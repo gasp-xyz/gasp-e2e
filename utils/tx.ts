@@ -55,3 +55,64 @@ export async function getNextAssetId() {
 
   return nextAssetId
 }
+
+export const issueAsset = async (account: any, total_balance: BN) => {
+  const api = getApi()
+
+  signTx(
+    api.tx.assets.issue(total_balance),
+    account,
+    await getCurrentNonce(account.address)
+  )
+}
+
+
+export const createPool = async (account: any, firstAssetId: BN,firstAssetAmount: BN,secondAssetId: BN,secondAssetAmount: BN) => {
+  const api = getApi()
+
+  signTx(
+    api.tx.xyk.createPool(firstAssetId, firstAssetAmount, secondAssetId, secondAssetAmount),
+    account,
+    await getCurrentNonce(account.address)
+  )
+}
+
+export const sellAsset = async (account: any, soldAssetId: BN, boughtAssetId: BN, amount: BN, minAmountOut: BN) => {
+  const api = getApi()
+
+  signTx(
+    api.tx.xyk.sellAsset(soldAssetId, boughtAssetId, amount, minAmountOut),
+    account,
+    await getCurrentNonce(account.address)
+  )
+}
+
+export const buyAsset = async (account: any, soldAssetId: BN, boughtAssetId: BN, amount: BN, maxAmountOut: BN) => {
+  const api = getApi()
+
+  signTx(
+    api.tx.xyk.buyAsset(soldAssetId, boughtAssetId, amount, maxAmountOut),
+    account,
+    await getCurrentNonce(account.address)
+  )
+}
+
+export const mintLiquidity = async (account: any, firstAssetId: BN, secondAssetId: BN, firstAssetAmount: BN) => {
+  const api = getApi()
+
+  signTx(
+    api.tx.xyk.mintLiquidity(firstAssetId, secondAssetId, firstAssetAmount),
+    account,
+    await getCurrentNonce(account.address)
+  )
+}
+
+export const burnLiquidity = async (account: any, firstAssetId: BN, secondAssetId: BN, firstAssetAmount: BN) => {
+  const api = getApi()
+
+  signTx(
+    api.tx.xyk.burnLiquidity(firstAssetId, secondAssetId, firstAssetAmount),
+    account,
+    await getCurrentNonce(account.address)
+  )
+}
