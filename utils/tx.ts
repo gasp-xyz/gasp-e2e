@@ -6,7 +6,7 @@ export const signTx = async (
   tx: SubmittableExtrinsic<'promise'>,
   address: AddressOrPair,
   nonce: number
-) => {                    
+) => {
   const unsub = await tx.signAndSend(address, { nonce }, (result: any) => {
     // handleTx(result, unsub)
   })
@@ -27,25 +27,34 @@ export async function getCurrentNonce(account?: string) {
 
 export async function getBalanceOfAsset(assetId: BN, account: any ) {
   const api = getApi()
- 
+
     const balance = await api.query.assets.balances([assetId, account.address])
 
   //  console.log(account.address + ' asset ' + assetId + " balance: " + balance.toString())
 
     return balance.toString()
-  
+
 }
 
 export async function getBalanceOfPool(assetId1: BN, assetId2: BN ) {
   const api = getApi()
- 
+
     const balance1 = await api.query.xyk.pools([assetId1, assetId2])
     const balance2 = await api.query.xyk.pools([assetId2, assetId1])
 
   //  console.log("pool " + assetId1 + "-" + assetId2 + " has balance of "+ balance1 +  "-" + balance2)
 
     return [balance1,balance2]
-  
+
+}
+
+export async function getLiquidityAssetId(assetId1: BN, assetId2: BN ) {
+  const api = getApi()
+
+    const liquidity_asset_id = await api.query.xyk.liquidityAssets([assetId1, assetId2])
+
+    return liquidity_asset_id
+
 }
 
 export async function getNextAssetId() {
@@ -61,6 +70,16 @@ export const issueAsset = async (account: any, total_balance: BN) => {
 
   signTx(
     api.tx.assets.issue(total_balance),
+    account,
+    await getCurrentNonce(account.address)
+  )
+}
+
+export const transferAsset = async (account: any, asset_id:BN, target: any, amount: BN) => {
+  const api = getApi()
+
+  signTx(
+    api.tx.assets.transfer(asset_id, target, amount),
     account,
     await getCurrentNonce(account.address)
   )
@@ -87,11 +106,11 @@ export const sellAsset = async (account: any, soldAssetId: BN, boughtAssetId: BN
   )
 }
 
-export const buyAsset = async (account: any, soldAssetId: BN, boughtAssetId: BN, amount: BN, maxAmountOut: BN) => {
+export const buyAsset = async (account: any, soldAssetId: BN, boughtAssetId: BN, amount: BN, maxAmountIn: BN) => {
   const api = getApi()
 
   signTx(
-    api.tx.xyk.buyAsset(soldAssetId, boughtAssetId, amount, maxAmountOut),
+    api.tx.xyk.buyAsset(soldAssetId, boughtAssetId, amount, maxAmountIn),
     account,
     await getCurrentNonce(account.address)
   )
