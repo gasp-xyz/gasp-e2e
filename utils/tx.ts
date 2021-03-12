@@ -57,6 +57,15 @@ export async function getLiquidityAssetId(assetId1: BN, assetId2: BN ) {
 
 }
 
+export async function getAssetSupply(assetId1: BN) {
+  const api = getApi()
+
+    const asset_supply = await api.query.assets.totalSupply(assetId1)
+
+    return asset_supply
+
+}
+
 export async function getNextAssetId() {
   const api = getApi()
 
@@ -65,11 +74,31 @@ export async function getNextAssetId() {
   return nextAssetId
 }
 
-export const issueAsset = async (account: any, total_balance: BN) => {
+export async function getSudoKey() {
+  const api = getApi()
+
+  const sudoKey = await api.query.sudo.key();
+
+  return sudoKey
+}
+
+export const balanceTransfer = async (account: any, target:any, amount: BN) => {
   const api = getApi()
 
   signTx(
-    api.tx.assets.issue(total_balance),
+    api.tx.balances.transfer(target, amount),
+    account,
+    await getCurrentNonce(account.address)
+  )
+}
+
+export const sudoIssueAsset = async (account: any, total_balance: BN, target: any) => {
+  const api = getApi()
+
+  signTx(
+		api.tx.sudo.sudo(
+    	api.tx.assets.issue(total_balance, target)
+		),
     account,
     await getCurrentNonce(account.address)
   )
