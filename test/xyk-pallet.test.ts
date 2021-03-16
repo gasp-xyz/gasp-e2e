@@ -215,11 +215,6 @@ test('xyk-pallet: Happy case scenario', async () => {
 	var sell_price_local = calculate_sell_price_local(pool_balance_before[0], pool_balance_before[1], amount);
 	var sell_price_rpc = await calculate_sell_price_rpc(pool_balance_before[0], pool_balance_before[1], amount);
 
-	console.log(sell_price_local);
-	console.log(sell_price_rpc);
-	console.log(sell_price_local.toString());
-	console.log(sell_price_rpc.toString());
-
 	expect(sell_price_local).toEqual(sell_price_rpc);
 
   console.log("Bob: selling asset " + firstAssetId + ", buying asset " + secondAssetId);
