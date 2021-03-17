@@ -5,9 +5,11 @@ import BN from 'bn.js'
 import { Keyring } from '@polkadot/api'
 import {sleep} from "../utils/utils";
 
+jest.spyOn(console, 'log').mockImplementation(jest.fn());
+jest.setTimeout(1200000);
+process.env.NODE_ENV = 'test';
+
 test('xyk-pallet: Happy case scenario', async () => {
-	jest.setTimeout(600000);
-  process.env.NODE_ENV = 'test';
 
 	try {
     getApi();
@@ -510,8 +512,6 @@ test('xyk-pallet: Happy case scenario', async () => {
 
 
 test('xyk-pallet: Liquidity sufficiency scenario', async () => {
-	jest.setTimeout(600000);
-  process.env.NODE_ENV = 'test';
 
 	try {
     getApi();
