@@ -32,7 +32,7 @@ export const initApi = async () => {
               type: 'Balance',
             },
           ],
-          type: 'Balance',
+          type: 'RpcResult<Balance>',
         },
         calculate_sell_price: {
           description: '',
@@ -50,11 +50,18 @@ export const initApi = async () => {
               type: 'Balance',
             },
           ],
-          type: 'Balance',
+          type: 'RpcResult<Balance>',
         },
       },
     },
     types: {
+
+			Balance: 'u128',
+
+			RpcResult: {
+				price: 'Balance'
+			},
+			
       // mapping the actual specified address format
       Address: 'AccountId',
       // mapping the lookup
