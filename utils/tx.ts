@@ -25,16 +25,16 @@ export async function calcuate_mint_liquidity_price_local(firstAssetId: BN, seco
 	return [second_asset_amount, liquidity_assets_minted]
 }
 
-export async function calcuate_burn_liquidity_price_local(firstAssetId: BN, secondAssetId: BN, first_asset_amount: BN){
+export async function calcuate_burn_liquidity_price_local(firstAssetId: BN, secondAssetId: BN, liquidity_asset_amount: BN){
 
 	let liquidity_asset_id = await getLiquidityAssetId(firstAssetId, secondAssetId);
 	let total_liquidity_assets = await getAssetSupply(liquidity_asset_id);
 	let [first_asset_reserve, second_asset_reserve] = await getBalanceOfPool(firstAssetId, secondAssetId);
 
-	let liquidity_asset_burned: BN = first_asset_amount.mul(total_liquidity_assets).div(first_asset_reserve);
-	let second_asset_amount: BN = second_asset_reserve.mul(liquidity_asset_burned).div(total_liquidity_assets);
+	let first_asset_amount: BN = first_asset_reserve.mul(liquidity_asset_amount).div(total_liquidity_assets);
+	let second_asset_amount: BN = second_asset_reserve.mul(liquidity_asset_amount).div(total_liquidity_assets);
 
-	return [second_asset_amount, liquidity_asset_burned]
+	return [first_asset_amount, second_asset_amount]
 }
 
 export function calculate_sell_price_local(input_reserve: BN, output_reserve: BN, sell_amount: BN){
@@ -208,11 +208,11 @@ export const mintLiquidity = async (account: any, firstAssetId: BN, secondAssetI
   )
 }
 
-export const burnLiquidity = async (account: any, firstAssetId: BN, secondAssetId: BN, firstAssetAmount: BN) => {
+export const burnLiquidity = async (account: any, firstAssetId: BN, secondAssetId: BN, liquidityAssetAmount: BN) => {
   const api = getApi();
 
   signTx(
-    api.tx.xyk.burnLiquidity(firstAssetId, secondAssetId, firstAssetAmount),
+    api.tx.xyk.burnLiquidity(firstAssetId, secondAssetId, liquidityAssetAmount),
     account,
     await getCurrentNonce(account.address)
   )

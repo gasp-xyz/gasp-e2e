@@ -422,12 +422,12 @@ test('xyk-pallet: Happy case scenario', async () => {
 
 
 	var user = alice;
-	var first_asset_amount = new BN(20000);
-	var [second_asset_amount, liquidity_assets_burned] = await calcuate_burn_liquidity_price_local(firstAssetId, secondAssetId, first_asset_amount);
+	var liquidity_assets_burned = new BN(20000);
+	var [first_asset_amount, second_asset_amount] = await calcuate_burn_liquidity_price_local(firstAssetId, secondAssetId, liquidity_assets_burned);
 
-  console.log("Alice: burning liquidity " + firstAssetId + " - " + secondAssetId);
+  console.log("Alice: burning liquidity " + liquidity_assets_burned + "of pool " + firstAssetId + " - " + secondAssetId);
   eventPromise = expectEvent("xyk", "LiquidityBurned", 14);
-  burnLiquidity(user, firstAssetId, secondAssetId, first_asset_amount);
+  burnLiquidity(user, firstAssetId, secondAssetId, liquidity_assets_burned);
   [eventResponse,] = await eventPromise;
 	expect(eventResponse).toEqual('ExtrinsicSuccess');
 
@@ -472,12 +472,12 @@ test('xyk-pallet: Happy case scenario', async () => {
 
 
 	var user = alice;
-	var first_asset_amount = alice_assets_before[2].mul(pool_balance_before[0]).div(total_liquidity_assets_before);
-	var [second_asset_amount, liquidity_assets_burned] = await calcuate_burn_liquidity_price_local(firstAssetId, secondAssetId, first_asset_amount);
+	var liquidity_assets_burned: BN = alice_assets_before[2];
+	var [first_asset_amount, second_asset_amount] = await calcuate_burn_liquidity_price_local(firstAssetId, secondAssetId, liquidity_assets_burned);
 
   console.log("Alice: burning all liquidity " + firstAssetId + " - " + secondAssetId);
   eventPromise = expectEvent("xyk", "LiquidityBurned", 14);
-  burnLiquidity(user, firstAssetId, secondAssetId, first_asset_amount);
+  burnLiquidity(user, firstAssetId, secondAssetId, liquidity_assets_burned);
   [eventResponse,] = await eventPromise;
 	expect(eventResponse).toEqual('ExtrinsicSuccess');
 
@@ -769,13 +769,13 @@ test('xyk-pallet: Liquidity sufficiency scenario', async () => {
 
 
 	var user = alice;
-	var first_asset_amount = alice_assets_before[2].mul(pool_balance_before[0]).div(total_liquidity_assets_before);
-	var [second_asset_amount, liquidity_assets_burned] = await calcuate_burn_liquidity_price_local(firstAssetId, secondAssetId, first_asset_amount);
-	var first_asset_amount_excess = first_asset_amount.mul(new BN(105)).div(new BN(100));
+	var liquidity_assets_burned = alice_assets_before[2];
+	var [first_asset_amount, second_asset_amount] = await calcuate_burn_liquidity_price_local(firstAssetId, secondAssetId, first_asset_amount);
+	var liquidity_assets_burned_excess = liquidity_assets_burned.mul(new BN(105)).div(new BN(100));
 
   console.log("Alice: attempting to burn more liquidity than they have " + firstAssetId + " - " + secondAssetId);
   eventPromise = expectEvent("xyk", "LiquidityBurned", 14);
-  burnLiquidity(user, firstAssetId, secondAssetId, first_asset_amount_excess);
+  burnLiquidity(user, firstAssetId, secondAssetId, liquidity_assets_burned_excess);
   [eventResponse, error] = await eventPromise;
 	expect(eventResponse).toEqual('ExtrinsicFailed');
 	expect(error).toEqual(2);
@@ -820,13 +820,13 @@ test('xyk-pallet: Liquidity sufficiency scenario', async () => {
 
 
 	var user = bob;
-	var first_asset_amount = bob_assets_before[2].mul(pool_balance_before[0]).div(total_liquidity_assets_before);
-	var [second_asset_amount, liquidity_assets_burned] = await calcuate_burn_liquidity_price_local(firstAssetId, secondAssetId, first_asset_amount);
-	var first_asset_amount_excess = first_asset_amount.mul(new BN(105)).div(new BN(100));
+	var liquidity_asset_amount: BN = bob_assets_before[2];
+	var [first_asset_amount, second_asset_amount] = await calcuate_burn_liquidity_price_local(firstAssetId, secondAssetId, liquidity_asset_amount);
+	var liquidity_asset_amount_excess = liquidity_asset_amount.mul(new BN(105)).div(new BN(100));
 
-  console.log("Bob: attempting to burn more liquidity than they have " + firstAssetId + " - " + secondAssetId);
+  console.log("Bob: attempting to burn more liquidity than they have " + liquidity_asset_amount_excess + " from pool " + firstAssetId + " - " + secondAssetId);
   eventPromise = expectEvent("xyk", "LiquidityBurned", 14);
-  burnLiquidity(user, firstAssetId, secondAssetId, first_asset_amount_excess);
+  burnLiquidity(user, firstAssetId, secondAssetId, liquidity_asset_amount_excess);
   [eventResponse, error] = await eventPromise;
 	expect(eventResponse).toEqual('ExtrinsicFailed');
 	expect(error).toEqual(2);
@@ -871,12 +871,12 @@ test('xyk-pallet: Liquidity sufficiency scenario', async () => {
 
 
 	var user = alice;
-	var first_asset_amount = alice_assets_before[2].mul(pool_balance_before[0]).div(total_liquidity_assets_before);
-	var [second_asset_amount, liquidity_assets_burned] = await calcuate_burn_liquidity_price_local(firstAssetId, secondAssetId, first_asset_amount);
+	var liquidity_assets_burned = alice_assets_before[2];
+	var [first_asset_amount, second_asset_amount] = await calcuate_burn_liquidity_price_local(firstAssetId, secondAssetId, liquidity_assets_burned);
 
   console.log("Alice: burning all liquidity " + firstAssetId + " - " + secondAssetId);
   eventPromise = expectEvent("xyk", "LiquidityBurned", 14);
-  burnLiquidity(user, firstAssetId, secondAssetId, first_asset_amount);
+  burnLiquidity(user, firstAssetId, secondAssetId, liquidity_assets_burned);
   [eventResponse,] = await eventPromise;
 	expect(eventResponse).toEqual('ExtrinsicSuccess');
 
@@ -920,13 +920,13 @@ test('xyk-pallet: Liquidity sufficiency scenario', async () => {
 
 
 	var user = bob;
-	var first_asset_amount = bob_assets_before[2].mul(pool_balance_before[0]).div(total_liquidity_assets_before);
-	var [second_asset_amount, liquidity_assets_burned] = await calcuate_burn_liquidity_price_local(firstAssetId, secondAssetId, first_asset_amount);
-	var first_asset_amount_excess = first_asset_amount.mul(new BN(105)).div(new BN(100));
+	var liquidity_assets_burned = bob_assets_before[2];
+	var [first_asset_amount, second_asset_amount] = await calcuate_burn_liquidity_price_local(firstAssetId, secondAssetId, liquidity_assets_burned);
+	var liquidity_assets_burned_excess = liquidity_assets_burned.mul(new BN(105)).div(new BN(100));
 
 	console.log("Bob: owning 100% of the pool, attempting to burn more liquidity than then pool has " + firstAssetId + " - " + secondAssetId);
   eventPromise = expectEvent("xyk", "LiquidityBurned", 14);
-  burnLiquidity(user, firstAssetId, secondAssetId, first_asset_amount_excess);
+  burnLiquidity(user, firstAssetId, secondAssetId, liquidity_assets_burned_excess);
   [eventResponse, error] = await eventPromise;
 	expect(eventResponse).toEqual('ExtrinsicFailed');
 	expect(error).toEqual(2);
@@ -971,12 +971,12 @@ test('xyk-pallet: Liquidity sufficiency scenario', async () => {
 
 
 	var user = bob;
-	var first_asset_amount = bob_assets_before[2].mul(pool_balance_before[0]).div(total_liquidity_assets_before);
-	var [second_asset_amount, liquidity_assets_burned] = await calcuate_burn_liquidity_price_local(firstAssetId, secondAssetId, first_asset_amount);
+	var liquidity_assets_burned = bob_assets_before[2];
+	var [first_asset_amount, second_asset_amount] = await calcuate_burn_liquidity_price_local(firstAssetId, secondAssetId, liquidity_assets_burned);
 
   console.log("Bob: burning all liquidity " + firstAssetId + " - " + secondAssetId);
   eventPromise = expectEvent("xyk", "LiquidityBurned", 14);
-  burnLiquidity(user, firstAssetId, secondAssetId, first_asset_amount);
+  burnLiquidity(user, firstAssetId, secondAssetId, liquidity_assets_burned);
   [eventResponse,] = await eventPromise;
 	expect(eventResponse).toEqual('ExtrinsicSuccess');
 
@@ -1020,11 +1020,11 @@ test('xyk-pallet: Liquidity sufficiency scenario', async () => {
 
 
 	var user = bob;
-	var first_asset_amount = new BN(10000);
+	var liquidity_asset_amount = new BN(10000);
 
 	console.log("Bob: attempting to burn liquidity from 0 liquidity pool " + firstAssetId + " - " + secondAssetId);
   eventPromise = expectEvent("xyk", "LiquidityBurned", 14);
-  burnLiquidity(user, firstAssetId, secondAssetId, first_asset_amount);
+  burnLiquidity(user, firstAssetId, secondAssetId, liquidity_asset_amount);
   [eventResponse, error] = await eventPromise;
 	expect(eventResponse).toEqual('ExtrinsicFailed');
 	expect(error).toEqual(3);
