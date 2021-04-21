@@ -208,11 +208,11 @@ export const mintLiquidity = async (account: any, firstAssetId: BN, secondAssetI
   )
 }
 
-export const burnLiquidity = async (account: any, firstAssetId: BN, secondAssetId: BN, firstAssetAmount: BN) => {
+export const burnLiquidity = async (account: any, firstAssetId: BN, secondAssetId: BN, liquidityAssetAmount: BN) => {
   const api = getApi();
 
   signTx(
-    api.tx.xyk.burnLiquidity(firstAssetId, secondAssetId, firstAssetAmount),
+    api.tx.xyk.burnLiquidity(firstAssetId, secondAssetId, liquidityAssetAmount),
     account,
     await getCurrentNonce(account.address)
   )
