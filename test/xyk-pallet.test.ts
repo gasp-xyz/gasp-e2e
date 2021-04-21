@@ -824,7 +824,7 @@ test('xyk-pallet: Liquidity sufficiency scenario', async () => {
 	var [first_asset_amount, second_asset_amount] = await calcuate_burn_liquidity_price_local(firstAssetId, secondAssetId, liquidity_asset_amount);
 	var liquidity_asset_amount_excess = liquidity_asset_amount.mul(new BN(105)).div(new BN(100));
 
-  console.log("Bob: attempting to burn more liquidity than they have " + liquidity_asset_amount_excess);
+  console.log("Bob: attempting to burn more liquidity than they have " + liquidity_asset_amount_excess + " from pool " + firstAssetId + " - " + secondAssetId);
   eventPromise = expectEvent("xyk", "LiquidityBurned", 14);
   burnLiquidity(user, firstAssetId, secondAssetId, liquidity_asset_amount_excess);
   [eventResponse, error] = await eventPromise;
