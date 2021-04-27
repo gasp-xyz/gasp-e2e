@@ -10,7 +10,7 @@ export const expectEvent = (section: any, method: any, module_index: any) => {
         const { event } = record
         if (event.section === section && event.method === method) {
           unsubscribe()
-          resolve(['ExtrinsicSuccess', null])
+          resolve(['ExtrinsicSuccess', JSON.parse(event.data.toString())])
         } else if (
 									(event.section === "system" && event.method === "ExtrinsicFailed")
 									&&
