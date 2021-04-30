@@ -96,7 +96,7 @@ export const initApi = async () => {
         blockNumber: 'u64',
         eventIndex: 'u32',
       },
-      TokenId: 'H160',
+      TokenId: 'u32',
       BridgedAssetId: 'H160',
       AssetAccountData: {
         free: 'U256',
