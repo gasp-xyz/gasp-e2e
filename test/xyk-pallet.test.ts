@@ -6,7 +6,7 @@ import { Keyring } from '@polkadot/api'
 import {sleep} from "../utils/utils";
 
 jest.spyOn(console, 'log').mockImplementation(jest.fn());
-jest.setTimeout(1200000);
+jest.setTimeout(1500000);
 process.env.NODE_ENV = 'test';
 
 test('xyk-pallet: Happy case scenario', async () => {
