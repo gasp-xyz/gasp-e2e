@@ -58,6 +58,12 @@ export const initApi = async () => {
       CurrencyIdOf: "u32",
       CurrencyId: "u32",
       Balance: 'u128',
+      App: {
+          _enum: [
+              'ETH',
+              'ERC20'
+          ]
+      },
 
       RpcResult: {
           price: 'Balance'
