@@ -6,7 +6,7 @@ import { Keyring } from '@polkadot/api'
 import {sleep} from "../utils/utils";
 
 jest.spyOn(console, 'log').mockImplementation(jest.fn());
-jest.setTimeout(1200000);
+jest.setTimeout(1500000);
 process.env.NODE_ENV = 'test';
 
 test('xyk-pallet: Happy case scenario', async () => {
@@ -41,7 +41,7 @@ test('xyk-pallet: Happy case scenario', async () => {
 
 	// Sudo requies alice as key.
 	console.log("Sudo: issuing asset " + firstAssetId + " to Alice");
-	eventPromise = expectEvent("assets","Issued", 12);
+	eventPromise = expectEvent("tokens","Issued", 12);
 	sudoIssueAsset(sudoPair, new BN(220000), alice.address);
 	[eventResponse,] = await eventPromise;
 	expect(eventResponse).toEqual('ExtrinsicSuccess');
@@ -53,7 +53,7 @@ test('xyk-pallet: Happy case scenario', async () => {
 	await waitNewBlock();
 
   console.log("Sudo: issuing asset " + secondAssetId + " to Alice");
-  eventPromise = expectEvent("assets","Issued", 12);
+  eventPromise = expectEvent("tokens","Issued", 12);
   sudoIssueAsset(sudoPair, new BN(120000), alice.address);
   [eventResponse,] = await eventPromise;
 	expect(eventResponse).toEqual('ExtrinsicSuccess');
@@ -173,7 +173,7 @@ test('xyk-pallet: Happy case scenario', async () => {
 	var amount = new BN(100000);
 
 	console.log("Alice: transfering asset " + firstAssetId + " to Bob");
-	eventPromise = expectEvent("assets", "Transferred", 12);
+	eventPromise = expectEvent("tokens", "Transferred", 12);
 	transferAsset(user, firstAssetId, bob.address, amount);
 	[eventResponse,] = await eventPromise;
 	expect(eventResponse).toEqual('ExtrinsicSuccess');
@@ -543,7 +543,7 @@ test('xyk-pallet: Liquidity sufficiency scenario', async () => {
 
 	// Sudo requies alice as key.
 	console.log("Sudo: issuing asset " + firstAssetId + " to Alice");
-	eventPromise = expectEvent("assets","Issued", 12);
+	eventPromise = expectEvent("tokens","Issued", 12);
 	sudoIssueAsset(sudoPair, new BN(200000), alice.address);
 	[eventResponse,] = await eventPromise;
 	expect(eventResponse).toEqual('ExtrinsicSuccess');
@@ -555,7 +555,7 @@ test('xyk-pallet: Liquidity sufficiency scenario', async () => {
 	await waitNewBlock();
 
   console.log("Sudo: issuing asset " + secondAssetId + " to Alice");
-  eventPromise = expectEvent("assets","Issued", 12);
+  eventPromise = expectEvent("tokens","Issued", 12);
   sudoIssueAsset(sudoPair, new BN(200000), alice.address);
   [eventResponse,] = await eventPromise;
 	expect(eventResponse).toEqual('ExtrinsicSuccess');
@@ -574,7 +574,7 @@ test('xyk-pallet: Liquidity sufficiency scenario', async () => {
 	var amount = new BN(100000);
 
 	console.log("Alice: transfering asset " + firstAssetId + " to Bob");
-	eventPromise = expectEvent("assets", "Transferred", 12);
+	eventPromise = expectEvent("tokens", "Transferred", 12);
 	transferAsset(user, firstAssetId, bob.address, amount);
 	[eventResponse,] = await eventPromise;
 	expect(eventResponse).toEqual('ExtrinsicSuccess');
@@ -599,7 +599,7 @@ test('xyk-pallet: Liquidity sufficiency scenario', async () => {
 	var amount = new BN(100000);
 
 	console.log("Alice: transfering asset " + secondAssetId + " to Bob");
-	eventPromise = expectEvent("assets", "Transferred", 12);
+	eventPromise = expectEvent("tokens", "Transferred", 12);
 	transferAsset(user, secondAssetId, bob.address, amount);
 	[eventResponse,] = await eventPromise;
 	expect(eventResponse).toEqual('ExtrinsicSuccess');

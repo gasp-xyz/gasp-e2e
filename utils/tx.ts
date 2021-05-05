@@ -85,10 +85,9 @@ export async function getUserAssets(account: any, assets){
 export async function getBalanceOfAsset(assetId: BN, account: any ) {
   const api = getApi();
 
-	const balance = await api.query.assets.balances([assetId, account]);
+	const balance = await api.query.tokens.accounts(account, assetId);
 
-	return new BN(balance.toString())
-
+	return new BN(balance.free.words[0].toString())
 }
 
 export async function getBalanceOfPool(assetId1: BN, assetId2: BN ) {
@@ -113,7 +112,7 @@ export async function getLiquidityAssetId(assetId1: BN, assetId2: BN ) {
 export async function getAssetSupply(assetId1: BN) {
   const api = getApi();
 
-	const asset_supply = await api.query.assets.totalSupply(assetId1);
+	const asset_supply = await api.query.tokens.totalIssuance(assetId1);
 
 	return new BN(asset_supply.toString())
 
@@ -122,8 +121,7 @@ export async function getAssetSupply(assetId1: BN) {
 export async function getNextAssetId() {
   const api = getApi();
 
-  const nextAssetId = await api.query.assets.nextAssetId();
-
+  const nextAssetId = await api.query.tokens.nextCurrencyId();
   return new BN(nextAssetId.toString())
 }
 
@@ -147,10 +145,9 @@ export const balanceTransfer = async (account: any, target:any, amount: BN) => {
 
 export const sudoIssueAsset = async (account: any, total_balance: BN, target: any) => {
   const api = getApi();
-
   signTx(
 		api.tx.sudo.sudo(
-    	api.tx.assets.issue(total_balance, target)
+    	api.tx.tokens.create(target, total_balance)
 		),
     account,
     await getCurrentNonce(account.address)
@@ -161,7 +158,7 @@ export const transferAsset = async (account: any, asset_id:BN, target: any, amou
   const api = getApi();
 
   signTx(
-    api.tx.assets.transfer(asset_id, target, amount),
+    api.tx.tokens.transfer(target, asset_id, amount),
     account,
     await getCurrentNonce(account.address)
   )

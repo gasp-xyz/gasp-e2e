@@ -55,13 +55,20 @@ export const initApi = async () => {
       },
     },
     types: {
+      CurrencyIdOf: "u32",
+      CurrencyId: "u32",
+      Balance: 'u128',
+      App: {
+          _enum: [
+              'ETH',
+              'ERC20'
+          ]
+      },
 
-			Balance: 'u128',
+      RpcResult: {
+          price: 'Balance'
+      },
 
-			RpcResult: {
-				price: 'Balance'
-			},
-			
       // mapping the actual specified address format
       Address: 'AccountId',
       // mapping the lookup
@@ -89,7 +96,7 @@ export const initApi = async () => {
         blockNumber: 'u64',
         eventIndex: 'u32',
       },
-      TokenId: 'H160',
+      TokenId: 'u32',
       BridgedAssetId: 'H160',
       AssetAccountData: {
         free: 'U256',
