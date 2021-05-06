@@ -125,6 +125,13 @@ export async function getNextAssetId() {
   return new BN(nextAssetId.toString())
 }
 
+export async function getAvailableCurrencies() {
+  const api = getApi();
+  const curerncies = await api.query.tokens.totalIssuance();
+  return curerncies;
+}
+
+
 export async function getSudoKey() {
   const api = getApi();
 

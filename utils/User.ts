@@ -18,5 +18,6 @@ export class User {
         this.name = name;
         this.keyRingPair = keyring.createFromUri(name);          
     }
+
 }
 
