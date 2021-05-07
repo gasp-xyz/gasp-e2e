@@ -140,7 +140,7 @@ export async function getSudoKey() {
   return sudoKey
 }
 
-export const balanceTransfer = async (account: any, target:any, amount: BN) => {
+export const balanceTransfer = async (account: any, target:any, amount: number) => {
   const api = getApi();
 
   signTx(
@@ -174,7 +174,8 @@ export const transferAsset = async (account: any, asset_id:BN, target: any, amou
 
 export const createPool = async (account: any, firstAssetId: BN,firstAssetAmount: BN,secondAssetId: BN,secondAssetAmount: BN) => {
   const api = getApi();
-
+  console.warn(`Creating pool:${firstAssetId},${firstAssetAmount},${secondAssetId},${secondAssetAmount}`);
+  console.warn(`Creating Address:${account.address}`);
   signTx(
     api.tx.xyk.createPool(firstAssetId, firstAssetAmount, secondAssetId, secondAssetAmount),
     account,
