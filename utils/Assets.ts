@@ -44,6 +44,7 @@ export class Assets {
             await waitNewBlock();
             const currencyId = await this.issueAssetToUser(user, value[currency]);
             currencies.push(currencyId);
+            user.addAsset(currencyId,new BN(value[currency]));
         }
         return currencies;
     }
