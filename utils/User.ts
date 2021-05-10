@@ -46,8 +46,8 @@ export class User {
         expect(this.getAsset(currencyId).amountAfter).toEqual(diffFromWallet);
     }
     async validateWalletIncreased(currencyId: BN, amount: BN){
-        const diffFromWallet = this.getAsset(currencyId).amountBefore.add(amount);
-        expect(this.getAsset(currencyId).amountAfter).toEqual(diffFromWallet);
+        const addFromWallet = this.getAsset(currencyId).amountBefore.add(amount);
+        expect(this.getAsset(currencyId).amountAfter).toEqual(addFromWallet);
     }
 
     async validateLiquidity(userLiquidityWalletId : BN, liquidityAmount: any){

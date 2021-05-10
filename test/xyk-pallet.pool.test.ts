@@ -69,7 +69,7 @@ beforeEach( async () => {
 	validateEmptyAssets([testUser2.getAsset(firstCurrency).amountBefore,testUser2.getAsset(secondCurrency).amountBefore]);
 });
 
-test('xyk-pallet - Pool tests: Create pool', async () => {
+test.skip('xyk-pallet - Pool tests: createPool', async () => {
 	
 	const pool_balance_before = [new BN(0), new BN(0)];
 	const total_liquidity_assets_before = new BN(0);
@@ -113,308 +113,221 @@ test('xyk-pallet - Pool tests: Create pool', async () => {
 	expect(total_liquidity_assets_before.add(liquidity_assets_minted))
 	.toEqual(total_liquidity_assets);
 
-	await waitNewBlock();
 });
 
-test.skip('xyk-pallet - remaining tests', async () => {
-
-	var alice_assets_before = await getUserAssets(alice.address, [firstAssetId, secondAssetId, liquidity_asset_id]);
-	// console.log(alice_assets_before.toString());
-	var bob_assets_before = await getUserAssets(bob.address, [firstAssetId, secondAssetId, liquidity_asset_id]);
-	// console.log(bob_assets_before.toString());
-	var pallet_assets_before = await getUserAssets(pallet_address, [firstAssetId, secondAssetId]);
-	// console.log(pallet_assets_before.toString());
-	var pool_balance_before = await getBalanceOfPool(firstAssetId, secondAssetId);
-	// console.log(pool_balance_before.toString());
-	var total_liquidity_assets_before = await getAssetSupply(liquidity_asset_id);
-	// console.log(total_liquidity_assets_before.toString());
-
-	var user = alice;
+test.skip('xyk-pallet - LiquidityOperation: mintLiquidity', async () => {
 	var first_asset_amount = new BN(30000);
-	var [second_asset_amount, liquidity_assets_minted] = await calcuate_mint_liquidity_price_local(firstAssetId, secondAssetId, first_asset_amount);
+	await createPoolToAsset(new BN(50000), new BN(50000), testUser1);
+	
+	var pool_balance_before = await getBalanceOfPool(firstCurrency, secondCurrency);
+	var liquidity_asset_id = await getLiquidityAssetId(firstCurrency, secondCurrency);
+	var total_liquidity_assets_before = await getAssetSupply(liquidity_asset_id);
+	
+	// refresh amounts after the pool Asset creation
+	testUser1.addAsset(liquidity_asset_id);
+	testUser2.addAsset(liquidity_asset_id);
+	await testUser1.refreshAmounts(AssetWallet.BEFORE);
+	await testUser2.refreshAmounts(AssetWallet.BEFORE);
+	await pallet.refreshAmounts(AssetWallet.BEFORE);
 
-  console.log("Alice: minting liquidity " + firstAssetId + " - " + secondAssetId);
-  eventPromise = expectEvent("xyk", "LiquidityMinted", 14);
-  mintLiquidity(user, firstAssetId, secondAssetId, first_asset_amount);
-  [eventResponse,] = await eventPromise;
-	expect(eventResponse).toEqual('ExtrinsicSuccess');
+	var [second_asset_amount, liquidity_assets_minted] = await calcuate_mint_liquidity_price_local(firstCurrency, secondCurrency, first_asset_amount);
+  	console.log("User: minting liquidity " + firstCurrency + " - " + secondCurrency);
+	const eventPromise = getEventResult("xyk", "LiquidityMinted", 14);
+	mintLiquidity(testUser1.keyRingPair, firstCurrency, secondCurrency, first_asset_amount);
+	const eventResponse = await eventPromise;
+	expect(eventResponse.state).toEqual(ExtrinsicResult.ExtrinsicSuccess);
 
-	// console.log(second_asset_amount.toString());
-	// console.log(liquidity_assets_minted.toString());
+	await testUser1.refreshAmounts(AssetWallet.AFTER);
+	await testUser2.refreshAmounts(AssetWallet.AFTER);
+	await pallet.refreshAmounts(AssetWallet.AFTER);
 
-	var alice_assets = await getUserAssets(alice.address, [firstAssetId, secondAssetId, liquidity_asset_id]);
-	expect	([	alice_assets_before[0].sub(first_asset_amount),	alice_assets_before[1].sub(second_asset_amount),	alice_assets_before[2].add(liquidity_assets_minted)	])
-	.toEqual(alice_assets);
-	// console.log(alice_assets.toString());
-	var bob_assets = await getUserAssets(bob.address, [firstAssetId, secondAssetId, liquidity_asset_id]);
-	expect	(bob_assets_before)
-	.toEqual(bob_assets);
-	// console.log(bob_assets.toString());
-	var pallet_assets = await getUserAssets(pallet_address, [firstAssetId, secondAssetId]);
-	expect	([	pallet_assets_before[0].add(first_asset_amount),	pallet_assets_before[1].add(second_asset_amount)	])
-	.toEqual(pallet_assets);
-	// console.log(pallet_assets.toString());
-	var pool_balance = await getBalanceOfPool(firstAssetId, secondAssetId);
+	testUser1.validateWalletReduced(firstCurrency,first_asset_amount);
+	testUser1.validateWalletReduced(secondCurrency,second_asset_amount);
+	testUser1.validateWalletIncreased(liquidity_asset_id,liquidity_assets_minted);
+
+	await testUser2.validateWalletsUnmodified();
+	
+	pallet.validateWalletIncreased(firstCurrency, first_asset_amount);
+	pallet.validateWalletIncreased(secondCurrency, second_asset_amount);
+
+	var pool_balance = await getBalanceOfPool(firstCurrency, secondCurrency);
 	expect	([	pool_balance_before[0].add(first_asset_amount),	pool_balance_before[1].add(second_asset_amount)	])
 	.toEqual(pool_balance);
-	// console.log(pool_balance.toString());
+	
 	var total_liquidity_assets = await getAssetSupply(liquidity_asset_id);
 	expect(total_liquidity_assets_before.add(liquidity_assets_minted))
 	.toEqual(total_liquidity_assets);
-	// console.log(total_liquidity_assets.toString());
 
-  await waitNewBlock();
+});
 
-	var alice_assets_before = await getUserAssets(alice.address, [firstAssetId, secondAssetId, liquidity_asset_id]);
-	// console.log(alice_assets_before.toString());
-	var bob_assets_before = await getUserAssets(bob.address, [firstAssetId, secondAssetId, liquidity_asset_id]);
-	// console.log(bob_assets_before.toString());
-	var pallet_assets_before = await getUserAssets(pallet_address, [firstAssetId, secondAssetId]);
-	// console.log(pallet_assets_before.toString());
-	var pool_balance_before = await getBalanceOfPool(firstAssetId, secondAssetId);
-	// console.log(pool_balance_before.toString());
-	var total_liquidity_assets_before = await getAssetSupply(liquidity_asset_id);
-	// console.log(total_liquidity_assets_before.toString());
-
-	var user = alice;
+test.skip('xyk-pallet - AssetsOperation: transferAsset', async() => {
+    //Refactor Note: [Missing Wallet assert?] Did not considered creating a liquity asset. Transaction does nothing with it.
+	var pool_balance_before = await getBalanceOfPool(firstCurrency, secondCurrency);
 	var amount = new BN(100000);
+	console.log("testUser1: transfering asset " + firstCurrency + " to testUser2");
 
-	console.log("Alice: transfering asset " + firstAssetId + " to Bob");
-	eventPromise = expectEvent("tokens", "Transferred", 12);
-	transferAsset(user, firstAssetId, bob.address, amount);
-	[eventResponse,] = await eventPromise;
-	expect(eventResponse).toEqual('ExtrinsicSuccess');
+	const eventPromise = getEventResult("tokens", "Transferred", 12);
+	transferAsset(testUser1.keyRingPair, firstCurrency, testUser2.keyRingPair.address, amount);
+	const eventResponse = await eventPromise;
+	expect(eventResponse.state).toEqual(ExtrinsicResult.ExtrinsicSuccess);
 
-	var alice_assets = await getUserAssets(alice.address, [firstAssetId, secondAssetId, liquidity_asset_id]);
-	expect	([	alice_assets_before[0].sub(amount),	alice_assets_before[1],	alice_assets_before[2]	])
-	.toEqual(alice_assets);
-	// console.log(alice_assets.toString());
-	var bob_assets = await getUserAssets(bob.address, [firstAssetId, secondAssetId, liquidity_asset_id]);
-	expect	([	bob_assets_before[0].add(amount),	bob_assets_before[1], bob_assets_before[2]])
-	.toEqual(bob_assets);
-	// console.log(bob_assets.toString());
-	var pallet_assets = await getUserAssets(pallet_address, [firstAssetId, secondAssetId]);
-	expect	(pallet_assets_before)
-	.toEqual(pallet_assets);
-	// console.log(pallet_assets.toString());
-	var pool_balance = await getBalanceOfPool(firstAssetId, secondAssetId);
+	await testUser1.refreshAmounts(AssetWallet.AFTER);
+	await testUser2.refreshAmounts(AssetWallet.AFTER);
+	await pallet.refreshAmounts(AssetWallet.AFTER);
+
+	testUser1.validateWalletReduced(firstCurrency, amount);
+	testUser1.validateWalletIncreased(secondCurrency,new BN(0));
+
+	testUser2.validateWalletIncreased(firstCurrency, amount);
+	testUser1.validateWalletIncreased(secondCurrency,new BN(0));
+
+	var pool_balance = await getBalanceOfPool(firstCurrency, secondCurrency);
 	expect	(pool_balance_before)
 	.toEqual(pool_balance);
-	// console.log(pool_balance.toString());
-	var total_liquidity_assets = await getAssetSupply(liquidity_asset_id);
-	expect(total_liquidity_assets_before)
-	.toEqual(total_liquidity_assets);
-	// console.log(total_liquidity_assets.toString());
 
-	await waitNewBlock();
 
-	var alice_assets_before = await getUserAssets(alice.address, [firstAssetId, secondAssetId, liquidity_asset_id]);
-	// console.log(alice_assets_before.toString());
-	var bob_assets_before = await getUserAssets(bob.address, [firstAssetId, secondAssetId, liquidity_asset_id]);
-	// console.log(bob_assets_before.toString());
-	var pallet_assets_before = await getUserAssets(pallet_address, [firstAssetId, secondAssetId]);
-	// console.log(pallet_assets_before.toString());
-	var pool_balance_before = await getBalanceOfPool(firstAssetId, secondAssetId);
-	// console.log(pool_balance_before.toString());
-	var total_liquidity_assets_before = await getAssetSupply(liquidity_asset_id);
-	// console.log(total_liquidity_assets_before.toString());
+});
 
-	var user = bob;
+test.skip('xyk-pallet - AssetsOperation: sellAsset [minAmountOut = 0] , first to second currency', async() => {
+
+	await createPoolToAsset(new BN(50000), new BN(50000), testUser1);
+	await testUser1.refreshAmounts(AssetWallet.BEFORE);
+
+	var pool_balance_before = await getBalanceOfPool(firstCurrency, secondCurrency);
 	var amount = new BN(30000);
 	var sell_price_local = calculate_sell_price_local(pool_balance_before[0], pool_balance_before[1], amount);
 	var sell_price_rpc = await calculate_sell_price_rpc(pool_balance_before[0], pool_balance_before[1], amount);
-
 	expect(sell_price_local).toEqual(sell_price_rpc);
+	console.log("TestUser1: selling asset " + firstCurrency + ", buying asset " + secondCurrency);
+	
+	const soldAssetId = firstCurrency;
+	const boughtAssetId = secondCurrency;
+	await transferAssets(testUser1, soldAssetId, secondCurrency , amount);
 
-  console.log("Bob: selling asset " + firstAssetId + ", buying asset " + secondAssetId);
-	var soldAssetId = firstAssetId;
-	var boughtAssetId = secondAssetId;
-  eventPromise = expectEvent("xyk", "AssetsSwapped", 14);
-  sellAsset(user, soldAssetId, boughtAssetId, amount, new BN(0));
-  [eventResponse,] = await eventPromise;
-	expect(eventResponse).toEqual('ExtrinsicSuccess');
+	await testUser1.refreshAmounts(AssetWallet.AFTER);
+	await testUser2.refreshAmounts(AssetWallet.AFTER);
+	await pallet.refreshAmounts(AssetWallet.AFTER);
 
-	// console.log(sell_price_local.toString());
-	// console.log(sell_price_rpc.toString());
-
-	var alice_assets = await getUserAssets(alice.address, [firstAssetId, secondAssetId, liquidity_asset_id]);
-	expect	(alice_assets_before)
-	.toEqual(alice_assets);
-	// console.log(alice_assets.toString());
-	var bob_assets = await getUserAssets(bob.address, [firstAssetId, secondAssetId, liquidity_asset_id]);
-	expect	([	bob_assets_before[0].sub(amount),	bob_assets_before[1].add(sell_price_local), bob_assets_before[2]])
-	.toEqual(bob_assets);
-	// console.log(bob_assets.toString());
-	var pallet_assets = await getUserAssets(pallet_address, [firstAssetId, secondAssetId]);
-	expect	([	pallet_assets_before[0].add(amount),	pallet_assets_before[1].sub(sell_price_local)	])
-	.toEqual(pallet_assets);
-	// console.log(pallet_assets.toString());
-	var pool_balance = await getBalanceOfPool(firstAssetId, secondAssetId);
+	testUser1.validateWalletReduced(soldAssetId,amount);
+	testUser1.validateWalletIncreased(boughtAssetId,sell_price_local);
+	testUser2.validateWalletsUnmodified();
+	pallet.validateWalletsUnmodified();
+	var pool_balance = await getBalanceOfPool(firstCurrency, secondCurrency);
 	expect	([	pool_balance_before[0].add(amount),	pool_balance_before[1].sub(sell_price_local)	])
 	.toEqual(pool_balance);
-	// console.log(pool_balance.toString());
-	var total_liquidity_assets = await getAssetSupply(liquidity_asset_id);
-	expect(total_liquidity_assets_before)
-	.toEqual(total_liquidity_assets);
-	// console.log(total_liquidity_assets.toString());
 
-	await waitNewBlock();
+});
 
-	var alice_assets_before = await getUserAssets(alice.address, [firstAssetId, secondAssetId, liquidity_asset_id]);
-	// console.log(alice_assets_before.toString());
-	var bob_assets_before = await getUserAssets(bob.address, [firstAssetId, secondAssetId, liquidity_asset_id]);
-	// console.log(bob_assets_before.toString());
-	var pallet_assets_before = await getUserAssets(pallet_address, [firstAssetId, secondAssetId]);
-	// console.log(pallet_assets_before.toString());
-	var pool_balance_before = await getBalanceOfPool(firstAssetId, secondAssetId);
-	// console.log(pool_balance_before.toString());
-	var total_liquidity_assets_before = await getAssetSupply(liquidity_asset_id);
-	// console.log(total_liquidity_assets_before.toString());
+test('xyk-pallet - AssetsOperation: sellAsset [minAmountOut = 0], sell an already bought asset', async () => {
+	await createPoolToAsset(new BN(50000), new BN(50000), testUser1);
+	var amount = new BN(30000);
+	var soldAssetId = firstCurrency;
+	var boughtAssetId = secondCurrency;
+	await transferAssets(testUser1, soldAssetId, boughtAssetId , amount);
+	await testUser1.refreshAmounts(AssetWallet.BEFORE);
+	await testUser2.refreshAmounts(AssetWallet.BEFORE);
+	await pallet.refreshAmounts(AssetWallet.BEFORE);
+	var pool_balance_before = await getBalanceOfPool(firstCurrency, secondCurrency);
 
-	var user = bob;
-	var amount = new BN(20000);
+	amount = new BN(20000);
 	var sell_price_local = calculate_sell_price_local(pool_balance_before[1], pool_balance_before[0], amount);
 	var sell_price_rpc = await calculate_sell_price_rpc(pool_balance_before[1], pool_balance_before[0], amount);
-
 	expect(sell_price_local).toEqual(sell_price_rpc);
 
-  console.log("Bob: selling asset " + secondAssetId + ", buying asset " + firstAssetId);
-	soldAssetId = secondAssetId;
-	boughtAssetId = firstAssetId;
-  eventPromise = expectEvent("xyk", "AssetsSwapped", 14);
-  sellAsset(user, soldAssetId, boughtAssetId, amount, new BN(0));
-  [eventResponse,] = await eventPromise;
-	expect(eventResponse).toEqual('ExtrinsicSuccess');
+	soldAssetId = secondCurrency;
+	boughtAssetId = firstCurrency;
+	await transferAssets(testUser1, soldAssetId, boughtAssetId , amount);
 
-	// console.log(sell_price_local.toString());
-	// console.log(sell_price_rpc.toString());
+	await testUser1.refreshAmounts(AssetWallet.AFTER);
+	await testUser2.refreshAmounts(AssetWallet.AFTER);
+	await pallet.refreshAmounts(AssetWallet.AFTER);
 
-	var alice_assets = await getUserAssets(alice.address, [firstAssetId, secondAssetId, liquidity_asset_id]);
-	expect	(alice_assets_before)
-	.toEqual(alice_assets);
-	// console.log(alice_assets.toString());
-	var bob_assets = await getUserAssets(bob.address, [firstAssetId, secondAssetId, liquidity_asset_id]);
-	expect	([	bob_assets_before[0].add(sell_price_local),	bob_assets_before[1].sub(amount), bob_assets_before[2]])
-	.toEqual(bob_assets);
-	// console.log(bob_assets.toString());
-	var pallet_assets = await getUserAssets(pallet_address, [firstAssetId, secondAssetId]);
-	expect	([	pallet_assets_before[0].sub(sell_price_local),	pallet_assets_before[1].add(amount)	])
-	.toEqual(pallet_assets);
-	// console.log(pallet_assets.toString());
-	var pool_balance = await getBalanceOfPool(firstAssetId, secondAssetId);
-	expect	([	pool_balance_before[0].sub(sell_price_local),	pool_balance_before[1].add(amount)	])
+	testUser1.validateWalletReduced(soldAssetId,amount);
+	testUser1.validateWalletIncreased(boughtAssetId,sell_price_local);
+	testUser2.validateWalletsUnmodified();
+	pallet.validateWalletIncreased(boughtAssetId,sell_price_local);
+	pallet.validateWalletIncreased(soldAssetId,amount);
+	
+	var pool_balance = await getBalanceOfPool(firstCurrency, secondCurrency);
+	expect	([	pool_balance_before[0].add(amount),	pool_balance_before[1].sub(sell_price_local)	])
 	.toEqual(pool_balance);
-	// console.log(pool_balance.toString());
-	var total_liquidity_assets = await getAssetSupply(liquidity_asset_id);
-	expect(total_liquidity_assets_before)
-	.toEqual(total_liquidity_assets);
-	// console.log(total_liquidity_assets.toString());
+});
 
-	await waitNewBlock();
+test.skip('xyk-pallet - AssetsOperation: buyAsset [maxAmountIn = 1M], buy asset', async() => {
+	await createPoolToAsset(new BN(50000), new BN(50000), testUser1);
+	await testUser1.refreshAmounts(AssetWallet.BEFORE);
+	await testUser2.refreshAmounts(AssetWallet.BEFORE);
+	await pallet.refreshAmounts(AssetWallet.BEFORE);
+	var pool_balance_before = await getBalanceOfPool(firstCurrency, secondCurrency);
 
-	var alice_assets_before = await getUserAssets(alice.address, [firstAssetId, secondAssetId, liquidity_asset_id]);
-	// console.log(alice_assets_before.toString());
-	var bob_assets_before = await getUserAssets(bob.address, [firstAssetId, secondAssetId, liquidity_asset_id]);
-	// console.log(bob_assets_before.toString());
-	var pallet_assets_before = await getUserAssets(pallet_address, [firstAssetId, secondAssetId]);
-	// console.log(pallet_assets_before.toString());
-	var pool_balance_before = await getBalanceOfPool(firstAssetId, secondAssetId);
-	// console.log(pool_balance_before.toString());
-	var total_liquidity_assets_before = await getAssetSupply(liquidity_asset_id);
-	// console.log(total_liquidity_assets_before.toString());
-
-	var user = bob;
 	var amount = new BN(10000);
 	var buy_price_local = calculate_buy_price_local(pool_balance_before[0], pool_balance_before[1], amount);
 	var buy_price_rpc = await calculate_buy_price_rpc(pool_balance_before[0], pool_balance_before[1], amount);
-
 	expect(buy_price_local).toEqual(buy_price_rpc);
 
-  console.log("Bob: buying asset " + secondAssetId + ", selling asset " + firstAssetId);
-	soldAssetId = firstAssetId;
-	boughtAssetId = secondAssetId;
-  eventPromise = expectEvent("xyk", "AssetsSwapped", 14);
-  buyAsset(user, soldAssetId, boughtAssetId, amount, new BN(1000000));
-  [eventResponse,] = await eventPromise;
-	expect(eventResponse).toEqual('ExtrinsicSuccess');
+	console.log("Bob: buying asset " + secondCurrency + ", selling asset " + firstCurrency);
+	const soldAssetId = firstCurrency;
+	const boughtAssetId = secondCurrency;
+  	const eventPromise = getEventResult("xyk", "AssetsSwapped", 14);
+  	buyAsset(testUser1.keyRingPair, soldAssetId, boughtAssetId, amount, new BN(1000000));
+  	const eventResult = await eventPromise;
+	expect(eventResult.state).toEqual(ExtrinsicResult.ExtrinsicSuccess);
 
-	// console.log(buy_price_local.toString());
-	// console.log(buy_price_rpc.toString());
+	await testUser1.refreshAmounts(AssetWallet.AFTER);
+	await testUser2.refreshAmounts(AssetWallet.AFTER);
+	await pallet.refreshAmounts(AssetWallet.AFTER);
 
-	var alice_assets = await getUserAssets(alice.address, [firstAssetId, secondAssetId, liquidity_asset_id]);
-	expect	(alice_assets_before)
-	.toEqual(alice_assets);
-	// console.log(alice_assets.toString());
-	var bob_assets = await getUserAssets(bob.address, [firstAssetId, secondAssetId, liquidity_asset_id]);
-	expect	([	bob_assets_before[0].sub(buy_price_local),	bob_assets_before[1].add(amount), bob_assets_before[2]])
-	.toEqual(bob_assets);
-	// console.log(bob_assets.toString());
-	var pallet_assets = await getUserAssets(pallet_address, [firstAssetId, secondAssetId]);
-	expect	([	pallet_assets_before[0].add(buy_price_local),	pallet_assets_before[1].sub(amount)	])
-	.toEqual(pallet_assets);
-	// console.log(pallet_assets.toString());
-	var pool_balance = await getBalanceOfPool(firstAssetId, secondAssetId);
+	testUser1.validateWalletIncreased(boughtAssetId, amount);
+	testUser1.validateWalletReduced(soldAssetId, buy_price_local);
+	testUser2.validateWalletsUnmodified();
+	pallet.validateWalletIncreased(soldAssetId,buy_price_local);
+	pallet.validateWalletReduced(boughtAssetId,amount);
+	var pool_balance = await getBalanceOfPool(firstCurrency, secondCurrency);
 	expect	([	pool_balance_before[0].add(buy_price_local),	pool_balance_before[1].sub(amount)	])
 	.toEqual(pool_balance);
-	// console.log(pool_balance.toString());
-	var total_liquidity_assets = await getAssetSupply(liquidity_asset_id);
-	expect(total_liquidity_assets_before)
-	.toEqual(total_liquidity_assets);
-	// console.log(total_liquidity_assets.toString());
 
-	await waitNewBlock();
+});
 
-	var alice_assets_before = await getUserAssets(alice.address, [firstAssetId, secondAssetId, liquidity_asset_id]);
-	// console.log(alice_assets_before.toString());
-	var bob_assets_before = await getUserAssets(bob.address, [firstAssetId, secondAssetId, liquidity_asset_id]);
-	// console.log(bob_assets_before.toString());
-	var pallet_assets_before = await getUserAssets(pallet_address, [firstAssetId, secondAssetId]);
-	// console.log(pallet_assets_before.toString());
-	var pool_balance_before = await getBalanceOfPool(firstAssetId, secondAssetId);
-	// console.log(pool_balance_before.toString());
-	var total_liquidity_assets_before = await getAssetSupply(liquidity_asset_id);
-	// console.log(total_liquidity_assets_before.toString());
+test.skip('xyk-pallet - AssetsOperation: buyAsset [maxAmountIn = 1M], sell a bought asset', async() =>{
 
-	var user = bob;
+	await createPoolToAsset(new BN(50000), new BN(50000), testUser1);
 	var amount = new BN(10000);
-	var buy_price_local = calculate_buy_price_local(pool_balance_before[1], pool_balance_before[0], amount);
-	var buy_price_rpc = await calculate_buy_price_rpc(pool_balance_before[1], pool_balance_before[0], amount);
 
+	console.log("Bob: buying asset " + secondCurrency + ", selling asset " + firstCurrency);
+	var soldAssetId = firstCurrency;
+	var boughtAssetId = secondCurrency;
+	await buyAssets(testUser1, soldAssetId, boughtAssetId, amount);
+	
+	var pool_balance_before = await getBalanceOfPool(secondCurrency, firstCurrency);
+	var buy_price_local = calculate_buy_price_local(pool_balance_before[0], pool_balance_before[1], amount);
+	var buy_price_rpc = await calculate_buy_price_rpc(pool_balance_before[0], pool_balance_before[1], amount);
 	expect(buy_price_local).toEqual(buy_price_rpc);
 
-  console.log("Bob: buying asset " + firstAssetId + ", selling asset " + secondAssetId);
-	soldAssetId = secondAssetId;
-	boughtAssetId = firstAssetId;
-  eventPromise = expectEvent("xyk", "AssetsSwapped", 14);
-  buyAsset(user, soldAssetId, boughtAssetId, amount, new BN(1000000));
-  [eventResponse,] = await eventPromise;
-	expect(eventResponse).toEqual('ExtrinsicSuccess');
+	await testUser1.refreshAmounts(AssetWallet.BEFORE);
+	await testUser2.refreshAmounts(AssetWallet.BEFORE);
+	await pallet.refreshAmounts(AssetWallet.BEFORE);
+	
+	soldAssetId = secondCurrency;
+	boughtAssetId = firstCurrency;
+	//buy asset swiching the assetIds
+	await buyAssets(testUser1, soldAssetId, boughtAssetId, amount);
 
-	// console.log(buy_price_local.toString());
-	// console.log(buy_price_rpc.toString());
+	await testUser1.refreshAmounts(AssetWallet.AFTER);
+	await testUser2.refreshAmounts(AssetWallet.AFTER);
+	await pallet.refreshAmounts(AssetWallet.AFTER);
 
-	var alice_assets = await getUserAssets(alice.address, [firstAssetId, secondAssetId, liquidity_asset_id]);
-	expect	(alice_assets_before)
-	.toEqual(alice_assets);
-	// console.log(alice_assets.toString());
-	var bob_assets = await getUserAssets(bob.address, [firstAssetId, secondAssetId, liquidity_asset_id]);
-	expect	([	bob_assets_before[0].add(amount),	bob_assets_before[1].sub(buy_price_local), bob_assets_before[2]])
-	.toEqual(bob_assets);
-	// console.log(bob_assets.toString());
-	var pallet_assets = await getUserAssets(pallet_address, [firstAssetId, secondAssetId]);
-	expect	([	pallet_assets_before[0].sub(amount),	pallet_assets_before[1].add(buy_price_local)	])
-	.toEqual(pallet_assets);
-	// console.log(pallet_assets.toString());
-	var pool_balance = await getBalanceOfPool(firstAssetId, secondAssetId);
-	expect	([	pool_balance_before[0].sub(amount),	pool_balance_before[1].add(buy_price_local)	])
+	testUser1.validateWalletIncreased(boughtAssetId, amount);
+	testUser1.validateWalletReduced(soldAssetId, buy_price_local);
+	testUser2.validateWalletsUnmodified();
+	pallet.validateWalletIncreased(soldAssetId,buy_price_local);
+	pallet.validateWalletReduced(boughtAssetId,amount);
+	var pool_balance = await getBalanceOfPool(firstCurrency, secondCurrency);
+	expect	([	pool_balance_before[1].add(buy_price_local),	pool_balance_before[0].sub(amount)	])
 	.toEqual(pool_balance);
-	// console.log(pool_balance.toString());
-	var total_liquidity_assets = await getAssetSupply(liquidity_asset_id);
-	expect(total_liquidity_assets_before)
-	.toEqual(total_liquidity_assets);
-	// console.log(total_liquidity_assets.toString());
 
-	await waitNewBlock();
+})
+
+test.skip('xyk-pallet - remaining tests', async () => {
 
 	var alice_assets_before = await getUserAssets(alice.address, [firstAssetId, secondAssetId, liquidity_asset_id]);
 	// console.log(alice_assets_before.toString());
@@ -516,3 +429,29 @@ test.skip('xyk-pallet - remaining tests', async () => {
 	await waitNewBlock();
 
 });
+
+async function buyAssets(user:User , soldAssetId: BN, boughtAssetId: BN, amount: BN, maxExpected = new BN(1000000)) {
+	const eventPromise = getEventResult("xyk", "AssetsSwapped", 14);
+	buyAsset(user.keyRingPair, soldAssetId, boughtAssetId, amount, maxExpected);
+	const eventResult = await eventPromise;
+	expect(eventResult.state).toEqual(ExtrinsicResult.ExtrinsicSuccess);
+	await waitNewBlock();
+}
+
+async function transferAssets(user : User, soldAssetId : BN, boughtAssetId: BN ,amount: BN) {
+
+	const eventPromise = getEventResult("xyk", "AssetsSwapped", 14);
+	sellAsset(user.keyRingPair, soldAssetId, boughtAssetId, amount, new BN(0));
+	const eventResponse = await eventPromise;
+	expect(eventResponse.state).toEqual(ExtrinsicResult.ExtrinsicSuccess);
+	await waitNewBlock();
+}
+
+async function createPoolToAsset(first_asset_amount: BN, second_asset_amount: BN, user: User) {
+	console.log("testUser1: creating pool " + firstCurrency + " - " + secondCurrency);
+	var eventPromise = getEventResult("xyk", "PoolCreated", 14);
+	createPool(user.keyRingPair, firstCurrency, first_asset_amount, secondCurrency, second_asset_amount);
+	var eventResponse = await eventPromise;
+	expect(eventResponse.state).toEqual(ExtrinsicResult.ExtrinsicSuccess);
+	await waitNewBlock();
+}
