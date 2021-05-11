@@ -2,6 +2,7 @@ import { ApiPromise, WsProvider } from '@polkadot/api'
 
 export let api: ApiPromise | null = null
 
+const uri = process.env.API_URL ? process.env.API_URL: 'ws://127.0.0.1:9944';
 export const getApi = () => {
   if (!api) {
     throw new Error('Api not initialized')
@@ -11,7 +12,7 @@ export const getApi = () => {
 
 export const initApi = async () => {
   // const wsProvider = new WsProvider(process.env.API_URL || 'ws://mangata-node:9944')
-  const wsProvider = new WsProvider('ws://127.0.0.1:9944')
+  const wsProvider = new WsProvider(uri)
   api = await ApiPromise.create({
     provider: wsProvider,
     rpc: {

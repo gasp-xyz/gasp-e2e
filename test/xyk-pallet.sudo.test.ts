@@ -37,10 +37,6 @@ beforeEach( async () => {
 	keyring.addPair(testUser.keyRingPair);
 	keyring.addPair(sudo.keyRingPair);
 	
-	// this may collide if test runs in parallel.
-	//nextAssetId = await getNextAssetId();
-	//assetId = new BN(nextAssetId.toString());
-	
 });
 
 test('xyk-pallet - Sudo tests: Sudo Issue an asset', async () => {

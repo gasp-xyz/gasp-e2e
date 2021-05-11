@@ -69,52 +69,6 @@ beforeEach( async () => {
 	validateEmptyAssets([testUser2.getAsset(firstCurrency).amountBefore,testUser2.getAsset(secondCurrency).amountBefore]);
 });
 
-test('xyk-pallet - Pool tests: createPool', async () => {
-	
-	const pool_balance_before = [new BN(0), new BN(0)];
-	const total_liquidity_assets_before = new BN(0);
-
-	var first_asset_amount = new BN(50000);
-	var second_asset_amount = new BN(50000);
-	
-  	console.log("testUser1: creating pool " + firstCurrency + " - " + secondCurrency);
-  	var eventPromise = getEventResult("xyk","PoolCreated", 14);
-  	createPool(testUser1.keyRingPair, firstCurrency, first_asset_amount, secondCurrency, second_asset_amount);
-  	var eventResponse = await eventPromise;
-	expect(eventResponse.state).toEqual(ExtrinsicResult.ExtrinsicSuccess);
-
-	var liquidity_asset_id = await getLiquidityAssetId(firstCurrency, secondCurrency);
-	var liquidity_assets_minted = first_asset_amount.add(second_asset_amount);
-
-	testUser1.addAsset(liquidity_asset_id, new BN(0));
-	testUser2.addAsset(liquidity_asset_id, new BN(0));
-	//validate
-
-	await testUser1.refreshAmounts(AssetWallet.AFTER);
-	await testUser2.refreshAmounts(AssetWallet.AFTER);
-	await pallet.refreshAmounts(AssetWallet.AFTER);
-
-	await testUser1.validateWalletReduced(firstCurrency, first_asset_amount);
-	await testUser1.validateWalletReduced(secondCurrency, second_asset_amount);
-	await testUser1.validateWalletIncreased(liquidity_asset_id, liquidity_assets_minted);
-	
-	await testUser2.validateWalletsUnmodified();
-
-	await pallet.validateWalletIncreased(firstCurrency, first_asset_amount);
-	await pallet.validateWalletIncreased(secondCurrency, second_asset_amount);
-
-	//TODO: pending to validate.
-	var pool_balance = await getBalanceOfPool(firstCurrency, secondCurrency);
-	expect	([	pool_balance_before[0].add(first_asset_amount),	
-				pool_balance_before[1].add(second_asset_amount)	])
-	.toEqual(pool_balance);
-
-	var total_liquidity_assets = await getAssetSupply(liquidity_asset_id);
-	expect(total_liquidity_assets_before.add(liquidity_assets_minted))
-	.toEqual(total_liquidity_assets);
-
-});
-
 test('xyk-pallet - AssetsOperation: transferAsset', async() => {
     //Refactor Note: [Missing Wallet assert?] Did not considered creating a liquity asset. Transaction does nothing with it.
 	var pool_balance_before = await getBalanceOfPool(firstCurrency, secondCurrency);

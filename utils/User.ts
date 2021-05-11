@@ -4,8 +4,8 @@ import { KeyringInstance, KeyringPair, KeyringPair$Json, KeyringPair$JsonEncodin
 import BN from 'bn.js';
 import { getuid } from 'process';
 import { v4 as uuid } from 'uuid';
-import { getEventResult } from './eventListeners';
-import { balanceTransfer, getUserAssets } from './tx';
+import { ExtrinsicResult, getEventResult, waitNewBlock } from './eventListeners';
+import { balanceTransfer, buyAsset, createPool, getUserAssets, sellAsset } from './tx';
 
 export class User {
 
@@ -24,7 +24,6 @@ export class User {
         this.name = name;
         this.keyring = keyring;
         this.keyRingPair = keyring.createFromUri(name); 
-        console.warn(`User  ${name} :created: ${this.keyRingPair.address} `);
         this.assets = [];
     }
 
@@ -33,36 +32,20 @@ export class User {
         this.name = 'addres_created_account';
     }
 
-    async addBalance(){
-        var eventPromise = getEventResult("balances","Endowed", 14);
-        await balanceTransfer(new User(this.keyring,'//Alice').keyRingPair,this.keyRingPair.address,Math.pow(10,11));
-        var result = await eventPromise;
-        eventPromise = getEventResult("balances","Transfer", 14);
-        result = await eventPromise;
-    }
-
-    async validateWalletReduced(currencyId: BN, amount: BN){
+    validateWalletReduced(currencyId: BN, amount: BN){
         const diffFromWallet = this.getAsset(currencyId).amountBefore.sub(amount);
         expect(this.getAsset(currencyId).amountAfter).toEqual(diffFromWallet);
     }
-    async validateWalletIncreased(currencyId: BN, amount: BN){
+    validateWalletIncreased(currencyId: BN, amount: BN){
         const addFromWallet = this.getAsset(currencyId).amountBefore.add(amount);
         expect(this.getAsset(currencyId).amountAfter).toEqual(addFromWallet);
     }
 
-    async validateLiquidity(userLiquidityWalletId : BN, liquidityAmount: any){
-        const liquiditySum = this.getAsset(userLiquidityWalletId).amountBefore.add(liquidityAmount);
-        expect(this.getAsset(userLiquidityWalletId).amountAfter).toEqual(liquiditySum);
-    }
-
-    async validateCurrencies(firstCurrency :  any, secondCurrency : any,liquidityUserWallet : any, liquidity : any, transactionAmount : any) {
-
-        const diffFromWallet = this.getAsset(firstCurrency).amountBefore.sub(transactionAmount);
-        const diffToWallet = this.getAsset(secondCurrency).amountBefore.sub(this.getAsset(secondCurrency).amountAfter);
-        const liquiditySum = this.getAsset(liquidityUserWallet).amountBefore.add(liquidity);
-        expect	( [diffFromWallet,diffToWallet,liquiditySum ])
-        .toEqual( [this.getAsset(firstCurrency).amountAfter , this.getAsset(secondCurrency).amountAfter, this.getAsset(liquidityUserWallet).amountAfter ] );
-    }
+    validateWalletsUnmodified(){
+        this.assets.forEach( asset => {
+            expect(asset.amountBefore).toEqual(asset.amountAfter);
+        });
+    };
 
     addAsset(currecncyId, amountBefore = new BN(0)){
         const asset = new Asset(currecncyId, amountBefore);
@@ -91,10 +74,38 @@ export class User {
         }
     }
 
-    validateWalletsUnmodified(){
-        this.assets.forEach( asset => {
-            expect(asset.amountBefore).toEqual(asset.amountAfter);
-        });
+    async buyAssets( soldAssetId: BN, boughtAssetId: BN, amount: BN, maxExpected = new BN(1000000)) {
+        const eventPromise = getEventResult("xyk", "AssetsSwapped", 14);
+        buyAsset(this.keyRingPair, soldAssetId, boughtAssetId, amount, maxExpected);
+        const eventResult = await eventPromise;
+        expect(eventResult.state).toEqual(ExtrinsicResult.ExtrinsicSuccess);
+        await waitNewBlock();
+    }
+    
+    async transferAssets(soldAssetId : BN, boughtAssetId: BN ,amount: BN) {
+    
+        const eventPromise = getEventResult("xyk", "AssetsSwapped", 14);
+        sellAsset(this.keyRingPair, soldAssetId, boughtAssetId, amount, new BN(0));
+        const eventResponse = await eventPromise;
+        expect(eventResponse.state).toEqual(ExtrinsicResult.ExtrinsicSuccess);
+        await waitNewBlock();
+    }
+    
+    async createPoolToAsset(first_asset_amount: BN, second_asset_amount: BN, firstCurrency: BN, secondCurrency : BN) {
+        console.log("creating pool " + firstCurrency + " - " + secondCurrency);
+        var eventPromise = getEventResult("xyk", "PoolCreated", 14);
+        createPool(this.keyRingPair, firstCurrency, first_asset_amount, secondCurrency, second_asset_amount);
+        var eventResponse = await eventPromise;
+        expect(eventResponse.state).toEqual(ExtrinsicResult.ExtrinsicSuccess);
+        await waitNewBlock();
+    }
+
+    async addBalance(user : string = '//Alice', amount : number = Math.pow(10,11)){
+        var eventPromise = getEventResult("balances","Endowed", 14);
+        await balanceTransfer(new User(this.keyring, user).keyRingPair,this.keyRingPair.address, amount);
+        var result = await eventPromise;
+        eventPromise = getEventResult("balances","Transfer", 14);
+        result = await eventPromise;
     }
 
 }
