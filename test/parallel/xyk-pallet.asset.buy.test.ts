@@ -1,10 +1,9 @@
 import {getApi, initApi} from "../../utils/api";
-import { calcuate_mint_liquidity_price_local, calcuate_burn_liquidity_price_local, calculate_sell_price_local, calculate_buy_price_local, calculate_sell_price_rpc, calculate_buy_price_rpc, getUserAssets, getBalanceOfAsset, getBalanceOfPool, getNextAssetId, getLiquidityAssetId, getAssetSupply, balanceTransfer, getSudoKey, sudoIssueAsset, transferAsset, createPool, sellAsset, buyAsset, mintLiquidity, burnLiquidity} from '../../utils/tx'
-import {waitNewBlock, expectEvent, getEventResult, ExtrinsicResult, EventResult, getUserEventResult} from '../../utils/eventListeners'
+import { calculate_buy_price_local, calculate_buy_price_rpc, getBalanceOfPool, buyAsset} from '../../utils/tx'
+import {waitNewBlock, ExtrinsicResult, getUserEventResult} from '../../utils/eventListeners'
 import BN from 'bn.js'
 import { Keyring } from '@polkadot/api'
 import {AssetWallet, User} from "../../utils/User";
-import { validateAssetsWithValues, validateEmptyAssets } from "../../utils/validators";
 import { Assets } from "../../utils/Assets";
 
 
@@ -68,9 +67,6 @@ beforeEach( async () => {
 	await testUser1.refreshAmounts(AssetWallet.BEFORE);
 	await testUser2.refreshAmounts(AssetWallet.BEFORE);
 });
-
-test('xyk-pallet - AssetsOperation: Setup', async() => {
-})
 
 test('xyk-pallet - AssetsOperation: buyAsset [maxAmountIn = 1M], buy asset', async() => {
 

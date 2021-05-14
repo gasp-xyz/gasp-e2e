@@ -1,9 +1,8 @@
 import {getApi, initApi} from "../../utils/api";
-import { getCurrentNonce, signTx, calcuate_mint_liquidity_price_local, calcuate_burn_liquidity_price_local, calculate_sell_price_local, calculate_buy_price_local, calculate_sell_price_rpc, calculate_buy_price_rpc, getUserAssets, getBalanceOfAsset, getBalanceOfPool, getNextAssetId, getLiquidityAssetId, getAssetSupply, balanceTransfer, getSudoKey, sudoIssueAsset, transferAsset, createPool, sellAsset, buyAsset, mintLiquidity, burnLiquidity} from '../../utils/tx'
+import { calcuate_mint_liquidity_price_local, calcuate_burn_liquidity_price_local, calculate_sell_price_local, calculate_buy_price_local, calculate_sell_price_rpc, calculate_buy_price_rpc, getUserAssets, getBalanceOfPool, getNextAssetId, getLiquidityAssetId, getAssetSupply, getSudoKey, sudoIssueAsset, transferAsset, createPool, sellAsset, buyAsset, mintLiquidity, burnLiquidity} from '../../utils/tx'
 import {waitNewBlock, getUserEventResult, ExtrinsicResult} from '../../utils/eventListeners'
 import BN from 'bn.js'
 import { Keyring } from '@polkadot/api'
-import {sleep} from "../../utils/utils";
 
 jest.spyOn(console, 'log').mockImplementation(jest.fn());
 jest.setTimeout(1500000);
@@ -778,7 +777,7 @@ test('xyk-pallet: Liquidity sufficiency scenario', async () => {
 	var liquidity_assets_burned_excess = liquidity_assets_burned.mul(new BN(105)).div(new BN(100));
 
   console.log("Alice: attempting to burn more liquidity than they have " + firstAssetId + " - " + secondAssetId);
-  eventPromise = getUserEventResult("xyk", "LiquidityBurned", 14, '"error":2');
+  eventPromise = getUserEventResult("xyk", "LiquidityBurned", 14, user.address);
   burnLiquidity(user, firstAssetId, secondAssetId, liquidity_assets_burned_excess);
   eventResponse = await eventPromise;
 	expect(eventResponse.state).toEqual(ExtrinsicResult.ExtrinsicFailed);
@@ -829,7 +828,7 @@ test('xyk-pallet: Liquidity sufficiency scenario', async () => {
 	var liquidity_asset_amount_excess = liquidity_asset_amount.mul(new BN(105)).div(new BN(100));
 
   console.log("Bob: attempting to burn more liquidity than they have " + liquidity_asset_amount_excess + " from pool " + firstAssetId + " - " + secondAssetId);
-  eventPromise = getUserEventResult("xyk", "LiquidityBurned", 14, '"error":2');
+  eventPromise = getUserEventResult("xyk", "LiquidityBurned", 14, user.address);
   burnLiquidity(user, firstAssetId, secondAssetId, liquidity_asset_amount_excess);
   eventResponse = await eventPromise;
 	expect(eventResponse.state).toEqual(ExtrinsicResult.ExtrinsicFailed);
@@ -929,7 +928,7 @@ test('xyk-pallet: Liquidity sufficiency scenario', async () => {
 	var liquidity_assets_burned_excess = liquidity_assets_burned.mul(new BN(105)).div(new BN(100));
 
 	console.log("Bob: owning 100% of the pool, attempting to burn more liquidity than then pool has " + firstAssetId + " - " + secondAssetId);
-  eventPromise = getUserEventResult("xyk", "LiquidityBurned", 14, '"error":2');
+  eventPromise = getUserEventResult("xyk", "LiquidityBurned", 14, user.address);
   burnLiquidity(user, firstAssetId, secondAssetId, liquidity_assets_burned_excess);
   eventResponse = await eventPromise;
   expect(eventResponse.state).toEqual(ExtrinsicResult.ExtrinsicFailed);

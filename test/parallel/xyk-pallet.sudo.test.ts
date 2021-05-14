@@ -1,11 +1,9 @@
 import {getApi, initApi} from "../../utils/api";
-import { getCurrentNonce, signTx, calcuate_mint_liquidity_price_local, calcuate_burn_liquidity_price_local, calculate_sell_price_local, calculate_buy_price_local, calculate_sell_price_rpc, calculate_buy_price_rpc, getUserAssets, getBalanceOfAsset, getBalanceOfPool, getNextAssetId, getLiquidityAssetId, getAssetSupply, balanceTransfer, getSudoKey, sudoIssueAsset, transferAsset, createPool, sellAsset, buyAsset, mintLiquidity, burnLiquidity} from '../../utils/tx'
-import {waitNewBlock, expectEvent, getEventResult, ExtrinsicResult, EventResult, getUserEventResult} from '../../utils/eventListeners'
+import { getUserAssets, getSudoKey, sudoIssueAsset} from '../../utils/tx'
+import {waitNewBlock, EventResult, getUserEventResult} from '../../utils/eventListeners'
 import BN from 'bn.js'
 import { Keyring } from '@polkadot/api'
-import {sleep} from "../../utils/utils";
 import {User} from "../../utils/User";
-import { userInfo } from "os";
 import { validateTransactionSucessful } from "../../utils/validators";
 
 jest.spyOn(console, 'log').mockImplementation(jest.fn());
