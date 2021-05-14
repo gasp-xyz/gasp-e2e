@@ -1,11 +1,11 @@
-import {getApi, initApi} from "../utils/api";
-import { calcuate_mint_liquidity_price_local, calcuate_burn_liquidity_price_local, calculate_sell_price_local, calculate_buy_price_local, calculate_sell_price_rpc, calculate_buy_price_rpc, getUserAssets, getBalanceOfAsset, getBalanceOfPool, getNextAssetId, getLiquidityAssetId, getAssetSupply, balanceTransfer, getSudoKey, sudoIssueAsset, transferAsset, createPool, sellAsset, buyAsset, mintLiquidity, burnLiquidity} from '../utils/tx'
-import {waitNewBlock, expectEvent, getEventResult, ExtrinsicResult, EventResult} from '../utils/eventListeners'
+import {getApi, initApi} from "../../utils/api";
+import { calcuate_mint_liquidity_price_local, calcuate_burn_liquidity_price_local, calculate_sell_price_local, calculate_buy_price_local, calculate_sell_price_rpc, calculate_buy_price_rpc, getUserAssets, getBalanceOfAsset, getBalanceOfPool, getNextAssetId, getLiquidityAssetId, getAssetSupply, balanceTransfer, getSudoKey, sudoIssueAsset, transferAsset, createPool, sellAsset, buyAsset, mintLiquidity, burnLiquidity} from '../../utils/tx'
+import {waitNewBlock, expectEvent, getEventResult, ExtrinsicResult, EventResult, getUserEventResult} from '../../utils/eventListeners'
 import BN from 'bn.js'
 import { Keyring } from '@polkadot/api'
-import {AssetWallet, User} from "../utils/User";
-import { validateAssetsWithValues, validateEmptyAssets } from "../utils/validators";
-import { Assets } from "../utils/Assets";
+import {AssetWallet, User} from "../../utils/User";
+import { validateAssetsWithValues, validateEmptyAssets } from "../../utils/validators";
+import { Assets } from "../../utils/Assets";
 
 
 jest.spyOn(console, 'log').mockImplementation(jest.fn());
@@ -48,8 +48,8 @@ beforeEach( async () => {
 	pallet.addFromAddress(keyring,pallet_address);
 	
 	//add two curerncies and balance to testUser:
-	[firstCurrency, secondCurrency] = await Assets.setupUserWithCurrencies(testUser1, 2, [defaultCurrecyValue,defaultCurrecyValue +1] );
-	await testUser1.addBalance();
+	[firstCurrency, secondCurrency] = await Assets.setupUserWithCurrencies(testUser1, 2, [defaultCurrecyValue,defaultCurrecyValue +1], sudo );
+	await testUser1.setBalance(sudo);
 	
 	// add users to pair.
 	keyring.addPair(testUser1.keyRingPair);
@@ -75,7 +75,7 @@ test('xyk-pallet - AssetsOperation: transferAsset', async() => {
 	var amount = new BN(100000);
 	console.log("testUser1: transfering asset " + firstCurrency + " to testUser2");
 
-	const eventPromise = getEventResult("tokens", "Transferred", 12);
+	const eventPromise = getUserEventResult("tokens", "Transferred", 12, testUser1.keyRingPair.address);
 	transferAsset(testUser1.keyRingPair, firstCurrency, testUser2.keyRingPair.address, amount);
 	const eventResponse = await eventPromise;
 	expect(eventResponse.state).toEqual(ExtrinsicResult.ExtrinsicSuccess);
@@ -93,7 +93,6 @@ test('xyk-pallet - AssetsOperation: transferAsset', async() => {
 	var pool_balance = await getBalanceOfPool(firstCurrency, secondCurrency);
 	expect	(pool_balance_before)
 	.toEqual(pool_balance);
-
 
 });
 

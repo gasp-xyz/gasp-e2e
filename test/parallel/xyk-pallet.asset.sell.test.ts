@@ -1,11 +1,11 @@
-import {getApi, initApi} from "../utils/api";
-import { calcuate_mint_liquidity_price_local, calcuate_burn_liquidity_price_local, calculate_sell_price_local, calculate_buy_price_local, calculate_sell_price_rpc, calculate_buy_price_rpc, getUserAssets, getBalanceOfAsset, getBalanceOfPool, getNextAssetId, getLiquidityAssetId, getAssetSupply, balanceTransfer, getSudoKey, sudoIssueAsset, transferAsset, createPool, sellAsset, buyAsset, mintLiquidity, burnLiquidity} from '../utils/tx'
-import {waitNewBlock, expectEvent, getEventResult, ExtrinsicResult, EventResult} from '../utils/eventListeners'
+import {getApi, initApi} from "../../utils/api";
+import { calcuate_mint_liquidity_price_local, calcuate_burn_liquidity_price_local, calculate_sell_price_local, get_burn_amount, calculate_buy_price_local, calculate_sell_price_rpc, calculate_buy_price_rpc, getUserAssets, getBalanceOfAsset, getBalanceOfPool, getNextAssetId, getLiquidityAssetId, getAssetSupply, balanceTransfer, getSudoKey, sudoIssueAsset, transferAsset, createPool, sellAsset, buyAsset, mintLiquidity, burnLiquidity, calculate_sell_price_local_no_fee} from '../../utils/tx'
+import {waitNewBlock, expectEvent, getEventResult, ExtrinsicResult, EventResult} from '../../utils/eventListeners'
 import BN from 'bn.js'
 import { Keyring } from '@polkadot/api'
-import {AssetWallet, User} from "../utils/User";
-import { validateAssetsWithValues, validateEmptyAssets } from "../utils/validators";
-import { Assets } from "../utils/Assets";
+import {AssetWallet, User} from "../../utils/User";
+import { validateAssetsWithValues, validateEmptyAssets } from "../../utils/validators";
+import { Assets } from "../../utils/Assets";
 
 
 jest.spyOn(console, 'log').mockImplementation(jest.fn());
@@ -48,8 +48,8 @@ beforeEach( async () => {
 	pallet.addFromAddress(keyring,pallet_address);
 	
 	//add two curerncies and balance to testUser:
-	[firstCurrency, secondCurrency] = await Assets.setupUserWithCurrencies(testUser1, 2, [defaultCurrecyValue,defaultCurrecyValue +1] );
-	await testUser1.addBalance();
+	[firstCurrency, secondCurrency] = await Assets.setupUserWithCurrencies(testUser1, 2, [defaultCurrecyValue,defaultCurrecyValue +1] , sudo );
+	await testUser1.setBalance(sudo);
 	await testUser1.createPoolToAsset(new BN(60000), new BN(60000), firstCurrency, secondCurrency);
 	
     // add users to pair.
@@ -68,12 +68,16 @@ beforeEach( async () => {
 
 });
 
+test('xyk-pallet - AssetsOperation: Setup', async() => {
+})
 
 test('xyk-pallet - AssetsOperation: sellAsset [minAmountOut = 0] , first to second currency', async() => {
 
 
 	var poolBalanceBefore = await getBalanceOfPool(firstCurrency, secondCurrency);
 	var amount = new BN(30000);
+	// considering the 60k of pool and the 30k amount
+	const traseureAndBurn  = new BN(6).mul(new BN(2));
 	var sellPriceLocal = calculate_sell_price_local(poolBalanceBefore[0], poolBalanceBefore[1], amount);
 	var sellPriceRpc = await calculate_sell_price_rpc(poolBalanceBefore[0], poolBalanceBefore[1], amount);
 	expect(sellPriceLocal).toEqual(sellPriceRpc);
@@ -81,7 +85,7 @@ test('xyk-pallet - AssetsOperation: sellAsset [minAmountOut = 0] , first to seco
 	
 	const soldAssetId = firstCurrency;
 	const boughtAssetId = secondCurrency;
-	await testUser1.transferAssets(soldAssetId, secondCurrency , amount);
+	await testUser1.sellAssets(soldAssetId, secondCurrency , amount);
 
 	await testUser1.refreshAmounts(AssetWallet.AFTER);
 	await testUser2.refreshAmounts(AssetWallet.AFTER);
@@ -93,7 +97,8 @@ test('xyk-pallet - AssetsOperation: sellAsset [minAmountOut = 0] , first to seco
 	pallet.validateWalletReduced(boughtAssetId,sellPriceLocal);
 	pallet.validateWalletIncreased(soldAssetId,amount);
 	var pool_balance = await getBalanceOfPool(firstCurrency, secondCurrency);
-	expect	([	poolBalanceBefore[0].add(amount),	poolBalanceBefore[1].sub(sellPriceLocal)	])
+	var burned = (sellPriceLocal.mul(new BN(5))).div(new BN(10000));
+	expect	([	poolBalanceBefore[0].add(amount),	poolBalanceBefore[1].sub(sellPriceLocal).sub(traseureAndBurn)	])
 	.toEqual(pool_balance);
 
 });
@@ -103,7 +108,7 @@ test('xyk-pallet - AssetsOperation: sellAsset [minAmountOut = 0], sell an alread
 	var amount = new BN(30000);
 	var soldAssetId = firstCurrency;
 	var boughtAssetId = secondCurrency;
-	await testUser1.transferAssets(soldAssetId, boughtAssetId , amount);
+	await testUser1.sellAssets(soldAssetId, boughtAssetId , amount);
 
 	await testUser1.refreshAmounts(AssetWallet.BEFORE);
 	await testUser2.refreshAmounts(AssetWallet.BEFORE);
@@ -111,13 +116,15 @@ test('xyk-pallet - AssetsOperation: sellAsset [minAmountOut = 0], sell an alread
 	var poolBalanceBefore = await getBalanceOfPool(firstCurrency, secondCurrency);
 
 	amount = new BN(20000);
+	// considering the previous bought and the 20k amount
+	const traseureAndBurn  = new BN(10).mul(new BN(2));
 	var sellPriceLocal = calculate_sell_price_local(poolBalanceBefore[1], poolBalanceBefore[0], amount);
 	var sellPriceRpc = await calculate_sell_price_rpc(poolBalanceBefore[1], poolBalanceBefore[0], amount);
 	expect(sellPriceLocal).toEqual(sellPriceRpc);
 
 	soldAssetId = secondCurrency;
 	boughtAssetId = firstCurrency;
-	await testUser1.transferAssets(soldAssetId, boughtAssetId , amount);
+	await testUser1.sellAssets(soldAssetId, boughtAssetId , amount);
 
 	await testUser1.refreshAmounts(AssetWallet.AFTER);
 	await testUser2.refreshAmounts(AssetWallet.AFTER);
@@ -130,6 +137,6 @@ test('xyk-pallet - AssetsOperation: sellAsset [minAmountOut = 0], sell an alread
 	pallet.validateWalletIncreased(soldAssetId,amount);
 	
 	var pool_balance = await getBalanceOfPool(firstCurrency, secondCurrency);
-	expect	([	poolBalanceBefore[0].sub(sellPriceLocal),	poolBalanceBefore[1].add(amount)	])
+	expect	([	poolBalanceBefore[0].sub(sellPriceLocal).sub(traseureAndBurn),	poolBalanceBefore[1].add(amount)	])
 	.toEqual(pool_balance);
 });

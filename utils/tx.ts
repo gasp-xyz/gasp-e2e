@@ -1,6 +1,8 @@
 import { AddressOrPair, SubmittableExtrinsic } from '@polkadot/api/types'
 import { getApi } from './api'
 import BN from 'bn.js'
+import { env } from 'process'
+import { SudoDB } from './SudoDB';
 
 export const signTx = async (
   tx: SubmittableExtrinsic<'promise'>,
@@ -44,12 +46,25 @@ export function calculate_sell_price_local(input_reserve: BN, output_reserve: BN
 	let result: BN = numerator.div(denominator);
 	return new BN(result.toString())
 }
+export function calculate_sell_price_local_no_fee(input_reserve: BN, output_reserve: BN, sell_amount: BN){
+	let input_amount_with_no_fee: BN = sell_amount;
+	let numerator: BN = input_amount_with_no_fee.mul(output_reserve);
+	let denominator: BN = input_reserve.mul(new BN(1000)).add(input_amount_with_no_fee);
+	let result: BN = numerator.div(denominator);
+	return new BN(result.toString())
+}
 
 export function calculate_buy_price_local(input_reserve: BN, output_reserve: BN, buy_amount: BN){
 	let numerator: BN = input_reserve.mul(buy_amount).mul(new BN(1000));
 	let denominator: BN = output_reserve.sub(buy_amount).mul(new BN(997));
 	let result: BN = numerator.div(denominator).add(new BN(1));
 	return new BN(result.toString())
+}
+
+export async function get_burn_amount(firstAssetId: BN, secondAssetId: BN, liquidity_asset_amount: BN){
+	const api = getApi();
+	let result = await api.rpc.xyk.get_burn_amount(firstAssetId, secondAssetId, liquidity_asset_amount);
+	return new BN(result.price.toString())
 }
 
 export async function calculate_sell_price_rpc(input_reserve: BN, output_reserve: BN, sell_amount: BN){
@@ -67,7 +82,7 @@ export async function calculate_buy_price_rpc(input_reserve: BN, output_reserve:
 export async function getCurrentNonce(account?: string) {
   const api = getApi();
   if (account) {
-    const { nonce } = await api.query.system.account(account)
+    const { nonce } = await api.query.system.account(account);
     return new BN(nonce.toString())
   }
   return -1
@@ -150,15 +165,33 @@ export const balanceTransfer = async (account: any, target:any, amount: number) 
   )
 }
 
-export const sudoIssueAsset = async (account: any, total_balance: BN, target: any) => {
+export const setBalance = async (sudoAccount: any, target:any, amount: number) => {
+
   const api = getApi();
+  const nonce = await SudoDB.getInstance().getSudoNonce(sudoAccount.address);
+  console.info(`W[${env.JEST_WORKER_ID}] - sudoNonce: ${nonce} `);
   signTx(
 		api.tx.sudo.sudo(
-    	api.tx.tokens.create(target, total_balance)
+      api.tx.balances.setBalance(target, amount, amount)
+      ),
+    sudoAccount,
+    nonce
+  );
+}
+
+export const sudoIssueAsset = async (account: any, total_balance: BN, target: any) => {
+
+  const api = getApi();
+  const nonce = await SudoDB.getInstance().getSudoNonce(account.address);
+  console.info(`W[${env.JEST_WORKER_ID}] - sudoNonce: ${nonce} `);
+  const tokenCreation = api.tx.tokens.create(target, total_balance);
+  signTx(
+		api.tx.sudo.sudo(
+    	tokenCreation
 		),
     account,
-    await getCurrentNonce(account.address)
-  )
+    nonce
+  );
 }
 
 export const transferAsset = async (account: any, asset_id:BN, target: any, amount: BN) => {
@@ -174,8 +207,7 @@ export const transferAsset = async (account: any, asset_id:BN, target: any, amou
 
 export const createPool = async (account: any, firstAssetId: BN,firstAssetAmount: BN,secondAssetId: BN,secondAssetAmount: BN) => {
   const api = getApi();
-  console.warn(`Creating pool:${firstAssetId},${firstAssetAmount},${secondAssetId},${secondAssetAmount}`);
-  console.warn(`Creating Address:${account.address}`);
+  console.info(`Creating pool:${firstAssetId},${firstAssetAmount},${secondAssetId},${secondAssetAmount}`);
   signTx(
     api.tx.xyk.createPool(firstAssetId, firstAssetAmount, secondAssetId, secondAssetAmount),
     account,
@@ -221,4 +253,14 @@ export const burnLiquidity = async (account: any, firstAssetId: BN, secondAssetI
     account,
     await getCurrentNonce(account.address)
   )
+}
+
+export async function getAccountInfo(account?: string) {
+  const api = getApi();
+  if (account) {
+    const { data } = await api.query.system.account(account);
+
+    return JSON.parse(data.toString());
+  }
+  return -1
 }

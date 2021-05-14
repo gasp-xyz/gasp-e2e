@@ -1,11 +1,10 @@
 
 import { Keyring } from '@polkadot/api';
-import { KeyringInstance, KeyringPair, KeyringPair$Json, KeyringPair$JsonEncodingTypes, KeyringPair$Meta, KeyringOptions } from '@polkadot/keyring/types';
+import { KeyringPair } from '@polkadot/keyring/types';
 import BN from 'bn.js';
-import { getuid } from 'process';
 import { v4 as uuid } from 'uuid';
-import { ExtrinsicResult, getEventResult, waitNewBlock } from './eventListeners';
-import { balanceTransfer, buyAsset, createPool, getUserAssets, sellAsset } from './tx';
+import { ExtrinsicResult, getUserEventResult, waitNewBlock } from './eventListeners';
+import { balanceTransfer, buyAsset, createPool, getAccountInfo, getUserAssets, sellAsset, setBalance } from './tx';
 
 export class User {
 
@@ -75,16 +74,16 @@ export class User {
     }
 
     async buyAssets( soldAssetId: BN, boughtAssetId: BN, amount: BN, maxExpected = new BN(1000000)) {
-        const eventPromise = getEventResult("xyk", "AssetsSwapped", 14);
+        const eventPromise = getUserEventResult("xyk", "AssetsSwapped", 14, this.keyRingPair.address);
         buyAsset(this.keyRingPair, soldAssetId, boughtAssetId, amount, maxExpected);
         const eventResult = await eventPromise;
         expect(eventResult.state).toEqual(ExtrinsicResult.ExtrinsicSuccess);
         await waitNewBlock();
     }
     
-    async transferAssets(soldAssetId : BN, boughtAssetId: BN ,amount: BN) {
+    async sellAssets(soldAssetId : BN, boughtAssetId: BN ,amount: BN) {
     
-        const eventPromise = getEventResult("xyk", "AssetsSwapped", 14);
+        const eventPromise = getUserEventResult("xyk", "AssetsSwapped", 14, this.keyRingPair.address);
         sellAsset(this.keyRingPair, soldAssetId, boughtAssetId, amount, new BN(0));
         const eventResponse = await eventPromise;
         expect(eventResponse.state).toEqual(ExtrinsicResult.ExtrinsicSuccess);
@@ -92,22 +91,52 @@ export class User {
     }
     
     async createPoolToAsset(first_asset_amount: BN, second_asset_amount: BN, firstCurrency: BN, secondCurrency : BN) {
-        console.log("creating pool " + firstCurrency + " - " + secondCurrency);
-        var eventPromise = getEventResult("xyk", "PoolCreated", 14);
+
+        var eventPromise = getUserEventResult("xyk", "PoolCreated", 14, this.keyRingPair.address);
         createPool(this.keyRingPair, firstCurrency, first_asset_amount, secondCurrency, second_asset_amount);
         var eventResponse = await eventPromise;
+        //console.warn(eventResponse.data);
         expect(eventResponse.state).toEqual(ExtrinsicResult.ExtrinsicSuccess);
         await waitNewBlock();
+
     }
 
     async addBalance(user : string = '//Alice', amount : number = Math.pow(10,11)){
-        var eventPromise = getEventResult("balances","Endowed", 14);
+        
+        var eventPromise = getUserEventResult("balances","Endowed", 14 , this.keyRingPair.address);
         await balanceTransfer(new User(this.keyring, user).keyRingPair,this.keyRingPair.address, amount);
         var result = await eventPromise;
-        eventPromise = getEventResult("balances","Transfer", 14);
+        eventPromise = getUserEventResult("balances","Transfer", 14, this.keyRingPair.address);
         result = await eventPromise;
+        await this.waitUntilBalanceIsNotZero();
+
+        await waitNewBlock();
+
     }
 
+    async setBalance(sudo : User, amount : number = Math.pow(10,11)) {
+       
+        var eventPromise = getUserEventResult("balances","Endowed", 14, this.keyRingPair.address);
+        await setBalance(sudo.keyRingPair,this.keyRingPair.address, amount);
+        var result = await eventPromise;
+        eventPromise = getUserEventResult("balances","BalanceSet", 14, this.keyRingPair.address);
+        result = await eventPromise;
+
+        await waitNewBlock();
+        
+    }
+    async getUserAccountInfo(){
+        const accountInfo = await getAccountInfo(this.keyRingPair.address);
+        return accountInfo;
+    }
+    async waitUntilBalanceIsNotZero(){
+        var amount = '0';
+        do {
+            await waitNewBlock();
+            const accountData = await this.getUserAccountInfo();
+            amount = accountData.free;
+        } while (amount === '0');
+    }
 }
 
 export class Asset{
