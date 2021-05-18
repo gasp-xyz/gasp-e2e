@@ -19,3 +19,15 @@ export function validateAssetsWithValues(assets : BN[], values : number []){
 	}
 	expect(assets).toHaveLength(values.length);
 }
+
+export function validatePoolCreatedEvent(result : EventResult, userAddress,  firstCurrency, first_asset_amount, secondCurrency, second_asset_amount){
+	//validate the pool created event contract.
+	const rawData = result.data;
+	expect(rawData).not.toBeNull();
+	expect(rawData[0]).toEqual(userAddress);
+	expect(rawData[1]).toEqual(firstCurrency);
+	expect(rawData[2].toString()).toEqual(first_asset_amount.toString());
+	expect(rawData[3]).toEqual(secondCurrency);
+	expect(rawData[4].toString()).toEqual(second_asset_amount.toString());
+
+}

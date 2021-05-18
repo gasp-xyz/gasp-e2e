@@ -115,34 +115,6 @@ test('xyk-pallet - Pool tests: createPool', async () => {
 
 });
 
-test('xyk-pallet - AssetsOperation: transferAsset', async() => {
-    //Refactor Note: [Missing Wallet assert?] Did not considered creating a liquity asset. Transaction does nothing with it.
-	var pool_balance_before = await getBalanceOfPool(firstCurrency, secondCurrency);
-	var amount = new BN(100000);
-	console.log("testUser1: transfering asset " + firstCurrency + " to testUser2");
-
-	const eventPromise = getUserEventResult("tokens", "Transferred", 12, testUser1.keyRingPair.address);
-	transferAsset(testUser1.keyRingPair, firstCurrency, testUser2.keyRingPair.address, amount);
-	const eventResponse = await eventPromise;
-	expect(eventResponse.state).toEqual(ExtrinsicResult.ExtrinsicSuccess);
-
-	await testUser1.refreshAmounts(AssetWallet.AFTER);
-	await testUser2.refreshAmounts(AssetWallet.AFTER);
-	await pallet.refreshAmounts(AssetWallet.AFTER);
-
-	testUser1.validateWalletReduced(firstCurrency, amount);
-	testUser1.validateWalletIncreased(secondCurrency,new BN(0));
-
-	testUser2.validateWalletIncreased(firstCurrency, amount);
-	testUser1.validateWalletIncreased(secondCurrency,new BN(0));
-
-	var pool_balance = await getBalanceOfPool(firstCurrency, secondCurrency);
-	expect	(pool_balance_before)
-	.toEqual(pool_balance);
-
-
-});
-
 
 
 
