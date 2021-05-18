@@ -1,5 +1,5 @@
 {
-  "name": "mangata-asset-info",
+  "name": "mangata-e2e-tests",
   "version": "1.0.0",
   "description": "sets asset info for assets bridged from ethereum to mangata",
   "main": "index.ts",
@@ -21,7 +21,9 @@
     "start": "ts-node --project tsconfig.json index.ts",
     "start-prod": "node ./build/index.js",
     "build": "tsc --project tsconfig.json",
-    "test": "jest"
+    "test": "jest",
+    "tsc-lint": "tsc -noemit -p tsconfig.json",
+    "eslint": "node_modules/.bin/eslint --max-warnings 0 \"src/**/*.{ts,tsx}\""
   },
   "devDependencies": {
     "@babel/core": "^7.13.10",
@@ -29,6 +31,8 @@
     "@babel/preset-typescript": "^7.13.0",
     "@types/jest": "^26.0.20",
     "babel-jest": "^26.6.3",
-    "jest": "^26.6.3"
+    "eslint-config-mangata": "https://github.com/mangata-finance/eslint-config-mangata.git",
+    "jest": "^26.6.3",
+    "mangata-code-style": "https://github.com/mangata-finance/code-style.git"
   }
 }
