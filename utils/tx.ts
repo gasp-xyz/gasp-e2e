@@ -9,7 +9,7 @@ export const signTx = async (
   address: AddressOrPair,
   nonce: BN
 ) => {
-  const unsub = await tx.signAndSend(address, { nonce }, (result: any) => {
+  await tx.signAndSend(address, { nonce }, (result: any) => {
     // handleTx(result, unsub)
   })
   //   setNonce(nonce + 1)

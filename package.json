@@ -14,6 +14,7 @@
     "@types/web3": "^1.2.2",
     "bn.js": "^5.1.3",
     "dotenv": "^8.2.0",
+    "eslint": "^7.26.0",
     "lowdb": "^1.0.0",
     "typescript": "3",
     "web3": "^1.3.0",
@@ -27,7 +28,7 @@
     "test-parallel": "rm nunce.sudo ; rm sudo.lock; jest test/parallel/* --verbose",
     "test-sequential": "rm nunce.sudo ; rm sudo.lock; jest test/sequential/* --verbose --runInBand",
     "tsc-lint": "tsc -noemit -p tsconfig.json",
-    "eslint": "node_modules/.bin/eslint --max-warnings 0 \"src/**/*.{ts,tsx}\""
+    "eslint": "node_modules/.bin/eslint --max-warnings 0 . --ext .ts"
   },
   "devDependencies": {
     "@babel/core": "^7.13.10",

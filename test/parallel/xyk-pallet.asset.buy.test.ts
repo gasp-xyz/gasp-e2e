@@ -105,7 +105,7 @@ test('xyk-pallet - AssetsOperation: buyAsset [maxAmountIn = 1M], buy asset', asy
 
 test('xyk-pallet - AssetsOperation: buyAsset [maxAmountIn = 1M], sell a bought asset', async() =>{
 
-	var amount = new BN(10000);
+	let amount = new BN(10000);
 
 	console.log("buying asset " + secondCurrency + ", selling asset " + firstCurrency);
 	var soldAssetId = firstCurrency;
@@ -113,7 +113,7 @@ test('xyk-pallet - AssetsOperation: buyAsset [maxAmountIn = 1M], sell a bought a
 	await testUser1.buyAssets(soldAssetId, boughtAssetId, amount);
 	
 	
-	var amount = new BN(15000);
+	amount = new BN(15000);
 	// considering the pool and the 15k amount
 	const traseureAndBurn  = new BN(5).mul(new BN(2));
 	var poolBalanceBefore = await getBalanceOfPool(secondCurrency, firstCurrency);

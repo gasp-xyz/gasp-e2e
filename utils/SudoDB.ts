@@ -7,10 +7,6 @@ export class SudoDB {
 
     private sudoNounceFileName = 'nunce.sudo';
 
-    constructor() {
-
-    }
-
     private static instance: SudoDB
     
     // build the singleton.

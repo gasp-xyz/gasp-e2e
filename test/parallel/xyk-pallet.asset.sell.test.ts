@@ -93,7 +93,7 @@ test('xyk-pallet - AssetsOperation: sellAsset [minAmountOut = 0] , first to seco
 	pallet.validateWalletReduced(boughtAssetId,sellPriceLocal);
 	pallet.validateWalletIncreased(soldAssetId,amount);
 	var pool_balance = await getBalanceOfPool(firstCurrency, secondCurrency);
-	var burned = (sellPriceLocal.mul(new BN(5))).div(new BN(10000));
+
 	expect	([	poolBalanceBefore[0].add(amount),	poolBalanceBefore[1].sub(sellPriceLocal).sub(traseureAndBurn)	])
 	.toEqual(pool_balance);
 

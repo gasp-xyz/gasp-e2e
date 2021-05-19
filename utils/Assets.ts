@@ -1,20 +1,11 @@
 
-import { Keyring } from '@polkadot/api';
-import { KeyringInstance, KeyringPair, KeyringPair$Json, KeyringPair$JsonEncodingTypes, KeyringPair$Meta, KeyringOptions } from '@polkadot/keyring/types';
 import BN from 'bn.js';
-import { env, getuid } from 'process';
-import { v4 as uuid } from 'uuid';
-import { ExtrinsicResult, getEventResult,getUserEventResult, waitNewBlock } from './eventListeners';
-import { getNextAssetId , getAvailableCurrencies, getAssetSupply , sudoIssueAsset, getSudoKey} from './tx';
+import { ExtrinsicResult, getUserEventResult, waitNewBlock } from './eventListeners';
+import { getNextAssetId , getAssetSupply , sudoIssueAsset} from './tx';
 import { User } from './User';
 
 export class Assets {
-    /**
-     * class that encapsulates some Asset related methods.
-     */
-    
-    constructor() {
-    }
+
     ///This method create or return the specified number of available assets
     static async getCurrencies(numAssets : number = 2, sudoUser : User){
         var currencies = []
@@ -29,9 +20,8 @@ export class Assets {
         }
         //there are some currencies already created.
         for (let index = 0; index < numAssets; index++) {
-                const element = await getAssetSupply(new BN(index));
+                await getAssetSupply(new BN(index));
                 currencies.push(index.toString());
-                
         }
         
         return currencies;

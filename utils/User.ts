@@ -6,6 +6,12 @@ import { v4 as uuid } from 'uuid';
 import { ExtrinsicResult, getUserEventResult, waitNewBlock } from './eventListeners';
 import { balanceTransfer, buyAsset, createPool, getAccountInfo, getUserAssets, sellAsset, setBalance } from './tx';
 
+export enum AssetWallet
+{
+    BEFORE,
+    AFTER
+}
+
 export class User {
 
     /**
@@ -65,7 +71,6 @@ export class User {
         var assetValues = await getUserAssets(this.keyRingPair.address, currencies);
         
         for (let index = 0; index < this.assets.length; index++) {
-            const asset = this.assets[index];
             if(beforeOrAfter === AssetWallet.BEFORE)
                 this.assets[index].amountBefore = assetValues[index];
             else
@@ -105,9 +110,9 @@ export class User {
         
         var eventPromise = getUserEventResult("balances","Endowed", 14 , this.keyRingPair.address);
         await balanceTransfer(new User(this.keyring, user).keyRingPair,this.keyRingPair.address, amount);
-        var result = await eventPromise;
+        await eventPromise;
         eventPromise = getUserEventResult("balances","Transfer", 14, this.keyRingPair.address);
-        result = await eventPromise;
+        await eventPromise;
         await this.waitUntilBalanceIsNotZero();
 
         await waitNewBlock();
@@ -118,9 +123,9 @@ export class User {
        
         var eventPromise = getUserEventResult("balances","Endowed", 14, this.keyRingPair.address);
         await setBalance(sudo.keyRingPair,this.keyRingPair.address, amount);
-        var result = await eventPromise;
+        await eventPromise;
         eventPromise = getUserEventResult("balances","BalanceSet", 14, this.keyRingPair.address);
-        result = await eventPromise;
+        await eventPromise;
 
         await waitNewBlock();
         
@@ -144,9 +149,6 @@ export class Asset{
     amountAfter : BN ;
     currencyId : BN;
 
-    /**
-     *
-     */
     constructor(currencyId : BN, amountBefore = new BN(0), amountAfter = new BN(0)) {
         this.currencyId = currencyId;
         this.amountBefore = amountBefore;
@@ -156,8 +158,3 @@ export class Asset{
 
 }
 
-export enum AssetWallet
-{
-    BEFORE,
-    AFTER
-}

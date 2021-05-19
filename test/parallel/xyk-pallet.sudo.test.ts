@@ -68,7 +68,7 @@ test('xyk-pallet - Sudo tests: Sudo Issue two  different assets to the same acco
 
 	eventPromise = getUserEventResult("tokens","Issued", 12, testUser.keyRingPair.address);
 	sudoIssueAsset(sudoPair, new BN(tokensFirstAmount), testUser.keyRingPair.address);
-	var eventResult = await eventPromise;
+	let eventResult = await eventPromise;
 	const assetId = new BN(eventResult.data[0]);
 	console.info("Sudo: asset issued " + assetId + " to " + testUser.name);
 	validateTransactionSucessful(eventResult, tokensFirstAmount, testUser);
@@ -80,7 +80,7 @@ test('xyk-pallet - Sudo tests: Sudo Issue two  different assets to the same acco
 
 	eventPromise = getUserEventResult("tokens","Issued", 12,testUser.keyRingPair.address);
 	sudoIssueAsset(sudoPair, new BN(tokensSecondAmount), testUser.keyRingPair.address);
-	var eventResult = await eventPromise;
+	eventResult = await eventPromise;
 	const secondAssetId = new BN(eventResult.data[0]);
 
 	validateTransactionSucessful(eventResult, tokensSecondAmount, testUser);
