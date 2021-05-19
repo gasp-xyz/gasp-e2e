@@ -21,7 +21,7 @@ var secondCurrency :BN;
 var liquidityAssetId: BN;
 
 // Assuming the pallet's AccountId
-const pallet_address = process.env.TEST_PALLET_ADDRESS;
+const pallet_address = process.env.TEST_PALLET_ADDRESS ? process.env.TEST_PALLET_ADDRESS : '';
 const defaultCurrecyValue = 250000;
 
 beforeAll( async () => {
@@ -114,7 +114,7 @@ test('xyk-pallet - Liqudity : Burn all the liquidity', async () => {
 	
 	var poolBalanceBefore = await getBalanceOfPool(firstCurrency, secondCurrency);
 	var totalLiquidityAssetsBefore = await getAssetSupply(liquidityAssetId);
-	var liquidityAssetsBurned: BN = testUser1.getAsset(liquidityAssetId).amountBefore;
+	var liquidityAssetsBurned: BN = testUser1.getAsset(liquidityAssetId)?.amountBefore!;
 
 	var [firstAssetAmount, secondAssetAmount] = await calcuate_burn_liquidity_price_local(firstCurrency, secondCurrency, liquidityAssetsBurned);
 

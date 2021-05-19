@@ -32,12 +32,12 @@ export class User {
     }
 
     validateWalletReduced(currencyId: BN, amount: BN){
-        const diffFromWallet = this.getAsset(currencyId).amountBefore.sub(amount);
-        expect(this.getAsset(currencyId).amountAfter).toEqual(diffFromWallet);
+        const diffFromWallet = this.getAsset(currencyId)?.amountBefore!.sub(amount);
+        expect(this.getAsset(currencyId)?.amountAfter!).toEqual(diffFromWallet);
     }
     validateWalletIncreased(currencyId: BN, amount: BN){
-        const addFromWallet = this.getAsset(currencyId).amountBefore.add(amount);
-        expect(this.getAsset(currencyId).amountAfter).toEqual(addFromWallet);
+        const addFromWallet = this.getAsset(currencyId)?.amountBefore!.add(amount);
+        expect(this.getAsset(currencyId)?.amountAfter!).toEqual(addFromWallet);
     }
 
     validateWalletsUnmodified(){
@@ -46,7 +46,7 @@ export class User {
         });
     };
 
-    addAsset(currecncyId, amountBefore = new BN(0)){
+    addAsset(currecncyId : any, amountBefore = new BN(0)){
         const asset = new Asset(currecncyId, amountBefore);
         if(this.assets.find( asset => asset.currencyId === currecncyId) === undefined){
             this.assets.push(asset);
@@ -57,7 +57,7 @@ export class User {
             this.addAsset(element);
         });
     }
-    getAsset(currecncyId){
+    getAsset(currecncyId : any){
         return this.assets.find( asset => asset.currencyId === currecncyId);
     }
     async refreshAmounts(beforeOrAfter : AssetWallet = AssetWallet.BEFORE){

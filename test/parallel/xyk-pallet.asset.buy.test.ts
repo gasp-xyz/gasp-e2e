@@ -20,7 +20,7 @@ var firstCurrency :BN;
 var secondCurrency :BN;
 
 // Assuming the pallet's AccountId
-const pallet_address = process.env.TEST_PALLET_ADDRESS;
+const pallet_address = process.env.TEST_PALLET_ADDRESS ? process.env.TEST_PALLET_ADDRESS : '';
 const defaultCurrecyValue = 250000;
 
 

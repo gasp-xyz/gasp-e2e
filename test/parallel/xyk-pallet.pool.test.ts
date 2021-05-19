@@ -21,7 +21,7 @@ var firstCurrency :BN;
 var secondCurrency :BN;
 
 // Assuming the pallet's AccountId
-const pallet_address = process.env.TEST_PALLET_ADDRESS;
+const pallet_address = process.env.TEST_PALLET_ADDRESS ? process.env.TEST_PALLET_ADDRESS : '';
 const defaultCurrecyValue = 250000;
 
 beforeAll( async () => {
@@ -65,8 +65,8 @@ beforeEach( async () => {
 	await testUser1.refreshAmounts(AssetWallet.BEFORE);
 	await testUser2.refreshAmounts(AssetWallet.BEFORE);
 
-	validateAssetsWithValues([testUser1.getAsset(firstCurrency).amountBefore,testUser1.getAsset(secondCurrency).amountBefore ], [defaultCurrecyValue, defaultCurrecyValue+1]);
-	validateEmptyAssets([testUser2.getAsset(firstCurrency).amountBefore,testUser2.getAsset(secondCurrency).amountBefore]);
+	validateAssetsWithValues([testUser1.getAsset(firstCurrency)?.amountBefore!,testUser1.getAsset(secondCurrency)?.amountBefore! ], [defaultCurrecyValue, defaultCurrecyValue+1]);
+	validateEmptyAssets([testUser2.getAsset(firstCurrency)?.amountBefore!,testUser2.getAsset(secondCurrency)?.amountBefore!]);
 });
 
 test('xyk-pallet - Pool tests: createPool', async () => {

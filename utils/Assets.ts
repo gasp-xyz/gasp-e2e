@@ -61,7 +61,7 @@ export class Assets {
         var eventResult = await eventPromise;
         expect(eventResult.state).toEqual(ExtrinsicResult.ExtrinsicSuccess);
 
-        return eventResult.data[0];
+        return new BN(eventResult.data[0]);
 
     }
 

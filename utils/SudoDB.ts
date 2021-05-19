@@ -1,3 +1,4 @@
+import BN from 'bn.js'
 import { lockSudoFile, unlockSudoFile } from "./lock";
 import { getCurrentNonce } from "./tx";
 const fs = require('fs');
@@ -20,13 +21,13 @@ export class SudoDB {
         return SudoDB.instance
     }
     
-    public async getSudoNonce(sudoAddress) {
+    public async getSudoNonce(sudoAddress: string) {
         
         try{
             // we need to prevent workers accessing and writing to the file concurrently
             await lockSudoFile();
-            const chainNonce = await getCurrentNonce(sudoAddress);
-            const chainNodeInt = parseInt(chainNonce);
+            const chainNonce : BN = await getCurrentNonce(sudoAddress);
+            const chainNodeInt = parseInt(chainNonce.toString());
     
             //if does not exist, create it
             if(!fs.existsSync(this.sudoNounceFileName))

@@ -86,8 +86,8 @@ test('xyk-pallet - Sudo tests: Sudo Issue two  different assets to the same acco
 	validateTransactionSucessful(eventResult, tokensSecondAmount, testUser);
 	// validate.
 	var userAssets = await getUserAssets(testUser.keyRingPair.address, [assetId,secondAssetId]);
-	expect(userAssets[0].words[0]).toEqual(tokensFirstAmount);
-	expect(userAssets[1].words[0]).toEqual(tokensSecondAmount);
+	expect((userAssets[0] as any).words[0]).toEqual(tokensFirstAmount);
+	expect((userAssets[1] as any).words[0]).toEqual(tokensSecondAmount);
 	
 });
 
