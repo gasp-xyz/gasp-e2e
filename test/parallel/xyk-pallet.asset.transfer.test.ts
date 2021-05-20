@@ -12,13 +12,13 @@ jest.spyOn(console, 'log').mockImplementation(jest.fn());
 jest.setTimeout(1500000);
 process.env.NODE_ENV = 'test';
 
-var testUser1 : User;
-var testUser2 : User;
-var pallet : User;
+let testUser1 : User;
+let testUser2 : User;
+let pallet : User;
 
-var keyring : Keyring;
-var firstCurrency :BN;
-var secondCurrency :BN;
+let keyring : Keyring;
+let firstCurrency :BN;
+let secondCurrency :BN;
 
 // Assuming the pallet's AccountId
 const pallet_address = process.env.TEST_PALLET_ADDRESS ? process.env.TEST_PALLET_ADDRESS : '';
@@ -71,8 +71,8 @@ beforeEach( async () => {
 
 test('xyk-pallet - AssetsOperation: transferAsset', async() => {
     //Refactor Note: [Missing Wallet assert?] Did not considered creating a liquity asset. Transaction does nothing with it.
-	var pool_balance_before = await getBalanceOfPool(firstCurrency, secondCurrency);
-	var amount = new BN(100000);
+	let pool_balance_before = await getBalanceOfPool(firstCurrency, secondCurrency);
+	let amount = new BN(100000);
 	console.log("testUser1: transfering asset " + firstCurrency + " to testUser2");
 
 	const eventPromise = getUserEventResult("tokens", "Transferred", 12, testUser1.keyRingPair.address);
@@ -90,7 +90,7 @@ test('xyk-pallet - AssetsOperation: transferAsset', async() => {
 	testUser2.validateWalletIncreased(firstCurrency, amount);
 	testUser1.validateWalletIncreased(secondCurrency,new BN(0));
 
-	var pool_balance = await getBalanceOfPool(firstCurrency, secondCurrency);
+	let pool_balance = await getBalanceOfPool(firstCurrency, secondCurrency);
 	expect	(pool_balance_before)
 	.toEqual(pool_balance);
 

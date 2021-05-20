@@ -1,9 +1,9 @@
-import { AddressOrPair, SubmittableExtrinsic } from '@polkadot/api/types'
+import { AddressOrPair, SubmittableExtrinsic  } from '@polkadot/api/types'
 import { getApi } from './api'
 import BN from 'bn.js'
 import { env } from 'process'
 import { SudoDB } from './SudoDB';
-
+import {AccountData} from '@polkadot/types/interfaces/balances'
 export const signTx = async (
   tx: SubmittableExtrinsic<'promise'>,
   address: AddressOrPair,
@@ -63,18 +63,21 @@ export function calculate_buy_price_local(input_reserve: BN, output_reserve: BN,
 
 export async function get_burn_amount(firstAssetId: BN, secondAssetId: BN, liquidity_asset_amount: BN){
 	const api = getApi();
+  //I could not find a way to get and inject the xyk interface in the api builder. 
 	let result = await ( api.rpc as any).xyk.get_burn_amount(firstAssetId, secondAssetId, liquidity_asset_amount);
 	return new BN(result.price.toString())
 }
 
 export async function calculate_sell_price_rpc(input_reserve: BN, output_reserve: BN, sell_amount: BN){
 	const api = getApi();
+  //I could not find a way to get and inject the xyk interface in the api builder. 
 	let result = await ( api.rpc as any).xyk.calculate_sell_price(input_reserve, output_reserve, sell_amount);
 	return new BN(result.price.toString())
 }
 
 export async function calculate_buy_price_rpc(input_reserve: BN, output_reserve: BN, buy_amount: BN){
 	const api = getApi();
+    //I could not find a way to get and inject the xyk interface in the api builder. 
 	let result = await ( api.rpc as any).xyk.calculate_buy_price(input_reserve, output_reserve, buy_amount);
 	return new BN(result.price.toString())
 }
@@ -101,8 +104,8 @@ export async function getBalanceOfAsset(assetId: BN, account: any ) {
   const api = getApi();
 
 	const balance = await api.query.tokens.accounts(account, assetId);
-
-	return new BN( (balance as any).free.words[0].toString())
+  const accountData = (balance as AccountData);
+	return new BN( accountData.free.toBigInt().toString())
 }
 
 export async function getBalanceOfPool(assetId1: BN, assetId2: BN ) {

@@ -67,8 +67,8 @@ export class User {
         return this.assets.find( asset => asset.currencyId === currecncyId);
     }
     async refreshAmounts(beforeOrAfter : AssetWallet = AssetWallet.BEFORE){
-        var currencies = this.assets.map( asset => new BN(asset.currencyId));
-        var assetValues = await getUserAssets(this.keyRingPair.address, currencies);
+        let currencies = this.assets.map( asset => new BN(asset.currencyId));
+        let assetValues = await getUserAssets(this.keyRingPair.address, currencies);
         
         for (let index = 0; index < this.assets.length; index++) {
             if(beforeOrAfter === AssetWallet.BEFORE)
@@ -97,9 +97,9 @@ export class User {
     
     async createPoolToAsset(first_asset_amount: BN, second_asset_amount: BN, firstCurrency: BN, secondCurrency : BN) {
 
-        var eventPromise = getUserEventResult("xyk", "PoolCreated", 14, this.keyRingPair.address);
+        let eventPromise = getUserEventResult("xyk", "PoolCreated", 14, this.keyRingPair.address);
         createPool(this.keyRingPair, firstCurrency, first_asset_amount, secondCurrency, second_asset_amount);
-        var eventResponse = await eventPromise;
+        let eventResponse = await eventPromise;
         //console.warn(eventResponse.data);
         expect(eventResponse.state).toEqual(ExtrinsicResult.ExtrinsicSuccess);
         await waitNewBlock();
@@ -108,7 +108,7 @@ export class User {
 
     async addBalance(user : string = '//Alice', amount : number = Math.pow(10,11)){
         
-        var eventPromise = getUserEventResult("balances","Endowed", 14 , this.keyRingPair.address);
+        let eventPromise = getUserEventResult("balances","Endowed", 14 , this.keyRingPair.address);
         await balanceTransfer(new User(this.keyring, user).keyRingPair,this.keyRingPair.address, amount);
         await eventPromise;
         eventPromise = getUserEventResult("balances","Transfer", 14, this.keyRingPair.address);
@@ -121,7 +121,7 @@ export class User {
 
     async setBalance(sudo : User, amount : number = Math.pow(10,11)) {
        
-        var eventPromise = getUserEventResult("balances","Endowed", 14, this.keyRingPair.address);
+        let eventPromise = getUserEventResult("balances","Endowed", 14, this.keyRingPair.address);
         await setBalance(sudo.keyRingPair,this.keyRingPair.address, amount);
         await eventPromise;
         eventPromise = getUserEventResult("balances","BalanceSet", 14, this.keyRingPair.address);
@@ -135,7 +135,7 @@ export class User {
         return accountInfo;
     }
     async waitUntilBalanceIsNotZero(){
-        var amount = '0';
+        let amount = '0';
         do {
             await waitNewBlock();
             const accountData = await this.getUserAccountInfo();

@@ -11,13 +11,13 @@ jest.spyOn(console, 'log').mockImplementation(jest.fn());
 jest.setTimeout(1500000);
 process.env.NODE_ENV = 'test';
 
-var testUser1 : User;
-var testUser2 : User;
-var pallet : User;
+let testUser1 : User;
+let testUser2 : User;
+let pallet : User;
 
-var keyring : Keyring;
-var firstCurrency :BN;
-var secondCurrency :BN;
+let keyring : Keyring;
+let firstCurrency :BN;
+let secondCurrency :BN;
 
 // Assuming the pallet's AccountId
 const pallet_address = process.env.TEST_PALLET_ADDRESS ? process.env.TEST_PALLET_ADDRESS : '';
@@ -70,12 +70,12 @@ beforeEach( async () => {
 test('xyk-pallet - AssetsOperation: sellAsset [minAmountOut = 0] , first to second currency', async() => {
 
 
-	var poolBalanceBefore = await getBalanceOfPool(firstCurrency, secondCurrency);
-	var amount = new BN(30000);
+	let poolBalanceBefore = await getBalanceOfPool(firstCurrency, secondCurrency);
+	let amount = new BN(30000);
 	// considering the 60k of pool and the 30k amount
 	const traseureAndBurn  = new BN(6).mul(new BN(2));
-	var sellPriceLocal = calculate_sell_price_local(poolBalanceBefore[0], poolBalanceBefore[1], amount);
-	var sellPriceRpc = await calculate_sell_price_rpc(poolBalanceBefore[0], poolBalanceBefore[1], amount);
+	let sellPriceLocal = calculate_sell_price_local(poolBalanceBefore[0], poolBalanceBefore[1], amount);
+	let sellPriceRpc = await calculate_sell_price_rpc(poolBalanceBefore[0], poolBalanceBefore[1], amount);
 	expect(sellPriceLocal).toEqual(sellPriceRpc);
 	console.log("selling asset " + firstCurrency + ", buying asset " + secondCurrency);
 	
@@ -92,7 +92,7 @@ test('xyk-pallet - AssetsOperation: sellAsset [minAmountOut = 0] , first to seco
 	testUser2.validateWalletsUnmodified();
 	pallet.validateWalletReduced(boughtAssetId,sellPriceLocal);
 	pallet.validateWalletIncreased(soldAssetId,amount);
-	var pool_balance = await getBalanceOfPool(firstCurrency, secondCurrency);
+	let pool_balance = await getBalanceOfPool(firstCurrency, secondCurrency);
 
 	expect	([	poolBalanceBefore[0].add(amount),	poolBalanceBefore[1].sub(sellPriceLocal).sub(traseureAndBurn)	])
 	.toEqual(pool_balance);
@@ -101,21 +101,21 @@ test('xyk-pallet - AssetsOperation: sellAsset [minAmountOut = 0] , first to seco
 
 test('xyk-pallet - AssetsOperation: sellAsset [minAmountOut = 0], sell an already sold asset', async () => {
 
-	var amount = new BN(30000);
-	var soldAssetId = firstCurrency;
-	var boughtAssetId = secondCurrency;
+	let amount = new BN(30000);
+	let soldAssetId = firstCurrency;
+	let boughtAssetId = secondCurrency;
 	await testUser1.sellAssets(soldAssetId, boughtAssetId , amount);
 
 	await testUser1.refreshAmounts(AssetWallet.BEFORE);
 	await testUser2.refreshAmounts(AssetWallet.BEFORE);
 	await pallet.refreshAmounts(AssetWallet.BEFORE);
-	var poolBalanceBefore = await getBalanceOfPool(firstCurrency, secondCurrency);
+	let poolBalanceBefore = await getBalanceOfPool(firstCurrency, secondCurrency);
 
 	amount = new BN(20000);
 	// considering the previous bought and the 20k amount
 	const traseureAndBurn  = new BN(10).mul(new BN(2));
-	var sellPriceLocal = calculate_sell_price_local(poolBalanceBefore[1], poolBalanceBefore[0], amount);
-	var sellPriceRpc = await calculate_sell_price_rpc(poolBalanceBefore[1], poolBalanceBefore[0], amount);
+	let sellPriceLocal = calculate_sell_price_local(poolBalanceBefore[1], poolBalanceBefore[0], amount);
+	let sellPriceRpc = await calculate_sell_price_rpc(poolBalanceBefore[1], poolBalanceBefore[0], amount);
 	expect(sellPriceLocal).toEqual(sellPriceRpc);
 
 	soldAssetId = secondCurrency;
@@ -132,7 +132,7 @@ test('xyk-pallet - AssetsOperation: sellAsset [minAmountOut = 0], sell an alread
 	pallet.validateWalletReduced(boughtAssetId,sellPriceLocal);
 	pallet.validateWalletIncreased(soldAssetId,amount);
 	
-	var pool_balance = await getBalanceOfPool(firstCurrency, secondCurrency);
+	let pool_balance = await getBalanceOfPool(firstCurrency, secondCurrency);
 	expect	([	poolBalanceBefore[0].sub(sellPriceLocal).sub(traseureAndBurn),	poolBalanceBefore[1].add(amount)	])
 	.toEqual(pool_balance);
 });

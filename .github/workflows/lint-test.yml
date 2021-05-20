@@ -16,5 +16,7 @@ jobs:
         run: yarn tsc-lint
       - name: ESLint code quality check
         run: yarn eslint
-      - name: Run tests
-        run: CI=true yarn test
+# tests are not ready to run in github.
+# TODO: Build image, export pallet address and run yarn test-parallel && yarn test-sequential
+#      - name: Run tests
+#        run: CI=true yarn test
