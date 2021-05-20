@@ -19,6 +19,8 @@ test('xyk-pallet: Happy case scenario', async () => {
 	const keyring = new Keyring({ type: 'sr25519' });
   const alice = keyring.addFromUri('//Alice');
   const bob = keyring.addFromUri('//Bob');
+  keyring.addFromUri('//Maciatko');
+
   let pool_balance_before;
   let total_liquidity_assets_before;
 
@@ -520,7 +522,7 @@ test('xyk-pallet: Liquidity sufficiency scenario', async () => {
 	const keyring = new Keyring({ type: 'sr25519' });
   const alice = keyring.addFromUri('//Alice');
   const bob = keyring.addFromUri('//Bob');
-  
+  keyring.addFromUri('//Maciatko');
 	// Assuming the pallet's AccountId
 	const pallet_address = "5EYCAe5XGPRojsCSi9p1ZZQ5qgeJGFcTxPxrsFRzkASu6bT2"
 
