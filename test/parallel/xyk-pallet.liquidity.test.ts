@@ -11,17 +11,17 @@ jest.spyOn(console, 'log').mockImplementation(jest.fn());
 jest.setTimeout(1500000);
 process.env.NODE_ENV = 'test';
 
-var testUser1 : User;
-var testUser2 : User;
-var pallet : User;
+let testUser1 : User;
+let testUser2 : User;
+let pallet : User;
 
-var keyring : Keyring;
-var firstCurrency :BN;
-var secondCurrency :BN;
-var liquidityAssetId: BN;
+let keyring : Keyring;
+let firstCurrency :BN;
+let secondCurrency :BN;
+let liquidityAssetId: BN;
 
 // Assuming the pallet's AccountId
-const pallet_address = process.env.TEST_PALLET_ADDRESS;
+const pallet_address = process.env.TEST_PALLET_ADDRESS ? process.env.TEST_PALLET_ADDRESS : '';
 const defaultCurrecyValue = 250000;
 
 beforeAll( async () => {
@@ -75,10 +75,10 @@ beforeEach( async () => {
 
 test('xyk-pallet - Liqudity : Burn part of the liquidity', async () => {
 
-	var poolBalanceBefore = await getBalanceOfPool(firstCurrency, secondCurrency);
-	var totalLiquidityAssetsBefore = await getAssetSupply(liquidityAssetId);
-	var liquidityAssetsBurned = new BN(20000);
-	var [firstAssetAmount, second_asset_amount] = await calcuate_burn_liquidity_price_local(firstCurrency, secondCurrency, liquidityAssetsBurned);
+	let poolBalanceBefore = await getBalanceOfPool(firstCurrency, secondCurrency);
+	let totalLiquidityAssetsBefore = await getAssetSupply(liquidityAssetId);
+	let liquidityAssetsBurned = new BN(20000);
+	let [firstAssetAmount, second_asset_amount] = await calcuate_burn_liquidity_price_local(firstCurrency, secondCurrency, liquidityAssetsBurned);
 
 	console.log("burning liquidity " + liquidityAssetsBurned + "of pool " + firstCurrency + " - " + secondCurrency);
 
@@ -100,11 +100,11 @@ test('xyk-pallet - Liqudity : Burn part of the liquidity', async () => {
 	pallet.validateWalletReduced(firstCurrency, firstAssetAmount);
 	pallet.validateWalletReduced(secondCurrency, second_asset_amount);
 
-	var pool_balance = await getBalanceOfPool(firstCurrency, secondCurrency);
+	let pool_balance = await getBalanceOfPool(firstCurrency, secondCurrency);
 	expect	([	poolBalanceBefore[0].sub(firstAssetAmount),	poolBalanceBefore[1].sub(second_asset_amount)	])
 	.toEqual(pool_balance);
 
-	var total_liquidity_assets = await getAssetSupply(liquidityAssetId);
+	let total_liquidity_assets = await getAssetSupply(liquidityAssetId);
 	expect(totalLiquidityAssetsBefore.sub(liquidityAssetsBurned))
 	.toEqual(total_liquidity_assets);
 
@@ -112,11 +112,11 @@ test('xyk-pallet - Liqudity : Burn part of the liquidity', async () => {
 
 test('xyk-pallet - Liqudity : Burn all the liquidity', async () => {
 	
-	var poolBalanceBefore = await getBalanceOfPool(firstCurrency, secondCurrency);
-	var totalLiquidityAssetsBefore = await getAssetSupply(liquidityAssetId);
-	var liquidityAssetsBurned: BN = testUser1.getAsset(liquidityAssetId).amountBefore;
+	let poolBalanceBefore = await getBalanceOfPool(firstCurrency, secondCurrency);
+	let totalLiquidityAssetsBefore = await getAssetSupply(liquidityAssetId);
+	let liquidityAssetsBurned: BN = testUser1.getAsset(liquidityAssetId)?.amountBefore!;
 
-	var [firstAssetAmount, secondAssetAmount] = await calcuate_burn_liquidity_price_local(firstCurrency, secondCurrency, liquidityAssetsBurned);
+	let [firstAssetAmount, secondAssetAmount] = await calcuate_burn_liquidity_price_local(firstCurrency, secondCurrency, liquidityAssetsBurned);
 
 	console.log("TestUser1: burning liquidity " + liquidityAssetsBurned + "of pool " + firstCurrency + " - " + secondCurrency);
 
@@ -138,21 +138,21 @@ test('xyk-pallet - Liqudity : Burn all the liquidity', async () => {
 	pallet.validateWalletReduced(firstCurrency, firstAssetAmount);
 	pallet.validateWalletReduced(secondCurrency, secondAssetAmount);
 
-	var pool_balance = await getBalanceOfPool(firstCurrency, secondCurrency);
+	let pool_balance = await getBalanceOfPool(firstCurrency, secondCurrency);
 	expect	([	poolBalanceBefore[0].sub(firstAssetAmount),	poolBalanceBefore[1].sub(secondAssetAmount)	])
 	.toEqual(pool_balance);
 
-	var totalLiquidityAssets = await getAssetSupply(liquidityAssetId);
+	let totalLiquidityAssets = await getAssetSupply(liquidityAssetId);
 	expect(totalLiquidityAssetsBefore.sub(liquidityAssetsBurned))
 	.toEqual(totalLiquidityAssets);
 
 });
 
 test('xyk-pallet - LiquidityOperation: mintLiquidity', async () => {
-	var firstCurrencyAssetAmount = new BN(30000);
-	var poolBalanceBefore = await getBalanceOfPool(firstCurrency, secondCurrency);
-	var totalLiquidityAssetsBefore = await getAssetSupply(liquidityAssetId);
-	var [secondAssetAmount, liquidityAssetsMinted] = await calcuate_mint_liquidity_price_local(firstCurrency, secondCurrency, firstCurrencyAssetAmount);
+	let firstCurrencyAssetAmount = new BN(30000);
+	let poolBalanceBefore = await getBalanceOfPool(firstCurrency, secondCurrency);
+	let totalLiquidityAssetsBefore = await getAssetSupply(liquidityAssetId);
+	let [secondAssetAmount, liquidityAssetsMinted] = await calcuate_mint_liquidity_price_local(firstCurrency, secondCurrency, firstCurrencyAssetAmount);
   	
     console.log("User: minting liquidity " + firstCurrency + " - " + secondCurrency);
 	const eventPromise = getUserEventResult("xyk", "LiquidityMinted", 14, testUser1.keyRingPair.address);
@@ -173,11 +173,11 @@ test('xyk-pallet - LiquidityOperation: mintLiquidity', async () => {
 	pallet.validateWalletIncreased(firstCurrency, firstCurrencyAssetAmount);
 	pallet.validateWalletIncreased(secondCurrency, secondAssetAmount);
 
-	var pool_balance = await getBalanceOfPool(firstCurrency, secondCurrency);
+	let pool_balance = await getBalanceOfPool(firstCurrency, secondCurrency);
 	expect	([	poolBalanceBefore[0].add(firstCurrencyAssetAmount),	poolBalanceBefore[1].add(secondAssetAmount)	])
 	.toEqual(pool_balance);
 	
-	var total_liquidity_assets = await getAssetSupply(liquidityAssetId);
+	let total_liquidity_assets = await getAssetSupply(liquidityAssetId);
 	expect(totalLiquidityAssetsBefore.add(liquidityAssetsMinted))
 	.toEqual(total_liquidity_assets);
 

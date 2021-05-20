@@ -6,6 +6,12 @@ import { v4 as uuid } from 'uuid';
 import { ExtrinsicResult, getUserEventResult, waitNewBlock } from './eventListeners';
 import { balanceTransfer, buyAsset, createPool, getAccountInfo, getUserAssets, mintAsset, sellAsset, setBalance, setOnlyLockedBalance } from './tx';
 
+export enum AssetWallet
+{
+    BEFORE,
+    AFTER
+}
+
 export class User {
 
 
@@ -34,12 +40,12 @@ export class User {
     }
 
     validateWalletReduced(currencyId: BN, amount: BN){
-        const diffFromWallet = this.getAsset(currencyId).amountBefore.sub(amount);
-        expect(this.getAsset(currencyId).amountAfter).toEqual(diffFromWallet);
+        const diffFromWallet = this.getAsset(currencyId)?.amountBefore!.sub(amount);
+        expect(this.getAsset(currencyId)?.amountAfter!).toEqual(diffFromWallet);
     }
     validateWalletIncreased(currencyId: BN, amount: BN){
-        const addFromWallet = this.getAsset(currencyId).amountBefore.add(amount);
-        expect(this.getAsset(currencyId).amountAfter).toEqual(addFromWallet);
+        const addFromWallet = this.getAsset(currencyId)?.amountBefore!.add(amount);
+        expect(this.getAsset(currencyId)?.amountAfter!).toEqual(addFromWallet);
     }
 
     validateWalletsUnmodified(){
@@ -48,7 +54,7 @@ export class User {
         });
     };
 
-    addAsset(currecncyId, amountBefore = new BN(0)){
+    addAsset(currecncyId : any, amountBefore = new BN(0)){
         const asset = new Asset(currecncyId, amountBefore);
         if(this.assets.find( asset => asset.currencyId === currecncyId) === undefined){
             this.assets.push(asset);
@@ -59,15 +65,14 @@ export class User {
             this.addAsset(element);
         });
     }
-    getAsset(currecncyId){
+    getAsset(currecncyId : any){
         return this.assets.find( asset => asset.currencyId === currecncyId);
     }
     async refreshAmounts(beforeOrAfter : AssetWallet = AssetWallet.BEFORE){
-        var currencies = this.assets.map( asset => new BN(asset.currencyId));
-        var assetValues = await getUserAssets(this.keyRingPair.address, currencies);
+        let currencies = this.assets.map( asset => new BN(asset.currencyId));
+        let assetValues = await getUserAssets(this.keyRingPair.address, currencies);
         
         for (let index = 0; index < this.assets.length; index++) {
-            const asset = this.assets[index];
             if(beforeOrAfter === AssetWallet.BEFORE)
                 this.assets[index].amountBefore = assetValues[index];
             else
@@ -103,9 +108,9 @@ export class User {
     
     async createPoolToAsset(first_asset_amount: BN, second_asset_amount: BN, firstCurrency: BN, secondCurrency : BN) {
 
-        var eventPromise = getUserEventResult("xyk", "PoolCreated", 14, this.keyRingPair.address);
+        let eventPromise = getUserEventResult("xyk", "PoolCreated", 14, this.keyRingPair.address);
         createPool(this.keyRingPair, firstCurrency, first_asset_amount, secondCurrency, second_asset_amount);
-        var eventResponse = await eventPromise;
+        let eventResponse = await eventPromise;
         //console.warn(eventResponse.data);
         expect(eventResponse.state).toEqual(ExtrinsicResult.ExtrinsicSuccess);
         await waitNewBlock();
@@ -114,11 +119,11 @@ export class User {
 
     async addBalance(user : string = '//Alice', amount : number = Math.pow(10,11)){
         
-        var eventPromise = getUserEventResult("balances","Endowed", 14 , this.keyRingPair.address);
+        let eventPromise = getUserEventResult("balances","Endowed", 14 , this.keyRingPair.address);
         await balanceTransfer(new User(this.keyring, user).keyRingPair,this.keyRingPair.address, amount);
-        var result = await eventPromise;
+        await eventPromise;
         eventPromise = getUserEventResult("balances","Transfer", 14, this.keyRingPair.address);
-        result = await eventPromise;
+        await eventPromise;
         await this.waitUntilBalanceIsNotZero();
 
         await waitNewBlock();
@@ -127,12 +132,11 @@ export class User {
 
     async setBalance(sudo : User, amountFree : number = Math.pow(10,11), amountReserved : number = Math.pow(10,11)) {
        
-        var eventPromise = getUserEventResult("balances","Endowed", 14, this.keyRingPair.address);
+        let eventPromise = getUserEventResult("balances","Endowed", 14, this.keyRingPair.address);
         await setBalance(sudo.keyRingPair,this.keyRingPair.address, amountFree, amountReserved);
-        
-        var result = await eventPromise;
+        await eventPromise;
         eventPromise = getUserEventResult("balances","BalanceSet", 14, this.keyRingPair.address);
-        result = await eventPromise;
+        await eventPromise;
 
         await waitNewBlock();
         
@@ -142,7 +146,7 @@ export class User {
         return accountInfo;
     }
     async waitUntilBalanceIsNotZero(){
-        var amount = '0';
+        let amount = '0';
         do {
             await waitNewBlock();
             const accountData = await this.getUserAccountInfo();
@@ -156,9 +160,6 @@ export class Asset{
     amountAfter : BN ;
     currencyId : BN;
 
-    /**
-     *
-     */
     constructor(currencyId : BN, amountBefore = new BN(0), amountAfter = new BN(0)) {
         this.currencyId = currencyId;
         this.amountBefore = amountBefore;
@@ -168,8 +169,3 @@ export class Asset{
 
 }
 
-export enum AssetWallet
-{
-    BEFORE,
-    AFTER
-}

@@ -1,8 +1,9 @@
-import { AddressOrPair, SubmittableExtrinsic } from '@polkadot/api/types'
+import { AddressOrPair, SubmittableExtrinsic  } from '@polkadot/api/types'
 import { getApi } from './api'
 import BN from 'bn.js'
 import { env } from 'process'
 import { SudoDB } from './SudoDB';
+import {AccountData} from '@polkadot/types/interfaces/balances'
 
 export async function signSendAndWaitToFinish( fun  , account , nunce = -1){
   return new Promise( resolve => {
@@ -33,12 +34,13 @@ export async function signSendAndWaitToFinish( fun  , account , nunce = -1){
 }
 
 
+
 export const signTx = async (
   tx: SubmittableExtrinsic<'promise'>,
   address: AddressOrPair,
   nonce: BN
 ) => {
-  const unsub = await tx.signAndSend(address, { nonce }, (result: any) => {
+  await tx.signAndSend(address, { nonce }, (result: any) => {
     // handleTx(result, unsub)
   })
   //   setNonce(nonce + 1)
@@ -92,19 +94,22 @@ export function calculate_buy_price_local(input_reserve: BN, output_reserve: BN,
 
 export async function get_burn_amount(firstAssetId: BN, secondAssetId: BN, liquidity_asset_amount: BN){
 	const api = getApi();
-	let result = await api.rpc.xyk.get_burn_amount(firstAssetId, secondAssetId, liquidity_asset_amount);
+  //I could not find a way to get and inject the xyk interface in the api builder. 
+	let result = await ( api.rpc as any).xyk.get_burn_amount(firstAssetId, secondAssetId, liquidity_asset_amount);
 	return new BN(result.price.toString())
 }
 
 export async function calculate_sell_price_rpc(input_reserve: BN, output_reserve: BN, sell_amount: BN){
 	const api = getApi();
-	let result = await api.rpc.xyk.calculate_sell_price(input_reserve, output_reserve, sell_amount);
+  //I could not find a way to get and inject the xyk interface in the api builder. 
+	let result = await ( api.rpc as any).xyk.calculate_sell_price(input_reserve, output_reserve, sell_amount);
 	return new BN(result.price.toString())
 }
 
 export async function calculate_buy_price_rpc(input_reserve: BN, output_reserve: BN, buy_amount: BN){
 	const api = getApi();
-	let result = await api.rpc.xyk.calculate_buy_price(input_reserve, output_reserve, buy_amount);
+    //I could not find a way to get and inject the xyk interface in the api builder. 
+	let result = await ( api.rpc as any).xyk.calculate_buy_price(input_reserve, output_reserve, buy_amount);
 	return new BN(result.price.toString())
 }
 
@@ -114,10 +119,10 @@ export async function getCurrentNonce(account?: string) {
     const { nonce } = await api.query.system.account(account);
     return new BN(nonce.toString())
   }
-  return -1
+  return new BN(-1)
 }
 
-export async function getUserAssets(account: any, assets){
+export async function getUserAssets(account: any, assets : BN[]){
 	let user_asset_balances = [];
 	for (const asset of assets){
 		let user_asset_balance = await getBalanceOfAsset(asset, account);
@@ -130,8 +135,8 @@ export async function getBalanceOfAsset(assetId: BN, account: any ) {
   const api = getApi();
 
 	const balance = await api.query.tokens.accounts(account, assetId);
-
-	return new BN(balance.free.words[0].toString())
+  const accountData = (balance as AccountData);
+	return new BN( accountData.free.toBigInt().toString())
 }
 
 export async function getBalanceOfPool(assetId1: BN, assetId2: BN ) {
@@ -156,7 +161,7 @@ export async function getLiquidityAssetId(assetId1: BN, assetId2: BN ) {
 export async function getAssetSupply(assetId1: BN) {
   const api = getApi();
 
-	const asset_supply = await api.query.tokens.totalIssuance(assetId1);
+	const asset_supply = await api.query.tokens.totalIssuance(assetId1.toString());
 
 	return new BN(asset_supply.toString())
 

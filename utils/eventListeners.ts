@@ -50,7 +50,7 @@ export const getEventResult = (section: any, method: any, module_index: any) => 
 }
 
 // for testing
-export const getUserEventResult = (section: any, method: any, module_index: any, stringIdentifier) => {
+export const getUserEventResult = (section: any, method: any, module_index: any, stringIdentifier : string) => {
   const api = getApi()
 
   return new Promise<EventResult>(async (resolve, reject) => {

@@ -12,16 +12,16 @@ jest.spyOn(console, 'log').mockImplementation(jest.fn());
 jest.setTimeout(1500000);
 process.env.NODE_ENV = 'test';
 
-var testUser1 : User;
-var testUser2 : User;
-var pallet : User;
+let testUser1 : User;
+let testUser2 : User;
+let pallet : User;
 
-var keyring : Keyring;
-var firstCurrency :BN;
-var secondCurrency :BN;
+let keyring : Keyring;
+let firstCurrency :BN;
+let secondCurrency :BN;
 
 // Assuming the pallet's AccountId
-const pallet_address = process.env.TEST_PALLET_ADDRESS;
+const pallet_address = process.env.TEST_PALLET_ADDRESS ? process.env.TEST_PALLET_ADDRESS : '';
 const defaultCurrecyValue = 250000;
 
 beforeAll( async () => {
@@ -65,8 +65,8 @@ beforeEach( async () => {
 	await testUser1.refreshAmounts(AssetWallet.BEFORE);
 	await testUser2.refreshAmounts(AssetWallet.BEFORE);
 
-	validateAssetsWithValues([testUser1.getAsset(firstCurrency).amountBefore,testUser1.getAsset(secondCurrency).amountBefore ], [defaultCurrecyValue, defaultCurrecyValue+1]);
-	validateEmptyAssets([testUser2.getAsset(firstCurrency).amountBefore,testUser2.getAsset(secondCurrency).amountBefore]);
+	validateAssetsWithValues([testUser1.getAsset(firstCurrency)?.amountBefore!,testUser1.getAsset(secondCurrency)?.amountBefore! ], [defaultCurrecyValue, defaultCurrecyValue+1]);
+	validateEmptyAssets([testUser2.getAsset(firstCurrency)?.amountBefore!,testUser2.getAsset(secondCurrency)?.amountBefore!]);
 });
 
 test('xyk-pallet - Pool tests: createPool', async () => {
@@ -74,17 +74,17 @@ test('xyk-pallet - Pool tests: createPool', async () => {
 	const pool_balance_before = [new BN(0), new BN(0)];
 	const total_liquidity_assets_before = new BN(0);
 
-	var first_asset_amount = new BN(50000);
-	var second_asset_amount = new BN(50000);
+	let first_asset_amount = new BN(50000);
+	let second_asset_amount = new BN(50000);
 	
   	console.log("testUser1: creating pool " + firstCurrency + " - " + secondCurrency);
-  	var eventPromise = getUserEventResult("xyk","PoolCreated", 14, testUser1.keyRingPair.address);
+  	let eventPromise = getUserEventResult("xyk","PoolCreated", 14, testUser1.keyRingPair.address);
   	createPool(testUser1.keyRingPair, firstCurrency, first_asset_amount, secondCurrency, second_asset_amount);
-  	var eventResponse = await eventPromise;
+  	let eventResponse = await eventPromise;
 	expect(eventResponse.state).toEqual(ExtrinsicResult.ExtrinsicSuccess);
 
-	var liquidity_asset_id = await getLiquidityAssetId(firstCurrency, secondCurrency);
-	var liquidity_assets_minted = first_asset_amount.add(second_asset_amount);
+	let liquidity_asset_id = await getLiquidityAssetId(firstCurrency, secondCurrency);
+	let liquidity_assets_minted = first_asset_amount.add(second_asset_amount);
 
 	testUser1.addAsset(liquidity_asset_id, new BN(0));
 	testUser2.addAsset(liquidity_asset_id, new BN(0));
@@ -104,12 +104,12 @@ test('xyk-pallet - Pool tests: createPool', async () => {
 	await pallet.validateWalletIncreased(secondCurrency, second_asset_amount);
 
 	//TODO: pending to validate.
-	var pool_balance = await getBalanceOfPool(firstCurrency, secondCurrency);
+	let pool_balance = await getBalanceOfPool(firstCurrency, secondCurrency);
 	expect	([	pool_balance_before[0].add(first_asset_amount),	
 				pool_balance_before[1].add(second_asset_amount)	])
 	.toEqual(pool_balance);
 
-	var total_liquidity_assets = await getAssetSupply(liquidity_asset_id);
+	let total_liquidity_assets = await getAssetSupply(liquidity_asset_id);
 	expect(total_liquidity_assets_before.add(liquidity_assets_minted))
 	.toEqual(total_liquidity_assets);
 

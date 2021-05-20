@@ -6,21 +6,20 @@ import { Keyring } from '@polkadot/api'
 import {AssetWallet, User} from "../../utils/User";
 import { Assets } from "../../utils/Assets";
 
-
 jest.spyOn(console, 'log').mockImplementation(jest.fn());
 jest.setTimeout(1500000);
 process.env.NODE_ENV = 'test';
 
-var testUser1 : User;
-var testUser2 : User;
-var pallet : User;
+let testUser1 : User;
+let testUser2 : User;
+let pallet : User;
 
-var keyring : Keyring;
-var firstCurrency :BN;
-var secondCurrency :BN;
+let keyring : Keyring;
+let firstCurrency :BN;
+let secondCurrency :BN;
 
 // Assuming the pallet's AccountId
-const pallet_address = process.env.TEST_PALLET_ADDRESS;
+const pallet_address = process.env.TEST_PALLET_ADDRESS ? process.env.TEST_PALLET_ADDRESS : '';
 const defaultCurrecyValue = 250000;
 
 
@@ -70,13 +69,13 @@ beforeEach( async () => {
 
 test('xyk-pallet - AssetsOperation: buyAsset [maxAmountIn = 1M], buy asset', async() => {
 
-	var poolBalanceBefore = await getBalanceOfPool(firstCurrency, secondCurrency);
+	let poolBalanceBefore = await getBalanceOfPool(firstCurrency, secondCurrency);
 
-	var amount = new BN(10000);
+	let amount = new BN(10000);
 	// considering the pool and the 10k amount
 	const traseureAndBurn  = new BN(3).mul(new BN(2));
-	var buyPriceLocal = calculate_buy_price_local(poolBalanceBefore[0], poolBalanceBefore[1], amount);
-	var buyPriceRpc = await calculate_buy_price_rpc(poolBalanceBefore[0], poolBalanceBefore[1], amount);
+	let buyPriceLocal = calculate_buy_price_local(poolBalanceBefore[0], poolBalanceBefore[1], amount);
+	let buyPriceRpc = await calculate_buy_price_rpc(poolBalanceBefore[0], poolBalanceBefore[1], amount);
 	expect(buyPriceLocal).toEqual(buyPriceRpc);
 
 	console.log("Bob: buying asset " + secondCurrency + ", selling asset " + firstCurrency);
@@ -96,7 +95,7 @@ test('xyk-pallet - AssetsOperation: buyAsset [maxAmountIn = 1M], buy asset', asy
 	testUser2.validateWalletsUnmodified();
 	pallet.validateWalletIncreased(soldAssetId,buyPriceLocal);
 	pallet.validateWalletReduced(boughtAssetId,amount);
-	var pool_balance = await getBalanceOfPool(firstCurrency, secondCurrency);
+	let pool_balance = await getBalanceOfPool(firstCurrency, secondCurrency);
 	
 	expect	([	poolBalanceBefore[0].add(buyPriceLocal),	poolBalanceBefore[1].sub(amount).sub(traseureAndBurn)	])
 	.toEqual(pool_balance);
@@ -105,20 +104,20 @@ test('xyk-pallet - AssetsOperation: buyAsset [maxAmountIn = 1M], buy asset', asy
 
 test('xyk-pallet - AssetsOperation: buyAsset [maxAmountIn = 1M], sell a bought asset', async() =>{
 
-	var amount = new BN(10000);
+	let amount = new BN(10000);
 
 	console.log("buying asset " + secondCurrency + ", selling asset " + firstCurrency);
-	var soldAssetId = firstCurrency;
-	var boughtAssetId = secondCurrency;
+	let soldAssetId = firstCurrency;
+	let boughtAssetId = secondCurrency;
 	await testUser1.buyAssets(soldAssetId, boughtAssetId, amount);
 	
 	
-	var amount = new BN(15000);
+	amount = new BN(15000);
 	// considering the pool and the 15k amount
 	const traseureAndBurn  = new BN(5).mul(new BN(2));
-	var poolBalanceBefore = await getBalanceOfPool(secondCurrency, firstCurrency);
-	var buyPriceLocal = calculate_buy_price_local(poolBalanceBefore[0], poolBalanceBefore[1], amount);
-	var buypriceRpc = await calculate_buy_price_rpc(poolBalanceBefore[0], poolBalanceBefore[1], amount);
+	let poolBalanceBefore = await getBalanceOfPool(secondCurrency, firstCurrency);
+	let buyPriceLocal = calculate_buy_price_local(poolBalanceBefore[0], poolBalanceBefore[1], amount);
+	let buypriceRpc = await calculate_buy_price_rpc(poolBalanceBefore[0], poolBalanceBefore[1], amount);
 	expect(buyPriceLocal).toEqual(buypriceRpc);
 
 	await testUser1.refreshAmounts(AssetWallet.BEFORE);
@@ -139,7 +138,7 @@ test('xyk-pallet - AssetsOperation: buyAsset [maxAmountIn = 1M], sell a bought a
 	testUser2.validateWalletsUnmodified();
 	pallet.validateWalletIncreased(soldAssetId,buyPriceLocal);
 	pallet.validateWalletReduced(boughtAssetId,amount);
-	var pool_balance = await getBalanceOfPool(secondCurrency, firstCurrency);
+	let pool_balance = await getBalanceOfPool(secondCurrency, firstCurrency);
 	expect	([	poolBalanceBefore[0].add(buyPriceLocal),	poolBalanceBefore[1].sub(amount).sub(traseureAndBurn)	])
 	.toEqual(pool_balance);
 

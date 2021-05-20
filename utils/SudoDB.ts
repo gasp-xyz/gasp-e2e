@@ -1,14 +1,11 @@
+import BN from 'bn.js'
 import { lockSudoFile, unlockSudoFile } from "./lock";
 import { getCurrentNonce } from "./tx";
 const fs = require('fs');
 
 export class SudoDB {
 
-    private sudoNounceFileName = 'nunce.sudo';
-
-    constructor() {
-
-    }
+    private sudoNonceFileName = 'nonce.db';
 
     private static instance: SudoDB
     
@@ -20,25 +17,25 @@ export class SudoDB {
         return SudoDB.instance
     }
     
-    public async getSudoNonce(sudoAddress) {
-        
+    public async getSudoNonce(sudoAddress: string) {
+        let dbNonce;
         try{
             // we need to prevent workers accessing and writing to the file concurrently
             await lockSudoFile();
-            const chainNonce = await getCurrentNonce(sudoAddress);
-            const chainNodeInt = parseInt(chainNonce);
+            const chainNonce : BN = await getCurrentNonce(sudoAddress);
+            const chainNodeInt = parseInt(chainNonce.toString());
     
             //if does not exist, create it
-            if(!fs.existsSync(this.sudoNounceFileName))
-                fs.writeFileSync('nunce.sudo','0');
-            var dbNonce =  fs.readFileSync('nunce.sudo',{encoding:'utf8', flag:'r'});
+            if(!fs.existsSync(this.sudoNonceFileName))
+                fs.writeFileSync(this.sudoNonceFileName,'0');
+            dbNonce =  fs.readFileSync(this.sudoNonceFileName,{encoding:'utf8', flag:'r'});
     
             if(dbNonce === undefined || chainNodeInt > parseInt(dbNonce) ) {
                 dbNonce = chainNodeInt;
             }
             const nextNonce = parseInt(dbNonce) +1;
     
-            fs.writeFileSync(this.sudoNounceFileName,String(nextNonce));
+            fs.writeFileSync(this.sudoNonceFileName,String(nextNonce));
 
         }finally{
             //unlock always!
