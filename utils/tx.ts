@@ -1,20 +1,22 @@
 import { AddressOrPair, SubmittableExtrinsic  } from '@polkadot/api/types'
+import { KeyringPair } from '@polkadot/keyring/types';
 import { getApi } from './api'
 import BN from 'bn.js'
 import { env } from 'process'
 import { SudoDB } from './SudoDB';
 import {AccountData} from '@polkadot/types/interfaces/balances'
 
-export async function signSendAndWaitToFinish( fun  , account , nunce = -1){
+export async function signSendAndWaitToFinish( fun : SubmittableExtrinsic<'promise'> | undefined, account : KeyringPair ){
+  const nonce = await getCurrentNonce(account.address);
   return new Promise( resolve => {
-    fun
+    fun!
       .signAndSend(
         account , 
-        nunce, 
-        (result, error) => {
+        { nonce }, 
+        ( result ) => {
           
-          if(error){
-            resolve(error);
+          if(result.isError){
+            resolve(result.toHuman());
           }
           console.info( JSON.stringify(result.toHuman()) );
           if (result.status.isInBlock || result.status.isFinalized) {
@@ -24,7 +26,7 @@ export async function signSendAndWaitToFinish( fun  , account , nunce = -1){
     
           }
           if(result.status.isFinalized){
-            resolve(result.status.toHuman().Finalized.toString());
+            resolve(result.status.toHuman());
           }
           
         });

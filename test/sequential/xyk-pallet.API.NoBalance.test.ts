@@ -1,10 +1,10 @@
-import {api, getApi, initApi} from "../../utils/api";
-import { getBalanceOfPool, getLiquidityAssetId, getAssetSupply, transferAsset, createPool, signSendAndWaitToFinish, getNextAssetId, getBalanceOfAsset, signTx} from '../../utils/tx'
-import {waitNewBlock, ExtrinsicResult, getUserEventResult} from '../../utils/eventListeners'
+import {getApi, initApi} from "../../utils/api";
+import { getBalanceOfPool, getCurrentNonce, getLiquidityAssetId, signTx} from '../../utils/tx'
+import {waitNewBlock} from '../../utils/eventListeners'
 import BN from 'bn.js'
 import { Keyring } from '@polkadot/api'
 import {AssetWallet, User} from "../../utils/User";
-import { validateAssetsWithValues, validateEmptyAssets, validatePoolCreatedEvent } from "../../utils/validators";
+import { validateAssetsWithValues } from "../../utils/validators";
 import { Assets } from "../../utils/Assets";
 
 
@@ -23,10 +23,8 @@ var first_asset_amount = new BN(50000);
 var second_asset_amount = new BN(50000);
 //creating pool
 const pool_balance_before = [new BN(0), new BN(0)];
-const total_liquidity_assets_before = new BN(0);
 
 // Assuming the pallet's AccountId
-const pallet_address = process.env.TEST_PALLET_ADDRESS;
 const defaultCurrecyValue = 250000;
 
 beforeAll( async () => {
@@ -55,21 +53,22 @@ beforeAll( async () => {
 
 	// check users accounts.
 	await testUser1.refreshAmounts(AssetWallet.BEFORE);
-	validateAssetsWithValues([testUser1.getAsset(firstCurrency).amountBefore,testUser1.getAsset(secondCurrency).amountBefore ], [defaultCurrecyValue, defaultCurrecyValue+1]);
+	validateAssetsWithValues([testUser1.getAsset(firstCurrency)?.amountBefore!,testUser1.getAsset(secondCurrency)?.amountBefore! ], [defaultCurrecyValue, defaultCurrecyValue+1]);
 
 })
 
 test('xyk-pallet - Alternative  - No Balance for creating pool', async () => {
 		let exception = false;
+		const api = getApi();
+
 		await expect( 
 			signTx( 
-				api.tx.xyk.createPool(firstCurrency, first_asset_amount, secondCurrency, second_asset_amount), 
+				api?.tx.xyk.createPool(firstCurrency, first_asset_amount, secondCurrency, second_asset_amount), 
 				testUser1.keyRingPair,
-				-1 )
+				await  getCurrentNonce(testUser1.keyRingPair.address))
 				.catch((reason) => {
 					exception = true;
 					throw new Error(reason);
-					expect(reason).toEqual('1010: Invalid Transaction: Inability to pay some fees , e.g. account balance too low')
 				})
 		).rejects
 		.toThrow('1010: Invalid Transaction: Inability to pay some fees , e.g. account balance too low')
@@ -79,7 +78,6 @@ test('xyk-pallet - Alternative  - No Balance for creating pool', async () => {
 afterEach(async () => {
 
 	var liquidity_asset_id = await getLiquidityAssetId(firstCurrency, secondCurrency);
-	var liquidity_assets_minted = first_asset_amount.add(second_asset_amount);
 
 	testUser1.addAsset(liquidity_asset_id, new BN(0));
 	//validate

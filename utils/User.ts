@@ -4,7 +4,7 @@ import { KeyringPair } from '@polkadot/keyring/types';
 import BN from 'bn.js';
 import { v4 as uuid } from 'uuid';
 import { ExtrinsicResult, getUserEventResult, waitNewBlock } from './eventListeners';
-import { balanceTransfer, buyAsset, createPool, getAccountInfo, getUserAssets, mintAsset, sellAsset, setBalance, setOnlyLockedBalance } from './tx';
+import { balanceTransfer, buyAsset, createPool, getAccountInfo, getUserAssets, mintAsset, sellAsset, setBalance } from './tx';
 
 export enum AssetWallet
 {

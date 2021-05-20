@@ -30,27 +30,29 @@ export const getEventResult = (section: any, method: any, module_index: any) => 
   const api = getApi()
 
   return new Promise<EventResult>(async (resolve, reject) => {
-    const unsubscribe = await api.query.system.events((events: any) => {
-      events.forEach((record: any) => {
-        const { event } = record
-        if (event.section === section && event.method === method) {
-          unsubscribe()
-          resolve(new EventResult(ExtrinsicResult.ExtrinsicSuccess, JSON.parse(event.data.toString())))
-        } else if (
-									(event.section === "system" && event.method === "ExtrinsicFailed")
-									&&
-									(JSON.parse(event.data.toString())[0].Module.index = module_index)
-									){
-					unsubscribe()
-          resolve(new EventResult(ExtrinsicResult.ExtrinsicFailed, JSON.parse(event.data.toString())[0].Module.error));
-				}
-      })
+
+      const unsubscribe = await api.query.system.events((events: any) => {
+        events.forEach((record: any) => {
+          const { event } = record
+          if (event.section === section && event.method === method) {
+            unsubscribe()
+            resolve(new EventResult(ExtrinsicResult.ExtrinsicSuccess, JSON.parse(event.data.toString())))
+          } else if (
+                    (event.section === "system" && event.method === "ExtrinsicFailed")
+                    &&
+                    (JSON.parse(event.data.toString())[0].Module.index = module_index)
+                    ){
+            unsubscribe()
+            resolve(new EventResult(ExtrinsicResult.ExtrinsicFailed, JSON.parse(event.data.toString())[0].Module.error));
+          }
+        })
+      setTimeout(() => resolve(new EventResult(ExtrinsicResult.ExtrinsicUndefined, 'TimedOut')), 20000);
     })
   })
 }
 
 // for testing
-export const getUserEventResult = (section: any, method: any, module_index: any, stringIdentifier : string) => {
+export const getUserEventResult = (section: any, method: any, module_index: any, stringIdentifier : string = '') => {
   const api = getApi()
 
   return new Promise<EventResult>(async (resolve, reject) => {

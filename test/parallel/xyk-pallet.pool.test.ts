@@ -1,5 +1,5 @@
 import {getApi, initApi} from "../../utils/api";
-import { getBalanceOfPool, getLiquidityAssetId, getAssetSupply, transferAsset, createPool} from '../../utils/tx'
+import { getBalanceOfPool, getLiquidityAssetId, getAssetSupply, createPool} from '../../utils/tx'
 import {waitNewBlock, ExtrinsicResult, getUserEventResult} from '../../utils/eventListeners'
 import BN from 'bn.js'
 import { Keyring } from '@polkadot/api'
