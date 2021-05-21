@@ -76,6 +76,7 @@ describe('xyk-pallet - Pool tests: createPool Errors:', () => {
 	});
 
 	test('Try Sell more assets than owned', async () => {
+		await waitNewBlock();
 		[firstCurrency, secondCurrency] = await Assets.setupUserWithCurrencies(testUser1, 2, [defaultCurrecyValue,defaultCurrecyValue +1], sudo);
 		await testUser1.setBalance(sudo);
 		await testUser1.refreshAmounts(AssetWallet.BEFORE);
