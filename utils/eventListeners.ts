@@ -74,6 +74,7 @@ export const getUserEventResult = (section: any, method: any, module_index: any,
           resolve(new EventResult(ExtrinsicResult.ExtrinsicFailed, JSON.parse(event.data.toString())[0].Module.error));
 				}
       })
+      setTimeout(() => resolve(new EventResult(ExtrinsicResult.ExtrinsicUndefined, 'TimedOut')), 20000);
     })
   })
 }
