@@ -33,6 +33,12 @@ export function validatePoolCreatedEvent(result : EventResult, userAddress : str
 
 }
 
+export function validateAssetsSwappedEvent(result : EventResult, userAddress : string,  firstCurrency : BN , first_asset_amount : BN, secondCurrency : BN, second_asset_amount : BN){
+	//validate the asset swapped created event contract.
+	validatePoolCreatedEvent(result, userAddress, firstCurrency, first_asset_amount, secondCurrency, second_asset_amount);
+}
+
+
 export async function validateStatusWhenPoolCreated(firstCurrency: BN, secondCurrency: BN, testUser1: User, pool_balance_before: BN[], total_liquidity_assets_before: BN, first_asset_amount:BN = new BN(50000), second_asset_amount:BN = new BN(50000)) {
 	var liquidity_asset_id = await getLiquidityAssetId(firstCurrency, secondCurrency);
 	var liquidity_assets_minted = first_asset_amount.add(second_asset_amount);
