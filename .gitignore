@@ -2,3 +2,7 @@ node_modules/
 .idea/
 build
 .env
+.vscode/settings.json
+.vscode/tasks.json
+yarn-error.log
+nonce.db

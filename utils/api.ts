@@ -2,6 +2,7 @@ import { ApiPromise, WsProvider } from '@polkadot/api'
 
 export let api: ApiPromise | null = null
 
+const uri = process.env.API_URL ? process.env.API_URL: 'ws://127.0.0.1:9944';
 export const getApi = () => {
   if (!api) {
     throw new Error('Api not initialized')
@@ -11,7 +12,7 @@ export const getApi = () => {
 
 export const initApi = async () => {
   // const wsProvider = new WsProvider(process.env.API_URL || 'ws://mangata-node:9944')
-  const wsProvider = new WsProvider('ws://127.0.0.1:9944')
+  const wsProvider = new WsProvider(uri)
   api = await ApiPromise.create({
     provider: wsProvider,
     rpc: {
@@ -47,6 +48,24 @@ export const initApi = async () => {
             },
             {
               name: 'sell_amount',
+              type: 'Balance',
+            },
+          ],
+          type: 'RpcResult<Balance>',
+        },
+        get_burn_amount: {
+          description: '',
+          params: [
+            {
+              name: 'first_asset_id',
+              type: 'TokenId',
+            },
+            {
+              name: 'second_asset_id',
+              type: 'TokenId',
+            },
+            {
+              name: 'liquidity_asset_amount',
               type: 'Balance',
             },
           ],

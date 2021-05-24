@@ -1,0 +1,150 @@
+import {getApi, initApi} from "../../utils/api";
+import { getBalanceOfPool, getLiquidityAssetId, getAssetSupply, transferAsset, createPool} from '../../utils/tx'
+import {waitNewBlock, ExtrinsicResult, getUserEventResult} from '../../utils/eventListeners'
+import BN from 'bn.js'
+import { Keyring } from '@polkadot/api'
+import {AssetWallet, User} from "../../utils/User";
+import { validateAssetsWithValues, validateEmptyAssets } from "../../utils/validators";
+import { Assets } from "../../utils/Assets";
+
+
+jest.spyOn(console, 'log').mockImplementation(jest.fn());
+jest.setTimeout(1500000);
+process.env.NODE_ENV = 'test';
+
+let testUser1 : User;
+let testUser2 : User;
+let pallet : User;
+
+let keyring : Keyring;
+let firstCurrency :BN;
+let secondCurrency :BN;
+
+// Assuming the pallet's AccountId
+const pallet_address = process.env.TEST_PALLET_ADDRESS ? process.env.TEST_PALLET_ADDRESS : '';
+const defaultCurrecyValue = 250000;
+
+beforeAll( async () => {
+	try {
+		getApi();
+	  } catch(e) {
+		await initApi();
+	}
+
+})
+
+beforeEach( async () => {
+	await waitNewBlock();
+	keyring = new Keyring({ type: 'sr25519' });
+
+	// setup users
+	testUser1 = new User(keyring);
+	testUser2 = new User(keyring);
+	// build Maciatko, he is sudo. :S
+	const sudo = new User(keyring, '//Maciatko');
+	
+	// setup Pallet.
+	pallet = new User(keyring);
+	pallet.addFromAddress(keyring,pallet_address);
+	
+	//add two curerncies and balance to testUser:
+	[firstCurrency, secondCurrency] = await Assets.setupUserWithCurrencies(testUser1, 2, [defaultCurrecyValue,defaultCurrecyValue +1], sudo);
+	await testUser1.setBalance(sudo);
+	
+	// add users to pair.
+	keyring.addPair(testUser1.keyRingPair);
+	keyring.addPair(testUser2.keyRingPair);
+	keyring.addPair(sudo.keyRingPair);
+	keyring.addPair(pallet.keyRingPair);
+
+	// check users accounts.
+	await waitNewBlock();
+	pallet.addAssets([firstCurrency, secondCurrency]);
+	testUser2.addAssets([firstCurrency, secondCurrency]);
+	await pallet.refreshAmounts(AssetWallet.BEFORE);
+	await testUser1.refreshAmounts(AssetWallet.BEFORE);
+	await testUser2.refreshAmounts(AssetWallet.BEFORE);
+
+	validateAssetsWithValues([testUser1.getAsset(firstCurrency)?.amountBefore!,testUser1.getAsset(secondCurrency)?.amountBefore! ], [defaultCurrecyValue, defaultCurrecyValue+1]);
+	validateEmptyAssets([testUser2.getAsset(firstCurrency)?.amountBefore!,testUser2.getAsset(secondCurrency)?.amountBefore!]);
+});
+
+test('xyk-pallet - Pool tests: createPool', async () => {
+	
+	const pool_balance_before = [new BN(0), new BN(0)];
+	const total_liquidity_assets_before = new BN(0);
+
+	let first_asset_amount = new BN(50000);
+	let second_asset_amount = new BN(50000);
+	
+  	console.log("testUser1: creating pool " + firstCurrency + " - " + secondCurrency);
+  	let eventPromise = getUserEventResult("xyk","PoolCreated", 14, testUser1.keyRingPair.address);
+  	createPool(testUser1.keyRingPair, firstCurrency, first_asset_amount, secondCurrency, second_asset_amount);
+  	let eventResponse = await eventPromise;
+	expect(eventResponse.state).toEqual(ExtrinsicResult.ExtrinsicSuccess);
+
+	let liquidity_asset_id = await getLiquidityAssetId(firstCurrency, secondCurrency);
+	let liquidity_assets_minted = first_asset_amount.add(second_asset_amount);
+
+	testUser1.addAsset(liquidity_asset_id, new BN(0));
+	testUser2.addAsset(liquidity_asset_id, new BN(0));
+	//validate
+
+	await testUser1.refreshAmounts(AssetWallet.AFTER);
+	await testUser2.refreshAmounts(AssetWallet.AFTER);
+	await pallet.refreshAmounts(AssetWallet.AFTER);
+
+	await testUser1.validateWalletReduced(firstCurrency, first_asset_amount);
+	await testUser1.validateWalletReduced(secondCurrency, second_asset_amount);
+	await testUser1.validateWalletIncreased(liquidity_asset_id, liquidity_assets_minted);
+	
+	await testUser2.validateWalletsUnmodified();
+
+	await pallet.validateWalletIncreased(firstCurrency, first_asset_amount);
+	await pallet.validateWalletIncreased(secondCurrency, second_asset_amount);
+
+	//TODO: pending to validate.
+	let pool_balance = await getBalanceOfPool(firstCurrency, secondCurrency);
+	expect	([	pool_balance_before[0].add(first_asset_amount),	
+				pool_balance_before[1].add(second_asset_amount)	])
+	.toEqual(pool_balance);
+
+	let total_liquidity_assets = await getAssetSupply(liquidity_asset_id);
+	expect(total_liquidity_assets_before.add(liquidity_assets_minted))
+	.toEqual(total_liquidity_assets);
+
+});
+
+test('xyk-pallet - AssetsOperation: transferAsset', async() => {
+    //Refactor Note: [Missing Wallet assert?] Did not considered creating a liquity asset. Transaction does nothing with it.
+	let pool_balance_before = await getBalanceOfPool(firstCurrency, secondCurrency);
+	let amount = new BN(100000);
+	console.log("testUser1: transfering asset " + firstCurrency + " to testUser2");
+
+	const eventPromise = getUserEventResult("tokens", "Transferred", 12, testUser1.keyRingPair.address);
+	transferAsset(testUser1.keyRingPair, firstCurrency, testUser2.keyRingPair.address, amount);
+	const eventResponse = await eventPromise;
+	expect(eventResponse.state).toEqual(ExtrinsicResult.ExtrinsicSuccess);
+
+	await testUser1.refreshAmounts(AssetWallet.AFTER);
+	await testUser2.refreshAmounts(AssetWallet.AFTER);
+	await pallet.refreshAmounts(AssetWallet.AFTER);
+
+	testUser1.validateWalletReduced(firstCurrency, amount);
+	testUser1.validateWalletIncreased(secondCurrency,new BN(0));
+
+	testUser2.validateWalletIncreased(firstCurrency, amount);
+	testUser1.validateWalletIncreased(secondCurrency,new BN(0));
+
+	let pool_balance = await getBalanceOfPool(firstCurrency, secondCurrency);
+	expect	(pool_balance_before)
+	.toEqual(pool_balance);
+
+
+});
+
+
+
+
+
+

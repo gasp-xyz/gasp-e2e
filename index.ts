@@ -1,6 +1,5 @@
 import {getApi, initApi} from "./utils/api";
 
-import BN from 'bn.js'
 require('dotenv').config()
 
 
