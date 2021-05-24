@@ -16,7 +16,7 @@ var first_asset_amount = new BN(50000);
 var second_asset_amount = new BN(50000);
 const defaultCurrecyValue = 250000;
 
-describe('xyk-pallet - Pool tests: SellAsset Errors:', () => {
+describe('xyk-pallet - Sell assets tests: SellAsset Errors:', () => {
 	
 	var testUser1 : User;
 	var sudo : User;
@@ -25,7 +25,6 @@ describe('xyk-pallet - Pool tests: SellAsset Errors:', () => {
 	var firstCurrency :BN;
 	var secondCurrency :BN;
 
-	//creating pool
 	const pool_balance_before = [new BN(0), new BN(0)];
 
 	beforeAll( async () => {
@@ -51,6 +50,7 @@ describe('xyk-pallet - Pool tests: SellAsset Errors:', () => {
 		keyring.addPair(sudo.keyRingPair);
 
 	});
+
 	test('Sell assets that does not belong to any pool', async () => {
 		//add two curerncies and balance to testUser:
 		[firstCurrency, secondCurrency] = await Assets.setupUserWithCurrencies(testUser1, 2, [defaultCurrecyValue,defaultCurrecyValue +1], sudo);
@@ -75,7 +75,7 @@ describe('xyk-pallet - Pool tests: SellAsset Errors:', () => {
 
 	});
 
-	test('Try Sell more assets than owned', async () => {
+	test('Try sell more assets than owned', async () => {
 		await waitNewBlock();
 		[firstCurrency, secondCurrency] = await Assets.setupUserWithCurrencies(testUser1, 2, [defaultCurrecyValue,defaultCurrecyValue +1], sudo);
 		await testUser1.setBalance(sudo);
@@ -158,7 +158,7 @@ describe('xyk-pallet - Pool tests: SellAsset Errors:', () => {
 });
 
 
-describe('xyk-pallet - Pool tests: Selling Assets you can', () => {
+describe('xyk-pallet - Sell assets tests: Selling Assets you can', () => {
 	
 	var testUser1 : User;
 	var sudo : User;
