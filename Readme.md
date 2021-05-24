@@ -5,7 +5,7 @@ This project has been created to test individual and combined API functionalitie
 ###  How to setup
 1. Install node ( v14.16.1 )
 2. Clone the code
-3. Run `yarn add package.json` in the root folder.
+3. Run `yarn` in the root folder.
 4. Install Jest test framework globally. `yarn global add  jest -g `
 ---
 ###  How to build
