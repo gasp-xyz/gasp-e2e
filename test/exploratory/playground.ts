@@ -8,11 +8,12 @@ import { Assets } from "../../utils/Assets";
 
 
 jest.spyOn(console, 'log').mockImplementation(jest.fn());
-jest.setTimeout(1500000000);
+jest.setTimeout(150000);
 process.env.NODE_ENV = 'test';
 
 //The idea of this is to use it as a playground, so whenever its needed to test any specifics,
 // we can setup the specific scenario and test.
+// always skip the test suite to avoid long test executions. 
 describe.skip('Playground', () => {
 	
 	var testUser1 : User;
