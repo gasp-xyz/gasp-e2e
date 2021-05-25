@@ -92,6 +92,7 @@ export class User {
     }
 
     async mint(assetId: BN, user: User, amount: BN) {
+        await waitNewBlock();
         const eventPromise = getUserEventResult("tokens", "Minted", 14, user.keyRingPair.address);
         mintAsset(this.keyRingPair, assetId, user.keyRingPair.address, amount)
         const eventResult = await eventPromise;
@@ -134,13 +135,10 @@ export class User {
     }
 
     async setBalance(sudo : User, amountFree : number = Math.pow(10,11), amountReserved : number = Math.pow(10,11)) {
-       
-        let eventPromise = getUserEventResult("balances","Endowed", 14, this.keyRingPair.address);
+        await waitNewBlock();
+        let eventPromise = getUserEventResult("balances","BalanceSet", 14, this.keyRingPair.address);
         await setBalance(sudo.keyRingPair,this.keyRingPair.address, amountFree, amountReserved);
         await eventPromise;
-        eventPromise = getUserEventResult("balances","BalanceSet", 14, this.keyRingPair.address);
-        await eventPromise;
-
         await waitNewBlock();
         
     }

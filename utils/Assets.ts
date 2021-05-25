@@ -36,6 +36,7 @@ export class Assets {
             currencies.push(currencyId);
             user.addAsset(currencyId,new BN(value[currency]));
         }
+        await waitNewBlock();
         return currencies;
     }
 
