@@ -5,6 +5,7 @@ import BN from 'bn.js'
 import { Keyring } from '@polkadot/api'
 import {AssetWallet, User} from "../../utils/User";
 import { Assets } from "../../utils/Assets";
+import { getEnvironmentRequiredVars } from "../../utils/utils";
 
 
 jest.spyOn(console, 'log').mockImplementation(jest.fn());
@@ -20,8 +21,7 @@ let firstCurrency :BN;
 let secondCurrency :BN;
 let liquidityAssetId: BN;
 
-// Assuming the pallet's AccountId
-const pallet_address = process.env.TEST_PALLET_ADDRESS ? process.env.TEST_PALLET_ADDRESS : '';
+const {pallet: pallet_address,sudo:sudoUserName} = getEnvironmentRequiredVars();
 const defaultCurrecyValue = 250000;
 
 beforeAll( async () => {
@@ -41,7 +41,7 @@ beforeEach( async () => {
 	testUser1 = new User(keyring);
 	testUser2 = new User(keyring);
 	// build Maciatko, he is sudo. :S
-	const sudo = new User(keyring, '//Maciatko');
+	const sudo = new User(keyring, sudoUserName);
 	
 	// setup Pallet.
 	pallet = new User(keyring);

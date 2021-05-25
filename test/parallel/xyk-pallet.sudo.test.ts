@@ -5,10 +5,13 @@ import BN from 'bn.js'
 import { Keyring } from '@polkadot/api'
 import {User} from "../../utils/User";
 import { validateTransactionSucessful } from "../../utils/validators";
+import { getEnvironmentRequiredVars } from "../../utils/utils";
 
 jest.spyOn(console, 'log').mockImplementation(jest.fn());
 jest.setTimeout(1500000);
 process.env.NODE_ENV = 'test';
+const {sudo:sudoUserName} = getEnvironmentRequiredVars();
+
 
 let testUser : User;
 let keyring : Keyring;
@@ -29,7 +32,7 @@ beforeEach( async () => {
 	// setup users
 	testUser = new User(keyring);
 	// build charlie, he is sudo. :S
-	const sudo = new User(keyring, '//Maciatko');
+	const sudo = new User(keyring, sudoUserName);
 	// add users to pair.
 	keyring.addPair(testUser.keyRingPair);
 	keyring.addPair(sudo.keyRingPair);

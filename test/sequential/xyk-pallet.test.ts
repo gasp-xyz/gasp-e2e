@@ -3,8 +3,11 @@ import { calcuate_mint_liquidity_price_local, calcuate_burn_liquidity_price_loca
 import {waitNewBlock, getUserEventResult, ExtrinsicResult} from '../../utils/eventListeners'
 import BN from 'bn.js'
 import { Keyring } from '@polkadot/api'
+import { getEnvironmentRequiredVars } from "../../utils/utils";
 
 jest.spyOn(console, 'log').mockImplementation(jest.fn());
+const {pallet: pallet_address,sudo:sudoUserName} = getEnvironmentRequiredVars();
+
 jest.setTimeout(1500000);
 process.env.NODE_ENV = 'test';
 
@@ -19,7 +22,7 @@ test('xyk-pallet: Happy case scenario', async () => {
 	const keyring = new Keyring({ type: 'sr25519' });
   const alice = keyring.addFromUri('//Alice');
   const bob = keyring.addFromUri('//Bob');
-  keyring.addFromUri('//Maciatko');
+  keyring.addFromUri(sudoUserName);
 
   let pool_balance_before;
   let total_liquidity_assets_before;
@@ -522,9 +525,7 @@ test('xyk-pallet: Liquidity sufficiency scenario', async () => {
 	const keyring = new Keyring({ type: 'sr25519' });
   const alice = keyring.addFromUri('//Alice');
   const bob = keyring.addFromUri('//Bob');
-  keyring.addFromUri('//Maciatko');
-	// Assuming the pallet's AccountId
-	const pallet_address = "5EYCAe5XGPRojsCSi9p1ZZQ5qgeJGFcTxPxrsFRzkASu6bT2"
+  keyring.addFromUri(sudoUserName);
 
   const nextAssetId = await getNextAssetId();
   const firstAssetId = new BN(nextAssetId.toString());
