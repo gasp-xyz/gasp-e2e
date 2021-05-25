@@ -41,7 +41,6 @@ beforeEach( async () => {
 	// setup users
 	testUser1 = new User(keyring);
 	testUser2 = new User(keyring);
-	// build Maciatko, he is sudo. :S
 	const sudo = new User(keyring, sudoUserName);
 	
 	// setup Pallet.

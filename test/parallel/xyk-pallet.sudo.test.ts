@@ -31,7 +31,6 @@ beforeEach( async () => {
 
 	// setup users
 	testUser = new User(keyring);
-	// build charlie, he is sudo. :S
 	const sudo = new User(keyring, sudoUserName);
 	// add users to pair.
 	keyring.addPair(testUser.keyRingPair);

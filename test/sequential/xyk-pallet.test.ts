@@ -39,7 +39,6 @@ test('xyk-pallet: Happy case scenario', async () => {
 
 	await waitNewBlock();
 
-	// Sudo requies alice as key.
 	console.info("Sudo: issuing asset " + firstAssetId + " to Alice");
 	let eventPromise = getUserEventResult("tokens","Issued", 12, alice.address);
 	sudoIssueAsset(sudoPair, new BN(220000), alice.address);
@@ -537,7 +536,6 @@ test('xyk-pallet: Liquidity sufficiency scenario', async () => {
 	let eventPromise;
 	await waitNewBlock();
 
-	// Sudo requies alice as key.
 	console.info("Sudo: issuing asset " + firstAssetId + " to Alice");
 	eventPromise = getUserEventResult("tokens","Issued", 12, alice.address);
 	sudoIssueAsset(sudoPair, new BN(200000), alice.address);

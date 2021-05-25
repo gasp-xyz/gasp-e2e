@@ -44,7 +44,6 @@ describe('xyk-pallet - Pool tests: createPool Errors:', () => {
 		// setup users
 		testUser1 = new User(keyring);
 	
-		// build Maciatko, he is sudo. :S
 		sudo = new User(keyring, sudoUserName);
 		
 		//add two curerncies and balance to testUser:
