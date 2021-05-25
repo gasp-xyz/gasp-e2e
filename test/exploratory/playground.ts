@@ -8,12 +8,13 @@ import { Assets } from "../../utils/Assets";
 
 
 jest.spyOn(console, 'log').mockImplementation(jest.fn());
-jest.setTimeout(150000);
+jest.setTimeout(15000000000);
 process.env.NODE_ENV = 'test';
 
 //The idea of this is to use it as a playground, so whenever its needed to test any specifics,
 // we can setup the specific scenario and test.
-// always skip the test suite to avoid long test executions. 
+// always skip the test suite to avoid long test executions.
+// node ./node_modules/jest/bin/jest.js test/exploratory/playground.ts --testRegex='.*' 
 describe.skip('Playground', () => {
 	
 	var testUser1 : User;
@@ -60,7 +61,7 @@ describe.skip('Playground', () => {
 		[firstCurrency, secondCurrency] = await Assets.setupUserWithCurrencies(testUser1, 2, [10000000,10000000], sudo);
 		await testUser1.setBalance(sudo);
 		await signSendAndWaitToFinish( 
-			api?.tx.xyk.createPool(firstCurrency, 10000, secondCurrency, 1), 
+			api?.tx.xyk.createPool(firstCurrency, 1, secondCurrency, 1), 
 			testUser1.keyRingPair 
 		);
 

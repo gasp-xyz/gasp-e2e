@@ -94,6 +94,25 @@ test('xyk-pallet - User Balance - Selling an asset does not require free balance
 	expect(exception).toBeFalsy();
 });
 
+test('xyk-pallet - User Balance - Buying an asset does not require free balance', async () => {
+	let exception = false;
+	const api = getApi();
+	testUser1.refreshAmounts(AssetWallet.BEFORE);
+	let amountInWallet = testUser1.getAsset(firstCurrency)?.amountBefore!;
+	await expect( 
+		signTx( 
+			api.tx.xyk.buyAsset(firstCurrency, secondCurrency, new BN(1) , amountInWallet),
+			testUser1.keyRingPair,
+			await  getCurrentNonce(testUser1.keyRingPair.address))
+			.catch((reason) => {
+				exception = true;
+				throw new Error(reason);
+		})
+	).resolves.toBeUndefined();
+	expect(exception).toBeFalsy();
+});
+
+
 
 afterEach(async () => {
 
