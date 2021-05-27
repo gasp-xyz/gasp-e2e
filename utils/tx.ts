@@ -1,9 +1,42 @@
 import { AddressOrPair, SubmittableExtrinsic  } from '@polkadot/api/types'
+import { KeyringPair } from '@polkadot/keyring/types';
 import { getApi } from './api'
 import BN from 'bn.js'
 import { env } from 'process'
 import { SudoDB } from './SudoDB';
 import {AccountData} from '@polkadot/types/interfaces/balances'
+
+export async function signSendAndWaitToFinish( fun : SubmittableExtrinsic<'promise'> | undefined, account : KeyringPair ){
+  const nonce = await getCurrentNonce(account.address);
+  return new Promise( resolve => {
+    fun!
+      .signAndSend(
+        account , 
+        { nonce }, 
+        ( result ) => {
+          
+          if(result.isError){
+            resolve(result.toHuman());
+          }
+          console.info( JSON.stringify(result.toHuman()) );
+          if (result.status.isInBlock || result.status.isFinalized) {
+            result.events.forEach( e => {
+              console.info( e.toString() );
+            });
+    
+          }
+          if(result.status.isFinalized){
+            resolve(result.status.toHuman());
+          }
+          
+        });
+    }).catch( (err) => {
+      console.error(err)
+    })
+}
+
+
+
 export const signTx = async (
   tx: SubmittableExtrinsic<'promise'>,
   address: AddressOrPair,
@@ -168,14 +201,14 @@ export const balanceTransfer = async (account: any, target:any, amount: number) 
   )
 }
 
-export const setBalance = async (sudoAccount: any, target:any, amount: number) => {
+export const setBalance = async (sudoAccount: any, target:any, amountFree: number, amountReserved: number) => {
 
   const api = getApi();
   const nonce = await SudoDB.getInstance().getSudoNonce(sudoAccount.address);
   console.info(`W[${env.JEST_WORKER_ID}] - sudoNonce: ${nonce} `);
   signTx(
 		api.tx.sudo.sudo(
-      api.tx.balances.setBalance(target, amount, amount)
+      api.tx.balances.setBalance(target, amountFree, amountReserved)
       ),
     sudoAccount,
     nonce
@@ -204,6 +237,17 @@ export const transferAsset = async (account: any, asset_id:BN, target: any, amou
     api.tx.tokens.transfer(target, asset_id, amount),
     account,
     await getCurrentNonce(account.address)
+  )
+}
+
+export const mintAsset = async (account: any, asset_id:BN, target: any, amount: BN) => {
+  const api = getApi();
+  signTx(
+    api.tx.sudo.sudo(
+      api.tx.tokens.mint(asset_id, target, amount),
+      ),
+    account,
+    await getCurrentNonce(account.address)    
   )
 }
 

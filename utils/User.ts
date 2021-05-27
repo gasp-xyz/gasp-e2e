@@ -4,7 +4,7 @@ import { KeyringPair } from '@polkadot/keyring/types';
 import BN from 'bn.js';
 import { v4 as uuid } from 'uuid';
 import { ExtrinsicResult, getUserEventResult, waitNewBlock } from './eventListeners';
-import { balanceTransfer, buyAsset, createPool, getAccountInfo, getUserAssets, sellAsset, setBalance } from './tx';
+import { balanceTransfer, buyAsset, createPool, getAccountInfo, getUserAssets, mintAsset, sellAsset, setBalance } from './tx';
 
 export enum AssetWallet
 {
@@ -13,6 +13,8 @@ export enum AssetWallet
 }
 
 export class User {
+
+
 
     /**
      * class that represent the user and wallet.
@@ -85,6 +87,15 @@ export class User {
         expect(eventResult.state).toEqual(ExtrinsicResult.ExtrinsicSuccess);
         await waitNewBlock();
     }
+
+    async mint(assetId: BN, user: User, amount: BN) {
+        const eventPromise = getUserEventResult("tokens", "Minted", 14, user.keyRingPair.address);
+        mintAsset(this.keyRingPair, assetId, user.keyRingPair.address, amount)
+        const eventResult = await eventPromise;
+        expect(eventResult.state).toEqual(ExtrinsicResult.ExtrinsicSuccess);
+        await waitNewBlock();
+
+	}
     
     async sellAssets(soldAssetId : BN, boughtAssetId: BN ,amount: BN) {
     
@@ -119,10 +130,10 @@ export class User {
 
     }
 
-    async setBalance(sudo : User, amount : number = Math.pow(10,11)) {
+    async setBalance(sudo : User, amountFree : number = Math.pow(10,11), amountReserved : number = Math.pow(10,11)) {
        
         let eventPromise = getUserEventResult("balances","Endowed", 14, this.keyRingPair.address);
-        await setBalance(sudo.keyRingPair,this.keyRingPair.address, amount);
+        await setBalance(sudo.keyRingPair,this.keyRingPair.address, amountFree, amountReserved);
         await eventPromise;
         eventPromise = getUserEventResult("balances","BalanceSet", 14, this.keyRingPair.address);
         await eventPromise;
