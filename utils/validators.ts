@@ -1,6 +1,6 @@
 import BN from "bn.js";
 import { EventResult, ExtrinsicResult } from "./eventListeners";
-import { getAssetSupply, getBalanceOfPool, getLiquidityAssetId } from "./tx";
+import { getAssetSupply, getBalanceOfPool, getLiquidityAssetId, getTreasury, getTreasuryBurn } from "./tx";
 import { AssetWallet, User } from "./User";
 
 export function validateTransactionSucessful(eventResult: EventResult, tokensAmount: number, user : User) {
@@ -36,6 +36,18 @@ export function validatePoolCreatedEvent(result : EventResult, userAddress : str
 export function validateAssetsSwappedEvent(result : EventResult, userAddress : string,  firstCurrency : BN , first_asset_amount : BN, secondCurrency : BN, second_asset_amount : BN){
 	//validate the asset swapped created event contract.
 	validatePoolCreatedEvent(result, userAddress, firstCurrency, first_asset_amount, secondCurrency, second_asset_amount);
+}
+
+export function validateMintedLiquidityEvent(result: EventResult, address: string, firstCurrency: BN, firstCurerncyAmount: BN, secondCurrency: BN, secondCurrencyAmount: BN , liquidityAssetId: BN) {
+	const rawData = result.data;
+	expect(rawData).not.toBeNull();
+	expect(rawData[0]).toEqual(address);
+	expect(rawData[1]).toEqual(parseInt(firstCurrency.toString()));
+	expect(rawData[2].toString()).toEqual(firstCurerncyAmount.toString());
+	expect(rawData[3]).toEqual(parseInt(secondCurrency.toString()));
+	expect(rawData[4].toString()).toEqual(secondCurrencyAmount.toString());
+	expect(rawData[5].toString()).toEqual(liquidityAssetId.toString());
+	expect(rawData[6].toString()).toEqual(secondCurrencyAmount.toString());
 }
 
 
@@ -77,3 +89,14 @@ export async function validateUnmodified(firstCurrency: BN, secondCurrency: BN, 
 	expect([pool_balance_before[0],pool_balance_before[1]]).toEqual([balance[1], balance[0]]);
 
 }
+
+export async function validateTreasuryAmountsEqual(assetId : BN, treasuryExpectation: string[]){
+	const [expectedTreasury, expectedTreasuryBurn] = treasuryExpectation;
+	const treasuryAsset = await getTreasury(assetId);
+	const treasuryBurn = await getTreasuryBurn(assetId);
+	
+	expect(treasuryAsset).toEqual(expectedTreasury);
+	expect(treasuryBurn).toEqual(expectedTreasuryBurn);
+
+}
+

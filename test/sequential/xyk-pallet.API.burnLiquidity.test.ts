@@ -16,7 +16,7 @@ var firstAssetAmount = new BN(50000);
 var secondAssetAmount = new BN(50000);
 const defaultCurrecyValue = 250000;
 
-describe('xyk-pallet - Mint liquidity tests: MintLiquidity Errors:', () => {
+describe.skip('xyk-pallet - Burn liquidity tests: BurnLiquidity Errors:', () => {
 	
 	var testUser1 : User;
 	var sudo : User;
@@ -52,7 +52,7 @@ describe('xyk-pallet - Mint liquidity tests: MintLiquidity Errors:', () => {
 
 	});
 
-	test('Mint liquidity when not enough assetY for minting Xamount', async () => {
+	test('Burn liquidity when not enough assetY for minting Xamount', async () => {
 		await waitNewBlock();
 		//Adding 1000 and 1 more than default. So the user when the pool is created has 1000,1.
 		[firstCurrency, secondCurrency] = await Assets.setupUserWithCurrencies(testUser1, 2, [defaultCurrecyValue + 1000,defaultCurrecyValue +1], sudo);
@@ -74,7 +74,7 @@ describe('xyk-pallet - Mint liquidity tests: MintLiquidity Errors:', () => {
 		validateUnmodified(firstCurrency,secondCurrency,testUser1,[new BN(defaultCurrecyValue), new BN(defaultCurrecyValue)]);
 
 	});
-	test('Mint liquidity when not enough assetX for minting Yamount', async () => {
+	test('Burn liquidity when not enough assetX for minting Yamount', async () => {
 		await waitNewBlock();
 		//Adding 1000 and 1 more than default. So the user when the pool is created has 1000,1.
 		[firstCurrency, secondCurrency] = await Assets.setupUserWithCurrencies(testUser1, 2, [defaultCurrecyValue + 1,defaultCurrecyValue +1000], sudo);
@@ -98,7 +98,7 @@ describe('xyk-pallet - Mint liquidity tests: MintLiquidity Errors:', () => {
 
 	});
 	
-	test('Mint liquidity assets that does not belong to any pool', async () => {
+	test.skip('Burn liquidity assets that does not belong to any pool', async () => {
 		//add two curerncies and balance to testUser:
 		[firstCurrency, secondCurrency] = await Assets.setupUserWithCurrencies(testUser1, 2, [defaultCurrecyValue,defaultCurrecyValue +1], sudo);
 		const [thirdCurrency]= await Assets.setupUserWithCurrencies(testUser1, 1, [defaultCurrecyValue], sudo);
@@ -130,7 +130,49 @@ describe('xyk-pallet - Mint liquidity tests: MintLiquidity Errors:', () => {
 
 	});
 
-	test('Mint liquidity more assets than I own', async () => {
+	test.skip('Burn liquidity  for more assets than the liquidity pool has issued', async () => {
+		await waitNewBlock();
+		[firstCurrency, secondCurrency] = await Assets.setupUserWithCurrencies(testUser1, 2, [defaultCurrecyValue,defaultCurrecyValue], sudo);
+		await testUser1.setBalance(sudo);
+		await testUser1.refreshAmounts(AssetWallet.BEFORE);
+		const poolAmountSecondCurrency = secondAssetAmount.div(new BN(2));
+		await signSendAndWaitToFinish( 
+			api?.tx.xyk.createPool(firstCurrency, firstAssetAmount, secondCurrency,poolAmountSecondCurrency), 
+			testUser1.keyRingPair 
+		);
+		await waitNewBlock();
+		await testUser1.refreshAmounts(AssetWallet.BEFORE);
+		
+		let eventPromise = getUserEventResult("xyk", "LiquidityMinted", 14, testUser1.keyRingPair.address);
+		mintLiquidity(testUser1.keyRingPair, firstCurrency, secondCurrency, testUser1.getAsset(firstCurrency)?.amountBefore.add(new BN(1))!);
+		let eventResponse = await eventPromise;
+		expect(eventResponse.state).toEqual(ExtrinsicResult.ExtrinsicFailed);
+		expect(eventResponse.data).toEqual(2);
+		await waitNewBlock();
+
+		//lets empty the second wallet assets.
+		let eventPromiseSell = getUserEventResult("xyk", "AssetsSwapped", 14, testUser1.keyRingPair.address);
+		await signSendAndWaitToFinish( 
+			api?.tx.xyk.sellAsset(secondCurrency, firstCurrency, testUser1.getAsset(secondCurrency)?.amountBefore!, new BN(0)),
+			testUser1.keyRingPair 
+		);
+		let eventResponseSell = await eventPromiseSell;
+		expect(eventResponseSell.state).toEqual(ExtrinsicResult.ExtrinsicSuccess);
+		await waitNewBlock();
+
+		//await testUser1.sellAssets(secondCurrency,firstCurrency,testUser1.getAsset(secondCurrency)?.amountBefore.sub(new BN(201000))!);
+		
+		await testUser1.refreshAmounts(AssetWallet.BEFORE);
+		eventPromise = getUserEventResult("xyk", "LiquidityMinted", 14, testUser1.keyRingPair.address);
+		mintLiquidity(testUser1.keyRingPair, firstCurrency, secondCurrency, testUser1.getAsset(firstCurrency)?.amountBefore.sub(new BN(1))!);
+		eventResponse = await eventPromise;
+		expect(eventResponse.state).toEqual(ExtrinsicResult.ExtrinsicFailed);
+		expect(eventResponse.data).toEqual(2);
+
+		validateUnmodified(firstCurrency,secondCurrency,testUser1,[firstAssetAmount, poolAmountSecondCurrency]);
+
+	});
+	test.skip('Burn someone else liquidities', async () => {
 		await waitNewBlock();
 		[firstCurrency, secondCurrency] = await Assets.setupUserWithCurrencies(testUser1, 2, [defaultCurrecyValue,defaultCurrecyValue], sudo);
 		await testUser1.setBalance(sudo);
@@ -177,7 +219,7 @@ describe('xyk-pallet - Mint liquidity tests: MintLiquidity Errors:', () => {
 });
 
 
-describe('xyk-pallet - Mint liquidity tests: with minting you can', () => {
+describe.skip('xyk-pallet - Burn liquidity tests: when burning liquidity you can', () => {
 	
 	var testUser1 : User;
 	var sudo : User;
@@ -212,7 +254,7 @@ describe('xyk-pallet - Mint liquidity tests: with minting you can', () => {
 
 	});
 
-	test('Add all the wallet assets to the pool', async () => {
+	test.skip('Burning all liquidities destroys the pool', async () => {
 		//valdiated with Gleb the rounding issue to preserve the x*y =k
 		const roundingIssue =  new BN(1);
 		await waitNewBlock();
@@ -247,7 +289,91 @@ describe('xyk-pallet - Mint liquidity tests: with minting you can', () => {
 		
 	});
 	
-	test('Expect an event when liquidirty is minted', async () => {
+	test.skip('Burning liquidities provides Burn and settle', async () => {
+
+		await waitNewBlock();
+		// The second currecy value is : defaultCurrecyValue, one to create the pool later, and the other one because of the rounding issue.
+		[firstCurrency, secondCurrency] = await Assets.setupUserWithCurrencies(testUser1, 2, [defaultCurrecyValue,defaultCurrecyValue], sudo);
+		await testUser1.setBalance(sudo);
+		const amounttoThePool = new BN(defaultCurrecyValue).div(new BN(2));
+		await signSendAndWaitToFinish( 
+			api?.tx.xyk.createPool(firstCurrency, amounttoThePool, secondCurrency,amounttoThePool), 
+			testUser1.keyRingPair 
+		);
+		const liquidityAssetId = await getLiquidityAssetId(firstCurrency, secondCurrency);
+		testUser1.addAsset(liquidityAssetId);
+
+		var poolBalanceWhenCreated = await getBalanceOfPool(firstCurrency, secondCurrency);
+		await waitNewBlock();
+		
+		await testUser1.refreshAmounts(AssetWallet.BEFORE);
+		const injectedValue = amounttoThePool.div(new BN(2));
+
+		const eventPromise = getUserEventResult("xyk", "LiquidityMinted", 14, testUser1.keyRingPair.address);
+		mintLiquidity(testUser1.keyRingPair, firstCurrency, secondCurrency, injectedValue);
+		const eventResponse = await eventPromise;
+		expect(eventResponse.state).toEqual(ExtrinsicResult.ExtrinsicSuccess);
+
+		await testUser1.refreshAmounts(AssetWallet.AFTER);
+		var poolBalanceAfterMinting = await getBalanceOfPool(firstCurrency, secondCurrency);
+		const secondCurrencyAmountLost = testUser1.getAsset(secondCurrency)?.amountBefore.sub(testUser1.getAsset(secondCurrency)?.amountAfter!)!;
+		validateMintedLiquidityEvent(eventResponse, testUser1.keyRingPair.address, firstCurrency,injectedValue, secondCurrency, secondCurrencyAmountLost, liquidityAssetId )
+		
+		expect([poolBalanceWhenCreated[0].add(injectedValue), poolBalanceWhenCreated[1].add(secondCurrencyAmountLost)])
+		.toEqual(poolBalanceAfterMinting);
+
+		testUser1.validateWalletReduced(firstCurrency,injectedValue);
+		testUser1.validateWalletReduced(secondCurrency, secondCurrencyAmountLost);
+		// TODO: miss that rounding value. to check with Gleb or Stano.
+		testUser1.validateWalletIncreased(liquidityAssetId,new BN(injectedValue).mul(new BN(2)));
+		await validateTreasuryAmountsEqual(firstCurrency,['0','0']);
+		await validateTreasuryAmountsEqual(secondCurrency,['0','0']);
+
+	});
+
+	test.skip('Burning liquidities generates a Liquidity burned event', async () => {
+
+		await waitNewBlock();
+		// The second currecy value is : defaultCurrecyValue, one to create the pool later, and the other one because of the rounding issue.
+		[firstCurrency, secondCurrency] = await Assets.setupUserWithCurrencies(testUser1, 2, [defaultCurrecyValue,defaultCurrecyValue], sudo);
+		await testUser1.setBalance(sudo);
+		const amounttoThePool = new BN(defaultCurrecyValue).div(new BN(2));
+		await signSendAndWaitToFinish( 
+			api?.tx.xyk.createPool(firstCurrency, amounttoThePool, secondCurrency,amounttoThePool), 
+			testUser1.keyRingPair 
+		);
+		const liquidityAssetId = await getLiquidityAssetId(firstCurrency, secondCurrency);
+		testUser1.addAsset(liquidityAssetId);
+
+		var poolBalanceWhenCreated = await getBalanceOfPool(firstCurrency, secondCurrency);
+		await waitNewBlock();
+		
+		await testUser1.refreshAmounts(AssetWallet.BEFORE);
+		const injectedValue = amounttoThePool.div(new BN(2));
+
+		const eventPromise = getUserEventResult("xyk", "LiquidityMinted", 14, testUser1.keyRingPair.address);
+		mintLiquidity(testUser1.keyRingPair, firstCurrency, secondCurrency, injectedValue);
+		const eventResponse = await eventPromise;
+		expect(eventResponse.state).toEqual(ExtrinsicResult.ExtrinsicSuccess);
+
+		await testUser1.refreshAmounts(AssetWallet.AFTER);
+		var poolBalanceAfterMinting = await getBalanceOfPool(firstCurrency, secondCurrency);
+		const secondCurrencyAmountLost = testUser1.getAsset(secondCurrency)?.amountBefore.sub(testUser1.getAsset(secondCurrency)?.amountAfter!)!;
+		validateMintedLiquidityEvent(eventResponse, testUser1.keyRingPair.address, firstCurrency,injectedValue, secondCurrency, secondCurrencyAmountLost, liquidityAssetId )
+		
+		expect([poolBalanceWhenCreated[0].add(injectedValue), poolBalanceWhenCreated[1].add(secondCurrencyAmountLost)])
+		.toEqual(poolBalanceAfterMinting);
+
+		testUser1.validateWalletReduced(firstCurrency,injectedValue);
+		testUser1.validateWalletReduced(secondCurrency, secondCurrencyAmountLost);
+		// TODO: miss that rounding value. to check with Gleb or Stano.
+		testUser1.validateWalletIncreased(liquidityAssetId,new BN(injectedValue).mul(new BN(2)));
+		await validateTreasuryAmountsEqual(firstCurrency,['0','0']);
+		await validateTreasuryAmountsEqual(secondCurrency,['0','0']);
+
+	});
+
+	test.skip('Burning all liquidities  + do tx on the pool -> error?', async () => {
 
 		await waitNewBlock();
 		// The second currecy value is : defaultCurrecyValue, one to create the pool later, and the other one because of the rounding issue.

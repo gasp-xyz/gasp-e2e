@@ -242,12 +242,14 @@ export const transferAsset = async (account: any, asset_id:BN, target: any, amou
 
 export const mintAsset = async (account: any, asset_id:BN, target: any, amount: BN) => {
   const api = getApi();
+  const nonce = await SudoDB.getInstance().getSudoNonce(account.address);
+  console.info(`W[${env.JEST_WORKER_ID}] - sudoNonce: ${nonce} `);
   signTx(
     api.tx.sudo.sudo(
       api.tx.tokens.mint(asset_id, target, amount),
       ),
     account,
-    await getCurrentNonce(account.address)    
+    nonce   
   )
 }
 

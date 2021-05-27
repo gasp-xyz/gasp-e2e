@@ -4,7 +4,7 @@ import { KeyringPair } from '@polkadot/keyring/types';
 import BN from 'bn.js';
 import { v4 as uuid } from 'uuid';
 import { ExtrinsicResult, getUserEventResult, waitNewBlock } from './eventListeners';
-import { balanceTransfer, buyAsset, createPool, getAccountInfo, getUserAssets, mintAsset, sellAsset, setBalance } from './tx';
+import { balanceTransfer, buyAsset, createPool, getAccountInfo, getUserAssets, mintAsset, mintLiquidity, sellAsset, setBalance } from './tx';
 
 export enum AssetWallet
 {
@@ -13,9 +13,7 @@ export enum AssetWallet
 }
 
 export class User {
-
-
-
+	
     /**
      * class that represent the user and wallet.
      */
@@ -109,6 +107,14 @@ export class User {
         expect(eventResponse.state).toEqual(ExtrinsicResult.ExtrinsicSuccess);
         await waitNewBlock();
     }
+    async mintLiquidity(firstCurrency: BN, secondCurrency: BN, amount: BN) {
+        const eventPromise = getUserEventResult("xyk", "LiquidityMinted", 14, this.keyRingPair.address);
+		mintLiquidity(this.keyRingPair, firstCurrency, secondCurrency, amount);
+		const eventResponse = await eventPromise;
+		expect(eventResponse.state).toEqual(ExtrinsicResult.ExtrinsicSuccess);
+        await waitNewBlock();
+	}
+
     
     async createPoolToAsset(first_asset_amount: BN, second_asset_amount: BN, firstCurrency: BN, secondCurrency : BN) {
 
