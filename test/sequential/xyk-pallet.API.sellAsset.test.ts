@@ -152,7 +152,7 @@ describe('xyk-pallet - Sell assets tests: SellAsset Errors:', () => {
 		expect(eventResponse.state).toEqual(ExtrinsicResult.ExtrinsicFailed);
 		expect(eventResponse.data).toEqual(8); //InsufficientOutputAmount
 		
-		validateUnmodified(firstCurrency,secondCurrency,testUser1,[first_asset_amount, second_asset_amount.div(new BN(2))]);
+		await validateUnmodified(firstCurrency,secondCurrency,testUser1,[first_asset_amount, second_asset_amount.div(new BN(2))]);
 	});
 
 });

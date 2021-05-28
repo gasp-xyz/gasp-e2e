@@ -82,6 +82,7 @@ export class User {
     }
 
     async buyAssets( soldAssetId: BN, boughtAssetId: BN, amount: BN, maxExpected = new BN(1000000)) {
+        await waitNewBlock();
         const eventPromise = getUserEventResult("xyk", "AssetsSwapped", 14, this.keyRingPair.address);
         buyAsset(this.keyRingPair, soldAssetId, boughtAssetId, amount, maxExpected);
         const eventResult = await eventPromise;

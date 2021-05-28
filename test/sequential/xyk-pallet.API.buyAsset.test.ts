@@ -94,7 +94,7 @@ describe('xyk-pallet - Buy assets tests: BuyAssets Errors:', () => {
 		expect(eventResponse.state).toEqual(ExtrinsicResult.ExtrinsicFailed);
 		expect(eventResponse.data).toEqual(5);
 
-		validateUnmodified(firstCurrency,secondCurrency,testUser1,[firstAssetAmount, poolAmountSecondCurrency]);
+		await validateUnmodified(firstCurrency,secondCurrency,testUser1,[firstAssetAmount, poolAmountSecondCurrency]);
 
 	});
 
@@ -117,7 +117,7 @@ describe('xyk-pallet - Buy assets tests: BuyAssets Errors:', () => {
 		expect(eventResponse.state).toEqual(ExtrinsicResult.ExtrinsicFailed);
 		expect(eventResponse.data).toEqual(5);
 
-		validateUnmodified(firstCurrency,secondCurrency,testUser1,[firstAssetAmount, poolAmountSecondCurrency]);
+		await validateUnmodified(firstCurrency,secondCurrency,testUser1,[firstAssetAmount, poolAmountSecondCurrency]);
 
 	});
 
@@ -144,7 +144,7 @@ describe('xyk-pallet - Buy assets tests: BuyAssets Errors:', () => {
 		expect(eventResponse.state).toEqual(ExtrinsicResult.ExtrinsicFailed);
 		expect(eventResponse.data).toEqual(7);
 		
-		validateUnmodified(firstCurrency,secondCurrency,testUser1,[firstAssetAmount, secondAssetAmount.div(new BN(2))]);
+		await validateUnmodified(firstCurrency,secondCurrency,testUser1,[firstAssetAmount, secondAssetAmount.div(new BN(2))]);
 	});
 
 });

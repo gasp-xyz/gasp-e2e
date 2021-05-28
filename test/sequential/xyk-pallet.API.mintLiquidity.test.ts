@@ -71,7 +71,7 @@ describe('xyk-pallet - Mint liquidity tests: MintLiquidity Errors:', () => {
 		expect(eventResponse.state).toEqual(ExtrinsicResult.ExtrinsicFailed);
 		expect(eventResponse.data).toEqual(2);
 		await testUser1.refreshAmounts(AssetWallet.AFTER);
-		validateUnmodified(firstCurrency,secondCurrency,testUser1,[new BN(defaultCurrecyValue), new BN(defaultCurrecyValue)]);
+		await validateUnmodified(firstCurrency,secondCurrency,testUser1,[new BN(defaultCurrecyValue), new BN(defaultCurrecyValue)]);
 
 	});
 	test('Mint liquidity when not enough assetX for minting Yamount', async () => {
@@ -94,7 +94,7 @@ describe('xyk-pallet - Mint liquidity tests: MintLiquidity Errors:', () => {
 		expect(eventResponse.state).toEqual(ExtrinsicResult.ExtrinsicFailed);
 		expect(eventResponse.data).toEqual(2);
 
-		validateUnmodified(firstCurrency,secondCurrency,testUser1,[new BN(defaultCurrecyValue), new BN(defaultCurrecyValue)]);
+		await validateUnmodified(firstCurrency,secondCurrency,testUser1,[new BN(defaultCurrecyValue), new BN(defaultCurrecyValue)]);
 
 	});
 	
@@ -169,7 +169,7 @@ describe('xyk-pallet - Mint liquidity tests: MintLiquidity Errors:', () => {
 		expect(eventResponse.state).toEqual(ExtrinsicResult.ExtrinsicFailed);
 		expect(eventResponse.data).toEqual(2);
 
-		validateUnmodified(firstCurrency,secondCurrency,testUser1,[firstAssetAmount, poolAmountSecondCurrency]);
+		await validateUnmodified(firstCurrency,secondCurrency,testUser1,[firstAssetAmount, poolAmountSecondCurrency]);
 
 	});
 
