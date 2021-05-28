@@ -150,6 +150,8 @@ describe('xyk-pallet - Mint liquidity tests: MintLiquidity Errors:', () => {
 		expect(eventResponse.data).toEqual(2);
 		await waitNewBlock();
 
+		await validateUnmodified(firstCurrency,secondCurrency,testUser1,[firstAssetAmount, poolAmountSecondCurrency]);
+
 		//lets empty the second wallet assets.
 		let eventPromiseSell = getUserEventResult("xyk", "AssetsSwapped", 14, testUser1.keyRingPair.address);
 		await signSendAndWaitToFinish( 
@@ -159,7 +161,7 @@ describe('xyk-pallet - Mint liquidity tests: MintLiquidity Errors:', () => {
 		let eventResponseSell = await eventPromiseSell;
 		expect(eventResponseSell.state).toEqual(ExtrinsicResult.ExtrinsicSuccess);
 		await waitNewBlock();
-
+		var poolBalanceAfterSelling = await getBalanceOfPool(firstCurrency, secondCurrency);
 		//await testUser1.sellAssets(secondCurrency,firstCurrency,testUser1.getAsset(secondCurrency)?.amountBefore.sub(new BN(201000))!);
 		
 		await testUser1.refreshAmounts(AssetWallet.BEFORE);
@@ -169,7 +171,7 @@ describe('xyk-pallet - Mint liquidity tests: MintLiquidity Errors:', () => {
 		expect(eventResponse.state).toEqual(ExtrinsicResult.ExtrinsicFailed);
 		expect(eventResponse.data).toEqual(2);
 
-		await validateUnmodified(firstCurrency,secondCurrency,testUser1,[firstAssetAmount, poolAmountSecondCurrency]);
+		await validateUnmodified(firstCurrency,secondCurrency,testUser1,poolBalanceAfterSelling);
 
 	});
 
