@@ -144,7 +144,7 @@ export class User {
     async setBalance(sudo : User, amountFree : number = Math.pow(10,11), amountReserved : number = Math.pow(10,11)) {
         await waitNewBlock();
         let eventPromise = getUserEventResult("balances","BalanceSet", 14, this.keyRingPair.address);
-        await setBalance(sudo.keyRingPair,this.keyRingPair.address, amountFree, amountReserved);
+        setBalance(sudo.keyRingPair,this.keyRingPair.address, amountFree, amountReserved);
         await eventPromise;
         await waitNewBlock();
         
