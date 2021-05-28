@@ -98,7 +98,7 @@ test('xyk-pallet - User Balance - mint liquidity requires free balance', async (
 test('xyk-pallet - User Balance - Selling an asset does not require free balance', async () => {
 	let exception = false;
 	const api = getApi();
-	testUser1.refreshAmounts(AssetWallet.BEFORE);
+	await testUser1.refreshAmounts(AssetWallet.BEFORE);
 	let amountInWallet = testUser1.getAsset(firstCurrency)?.amountBefore!;
 	await expect( 
 		signTx( 
@@ -116,7 +116,7 @@ test('xyk-pallet - User Balance - Selling an asset does not require free balance
 test('xyk-pallet - User Balance - Buying an asset does not require free balance', async () => {
 	let exception = false;
 	const api = getApi();
-	testUser1.refreshAmounts(AssetWallet.BEFORE);
+	await testUser1.refreshAmounts(AssetWallet.BEFORE);
 	let amountInWallet = testUser1.getAsset(firstCurrency)?.amountBefore!;
 	await expect( 
 		signTx( 

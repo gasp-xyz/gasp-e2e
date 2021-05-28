@@ -134,16 +134,15 @@ describe('xyk-pallet - Buy assets tests: BuyAssets Errors:', () => {
 		await waitNewBlock();
 
 		let buyPriceLocal = await calculate_buy_price_rpc(firstAssetAmount, poolAmountSecondCurrency, poolAmountSecondCurrency.sub(new BN(1)));
-		
-		await testUser1.refreshAmounts(AssetWallet.BEFORE);
 		await sudo.mint(firstCurrency, testUser1,new BN(buyPriceLocal));
-		
+		await testUser1.refreshAmounts(AssetWallet.BEFORE);
 		let eventPromise = getUserEventResult("xyk", "AssetsSwapped", 14, testUser1.keyRingPair.address);
 		buyAsset(testUser1.keyRingPair, firstCurrency, secondCurrency, poolAmountSecondCurrency.sub(new BN(1)), buyPriceLocal.sub(new BN(1)));
 		let eventResponse =await eventPromise;
 		expect(eventResponse.state).toEqual(ExtrinsicResult.ExtrinsicFailed);
 		expect(eventResponse.data).toEqual(7);
 		
+		await testUser1.refreshAmounts(AssetWallet.AFTER);
 		await validateUnmodified(firstCurrency,secondCurrency,testUser1,[firstAssetAmount, secondAssetAmount.div(new BN(2))]);
 	});
 
