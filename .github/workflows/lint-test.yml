@@ -8,6 +8,8 @@ jobs:
   test:
     name: Test code quality and run tests
     runs-on: ubuntu-latest
+    env:
+      API_URL: 'ws://172.16.238.10:9944'
     steps:
       - uses: actions/checkout@v2
       - name: Install dependencies
@@ -16,6 +18,10 @@ jobs:
         run: yarn tsc-lint
       - name: ESLint code quality check
         run: yarn eslint
+      - name: Start node img.
+        run: docker-compose up -d
+        run: docker ps
+        run: yarn test-sequential-pool
 # tests are not ready to run in github.
 # TODO: Build image, export pallet address and run yarn test-parallel && yarn test-sequential
 #      - name: Run tests
