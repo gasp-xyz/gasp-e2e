@@ -26,6 +26,14 @@ jobs:
         run: docker ps
       - name: Run job
         run: yarn test-sequential-pool
+      
+      - name: Test Report
+        uses: dorny/test-reporter@v1
+        if: success() || failure()    # run this step even if previous step failed
+        with:
+          name: JEST Tests            # Name of the check run which will be created
+          path: reports/jest-*.xml    # Path to test results
+          reporter: jest-junit        # Format of test results
 # tests are not ready to run in github.
 # TODO: Build image, export pallet address and run yarn test-parallel && yarn test-sequential
 #      - name: Run tests
