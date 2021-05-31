@@ -26,7 +26,7 @@
     "test": "jest",
     "test-parallel": "rm nonce.db ; rm sudo.lock; jest test/parallel/* --verbose",
     "test-sequential": "rm nonce.db ; rm sudo.lock; jest test/sequential/* --verbose --runInBand",
-    "test-sequential-pool": "rm nonce.db ; rm sudo.lock; jest test/sequential/xyk-pallet.API.pool.test.ts --verbose --runInBand --ci --reporters=default --reporters=jest-junit",
+    "test-sequential-e2e": "rm nonce.db ; rm sudo.lock; jest test/sequential/xyk-pallet.test.ts --verbose --runInBand --ci --reporters=default --reporters=jest-junit",
     "tsc-lint": "tsc -noemit -p tsconfig.json",
     "eslint": "node_modules/.bin/eslint --max-warnings 0 . --ext .ts"
   },
