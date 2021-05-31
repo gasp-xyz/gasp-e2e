@@ -16,15 +16,15 @@ jobs:
       - uses: actions/checkout@v2
       - name: Install dependencies
         run: yarn
-      - name: tsc code quality check
+      - name: Tsc code quality check
         run: yarn tsc-lint
       - name: ESLint code quality check
         run: yarn eslint
-      - name: Start node img.
+      - name: Start mangata-node node
         run: docker-compose -f devops/docker-compose.yml
-      - name: get docker ps
+      - name: Docker ps
         run: docker ps
-      - name: Run job
+      - name: Run e2e tests
         run: yarn test-sequential-e2e
       
       - name: Test Report
@@ -34,7 +34,4 @@ jobs:
           name: JEST Tests            # Name of the check run which will be created
           path: reports/jest-*.xml    # Path to test results
           reporter: jest-junit        # Format of test results
-# tests are not ready to run in github.
-# TODO: Build image, export pallet address and run yarn test-parallel && yarn test-sequential
-#      - name: Run tests
-#        run: CI=true yarn test
+
