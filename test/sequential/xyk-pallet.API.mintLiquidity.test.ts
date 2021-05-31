@@ -6,11 +6,14 @@ import { Keyring } from '@polkadot/api'
 import {AssetWallet, User} from "../../utils/User";
 import { validateMintedLiquidityEvent, validateTreasuryAmountsEqual, validateUnmodified } from "../../utils/validators";
 import { Assets } from "../../utils/Assets";
+import { getEnvironmentRequiredVars } from "../../utils/utils";
 
 
 jest.spyOn(console, 'log').mockImplementation(jest.fn());
 jest.setTimeout(1500000);
 process.env.NODE_ENV = 'test';
+
+const {sudo:sudoUserName} = getEnvironmentRequiredVars();
 
 var firstAssetAmount = new BN(50000);
 var secondAssetAmount = new BN(50000);
@@ -41,9 +44,8 @@ describe('xyk-pallet - Mint liquidity tests: MintLiquidity Errors:', () => {
 	
 		// setup users
 		testUser1 = new User(keyring);
-	
-		// build Maciatko, he is sudo. :S
-		sudo = new User(keyring, '//Maciatko');
+
+		sudo = new User(keyring, sudoUserName);
 		
 		// add users to pair.
 		keyring.addPair(testUser1.keyRingPair);
@@ -55,7 +57,7 @@ describe('xyk-pallet - Mint liquidity tests: MintLiquidity Errors:', () => {
 	test('Mint liquidity when not enough assetY for minting Xamount', async () => {
 		await waitNewBlock();
 		//Adding 1000 and 1 more than default. So the user when the pool is created has 1000,1.
-		[firstCurrency, secondCurrency] = await Assets.setupUserWithCurrencies(testUser1, 2, [defaultCurrecyValue + 1000,defaultCurrecyValue +1], sudo);
+		[firstCurrency, secondCurrency] = await Assets.setupUserWithCurrencies(testUser1, [defaultCurrecyValue + 1000,defaultCurrecyValue +1], sudo);
 		await testUser1.setBalance(sudo);
 		//lets create a pool with equal balances
 		await signSendAndWaitToFinish( 
@@ -77,7 +79,7 @@ describe('xyk-pallet - Mint liquidity tests: MintLiquidity Errors:', () => {
 	test('Mint liquidity when not enough assetX for minting Yamount', async () => {
 		await waitNewBlock();
 		//Adding 1000 and 1 more than default. So the user when the pool is created has 1000,1.
-		[firstCurrency, secondCurrency] = await Assets.setupUserWithCurrencies(testUser1, 2, [defaultCurrecyValue + 1,defaultCurrecyValue +1000], sudo);
+		[firstCurrency, secondCurrency] = await Assets.setupUserWithCurrencies(testUser1, [defaultCurrecyValue + 1,defaultCurrecyValue +1000], sudo);
 		await testUser1.setBalance(sudo);
 		//lets create a pool with equal balances
 		await signSendAndWaitToFinish( 
@@ -100,8 +102,8 @@ describe('xyk-pallet - Mint liquidity tests: MintLiquidity Errors:', () => {
 	
 	test('Mint liquidity assets that does not belong to any pool', async () => {
 		//add two curerncies and balance to testUser:
-		[firstCurrency, secondCurrency] = await Assets.setupUserWithCurrencies(testUser1, 2, [defaultCurrecyValue,defaultCurrecyValue +1], sudo);
-		const [thirdCurrency]= await Assets.setupUserWithCurrencies(testUser1, 1, [defaultCurrecyValue], sudo);
+		[firstCurrency, secondCurrency] = await Assets.setupUserWithCurrencies(testUser1, [defaultCurrecyValue,defaultCurrecyValue +1], sudo);
+		const [thirdCurrency]= await Assets.setupUserWithCurrencies(testUser1, [defaultCurrecyValue], sudo);
 		//lets create a pool between asset 1 and 3.
 		await signSendAndWaitToFinish( 
 			api?.tx.xyk.createPool(firstCurrency, firstAssetAmount, thirdCurrency,secondAssetAmount), 
@@ -132,7 +134,7 @@ describe('xyk-pallet - Mint liquidity tests: MintLiquidity Errors:', () => {
 
 	test('Mint liquidity more assets than I own', async () => {
 		await waitNewBlock();
-		[firstCurrency, secondCurrency] = await Assets.setupUserWithCurrencies(testUser1, 2, [defaultCurrecyValue,defaultCurrecyValue], sudo);
+		[firstCurrency, secondCurrency] = await Assets.setupUserWithCurrencies(testUser1, [defaultCurrecyValue,defaultCurrecyValue], sudo);
 		await testUser1.setBalance(sudo);
 		await testUser1.refreshAmounts(AssetWallet.BEFORE);
 		const poolAmountSecondCurrency = secondAssetAmount.div(new BN(2));
@@ -205,8 +207,7 @@ describe('xyk-pallet - Mint liquidity tests: with minting you can', () => {
 		// setup users
 		testUser1 = new User(keyring);
 	
-		// build Maciatko, he is sudo. :S
-		sudo = new User(keyring, '//Maciatko');
+		sudo = new User(keyring, sudoUserName);
 		
 		// add users to pair.
 		keyring.addPair(testUser1.keyRingPair);
@@ -219,7 +220,7 @@ describe('xyk-pallet - Mint liquidity tests: with minting you can', () => {
 		const roundingIssue =  new BN(1);
 		await waitNewBlock();
 		// The second currecy value is : defaultCurrecyValue, one to create the pool later, and the other one because of the rounding issue.
-		[firstCurrency, secondCurrency] = await Assets.setupUserWithCurrencies(testUser1, 2, [defaultCurrecyValue +1 ,defaultCurrecyValue +1 + 1], sudo);
+		[firstCurrency, secondCurrency] = await Assets.setupUserWithCurrencies(testUser1, [defaultCurrecyValue +1 ,defaultCurrecyValue +1 + 1], sudo);
 		await testUser1.setBalance(sudo);
 		const amounttoThePool = new BN(1);
 		await signSendAndWaitToFinish( 
@@ -253,7 +254,7 @@ describe('xyk-pallet - Mint liquidity tests: with minting you can', () => {
 
 		await waitNewBlock();
 		// The second currecy value is : defaultCurrecyValue, one to create the pool later, and the other one because of the rounding issue.
-		[firstCurrency, secondCurrency] = await Assets.setupUserWithCurrencies(testUser1, 2, [defaultCurrecyValue,defaultCurrecyValue], sudo);
+		[firstCurrency, secondCurrency] = await Assets.setupUserWithCurrencies(testUser1, [defaultCurrecyValue,defaultCurrecyValue], sudo);
 		await testUser1.setBalance(sudo);
 		const amounttoThePool = new BN(defaultCurrecyValue).div(new BN(2));
 		await signSendAndWaitToFinish( 

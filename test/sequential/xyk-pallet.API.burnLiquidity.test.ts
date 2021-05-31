@@ -6,7 +6,9 @@ import { Keyring } from '@polkadot/api'
 import {AssetWallet, User} from "../../utils/User";
 import { validateMintedLiquidityEvent, validateTreasuryAmountsEqual, validateUnmodified } from "../../utils/validators";
 import { Assets } from "../../utils/Assets";
+import { getEnvironmentRequiredVars } from "../../utils/utils";
 
+const {sudo:sudoUserName} = getEnvironmentRequiredVars();
 
 jest.spyOn(console, 'log').mockImplementation(jest.fn());
 jest.setTimeout(1500000);
@@ -41,8 +43,7 @@ describe('xyk-pallet - Burn liquidity tests: when burning liquidity you can', ()
 		// setup users
 		testUser1 = new User(keyring);
 	
-		// build Maciatko, he is sudo. :S
-		sudo = new User(keyring, '//Maciatko');
+		sudo = new User(keyring, sudoUserName);
 		
 		// add users to pair.
 		keyring.addPair(testUser1.keyRingPair);
@@ -56,7 +57,7 @@ describe('xyk-pallet - Burn liquidity tests: when burning liquidity you can', ()
 		//create a new user
 		const testUser2 = new User(keyring);
 		keyring.addPair(testUser2.keyRingPair);
-		[firstCurrency, secondCurrency] = await Assets.setupUserWithCurrencies(testUser1, 2, [assetXamount,assetYamount], sudo);
+		[firstCurrency, secondCurrency] = await Assets.setupUserWithCurrencies(testUser1, [assetXamount,assetYamount], sudo);
 		await testUser1.setBalance(sudo);
 		//lets create a pool with equal balances
 		await signSendAndWaitToFinish( 
@@ -153,8 +154,7 @@ describe('xyk-pallet - Burn liquidity tests: BurnLiquidity Errors:', () => {
 		// setup users
 		testUser1 = new User(keyring);
 	
-		// build Maciatko, he is sudo. :S
-		sudo = new User(keyring, '//Maciatko');
+		sudo = new User(keyring, sudoUserName);
 		
 		// add users to pair.
 		keyring.addPair(testUser1.keyRingPair);
@@ -165,7 +165,7 @@ describe('xyk-pallet - Burn liquidity tests: BurnLiquidity Errors:', () => {
 
 	test('Burn liquidity assets that does not belong to any pool', async () => {
 		await testUser1.setBalance(sudo);
-		const [firstCurrency, secondCurrency] = await Assets.setupUserWithCurrencies(testUser1, 2, [defaultCurrecyValue, defaultCurrecyValue], sudo);
+		const [firstCurrency, secondCurrency] = await Assets.setupUserWithCurrencies(testUser1, [defaultCurrecyValue, defaultCurrecyValue], sudo);
 		const eventPromise = getUserEventResult("xyk", "LiquidityBurned", 14, testUser1.keyRingPair.address);
 		burnLiquidity(testUser1.keyRingPair, firstCurrency, secondCurrency, new BN(1));
 		const eventResponse = await eventPromise;
@@ -220,7 +220,7 @@ async function UserCreatesAPoolAndMintliquidity(
 	, mintAmount: BN = new BN(userAmount).div(new BN(4))) {
 
 	await waitNewBlock();
-	const [firstCurrency, secondCurrency] = await Assets.setupUserWithCurrencies(testUser1, 2, [parseInt(userAmount.toString()), parseInt(userAmount.toString())], sudo);
+	const [firstCurrency, secondCurrency] = await Assets.setupUserWithCurrencies(testUser1, [parseInt(userAmount.toString()), parseInt(userAmount.toString())], sudo);
 	await testUser1.setBalance(sudo);
 	await signSendAndWaitToFinish(
 		api?.tx.xyk.createPool(firstCurrency, poolAmount, secondCurrency, poolAmount),
