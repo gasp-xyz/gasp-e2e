@@ -58,7 +58,7 @@ describe.skip('Playground', () => {
         // sell assts 
 		await waitNewBlock();
 		// setup users
-		[firstCurrency, secondCurrency] = await Assets.setupUserWithCurrencies(testUser1, 2, [10000000,10000000], sudo);
+		[firstCurrency, secondCurrency] = await Assets.setupUserWithCurrencies(testUser1, [10000000,10000000], sudo);
 		await testUser1.setBalance(sudo);
 		await signSendAndWaitToFinish( 
 			api?.tx.xyk.createPool(firstCurrency, 10000, secondCurrency, 1), 

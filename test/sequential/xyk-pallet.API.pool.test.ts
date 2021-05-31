@@ -47,7 +47,7 @@ describe('xyk-pallet - Sell Asset: validate Errors:', () => {
 		sudo = new User(keyring, sudoUserName);
 		
 		//add two curerncies and balance to testUser:
-		[firstCurrency, secondCurrency] = await Assets.setupUserWithCurrencies(testUser1, 2, [defaultCurrecyValue,defaultCurrecyValue +1], sudo);
+		[firstCurrency, secondCurrency] = await Assets.setupUserWithCurrencies(testUser1, [defaultCurrecyValue,defaultCurrecyValue +1], sudo);
 		await testUser1.setBalance(sudo);
 		// add users to pair.
 		keyring.addPair(testUser1.keyRingPair);
@@ -95,7 +95,7 @@ describe('xyk-pallet - Sell Asset: validate Errors:', () => {
 	test('Not enough assets', async () => {
 		await waitNewBlock();
 		const txAmount = 100000000000000;
-		const testAssetId = await Assets.setupUserWithCurrencies(testUser1, 1, [txAmount], sudo);
+		const testAssetId = await Assets.setupUserWithCurrencies(testUser1, [txAmount], sudo);
 		var eventPromise = getUserEventResult("xyk","PoolCreated", 14, txAmount.toString());
 		await signSendAndWaitToFinish( api?.tx.xyk.createPool(firstCurrency, new BN(txAmount).add(new BN(1)), testAssetId[0], new BN(txAmount).add(new BN(1))), testUser1.keyRingPair );
 		var eventResponse = await eventPromise;
@@ -137,7 +137,7 @@ describe('xyk-pallet - Pool tests: a pool can:', () => {
 		
 		//add two curerncies and balance to testUser2:
 
-		[firstCurrency, secondCurrency] = await Assets.setupUserWithCurrencies(testUser1, 2, [defaultCurrecyValue,defaultCurrecyValue +1], sudo);
+		[firstCurrency, secondCurrency] = await Assets.setupUserWithCurrencies(testUser1, [defaultCurrecyValue,defaultCurrecyValue +1], sudo);
 		await testUser1.setBalance(sudo);
 		await testUser1.createPoolToAsset(first_asset_amount,second_asset_amount,firstCurrency,secondCurrency);
 		await testUser2.setBalance(sudo);
