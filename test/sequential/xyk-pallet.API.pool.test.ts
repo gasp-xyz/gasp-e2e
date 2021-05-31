@@ -6,11 +6,13 @@ import { Keyring } from '@polkadot/api'
 import {AssetWallet, User} from "../../utils/User";
 import { validateAssetsWithValues, validatePoolCreatedEvent, validateStatusWhenPoolCreated } from "../../utils/validators";
 import { Assets } from "../../utils/Assets";
+import { getEnvironmentRequiredVars } from "../../utils/utils";
 
 
 jest.spyOn(console, 'log').mockImplementation(jest.fn());
 jest.setTimeout(1500000);
 process.env.NODE_ENV = 'test';
+const {sudo:sudoUserName} = getEnvironmentRequiredVars();
 
 var first_asset_amount = new BN(50000);
 var second_asset_amount = new BN(50000);
@@ -42,11 +44,10 @@ describe('xyk-pallet - Sell Asset: validate Errors:', () => {
 		// setup users
 		testUser1 = new User(keyring);
 	
-		// build Maciatko, he is sudo. :S
-		sudo = new User(keyring, '//Maciatko');
+		sudo = new User(keyring, sudoUserName);
 		
 		//add two curerncies and balance to testUser:
-		[firstCurrency, secondCurrency] = await Assets.setupUserWithCurrencies(testUser1, 2, [defaultCurrecyValue,defaultCurrecyValue +1], sudo);
+		[firstCurrency, secondCurrency] = await Assets.setupUserWithCurrencies(testUser1, [defaultCurrecyValue,defaultCurrecyValue +1], sudo);
 		await testUser1.setBalance(sudo);
 		// add users to pair.
 		keyring.addPair(testUser1.keyRingPair);
@@ -94,7 +95,7 @@ describe('xyk-pallet - Sell Asset: validate Errors:', () => {
 	test('Not enough assets', async () => {
 		await waitNewBlock();
 		const txAmount = 100000000000000;
-		const testAssetId = await Assets.setupUserWithCurrencies(testUser1, 1, [txAmount], sudo);
+		const testAssetId = await Assets.setupUserWithCurrencies(testUser1, [txAmount], sudo);
 		var eventPromise = getUserEventResult("xyk","PoolCreated", 14, txAmount.toString());
 		await signSendAndWaitToFinish( api?.tx.xyk.createPool(firstCurrency, new BN(txAmount).add(new BN(1)), testAssetId[0], new BN(txAmount).add(new BN(1))), testUser1.keyRingPair );
 		var eventResponse = await eventPromise;
@@ -130,13 +131,13 @@ describe('xyk-pallet - Pool tests: a pool can:', () => {
 		// setup a second user
 		testUser2 = new User(keyring);
 		testUser1 = new User(keyring);
-		let sudo = new User(keyring, '//Maciatko')
+		let sudo = new User(keyring, sudoUserName)
 		keyring.addPair(testUser2.keyRingPair);
 		keyring.addPair(testUser1.keyRingPair);
 		
 		//add two curerncies and balance to testUser2:
 
-		[firstCurrency, secondCurrency] = await Assets.setupUserWithCurrencies(testUser1, 2, [defaultCurrecyValue,defaultCurrecyValue +1], sudo);
+		[firstCurrency, secondCurrency] = await Assets.setupUserWithCurrencies(testUser1, [defaultCurrecyValue,defaultCurrecyValue +1], sudo);
 		await testUser1.setBalance(sudo);
 		await testUser1.createPoolToAsset(first_asset_amount,second_asset_amount,firstCurrency,secondCurrency);
 		await testUser2.setBalance(sudo);

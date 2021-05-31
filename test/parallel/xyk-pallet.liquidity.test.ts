@@ -5,6 +5,7 @@ import BN from 'bn.js'
 import { Keyring } from '@polkadot/api'
 import {AssetWallet, User} from "../../utils/User";
 import { Assets } from "../../utils/Assets";
+import { getEnvironmentRequiredVars } from "../../utils/utils";
 
 
 jest.spyOn(console, 'log').mockImplementation(jest.fn());
@@ -20,8 +21,7 @@ let firstCurrency :BN;
 let secondCurrency :BN;
 let liquidityAssetId: BN;
 
-// Assuming the pallet's AccountId
-const pallet_address = process.env.TEST_PALLET_ADDRESS ? process.env.TEST_PALLET_ADDRESS : '';
+const {pallet: pallet_address,sudo:sudoUserName} = getEnvironmentRequiredVars();
 const defaultCurrecyValue = 250000;
 
 beforeAll( async () => {
@@ -40,15 +40,14 @@ beforeEach( async () => {
 	// setup users
 	testUser1 = new User(keyring);
 	testUser2 = new User(keyring);
-	// build Maciatko, he is sudo. :S
-	const sudo = new User(keyring, '//Maciatko');
+	const sudo = new User(keyring, sudoUserName);
 	
 	// setup Pallet.
 	pallet = new User(keyring);
 	pallet.addFromAddress(keyring,pallet_address);
 	
 	//add two curerncies and balance to testUser:
-	[firstCurrency, secondCurrency] = await Assets.setupUserWithCurrencies(testUser1, 2, [defaultCurrecyValue,defaultCurrecyValue +1], sudo );
+	[firstCurrency, secondCurrency] = await Assets.setupUserWithCurrencies(testUser1, [defaultCurrecyValue,defaultCurrecyValue +1], sudo );
     await testUser1.setBalance(sudo);
 	await testUser1.createPoolToAsset(new BN(40000), new BN(30000), firstCurrency, secondCurrency);
 	liquidityAssetId = await getLiquidityAssetId(firstCurrency, secondCurrency);

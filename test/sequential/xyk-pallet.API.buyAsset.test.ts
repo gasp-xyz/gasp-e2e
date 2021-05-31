@@ -6,11 +6,13 @@ import { Keyring } from '@polkadot/api'
 import {AssetWallet, User} from "../../utils/User";
 import { validateAssetsSwappedEvent, validateUnmodified } from "../../utils/validators";
 import { Assets } from "../../utils/Assets";
+import { getEnvironmentRequiredVars } from "../../utils/utils";
 
 
 jest.spyOn(console, 'log').mockImplementation(jest.fn());
 jest.setTimeout(1500000);
 process.env.NODE_ENV = 'test';
+const {sudo:sudoUserName} = getEnvironmentRequiredVars();
 
 var firstAssetAmount = new BN(50000);
 var secondAssetAmount = new BN(50000);
@@ -42,8 +44,7 @@ describe('xyk-pallet - Buy assets tests: BuyAssets Errors:', () => {
 		// setup users
 		testUser1 = new User(keyring);
 	
-		// build Maciatko, he is sudo. :S
-		sudo = new User(keyring, '//Maciatko');
+		sudo = new User(keyring, sudoUserName);
 		
 		// add users to pair.
 		keyring.addPair(testUser1.keyRingPair);
@@ -53,11 +54,11 @@ describe('xyk-pallet - Buy assets tests: BuyAssets Errors:', () => {
 
 	test('Buy assets that does not belong to any pool', async () => {
 		//add two curerncies and balance to testUser:
-		[firstCurrency, secondCurrency] = await Assets.setupUserWithCurrencies(testUser1, 2, [defaultCurrecyValue,defaultCurrecyValue +1], sudo);
+		[firstCurrency, secondCurrency] = await Assets.setupUserWithCurrencies(testUser1, [defaultCurrecyValue,defaultCurrecyValue +1], sudo);
 		await testUser1.refreshAmounts(AssetWallet.BEFORE);
 
 		await waitNewBlock();
-		const [thirdCurrency]= await Assets.setupUserWithCurrencies(testUser1, 1, [defaultCurrecyValue], sudo);
+		const [thirdCurrency]= await Assets.setupUserWithCurrencies(testUser1, [defaultCurrecyValue], sudo);
 		let eventPromise = getUserEventResult("xyk", "AssetsSwapped", 14, testUser1.keyRingPair.address);
 		
 		buyAsset(testUser1.keyRingPair, thirdCurrency, secondCurrency, firstAssetAmount.div(new BN(2)), new BN(0));
@@ -77,7 +78,7 @@ describe('xyk-pallet - Buy assets tests: BuyAssets Errors:', () => {
 
 	test('Buy more assets than exists in the pool', async () => {
 		await waitNewBlock();
-		[firstCurrency, secondCurrency] = await Assets.setupUserWithCurrencies(testUser1, 2, [defaultCurrecyValue,defaultCurrecyValue +1], sudo);
+		[firstCurrency, secondCurrency] = await Assets.setupUserWithCurrencies(testUser1, [defaultCurrecyValue,defaultCurrecyValue +1], sudo);
 		await testUser1.setBalance(sudo);
 		await testUser1.refreshAmounts(AssetWallet.BEFORE);
 		const poolAmountSecondCurrency = secondAssetAmount.div(new BN(2));
@@ -100,7 +101,7 @@ describe('xyk-pallet - Buy assets tests: BuyAssets Errors:', () => {
 
 	test('Buy all assets from the the pool', async () => {
 		await waitNewBlock();
-		[firstCurrency, secondCurrency] = await Assets.setupUserWithCurrencies(testUser1, 2, [defaultCurrecyValue,defaultCurrecyValue +1], sudo);
+		[firstCurrency, secondCurrency] = await Assets.setupUserWithCurrencies(testUser1, [defaultCurrecyValue,defaultCurrecyValue +1], sudo);
 		await testUser1.setBalance(sudo);
 		await testUser1.refreshAmounts(AssetWallet.BEFORE);
 		const poolAmountSecondCurrency = secondAssetAmount.div(new BN(2));
@@ -123,7 +124,7 @@ describe('xyk-pallet - Buy assets tests: BuyAssets Errors:', () => {
 
 	test('Buy assets with a high expectation: maxInput -1', async () => {
 		await waitNewBlock();
-		[firstCurrency, secondCurrency] = await Assets.setupUserWithCurrencies(testUser1, 2, [defaultCurrecyValue,defaultCurrecyValue +1], sudo);
+		[firstCurrency, secondCurrency] = await Assets.setupUserWithCurrencies(testUser1, [defaultCurrecyValue,defaultCurrecyValue +1], sudo);
 		await testUser1.setBalance(sudo);
 		await testUser1.refreshAmounts(AssetWallet.BEFORE);
 		const poolAmountSecondCurrency = secondAssetAmount.div(new BN(2));
@@ -175,8 +176,7 @@ describe('xyk-pallet - Buy assets tests: Buying assets you can', () => {
 		// setup users
 		testUser1 = new User(keyring);
 	
-		// build Maciatko, he is sudo. :S
-		sudo = new User(keyring, '//Maciatko');
+		sudo = new User(keyring, sudoUserName);
 		
 		// add users to pair.
 		keyring.addPair(testUser1.keyRingPair);
@@ -187,7 +187,7 @@ describe('xyk-pallet - Buy assets tests: Buying assets you can', () => {
 
 	test('Leave only one asset in the pool', async () => {
 		await waitNewBlock();
-		[firstCurrency, secondCurrency] = await Assets.setupUserWithCurrencies(testUser1, 2, [defaultCurrecyValue,defaultCurrecyValue +1], sudo);
+		[firstCurrency, secondCurrency] = await Assets.setupUserWithCurrencies(testUser1, [defaultCurrecyValue,defaultCurrecyValue +1], sudo);
 		await testUser1.setBalance(sudo);
 		await testUser1.refreshAmounts(AssetWallet.BEFORE);
 		const poolAmountSecondCurrency = secondAssetAmount.div(new BN(2));
@@ -235,8 +235,8 @@ describe('xyk-pallet - Buy assets tests: Buying assets you can', () => {
 		// setup users
 		const testUser2 = new User(keyring);
 		keyring.addPair(testUser2.keyRingPair);
-		[firstCurrency, secondCurrency] = await Assets.setupUserWithCurrencies(testUser1, 2, [defaultCurrecyValue,defaultCurrecyValue +1], sudo);
-		const [thirdCurrency] = await Assets.setupUserWithCurrencies(testUser2, 1, [defaultCurrecyValue], sudo);
+		[firstCurrency, secondCurrency] = await Assets.setupUserWithCurrencies(testUser1, [defaultCurrecyValue,defaultCurrecyValue +1], sudo);
+		const [thirdCurrency] = await Assets.setupUserWithCurrencies(testUser2, [defaultCurrecyValue], sudo);
 		
 		await sudo.mint(thirdCurrency, testUser1, thirdAssetAmount);
 		await testUser1.setBalance(sudo);

@@ -5,11 +5,13 @@ import BN from 'bn.js'
 import { Keyring } from '@polkadot/api'
 import {User} from "../../utils/User";
 import { Assets } from "../../utils/Assets";
+import { getEnvironmentRequiredVars } from "../../utils/utils";
 
 
 jest.spyOn(console, 'log').mockImplementation(jest.fn());
 jest.setTimeout(15000000000);
 process.env.NODE_ENV = 'test';
+const {sudo:sudoUserName} = getEnvironmentRequiredVars();
 
 //The idea of this is to use it as a playground, so whenever its needed to test any specifics,
 // we can setup the specific scenario and test.
@@ -41,8 +43,7 @@ describe.skip('Playground', () => {
 		// setup users
 		testUser1 = new User(keyring);
 	
-		// build Maciatko, he is sudo. :S
-		sudo = new User(keyring, '//Maciatko');
+		sudo = new User(keyring, sudoUserName);
 		
 		// add users to pair.
 		keyring.addPair(testUser1.keyRingPair);
@@ -58,7 +59,7 @@ describe.skip('Playground', () => {
         // sell assts 
 		await waitNewBlock();
 		// setup users
-		[firstCurrency, secondCurrency] = await Assets.setupUserWithCurrencies(testUser1, 2, [10000000,10000000], sudo);
+		[firstCurrency, secondCurrency] = await Assets.setupUserWithCurrencies(testUser1, [10000000,10000000], sudo);
 		await testUser1.setBalance(sudo);
 		await signSendAndWaitToFinish( 
 			api?.tx.xyk.createPool(firstCurrency, 1, secondCurrency, 1), 
