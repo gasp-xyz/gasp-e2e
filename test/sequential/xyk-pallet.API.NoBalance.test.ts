@@ -6,6 +6,7 @@ import { Keyring } from '@polkadot/api'
 import {AssetWallet, User} from "../../utils/User";
 import { validateAssetsWithValues } from "../../utils/validators";
 import { Assets } from "../../utils/Assets";
+import { getEnvironmentRequiredVars } from "../../utils/utils";
 
 
 jest.spyOn(console, 'log').mockImplementation(jest.fn());
@@ -24,7 +25,8 @@ var second_asset_amount = new BN(50000);
 //creating pool
 const pool_balance_before = [new BN(0), new BN(0)];
 
-// Assuming the pallet's AccountId
+const {sudo:sudoUserName} = getEnvironmentRequiredVars();
+
 const defaultCurrecyValue = 250000;
 
 beforeAll( async () => {
@@ -40,9 +42,7 @@ beforeAll( async () => {
 
 	// setup users
 	testUser1 = new User(keyring);
-
-	// build Maciatko, he is sudo. :S
-	sudo = new User(keyring, '//Maciatko');
+	sudo = new User(keyring, sudoUserName);
 	
 	//add two curerncies and balance to testUser:
 	[firstCurrency, secondCurrency] = await Assets.setupUserWithCurrencies(testUser1, 2, [defaultCurrecyValue,defaultCurrecyValue +1], sudo);

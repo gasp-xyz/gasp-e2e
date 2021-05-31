@@ -1,8 +1,9 @@
 import { ApiPromise, WsProvider } from '@polkadot/api'
+import { getEnvironmentRequiredVars } from './utils'
 
 export let api: ApiPromise | null = null
 
-const uri = process.env.API_URL ? process.env.API_URL: 'ws://127.0.0.1:9944';
+const {chainUri: uri}  = getEnvironmentRequiredVars();
 export const getApi = () => {
   if (!api) {
     throw new Error('Api not initialized')
