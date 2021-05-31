@@ -6,6 +6,7 @@ import { Keyring } from '@polkadot/api'
 import {AssetWallet, User} from "../../utils/User";
 import { validateAssetsSwappedEvent, validateUnmodified } from "../../utils/validators";
 import { Assets } from "../../utils/Assets";
+import { getEnvironmentRequiredVars } from "../../utils/utils";
 
 
 jest.spyOn(console, 'log').mockImplementation(jest.fn());
@@ -15,6 +16,7 @@ process.env.NODE_ENV = 'test';
 var first_asset_amount = new BN(50000);
 var second_asset_amount = new BN(50000);
 const defaultCurrecyValue = 250000;
+const {sudo:sudoUserName} = getEnvironmentRequiredVars();
 
 describe('xyk-pallet - Sell assets tests: SellAsset Errors:', () => {
 	
@@ -42,8 +44,7 @@ describe('xyk-pallet - Sell assets tests: SellAsset Errors:', () => {
 		// setup users
 		testUser1 = new User(keyring);
 	
-		// build Maciatko, he is sudo. :S
-		sudo = new User(keyring, '//Maciatko');
+		sudo = new User(keyring, sudoUserName);
 		
 		// add users to pair.
 		keyring.addPair(testUser1.keyRingPair);
@@ -184,8 +185,7 @@ describe('xyk-pallet - Sell assets tests: Selling Assets you can', () => {
 		// setup users
 		testUser1 = new User(keyring);
 	
-		// build Maciatko, he is sudo. :S
-		sudo = new User(keyring, '//Maciatko');
+		sudo = new User(keyring, sudoUserName);
 		
 		// add users to pair.
 		keyring.addPair(testUser1.keyRingPair);
