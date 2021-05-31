@@ -10,6 +10,8 @@ jobs:
     runs-on: ubuntu-latest
     env:
       API_URL: 'ws://172.16.238.10:9944'
+      TEST_PALLET_ADDRESS: ${{ secrets.TEST_PALLET_ADDRESS }}
+      TEST_SUDO_NAME: ${{ secrets.TEST_SUDO_NAME }}
     steps:
       - uses: actions/checkout@v2
       - name: Install dependencies
