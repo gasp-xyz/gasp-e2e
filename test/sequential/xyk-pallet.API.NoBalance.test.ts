@@ -45,7 +45,7 @@ beforeAll( async () => {
 	sudo = new User(keyring, sudoUserName);
 	
 	//add two curerncies and balance to testUser:
-	[firstCurrency, secondCurrency] = await Assets.setupUserWithCurrencies(testUser1, 2, [defaultCurrecyValue,defaultCurrecyValue +1], sudo);
+	[firstCurrency, secondCurrency] = await Assets.setupUserWithCurrencies(testUser1, [defaultCurrecyValue,defaultCurrecyValue +1], sudo);
 	//add only RESERVED balance
 	await testUser1.setBalance(sudo, 0 , Math.pow(10,11) );
 	// add users to pair.

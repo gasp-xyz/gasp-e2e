@@ -28,14 +28,15 @@ export class Assets {
         
     };
 
-    static async setupUserWithCurrencies(user : User, numCurrencies = 2, value = [250000, 250001], sudo: User){
+    static async setupUserWithCurrencies(user : User, currencyValues = [250000, 250001], sudo: User){
         let currencies = [];
-        for (let currency = 0; currency < numCurrencies; currency++) {
+        for (let currency = 0; currency < currencyValues.length; currency++) {
             await waitNewBlock();
-            const currencyId = await this.issueAssetToUser(user, value[currency], sudo);
+            const currencyId = await this.issueAssetToUser(user, currencyValues[currency], sudo);
             currencies.push(currencyId);
-            user.addAsset(currencyId,new BN(value[currency]));
+            user.addAsset(currencyId,new BN(currencyValues[currency]));
         }
+        await waitNewBlock();
         return currencies;
     }
 
