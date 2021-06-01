@@ -4,7 +4,7 @@ import {waitNewBlock, ExtrinsicResult, getUserEventResult, getEventResult} from 
 import BN from 'bn.js'
 import { Keyring } from '@polkadot/api'
 import {AssetWallet, User} from "../../utils/User";
-import { validateAssetsWithValues, validatePoolCreatedEvent } from "../../utils/validators";
+import { validateAssetsWithValues, validatePoolCreatedEvent, validateStatusWhenPoolCreated } from "../../utils/validators";
 import { Assets } from "../../utils/Assets";
 import { getEnvironmentRequiredVars } from "../../utils/utils";
 
@@ -18,7 +18,7 @@ var first_asset_amount = new BN(50000);
 var second_asset_amount = new BN(50000);
 const defaultCurrecyValue = 250000;
 
-describe('xyk-pallet - Pool tests: createPool Errors:', () => {
+describe('xyk-pallet - Sell Asset: validate Errors:', () => {
 	
 	var testUser1 : User;
 	var sudo : User;
@@ -107,32 +107,7 @@ describe('xyk-pallet - Pool tests: createPool Errors:', () => {
 	});
 	
 	afterEach(async () => {
-	
-		var liquidity_asset_id = await getLiquidityAssetId(firstCurrency, secondCurrency);
-		var liquidity_assets_minted = first_asset_amount.add(second_asset_amount);
-	
-		testUser1.addAsset(liquidity_asset_id, new BN(0));
-		//validate
-		await testUser1.refreshAmounts(AssetWallet.AFTER);
-	
-		await testUser1.validateWalletReduced(firstCurrency, first_asset_amount);
-		await testUser1.validateWalletReduced(secondCurrency, second_asset_amount);
-		await testUser1.validateWalletIncreased(liquidity_asset_id, liquidity_assets_minted);
-	
-		//TODO: pending to validate.
-		var pool_balance = await getBalanceOfPool(firstCurrency, secondCurrency);
-		expect	([	pool_balance_before[0].add(first_asset_amount),	
-					pool_balance_before[1].add(second_asset_amount)	])
-		.toEqual(pool_balance);
-	
-		const balance = await getBalanceOfPool(secondCurrency, firstCurrency);
-		expect	([	pool_balance_before[0].add(first_asset_amount),	
-		pool_balance_before[1].add(second_asset_amount)	])
-		.toEqual([balance[1], balance[0]]);
-	
-		var total_liquidity_assets = await getAssetSupply(liquidity_asset_id);
-		expect(total_liquidity_assets_before.add(liquidity_assets_minted))
-		.toEqual(total_liquidity_assets);
+		await validateStatusWhenPoolCreated(firstCurrency, secondCurrency, testUser1, pool_balance_before, total_liquidity_assets_before);
 	});
 });
 

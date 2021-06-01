@@ -311,3 +311,15 @@ export async function getAccountInfo(account?: string) {
   }
   return -1
 }
+
+export async function getTreasury(currencyId : BN){
+  const api = getApi();
+  const treasuryBalance = await api.query.xyk.treasury(currencyId);
+  return treasuryBalance.toHuman();
+}
+
+export async function getTreasuryBurn(currencyId : BN){
+  const api = getApi();
+  const treasuryBalance = await api.query.xyk.treasuryBurn(currencyId);
+  return treasuryBalance.toHuman();
+}

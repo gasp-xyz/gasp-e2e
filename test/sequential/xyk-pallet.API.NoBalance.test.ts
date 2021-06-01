@@ -46,6 +46,7 @@ beforeAll( async () => {
 	
 	//add two curerncies and balance to testUser:
 	[firstCurrency, secondCurrency] = await Assets.setupUserWithCurrencies(testUser1, 2, [defaultCurrecyValue,defaultCurrecyValue +1], sudo);
+	//add only RESERVED balance
 	await testUser1.setBalance(sudo, 0 , Math.pow(10,11) );
 	// add users to pair.
 	keyring.addPair(testUser1.keyRingPair);
@@ -57,7 +58,7 @@ beforeAll( async () => {
 
 })
 
-test('xyk-pallet - Alternative  - No Balance for creating pool', async () => {
+test('xyk-pallet - User Balance - Creating a pool requires free balance', async () => {
 		let exception = false;
 		const api = getApi();
 
@@ -74,6 +75,25 @@ test('xyk-pallet - Alternative  - No Balance for creating pool', async () => {
 		.toThrow('1010: Invalid Transaction: Inability to pay some fees , e.g. account balance too low')
 		expect(exception).toBeTruthy();
 });
+
+test('xyk-pallet - User Balance - Selling an asset does not require free balance', async () => {
+	let exception = false;
+	const api = getApi();
+	testUser1.refreshAmounts(AssetWallet.BEFORE);
+	let amountInWallet = testUser1.getAsset(firstCurrency)?.amountBefore!;
+	await expect( 
+		signTx( 
+			api.tx.xyk.sellAsset(firstCurrency, secondCurrency, amountInWallet.sub(new BN(1)) , first_asset_amount.mul(first_asset_amount)),
+			testUser1.keyRingPair,
+			await  getCurrentNonce(testUser1.keyRingPair.address))
+			.catch((reason) => {
+				exception = true;
+				throw new Error(reason);
+		})
+	).resolves.toBeUndefined();
+	expect(exception).toBeFalsy();
+});
+
 
 afterEach(async () => {
 
