@@ -3,7 +3,7 @@ import { getEnvironmentRequiredVars } from './utils'
 
 export let api: ApiPromise | null = null
 
-const {chainUri: uri}  = getEnvironmentRequiredVars();
+const {chainUri: envUri}  = getEnvironmentRequiredVars();
 export const getApi = () => {
   if (!api) {
     throw new Error('Api not initialized')
@@ -11,8 +11,11 @@ export const getApi = () => {
   return api
 }
 
-export const initApi = async () => {
+export const initApi = async (uri = '') => {
   // const wsProvider = new WsProvider(process.env.API_URL || 'ws://mangata-node:9944')
+  if(!uri)
+    uri = envUri;
+  
   const wsProvider = new WsProvider(uri)
   api = await ApiPromise.create({
     provider: wsProvider,
@@ -143,5 +146,7 @@ export const initApi = async () => {
     },
   })
   // console.log(api.genesisHash.toHex())
-  // return api
+  return api
 }
+
+

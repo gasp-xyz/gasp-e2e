@@ -76,10 +76,29 @@ test('xyk-pallet - User Balance - Creating a pool requires free balance', async 
 		expect(exception).toBeTruthy();
 });
 
+test('xyk-pallet - User Balance - mint liquidity requires free balance', async () => {
+	let exception = false;
+	const api = getApi();
+
+	await expect( 
+		signTx( 
+			api.tx.xyk.mintLiquidity(firstCurrency, secondCurrency, first_asset_amount), 
+			testUser1.keyRingPair,
+			await  getCurrentNonce(testUser1.keyRingPair.address))
+			.catch((reason) => {
+				exception = true;
+				throw new Error(reason);
+			})
+	).rejects
+	.toThrow('1010: Invalid Transaction: Inability to pay some fees , e.g. account balance too low')
+	expect(exception).toBeTruthy();
+});
+
+
 test('xyk-pallet - User Balance - Selling an asset does not require free balance', async () => {
 	let exception = false;
 	const api = getApi();
-	testUser1.refreshAmounts(AssetWallet.BEFORE);
+	await testUser1.refreshAmounts(AssetWallet.BEFORE);
 	let amountInWallet = testUser1.getAsset(firstCurrency)?.amountBefore!;
 	await expect( 
 		signTx( 
@@ -93,6 +112,25 @@ test('xyk-pallet - User Balance - Selling an asset does not require free balance
 	).resolves.toBeUndefined();
 	expect(exception).toBeFalsy();
 });
+
+test('xyk-pallet - User Balance - Buying an asset does not require free balance', async () => {
+	let exception = false;
+	const api = getApi();
+	await testUser1.refreshAmounts(AssetWallet.BEFORE);
+	let amountInWallet = testUser1.getAsset(firstCurrency)?.amountBefore!;
+	await expect( 
+		signTx( 
+			api.tx.xyk.buyAsset(firstCurrency, secondCurrency, new BN(1) , amountInWallet),
+			testUser1.keyRingPair,
+			await  getCurrentNonce(testUser1.keyRingPair.address))
+			.catch((reason) => {
+				exception = true;
+				throw new Error(reason);
+		})
+	).resolves.toBeUndefined();
+	expect(exception).toBeFalsy();
+});
+
 
 
 afterEach(async () => {
