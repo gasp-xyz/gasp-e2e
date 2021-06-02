@@ -25,7 +25,7 @@ jobs:
       - name: ESLint code quality check
         run: yarn eslint
       - name: Start mangata-node node
-        run: docker-compose -f devops/docker-compose.yml up -d
+        run: docker-compose -f devops/dockerfiles/docker-compose.yml up -d
       - name: Docker ps
         run: docker ps
       - name: Run e2e tests
