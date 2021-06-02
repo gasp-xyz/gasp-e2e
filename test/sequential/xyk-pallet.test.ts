@@ -11,7 +11,7 @@ const {pallet: pallet_address,sudo:sudoUserName} = getEnvironmentRequiredVars();
 jest.setTimeout(1500000);
 process.env.NODE_ENV = 'test';
 
-test('xyk-pallet: Happy case scenario', async () => {
+test.skip('xyk-pallet: Happy case scenario', async () => {
 
 	try {
     getApi();
