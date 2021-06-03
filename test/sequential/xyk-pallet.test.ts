@@ -11,7 +11,7 @@ const {pallet: pallet_address,sudo:sudoUserName} = getEnvironmentRequiredVars();
 jest.setTimeout(1500000);
 process.env.NODE_ENV = 'test';
 
-test.skip('xyk-pallet: Happy case scenario', async () => {
+test('xyk-pallet: Happy case scenario', async () => {
 
 	try {
     getApi();
@@ -513,7 +513,7 @@ test.skip('xyk-pallet: Happy case scenario', async () => {
 });
 
 
-test.skip('xyk-pallet: Liquidity sufficiency scenario', async () => {
+test('xyk-pallet: Liquidity sufficiency scenario', async () => {
 
 	try {
     getApi();
@@ -1238,8 +1238,4 @@ test.skip('xyk-pallet: Liquidity sufficiency scenario', async () => {
 	await waitNewBlock();
 
 
-});
-
-test('xyk-pallet: dummy', async () => {
-	expect(true).toEqual(true);
 });
