@@ -1,8 +1,19 @@
+import { formatBalance} from "@polkadot/util/format";
+import BN from "bn.js";
+import { getApi } from "./api";
+
 
 export function sleep(ms: number) {
     return new Promise((resolve) => {
         setTimeout(resolve, ms)
     })
+}
+
+export function fromBNToUnitString(value : BN){
+    const api = getApi();
+    const decimals = api?.registry.chainDecimals;
+    const valueFormatted = formatBalance(value, {decimals:decimals})
+    return valueFormatted;
 }
 
 export function getEnvironmentRequiredVars(){

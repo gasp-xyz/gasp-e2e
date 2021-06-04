@@ -1,12 +1,13 @@
-import {api, getApi, initApi} from "../../utils/api";
-import { getBalanceOfPool, getLiquidityAssetId, getAssetSupply, signSendAndWaitToFinish, getNextAssetId, mintLiquidity, burnLiquidity} from '../../utils/tx'
-import {waitNewBlock, ExtrinsicResult, getUserEventResult, getEventResult} from '../../utils/eventListeners'
+import {getApi, initApi} from "../../utils/api";
+import { getBalanceOfPool, getLiquidityAssetId, getAssetSupply, getNextAssetId, mintLiquidity, burnLiquidity, createPool} from '../../utils/tx'
+import {waitNewBlock, ExtrinsicResult, EventResult} from '../../utils/eventListeners'
 import BN from 'bn.js'
 import { Keyring } from '@polkadot/api'
 import {AssetWallet, User} from "../../utils/User";
 import { validateAssetsWithValues, validatePoolCreatedEvent, validateStatusWhenPoolCreated } from "../../utils/validators";
 import { Assets } from "../../utils/Assets";
 import { getEnvironmentRequiredVars } from "../../utils/utils";
+import { getEventResultFromTxWait } from "../../utils/txHandler";
 
 
 jest.spyOn(console, 'log').mockImplementation(jest.fn());
@@ -56,38 +57,48 @@ describe('xyk-pallet - Sell Asset: validate Errors:', () => {
 		// check users accounts.
 		await testUser1.refreshAmounts(AssetWallet.BEFORE);
 		validateAssetsWithValues([testUser1.getAsset(firstCurrency)?.amountBefore!,testUser1.getAsset(secondCurrency)?.amountBefore! ], [defaultCurrecyValue, defaultCurrecyValue+1]);
+		
+		let eventResponse: EventResult = new EventResult(0,'');
+		await createPool(testUser1.keyRingPair, firstCurrency, first_asset_amount, secondCurrency, second_asset_amount)
+			.then(
+			  (result) => {
+				  eventResponse = getEventResultFromTxWait(result, ["xyk","PoolCreated", testUser1.keyRingPair.address]);
+				  expect(eventResponse.state).toEqual(ExtrinsicResult.ExtrinsicSuccess);
+			  }
+		  );
 			
-		  console.log("testUser1: creating pool " + firstCurrency + " - " + secondCurrency);
-		  var eventPromise = getUserEventResult("xyk","PoolCreated", 14, testUser1.keyRingPair.address);
-		await signSendAndWaitToFinish( 
-			api?.tx.xyk.createPool(firstCurrency, first_asset_amount, secondCurrency, second_asset_amount), 
-			testUser1.keyRingPair );
-		var eventResponse = await eventPromise;
 		//validate the content of the event about the pool creation.
 		validatePoolCreatedEvent(eventResponse, testUser1.keyRingPair.address, firstCurrency, first_asset_amount, secondCurrency, second_asset_amount);
-		expect(eventResponse.state).toEqual(ExtrinsicResult.ExtrinsicSuccess);
+
 	
 	});
 	test('Create x-y and y-x pool', async () => {
 		await waitNewBlock();
 		console.log("testUser1: creating pool already created " + firstCurrency + " - " + secondCurrency);
-		var eventPromise = getEventResult("xyk","PoolCreated", 14);
-		await signSendAndWaitToFinish( api?.tx.xyk.createPool(secondCurrency, new BN(666), firstCurrency, new BN(666)), testUser1.keyRingPair );
-		var eventResponse = await eventPromise;
-		  expect(eventResponse.state).toEqual(ExtrinsicResult.ExtrinsicFailed);
-		expect(eventResponse.data).toEqual(1);
-	
+		await createPool(testUser1.keyRingPair ,secondCurrency, new BN(666), firstCurrency, new BN(666))
+		.then(
+			(result) => {
+					const eventResponse = getEventResultFromTxWait(result);
+					expect(eventResponse.state).toEqual(ExtrinsicResult.ExtrinsicFailed);
+					expect(eventResponse.data).toEqual(1);				
+				}
+			);			
+			
 	});
 	test('Create pool with zero', async () => {
 		await waitNewBlock();
 		const nextAssetId = await getNextAssetId();
 		const emptyAssetID = new BN(nextAssetId.toString());
 	
-		var eventPromise = getEventResult("xyk","PoolCreated", 14);
-		await signSendAndWaitToFinish( api?.tx.xyk.createPool(firstCurrency, new BN(0), emptyAssetID, new BN(0)), testUser1.keyRingPair );
-		var eventResponse = await eventPromise;
-		  expect(eventResponse.state).toEqual(ExtrinsicResult.ExtrinsicFailed);
-		expect(eventResponse.data).toEqual(6);
+		await createPool(testUser1.keyRingPair ,firstCurrency, new BN(0), emptyAssetID, new BN(0))
+		.then(
+			(result) => {
+					const eventResponse = getEventResultFromTxWait(result);
+					expect(eventResponse.state).toEqual(ExtrinsicResult.ExtrinsicFailed);
+					expect(eventResponse.data).toEqual(6);				
+				}
+			);		
+		
 		const balance = await getBalanceOfPool(firstCurrency, emptyAssetID);
 		expect(balance).toEqual([new BN(0), new BN(0)]);
 	
@@ -96,11 +107,16 @@ describe('xyk-pallet - Sell Asset: validate Errors:', () => {
 		await waitNewBlock();
 		const txAmount = 100000000000000;
 		const testAssetId = await Assets.setupUserWithCurrencies(testUser1, [txAmount], sudo);
-		var eventPromise = getUserEventResult("xyk","PoolCreated", 14, txAmount.toString());
-		await signSendAndWaitToFinish( api?.tx.xyk.createPool(firstCurrency, new BN(txAmount).add(new BN(1)), testAssetId[0], new BN(txAmount).add(new BN(1))), testUser1.keyRingPair );
-		var eventResponse = await eventPromise;
-		  expect(eventResponse.state).toEqual(ExtrinsicResult.ExtrinsicFailed);
-		expect(eventResponse.data).toEqual(2); //NotEnoughAssets
+
+		await createPool(testUser1.keyRingPair ,firstCurrency,new BN(txAmount).add(new BN(1)), testAssetId[0], new BN(txAmount).add(new BN(1)))
+		.then(
+			(result) => {
+					const eventResponse = getEventResultFromTxWait(result);
+					expect(eventResponse.state).toEqual(ExtrinsicResult.ExtrinsicFailed);
+					expect(eventResponse.data).toEqual(2);				
+				}
+			);	
+
 		const balance = await getBalanceOfPool(firstCurrency, testAssetId[0]);
 		expect(balance).toEqual([new BN(0), new BN(0)]);
 	
@@ -152,12 +168,14 @@ describe('xyk-pallet - Pool tests: a pool can:', () => {
 
 	test('be minted', async () => {
 	
-		console.log("User: minting liquidity " + firstCurrency + " - " + secondCurrency);
-		const eventPromise = getUserEventResult("xyk", "LiquidityMinted", 14, testUser2.keyRingPair.address);
-		mintLiquidity(testUser2.keyRingPair, firstCurrency, secondCurrency, new BN(5000));
-		const eventResponse = await eventPromise;
-		expect(eventResponse.state).toEqual(ExtrinsicResult.ExtrinsicSuccess);
-
+		await mintLiquidity(testUser2.keyRingPair, firstCurrency, secondCurrency, new BN(5000))
+		.then(
+			(result) => {
+					const eventResponse = getEventResultFromTxWait(result, ["xyk", "LiquidityMinted", testUser2.keyRingPair.address]);
+					expect(eventResponse.state).toEqual(ExtrinsicResult.ExtrinsicSuccess);
+				}
+			);	
+		
 		var liquidity_asset_id = await getLiquidityAssetId(firstCurrency, secondCurrency);
 		var liquidity_assets_minted = first_asset_amount.add(second_asset_amount);
 		testUser2.addAsset(liquidity_asset_id, new BN(0));
@@ -181,10 +199,13 @@ describe('xyk-pallet - Pool tests: a pool can:', () => {
 	test('be burn', async () => {
 
 		console.log("User: minting liquidity " + firstCurrency + " - " + secondCurrency);
-		let eventPromise = getUserEventResult("xyk", "LiquidityMinted", 14, testUser2.keyRingPair.address);
-		mintLiquidity(testUser2.keyRingPair, firstCurrency, secondCurrency, new BN(5000));
-		let eventResponse = await eventPromise;
-		expect(eventResponse.state).toEqual(ExtrinsicResult.ExtrinsicSuccess);
+		await mintLiquidity(testUser2.keyRingPair, firstCurrency, secondCurrency, new BN(5000))
+		.then(
+			(result) => {
+				const eventResponse = getEventResultFromTxWait(result, ["xyk", "LiquidityMinted", testUser2.keyRingPair.address]);
+				expect(eventResponse.state).toEqual(ExtrinsicResult.ExtrinsicSuccess);
+			}
+		);
 
 		var liquidity_asset_id = await getLiquidityAssetId(firstCurrency, secondCurrency);
 		var liquidity_assets_minted = first_asset_amount.add(second_asset_amount);
@@ -193,10 +214,14 @@ describe('xyk-pallet - Pool tests: a pool can:', () => {
 		await testUser2.refreshAmounts(AssetWallet.BEFORE);
 		
 		console.log("User: burn liquidity " + firstCurrency + " - " + secondCurrency);
-		eventPromise = getUserEventResult("xyk", "LiquidityBurned", 14, testUser2.keyRingPair.address);
-		burnLiquidity(testUser2.keyRingPair, firstCurrency, secondCurrency, new BN(5000));
-		eventResponse = await eventPromise;
-		  expect(eventResponse.state).toEqual(ExtrinsicResult.ExtrinsicSuccess);
+		await burnLiquidity(testUser2.keyRingPair, firstCurrency, secondCurrency, new BN(5000))
+		.then(
+			(result) => {
+				const eventResponse = getEventResultFromTxWait(result, ["xyk", "LiquidityBurned", testUser2.keyRingPair.address]);
+				expect(eventResponse.state).toEqual(ExtrinsicResult.ExtrinsicSuccess);
+			}
+		);
+		
 		
 		await testUser2.refreshAmounts(AssetWallet.AFTER);
 		await testUser2.validateWalletReduced(liquidity_asset_id, new BN(5000));

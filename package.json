@@ -17,6 +17,7 @@
     "eslint": "^7.26.0",
     "typescript": "3",
     "web3": "^1.3.0",
+    "xoshiro": "^2.0.3",
     "yarn": "^1.22.10"
   },
   "scripts": {
@@ -24,10 +25,11 @@
     "start-prod": "node ./build/index.js",
     "build": "tsc --project tsconfig.json",
     "test": "jest",
-    "test-parallel": "rm nonce.db ; rm sudo.lock; jest test/parallel/* --verbose",
+    "test-parallel": "rm nonce.db ; rm sudo.lock; jest test/parallel/* test/sequential/xyk-pallet.API.sellAsset.test.ts --verbose",
     "test-sequential": "rm nonce.db ; rm sudo.lock; jest test/sequential/* --verbose --runInBand",
     "tsc-lint": "tsc -noemit -p tsconfig.json",
-    "eslint": "node_modules/.bin/eslint --max-warnings 0 . --ext .ts"
+    "eslint": "node_modules/.bin/eslint --max-warnings 0 . --ext .ts",
+    "xoshiro": "^2.0.3"
   },
   "devDependencies": {
     "@babel/core": "^7.13.10",

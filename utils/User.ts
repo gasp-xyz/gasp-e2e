@@ -3,8 +3,9 @@ import { Keyring } from '@polkadot/api';
 import { KeyringPair } from '@polkadot/keyring/types';
 import BN from 'bn.js';
 import { v4 as uuid } from 'uuid';
-import { ExtrinsicResult, getUserEventResult, waitNewBlock } from './eventListeners';
+import { ExtrinsicResult, waitNewBlock } from './eventListeners';
 import { balanceTransfer, buyAsset, createPool, getAccountInfo, getUserAssets, mintAsset, mintLiquidity, sellAsset, setBalance } from './tx';
+import { getEventResultFromTxWait } from './txHandler';
 
 export enum AssetWallet
 {
@@ -82,70 +83,91 @@ export class User {
     }
 
     async buyAssets( soldAssetId: BN, boughtAssetId: BN, amount: BN, maxExpected = new BN(1000000)) {
-        await waitNewBlock();
-        const eventPromise = getUserEventResult("xyk", "AssetsSwapped", 14, this.keyRingPair.address);
-        buyAsset(this.keyRingPair, soldAssetId, boughtAssetId, amount, maxExpected);
-        const eventResult = await eventPromise;
-        expect(eventResult.state).toEqual(ExtrinsicResult.ExtrinsicSuccess);
-        await waitNewBlock();
+
+        await buyAsset(this.keyRingPair, soldAssetId, boughtAssetId, amount, maxExpected)
+        .then(
+          (result) => {
+              const eventResponse = getEventResultFromTxWait(result, ["xyk", "AssetsSwapped", this.keyRingPair.address]);
+              expect(eventResponse.state).toEqual(ExtrinsicResult.ExtrinsicSuccess);
+          }
+      );
     }
 
     async mint(assetId: BN, user: User, amount: BN) {
         await waitNewBlock();
-        const eventPromise = getUserEventResult("tokens", "Minted", 14, user.keyRingPair.address);
-        mintAsset(this.keyRingPair, assetId, user.keyRingPair.address, amount)
-        const eventResult = await eventPromise;
-        expect(eventResult.state).toEqual(ExtrinsicResult.ExtrinsicSuccess);
+
+        await mintAsset(this.keyRingPair, assetId, user.keyRingPair.address, amount)
+		.then(
+			(result) => {
+				const eventResponse = getEventResultFromTxWait(result, ["tokens", "Minted", user.keyRingPair.address]);
+				expect(eventResponse.state).toEqual(ExtrinsicResult.ExtrinsicSuccess);
+			}
+		);  
         await waitNewBlock();
 
 	}
     
     async sellAssets(soldAssetId : BN, boughtAssetId: BN ,amount: BN) {
     
-        const eventPromise = getUserEventResult("xyk", "AssetsSwapped", 14, this.keyRingPair.address);
-        sellAsset(this.keyRingPair, soldAssetId, boughtAssetId, amount, new BN(0));
-        const eventResponse = await eventPromise;
-        expect(eventResponse.state).toEqual(ExtrinsicResult.ExtrinsicSuccess);
+        await sellAsset(this.keyRingPair, soldAssetId, boughtAssetId, amount, new BN(0))
+		.then(
+			(result) => {
+				const eventResponse = getEventResultFromTxWait(result, ["xyk", "AssetsSwapped", '14', this.keyRingPair.address]);
+				expect(eventResponse.state).toEqual(ExtrinsicResult.ExtrinsicSuccess);
+			}
+		);        
         await waitNewBlock();
     }
     async mintLiquidity(firstCurrency: BN, secondCurrency: BN, amount: BN) {
-        const eventPromise = getUserEventResult("xyk", "LiquidityMinted", 14, this.keyRingPair.address);
-		mintLiquidity(this.keyRingPair, firstCurrency, secondCurrency, amount);
-		const eventResponse = await eventPromise;
-		expect(eventResponse.state).toEqual(ExtrinsicResult.ExtrinsicSuccess);
+        
+		await mintLiquidity(this.keyRingPair, firstCurrency, secondCurrency, amount)
+        .then(
+            (result) => {
+                    const eventResponse = getEventResultFromTxWait(result, ["xyk", "LiquidityMinted", this.keyRingPair.address]);
+                    expect(eventResponse.state).toEqual(ExtrinsicResult.ExtrinsicSuccess);		
+                }
+            );	
         await waitNewBlock();
 	}
 
     
     async createPoolToAsset(first_asset_amount: BN, second_asset_amount: BN, firstCurrency: BN, secondCurrency : BN) {
 
-        let eventPromise = getUserEventResult("xyk", "PoolCreated", 14, this.keyRingPair.address);
-        createPool(this.keyRingPair, firstCurrency, first_asset_amount, secondCurrency, second_asset_amount);
-        let eventResponse = await eventPromise;
-        //console.warn(eventResponse.data);
-        expect(eventResponse.state).toEqual(ExtrinsicResult.ExtrinsicSuccess);
+        await createPool(this.keyRingPair, firstCurrency, first_asset_amount, secondCurrency, second_asset_amount)
+		.then(
+			(result) => {
+				const eventResponse = getEventResultFromTxWait(result, ["xyk", "PoolCreated", '14', this.keyRingPair.address]);
+				expect(eventResponse.state).toEqual(ExtrinsicResult.ExtrinsicSuccess);
+			}
+		);  
         await waitNewBlock();
 
     }
 
     async addBalance(user : string = '//Alice', amount : number = Math.pow(10,11)){
         
-        let eventPromise = getUserEventResult("balances","Endowed", 14 , this.keyRingPair.address);
-        await balanceTransfer(new User(this.keyring, user).keyRingPair,this.keyRingPair.address, amount);
-        await eventPromise;
-        eventPromise = getUserEventResult("balances","Transfer", 14, this.keyRingPair.address);
-        await eventPromise;
-        await this.waitUntilBalanceIsNotZero();
+        await balanceTransfer(new User(this.keyring, user).keyRingPair,this.keyRingPair.address, amount)
+        .then(
+            (result) => {
+                const eventResponse = getEventResultFromTxWait(result, ["balances","Transfer", this.keyRingPair.address]);
+                expect(eventResponse.state).toEqual(ExtrinsicResult.ExtrinsicSuccess);
+              }
+            );
 
-        await waitNewBlock();
+        await this.waitUntilBalanceIsNotZero();
 
     }
 
     async setBalance(sudo : User, amountFree : number = Math.pow(10,11), amountReserved : number = Math.pow(10,11)) {
         await waitNewBlock();
-        let eventPromise = getUserEventResult("balances","BalanceSet", 14, this.keyRingPair.address);
-        setBalance(sudo.keyRingPair,this.keyRingPair.address, amountFree, amountReserved);
-        await eventPromise;
+
+        await setBalance(sudo.keyRingPair,this.keyRingPair.address, amountFree, amountReserved)
+		.then(
+			(result) => {
+				const eventResponse = getEventResultFromTxWait(result, ["balances","BalanceSet", this.keyRingPair.address]);
+				expect(eventResponse.state).toEqual(ExtrinsicResult.ExtrinsicSuccess);
+			}
+		);  
         await waitNewBlock();
         
     }

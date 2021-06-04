@@ -1,9 +1,10 @@
 import {getApi, initApi} from "../../utils/api";
 import { calcuate_mint_liquidity_price_local, calcuate_burn_liquidity_price_local, calculate_sell_price_local, calculate_buy_price_local, calculate_sell_price_rpc, calculate_buy_price_rpc, getUserAssets, getBalanceOfPool, getNextAssetId, getLiquidityAssetId, getAssetSupply, getSudoKey, sudoIssueAsset, transferAsset, createPool, sellAsset, buyAsset, mintLiquidity, burnLiquidity} from '../../utils/tx'
-import {waitNewBlock, getUserEventResult, ExtrinsicResult} from '../../utils/eventListeners'
+import {waitNewBlock, ExtrinsicResult} from '../../utils/eventListeners'
 import BN from 'bn.js'
 import { Keyring } from '@polkadot/api'
 import { getEnvironmentRequiredVars } from "../../utils/utils";
+import { getEventResultFromTxWait } from "../../utils/txHandler";
 
 jest.spyOn(console, 'log').mockImplementation(jest.fn());
 const {pallet: pallet_address,sudo:sudoUserName} = getEnvironmentRequiredVars();
@@ -40,11 +41,15 @@ test('xyk-pallet: Happy case scenario', async () => {
 	await waitNewBlock();
 
 	console.info("Sudo: issuing asset " + firstAssetId + " to Alice");
-	let eventPromise = getUserEventResult("tokens","Issued", 12, alice.address);
-	sudoIssueAsset(sudoPair, new BN(220000), alice.address);
-	let eventResponse = await eventPromise;
-	expect(eventResponse.state).toEqual(ExtrinsicResult.ExtrinsicSuccess);
-
+	
+	await sudoIssueAsset(sudoPair, new BN(220000), alice.address)
+	.then(
+		(result) => {
+			const eventResponse = getEventResultFromTxWait(result, ["tokens","Issued", alice.address]);
+			expect(eventResponse.state).toEqual(ExtrinsicResult.ExtrinsicSuccess);
+		}
+	);
+	
 	let alice_assets = await getUserAssets(alice.address, [firstAssetId]);
 	expect(alice_assets).toEqual([new BN(220000)]);
 
@@ -52,10 +57,14 @@ test('xyk-pallet: Happy case scenario', async () => {
 	await waitNewBlock();
 
   console.info("Sudo: issuing asset " + secondAssetId + " to Alice");
-  eventPromise = getUserEventResult("tokens","Issued", 12, alice.address);
-  sudoIssueAsset(sudoPair, new BN(120000), alice.address);
-  eventResponse = await eventPromise;
-	expect(eventResponse.state).toEqual(ExtrinsicResult.ExtrinsicSuccess);
+  
+  await sudoIssueAsset(sudoPair, new BN(120000), alice.address)
+  .then(
+	(result) => {
+		const eventResponse = getEventResultFromTxWait(result, ["tokens","Issued", alice.address]);
+		expect(eventResponse.state).toEqual(ExtrinsicResult.ExtrinsicSuccess);
+	}
+	);
 
 	alice_assets = await getUserAssets(alice.address, [secondAssetId]);
 	expect(alice_assets).toEqual([new BN(120000)]);
@@ -80,11 +89,14 @@ test('xyk-pallet: Happy case scenario', async () => {
 	let second_asset_amount = new BN(50000);
 
   console.info("Alice: creating pool " + firstAssetId + " - " + secondAssetId);
-  eventPromise = getUserEventResult("xyk","PoolCreated", 14, user.address );
-  createPool(user, firstAssetId, first_asset_amount, secondAssetId, second_asset_amount);
-    eventResponse = await eventPromise;
-	expect(eventResponse.state).toEqual(ExtrinsicResult.ExtrinsicSuccess);
-
+  await createPool(user, firstAssetId, first_asset_amount, secondAssetId, second_asset_amount)
+  	.then(
+		(result) => {
+			const eventResponse = getEventResultFromTxWait(result, ["xyk","PoolCreated", user.address]);
+			expect(eventResponse.state).toEqual(ExtrinsicResult.ExtrinsicSuccess);
+		}
+	);
+    
 	let liquidity_asset_id = await getLiquidityAssetId(firstAssetId, secondAssetId);
 	let liquidity_assets_minted = first_asset_amount.add(second_asset_amount);
 	alice_assets = await getUserAssets(alice.address, [firstAssetId, secondAssetId, liquidity_asset_id]);
@@ -126,12 +138,15 @@ test('xyk-pallet: Happy case scenario', async () => {
 	[second_asset_amount, liquidity_assets_minted] = await calcuate_mint_liquidity_price_local(firstAssetId, secondAssetId, first_asset_amount);
 
   console.info("Alice: minting liquidity " + firstAssetId + " - " + secondAssetId);
-  eventPromise = getUserEventResult("xyk", "LiquidityMinted", 14, user.address);
-  mintLiquidity(user, firstAssetId, secondAssetId, first_asset_amount);
-  	eventResponse = await eventPromise;
-	expect(eventResponse.state).toEqual(ExtrinsicResult.ExtrinsicSuccess);
-
-	// console.info(second_asset_amount.toString());
+  
+  await mintLiquidity(user, firstAssetId, secondAssetId, first_asset_amount)
+  	.then(
+		(result) => {
+			const eventResponse = getEventResultFromTxWait(result, ["xyk", "LiquidityMinted", user.address]);
+			expect(eventResponse.state).toEqual(ExtrinsicResult.ExtrinsicSuccess);
+		}
+	);
+  	// console.info(second_asset_amount.toString());
 	// console.info(liquidity_assets_minted.toString());
 
 	alice_assets = await getUserAssets(alice.address, [firstAssetId, secondAssetId, liquidity_asset_id]);
@@ -172,11 +187,15 @@ test('xyk-pallet: Happy case scenario', async () => {
 	let amount = new BN(100000);
 
 	console.info("Alice: transfering asset " + firstAssetId + " to Bob");
-	eventPromise = getUserEventResult("tokens", "Transferred", 12, user.address);
-	transferAsset(user, firstAssetId, bob.address, amount);
-	eventResponse = await eventPromise;
-	expect(eventResponse.state).toEqual(ExtrinsicResult.ExtrinsicSuccess);
-
+	
+	await transferAsset(user, firstAssetId, bob.address, amount)
+	.then(
+		(result) => {
+			const eventResponse = getEventResultFromTxWait(result, ["tokens", "Transferred", user.address]);
+			expect(eventResponse.state).toEqual(ExtrinsicResult.ExtrinsicSuccess);
+		}
+	);
+	
 	alice_assets = await getUserAssets(alice.address, [firstAssetId, secondAssetId, liquidity_asset_id]);
 	expect	([	alice_assets_before[0].sub(amount),	alice_assets_before[1],	alice_assets_before[2]	])
 	.toEqual(alice_assets);
@@ -221,10 +240,14 @@ test('xyk-pallet: Happy case scenario', async () => {
   console.info("Bob: selling asset " + firstAssetId + ", buying asset " + secondAssetId);
 	let soldAssetId = firstAssetId;
 	let boughtAssetId = secondAssetId;
-  eventPromise = getUserEventResult("xyk", "AssetsSwapped", 14, user.address);
-  sellAsset(user, soldAssetId, boughtAssetId, amount, new BN(0));
-  	eventResponse = await eventPromise;
-	expect(eventResponse.state).toEqual(ExtrinsicResult.ExtrinsicSuccess);
+
+	await sellAsset(user, soldAssetId, boughtAssetId, amount, new BN(0))
+	.then(
+		(result) => {
+			const eventResponse = getEventResultFromTxWait(result, ["xyk", "AssetsSwapped", '14', user.address]);
+			expect(eventResponse.state).toEqual(ExtrinsicResult.ExtrinsicSuccess);
+		}
+	);
 
 	// console.info(sell_price_local.toString());
 	// console.info(sell_price_rpc.toString());
@@ -274,10 +297,14 @@ test('xyk-pallet: Happy case scenario', async () => {
   console.info("Bob: selling asset " + secondAssetId + ", buying asset " + firstAssetId);
 	soldAssetId = secondAssetId;
 	boughtAssetId = firstAssetId;
-  eventPromise = getUserEventResult("xyk", "AssetsSwapped", 14, user.address);
-  sellAsset(user, soldAssetId, boughtAssetId, amount, new BN(0));
-  	eventResponse = await eventPromise;
-	expect(eventResponse.state).toEqual(ExtrinsicResult.ExtrinsicSuccess);
+
+	await sellAsset(user, soldAssetId, boughtAssetId, amount, new BN(0))
+	.then(
+		(result) => {
+			const eventResponse = getEventResultFromTxWait(result, ["xyk", "AssetsSwapped", '14', user.address]);
+			expect(eventResponse.state).toEqual(ExtrinsicResult.ExtrinsicSuccess);
+		}
+	);
 
 	// console.info(sell_price_local.toString());
 	// console.info(sell_price_rpc.toString());
@@ -327,11 +354,15 @@ test('xyk-pallet: Happy case scenario', async () => {
   console.info("Bob: buying asset " + secondAssetId + ", selling asset " + firstAssetId);
 	soldAssetId = firstAssetId;
 	boughtAssetId = secondAssetId;
-  eventPromise = getUserEventResult("xyk", "AssetsSwapped", 14, user.address);
-  buyAsset(user, soldAssetId, boughtAssetId, amount, new BN(1000000));
-  	eventResponse = await eventPromise;
-	expect(eventResponse.state).toEqual(ExtrinsicResult.ExtrinsicSuccess);
-
+  
+  await buyAsset(user, soldAssetId, boughtAssetId, amount, new BN(1000000))
+	.then(
+		(result) => {
+			const eventResponse = getEventResultFromTxWait(result, ["xyk", "AssetsSwapped", user.address]);
+			expect(eventResponse.state).toEqual(ExtrinsicResult.ExtrinsicSuccess);
+		}
+	);
+  
 	// console.info(buy_price_local.toString());
 	// console.info(buy_price_rpc.toString());
 
@@ -380,10 +411,14 @@ test('xyk-pallet: Happy case scenario', async () => {
   console.info("Bob: buying asset " + firstAssetId + ", selling asset " + secondAssetId);
 	soldAssetId = secondAssetId;
 	boughtAssetId = firstAssetId;
-  eventPromise = getUserEventResult("xyk", "AssetsSwapped", 14, user.address);
-  buyAsset(user, soldAssetId, boughtAssetId, amount, new BN(1000000));
-  eventResponse = await eventPromise;
-	expect(eventResponse.state).toEqual(ExtrinsicResult.ExtrinsicSuccess);
+
+  await buyAsset(user, soldAssetId, boughtAssetId, amount, new BN(1000000))
+  	.then(
+		(result) => {
+			const eventResponse = getEventResultFromTxWait(result, ["xyk", "AssetsSwapped", user.address]);
+			expect(eventResponse.state).toEqual(ExtrinsicResult.ExtrinsicSuccess);
+		}
+	);
 
 	// console.info(buy_price_local.toString());
 	// console.info(buy_price_rpc.toString());
@@ -429,11 +464,15 @@ test('xyk-pallet: Happy case scenario', async () => {
 	[first_asset_amount, second_asset_amount] = await calcuate_burn_liquidity_price_local(firstAssetId, secondAssetId, liquidity_assets_burned);
 
   console.info("Alice: burning liquidity " + liquidity_assets_burned + "of pool " + firstAssetId + " - " + secondAssetId);
-  eventPromise = getUserEventResult("xyk", "LiquidityBurned", 14, user.address);
-  burnLiquidity(user, firstAssetId, secondAssetId, liquidity_assets_burned);
-  eventResponse = await eventPromise;
-	expect(eventResponse.state).toEqual(ExtrinsicResult.ExtrinsicSuccess);
-
+  
+  await burnLiquidity(user, firstAssetId, secondAssetId, liquidity_assets_burned)
+  .then(
+	(result) => {
+		const eventResponse = getEventResultFromTxWait(result, ["xyk", "LiquidityBurned", user.address]);
+		expect(eventResponse.state).toEqual(ExtrinsicResult.ExtrinsicSuccess);
+	}
+);
+  
 	// console.info(first_asset_amount.toString());
 	// console.info(second_asset_amount.toString());
 	// console.info(liquidity_assets_burned.toString());
@@ -478,10 +517,12 @@ test('xyk-pallet: Happy case scenario', async () => {
 	[first_asset_amount, second_asset_amount] = await calcuate_burn_liquidity_price_local(firstAssetId, secondAssetId, liquidity_assets_burned);
 
   console.info("Alice: burning all liquidity " + firstAssetId + " - " + secondAssetId);
-  eventPromise = getUserEventResult("xyk", "LiquidityBurned", 14, user.address);
-  burnLiquidity(user, firstAssetId, secondAssetId, liquidity_assets_burned);
-  eventResponse = await eventPromise;
-	expect(eventResponse.state).toEqual(ExtrinsicResult.ExtrinsicSuccess);
+  await burnLiquidity(user, firstAssetId, secondAssetId, liquidity_assets_burned)
+  .then(
+	(result) => {
+		const eventResponse = getEventResultFromTxWait(result, ["xyk", "LiquidityBurned", user.address]);
+		expect(eventResponse.state).toEqual(ExtrinsicResult.ExtrinsicSuccess);
+	});
 
 	// console.info(first_asset_amount.toString());
 	// console.info(second_asset_amount.toString());
@@ -533,15 +574,17 @@ test('xyk-pallet: Liquidity sufficiency scenario', async () => {
 	let sudoKey = await getSudoKey();
 	let sudoPair = keyring.getPair(sudoKey.toString());
 
-	let eventPromise;
 	await waitNewBlock();
 
 	console.info("Sudo: issuing asset " + firstAssetId + " to Alice");
-	eventPromise = getUserEventResult("tokens","Issued", 12, alice.address);
-	sudoIssueAsset(sudoPair, new BN(200000), alice.address);
-	let eventResponse = await eventPromise;
-	expect(eventResponse.state).toEqual(ExtrinsicResult.ExtrinsicSuccess);
-
+	await sudoIssueAsset(sudoPair, new BN(200000), alice.address)
+	.then(
+		(result) => {
+			const eventResponse = getEventResultFromTxWait(result, ["tokens","Issued", alice.address]);
+			expect(eventResponse.state).toEqual(ExtrinsicResult.ExtrinsicSuccess);
+		}
+	);
+	
 	let alice_assets = await getUserAssets(alice.address, [firstAssetId]);
 	expect(alice_assets).toEqual([new BN(200000)]);
 
@@ -549,10 +592,14 @@ test('xyk-pallet: Liquidity sufficiency scenario', async () => {
 	await waitNewBlock();
 
   console.info("Sudo: issuing asset " + secondAssetId + " to Alice");
-  eventPromise = getUserEventResult("tokens","Issued", 12, alice.address);
-  sudoIssueAsset(sudoPair, new BN(200000), alice.address);
-  eventResponse = await eventPromise;
-	expect(eventResponse.state).toEqual(ExtrinsicResult.ExtrinsicSuccess);
+  
+  await sudoIssueAsset(sudoPair, new BN(200000), alice.address)
+  .then(
+		(result) => {
+			const eventResponse = getEventResultFromTxWait(result, ["tokens","Issued", alice.address]);
+			expect(eventResponse.state).toEqual(ExtrinsicResult.ExtrinsicSuccess);
+		}
+	);
 
 	alice_assets = await getUserAssets(alice.address, [secondAssetId]);
 	expect(alice_assets).toEqual([new BN(200000)]);
@@ -568,11 +615,15 @@ test('xyk-pallet: Liquidity sufficiency scenario', async () => {
 	let amount = new BN(100000);
 
 	console.info("Alice: transfering asset " + firstAssetId + " to Bob");
-	eventPromise = getUserEventResult("tokens", "Transferred", 12, user.address);
-	transferAsset(user, firstAssetId, bob.address, amount);
-	eventResponse = await eventPromise;
-	expect(eventResponse.state).toEqual(ExtrinsicResult.ExtrinsicSuccess);
-
+	
+	await transferAsset(user, firstAssetId, bob.address, amount)
+	.then(
+		(result) => {
+			const eventResponse = getEventResultFromTxWait(result, ["tokens", "Transferred", user.address]);
+			expect(eventResponse.state).toEqual(ExtrinsicResult.ExtrinsicSuccess);		
+		}
+	);
+	
 	alice_assets = await getUserAssets(alice.address, [firstAssetId, secondAssetId]);
 	expect	([	alice_assets_before[0].sub(amount),	alice_assets_before[1]	])
 	.toEqual(alice_assets);
@@ -593,11 +644,15 @@ test('xyk-pallet: Liquidity sufficiency scenario', async () => {
 	amount = new BN(100000);
 
 	console.info("Alice: transfering asset " + secondAssetId + " to Bob");
-	eventPromise = getUserEventResult("tokens", "Transferred", 12, user.address);
-	transferAsset(user, secondAssetId, bob.address, amount);
-	eventResponse = await eventPromise;
-	expect(eventResponse.state).toEqual(ExtrinsicResult.ExtrinsicSuccess);
-
+	
+	await transferAsset(user, secondAssetId, bob.address, amount)
+	.then(
+		(result) => {
+			const eventResponse = getEventResultFromTxWait(result, ["tokens", "Transferred", user.address]);
+			expect(eventResponse.state).toEqual(ExtrinsicResult.ExtrinsicSuccess);		
+		}
+	);
+	
 	alice_assets = await getUserAssets(alice.address, [firstAssetId, secondAssetId]);
 	expect	([	alice_assets_before[0],	alice_assets_before[1].sub(amount)	])
 	.toEqual(alice_assets);
@@ -626,10 +681,14 @@ test('xyk-pallet: Liquidity sufficiency scenario', async () => {
 	let second_asset_amount = new BN(60000);
 
   console.info("Alice: creating pool " + firstAssetId + " - " + secondAssetId);
-  eventPromise = getUserEventResult("xyk","PoolCreated", 14, user.address);
-  createPool(user, firstAssetId, first_asset_amount, secondAssetId, second_asset_amount);
-  eventResponse = await eventPromise;
-	expect(eventResponse.state).toEqual(ExtrinsicResult.ExtrinsicSuccess);
+  
+  await createPool(user, firstAssetId, first_asset_amount, secondAssetId, second_asset_amount)
+  .then(
+	(result) => {
+			const eventResponse = getEventResultFromTxWait(result, ["xyk","PoolCreated", user.address]);
+			expect(eventResponse.state).toEqual(ExtrinsicResult.ExtrinsicSuccess);		
+		}
+	);	
 
 	let liquidity_asset_id = await getLiquidityAssetId(firstAssetId, secondAssetId);
 	let liquidity_assets_minted = first_asset_amount.add(second_asset_amount);
@@ -672,11 +731,13 @@ test('xyk-pallet: Liquidity sufficiency scenario', async () => {
 	[second_asset_amount, liquidity_assets_minted] = await calcuate_mint_liquidity_price_local(firstAssetId, secondAssetId, first_asset_amount);
 
   console.info("Alice: minting liquidity " + firstAssetId + " - " + secondAssetId);
-  eventPromise = getUserEventResult("xyk", "LiquidityMinted", 14, user.address);
-  mintLiquidity(user, firstAssetId, secondAssetId, first_asset_amount);
-  eventResponse = await eventPromise;
-	expect(eventResponse.state).toEqual(ExtrinsicResult.ExtrinsicSuccess);
-
+  await mintLiquidity(user, firstAssetId, secondAssetId, first_asset_amount)
+  .then(
+	(result) => {
+			const eventResponse = getEventResultFromTxWait(result, ["xyk", "LiquidityMinted", user.address]);
+			expect(eventResponse.state).toEqual(ExtrinsicResult.ExtrinsicSuccess);		
+		}
+	);	
 	// console.info(second_asset_amount.toString());
 	// console.info(liquidity_assets_minted.toString());
 
@@ -719,10 +780,14 @@ test('xyk-pallet: Liquidity sufficiency scenario', async () => {
 	[second_asset_amount, liquidity_assets_minted] = await calcuate_mint_liquidity_price_local(firstAssetId, secondAssetId, first_asset_amount);
 
   console.info("Bob: minting liquidity " + firstAssetId + " - " + secondAssetId);
-  eventPromise = getUserEventResult("xyk", "LiquidityMinted", 14, user.address);
-  mintLiquidity(user, firstAssetId, secondAssetId, first_asset_amount);
-  eventResponse = await eventPromise;
-	expect(eventResponse.state).toEqual(ExtrinsicResult.ExtrinsicSuccess);
+  
+  await mintLiquidity(user, firstAssetId, secondAssetId, first_asset_amount)
+	.then(
+		(result) => {
+				const eventResponse = getEventResultFromTxWait(result, ["xyk", "LiquidityMinted", user.address]);
+				expect(eventResponse.state).toEqual(ExtrinsicResult.ExtrinsicSuccess);		
+			}
+		);	
 
 	// console.info(second_asset_amount.toString());
 	// console.info(liquidity_assets_minted.toString());
@@ -768,12 +833,14 @@ test('xyk-pallet: Liquidity sufficiency scenario', async () => {
 	let liquidity_assets_burned_excess = liquidity_assets_burned.mul(new BN(105)).div(new BN(100));
 
   console.info("Alice: attempting to burn more liquidity than they have " + firstAssetId + " - " + secondAssetId);
-  eventPromise = getUserEventResult("xyk", "LiquidityBurned", 14, user.address);
-  burnLiquidity(user, firstAssetId, secondAssetId, liquidity_assets_burned_excess);
-  eventResponse = await eventPromise;
-	expect(eventResponse.state).toEqual(ExtrinsicResult.ExtrinsicFailed);
-	expect(eventResponse.data).toEqual(2);
-
+  await burnLiquidity(user, firstAssetId, secondAssetId, liquidity_assets_burned_excess)
+  .then(
+	(result) => {
+		const eventResponse = getEventResultFromTxWait(result);
+		expect(eventResponse.state).toEqual(ExtrinsicResult.ExtrinsicFailed);
+		expect(eventResponse.data).toEqual(2);
+	});
+	
 	// console.info(first_asset_amount.toString());
 	// console.info(second_asset_amount.toString());
 	// console.info(liquidity_assets_burned.toString());
@@ -819,11 +886,14 @@ test('xyk-pallet: Liquidity sufficiency scenario', async () => {
 	let liquidity_asset_amount_excess = liquidity_asset_amount.mul(new BN(105)).div(new BN(100));
 
   console.info("Bob: attempting to burn more liquidity than they have " + liquidity_asset_amount_excess + " from pool " + firstAssetId + " - " + secondAssetId);
-  eventPromise = getUserEventResult("xyk", "LiquidityBurned", 14, user.address);
-  burnLiquidity(user, firstAssetId, secondAssetId, liquidity_asset_amount_excess);
-  eventResponse = await eventPromise;
-	expect(eventResponse.state).toEqual(ExtrinsicResult.ExtrinsicFailed);
-	expect(eventResponse.data).toEqual(2);
+  
+  await burnLiquidity(user, firstAssetId, secondAssetId, liquidity_asset_amount_excess)
+  .then(
+	(result) => {
+		const eventResponse = getEventResultFromTxWait(result);
+		expect(eventResponse.state).toEqual(ExtrinsicResult.ExtrinsicFailed);
+		expect(eventResponse.data).toEqual(2);
+	});
 
 	// console.info(first_asset_amount.toString());
 	// console.info(second_asset_amount.toString());
@@ -869,10 +939,13 @@ test('xyk-pallet: Liquidity sufficiency scenario', async () => {
 	[first_asset_amount, second_asset_amount] = await calcuate_burn_liquidity_price_local(firstAssetId, secondAssetId, liquidity_assets_burned);
 
   console.info("Alice: burning all liquidity " + firstAssetId + " - " + secondAssetId);
-  eventPromise = getUserEventResult("xyk", "LiquidityBurned", 14, user.address);
-  burnLiquidity(user, firstAssetId, secondAssetId, liquidity_assets_burned);
-  eventResponse = await eventPromise;
-	expect(eventResponse.state).toEqual(ExtrinsicResult.ExtrinsicSuccess);
+  
+  await burnLiquidity(user, firstAssetId, secondAssetId, liquidity_assets_burned)
+  .then(
+	(result) => {
+		const eventResponse = getEventResultFromTxWait(result, ["xyk", "LiquidityBurned", user.address]);
+		expect(eventResponse.state).toEqual(ExtrinsicResult.ExtrinsicSuccess);
+	});
 
 	// console.info(first_asset_amount.toString());
 	// console.info(second_asset_amount.toString());
@@ -919,11 +992,15 @@ test('xyk-pallet: Liquidity sufficiency scenario', async () => {
 	liquidity_assets_burned_excess = liquidity_assets_burned.mul(new BN(105)).div(new BN(100));
 
 	console.info("Bob: owning 100% of the pool, attempting to burn more liquidity than then pool has " + firstAssetId + " - " + secondAssetId);
-  eventPromise = getUserEventResult("xyk", "LiquidityBurned", 14, user.address);
-  burnLiquidity(user, firstAssetId, secondAssetId, liquidity_assets_burned_excess);
-  eventResponse = await eventPromise;
-  expect(eventResponse.state).toEqual(ExtrinsicResult.ExtrinsicFailed);
-  expect(eventResponse.data).toEqual(2);
+    
+  await burnLiquidity(user, firstAssetId, secondAssetId, liquidity_assets_burned_excess)
+  .then(
+	(result) => {
+		const eventResponse = getEventResultFromTxWait(result);
+		expect(eventResponse.state).toEqual(ExtrinsicResult.ExtrinsicFailed);
+  		expect(eventResponse.data).toEqual(2);
+	});
+
 
 	// console.info(first_asset_amount.toString());
 	// console.info(second_asset_amount.toString());
@@ -969,10 +1046,13 @@ test('xyk-pallet: Liquidity sufficiency scenario', async () => {
 	[first_asset_amount, second_asset_amount] = await calcuate_burn_liquidity_price_local(firstAssetId, secondAssetId, liquidity_assets_burned);
 
   console.info("Bob: burning all liquidity " + firstAssetId + " - " + secondAssetId);
-  eventPromise = getUserEventResult("xyk", "LiquidityBurned", 14, user.address);
-  burnLiquidity(user, firstAssetId, secondAssetId, liquidity_assets_burned);
-  eventResponse = await eventPromise;
-	expect(eventResponse.state).toEqual(ExtrinsicResult.ExtrinsicSuccess);
+  
+  await burnLiquidity(user, firstAssetId, secondAssetId, liquidity_assets_burned)
+  .then(
+	(result) => {
+		const eventResponse = getEventResultFromTxWait(result, ["xyk", "LiquidityBurned", user.address]);
+		expect(eventResponse.state).toEqual(ExtrinsicResult.ExtrinsicSuccess);
+	});
 
 	// console.info(first_asset_amount.toString());
 	// console.info(second_asset_amount.toString());
@@ -1017,13 +1097,16 @@ test('xyk-pallet: Liquidity sufficiency scenario', async () => {
 	liquidity_asset_amount = new BN(10000);
 
 	console.info("Bob: attempting to burn liquidity from 0 liquidity pool " + firstAssetId + " - " + secondAssetId);
-  eventPromise = getUserEventResult("xyk", "LiquidityBurned", 14, user.address);
-  burnLiquidity(user, firstAssetId, secondAssetId, liquidity_asset_amount);
-  eventResponse = await eventPromise;
-  expect(eventResponse.state).toEqual(ExtrinsicResult.ExtrinsicFailed);
-  expect(eventResponse.data).toEqual(3);
+  
+  await burnLiquidity(user, firstAssetId, secondAssetId, liquidity_asset_amount)
+  .then(
+	(result) => {
+		const eventResponse = getEventResultFromTxWait(result);
+		expect(eventResponse.state).toEqual(ExtrinsicResult.ExtrinsicFailed);
+		expect(eventResponse.data).toEqual(3);
+	});
 
-	// console.info(first_asset_amount.toString());
+  	// console.info(first_asset_amount.toString());
 	// console.info(second_asset_amount.toString());
 	// console.info(liquidity_assets_burned.toString());
 
@@ -1068,12 +1151,17 @@ test('xyk-pallet: Liquidity sufficiency scenario', async () => {
   console.info("Bob: attempting to sell asset from 0 liquidity pool " + firstAssetId + ", buying asset " + secondAssetId);
 	let soldAssetId = firstAssetId;
 	let boughtAssetId = secondAssetId;
-  eventPromise = getUserEventResult("xyk", "AssetsSwapped", 14, user.address);
-  sellAsset(user, soldAssetId, boughtAssetId, amount, new BN(0));
-  eventResponse = await eventPromise;
-  expect(eventResponse.state).toEqual(ExtrinsicResult.ExtrinsicFailed);
-  expect(eventResponse.data).toEqual(3);
+	
+	await sellAsset(user, soldAssetId, boughtAssetId, amount, new BN(0))
+	.then(
+		(result) => {
+			const eventResponse = getEventResultFromTxWait(result);
+			expect(eventResponse.state).toEqual(ExtrinsicResult.ExtrinsicFailed);
+			expect(eventResponse.data).toEqual(3);
+		}
+	);
 
+  
 	alice_assets = await getUserAssets(alice.address, [firstAssetId, secondAssetId, liquidity_asset_id]);
 	expect	(alice_assets_before)
 	.toEqual(alice_assets);
@@ -1114,11 +1202,15 @@ test('xyk-pallet: Liquidity sufficiency scenario', async () => {
 	console.info("Bob: attempting to sell asset from 0 liquidity pool " + secondAssetId + ", buying asset " + firstAssetId);
 	soldAssetId = secondAssetId;
 	boughtAssetId = firstAssetId;
-  eventPromise = getUserEventResult("xyk", "AssetsSwapped", 14, user.address);
-  sellAsset(user, soldAssetId, boughtAssetId, amount, new BN(0));
-  	eventResponse = await eventPromise;
-  	expect(eventResponse.state).toEqual(ExtrinsicResult.ExtrinsicFailed);
-  	expect(eventResponse.data).toEqual(3);
+  	
+  await sellAsset(user, soldAssetId, boughtAssetId, amount, new BN(0))
+  .then(
+	  (result) => {
+		  const eventResponse = getEventResultFromTxWait(result);
+		  expect(eventResponse.state).toEqual(ExtrinsicResult.ExtrinsicFailed);
+		  expect(eventResponse.data).toEqual(3);	
+	  }
+  );
 
 	alice_assets = await getUserAssets(alice.address, [firstAssetId, secondAssetId, liquidity_asset_id]);
 	expect	(alice_assets_before)
@@ -1161,11 +1253,15 @@ test('xyk-pallet: Liquidity sufficiency scenario', async () => {
   console.info("Bob: attempting to buy asset from 0 liquidity pool " + secondAssetId + ", selling asset " + firstAssetId);
 	soldAssetId = firstAssetId;
 	boughtAssetId = secondAssetId;
-  eventPromise = getUserEventResult("xyk", "AssetsSwapped", 14, user.address);
-  buyAsset(user, soldAssetId, boughtAssetId, amount, new BN(1000000));
- eventResponse = await eventPromise;
-  expect(eventResponse.state).toEqual(ExtrinsicResult.ExtrinsicFailed);
-  expect(eventResponse.data).toEqual(3);
+  
+  await buyAsset(user, soldAssetId, boughtAssetId, amount, new BN(1000000))
+  .then(
+	(result) => {
+			const eventResponse = getEventResultFromTxWait(result);
+			expect(eventResponse.state).toEqual(ExtrinsicResult.ExtrinsicFailed);
+			expect(eventResponse.data).toEqual(3);		  
+		}
+	);	
 
 	alice_assets = await getUserAssets(alice.address, [firstAssetId, secondAssetId, liquidity_asset_id]);
 	expect	(alice_assets_before)
@@ -1208,11 +1304,16 @@ test('xyk-pallet: Liquidity sufficiency scenario', async () => {
   console.info("Bob: attempting to buy asset from 0 liquidity pool " + firstAssetId + ", selling asset " + secondAssetId);
 	soldAssetId = secondAssetId;
 	boughtAssetId = firstAssetId;
-  eventPromise = getUserEventResult("xyk", "AssetsSwapped", 14, user.address);
-  buyAsset(user, soldAssetId, boughtAssetId, amount, new BN(1000000));
-  eventResponse = await eventPromise;
-  expect(eventResponse.state).toEqual(ExtrinsicResult.ExtrinsicFailed);
-  expect(eventResponse.data).toEqual(3);
+  
+  await buyAsset(user, soldAssetId, boughtAssetId, amount, new BN(1000000))
+  .then(
+	(result) => {
+			const eventResponse = getEventResultFromTxWait(result);
+			expect(eventResponse.state).toEqual(ExtrinsicResult.ExtrinsicFailed);
+			expect(eventResponse.data).toEqual(3);
+		}
+	);	
+
 
 	alice_assets = await getUserAssets(alice.address, [firstAssetId, secondAssetId, liquidity_asset_id]);
 	expect	(alice_assets_before)

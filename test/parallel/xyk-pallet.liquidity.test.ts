@@ -1,11 +1,12 @@
 import {getApi, initApi} from "../../utils/api";
 import { calcuate_mint_liquidity_price_local, calcuate_burn_liquidity_price_local, getBalanceOfPool, getLiquidityAssetId, getAssetSupply, mintLiquidity, burnLiquidity} from '../../utils/tx'
-import {waitNewBlock, ExtrinsicResult, getUserEventResult} from '../../utils/eventListeners'
+import {waitNewBlock, ExtrinsicResult} from '../../utils/eventListeners'
 import BN from 'bn.js'
 import { Keyring } from '@polkadot/api'
 import {AssetWallet, User} from "../../utils/User";
 import { Assets } from "../../utils/Assets";
 import { getEnvironmentRequiredVars } from "../../utils/utils";
+import { getEventResultFromTxWait } from "../../utils/txHandler";
 
 
 jest.spyOn(console, 'log').mockImplementation(jest.fn());
@@ -81,11 +82,15 @@ test('xyk-pallet - Liqudity : Burn part of the liquidity', async () => {
 
 	console.log("burning liquidity " + liquidityAssetsBurned + "of pool " + firstCurrency + " - " + secondCurrency);
 
-	const eventPromise = getUserEventResult("xyk", "LiquidityBurned", 14, testUser1.keyRingPair.address);
-	burnLiquidity(testUser1.keyRingPair, firstCurrency,secondCurrency, liquidityAssetsBurned);
-	const eventResponse = await eventPromise;
-	expect(eventResponse.state).toEqual(ExtrinsicResult.ExtrinsicSuccess);
-
+	
+	await burnLiquidity(testUser1.keyRingPair, firstCurrency,secondCurrency, liquidityAssetsBurned)
+	.then(
+		(result) => {
+			const eventResponse = getEventResultFromTxWait(result, ["xyk", "LiquidityBurned", testUser1.keyRingPair.address]);
+			expect(eventResponse.state).toEqual(ExtrinsicResult.ExtrinsicSuccess);
+		}
+	);
+	
 	await testUser1.refreshAmounts(AssetWallet.AFTER);
 	await testUser2.refreshAmounts(AssetWallet.AFTER);
 	await pallet.refreshAmounts(AssetWallet.AFTER);
@@ -119,10 +124,13 @@ test('xyk-pallet - Liqudity : Burn all the liquidity', async () => {
 
 	console.log("TestUser1: burning liquidity " + liquidityAssetsBurned + "of pool " + firstCurrency + " - " + secondCurrency);
 
-	const eventPromise = getUserEventResult("xyk", "LiquidityBurned", 14, testUser1.keyRingPair.address);
-	burnLiquidity(testUser1.keyRingPair, firstCurrency,secondCurrency, liquidityAssetsBurned);
-	const eventResponse = await eventPromise;
-	expect(eventResponse.state).toEqual(ExtrinsicResult.ExtrinsicSuccess);
+	await burnLiquidity(testUser1.keyRingPair, firstCurrency,secondCurrency, liquidityAssetsBurned)
+	.then(
+		(result) => {
+			const eventResponse = getEventResultFromTxWait(result, ["xyk", "LiquidityBurned", testUser1.keyRingPair.address]);
+			expect(eventResponse.state).toEqual(ExtrinsicResult.ExtrinsicSuccess);
+		}
+	);
 
 	await testUser1.refreshAmounts(AssetWallet.AFTER);
 	await testUser2.refreshAmounts(AssetWallet.AFTER);
@@ -154,10 +162,14 @@ test('xyk-pallet - LiquidityOperation: mintLiquidity', async () => {
 	let [secondAssetAmount, liquidityAssetsMinted] = await calcuate_mint_liquidity_price_local(firstCurrency, secondCurrency, firstCurrencyAssetAmount);
   	
     console.log("User: minting liquidity " + firstCurrency + " - " + secondCurrency);
-	const eventPromise = getUserEventResult("xyk", "LiquidityMinted", 14, testUser1.keyRingPair.address);
-	mintLiquidity(testUser1.keyRingPair, firstCurrency, secondCurrency, firstCurrencyAssetAmount);
-	const eventResponse = await eventPromise;
-	expect(eventResponse.state).toEqual(ExtrinsicResult.ExtrinsicSuccess);
+	
+	await mintLiquidity(testUser1.keyRingPair, firstCurrency, secondCurrency, firstCurrencyAssetAmount)
+	.then(
+		(result) => {
+			const eventResponse = getEventResultFromTxWait(result, ["xyk", "LiquidityMinted", testUser1.keyRingPair.address]);
+			expect(eventResponse.state).toEqual(ExtrinsicResult.ExtrinsicSuccess);
+		}
+	);
 
 	await testUser1.refreshAmounts(AssetWallet.AFTER);
 	await testUser2.refreshAmounts(AssetWallet.AFTER);
