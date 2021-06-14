@@ -68,7 +68,7 @@ describe('xyk-pallet - Mint liquidity tests: MintLiquidity Errors:', () => {
 		// force the error minting almost all of X
 		await testUser1.refreshAmounts(AssetWallet.BEFORE);
 		const eventPromise = getUserEventResult("xyk", "LiquidityMinted", 14, testUser1.keyRingPair.address);
-		mintLiquidity(testUser1.keyRingPair, firstCurrency, secondCurrency, testUser1.getAsset(firstCurrency)?.amountBefore.sub(new BN(1))!);
+		mintLiquidity(testUser1.keyRingPair, firstCurrency, secondCurrency, testUser1.getAsset(firstCurrency)?.amountBefore.sub(new BN(1))!, testUser1.getAsset(secondCurrency)?.amountBefore!);
 		const eventResponse = await eventPromise;
 		expect(eventResponse.state).toEqual(ExtrinsicResult.ExtrinsicFailed);
 		expect(eventResponse.data).toEqual(2);
@@ -91,7 +91,7 @@ describe('xyk-pallet - Mint liquidity tests: MintLiquidity Errors:', () => {
 		// force the error minting almost all of X
 		await testUser1.refreshAmounts(AssetWallet.BEFORE);
 		const eventPromise = getUserEventResult("xyk", "LiquidityMinted", 14, testUser1.keyRingPair.address);
-		mintLiquidity(testUser1.keyRingPair, firstCurrency, secondCurrency, testUser1.getAsset(secondCurrency)?.amountBefore.sub(new BN(1))!);
+		mintLiquidity(testUser1.keyRingPair, firstCurrency, secondCurrency, testUser1.getAsset(secondCurrency)?.amountBefore.sub(new BN(1))!, testUser1.getAsset(secondCurrency)?.amountBefore!);
 		const eventResponse = await eventPromise;
 		expect(eventResponse.state).toEqual(ExtrinsicResult.ExtrinsicFailed);
 		expect(eventResponse.data).toEqual(2);
@@ -114,7 +114,7 @@ describe('xyk-pallet - Mint liquidity tests: MintLiquidity Errors:', () => {
 				
 		//lets try to mint with asset 1 and 2
 		let eventPromise = getUserEventResult("xyk", "LiquidityMinted", 14, testUser1.keyRingPair.address);
-		mintLiquidity(testUser1.keyRingPair, firstCurrency, secondCurrency, firstAssetAmount);
+		mintLiquidity(testUser1.keyRingPair, firstCurrency, secondCurrency, firstAssetAmount, secondAssetAmount);
 		let eventResponse = await eventPromise;
 		expect(eventResponse.state).toEqual(ExtrinsicResult.ExtrinsicFailed);
 		expect(eventResponse.data).toEqual(3);
@@ -122,7 +122,7 @@ describe('xyk-pallet - Mint liquidity tests: MintLiquidity Errors:', () => {
 		await waitNewBlock();
 		//lets try to mint with asset 2 and 3
 		eventPromise = getUserEventResult("xyk", "LiquidityMinted", 14, testUser1.keyRingPair.address);
-		mintLiquidity(testUser1.keyRingPair, firstCurrency, secondCurrency, firstAssetAmount);
+		mintLiquidity(testUser1.keyRingPair, firstCurrency, secondCurrency, firstAssetAmount, secondAssetAmount);
 		eventResponse = await eventPromise;
 		expect(eventResponse.state).toEqual(ExtrinsicResult.ExtrinsicFailed);
 		expect(eventResponse.data).toEqual(3);
@@ -146,7 +146,7 @@ describe('xyk-pallet - Mint liquidity tests: MintLiquidity Errors:', () => {
 		await testUser1.refreshAmounts(AssetWallet.BEFORE);
 		
 		let eventPromise = getUserEventResult("xyk", "LiquidityMinted", 14, testUser1.keyRingPair.address);
-		mintLiquidity(testUser1.keyRingPair, firstCurrency, secondCurrency, testUser1.getAsset(firstCurrency)?.amountBefore.add(new BN(1))!);
+		mintLiquidity(testUser1.keyRingPair, firstCurrency, secondCurrency, testUser1.getAsset(firstCurrency)?.amountBefore.add(new BN(1))!, testUser1.getAsset(secondCurrency)?.amountBefore.add(new BN(1))!);
 		let eventResponse = await eventPromise;
 		expect(eventResponse.state).toEqual(ExtrinsicResult.ExtrinsicFailed);
 		expect(eventResponse.data).toEqual(2);
@@ -168,7 +168,7 @@ describe('xyk-pallet - Mint liquidity tests: MintLiquidity Errors:', () => {
 		
 		await testUser1.refreshAmounts(AssetWallet.BEFORE);
 		eventPromise = getUserEventResult("xyk", "LiquidityMinted", 14, testUser1.keyRingPair.address);
-		mintLiquidity(testUser1.keyRingPair, firstCurrency, secondCurrency, testUser1.getAsset(firstCurrency)?.amountBefore.sub(new BN(1))!);
+		mintLiquidity(testUser1.keyRingPair, firstCurrency, secondCurrency, testUser1.getAsset(firstCurrency)?.amountBefore.sub(new BN(1))!, testUser1.getAsset(secondCurrency)?.amountBefore.sub(new BN(1))!);
 		eventResponse = await eventPromise;
 		expect(eventResponse.state).toEqual(ExtrinsicResult.ExtrinsicFailed);
 		expect(eventResponse.data).toEqual(2);
@@ -234,7 +234,7 @@ describe('xyk-pallet - Mint liquidity tests: with minting you can', () => {
 		await waitNewBlock();
 		
 		await testUser1.refreshAmounts(AssetWallet.BEFORE);
-		await testUser1.mintLiquidity(firstCurrency,secondCurrency,new BN(defaultCurrecyValue));
+		await testUser1.mintLiquidity(firstCurrency,secondCurrency,new BN(defaultCurrecyValue),new BN(defaultCurrecyValue));
 		await testUser1.refreshAmounts(AssetWallet.AFTER);
 		
 		var poolBalanceAfterMinting = await getBalanceOfPool(firstCurrency, secondCurrency);
@@ -271,7 +271,7 @@ describe('xyk-pallet - Mint liquidity tests: with minting you can', () => {
 		const injectedValue = amounttoThePool.div(new BN(2));
 
 		const eventPromise = getUserEventResult("xyk", "LiquidityMinted", 14, testUser1.keyRingPair.address);
-		mintLiquidity(testUser1.keyRingPair, firstCurrency, secondCurrency, injectedValue);
+		mintLiquidity(testUser1.keyRingPair, firstCurrency, secondCurrency, injectedValue, amounttoThePool);
 		const eventResponse = await eventPromise;
 		expect(eventResponse.state).toEqual(ExtrinsicResult.ExtrinsicSuccess);
 
