@@ -154,7 +154,7 @@ describe('xyk-pallet - Pool tests: a pool can:', () => {
 	
 		console.log("User: minting liquidity " + firstCurrency + " - " + secondCurrency);
 		const eventPromise = getUserEventResult("xyk", "LiquidityMinted", 14, testUser2.keyRingPair.address);
-		mintLiquidity(testUser2.keyRingPair, firstCurrency, secondCurrency, new BN(5000));
+		mintLiquidity(testUser2.keyRingPair, firstCurrency, secondCurrency, new BN(5000), new BN(50000));
 		const eventResponse = await eventPromise;
 		expect(eventResponse.state).toEqual(ExtrinsicResult.ExtrinsicSuccess);
 
@@ -182,7 +182,7 @@ describe('xyk-pallet - Pool tests: a pool can:', () => {
 
 		console.log("User: minting liquidity " + firstCurrency + " - " + secondCurrency);
 		let eventPromise = getUserEventResult("xyk", "LiquidityMinted", 14, testUser2.keyRingPair.address);
-		mintLiquidity(testUser2.keyRingPair, firstCurrency, secondCurrency, new BN(5000));
+		mintLiquidity(testUser2.keyRingPair, firstCurrency, secondCurrency, new BN(5000), new BN(50000));
 		let eventResponse = await eventPromise;
 		expect(eventResponse.state).toEqual(ExtrinsicResult.ExtrinsicSuccess);
 
