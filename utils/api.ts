@@ -78,6 +78,10 @@ export const initApi = async (uri = '') => {
       },
     },
     types: {
+      SeedType: {
+        seed: "[u8;32]",
+        proof: "[u8;64]"
+      },
       CurrencyIdOf: "u32",
       CurrencyId: "u32",
       Balance: 'u128',

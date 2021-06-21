@@ -164,7 +164,8 @@ export const signAndWaitTx = async (
                         return;
                     }
 
-                    var seed_bytes = extrinsic_with_seed.method.args[0].toU8a();
+                    var json_response = JSON.parse(extrinsic_with_seed.method.args[0].toString())
+                    const seed_bytes = Uint8Array.from(Buffer.from(json_response["seed"].substring(2), 'hex'));
                     let shuffled_extrinsics = recreateExtrinsicsOrder(prev_block_extrinsics, seed_bytes);
 
                     // filter extrinsic triggered by current request
