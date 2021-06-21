@@ -8,7 +8,7 @@ import BN from 'bn.js'
 import { SudoDB } from './SudoDB';
 import { env } from 'process';
 import { EventResult, ExtrinsicResult } from './eventListeners';
-const DEFAULT_TIME_OUT_MS = 60000;
+const DEFAULT_TIME_OUT_MS = 100000;
 
 export async function getCurrentNonce(account?: string) {
   const api = getApi()
@@ -146,7 +146,7 @@ export const signAndWaitTx = async (
 
   if (timeout_ms > 0){
       setTimeout(() => {
-          reject("timeout")
+      reject("timeout in - signAndWaitTx" + who.address + " - " + nonce + " - " + tx.toHuman())
       }, timeout_ms);
   }
 
