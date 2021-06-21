@@ -163,7 +163,7 @@ test('xyk-pallet - LiquidityOperation: mintLiquidity', async () => {
   	
     console.log("User: minting liquidity " + firstCurrency + " - " + secondCurrency);
 	
-	await mintLiquidity(testUser1.keyRingPair, firstCurrency, secondCurrency, firstCurrencyAssetAmount)
+	await mintLiquidity(testUser1.keyRingPair, firstCurrency, secondCurrency, firstCurrencyAssetAmount, secondAssetAmount)
 	.then(
 		(result) => {
 			const eventResponse = getEventResultFromTxWait(result, ["xyk", "LiquidityMinted", testUser1.keyRingPair.address]);

@@ -118,9 +118,9 @@ export class User {
 		);        
         await waitNewBlock();
     }
-    async mintLiquidity(firstCurrency: BN, secondCurrency: BN, amount: BN) {
+    async mintLiquidity(firstCurrency: BN, secondCurrency: BN, firstCurrencyAmount: BN, secondCurrencyAmount: BN) {
         
-		await mintLiquidity(this.keyRingPair, firstCurrency, secondCurrency, amount)
+		await mintLiquidity(this.keyRingPair, firstCurrency, secondCurrency, firstCurrencyAmount, secondCurrencyAmount)
         .then(
             (result) => {
                     const eventResponse = getEventResultFromTxWait(result, ["xyk", "LiquidityMinted", this.keyRingPair.address]);

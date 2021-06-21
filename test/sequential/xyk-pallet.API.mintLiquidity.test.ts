@@ -68,7 +68,7 @@ describe('xyk-pallet - Mint liquidity tests: MintLiquidity Errors:', () => {
 		// now we have quite a lot of X and only a few Y, but the pool is 1:1, 
 		// force the error minting almost all of X
 		await testUser1.refreshAmounts(AssetWallet.BEFORE);
-		await mintLiquidity(testUser1.keyRingPair, firstCurrency, secondCurrency, testUser1.getAsset(firstCurrency)?.amountBefore.sub(new BN(1))!)
+		await mintLiquidity(testUser1.keyRingPair, firstCurrency, secondCurrency, testUser1.getAsset(firstCurrency)?.amountBefore.sub(new BN(1))!, testUser1.getAsset(secondCurrency)?.amountBefore!)
 		.then(
 			(result) => {
 					const eventResponse = getEventResultFromTxWait(result);
@@ -96,7 +96,7 @@ describe('xyk-pallet - Mint liquidity tests: MintLiquidity Errors:', () => {
 		// force the error minting almost all of X
 		await testUser1.refreshAmounts(AssetWallet.BEFORE);
 
-		await mintLiquidity(testUser1.keyRingPair, firstCurrency, secondCurrency, testUser1.getAsset(firstCurrency)?.amountBefore.sub(new BN(1))!)
+		await mintLiquidity(testUser1.keyRingPair, firstCurrency, secondCurrency, testUser1.getAsset(secondCurrency)?.amountBefore.sub(new BN(1))!, testUser1.getAsset(secondCurrency)?.amountBefore!)
 		.then(
 			(result) => {
 					const eventResponse = getEventResultFromTxWait(result);
@@ -122,7 +122,7 @@ describe('xyk-pallet - Mint liquidity tests: MintLiquidity Errors:', () => {
 		await testUser1.refreshAmounts(AssetWallet.BEFORE);
 				
 		//lets try to mint with asset 1 and 2
-		await await mintLiquidity(testUser1.keyRingPair, firstCurrency, secondCurrency, firstAssetAmount)
+		await mintLiquidity(testUser1.keyRingPair, firstCurrency, secondCurrency, firstAssetAmount, secondAssetAmount)
 		.then(
 			(result) => {
 					const eventResponse = getEventResultFromTxWait(result);
@@ -134,7 +134,7 @@ describe('xyk-pallet - Mint liquidity tests: MintLiquidity Errors:', () => {
 
 		await waitNewBlock();
 		//lets try to mint with asset 2 and 3
-		await mintLiquidity(testUser1.keyRingPair, firstCurrency, secondCurrency, firstAssetAmount)
+		await mintLiquidity(testUser1.keyRingPair, firstCurrency, secondCurrency, firstAssetAmount, secondAssetAmount)
 		.then(
 			(result) => {
 					const eventResponse = getEventResultFromTxWait(result);
@@ -160,7 +160,7 @@ describe('xyk-pallet - Mint liquidity tests: MintLiquidity Errors:', () => {
 		await waitNewBlock();
 		await testUser1.refreshAmounts(AssetWallet.BEFORE);
 		
-		await mintLiquidity(testUser1.keyRingPair, firstCurrency, secondCurrency, testUser1.getAsset(firstCurrency)?.amountBefore.add(new BN(1))!)
+		await mintLiquidity(testUser1.keyRingPair, firstCurrency, secondCurrency, testUser1.getAsset(firstCurrency)?.amountBefore.add(new BN(1))!,testUser1.getAsset(secondCurrency)?.amountBefore.add(new BN(1))!)
 		.then(
 			(result) => {
 					const eventResponse = getEventResultFromTxWait(result);
@@ -180,7 +180,7 @@ describe('xyk-pallet - Mint liquidity tests: MintLiquidity Errors:', () => {
 		var poolBalanceAfterSelling = await getBalanceOfPool(firstCurrency, secondCurrency);
 		
 		await testUser1.refreshAmounts(AssetWallet.BEFORE);
-		await mintLiquidity(testUser1.keyRingPair, firstCurrency, secondCurrency, testUser1.getAsset(firstCurrency)?.amountBefore.sub(new BN(1))!)
+		await mintLiquidity(testUser1.keyRingPair, firstCurrency, secondCurrency, testUser1.getAsset(firstCurrency)?.amountBefore.sub(new BN(1))!, testUser1.getAsset(secondCurrency)?.amountBefore.sub(new BN(1))!)
 		.then(
 			(result) => {
 					const eventResponse = getEventResultFromTxWait(result);
@@ -249,7 +249,7 @@ describe('xyk-pallet - Mint liquidity tests: with minting you can', () => {
 		await waitNewBlock();
 		
 		await testUser1.refreshAmounts(AssetWallet.BEFORE);
-		await testUser1.mintLiquidity(firstCurrency,secondCurrency,new BN(defaultCurrecyValue));
+		await testUser1.mintLiquidity(firstCurrency,secondCurrency,new BN(defaultCurrecyValue),new BN(defaultCurrecyValue));
 		await testUser1.refreshAmounts(AssetWallet.AFTER);
 		
 		var poolBalanceAfterMinting = await getBalanceOfPool(firstCurrency, secondCurrency);
@@ -285,7 +285,7 @@ describe('xyk-pallet - Mint liquidity tests: with minting you can', () => {
 		await testUser1.refreshAmounts(AssetWallet.BEFORE);
 		const injectedValue = amounttoThePool.div(new BN(2));
 		let eventResponse : EventResult = new EventResult(0,'');
-		await mintLiquidity(testUser1.keyRingPair, firstCurrency, secondCurrency, injectedValue)
+		await mintLiquidity(testUser1.keyRingPair, firstCurrency, secondCurrency, injectedValue, amounttoThePool)
 		.then(
 			(result) => {
 					eventResponse = getEventResultFromTxWait(result,["xyk", "LiquidityMinted", testUser1.keyRingPair.address]);

@@ -249,7 +249,7 @@ async function UserCreatesAPoolAndMintliquidity(
 		testUser1.keyRingPair
 	);
 	await waitNewBlock();
-	await testUser1.mintLiquidity(firstCurrency, secondCurrency, mintAmount);
+	await testUser1.mintLiquidity(firstCurrency, secondCurrency, mintAmount, userAmount);
 	return [firstCurrency, secondCurrency];
 }
 

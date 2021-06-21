@@ -168,7 +168,7 @@ describe('xyk-pallet - Pool tests: a pool can:', () => {
 
 	test('be minted', async () => {
 	
-		await mintLiquidity(testUser2.keyRingPair, firstCurrency, secondCurrency, new BN(5000))
+		await mintLiquidity(testUser2.keyRingPair, firstCurrency, secondCurrency, new BN(5000), new BN(50000))
 		.then(
 			(result) => {
 					const eventResponse = getEventResultFromTxWait(result, ["xyk", "LiquidityMinted", testUser2.keyRingPair.address]);
@@ -199,7 +199,7 @@ describe('xyk-pallet - Pool tests: a pool can:', () => {
 	test('be burn', async () => {
 
 		console.log("User: minting liquidity " + firstCurrency + " - " + secondCurrency);
-		await mintLiquidity(testUser2.keyRingPair, firstCurrency, secondCurrency, new BN(5000))
+		await mintLiquidity(testUser2.keyRingPair, firstCurrency, secondCurrency, new BN(5000), new BN(50000))
 		.then(
 			(result) => {
 				const eventResponse = getEventResultFromTxWait(result, ["xyk", "LiquidityMinted", testUser2.keyRingPair.address]);

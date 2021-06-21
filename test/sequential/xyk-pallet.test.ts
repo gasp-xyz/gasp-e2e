@@ -139,7 +139,7 @@ test('xyk-pallet: Happy case scenario', async () => {
 
   console.info("Alice: minting liquidity " + firstAssetId + " - " + secondAssetId);
   
-  await mintLiquidity(user, firstAssetId, secondAssetId, first_asset_amount)
+  await mintLiquidity(user, firstAssetId, secondAssetId, first_asset_amount, second_asset_amount)
   	.then(
 		(result) => {
 			const eventResponse = getEventResultFromTxWait(result, ["xyk", "LiquidityMinted", user.address]);
@@ -731,7 +731,7 @@ test('xyk-pallet: Liquidity sufficiency scenario', async () => {
 	[second_asset_amount, liquidity_assets_minted] = await calcuate_mint_liquidity_price_local(firstAssetId, secondAssetId, first_asset_amount);
 
   console.info("Alice: minting liquidity " + firstAssetId + " - " + secondAssetId);
-  await mintLiquidity(user, firstAssetId, secondAssetId, first_asset_amount)
+  await mintLiquidity(user, firstAssetId, secondAssetId, first_asset_amount, second_asset_amount)
   .then(
 	(result) => {
 			const eventResponse = getEventResultFromTxWait(result, ["xyk", "LiquidityMinted", user.address]);
@@ -781,7 +781,7 @@ test('xyk-pallet: Liquidity sufficiency scenario', async () => {
 
   console.info("Bob: minting liquidity " + firstAssetId + " - " + secondAssetId);
   
-  await mintLiquidity(user, firstAssetId, secondAssetId, first_asset_amount)
+  await mintLiquidity(user, firstAssetId, secondAssetId, first_asset_amount, second_asset_amount)
 	.then(
 		(result) => {
 				const eventResponse = getEventResultFromTxWait(result, ["xyk", "LiquidityMinted", user.address]);

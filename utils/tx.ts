@@ -265,11 +265,11 @@ export const buyAsset = async (account: any, soldAssetId: BN, boughtAssetId: BN,
   return txResult
 }
 
-export const mintLiquidity = async (account: any, firstAssetId: BN, secondAssetId: BN, firstAssetAmount: BN) => {
+export const mintLiquidity = async (account: any, firstAssetId: BN, secondAssetId: BN, firstAssetAmount: BN, expectedSecondAssetAmount: BN) => {
   const api = getApi();
   const nonce = await (await getCurrentNonce(account.address)).toNumber();
   const txResult = await signAndWaitTx(
-    api.tx.xyk.mintLiquidity(firstAssetId, secondAssetId, firstAssetAmount),
+    api.tx.xyk.mintLiquidity(firstAssetId, secondAssetId, firstAssetAmount, expectedSecondAssetAmount),
     account,
     nonce
   )
