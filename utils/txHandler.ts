@@ -8,7 +8,7 @@ import BN from 'bn.js'
 import { SudoDB } from './SudoDB';
 import { env } from 'process';
 import { EventResult, ExtrinsicResult } from './eventListeners';
-const DEFAULT_TIME_OUT_MS = 100000;
+const DEFAULT_TIME_OUT_MS = 1500000;
 
 export async function getCurrentNonce(account?: string) {
   const api = getApi()
@@ -146,12 +146,13 @@ export const signAndWaitTx = async (
 
   if (timeout_ms > 0){
       setTimeout(() => {
-      reject("timeout in - signAndWaitTx" + who.address + " - " + nonce + " - " + tx.toHuman())
+      reject("timeout in - signAndWaitTx - " + who.address + " - " + nonce + " - " + tx.toHuman()?.toString())
       }, timeout_ms);
   }
 
   const unsub = await tx.signAndSend(who, { nonce }, async ({ events = [], status }) => {
-        if (status.isInBlock) {
+    //console.warn(status);
+    if (status.isInBlock) {
             const unsub_new_heads = await api.derive.chain.subscribeNewHeads(async (lastHeader) => {
                 if (lastHeader.parentHash.toString() === status.asInBlock.toString()){
                     unsub_new_heads()
@@ -173,12 +174,19 @@ export const signAndWaitTx = async (
                     if (index < 0) {
                         return;
                     }
+                    
+
                     let req_events = curr_block_events.filter(event => {
                         return event.phase.isApplyExtrinsic && event.phase.asApplyExtrinsic.toNumber() === index;
                     }).map( ({ phase, event }) => {
                         return event;
                     });
-
+                    console.info("--curr_block " + JSON.stringify(curr_block_events.toJSON())
+                           + " \n --req_events " + req_events.toString() + 
+                             " \n --index: " + index +
+                             " \n --who.address: " + who.address +
+                             " \n --nonce: " + nonce.toString()
+                    );
                     result = req_events;
                 }
             });
@@ -226,6 +234,8 @@ export const getEventResultFromTxWait = function(relatedEvents :GenericEvent[], 
     }
 
   }
+  relatedEvents.forEach( event => console.error(JSON.stringify(event.toHuman()) + "----" + searchTerm.toString()));
+
   return new EventResult(-1, 'ERROR: NO TX FOUND');
 }
 

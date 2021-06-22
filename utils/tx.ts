@@ -265,7 +265,7 @@ export const buyAsset = async (account: any, soldAssetId: BN, boughtAssetId: BN,
   return txResult
 }
 
-export const mintLiquidity = async (account: any, firstAssetId: BN, secondAssetId: BN, firstAssetAmount: BN, expectedSecondAssetAmount: BN) => {
+export const mintLiquidity = async (account: any, firstAssetId: BN, secondAssetId: BN, firstAssetAmount: BN, expectedSecondAssetAmount: BN = new BN(Number.MAX_SAFE_INTEGER)) => {
   const api = getApi();
   const nonce = await (await getCurrentNonce(account.address)).toNumber();
   const txResult = await signAndWaitTx(

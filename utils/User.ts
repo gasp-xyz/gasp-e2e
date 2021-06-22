@@ -118,7 +118,7 @@ export class User {
 		);        
         await waitNewBlock();
     }
-    async mintLiquidity(firstCurrency: BN, secondCurrency: BN, firstCurrencyAmount: BN, secondCurrencyAmount: BN) {
+    async mintLiquidity(firstCurrency: BN, secondCurrency: BN, firstCurrencyAmount: BN, secondCurrencyAmount: BN = new BN(Number.MAX_SAFE_INTEGER)) {
         
 		await mintLiquidity(this.keyRingPair, firstCurrency, secondCurrency, firstCurrencyAmount, secondCurrencyAmount)
         .then(

@@ -43,12 +43,12 @@ export function validateMintedLiquidityEvent(result: EventResult, address: strin
 	const rawData = result.data;
 	expect(rawData).not.toBeNull();
 	expect(rawData[0]).toEqual(address);
-	expect(rawData[1]).toEqual(parseInt(firstCurrency.toString()));
-	expect(rawData[2].toString()).toEqual(firstCurerncyAmount.toString());
-	expect(rawData[3]).toEqual(parseInt(secondCurrency.toString()));
-	expect(rawData[4].toString()).toEqual(secondCurrencyAmount.toString());
+	expect(rawData[1]).toEqual(firstCurrency.toString());
+	expect(rawData[2].toString()).toEqual(fromBNToUnitString(firstCurerncyAmount));
+	expect(rawData[3]).toEqual(secondCurrency.toString());
+	expect(rawData[4].toString()).toEqual(fromBNToUnitString(secondCurrencyAmount));
 	expect(rawData[5].toString()).toEqual(liquidityAssetId.toString());
-	expect(rawData[6].toString()).toEqual(secondCurrencyAmount.toString());
+	expect(rawData[6].toString()).toEqual(fromBNToUnitString(secondCurrencyAmount));
 }
 
 
