@@ -234,8 +234,7 @@ export const getEventResultFromTxWait = function(relatedEvents :GenericEvent[], 
     }
 
   }
-  relatedEvents.forEach( event => console.error(JSON.stringify(event.toHuman()) + "----" + searchTerm.toString()));
-
+  console.error(relatedEvents + "<-found  --- Expected \n --->>" + searchTerm.toString())
   return new EventResult(-1, 'ERROR: NO TX FOUND');
 }
 
