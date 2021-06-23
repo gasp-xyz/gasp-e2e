@@ -127,7 +127,7 @@ test('xyk-pallet: Happy case scenario', async () => {
 
   console.info("Alice: minting liquidity " + firstAssetId + " - " + secondAssetId);
   eventPromise = getUserEventResult("xyk", "LiquidityMinted", 14, user.address);
-  mintLiquidity(user, firstAssetId, secondAssetId, first_asset_amount);
+  mintLiquidity(user, firstAssetId, secondAssetId, first_asset_amount, second_asset_amount);
   	eventResponse = await eventPromise;
 	expect(eventResponse.state).toEqual(ExtrinsicResult.ExtrinsicSuccess);
 
@@ -673,7 +673,7 @@ test('xyk-pallet: Liquidity sufficiency scenario', async () => {
 
   console.info("Alice: minting liquidity " + firstAssetId + " - " + secondAssetId);
   eventPromise = getUserEventResult("xyk", "LiquidityMinted", 14, user.address);
-  mintLiquidity(user, firstAssetId, secondAssetId, first_asset_amount);
+  mintLiquidity(user, firstAssetId, secondAssetId, first_asset_amount, second_asset_amount);
   eventResponse = await eventPromise;
 	expect(eventResponse.state).toEqual(ExtrinsicResult.ExtrinsicSuccess);
 
@@ -720,7 +720,7 @@ test('xyk-pallet: Liquidity sufficiency scenario', async () => {
 
   console.info("Bob: minting liquidity " + firstAssetId + " - " + secondAssetId);
   eventPromise = getUserEventResult("xyk", "LiquidityMinted", 14, user.address);
-  mintLiquidity(user, firstAssetId, secondAssetId, first_asset_amount);
+  mintLiquidity(user, firstAssetId, secondAssetId, first_asset_amount, second_asset_amount);
   eventResponse = await eventPromise;
 	expect(eventResponse.state).toEqual(ExtrinsicResult.ExtrinsicSuccess);
 

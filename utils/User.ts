@@ -108,9 +108,9 @@ export class User {
         expect(eventResponse.state).toEqual(ExtrinsicResult.ExtrinsicSuccess);
         await waitNewBlock();
     }
-    async mintLiquidity(firstCurrency: BN, secondCurrency: BN, amount: BN) {
+    async mintLiquidity(firstCurrency: BN, secondCurrency: BN, firstCurrencyAmount: BN, secondCurrencyAmount: BN) {
         const eventPromise = getUserEventResult("xyk", "LiquidityMinted", 14, this.keyRingPair.address);
-		mintLiquidity(this.keyRingPair, firstCurrency, secondCurrency, amount);
+		mintLiquidity(this.keyRingPair, firstCurrency, secondCurrency, firstCurrencyAmount, secondCurrencyAmount);
 		const eventResponse = await eventPromise;
 		expect(eventResponse.state).toEqual(ExtrinsicResult.ExtrinsicSuccess);
         await waitNewBlock();
