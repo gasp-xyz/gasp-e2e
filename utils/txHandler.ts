@@ -142,7 +142,7 @@ export const signAndWaitTx = async (
   return new Promise<GenericEvent[]>(async (resolve, reject) => {
 
   const api = getApi()
-  let result: GenericEvent[] = []
+  let result: GenericEvent[] = [];
 
   if (timeout_ms > 0){
       setTimeout(() => {
@@ -181,19 +181,31 @@ export const signAndWaitTx = async (
                     }).map( ({ phase, event }) => {
                         return event;
                     });
-                    console.info("--curr_block " + JSON.stringify(curr_block_events.toJSON())
-                           + " \n --req_events " + req_events.toString() + 
+                    console.info(
+                            `W[${env.JEST_WORKER_ID}]` +
+                             "--block - no " + lastHeader.number +
+                             " \n --curr_block " + JSON.stringify(curr_block_events.toJSON()) + 
+                             " \n --curr_block[toHuman]: " + curr_block_events.map( ({event}) => {return event} ).map( e => JSON.stringify(e.toHuman()) + JSON.stringify(e.toHuman().data) ).toString() +
+                             " \n --req_events " + req_events.toString() + 
                              " \n --index: " + index +
                              " \n --who.address: " + who.address +
-                             " \n --nonce: " + nonce.toString()
+                             " \n --nonce: " + nonce.toString() + 
+                             " \n --toHuman: " + req_events.map( e => JSON.stringify(e.toHuman()) + JSON.stringify(e.toHuman().data) ).toString()
                     );
-                    result = req_events;
+                    result = result.concat(req_events);
                 }
             });
 
         }else if (status.isFinalized) {
             unsub();
             // resolve only if transaction has been finalized
+            console.info(
+              `RESULT W[${env.JEST_WORKER_ID}]` +
+               " \n --req_events " + result.toString() + 
+               " \n --who.address: " + who.address +
+               " \n --nonce: " + nonce.toString() + 
+               " \n --toHuman: " + result.map( e => JSON.stringify(e.toHuman()) + JSON.stringify(e.toHuman().data) ).toString()
+            );
             resolve(result)
         }
     });
@@ -234,7 +246,8 @@ export const getEventResultFromTxWait = function(relatedEvents :GenericEvent[], 
     }
 
   }
-  console.error(relatedEvents + "<-found  --- Expected \n --->>" + searchTerm.toString())
+  console.error(`W[${env.JEST_WORKER_ID}]` + relatedEvents + "<-found  --- Expected \n --->>" + searchTerm.toString() 
+    + "\n toHumanStr " + relatedEvents.map( e => JSON.stringify(e.toHuman()) + JSON.stringify(e.toHuman().data) ).toString())
   return new EventResult(-1, 'ERROR: NO TX FOUND');
 }
 

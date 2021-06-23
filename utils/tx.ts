@@ -193,10 +193,10 @@ export const sudoIssueAsset = async (account: any, total_balance: BN, target: an
   const api = getApi();
   const nonce = await SudoDB.getInstance().getSudoNonce(account.address);
   console.info(`W[${env.JEST_WORKER_ID}] - sudoNonce: ${nonce} `);
-  const tokenCreation = api.tx.tokens.create(target, total_balance);
+
   const txResult = await signAndWaitTx(
 		api.tx.sudo.sudo(
-    	tokenCreation
+    	api.tx.tokens.create(target, total_balance)
 		),
     account,
     nonce
