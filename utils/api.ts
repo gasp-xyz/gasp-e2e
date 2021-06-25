@@ -73,7 +73,7 @@ export const initApi = async (uri = '') => {
               type: 'Balance',
             },
           ],
-          type: 'RpcResult<Balance>',
+          type: 'RPCAmountsResult<Balance>',
         },
         calculate_sell_price_id: {
           description: '',
@@ -131,6 +131,9 @@ export const initApi = async (uri = '') => {
       RpcResult: {
           price: 'Balance'
       },
+      RPCAmountsResult: {
+        ['Balance','Balance']
+    },
 
       // mapping the actual specified address format
       Address: 'AccountId',

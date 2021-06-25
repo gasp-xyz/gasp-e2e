@@ -98,7 +98,7 @@ export async function get_burn_amount(firstAssetId: BN, secondAssetId: BN, liqui
 	const api = getApi();
   //I could not find a way to get and inject the xyk interface in the api builder. 
 	let result = await ( api.rpc as any).xyk.get_burn_amount(firstAssetId, secondAssetId, liquidity_asset_amount);
-	return new BN(result.price.toString())
+	return new BN(result.toHuman())
 }
 
 export async function calculate_sell_price_rpc(input_reserve: BN, output_reserve: BN, sell_amount: BN){

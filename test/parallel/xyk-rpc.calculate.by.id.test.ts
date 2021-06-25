@@ -1,9 +1,8 @@
 import {getApi, initApi} from "../../utils/api";
 import { calculate_buy_price_id_rpc, calculate_buy_price_rpc, calculate_sell_price_id_rpc, calculate_sell_price_rpc, getBalanceOfPool} from '../../utils/tx'
-import {waitNewBlock} from '../../utils/eventListeners'
 import BN from 'bn.js'
 import { Keyring } from '@polkadot/api'
-import {AssetWallet, User} from "../../utils/User";
+import {User} from "../../utils/User";
 import { Assets } from "../../utils/Assets";
 import { getEnvironmentRequiredVars } from "../../utils/utils";
 
@@ -12,17 +11,6 @@ jest.spyOn(console, 'log').mockImplementation(jest.fn());
 jest.setTimeout(1500000);
 process.env.NODE_ENV = 'test';
 
-let testUser1 : User;
-
-
-let keyring : Keyring;
-let firstCurrency :BN;
-let secondCurrency :BN;
-
-// Assuming the pallet's AccountId
-const {sudo:sudoUserName} = getEnvironmentRequiredVars();
-const firstAssetAmount = 1000;
-const seccondAssetAmount = 1000;
 
 beforeAll( async () => {
 	try {
@@ -30,30 +18,9 @@ beforeAll( async () => {
 	  } catch(e) {
 		await initApi();
 	}
-	await waitNewBlock();
-	keyring = new Keyring({ type: 'sr25519' });
-
-	// setup users
-	testUser1 = new User(keyring);
-	const sudo = new User(keyring, sudoUserName);
-
-	
-	//add two curerncies and balance to testUser:
-	[firstCurrency, secondCurrency] = await Assets.setupUserWithCurrencies(testUser1, [firstAssetAmount *2 ,seccondAssetAmount *2] , sudo );
-	await testUser1.setBalance(sudo);
-	await testUser1.createPoolToAsset(new BN(firstAssetAmount), new BN(seccondAssetAmount), firstCurrency, secondCurrency);
-	
-    // add users to pair.
-	keyring.addPair(testUser1.keyRingPair);
-	keyring.addPair(sudo.keyRingPair);
 
 });
 
-beforeEach( async () => {
-	// check users accounts.
-	await waitNewBlock();
-	await testUser1.refreshAmounts(AssetWallet.BEFORE);
-})
 describe('xyk-rpc - calculate_buy_price_by_id, calculate_sell_price_by_id', () => {
 
 	let dictAssets = new Map<number, BN>();
