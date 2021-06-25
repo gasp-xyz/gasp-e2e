@@ -115,6 +115,18 @@ export async function calculate_buy_price_rpc(input_reserve: BN, output_reserve:
 	return new BN(result.price.toString())
 }
 
+export async function calculate_buy_price_id_rpc(soldTokenId: BN, boughtTokenId: BN, buy_amount: BN){
+	const api = getApi();
+	let result = await ( api.rpc as any).xyk.calculate_buy_price_id(soldTokenId, boughtTokenId, buy_amount);
+	return new BN(result.price.toString())
+}
+
+export async function calculate_sell_price_id_rpc(soldTokenId: BN, boughtTokenId: BN, sell_amount: BN){
+	const api = getApi();
+	let result = await ( api.rpc as any).xyk.calculate_sell_price_id(soldTokenId, boughtTokenId, sell_amount);
+	return new BN(result.price.toString())
+}
+
 export async function getCurrentNonce(account?: string) {
   const api = getApi();
   if (account) {
