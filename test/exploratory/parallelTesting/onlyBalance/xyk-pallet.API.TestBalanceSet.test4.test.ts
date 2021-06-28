@@ -1,11 +1,8 @@
-import {api, getApi, initApi} from "../../../utils/api";
-import {waitNewBlock, ExtrinsicResult, EventResult} from '../../../utils/eventListeners'
-import BN from 'bn.js'
+import {getApi, initApi} from "../../../../utils/api";
+import {waitNewBlock} from '../../../../utils/eventListeners'
 import { Keyring } from '@polkadot/api'
-import {AssetWallet, User} from "../../../utils/User";
-import { Assets } from "../../../utils/Assets";
-import { getEnvironmentRequiredVars } from "../../../utils/utils";
-import { getEventResultFromTxWait, signSendAndWaitToFinishTx } from "../../../utils/txHandler";
+import {User} from "../../../../utils/User";
+import { getEnvironmentRequiredVars } from "../../../../utils/utils";
 
 const {sudo:sudoUserName} = getEnvironmentRequiredVars();
 
@@ -13,17 +10,12 @@ jest.spyOn(console, 'log').mockImplementation(jest.fn());
 jest.setTimeout(1500000);
 process.env.NODE_ENV = 'test';
 
-const defaultCurrecyValue = 250000;
-
-
 describe('xyk-pallet - Burn liquidity tests: when burning liquidity you can', () => {
 	
 	var testUser1 : User;
 	var sudo : User;
 
 	var keyring : Keyring;
-	var firstCurrency :BN;
-	var secondCurrency :BN;
 
 	//creating pool
 	
