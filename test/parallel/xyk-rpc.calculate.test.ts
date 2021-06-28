@@ -109,8 +109,6 @@ test('xyk-rpc - calculate_sell_price matches with the real sell', async() => {
 	const assetsSold = testUser1.getAsset(firstCurrency)?.amountAfter;
 	const assetsBought = testUser1.getAsset(secondCurrency)?.amountAfter;
 
-	//the relation of buy and sell is maintained.
-	//because of rounding, we need to expend one unit more
 	expect(assetsSold).toEqual(testUser1.getAsset(firstCurrency)?.amountBefore.sub(numberOfAssets));
 	expect(assetsBought).toEqual(testUser1.getAsset(secondCurrency)?.amountBefore.add(sellPriceRpc));
 	
@@ -127,8 +125,6 @@ test('xyk-rpc - calculate_buy_price matches with the real buy', async() => {
 	const assetsSold = testUser1.getAsset(firstCurrency)?.amountAfter;
 	const assetsBought = testUser1.getAsset(secondCurrency)?.amountAfter;
 
-	//the relation of buy and sell is maintained.
-	//because of rounding, we need to expend one unit more
 	expect(assetsSold).toEqual(testUser1.getAsset(firstCurrency)?.amountBefore.sub(sellPriceRpc));
 	expect(assetsBought).toEqual(testUser1.getAsset(secondCurrency)?.amountBefore.add(numberOfAssets));
 	
