@@ -39,7 +39,7 @@ export function validateAssetsSwappedEvent(result : EventResult, userAddress : s
 	validatePoolCreatedEvent(result, userAddress, firstCurrency, first_asset_amount, secondCurrency, second_asset_amount);
 }
 
-export function validateMintedLiquidityEvent(result: EventResult, address: string, firstCurrency: BN, firstCurerncyAmount: BN, secondCurrency: BN, secondCurrencyAmount: BN , liquidityAssetId: BN) {
+export function validateMintedLiquidityEvent(result: EventResult, address: string, firstCurrency: BN, firstCurerncyAmount: BN, secondCurrency: BN, secondCurrencyAmount: BN , liquidityAssetId: BN, txAmount:BN) {
 	const rawData = result.data;
 	expect(rawData).not.toBeNull();
 	expect(rawData[0]).toEqual(address);
@@ -48,7 +48,7 @@ export function validateMintedLiquidityEvent(result: EventResult, address: strin
 	expect(rawData[3]).toEqual(secondCurrency.toString());
 	expect(rawData[4].toString()).toEqual(fromBNToUnitString(secondCurrencyAmount));
 	expect(rawData[5].toString()).toEqual(liquidityAssetId.toString());
-	expect(rawData[6].toString()).toEqual(fromBNToUnitString(secondCurrencyAmount));
+	expect(rawData[6].toString()).toEqual(fromBNToUnitString(txAmount));
 }
 
 

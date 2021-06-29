@@ -2,6 +2,10 @@ import { formatBalance} from "@polkadot/util/format";
 import BN from "bn.js";
 import { getApi } from "./api";
 import { assert } from "console";
+import { waitNewBlock } from "./eventListeners";
+import { Assets } from "./Assets";
+import { signSendAndWaitToFinishTx } from "./txHandler";
+import { User } from "./User";
 
 
 export function sleep(ms: number) {
@@ -26,4 +30,23 @@ export function getEnvironmentRequiredVars(){
     // expect(sudoUserName.length).not.toEqual(0);
     const uri = process.env.API_URL ? process.env.API_URL: 'ws://127.0.0.1:9944';
     return {pallet: palletAddress, sudo: sudoUserName, chainUri:uri};
+}
+
+export async function UserCreatesAPoolAndMintliquidity(
+	testUser1: User, sudo: User
+	, userAmount : BN 
+	, poolAmount : BN = new BN(userAmount).div(new BN(2))
+	, mintAmount: BN = new BN(userAmount).div(new BN(4))) {
+
+	await waitNewBlock();
+    const api = getApi();
+	const [firstCurrency, secondCurrency] = await Assets.setupUserWithCurrencies(testUser1, [parseInt(userAmount.toString()), parseInt(userAmount.toString())], sudo);
+	await testUser1.setBalance(sudo);
+	await signSendAndWaitToFinishTx(
+		api?.tx.xyk.createPool(firstCurrency, poolAmount, secondCurrency, poolAmount),
+		testUser1.keyRingPair
+	);
+	await waitNewBlock();
+	await testUser1.mintLiquidity(firstCurrency, secondCurrency, mintAmount);
+	return [firstCurrency, secondCurrency];
 }

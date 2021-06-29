@@ -131,6 +131,19 @@ export async function getLiquidityAssetId(assetId1: BN, assetId2: BN ) {
 
 }
 
+export async function getLiquiditybalance(liquidityAssetId: BN){
+  const pool = await getLiquidityPool(liquidityAssetId);
+  const assetIds = pool.toHuman() as string[];
+  const poolBalance = await getBalanceOfPool(new BN(assetIds[0].toString()), new BN(assetIds[1].toString()) );
+  return poolBalance;
+}
+
+export async function getLiquidityPool(liquidityAssetId: BN) {
+  const api = getApi();
+  const pool = await api.query.xyk.liquidityPools(liquidityAssetId);
+  return pool;
+}
+
 export async function getAssetSupply(assetId1: BN) {
   const api = getApi();
 
