@@ -26,6 +26,7 @@
     "test": "jest",
     "test-parallel": "rm nonce.db ; rm sudo.lock; jest test/parallel/* --verbose",
     "test-sequential": "rm nonce.db ; rm sudo.lock; jest test/sequential/* --verbose --runInBand",
+    "test-ci": "rm nonce.db ; rm sudo.lock; jest test/ci/* --verbose --runInBand",
     "tsc-lint": "tsc -noemit -p tsconfig.json",
     "eslint": "node_modules/.bin/eslint --max-warnings 0 . --ext .ts"
   },

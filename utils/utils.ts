@@ -1,4 +1,5 @@
 import { formatBalance} from "@polkadot/util/format";
+import BN from "bn.js";
 import { getApi } from "./api";
 
 export function sleep(ms: number) {

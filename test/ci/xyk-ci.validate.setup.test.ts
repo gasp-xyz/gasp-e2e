@@ -1,7 +1,6 @@
 import {getApi, initApi} from "../../utils/api";
 import BN from 'bn.js'
 import { Keyring } from '@polkadot/api'
-import {User} from "../../utils/User";
 import { fromBNToUnitString, getEnvironmentRequiredVars } from "../../utils/utils";
 import { getBalanceOfPool, getUserAssets } from "../../utils/tx";
 
@@ -13,10 +12,7 @@ process.env.NODE_ENV = 'test';
 
 let keyring : Keyring;
 
-// Assuming the pallet's AccountId
-const {sudo:sudoUserName, alice:testUserName} = getEnvironmentRequiredVars();
-let sudo: User;
-
+const {alice:testUserName} = getEnvironmentRequiredVars();
 
 beforeAll( async () => {
 	try {
@@ -25,7 +21,6 @@ beforeAll( async () => {
 		await initApi();
 	}
 	keyring = new Keyring({ type: 'sr25519' });
-	sudo = new User(keyring, sudoUserName);
 	
 })
 
@@ -34,7 +29,7 @@ test.each([
 	[new BN(0), new BN(5)],
 	[new BN(0), new BN(6)],
 	[new BN(4), new BN(6)],
-])('xyk-CI - validate pool created: Pool[%s,%s]', async (assetId1,assetId2) => {
+])('xyk-CI - validate pools created: Pool[%s,%s]', async (assetId1,assetId2) => {
 	
 	var poolBalance = await getBalanceOfPool(assetId1, assetId2);
 	console.info(`Pool[${assetId1},${assetId2}] has: ${fromBNToUnitString(poolBalance[0])} , ${fromBNToUnitString(poolBalance[1])} `);
@@ -44,7 +39,9 @@ test.each([
 });
 
 test('xyk-CI - validate user got the right Assets', async() => {
-	const alice = keyring.addFromUri('//Alice');
+	console.info(`TEST_INFO: Validating ${testUserName}, export TEST_USER_NAME env variable to change the test user`);
+	
+	const alice = keyring.addFromUri(testUserName);
 	const aliceBalances = await getUserAssets(alice.address, [new BN(0),new BN(4),new BN(5),new BN(6)]);
 	console.info(`AssetID[0] - ${fromBNToUnitString(aliceBalances[0])}`);
 	console.info(`AssetID[4] - ${fromBNToUnitString(aliceBalances[1])}`);
