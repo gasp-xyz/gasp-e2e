@@ -1,9 +1,7 @@
 //README:
 //Configure uris constant.
 //Build And Run!
-// npx ts-node test/exploratory/eventListener4000.ts
-//Example of a trace:
-//[ Fri, 28 May 2021 13:49:54 GMT] - W[127.0.0.1]         xyk:LiquidityMinted [AccountId: 5GrwvaEF5zXb26Fz9rcQpDWS57CtERHpNehXCPcNoHGKutQY]  [TokenId: 134]  [Balance: 20000]  [TokenId: 135]  [Balance: 20001]  [TokenId: 136]  [Balance: 20001] 
+// npx ts-node test/exploratory/eventsBlockListener.ts
 export {};
 
 let uris = [
