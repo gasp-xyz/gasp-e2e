@@ -155,7 +155,7 @@ test('xyk-pallet - LiquidityOperation: mintLiquidity', async () => {
   	
     console.log("User: minting liquidity " + firstCurrency + " - " + secondCurrency);
 	const eventPromise = getUserEventResult("xyk", "LiquidityMinted", 14, testUser1.keyRingPair.address);
-	mintLiquidity(testUser1.keyRingPair, firstCurrency, secondCurrency, firstCurrencyAssetAmount);
+	mintLiquidity(testUser1.keyRingPair, firstCurrency, secondCurrency, firstCurrencyAssetAmount, secondAssetAmount);
 	const eventResponse = await eventPromise;
 	expect(eventResponse.state).toEqual(ExtrinsicResult.ExtrinsicSuccess);
 

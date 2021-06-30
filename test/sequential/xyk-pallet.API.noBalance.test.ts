@@ -82,7 +82,7 @@ test('xyk-pallet - User Balance - mint liquidity requires free balance', async (
 
 	await expect( 
 		signTx( 
-			api.tx.xyk.mintLiquidity(firstCurrency, secondCurrency, first_asset_amount), 
+			api.tx.xyk.mintLiquidity(firstCurrency, secondCurrency, first_asset_amount, second_asset_amount), 
 			testUser1.keyRingPair,
 			await  getCurrentNonce(testUser1.keyRingPair.address))
 			.catch((reason) => {
