@@ -132,7 +132,8 @@ export const initApi = async (uri = '') => {
           price: 'Balance'
       },
       RPCAmountsResult: {
-        ['Balance','Balance']
+        first_asset_amount: 'Balance',
+        second_asset_amount: 'Balance',
     },
 
       // mapping the actual specified address format

@@ -22,7 +22,7 @@ beforeAll( async () => {
 });
 
 //TODO,  fix when bug gets resolved.
-describe.skip('xyk-rpc - calculate burn amount', () => {
+describe('xyk-rpc - calculate burn amount', () => {
 
 	let dictAssets = new Map<number, BN>();
 
@@ -33,9 +33,7 @@ describe.skip('xyk-rpc - calculate burn amount', () => {
 		keyring.addPair(sudo.keyRingPair);
 		
 		//the idea of this mess is to have some pools with different values,
-		//pool1 [0,1]: with one,one value
-		//pool2 [1,2]: with one,two value
-		//pool3 [2,3]: with two,two value
+		//pool1 [0,1]: with [defaultCurrencyAmount,defaultCurrencyAmount]
 		const assetIds = await Assets.setupUserWithCurrencies(sudo, [defaultCurrencyAmount,defaultCurrencyAmount], sudo);	
 		const assetValues = [defaultCurrencyAmount,defaultCurrencyAmount];
 		for (let index = 0; index < assetIds.length; index++) {
@@ -55,7 +53,7 @@ describe.skip('xyk-rpc - calculate burn amount', () => {
 	('validate parameters - buy [soldTokenId->%s,boughtTokenId->%s,amount->%s,expected->%s]', async(soldTokenId,boughtTokenId,amount, expected) => {
 		
 		const poolBalance = await getBalanceOfPool(dictAssets.get(soldTokenId)!, dictAssets.get(boughtTokenId)!);
-		const burnAmount = await get_burn_amount(dictAssets.get(soldTokenId)!,dictAssets.get(boughtTokenId)!, amount);
+		const burnAmount = await get_burn_amount(dictAssets.get(boughtTokenId)!,dictAssets.get(soldTokenId)!, amount);
 		expect(burnAmount).toEqual(expected);
 	});
 })
