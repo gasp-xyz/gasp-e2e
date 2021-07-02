@@ -100,9 +100,9 @@ describe('xyk-pallet - Burn liquidity tests: when burning liquidity you can', ()
 		expect(eventResponse.state).toEqual(ExtrinsicResult.ExtrinsicSuccess);
 
 		await testUser1.refreshAmounts(AssetWallet.AFTER);
-		//TODO: Make tx big enough to get treasury units.
-		await validateTreasuryAmountsEqual(firstCurrency,['0','0']);
-		await validateTreasuryAmountsEqual(secondCurrency,['0','0']);
+		//burn liquidity does not add any treasury.
+		await validateTreasuryAmountsEqual(firstCurrency, [new BN(0),new BN(0)]);
+		await validateTreasuryAmountsEqual(secondCurrency,[new BN(0),new BN(0)]);
 
 	});
 

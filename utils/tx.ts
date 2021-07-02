@@ -314,14 +314,25 @@ export async function getAccountInfo(account?: string) {
   return -1
 }
 
-export async function getTreasury(currencyId : BN){
+export async function getTreasury(currencyId : BN): Promise<BN>{
   const api = getApi();
   const treasuryBalance = await api.query.xyk.treasury(currencyId);
-  return treasuryBalance.toHuman();
+  const treasuryBalanceBN = new BN(treasuryBalance.toString());
+  return treasuryBalanceBN;
 }
 
-export async function getTreasuryBurn(currencyId : BN){
+export async function getTreasuryBurn(currencyId : BN): Promise<BN>{
   const api = getApi();
   const treasuryBalance = await api.query.xyk.treasuryBurn(currencyId);
-  return treasuryBalance.toHuman();
+  const treasuryBalanceBN = new BN(treasuryBalance.toString());
+  return treasuryBalanceBN;
+}
+
+export async function getAssetId(assetName : string) : Promise<any> {
+  const api = getApi();
+  const assetsInfo = await api.query.assetsInfo.assetsInfo.entries();
+  const assetFiltered = assetsInfo.filter( el =>  JSON.stringify(el[1].toHuman()).includes( assetName ))[0]
+  const assetId = JSON.stringify(assetFiltered[0].toHuman());
+  return new BN(parseInt(JSON.parse(assetId)[0]))
+  
 }
