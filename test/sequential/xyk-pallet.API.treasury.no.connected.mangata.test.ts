@@ -61,7 +61,7 @@ describe('xyk-pallet - treasury tests [No Mangata]: on treasury we store', () =>
 
 	});
 
-	test('assets won when assets are sold - 5', async () => {
+	test('assets won when assets are sold - 5 [no connected to MNG]', async () => {
 
 		await waitNewBlock();
 		let sellAssetAmount = new BN(10000);
@@ -79,7 +79,7 @@ describe('xyk-pallet - treasury tests [No Mangata]: on treasury we store', () =>
 		await validateTreasuryAmountsEqual(secondCurrency,[new BN(0),new BN(0)]);
 		
 	});
-	test('assets won when assets are sold - 0 [rounding]', async () => {
+	test('assets won when assets are sold - 0 [rounding] [no connected to MNG]', async () => {
 
 		await waitNewBlock();
 		let sellAssetAmount = new BN(5000);
@@ -98,7 +98,7 @@ describe('xyk-pallet - treasury tests [No Mangata]: on treasury we store', () =>
 		
 	});
 
-	test('assets won when assets are bought -2', async () => {
+	test('assets won when assets are bought - 2 [no connected to MNG]', async () => {
 
 		await waitNewBlock();
 		let buyAssetAmount = new BN(10000);
@@ -118,7 +118,7 @@ describe('xyk-pallet - treasury tests [No Mangata]: on treasury we store', () =>
 		
 	});
 
-	test('assets won when assets are bought -1', async () => {
+	test('assets won when assets are bought - 1 [no connected to MNG]', async () => {
 
 		await waitNewBlock();
 		let buyAssetAmount = new BN(20000);
