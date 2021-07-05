@@ -80,7 +80,7 @@ export function calculate_sell_price_local(input_reserve: BN, output_reserve: BN
 	return new BN(result.toString())
 }
 export function calculate_sell_price_local_no_fee(input_reserve: BN, output_reserve: BN, sell_amount: BN){
-	let input_amount_with_no_fee: BN = sell_amount;
+	let input_amount_with_no_fee: BN = sell_amount.mul(new BN(1000));
 	let numerator: BN = input_amount_with_no_fee.mul(output_reserve);
 	let denominator: BN = input_reserve.mul(new BN(1000)).add(input_amount_with_no_fee);
 	let result: BN = numerator.div(denominator);
