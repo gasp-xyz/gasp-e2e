@@ -61,7 +61,7 @@ describe('xyk-pallet - treasury tests [No Mangata]: on treasury we store', () =>
 
 	});
 
-	test('assets won when assets are sold - 5 [no connected to MNG]', async () => {
+	test('assets won when assets are sold - 5 [no connected to MGA]', async () => {
 
 		await waitNewBlock();
 		let sellAssetAmount = new BN(10000);
@@ -79,7 +79,7 @@ describe('xyk-pallet - treasury tests [No Mangata]: on treasury we store', () =>
 		await validateTreasuryAmountsEqual(secondCurrency,[new BN(0),new BN(0)]);
 		
 	});
-	test('assets won when assets are sold - 0 [rounding] [no connected to MNG]', async () => {
+	test('assets won when assets are sold - 0 [rounding] [no connected to MGA]', async () => {
 
 		await waitNewBlock();
 		let sellAssetAmount = new BN(5000);
@@ -98,7 +98,7 @@ describe('xyk-pallet - treasury tests [No Mangata]: on treasury we store', () =>
 		
 	});
 
-	test('assets won when assets are bought - 2 [no connected to MNG]', async () => {
+	test('assets won when assets are bought - 2 [no connected to MGA]', async () => {
 
 		await waitNewBlock();
 		let buyAssetAmount = new BN(10000);
@@ -118,10 +118,10 @@ describe('xyk-pallet - treasury tests [No Mangata]: on treasury we store', () =>
 		
 	});
 
-	test('assets won when assets are bought - 1 [no connected to MNG]', async () => {
+	test('assets won when assets are bought - 1 [no connected to MGA]', async () => {
 
 		await waitNewBlock();
-		let buyAssetAmount = new BN(20000);
+		let buyAssetAmount = new BN(5000);
 
 		let eventPromise = getUserEventResult("xyk", "AssetsSwapped", 14, testUser1.keyRingPair.address);
 		buyAsset(testUser1.keyRingPair, firstCurrency, secondCurrency, buyAssetAmount, new BN(100000000));
@@ -130,7 +130,7 @@ describe('xyk-pallet - treasury tests [No Mangata]: on treasury we store', () =>
 
 		await testUser1.refreshAmounts(AssetWallet.AFTER);
 		//pool is [50000X,25000Y]
-		//user buy [10000] of X.
+		//user buy [5000] of Y.
 		//Stano sheet tells: Burn - 1,1
 		await validateTreasuryAmountsEqual(secondCurrency,[new BN(1),new BN(1)]);
 		//treasuries are stored in the bought assets wallet, not the fitst, so must be zero.

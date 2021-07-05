@@ -94,6 +94,13 @@ export function calculate_buy_price_local(input_reserve: BN, output_reserve: BN,
 	return new BN(result.toString())
 }
 
+export function calculate_buy_price_local_no_fee(input_reserve: BN, output_reserve: BN, buy_amount: BN){
+	let numerator: BN = input_reserve.mul(buy_amount).mul(new BN(1000));
+	let denominator: BN = output_reserve.sub(buy_amount).mul(new BN(1000));
+	let result: BN = numerator.div(denominator).add(new BN(1));
+	return new BN(result.toString())
+}
+
 export async function get_burn_amount(firstAssetId: BN, secondAssetId: BN, liquidity_asset_amount: BN){
 	const api = getApi();
   //I could not find a way to get and inject the xyk interface in the api builder. 
