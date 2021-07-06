@@ -178,7 +178,7 @@ export async function getLiquidityPool(liquidityAssetId: BN ) {
   const poolAssetIds = (liqPool.toHuman() as Number[]);
   if(!poolAssetIds)
     return [new BN(-1),new BN(-1)];
-    
+
   const result = poolAssetIds.map( num => new BN(num.toString()) )
 	return result;
 
@@ -261,6 +261,16 @@ export const transferAsset = async (account: any, asset_id:BN, target: any, amou
 
   signTx(
     api.tx.tokens.transfer(target, asset_id, amount),
+    account,
+    await getCurrentNonce(account.address)
+  )
+}
+
+export const transferAll = async (account: any, asset_id:BN, target: any) => {
+  const api = getApi();
+
+  signTx(
+    api.tx.tokens.transferAll(target, asset_id),
     account,
     await getCurrentNonce(account.address)
   )
