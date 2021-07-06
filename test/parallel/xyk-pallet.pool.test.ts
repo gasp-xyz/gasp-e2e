@@ -1,5 +1,5 @@
 import {getApi, initApi} from "../../utils/api";
-import { getBalanceOfPool, getLiquidityAssetId, getAssetSupply, createPool} from '../../utils/tx'
+import { getBalanceOfPool, getLiquidityAssetId, getAssetSupply, createPool, getLiquidityPool} from '../../utils/tx'
 import {waitNewBlock, ExtrinsicResult, getUserEventResult} from '../../utils/eventListeners'
 import BN from 'bn.js'
 import { Keyring } from '@polkadot/api'
@@ -112,6 +112,11 @@ test('xyk-pallet - Pool tests: createPool', async () => {
 	let total_liquidity_assets = await getAssetSupply(liquidity_asset_id);
 	expect(total_liquidity_assets_before.add(liquidity_assets_minted))
 	.toEqual(total_liquidity_assets);
+
+	//Validate liquidity pool.
+	const liquidityPool = await getLiquidityPool(liquidity_asset_id);
+	expect(liquidityPool[0]).toEqual(firstCurrency);
+	expect(liquidityPool[1]).toEqual(secondCurrency);
 
 });
 
