@@ -82,7 +82,7 @@ test('xyk-pallet - User Balance - mint liquidity requires free balance', async (
 
 	await expect( 
 		signTx( 
-			api.tx.xyk.mintLiquidity(firstCurrency, secondCurrency, first_asset_amount, second_asset_amount), 
+			api.tx.xyk.mintLiquidity(firstCurrency, secondCurrency, first_asset_amount, new BN(Number.MAX_SAFE_INTEGER)), 
 			testUser1.keyRingPair,
 			await  getCurrentNonce(testUser1.keyRingPair.address))
 			.catch((reason) => {
@@ -100,11 +100,12 @@ test('xyk-pallet - User Balance - Selling an asset does not require free balance
 	const api = getApi();
 	await testUser1.refreshAmounts(AssetWallet.BEFORE);
 	let amountInWallet = testUser1.getAsset(firstCurrency)?.amountBefore!;
+	const nonce = await getCurrentNonce(testUser1.keyRingPair.address);
 	await expect( 
 		signTx( 
 			api.tx.xyk.sellAsset(firstCurrency, secondCurrency, amountInWallet.sub(new BN(1)) , first_asset_amount.mul(first_asset_amount)),
 			testUser1.keyRingPair,
-			await  getCurrentNonce(testUser1.keyRingPair.address))
+			nonce)
 			.catch((reason) => {
 				exception = true;
 				throw new Error(reason);
@@ -118,11 +119,12 @@ test('xyk-pallet - User Balance - Buying an asset does not require free balance'
 	const api = getApi();
 	await testUser1.refreshAmounts(AssetWallet.BEFORE);
 	let amountInWallet = testUser1.getAsset(firstCurrency)?.amountBefore!;
+	const nonce = await getCurrentNonce(testUser1.keyRingPair.address);
 	await expect( 
 		signTx( 
 			api.tx.xyk.buyAsset(firstCurrency, secondCurrency, new BN(1) , amountInWallet),
 			testUser1.keyRingPair,
-			await  getCurrentNonce(testUser1.keyRingPair.address))
+			nonce)
 			.catch((reason) => {
 				exception = true;
 				throw new Error(reason);
@@ -149,5 +151,6 @@ afterEach(async () => {
 	expect([pool_balance_before[0], pool_balance_before[1]]).toEqual([balance[1], balance[0]]);
 
 	expect(liquidity_asset_id).toEqual(new BN(0));
+	await waitNewBlock();
 
 })

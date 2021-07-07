@@ -17,6 +17,7 @@
     "eslint": "^7.26.0",
     "typescript": "3",
     "web3": "^1.3.0",
+    "xoshiro": "^2.0.3",
     "yarn": "^1.22.10"
   },
   "scripts": {
@@ -25,9 +26,12 @@
     "build": "tsc --project tsconfig.json",
     "test": "jest",
     "test-parallel": "rm nonce.db ; rm sudo.lock; jest test/parallel/* --verbose",
+    "test-playground-pararell": "rm nonce.db ; rm sudo.lock; jest test/exploratory/parallelTesting/transfer/* --verbose",
     "test-sequential": "rm nonce.db ; rm sudo.lock; jest test/sequential/* --verbose --runInBand",
+    "test-sequential-e2e": "rm nonce.db ; rm sudo.lock; jest test/sequential/xyk-pallet.test.ts --verbose --runInBand --ci --reporters=default --reporters=jest-junit",
     "tsc-lint": "tsc -noemit -p tsconfig.json",
-    "eslint": "node_modules/.bin/eslint --max-warnings 0 . --ext .ts"
+    "eslint": "node_modules/.bin/eslint --max-warnings 0 . --ext .ts",
+    "xoshiro": "^2.0.3"
   },
   "devDependencies": {
     "@babel/core": "^7.13.10",
@@ -36,6 +40,16 @@
     "@types/jest": "^26.0.23",
     "babel-jest": "^26.6.3",
     "eslint-config-mangata": "https://github.com/mangata-finance/eslint-config-mangata.git",
-    "jest": "^26.6.3"
+    "jest": "^26.6.3",
+    "jest-junit": "^12.2.0"
+  },
+  "jest-junit": {
+    "outputDirectory": "reports",
+    "outputName": "jest-junit.xml",
+    "ancestorSeparator": " › ",
+    "uniqueOutputName": "false",
+    "suiteNameTemplate": "{filepath}",
+    "classNameTemplate": "{classname}",
+    "titleTemplate": "{title}"
   }
 }
