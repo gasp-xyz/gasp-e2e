@@ -1,17 +1,22 @@
 name: e2e workflow
 
-inputs:
-  scriptName:
-    description: 'Name of the script to run'
-    required: false
-    default: 'test-sequential-e2e'
-
 on:
   pull_request:
     branches:
       - main
       - develop
+    inputs:
+      scriptName:
+        description: 'Name of the script to run'
+        required: false
+        default: 'test-sequential-e2e'
+
   workflow_dispatch:
+      inputs:
+        scriptName:
+          description: 'Name of the script to run'
+          required: false
+          default: 'test-sequential-e2e'
       # For manually trigger
  
 
