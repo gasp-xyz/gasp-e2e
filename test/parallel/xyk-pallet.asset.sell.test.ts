@@ -81,6 +81,7 @@ test('xyk-pallet - AssetsOperation: sellAsset [minAmountOut = 0] , first to seco
 	
 	const soldAssetId = firstCurrency;
 	const boughtAssetId = secondCurrency;
+	
 	await testUser1.sellAssets(soldAssetId, secondCurrency , amount);
 
 	await testUser1.refreshAmounts(AssetWallet.AFTER);

@@ -1,7 +1,8 @@
 
 import BN from 'bn.js';
-import { ExtrinsicResult, getUserEventResult, waitNewBlock } from './eventListeners';
-import { getNextAssetId , getAssetSupply , sudoIssueAsset} from './tx';
+import { ExtrinsicResult, waitNewBlock } from './eventListeners';
+import { getNextAssetId , getAssetSupply } from './tx';
+import {getEventResultFromTxWait, sudoIssueAsset} from './txHandler';
 import { User } from './User';
 
 export class Assets {
@@ -47,9 +48,9 @@ export class Assets {
     //this method add a certain amount of currencies to a user into a returned currecncyId
     static async issueAssetToUser(user : User, num = 1000, sudo : User){
 
-        let eventPromise = getUserEventResult("tokens","Issued", 12, user.keyRingPair.address);
-        sudoIssueAsset(sudo.keyRingPair, new BN(num), user.keyRingPair.address);        
-        let eventResult = await eventPromise;
+        const result = await sudoIssueAsset(sudo.keyRingPair, new BN(num), user.keyRingPair.address);  
+        const eventResult = await getEventResultFromTxWait(result, ["tokens","Issued", user.keyRingPair.address]);  
+
         expect(eventResult.state).toEqual(ExtrinsicResult.ExtrinsicSuccess);
 
         return new BN(eventResult.data[0]);
