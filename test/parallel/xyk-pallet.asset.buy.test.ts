@@ -1,11 +1,12 @@
 import {getApi, initApi} from "../../utils/api";
 import { calculate_buy_price_local, calculate_buy_price_rpc, getBalanceOfPool, buyAsset} from '../../utils/tx'
-import {waitNewBlock, ExtrinsicResult, getUserEventResult} from '../../utils/eventListeners'
+import {waitNewBlock, ExtrinsicResult} from '../../utils/eventListeners'
 import BN from 'bn.js'
 import { Keyring } from '@polkadot/api'
 import {AssetWallet, User} from "../../utils/User";
 import { Assets } from "../../utils/Assets";
 import { getEnvironmentRequiredVars } from "../../utils/utils";
+import { getEventResultFromTxWait } from "../../utils/txHandler";
 
 jest.spyOn(console, 'log').mockImplementation(jest.fn());
 jest.setTimeout(1500000);
@@ -81,10 +82,14 @@ test('xyk-pallet - AssetsOperation: buyAsset [maxAmountIn = 1M], buy asset', asy
 	console.log("Bob: buying asset " + secondCurrency + ", selling asset " + firstCurrency);
 	const soldAssetId = firstCurrency;
 	const boughtAssetId = secondCurrency;
-  	const eventPromise = getUserEventResult("xyk", "AssetsSwapped", 14, testUser1.keyRingPair.address);
-  	buyAsset(testUser1.keyRingPair, soldAssetId, boughtAssetId, amount, new BN(1000000));
-  	const eventResult = await eventPromise;
-	expect(eventResult.state).toEqual(ExtrinsicResult.ExtrinsicSuccess);
+  	
+  	await buyAsset(testUser1.keyRingPair, soldAssetId, boughtAssetId, amount, new BN(1000000))
+	  .then(
+		(result) => {
+			const eventResponse = getEventResultFromTxWait(result, ["xyk", "AssetsSwapped", testUser1.keyRingPair.address]);
+			expect(eventResponse.state).toEqual(ExtrinsicResult.ExtrinsicSuccess);
+		}
+	);
 
 	await testUser1.refreshAmounts(AssetWallet.AFTER);
 	await testUser2.refreshAmounts(AssetWallet.AFTER);

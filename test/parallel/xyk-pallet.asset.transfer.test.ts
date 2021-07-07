@@ -7,6 +7,7 @@ import {AssetWallet, User} from "../../utils/User";
 import { validateAssetsWithValues, validateEmptyAssets } from "../../utils/validators";
 import { Assets } from "../../utils/Assets";
 import { getEnvironmentRequiredVars } from "../../utils/utils";
+import { getEventResultFromTxWait } from "../../utils/txHandler";
 
 
 jest.spyOn(console, 'log').mockImplementation(jest.fn());
@@ -75,10 +76,13 @@ test('xyk-pallet - AssetsOperation: transferAsset', async() => {
 	let amount = new BN(100000);
 	console.log("testUser1: transfering asset " + firstCurrency + " to testUser2");
 
-	const eventPromise = getUserEventResult("tokens", "Transferred", 12, testUser1.keyRingPair.address);
-	transferAsset(testUser1.keyRingPair, firstCurrency, testUser2.keyRingPair.address, amount);
-	const eventResponse = await eventPromise;
-	expect(eventResponse.state).toEqual(ExtrinsicResult.ExtrinsicSuccess);
+	await transferAsset(testUser1.keyRingPair, firstCurrency, testUser2.keyRingPair.address, amount)
+	.then(
+		(result) => {
+			const eventResponse = getEventResultFromTxWait(result, ["tokens", "Transferred", testUser1.keyRingPair.address]);
+			expect(eventResponse.state).toEqual(ExtrinsicResult.ExtrinsicSuccess);
+		}
+	);
 
 	await testUser1.refreshAmounts(AssetWallet.AFTER);
 	await testUser2.refreshAmounts(AssetWallet.AFTER);

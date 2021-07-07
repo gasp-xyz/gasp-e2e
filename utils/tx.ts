@@ -1,40 +1,10 @@
 import { AddressOrPair, SubmittableExtrinsic  } from '@polkadot/api/types'
-import { KeyringPair } from '@polkadot/keyring/types';
 import { BalanceLock, getApi } from './api'
 import BN from 'bn.js'
 import { env } from 'process'
 import { SudoDB } from './SudoDB';
 import {AccountData} from '@polkadot/types/interfaces/balances'
-
-export async function signSendAndWaitToFinish( fun : SubmittableExtrinsic<'promise'> | undefined, account : KeyringPair ){
-  const nonce = await getCurrentNonce(account.address);
-  return new Promise( resolve => {
-    fun!
-      .signAndSend(
-        account , 
-        { nonce }, 
-        ( result ) => {
-          
-          if(result.isError){
-            resolve(result.toHuman());
-          }
-          console.info( JSON.stringify(result.toHuman()) );
-          if (result.status.isInBlock || result.status.isFinalized) {
-            result.events.forEach( e => {
-              console.info( e.toString() );
-            });
-    
-          }
-          if(result.status.isFinalized){
-            resolve(result.status.toHuman());
-          }
-          
-        });
-    }).catch( (err) => {
-      console.error(err)
-    })
-}
-
+import { signAndWaitTx } from './txHandler';
 
 
 export const signTx = async (
@@ -79,6 +49,7 @@ export function calculate_sell_price_local(input_reserve: BN, output_reserve: BN
 	let result: BN = numerator.div(denominator);
 	return new BN(result.toString())
 }
+
 export function calculate_sell_price_local_no_fee(input_reserve: BN, output_reserve: BN, sell_amount: BN){
 	let input_amount_with_no_fee: BN = sell_amount;
 	let numerator: BN = input_amount_with_no_fee.mul(output_reserve);
@@ -171,6 +142,13 @@ export async function getLiquidityAssetId(assetId1: BN, assetId2: BN ) {
 
 }
 
+export async function getLiquiditybalance(liquidityAssetId: BN){
+  const pool = await getLiquidityPool(liquidityAssetId);
+  const assetIds = pool.toHuman() as string[];
+  const poolBalance = await getBalanceOfPool(new BN(assetIds[0].toString()), new BN(assetIds[1].toString()) );
+  return poolBalance;
+}
+
 export async function getLiquidityPool(liquidityAssetId: BN ) {
   const api = getApi();
 
@@ -220,11 +198,12 @@ export async function getSudoKey() {
 export const balanceTransfer = async (account: any, target:any, amount: number) => {
   const api = getApi();
 
-  signTx(
+  const txResult = await signAndWaitTx(
     api.tx.balances.transfer(target, amount),
     account,
-    await getCurrentNonce(account.address)
+    await (await getCurrentNonce(account.address)).toNumber()
   )
+  return txResult;
 }
 
 export const setBalance = async (sudoAccount: any, target:any, amountFree: number, amountReserved: number) => {
@@ -232,13 +211,14 @@ export const setBalance = async (sudoAccount: any, target:any, amountFree: numbe
   const api = getApi();
   const nonce = await SudoDB.getInstance().getSudoNonce(sudoAccount.address);
   console.info(`W[${env.JEST_WORKER_ID}] - sudoNonce: ${nonce} `);
-  signTx(
+  const txResult = await signAndWaitTx(
 		api.tx.sudo.sudo(
       api.tx.balances.setBalance(target, amountFree, amountReserved)
       ),
     sudoAccount,
     nonce
   );
+  return txResult;
 }
 
 export const sudoIssueAsset = async (account: any, total_balance: BN, target: any) => {
@@ -246,24 +226,27 @@ export const sudoIssueAsset = async (account: any, total_balance: BN, target: an
   const api = getApi();
   const nonce = await SudoDB.getInstance().getSudoNonce(account.address);
   console.info(`W[${env.JEST_WORKER_ID}] - sudoNonce: ${nonce} `);
-  const tokenCreation = api.tx.tokens.create(target, total_balance);
-  signTx(
+
+  const txResult = await signAndWaitTx(
 		api.tx.sudo.sudo(
-    	tokenCreation
+    	api.tx.tokens.create(target, total_balance)
 		),
     account,
     nonce
   );
+  console.log(txResult);
+  return txResult;
 }
 
 export const transferAsset = async (account: any, asset_id:BN, target: any, amount: BN) => {
   const api = getApi();
-
-  signTx(
+  const nonce = await (await getCurrentNonce(account.address)).toString();
+  const txResult = signAndWaitTx(
     api.tx.tokens.transfer(target, asset_id, amount),
     account,
-    await getCurrentNonce(account.address)
+    parseInt(nonce)
   )
+  return txResult;
 }
 
 export const transferAll = async (account: any, asset_id:BN, target: any) => {
@@ -280,64 +263,71 @@ export const mintAsset = async (account: any, asset_id:BN, target: any, amount: 
   const api = getApi();
   const nonce = await SudoDB.getInstance().getSudoNonce(account.address);
   console.info(`W[${env.JEST_WORKER_ID}] - sudoNonce: ${nonce} `);
-  signTx(
+  const txResult = await signAndWaitTx(
     api.tx.sudo.sudo(
       api.tx.tokens.mint(asset_id, target, amount),
       ),
     account,
     nonce   
   )
+  return txResult;
 }
 
 
 export const createPool = async (account: any, firstAssetId: BN,firstAssetAmount: BN,secondAssetId: BN,secondAssetAmount: BN) => {
   const api = getApi();
+  const nonce = await getCurrentNonce(account.address);
   console.info(`Creating pool:${firstAssetId},${firstAssetAmount},${secondAssetId},${secondAssetAmount}`);
-  signTx(
+  const txResult = await signAndWaitTx(
     api.tx.xyk.createPool(firstAssetId, firstAssetAmount, secondAssetId, secondAssetAmount),
     account,
-    await getCurrentNonce(account.address)
+    nonce.toNumber()
   )
+  return txResult
 }
 
 export const sellAsset = async (account: any, soldAssetId: BN, boughtAssetId: BN, amount: BN, minAmountOut: BN) => {
   const api = getApi();
-
-  signTx(
+  const nonce = await getCurrentNonce(account.address);
+  const txResult = await signAndWaitTx(
     api.tx.xyk.sellAsset(soldAssetId, boughtAssetId, amount, minAmountOut),
     account,
-    await getCurrentNonce(account.address)
+    nonce.toNumber()
   )
+  return txResult
 }
 
 export const buyAsset = async (account: any, soldAssetId: BN, boughtAssetId: BN, amount: BN, maxAmountIn: BN) => {
   const api = getApi();
-
-  signTx(
+  const nonce = await getCurrentNonce(account.address);
+  const txResult = await signAndWaitTx(
     api.tx.xyk.buyAsset(soldAssetId, boughtAssetId, amount, maxAmountIn),
     account,
-    await getCurrentNonce(account.address)
+    nonce.toNumber()
   )
+  return txResult
 }
 
-export const mintLiquidity = async (account: any, firstAssetId: BN, secondAssetId: BN, firstAssetAmount: BN, expectedSecondAssetAmount: BN) => {
+export const mintLiquidity = async (account: any, firstAssetId: BN, secondAssetId: BN, firstAssetAmount: BN, expectedSecondAssetAmount: BN = new BN(Number.MAX_SAFE_INTEGER)) => {
   const api = getApi();
-
-  signTx(
+  const nonce = await (await getCurrentNonce(account.address)).toNumber();
+  const txResult = await signAndWaitTx(
     api.tx.xyk.mintLiquidity(firstAssetId, secondAssetId, firstAssetAmount, expectedSecondAssetAmount),
     account,
-    await getCurrentNonce(account.address)
+    nonce
   )
+  return txResult;
 }
 
 export const burnLiquidity = async (account: any, firstAssetId: BN, secondAssetId: BN, liquidityAssetAmount: BN) => {
   const api = getApi();
-
-  signTx(
+  const nonce = await getCurrentNonce(account.address);
+  const txResult = await signAndWaitTx(
     api.tx.xyk.burnLiquidity(firstAssetId, secondAssetId, liquidityAssetAmount),
     account,
-    await getCurrentNonce(account.address)
+    nonce.toNumber()
   )
+  return txResult;
 }
 
 export async function getAccountInfo(account?: string) {
