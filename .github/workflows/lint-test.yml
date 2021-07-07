@@ -28,7 +28,11 @@ jobs:
       API_URL: 'ws://172.16.238.10:9944'
       TEST_PALLET_ADDRESS: ${{ secrets.TEST_PALLET_ADDRESS }}
       TEST_SUDO_NAME: ${{ secrets.TEST_SUDO_NAME }}
+      TEST_SCRIPT: 'test-sequential-e2e'
     steps:
+      - name: Set variables
+        run:  run: |
+          echo "TEST_SCRIPT=${{ github.event.inputs.scriptName || env.TEST_SCRIPT }}" >> $GITHUB_ENV
       - uses: actions/checkout@v2
       - name: Install dependencies
         run: yarn
@@ -41,7 +45,7 @@ jobs:
       - name: Docker ps
         run: docker ps
       - name: Run e2e tests
-        run: yarn ${{ github.event.inputs.scriptName }}
+        run: yarn ${{ env.TEST_SCRIPT }}
       
       - name: Test Report
         uses: dorny/test-reporter@v1
