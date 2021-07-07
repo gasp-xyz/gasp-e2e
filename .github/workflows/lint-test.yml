@@ -31,7 +31,7 @@ jobs:
       TEST_SCRIPT: 'test-sequential-e2e'
     steps:
       - name: Set variables
-        run:  run: |
+        run:  |
           echo "TEST_SCRIPT=${{ github.event.inputs.scriptName || env.TEST_SCRIPT }}" >> $GITHUB_ENV
       - uses: actions/checkout@v2
       - name: Install dependencies
