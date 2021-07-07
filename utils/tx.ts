@@ -144,8 +144,7 @@ export async function getLiquidityAssetId(assetId1: BN, assetId2: BN ) {
 
 export async function getLiquiditybalance(liquidityAssetId: BN){
   const pool = await getLiquidityPool(liquidityAssetId);
-  const assetIds = pool.toHuman() as string[];
-  const poolBalance = await getBalanceOfPool(new BN(assetIds[0].toString()), new BN(assetIds[1].toString()) );
+  const poolBalance = await getBalanceOfPool(pool[0], pool[1]);
   return poolBalance;
 }
 

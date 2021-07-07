@@ -1,11 +1,13 @@
 
 import {api, getApi, initApi} from "../../utils/api";
-import { signSendAndWaitToFinish, getLock} from '../../utils/tx'
+import { getLock} from '../../utils/tx'
+
 import {waitNewBlock, ExtrinsicResult, getEventResult} from '../../utils/eventListeners'
 import BN from 'bn.js'
 import { Keyring } from '@polkadot/api'
 import {User} from "../../utils/User";
 import { getEnvironmentRequiredVars } from "../../utils/utils";
+import { signSendAndWaitToFinishTx } from "../../utils/txHandler";
 
 jest.spyOn(console, 'log').mockImplementation(jest.fn());
 jest.setTimeout(1500000);
@@ -48,7 +50,7 @@ describe('xyk-pallet - Sell Asset: validate Errors:', () => {
 		console.log("testUser1: creating pool already created " + firstCurrency + " - " + secondCurrency);
 		var eventPromise = getEventResult("staking","Bonded", 14);
 		//@ts-ignore: Mangata bond operation has 4 params, somehow is inheriting the bond operation from polkadot :S
-		await signSendAndWaitToFinish( api?.tx.staking.bond(testUser1.keyRingPair.address, new BN(1000),'Staked', new BN(3)), testUser1.keyRingPair);
+		await signSendAndWaitToFinishTx( api?.tx.staking.bond(testUser1.keyRingPair.address, new BN(1000),'Staked', new BN(3)), testUser1.keyRingPair);
 		var eventResponse = await eventPromise;
 		  expect(eventResponse.state).toEqual(ExtrinsicResult.ExtrinsicSuccess);
 		expect(eventResponse.data[1]).toEqual(1000);
