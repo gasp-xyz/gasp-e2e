@@ -41,7 +41,7 @@ jobs:
       - name: Docker ps
         run: docker ps
       - name: Run e2e tests
-        run: yarn input.scriptName
+        run: yarn inputs.scriptName
       
       - name: Test Report
         uses: dorny/test-reporter@v1
