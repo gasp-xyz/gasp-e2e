@@ -1,5 +1,5 @@
 import {api, getApi, initApi} from "../../utils/api";
-import { signSendAndWaitToFinish, sellAsset, getTreasury, getTreasuryBurn, getAssetId, getBalanceOfPool, calculate_sell_price_local_no_fee, buyAsset} from '../../utils/tx'
+import { sellAsset, getTreasury, getTreasuryBurn, getAssetId, getBalanceOfPool, calculate_sell_price_local_no_fee, buyAsset} from '../../utils/tx'
 import {waitNewBlock, ExtrinsicResult, getUserEventResult} from '../../utils/eventListeners'
 import BN from 'bn.js'
 import { Keyring } from '@polkadot/api'
@@ -7,6 +7,7 @@ import {AssetWallet, User} from "../../utils/User";
 import { validateTreasuryAmountsEqual } from "../../utils/validators";
 import { Assets } from "../../utils/Assets";
 import { getEnvironmentRequiredVars } from "../../utils/utils";
+import { signSendAndWaitToFinishTx } from "../../utils/txHandler";
 
 
 jest.spyOn(console, 'log').mockImplementation(jest.fn());
@@ -55,7 +56,7 @@ describe('xyk-pallet - treasury tests [Mangata]: on treasury we store', () => {
 		testUser1.addAsset(mgaTokenId);
 	    secondCurrency = (await Assets.setupUserWithCurrencies(testUser1, [defaultCurrecyValue], sudo))[0];
 		await testUser1.setBalance(sudo);
-		await signSendAndWaitToFinish( 
+		await signSendAndWaitToFinishTx( 
 			api?.tx.xyk.createPool(mgaTokenId, first_asset_amount, secondCurrency, first_asset_amount.div(new BN(2))), 
 			testUser1.keyRingPair 
 		);
@@ -221,12 +222,12 @@ describe('xyk-pallet - treasury tests [Connected - Mangata]: on treasury we stor
 	    indirectlyConnected = (await Assets.setupUserWithCurrencies(testUser1, [defaultCurrecyValue], sudo))[0];
 		await testUser1.setBalance(sudo);
 
-		await signSendAndWaitToFinish( 
+		await signSendAndWaitToFinishTx( 
 			api?.tx.xyk.createPool(mgaTokenId, first_asset_amount, connectedToMGA, first_asset_amount.div(new BN(2))), 
 			testUser1.keyRingPair 
 		);
 
-		await signSendAndWaitToFinish( 
+		await signSendAndWaitToFinishTx( 
 			api?.tx.xyk.createPool(connectedToMGA, first_asset_amount, indirectlyConnected, first_asset_amount.div(new BN(2))), 
 			testUser1.keyRingPair 
 		);

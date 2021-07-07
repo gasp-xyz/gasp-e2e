@@ -1,12 +1,13 @@
 import {api, getApi, initApi} from "../../utils/api";
-import { getBalanceOfPool, signSendAndWaitToFinish, getLiquidityAssetId, burnLiquidity, getBalanceOfAsset, calculate_buy_price_local} from '../../utils/tx'
-import {waitNewBlock, ExtrinsicResult, getUserEventResult} from '../../utils/eventListeners'
+import { getBalanceOfPool, getLiquidityAssetId, burnLiquidity, getBalanceOfAsset, calculate_buy_price_local} from '../../utils/tx'
+import {waitNewBlock, ExtrinsicResult, EventResult} from '../../utils/eventListeners'
 import BN from 'bn.js'
 import { Keyring } from '@polkadot/api'
 import {AssetWallet, User} from "../../utils/User";
-import { validateMintedLiquidityEvent, validateTreasuryAmountsEqual, validateUnmodified } from "../../utils/validators";
+import { validateMintedLiquidityEvent, validateTreasuryAmountsEqual } from "../../utils/validators";
 import { Assets } from "../../utils/Assets";
 import { getEnvironmentRequiredVars } from "../../utils/utils";
+import { getEventResultFromTxWait, signSendAndWaitToFinishTx } from "../../utils/txHandler";
 
 const {sudo:sudoUserName} = getEnvironmentRequiredVars();
 
@@ -60,7 +61,7 @@ describe('xyk-pallet - Burn liquidity tests: when burning liquidity you can', ()
 		[firstCurrency, secondCurrency] = await Assets.setupUserWithCurrencies(testUser1, [assetXamount,assetYamount], sudo);
 		await testUser1.setBalance(sudo);
 		//lets create a pool with equal balances
-		await signSendAndWaitToFinish( 
+		await signSendAndWaitToFinishTx( 
 			api?.tx.xyk.createPool(firstCurrency, new BN(assetXamount), secondCurrency,new BN(assetYamount)), 
 			testUser1.keyRingPair 
 		);
@@ -70,11 +71,15 @@ describe('xyk-pallet - Burn liquidity tests: when burning liquidity you can', ()
 		await testUser2.buyAssets(firstCurrency,secondCurrency, new BN(9), amountOfX.add(new BN(1)));
 		await testUser1.refreshAmounts(AssetWallet.BEFORE);
 
-		const eventPromise = getUserEventResult("xyk", "LiquidityBurned", 14, testUser1.keyRingPair.address);
-		burnLiquidity(testUser1.keyRingPair, firstCurrency, secondCurrency, new BN(assetXamount + assetYamount));
-		const eventResponse = await eventPromise;
-		expect(eventResponse.state).toEqual(ExtrinsicResult.ExtrinsicSuccess);
 		
+		await burnLiquidity(testUser1.keyRingPair, firstCurrency, secondCurrency, new BN(assetXamount + assetYamount))
+		.then(
+			(result) => {
+				const eventResponse = getEventResultFromTxWait(result, ["xyk", "LiquidityBurned", testUser1.keyRingPair.address]);
+				expect(eventResponse.state).toEqual(ExtrinsicResult.ExtrinsicSuccess);
+			}
+		);
+
 		const liqId = await getLiquidityAssetId(firstCurrency, secondCurrency);
 		let poolBalance = await getBalanceOfPool(firstCurrency,secondCurrency);
 		let liquidity = await getBalanceOfAsset(liqId, testUser1.keyRingPair.address);
@@ -94,11 +99,13 @@ describe('xyk-pallet - Burn liquidity tests: when burning liquidity you can', ()
 		// The second currecy value is : defaultCurrecyValue, one to create the pool later, and the other one because of the rounding issue.
 		[firstCurrency, secondCurrency] = await UserCreatesAPoolAndMintliquidity(testUser1, sudo, new BN(defaultCurrecyValue), new BN(defaultCurrecyValue).div(new BN(2)),new BN(defaultCurrecyValue).div(new BN(4)) );
 		
-		const eventPromise = getUserEventResult("xyk", "LiquidityBurned", 14, testUser1.keyRingPair.address);
-		burnLiquidity(testUser1.keyRingPair, firstCurrency, secondCurrency, new BN(defaultCurrecyValue).div(new BN(4)));
-		const eventResponse = await eventPromise;
-		expect(eventResponse.state).toEqual(ExtrinsicResult.ExtrinsicSuccess);
-
+		await burnLiquidity(testUser1.keyRingPair, firstCurrency, secondCurrency, new BN(defaultCurrecyValue).div(new BN(4)))
+		.then(
+			(result) => {
+				const eventResponse = getEventResultFromTxWait(result, ["xyk", "LiquidityBurned", testUser1.keyRingPair.address]);
+				expect(eventResponse.state).toEqual(ExtrinsicResult.ExtrinsicSuccess);
+			}
+		);
 		await testUser1.refreshAmounts(AssetWallet.AFTER);
 		//burn liquidity does not add any treasury.
 		await validateTreasuryAmountsEqual(firstCurrency, [new BN(0),new BN(0)]);
@@ -113,105 +120,26 @@ describe('xyk-pallet - Burn liquidity tests: when burning liquidity you can', ()
 		[firstCurrency, secondCurrency] = await UserCreatesAPoolAndMintliquidity(testUser1, sudo, new BN(defaultCurrecyValue), new BN(defaultCurrecyValue).div(new BN(2)),new BN(defaultCurrecyValue).div(new BN(4)) );
 		const burnAmount = new BN(defaultCurrecyValue).div(new BN(4));
 		await testUser1.refreshAmounts(AssetWallet.BEFORE);
-		const eventPromise = getUserEventResult("xyk", "LiquidityBurned", 14, testUser1.keyRingPair.address);
-		burnLiquidity(testUser1.keyRingPair, firstCurrency, secondCurrency, burnAmount);
-		const eventResponse = await eventPromise;
-		expect(eventResponse.state).toEqual(ExtrinsicResult.ExtrinsicSuccess);
 		
+		let eventResponse: EventResult = new EventResult(0,'');
+		await burnLiquidity(testUser1.keyRingPair, firstCurrency, secondCurrency, burnAmount)
+		.then(
+			(result) => {
+				eventResponse = getEventResultFromTxWait(result, ["xyk", "LiquidityBurned", testUser1.keyRingPair.address]);
+				expect(eventResponse.state).toEqual(ExtrinsicResult.ExtrinsicSuccess);
+			}
+		);
+
 		await testUser1.refreshAmounts(AssetWallet.AFTER);
 		const secondCurrencyAmount = testUser1.getAsset(secondCurrency)?.amountAfter.sub(testUser1.getAsset(secondCurrency)?.amountBefore!)!;
 		const firstCurrencyAmount = testUser1.getAsset(firstCurrency)?.amountAfter.sub(testUser1.getAsset(firstCurrency)?.amountBefore!)!;
 		const liquidityAssetId = await getLiquidityAssetId(firstCurrency, secondCurrency);
-
-		validateMintedLiquidityEvent(eventResponse, testUser1.keyRingPair.address, firstCurrency, firstCurrencyAmount, secondCurrency, secondCurrencyAmount, liquidityAssetId);
+		validateMintedLiquidityEvent(eventResponse, testUser1.keyRingPair.address, firstCurrency, firstCurrencyAmount, secondCurrency, secondCurrencyAmount, liquidityAssetId, burnAmount);	
 		
 	});
 
 
 });
-
-describe('xyk-pallet - Burn liquidity tests: BurnLiquidity Errors:', () => {
-	
-	var testUser1 : User;
-	var sudo : User;
-
-	var keyring : Keyring;
-	var firstCurrency :BN;
-	var secondCurrency :BN;
-
-	beforeAll( async () => {
-		try {
-			getApi();
-		  } catch(e) {
-			await initApi();
-		}
-	});
-
-	beforeEach(async () => {
-		await waitNewBlock();
-		keyring = new Keyring({ type: 'sr25519' });
-	
-		// setup users
-		testUser1 = new User(keyring);
-	
-		sudo = new User(keyring, sudoUserName);
-		
-		// add users to pair.
-		keyring.addPair(testUser1.keyRingPair);
-		keyring.addPair(sudo.keyRingPair);
-		await testUser1.setBalance(sudo);
-
-	});
-
-	test('Burn liquidity assets that does not belong to any pool', async () => {
-		await testUser1.setBalance(sudo);
-		const [firstCurrency, secondCurrency] = await Assets.setupUserWithCurrencies(testUser1, [defaultCurrecyValue, defaultCurrecyValue], sudo);
-		const eventPromise = getUserEventResult("xyk", "LiquidityBurned", 14, testUser1.keyRingPair.address);
-		burnLiquidity(testUser1.keyRingPair, firstCurrency, secondCurrency, new BN(1));
-		const eventResponse = await eventPromise;
-		expect(eventResponse.state).toEqual(ExtrinsicResult.ExtrinsicFailed);
-		expect(eventResponse.data).toEqual(3);
-
-	});
-
-	test('Burn liquidity  for more assets than the liquidity pool has issued', async () => {
-		const poolAmount = new BN(defaultCurrecyValue).div(new BN(2));
-		[firstCurrency,secondCurrency] = await UserCreatesAPoolAndMintliquidity(testUser1, sudo, new BN(defaultCurrecyValue),poolAmount);
-		let poolBalance = await getBalanceOfPool(firstCurrency,secondCurrency);
-		const liquidityAssetId = await getLiquidityAssetId(firstCurrency, secondCurrency);
-		const liquidityBalance = await getBalanceOfAsset(liquidityAssetId, testUser1.keyRingPair.address);
-		await testUser1.refreshAmounts(AssetWallet.BEFORE);
-		
-		const eventPromise = getUserEventResult("xyk", "LiquidityBurned", 14, testUser1.keyRingPair.address);
-		burnLiquidity(testUser1.keyRingPair, firstCurrency,secondCurrency, liquidityBalance.add(new BN(1)) );
-		const eventResponse = await eventPromise;
-		expect(eventResponse.state).toEqual(ExtrinsicResult.ExtrinsicFailed);
-		expect(eventResponse.data).toEqual(2);
-
-		await validateUnmodified(firstCurrency,secondCurrency,testUser1,poolBalance);
-
-	});
-
-	test('Burn someone else liquidities', async () => {
-		//create a new user
-		const testUser2 = new User(keyring);
-		keyring.addPair(testUser2.keyRingPair);
-		await testUser2.setBalance(sudo);
-		[firstCurrency,secondCurrency] = await UserCreatesAPoolAndMintliquidity(testUser1, sudo, new BN(defaultCurrecyValue));
-		
-		const liquidityAssetId = await getLiquidityAssetId(firstCurrency, secondCurrency);
-		testUser1.addAsset(liquidityAssetId);
-		const aFewAssetsToBurn = new BN(1000);
-		const eventPromise = getUserEventResult("xyk", "LiquidityBurned", 14, testUser2.keyRingPair.address);
-		burnLiquidity(testUser2.keyRingPair, firstCurrency,secondCurrency, aFewAssetsToBurn );
-		const eventResponse = await eventPromise;
-		expect(eventResponse.state).toEqual(ExtrinsicResult.ExtrinsicFailed);
-		expect(eventResponse.data).toEqual(2);
-
-	});
-
-});
-
 
 async function UserCreatesAPoolAndMintliquidity(
 	testUser1: User, sudo: User
@@ -222,12 +150,12 @@ async function UserCreatesAPoolAndMintliquidity(
 	await waitNewBlock();
 	const [firstCurrency, secondCurrency] = await Assets.setupUserWithCurrencies(testUser1, [parseInt(userAmount.toString()), parseInt(userAmount.toString())], sudo);
 	await testUser1.setBalance(sudo);
-	await signSendAndWaitToFinish(
+	await signSendAndWaitToFinishTx(
 		api?.tx.xyk.createPool(firstCurrency, poolAmount, secondCurrency, poolAmount),
 		testUser1.keyRingPair
 	);
 	await waitNewBlock();
-	await testUser1.mintLiquidity(firstCurrency, secondCurrency, mintAmount, userAmount);
+	await testUser1.mintLiquidity(firstCurrency, secondCurrency, mintAmount);
 	return [firstCurrency, secondCurrency];
 }
 

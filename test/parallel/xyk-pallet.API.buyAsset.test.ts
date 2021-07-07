@@ -1,12 +1,13 @@
 import {api, getApi, initApi} from "../../utils/api";
-import { getBalanceOfPool, signSendAndWaitToFinish, getTreasury, getTreasuryBurn, calculate_buy_price_local, buyAsset, calculate_buy_price_rpc} from '../../utils/tx'
-import {waitNewBlock, ExtrinsicResult, getUserEventResult} from '../../utils/eventListeners'
+import { getBalanceOfPool, getTreasury, getTreasuryBurn, calculate_buy_price_local, buyAsset, calculate_buy_price_rpc} from '../../utils/tx'
+import {waitNewBlock, ExtrinsicResult} from '../../utils/eventListeners'
 import BN from 'bn.js'
 import { Keyring } from '@polkadot/api'
 import {AssetWallet, User} from "../../utils/User";
 import { validateAssetsSwappedEvent, validateUnmodified } from "../../utils/validators";
 import { Assets } from "../../utils/Assets";
 import { getEnvironmentRequiredVars } from "../../utils/utils";
+import { getEventResultFromTxWait, signSendAndWaitToFinishTx } from "../../utils/txHandler";
 
 
 jest.spyOn(console, 'log').mockImplementation(jest.fn());
@@ -59,18 +60,26 @@ describe('xyk-pallet - Buy assets tests: BuyAssets Errors:', () => {
 
 		await waitNewBlock();
 		const [thirdCurrency]= await Assets.setupUserWithCurrencies(testUser1, [defaultCurrecyValue], sudo);
-		let eventPromise = getUserEventResult("xyk", "AssetsSwapped", 14, testUser1.keyRingPair.address);
 		
-		buyAsset(testUser1.keyRingPair, thirdCurrency, secondCurrency, firstAssetAmount.div(new BN(2)), new BN(0));
-		let eventResponse = await eventPromise;
-		expect(eventResponse.state).toEqual(ExtrinsicResult.ExtrinsicFailed);
-		expect(eventResponse.data).toEqual(3);
+		await buyAsset(testUser1.keyRingPair, thirdCurrency, secondCurrency, firstAssetAmount.div(new BN(2)), new BN(0))
+		.then(
+		  (result) => {
+			  const eventResponse = getEventResultFromTxWait(result);
+			  expect(eventResponse.state).toEqual(ExtrinsicResult.ExtrinsicFailed);
+			  expect(eventResponse.data).toEqual(3);
+		  }
+	  	);
+		
 		await waitNewBlock();
 
-		buyAsset(testUser1.keyRingPair, secondCurrency, thirdCurrency, firstAssetAmount.div(new BN(2)), new BN(0));
-		eventResponse = await eventPromise;
-		expect(eventResponse.state).toEqual(ExtrinsicResult.ExtrinsicFailed);
-		expect(eventResponse.data).toEqual(3);
+		await buyAsset(testUser1.keyRingPair, secondCurrency, thirdCurrency, firstAssetAmount.div(new BN(2)), new BN(0))
+		.then(
+		  (result) => {
+			  const eventResponse = getEventResultFromTxWait(result);
+			  expect(eventResponse.state).toEqual(ExtrinsicResult.ExtrinsicFailed);
+			  expect(eventResponse.data).toEqual(3);
+			}
+	  	);
 
 		await validateUnmodified(firstCurrency, secondCurrency, testUser1, pool_balance_before);
 
@@ -82,18 +91,21 @@ describe('xyk-pallet - Buy assets tests: BuyAssets Errors:', () => {
 		await testUser1.setBalance(sudo);
 		await testUser1.refreshAmounts(AssetWallet.BEFORE);
 		const poolAmountSecondCurrency = secondAssetAmount.div(new BN(2));
-		await signSendAndWaitToFinish( 
+		await signSendAndWaitToFinishTx( 
 			api?.tx.xyk.createPool(firstCurrency, firstAssetAmount, secondCurrency,poolAmountSecondCurrency), 
 			testUser1.keyRingPair 
 		);
 		await waitNewBlock();
 		await testUser1.refreshAmounts(AssetWallet.BEFORE);
 		
-		let eventPromise = getUserEventResult("xyk", "AssetsSwapped", 14, testUser1.keyRingPair.address);
-		buyAsset(testUser1.keyRingPair, firstCurrency, secondCurrency, poolAmountSecondCurrency.add(new BN(1)), new BN(1000000));
-		let eventResponse =await eventPromise;
-		expect(eventResponse.state).toEqual(ExtrinsicResult.ExtrinsicFailed);
-		expect(eventResponse.data).toEqual(5);
+		await buyAsset(testUser1.keyRingPair, firstCurrency, secondCurrency, poolAmountSecondCurrency.add(new BN(1)), new BN(1000000))
+		.then(
+		  (result) => {
+			  const eventResponse = getEventResultFromTxWait(result);
+			  expect(eventResponse.state).toEqual(ExtrinsicResult.ExtrinsicFailed);
+			  expect(eventResponse.data).toEqual(5);
+	        }
+	  	);
 
 		await validateUnmodified(firstCurrency,secondCurrency,testUser1,[firstAssetAmount, poolAmountSecondCurrency]);
 
@@ -105,18 +117,21 @@ describe('xyk-pallet - Buy assets tests: BuyAssets Errors:', () => {
 		await testUser1.setBalance(sudo);
 		await testUser1.refreshAmounts(AssetWallet.BEFORE);
 		const poolAmountSecondCurrency = secondAssetAmount.div(new BN(2));
-		await signSendAndWaitToFinish( 
+		await signSendAndWaitToFinishTx( 
 			api?.tx.xyk.createPool(firstCurrency, firstAssetAmount, secondCurrency,poolAmountSecondCurrency), 
 			testUser1.keyRingPair 
 		);
 		await waitNewBlock();
 		await testUser1.refreshAmounts(AssetWallet.BEFORE);
 		
-		let eventPromise = getUserEventResult("xyk", "AssetsSwapped", 14, testUser1.keyRingPair.address);
-		buyAsset(testUser1.keyRingPair, firstCurrency, secondCurrency, poolAmountSecondCurrency, new BN(100000000));
-		let eventResponse =await eventPromise;
-		expect(eventResponse.state).toEqual(ExtrinsicResult.ExtrinsicFailed);
-		expect(eventResponse.data).toEqual(5);
+		await buyAsset(testUser1.keyRingPair, firstCurrency, secondCurrency, poolAmountSecondCurrency, new BN(100000000))
+		.then(
+		  (result) => {
+			  const eventResponse = getEventResultFromTxWait(result);
+			  expect(eventResponse.state).toEqual(ExtrinsicResult.ExtrinsicFailed);
+			  expect(eventResponse.data).toEqual(5);
+			}
+	  	);
 
 		await validateUnmodified(firstCurrency,secondCurrency,testUser1,[firstAssetAmount, poolAmountSecondCurrency]);
 
@@ -128,7 +143,7 @@ describe('xyk-pallet - Buy assets tests: BuyAssets Errors:', () => {
 		await testUser1.setBalance(sudo);
 		await testUser1.refreshAmounts(AssetWallet.BEFORE);
 		const poolAmountSecondCurrency = secondAssetAmount.div(new BN(2));
-		await signSendAndWaitToFinish( 
+		await signSendAndWaitToFinishTx( 
 			api?.tx.xyk.createPool(firstCurrency, firstAssetAmount, secondCurrency,poolAmountSecondCurrency), 
 			testUser1.keyRingPair 
 		);
@@ -137,11 +152,15 @@ describe('xyk-pallet - Buy assets tests: BuyAssets Errors:', () => {
 		let buyPriceLocal = await calculate_buy_price_rpc(firstAssetAmount, poolAmountSecondCurrency, poolAmountSecondCurrency.sub(new BN(1)));
 		await sudo.mint(firstCurrency, testUser1,new BN(buyPriceLocal));
 		await testUser1.refreshAmounts(AssetWallet.BEFORE);
-		let eventPromise = getUserEventResult("xyk", "AssetsSwapped", 14, testUser1.keyRingPair.address);
-		buyAsset(testUser1.keyRingPair, firstCurrency, secondCurrency, poolAmountSecondCurrency.sub(new BN(1)), buyPriceLocal.sub(new BN(1)));
-		let eventResponse =await eventPromise;
-		expect(eventResponse.state).toEqual(ExtrinsicResult.ExtrinsicFailed);
-		expect(eventResponse.data).toEqual(7);
+		
+		await buyAsset(testUser1.keyRingPair, firstCurrency, secondCurrency, poolAmountSecondCurrency.sub(new BN(1)), buyPriceLocal.sub(new BN(1)))
+		.then(
+		  (result) => {
+			  const eventResponse = getEventResultFromTxWait(result);
+			  expect(eventResponse.state).toEqual(ExtrinsicResult.ExtrinsicFailed);
+			  expect(eventResponse.data).toEqual(7);
+			}
+	  	);
 		
 		await testUser1.refreshAmounts(AssetWallet.AFTER);
 		await validateUnmodified(firstCurrency,secondCurrency,testUser1,[firstAssetAmount, secondAssetAmount.div(new BN(2))]);
@@ -191,7 +210,7 @@ describe('xyk-pallet - Buy assets tests: Buying assets you can', () => {
 		await testUser1.setBalance(sudo);
 		await testUser1.refreshAmounts(AssetWallet.BEFORE);
 		const poolAmountSecondCurrency = secondAssetAmount.div(new BN(2));
-		await signSendAndWaitToFinish( 
+		await signSendAndWaitToFinishTx( 
 			api?.tx.xyk.createPool(firstCurrency, firstAssetAmount, secondCurrency,poolAmountSecondCurrency), 
 			testUser1.keyRingPair 
 		);
@@ -203,11 +222,14 @@ describe('xyk-pallet - Buy assets tests: Buying assets you can', () => {
 		await waitNewBlock();
 		await sudo.mint(firstCurrency, testUser1,new BN(buyPriceLocal));
 		
-		let eventPromise = getUserEventResult("xyk", "AssetsSwapped", 14, testUser1.keyRingPair.address);
-		buyAsset(testUser1.keyRingPair, firstCurrency, secondCurrency, poolAmountSecondCurrency.sub(new BN(1)), buyPriceLocal.add(new BN(1)));
-		let eventResponse =await eventPromise;
-		expect(eventResponse.state).toEqual(ExtrinsicResult.ExtrinsicSuccess);
-		
+		await buyAsset(testUser1.keyRingPair, firstCurrency, secondCurrency, poolAmountSecondCurrency.sub(new BN(1)), buyPriceLocal.add(new BN(1)))
+		.then(
+		  (result) => {
+			  const eventResponse = getEventResultFromTxWait(result, ["xyk", "AssetsSwapped", testUser1.keyRingPair.address]);
+			  expect(eventResponse.state).toEqual(ExtrinsicResult.ExtrinsicSuccess);
+			}
+	  	);
+
 		await waitNewBlock();
 		await testUser1.refreshAmounts(AssetWallet.AFTER);
 		var pool_balance = await getBalanceOfPool(firstCurrency, secondCurrency);
@@ -240,13 +262,13 @@ describe('xyk-pallet - Buy assets tests: Buying assets you can', () => {
 		
 		await sudo.mint(thirdCurrency, testUser1, thirdAssetAmount);
 		await testUser1.setBalance(sudo);
-		await signSendAndWaitToFinish( 
+		await signSendAndWaitToFinishTx( 
 			api?.tx.xyk.createPool(firstCurrency, firstAssetAmount, secondCurrency, secondAssetAmount.div(new BN(2))), 
 			testUser1.keyRingPair 
 		);
 		// create a pool between First and Third, P(thirdAssetAmount, thirdAssetAmount/2)
 		
-		await signSendAndWaitToFinish( 
+		await signSendAndWaitToFinishTx( 
 			api?.tx.xyk.createPool(firstCurrency, thirdAssetAmount , thirdCurrency, thirdAssetAmount.div(new BN(2))), 
 			testUser1.keyRingPair 
 		);
@@ -256,11 +278,14 @@ describe('xyk-pallet - Buy assets tests: Buying assets you can', () => {
 		await waitNewBlock();
 		let buyPriceLocal = calculate_buy_price_local(thirdAssetAmount.div(new BN(2)), thirdAssetAmount, amountToBuy);
 
-		let eventPromise = getUserEventResult("xyk", "AssetsSwapped", 14, testUser2.keyRingPair.address);
-		buyAsset(testUser2.keyRingPair, thirdCurrency, firstCurrency, amountToBuy, buyPriceLocal);
-		let eventResponse = await eventPromise;
-		expect(eventResponse.state).toEqual(ExtrinsicResult.ExtrinsicSuccess);
-		validateAssetsSwappedEvent(eventResponse, testUser2.keyRingPair.address,thirdCurrency, buyPriceLocal, firstCurrency, amountToBuy);
+		await buyAsset(testUser2.keyRingPair, thirdCurrency, firstCurrency, amountToBuy, buyPriceLocal)
+		.then(
+			(result) => {
+				const eventResponse = getEventResultFromTxWait(result, ["xyk", "AssetsSwapped", testUser2.keyRingPair.address]);
+				expect(eventResponse.state).toEqual(ExtrinsicResult.ExtrinsicSuccess);
+				validateAssetsSwappedEvent(eventResponse, testUser2.keyRingPair.address,thirdCurrency, buyPriceLocal, firstCurrency, amountToBuy);
+			  }
+			);
 		
 		testUser2.addAsset(firstCurrency);
 		await testUser2.refreshAmounts(AssetWallet.AFTER);

@@ -1,5 +1,5 @@
 import {api, getApi, initApi} from "../../utils/api";
-import { signSendAndWaitToFinish, sellAsset, buyAsset} from '../../utils/tx'
+import { sellAsset, buyAsset} from '../../utils/tx'
 import {waitNewBlock, ExtrinsicResult, getUserEventResult} from '../../utils/eventListeners'
 import BN from 'bn.js'
 import { Keyring } from '@polkadot/api'
@@ -7,6 +7,7 @@ import {AssetWallet, User} from "../../utils/User";
 import { validateTreasuryAmountsEqual } from "../../utils/validators";
 import { Assets } from "../../utils/Assets";
 import { getEnvironmentRequiredVars } from "../../utils/utils";
+import { signSendAndWaitToFinishTx } from "../../utils/txHandler";
 
 
 jest.spyOn(console, 'log').mockImplementation(jest.fn());
@@ -53,7 +54,7 @@ describe('xyk-pallet - treasury tests [No Mangata]: on treasury we store', () =>
 		await waitNewBlock();
 		[firstCurrency, secondCurrency] = await Assets.setupUserWithCurrencies(testUser1, [defaultCurrecyValue,defaultCurrecyValue], sudo);
 		await testUser1.setBalance(sudo);
-		await signSendAndWaitToFinish( 
+		await signSendAndWaitToFinishTx( 
 			api?.tx.xyk.createPool(firstCurrency, first_asset_amount, secondCurrency, first_asset_amount.div(new BN(2))), 
 			testUser1.keyRingPair 
 		);

@@ -16,7 +16,7 @@ export class EventResult{
    *
    */
   constructor(state : ExtrinsicResult = ExtrinsicResult.ExtrinsicUndefined, 
-               data : String = '' ) {
+               data : any) {
     this.state = state;
     this.data = data;
   }
