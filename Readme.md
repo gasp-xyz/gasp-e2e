@@ -22,6 +22,9 @@ To point to the right environment or instance, you need to export the following 
 `export TEST_SUDO_NAME='//nameofTheUser' ` more info available in `mangate-node: node/src/chain_spec.rs`
 3. API_URL: Points the API to the right environment. The default will be localhost (`ws://127.0.0.1:9944`).
 `export API_URL='ws://127.0.0.1:9944'`
+4. TEST_USER_NAME: Contains the name of the user for CI/CD validation tests. Default is `//Alice` (address `5GrwvaEF5zXb26Fz9rcQpDWS57CtERHpNehXCPcNoHGKutQY`)
+`export TEST_USER_NAME='//Alice'`
+
 ---
 ###  How to run
 After that env. variables have been exported, you can run all tests with the command

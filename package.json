@@ -29,6 +29,7 @@
     "test-playground-pararell": "rm nonce.db ; rm sudo.lock; jest test/exploratory/parallelTesting/transfer/* --verbose",
     "test-sequential": "rm nonce.db ; rm sudo.lock; jest test/sequential/* --verbose --runInBand",
     "test-sequential-e2e": "rm nonce.db ; rm sudo.lock; jest test/sequential/xyk-pallet.test.ts --verbose --runInBand --ci --reporters=default --reporters=jest-junit",
+    "test-ci": "rm nonce.db ; rm sudo.lock; jest test/ci/* --verbose --runInBand",
     "tsc-lint": "tsc -noemit -p tsconfig.json",
     "eslint": "node_modules/.bin/eslint --max-warnings 0 . --ext .ts",
     "xoshiro": "^2.0.3"
