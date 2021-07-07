@@ -1,6 +1,6 @@
 import { AddressOrPair, SubmittableExtrinsic  } from '@polkadot/api/types'
 import { KeyringPair } from '@polkadot/keyring/types';
-import { getApi } from './api'
+import { BalanceLock, getApi } from './api'
 import BN from 'bn.js'
 import { env } from 'process'
 import { SudoDB } from './SudoDB';
@@ -360,4 +360,10 @@ export async function getTreasuryBurn(currencyId : BN){
   const api = getApi();
   const treasuryBalance = await api.query.xyk.treasuryBurn(currencyId);
   return treasuryBalance.toHuman();
+}
+
+export async function getLock(accountAddress:string, assetId : BN){
+  const api = getApi();
+  const locksResponse = await api.query.tokens.locks(accountAddress,assetId);
+  return locksResponse.toHuman() as BalanceLock[];
 }

@@ -134,7 +134,7 @@ export const initApi = async (uri = '') => {
       RPCAmountsResult: {
         firstAssetAmount: 'Balance',
         secondAssetAmount: 'Balance',
-    },
+      },
 
       // mapping the actual specified address format
       Address: 'AccountId',
@@ -187,6 +187,10 @@ export const initApi = async (uri = '') => {
       Bloom: {
         _: '[u8; 256]',
       },
+      BalanceLock: {
+        id: "[u8; 8]",
+        amount: 'Balance'
+      }
     },
   })
   // console.log(api.genesisHash.toHex())
@@ -194,3 +198,8 @@ export const initApi = async (uri = '') => {
 }
 
 
+//TODO: Remove when type mess is solved.
+export type BalanceLock = {
+  id: string,
+  amount: string
+}
