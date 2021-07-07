@@ -35,3 +35,11 @@ You can specify the command `--runInBand` if you don't want to run the tests in 
 There are also some configurations to run tests, 
 - `npm run test-parallel` : Run the tests (from `test/parallel/` folder) that can be parallelized.
 - `npm run test-sequential` : Run tests (from `test/sequential/` folder) that can not be paralelized so they will run one after the other.
+
+###  How to run in a docker setup
+There exist a possibility to run test pointing to a dockerized setup. You only need to :
+1. Download and run docker instance:  `docker-compose -f devops/docker-compose.yml up`
+2. Point to that node ( ip can be obtained from the docker-compose) exporting `API_URL='ws://172.16.238.10:9944`.`
+3. Run any test `yarn test-sequential`.
+
+
