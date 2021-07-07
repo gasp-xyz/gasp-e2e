@@ -6,6 +6,7 @@ import { waitNewBlock } from "./eventListeners";
 import { Assets } from "./Assets";
 import { signSendAndWaitToFinishTx } from "./txHandler";
 import { User } from "./User";
+import { formatBalance} from "@polkadot/util/format";
 
 
 export function sleep(ms: number) {
@@ -49,4 +50,11 @@ export async function UserCreatesAPoolAndMintliquidity(
 	await waitNewBlock();
 	await testUser1.mintLiquidity(firstCurrency, secondCurrency, mintAmount);
 	return [firstCurrency, secondCurrency];
+}
+
+export function fromBNToUnitString(value : BN){
+    const api = getApi();
+    const decimals = api?.registry.chainDecimals;
+    const valueFormatted = formatBalance(value, {decimals:decimals})
+    return valueFormatted;
 }

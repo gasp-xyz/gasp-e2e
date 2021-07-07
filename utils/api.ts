@@ -73,6 +73,42 @@ export const initApi = async (uri = '') => {
               type: 'Balance',
             },
           ],
+          type: 'RPCAmountsResult<Balance>',
+        },
+        calculate_sell_price_id: {
+          description: '',
+          params: [
+            {
+              name: 'sold_token_id',
+              type: 'TokenId',
+            },
+            {
+              name: 'bought_token_id',
+              type: 'TokenId',
+            },
+            {
+              name: 'sell_amount',
+              type: 'Balance',
+            },
+          ],
+          type: 'RpcResult<Balance>',
+        },
+        calculate_buy_price_id: {
+          description: '',
+          params: [
+            {
+              name: 'sold_token_id',
+              type: 'TokenId',
+            },
+            {
+              name: 'bought_token_id',
+              type: 'TokenId',
+            },
+            {
+              name: 'buy_amount',
+              type: 'Balance',
+            },
+          ],
           type: 'RpcResult<Balance>',
         },
       },
@@ -95,6 +131,10 @@ export const initApi = async (uri = '') => {
       RpcResult: {
           price: 'Balance'
       },
+      RPCAmountsResult: {
+        firstAssetAmount: 'Balance',
+        secondAssetAmount: 'Balance',
+    },
 
       // mapping the actual specified address format
       Address: 'AccountId',
