@@ -192,6 +192,50 @@ describe('xyk-pallet - Mint liquidity tests: MintLiquidity Errors:', () => {
 
 	});
 
-
+	test('Min liquidity, SecondAssetAmount parameter expectation not met', async () => {
+		await waitNewBlock();
+		[firstCurrency, secondCurrency] = await Assets.setupUserWithCurrencies(testUser1, [defaultCurrecyValue,defaultCurrecyValue], sudo);
+		await testUser1.setBalance(sudo);
+		await testUser1.refreshAmounts(AssetWallet.BEFORE);
+		const poolAmountSecondCurrency = secondAssetAmount.div(new BN(2));
+		await signSendAndWaitToFinishTx( 
+			api?.tx.xyk.createPool(firstCurrency, firstAssetAmount, secondCurrency,poolAmountSecondCurrency), 
+			testUser1.keyRingPair 
+		);
+		await waitNewBlock();
+		await testUser1.refreshAmounts(AssetWallet.BEFORE);
+				
+		//lets test with 1.
+		const result = await mintLiquidity(testUser1.keyRingPair, firstCurrency, secondCurrency, testUser1.getAsset(firstCurrency)?.amountBefore.sub(new BN(1))!, new BN(1));
+		var eventResponse = getEventResultFromTxWait(result);
+		expect(eventResponse.state).toEqual(ExtrinsicResult.ExtrinsicFailed);
+		expect(eventResponse.data).toEqual(15);
+		await validateUnmodified(firstCurrency,secondCurrency,testUser1,[firstAssetAmount,poolAmountSecondCurrency]);
+		
+		await waitNewBlock();
+		//lets test with 0
+		const resultZero = await mintLiquidity(testUser1.keyRingPair, firstCurrency, secondCurrency, testUser1.getAsset(firstCurrency)?.amountBefore.sub(new BN(1))!, new BN(0));
+		eventResponse = getEventResultFromTxWait(resultZero);
+		expect(eventResponse.state).toEqual(ExtrinsicResult.ExtrinsicFailed);
+		expect(eventResponse.data).toEqual(15);
+		await validateUnmodified(firstCurrency,secondCurrency,testUser1,[firstAssetAmount,poolAmountSecondCurrency]);
+				
+		//lest test with 5000 ( boundary value for unexpected ) the pool was generated with [50000,25000]
+		//so we must expect at least 5001 for an amount of 10000
+		await waitNewBlock();
+		var resultExpectation = await mintLiquidity(testUser1.keyRingPair, firstCurrency, secondCurrency, new BN(10000), new BN(5000));
+		eventResponse = getEventResultFromTxWait(resultExpectation);
+		expect(eventResponse.state).toEqual(ExtrinsicResult.ExtrinsicFailed);
+		expect(eventResponse.data).toEqual(15);
+		await validateUnmodified(firstCurrency,secondCurrency,testUser1,[firstAssetAmount,poolAmountSecondCurrency]);
+		
+		//lets test the boundary value of 5001 ( lowest expectation possible )
+		await waitNewBlock();
+		resultExpectation = await mintLiquidity(testUser1.keyRingPair, firstCurrency, secondCurrency, new BN(10000), new BN(5001));
+		eventResponse = getEventResultFromTxWait(resultExpectation);
+		expect(eventResponse.state).toEqual(ExtrinsicResult.ExtrinsicSuccess);
+		
+	});
+		
 });
 
