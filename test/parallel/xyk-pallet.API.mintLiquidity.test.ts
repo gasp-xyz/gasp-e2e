@@ -126,7 +126,7 @@ describe('xyk-pallet - Mint liquidity tests: with minting you can', () => {
 
 		testUser1.validateWalletReduced(firstCurrency,injectedValue);
 		testUser1.validateWalletReduced(secondCurrency, secondCurrencyAmountLost);
-		// TODO: miss that rounding value. to check with Gleb or Stano.
+		//No trading - no Treasure added.
 		testUser1.validateWalletIncreased(liquidityAssetId,new BN(injectedValue).mul(new BN(2)));
 		await validateTreasuryAmountsEqual(firstCurrency,['0','0']);
 		await validateTreasuryAmountsEqual(secondCurrency,['0','0']);
