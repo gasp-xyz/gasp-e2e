@@ -1,11 +1,12 @@
 import {api, getApi, initApi} from "../../utils/api";
-import { getBalanceOfPool, signSendAndWaitToFinish} from '../../utils/tx'
+import { getBalanceOfPool} from '../../utils/tx'
 import {waitNewBlock} from '../../utils/eventListeners'
 import BN from 'bn.js'
 import { Keyring } from '@polkadot/api'
 import {User} from "../../utils/User";
 import { Assets } from "../../utils/Assets";
 import { getEnvironmentRequiredVars } from "../../utils/utils";
+import { signSendAndWaitToFinishTx } from "../../utils/txHandler";
 
 
 jest.spyOn(console, 'log').mockImplementation(jest.fn());
@@ -61,7 +62,7 @@ describe.skip('Playground', () => {
 		// setup users
 		[firstCurrency, secondCurrency] = await Assets.setupUserWithCurrencies(testUser1, [10000000,10000000], sudo);
 		await testUser1.setBalance(sudo);
-		await signSendAndWaitToFinish( 
+		await signSendAndWaitToFinishTx( 
 			api?.tx.xyk.createPool(firstCurrency, 1, secondCurrency, 1), 
 			testUser1.keyRingPair 
 		);
@@ -70,7 +71,7 @@ describe.skip('Playground', () => {
 			await sudo.mint(firstCurrency, testUser1,new BN(10000));
 
 			try {
-				const status = await signSendAndWaitToFinish( 
+				const status = await signSendAndWaitToFinishTx( 
 					api?.tx.xyk.sellAsset(firstCurrency, secondCurrency, new BN(10000), new BN(0)),
 					testUser1.keyRingPair 
 				);

@@ -1,12 +1,13 @@
 import {getApi, initApi} from "../../utils/api";
 import { getBalanceOfPool, getLiquidityAssetId, getAssetSupply, createPool} from '../../utils/tx'
-import {waitNewBlock, ExtrinsicResult, getUserEventResult} from '../../utils/eventListeners'
+import {waitNewBlock, ExtrinsicResult} from '../../utils/eventListeners'
 import BN from 'bn.js'
 import { Keyring } from '@polkadot/api'
 import {AssetWallet, User} from "../../utils/User";
 import { validateAssetsWithValues, validateEmptyAssets } from "../../utils/validators";
 import { Assets } from "../../utils/Assets";
 import { getEnvironmentRequiredVars } from "../../utils/utils";
+import { getEventResultFromTxWait } from "../../utils/txHandler";
 
 
 jest.spyOn(console, 'log').mockImplementation(jest.fn());
@@ -78,10 +79,14 @@ test('xyk-pallet - Pool tests: createPool', async () => {
 	let second_asset_amount = new BN(50000);
 	
   	console.log("testUser1: creating pool " + firstCurrency + " - " + secondCurrency);
-  	let eventPromise = getUserEventResult("xyk","PoolCreated", 14, testUser1.keyRingPair.address);
-  	createPool(testUser1.keyRingPair, firstCurrency, first_asset_amount, secondCurrency, second_asset_amount);
-  	let eventResponse = await eventPromise;
-	expect(eventResponse.state).toEqual(ExtrinsicResult.ExtrinsicSuccess);
+
+  	await createPool(testUser1.keyRingPair, firstCurrency, first_asset_amount, secondCurrency, second_asset_amount)
+	  .then(
+		(result) => {
+			const eventResponse = getEventResultFromTxWait(result, ["xyk","PoolCreated", testUser1.keyRingPair.address]);
+			expect(eventResponse.state).toEqual(ExtrinsicResult.ExtrinsicSuccess);
+		}
+	);
 
 	let liquidity_asset_id = await getLiquidityAssetId(firstCurrency, secondCurrency);
 	let liquidity_assets_minted = first_asset_amount.add(second_asset_amount);
