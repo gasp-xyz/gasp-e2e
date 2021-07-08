@@ -164,7 +164,6 @@ describe('xyk-pallet - treasury tests [Mangata]: on treasury we store', () => {
 		//pool is [50000M,25000Y]
 		//user buy [10000] of Y.
 		//Stano sheet tells: Treasury- 16 , burned destroyed!
-		//TODO: NEED TO VALIDATE THE 16!
 		const treasuryAfter = await getTreasury(mgaTokenId);
 		const treasuryBurnAfter = await getTreasuryBurn(mgaTokenId);
 
