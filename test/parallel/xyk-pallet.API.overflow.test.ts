@@ -217,8 +217,95 @@ describe('xyk-pallet - Operate with a pool close to overflow', () => {
 
 	});	
 
-
-
 });
 
+describe('xyk-pallet - Operate with a user account close to overflow', () => {
+	
+	var testUser1 : User;
+	var testUser2 : User;
+	var sudo : User;
+
+	var keyring : Keyring;
+	var firstCurrency :BN;
+	var secondCurrency :BN;
+
+
+	beforeAll( async () => {
+		try {
+			getApi();
+		  } catch(e) {
+			await initApi();
+		}
+	
+		await waitNewBlock();
+		keyring = new Keyring({ type: 'sr25519' });
+	
+		// setup users
+		testUser1 = new User(keyring);
+		sudo = new User(keyring, sudoUserName);
+		// add users to pair.
+        keyring.addPair(testUser1.keyRingPair);
+        keyring.addPair(sudo.keyRingPair);
+        
+		//add two curerncies and balance to testUser:
+		[firstCurrency, secondCurrency] = await Assets.setupUserWithCurrencies(testUser1, [MAX_BALANCE,MAX_BALANCE.sub(new BN(1))], sudo);
+		await testUser1.setBalance(sudo);
+
+	
+		// check users accounts.
+		await testUser1.refreshAmounts(AssetWallet.BEFORE);
+
+        testUser2 = new User(keyring);
+        keyring.addPair(testUser2.keyRingPair);
+        await sudo.mint(firstCurrency,testUser2, MAX_BALANCE);
+        await sudo.mint(secondCurrency,testUser2, MAX_BALANCE);
+        testUser2.addAssets([firstCurrency,secondCurrency]);
+        await testUser2.setBalance(sudo);
+        //Lets create a pool with 1M-5M
+        await createPool(testUser2.keyRingPair ,secondCurrency, new BN(1000000), firstCurrency, new BN(5000000))
+		.then(
+			(result) => {
+					const eventResponse = getEventResultFromTxWait(result);
+					expect(eventResponse.state).toEqual(ExtrinsicResult.ExtrinsicSuccess);
+		
+			}
+		);
+        
+		await testUser2.refreshAmounts(AssetWallet.BEFORE);
+
+	});
+
+    test('Sell a few assets to a wallet that is full => overflow.', async () => {
+
+        await sellAsset(testUser1.keyRingPair, firstCurrency,secondCurrency, new BN(10000), new BN(1))
+        .then(
+            (result) => {
+                const eventResponse = getEventResultFromTxWait(result);
+                expect(eventResponse.state).toEqual(ExtrinsicResult.ExtrinsicFailed);
+                expect(eventResponse.data).toEqual(XyzErrorCodes.MathOverflow);				
+            }
+        );
+        await testUser1.refreshAmounts(AssetWallet.AFTER);
+
+        expect(testUser1.getAsset(firstCurrency)?.amountAfter).toEqual(testUser1.getAsset(firstCurrency)?.amountBefore);
+        expect(testUser1.getAsset(secondCurrency)?.amountAfter).toEqual(testUser1.getAsset(secondCurrency)?.amountBefore);
+
+	});	
+    test.skip('TODO: Buy [100] assets to a wallet with Max-1000,1000 => overflow.', async () => {
+
+        await buyAsset(testUser1.keyRingPair, secondCurrency, firstCurrency, new BN(100), MAX_BALANCE)
+        .then(
+            (result) => {
+                const eventResponse = getEventResultFromTxWait(result);
+                expect(eventResponse.state).toEqual(ExtrinsicResult.ExtrinsicFailed);
+                expect(eventResponse.data).toEqual(XyzErrorCodes.MathOverflow);				
+            }
+        );
+        await testUser1.refreshAmounts(AssetWallet.AFTER);
+
+        expect(testUser1.getAsset(firstCurrency)?.amountAfter).toEqual(MAX_BALANCE);
+
+	});	
+
+});
 
