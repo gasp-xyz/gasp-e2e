@@ -29,7 +29,7 @@ export class Assets {
         
     };
 
-    static async setupUserWithCurrencies(user : User, currencyValues = [250000, 250001], sudo: User){
+    static async setupUserWithCurrencies(user : User, currencyValues = [new BN(250000), new BN(250001)], sudo: User){
         let currencies = [];
         for (let currency = 0; currency < currencyValues.length; currency++) {
             await waitNewBlock();
@@ -42,13 +42,13 @@ export class Assets {
     }
 
     static async issueAssetToSudo(sudo : User){
-        await this.issueAssetToUser(sudo, 1000, sudo);
+        await this.issueAssetToUser(sudo, new BN(1000), sudo);
     }
 
     //this method add a certain amount of currencies to a user into a returned currecncyId
-    static async issueAssetToUser(user : User, num = 1000, sudo : User){
+    static async issueAssetToUser(user : User, num = new BN(1000), sudo : User){
 
-        const result = await sudoIssueAsset(sudo.keyRingPair, new BN(num), user.keyRingPair.address);  
+        const result = await sudoIssueAsset(sudo.keyRingPair, num, user.keyRingPair.address);  
         const eventResult = await getEventResultFromTxWait(result, ["tokens","Issued", user.keyRingPair.address]);  
 
         expect(eventResult.state).toEqual(ExtrinsicResult.ExtrinsicSuccess);

@@ -229,11 +229,11 @@ export const sudoIssueAsset = async (account: any, total_balance: BN, target: an
   return txResult;
 }
 
-export const transferAsset = async (account: any, asset_id:BN, target: any, amount: BN) => {
+export const transferAsset = async (account: any, asset_id:BN, targetAddress: string, amount: BN) => {
   const api = getApi();
   const nonce = await (await getCurrentNonce(account.address)).toString();
   const txResult = signAndWaitTx(
-    api.tx.tokens.transfer(target, asset_id, amount),
+    api.tx.tokens.transfer(targetAddress, asset_id, amount),
     account,
     parseInt(nonce)
   )

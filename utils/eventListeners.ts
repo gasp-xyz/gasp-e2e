@@ -108,9 +108,12 @@ export const waitNewBlock = () => {
   const api = getApi()
   let count = 0
   return new Promise(async (resolve) => {
+
     const unsubscribe = await api.rpc.chain.subscribeNewHeads((header: any) => {
       console.log(`Chain is at block: #${header.number}`)
-
+      //TODO:Lets speed up tests removing waits.
+      unsubscribe()
+      resolve(true)
       if (++count === 2) {
         unsubscribe()
         resolve(true)
