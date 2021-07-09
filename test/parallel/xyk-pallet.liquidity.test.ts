@@ -23,7 +23,7 @@ let secondCurrency :BN;
 let liquidityAssetId: BN;
 
 const {pallet: pallet_address,sudo:sudoUserName} = getEnvironmentRequiredVars();
-const defaultCurrecyValue = 250000;
+const defaultCurrecyValue = new BN(250000);
 
 beforeAll( async () => {
 	try {
@@ -48,7 +48,7 @@ beforeEach( async () => {
 	pallet.addFromAddress(keyring,pallet_address);
 	
 	//add two curerncies and balance to testUser:
-	[firstCurrency, secondCurrency] = await Assets.setupUserWithCurrencies(testUser1, [defaultCurrecyValue,defaultCurrecyValue +1], sudo );
+	[firstCurrency, secondCurrency] = await Assets.setupUserWithCurrencies(testUser1, [defaultCurrecyValue,defaultCurrecyValue.add(new BN(1))], sudo );
     await testUser1.setBalance(sudo);
 	await testUser1.createPoolToAsset(new BN(40000), new BN(30000), firstCurrency, secondCurrency);
 	liquidityAssetId = await getLiquidityAssetId(firstCurrency, secondCurrency);

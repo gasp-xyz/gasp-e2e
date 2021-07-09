@@ -4,6 +4,7 @@ import { Keyring } from '@polkadot/api'
 import {User} from "../../../../utils/User";
 import { Assets } from "../../../../utils/Assets";
 import { getEnvironmentRequiredVars } from "../../../../utils/utils";
+import BN from "bn.js";
 
 const {sudo:sudoUserName} = getEnvironmentRequiredVars();
 
@@ -34,7 +35,7 @@ describe('xyk-pallet - Burn liquidity tests: when burning liquidity you can', ()
 	
 		// setup users
 		testUser1 = new User(keyring);
-		await Assets.setupUserWithCurrencies(testUser1, [20000,25550], sudo);
+		await Assets.setupUserWithCurrencies(testUser1, [new BN(20000), new BN(25550)], sudo);
 		sudo = new User(keyring, sudoUserName);
 		
 		// add users to pair.

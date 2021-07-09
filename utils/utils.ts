@@ -41,7 +41,7 @@ export async function UserCreatesAPoolAndMintliquidity(
 
 	await waitNewBlock();
     const api = getApi();
-	const [firstCurrency, secondCurrency] = await Assets.setupUserWithCurrencies(testUser1, [parseInt(userAmount.toString()), parseInt(userAmount.toString())], sudo);
+	const [firstCurrency, secondCurrency] = await Assets.setupUserWithCurrencies(testUser1, [userAmount, userAmount], sudo);
 	await testUser1.setBalance(sudo);
 	await signSendAndWaitToFinishTx(
 		api?.tx.xyk.createPool(firstCurrency, poolAmount, secondCurrency, poolAmount),

@@ -29,7 +29,7 @@ export class Assets {
         
     };
 
-    static async setupUserWithCurrencies(user : User, currencyValues = [new BN(250000), new BN(250001)], sudo: User){
+    static async setupUserWithCurrencies(user : User, currencyValues = [new BN(250000), new BN(250001)], sudo: User): Promise<BN[]>{
         let currencies = [];
         for (let currency = 0; currency < currencyValues.length; currency++) {
             await waitNewBlock();

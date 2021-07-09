@@ -78,7 +78,7 @@ describe('xyk-rpc - calculate_buy_price_by_id:No pool assotiated with the assets
 		keyring.addPair(sudo.keyRingPair);
 		
 		//the idea of this mess is to have assets with different values,
-		const assetIds = await Assets.setupUserWithCurrencies(sudo, [10,10], sudo);	
+		const assetIds = await Assets.setupUserWithCurrencies(sudo, [new BN(10),new BN(10)], sudo);	
 		for (let index = 0; index < assetIds.length; index++) {
 			dictAssets.set(index,assetIds[index]);
 		}

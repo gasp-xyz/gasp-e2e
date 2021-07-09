@@ -7,6 +7,7 @@ import {User} from "../../utils/User";
 import { Assets } from "../../utils/Assets";
 import { getEnvironmentRequiredVars } from "../../utils/utils";
 import { signSendAndWaitToFinishTx } from "../../utils/txHandler";
+import {AccountData} from '@polkadot/types/interfaces/balances'
 
 
 jest.spyOn(console, 'log').mockImplementation(jest.fn());
@@ -18,7 +19,7 @@ const {sudo:sudoUserName} = getEnvironmentRequiredVars();
 // we can setup the specific scenario and test.
 // always skip the test suite to avoid long test executions.
 // node ./node_modules/jest/bin/jest.js test/exploratory/playground.ts --testRegex='.*' 
-describe.skip('Playground', () => {
+describe('Playground', () => {
 	
 	var testUser1 : User;
 	var sudo : User;
@@ -52,7 +53,18 @@ describe.skip('Playground', () => {
 
 	});
 
-	test('WhileTrue selling the same assets', async () => {
+	test('Overflow - RPC', async () => {
+
+		const api = getApi();
+		
+
+		const balance = await api.query.tokens.accounts(testUser1.keyRingPair.address, 0);
+		const accountData = (balance as AccountData);
+		console.info(accountData.free.toBigInt().toString())
+
+	})
+	
+	test.skip('WhileTrue selling the same assets', async () => {
         //creates an unfair pool,
         //add balance
         //mint token to give tokens to the user

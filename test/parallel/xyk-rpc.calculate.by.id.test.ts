@@ -35,7 +35,7 @@ describe('xyk-rpc - calculate_buy_price_by_id, calculate_sell_price_by_id', () =
 		//pool1 [0,1]: with one,one value
 		//pool2 [1,2]: with one,two value
 		//pool3 [2,3]: with two,two value
-		const assetIds = await Assets.setupUserWithCurrencies(sudo, [10,10,10,10,10], sudo);	
+		const assetIds = await Assets.setupUserWithCurrencies(sudo, [new BN(10),new BN(10),new BN(10),new BN(10),new BN(10)], sudo);	
 		const assetValues = [1,1,2,2,3];
 		for (let index = 0; index < assetIds.length; index++) {
 			dictAssets.set(index,assetIds[index]);

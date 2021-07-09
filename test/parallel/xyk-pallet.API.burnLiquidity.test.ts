@@ -53,8 +53,8 @@ describe('xyk-pallet - Burn liquidity tests: when burning liquidity you can', ()
 	});
 
 	test('Get affected after a transaction that devaluates X wallet & destroy the pool', async () => {
-		const assetXamount = 1000;
-		const assetYamount = 10;
+		const assetXamount = new BN(1000);
+		const assetYamount = new BN(10);
 		//create a new user
 		const testUser2 = new User(keyring);
 		keyring.addPair(testUser2.keyRingPair);
@@ -72,7 +72,7 @@ describe('xyk-pallet - Burn liquidity tests: when burning liquidity you can', ()
 		await testUser1.refreshAmounts(AssetWallet.BEFORE);
 
 		
-		await burnLiquidity(testUser1.keyRingPair, firstCurrency, secondCurrency, new BN(assetXamount + assetYamount))
+		await burnLiquidity(testUser1.keyRingPair, firstCurrency, secondCurrency, new BN(assetXamount.add(assetYamount)))
 		.then(
 			(result) => {
 				const eventResponse = getEventResultFromTxWait(result, ["xyk", "LiquidityBurned", testUser1.keyRingPair.address]);
@@ -148,7 +148,7 @@ async function UserCreatesAPoolAndMintliquidity(
 	, mintAmount: BN = new BN(userAmount).div(new BN(4))) {
 
 	await waitNewBlock();
-	const [firstCurrency, secondCurrency] = await Assets.setupUserWithCurrencies(testUser1, [parseInt(userAmount.toString()), parseInt(userAmount.toString())], sudo);
+	const [firstCurrency, secondCurrency] = await Assets.setupUserWithCurrencies(testUser1, [userAmount, userAmount], sudo);
 	await testUser1.setBalance(sudo);
 	await signSendAndWaitToFinishTx(
 		api?.tx.xyk.createPool(firstCurrency, poolAmount, secondCurrency, poolAmount),
