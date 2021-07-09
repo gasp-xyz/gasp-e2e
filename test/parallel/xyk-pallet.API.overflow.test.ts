@@ -194,12 +194,15 @@ describe('xyk-pallet - Operate with a pool close to overflow', () => {
         expect(testUser1.getAsset(firstCurrency)?.amountAfter).toEqual(MAX_BALANCE);
 
 	});	
-    test.skip('TODO::Burn liquidities [1000] assets to a wallet with Max-1000,1000 => overflow.', async () => {
+    test('[BUG] Burn liquidities [MAX -1] assets to a wallet wich is full => overflow.', async () => {
         
         const amountToFillAsset = MAX_BALANCE.sub(testUser2.getAsset(firstCurrency)?.amountBefore!).sub(new BN(2));
+        const amountToFillAssetSeccondC = MAX_BALANCE.sub(testUser2.getAsset(secondCurrency)?.amountBefore!).sub(new BN(2));
         await sudo.mint(firstCurrency,testUser2, amountToFillAsset);
+        await sudo.mint(secondCurrency,testUser2, amountToFillAssetSeccondC);
 
-        await burnLiquidity(testUser2.keyRingPair, secondCurrency, firstCurrency, new BN(10))
+      //burn 1 token less than the pool amount created in the setup.
+      await burnLiquidity(testUser2.keyRingPair, secondCurrency, firstCurrency, MAX_BALANCE.sub(new BN(1001)))
         .then(
             (result) => {
                 const eventResponse = getEventResultFromTxWait(result);
@@ -207,9 +210,10 @@ describe('xyk-pallet - Operate with a pool close to overflow', () => {
                 expect(eventResponse.data).toEqual(XyzErrorCodes.MathOverflow);				
             }
         );
-        await testUser1.refreshAmounts(AssetWallet.AFTER);
+        await testUser2.refreshAmounts(AssetWallet.AFTER);
 
-        expect(testUser1.getAsset(firstCurrency)?.amountAfter).toEqual(MAX_BALANCE);
+        expect(testUser2.getAsset(firstCurrency)?.amountAfter).toEqual(MAX_BALANCE.sub(new BN(2)));
+        expect(testUser2.getAsset(secondCurrency)?.amountAfter).toEqual(MAX_BALANCE.sub(new BN(2)));
 
 	});	
 
