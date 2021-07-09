@@ -23,7 +23,7 @@ export const main = async () => {
   const testUser1 = new User(keyring, '//testUser_120c053b-697e-4538-94cb-39b92c4b650e');
   keyring.addPair(testUser1.keyRingPair);
   
-  const MAX_BALANCE = new BN('340282366920938463463374607431768211455'); //max balance
+  //const MAX_BALANCE = new BN('340282366920938463463374607431768211455'); //max balance
   const api = getApi();
   const nonce = await getCurrentNonce(testUser1.keyRingPair.address);
   //const txResult = await signAndWaitTx(
