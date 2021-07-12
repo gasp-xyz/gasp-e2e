@@ -291,9 +291,9 @@ describe('xyk-pallet - Operate with a user account close to overflow', () => {
         expect(testUser1.getAsset(secondCurrency)?.amountAfter).toEqual(testUser1.getAsset(secondCurrency)?.amountBefore);
 
 	});	
-    test.skip('TODO: Buy [100] assets to a wallet with Max-1000,1000 => overflow.', async () => {
+    test('Buy a few assets to a wallet that is full  => overflow.', async () => {
 
-        await buyAsset(testUser1.keyRingPair, secondCurrency, firstCurrency, new BN(100), MAX_BALANCE)
+        await buyAsset(testUser1.keyRingPair, firstCurrency, secondCurrency, new BN(100), MAX_BALANCE)
         .then(
             (result) => {
                 const eventResponse = getEventResultFromTxWait(result);
@@ -303,9 +303,108 @@ describe('xyk-pallet - Operate with a user account close to overflow', () => {
         );
         await testUser1.refreshAmounts(AssetWallet.AFTER);
 
-        expect(testUser1.getAsset(firstCurrency)?.amountAfter).toEqual(MAX_BALANCE);
+        expect(testUser1.getAsset(firstCurrency)?.amountAfter).toEqual(testUser1.getAsset(firstCurrency)?.amountBefore);
+        expect(testUser1.getAsset(secondCurrency)?.amountAfter).toEqual(testUser1.getAsset(secondCurrency)?.amountBefore);
 
 	});	
 
 });
 
+describe('xyk-pallet - Operate with a highly unbalanced pool [mg - newAsset]', () => {
+	
+	var testUser1 : User;
+	var sudo : User;
+    var testUser2 : User;
+	var keyring : Keyring;
+	var firstCurrency :BN;
+	var secondCurrency :BN;
+
+
+	beforeAll( async () => {
+		try {
+			getApi();
+		  } catch(e) {
+			await initApi();
+		}
+	
+        try {
+			getApi();
+		  } catch(e) {
+			await initApi();
+		}
+	
+		await waitNewBlock();
+		keyring = new Keyring({ type: 'sr25519' });
+	
+		// setup users
+		testUser1 = new User(keyring);
+		sudo = new User(keyring, sudoUserName);
+		// add users to pair.
+        keyring.addPair(testUser1.keyRingPair);
+        keyring.addPair(sudo.keyRingPair);
+        
+        const divNumber = new BN(100);
+		//add two curerncies and balance to testUser:
+		[firstCurrency, secondCurrency] = await Assets.setupUserWithCurrencies(testUser1, [divNumber,MAX_BALANCE.div(divNumber)], sudo);
+		await testUser1.setBalance(sudo);
+
+	
+		// check users accounts.
+		await testUser1.refreshAmounts(AssetWallet.BEFORE);
+
+        
+        testUser2 = new User(keyring);
+        keyring.addPair(testUser2.keyRingPair);
+        await sudo.mint(new BN(0),testUser2, MAX_BALANCE);
+        await sudo.mint(secondCurrency,testUser2, MAX_BALANCE);
+        await sudo.mint(firstCurrency,testUser2, MAX_BALANCE);
+        testUser2.addAssets([firstCurrency,secondCurrency]);
+        await testUser2.setBalance(sudo);
+        //Lets create a pool with Lot of MGA few secondCurr.
+        await createPool(testUser2.keyRingPair ,new BN(0), MAX_BALANCE.div(divNumber), secondCurrency, divNumber)
+		.then(
+			(result) => {
+					const eventResponse = getEventResultFromTxWait(result);
+					expect(eventResponse.state).toEqual(ExtrinsicResult.ExtrinsicSuccess);
+		
+			}
+		);
+        await createPool(testUser2.keyRingPair ,firstCurrency, MAX_BALANCE.div(divNumber), secondCurrency, MAX_BALANCE.div(divNumber))
+		.then(
+			(result) => {
+					const eventResponse = getEventResultFromTxWait(result);
+					expect(eventResponse.state).toEqual(ExtrinsicResult.ExtrinsicSuccess);
+		
+			}
+		);
+        
+		await testUser2.refreshAmounts(AssetWallet.BEFORE);
+
+	});
+	
+    test('[BUG] Buy a few assets to a wallet linked to MGA  => overflow.', async () => {
+
+        // lets buy some asets
+        var poolBalanceAssetsBefore = await getBalanceOfPool(secondCurrency, firstCurrency);
+        var poolBalanceMGAAssetBefore = await getBalanceOfPool(new BN(0), secondCurrency);
+
+        await buyAsset(testUser1.keyRingPair, secondCurrency, firstCurrency, MAX_BALANCE.div(new BN('100000000000')), MAX_BALANCE)
+        .then(
+            (result) => {
+                const eventResponse = getEventResultFromTxWait(result);
+                expect(eventResponse.state).toEqual(ExtrinsicResult.ExtrinsicSuccess);		
+            }
+        );
+        var poolBalanceAssetsAfter = await getBalanceOfPool(secondCurrency, firstCurrency);
+        var poolBalanceMGAAssetAfter = await getBalanceOfPool(new BN(0), secondCurrency);
+
+        await testUser1.refreshAmounts(AssetWallet.AFTER);
+
+        expect(poolBalanceMGAAssetAfter[0]).not.toEqual(new BN(0));
+        expect(poolBalanceAssetsAfter[0]).not.toEqual(new BN(0));
+        expect(poolBalanceAssetsBefore[0]).not.toEqual(new BN(0));
+        expect(poolBalanceMGAAssetBefore[0]).not.toEqual(new BN(0));
+
+	});	
+    
+});
