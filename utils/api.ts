@@ -196,10 +196,3 @@ export const initApi = async (uri = '') => {
   // console.log(api.genesisHash.toHex())
   return api
 }
-
-
-//TODO: Remove when type mess is solved.
-export type BalanceLock = {
-  id: string,
-  amount: string
-}

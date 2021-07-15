@@ -19,12 +19,15 @@ export class SudoDB {
     
     public async getSudoNonce(sudoAddress: string) {
         let dbNonce;
+        if(process.argv.includes('--runInBand')){
+            return await getCurrentNonce(sudoAddress);
+        }
         try{
             // we need to prevent workers accessing and writing to the file concurrently
             await lockSudoFile();
             const chainNonce : BN = await getCurrentNonce(sudoAddress);
             const chainNodeInt = parseInt(chainNonce.toString());
-    
+            
             //if does not exist, create it
             if(!fs.existsSync(this.sudoNonceFileName))
                 fs.writeFileSync(this.sudoNonceFileName,'0');

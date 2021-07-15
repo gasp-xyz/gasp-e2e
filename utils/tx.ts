@@ -1,5 +1,5 @@
 import { AddressOrPair, SubmittableExtrinsic  } from '@polkadot/api/types'
-import { BalanceLock, getApi } from './api'
+import { getApi } from './api'
 import BN from 'bn.js'
 import { env } from 'process'
 import { SudoDB } from './SudoDB';
@@ -353,6 +353,8 @@ export async function getTreasuryBurn(currencyId : BN){
 
 export async function getLock(accountAddress:string, assetId : BN){
   const api = getApi();
-  const locksResponse = await api.query.tokens.locks(accountAddress,assetId);
-  return locksResponse.toHuman() as BalanceLock[];
+  const locksResponse = await api.query.tokens.locks(accountAddress,assetId)!;
+  const decodedlocks = JSON.parse(JSON.stringify(locksResponse.toHuman()));
+  return decodedlocks;
+
 }
