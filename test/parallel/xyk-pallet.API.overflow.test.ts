@@ -16,7 +16,7 @@ const {sudo:sudoUserName} = getEnvironmentRequiredVars();
 
 const MAX_BALANCE = new BN('340282366920938463463374607431768211455'); //max balance
 
-describe('xyk-pallet - Check operations are not executed because of overflow in asset token', () => {
+describe.skip('xyk-pallet - Check operations are not executed because of overflow in asset token', () => {
 	
 	var testUser1 : User;
 	var sudo : User;
@@ -93,7 +93,7 @@ describe('xyk-pallet - Check operations are not executed because of overflow in 
 	});	
 });
 
-describe('xyk-pallet - Operate with a pool close to overflow', () => {
+describe.skip('xyk-pallet - Operate with a pool close to overflow', () => {
 	
 	var testUser1 : User;
 	var testUser2 : User;
@@ -219,7 +219,7 @@ describe('xyk-pallet - Operate with a pool close to overflow', () => {
 
 });
 
-describe('xyk-pallet - Operate with a user account close to overflow', () => {
+describe.skip('xyk-pallet - Operate with a user account close to overflow', () => {
 	
 	var testUser1 : User;
 	var testUser2 : User;
@@ -310,7 +310,7 @@ describe('xyk-pallet - Operate with a user account close to overflow', () => {
 
 });
 
-describe('xyk-pallet - Operate with a highly unbalanced pool [mg - newAsset]', () => {
+describe.skip('xyk-pallet - Operate with a highly unbalanced pool [mg - newAsset]', () => {
 	
 	var testUser1 : User;
 	var sudo : User;
