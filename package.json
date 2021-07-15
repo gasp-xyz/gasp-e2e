@@ -52,5 +52,9 @@
     "suiteNameTemplate": "{filepath}",
     "classNameTemplate": "{classname}",
     "titleTemplate": "{title}"
+  },
+  "jest": {
+    "verbose": true,
+    "bail" : true
   }
 }

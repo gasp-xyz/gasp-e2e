@@ -18,6 +18,10 @@ export class SudoDB {
     }
     
     public async getSudoNonce(sudoAddress: string) {
+        //we are debugging, so we dont need sudo nonce.
+        if(process.env.VSCODE_INSPECTOR_OPTIONS !== undefined && process.env.VSCODE_INSPECTOR_OPTIONS.length > 0)
+            return await getCurrentNonce(sudoAddress);
+        
         let dbNonce;
         try{
             // we need to prevent workers accessing and writing to the file concurrently
