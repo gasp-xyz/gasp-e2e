@@ -274,7 +274,7 @@ export const mintAsset = async (account: any, asset_id:BN, target: any, amount: 
 }
 
 
-export const createPool = async (account: any, firstAssetId: BN,firstAssetAmount: BN,secondAssetId: BN,secondAssetAmount: BN, sudo = false) => {
+export const createPool = async (account: any, firstAssetId: BN,firstAssetAmount: BN,secondAssetId: BN,secondAssetAmount: BN) => {
   const api = getApi();
   const nonce = await getCurrentNonce(account.address);
   console.info(`Creating pool:${firstAssetId},${firstAssetAmount},${secondAssetId},${secondAssetAmount}`);
