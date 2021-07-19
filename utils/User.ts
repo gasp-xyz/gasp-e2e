@@ -132,7 +132,6 @@ export class User {
 
     
     async createPoolToAsset(first_asset_amount: BN, second_asset_amount: BN, firstCurrency: BN, secondCurrency : BN) {
-
         await createPool(this.keyRingPair, firstCurrency, first_asset_amount, secondCurrency, second_asset_amount)
 		.then(
 			(result) => {

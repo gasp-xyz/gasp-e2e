@@ -5,6 +5,9 @@ import { env } from 'process'
 import { SudoDB } from './SudoDB';
 import {AccountData} from '@polkadot/types/interfaces/balances'
 import { signAndWaitTx } from './txHandler';
+import { getEnvironmentRequiredVars } from './utils';
+import { Keyring } from '@polkadot/api';
+import { User } from './User';
 
 
 export const signTx = async (
@@ -98,12 +101,28 @@ export async function calculate_sell_price_id_rpc(soldTokenId: BN, boughtTokenId
 }
 
 export async function getCurrentNonce(account?: string) {
-  const api = getApi();
-  if (account) {
-    const { nonce } = await api.query.system.account(account);
-    return new BN(nonce.toString())
+
+  const {sudo:sudoUserName} = getEnvironmentRequiredVars();
+  const sudo = new User(new Keyring({ type: 'sr25519' }), sudoUserName);
+  // lets check if sudo -> calculate manually nonce.
+  if(account === sudo.keyRingPair.address){
+      const nonce = new BN(await SudoDB.getInstance().getSudoNonce(account));
+
+      return nonce;
+
+  }else if (account){
+
+    return getChainNonce(account);
+
   }
   return new BN(-1)
+}
+
+export async function getChainNonce(address : string){
+  const api = getApi();
+    const { nonce } = await api.query.system.account(address);
+    
+    return new BN(nonce.toString())
 }
 
 export async function getUserAssets(account: any, assets : BN[]){
@@ -255,7 +274,7 @@ export const mintAsset = async (account: any, asset_id:BN, target: any, amount: 
 }
 
 
-export const createPool = async (account: any, firstAssetId: BN,firstAssetAmount: BN,secondAssetId: BN,secondAssetAmount: BN) => {
+export const createPool = async (account: any, firstAssetId: BN,firstAssetAmount: BN,secondAssetId: BN,secondAssetAmount: BN, sudo = false) => {
   const api = getApi();
   const nonce = await getCurrentNonce(account.address);
   console.info(`Creating pool:${firstAssetId},${firstAssetAmount},${secondAssetId},${secondAssetAmount}`);

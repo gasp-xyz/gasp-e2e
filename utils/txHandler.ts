@@ -8,17 +8,15 @@ import BN from 'bn.js'
 import { SudoDB } from './SudoDB';
 import { env } from 'process';
 import { EventResult, ExtrinsicResult } from './eventListeners';
-const DEFAULT_TIME_OUT_MS = 1500000;
+//let wait 7 blocks - 6000 * 7 = 42000; depends on the number of workers.
+const DEFAULT_TIME_OUT_MS = 42000;
 
 export async function getCurrentNonce(account?: string) {
   const api = getApi()
   if (account) {
     const { nonce } = await api.query.system.account(account)
-    //console.log('currentNonce', nonce.toNumber())
-    //   setNonce(nonce.toNumber())
     return nonce.toNumber()
   }
- // console.log('currentNonce', -1)
   return -1
 }
 
@@ -139,77 +137,80 @@ export const signAndWaitTx = async (
   nonce: number,
   timeout_ms: number = DEFAULT_TIME_OUT_MS
 ): Promise<GenericEvent[]> => {
-  return new Promise<GenericEvent[]>(async (resolve, reject) => {
+  console.info(`W[${env.JEST_WORKER_ID}] - who: ${who.address} - nonce ${nonce} - tx : ${JSON.stringify(tx.toHuman())} - timeout_ms : ${timeout_ms}`);
 
-  const api = getApi()
-  let result: GenericEvent[] = [];
+    return new Promise<GenericEvent[]>(async (resolve, reject) => {
 
-  if (timeout_ms > 0){
-      setTimeout(() => {
-      reject("timeout in - signAndWaitTx - " + who.address + " - " + nonce + " - " + tx.toHuman()?.toString())
-      }, timeout_ms);
-  }
-
-  const unsub = await tx.signAndSend(who, { nonce }, async ({ events = [], status }) => {
-    //console.warn(status);
-    if (status.isInBlock) {
-            const unsub_new_heads = await api.derive.chain.subscribeNewHeads(async (lastHeader) => {
-                if (lastHeader.parentHash.toString() === status.asInBlock.toString()){
-                    unsub_new_heads()
-                    let prev_block_extrinsics = (await api.rpc.chain.getBlock(lastHeader.parentHash)).block.extrinsics;
-                    let curr_block_extrinsics = (await api.rpc.chain.getBlock(lastHeader.hash)).block.extrinsics;
-                    let curr_block_events = await api.query.system.events.at(lastHeader.hash);
-
-                    let extrinsic_with_seed = curr_block_extrinsics.find( e => { return e.method.method === "set" && e.method.section === "random" });
-                    if(!extrinsic_with_seed){
-                        return;
+      const api = getApi()
+      let result: GenericEvent[] = [];
+    
+      if (timeout_ms > 0){
+          setTimeout(() => {
+          reject(`W[${env.JEST_WORKER_ID}] timeout in - signAndWaitTx - " + ${who.address} + " - " + ${nonce} + " - " + ${JSON.stringify(tx.toHuman())}` )
+          }, timeout_ms);
+      }
+    
+      const unsub = await tx.signAndSend(who, { nonce }, async ({ events = [], status }) => {
+        //console.warn(status);
+        if (status.isInBlock) {
+                const unsub_new_heads = await api.derive.chain.subscribeNewHeads(async (lastHeader) => {
+                    if (lastHeader.parentHash.toString() === status.asInBlock.toString()){
+                        unsub_new_heads()
+                        let prev_block_extrinsics = (await api.rpc.chain.getBlock(lastHeader.parentHash)).block.extrinsics;
+                        let curr_block_extrinsics = (await api.rpc.chain.getBlock(lastHeader.hash)).block.extrinsics;
+                        let curr_block_events = await api.query.system.events.at(lastHeader.hash);
+    
+                        let extrinsic_with_seed = curr_block_extrinsics.find( e => { return e.method.method === "set" && e.method.section === "random" });
+                        if(!extrinsic_with_seed){
+                            return;
+                        }
+    
+                        var json_response = JSON.parse(extrinsic_with_seed.method.args[0].toString())
+                        const seed_bytes = Uint8Array.from(Buffer.from(json_response["seed"].substring(2), 'hex'));
+                        let shuffled_extrinsics = recreateExtrinsicsOrder(prev_block_extrinsics, seed_bytes);
+    
+                        // filter extrinsic triggered by current request
+                        let index = shuffled_extrinsics.findIndex( e => {return e.isSigned && e.signer.toString() === who.address && e.nonce.toString() === nonce.toString();});
+                        if (index < 0) {
+                            return;
+                        }
+                        
+    
+                        let req_events = curr_block_events.filter(event => {
+                            return event.phase.isApplyExtrinsic && event.phase.asApplyExtrinsic.toNumber() === index;
+                        }).map( ({ phase, event }) => {
+                            return event;
+                        });
+                        console.log(
+                                `W[${env.JEST_WORKER_ID}]` +
+                                 "--block - no " + lastHeader.number +
+                                 " \n --curr_block " + JSON.stringify(curr_block_events.toJSON()) + 
+                                 " \n --curr_block[toHuman]: " + curr_block_events.map( ({event}) => {return event} ).map( e => JSON.stringify(e.toHuman()) + JSON.stringify(e.toHuman().data) ).toString() +
+                                 " \n --req_events " + req_events.toString() + 
+                                 " \n --index: " + index +
+                                 " \n --who.address: " + who.address +
+                                 " \n --nonce: " + nonce.toString() + 
+                                 " \n --toHuman: " + req_events.map( e => JSON.stringify(e.toHuman()) + JSON.stringify(e.toHuman().data) ).toString()
+                        );
+                        result = result.concat(req_events);
                     }
+                });
+    
+            }else if (status.isFinalized) {
+                unsub();
+                // resolve only if transaction has been finalized
+                console.log(
+                  `RESULT W[${env.JEST_WORKER_ID}]` +
+                   " \n --req_events " + result.toString() + 
+                   " \n --who.address: " + who.address +
+                   " \n --nonce: " + nonce.toString() + 
+                   " \n --toHuman: " + result.map( e => JSON.stringify(e.toHuman()) + JSON.stringify(e.toHuman().data) ).toString()
+                );
+                resolve(result)
+            }
+        });
+      })
 
-                    var json_response = JSON.parse(extrinsic_with_seed.method.args[0].toString())
-                    const seed_bytes = Uint8Array.from(Buffer.from(json_response["seed"].substring(2), 'hex'));
-                    let shuffled_extrinsics = recreateExtrinsicsOrder(prev_block_extrinsics, seed_bytes);
-
-                    // filter extrinsic triggered by current request
-                    let index = shuffled_extrinsics.findIndex( e => {return e.isSigned && e.signer.toString() === who.address && e.nonce.toString() === nonce.toString();});
-                    if (index < 0) {
-                        return;
-                    }
-                    
-
-                    let req_events = curr_block_events.filter(event => {
-                        return event.phase.isApplyExtrinsic && event.phase.asApplyExtrinsic.toNumber() === index;
-                    }).map( ({ phase, event }) => {
-                        return event;
-                    });
-                    console.info(
-                            `W[${env.JEST_WORKER_ID}]` +
-                             "--block - no " + lastHeader.number +
-                             " \n --curr_block " + JSON.stringify(curr_block_events.toJSON()) + 
-                             " \n --curr_block[toHuman]: " + curr_block_events.map( ({event}) => {return event} ).map( e => JSON.stringify(e.toHuman()) + JSON.stringify(e.toHuman().data) ).toString() +
-                             " \n --req_events " + req_events.toString() + 
-                             " \n --index: " + index +
-                             " \n --who.address: " + who.address +
-                             " \n --nonce: " + nonce.toString() + 
-                             " \n --toHuman: " + req_events.map( e => JSON.stringify(e.toHuman()) + JSON.stringify(e.toHuman().data) ).toString()
-                    );
-                    result = result.concat(req_events);
-                }
-            });
-
-        }else if (status.isFinalized) {
-            unsub();
-            // resolve only if transaction has been finalized
-            console.info(
-              `RESULT W[${env.JEST_WORKER_ID}]` +
-               " \n --req_events " + result.toString() + 
-               " \n --who.address: " + who.address +
-               " \n --nonce: " + nonce.toString() + 
-               " \n --toHuman: " + result.map( e => JSON.stringify(e.toHuman()) + JSON.stringify(e.toHuman().data) ).toString()
-            );
-            resolve(result)
-        }
-    });
-  })
 }
 // From the events that a waitForTx, create an EventResponse filtering by search term or by extrinsic results.
 export const getEventResultFromTxWait = function(relatedEvents :GenericEvent[], searchTerm : string [] = []) : EventResult{
