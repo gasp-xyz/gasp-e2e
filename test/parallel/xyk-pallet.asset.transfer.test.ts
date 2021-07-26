@@ -1,6 +1,6 @@
 import {getApi, initApi} from "../../utils/api";
-import { getBalanceOfPool, transferAsset} from '../../utils/tx'
-import {waitNewBlock, ExtrinsicResult} from '../../utils/eventListeners'
+import { getBalanceOfPool, transferAll, transferAsset} from '../../utils/tx'
+import {waitNewBlock, ExtrinsicResult, getUserEventResult} from '../../utils/eventListeners'
 import BN from 'bn.js'
 import { Keyring } from '@polkadot/api'
 import {AssetWallet, User} from "../../utils/User";
@@ -99,6 +99,34 @@ test('xyk-pallet - AssetsOperation: transferAsset', async() => {
 	.toEqual(pool_balance);
 
 });
+
+test('xyk-pallet - AssetsOperation: transferAll', async() => {
+    //Refactor Note: [Missing Wallet assert?] Did not considered creating a liquity asset. Transaction does nothing with it.
+	let pool_balance_before = await getBalanceOfPool(firstCurrency, secondCurrency);
+	let amount = testUser1.getAsset(firstCurrency)?.amountBefore!;
+	console.log("testUser1: transfering all assets " + firstCurrency + " to testUser2");
+
+	const eventPromise = getUserEventResult("tokens", "Transferred", 12, testUser1.keyRingPair.address);
+	transferAll(testUser1.keyRingPair, firstCurrency, testUser2.keyRingPair.address);
+	const eventResponse = await eventPromise;
+	expect(eventResponse.state).toEqual(ExtrinsicResult.ExtrinsicSuccess);
+
+	await testUser1.refreshAmounts(AssetWallet.AFTER);
+	await testUser2.refreshAmounts(AssetWallet.AFTER);
+	await pallet.refreshAmounts(AssetWallet.AFTER);
+
+	testUser1.validateWalletReduced(firstCurrency, amount);
+	testUser1.validateWalletIncreased(secondCurrency,new BN(0));
+
+	testUser2.validateWalletIncreased(firstCurrency, amount);
+	testUser1.validateWalletIncreased(secondCurrency,new BN(0));
+
+	let pool_balance = await getBalanceOfPool(firstCurrency, secondCurrency);
+	expect	(pool_balance_before)
+	.toEqual(pool_balance);
+
+});
+
 
 
 

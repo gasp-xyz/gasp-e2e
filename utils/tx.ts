@@ -144,16 +144,24 @@ export async function getLiquidityAssetId(assetId1: BN, assetId2: BN ) {
 
 export async function getLiquiditybalance(liquidityAssetId: BN){
   const pool = await getLiquidityPool(liquidityAssetId);
-  const assetIds = pool.toHuman() as string[];
-  const poolBalance = await getBalanceOfPool(new BN(assetIds[0].toString()), new BN(assetIds[1].toString()) );
+  const poolBalance = await getBalanceOfPool(pool[0], pool[1]);
   return poolBalance;
 }
 
-export async function getLiquidityPool(liquidityAssetId: BN) {
+export async function getLiquidityPool(liquidityAssetId: BN ) {
   const api = getApi();
-  const pool = await api.query.xyk.liquidityPools(liquidityAssetId);
-  return pool;
+
+	const liqPool = await api.query.xyk.liquidityPools(liquidityAssetId);
+  const poolAssetIds = (liqPool.toHuman() as Number[]);
+  if(!poolAssetIds)
+    return [new BN(-1),new BN(-1)];
+
+  const result = poolAssetIds.map( num => new BN(num.toString()) )
+	return result;
+
 }
+
+
 
 export async function getAssetSupply(assetId1: BN) {
   const api = getApi();
@@ -238,6 +246,16 @@ export const transferAsset = async (account: any, asset_id:BN, target: any, amou
     parseInt(nonce)
   )
   return txResult;
+}
+
+export const transferAll = async (account: any, asset_id:BN, target: any) => {
+  const api = getApi();
+
+  signTx(
+    api.tx.tokens.transferAll(target, asset_id),
+    account,
+    await getCurrentNonce(account.address)
+  )
 }
 
 export const mintAsset = async (account: any, asset_id:BN, target: any, amount: BN) => {
@@ -331,4 +349,12 @@ export async function getTreasuryBurn(currencyId : BN){
   const api = getApi();
   const treasuryBalance = await api.query.xyk.treasuryBurn(currencyId);
   return treasuryBalance.toHuman();
+}
+
+export async function getLock(accountAddress:string, assetId : BN){
+  const api = getApi();
+  const locksResponse = await api.query.tokens.locks(accountAddress,assetId)!;
+  const decodedlocks = JSON.parse(JSON.stringify(locksResponse.toHuman()));
+  return decodedlocks;
+
 }

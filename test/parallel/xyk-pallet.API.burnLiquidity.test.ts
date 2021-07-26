@@ -1,5 +1,5 @@
 import {api, getApi, initApi} from "../../utils/api";
-import { getBalanceOfPool, getLiquidityAssetId, burnLiquidity, getBalanceOfAsset, calculate_buy_price_local} from '../../utils/tx'
+import { getBalanceOfPool, getLiquidityAssetId, burnLiquidity, getBalanceOfAsset, calculate_buy_price_local, getLiquidityPool} from '../../utils/tx'
 import {waitNewBlock, ExtrinsicResult, EventResult} from '../../utils/eventListeners'
 import BN from 'bn.js'
 import { Keyring } from '@polkadot/api'
@@ -65,6 +65,10 @@ describe('xyk-pallet - Burn liquidity tests: when burning liquidity you can', ()
 			api?.tx.xyk.createPool(firstCurrency, new BN(assetXamount), secondCurrency,new BN(assetYamount)), 
 			testUser1.keyRingPair 
 		);
+		const liquidityAssetId = await getLiquidityAssetId(firstCurrency, secondCurrency);
+		const liquidityPoolBeforeDestroy = await getLiquidityPool(liquidityAssetId);
+
+		
 		await testUser2.setBalance(sudo);
 		const amountOfX = calculate_buy_price_local(new BN(assetXamount),new BN(assetYamount),new BN(9));
 		await sudo.mint(firstCurrency,testUser2,amountOfX);
@@ -90,6 +94,15 @@ describe('xyk-pallet - Burn liquidity tests: when burning liquidity you can', ()
 
 		expect([new BN(0),new BN(0)]).toEqual(poolBalance);
 		expect(liquidity).toEqual(new BN(0));
+
+
+		//Validate liquidity pool is destroyed.
+		const liquidityPool = await getLiquidityPool(liquidityAssetId);
+		expect(liquidityPool[0]).toEqual(new BN(-1));
+		expect(liquidityPool[1]).toEqual(new BN(-1));
+
+		expect(liquidityPoolBeforeDestroy[0]).toEqual(firstCurrency);
+		expect(liquidityPoolBeforeDestroy[1]).toEqual(secondCurrency);
 		
 	});
 
