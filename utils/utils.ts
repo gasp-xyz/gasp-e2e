@@ -1,7 +1,7 @@
 import { formatBalance} from "@polkadot/util/format";
 import BN from "bn.js";
 import { getApi } from "./api";
-import { assert } from "console";
+
 import { waitNewBlock } from "./eventListeners";
 import { Assets } from "./Assets";
 import { signSendAndWaitToFinishTx } from "./txHandler";
@@ -24,13 +24,26 @@ export function getEnvironmentRequiredVars(){
     const palletAddress = process.env.TEST_PALLET_ADDRESS ? process.env.TEST_PALLET_ADDRESS : '';
     const sudoUserName = process.env.TEST_SUDO_NAME ? process.env.TEST_SUDO_NAME : '';
     const testUserName = process.env.TEST_USER_NAME ? process.env.TEST_USER_NAME : '//Alice';
+    if(palletAddress.length === 0 || sudoUserName.length === 0){
+        throw new Error("PALLET ADDRESS OR SUDO USERNAME NOT FOUND AS GLOBAL ENV")
+    }
 
-    assert(palletAddress.length !== 0, "PALLET ADDRESS NOT FOUND AS GLOBAL ENV")
-    assert(sudoUserName.length !== 0, "SUDO USERNAME NOT FOUND AS GLOBAL ENV")
-    // expect(palletAddress.length).not.toEqual(0);
-    // expect(sudoUserName.length).not.toEqual(0);
     const uri = process.env.API_URL ? process.env.API_URL: 'ws://127.0.0.1:9944';
-    return {pallet: palletAddress, sudo: sudoUserName, chainUri:uri, alice: testUserName};
+    const userPassword = process.env.UI_USR_PWD ? process.env.UI_USR_PWD: 'mangata123';
+    const uiUri = process.env.UI_URL ? process.env.UI_URL: 'https://staging.mangata.finance/'
+    const mnemonicMetaMask = process.env.MNEMONIC_META ? process.env.MNEMONIC_META: ' oh oh'
+    const mnemonicPolkadot = process.env.MNEMONIC_POLK ? process.env.MNEMONIC_POLK: ' oh oh'
+
+    return {
+        pallet: palletAddress, 
+        sudo: sudoUserName, 
+        chainUri:uri, 
+        alice: testUserName,
+        uiUserPassword : userPassword,
+        uiUri : uiUri,
+        mnemonicMetaMask: mnemonicMetaMask,
+        mnemonicPolkadot: mnemonicPolkadot
+    };
 }
 
 export async function UserCreatesAPoolAndMintliquidity(

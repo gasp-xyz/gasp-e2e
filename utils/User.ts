@@ -4,7 +4,7 @@ import { KeyringPair } from '@polkadot/keyring/types';
 import BN from 'bn.js';
 import { v4 as uuid } from 'uuid';
 import { ExtrinsicResult, waitNewBlock } from './eventListeners';
-import { balanceTransfer, buyAsset, createPool, getAccountInfo, getUserAssets, mintAsset, mintLiquidity, sellAsset, setBalance } from './tx';
+import { balanceTransfer, buyAsset, createPool, getAccountInfo, getUserAssets, mintAsset, mintLiquidity, sellAsset, setBalance, transferAll } from './tx';
 import { getEventResultFromTxWait } from './txHandler';
 
 export enum AssetWallet
@@ -14,7 +14,6 @@ export enum AssetWallet
 }
 
 export class User {
-	
     /**
      * class that represent the user and wallet.
      */
@@ -23,13 +22,17 @@ export class User {
     keyring :Keyring;
     assets : Asset [];
     
-    constructor(keyring : Keyring ,name = '') {
+    constructor(keyring : Keyring ,name = '', json : any = undefined) {
         if(!name){
             name = '//testUser_' + uuid();
         }
         this.name = name;
         this.keyring = keyring;
-        this.keyRingPair = keyring.createFromUri(name); 
+        if(json){
+            this.keyRingPair = keyring.createFromJson(json);
+        }else{
+            this.keyRingPair = keyring.createFromUri(name); 
+        }
         this.assets = [];
     }
 
@@ -182,6 +185,10 @@ export class User {
             const accountData = await this.getUserAccountInfo();
             amount = accountData.free;
         } while (amount === '0');
+    }
+
+    async removeTokens(){
+        await transferAll(this.keyRingPair, new BN(0), process.env.TEST_PALLET_ADDRESS);
     }
 }
 
