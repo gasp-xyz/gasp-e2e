@@ -15,7 +15,7 @@ on:
         publishDockerImage:
           description: 'Generate new Docker image'
           required: false
-          default: 'false'
+          default: 'true'
       # For manually trigger
  
 
