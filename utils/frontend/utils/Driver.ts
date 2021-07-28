@@ -13,12 +13,12 @@ export const DriverBuilder = (function () {
     
     function buildChromeDriver() {
       let options = new chrome.Options();
-      options.addExtensions(fs.readFileSync(polkadotExtensionPath, { encoding: 'base64' }))
-      options.addExtensions(fs.readFileSync(metamaskExtensionPath, { encoding: 'base64' }))
+      options.addExtensions(polkadotExtensionPath);
+      options.addExtensions(metamaskExtensionPath);
     
       driver = new Builder()
           .forBrowser('chrome')
-//          .setChromeOptions(options)
+          .setChromeOptions(options)
           .build();
       return driver;
     }
