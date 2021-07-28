@@ -12,6 +12,10 @@ on:
           description: 'Name of the script to run'
           required: false
           default: 'test-ui'
+        publishDockerImage:
+          description: 'Generate new Docker image'
+          required: false
+          default: 'false'
       # For manually trigger
  
 
@@ -26,22 +30,33 @@ jobs:
         name: Set up Docker Buildx
         uses: docker/setup-buildx-action@v1
       -
+        if: ${{ github.event.inputs.scriptName }}
+        name: Login to Docker Hub
+        uses: docker/login-action@v1
+        with:
+          username: ${{ secrets.DOCKERHUB_USERNAME }}
+          password: ${{ secrets.DOCKERHUB_TOKEN }}
+
+      -
         name: Build Docker Image
         uses: docker/build-push-action@v2
+        if: contains(github.event.inputs.publishDockerImage, 'true')
         with:
           file: "devops/dockerfiles/Dockerfile"
-          push: false
-          load: true
-          tags: mangatasolutions/mangata-e2e:${{ github.sha }}
-          outputs: type=docker,dest=/tmp/${{ github.run_id }}.tar
+          push: true
+          tags: mangatasolutions/mangata-e2e:latest
+
 
   test:
     needs: build
     name: Run UI tests
     runs-on: ubuntu-latest
     container:
-      image: mangatasolutions/mangata-e2e:${{ github.sha }}
+      image: mangatasolutions/mangata-e2e:latest
       options: --network-alias testHost
+      credentials:
+          username: ${{ secrets.DOCKERHUB_USERNAME }}
+          password: ${{ secrets.DOCKERHUB_TOKEN }}
     env:
       API_URL: 'wss://staging.testnode.mangata.finance:9945'
       TEST_PALLET_ADDRESS: ${{ secrets.TEST_PALLET_ADDRESS }}
