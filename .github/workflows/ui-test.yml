@@ -66,8 +66,7 @@ jobs:
         uses: Xotabu4/selenoid-github-action@v2
         with:
           selenoid-start-arguments: |
-            --args "-timeout 60s -limit 5"
-            --browsers 'chrome'
+            --args "-timeout 60s -limit 5 -b 'chrome'"
       - name: Set variables
         run:  |
           echo "TEST_SCRIPT=${{ github.event.inputs.scriptName || env.TEST_SCRIPT }}" >> $GITHUB_ENV
