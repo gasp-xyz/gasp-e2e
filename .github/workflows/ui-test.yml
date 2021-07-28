@@ -79,7 +79,9 @@ jobs:
       - name: Tsc code quality check
         run: yarn tsc-lint
       - name: ESLint code quality check
-        run: yarn eslint
+        run: yarn eslint  
+      - name: installed packages
+        run: yarn list
       - name: docker ps
         run: docker ps
       - name: is selenoid started?
