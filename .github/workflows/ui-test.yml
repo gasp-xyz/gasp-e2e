@@ -39,7 +39,7 @@ jobs:
       -
         name: Build Docker Image
         uses: docker/build-push-action@v2
-        if: contains(github.event.inputs.publishDockerImage, 'true')
+        #if: contains(github.event.inputs.publishDockerImage, 'true')
         with:
           file: "devops/dockerfiles/Dockerfile"
           push: true
@@ -50,7 +50,12 @@ jobs:
     needs: build
     name: Run UI tests
     runs-on: ubuntu-latest
-
+    container:
+      image: mangatasolutions/mangata-e2e:latest
+      options: --network-alias testHost
+      credentials:
+          username: ${{ secrets.DOCKERHUB_USERNAME }}
+          password: ${{ secrets.DOCKERHUB_TOKEN }}
     env:
       API_URL: 'wss://staging.testnode.mangata.finance:9945'
       TEST_PALLET_ADDRESS: ${{ secrets.TEST_PALLET_ADDRESS }}
@@ -59,14 +64,11 @@ jobs:
       MNEMONIC_POLK: ${{ secrets.MNEMONIC_POLK }}
       TEST_SCRIPT: 'test-ui'
       NODE_ENV: test
-      SELENIUM_REMOTE_URL: http://localhost:4444/wd/hub
+#      SELENIUM_REMOTE_URL: http://localhost:4444/wd/hub
 
     steps:
       - name: Start selenoid
         uses: Xotabu4/selenoid-github-action@v2
-        with:
-          selenoid-start-arguments: |
-            --args "-timeout 60s -limit 5 -b 'chrome'"
       - name: Set variables
         run:  |
           echo "TEST_SCRIPT=${{ github.event.inputs.scriptName || env.TEST_SCRIPT }}" >> $GITHUB_ENV
