@@ -16,10 +16,32 @@ on:
  
 
 jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      -
+        name: Checkout
+        uses: actions/checkout@v2
+      -
+        name: Set up Docker Buildx
+        uses: docker/setup-buildx-action@v1
+      -
+        name: Build Docker Image
+        uses: docker/build-push-action@v2
+        with:
+          file: "devops/dockerfiles/Dockerfile"
+          push: false
+          load: true
+          tags: mangatasolutions/mangata-e2e:${{ github.sha }}
+          outputs: type=docker,dest=/tmp/${{ github.run_id }}.tar
+
   test:
+    needs: build
     name: Run UI tests
     runs-on: ubuntu-latest
-
+    container:
+      image: mangatasolutions/mangata-e2e:${{ github.sha }}
+      options: --network-alias testHost
     env:
       API_URL: 'wss://staging.testnode.mangata.finance:9945'
       TEST_PALLET_ADDRESS: ${{ secrets.TEST_PALLET_ADDRESS }}
