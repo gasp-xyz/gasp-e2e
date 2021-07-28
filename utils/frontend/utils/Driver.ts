@@ -18,7 +18,7 @@ export const DriverBuilder = (function () {
     
       driver = new Builder()
           .forBrowser('chrome')
-          .setChromeOptions(options)
+//          .setChromeOptions(options)
           .build();
       return driver;
     }
