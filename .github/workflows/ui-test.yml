@@ -68,7 +68,7 @@ jobs:
 
     steps:
       - name: Start selenoid
-        uses: Xotabu4/selenoid-github-action@v2
+        uses: ajinx/selenoid@v2
       - name: Set variables
         run:  |
           echo "TEST_SCRIPT=${{ github.event.inputs.scriptName || env.TEST_SCRIPT }}" >> $GITHUB_ENV
