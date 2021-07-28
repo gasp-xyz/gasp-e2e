@@ -67,8 +67,8 @@ jobs:
       SELENIUM_REMOTE_URL: http://localhost:4444/wd/hub
 
     steps:
-      - name: Start selenoid
-        uses: ajinx/selenoid@v2
+      - name: Starting Selenoid Server (aerokube/selenoid) within actions
+        uses: ajinx/selenoid@2.0
       - name: Set variables
         run:  |
           echo "TEST_SCRIPT=${{ github.event.inputs.scriptName || env.TEST_SCRIPT }}" >> $GITHUB_ENV
