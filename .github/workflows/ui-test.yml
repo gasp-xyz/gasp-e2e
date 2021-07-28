@@ -39,7 +39,7 @@ jobs:
       -
         name: Build Docker Image
         uses: docker/build-push-action@v2
-        if: contains(github.event.inputs.publishDockerImage, 'true')
+        #if: contains(github.event.inputs.publishDockerImage, 'true')
         with:
           file: "devops/dockerfiles/Dockerfile"
           push: true
