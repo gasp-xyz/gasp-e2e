@@ -21,6 +21,7 @@ on:
 
 jobs:
   build:
+    if: contains(github.event.inputs.publishDockerImage, 'true')
     runs-on: ubuntu-latest
     steps:
       -
@@ -47,7 +48,7 @@ jobs:
 
 
   test:
-    needs: build
+#    needs: build
     name: Run UI tests
     runs-on: ubuntu-latest
 #    container:
@@ -67,8 +68,8 @@ jobs:
       SELENIUM_REMOTE_URL: http://localhost:4444/wd/hub
 
     steps:
-      - name: Starting Selenoid Server (aerokube/selenoid) within actions
-        uses: ajinx/selenoid@2.0
+      - name: Start Selenoid Server
+        uses: Xotabu4/selenoid-github-action@v2
       - name: Set variables
         run:  |
           echo "TEST_SCRIPT=${{ github.event.inputs.scriptName || env.TEST_SCRIPT }}" >> $GITHUB_ENV
