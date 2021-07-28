@@ -86,8 +86,7 @@ jobs:
         run: yarn tsc-lint
       - name: ESLint code quality check
         run: yarn eslint
-      - name: Docker ps
-        run: docker ps
+
       - name: Run e2e tests
         run: yarn ${{ env.TEST_SCRIPT }}
       
