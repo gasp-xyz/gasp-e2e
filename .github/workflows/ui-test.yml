@@ -19,9 +19,7 @@ jobs:
   test:
     name: Run UI tests
     runs-on: ubuntu-latest
-    container:
-      image: node:14.4
-      options: --network-alias testHost
+
     env:
       API_URL: 'wss://staging.testnode.mangata.finance:9945'
       TEST_PALLET_ADDRESS: ${{ secrets.TEST_PALLET_ADDRESS }}
