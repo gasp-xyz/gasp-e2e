@@ -1,4 +1,4 @@
-name: e2e workflow
+name: UI tests
 
 on:
   pull_request:
