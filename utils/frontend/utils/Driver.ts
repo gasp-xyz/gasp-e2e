@@ -2,7 +2,6 @@ import { WebDriver } from "selenium-webdriver";
 
 require("chromedriver");
 const { Builder } = require("selenium-webdriver");
-const fs = require('fs');
 let chrome = require("selenium-webdriver/chrome");
 const path = 'utils/frontend/utils/extensions'
 const polkadotExtensionPath = `${path}/polkadot_v0.38.3.crx`;
