@@ -69,7 +69,7 @@ jobs:
 
     steps:
       - name: Start Selenoid Server
-        uses: Xotabu4/selenoid-github-action@v1
+        uses: Xotabu4/selenoid-github-action@v2
       - name: Set variables
         run:  |
           echo "TEST_SCRIPT=${{ github.event.inputs.scriptName || env.TEST_SCRIPT }}" >> $GITHUB_ENV
@@ -82,10 +82,10 @@ jobs:
         run: yarn eslint
       - name: docker ps
         run: docker ps
-      - name: Run e2e tests
-        run: yarn ${{ env.TEST_SCRIPT }}
       - name: is selenoid started?
         run: curl http://localhost:4444/status
+      - name: Run e2e tests
+        run: yarn ${{ env.TEST_SCRIPT }}
       - name: Test Report
         uses: dorny/test-reporter@v1
         if: success() || failure()    # run this step even if previous step failed
