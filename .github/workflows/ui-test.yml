@@ -117,13 +117,13 @@ jobs:
           path: reports.zip
       - name: Check video path
         if: success() || failure()
-        run: "ls -lt ~/.aerokube/selenoid/"
+        run: "ls -lt ~/.aerokube/selenoid/video/"
 
       - name: create zip
         uses: papeloto/action-zip@v1
         if: success() || failure()
         with:
-          files: ~/.aerokube/selenoid/video/
+          files: "~/.aerokube/selenoid/video/"
           dest: videos.zip
 
       - name: Archive videos files
@@ -140,3 +140,5 @@ jobs:
           name: screenshots
           path: reports/artifacts/screenshot.png
 
+      - name: any video?
+        run: curl http://localhost:4444/video/
