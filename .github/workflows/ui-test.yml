@@ -114,6 +114,20 @@ jobs:
           name: reportsFolder
           path: reports.zip
       
+      - name: create zip
+        uses: papeloto/action-zip@v1
+        if: success() || failure()
+        with:
+          files: ~/.aerokube/selenoid/video/
+          dest: videos.zip
+
+      - name: Archive videos files
+        uses: actions/upload-artifact@v2
+        if: success() || failure()
+        with:
+          name: reportsFolder
+          path: videos.zip
+      
       - name: Archive screenshots
         if: success() || failure()
         uses: actions/upload-artifact@v2
