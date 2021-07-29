@@ -111,7 +111,7 @@ jobs:
         uses: actions/upload-artifact@v2
         if: success() || failure()
         with:
-          name: screenshots
+          name: reportsFolder
           path: reports.zip
       
       - name: Archive screenshots
@@ -119,5 +119,5 @@ jobs:
         uses: actions/upload-artifact@v2
         with:
           name: screenshots
-          path: reports/screenshot.png
+          path: reports/artifacts/screenshot.png
 
