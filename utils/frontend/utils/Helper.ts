@@ -3,6 +3,7 @@ import { sleep } from "../../utils";
 import { Mangata } from "../pages/Mangata";
 import { MetaMask } from "../pages/MetaMask";
 import { Polkadot } from "../pages/Polkadot";
+const fs = require('fs');
 
 const { By, until } = require("selenium-webdriver");
 require("chromedriver");
@@ -36,4 +37,9 @@ export async function leaveOnlyOneTab(driver: WebDriver){
         await (await driver).switchTo().window(handles[0]);
     }
 
+}
+
+export async function takeScreenshot(driver: WebDriver) {
+    const img = await driver.takeScreenshot()
+    fs.writeFileSync('reports/out/screenshot.png', img, 'base64')
 }

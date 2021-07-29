@@ -4,7 +4,7 @@ import { getApi, initApi } from "../../utils/api";
 import { Mangata } from "../../utils/frontend/pages/Mangata";
 import { Polkadot } from "../../utils/frontend/pages/Polkadot";
 import {DriverBuilder} from "../../utils/frontend/utils/Driver";
-import {setupAllExtensions} from "../../utils/frontend/utils/Helper";
+import {setupAllExtensions, takeScreenshot} from "../../utils/frontend/utils/Helper";
 import { User } from "../../utils/User";
 import { getEnvironmentRequiredVars } from "../../utils/utils";
 
@@ -57,8 +57,11 @@ describe('UI tests - Get Tokens from Faucet', () => {
     });
 
     afterEach( async () => {
+        const session = await driver.getSession();
+        await takeScreenshot(driver);
         await driver.quit();
+        //await downloadVideo(session.getId())
         const api = getApi();
-        await api.disconnect()
+        await api.disconnect();
     });
 });

@@ -251,11 +251,12 @@ export const transferAsset = async (account: any, asset_id:BN, target: any, amou
 export const transferAll = async (account: any, asset_id:BN, target: any) => {
   const api = getApi();
 
-  signTx(
+  const txResult = await signAndWaitTx(
     api.tx.tokens.transferAll(target, asset_id),
     account,
-    await getCurrentNonce(account.address)
+    await (await getCurrentNonce(account.address)).toNumber()
   )
+  return txResult;
 }
 
 export const mintAsset = async (account: any, asset_id:BN, target: any, amount: BN) => {
