@@ -70,10 +70,10 @@ jobs:
     steps:
       - name: Start Selenoid Server
         uses: Xotabu4/selenoid-github-action@v2
-        selenoid-start-arguments: |
-          --args "-timeout 60s"
-          --browsers 'chrome'
-          --last-versions 2
+          selenoid-start-arguments: |
+            --args "-timeout 60s"
+            --browsers 'chrome'
+            --last-versions 2
       - name: Set variables
         run:  |
           echo "TEST_SCRIPT=${{ github.event.inputs.scriptName || env.TEST_SCRIPT }}" >> $GITHUB_ENV
