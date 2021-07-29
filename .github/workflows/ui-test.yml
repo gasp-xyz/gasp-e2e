@@ -87,11 +87,13 @@ jobs:
       - name: installed packages
         run: yarn list
       - name: docker ps
-        run: docker ps
+        run: docker inspect aerokube/selenoid:1.10.4
+
       - name: is selenoid started?
         run: curl http://localhost:4444/status
       - name: Run e2e tests
         run: yarn ${{ env.TEST_SCRIPT }}
+      
       - name: Test Report
         uses: dorny/test-reporter@v1
         if: success() || failure()    # run this step even if previous step failed
@@ -113,7 +115,10 @@ jobs:
         with:
           name: reportsFolder
           path: reports.zip
-      
+      - name: Check video path
+        if: success() || failure()
+          run: ls -lt ~/.aerokube/selenoid/
+
       - name: create zip
         uses: papeloto/action-zip@v1
         if: success() || failure()

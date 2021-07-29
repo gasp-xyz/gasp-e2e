@@ -58,7 +58,7 @@ describe('UI tests - Get Tokens from Faucet', () => {
 
     afterEach( async () => {
         //const session = await driver.getSession();
-        await takeScreenshot(driver);
+        await takeScreenshot(driver, expect.getState().currentTestName);
         await driver.quit();
         //await downloadVideo(session.getId())
         const api = getApi();

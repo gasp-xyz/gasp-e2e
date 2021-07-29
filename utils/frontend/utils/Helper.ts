@@ -39,7 +39,7 @@ export async function leaveOnlyOneTab(driver: WebDriver){
 
 }
 
-export async function takeScreenshot(driver: WebDriver) {
+export async function takeScreenshot(driver: WebDriver, testName = '') {
     const img = await driver.takeScreenshot();
-    fs.writeFileSync(`reports/artifacts/screenshot.png`, img, 'base64')
+    fs.writeFileSync(`reports/artifacts/screenshot_${testName}.png`, img, 'base64')
 }
