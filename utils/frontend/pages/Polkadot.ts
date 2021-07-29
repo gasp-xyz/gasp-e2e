@@ -1,8 +1,7 @@
 import { WebDriver } from "selenium-webdriver";
 import { getEnvironmentRequiredVars } from "../../utils";
-import { waitForElement } from "../utils/Helper";
+import { clickElement, waitForElement } from "../utils/Helper";
 const { By } = require("selenium-webdriver");
-const fs = require('fs');
 
 //xpaths
 const XPATH_NEXT = "//*[text()='Next']";
@@ -41,7 +40,8 @@ export class Polkadot {
         await this.driver.get(`${this.WEB_UI_ACCESS_URL}#/account/import-seed`);
         await waitForElement(this.driver, XPATH_MNEMONIC);
         await (await this.driver).findElement(By.xpath(XPATH_MNEMONIC)).sendKeys(this.ACCOUNT_MNEMONIC);
-        await (await this.driver.findElement(By.xpath(XPATH_NEXT))).click();
+        await clickElement(this.driver,XPATH_NEXT);
+
         await waitForElement(this.driver, XPATH_USER_NAME);
         await (await this.driver.findElement(By.xpath(XPATH_USER_NAME))).sendKeys('acc_automation');
         await (await this.driver.findElement(By.xpath(XPATH_PASSWORD))).sendKeys(userPassword);
@@ -52,11 +52,11 @@ export class Polkadot {
     private async enable(){
         
         await waitForElement(this.driver, XPATH_ADD_ACCOUNT);
-        await (await this.driver.findElement(By.xpath(XPATH_ADD_ACCOUNT))).click();
+        await clickElement(this.driver,XPATH_ADD_ACCOUNT);
 
         await waitForElement(this.driver, XPATH_UNDERSTOOD);
-        await (await this.driver.findElement(By.xpath(XPATH_UNDERSTOOD))).click();
-    
+        await clickElement(this.driver,XPATH_UNDERSTOOD);
+
     }
 
     async acceptPermissions(){
@@ -68,7 +68,8 @@ export class Polkadot {
             
             try {
                 await waitForElement(this.driver,XPATH_ACCEPT_PERMISSIONS);
-                await (await this.driver.findElement(By.xpath(XPATH_ACCEPT_PERMISSIONS))).click();   
+                await clickElement(this.driver,XPATH_ACCEPT_PERMISSIONS);
+  
                 break
             } catch (error) {
                 
@@ -81,13 +82,6 @@ export class Polkadot {
         value = iterator.next().value;
         await this.driver.switchTo().window(value[1]); 
         return;
-    }
-
-    getAccountJSON() {
-        const path = 'utils/frontend/utils/extensions'
-        const polkadotUserJson = `${path}/polkadotExportedUser.json`;
-        const jsonContent =  JSON.parse(fs.readFileSync(polkadotUserJson,{encoding:'utf8', flag:'r'}));
-        return jsonContent;
     }
 
 }

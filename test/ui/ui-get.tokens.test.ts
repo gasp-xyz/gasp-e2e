@@ -2,9 +2,8 @@ import { Keyring } from "@polkadot/api";
 import { WebDriver } from "selenium-webdriver";
 import { getApi, initApi } from "../../utils/api";
 import { Mangata } from "../../utils/frontend/pages/Mangata";
-import { Polkadot } from "../../utils/frontend/pages/Polkadot";
 import {DriverBuilder} from "../../utils/frontend/utils/Driver";
-import {setupAllExtensions, takeScreenshot} from "../../utils/frontend/utils/Helper";
+import {getAccountJSON, setupAllExtensions, takeScreenshot} from "../../utils/frontend/utils/Helper";
 import { User } from "../../utils/User";
 import { getEnvironmentRequiredVars } from "../../utils/utils";
 
@@ -25,12 +24,9 @@ describe('UI tests - Get Tokens from Faucet', () => {
           } catch(e) {
             await initApi();
         }
-        driver = DriverBuilder.getInstance();
-
         const keyring = new Keyring({ type: 'sr25519' });
 		// setup users
-        const json = new Polkadot(driver).getAccountJSON();
-		
+        const json = await getAccountJSON();
         testUser1 = new User(keyring,undefined, json);
         keyring.addPair(testUser1.keyRingPair);
         keyring.pairs[0].decodePkcs8(userPassword);
@@ -41,11 +37,13 @@ describe('UI tests - Get Tokens from Faucet', () => {
 
     beforeEach( async () => {
         await testUser1.removeTokens();
+        driver = DriverBuilder.getInstance();
         await setupAllExtensions(driver);
 
     });
 
     it("As a User I can get test tokens from the faucet", async () => {
+        
         const mga = new Mangata(driver);
         await mga.navigate();
         const getTokensAvailable = await mga.isGetTokensVisible();
@@ -57,10 +55,9 @@ describe('UI tests - Get Tokens from Faucet', () => {
     });
 
     afterEach( async () => {
-        //const session = await driver.getSession();
-        await takeScreenshot(driver, expect.getState().currentTestName);
+        const session = await driver.getSession();
+        await takeScreenshot(driver, expect.getState().currentTestName + " - " + session);
         await driver.quit();
-        //await downloadVideo(session.getId())
         const api = getApi();
         await api.disconnect();
     });

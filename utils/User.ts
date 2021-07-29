@@ -4,7 +4,7 @@ import { KeyringPair } from '@polkadot/keyring/types';
 import BN from 'bn.js';
 import { v4 as uuid } from 'uuid';
 import { ExtrinsicResult, waitNewBlock } from './eventListeners';
-import { balanceTransfer, buyAsset, createPool, getAccountInfo, getUserAssets, mintAsset, mintLiquidity, sellAsset, setBalance, transferAll } from './tx';
+import { balanceTransfer, buyAsset, createPool, getAccountInfo, getAllAssets, getUserAssets, mintAsset, mintLiquidity, sellAsset, setBalance, transferAll } from './tx';
 import { getEventResultFromTxWait } from './txHandler';
 
 export enum AssetWallet
@@ -188,8 +188,15 @@ export class User {
     }
 
     async removeTokens(){
-        await transferAll(this.keyRingPair, new BN(0), process.env.TEST_PALLET_ADDRESS);
+    //TODO: find a proper way to clean all the user tokens in one shot!
+        const assets = await getAllAssets(this.keyRingPair.address);
+        for (let index = 0; index < assets.length; index++) {
+            const assetId = assets[index];
+            await transferAll(this.keyRingPair, assetId, process.env.TEST_PALLET_ADDRESS);
+        }
     }
+
+
 }
 
 export class Asset{

@@ -1,11 +1,11 @@
 import { AddressOrPair, SubmittableExtrinsic  } from '@polkadot/api/types'
+import { StorageKey  } from '@polkadot/types'
 import { getApi } from './api'
 import BN from 'bn.js'
 import { env } from 'process'
 import { SudoDB } from './SudoDB';
 import {AccountData} from '@polkadot/types/interfaces/balances'
 import { signAndWaitTx } from './txHandler';
-
 
 export const signTx = async (
   tx: SubmittableExtrinsic<'promise'>,
@@ -358,4 +358,17 @@ export async function getLock(accountAddress:string, assetId : BN){
   const decodedlocks = JSON.parse(JSON.stringify(locksResponse.toHuman()));
   return decodedlocks;
 
+}
+
+export async function getAllAssets(accountAddress:string){
+  const api = getApi();
+  const availableAssets = await api.query.tokens.accounts.entries();
+  // Example of the returned object:
+  // availableAssets[0][0].toHuman() -> ['5ERGFUfA5mhYGvgNQ1bkkeoW5gwEeggdVrrnKUsHuBGNLxL4', '5']
+  // first entry is a StorageKey with contains the addres and the assetId, so we filter by it and get the id
+  const userOnes = availableAssets.filter( asset =>  
+    ((((asset as any[])[0] ) as StorageKey).toHuman() as any[])[0]  === accountAddress 
+  ).map( tuple => new BN((tuple[0].toHuman() as any[])[1]))
+
+  return userOnes;
 }

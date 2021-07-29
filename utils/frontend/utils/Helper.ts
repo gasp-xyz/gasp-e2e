@@ -12,6 +12,16 @@ export async function waitForElement(driver: WebDriver, xpath : string){
     await driver.wait(until.elementLocated(By.xpath(xpath)),10000);
 };
 
+export async function clickElement(driver: WebDriver, xpath : string){
+    await waitForElement(driver,xpath);
+    const element = await driver.findElement(By.xpath(xpath));
+    await driver.wait(until.elementIsVisible(element), 10000);
+    await sleep(1000);
+    await element.click();
+
+
+}
+
 export async function setupAllExtensions(driver: WebDriver){
     await leaveOnlyOneTab(driver);
 
@@ -42,4 +52,11 @@ export async function leaveOnlyOneTab(driver: WebDriver){
 export async function takeScreenshot(driver: WebDriver, testName = '') {
     const img = await driver.takeScreenshot();
     fs.writeFileSync(`reports/artifacts/screenshot_${testName}.png`, img, 'base64')
+}
+
+export async function getAccountJSON() {
+    const path = 'utils/frontend/utils/extensions'
+    const polkadotUserJson = `${path}/polkadotExportedUser.json`;
+    const jsonContent =  JSON.parse(fs.readFileSync(polkadotUserJson,{encoding:'utf8', flag:'r'}));
+    return jsonContent;
 }

@@ -1,5 +1,5 @@
 import { getEnvironmentRequiredVars } from "../../utils";
-import { waitForElement } from "../utils/Helper";
+import { clickElement, waitForElement } from "../utils/Helper";
 const { By } = require("selenium-webdriver");
 
 //xpaths
@@ -43,20 +43,20 @@ export class MetaMask {
         await (await this.driver).findElement(By.xpath(XPATH_MNEMONIC)).sendKeys(this.ACCOUNT_MNEMONIC);
         await (await this.driver.findElement(By.xpath(XPATH_PASSWORD))).sendKeys(userPassword);
         await (await this.driver.findElement(By.xpath(XPATH_CONFIRM_PASSWORD))).sendKeys(userPassword);
-        await (await this.driver.findElement(By.xpath(XPATH_ACCEPT_TERMS))).click();
-        await (await this.driver.findElement(By.xpath(XPATH_SUBMIT))).click();
+        await clickElement(this.driver,XPATH_ACCEPT_TERMS);
+        await clickElement(this.driver,XPATH_SUBMIT);
         await this.driver.get(`${this.WEB_UI_ACCESS_URL}#initialize/end-of-flow`);
         await waitForElement(this.driver, XPATH_ALL_DONE);
-        await (await this.driver.findElement(By.xpath(XPATH_ALL_DONE))).click();
+        await clickElement(this.driver,XPATH_ALL_DONE);
         await this.enable();
     }
 
     private async enable(){
         
         await waitForElement(this.driver, XPATH_POPOVER_CLOSE);
-        await (await this.driver.findElement(By.xpath(XPATH_POPOVER_CLOSE))).click();
-        await (await this.driver.findElement(By.xpath(XPATH_SELECT_NET_CMB))).click();
-        await (await this.driver.findElement(By.xpath(XPATH_KOVAN_NETWORK))).click();
+        await clickElement(this.driver,XPATH_POPOVER_CLOSE);
+        await clickElement(this.driver,XPATH_SELECT_NET_CMB);
+        await clickElement(this.driver,XPATH_KOVAN_NETWORK);
     
     }
 
