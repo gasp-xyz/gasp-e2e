@@ -24,6 +24,7 @@ describe('UI tests - Get Tokens from Faucet', () => {
           } catch(e) {
             await initApi();
         }
+        
         const keyring = new Keyring({ type: 'sr25519' });
 		// setup users
         const json = await getAccountJSON();
