@@ -48,7 +48,6 @@ describe('UI tests - Get Tokens from Faucet', () => {
     it("As a User I can get test tokens from the faucet", async () => {
         const mga = new Mangata(driver);
         await mga.navigate();
-
         const getTokensAvailable = await mga.isGetTokensVisible();
         expect(getTokensAvailable).toBeTruthy();
         await mga.clickOnGetTokens();

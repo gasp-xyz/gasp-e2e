@@ -1,4 +1,4 @@
-import { WebDriver } from "selenium-webdriver";
+import { WebDriver, Capabilities } from "selenium-webdriver";
 
 require("chromedriver");
 const { Builder } = require("selenium-webdriver");
@@ -14,10 +14,15 @@ export const DriverBuilder = (function () {
       let options = new chrome.Options();
       options.addExtensions(polkadotExtensionPath);
       options.addExtensions(metamaskExtensionPath);
-    
+      let caps: Capabilities = new Capabilities();
+      caps = Capabilities.chrome();
+      caps.set("version", "91.0");
+      caps.set("selenoid:options", {enableVNC: true, enableVideo: true })
+      
       driver = new Builder()
           .forBrowser('chrome')
           .setChromeOptions(options)
+          .withCapabilities(caps)
           .build();
       return driver;
     }
