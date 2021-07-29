@@ -100,18 +100,22 @@ jobs:
           path: reports/jest-*.xml    # Path to test results
           reporter: jest-junit        # Format of test results
       
-      - uses: papeloto/action-zip@v1
+      - name: create zip
+        uses: papeloto/action-zip@v1
+        if: success() || failure()
         with:
           files: reports/
           dest: reports.zip
 
       - name: Archive report files
         uses: actions/upload-artifact@v2
+        if: success() || failure()
         with:
           name: screenshots
           path: reports.zip
       
       - name: Archive screenshots
+        if: success() || failure()
         uses: actions/upload-artifact@v2
         with:
           name: screenshots
