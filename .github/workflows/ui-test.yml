@@ -117,7 +117,7 @@ jobs:
           path: reports.zip
       - name: Check video path
         if: success() || failure()
-          run: ls -lt ~/.aerokube/selenoid/
+        run: "ls -lt ~/.aerokube/selenoid/"
 
       - name: create zip
         uses: papeloto/action-zip@v1
