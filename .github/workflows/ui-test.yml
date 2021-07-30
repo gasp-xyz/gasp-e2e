@@ -20,7 +20,8 @@ on:
  
 
 jobs:
-  Build tests Docker image:
+  build:
+    name: Build docker image
     if: contains(github.event.inputs.publishDockerImage, 'true')
     runs-on: ubuntu-latest
     steps:
