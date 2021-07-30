@@ -20,7 +20,7 @@ on:
  
 
 jobs:
-  build:
+  Build tests Docker image:
     if: contains(github.event.inputs.publishDockerImage, 'true')
     runs-on: ubuntu-latest
     steps:
@@ -46,17 +46,10 @@ jobs:
           push: true
           tags: mangatasolutions/mangata-e2e:latest
 
-
   test:
-#    needs: build
     name: Run UI tests
     runs-on: ubuntu-latest
-#    container:
-#      image: mangatasolutions/mangata-e2e:latest
-#      options: --network-alias testHost
-#      credentials:
-#          username: ${{ secrets.DOCKERHUB_USERNAME }}
-#          password: ${{ secrets.DOCKERHUB_TOKEN }}
+
     env:
       API_URL: 'wss://staging.testnode.mangata.finance:9945'
       TEST_PALLET_ADDRESS: ${{ secrets.TEST_PALLET_ADDRESS }}
@@ -86,11 +79,10 @@ jobs:
         run: yarn eslint  
       - name: installed packages
         run: yarn list
-      - name: docker ps
-        run: docker inspect aerokube/selenoid:1.10.4
 
       - name: is selenoid started?
         run: curl http://localhost:4444/status
+
       - name: Run e2e tests
         run: yarn ${{ env.TEST_SCRIPT }}
       
@@ -102,19 +94,11 @@ jobs:
           path: reports/jest-*.xml    # Path to test results
           reporter: jest-junit        # Format of test results
 
-      - name: Check video path
-        if: success() || failure()
-        run: "ls -lt ~/.aerokube/selenoid/video/"
-      
-      - name: copy video files
+      - name: Copy video files to reports folder
         if: success() || failure()
         run: "cp ~/.aerokube/selenoid/video/* reports/artifacts/"
 
-      - name: Check video locally
-        if: success() || failure()
-        run: "ls -lt reports/artifacts/"
-
-      - name: create zip
+      - name: Create  reports zip
         uses: papeloto/action-zip@v1
         if: success() || failure()
         with:
@@ -125,8 +109,6 @@ jobs:
         uses: actions/upload-artifact@v2
         if: success() || failure()
         with:
-          name: reportsFolder
+          name: Reports
           path: reports.zip
-      
-      - name: any video?
-        run: curl http://localhost:4444/video/
+
