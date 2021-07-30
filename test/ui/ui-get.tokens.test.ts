@@ -3,16 +3,19 @@ import { WebDriver } from "selenium-webdriver";
 import { getApi, initApi } from "../../utils/api";
 import { Mangata } from "../../utils/frontend/pages/Mangata";
 import {DriverBuilder} from "../../utils/frontend/utils/Driver";
-import {getAccountJSON, setupAllExtensions, takeScreenshot} from "../../utils/frontend/utils/Helper";
+import {setupAllExtensions, takeScreenshot} from "../../utils/frontend/utils/Helper";
 import { User } from "../../utils/User";
-import { getEnvironmentRequiredVars } from "../../utils/utils";
 
 jest.setTimeout(1500000);
 jest.spyOn(console, 'log').mockImplementation(jest.fn());
-const {sudo:sudoUserName, uiUserPassword:userPassword} = getEnvironmentRequiredVars();
 let driver: WebDriver;
 
+//Required env vars:
 //export API_URL=wss://staging.testnode.mangata.finance:9945
+//export UI_URL='https://staging.mangata.finance/' ;
+//export MNEMONIC_META='dismiss .. trumpet' ( Ask Gonzalo :) )
+
+
 describe('UI tests - Get Tokens from Faucet', () => {
 
     let testUser1: User;
