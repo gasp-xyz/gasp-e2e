@@ -37,8 +37,6 @@ describe('UI tests - Get Tokens from Faucet', () => {
 
         testUser1 = new User(keyring,undefined);
         testUser1.addFromAddress(keyring, polkUserAddress);
-        let sudo = new User(keyring, sudoUserName);
-        await testUser1.setBalance(sudo);
 
     });
 
