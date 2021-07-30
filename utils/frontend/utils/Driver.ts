@@ -10,7 +10,7 @@ const metamaskExtensionPath = `${path}/metamask_9.8.2.0.crx`;
 // Singleton constructor
 export const DriverBuilder = (function () {
     
-    function buildChromeDriver() {
+    async function buildChromeDriver() {
       let options = new chrome.Options();
       options.addExtensions(polkadotExtensionPath);
       options.addExtensions(metamaskExtensionPath);
@@ -24,15 +24,18 @@ export const DriverBuilder = (function () {
           .setChromeOptions(options)
           .withCapabilities(caps)
           .build();
+      
+      await driver.manage().window().maximize();
+      
       return driver;
     }
     
     let driver: WebDriver;
     return {
       
-      getInstance: function () {
+      getInstance: async function () {
         if (!driver) {
-            driver = buildChromeDriver();
+            driver = await buildChromeDriver();
         }
         return driver;
       }

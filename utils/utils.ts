@@ -6,6 +6,8 @@ import { waitNewBlock } from "./eventListeners";
 import { Assets } from "./Assets";
 import { signSendAndWaitToFinishTx } from "./txHandler";
 import { User } from "./User";
+import Keyring from "@polkadot/keyring";
+import { getAccountJSON } from "./frontend/utils/Helper";
 
 export function sleep(ms: number) {
     return new Promise((resolve) => {
@@ -63,4 +65,14 @@ export async function UserCreatesAPoolAndMintliquidity(
 	await waitNewBlock();
 	await testUser1.mintLiquidity(firstCurrency, secondCurrency, mintAmount);
 	return [firstCurrency, secondCurrency];
+}
+
+//Leaving this function that may be neccesary in the future.
+export async function createUserFromJson(keyring : Keyring){
+    const userPassword = 'mangata123';
+    const json = await getAccountJSON();
+    const testUser = new User(keyring,undefined, json);
+    keyring.addPair(testUser.keyRingPair);
+    keyring.pairs[0].decodePkcs8(userPassword);
+    return testUser;
 }

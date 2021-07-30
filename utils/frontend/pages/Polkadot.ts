@@ -9,9 +9,15 @@ const XPATH_PASSWORD = "//*[@type='password']";
 const XPATH_CONFIRM_PASSWORD = "//*[@type='password' and @value='']";
 const XPATH_MNEMONIC = `//*[contains(label/text(),'existing 12 or 24-word mnemonic seed')]/textarea`
 const XPATH_USER_NAME = "//*[@type='text']";
-const XPATH_ADD_ACCOUNT = "//*[text()='Add the account with the supplied seed']";
+const XPATH_ADD_ACCOUNT = "//*[contains(text(),'Add the account with')]";
 const XPATH_UNDERSTOOD = "//*[text()='Understood, let me continue']";
 const XPATH_ACCEPT_PERMISSIONS = "//*[text()='Yes, allow this application access']";
+const XPATH_CHECK_ISAVED = "//label[contains(text(),'I have saved')]";
+const XPATH_NEXT_STEP = "//*[contains(text(),'Next step')]";
+const XPATH_SETTINGS = "//div[@class='settings']";
+const XPATH_EXPORT = "//a[text()='Export Account']";
+const XPATH_EXPORT_CONFIRM = "//*[text()='I want to export this account']";
+const XPATH_DATA_ADDRESS = "//*[@data-field = 'address']";
 
 const {uiUserPassword:userPassword, mnemonicPolkadot} = getEnvironmentRequiredVars();
 
@@ -42,21 +48,47 @@ export class Polkadot {
         await (await this.driver).findElement(By.xpath(XPATH_MNEMONIC)).sendKeys(this.ACCOUNT_MNEMONIC);
         await clickElement(this.driver,XPATH_NEXT);
 
+        await this.fillUserPass();
+        await this.enable();
+    }
+    private async fillUserPass(){
         await waitForElement(this.driver, XPATH_USER_NAME);
         await (await this.driver.findElement(By.xpath(XPATH_USER_NAME))).sendKeys('acc_automation');
         await (await this.driver.findElement(By.xpath(XPATH_PASSWORD))).sendKeys(userPassword);
         await (await this.driver.findElement(By.xpath(XPATH_CONFIRM_PASSWORD))).sendKeys(userPassword);
-        await this.enable();
+
     }
 
-    private async enable(){
+    async createAccount(): Promise<string>{
+        await this.driver.get(`${this.WEB_UI_ACCESS_URL}#/account/create`);
+        await clickElement(this.driver,XPATH_CHECK_ISAVED);
+        await clickElement(this.driver, XPATH_NEXT_STEP);
+        await this.fillUserPass();
+        const userAddress = await this.enable();
+        this.ACCOUNT_ADDRESS = userAddress;
+        return userAddress;
+    }
+    
+    async exportAccount(){
+        await clickElement(this.driver,XPATH_SETTINGS);
+        await waitForElement(this.driver,XPATH_EXPORT);
+        const linkToExport = await this.driver.findElement(By.xpath(XPATH_EXPORT)).getAttribute("href");
+        await this.driver.get(`${linkToExport}`);
+        await (await this.driver.findElement(By.xpath(XPATH_PASSWORD))).sendKeys(userPassword);
+        await clickElement(this.driver,XPATH_EXPORT_CONFIRM);
+        
+    }
+
+    private async enable() : Promise<string>{
         
         await waitForElement(this.driver, XPATH_ADD_ACCOUNT);
         await clickElement(this.driver,XPATH_ADD_ACCOUNT);
 
         await waitForElement(this.driver, XPATH_UNDERSTOOD);
         await clickElement(this.driver,XPATH_UNDERSTOOD);
-
+        await waitForElement(this.driver, XPATH_DATA_ADDRESS);
+        const accoundAddress = await (await this.driver.findElement(By.xpath(XPATH_DATA_ADDRESS))).getText();
+        return accoundAddress;
     }
 
     async acceptPermissions(){

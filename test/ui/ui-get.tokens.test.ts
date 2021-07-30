@@ -16,6 +16,7 @@ let driver: WebDriver;
 describe('UI tests - Get Tokens from Faucet', () => {
 
     let testUser1: User;
+    let keyring : Keyring;
 
     beforeAll( async () => {
         
@@ -24,22 +25,20 @@ describe('UI tests - Get Tokens from Faucet', () => {
           } catch(e) {
             await initApi();
         }
-        
-        const keyring = new Keyring({ type: 'sr25519' });
-		// setup users
-        const json = await getAccountJSON();
-        testUser1 = new User(keyring,undefined, json);
-        keyring.addPair(testUser1.keyRingPair);
-        keyring.pairs[0].decodePkcs8(userPassword);
-        let sudo = new User(keyring, sudoUserName);
-        await testUser1.setBalance(sudo);
 
+        keyring = new Keyring({ type: 'sr25519' });
 	});
 
     beforeEach( async () => {
-        await testUser1.removeTokens();
-        driver = DriverBuilder.getInstance();
-        await setupAllExtensions(driver);
+
+        driver = await DriverBuilder.getInstance();
+        
+        const {polkUserAddress}  = await setupAllExtensions(driver);
+
+        testUser1 = new User(keyring,undefined);
+        testUser1.addFromAddress(keyring, polkUserAddress);
+        let sudo = new User(keyring, sudoUserName);
+        await testUser1.setBalance(sudo);
 
     });
 

@@ -21,7 +21,9 @@ export async function clickElement(driver: WebDriver, xpath : string){
 
 
 }
-
+///Setup both extensions
+//Setup Metamask from "MNEMONIC_META" global env. 
+//Polkadot extension creating an account.
 export async function setupAllExtensions(driver: WebDriver){
     await leaveOnlyOneTab(driver);
 
@@ -31,12 +33,13 @@ export async function setupAllExtensions(driver: WebDriver){
     
     const polkadotExtension = new Polkadot(driver);
     await polkadotExtension.go();
-    await polkadotExtension.setupAccount();
+    const polkUserAddress = await polkadotExtension.createAccount() ;
 
     await new Mangata(driver).go();
     await sleep(2000);
     await polkadotExtension.acceptPermissions();
     
+    return {polkUserAddress: polkUserAddress}
     
 }
 
