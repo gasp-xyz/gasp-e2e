@@ -105,7 +105,7 @@ test('xyk-pallet - AssetsOperation: transferAll', async() => {
     //Refactor Note: [Missing Wallet assert?] Did not considered creating a liquity asset. Transaction does nothing with it.
 	let pool_balance_before = await getBalanceOfPool(firstCurrency, secondCurrency);
 	let amount = testUser1.getAsset(firstCurrency)?.amountBefore!;
-	console.log("testUser1: transfering all assets " + firstCurrency + " to testUser2");
+	testLog.getLog().debug("testUser1: transfering all assets " + firstCurrency + " to testUser2");
 
 	await transferAll(testUser1.keyRingPair, firstCurrency, testUser2.keyRingPair.address)
 	.then(

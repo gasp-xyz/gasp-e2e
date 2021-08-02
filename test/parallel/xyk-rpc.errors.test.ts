@@ -6,6 +6,7 @@ import { getEnvironmentRequiredVars } from "../../utils/utils";
 import { Assets } from "../../utils/Assets"
 import { ApiPromise, Keyring } from "@polkadot/api";
 import { User } from "../../utils/User";
+import { testLog } from "../../utils/Logger";
 
 jest.spyOn(console, 'log').mockImplementation(jest.fn());
 jest.setTimeout(1500000);
@@ -132,7 +133,7 @@ test.each([
 
 	const resp = await (api.rpc as any).xyk.calculate_buy_price_id(hexFrom, hexTo, hexAmount);
 	const respJson = JSON.parse(JSON.stringify(resp.toHuman()));
-	console.info(respJson);
+	testLog.getLog().info(respJson);
 	expect(parseInt(respJson.price)).toBeGreaterThanOrEqual(0)
 
 });

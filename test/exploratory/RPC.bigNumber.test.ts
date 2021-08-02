@@ -4,6 +4,7 @@ import BN from 'bn.js'
 import { Keyring } from '@polkadot/api'
 import {User} from "../../utils/User";
 import { getEnvironmentRequiredVars } from "../../utils/utils";
+import { testLog } from "../../utils/Logger";
 
 
 jest.spyOn(console, 'log').mockImplementation(jest.fn());
@@ -50,12 +51,12 @@ describe('Playground', () => {
 	test('Request big numbers', async () => {
 
 		let result = await ( api.rpc as any).xyk.calculate_buy_price(MAX_BALANCE, MAX_BALANCE, MAX_BALANCE);
-		console.info(result);
+		testLog.getLog().info(result);
 	});
 	test('Request big numbers -1', async () => {
 		const b = MAX_BALANCE.sub(new BN(1));
 		let result = await ( api.rpc as any).xyk.calculate_buy_price(b, b, b);
-		console.info(result);
+		testLog.getLog().info(result);
 	});
 
 });

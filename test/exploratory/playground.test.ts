@@ -8,6 +8,7 @@ import { Assets } from "../../utils/Assets";
 import { getEnvironmentRequiredVars } from "../../utils/utils";
 import { signSendAndWaitToFinishTx } from "../../utils/txHandler";
 import {AccountData} from '@polkadot/types/interfaces/balances'
+import { testLog } from "../../utils/Logger";
 
 
 jest.spyOn(console, 'log').mockImplementation(jest.fn());
@@ -60,7 +61,7 @@ describe('Playground', () => {
 
 		const balance = await api.query.tokens.accounts(testUser1.keyRingPair.address, 0);
 		const accountData = (balance as AccountData);
-		console.info(accountData.free.toBigInt().toString())
+		testLog.getLog().info(accountData.free.toBigInt().toString())
 
 	})
 	
@@ -87,12 +88,12 @@ describe('Playground', () => {
 					api?.tx.xyk.sellAsset(firstCurrency, secondCurrency, new BN(10000), new BN(0)),
 					testUser1.keyRingPair 
 				);
-				console.info(status);
+				testLog.getLog().info(status);
 			} catch (error) {
 				await sudo.mint(firstCurrency, testUser1,new BN(10000));
 			}
 			let balance = await getBalanceOfPool(secondCurrency, firstCurrency);
-			console.info(balance.toString())
+			testLog.getLog().info(balance.toString())
 		}
 
 	});

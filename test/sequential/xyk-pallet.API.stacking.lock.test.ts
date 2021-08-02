@@ -8,6 +8,7 @@ import { Keyring } from '@polkadot/api'
 import {User} from "../../utils/User";
 import { getEnvironmentRequiredVars } from "../../utils/utils";
 import { signSendAndWaitToFinishTx } from "../../utils/txHandler";
+import { testLog } from "../../utils/Logger";
 
 jest.spyOn(console, 'log').mockImplementation(jest.fn());
 jest.setTimeout(1500000);
@@ -47,7 +48,7 @@ describe('xyk-pallet - Sell Asset: validate Errors:', () => {
 	});
 	test('Bond operation locks some amount', async () => {
 		await waitNewBlock();
-		console.log("testUser1: creating pool already created " + firstCurrency + " - " + secondCurrency);
+		testLog.getLog().debug("testUser1: creating pool already created " + firstCurrency + " - " + secondCurrency);
 		var eventPromise = getEventResult("staking","Bonded", 14);
 		//@ts-ignore: Mangata bond operation has 4 params, somehow is inheriting the bond operation from polkadot :S
 		await signSendAndWaitToFinishTx( api?.tx.staking.bond(testUser1.keyRingPair.address, new BN(1000),'Staked', new BN(3)), testUser1.keyRingPair);
