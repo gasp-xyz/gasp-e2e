@@ -1,4 +1,5 @@
 import { AddressOrPair, SubmittableExtrinsic  } from '@polkadot/api/types'
+import { StorageKey  } from '@polkadot/types'
 import { getApi } from './api'
 import BN from 'bn.js'
 import { env } from 'process'
@@ -9,7 +10,6 @@ import { getEnvironmentRequiredVars } from './utils';
 import { Keyring } from '@polkadot/api';
 import { User } from './User';
 import { testLog } from './Logger';
-
 
 export const signTx = async (
   tx: SubmittableExtrinsic<'promise'>,
@@ -55,7 +55,7 @@ export function calculate_sell_price_local(input_reserve: BN, output_reserve: BN
 }
 
 export function calculate_sell_price_local_no_fee(input_reserve: BN, output_reserve: BN, sell_amount: BN){
-	let input_amount_with_no_fee: BN = sell_amount;
+	let input_amount_with_no_fee: BN = sell_amount.mul(new BN(1000));
 	let numerator: BN = input_amount_with_no_fee.mul(output_reserve);
 	let denominator: BN = input_reserve.mul(new BN(1000)).add(input_amount_with_no_fee);
 	let result: BN = numerator.div(denominator);
@@ -65,6 +65,13 @@ export function calculate_sell_price_local_no_fee(input_reserve: BN, output_rese
 export function calculate_buy_price_local(input_reserve: BN, output_reserve: BN, buy_amount: BN){
 	let numerator: BN = input_reserve.mul(buy_amount).mul(new BN(1000));
 	let denominator: BN = output_reserve.sub(buy_amount).mul(new BN(997));
+	let result: BN = numerator.div(denominator).add(new BN(1));
+	return new BN(result.toString())
+}
+
+export function calculate_buy_price_local_no_fee(input_reserve: BN, output_reserve: BN, buy_amount: BN){
+	let numerator: BN = input_reserve.mul(buy_amount).mul(new BN(1000));
+	let denominator: BN = output_reserve.sub(buy_amount).mul(new BN(1000));
 	let result: BN = numerator.div(denominator).add(new BN(1));
 	return new BN(result.toString())
 }
@@ -164,16 +171,24 @@ export async function getLiquidityAssetId(assetId1: BN, assetId2: BN ) {
 
 export async function getLiquiditybalance(liquidityAssetId: BN){
   const pool = await getLiquidityPool(liquidityAssetId);
-  const assetIds = pool.toHuman() as string[];
-  const poolBalance = await getBalanceOfPool(new BN(assetIds[0].toString()), new BN(assetIds[1].toString()) );
+  const poolBalance = await getBalanceOfPool(pool[0], pool[1]);
   return poolBalance;
 }
 
-export async function getLiquidityPool(liquidityAssetId: BN) {
+export async function getLiquidityPool(liquidityAssetId: BN ) {
   const api = getApi();
-  const pool = await api.query.xyk.liquidityPools(liquidityAssetId);
-  return pool;
+
+	const liqPool = await api.query.xyk.liquidityPools(liquidityAssetId);
+  const poolAssetIds = (liqPool.toHuman() as Number[]);
+  if(!poolAssetIds)
+    return [new BN(-1),new BN(-1)];
+
+  const result = poolAssetIds.map( num => new BN(num.toString()) )
+	return result;
+
 }
+
+
 
 export async function getAssetSupply(assetId1: BN) {
   const api = getApi();
@@ -260,6 +275,17 @@ export const transferAsset = async (account: any, asset_id:BN, target: any, amou
   return txResult;
 }
 
+export const transferAll = async (account: any, asset_id:BN, target: any) => {
+  const api = getApi();
+
+  const txResult = await signAndWaitTx(
+    api.tx.tokens.transferAll(target, asset_id),
+    account,
+    await (await getCurrentNonce(account.address)).toNumber()
+  )
+  return txResult;
+}
+
 export const mintAsset = async (account: any, asset_id:BN, target: any, amount: BN) => {
   const api = getApi();
   const nonce = await SudoDB.getInstance().getSudoNonce(account.address);
@@ -341,14 +367,46 @@ export async function getAccountInfo(account?: string) {
   return -1
 }
 
-export async function getTreasury(currencyId : BN){
+export async function getTreasury(currencyId : BN): Promise<BN>{
   const api = getApi();
   const treasuryBalance = await api.query.xyk.treasury(currencyId);
-  return treasuryBalance.toHuman();
+  const treasuryBalanceBN = new BN(treasuryBalance.toString());
+  return treasuryBalanceBN;
 }
 
-export async function getTreasuryBurn(currencyId : BN){
+export async function getTreasuryBurn(currencyId : BN): Promise<BN>{
   const api = getApi();
   const treasuryBalance = await api.query.xyk.treasuryBurn(currencyId);
-  return treasuryBalance.toHuman();
+  const treasuryBalanceBN = new BN(treasuryBalance.toString());
+  return treasuryBalanceBN;
+}
+
+export async function getAssetId(assetName : string) : Promise<any> {
+  const api = getApi();
+  const assetsInfo = await api.query.assetsInfo.assetsInfo.entries();
+  const assetFiltered = assetsInfo.filter( el =>  JSON.stringify(el[1].toHuman()).includes( assetName ))[0]
+  const assetId = JSON.stringify(assetFiltered[0].toHuman());
+  return new BN(parseInt(JSON.parse(assetId)[0]))
+  
+}
+
+export async function getLock(accountAddress:string, assetId : BN){
+  const api = getApi();
+  const locksResponse = await api.query.tokens.locks(accountAddress,assetId)!;
+  const decodedlocks = JSON.parse(JSON.stringify(locksResponse.toHuman()));
+  return decodedlocks;
+
+}
+
+export async function getAllAssets(accountAddress:string){
+  const api = getApi();
+  const availableAssets = await api.query.tokens.accounts.entries();
+  // Example of the returned object:
+  // availableAssets[0][0].toHuman() -> ['5ERGFUfA5mhYGvgNQ1bkkeoW5gwEeggdVrrnKUsHuBGNLxL4', '5']
+  // first entry is a StorageKey with contains the addres and the assetId, so we filter by it and get the id
+  const userOnes = availableAssets.filter( asset =>  
+    ((((asset as any[])[0] ) as StorageKey).toHuman() as any[])[0]  === accountAddress 
+  ).map( tuple => new BN((tuple[0].toHuman() as any[])[1]))
+
+  return userOnes;
 }

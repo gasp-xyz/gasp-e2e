@@ -14,6 +14,8 @@ This project has been created to test individual and combined API functionalitie
 1. `npm run eslint`
 
 ###  How to configure
+
+####  Node tests ( no UI )
 To point to the right environment or instance, you need to export the following environment variables:
 
 1. TEST_PALLET_ADDRESS: This contains the address to the pallet wallet. 
@@ -27,6 +29,12 @@ To point to the right environment or instance, you need to export the following 
 5. LOG_LEVEL: Handles the test log_levels:[error,warn,info,http,verbose,debug,silly] , default: `info`.
 
 ---
+####  Node tests ( UI )
+
+1. API_URL: UI tests need the API to do and setup some internal stuff.  `export API_URL=wss://staging.testnode.mangata.finance:9945`
+2. UI_URL : UI tests need a UI to test with. Important that the tested UI  points to the same API_URL you exported before . `export UI_URL='https://staging.mangata.finance/'`
+3. MNEMONIC_META: In order to setup Metamask extension, we need the mnemonic for that account. This is available as a secret in Github .`export MNEMONIC_META='dismiss blabla bla .. trumpet' ` ( Ask Gonzalo :) )
+
 ###  How to run
 After that env. variables have been exported, you can run all tests with the command
  `jest` or `./node_modules/.bin/jest`
@@ -36,6 +44,8 @@ You can specify the command `--runInBand` if you don't want to run the tests in 
 There are also some configurations to run tests, 
 - `npm run test-parallel` : Run the tests (from `test/parallel/` folder) that can be parallelized.
 - `npm run test-sequential` : Run tests (from `test/sequential/` folder) that can not be paralelized so they will run one after the other.
+
+- `npm run test-ui` : Run tests (from `test/ui/` folder). They contain UI tests.
 
 ###  How to run in a docker setup
 There exist a possibility to run test pointing to a dockerized setup. You only need to :
