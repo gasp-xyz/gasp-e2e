@@ -3,6 +3,8 @@
 //Build And Run!
 // npx ts-node test/exploratory/eventListener.ts
 
+import { testLog } from "../../utils/Logger";
+
 let uris = [
     'ws://127.0.0.1:9944',
 //    'ws://172.28.1.1:9944',
@@ -26,7 +28,7 @@ async function main () {
     const p = new Promise( (): void =>{
             // Subscribe to system events via storage
             api.query.system.events((events : any): void => {
-                console.log(`[ ${new Date().toUTCString()}] - W[${worker}] Received ${events.length} events: -------`);
+                testLog.getLog().info(`[ ${new Date().toUTCString()}] - W[${worker}] Received ${events.length} events: -------`);
 
                 // Loop through the Vec<EventRecord>
                 events.forEach((record : any) => {
@@ -49,20 +51,20 @@ async function main () {
                     else
                         eventMessage += ` [${types[index].type}: ${data.toString()}] `;
                 });
-                console.log(eventMessage);
+                testLog.getLog().info(eventMessage);
             });
             });
         })
     promises.push(p);
   }
   await Promise.all(promises).then((values) => {
-    console.log(values);
+    testLog.getLog().info(values.toString());
   });
-  console.info('----------------');
+  testLog.getLog().info('----------------');
   
 }
 
 main().catch((error) => {
-  console.error(error);
+  testLog.getLog().error((error));
   process.exit(-1);
 });

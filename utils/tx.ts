@@ -8,6 +8,7 @@ import { signAndWaitTx } from './txHandler';
 import { getEnvironmentRequiredVars } from './utils';
 import { Keyring } from '@polkadot/api';
 import { User } from './User';
+import { testLog } from './Logger';
 
 
 export const signTx = async (
@@ -220,7 +221,7 @@ export const setBalance = async (sudoAccount: any, target:any, amountFree: numbe
 
   const api = getApi();
   const nonce = await SudoDB.getInstance().getSudoNonce(sudoAccount.address);
-  console.info(`W[${env.JEST_WORKER_ID}] - sudoNonce: ${nonce} `);
+  testLog.getLog().info(`W[${env.JEST_WORKER_ID}] - sudoNonce: ${nonce} `);
   const txResult = await signAndWaitTx(
 		api.tx.sudo.sudo(
       api.tx.balances.setBalance(target, amountFree, amountReserved)
@@ -235,7 +236,7 @@ export const sudoIssueAsset = async (account: any, total_balance: BN, target: an
 
   const api = getApi();
   const nonce = await SudoDB.getInstance().getSudoNonce(account.address);
-  console.info(`W[${env.JEST_WORKER_ID}] - sudoNonce: ${nonce} `);
+  testLog.getLog().info(`W[${env.JEST_WORKER_ID}] - sudoNonce: ${nonce} `);
 
   const txResult = await signAndWaitTx(
 		api.tx.sudo.sudo(
@@ -244,7 +245,7 @@ export const sudoIssueAsset = async (account: any, total_balance: BN, target: an
     account,
     nonce
   );
-  console.log(txResult);
+  testLog.getLog().info(txResult);
   return txResult;
 }
 
@@ -262,7 +263,7 @@ export const transferAsset = async (account: any, asset_id:BN, target: any, amou
 export const mintAsset = async (account: any, asset_id:BN, target: any, amount: BN) => {
   const api = getApi();
   const nonce = await SudoDB.getInstance().getSudoNonce(account.address);
-  console.info(`W[${env.JEST_WORKER_ID}] - sudoNonce: ${nonce} `);
+  testLog.getLog().info(`W[${env.JEST_WORKER_ID}] - sudoNonce: ${nonce} `);
   const txResult = await signAndWaitTx(
     api.tx.sudo.sudo(
       api.tx.tokens.mint(asset_id, target, amount),
@@ -277,7 +278,7 @@ export const mintAsset = async (account: any, asset_id:BN, target: any, amount: 
 export const createPool = async (account: any, firstAssetId: BN,firstAssetAmount: BN,secondAssetId: BN,secondAssetAmount: BN) => {
   const api = getApi();
   const nonce = await getCurrentNonce(account.address);
-  console.info(`Creating pool:${firstAssetId},${firstAssetAmount},${secondAssetId},${secondAssetAmount}`);
+  testLog.getLog().info(`Creating pool:${firstAssetId},${firstAssetAmount},${secondAssetId},${secondAssetAmount}`);
   const txResult = await signAndWaitTx(
     api.tx.xyk.createPool(firstAssetId, firstAssetAmount, secondAssetId, secondAssetAmount),
     account,

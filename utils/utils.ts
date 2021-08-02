@@ -7,6 +7,7 @@ import { Assets } from "./Assets";
 import { signSendAndWaitToFinishTx } from "./txHandler";
 import { User } from "./User";
 
+
 export function sleep(ms: number) {
     return new Promise((resolve) => {
         setTimeout(resolve, ms)
@@ -24,13 +25,13 @@ export function getEnvironmentRequiredVars(){
     const palletAddress = process.env.TEST_PALLET_ADDRESS ? process.env.TEST_PALLET_ADDRESS : '';
     const sudoUserName = process.env.TEST_SUDO_NAME ? process.env.TEST_SUDO_NAME : '';
     const testUserName = process.env.TEST_USER_NAME ? process.env.TEST_USER_NAME : '//Alice';
-
+    const logLevel = process.env.LOG_LEVEL ?  process.env.LOG_LEVEL : 'info';
     assert(palletAddress.length !== 0, "PALLET ADDRESS NOT FOUND AS GLOBAL ENV")
     assert(sudoUserName.length !== 0, "SUDO USERNAME NOT FOUND AS GLOBAL ENV")
     // expect(palletAddress.length).not.toEqual(0);
     // expect(sudoUserName.length).not.toEqual(0);
     const uri = process.env.API_URL ? process.env.API_URL: 'ws://127.0.0.1:9944';
-    return {pallet: palletAddress, sudo: sudoUserName, chainUri:uri, alice: testUserName};
+    return {pallet: palletAddress, sudo: sudoUserName, chainUri:uri, alice: testUserName, logLevel: logLevel};
 }
 
 export async function UserCreatesAPoolAndMintliquidity(
@@ -51,3 +52,4 @@ export async function UserCreatesAPoolAndMintliquidity(
 	await testUser1.mintLiquidity(firstCurrency, secondCurrency, mintAmount);
 	return [firstCurrency, secondCurrency];
 }
+

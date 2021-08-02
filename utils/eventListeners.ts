@@ -1,4 +1,5 @@
 import { getApi } from './api'
+import { testLog } from './Logger';
 
 // lets create a enum for different status.
 export enum ExtrinsicResult
@@ -55,7 +56,7 @@ export const waitNewBlock = (forceWait = false) => {
   let count = 0
   return new Promise(async (resolve) => {
     const unsubscribe = await api.rpc.chain.subscribeNewHeads((header: any) => {
-      console.log(`Chain is at block: #${header.number}`)
+      testLog.getLog().info(`Chain is at block: #${header.number}`)
       if(!forceWait || ++count === 2){
         unsubscribe()
         resolve(true)

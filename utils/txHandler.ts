@@ -8,6 +8,7 @@ import BN from 'bn.js'
 import { SudoDB } from './SudoDB';
 import { env } from 'process';
 import { EventResult, ExtrinsicResult } from './eventListeners';
+import { testLog } from './Logger';
 //let wait 7 blocks - 6000 * 7 = 42000; depends on the number of workers.
 const DEFAULT_TIME_OUT_MS = 42000;
 
@@ -25,7 +26,7 @@ export async function getBalanceOfAsset(assetId: BN, account: any ) {
  
     const balance = await api.query.assets.balances([assetId, account.address])
 
-    console.log(account.address + ' asset ' + assetId + " balance: " + balance.toString())
+    testLog.getLog().info(account.address + ' asset ' + assetId + " balance: " + balance.toString())
 
     return balance.toString()
   
@@ -37,7 +38,7 @@ export async function getBalanceOfPool(assetId1: BN, assetId2: BN ) {
     const balance1 = await api.query.xyk.pools([assetId1, assetId2])
     const balance2 = await api.query.xyk.pools([assetId2, assetId1])
 
-    console.log("pool " + assetId1 + "-" + assetId2 + " has balance of "+ balance1 +  "-" + balance2)
+    testLog.getLog().info("pool " + assetId1 + "-" + assetId2 + " has balance of "+ balance1 +  "-" + balance2)
 
     return [balance1,balance2]
   
@@ -60,7 +61,7 @@ export const getNextAssetId = async () => {
 export const sudoIssueAsset = async (account: KeyringPair, total_balance: BN, target: any)
 : Promise<GenericEvent[]> => {
   const nonce = await SudoDB.getInstance().getSudoNonce(account.address);
-  console.info(`W[${env.JEST_WORKER_ID}] - sudoNonce: ${nonce} `);
+  testLog.getLog().info(`W[${env.JEST_WORKER_ID}] - sudoNonce: ${nonce} `);
 
   const api = getApi();
   return signAndWaitTx(
@@ -137,7 +138,7 @@ export const signAndWaitTx = async (
   nonce: number,
   timeout_ms: number = DEFAULT_TIME_OUT_MS
 ): Promise<GenericEvent[]> => {
-  console.info(`W[${env.JEST_WORKER_ID}] - who: ${who.address} - nonce ${nonce} - tx : ${JSON.stringify(tx.toHuman())} - timeout_ms : ${timeout_ms}`);
+  testLog.getLog().info(`W[${env.JEST_WORKER_ID}] - who: ${who.address} - nonce ${nonce} - tx : ${JSON.stringify(tx.toHuman())} - timeout_ms : ${timeout_ms}`);
 
     return new Promise<GenericEvent[]>(async (resolve, reject) => {
 
@@ -151,7 +152,7 @@ export const signAndWaitTx = async (
       }
     
       const unsub = await tx.signAndSend(who, { nonce }, async ({ events = [], status }) => {
-        //console.warn(status);
+        //testLog.getLog().warn((status);
         if (status.isInBlock) {
                 const unsub_new_heads = await api.derive.chain.subscribeNewHeads(async (lastHeader) => {
                     if (lastHeader.parentHash.toString() === status.asInBlock.toString()){
@@ -181,7 +182,7 @@ export const signAndWaitTx = async (
                         }).map( ({ phase, event }) => {
                             return event;
                         });
-                        console.log(
+                        testLog.getLog().info(
                                 `W[${env.JEST_WORKER_ID}]` +
                                  "--block - no " + lastHeader.number +
                                  " \n --curr_block " + JSON.stringify(curr_block_events.toJSON()) + 
@@ -199,7 +200,7 @@ export const signAndWaitTx = async (
             }else if (status.isFinalized) {
                 unsub();
                 // resolve only if transaction has been finalized
-                console.log(
+                testLog.getLog().info(
                   `RESULT W[${env.JEST_WORKER_ID}]` +
                    " \n --req_events " + result.toString() + 
                    " \n --who.address: " + who.address +
@@ -247,7 +248,7 @@ export const getEventResultFromTxWait = function(relatedEvents :GenericEvent[], 
     }
 
   }
-  console.error(`W[${env.JEST_WORKER_ID}]` + relatedEvents + "<-found  --- Expected \n --->>" + searchTerm.toString() 
+  testLog.getLog().error(`W[${env.JEST_WORKER_ID}]` + relatedEvents + "<-found  --- Expected \n --->>" + searchTerm.toString() 
     + "\n toHumanStr " + relatedEvents.map( e => JSON.stringify(e.toHuman()) + JSON.stringify(e.toHuman().data) ).toString())
   return new EventResult(-1, 'ERROR: NO TX FOUND');
 }
