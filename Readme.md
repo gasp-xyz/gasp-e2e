@@ -26,6 +26,7 @@ To point to the right environment or instance, you need to export the following 
 `export API_URL='ws://127.0.0.1:9944'`
 4. TEST_USER_NAME: Contains the name of the user for CI/CD validation tests. Default is `//Alice` (address `5GrwvaEF5zXb26Fz9rcQpDWS57CtERHpNehXCPcNoHGKutQY`)
 `export TEST_USER_NAME='//Alice'`
+5. LOG_LEVEL: Handles the test log_levels:[error,warn,info,http,verbose,debug,silly] , default: `info`.
 
 ---
 ####  Node tests ( UI )

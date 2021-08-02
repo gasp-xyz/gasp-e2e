@@ -31,6 +31,7 @@ export function getEnvironmentRequiredVars(){
         throw new Error("PALLET ADDRESS OR SUDO USERNAME NOT FOUND AS GLOBAL ENV")
     }
 
+    const logLevel = process.env.LOG_LEVEL ?  process.env.LOG_LEVEL : 'info';
     const uri = process.env.API_URL ? process.env.API_URL: 'ws://127.0.0.1:9944';
     const userPassword = process.env.UI_USR_PWD ? process.env.UI_USR_PWD: 'mangata123';
     const uiUri = process.env.UI_URL ? process.env.UI_URL: 'https://staging.mangata.finance/'
@@ -45,7 +46,8 @@ export function getEnvironmentRequiredVars(){
         uiUserPassword : userPassword,
         uiUri : uiUri,
         mnemonicMetaMask: mnemonicMetaMask,
-        mnemonicPolkadot: mnemonicPolkadot
+        mnemonicPolkadot: mnemonicPolkadot,
+        logLevel: logLevel
     };
 }
 

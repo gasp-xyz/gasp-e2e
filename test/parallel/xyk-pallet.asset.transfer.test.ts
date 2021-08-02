@@ -8,6 +8,7 @@ import { validateAssetsWithValues, validateEmptyAssets } from "../../utils/valid
 import { Assets } from "../../utils/Assets";
 import { getEnvironmentRequiredVars } from "../../utils/utils";
 import { getEventResultFromTxWait } from "../../utils/txHandler";
+import { testLog } from "../../utils/Logger";
 
 
 jest.spyOn(console, 'log').mockImplementation(jest.fn());
@@ -74,7 +75,7 @@ test('xyk-pallet - AssetsOperation: transferAsset', async() => {
     //Refactor Note: [Missing Wallet assert?] Did not considered creating a liquity asset. Transaction does nothing with it.
 	let pool_balance_before = await getBalanceOfPool(firstCurrency, secondCurrency);
 	let amount = new BN(100000);
-	console.log("testUser1: transfering asset " + firstCurrency + " to testUser2");
+	testLog.getLog().info("testUser1: transfering asset " + firstCurrency + " to testUser2");
 
 	await transferAsset(testUser1.keyRingPair, firstCurrency, testUser2.keyRingPair.address, amount)
 	.then(

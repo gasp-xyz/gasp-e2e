@@ -1,13 +1,13 @@
 import {api, getApi, initApi} from "../../utils/api";
 import { sellAsset, buyAsset} from '../../utils/tx'
-import {waitNewBlock, ExtrinsicResult, getUserEventResult} from '../../utils/eventListeners'
+import {waitNewBlock, ExtrinsicResult} from '../../utils/eventListeners'
 import BN from 'bn.js'
 import { Keyring } from '@polkadot/api'
 import {AssetWallet, User} from "../../utils/User";
 import { validateTreasuryAmountsEqual } from "../../utils/validators";
 import { Assets } from "../../utils/Assets";
 import { getEnvironmentRequiredVars } from "../../utils/utils";
-import { signSendAndWaitToFinishTx } from "../../utils/txHandler";
+import { getEventResultFromTxWait, signSendAndWaitToFinishTx } from "../../utils/txHandler";
 
 
 jest.spyOn(console, 'log').mockImplementation(jest.fn());
@@ -67,10 +67,13 @@ describe('xyk-pallet - treasury tests [No Mangata]: on treasury we store', () =>
 		await waitNewBlock();
 		let sellAssetAmount = new BN(10000);
 
-		let eventPromise = getUserEventResult("xyk", "AssetsSwapped", 14, testUser1.keyRingPair.address);
-		sellAsset(testUser1.keyRingPair, secondCurrency, firstCurrency, sellAssetAmount, new BN(1));
-		let eventResponse = await eventPromise;
-		expect(eventResponse.state).toEqual(ExtrinsicResult.ExtrinsicSuccess);
+		await sellAsset(testUser1.keyRingPair, secondCurrency, firstCurrency, sellAssetAmount, new BN(1))
+		.then(
+			(result) => {
+				const eventResponse = getEventResultFromTxWait(result, ["xyk", "AssetsSwapped", '14', testUser1.keyRingPair.address]);
+				expect(eventResponse.state).toEqual(ExtrinsicResult.ExtrinsicSuccess);
+			}
+		);
 		
 		await testUser1.refreshAmounts(AssetWallet.AFTER);
 		//pool is [50000X,25000Y]
@@ -85,10 +88,13 @@ describe('xyk-pallet - treasury tests [No Mangata]: on treasury we store', () =>
 		await waitNewBlock();
 		let sellAssetAmount = new BN(5000);
 
-		let eventPromise = getUserEventResult("xyk", "AssetsSwapped", 14, testUser1.keyRingPair.address);
-		sellAsset(testUser1.keyRingPair, firstCurrency, secondCurrency, sellAssetAmount, new BN(1));
-		let eventResponse = await eventPromise;
-		expect(eventResponse.state).toEqual(ExtrinsicResult.ExtrinsicSuccess);
+		await sellAsset(testUser1.keyRingPair, firstCurrency, secondCurrency, sellAssetAmount, new BN(1))
+		.then(
+			(result) => {
+				const eventResponse = getEventResultFromTxWait(result, ["xyk", "AssetsSwapped", '14', testUser1.keyRingPair.address]);
+				expect(eventResponse.state).toEqual(ExtrinsicResult.ExtrinsicSuccess);
+			}
+		);
 		
 		await testUser1.refreshAmounts(AssetWallet.AFTER);
 		//pool is [50000X,25000Y]
@@ -104,10 +110,13 @@ describe('xyk-pallet - treasury tests [No Mangata]: on treasury we store', () =>
 		await waitNewBlock();
 		let buyAssetAmount = new BN(10000);
 
-		let eventPromise = getUserEventResult("xyk", "AssetsSwapped", 14, testUser1.keyRingPair.address);
-		buyAsset(testUser1.keyRingPair, firstCurrency, secondCurrency, buyAssetAmount, new BN(100000000));
-		let eventResponse = await eventPromise;
-		expect(eventResponse.state).toEqual(ExtrinsicResult.ExtrinsicSuccess);
+		await buyAsset(testUser1.keyRingPair, firstCurrency, secondCurrency, buyAssetAmount, new BN(100000000))
+		.then(
+			(result) => {
+				const eventResponse = getEventResultFromTxWait(result, ["xyk", "AssetsSwapped", '14', testUser1.keyRingPair.address]);
+				expect(eventResponse.state).toEqual(ExtrinsicResult.ExtrinsicSuccess);
+			}
+		);
 
 		await testUser1.refreshAmounts(AssetWallet.AFTER);
 		//pool is [50000X,25000Y]
@@ -124,10 +133,13 @@ describe('xyk-pallet - treasury tests [No Mangata]: on treasury we store', () =>
 		await waitNewBlock();
 		let buyAssetAmount = new BN(5000);
 
-		let eventPromise = getUserEventResult("xyk", "AssetsSwapped", 14, testUser1.keyRingPair.address);
-		buyAsset(testUser1.keyRingPair, firstCurrency, secondCurrency, buyAssetAmount, new BN(100000000));
-		let eventResponse = await eventPromise;
-		expect(eventResponse.state).toEqual(ExtrinsicResult.ExtrinsicSuccess);
+		await buyAsset(testUser1.keyRingPair, firstCurrency, secondCurrency, buyAssetAmount, new BN(100000000))
+		.then(
+			(result) => {
+				const eventResponse = getEventResultFromTxWait(result, ["xyk", "AssetsSwapped", '14', testUser1.keyRingPair.address]);
+				expect(eventResponse.state).toEqual(ExtrinsicResult.ExtrinsicSuccess);
+			}
+		);
 
 		await testUser1.refreshAmounts(AssetWallet.AFTER);
 		//pool is [50000X,25000Y]

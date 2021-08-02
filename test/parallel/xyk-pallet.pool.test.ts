@@ -8,7 +8,7 @@ import { validateAssetsWithValues, validateEmptyAssets } from "../../utils/valid
 import { Assets } from "../../utils/Assets";
 import { getEnvironmentRequiredVars } from "../../utils/utils";
 import { getEventResultFromTxWait } from "../../utils/txHandler";
-
+import { testLog } from "../../utils/Logger";
 
 jest.spyOn(console, 'log').mockImplementation(jest.fn());
 jest.setTimeout(1500000);
@@ -32,7 +32,6 @@ beforeAll( async () => {
 	  } catch(e) {
 		await initApi();
 	}
-
 })
 
 beforeEach( async () => {
@@ -78,7 +77,7 @@ test('xyk-pallet - Pool tests: createPool', async () => {
 	let first_asset_amount = new BN(50000);
 	let second_asset_amount = new BN(50000);
 	
-  	console.log("testUser1: creating pool " + firstCurrency + " - " + secondCurrency);
+	testLog.getLog().info("testUser1: creating pool " + firstCurrency + " - " + secondCurrency);
 
   	await createPool(testUser1.keyRingPair, firstCurrency, first_asset_amount, secondCurrency, second_asset_amount)
 	  .then(

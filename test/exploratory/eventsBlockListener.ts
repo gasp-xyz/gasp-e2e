@@ -1,6 +1,9 @@
 //README:
 //Configure uris constant.
 //Build And Run!
+
+import { testLog } from "../../utils/Logger";
+
 // npx ts-node test/exploratory/eventsBlockListener.ts
 export {};
 
@@ -24,9 +27,9 @@ async function main () {
     const p = new Promise( (): void =>{
 
       api.rpc.chain.subscribeNewHeads(async (header: any) => {
-        console.info(`Chain is at block: #${header.number}`);
+        testLog.getLog().info(`Chain is at block: #${header.number}`);
         const allRecords = await api.query.system.events.at(header.hash) as any[]
-        console.info('-----Events-----');
+        testLog.getLog().info('-----Events-----');
         
         allRecords.forEach(chainEvent => {
           const { event } = chainEvent;
@@ -37,24 +40,24 @@ async function main () {
           event.data.forEach((data : any , index : any) => {
                   eventMessage += ` [${types[index].type}: ${data.toString()}] `;
           });
-          console.log(eventMessage);
+          testLog.getLog().info(eventMessage);
 
         });
         
 
-        console.info('-----EoEvents-----');
+        testLog.getLog().info('-----EoEvents-----');
       })
     })
     promises.push(p);
   }
   await Promise.all(promises).then((values) => {
-    console.log(values);
+    testLog.getLog().info(values);
   });
-  console.info('----------------');
+  testLog.getLog().info('----------------');
   
 }
 
 main().catch((error) => {
-  console.error(error);
+  testLog.getLog().error(error);
   process.exit(-1);
 });

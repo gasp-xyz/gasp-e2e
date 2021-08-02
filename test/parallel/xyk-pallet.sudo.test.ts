@@ -7,6 +7,7 @@ import {User} from "../../utils/User";
 import { validateTransactionSucessful } from "../../utils/validators";
 import { getEnvironmentRequiredVars } from "../../utils/utils";
 import { getEventResultFromTxWait } from "../../utils/txHandler";
+import { testLog } from "../../utils/Logger";
 
 jest.spyOn(console, 'log').mockImplementation(jest.fn());
 jest.setTimeout(1500000);
@@ -58,7 +59,7 @@ test('xyk-pallet - Sudo tests: Sudo Issue an asset', async () => {
 
 	// get the new  assetId from the response.
 	
-	console.info("Sudo: issued asset " + assetId + " to " + testUser.name);
+	testLog.getLog().info("Sudo: issued asset " + assetId + " to " + testUser.name);
 
 	//validate
 	let userAssets = await getUserAssets(testUser.keyRingPair.address, [assetId]);
@@ -82,7 +83,7 @@ test('xyk-pallet - Sudo tests: Sudo Issue two  different assets to the same acco
 			validateTransactionSucessful(eventResponse, tokensFirstAmount, testUser);
 		}
 	);
-	console.info("Sudo: asset issued " + assetId + " to " + testUser.name);
+	testLog.getLog().info("Sudo: asset issued " + assetId + " to " + testUser.name);
 
 	await waitNewBlock();
 	// act2 : send the second asset issue.

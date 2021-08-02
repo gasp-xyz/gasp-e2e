@@ -29,13 +29,12 @@ const {sudo:sudoUserName} = getEnvironmentRequiredVars();
 
 const defaultCurrecyValue = 250000;
 
-beforeAll( async () => {
+beforeEach( async () => {
 	try {
 		getApi();
 		} catch(e) {
 		await initApi();
 	}
-
 
 	await waitNewBlock();
 	keyring = new Keyring({ type: 'sr25519' });
@@ -79,7 +78,6 @@ test('xyk-pallet - User Balance - Creating a pool requires free balance', async 
 test('xyk-pallet - User Balance - mint liquidity requires free balance', async () => {
 	let exception = false;
 	const api = getApi();
-
 	await expect( 
 		signTx( 
 			api.tx.xyk.mintLiquidity(firstCurrency, secondCurrency, first_asset_amount, new BN(Number.MAX_SAFE_INTEGER)), 
@@ -151,6 +149,5 @@ afterEach(async () => {
 	expect([pool_balance_before[0], pool_balance_before[1]]).toEqual([balance[1], balance[0]]);
 
 	expect(liquidity_asset_id).toEqual(new BN(0));
-	await waitNewBlock();
 
 })

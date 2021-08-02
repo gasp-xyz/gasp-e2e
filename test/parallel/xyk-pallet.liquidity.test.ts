@@ -7,6 +7,7 @@ import {AssetWallet, User} from "../../utils/User";
 import { Assets } from "../../utils/Assets";
 import { getEnvironmentRequiredVars } from "../../utils/utils";
 import { getEventResultFromTxWait } from "../../utils/txHandler";
+import { testLog } from "../../utils/Logger";
 
 
 jest.spyOn(console, 'log').mockImplementation(jest.fn());
@@ -80,7 +81,7 @@ test('xyk-pallet - Liqudity : Burn part of the liquidity', async () => {
 	let liquidityAssetsBurned = new BN(20000);
 	let [firstAssetAmount, second_asset_amount] = await calcuate_burn_liquidity_price_local(firstCurrency, secondCurrency, liquidityAssetsBurned);
 
-	console.log("burning liquidity " + liquidityAssetsBurned + "of pool " + firstCurrency + " - " + secondCurrency);
+	testLog.getLog().info("burning liquidity " + liquidityAssetsBurned + "of pool " + firstCurrency + " - " + secondCurrency);
 
 	
 	await burnLiquidity(testUser1.keyRingPair, firstCurrency,secondCurrency, liquidityAssetsBurned)
@@ -122,7 +123,7 @@ test('xyk-pallet - Liqudity : Burn all the liquidity', async () => {
 
 	let [firstAssetAmount, secondAssetAmount] = await calcuate_burn_liquidity_price_local(firstCurrency, secondCurrency, liquidityAssetsBurned);
 
-	console.log("TestUser1: burning liquidity " + liquidityAssetsBurned + "of pool " + firstCurrency + " - " + secondCurrency);
+	testLog.getLog().info("TestUser1: burning liquidity " + liquidityAssetsBurned + "of pool " + firstCurrency + " - " + secondCurrency);
 
 	await burnLiquidity(testUser1.keyRingPair, firstCurrency,secondCurrency, liquidityAssetsBurned)
 	.then(
@@ -161,7 +162,7 @@ test('xyk-pallet - LiquidityOperation: mintLiquidity', async () => {
 	let totalLiquidityAssetsBefore = await getAssetSupply(liquidityAssetId);
 	let [secondAssetAmount, liquidityAssetsMinted] = await calcuate_mint_liquidity_price_local(firstCurrency, secondCurrency, firstCurrencyAssetAmount);
   	
-    console.log("User: minting liquidity " + firstCurrency + " - " + secondCurrency);
+    testLog.getLog().info("User: minting liquidity " + firstCurrency + " - " + secondCurrency);
 	
 	await mintLiquidity(testUser1.keyRingPair, firstCurrency, secondCurrency, firstCurrencyAssetAmount)
 	.then(
