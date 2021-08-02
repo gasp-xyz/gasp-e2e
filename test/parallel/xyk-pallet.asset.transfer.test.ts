@@ -1,6 +1,6 @@
 import {getApi, initApi} from "../../utils/api";
 import { getBalanceOfPool, transferAll, transferAsset} from '../../utils/tx'
-import {waitNewBlock, ExtrinsicResult, getUserEventResult} from '../../utils/eventListeners'
+import {waitNewBlock, ExtrinsicResult} from '../../utils/eventListeners'
 import BN from 'bn.js'
 import { Keyring } from '@polkadot/api'
 import {AssetWallet, User} from "../../utils/User";
@@ -106,10 +106,13 @@ test('xyk-pallet - AssetsOperation: transferAll', async() => {
 	let amount = testUser1.getAsset(firstCurrency)?.amountBefore!;
 	console.log("testUser1: transfering all assets " + firstCurrency + " to testUser2");
 
-	const eventPromise = getUserEventResult("tokens", "Transferred", 12, testUser1.keyRingPair.address);
-	transferAll(testUser1.keyRingPair, firstCurrency, testUser2.keyRingPair.address);
-	const eventResponse = await eventPromise;
-	expect(eventResponse.state).toEqual(ExtrinsicResult.ExtrinsicSuccess);
+	await transferAll(testUser1.keyRingPair, firstCurrency, testUser2.keyRingPair.address)
+	.then(
+		(result) => {
+			const eventResponse = getEventResultFromTxWait(result, ["tokens", "Transferred", testUser1.keyRingPair.address]);
+			expect(eventResponse.state).toEqual(ExtrinsicResult.ExtrinsicSuccess);
+		}
+	);
 
 	await testUser1.refreshAmounts(AssetWallet.AFTER);
 	await testUser2.refreshAmounts(AssetWallet.AFTER);
