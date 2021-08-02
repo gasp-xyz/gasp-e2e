@@ -51,7 +51,7 @@ export function calculate_sell_price_local(input_reserve: BN, output_reserve: BN
 }
 
 export function calculate_sell_price_local_no_fee(input_reserve: BN, output_reserve: BN, sell_amount: BN){
-	let input_amount_with_no_fee: BN = sell_amount;
+	let input_amount_with_no_fee: BN = sell_amount.mul(new BN(1000));
 	let numerator: BN = input_amount_with_no_fee.mul(output_reserve);
 	let denominator: BN = input_reserve.mul(new BN(1000)).add(input_amount_with_no_fee);
 	let result: BN = numerator.div(denominator);
@@ -61,6 +61,13 @@ export function calculate_sell_price_local_no_fee(input_reserve: BN, output_rese
 export function calculate_buy_price_local(input_reserve: BN, output_reserve: BN, buy_amount: BN){
 	let numerator: BN = input_reserve.mul(buy_amount).mul(new BN(1000));
 	let denominator: BN = output_reserve.sub(buy_amount).mul(new BN(997));
+	let result: BN = numerator.div(denominator).add(new BN(1));
+	return new BN(result.toString())
+}
+
+export function calculate_buy_price_local_no_fee(input_reserve: BN, output_reserve: BN, buy_amount: BN){
+	let numerator: BN = input_reserve.mul(buy_amount).mul(new BN(1000));
+	let denominator: BN = output_reserve.sub(buy_amount).mul(new BN(1000));
 	let result: BN = numerator.div(denominator).add(new BN(1));
 	return new BN(result.toString())
 }
@@ -340,16 +347,27 @@ export async function getAccountInfo(account?: string) {
   return -1
 }
 
-export async function getTreasury(currencyId : BN){
+export async function getTreasury(currencyId : BN): Promise<BN>{
   const api = getApi();
   const treasuryBalance = await api.query.xyk.treasury(currencyId);
-  return treasuryBalance.toHuman();
+  const treasuryBalanceBN = new BN(treasuryBalance.toString());
+  return treasuryBalanceBN;
 }
 
-export async function getTreasuryBurn(currencyId : BN){
+export async function getTreasuryBurn(currencyId : BN): Promise<BN>{
   const api = getApi();
   const treasuryBalance = await api.query.xyk.treasuryBurn(currencyId);
-  return treasuryBalance.toHuman();
+  const treasuryBalanceBN = new BN(treasuryBalance.toString());
+  return treasuryBalanceBN;
+}
+
+export async function getAssetId(assetName : string) : Promise<any> {
+  const api = getApi();
+  const assetsInfo = await api.query.assetsInfo.assetsInfo.entries();
+  const assetFiltered = assetsInfo.filter( el =>  JSON.stringify(el[1].toHuman()).includes( assetName ))[0]
+  const assetId = JSON.stringify(assetFiltered[0].toHuman());
+  return new BN(parseInt(JSON.parse(assetId)[0]))
+  
 }
 
 export async function getLock(accountAddress:string, assetId : BN){

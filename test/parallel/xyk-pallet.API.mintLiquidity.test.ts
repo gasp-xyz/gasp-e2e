@@ -81,9 +81,10 @@ describe('xyk-pallet - Mint liquidity tests: with minting you can', () => {
 		testUser1.validateWalletReduced(firstCurrency,new BN(defaultCurrecyValue));
 		testUser1.validateWalletReduced(secondCurrency,new BN(defaultCurrecyValue).add(roundingIssue));
 
+		//minting must not add any treasury
 		testUser1.validateWalletIncreased(liquidityAssetId,new BN(defaultCurrecyValue).mul(new BN(2)));
-		await validateTreasuryAmountsEqual(firstCurrency,['0','0']);
-		await validateTreasuryAmountsEqual(secondCurrency,['0','0']);
+		await validateTreasuryAmountsEqual(firstCurrency, [new BN(0),new BN(0)]);
+		await validateTreasuryAmountsEqual(secondCurrency,[new BN(0),new BN(0)]);
 		
 	});
 	
@@ -128,8 +129,8 @@ describe('xyk-pallet - Mint liquidity tests: with minting you can', () => {
 		testUser1.validateWalletReduced(secondCurrency, secondCurrencyAmountLost);
 		//No trading - no Treasure added.
 		testUser1.validateWalletIncreased(liquidityAssetId,new BN(injectedValue).mul(new BN(2)));
-		await validateTreasuryAmountsEqual(firstCurrency,['0','0']);
-		await validateTreasuryAmountsEqual(secondCurrency,['0','0']);
+		await validateTreasuryAmountsEqual(firstCurrency, [new BN(0),new BN(0)]);
+		await validateTreasuryAmountsEqual(secondCurrency,[new BN(0),new BN(0)]);
 
 	});
 
