@@ -7,6 +7,7 @@ import {AssetWallet, User} from "../../utils/User";
 import { Assets } from "../../utils/Assets";
 import { getEnvironmentRequiredVars } from "../../utils/utils";
 import { getEventResultFromTxWait } from "../../utils/txHandler";
+import { testLog } from "../../utils/Logger";
 
 jest.spyOn(console, 'log').mockImplementation(jest.fn());
 jest.setTimeout(1500000);
@@ -79,7 +80,7 @@ test('xyk-pallet - AssetsOperation: buyAsset [maxAmountIn = 1M], buy asset', asy
 	let buyPriceRpc = await calculate_buy_price_rpc(poolBalanceBefore[0], poolBalanceBefore[1], amount);
 	expect(buyPriceLocal).toEqual(buyPriceRpc);
 
-	console.log("Bob: buying asset " + secondCurrency + ", selling asset " + firstCurrency);
+	testLog.getLog().info("Bob: buying asset " + secondCurrency + ", selling asset " + firstCurrency);
 	const soldAssetId = firstCurrency;
 	const boughtAssetId = secondCurrency;
   	
@@ -111,7 +112,7 @@ test('xyk-pallet - AssetsOperation: buyAsset [maxAmountIn = 1M], sell a bought a
 
 	let amount = new BN(10000);
 
-	console.log("buying asset " + secondCurrency + ", selling asset " + firstCurrency);
+	testLog.getLog().info("buying asset " + secondCurrency + ", selling asset " + firstCurrency);
 	let soldAssetId = firstCurrency;
 	let boughtAssetId = secondCurrency;
 	await testUser1.buyAssets(soldAssetId, boughtAssetId, amount);

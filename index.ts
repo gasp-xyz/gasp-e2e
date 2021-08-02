@@ -1,10 +1,11 @@
 import {getApi, initApi} from "./utils/api";
+import { testLog } from "./utils/Logger";
 
 require('dotenv').config()
 
 
 export const main = async () => {
-  console.log('main start')
+  testLog.getLog().info('main start')
 
   try {
     getApi();
@@ -16,6 +17,6 @@ export const main = async () => {
 
 
 main().then(() => {
-  console.log('end')
+  testLog.getLog().info('end')
   process.exit(0)
 })

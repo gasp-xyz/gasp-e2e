@@ -6,6 +6,7 @@ import { Keyring } from '@polkadot/api'
 import {AssetWallet, User} from "../../utils/User";
 import { Assets } from "../../utils/Assets";
 import { getEnvironmentRequiredVars } from "../../utils/utils";
+import { testLog } from "../../utils/Logger";
 
 
 jest.spyOn(console, 'log').mockImplementation(jest.fn());
@@ -77,7 +78,7 @@ test('xyk-pallet - AssetsOperation: sellAsset [minAmountOut = 0] , first to seco
 	let sellPriceLocal = calculate_sell_price_local(poolBalanceBefore[0], poolBalanceBefore[1], amount);
 	let sellPriceRpc = await calculate_sell_price_rpc(poolBalanceBefore[0], poolBalanceBefore[1], amount);
 	expect(sellPriceLocal).toEqual(sellPriceRpc);
-	console.log("selling asset " + firstCurrency + ", buying asset " + secondCurrency);
+	testLog.getLog().info("selling asset " + firstCurrency + ", buying asset " + secondCurrency);
 	
 	const soldAssetId = firstCurrency;
 	const boughtAssetId = secondCurrency;

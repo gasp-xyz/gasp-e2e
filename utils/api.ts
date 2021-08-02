@@ -1,4 +1,5 @@
 import { ApiPromise, WsProvider } from '@polkadot/api'
+import { testLog } from './Logger';
 import { getEnvironmentRequiredVars } from './utils'
 
 export let api: ApiPromise | null = null
@@ -15,7 +16,7 @@ export const initApi = async (uri = '') => {
   // const wsProvider = new WsProvider(process.env.API_URL || 'ws://mangata-node:9944')
   if(!uri)
     uri = envUri;
-  console.info(`TEST_INFO: Running test in ${uri}`);
+  testLog.getLog().info(`TEST_INFO: Running test in ${uri}`);
   const wsProvider = new WsProvider(uri)
   api = await ApiPromise.create({
     provider: wsProvider,
@@ -134,7 +135,7 @@ export const initApi = async (uri = '') => {
       RPCAmountsResult: {
         firstAssetAmount: 'Balance',
         secondAssetAmount: 'Balance',
-    },
+      },
 
       // mapping the actual specified address format
       Address: 'AccountId',
@@ -187,10 +188,12 @@ export const initApi = async (uri = '') => {
       Bloom: {
         _: '[u8; 256]',
       },
+      BalanceLock: {
+        id: "[u8; 8]",
+        amount: 'Balance'
+      }
     },
   })
-  // console.log(api.genesisHash.toHex())
+  testLog.getLog().debug(api.genesisHash.toHex())
   return api
 }
-
-

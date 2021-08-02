@@ -1,6 +1,7 @@
 import BN from 'bn.js'
 import { lockSudoFile, unlockSudoFile } from "./lock";
-import { getCurrentNonce } from "./tx";
+import { getChainNonce } from "./tx";
+import { getCurrentNonce } from './txHandler';
 const fs = require('fs');
 
 export class SudoDB {
@@ -23,12 +24,15 @@ export class SudoDB {
             return await getCurrentNonce(sudoAddress);
         
         let dbNonce;
+        if(process.argv.includes('--runInBand')){
+            return await getCurrentNonce(sudoAddress);
+        }
         try{
             // we need to prevent workers accessing and writing to the file concurrently
             await lockSudoFile();
-            const chainNonce : BN = await getCurrentNonce(sudoAddress);
+            const chainNonce : BN = await getChainNonce(sudoAddress);
             const chainNodeInt = parseInt(chainNonce.toString());
-    
+            
             //if does not exist, create it
             if(!fs.existsSync(this.sudoNonceFileName))
                 fs.writeFileSync(this.sudoNonceFileName,'0');

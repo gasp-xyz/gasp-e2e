@@ -91,7 +91,7 @@ export async function validateUnmodified(firstCurrency: BN, secondCurrency: BN, 
 
 }
 
-export async function validateTreasuryAmountsEqual(assetId : BN, treasuryExpectation: string[]){
+export async function validateTreasuryAmountsEqual(assetId : BN, treasuryExpectation: BN[]){
 	const [expectedTreasury, expectedTreasuryBurn] = treasuryExpectation;
 	const treasuryAsset = await getTreasury(assetId);
 	const treasuryBurn = await getTreasuryBurn(assetId);

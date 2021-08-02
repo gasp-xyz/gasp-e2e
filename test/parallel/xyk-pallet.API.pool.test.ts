@@ -8,6 +8,7 @@ import { validateAssetsWithValues, validatePoolCreatedEvent, validateStatusWhenP
 import { Assets } from "../../utils/Assets";
 import { getEnvironmentRequiredVars } from "../../utils/utils";
 import { getEventResultFromTxWait } from "../../utils/txHandler";
+import { testLog } from "../../utils/Logger";
 
 
 jest.spyOn(console, 'log').mockImplementation(jest.fn());
@@ -74,7 +75,7 @@ describe('xyk-pallet - Sell Asset: validate Errors:', () => {
 	});
 	test('Create x-y and y-x pool', async () => {
 		await waitNewBlock();
-		console.log("testUser1: creating pool already created " + firstCurrency + " - " + secondCurrency);
+		testLog.getLog().info("testUser1: creating pool already created " + firstCurrency + " - " + secondCurrency);
 		await createPool(testUser1.keyRingPair ,secondCurrency, new BN(666), firstCurrency, new BN(666))
 		.then(
 			(result) => {
@@ -198,7 +199,7 @@ describe('xyk-pallet - Pool tests: a pool can:', () => {
 
 	test('be burn', async () => {
 
-		console.log("User: minting liquidity " + firstCurrency + " - " + secondCurrency);
+		testLog.getLog().info("User: minting liquidity " + firstCurrency + " - " + secondCurrency);
 		await mintLiquidity(testUser2.keyRingPair, firstCurrency, secondCurrency, new BN(5000))
 		.then(
 			(result) => {
@@ -213,7 +214,7 @@ describe('xyk-pallet - Pool tests: a pool can:', () => {
 		testUser2.addAsset(liquidity_asset_id, new BN(0));
 		await testUser2.refreshAmounts(AssetWallet.BEFORE);
 		
-		console.log("User: burn liquidity " + firstCurrency + " - " + secondCurrency);
+		testLog.getLog().info("User: burn liquidity " + firstCurrency + " - " + secondCurrency);
 		await burnLiquidity(testUser2.keyRingPair, firstCurrency, secondCurrency, new BN(5000))
 		.then(
 			(result) => {

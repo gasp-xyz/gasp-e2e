@@ -5,7 +5,8 @@ import { Keyring } from '@polkadot/api'
 import {AssetWallet, User} from "../../utils/User";
 import { Assets } from "../../utils/Assets";
 import { fromBNToUnitString, getEnvironmentRequiredVars } from "../../utils/utils";
-import { ExtrinsicResult, getUserEventResult } from "../../utils/eventListeners";
+import { ExtrinsicResult } from "../../utils/eventListeners";
+import { getEventResultFromTxWait } from "../../utils/txHandler";
 
 
 jest.spyOn(console, 'log').mockImplementation(jest.fn());
@@ -120,10 +121,13 @@ describe('xyk-rpc - calculate get_burn amount: RPC result matches with burn amou
 		const burnAmount = await get_burn_amount(firstAssetId,secondAssetId, toBurn);
 		const poolBefore = await getBalanceOfPool(firstAssetId,secondAssetId);
 
-		const eventPromise = getUserEventResult("xyk", "LiquidityBurned", 14, sudo.keyRingPair.address);
-		burnLiquidity(sudo.keyRingPair, firstAssetId,secondAssetId, toBurn);
-		const eventResponse = await eventPromise;
-		expect(eventResponse.state).toEqual(ExtrinsicResult.ExtrinsicSuccess);
+		await burnLiquidity(sudo.keyRingPair, firstAssetId,secondAssetId, toBurn)
+		.then(
+			(result) => {
+				const eventResponse = getEventResultFromTxWait(result, ["xyk", "LiquidityBurned", sudo.keyRingPair.address]);
+				expect(eventResponse.state).toEqual(ExtrinsicResult.ExtrinsicSuccess);
+			}
+		);
 
 		await sudo.refreshAmounts(AssetWallet.AFTER);
 		const poolAfter = await getBalanceOfPool(firstAssetId,secondAssetId);
