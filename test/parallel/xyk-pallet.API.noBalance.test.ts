@@ -131,13 +131,10 @@ test('xyk-pallet - User Balance - Buying an asset does not require free balance'
 	expect(exception).toBeFalsy();
 });
 
-
-
 afterEach(async () => {
 
 	var liquidity_asset_id = await getLiquidityAssetId(firstCurrency, secondCurrency);
-
-	testUser1.addAsset(liquidity_asset_id, new BN(0));
+	expect(liquidity_asset_id).toEqual(new BN(-1));
 	//validate
 	await testUser1.refreshAmounts(AssetWallet.AFTER);
 
@@ -148,6 +145,6 @@ afterEach(async () => {
 	const balance = await getBalanceOfPool(secondCurrency, firstCurrency);
 	expect([pool_balance_before[0], pool_balance_before[1]]).toEqual([balance[1], balance[0]]);
 
-	expect(liquidity_asset_id).toEqual(new BN(0));
+	
 
 })

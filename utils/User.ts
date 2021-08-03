@@ -5,7 +5,7 @@ import BN from 'bn.js';
 import { v4 as uuid } from 'uuid';
 import { ExtrinsicResult, waitNewBlock } from './eventListeners';
 import { testLog } from './Logger';
-import { balanceTransfer, buyAsset, createPool, getAccountInfo, getAllAssets, getUserAssets, mintAsset, mintLiquidity, sellAsset, setBalance, transferAll } from './tx';
+import { balanceTransfer, buyAsset, createPool, getAccountInfo, getAllAssets, getUserAssets, mintAsset, mintLiquidity, sellAsset, transferAll } from './tx';
 import { getEventResultFromTxWait } from './txHandler';
 
 export enum AssetWallet
@@ -166,16 +166,7 @@ export class User {
     }
 
     async setBalance(sudo : User, amountFree : number = Math.pow(10,11), amountReserved : number = Math.pow(10,11)) {
-        await waitNewBlock();
-
-        await setBalance(sudo.keyRingPair,this.keyRingPair.address, amountFree, amountReserved)
-		.then(
-			(result) => {
-				const eventResponse = getEventResultFromTxWait(result, ["balances","BalanceSet", this.keyRingPair.address]);
-				expect(eventResponse.state).toEqual(ExtrinsicResult.ExtrinsicSuccess);
-			}
-		);  
-        await waitNewBlock();
+        await sudo.mint(new BN(0),this,new BN(amountFree));
         
     }
     async getUserAccountInfo(){

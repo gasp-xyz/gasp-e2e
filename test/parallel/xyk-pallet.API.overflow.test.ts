@@ -16,7 +16,7 @@ const {sudo:sudoUserName} = getEnvironmentRequiredVars();
 
 const MAX_BALANCE = new BN('340282366920938463463374607431768211455'); //max balance
 
-describe.skip('xyk-pallet - Check operations are not executed because of overflow in asset token', () => {
+describe('xyk-pallet - Check operations are not executed because of overflow in asset token', () => {
 	
 	var testUser1 : User;
 	var sudo : User;
@@ -93,7 +93,7 @@ describe.skip('xyk-pallet - Check operations are not executed because of overflo
 	});	
 });
 
-describe.skip('xyk-pallet - Operate with a pool close to overflow', () => {
+describe('xyk-pallet - Operate with a pool close to overflow', () => {
 	
 	var testUser1 : User;
 	var testUser2 : User;
@@ -194,7 +194,7 @@ describe.skip('xyk-pallet - Operate with a pool close to overflow', () => {
         expect(testUser1.getAsset(firstCurrency)?.amountAfter).toEqual(MAX_BALANCE);
 
 	});	
-    test('[BUG] Burn liquidities [MAX -1] assets to a wallet wich is full => overflow.', async () => {
+    test.skip('[BUG] Burn liquidities [MAX -1] assets to a wallet wich is full => overflow. NOT  a bug https://trello.com/c/J3fzuwH5', async () => {
         
         const amountToFillAsset = MAX_BALANCE.sub(testUser2.getAsset(firstCurrency)?.amountBefore!).sub(new BN(2));
         const amountToFillAssetSeccondC = MAX_BALANCE.sub(testUser2.getAsset(secondCurrency)?.amountBefore!).sub(new BN(2));
@@ -219,7 +219,7 @@ describe.skip('xyk-pallet - Operate with a pool close to overflow', () => {
 
 });
 
-describe.skip('xyk-pallet - Operate with a user account close to overflow', () => {
+describe('xyk-pallet - Operate with a user account close to overflow', () => {
 	
 	var testUser1 : User;
 	var testUser2 : User;
@@ -275,7 +275,7 @@ describe.skip('xyk-pallet - Operate with a user account close to overflow', () =
 
 	});
 
-    test('Sell a few assets to a wallet that is full => overflow.', async () => {
+    test.skip('Sell a few assets to a wallet that is full => overflow. NOT A BUG: https://trello.com/c/J3fzuwH5', async () => {
 
         await sellAsset(testUser1.keyRingPair, firstCurrency,secondCurrency, new BN(10000), new BN(1))
         .then(
@@ -291,7 +291,7 @@ describe.skip('xyk-pallet - Operate with a user account close to overflow', () =
         expect(testUser1.getAsset(secondCurrency)?.amountAfter).toEqual(testUser1.getAsset(secondCurrency)?.amountBefore);
 
 	});	
-    test('Buy a few assets to a wallet that is full  => overflow.', async () => {
+    test.skip('Buy a few assets to a wallet that is full  => overflow. NOT A BUG: https://trello.com/c/J3fzuwH5', async () => {
 
         await buyAsset(testUser1.keyRingPair, firstCurrency, secondCurrency, new BN(100), MAX_BALANCE)
         .then(
@@ -355,7 +355,7 @@ describe.skip('xyk-pallet - Operate with a highly unbalanced pool [mg - newAsset
         
         testUser2 = new User(keyring);
         keyring.addPair(testUser2.keyRingPair);
-        await sudo.mint(new BN(0),testUser2, MAX_BALANCE);
+        await sudo.mint(new BN(0),testUser2, MAX_BALANCE.div(divNumber));
         await sudo.mint(secondCurrency,testUser2, MAX_BALANCE);
         await sudo.mint(firstCurrency,testUser2, MAX_BALANCE);
         testUser2.addAssets([firstCurrency,secondCurrency]);

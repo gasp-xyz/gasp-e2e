@@ -164,7 +164,9 @@ export async function getLiquidityAssetId(assetId1: BN, assetId2: BN ) {
   const api = getApi();
 
 	const liquidity_asset_id = await api.query.xyk.liquidityAssets([assetId1, assetId2]);
-
+  if(liquidity_asset_id.isEmpty){
+    return new BN(-1);
+  }
 	return new BN (liquidity_asset_id.toString())
 
 }

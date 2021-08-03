@@ -141,9 +141,9 @@ describe('xyk-pallet - Sell assets tests: SellAsset Errors:', () => {
 		const treasuryFirstCurrency = await getTreasury(firstCurrency);
 		const treasuryBurnSecondCurrency = await getTreasuryBurn(secondCurrency);
 		const treasuryBurnFirstCurrency = await getTreasuryBurn(firstCurrency);
-		expect(treasurySecondCurrency).toEqual('1.0000 pUnit');
-		expect(treasuryBurnSecondCurrency).toEqual('1.0000 pUnit');
-		expect([treasuryFirstCurrency,treasuryBurnFirstCurrency]).toEqual(['0','0'])
+		expect(treasurySecondCurrency).toEqual(new BN(1));
+		expect(treasuryBurnSecondCurrency).toEqual(new BN(1));
+		expect([treasuryFirstCurrency,treasuryBurnFirstCurrency]).toEqual([new BN(0),new BN(0)])
 
 	});
 

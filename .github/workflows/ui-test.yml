@@ -110,6 +110,12 @@ jobs:
         uses: actions/upload-artifact@v2
         if: success() || failure()
         with:
-          name: Reports
+          name: ReportData
           path: reports.zip
 
+      - name: Archive report files
+        uses: actions/upload-artifact@v2
+        if: success() || failure()
+        with:
+          name: TestReport
+          path: reports/html-report/report.html

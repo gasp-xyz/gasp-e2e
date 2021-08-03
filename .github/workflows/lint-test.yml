@@ -50,3 +50,10 @@ jobs:
           path: reports/jest-*.xml    # Path to test results
           reporter: jest-junit        # Format of test results
 
+      - name: Archive report files
+        uses: actions/upload-artifact@v2
+        if: success() || failure()
+        with:
+          name: TestReport
+          path: reports/html-report/report.html
+

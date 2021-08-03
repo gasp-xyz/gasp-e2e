@@ -245,8 +245,8 @@ describe('xyk-pallet - Buy assets tests: Buying assets you can', () => {
 		const treasuryBurnSecondCurrency = await getTreasuryBurn(secondCurrency);
 		const treasuryBurnFirstCurrency = await getTreasuryBurn(firstCurrency);
 
-		expect([treasurySecondCurrency,treasuryBurnSecondCurrency]).toEqual(['0','0'])
-		expect([treasuryFirstCurrency,treasuryBurnFirstCurrency]).toEqual(['0','0'])
+		expect([treasurySecondCurrency,treasuryBurnSecondCurrency]).toEqual([new BN(0),new BN(0)])
+		expect([treasuryFirstCurrency,treasuryBurnFirstCurrency]).toEqual([new BN(0),new BN(0)])
 
 	});
 	
