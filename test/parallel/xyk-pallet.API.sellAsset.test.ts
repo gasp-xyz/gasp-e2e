@@ -17,7 +17,7 @@ process.env.NODE_ENV = 'test';
 
 var first_asset_amount = new BN(50000);
 var second_asset_amount = new BN(50000);
-const defaultCurrecyValue = 250000;
+const defaultCurrecyValue = new BN(250000);
 const {sudo:sudoUserName} = getEnvironmentRequiredVars();
 
 describe('xyk-pallet - Sell assets tests: SellAsset Errors:', () => {
@@ -56,7 +56,7 @@ describe('xyk-pallet - Sell assets tests: SellAsset Errors:', () => {
 
 	test('Sell assets that does not belong to any pool', async () => {
 		//add two curerncies and balance to testUser:
-		[firstCurrency, secondCurrency] = await Assets.setupUserWithCurrencies(testUser1, [defaultCurrecyValue,defaultCurrecyValue +1], sudo);
+		[firstCurrency, secondCurrency] = await Assets.setupUserWithCurrencies(testUser1, [defaultCurrecyValue,defaultCurrecyValue.add(new BN(1))], sudo);
 		await testUser1.refreshAmounts(AssetWallet.BEFORE);
 
 		await waitNewBlock();
@@ -85,7 +85,7 @@ describe('xyk-pallet - Sell assets tests: SellAsset Errors:', () => {
 
 	test('Try sell more assets than owned', async () => {
 		await waitNewBlock();
-		[firstCurrency, secondCurrency] = await Assets.setupUserWithCurrencies(testUser1, [defaultCurrecyValue,defaultCurrecyValue +1], sudo);
+		[firstCurrency, secondCurrency] = await Assets.setupUserWithCurrencies(testUser1, [defaultCurrecyValue,defaultCurrecyValue.add(new BN(1))], sudo);
 		await testUser1.setBalance(sudo);
 		await testUser1.refreshAmounts(AssetWallet.BEFORE);
 		await signSendAndWaitToFinishTx( 
@@ -110,7 +110,7 @@ describe('xyk-pallet - Sell assets tests: SellAsset Errors:', () => {
 		expect(remainingOfCurrency1).toEqual(new BN(1));
 		
 		
-		let secondWalletAmount = new BN(defaultCurrecyValue +1).sub(second_asset_amount.div(new BN(2))).add(sellPriceLocal);
+		let secondWalletAmount = defaultCurrecyValue.add(new BN(1)).sub(second_asset_amount.div(new BN(2))).add(sellPriceLocal);
 
 		await sellAsset(testUser1.keyRingPair, firstCurrency, secondCurrency, remainingOfCurrency1.add(new BN(1)), new BN(0))
 		.then(
@@ -132,7 +132,7 @@ describe('xyk-pallet - Sell assets tests: SellAsset Errors:', () => {
 		// the user has "secondWalletAmount", so the remaining must be in the pool.
 		// Using Stano formulas, doing a Tx of 200k when the pool has 25k of X and 50k of Y -> 2 units gets burn.
 		const burned = new BN(2);
-		const secondWalletInThePool = new BN(defaultCurrecyValue +1).sub(secondWalletAmount);
+		const secondWalletInThePool = defaultCurrecyValue.add(new BN(1)).sub(secondWalletAmount);
 		expect([new BN(249999), secondWalletInThePool.sub(burned)])
 			.toEqual(pool_balance);
 		
@@ -141,15 +141,15 @@ describe('xyk-pallet - Sell assets tests: SellAsset Errors:', () => {
 		const treasuryFirstCurrency = await getTreasury(firstCurrency);
 		const treasuryBurnSecondCurrency = await getTreasuryBurn(secondCurrency);
 		const treasuryBurnFirstCurrency = await getTreasuryBurn(firstCurrency);
-		expect(treasurySecondCurrency).toEqual('1.0000 pUnit');
-		expect(treasuryBurnSecondCurrency).toEqual('1.0000 pUnit');
-		expect([treasuryFirstCurrency,treasuryBurnFirstCurrency]).toEqual(['0','0'])
+		expect(treasurySecondCurrency).toEqual(new BN(1));
+		expect(treasuryBurnSecondCurrency).toEqual(new BN(1));
+		expect([treasuryFirstCurrency,treasuryBurnFirstCurrency]).toEqual([new BN(0),new BN(0)])
 
 	});
 
 	test('Sell assets with a high expectation: limit +1', async () => {
 		await waitNewBlock();
-		[firstCurrency, secondCurrency] = await Assets.setupUserWithCurrencies(testUser1, [defaultCurrecyValue,defaultCurrecyValue +1], sudo);
+		[firstCurrency, secondCurrency] = await Assets.setupUserWithCurrencies(testUser1, [defaultCurrecyValue,defaultCurrecyValue.add(new BN(1))], sudo);
 		await testUser1.setBalance(sudo);
 		await signSendAndWaitToFinishTx( 
 			api?.tx.xyk.createPool(firstCurrency, first_asset_amount, secondCurrency, second_asset_amount.div(new BN(2))), 
@@ -212,7 +212,7 @@ describe('xyk-pallet - Sell assets tests: Selling Assets you can', () => {
 	test('Sell assets with a high expectation: limit - OK', async () => {
 
 		await waitNewBlock();
-		[firstCurrency, secondCurrency] = await Assets.setupUserWithCurrencies(testUser1, [defaultCurrecyValue,defaultCurrecyValue +1], sudo);
+		[firstCurrency, secondCurrency] = await Assets.setupUserWithCurrencies(testUser1, [defaultCurrecyValue,defaultCurrecyValue.add(new BN(1))], sudo);
 		await testUser1.setBalance(sudo);
 		await signSendAndWaitToFinishTx( 
 			api?.tx.xyk.createPool(firstCurrency, first_asset_amount, secondCurrency, second_asset_amount.div(new BN(2))), 
@@ -236,7 +236,7 @@ describe('xyk-pallet - Sell assets tests: Selling Assets you can', () => {
 		//spent all the money!
 		await testUser1.validateWalletEquals(firstCurrency, new BN(0));
 		//amounAsset2 = issued  - spent in the pool + bought selling all firstCurerncy.
-		const amounAsset2 = new BN(defaultCurrecyValue +1 ).sub(second_asset_amount.div(new BN(2))).add(sellPriceLocal)
+		const amounAsset2 = defaultCurrecyValue.add(new BN(1)).sub(second_asset_amount.div(new BN(2))).add(sellPriceLocal)
 		await testUser1.validateWalletEquals(secondCurrency, amounAsset2);		
 	});
 
@@ -245,7 +245,7 @@ describe('xyk-pallet - Sell assets tests: Selling Assets you can', () => {
 		// setup users
 		const testUser2 = new User(keyring);
 		keyring.addPair(testUser2.keyRingPair);
-		[firstCurrency, secondCurrency] = await Assets.setupUserWithCurrencies(testUser1, [defaultCurrecyValue,defaultCurrecyValue +1], sudo);
+		[firstCurrency, secondCurrency] = await Assets.setupUserWithCurrencies(testUser1, [defaultCurrecyValue,defaultCurrecyValue.add(new BN(1))], sudo);
 		const [thirdCurrency] = await Assets.setupUserWithCurrencies(testUser2, [defaultCurrecyValue], sudo);
 		
 		await sudo.mint(thirdCurrency, testUser1, new BN(10000));

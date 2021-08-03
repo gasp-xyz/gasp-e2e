@@ -24,7 +24,7 @@ let secondCurrency :BN;
 
 // Assuming the pallet's AccountId
 const {pallet: pallet_address,sudo:sudoUserName} = getEnvironmentRequiredVars();
-const defaultCurrecyValue = 250000;
+const defaultCurrecyValue = new BN(250000);
 
 beforeAll( async () => {
 	try {
@@ -48,7 +48,7 @@ beforeEach( async () => {
 	pallet.addFromAddress(keyring,pallet_address);
 	
 	//add two curerncies and balance to testUser:
-	[firstCurrency, secondCurrency] = await Assets.setupUserWithCurrencies(testUser1, [defaultCurrecyValue,defaultCurrecyValue +1], sudo);
+	[firstCurrency, secondCurrency] = await Assets.setupUserWithCurrencies(testUser1, [defaultCurrecyValue,defaultCurrecyValue.add(new BN(1))], sudo);
 	await testUser1.setBalance(sudo);
 	
 	// add users to pair.
@@ -65,7 +65,7 @@ beforeEach( async () => {
 	await testUser1.refreshAmounts(AssetWallet.BEFORE);
 	await testUser2.refreshAmounts(AssetWallet.BEFORE);
 
-	validateAssetsWithValues([testUser1.getAsset(firstCurrency)?.amountBefore!,testUser1.getAsset(secondCurrency)?.amountBefore! ], [defaultCurrecyValue, defaultCurrecyValue+1]);
+	validateAssetsWithValues([testUser1.getAsset(firstCurrency)?.amountBefore!,testUser1.getAsset(secondCurrency)?.amountBefore! ], [defaultCurrecyValue.toNumber(), defaultCurrecyValue.add(new BN(1)).toNumber()]);
 	validateEmptyAssets([testUser2.getAsset(firstCurrency)?.amountBefore!,testUser2.getAsset(secondCurrency)?.amountBefore!]);
 });
 

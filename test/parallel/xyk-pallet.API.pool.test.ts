@@ -18,7 +18,7 @@ const {sudo:sudoUserName} = getEnvironmentRequiredVars();
 
 var first_asset_amount = new BN(50000);
 var second_asset_amount = new BN(50000);
-const defaultCurrecyValue = 250000;
+const defaultCurrecyValue = new BN(250000);
 
 describe('xyk-pallet - Sell Asset: validate Errors:', () => {
 	
@@ -49,7 +49,7 @@ describe('xyk-pallet - Sell Asset: validate Errors:', () => {
 		sudo = new User(keyring, sudoUserName);
 		
 		//add two curerncies and balance to testUser:
-		[firstCurrency, secondCurrency] = await Assets.setupUserWithCurrencies(testUser1, [defaultCurrecyValue,defaultCurrecyValue +1], sudo);
+		[firstCurrency, secondCurrency] = await Assets.setupUserWithCurrencies(testUser1, [defaultCurrecyValue,defaultCurrecyValue.add(new BN(1))], sudo);
 		await testUser1.setBalance(sudo);
 		// add users to pair.
 		keyring.addPair(testUser1.keyRingPair);
@@ -57,7 +57,7 @@ describe('xyk-pallet - Sell Asset: validate Errors:', () => {
 	
 		// check users accounts.
 		await testUser1.refreshAmounts(AssetWallet.BEFORE);
-		validateAssetsWithValues([testUser1.getAsset(firstCurrency)?.amountBefore!,testUser1.getAsset(secondCurrency)?.amountBefore! ], [defaultCurrecyValue, defaultCurrecyValue+1]);
+		validateAssetsWithValues([testUser1.getAsset(firstCurrency)?.amountBefore!,testUser1.getAsset(secondCurrency)?.amountBefore! ], [defaultCurrecyValue.toNumber(), defaultCurrecyValue.add(new BN(1)).toNumber()]);
 		
 		let eventResponse: EventResult = new EventResult(0,'');
 		await createPool(testUser1.keyRingPair, firstCurrency, first_asset_amount, secondCurrency, second_asset_amount)
@@ -106,7 +106,7 @@ describe('xyk-pallet - Sell Asset: validate Errors:', () => {
 	});
 	test('Not enough assets', async () => {
 		await waitNewBlock();
-		const txAmount = 100000000000000;
+		const txAmount = new BN(100000000000000);
 		const testAssetId = await Assets.setupUserWithCurrencies(testUser1, [txAmount], sudo);
 
 		await createPool(testUser1.keyRingPair ,firstCurrency,new BN(txAmount).add(new BN(1)), testAssetId[0], new BN(txAmount).add(new BN(1)))
@@ -154,7 +154,7 @@ describe('xyk-pallet - Pool tests: a pool can:', () => {
 		
 		//add two curerncies and balance to testUser2:
 
-		[firstCurrency, secondCurrency] = await Assets.setupUserWithCurrencies(testUser1, [defaultCurrecyValue,defaultCurrecyValue +1], sudo);
+		[firstCurrency, secondCurrency] = await Assets.setupUserWithCurrencies(testUser1, [defaultCurrecyValue,defaultCurrecyValue.add(new BN(1))], sudo);
 		await testUser1.setBalance(sudo);
 		await testUser1.createPoolToAsset(first_asset_amount,second_asset_amount,firstCurrency,secondCurrency);
 		await testUser2.setBalance(sudo);

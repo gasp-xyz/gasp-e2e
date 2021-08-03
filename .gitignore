@@ -8,3 +8,4 @@ yarn-error.log
 nonce.db
 reports/jest-junit.xml
 reports/testLog.log
+test/exploratory/testPad.ts

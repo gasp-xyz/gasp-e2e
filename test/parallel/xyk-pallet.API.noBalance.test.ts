@@ -27,7 +27,7 @@ const pool_balance_before = [new BN(0), new BN(0)];
 
 const {sudo:sudoUserName} = getEnvironmentRequiredVars();
 
-const defaultCurrecyValue = 250000;
+const defaultCurrecyValue = new BN(250000);
 
 beforeEach( async () => {
 	try {
@@ -44,7 +44,7 @@ beforeEach( async () => {
 	sudo = new User(keyring, sudoUserName);
 	
 	//add two curerncies and balance to testUser:
-	[firstCurrency, secondCurrency] = await Assets.setupUserWithCurrencies(testUser1, [defaultCurrecyValue,defaultCurrecyValue +1], sudo);
+	[firstCurrency, secondCurrency] = await Assets.setupUserWithCurrencies(testUser1, [defaultCurrecyValue,defaultCurrecyValue.add(new BN(1))], sudo);
 	//add only RESERVED balance
 	await testUser1.setBalance(sudo, 0 , Math.pow(10,11) );
 	// add users to pair.
@@ -53,7 +53,7 @@ beforeEach( async () => {
 
 	// check users accounts.
 	await testUser1.refreshAmounts(AssetWallet.BEFORE);
-	validateAssetsWithValues([testUser1.getAsset(firstCurrency)?.amountBefore!,testUser1.getAsset(secondCurrency)?.amountBefore! ], [defaultCurrecyValue, defaultCurrecyValue+1]);
+	validateAssetsWithValues([testUser1.getAsset(firstCurrency)?.amountBefore!,testUser1.getAsset(secondCurrency)?.amountBefore! ], [defaultCurrecyValue.toNumber(), defaultCurrecyValue.add(new BN(1)).toNumber()]);
 
 })
 
@@ -131,13 +131,10 @@ test('xyk-pallet - User Balance - Buying an asset does not require free balance'
 	expect(exception).toBeFalsy();
 });
 
-
-
 afterEach(async () => {
 
 	var liquidity_asset_id = await getLiquidityAssetId(firstCurrency, secondCurrency);
-
-	testUser1.addAsset(liquidity_asset_id, new BN(0));
+	expect(liquidity_asset_id).toEqual(new BN(-1));
 	//validate
 	await testUser1.refreshAmounts(AssetWallet.AFTER);
 
@@ -148,6 +145,6 @@ afterEach(async () => {
 	const balance = await getBalanceOfPool(secondCurrency, firstCurrency);
 	expect([pool_balance_before[0], pool_balance_before[1]]).toEqual([balance[1], balance[0]]);
 
-	expect(liquidity_asset_id).toEqual(new BN(0));
+	
 
 })

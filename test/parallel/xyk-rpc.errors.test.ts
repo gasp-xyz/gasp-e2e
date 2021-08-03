@@ -1,10 +1,12 @@
 import {getApi, initApi} from "../../utils/api";
 import { calculate_buy_price_id_rpc, calculate_buy_price_rpc, calculate_sell_price_rpc} from '../../utils/tx'
 import BN from 'bn.js'
+import {bnToHex} from '@polkadot/util';
 import { getEnvironmentRequiredVars } from "../../utils/utils";
 import { Assets } from "../../utils/Assets"
 import { ApiPromise, Keyring } from "@polkadot/api";
 import { User } from "../../utils/User";
+import { testLog } from "../../utils/Logger";
 
 jest.spyOn(console, 'log').mockImplementation(jest.fn());
 jest.setTimeout(1500000);
@@ -78,7 +80,7 @@ describe('xyk-rpc - calculate_buy_price_by_id:No pool assotiated with the assets
 		keyring.addPair(sudo.keyRingPair);
 		
 		//the idea of this mess is to have assets with different values,
-		const assetIds = await Assets.setupUserWithCurrencies(sudo, [10,10], sudo);	
+		const assetIds = await Assets.setupUserWithCurrencies(sudo, [new BN(10),new BN(10)], sudo);	
 		for (let index = 0; index < assetIds.length; index++) {
 			dictAssets.set(index,assetIds[index]);
 		}
@@ -112,6 +114,27 @@ test.each([
 		( api.rpc as any).xyk.calculate_sell_price_id(soldTokenId, boughtTokenId, amount)
 	).rejects
 	.toThrow(expected.toString())
+
+});
+
+
+
+test.each([
+	[new BN('100000000')],
+	[new BN('100000000000000')],
+	[new BN('10000000000000000000000')] //<- Fails with:
+	//-32602: Invalid params: invalid type: string "0x000000000000021e19e0c9bab2400000", expected u128.
+	//assert_eq!(u128::MAX, 340282366920938463463374607431768211455);
+])
+('RPC big numbers : negative asset ids [amount->%s]', async(amount) => {
+	let hexFrom = bnToHex(1000);
+	let hexTo = bnToHex(2000);
+	let hexAmount = bnToHex(amount);
+
+	const resp = await (api.rpc as any).xyk.calculate_buy_price_id(hexFrom, hexTo, hexAmount);
+	const respJson = JSON.parse(JSON.stringify(resp.toHuman()));
+	testLog.getLog().info(respJson);
+	expect(parseInt(respJson.price)).toBeGreaterThanOrEqual(0)
 
 });
 

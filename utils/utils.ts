@@ -59,7 +59,7 @@ export async function UserCreatesAPoolAndMintliquidity(
 
 	await waitNewBlock();
     const api = getApi();
-	const [firstCurrency, secondCurrency] = await Assets.setupUserWithCurrencies(testUser1, [parseInt(userAmount.toString()), parseInt(userAmount.toString())], sudo);
+	const [firstCurrency, secondCurrency] = await Assets.setupUserWithCurrencies(testUser1, [userAmount, userAmount], sudo);
 	await testUser1.setBalance(sudo);
 	await signSendAndWaitToFinishTx(
 		api?.tx.xyk.createPool(firstCurrency, poolAmount, secondCurrency, poolAmount),
@@ -70,6 +70,39 @@ export async function UserCreatesAPoolAndMintliquidity(
 	return [firstCurrency, secondCurrency];
 }
 
+export enum XyzErrorCodes{
+        VaultAlreadySet,
+        PoolAlreadyExists,
+        NotEnoughAssets,
+        NoSuchPool,
+        NoSuchLiquidityAsset,
+        NotEnoughReserve,
+        ZeroAmount,
+        InsufficientInputAmount,
+        InsufficientOutputAmount,
+        SameAsset,
+        AssetAlreadyExists,
+        AssetDoesNotExists,
+        DivisionByZero,
+        UnexpectedFailure,
+        NotMangataLiquidityAsset,
+        SecondAssetAmountExceededExpectations,
+        MathOverflow,
+}
+export enum TokensErrorCodes{
+            /// The balance is too low
+            BalanceTooLow,
+            /// This operation will cause balance to overflow
+            BalanceOverflow,
+            /// This operation will cause total issuance to overflow
+            TotalIssuanceOverflow,
+            /// Cannot convert Amount into Balance type
+            AmountIntoBalanceFailed,
+            /// Failed because liquidity restrictions due to locking
+            LiquidityRestrictions,
+            /// Failed because token with given id does not exits
+            TokenIdNotExists,
+}
 //Leaving this function that may be neccesary in the future.
 export async function createUserFromJson(keyring : Keyring){
     const userPassword = 'mangata123';

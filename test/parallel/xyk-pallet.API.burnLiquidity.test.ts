@@ -1,5 +1,5 @@
 import {api, getApi, initApi} from "../../utils/api";
-import { getBalanceOfPool, getLiquidityAssetId, burnLiquidity, getBalanceOfAsset, calculate_buy_price_local, getLiquidityPool} from '../../utils/tx'
+import { getBalanceOfPool, getLiquidityAssetId, burnLiquidity, calculate_buy_price_local, getLiquidityPool} from '../../utils/tx'
 import {waitNewBlock, ExtrinsicResult, EventResult} from '../../utils/eventListeners'
 import BN from 'bn.js'
 import { Keyring } from '@polkadot/api'
@@ -53,8 +53,8 @@ describe('xyk-pallet - Burn liquidity tests: when burning liquidity you can', ()
 	});
 
 	test('Get affected after a transaction that devaluates X wallet & destroy the pool', async () => {
-		const assetXamount = 1000;
-		const assetYamount = 10;
+		const assetXamount = new BN(1000);
+		const assetYamount = new BN(10);
 		//create a new user
 		const testUser2 = new User(keyring);
 		keyring.addPair(testUser2.keyRingPair);
@@ -76,7 +76,7 @@ describe('xyk-pallet - Burn liquidity tests: when burning liquidity you can', ()
 		await testUser1.refreshAmounts(AssetWallet.BEFORE);
 
 		
-		await burnLiquidity(testUser1.keyRingPair, firstCurrency, secondCurrency, new BN(assetXamount + assetYamount))
+		await burnLiquidity(testUser1.keyRingPair, firstCurrency, secondCurrency, new BN(assetXamount.add(assetYamount)))
 		.then(
 			(result) => {
 				const eventResponse = getEventResultFromTxWait(result, ["xyk", "LiquidityBurned", testUser1.keyRingPair.address]);
@@ -85,15 +85,14 @@ describe('xyk-pallet - Burn liquidity tests: when burning liquidity you can', ()
 		);
 
 		const liqId = await getLiquidityAssetId(firstCurrency, secondCurrency);
+		expect(liqId).toEqual(new BN(-1));
 		let poolBalance = await getBalanceOfPool(firstCurrency,secondCurrency);
-		let liquidity = await getBalanceOfAsset(liqId, testUser1.keyRingPair.address);
-		
 		await testUser1.refreshAmounts(AssetWallet.AFTER);
 		testUser1.validateWalletEquals(firstCurrency,amountOfX.add(new BN(assetXamount)));
 		testUser1.validateWalletEquals(secondCurrency,new BN(1));
 
 		expect([new BN(0),new BN(0)]).toEqual(poolBalance);
-		expect(liquidity).toEqual(new BN(0));
+		
 
 
 		//Validate liquidity pool is destroyed.
@@ -161,7 +160,7 @@ async function UserCreatesAPoolAndMintliquidity(
 	, mintAmount: BN = new BN(userAmount).div(new BN(4))) {
 
 	await waitNewBlock();
-	const [firstCurrency, secondCurrency] = await Assets.setupUserWithCurrencies(testUser1, [parseInt(userAmount.toString()), parseInt(userAmount.toString())], sudo);
+	const [firstCurrency, secondCurrency] = await Assets.setupUserWithCurrencies(testUser1, [userAmount, userAmount], sudo);
 	await testUser1.setBalance(sudo);
 	await signSendAndWaitToFinishTx(
 		api?.tx.xyk.createPool(firstCurrency, poolAmount, secondCurrency, poolAmount),

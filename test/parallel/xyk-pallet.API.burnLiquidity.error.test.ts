@@ -15,7 +15,7 @@ jest.spyOn(console, 'log').mockImplementation(jest.fn());
 jest.setTimeout(1500000);
 process.env.NODE_ENV = 'test';
 
-const defaultCurrecyValue = 250000;
+const defaultCurrecyValue = new BN(250000);
 
 describe('xyk-pallet - Burn liquidity tests: BurnLiquidity Errors:', () => {
 	

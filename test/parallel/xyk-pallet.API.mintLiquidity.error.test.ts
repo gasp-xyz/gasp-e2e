@@ -18,7 +18,7 @@ const {sudo:sudoUserName} = getEnvironmentRequiredVars();
 
 var firstAssetAmount = new BN(50000);
 var secondAssetAmount = new BN(50000);
-const defaultCurrecyValue = 250000;
+const defaultCurrecyValue = new BN(250000);
 
 describe('xyk-pallet - Mint liquidity tests: MintLiquidity Errors:', () => {
 	
@@ -58,7 +58,7 @@ describe('xyk-pallet - Mint liquidity tests: MintLiquidity Errors:', () => {
 	test('Mint liquidity when not enough assetY for minting Xamount', async () => {
 		await waitNewBlock();
 		//Adding 1000 and 1 more than default. So the user when the pool is created has 1000,1.
-		[firstCurrency, secondCurrency] = await Assets.setupUserWithCurrencies(testUser1, [defaultCurrecyValue + 1000,defaultCurrecyValue +1], sudo);
+		[firstCurrency, secondCurrency] = await Assets.setupUserWithCurrencies(testUser1, [defaultCurrecyValue.add(new BN(1000)) ,defaultCurrecyValue.add(new BN(1))], sudo);
 		await testUser1.setBalance(sudo);
 		//lets create a pool with equal balances
 		await signSendAndWaitToFinishTx( 
@@ -84,7 +84,7 @@ describe('xyk-pallet - Mint liquidity tests: MintLiquidity Errors:', () => {
 	test('Mint liquidity when not enough assetX for minting Yamount', async () => {
 		await waitNewBlock();
 		//Adding 1000 and 1 more than default. So the user when the pool is created has 1000,1.
-		[firstCurrency, secondCurrency] = await Assets.setupUserWithCurrencies(testUser1, [defaultCurrecyValue + 1,defaultCurrecyValue +1000], sudo);
+		[firstCurrency, secondCurrency] = await Assets.setupUserWithCurrencies(testUser1, [defaultCurrecyValue.add(new BN(1)),defaultCurrecyValue.add(new BN(1000))], sudo);
 		await testUser1.setBalance(sudo);
 		//lets create a pool with equal balances
 		await signSendAndWaitToFinishTx( 
@@ -111,7 +111,7 @@ describe('xyk-pallet - Mint liquidity tests: MintLiquidity Errors:', () => {
 	
 	test('Mint liquidity assets that does not belong to any pool', async () => {
 		//add two curerncies and balance to testUser:
-		[firstCurrency, secondCurrency] = await Assets.setupUserWithCurrencies(testUser1, [defaultCurrecyValue,defaultCurrecyValue +1], sudo);
+		[firstCurrency, secondCurrency] = await Assets.setupUserWithCurrencies(testUser1, [defaultCurrecyValue,defaultCurrecyValue.add(new BN(1))], sudo);
 		const [thirdCurrency]= await Assets.setupUserWithCurrencies(testUser1, [defaultCurrecyValue], sudo);
 		//lets create a pool between asset 1 and 3.
 		await signSendAndWaitToFinishTx( 

@@ -25,7 +25,7 @@ let secondCurrency :BN;
 
 const {pallet: pallet_address,sudo:sudoUserName} = getEnvironmentRequiredVars();
 
-const defaultCurrecyValue = 250000;
+const defaultCurrecyValue = new BN(250000);
 
 beforeAll( async () => {
 	try {
@@ -50,7 +50,7 @@ beforeEach( async () => {
 	pallet.addFromAddress(keyring,pallet_address);
 	
 	//add two curerncies and balance to testUser:
-	[firstCurrency, secondCurrency] = await Assets.setupUserWithCurrencies(testUser1, [defaultCurrecyValue,defaultCurrecyValue +1], sudo );
+	[firstCurrency, secondCurrency] = await Assets.setupUserWithCurrencies(testUser1, [defaultCurrecyValue,defaultCurrecyValue.add(new BN(1))], sudo );
 	await testUser1.setBalance(sudo);
 	
 	// add users to pair.
@@ -67,7 +67,7 @@ beforeEach( async () => {
 	await testUser1.refreshAmounts(AssetWallet.BEFORE);
 	await testUser2.refreshAmounts(AssetWallet.BEFORE);
 
-	validateAssetsWithValues([testUser1.getAsset(firstCurrency)?.amountBefore!,testUser1.getAsset(secondCurrency)?.amountBefore!], [defaultCurrecyValue, defaultCurrecyValue+1]);
+	validateAssetsWithValues([testUser1.getAsset(firstCurrency)?.amountBefore!,testUser1.getAsset(secondCurrency)?.amountBefore!], [defaultCurrecyValue.toNumber(), defaultCurrecyValue.add(new BN(1)).toNumber()]);
 	validateEmptyAssets([testUser2.getAsset(firstCurrency)?.amountBefore!,testUser2.getAsset(secondCurrency)?.amountBefore!]);
 });
 
@@ -105,7 +105,7 @@ test('xyk-pallet - AssetsOperation: transferAll', async() => {
     //Refactor Note: [Missing Wallet assert?] Did not considered creating a liquity asset. Transaction does nothing with it.
 	let pool_balance_before = await getBalanceOfPool(firstCurrency, secondCurrency);
 	let amount = testUser1.getAsset(firstCurrency)?.amountBefore!;
-	console.log("testUser1: transfering all assets " + firstCurrency + " to testUser2");
+	testLog.getLog().debug("testUser1: transfering all assets " + firstCurrency + " to testUser2");
 
 	await transferAll(testUser1.keyRingPair, firstCurrency, testUser2.keyRingPair.address)
 	.then(

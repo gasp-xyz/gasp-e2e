@@ -12,7 +12,7 @@ import { getEventResultFromTxWait } from "../../utils/txHandler";
 jest.spyOn(console, 'log').mockImplementation(jest.fn());
 jest.setTimeout(1500000);
 process.env.NODE_ENV = 'test';
-const defaultCurrencyAmount = 100000;
+const defaultCurrencyAmount = new BN(100000);
 
 beforeAll( async () => {
 	try {
@@ -112,7 +112,7 @@ describe('xyk-rpc - calculate get_burn amount: RPC result matches with burn amou
 		firstAssetId = assetIds[0];
 		secondAssetId = assetIds[1];
 
-		await sudo.createPoolToAsset( new BN(defaultCurrencyAmount), new BN(defaultCurrencyAmount-12345), firstAssetId, secondAssetId);
+		await sudo.createPoolToAsset( new BN(defaultCurrencyAmount), new BN(defaultCurrencyAmount.sub(new BN(12345))), firstAssetId, secondAssetId);
 	})
 
 	test('validate get_burn_amount that matches with real burn operation', async() => {

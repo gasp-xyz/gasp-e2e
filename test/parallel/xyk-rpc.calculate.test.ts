@@ -39,7 +39,7 @@ beforeAll( async () => {
 
 	
 	//add two curerncies and balance to testUser:
-	[firstCurrency, secondCurrency] = await Assets.setupUserWithCurrencies(testUser1, [firstAssetAmount *2 ,seccondAssetAmount *2] , sudo );
+	[firstCurrency, secondCurrency] = await Assets.setupUserWithCurrencies(testUser1, [new BN(firstAssetAmount *2) ,new BN(seccondAssetAmount *2)] , sudo );
 	await testUser1.setBalance(sudo);
 	await testUser1.createPoolToAsset(new BN(firstAssetAmount), new BN(seccondAssetAmount), firstCurrency, secondCurrency);
 	

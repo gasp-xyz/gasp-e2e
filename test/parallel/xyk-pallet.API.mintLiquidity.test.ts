@@ -16,7 +16,7 @@ process.env.NODE_ENV = 'test';
 
 const {sudo:sudoUserName} = getEnvironmentRequiredVars();
 
-const defaultCurrecyValue = 250000;
+const defaultCurrecyValue = new BN(250000);
 
 describe('xyk-pallet - Mint liquidity tests: with minting you can', () => {
 	
@@ -57,7 +57,7 @@ describe('xyk-pallet - Mint liquidity tests: with minting you can', () => {
 		const roundingIssue =  new BN(1);
 		await waitNewBlock();
 		// The second currecy value is : defaultCurrecyValue, one to create the pool later, and the other one because of the rounding issue.
-		[firstCurrency, secondCurrency] = await Assets.setupUserWithCurrencies(testUser1, [defaultCurrecyValue +1 ,defaultCurrecyValue +1 + 1], sudo);
+		[firstCurrency, secondCurrency] = await Assets.setupUserWithCurrencies(testUser1, [defaultCurrecyValue.add(new BN(1)) ,defaultCurrecyValue.add(new BN(1)).add(new BN(1))], sudo);
 		await testUser1.setBalance(sudo);
 		const amounttoThePool = new BN(1);
 		await signSendAndWaitToFinishTx( 
