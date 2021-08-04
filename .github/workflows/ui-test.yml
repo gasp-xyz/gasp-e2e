@@ -154,5 +154,5 @@ jobs:
             authToken: ${{secrets.GITHUB_TOKEN}}
             context: 'Test report'
             state: 'success'
-            sha: ${{ github.event.pull_request.head.sha }} || github.sha
+            sha: ${{ github.event.pull_request.head.sha  || github.sha }}
             target_url: mangata-finance.github.io/mangata-e2e/${{ github.run_number }}
