@@ -1,0 +1,26 @@
+{
+  "uid" : "4b4757e66a1912dae1a509f688f20b0f",
+  "children" : [ {
+    "name" : "Product defects",
+    "children" : [ {
+      "name" : "TimeoutError: Waiting for element to be located By(xpath, //div[@class='assets']/div[@class='AssetBox'])\n                Wait timed out after 120001ms",
+      "children" : [ {
+        "name" : "As a User I can get test tokens from the faucet",
+        "uid" : "ce1625527ae1cc84",
+        "parentUid" : "d18a283ca6291dbd1a7bb48c0b575eee",
+        "status" : "failed",
+        "time" : {
+          "start" : 1628081668949,
+          "stop" : 1628081827731,
+          "duration" : 158782
+        },
+        "flaky" : false,
+        "newFailed" : true,
+        "parameters" : [ ]
+      } ],
+      "uid" : "d18a283ca6291dbd1a7bb48c0b575eee"
+    } ],
+    "uid" : "8fb3a91ba5aaf9de24cc8a92edc82b5d"
+  } ],
+  "name" : "categories"
+}
