@@ -1,10 +1,10 @@
 [ {
-  "uid" : "3005f7207a37f806",
+  "uid" : "2ae7c10b51c41a36",
   "name" : "As a User I can get test tokens from the faucet",
   "time" : {
-    "start" : 1628072563518,
-    "stop" : 1628072629072,
-    "duration" : 65554
+    "start" : 1628073756048,
+    "stop" : 1628073828927,
+    "duration" : 72879
   },
   "status" : "passed",
   "severity" : "normal"

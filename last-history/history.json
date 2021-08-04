@@ -9,13 +9,13 @@
       "total" : 1
     },
     "items" : [ {
-      "uid" : "3005f7207a37f806",
-      "reportUrl" : "https://mangata-finance.github.io/mangata-e2e/55//#testresult/3005f7207a37f806",
+      "uid" : "2ae7c10b51c41a36",
+      "reportUrl" : "https://mangata-finance.github.io/mangata-e2e/56//#testresult/2ae7c10b51c41a36",
       "status" : "passed",
       "time" : {
-        "start" : 1628072563518,
-        "stop" : 1628072629072,
-        "duration" : 65554
+        "start" : 1628073756048,
+        "stop" : 1628073828927,
+        "duration" : 72879
       }
     } ]
   }
