@@ -6,7 +6,7 @@ import { Keyring } from '@polkadot/api'
 import {AssetWallet, User} from "../../utils/User";
 import { validateTreasuryAmountsEqual } from "../../utils/validators";
 import { Assets } from "../../utils/Assets";
-import { getEnvironmentRequiredVars } from "../../utils/utils";
+import { getEnvironmentRequiredVars, MGA_ASSET_NAME } from "../../utils/utils";
 import { getEventResultFromTxWait, signSendAndWaitToFinishTx } from "../../utils/txHandler";
 
 
@@ -51,7 +51,7 @@ describe('xyk-pallet - treasury tests [Mangata]: on treasury we store', () => {
 		keyring.addPair(sudo.keyRingPair);
 
 		await waitNewBlock();
-		mgaTokenId  = await getAssetId('MGA');
+		mgaTokenId  = await getAssetId(MGA_ASSET_NAME);
 		await sudo.mint(mgaTokenId, testUser1,new BN(defaultCurrecyValue));
 		testUser1.addAsset(mgaTokenId);
 	    secondCurrency = (await Assets.setupUserWithCurrencies(testUser1, [defaultCurrecyValue], sudo))[0];
@@ -225,7 +225,7 @@ describe('xyk-pallet - treasury tests [Connected - Mangata]: on treasury we stor
 		keyring.addPair(sudo.keyRingPair);
 
 		await waitNewBlock();
-		mgaTokenId  = await getAssetId('MNG');
+		mgaTokenId  = await getAssetId(MGA_ASSET_NAME);
 		await sudo.mint(mgaTokenId, testUser1,new BN(defaultCurrecyValue));
 		testUser1.addAsset(mgaTokenId);
 	    connectedToMGA = (await Assets.setupUserWithCurrencies(testUser1, [defaultCurrecyValue], sudo))[0];
