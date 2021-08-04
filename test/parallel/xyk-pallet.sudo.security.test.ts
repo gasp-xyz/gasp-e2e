@@ -1,10 +1,11 @@
 import {getApi, initApi} from "../../utils/api";
-import { getCurrentNonce, signTx} from '../../utils/tx'
-import {ExtrinsicResult, getUserEventResult, waitNewBlock} from '../../utils/eventListeners'
+import { getCurrentNonce} from '../../utils/tx'
+import {ExtrinsicResult, waitNewBlock} from '../../utils/eventListeners'
 import { Keyring } from '@polkadot/api'
-import {User} from "../../utils/User";
-import { getEnvironmentRequiredVars } from "../../utils/utils";
+import {AssetWallet, User} from "../../utils/User";
+import { getEnvironmentRequiredVars, MGA_ASSET_ID } from "../../utils/utils";
 import BN from "bn.js";
+import { getEventResultFromTxWait, signAndWaitTx } from "../../utils/txHandler";
 
 
 jest.spyOn(console, 'log').mockImplementation(jest.fn());
@@ -44,31 +45,32 @@ beforeAll( async () => {
 	keyring.addPair(sudo.keyRingPair);
 
     await testUser1.setBalance(sudo);
+    testUser1.addAsset(MGA_ASSET_ID);
+    await testUser1.refreshAmounts(AssetWallet.BEFORE);
 
 })
 
 beforeEach( async () => {
     infoUser1Before = await testUser1.getUserAccountInfo();
+    await testUser1.refreshAmounts(AssetWallet.BEFORE);
 })
 
 test('xyk-pallet - SecurityTests - Only sudo can perform actions [balancecs.setBalance to other user]', async () => {
 
         const api = getApi();
-        let eventPromise = getUserEventResult("balances","BalanceSet", 14, testUser1.keyRingPair.address);
-        waitNewBlock();
-        waitNewBlock();
 
-        signTx(
+        await signAndWaitTx(
             api.tx.sudo.sudo(
                 api.tx.balances.setBalance(testUser2.keyRingPair.address, Math.pow(10,11) -1, Math.pow(10,11) -1)
                 ),
                 testUser1.keyRingPair,
-                await getCurrentNonce(testUser1.keyRingPair.address)
-        )
+                await (await getCurrentNonce(testUser1.keyRingPair.address)).toNumber()
 
-		const result = await eventPromise;
-        expect(result.state).toEqual(ExtrinsicResult.ExtrinsicFailed);
-
+        ).then(
+            (result) => {
+            const eventResponse = getEventResultFromTxWait(result);
+            expect(eventResponse.state).toEqual(ExtrinsicResult.ExtrinsicFailed);
+        });
 		const infoUser2 = await testUser2.getUserAccountInfo();
 
         expect(infoUser2.free).toBe(0);
@@ -81,62 +83,59 @@ test('xyk-pallet - SecurityTests - Only sudo can perform actions [balancecs.setB
 test('xyk-pallet - SecurityTests - Only sudo can perform actions [balances.setBalance to itself]', async () => {
 
     const api = getApi();
-    let eventPromise = getUserEventResult("balances","BalanceSet", 14, testUser1.keyRingPair.address);
-    waitNewBlock();
-    waitNewBlock();
-
+    
     const infoUser1Before = await testUser1.getUserAccountInfo();
 
-    signTx(
+    await signAndWaitTx(
         api.tx.sudo.sudo(
             api.tx.balances.setBalance(testUser1.keyRingPair.address, Math.pow(10,11) -1, Math.pow(10,11) -1)
             ),
             testUser1.keyRingPair,
-            await getCurrentNonce(testUser1.keyRingPair.address)
-    )
-
-    const result = await eventPromise;
-    expect(result.state).toEqual(ExtrinsicResult.ExtrinsicFailed);
+            await (await getCurrentNonce(testUser1.keyRingPair.address)).toNumber()
+    ).then(
+        (result) => {
+        const eventResponse = getEventResultFromTxWait(result);
+        expect(eventResponse.state).toEqual(ExtrinsicResult.ExtrinsicFailed);
+    });
 
     const infoUser1After = await testUser1.getUserAccountInfo();
-    expect(infoUser1Before).not.toEqual(infoUser1After);
-    expect(infoUser1Before.free).toBeGreaterThan(infoUser1After.free);
+    expect(infoUser1Before).toEqual(infoUser1After);
 
 });
 
 test('xyk-pallet - SecurityTests - Only sudo can perform actions [tokens.create]', async () => {
 
     const api = getApi();
-    let eventPromise = getUserEventResult("tokens","Issued", 12, testUser2.keyRingPair.address);
 
-    signTx(
+    await signAndWaitTx(
 		api.tx.sudo.sudo(
             api.tx.tokens.create(testUser2.keyRingPair.address, new BN(10000000))
 		),
         testUser1.keyRingPair,
-        await getCurrentNonce(testUser1.keyRingPair.address)
-    );
-
-    const result = await eventPromise;
-    expect(result.state).toEqual(ExtrinsicResult.ExtrinsicFailed);
+        await (await getCurrentNonce(testUser1.keyRingPair.address)).toNumber()
+    ).then(
+        (result) => {
+        const eventResponse = getEventResultFromTxWait(result);
+        expect(eventResponse.state).toEqual(ExtrinsicResult.ExtrinsicFailed);
+    });
 
 });
 
 test('xyk-pallet - SecurityTests - Only sudo can perform actions [tokens.create to itself]', async () => {
 
     const api = getApi();
-    let eventPromise = getUserEventResult("tokens","Issued", 12, testUser1.keyRingPair.address);
 
-    signTx(
+    await signAndWaitTx(
 		api.tx.sudo.sudo(
             api.tx.tokens.create(testUser1.keyRingPair.address, new BN(10000000))
 		),
         testUser1.keyRingPair,
-        await getCurrentNonce(testUser1.keyRingPair.address)
-    );
-
-    const result = await eventPromise;
-    expect(result.state).toEqual(ExtrinsicResult.ExtrinsicFailed);
+        await (await getCurrentNonce(testUser1.keyRingPair.address)).toNumber()
+    ).then(
+        (result) => {
+        const eventResponse = getEventResultFromTxWait(result);
+        expect(eventResponse.state).toEqual(ExtrinsicResult.ExtrinsicFailed);
+    });
 
 });
 
@@ -144,44 +143,47 @@ test('xyk-pallet - SecurityTests - Only sudo can perform actions [tokens.create 
 test('xyk-pallet - SecurityTests - Only sudo can perform actions [tokens.mint]', async () => {
 
     const api = getApi();
-    const eventPromise = getUserEventResult("tokens", "Minted", 14, testUser2.keyRingPair.address);
-    signTx(
+
+    await signAndWaitTx(
         api.tx.sudo.sudo(
           api.tx.tokens.mint(new BN(0), testUser2.keyRingPair.address, new BN(100000)),
           ),
         testUser1.keyRingPair,
-        await getCurrentNonce(testUser1.keyRingPair.address)   
-    )
-
-    const result = await eventPromise;
-    expect(result.state).toEqual(ExtrinsicResult.ExtrinsicFailed);
+        await (await getCurrentNonce(testUser1.keyRingPair.address)).toNumber()   
+    ).then(
+        (result) => {
+        const eventResponse = getEventResultFromTxWait(result);
+        expect(eventResponse.state).toEqual(ExtrinsicResult.ExtrinsicFailed);
+    });
 
 });
 
 test('xyk-pallet - SecurityTests - Only sudo can perform actions [tokens.mint to itself]', async () => {
 
     const api = getApi();
-    const eventPromise = getUserEventResult("tokens", "Minted", 14, testUser1.keyRingPair.address);
-    signTx(
+
+    await signAndWaitTx(
         api.tx.sudo.sudo(
           api.tx.tokens.mint(new BN(0), testUser1.keyRingPair.address, new BN(100000)),
           ),
         testUser1.keyRingPair,
-        await getCurrentNonce(testUser1.keyRingPair.address)   
-    )
-
-    const result = await eventPromise;
-    expect(result.state).toEqual(ExtrinsicResult.ExtrinsicFailed);
+        await (await getCurrentNonce(testUser1.keyRingPair.address)).toNumber()
+    ).then(
+        (result) => {
+        const eventResponse = getEventResultFromTxWait(result);
+        expect(eventResponse.state).toEqual(ExtrinsicResult.ExtrinsicFailed);
+    });
 
 });
 
 afterEach(async () => {
-
+  
+    await testUser1.refreshAmounts(AssetWallet.AFTER);
     const infoUser1After = await testUser1.getUserAccountInfo();
-    expect(infoUser1Before).not.toEqual(infoUser1After);
-    expect(infoUser1Before.free).toBeGreaterThan(infoUser1After.free);
-    await waitNewBlock();
-    await waitNewBlock();
+    expect(infoUser1Before).toEqual(infoUser1After);
+    const assetValue = testUser1.getAsset(MGA_ASSET_ID);
+    expect(assetValue?.amountBefore.toNumber()).toBeGreaterThan(assetValue?.amountAfter.toNumber()!);
+
 })
 
 
