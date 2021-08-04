@@ -39,6 +39,9 @@ jobs:
         run: docker-compose -f devops/dockerfiles/docker-compose.yml up -d
       - name: Docker ps
         run: docker ps
+      - name: Sleep for 5 seconds
+        run: sleep 5s #we need to sleep to avoid block Number 0.
+        shell: bash
       - name: Run e2e tests
         run: yarn ${{ env.TEST_SCRIPT }}
       
