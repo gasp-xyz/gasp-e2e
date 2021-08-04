@@ -51,7 +51,7 @@ describe('xyk-pallet - treasury tests [Mangata]: on treasury we store', () => {
 		keyring.addPair(sudo.keyRingPair);
 
 		await waitNewBlock();
-		mgaTokenId  = await getAssetId('MNG');
+		mgaTokenId  = await getAssetId('MGA');
 		await sudo.mint(mgaTokenId, testUser1,new BN(defaultCurrecyValue));
 		testUser1.addAsset(mgaTokenId);
 	    secondCurrency = (await Assets.setupUserWithCurrencies(testUser1, [defaultCurrecyValue], sudo))[0];
@@ -75,7 +75,7 @@ describe('xyk-pallet - treasury tests [Mangata]: on treasury we store', () => {
 		await sellAsset(testUser1.keyRingPair, mgaTokenId, secondCurrency, sellAssetAmount, new BN(1))
 		.then(
 			(result) => {
-				const eventResponse = getEventResultFromTxWait(result, ["xyk", "AssetsSwapped", '14', testUser1.keyRingPair.address]);
+				const eventResponse = getEventResultFromTxWait(result, ["xyk", "AssetsSwapped", testUser1.keyRingPair.address]);
 				expect(eventResponse.state).toEqual(ExtrinsicResult.ExtrinsicSuccess);
 			}
 		);
