@@ -2,13 +2,13 @@
   "uid" : "b1a8273437954620fa374b796ffaacdd",
   "children" : [ {
     "name" : "As a User I can get test tokens from the faucet",
-    "uid" : "e9e6ad5f225740ab",
+    "uid" : "69b7373565a0c216",
     "parentUid" : "b1a8273437954620fa374b796ffaacdd",
     "status" : "passed",
     "time" : {
-      "start" : 1628080487740,
-      "stop" : 1628080555164,
-      "duration" : 67424
+      "start" : 1628080939949,
+      "stop" : 1628081034995,
+      "duration" : 95046
     },
     "flaky" : false,
     "newFailed" : false,
