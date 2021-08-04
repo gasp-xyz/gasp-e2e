@@ -1,12 +1,12 @@
 {
-  "uid" : "2ae7c10b51c41a36",
+  "uid" : "e9e6ad5f225740ab",
   "name" : "As a User I can get test tokens from the faucet",
   "fullName" : "UI tests - Get Tokens from Faucet.As a User I can get test tokens from the faucet",
   "historyId" : "eec88a440f5cd4c786967d8a5233a8c0",
   "time" : {
-    "start" : 1628073756048,
-    "stop" : 1628073828927,
-    "duration" : 72879
+    "start" : 1628080487740,
+    "stop" : 1628080555164,
+    "duration" : 67424
   },
   "description" : "",
   "descriptionHtml" : "",
@@ -41,6 +41,6 @@
     "categories" : [ ],
     "tags" : [ ]
   },
-  "source" : "2ae7c10b51c41a36.json",
+  "source" : "e9e6ad5f225740ab.json",
   "parameterValues" : [ ]
 }

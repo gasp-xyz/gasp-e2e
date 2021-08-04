@@ -4,13 +4,13 @@
     "name" : "UI tests - Get Tokens from Faucet",
     "children" : [ {
       "name" : "As a User I can get test tokens from the faucet",
-      "uid" : "2ae7c10b51c41a36",
+      "uid" : "e9e6ad5f225740ab",
       "parentUid" : "e0b92ad8f9649540b463b21b6e90d991",
       "status" : "passed",
       "time" : {
-        "start" : 1628073756048,
-        "stop" : 1628073828927,
-        "duration" : 72879
+        "start" : 1628080487740,
+        "stop" : 1628080555164,
+        "duration" : 67424
       },
       "flaky" : false,
       "newFailed" : false,
