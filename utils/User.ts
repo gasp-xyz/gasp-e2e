@@ -7,6 +7,7 @@ import { ExtrinsicResult, waitNewBlock } from './eventListeners';
 import { testLog } from './Logger';
 import { balanceTransfer, buyAsset, createPool, getAccountInfo, getAllAssets, getUserAssets, mintAsset, mintLiquidity, sellAsset, transferAll } from './tx';
 import { getEventResultFromTxWait } from './txHandler';
+import { MGA_ASSET_ID } from './utils';
 
 export enum AssetWallet
 {
@@ -166,8 +167,7 @@ export class User {
     }
 
     async setBalance(sudo : User, amountFree : number = Math.pow(10,11), amountReserved : number = Math.pow(10,11)) {
-        await sudo.mint(new BN(0),this,new BN(amountFree));
-        
+        await sudo.mint(MGA_ASSET_ID,this,new BN(amountFree));
     }
     async getUserAccountInfo(){
         const accountInfo = await getAccountInfo(this.keyRingPair.address);
