@@ -1,3 +1,0 @@
-Extensions are dowloaded with the following chroem extension,
-- Get CRX -
-In order to generate the .crx, go to chrome > extensions and download it using the extension.

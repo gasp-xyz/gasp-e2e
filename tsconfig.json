@@ -1,4 +1,0 @@
-{
-  "extends": "eslint-config-mangata/tsconfig.json",
-  "include": ["index.ts", "test/**/*", "utils/*"]
-}
