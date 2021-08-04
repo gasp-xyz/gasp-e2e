@@ -15,10 +15,9 @@ on:
         publishDockerImage:
           description: 'Generate new Docker image'
           required: false
-          default: 'true'
+          default: 'false'
       # For manually trigger
  
-
 jobs:
   build:
     name: Build docker image

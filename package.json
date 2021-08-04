@@ -33,7 +33,7 @@
     "test-parallel": "rm nonce.db ; rm sudo.lock; jest test/parallel/* --verbose --ci",
     "test-playground-pararell": "rm nonce.db ; rm sudo.lock; jest test/exploratory/parallelTesting/transfer/* --verbose",
     "test-sequential": "rm nonce.db ; rm sudo.lock; jest test/sequential/* --verbose --runInBand",
-    "test-sequential-e2e": "rm nonce.db ; rm sudo.lock; jest test/sequential/xyk-pallet.test.ts --verbose --runInBand --ci ",
+    "test-sequential-e2e": "rm nonce.db ; rm sudo.lock; jest test/sequential/* --verbose --runInBand --ci ",
     "test-ci": "rm nonce.db ; rm sudo.lock; jest test/ci/* --verbose --runInBand --ci ",
     "test-ui": "rm nonce.db ; rm sudo.lock; jest test/ui/* --verbose --runInBand --ci ",
     "tsc-lint": "tsc -noemit -p tsconfig.json",
