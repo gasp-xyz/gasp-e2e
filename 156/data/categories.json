@@ -1,0 +1,172 @@
+{
+  "uid" : "4b4757e66a1912dae1a509f688f20b0f",
+  "children" : [ {
+    "name" : "Product defects",
+    "children" : [ {
+      "name" : "Error: Failed: \"W[1] timeout in - signAndWaitTx - \\\" + 5HQ9Mm9L1HG53htEGDMsnhkkL7hEfF9vLstEQPtMLX5Gupqx + \\\" - \\\" + 0 + \\\" - \\\" + {\\\"isSigned\\\":true,\\\"method\\\":{\\\"args\\\":[{\\\"args\\\":[\\\"5GrwvaEF5zXb26Fz9rcQpDWS57CtERHpNehXCPcNoHGKutQY\\\",\\\"220.0000 nUnit\\\"],\\\"method\\\":\\\"create\\\",\\\"section\\\":\\\"tokens\\\"}],\\\"method\\\":\\\"sudo\\\",\\\"section\\\":\\\"sudo\\\"},\\\"era\\\":{\\\"MortalEra\\\":{\\\"period\\\":\\\"64\\\",\\\"phase\\\":\\\"0\\\"}},\\\"nonce\\\":\\\"0\\\",\\\"signature\\\":\\\"0x60968afcb51aec0063c74f8cc39a3da09a1b265e71e35566e8b44b8ee61fe352243863a89f99da68bd241ded03507a171fdc6e24ead55668eb5032f574fcc881\\\",\\\"signer\\\":\\\"5HQ9Mm9L1HG53htEGDMsnhkkL7hEfF9vLstEQPtMLX5Gupqx\\\",\\\"tip\\\":\\\"0\\\"}\"",
+      "children" : [ {
+        "name" : "xyk-pallet: Happy case scenario",
+        "uid" : "35dae03acae6b0ce",
+        "parentUid" : "69ef8905d4993df056bcae3c9ab4ebc8",
+        "status" : "failed",
+        "time" : {
+          "start" : 1628087398750,
+          "stop" : 1628087441770,
+          "duration" : 43020
+        },
+        "flaky" : false,
+        "newFailed" : false,
+        "parameters" : [ ]
+      } ],
+      "uid" : "69ef8905d4993df056bcae3c9ab4ebc8"
+    }, {
+      "name" : "Error: Failed: \"W[1] timeout in - signAndWaitTx - \\\" + 5HQ9Mm9L1HG53htEGDMsnhkkL7hEfF9vLstEQPtMLX5Gupqx + \\\" - \\\" + 1 + \\\" - \\\" + {\\\"isSigned\\\":true,\\\"method\\\":{\\\"args\\\":[{\\\"args\\\":[\\\"5GrwvaEF5zXb26Fz9rcQpDWS57CtERHpNehXCPcNoHGKutQY\\\",\\\"200.0000 nUnit\\\"],\\\"method\\\":\\\"create\\\",\\\"section\\\":\\\"tokens\\\"}],\\\"method\\\":\\\"sudo\\\",\\\"section\\\":\\\"sudo\\\"},\\\"era\\\":{\\\"MortalEra\\\":{\\\"period\\\":\\\"64\\\",\\\"phase\\\":\\\"0\\\"}},\\\"nonce\\\":\\\"1\\\",\\\"signature\\\":\\\"0x7236f4dea6d7324c38294cfad5a458130fcac4a9fcf16b5e7c3d4fc8e732911acb810f8308d859b95225fc6c1f5e152e349915e62a6fb6b8b3de2c82605d9985\\\",\\\"signer\\\":\\\"5HQ9Mm9L1HG53htEGDMsnhkkL7hEfF9vLstEQPtMLX5Gupqx\\\",\\\"tip\\\":\\\"0\\\"}\"",
+      "children" : [ {
+        "name" : "xyk-pallet: Liquidity sufficiency scenario",
+        "uid" : "483648447ac34274",
+        "parentUid" : "d7a91f760f88fac44703e28e92569fc9",
+        "status" : "failed",
+        "time" : {
+          "start" : 1628087441770,
+          "stop" : 1628087483841,
+          "duration" : 42071
+        },
+        "flaky" : false,
+        "newFailed" : false,
+        "parameters" : [ ]
+      } ],
+      "uid" : "d7a91f760f88fac44703e28e92569fc9"
+    }, {
+      "name" : "Error: 1014: Priority is too low: (4201677389240 vs 4096660590112): The transaction has too low priority to replace another transaction already in the pool.",
+      "children" : [ {
+        "name" : "assets won when assets are sold [Selling Mangata] - 5",
+        "uid" : "ba33c09fe0459a88",
+        "parentUid" : "a2978a4e51a03cddc575db8cdd45eddb",
+        "status" : "failed",
+        "time" : {
+          "start" : 1628087486020,
+          "stop" : 1628087486124,
+          "duration" : 104
+        },
+        "flaky" : false,
+        "newFailed" : false,
+        "parameters" : [ ]
+      }, {
+        "name" : "assets won when assets are bought [Buying Mangata]",
+        "uid" : "a3883b57baa982c6",
+        "parentUid" : "a2978a4e51a03cddc575db8cdd45eddb",
+        "status" : "failed",
+        "time" : {
+          "start" : 1628087486124,
+          "stop" : 1628087486226,
+          "duration" : 102
+        },
+        "flaky" : false,
+        "newFailed" : false,
+        "parameters" : [ ]
+      }, {
+        "name" : "assets won when assets are sold [Selling other in MGA pool] - 6",
+        "uid" : "ba140b8d6100e11e",
+        "parentUid" : "a2978a4e51a03cddc575db8cdd45eddb",
+        "status" : "failed",
+        "time" : {
+          "start" : 1628087486226,
+          "stop" : 1628087486331,
+          "duration" : 105
+        },
+        "flaky" : false,
+        "newFailed" : false,
+        "parameters" : [ ]
+      }, {
+        "name" : "assets won when assets are bought [Buying other in MGA pool]",
+        "uid" : "4232eb9ec5bb7e5a",
+        "parentUid" : "a2978a4e51a03cddc575db8cdd45eddb",
+        "status" : "failed",
+        "time" : {
+          "start" : 1628087486331,
+          "stop" : 1628087486433,
+          "duration" : 102
+        },
+        "flaky" : false,
+        "newFailed" : false,
+        "parameters" : [ ]
+      }, {
+        "name" : "assets won when assets are bought [Buying X connected to MGA pool]",
+        "uid" : "38804b74bf2b16de",
+        "parentUid" : "a2978a4e51a03cddc575db8cdd45eddb",
+        "status" : "failed",
+        "time" : {
+          "start" : 1628087486534,
+          "stop" : 1628087486593,
+          "duration" : 59
+        },
+        "flaky" : false,
+        "newFailed" : false,
+        "parameters" : [ ]
+      }, {
+        "name" : "assets won when assets are sold [Selling Y - X connected toMGA pool] - 6",
+        "uid" : "31c76b960585179b",
+        "parentUid" : "a2978a4e51a03cddc575db8cdd45eddb",
+        "status" : "failed",
+        "time" : {
+          "start" : 1628087486593,
+          "stop" : 1628087486721,
+          "duration" : 128
+        },
+        "flaky" : false,
+        "newFailed" : false,
+        "parameters" : [ ]
+      }, {
+        "name" : "assets won when assets are bought [Buying Y - X connected toMGA pool] - 6",
+        "uid" : "62e9af7a1b119d0a",
+        "parentUid" : "a2978a4e51a03cddc575db8cdd45eddb",
+        "status" : "failed",
+        "time" : {
+          "start" : 1628087486721,
+          "stop" : 1628087486812,
+          "duration" : 91
+        },
+        "flaky" : false,
+        "newFailed" : false,
+        "parameters" : [ ]
+      } ],
+      "uid" : "a2978a4e51a03cddc575db8cdd45eddb"
+    }, {
+      "name" : "Error: 1014: Priority is too low: (10000 vs 10000): The transaction has too low priority to replace another transaction already in the pool.",
+      "children" : [ {
+        "name" : "assets won when assets are sold [Selling X connected to MGA pool] - 10",
+        "uid" : "37436f1a84f3e8c7",
+        "parentUid" : "10852432c47ceb4232333098d6e781b8",
+        "status" : "failed",
+        "time" : {
+          "start" : 1628087486439,
+          "stop" : 1628087486534,
+          "duration" : 95
+        },
+        "flaky" : false,
+        "newFailed" : false,
+        "parameters" : [ ]
+      } ],
+      "uid" : "10852432c47ceb4232333098d6e781b8"
+    }, {
+      "name" : "Error: Failed: \"W[1] timeout in - signAndWaitTx - \\\" + 5HQ9Mm9L1HG53htEGDMsnhkkL7hEfF9vLstEQPtMLX5Gupqx + \\\" - \\\" + 1 + \\\" - \\\" + {\\\"isSigned\\\":true,\\\"method\\\":{\\\"args\\\":[{\\\"args\\\":[\\\"0\\\",\\\"5H91Ed5uFmsEnT3Eqjqqnm3L9qSWG8JNffN5X9vc4C6NBSKi\\\",\\\"10.0000 nUnit\\\"],\\\"method\\\":\\\"mint\\\",\\\"section\\\":\\\"tokens\\\"}],\\\"method\\\":\\\"sudo\\\",\\\"section\\\":\\\"sudo\\\"},\\\"era\\\":{\\\"MortalEra\\\":{\\\"period\\\":\\\"64\\\",\\\"phase\\\":\\\"0\\\"}},\\\"nonce\\\":\\\"1\\\",\\\"signature\\\":\\\"0xb2ebe4e003169324661cf6f9be09e9c8f7de8f63d74b52c6da683937d5f2fd3ccde055783d02da900ff4d659e801a31a22ffad599d9e5ae8635280de81faee8f\\\",\\\"signer\\\":\\\"5HQ9Mm9L1HG53htEGDMsnhkkL7hEfF9vLstEQPtMLX5Gupqx\\\",\\\"tip\\\":\\\"0\\\"}\"",
+      "children" : [ {
+        "name" : "Bond operation locks some amount",
+        "uid" : "745af45c7db7f8cf",
+        "parentUid" : "8208d1ab5ed066d837583a822d042fef",
+        "status" : "failed",
+        "time" : {
+          "start" : 1628087530228,
+          "stop" : 1628087530269,
+          "duration" : 41
+        },
+        "flaky" : false,
+        "newFailed" : false,
+        "parameters" : [ ]
+      } ],
+      "uid" : "8208d1ab5ed066d837583a822d042fef"
+    } ],
+    "uid" : "8fb3a91ba5aaf9de24cc8a92edc82b5d"
+  } ],
+  "name" : "categories"
+}
