@@ -10,6 +10,8 @@ import { getEnvironmentRequiredVars, MGA_DEFAULT_LIQ_TOKEN } from './utils';
 import { Keyring } from '@polkadot/api';
 import { User } from './User';
 import { testLog } from './Logger';
+import { KeyringPair } from '@polkadot/keyring/types';
+
 
 export const signTx = async (
   tx: SubmittableExtrinsic<'promise'>,
@@ -262,7 +264,7 @@ export const transferAsset = async (account: any, asset_id:BN, targetAddress: st
   return txResult;
 }
 
-export const transferAll = async (account: any, asset_id:BN, target: any) => {
+export const transferAll = async (account: KeyringPair, asset_id:BN, target: any) => {
   const api = getApi();
 
   const txResult = await signAndWaitTx(
@@ -288,7 +290,7 @@ export const mintAsset = async (account: any, asset_id:BN, target: any, amount: 
 }
 
 
-export const createPool = async (account: any, firstAssetId: BN,firstAssetAmount: BN,secondAssetId: BN,secondAssetAmount: BN) => {
+export const createPool = async (account: KeyringPair, firstAssetId: BN,firstAssetAmount: BN,secondAssetId: BN,secondAssetAmount: BN) => {
   const api = getApi();
   const nonce = await getCurrentNonce(account.address);
   testLog.getLog().info(`Creating pool:${firstAssetId},${firstAssetAmount},${secondAssetId},${secondAssetAmount}`);
@@ -322,7 +324,7 @@ export const buyAsset = async (account: any, soldAssetId: BN, boughtAssetId: BN,
   return txResult
 }
 
-export const mintLiquidity = async (account: any, firstAssetId: BN, secondAssetId: BN, firstAssetAmount: BN, expectedSecondAssetAmount: BN = new BN(Number.MAX_SAFE_INTEGER)) => {
+export const mintLiquidity = async (account: KeyringPair, firstAssetId: BN, secondAssetId: BN, firstAssetAmount: BN, expectedSecondAssetAmount: BN = new BN(Number.MAX_SAFE_INTEGER)) => {
   const api = getApi();
   const nonce = await (await getCurrentNonce(account.address)).toNumber();
   const txResult = await signAndWaitTx(
@@ -333,7 +335,7 @@ export const mintLiquidity = async (account: any, firstAssetId: BN, secondAssetI
   return txResult;
 }
 
-export const burnLiquidity = async (account: any, firstAssetId: BN, secondAssetId: BN, liquidityAssetAmount: BN) => {
+export const burnLiquidity = async (account: KeyringPair, firstAssetId: BN, secondAssetId: BN, liquidityAssetAmount: BN) => {
   const api = getApi();
   const nonce = await getCurrentNonce(account.address);
   const txResult = await signAndWaitTx(
