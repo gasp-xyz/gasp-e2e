@@ -45,8 +45,8 @@ beforeEach( async () => {
 	
 	//add two curerncies and balance to testUser:
 	[firstCurrency, secondCurrency] = await Assets.setupUserWithCurrencies(testUser1, [defaultCurrecyValue,defaultCurrecyValue.add(new BN(1))], sudo);
-	//add only RESERVED balance
-	await testUser1.addMGATokens(sudo);
+	//add zero MGA tokens.
+	await testUser1.addMGATokens(sudo,0);
 	// add users to pair.
 	keyring.addPair(testUser1.keyRingPair);
 	keyring.addPair(sudo.keyRingPair);
