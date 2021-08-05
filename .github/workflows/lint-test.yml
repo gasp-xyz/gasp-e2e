@@ -60,6 +60,14 @@ jobs:
           name: TestReport
           path: reports/html-report/report.html
 
+      - name: Get Allure history
+        uses: actions/checkout@v2
+        if: always()
+        continue-on-error: true
+        with:
+          ref: gh-pages
+          path: gh-pages
+
       - name: Generate Allure Report [History]
         uses: simple-elf/allure-report-action@master
         if: always()
