@@ -88,7 +88,7 @@ describe('xyk-pallet - Buy assets tests: BuyAssets Errors:', () => {
 	test('Buy more assets than exists in the pool', async () => {
 		await waitNewBlock();
 		[firstCurrency, secondCurrency] = await Assets.setupUserWithCurrencies(testUser1, [defaultCurrecyValue,defaultCurrecyValue.add(new BN(1))], sudo);
-		await testUser1.setBalance(sudo);
+		await testUser1.addMGATokens(sudo);
 		await testUser1.refreshAmounts(AssetWallet.BEFORE);
 		const poolAmountSecondCurrency = secondAssetAmount.div(new BN(2));
 		await signSendAndWaitToFinishTx( 
@@ -114,7 +114,7 @@ describe('xyk-pallet - Buy assets tests: BuyAssets Errors:', () => {
 	test('Buy all assets from the the pool', async () => {
 		await waitNewBlock();
 		[firstCurrency, secondCurrency] = await Assets.setupUserWithCurrencies(testUser1, [defaultCurrecyValue,defaultCurrecyValue.add(new BN(1))], sudo);
-		await testUser1.setBalance(sudo);
+		await testUser1.addMGATokens(sudo);
 		await testUser1.refreshAmounts(AssetWallet.BEFORE);
 		const poolAmountSecondCurrency = secondAssetAmount.div(new BN(2));
 		await signSendAndWaitToFinishTx( 
@@ -140,7 +140,7 @@ describe('xyk-pallet - Buy assets tests: BuyAssets Errors:', () => {
 	test('Buy assets with a high expectation: maxInput -1', async () => {
 		await waitNewBlock();
 		[firstCurrency, secondCurrency] = await Assets.setupUserWithCurrencies(testUser1, [defaultCurrecyValue,defaultCurrecyValue.add(new BN(1))], sudo);
-		await testUser1.setBalance(sudo);
+		await testUser1.addMGATokens(sudo);
 		await testUser1.refreshAmounts(AssetWallet.BEFORE);
 		const poolAmountSecondCurrency = secondAssetAmount.div(new BN(2));
 		await signSendAndWaitToFinishTx( 
@@ -207,7 +207,7 @@ describe('xyk-pallet - Buy assets tests: Buying assets you can', () => {
 	test('Leave only one asset in the pool', async () => {
 		await waitNewBlock();
 		[firstCurrency, secondCurrency] = await Assets.setupUserWithCurrencies(testUser1, [defaultCurrecyValue,defaultCurrecyValue.add(new BN(1))], sudo);
-		await testUser1.setBalance(sudo);
+		await testUser1.addMGATokens(sudo);
 		await testUser1.refreshAmounts(AssetWallet.BEFORE);
 		const poolAmountSecondCurrency = secondAssetAmount.div(new BN(2));
 		await signSendAndWaitToFinishTx( 
@@ -261,7 +261,7 @@ describe('xyk-pallet - Buy assets tests: Buying assets you can', () => {
 		const [thirdCurrency] = await Assets.setupUserWithCurrencies(testUser2, [defaultCurrecyValue], sudo);
 		
 		await sudo.mint(thirdCurrency, testUser1, thirdAssetAmount);
-		await testUser1.setBalance(sudo);
+		await testUser1.addMGATokens(sudo);
 		await signSendAndWaitToFinishTx( 
 			api?.tx.xyk.createPool(firstCurrency, firstAssetAmount, secondCurrency, secondAssetAmount.div(new BN(2))), 
 			testUser1.keyRingPair 

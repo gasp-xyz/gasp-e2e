@@ -51,7 +51,7 @@ describe('xyk-pallet - Mint liquidity tests: MintLiquidity Errors:', () => {
 		// add users to pair.
 		keyring.addPair(testUser1.keyRingPair);
 		keyring.addPair(sudo.keyRingPair);
-		await testUser1.setBalance(sudo);
+		await testUser1.addMGATokens(sudo);
 
 	});
 
@@ -59,7 +59,7 @@ describe('xyk-pallet - Mint liquidity tests: MintLiquidity Errors:', () => {
 		await waitNewBlock();
 		//Adding 1000 and 1 more than default. So the user when the pool is created has 1000,1.
 		[firstCurrency, secondCurrency] = await Assets.setupUserWithCurrencies(testUser1, [defaultCurrecyValue.add(new BN(1000)) ,defaultCurrecyValue.add(new BN(1))], sudo);
-		await testUser1.setBalance(sudo);
+		await testUser1.addMGATokens(sudo);
 		//lets create a pool with equal balances
 		await signSendAndWaitToFinishTx( 
 			api?.tx.xyk.createPool(firstCurrency, defaultCurrecyValue, secondCurrency,defaultCurrecyValue), 
@@ -85,7 +85,7 @@ describe('xyk-pallet - Mint liquidity tests: MintLiquidity Errors:', () => {
 		await waitNewBlock();
 		//Adding 1000 and 1 more than default. So the user when the pool is created has 1000,1.
 		[firstCurrency, secondCurrency] = await Assets.setupUserWithCurrencies(testUser1, [defaultCurrecyValue.add(new BN(1)),defaultCurrecyValue.add(new BN(1000))], sudo);
-		await testUser1.setBalance(sudo);
+		await testUser1.addMGATokens(sudo);
 		//lets create a pool with equal balances
 		await signSendAndWaitToFinishTx( 
 			api?.tx.xyk.createPool(firstCurrency, defaultCurrecyValue, secondCurrency,defaultCurrecyValue), 
@@ -150,7 +150,7 @@ describe('xyk-pallet - Mint liquidity tests: MintLiquidity Errors:', () => {
 	test('Mint liquidity more assets than I own', async () => {
 		await waitNewBlock();
 		[firstCurrency, secondCurrency] = await Assets.setupUserWithCurrencies(testUser1, [defaultCurrecyValue,defaultCurrecyValue], sudo);
-		await testUser1.setBalance(sudo);
+		await testUser1.addMGATokens(sudo);
 		await testUser1.refreshAmounts(AssetWallet.BEFORE);
 		const poolAmountSecondCurrency = secondAssetAmount.div(new BN(2));
 		await signSendAndWaitToFinishTx( 
@@ -195,7 +195,7 @@ describe('xyk-pallet - Mint liquidity tests: MintLiquidity Errors:', () => {
 	test('Min liquidity, SecondAssetAmount parameter expectation not met', async () => {
 		await waitNewBlock();
 		[firstCurrency, secondCurrency] = await Assets.setupUserWithCurrencies(testUser1, [defaultCurrecyValue,defaultCurrecyValue], sudo);
-		await testUser1.setBalance(sudo);
+		await testUser1.addMGATokens(sudo);
 		await testUser1.refreshAmounts(AssetWallet.BEFORE);
 		const poolAmountSecondCurrency = secondAssetAmount.div(new BN(2));
 		await signSendAndWaitToFinishTx( 

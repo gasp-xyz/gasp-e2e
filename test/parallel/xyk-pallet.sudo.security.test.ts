@@ -44,7 +44,7 @@ beforeAll( async () => {
 	keyring.addPair(testUser2.keyRingPair);
 	keyring.addPair(sudo.keyRingPair);
 
-    await testUser1.setBalance(sudo);
+    await testUser1.addMGATokens(sudo);
     testUser1.addAsset(MGA_ASSET_ID);
     await testUser1.refreshAmounts(AssetWallet.BEFORE);
 
@@ -54,54 +54,6 @@ beforeEach( async () => {
     infoUser1Before = await testUser1.getUserAccountInfo();
     await testUser1.refreshAmounts(AssetWallet.BEFORE);
 })
-
-test('xyk-pallet - SecurityTests - Only sudo can perform actions [balancecs.setBalance to other user]', async () => {
-
-        const api = getApi();
-
-        await signAndWaitTx(
-            api.tx.sudo.sudo(
-                api.tx.balances.setBalance(testUser2.keyRingPair.address, Math.pow(10,11) -1, Math.pow(10,11) -1)
-                ),
-                testUser1.keyRingPair,
-                await (await getCurrentNonce(testUser1.keyRingPair.address)).toNumber()
-
-        ).then(
-            (result) => {
-            const eventResponse = getEventResultFromTxWait(result);
-            expect(eventResponse.state).toEqual(ExtrinsicResult.ExtrinsicFailed);
-        });
-		const infoUser2 = await testUser2.getUserAccountInfo();
-
-        expect(infoUser2.free).toBe(0);
-        expect(infoUser2.feeFrozen).toBe(0);
-        expect(infoUser2.miscFrozen).toBe(0);
-        expect(infoUser2.reserved).toBe(0);
-         
-});
-
-test('xyk-pallet - SecurityTests - Only sudo can perform actions [balances.setBalance to itself]', async () => {
-
-    const api = getApi();
-    
-    const infoUser1Before = await testUser1.getUserAccountInfo();
-
-    await signAndWaitTx(
-        api.tx.sudo.sudo(
-            api.tx.balances.setBalance(testUser1.keyRingPair.address, Math.pow(10,11) -1, Math.pow(10,11) -1)
-            ),
-            testUser1.keyRingPair,
-            await (await getCurrentNonce(testUser1.keyRingPair.address)).toNumber()
-    ).then(
-        (result) => {
-        const eventResponse = getEventResultFromTxWait(result);
-        expect(eventResponse.state).toEqual(ExtrinsicResult.ExtrinsicFailed);
-    });
-
-    const infoUser1After = await testUser1.getUserAccountInfo();
-    expect(infoUser1Before).toEqual(infoUser1After);
-
-});
 
 test('xyk-pallet - SecurityTests - Only sudo can perform actions [tokens.create]', async () => {
 

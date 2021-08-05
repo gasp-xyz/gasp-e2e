@@ -55,7 +55,7 @@ describe('xyk-pallet - treasury tests [Mangata]: on treasury we store', () => {
 		await sudo.mint(mgaTokenId, testUser1,new BN(defaultCurrecyValue));
 		testUser1.addAsset(mgaTokenId);
 	    secondCurrency = (await Assets.setupUserWithCurrencies(testUser1, [defaultCurrecyValue], sudo))[0];
-		await testUser1.setBalance(sudo);
+		await testUser1.addMGATokens(sudo);
 		await signSendAndWaitToFinishTx( 
 			api?.tx.xyk.createPool(mgaTokenId, first_asset_amount, secondCurrency, first_asset_amount.div(new BN(2))), 
 			testUser1.keyRingPair 
@@ -230,7 +230,7 @@ describe('xyk-pallet - treasury tests [Connected - Mangata]: on treasury we stor
 		testUser1.addAsset(mgaTokenId);
 	    connectedToMGA = (await Assets.setupUserWithCurrencies(testUser1, [defaultCurrecyValue], sudo))[0];
 	    indirectlyConnected = (await Assets.setupUserWithCurrencies(testUser1, [defaultCurrecyValue], sudo))[0];
-		await testUser1.setBalance(sudo);
+		await testUser1.addMGATokens(sudo);
 
 		await signSendAndWaitToFinishTx( 
 			api?.tx.xyk.createPool(mgaTokenId, first_asset_amount, connectedToMGA, first_asset_amount.div(new BN(2))), 

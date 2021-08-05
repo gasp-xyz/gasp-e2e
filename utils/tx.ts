@@ -5,8 +5,8 @@ import BN from 'bn.js'
 import { env } from 'process'
 import { SudoDB } from './SudoDB';
 import {AccountData} from '@polkadot/types/interfaces/balances'
-import { signAndWaitTx } from './txHandler';
-import { getEnvironmentRequiredVars } from './utils';
+import { signAndWaitTx, signSendAndWaitToFinishTx } from './txHandler';
+import { getEnvironmentRequiredVars, MGA_DEFAULT_LIQ_TOKEN } from './utils';
 import { Keyring } from '@polkadot/api';
 import { User } from './User';
 import { testLog } from './Logger';
@@ -234,21 +234,6 @@ export const balanceTransfer = async (account: any, target:any, amount: number) 
   return txResult;
 }
 
-export const setBalance = async (sudoAccount: any, target:any, amountFree: number, amountReserved: number) => {
-
-  const api = getApi();
-  const nonce = await SudoDB.getInstance().getSudoNonce(sudoAccount.address);
-  testLog.getLog().info(`W[${env.JEST_WORKER_ID}] - sudoNonce: ${nonce} `);
-  const txResult = await signAndWaitTx(
-		api.tx.sudo.sudo(
-      api.tx.balances.setBalance(target, amountFree, amountReserved)
-      ),
-    sudoAccount,
-    nonce
-  );
-  return txResult;
-}
-
 export const sudoIssueAsset = async (account: any, total_balance: BN, target: any) => {
 
   const api = getApi();
@@ -411,4 +396,14 @@ export async function getAllAssets(accountAddress:string){
   ).map( tuple => new BN((tuple[0].toHuman() as any[])[1]))
 
   return userOnes;
+}
+
+export async function lockAsset(user : User, assetId : BN, amount:BN){
+  const api = getApi();
+  
+  await signSendAndWaitToFinishTx( 
+    //@ts-ignore: Mangata bond operation has 4 params, somehow is inheriting the bond operation from polkadot :S
+    api?.tx.staking.bond(user.keyRingPair.address, amount,'Staked', MGA_DEFAULT_LIQ_TOKEN),
+    user.keyRingPair
+  );
 }

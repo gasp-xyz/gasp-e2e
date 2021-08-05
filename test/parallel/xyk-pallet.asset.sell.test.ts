@@ -49,7 +49,7 @@ beforeEach( async () => {
 	
 	//add two curerncies and balance to testUser:
 	[firstCurrency, secondCurrency] = await Assets.setupUserWithCurrencies(testUser1, [defaultCurrecyValue,defaultCurrecyValue.add(new BN(1))] , sudo );
-	await testUser1.setBalance(sudo);
+	await testUser1.addMGATokens(sudo);
 	await testUser1.createPoolToAsset(new BN(60000), new BN(60000), firstCurrency, secondCurrency);
 	
     // add users to pair.

@@ -52,8 +52,8 @@ describe('xyk-pallet - Burn liquidity tests: when burning liquidity you can', ()
 		[firstCurrency,secondCurrency] = await Assets.setupUserWithCurrencies(testUser1, [new BN(20000000), new BN(20000000)], sudo);
 		await sudo.mint(firstCurrency,testUser2,new BN(20000000));
 		await sudo.mint(secondCurrency,testUser2,new BN(20000000));
-		await testUser1.setBalance(sudo);
-		await testUser2.setBalance(sudo);
+		await testUser1.addMGATokens(sudo);
+		await testUser2.addMGATokens(sudo);
 
 
 	});
