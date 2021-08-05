@@ -1,13 +1,11 @@
 import {getApi, initApi} from "../../utils/api";
-import { burnLiquidity, createPool, getBalanceOfPool, getCurrentNonce, getLiquidityAssetId, mintLiquidity, signTx, transferAll, transferAsset} from '../../utils/tx'
+import { burnLiquidity, createPool, mintLiquidity, transferAll, transferAsset} from '../../utils/tx'
 import {waitNewBlock} from '../../utils/eventListeners'
 import BN from 'bn.js'
 import { Keyring } from '@polkadot/api'
 import {AssetWallet, User} from "../../utils/User";
-import { validateAssetsWithValues } from "../../utils/validators";
 import { Assets } from "../../utils/Assets";
 import { getEnvironmentRequiredVars, MGA_ASSET_ID } from "../../utils/utils";
-import { signAndWaitTx } from "../../utils/txHandler";
 
 
 jest.spyOn(console, 'log').mockImplementation(jest.fn());
