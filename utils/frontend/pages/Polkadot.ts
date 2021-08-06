@@ -18,6 +18,7 @@ const XPATH_SETTINGS = "//div[@class='settings']";
 const XPATH_EXPORT = "//a[text()='Export Account']";
 const XPATH_EXPORT_CONFIRM = "//*[text()='I want to export this account']";
 const XPATH_DATA_ADDRESS = "//*[@data-field = 'address']";
+const XPATH_TEXT_AREA = "//textarea";
 
 const {uiUserPassword:userPassword, mnemonicPolkadot} = getEnvironmentRequiredVars();
 
@@ -59,14 +60,15 @@ export class Polkadot {
 
     }
 
-    async createAccount(): Promise<string>{
+    async createAccount(): Promise<[string,string]>{
         await this.driver.get(`${this.WEB_UI_ACCESS_URL}#/account/create`);
         await clickElement(this.driver,XPATH_CHECK_ISAVED);
+        const mnemonic = await (await this.driver.findElement(By.xpath(XPATH_TEXT_AREA))).getText();
         await clickElement(this.driver, XPATH_NEXT_STEP);
         await this.fillUserPass();
         const userAddress = await this.enable();
         this.ACCOUNT_ADDRESS = userAddress;
-        return userAddress;
+        return [userAddress,mnemonic];
     }
     
     async exportAccount(){

@@ -42,6 +42,11 @@ export class User {
             testLog.getLog().info(`name: ${this.name}, address: ${this.keyRingPair.address}`);
     }
 
+    addFromMnemonic(keyring : Keyring, mnemonic: string){
+        this.keyRingPair = keyring.addFromMnemonic(mnemonic);
+        this.name = 'mnemonic_created_account';
+    }
+
     addFromAddress(keyring : Keyring, address : string){
         this.keyRingPair = keyring.addFromAddress(address);
         this.name = 'addres_created_account';
