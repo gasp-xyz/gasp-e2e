@@ -6,25 +6,22 @@ import {waitNewBlock, ExtrinsicResult, getEventResult} from '../../utils/eventLi
 import BN from 'bn.js'
 import { Keyring } from '@polkadot/api'
 import {User} from "../../utils/User";
-import { getEnvironmentRequiredVars } from "../../utils/utils";
+import { getEnvironmentRequiredVars, MGA_ASSET_ID, MGA_DEFAULT_LIQ_TOKEN } from "../../utils/utils";
 import { signSendAndWaitToFinishTx } from "../../utils/txHandler";
-import { testLog } from "../../utils/Logger";
 
 jest.spyOn(console, 'log').mockImplementation(jest.fn());
 jest.setTimeout(1500000);
 process.env.NODE_ENV = 'test';
 const {sudo:sudoUserName} = getEnvironmentRequiredVars();
 
-const ASSET_ID_MGA_ETH = new BN(3);
-const ASSET_ID_MGA = new BN(0);
+const ASSET_ID_MGA_ETH = MGA_DEFAULT_LIQ_TOKEN;
+const ASSET_ID_MGA = MGA_ASSET_ID;
 describe('xyk-pallet - Sell Asset: validate Errors:', () => {
 	
 	var testUser1 : User;
 	var sudo : User;
 
 	var keyring : Keyring;
-	var firstCurrency :BN;
-	var secondCurrency :BN;
 
 	beforeAll( async () => {
 		try {
@@ -43,12 +40,11 @@ describe('xyk-pallet - Sell Asset: validate Errors:', () => {
 
 		await sudo.mint(ASSET_ID_MGA,testUser1,new BN(10000));
 		await sudo.mint(ASSET_ID_MGA_ETH,testUser1,new BN(10000));
-		await testUser1.setBalance(sudo);
+		await testUser1.addMGATokens(sudo);
 
 	});
 	test('Bond operation locks some amount', async () => {
 		await waitNewBlock();
-		testLog.getLog().debug("testUser1: creating pool already created " + firstCurrency + " - " + secondCurrency);
 		var eventPromise = getEventResult("staking","Bonded", 14);
 		//@ts-ignore: Mangata bond operation has 4 params, somehow is inheriting the bond operation from polkadot :S
 		await signSendAndWaitToFinishTx( api?.tx.staking.bond(testUser1.keyRingPair.address, new BN(1000),'Staked', new BN(3)), testUser1.keyRingPair);

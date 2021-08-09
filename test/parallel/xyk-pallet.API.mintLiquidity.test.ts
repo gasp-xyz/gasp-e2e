@@ -58,7 +58,7 @@ describe('xyk-pallet - Mint liquidity tests: with minting you can', () => {
 		await waitNewBlock();
 		// The second currecy value is : defaultCurrecyValue, one to create the pool later, and the other one because of the rounding issue.
 		[firstCurrency, secondCurrency] = await Assets.setupUserWithCurrencies(testUser1, [defaultCurrecyValue.add(new BN(1)) ,defaultCurrecyValue.add(new BN(1)).add(new BN(1))], sudo);
-		await testUser1.setBalance(sudo);
+		await testUser1.addMGATokens(sudo);
 		const amounttoThePool = new BN(1);
 		await signSendAndWaitToFinishTx( 
 			api?.tx.xyk.createPool(firstCurrency, amounttoThePool, secondCurrency,amounttoThePool), 
@@ -93,7 +93,7 @@ describe('xyk-pallet - Mint liquidity tests: with minting you can', () => {
 		await waitNewBlock();
 		// The second currecy value is : defaultCurrecyValue, one to create the pool later, and the other one because of the rounding issue.
 		[firstCurrency, secondCurrency] = await Assets.setupUserWithCurrencies(testUser1, [defaultCurrecyValue,defaultCurrecyValue], sudo);
-		await testUser1.setBalance(sudo);
+		await testUser1.addMGATokens(sudo);
 		const amounttoThePool = new BN(defaultCurrecyValue).div(new BN(2));
 		await signSendAndWaitToFinishTx( 
 			api?.tx.xyk.createPool(firstCurrency, amounttoThePool, secondCurrency,amounttoThePool), 

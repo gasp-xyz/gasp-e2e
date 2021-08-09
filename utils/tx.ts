@@ -5,11 +5,13 @@ import BN from 'bn.js'
 import { env } from 'process'
 import { SudoDB } from './SudoDB';
 import {AccountData} from '@polkadot/types/interfaces/balances'
-import { signAndWaitTx } from './txHandler';
-import { getEnvironmentRequiredVars } from './utils';
+import { signAndWaitTx, signSendAndWaitToFinishTx } from './txHandler';
+import { getEnvironmentRequiredVars, MGA_DEFAULT_LIQ_TOKEN } from './utils';
 import { Keyring } from '@polkadot/api';
 import { User } from './User';
 import { testLog } from './Logger';
+import { KeyringPair } from '@polkadot/keyring/types';
+
 
 export const signTx = async (
   tx: SubmittableExtrinsic<'promise'>,
@@ -234,21 +236,6 @@ export const balanceTransfer = async (account: any, target:any, amount: number) 
   return txResult;
 }
 
-export const setBalance = async (sudoAccount: any, target:any, amountFree: number, amountReserved: number) => {
-
-  const api = getApi();
-  const nonce = await SudoDB.getInstance().getSudoNonce(sudoAccount.address);
-  testLog.getLog().info(`W[${env.JEST_WORKER_ID}] - sudoNonce: ${nonce} `);
-  const txResult = await signAndWaitTx(
-		api.tx.sudo.sudo(
-      api.tx.balances.setBalance(target, amountFree, amountReserved)
-      ),
-    sudoAccount,
-    nonce
-  );
-  return txResult;
-}
-
 export const sudoIssueAsset = async (account: any, total_balance: BN, target: any) => {
 
   const api = getApi();
@@ -277,7 +264,7 @@ export const transferAsset = async (account: any, asset_id:BN, targetAddress: st
   return txResult;
 }
 
-export const transferAll = async (account: any, asset_id:BN, target: any) => {
+export const transferAll = async (account: KeyringPair, asset_id:BN, target: any) => {
   const api = getApi();
 
   const txResult = await signAndWaitTx(
@@ -303,7 +290,7 @@ export const mintAsset = async (account: any, asset_id:BN, target: any, amount: 
 }
 
 
-export const createPool = async (account: any, firstAssetId: BN,firstAssetAmount: BN,secondAssetId: BN,secondAssetAmount: BN) => {
+export const createPool = async (account: KeyringPair, firstAssetId: BN,firstAssetAmount: BN,secondAssetId: BN,secondAssetAmount: BN) => {
   const api = getApi();
   const nonce = await getCurrentNonce(account.address);
   testLog.getLog().info(`Creating pool:${firstAssetId},${firstAssetAmount},${secondAssetId},${secondAssetAmount}`);
@@ -337,7 +324,7 @@ export const buyAsset = async (account: any, soldAssetId: BN, boughtAssetId: BN,
   return txResult
 }
 
-export const mintLiquidity = async (account: any, firstAssetId: BN, secondAssetId: BN, firstAssetAmount: BN, expectedSecondAssetAmount: BN = new BN(Number.MAX_SAFE_INTEGER)) => {
+export const mintLiquidity = async (account: KeyringPair, firstAssetId: BN, secondAssetId: BN, firstAssetAmount: BN, expectedSecondAssetAmount: BN = new BN(Number.MAX_SAFE_INTEGER)) => {
   const api = getApi();
   const nonce = await (await getCurrentNonce(account.address)).toNumber();
   const txResult = await signAndWaitTx(
@@ -348,7 +335,7 @@ export const mintLiquidity = async (account: any, firstAssetId: BN, secondAssetI
   return txResult;
 }
 
-export const burnLiquidity = async (account: any, firstAssetId: BN, secondAssetId: BN, liquidityAssetAmount: BN) => {
+export const burnLiquidity = async (account: KeyringPair, firstAssetId: BN, secondAssetId: BN, liquidityAssetAmount: BN) => {
   const api = getApi();
   const nonce = await getCurrentNonce(account.address);
   const txResult = await signAndWaitTx(
@@ -411,4 +398,14 @@ export async function getAllAssets(accountAddress:string){
   ).map( tuple => new BN((tuple[0].toHuman() as any[])[1]))
 
   return userOnes;
+}
+
+export async function lockAsset(user : User, assetId : BN, amount:BN){
+  const api = getApi();
+  
+  await signSendAndWaitToFinishTx( 
+    //@ts-ignore: Mangata bond operation has 4 params, somehow is inheriting the bond operation from polkadot :S
+    api?.tx.staking.bond(user.keyRingPair.address, amount,'Staked', MGA_DEFAULT_LIQ_TOKEN),
+    user.keyRingPair
+  );
 }

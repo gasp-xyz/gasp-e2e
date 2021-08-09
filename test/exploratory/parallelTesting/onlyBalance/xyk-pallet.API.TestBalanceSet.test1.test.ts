@@ -46,7 +46,7 @@ describe('xyk-pallet - Burn liquidity tests: when burning liquidity you can', ()
 
 	test('Test0', async () => {
 		while(true){
-			await testUser1.setBalance(sudo);
+			await testUser1.addMGATokens(sudo);
 		}
 	});
 });

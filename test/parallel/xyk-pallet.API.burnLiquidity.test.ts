@@ -59,7 +59,7 @@ describe('xyk-pallet - Burn liquidity tests: when burning liquidity you can', ()
 		const testUser2 = new User(keyring);
 		keyring.addPair(testUser2.keyRingPair);
 		[firstCurrency, secondCurrency] = await Assets.setupUserWithCurrencies(testUser1, [assetXamount,assetYamount], sudo);
-		await testUser1.setBalance(sudo);
+		await testUser1.addMGATokens(sudo);
 		//lets create a pool with equal balances
 		await signSendAndWaitToFinishTx( 
 			api?.tx.xyk.createPool(firstCurrency, new BN(assetXamount), secondCurrency,new BN(assetYamount)), 
@@ -69,7 +69,7 @@ describe('xyk-pallet - Burn liquidity tests: when burning liquidity you can', ()
 		const liquidityPoolBeforeDestroy = await getLiquidityPool(liquidityAssetId);
 
 		
-		await testUser2.setBalance(sudo);
+		await testUser2.addMGATokens(sudo);
 		const amountOfX = calculate_buy_price_local(new BN(assetXamount),new BN(assetYamount),new BN(9));
 		await sudo.mint(firstCurrency,testUser2,amountOfX);
 		await testUser2.buyAssets(firstCurrency,secondCurrency, new BN(9), amountOfX.add(new BN(1)));
@@ -161,7 +161,7 @@ async function UserCreatesAPoolAndMintliquidity(
 
 	await waitNewBlock();
 	const [firstCurrency, secondCurrency] = await Assets.setupUserWithCurrencies(testUser1, [userAmount, userAmount], sudo);
-	await testUser1.setBalance(sudo);
+	await testUser1.addMGATokens(sudo);
 	await signSendAndWaitToFinishTx(
 		api?.tx.xyk.createPool(firstCurrency, poolAmount, secondCurrency, poolAmount),
 		testUser1.keyRingPair

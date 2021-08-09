@@ -86,7 +86,7 @@ describe('xyk-pallet - Sell assets tests: SellAsset Errors:', () => {
 	test('Try sell more assets than owned', async () => {
 		await waitNewBlock();
 		[firstCurrency, secondCurrency] = await Assets.setupUserWithCurrencies(testUser1, [defaultCurrecyValue,defaultCurrecyValue.add(new BN(1))], sudo);
-		await testUser1.setBalance(sudo);
+		await testUser1.addMGATokens(sudo);
 		await testUser1.refreshAmounts(AssetWallet.BEFORE);
 		await signSendAndWaitToFinishTx( 
 			api?.tx.xyk.createPool(firstCurrency, first_asset_amount, secondCurrency, second_asset_amount.div(new BN(2))), 
@@ -150,7 +150,7 @@ describe('xyk-pallet - Sell assets tests: SellAsset Errors:', () => {
 	test('Sell assets with a high expectation: limit +1', async () => {
 		await waitNewBlock();
 		[firstCurrency, secondCurrency] = await Assets.setupUserWithCurrencies(testUser1, [defaultCurrecyValue,defaultCurrecyValue.add(new BN(1))], sudo);
-		await testUser1.setBalance(sudo);
+		await testUser1.addMGATokens(sudo);
 		await signSendAndWaitToFinishTx( 
 			api?.tx.xyk.createPool(firstCurrency, first_asset_amount, secondCurrency, second_asset_amount.div(new BN(2))), 
 			testUser1.keyRingPair 
@@ -213,7 +213,7 @@ describe('xyk-pallet - Sell assets tests: Selling Assets you can', () => {
 
 		await waitNewBlock();
 		[firstCurrency, secondCurrency] = await Assets.setupUserWithCurrencies(testUser1, [defaultCurrecyValue,defaultCurrecyValue.add(new BN(1))], sudo);
-		await testUser1.setBalance(sudo);
+		await testUser1.addMGATokens(sudo);
 		await signSendAndWaitToFinishTx( 
 			api?.tx.xyk.createPool(firstCurrency, first_asset_amount, secondCurrency, second_asset_amount.div(new BN(2))), 
 			testUser1.keyRingPair 
@@ -249,7 +249,7 @@ describe('xyk-pallet - Sell assets tests: Selling Assets you can', () => {
 		const [thirdCurrency] = await Assets.setupUserWithCurrencies(testUser2, [defaultCurrecyValue], sudo);
 		
 		await sudo.mint(thirdCurrency, testUser1, new BN(10000));
-		await testUser1.setBalance(sudo);
+		await testUser1.addMGATokens(sudo);
 		await signSendAndWaitToFinishTx( 
 			api?.tx.xyk.createPool(firstCurrency, first_asset_amount, secondCurrency, second_asset_amount.div(new BN(2))), 
 			testUser1.keyRingPair 

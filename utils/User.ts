@@ -1,4 +1,3 @@
-
 import { Keyring } from '@polkadot/api';
 import { KeyringPair } from '@polkadot/keyring/types';
 import BN from 'bn.js';
@@ -166,7 +165,7 @@ export class User {
 
     }
 
-    async setBalance(sudo : User, amountFree : number = Math.pow(10,11), amountReserved : number = Math.pow(10,11)) {
+    async addMGATokens(sudo : User, amountFree : number = Math.pow(10,11)) {
         await sudo.mint(MGA_ASSET_ID,this,new BN(amountFree));
     }
     async getUserAccountInfo(){

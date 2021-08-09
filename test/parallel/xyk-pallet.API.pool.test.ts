@@ -50,7 +50,7 @@ describe('xyk-pallet - Sell Asset: validate Errors:', () => {
 		
 		//add two curerncies and balance to testUser:
 		[firstCurrency, secondCurrency] = await Assets.setupUserWithCurrencies(testUser1, [defaultCurrecyValue,defaultCurrecyValue.add(new BN(1))], sudo);
-		await testUser1.setBalance(sudo);
+		await testUser1.addMGATokens(sudo);
 		// add users to pair.
 		keyring.addPair(testUser1.keyRingPair);
 		keyring.addPair(sudo.keyRingPair);
@@ -155,9 +155,9 @@ describe('xyk-pallet - Pool tests: a pool can:', () => {
 		//add two curerncies and balance to testUser2:
 
 		[firstCurrency, secondCurrency] = await Assets.setupUserWithCurrencies(testUser1, [defaultCurrecyValue,defaultCurrecyValue.add(new BN(1))], sudo);
-		await testUser1.setBalance(sudo);
+		await testUser1.addMGATokens(sudo);
 		await testUser1.createPoolToAsset(first_asset_amount,second_asset_amount,firstCurrency,secondCurrency);
-		await testUser2.setBalance(sudo);
+		await testUser2.addMGATokens(sudo);
 		await sudo.mint(firstCurrency, testUser2, new BN(10000));
 		await sudo.mint(secondCurrency, testUser2, new BN(10000));
 		

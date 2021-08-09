@@ -53,7 +53,7 @@ describe('xyk-pallet - treasury tests [No Mangata]: on treasury we store', () =>
 
 		await waitNewBlock();
 		[firstCurrency, secondCurrency] = await Assets.setupUserWithCurrencies(testUser1, [defaultCurrecyValue,defaultCurrecyValue], sudo);
-		await testUser1.setBalance(sudo);
+		await testUser1.addMGATokens(sudo);
 		await signSendAndWaitToFinishTx( 
 			api?.tx.xyk.createPool(firstCurrency, first_asset_amount, secondCurrency, first_asset_amount.div(new BN(2))), 
 			testUser1.keyRingPair 

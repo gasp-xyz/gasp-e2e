@@ -11,6 +11,7 @@ import { getAccountJSON } from "./frontend/utils/Helper";
 
 export const MGA_ASSET_ID = new BN(0);
 export const MGA_ASSET_NAME = 'MGA';
+export const MGA_DEFAULT_LIQ_TOKEN = new BN(3);
 
 export function sleep(ms: number) {
     return new Promise((resolve) => {
@@ -62,7 +63,7 @@ export async function UserCreatesAPoolAndMintliquidity(
 	await waitNewBlock();
     const api = getApi();
 	const [firstCurrency, secondCurrency] = await Assets.setupUserWithCurrencies(testUser1, [userAmount, userAmount], sudo);
-	await testUser1.setBalance(sudo);
+	await testUser1.addMGATokens(sudo);
 	await signSendAndWaitToFinishTx(
 		api?.tx.xyk.createPool(firstCurrency, poolAmount, secondCurrency, poolAmount),
 		testUser1.keyRingPair

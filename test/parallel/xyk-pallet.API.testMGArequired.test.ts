@@ -45,8 +45,8 @@ beforeEach( async () => {
 	
 	//add two curerncies and balance to testUser:
 	[firstCurrency, secondCurrency] = await Assets.setupUserWithCurrencies(testUser1, [defaultCurrecyValue,defaultCurrecyValue.add(new BN(1))], sudo);
-	//add only RESERVED balance
-	await testUser1.setBalance(sudo, 0 , Math.pow(10,11) );
+	//add zero MGA tokens.
+	await testUser1.addMGATokens(sudo,0);
 	// add users to pair.
 	keyring.addPair(testUser1.keyRingPair);
 	keyring.addPair(sudo.keyRingPair);
@@ -57,7 +57,7 @@ beforeEach( async () => {
 
 })
 
-test('xyk-pallet - User Balance - Creating a pool requires free balance', async () => {
+test('xyk-pallet - User Balance - Creating a pool requires paying fees', async () => {
 		let exception = false;
 		const api = getApi();
 
@@ -75,7 +75,7 @@ test('xyk-pallet - User Balance - Creating a pool requires free balance', async 
 		expect(exception).toBeTruthy();
 });
 
-test('xyk-pallet - User Balance - mint liquidity requires free balance', async () => {
+test('xyk-pallet - User Balance - mint liquidity requires paying fees', async () => {
 	let exception = false;
 	const api = getApi();
 	await expect( 
@@ -92,8 +92,7 @@ test('xyk-pallet - User Balance - mint liquidity requires free balance', async (
 	expect(exception).toBeTruthy();
 });
 
-
-test('xyk-pallet - User Balance - Selling an asset does not require free balance', async () => {
+test('xyk-pallet - User Balance - Selling an asset does not require paying fees', async () => {
 	let exception = false;
 	const api = getApi();
 	await testUser1.refreshAmounts(AssetWallet.BEFORE);
@@ -112,7 +111,7 @@ test('xyk-pallet - User Balance - Selling an asset does not require free balance
 	expect(exception).toBeFalsy();
 });
 
-test('xyk-pallet - User Balance - Buying an asset does not require free balance', async () => {
+test('xyk-pallet - User Balance - Buying an asset does not require paying fees', async () => {
 	let exception = false;
 	const api = getApi();
 	await testUser1.refreshAmounts(AssetWallet.BEFORE);

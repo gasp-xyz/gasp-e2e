@@ -45,7 +45,7 @@ describe('xyk-pallet - Check operations are not executed because of overflow in 
 
 		//add two curerncies and balance to testUser:
 		[firstCurrency, secondCurrency] = await Assets.setupUserWithCurrencies(testUser1, [MAX_BALANCE,MAX_BALANCE.sub(new BN(1))], sudo);
-		await testUser1.setBalance(sudo);
+		await testUser1.addMGATokens(sudo);
 
 	
 		// check users accounts.
@@ -123,7 +123,7 @@ describe('xyk-pallet - Operate with a pool close to overflow', () => {
         
 		//add two curerncies and balance to testUser:
 		[firstCurrency, secondCurrency] = await Assets.setupUserWithCurrencies(testUser1, [MAX_BALANCE,MAX_BALANCE.sub(new BN(1))], sudo);
-		await testUser1.setBalance(sudo);
+		await testUser1.addMGATokens(sudo);
 
 	
 		// check users accounts.
@@ -134,7 +134,7 @@ describe('xyk-pallet - Operate with a pool close to overflow', () => {
         await sudo.mint(firstCurrency,testUser2, MAX_BALANCE);
         await sudo.mint(secondCurrency,testUser2, MAX_BALANCE);
         testUser2.addAssets([firstCurrency,secondCurrency]);
-        await testUser2.setBalance(sudo);
+        await testUser2.addMGATokens(sudo);
         //Lets create a pool with MAX-2,1 -> liquidity is at 1 token to be overflowed.
         await createPool(testUser2.keyRingPair ,secondCurrency, MAX_BALANCE.sub(new BN(1000)), firstCurrency, new BN(1000))
 		.then(
@@ -249,7 +249,7 @@ describe('xyk-pallet - Operate with a user account close to overflow', () => {
         
 		//add two curerncies and balance to testUser:
 		[firstCurrency, secondCurrency] = await Assets.setupUserWithCurrencies(testUser1, [MAX_BALANCE,MAX_BALANCE.sub(new BN(1))], sudo);
-		await testUser1.setBalance(sudo);
+		await testUser1.addMGATokens(sudo);
 
 	
 		// check users accounts.
@@ -260,7 +260,7 @@ describe('xyk-pallet - Operate with a user account close to overflow', () => {
         await sudo.mint(firstCurrency,testUser2, MAX_BALANCE);
         await sudo.mint(secondCurrency,testUser2, MAX_BALANCE);
         testUser2.addAssets([firstCurrency,secondCurrency]);
-        await testUser2.setBalance(sudo);
+        await testUser2.addMGATokens(sudo);
         //Lets create a pool with 1M-5M
         await createPool(testUser2.keyRingPair ,secondCurrency, new BN(1000000), firstCurrency, new BN(5000000))
 		.then(
@@ -346,7 +346,7 @@ describe.skip('xyk-pallet - Operate with a highly unbalanced pool [mg - newAsset
         const divNumber = new BN(100);
 		//add two curerncies and balance to testUser:
 		[firstCurrency, secondCurrency] = await Assets.setupUserWithCurrencies(testUser1, [divNumber,MAX_BALANCE.div(divNumber)], sudo);
-		await testUser1.setBalance(sudo);
+		await testUser1.addMGATokens(sudo);
 
 	
 		// check users accounts.
@@ -359,7 +359,7 @@ describe.skip('xyk-pallet - Operate with a highly unbalanced pool [mg - newAsset
         await sudo.mint(secondCurrency,testUser2, MAX_BALANCE);
         await sudo.mint(firstCurrency,testUser2, MAX_BALANCE);
         testUser2.addAssets([firstCurrency,secondCurrency]);
-        await testUser2.setBalance(sudo);
+        await testUser2.addMGATokens(sudo);
         //Lets create a pool with Lot of MGA few secondCurr.
         await createPool(testUser2.keyRingPair ,new BN(0), MAX_BALANCE.div(divNumber), secondCurrency, divNumber)
 		.then(
