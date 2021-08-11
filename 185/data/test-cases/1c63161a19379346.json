@@ -1,0 +1,46 @@
+{
+  "uid" : "1c63161a19379346",
+  "name" : "assets won when assets are sold - 0 [rounding] [no connected to MGA]",
+  "fullName" : "xyk-pallet - treasury tests [No Mangata]: on treasury we store.assets won when assets are sold - 0 [rounding] [no connected to MGA]",
+  "historyId" : "11b673932eb3a049f0d27eea2c187d3b",
+  "time" : {
+    "start" : 1628695278867,
+    "stop" : 1628695370049,
+    "duration" : 91182
+  },
+  "description" : "",
+  "descriptionHtml" : "",
+  "status" : "passed",
+  "flaky" : false,
+  "newFailed" : false,
+  "beforeStages" : [ ],
+  "afterStages" : [ ],
+  "labels" : [ {
+    "name" : "suite",
+    "value" : "xyk-pallet - treasury tests [No Mangata]: on treasury we store"
+  }, {
+    "name" : "testClass",
+    "value" : "xyk-pallet - treasury tests [No Mangata]: on treasury we store"
+  }, {
+    "name" : "testMethod",
+    "value" : "assets won when assets are sold - 0 [rounding] [no connected to MGA]"
+  }, {
+    "name" : "package",
+    "value" : "xyk-pallet - treasury tests [No Mangata]: on treasury we store"
+  }, {
+    "name" : "resultFormat",
+    "value" : "allure1"
+  } ],
+  "parameters" : [ ],
+  "links" : [ ],
+  "hidden" : false,
+  "retry" : false,
+  "extra" : {
+    "severity" : "normal",
+    "retries" : [ ],
+    "categories" : [ ],
+    "tags" : [ ]
+  },
+  "source" : "1c63161a19379346.json",
+  "parameterValues" : [ ]
+}

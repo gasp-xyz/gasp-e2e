@@ -1,0 +1,52 @@
+{
+  "uid" : "c25dc464624cc881",
+  "name" : "xyk-pallet - MGA tokens are substracted as fee : TransferAll",
+  "fullName" : "test/parallel/xyk-pallet.API.fees.test.ts.xyk-pallet - MGA tokens are substracted as fee : TransferAll",
+  "historyId" : "856d9bc194b2fe3dbace19c3a67f4ea5",
+  "time" : {
+    "start" : 1628695387340,
+    "stop" : 1628695423433,
+    "duration" : 36093
+  },
+  "description" : "",
+  "descriptionHtml" : "",
+  "status" : "failed",
+  "statusMessage" : "Error: expect(received).toEqual(expected) // deep equality\n                \n                - Expected  - 1\n                + Received  + 1\n                \n                - \"021e19e0c9bad0d32b4b\"\n                + \"021e19e0c9bab2400000\"",
+  "statusTrace" : "Error: expect(received).toEqual(expected) // deep equality\n                \n                - Expected  - 1\n                + Received  + 1\n                \n                - \"021e19e0c9bad0d32b4b\"\n                + \"021e19e0c9bab2400000\"\n                    at User.validateWalletIncreased (/home/goncer/projects/ghActions/actions-runner/_work/mangata-e2e/mangata-e2e/utils/User.ts:55:57)\n                    at Object.<anonymous> (/home/goncer/projects/ghActions/actions-runner/_work/mangata-e2e/mangata-e2e/test/parallel/xyk-pallet.API.fees.test.ts:128:9)\n                    at processTicksAndRejections (internal/process/task_queues.js:95:5)",
+  "flaky" : false,
+  "newFailed" : false,
+  "beforeStages" : [ ],
+  "afterStages" : [ ],
+  "labels" : [ {
+    "name" : "suite",
+    "value" : "test/parallel/xyk-pallet.API.fees.test.ts"
+  }, {
+    "name" : "testClass",
+    "value" : "test/parallel/xyk-pallet.API.fees.test.ts"
+  }, {
+    "name" : "testMethod",
+    "value" : "xyk-pallet - MGA tokens are substracted as fee : TransferAll"
+  }, {
+    "name" : "package",
+    "value" : "test/parallel/xyk-pallet.API.fees.test.ts"
+  }, {
+    "name" : "resultFormat",
+    "value" : "allure1"
+  } ],
+  "parameters" : [ ],
+  "links" : [ ],
+  "hidden" : false,
+  "retry" : false,
+  "extra" : {
+    "severity" : "normal",
+    "retries" : [ ],
+    "categories" : [ {
+      "name" : "Product defects",
+      "matchedStatuses" : [ ],
+      "flaky" : false
+    } ],
+    "tags" : [ ]
+  },
+  "source" : "c25dc464624cc881.json",
+  "parameterValues" : [ ]
+}
