@@ -20,8 +20,8 @@ RUN su node -c "npm install -g jest"
 
 # Export variables
 ENV TEST_PALLET_ADDRESS='5EYCAe5XGPRojsCSi9p1ZZQ5qgeJGFcTxPxrsFRzkASu6bT2'
-ENV TEST_SUDO_NAME='//node'
-ENV API_URL='wss://staging.testnode.mangata.finance:9945'
+ENV TEST_SUDO_NAME='//Maciatko'
+ENV API_URL='ws://127.0.0.1:9944'
 ENV TEST_USER_NAME='//Alice'
 ENV LOG_INFO='info'
 ENV UI_URL='https://staging.mangata.finance/'
