@@ -58,7 +58,7 @@ beforeAll( async () => {
 	//add zero MGA tokens.
 	await testUser1.addMGATokens(sudo);
 	testUser1.addAsset(MGA_ASSET_ID);
-	await sudo.addMGATokens(testUser2);
+	await testUser2.addMGATokens(sudo);
 	testUser2.addAsset(MGA_ASSET_ID);
 
 	await createPool(testUser1.keyRingPair, firstCurrency, new BN(1000),secondCurrency,new BN(1000));
