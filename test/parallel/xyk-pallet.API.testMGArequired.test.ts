@@ -133,7 +133,7 @@ test('xyk-pallet - User Balance - Buying an asset does not require paying fees',
 afterEach(async () => {
 
 	var liquidity_asset_id = await getLiquidityAssetId(firstCurrency, secondCurrency);
-	expect(liquidity_asset_id).toEqual(new BN(-1));
+	expect(liquidity_asset_id).bnEqual(new BN(-1));
 	//validate
 	await testUser1.refreshAmounts(AssetWallet.AFTER);
 

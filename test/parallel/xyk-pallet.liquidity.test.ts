@@ -111,7 +111,7 @@ test('xyk-pallet - Liqudity : Burn part of the liquidity', async () => {
 
 	let total_liquidity_assets = await getAssetSupply(liquidityAssetId);
 	expect(totalLiquidityAssetsBefore.sub(liquidityAssetsBurned))
-	.toEqual(total_liquidity_assets);
+	.bnEqual(total_liquidity_assets);
 
 });
 
@@ -152,7 +152,7 @@ test('xyk-pallet - Liqudity : Burn all the liquidity', async () => {
 
 	let totalLiquidityAssets = await getAssetSupply(liquidityAssetId);
 	expect(totalLiquidityAssetsBefore.sub(liquidityAssetsBurned))
-	.toEqual(totalLiquidityAssets);
+	.bnEqual(totalLiquidityAssets);
 
 });
 
@@ -191,7 +191,7 @@ test('xyk-pallet - LiquidityOperation: mintLiquidity', async () => {
 	
 	let total_liquidity_assets = await getAssetSupply(liquidityAssetId);
 	expect(totalLiquidityAssetsBefore.add(liquidityAssetsMinted))
-	.toEqual(total_liquidity_assets);
+	.bnEqual(total_liquidity_assets);
 
 });
 

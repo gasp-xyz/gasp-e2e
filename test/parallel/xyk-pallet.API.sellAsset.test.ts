@@ -107,7 +107,7 @@ describe('xyk-pallet - Sell assets tests: SellAsset Errors:', () => {
 		await waitNewBlock();
 		await testUser1.refreshAmounts(AssetWallet.AFTER);
 		remainingOfCurrency1 = testUser1.getAsset(firstCurrency)?.amountAfter!;
-		expect(remainingOfCurrency1).toEqual(new BN(1));
+		expect(remainingOfCurrency1).bnEqual(new BN(1));
 		
 		
 		let secondWalletAmount = defaultCurrecyValue.add(new BN(1)).sub(second_asset_amount.div(new BN(2))).add(sellPriceLocal);
@@ -141,8 +141,8 @@ describe('xyk-pallet - Sell assets tests: SellAsset Errors:', () => {
 		const treasuryFirstCurrency = await getTreasury(firstCurrency);
 		const treasuryBurnSecondCurrency = await getTreasuryBurn(secondCurrency);
 		const treasuryBurnFirstCurrency = await getTreasuryBurn(firstCurrency);
-		expect(treasurySecondCurrency).toEqual(new BN(1));
-		expect(treasuryBurnSecondCurrency).toEqual(new BN(1));
+		expect(treasurySecondCurrency).bnEqual(new BN(1));
+		expect(treasuryBurnSecondCurrency).bnEqual(new BN(1));
 		expect([treasuryFirstCurrency,treasuryBurnFirstCurrency]).toEqual([new BN(0),new BN(0)])
 
 	});

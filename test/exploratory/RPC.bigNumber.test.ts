@@ -16,7 +16,14 @@ const {sudo:sudoUserName} = getEnvironmentRequiredVars();
 // we can setup the specific scenario and test.
 // always skip the test suite to avoid long test executions.
 // node ./node_modules/jest/bin/jest.js test/exploratory/playground.ts --testRegex='.*' 
-describe('Playground', () => {
+
+it.skip('test', async () => {
+	expect(new BN('100000')).bnEqual(new BN('100200'));
+	expect(new BN('100000')).bnEqual(new BN('100200'), "Test mesasge");
+})
+
+
+describe.skip('Playground', () => {
 	
 	var testUser1 : User;
 	var sudo : User;

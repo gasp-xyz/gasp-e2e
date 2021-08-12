@@ -64,8 +64,8 @@ describe('xyk-pallet - Check operations are not executed because of overflow in 
 			}
 		);	
         const poolBalances = await getBalanceOfPool(firstCurrency,secondCurrency);
-        expect(poolBalances[0]).toEqual(new BN(0));
-        expect(poolBalances[1]).toEqual(new BN(0));
+        expect(poolBalances[0]).bnEqual(new BN(0));
+        expect(poolBalances[1]).bnEqual(new BN(0));
 
 	});	
     test('Transfer [MAX] assets to other user when that user has 1 asset. Max+1 => overflow.', async () => {
@@ -87,8 +87,8 @@ describe('xyk-pallet - Check operations are not executed because of overflow in 
         await testUser1.refreshAmounts(AssetWallet.AFTER);
         await testUser2.refreshAmounts(AssetWallet.AFTER);
 
-        expect(testUser1.getAsset(firstCurrency)?.amountAfter).toEqual(MAX_BALANCE);
-        expect(testUser2.getAsset(firstCurrency)?.amountAfter).toEqual(new BN(1));
+        expect(testUser1.getAsset(firstCurrency)?.amountAfter).bnEqual(MAX_BALANCE);
+        expect(testUser2.getAsset(firstCurrency)?.amountAfter).bnEqual(new BN(1));
 
 	});	
 });
@@ -161,7 +161,7 @@ describe('xyk-pallet - Operate with a pool close to overflow', () => {
         );
         await testUser1.refreshAmounts(AssetWallet.AFTER);
 
-        expect(testUser1.getAsset(firstCurrency)?.amountAfter).toEqual(MAX_BALANCE);
+        expect(testUser1.getAsset(firstCurrency)?.amountAfter).bnEqual(MAX_BALANCE);
 
 	});	
     test('Buy [100] assets to a wallet with Max-1000,1000 => overflow.', async () => {
@@ -176,7 +176,7 @@ describe('xyk-pallet - Operate with a pool close to overflow', () => {
         );
         await testUser1.refreshAmounts(AssetWallet.AFTER);
 
-        expect(testUser1.getAsset(firstCurrency)?.amountAfter).toEqual(MAX_BALANCE);
+        expect(testUser1.getAsset(firstCurrency)?.amountAfter).bnEqual(MAX_BALANCE);
 
 	});	
     test('Mint liquidities [1000] assets to a wallet with Max-1000,1000 => overflow.', async () => {
@@ -191,7 +191,7 @@ describe('xyk-pallet - Operate with a pool close to overflow', () => {
         );
         await testUser1.refreshAmounts(AssetWallet.AFTER);
 
-        expect(testUser1.getAsset(firstCurrency)?.amountAfter).toEqual(MAX_BALANCE);
+        expect(testUser1.getAsset(firstCurrency)?.amountAfter).bnEqual(MAX_BALANCE);
 
 	});	
     test.skip('[BUG] Burn liquidities [MAX -1] assets to a wallet wich is full => overflow. NOT  a bug https://trello.com/c/J3fzuwH5', async () => {
@@ -212,8 +212,8 @@ describe('xyk-pallet - Operate with a pool close to overflow', () => {
         );
         await testUser2.refreshAmounts(AssetWallet.AFTER);
 
-        expect(testUser2.getAsset(firstCurrency)?.amountAfter).toEqual(MAX_BALANCE.sub(new BN(2)));
-        expect(testUser2.getAsset(secondCurrency)?.amountAfter).toEqual(MAX_BALANCE.sub(new BN(2)));
+        expect(testUser2.getAsset(firstCurrency)?.amountAfter).bnEqual(MAX_BALANCE.sub(new BN(2)));
+        expect(testUser2.getAsset(secondCurrency)?.amountAfter).bnEqual(MAX_BALANCE.sub(new BN(2)));
 
 	});	
 
@@ -287,8 +287,8 @@ describe('xyk-pallet - Operate with a user account close to overflow', () => {
         );
         await testUser1.refreshAmounts(AssetWallet.AFTER);
 
-        expect(testUser1.getAsset(firstCurrency)?.amountAfter).toEqual(testUser1.getAsset(firstCurrency)?.amountBefore);
-        expect(testUser1.getAsset(secondCurrency)?.amountAfter).toEqual(testUser1.getAsset(secondCurrency)?.amountBefore);
+        expect(testUser1.getAsset(firstCurrency)?.amountAfter).bnEqual(testUser1.getAsset(firstCurrency)?.amountBefore!);
+        expect(testUser1.getAsset(secondCurrency)?.amountAfter).bnEqual(testUser1.getAsset(secondCurrency)?.amountBefore!);
 
 	});	
     test.skip('Buy a few assets to a wallet that is full  => overflow. NOT A BUG: https://trello.com/c/J3fzuwH5', async () => {
@@ -400,10 +400,10 @@ describe.skip('xyk-pallet - Operate with a highly unbalanced pool [mg - newAsset
 
         await testUser1.refreshAmounts(AssetWallet.AFTER);
 
-        expect(poolBalanceMGAAssetAfter[0]).not.toEqual(new BN(0));
-        expect(poolBalanceAssetsAfter[0]).not.toEqual(new BN(0));
-        expect(poolBalanceAssetsBefore[0]).not.toEqual(new BN(0));
-        expect(poolBalanceMGAAssetBefore[0]).not.toEqual(new BN(0));
+        expect(poolBalanceMGAAssetAfter[0]).not.bnEqual(new BN(0));
+        expect(poolBalanceAssetsAfter[0]).not.bnEqual(new BN(0));
+        expect(poolBalanceAssetsBefore[0]).not.bnEqual(new BN(0));
+        expect(poolBalanceMGAAssetBefore[0]).not.bnEqual(new BN(0));
 
 	});	
     
