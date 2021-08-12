@@ -1,0 +1,66 @@
+{
+  "uid" : "a3f7fc58423530d6",
+  "name" : "Sell assets with a high expectation: limit +1",
+  "fullName" : "xyk-pallet - Sell assets tests: SellAsset Errors:.Sell assets with a high expectation: limit +1",
+  "historyId" : "597ce623cd52737dde11f09675711579",
+  "time" : {
+    "start" : 1628765245548,
+    "stop" : 1628765335349,
+    "duration" : 89801
+  },
+  "description" : "",
+  "descriptionHtml" : "",
+  "status" : "passed",
+  "flaky" : false,
+  "newFailed" : false,
+  "beforeStages" : [ ],
+  "afterStages" : [ ],
+  "labels" : [ {
+    "name" : "suite",
+    "value" : "xyk-pallet - Sell assets tests: SellAsset Errors:"
+  }, {
+    "name" : "testClass",
+    "value" : "xyk-pallet - Sell assets tests: SellAsset Errors:"
+  }, {
+    "name" : "testMethod",
+    "value" : "Sell assets with a high expectation: limit +1"
+  }, {
+    "name" : "package",
+    "value" : "xyk-pallet - Sell assets tests: SellAsset Errors:"
+  }, {
+    "name" : "resultFormat",
+    "value" : "allure1"
+  } ],
+  "parameters" : [ ],
+  "links" : [ ],
+  "hidden" : false,
+  "retry" : false,
+  "extra" : {
+    "severity" : "normal",
+    "retries" : [ ],
+    "categories" : [ ],
+    "history" : {
+      "statistic" : {
+        "failed" : 0,
+        "broken" : 0,
+        "skipped" : 0,
+        "passed" : 2,
+        "unknown" : 0,
+        "total" : 2
+      },
+      "items" : [ {
+        "uid" : "aaf66f0b1ef61611",
+        "reportUrl" : "https://mangata-finance.github.io/mangata-e2e/191//#testresult/aaf66f0b1ef61611",
+        "status" : "passed",
+        "time" : {
+          "start" : 1628763474908,
+          "stop" : 1628763566113,
+          "duration" : 91205
+        }
+      } ]
+    },
+    "tags" : [ ]
+  },
+  "source" : "a3f7fc58423530d6.json",
+  "parameterValues" : [ ]
+}

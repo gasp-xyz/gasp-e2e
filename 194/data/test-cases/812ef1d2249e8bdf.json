@@ -1,0 +1,69 @@
+{
+  "uid" : "812ef1d2249e8bdf",
+  "name" : "[BUG] Buy a few assets to a wallet linked to MGA  => overflow.",
+  "fullName" : "xyk-pallet - Operate with a highly unbalanced pool [mg - newAsset].[BUG] Buy a few assets to a wallet linked to MGA  => overflow.",
+  "historyId" : "3ba25a28865962e78c6e26d72d4cc1ba",
+  "time" : {
+    "start" : 1628765701407,
+    "stop" : 1628765701407,
+    "duration" : 0
+  },
+  "description" : "",
+  "descriptionHtml" : "",
+  "status" : "skipped",
+  "statusMessage" : "",
+  "statusTrace" : "undefined",
+  "flaky" : false,
+  "newFailed" : false,
+  "beforeStages" : [ ],
+  "afterStages" : [ ],
+  "labels" : [ {
+    "name" : "suite",
+    "value" : "xyk-pallet - Operate with a highly unbalanced pool [mg - newAsset]"
+  }, {
+    "name" : "testClass",
+    "value" : "xyk-pallet - Operate with a highly unbalanced pool [mg - newAsset]"
+  }, {
+    "name" : "testMethod",
+    "value" : "[BUG] Buy a few assets to a wallet linked to MGA  => overflow."
+  }, {
+    "name" : "package",
+    "value" : "xyk-pallet - Operate with a highly unbalanced pool [mg - newAsset]"
+  }, {
+    "name" : "resultFormat",
+    "value" : "allure1"
+  } ],
+  "parameters" : [ ],
+  "links" : [ ],
+  "hidden" : false,
+  "retry" : false,
+  "extra" : {
+    "severity" : "normal",
+    "retries" : [ ],
+    "categories" : [ ],
+    "history" : {
+      "statistic" : {
+        "failed" : 0,
+        "broken" : 0,
+        "skipped" : 2,
+        "passed" : 0,
+        "unknown" : 0,
+        "total" : 2
+      },
+      "items" : [ {
+        "uid" : "83e94d94afb74a25",
+        "reportUrl" : "https://mangata-finance.github.io/mangata-e2e/191//#testresult/83e94d94afb74a25",
+        "status" : "skipped",
+        "statusDetails" : "",
+        "time" : {
+          "start" : 1628763937564,
+          "stop" : 1628763937564,
+          "duration" : 0
+        }
+      } ]
+    },
+    "tags" : [ ]
+  },
+  "source" : "812ef1d2249e8bdf.json",
+  "parameterValues" : [ ]
+}

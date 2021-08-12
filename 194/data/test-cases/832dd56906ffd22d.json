@@ -1,0 +1,66 @@
+{
+  "uid" : "832dd56906ffd22d",
+  "name" : "assets won when assets are bought - 2 [no connected to MGA]",
+  "fullName" : "xyk-pallet - treasury tests [No Mangata]: on treasury we store.assets won when assets are bought - 2 [no connected to MGA]",
+  "historyId" : "d781b4106ef90af4c4f396b924ffea1f",
+  "time" : {
+    "start" : 1628765228079,
+    "stop" : 1628765317915,
+    "duration" : 89836
+  },
+  "description" : "",
+  "descriptionHtml" : "",
+  "status" : "passed",
+  "flaky" : false,
+  "newFailed" : false,
+  "beforeStages" : [ ],
+  "afterStages" : [ ],
+  "labels" : [ {
+    "name" : "suite",
+    "value" : "xyk-pallet - treasury tests [No Mangata]: on treasury we store"
+  }, {
+    "name" : "testClass",
+    "value" : "xyk-pallet - treasury tests [No Mangata]: on treasury we store"
+  }, {
+    "name" : "testMethod",
+    "value" : "assets won when assets are bought - 2 [no connected to MGA]"
+  }, {
+    "name" : "package",
+    "value" : "xyk-pallet - treasury tests [No Mangata]: on treasury we store"
+  }, {
+    "name" : "resultFormat",
+    "value" : "allure1"
+  } ],
+  "parameters" : [ ],
+  "links" : [ ],
+  "hidden" : false,
+  "retry" : false,
+  "extra" : {
+    "severity" : "normal",
+    "retries" : [ ],
+    "categories" : [ ],
+    "history" : {
+      "statistic" : {
+        "failed" : 0,
+        "broken" : 0,
+        "skipped" : 0,
+        "passed" : 2,
+        "unknown" : 0,
+        "total" : 2
+      },
+      "items" : [ {
+        "uid" : "b8c1085d4ab7a26e",
+        "reportUrl" : "https://mangata-finance.github.io/mangata-e2e/191//#testresult/b8c1085d4ab7a26e",
+        "status" : "passed",
+        "time" : {
+          "start" : 1628763727042,
+          "stop" : 1628763816868,
+          "duration" : 89826
+        }
+      } ]
+    },
+    "tags" : [ ]
+  },
+  "source" : "832dd56906ffd22d.json",
+  "parameterValues" : [ ]
+}

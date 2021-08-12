@@ -1,0 +1,66 @@
+{
+  "uid" : "306e4a2899d71464",
+  "name" : "Leave only one asset in the pool",
+  "fullName" : "xyk-pallet - Buy assets tests: Buying assets you can.Leave only one asset in the pool",
+  "historyId" : "c75875a552d479f41ec91ef046fa6d42",
+  "time" : {
+    "start" : 1628765425187,
+    "stop" : 1628765533777,
+    "duration" : 108590
+  },
+  "description" : "",
+  "descriptionHtml" : "",
+  "status" : "passed",
+  "flaky" : false,
+  "newFailed" : false,
+  "beforeStages" : [ ],
+  "afterStages" : [ ],
+  "labels" : [ {
+    "name" : "suite",
+    "value" : "xyk-pallet - Buy assets tests: Buying assets you can"
+  }, {
+    "name" : "testClass",
+    "value" : "xyk-pallet - Buy assets tests: Buying assets you can"
+  }, {
+    "name" : "testMethod",
+    "value" : "Leave only one asset in the pool"
+  }, {
+    "name" : "package",
+    "value" : "xyk-pallet - Buy assets tests: Buying assets you can"
+  }, {
+    "name" : "resultFormat",
+    "value" : "allure1"
+  } ],
+  "parameters" : [ ],
+  "links" : [ ],
+  "hidden" : false,
+  "retry" : false,
+  "extra" : {
+    "severity" : "normal",
+    "retries" : [ ],
+    "categories" : [ ],
+    "history" : {
+      "statistic" : {
+        "failed" : 0,
+        "broken" : 0,
+        "skipped" : 0,
+        "passed" : 2,
+        "unknown" : 0,
+        "total" : 2
+      },
+      "items" : [ {
+        "uid" : "2811eca1fcf56e26",
+        "reportUrl" : "https://mangata-finance.github.io/mangata-e2e/191//#testresult/2811eca1fcf56e26",
+        "status" : "passed",
+        "time" : {
+          "start" : 1628763655993,
+          "stop" : 1628763763266,
+          "duration" : 107273
+        }
+      } ]
+    },
+    "tags" : [ ]
+  },
+  "source" : "306e4a2899d71464.json",
+  "parameterValues" : [ ]
+}

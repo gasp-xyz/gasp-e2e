@@ -1,0 +1,73 @@
+{
+  "uid" : "9289a757a613eb95",
+  "name" : "xyk-pallet - MGA tokens are substracted as fee : Transfer",
+  "fullName" : "test/parallel/xyk-pallet.API.fees.test.ts.xyk-pallet - MGA tokens are substracted as fee : Transfer",
+  "historyId" : "20dd2803b098d1ebdd21db2a9904b4a5",
+  "time" : {
+    "start" : 1628765228079,
+    "stop" : 1628765245536,
+    "duration" : 17457
+  },
+  "description" : "",
+  "descriptionHtml" : "",
+  "status" : "failed",
+  "statusMessage" : "Error: Expected: 10000000000000000000000 \n                  Actual: 10000000000000508696039 \n                 ",
+  "statusTrace" : "Error: Expected: 10000000000000000000000 \n                  Actual: 10000000000000508696039 \n                 \n                    at User.validateWalletIncreased (/home/goncer/projects/ghActions/actions-runner/_work/mangata-e2e/mangata-e2e/utils/User.ts:55:57)\n                    at Object.<anonymous> (/home/goncer/projects/ghActions/actions-runner/_work/mangata-e2e/mangata-e2e/test/parallel/xyk-pallet.API.fees.test.ts:117:9)\n                    at processTicksAndRejections (internal/process/task_queues.js:95:5)",
+  "flaky" : false,
+  "newFailed" : false,
+  "beforeStages" : [ ],
+  "afterStages" : [ ],
+  "labels" : [ {
+    "name" : "suite",
+    "value" : "test/parallel/xyk-pallet.API.fees.test.ts"
+  }, {
+    "name" : "testClass",
+    "value" : "test/parallel/xyk-pallet.API.fees.test.ts"
+  }, {
+    "name" : "testMethod",
+    "value" : "xyk-pallet - MGA tokens are substracted as fee : Transfer"
+  }, {
+    "name" : "package",
+    "value" : "test/parallel/xyk-pallet.API.fees.test.ts"
+  }, {
+    "name" : "resultFormat",
+    "value" : "allure1"
+  } ],
+  "parameters" : [ ],
+  "links" : [ ],
+  "hidden" : false,
+  "retry" : false,
+  "extra" : {
+    "severity" : "normal",
+    "retries" : [ ],
+    "categories" : [ {
+      "name" : "Product defects",
+      "matchedStatuses" : [ ],
+      "flaky" : false
+    } ],
+    "history" : {
+      "statistic" : {
+        "failed" : 2,
+        "broken" : 0,
+        "skipped" : 0,
+        "passed" : 0,
+        "unknown" : 0,
+        "total" : 2
+      },
+      "items" : [ {
+        "uid" : "ec8d561f5f210032",
+        "reportUrl" : "https://mangata-finance.github.io/mangata-e2e/191//#testresult/ec8d561f5f210032",
+        "status" : "failed",
+        "statusDetails" : "Error: Expected: 021e19e0c9bab2400000 \n                  Actual: 021e19e0c9bad0963a5b \n                 ",
+        "time" : {
+          "start" : 1628763457490,
+          "stop" : 1628763474905,
+          "duration" : 17415
+        }
+      } ]
+    },
+    "tags" : [ ]
+  },
+  "source" : "9289a757a613eb95.json",
+  "parameterValues" : [ ]
+}

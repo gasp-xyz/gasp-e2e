@@ -1,0 +1,66 @@
+{
+  "uid" : "6e402e6b8562694d",
+  "name" : "Create x-y and y-x pool",
+  "fullName" : "xyk-pallet - Sell Asset: validate Errors:.Create x-y and y-x pool",
+  "historyId" : "1e1b9c331e42e2d52320e04ab3d82096",
+  "time" : {
+    "start" : 1628765119553,
+    "stop" : 1628765137011,
+    "duration" : 17458
+  },
+  "description" : "",
+  "descriptionHtml" : "",
+  "status" : "passed",
+  "flaky" : false,
+  "newFailed" : false,
+  "beforeStages" : [ ],
+  "afterStages" : [ ],
+  "labels" : [ {
+    "name" : "suite",
+    "value" : "xyk-pallet - Sell Asset: validate Errors:"
+  }, {
+    "name" : "testClass",
+    "value" : "xyk-pallet - Sell Asset: validate Errors:"
+  }, {
+    "name" : "testMethod",
+    "value" : "Create x-y and y-x pool"
+  }, {
+    "name" : "package",
+    "value" : "xyk-pallet - Sell Asset: validate Errors:"
+  }, {
+    "name" : "resultFormat",
+    "value" : "allure1"
+  } ],
+  "parameters" : [ ],
+  "links" : [ ],
+  "hidden" : false,
+  "retry" : false,
+  "extra" : {
+    "severity" : "normal",
+    "retries" : [ ],
+    "categories" : [ ],
+    "history" : {
+      "statistic" : {
+        "failed" : 0,
+        "broken" : 0,
+        "skipped" : 0,
+        "passed" : 2,
+        "unknown" : 0,
+        "total" : 2
+      },
+      "items" : [ {
+        "uid" : "dabf088543cb7cd2",
+        "reportUrl" : "https://mangata-finance.github.io/mangata-e2e/191//#testresult/dabf088543cb7cd2",
+        "status" : "passed",
+        "time" : {
+          "start" : 1628763350156,
+          "stop" : 1628763367599,
+          "duration" : 17443
+        }
+      } ]
+    },
+    "tags" : [ ]
+  },
+  "source" : "6e402e6b8562694d.json",
+  "parameterValues" : [ ]
+}

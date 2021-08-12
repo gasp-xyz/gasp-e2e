@@ -1,0 +1,66 @@
+{
+  "uid" : "d174c3d6c2093e86",
+  "name" : "Buy more assets than exists in the pool",
+  "fullName" : "xyk-pallet - Buy assets tests: BuyAssets Errors:.Buy more assets than exists in the pool",
+  "historyId" : "d5e957604e7165b61395f601d4e7881f",
+  "time" : {
+    "start" : 1628765137000,
+    "stop" : 1628765228087,
+    "duration" : 91087
+  },
+  "description" : "",
+  "descriptionHtml" : "",
+  "status" : "passed",
+  "flaky" : false,
+  "newFailed" : false,
+  "beforeStages" : [ ],
+  "afterStages" : [ ],
+  "labels" : [ {
+    "name" : "suite",
+    "value" : "xyk-pallet - Buy assets tests: BuyAssets Errors:"
+  }, {
+    "name" : "testClass",
+    "value" : "xyk-pallet - Buy assets tests: BuyAssets Errors:"
+  }, {
+    "name" : "testMethod",
+    "value" : "Buy more assets than exists in the pool"
+  }, {
+    "name" : "package",
+    "value" : "xyk-pallet - Buy assets tests: BuyAssets Errors:"
+  }, {
+    "name" : "resultFormat",
+    "value" : "allure1"
+  } ],
+  "parameters" : [ ],
+  "links" : [ ],
+  "hidden" : false,
+  "retry" : false,
+  "extra" : {
+    "severity" : "normal",
+    "retries" : [ ],
+    "categories" : [ ],
+    "history" : {
+      "statistic" : {
+        "failed" : 0,
+        "broken" : 0,
+        "skipped" : 0,
+        "passed" : 2,
+        "unknown" : 0,
+        "total" : 2
+      },
+      "items" : [ {
+        "uid" : "f707974291168720",
+        "reportUrl" : "https://mangata-finance.github.io/mangata-e2e/191//#testresult/f707974291168720",
+        "status" : "passed",
+        "time" : {
+          "start" : 1628763367576,
+          "stop" : 1628763457497,
+          "duration" : 89921
+        }
+      } ]
+    },
+    "tags" : [ ]
+  },
+  "source" : "d174c3d6c2093e86.json",
+  "parameterValues" : [ ]
+}

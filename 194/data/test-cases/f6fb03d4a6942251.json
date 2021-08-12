@@ -1,0 +1,66 @@
+{
+  "uid" : "f6fb03d4a6942251",
+  "name" : "xyk-pallet - LiquidityOperation: mintLiquidity",
+  "fullName" : "test/parallel/xyk-pallet.liquidity.test.ts.xyk-pallet - LiquidityOperation: mintLiquidity",
+  "historyId" : "d50dea3e448451b6db0aa91b3ff58e96",
+  "time" : {
+    "start" : 1628765684062,
+    "stop" : 1628765773872,
+    "duration" : 89810
+  },
+  "description" : "",
+  "descriptionHtml" : "",
+  "status" : "passed",
+  "flaky" : false,
+  "newFailed" : false,
+  "beforeStages" : [ ],
+  "afterStages" : [ ],
+  "labels" : [ {
+    "name" : "suite",
+    "value" : "test/parallel/xyk-pallet.liquidity.test.ts"
+  }, {
+    "name" : "testClass",
+    "value" : "test/parallel/xyk-pallet.liquidity.test.ts"
+  }, {
+    "name" : "testMethod",
+    "value" : "xyk-pallet - LiquidityOperation: mintLiquidity"
+  }, {
+    "name" : "package",
+    "value" : "test/parallel/xyk-pallet.liquidity.test.ts"
+  }, {
+    "name" : "resultFormat",
+    "value" : "allure1"
+  } ],
+  "parameters" : [ ],
+  "links" : [ ],
+  "hidden" : false,
+  "retry" : false,
+  "extra" : {
+    "severity" : "normal",
+    "retries" : [ ],
+    "categories" : [ ],
+    "history" : {
+      "statistic" : {
+        "failed" : 0,
+        "broken" : 0,
+        "skipped" : 0,
+        "passed" : 2,
+        "unknown" : 0,
+        "total" : 2
+      },
+      "items" : [ {
+        "uid" : "fe467759593a3aae",
+        "reportUrl" : "https://mangata-finance.github.io/mangata-e2e/191//#testresult/fe467759593a3aae",
+        "status" : "passed",
+        "time" : {
+          "start" : 1628763816888,
+          "stop" : 1628763920170,
+          "duration" : 103282
+        }
+      } ]
+    },
+    "tags" : [ ]
+  },
+  "source" : "f6fb03d4a6942251.json",
+  "parameterValues" : [ ]
+}

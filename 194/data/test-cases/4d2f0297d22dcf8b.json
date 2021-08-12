@@ -1,0 +1,66 @@
+{
+  "uid" : "4d2f0297d22dcf8b",
+  "name" : "Buy assets with a high expectation: maxInput -1",
+  "fullName" : "xyk-pallet - Buy assets tests: BuyAssets Errors:.Buy assets with a high expectation: maxInput -1",
+  "historyId" : "accc5974131ac463afb4d89efe686a24",
+  "time" : {
+    "start" : 1628765317915,
+    "stop" : 1628765425175,
+    "duration" : 107260
+  },
+  "description" : "",
+  "descriptionHtml" : "",
+  "status" : "passed",
+  "flaky" : false,
+  "newFailed" : false,
+  "beforeStages" : [ ],
+  "afterStages" : [ ],
+  "labels" : [ {
+    "name" : "suite",
+    "value" : "xyk-pallet - Buy assets tests: BuyAssets Errors:"
+  }, {
+    "name" : "testClass",
+    "value" : "xyk-pallet - Buy assets tests: BuyAssets Errors:"
+  }, {
+    "name" : "testMethod",
+    "value" : "Buy assets with a high expectation: maxInput -1"
+  }, {
+    "name" : "package",
+    "value" : "xyk-pallet - Buy assets tests: BuyAssets Errors:"
+  }, {
+    "name" : "resultFormat",
+    "value" : "allure1"
+  } ],
+  "parameters" : [ ],
+  "links" : [ ],
+  "hidden" : false,
+  "retry" : false,
+  "extra" : {
+    "severity" : "normal",
+    "retries" : [ ],
+    "categories" : [ ],
+    "history" : {
+      "statistic" : {
+        "failed" : 0,
+        "broken" : 0,
+        "skipped" : 0,
+        "passed" : 2,
+        "unknown" : 0,
+        "total" : 2
+      },
+      "items" : [ {
+        "uid" : "def74eb7b0d8722a",
+        "reportUrl" : "https://mangata-finance.github.io/mangata-e2e/191//#testresult/def74eb7b0d8722a",
+        "status" : "passed",
+        "time" : {
+          "start" : 1628763547336,
+          "stop" : 1628763655985,
+          "duration" : 108649
+        }
+      } ]
+    },
+    "tags" : [ ]
+  },
+  "source" : "4d2f0297d22dcf8b.json",
+  "parameterValues" : [ ]
+}

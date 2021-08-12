@@ -1,0 +1,66 @@
+{
+  "uid" : "50fc2b407539b801",
+  "name" : "Create pool with zero",
+  "fullName" : "xyk-pallet - Sell Asset: validate Errors:.Create pool with zero",
+  "historyId" : "a1765c0b0f4bb0afcc84df2d921d419c",
+  "time" : {
+    "start" : 1628765137011,
+    "stop" : 1628765155765,
+    "duration" : 18754
+  },
+  "description" : "",
+  "descriptionHtml" : "",
+  "status" : "passed",
+  "flaky" : false,
+  "newFailed" : false,
+  "beforeStages" : [ ],
+  "afterStages" : [ ],
+  "labels" : [ {
+    "name" : "suite",
+    "value" : "xyk-pallet - Sell Asset: validate Errors:"
+  }, {
+    "name" : "testClass",
+    "value" : "xyk-pallet - Sell Asset: validate Errors:"
+  }, {
+    "name" : "testMethod",
+    "value" : "Create pool with zero"
+  }, {
+    "name" : "package",
+    "value" : "xyk-pallet - Sell Asset: validate Errors:"
+  }, {
+    "name" : "resultFormat",
+    "value" : "allure1"
+  } ],
+  "parameters" : [ ],
+  "links" : [ ],
+  "hidden" : false,
+  "retry" : false,
+  "extra" : {
+    "severity" : "normal",
+    "retries" : [ ],
+    "categories" : [ ],
+    "history" : {
+      "statistic" : {
+        "failed" : 0,
+        "broken" : 0,
+        "skipped" : 0,
+        "passed" : 2,
+        "unknown" : 0,
+        "total" : 2
+      },
+      "items" : [ {
+        "uid" : "c95b0e0916766afe",
+        "reportUrl" : "https://mangata-finance.github.io/mangata-e2e/191//#testresult/c95b0e0916766afe",
+        "status" : "passed",
+        "time" : {
+          "start" : 1628763367599,
+          "stop" : 1628763385045,
+          "duration" : 17446
+        }
+      } ]
+    },
+    "tags" : [ ]
+  },
+  "source" : "50fc2b407539b801.json",
+  "parameterValues" : [ ]
+}

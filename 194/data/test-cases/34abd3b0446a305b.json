@@ -1,0 +1,66 @@
+{
+  "uid" : "34abd3b0446a305b",
+  "name" : "Create pool of [MAX,1]: OverFlow [a+b] - liquidityAsset calculation",
+  "fullName" : "xyk-pallet - Check operations are not executed because of overflow in asset token.Create pool of [MAX,1]: OverFlow [a+b] - liquidityAsset calculation",
+  "historyId" : "69e461b1d3d23d081796f46a921180fc",
+  "time" : {
+    "start" : 1628765461383,
+    "stop" : 1628765480140,
+    "duration" : 18757
+  },
+  "description" : "",
+  "descriptionHtml" : "",
+  "status" : "passed",
+  "flaky" : false,
+  "newFailed" : false,
+  "beforeStages" : [ ],
+  "afterStages" : [ ],
+  "labels" : [ {
+    "name" : "suite",
+    "value" : "xyk-pallet - Check operations are not executed because of overflow in asset token"
+  }, {
+    "name" : "testClass",
+    "value" : "xyk-pallet - Check operations are not executed because of overflow in asset token"
+  }, {
+    "name" : "testMethod",
+    "value" : "Create pool of [MAX,1]: OverFlow [a+b] - liquidityAsset calculation"
+  }, {
+    "name" : "package",
+    "value" : "xyk-pallet - Check operations are not executed because of overflow in asset token"
+  }, {
+    "name" : "resultFormat",
+    "value" : "allure1"
+  } ],
+  "parameters" : [ ],
+  "links" : [ ],
+  "hidden" : false,
+  "retry" : false,
+  "extra" : {
+    "severity" : "normal",
+    "retries" : [ ],
+    "categories" : [ ],
+    "history" : {
+      "statistic" : {
+        "failed" : 0,
+        "broken" : 0,
+        "skipped" : 0,
+        "passed" : 2,
+        "unknown" : 0,
+        "total" : 2
+      },
+      "items" : [ {
+        "uid" : "4e13de95651a38e3",
+        "reportUrl" : "https://mangata-finance.github.io/mangata-e2e/191//#testresult/4e13de95651a38e3",
+        "status" : "passed",
+        "time" : {
+          "start" : 1628763690911,
+          "stop" : 1628763709585,
+          "duration" : 18674
+        }
+      } ]
+    },
+    "tags" : [ ]
+  },
+  "source" : "34abd3b0446a305b.json",
+  "parameterValues" : [ ]
+}

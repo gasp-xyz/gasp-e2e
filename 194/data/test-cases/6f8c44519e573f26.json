@@ -1,0 +1,66 @@
+{
+  "uid" : "6f8c44519e573f26",
+  "name" : "Add all the wallet assets to the pool",
+  "fullName" : "xyk-pallet - Mint liquidity tests: with minting you can.Add all the wallet assets to the pool",
+  "historyId" : "234232acd523f56b49486f6c8764cabe",
+  "time" : {
+    "start" : 1628765686551,
+    "stop" : 1628765773875,
+    "duration" : 87324
+  },
+  "description" : "",
+  "descriptionHtml" : "",
+  "status" : "passed",
+  "flaky" : false,
+  "newFailed" : false,
+  "beforeStages" : [ ],
+  "afterStages" : [ ],
+  "labels" : [ {
+    "name" : "suite",
+    "value" : "xyk-pallet - Mint liquidity tests: with minting you can"
+  }, {
+    "name" : "testClass",
+    "value" : "xyk-pallet - Mint liquidity tests: with minting you can"
+  }, {
+    "name" : "testMethod",
+    "value" : "Add all the wallet assets to the pool"
+  }, {
+    "name" : "package",
+    "value" : "xyk-pallet - Mint liquidity tests: with minting you can"
+  }, {
+    "name" : "resultFormat",
+    "value" : "allure1"
+  } ],
+  "parameters" : [ ],
+  "links" : [ ],
+  "hidden" : false,
+  "retry" : false,
+  "extra" : {
+    "severity" : "normal",
+    "retries" : [ ],
+    "categories" : [ ],
+    "history" : {
+      "statistic" : {
+        "failed" : 0,
+        "broken" : 0,
+        "skipped" : 0,
+        "passed" : 2,
+        "unknown" : 0,
+        "total" : 2
+      },
+      "items" : [ {
+        "uid" : "64df3b71b2e0cb25",
+        "reportUrl" : "https://mangata-finance.github.io/mangata-e2e/191//#testresult/64df3b71b2e0cb25",
+        "status" : "passed",
+        "time" : {
+          "start" : 1628763922819,
+          "stop" : 1628764009965,
+          "duration" : 87146
+        }
+      } ]
+    },
+    "tags" : [ ]
+  },
+  "source" : "6f8c44519e573f26.json",
+  "parameterValues" : [ ]
+}

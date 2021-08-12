@@ -1,0 +1,66 @@
+{
+  "uid" : "35e579cf388eb90a",
+  "name" : "Mint liquidity more assets than I own",
+  "fullName" : "xyk-pallet - Mint liquidity tests: MintLiquidity Errors:.Mint liquidity more assets than I own",
+  "historyId" : "3428fa842c304e95eed2682f5bce7ff3",
+  "time" : {
+    "start" : 1628765388962,
+    "stop" : 1628765533754,
+    "duration" : 144792
+  },
+  "description" : "",
+  "descriptionHtml" : "",
+  "status" : "passed",
+  "flaky" : false,
+  "newFailed" : false,
+  "beforeStages" : [ ],
+  "afterStages" : [ ],
+  "labels" : [ {
+    "name" : "suite",
+    "value" : "xyk-pallet - Mint liquidity tests: MintLiquidity Errors:"
+  }, {
+    "name" : "testClass",
+    "value" : "xyk-pallet - Mint liquidity tests: MintLiquidity Errors:"
+  }, {
+    "name" : "testMethod",
+    "value" : "Mint liquidity more assets than I own"
+  }, {
+    "name" : "package",
+    "value" : "xyk-pallet - Mint liquidity tests: MintLiquidity Errors:"
+  }, {
+    "name" : "resultFormat",
+    "value" : "allure1"
+  } ],
+  "parameters" : [ ],
+  "links" : [ ],
+  "hidden" : false,
+  "retry" : false,
+  "extra" : {
+    "severity" : "normal",
+    "retries" : [ ],
+    "categories" : [ ],
+    "history" : {
+      "statistic" : {
+        "failed" : 0,
+        "broken" : 0,
+        "skipped" : 0,
+        "passed" : 2,
+        "unknown" : 0,
+        "total" : 2
+      },
+      "items" : [ {
+        "uid" : "c2deb7853a2ebdc1",
+        "reportUrl" : "https://mangata-finance.github.io/mangata-e2e/191//#testresult/c2deb7853a2ebdc1",
+        "status" : "passed",
+        "time" : {
+          "start" : 1628763619781,
+          "stop" : 1628763763254,
+          "duration" : 143473
+        }
+      } ]
+    },
+    "tags" : [ ]
+  },
+  "source" : "35e579cf388eb90a.json",
+  "parameterValues" : [ ]
+}
