@@ -100,4 +100,4 @@ jobs:
 
       - name: Stop Containers
         if: always()
-        run: docker-compose -f "docker-compose.yml" down
+        run: docker-compose -f "devops/dockerfiles/docker-compose.yml" down
