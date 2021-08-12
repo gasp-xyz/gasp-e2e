@@ -16,7 +16,7 @@ RUN wget https://github.com/Kitware/CMake/releases/download/v3.20.2/cmake-3.20.2
     && make install 
 
 # Global npm modules
-RUN su node -c "npm install -g jest"
+RUN su node -c "npm install -g jest jest-allure"
 
 # Export variables
 ENV TEST_PALLET_ADDRESS='5EYCAe5XGPRojsCSi9p1ZZQ5qgeJGFcTxPxrsFRzkASu6bT2'
