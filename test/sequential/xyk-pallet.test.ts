@@ -236,7 +236,7 @@ test('xyk-pallet: Happy case scenario', async () => {
 	let sell_price_local = calculate_sell_price_local(pool_balance_before[0], pool_balance_before[1], amount);
 	let sell_price_rpc = await calculate_sell_price_rpc(pool_balance_before[0], pool_balance_before[1], amount);
 
-	expect(sell_price_local).toEqual(sell_price_rpc);
+	expect(sell_price_local).bnEqual(sell_price_rpc);
 
   testLog.getLog().info("Bob: selling asset " + firstAssetId + ", buying asset " + secondAssetId);
 	let soldAssetId = firstAssetId;
@@ -293,7 +293,7 @@ test('xyk-pallet: Happy case scenario', async () => {
 	sell_price_local = calculate_sell_price_local(pool_balance_before[1], pool_balance_before[0], amount);
 	sell_price_rpc = await calculate_sell_price_rpc(pool_balance_before[1], pool_balance_before[0], amount);
 
-	expect(sell_price_local).toEqual(sell_price_rpc);
+	expect(sell_price_local).bnEqual(sell_price_rpc);
 
   testLog.getLog().info("Bob: selling asset " + secondAssetId + ", buying asset " + firstAssetId);
 	soldAssetId = secondAssetId;
@@ -350,7 +350,7 @@ test('xyk-pallet: Happy case scenario', async () => {
 	let buy_price_local = calculate_buy_price_local(pool_balance_before[0], pool_balance_before[1], amount);
 	let buy_price_rpc = await calculate_buy_price_rpc(pool_balance_before[0], pool_balance_before[1], amount);
 
-	expect(buy_price_local).toEqual(buy_price_rpc);
+	expect(buy_price_local).bnEqual(buy_price_rpc);
 
   testLog.getLog().info("Bob: buying asset " + secondAssetId + ", selling asset " + firstAssetId);
 	soldAssetId = firstAssetId;
@@ -407,7 +407,7 @@ test('xyk-pallet: Happy case scenario', async () => {
 	buy_price_local = calculate_buy_price_local(pool_balance_before[1], pool_balance_before[0], amount);
 	buy_price_rpc = await calculate_buy_price_rpc(pool_balance_before[1], pool_balance_before[0], amount);
 
-	expect(buy_price_local).toEqual(buy_price_rpc);
+	expect(buy_price_local).bnEqual(buy_price_rpc);
 
   testLog.getLog().info("Bob: buying asset " + firstAssetId + ", selling asset " + secondAssetId);
 	soldAssetId = secondAssetId;

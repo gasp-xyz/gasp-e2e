@@ -31,7 +31,7 @@ To point to the right environment or instance, you need to export the following 
 ---
 ####  Node tests ( UI )
 
-1. API_URL: UI tests need the API to do and setup some internal stuff.  `export API_URL=wss://staging.testnode.mangata.finance:9945`
+1. API_URL: UI tests need the API to do and setup some internal stuff.  `export API_URL='wss://staging.testnode.mangata.finance:9945'`
 2. UI_URL : UI tests need a UI to test with. Important that the tested UI  points to the same API_URL you exported before . `export UI_URL='https://staging.mangata.finance/'`
 3. MNEMONIC_META: In order to setup Metamask extension, we need the mnemonic for that account. This is available as a secret in Github .`export MNEMONIC_META='dismiss blabla bla .. trumpet' ` ( Ask Gonzalo :) )
 

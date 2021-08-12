@@ -75,7 +75,7 @@ export async function validateStatusWhenPoolCreated(firstCurrency: BN, secondCur
 
 	var total_liquidity_assets = await getAssetSupply(liquidity_asset_id);
 	expect(total_liquidity_assets_before.add(liquidity_assets_minted))
-		.toEqual(total_liquidity_assets);
+		.bnEqual(total_liquidity_assets);
 }
 
 export async function validateUnmodified(firstCurrency: BN, secondCurrency: BN, testUser1: User, pool_balance_before: BN[]) {
@@ -96,8 +96,8 @@ export async function validateTreasuryAmountsEqual(assetId : BN, treasuryExpecta
 	const treasuryAsset = await getTreasury(assetId);
 	const treasuryBurn = await getTreasuryBurn(assetId);
 	
-	expect(treasuryAsset).toEqual(expectedTreasury);
-	expect(treasuryBurn).toEqual(expectedTreasuryBurn);
+	expect(treasuryAsset).bnEqual(expectedTreasury);
+	expect(treasuryBurn).bnEqual(expectedTreasuryBurn);
 
 }
 
