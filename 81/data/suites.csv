@@ -1,0 +1,2 @@
+"Status","Start Time","Stop Time","Duration in ms","Parent Suite","Suite","Sub Suite","Test Class","Test Method","Name","Description"
+"passed","Thu Aug 12 00:11:12 GMT 2021","Thu Aug 12 00:12:54 GMT 2021","101905","","UI tests - Get Tokens from Faucet","","UI tests - Get Tokens from Faucet","As a User I can get test tokens from the faucet","As a User I can get test tokens from the faucet",""
