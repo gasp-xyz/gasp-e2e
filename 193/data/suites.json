@@ -1,0 +1,164 @@
+{
+  "uid" : "98d3104e051c652961429bf95fa0b5d6",
+  "children" : [ {
+    "name" : "test/sequential/xyk-pallet.test.ts",
+    "children" : [ {
+      "name" : "xyk-pallet: Happy case scenario",
+      "uid" : "32645849cfa8050",
+      "parentUid" : "7c932ff5fdb9624b56fc99866d13104d",
+      "status" : "passed",
+      "time" : {
+        "start" : 1628765008945,
+        "stop" : 1628765209618,
+        "duration" : 200673
+      },
+      "flaky" : false,
+      "newFailed" : false,
+      "parameters" : [ ]
+    }, {
+      "name" : "xyk-pallet: Liquidity sufficiency scenario",
+      "uid" : "9da15098cb2e95f8",
+      "parentUid" : "7c932ff5fdb9624b56fc99866d13104d",
+      "status" : "passed",
+      "time" : {
+        "start" : 1628765209618,
+        "stop" : 1628765515834,
+        "duration" : 306216
+      },
+      "flaky" : false,
+      "newFailed" : false,
+      "parameters" : [ ]
+    } ],
+    "uid" : "7c932ff5fdb9624b56fc99866d13104d"
+  }, {
+    "name" : "xyk-pallet - treasury tests [Mangata]: on treasury we store",
+    "children" : [ {
+      "name" : "assets won when assets are sold [Selling Mangata] - 5",
+      "uid" : "ad2ddbf6bbb7e630",
+      "parentUid" : "dd0c8d27829bd9fa6c614b8009117e89",
+      "status" : "passed",
+      "time" : {
+        "start" : 1628765518425,
+        "stop" : 1628765605399,
+        "duration" : 86974
+      },
+      "flaky" : false,
+      "newFailed" : false,
+      "parameters" : [ ]
+    }, {
+      "name" : "assets won when assets are bought [Buying Mangata]",
+      "uid" : "c7e4955bf90887c0",
+      "parentUid" : "dd0c8d27829bd9fa6c614b8009117e89",
+      "status" : "passed",
+      "time" : {
+        "start" : 1628765605399,
+        "stop" : 1628765695014,
+        "duration" : 89615
+      },
+      "flaky" : false,
+      "newFailed" : false,
+      "parameters" : [ ]
+    }, {
+      "name" : "assets won when assets are sold [Selling other in MGA pool] - 6",
+      "uid" : "ec946e25af0af819",
+      "parentUid" : "dd0c8d27829bd9fa6c614b8009117e89",
+      "status" : "passed",
+      "time" : {
+        "start" : 1628765695014,
+        "stop" : 1628765785979,
+        "duration" : 90965
+      },
+      "flaky" : false,
+      "newFailed" : false,
+      "parameters" : [ ]
+    }, {
+      "name" : "assets won when assets are bought [Buying other in MGA pool]",
+      "uid" : "ca8de91b9aee2337",
+      "parentUid" : "dd0c8d27829bd9fa6c614b8009117e89",
+      "status" : "passed",
+      "time" : {
+        "start" : 1628765785979,
+        "stop" : 1628765875571,
+        "duration" : 89592
+      },
+      "flaky" : false,
+      "newFailed" : false,
+      "parameters" : [ ]
+    } ],
+    "uid" : "dd0c8d27829bd9fa6c614b8009117e89"
+  }, {
+    "name" : "xyk-pallet - treasury tests [Connected - Mangata]: on treasury we store",
+    "children" : [ {
+      "name" : "assets won when assets are sold [Selling X connected to MGA pool] - 10",
+      "uid" : "948d29504447c032",
+      "parentUid" : "6f44ca105b926385238dffcbc4e2cf02",
+      "status" : "passed",
+      "time" : {
+        "start" : 1628765875578,
+        "stop" : 1628766001232,
+        "duration" : 125654
+      },
+      "flaky" : false,
+      "newFailed" : false,
+      "parameters" : [ ]
+    }, {
+      "name" : "assets won when assets are bought [Buying X connected to MGA pool]",
+      "uid" : "dc76b34907e630dc",
+      "parentUid" : "6f44ca105b926385238dffcbc4e2cf02",
+      "status" : "passed",
+      "time" : {
+        "start" : 1628766001232,
+        "stop" : 1628766126899,
+        "duration" : 125667
+      },
+      "flaky" : false,
+      "newFailed" : false,
+      "parameters" : [ ]
+    }, {
+      "name" : "assets won when assets are sold [Selling Y - X connected toMGA pool] - 6",
+      "uid" : "97d6d1e8da50e81b",
+      "parentUid" : "6f44ca105b926385238dffcbc4e2cf02",
+      "status" : "passed",
+      "time" : {
+        "start" : 1628766126899,
+        "stop" : 1628766259322,
+        "duration" : 132423
+      },
+      "flaky" : false,
+      "newFailed" : false,
+      "parameters" : [ ]
+    }, {
+      "name" : "assets won when assets are bought [Buying Y - X connected toMGA pool] - 6",
+      "uid" : "19e9bdb5452dd6da",
+      "parentUid" : "6f44ca105b926385238dffcbc4e2cf02",
+      "status" : "passed",
+      "time" : {
+        "start" : 1628766259322,
+        "stop" : 1628766384961,
+        "duration" : 125639
+      },
+      "flaky" : false,
+      "newFailed" : false,
+      "parameters" : [ ]
+    } ],
+    "uid" : "6f44ca105b926385238dffcbc4e2cf02"
+  }, {
+    "name" : "xyk-pallet - Sell Asset: validate Errors:",
+    "children" : [ {
+      "name" : "Bond operation locks some amount",
+      "uid" : "90bf7a7f88f00b3c",
+      "parentUid" : "51f864e0cd66a5f59a9db7c25597c6c7",
+      "status" : "passed",
+      "time" : {
+        "start" : 1628766439798,
+        "stop" : 1628766457182,
+        "duration" : 17384
+      },
+      "flaky" : false,
+      "newFailed" : false,
+      "parameters" : [ ]
+    } ],
+    "uid" : "51f864e0cd66a5f59a9db7c25597c6c7"
+  } ],
+  "name" : "suites"
+}
