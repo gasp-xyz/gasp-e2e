@@ -136,9 +136,9 @@ describe('xyk-rpc - calculate get_burn amount: RPC result matches with burn amou
 		expect(burnAmount.secondAssetAmount).toEqual(fromBNToUnitString(poolBefore[1].sub(poolAfter[1])));
 
 		expect(fromBNToUnitString(sudo.getAsset(firstAssetId)?.amountAfter!))
-									.bnEqual(burnAmount.firstAssetAmount);
+									.toEqual(burnAmount.firstAssetAmount);
 		expect(fromBNToUnitString(sudo.getAsset(secondAssetId)?.amountAfter.sub(sudo.getAsset(secondAssetId)?.amountBefore!)!))
-									.bnEqual(burnAmount.secondAssetAmount);
+									.toEqual(burnAmount.secondAssetAmount);
 
 	});
 });
