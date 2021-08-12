@@ -1,0 +1,52 @@
+{
+  "uid" : "9a98ee72f2992a76",
+  "name" : "validate get_burn_amount that matches with real burn operation",
+  "fullName" : "xyk-rpc - calculate get_burn amount: RPC result matches with burn amount.validate get_burn_amount that matches with real burn operation",
+  "historyId" : "60312bfde2d5e6b7027d81a22b65c70d",
+  "time" : {
+    "start" : 1628764081022,
+    "stop" : 1628764099753,
+    "duration" : 18731
+  },
+  "description" : "",
+  "descriptionHtml" : "",
+  "status" : "failed",
+  "statusMessage" : "TypeError: expected.eq is not a function",
+  "statusTrace" : "TypeError: expected.eq is not a function\n                    at Object.bnEqual (/home/goncer/projects/ghActions/actions-runner/_work/mangata-e2e/mangata-e2e/utils/setupJest.ts:15:29)\n                    at __EXTERNAL_MATCHER_TRAP__ (/home/goncer/projects/ghActions/actions-runner/_work/mangata-e2e/mangata-e2e/node_modules/expect/build/index.js:342:30)\n                    at Object.bnEqual (/home/goncer/projects/ghActions/actions-runner/_work/mangata-e2e/mangata-e2e/node_modules/expect/build/index.js:343:15)\n                    at Object.<anonymous> (/home/goncer/projects/ghActions/actions-runner/_work/mangata-e2e/mangata-e2e/test/parallel/xyk-rpc.calculate.burnAmount.test.ts:139:11)\n                    at processTicksAndRejections (internal/process/task_queues.js:95:5)",
+  "flaky" : false,
+  "newFailed" : false,
+  "beforeStages" : [ ],
+  "afterStages" : [ ],
+  "labels" : [ {
+    "name" : "suite",
+    "value" : "xyk-rpc - calculate get_burn amount: RPC result matches with burn amount"
+  }, {
+    "name" : "testClass",
+    "value" : "xyk-rpc - calculate get_burn amount: RPC result matches with burn amount"
+  }, {
+    "name" : "testMethod",
+    "value" : "validate get_burn_amount that matches with real burn operation"
+  }, {
+    "name" : "package",
+    "value" : "xyk-rpc - calculate get_burn amount: RPC result matches with burn amount"
+  }, {
+    "name" : "resultFormat",
+    "value" : "allure1"
+  } ],
+  "parameters" : [ ],
+  "links" : [ ],
+  "hidden" : false,
+  "retry" : false,
+  "extra" : {
+    "severity" : "normal",
+    "retries" : [ ],
+    "categories" : [ {
+      "name" : "Product defects",
+      "matchedStatuses" : [ ],
+      "flaky" : false
+    } ],
+    "tags" : [ ]
+  },
+  "source" : "9a98ee72f2992a76.json",
+  "parameterValues" : [ ]
+}
