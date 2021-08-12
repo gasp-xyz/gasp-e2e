@@ -52,7 +52,7 @@ test('xyk-pallet: Happy case scenario', async () => {
 	);
 	
 	let alice_assets = await getUserAssets(alice.address, [firstAssetId]);
-	expect(alice_assets).bnEqual([new BN(220000)]);
+	expect(alice_assets).toEqual([new BN(220000)]);
 
 
 	await waitNewBlock();
@@ -68,7 +68,7 @@ test('xyk-pallet: Happy case scenario', async () => {
 	);
 
 	alice_assets = await getUserAssets(alice.address, [secondAssetId]);
-	expect(alice_assets).bnEqual([new BN(120000)]);
+	expect(alice_assets).toEqual([new BN(120000)]);
 
 
   await waitNewBlock();

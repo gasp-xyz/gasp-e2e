@@ -55,8 +55,8 @@ describe('xyk-rpc - calculate get_burn amount: OK', () => {
 	('validate parameters - burn from pool [firstIdx->%s,secondIdx->%s,amount->%s,expected->%s]', async(firstIdx,secondIdx,amount, expected) => {
 		
 		const burnAmount = await get_burn_amount(dictAssets.get(firstIdx)!,dictAssets.get(secondIdx)!, amount);
-		expect(burnAmount.firstAssetAmount).bnEqual(expected);
-		expect(burnAmount.secondAssetAmount).bnEqual(expected);
+		expect(burnAmount.firstAssetAmount).toEqual(expected);
+		expect(burnAmount.secondAssetAmount).toEqual(expected);
 	});
 });
 
