@@ -48,19 +48,19 @@ export class User {
 
     validateWalletReduced(currencyId: BN, amount: BN){
         const diffFromWallet = this.getAsset(currencyId)?.amountBefore!.sub(amount);
-        expect(this.getAsset(currencyId)?.amountAfter!).toEqual(diffFromWallet);
+        expect(this.getAsset(currencyId)?.amountAfter!).bnEqual(diffFromWallet!);
     }
     validateWalletIncreased(currencyId: BN, amount: BN){
         const addFromWallet = this.getAsset(currencyId)?.amountBefore!.add(amount);
-        expect(this.getAsset(currencyId)?.amountAfter!).toEqual(addFromWallet);
+        expect(this.getAsset(currencyId)?.amountAfter!).bnEqual(addFromWallet!);
     }
     validateWalletEquals(currencyId: BN, amount: BN){
-        expect(this.getAsset(currencyId)?.amountAfter!).toEqual(amount);
+        expect(this.getAsset(currencyId)?.amountAfter!).bnEqual(amount);
     }
 
     validateWalletsUnmodified(){
         this.assets.forEach( asset => {
-            expect(asset.amountBefore).toEqual(asset.amountAfter);
+            expect(asset.amountBefore).bnEqual(asset.amountAfter);
         });
     };
 

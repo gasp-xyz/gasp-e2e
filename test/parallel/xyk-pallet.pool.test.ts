@@ -115,12 +115,12 @@ test('xyk-pallet - Pool tests: createPool', async () => {
 
 	let total_liquidity_assets = await getAssetSupply(liquidity_asset_id);
 	expect(total_liquidity_assets_before.add(liquidity_assets_minted))
-	.toEqual(total_liquidity_assets);
+	.bnEqual(total_liquidity_assets);
 
 	//Validate liquidity pool.
 	const liquidityPool = await getLiquidityPool(liquidity_asset_id);
-	expect(liquidityPool[0]).toEqual(firstCurrency);
-	expect(liquidityPool[1]).toEqual(secondCurrency);
+	expect(liquidityPool[0]).bnEqual(firstCurrency);
+	expect(liquidityPool[1]).bnEqual(secondCurrency);
 
 });
 

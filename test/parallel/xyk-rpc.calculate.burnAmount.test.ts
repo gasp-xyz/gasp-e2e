@@ -55,8 +55,8 @@ describe('xyk-rpc - calculate get_burn amount: OK', () => {
 	('validate parameters - burn from pool [firstIdx->%s,secondIdx->%s,amount->%s,expected->%s]', async(firstIdx,secondIdx,amount, expected) => {
 		
 		const burnAmount = await get_burn_amount(dictAssets.get(firstIdx)!,dictAssets.get(secondIdx)!, amount);
-		expect(burnAmount.firstAssetAmount).toEqual(expected);
-		expect(burnAmount.secondAssetAmount).toEqual(expected);
+		expect(burnAmount.firstAssetAmount).bnEqual(expected);
+		expect(burnAmount.secondAssetAmount).bnEqual(expected);
 	});
 });
 
@@ -136,9 +136,9 @@ describe('xyk-rpc - calculate get_burn amount: RPC result matches with burn amou
 		expect(burnAmount.secondAssetAmount).toEqual(fromBNToUnitString(poolBefore[1].sub(poolAfter[1])));
 
 		expect(fromBNToUnitString(sudo.getAsset(firstAssetId)?.amountAfter!))
-									.toEqual(burnAmount.firstAssetAmount);
+									.bnEqual(burnAmount.firstAssetAmount);
 		expect(fromBNToUnitString(sudo.getAsset(secondAssetId)?.amountAfter.sub(sudo.getAsset(secondAssetId)?.amountBefore!)!))
-									.toEqual(burnAmount.secondAssetAmount);
+									.bnEqual(burnAmount.secondAssetAmount);
 
 	});
 });

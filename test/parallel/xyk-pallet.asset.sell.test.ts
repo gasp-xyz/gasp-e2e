@@ -118,7 +118,7 @@ test('xyk-pallet - AssetsOperation: sellAsset [minAmountOut = 0], sell an alread
 	const traseureAndBurn  = new BN(10).mul(new BN(2));
 	let sellPriceLocal = calculate_sell_price_local(poolBalanceBefore[1], poolBalanceBefore[0], amount);
 	let sellPriceRpc = await calculate_sell_price_rpc(poolBalanceBefore[1], poolBalanceBefore[0], amount);
-	expect(sellPriceLocal).toEqual(sellPriceRpc);
+	expect(sellPriceLocal).bnEqual(sellPriceRpc);
 
 	soldAssetId = secondCurrency;
 	boughtAssetId = firstCurrency;

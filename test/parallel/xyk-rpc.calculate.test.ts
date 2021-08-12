@@ -67,11 +67,11 @@ test('xyk-rpc - calculate_sell_price and calculate_buy_price matches, 1000,1000'
 	let buyPriceRpcInverse = await calculate_buy_price_rpc(poolBalanceBefore[1], poolBalanceBefore[0], sellPriceRpc);
 
 	//in a perfect balanced pool, those number match
-	expect(sellPriceRpcInverse).toEqual(sellPriceRpc);
-	expect(buyPriceRpc).toEqual(buyPriceRpcInverse);
+	expect(sellPriceRpcInverse).bnEqual(sellPriceRpc);
+	expect(buyPriceRpc).bnEqual(buyPriceRpcInverse);
 
 	//the relation of buy and sell is maintained.
-	expect(buyPriceRpc).toEqual(numberOfAssets);
+	expect(buyPriceRpc).bnEqual(numberOfAssets);
 	
 });
 
@@ -89,12 +89,12 @@ test('xyk-rpc - calculate_sell_price and calculate_buy_price matches, 2000,1000'
 	let buyPriceRpcInverse = await calculate_buy_price_rpc(poolBalanceBefore[1], poolBalanceBefore[0], sellPriceRpc);
 
 	//in a not perfect balanced pool, those number can not match
-	expect(sellPriceRpcInverse).not.toEqual(sellPriceRpc);
-	expect(buyPriceRpc).not.toEqual(buyPriceRpcInverse);
+	expect(sellPriceRpcInverse).not.bnEqual(sellPriceRpc);
+	expect(buyPriceRpc).not.bnEqual(buyPriceRpcInverse);
 
 	//the relation of buy and sell is maintained.
 	//because of rounding, we need to expend one unit more
-	expect(buyPriceRpc.add(new BN(1))).toEqual(numberOfAssets);
+	expect(buyPriceRpc.add(new BN(1))).bnEqual(numberOfAssets);
 	
 });
 
@@ -109,8 +109,8 @@ test('xyk-rpc - calculate_sell_price matches with the real sell', async() => {
 	const assetsSold = testUser1.getAsset(firstCurrency)?.amountAfter;
 	const assetsBought = testUser1.getAsset(secondCurrency)?.amountAfter;
 
-	expect(assetsSold).toEqual(testUser1.getAsset(firstCurrency)?.amountBefore.sub(numberOfAssets));
-	expect(assetsBought).toEqual(testUser1.getAsset(secondCurrency)?.amountBefore.add(sellPriceRpc));
+	expect(assetsSold).bnEqual(testUser1.getAsset(firstCurrency)?.amountBefore.sub(numberOfAssets)!);
+	expect(assetsBought).bnEqual(testUser1.getAsset(secondCurrency)?.amountBefore.add(sellPriceRpc)!);
 	
 });
 

@@ -61,8 +61,8 @@ describe('xyk-rpc - calculate_buy_price_by_id, calculate_sell_price_by_id', () =
 		const poolBalance = await getBalanceOfPool(dictAssets.get(soldTokenId)!, dictAssets.get(boughtTokenId)!);
 		const priceBuy = await calculate_buy_price_id_rpc(dictAssets.get(soldTokenId)!,dictAssets.get(boughtTokenId)!, amount);
 		const priceBuyNoIds = await calculate_buy_price_rpc(poolBalance[0],poolBalance[1], amount);
-		expect(priceBuyNoIds).toEqual(priceBuy);
-		expect(priceBuy).toEqual(expected);
+		expect(priceBuyNoIds).bnEqual(priceBuy);
+		expect(priceBuy).bnEqual(expected);
 	
 	});
 
@@ -80,8 +80,8 @@ describe('xyk-rpc - calculate_buy_price_by_id, calculate_sell_price_by_id', () =
 		const poolBalance = await getBalanceOfPool(dictAssets.get(soldTokenId)!, dictAssets.get(boughtTokenId)!);
 		const priceBuy = await calculate_sell_price_id_rpc(dictAssets.get(soldTokenId)!,dictAssets.get(boughtTokenId)!, amount);
 		const priceBuyNoIds = await calculate_sell_price_rpc(poolBalance[0],poolBalance[1], amount);
-		expect(priceBuyNoIds).toEqual(priceBuy);
-		expect(priceBuy).toEqual(expected);
+		expect(priceBuyNoIds).bnEqual(priceBuy);
+		expect(priceBuy).bnEqual(expected);
 	
 	});
 

@@ -85,7 +85,7 @@ describe('xyk-pallet - Burn liquidity tests: when burning liquidity you can', ()
 		);
 
 		const liqId = await getLiquidityAssetId(firstCurrency, secondCurrency);
-		expect(liqId).toEqual(new BN(-1));
+		expect(liqId).bnEqual(new BN(-1));
 		let poolBalance = await getBalanceOfPool(firstCurrency,secondCurrency);
 		await testUser1.refreshAmounts(AssetWallet.AFTER);
 		testUser1.validateWalletEquals(firstCurrency,amountOfX.add(new BN(assetXamount)));
@@ -97,11 +97,11 @@ describe('xyk-pallet - Burn liquidity tests: when burning liquidity you can', ()
 
 		//Validate liquidity pool is destroyed.
 		const liquidityPool = await getLiquidityPool(liquidityAssetId);
-		expect(liquidityPool[0]).toEqual(new BN(-1));
-		expect(liquidityPool[1]).toEqual(new BN(-1));
+		expect(liquidityPool[0]).bnEqual(new BN(-1));
+		expect(liquidityPool[1]).bnEqual(new BN(-1));
 
-		expect(liquidityPoolBeforeDestroy[0]).toEqual(firstCurrency);
-		expect(liquidityPoolBeforeDestroy[1]).toEqual(secondCurrency);
+		expect(liquidityPoolBeforeDestroy[0]).bnEqual(firstCurrency);
+		expect(liquidityPoolBeforeDestroy[1]).bnEqual(secondCurrency);
 		
 	});
 

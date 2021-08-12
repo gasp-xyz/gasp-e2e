@@ -124,7 +124,7 @@ test('xyk-pallet - AssetsOperation: buyAsset [maxAmountIn = 1M], sell a bought a
 	let poolBalanceBefore = await getBalanceOfPool(secondCurrency, firstCurrency);
 	let buyPriceLocal = calculate_buy_price_local(poolBalanceBefore[0], poolBalanceBefore[1], amount);
 	let buypriceRpc = await calculate_buy_price_rpc(poolBalanceBefore[0], poolBalanceBefore[1], amount);
-	expect(buyPriceLocal).toEqual(buypriceRpc);
+	expect(buyPriceLocal).bnEqual(buypriceRpc);
 
 	await testUser1.refreshAmounts(AssetWallet.BEFORE);
 	await testUser2.refreshAmounts(AssetWallet.BEFORE);

@@ -88,8 +88,8 @@ describe('xyk-pallet - treasury tests [Mangata]: on treasury we store', () => {
 		const treasuryAfter = await getTreasury(mgaTokenId);
 		const treasuryBurnAfter = await getTreasuryBurn(mgaTokenId);
 
-		expect(treasuryAfter).toEqual(treasuryBefore.add(new BN(5)));
-		expect(treasuryBurnAfter).toEqual(treasuryBurnBefore);
+		expect(treasuryAfter).bnEqual(treasuryBefore.add(new BN(5)));
+		expect(treasuryBurnAfter).bnEqual(treasuryBurnBefore);
 		await validateTreasuryAmountsEqual(secondCurrency,[new BN(0),new BN(0)]);
 		
 	});
@@ -117,8 +117,8 @@ describe('xyk-pallet - treasury tests [Mangata]: on treasury we store', () => {
 		const treasuryAfter = await getTreasury(mgaTokenId);
 		const treasuryBurnAfter = await getTreasuryBurn(mgaTokenId);
 
-		expect(treasuryAfter).toEqual(treasuryBefore.add(new BN(3)));
-		expect(treasuryBurnAfter).toEqual(treasuryBurnBefore);
+		expect(treasuryAfter).bnEqual(treasuryBefore.add(new BN(3)));
+		expect(treasuryBurnAfter).bnEqual(treasuryBurnBefore);
 		await validateTreasuryAmountsEqual(secondCurrency,[new BN(0),new BN(0)]);
 	});
 
@@ -148,8 +148,8 @@ describe('xyk-pallet - treasury tests [Mangata]: on treasury we store', () => {
 		const treasuryAfter = await getTreasury(mgaTokenId);
 		const treasuryBurnAfter = await getTreasuryBurn(mgaTokenId);
 
-		expect(treasuryAfter).toEqual(treasuryBefore.add(new BN(6)));
-		expect(treasuryBurnAfter).toEqual(treasuryBurnBefore);
+		expect(treasuryAfter).bnEqual(treasuryBefore.add(new BN(6)));
+		expect(treasuryBurnAfter).bnEqual(treasuryBurnBefore);
 		await validateTreasuryAmountsEqual(secondCurrency,[new BN(0),new BN(0)]);
 		
 	});
@@ -178,8 +178,8 @@ describe('xyk-pallet - treasury tests [Mangata]: on treasury we store', () => {
 		const treasuryAfter = await getTreasury(mgaTokenId);
 		const treasuryBurnAfter = await getTreasuryBurn(mgaTokenId);
 
-	   	expect(treasuryAfter).toEqual(treasuryBefore.add(new BN(16)));
-		expect(treasuryBurnAfter).toEqual(treasuryBurnBefore);
+	   	expect(treasuryAfter).bnEqual(treasuryBefore.add(new BN(16)));
+		expect(treasuryBurnAfter).bnEqual(treasuryBurnBefore);
 		await validateTreasuryAmountsEqual(secondCurrency,[new BN(0),new BN(0)]);
 		
 	});
@@ -276,10 +276,10 @@ describe('xyk-pallet - treasury tests [Connected - Mangata]: on treasury we stor
 		const treasuryBurnAfter = await getTreasuryBurn(mgaTokenId);
 
 
-		expect(treasuryAfter).toEqual(treasuryBefore.add(swapTreasuryInMG));
+		expect(treasuryAfter).bnEqual(treasuryBefore.add(swapTreasuryInMG));
 		
 		//burned destroyed! because is translated toMGA
-		expect(treasuryBurnAfter).toEqual(treasuryBurnBefore);
+		expect(treasuryBurnAfter).bnEqual(treasuryBurnBefore);
 		await validateTreasuryAmountsEqual(indirectlyConnected,[new BN(0),new BN(0)]);
 		
 	});
@@ -314,10 +314,10 @@ describe('xyk-pallet - treasury tests [Connected - Mangata]: on treasury we stor
 		const treasuryAfter = await getTreasury(mgaTokenId);
 		const treasuryBurnAfter = await getTreasuryBurn(mgaTokenId);
 
-		expect(treasuryAfter).toEqual(treasuryBefore.add(swapTreasuryInMG));
+		expect(treasuryAfter).bnEqual(treasuryBefore.add(swapTreasuryInMG));
 		
 		//burned destroyed! because is translated toMGA
-		expect(treasuryBurnAfter).toEqual(treasuryBurnBefore);
+		expect(treasuryBurnAfter).bnEqual(treasuryBurnBefore);
 		await validateTreasuryAmountsEqual(indirectlyConnected,[new BN(0),new BN(0)]);
 
 	});
@@ -351,10 +351,10 @@ describe('xyk-pallet - treasury tests [Connected - Mangata]: on treasury we stor
 
 		const swapTreasuryInMG = calculate_sell_price_local_no_fee(mgPoolAmount[0], mgPoolAmount[1],  new BN(6));
 
-		expect(treasuryAfter).toEqual(treasuryBefore.add(swapTreasuryInMG));
+		expect(treasuryAfter).bnEqual(treasuryBefore.add(swapTreasuryInMG));
 		
 		//burned destroyed! because is translated toMGA
-		expect(treasuryBurnAfter).toEqual(treasuryBurnBefore);
+		expect(treasuryBurnAfter).bnEqual(treasuryBurnBefore);
 		await validateTreasuryAmountsEqual(indirectlyConnected,[new BN(0),new BN(0)]);
 		
 	});
@@ -388,9 +388,9 @@ describe('xyk-pallet - treasury tests [Connected - Mangata]: on treasury we stor
 
 		const swapTreasuryInMG = calculate_sell_price_local_no_fee(mgPoolAmount[0], mgPoolAmount[1],  new BN(7));
 
-		expect(treasuryAfter).toEqual(treasuryBefore.add(swapTreasuryInMG));
+		expect(treasuryAfter).bnEqual(treasuryBefore.add(swapTreasuryInMG));
 		//burned destroyed! because is translated toMGA
-		expect(treasuryBurnAfter).toEqual(treasuryBurnBefore);
+		expect(treasuryBurnAfter).bnEqual(treasuryBurnBefore);
 		await validateTreasuryAmountsEqual(indirectlyConnected,[new BN(0),new BN(0)]);
 		
 	});
