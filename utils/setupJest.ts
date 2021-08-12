@@ -13,7 +13,7 @@ declare global {
 expect.extend({
     bnEqual(expected : BN, received : BN, message = '') {
       const pass = expected.eq(received);
-      const [expectedMsg, receivedMsg ] = expected.bitLength() < 53 &&  received.bitLength() < 53 ? [ expected.toNumber(), received.toNumber() ] : [ expected.toJSON(), received.toJSON() ];
+      const [expectedMsg, receivedMsg ] = expected.bitLength() < 53 &&  received.bitLength() < 53 ? [ expected.toNumber(), received.toNumber() ] : [ expected.toString(), received.toString() ];
 
       if (pass) {
         return {
