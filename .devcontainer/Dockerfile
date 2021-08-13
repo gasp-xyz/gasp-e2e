@@ -20,10 +20,7 @@ RUN su node -c "npm install -g jest jest-allure"
 
 # Export variables
 ENV TEST_PALLET_ADDRESS='5EYCAe5XGPRojsCSi9p1ZZQ5qgeJGFcTxPxrsFRzkASu6bT2'
-ENV TEST_SUDO_NAME='//Maciatko'
 ENV API_URL='ws://node_alice:9944'
 ENV TEST_USER_NAME='//Alice'
 ENV LOG_INFO='info'
 ENV UI_URL='https://staging.mangata.finance/'
-ENV MNEMONIC_POLK='dismiss addict reduce fitness install aisle creek they seek palace stereo trumpet' 
-ENV MNEMONIC_META='escape quiz cereal ribbon eagle appear replace hub inside raccoon control addict'
