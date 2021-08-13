@@ -53,4 +53,5 @@ There exist a possibility to run test pointing to a dockerized setup. You only n
 2. Point to that node ( ip can be obtained from the docker-compose) exporting `API_URL='ws://172.16.238.10:9944`.`
 3. Run any test `yarn test-sequential`.
 
-
+### Reports reports reports!
+https://mangata-finance.github.io/mangata-e2e
