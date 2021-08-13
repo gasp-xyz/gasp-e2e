@@ -43,7 +43,7 @@ jobs:
         run: sleep 5s #we need to sleep to avoid block Number 0.
         shell: bash
       - name: Run e2e tests
-        run: yarn ${{ env.TEST_SCRIPT }}
+        run: yarn ${{ env.TEST_SCRIPT }} --coverage --coverageDirectory='coverage'
       
       - name: Test Report
         uses: dorny/test-reporter@v1
@@ -59,6 +59,13 @@ jobs:
         with:
           name: TestReport
           path: reports/html-report/report.html
+
+      - name: Archive coverage files
+        uses: actions/upload-artifact@v2
+        if: success() || failure()
+        with:
+          name: Coverage
+          path: coverage/
 
       - name: Get Allure history
         uses: actions/checkout@v2
@@ -97,6 +104,11 @@ jobs:
             state: 'success'
             sha: ${{ github.event.pull_request.head.sha  || github.sha }}
             target_url: 'https://mangata-finance.github.io/mangata-e2e/${{ github.run_number }}'
+      
+      - name: Coverage
+        uses: artiomtr/jest-coverage-report-action@v2.0-rc.1
+        with:
+          coverage-file: ./coverage/coverage-final.json
 
       - name: Stop Containers
         if: always()
