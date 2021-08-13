@@ -3,7 +3,7 @@ import { calcuate_mint_liquidity_price_local, calcuate_burn_liquidity_price_loca
 import {waitNewBlock, ExtrinsicResult} from '../../utils/eventListeners'
 import BN from 'bn.js'
 import { Keyring } from '@polkadot/api'
-import { getEnvironmentRequiredVars } from "../../utils/utils";
+import { calculateLiqAssetAmount, getEnvironmentRequiredVars } from "../../utils/utils";
 import { getEventResultFromTxWait } from "../../utils/txHandler";
 import { testLog } from "../../utils/Logger";
 
@@ -99,7 +99,7 @@ test('xyk-pallet: Happy case scenario', async () => {
 	);
     
 	let liquidity_asset_id = await getLiquidityAssetId(firstAssetId, secondAssetId);
-	let liquidity_assets_minted = first_asset_amount.add(second_asset_amount);
+	let liquidity_assets_minted = calculateLiqAssetAmount(first_asset_amount, second_asset_amount);
 	alice_assets = await getUserAssets(alice.address, [firstAssetId, secondAssetId, liquidity_asset_id]);
 	expect	([	alice_assets_before[0].sub(first_asset_amount),	alice_assets_before[1].sub(second_asset_amount),	alice_assets_before[2].add(liquidity_assets_minted)	])
 	.toEqual(alice_assets);
@@ -692,7 +692,7 @@ test('xyk-pallet: Liquidity sufficiency scenario', async () => {
 	);	
 
 	let liquidity_asset_id = await getLiquidityAssetId(firstAssetId, secondAssetId);
-	let liquidity_assets_minted = first_asset_amount.add(second_asset_amount);
+	let liquidity_assets_minted = calculateLiqAssetAmount(first_asset_amount, second_asset_amount);
 	alice_assets = await getUserAssets(alice.address, [firstAssetId, secondAssetId, liquidity_asset_id]);
 	expect	([	alice_assets_before[0].sub(first_asset_amount),	alice_assets_before[1].sub(second_asset_amount),	alice_assets_before[2].add(liquidity_assets_minted)	])
 	.toEqual(alice_assets);
