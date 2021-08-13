@@ -1,22 +1,22 @@
 {
-  "uid" : "98d3104e051c652961429bf95fa0b5d6",
+  "uid" : "83edc06c07f9ae9e47eb6dd1b683e4e2",
   "children" : [ {
     "name" : "UI tests - Get Tokens from Faucet",
     "children" : [ {
       "name" : "As a User I can get test tokens from the faucet",
-      "uid" : "62ac3cd07b0b3f9c",
-      "parentUid" : "7f01ef1c38b8c53ee90c160ef83936f7",
+      "uid" : "3722a6983f4b4fc8",
+      "parentUid" : "e0b92ad8f9649540b463b21b6e90d991",
       "status" : "passed",
       "time" : {
-        "start" : 1628813517166,
-        "stop" : 1628813587040,
-        "duration" : 69874
+        "start" : 1628856464317,
+        "stop" : 1628856553061,
+        "duration" : 88744
       },
       "flaky" : false,
       "newFailed" : false,
       "parameters" : [ ]
     } ],
-    "uid" : "7f01ef1c38b8c53ee90c160ef83936f7"
+    "uid" : "e0b92ad8f9649540b463b21b6e90d991"
   } ],
-  "name" : "suites"
+  "name" : "packages"
 }
