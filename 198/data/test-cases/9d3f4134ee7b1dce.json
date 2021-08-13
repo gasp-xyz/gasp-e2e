@@ -1,0 +1,66 @@
+{
+  "uid" : "9d3f4134ee7b1dce",
+  "name" : "Bond operation locks some amount",
+  "fullName" : "xyk-pallet - Sell Asset: validate Errors:.Bond operation locks some amount",
+  "historyId" : "2c3dad72504039bdda0c53211c41ab65",
+  "time" : {
+    "start" : 1628824141445,
+    "stop" : 1628824158860,
+    "duration" : 17415
+  },
+  "description" : "",
+  "descriptionHtml" : "",
+  "status" : "passed",
+  "flaky" : false,
+  "newFailed" : false,
+  "beforeStages" : [ ],
+  "afterStages" : [ ],
+  "labels" : [ {
+    "name" : "suite",
+    "value" : "xyk-pallet - Sell Asset: validate Errors:"
+  }, {
+    "name" : "testClass",
+    "value" : "xyk-pallet - Sell Asset: validate Errors:"
+  }, {
+    "name" : "testMethod",
+    "value" : "Bond operation locks some amount"
+  }, {
+    "name" : "package",
+    "value" : "xyk-pallet - Sell Asset: validate Errors:"
+  }, {
+    "name" : "resultFormat",
+    "value" : "allure1"
+  } ],
+  "parameters" : [ ],
+  "links" : [ ],
+  "hidden" : false,
+  "retry" : false,
+  "extra" : {
+    "severity" : "normal",
+    "retries" : [ ],
+    "categories" : [ ],
+    "history" : {
+      "statistic" : {
+        "failed" : 0,
+        "broken" : 0,
+        "skipped" : 0,
+        "passed" : 2,
+        "unknown" : 0,
+        "total" : 2
+      },
+      "items" : [ {
+        "uid" : "74764f64c5b798c7",
+        "reportUrl" : "https://mangata-finance.github.io/mangata-e2e/197//#testresult/74764f64c5b798c7",
+        "status" : "passed",
+        "time" : {
+          "start" : 1628821957037,
+          "stop" : 1628821975747,
+          "duration" : 18710
+        }
+      } ]
+    },
+    "tags" : [ ]
+  },
+  "source" : "9d3f4134ee7b1dce.json",
+  "parameterValues" : [ ]
+}
