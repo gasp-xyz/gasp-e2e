@@ -106,6 +106,7 @@ jobs:
             target_url: 'https://mangata-finance.github.io/mangata-e2e/${{ github.run_number }}'
       
       - name: Coverage
+        if: ${{ github.event == 'pull_request' }}
         uses: artiomtr/jest-coverage-report-action@v2.0-rc.1
         with:
           coverage-file: ./coverage/coverage-final.json
