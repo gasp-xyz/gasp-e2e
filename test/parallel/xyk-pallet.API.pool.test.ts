@@ -6,7 +6,7 @@ import { Keyring } from '@polkadot/api'
 import {AssetWallet, User} from "../../utils/User";
 import { validateAssetsWithValues, validatePoolCreatedEvent, validateStatusWhenPoolCreated } from "../../utils/validators";
 import { Assets } from "../../utils/Assets";
-import { getEnvironmentRequiredVars } from "../../utils/utils";
+import { calculateLiqAssetAmount, getEnvironmentRequiredVars } from "../../utils/utils";
 import { getEventResultFromTxWait } from "../../utils/txHandler";
 import { testLog } from "../../utils/Logger";
 
@@ -178,11 +178,11 @@ describe('xyk-pallet - Pool tests: a pool can:', () => {
 			);	
 		
 		var liquidity_asset_id = await getLiquidityAssetId(firstCurrency, secondCurrency);
-		var liquidity_assets_minted = first_asset_amount.add(second_asset_amount);
+		var liquidity_assets_minted = calculateLiqAssetAmount(first_asset_amount, second_asset_amount);
 		testUser2.addAsset(liquidity_asset_id, new BN(0));
 		await testUser2.refreshAmounts(AssetWallet.AFTER);
 
-		await testUser2.validateWalletIncreased(liquidity_asset_id, new BN(10000));
+		await testUser2.validateWalletIncreased(liquidity_asset_id, new BN(5000));
 		await testUser2.validateWalletReduced(firstCurrency, new BN(5000));
 		await testUser2.validateWalletReduced(secondCurrency, new BN(5000).add(new BN(1)));
 		//TODO: pending to validate.
@@ -192,7 +192,7 @@ describe('xyk-pallet - Pool tests: a pool can:', () => {
 		.toEqual(pool_balance);
 	
 		var total_liquidity_assets = await getAssetSupply(liquidity_asset_id);
-		expect(liquidity_assets_minted.add(new BN(10000)))
+		expect(liquidity_assets_minted.add(new BN(5000)))
 		.toEqual(total_liquidity_assets);
 
 	});
@@ -207,15 +207,16 @@ describe('xyk-pallet - Pool tests: a pool can:', () => {
 				expect(eventResponse.state).toEqual(ExtrinsicResult.ExtrinsicSuccess);
 			}
 		);
+		await testUser2.refreshAmounts(AssetWallet.BEFORE);
 
 		var liquidity_asset_id = await getLiquidityAssetId(firstCurrency, secondCurrency);
-		var liquidity_assets_minted = first_asset_amount.add(second_asset_amount);
+		var liquidity_assets_minted = calculateLiqAssetAmount(first_asset_amount,second_asset_amount);
 
 		testUser2.addAsset(liquidity_asset_id, new BN(0));
 		await testUser2.refreshAmounts(AssetWallet.BEFORE);
 		
 		testLog.getLog().info("User: burn liquidity " + firstCurrency + " - " + secondCurrency);
-		await burnLiquidity(testUser2.keyRingPair, firstCurrency, secondCurrency, new BN(5000))
+		await burnLiquidity(testUser2.keyRingPair, firstCurrency, secondCurrency, new BN(2500))
 		.then(
 			(result) => {
 				const eventResponse = getEventResultFromTxWait(result, ["xyk", "LiquidityBurned", testUser2.keyRingPair.address]);
@@ -225,24 +226,24 @@ describe('xyk-pallet - Pool tests: a pool can:', () => {
 		
 		
 		await testUser2.refreshAmounts(AssetWallet.AFTER);
-		await testUser2.validateWalletReduced(liquidity_asset_id, new BN(5000));
+		await testUser2.validateWalletReduced(liquidity_asset_id, new BN(2500));
 		await testUser2.validateWalletIncreased(firstCurrency, new BN(2500));
 		await testUser2.validateWalletIncreased(secondCurrency, new BN(2500));
 		//TODO: pending to validate.
 		var pool_balance = await getBalanceOfPool(firstCurrency, secondCurrency);
 		expect	([	new BN(first_asset_amount).add(new BN(2500)),	
 					new BN(second_asset_amount).add(new BN(2500).add(new BN(1)))	])
-		.toEqual(pool_balance);
+		.collectionBnEqual(pool_balance);
 	
 		var total_liquidity_assets = await getAssetSupply(liquidity_asset_id);
-		expect(liquidity_assets_minted.add(new BN(5000)))
+		expect(liquidity_assets_minted.add(new BN(2500)))
 		.toEqual(total_liquidity_assets);
 	});
 
 	afterEach(async () => {
 		// those values must not change.
 		var liquidity_asset_id = await getLiquidityAssetId(firstCurrency, secondCurrency);
-		var liquidity_assets_minted = first_asset_amount.add(second_asset_amount);
+		var liquidity_assets_minted = calculateLiqAssetAmount(first_asset_amount,second_asset_amount);
 	
 		testUser1.addAsset(liquidity_asset_id, new BN(0));
 		//validate

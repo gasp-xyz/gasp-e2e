@@ -6,7 +6,7 @@ import { Keyring } from '@polkadot/api'
 import {AssetWallet, User} from "../../utils/User";
 import { validateMintedLiquidityEvent, validateTreasuryAmountsEqual } from "../../utils/validators";
 import { Assets } from "../../utils/Assets";
-import { getEnvironmentRequiredVars } from "../../utils/utils";
+import { calculateLiqAssetAmount, getEnvironmentRequiredVars, sleep } from "../../utils/utils";
 import { getEventResultFromTxWait, signSendAndWaitToFinishTx } from "../../utils/txHandler";
 
 const {sudo:sudoUserName} = getEnvironmentRequiredVars();
@@ -60,7 +60,7 @@ describe('xyk-pallet - Burn liquidity tests: when burning liquidity you can', ()
 		keyring.addPair(testUser2.keyRingPair);
 		[firstCurrency, secondCurrency] = await Assets.setupUserWithCurrencies(testUser1, [assetXamount,assetYamount], sudo);
 		await testUser1.addMGATokens(sudo);
-		//lets create a pool with equal balances
+		//lets create a pool
 		await signSendAndWaitToFinishTx( 
 			api?.tx.xyk.createPool(firstCurrency, new BN(assetXamount), secondCurrency,new BN(assetYamount)), 
 			testUser1.keyRingPair 
@@ -72,18 +72,19 @@ describe('xyk-pallet - Burn liquidity tests: when burning liquidity you can', ()
 		await testUser2.addMGATokens(sudo);
 		const amountOfX = calculate_buy_price_local(new BN(assetXamount),new BN(assetYamount),new BN(9));
 		await sudo.mint(firstCurrency,testUser2,amountOfX);
+		//user2 exange some assets.
 		await testUser2.buyAssets(firstCurrency,secondCurrency, new BN(9), amountOfX.add(new BN(1)));
 		await testUser1.refreshAmounts(AssetWallet.BEFORE);
-
-		
-		await burnLiquidity(testUser1.keyRingPair, firstCurrency, secondCurrency, new BN(assetXamount.add(assetYamount)))
+		const ownedLiquidityAssets = calculateLiqAssetAmount(assetXamount, assetYamount);
+		//user1 can still burn all the assets, eventhough pool got modified.
+		await burnLiquidity(testUser1.keyRingPair, firstCurrency, secondCurrency, ownedLiquidityAssets)
 		.then(
 			(result) => {
 				const eventResponse = getEventResultFromTxWait(result, ["xyk", "LiquidityBurned", testUser1.keyRingPair.address]);
 				expect(eventResponse.state).toEqual(ExtrinsicResult.ExtrinsicSuccess);
 			}
 		);
-
+		waitNewBlock(true); //lets wait one block until liquidity asset Id gets destroyed. Avoid flakiness ;)
 		const liqId = await getLiquidityAssetId(firstCurrency, secondCurrency);
 		expect(liqId).bnEqual(new BN(-1));
 		let poolBalance = await getBalanceOfPool(firstCurrency,secondCurrency);
@@ -91,10 +92,8 @@ describe('xyk-pallet - Burn liquidity tests: when burning liquidity you can', ()
 		testUser1.validateWalletEquals(firstCurrency,amountOfX.add(new BN(assetXamount)));
 		testUser1.validateWalletEquals(secondCurrency,new BN(1));
 
-		expect([new BN(0),new BN(0)]).toEqual(poolBalance);
+		expect([new BN(0),new BN(0)]).collectionBnEqual(poolBalance);
 		
-
-
 		//Validate liquidity pool is destroyed.
 		const liquidityPool = await getLiquidityPool(liquidityAssetId);
 		expect(liquidityPool[0]).bnEqual(new BN(-1));

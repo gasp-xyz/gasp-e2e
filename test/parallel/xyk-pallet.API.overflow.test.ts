@@ -26,7 +26,7 @@ describe('xyk-pallet - Check operations are not executed because of overflow in 
 	var secondCurrency :BN;
 
 
-	beforeAll( async () => {
+	beforeEach( async () => {
 		try {
 			getApi();
 		  } catch(e) {
@@ -52,20 +52,20 @@ describe('xyk-pallet - Check operations are not executed because of overflow in 
 		await testUser1.refreshAmounts(AssetWallet.BEFORE);
 
 	});
-	test('Create pool of [MAX,1]: OverFlow [a+b] - liquidityAsset calculation', async () => {
+	test('Create pool of [MAX,MAX]: OverFlow [a+b] - liquidityAsset calculation', async () => {
 		await waitNewBlock();
-
-		await createPool(testUser1.keyRingPair ,secondCurrency, new BN(1), firstCurrency, MAX_BALANCE)
+        await sudo.mint(secondCurrency,testUser1, new BN(1));
+        //UPDATE: Liq assets  = asset1 /2 + asset2/2.
+		await createPool(testUser1.keyRingPair ,secondCurrency, MAX_BALANCE, firstCurrency, MAX_BALANCE)
 		.then(
 			(result) => {
 					const eventResponse = getEventResultFromTxWait(result);
-					expect(eventResponse.state).toEqual(ExtrinsicResult.ExtrinsicFailed);
-					expect(eventResponse.data).toEqual(XyzErrorCodes.MathOverflow);				
+					expect(eventResponse.state).toEqual(ExtrinsicResult.ExtrinsicSuccess);
 			}
 		);	
         const poolBalances = await getBalanceOfPool(firstCurrency,secondCurrency);
-        expect(poolBalances[0]).bnEqual(new BN(0));
-        expect(poolBalances[1]).bnEqual(new BN(0));
+        expect(poolBalances[0]).bnEqual(MAX_BALANCE);
+        expect(poolBalances[1]).bnEqual(MAX_BALANCE);
 
 	});	
     test('Transfer [MAX] assets to other user when that user has 1 asset. Max+1 => overflow.', async () => {

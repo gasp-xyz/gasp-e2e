@@ -2,7 +2,7 @@ import BN from "bn.js";
 import { EventResult, ExtrinsicResult } from "./eventListeners";
 import { getAssetSupply, getBalanceOfPool, getLiquidityAssetId, getTreasury, getTreasuryBurn } from "./tx";
 import { AssetWallet, User } from "./User";
-import { fromBNToUnitString } from "./utils";
+import { calculateLiqAssetAmount, fromBNToUnitString } from "./utils";
 
 export function validateTransactionSucessful(eventResult: EventResult, tokensAmount: number, user : User) {
 	expect(eventResult.state).toEqual(ExtrinsicResult.ExtrinsicSuccess);
@@ -54,7 +54,7 @@ export function validateMintedLiquidityEvent(result: EventResult, address: strin
 
 export async function validateStatusWhenPoolCreated(firstCurrency: BN, secondCurrency: BN, testUser1: User, pool_balance_before: BN[], total_liquidity_assets_before: BN, first_asset_amount:BN = new BN(50000), second_asset_amount:BN = new BN(50000)) {
 	var liquidity_asset_id = await getLiquidityAssetId(firstCurrency, secondCurrency);
-	var liquidity_assets_minted = first_asset_amount.add(second_asset_amount);
+	var liquidity_assets_minted = calculateLiqAssetAmount(first_asset_amount, second_asset_amount);
 
 	testUser1.addAsset(liquidity_asset_id, new BN(0));
 
@@ -66,12 +66,12 @@ export async function validateStatusWhenPoolCreated(firstCurrency: BN, secondCur
 	var pool_balance = await getBalanceOfPool(firstCurrency, secondCurrency);
 	expect([pool_balance_before[0].add(first_asset_amount),
 	pool_balance_before[1].add(second_asset_amount)])
-		.toEqual(pool_balance);
+		.collectionBnEqual(pool_balance);
 
 	const balance = await getBalanceOfPool(secondCurrency, firstCurrency);
 	expect([pool_balance_before[0].add(first_asset_amount),
 	pool_balance_before[1].add(second_asset_amount)])
-		.toEqual([balance[1], balance[0]]);
+		.collectionBnEqual([balance[1], balance[0]]);
 
 	var total_liquidity_assets = await getAssetSupply(liquidity_asset_id);
 	expect(total_liquidity_assets_before.add(liquidity_assets_minted))

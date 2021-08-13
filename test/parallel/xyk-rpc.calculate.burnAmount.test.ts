@@ -47,10 +47,10 @@ describe('xyk-rpc - calculate get_burn amount: OK', () => {
 	//now with the dict indexes we do the testing.
 	//ie, pool1, assets(0 and 1) in the dictionary, requesting amount of 0 , we expect 1. Weird.
 	test.each([
-		[0,1,new BN(1000),'500.0000 pUnit'],		
-		[1,0,new BN(1000),'500.0000 pUnit'],		
-		[0,1,new BN(10000),'5.0000 nUnit'],		
-		[0,1,new BN(100000),'50.0000 nUnit']		
+		[0,1,new BN(1000),'1.0000 nUnit'],		
+		[1,0,new BN(1000),'1.0000 nUnit'],		
+		[0,1,new BN(10000),'10.0000 nUnit'],		
+		[0,1,new BN(100000),'100.0000 nUnit']		
 	])
 	('validate parameters - burn from pool [firstIdx->%s,secondIdx->%s,amount->%s,expected->%s]', async(firstIdx,secondIdx,amount, expected) => {
 		

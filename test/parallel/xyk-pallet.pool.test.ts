@@ -6,7 +6,7 @@ import { Keyring } from '@polkadot/api'
 import {AssetWallet, User} from "../../utils/User";
 import { validateAssetsWithValues, validateEmptyAssets } from "../../utils/validators";
 import { Assets } from "../../utils/Assets";
-import { getEnvironmentRequiredVars } from "../../utils/utils";
+import { calculateLiqAssetAmount, getEnvironmentRequiredVars } from "../../utils/utils";
 import { getEventResultFromTxWait } from "../../utils/txHandler";
 import { testLog } from "../../utils/Logger";
 
@@ -88,7 +88,7 @@ test('xyk-pallet - Pool tests: createPool', async () => {
 	);
 
 	let liquidity_asset_id = await getLiquidityAssetId(firstCurrency, secondCurrency);
-	let liquidity_assets_minted = first_asset_amount.add(second_asset_amount);
+	let liquidity_assets_minted = calculateLiqAssetAmount(first_asset_amount, second_asset_amount);
 
 	testUser1.addAsset(liquidity_asset_id, new BN(0));
 	testUser2.addAsset(liquidity_asset_id, new BN(0));
