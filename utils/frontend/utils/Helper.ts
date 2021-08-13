@@ -39,6 +39,7 @@ export async function setupAllExtensions(driver: WebDriver){
     await sleep(2000);
     await polkadotExtension.acceptPermissions();
     
+    await metaMaskExtension.connect();
     return {polkUserAddress: polkUserAddress}
     
 }
