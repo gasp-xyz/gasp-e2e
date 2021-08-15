@@ -44,11 +44,20 @@
       "failed" : 0,
       "broken" : 0,
       "skipped" : 0,
-      "passed" : 2,
+      "passed" : 3,
       "unknown" : 0,
-      "total" : 2
+      "total" : 3
     },
     "items" : [ {
+      "uid" : "903a416e497bbe6d",
+      "reportUrl" : "https://mangata-finance.github.io/mangata-e2e/87//#testresult/903a416e497bbe6d",
+      "status" : "passed",
+      "time" : {
+        "start" : 1628986336280,
+        "stop" : 1628986410913,
+        "duration" : 74633
+      }
+    }, {
       "uid" : "56618d25a321197f",
       "reportUrl" : "https://mangata-finance.github.io/mangata-e2e/86//#testresult/56618d25a321197f",
       "status" : "passed",
