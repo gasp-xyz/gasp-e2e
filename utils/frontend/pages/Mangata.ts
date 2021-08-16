@@ -11,6 +11,8 @@ const DIV_ASSETS_ITEM = `//div[@class='assets']/div[@class='AssetBox']`
 const DIV_MGA_ASSETS_ITEM_VALUE = `//div[@class = 'AssetBox' and //*[text()='MGA']]/span[@class='value']`
 const DIV_MGA_SWAP = `//*[@class='Swap']`
 const DIV_MGA_LOGO = `//*[contains(@class,'bg-mangata-logo')]`
+const BTN_SELECT_TOKENS = `//*[text() = 'Select Token' ]`;
+const LI_TOKEN_ELEM = `//*[@class = 'assets' ]/ul/li`;
 
 const {uiUri} = getEnvironmentRequiredVars();
 
@@ -52,4 +54,14 @@ export class Mangata {
     async isLogoDisplayed() {
         return await (await this.driver.findElement(By.xpath(DIV_MGA_LOGO))).isDisplayed()
     }
+    async clickOnSelectTokens() {
+        await clickElement(this.driver,BTN_SELECT_TOKENS);
+    }
+    async getAvailableTokenList() {
+        const elements = await this.driver.findElements(By.xpath(LI_TOKEN_ELEM));
+        const promises = elements.map( listItem => listItem.getText() );
+        const tokenListTexts = await Promise.all(promises);
+        return tokenListTexts;
+    }
+
 }
