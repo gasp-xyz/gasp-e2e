@@ -1,0 +1,75 @@
+{
+  "uid" : "396a1b3b8ead0592",
+  "name" : "assets won when assets are sold [Selling X connected to MGA pool] - 10",
+  "fullName" : "xyk-pallet - treasury tests [Connected - Mangata]: on treasury we store.assets won when assets are sold [Selling X connected to MGA pool] - 10",
+  "historyId" : "6c8f67b14cd2e20f6120723d8e7bec7",
+  "time" : {
+    "start" : 1629115428883,
+    "stop" : 1629115555774,
+    "duration" : 126891
+  },
+  "description" : "",
+  "descriptionHtml" : "",
+  "status" : "passed",
+  "flaky" : false,
+  "newFailed" : false,
+  "beforeStages" : [ ],
+  "afterStages" : [ ],
+  "labels" : [ {
+    "name" : "suite",
+    "value" : "xyk-pallet - treasury tests [Connected - Mangata]: on treasury we store"
+  }, {
+    "name" : "testClass",
+    "value" : "xyk-pallet - treasury tests [Connected - Mangata]: on treasury we store"
+  }, {
+    "name" : "testMethod",
+    "value" : "assets won when assets are sold [Selling X connected to MGA pool] - 10"
+  }, {
+    "name" : "package",
+    "value" : "xyk-pallet - treasury tests [Connected - Mangata]: on treasury we store"
+  }, {
+    "name" : "resultFormat",
+    "value" : "allure1"
+  } ],
+  "parameters" : [ ],
+  "links" : [ ],
+  "hidden" : false,
+  "retry" : false,
+  "extra" : {
+    "severity" : "normal",
+    "retries" : [ ],
+    "categories" : [ ],
+    "history" : {
+      "statistic" : {
+        "failed" : 0,
+        "broken" : 0,
+        "skipped" : 0,
+        "passed" : 3,
+        "unknown" : 0,
+        "total" : 3
+      },
+      "items" : [ {
+        "uid" : "e41f3437f6630b34",
+        "reportUrl" : "https://mangata-finance.github.io/mangata-e2e/203//#testresult/e41f3437f6630b34",
+        "status" : "passed",
+        "time" : {
+          "start" : 1629093883620,
+          "stop" : 1629094009110,
+          "duration" : 125490
+        }
+      }, {
+        "uid" : "dfe490da81c73afa",
+        "reportUrl" : "https://mangata-finance.github.io/mangata-e2e/202//#testresult/dfe490da81c73afa",
+        "status" : "passed",
+        "time" : {
+          "start" : 1628887770797,
+          "stop" : 1628887897723,
+          "duration" : 126926
+        }
+      } ]
+    },
+    "tags" : [ ]
+  },
+  "source" : "396a1b3b8ead0592.json",
+  "parameterValues" : [ ]
+}
