@@ -6,7 +6,7 @@ import { Keyring } from '@polkadot/api'
 import {AssetWallet, User} from "../../utils/User";
 import { validateMintedLiquidityEvent, validateTreasuryAmountsEqual } from "../../utils/validators";
 import { Assets } from "../../utils/Assets";
-import { calculateLiqAssetAmount, getEnvironmentRequiredVars, sleep } from "../../utils/utils";
+import { calculateLiqAssetAmount, getEnvironmentRequiredVars} from "../../utils/utils";
 import { getEventResultFromTxWait, signSendAndWaitToFinishTx } from "../../utils/txHandler";
 
 const {sudo:sudoUserName} = getEnvironmentRequiredVars();
