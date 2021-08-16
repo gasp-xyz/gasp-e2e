@@ -9,11 +9,12 @@ const BTN_GET_TOKENS = `//button[contains(text(), 'Get Tokens')] `;
 const DIV_ASSETS_ITEM = `//div[@class='assets']/div[@class='AssetBox']`
 //const DIV_ASSETS_ITEM_VALUE = `${DIV_ASSETS_ITEM}/span[@class ='value']`
 const DIV_MGA_ASSETS_ITEM_VALUE = `//div[@class = 'AssetBox' and //*[text()='MGA']]/span[@class='value']`
+const DIV_MGA_SWAP = `//*[@class='Swap']`
+const DIV_MGA_LOGO = `//*[contains(@class,'bg-mangata-logo')]`
 
 const {uiUri} = getEnvironmentRequiredVars();
 
 export class Mangata {
-
 
     driver: WebDriver;
     
@@ -42,5 +43,13 @@ export class Mangata {
         await waitForElement(this.driver, DIV_MGA_ASSETS_ITEM_VALUE);
         const value = await (await this.driver.findElement(By.xpath(DIV_MGA_ASSETS_ITEM_VALUE))).getText();
         return value;
+    }
+
+    async isSwapFrameDisplayed() {
+        return await (await this.driver.findElement(By.xpath(DIV_MGA_SWAP))).isDisplayed()
+    }
+    
+    async isLogoDisplayed() {
+        return await (await this.driver.findElement(By.xpath(DIV_MGA_LOGO))).isDisplayed()
     }
 }
