@@ -7,6 +7,23 @@ This project has been created to test individual and combined API functionalitie
 2. Clone the code
 3. Run `yarn` in the root folder.
 4. Install Jest test framework globally. `yarn global add  jest -g `
+
+### Setup with Dev Container
+1. Install `docker`, `docker-compose`, and `vscode`
+2. Install the `ms-vscode-remote.remote-containers` vscode extension
+3. Run `docker-compose -f devops/dockerfiles/docker-compose.yml up` in a seperate terminal
+4. Open the repo in vscode and click 'Reopen in container' or `ctrl+shift+p` and search for _Remote-Containers: Open Folder in Container_
+
+#### Working with Dev Containers
+Basically all system and project dependencies should be added to `.devcontainer/Dockerfile` so all developer dependencies are tracked in version control and available to anyone. 
+
+#### Troubleshooting
+So somehow we now have essentially a distributed system for developing and that brings its own problems. If you get stuck, tear down chain running in docker-compose, spin it back up, and rebuild the devcontainer. 
+1. Close vscode
+2. `docker-compose -f devops/dockerfiles/docker-compose.yml down`
+3. `docker-compose -f devops/dockerfiles/docker-compose.yml up`
+4. Re-open vscode
+5. `ctrl+shift+p` and search for _Remote-Containers: Rebuild and Reopen in Container_
 ---
 ###  How to build
 1. `npm run build`
