@@ -34,14 +34,17 @@ export const DriverBuilder = (function () {
       return driver;
     }
     
-    let driver: WebDriver;
+    let driver: WebDriver| undefined;
     return {
       
-      getInstance: async function (withExtensions = true) {
+      getInstance: async function (withExtensions = true) : Promise<WebDriver> {
         if (!driver) {
             driver = await buildChromeDriver(withExtensions);
         }
-        return driver;
+        return driver!;
+      },
+      destroy : async function (){
+        driver = undefined;
       }
     }
 })();
