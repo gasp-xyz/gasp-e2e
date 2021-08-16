@@ -1,5 +1,4 @@
 import { WebDriver } from "selenium-webdriver";
-import { getApi, initApi } from "../../utils/api";
 import { Mangata } from "../../utils/frontend/pages/Mangata";
 import {DriverBuilder} from "../../utils/frontend/utils/Driver";
 import {takeScreenshot} from "../../utils/frontend/utils/Helper";

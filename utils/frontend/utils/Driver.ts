@@ -29,7 +29,7 @@ export const DriverBuilder = (function () {
           .withCapabilities(caps)
           .build();
       
-      await driver.manage().window().maximize();
+      await driver!.manage().window().maximize();
       
       return driver;
     }
