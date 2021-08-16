@@ -1,0 +1,90 @@
+{
+  "uid" : "4b4757e66a1912dae1a509f688f20b0f",
+  "children" : [ {
+    "name" : "Product defects",
+    "children" : [ {
+      "name" : "Error: Expected: 10000308571000000000000 \n                  Actual: 10000308571000125007201 \n                 ",
+      "children" : [ {
+        "name" : "xyk-pallet - MGA tokens are substracted as fee : CreatePool",
+        "uid" : "f9384a2ca63cce12",
+        "parentUid" : "fe421ce7b08a2a62b9117418f4574d25",
+        "status" : "failed",
+        "time" : {
+          "start" : 1629125713250,
+          "stop" : 1629125768101,
+          "duration" : 54851
+        },
+        "flaky" : false,
+        "newFailed" : false,
+        "parameters" : [ ]
+      }, {
+        "name" : "xyk-pallet - MGA tokens are substracted as fee : MintLiquidity",
+        "uid" : "5997b4b9c7eec75c",
+        "parentUid" : "fe421ce7b08a2a62b9117418f4574d25",
+        "status" : "failed",
+        "time" : {
+          "start" : 1629125768101,
+          "stop" : 1629125785427,
+          "duration" : 17326
+        },
+        "flaky" : false,
+        "newFailed" : false,
+        "parameters" : [ ]
+      } ],
+      "uid" : "fe421ce7b08a2a62b9117418f4574d25"
+    }, {
+      "name" : "Error: Expected: 10000308571000000000000 \n                  Actual: 10000308571000125007185 \n                 ",
+      "children" : [ {
+        "name" : "xyk-pallet - MGA tokens are substracted as fee : BurnLiquidity",
+        "uid" : "f10b85443e868e2f",
+        "parentUid" : "83823e99b3ab32249fb34cff8a547c93",
+        "status" : "failed",
+        "time" : {
+          "start" : 1629125785427,
+          "stop" : 1629125804121,
+          "duration" : 18694
+        },
+        "flaky" : false,
+        "newFailed" : false,
+        "parameters" : [ ]
+      } ],
+      "uid" : "83823e99b3ab32249fb34cff8a547c93"
+    }, {
+      "name" : "Error: Expected: 10000308571000000000000 \n                  Actual: 10000308571000395910681 \n                 ",
+      "children" : [ {
+        "name" : "xyk-pallet - MGA tokens are substracted as fee : Transfer",
+        "uid" : "21c0ea6eb1136f7a",
+        "parentUid" : "749aec5216ab89b302b16197ad72e7d8",
+        "status" : "failed",
+        "time" : {
+          "start" : 1629125804121,
+          "stop" : 1629125821424,
+          "duration" : 17303
+        },
+        "flaky" : false,
+        "newFailed" : false,
+        "parameters" : [ ]
+      } ],
+      "uid" : "749aec5216ab89b302b16197ad72e7d8"
+    }, {
+      "name" : "Error: Expected: 10000308571000000000000 \n                  Actual: 10000308571000398731296 \n                 ",
+      "children" : [ {
+        "name" : "xyk-pallet - MGA tokens are substracted as fee : TransferAll",
+        "uid" : "c8b5e29303de4eb7",
+        "parentUid" : "d5136c6df752cf835c7c80a795ce1800",
+        "status" : "failed",
+        "time" : {
+          "start" : 1629125821424,
+          "stop" : 1629125857348,
+          "duration" : 35924
+        },
+        "flaky" : false,
+        "newFailed" : false,
+        "parameters" : [ ]
+      } ],
+      "uid" : "d5136c6df752cf835c7c80a795ce1800"
+    } ],
+    "uid" : "8fb3a91ba5aaf9de24cc8a92edc82b5d"
+  } ],
+  "name" : "categories"
+}

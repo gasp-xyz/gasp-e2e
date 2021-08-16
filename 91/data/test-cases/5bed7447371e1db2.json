@@ -1,0 +1,46 @@
+{
+  "uid" : "5bed7447371e1db2",
+  "name" : "validate parameters - get_burn from not generated pool [soldTokenId->0,boughtTokenId->1,amount->1000,expected->0]",
+  "fullName" : "xyk-rpc - calculate get_burn amount: Missing requirements.validate parameters - get_burn from not generated pool [soldTokenId->0,boughtTokenId->1,amount->1000,expected->0]",
+  "historyId" : "1744d0c95625b6a751a5bd10c4787f24",
+  "time" : {
+    "start" : 1629125731841,
+    "stop" : 1629125731890,
+    "duration" : 49
+  },
+  "description" : "",
+  "descriptionHtml" : "",
+  "status" : "passed",
+  "flaky" : false,
+  "newFailed" : false,
+  "beforeStages" : [ ],
+  "afterStages" : [ ],
+  "labels" : [ {
+    "name" : "suite",
+    "value" : "xyk-rpc - calculate get_burn amount: Missing requirements"
+  }, {
+    "name" : "testClass",
+    "value" : "xyk-rpc - calculate get_burn amount: Missing requirements"
+  }, {
+    "name" : "testMethod",
+    "value" : "validate parameters - get_burn from not generated pool [soldTokenId->0,boughtTokenId->1,amount->1000,expected->0]"
+  }, {
+    "name" : "package",
+    "value" : "xyk-rpc - calculate get_burn amount: Missing requirements"
+  }, {
+    "name" : "resultFormat",
+    "value" : "allure1"
+  } ],
+  "parameters" : [ ],
+  "links" : [ ],
+  "hidden" : false,
+  "retry" : false,
+  "extra" : {
+    "severity" : "normal",
+    "retries" : [ ],
+    "categories" : [ ],
+    "tags" : [ ]
+  },
+  "source" : "5bed7447371e1db2.json",
+  "parameterValues" : [ ]
+}
