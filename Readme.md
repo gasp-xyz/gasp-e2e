@@ -21,7 +21,7 @@ Basically all system and project dependencies should be added to `.devcontainer/
 So somehow we now have essentially a distributed system for developing and that brings its own problems. If you get stuck, tear down chain running in docker-compose, spin it back up, and rebuild the devcontainer. 
 1. Close vscode
 2. `docker-compose -f devops/dockerfiles/docker-compose.yml down`
-3. `docker-compose -f devops/dockerfiles/docker-compose.yml down`
+3. `docker-compose -f devops/dockerfiles/docker-compose.yml up`
 4. Re-open vscode
 5. `ctrl+shift+p` and search for _Remote-Containers: Rebuild and Reopen in Container_
 ---
