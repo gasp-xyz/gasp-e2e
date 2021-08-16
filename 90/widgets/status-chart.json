@@ -1,0 +1,11 @@
+[ {
+  "uid" : "a0af0c6df08a60a9",
+  "name" : "As a User I can get test tokens from the faucet",
+  "time" : {
+    "start" : 1629115705184,
+    "stop" : 1629115795248,
+    "duration" : 90064
+  },
+  "status" : "passed",
+  "severity" : "normal"
+} ]
