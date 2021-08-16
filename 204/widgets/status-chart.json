@@ -1,0 +1,111 @@
+[ {
+  "uid" : "306ec81e32a13eaa",
+  "name" : "assets won when assets are sold [Selling X connected to MGA pool] - 10",
+  "time" : {
+    "start" : 1629115471653,
+    "stop" : 1629115597122,
+    "duration" : 125469
+  },
+  "status" : "passed",
+  "severity" : "normal"
+}, {
+  "uid" : "2fa69ee3e04e8b13",
+  "name" : "assets won when assets are sold [Selling other in MGA pool] - 6",
+  "time" : {
+    "start" : 1629115291420,
+    "stop" : 1629115380823,
+    "duration" : 89403
+  },
+  "status" : "passed",
+  "severity" : "normal"
+}, {
+  "uid" : "6c8a70626a89ce00",
+  "name" : "assets won when assets are bought [Buying Mangata]",
+  "time" : {
+    "start" : 1629115195230,
+    "stop" : 1629115291420,
+    "duration" : 96190
+  },
+  "status" : "passed",
+  "severity" : "normal"
+}, {
+  "uid" : "a9cd52348f744921",
+  "name" : "assets won when assets are bought [Buying Y - X connected toMGA pool] - 6",
+  "time" : {
+    "start" : 1629115854825,
+    "stop" : 1629115981670,
+    "duration" : 126845
+  },
+  "status" : "passed",
+  "severity" : "normal"
+}, {
+  "uid" : "24dc9513c6f833f0",
+  "name" : "xyk-pallet: Liquidity sufficiency scenario",
+  "time" : {
+    "start" : 1629114800062,
+    "stop" : 1629115105781,
+    "duration" : 305719
+  },
+  "status" : "passed",
+  "severity" : "normal"
+}, {
+  "uid" : "bb4abd5ae3db68ce",
+  "name" : "xyk-pallet: Happy case scenario",
+  "time" : {
+    "start" : 1629114604414,
+    "stop" : 1629114800062,
+    "duration" : 195648
+  },
+  "status" : "passed",
+  "severity" : "normal"
+}, {
+  "uid" : "356a376be1d13e2d",
+  "name" : "assets won when assets are sold [Selling Mangata] - 5",
+  "time" : {
+    "start" : 1629115108138,
+    "stop" : 1629115195230,
+    "duration" : 87092
+  },
+  "status" : "passed",
+  "severity" : "normal"
+}, {
+  "uid" : "70d6560d109cb2da",
+  "name" : "assets won when assets are sold [Selling Y - X connected toMGA pool] - 6",
+  "time" : {
+    "start" : 1629115723974,
+    "stop" : 1629115854825,
+    "duration" : 130851
+  },
+  "status" : "passed",
+  "severity" : "normal"
+}, {
+  "uid" : "df2ee9e9911ea692",
+  "name" : "Bond operation locks some amount",
+  "time" : {
+    "start" : 1629116035075,
+    "stop" : 1629116053800,
+    "duration" : 18725
+  },
+  "status" : "passed",
+  "severity" : "normal"
+}, {
+  "uid" : "1306834f6c7c880e",
+  "name" : "assets won when assets are bought [Buying X connected to MGA pool]",
+  "time" : {
+    "start" : 1629115597122,
+    "stop" : 1629115723974,
+    "duration" : 126852
+  },
+  "status" : "passed",
+  "severity" : "normal"
+}, {
+  "uid" : "f117a135ee4936d3",
+  "name" : "assets won when assets are bought [Buying other in MGA pool]",
+  "time" : {
+    "start" : 1629115380823,
+    "stop" : 1629115471647,
+    "duration" : 90824
+  },
+  "status" : "passed",
+  "severity" : "normal"
+} ]
