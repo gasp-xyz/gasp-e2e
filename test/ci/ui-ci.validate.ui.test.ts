@@ -16,16 +16,6 @@ let driver: WebDriver;
 describe('UI tests: Infra', () => {
 
 
-    beforeAll( async () => {
-        
-        try {
-            getApi();
-          } catch(e) {
-            await initApi();
-        }
-
-	});
-
     beforeEach( async () => {
 
         driver = await DriverBuilder.getInstance(false);
@@ -62,7 +52,6 @@ describe('UI tests: Infra', () => {
         const session = await driver.getSession();
         await takeScreenshot(driver, expect.getState().currentTestName + " - " + session);
         await driver.quit();
-        const api = getApi();
-        await api.disconnect();
+        await DriverBuilder.destroy();
     });
 });
