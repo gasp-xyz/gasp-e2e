@@ -1,0 +1,43 @@
+{
+  "uid" : "4b4757e66a1912dae1a509f688f20b0f",
+  "children" : [ {
+    "name" : "Product defects",
+    "children" : [ {
+      "name" : "Error: expect(received).toEqual(expected) // deep equality\n                \n                - Expected  - 1\n                + Received  + 1\n                \n                  Array [\n                    \"029810\",\n                    \"011170\",\n                -   \"0186a0\",\n                +   \"c350\",\n                  ]",
+      "children" : [ {
+        "name" : "xyk-pallet: Happy case scenario",
+        "uid" : "933da9e156410519",
+        "parentUid" : "fb128aa6bc7f0efbf38025e34d400c6e",
+        "status" : "failed",
+        "time" : {
+          "start" : 1629189011535,
+          "stop" : 1629189067098,
+          "duration" : 55563
+        },
+        "flaky" : true,
+        "newFailed" : true,
+        "parameters" : [ ]
+      } ],
+      "uid" : "fb128aa6bc7f0efbf38025e34d400c6e"
+    }, {
+      "name" : "Error: expect(received).toEqual(expected) // deep equality\n                \n                - Expected  - 1\n                + Received  + 1\n                \n                  Array [\n                    \"9c40\",\n                    \"9c40\",\n                -   \"01d4c0\",\n                +   \"ea60\",\n                  ]",
+      "children" : [ {
+        "name" : "xyk-pallet: Liquidity sufficiency scenario",
+        "uid" : "a50266bad380ea78",
+        "parentUid" : "6570ef9e114b33499484db0d39e57fc0",
+        "status" : "failed",
+        "time" : {
+          "start" : 1629189067098,
+          "stop" : 1629189157896,
+          "duration" : 90798
+        },
+        "flaky" : true,
+        "newFailed" : true,
+        "parameters" : [ ]
+      } ],
+      "uid" : "6570ef9e114b33499484db0d39e57fc0"
+    } ],
+    "uid" : "8fb3a91ba5aaf9de24cc8a92edc82b5d"
+  } ],
+  "name" : "categories"
+}
