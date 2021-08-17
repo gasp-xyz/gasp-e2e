@@ -1,3 +1,9 @@
+/*
+ * @group parallel
+ * @group api
+ * 
+ */
+
 import {getApi, initApi} from "../../utils/api";
 import { getBalanceOfPool, getCurrentNonce, getLiquidityAssetId, signTx} from '../../utils/tx'
 import {waitNewBlock} from '../../utils/eventListeners'

@@ -1,3 +1,9 @@
+/*
+ * @group parallel
+ * @group api
+ * 
+ */
+
 import {getApi, initApi} from "../../utils/api";
 import { burnLiquidity, createPool, mintLiquidity, transferAll, transferAsset} from '../../utils/tx'
 import {waitNewBlock} from '../../utils/eventListeners'

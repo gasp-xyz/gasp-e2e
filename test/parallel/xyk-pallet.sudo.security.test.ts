@@ -1,3 +1,9 @@
+/*
+ * @group parallel
+ * @group sudo
+ * 
+ */
+
 import {getApi, initApi} from "../../utils/api";
 import { getCurrentNonce} from '../../utils/tx'
 import {ExtrinsicResult, waitNewBlock} from '../../utils/eventListeners'

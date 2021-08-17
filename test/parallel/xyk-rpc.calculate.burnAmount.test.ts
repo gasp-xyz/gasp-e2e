@@ -1,3 +1,8 @@
+/*
+ * @group parallel
+ * @group calculate
+ */
+
 import {getApi, initApi} from "../../utils/api";
 import { burnLiquidity, getBalanceOfPool, get_burn_amount} from '../../utils/tx'
 import BN from 'bn.js'

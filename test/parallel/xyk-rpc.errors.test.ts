@@ -1,3 +1,9 @@
+/*
+ * @group parallel
+ * @group errors
+ * 
+ */
+
 import {getApi, initApi} from "../../utils/api";
 import { calculate_buy_price_id_rpc, calculate_buy_price_rpc, calculate_sell_price_rpc} from '../../utils/tx'
 import BN from 'bn.js'

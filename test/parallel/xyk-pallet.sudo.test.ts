@@ -1,3 +1,9 @@
+/*
+ * @group parallel
+ * @group sudo
+ * 
+ */
+
 import {getApi, initApi} from "../../utils/api";
 import { getUserAssets, getSudoKey, sudoIssueAsset} from '../../utils/tx'
 import {waitNewBlock} from '../../utils/eventListeners'

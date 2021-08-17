@@ -1,3 +1,9 @@
+/*
+ * @group sequential
+ * @group api
+ * 
+ */
+
 import {api, getApi, initApi} from "../../utils/api";
 import { sellAsset, getTreasury, getTreasuryBurn, getAssetId, getBalanceOfPool, calculate_sell_price_local_no_fee, buyAsset} from '../../utils/tx'
 import {waitNewBlock, ExtrinsicResult} from '../../utils/eventListeners'

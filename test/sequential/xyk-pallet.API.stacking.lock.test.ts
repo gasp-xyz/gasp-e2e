@@ -1,3 +1,8 @@
+/*
+ * @group sequential
+ * @group api
+ * 
+ */
 
 import {api, getApi, initApi} from "../../utils/api";
 import { getLock} from '../../utils/tx'

@@ -1,3 +1,9 @@
+/*
+ * @group parallel
+ * @group liquidity
+ * 
+ */
+
 import {getApi, initApi} from "../../utils/api";
 import { calcuate_mint_liquidity_price_local, calcuate_burn_liquidity_price_local, getBalanceOfPool, getLiquidityAssetId, getAssetSupply, mintLiquidity, burnLiquidity} from '../../utils/tx'
 import {waitNewBlock, ExtrinsicResult} from '../../utils/eventListeners'
