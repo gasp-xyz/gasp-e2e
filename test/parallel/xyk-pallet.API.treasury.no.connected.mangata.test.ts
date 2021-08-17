@@ -70,7 +70,7 @@ describe('xyk-pallet - treasury tests [No Mangata]: on treasury we store', () =>
 		await sellAsset(testUser1.keyRingPair, secondCurrency, firstCurrency, sellAssetAmount, new BN(1))
 		.then(
 			(result) => {
-				const eventResponse = getEventResultFromTxWait(result, ["xyk", "AssetsSwapped", '14', testUser1.keyRingPair.address]);
+				const eventResponse = getEventResultFromTxWait(result, ["xyk", "AssetsSwapped", testUser1.keyRingPair.address]);
 				expect(eventResponse.state).toEqual(ExtrinsicResult.ExtrinsicSuccess);
 			}
 		);
@@ -91,7 +91,7 @@ describe('xyk-pallet - treasury tests [No Mangata]: on treasury we store', () =>
 		await sellAsset(testUser1.keyRingPair, firstCurrency, secondCurrency, sellAssetAmount, new BN(1))
 		.then(
 			(result) => {
-				const eventResponse = getEventResultFromTxWait(result, ["xyk", "AssetsSwapped", '14', testUser1.keyRingPair.address]);
+				const eventResponse = getEventResultFromTxWait(result, ["xyk", "AssetsSwapped", testUser1.keyRingPair.address]);
 				expect(eventResponse.state).toEqual(ExtrinsicResult.ExtrinsicSuccess);
 			}
 		);
@@ -113,7 +113,7 @@ describe('xyk-pallet - treasury tests [No Mangata]: on treasury we store', () =>
 		await buyAsset(testUser1.keyRingPair, firstCurrency, secondCurrency, buyAssetAmount, new BN(100000000))
 		.then(
 			(result) => {
-				const eventResponse = getEventResultFromTxWait(result, ["xyk", "AssetsSwapped", '14', testUser1.keyRingPair.address]);
+				const eventResponse = getEventResultFromTxWait(result, ["xyk", "AssetsSwapped", testUser1.keyRingPair.address]);
 				expect(eventResponse.state).toEqual(ExtrinsicResult.ExtrinsicSuccess);
 			}
 		);
@@ -136,7 +136,7 @@ describe('xyk-pallet - treasury tests [No Mangata]: on treasury we store', () =>
 		await buyAsset(testUser1.keyRingPair, firstCurrency, secondCurrency, buyAssetAmount, new BN(100000000))
 		.then(
 			(result) => {
-				const eventResponse = getEventResultFromTxWait(result, ["xyk", "AssetsSwapped", '14', testUser1.keyRingPair.address]);
+				const eventResponse = getEventResultFromTxWait(result, ["xyk", "AssetsSwapped", testUser1.keyRingPair.address]);
 				expect(eventResponse.state).toEqual(ExtrinsicResult.ExtrinsicSuccess);
 			}
 		);

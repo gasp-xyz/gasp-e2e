@@ -104,7 +104,7 @@ describe('xyk-pallet - treasury tests [Mangata]: on treasury we store', () => {
 		await buyAsset(testUser1.keyRingPair, secondCurrency, mgaTokenId, buyAssetAmount, new BN(100000000))
 		.then(
 			(result) => {
-				const eventResponse = getEventResultFromTxWait(result, ["xyk", "AssetsSwapped", '14', testUser1.keyRingPair.address]);
+				const eventResponse = getEventResultFromTxWait(result, ["xyk", "AssetsSwapped", testUser1.keyRingPair.address]);
 				expect(eventResponse.state).toEqual(ExtrinsicResult.ExtrinsicSuccess);
 			}
 		);
@@ -133,7 +133,7 @@ describe('xyk-pallet - treasury tests [Mangata]: on treasury we store', () => {
 		await sellAsset(testUser1.keyRingPair, secondCurrency, mgaTokenId, sellAssetAmount, new BN(1))
 		.then(
 			(result) => {
-				const eventResponse = getEventResultFromTxWait(result, ["xyk", "AssetsSwapped", '14', testUser1.keyRingPair.address]);
+				const eventResponse = getEventResultFromTxWait(result, ["xyk", "AssetsSwapped", testUser1.keyRingPair.address]);
 				expect(eventResponse.state).toEqual(ExtrinsicResult.ExtrinsicSuccess);
 			}
 		);
@@ -165,7 +165,7 @@ describe('xyk-pallet - treasury tests [Mangata]: on treasury we store', () => {
 		await buyAsset(testUser1.keyRingPair, mgaTokenId, secondCurrency, buyAssetAmount, new BN(100000000))
 		.then(
 			(result) => {
-				const eventResponse = getEventResultFromTxWait(result, ["xyk", "AssetsSwapped", '14', testUser1.keyRingPair.address]);
+				const eventResponse = getEventResultFromTxWait(result, ["xyk", "AssetsSwapped", testUser1.keyRingPair.address]);
 				expect(eventResponse.state).toEqual(ExtrinsicResult.ExtrinsicSuccess);
 			}
 		);
@@ -265,7 +265,7 @@ describe('xyk-pallet - treasury tests [Connected - Mangata]: on treasury we stor
 		await sellAsset(testUser1.keyRingPair, connectedToMGA, indirectlyConnected, sellAssetAmount, new BN(1))
 		.then(
 			(result) => {
-				const eventResponse = getEventResultFromTxWait(result, ["xyk", "AssetsSwapped", '14', testUser1.keyRingPair.address]);
+				const eventResponse = getEventResultFromTxWait(result, ["xyk", "AssetsSwapped", testUser1.keyRingPair.address]);
 				expect(eventResponse.state).toEqual(ExtrinsicResult.ExtrinsicSuccess);
 			}
 		);
@@ -304,7 +304,7 @@ describe('xyk-pallet - treasury tests [Connected - Mangata]: on treasury we stor
 		await buyAsset(testUser1.keyRingPair, connectedToMGA, indirectlyConnected, buyAssetAmount, new BN(10000000))
 		.then(
 			(result) => {
-				const eventResponse = getEventResultFromTxWait(result, ["xyk", "AssetsSwapped", '14', testUser1.keyRingPair.address]);
+				const eventResponse = getEventResultFromTxWait(result, ["xyk", "AssetsSwapped", testUser1.keyRingPair.address]);
 				expect(eventResponse.state).toEqual(ExtrinsicResult.ExtrinsicSuccess);
 			}
 		);
@@ -333,7 +333,7 @@ describe('xyk-pallet - treasury tests [Connected - Mangata]: on treasury we stor
 		await sellAsset(testUser1.keyRingPair, indirectlyConnected, connectedToMGA, sellAssetAmount, new BN(1))
 		.then(
 			(result) => {
-				const eventResponse = getEventResultFromTxWait(result, ["xyk", "AssetsSwapped", '14', testUser1.keyRingPair.address]);
+				const eventResponse = getEventResultFromTxWait(result, ["xyk", "AssetsSwapped", testUser1.keyRingPair.address]);
 				expect(eventResponse.state).toEqual(ExtrinsicResult.ExtrinsicSuccess);
 			}
 		);
@@ -370,7 +370,7 @@ describe('xyk-pallet - treasury tests [Connected - Mangata]: on treasury we stor
 		await buyAsset(testUser1.keyRingPair,connectedToMGA, indirectlyConnected, buyAssetAmount, new BN(1000000))
 		.then(
 			(result) => {
-				const eventResponse = getEventResultFromTxWait(result, ["xyk", "AssetsSwapped", '14', testUser1.keyRingPair.address]);
+				const eventResponse = getEventResultFromTxWait(result, ["xyk", "AssetsSwapped", testUser1.keyRingPair.address]);
 				expect(eventResponse.state).toEqual(ExtrinsicResult.ExtrinsicSuccess);
 			}
 		);

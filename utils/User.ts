@@ -125,7 +125,7 @@ export class User {
         await sellAsset(this.keyRingPair, soldAssetId, boughtAssetId, amount, new BN(0))
 		.then(
 			(result) => {
-				const eventResponse = getEventResultFromTxWait(result, ["xyk", "AssetsSwapped", '14', this.keyRingPair.address]);
+				const eventResponse = getEventResultFromTxWait(result, ["xyk", "AssetsSwapped", this.keyRingPair.address]);
 				expect(eventResponse.state).toEqual(ExtrinsicResult.ExtrinsicSuccess);
 			}
 		);        
@@ -148,7 +148,7 @@ export class User {
         await createPool(this.keyRingPair, firstCurrency, first_asset_amount, secondCurrency, second_asset_amount)
 		.then(
 			(result) => {
-				const eventResponse = getEventResultFromTxWait(result, ["xyk", "PoolCreated", '14', this.keyRingPair.address]);
+				const eventResponse = getEventResultFromTxWait(result, ["xyk", "PoolCreated", this.keyRingPair.address]);
 				expect(eventResponse.state).toEqual(ExtrinsicResult.ExtrinsicSuccess);
 			}
 		);  
