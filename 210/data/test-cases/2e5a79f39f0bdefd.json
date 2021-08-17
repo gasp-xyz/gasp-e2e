@@ -1,0 +1,129 @@
+{
+  "uid" : "2e5a79f39f0bdefd",
+  "name" : "assets won when assets are sold [Selling Mangata] - 5",
+  "fullName" : "xyk-pallet - treasury tests [Mangata]: on treasury we store.assets won when assets are sold [Selling Mangata] - 5",
+  "historyId" : "dd6031c39dad92c2f0d6040402ed7ebf",
+  "time" : {
+    "start" : 1629199648159,
+    "stop" : 1629199735486,
+    "duration" : 87327
+  },
+  "description" : "",
+  "descriptionHtml" : "",
+  "status" : "passed",
+  "flaky" : false,
+  "newFailed" : false,
+  "beforeStages" : [ ],
+  "afterStages" : [ ],
+  "labels" : [ {
+    "name" : "suite",
+    "value" : "xyk-pallet - treasury tests [Mangata]: on treasury we store"
+  }, {
+    "name" : "testClass",
+    "value" : "xyk-pallet - treasury tests [Mangata]: on treasury we store"
+  }, {
+    "name" : "testMethod",
+    "value" : "assets won when assets are sold [Selling Mangata] - 5"
+  }, {
+    "name" : "package",
+    "value" : "xyk-pallet - treasury tests [Mangata]: on treasury we store"
+  }, {
+    "name" : "resultFormat",
+    "value" : "allure1"
+  } ],
+  "parameters" : [ ],
+  "links" : [ ],
+  "hidden" : false,
+  "retry" : false,
+  "extra" : {
+    "severity" : "normal",
+    "retries" : [ ],
+    "categories" : [ ],
+    "history" : {
+      "statistic" : {
+        "failed" : 0,
+        "broken" : 0,
+        "skipped" : 0,
+        "passed" : 9,
+        "unknown" : 0,
+        "total" : 9
+      },
+      "items" : [ {
+        "uid" : "e1520edadba45d35",
+        "reportUrl" : "https://mangata-finance.github.io/mangata-e2e/209//#testresult/e1520edadba45d35",
+        "status" : "passed",
+        "time" : {
+          "start" : 1629189160329,
+          "stop" : 1629189247379,
+          "duration" : 87050
+        }
+      }, {
+        "uid" : "d097aeb6015ba1da",
+        "reportUrl" : "https://mangata-finance.github.io/mangata-e2e/208//#testresult/d097aeb6015ba1da",
+        "status" : "passed",
+        "time" : {
+          "start" : 1629117922180,
+          "stop" : 1629118009216,
+          "duration" : 87036
+        }
+      }, {
+        "uid" : "86001dc23e407c79",
+        "reportUrl" : "https://mangata-finance.github.io/mangata-e2e/207//#testresult/86001dc23e407c79",
+        "status" : "passed",
+        "time" : {
+          "start" : 1629117435521,
+          "stop" : 1629117523803,
+          "duration" : 88282
+        }
+      }, {
+        "uid" : "80c70308b7da5074",
+        "reportUrl" : "https://mangata-finance.github.io/mangata-e2e/206//#testresult/80c70308b7da5074",
+        "status" : "passed",
+        "time" : {
+          "start" : 1629117148273,
+          "stop" : 1629117235116,
+          "duration" : 86843
+        }
+      }, {
+        "uid" : "356a376be1d13e2d",
+        "reportUrl" : "https://mangata-finance.github.io/mangata-e2e/204//#testresult/356a376be1d13e2d",
+        "status" : "passed",
+        "time" : {
+          "start" : 1629115108138,
+          "stop" : 1629115195230,
+          "duration" : 87092
+        }
+      }, {
+        "uid" : "20235266f8bd2f26",
+        "reportUrl" : "https://mangata-finance.github.io/mangata-e2e/205//#testresult/20235266f8bd2f26",
+        "status" : "passed",
+        "time" : {
+          "start" : 1629115072560,
+          "stop" : 1629115159040,
+          "duration" : 86480
+        }
+      }, {
+        "uid" : "6d0e0bb93747aecc",
+        "reportUrl" : "https://mangata-finance.github.io/mangata-e2e/203//#testresult/6d0e0bb93747aecc",
+        "status" : "passed",
+        "time" : {
+          "start" : 1629093520032,
+          "stop" : 1629093607212,
+          "duration" : 87180
+        }
+      }, {
+        "uid" : "9c54e1c3ad1a27d4",
+        "reportUrl" : "https://mangata-finance.github.io/mangata-e2e/202//#testresult/9c54e1c3ad1a27d4",
+        "status" : "passed",
+        "time" : {
+          "start" : 1628887407646,
+          "stop" : 1628887495646,
+          "duration" : 88000
+        }
+      } ]
+    },
+    "tags" : [ ]
+  },
+  "source" : "2e5a79f39f0bdefd.json",
+  "parameterValues" : [ ]
+}
