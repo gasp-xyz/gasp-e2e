@@ -64,6 +64,12 @@ There are also some configurations to run tests,
 
 - `npm run test-ui` : Run tests (from `test/ui/` folder). They contain UI tests.
 
+Finally, there are [groups](https://www.npmjs.com/package/jest-runner-groups) that can be ran instead. 
+
+These are ran like so: `jest --group=sequential`. Multiple groups can be ran like `jest --group=group1 --group=group2`. 
+
+At the moment groups are split between testing configurations (parallel, sequential, etc) and pallets (api, asset, liquidity, sudo, etc). They can be found in docstrings at the top of any test file. 
+
 ###  How to run in a docker setup
 There exist a possibility to run test pointing to a dockerized setup. You only need to :
 1. Download and run docker instance:  `docker-compose -f devops/docker-compose.yml up`
