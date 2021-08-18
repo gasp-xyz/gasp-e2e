@@ -11,6 +11,7 @@ import { Keyring } from '@polkadot/api';
 import { User } from './User';
 import { testLog } from './Logger';
 import { KeyringPair } from '@polkadot/keyring/types';
+import {hexToBn} from '@polkadot/util';
 
 
 export const signTx = async (
@@ -154,11 +155,20 @@ export async function getBalanceOfAsset(assetId: BN, account: any ) {
 
 export async function getBalanceOfPool(assetId1: BN, assetId2: BN ) {
   const api = getApi();
+  const emptyPool = '[0,0]';
 
 	const balance1 = await api.query.xyk.pools([assetId1, assetId2]);
 	const balance2 = await api.query.xyk.pools([assetId2, assetId1]);
+  let balanceWithData = balance1;
+  if(balance2.toString() !== emptyPool){
+    balanceWithData = balance2;
+  }
+  const assetValue1 = JSON.parse(balanceWithData.toString())[0];
+  const assetValue2 = JSON.parse(balanceWithData.toString())[1];
+  var a = hexToBn(assetValue1);
+  var b = hexToBn(assetValue2);
+  return [a,b]
 
-	return [new BN(balance1.toString()), new BN(balance2.toString())]
 
 }
 
