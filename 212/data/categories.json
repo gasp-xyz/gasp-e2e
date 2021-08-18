@@ -1,0 +1,111 @@
+{
+  "uid" : "4b4757e66a1912dae1a509f688f20b0f",
+  "children" : [ {
+    "name" : "Product defects",
+    "children" : [ {
+      "name" : "Error: expect(received).toEqual(expected) // deep equality\n                \n                - Expected  - 1\n                + Received  + 1\n                \n                  Array [\n                    \"029810\",\n                    \"011170\",\n                -   \"0186a0\",\n                +   \"c350\",\n                  ]",
+      "children" : [ {
+        "name" : "xyk-pallet: Happy case scenario",
+        "uid" : "df2e392d47b151f",
+        "parentUid" : "fb128aa6bc7f0efbf38025e34d400c6e",
+        "status" : "failed",
+        "time" : {
+          "start" : 1629286612330,
+          "stop" : 1629286663457,
+          "duration" : 51127
+        },
+        "flaky" : false,
+        "newFailed" : false,
+        "parameters" : [ ]
+      } ],
+      "uid" : "fb128aa6bc7f0efbf38025e34d400c6e"
+    }, {
+      "name" : "Error: expect(received).toEqual(expected) // deep equality\n                \n                - Expected  - 1\n                + Received  + 1\n                \n                  Array [\n                    \"9c40\",\n                    \"9c40\",\n                -   \"01d4c0\",\n                +   \"ea60\",\n                  ]",
+      "children" : [ {
+        "name" : "xyk-pallet: Liquidity sufficiency scenario",
+        "uid" : "1740bdd5fe780a90",
+        "parentUid" : "6570ef9e114b33499484db0d39e57fc0",
+        "status" : "failed",
+        "time" : {
+          "start" : 1629286663457,
+          "stop" : 1629286752923,
+          "duration" : 89466
+        },
+        "flaky" : false,
+        "newFailed" : false,
+        "parameters" : [ ]
+      } ],
+      "uid" : "6570ef9e114b33499484db0d39e57fc0"
+    }, {
+      "name" : "Error: Expected: 49 \n                  Actual: 30 \n                 ",
+      "children" : [ {
+        "name" : "assets won when assets are sold [Selling X connected to MGA pool] - 10",
+        "uid" : "ff589b12bb6c8d5f",
+        "parentUid" : "3d7c400afc91f0f2b662f078fe85b498",
+        "status" : "failed",
+        "time" : {
+          "start" : 1629287113465,
+          "stop" : 1629287245716,
+          "duration" : 132251
+        },
+        "flaky" : false,
+        "newFailed" : false,
+        "parameters" : [ ]
+      } ],
+      "uid" : "3d7c400afc91f0f2b662f078fe85b498"
+    }, {
+      "name" : "Error: Expected: 66 \n                  Actual: 49 \n                 ",
+      "children" : [ {
+        "name" : "assets won when assets are bought [Buying X connected to MGA pool]",
+        "uid" : "fcac2b49f54093b7",
+        "parentUid" : "477125e7b4f994875c5fc3f67e55c741",
+        "status" : "failed",
+        "time" : {
+          "start" : 1629287245716,
+          "stop" : 1629287371206,
+          "duration" : 125490
+        },
+        "flaky" : false,
+        "newFailed" : false,
+        "parameters" : [ ]
+      } ],
+      "uid" : "477125e7b4f994875c5fc3f67e55c741"
+    }, {
+      "name" : "Error: Expected: 77 \n                  Actual: 66 \n                 ",
+      "children" : [ {
+        "name" : "assets won when assets are sold [Selling Y - X connected toMGA pool] - 6",
+        "uid" : "14e89d821e6409db",
+        "parentUid" : "8f68f6929f4424620d556501f17f9b11",
+        "status" : "failed",
+        "time" : {
+          "start" : 1629287371206,
+          "stop" : 1629287496749,
+          "duration" : 125543
+        },
+        "flaky" : false,
+        "newFailed" : false,
+        "parameters" : [ ]
+      } ],
+      "uid" : "8f68f6929f4424620d556501f17f9b11"
+    }, {
+      "name" : "Error: Expected: 90 \n                  Actual: 77 \n                 ",
+      "children" : [ {
+        "name" : "assets won when assets are bought [Buying Y - X connected toMGA pool] - 6",
+        "uid" : "4bef336ac25a114",
+        "parentUid" : "912e3a085181b148eca1feed6cfa97cb",
+        "status" : "failed",
+        "time" : {
+          "start" : 1629287496749,
+          "stop" : 1629287623618,
+          "duration" : 126869
+        },
+        "flaky" : false,
+        "newFailed" : false,
+        "parameters" : [ ]
+      } ],
+      "uid" : "912e3a085181b148eca1feed6cfa97cb"
+    } ],
+    "uid" : "8fb3a91ba5aaf9de24cc8a92edc82b5d"
+  } ],
+  "name" : "categories"
+}
