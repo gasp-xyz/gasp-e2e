@@ -1,0 +1,21 @@
+[ {
+  "uid" : "bbc0e9d2b5cab982",
+  "name" : "As a User I can get test tokens from the faucet",
+  "time" : {
+    "start" : 1629245634855,
+    "stop" : 1629245713500,
+    "duration" : 78645
+  },
+  "status" : "passed",
+  "severity" : "normal"
+}, {
+  "uid" : "fad23298d997ee24",
+  "name" : "As a User I get the right values for Pool investment",
+  "time" : {
+    "start" : 1629245564177,
+    "stop" : 1629245631056,
+    "duration" : 66879
+  },
+  "status" : "passed",
+  "severity" : "normal"
+} ]

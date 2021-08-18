@@ -1,0 +1,46 @@
+{
+  "uid" : "fad23298d997ee24",
+  "name" : "As a User I get the right values for Pool investment",
+  "fullName" : "UI tests - Get Tokens from Faucet.As a User I get the right values for Pool investment",
+  "historyId" : "302add1c134c7eb391309b5951c6ab60",
+  "time" : {
+    "start" : 1629245564177,
+    "stop" : 1629245631056,
+    "duration" : 66879
+  },
+  "description" : "",
+  "descriptionHtml" : "",
+  "status" : "passed",
+  "flaky" : false,
+  "newFailed" : false,
+  "beforeStages" : [ ],
+  "afterStages" : [ ],
+  "labels" : [ {
+    "name" : "suite",
+    "value" : "UI tests - Get Tokens from Faucet"
+  }, {
+    "name" : "testClass",
+    "value" : "UI tests - Get Tokens from Faucet"
+  }, {
+    "name" : "testMethod",
+    "value" : "As a User I get the right values for Pool investment"
+  }, {
+    "name" : "package",
+    "value" : "UI tests - Get Tokens from Faucet"
+  }, {
+    "name" : "resultFormat",
+    "value" : "allure1"
+  } ],
+  "parameters" : [ ],
+  "links" : [ ],
+  "hidden" : false,
+  "retry" : false,
+  "extra" : {
+    "severity" : "normal",
+    "retries" : [ ],
+    "categories" : [ ],
+    "tags" : [ ]
+  },
+  "source" : "fad23298d997ee24.json",
+  "parameterValues" : [ ]
+}
