@@ -155,6 +155,7 @@ export async function getBalanceOfAsset(assetId: BN, account: any ) {
 
 export async function getBalanceOfPool(assetId1: BN, assetId2: BN ) {
   const api = getApi();
+  let reversed = false;
   const emptyPool = '[0,0]';
 
 	const balance1 = await api.query.xyk.pools([assetId1, assetId2]);
@@ -162,12 +163,19 @@ export async function getBalanceOfPool(assetId1: BN, assetId2: BN ) {
   let balanceWithData = balance1;
   if(balance2.toString() !== emptyPool){
     balanceWithData = balance2;
+    reversed = true;
   }
   const assetValue1 = JSON.parse(balanceWithData.toString())[0];
   const assetValue2 = JSON.parse(balanceWithData.toString())[1];
   var a = hexToBn(assetValue1);
   var b = hexToBn(assetValue2);
-  return [a,b]
+  if(reversed){
+    return [b,a];
+  }
+  else{
+    return [a,b]
+  }
+  
 
 
 }
