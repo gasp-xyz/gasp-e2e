@@ -3,7 +3,7 @@ import { calcuate_mint_liquidity_price_local, calcuate_burn_liquidity_price_loca
 import {waitNewBlock, ExtrinsicResult} from '../../utils/eventListeners'
 import BN from 'bn.js'
 import { Keyring } from '@polkadot/api'
-import { calculateLiqAssetAmount, getEnvironmentRequiredVars } from "../../utils/utils";
+import { calculateFees, calculateLiqAssetAmount, getEnvironmentRequiredVars } from "../../utils/utils";
 import { getEventResultFromTxWait } from "../../utils/txHandler";
 import { testLog } from "../../utils/Logger";
 
@@ -266,8 +266,9 @@ test('xyk-pallet: Happy case scenario', async () => {
 	.toEqual(pallet_assets);
 	testLog.getLog().debug(pallet_assets.toString());
 	pool_balance = await getBalanceOfPool(firstAssetId, secondAssetId);
-	const buyAndBurn = new BN(7).mul(new BN(2));
-	expect	([	pool_balance_before[0].add(amount),	pool_balance_before[1].sub(sell_price_local).sub(buyAndBurn)	])
+	let { treasury , treasuryBurn } = calculateFees(amount);
+	expect	([	pool_balance_before[0].add(amount).sub(treasury.add(treasuryBurn)),	
+			    pool_balance_before[1].sub(sell_price_local)	])
 	.toEqual(pool_balance);
 	testLog.getLog().debug(pool_balance.toString());
 	total_liquidity_assets = await getAssetSupply(liquidity_asset_id);
@@ -319,13 +320,16 @@ test('xyk-pallet: Happy case scenario', async () => {
 	.toEqual(bob_assets);
 	testLog.getLog().debug(bob_assets.toString());
 	pallet_assets = await getUserAssets(pallet_address, [firstAssetId, secondAssetId]);
+	pool_balance = await getBalanceOfPool(firstAssetId, secondAssetId);
 	expect	([	pallet_assets_before[0].sub(sell_price_local),	pallet_assets_before[1].add(amount)	])
 	.toEqual(pallet_assets);
 	testLog.getLog().debug(pallet_assets.toString());
 	pool_balance = await getBalanceOfPool(firstAssetId, secondAssetId);
-	const buyAndBurnReSelling = new BN(10).mul(new BN(2));
-	expect	([	pool_balance_before[0].sub(sell_price_local).sub(buyAndBurnReSelling),	pool_balance_before[1].add(amount)	])
-	.toEqual(pool_balance);
+	treasury = calculateFees(amount).treasury;
+	treasuryBurn = calculateFees(amount).treasuryBurn;
+
+	expect	([	pool_balance_before[0].sub(sell_price_local),	pool_balance_before[1].add(amount).sub(treasury.add(treasuryBurn))	])
+	.collectionBnEqual(pool_balance);
 	testLog.getLog().debug(pool_balance.toString());
 	total_liquidity_assets = await getAssetSupply(liquidity_asset_id);
 	expect(total_liquidity_assets_before)
@@ -376,13 +380,17 @@ test('xyk-pallet: Happy case scenario', async () => {
 	.toEqual(bob_assets);
 	testLog.getLog().debug(bob_assets.toString());
 	pallet_assets = await getUserAssets(pallet_address, [firstAssetId, secondAssetId]);
+
 	expect	([	pallet_assets_before[0].add(buy_price_local),	pallet_assets_before[1].sub(amount)	])
 	.toEqual(pallet_assets);
 	testLog.getLog().debug(pallet_assets.toString());
 	pool_balance = await getBalanceOfPool(firstAssetId, secondAssetId);
-	const buyAndBurnBuy = new BN(4).mul( new BN(2));
-	expect	([	pool_balance_before[0].add(buy_price_local),	pool_balance_before[1].sub(amount).sub(buyAndBurnBuy)	])
-	.toEqual(pool_balance);
+
+	treasury = calculateFees(buy_price_local).treasury;
+	treasuryBurn = calculateFees(buy_price_local).treasuryBurn;
+
+	expect	([	pool_balance_before[0].add(buy_price_local).sub(treasury.add(treasuryBurn)), pool_balance_before[1].sub(amount)	])
+	.collectionBnEqual(pool_balance);
 	testLog.getLog().debug(pool_balance.toString());
 	total_liquidity_assets = await getAssetSupply(liquidity_asset_id);
 	expect(total_liquidity_assets_before)
@@ -437,9 +445,10 @@ test('xyk-pallet: Happy case scenario', async () => {
 	.toEqual(pallet_assets);
 	testLog.getLog().debug(pallet_assets.toString());
 	pool_balance = await getBalanceOfPool(firstAssetId, secondAssetId);
-	const buyAndBurnReBuy = new BN(4).mul( new BN(2));
-	expect	([	pool_balance_before[0].sub(amount).sub(buyAndBurnReBuy),	pool_balance_before[1].add(buy_price_local)	])
-	.toEqual(pool_balance);
+	treasury = calculateFees(buy_price_local).treasury;
+	treasuryBurn = calculateFees(buy_price_local).treasuryBurn;
+	expect	([	pool_balance_before[0].sub(amount),	pool_balance_before[1].add(buy_price_local).sub(treasury.add(treasuryBurn))	])
+		.collectionBnEqual(pool_balance);
 	testLog.getLog().debug(pool_balance.toString());
 	total_liquidity_assets = await getAssetSupply(liquidity_asset_id);
 	expect(total_liquidity_assets_before)
