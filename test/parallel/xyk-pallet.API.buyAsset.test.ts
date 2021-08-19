@@ -6,7 +6,7 @@ import { Keyring } from '@polkadot/api'
 import {AssetWallet, User} from "../../utils/User";
 import { validateAssetsSwappedEvent, validateUnmodified, validateUserPaidFeeForFailedTx } from "../../utils/validators";
 import { Assets } from "../../utils/Assets";
-import { calculateCompleteFees, calculateFees, getEnvironmentRequiredVars } from "../../utils/utils";
+import { calculateFees, getEnvironmentRequiredVars } from "../../utils/utils";
 import { getEventResultFromTxWait, signSendAndWaitToFinishTx } from "../../utils/txHandler";
 
 
