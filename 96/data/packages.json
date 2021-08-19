@@ -1,35 +1,35 @@
 {
-  "uid" : "98d3104e051c652961429bf95fa0b5d6",
+  "uid" : "83edc06c07f9ae9e47eb6dd1b683e4e2",
   "children" : [ {
     "name" : "UI tests - Get Tokens from Faucet",
     "children" : [ {
       "name" : "As a User I get the right values for Pool investment",
-      "uid" : "70b2a1348e148ed3",
-      "parentUid" : "7f01ef1c38b8c53ee90c160ef83936f7",
+      "uid" : "314e0e3026c6750c",
+      "parentUid" : "e0b92ad8f9649540b463b21b6e90d991",
       "status" : "passed",
       "time" : {
-        "start" : 1629288518057,
-        "stop" : 1629288584280,
-        "duration" : 66223
+        "start" : 1629331861432,
+        "stop" : 1629331929019,
+        "duration" : 67587
       },
       "flaky" : false,
       "newFailed" : false,
       "parameters" : [ ]
     }, {
       "name" : "As a User I can get test tokens from the faucet",
-      "uid" : "5638ab617101ffe3",
-      "parentUid" : "7f01ef1c38b8c53ee90c160ef83936f7",
+      "uid" : "524c158a4a3e800c",
+      "parentUid" : "e0b92ad8f9649540b463b21b6e90d991",
       "status" : "passed",
       "time" : {
-        "start" : 1629288587720,
-        "stop" : 1629288679333,
-        "duration" : 91613
+        "start" : 1629331932112,
+        "stop" : 1629332005260,
+        "duration" : 73148
       },
       "flaky" : false,
       "newFailed" : false,
       "parameters" : [ ]
     } ],
-    "uid" : "7f01ef1c38b8c53ee90c160ef83936f7"
+    "uid" : "e0b92ad8f9649540b463b21b6e90d991"
   } ],
-  "name" : "suites"
+  "name" : "packages"
 }
