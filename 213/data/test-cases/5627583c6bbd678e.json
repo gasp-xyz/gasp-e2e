@@ -1,0 +1,67 @@
+{
+  "uid" : "5627583c6bbd678e",
+  "name" : "assets won when assets are bought [Buying X connected to MGA pool]",
+  "fullName" : "xyk-pallet - treasury tests [Connected - Mangata]: on treasury we store.assets won when assets are bought [Buying X connected to MGA pool]",
+  "historyId" : "7fa2856547086651d7f62b3628e0d674",
+  "time" : {
+    "start" : 1629351883232,
+    "stop" : 1629352008796,
+    "duration" : 125564
+  },
+  "description" : "",
+  "descriptionHtml" : "",
+  "status" : "passed",
+  "flaky" : false,
+  "newFailed" : false,
+  "beforeStages" : [ ],
+  "afterStages" : [ ],
+  "labels" : [ {
+    "name" : "suite",
+    "value" : "xyk-pallet - treasury tests [Connected - Mangata]: on treasury we store"
+  }, {
+    "name" : "testClass",
+    "value" : "xyk-pallet - treasury tests [Connected - Mangata]: on treasury we store"
+  }, {
+    "name" : "testMethod",
+    "value" : "assets won when assets are bought [Buying X connected to MGA pool]"
+  }, {
+    "name" : "package",
+    "value" : "xyk-pallet - treasury tests [Connected - Mangata]: on treasury we store"
+  }, {
+    "name" : "resultFormat",
+    "value" : "allure1"
+  } ],
+  "parameters" : [ ],
+  "links" : [ ],
+  "hidden" : false,
+  "retry" : false,
+  "extra" : {
+    "severity" : "normal",
+    "retries" : [ ],
+    "categories" : [ ],
+    "history" : {
+      "statistic" : {
+        "failed" : 1,
+        "broken" : 0,
+        "skipped" : 0,
+        "passed" : 1,
+        "unknown" : 0,
+        "total" : 2
+      },
+      "items" : [ {
+        "uid" : "fcac2b49f54093b7",
+        "reportUrl" : "https://mangata-finance.github.io/mangata-e2e/212//#testresult/fcac2b49f54093b7",
+        "status" : "failed",
+        "statusDetails" : "Error: Expected: 66 \n                  Actual: 49 \n                 ",
+        "time" : {
+          "start" : 1629287245716,
+          "stop" : 1629287371206,
+          "duration" : 125490
+        }
+      } ]
+    },
+    "tags" : [ ]
+  },
+  "source" : "5627583c6bbd678e.json",
+  "parameterValues" : [ ]
+}
