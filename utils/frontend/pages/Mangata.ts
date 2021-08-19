@@ -9,15 +9,21 @@ const BTN_GET_TOKENS = `//button[contains(text(), 'Get Tokens')] `;
 const DIV_ASSETS_ITEM = `//div[@class='assets']/div[@class='AssetBox']`
 //const DIV_ASSETS_ITEM_VALUE = `${DIV_ASSETS_ITEM}/span[@class ='value']`
 const DIV_MGA_ASSETS_ITEM_VALUE = `//div[@class = 'AssetBox' and //*[text()='MGA']]/span[@class='value']`
+
+const DIV_MGA_SWAP = `//*[@class='Swap']`
+const DIV_MGA_LOGO = `//*[contains(@class,'bg-mangata-logo')]`
+const BTN_SELECT_TOKENS = `//*[text() = 'Select Token' ]`;
+const LI_TOKEN_ELEM = `//*[@class = 'assets' ]/ul/li`;
+
 const DIV_MGA_LIQ_POOLS = `//div[@class='PoolsOverview__inner__list__item']`
 const BTN_MGA_LIQ_POOLS_ADD = `//*[small[contains(text(),'Liquidity')] and contains(text(),'Add' ) ]`
 //const BTN_MGA_LIQ_POOLS_REMOVE = `//*[small[contains(text(),'Liquidity')] and contains(text(),'Remove' ) ]`
 const INPUT_MGA_ADD_ASSET_VALUE = `//input[@placeholder='0.0']`
 
+
 const {uiUri} = getEnvironmentRequiredVars();
 
 export class Mangata {
-
 
     driver: WebDriver;
     
@@ -47,6 +53,25 @@ export class Mangata {
         const value = await (await this.driver.findElement(By.xpath(DIV_MGA_ASSETS_ITEM_VALUE))).getText();
         return value;
     }
+
+
+    async isSwapFrameDisplayed() {
+        return await (await this.driver.findElement(By.xpath(DIV_MGA_SWAP))).isDisplayed()
+    }
+    
+    async isLogoDisplayed() {
+        return await (await this.driver.findElement(By.xpath(DIV_MGA_LOGO))).isDisplayed()
+    }
+    async clickOnSelectTokens() {
+        await clickElement(this.driver,BTN_SELECT_TOKENS);
+    }
+    async getAvailableTokenList() {
+        const elements = await this.driver.findElements(By.xpath(LI_TOKEN_ELEM));
+        const promises = elements.map( listItem => listItem.getText() );
+        const tokenListTexts = await Promise.all(promises);
+        return tokenListTexts;
+    }
+
 
     async clickOnFirstOwnedLiquidityPool(){
         await waitForElement(this.driver, DIV_MGA_LIQ_POOLS);
@@ -82,4 +107,5 @@ export class Mangata {
             value = await inputs[1]!.getAttribute('value')
         return value;
     }
+
 }

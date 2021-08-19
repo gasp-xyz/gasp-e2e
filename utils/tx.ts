@@ -409,3 +409,27 @@ export async function lockAsset(user : User, assetId : BN, amount:BN){
     user.keyRingPair
   );
 }
+
+export async function getAllAssetsInfo(): Promise<any[]>{
+  const api = getApi();
+  const availableAssetsInfo = await api.query.assetsInfo.assetsInfo.entries();
+/// returns something like this:  
+///[
+///    [
+///      0
+///    ],
+///    {
+///      name: Mangata,
+///      symbol: MGA,
+///      description: Mangata Asset,
+///      decimals: 18
+///    }
+///  ],
+/// Humanize the [1]  ( zero is the ID ), stringify and converting to json.
+
+  const assetsInfo = availableAssetsInfo.map( 
+    asset => JSON.parse( JSON.stringify((((asset as any[])[1] ) as StorageKey).toHuman() ))
+  )
+
+  return assetsInfo;
+}
