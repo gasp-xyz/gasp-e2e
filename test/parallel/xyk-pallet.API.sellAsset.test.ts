@@ -99,7 +99,7 @@ describe('xyk-pallet - Sell assets tests: SellAsset Errors:', () => {
 		await sellAsset(testUser1.keyRingPair, firstCurrency, secondCurrency, remainingOfCurrency1.sub(new BN(1)), new BN(0))
 		.then(
 			(result) => {
-				const eventResponse = getEventResultFromTxWait(result, ["xyk", "AssetsSwapped", '14', testUser1.keyRingPair.address]);
+				const eventResponse = getEventResultFromTxWait(result, ["xyk", "AssetsSwapped", testUser1.keyRingPair.address]);
 				expect(eventResponse.state).toEqual(ExtrinsicResult.ExtrinsicSuccess);
 			}
 		);
@@ -226,7 +226,7 @@ describe('xyk-pallet - Sell assets tests: Selling Assets you can', () => {
 		await sellAsset(testUser1.keyRingPair, firstCurrency, secondCurrency, remainingOfCurrency1, sellPriceLocal)
 		.then(
 			(result) => {
-				const eventResponse = getEventResultFromTxWait(result, ["xyk", "AssetsSwapped", '14', testUser1.keyRingPair.address]);
+				const eventResponse = getEventResultFromTxWait(result, ["xyk", "AssetsSwapped", testUser1.keyRingPair.address]);
 				expect(eventResponse.state).toEqual(ExtrinsicResult.ExtrinsicSuccess);
 				validateAssetsSwappedEvent(eventResponse, testUser1.keyRingPair.address, firstCurrency, remainingOfCurrency1, secondCurrency, sellPriceLocal);
 			}
@@ -267,7 +267,7 @@ describe('xyk-pallet - Sell assets tests: Selling Assets you can', () => {
 		await sellAsset(testUser2.keyRingPair, thirdCurrency, firstCurrency, remainingOfCurrency3, sellPriceLocal)
 		.then(
 			(result) => {
-				const eventResponse = getEventResultFromTxWait(result, ["xyk", "AssetsSwapped", '14', testUser2.keyRingPair.address]);
+				const eventResponse = getEventResultFromTxWait(result, ["xyk", "AssetsSwapped", testUser2.keyRingPair.address]);
 				expect(eventResponse.state).toEqual(ExtrinsicResult.ExtrinsicSuccess);
 				validateAssetsSwappedEvent(eventResponse, testUser2.keyRingPair.address,thirdCurrency, remainingOfCurrency3, firstCurrency, sellPriceLocal);
 			}
