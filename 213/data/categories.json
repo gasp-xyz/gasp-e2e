@@ -1,26 +1,5 @@
 {
   "uid" : "4b4757e66a1912dae1a509f688f20b0f",
-  "children" : [ {
-    "name" : "Product defects",
-    "children" : [ {
-      "name" : "Error: expect(received).toEqual(expected) // deep equality\n                \n                - Expected  - 2\n                + Received  + 2\n                \n                  Array [\n                -   \"00\",\n                -   \"00\",\n                +   \"ea60\",\n                +   \"ea60\",\n                  ]",
-      "children" : [ {
-        "name" : "xyk-pallet: Liquidity sufficiency scenario",
-        "uid" : "3668b282f4602647",
-        "parentUid" : "49cafece4a08ffa347e3a669ae3da245",
-        "status" : "failed",
-        "time" : {
-          "start" : 1629351307710,
-          "stop" : 1629351397176,
-          "duration" : 89466
-        },
-        "flaky" : false,
-        "newFailed" : false,
-        "parameters" : [ ]
-      } ],
-      "uid" : "49cafece4a08ffa347e3a669ae3da245"
-    } ],
-    "uid" : "8fb3a91ba5aaf9de24cc8a92edc82b5d"
-  } ],
+  "children" : [ ],
   "name" : "categories"
 }

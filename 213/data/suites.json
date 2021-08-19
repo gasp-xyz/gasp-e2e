@@ -4,26 +4,26 @@
     "name" : "test/sequential/xyk-pallet.test.ts",
     "children" : [ {
       "name" : "xyk-pallet: Happy case scenario",
-      "uid" : "45cbf70d26520b71",
+      "uid" : "492d5302b446cf1e",
       "parentUid" : "7c932ff5fdb9624b56fc99866d13104d",
       "status" : "passed",
       "time" : {
-        "start" : 1629351108179,
-        "stop" : 1629351307710,
-        "duration" : 199531
+        "start" : 1629357618267,
+        "stop" : 1629357816911,
+        "duration" : 198644
       },
       "flaky" : false,
       "newFailed" : false,
       "parameters" : [ ]
     }, {
       "name" : "xyk-pallet: Liquidity sufficiency scenario",
-      "uid" : "3668b282f4602647",
+      "uid" : "4beef3958c060e12",
       "parentUid" : "7c932ff5fdb9624b56fc99866d13104d",
-      "status" : "failed",
+      "status" : "passed",
       "time" : {
-        "start" : 1629351307710,
-        "stop" : 1629351397176,
-        "duration" : 89466
+        "start" : 1629357816911,
+        "stop" : 1629358123111,
+        "duration" : 306200
       },
       "flaky" : false,
       "newFailed" : false,
@@ -34,52 +34,52 @@
     "name" : "xyk-pallet - treasury tests [Mangata]: on treasury we store",
     "children" : [ {
       "name" : "assets won when assets are sold [Selling Mangata] - 5",
-      "uid" : "464bd3ae0371fe16",
+      "uid" : "53acfe8904790614",
       "parentUid" : "dd0c8d27829bd9fa6c614b8009117e89",
       "status" : "passed",
       "time" : {
-        "start" : 1629351398975,
-        "stop" : 1629351488011,
-        "duration" : 89036
+        "start" : 1629358125308,
+        "stop" : 1629358214083,
+        "duration" : 88775
       },
       "flaky" : false,
       "newFailed" : false,
       "parameters" : [ ]
     }, {
       "name" : "assets won when assets are bought [Buying Mangata]",
-      "uid" : "80f0a2cb3fef21d8",
+      "uid" : "83f19de422e92b1d",
       "parentUid" : "dd0c8d27829bd9fa6c614b8009117e89",
       "status" : "passed",
       "time" : {
-        "start" : 1629351488011,
-        "stop" : 1629351577430,
-        "duration" : 89419
+        "start" : 1629358214083,
+        "stop" : 1629358303611,
+        "duration" : 89528
       },
       "flaky" : false,
       "newFailed" : false,
       "parameters" : [ ]
     }, {
       "name" : "assets won when assets are sold [Selling other in MGA pool] - 6",
-      "uid" : "7a249f28116181b6",
+      "uid" : "715414aaa3cc1b83",
       "parentUid" : "dd0c8d27829bd9fa6c614b8009117e89",
       "status" : "passed",
       "time" : {
-        "start" : 1629351577430,
-        "stop" : 1629351666944,
-        "duration" : 89514
+        "start" : 1629358303612,
+        "stop" : 1629358393205,
+        "duration" : 89593
       },
       "flaky" : false,
       "newFailed" : false,
       "parameters" : [ ]
     }, {
       "name" : "assets won when assets are bought [Buying other in MGA pool]",
-      "uid" : "51f9f6df942dc1ab",
+      "uid" : "b20f801cbcbfd70c",
       "parentUid" : "dd0c8d27829bd9fa6c614b8009117e89",
       "status" : "passed",
       "time" : {
-        "start" : 1629351666944,
-        "stop" : 1629351757704,
-        "duration" : 90760
+        "start" : 1629358393205,
+        "stop" : 1629358482786,
+        "duration" : 89581
       },
       "flaky" : false,
       "newFailed" : false,
@@ -90,52 +90,52 @@
     "name" : "xyk-pallet - treasury tests [Connected - Mangata]: on treasury we store",
     "children" : [ {
       "name" : "assets won when assets are sold [Selling X connected to MGA pool] - 10",
-      "uid" : "396bae8308027f9d",
+      "uid" : "5c82632ab7d045a4",
       "parentUid" : "6f44ca105b926385238dffcbc4e2cf02",
       "status" : "passed",
       "time" : {
-        "start" : 1629351757710,
-        "stop" : 1629351883232,
-        "duration" : 125522
+        "start" : 1629358482792,
+        "stop" : 1629358609809,
+        "duration" : 127017
       },
       "flaky" : false,
       "newFailed" : false,
       "parameters" : [ ]
     }, {
       "name" : "assets won when assets are bought [Buying X connected to MGA pool]",
-      "uid" : "5627583c6bbd678e",
+      "uid" : "b2092f0d5f620da",
       "parentUid" : "6f44ca105b926385238dffcbc4e2cf02",
       "status" : "passed",
       "time" : {
-        "start" : 1629351883232,
-        "stop" : 1629352008796,
-        "duration" : 125564
+        "start" : 1629358609809,
+        "stop" : 1629358735547,
+        "duration" : 125738
       },
       "flaky" : false,
       "newFailed" : false,
       "parameters" : [ ]
     }, {
       "name" : "assets won when assets are sold [Selling Y - X connected toMGA pool] - 6",
-      "uid" : "1a7d22412f8f75cd",
+      "uid" : "37c88c2d84d48a65",
       "parentUid" : "6f44ca105b926385238dffcbc4e2cf02",
       "status" : "passed",
       "time" : {
-        "start" : 1629352008796,
-        "stop" : 1629352135604,
-        "duration" : 126808
+        "start" : 1629358735547,
+        "stop" : 1629358867961,
+        "duration" : 132414
       },
       "flaky" : false,
       "newFailed" : false,
       "parameters" : [ ]
     }, {
       "name" : "assets won when assets are bought [Buying Y - X connected toMGA pool] - 6",
-      "uid" : "13d98f81625e8048",
+      "uid" : "c951a5695388471a",
       "parentUid" : "6f44ca105b926385238dffcbc4e2cf02",
       "status" : "passed",
       "time" : {
-        "start" : 1629352135604,
-        "stop" : 1629352261133,
-        "duration" : 125529
+        "start" : 1629358867961,
+        "stop" : 1629358993640,
+        "duration" : 125679
       },
       "flaky" : false,
       "newFailed" : false,
@@ -146,13 +146,13 @@
     "name" : "xyk-pallet - Sell Asset: validate Errors:",
     "children" : [ {
       "name" : "Bond operation locks some amount",
-      "uid" : "3af67667f87e5199",
+      "uid" : "9d10c7289e0c5201",
       "parentUid" : "51f864e0cd66a5f59a9db7c25597c6c7",
       "status" : "passed",
       "time" : {
-        "start" : 1629352321228,
-        "stop" : 1629352339910,
-        "duration" : 18682
+        "start" : 1629359047041,
+        "stop" : 1629359065798,
+        "duration" : 18757
       },
       "flaky" : false,
       "newFailed" : false,
