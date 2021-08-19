@@ -4,9 +4,9 @@ import {waitNewBlock, ExtrinsicResult} from '../../utils/eventListeners'
 import BN from 'bn.js'
 import { Keyring } from '@polkadot/api'
 import {AssetWallet, User} from "../../utils/User";
-import { validateAssetsSwappedEvent, validateUnmodified } from "../../utils/validators";
+import { validateAssetsSwappedEvent, validateUnmodified, validateUserPaidFeeForFailedTx } from "../../utils/validators";
 import { Assets } from "../../utils/Assets";
-import { getEnvironmentRequiredVars } from "../../utils/utils";
+import { calculateCompleteFees, calculateFees, getEnvironmentRequiredVars } from "../../utils/utils";
 import { getEventResultFromTxWait, signSendAndWaitToFinishTx } from "../../utils/txHandler";
 
 
@@ -162,8 +162,8 @@ describe('xyk-pallet - Buy assets tests: BuyAssets Errors:', () => {
 			}
 	  	);
 		
-		await testUser1.refreshAmounts(AssetWallet.AFTER);
-		await validateUnmodified(firstCurrency,secondCurrency,testUser1,[firstAssetAmount, secondAssetAmount.div(new BN(2))]);
+		await validateUserPaidFeeForFailedTx(buyPriceLocal, testUser1, firstCurrency, secondCurrency, poolAmountSecondCurrency, firstAssetAmount);
+
 	});
 
 });
@@ -232,9 +232,11 @@ describe('xyk-pallet - Buy assets tests: Buying assets you can', () => {
 
 		await waitNewBlock();
 		await testUser1.refreshAmounts(AssetWallet.AFTER);
+		const { treasury, treasuryBurn }= calculateFees(buyPriceLocal)
+		const fee = treasury.add(treasuryBurn);
 		var pool_balance = await getBalanceOfPool(firstCurrency, secondCurrency);
-		expect([buyPriceLocal.add(firstAssetAmount), new BN(1)])
-		.toEqual(pool_balance);
+		expect([buyPriceLocal.add(firstAssetAmount).sub(fee), new BN(1)])
+		.collectionBnEqual(pool_balance);
 
 		testUser1.validateWalletIncreased(secondCurrency,poolAmountSecondCurrency.sub(new BN(1)));
 		testUser1.validateWalletEquals(firstCurrency, testUser1.getAsset(firstCurrency)?.amountBefore! );
@@ -245,8 +247,8 @@ describe('xyk-pallet - Buy assets tests: Buying assets you can', () => {
 		const treasuryBurnSecondCurrency = await getTreasuryBurn(secondCurrency);
 		const treasuryBurnFirstCurrency = await getTreasuryBurn(firstCurrency);
 
-		expect([treasurySecondCurrency,treasuryBurnSecondCurrency]).toEqual([new BN(0),new BN(0)])
-		expect([treasuryFirstCurrency,treasuryBurnFirstCurrency]).toEqual([new BN(0),new BN(0)])
+		expect([treasurySecondCurrency,treasuryBurnSecondCurrency]).collectionBnEqual([new BN(0),new BN(0)])
+		expect([treasuryFirstCurrency,treasuryBurnFirstCurrency]).collectionBnEqual([treasury,treasuryBurn])
 
 	});
 	
@@ -293,9 +295,13 @@ describe('xyk-pallet - Buy assets tests: Buying assets you can', () => {
 		testUser2.validateWalletEquals(firstCurrency, amountToBuy);
 
 		var poolBalanceAfter = await getBalanceOfPool(firstCurrency, thirdCurrency);
-		expect([poolBalanceBefore[0].sub(amountToBuy), poolBalanceBefore[1].add(buyPriceLocal)])
+		const { treasury, treasuryBurn }= calculateFees(buyPriceLocal)
+		const fee = treasury.add(treasuryBurn);
+		expect([poolBalanceBefore[0].sub(amountToBuy), poolBalanceBefore[1].add(buyPriceLocal).sub(fee)])
 		.toEqual(poolBalanceAfter);
 
 	});
 
 });
+
+

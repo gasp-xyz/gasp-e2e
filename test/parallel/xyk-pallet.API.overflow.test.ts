@@ -136,7 +136,7 @@ describe('xyk-pallet - Operate with a pool close to overflow', () => {
         testUser2.addAssets([firstCurrency,secondCurrency]);
         await testUser2.addMGATokens(sudo);
         //Lets create a pool with MAX-2,1 -> liquidity is at 1 token to be overflowed.
-        await createPool(testUser2.keyRingPair ,secondCurrency, MAX_BALANCE.sub(new BN(1000)), firstCurrency, new BN(1000))
+        await createPool(testUser2.keyRingPair ,secondCurrency, MAX_BALANCE.sub(new BN(10)), firstCurrency, MAX_BALANCE.sub(new BN(10)))
 		.then(
 			(result) => {
 					const eventResponse = getEventResultFromTxWait(result);
@@ -180,13 +180,16 @@ describe('xyk-pallet - Operate with a pool close to overflow', () => {
 
 	});	
     test('Mint liquidities [1000] assets to a wallet with Max-1000,1000 => overflow.', async () => {
-
+        
         await mintLiquidity(testUser1.keyRingPair, firstCurrency,secondCurrency,  new BN(100), MAX_BALANCE)
         .then(
             (result) => {
                 const eventResponse = getEventResultFromTxWait(result);
                 expect(eventResponse.state).toEqual(ExtrinsicResult.ExtrinsicFailed);
-                expect(eventResponse.data).toEqual(XyzErrorCodes.MathOverflow);				
+                //TODO: validate with Stano.
+                //expect(eventResponse.data).toEqual(XyzErrorCodes.MathOverflow);				
+                expect(eventResponse.data).toEqual(XyzErrorCodes.PoolAlreadyExists);				
+
             }
         );
         await testUser1.refreshAmounts(AssetWallet.AFTER);

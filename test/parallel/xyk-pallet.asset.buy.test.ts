@@ -5,7 +5,7 @@ import BN from 'bn.js'
 import { Keyring } from '@polkadot/api'
 import {AssetWallet, User} from "../../utils/User";
 import { Assets } from "../../utils/Assets";
-import { getEnvironmentRequiredVars } from "../../utils/utils";
+import { calculateFees, getEnvironmentRequiredVars } from "../../utils/utils";
 import { getEventResultFromTxWait } from "../../utils/txHandler";
 import { testLog } from "../../utils/Logger";
 
@@ -75,7 +75,6 @@ test('xyk-pallet - AssetsOperation: buyAsset [maxAmountIn = 1M], buy asset', asy
 
 	let amount = new BN(10000);
 	// considering the pool and the 10k amount
-	const traseureAndBurn  = new BN(3).mul(new BN(2));
 	let buyPriceLocal = calculate_buy_price_local(poolBalanceBefore[0], poolBalanceBefore[1], amount);
 	let buyPriceRpc = await calculate_buy_price_rpc(poolBalanceBefore[0], poolBalanceBefore[1], amount);
 	expect(buyPriceLocal).toEqual(buyPriceRpc);
@@ -102,9 +101,10 @@ test('xyk-pallet - AssetsOperation: buyAsset [maxAmountIn = 1M], buy asset', asy
 	pallet.validateWalletIncreased(soldAssetId,buyPriceLocal);
 	pallet.validateWalletReduced(boughtAssetId,amount);
 	let pool_balance = await getBalanceOfPool(firstCurrency, secondCurrency);
-	
-	expect	([	poolBalanceBefore[0].add(buyPriceLocal),	poolBalanceBefore[1].sub(amount).sub(traseureAndBurn)	])
-	.toEqual(pool_balance);
+	const {treasury , treasuryBurn } = calculateFees(buyPriceLocal);
+	const bothFees = treasury.add(treasuryBurn);
+	expect	([	poolBalanceBefore[0].add(buyPriceLocal).sub(bothFees),	poolBalanceBefore[1].sub(amount)])
+	.collectionBnEqual(pool_balance);
 
 });
 
@@ -120,7 +120,6 @@ test('xyk-pallet - AssetsOperation: buyAsset [maxAmountIn = 1M], sell a bought a
 	
 	amount = new BN(15000);
 	// considering the pool and the 15k amount
-	const traseureAndBurn  = new BN(5).mul(new BN(2));
 	let poolBalanceBefore = await getBalanceOfPool(secondCurrency, firstCurrency);
 	let buyPriceLocal = calculate_buy_price_local(poolBalanceBefore[0], poolBalanceBefore[1], amount);
 	let buypriceRpc = await calculate_buy_price_rpc(poolBalanceBefore[0], poolBalanceBefore[1], amount);
@@ -144,8 +143,10 @@ test('xyk-pallet - AssetsOperation: buyAsset [maxAmountIn = 1M], sell a bought a
 	testUser2.validateWalletsUnmodified();
 	pallet.validateWalletIncreased(soldAssetId,buyPriceLocal);
 	pallet.validateWalletReduced(boughtAssetId,amount);
+	const {treasury , treasuryBurn } = calculateFees(buyPriceLocal);
+	const bothFees = treasury.add(treasuryBurn);
 	let pool_balance = await getBalanceOfPool(secondCurrency, firstCurrency);
-	expect	([	poolBalanceBefore[0].add(buyPriceLocal),	poolBalanceBefore[1].sub(amount).sub(traseureAndBurn)	])
+	expect	([	poolBalanceBefore[0].add(buyPriceLocal).sub(bothFees),	poolBalanceBefore[1].sub(amount)	])
 	.toEqual(pool_balance);
 
 });
