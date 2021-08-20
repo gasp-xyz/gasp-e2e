@@ -712,7 +712,7 @@ test('xyk-pallet: Liquidity sufficiency scenario', async () => {
 	testLog.getLog().debug(bob_assets.toString());
 	let pallet_assets = await getUserAssets(pallet_address, [firstAssetId, secondAssetId]);
 	expect	([	pallet_assets_before[0].add(first_asset_amount),	pallet_assets_before[1].add(second_asset_amount)	])
-	.toEqual(pallet_assets);
+	.collectionBnEqual(pallet_assets);
 	testLog.getLog().debug(pallet_assets.toString());
 	let pool_balance = await getBalanceOfPool(firstAssetId, secondAssetId);
 	expect	([	pool_balance_before[0].add(first_asset_amount),	pool_balance_before[1].add(second_asset_amount)	])
