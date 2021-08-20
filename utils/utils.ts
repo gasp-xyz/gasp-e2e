@@ -28,8 +28,8 @@ export function fromBNToUnitString(value : BN){
 
 export function getEnvironmentRequiredVars(){
     const palletAddress = process.env.TEST_PALLET_ADDRESS ? process.env.TEST_PALLET_ADDRESS : '';
-    const palletAddress = process.env.XYK_PALLET_ADDRESS ? process.env.XYK_PALLET_ADDRESS : '';
-    const palletAddress = process.env.TREASURY_PALLET_ADDRESS ? process.env.TREASURY_PALLET_ADDRESS : '';
+    const xykPalletAddress = process.env.E2E_XYK_PALLET_ADDRESS ? process.env.E2E_XYK_PALLET_ADDRESS : '';
+    const treasuryPalletAddress = process.env.E2E_TREASURY_PALLET_ADDRESS ? process.env.E2E_TREASURY_PALLET_ADDRESS : '';
     const sudoUserName = process.env.TEST_SUDO_NAME ? process.env.TEST_SUDO_NAME : '';
     const testUserName = process.env.TEST_USER_NAME ? process.env.TEST_USER_NAME : '//Alice';
     if(palletAddress.length === 0 || sudoUserName.length === 0){

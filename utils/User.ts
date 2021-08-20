@@ -191,7 +191,7 @@ export class User {
         const assets = await getAllAssets(this.keyRingPair.address);
         for (let index = 0; index < assets.length; index++) {
             const assetId = assets[index];
-            await transferAll(this.keyRingPair, assetId, process.env.XYK_PALLET_ADDRESS);
+            await transferAll(this.keyRingPair, assetId, process.env.E2E_XYK_PALLET_ADDRESS);
         }
     }
 
