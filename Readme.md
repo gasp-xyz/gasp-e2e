@@ -35,8 +35,8 @@ So somehow we now have essentially a distributed system for developing and that 
 ####  Node tests ( no UI )
 To point to the right environment or instance, you need to export the following environment variables:
 
-1. TEST_PALLET_ADDRESS: This contains the address to the pallet wallet. 
-`export TEST_PALLET_ADDRESS='PalletAddressComehere' ` more info available in `mangate-node: node/src/chain_spec.rs`
+1. XYK_PALLET_ADDRESS: This contains the address to the pallet wallet. 
+`export XYK_PALLET_ADDRESS='PalletAddressComehere' ` more info available in `mangate-node: node/src/chain_spec.rs`
 2. TEST_SUDO_NAME: This contains the name of sudo user to perform required sudo perations. 
 `export TEST_SUDO_NAME='//nameofTheUser' ` more info available in `mangate-node: node/src/chain_spec.rs`
 3. API_URL: Points the API to the right environment. The default will be localhost (`ws://127.0.0.1:9944`).
