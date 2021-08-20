@@ -245,7 +245,7 @@ test('xyk-pallet: Happy case scenario', async () => {
 	await sellAsset(user, soldAssetId, boughtAssetId, amount, new BN(0))
 	.then(
 		(result) => {
-			const eventResponse = getEventResultFromTxWait(result, ["xyk", "AssetsSwapped", '14', user.address]);
+			const eventResponse = getEventResultFromTxWait(result, ["xyk", "AssetsSwapped", user.address]);
 			expect(eventResponse.state).toEqual(ExtrinsicResult.ExtrinsicSuccess);
 		}
 	);
@@ -302,7 +302,7 @@ test('xyk-pallet: Happy case scenario', async () => {
 	await sellAsset(user, soldAssetId, boughtAssetId, amount, new BN(0))
 	.then(
 		(result) => {
-			const eventResponse = getEventResultFromTxWait(result, ["xyk", "AssetsSwapped", '14', user.address]);
+			const eventResponse = getEventResultFromTxWait(result, ["xyk", "AssetsSwapped", user.address]);
 			expect(eventResponse.state).toEqual(ExtrinsicResult.ExtrinsicSuccess);
 		}
 	);

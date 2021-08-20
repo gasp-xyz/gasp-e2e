@@ -191,6 +191,10 @@ export const initApi = async (uri = '') => {
       BalanceLock: {
         id: "[u8; 8]",
         amount: 'Balance'
+      },
+      Valuation: {
+        liquidity_token_amount: 'Balance',
+        mng_valuation: 'Balance'
       }
     },
   })
