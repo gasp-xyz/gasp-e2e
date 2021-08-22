@@ -1,4 +1,9 @@
 [ {
+  "buildOrder" : 102,
+  "reportUrl" : "https://mangata-finance.github.io/mangata-e2e/102/",
+  "reportName" : "Allure Report with history",
+  "data" : { }
+}, {
   "buildOrder" : 101,
   "reportUrl" : "https://mangata-finance.github.io/mangata-e2e/101/",
   "reportName" : "Allure Report with history",
