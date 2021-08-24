@@ -85,10 +85,20 @@ beforeEach( async () => {
 						expect(eventResponse.state).toEqual(ExtrinsicResult.ExtrinsicSuccess);
 					}
 			);
+			
 
 	});
 
 	test('xyk-pallet - Calculate required MGA fee - BuyAsset', async () => {
+
+		await testUser1.createPoolToAsset(
+				defaultCurrecyValue.div(new BN(10)),
+				defaultCurrecyValue.div(new BN(10)), 
+				firstCurrency, 
+				secondCurrency);
+		
+		//create a pool requires mga, so refreshing wallets.
+		await testUser1.refreshAmounts(AssetWallet.BEFORE);
 
 		const api = getApi();
 		const nonce = await  getCurrentNonce(testUser1.keyRingPair.address) ;
@@ -113,16 +123,19 @@ beforeEach( async () => {
 					expect(eventResponse.state).toEqual(ExtrinsicResult.ExtrinsicSuccess);
 				}
 		);
-		expect(cost).toEqual('0');
+		expect(getFeeString(cost)).toEqual('0');
+
 	});
 
 afterEach(async () => {
 
 	await testUser1.refreshAmounts(AssetWallet.AFTER);
-	const feeCalculated = JSON.parse( JSON.stringify( cost.toHuman() ) ).partialFee
 	const deductedMGATkns = testUser1.getAsset(MGA_ASSET_ID)?.amountBefore.sub(testUser1.getAsset(MGA_ASSET_ID)?.amountAfter!);
 	const deductedMGAString = fromBNToUnitString(deductedMGATkns!);
-	//Create pools takes some money as network fee,
-	expect(deductedMGAString).toEqual(feeCalculated);
+	expect(deductedMGAString).toEqual(getFeeString(cost));
 
 })
+function getFeeString(cost: RuntimeDispatchInfo) {
+	return JSON.parse(JSON.stringify(cost.toHuman())).partialFee;
+}
+
