@@ -1,12 +1,12 @@
 {
-  "uid" : "50ed48be8d974fb8",
+  "uid" : "535a8afc9d538c81",
   "name" : "As a User I get the right values for Pool investment",
   "fullName" : "UI tests - Get Tokens from Faucet.As a User I get the right values for Pool investment",
   "historyId" : "302add1c134c7eb391309b5951c6ab60",
   "time" : {
-    "start" : 1629764083530,
-    "stop" : 1629764150454,
-    "duration" : 66924
+    "start" : 1629807482430,
+    "stop" : 1629807549288,
+    "duration" : 66858
   },
   "description" : "",
   "descriptionHtml" : "",
@@ -44,11 +44,20 @@
         "failed" : 0,
         "broken" : 0,
         "skipped" : 0,
-        "passed" : 7,
+        "passed" : 8,
         "unknown" : 0,
-        "total" : 7
+        "total" : 8
       },
       "items" : [ {
+        "uid" : "50ed48be8d974fb8",
+        "reportUrl" : "https://mangata-finance.github.io/mangata-e2e/106//#testresult/50ed48be8d974fb8",
+        "status" : "passed",
+        "time" : {
+          "start" : 1629764083530,
+          "stop" : 1629764150454,
+          "duration" : 66924
+        }
+      }, {
         "uid" : "2a039f5752f02415",
         "reportUrl" : "https://mangata-finance.github.io/mangata-e2e/105//#testresult/2a039f5752f02415",
         "status" : "passed",
@@ -106,6 +115,6 @@
     },
     "tags" : [ ]
   },
-  "source" : "50ed48be8d974fb8.json",
+  "source" : "535a8afc9d538c81.json",
   "parameterValues" : [ ]
 }

@@ -2,26 +2,26 @@
   "uid" : "ab17fc5a4eb3bca4b216b548c7f9fcbc",
   "children" : [ {
     "name" : "As a User I get the right values for Pool investment",
-    "uid" : "50ed48be8d974fb8",
+    "uid" : "535a8afc9d538c81",
     "parentUid" : "ab17fc5a4eb3bca4b216b548c7f9fcbc",
     "status" : "passed",
     "time" : {
-      "start" : 1629764083530,
-      "stop" : 1629764150454,
-      "duration" : 66924
+      "start" : 1629807482430,
+      "stop" : 1629807549288,
+      "duration" : 66858
     },
     "flaky" : false,
     "newFailed" : false,
     "parameters" : [ ]
   }, {
     "name" : "As a User I can get test tokens from the faucet",
-    "uid" : "38cc24c53a7b800d",
+    "uid" : "864d92a316087b52",
     "parentUid" : "ab17fc5a4eb3bca4b216b548c7f9fcbc",
     "status" : "passed",
     "time" : {
-      "start" : 1629764154164,
-      "stop" : 1629764251922,
-      "duration" : 97758
+      "start" : 1629807553165,
+      "stop" : 1629807637843,
+      "duration" : 84678
     },
     "flaky" : false,
     "newFailed" : false,
