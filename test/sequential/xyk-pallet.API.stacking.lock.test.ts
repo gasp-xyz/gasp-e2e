@@ -23,6 +23,7 @@ const { sudo: sudoUserName } = getEnvironmentRequiredVars();
 
 const ASSET_ID_MGA_ETH = MGA_DEFAULT_LIQ_TOKEN;
 const ASSET_ID_MGA = MGA_ASSET_ID;
+
 describe("xyk-pallet - Sell Asset: validate Errors:", () => {
   let testUser1: User;
   let sudo: User;
@@ -48,15 +49,17 @@ describe("xyk-pallet - Sell Asset: validate Errors:", () => {
     await sudo.mint(ASSET_ID_MGA_ETH, testUser1, new BN(10000));
     await testUser1.addMGATokens(sudo);
   });
+  
   test("Bond operation locks some amount", async () => {
     await waitNewBlock();
     const eventPromise = getEventResult("staking", "Bonded", 14);
-    //@ts-ignore: Mangata bond operation has 4 params, somehow is inheriting the bond operation from polkadot :S
     await signSendAndWaitToFinishTx(
       api?.tx.staking.bond(
         testUser1.keyRingPair.address,
         new BN(1000),
-        "Staked"
+        "Staked",
+        // @ts-ignore - Mangata bond operation has 4 params, somehow is inheriting the bond operation from polkadot :S
+        new BN(3)
       ),
       testUser1.keyRingPair
     );

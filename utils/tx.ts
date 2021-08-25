@@ -547,7 +547,7 @@ export async function lockAsset(user: User, assetId: BN, amount: BN) {
 
   await signSendAndWaitToFinishTx(
     //@ts-ignore: Mangata bond operation has 4 params, somehow is inheriting the bond operation from polkadot :S
-    api?.tx.staking.bond(user.keyRingPair.address, amount, "Staked"),
+    api?.tx.staking.bond(user.keyRingPair.address, amount, "Staked", MGA_DEFAULT_LIQ_TOKEN),
     user.keyRingPair
   );
 }
