@@ -38,7 +38,7 @@
     "test-ci": "rm nonce.db ; rm sudo.lock; jest test/ci/* test/ui/* --runInBand --verbose --ci ",
     "test-ui": "rm nonce.db ; rm sudo.lock; jest test/ui/* --verbose --runInBand --ci ",
     "tsc-lint": "tsc -noemit -p tsconfig.json",
-    "eslint": "node_modules/.bin/eslint --max-warnings 0 . --ext .ts",
+    "eslint": "node_modules/.bin/eslint --max-warnings 20 . --ext .ts",
     "xoshiro": "^2.0.3"
   },
   "devDependencies": {
