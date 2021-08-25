@@ -1,0 +1,26 @@
+{
+  "uid" : "4b4757e66a1912dae1a509f688f20b0f",
+  "children" : [ {
+    "name" : "Product defects",
+    "children" : [ {
+      "name" : "Error: Extrinsic staking.bond expects 4 arguments, got 3.",
+      "children" : [ {
+        "name" : "Bond operation locks some amount",
+        "uid" : "e2bbddc73c1ea23",
+        "parentUid" : "bbf784d324e1f32f672c0312229f4f05",
+        "status" : "failed",
+        "time" : {
+          "start" : 1629918685079,
+          "stop" : 1629918685086,
+          "duration" : 7
+        },
+        "flaky" : false,
+        "newFailed" : true,
+        "parameters" : [ ]
+      } ],
+      "uid" : "bbf784d324e1f32f672c0312229f4f05"
+    } ],
+    "uid" : "8fb3a91ba5aaf9de24cc8a92edc82b5d"
+  } ],
+  "name" : "categories"
+}

@@ -1,0 +1,90 @@
+{
+  "uid" : "e2bbddc73c1ea23",
+  "name" : "Bond operation locks some amount",
+  "fullName" : "xyk-pallet - Sell Asset: validate Errors:.Bond operation locks some amount",
+  "historyId" : "2c3dad72504039bdda0c53211c41ab65",
+  "time" : {
+    "start" : 1629918685079,
+    "stop" : 1629918685086,
+    "duration" : 7
+  },
+  "description" : "",
+  "descriptionHtml" : "",
+  "status" : "failed",
+  "statusMessage" : "Error: Extrinsic staking.bond expects 4 arguments, got 3.",
+  "statusTrace" : "Error: Extrinsic staking.bond expects 4 arguments, got 3.\n                    at assert (/home/runner/work/mangata-e2e/mangata-e2e/node_modules/@polkadot/util/assert.js:34:11)\n                    at extrinsicFn (/home/runner/work/mangata-e2e/mangata-e2e/node_modules/@polkadot/metadata/decorate/extrinsics/createUnchecked.js:19:22)\n                    at Object.bond (/home/runner/work/mangata-e2e/mangata-e2e/node_modules/@polkadot/api/base/Decorate.js:324:46)\n                    at Object.<anonymous> (/home/runner/work/mangata-e2e/mangata-e2e/test/sequential/xyk-pallet.API.stacking.lock.test.ts:56:23)\n                    at processTicksAndRejections (internal/process/task_queues.js:95:5)",
+  "flaky" : false,
+  "newFailed" : true,
+  "beforeStages" : [ ],
+  "afterStages" : [ ],
+  "labels" : [ {
+    "name" : "suite",
+    "value" : "xyk-pallet - Sell Asset: validate Errors:"
+  }, {
+    "name" : "testClass",
+    "value" : "xyk-pallet - Sell Asset: validate Errors:"
+  }, {
+    "name" : "testMethod",
+    "value" : "Bond operation locks some amount"
+  }, {
+    "name" : "package",
+    "value" : "xyk-pallet - Sell Asset: validate Errors:"
+  }, {
+    "name" : "resultFormat",
+    "value" : "allure1"
+  } ],
+  "parameters" : [ ],
+  "links" : [ ],
+  "hidden" : false,
+  "retry" : false,
+  "extra" : {
+    "severity" : "normal",
+    "retries" : [ ],
+    "categories" : [ {
+      "name" : "Product defects",
+      "matchedStatuses" : [ ],
+      "flaky" : false
+    } ],
+    "history" : {
+      "statistic" : {
+        "failed" : 1,
+        "broken" : 0,
+        "skipped" : 0,
+        "passed" : 3,
+        "unknown" : 0,
+        "total" : 4
+      },
+      "items" : [ {
+        "uid" : "d7545fb11179d7f4",
+        "reportUrl" : "https://mangata-finance.github.io/mangata-e2e/225//#testresult/d7545fb11179d7f4",
+        "status" : "passed",
+        "time" : {
+          "start" : 1629897601357,
+          "stop" : 1629897618724,
+          "duration" : 17367
+        }
+      }, {
+        "uid" : "16de49f172675e20",
+        "reportUrl" : "https://mangata-finance.github.io/mangata-e2e/225//#testresult/16de49f172675e20",
+        "status" : "passed",
+        "time" : {
+          "start" : 1629893845685,
+          "stop" : 1629893863055,
+          "duration" : 17370
+        }
+      }, {
+        "uid" : "1d02bb0a410e28ae",
+        "reportUrl" : "https://mangata-finance.github.io/mangata-e2e/224//#testresult/1d02bb0a410e28ae",
+        "status" : "passed",
+        "time" : {
+          "start" : 1629856795509,
+          "stop" : 1629856812870,
+          "duration" : 17361
+        }
+      } ]
+    },
+    "tags" : [ ]
+  },
+  "source" : "e2bbddc73c1ea23.json",
+  "parameterValues" : [ ]
+}
