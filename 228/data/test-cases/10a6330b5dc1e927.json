@@ -1,0 +1,66 @@
+{
+  "uid" : "10a6330b5dc1e927",
+  "name" : "validate get_burn_amount that matches with real burn operation",
+  "fullName" : "xyk-rpc - calculate get_burn amount: RPC result matches with burn amount.validate get_burn_amount that matches with real burn operation",
+  "historyId" : "60312bfde2d5e6b7027d81a22b65c70d",
+  "time" : {
+    "start" : 1629895111616,
+    "stop" : 1629895129041,
+    "duration" : 17425
+  },
+  "description" : "",
+  "descriptionHtml" : "",
+  "status" : "passed",
+  "flaky" : false,
+  "newFailed" : false,
+  "beforeStages" : [ ],
+  "afterStages" : [ ],
+  "labels" : [ {
+    "name" : "suite",
+    "value" : "xyk-rpc - calculate get_burn amount: RPC result matches with burn amount"
+  }, {
+    "name" : "testClass",
+    "value" : "xyk-rpc - calculate get_burn amount: RPC result matches with burn amount"
+  }, {
+    "name" : "testMethod",
+    "value" : "validate get_burn_amount that matches with real burn operation"
+  }, {
+    "name" : "package",
+    "value" : "xyk-rpc - calculate get_burn amount: RPC result matches with burn amount"
+  }, {
+    "name" : "resultFormat",
+    "value" : "allure1"
+  } ],
+  "parameters" : [ ],
+  "links" : [ ],
+  "hidden" : false,
+  "retry" : false,
+  "extra" : {
+    "severity" : "normal",
+    "retries" : [ ],
+    "categories" : [ ],
+    "history" : {
+      "statistic" : {
+        "failed" : 0,
+        "broken" : 0,
+        "skipped" : 0,
+        "passed" : 2,
+        "unknown" : 0,
+        "total" : 2
+      },
+      "items" : [ {
+        "uid" : "5c91a75e0c017832",
+        "reportUrl" : "https://mangata-finance.github.io/mangata-e2e/227//#testresult/5c91a75e0c017832",
+        "status" : "passed",
+        "time" : {
+          "start" : 1629893509506,
+          "stop" : 1629893526926,
+          "duration" : 17420
+        }
+      } ]
+    },
+    "tags" : [ ]
+  },
+  "source" : "10a6330b5dc1e927.json",
+  "parameterValues" : [ ]
+}

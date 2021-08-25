@@ -1,0 +1,66 @@
+{
+  "uid" : "f497ba1ea8342bd3",
+  "name" : "xyk-rpc - calculate_sell_price matches with the real sell",
+  "fullName" : "test/parallel/xyk-rpc.calculate.test.ts.xyk-rpc - calculate_sell_price matches with the real sell",
+  "historyId" : "bbd5182266460b8c826523c3cb048d25",
+  "time" : {
+    "start" : 1629895753665,
+    "stop" : 1629895771067,
+    "duration" : 17402
+  },
+  "description" : "",
+  "descriptionHtml" : "",
+  "status" : "passed",
+  "flaky" : false,
+  "newFailed" : false,
+  "beforeStages" : [ ],
+  "afterStages" : [ ],
+  "labels" : [ {
+    "name" : "suite",
+    "value" : "test/parallel/xyk-rpc.calculate.test.ts"
+  }, {
+    "name" : "testClass",
+    "value" : "test/parallel/xyk-rpc.calculate.test.ts"
+  }, {
+    "name" : "testMethod",
+    "value" : "xyk-rpc - calculate_sell_price matches with the real sell"
+  }, {
+    "name" : "package",
+    "value" : "test/parallel/xyk-rpc.calculate.test.ts"
+  }, {
+    "name" : "resultFormat",
+    "value" : "allure1"
+  } ],
+  "parameters" : [ ],
+  "links" : [ ],
+  "hidden" : false,
+  "retry" : false,
+  "extra" : {
+    "severity" : "normal",
+    "retries" : [ ],
+    "categories" : [ ],
+    "history" : {
+      "statistic" : {
+        "failed" : 0,
+        "broken" : 0,
+        "skipped" : 0,
+        "passed" : 2,
+        "unknown" : 0,
+        "total" : 2
+      },
+      "items" : [ {
+        "uid" : "e223e645ce1b16bb",
+        "reportUrl" : "https://mangata-finance.github.io/mangata-e2e/227//#testresult/e223e645ce1b16bb",
+        "status" : "passed",
+        "time" : {
+          "start" : 1629893635528,
+          "stop" : 1629893652918,
+          "duration" : 17390
+        }
+      } ]
+    },
+    "tags" : [ ]
+  },
+  "source" : "f497ba1ea8342bd3.json",
+  "parameterValues" : [ ]
+}

@@ -1,0 +1,67 @@
+{
+  "uid" : "3a8a33c0d9421683",
+  "name" : "Transfer [MAX] assets to other user when that user has 1 asset. Max+1 => overflow.",
+  "fullName" : "xyk-pallet - Check operations are not executed because of overflow in asset token.Transfer [MAX] assets to other user when that user has 1 asset. Max+1 => overflow.",
+  "historyId" : "ce6131a3606abf8008ef7baac1af2ab3",
+  "time" : {
+    "start" : 1629895039396,
+    "stop" : 1629895075490,
+    "duration" : 36094
+  },
+  "description" : "",
+  "descriptionHtml" : "",
+  "status" : "passed",
+  "flaky" : false,
+  "newFailed" : false,
+  "beforeStages" : [ ],
+  "afterStages" : [ ],
+  "labels" : [ {
+    "name" : "suite",
+    "value" : "xyk-pallet - Check operations are not executed because of overflow in asset token"
+  }, {
+    "name" : "testClass",
+    "value" : "xyk-pallet - Check operations are not executed because of overflow in asset token"
+  }, {
+    "name" : "testMethod",
+    "value" : "Transfer [MAX] assets to other user when that user has 1 asset. Max+1 => overflow."
+  }, {
+    "name" : "package",
+    "value" : "xyk-pallet - Check operations are not executed because of overflow in asset token"
+  }, {
+    "name" : "resultFormat",
+    "value" : "allure1"
+  } ],
+  "parameters" : [ ],
+  "links" : [ ],
+  "hidden" : false,
+  "retry" : false,
+  "extra" : {
+    "severity" : "normal",
+    "retries" : [ ],
+    "categories" : [ ],
+    "history" : {
+      "statistic" : {
+        "failed" : 1,
+        "broken" : 0,
+        "skipped" : 0,
+        "passed" : 1,
+        "unknown" : 0,
+        "total" : 2
+      },
+      "items" : [ {
+        "uid" : "32aab77d09751806",
+        "reportUrl" : "https://mangata-finance.github.io/mangata-e2e/227//#testresult/32aab77d09751806",
+        "status" : "failed",
+        "statusDetails" : "Error: expect(received).toEqual(expected) // deep equality\n                \n                Expected: 1\n                Received: 0",
+        "time" : {
+          "start" : 1629893148899,
+          "stop" : 1629893185011,
+          "duration" : 36112
+        }
+      } ]
+    },
+    "tags" : [ ]
+  },
+  "source" : "3a8a33c0d9421683.json",
+  "parameterValues" : [ ]
+}

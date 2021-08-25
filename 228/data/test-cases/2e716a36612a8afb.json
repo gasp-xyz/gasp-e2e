@@ -1,0 +1,66 @@
+{
+  "uid" : "2e716a36612a8afb",
+  "name" : "Burn liquidity  for more assets than the liquidity pool has issued",
+  "fullName" : "xyk-pallet - Burn liquidity tests: BurnLiquidity Errors:.Burn liquidity  for more assets than the liquidity pool has issued",
+  "historyId" : "21fd00cd9da05e9b2a31319b3cd4156b",
+  "time" : {
+    "start" : 1629895327361,
+    "stop" : 1629895453318,
+    "duration" : 125957
+  },
+  "description" : "",
+  "descriptionHtml" : "",
+  "status" : "passed",
+  "flaky" : false,
+  "newFailed" : false,
+  "beforeStages" : [ ],
+  "afterStages" : [ ],
+  "labels" : [ {
+    "name" : "suite",
+    "value" : "xyk-pallet - Burn liquidity tests: BurnLiquidity Errors:"
+  }, {
+    "name" : "testClass",
+    "value" : "xyk-pallet - Burn liquidity tests: BurnLiquidity Errors:"
+  }, {
+    "name" : "testMethod",
+    "value" : "Burn liquidity  for more assets than the liquidity pool has issued"
+  }, {
+    "name" : "package",
+    "value" : "xyk-pallet - Burn liquidity tests: BurnLiquidity Errors:"
+  }, {
+    "name" : "resultFormat",
+    "value" : "allure1"
+  } ],
+  "parameters" : [ ],
+  "links" : [ ],
+  "hidden" : false,
+  "retry" : false,
+  "extra" : {
+    "severity" : "normal",
+    "retries" : [ ],
+    "categories" : [ ],
+    "history" : {
+      "statistic" : {
+        "failed" : 0,
+        "broken" : 0,
+        "skipped" : 0,
+        "passed" : 2,
+        "unknown" : 0,
+        "total" : 2
+      },
+      "items" : [ {
+        "uid" : "1a4bf29b32167474",
+        "reportUrl" : "https://mangata-finance.github.io/mangata-e2e/227//#testresult/1a4bf29b32167474",
+        "status" : "passed",
+        "time" : {
+          "start" : 1629893814853,
+          "stop" : 1629893940838,
+          "duration" : 125985
+        }
+      } ]
+    },
+    "tags" : [ ]
+  },
+  "source" : "2e716a36612a8afb.json",
+  "parameterValues" : [ ]
+}

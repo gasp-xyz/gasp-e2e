@@ -1,0 +1,66 @@
+{
+  "uid" : "cf03e6218e92bd04",
+  "name" : "Burning liquidities generates a Liquidity burned event",
+  "fullName" : "xyk-pallet - Burn liquidity tests: when burning liquidity you can.Burning liquidities generates a Liquidity burned event",
+  "historyId" : "4343dc61e08f87d0c997e8820122ea6",
+  "time" : {
+    "start" : 1629895218907,
+    "stop" : 1629895327379,
+    "duration" : 108472
+  },
+  "description" : "",
+  "descriptionHtml" : "",
+  "status" : "passed",
+  "flaky" : false,
+  "newFailed" : false,
+  "beforeStages" : [ ],
+  "afterStages" : [ ],
+  "labels" : [ {
+    "name" : "suite",
+    "value" : "xyk-pallet - Burn liquidity tests: when burning liquidity you can"
+  }, {
+    "name" : "testClass",
+    "value" : "xyk-pallet - Burn liquidity tests: when burning liquidity you can"
+  }, {
+    "name" : "testMethod",
+    "value" : "Burning liquidities generates a Liquidity burned event"
+  }, {
+    "name" : "package",
+    "value" : "xyk-pallet - Burn liquidity tests: when burning liquidity you can"
+  }, {
+    "name" : "resultFormat",
+    "value" : "allure1"
+  } ],
+  "parameters" : [ ],
+  "links" : [ ],
+  "hidden" : false,
+  "retry" : false,
+  "extra" : {
+    "severity" : "normal",
+    "retries" : [ ],
+    "categories" : [ ],
+    "history" : {
+      "statistic" : {
+        "failed" : 0,
+        "broken" : 0,
+        "skipped" : 0,
+        "passed" : 2,
+        "unknown" : 0,
+        "total" : 2
+      },
+      "items" : [ {
+        "uid" : "ecb47a8b8c715c8d",
+        "reportUrl" : "https://mangata-finance.github.io/mangata-e2e/227//#testresult/ecb47a8b8c715c8d",
+        "status" : "passed",
+        "time" : {
+          "start" : 1629893335293,
+          "stop" : 1629893443861,
+          "duration" : 108568
+        }
+      } ]
+    },
+    "tags" : [ ]
+  },
+  "source" : "cf03e6218e92bd04.json",
+  "parameterValues" : [ ]
+}

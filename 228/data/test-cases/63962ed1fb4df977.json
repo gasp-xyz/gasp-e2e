@@ -1,0 +1,66 @@
+{
+  "uid" : "63962ed1fb4df977",
+  "name" : "Mint liquidity assets that does not belong to any pool",
+  "fullName" : "xyk-pallet - Mint liquidity tests: MintLiquidity Errors:.Mint liquidity assets that does not belong to any pool",
+  "historyId" : "2a65cd99fcbd61b0ee021690ae6e92d8",
+  "time" : {
+    "start" : 1629895255035,
+    "stop" : 1629895380995,
+    "duration" : 125960
+  },
+  "description" : "",
+  "descriptionHtml" : "",
+  "status" : "passed",
+  "flaky" : false,
+  "newFailed" : false,
+  "beforeStages" : [ ],
+  "afterStages" : [ ],
+  "labels" : [ {
+    "name" : "suite",
+    "value" : "xyk-pallet - Mint liquidity tests: MintLiquidity Errors:"
+  }, {
+    "name" : "testClass",
+    "value" : "xyk-pallet - Mint liquidity tests: MintLiquidity Errors:"
+  }, {
+    "name" : "testMethod",
+    "value" : "Mint liquidity assets that does not belong to any pool"
+  }, {
+    "name" : "package",
+    "value" : "xyk-pallet - Mint liquidity tests: MintLiquidity Errors:"
+  }, {
+    "name" : "resultFormat",
+    "value" : "allure1"
+  } ],
+  "parameters" : [ ],
+  "links" : [ ],
+  "hidden" : false,
+  "retry" : false,
+  "extra" : {
+    "severity" : "normal",
+    "retries" : [ ],
+    "categories" : [ ],
+    "history" : {
+      "statistic" : {
+        "failed" : 0,
+        "broken" : 0,
+        "skipped" : 0,
+        "passed" : 2,
+        "unknown" : 0,
+        "total" : 2
+      },
+      "items" : [ {
+        "uid" : "fcc50a38d034c105",
+        "reportUrl" : "https://mangata-finance.github.io/mangata-e2e/227//#testresult/fcc50a38d034c105",
+        "status" : "passed",
+        "time" : {
+          "start" : 1629893293767,
+          "stop" : 1629893419759,
+          "duration" : 125992
+        }
+      } ]
+    },
+    "tags" : [ ]
+  },
+  "source" : "63962ed1fb4df977.json",
+  "parameterValues" : [ ]
+}

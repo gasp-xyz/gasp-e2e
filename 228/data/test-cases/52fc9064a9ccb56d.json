@@ -1,0 +1,67 @@
+{
+  "uid" : "52fc9064a9ccb56d",
+  "name" : "Not enough assets",
+  "fullName" : "xyk-pallet - Sell Asset: validate Errors:.Not enough assets",
+  "historyId" : "ebd992606780a175ecd22f17f4770ec1",
+  "time" : {
+    "start" : 1629895075517,
+    "stop" : 1629895111664,
+    "duration" : 36147
+  },
+  "description" : "",
+  "descriptionHtml" : "",
+  "status" : "passed",
+  "flaky" : false,
+  "newFailed" : false,
+  "beforeStages" : [ ],
+  "afterStages" : [ ],
+  "labels" : [ {
+    "name" : "suite",
+    "value" : "xyk-pallet - Sell Asset: validate Errors:"
+  }, {
+    "name" : "testClass",
+    "value" : "xyk-pallet - Sell Asset: validate Errors:"
+  }, {
+    "name" : "testMethod",
+    "value" : "Not enough assets"
+  }, {
+    "name" : "package",
+    "value" : "xyk-pallet - Sell Asset: validate Errors:"
+  }, {
+    "name" : "resultFormat",
+    "value" : "allure1"
+  } ],
+  "parameters" : [ ],
+  "links" : [ ],
+  "hidden" : false,
+  "retry" : false,
+  "extra" : {
+    "severity" : "normal",
+    "retries" : [ ],
+    "categories" : [ ],
+    "history" : {
+      "statistic" : {
+        "failed" : 1,
+        "broken" : 0,
+        "skipped" : 0,
+        "passed" : 1,
+        "unknown" : 0,
+        "total" : 2
+      },
+      "items" : [ {
+        "uid" : "f41cf31f89a6a87e",
+        "reportUrl" : "https://mangata-finance.github.io/mangata-e2e/227//#testresult/f41cf31f89a6a87e",
+        "status" : "failed",
+        "statusDetails" : "Error: Expected: 50000 \n                  Actual: 100000 \n                 ",
+        "time" : {
+          "start" : 1629893185048,
+          "stop" : 1629893221328,
+          "duration" : 36280
+        }
+      } ]
+    },
+    "tags" : [ ]
+  },
+  "source" : "52fc9064a9ccb56d.json",
+  "parameterValues" : [ ]
+}
