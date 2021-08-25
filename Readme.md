@@ -28,7 +28,8 @@ So somehow we now have essentially a distributed system for developing and that 
 ###  How to build
 1. `npm run build`
 ###  How to run esLint
-1. `npm run eslint`
+1. Follow the mangata eslint installation guide [here](https://github.com/mangata-finance/eslint-config-mangata)
+2. `npm run eslint`
 
 ###  How to configure
 
