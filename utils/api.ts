@@ -1,4 +1,4 @@
-import { ApiPromise, WsProvider } from '@polkadot/api'
+import { ApiPromise } from '@polkadot/api'
 import { testLog } from './Logger';
 import { getEnvironmentRequiredVars } from './utils'
 import {Mangata} from 'mangata-sdk'
