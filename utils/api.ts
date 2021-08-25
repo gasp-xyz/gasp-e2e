@@ -1,7 +1,7 @@
 import { ApiPromise } from '@polkadot/api'
 import { testLog } from './Logger';
 import { getEnvironmentRequiredVars } from './utils'
-import {Mangata} from 'mangata-sdk'
+import { Mangata } from 'mangata-sdk'
 
 export let api: ApiPromise | null = null
 
@@ -14,8 +14,10 @@ export const getApi = () => {
 }
 
 export const initApi = async ( uri = '') => {
-  if(!uri)
-  uri = envUri;
+  if(!uri) {
+    uri = envUri;
+  }
+    
   testLog.getLog().info(`TEST_INFO: Running test in ${uri}`);
   const mangata = Mangata.getInstance(uri);
   api = await mangata.getApi();
