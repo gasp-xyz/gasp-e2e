@@ -17,6 +17,7 @@
     "chromedriver": "^92.0.0",
     "dotenv": "^8.2.0",
     "eslint": "^7.26.0",
+    "mangata-sdk": "^0.1.0",
     "package.json": "^2.0.1",
     "selenium-webdriver": "3.6.0",
     "typescript": "3",
@@ -64,7 +65,10 @@
   "jest": {
     "verbose": true,
     "bail": false,
-    "setupFilesAfterEnv": ["jest-allure/dist/setup", "./utils/setupJest.ts"],
+    "setupFilesAfterEnv": [
+      "jest-allure/dist/setup",
+      "./utils/setupJest.ts"
+    ],
     "reporters": [
       "default",
       "jest-allure",
