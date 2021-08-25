@@ -21,7 +21,7 @@ export class SudoDB {
     public async getSudoNonce(sudoAddress: string) {
         //we are debugging, so we dont need sudo nonce.
         if(process.env.VSCODE_INSPECTOR_OPTIONS !== undefined && process.env.VSCODE_INSPECTOR_OPTIONS.length > 0)
-            return await getCurrentNonce(sudoAddress);
+            {return await getCurrentNonce(sudoAddress);}
         
         let dbNonce;
         if(process.argv.includes('--runInBand')){
@@ -35,7 +35,7 @@ export class SudoDB {
             
             //if does not exist, create it
             if(!fs.existsSync(this.sudoNonceFileName))
-                fs.writeFileSync(this.sudoNonceFileName,'0');
+                {fs.writeFileSync(this.sudoNonceFileName,'0');}
             dbNonce =  fs.readFileSync(this.sudoNonceFileName,{encoding:'utf8', flag:'r'});
     
             if(dbNonce === undefined || chainNodeInt > parseInt(dbNonce) ) {

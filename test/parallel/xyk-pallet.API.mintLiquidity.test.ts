@@ -26,12 +26,12 @@ const defaultCurrecyValue = new BN(250000);
 
 describe('xyk-pallet - Mint liquidity tests: with minting you can', () => {
 	
-	var testUser1 : User;
-	var sudo : User;
+	let testUser1 : User;
+	let sudo : User;
 
-	var keyring : Keyring;
-	var firstCurrency :BN;
-	var secondCurrency :BN;
+	let keyring : Keyring;
+	let firstCurrency :BN;
+	let secondCurrency :BN;
 
 	//creating pool
 	
@@ -73,14 +73,14 @@ describe('xyk-pallet - Mint liquidity tests: with minting you can', () => {
 		const liquidityAssetId = await getLiquidityAssetId(firstCurrency, secondCurrency);
 		testUser1.addAsset(liquidityAssetId);
 
-		var poolBalanceWhenCreated = await getBalanceOfPool(firstCurrency, secondCurrency);
+		const poolBalanceWhenCreated = await getBalanceOfPool(firstCurrency, secondCurrency);
 		await waitNewBlock();
 		
 		await testUser1.refreshAmounts(AssetWallet.BEFORE);
 		await testUser1.mintLiquidity(firstCurrency,secondCurrency,new BN(defaultCurrecyValue));
 		await testUser1.refreshAmounts(AssetWallet.AFTER);
 		
-		var poolBalanceAfterMinting = await getBalanceOfPool(firstCurrency, secondCurrency);
+		const poolBalanceAfterMinting = await getBalanceOfPool(firstCurrency, secondCurrency);
 		expect([poolBalanceWhenCreated[0].add(new BN(defaultCurrecyValue)), poolBalanceWhenCreated[0].add(new BN(defaultCurrecyValue)).add(roundingIssue)])
 		.toEqual(poolBalanceAfterMinting);
 
@@ -108,7 +108,7 @@ describe('xyk-pallet - Mint liquidity tests: with minting you can', () => {
 		const liquidityAssetId = await getLiquidityAssetId(firstCurrency, secondCurrency);
 		testUser1.addAsset(liquidityAssetId);
 
-		var poolBalanceWhenCreated = await getBalanceOfPool(firstCurrency, secondCurrency);
+		const poolBalanceWhenCreated = await getBalanceOfPool(firstCurrency, secondCurrency);
 		await waitNewBlock();
 		
 		await testUser1.refreshAmounts(AssetWallet.BEFORE);
@@ -123,7 +123,7 @@ describe('xyk-pallet - Mint liquidity tests: with minting you can', () => {
 		);			
 		
 		await testUser1.refreshAmounts(AssetWallet.AFTER);
-		var poolBalanceAfterMinting = await getBalanceOfPool(firstCurrency, secondCurrency);
+		const poolBalanceAfterMinting = await getBalanceOfPool(firstCurrency, secondCurrency);
 		const secondCurrencyAmountLost = testUser1.getAsset(secondCurrency)?.amountBefore.sub(testUser1.getAsset(secondCurrency)?.amountAfter!)!;
 		// liquidity value matches with 2*minted_amount, since the pool is balanced.
 		validateMintedLiquidityEvent(eventResponse, testUser1.keyRingPair.address, firstCurrency,injectedValue, secondCurrency, secondCurrencyAmountLost, liquidityAssetId, injectedValue.mul(new BN(2)))

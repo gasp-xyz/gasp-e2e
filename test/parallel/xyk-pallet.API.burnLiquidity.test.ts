@@ -26,12 +26,12 @@ const defaultCurrecyValue = 250000;
 
 describe('xyk-pallet - Burn liquidity tests: when burning liquidity you can', () => {
 	
-	var testUser1 : User;
-	var sudo : User;
+	let testUser1 : User;
+	let sudo : User;
 
-	var keyring : Keyring;
-	var firstCurrency :BN;
-	var secondCurrency :BN;
+	let keyring : Keyring;
+	let firstCurrency :BN;
+	let secondCurrency :BN;
 
 	//creating pool
 	
@@ -92,7 +92,7 @@ describe('xyk-pallet - Burn liquidity tests: when burning liquidity you can', ()
 
 		const liqId = await getLiquidityAssetId(firstCurrency, secondCurrency);
 		expect(liqId).bnEqual(new BN(-1));
-		let poolBalance = await getBalanceOfPool(firstCurrency,secondCurrency);
+		const poolBalance = await getBalanceOfPool(firstCurrency,secondCurrency);
 		await testUser1.refreshAmounts(AssetWallet.AFTER);
 		testUser1.validateWalletEquals(firstCurrency,amountOfX.add(new BN(assetXamount)));
 		testUser1.validateWalletEquals(secondCurrency,new BN(1));

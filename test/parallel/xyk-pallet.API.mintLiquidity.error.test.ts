@@ -22,18 +22,18 @@ process.env.NODE_ENV = 'test';
 
 const {sudo:sudoUserName} = getEnvironmentRequiredVars();
 
-var firstAssetAmount = new BN(50000);
-var secondAssetAmount = new BN(50000);
+const firstAssetAmount = new BN(50000);
+const secondAssetAmount = new BN(50000);
 const defaultCurrecyValue = new BN(250000);
 
 describe('xyk-pallet - Mint liquidity tests: MintLiquidity Errors:', () => {
 	
-	var testUser1 : User;
-	var sudo : User;
+	let testUser1 : User;
+	let sudo : User;
 
-	var keyring : Keyring;
-	var firstCurrency :BN;
-	var secondCurrency :BN;
+	let keyring : Keyring;
+	let firstCurrency :BN;
+	let secondCurrency :BN;
 
 	const pool_balance_before = [new BN(0), new BN(0)];
 
@@ -183,7 +183,7 @@ describe('xyk-pallet - Mint liquidity tests: MintLiquidity Errors:', () => {
 			testUser1.keyRingPair 
 		);
 		await waitNewBlock();
-		var poolBalanceAfterSelling = await getBalanceOfPool(firstCurrency, secondCurrency);
+		const poolBalanceAfterSelling = await getBalanceOfPool(firstCurrency, secondCurrency);
 		
 		await testUser1.refreshAmounts(AssetWallet.BEFORE);
 		await mintLiquidity(testUser1.keyRingPair, firstCurrency, secondCurrency, testUser1.getAsset(firstCurrency)?.amountBefore.sub(new BN(1))!)
@@ -213,7 +213,7 @@ describe('xyk-pallet - Mint liquidity tests: MintLiquidity Errors:', () => {
 				
 		//lets test with 1.
 		const result = await mintLiquidity(testUser1.keyRingPair, firstCurrency, secondCurrency, testUser1.getAsset(firstCurrency)?.amountBefore.sub(new BN(1))!, new BN(1));
-		var eventResponse = getEventResultFromTxWait(result);
+		let eventResponse = getEventResultFromTxWait(result);
 		expect(eventResponse.state).toEqual(ExtrinsicResult.ExtrinsicFailed);
 		expect(eventResponse.data).toEqual(15);
 		await validateUnmodified(firstCurrency,secondCurrency,testUser1,[firstAssetAmount,poolAmountSecondCurrency]);
@@ -229,7 +229,7 @@ describe('xyk-pallet - Mint liquidity tests: MintLiquidity Errors:', () => {
 		//lest test with 5000 ( boundary value for unexpected ) the pool was generated with [50000,25000]
 		//so we must expect at least 5001 for an amount of 10000
 		await waitNewBlock();
-		var resultExpectation = await mintLiquidity(testUser1.keyRingPair, firstCurrency, secondCurrency, new BN(10000), new BN(5000));
+		let resultExpectation = await mintLiquidity(testUser1.keyRingPair, firstCurrency, secondCurrency, new BN(10000), new BN(5000));
 		eventResponse = getEventResultFromTxWait(resultExpectation);
 		expect(eventResponse.state).toEqual(ExtrinsicResult.ExtrinsicFailed);
 		expect(eventResponse.data).toEqual(15);

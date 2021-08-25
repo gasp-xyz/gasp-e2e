@@ -23,10 +23,10 @@ const ASSET_ID_MGA_ETH = MGA_DEFAULT_LIQ_TOKEN;
 const ASSET_ID_MGA = MGA_ASSET_ID;
 describe('xyk-pallet - Sell Asset: validate Errors:', () => {
 	
-	var testUser1 : User;
-	var sudo : User;
+	let testUser1 : User;
+	let sudo : User;
 
-	var keyring : Keyring;
+	let keyring : Keyring;
 
 	beforeAll( async () => {
 		try {
@@ -50,10 +50,10 @@ describe('xyk-pallet - Sell Asset: validate Errors:', () => {
 	});
 	test('Bond operation locks some amount', async () => {
 		await waitNewBlock();
-		var eventPromise = getEventResult("staking","Bonded", 14);
+		const eventPromise = getEventResult("staking","Bonded", 14);
 		//@ts-ignore: Mangata bond operation has 4 params, somehow is inheriting the bond operation from polkadot :S
 		await signSendAndWaitToFinishTx( api?.tx.staking.bond(testUser1.keyRingPair.address, new BN(1000),'Staked', new BN(3)), testUser1.keyRingPair);
-		var eventResponse = await eventPromise;
+		const eventResponse = await eventPromise;
 		  expect(eventResponse.state).toEqual(ExtrinsicResult.ExtrinsicSuccess);
 		expect(eventResponse.data[1]).toEqual(1000);
 		const lockStatus = await getLock(testUser1.keyRingPair.address, ASSET_ID_MGA_ETH);

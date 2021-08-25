@@ -14,10 +14,10 @@ process.env.NODE_ENV = 'test';
 
 describe('xyk-pallet - Burn liquidity tests: when burning liquidity you can', () => {
 	
-	var testUser1 : User;
-	var sudo : User;
+	let testUser1 : User;
+	let sudo : User;
 
-	var keyring : Keyring;
+	let keyring : Keyring;
 
 	//creating pool
 	

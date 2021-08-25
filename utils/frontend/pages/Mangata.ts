@@ -66,9 +66,9 @@ export class Mangata {
         await waitForElement(this.driver, INPUT_MGA_ADD_ASSET_VALUE );
         const inputs = await this.driver.findElements(By.xpath(INPUT_MGA_ADD_ASSET_VALUE));
         if(input ===1)
-            await inputs[0]!.sendKeys(inputValue)
+            {await inputs[0]!.sendKeys(inputValue)}
         else
-            await inputs[1]!.sendKeys(inputValue)
+            {await inputs[1]!.sendKeys(inputValue)}
 
     }
     async getAmount(input=1):Promise<string>{
@@ -77,9 +77,9 @@ export class Mangata {
         const inputs = await this.driver.findElements(By.xpath(INPUT_MGA_ADD_ASSET_VALUE));
         let value = '';
         if(input === 1)
-            value = await inputs[0]!.getAttribute('value')
+            {value = await inputs[0]!.getAttribute('value')}
         else
-            value = await inputs[1]!.getAttribute('value')
+            {value = await inputs[1]!.getAttribute('value')}
         return value;
     }
 }

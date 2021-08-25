@@ -5,13 +5,13 @@
 
 import { testLog } from "../../utils/Logger";
 
-let uris = [
+const uris = [
     'ws://127.0.0.1:9944',
 //    'ws://172.28.1.1:9944',
 
 ]
 const { initApi } = require("../../utils/api");
-var ipRegex = /\d{1,3}\.\d{1,3}\.\d{1,3}\.\d{1,3}/gm;
+const ipRegex = /\d{1,3}\.\d{1,3}\.\d{1,3}\.\d{1,3}/gm;
 
 //this constant will skip some traces.
 const onlyrelevant = true;
@@ -20,7 +20,7 @@ const pretty = false;
 
 async function main () {
 
-  let promises = [];
+  const promises = [];
   for (let index = 0; index < uris.length; index++) {
     const uri = uris[index];
     const worker = ipRegex.exec(uri);
@@ -47,9 +47,9 @@ async function main () {
                 // Loop through each of the parameters, displaying the type and data
                 event.data.forEach((data : any , index : any) => {
                     if(pretty)
-                        eventMessage += `\n \t\t\t\t\t\t\t${types[index].type}: ${data.toString()}`;
+                        {eventMessage += `\n \t\t\t\t\t\t\t${types[index].type}: ${data.toString()}`;}
                     else
-                        eventMessage += ` [${types[index].type}: ${data.toString()}] `;
+                        {eventMessage += ` [${types[index].type}: ${data.toString()}] `;}
                 });
                 testLog.getLog().info(eventMessage);
             });

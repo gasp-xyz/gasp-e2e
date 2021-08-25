@@ -21,19 +21,19 @@ jest.spyOn(console, 'log').mockImplementation(jest.fn());
 jest.setTimeout(1500000);
 process.env.NODE_ENV = 'test';
 
-var first_asset_amount = new BN(50000);
-var second_asset_amount = new BN(50000);
+const first_asset_amount = new BN(50000);
+const second_asset_amount = new BN(50000);
 const defaultCurrecyValue = new BN(250000);
 const {sudo:sudoUserName} = getEnvironmentRequiredVars();
 
 describe('xyk-pallet - Sell assets tests: SellAsset Errors:', () => {
 	
-	var testUser1 : User;
-	var sudo : User;
+	let testUser1 : User;
+	let sudo : User;
 
-	var keyring : Keyring;
-	var firstCurrency :BN;
-	var secondCurrency :BN;
+	let keyring : Keyring;
+	let firstCurrency :BN;
+	let secondCurrency :BN;
 
 	const pool_balance_before = [new BN(0), new BN(0)];
 
@@ -100,7 +100,7 @@ describe('xyk-pallet - Sell assets tests: SellAsset Errors:', () => {
 		);
 		await waitNewBlock();
 		let remainingOfCurrency1 = testUser1.getAsset(firstCurrency)?.amountBefore!.sub(first_asset_amount)!;
-		let sellPriceLocal = calculate_sell_price_local(first_asset_amount, second_asset_amount.div(new BN(2)), remainingOfCurrency1.sub(new BN(1)));
+		const sellPriceLocal = calculate_sell_price_local(first_asset_amount, second_asset_amount.div(new BN(2)), remainingOfCurrency1.sub(new BN(1)));
 
 		await sellAsset(testUser1.keyRingPair, firstCurrency, secondCurrency, remainingOfCurrency1.sub(new BN(1)), new BN(0))
 		.then(
@@ -116,7 +116,7 @@ describe('xyk-pallet - Sell assets tests: SellAsset Errors:', () => {
 		expect(remainingOfCurrency1).bnEqual(new BN(1));
 		
 		
-		let secondWalletAmount = defaultCurrecyValue.add(new BN(1)).sub(second_asset_amount.div(new BN(2))).add(sellPriceLocal);
+		const secondWalletAmount = defaultCurrecyValue.add(new BN(1)).sub(second_asset_amount.div(new BN(2))).add(sellPriceLocal);
 
 		await sellAsset(testUser1.keyRingPair, firstCurrency, secondCurrency, remainingOfCurrency1.add(new BN(1)), new BN(0))
 		.then(
@@ -132,7 +132,7 @@ describe('xyk-pallet - Sell assets tests: SellAsset Errors:', () => {
 		await testUser1.validateWalletReduced(firstCurrency, new BN(defaultCurrecyValue).sub(new BN(1)));
 		await testUser1.validateWalletEquals(secondCurrency, secondWalletAmount );
 	
-		var pool_balance = await getBalanceOfPool(firstCurrency, secondCurrency);
+		const pool_balance = await getBalanceOfPool(firstCurrency, secondCurrency);
 
 		// the user only has 1 asset of X -> pool must have : 250k -1
 		// the user has "secondWalletAmount", so the remaining must be in the pool.
@@ -162,10 +162,10 @@ describe('xyk-pallet - Sell assets tests: SellAsset Errors:', () => {
 			testUser1.keyRingPair 
 		);
 		await testUser1.refreshAmounts(AssetWallet.BEFORE);
-		let remainingOfCurrency1 = testUser1.getAsset(firstCurrency)?.amountBefore!;
+		const remainingOfCurrency1 = testUser1.getAsset(firstCurrency)?.amountBefore!;
 		await waitNewBlock();
 		
-		let sellPriceLocal = calculate_sell_price_local(first_asset_amount, second_asset_amount.div(new BN(2)), remainingOfCurrency1);
+		const sellPriceLocal = calculate_sell_price_local(first_asset_amount, second_asset_amount.div(new BN(2)), remainingOfCurrency1);
 		await sellAsset(testUser1.keyRingPair, firstCurrency, secondCurrency, remainingOfCurrency1, sellPriceLocal.add(new BN(1)))
 		.then(
 			(result) => {
@@ -183,12 +183,12 @@ describe('xyk-pallet - Sell assets tests: SellAsset Errors:', () => {
 
 describe('xyk-pallet - Sell assets tests: Selling Assets you can', () => {
 	
-	var testUser1 : User;
-	var sudo : User;
+	let testUser1 : User;
+	let sudo : User;
 
-	var keyring : Keyring;
-	var firstCurrency :BN;
-	var secondCurrency :BN;
+	let keyring : Keyring;
+	let firstCurrency :BN;
+	let secondCurrency :BN;
 
 	//creating pool
 	
@@ -225,10 +225,10 @@ describe('xyk-pallet - Sell assets tests: Selling Assets you can', () => {
 			testUser1.keyRingPair 
 		);
 		await testUser1.refreshAmounts(AssetWallet.BEFORE);
-		let remainingOfCurrency1 = testUser1.getAsset(firstCurrency)?.amountBefore!;
+		const remainingOfCurrency1 = testUser1.getAsset(firstCurrency)?.amountBefore!;
 		await waitNewBlock();
 		
-		let sellPriceLocal = calculate_sell_price_local(first_asset_amount, second_asset_amount.div(new BN(2)), remainingOfCurrency1);
+		const sellPriceLocal = calculate_sell_price_local(first_asset_amount, second_asset_amount.div(new BN(2)), remainingOfCurrency1);
 		await sellAsset(testUser1.keyRingPair, firstCurrency, secondCurrency, remainingOfCurrency1, sellPriceLocal)
 		.then(
 			(result) => {
@@ -266,9 +266,9 @@ describe('xyk-pallet - Sell assets tests: Selling Assets you can', () => {
 		);
 
 		await testUser2.refreshAmounts(AssetWallet.BEFORE);
-		let remainingOfCurrency3 = testUser2.getAsset(thirdCurrency)?.amountBefore!;
+		const remainingOfCurrency3 = testUser2.getAsset(thirdCurrency)?.amountBefore!;
 		await waitNewBlock();
-		let sellPriceLocal = calculate_sell_price_local(new BN(10000).div(new BN(2)), new BN(10000), remainingOfCurrency3);
+		const sellPriceLocal = calculate_sell_price_local(new BN(10000).div(new BN(2)), new BN(10000), remainingOfCurrency3);
 
 		await sellAsset(testUser2.keyRingPair, thirdCurrency, firstCurrency, remainingOfCurrency3, sellPriceLocal)
 		.then(

@@ -19,14 +19,14 @@ jest.spyOn(console, 'error').mockImplementation(jest.fn());
 jest.setTimeout(1500000);
 process.env.NODE_ENV = 'test';
 
-var testUser1 : User;
-var testUser2 : User;
-var sudo : User;
-var pallet : User;
+let testUser1 : User;
+let testUser2 : User;
+let sudo : User;
+let pallet : User;
 
-var keyring : Keyring;
-var firstCurrency :BN;
-var secondCurrency :BN;
+let keyring : Keyring;
+let firstCurrency :BN;
+let secondCurrency :BN;
 
 const {pallet: pallet_address,sudo:sudoUserName} = getEnvironmentRequiredVars();
 

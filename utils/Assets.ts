@@ -9,7 +9,7 @@ export class Assets {
 
     ///This method create or return the specified number of available assets
     static async getCurrencies(numAssets : number = 2, sudoUser : User){
-        let currencies = []
+        const currencies = []
         const numberOfcurrencies = parseInt((await getNextAssetId()).toString());
         
         if (numAssets > numberOfcurrencies){
@@ -30,7 +30,7 @@ export class Assets {
     };
 
     static async setupUserWithCurrencies(user : User, currencyValues = [new BN(250000), new BN(250001)], sudo: User): Promise<BN[]>{
-        let currencies = [];
+        const currencies = [];
         for (let currency = 0; currency < currencyValues.length; currency++) {
             await waitNewBlock();
             const currencyId = await this.issueAssetToUser(user, currencyValues[currency], sudo);

@@ -15,7 +15,7 @@ export const getApi = () => {
 export const initApi = async (uri = '') => {
   // const wsProvider = new WsProvider(process.env.API_URL || 'ws://mangata-node:9944')
   if(!uri)
-    uri = envUri;
+    {uri = envUri;}
   testLog.getLog().info(`TEST_INFO: Running test in ${uri}`);
   const wsProvider = new WsProvider(uri)
   api = await ApiPromise.create({

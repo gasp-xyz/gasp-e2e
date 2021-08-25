@@ -44,7 +44,7 @@ export async function setupAllExtensions(driver: WebDriver){
 }
 
 export async function leaveOnlyOneTab(driver: WebDriver){
-    let handles = await (await driver).getAllWindowHandles();
+    const handles = await (await driver).getAllWindowHandles();
     for(let index = 1; index < handles.length; index++) {
         await (await driver).close();
         await (await driver).switchTo().window(handles[0]);

@@ -21,18 +21,18 @@ jest.setTimeout(1500000);
 process.env.NODE_ENV = 'test';
 const {sudo:sudoUserName} = getEnvironmentRequiredVars();
 
-var firstAssetAmount = new BN(50000);
-var secondAssetAmount = new BN(50000);
+const firstAssetAmount = new BN(50000);
+const secondAssetAmount = new BN(50000);
 const defaultCurrecyValue = new BN(250000);
 
 describe('xyk-pallet - Buy assets tests: BuyAssets Errors:', () => {
 	
-	var testUser1 : User;
-	var sudo : User;
+	let testUser1 : User;
+	let sudo : User;
 
-	var keyring : Keyring;
-	var firstCurrency :BN;
-	var secondCurrency :BN;
+	let keyring : Keyring;
+	let firstCurrency :BN;
+	let secondCurrency :BN;
 
 	const pool_balance_before = [new BN(0), new BN(0)];
 
@@ -155,7 +155,7 @@ describe('xyk-pallet - Buy assets tests: BuyAssets Errors:', () => {
 		);
 		await waitNewBlock();
 
-		let buyPriceLocal = await calculate_buy_price_rpc(firstAssetAmount, poolAmountSecondCurrency, poolAmountSecondCurrency.sub(new BN(1)));
+		const buyPriceLocal = await calculate_buy_price_rpc(firstAssetAmount, poolAmountSecondCurrency, poolAmountSecondCurrency.sub(new BN(1)));
 		await sudo.mint(firstCurrency, testUser1,new BN(buyPriceLocal));
 		await testUser1.refreshAmounts(AssetWallet.BEFORE);
 		
@@ -177,12 +177,12 @@ describe('xyk-pallet - Buy assets tests: BuyAssets Errors:', () => {
 
 describe('xyk-pallet - Buy assets tests: Buying assets you can', () => {
 	
-	var testUser1 : User;
-	var sudo : User;
+	let testUser1 : User;
+	let sudo : User;
 
-	var keyring : Keyring;
-	var firstCurrency :BN;
-	var secondCurrency :BN;
+	let keyring : Keyring;
+	let firstCurrency :BN;
+	let secondCurrency :BN;
 
 	//creating pool
 	
@@ -222,7 +222,7 @@ describe('xyk-pallet - Buy assets tests: Buying assets you can', () => {
 		);
 		await waitNewBlock();
 
-		let buyPriceLocal = await calculate_buy_price_rpc(firstAssetAmount, poolAmountSecondCurrency, poolAmountSecondCurrency.sub(new BN(1)));
+		const buyPriceLocal = await calculate_buy_price_rpc(firstAssetAmount, poolAmountSecondCurrency, poolAmountSecondCurrency.sub(new BN(1)));
 		
 		await testUser1.refreshAmounts(AssetWallet.BEFORE);
 		await waitNewBlock();
@@ -238,7 +238,7 @@ describe('xyk-pallet - Buy assets tests: Buying assets you can', () => {
 
 		await waitNewBlock();
 		await testUser1.refreshAmounts(AssetWallet.AFTER);
-		var pool_balance = await getBalanceOfPool(firstCurrency, secondCurrency);
+		const pool_balance = await getBalanceOfPool(firstCurrency, secondCurrency);
 		expect([buyPriceLocal.add(firstAssetAmount), new BN(1)])
 		.toEqual(pool_balance);
 
@@ -278,11 +278,11 @@ describe('xyk-pallet - Buy assets tests: Buying assets you can', () => {
 			api?.tx.xyk.createPool(firstCurrency, thirdAssetAmount , thirdCurrency, thirdAssetAmount.div(new BN(2))), 
 			testUser1.keyRingPair 
 		);
-		var poolBalanceBefore = await getBalanceOfPool(firstCurrency, thirdCurrency);
+		const poolBalanceBefore = await getBalanceOfPool(firstCurrency, thirdCurrency);
 
 		await testUser2.refreshAmounts(AssetWallet.BEFORE);
 		await waitNewBlock();
-		let buyPriceLocal = calculate_buy_price_local(thirdAssetAmount.div(new BN(2)), thirdAssetAmount, amountToBuy);
+		const buyPriceLocal = calculate_buy_price_local(thirdAssetAmount.div(new BN(2)), thirdAssetAmount, amountToBuy);
 
 		await buyAsset(testUser2.keyRingPair, thirdCurrency, firstCurrency, amountToBuy, buyPriceLocal)
 		.then(
@@ -298,7 +298,7 @@ describe('xyk-pallet - Buy assets tests: Buying assets you can', () => {
 		testUser2.validateWalletReduced(thirdCurrency, buyPriceLocal);
 		testUser2.validateWalletEquals(firstCurrency, amountToBuy);
 
-		var poolBalanceAfter = await getBalanceOfPool(firstCurrency, thirdCurrency);
+		const poolBalanceAfter = await getBalanceOfPool(firstCurrency, thirdCurrency);
 		expect([poolBalanceBefore[0].sub(amountToBuy), poolBalanceBefore[1].add(buyPriceLocal)])
 		.toEqual(poolBalanceAfter);
 

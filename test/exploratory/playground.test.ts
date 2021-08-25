@@ -22,12 +22,12 @@ const {sudo:sudoUserName} = getEnvironmentRequiredVars();
 // node ./node_modules/jest/bin/jest.js test/exploratory/playground.ts --testRegex='.*' 
 describe('Playground', () => {
 	
-	var testUser1 : User;
-	var sudo : User;
+	let testUser1 : User;
+	let sudo : User;
 
-	var keyring : Keyring;
-	var firstCurrency :BN;
-	var secondCurrency :BN;
+	let keyring : Keyring;
+	let firstCurrency :BN;
+	let secondCurrency :BN;
 
 	//creating pool
 	
@@ -92,7 +92,7 @@ describe('Playground', () => {
 			} catch (error) {
 				await sudo.mint(firstCurrency, testUser1,new BN(10000));
 			}
-			let balance = await getBalanceOfPool(secondCurrency, firstCurrency);
+			const balance = await getBalanceOfPool(secondCurrency, firstCurrency);
 			testLog.getLog().info(balance.toString())
 		}
 

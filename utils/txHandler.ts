@@ -92,16 +92,16 @@ export const transferAssets = async (from: any, to: any, asset_id: BN, amount: B
 function fisher_yates_shuffle<K>(objects: K[], seed: Uint8Array)
 {
     const prng = xoshiro.create('256+', seed);
-    for(var i=objects.length-1; i>0; i--){
-        var j = prng.roll() % i; 
-        var tmp = objects[i];
+    for(let i=objects.length-1; i>0; i--){
+        const j = prng.roll() % i; 
+        const tmp = objects[i];
         objects[i] = objects[j];
         objects[j] = tmp;
     } 
 }
 
 function recreateExtrinsicsOrder(extrinsics: GenericExtrinsic[], seed_bytes: Uint8Array){
-    var slots = extrinsics.map((ev) => {
+    const slots = extrinsics.map((ev) => {
         if (ev.isSigned) {
             return ev.signer.toString();
         }else{
@@ -111,9 +111,9 @@ function recreateExtrinsicsOrder(extrinsics: GenericExtrinsic[], seed_bytes: Uin
 
     fisher_yates_shuffle(slots, seed_bytes);
 
-    let map = new Map()
+    const map = new Map()
 
-    for (var e of extrinsics) {
+    for (const e of extrinsics) {
         let who = "None";
         if (e.isSigned){
             who = e.signer.toString();
@@ -126,7 +126,7 @@ function recreateExtrinsicsOrder(extrinsics: GenericExtrinsic[], seed_bytes: Uin
         }
     }
 
-    let shuffled_extrinsics = slots.map( (who) => {
+    const shuffled_extrinsics = slots.map( (who) => {
         return map.get(who).shift();
     });
     return shuffled_extrinsics;
@@ -157,27 +157,27 @@ export const signAndWaitTx = async (
                 const unsub_new_heads = await api.derive.chain.subscribeNewHeads(async (lastHeader) => {
                     if (lastHeader.parentHash.toString() === status.asInBlock.toString()){
                         unsub_new_heads()
-                        let prev_block_extrinsics = (await api.rpc.chain.getBlock(lastHeader.parentHash)).block.extrinsics;
-                        let curr_block_extrinsics = (await api.rpc.chain.getBlock(lastHeader.hash)).block.extrinsics;
-                        let curr_block_events = await api.query.system.events.at(lastHeader.hash);
+                        const prev_block_extrinsics = (await api.rpc.chain.getBlock(lastHeader.parentHash)).block.extrinsics;
+                        const curr_block_extrinsics = (await api.rpc.chain.getBlock(lastHeader.hash)).block.extrinsics;
+                        const curr_block_events = await api.query.system.events.at(lastHeader.hash);
     
-                        let extrinsic_with_seed = curr_block_extrinsics.find( e => { return e.method.method === "set" && e.method.section === "random" });
+                        const extrinsic_with_seed = curr_block_extrinsics.find( e => { return e.method.method === "set" && e.method.section === "random" });
                         if(!extrinsic_with_seed){
                             return;
                         }
     
-                        var json_response = JSON.parse(extrinsic_with_seed.method.args[0].toString())
+                        const json_response = JSON.parse(extrinsic_with_seed.method.args[0].toString())
                         const seed_bytes = Uint8Array.from(Buffer.from(json_response["seed"].substring(2), 'hex'));
-                        let shuffled_extrinsics = recreateExtrinsicsOrder(prev_block_extrinsics, seed_bytes);
+                        const shuffled_extrinsics = recreateExtrinsicsOrder(prev_block_extrinsics, seed_bytes);
     
                         // filter extrinsic triggered by current request
-                        let index = shuffled_extrinsics.findIndex( e => {return e.isSigned && e.signer.toString() === who.address && e.nonce.toString() === nonce.toString();});
+                        const index = shuffled_extrinsics.findIndex( e => {return e.isSigned && e.signer.toString() === who.address && e.nonce.toString() === nonce.toString();});
                         if (index < 0) {
                             return;
                         }
                         
     
-                        let req_events = curr_block_events.filter(event => {
+                        const req_events = curr_block_events.filter(event => {
                             return event.phase.isApplyExtrinsic && event.phase.asApplyExtrinsic.toNumber() === index;
                         }).map( ({ phase, event }) => {
                             return event;

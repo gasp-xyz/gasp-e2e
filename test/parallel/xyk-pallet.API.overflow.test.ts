@@ -24,12 +24,12 @@ const MAX_BALANCE = new BN('340282366920938463463374607431768211455'); //max bal
 
 describe('xyk-pallet - Check operations are not executed because of overflow in asset token', () => {
 	
-	var testUser1 : User;
-	var sudo : User;
+	let testUser1 : User;
+	let sudo : User;
 
-	var keyring : Keyring;
-	var firstCurrency :BN;
-	var secondCurrency :BN;
+	let keyring : Keyring;
+	let firstCurrency :BN;
+	let secondCurrency :BN;
 
 
 	beforeAll( async () => {
@@ -101,13 +101,13 @@ describe('xyk-pallet - Check operations are not executed because of overflow in 
 
 describe('xyk-pallet - Operate with a pool close to overflow', () => {
 	
-	var testUser1 : User;
-	var testUser2 : User;
-	var sudo : User;
+	let testUser1 : User;
+	let testUser2 : User;
+	let sudo : User;
 
-	var keyring : Keyring;
-	var firstCurrency :BN;
-	var secondCurrency :BN;
+	let keyring : Keyring;
+	let firstCurrency :BN;
+	let secondCurrency :BN;
 
 
 	beforeAll( async () => {
@@ -227,13 +227,13 @@ describe('xyk-pallet - Operate with a pool close to overflow', () => {
 
 describe('xyk-pallet - Operate with a user account close to overflow', () => {
 	
-	var testUser1 : User;
-	var testUser2 : User;
-	var sudo : User;
+	let testUser1 : User;
+	let testUser2 : User;
+	let sudo : User;
 
-	var keyring : Keyring;
-	var firstCurrency :BN;
-	var secondCurrency :BN;
+	let keyring : Keyring;
+	let firstCurrency :BN;
+	let secondCurrency :BN;
 
 
 	beforeAll( async () => {
@@ -318,12 +318,12 @@ describe('xyk-pallet - Operate with a user account close to overflow', () => {
 
 describe.skip('xyk-pallet - Operate with a highly unbalanced pool [mg - newAsset]', () => {
 	
-	var testUser1 : User;
-	var sudo : User;
-    var testUser2 : User;
-	var keyring : Keyring;
-	var firstCurrency :BN;
-	var secondCurrency :BN;
+	let testUser1 : User;
+	let sudo : User;
+    let testUser2 : User;
+	let keyring : Keyring;
+	let firstCurrency :BN;
+	let secondCurrency :BN;
 
 
 	beforeAll( async () => {
@@ -391,8 +391,8 @@ describe.skip('xyk-pallet - Operate with a highly unbalanced pool [mg - newAsset
     test('[BUG] Buy a few assets to a wallet linked to MGA  => overflow.', async () => {
 
         // lets buy some asets
-        var poolBalanceAssetsBefore = await getBalanceOfPool(secondCurrency, firstCurrency);
-        var poolBalanceMGAAssetBefore = await getBalanceOfPool(new BN(0), secondCurrency);
+        const poolBalanceAssetsBefore = await getBalanceOfPool(secondCurrency, firstCurrency);
+        const poolBalanceMGAAssetBefore = await getBalanceOfPool(new BN(0), secondCurrency);
 
         await buyAsset(testUser1.keyRingPair, secondCurrency, firstCurrency, MAX_BALANCE.div(new BN('100000000000')), MAX_BALANCE)
         .then(
@@ -401,8 +401,8 @@ describe.skip('xyk-pallet - Operate with a highly unbalanced pool [mg - newAsset
                 expect(eventResponse.state).toEqual(ExtrinsicResult.ExtrinsicSuccess);		
             }
         );
-        var poolBalanceAssetsAfter = await getBalanceOfPool(secondCurrency, firstCurrency);
-        var poolBalanceMGAAssetAfter = await getBalanceOfPool(new BN(0), secondCurrency);
+        const poolBalanceAssetsAfter = await getBalanceOfPool(secondCurrency, firstCurrency);
+        const poolBalanceMGAAssetAfter = await getBalanceOfPool(new BN(0), secondCurrency);
 
         await testUser1.refreshAmounts(AssetWallet.AFTER);
 

@@ -29,7 +29,7 @@ beforeAll( async () => {
 
 describe('xyk-rpc - calculate_buy_price_by_id, calculate_sell_price_by_id', () => {
 
-	let dictAssets = new Map<number, BN>();
+	const dictAssets = new Map<number, BN>();
 
 	beforeAll( async () => {
 		const {sudo:sudoUserName} = getEnvironmentRequiredVars();

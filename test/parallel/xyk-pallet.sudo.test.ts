@@ -48,9 +48,9 @@ beforeEach( async () => {
 
 test('xyk-pallet - Sudo tests: Sudo Issue an asset', async () => {
 	//setup
-	let sudoKey = await getSudoKey();
-	let sudoPair = keyring.getPair(sudoKey.toString());
-	let tokensAmount = 220000;
+	const sudoKey = await getSudoKey();
+	const sudoPair = keyring.getPair(sudoKey.toString());
+	const tokensAmount = 220000;
 	//act
 
 	let assetId = new BN(0);
@@ -68,16 +68,16 @@ test('xyk-pallet - Sudo tests: Sudo Issue an asset', async () => {
 	testLog.getLog().info("Sudo: issued asset " + assetId + " to " + testUser.name);
 
 	//validate
-	let userAssets = await getUserAssets(testUser.keyRingPair.address, [assetId]);
+	const userAssets = await getUserAssets(testUser.keyRingPair.address, [assetId]);
 	expect(userAssets).toEqual([new BN(tokensAmount)]);
 	
 });
 
 test('xyk-pallet - Sudo tests: Sudo Issue two  different assets to the same account', async () => {
 
-	let sudoKey = await getSudoKey();
-	let sudoPair = keyring.getPair(sudoKey.toString());
-	let tokensFirstAmount = 220000;
+	const sudoKey = await getSudoKey();
+	const sudoPair = keyring.getPair(sudoKey.toString());
+	const tokensFirstAmount = 220000;
 	//act
 
 	let assetId = new BN(0);
@@ -93,7 +93,7 @@ test('xyk-pallet - Sudo tests: Sudo Issue two  different assets to the same acco
 
 	await waitNewBlock();
 	// act2 : send the second asset issue.
-	let tokensSecondAmount = 120000;
+	const tokensSecondAmount = 120000;
 	let secondAssetId = new BN(0);
 	await sudoIssueAsset(sudoPair, new BN(tokensSecondAmount), testUser.keyRingPair.address)
 	.then(
@@ -104,7 +104,7 @@ test('xyk-pallet - Sudo tests: Sudo Issue two  different assets to the same acco
 		}
 	);
 	// validate.
-	let userAssets = await getUserAssets(testUser.keyRingPair.address, [assetId,secondAssetId]);
+	const userAssets = await getUserAssets(testUser.keyRingPair.address, [assetId,secondAssetId]);
 
 	expect(parseInt(userAssets[0].toString())).toEqual(tokensFirstAmount);
 	expect(parseInt(userAssets[1].toString())).toEqual(tokensSecondAmount);

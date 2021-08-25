@@ -20,18 +20,18 @@ jest.spyOn(console, 'log').mockImplementation(jest.fn());
 jest.setTimeout(1500000);
 process.env.NODE_ENV = 'test';
 
-var first_asset_amount = new BN(50000);
+const first_asset_amount = new BN(50000);
 const defaultCurrecyValue = new BN(250000);
 const {sudo:sudoUserName} = getEnvironmentRequiredVars();
 
 describe('xyk-pallet - treasury tests [Mangata]: on treasury we store', () => {
 	
-	var testUser1 : User;
-	var sudo : User;
+	let testUser1 : User;
+	let sudo : User;
 
-	var keyring : Keyring;
-	var secondCurrency :BN;
-	var mgaTokenId:BN;
+	let keyring : Keyring;
+	let secondCurrency :BN;
+	let mgaTokenId:BN;
 
 	//creating pool
 	
@@ -73,7 +73,7 @@ describe('xyk-pallet - treasury tests [Mangata]: on treasury we store', () => {
 	test('assets won when assets are sold [Selling Mangata] - 5', async () => {
 
 		await waitNewBlock();
-		let sellAssetAmount = new BN(10000);
+		const sellAssetAmount = new BN(10000);
 		
 		const treasuryBefore = await getTreasury(mgaTokenId);
 		const treasuryBurnBefore = await getTreasuryBurn(mgaTokenId);
@@ -102,7 +102,7 @@ describe('xyk-pallet - treasury tests [Mangata]: on treasury we store', () => {
 
 	test('assets won when assets are bought [Buying Mangata]', async () => {
 		await waitNewBlock();
-		let buyAssetAmount = new BN(10000);
+		const buyAssetAmount = new BN(10000);
 		
 		const treasuryBefore = await getTreasury(mgaTokenId);
 		const treasuryBurnBefore = await getTreasuryBurn(mgaTokenId);
@@ -131,7 +131,7 @@ describe('xyk-pallet - treasury tests [Mangata]: on treasury we store', () => {
 	test('assets won when assets are sold [Selling other in MGA pool] - 6', async () => {
 
 		await waitNewBlock();
-		let sellAssetAmount = new BN(20000);
+		const sellAssetAmount = new BN(20000);
 		
 		const treasuryBefore = await getTreasury(mgaTokenId);
 		const treasuryBurnBefore = await getTreasuryBurn(mgaTokenId);
@@ -162,7 +162,7 @@ describe('xyk-pallet - treasury tests [Mangata]: on treasury we store', () => {
 
 	test('assets won when assets are bought [Buying other in MGA pool]', async () => {
 		await waitNewBlock();
-		let buyAssetAmount = new BN(10000);
+		const buyAssetAmount = new BN(10000);
 		
 		const treasuryBefore = await getTreasury(mgaTokenId);
 		const treasuryBurnBefore = await getTreasuryBurn(mgaTokenId);
@@ -194,12 +194,12 @@ describe('xyk-pallet - treasury tests [Mangata]: on treasury we store', () => {
 
 describe('xyk-pallet - treasury tests [Connected - Mangata]: on treasury we store', () => {
 	
-	var testUser1 : User;
-	var sudo : User;
+	let testUser1 : User;
+	let sudo : User;
 
-	var keyring : Keyring;
-	var connectedToMGA : BN, indirectlyConnected :BN;
-	var mgaTokenId:BN;
+	let keyring : Keyring;
+	let connectedToMGA : BN, indirectlyConnected :BN;
+	let mgaTokenId:BN;
 
 	//creating pool
 	
@@ -254,7 +254,7 @@ describe('xyk-pallet - treasury tests [Connected - Mangata]: on treasury we stor
 	test('assets won when assets are sold [Selling X connected to MGA pool] - 10', async () => {
 
 		await waitNewBlock();
-		let sellAssetAmount = new BN(20000);
+		const sellAssetAmount = new BN(20000);
 
 		const mgPoolAmount = await getBalanceOfPool(mgaTokenId,connectedToMGA);
 
@@ -292,7 +292,7 @@ describe('xyk-pallet - treasury tests [Connected - Mangata]: on treasury we stor
 
 	test('assets won when assets are bought [Buying X connected to MGA pool]', async () => {
 		await waitNewBlock();
-		let buyAssetAmount = new BN(7000);
+		const buyAssetAmount = new BN(7000);
 
 		const mgPoolAmount = await getBalanceOfPool(mgaTokenId,connectedToMGA);
 
@@ -331,7 +331,7 @@ describe('xyk-pallet - treasury tests [Connected - Mangata]: on treasury we stor
 	test('assets won when assets are sold [Selling Y - X connected toMGA pool] - 6', async () => {
 
 		await waitNewBlock();
-		let sellAssetAmount = new BN(20000);
+		const sellAssetAmount = new BN(20000);
 
 		const treasuryBefore = await getTreasury(mgaTokenId);
 		const treasuryBurnBefore = await getTreasuryBurn(mgaTokenId);
@@ -368,7 +368,7 @@ describe('xyk-pallet - treasury tests [Connected - Mangata]: on treasury we stor
 	test('assets won when assets are bought [Buying Y - X connected toMGA pool] - 6', async () => {
 		
 		await waitNewBlock();
-		let buyAssetAmount = new BN(6000);
+		const buyAssetAmount = new BN(6000);
 
 		const treasuryBefore = await getTreasury(mgaTokenId);
 		const treasuryBurnBefore = await getTreasuryBurn(mgaTokenId);

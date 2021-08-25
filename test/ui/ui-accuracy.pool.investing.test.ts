@@ -27,8 +27,8 @@ let driver: WebDriver;
 //export MNEMONIC_META='dismiss .. trumpet' ( Ask Gonzalo :) )
 
 const {sudo:sudoUserName} = getEnvironmentRequiredVars();
-var firstCurrency : BN; 
-var secondCurrency : BN; 
+let firstCurrency : BN; 
+let secondCurrency : BN; 
 
 
 describe('UI tests - Get Tokens from Faucet', () => {
@@ -36,7 +36,7 @@ describe('UI tests - Get Tokens from Faucet', () => {
     let testUser1: User;
     let sudo: User;
     let keyring : Keyring;
-    let visibleValueNumber = Math.pow(10,19).toString();
+    const visibleValueNumber = Math.pow(10,19).toString();
 
     beforeAll( async () => {
         

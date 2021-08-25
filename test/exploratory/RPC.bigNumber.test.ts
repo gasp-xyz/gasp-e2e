@@ -25,10 +25,10 @@ it.skip('test', async () => {
 
 describe.skip('Playground', () => {
 	
-	var testUser1 : User;
-	var sudo : User;
-	var api: any;
-	var keyring : Keyring;
+	let testUser1 : User;
+	let sudo : User;
+	let api: any;
+	let keyring : Keyring;
 
 	//creating pool
 	
@@ -57,12 +57,12 @@ describe.skip('Playground', () => {
 	const MAX_BALANCE = new BN('340282366920938463463374607431768211455'); //max balance
 	test('Request big numbers', async () => {
 
-		let result = await ( api.rpc as any).xyk.calculate_buy_price(MAX_BALANCE, MAX_BALANCE, MAX_BALANCE);
+		const result = await ( api.rpc as any).xyk.calculate_buy_price(MAX_BALANCE, MAX_BALANCE, MAX_BALANCE);
 		testLog.getLog().info(result);
 	});
 	test('Request big numbers -1', async () => {
 		const b = MAX_BALANCE.sub(new BN(1));
-		let result = await ( api.rpc as any).xyk.calculate_buy_price(b, b, b);
+		const result = await ( api.rpc as any).xyk.calculate_buy_price(b, b, b);
 		testLog.getLog().info(result);
 	});
 

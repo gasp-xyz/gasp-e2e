@@ -77,7 +77,7 @@ test.each([
 
 describe('xyk-rpc - calculate_buy_price_by_id:No pool assotiated with the assets', () => {
 
-	let dictAssets = new Map<number, BN>();
+	const dictAssets = new Map<number, BN>();
 
 	beforeAll( async () => {
 		const {sudo:sudoUserName} = getEnvironmentRequiredVars();
@@ -133,9 +133,9 @@ test.each([
 	//assert_eq!(u128::MAX, 340282366920938463463374607431768211455);
 ])
 ('RPC big numbers : negative asset ids [amount->%s]', async(amount) => {
-	let hexFrom = bnToHex(1000);
-	let hexTo = bnToHex(2000);
-	let hexAmount = bnToHex(amount);
+	const hexFrom = bnToHex(1000);
+	const hexTo = bnToHex(2000);
+	const hexAmount = bnToHex(amount);
 
 	const resp = await (api.rpc as any).xyk.calculate_buy_price_id(hexFrom, hexTo, hexAmount);
 	const respJson = JSON.parse(JSON.stringify(resp.toHuman()));

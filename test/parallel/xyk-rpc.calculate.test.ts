@@ -63,14 +63,14 @@ beforeEach( async () => {
 
 test('xyk-rpc - calculate_sell_price and calculate_buy_price matches, 1000,1000', async() => {
 
-	let poolBalanceBefore = await getBalanceOfPool(firstCurrency, secondCurrency);
+	const poolBalanceBefore = await getBalanceOfPool(firstCurrency, secondCurrency);
 	
 	const numberOfAssets = new BN(100);
-	let sellPriceRpc = await calculate_sell_price_rpc(poolBalanceBefore[0], poolBalanceBefore[1], numberOfAssets);
-	let sellPriceRpcInverse = await calculate_sell_price_rpc(poolBalanceBefore[1], poolBalanceBefore[0], numberOfAssets);
+	const sellPriceRpc = await calculate_sell_price_rpc(poolBalanceBefore[0], poolBalanceBefore[1], numberOfAssets);
+	const sellPriceRpcInverse = await calculate_sell_price_rpc(poolBalanceBefore[1], poolBalanceBefore[0], numberOfAssets);
 
-	let buyPriceRpc= await calculate_buy_price_rpc(poolBalanceBefore[0], poolBalanceBefore[1], sellPriceRpc);
-	let buyPriceRpcInverse = await calculate_buy_price_rpc(poolBalanceBefore[1], poolBalanceBefore[0], sellPriceRpc);
+	const buyPriceRpc= await calculate_buy_price_rpc(poolBalanceBefore[0], poolBalanceBefore[1], sellPriceRpc);
+	const buyPriceRpcInverse = await calculate_buy_price_rpc(poolBalanceBefore[1], poolBalanceBefore[0], sellPriceRpc);
 
 	//in a perfect balanced pool, those number match
 	expect(sellPriceRpcInverse).bnEqual(sellPriceRpc);
@@ -83,16 +83,16 @@ test('xyk-rpc - calculate_sell_price and calculate_buy_price matches, 1000,1000'
 
 test('xyk-rpc - calculate_sell_price and calculate_buy_price matches, 2000,1000', async() => {
 
-	let poolBalanceBefore = await getBalanceOfPool(firstCurrency, secondCurrency);
+	const poolBalanceBefore = await getBalanceOfPool(firstCurrency, secondCurrency);
 	//lets unbalance it artificailly, now the relation is 2000X=1000Y
 	poolBalanceBefore[0] = poolBalanceBefore[0].add(new BN(1000));
 	
 	const numberOfAssets = new BN(100);
-	let sellPriceRpc = await calculate_sell_price_rpc(poolBalanceBefore[0], poolBalanceBefore[1], numberOfAssets);
-	let sellPriceRpcInverse = await calculate_sell_price_rpc(poolBalanceBefore[1], poolBalanceBefore[0], numberOfAssets);
+	const sellPriceRpc = await calculate_sell_price_rpc(poolBalanceBefore[0], poolBalanceBefore[1], numberOfAssets);
+	const sellPriceRpcInverse = await calculate_sell_price_rpc(poolBalanceBefore[1], poolBalanceBefore[0], numberOfAssets);
 
-	let buyPriceRpc= await calculate_buy_price_rpc(poolBalanceBefore[0], poolBalanceBefore[1], sellPriceRpc);
-	let buyPriceRpcInverse = await calculate_buy_price_rpc(poolBalanceBefore[1], poolBalanceBefore[0], sellPriceRpc);
+	const buyPriceRpc= await calculate_buy_price_rpc(poolBalanceBefore[0], poolBalanceBefore[1], sellPriceRpc);
+	const buyPriceRpcInverse = await calculate_buy_price_rpc(poolBalanceBefore[1], poolBalanceBefore[0], sellPriceRpc);
 
 	//in a not perfect balanced pool, those number can not match
 	expect(sellPriceRpcInverse).not.bnEqual(sellPriceRpc);
@@ -106,10 +106,10 @@ test('xyk-rpc - calculate_sell_price and calculate_buy_price matches, 2000,1000'
 
 test('xyk-rpc - calculate_sell_price matches with the real sell', async() => {
 
-	let poolBalanceBefore = await getBalanceOfPool(firstCurrency, secondCurrency);
+	const poolBalanceBefore = await getBalanceOfPool(firstCurrency, secondCurrency);
 	
 	const numberOfAssets = new BN(100);
-	let sellPriceRpc = await calculate_sell_price_rpc(poolBalanceBefore[0], poolBalanceBefore[1], numberOfAssets);
+	const sellPriceRpc = await calculate_sell_price_rpc(poolBalanceBefore[0], poolBalanceBefore[1], numberOfAssets);
 	await testUser1.sellAssets(firstCurrency, secondCurrency , numberOfAssets);
 	await testUser1.refreshAmounts(AssetWallet.AFTER);
 	const assetsSold = testUser1.getAsset(firstCurrency)?.amountAfter;
@@ -122,10 +122,10 @@ test('xyk-rpc - calculate_sell_price matches with the real sell', async() => {
 
 test('xyk-rpc - calculate_buy_price matches with the real buy', async() => {
 
-	let poolBalanceBefore = await getBalanceOfPool(firstCurrency, secondCurrency);
+	const poolBalanceBefore = await getBalanceOfPool(firstCurrency, secondCurrency);
 	
 	const numberOfAssets = new BN(100);
-	let sellPriceRpc = await calculate_buy_price_rpc(poolBalanceBefore[0], poolBalanceBefore[1], numberOfAssets);
+	const sellPriceRpc = await calculate_buy_price_rpc(poolBalanceBefore[0], poolBalanceBefore[1], numberOfAssets);
 	await testUser1.buyAssets(firstCurrency, secondCurrency , numberOfAssets);
 	await testUser1.refreshAmounts(AssetWallet.AFTER);
 	const assetsSold = testUser1.getAsset(firstCurrency)?.amountAfter;

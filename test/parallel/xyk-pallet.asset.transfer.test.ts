@@ -79,8 +79,8 @@ beforeEach( async () => {
 
 test('xyk-pallet - AssetsOperation: transferAsset', async() => {
     //Refactor Note: [Missing Wallet assert?] Did not considered creating a liquity asset. Transaction does nothing with it.
-	let pool_balance_before = await getBalanceOfPool(firstCurrency, secondCurrency);
-	let amount = new BN(100000);
+	const pool_balance_before = await getBalanceOfPool(firstCurrency, secondCurrency);
+	const amount = new BN(100000);
 	testLog.getLog().info("testUser1: transfering asset " + firstCurrency + " to testUser2");
 
 	await transferAsset(testUser1.keyRingPair, firstCurrency, testUser2.keyRingPair.address, amount)
@@ -101,7 +101,7 @@ test('xyk-pallet - AssetsOperation: transferAsset', async() => {
 	testUser2.validateWalletIncreased(firstCurrency, amount);
 	testUser1.validateWalletIncreased(secondCurrency,new BN(0));
 
-	let pool_balance = await getBalanceOfPool(firstCurrency, secondCurrency);
+	const pool_balance = await getBalanceOfPool(firstCurrency, secondCurrency);
 	expect	(pool_balance_before)
 	.toEqual(pool_balance);
 
@@ -109,8 +109,8 @@ test('xyk-pallet - AssetsOperation: transferAsset', async() => {
 
 test('xyk-pallet - AssetsOperation: transferAll', async() => {
     //Refactor Note: [Missing Wallet assert?] Did not considered creating a liquity asset. Transaction does nothing with it.
-	let pool_balance_before = await getBalanceOfPool(firstCurrency, secondCurrency);
-	let amount = testUser1.getAsset(firstCurrency)?.amountBefore!;
+	const pool_balance_before = await getBalanceOfPool(firstCurrency, secondCurrency);
+	const amount = testUser1.getAsset(firstCurrency)?.amountBefore!;
 	testLog.getLog().debug("testUser1: transfering all assets " + firstCurrency + " to testUser2");
 
 	await transferAll(testUser1.keyRingPair, firstCurrency, testUser2.keyRingPair.address)
@@ -131,7 +131,7 @@ test('xyk-pallet - AssetsOperation: transferAll', async() => {
 	testUser2.validateWalletIncreased(firstCurrency, amount);
 	testUser1.validateWalletIncreased(secondCurrency,new BN(0));
 
-	let pool_balance = await getBalanceOfPool(firstCurrency, secondCurrency);
+	const pool_balance = await getBalanceOfPool(firstCurrency, secondCurrency);
 	expect	(pool_balance_before)
 	.toEqual(pool_balance);
 

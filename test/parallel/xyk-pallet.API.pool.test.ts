@@ -22,18 +22,18 @@ jest.setTimeout(1500000);
 process.env.NODE_ENV = 'test';
 const {sudo:sudoUserName} = getEnvironmentRequiredVars();
 
-var first_asset_amount = new BN(50000);
-var second_asset_amount = new BN(50000);
+const first_asset_amount = new BN(50000);
+const second_asset_amount = new BN(50000);
 const defaultCurrecyValue = new BN(250000);
 
 describe('xyk-pallet - Sell Asset: validate Errors:', () => {
 	
-	var testUser1 : User;
-	var sudo : User;
+	let testUser1 : User;
+	let sudo : User;
 
-	var keyring : Keyring;
-	var firstCurrency :BN;
-	var secondCurrency :BN;
+	let keyring : Keyring;
+	let firstCurrency :BN;
+	let secondCurrency :BN;
 
 	//creating pool
 	const pool_balance_before = [new BN(0), new BN(0)];
@@ -154,7 +154,7 @@ describe('xyk-pallet - Pool tests: a pool can:', () => {
 		// setup a second user
 		testUser2 = new User(keyring);
 		testUser1 = new User(keyring);
-		let sudo = new User(keyring, sudoUserName)
+		const sudo = new User(keyring, sudoUserName)
 		keyring.addPair(testUser2.keyRingPair);
 		keyring.addPair(testUser1.keyRingPair);
 		
@@ -183,8 +183,8 @@ describe('xyk-pallet - Pool tests: a pool can:', () => {
 				}
 			);	
 		
-		var liquidity_asset_id = await getLiquidityAssetId(firstCurrency, secondCurrency);
-		var liquidity_assets_minted = first_asset_amount.add(second_asset_amount);
+		const liquidity_asset_id = await getLiquidityAssetId(firstCurrency, secondCurrency);
+		const liquidity_assets_minted = first_asset_amount.add(second_asset_amount);
 		testUser2.addAsset(liquidity_asset_id, new BN(0));
 		await testUser2.refreshAmounts(AssetWallet.AFTER);
 
@@ -192,12 +192,12 @@ describe('xyk-pallet - Pool tests: a pool can:', () => {
 		await testUser2.validateWalletReduced(firstCurrency, new BN(5000));
 		await testUser2.validateWalletReduced(secondCurrency, new BN(5000).add(new BN(1)));
 		//TODO: pending to validate.
-		var pool_balance = await getBalanceOfPool(firstCurrency, secondCurrency);
+		const pool_balance = await getBalanceOfPool(firstCurrency, secondCurrency);
 		expect	([	new BN(first_asset_amount).add(new BN(5000)),	
 					new BN(second_asset_amount).add(new BN(5000).add(new BN(1)))	])
 		.toEqual(pool_balance);
 	
-		var total_liquidity_assets = await getAssetSupply(liquidity_asset_id);
+		const total_liquidity_assets = await getAssetSupply(liquidity_asset_id);
 		expect(liquidity_assets_minted.add(new BN(10000)))
 		.toEqual(total_liquidity_assets);
 
@@ -214,8 +214,8 @@ describe('xyk-pallet - Pool tests: a pool can:', () => {
 			}
 		);
 
-		var liquidity_asset_id = await getLiquidityAssetId(firstCurrency, secondCurrency);
-		var liquidity_assets_minted = first_asset_amount.add(second_asset_amount);
+		const liquidity_asset_id = await getLiquidityAssetId(firstCurrency, secondCurrency);
+		const liquidity_assets_minted = first_asset_amount.add(second_asset_amount);
 
 		testUser2.addAsset(liquidity_asset_id, new BN(0));
 		await testUser2.refreshAmounts(AssetWallet.BEFORE);
@@ -235,20 +235,20 @@ describe('xyk-pallet - Pool tests: a pool can:', () => {
 		await testUser2.validateWalletIncreased(firstCurrency, new BN(2500));
 		await testUser2.validateWalletIncreased(secondCurrency, new BN(2500));
 		//TODO: pending to validate.
-		var pool_balance = await getBalanceOfPool(firstCurrency, secondCurrency);
+		const pool_balance = await getBalanceOfPool(firstCurrency, secondCurrency);
 		expect	([	new BN(first_asset_amount).add(new BN(2500)),	
 					new BN(second_asset_amount).add(new BN(2500).add(new BN(1)))	])
 		.toEqual(pool_balance);
 	
-		var total_liquidity_assets = await getAssetSupply(liquidity_asset_id);
+		const total_liquidity_assets = await getAssetSupply(liquidity_asset_id);
 		expect(liquidity_assets_minted.add(new BN(5000)))
 		.toEqual(total_liquidity_assets);
 	});
 
 	afterEach(async () => {
 		// those values must not change.
-		var liquidity_asset_id = await getLiquidityAssetId(firstCurrency, secondCurrency);
-		var liquidity_assets_minted = first_asset_amount.add(second_asset_amount);
+		const liquidity_asset_id = await getLiquidityAssetId(firstCurrency, secondCurrency);
+		const liquidity_assets_minted = first_asset_amount.add(second_asset_amount);
 	
 		testUser1.addAsset(liquidity_asset_id, new BN(0));
 		//validate

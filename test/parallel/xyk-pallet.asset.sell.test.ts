@@ -77,12 +77,12 @@ beforeEach( async () => {
 test('xyk-pallet - AssetsOperation: sellAsset [minAmountOut = 0] , first to second currency', async() => {
 
 
-	let poolBalanceBefore = await getBalanceOfPool(firstCurrency, secondCurrency);
-	let amount = new BN(30000);
+	const poolBalanceBefore = await getBalanceOfPool(firstCurrency, secondCurrency);
+	const amount = new BN(30000);
 	// considering the 60k of pool and the 30k amount
 	const traseureAndBurn  = new BN(6).mul(new BN(2));
-	let sellPriceLocal = calculate_sell_price_local(poolBalanceBefore[0], poolBalanceBefore[1], amount);
-	let sellPriceRpc = await calculate_sell_price_rpc(poolBalanceBefore[0], poolBalanceBefore[1], amount);
+	const sellPriceLocal = calculate_sell_price_local(poolBalanceBefore[0], poolBalanceBefore[1], amount);
+	const sellPriceRpc = await calculate_sell_price_rpc(poolBalanceBefore[0], poolBalanceBefore[1], amount);
 	expect(sellPriceLocal).toEqual(sellPriceRpc);
 	testLog.getLog().info("selling asset " + firstCurrency + ", buying asset " + secondCurrency);
 	
@@ -100,7 +100,7 @@ test('xyk-pallet - AssetsOperation: sellAsset [minAmountOut = 0] , first to seco
 	testUser2.validateWalletsUnmodified();
 	pallet.validateWalletReduced(boughtAssetId,sellPriceLocal);
 	pallet.validateWalletIncreased(soldAssetId,amount);
-	let pool_balance = await getBalanceOfPool(firstCurrency, secondCurrency);
+	const pool_balance = await getBalanceOfPool(firstCurrency, secondCurrency);
 
 	expect	([	poolBalanceBefore[0].add(amount),	poolBalanceBefore[1].sub(sellPriceLocal).sub(traseureAndBurn)	])
 	.toEqual(pool_balance);
@@ -117,13 +117,13 @@ test('xyk-pallet - AssetsOperation: sellAsset [minAmountOut = 0], sell an alread
 	await testUser1.refreshAmounts(AssetWallet.BEFORE);
 	await testUser2.refreshAmounts(AssetWallet.BEFORE);
 	await pallet.refreshAmounts(AssetWallet.BEFORE);
-	let poolBalanceBefore = await getBalanceOfPool(firstCurrency, secondCurrency);
+	const poolBalanceBefore = await getBalanceOfPool(firstCurrency, secondCurrency);
 
 	amount = new BN(20000);
 	// considering the previous bought and the 20k amount
 	const traseureAndBurn  = new BN(10).mul(new BN(2));
-	let sellPriceLocal = calculate_sell_price_local(poolBalanceBefore[1], poolBalanceBefore[0], amount);
-	let sellPriceRpc = await calculate_sell_price_rpc(poolBalanceBefore[1], poolBalanceBefore[0], amount);
+	const sellPriceLocal = calculate_sell_price_local(poolBalanceBefore[1], poolBalanceBefore[0], amount);
+	const sellPriceRpc = await calculate_sell_price_rpc(poolBalanceBefore[1], poolBalanceBefore[0], amount);
 	expect(sellPriceLocal).bnEqual(sellPriceRpc);
 
 	soldAssetId = secondCurrency;
@@ -140,7 +140,7 @@ test('xyk-pallet - AssetsOperation: sellAsset [minAmountOut = 0], sell an alread
 	pallet.validateWalletReduced(boughtAssetId,sellPriceLocal);
 	pallet.validateWalletIncreased(soldAssetId,amount);
 	
-	let pool_balance = await getBalanceOfPool(firstCurrency, secondCurrency);
+	const pool_balance = await getBalanceOfPool(firstCurrency, secondCurrency);
 	expect	([	poolBalanceBefore[0].sub(sellPriceLocal).sub(traseureAndBurn),	poolBalanceBefore[1].add(amount)	])
 	.toEqual(pool_balance);
 });

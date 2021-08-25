@@ -53,8 +53,8 @@ export function validateMintedLiquidityEvent(result: EventResult, address: strin
 
 
 export async function validateStatusWhenPoolCreated(firstCurrency: BN, secondCurrency: BN, testUser1: User, pool_balance_before: BN[], total_liquidity_assets_before: BN, first_asset_amount:BN = new BN(50000), second_asset_amount:BN = new BN(50000)) {
-	var liquidity_asset_id = await getLiquidityAssetId(firstCurrency, secondCurrency);
-	var liquidity_assets_minted = first_asset_amount.add(second_asset_amount);
+	const liquidity_asset_id = await getLiquidityAssetId(firstCurrency, secondCurrency);
+	const liquidity_assets_minted = first_asset_amount.add(second_asset_amount);
 
 	testUser1.addAsset(liquidity_asset_id, new BN(0));
 
@@ -63,7 +63,7 @@ export async function validateStatusWhenPoolCreated(firstCurrency: BN, secondCur
 	await testUser1.validateWalletReduced(secondCurrency, second_asset_amount);
 	await testUser1.validateWalletIncreased(liquidity_asset_id, liquidity_assets_minted);
 
-	var pool_balance = await getBalanceOfPool(firstCurrency, secondCurrency);
+	const pool_balance = await getBalanceOfPool(firstCurrency, secondCurrency);
 	expect([pool_balance_before[0].add(first_asset_amount),
 	pool_balance_before[1].add(second_asset_amount)])
 		.toEqual(pool_balance);
@@ -73,7 +73,7 @@ export async function validateStatusWhenPoolCreated(firstCurrency: BN, secondCur
 	pool_balance_before[1].add(second_asset_amount)])
 		.toEqual([balance[1], balance[0]]);
 
-	var total_liquidity_assets = await getAssetSupply(liquidity_asset_id);
+	const total_liquidity_assets = await getAssetSupply(liquidity_asset_id);
 	expect(total_liquidity_assets_before.add(liquidity_assets_minted))
 		.bnEqual(total_liquidity_assets);
 }
@@ -83,7 +83,7 @@ export async function validateUnmodified(firstCurrency: BN, secondCurrency: BN, 
 	await testUser1.refreshAmounts(AssetWallet.AFTER);
 	await testUser1.validateWalletsUnmodified();
 	
-	var pool_balance = await getBalanceOfPool(firstCurrency, secondCurrency);
+	const pool_balance = await getBalanceOfPool(firstCurrency, secondCurrency);
 	expect([pool_balance_before[0],pool_balance_before[1]]).toEqual(pool_balance);
 
 	const balance = await getBalanceOfPool(secondCurrency, firstCurrency);

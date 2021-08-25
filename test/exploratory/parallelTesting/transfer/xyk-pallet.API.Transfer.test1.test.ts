@@ -19,13 +19,13 @@ process.env.NODE_ENV = 'test';
 
 describe('xyk-pallet - Burn liquidity tests: when burning liquidity you can', () => {
 	
-	var testUser1 : User;
-	var testUser2 : User;
-	var sudo : User;
+	let testUser1 : User;
+	let testUser2 : User;
+	let sudo : User;
 
-	var keyring : Keyring;
-	var firstCurrency :BN;
-	var secondCurrency :BN;
+	let keyring : Keyring;
+	let firstCurrency :BN;
+	let secondCurrency :BN;
 
 	//creating pool
 	

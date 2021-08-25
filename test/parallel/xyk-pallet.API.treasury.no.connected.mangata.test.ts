@@ -20,19 +20,19 @@ jest.spyOn(console, 'log').mockImplementation(jest.fn());
 jest.setTimeout(1500000);
 process.env.NODE_ENV = 'test';
 
-var first_asset_amount = new BN(50000);
+const first_asset_amount = new BN(50000);
 const defaultCurrecyValue = new BN(250000);
 const {sudo:sudoUserName} = getEnvironmentRequiredVars();
 
 
 describe('xyk-pallet - treasury tests [No Mangata]: on treasury we store', () => {
 	
-	var testUser1 : User;
-	var sudo : User;
+	let testUser1 : User;
+	let sudo : User;
 
-	var keyring : Keyring;
-	var firstCurrency :BN;
-	var secondCurrency :BN;
+	let keyring : Keyring;
+	let firstCurrency :BN;
+	let secondCurrency :BN;
 
 	//creating pool
 	
@@ -71,7 +71,7 @@ describe('xyk-pallet - treasury tests [No Mangata]: on treasury we store', () =>
 	test('assets won when assets are sold - 5 [no connected to MGA]', async () => {
 
 		await waitNewBlock();
-		let sellAssetAmount = new BN(10000);
+		const sellAssetAmount = new BN(10000);
 
 		await sellAsset(testUser1.keyRingPair, secondCurrency, firstCurrency, sellAssetAmount, new BN(1))
 		.then(
@@ -92,7 +92,7 @@ describe('xyk-pallet - treasury tests [No Mangata]: on treasury we store', () =>
 	test('assets won when assets are sold - 0 [rounding] [no connected to MGA]', async () => {
 
 		await waitNewBlock();
-		let sellAssetAmount = new BN(5000);
+		const sellAssetAmount = new BN(5000);
 
 		await sellAsset(testUser1.keyRingPair, firstCurrency, secondCurrency, sellAssetAmount, new BN(1))
 		.then(
@@ -114,7 +114,7 @@ describe('xyk-pallet - treasury tests [No Mangata]: on treasury we store', () =>
 	test('assets won when assets are bought - 2 [no connected to MGA]', async () => {
 
 		await waitNewBlock();
-		let buyAssetAmount = new BN(10000);
+		const buyAssetAmount = new BN(10000);
 
 		await buyAsset(testUser1.keyRingPair, firstCurrency, secondCurrency, buyAssetAmount, new BN(100000000))
 		.then(
@@ -137,7 +137,7 @@ describe('xyk-pallet - treasury tests [No Mangata]: on treasury we store', () =>
 	test('assets won when assets are bought - 1 [no connected to MGA]', async () => {
 
 		await waitNewBlock();
-		let buyAssetAmount = new BN(5000);
+		const buyAssetAmount = new BN(5000);
 
 		await buyAsset(testUser1.keyRingPair, firstCurrency, secondCurrency, buyAssetAmount, new BN(100000000))
 		.then(

@@ -26,87 +26,87 @@ export const signTx = async (
 
 export async function calcuate_mint_liquidity_price_local(firstAssetId: BN, secondAssetId: BN, first_asset_amount: BN){
 
-	let liquidity_asset_id = await getLiquidityAssetId(firstAssetId, secondAssetId);
-	let total_liquidity_assets = await getAssetSupply(liquidity_asset_id);
-	let [first_asset_reserve, second_asset_reserve] = await getBalanceOfPool(firstAssetId, secondAssetId);
+	const liquidity_asset_id = await getLiquidityAssetId(firstAssetId, secondAssetId);
+	const total_liquidity_assets = await getAssetSupply(liquidity_asset_id);
+	const [first_asset_reserve, second_asset_reserve] = await getBalanceOfPool(firstAssetId, secondAssetId);
 
-	let second_asset_amount: BN = first_asset_amount.mul(second_asset_reserve).div(first_asset_reserve).add(new BN(1));
-	let liquidity_assets_minted: BN = first_asset_amount.mul(total_liquidity_assets).div(first_asset_reserve);
+	const second_asset_amount: BN = first_asset_amount.mul(second_asset_reserve).div(first_asset_reserve).add(new BN(1));
+	const liquidity_assets_minted: BN = first_asset_amount.mul(total_liquidity_assets).div(first_asset_reserve);
 
 	return [second_asset_amount, liquidity_assets_minted]
 }
 
 export async function calcuate_burn_liquidity_price_local(firstAssetId: BN, secondAssetId: BN, liquidity_asset_amount: BN){
 
-	let liquidity_asset_id = await getLiquidityAssetId(firstAssetId, secondAssetId);
-	let total_liquidity_assets = await getAssetSupply(liquidity_asset_id);
-	let [first_asset_reserve, second_asset_reserve] = await getBalanceOfPool(firstAssetId, secondAssetId);
+	const liquidity_asset_id = await getLiquidityAssetId(firstAssetId, secondAssetId);
+	const total_liquidity_assets = await getAssetSupply(liquidity_asset_id);
+	const [first_asset_reserve, second_asset_reserve] = await getBalanceOfPool(firstAssetId, secondAssetId);
 
-	let first_asset_amount: BN = first_asset_reserve.mul(liquidity_asset_amount).div(total_liquidity_assets);
-	let second_asset_amount: BN = second_asset_reserve.mul(liquidity_asset_amount).div(total_liquidity_assets);
+	const first_asset_amount: BN = first_asset_reserve.mul(liquidity_asset_amount).div(total_liquidity_assets);
+	const second_asset_amount: BN = second_asset_reserve.mul(liquidity_asset_amount).div(total_liquidity_assets);
 
 	return [first_asset_amount, second_asset_amount]
 }
 
 export function calculate_sell_price_local(input_reserve: BN, output_reserve: BN, sell_amount: BN){
-	let input_amount_with_fee: BN = sell_amount.mul(new BN(997));
-	let numerator: BN = input_amount_with_fee.mul(output_reserve);
-	let denominator: BN = input_reserve.mul(new BN(1000)).add(input_amount_with_fee);
-	let result: BN = numerator.div(denominator);
+	const input_amount_with_fee: BN = sell_amount.mul(new BN(997));
+	const numerator: BN = input_amount_with_fee.mul(output_reserve);
+	const denominator: BN = input_reserve.mul(new BN(1000)).add(input_amount_with_fee);
+	const result: BN = numerator.div(denominator);
 	return new BN(result.toString())
 }
 
 export function calculate_sell_price_local_no_fee(input_reserve: BN, output_reserve: BN, sell_amount: BN){
-	let input_amount_with_no_fee: BN = sell_amount.mul(new BN(1000));
-	let numerator: BN = input_amount_with_no_fee.mul(output_reserve);
-	let denominator: BN = input_reserve.mul(new BN(1000)).add(input_amount_with_no_fee);
-	let result: BN = numerator.div(denominator);
+	const input_amount_with_no_fee: BN = sell_amount.mul(new BN(1000));
+	const numerator: BN = input_amount_with_no_fee.mul(output_reserve);
+	const denominator: BN = input_reserve.mul(new BN(1000)).add(input_amount_with_no_fee);
+	const result: BN = numerator.div(denominator);
 	return new BN(result.toString())
 }
 
 export function calculate_buy_price_local(input_reserve: BN, output_reserve: BN, buy_amount: BN){
-	let numerator: BN = input_reserve.mul(buy_amount).mul(new BN(1000));
-	let denominator: BN = output_reserve.sub(buy_amount).mul(new BN(997));
-	let result: BN = numerator.div(denominator).add(new BN(1));
+	const numerator: BN = input_reserve.mul(buy_amount).mul(new BN(1000));
+	const denominator: BN = output_reserve.sub(buy_amount).mul(new BN(997));
+	const result: BN = numerator.div(denominator).add(new BN(1));
 	return new BN(result.toString())
 }
 
 export function calculate_buy_price_local_no_fee(input_reserve: BN, output_reserve: BN, buy_amount: BN){
-	let numerator: BN = input_reserve.mul(buy_amount).mul(new BN(1000));
-	let denominator: BN = output_reserve.sub(buy_amount).mul(new BN(1000));
-	let result: BN = numerator.div(denominator).add(new BN(1));
+	const numerator: BN = input_reserve.mul(buy_amount).mul(new BN(1000));
+	const denominator: BN = output_reserve.sub(buy_amount).mul(new BN(1000));
+	const result: BN = numerator.div(denominator).add(new BN(1));
 	return new BN(result.toString())
 }
 
 export async function get_burn_amount(firstAssetId: BN, secondAssetId: BN, liquidity_asset_amount: BN){
 	const api = getApi();
   //I could not find a way to get and inject the xyk interface in the api builder. 
-	let result = await ( api.rpc as any).xyk.get_burn_amount(firstAssetId, secondAssetId, liquidity_asset_amount);
+	const result = await ( api.rpc as any).xyk.get_burn_amount(firstAssetId, secondAssetId, liquidity_asset_amount);
 	return result.toHuman()
 }
 
 export async function calculate_sell_price_rpc(input_reserve: BN, output_reserve: BN, sell_amount: BN){
 	const api = getApi();
-	let result = await ( api.rpc as any).xyk.calculate_sell_price(input_reserve, output_reserve, sell_amount);
+	const result = await ( api.rpc as any).xyk.calculate_sell_price(input_reserve, output_reserve, sell_amount);
 	return new BN(result.price.toString())
 }
 
 export async function calculate_buy_price_rpc(input_reserve: BN, output_reserve: BN, buy_amount: BN){
 	const api = getApi();
     //I could not find a way to get and inject the xyk interface in the api builder. 
-	let result = await ( api.rpc as any).xyk.calculate_buy_price(input_reserve, output_reserve, buy_amount);
+	const result = await ( api.rpc as any).xyk.calculate_buy_price(input_reserve, output_reserve, buy_amount);
 	return new BN(result.price.toString())
 }
 
 export async function calculate_buy_price_id_rpc(soldTokenId: BN, boughtTokenId: BN, buy_amount: BN){
 	const api = getApi();
-	let result = await ( api.rpc as any).xyk.calculate_buy_price_id(soldTokenId, boughtTokenId, buy_amount);
+	const result = await ( api.rpc as any).xyk.calculate_buy_price_id(soldTokenId, boughtTokenId, buy_amount);
 	return new BN(result.price.toString())
 }
 
 export async function calculate_sell_price_id_rpc(soldTokenId: BN, boughtTokenId: BN, sell_amount: BN){
 	const api = getApi();
-	let result = await ( api.rpc as any).xyk.calculate_sell_price_id(soldTokenId, boughtTokenId, sell_amount);
+	const result = await ( api.rpc as any).xyk.calculate_sell_price_id(soldTokenId, boughtTokenId, sell_amount);
 	return new BN(result.price.toString())
 }
 
@@ -136,9 +136,9 @@ export async function getChainNonce(address : string){
 }
 
 export async function getUserAssets(account: any, assets : BN[]){
-	let user_asset_balances = [];
+	const user_asset_balances = [];
 	for (const asset of assets){
-		let user_asset_balance = await getBalanceOfAsset(asset, account);
+		const user_asset_balance = await getBalanceOfAsset(asset, account);
 		user_asset_balances.push(user_asset_balance);
 	}
 	return user_asset_balances;
@@ -185,7 +185,7 @@ export async function getLiquidityPool(liquidityAssetId: BN ) {
 	const liqPool = await api.query.xyk.liquidityPools(liquidityAssetId);
   const poolAssetIds = (liqPool.toHuman() as Number[]);
   if(!poolAssetIds)
-    return [new BN(-1),new BN(-1)];
+    {return [new BN(-1),new BN(-1)];}
 
   const result = poolAssetIds.map( num => new BN(num.toString()) )
 	return result;

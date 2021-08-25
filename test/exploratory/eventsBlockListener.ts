@@ -7,19 +7,19 @@ import { testLog } from "../../utils/Logger";
 // npx ts-node test/exploratory/eventsBlockListener.ts
 export {};
 
-let uris = [
+const uris = [
     'ws://127.0.0.1:9944',
 //    'ws://172.28.1.1:9944',
 
 ]
 const { initApi } = require("../../utils/api");
-var ipRegex = /\d{1,3}\.\d{1,3}\.\d{1,3}\.\d{1,3}/gm;
+const ipRegex = /\d{1,3}\.\d{1,3}\.\d{1,3}\.\d{1,3}/gm;
 
 
 
 async function main () {
 
-  let promises = [];
+  const promises = [];
   for (let index = 0; index < uris.length; index++) {
     const uri = uris[index];
     const worker = ipRegex.exec(uri);

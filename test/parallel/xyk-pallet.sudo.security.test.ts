@@ -19,12 +19,12 @@ jest.spyOn(console, 'error').mockImplementation(jest.fn());
 jest.setTimeout(1500000);
 process.env.NODE_ENV = 'test';
 
-var testUser1 : User;
-var testUser2 : User;
-var sudo : User;
-var infoUser1Before:any;
+let testUser1 : User;
+let testUser2 : User;
+let sudo : User;
+let infoUser1Before:any;
 
-var keyring : Keyring;
+let keyring : Keyring;
 //creating pool
 
 const {sudo:sudoUserName} = getEnvironmentRequiredVars();

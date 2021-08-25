@@ -20,14 +20,14 @@ jest.spyOn(console, 'error').mockImplementation(jest.fn());
 jest.setTimeout(1500000);
 process.env.NODE_ENV = 'test';
 
-var testUser1 : User;
-var sudo : User;
+let testUser1 : User;
+let sudo : User;
 
-var keyring : Keyring;
-var firstCurrency :BN;
-var secondCurrency :BN;
-var first_asset_amount = new BN(50000);
-var second_asset_amount = new BN(50000);
+let keyring : Keyring;
+let firstCurrency :BN;
+let secondCurrency :BN;
+const first_asset_amount = new BN(50000);
+const second_asset_amount = new BN(50000);
 //creating pool
 const pool_balance_before = [new BN(0), new BN(0)];
 
@@ -102,7 +102,7 @@ test('xyk-pallet - User Balance - Selling an asset does not require paying fees'
 	let exception = false;
 	const api = getApi();
 	await testUser1.refreshAmounts(AssetWallet.BEFORE);
-	let amountInWallet = testUser1.getAsset(firstCurrency)?.amountBefore!;
+	const amountInWallet = testUser1.getAsset(firstCurrency)?.amountBefore!;
 	const nonce = await getCurrentNonce(testUser1.keyRingPair.address);
 	await expect( 
 		signTx( 
@@ -121,7 +121,7 @@ test('xyk-pallet - User Balance - Buying an asset does not require paying fees',
 	let exception = false;
 	const api = getApi();
 	await testUser1.refreshAmounts(AssetWallet.BEFORE);
-	let amountInWallet = testUser1.getAsset(firstCurrency)?.amountBefore!;
+	const amountInWallet = testUser1.getAsset(firstCurrency)?.amountBefore!;
 	const nonce = await getCurrentNonce(testUser1.keyRingPair.address);
 	await expect( 
 		signTx( 
@@ -138,14 +138,14 @@ test('xyk-pallet - User Balance - Buying an asset does not require paying fees',
 
 afterEach(async () => {
 
-	var liquidity_asset_id = await getLiquidityAssetId(firstCurrency, secondCurrency);
+	const liquidity_asset_id = await getLiquidityAssetId(firstCurrency, secondCurrency);
 	expect(liquidity_asset_id).bnEqual(new BN(-1));
 	//validate
 	await testUser1.refreshAmounts(AssetWallet.AFTER);
 
 	await testUser1.validateWalletsUnmodified();
 
-	var pool_balance = await getBalanceOfPool(firstCurrency, secondCurrency);
+	const pool_balance = await getBalanceOfPool(firstCurrency, secondCurrency);
 	expect([pool_balance_before[0], pool_balance_before[1]]).toEqual(pool_balance);
 	const balance = await getBalanceOfPool(secondCurrency, firstCurrency);
 	expect([pool_balance_before[0], pool_balance_before[1]]).toEqual([balance[1], balance[0]]);

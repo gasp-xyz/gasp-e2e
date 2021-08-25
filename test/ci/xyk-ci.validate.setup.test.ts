@@ -37,7 +37,7 @@ test.each([
 	[new BN(4), new BN(6)],
 ])('xyk-CI - validate pools created: Pool[%s,%s]', async (assetId1,assetId2) => {
 	
-	var poolBalance = await getBalanceOfPool(assetId1, assetId2);
+	const poolBalance = await getBalanceOfPool(assetId1, assetId2);
 	testLog.getLog().info(`Pool[${assetId1},${assetId2}] has: ${fromBNToUnitString(poolBalance[0])} , ${fromBNToUnitString(poolBalance[1])} `);
 	expect(poolBalance[0]).not.bnEqual(new BN(0));
 	expect(poolBalance[1]).not.bnEqual(new BN(0));

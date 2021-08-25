@@ -30,7 +30,7 @@ beforeAll( async () => {
 
 describe('xyk-rpc - calculate get_burn amount: OK', () => {
 
-	let dictAssets = new Map<number, BN>();
+	const dictAssets = new Map<number, BN>();
 
 	beforeAll( async () => {
 		const {sudo:sudoUserName} = getEnvironmentRequiredVars();
@@ -67,7 +67,7 @@ describe('xyk-rpc - calculate get_burn amount: OK', () => {
 
 describe('xyk-rpc - calculate get_burn amount: Missing requirements', () => {
 
-	let dictAssets = new Map<number, BN>();
+	const dictAssets = new Map<number, BN>();
 
 	beforeAll( async () => {
 		const {sudo:sudoUserName} = getEnvironmentRequiredVars();

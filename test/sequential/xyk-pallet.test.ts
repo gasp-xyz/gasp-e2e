@@ -41,8 +41,8 @@ test('xyk-pallet: Happy case scenario', async () => {
   const firstAssetId = new BN(nextAssetId.toString());
   const secondAssetId = firstAssetId.add(new BN(1));
 
-	let sudoKey = await getSudoKey();
-	let sudoPair = keyring.getPair(sudoKey.toString());
+	const sudoKey = await getSudoKey();
+	const sudoPair = keyring.getPair(sudoKey.toString());
 
 	await waitNewBlock();
 
@@ -103,7 +103,7 @@ test('xyk-pallet: Happy case scenario', async () => {
 		}
 	);
     
-	let liquidity_asset_id = await getLiquidityAssetId(firstAssetId, secondAssetId);
+	const liquidity_asset_id = await getLiquidityAssetId(firstAssetId, secondAssetId);
 	let liquidity_assets_minted = first_asset_amount.add(second_asset_amount);
 	alice_assets = await getUserAssets(alice.address, [firstAssetId, secondAssetId, liquidity_asset_id]);
 	expect	([	alice_assets_before[0].sub(first_asset_amount),	alice_assets_before[1].sub(second_asset_amount),	alice_assets_before[2].add(liquidity_assets_minted)	])
@@ -466,7 +466,7 @@ test('xyk-pallet: Happy case scenario', async () => {
 
 
 	user = alice;
-	let liquidity_assets_burned = new BN(20000);
+	const liquidity_assets_burned = new BN(20000);
 	[first_asset_amount, second_asset_amount] = await calcuate_burn_liquidity_price_local(firstAssetId, secondAssetId, liquidity_assets_burned);
 
   testLog.getLog().info("Alice: burning liquidity " + liquidity_assets_burned + "of pool " + firstAssetId + " - " + secondAssetId);
@@ -577,8 +577,8 @@ test('xyk-pallet: Liquidity sufficiency scenario', async () => {
   const firstAssetId = new BN(nextAssetId.toString());
   const secondAssetId = firstAssetId.add(new BN(1));
 
-	let sudoKey = await getSudoKey();
-	let sudoPair = keyring.getPair(sudoKey.toString());
+	const sudoKey = await getSudoKey();
+	const sudoPair = keyring.getPair(sudoKey.toString());
 
 	await waitNewBlock();
 
@@ -696,7 +696,7 @@ test('xyk-pallet: Liquidity sufficiency scenario', async () => {
 		}
 	);	
 
-	let liquidity_asset_id = await getLiquidityAssetId(firstAssetId, secondAssetId);
+	const liquidity_asset_id = await getLiquidityAssetId(firstAssetId, secondAssetId);
 	let liquidity_assets_minted = first_asset_amount.add(second_asset_amount);
 	alice_assets = await getUserAssets(alice.address, [firstAssetId, secondAssetId, liquidity_asset_id]);
 	expect	([	alice_assets_before[0].sub(first_asset_amount),	alice_assets_before[1].sub(second_asset_amount),	alice_assets_before[2].add(liquidity_assets_minted)	])
@@ -889,7 +889,7 @@ test('xyk-pallet: Liquidity sufficiency scenario', async () => {
 	user = bob;
 	let liquidity_asset_amount: BN = bob_assets_before[2];
 	[first_asset_amount, second_asset_amount] = await calcuate_burn_liquidity_price_local(firstAssetId, secondAssetId, liquidity_asset_amount);
-	let liquidity_asset_amount_excess = liquidity_asset_amount.mul(new BN(105)).div(new BN(100));
+	const liquidity_asset_amount_excess = liquidity_asset_amount.mul(new BN(105)).div(new BN(100));
 
   testLog.getLog().info("Bob: attempting to burn more liquidity than they have " + liquidity_asset_amount_excess + " from pool " + firstAssetId + " - " + secondAssetId);
   

@@ -25,12 +25,12 @@ const defaultCurrecyValue = new BN(250000);
 
 describe('xyk-pallet - Burn liquidity tests: BurnLiquidity Errors:', () => {
 	
-	var testUser1 : User;
-	var sudo : User;
+	let testUser1 : User;
+	let sudo : User;
 
-	var keyring : Keyring;
-	var firstCurrency :BN;
-	var secondCurrency :BN;
+	let keyring : Keyring;
+	let firstCurrency :BN;
+	let secondCurrency :BN;
 
 	beforeAll( async () => {
 		try {
@@ -73,7 +73,7 @@ describe('xyk-pallet - Burn liquidity tests: BurnLiquidity Errors:', () => {
 	test('Burn liquidity  for more assets than the liquidity pool has issued', async () => {
 		const poolAmount = new BN(defaultCurrecyValue).div(new BN(2));
 		[firstCurrency,secondCurrency] = await UserCreatesAPoolAndMintliquidity(testUser1, sudo, new BN(defaultCurrecyValue),poolAmount);
-		let poolBalance = await getBalanceOfPool(firstCurrency,secondCurrency);
+		const poolBalance = await getBalanceOfPool(firstCurrency,secondCurrency);
 		const liquidityAssetId = await getLiquidityAssetId(firstCurrency, secondCurrency);
 		const liquidityBalance = await getBalanceOfAsset(liquidityAssetId, testUser1.keyRingPair.address);
 		await testUser1.refreshAmounts(AssetWallet.BEFORE);
