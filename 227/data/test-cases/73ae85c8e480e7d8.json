@@ -1,0 +1,46 @@
+{
+  "uid" : "73ae85c8e480e7d8",
+  "name" : "Sell assets that does not belong to any pool",
+  "fullName" : "xyk-pallet - Sell assets tests: SellAsset Errors:.Sell assets that does not belong to any pool",
+  "historyId" : "2b2c526d0e3afb6be5864b07bd3016fb",
+  "time" : {
+    "start" : 1629893081706,
+    "stop" : 1629893167705,
+    "duration" : 85999
+  },
+  "description" : "",
+  "descriptionHtml" : "",
+  "status" : "passed",
+  "flaky" : false,
+  "newFailed" : false,
+  "beforeStages" : [ ],
+  "afterStages" : [ ],
+  "labels" : [ {
+    "name" : "suite",
+    "value" : "xyk-pallet - Sell assets tests: SellAsset Errors:"
+  }, {
+    "name" : "testClass",
+    "value" : "xyk-pallet - Sell assets tests: SellAsset Errors:"
+  }, {
+    "name" : "testMethod",
+    "value" : "Sell assets that does not belong to any pool"
+  }, {
+    "name" : "package",
+    "value" : "xyk-pallet - Sell assets tests: SellAsset Errors:"
+  }, {
+    "name" : "resultFormat",
+    "value" : "allure1"
+  } ],
+  "parameters" : [ ],
+  "links" : [ ],
+  "hidden" : false,
+  "retry" : false,
+  "extra" : {
+    "severity" : "normal",
+    "retries" : [ ],
+    "categories" : [ ],
+    "tags" : [ ]
+  },
+  "source" : "73ae85c8e480e7d8.json",
+  "parameterValues" : [ ]
+}

@@ -1,0 +1,52 @@
+{
+  "uid" : "fdda577468e3596d",
+  "name" : "Create pool with zero",
+  "fullName" : "xyk-pallet - Sell Asset: validate Errors:.Create pool with zero",
+  "historyId" : "a1765c0b0f4bb0afcc84df2d921d419c",
+  "time" : {
+    "start" : 1629893167704,
+    "stop" : 1629893185048,
+    "duration" : 17344
+  },
+  "description" : "",
+  "descriptionHtml" : "",
+  "status" : "failed",
+  "statusMessage" : "Error: Expected: 50000 \n                  Actual: 100000 \n                 ",
+  "statusTrace" : "Error: Expected: 50000 \n                  Actual: 100000 \n                 \n                    at User.validateWalletIncreased (/home/goncer/projects/ghActions/actions-runner/_work/mangata-e2e/mangata-e2e/utils/User.ts:60:57)\n                    at validateStatusWhenPoolCreated (/home/goncer/projects/ghActions/actions-runner/_work/mangata-e2e/mangata-e2e/utils/validators.ts:64:18)\n                    at processTicksAndRejections (internal/process/task_queues.js:95:5)\n                    at Object.<anonymous> (/home/goncer/projects/ghActions/actions-runner/_work/mangata-e2e/mangata-e2e/test/parallel/xyk-pallet.API.pool.test.ts:127:3)",
+  "flaky" : false,
+  "newFailed" : false,
+  "beforeStages" : [ ],
+  "afterStages" : [ ],
+  "labels" : [ {
+    "name" : "suite",
+    "value" : "xyk-pallet - Sell Asset: validate Errors:"
+  }, {
+    "name" : "testClass",
+    "value" : "xyk-pallet - Sell Asset: validate Errors:"
+  }, {
+    "name" : "testMethod",
+    "value" : "Create pool with zero"
+  }, {
+    "name" : "package",
+    "value" : "xyk-pallet - Sell Asset: validate Errors:"
+  }, {
+    "name" : "resultFormat",
+    "value" : "allure1"
+  } ],
+  "parameters" : [ ],
+  "links" : [ ],
+  "hidden" : false,
+  "retry" : false,
+  "extra" : {
+    "severity" : "normal",
+    "retries" : [ ],
+    "categories" : [ {
+      "name" : "Product defects",
+      "matchedStatuses" : [ ],
+      "flaky" : false
+    } ],
+    "tags" : [ ]
+  },
+  "source" : "fdda577468e3596d.json",
+  "parameterValues" : [ ]
+}

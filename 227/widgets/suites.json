@@ -1,0 +1,114 @@
+{
+  "total" : 31,
+  "items" : [ {
+    "uid" : "59f34c7c5a7a1657f9661c8c902f2233",
+    "name" : "test/parallel/xyk-pallet.API.fees.test.ts",
+    "statistic" : {
+      "failed" : 5,
+      "broken" : 0,
+      "skipped" : 0,
+      "passed" : 2,
+      "unknown" : 0,
+      "total" : 7
+    }
+  }, {
+    "uid" : "1adabc2b2a5a32cdb4362e91db344710",
+    "name" : "xyk-rpc - calculate get_burn amount: OK",
+    "statistic" : {
+      "failed" : 4,
+      "broken" : 0,
+      "skipped" : 0,
+      "passed" : 0,
+      "unknown" : 0,
+      "total" : 4
+    }
+  }, {
+    "uid" : "51f864e0cd66a5f59a9db7c25597c6c7",
+    "name" : "xyk-pallet - Sell Asset: validate Errors:",
+    "statistic" : {
+      "failed" : 3,
+      "broken" : 0,
+      "skipped" : 0,
+      "passed" : 0,
+      "unknown" : 0,
+      "total" : 3
+    }
+  }, {
+    "uid" : "37f5bf25d509356a6de7175a21f6fbff",
+    "name" : "xyk-pallet - Check operations are not executed because of overflow in asset token",
+    "statistic" : {
+      "failed" : 2,
+      "broken" : 0,
+      "skipped" : 0,
+      "passed" : 0,
+      "unknown" : 0,
+      "total" : 2
+    }
+  }, {
+    "uid" : "6a319d2c1a12596f59f8c20ebbe7424e",
+    "name" : "xyk-pallet - Pool tests: a pool can:",
+    "statistic" : {
+      "failed" : 2,
+      "broken" : 0,
+      "skipped" : 0,
+      "passed" : 0,
+      "unknown" : 0,
+      "total" : 2
+    }
+  }, {
+    "uid" : "18dc62eb95e0e0d7be426263ba59591b",
+    "name" : "xyk-pallet - Mint liquidity tests: with minting you can",
+    "statistic" : {
+      "failed" : 2,
+      "broken" : 0,
+      "skipped" : 0,
+      "passed" : 0,
+      "unknown" : 0,
+      "total" : 2
+    }
+  }, {
+    "uid" : "07e062b4641707e21a88819c4602d1d3",
+    "name" : "xyk-pallet - Burn liquidity tests: when burning liquidity you can",
+    "statistic" : {
+      "failed" : 1,
+      "broken" : 0,
+      "skipped" : 0,
+      "passed" : 2,
+      "unknown" : 0,
+      "total" : 3
+    }
+  }, {
+    "uid" : "bc1cfd6743ac1ab486f018fdd793be9c",
+    "name" : "test/parallel/xyk-pallet.pool.test.ts",
+    "statistic" : {
+      "failed" : 1,
+      "broken" : 0,
+      "skipped" : 0,
+      "passed" : 0,
+      "unknown" : 0,
+      "total" : 1
+    }
+  }, {
+    "uid" : "32dd2522f9ef14203f8d3929c2f28fd2",
+    "name" : "test/parallel/xyk-rpc.errors.test.ts",
+    "statistic" : {
+      "failed" : 0,
+      "broken" : 0,
+      "skipped" : 0,
+      "passed" : 15,
+      "unknown" : 0,
+      "total" : 15
+    }
+  }, {
+    "uid" : "a8b47772fd2857c68983b46bca09a4e4",
+    "name" : "xyk-rpc - calculate_buy_price_by_id, calculate_sell_price_by_id",
+    "statistic" : {
+      "failed" : 0,
+      "broken" : 0,
+      "skipped" : 0,
+      "passed" : 15,
+      "unknown" : 0,
+      "total" : 15
+    }
+  } ]
+}

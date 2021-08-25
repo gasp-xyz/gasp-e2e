@@ -1,0 +1,52 @@
+{
+  "uid" : "54f23214149f2063",
+  "name" : "xyk-pallet - Pool tests: createPool",
+  "fullName" : "test/parallel/xyk-pallet.pool.test.ts.xyk-pallet - Pool tests: createPool",
+  "historyId" : "a2ca07f827d069e059d2d382883604cd",
+  "time" : {
+    "start" : 1629893710302,
+    "stop" : 1629893780102,
+    "duration" : 69800
+  },
+  "description" : "",
+  "descriptionHtml" : "",
+  "status" : "failed",
+  "statusMessage" : "Error: Expected: 50000 \n                  Actual: 100000 \n                 ",
+  "statusTrace" : "Error: Expected: 50000 \n                  Actual: 100000 \n                 \n                    at User.validateWalletIncreased (/home/goncer/projects/ghActions/actions-runner/_work/mangata-e2e/mangata-e2e/utils/User.ts:60:57)\n                    at Object.<anonymous> (/home/goncer/projects/ghActions/actions-runner/_work/mangata-e2e/mangata-e2e/test/parallel/xyk-pallet.pool.test.ts:103:18)\n                    at processTicksAndRejections (internal/process/task_queues.js:95:5)",
+  "flaky" : false,
+  "newFailed" : false,
+  "beforeStages" : [ ],
+  "afterStages" : [ ],
+  "labels" : [ {
+    "name" : "suite",
+    "value" : "test/parallel/xyk-pallet.pool.test.ts"
+  }, {
+    "name" : "testClass",
+    "value" : "test/parallel/xyk-pallet.pool.test.ts"
+  }, {
+    "name" : "testMethod",
+    "value" : "xyk-pallet - Pool tests: createPool"
+  }, {
+    "name" : "package",
+    "value" : "test/parallel/xyk-pallet.pool.test.ts"
+  }, {
+    "name" : "resultFormat",
+    "value" : "allure1"
+  } ],
+  "parameters" : [ ],
+  "links" : [ ],
+  "hidden" : false,
+  "retry" : false,
+  "extra" : {
+    "severity" : "normal",
+    "retries" : [ ],
+    "categories" : [ {
+      "name" : "Product defects",
+      "matchedStatuses" : [ ],
+      "flaky" : false
+    } ],
+    "tags" : [ ]
+  },
+  "source" : "54f23214149f2063.json",
+  "parameterValues" : [ ]
+}

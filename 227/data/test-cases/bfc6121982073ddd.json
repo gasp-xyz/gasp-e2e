@@ -1,0 +1,52 @@
+{
+  "uid" : "bfc6121982073ddd",
+  "name" : "Create pool of [MAX,1]: OverFlow [a+b] - liquidityAsset calculation",
+  "fullName" : "xyk-pallet - Check operations are not executed because of overflow in asset token.Create pool of [MAX,1]: OverFlow [a+b] - liquidityAsset calculation",
+  "historyId" : "69e461b1d3d23d081796f46a921180fc",
+  "time" : {
+    "start" : 1629893131495,
+    "stop" : 1629893148899,
+    "duration" : 17404
+  },
+  "description" : "",
+  "descriptionHtml" : "",
+  "status" : "failed",
+  "statusMessage" : "Error: expect(received).toEqual(expected) // deep equality\n                \n                Expected: 1\n                Received: 0",
+  "statusTrace" : "Error: expect(received).toEqual(expected) // deep equality\n                \n                Expected: 1\n                Received: 0\n                    at /home/goncer/projects/ghActions/actions-runner/_work/mangata-e2e/mangata-e2e/test/parallel/xyk-pallet.API.overflow.test.ts:62:34\n                    at processTicksAndRejections (internal/process/task_queues.js:95:5)\n                    at Object.<anonymous> (/home/goncer/projects/ghActions/actions-runner/_work/mangata-e2e/mangata-e2e/test/parallel/xyk-pallet.API.overflow.test.ts:58:3)",
+  "flaky" : false,
+  "newFailed" : false,
+  "beforeStages" : [ ],
+  "afterStages" : [ ],
+  "labels" : [ {
+    "name" : "suite",
+    "value" : "xyk-pallet - Check operations are not executed because of overflow in asset token"
+  }, {
+    "name" : "testClass",
+    "value" : "xyk-pallet - Check operations are not executed because of overflow in asset token"
+  }, {
+    "name" : "testMethod",
+    "value" : "Create pool of [MAX,1]: OverFlow [a+b] - liquidityAsset calculation"
+  }, {
+    "name" : "package",
+    "value" : "xyk-pallet - Check operations are not executed because of overflow in asset token"
+  }, {
+    "name" : "resultFormat",
+    "value" : "allure1"
+  } ],
+  "parameters" : [ ],
+  "links" : [ ],
+  "hidden" : false,
+  "retry" : false,
+  "extra" : {
+    "severity" : "normal",
+    "retries" : [ ],
+    "categories" : [ {
+      "name" : "Product defects",
+      "matchedStatuses" : [ ],
+      "flaky" : false
+    } ],
+    "tags" : [ ]
+  },
+  "source" : "bfc6121982073ddd.json",
+  "parameterValues" : [ ]
+}

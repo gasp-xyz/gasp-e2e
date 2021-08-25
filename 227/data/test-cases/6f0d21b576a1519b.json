@@ -1,0 +1,52 @@
+{
+  "uid" : "6f0d21b576a1519b",
+  "name" : "Expect an event when liquidirty is minted",
+  "fullName" : "xyk-pallet - Mint liquidity tests: with minting you can.Expect an event when liquidirty is minted",
+  "historyId" : "c548fe04beb3eff101e468e856d1a193",
+  "time" : {
+    "start" : 1629893533678,
+    "stop" : 1629893623357,
+    "duration" : 89679
+  },
+  "description" : "",
+  "descriptionHtml" : "",
+  "status" : "failed",
+  "statusMessage" : "Error: expect(received).toEqual(expected) // deep equality\n                \n                Expected: \"125.0000 nUnit\"\n                Received: \"62.5000 nUnit\"",
+  "statusTrace" : "Error: expect(received).toEqual(expected) // deep equality\n                \n                Expected: \"125.0000 nUnit\"\n                Received: \"62.5000 nUnit\"\n                    at validateMintedLiquidityEvent (/home/goncer/projects/ghActions/actions-runner/_work/mangata-e2e/mangata-e2e/utils/validators.ts:51:32)\n                    at Object.<anonymous> (/home/goncer/projects/ghActions/actions-runner/_work/mangata-e2e/mangata-e2e/test/parallel/xyk-pallet.API.mintLiquidity.test.ts:123:3)\n                    at processTicksAndRejections (internal/process/task_queues.js:95:5)",
+  "flaky" : false,
+  "newFailed" : false,
+  "beforeStages" : [ ],
+  "afterStages" : [ ],
+  "labels" : [ {
+    "name" : "suite",
+    "value" : "xyk-pallet - Mint liquidity tests: with minting you can"
+  }, {
+    "name" : "testClass",
+    "value" : "xyk-pallet - Mint liquidity tests: with minting you can"
+  }, {
+    "name" : "testMethod",
+    "value" : "Expect an event when liquidirty is minted"
+  }, {
+    "name" : "package",
+    "value" : "xyk-pallet - Mint liquidity tests: with minting you can"
+  }, {
+    "name" : "resultFormat",
+    "value" : "allure1"
+  } ],
+  "parameters" : [ ],
+  "links" : [ ],
+  "hidden" : false,
+  "retry" : false,
+  "extra" : {
+    "severity" : "normal",
+    "retries" : [ ],
+    "categories" : [ {
+      "name" : "Product defects",
+      "matchedStatuses" : [ ],
+      "flaky" : false
+    } ],
+    "tags" : [ ]
+  },
+  "source" : "6f0d21b576a1519b.json",
+  "parameterValues" : [ ]
+}
