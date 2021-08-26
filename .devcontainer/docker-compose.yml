@@ -116,3 +116,13 @@ services:
     networks:
       mangata:
         ipv4_address: 172.18.0.6
+  
+  relayer:
+    image: mangatasolutions/mangata-bridge
+    container_name: relayer
+    depends_on:
+      - node_alice
+    command: run --config /opt/config/config.toml
+    environment:
+      ARTEMIS_ETHEREUM_KEY: "8942a0094dfda5c7d40db448588ffb58513802f7c48edaded7bf6157f026567d"
+      ARTEMIS_SUBSTRATE_KEY: "//Relay"
