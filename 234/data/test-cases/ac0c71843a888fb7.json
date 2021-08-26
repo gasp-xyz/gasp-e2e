@@ -1,0 +1,75 @@
+{
+  "uid" : "ac0c71843a888fb7",
+  "name" : "Bond operation locks some amount",
+  "fullName" : "xyk-pallet - Sell Asset: validate Errors:.Bond operation locks some amount",
+  "historyId" : "2c3dad72504039bdda0c53211c41ab65",
+  "time" : {
+    "start" : 1629961338851,
+    "stop" : 1629961357586,
+    "duration" : 18735
+  },
+  "description" : "",
+  "descriptionHtml" : "",
+  "status" : "passed",
+  "flaky" : false,
+  "newFailed" : false,
+  "beforeStages" : [ ],
+  "afterStages" : [ ],
+  "labels" : [ {
+    "name" : "suite",
+    "value" : "xyk-pallet - Sell Asset: validate Errors:"
+  }, {
+    "name" : "testClass",
+    "value" : "xyk-pallet - Sell Asset: validate Errors:"
+  }, {
+    "name" : "testMethod",
+    "value" : "Bond operation locks some amount"
+  }, {
+    "name" : "package",
+    "value" : "xyk-pallet - Sell Asset: validate Errors:"
+  }, {
+    "name" : "resultFormat",
+    "value" : "allure1"
+  } ],
+  "parameters" : [ ],
+  "links" : [ ],
+  "hidden" : false,
+  "retry" : false,
+  "extra" : {
+    "severity" : "normal",
+    "retries" : [ ],
+    "categories" : [ ],
+    "history" : {
+      "statistic" : {
+        "failed" : 0,
+        "broken" : 0,
+        "skipped" : 0,
+        "passed" : 3,
+        "unknown" : 0,
+        "total" : 3
+      },
+      "items" : [ {
+        "uid" : "f6366f6fb095bd06",
+        "reportUrl" : "https://mangata-finance.github.io/mangata-e2e/233//#testresult/f6366f6fb095bd06",
+        "status" : "passed",
+        "time" : {
+          "start" : 1629960362013,
+          "stop" : 1629960379394,
+          "duration" : 17381
+        }
+      }, {
+        "uid" : "e92dbb1fefb96dd0",
+        "reportUrl" : "https://mangata-finance.github.io/mangata-e2e/232//#testresult/e92dbb1fefb96dd0",
+        "status" : "passed",
+        "time" : {
+          "start" : 1629937681470,
+          "stop" : 1629937698789,
+          "duration" : 17319
+        }
+      } ]
+    },
+    "tags" : [ ]
+  },
+  "source" : "ac0c71843a888fb7.json",
+  "parameterValues" : [ ]
+}
