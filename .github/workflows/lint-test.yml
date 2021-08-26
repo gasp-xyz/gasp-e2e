@@ -22,6 +22,8 @@ jobs:
     env:
       API_URL: 'ws://172.16.238.10:9944'
       TEST_PALLET_ADDRESS: ${{ secrets.TEST_PALLET_ADDRESS }}
+      E2E_XYK_PALLET_ADDRESS: ${{ secrets.E2E_XYK_PALLET_ADDRESS }}
+      E2E_TREASURY_PALLET_ADDRESS: ${{ secrets.E2E_TREASURY_PALLET_ADDRESS }}
       TEST_SUDO_NAME: ${{ secrets.TEST_SUDO_NAME }}
       TEST_SCRIPT: 'test-sequential-e2e'
     steps:

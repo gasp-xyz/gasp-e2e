@@ -22,13 +22,17 @@ let testUser1: User;
 let testUser2: User;
 let sudo: User;
 let pallet: User;
+let treasury: User;
 
 let keyring: Keyring;
 let firstCurrency: BN;
 let secondCurrency: BN;
 
-const { pallet: pallet_address, sudo: sudoUserName } =
-  getEnvironmentRequiredVars();
+const {
+  pallet: pallet_address,
+  sudo: sudoUserName,
+  treasuryPalletAddress,
+} = getEnvironmentRequiredVars();
 
 const defaultCurrecyValue = new BN(250000);
 
@@ -51,6 +55,10 @@ beforeAll(async () => {
   pallet = new User(keyring);
   pallet.addFromAddress(keyring, pallet_address);
   pallet.addAsset(MGA_ASSET_ID);
+
+  treasury = new User(keyring);
+  treasury.addFromAddress(keyring, treasuryPalletAddress);
+  treasury.addAsset(MGA_ASSET_ID);
 
   // add users to pair.
   keyring.addPair(testUser1.keyRingPair);
@@ -77,15 +85,13 @@ beforeAll(async () => {
     secondCurrency,
     new BN(1000)
   );
-  // check users accounts.
-  await testUser1.refreshAmounts(AssetWallet.BEFORE);
-  await testUser2.refreshAmounts(AssetWallet.BEFORE);
 });
 
 beforeEach(async () => {
   await testUser1.refreshAmounts(AssetWallet.BEFORE);
   await pallet.refreshAmounts(AssetWallet.BEFORE);
   await testUser2.refreshAmounts(AssetWallet.BEFORE);
+  await treasury.refreshAmounts(AssetWallet.BEFORE);
 });
 
 test("xyk-pallet - MGA tokens are substracted as fee : CreatePool", async () => {
@@ -107,7 +113,8 @@ test("xyk-pallet - MGA tokens are substracted as fee : CreatePool", async () => 
   const diff =
     mgaUserToken.amountBefore.toNumber() - mgaUserToken.amountAfter.toNumber();
   expect(diff).toBeGreaterThan(0);
-  pallet.validateWalletIncreased(MGA_ASSET_ID, new BN(diff));
+  await treasury.refreshAmounts(AssetWallet.AFTER);
+  treasury.validateWalletIncreased(MGA_ASSET_ID, new BN(diff));
 });
 test("xyk-pallet - MGA tokens are substracted as fee : MintLiquidity", async () => {
   await mintLiquidity(
@@ -121,7 +128,8 @@ test("xyk-pallet - MGA tokens are substracted as fee : MintLiquidity", async () 
   const diff =
     mgaUserToken.amountBefore.toNumber() - mgaUserToken.amountAfter.toNumber();
   expect(diff).toBeGreaterThan(0);
-  pallet.validateWalletIncreased(MGA_ASSET_ID, new BN(diff));
+  await treasury.refreshAmounts(AssetWallet.AFTER);
+  treasury.validateWalletIncreased(MGA_ASSET_ID, new BN(diff));
 });
 test("xyk-pallet - MGA tokens are substracted as fee : BurnLiquidity", async () => {
   await burnLiquidity(
@@ -135,7 +143,8 @@ test("xyk-pallet - MGA tokens are substracted as fee : BurnLiquidity", async () 
   const diff =
     mgaUserToken.amountBefore.toNumber() - mgaUserToken.amountAfter.toNumber();
   expect(diff).toBeGreaterThan(0);
-  pallet.validateWalletIncreased(MGA_ASSET_ID, new BN(diff));
+  await treasury.refreshAmounts(AssetWallet.AFTER);
+  treasury.validateWalletIncreased(MGA_ASSET_ID, new BN(diff));
 });
 test("xyk-pallet - MGA tokens are substracted as fee : Transfer", async () => {
   await transferAsset(
@@ -149,7 +158,8 @@ test("xyk-pallet - MGA tokens are substracted as fee : Transfer", async () => {
   const diff =
     mgaUserToken.amountBefore.toNumber() - mgaUserToken.amountAfter.toNumber();
   expect(diff).toBeGreaterThan(0);
-  pallet.validateWalletIncreased(MGA_ASSET_ID, new BN(diff));
+  await treasury.refreshAmounts(AssetWallet.AFTER);
+  treasury.validateWalletIncreased(MGA_ASSET_ID, new BN(diff));
 });
 test("xyk-pallet - MGA tokens are substracted as fee : TransferAll", async () => {
   await sudo.mint(firstCurrency, testUser2, new BN(1000));
@@ -163,7 +173,8 @@ test("xyk-pallet - MGA tokens are substracted as fee : TransferAll", async () =>
   const diff =
     mgaUserToken.amountBefore.toNumber() - mgaUserToken.amountAfter.toNumber();
   expect(diff).toBeGreaterThan(0);
-  pallet.validateWalletIncreased(MGA_ASSET_ID, new BN(diff));
+  await treasury.refreshAmounts(AssetWallet.AFTER);
+  treasury.validateWalletIncreased(MGA_ASSET_ID, new BN(diff));
 });
 test("xyk-pallet - MGA tokens are not substracted as fee : SellAsset", async () => {
   await testUser1.sellAssets(firstCurrency, secondCurrency, new BN(50));

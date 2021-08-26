@@ -193,6 +193,18 @@ export class User {
     await waitNewBlock();
   }
 
+  async removeTokens() {
+    //TODO: find a proper way to clean all the user tokens in one shot!
+    const assets = await getAllAssets(this.keyRingPair.address);
+    for (let index = 0; index < assets.length; index++) {
+      const assetId = assets[index];
+      await transferAll(
+        this.keyRingPair,
+        assetId,
+        process.env.E2E_XYK_PALLET_ADDRESS
+      );
+    }
+  }
   async createPoolToAsset(
     first_asset_amount: BN,
     second_asset_amount: BN,
@@ -250,19 +262,6 @@ export class User {
       const accountData = await this.getUserAccountInfo();
       amount = accountData.free;
     } while (amount === "0");
-  }
-
-  async removeTokens() {
-    //TODO: find a proper way to clean all the user tokens in one shot!
-    const assets = await getAllAssets(this.keyRingPair.address);
-    for (let index = 0; index < assets.length; index++) {
-      const assetId = assets[index];
-      await transferAll(
-        this.keyRingPair,
-        assetId,
-        process.env.TEST_PALLET_ADDRESS
-      );
-    }
   }
 }
 

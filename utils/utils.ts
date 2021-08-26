@@ -30,13 +30,23 @@ export function getEnvironmentRequiredVars() {
   const palletAddress = process.env.TEST_PALLET_ADDRESS
     ? process.env.TEST_PALLET_ADDRESS
     : "";
+  const xykPalletAddress = process.env.E2E_XYK_PALLET_ADDRESS
+    ? process.env.E2E_XYK_PALLET_ADDRESS
+    : "";
+  const treasuryPalletAddress = process.env.E2E_TREASURY_PALLET_ADDRESS
+    ? process.env.E2E_TREASURY_PALLET_ADDRESS
+    : "";
   const sudoUserName = process.env.TEST_SUDO_NAME
     ? process.env.TEST_SUDO_NAME
     : "";
   const testUserName = process.env.TEST_USER_NAME
     ? process.env.TEST_USER_NAME
     : "//Alice";
-  if (palletAddress.length === 0 || sudoUserName.length === 0) {
+  if (
+    (palletAddress.length === 0 && xykPalletAddress.length === 0) ||
+    sudoUserName.length === 0 ||
+    treasuryPalletAddress.length === 0
+  ) {
     throw new Error("PALLET ADDRESS OR SUDO USERNAME NOT FOUND AS GLOBAL ENV");
   }
 
@@ -65,6 +75,8 @@ export function getEnvironmentRequiredVars() {
     mnemonicMetaMask: mnemonicMetaMask,
     mnemonicPolkadot: mnemonicPolkadot,
     logLevel: logLevel,
+    xykPalletAddress: xykPalletAddress,
+    treasuryPalletAddress: treasuryPalletAddress,
   };
 }
 
