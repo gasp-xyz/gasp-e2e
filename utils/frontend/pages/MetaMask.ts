@@ -1,4 +1,4 @@
-import { getEnvironmentRequiredVars } from "../../utils";
+import { getEnvironmentRequiredVars, sleep } from "../../utils";
 import { clickElement, waitForElement } from "../utils/Helper";
 const { By } = require("selenium-webdriver");
 
@@ -15,7 +15,8 @@ const XPATH_KOVAN_NETWORK = "//span[text()='Kovan Test Network']";
 const XPATH_ALL_DONE =
   "//*[contains(@class,'button btn-primary first-time-flow__button')]";
 const XPATH_MNEMONIC = `//input[@placeholder='Paste Secret Recovery Phrase from clipboard']`;
-
+const XPATH_CONNECT_META = `//button[text()='Connect']`;
+const XPATH_NEXT = `//*[contains(@class,'button btn-primary')]`;
 const { uiUserPassword: userPassword, mnemonicMetaMask } =
   getEnvironmentRequiredVars();
 
@@ -67,5 +68,38 @@ export class MetaMask {
     await clickElement(this.driver, XPATH_POPOVER_CLOSE);
     await clickElement(this.driver, XPATH_SELECT_NET_CMB);
     await clickElement(this.driver, XPATH_KOVAN_NETWORK);
+  }
+
+  public async connect() {
+    await clickElement(this.driver, XPATH_CONNECT_META);
+    await this.acceptConnectionPermissions();
+  }
+
+  async acceptConnectionPermissions() {
+    //wait for window to be opened.
+    await sleep(4000);
+    let handle = await (await this.driver).getAllWindowHandles();
+    let iterator = handle.entries();
+    let value = iterator.next().value;
+    while (value) {
+      await this.driver.switchTo().window(value[1]);
+
+      try {
+        await waitForElement(this.driver, XPATH_NEXT);
+        await clickElement(this.driver, XPATH_NEXT);
+        await sleep(2000);
+        //now click on connect.
+        await waitForElement(this.driver, XPATH_NEXT);
+        await clickElement(this.driver, XPATH_NEXT);
+
+        break;
+      } catch (error) {}
+      value = iterator.next().value;
+    }
+    handle = await (await this.driver).getAllWindowHandles();
+    iterator = handle.entries();
+    value = iterator.next().value;
+    await this.driver.switchTo().window(value[1]);
+    return;
   }
 }
