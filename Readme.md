@@ -26,9 +26,10 @@ So somehow we now have essentially a distributed system for developing and that 
 5. `ctrl+shift+p` and search for _Remote-Containers: Rebuild and Reopen in Container_
 ---
 ###  How to build
-1. `npm run build`
+1. `yarn`
 ###  How to run esLint
-1. `npm run eslint`
+1. Follow the mangata eslint installation guide [here](https://github.com/mangata-finance/eslint-config-mangata)
+2. `yarn eslint`
 
 ###  How to configure
 
