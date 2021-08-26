@@ -29,9 +29,6 @@ export async function setupAllExtensions(driver: WebDriver) {
   await metaMaskExtension.go();
   await metaMaskExtension.setupAccount();
 
-  await new Mangata(driver).go();
-  await sleep(2000);
-
   const polkadotExtension = new Polkadot(driver);
   await polkadotExtension.go();
   const [polkUserAddress, usrMnemonic] =
@@ -40,6 +37,7 @@ export async function setupAllExtensions(driver: WebDriver) {
   await new Mangata(driver).go();
   await sleep(2000);
   await polkadotExtension.acceptPermissions();
+
   await metaMaskExtension.connect();
   return { polkUserAddress: polkUserAddress, mnemonic: usrMnemonic };
 }
