@@ -1,0 +1,9 @@
+[submodule "mangata-sdk"]
+	path = mangata-sdk
+	url = https://github.com/mangata-finance/mangata-SDK
+[submodule "mangata-bridge"]
+	path = mangata-bridge
+	url = https://github.com/mangata-finance/mangata-bridge
+[submodule "mangata-node"]
+	path = mangata-node
+	url = https://github.com/mangata-finance/mangata-node
