@@ -1,0 +1,129 @@
+{
+  "uid" : "730b25ef07a71a55",
+  "name" : "assets won when assets are bought [Buying Mangata]",
+  "fullName" : "xyk-pallet - treasury tests [Mangata]: on treasury we store.assets won when assets are bought [Buying Mangata]",
+  "historyId" : "d8aef4a46a05e4d14611e567583cd514",
+  "time" : {
+    "start" : 1629974376763,
+    "stop" : 1629974467566,
+    "duration" : 90803
+  },
+  "description" : "",
+  "descriptionHtml" : "",
+  "status" : "passed",
+  "flaky" : false,
+  "newFailed" : false,
+  "beforeStages" : [ ],
+  "afterStages" : [ ],
+  "labels" : [ {
+    "name" : "suite",
+    "value" : "xyk-pallet - treasury tests [Mangata]: on treasury we store"
+  }, {
+    "name" : "testClass",
+    "value" : "xyk-pallet - treasury tests [Mangata]: on treasury we store"
+  }, {
+    "name" : "testMethod",
+    "value" : "assets won when assets are bought [Buying Mangata]"
+  }, {
+    "name" : "package",
+    "value" : "xyk-pallet - treasury tests [Mangata]: on treasury we store"
+  }, {
+    "name" : "resultFormat",
+    "value" : "allure1"
+  } ],
+  "parameters" : [ ],
+  "links" : [ ],
+  "hidden" : false,
+  "retry" : false,
+  "extra" : {
+    "severity" : "normal",
+    "retries" : [ ],
+    "categories" : [ ],
+    "history" : {
+      "statistic" : {
+        "failed" : 0,
+        "broken" : 0,
+        "skipped" : 0,
+        "passed" : 9,
+        "unknown" : 0,
+        "total" : 9
+      },
+      "items" : [ {
+        "uid" : "9d8230f5b57a64f0",
+        "reportUrl" : "https://mangata-finance.github.io/mangata-e2e/239//#testresult/9d8230f5b57a64f0",
+        "status" : "passed",
+        "time" : {
+          "start" : 1629973945613,
+          "stop" : 1629974035086,
+          "duration" : 89473
+        }
+      }, {
+        "uid" : "ff0393b51aead288",
+        "reportUrl" : "https://mangata-finance.github.io/mangata-e2e/238//#testresult/ff0393b51aead288",
+        "status" : "passed",
+        "time" : {
+          "start" : 1629973357332,
+          "stop" : 1629973446878,
+          "duration" : 89546
+        }
+      }, {
+        "uid" : "11ea6cddfaae6523",
+        "reportUrl" : "https://mangata-finance.github.io/mangata-e2e/237//#testresult/11ea6cddfaae6523",
+        "status" : "passed",
+        "time" : {
+          "start" : 1629972151168,
+          "stop" : 1629972242066,
+          "duration" : 90898
+        }
+      }, {
+        "uid" : "2aeacac5b213195c",
+        "reportUrl" : "https://mangata-finance.github.io/mangata-e2e/236//#testresult/2aeacac5b213195c",
+        "status" : "passed",
+        "time" : {
+          "start" : 1629968377086,
+          "stop" : 1629968467937,
+          "duration" : 90851
+        }
+      }, {
+        "uid" : "46c86aa030abcdcc",
+        "reportUrl" : "https://mangata-finance.github.io/mangata-e2e/235//#testresult/46c86aa030abcdcc",
+        "status" : "passed",
+        "time" : {
+          "start" : 1629960936915,
+          "stop" : 1629961033116,
+          "duration" : 96201
+        }
+      }, {
+        "uid" : "b2958382ea219d28",
+        "reportUrl" : "https://mangata-finance.github.io/mangata-e2e/234//#testresult/b2958382ea219d28",
+        "status" : "passed",
+        "time" : {
+          "start" : 1629960505278,
+          "stop" : 1629960594778,
+          "duration" : 89500
+        }
+      }, {
+        "uid" : "be8efd5b92c5dff9",
+        "reportUrl" : "https://mangata-finance.github.io/mangata-e2e/233//#testresult/be8efd5b92c5dff9",
+        "status" : "passed",
+        "time" : {
+          "start" : 1629959527655,
+          "stop" : 1629959617235,
+          "duration" : 89580
+        }
+      }, {
+        "uid" : "9489b38d655faf49",
+        "reportUrl" : "https://mangata-finance.github.io/mangata-e2e/232//#testresult/9489b38d655faf49",
+        "status" : "passed",
+        "time" : {
+          "start" : 1629936848044,
+          "stop" : 1629936937529,
+          "duration" : 89485
+        }
+      } ]
+    },
+    "tags" : [ ]
+  },
+  "source" : "730b25ef07a71a55.json",
+  "parameterValues" : [ ]
+}
