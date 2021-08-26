@@ -13,16 +13,17 @@ jest.spyOn(console, 'error').mockImplementation(jest.fn());
 jest.setTimeout(1500000);
 process.env.NODE_ENV = 'test';
 
-var testUser1 : User;
-var testUser2 : User;
-var sudo : User;
-var pallet : User;
+let testUser1 : User;
+let testUser2 : User;
+let sudo : User;
+let pallet : User;
+let treasury : User;
 
-var keyring : Keyring;
-var firstCurrency :BN;
-var secondCurrency :BN;
+let keyring : Keyring;
+let firstCurrency :BN;
+let secondCurrency :BN;
 
-const {pallet: pallet_address,sudo:sudoUserName} = getEnvironmentRequiredVars();
+const {pallet: pallet_address,sudo:sudoUserName, treasuryPalletAddress } = getEnvironmentRequiredVars();
 
 const defaultCurrecyValue = new BN(250000);
 
@@ -43,9 +44,12 @@ beforeAll( async () => {
 	
 	// setup Pallet.
 	pallet = new User(keyring);
-	pallet.addFromAddress(keyring,pallet_address);
+	pallet.addFromAddress(keyring, pallet_address);
 	pallet.addAsset(MGA_ASSET_ID);
 
+	treasury = new User(keyring);
+	treasury.addFromAddress(keyring, treasuryPalletAddress);
+	treasury.addAsset(MGA_ASSET_ID);
 
 	// add users to pair.
 	keyring.addPair(testUser1.keyRingPair);
@@ -62,9 +66,6 @@ beforeAll( async () => {
 	testUser2.addAsset(MGA_ASSET_ID);
 
 	await createPool(testUser1.keyRingPair, firstCurrency, new BN(1000),secondCurrency,new BN(1000));
-	// check users accounts.
-	await testUser1.refreshAmounts(AssetWallet.BEFORE);
-	await testUser2.refreshAmounts(AssetWallet.BEFORE);
 
 });
 
@@ -73,6 +74,8 @@ beforeEach( async () => {
 	await testUser1.refreshAmounts(AssetWallet.BEFORE);
 	await pallet.refreshAmounts(AssetWallet.BEFORE);
 	await testUser2.refreshAmounts(AssetWallet.BEFORE);
+	await treasury.refreshAmounts(AssetWallet.BEFORE);
+
 });
 
 test('xyk-pallet - MGA tokens are substracted as fee : CreatePool', async () => {
@@ -84,7 +87,8 @@ test('xyk-pallet - MGA tokens are substracted as fee : CreatePool', async () => 
 	const mgaUserToken = testUser1.getAsset(MGA_ASSET_ID)!;
 	const diff = mgaUserToken.amountBefore.toNumber() - mgaUserToken.amountAfter.toNumber();
 	expect(diff).toBeGreaterThan(0);
-	pallet.validateWalletIncreased(MGA_ASSET_ID,new BN(diff));
+	await treasury.refreshAmounts(AssetWallet.AFTER);
+	treasury.validateWalletIncreased(MGA_ASSET_ID, new BN(diff));
 
 });
 test('xyk-pallet - MGA tokens are substracted as fee : MintLiquidity', async () => {
@@ -94,7 +98,9 @@ test('xyk-pallet - MGA tokens are substracted as fee : MintLiquidity', async () 
 	const mgaUserToken = testUser1.getAsset(MGA_ASSET_ID)!;
 	const diff = mgaUserToken.amountBefore.toNumber() - mgaUserToken.amountAfter.toNumber();
 	expect(diff).toBeGreaterThan(0);
-	pallet.validateWalletIncreased(MGA_ASSET_ID,new BN(diff));
+	await treasury.refreshAmounts(AssetWallet.AFTER);
+	treasury.validateWalletIncreased(MGA_ASSET_ID, new BN(diff));
+
 
 });
 test('xyk-pallet - MGA tokens are substracted as fee : BurnLiquidity', async () => {
@@ -104,7 +110,8 @@ test('xyk-pallet - MGA tokens are substracted as fee : BurnLiquidity', async () 
 	const mgaUserToken = testUser1.getAsset(MGA_ASSET_ID)!;
 	const diff = mgaUserToken.amountBefore.toNumber() - mgaUserToken.amountAfter.toNumber();
 	expect(diff).toBeGreaterThan(0);
-	pallet.validateWalletIncreased(MGA_ASSET_ID,new BN(diff));
+	await treasury.refreshAmounts(AssetWallet.AFTER);
+	treasury.validateWalletIncreased(MGA_ASSET_ID, new BN(diff));
 
 });
 test('xyk-pallet - MGA tokens are substracted as fee : Transfer', async () => {
@@ -114,7 +121,8 @@ test('xyk-pallet - MGA tokens are substracted as fee : Transfer', async () => {
 	const mgaUserToken = testUser1.getAsset(MGA_ASSET_ID)!;
 	const diff = mgaUserToken.amountBefore.toNumber() - mgaUserToken.amountAfter.toNumber();
 	expect(diff).toBeGreaterThan(0);
-	pallet.validateWalletIncreased(MGA_ASSET_ID,new BN(diff));
+	await treasury.refreshAmounts(AssetWallet.AFTER);
+	treasury.validateWalletIncreased(MGA_ASSET_ID, new BN(diff));
 
 });
 test('xyk-pallet - MGA tokens are substracted as fee : TransferAll', async () => {
@@ -125,7 +133,9 @@ test('xyk-pallet - MGA tokens are substracted as fee : TransferAll', async () =>
 	const mgaUserToken = testUser2.getAsset(MGA_ASSET_ID)!;
 	const diff = mgaUserToken.amountBefore.toNumber() - mgaUserToken.amountAfter.toNumber();
 	expect(diff).toBeGreaterThan(0);
-	pallet.validateWalletIncreased(MGA_ASSET_ID,new BN(diff));
+	await treasury.refreshAmounts(AssetWallet.AFTER);
+	treasury.validateWalletIncreased(MGA_ASSET_ID, new BN(diff));
+
 
 });
 test('xyk-pallet - MGA tokens are not substracted as fee : SellAsset', async () => {
