@@ -33,19 +33,19 @@ export async function setupAllExtensions(driver: WebDriver){
     
     const polkadotExtension = new Polkadot(driver);
     await polkadotExtension.go();
-    const polkUserAddress = await polkadotExtension.createAccount() ;
+    const [polkUserAddress,usrMnemonic] = await polkadotExtension.createAccount() ;
 
     await new Mangata(driver).go();
     await sleep(2000);
     await polkadotExtension.acceptPermissions();
     
     await metaMaskExtension.connect();
-    return {polkUserAddress: polkUserAddress}
+    return {polkUserAddress: polkUserAddress, mnemonic: usrMnemonic}
     
 }
 
 export async function leaveOnlyOneTab(driver: WebDriver){
-    let handles = await (await driver).getAllWindowHandles();
+    const handles = await (await driver).getAllWindowHandles();
     for(let index = 1; index < handles.length; index++) {
         await (await driver).close();
         await (await driver).switchTo().window(handles[0]);
