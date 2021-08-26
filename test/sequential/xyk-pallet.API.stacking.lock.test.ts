@@ -49,7 +49,7 @@ describe("xyk-pallet - Sell Asset: validate Errors:", () => {
     await sudo.mint(ASSET_ID_MGA_ETH, testUser1, new BN(10000));
     await testUser1.addMGATokens(sudo);
   });
-  
+
   test("Bond operation locks some amount", async () => {
     await waitNewBlock();
     const eventPromise = getEventResult("staking", "Bonded", 14);

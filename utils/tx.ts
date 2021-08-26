@@ -6,7 +6,7 @@ import { env } from "process";
 import { SudoDB } from "./SudoDB";
 import { AccountData } from "@polkadot/types/interfaces/balances";
 import { signAndWaitTx, signSendAndWaitToFinishTx } from "./txHandler";
-import { getEnvironmentRequiredVars } from "./utils";
+import { getEnvironmentRequiredVars, MGA_DEFAULT_LIQ_TOKEN } from "./utils";
 import { Keyring } from "@polkadot/api";
 import { User } from "./User";
 import { testLog } from "./Logger";
@@ -546,8 +546,13 @@ export async function lockAsset(user: User, assetId: BN, amount: BN) {
   const api = getApi();
 
   await signSendAndWaitToFinishTx(
-    //@ts-ignore: Mangata bond operation has 4 params, somehow is inheriting the bond operation from polkadot :S
-    api?.tx.staking.bond(user.keyRingPair.address, amount, "Staked", MGA_DEFAULT_LIQ_TOKEN),
+    api?.tx.staking.bond(
+      user.keyRingPair.address,
+      amount,
+      "Staked",
+      //@ts-ignore: Mangata bond operation has 4 params, somehow is inheriting the bond operation from polkadot :S
+      MGA_DEFAULT_LIQ_TOKEN
+    ),
     user.keyRingPair
   );
 }
