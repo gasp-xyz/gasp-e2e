@@ -66,3 +66,8 @@ export async function getAccountJSON() {
   );
   return jsonContent;
 }
+
+export function buildDataTestIdSelector(dataTestId: string) {
+  const xpathSelector = `//*[@data-testid='${dataTestId}']`;
+  return By.xpath(xpathSelector);
+}
