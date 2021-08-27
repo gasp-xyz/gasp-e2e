@@ -151,3 +151,10 @@ export async function createUserFromJson(keyring: Keyring) {
   keyring.pairs[0].decodePkcs8(userPassword);
   return testUser;
 }
+
+export function calculateLiqAssetAmount(
+  firstAssetAmount: BN,
+  secondAssetAmount: BN
+) {
+  return firstAssetAmount.add(secondAssetAmount).div(new BN(2));
+}
