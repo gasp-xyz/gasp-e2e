@@ -1,0 +1,148 @@
+{
+  "uid" : "ab17fc5a4eb3bca4b216b548c7f9fcbc",
+  "children" : [ {
+    "name" : "assets won when assets are bought [Buying Y - X connected toMGA pool] - 6",
+    "uid" : "9fde814c169b28f7",
+    "parentUid" : "ab17fc5a4eb3bca4b216b548c7f9fcbc",
+    "status" : "passed",
+    "time" : {
+      "start" : 1630078783625,
+      "stop" : 1630078909226,
+      "duration" : 125601
+    },
+    "flaky" : false,
+    "newFailed" : false,
+    "parameters" : [ ]
+  }, {
+    "name" : "assets won when assets are bought [Buying Mangata]",
+    "uid" : "46af5bbe8c825595",
+    "parentUid" : "ab17fc5a4eb3bca4b216b548c7f9fcbc",
+    "status" : "passed",
+    "time" : {
+      "start" : 1630078135814,
+      "stop" : 1630078225270,
+      "duration" : 89456
+    },
+    "flaky" : false,
+    "newFailed" : false,
+    "parameters" : [ ]
+  }, {
+    "name" : "xyk-pallet: Liquidity sufficiency scenario",
+    "uid" : "3c94e6080b011607",
+    "parentUid" : "ab17fc5a4eb3bca4b216b548c7f9fcbc",
+    "status" : "failed",
+    "time" : {
+      "start" : 1630077955465,
+      "stop" : 1630078044943,
+      "duration" : 89478
+    },
+    "flaky" : true,
+    "newFailed" : false,
+    "parameters" : [ ]
+  }, {
+    "name" : "assets won when assets are sold [Selling Y - X connected toMGA pool] - 6",
+    "uid" : "ecf6a29417535652",
+    "parentUid" : "ab17fc5a4eb3bca4b216b548c7f9fcbc",
+    "status" : "passed",
+    "time" : {
+      "start" : 1630078658060,
+      "stop" : 1630078783625,
+      "duration" : 125565
+    },
+    "flaky" : false,
+    "newFailed" : false,
+    "parameters" : [ ]
+  }, {
+    "name" : "assets won when assets are bought [Buying other in MGA pool]",
+    "uid" : "7b4eb3961053f9e0",
+    "parentUid" : "ab17fc5a4eb3bca4b216b548c7f9fcbc",
+    "status" : "passed",
+    "time" : {
+      "start" : 1630078314766,
+      "stop" : 1630078405592,
+      "duration" : 90826
+    },
+    "flaky" : false,
+    "newFailed" : false,
+    "parameters" : [ ]
+  }, {
+    "name" : "assets won when assets are sold [Selling X connected to MGA pool] - 10",
+    "uid" : "88832dc891b467b1",
+    "parentUid" : "ab17fc5a4eb3bca4b216b548c7f9fcbc",
+    "status" : "passed",
+    "time" : {
+      "start" : 1630078405595,
+      "stop" : 1630078531198,
+      "duration" : 125603
+    },
+    "flaky" : false,
+    "newFailed" : false,
+    "parameters" : [ ]
+  }, {
+    "name" : "assets won when assets are sold [Selling Mangata] - 5",
+    "uid" : "fb2d5ad9781081e3",
+    "parentUid" : "ab17fc5a4eb3bca4b216b548c7f9fcbc",
+    "status" : "passed",
+    "time" : {
+      "start" : 1630078047223,
+      "stop" : 1630078135813,
+      "duration" : 88590
+    },
+    "flaky" : false,
+    "newFailed" : false,
+    "parameters" : [ ]
+  }, {
+    "name" : "assets won when assets are sold [Selling other in MGA pool] - 6",
+    "uid" : "68eac92cf82e3c56",
+    "parentUid" : "ab17fc5a4eb3bca4b216b548c7f9fcbc",
+    "status" : "passed",
+    "time" : {
+      "start" : 1630078225270,
+      "stop" : 1630078314766,
+      "duration" : 89496
+    },
+    "flaky" : false,
+    "newFailed" : false,
+    "parameters" : [ ]
+  }, {
+    "name" : "Bond operation locks some amount",
+    "uid" : "9d552bb8c660bbba",
+    "parentUid" : "ab17fc5a4eb3bca4b216b548c7f9fcbc",
+    "status" : "passed",
+    "time" : {
+      "start" : 1630078963938,
+      "stop" : 1630078981312,
+      "duration" : 17374
+    },
+    "flaky" : false,
+    "newFailed" : false,
+    "parameters" : [ ]
+  }, {
+    "name" : "assets won when assets are bought [Buying X connected to MGA pool]",
+    "uid" : "a266fc70e437a9ff",
+    "parentUid" : "ab17fc5a4eb3bca4b216b548c7f9fcbc",
+    "status" : "passed",
+    "time" : {
+      "start" : 1630078531198,
+      "stop" : 1630078658060,
+      "duration" : 126862
+    },
+    "flaky" : false,
+    "newFailed" : false,
+    "parameters" : [ ]
+  }, {
+    "name" : "xyk-pallet: Happy case scenario",
+    "uid" : "94a893e694cf08dc",
+    "parentUid" : "ab17fc5a4eb3bca4b216b548c7f9fcbc",
+    "status" : "failed",
+    "time" : {
+      "start" : 1630077904423,
+      "stop" : 1630077955465,
+      "duration" : 51042
+    },
+    "flaky" : true,
+    "newFailed" : false,
+    "parameters" : [ ]
+  } ],
+  "name" : "timeline"
+}

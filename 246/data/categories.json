@@ -1,0 +1,43 @@
+{
+  "uid" : "4b4757e66a1912dae1a509f688f20b0f",
+  "children" : [ {
+    "name" : "Product defects",
+    "children" : [ {
+      "name" : "Error: Expected: [ 170000,70000,50000 ] \n                  Actual: [ 170000,70000,100000 ] \n                 ",
+      "children" : [ {
+        "name" : "xyk-pallet: Happy case scenario",
+        "uid" : "94a893e694cf08dc",
+        "parentUid" : "cdd53d333e61615fd49eac083c42356c",
+        "status" : "failed",
+        "time" : {
+          "start" : 1630077904423,
+          "stop" : 1630077955465,
+          "duration" : 51042
+        },
+        "flaky" : true,
+        "newFailed" : false,
+        "parameters" : [ ]
+      } ],
+      "uid" : "cdd53d333e61615fd49eac083c42356c"
+    }, {
+      "name" : "Error: Expected: [ 40000,40000,60000 ] \n                  Actual: [ 40000,40000,120000 ] \n                 ",
+      "children" : [ {
+        "name" : "xyk-pallet: Liquidity sufficiency scenario",
+        "uid" : "3c94e6080b011607",
+        "parentUid" : "6190e6085e003ad5f452a678628b318b",
+        "status" : "failed",
+        "time" : {
+          "start" : 1630077955465,
+          "stop" : 1630078044943,
+          "duration" : 89478
+        },
+        "flaky" : true,
+        "newFailed" : false,
+        "parameters" : [ ]
+      } ],
+      "uid" : "6190e6085e003ad5f452a678628b318b"
+    } ],
+    "uid" : "8fb3a91ba5aaf9de24cc8a92edc82b5d"
+  } ],
+  "name" : "categories"
+}
