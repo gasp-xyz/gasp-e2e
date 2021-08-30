@@ -1,0 +1,95 @@
+{
+  "uid" : "c737190f04549831",
+  "name" : "As a User I can get test tokens from the faucet",
+  "fullName" : "UI tests - Get Tokens from Faucet.As a User I can get test tokens from the faucet",
+  "historyId" : "eec88a440f5cd4c786967d8a5233a8c0",
+  "time" : {
+    "start" : 1630282494003,
+    "stop" : 1630282610244,
+    "duration" : 116241
+  },
+  "description" : "",
+  "descriptionHtml" : "",
+  "status" : "passed",
+  "flaky" : false,
+  "newFailed" : false,
+  "beforeStages" : [ ],
+  "afterStages" : [ ],
+  "labels" : [ {
+    "name" : "suite",
+    "value" : "UI tests - Get Tokens from Faucet"
+  }, {
+    "name" : "testClass",
+    "value" : "UI tests - Get Tokens from Faucet"
+  }, {
+    "name" : "testMethod",
+    "value" : "As a User I can get test tokens from the faucet"
+  }, {
+    "name" : "package",
+    "value" : "UI tests - Get Tokens from Faucet"
+  }, {
+    "name" : "resultFormat",
+    "value" : "allure1"
+  } ],
+  "parameters" : [ ],
+  "links" : [ ],
+  "hidden" : false,
+  "retry" : false,
+  "extra" : {
+    "severity" : "normal",
+    "retries" : [ ],
+    "categories" : [ ],
+    "history" : {
+      "statistic" : {
+        "failed" : 2,
+        "broken" : 0,
+        "skipped" : 0,
+        "passed" : 3,
+        "unknown" : 0,
+        "total" : 5
+      },
+      "items" : [ {
+        "uid" : "9dd5f4e3ad188e09",
+        "reportUrl" : "https://mangata-finance.github.io/mangata-e2e/117//#testresult/9dd5f4e3ad188e09",
+        "status" : "failed",
+        "statusDetails" : "TimeoutError: Waiting for element to be located By(xpath, //button[text()='Connect'])\n                Wait timed out after 10923ms",
+        "time" : {
+          "start" : 1630239103125,
+          "stop" : 1630239224051,
+          "duration" : 120926
+        }
+      }, {
+        "uid" : "1b33396e765b1dff",
+        "reportUrl" : "https://mangata-finance.github.io/mangata-e2e/116//#testresult/1b33396e765b1dff",
+        "status" : "passed",
+        "time" : {
+          "start" : 1630196023903,
+          "stop" : 1630196137858,
+          "duration" : 113955
+        }
+      }, {
+        "uid" : "3f8a08e0c15735c9",
+        "reportUrl" : "https://mangata-finance.github.io/mangata-e2e/115//#testresult/3f8a08e0c15735c9",
+        "status" : "passed",
+        "time" : {
+          "start" : 1630152594215,
+          "stop" : 1630152685531,
+          "duration" : 91316
+        }
+      }, {
+        "uid" : "8222c3c66582f999",
+        "reportUrl" : "https://mangata-finance.github.io/mangata-e2e/114//#testresult/8222c3c66582f999",
+        "status" : "failed",
+        "statusDetails" : "TimeoutError: Waiting for element to be located By(xpath, //button[text()='Connect'])\n                Wait timed out after 10008ms",
+        "time" : {
+          "start" : 1630109658645,
+          "stop" : 1630109714155,
+          "duration" : 55510
+        }
+      } ]
+    },
+    "tags" : [ ]
+  },
+  "source" : "c737190f04549831.json",
+  "parameterValues" : [ ]
+}
