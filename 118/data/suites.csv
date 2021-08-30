@@ -1,3 +1,0 @@
-"Status","Start Time","Stop Time","Duration in ms","Parent Suite","Suite","Sub Suite","Test Class","Test Method","Name","Description"
-"passed","Mon Aug 30 00:14:54 GMT 2021","Mon Aug 30 00:16:50 GMT 2021","116241","","UI tests - Get Tokens from Faucet","","UI tests - Get Tokens from Faucet","As a User I can get test tokens from the faucet","As a User I can get test tokens from the faucet",""
-"passed","Mon Aug 30 00:13:43 GMT 2021","Mon Aug 30 00:14:50 GMT 2021","66236","","UI tests - Get Tokens from Faucet","","UI tests - Get Tokens from Faucet","As a User I get the right values for Pool investment","As a User I get the right values for Pool investment",""
