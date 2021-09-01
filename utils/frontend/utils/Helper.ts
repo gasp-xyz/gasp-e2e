@@ -68,6 +68,10 @@ export async function getAccountJSON() {
 }
 
 export function buildDataTestIdSelector(dataTestId: string) {
+  return By.xpath(buildDataTestIdXpath(dataTestId));
+}
+
+export function buildDataTestIdXpath(dataTestId: string) {
   const xpathSelector = `//*[@data-testid='${dataTestId}']`;
-  return By.xpath(xpathSelector);
+  return xpathSelector;
 }

@@ -10,7 +10,12 @@ import {
   takeScreenshot,
 } from "../../utils/frontend/utils/Helper";
 import { User } from "../../utils/User";
-import { getEnvironmentRequiredVars, mETH_ASSET_NAME, MGA_ASSET_ID, MGA_ASSET_NAME } from "../../utils/utils";
+import {
+  getEnvironmentRequiredVars,
+  mETH_ASSET_NAME,
+  MGA_ASSET_ID,
+  MGA_ASSET_NAME,
+} from "../../utils/utils";
 
 jest.setTimeout(1500000);
 jest.spyOn(console, "log").mockImplementation(jest.fn());
@@ -82,9 +87,8 @@ describe.skip("UI tests - A user can swap tokens", () => {
     await swapView.toggleSwap();
     await swapView.selectPayAsset(MGA_ASSET_NAME);
     await swapView.selectGetAsset(mETH_ASSET_NAME);
-    await swapView.addFirstAssetAmount('0.0001');
-    await swapView.doSwap()
-
+    await swapView.addFirstAssetAmount("0.0001");
+    await swapView.doSwap();
   });
 
   afterEach(async () => {
