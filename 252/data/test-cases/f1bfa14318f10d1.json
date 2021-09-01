@@ -1,0 +1,76 @@
+{
+  "uid" : "f1bfa14318f10d1",
+  "name" : "assets won when assets are sold [Selling Mangata] - 5",
+  "fullName" : "xyk-pallet - treasury tests [Mangata]: on treasury we store.assets won when assets are sold [Selling Mangata] - 5",
+  "historyId" : "dd6031c39dad92c2f0d6040402ed7ebf",
+  "time" : {
+    "start" : 1630502001649,
+    "stop" : 1630502089042,
+    "duration" : 87393
+  },
+  "description" : "",
+  "descriptionHtml" : "",
+  "status" : "passed",
+  "flaky" : false,
+  "newFailed" : false,
+  "beforeStages" : [ ],
+  "afterStages" : [ ],
+  "labels" : [ {
+    "name" : "suite",
+    "value" : "xyk-pallet - treasury tests [Mangata]: on treasury we store"
+  }, {
+    "name" : "testClass",
+    "value" : "xyk-pallet - treasury tests [Mangata]: on treasury we store"
+  }, {
+    "name" : "testMethod",
+    "value" : "assets won when assets are sold [Selling Mangata] - 5"
+  }, {
+    "name" : "package",
+    "value" : "xyk-pallet - treasury tests [Mangata]: on treasury we store"
+  }, {
+    "name" : "resultFormat",
+    "value" : "allure1"
+  } ],
+  "parameters" : [ ],
+  "links" : [ ],
+  "hidden" : false,
+  "retry" : false,
+  "extra" : {
+    "severity" : "normal",
+    "retries" : [ ],
+    "categories" : [ ],
+    "history" : {
+      "statistic" : {
+        "failed" : 1,
+        "broken" : 0,
+        "skipped" : 0,
+        "passed" : 2,
+        "unknown" : 0,
+        "total" : 3
+      },
+      "items" : [ {
+        "uid" : "50fde59f022e0690",
+        "reportUrl" : "https://mangata-finance.github.io/mangata-e2e/251//#testresult/50fde59f022e0690",
+        "status" : "passed",
+        "time" : {
+          "start" : 1630500922509,
+          "stop" : 1630501009242,
+          "duration" : 86733
+        }
+      }, {
+        "uid" : "469ba89a6ae2e6f5",
+        "reportUrl" : "https://mangata-finance.github.io/mangata-e2e/250//#testresult/469ba89a6ae2e6f5",
+        "status" : "failed",
+        "statusDetails" : "Error: Expected: 6 \n                  Actual: 5 \n                 ",
+        "time" : {
+          "start" : 1630499223938,
+          "stop" : 1630499311090,
+          "duration" : 87152
+        }
+      } ]
+    },
+    "tags" : [ ]
+  },
+  "source" : "f1bfa14318f10d1.json",
+  "parameterValues" : [ ]
+}

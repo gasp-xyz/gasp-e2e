@@ -1,0 +1,76 @@
+{
+  "uid" : "e77bf5ca727acfdf",
+  "name" : "assets won when assets are bought [Buying Y - X connected toMGA pool] - 6",
+  "fullName" : "xyk-pallet - treasury tests [Connected - Mangata]: on treasury we store.assets won when assets are bought [Buying Y - X connected toMGA pool] - 6",
+  "historyId" : "7967eeadd35f234dba8c5ca88c563c78",
+  "time" : {
+    "start" : 1630502743502,
+    "stop" : 1630502869042,
+    "duration" : 125540
+  },
+  "description" : "",
+  "descriptionHtml" : "",
+  "status" : "passed",
+  "flaky" : false,
+  "newFailed" : false,
+  "beforeStages" : [ ],
+  "afterStages" : [ ],
+  "labels" : [ {
+    "name" : "suite",
+    "value" : "xyk-pallet - treasury tests [Connected - Mangata]: on treasury we store"
+  }, {
+    "name" : "testClass",
+    "value" : "xyk-pallet - treasury tests [Connected - Mangata]: on treasury we store"
+  }, {
+    "name" : "testMethod",
+    "value" : "assets won when assets are bought [Buying Y - X connected toMGA pool] - 6"
+  }, {
+    "name" : "package",
+    "value" : "xyk-pallet - treasury tests [Connected - Mangata]: on treasury we store"
+  }, {
+    "name" : "resultFormat",
+    "value" : "allure1"
+  } ],
+  "parameters" : [ ],
+  "links" : [ ],
+  "hidden" : false,
+  "retry" : false,
+  "extra" : {
+    "severity" : "normal",
+    "retries" : [ ],
+    "categories" : [ ],
+    "history" : {
+      "statistic" : {
+        "failed" : 1,
+        "broken" : 0,
+        "skipped" : 0,
+        "passed" : 2,
+        "unknown" : 0,
+        "total" : 3
+      },
+      "items" : [ {
+        "uid" : "cfbab40620c93072",
+        "reportUrl" : "https://mangata-finance.github.io/mangata-e2e/251//#testresult/cfbab40620c93072",
+        "status" : "passed",
+        "time" : {
+          "start" : 1630501663692,
+          "stop" : 1630501789235,
+          "duration" : 125543
+        }
+      }, {
+        "uid" : "19a0ba4c25aedeb0",
+        "reportUrl" : "https://mangata-finance.github.io/mangata-e2e/250//#testresult/19a0ba4c25aedeb0",
+        "status" : "failed",
+        "statusDetails" : "Error: Invalid character",
+        "time" : {
+          "start" : 1630499928948,
+          "stop" : 1630500056008,
+          "duration" : 127060
+        }
+      } ]
+    },
+    "tags" : [ ]
+  },
+  "source" : "e77bf5ca727acfdf.json",
+  "parameterValues" : [ ]
+}
