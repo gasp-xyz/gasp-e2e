@@ -1,7 +1,7 @@
 {
   "extends": "eslint-config-mangata/tsconfig.json",
   "include": ["index.ts", "test/**/*", "utils/*"],
-  "compilerOptions": {
-    "skipLibCheck": true
-  }
+  "exclude": [
+        "node_modules",
+    ]
 }
