@@ -26,17 +26,18 @@ So somehow we now have essentially a distributed system for developing and that 
 5. `ctrl+shift+p` and search for _Remote-Containers: Rebuild and Reopen in Container_
 ---
 ###  How to build
-1. `npm run build`
+1. `yarn`
 ###  How to run esLint
-1. `npm run eslint`
+1. Follow the mangata eslint installation guide [here](https://github.com/mangata-finance/eslint-config-mangata)
+2. `yarn eslint`
 
 ###  How to configure
 
 ####  Node tests ( no UI )
 To point to the right environment or instance, you need to export the following environment variables:
 
-1. TEST_PALLET_ADDRESS: This contains the address to the pallet wallet. 
-`export TEST_PALLET_ADDRESS='PalletAddressComehere' ` more info available in `mangate-node: node/src/chain_spec.rs`
+1. E2E_XYK_PALLET_ADDRESS: This contains the address to the pallet wallet. 
+`export E2E_XYK_PALLET_ADDRESS='PalletAddressComehere' ` more info available in `mangate-node: node/src/chain_spec.rs`
 2. TEST_SUDO_NAME: This contains the name of sudo user to perform required sudo perations. 
 `export TEST_SUDO_NAME='//nameofTheUser' ` more info available in `mangate-node: node/src/chain_spec.rs`
 3. API_URL: Points the API to the right environment. The default will be localhost (`ws://127.0.0.1:9944`).
