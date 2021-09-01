@@ -17,7 +17,10 @@
     "chromedriver": "^92.0.0",
     "dotenv": "^8.2.0",
     "eslint": "^7.26.0",
+    "mangata-sdk": "^0.1.0",
+    "husky": "^7.0.2",
     "package.json": "^2.0.1",
+    "prettier": "^2.3.0",
     "selenium-webdriver": "3.6.0",
     "typescript": "3",
     "web3": "^1.3.0",
@@ -34,7 +37,7 @@
     "test-playground-pararell": "rm nonce.db ; rm sudo.lock; jest test/exploratory/parallelTesting/transfer/* --verbose",
     "test-sequential": "rm nonce.db ; rm sudo.lock; jest test/sequential/* --verbose --runInBand",
     "test-sequential-e2e": "rm nonce.db ; rm sudo.lock; jest test/sequential/* --verbose --runInBand --ci ",
-    "test-ci": "rm nonce.db ; rm sudo.lock; jest test/ci/* --verbose --runInBand --ci ",
+    "test-ci": "rm nonce.db ; rm sudo.lock; jest test/ci/* test/ui/* --runInBand --verbose --ci ",
     "test-ui": "rm nonce.db ; rm sudo.lock; jest test/ui/* --verbose --runInBand --ci ",
     "tsc-lint": "tsc -noemit -p tsconfig.json",
     "eslint": "node_modules/.bin/eslint --max-warnings 0 . --ext .ts",
@@ -64,7 +67,10 @@
   "jest": {
     "verbose": true,
     "bail": false,
-    "setupFilesAfterEnv": ["jest-allure/dist/setup", "./utils/setupJest.ts"],
+    "setupFilesAfterEnv": [
+      "jest-allure/dist/setup",
+      "./utils/setupJest.ts"
+    ],
     "reporters": [
       "default",
       "jest-allure",
