@@ -34,7 +34,7 @@ jobs:
       - name: Install dependencies
         run: yarn
       - name: Tsc code quality check
-        run: yarn tsc-lint
+        run: yarn tsc-lint --skipLibCheck
       - name: ESLint code quality check
         run: yarn eslint
       - name: Start mangata-node node
