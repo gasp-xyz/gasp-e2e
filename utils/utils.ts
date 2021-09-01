@@ -159,16 +159,16 @@ export function calculateLiqAssetAmount(
   return firstAssetAmount.add(secondAssetAmount).div(new BN(2));
 }
 
-export function calculateFees(soldAmount : BN){
-    const treasury = soldAmount.mul(new BN(5)).div(new BN(10000))
-    const treasuryFee = treasury.add(new BN(1));
-    return { treasury : treasuryFee , treasuryBurn : treasuryFee } ;
+export function calculateFees(soldAmount: BN) {
+  const treasury = soldAmount.mul(new BN(5)).div(new BN(10000));
+  const treasuryFee = treasury.add(new BN(1));
+  return { treasury: treasuryFee, treasuryBurn: treasuryFee };
 }
-export function calculateCompleteFees(soldAmount : BN){
-    const {treasury , treasuryBurn } = calculateFees(soldAmount);
-    let threePercent = treasury.add(treasuryBurn).mul(new BN(3));
-    threePercent = threePercent.add(new BN(1));
-    //We remove those two added by treasury_treasury_burn.
-    threePercent = threePercent.sub(new BN(2));
-    return { completeFee : threePercent } ;
+export function calculateCompleteFees(soldAmount: BN) {
+  const { treasury, treasuryBurn } = calculateFees(soldAmount);
+  let threePercent = treasury.add(treasuryBurn).mul(new BN(3));
+  threePercent = threePercent.add(new BN(1));
+  //We remove those two added by treasury_treasury_burn.
+  threePercent = threePercent.sub(new BN(2));
+  return { completeFee: threePercent };
 }

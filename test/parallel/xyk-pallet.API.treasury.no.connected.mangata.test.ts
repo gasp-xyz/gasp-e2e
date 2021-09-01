@@ -1,13 +1,16 @@
-import {api, getApi, initApi} from "../../utils/api";
-import { sellAsset, buyAsset, calculate_buy_price_rpc} from '../../utils/tx'
-import {waitNewBlock, ExtrinsicResult} from '../../utils/eventListeners'
-import BN from 'bn.js'
-import { Keyring } from '@polkadot/api'
-import {AssetWallet, User} from "../../utils/User";
+import { api, getApi, initApi } from "../../utils/api";
+import { sellAsset, buyAsset, calculate_buy_price_rpc } from "../../utils/tx";
+import { waitNewBlock, ExtrinsicResult } from "../../utils/eventListeners";
+import BN from "bn.js";
+import { Keyring } from "@polkadot/api";
+import { AssetWallet, User } from "../../utils/User";
 import { validateTreasuryAmountsEqual } from "../../utils/validators";
 import { Assets } from "../../utils/Assets";
 import { calculateFees, getEnvironmentRequiredVars } from "../../utils/utils";
-import { getEventResultFromTxWait, signSendAndWaitToFinishTx } from "../../utils/txHandler";
+import {
+  getEventResultFromTxWait,
+  signSendAndWaitToFinishTx,
+} from "../../utils/txHandler";
 
 jest.spyOn(console, "log").mockImplementation(jest.fn());
 jest.setTimeout(1500000);
@@ -67,41 +70,39 @@ describe("xyk-pallet - treasury tests [No Mangata]: on treasury we store", () =>
     await testUser1.refreshAmounts(AssetWallet.BEFORE);
   });
 
-		await sellAsset(testUser1.keyRingPair, secondCurrency, firstCurrency, sellAssetAmount, new BN(1))
-		.then(
-			(result) => {
-				const eventResponse = getEventResultFromTxWait(result, ["xyk", "AssetsSwapped", '14', testUser1.keyRingPair.address]);
-				expect(eventResponse.state).toEqual(ExtrinsicResult.ExtrinsicSuccess);
-			}
-		);
-		
-		await testUser1.refreshAmounts(AssetWallet.AFTER);
+  test("assets won when assets are sold - 5 [no connected to MGA]", async () => {
+    await waitNewBlock();
+    const sellAssetAmount = new BN(10000);
 
-		const { treasury, treasuryBurn }= calculateFees(sellAssetAmount)
-		
-		await validateTreasuryAmountsEqual(firstCurrency,[new BN(0),new BN(0)]);
-		await validateTreasuryAmountsEqual(secondCurrency,[treasury,treasuryBurn]);
-		
-	});
-	test('assets won when assets are sold - 1 [rounding] [no connected to MGA]', async () => {
+    await sellAsset(
+      testUser1.keyRingPair,
+      secondCurrency,
+      firstCurrency,
+      sellAssetAmount,
+      new BN(1)
+    ).then((result) => {
+      const eventResponse = getEventResultFromTxWait(result, [
+        "xyk",
+        "AssetsSwapped",
+        "14",
+        testUser1.keyRingPair.address,
+      ]);
+      expect(eventResponse.state).toEqual(ExtrinsicResult.ExtrinsicSuccess);
+    });
 
-		await waitNewBlock();
-		let sellAssetAmount = new BN(500);
+    await testUser1.refreshAmounts(AssetWallet.AFTER);
 
-		await sellAsset(testUser1.keyRingPair, firstCurrency, secondCurrency, sellAssetAmount, new BN(1))
-		.then(
-			(result) => {
-				const eventResponse = getEventResultFromTxWait(result, ["xyk", "AssetsSwapped", '14', testUser1.keyRingPair.address]);
-				expect(eventResponse.state).toEqual(ExtrinsicResult.ExtrinsicSuccess);
-			}
-		);
-		
-		await testUser1.refreshAmounts(AssetWallet.AFTER);
-		const { treasury, treasuryBurn }= calculateFees(sellAssetAmount)
-		await validateTreasuryAmountsEqual(firstCurrency,[treasury,treasuryBurn]);
-		await validateTreasuryAmountsEqual(secondCurrency,[new BN(0), new BN(0)]);
-		
-	});
+    const { treasury, treasuryBurn } = calculateFees(sellAssetAmount);
+
+    await validateTreasuryAmountsEqual(firstCurrency, [new BN(0), new BN(0)]);
+    await validateTreasuryAmountsEqual(secondCurrency, [
+      treasury,
+      treasuryBurn,
+    ]);
+  });
+  test("assets won when assets are sold - 1 [rounding] [no connected to MGA]", async () => {
+    await waitNewBlock();
+    const sellAssetAmount = new BN(500);
 
     await sellAsset(
       testUser1.keyRingPair,
@@ -113,53 +114,76 @@ describe("xyk-pallet - treasury tests [No Mangata]: on treasury we store", () =>
       const eventResponse = getEventResultFromTxWait(result, [
         "xyk",
         "AssetsSwapped",
+        "14",
         testUser1.keyRingPair.address,
       ]);
       expect(eventResponse.state).toEqual(ExtrinsicResult.ExtrinsicSuccess);
     });
 
-		await waitNewBlock();
-		let buyAssetAmount = new BN(10000);
-		let sellPriceRpc = await calculate_buy_price_rpc(first_asset_amount, first_asset_amount.div(new BN(2)), buyAssetAmount);
-		await buyAsset(testUser1.keyRingPair, firstCurrency, secondCurrency, buyAssetAmount, new BN(100000000))
-		.then(
-			(result) => {
-				const eventResponse = getEventResultFromTxWait(result, ["xyk", "AssetsSwapped", '14', testUser1.keyRingPair.address]);
-				expect(eventResponse.state).toEqual(ExtrinsicResult.ExtrinsicSuccess);
-			}
-		);
-
-		await testUser1.refreshAmounts(AssetWallet.AFTER);
-		const { treasury, treasuryBurn } = calculateFees(sellPriceRpc)
-		await validateTreasuryAmountsEqual(secondCurrency,[new BN(0),new BN(0)]);
-		//treasuries are stored always in the sold asset
-		await validateTreasuryAmountsEqual(firstCurrency,[treasury,treasuryBurn]);
-		
-	});
-
     await testUser1.refreshAmounts(AssetWallet.AFTER);
-    //pool is [50000X,25000Y]
-    //user buy [10000] of X.
-    //Stano sheet tells: Burn - 2,2
-    await validateTreasuryAmountsEqual(secondCurrency, [new BN(2), new BN(2)]);
-    //treasuries are stored in the bought assets wallet, not the fitst, so must be zero.
-    await validateTreasuryAmountsEqual(firstCurrency, [new BN(0), new BN(0)]);
+    const { treasury, treasuryBurn } = calculateFees(sellAssetAmount);
+    await validateTreasuryAmountsEqual(firstCurrency, [treasury, treasuryBurn]);
+    await validateTreasuryAmountsEqual(secondCurrency, [new BN(0), new BN(0)]);
   });
 
-		await waitNewBlock();
-		let buyAssetAmount = new BN(100);
-		let sellPriceRpc = await calculate_buy_price_rpc(first_asset_amount, first_asset_amount.div(new BN(2)), buyAssetAmount);
-		await buyAsset(testUser1.keyRingPair, firstCurrency, secondCurrency, buyAssetAmount, new BN(100000000))
-		.then(
-			(result) => {
-				const eventResponse = getEventResultFromTxWait(result, ["xyk", "AssetsSwapped", '14', testUser1.keyRingPair.address]);
-				expect(eventResponse.state).toEqual(ExtrinsicResult.ExtrinsicSuccess);
-			}
-		);
+  test("assets won when assets are bought - 2 [no connected to MGA]", async () => {
+    await waitNewBlock();
+    const buyAssetAmount = new BN(10000);
+    const sellPriceRpc = await calculate_buy_price_rpc(
+      first_asset_amount,
+      first_asset_amount.div(new BN(2)),
+      buyAssetAmount
+    );
+    await buyAsset(
+      testUser1.keyRingPair,
+      firstCurrency,
+      secondCurrency,
+      buyAssetAmount,
+      new BN(100000000)
+    ).then((result) => {
+      const eventResponse = getEventResultFromTxWait(result, [
+        "xyk",
+        "AssetsSwapped",
+        "14",
+        testUser1.keyRingPair.address,
+      ]);
+      expect(eventResponse.state).toEqual(ExtrinsicResult.ExtrinsicSuccess);
+    });
 
-		await testUser1.refreshAmounts(AssetWallet.AFTER);
-		const { treasury, treasuryBurn }= calculateFees(sellPriceRpc)
-		await validateTreasuryAmountsEqual(firstCurrency,[treasury,treasuryBurn]);
-		await validateTreasuryAmountsEqual(secondCurrency,[new BN(0), new BN(0)]);
-		
-	});
+    await testUser1.refreshAmounts(AssetWallet.AFTER);
+    const { treasury, treasuryBurn } = calculateFees(sellPriceRpc);
+    await validateTreasuryAmountsEqual(secondCurrency, [new BN(0), new BN(0)]);
+    //treasuries are stored always in the sold asset
+    await validateTreasuryAmountsEqual(firstCurrency, [treasury, treasuryBurn]);
+  });
+
+  test("assets won when assets are bought - 1 [no connected to MGA]", async () => {
+    await waitNewBlock();
+    const buyAssetAmount = new BN(100);
+    const sellPriceRpc = await calculate_buy_price_rpc(
+      first_asset_amount,
+      first_asset_amount.div(new BN(2)),
+      buyAssetAmount
+    );
+    await buyAsset(
+      testUser1.keyRingPair,
+      firstCurrency,
+      secondCurrency,
+      buyAssetAmount,
+      new BN(100000000)
+    ).then((result) => {
+      const eventResponse = getEventResultFromTxWait(result, [
+        "xyk",
+        "AssetsSwapped",
+        "14",
+        testUser1.keyRingPair.address,
+      ]);
+      expect(eventResponse.state).toEqual(ExtrinsicResult.ExtrinsicSuccess);
+    });
+
+    await testUser1.refreshAmounts(AssetWallet.AFTER);
+    const { treasury, treasuryBurn } = calculateFees(sellPriceRpc);
+    await validateTreasuryAmountsEqual(firstCurrency, [treasury, treasuryBurn]);
+    await validateTreasuryAmountsEqual(secondCurrency, [new BN(0), new BN(0)]);
+  });
+});

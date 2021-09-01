@@ -8,7 +8,12 @@ import {
   getTreasuryBurn,
 } from "./tx";
 import { AssetWallet, User } from "./User";
-import { calculateCompleteFees, calculateFees, calculateLiqAssetAmount, fromBNToUnitString } from "./utils";
+import {
+  calculateCompleteFees,
+  calculateFees,
+  calculateLiqAssetAmount,
+  fromBNToUnitString,
+} from "./utils";
 
 export function validateTransactionSucessful(
   eventResult: EventResult,
@@ -174,25 +179,35 @@ export async function validateTreasuryAmountsEqual(
   expect(treasuryBurn).bnEqual(expectedTreasuryBurn);
 }
 
-export async function validateUserPaidFeeForFailedTx(soldAmount: BN, user: User, assetSoldId: BN, failedBoughtAssetId: BN, poolAmountFailedBought: BN, initialPoolValueSoldAssetId: BN) {
-	const { treasury, treasuryBurn } = calculateFees(soldAmount);
-	const { completeFee } = calculateCompleteFees(soldAmount);
+export async function validateUserPaidFeeForFailedTx(
+  soldAmount: BN,
+  user: User,
+  assetSoldId: BN,
+  failedBoughtAssetId: BN,
+  poolAmountFailedBought: BN,
+  initialPoolValueSoldAssetId: BN
+) {
+  const { treasury, treasuryBurn } = calculateFees(soldAmount);
+  const { completeFee } = calculateCompleteFees(soldAmount);
 
-	//when failed Tx, we remove 3% and put it in the pool.
-	await user.refreshAmounts(AssetWallet.AFTER);
-	user.validateWalletReduced(assetSoldId, completeFee);
-	//second wallet should not be modified.
-	user.validateWalletEquals(failedBoughtAssetId, user.getAsset(failedBoughtAssetId)?.amountBefore!);
+  //when failed Tx, we remove 3% and put it in the pool.
+  await user.refreshAmounts(AssetWallet.AFTER);
+  user.validateWalletReduced(assetSoldId, completeFee);
+  //second wallet should not be modified.
+  user.validateWalletEquals(
+    failedBoughtAssetId,
+    user.getAsset(failedBoughtAssetId)?.amountBefore!
+  );
 
-	const treasuryTokens = await getTreasury(assetSoldId);
-	const treasuryBurnTokens = await getTreasuryBurn(assetSoldId);
-	expect(treasuryTokens).bnEqual(treasury);
-	expect(treasuryBurnTokens).bnEqual(treasuryBurn);
+  const treasuryTokens = await getTreasury(assetSoldId);
+  const treasuryBurnTokens = await getTreasuryBurn(assetSoldId);
+  expect(treasuryTokens).bnEqual(treasury);
+  expect(treasuryBurnTokens).bnEqual(treasuryBurn);
 
-	const increasedInPool = completeFee.sub(treasury.add(treasuryBurn));
-	const poolBalances = await getBalanceOfPool(assetSoldId, failedBoughtAssetId);
-	expect(poolBalances[0]).bnEqual(initialPoolValueSoldAssetId.add(increasedInPool));
-	expect(poolBalances[1]).bnEqual(poolAmountFailedBought);
+  const increasedInPool = completeFee.sub(treasury.add(treasuryBurn));
+  const poolBalances = await getBalanceOfPool(assetSoldId, failedBoughtAssetId);
+  expect(poolBalances[0]).bnEqual(
+    initialPoolValueSoldAssetId.add(increasedInPool)
+  );
+  expect(poolBalances[1]).bnEqual(poolAmountFailedBought);
 }
-
-

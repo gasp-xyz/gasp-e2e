@@ -63,31 +63,10 @@ describe("xyk-pallet - Burn liquidity tests: when burning liquidity you can", ()
 
     sudo = new User(keyring, sudoUserName);
 
-		
-		await testUser2.addMGATokens(sudo);
-		const amountOfX = calculate_buy_price_local(new BN(assetXamount),new BN(assetYamount),new BN(9));
-		await sudo.mint(firstCurrency,testUser2,amountOfX);
-		//user2 exange some assets.
-		await testUser2.buyAssets(firstCurrency,secondCurrency, new BN(9), amountOfX.add(new BN(1)));
-		await testUser1.refreshAmounts(AssetWallet.BEFORE);
-		const ownedLiquidityAssets = calculateLiqAssetAmount(assetXamount, assetYamount);
-		//user1 can still burn all the assets, eventhough pool got modified.
-		await burnLiquidity(testUser1.keyRingPair, firstCurrency, secondCurrency, ownedLiquidityAssets)
-		.then(
-			(result) => {
-				const eventResponse = getEventResultFromTxWait(result, ["xyk", "LiquidityBurned", testUser1.keyRingPair.address]);
-				expect(eventResponse.state).toEqual(ExtrinsicResult.ExtrinsicSuccess);
-			}
-		);
-		waitNewBlock(true); //lets wait one block until liquidity asset Id gets destroyed. Avoid flakiness ;)
-		const liqId = await getLiquidityAssetId(firstCurrency, secondCurrency);
-		expect(liqId).bnEqual(new BN(-1));
-		let poolBalance = await getBalanceOfPool(firstCurrency,secondCurrency);
-		await testUser1.refreshAmounts(AssetWallet.AFTER);
-		//TODO: validate with Stano.
-		const fee = new BN(10);
-		testUser1.validateWalletEquals(firstCurrency,amountOfX.add(new BN(assetXamount)).sub(fee));
-		testUser1.validateWalletEquals(secondCurrency,new BN(1));
+    // add users to pair.
+    keyring.addPair(testUser1.keyRingPair);
+    keyring.addPair(sudo.keyRingPair);
+  });
 
   test("Get affected after a transaction that devaluates X wallet & destroy the pool", async () => {
     const assetXamount = new BN(1000);
@@ -155,9 +134,11 @@ describe("xyk-pallet - Burn liquidity tests: when burning liquidity you can", ()
     expect(liqId).bnEqual(new BN(-1));
     const poolBalance = await getBalanceOfPool(firstCurrency, secondCurrency);
     await testUser1.refreshAmounts(AssetWallet.AFTER);
+    //TODO: validate with Stano.
+    const fee = new BN(10);
     testUser1.validateWalletEquals(
       firstCurrency,
-      amountOfX.add(new BN(assetXamount))
+      amountOfX.add(new BN(assetXamount)).sub(fee)
     );
     testUser1.validateWalletEquals(secondCurrency, new BN(1));
 
