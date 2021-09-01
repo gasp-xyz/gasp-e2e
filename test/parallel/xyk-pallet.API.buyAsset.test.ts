@@ -1,42 +1,252 @@
 import { api, getApi, initApi } from "../../utils/api";
 import {
   getBalanceOfPool,
-  getLiquidityAssetId,
-  burnLiquidity,
+  getTreasury,
+  getTreasuryBurn,
   calculate_buy_price_local,
-  getLiquidityPool,
+  buyAsset,
+  calculate_buy_price_rpc,
 } from "../../utils/tx";
-import {
-  waitNewBlock,
-  ExtrinsicResult,
-  EventResult,
-} from "../../utils/eventListeners";
+import { waitNewBlock, ExtrinsicResult } from "../../utils/eventListeners";
 import BN from "bn.js";
 import { Keyring } from "@polkadot/api";
 import { AssetWallet, User } from "../../utils/User";
 import {
-  validateMintedLiquidityEvent,
-  validateTreasuryAmountsEqual,
+  validateAssetsSwappedEvent,
+  validateUnmodified,
+  validateUserPaidFeeForFailedTx,
 } from "../../utils/validators";
 import { Assets } from "../../utils/Assets";
-import {
-  calculateLiqAssetAmount,
-  getEnvironmentRequiredVars,
-} from "../../utils/utils";
+import { calculateFees, getEnvironmentRequiredVars } from "../../utils/utils";
 import {
   getEventResultFromTxWait,
   signSendAndWaitToFinishTx,
 } from "../../utils/txHandler";
 
-const { sudo: sudoUserName } = getEnvironmentRequiredVars();
-
 jest.spyOn(console, "log").mockImplementation(jest.fn());
 jest.setTimeout(1500000);
 process.env.NODE_ENV = "test";
+const { sudo: sudoUserName } = getEnvironmentRequiredVars();
 
-const defaultCurrecyValue = 250000;
+const firstAssetAmount = new BN(50000);
+const secondAssetAmount = new BN(50000);
+const defaultCurrecyValue = new BN(250000);
 
-describe("xyk-pallet - Burn liquidity tests: when burning liquidity you can", () => {
+describe("xyk-pallet - Buy assets tests: BuyAssets Errors:", () => {
+  let testUser1: User;
+  let sudo: User;
+
+  let keyring: Keyring;
+  let firstCurrency: BN;
+  let secondCurrency: BN;
+
+  const pool_balance_before = [new BN(0), new BN(0)];
+
+  beforeAll(async () => {
+    try {
+      getApi();
+    } catch (e) {
+      await initApi();
+    }
+  });
+
+  beforeEach(async () => {
+    await waitNewBlock();
+    keyring = new Keyring({ type: "sr25519" });
+
+    // setup users
+    testUser1 = new User(keyring);
+
+    sudo = new User(keyring, sudoUserName);
+
+    // add users to pair.
+    keyring.addPair(testUser1.keyRingPair);
+    keyring.addPair(sudo.keyRingPair);
+  });
+
+  test("Buy assets that does not belong to any pool", async () => {
+    //add two curerncies and balance to testUser:
+    [firstCurrency, secondCurrency] = await Assets.setupUserWithCurrencies(
+      testUser1,
+      [defaultCurrecyValue, defaultCurrecyValue.add(new BN(1))],
+      sudo
+    );
+    await testUser1.refreshAmounts(AssetWallet.BEFORE);
+
+    await waitNewBlock();
+    const [thirdCurrency] = await Assets.setupUserWithCurrencies(
+      testUser1,
+      [defaultCurrecyValue],
+      sudo
+    );
+
+    await buyAsset(
+      testUser1.keyRingPair,
+      thirdCurrency,
+      secondCurrency,
+      firstAssetAmount.div(new BN(2)),
+      new BN(0)
+    ).then((result) => {
+      const eventResponse = getEventResultFromTxWait(result);
+      expect(eventResponse.state).toEqual(ExtrinsicResult.ExtrinsicFailed);
+      expect(eventResponse.data).toEqual(3);
+    });
+
+    await waitNewBlock();
+
+    await buyAsset(
+      testUser1.keyRingPair,
+      secondCurrency,
+      thirdCurrency,
+      firstAssetAmount.div(new BN(2)),
+      new BN(0)
+    ).then((result) => {
+      const eventResponse = getEventResultFromTxWait(result);
+      expect(eventResponse.state).toEqual(ExtrinsicResult.ExtrinsicFailed);
+      expect(eventResponse.data).toEqual(3);
+    });
+
+    await validateUnmodified(
+      firstCurrency,
+      secondCurrency,
+      testUser1,
+      pool_balance_before
+    );
+  });
+
+  test("Buy more assets than exists in the pool", async () => {
+    await waitNewBlock();
+    [firstCurrency, secondCurrency] = await Assets.setupUserWithCurrencies(
+      testUser1,
+      [defaultCurrecyValue, defaultCurrecyValue.add(new BN(1))],
+      sudo
+    );
+    await testUser1.addMGATokens(sudo);
+    await testUser1.refreshAmounts(AssetWallet.BEFORE);
+    const poolAmountSecondCurrency = secondAssetAmount.div(new BN(2));
+    await signSendAndWaitToFinishTx(
+      api?.tx.xyk.createPool(
+        firstCurrency,
+        firstAssetAmount,
+        secondCurrency,
+        poolAmountSecondCurrency
+      ),
+      testUser1.keyRingPair
+    );
+    await waitNewBlock();
+    await testUser1.refreshAmounts(AssetWallet.BEFORE);
+
+    await buyAsset(
+      testUser1.keyRingPair,
+      firstCurrency,
+      secondCurrency,
+      poolAmountSecondCurrency.add(new BN(1)),
+      new BN(1000000)
+    ).then((result) => {
+      const eventResponse = getEventResultFromTxWait(result);
+      expect(eventResponse.state).toEqual(ExtrinsicResult.ExtrinsicFailed);
+      expect(eventResponse.data).toEqual(5);
+    });
+
+    await validateUnmodified(firstCurrency, secondCurrency, testUser1, [
+      firstAssetAmount,
+      poolAmountSecondCurrency,
+    ]);
+  });
+
+  test("Buy all assets from the the pool", async () => {
+    await waitNewBlock();
+    [firstCurrency, secondCurrency] = await Assets.setupUserWithCurrencies(
+      testUser1,
+      [defaultCurrecyValue, defaultCurrecyValue.add(new BN(1))],
+      sudo
+    );
+    await testUser1.addMGATokens(sudo);
+    await testUser1.refreshAmounts(AssetWallet.BEFORE);
+    const poolAmountSecondCurrency = secondAssetAmount.div(new BN(2));
+    await signSendAndWaitToFinishTx(
+      api?.tx.xyk.createPool(
+        firstCurrency,
+        firstAssetAmount,
+        secondCurrency,
+        poolAmountSecondCurrency
+      ),
+      testUser1.keyRingPair
+    );
+    await waitNewBlock();
+    await testUser1.refreshAmounts(AssetWallet.BEFORE);
+
+    await buyAsset(
+      testUser1.keyRingPair,
+      firstCurrency,
+      secondCurrency,
+      poolAmountSecondCurrency,
+      new BN(100000000)
+    ).then((result) => {
+      const eventResponse = getEventResultFromTxWait(result);
+      expect(eventResponse.state).toEqual(ExtrinsicResult.ExtrinsicFailed);
+      expect(eventResponse.data).toEqual(5);
+    });
+
+    await validateUnmodified(firstCurrency, secondCurrency, testUser1, [
+      firstAssetAmount,
+      poolAmountSecondCurrency,
+    ]);
+  });
+
+  test("Buy assets with a high expectation: maxInput -1", async () => {
+    await waitNewBlock();
+    [firstCurrency, secondCurrency] = await Assets.setupUserWithCurrencies(
+      testUser1,
+      [defaultCurrecyValue, defaultCurrecyValue.add(new BN(1))],
+      sudo
+    );
+    await testUser1.addMGATokens(sudo);
+    await testUser1.refreshAmounts(AssetWallet.BEFORE);
+    const poolAmountSecondCurrency = secondAssetAmount.div(new BN(2));
+    await signSendAndWaitToFinishTx(
+      api?.tx.xyk.createPool(
+        firstCurrency,
+        firstAssetAmount,
+        secondCurrency,
+        poolAmountSecondCurrency
+      ),
+      testUser1.keyRingPair
+    );
+    await waitNewBlock();
+
+    const buyPriceLocal = await calculate_buy_price_rpc(
+      firstAssetAmount,
+      poolAmountSecondCurrency,
+      poolAmountSecondCurrency.sub(new BN(1))
+    );
+    await sudo.mint(firstCurrency, testUser1, new BN(buyPriceLocal));
+    await testUser1.refreshAmounts(AssetWallet.BEFORE);
+
+    await buyAsset(
+      testUser1.keyRingPair,
+      firstCurrency,
+      secondCurrency,
+      poolAmountSecondCurrency.sub(new BN(1)),
+      buyPriceLocal.sub(new BN(1))
+    ).then((result) => {
+      const eventResponse = getEventResultFromTxWait(result);
+      expect(eventResponse.state).toEqual(ExtrinsicResult.ExtrinsicFailed);
+      expect(eventResponse.data).toEqual(7);
+    });
+
+    await validateUserPaidFeeForFailedTx(
+      buyPriceLocal,
+      testUser1,
+      firstCurrency,
+      secondCurrency,
+      poolAmountSecondCurrency,
+      firstAssetAmount
+    );
+  });
+});
+
+describe("xyk-pallet - Buy assets tests: Buying assets you can", () => {
   let testUser1: User;
   let sudo: User;
 
@@ -68,197 +278,177 @@ describe("xyk-pallet - Burn liquidity tests: when burning liquidity you can", ()
     keyring.addPair(sudo.keyRingPair);
   });
 
-  test("Get affected after a transaction that devaluates X wallet & destroy the pool", async () => {
-    const assetXamount = new BN(1000);
-    const assetYamount = new BN(10);
-    //create a new user
+  test("Leave only one asset in the pool", async () => {
+    await waitNewBlock();
+    [firstCurrency, secondCurrency] = await Assets.setupUserWithCurrencies(
+      testUser1,
+      [defaultCurrecyValue, defaultCurrecyValue.add(new BN(1))],
+      sudo
+    );
+    await testUser1.addMGATokens(sudo);
+    await testUser1.refreshAmounts(AssetWallet.BEFORE);
+    const poolAmountSecondCurrency = secondAssetAmount.div(new BN(2));
+    await signSendAndWaitToFinishTx(
+      api?.tx.xyk.createPool(
+        firstCurrency,
+        firstAssetAmount,
+        secondCurrency,
+        poolAmountSecondCurrency
+      ),
+      testUser1.keyRingPair
+    );
+    await waitNewBlock();
+
+    const buyPriceLocal = await calculate_buy_price_rpc(
+      firstAssetAmount,
+      poolAmountSecondCurrency,
+      poolAmountSecondCurrency.sub(new BN(1))
+    );
+
+    await testUser1.refreshAmounts(AssetWallet.BEFORE);
+    await waitNewBlock();
+    await sudo.mint(firstCurrency, testUser1, new BN(buyPriceLocal));
+
+    await buyAsset(
+      testUser1.keyRingPair,
+      firstCurrency,
+      secondCurrency,
+      poolAmountSecondCurrency.sub(new BN(1)),
+      buyPriceLocal.add(new BN(1))
+    ).then((result) => {
+      const eventResponse = getEventResultFromTxWait(result, [
+        "xyk",
+        "AssetsSwapped",
+        testUser1.keyRingPair.address,
+      ]);
+      expect(eventResponse.state).toEqual(ExtrinsicResult.ExtrinsicSuccess);
+    });
+
+    await waitNewBlock();
+    await testUser1.refreshAmounts(AssetWallet.AFTER);
+    const { treasury, treasuryBurn } = calculateFees(buyPriceLocal);
+    const fee = treasury.add(treasuryBurn);
+    const pool_balance = await getBalanceOfPool(firstCurrency, secondCurrency);
+    expect([
+      buyPriceLocal.add(firstAssetAmount).sub(fee),
+      new BN(1),
+    ]).collectionBnEqual(pool_balance);
+
+    testUser1.validateWalletIncreased(
+      secondCurrency,
+      poolAmountSecondCurrency.sub(new BN(1))
+    );
+    testUser1.validateWalletEquals(
+      firstCurrency,
+      testUser1.getAsset(firstCurrency)?.amountBefore!
+    );
+
+    //lets get the treasure amounts!
+    const treasurySecondCurrency = await getTreasury(secondCurrency);
+    const treasuryFirstCurrency = await getTreasury(firstCurrency);
+    const treasuryBurnSecondCurrency = await getTreasuryBurn(secondCurrency);
+    const treasuryBurnFirstCurrency = await getTreasuryBurn(firstCurrency);
+
+    expect([
+      treasurySecondCurrency,
+      treasuryBurnSecondCurrency,
+    ]).collectionBnEqual([new BN(0), new BN(0)]);
+    expect([
+      treasuryFirstCurrency,
+      treasuryBurnFirstCurrency,
+    ]).collectionBnEqual([treasury, treasuryBurn]);
+  });
+
+  test("Buy from a wallet I own into a wallet I do not own", async () => {
+    await waitNewBlock();
+    const thirdAssetAmount = new BN(10000);
+    const amountToBuy = new BN(2000);
+    // setup users
     const testUser2 = new User(keyring);
     keyring.addPair(testUser2.keyRingPair);
     [firstCurrency, secondCurrency] = await Assets.setupUserWithCurrencies(
       testUser1,
-      [assetXamount, assetYamount],
+      [defaultCurrecyValue, defaultCurrecyValue.add(new BN(1))],
       sudo
     );
+    const [thirdCurrency] = await Assets.setupUserWithCurrencies(
+      testUser2,
+      [defaultCurrecyValue],
+      sudo
+    );
+
+    await sudo.mint(thirdCurrency, testUser1, thirdAssetAmount);
     await testUser1.addMGATokens(sudo);
-    //lets create a pool
     await signSendAndWaitToFinishTx(
       api?.tx.xyk.createPool(
         firstCurrency,
-        new BN(assetXamount),
+        firstAssetAmount,
         secondCurrency,
-        new BN(assetYamount)
+        secondAssetAmount.div(new BN(2))
       ),
       testUser1.keyRingPair
     );
-    const liquidityAssetId = await getLiquidityAssetId(
-      firstCurrency,
-      secondCurrency
-    );
-    const liquidityPoolBeforeDestroy = await getLiquidityPool(liquidityAssetId);
+    // create a pool between First and Third, P(thirdAssetAmount, thirdAssetAmount/2)
 
-    await testUser2.addMGATokens(sudo);
-    const amountOfX = calculate_buy_price_local(
-      new BN(assetXamount),
-      new BN(assetYamount),
-      new BN(9)
+    await signSendAndWaitToFinishTx(
+      api?.tx.xyk.createPool(
+        firstCurrency,
+        thirdAssetAmount,
+        thirdCurrency,
+        thirdAssetAmount.div(new BN(2))
+      ),
+      testUser1.keyRingPair
     );
-    await sudo.mint(firstCurrency, testUser2, amountOfX);
-    //user2 exange some assets.
-    await testUser2.buyAssets(
+    const poolBalanceBefore = await getBalanceOfPool(
       firstCurrency,
-      secondCurrency,
-      new BN(9),
-      amountOfX.add(new BN(1))
+      thirdCurrency
     );
-    await testUser1.refreshAmounts(AssetWallet.BEFORE);
-    const ownedLiquidityAssets = calculateLiqAssetAmount(
-      assetXamount,
-      assetYamount
+
+    await testUser2.refreshAmounts(AssetWallet.BEFORE);
+    await waitNewBlock();
+    const buyPriceLocal = calculate_buy_price_local(
+      thirdAssetAmount.div(new BN(2)),
+      thirdAssetAmount,
+      amountToBuy
     );
-    //user1 can still burn all the assets, eventhough pool got modified.
-    await burnLiquidity(
-      testUser1.keyRingPair,
+
+    await buyAsset(
+      testUser2.keyRingPair,
+      thirdCurrency,
       firstCurrency,
-      secondCurrency,
-      ownedLiquidityAssets
+      amountToBuy,
+      buyPriceLocal
     ).then((result) => {
       const eventResponse = getEventResultFromTxWait(result, [
         "xyk",
-        "LiquidityBurned",
-        testUser1.keyRingPair.address,
+        "AssetsSwapped",
+        testUser2.keyRingPair.address,
       ]);
       expect(eventResponse.state).toEqual(ExtrinsicResult.ExtrinsicSuccess);
-    });
-    waitNewBlock(true); //lets wait one block until liquidity asset Id gets destroyed. Avoid flakiness ;)
-    const liqId = await getLiquidityAssetId(firstCurrency, secondCurrency);
-    expect(liqId).bnEqual(new BN(-1));
-    const poolBalance = await getBalanceOfPool(firstCurrency, secondCurrency);
-    await testUser1.refreshAmounts(AssetWallet.AFTER);
-    //TODO: validate with Stano.
-    const fee = new BN(10);
-    testUser1.validateWalletEquals(
-      firstCurrency,
-      amountOfX.add(new BN(assetXamount)).sub(fee)
-    );
-    testUser1.validateWalletEquals(secondCurrency, new BN(1));
-
-    expect([new BN(0), new BN(0)]).collectionBnEqual(poolBalance);
-
-    //Validate liquidity pool is destroyed.
-    const liquidityPool = await getLiquidityPool(liquidityAssetId);
-    expect(liquidityPool[0]).bnEqual(new BN(-1));
-    expect(liquidityPool[1]).bnEqual(new BN(-1));
-
-    expect(liquidityPoolBeforeDestroy[0]).bnEqual(firstCurrency);
-    expect(liquidityPoolBeforeDestroy[1]).bnEqual(secondCurrency);
-  });
-
-  test("Burning liquidities provides Burn and settle", async () => {
-    await waitNewBlock();
-    // The second currecy value is : defaultCurrecyValue, one to create the pool later, and the other one because of the rounding issue.
-    [firstCurrency, secondCurrency] = await UserCreatesAPoolAndMintliquidity(
-      testUser1,
-      sudo,
-      new BN(defaultCurrecyValue),
-      new BN(defaultCurrecyValue).div(new BN(2)),
-      new BN(defaultCurrecyValue).div(new BN(4))
-    );
-
-    await burnLiquidity(
-      testUser1.keyRingPair,
-      firstCurrency,
-      secondCurrency,
-      new BN(defaultCurrecyValue).div(new BN(4))
-    ).then((result) => {
-      const eventResponse = getEventResultFromTxWait(result, [
-        "xyk",
-        "LiquidityBurned",
-        testUser1.keyRingPair.address,
-      ]);
-      expect(eventResponse.state).toEqual(ExtrinsicResult.ExtrinsicSuccess);
-    });
-    await testUser1.refreshAmounts(AssetWallet.AFTER);
-    //burn liquidity does not add any treasury.
-    await validateTreasuryAmountsEqual(firstCurrency, [new BN(0), new BN(0)]);
-    await validateTreasuryAmountsEqual(secondCurrency, [new BN(0), new BN(0)]);
-  });
-
-  test("Burning liquidities generates a Liquidity burned event", async () => {
-    await waitNewBlock();
-    // The second currecy value is : defaultCurrecyValue, one to create the pool later, and the other one because of the rounding issue.
-    [firstCurrency, secondCurrency] = await UserCreatesAPoolAndMintliquidity(
-      testUser1,
-      sudo,
-      new BN(defaultCurrecyValue),
-      new BN(defaultCurrecyValue).div(new BN(2)),
-      new BN(defaultCurrecyValue).div(new BN(4))
-    );
-    const burnAmount = new BN(defaultCurrecyValue).div(new BN(4));
-    await testUser1.refreshAmounts(AssetWallet.BEFORE);
-
-    let eventResponse: EventResult = new EventResult(0, "");
-    await burnLiquidity(
-      testUser1.keyRingPair,
-      firstCurrency,
-      secondCurrency,
-      burnAmount
-    ).then((result) => {
-      eventResponse = getEventResultFromTxWait(result, [
-        "xyk",
-        "LiquidityBurned",
-        testUser1.keyRingPair.address,
-      ]);
-      expect(eventResponse.state).toEqual(ExtrinsicResult.ExtrinsicSuccess);
+      validateAssetsSwappedEvent(
+        eventResponse,
+        testUser2.keyRingPair.address,
+        thirdCurrency,
+        buyPriceLocal,
+        firstCurrency,
+        amountToBuy
+      );
     });
 
-    await testUser1.refreshAmounts(AssetWallet.AFTER);
-    const secondCurrencyAmount = testUser1
-      .getAsset(secondCurrency)
-      ?.amountAfter.sub(testUser1.getAsset(secondCurrency)?.amountBefore!)!;
-    const firstCurrencyAmount = testUser1
-      .getAsset(firstCurrency)
-      ?.amountAfter.sub(testUser1.getAsset(firstCurrency)?.amountBefore!)!;
-    const liquidityAssetId = await getLiquidityAssetId(
+    testUser2.addAsset(firstCurrency);
+    await testUser2.refreshAmounts(AssetWallet.AFTER);
+    testUser2.validateWalletReduced(thirdCurrency, buyPriceLocal);
+    testUser2.validateWalletEquals(firstCurrency, amountToBuy);
+
+    const poolBalanceAfter = await getBalanceOfPool(
       firstCurrency,
-      secondCurrency
+      thirdCurrency
     );
-    validateMintedLiquidityEvent(
-      eventResponse,
-      testUser1.keyRingPair.address,
-      firstCurrency,
-      firstCurrencyAmount,
-      secondCurrency,
-      secondCurrencyAmount,
-      liquidityAssetId,
-      burnAmount
-    );
+    const { treasury, treasuryBurn } = calculateFees(buyPriceLocal);
+    const fee = treasury.add(treasuryBurn);
+    expect([
+      poolBalanceBefore[0].sub(amountToBuy),
+      poolBalanceBefore[1].add(buyPriceLocal).sub(fee),
+    ]).toEqual(poolBalanceAfter);
   });
 });
-
-async function UserCreatesAPoolAndMintliquidity(
-  testUser1: User,
-  sudo: User,
-  userAmount: BN,
-  poolAmount: BN = new BN(userAmount).div(new BN(2)),
-  mintAmount: BN = new BN(userAmount).div(new BN(4))
-) {
-  await waitNewBlock();
-  const [firstCurrency, secondCurrency] = await Assets.setupUserWithCurrencies(
-    testUser1,
-    [userAmount, userAmount],
-    sudo
-  );
-  await testUser1.addMGATokens(sudo);
-  await signSendAndWaitToFinishTx(
-    api?.tx.xyk.createPool(
-      firstCurrency,
-      poolAmount,
-      secondCurrency,
-      poolAmount
-    ),
-    testUser1.keyRingPair
-  );
-  await waitNewBlock();
-  await testUser1.mintLiquidity(firstCurrency, secondCurrency, mintAmount);
-  return [firstCurrency, secondCurrency];
-}
