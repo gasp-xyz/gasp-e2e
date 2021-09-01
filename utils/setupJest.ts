@@ -1,6 +1,9 @@
 import BN from "bn.js";
 
-export {};
+module.exports = {
+  runner: "groups",
+};
+
 declare global {
   namespace jest {
     interface Matchers<R> {
