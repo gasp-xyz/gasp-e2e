@@ -1,0 +1,73 @@
+{
+  "uid" : "3a1b251ad06e8093",
+  "name" : "xyk-pallet: Happy case scenario",
+  "fullName" : "test/sequential/xyk-pallet.test.ts.xyk-pallet: Happy case scenario",
+  "historyId" : "31b3a07db373fe04b185d770d93dc95d",
+  "time" : {
+    "start" : 1630495045721,
+    "stop" : 1630495098969,
+    "duration" : 53248
+  },
+  "description" : "",
+  "descriptionHtml" : "",
+  "status" : "failed",
+  "statusMessage" : "Error: Expected: [ 50000,50000 ] \n                  Actual: [ 0,0 ] \n                 ",
+  "statusTrace" : "Error: Expected: [ 50000,50000 ] \n                  Actual: [ 0,0 ] \n                 \n                    at Object.<anonymous> (/home/runner/work/mangata-e2e/mangata-e2e/test/sequential/xyk-pallet.test.ts:185:6)\n                    at processTicksAndRejections (internal/process/task_queues.js:95:5)",
+  "flaky" : false,
+  "newFailed" : false,
+  "beforeStages" : [ ],
+  "afterStages" : [ ],
+  "labels" : [ {
+    "name" : "suite",
+    "value" : "test/sequential/xyk-pallet.test.ts"
+  }, {
+    "name" : "testClass",
+    "value" : "test/sequential/xyk-pallet.test.ts"
+  }, {
+    "name" : "testMethod",
+    "value" : "xyk-pallet: Happy case scenario"
+  }, {
+    "name" : "package",
+    "value" : "test/sequential/xyk-pallet.test.ts"
+  }, {
+    "name" : "resultFormat",
+    "value" : "allure1"
+  } ],
+  "parameters" : [ ],
+  "links" : [ ],
+  "hidden" : false,
+  "retry" : false,
+  "extra" : {
+    "severity" : "normal",
+    "retries" : [ ],
+    "categories" : [ {
+      "name" : "Product defects",
+      "matchedStatuses" : [ ],
+      "flaky" : false
+    } ],
+    "history" : {
+      "statistic" : {
+        "failed" : 2,
+        "broken" : 0,
+        "skipped" : 0,
+        "passed" : 0,
+        "unknown" : 0,
+        "total" : 2
+      },
+      "items" : [ {
+        "uid" : "5f4e34945c228683",
+        "reportUrl" : "https://mangata-finance.github.io/mangata-e2e/248//#testresult/5f4e34945c228683",
+        "status" : "failed",
+        "statusDetails" : "Error: Expected: [ 50000,50000 ] \n                  Actual: [ 0,0 ] \n                 ",
+        "time" : {
+          "start" : 1630493510262,
+          "stop" : 1630493563492,
+          "duration" : 53230
+        }
+      } ]
+    },
+    "tags" : [ ]
+  },
+  "source" : "3a1b251ad06e8093.json",
+  "parameterValues" : [ ]
+}
