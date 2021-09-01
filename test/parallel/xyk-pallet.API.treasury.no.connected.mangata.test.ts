@@ -84,7 +84,6 @@ describe("xyk-pallet - treasury tests [No Mangata]: on treasury we store", () =>
       const eventResponse = getEventResultFromTxWait(result, [
         "xyk",
         "AssetsSwapped",
-        "14",
         testUser1.keyRingPair.address,
       ]);
       expect(eventResponse.state).toEqual(ExtrinsicResult.ExtrinsicSuccess);
@@ -114,7 +113,6 @@ describe("xyk-pallet - treasury tests [No Mangata]: on treasury we store", () =>
       const eventResponse = getEventResultFromTxWait(result, [
         "xyk",
         "AssetsSwapped",
-        "14",
         testUser1.keyRingPair.address,
       ]);
       expect(eventResponse.state).toEqual(ExtrinsicResult.ExtrinsicSuccess);
@@ -144,7 +142,6 @@ describe("xyk-pallet - treasury tests [No Mangata]: on treasury we store", () =>
       const eventResponse = getEventResultFromTxWait(result, [
         "xyk",
         "AssetsSwapped",
-        "14",
         testUser1.keyRingPair.address,
       ]);
       expect(eventResponse.state).toEqual(ExtrinsicResult.ExtrinsicSuccess);
@@ -175,7 +172,6 @@ describe("xyk-pallet - treasury tests [No Mangata]: on treasury we store", () =>
       const eventResponse = getEventResultFromTxWait(result, [
         "xyk",
         "AssetsSwapped",
-        "14",
         testUser1.keyRingPair.address,
       ]);
       expect(eventResponse.state).toEqual(ExtrinsicResult.ExtrinsicSuccess);

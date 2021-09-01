@@ -147,7 +147,6 @@ describe("xyk-pallet - Sell assets tests: SellAsset Errors:", () => {
       const eventResponse = getEventResultFromTxWait(result, [
         "xyk",
         "AssetsSwapped",
-        "14",
         testUser1.keyRingPair.address,
       ]);
       expect(eventResponse.state).toEqual(ExtrinsicResult.ExtrinsicSuccess);
@@ -340,7 +339,6 @@ describe("xyk-pallet - Sell assets tests: Selling Assets you can", () => {
       const eventResponse = getEventResultFromTxWait(result, [
         "xyk",
         "AssetsSwapped",
-        "14",
         testUser1.keyRingPair.address,
       ]);
       expect(eventResponse.state).toEqual(ExtrinsicResult.ExtrinsicSuccess);
@@ -422,7 +420,6 @@ describe("xyk-pallet - Sell assets tests: Selling Assets you can", () => {
       const eventResponse = getEventResultFromTxWait(result, [
         "xyk",
         "AssetsSwapped",
-        "14",
         testUser2.keyRingPair.address,
       ]);
       expect(eventResponse.state).toEqual(ExtrinsicResult.ExtrinsicSuccess);
