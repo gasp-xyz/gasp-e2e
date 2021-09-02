@@ -1,3 +1,9 @@
+/*
+ *
+ * @group xyk
+ * @group liquidity
+ * @group parallel
+ */
 import { getApi, initApi } from "../../utils/api";
 import {
   calcuate_mint_liquidity_price_local,

@@ -1,3 +1,8 @@
+/*
+ *
+ * @group xyk
+ * @group ci
+ */
 import { getApi, initApi } from "../../utils/api";
 import BN from "bn.js";
 import { Keyring } from "@polkadot/api";
