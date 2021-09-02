@@ -1,6 +1,6 @@
 import { WebDriver } from "selenium-webdriver";
-import { getEnvironmentRequiredVars } from "../../utils";
-import { clickElement, waitForElement } from "../utils/Helper";
+import { getEnvironmentRequiredVars, sleep } from "../../utils";
+import { clickElement, waitForElement, writeText } from "../utils/Helper";
 const { By } = require("selenium-webdriver");
 
 //xpaths
@@ -20,6 +20,8 @@ const XPATH_EXPORT = "//a[text()='Export Account']";
 const XPATH_EXPORT_CONFIRM = "//*[text()='I want to export this account']";
 const XPATH_DATA_ADDRESS = "//*[@data-field = 'address']";
 const XPATH_TEXT_AREA = "//textarea";
+const XPATH_SIGN_PASSWORD = "//*[@type='password']";
+const XPATH_SIGN_BTN = "//button[//div[text() = 'Sign the transaction']]";
 
 const { uiUserPassword: userPassword, mnemonicPolkadot } =
   getEnvironmentRequiredVars();
@@ -127,6 +129,29 @@ export class Polkadot {
     iterator = handle.entries();
     value = iterator.next().value;
     await this.driver.switchTo().window(value[1]);
+    return;
+  }
+
+  static async signTransaction(driver: WebDriver) {
+    await sleep(5000);
+    let handle = await (await driver).getAllWindowHandles();
+    let iterator = handle.entries();
+    let value = iterator.next().value;
+    while (value) {
+      await driver.switchTo().window(value[1]);
+
+      try {
+        await writeText(driver, XPATH_SIGN_PASSWORD, userPassword);
+        await clickElement(driver, XPATH_SIGN_BTN);
+
+        break;
+      } catch (error) {}
+      value = iterator.next().value;
+    }
+    handle = await (await driver).getAllWindowHandles();
+    iterator = handle.entries();
+    value = iterator.next().value;
+    await driver.switchTo().window(value[1]);
     return;
   }
 }

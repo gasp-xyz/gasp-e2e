@@ -12,6 +12,22 @@ export async function waitForElement(driver: WebDriver, xpath: string) {
   await driver.wait(until.elementLocated(By.xpath(xpath)), 10000);
 }
 
+export async function waitForElementToDissapear(
+  driver: WebDriver,
+  xpath: string
+) {
+  let continueWaiting = false;
+  do {
+    try {
+      await driver.wait(until.elementLocated(By.xpath(xpath)), 10000);
+      continueWaiting = true;
+    } catch (error) {
+      sleep(1000);
+      continueWaiting = false;
+    }
+  } while (continueWaiting);
+}
+
 export async function clickElement(driver: WebDriver, xpath: string) {
   await waitForElement(driver, xpath);
   const element = await driver.findElement(By.xpath(xpath));
@@ -19,6 +35,16 @@ export async function clickElement(driver: WebDriver, xpath: string) {
   await sleep(1000);
   await element.click();
 }
+
+export async function writeText(
+  driver: WebDriver,
+  elementXpath: string,
+  text: string
+) {
+  await waitForElement(driver, elementXpath);
+  await (await driver.findElement(By.xpath(elementXpath))).sendKeys(text);
+}
+
 ///Setup both extensions
 //Setup Metamask from "MNEMONIC_META" global env.
 //Polkadot extension creating an account.
