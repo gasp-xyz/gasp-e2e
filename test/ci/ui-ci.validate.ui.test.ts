@@ -1,3 +1,9 @@
+/*
+ *
+ * @group ui
+ * @group ci
+ */
+
 import { WebDriver } from "selenium-webdriver";
 import { Mangata } from "../../utils/frontend/pages/Mangata";
 import { DriverBuilder } from "../../utils/frontend/utils/Driver";

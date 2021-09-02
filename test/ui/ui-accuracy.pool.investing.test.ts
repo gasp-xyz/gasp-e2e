@@ -1,3 +1,7 @@
+/*
+ *
+ * @group ui
+ */
 import { Keyring } from "@polkadot/api";
 import BN from "bn.js";
 import { WebDriver } from "selenium-webdriver";

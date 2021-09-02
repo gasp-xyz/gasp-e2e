@@ -1,3 +1,9 @@
+/*
+ *
+ * @group xyk
+ * @group sudo
+ * @group parallel
+ */
 import { getApi, initApi } from "../../utils/api";
 import { getUserAssets, getSudoKey, sudoIssueAsset } from "../../utils/tx";
 import { waitNewBlock } from "../../utils/eventListeners";

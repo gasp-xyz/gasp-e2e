@@ -1,3 +1,9 @@
+/*
+ *
+ * @group xyk
+ * @group api
+ * @group parallel
+ */
 import { api, getApi, initApi } from "../../utils/api";
 import { sellAsset, buyAsset } from "../../utils/tx";
 import { waitNewBlock, ExtrinsicResult } from "../../utils/eventListeners";

@@ -1,3 +1,8 @@
+/*
+ *
+ * @group xyk
+ * @group ci
+ */
 import { getApi, initApi } from "../../utils/api";
 import { testLog } from "../../utils/Logger";
 import { Header } from "@polkadot/types/interfaces/runtime";
