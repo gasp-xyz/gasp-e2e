@@ -80,7 +80,7 @@ describe.skip("UI tests - A user can swap tokens", () => {
     await sudo.mint(MGA_ASSET_ID, testUser1, new BN(visibleValueNumber));
   });
 
-  it("As a User I can Swap tokens - ", async () => {
+  it("As a User I can Swap tokens - MGA - POLK", async () => {
     const mga = new Mangata(driver);
     await mga.navigate();
     const swapView = new Swap(driver);
