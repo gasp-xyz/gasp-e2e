@@ -12,7 +12,7 @@ on:
           description: 'Name of the script to run'
           required: false
           default: 'test-sequential-e2e'
-      inputs:
+
         dockerImage:
           description: 'identifier, ie runId or sha'
           required: false
