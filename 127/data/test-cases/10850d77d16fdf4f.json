@@ -1,0 +1,90 @@
+{
+  "uid" : "10850d77d16fdf4f",
+  "name" : "As a User I get the right values for Pool investment",
+  "fullName" : "UI tests - Get Tokens from Faucet.As a User I get the right values for Pool investment",
+  "historyId" : "302add1c134c7eb391309b5951c6ab60",
+  "time" : {
+    "start" : 1630672362908,
+    "stop" : 1630672362921,
+    "duration" : 13
+  },
+  "description" : "",
+  "descriptionHtml" : "",
+  "status" : "failed",
+  "statusMessage" : "Error: Timeout - Async callback was not invoked within the 1500000 ms timeout specified by jest.setTimeout.",
+  "statusTrace" : "Timeout - Async callback was not invoked within the 1500000 ms timeout specified by jest.setTimeout.Error: Timeout - Async callback was not invoked within the 1500000 ms timeout specified by jest.setTimeout.\n                    at mapper (/home/runner/work/mangata-e2e/mangata-e2e/node_modules/jest-jasmine2/build/queueRunner.js:27:45)\n                    at /home/runner/work/mangata-e2e/mangata-e2e/node_modules/jest-jasmine2/build/queueRunner.js:75:41",
+  "flaky" : false,
+  "newFailed" : true,
+  "beforeStages" : [ ],
+  "afterStages" : [ ],
+  "labels" : [ {
+    "name" : "suite",
+    "value" : "UI tests - Get Tokens from Faucet"
+  }, {
+    "name" : "testClass",
+    "value" : "UI tests - Get Tokens from Faucet"
+  }, {
+    "name" : "testMethod",
+    "value" : "As a User I get the right values for Pool investment"
+  }, {
+    "name" : "package",
+    "value" : "UI tests - Get Tokens from Faucet"
+  }, {
+    "name" : "resultFormat",
+    "value" : "allure1"
+  } ],
+  "parameters" : [ ],
+  "links" : [ ],
+  "hidden" : false,
+  "retry" : false,
+  "extra" : {
+    "severity" : "normal",
+    "retries" : [ ],
+    "categories" : [ {
+      "name" : "Product defects",
+      "matchedStatuses" : [ ],
+      "flaky" : false
+    } ],
+    "history" : {
+      "statistic" : {
+        "failed" : 1,
+        "broken" : 0,
+        "skipped" : 0,
+        "passed" : 3,
+        "unknown" : 0,
+        "total" : 4
+      },
+      "items" : [ {
+        "uid" : "a53b7a7fa429b08c",
+        "reportUrl" : "https://mangata-finance.github.io/mangata-e2e/126//#testresult/a53b7a7fa429b08c",
+        "status" : "passed",
+        "time" : {
+          "start" : 1630628000637,
+          "stop" : 1630628069478,
+          "duration" : 68841
+        }
+      }, {
+        "uid" : "ce3ec4513673322d",
+        "reportUrl" : "https://mangata-finance.github.io/mangata-e2e/125//#testresult/ce3ec4513673322d",
+        "status" : "passed",
+        "time" : {
+          "start" : 1630584565926,
+          "stop" : 1630584632726,
+          "duration" : 66800
+        }
+      }, {
+        "uid" : "e3ed9c7aabd10dbf",
+        "reportUrl" : "https://mangata-finance.github.io/mangata-e2e/124//#testresult/e3ed9c7aabd10dbf",
+        "status" : "passed",
+        "time" : {
+          "start" : 1630541623616,
+          "stop" : 1630541690313,
+          "duration" : 66697
+        }
+      } ]
+    },
+    "tags" : [ ]
+  },
+  "source" : "10850d77d16fdf4f.json",
+  "parameterValues" : [ ]
+}
