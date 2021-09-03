@@ -103,31 +103,26 @@ export function buildDataTestIdXpath(dataTestId: string) {
   return xpathSelector;
 }
 
-export async function doActionInDifferentWindow(fn: () => void) {
-  await fn();
-
+export async function doActionInDifferentWindow(
+  driver: WebDriver,
+  fn: (driver: WebDriver) => void
+) {
   await sleep(4000);
-  let handle = await (await this.driver).getAllWindowHandles();
+  let handle = await (await driver).getAllWindowHandles();
   let iterator = handle.entries();
   let value = iterator.next().value;
   while (value) {
-    await this.driver.switchTo().window(value[1]);
+    await driver.switchTo().window(value[1]);
 
     try {
-      await waitForElement(this.driver, XPATH_NEXT);
-      await clickElement(this.driver, XPATH_NEXT);
-      await sleep(2000);
-      //now click on connect.
-      await waitForElement(this.driver, XPATH_NEXT);
-      await clickElement(this.driver, XPATH_NEXT);
-
+      await fn(driver);
       break;
     } catch (error) {}
     value = iterator.next().value;
   }
-  handle = await (await this.driver).getAllWindowHandles();
+  handle = await (await driver).getAllWindowHandles();
   iterator = handle.entries();
   value = iterator.next().value;
-  await this.driver.switchTo().window(value[1]);
+  await driver.switchTo().window(value[1]);
   return;
 }

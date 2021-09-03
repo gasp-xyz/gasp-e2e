@@ -1,6 +1,7 @@
 import { WebDriver } from "selenium-webdriver";
+import { signTx } from "../../tx";
 import { getEnvironmentRequiredVars, sleep } from "../../utils";
-import { clickElement, waitForElement, writeText } from "../utils/Helper";
+import { clickElement, doActionInDifferentWindow, waitForElement, writeText } from "../utils/Helper";
 const { By } = require("selenium-webdriver");
 
 //xpaths
@@ -110,48 +111,21 @@ export class Polkadot {
     return accoundAddress;
   }
 
+  async acceptModal(driver: WebDriver) {
+    await waitForElement(driver, XPATH_ACCEPT_PERMISSIONS);
+    await clickElement(driver, XPATH_ACCEPT_PERMISSIONS);
+  }
   async acceptPermissions() {
-    let handle = await (await this.driver).getAllWindowHandles();
-    let iterator = handle.entries();
-    let value = iterator.next().value;
-    while (value) {
-      await this.driver.switchTo().window(value[1]);
+    await doActionInDifferentWindow(this.driver, this.acceptModal);
+  }
 
-      try {
-        await waitForElement(this.driver, XPATH_ACCEPT_PERMISSIONS);
-        await clickElement(this.driver, XPATH_ACCEPT_PERMISSIONS);
-
-        break;
-      } catch (error) {}
-      value = iterator.next().value;
-    }
-    handle = await (await this.driver).getAllWindowHandles();
-    iterator = handle.entries();
-    value = iterator.next().value;
-    await this.driver.switchTo().window(value[1]);
-    return;
+  static async signTransactionModal(driver: WebDriver) {
+    await writeText(driver, XPATH_SIGN_PASSWORD, userPassword);
+    await clickElement(driver, XPATH_SIGN_BTN);
   }
 
   static async signTransaction(driver: WebDriver) {
-    await sleep(5000);
-    let handle = await (await driver).getAllWindowHandles();
-    let iterator = handle.entries();
-    let value = iterator.next().value;
-    while (value) {
-      await driver.switchTo().window(value[1]);
-
-      try {
-        await writeText(driver, XPATH_SIGN_PASSWORD, userPassword);
-        await clickElement(driver, XPATH_SIGN_BTN);
-
-        break;
-      } catch (error) {}
-      value = iterator.next().value;
-    }
-    handle = await (await driver).getAllWindowHandles();
-    iterator = handle.entries();
-    value = iterator.next().value;
-    await driver.switchTo().window(value[1]);
+    await doActionInDifferentWindow(driver, Polkadot.signTransactionModal);
     return;
   }
 }
