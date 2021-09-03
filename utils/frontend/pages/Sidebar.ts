@@ -21,6 +21,14 @@ const LBL_TOKEN_AMOUNT = "wallet-tokensAmount";
 const SPINNER_LOADING = `//*[@class = 'Sidebar__loading']`;
 
 export class Sidebar {
+  private buildPoolDataTestId(asseName1: string, assetName2: string) {
+    return `poolsOverview-item-${asseName1}-${assetName2}`;
+  }
+  async isLiquidityPoolVisible(asset1Name: string, asset2Name: string) {
+    return await this.isDisplayed(
+      buildDataTestIdXpath(this.buildPoolDataTestId(asset1Name, asset2Name))
+    );
+  }
   driver: WebDriver;
 
   constructor(driver: WebDriver) {
