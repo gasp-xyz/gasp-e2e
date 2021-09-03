@@ -9,6 +9,7 @@ import { SudoDB } from "./SudoDB";
 import { env } from "process";
 import { EventResult, ExtrinsicResult } from "./eventListeners";
 import { testLog } from "./Logger";
+import { User } from "./User";
 //let wait 7 blocks - 6000 * 7 = 42000; depends on the number of workers.
 const DEFAULT_TIME_OUT_MS = 42000;
 
@@ -395,5 +396,38 @@ export async function signSendAndWaitToFinishTx(
     return getEventResultFromTxWait(result);
   });
   expect(result.state).toEqual(ExtrinsicResult.ExtrinsicSuccess);
+  return result;
+}
+
+export async function setAssetInfo(
+  sudo: User,
+  id: BN,
+  name: string,
+  symbol: string,
+  address: string,
+  decimals: BN
+) {
+  const nonce = await SudoDB.getInstance().getSudoNonce(
+    sudo.keyRingPair.address
+  );
+  testLog.getLog().info(`W[${env.JEST_WORKER_ID}] - sudoNonce: ${nonce} `);
+
+  const api = getApi();
+  const result = await signAndWaitTx(
+    api.tx.sudo.sudo(
+      api.tx.assetsInfo.setInfo(
+        id,
+        api.createType("Vec<u8>", name),
+        api.createType("Vec<u8>", symbol),
+        api.createType("Vec<u8>", address),
+        api.createType("u32", decimals)
+      )
+    ),
+    sudo.keyRingPair,
+    nonce
+  ).then((result) => {
+    return getEventResultFromTxWait(result);
+  });
+
   return result;
 }

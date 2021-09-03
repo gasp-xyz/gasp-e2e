@@ -92,7 +92,7 @@ describe("UI tests - Extension management", () => {
   });
 });
 
-describe("UI tests - A user can swap tokens", () => {
+describe("UI tests - A user can swap and mint tokens", () => {
   let keyring: Keyring;
   let testUser1: User;
   let sudo: User;
@@ -163,7 +163,7 @@ describe("UI tests - A user can swap tokens", () => {
     expect(swapped).toBeTruthy();
   });
 
-  it("As a User I can mint some tokens", async () => {
+  it("As a User I can mint some tokens MGA - mETH", async () => {
     testUser1.refreshAmounts(AssetWallet.BEFORE);
     const mga = new Mangata(driver);
     await mga.navigate();
