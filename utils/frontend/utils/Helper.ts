@@ -8,8 +8,12 @@ const fs = require("fs");
 const { By, until } = require("selenium-webdriver");
 require("chromedriver");
 
-export async function waitForElement(driver: WebDriver, xpath: string) {
-  await driver.wait(until.elementLocated(By.xpath(xpath)), 10000);
+export async function waitForElement(
+  driver: WebDriver,
+  xpath: string,
+  timeout = 10000
+) {
+  await driver.wait(until.elementLocated(By.xpath(xpath)), timeout);
 }
 
 export async function waitForElementToDissapear(

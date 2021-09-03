@@ -1,7 +1,11 @@
 import { WebDriver } from "selenium-webdriver";
-import { signTx } from "../../tx";
-import { getEnvironmentRequiredVars, sleep } from "../../utils";
-import { clickElement, doActionInDifferentWindow, waitForElement, writeText } from "../utils/Helper";
+import { getEnvironmentRequiredVars } from "../../utils";
+import {
+  clickElement,
+  doActionInDifferentWindow,
+  waitForElement,
+  writeText,
+} from "../utils/Helper";
 const { By } = require("selenium-webdriver");
 
 //xpaths

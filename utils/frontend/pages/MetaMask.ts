@@ -1,6 +1,10 @@
 import { WebDriver } from "selenium-webdriver";
 import { getEnvironmentRequiredVars, sleep } from "../../utils";
-import { clickElement, doActionInDifferentWindow, waitForElement } from "../utils/Helper";
+import {
+  clickElement,
+  doActionInDifferentWindow,
+  waitForElement,
+} from "../utils/Helper";
 const { By } = require("selenium-webdriver");
 
 //xpaths

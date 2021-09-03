@@ -37,11 +37,9 @@ describe("UI tests - Extension management", () => {
     }
   });
 
-  beforeEach(async () => {
-    driver = await DriverBuilder.getInstance(false);
-  });
-
   it("As a User I get infomed whenever is neccesary to install any extension", async () => {
+    driver = await DriverBuilder.getInstance(false);
+
     const mga = new Mangata(driver);
     await mga.go();
     const sidebar = new Sidebar(driver);
@@ -54,6 +52,30 @@ describe("UI tests - Extension management", () => {
     expect(polkDiv).toBeTruthy();
     expect(metaBtnInstall).toBeTruthy();
     expect(polkBtnInstall).toBeTruthy();
+  });
+
+  it("As a User I get feedback when extensions are installed and correctly setup", async () => {
+    driver = await DriverBuilder.getInstance();
+    await setupAllExtensions(driver);
+
+    const mga = new Mangata(driver);
+    await mga.go();
+    const sidebar = new Sidebar(driver);
+    await sidebar.waitForLoad();
+    const metaDiv = await sidebar.isMetamaskExtensionNotFoundDisplayed();
+    const polkDiv = await sidebar.isPolkExtensionNotFoundDisplayed();
+    const metaBtnInstall = await sidebar.isMetamaskInstallBtnDisplayed();
+    const polkBtnInstall = await sidebar.isPolkInstallBtnDisplayed();
+    expect(metaDiv).toBeFalsy();
+    expect(polkDiv).toBeFalsy();
+    expect(metaBtnInstall).toBeFalsy();
+    expect(polkBtnInstall).toBeFalsy();
+
+    const isMetaOK = await sidebar.isMetamaskExtensionOK();
+    const ispolkOK = await sidebar.isPolkadotExtensionOK();
+
+    expect(isMetaOK).toBeTruthy();
+    expect(ispolkOK).toBeTruthy();
   });
 
   afterEach(async () => {
