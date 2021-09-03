@@ -1,20 +1,20 @@
 [ {
-  "uid" : "ce3ec4513673322d",
+  "uid" : "a53b7a7fa429b08c",
   "name" : "As a User I get the right values for Pool investment",
   "time" : {
-    "start" : 1630584565926,
-    "stop" : 1630584632726,
-    "duration" : 66800
+    "start" : 1630628000637,
+    "stop" : 1630628069478,
+    "duration" : 68841
   },
   "status" : "passed",
   "severity" : "normal"
 }, {
-  "uid" : "a67ce2cfa8567dd1",
+  "uid" : "dc99506a6509e1f7",
   "name" : "As a User I can get test tokens from the faucet",
   "time" : {
-    "start" : 1630584636204,
-    "stop" : 1630584752103,
-    "duration" : 115899
+    "start" : 1630628073214,
+    "stop" : 1630628198091,
+    "duration" : 124877
   },
   "status" : "passed",
   "severity" : "normal"
