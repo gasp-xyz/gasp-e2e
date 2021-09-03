@@ -1,3 +1,9 @@
+/*
+ *
+ * @group xyk
+ * @group pool
+ * @group parallel
+ */
 import { getApi, initApi } from "../../utils/api";
 import {
   getBalanceOfPool,
