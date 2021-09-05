@@ -1,52 +1,73 @@
 [ {
+  "buildOrder" : 130,
+  "reportUrl" : "https://mangata-finance.github.io/mangata-e2e/130/",
+  "reportName" : "Allure Report with history",
+  "data" : {
+    "duration" : 191661
+  }
+}, {
   "buildOrder" : 129,
   "reportUrl" : "https://mangata-finance.github.io/mangata-e2e/129/",
   "reportName" : "Allure Report with history",
-  "data" : { }
+  "data" : {
+    "duration" : 173780
+  }
 }, {
   "buildOrder" : 128,
   "reportUrl" : "https://mangata-finance.github.io/mangata-e2e/128/",
   "reportName" : "Allure Report with history",
   "data" : {
-    "Product defects" : 1
+    "duration" : 119425
   }
 }, {
   "buildOrder" : 263,
   "reportUrl" : "https://mangata-finance.github.io/mangata-e2e/263/",
   "reportName" : "Allure Report with history",
-  "data" : { }
+  "data" : {
+    "duration" : 1443804
+  }
 }, {
   "buildOrder" : 262,
   "reportUrl" : "https://mangata-finance.github.io/mangata-e2e/262/",
   "reportName" : "Allure Report with history",
-  "data" : { }
+  "data" : {
+    "duration" : 1660365
+  }
 }, {
   "buildOrder" : 127,
   "reportUrl" : "https://mangata-finance.github.io/mangata-e2e/127/",
   "reportName" : "Allure Report with history",
   "data" : {
-    "Product defects" : 2
+    "duration" : 1134987
   }
 }, {
   "buildOrder" : 126,
   "reportUrl" : "https://mangata-finance.github.io/mangata-e2e/126/",
   "reportName" : "Allure Report with history",
-  "data" : { }
+  "data" : {
+    "duration" : 197454
+  }
 }, {
   "buildOrder" : 125,
   "reportUrl" : "https://mangata-finance.github.io/mangata-e2e/125/",
   "reportName" : "Allure Report with history",
-  "data" : { }
+  "data" : {
+    "duration" : 186177
+  }
 }, {
   "buildOrder" : 261,
   "reportUrl" : "https://mangata-finance.github.io/mangata-e2e/261/",
   "reportName" : "Allure Report with history",
-  "data" : { }
+  "data" : {
+    "duration" : 1445552
+  }
 }, {
   "buildOrder" : 124,
   "reportUrl" : "https://mangata-finance.github.io/mangata-e2e/124/",
   "reportName" : "Allure Report with history",
-  "data" : { }
+  "data" : {
+    "duration" : 162478
+  }
 }, {
   "data" : { }
 } ]
