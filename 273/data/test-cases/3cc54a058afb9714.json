@@ -1,12 +1,12 @@
 {
-  "uid" : "ec3bc8d9362f2361",
-  "name" : "xyk-CI - validate pools created: Pool[0,5]",
-  "fullName" : "test/ci/xyk-ci.validate.setup.test.ts.xyk-CI - validate pools created: Pool[0,5]",
-  "historyId" : "aca39bd06c125c225d0094d52d8218d5",
+  "uid" : "3cc54a058afb9714",
+  "name" : "Bond operation locks some amount",
+  "fullName" : "xyk-pallet - Sell Asset: validate Errors:.Bond operation locks some amount",
+  "historyId" : "2c3dad72504039bdda0c53211c41ab65",
   "time" : {
-    "start" : 1630927940295,
-    "stop" : 1630927940546,
-    "duration" : 251
+    "start" : 1630929337096,
+    "stop" : 1630929355827,
+    "duration" : 18731
   },
   "description" : "",
   "descriptionHtml" : "",
@@ -17,16 +17,16 @@
   "afterStages" : [ ],
   "labels" : [ {
     "name" : "suite",
-    "value" : "test/ci/xyk-ci.validate.setup.test.ts"
+    "value" : "xyk-pallet - Sell Asset: validate Errors:"
   }, {
     "name" : "testClass",
-    "value" : "test/ci/xyk-ci.validate.setup.test.ts"
+    "value" : "xyk-pallet - Sell Asset: validate Errors:"
   }, {
     "name" : "testMethod",
-    "value" : "xyk-CI - validate pools created: Pool[0,5]"
+    "value" : "Bond operation locks some amount"
   }, {
     "name" : "package",
-    "value" : "test/ci/xyk-ci.validate.setup.test.ts"
+    "value" : "xyk-pallet - Sell Asset: validate Errors:"
   }, {
     "name" : "resultFormat",
     "value" : "allure1"
@@ -41,6 +41,6 @@
     "categories" : [ ],
     "tags" : [ ]
   },
-  "source" : "ec3bc8d9362f2361.json",
+  "source" : "3cc54a058afb9714.json",
   "parameterValues" : [ ]
 }

@@ -1,12 +1,12 @@
 {
-  "uid" : "2472d86245fd68e3",
-  "name" : "xyk-CI - validate pools created: Pool[4,5]",
-  "fullName" : "test/ci/xyk-ci.validate.setup.test.ts.xyk-CI - validate pools created: Pool[4,5]",
-  "historyId" : "6981417f279182565aeb679ea42df85b",
+  "uid" : "b3cf74ff49021441",
+  "name" : "xyk-pallet: Happy case scenario",
+  "fullName" : "test/sequential/xyk-pallet.test.ts.xyk-pallet: Happy case scenario",
+  "historyId" : "31b3a07db373fe04b185d770d93dc95d",
   "time" : {
-    "start" : 1630927940038,
-    "stop" : 1630927940295,
-    "duration" : 257
+    "start" : 1630927907202,
+    "stop" : 1630928106906,
+    "duration" : 199704
   },
   "description" : "",
   "descriptionHtml" : "",
@@ -17,16 +17,16 @@
   "afterStages" : [ ],
   "labels" : [ {
     "name" : "suite",
-    "value" : "test/ci/xyk-ci.validate.setup.test.ts"
+    "value" : "test/sequential/xyk-pallet.test.ts"
   }, {
     "name" : "testClass",
-    "value" : "test/ci/xyk-ci.validate.setup.test.ts"
+    "value" : "test/sequential/xyk-pallet.test.ts"
   }, {
     "name" : "testMethod",
-    "value" : "xyk-CI - validate pools created: Pool[4,5]"
+    "value" : "xyk-pallet: Happy case scenario"
   }, {
     "name" : "package",
-    "value" : "test/ci/xyk-ci.validate.setup.test.ts"
+    "value" : "test/sequential/xyk-pallet.test.ts"
   }, {
     "name" : "resultFormat",
     "value" : "allure1"
@@ -41,6 +41,6 @@
     "categories" : [ ],
     "tags" : [ ]
   },
-  "source" : "2472d86245fd68e3.json",
+  "source" : "b3cf74ff49021441.json",
   "parameterValues" : [ ]
 }
