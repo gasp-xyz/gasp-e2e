@@ -1,0 +1,67 @@
+{
+  "uid" : "caa8d81af5107156",
+  "name" : "xyk-pallet - User Balance - Selling an asset does not require paying fees",
+  "fullName" : "test/parallel/xyk-pallet.API.testMGArequired.test.ts.xyk-pallet - User Balance - Selling an asset does not require paying fees",
+  "historyId" : "4864eb37ab5cc3fb0c61ba25501b9833",
+  "time" : {
+    "start" : 1630909704934,
+    "stop" : 1630909759916,
+    "duration" : 54982
+  },
+  "description" : "",
+  "descriptionHtml" : "",
+  "status" : "passed",
+  "flaky" : false,
+  "newFailed" : false,
+  "beforeStages" : [ ],
+  "afterStages" : [ ],
+  "labels" : [ {
+    "name" : "suite",
+    "value" : "test/parallel/xyk-pallet.API.testMGArequired.test.ts"
+  }, {
+    "name" : "testClass",
+    "value" : "test/parallel/xyk-pallet.API.testMGArequired.test.ts"
+  }, {
+    "name" : "testMethod",
+    "value" : "xyk-pallet - User Balance - Selling an asset does not require paying fees"
+  }, {
+    "name" : "package",
+    "value" : "test/parallel/xyk-pallet.API.testMGArequired.test.ts"
+  }, {
+    "name" : "resultFormat",
+    "value" : "allure1"
+  } ],
+  "parameters" : [ ],
+  "links" : [ ],
+  "hidden" : false,
+  "retry" : false,
+  "extra" : {
+    "severity" : "normal",
+    "retries" : [ ],
+    "categories" : [ ],
+    "history" : {
+      "statistic" : {
+        "failed" : 1,
+        "broken" : 0,
+        "skipped" : 0,
+        "passed" : 1,
+        "unknown" : 0,
+        "total" : 2
+      },
+      "items" : [ {
+        "uid" : "2eaa414bcf26f947",
+        "reportUrl" : "https://mangata-finance.github.io/mangata-e2e/265//#testresult/2eaa414bcf26f947",
+        "status" : "failed",
+        "statusDetails" : "Error: Failed: \"W[7] timeout in - signAndWaitTx - \\\" + 5HQ9Mm9L1HG53htEGDMsnhkkL7hEfF9vLstEQPtMLX5Gupqx + \\\" - \\\" + 73 + \\\" - \\\" + {\\\"isSigned\\\":true,\\\"method\\\":{\\\"args\\\":[{\\\"args\\\":[\\\"5HRDG1ES3WHYw5GNujxocmhAGHWU3ge8gPF1jYu64rMhBjoS\\\",\\\"250.0000 nUnit\\\"],\\\"method\\\":\\\"create\\\",\\\"section\\\":\\\"tokens\\\"}],\\\"method\\\":\\\"sudo\\\",\\\"section\\\":\\\"sudo\\\"},\\\"era\\\":{\\\"MortalEra\\\":{\\\"period\\\":\\\"64\\\",\\\"phase\\\":\\\"12\\\"}},\\\"nonce\\\":\\\"73\\\",\\\"signature\\\":\\\"0x527009fc7dbd8631b3f60e8378872e7ed768fbd7035e687448b2653d3cac37244425ace64d280799b5dd869f6b97c78ccc46c4226bf0cda5629a2dcaa0b6c485\\\",\\\"signer\\\":\\\"5HQ9Mm9L1HG53htEGDMsnhkkL7hEfF9vLstEQPtMLX5Gupqx\\\",\\\"tip\\\":\\\"0\\\"}\"",
+        "time" : {
+          "start" : 1630908508260,
+          "stop" : 1630908550426,
+          "duration" : 42166
+        }
+      } ]
+    },
+    "tags" : [ ]
+  },
+  "source" : "caa8d81af5107156.json",
+  "parameterValues" : [ ]
+}

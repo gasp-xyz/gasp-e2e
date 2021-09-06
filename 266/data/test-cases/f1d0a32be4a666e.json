@@ -1,0 +1,67 @@
+{
+  "uid" : "f1d0a32be4a666e",
+  "name" : "Mint liquidity when not enough assetY for minting Xamount",
+  "fullName" : "xyk-pallet - Mint liquidity tests: MintLiquidity Errors:.Mint liquidity when not enough assetY for minting Xamount",
+  "historyId" : "b2d075f90e328573a39d1ca3480e7c9c",
+  "time" : {
+    "start" : 1630909028010,
+    "stop" : 1630909136170,
+    "duration" : 108160
+  },
+  "description" : "",
+  "descriptionHtml" : "",
+  "status" : "passed",
+  "flaky" : false,
+  "newFailed" : false,
+  "beforeStages" : [ ],
+  "afterStages" : [ ],
+  "labels" : [ {
+    "name" : "suite",
+    "value" : "xyk-pallet - Mint liquidity tests: MintLiquidity Errors:"
+  }, {
+    "name" : "testClass",
+    "value" : "xyk-pallet - Mint liquidity tests: MintLiquidity Errors:"
+  }, {
+    "name" : "testMethod",
+    "value" : "Mint liquidity when not enough assetY for minting Xamount"
+  }, {
+    "name" : "package",
+    "value" : "xyk-pallet - Mint liquidity tests: MintLiquidity Errors:"
+  }, {
+    "name" : "resultFormat",
+    "value" : "allure1"
+  } ],
+  "parameters" : [ ],
+  "links" : [ ],
+  "hidden" : false,
+  "retry" : false,
+  "extra" : {
+    "severity" : "normal",
+    "retries" : [ ],
+    "categories" : [ ],
+    "history" : {
+      "statistic" : {
+        "failed" : 1,
+        "broken" : 0,
+        "skipped" : 0,
+        "passed" : 1,
+        "unknown" : 0,
+        "total" : 2
+      },
+      "items" : [ {
+        "uid" : "b126f0aeadfe3ce8",
+        "reportUrl" : "https://mangata-finance.github.io/mangata-e2e/265//#testresult/b126f0aeadfe3ce8",
+        "status" : "failed",
+        "statusDetails" : "Error: Failed: \"W[4] timeout in - signAndWaitTx - \\\" + 5HQ9Mm9L1HG53htEGDMsnhkkL7hEfF9vLstEQPtMLX5Gupqx + \\\" - \\\" + 14 + \\\" - \\\" + {\\\"isSigned\\\":true,\\\"method\\\":{\\\"args\\\":[{\\\"args\\\":[\\\"5CRmBEuFVY9B3dwnbXFN8icXFZreieaYZfzoxPjGKfGpurNA\\\",\\\"250.0010 nUnit\\\"],\\\"method\\\":\\\"create\\\",\\\"section\\\":\\\"tokens\\\"}],\\\"method\\\":\\\"sudo\\\",\\\"section\\\":\\\"sudo\\\"},\\\"era\\\":{\\\"MortalEra\\\":{\\\"period\\\":\\\"64\\\",\\\"phase\\\":\\\"8\\\"}},\\\"nonce\\\":\\\"14\\\",\\\"signature\\\":\\\"0x4240da29bf740fb4f87fe25ed5c51a9e638de248af630eb3d970faeaf7aa815bec98dddb8c3cda2c3d595f9f0e761582d1159cf3e039ea0c5ae1f34bb668da80\\\",\\\"signer\\\":\\\"5HQ9Mm9L1HG53htEGDMsnhkkL7hEfF9vLstEQPtMLX5Gupqx\\\",\\\"tip\\\":\\\"0\\\"}\"",
+        "time" : {
+          "start" : 1630908078064,
+          "stop" : 1630908161148,
+          "duration" : 83084
+        }
+      } ]
+    },
+    "tags" : [ ]
+  },
+  "source" : "f1d0a32be4a666e.json",
+  "parameterValues" : [ ]
+}

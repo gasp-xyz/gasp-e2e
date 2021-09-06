@@ -1,0 +1,82 @@
+{
+  "uid" : "a62bbf93cb582794",
+  "name" : "xyk-rpc - calculate_sell_price validates parameters - Negative params",
+  "fullName" : "test/parallel/xyk-rpc.errors.test.ts.xyk-rpc - calculate_sell_price validates parameters - Negative params",
+  "historyId" : "2ee1280dc5ab69689978447d22d20b5",
+  "time" : {
+    "start" : 1630909551105,
+    "stop" : 1630909551119,
+    "duration" : 14
+  },
+  "description" : "",
+  "descriptionHtml" : "",
+  "status" : "passed",
+  "flaky" : false,
+  "newFailed" : false,
+  "beforeStages" : [ ],
+  "afterStages" : [ ],
+  "labels" : [ {
+    "name" : "suite",
+    "value" : "test/parallel/xyk-rpc.errors.test.ts"
+  }, {
+    "name" : "testClass",
+    "value" : "test/parallel/xyk-rpc.errors.test.ts"
+  }, {
+    "name" : "testMethod",
+    "value" : "xyk-rpc - calculate_sell_price validates parameters - Negative params"
+  }, {
+    "name" : "package",
+    "value" : "test/parallel/xyk-rpc.errors.test.ts"
+  }, {
+    "name" : "resultFormat",
+    "value" : "allure1"
+  } ],
+  "parameters" : [ ],
+  "links" : [ ],
+  "hidden" : false,
+  "retry" : false,
+  "extra" : {
+    "severity" : "normal",
+    "retries" : [ {
+      "uid" : "d70362f3289f680c",
+      "status" : "passed",
+      "time" : {
+        "start" : 1630909551092,
+        "stop" : 1630909551105,
+        "duration" : 13
+      }
+    }, {
+      "uid" : "27af7c5a15e21cd0",
+      "status" : "passed",
+      "time" : {
+        "start" : 1630909551019,
+        "stop" : 1630909551092,
+        "duration" : 73
+      }
+    } ],
+    "categories" : [ ],
+    "history" : {
+      "statistic" : {
+        "failed" : 0,
+        "broken" : 0,
+        "skipped" : 0,
+        "passed" : 2,
+        "unknown" : 0,
+        "total" : 2
+      },
+      "items" : [ {
+        "uid" : "1641b838bfa1862b",
+        "reportUrl" : "https://mangata-finance.github.io/mangata-e2e/265//#testresult/1641b838bfa1862b",
+        "status" : "passed",
+        "time" : {
+          "start" : 1630908346967,
+          "stop" : 1630908346981,
+          "duration" : 14
+        }
+      } ]
+    },
+    "tags" : [ ]
+  },
+  "source" : "a62bbf93cb582794.json",
+  "parameterValues" : [ ]
+}

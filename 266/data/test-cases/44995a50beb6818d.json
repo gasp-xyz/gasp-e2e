@@ -1,0 +1,67 @@
+{
+  "uid" : "44995a50beb6818d",
+  "name" : "Burning liquidities provides Burn and settle",
+  "fullName" : "xyk-pallet - Burn liquidity tests: when burning liquidity you can.Burning liquidities provides Burn and settle",
+  "historyId" : "59532f0e800cd0e6a512da785baeda0a",
+  "time" : {
+    "start" : 1630909171127,
+    "stop" : 1630909279643,
+    "duration" : 108516
+  },
+  "description" : "",
+  "descriptionHtml" : "",
+  "status" : "passed",
+  "flaky" : false,
+  "newFailed" : false,
+  "beforeStages" : [ ],
+  "afterStages" : [ ],
+  "labels" : [ {
+    "name" : "suite",
+    "value" : "xyk-pallet - Burn liquidity tests: when burning liquidity you can"
+  }, {
+    "name" : "testClass",
+    "value" : "xyk-pallet - Burn liquidity tests: when burning liquidity you can"
+  }, {
+    "name" : "testMethod",
+    "value" : "Burning liquidities provides Burn and settle"
+  }, {
+    "name" : "package",
+    "value" : "xyk-pallet - Burn liquidity tests: when burning liquidity you can"
+  }, {
+    "name" : "resultFormat",
+    "value" : "allure1"
+  } ],
+  "parameters" : [ ],
+  "links" : [ ],
+  "hidden" : false,
+  "retry" : false,
+  "extra" : {
+    "severity" : "normal",
+    "retries" : [ ],
+    "categories" : [ ],
+    "history" : {
+      "statistic" : {
+        "failed" : 1,
+        "broken" : 0,
+        "skipped" : 0,
+        "passed" : 1,
+        "unknown" : 0,
+        "total" : 2
+      },
+      "items" : [ {
+        "uid" : "4973e4f316e64af2",
+        "reportUrl" : "https://mangata-finance.github.io/mangata-e2e/265//#testresult/4973e4f316e64af2",
+        "status" : "failed",
+        "statusDetails" : "Error: Failed: \"W[7] timeout in - signAndWaitTx - \\\" + 5HQ9Mm9L1HG53htEGDMsnhkkL7hEfF9vLstEQPtMLX5Gupqx + \\\" - \\\" + 23 + \\\" - \\\" + {\\\"isSigned\\\":true,\\\"method\\\":{\\\"args\\\":[{\\\"args\\\":[\\\"5CvjRX2tV1nsdnaC3HqeqKMBNUPcH85sSLUCJJWmSNTCqxAw\\\",\\\"250.0000 nUnit\\\"],\\\"method\\\":\\\"create\\\",\\\"section\\\":\\\"tokens\\\"}],\\\"method\\\":\\\"sudo\\\",\\\"section\\\":\\\"sudo\\\"},\\\"era\\\":{\\\"MortalEra\\\":{\\\"period\\\":\\\"64\\\",\\\"phase\\\":\\\"9\\\"}},\\\"nonce\\\":\\\"23\\\",\\\"signature\\\":\\\"0xe894f2592c475a9e55621309641058bc8851788f8edbce8118cc0d2a84c85e479cc0cf2453444d198c512fc7301bb24aaf717d7723e74f6902fb6356b2d4e087\\\",\\\"signer\\\":\\\"5HQ9Mm9L1HG53htEGDMsnhkkL7hEfF9vLstEQPtMLX5Gupqx\\\",\\\"tip\\\":\\\"0\\\"}\"",
+        "time" : {
+          "start" : 1630908161148,
+          "stop" : 1630908206111,
+          "duration" : 44963
+        }
+      } ]
+    },
+    "tags" : [ ]
+  },
+  "source" : "44995a50beb6818d.json",
+  "parameterValues" : [ ]
+}

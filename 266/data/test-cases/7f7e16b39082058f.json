@@ -1,0 +1,67 @@
+{
+  "uid" : "7f7e16b39082058f",
+  "name" : "Buy from a wallet I own into a wallet I do not own",
+  "fullName" : "xyk-pallet - Buy assets tests: Buying assets you can.Buy from a wallet I own into a wallet I do not own",
+  "historyId" : "385ad6aa68caa365708b3f1f14d99f4c",
+  "time" : {
+    "start" : 1630909513039,
+    "stop" : 1630909670034,
+    "duration" : 156995
+  },
+  "description" : "",
+  "descriptionHtml" : "",
+  "status" : "passed",
+  "flaky" : false,
+  "newFailed" : false,
+  "beforeStages" : [ ],
+  "afterStages" : [ ],
+  "labels" : [ {
+    "name" : "suite",
+    "value" : "xyk-pallet - Buy assets tests: Buying assets you can"
+  }, {
+    "name" : "testClass",
+    "value" : "xyk-pallet - Buy assets tests: Buying assets you can"
+  }, {
+    "name" : "testMethod",
+    "value" : "Buy from a wallet I own into a wallet I do not own"
+  }, {
+    "name" : "package",
+    "value" : "xyk-pallet - Buy assets tests: Buying assets you can"
+  }, {
+    "name" : "resultFormat",
+    "value" : "allure1"
+  } ],
+  "parameters" : [ ],
+  "links" : [ ],
+  "hidden" : false,
+  "retry" : false,
+  "extra" : {
+    "severity" : "normal",
+    "retries" : [ ],
+    "categories" : [ ],
+    "history" : {
+      "statistic" : {
+        "failed" : 1,
+        "broken" : 0,
+        "skipped" : 0,
+        "passed" : 1,
+        "unknown" : 0,
+        "total" : 2
+      },
+      "items" : [ {
+        "uid" : "f4678f17dcb3f051",
+        "reportUrl" : "https://mangata-finance.github.io/mangata-e2e/265//#testresult/f4678f17dcb3f051",
+        "status" : "failed",
+        "statusDetails" : "Error: Failed: \"W[2] timeout in - signAndWaitTx - \\\" + 5HQ9Mm9L1HG53htEGDMsnhkkL7hEfF9vLstEQPtMLX5Gupqx + \\\" - \\\" + 48 + \\\" - \\\" + {\\\"isSigned\\\":true,\\\"method\\\":{\\\"args\\\":[{\\\"args\\\":[\\\"5GYtnDNTs2gJHDt1nse6Q9jsTauWtSqXooRAPtWW3QKiHuoS\\\",\\\"250.0000 nUnit\\\"],\\\"method\\\":\\\"create\\\",\\\"section\\\":\\\"tokens\\\"}],\\\"method\\\":\\\"sudo\\\",\\\"section\\\":\\\"sudo\\\"},\\\"era\\\":{\\\"MortalEra\\\":{\\\"period\\\":\\\"64\\\",\\\"phase\\\":\\\"12\\\"}},\\\"nonce\\\":\\\"48\\\",\\\"signature\\\":\\\"0x8c9eb9a66e7f503e310615c2013617e69069d48d4ef543483c489e6f7a06d46be46374af17d26432a60429df06a67aa6497b32ca95d2fb5e988d6f8d5e674c8c\\\",\\\"signer\\\":\\\"5HQ9Mm9L1HG53htEGDMsnhkkL7hEfF9vLstEQPtMLX5Gupqx\\\",\\\"tip\\\":\\\"0\\\"}\"",
+        "time" : {
+          "start" : 1630908332622,
+          "stop" : 1630908374695,
+          "duration" : 42073
+        }
+      } ]
+    },
+    "tags" : [ ]
+  },
+  "source" : "7f7e16b39082058f.json",
+  "parameterValues" : [ ]
+}

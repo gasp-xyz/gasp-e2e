@@ -1,0 +1,67 @@
+{
+  "uid" : "f1f818027b2ac50f",
+  "name" : "Burning liquidities generates a Liquidity burned event",
+  "fullName" : "xyk-pallet - Burn liquidity tests: when burning liquidity you can.Burning liquidities generates a Liquidity burned event",
+  "historyId" : "4343dc61e08f87d0c997e8820122ea6",
+  "time" : {
+    "start" : 1630909279643,
+    "stop" : 1630909386961,
+    "duration" : 107318
+  },
+  "description" : "",
+  "descriptionHtml" : "",
+  "status" : "passed",
+  "flaky" : false,
+  "newFailed" : false,
+  "beforeStages" : [ ],
+  "afterStages" : [ ],
+  "labels" : [ {
+    "name" : "suite",
+    "value" : "xyk-pallet - Burn liquidity tests: when burning liquidity you can"
+  }, {
+    "name" : "testClass",
+    "value" : "xyk-pallet - Burn liquidity tests: when burning liquidity you can"
+  }, {
+    "name" : "testMethod",
+    "value" : "Burning liquidities generates a Liquidity burned event"
+  }, {
+    "name" : "package",
+    "value" : "xyk-pallet - Burn liquidity tests: when burning liquidity you can"
+  }, {
+    "name" : "resultFormat",
+    "value" : "allure1"
+  } ],
+  "parameters" : [ ],
+  "links" : [ ],
+  "hidden" : false,
+  "retry" : false,
+  "extra" : {
+    "severity" : "normal",
+    "retries" : [ ],
+    "categories" : [ ],
+    "history" : {
+      "statistic" : {
+        "failed" : 1,
+        "broken" : 0,
+        "skipped" : 0,
+        "passed" : 1,
+        "unknown" : 0,
+        "total" : 2
+      },
+      "items" : [ {
+        "uid" : "3df8bf24a6247351",
+        "reportUrl" : "https://mangata-finance.github.io/mangata-e2e/265//#testresult/3df8bf24a6247351",
+        "status" : "failed",
+        "statusDetails" : "Error: Failed: \"W[7] timeout in - signAndWaitTx - \\\" + 5HQ9Mm9L1HG53htEGDMsnhkkL7hEfF9vLstEQPtMLX5Gupqx + \\\" - \\\" + 29 + \\\" - \\\" + {\\\"isSigned\\\":true,\\\"method\\\":{\\\"args\\\":[{\\\"args\\\":[\\\"5CSMZpEzV6yf3s57tJHa5zVxPcL7UuWwb5JpDDKTCdnB1rU4\\\",\\\"250.0000 nUnit\\\"],\\\"method\\\":\\\"create\\\",\\\"section\\\":\\\"tokens\\\"}],\\\"method\\\":\\\"sudo\\\",\\\"section\\\":\\\"sudo\\\"},\\\"era\\\":{\\\"MortalEra\\\":{\\\"period\\\":\\\"64\\\",\\\"phase\\\":\\\"12\\\"}},\\\"nonce\\\":\\\"29\\\",\\\"signature\\\":\\\"0xf2376a909a5f8972052acda08cdfe752c1eb6c4d0959bdfef6be0a3655c4e64587b27810c9f940c3cf999e6a2f441e157221b84546f84a552c23d5b8a3cd2b8d\\\",\\\"signer\\\":\\\"5HQ9Mm9L1HG53htEGDMsnhkkL7hEfF9vLstEQPtMLX5Gupqx\\\",\\\"tip\\\":\\\"0\\\"}\"",
+        "time" : {
+          "start" : 1630908206111,
+          "stop" : 1630908248209,
+          "duration" : 42098
+        }
+      } ]
+    },
+    "tags" : [ ]
+  },
+  "source" : "f1f818027b2ac50f.json",
+  "parameterValues" : [ ]
+}

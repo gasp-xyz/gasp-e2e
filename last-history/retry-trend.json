@@ -3,6 +3,14 @@
   "reportUrl" : "https://mangata-finance.github.io/mangata-e2e/266/",
   "reportName" : "Allure Report with history",
   "data" : {
+    "run" : 115,
+    "retry" : 2
+  }
+}, {
+  "buildOrder" : 266,
+  "reportUrl" : "https://mangata-finance.github.io/mangata-e2e/266/",
+  "reportName" : "Allure Report with history",
+  "data" : {
     "run" : 0,
     "retry" : 0
   }

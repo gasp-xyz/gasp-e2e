@@ -1,0 +1,67 @@
+{
+  "uid" : "695e00ba272cbb9f",
+  "name" : "Min liquidity, SecondAssetAmount parameter expectation not met",
+  "fullName" : "xyk-pallet - Mint liquidity tests: MintLiquidity Errors:.Min liquidity, SecondAssetAmount parameter expectation not met",
+  "historyId" : "5e5af97f847f5c7cba0ecc681e37f8fb",
+  "time" : {
+    "start" : 1630909513026,
+    "stop" : 1630909687435,
+    "duration" : 174409
+  },
+  "description" : "",
+  "descriptionHtml" : "",
+  "status" : "passed",
+  "flaky" : false,
+  "newFailed" : false,
+  "beforeStages" : [ ],
+  "afterStages" : [ ],
+  "labels" : [ {
+    "name" : "suite",
+    "value" : "xyk-pallet - Mint liquidity tests: MintLiquidity Errors:"
+  }, {
+    "name" : "testClass",
+    "value" : "xyk-pallet - Mint liquidity tests: MintLiquidity Errors:"
+  }, {
+    "name" : "testMethod",
+    "value" : "Min liquidity, SecondAssetAmount parameter expectation not met"
+  }, {
+    "name" : "package",
+    "value" : "xyk-pallet - Mint liquidity tests: MintLiquidity Errors:"
+  }, {
+    "name" : "resultFormat",
+    "value" : "allure1"
+  } ],
+  "parameters" : [ ],
+  "links" : [ ],
+  "hidden" : false,
+  "retry" : false,
+  "extra" : {
+    "severity" : "normal",
+    "retries" : [ ],
+    "categories" : [ ],
+    "history" : {
+      "statistic" : {
+        "failed" : 1,
+        "broken" : 0,
+        "skipped" : 0,
+        "passed" : 1,
+        "unknown" : 0,
+        "total" : 2
+      },
+      "items" : [ {
+        "uid" : "fbbddd8b0bb66a0a",
+        "reportUrl" : "https://mangata-finance.github.io/mangata-e2e/265//#testresult/fbbddd8b0bb66a0a",
+        "status" : "failed",
+        "statusDetails" : "Error: Failed: \"W[4] timeout in - signAndWaitTx - \\\" + 5HQ9Mm9L1HG53htEGDMsnhkkL7hEfF9vLstEQPtMLX5Gupqx + \\\" - \\\" + 60 + \\\" - \\\" + {\\\"isSigned\\\":true,\\\"method\\\":{\\\"args\\\":[{\\\"args\\\":[\\\"0\\\",\\\"5D5BFusaAwbr2w7RQ3PjEj2Da8Ab3xAVSpEm4KZ45oYSWD2w\\\",\\\"100.0000 mUnit\\\"],\\\"method\\\":\\\"mint\\\",\\\"section\\\":\\\"tokens\\\"}],\\\"method\\\":\\\"sudo\\\",\\\"section\\\":\\\"sudo\\\"},\\\"era\\\":{\\\"MortalEra\\\":{\\\"period\\\":\\\"64\\\",\\\"phase\\\":\\\"12\\\"}},\\\"nonce\\\":\\\"60\\\",\\\"signature\\\":\\\"0x92033ddfe39a01fa3c3d481de1fae04c30295c4b967338ddfa1d91a203fe0855d97f44dd5f77ab378dc310991bdabf48a9f63142849966d311f1917670d7e986\\\",\\\"signer\\\":\\\"5HQ9Mm9L1HG53htEGDMsnhkkL7hEfF9vLstEQPtMLX5Gupqx\\\",\\\"tip\\\":\\\"0\\\"}\"",
+        "time" : {
+          "start" : 1630908416748,
+          "stop" : 1630908500884,
+          "duration" : 84136
+        }
+      } ]
+    },
+    "tags" : [ ]
+  },
+  "source" : "695e00ba272cbb9f.json",
+  "parameterValues" : [ ]
+}

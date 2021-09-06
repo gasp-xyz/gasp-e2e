@@ -1,0 +1,67 @@
+{
+  "uid" : "e04b460ca00bc162",
+  "name" : "Not enough assets",
+  "fullName" : "xyk-pallet - Sell Asset: validate Errors:.Not enough assets",
+  "historyId" : "ebd992606780a175ecd22f17f4770ec1",
+  "time" : {
+    "start" : 1630909136188,
+    "stop" : 1630909171108,
+    "duration" : 34920
+  },
+  "description" : "",
+  "descriptionHtml" : "",
+  "status" : "passed",
+  "flaky" : false,
+  "newFailed" : false,
+  "beforeStages" : [ ],
+  "afterStages" : [ ],
+  "labels" : [ {
+    "name" : "suite",
+    "value" : "xyk-pallet - Sell Asset: validate Errors:"
+  }, {
+    "name" : "testClass",
+    "value" : "xyk-pallet - Sell Asset: validate Errors:"
+  }, {
+    "name" : "testMethod",
+    "value" : "Not enough assets"
+  }, {
+    "name" : "package",
+    "value" : "xyk-pallet - Sell Asset: validate Errors:"
+  }, {
+    "name" : "resultFormat",
+    "value" : "allure1"
+  } ],
+  "parameters" : [ ],
+  "links" : [ ],
+  "hidden" : false,
+  "retry" : false,
+  "extra" : {
+    "severity" : "normal",
+    "retries" : [ ],
+    "categories" : [ ],
+    "history" : {
+      "statistic" : {
+        "failed" : 1,
+        "broken" : 0,
+        "skipped" : 0,
+        "passed" : 1,
+        "unknown" : 0,
+        "total" : 2
+      },
+      "items" : [ {
+        "uid" : "88982af72f3b5aeb",
+        "reportUrl" : "https://mangata-finance.github.io/mangata-e2e/265//#testresult/88982af72f3b5aeb",
+        "status" : "failed",
+        "statusDetails" : "Error: Failed: \"W[5] timeout in - signAndWaitTx - \\\" + 5HQ9Mm9L1HG53htEGDMsnhkkL7hEfF9vLstEQPtMLX5Gupqx + \\\" - \\\" + 20 + \\\" - \\\" + {\\\"isSigned\\\":true,\\\"method\\\":{\\\"args\\\":[{\\\"args\\\":[\\\"0\\\",\\\"5HQ9i1k9YRJyDeawXPyLCFaksiAbU1CkqBmppAw5RqTeDA9j\\\",\\\"100.0000 mUnit\\\"],\\\"method\\\":\\\"mint\\\",\\\"section\\\":\\\"tokens\\\"}],\\\"method\\\":\\\"sudo\\\",\\\"section\\\":\\\"sudo\\\"},\\\"era\\\":{\\\"MortalEra\\\":{\\\"period\\\":\\\"64\\\",\\\"phase\\\":\\\"8\\\"}},\\\"nonce\\\":\\\"20\\\",\\\"signature\\\":\\\"0x961c9702a79fefa38015775a1e9602f9beb151db2b1096602762a0cbb1263d620096648f0bfb0f7a2c12c8b83a044ae3a9271e5920285b85f76b7e663c4ad580\\\",\\\"signer\\\":\\\"5HQ9Mm9L1HG53htEGDMsnhkkL7hEfF9vLstEQPtMLX5Gupqx\\\",\\\"tip\\\":\\\"0\\\"}\"",
+        "time" : {
+          "start" : 1630908215653,
+          "stop" : 1630908257761,
+          "duration" : 42108
+        }
+      } ]
+    },
+    "tags" : [ ]
+  },
+  "source" : "e04b460ca00bc162.json",
+  "parameterValues" : [ ]
+}

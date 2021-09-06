@@ -1,0 +1,67 @@
+{
+  "uid" : "8505592a75d28876",
+  "name" : "Buy all assets from the the pool",
+  "fullName" : "xyk-pallet - Buy assets tests: BuyAssets Errors:.Buy all assets from the the pool",
+  "historyId" : "6050aaf7611020722f7b4ed250987b21",
+  "time" : {
+    "start" : 1630909207214,
+    "stop" : 1630909297069,
+    "duration" : 89855
+  },
+  "description" : "",
+  "descriptionHtml" : "",
+  "status" : "passed",
+  "flaky" : false,
+  "newFailed" : false,
+  "beforeStages" : [ ],
+  "afterStages" : [ ],
+  "labels" : [ {
+    "name" : "suite",
+    "value" : "xyk-pallet - Buy assets tests: BuyAssets Errors:"
+  }, {
+    "name" : "testClass",
+    "value" : "xyk-pallet - Buy assets tests: BuyAssets Errors:"
+  }, {
+    "name" : "testMethod",
+    "value" : "Buy all assets from the the pool"
+  }, {
+    "name" : "package",
+    "value" : "xyk-pallet - Buy assets tests: BuyAssets Errors:"
+  }, {
+    "name" : "resultFormat",
+    "value" : "allure1"
+  } ],
+  "parameters" : [ ],
+  "links" : [ ],
+  "hidden" : false,
+  "retry" : false,
+  "extra" : {
+    "severity" : "normal",
+    "retries" : [ ],
+    "categories" : [ ],
+    "history" : {
+      "statistic" : {
+        "failed" : 1,
+        "broken" : 0,
+        "skipped" : 0,
+        "passed" : 1,
+        "unknown" : 0,
+        "total" : 2
+      },
+      "items" : [ {
+        "uid" : "6e93531315014ca",
+        "reportUrl" : "https://mangata-finance.github.io/mangata-e2e/265//#testresult/6e93531315014ca",
+        "status" : "failed",
+        "statusDetails" : "Error: Failed: \"W[2] timeout in - signAndWaitTx - \\\" + 5HQ9Mm9L1HG53htEGDMsnhkkL7hEfF9vLstEQPtMLX5Gupqx + \\\" - \\\" + 30 + \\\" - \\\" + {\\\"isSigned\\\":true,\\\"method\\\":{\\\"args\\\":[{\\\"args\\\":[\\\"5HNiMoQpRpaEKeAikzYhRS8Kk1vghiPQ4LPWLKc1EGkg42GA\\\",\\\"250.0000 nUnit\\\"],\\\"method\\\":\\\"create\\\",\\\"section\\\":\\\"tokens\\\"}],\\\"method\\\":\\\"sudo\\\",\\\"section\\\":\\\"sudo\\\"},\\\"era\\\":{\\\"MortalEra\\\":{\\\"period\\\":\\\"64\\\",\\\"phase\\\":\\\"12\\\"}},\\\"nonce\\\":\\\"30\\\",\\\"signature\\\":\\\"0x9e2adcf038af332c5f17bec392142d30a85f119619b669c26bb62f595f91a07833774cc9edd0daa70dcd228c6357de714f628fe81ee1224e055f0f8f402ccf8c\\\",\\\"signer\\\":\\\"5HQ9Mm9L1HG53htEGDMsnhkkL7hEfF9vLstEQPtMLX5Gupqx\\\",\\\"tip\\\":\\\"0\\\"}\"",
+        "time" : {
+          "start" : 1630908206394,
+          "stop" : 1630908248480,
+          "duration" : 42086
+        }
+      } ]
+    },
+    "tags" : [ ]
+  },
+  "source" : "8505592a75d28876.json",
+  "parameterValues" : [ ]
+}

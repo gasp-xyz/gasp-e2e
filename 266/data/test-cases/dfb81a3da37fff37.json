@@ -1,0 +1,67 @@
+{
+  "uid" : "dfb81a3da37fff37",
+  "name" : "xyk-pallet - Liqudity : Burn part of the liquidity",
+  "fullName" : "test/parallel/xyk-pallet.liquidity.test.ts.xyk-pallet - Liqudity : Burn part of the liquidity",
+  "historyId" : "83f526f2d0082c3729a71752c9cf7948",
+  "time" : {
+    "start" : 1630909028086,
+    "stop" : 1630909117384,
+    "duration" : 89298
+  },
+  "description" : "",
+  "descriptionHtml" : "",
+  "status" : "passed",
+  "flaky" : false,
+  "newFailed" : false,
+  "beforeStages" : [ ],
+  "afterStages" : [ ],
+  "labels" : [ {
+    "name" : "suite",
+    "value" : "test/parallel/xyk-pallet.liquidity.test.ts"
+  }, {
+    "name" : "testClass",
+    "value" : "test/parallel/xyk-pallet.liquidity.test.ts"
+  }, {
+    "name" : "testMethod",
+    "value" : "xyk-pallet - Liqudity : Burn part of the liquidity"
+  }, {
+    "name" : "package",
+    "value" : "test/parallel/xyk-pallet.liquidity.test.ts"
+  }, {
+    "name" : "resultFormat",
+    "value" : "allure1"
+  } ],
+  "parameters" : [ ],
+  "links" : [ ],
+  "hidden" : false,
+  "retry" : false,
+  "extra" : {
+    "severity" : "normal",
+    "retries" : [ ],
+    "categories" : [ ],
+    "history" : {
+      "statistic" : {
+        "failed" : 1,
+        "broken" : 0,
+        "skipped" : 0,
+        "passed" : 1,
+        "unknown" : 0,
+        "total" : 2
+      },
+      "items" : [ {
+        "uid" : "98e72c1f485da562",
+        "reportUrl" : "https://mangata-finance.github.io/mangata-e2e/265//#testresult/98e72c1f485da562",
+        "status" : "failed",
+        "statusDetails" : "Error: Failed: \"W[6] timeout in - signAndWaitTx - \\\" + 5HQ9Mm9L1HG53htEGDMsnhkkL7hEfF9vLstEQPtMLX5Gupqx + \\\" - \\\" + 19 + \\\" - \\\" + {\\\"isSigned\\\":true,\\\"method\\\":{\\\"args\\\":[{\\\"args\\\":[\\\"0\\\",\\\"5HQiCGLe7Qk2PTKNLcJQFDe5RwVviR4wAKaF51dqeHAMN1iC\\\",\\\"100.0000 mUnit\\\"],\\\"method\\\":\\\"mint\\\",\\\"section\\\":\\\"tokens\\\"}],\\\"method\\\":\\\"sudo\\\",\\\"section\\\":\\\"sudo\\\"},\\\"era\\\":{\\\"MortalEra\\\":{\\\"period\\\":\\\"64\\\",\\\"phase\\\":\\\"8\\\"}},\\\"nonce\\\":\\\"19\\\",\\\"signature\\\":\\\"0xb8fb98012dedd81a99e9bdb07e880a08f51fe87a974b3d92fca3cb17b0bba953db04255fffd45c1e89d4c52eca4ffd9054552ff8cdd9a2dbcafd750aa716f188\\\",\\\"signer\\\":\\\"5HQ9Mm9L1HG53htEGDMsnhkkL7hEfF9vLstEQPtMLX5Gupqx\\\",\\\"tip\\\":\\\"0\\\"}\"",
+        "time" : {
+          "start" : 1630908078099,
+          "stop" : 1630908168536,
+          "duration" : 90437
+        }
+      } ]
+    },
+    "tags" : [ ]
+  },
+  "source" : "dfb81a3da37fff37.json",
+  "parameterValues" : [ ]
+}
