@@ -11,3 +11,4 @@ reports/testLog.log
 test/exploratory/testPad.ts
 allure-results/*.xml
 reports/html-report/report.html
+reports/*

@@ -12,7 +12,7 @@ import { Mangata } from "../../utils/frontend/pages/Mangata";
 import { DriverBuilder } from "../../utils/frontend/utils/Driver";
 import {
   setupAllExtensions,
-  takeScreenshot,
+  addExtraLogs,
 } from "../../utils/frontend/utils/Helper";
 import { createPool } from "../../utils/tx";
 import { getEventResultFromTxWait } from "../../utils/txHandler";
@@ -101,7 +101,7 @@ describe("UI tests - Get Tokens from Faucet", () => {
 
   afterEach(async () => {
     const session = await driver.getSession();
-    await takeScreenshot(
+    await addExtraLogs(
       driver,
       expect.getState().currentTestName + " - " + session
     );

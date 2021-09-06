@@ -1,4 +1,4 @@
-import { WebDriver } from "selenium-webdriver";
+import { logging, WebDriver } from "selenium-webdriver";
 import { sleep } from "../../utils";
 import { Mangata } from "../pages/Mangata";
 import { MetaMask } from "../pages/MetaMask";
@@ -15,7 +15,7 @@ export async function waitForElement(driver: WebDriver, xpath: string) {
 export async function clickElement(driver: WebDriver, xpath: string) {
   await waitForElement(driver, xpath);
   const element = await driver.findElement(By.xpath(xpath));
-  await driver.wait(until.elementIsVisible(element), 10000);
+  await driver.wait(until.elementIsVisible(element), 20000);
   await sleep(1000);
   await element.click();
 }
@@ -50,13 +50,26 @@ export async function leaveOnlyOneTab(driver: WebDriver) {
   }
 }
 
-export async function takeScreenshot(driver: WebDriver, testName = "") {
+export async function addExtraLogs(driver: WebDriver, testName = "") {
+  const outputPath = `reports/artifacts`;
+  [logging.Type.BROWSER, logging.Type.DRIVER].forEach(async (value) => {
+    await driver
+      .manage()
+      .logs()
+      .get(value)
+      .then(function (entries) {
+        entries.forEach(function (entry) {
+          const logLine = `[${entry.level.name}] ${entry.message}`;
+          fs.appendFileSync(
+            `${outputPath}/log_${value}_${testName}.txt`,
+            logLine
+          );
+        });
+      });
+  });
+
   const img = await driver.takeScreenshot();
-  fs.writeFileSync(
-    `reports/artifacts/screenshot_${testName}.png`,
-    img,
-    "base64"
-  );
+  fs.writeFileSync(`${outputPath}/screenshot_${testName}.png`, img, "base64");
 }
 
 export async function getAccountJSON() {
