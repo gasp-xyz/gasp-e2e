@@ -1,0 +1,26 @@
+{
+  "uid" : "4b4757e66a1912dae1a509f688f20b0f",
+  "children" : [ {
+    "name" : "Product defects",
+    "children" : [ {
+      "name" : "TimeoutError: Waiting for element to be located By(xpath, //button[text()='Connect'])\n                Wait timed out after 10178ms",
+      "children" : [ {
+        "name" : "As a User I get the right values for Pool investment",
+        "uid" : "6e1898334606cea7",
+        "parentUid" : "8f7e255761fc7278d8521d04c0b1409b",
+        "status" : "failed",
+        "time" : {
+          "start" : 1630925543443,
+          "stop" : 1630925544092,
+          "duration" : 649
+        },
+        "flaky" : true,
+        "newFailed" : false,
+        "parameters" : [ ]
+      } ],
+      "uid" : "8f7e255761fc7278d8521d04c0b1409b"
+    } ],
+    "uid" : "8fb3a91ba5aaf9de24cc8a92edc82b5d"
+  } ],
+  "name" : "categories"
+}
