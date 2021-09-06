@@ -11,7 +11,7 @@ on:
           required: false
           default: 'test-ci'
         environment:
-          description: 'Generate new Docker image'
+          description: 'Environment to run the job'
           required: false
           default: 'staging'
       # For manually trigger
@@ -28,7 +28,10 @@ jobs:
       - name: Repository Dispatch
         uses: peter-evans/repository-dispatch@v1
         with:
-          token: ${{ secrets.GITHUB_TOKEN }}
+          token: ${{ secrets.PAT_TRIGGER_JOB }}
           repository: ${{ matrix.repo }}
           event-type: run-ci
           client-payload: '{"scriptName": "${{ github.event.inputs.scriptName }}", "environment": "${{ github.event.inputs.environment }}"}'
+
+
+          run-ci
