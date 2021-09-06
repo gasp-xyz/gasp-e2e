@@ -1,0 +1,1344 @@
+{
+  "uid" : "4b4757e66a1912dae1a509f688f20b0f",
+  "children" : [ {
+    "name" : "Product defects",
+    "children" : [ {
+      "name" : "Error: Failed: \"W[1] timeout in - signAndWaitTx - \\\" + 5HQ9Mm9L1HG53htEGDMsnhkkL7hEfF9vLstEQPtMLX5Gupqx + \\\" - \\\" + 15 + \\\" - \\\" + {\\\"isSigned\\\":true,\\\"method\\\":{\\\"args\\\":[{\\\"args\\\":[\\\"0\\\",\\\"5G9BiC12spCoFypyh75hjzTdEhMvESEZYcGuPXVkFczMYYxw\\\",\\\"100.0000 mUnit\\\"],\\\"method\\\":\\\"mint\\\",\\\"section\\\":\\\"tokens\\\"}],\\\"method\\\":\\\"sudo\\\",\\\"section\\\":\\\"sudo\\\"},\\\"era\\\":{\\\"MortalEra\\\":{\\\"period\\\":\\\"64\\\",\\\"phase\\\":\\\"8\\\"}},\\\"nonce\\\":\\\"15\\\",\\\"signature\\\":\\\"0x78cab194725bd180830d3f6cd1f392b31beb61c97e00fbd5f13389f1dd6d880355798c0c6372ea3eb8acf773c5ae5826ccae6afa386388469d0914478a9e1184\\\",\\\"signer\\\":\\\"5HQ9Mm9L1HG53htEGDMsnhkkL7hEfF9vLstEQPtMLX5Gupqx\\\",\\\"tip\\\":\\\"0\\\"}\"",
+      "children" : [ {
+        "name" : "Create pool of [MAX,MAX]: OverFlow [a+b] - liquidityAsset calculation",
+        "uid" : "6a5f8be4204f7965",
+        "parentUid" : "8d516593e22064c10eeacfd4e3f4068e",
+        "status" : "failed",
+        "time" : {
+          "start" : 1630908075204,
+          "stop" : 1630908205855,
+          "duration" : 130651
+        },
+        "flaky" : false,
+        "newFailed" : false,
+        "parameters" : [ ]
+      } ],
+      "uid" : "8d516593e22064c10eeacfd4e3f4068e"
+    }, {
+      "name" : "Error: Failed: \"W[7] timeout in - signAndWaitTx - \\\" + 5HQ9Mm9L1HG53htEGDMsnhkkL7hEfF9vLstEQPtMLX5Gupqx + \\\" - \\\" + 17 + \\\" - \\\" + {\\\"isSigned\\\":true,\\\"method\\\":{\\\"args\\\":[{\\\"args\\\":[\\\"0\\\",\\\"5Ew1Zy6bxfx1nqnP5jJD2aX6mFDeztm1kYZeMWmNR6BDfqCL\\\",\\\"100.0000 mUnit\\\"],\\\"method\\\":\\\"mint\\\",\\\"section\\\":\\\"tokens\\\"}],\\\"method\\\":\\\"sudo\\\",\\\"section\\\":\\\"sudo\\\"},\\\"era\\\":{\\\"MortalEra\\\":{\\\"period\\\":\\\"64\\\",\\\"phase\\\":\\\"8\\\"}},\\\"nonce\\\":\\\"17\\\",\\\"signature\\\":\\\"0x380eb05a775feec800becaa82ebd2ac529edd05a9e81459b33b7e63d64bfe4198661acd6fca15752d2eb2bc9075f7b1b3242220396a6becdde31c9cd842eb78e\\\",\\\"signer\\\":\\\"5HQ9Mm9L1HG53htEGDMsnhkkL7hEfF9vLstEQPtMLX5Gupqx\\\",\\\"tip\\\":\\\"0\\\"}\"",
+      "children" : [ {
+        "name" : "Get affected after a transaction that devaluates X wallet & destroy the pool",
+        "uid" : "a0281fc25ec0517e",
+        "parentUid" : "1a4f70508b882bc7bfd8a6c3c6c3055f",
+        "status" : "failed",
+        "time" : {
+          "start" : 1630908078001,
+          "stop" : 1630908161148,
+          "duration" : 83147
+        },
+        "flaky" : false,
+        "newFailed" : false,
+        "parameters" : [ ]
+      } ],
+      "uid" : "1a4f70508b882bc7bfd8a6c3c6c3055f"
+    }, {
+      "name" : "Error: Failed: \"W[3] timeout in - signAndWaitTx - \\\" + 5HQ9Mm9L1HG53htEGDMsnhkkL7hEfF9vLstEQPtMLX5Gupqx + \\\" - \\\" + 18 + \\\" - \\\" + {\\\"isSigned\\\":true,\\\"method\\\":{\\\"args\\\":[{\\\"args\\\":[\\\"5EZR8wGoLPPGD2hjJusHiZ9cmGb8ip175gDw9gPx3cGWapGz\\\",\\\"250.0000 nUnit\\\"],\\\"method\\\":\\\"create\\\",\\\"section\\\":\\\"tokens\\\"}],\\\"method\\\":\\\"sudo\\\",\\\"section\\\":\\\"sudo\\\"},\\\"era\\\":{\\\"MortalEra\\\":{\\\"period\\\":\\\"64\\\",\\\"phase\\\":\\\"8\\\"}},\\\"nonce\\\":\\\"18\\\",\\\"signature\\\":\\\"0xc2433e6b1fe714dc239a377338df6b5e79370d7a81428a888d769a5ca96cf63945a54f794c678a22ebe9aca8c32d6807917c88e85128a5bc98ce36818c281481\\\",\\\"signer\\\":\\\"5HQ9Mm9L1HG53htEGDMsnhkkL7hEfF9vLstEQPtMLX5Gupqx\\\",\\\"tip\\\":\\\"0\\\"}\"",
+      "children" : [ {
+        "name" : "Sell assets that does not belong to any pool",
+        "uid" : "8003a35498e308c2",
+        "parentUid" : "79eece40ace2aac94e68b8eae1cd1148",
+        "status" : "failed",
+        "time" : {
+          "start" : 1630908078024,
+          "stop" : 1630908161148,
+          "duration" : 83124
+        },
+        "flaky" : false,
+        "newFailed" : false,
+        "parameters" : [ ]
+      } ],
+      "uid" : "79eece40ace2aac94e68b8eae1cd1148"
+    }, {
+      "name" : "Error: Failed: \"W[4] timeout in - signAndWaitTx - \\\" + 5HQ9Mm9L1HG53htEGDMsnhkkL7hEfF9vLstEQPtMLX5Gupqx + \\\" - \\\" + 14 + \\\" - \\\" + {\\\"isSigned\\\":true,\\\"method\\\":{\\\"args\\\":[{\\\"args\\\":[\\\"5CRmBEuFVY9B3dwnbXFN8icXFZreieaYZfzoxPjGKfGpurNA\\\",\\\"250.0010 nUnit\\\"],\\\"method\\\":\\\"create\\\",\\\"section\\\":\\\"tokens\\\"}],\\\"method\\\":\\\"sudo\\\",\\\"section\\\":\\\"sudo\\\"},\\\"era\\\":{\\\"MortalEra\\\":{\\\"period\\\":\\\"64\\\",\\\"phase\\\":\\\"8\\\"}},\\\"nonce\\\":\\\"14\\\",\\\"signature\\\":\\\"0x4240da29bf740fb4f87fe25ed5c51a9e638de248af630eb3d970faeaf7aa815bec98dddb8c3cda2c3d595f9f0e761582d1159cf3e039ea0c5ae1f34bb668da80\\\",\\\"signer\\\":\\\"5HQ9Mm9L1HG53htEGDMsnhkkL7hEfF9vLstEQPtMLX5Gupqx\\\",\\\"tip\\\":\\\"0\\\"}\"",
+      "children" : [ {
+        "name" : "Mint liquidity when not enough assetY for minting Xamount",
+        "uid" : "b126f0aeadfe3ce8",
+        "parentUid" : "81ff50ce0f7ff9c60ee3802dd9d4a938",
+        "status" : "failed",
+        "time" : {
+          "start" : 1630908078064,
+          "stop" : 1630908161148,
+          "duration" : 83084
+        },
+        "flaky" : false,
+        "newFailed" : false,
+        "parameters" : [ ]
+      } ],
+      "uid" : "81ff50ce0f7ff9c60ee3802dd9d4a938"
+    }, {
+      "name" : "Error: Failed: \"W[6] timeout in - signAndWaitTx - \\\" + 5HQ9Mm9L1HG53htEGDMsnhkkL7hEfF9vLstEQPtMLX5Gupqx + \\\" - \\\" + 19 + \\\" - \\\" + {\\\"isSigned\\\":true,\\\"method\\\":{\\\"args\\\":[{\\\"args\\\":[\\\"0\\\",\\\"5HQiCGLe7Qk2PTKNLcJQFDe5RwVviR4wAKaF51dqeHAMN1iC\\\",\\\"100.0000 mUnit\\\"],\\\"method\\\":\\\"mint\\\",\\\"section\\\":\\\"tokens\\\"}],\\\"method\\\":\\\"sudo\\\",\\\"section\\\":\\\"sudo\\\"},\\\"era\\\":{\\\"MortalEra\\\":{\\\"period\\\":\\\"64\\\",\\\"phase\\\":\\\"8\\\"}},\\\"nonce\\\":\\\"19\\\",\\\"signature\\\":\\\"0xb8fb98012dedd81a99e9bdb07e880a08f51fe87a974b3d92fca3cb17b0bba953db04255fffd45c1e89d4c52eca4ffd9054552ff8cdd9a2dbcafd750aa716f188\\\",\\\"signer\\\":\\\"5HQ9Mm9L1HG53htEGDMsnhkkL7hEfF9vLstEQPtMLX5Gupqx\\\",\\\"tip\\\":\\\"0\\\"}\"",
+      "children" : [ {
+        "name" : "xyk-pallet - Liqudity : Burn part of the liquidity",
+        "uid" : "98e72c1f485da562",
+        "parentUid" : "1eeffde22e62107becb25787590f7734",
+        "status" : "failed",
+        "time" : {
+          "start" : 1630908078099,
+          "stop" : 1630908168536,
+          "duration" : 90437
+        },
+        "flaky" : false,
+        "newFailed" : false,
+        "parameters" : [ ]
+      } ],
+      "uid" : "1eeffde22e62107becb25787590f7734"
+    }, {
+      "name" : "Error: Failed: \"W[2] timeout in - signAndWaitTx - \\\" + 5HQ9Mm9L1HG53htEGDMsnhkkL7hEfF9vLstEQPtMLX5Gupqx + \\\" - \\\" + 16 + \\\" - \\\" + {\\\"isSigned\\\":true,\\\"method\\\":{\\\"args\\\":[{\\\"args\\\":[\\\"5F4WyAVtVCLA53Xh7ksHz9iEqfRahQQVXY7QXPtHR3Mti43s\\\",\\\"250.0000 nUnit\\\"],\\\"method\\\":\\\"create\\\",\\\"section\\\":\\\"tokens\\\"}],\\\"method\\\":\\\"sudo\\\",\\\"section\\\":\\\"sudo\\\"},\\\"era\\\":{\\\"MortalEra\\\":{\\\"period\\\":\\\"64\\\",\\\"phase\\\":\\\"8\\\"}},\\\"nonce\\\":\\\"16\\\",\\\"signature\\\":\\\"0x608f8005f1ac768bfec0a980d2a966d011fdd912e4ad2aafd84b80a023d4414848044361d5970dca9d89c3b1c28e92401b0206f81dfefac33a74b1c89255e18d\\\",\\\"signer\\\":\\\"5HQ9Mm9L1HG53htEGDMsnhkkL7hEfF9vLstEQPtMLX5Gupqx\\\",\\\"tip\\\":\\\"0\\\"}\"",
+      "children" : [ {
+        "name" : "Buy assets that does not belong to any pool",
+        "uid" : "b6955dd597b8843",
+        "parentUid" : "0970f5b83c49ee433417bfe537ca3568",
+        "status" : "failed",
+        "time" : {
+          "start" : 1630908078143,
+          "stop" : 1630908161148,
+          "duration" : 83005
+        },
+        "flaky" : false,
+        "newFailed" : false,
+        "parameters" : [ ]
+      } ],
+      "uid" : "0970f5b83c49ee433417bfe537ca3568"
+    }, {
+      "name" : "Error: Failed: \"W[5] timeout in - signAndWaitTx - \\\" + 5HQ9Mm9L1HG53htEGDMsnhkkL7hEfF9vLstEQPtMLX5Gupqx + \\\" - \\\" + 20 + \\\" - \\\" + {\\\"isSigned\\\":true,\\\"method\\\":{\\\"args\\\":[{\\\"args\\\":[\\\"0\\\",\\\"5HQ9i1k9YRJyDeawXPyLCFaksiAbU1CkqBmppAw5RqTeDA9j\\\",\\\"100.0000 mUnit\\\"],\\\"method\\\":\\\"mint\\\",\\\"section\\\":\\\"tokens\\\"}],\\\"method\\\":\\\"sudo\\\",\\\"section\\\":\\\"sudo\\\"},\\\"era\\\":{\\\"MortalEra\\\":{\\\"period\\\":\\\"64\\\",\\\"phase\\\":\\\"8\\\"}},\\\"nonce\\\":\\\"20\\\",\\\"signature\\\":\\\"0x961c9702a79fefa38015775a1e9602f9beb151db2b1096602762a0cbb1263d620096648f0bfb0f7a2c12c8b83a044ae3a9271e5920285b85f76b7e663c4ad580\\\",\\\"signer\\\":\\\"5HQ9Mm9L1HG53htEGDMsnhkkL7hEfF9vLstEQPtMLX5Gupqx\\\",\\\"tip\\\":\\\"0\\\"}\"",
+      "children" : [ {
+        "name" : "Create x-y and y-x pool",
+        "uid" : "2ff18930fba647a5",
+        "parentUid" : "c3b4fe75e3ae9904dad5ee7ea8180722",
+        "status" : "failed",
+        "time" : {
+          "start" : 1630908160867,
+          "stop" : 1630908172978,
+          "duration" : 12111
+        },
+        "flaky" : false,
+        "newFailed" : false,
+        "parameters" : [ ]
+      }, {
+        "name" : "Create pool with zero",
+        "uid" : "605d1234de4f546c",
+        "parentUid" : "c3b4fe75e3ae9904dad5ee7ea8180722",
+        "status" : "failed",
+        "time" : {
+          "start" : 1630908172978,
+          "stop" : 1630908215653,
+          "duration" : 42675
+        },
+        "flaky" : false,
+        "newFailed" : false,
+        "parameters" : [ ]
+      }, {
+        "name" : "Not enough assets",
+        "uid" : "88982af72f3b5aeb",
+        "parentUid" : "c3b4fe75e3ae9904dad5ee7ea8180722",
+        "status" : "failed",
+        "time" : {
+          "start" : 1630908215653,
+          "stop" : 1630908257761,
+          "duration" : 42108
+        },
+        "flaky" : false,
+        "newFailed" : false,
+        "parameters" : [ ]
+      } ],
+      "uid" : "c3b4fe75e3ae9904dad5ee7ea8180722"
+    }, {
+      "name" : "Error: Failed: \"W[4] timeout in - signAndWaitTx - \\\" + 5HQ9Mm9L1HG53htEGDMsnhkkL7hEfF9vLstEQPtMLX5Gupqx + \\\" - \\\" + 24 + \\\" - \\\" + {\\\"isSigned\\\":true,\\\"method\\\":{\\\"args\\\":[{\\\"args\\\":[\\\"0\\\",\\\"5GGtBBprqQ9kUSo7NjbmCV7w4G4MQKhrhzLdViv691nrmJxk\\\",\\\"100.0000 mUnit\\\"],\\\"method\\\":\\\"mint\\\",\\\"section\\\":\\\"tokens\\\"}],\\\"method\\\":\\\"sudo\\\",\\\"section\\\":\\\"sudo\\\"},\\\"era\\\":{\\\"MortalEra\\\":{\\\"period\\\":\\\"64\\\",\\\"phase\\\":\\\"9\\\"}},\\\"nonce\\\":\\\"24\\\",\\\"signature\\\":\\\"0x0643bd2a40e762bbcdb9d479e49fd5768f2387d1260f706538732330defb3b656e24246cb1014ec1b1675439bc193776fdbfbd326666ae52ae32454458099286\\\",\\\"signer\\\":\\\"5HQ9Mm9L1HG53htEGDMsnhkkL7hEfF9vLstEQPtMLX5Gupqx\\\",\\\"tip\\\":\\\"0\\\"}\"",
+      "children" : [ {
+        "name" : "Mint liquidity when not enough assetX for minting Yamount",
+        "uid" : "e9da3dc5a8869703",
+        "parentUid" : "151efdeeaef74ea0ccd5162e1b941c98",
+        "status" : "failed",
+        "time" : {
+          "start" : 1630908161148,
+          "stop" : 1630908248558,
+          "duration" : 87410
+        },
+        "flaky" : false,
+        "newFailed" : false,
+        "parameters" : [ ]
+      } ],
+      "uid" : "151efdeeaef74ea0ccd5162e1b941c98"
+    }, {
+      "name" : "Error: Failed: \"W[2] timeout in - signAndWaitTx - \\\" + 5HQ9Mm9L1HG53htEGDMsnhkkL7hEfF9vLstEQPtMLX5Gupqx + \\\" - \\\" + 25 + \\\" - \\\" + {\\\"isSigned\\\":true,\\\"method\\\":{\\\"args\\\":[{\\\"args\\\":[\\\"5FqXPfD1QXCHx9TxMbLwjvBzNMoAJfxR4ijvi6vArsrbx4Jx\\\",\\\"250.0000 nUnit\\\"],\\\"method\\\":\\\"create\\\",\\\"section\\\":\\\"tokens\\\"}],\\\"method\\\":\\\"sudo\\\",\\\"section\\\":\\\"sudo\\\"},\\\"era\\\":{\\\"MortalEra\\\":{\\\"period\\\":\\\"64\\\",\\\"phase\\\":\\\"9\\\"}},\\\"nonce\\\":\\\"25\\\",\\\"signature\\\":\\\"0x66469953ccc0130993a2404a67725d6e3cb370426384474463dcd3dbd6bf264799bbf2badd0e91a245388955b2b3f668895a9be62616594edf854a599d9be886\\\",\\\"signer\\\":\\\"5HQ9Mm9L1HG53htEGDMsnhkkL7hEfF9vLstEQPtMLX5Gupqx\\\",\\\"tip\\\":\\\"0\\\"}\"",
+      "children" : [ {
+        "name" : "Buy more assets than exists in the pool",
+        "uid" : "81dd4db6847be9e4",
+        "parentUid" : "a1d45d4d186451e854e42e5347587805",
+        "status" : "failed",
+        "time" : {
+          "start" : 1630908161148,
+          "stop" : 1630908206394,
+          "duration" : 45246
+        },
+        "flaky" : false,
+        "newFailed" : false,
+        "parameters" : [ ]
+      } ],
+      "uid" : "a1d45d4d186451e854e42e5347587805"
+    }, {
+      "name" : "Error: Failed: \"W[7] timeout in - signAndWaitTx - \\\" + 5HQ9Mm9L1HG53htEGDMsnhkkL7hEfF9vLstEQPtMLX5Gupqx + \\\" - \\\" + 23 + \\\" - \\\" + {\\\"isSigned\\\":true,\\\"method\\\":{\\\"args\\\":[{\\\"args\\\":[\\\"5CvjRX2tV1nsdnaC3HqeqKMBNUPcH85sSLUCJJWmSNTCqxAw\\\",\\\"250.0000 nUnit\\\"],\\\"method\\\":\\\"create\\\",\\\"section\\\":\\\"tokens\\\"}],\\\"method\\\":\\\"sudo\\\",\\\"section\\\":\\\"sudo\\\"},\\\"era\\\":{\\\"MortalEra\\\":{\\\"period\\\":\\\"64\\\",\\\"phase\\\":\\\"9\\\"}},\\\"nonce\\\":\\\"23\\\",\\\"signature\\\":\\\"0xe894f2592c475a9e55621309641058bc8851788f8edbce8118cc0d2a84c85e479cc0cf2453444d198c512fc7301bb24aaf717d7723e74f6902fb6356b2d4e087\\\",\\\"signer\\\":\\\"5HQ9Mm9L1HG53htEGDMsnhkkL7hEfF9vLstEQPtMLX5Gupqx\\\",\\\"tip\\\":\\\"0\\\"}\"",
+      "children" : [ {
+        "name" : "Burning liquidities provides Burn and settle",
+        "uid" : "4973e4f316e64af2",
+        "parentUid" : "211d7ef9a3369661691a602c52413400",
+        "status" : "failed",
+        "time" : {
+          "start" : 1630908161148,
+          "stop" : 1630908206111,
+          "duration" : 44963
+        },
+        "flaky" : false,
+        "newFailed" : false,
+        "parameters" : [ ]
+      } ],
+      "uid" : "211d7ef9a3369661691a602c52413400"
+    }, {
+      "name" : "Error: Failed: \"W[3] timeout in - signAndWaitTx - \\\" + 5HQ9Mm9L1HG53htEGDMsnhkkL7hEfF9vLstEQPtMLX5Gupqx + \\\" - \\\" + 22 + \\\" - \\\" + {\\\"isSigned\\\":true,\\\"method\\\":{\\\"args\\\":[{\\\"args\\\":[\\\"5E6yNCie6c88sv68LUxp4ayVf1aHvmj7psXXmmVyfdZJ48Fb\\\",\\\"250.0000 nUnit\\\"],\\\"method\\\":\\\"create\\\",\\\"section\\\":\\\"tokens\\\"}],\\\"method\\\":\\\"sudo\\\",\\\"section\\\":\\\"sudo\\\"},\\\"era\\\":{\\\"MortalEra\\\":{\\\"period\\\":\\\"64\\\",\\\"phase\\\":\\\"9\\\"}},\\\"nonce\\\":\\\"22\\\",\\\"signature\\\":\\\"0xa63653d5a1e172e859c2192a5f4f799178815de53901dfbcc26dfe8ad8e9713af711137073c28d3e4914cb28b27d05e5049db7649effb2417dfd6162ea599a85\\\",\\\"signer\\\":\\\"5HQ9Mm9L1HG53htEGDMsnhkkL7hEfF9vLstEQPtMLX5Gupqx\\\",\\\"tip\\\":\\\"0\\\"}\"",
+      "children" : [ {
+        "name" : "Try sell more assets than owned",
+        "uid" : "4f92c5fdd546e02e",
+        "parentUid" : "d50296fe4d6287705bd25ee468e11bbd",
+        "status" : "failed",
+        "time" : {
+          "start" : 1630908161148,
+          "stop" : 1630908205899,
+          "duration" : 44751
+        },
+        "flaky" : false,
+        "newFailed" : false,
+        "parameters" : [ ]
+      } ],
+      "uid" : "d50296fe4d6287705bd25ee468e11bbd"
+    }, {
+      "name" : "Error: Failed: \"W[6] timeout in - signAndWaitTx - \\\" + 5HQ9Mm9L1HG53htEGDMsnhkkL7hEfF9vLstEQPtMLX5Gupqx + \\\" - \\\" + 26 + \\\" - \\\" + {\\\"isSigned\\\":true,\\\"method\\\":{\\\"args\\\":[{\\\"args\\\":[\\\"5C8J8BUkAEgkhTwJzjqRqxUn4Go4soRHrpQHmmGwaikpZga2\\\",\\\"250.0000 nUnit\\\"],\\\"method\\\":\\\"create\\\",\\\"section\\\":\\\"tokens\\\"}],\\\"method\\\":\\\"sudo\\\",\\\"section\\\":\\\"sudo\\\"},\\\"era\\\":{\\\"MortalEra\\\":{\\\"period\\\":\\\"64\\\",\\\"phase\\\":\\\"10\\\"}},\\\"nonce\\\":\\\"26\\\",\\\"signature\\\":\\\"0x88d5e0541fd373deff59559b428701f93ce416cc93d4fe59adfa7a3eddc79160979791c54ea98f2c7d7035127d49ddb75272d89683babc298130e3b14031598a\\\",\\\"signer\\\":\\\"5HQ9Mm9L1HG53htEGDMsnhkkL7hEfF9vLstEQPtMLX5Gupqx\\\",\\\"tip\\\":\\\"0\\\"}\"",
+      "children" : [ {
+        "name" : "xyk-pallet - Liqudity : Burn all the liquidity",
+        "uid" : "f5fd1a7bacb82465",
+        "parentUid" : "df6dbfd5d72206ec116fb56dc64c305b",
+        "status" : "failed",
+        "time" : {
+          "start" : 1630908169490,
+          "stop" : 1630908215011,
+          "duration" : 45521
+        },
+        "flaky" : false,
+        "newFailed" : false,
+        "parameters" : [ ]
+      } ],
+      "uid" : "df6dbfd5d72206ec116fb56dc64c305b"
+    }, {
+      "name" : "Error: Failed: \"W[1] timeout in - signAndWaitTx - \\\" + 5HQ9Mm9L1HG53htEGDMsnhkkL7hEfF9vLstEQPtMLX5Gupqx + \\\" - \\\" + 27 + \\\" - \\\" + {\\\"isSigned\\\":true,\\\"method\\\":{\\\"args\\\":[{\\\"args\\\":[\\\"5FvmdX9ZyuGGa18rqkc1N4LZgZJHyPkF1GPpuHddxd9t75py\\\",\\\"everything\\\"],\\\"method\\\":\\\"create\\\",\\\"section\\\":\\\"tokens\\\"}],\\\"method\\\":\\\"sudo\\\",\\\"section\\\":\\\"sudo\\\"},\\\"era\\\":{\\\"MortalEra\\\":{\\\"period\\\":\\\"64\\\",\\\"phase\\\":\\\"12\\\"}},\\\"nonce\\\":\\\"27\\\",\\\"signature\\\":\\\"0x44cd8f6a81ff9cfdcb446de25f861d3d13921024423d73b59373407f75bae3252feadfb31b39bf17275d7797675f8ab30c72a7f3f3d23223816f0d7b4293d385\\\",\\\"signer\\\":\\\"5HQ9Mm9L1HG53htEGDMsnhkkL7hEfF9vLstEQPtMLX5Gupqx\\\",\\\"tip\\\":\\\"0\\\"}\"",
+      "children" : [ {
+        "name" : "Transfer [MAX] assets to other user when that user has 1 asset. Max+1 => overflow.",
+        "uid" : "1a1fe4e42f62d332",
+        "parentUid" : "5b80d9a6f9889394f41ddb0f6a011028",
+        "status" : "failed",
+        "time" : {
+          "start" : 1630908205855,
+          "stop" : 1630908289988,
+          "duration" : 84133
+        },
+        "flaky" : false,
+        "newFailed" : false,
+        "parameters" : [ ]
+      } ],
+      "uid" : "5b80d9a6f9889394f41ddb0f6a011028"
+    }, {
+      "name" : "Error: Failed: \"W[3] timeout in - signAndWaitTx - \\\" + 5HQ9Mm9L1HG53htEGDMsnhkkL7hEfF9vLstEQPtMLX5Gupqx + \\\" - \\\" + 28 + \\\" - \\\" + {\\\"isSigned\\\":true,\\\"method\\\":{\\\"args\\\":[{\\\"args\\\":[\\\"5DvozyDWX8Kyri3eo1w41JMFSpKXeUDLT9MgVmPuiP6Pxj2d\\\",\\\"250.0000 nUnit\\\"],\\\"method\\\":\\\"create\\\",\\\"section\\\":\\\"tokens\\\"}],\\\"method\\\":\\\"sudo\\\",\\\"section\\\":\\\"sudo\\\"},\\\"era\\\":{\\\"MortalEra\\\":{\\\"period\\\":\\\"64\\\",\\\"phase\\\":\\\"12\\\"}},\\\"nonce\\\":\\\"28\\\",\\\"signature\\\":\\\"0xd6119a54c9c7788bbc516c473c4e38476159be5d292b50b3aec78bfbfbf857155a6cff9f9bbddd428145e5378efea89a0ce9a69bb3ff2bc2fba1c6a043e7a885\\\",\\\"signer\\\":\\\"5HQ9Mm9L1HG53htEGDMsnhkkL7hEfF9vLstEQPtMLX5Gupqx\\\",\\\"tip\\\":\\\"0\\\"}\"",
+      "children" : [ {
+        "name" : "Sell assets with a high expectation: limit +1",
+        "uid" : "ce992fb6775af8f1",
+        "parentUid" : "0f826631a2ef560a04a84e994c40f180",
+        "status" : "failed",
+        "time" : {
+          "start" : 1630908205899,
+          "stop" : 1630908247971,
+          "duration" : 42072
+        },
+        "flaky" : false,
+        "newFailed" : false,
+        "parameters" : [ ]
+      } ],
+      "uid" : "0f826631a2ef560a04a84e994c40f180"
+    }, {
+      "name" : "Error: Failed: \"W[7] timeout in - signAndWaitTx - \\\" + 5HQ9Mm9L1HG53htEGDMsnhkkL7hEfF9vLstEQPtMLX5Gupqx + \\\" - \\\" + 29 + \\\" - \\\" + {\\\"isSigned\\\":true,\\\"method\\\":{\\\"args\\\":[{\\\"args\\\":[\\\"5CSMZpEzV6yf3s57tJHa5zVxPcL7UuWwb5JpDDKTCdnB1rU4\\\",\\\"250.0000 nUnit\\\"],\\\"method\\\":\\\"create\\\",\\\"section\\\":\\\"tokens\\\"}],\\\"method\\\":\\\"sudo\\\",\\\"section\\\":\\\"sudo\\\"},\\\"era\\\":{\\\"MortalEra\\\":{\\\"period\\\":\\\"64\\\",\\\"phase\\\":\\\"12\\\"}},\\\"nonce\\\":\\\"29\\\",\\\"signature\\\":\\\"0xf2376a909a5f8972052acda08cdfe752c1eb6c4d0959bdfef6be0a3655c4e64587b27810c9f940c3cf999e6a2f441e157221b84546f84a552c23d5b8a3cd2b8d\\\",\\\"signer\\\":\\\"5HQ9Mm9L1HG53htEGDMsnhkkL7hEfF9vLstEQPtMLX5Gupqx\\\",\\\"tip\\\":\\\"0\\\"}\"",
+      "children" : [ {
+        "name" : "Burning liquidities generates a Liquidity burned event",
+        "uid" : "3df8bf24a6247351",
+        "parentUid" : "76ac0f0879f8905accbce91448ec5ff7",
+        "status" : "failed",
+        "time" : {
+          "start" : 1630908206111,
+          "stop" : 1630908248209,
+          "duration" : 42098
+        },
+        "flaky" : false,
+        "newFailed" : false,
+        "parameters" : [ ]
+      } ],
+      "uid" : "76ac0f0879f8905accbce91448ec5ff7"
+    }, {
+      "name" : "Error: Failed: \"W[2] timeout in - signAndWaitTx - \\\" + 5HQ9Mm9L1HG53htEGDMsnhkkL7hEfF9vLstEQPtMLX5Gupqx + \\\" - \\\" + 30 + \\\" - \\\" + {\\\"isSigned\\\":true,\\\"method\\\":{\\\"args\\\":[{\\\"args\\\":[\\\"5HNiMoQpRpaEKeAikzYhRS8Kk1vghiPQ4LPWLKc1EGkg42GA\\\",\\\"250.0000 nUnit\\\"],\\\"method\\\":\\\"create\\\",\\\"section\\\":\\\"tokens\\\"}],\\\"method\\\":\\\"sudo\\\",\\\"section\\\":\\\"sudo\\\"},\\\"era\\\":{\\\"MortalEra\\\":{\\\"period\\\":\\\"64\\\",\\\"phase\\\":\\\"12\\\"}},\\\"nonce\\\":\\\"30\\\",\\\"signature\\\":\\\"0x9e2adcf038af332c5f17bec392142d30a85f119619b669c26bb62f595f91a07833774cc9edd0daa70dcd228c6357de714f628fe81ee1224e055f0f8f402ccf8c\\\",\\\"signer\\\":\\\"5HQ9Mm9L1HG53htEGDMsnhkkL7hEfF9vLstEQPtMLX5Gupqx\\\",\\\"tip\\\":\\\"0\\\"}\"",
+      "children" : [ {
+        "name" : "Buy all assets from the the pool",
+        "uid" : "6e93531315014ca",
+        "parentUid" : "f94e460e816ecc43d8147daed28fa7bd",
+        "status" : "failed",
+        "time" : {
+          "start" : 1630908206394,
+          "stop" : 1630908248480,
+          "duration" : 42086
+        },
+        "flaky" : false,
+        "newFailed" : false,
+        "parameters" : [ ]
+      } ],
+      "uid" : "f94e460e816ecc43d8147daed28fa7bd"
+    }, {
+      "name" : "Error: Failed: \"W[6] timeout in - signAndWaitTx - \\\" + 5HQ9Mm9L1HG53htEGDMsnhkkL7hEfF9vLstEQPtMLX5Gupqx + \\\" - \\\" + 32 + \\\" - \\\" + {\\\"isSigned\\\":true,\\\"method\\\":{\\\"args\\\":[{\\\"args\\\":[\\\"5FCn8mNPH9RFQ5j8k7K2MJBZ8ddUNfHfUtXNg6rHCUsDmbnt\\\",\\\"250.0000 nUnit\\\"],\\\"method\\\":\\\"create\\\",\\\"section\\\":\\\"tokens\\\"}],\\\"method\\\":\\\"sudo\\\",\\\"section\\\":\\\"sudo\\\"},\\\"era\\\":{\\\"MortalEra\\\":{\\\"period\\\":\\\"64\\\",\\\"phase\\\":\\\"12\\\"}},\\\"nonce\\\":\\\"32\\\",\\\"signature\\\":\\\"0xbe5840fd1b44d28cec24dfeaa653fbe14eac7d760a9cc9fde196774fbb22d9103bfa4aae8d8cb0dcbc6c66737fa5c6d7bfcf86d4003dc4b2c771cdf596845f89\\\",\\\"signer\\\":\\\"5HQ9Mm9L1HG53htEGDMsnhkkL7hEfF9vLstEQPtMLX5Gupqx\\\",\\\"tip\\\":\\\"0\\\"}\"",
+      "children" : [ {
+        "name" : "xyk-pallet - LiquidityOperation: mintLiquidity",
+        "uid" : "f760c354995bb158",
+        "parentUid" : "1f5e85fc4371550c52e4233b2013e2ba",
+        "status" : "failed",
+        "time" : {
+          "start" : 1630908215011,
+          "stop" : 1630908257223,
+          "duration" : 42212
+        },
+        "flaky" : false,
+        "newFailed" : false,
+        "parameters" : [ ]
+      } ],
+      "uid" : "1f5e85fc4371550c52e4233b2013e2ba"
+    }, {
+      "name" : "Error: Failed: \"W[3] timeout in - signAndWaitTx - \\\" + 5HQ9Mm9L1HG53htEGDMsnhkkL7hEfF9vLstEQPtMLX5Gupqx + \\\" - \\\" + 35 + \\\" - \\\" + {\\\"isSigned\\\":true,\\\"method\\\":{\\\"args\\\":[{\\\"args\\\":[\\\"5G8icJkbK8NkyJ98SM5gDgiBCz2uPVT1Fso2HUWZ63NSW6mB\\\",\\\"250.0000 nUnit\\\"],\\\"method\\\":\\\"create\\\",\\\"section\\\":\\\"tokens\\\"}],\\\"method\\\":\\\"sudo\\\",\\\"section\\\":\\\"sudo\\\"},\\\"era\\\":{\\\"MortalEra\\\":{\\\"period\\\":\\\"64\\\",\\\"phase\\\":\\\"12\\\"}},\\\"nonce\\\":\\\"35\\\",\\\"signature\\\":\\\"0x02efb40c3d9e49d74a6c35e7ff8fdef82f8792170ac5e31fbc6e0a01701a4a0653bd21b87b69c021731354f0d655d25098fc99da38c5da685d559d86c151838a\\\",\\\"signer\\\":\\\"5HQ9Mm9L1HG53htEGDMsnhkkL7hEfF9vLstEQPtMLX5Gupqx\\\",\\\"tip\\\":\\\"0\\\"}\"",
+      "children" : [ {
+        "name" : "Sell assets with a high expectation: limit - OK",
+        "uid" : "d8f6981dc5a11805",
+        "parentUid" : "eba81eb46cb8d7465513f24b243ff948",
+        "status" : "failed",
+        "time" : {
+          "start" : 1630908247990,
+          "stop" : 1630908290055,
+          "duration" : 42065
+        },
+        "flaky" : false,
+        "newFailed" : false,
+        "parameters" : [ ]
+      } ],
+      "uid" : "eba81eb46cb8d7465513f24b243ff948"
+    }, {
+      "name" : "Error: Failed: \"W[2] timeout in - signAndWaitTx - \\\" + 5HQ9Mm9L1HG53htEGDMsnhkkL7hEfF9vLstEQPtMLX5Gupqx + \\\" - \\\" + 36 + \\\" - \\\" + {\\\"isSigned\\\":true,\\\"method\\\":{\\\"args\\\":[{\\\"args\\\":[\\\"5FLTqLrgcat9vhKYFDrHmog1euHvHxqJvcp5dku68bK9gAK1\\\",\\\"250.0000 nUnit\\\"],\\\"method\\\":\\\"create\\\",\\\"section\\\":\\\"tokens\\\"}],\\\"method\\\":\\\"sudo\\\",\\\"section\\\":\\\"sudo\\\"},\\\"era\\\":{\\\"MortalEra\\\":{\\\"period\\\":\\\"64\\\",\\\"phase\\\":\\\"12\\\"}},\\\"nonce\\\":\\\"36\\\",\\\"signature\\\":\\\"0x1ccba2047aef457237e866fb104363055fedaeb17e6745b1b21b7a50ff76a65ff8ee071a0625069be0b382981d24fc755881827224d168b22317eb12eb90c28a\\\",\\\"signer\\\":\\\"5HQ9Mm9L1HG53htEGDMsnhkkL7hEfF9vLstEQPtMLX5Gupqx\\\",\\\"tip\\\":\\\"0\\\"}\"",
+      "children" : [ {
+        "name" : "Buy assets with a high expectation: maxInput -1",
+        "uid" : "b191c8f858d28ed8",
+        "parentUid" : "ea6a83b7e10dcc9761fe62bac384088f",
+        "status" : "failed",
+        "time" : {
+          "start" : 1630908248480,
+          "stop" : 1630908290546,
+          "duration" : 42066
+        },
+        "flaky" : false,
+        "newFailed" : false,
+        "parameters" : [ ]
+      } ],
+      "uid" : "ea6a83b7e10dcc9761fe62bac384088f"
+    }, {
+      "name" : "Error: Failed: \"W[4] timeout in - signAndWaitTx - \\\" + 5HQ9Mm9L1HG53htEGDMsnhkkL7hEfF9vLstEQPtMLX5Gupqx + \\\" - \\\" + 37 + \\\" - \\\" + {\\\"isSigned\\\":true,\\\"method\\\":{\\\"args\\\":[{\\\"args\\\":[\\\"0\\\",\\\"5G1CqiUAXNjbNGQo3VMKpwGLTnzpKjsb4mawSf6gJzg5z17q\\\",\\\"100.0000 mUnit\\\"],\\\"method\\\":\\\"mint\\\",\\\"section\\\":\\\"tokens\\\"}],\\\"method\\\":\\\"sudo\\\",\\\"section\\\":\\\"sudo\\\"},\\\"era\\\":{\\\"MortalEra\\\":{\\\"period\\\":\\\"64\\\",\\\"phase\\\":\\\"12\\\"}},\\\"nonce\\\":\\\"37\\\",\\\"signature\\\":\\\"0x8a4b3dda5295a831214126a25c51e08f5b6d21511af6df06b7829e9af8df535bfbad13a136eeece9ec33f46a3a466abf39b98c2fe26e2d836beb16106fdd1a89\\\",\\\"signer\\\":\\\"5HQ9Mm9L1HG53htEGDMsnhkkL7hEfF9vLstEQPtMLX5Gupqx\\\",\\\"tip\\\":\\\"0\\\"}\"",
+      "children" : [ {
+        "name" : "Mint liquidity assets that does not belong to any pool",
+        "uid" : "879b70dcd5e778e",
+        "parentUid" : "8a4cd18b4cb40039bde2835ecba6ed99",
+        "status" : "failed",
+        "time" : {
+          "start" : 1630908248558,
+          "stop" : 1630908332656,
+          "duration" : 84098
+        },
+        "flaky" : false,
+        "newFailed" : false,
+        "parameters" : [ ]
+      } ],
+      "uid" : "8a4cd18b4cb40039bde2835ecba6ed99"
+    }, {
+      "name" : "Error: Failed: \"W[5] timeout in - signAndWaitTx - \\\" + 5HQ9Mm9L1HG53htEGDMsnhkkL7hEfF9vLstEQPtMLX5Gupqx + \\\" - \\\" + 39 + \\\" - \\\" + {\\\"isSigned\\\":true,\\\"method\\\":{\\\"args\\\":[{\\\"args\\\":[\\\"5GzczR7r9FesVtuoJaDwMqYGAadBwZu1vmYV4kuu5mAXdKcv\\\",\\\"250.0000 nUnit\\\"],\\\"method\\\":\\\"create\\\",\\\"section\\\":\\\"tokens\\\"}],\\\"method\\\":\\\"sudo\\\",\\\"section\\\":\\\"sudo\\\"},\\\"era\\\":{\\\"MortalEra\\\":{\\\"period\\\":\\\"64\\\",\\\"phase\\\":\\\"12\\\"}},\\\"nonce\\\":\\\"39\\\",\\\"signature\\\":\\\"0x809b5daed7285ab6469764ba3f89989d7195d59e1006543bf40cd044024ccc57b4a4624136bfc3d3b009d52fae72084bbec5d80f85ce49cdeee9c09af8590189\\\",\\\"signer\\\":\\\"5HQ9Mm9L1HG53htEGDMsnhkkL7hEfF9vLstEQPtMLX5Gupqx\\\",\\\"tip\\\":\\\"0\\\"}\"",
+      "children" : [ {
+        "name" : "be minted",
+        "uid" : "792a593c060517d",
+        "parentUid" : "2e67f5d32bee9992be313138da370fae",
+        "status" : "failed",
+        "time" : {
+          "start" : 1630908257768,
+          "stop" : 1630908299923,
+          "duration" : 42155
+        },
+        "flaky" : false,
+        "newFailed" : false,
+        "parameters" : [ ]
+      } ],
+      "uid" : "2e67f5d32bee9992be313138da370fae"
+    }, {
+      "name" : "Error: Failed: \"W[6] timeout in - signAndWaitTx - \\\" + 5HQ9Mm9L1HG53htEGDMsnhkkL7hEfF9vLstEQPtMLX5Gupqx + \\\" - \\\" + 40 + \\\" - \\\" + {\\\"isSigned\\\":true,\\\"method\\\":{\\\"args\\\":[{\\\"args\\\":[\\\"5G6H7UcmnW4TQmrEWWXVGT7nTcmym6uDeCoYPMec8QN81rVD\\\",\\\"250.0010 nUnit\\\"],\\\"method\\\":\\\"create\\\",\\\"section\\\":\\\"tokens\\\"}],\\\"method\\\":\\\"sudo\\\",\\\"section\\\":\\\"sudo\\\"},\\\"era\\\":{\\\"MortalEra\\\":{\\\"period\\\":\\\"64\\\",\\\"phase\\\":\\\"12\\\"}},\\\"nonce\\\":\\\"40\\\",\\\"signature\\\":\\\"0xb63bf8ed2abc56132b9ca80c3265f69e6a05d98153c62ce45e0ad48f33e22101228ffa96e436515c8f2e8817f5dc3a529617fcd1d1aa6e2ecf9888a2ce428384\\\",\\\"signer\\\":\\\"5HQ9Mm9L1HG53htEGDMsnhkkL7hEfF9vLstEQPtMLX5Gupqx\\\",\\\"tip\\\":\\\"0\\\"}\"",
+      "children" : [ {
+        "name" : "Add all the wallet assets to the pool",
+        "uid" : "df194d538c28a2af",
+        "parentUid" : "67352c033da0356852b4e8ebea8fcc14",
+        "status" : "failed",
+        "time" : {
+          "start" : 1630908260044,
+          "stop" : 1630908302150,
+          "duration" : 42106
+        },
+        "flaky" : false,
+        "newFailed" : false,
+        "parameters" : [ ]
+      } ],
+      "uid" : "67352c033da0356852b4e8ebea8fcc14"
+    }, {
+      "name" : "Error: Failed: \"W[3] timeout in - signAndWaitTx - \\\" + 5HQ9Mm9L1HG53htEGDMsnhkkL7hEfF9vLstEQPtMLX5Gupqx + \\\" - \\\" + 42 + \\\" - \\\" + {\\\"isSigned\\\":true,\\\"method\\\":{\\\"args\\\":[{\\\"args\\\":[\\\"5CArDT2BHwPcFncqA9T5M1TSxRwyRgTk5y9HhDGNRYh1ivVk\\\",\\\"250.0000 nUnit\\\"],\\\"method\\\":\\\"create\\\",\\\"section\\\":\\\"tokens\\\"}],\\\"method\\\":\\\"sudo\\\",\\\"section\\\":\\\"sudo\\\"},\\\"era\\\":{\\\"MortalEra\\\":{\\\"period\\\":\\\"64\\\",\\\"phase\\\":\\\"12\\\"}},\\\"nonce\\\":\\\"42\\\",\\\"signature\\\":\\\"0x324d48d32295ea3c5c61d55534d8cf587b504a6984752a49d07d3104b06ab777bfef7e70dc8574f52d13479509b3ac103d3d7397791d1fc41ff16aa70e67c382\\\",\\\"signer\\\":\\\"5HQ9Mm9L1HG53htEGDMsnhkkL7hEfF9vLstEQPtMLX5Gupqx\\\",\\\"tip\\\":\\\"0\\\"}\"",
+      "children" : [ {
+        "name" : "Sell assets from a wallet I own into a wallet I do not own: limit",
+        "uid" : "25e2a4d408206aea",
+        "parentUid" : "4c2ff6a3f0fcc3b54ddc5fa8ce8d7320",
+        "status" : "failed",
+        "time" : {
+          "start" : 1630908290055,
+          "stop" : 1630908332134,
+          "duration" : 42079
+        },
+        "flaky" : false,
+        "newFailed" : false,
+        "parameters" : [ ]
+      } ],
+      "uid" : "4c2ff6a3f0fcc3b54ddc5fa8ce8d7320"
+    }, {
+      "name" : "Error: Failed: \"W[2] timeout in - signAndWaitTx - \\\" + 5HQ9Mm9L1HG53htEGDMsnhkkL7hEfF9vLstEQPtMLX5Gupqx + \\\" - \\\" + 43 + \\\" - \\\" + {\\\"isSigned\\\":true,\\\"method\\\":{\\\"args\\\":[{\\\"args\\\":[\\\"5DjsTyvPMEczw3udnxPRzbZcymSpXb6vpU7nnKynh9dwFtDg\\\",\\\"250.0000 nUnit\\\"],\\\"method\\\":\\\"create\\\",\\\"section\\\":\\\"tokens\\\"}],\\\"method\\\":\\\"sudo\\\",\\\"section\\\":\\\"sudo\\\"},\\\"era\\\":{\\\"MortalEra\\\":{\\\"period\\\":\\\"64\\\",\\\"phase\\\":\\\"12\\\"}},\\\"nonce\\\":\\\"43\\\",\\\"signature\\\":\\\"0x70e6bb349977f1a4dda1aafc6585e71d7e3e096a9dbe7cefcdca9d5071aea9491927fbc72c9627fb9085c9dc47eae785e3fbd26623485c32261db3dcbfb99684\\\",\\\"signer\\\":\\\"5HQ9Mm9L1HG53htEGDMsnhkkL7hEfF9vLstEQPtMLX5Gupqx\\\",\\\"tip\\\":\\\"0\\\"}\"",
+      "children" : [ {
+        "name" : "Leave only one asset in the pool",
+        "uid" : "cb284655ee57af82",
+        "parentUid" : "8cbc8d4b8fd4188a40a80819f1e27021",
+        "status" : "failed",
+        "time" : {
+          "start" : 1630908290556,
+          "stop" : 1630908332621,
+          "duration" : 42065
+        },
+        "flaky" : false,
+        "newFailed" : false,
+        "parameters" : [ ]
+      } ],
+      "uid" : "8cbc8d4b8fd4188a40a80819f1e27021"
+    }, {
+      "name" : "Error: Failed: \"W[7] timeout in - signAndWaitTx - \\\" + 5HQ9Mm9L1HG53htEGDMsnhkkL7hEfF9vLstEQPtMLX5Gupqx + \\\" - \\\" + 38 + \\\" - \\\" + {\\\"isSigned\\\":true,\\\"method\\\":{\\\"args\\\":[{\\\"args\\\":[\\\"5GnVnvm8oVqKctkD3nn6oc3vRjSZi88Jn4WGxcRMdHixHXmZ\\\",\\\"250.0000 nUnit\\\"],\\\"method\\\":\\\"create\\\",\\\"section\\\":\\\"tokens\\\"}],\\\"method\\\":\\\"sudo\\\",\\\"section\\\":\\\"sudo\\\"},\\\"era\\\":{\\\"MortalEra\\\":{\\\"period\\\":\\\"64\\\",\\\"phase\\\":\\\"12\\\"}},\\\"nonce\\\":\\\"38\\\",\\\"signature\\\":\\\"0xc85233ac75e0c840c0554cbc0ac9cecedb0bc433f87b9a12cb9b34a74b09156f61a26bf6e1a10db5f5019bdb3cd1287ddd754223faca03ad0845a2e6451eb786\\\",\\\"signer\\\":\\\"5HQ9Mm9L1HG53htEGDMsnhkkL7hEfF9vLstEQPtMLX5Gupqx\\\",\\\"tip\\\":\\\"0\\\"}\"",
+      "children" : [ {
+        "name" : "xyk-pallet - MGA tokens are substracted as fee : CreatePool",
+        "uid" : "e0cbd1641c0ba52b",
+        "parentUid" : "8817ff820cc85d9bb9cd73b213ece9a2",
+        "status" : "failed",
+        "time" : {
+          "start" : 1630908293287,
+          "stop" : 1630908335334,
+          "duration" : 42047
+        },
+        "flaky" : false,
+        "newFailed" : false,
+        "parameters" : [ ]
+      }, {
+        "name" : "xyk-pallet - MGA tokens are substracted as fee : MintLiquidity",
+        "uid" : "fdcdb56d8e8124cb",
+        "parentUid" : "8817ff820cc85d9bb9cd73b213ece9a2",
+        "status" : "failed",
+        "time" : {
+          "start" : 1630908335334,
+          "stop" : 1630908335419,
+          "duration" : 85
+        },
+        "flaky" : false,
+        "newFailed" : false,
+        "parameters" : [ ]
+      }, {
+        "name" : "xyk-pallet - MGA tokens are substracted as fee : BurnLiquidity",
+        "uid" : "308dc06048e7a3eb",
+        "parentUid" : "8817ff820cc85d9bb9cd73b213ece9a2",
+        "status" : "failed",
+        "time" : {
+          "start" : 1630908335419,
+          "stop" : 1630908335464,
+          "duration" : 45
+        },
+        "flaky" : false,
+        "newFailed" : false,
+        "parameters" : [ ]
+      }, {
+        "name" : "xyk-pallet - MGA tokens are substracted as fee : Transfer",
+        "uid" : "1035256f312177cf",
+        "parentUid" : "8817ff820cc85d9bb9cd73b213ece9a2",
+        "status" : "failed",
+        "time" : {
+          "start" : 1630908335464,
+          "stop" : 1630908335507,
+          "duration" : 43
+        },
+        "flaky" : false,
+        "newFailed" : false,
+        "parameters" : [ ]
+      }, {
+        "name" : "xyk-pallet - MGA tokens are substracted as fee : TransferAll",
+        "uid" : "bd89fca766a3b9f2",
+        "parentUid" : "8817ff820cc85d9bb9cd73b213ece9a2",
+        "status" : "failed",
+        "time" : {
+          "start" : 1630908335507,
+          "stop" : 1630908377600,
+          "duration" : 42093
+        },
+        "flaky" : false,
+        "newFailed" : false,
+        "parameters" : [ ]
+      }, {
+        "name" : "xyk-pallet - MGA tokens are not substracted as fee : SellAsset",
+        "uid" : "f9f2ccb098911f60",
+        "parentUid" : "8817ff820cc85d9bb9cd73b213ece9a2",
+        "status" : "failed",
+        "time" : {
+          "start" : 1630908377601,
+          "stop" : 1630908419658,
+          "duration" : 42057
+        },
+        "flaky" : false,
+        "newFailed" : false,
+        "parameters" : [ ]
+      }, {
+        "name" : "xyk-pallet - MGA tokens are not substracted as fee : BuyAsset",
+        "uid" : "48e505d6f78fcd06",
+        "parentUid" : "8817ff820cc85d9bb9cd73b213ece9a2",
+        "status" : "failed",
+        "time" : {
+          "start" : 1630908419659,
+          "stop" : 1630908419733,
+          "duration" : 74
+        },
+        "flaky" : false,
+        "newFailed" : false,
+        "parameters" : [ ]
+      } ],
+      "uid" : "8817ff820cc85d9bb9cd73b213ece9a2"
+    }, {
+      "name" : "Error: createType(StorageKey):: createType(CurrencyId):: u32: Negative number passed to unsigned type",
+      "children" : [ {
+        "name" : "be burn",
+        "uid" : "29f016288b58ab3f",
+        "parentUid" : "00692d0b5264b6fba34b2797a2491c92",
+        "status" : "failed",
+        "time" : {
+          "start" : 1630908299923,
+          "stop" : 1630908342084,
+          "duration" : 42161
+        },
+        "flaky" : false,
+        "newFailed" : false,
+        "parameters" : [ ]
+      } ],
+      "uid" : "00692d0b5264b6fba34b2797a2491c92"
+    }, {
+      "name" : "Error: Failed: \"W[6] timeout in - signAndWaitTx - \\\" + 5HQ9Mm9L1HG53htEGDMsnhkkL7hEfF9vLstEQPtMLX5Gupqx + \\\" - \\\" + 47 + \\\" - \\\" + {\\\"isSigned\\\":true,\\\"method\\\":{\\\"args\\\":[{\\\"args\\\":[\\\"5DwENy5mtAwxcKnCKSjeoryLQnvxLnTcbvs5fnJygUYkxkM1\\\",\\\"250.0000 nUnit\\\"],\\\"method\\\":\\\"create\\\",\\\"section\\\":\\\"tokens\\\"}],\\\"method\\\":\\\"sudo\\\",\\\"section\\\":\\\"sudo\\\"},\\\"era\\\":{\\\"MortalEra\\\":{\\\"period\\\":\\\"64\\\",\\\"phase\\\":\\\"12\\\"}},\\\"nonce\\\":\\\"47\\\",\\\"signature\\\":\\\"0x54eb74a5713a25db7c60a47da976b2bcf73c784aa44a428da418cc561732c315273ce9c45148e5dc457466be70fee21e7fc76c3716d2ea99ea3df37adf52e085\\\",\\\"signer\\\":\\\"5HQ9Mm9L1HG53htEGDMsnhkkL7hEfF9vLstEQPtMLX5Gupqx\\\",\\\"tip\\\":\\\"0\\\"}\"",
+      "children" : [ {
+        "name" : "Expect an event when liquidirty is minted",
+        "uid" : "8765bc609c15929d",
+        "parentUid" : "577dad0812bd376dfd06aaad86371a7b",
+        "status" : "failed",
+        "time" : {
+          "start" : 1630908302150,
+          "stop" : 1630908344218,
+          "duration" : 42068
+        },
+        "flaky" : false,
+        "newFailed" : false,
+        "parameters" : [ ]
+      } ],
+      "uid" : "577dad0812bd376dfd06aaad86371a7b"
+    }, {
+      "name" : "Error: Failed: \"W[1] timeout in - signAndWaitTx - \\\" + 5HQ9Mm9L1HG53htEGDMsnhkkL7hEfF9vLstEQPtMLX5Gupqx + \\\" - \\\" + 41 + \\\" - \\\" + {\\\"isSigned\\\":true,\\\"method\\\":{\\\"args\\\":[{\\\"args\\\":[\\\"5DkHk3N6NwPb34DJpRMuvSz3z1Ndf7v5BFHKTzcUBdehy6H9\\\",\\\"everything\\\"],\\\"method\\\":\\\"create\\\",\\\"section\\\":\\\"tokens\\\"}],\\\"method\\\":\\\"sudo\\\",\\\"section\\\":\\\"sudo\\\"},\\\"era\\\":{\\\"MortalEra\\\":{\\\"period\\\":\\\"64\\\",\\\"phase\\\":\\\"12\\\"}},\\\"nonce\\\":\\\"41\\\",\\\"signature\\\":\\\"0xced14506f186eab9a1b17ea0f7a355b8be43b481b16fbb30fb68d1ba5875122860e3434ce0ead91bec2e5b489eb9d5058474760f487d947e5080a00ea7ea8f81\\\",\\\"signer\\\":\\\"5HQ9Mm9L1HG53htEGDMsnhkkL7hEfF9vLstEQPtMLX5Gupqx\\\",\\\"tip\\\":\\\"0\\\"}\"",
+      "children" : [ {
+        "name" : "Sell [MAX -2] assets to a wallet with Max-1000,1000 => overflow.",
+        "uid" : "127c5744a8da0fd7",
+        "parentUid" : "7e430f66d6d2fc09f60110a852145a60",
+        "status" : "failed",
+        "time" : {
+          "start" : 1630908332077,
+          "stop" : 1630908374137,
+          "duration" : 42060
+        },
+        "flaky" : false,
+        "newFailed" : false,
+        "parameters" : [ ]
+      }, {
+        "name" : "Buy [100] assets to a wallet with Max-1000,1000 => overflow.",
+        "uid" : "ca22d26d591e92d",
+        "parentUid" : "7e430f66d6d2fc09f60110a852145a60",
+        "status" : "failed",
+        "time" : {
+          "start" : 1630908374137,
+          "stop" : 1630908374220,
+          "duration" : 83
+        },
+        "flaky" : false,
+        "newFailed" : false,
+        "parameters" : [ ]
+      }, {
+        "name" : "Mint liquidities [1000] assets to a wallet with Max-1000,1000 => overflow.",
+        "uid" : "44d50a212cd5712",
+        "parentUid" : "7e430f66d6d2fc09f60110a852145a60",
+        "status" : "failed",
+        "time" : {
+          "start" : 1630908374220,
+          "stop" : 1630908374265,
+          "duration" : 45
+        },
+        "flaky" : false,
+        "newFailed" : false,
+        "parameters" : [ ]
+      } ],
+      "uid" : "7e430f66d6d2fc09f60110a852145a60"
+    }, {
+      "name" : "Error: Failed: \"W[2] timeout in - signAndWaitTx - \\\" + 5HQ9Mm9L1HG53htEGDMsnhkkL7hEfF9vLstEQPtMLX5Gupqx + \\\" - \\\" + 48 + \\\" - \\\" + {\\\"isSigned\\\":true,\\\"method\\\":{\\\"args\\\":[{\\\"args\\\":[\\\"5GYtnDNTs2gJHDt1nse6Q9jsTauWtSqXooRAPtWW3QKiHuoS\\\",\\\"250.0000 nUnit\\\"],\\\"method\\\":\\\"create\\\",\\\"section\\\":\\\"tokens\\\"}],\\\"method\\\":\\\"sudo\\\",\\\"section\\\":\\\"sudo\\\"},\\\"era\\\":{\\\"MortalEra\\\":{\\\"period\\\":\\\"64\\\",\\\"phase\\\":\\\"12\\\"}},\\\"nonce\\\":\\\"48\\\",\\\"signature\\\":\\\"0x8c9eb9a66e7f503e310615c2013617e69069d48d4ef543483c489e6f7a06d46be46374af17d26432a60429df06a67aa6497b32ca95d2fb5e988d6f8d5e674c8c\\\",\\\"signer\\\":\\\"5HQ9Mm9L1HG53htEGDMsnhkkL7hEfF9vLstEQPtMLX5Gupqx\\\",\\\"tip\\\":\\\"0\\\"}\"",
+      "children" : [ {
+        "name" : "Buy from a wallet I own into a wallet I do not own",
+        "uid" : "f4678f17dcb3f051",
+        "parentUid" : "3a55d22eab413d87098a1b540f987f66",
+        "status" : "failed",
+        "time" : {
+          "start" : 1630908332622,
+          "stop" : 1630908374695,
+          "duration" : 42073
+        },
+        "flaky" : false,
+        "newFailed" : false,
+        "parameters" : [ ]
+      } ],
+      "uid" : "3a55d22eab413d87098a1b540f987f66"
+    }, {
+      "name" : "Error: Failed: \"W[4] timeout in - signAndWaitTx - \\\" + 5HQ9Mm9L1HG53htEGDMsnhkkL7hEfF9vLstEQPtMLX5Gupqx + \\\" - \\\" + 49 + \\\" - \\\" + {\\\"isSigned\\\":true,\\\"method\\\":{\\\"args\\\":[{\\\"args\\\":[\\\"0\\\",\\\"5DcwvifLoKWwRxG1ZP7d7EdLpYVBcmHKF4GuRBbF5fTCkena\\\",\\\"100.0000 mUnit\\\"],\\\"method\\\":\\\"mint\\\",\\\"section\\\":\\\"tokens\\\"}],\\\"method\\\":\\\"sudo\\\",\\\"section\\\":\\\"sudo\\\"},\\\"era\\\":{\\\"MortalEra\\\":{\\\"period\\\":\\\"64\\\",\\\"phase\\\":\\\"12\\\"}},\\\"nonce\\\":\\\"49\\\",\\\"signature\\\":\\\"0x7c6b734af574920e553e1f62d439f5247d4e9f69181198efa2b0409477971b5ae5646bc67332109d65f843d7a4676953ad782e333c1da2e80f4847eccb06b981\\\",\\\"signer\\\":\\\"5HQ9Mm9L1HG53htEGDMsnhkkL7hEfF9vLstEQPtMLX5Gupqx\\\",\\\"tip\\\":\\\"0\\\"}\"",
+      "children" : [ {
+        "name" : "Mint liquidity more assets than I own",
+        "uid" : "505ab796002fc73c",
+        "parentUid" : "1870fb8088020802a107401c38a1e6e6",
+        "status" : "failed",
+        "time" : {
+          "start" : 1630908332656,
+          "stop" : 1630908416748,
+          "duration" : 84092
+        },
+        "flaky" : false,
+        "newFailed" : false,
+        "parameters" : [ ]
+      } ],
+      "uid" : "1870fb8088020802a107401c38a1e6e6"
+    }, {
+      "name" : "Error: Failed: \"W[5] timeout in - signAndWaitTx - \\\" + 5HQ9Mm9L1HG53htEGDMsnhkkL7hEfF9vLstEQPtMLX5Gupqx + \\\" - \\\" + 52 + \\\" - \\\" + {\\\"isSigned\\\":true,\\\"method\\\":{\\\"args\\\":[{\\\"args\\\":[\\\"5FF3jA5ici4upqWUws6N1s85MNH8QedJWz2UvtZqWdTUwwJt\\\",\\\"250.0000 nUnit\\\"],\\\"method\\\":\\\"create\\\",\\\"section\\\":\\\"tokens\\\"}],\\\"method\\\":\\\"sudo\\\",\\\"section\\\":\\\"sudo\\\"},\\\"era\\\":{\\\"MortalEra\\\":{\\\"period\\\":\\\"64\\\",\\\"phase\\\":\\\"12\\\"}},\\\"nonce\\\":\\\"52\\\",\\\"signature\\\":\\\"0xbc1cd853c286c11fa07394b08b458cfe4cd13e8d4034fdf362553f61b2177217b7fe727be055c245fec440e9482cec6a5b263cb5db6a7e860f15b712cb45f981\\\",\\\"signer\\\":\\\"5HQ9Mm9L1HG53htEGDMsnhkkL7hEfF9vLstEQPtMLX5Gupqx\\\",\\\"tip\\\":\\\"0\\\"}\"",
+      "children" : [ {
+        "name" : "xyk-pallet - AssetsOperation: buyAsset [maxAmountIn = 1M], buy asset",
+        "uid" : "a620fc30b6c099ae",
+        "parentUid" : "21d83e2618b8b1bd90d92aa21617ebb8",
+        "status" : "failed",
+        "time" : {
+          "start" : 1630908344783,
+          "stop" : 1630908386964,
+          "duration" : 42181
+        },
+        "flaky" : false,
+        "newFailed" : false,
+        "parameters" : [ ]
+      } ],
+      "uid" : "21d83e2618b8b1bd90d92aa21617ebb8"
+    }, {
+      "name" : "Error: Failed: \"W[3] timeout in - signAndWaitTx - \\\" + 5HQ9Mm9L1HG53htEGDMsnhkkL7hEfF9vLstEQPtMLX5Gupqx + \\\" - \\\" + 50 + \\\" - \\\" + {\\\"isSigned\\\":true,\\\"method\\\":{\\\"args\\\":[{\\\"args\\\":[\\\"5HQ9Mm9L1HG53htEGDMsnhkkL7hEfF9vLstEQPtMLX5Gupqx\\\",\\\"100.0000 nUnit\\\"],\\\"method\\\":\\\"create\\\",\\\"section\\\":\\\"tokens\\\"}],\\\"method\\\":\\\"sudo\\\",\\\"section\\\":\\\"sudo\\\"},\\\"era\\\":{\\\"MortalEra\\\":{\\\"period\\\":\\\"64\\\",\\\"phase\\\":\\\"12\\\"}},\\\"nonce\\\":\\\"50\\\",\\\"signature\\\":\\\"0x669c31543290eaff8195a238fa196fe2717af460f051468ce4f7105bd20ca76ddc02610ca3db3e2087205548ac7522ba2dd23af2f5ff3b43d899c7a11c07308e\\\",\\\"signer\\\":\\\"5HQ9Mm9L1HG53htEGDMsnhkkL7hEfF9vLstEQPtMLX5Gupqx\\\",\\\"tip\\\":\\\"0\\\"}\"",
+      "children" : [ {
+        "name" : "validate parameters - burn from pool [firstIdx->0,secondIdx->1,amount->1000,expected->1.0000 nUnit]",
+        "uid" : "df3cc65daeea391f",
+        "parentUid" : "9e084e73313ee1eacbd8684fc44360fd",
+        "status" : "failed",
+        "time" : {
+          "start" : 1630908376572,
+          "stop" : 1630908376588,
+          "duration" : 16
+        },
+        "flaky" : false,
+        "newFailed" : false,
+        "parameters" : [ ]
+      }, {
+        "name" : "validate parameters - burn from pool [firstIdx->1,secondIdx->0,amount->1000,expected->1.0000 nUnit]",
+        "uid" : "e583c4a8552ff0ae",
+        "parentUid" : "9e084e73313ee1eacbd8684fc44360fd",
+        "status" : "failed",
+        "time" : {
+          "start" : 1630908376588,
+          "stop" : 1630908376592,
+          "duration" : 4
+        },
+        "flaky" : false,
+        "newFailed" : false,
+        "parameters" : [ ]
+      }, {
+        "name" : "validate parameters - burn from pool [firstIdx->0,secondIdx->1,amount->10000,expected->10.0000 nUnit]",
+        "uid" : "a66f6f6f9cf63a0d",
+        "parentUid" : "9e084e73313ee1eacbd8684fc44360fd",
+        "status" : "failed",
+        "time" : {
+          "start" : 1630908376592,
+          "stop" : 1630908376596,
+          "duration" : 4
+        },
+        "flaky" : false,
+        "newFailed" : false,
+        "parameters" : [ ]
+      }, {
+        "name" : "validate parameters - burn from pool [firstIdx->0,secondIdx->1,amount->100000,expected->100.0000 nUnit]",
+        "uid" : "cda3163d8c3d2b36",
+        "parentUid" : "9e084e73313ee1eacbd8684fc44360fd",
+        "status" : "failed",
+        "time" : {
+          "start" : 1630908376596,
+          "stop" : 1630908376600,
+          "duration" : 4
+        },
+        "flaky" : false,
+        "newFailed" : false,
+        "parameters" : [ ]
+      } ],
+      "uid" : "9e084e73313ee1eacbd8684fc44360fd"
+    }, {
+      "name" : "Error: Failed: \"W[5] timeout in - signAndWaitTx - \\\" + 5HQ9Mm9L1HG53htEGDMsnhkkL7hEfF9vLstEQPtMLX5Gupqx + \\\" - \\\" + 58 + \\\" - \\\" + {\\\"isSigned\\\":true,\\\"method\\\":{\\\"args\\\":[{\\\"args\\\":[\\\"5GxGqHTZd7riP38dWphqvsukNv6YDbdZnmYLR6qQSBbSUxTA\\\",\\\"250.0000 nUnit\\\"],\\\"method\\\":\\\"create\\\",\\\"section\\\":\\\"tokens\\\"}],\\\"method\\\":\\\"sudo\\\",\\\"section\\\":\\\"sudo\\\"},\\\"era\\\":{\\\"MortalEra\\\":{\\\"period\\\":\\\"64\\\",\\\"phase\\\":\\\"12\\\"}},\\\"nonce\\\":\\\"58\\\",\\\"signature\\\":\\\"0x303aae6dd90ca72af0e697974ff9102d2396a5807be58db4447fb6d6d40b4201a89d139f614b3373b015c80fb8ec66e87dbc4cd3253c359a26c31d9dbee7a387\\\",\\\"signer\\\":\\\"5HQ9Mm9L1HG53htEGDMsnhkkL7hEfF9vLstEQPtMLX5Gupqx\\\",\\\"tip\\\":\\\"0\\\"}\"",
+      "children" : [ {
+        "name" : "xyk-pallet - AssetsOperation: buyAsset [maxAmountIn = 1M], sell a bought asset",
+        "uid" : "92316de16f9fcf6a",
+        "parentUid" : "91e6509d00e2dc5ca1cab2a580ced5cc",
+        "status" : "failed",
+        "time" : {
+          "start" : 1630908386965,
+          "stop" : 1630908471098,
+          "duration" : 84133
+        },
+        "flaky" : false,
+        "newFailed" : false,
+        "parameters" : [ ]
+      } ],
+      "uid" : "91e6509d00e2dc5ca1cab2a580ced5cc"
+    }, {
+      "name" : "Error: Failed: \"W[6] timeout in - signAndWaitTx - \\\" + 5HQ9Mm9L1HG53htEGDMsnhkkL7hEfF9vLstEQPtMLX5Gupqx + \\\" - \\\" + 53 + \\\" - \\\" + {\\\"isSigned\\\":true,\\\"method\\\":{\\\"args\\\":[{\\\"args\\\":[\\\"5HQ9Mm9L1HG53htEGDMsnhkkL7hEfF9vLstEQPtMLX5Gupqx\\\",\\\"10.0000 pUnit\\\"],\\\"method\\\":\\\"create\\\",\\\"section\\\":\\\"tokens\\\"}],\\\"method\\\":\\\"sudo\\\",\\\"section\\\":\\\"sudo\\\"},\\\"era\\\":{\\\"MortalEra\\\":{\\\"period\\\":\\\"64\\\",\\\"phase\\\":\\\"12\\\"}},\\\"nonce\\\":\\\"53\\\",\\\"signature\\\":\\\"0xfe3cc03d40c7b001d33a51eb83307b5ff27bb8a7311bce86c27485565045876720d8248e519ceef2ce68ee7fa661ea325de90925dfb7079a3c3571f04d6b7988\\\",\\\"signer\\\":\\\"5HQ9Mm9L1HG53htEGDMsnhkkL7hEfF9vLstEQPtMLX5Gupqx\\\",\\\"tip\\\":\\\"0\\\"}\"",
+      "children" : [ {
+        "name" : "validate parameters [soldTokenId->0,boughtTokenId->1,amount->0,expected->0]",
+        "uid" : "bc15a6dfae50ca27",
+        "parentUid" : "95c9c3e3395ae702d557ad67b786015b",
+        "status" : "failed",
+        "time" : {
+          "start" : 1630908389110,
+          "stop" : 1630908389114,
+          "duration" : 4
+        },
+        "flaky" : false,
+        "newFailed" : false,
+        "parameters" : [ ]
+      }, {
+        "name" : "validate parameters [soldTokenId->1,boughtTokenId->0,amount->1,expected->0]",
+        "uid" : "bf1db360447c982b",
+        "parentUid" : "95c9c3e3395ae702d557ad67b786015b",
+        "status" : "failed",
+        "time" : {
+          "start" : 1630908389114,
+          "stop" : 1630908389117,
+          "duration" : 3
+        },
+        "flaky" : false,
+        "newFailed" : false,
+        "parameters" : [ ]
+      } ],
+      "uid" : "95c9c3e3395ae702d557ad67b786015b"
+    }, {
+      "name" : "Error: Failed: \"W[6] timeout in - signAndWaitTx - \\\" + 5HQ9Mm9L1HG53htEGDMsnhkkL7hEfF9vLstEQPtMLX5Gupqx + \\\" - \\\" + 59 + \\\" - \\\" + {\\\"isSigned\\\":true,\\\"method\\\":{\\\"args\\\":[{\\\"args\\\":[\\\"5E1hMiCDnBntAUZZ7yhiQLTthhDBRSCG4He4kZR7WdzrxywX\\\",\\\"250.0000 nUnit\\\"],\\\"method\\\":\\\"create\\\",\\\"section\\\":\\\"tokens\\\"}],\\\"method\\\":\\\"sudo\\\",\\\"section\\\":\\\"sudo\\\"},\\\"era\\\":{\\\"MortalEra\\\":{\\\"period\\\":\\\"64\\\",\\\"phase\\\":\\\"12\\\"}},\\\"nonce\\\":\\\"59\\\",\\\"signature\\\":\\\"0xfebc34853249bef4dbd3da3c432818e95f51a7305a8af6c25d1bf1e410947b447fee7e37b25bfc88d62ab32d0204e3b970f5cd617b132790e6e3463cb01de28b\\\",\\\"signer\\\":\\\"5HQ9Mm9L1HG53htEGDMsnhkkL7hEfF9vLstEQPtMLX5Gupqx\\\",\\\"tip\\\":\\\"0\\\"}\"",
+      "children" : [ {
+        "name" : "xyk-pallet - AssetsOperation: sellAsset [minAmountOut = 0] , first to second currency",
+        "uid" : "114e53b9cd2928f9",
+        "parentUid" : "cb01da92eee7f7b1d7e451c81dfebd53",
+        "status" : "failed",
+        "time" : {
+          "start" : 1630908391531,
+          "stop" : 1630908475718,
+          "duration" : 84187
+        },
+        "flaky" : false,
+        "newFailed" : false,
+        "parameters" : [ ]
+      } ],
+      "uid" : "cb01da92eee7f7b1d7e451c81dfebd53"
+    }, {
+      "name" : "Error: Failed: \"W[4] timeout in - signAndWaitTx - \\\" + 5HQ9Mm9L1HG53htEGDMsnhkkL7hEfF9vLstEQPtMLX5Gupqx + \\\" - \\\" + 60 + \\\" - \\\" + {\\\"isSigned\\\":true,\\\"method\\\":{\\\"args\\\":[{\\\"args\\\":[\\\"0\\\",\\\"5D5BFusaAwbr2w7RQ3PjEj2Da8Ab3xAVSpEm4KZ45oYSWD2w\\\",\\\"100.0000 mUnit\\\"],\\\"method\\\":\\\"mint\\\",\\\"section\\\":\\\"tokens\\\"}],\\\"method\\\":\\\"sudo\\\",\\\"section\\\":\\\"sudo\\\"},\\\"era\\\":{\\\"MortalEra\\\":{\\\"period\\\":\\\"64\\\",\\\"phase\\\":\\\"12\\\"}},\\\"nonce\\\":\\\"60\\\",\\\"signature\\\":\\\"0x92033ddfe39a01fa3c3d481de1fae04c30295c4b967338ddfa1d91a203fe0855d97f44dd5f77ab378dc310991bdabf48a9f63142849966d311f1917670d7e986\\\",\\\"signer\\\":\\\"5HQ9Mm9L1HG53htEGDMsnhkkL7hEfF9vLstEQPtMLX5Gupqx\\\",\\\"tip\\\":\\\"0\\\"}\"",
+      "children" : [ {
+        "name" : "Min liquidity, SecondAssetAmount parameter expectation not met",
+        "uid" : "fbbddd8b0bb66a0a",
+        "parentUid" : "166933aad134b029fe045483c785ca86",
+        "status" : "failed",
+        "time" : {
+          "start" : 1630908416748,
+          "stop" : 1630908500884,
+          "duration" : 84136
+        },
+        "flaky" : false,
+        "newFailed" : false,
+        "parameters" : [ ]
+      } ],
+      "uid" : "166933aad134b029fe045483c785ca86"
+    }, {
+      "name" : "Error: Failed: \"W[3] timeout in - signAndWaitTx - \\\" + 5HQ9Mm9L1HG53htEGDMsnhkkL7hEfF9vLstEQPtMLX5Gupqx + \\\" - \\\" + 55 + \\\" - \\\" + {\\\"isSigned\\\":true,\\\"method\\\":{\\\"args\\\":[{\\\"args\\\":[\\\"5HQ9Mm9L1HG53htEGDMsnhkkL7hEfF9vLstEQPtMLX5Gupqx\\\",\\\"100.0000 nUnit\\\"],\\\"method\\\":\\\"create\\\",\\\"section\\\":\\\"tokens\\\"}],\\\"method\\\":\\\"sudo\\\",\\\"section\\\":\\\"sudo\\\"},\\\"era\\\":{\\\"MortalEra\\\":{\\\"period\\\":\\\"64\\\",\\\"phase\\\":\\\"12\\\"}},\\\"nonce\\\":\\\"55\\\",\\\"signature\\\":\\\"0x963e886571615ebda04ee0816fc46b8eb432196d74693660512f3ef958f22333d0602ca800fdd87d551ba9fcc0b9b8f419f48d93d9f5239671848046525ebc8d\\\",\\\"signer\\\":\\\"5HQ9Mm9L1HG53htEGDMsnhkkL7hEfF9vLstEQPtMLX5Gupqx\\\",\\\"tip\\\":\\\"0\\\"}\"",
+      "children" : [ {
+        "name" : "validate parameters - get_burn from not generated pool [soldTokenId->0,boughtTokenId->1,amount->1000,expected->0]",
+        "uid" : "6f7d2ec859764230",
+        "parentUid" : "7f6f927d2432abf6b165527a017994dc",
+        "status" : "failed",
+        "time" : {
+          "start" : 1630908418695,
+          "stop" : 1630908418705,
+          "duration" : 10
+        },
+        "flaky" : false,
+        "newFailed" : false,
+        "parameters" : [ ]
+      }, {
+        "name" : "validate parameters - get_burn from not created assets",
+        "uid" : "de6df99900ee929",
+        "parentUid" : "7f6f927d2432abf6b165527a017994dc",
+        "status" : "failed",
+        "time" : {
+          "start" : 1630908418705,
+          "stop" : 1630908418715,
+          "duration" : 10
+        },
+        "flaky" : false,
+        "newFailed" : false,
+        "parameters" : [ ]
+      } ],
+      "uid" : "7f6f927d2432abf6b165527a017994dc"
+    }, {
+      "name" : "Error: Failed: \"W[2] timeout in - signAndWaitTx - \\\" + 5HQ9Mm9L1HG53htEGDMsnhkkL7hEfF9vLstEQPtMLX5Gupqx + \\\" - \\\" + 57 + \\\" - \\\" + {\\\"isSigned\\\":true,\\\"method\\\":{\\\"args\\\":[{\\\"args\\\":[\\\"5CFZ33YaGsS7efPT2vr3TSY5jYkgxxM8qbi922WEN1jgfLGw\\\",\\\"2.0000 nUnit\\\"],\\\"method\\\":\\\"create\\\",\\\"section\\\":\\\"tokens\\\"}],\\\"method\\\":\\\"sudo\\\",\\\"section\\\":\\\"sudo\\\"},\\\"era\\\":{\\\"MortalEra\\\":{\\\"period\\\":\\\"64\\\",\\\"phase\\\":\\\"12\\\"}},\\\"nonce\\\":\\\"57\\\",\\\"signature\\\":\\\"0x389aeb13ec1b9948a47351c5956c60368e19b961507e36992a16307e0ad07624acc9d521efe7255641f8cdb6ff8f3bf54128759858da4b00ad4c7540921d248d\\\",\\\"signer\\\":\\\"5HQ9Mm9L1HG53htEGDMsnhkkL7hEfF9vLstEQPtMLX5Gupqx\\\",\\\"tip\\\":\\\"0\\\"}\"",
+      "children" : [ {
+        "name" : "xyk-rpc - calculate_sell_price and calculate_buy_price matches, 1000,1000",
+        "uid" : "9f00ba833aec1661",
+        "parentUid" : "bbbed312a374f0a275a5b6c2fd7da2a7",
+        "status" : "failed",
+        "time" : {
+          "start" : 1630908419329,
+          "stop" : 1630908419363,
+          "duration" : 34
+        },
+        "flaky" : false,
+        "newFailed" : false,
+        "parameters" : [ ]
+      }, {
+        "name" : "xyk-rpc - calculate_sell_price and calculate_buy_price matches, 2000,1000",
+        "uid" : "167f9f7a025eadd",
+        "parentUid" : "bbbed312a374f0a275a5b6c2fd7da2a7",
+        "status" : "failed",
+        "time" : {
+          "start" : 1630908419363,
+          "stop" : 1630908419380,
+          "duration" : 17
+        },
+        "flaky" : false,
+        "newFailed" : false,
+        "parameters" : [ ]
+      }, {
+        "name" : "xyk-rpc - calculate_sell_price matches with the real sell",
+        "uid" : "ace1dae835fe8a87",
+        "parentUid" : "bbbed312a374f0a275a5b6c2fd7da2a7",
+        "status" : "failed",
+        "time" : {
+          "start" : 1630908419380,
+          "stop" : 1630908461429,
+          "duration" : 42049
+        },
+        "flaky" : false,
+        "newFailed" : false,
+        "parameters" : [ ]
+      }, {
+        "name" : "xyk-rpc - calculate_buy_price matches with the real buy",
+        "uid" : "525bf111fddc5f62",
+        "parentUid" : "bbbed312a374f0a275a5b6c2fd7da2a7",
+        "status" : "failed",
+        "time" : {
+          "start" : 1630908461429,
+          "stop" : 1630908461529,
+          "duration" : 100
+        },
+        "flaky" : false,
+        "newFailed" : false,
+        "parameters" : [ ]
+      } ],
+      "uid" : "bbbed312a374f0a275a5b6c2fd7da2a7"
+    }, {
+      "name" : "TypeError: Cannot read property 'keyRingPair' of undefined",
+      "children" : [ {
+        "name" : "xyk-pallet - Pool tests: createPool and validate liq token",
+        "uid" : "1ae412895e0597e3",
+        "parentUid" : "93b52bbcafba54bd6145a78cde6c370e",
+        "status" : "failed",
+        "time" : {
+          "start" : 1630908422196,
+          "stop" : 1630908422199,
+          "duration" : 3
+        },
+        "flaky" : false,
+        "newFailed" : false,
+        "parameters" : [ ]
+      }, {
+        "name" : "xyk-pallet - Pool tests: createPool",
+        "uid" : "159055308244e95b",
+        "parentUid" : "93b52bbcafba54bd6145a78cde6c370e",
+        "status" : "failed",
+        "time" : {
+          "start" : 1630908422199,
+          "stop" : 1630908422200,
+          "duration" : 1
+        },
+        "flaky" : false,
+        "newFailed" : false,
+        "parameters" : [ ]
+      } ],
+      "uid" : "93b52bbcafba54bd6145a78cde6c370e"
+    }, {
+      "name" : "Error: Failed: \"W[7] timeout in - signAndWaitTx - \\\" + 5HQ9Mm9L1HG53htEGDMsnhkkL7hEfF9vLstEQPtMLX5Gupqx + \\\" - \\\" + 62 + \\\" - \\\" + {\\\"isSigned\\\":true,\\\"method\\\":{\\\"args\\\":[{\\\"args\\\":[\\\"5CK7khoXkSCdyASqmcgBqAKij8wX8XZWJrDNaFzcAtFVLstb\\\",\\\"250.0000 nUnit\\\"],\\\"method\\\":\\\"create\\\",\\\"section\\\":\\\"tokens\\\"}],\\\"method\\\":\\\"sudo\\\",\\\"section\\\":\\\"sudo\\\"},\\\"era\\\":{\\\"MortalEra\\\":{\\\"period\\\":\\\"64\\\",\\\"phase\\\":\\\"12\\\"}},\\\"nonce\\\":\\\"62\\\",\\\"signature\\\":\\\"0x7e12bf9bf175edf1e9fa794d4ff5a1899c1aa9ff9f410b77729468c5caa7d0214cc1981a17a2255a88976afd4c751b2eaadcdaa8c474ed05213f2127d2b0fb8b\\\",\\\"signer\\\":\\\"5HQ9Mm9L1HG53htEGDMsnhkkL7hEfF9vLstEQPtMLX5Gupqx\\\",\\\"tip\\\":\\\"0\\\"}\"",
+      "children" : [ {
+        "name" : "xyk-pallet - User Balance - Creating a pool requires paying fees",
+        "uid" : "b9353a5335cd185f",
+        "parentUid" : "01bbe6209e248bdd87ce3b2eaf5aebfa",
+        "status" : "failed",
+        "time" : {
+          "start" : 1630908422749,
+          "stop" : 1630908466063,
+          "duration" : 43314
+        },
+        "flaky" : false,
+        "newFailed" : false,
+        "parameters" : [ ]
+      } ],
+      "uid" : "01bbe6209e248bdd87ce3b2eaf5aebfa"
+    }, {
+      "name" : "Error: Failed: \"W[3] timeout in - signAndWaitTx - \\\" + 5HQ9Mm9L1HG53htEGDMsnhkkL7hEfF9vLstEQPtMLX5Gupqx + \\\" - \\\" + 61 + \\\" - \\\" + {\\\"isSigned\\\":true,\\\"method\\\":{\\\"args\\\":[{\\\"args\\\":[\\\"5HQ9Mm9L1HG53htEGDMsnhkkL7hEfF9vLstEQPtMLX5Gupqx\\\",\\\"100.0000 nUnit\\\"],\\\"method\\\":\\\"create\\\",\\\"section\\\":\\\"tokens\\\"}],\\\"method\\\":\\\"sudo\\\",\\\"section\\\":\\\"sudo\\\"},\\\"era\\\":{\\\"MortalEra\\\":{\\\"period\\\":\\\"64\\\",\\\"phase\\\":\\\"12\\\"}},\\\"nonce\\\":\\\"61\\\",\\\"signature\\\":\\\"0x6c96bb9e6250d16733f1a25eee4b38a9cf8c94348657937e811cdb35d6a7486a8714c4e3adde10f1462dc813b5f798de1621e677418a97e778056b19c847bc85\\\",\\\"signer\\\":\\\"5HQ9Mm9L1HG53htEGDMsnhkkL7hEfF9vLstEQPtMLX5Gupqx\\\",\\\"tip\\\":\\\"0\\\"}\"",
+      "children" : [ {
+        "name" : "validate get_burn_amount that matches with real burn operation",
+        "uid" : "705f885c3f1d6a5c",
+        "parentUid" : "ef7597eeabce25c3f947c9725983b280",
+        "status" : "failed",
+        "time" : {
+          "start" : 1630908460818,
+          "stop" : 1630908502883,
+          "duration" : 42065
+        },
+        "flaky" : false,
+        "newFailed" : false,
+        "parameters" : [ ]
+      } ],
+      "uid" : "ef7597eeabce25c3f947c9725983b280"
+    }, {
+      "name" : "Error: Failed: \"W[2] timeout in - signAndWaitTx - \\\" + 5HQ9Mm9L1HG53htEGDMsnhkkL7hEfF9vLstEQPtMLX5Gupqx + \\\" - \\\" + 66 + \\\" - \\\" + {\\\"isSigned\\\":true,\\\"method\\\":{\\\"args\\\":[{\\\"args\\\":[\\\"5CrTctkmTEBbJV8X8jGs24sS2ZyMArP15Nev1AEkfY3T94Rz\\\",\\\"250.0000 nUnit\\\"],\\\"method\\\":\\\"create\\\",\\\"section\\\":\\\"tokens\\\"}],\\\"method\\\":\\\"sudo\\\",\\\"section\\\":\\\"sudo\\\"},\\\"era\\\":{\\\"MortalEra\\\":{\\\"period\\\":\\\"64\\\",\\\"phase\\\":\\\"12\\\"}},\\\"nonce\\\":\\\"66\\\",\\\"signature\\\":\\\"0xc0be1a966af2c1ff3c522c4d0f3bf1378110532824848f7583d3b69b1e9fe9497a7867c6cf66ccad91acbdf061fe37e801b626eb691af429944a7d047398cd81\\\",\\\"signer\\\":\\\"5HQ9Mm9L1HG53htEGDMsnhkkL7hEfF9vLstEQPtMLX5Gupqx\\\",\\\"tip\\\":\\\"0\\\"}\"",
+      "children" : [ {
+        "name" : "xyk-pallet - AssetsOperation: transferAsset",
+        "uid" : "a20b09393f730784",
+        "parentUid" : "bb66d0aff86dfa138b900edb31135748",
+        "status" : "failed",
+        "time" : {
+          "start" : 1630908464026,
+          "stop" : 1630908506261,
+          "duration" : 42235
+        },
+        "flaky" : false,
+        "newFailed" : false,
+        "parameters" : [ ]
+      } ],
+      "uid" : "bb66d0aff86dfa138b900edb31135748"
+    }, {
+      "name" : "Error: Failed: \"W[7] timeout in - signAndWaitTx - \\\" + 5HQ9Mm9L1HG53htEGDMsnhkkL7hEfF9vLstEQPtMLX5Gupqx + \\\" - \\\" + 67 + \\\" - \\\" + {\\\"isSigned\\\":true,\\\"method\\\":{\\\"args\\\":[{\\\"args\\\":[\\\"5HgVPjKuyNSFT6Ffh8aTNsgL2LGB6vv7wjxfNHx8LfdhDujR\\\",\\\"250.0000 nUnit\\\"],\\\"method\\\":\\\"create\\\",\\\"section\\\":\\\"tokens\\\"}],\\\"method\\\":\\\"sudo\\\",\\\"section\\\":\\\"sudo\\\"},\\\"era\\\":{\\\"MortalEra\\\":{\\\"period\\\":\\\"64\\\",\\\"phase\\\":\\\"12\\\"}},\\\"nonce\\\":\\\"67\\\",\\\"signature\\\":\\\"0x04056fbf5603ff9374e42b87977877711ca57b663d18b4ab3a47497703b466455e5dc9c02372cf00b63b754923e2cc0c1398c793ddb0e5f247ffddb57e638e8f\\\",\\\"signer\\\":\\\"5HQ9Mm9L1HG53htEGDMsnhkkL7hEfF9vLstEQPtMLX5Gupqx\\\",\\\"tip\\\":\\\"0\\\"}\"",
+      "children" : [ {
+        "name" : "xyk-pallet - User Balance - mint liquidity requires paying fees",
+        "uid" : "2c6da57f253f4637",
+        "parentUid" : "70a6e5d3cd83279d6c802883824896b4",
+        "status" : "failed",
+        "time" : {
+          "start" : 1630908466064,
+          "stop" : 1630908508260,
+          "duration" : 42196
+        },
+        "flaky" : false,
+        "newFailed" : false,
+        "parameters" : [ ]
+      } ],
+      "uid" : "70a6e5d3cd83279d6c802883824896b4"
+    }, {
+      "name" : "Error: Failed: \"W[5] timeout in - signAndWaitTx - \\\" + 5HQ9Mm9L1HG53htEGDMsnhkkL7hEfF9vLstEQPtMLX5Gupqx + \\\" - \\\" + 68 + \\\" - \\\" + {\\\"isSigned\\\":true,\\\"method\\\":{\\\"args\\\":[{\\\"args\\\":[\\\"5EhG8qpvYc3znkW9cKtDHBKETyFY779AEKxfj5itF2KJXmwU\\\",\\\"250.0000 nUnit\\\"],\\\"method\\\":\\\"create\\\",\\\"section\\\":\\\"tokens\\\"}],\\\"method\\\":\\\"sudo\\\",\\\"section\\\":\\\"sudo\\\"},\\\"era\\\":{\\\"MortalEra\\\":{\\\"period\\\":\\\"64\\\",\\\"phase\\\":\\\"12\\\"}},\\\"nonce\\\":\\\"68\\\",\\\"signature\\\":\\\"0x066747f4fded4ecdffb65fa4664b8736fd27b37d3cd96f53a137c6982ed1414b8fce73356acc91c040929a98ff9cc2965c9bae7975d762a7a8ce685121250c8b\\\",\\\"signer\\\":\\\"5HQ9Mm9L1HG53htEGDMsnhkkL7hEfF9vLstEQPtMLX5Gupqx\\\",\\\"tip\\\":\\\"0\\\"}\"",
+      "children" : [ {
+        "name" : "xyk-pallet - Calculate required MGA fee - CreatePool",
+        "uid" : "2e4cb51d8960900f",
+        "parentUid" : "0d9040190fa51c7ed0d3c9d6368efb79",
+        "status" : "failed",
+        "time" : {
+          "start" : 1630908472315,
+          "stop" : 1630908515708,
+          "duration" : 43393
+        },
+        "flaky" : false,
+        "newFailed" : false,
+        "parameters" : [ ]
+      } ],
+      "uid" : "0d9040190fa51c7ed0d3c9d6368efb79"
+    }, {
+      "name" : "Error: Failed: \"W[6] timeout in - signAndWaitTx - \\\" + 5HQ9Mm9L1HG53htEGDMsnhkkL7hEfF9vLstEQPtMLX5Gupqx + \\\" - \\\" + 69 + \\\" - \\\" + {\\\"isSigned\\\":true,\\\"method\\\":{\\\"args\\\":[{\\\"args\\\":[\\\"5CShHhuKUrWxeeq9CkQzdnUf5U2k4AcaPNPxCbYhjM2K2UCH\\\",\\\"250.0000 nUnit\\\"],\\\"method\\\":\\\"create\\\",\\\"section\\\":\\\"tokens\\\"}],\\\"method\\\":\\\"sudo\\\",\\\"section\\\":\\\"sudo\\\"},\\\"era\\\":{\\\"MortalEra\\\":{\\\"period\\\":\\\"64\\\",\\\"phase\\\":\\\"12\\\"}},\\\"nonce\\\":\\\"69\\\",\\\"signature\\\":\\\"0x56de2837cfdaff9b07c2898620f4a2cf06df7dfe0e38fdf9684245e28b24e411808aa533efbbf671bd6a80ae15983a6cad8e8c88d20eaa09a248c3eb78af5281\\\",\\\"signer\\\":\\\"5HQ9Mm9L1HG53htEGDMsnhkkL7hEfF9vLstEQPtMLX5Gupqx\\\",\\\"tip\\\":\\\"0\\\"}\"",
+      "children" : [ {
+        "name" : "xyk-pallet - AssetsOperation: sellAsset [minAmountOut = 0], sell an already sold asset",
+        "uid" : "6c1f2ac7ee4f4796",
+        "parentUid" : "27c1dbee42678fb990a29e54acf92b2b",
+        "status" : "failed",
+        "time" : {
+          "start" : 1630908475718,
+          "stop" : 1630908559909,
+          "duration" : 84191
+        },
+        "flaky" : false,
+        "newFailed" : false,
+        "parameters" : [ ]
+      } ],
+      "uid" : "27c1dbee42678fb990a29e54acf92b2b"
+    }, {
+      "name" : "Error: Failed: \"W[2] timeout in - signAndWaitTx - \\\" + 5CrTctkmTEBbJV8X8jGs24sS2ZyMArP15Nev1AEkfY3T94Rz + \\\" - \\\" + 0 + \\\" - \\\" + {\\\"isSigned\\\":true,\\\"method\\\":{\\\"args\\\":[\\\"5GQgg557i6ZuZFpMTKri2JSGDBjJA2fi1Hr2tXdnqmde66s7\\\",\\\"0\\\",\\\"100.0000 nUnit\\\"],\\\"method\\\":\\\"transfer\\\",\\\"section\\\":\\\"tokens\\\"},\\\"era\\\":{\\\"MortalEra\\\":{\\\"period\\\":\\\"64\\\",\\\"phase\\\":\\\"12\\\"}},\\\"nonce\\\":\\\"0\\\",\\\"signature\\\":\\\"0x680c0a7268d9e9e6f5294297d624469132d44024ae15307e8c62ed313124b3266fe6f55f05ff0ff409109ccc22308bc410578422c1e31ef0257737f4b0c17c83\\\",\\\"signer\\\":\\\"5CrTctkmTEBbJV8X8jGs24sS2ZyMArP15Nev1AEkfY3T94Rz\\\",\\\"tip\\\":\\\"0\\\"}\"",
+      "children" : [ {
+        "name" : "xyk-pallet - AssetsOperation: transferAll",
+        "uid" : "67939f3296d305b5",
+        "parentUid" : "1ab4e53cd325a2376352a8286901cba1",
+        "status" : "failed",
+        "time" : {
+          "start" : 1630908506261,
+          "stop" : 1630908548459,
+          "duration" : 42198
+        },
+        "flaky" : false,
+        "newFailed" : false,
+        "parameters" : [ ]
+      } ],
+      "uid" : "1ab4e53cd325a2376352a8286901cba1"
+    }, {
+      "name" : "Error: Failed: \"W[7] timeout in - signAndWaitTx - \\\" + 5HQ9Mm9L1HG53htEGDMsnhkkL7hEfF9vLstEQPtMLX5Gupqx + \\\" - \\\" + 73 + \\\" - \\\" + {\\\"isSigned\\\":true,\\\"method\\\":{\\\"args\\\":[{\\\"args\\\":[\\\"5HRDG1ES3WHYw5GNujxocmhAGHWU3ge8gPF1jYu64rMhBjoS\\\",\\\"250.0000 nUnit\\\"],\\\"method\\\":\\\"create\\\",\\\"section\\\":\\\"tokens\\\"}],\\\"method\\\":\\\"sudo\\\",\\\"section\\\":\\\"sudo\\\"},\\\"era\\\":{\\\"MortalEra\\\":{\\\"period\\\":\\\"64\\\",\\\"phase\\\":\\\"12\\\"}},\\\"nonce\\\":\\\"73\\\",\\\"signature\\\":\\\"0x527009fc7dbd8631b3f60e8378872e7ed768fbd7035e687448b2653d3cac37244425ace64d280799b5dd869f6b97c78ccc46c4226bf0cda5629a2dcaa0b6c485\\\",\\\"signer\\\":\\\"5HQ9Mm9L1HG53htEGDMsnhkkL7hEfF9vLstEQPtMLX5Gupqx\\\",\\\"tip\\\":\\\"0\\\"}\"",
+      "children" : [ {
+        "name" : "xyk-pallet - User Balance - Selling an asset does not require paying fees",
+        "uid" : "2eaa414bcf26f947",
+        "parentUid" : "540bbdd5bb0645dd4ae5c57cab2e16e6",
+        "status" : "failed",
+        "time" : {
+          "start" : 1630908508260,
+          "stop" : 1630908550426,
+          "duration" : 42166
+        },
+        "flaky" : false,
+        "newFailed" : false,
+        "parameters" : [ ]
+      } ],
+      "uid" : "540bbdd5bb0645dd4ae5c57cab2e16e6"
+    }, {
+      "name" : "Error: Failed: \"W[5] timeout in - signAndWaitTx - \\\" + 5EhG8qpvYc3znkW9cKtDHBKETyFY779AEKxfj5itF2KJXmwU + \\\" - \\\" + 0 + \\\" - \\\" + {\\\"isSigned\\\":true,\\\"method\\\":{\\\"args\\\":[\\\"0\\\",\\\"50.0000 nUnit\\\",\\\"0\\\",\\\"50.0000 nUnit\\\"],\\\"method\\\":\\\"createPool\\\",\\\"section\\\":\\\"xyk\\\"},\\\"era\\\":{\\\"MortalEra\\\":{\\\"period\\\":\\\"64\\\",\\\"phase\\\":\\\"12\\\"}},\\\"nonce\\\":\\\"0\\\",\\\"signature\\\":\\\"0x8e27e081773a23c6002c3f582c04c93393f3459d63e9f0b30f394b33b298966c05db3035b38bf8b6c972096ed783c7e40a9faec6752515f14dac5f156db62384\\\",\\\"signer\\\":\\\"5EhG8qpvYc3znkW9cKtDHBKETyFY779AEKxfj5itF2KJXmwU\\\",\\\"tip\\\":\\\"0\\\"}\"",
+      "children" : [ {
+        "name" : "xyk-pallet - Calculate required MGA fee - BuyAsset",
+        "uid" : "32c1bc87e71fa39e",
+        "parentUid" : "9db142653f361d6888fa17d061e97eb4",
+        "status" : "failed",
+        "time" : {
+          "start" : 1630908515708,
+          "stop" : 1630908557861,
+          "duration" : 42153
+        },
+        "flaky" : false,
+        "newFailed" : false,
+        "parameters" : [ ]
+      } ],
+      "uid" : "9db142653f361d6888fa17d061e97eb4"
+    }, {
+      "name" : "Error: Failed: \"W[3] timeout in - signAndWaitTx - \\\" + 5HQ9Mm9L1HG53htEGDMsnhkkL7hEfF9vLstEQPtMLX5Gupqx + \\\" - \\\" + 71 + \\\" - \\\" + {\\\"isSigned\\\":true,\\\"method\\\":{\\\"args\\\":[{\\\"args\\\":[\\\"0\\\",\\\"5E9ZXxRBVrkGGMQPTnUwpTvXzJ5JsNmpHE3PgBqq7uoNPouk\\\",\\\"100.0000 mUnit\\\"],\\\"method\\\":\\\"mint\\\",\\\"section\\\":\\\"tokens\\\"}],\\\"method\\\":\\\"sudo\\\",\\\"section\\\":\\\"sudo\\\"},\\\"era\\\":{\\\"MortalEra\\\":{\\\"period\\\":\\\"64\\\",\\\"phase\\\":\\\"12\\\"}},\\\"nonce\\\":\\\"71\\\",\\\"signature\\\":\\\"0x78201ccba3348ac2a66a91c4bc689a6a95069cffd1ceb0d9248a5d29dae14b174f8d0fafd827394d6d0fcd28894035911bd312a126fa62eafb7d9b2576388a8b\\\",\\\"signer\\\":\\\"5HQ9Mm9L1HG53htEGDMsnhkkL7hEfF9vLstEQPtMLX5Gupqx\\\",\\\"tip\\\":\\\"0\\\"}\"",
+      "children" : [ {
+        "name" : "xyk-pallet - SecurityTests - Only sudo can perform actions [tokens.create]",
+        "uid" : "39f5e3e4ec7566b1",
+        "parentUid" : "1841c23f20e7c1eacb52305ac552ed07",
+        "status" : "failed",
+        "time" : {
+          "start" : 1630908547685,
+          "stop" : 1630908547742,
+          "duration" : 57
+        },
+        "flaky" : false,
+        "newFailed" : false,
+        "parameters" : [ ]
+      }, {
+        "name" : "xyk-pallet - SecurityTests - Only sudo can perform actions [tokens.create to itself]",
+        "uid" : "703ec5e9fbcccae8",
+        "parentUid" : "1841c23f20e7c1eacb52305ac552ed07",
+        "status" : "failed",
+        "time" : {
+          "start" : 1630908547742,
+          "stop" : 1630908547809,
+          "duration" : 67
+        },
+        "flaky" : false,
+        "newFailed" : false,
+        "parameters" : [ ]
+      }, {
+        "name" : "xyk-pallet - SecurityTests - Only sudo can perform actions [tokens.mint]",
+        "uid" : "4b5cd9b2a6e7c637",
+        "parentUid" : "1841c23f20e7c1eacb52305ac552ed07",
+        "status" : "failed",
+        "time" : {
+          "start" : 1630908547809,
+          "stop" : 1630908547867,
+          "duration" : 58
+        },
+        "flaky" : false,
+        "newFailed" : false,
+        "parameters" : [ ]
+      }, {
+        "name" : "xyk-pallet - SecurityTests - Only sudo can perform actions [tokens.mint to itself]",
+        "uid" : "62821de607ecb6b9",
+        "parentUid" : "1841c23f20e7c1eacb52305ac552ed07",
+        "status" : "failed",
+        "time" : {
+          "start" : 1630908547867,
+          "stop" : 1630908547920,
+          "duration" : 53
+        },
+        "flaky" : false,
+        "newFailed" : false,
+        "parameters" : [ ]
+      } ],
+      "uid" : "1841c23f20e7c1eacb52305ac552ed07"
+    }, {
+      "name" : "Error: Failed: \"W[7] timeout in - signAndWaitTx - \\\" + 5HQ9Mm9L1HG53htEGDMsnhkkL7hEfF9vLstEQPtMLX5Gupqx + \\\" - \\\" + 78 + \\\" - \\\" + {\\\"isSigned\\\":true,\\\"method\\\":{\\\"args\\\":[{\\\"args\\\":[\\\"5FH43xGcpzAToj32kST6Xgq3YwCJ5CNvSbSiQ1ZZtohYxvgM\\\",\\\"250.0000 nUnit\\\"],\\\"method\\\":\\\"create\\\",\\\"section\\\":\\\"tokens\\\"}],\\\"method\\\":\\\"sudo\\\",\\\"section\\\":\\\"sudo\\\"},\\\"era\\\":{\\\"MortalEra\\\":{\\\"period\\\":\\\"64\\\",\\\"phase\\\":\\\"12\\\"}},\\\"nonce\\\":\\\"78\\\",\\\"signature\\\":\\\"0x4cf451f45c952f45e9c5216fa822eb8445e3319c7a10d09d16c6c7fab5f445276ffded9772ccaa5499fb36586ef76f277e4fdc9ad505cff5c219a6ff1251d78b\\\",\\\"signer\\\":\\\"5HQ9Mm9L1HG53htEGDMsnhkkL7hEfF9vLstEQPtMLX5Gupqx\\\",\\\"tip\\\":\\\"0\\\"}\"",
+      "children" : [ {
+        "name" : "xyk-pallet - User Balance - Buying an asset does not require paying fees",
+        "uid" : "7682f21580ec4ff8",
+        "parentUid" : "3cf98f19278687b30c8fb215f9e238d1",
+        "status" : "failed",
+        "time" : {
+          "start" : 1630908550426,
+          "stop" : 1630908592609,
+          "duration" : 42183
+        },
+        "flaky" : false,
+        "newFailed" : false,
+        "parameters" : [ ]
+      } ],
+      "uid" : "3cf98f19278687b30c8fb215f9e238d1"
+    }, {
+      "name" : "Error: Failed: \"W[3] timeout in - signAndWaitTx - \\\" + 5HQ9Mm9L1HG53htEGDMsnhkkL7hEfF9vLstEQPtMLX5Gupqx + \\\" - \\\" + 77 + \\\" - \\\" + {\\\"isSigned\\\":true,\\\"method\\\":{\\\"args\\\":[{\\\"args\\\":[\\\"5HQ9Mm9L1HG53htEGDMsnhkkL7hEfF9vLstEQPtMLX5Gupqx\\\",\\\"10.0000 pUnit\\\"],\\\"method\\\":\\\"create\\\",\\\"section\\\":\\\"tokens\\\"}],\\\"method\\\":\\\"sudo\\\",\\\"section\\\":\\\"sudo\\\"},\\\"era\\\":{\\\"MortalEra\\\":{\\\"period\\\":\\\"64\\\",\\\"phase\\\":\\\"12\\\"}},\\\"nonce\\\":\\\"77\\\",\\\"signature\\\":\\\"0x6a2cfa25a8826260088117d90131a07fe8ee1647e73ef39143086de570c80952ab981ae799371a5b2f44dbe15e57ce456407d70b36a84e8f1d78ddd171c59886\\\",\\\"signer\\\":\\\"5HQ9Mm9L1HG53htEGDMsnhkkL7hEfF9vLstEQPtMLX5Gupqx\\\",\\\"tip\\\":\\\"0\\\"}\"",
+      "children" : [ {
+        "name" : "validate parameters - buy [soldTokenId->0,boughtTokenId->1,amount->0,expected->1]",
+        "uid" : "d603fe6ab8fce301",
+        "parentUid" : "35b6253499f377c3624e80f11f9ab20a",
+        "status" : "failed",
+        "time" : {
+          "start" : 1630908592298,
+          "stop" : 1630908592327,
+          "duration" : 29
+        },
+        "flaky" : false,
+        "newFailed" : false,
+        "parameters" : [ ]
+      }, {
+        "name" : "validate parameters - buy [soldTokenId->0,boughtTokenId->1,amount->1,expected->0]",
+        "uid" : "5578892ee4370bd9",
+        "parentUid" : "35b6253499f377c3624e80f11f9ab20a",
+        "status" : "failed",
+        "time" : {
+          "start" : 1630908592327,
+          "stop" : 1630908592338,
+          "duration" : 11
+        },
+        "flaky" : false,
+        "newFailed" : false,
+        "parameters" : [ ]
+      }, {
+        "name" : "validate parameters - buy [soldTokenId->1,boughtTokenId->2,amount->0,expected->1]",
+        "uid" : "a4b3e50af3406548",
+        "parentUid" : "35b6253499f377c3624e80f11f9ab20a",
+        "status" : "failed",
+        "time" : {
+          "start" : 1630908592339,
+          "stop" : 1630908592349,
+          "duration" : 10
+        },
+        "flaky" : false,
+        "newFailed" : false,
+        "parameters" : [ ]
+      }, {
+        "name" : "validate parameters - buy [soldTokenId->1,boughtTokenId->2,amount->1,expected->2]",
+        "uid" : "497b3899cacf2a5d",
+        "parentUid" : "35b6253499f377c3624e80f11f9ab20a",
+        "status" : "failed",
+        "time" : {
+          "start" : 1630908592349,
+          "stop" : 1630908592364,
+          "duration" : 15
+        },
+        "flaky" : false,
+        "newFailed" : false,
+        "parameters" : [ ]
+      }, {
+        "name" : "validate parameters - buy [soldTokenId->2,boughtTokenId->1,amount->1,expected->0]",
+        "uid" : "2609306d0e32d25c",
+        "parentUid" : "35b6253499f377c3624e80f11f9ab20a",
+        "status" : "failed",
+        "time" : {
+          "start" : 1630908592364,
+          "stop" : 1630908592376,
+          "duration" : 12
+        },
+        "flaky" : false,
+        "newFailed" : false,
+        "parameters" : [ ]
+      }, {
+        "name" : "validate parameters - buy [soldTokenId->2,boughtTokenId->3,amount->1,expected->3]",
+        "uid" : "45b9b5b14eda7241",
+        "parentUid" : "35b6253499f377c3624e80f11f9ab20a",
+        "status" : "failed",
+        "time" : {
+          "start" : 1630908592376,
+          "stop" : 1630908592385,
+          "duration" : 9
+        },
+        "flaky" : false,
+        "newFailed" : false,
+        "parameters" : [ ]
+      }, {
+        "name" : "validate parameters - buy [soldTokenId->3,boughtTokenId->2,amount->1,expected->3]",
+        "uid" : "a5d0d75e6fd5161f",
+        "parentUid" : "35b6253499f377c3624e80f11f9ab20a",
+        "status" : "failed",
+        "time" : {
+          "start" : 1630908592385,
+          "stop" : 1630908592396,
+          "duration" : 11
+        },
+        "flaky" : false,
+        "newFailed" : false,
+        "parameters" : [ ]
+      }, {
+        "name" : "validate parameters - buy [soldTokenId->3,boughtTokenId->2,amount->2,expected->0]",
+        "uid" : "af7a4aa356ed52cf",
+        "parentUid" : "35b6253499f377c3624e80f11f9ab20a",
+        "status" : "failed",
+        "time" : {
+          "start" : 1630908592396,
+          "stop" : 1630908592406,
+          "duration" : 10
+        },
+        "flaky" : false,
+        "newFailed" : false,
+        "parameters" : [ ]
+      }, {
+        "name" : "validate parameters - sell [soldTokenId->0,boughtTokenId->1,amount->0,expected->0]",
+        "uid" : "ef57d02a286c6802",
+        "parentUid" : "35b6253499f377c3624e80f11f9ab20a",
+        "status" : "failed",
+        "time" : {
+          "start" : 1630908592406,
+          "stop" : 1630908592417,
+          "duration" : 11
+        },
+        "flaky" : false,
+        "newFailed" : false,
+        "parameters" : [ ]
+      }, {
+        "name" : "validate parameters - sell [soldTokenId->0,boughtTokenId->1,amount->1,expected->0]",
+        "uid" : "c78af571ad3eb092",
+        "parentUid" : "35b6253499f377c3624e80f11f9ab20a",
+        "status" : "failed",
+        "time" : {
+          "start" : 1630908592417,
+          "stop" : 1630908592428,
+          "duration" : 11
+        },
+        "flaky" : false,
+        "newFailed" : false,
+        "parameters" : [ ]
+      }, {
+        "name" : "validate parameters - sell [soldTokenId->1,boughtTokenId->2,amount->0,expected->0]",
+        "uid" : "2d13b40bb13f35bb",
+        "parentUid" : "35b6253499f377c3624e80f11f9ab20a",
+        "status" : "failed",
+        "time" : {
+          "start" : 1630908592428,
+          "stop" : 1630908592438,
+          "duration" : 10
+        },
+        "flaky" : false,
+        "newFailed" : false,
+        "parameters" : [ ]
+      }, {
+        "name" : "validate parameters - sell [soldTokenId->1,boughtTokenId->2,amount->1,expected->0]",
+        "uid" : "fe290b729c2e27ca",
+        "parentUid" : "35b6253499f377c3624e80f11f9ab20a",
+        "status" : "failed",
+        "time" : {
+          "start" : 1630908592438,
+          "stop" : 1630908592448,
+          "duration" : 10
+        },
+        "flaky" : false,
+        "newFailed" : false,
+        "parameters" : [ ]
+      }, {
+        "name" : "validate parameters - sell [soldTokenId->2,boughtTokenId->1,amount->1,expected->0]",
+        "uid" : "8ee82a3a1945920c",
+        "parentUid" : "35b6253499f377c3624e80f11f9ab20a",
+        "status" : "failed",
+        "time" : {
+          "start" : 1630908592448,
+          "stop" : 1630908592461,
+          "duration" : 13
+        },
+        "flaky" : false,
+        "newFailed" : false,
+        "parameters" : [ ]
+      }, {
+        "name" : "validate parameters - sell [soldTokenId->3,boughtTokenId->2,amount->1,expected->0]",
+        "uid" : "4986d549958332f3",
+        "parentUid" : "35b6253499f377c3624e80f11f9ab20a",
+        "status" : "failed",
+        "time" : {
+          "start" : 1630908592461,
+          "stop" : 1630908592471,
+          "duration" : 10
+        },
+        "flaky" : false,
+        "newFailed" : false,
+        "parameters" : [ ]
+      }, {
+        "name" : "validate parameters - sell [soldTokenId->2,boughtTokenId->3,amount->1,expected->0]",
+        "uid" : "d9ca328197e34ee9",
+        "parentUid" : "35b6253499f377c3624e80f11f9ab20a",
+        "status" : "failed",
+        "time" : {
+          "start" : 1630908592472,
+          "stop" : 1630908592481,
+          "duration" : 9
+        },
+        "flaky" : false,
+        "newFailed" : false,
+        "parameters" : [ ]
+      } ],
+      "uid" : "35b6253499f377c3624e80f11f9ab20a"
+    } ],
+    "uid" : "8fb3a91ba5aaf9de24cc8a92edc82b5d"
+  } ],
+  "name" : "categories"
+}

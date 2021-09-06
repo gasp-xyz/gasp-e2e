@@ -1,0 +1,52 @@
+{
+  "uid" : "f760c354995bb158",
+  "name" : "xyk-pallet - LiquidityOperation: mintLiquidity",
+  "fullName" : "test/parallel/xyk-pallet.liquidity.test.ts.xyk-pallet - LiquidityOperation: mintLiquidity",
+  "historyId" : "d50dea3e448451b6db0aa91b3ff58e96",
+  "time" : {
+    "start" : 1630908215011,
+    "stop" : 1630908257223,
+    "duration" : 42212
+  },
+  "description" : "",
+  "descriptionHtml" : "",
+  "status" : "failed",
+  "statusMessage" : "Error: Failed: \"W[6] timeout in - signAndWaitTx - \\\" + 5HQ9Mm9L1HG53htEGDMsnhkkL7hEfF9vLstEQPtMLX5Gupqx + \\\" - \\\" + 32 + \\\" - \\\" + {\\\"isSigned\\\":true,\\\"method\\\":{\\\"args\\\":[{\\\"args\\\":[\\\"5FCn8mNPH9RFQ5j8k7K2MJBZ8ddUNfHfUtXNg6rHCUsDmbnt\\\",\\\"250.0000 nUnit\\\"],\\\"method\\\":\\\"create\\\",\\\"section\\\":\\\"tokens\\\"}],\\\"method\\\":\\\"sudo\\\",\\\"section\\\":\\\"sudo\\\"},\\\"era\\\":{\\\"MortalEra\\\":{\\\"period\\\":\\\"64\\\",\\\"phase\\\":\\\"12\\\"}},\\\"nonce\\\":\\\"32\\\",\\\"signature\\\":\\\"0xbe5840fd1b44d28cec24dfeaa653fbe14eac7d760a9cc9fde196774fbb22d9103bfa4aae8d8cb0dcbc6c66737fa5c6d7bfcf86d4003dc4b2c771cdf596845f89\\\",\\\"signer\\\":\\\"5HQ9Mm9L1HG53htEGDMsnhkkL7hEfF9vLstEQPtMLX5Gupqx\\\",\\\"tip\\\":\\\"0\\\"}\"",
+  "statusTrace" : "Error: \n                    at Env.beforeEach (/home/goncer/projects/ghActions/actions-runner/_work/mangata-e2e/mangata-e2e/node_modules/jest-jasmine2/build/jasmineAsyncInstall.js:46:24)\n                    at beforeEach (/home/goncer/projects/ghActions/actions-runner/_work/mangata-e2e/mangata-e2e/node_modules/jest-jasmine2/build/jasmine/jasmineLight.js:118:29)\n                    at Object.<anonymous> (/home/goncer/projects/ghActions/actions-runner/_work/mangata-e2e/mangata-e2e/test/parallel/xyk-pallet.liquidity.test.ts:51:1)\n                    at Runtime._execModule (/home/goncer/projects/ghActions/actions-runner/_work/mangata-e2e/mangata-e2e/node_modules/jest-runtime/build/index.js:1299:24)\n                    at Runtime._loadModule (/home/goncer/projects/ghActions/actions-runner/_work/mangata-e2e/mangata-e2e/node_modules/jest-runtime/build/index.js:898:12)\n                    at Runtime.requireModule (/home/goncer/projects/ghActions/actions-runner/_work/mangata-e2e/mangata-e2e/node_modules/jest-runtime/build/index.js:746:10)\n                    at jasmine2 (/home/goncer/projects/ghActions/actions-runner/_work/mangata-e2e/mangata-e2e/node_modules/jest-jasmine2/build/index.js:230:13)\n                    at runTestInternal (/home/goncer/projects/ghActions/actions-runner/_work/mangata-e2e/mangata-e2e/node_modules/jest-runner/build/runTest.js:380:22)\n                    at processTicksAndRejections (internal/process/task_queues.js:95:5)\n                    at runTest (/home/goncer/projects/ghActions/actions-runner/_work/mangata-e2e/mangata-e2e/node_modules/jest-runner/build/runTest.js:472:34)",
+  "flaky" : false,
+  "newFailed" : false,
+  "beforeStages" : [ ],
+  "afterStages" : [ ],
+  "labels" : [ {
+    "name" : "suite",
+    "value" : "test/parallel/xyk-pallet.liquidity.test.ts"
+  }, {
+    "name" : "testClass",
+    "value" : "test/parallel/xyk-pallet.liquidity.test.ts"
+  }, {
+    "name" : "testMethod",
+    "value" : "xyk-pallet - LiquidityOperation: mintLiquidity"
+  }, {
+    "name" : "package",
+    "value" : "test/parallel/xyk-pallet.liquidity.test.ts"
+  }, {
+    "name" : "resultFormat",
+    "value" : "allure1"
+  } ],
+  "parameters" : [ ],
+  "links" : [ ],
+  "hidden" : false,
+  "retry" : false,
+  "extra" : {
+    "severity" : "normal",
+    "retries" : [ ],
+    "categories" : [ {
+      "name" : "Product defects",
+      "matchedStatuses" : [ ],
+      "flaky" : false
+    } ],
+    "tags" : [ ]
+  },
+  "source" : "f760c354995bb158.json",
+  "parameterValues" : [ ]
+}

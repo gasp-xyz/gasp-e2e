@@ -1,0 +1,52 @@
+{
+  "uid" : "25e2a4d408206aea",
+  "name" : "Sell assets from a wallet I own into a wallet I do not own: limit",
+  "fullName" : "xyk-pallet - Sell assets tests: Selling Assets you can.Sell assets from a wallet I own into a wallet I do not own: limit",
+  "historyId" : "7677dc7ca32ec73b71d691f5e0d1f5bb",
+  "time" : {
+    "start" : 1630908290055,
+    "stop" : 1630908332134,
+    "duration" : 42079
+  },
+  "description" : "",
+  "descriptionHtml" : "",
+  "status" : "failed",
+  "statusMessage" : "Error: Failed: \"W[3] timeout in - signAndWaitTx - \\\" + 5HQ9Mm9L1HG53htEGDMsnhkkL7hEfF9vLstEQPtMLX5Gupqx + \\\" - \\\" + 42 + \\\" - \\\" + {\\\"isSigned\\\":true,\\\"method\\\":{\\\"args\\\":[{\\\"args\\\":[\\\"5CArDT2BHwPcFncqA9T5M1TSxRwyRgTk5y9HhDGNRYh1ivVk\\\",\\\"250.0000 nUnit\\\"],\\\"method\\\":\\\"create\\\",\\\"section\\\":\\\"tokens\\\"}],\\\"method\\\":\\\"sudo\\\",\\\"section\\\":\\\"sudo\\\"},\\\"era\\\":{\\\"MortalEra\\\":{\\\"period\\\":\\\"64\\\",\\\"phase\\\":\\\"12\\\"}},\\\"nonce\\\":\\\"42\\\",\\\"signature\\\":\\\"0x324d48d32295ea3c5c61d55534d8cf587b504a6984752a49d07d3104b06ab777bfef7e70dc8574f52d13479509b3ac103d3d7397791d1fc41ff16aa70e67c382\\\",\\\"signer\\\":\\\"5HQ9Mm9L1HG53htEGDMsnhkkL7hEfF9vLstEQPtMLX5Gupqx\\\",\\\"tip\\\":\\\"0\\\"}\"",
+  "statusTrace" : "Error: \n                    at Env.it (/home/goncer/projects/ghActions/actions-runner/_work/mangata-e2e/mangata-e2e/node_modules/jest-jasmine2/build/jasmineAsyncInstall.js:95:24)\n                    at test (/home/goncer/projects/ghActions/actions-runner/_work/mangata-e2e/mangata-e2e/node_modules/jest-jasmine2/build/jasmine/jasmineLight.js:100:21)\n                    at Suite.<anonymous> (/home/goncer/projects/ghActions/actions-runner/_work/mangata-e2e/mangata-e2e/test/parallel/xyk-pallet.API.sellAsset.test.ts:355:3)\n                    at addSpecsToSuite (/home/goncer/projects/ghActions/actions-runner/_work/mangata-e2e/mangata-e2e/node_modules/jest-jasmine2/build/jasmine/Env.js:444:51)\n                    at Env.describe (/home/goncer/projects/ghActions/actions-runner/_work/mangata-e2e/mangata-e2e/node_modules/jest-jasmine2/build/jasmine/Env.js:414:11)\n                    at describe (/home/goncer/projects/ghActions/actions-runner/_work/mangata-e2e/mangata-e2e/node_modules/jest-jasmine2/build/jasmine/jasmineLight.js:88:18)\n                    at Object.<anonymous> (/home/goncer/projects/ghActions/actions-runner/_work/mangata-e2e/mangata-e2e/test/parallel/xyk-pallet.API.sellAsset.test.ts:262:1)\n                    at Runtime._execModule (/home/goncer/projects/ghActions/actions-runner/_work/mangata-e2e/mangata-e2e/node_modules/jest-runtime/build/index.js:1299:24)\n                    at Runtime._loadModule (/home/goncer/projects/ghActions/actions-runner/_work/mangata-e2e/mangata-e2e/node_modules/jest-runtime/build/index.js:898:12)\n                    at Runtime.requireModule (/home/goncer/projects/ghActions/actions-runner/_work/mangata-e2e/mangata-e2e/node_modules/jest-runtime/build/index.js:746:10)",
+  "flaky" : false,
+  "newFailed" : false,
+  "beforeStages" : [ ],
+  "afterStages" : [ ],
+  "labels" : [ {
+    "name" : "suite",
+    "value" : "xyk-pallet - Sell assets tests: Selling Assets you can"
+  }, {
+    "name" : "testClass",
+    "value" : "xyk-pallet - Sell assets tests: Selling Assets you can"
+  }, {
+    "name" : "testMethod",
+    "value" : "Sell assets from a wallet I own into a wallet I do not own: limit"
+  }, {
+    "name" : "package",
+    "value" : "xyk-pallet - Sell assets tests: Selling Assets you can"
+  }, {
+    "name" : "resultFormat",
+    "value" : "allure1"
+  } ],
+  "parameters" : [ ],
+  "links" : [ ],
+  "hidden" : false,
+  "retry" : false,
+  "extra" : {
+    "severity" : "normal",
+    "retries" : [ ],
+    "categories" : [ {
+      "name" : "Product defects",
+      "matchedStatuses" : [ ],
+      "flaky" : false
+    } ],
+    "tags" : [ ]
+  },
+  "source" : "25e2a4d408206aea.json",
+  "parameterValues" : [ ]
+}

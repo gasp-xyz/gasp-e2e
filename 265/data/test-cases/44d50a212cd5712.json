@@ -1,0 +1,52 @@
+{
+  "uid" : "44d50a212cd5712",
+  "name" : "Mint liquidities [1000] assets to a wallet with Max-1000,1000 => overflow.",
+  "fullName" : "xyk-pallet - Operate with a pool close to overflow.Mint liquidities [1000] assets to a wallet with Max-1000,1000 => overflow.",
+  "historyId" : "775f6fc3f5ec7b26bd30a34f4e236328",
+  "time" : {
+    "start" : 1630908374220,
+    "stop" : 1630908374265,
+    "duration" : 45
+  },
+  "description" : "",
+  "descriptionHtml" : "",
+  "status" : "failed",
+  "statusMessage" : "Error: Failed: \"W[1] timeout in - signAndWaitTx - \\\" + 5HQ9Mm9L1HG53htEGDMsnhkkL7hEfF9vLstEQPtMLX5Gupqx + \\\" - \\\" + 41 + \\\" - \\\" + {\\\"isSigned\\\":true,\\\"method\\\":{\\\"args\\\":[{\\\"args\\\":[\\\"5DkHk3N6NwPb34DJpRMuvSz3z1Ndf7v5BFHKTzcUBdehy6H9\\\",\\\"everything\\\"],\\\"method\\\":\\\"create\\\",\\\"section\\\":\\\"tokens\\\"}],\\\"method\\\":\\\"sudo\\\",\\\"section\\\":\\\"sudo\\\"},\\\"era\\\":{\\\"MortalEra\\\":{\\\"period\\\":\\\"64\\\",\\\"phase\\\":\\\"12\\\"}},\\\"nonce\\\":\\\"41\\\",\\\"signature\\\":\\\"0xced14506f186eab9a1b17ea0f7a355b8be43b481b16fbb30fb68d1ba5875122860e3434ce0ead91bec2e5b489eb9d5058474760f487d947e5080a00ea7ea8f81\\\",\\\"signer\\\":\\\"5HQ9Mm9L1HG53htEGDMsnhkkL7hEfF9vLstEQPtMLX5Gupqx\\\",\\\"tip\\\":\\\"0\\\"}\"",
+  "statusTrace" : "Error: \n                    at Env.beforeAll (/home/goncer/projects/ghActions/actions-runner/_work/mangata-e2e/mangata-e2e/node_modules/jest-jasmine2/build/jasmineAsyncInstall.js:46:24)\n                    at beforeAll (/home/goncer/projects/ghActions/actions-runner/_work/mangata-e2e/mangata-e2e/node_modules/jest-jasmine2/build/jasmine/jasmineLight.js:138:28)\n                    at Suite.<anonymous> (/home/goncer/projects/ghActions/actions-runner/_work/mangata-e2e/mangata-e2e/test/parallel/xyk-pallet.API.overflow.test.ts:124:3)\n                    at addSpecsToSuite (/home/goncer/projects/ghActions/actions-runner/_work/mangata-e2e/mangata-e2e/node_modules/jest-jasmine2/build/jasmine/Env.js:444:51)\n                    at Env.describe (/home/goncer/projects/ghActions/actions-runner/_work/mangata-e2e/mangata-e2e/node_modules/jest-jasmine2/build/jasmine/Env.js:414:11)\n                    at describe (/home/goncer/projects/ghActions/actions-runner/_work/mangata-e2e/mangata-e2e/node_modules/jest-jasmine2/build/jasmine/jasmineLight.js:88:18)\n                    at Object.<anonymous> (/home/goncer/projects/ghActions/actions-runner/_work/mangata-e2e/mangata-e2e/test/parallel/xyk-pallet.API.overflow.test.ts:115:1)\n                    at Runtime._execModule (/home/goncer/projects/ghActions/actions-runner/_work/mangata-e2e/mangata-e2e/node_modules/jest-runtime/build/index.js:1299:24)\n                    at Runtime._loadModule (/home/goncer/projects/ghActions/actions-runner/_work/mangata-e2e/mangata-e2e/node_modules/jest-runtime/build/index.js:898:12)\n                    at Runtime.requireModule (/home/goncer/projects/ghActions/actions-runner/_work/mangata-e2e/mangata-e2e/node_modules/jest-runtime/build/index.js:746:10)",
+  "flaky" : false,
+  "newFailed" : false,
+  "beforeStages" : [ ],
+  "afterStages" : [ ],
+  "labels" : [ {
+    "name" : "suite",
+    "value" : "xyk-pallet - Operate with a pool close to overflow"
+  }, {
+    "name" : "testClass",
+    "value" : "xyk-pallet - Operate with a pool close to overflow"
+  }, {
+    "name" : "testMethod",
+    "value" : "Mint liquidities [1000] assets to a wallet with Max-1000,1000 => overflow."
+  }, {
+    "name" : "package",
+    "value" : "xyk-pallet - Operate with a pool close to overflow"
+  }, {
+    "name" : "resultFormat",
+    "value" : "allure1"
+  } ],
+  "parameters" : [ ],
+  "links" : [ ],
+  "hidden" : false,
+  "retry" : false,
+  "extra" : {
+    "severity" : "normal",
+    "retries" : [ ],
+    "categories" : [ {
+      "name" : "Product defects",
+      "matchedStatuses" : [ ],
+      "flaky" : false
+    } ],
+    "tags" : [ ]
+  },
+  "source" : "44d50a212cd5712.json",
+  "parameterValues" : [ ]
+}

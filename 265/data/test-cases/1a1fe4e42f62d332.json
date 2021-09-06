@@ -1,0 +1,52 @@
+{
+  "uid" : "1a1fe4e42f62d332",
+  "name" : "Transfer [MAX] assets to other user when that user has 1 asset. Max+1 => overflow.",
+  "fullName" : "xyk-pallet - Check operations are not executed because of overflow in asset token.Transfer [MAX] assets to other user when that user has 1 asset. Max+1 => overflow.",
+  "historyId" : "ce6131a3606abf8008ef7baac1af2ab3",
+  "time" : {
+    "start" : 1630908205855,
+    "stop" : 1630908289988,
+    "duration" : 84133
+  },
+  "description" : "",
+  "descriptionHtml" : "",
+  "status" : "failed",
+  "statusMessage" : "Error: Failed: \"W[1] timeout in - signAndWaitTx - \\\" + 5HQ9Mm9L1HG53htEGDMsnhkkL7hEfF9vLstEQPtMLX5Gupqx + \\\" - \\\" + 27 + \\\" - \\\" + {\\\"isSigned\\\":true,\\\"method\\\":{\\\"args\\\":[{\\\"args\\\":[\\\"5FvmdX9ZyuGGa18rqkc1N4LZgZJHyPkF1GPpuHddxd9t75py\\\",\\\"everything\\\"],\\\"method\\\":\\\"create\\\",\\\"section\\\":\\\"tokens\\\"}],\\\"method\\\":\\\"sudo\\\",\\\"section\\\":\\\"sudo\\\"},\\\"era\\\":{\\\"MortalEra\\\":{\\\"period\\\":\\\"64\\\",\\\"phase\\\":\\\"12\\\"}},\\\"nonce\\\":\\\"27\\\",\\\"signature\\\":\\\"0x44cd8f6a81ff9cfdcb446de25f861d3d13921024423d73b59373407f75bae3252feadfb31b39bf17275d7797675f8ab30c72a7f3f3d23223816f0d7b4293d385\\\",\\\"signer\\\":\\\"5HQ9Mm9L1HG53htEGDMsnhkkL7hEfF9vLstEQPtMLX5Gupqx\\\",\\\"tip\\\":\\\"0\\\"}\"",
+  "statusTrace" : "Error: \n                    at Env.beforeEach (/home/goncer/projects/ghActions/actions-runner/_work/mangata-e2e/mangata-e2e/node_modules/jest-jasmine2/build/jasmineAsyncInstall.js:46:24)\n                    at beforeEach (/home/goncer/projects/ghActions/actions-runner/_work/mangata-e2e/mangata-e2e/node_modules/jest-jasmine2/build/jasmine/jasmineLight.js:118:29)\n                    at Suite.<anonymous> (/home/goncer/projects/ghActions/actions-runner/_work/mangata-e2e/mangata-e2e/test/parallel/xyk-pallet.API.overflow.test.ts:44:3)\n                    at addSpecsToSuite (/home/goncer/projects/ghActions/actions-runner/_work/mangata-e2e/mangata-e2e/node_modules/jest-jasmine2/build/jasmine/Env.js:444:51)\n                    at Env.describe (/home/goncer/projects/ghActions/actions-runner/_work/mangata-e2e/mangata-e2e/node_modules/jest-jasmine2/build/jasmine/Env.js:414:11)\n                    at describe (/home/goncer/projects/ghActions/actions-runner/_work/mangata-e2e/mangata-e2e/node_modules/jest-jasmine2/build/jasmine/jasmineLight.js:88:18)\n                    at Object.<anonymous> (/home/goncer/projects/ghActions/actions-runner/_work/mangata-e2e/mangata-e2e/test/parallel/xyk-pallet.API.overflow.test.ts:36:1)\n                    at Runtime._execModule (/home/goncer/projects/ghActions/actions-runner/_work/mangata-e2e/mangata-e2e/node_modules/jest-runtime/build/index.js:1299:24)\n                    at Runtime._loadModule (/home/goncer/projects/ghActions/actions-runner/_work/mangata-e2e/mangata-e2e/node_modules/jest-runtime/build/index.js:898:12)\n                    at Runtime.requireModule (/home/goncer/projects/ghActions/actions-runner/_work/mangata-e2e/mangata-e2e/node_modules/jest-runtime/build/index.js:746:10)",
+  "flaky" : false,
+  "newFailed" : false,
+  "beforeStages" : [ ],
+  "afterStages" : [ ],
+  "labels" : [ {
+    "name" : "suite",
+    "value" : "xyk-pallet - Check operations are not executed because of overflow in asset token"
+  }, {
+    "name" : "testClass",
+    "value" : "xyk-pallet - Check operations are not executed because of overflow in asset token"
+  }, {
+    "name" : "testMethod",
+    "value" : "Transfer [MAX] assets to other user when that user has 1 asset. Max+1 => overflow."
+  }, {
+    "name" : "package",
+    "value" : "xyk-pallet - Check operations are not executed because of overflow in asset token"
+  }, {
+    "name" : "resultFormat",
+    "value" : "allure1"
+  } ],
+  "parameters" : [ ],
+  "links" : [ ],
+  "hidden" : false,
+  "retry" : false,
+  "extra" : {
+    "severity" : "normal",
+    "retries" : [ ],
+    "categories" : [ {
+      "name" : "Product defects",
+      "matchedStatuses" : [ ],
+      "flaky" : false
+    } ],
+    "tags" : [ ]
+  },
+  "source" : "1a1fe4e42f62d332.json",
+  "parameterValues" : [ ]
+}

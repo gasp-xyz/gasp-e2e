@@ -1,0 +1,52 @@
+{
+  "uid" : "b9353a5335cd185f",
+  "name" : "xyk-pallet - User Balance - Creating a pool requires paying fees",
+  "fullName" : "test/parallel/xyk-pallet.API.testMGArequired.test.ts.xyk-pallet - User Balance - Creating a pool requires paying fees",
+  "historyId" : "8baa2290cd1b5720c126b891185eb20b",
+  "time" : {
+    "start" : 1630908422749,
+    "stop" : 1630908466063,
+    "duration" : 43314
+  },
+  "description" : "",
+  "descriptionHtml" : "",
+  "status" : "failed",
+  "statusMessage" : "Error: Failed: \"W[7] timeout in - signAndWaitTx - \\\" + 5HQ9Mm9L1HG53htEGDMsnhkkL7hEfF9vLstEQPtMLX5Gupqx + \\\" - \\\" + 62 + \\\" - \\\" + {\\\"isSigned\\\":true,\\\"method\\\":{\\\"args\\\":[{\\\"args\\\":[\\\"5CK7khoXkSCdyASqmcgBqAKij8wX8XZWJrDNaFzcAtFVLstb\\\",\\\"250.0000 nUnit\\\"],\\\"method\\\":\\\"create\\\",\\\"section\\\":\\\"tokens\\\"}],\\\"method\\\":\\\"sudo\\\",\\\"section\\\":\\\"sudo\\\"},\\\"era\\\":{\\\"MortalEra\\\":{\\\"period\\\":\\\"64\\\",\\\"phase\\\":\\\"12\\\"}},\\\"nonce\\\":\\\"62\\\",\\\"signature\\\":\\\"0x7e12bf9bf175edf1e9fa794d4ff5a1899c1aa9ff9f410b77729468c5caa7d0214cc1981a17a2255a88976afd4c751b2eaadcdaa8c474ed05213f2127d2b0fb8b\\\",\\\"signer\\\":\\\"5HQ9Mm9L1HG53htEGDMsnhkkL7hEfF9vLstEQPtMLX5Gupqx\\\",\\\"tip\\\":\\\"0\\\"}\"",
+  "statusTrace" : "Error: \n                    at Env.beforeEach (/home/goncer/projects/ghActions/actions-runner/_work/mangata-e2e/mangata-e2e/node_modules/jest-jasmine2/build/jasmineAsyncInstall.js:46:24)\n                    at beforeEach (/home/goncer/projects/ghActions/actions-runner/_work/mangata-e2e/mangata-e2e/node_modules/jest-jasmine2/build/jasmine/jasmineLight.js:118:29)\n                    at Object.<anonymous> (/home/goncer/projects/ghActions/actions-runner/_work/mangata-e2e/mangata-e2e/test/parallel/xyk-pallet.API.testMGArequired.test.ts:42:1)\n                    at Runtime._execModule (/home/goncer/projects/ghActions/actions-runner/_work/mangata-e2e/mangata-e2e/node_modules/jest-runtime/build/index.js:1299:24)\n                    at Runtime._loadModule (/home/goncer/projects/ghActions/actions-runner/_work/mangata-e2e/mangata-e2e/node_modules/jest-runtime/build/index.js:898:12)\n                    at Runtime.requireModule (/home/goncer/projects/ghActions/actions-runner/_work/mangata-e2e/mangata-e2e/node_modules/jest-runtime/build/index.js:746:10)\n                    at jasmine2 (/home/goncer/projects/ghActions/actions-runner/_work/mangata-e2e/mangata-e2e/node_modules/jest-jasmine2/build/index.js:230:13)\n                    at runTestInternal (/home/goncer/projects/ghActions/actions-runner/_work/mangata-e2e/mangata-e2e/node_modules/jest-runner/build/runTest.js:380:22)\n                    at processTicksAndRejections (internal/process/task_queues.js:95:5)\n                    at runTest (/home/goncer/projects/ghActions/actions-runner/_work/mangata-e2e/mangata-e2e/node_modules/jest-runner/build/runTest.js:472:34)",
+  "flaky" : false,
+  "newFailed" : false,
+  "beforeStages" : [ ],
+  "afterStages" : [ ],
+  "labels" : [ {
+    "name" : "suite",
+    "value" : "test/parallel/xyk-pallet.API.testMGArequired.test.ts"
+  }, {
+    "name" : "testClass",
+    "value" : "test/parallel/xyk-pallet.API.testMGArequired.test.ts"
+  }, {
+    "name" : "testMethod",
+    "value" : "xyk-pallet - User Balance - Creating a pool requires paying fees"
+  }, {
+    "name" : "package",
+    "value" : "test/parallel/xyk-pallet.API.testMGArequired.test.ts"
+  }, {
+    "name" : "resultFormat",
+    "value" : "allure1"
+  } ],
+  "parameters" : [ ],
+  "links" : [ ],
+  "hidden" : false,
+  "retry" : false,
+  "extra" : {
+    "severity" : "normal",
+    "retries" : [ ],
+    "categories" : [ {
+      "name" : "Product defects",
+      "matchedStatuses" : [ ],
+      "flaky" : false
+    } ],
+    "tags" : [ ]
+  },
+  "source" : "b9353a5335cd185f.json",
+  "parameterValues" : [ ]
+}

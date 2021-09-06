@@ -1,0 +1,52 @@
+{
+  "uid" : "159055308244e95b",
+  "name" : "xyk-pallet - Pool tests: createPool",
+  "fullName" : "test/parallel/xyk-pallet.pool.test.ts.xyk-pallet - Pool tests: createPool",
+  "historyId" : "a2ca07f827d069e059d2d382883604cd",
+  "time" : {
+    "start" : 1630908422199,
+    "stop" : 1630908422200,
+    "duration" : 1
+  },
+  "description" : "",
+  "descriptionHtml" : "",
+  "status" : "failed",
+  "statusMessage" : "TypeError: Cannot read property 'keyRingPair' of undefined",
+  "statusTrace" : "TypeError: Cannot read property 'keyRingPair' of undefined\n                    at Object.<anonymous> (/home/goncer/projects/ghActions/actions-runner/_work/mangata-e2e/mangata-e2e/test/parallel/xyk-pallet.pool.test.ts:128:15)\n                    at Object.asyncJestTest (/home/goncer/projects/ghActions/actions-runner/_work/mangata-e2e/mangata-e2e/node_modules/jest-jasmine2/build/jasmineAsyncInstall.js:106:37)\n                    at /home/goncer/projects/ghActions/actions-runner/_work/mangata-e2e/mangata-e2e/node_modules/jest-jasmine2/build/queueRunner.js:45:12\n                    at new Promise (<anonymous>)\n                    at mapper (/home/goncer/projects/ghActions/actions-runner/_work/mangata-e2e/mangata-e2e/node_modules/jest-jasmine2/build/queueRunner.js:28:19)\n                    at /home/goncer/projects/ghActions/actions-runner/_work/mangata-e2e/mangata-e2e/node_modules/jest-jasmine2/build/queueRunner.js:75:41\n                    at processTicksAndRejections (internal/process/task_queues.js:95:5)",
+  "flaky" : false,
+  "newFailed" : false,
+  "beforeStages" : [ ],
+  "afterStages" : [ ],
+  "labels" : [ {
+    "name" : "suite",
+    "value" : "test/parallel/xyk-pallet.pool.test.ts"
+  }, {
+    "name" : "testClass",
+    "value" : "test/parallel/xyk-pallet.pool.test.ts"
+  }, {
+    "name" : "testMethod",
+    "value" : "xyk-pallet - Pool tests: createPool"
+  }, {
+    "name" : "package",
+    "value" : "test/parallel/xyk-pallet.pool.test.ts"
+  }, {
+    "name" : "resultFormat",
+    "value" : "allure1"
+  } ],
+  "parameters" : [ ],
+  "links" : [ ],
+  "hidden" : false,
+  "retry" : false,
+  "extra" : {
+    "severity" : "normal",
+    "retries" : [ ],
+    "categories" : [ {
+      "name" : "Product defects",
+      "matchedStatuses" : [ ],
+      "flaky" : false
+    } ],
+    "tags" : [ ]
+  },
+  "source" : "159055308244e95b.json",
+  "parameterValues" : [ ]
+}
