@@ -1,3 +1,9 @@
+/*
+ *
+ * @group xyk
+ * @group asset
+ * @group parallel
+ */
 import { getApi, initApi } from "../../utils/api";
 import {
   calculate_sell_price_local,

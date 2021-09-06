@@ -595,3 +595,9 @@ export async function getAllAssetsInfo(): Promise<any[]> {
 
   return assetsInfo;
 }
+
+export async function calculateTxCost(transactionExtrinsic: string) {
+  const api = getApi();
+  const queryInfoResult = await api.rpc.payment.queryInfo(transactionExtrinsic);
+  return queryInfoResult.toHuman();
+}
