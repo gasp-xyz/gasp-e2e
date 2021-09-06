@@ -1,12 +1,12 @@
 {
-  "uid" : "63e24ae1671756d9",
+  "uid" : "d65a339b3acc5ee1",
   "name" : "As a User I can get test tokens from the faucet",
   "fullName" : "UI tests - Get Tokens from Faucet.As a User I can get test tokens from the faucet",
   "historyId" : "eec88a440f5cd4c786967d8a5233a8c0",
   "time" : {
-    "start" : 1630925547543,
-    "stop" : 1630925666241,
-    "duration" : 118698
+    "start" : 1630926383599,
+    "stop" : 1630926506195,
+    "duration" : 122596
   },
   "description" : "",
   "descriptionHtml" : "",
@@ -44,11 +44,20 @@
         "failed" : 1,
         "broken" : 0,
         "skipped" : 0,
-        "passed" : 11,
+        "passed" : 12,
         "unknown" : 0,
-        "total" : 12
+        "total" : 13
       },
       "items" : [ {
+        "uid" : "63e24ae1671756d9",
+        "reportUrl" : "https://mangata-finance.github.io/mangata-e2e/135//#testresult/63e24ae1671756d9",
+        "status" : "passed",
+        "time" : {
+          "start" : 1630925547543,
+          "stop" : 1630925666241,
+          "duration" : 118698
+        }
+      }, {
         "uid" : "52ac6b3eca522c2",
         "reportUrl" : "https://mangata-finance.github.io/mangata-e2e/134//#testresult/52ac6b3eca522c2",
         "status" : "passed",
@@ -152,6 +161,6 @@
     },
     "tags" : [ ]
   },
-  "source" : "63e24ae1671756d9.json",
+  "source" : "d65a339b3acc5ee1.json",
   "parameterValues" : [ ]
 }
