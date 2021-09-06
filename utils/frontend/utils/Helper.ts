@@ -9,7 +9,7 @@ const { By, until } = require("selenium-webdriver");
 require("chromedriver");
 
 export async function waitForElement(driver: WebDriver, xpath: string) {
-  await driver.wait(until.elementLocated(By.xpath(xpath)), 10000);
+  await driver.wait(until.elementLocated(By.xpath(xpath)), 20000);
 }
 
 export async function clickElement(driver: WebDriver, xpath: string) {
