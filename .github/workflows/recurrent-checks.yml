@@ -28,7 +28,7 @@ jobs:
       - name: Repository Dispatch
         uses: peter-evans/repository-dispatch@v1
         with:
-          token: ${{ secrets.REPO_ACCESS_TOKEN }}
+          token: ${{ secrets.GITHUB_TOKEN }}
           repository: ${{ matrix.repo }}
           event-type: run-ci
           client-payload: '{"scriptName": "${{ github.event.inputs.scriptName }}", "environment": "${{ github.event.inputs.environment }}"}'
