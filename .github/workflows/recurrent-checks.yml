@@ -1,0 +1,32 @@
+name: UI tests
+
+on:
+#  schedule:
+#    - cron: "1 00,12 * * *" #lets run this job every 12 hours.
+  workflow_dispatch:
+      inputs:
+        scriptName:
+          description: 'Name of the script to run'
+          required: false
+          default: 'test-ci'
+        environment:
+          description: 'Generate new Docker image'
+          required: false
+          default: 'staging'
+      # For manually trigger
+ 
+jobs:
+  dispatch:
+    needs: build
+    strategy:
+      matrix:
+        repo: ['mangata-finance/mangata-e2e']
+    runs-on: ubuntu-latest
+    steps:
+      - name: Repository Dispatch
+        uses: peter-evans/repository-dispatch@v1
+        with:
+          token: ${{ secrets.REPO_ACCESS_TOKEN }}
+          repository: ${{ matrix.repo }}
+          event-type: run-ci
+          client-payload: '{"scriptName": "${{ github.event.inputs.scriptName }}", "environment": "${{ github.event.inputs.environment }}"}'
