@@ -3,6 +3,7 @@
  * @group xyk
  * @group api
  * @group sequential
+ * @group critical
  */
 import { api, getApi, initApi } from "../../utils/api";
 import {
