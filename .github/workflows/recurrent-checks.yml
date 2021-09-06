@@ -1,8 +1,9 @@
-name: UI tests
+name: CI check
 
 on:
 #  schedule:
 #    - cron: "1 00,12 * * *" #lets run this job every 12 hours.
+
   workflow_dispatch:
       inputs:
         scriptName:
@@ -16,8 +17,9 @@ on:
       # For manually trigger
  
 jobs:
+
   dispatch:
-    needs: build
+
     strategy:
       matrix:
         repo: ['mangata-finance/mangata-e2e']
