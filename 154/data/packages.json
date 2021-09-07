@@ -1,0 +1,172 @@
+{
+  "uid" : "83edc06c07f9ae9e47eb6dd1b683e4e2",
+  "children" : [ {
+    "name" : "UI tests - Get Tokens from Faucet",
+    "children" : [ {
+      "name" : "As a User I get the right values for Pool investment",
+      "uid" : "98a539c458a90553",
+      "parentUid" : "e0b92ad8f9649540b463b21b6e90d991",
+      "status" : "failed",
+      "time" : {
+        "start" : 1630999975469,
+        "stop" : 1630999975478,
+        "duration" : 9
+      },
+      "flaky" : true,
+      "newFailed" : false,
+      "parameters" : [ ]
+    }, {
+      "name" : "As a User I can get test tokens from the faucet",
+      "uid" : "7e090f00bed4ff45",
+      "parentUid" : "e0b92ad8f9649540b463b21b6e90d991",
+      "status" : "failed",
+      "time" : {
+        "start" : 1630999976483,
+        "stop" : 1631000001750,
+        "duration" : 25267
+      },
+      "flaky" : false,
+      "newFailed" : false,
+      "parameters" : [ ]
+    } ],
+    "uid" : "e0b92ad8f9649540b463b21b6e90d991"
+  }, {
+    "name" : "test/ci/xyk-ci.validate",
+    "children" : [ {
+      "name" : "setup.test.ts",
+      "children" : [ {
+        "name" : "xyk-CI - validate pools created: Pool[4,5]",
+        "uid" : "f996114c7fb587cd",
+        "parentUid" : "d297bf9cb0fb63197799c574d03fb1c2",
+        "status" : "failed",
+        "time" : {
+          "start" : 1630999976017,
+          "stop" : 1630999976053,
+          "duration" : 36
+        },
+        "flaky" : false,
+        "newFailed" : false,
+        "parameters" : [ ]
+      }, {
+        "name" : "xyk-CI - validate pools created: Pool[0,5]",
+        "uid" : "36167b99f75755cc",
+        "parentUid" : "d297bf9cb0fb63197799c574d03fb1c2",
+        "status" : "failed",
+        "time" : {
+          "start" : 1630999976053,
+          "stop" : 1630999976054,
+          "duration" : 1
+        },
+        "flaky" : false,
+        "newFailed" : false,
+        "parameters" : [ ]
+      }, {
+        "name" : "xyk-CI - validate pools created: Pool[0,6]",
+        "uid" : "535ec8e0dc86e475",
+        "parentUid" : "d297bf9cb0fb63197799c574d03fb1c2",
+        "status" : "failed",
+        "time" : {
+          "start" : 1630999976054,
+          "stop" : 1630999976054,
+          "duration" : 0
+        },
+        "flaky" : false,
+        "newFailed" : false,
+        "parameters" : [ ]
+      }, {
+        "name" : "xyk-CI - validate user got the right Assets",
+        "uid" : "6630b347c0c27cac",
+        "parentUid" : "d297bf9cb0fb63197799c574d03fb1c2",
+        "status" : "failed",
+        "time" : {
+          "start" : 1630999976055,
+          "stop" : 1630999976056,
+          "duration" : 1
+        },
+        "flaky" : false,
+        "newFailed" : false,
+        "parameters" : [ ]
+      }, {
+        "name" : "xyk-CI - validate pools created: Pool[4,6]",
+        "uid" : "ccc1fa96638ff171",
+        "parentUid" : "d297bf9cb0fb63197799c574d03fb1c2",
+        "status" : "failed",
+        "time" : {
+          "start" : 1630999976055,
+          "stop" : 1630999976055,
+          "duration" : 0
+        },
+        "flaky" : false,
+        "newFailed" : false,
+        "parameters" : [ ]
+      } ],
+      "uid" : "setup.test.ts"
+    }, {
+      "name" : "node.test.ts",
+      "children" : [ {
+        "name" : "xyk-CI - Node is up and running",
+        "uid" : "328d8ba3827669e6",
+        "parentUid" : "6d4ff15d07106bc7d5c87e79c36210fc",
+        "status" : "failed",
+        "time" : {
+          "start" : 1631000008902,
+          "stop" : 1631000008903,
+          "duration" : 1
+        },
+        "flaky" : false,
+        "newFailed" : false,
+        "parameters" : [ ]
+      } ],
+      "uid" : "node.test.ts"
+    }, {
+      "name" : "assetInfo.test.ts",
+      "children" : [ {
+        "name" : "xyk-CI - AssetInfo contains assets for MGA and Ether",
+        "uid" : "3566d9f49c8dc1d",
+        "parentUid" : "cf4510bdf0aeeaecf387372cdc0653d3",
+        "status" : "failed",
+        "time" : {
+          "start" : 1631000009749,
+          "stop" : 1631000009783,
+          "duration" : 34
+        },
+        "flaky" : false,
+        "newFailed" : false,
+        "parameters" : [ ]
+      } ],
+      "uid" : "assetInfo.test.ts"
+    } ],
+    "uid" : "test/ci/xyk-ci.validate"
+  }, {
+    "name" : "UI tests: Infra",
+    "children" : [ {
+      "name" : "Validate that Mangata Frontend up and running",
+      "uid" : "df9da64a3bf565ce",
+      "parentUid" : "4da232abacc86f64ea7024eed46f94f2",
+      "status" : "failed",
+      "time" : {
+        "start" : 1631000002857,
+        "stop" : 1631000005562,
+        "duration" : 2705
+      },
+      "flaky" : false,
+      "newFailed" : false,
+      "parameters" : [ ]
+    }, {
+      "name" : "Validate that Frontend retrieves AssetInfo data",
+      "uid" : "b0eaf744d291f697",
+      "parentUid" : "4da232abacc86f64ea7024eed46f94f2",
+      "status" : "failed",
+      "time" : {
+        "start" : 1631000005562,
+        "stop" : 1631000008381,
+        "duration" : 2819
+      },
+      "flaky" : false,
+      "newFailed" : false,
+      "parameters" : [ ]
+    } ],
+    "uid" : "4da232abacc86f64ea7024eed46f94f2"
+  } ],
+  "name" : "packages"
+}
