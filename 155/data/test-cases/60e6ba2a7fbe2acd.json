@@ -1,0 +1,104 @@
+{
+  "uid" : "60e6ba2a7fbe2acd",
+  "name" : "xyk-CI - AssetInfo contains assets for MGA and Ether",
+  "fullName" : "test/ci/xyk-ci.validate.assetInfo.test.ts.xyk-CI - AssetInfo contains assets for MGA and Ether",
+  "historyId" : "16033ac11d5c3e34e518da599466c153",
+  "time" : {
+    "start" : 1631000570307,
+    "stop" : 1631000570514,
+    "duration" : 207
+  },
+  "description" : "",
+  "descriptionHtml" : "",
+  "status" : "passed",
+  "flaky" : false,
+  "newFailed" : false,
+  "beforeStages" : [ ],
+  "afterStages" : [ ],
+  "labels" : [ {
+    "name" : "suite",
+    "value" : "test/ci/xyk-ci.validate.assetInfo.test.ts"
+  }, {
+    "name" : "testClass",
+    "value" : "test/ci/xyk-ci.validate.assetInfo.test.ts"
+  }, {
+    "name" : "testMethod",
+    "value" : "xyk-CI - AssetInfo contains assets for MGA and Ether"
+  }, {
+    "name" : "package",
+    "value" : "test/ci/xyk-ci.validate.assetInfo.test.ts"
+  }, {
+    "name" : "resultFormat",
+    "value" : "allure1"
+  } ],
+  "parameters" : [ ],
+  "links" : [ ],
+  "hidden" : false,
+  "retry" : false,
+  "extra" : {
+    "severity" : "normal",
+    "retries" : [ ],
+    "categories" : [ ],
+    "history" : {
+      "statistic" : {
+        "failed" : 2,
+        "broken" : 0,
+        "skipped" : 0,
+        "passed" : 4,
+        "unknown" : 0,
+        "total" : 6
+      },
+      "items" : [ {
+        "uid" : "3566d9f49c8dc1d",
+        "reportUrl" : "https://mangata-finance.github.io/mangata-e2e/154//#testresult/3566d9f49c8dc1d",
+        "status" : "failed",
+        "statusDetails" : "Error: Endpoint should start with 'ws://', received '\"wss://staging.testnode.mangata.finance:9945\"'",
+        "time" : {
+          "start" : 1631000009749,
+          "stop" : 1631000009783,
+          "duration" : 34
+        }
+      }, {
+        "uid" : "67393fe73f0fe3",
+        "reportUrl" : "https://mangata-finance.github.io/mangata-e2e/153//#testresult/67393fe73f0fe3",
+        "status" : "failed",
+        "statusDetails" : "Error: Endpoint should start with 'ws://', received '\"wss://develop.testnode.mangata.finance:9945\"'",
+        "time" : {
+          "start" : 1630999946340,
+          "stop" : 1630999946369,
+          "duration" : 29
+        }
+      }, {
+        "uid" : "dde2201b7ab2c980",
+        "reportUrl" : "https://mangata-finance.github.io/mangata-e2e/143//#testresult/dde2201b7ab2c980",
+        "status" : "passed",
+        "time" : {
+          "start" : 1630995908795,
+          "stop" : 1630995909338,
+          "duration" : 543
+        }
+      }, {
+        "uid" : "f9d8ec47cadb8e8f",
+        "reportUrl" : "https://mangata-finance.github.io/mangata-e2e/141//#testresult/f9d8ec47cadb8e8f",
+        "status" : "passed",
+        "time" : {
+          "start" : 1630934397000,
+          "stop" : 1630934397554,
+          "duration" : 554
+        }
+      }, {
+        "uid" : "f109a4c76613eb8d",
+        "reportUrl" : "https://mangata-finance.github.io/mangata-e2e/138//#testresult/f109a4c76613eb8d",
+        "status" : "passed",
+        "time" : {
+          "start" : 1630928096789,
+          "stop" : 1630928097324,
+          "duration" : 535
+        }
+      } ]
+    },
+    "tags" : [ ]
+  },
+  "source" : "60e6ba2a7fbe2acd.json",
+  "parameterValues" : [ ]
+}
