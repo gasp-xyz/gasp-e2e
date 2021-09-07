@@ -1,0 +1,46 @@
+{
+  "uid" : "b9f3df5a9af7e2a0",
+  "name" : "Bond operation locks some amount",
+  "fullName" : "xyk-pallet - Sell Asset: validate Errors:.Bond operation locks some amount",
+  "historyId" : "2c3dad72504039bdda0c53211c41ab65",
+  "time" : {
+    "start" : 1631028564808,
+    "stop" : 1631028583508,
+    "duration" : 18700
+  },
+  "description" : "",
+  "descriptionHtml" : "",
+  "status" : "passed",
+  "flaky" : false,
+  "newFailed" : false,
+  "beforeStages" : [ ],
+  "afterStages" : [ ],
+  "labels" : [ {
+    "name" : "suite",
+    "value" : "xyk-pallet - Sell Asset: validate Errors:"
+  }, {
+    "name" : "testClass",
+    "value" : "xyk-pallet - Sell Asset: validate Errors:"
+  }, {
+    "name" : "testMethod",
+    "value" : "Bond operation locks some amount"
+  }, {
+    "name" : "package",
+    "value" : "xyk-pallet - Sell Asset: validate Errors:"
+  }, {
+    "name" : "resultFormat",
+    "value" : "allure1"
+  } ],
+  "parameters" : [ ],
+  "links" : [ ],
+  "hidden" : false,
+  "retry" : false,
+  "extra" : {
+    "severity" : "normal",
+    "retries" : [ ],
+    "categories" : [ ],
+    "tags" : [ ]
+  },
+  "source" : "b9f3df5a9af7e2a0.json",
+  "parameterValues" : [ ]
+}
