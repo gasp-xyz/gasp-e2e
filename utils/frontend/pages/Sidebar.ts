@@ -19,7 +19,6 @@ const DIV_FAUCET_READY = "faucet-isReady-header";
 const LBL_TOKEN_AMOUNT = "wallet-tokensAmount";
 
 const SPINNER_LOADING = `//*[@class = 'Sidebar__loading']`;
-
 export class Sidebar {
   private buildPoolDataTestId(asseName1: string, assetName2: string) {
     return `poolsOverview-item-${asseName1}-${assetName2}`;
@@ -86,8 +85,15 @@ export class Sidebar {
   }
 
   async waitForLoad() {
-    await waitForElementToDissapear(this.driver, SPINNER_LOADING);
+    return new Promise<void>(async (resolve, reject) => {
+      setTimeout(() => {
+        reject("TIMEOUT: Waiting for " + SPINNER_LOADING + " to dissapear");
+      }, 20000);
+      await waitForElementToDissapear(this.driver, SPINNER_LOADING);
+      resolve();
+    });
   }
+
   private async isDisplayed(elementXpath: string) {
     try {
       await waitForElement(this.driver, elementXpath, 2000);

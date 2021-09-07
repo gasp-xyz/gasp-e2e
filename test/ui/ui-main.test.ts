@@ -87,8 +87,11 @@ describe("UI tests - Extension management", () => {
       expect.getState().currentTestName + " - " + session
     );
     await driver.quit();
+    DriverBuilder.destroy();
     const api = getApi();
-    await api.disconnect();
+    try {
+      await api.disconnect();
+    } catch (error) {}
   });
 });
 
