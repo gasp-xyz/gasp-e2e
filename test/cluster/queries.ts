@@ -1,10 +1,8 @@
 import { Node } from "./types";
 
-import { CodecHash } from "@polkadot/types/interfaces";
-
 export { getAllNodesLatestHash, getBalanceAtHash, getLastBlockHash };
 
-async function getBalanceAtHash(node: Node, hash: CodecHash, address: string) {
+async function getBalanceAtHash(node: Node, hash: string, address: string) {
   const balance = await node.api?.query.system.account.at(hash, address);
   return balance;
 }
@@ -22,7 +20,8 @@ async function getLastBlockHash(node: Node) {
 const getAllNodesLatestHash = async (nodes: Node[]) => {
   const hashes = Promise.all(
     nodes.map(async (node) => {
-      let hash = await getLastBlockHash(node);
+      const hash = await getLastBlockHash(node);
+      // eslint-disable-next-line no-console
       console.log(`${node.name}: ${hash}`);
       return hash;
     })
