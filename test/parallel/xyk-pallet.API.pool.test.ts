@@ -1,3 +1,9 @@
+/*
+ *
+ * @group xyk
+ * @group api
+ * @group parallel
+ */
 import { getApi, initApi } from "../../utils/api";
 import {
   getBalanceOfPool,
@@ -22,7 +28,10 @@ import {
   validateStatusWhenPoolCreated,
 } from "../../utils/validators";
 import { Assets } from "../../utils/Assets";
-import { getEnvironmentRequiredVars } from "../../utils/utils";
+import {
+  calculateLiqAssetAmount,
+  getEnvironmentRequiredVars,
+} from "../../utils/utils";
 import { getEventResultFromTxWait } from "../../utils/txHandler";
 import { testLog } from "../../utils/Logger";
 
@@ -261,11 +270,14 @@ describe("xyk-pallet - Pool tests: a pool can:", () => {
       firstCurrency,
       secondCurrency
     );
-    const liquidity_assets_minted = first_asset_amount.add(second_asset_amount);
+    const liquidity_assets_minted = calculateLiqAssetAmount(
+      first_asset_amount,
+      second_asset_amount
+    );
     testUser2.addAsset(liquidity_asset_id, new BN(0));
     await testUser2.refreshAmounts(AssetWallet.AFTER);
 
-    await testUser2.validateWalletIncreased(liquidity_asset_id, new BN(10000));
+    await testUser2.validateWalletIncreased(liquidity_asset_id, new BN(5000));
     await testUser2.validateWalletReduced(firstCurrency, new BN(5000));
     await testUser2.validateWalletReduced(
       secondCurrency,
@@ -279,7 +291,7 @@ describe("xyk-pallet - Pool tests: a pool can:", () => {
     ]).toEqual(pool_balance);
 
     const total_liquidity_assets = await getAssetSupply(liquidity_asset_id);
-    expect(liquidity_assets_minted.add(new BN(10000))).toEqual(
+    expect(liquidity_assets_minted.add(new BN(5000))).toEqual(
       total_liquidity_assets
     );
   });
@@ -303,12 +315,16 @@ describe("xyk-pallet - Pool tests: a pool can:", () => {
       ]);
       expect(eventResponse.state).toEqual(ExtrinsicResult.ExtrinsicSuccess);
     });
+    await testUser2.refreshAmounts(AssetWallet.BEFORE);
 
     const liquidity_asset_id = await getLiquidityAssetId(
       firstCurrency,
       secondCurrency
     );
-    const liquidity_assets_minted = first_asset_amount.add(second_asset_amount);
+    const liquidity_assets_minted = calculateLiqAssetAmount(
+      first_asset_amount,
+      second_asset_amount
+    );
 
     testUser2.addAsset(liquidity_asset_id, new BN(0));
     await testUser2.refreshAmounts(AssetWallet.BEFORE);
@@ -320,7 +336,7 @@ describe("xyk-pallet - Pool tests: a pool can:", () => {
       testUser2.keyRingPair,
       firstCurrency,
       secondCurrency,
-      new BN(5000)
+      new BN(2500)
     ).then((result) => {
       const eventResponse = getEventResultFromTxWait(result, [
         "xyk",
@@ -331,7 +347,7 @@ describe("xyk-pallet - Pool tests: a pool can:", () => {
     });
 
     await testUser2.refreshAmounts(AssetWallet.AFTER);
-    await testUser2.validateWalletReduced(liquidity_asset_id, new BN(5000));
+    await testUser2.validateWalletReduced(liquidity_asset_id, new BN(2500));
     await testUser2.validateWalletIncreased(firstCurrency, new BN(2500));
     await testUser2.validateWalletIncreased(secondCurrency, new BN(2500));
     //TODO: pending to validate.
@@ -339,10 +355,10 @@ describe("xyk-pallet - Pool tests: a pool can:", () => {
     expect([
       new BN(first_asset_amount).add(new BN(2500)),
       new BN(second_asset_amount).add(new BN(2500).add(new BN(1))),
-    ]).toEqual(pool_balance);
+    ]).collectionBnEqual(pool_balance);
 
     const total_liquidity_assets = await getAssetSupply(liquidity_asset_id);
-    expect(liquidity_assets_minted.add(new BN(5000))).toEqual(
+    expect(liquidity_assets_minted.add(new BN(2500))).toEqual(
       total_liquidity_assets
     );
   });
@@ -353,7 +369,10 @@ describe("xyk-pallet - Pool tests: a pool can:", () => {
       firstCurrency,
       secondCurrency
     );
-    const liquidity_assets_minted = first_asset_amount.add(second_asset_amount);
+    const liquidity_assets_minted = calculateLiqAssetAmount(
+      first_asset_amount,
+      second_asset_amount
+    );
 
     testUser1.addAsset(liquidity_asset_id, new BN(0));
     //validate

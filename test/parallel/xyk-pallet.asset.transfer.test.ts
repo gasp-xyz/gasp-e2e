@@ -1,3 +1,9 @@
+/*
+ *
+ * @group xyk
+ * @group asset
+ * @group parallel
+ */
 import { getApi, initApi } from "../../utils/api";
 import { getBalanceOfPool, transferAll, transferAsset } from "../../utils/tx";
 import { waitNewBlock, ExtrinsicResult } from "../../utils/eventListeners";

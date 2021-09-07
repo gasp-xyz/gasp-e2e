@@ -1,3 +1,9 @@
+/*
+ *
+ * @group xyk
+ * @group api
+ * @group parallel
+ */
 import { getApi, initApi } from "../../utils/api";
 import {
   burnLiquidity,

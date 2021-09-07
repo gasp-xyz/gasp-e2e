@@ -1,3 +1,9 @@
+/*
+ *
+ * @group xyk
+ * @group api
+ * @group sequential
+ */
 import { api, getApi, initApi } from "../../utils/api";
 import {
   sellAsset,

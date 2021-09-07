@@ -8,7 +8,7 @@ import {
   getTreasuryBurn,
 } from "./tx";
 import { AssetWallet, User } from "./User";
-import { fromBNToUnitString } from "./utils";
+import { calculateLiqAssetAmount, fromBNToUnitString } from "./utils";
 
 export function validateTransactionSucessful(
   eventResult: EventResult,
@@ -108,7 +108,10 @@ export async function validateStatusWhenPoolCreated(
     firstCurrency,
     secondCurrency
   );
-  const liquidity_assets_minted = first_asset_amount.add(second_asset_amount);
+  const liquidity_assets_minted = calculateLiqAssetAmount(
+    first_asset_amount,
+    second_asset_amount
+  );
 
   testUser1.addAsset(liquidity_asset_id, new BN(0));
 
@@ -124,13 +127,13 @@ export async function validateStatusWhenPoolCreated(
   expect([
     pool_balance_before[0].add(first_asset_amount),
     pool_balance_before[1].add(second_asset_amount),
-  ]).toEqual(pool_balance);
+  ]).collectionBnEqual(pool_balance);
 
   const balance = await getBalanceOfPool(secondCurrency, firstCurrency);
   expect([
     pool_balance_before[0].add(first_asset_amount),
     pool_balance_before[1].add(second_asset_amount),
-  ]).toEqual([balance[1], balance[0]]);
+  ]).collectionBnEqual([balance[1], balance[0]]);
 
   const total_liquidity_assets = await getAssetSupply(liquidity_asset_id);
   expect(total_liquidity_assets_before.add(liquidity_assets_minted)).bnEqual(

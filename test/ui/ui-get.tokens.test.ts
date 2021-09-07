@@ -1,3 +1,7 @@
+/*
+ *
+ * @group ui
+ */
 import { Keyring } from "@polkadot/api";
 import { WebDriver } from "selenium-webdriver";
 import { getApi, initApi } from "../../utils/api";
