@@ -1,0 +1,90 @@
+{
+  "uid" : "94290deed0e734d3",
+  "name" : "Validate that Mangata Frontend up and running",
+  "fullName" : "UI tests: Infra.Validate that Mangata Frontend up and running",
+  "historyId" : "8422b22f4ca0fa2b11be83bcdc18911d",
+  "time" : {
+    "start" : 1630999941416,
+    "stop" : 1630999943310,
+    "duration" : 1894
+  },
+  "description" : "",
+  "descriptionHtml" : "",
+  "status" : "failed",
+  "statusMessage" : "WebDriverError: invalid argument\n                  (Session info: chrome=91.0.4472.106)\n                  (Driver info: chromedriver=91.0.4472.101 (af52a90bf87030dd1523486a1cd3ae25c5d76c9b-refs/branch-heads/4472@{#1462}),platform=Linux 5.8.0-1040-azure x86_64)",
+  "statusTrace" : "WebDriverError: invalid argument\n                  (Session info: chrome=91.0.4472.106)\n                  (Driver info: chromedriver=91.0.4472.101 (af52a90bf87030dd1523486a1cd3ae25c5d76c9b-refs/branch-heads/4472@{#1462}),platform=Linux 5.8.0-1040-azure x86_64)\n                    at Object.checkLegacyResponse (/home/runner/work/mangata-e2e/mangata-e2e/node_modules/selenium-webdriver/lib/error.js:546:15)\n                    at parseHttpResponse (/home/runner/work/mangata-e2e/mangata-e2e/node_modules/selenium-webdriver/lib/http.js:509:13)\n                    at /home/runner/work/mangata-e2e/mangata-e2e/node_modules/selenium-webdriver/lib/http.js:441:30\n                    at processTicksAndRejections (internal/process/task_queues.js:95:5)\n                From: Task: WebDriver.navigate().to(\"https://develop.mangata.finance/\")\n                    at mixin.schedule (/home/runner/work/mangata-e2e/mangata-e2e/node_modules/selenium-webdriver/lib/webdriver.js:807:17)\n                    at Navigation.to (/home/runner/work/mangata-e2e/mangata-e2e/node_modules/selenium-webdriver/lib/webdriver.js:1133:25)\n                    at mixin.get (/home/runner/work/mangata-e2e/mangata-e2e/node_modules/selenium-webdriver/lib/webdriver.js:988:28)\n                    at Mangata.go (/home/runner/work/mangata-e2e/mangata-e2e/utils/frontend/pages/Mangata.ts:33:23)\n                    at Object.<anonymous> (/home/runner/work/mangata-e2e/mangata-e2e/test/ci/ui-ci.validate.ui.test.ts:28:15)\n                    at Object.asyncJestTest (/home/runner/work/mangata-e2e/mangata-e2e/node_modules/jest-jasmine2/build/jasmineAsyncInstall.js:106:37)\n                    at /home/runner/work/mangata-e2e/mangata-e2e/node_modules/jest-jasmine2/build/queueRunner.js:45:12\n                    at new Promise (<anonymous>)\n                    at mapper (/home/runner/work/mangata-e2e/mangata-e2e/node_modules/jest-jasmine2/build/queueRunner.js:28:19)\n                    at /home/runner/work/mangata-e2e/mangata-e2e/node_modules/jest-jasmine2/build/queueRunner.js:75:41\n                    at processTicksAndRejections (internal/process/task_queues.js:95:5)",
+  "flaky" : false,
+  "newFailed" : true,
+  "beforeStages" : [ ],
+  "afterStages" : [ ],
+  "labels" : [ {
+    "name" : "suite",
+    "value" : "UI tests: Infra"
+  }, {
+    "name" : "testClass",
+    "value" : "UI tests: Infra"
+  }, {
+    "name" : "testMethod",
+    "value" : "Validate that Mangata Frontend up and running"
+  }, {
+    "name" : "package",
+    "value" : "UI tests: Infra"
+  }, {
+    "name" : "resultFormat",
+    "value" : "allure1"
+  } ],
+  "parameters" : [ ],
+  "links" : [ ],
+  "hidden" : false,
+  "retry" : false,
+  "extra" : {
+    "severity" : "normal",
+    "retries" : [ ],
+    "categories" : [ {
+      "name" : "Product defects",
+      "matchedStatuses" : [ ],
+      "flaky" : false
+    } ],
+    "history" : {
+      "statistic" : {
+        "failed" : 1,
+        "broken" : 0,
+        "skipped" : 0,
+        "passed" : 3,
+        "unknown" : 0,
+        "total" : 4
+      },
+      "items" : [ {
+        "uid" : "c43ac41b7fbaf790",
+        "reportUrl" : "https://mangata-finance.github.io/mangata-e2e/143//#testresult/c43ac41b7fbaf790",
+        "status" : "passed",
+        "time" : {
+          "start" : 1630995879857,
+          "stop" : 1630995882218,
+          "duration" : 2361
+        }
+      }, {
+        "uid" : "6ddc79dd0d7996ed",
+        "reportUrl" : "https://mangata-finance.github.io/mangata-e2e/141//#testresult/6ddc79dd0d7996ed",
+        "status" : "passed",
+        "time" : {
+          "start" : 1630934368245,
+          "stop" : 1630934370896,
+          "duration" : 2651
+        }
+      }, {
+        "uid" : "710991344aace2ba",
+        "reportUrl" : "https://mangata-finance.github.io/mangata-e2e/138//#testresult/710991344aace2ba",
+        "status" : "passed",
+        "time" : {
+          "start" : 1630928068117,
+          "stop" : 1630928070778,
+          "duration" : 2661
+        }
+      } ]
+    },
+    "tags" : [ ]
+  },
+  "source" : "94290deed0e734d3.json",
+  "parameterValues" : [ ]
+}
