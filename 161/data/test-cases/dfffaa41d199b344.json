@@ -1,12 +1,12 @@
 {
-  "uid" : "a40555144839f3ef",
+  "uid" : "dfffaa41d199b344",
   "name" : "As a User I get feedback when extensions are installed and correctly setup",
   "fullName" : "UI tests - Extension management.As a User I get feedback when extensions are installed and correctly setup",
   "historyId" : "7365b4e6dd98ca21f75fccaf5b1ca8dd",
   "time" : {
-    "start" : 1631017645649,
-    "stop" : 1631017737975,
-    "duration" : 92326
+    "start" : 1631018136358,
+    "stop" : 1631018242608,
+    "duration" : 106250
   },
   "description" : "",
   "descriptionHtml" : "",
@@ -44,11 +44,20 @@
         "failed" : 1,
         "broken" : 0,
         "skipped" : 0,
-        "passed" : 1,
+        "passed" : 2,
         "unknown" : 0,
-        "total" : 2
+        "total" : 3
       },
       "items" : [ {
+        "uid" : "a40555144839f3ef",
+        "reportUrl" : "https://mangata-finance.github.io/mangata-e2e/160//#testresult/a40555144839f3ef",
+        "status" : "passed",
+        "time" : {
+          "start" : 1631017645649,
+          "stop" : 1631017737975,
+          "duration" : 92326
+        }
+      }, {
         "uid" : "44d32dab90f335aa",
         "reportUrl" : "https://mangata-finance.github.io/mangata-e2e/158//#testresult/44d32dab90f335aa",
         "status" : "failed",
@@ -62,6 +71,6 @@
     },
     "tags" : [ ]
   },
-  "source" : "a40555144839f3ef.json",
+  "source" : "dfffaa41d199b344.json",
   "parameterValues" : [ ]
 }

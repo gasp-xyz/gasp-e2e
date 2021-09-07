@@ -4,26 +4,26 @@
     "name" : "UI tests - Extension management",
     "children" : [ {
       "name" : "As a User I get infomed whenever is neccesary to install any extension",
-      "uid" : "7dd3a3af8ec61de4",
+      "uid" : "c1e8de3c2481a025",
       "parentUid" : "7f749799d9e3b05251bdf98eee50de84",
       "status" : "passed",
       "time" : {
-        "start" : 1631017628841,
-        "stop" : 1631017645649,
-        "duration" : 16808
+        "start" : 1631018117616,
+        "stop" : 1631018136358,
+        "duration" : 18742
       },
       "flaky" : false,
       "newFailed" : false,
       "parameters" : [ ]
     }, {
       "name" : "As a User I get feedback when extensions are installed and correctly setup",
-      "uid" : "a40555144839f3ef",
+      "uid" : "dfffaa41d199b344",
       "parentUid" : "7f749799d9e3b05251bdf98eee50de84",
       "status" : "passed",
       "time" : {
-        "start" : 1631017645649,
-        "stop" : 1631017737975,
-        "duration" : 92326
+        "start" : 1631018136358,
+        "stop" : 1631018242608,
+        "duration" : 106250
       },
       "flaky" : false,
       "newFailed" : false,
