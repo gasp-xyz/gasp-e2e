@@ -17,9 +17,9 @@ import {
 import { createPool } from "../../utils/tx";
 import { getEventResultFromTxWait } from "../../utils/txHandler";
 import { User } from "../../utils/User";
-import { getEnvironmentRequiredVars } from "../../utils/utils";
+import { FIVE_MIN, getEnvironmentRequiredVars } from "../../utils/utils";
 
-jest.setTimeout(1500000);
+jest.setTimeout(FIVE_MIN);
 jest.spyOn(console, "log").mockImplementation(jest.fn());
 let driver: WebDriver;
 

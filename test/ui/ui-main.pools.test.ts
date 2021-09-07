@@ -13,14 +13,14 @@ import {
   takeScreenshot,
 } from "../../utils/frontend/utils/Helper";
 import { AssetWallet, User } from "../../utils/User";
-import { getEnvironmentRequiredVars, MGA_ASSET_NAME } from "../../utils/utils";
+import { FIVE_MIN, getEnvironmentRequiredVars, MGA_ASSET_NAME } from "../../utils/utils";
 import { Assets } from "../../utils/Assets";
 
 const MGA_ASSET_ID = new BN(0);
 let createdAssetID: BN;
 let assetName = "";
 
-jest.setTimeout(1500000);
+jest.setTimeout(FIVE_MIN);
 jest.spyOn(console, "log").mockImplementation(jest.fn());
 let driver: WebDriver;
 

@@ -15,6 +15,7 @@ export const ETH_ASSET_ID = new BN(1);
 export const ETH_ASSET_NAME = "ETH";
 export const mETH_ASSET_NAME = "mETH";
 export const MGA_DEFAULT_LIQ_TOKEN = new BN(3);
+export const FIVE_MIN = 300000;
 
 export function sleep(ms: number) {
   return new Promise((resolve) => {

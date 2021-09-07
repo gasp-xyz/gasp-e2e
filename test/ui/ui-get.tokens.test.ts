@@ -14,9 +14,9 @@ import {
 } from "../../utils/frontend/utils/Helper";
 import { getAllAssets } from "../../utils/tx";
 import { AssetWallet, User } from "../../utils/User";
-import { MGA_ASSET_ID } from "../../utils/utils";
+import { FIVE_MIN, MGA_ASSET_ID } from "../../utils/utils";
 
-jest.setTimeout(1500000);
+jest.setTimeout(FIVE_MIN);
 jest.spyOn(console, "log").mockImplementation(jest.fn());
 let driver: WebDriver;
 
