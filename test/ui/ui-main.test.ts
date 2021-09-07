@@ -31,7 +31,7 @@ let driver: WebDriver;
 describe("UI tests - Extension management", () => {
   //  let keyring: Keyring;
 
-  beforeAll(async () => {
+  beforeEach(async () => {
     try {
       getApi();
     } catch (e) {
@@ -109,9 +109,7 @@ describe("UI tests - A user can swap and mint tokens", () => {
       await initApi();
     }
     keyring = new Keyring({ type: "sr25519" });
-  });
 
-  beforeAll(async () => {
     driver = await DriverBuilder.getInstance();
 
     const { mnemonic } = await setupAllExtensions(driver);
