@@ -10,10 +10,7 @@ on:
           description: 'Name of the script to run'
           required: false
           default: 'test-ci'
-        environment:
-          description: 'Generate new Docker image'
-          required: false
-          default: 'staging'
+
       # For manually trigger
  
 jobs:
@@ -22,13 +19,13 @@ jobs:
 
     strategy:
       matrix:
-        repo: ['mangata-finance/mangata-e2e']
+        environment: ['staging']
     runs-on: ubuntu-latest
     steps:
       - name: Repository Dispatch
         uses: peter-evans/repository-dispatch@v1
         with:
-          token: ${{ secrets.REPO_ACCESS_TOKEN }}
-          repository: ${{ matrix.repo }}
+          token: ${{ secrets.PAT_TRIGGER_JOB }}
+          repository: "mangata-finance/mangata-e2e"
           event-type: run-ci
-          client-payload: '{"scriptName": "${{ github.event.inputs.scriptName }}", "environment": "${{ github.event.inputs.environment }}"}'
+          client-payload: '{"scriptName": "${{ github.event.inputs.scriptName }}", "environment": "${{ matrix.environment }}"}'
