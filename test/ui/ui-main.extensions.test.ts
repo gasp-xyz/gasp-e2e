@@ -1,29 +1,13 @@
-import { Keyring } from "@polkadot/api";
-import BN from "bn.js";
 import { WebDriver } from "selenium-webdriver";
 import { getApi, initApi } from "../../utils/api";
-import { waitNewBlock } from "../../utils/eventListeners";
 import { Mangata } from "../../utils/frontend/pages/Mangata";
-import { Polkadot } from "../../utils/frontend/pages/Polkadot";
-import { Swap } from "../../utils/frontend/pages/Swap";
-import { Pool } from "../../utils/frontend/pages/Pool";
 import { Sidebar } from "../../utils/frontend/pages/Sidebar";
 import { DriverBuilder } from "../../utils/frontend/utils/Driver";
 import {
   setupAllExtensions,
   takeScreenshot,
 } from "../../utils/frontend/utils/Helper";
-import { getBalanceOfPool } from "../../utils/txHandler";
-import { AssetWallet, User } from "../../utils/User";
-import {
-  FIVE_MIN,
-  getEnvironmentRequiredVars,
-  mETH_ASSET_NAME,
-  MGA_ASSET_NAME,
-} from "../../utils/utils";
-
-const MGA_ASSET_ID = new BN(0);
-const ETH_ASSET_ID = new BN(1);
+import { FIVE_MIN } from "../../utils/utils";
 
 jest.setTimeout(FIVE_MIN);
 jest.spyOn(console, "log").mockImplementation(jest.fn());
@@ -91,7 +75,7 @@ describe("UI tests - Extension management", () => {
     DriverBuilder.destroy();
     const api = getApi();
     const isConnected = await api.isConnected;
-    if (isConnected){
+    if (isConnected) {
       await api.disconnect();
     }
   });

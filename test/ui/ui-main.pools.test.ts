@@ -13,7 +13,11 @@ import {
   takeScreenshot,
 } from "../../utils/frontend/utils/Helper";
 import { AssetWallet, User } from "../../utils/User";
-import { FIVE_MIN, getEnvironmentRequiredVars, MGA_ASSET_NAME } from "../../utils/utils";
+import {
+  FIVE_MIN,
+  getEnvironmentRequiredVars,
+  MGA_ASSET_NAME,
+} from "../../utils/utils";
 import { Assets } from "../../utils/Assets";
 
 const MGA_ASSET_ID = new BN(0);
