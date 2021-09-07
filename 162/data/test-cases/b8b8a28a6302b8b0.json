@@ -1,0 +1,85 @@
+{
+  "uid" : "b8b8a28a6302b8b0",
+  "name" : "As a User I get feedback when extensions are installed and correctly setup",
+  "fullName" : "UI tests - Extension management.As a User I get feedback when extensions are installed and correctly setup",
+  "historyId" : "7365b4e6dd98ca21f75fccaf5b1ca8dd",
+  "time" : {
+    "start" : 1631020551963,
+    "stop" : 1631020650379,
+    "duration" : 98416
+  },
+  "description" : "",
+  "descriptionHtml" : "",
+  "status" : "passed",
+  "flaky" : false,
+  "newFailed" : false,
+  "beforeStages" : [ ],
+  "afterStages" : [ ],
+  "labels" : [ {
+    "name" : "suite",
+    "value" : "UI tests - Extension management"
+  }, {
+    "name" : "testClass",
+    "value" : "UI tests - Extension management"
+  }, {
+    "name" : "testMethod",
+    "value" : "As a User I get feedback when extensions are installed and correctly setup"
+  }, {
+    "name" : "package",
+    "value" : "UI tests - Extension management"
+  }, {
+    "name" : "resultFormat",
+    "value" : "allure1"
+  } ],
+  "parameters" : [ ],
+  "links" : [ ],
+  "hidden" : false,
+  "retry" : false,
+  "extra" : {
+    "severity" : "normal",
+    "retries" : [ ],
+    "categories" : [ ],
+    "history" : {
+      "statistic" : {
+        "failed" : 1,
+        "broken" : 0,
+        "skipped" : 0,
+        "passed" : 3,
+        "unknown" : 0,
+        "total" : 4
+      },
+      "items" : [ {
+        "uid" : "dfffaa41d199b344",
+        "reportUrl" : "https://mangata-finance.github.io/mangata-e2e/161//#testresult/dfffaa41d199b344",
+        "status" : "passed",
+        "time" : {
+          "start" : 1631018136358,
+          "stop" : 1631018242608,
+          "duration" : 106250
+        }
+      }, {
+        "uid" : "a40555144839f3ef",
+        "reportUrl" : "https://mangata-finance.github.io/mangata-e2e/160//#testresult/a40555144839f3ef",
+        "status" : "passed",
+        "time" : {
+          "start" : 1631017645649,
+          "stop" : 1631017737975,
+          "duration" : 92326
+        }
+      }, {
+        "uid" : "44d32dab90f335aa",
+        "reportUrl" : "https://mangata-finance.github.io/mangata-e2e/158//#testresult/44d32dab90f335aa",
+        "status" : "failed",
+        "statusDetails" : "NoSuchSessionError: This driver instance does not have a valid session ID (did you call WebDriver.quit()?) and may no longer be used.",
+        "time" : {
+          "start" : 1631004348101,
+          "stop" : 1631004348105,
+          "duration" : 4
+        }
+      } ]
+    },
+    "tags" : [ ]
+  },
+  "source" : "b8b8a28a6302b8b0.json",
+  "parameterValues" : [ ]
+}
