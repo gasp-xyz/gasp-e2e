@@ -1,0 +1,21 @@
+[ {
+  "uid" : "7dd3a3af8ec61de4",
+  "name" : "As a User I get infomed whenever is neccesary to install any extension",
+  "time" : {
+    "start" : 1631017628841,
+    "stop" : 1631017645649,
+    "duration" : 16808
+  },
+  "status" : "passed",
+  "severity" : "normal"
+}, {
+  "uid" : "a40555144839f3ef",
+  "name" : "As a User I get feedback when extensions are installed and correctly setup",
+  "time" : {
+    "start" : 1631017645649,
+    "stop" : 1631017737975,
+    "duration" : 92326
+  },
+  "status" : "passed",
+  "severity" : "normal"
+} ]

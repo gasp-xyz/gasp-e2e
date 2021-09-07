@@ -1,27 +1,27 @@
 {
   "uid" : "ab17fc5a4eb3bca4b216b548c7f9fcbc",
   "children" : [ {
-    "name" : "As a User I get the right values for Pool investment",
-    "uid" : "b1b589c4aefcfad8",
+    "name" : "As a User I get infomed whenever is neccesary to install any extension",
+    "uid" : "7dd3a3af8ec61de4",
     "parentUid" : "ab17fc5a4eb3bca4b216b548c7f9fcbc",
     "status" : "passed",
     "time" : {
-      "start" : 1631016583612,
-      "stop" : 1631016650666,
-      "duration" : 67054
+      "start" : 1631017628841,
+      "stop" : 1631017645649,
+      "duration" : 16808
     },
     "flaky" : false,
     "newFailed" : false,
     "parameters" : [ ]
   }, {
-    "name" : "As a User I can get test tokens from the faucet",
-    "uid" : "df22cb8ac160de40",
+    "name" : "As a User I get feedback when extensions are installed and correctly setup",
+    "uid" : "a40555144839f3ef",
     "parentUid" : "ab17fc5a4eb3bca4b216b548c7f9fcbc",
     "status" : "passed",
     "time" : {
-      "start" : 1631016654443,
-      "stop" : 1631016758181,
-      "duration" : 103738
+      "start" : 1631017645649,
+      "stop" : 1631017737975,
+      "duration" : 92326
     },
     "flaky" : false,
     "newFailed" : false,

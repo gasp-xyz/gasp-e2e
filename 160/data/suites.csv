@@ -1,0 +1,3 @@
+"Status","Start Time","Stop Time","Duration in ms","Parent Suite","Suite","Sub Suite","Test Class","Test Method","Name","Description"
+"passed","Tue Sep 07 12:27:08 GMT 2021","Tue Sep 07 12:27:25 GMT 2021","16808","","UI tests - Extension management","","UI tests - Extension management","As a User I get infomed whenever is neccesary to install any extension","As a User I get infomed whenever is neccesary to install any extension",""
+"passed","Tue Sep 07 12:27:25 GMT 2021","Tue Sep 07 12:28:57 GMT 2021","92326","","UI tests - Extension management","","UI tests - Extension management","As a User I get feedback when extensions are installed and correctly setup","As a User I get feedback when extensions are installed and correctly setup",""
