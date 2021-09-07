@@ -1,0 +1,86 @@
+{
+  "uid" : "4b4757e66a1912dae1a509f688f20b0f",
+  "children" : [ {
+    "name" : "Product defects",
+    "children" : [ {
+      "name" : ": Timeout - Async callback was not invoked within the 1500000 ms timeout specified by jest.setTimeout.",
+      "children" : [ {
+        "name" : "As a User I get infomed whenever is neccesary to install any extension",
+        "uid" : "837cd28011a17c00",
+        "parentUid" : "005fba869b175f4f57f6f31cce8a4512",
+        "status" : "failed",
+        "time" : {
+          "start" : 1631002847810,
+          "stop" : 1631004348101,
+          "duration" : 1500291
+        },
+        "flaky" : false,
+        "newFailed" : false,
+        "parameters" : [ ]
+      } ],
+      "uid" : "005fba869b175f4f57f6f31cce8a4512"
+    }, {
+      "name" : "NoSuchSessionError: This driver instance does not have a valid session ID (did you call WebDriver.quit()?) and may no longer be used.",
+      "children" : [ {
+        "name" : "As a User I get feedback when extensions are installed and correctly setup",
+        "uid" : "44d32dab90f335aa",
+        "parentUid" : "f053c69ffed44be11eb927e01a0b535b",
+        "status" : "failed",
+        "time" : {
+          "start" : 1631004348101,
+          "stop" : 1631004348105,
+          "duration" : 4
+        },
+        "flaky" : false,
+        "newFailed" : false,
+        "parameters" : [ ]
+      }, {
+        "name" : "As a User I can Swap tokens - MGA - mETH",
+        "uid" : "e3edd1ee5ca7a2db",
+        "parentUid" : "f053c69ffed44be11eb927e01a0b535b",
+        "status" : "failed",
+        "time" : {
+          "start" : 1631004348116,
+          "stop" : 1631004348117,
+          "duration" : 1
+        },
+        "flaky" : false,
+        "newFailed" : false,
+        "parameters" : [ ]
+      }, {
+        "name" : "As a User I can mint some tokens MGA - mETH",
+        "uid" : "507207eef59e2ac2",
+        "parentUid" : "f053c69ffed44be11eb927e01a0b535b",
+        "status" : "failed",
+        "time" : {
+          "start" : 1631004348117,
+          "stop" : 1631004348118,
+          "duration" : 1
+        },
+        "flaky" : false,
+        "newFailed" : false,
+        "parameters" : [ ]
+      } ],
+      "uid" : "f053c69ffed44be11eb927e01a0b535b"
+    }, {
+      "name" : "Error: Failed: \"W[1] timeout in - signAndWaitTx - \\\" + 5HQ9Mm9L1HG53htEGDMsnhkkL7hEfF9vLstEQPtMLX5Gupqx + \\\" - \\\" + 443 + \\\" - \\\" + {\\\"isSigned\\\":true,\\\"method\\\":{\\\"args\\\":[{\\\"args\\\":[\\\"0\\\",\\\"5HgW77NAvwTyb5wS1XhW7sQMZTuDqM2SUG5Bvr9Ko7HJqTYb\\\",\\\"10.0000 MUnit\\\"],\\\"method\\\":\\\"mint\\\",\\\"section\\\":\\\"tokens\\\"}],\\\"method\\\":\\\"sudo\\\",\\\"section\\\":\\\"sudo\\\"},\\\"era\\\":{\\\"MortalEra\\\":{\\\"period\\\":\\\"64\\\",\\\"phase\\\":\\\"30\\\"}},\\\"nonce\\\":\\\"443\\\",\\\"signature\\\":\\\"0x20ad1a10e1eb4c06590e86a6126bf79fc55cf0ef340186342cf2559810752b32711ba7b5b8ffb29411f43e95168849b6a24d2b2b12c5d93dc8b14bd13f279d8f\\\",\\\"signer\\\":\\\"5HQ9Mm9L1HG53htEGDMsnhkkL7hEfF9vLstEQPtMLX5Gupqx\\\",\\\"tip\\\":\\\"0\\\"}\"",
+      "children" : [ {
+        "name" : "As a User I get the right values for Pool investment",
+        "uid" : "6df32ee6b19a4c50",
+        "parentUid" : "8aa6f2a2e1d196471663275926d5b881",
+        "status" : "failed",
+        "time" : {
+          "start" : 1631004646986,
+          "stop" : 1631004689631,
+          "duration" : 42645
+        },
+        "flaky" : true,
+        "newFailed" : false,
+        "parameters" : [ ]
+      } ],
+      "uid" : "8aa6f2a2e1d196471663275926d5b881"
+    } ],
+    "uid" : "8fb3a91ba5aaf9de24cc8a92edc82b5d"
+  } ],
+  "name" : "categories"
+}
