@@ -10,10 +10,7 @@ on:
           description: 'Name of the script to run'
           required: false
           default: 'test-ci'
-        environment:
-          description: 'Environment to run the job'
-          required: false
-          default: 'staging'
+
       # For manually trigger
  
 jobs:
@@ -22,13 +19,13 @@ jobs:
 
     strategy:
       matrix:
-        repo: ['mangata-finance/mangata-e2e']
+        environment: ['staging']
     runs-on: ubuntu-latest
     steps:
       - name: Repository Dispatch
         uses: peter-evans/repository-dispatch@v1
         with:
           token: ${{ secrets.PAT_TRIGGER_JOB }}
-          repository: ${{ matrix.repo }}
+          repository: "mangata-finance/mangata-e2e"
           event-type: run-ci
-          client-payload: '{"scriptName": "${{ github.event.inputs.scriptName }}", "environment": "${{ github.event.inputs.environment }}"}'
+          client-payload: '{"scriptName": "${{ github.event.inputs.scriptName }}", "environment": "${{ matrix.environment }}"}'

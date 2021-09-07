@@ -75,6 +75,12 @@ jobs:
           echo "TEST_SCRIPT=${{ github.event.inputs.scriptName || env.TEST_SCRIPT }}" >> $GITHUB_ENV
           echo "TEST_SCRIPT=${{ github.event.client_payload.scriptName || env.TEST_SCRIPT }}" >> $GITHUB_ENV
 
+      - name: Set UI_URL - Staging
+        if: ${{ github.event.client_payload.environment }} == "staging"
+        run:  |
+          echo "UI_URL="https://staging.mangata.finance/" >> $GITHUB_ENV
+          echo "API_URL="wss://staging.testnode.mangata.finance:9945" >> $GITHUB_ENV
+  
       - uses: actions/checkout@v2
       - name: Install dependencies
         run: yarn
