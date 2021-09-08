@@ -1,0 +1,66 @@
+{
+  "uid" : "5dbe29fde8fc4751",
+  "name" : "Validate that Mangata Frontend up and running",
+  "fullName" : "UI tests: Infra.Validate that Mangata Frontend up and running",
+  "historyId" : "8422b22f4ca0fa2b11be83bcdc18911d",
+  "time" : {
+    "start" : 1631093696423,
+    "stop" : 1631093699155,
+    "duration" : 2732
+  },
+  "description" : "",
+  "descriptionHtml" : "",
+  "status" : "passed",
+  "flaky" : false,
+  "newFailed" : false,
+  "beforeStages" : [ ],
+  "afterStages" : [ ],
+  "labels" : [ {
+    "name" : "suite",
+    "value" : "UI tests: Infra"
+  }, {
+    "name" : "testClass",
+    "value" : "UI tests: Infra"
+  }, {
+    "name" : "testMethod",
+    "value" : "Validate that Mangata Frontend up and running"
+  }, {
+    "name" : "package",
+    "value" : "UI tests: Infra"
+  }, {
+    "name" : "resultFormat",
+    "value" : "allure1"
+  } ],
+  "parameters" : [ ],
+  "links" : [ ],
+  "hidden" : false,
+  "retry" : false,
+  "extra" : {
+    "severity" : "normal",
+    "retries" : [ ],
+    "categories" : [ ],
+    "history" : {
+      "statistic" : {
+        "failed" : 0,
+        "broken" : 0,
+        "skipped" : 0,
+        "passed" : 2,
+        "unknown" : 0,
+        "total" : 2
+      },
+      "items" : [ {
+        "uid" : "cdf58ac8ca2b3a2a",
+        "reportUrl" : "https://mangata-finance.github.io/mangata-e2e/167//#testresult/cdf58ac8ca2b3a2a",
+        "status" : "passed",
+        "time" : {
+          "start" : 1631089376670,
+          "stop" : 1631089381601,
+          "duration" : 4931
+        }
+      } ]
+    },
+    "tags" : [ ]
+  },
+  "source" : "5dbe29fde8fc4751.json",
+  "parameterValues" : [ ]
+}

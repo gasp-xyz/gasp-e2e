@@ -1,0 +1,91 @@
+[ {
+  "uid" : "db23ec4a036a4bbf",
+  "name" : "As a User I can create a pool",
+  "time" : {
+    "start" : 1631093138222,
+    "stop" : 1631093202650,
+    "duration" : 64428
+  },
+  "status" : "passed",
+  "severity" : "normal"
+}, {
+  "uid" : "2740cb2b7f90215f",
+  "name" : "As a User I can Swap tokens - MGA - mETH",
+  "time" : {
+    "start" : 1631093012395,
+    "stop" : 1631093012749,
+    "duration" : 354
+  },
+  "status" : "failed",
+  "severity" : "normal"
+}, {
+  "uid" : "dc712d4e1a56446",
+  "name" : "Validate that Frontend retrieves AssetInfo data",
+  "time" : {
+    "start" : 1631093699155,
+    "stop" : 1631093716288,
+    "duration" : 17133
+  },
+  "status" : "passed",
+  "severity" : "normal"
+}, {
+  "uid" : "5dbe29fde8fc4751",
+  "name" : "Validate that Mangata Frontend up and running",
+  "time" : {
+    "start" : 1631093696423,
+    "stop" : 1631093699155,
+    "duration" : 2732
+  },
+  "status" : "passed",
+  "severity" : "normal"
+}, {
+  "uid" : "a884e05b4341cdb3",
+  "name" : "As a User I get feedback when extensions are installed and correctly setup",
+  "time" : {
+    "start" : 1631093432769,
+    "stop" : 1631093529118,
+    "duration" : 96349
+  },
+  "status" : "passed",
+  "severity" : "normal"
+}, {
+  "uid" : "b2518af4fc2cf29d",
+  "name" : "As a User I get infomed whenever is neccesary to install any extension",
+  "time" : {
+    "start" : 1631093410889,
+    "stop" : 1631093432769,
+    "duration" : 21880
+  },
+  "status" : "passed",
+  "severity" : "normal"
+}, {
+  "uid" : "42567a42beda3ff6",
+  "name" : "As a User I can mint some tokens MGA - mETH",
+  "time" : {
+    "start" : 1631093012749,
+    "stop" : 1631093013227,
+    "duration" : 478
+  },
+  "status" : "failed",
+  "severity" : "normal"
+}, {
+  "uid" : "66fbb78313fe7a70",
+  "name" : "As a User I get the right values for Pool investment",
+  "time" : {
+    "start" : 1631093294521,
+    "stop" : 1631093409376,
+    "duration" : 114855
+  },
+  "status" : "passed",
+  "severity" : "normal"
+}, {
+  "uid" : "5dc45f855e3b75b3",
+  "name" : "As a User I can get test tokens from the faucet",
+  "time" : {
+    "start" : 1631093533543,
+    "stop" : 1631093694915,
+    "duration" : 161372
+  },
+  "status" : "passed",
+  "severity" : "normal"
+} ]
