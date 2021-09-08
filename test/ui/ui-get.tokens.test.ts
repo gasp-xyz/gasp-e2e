@@ -60,7 +60,7 @@ describe("UI tests - Get Tokens from Faucet", () => {
     const session = await driver.getSession();
     await addExtraLogs(
       driver,
-      expect.getState().currentTestName + " - " + session
+      expect.getState().currentTestName + " - " + session.getId()
     );
     await driver.quit();
     const api = getApi();
