@@ -1,0 +1,91 @@
+[ {
+  "uid" : "ccd18db15e9c2c58",
+  "name" : "As a User I get feedback when extensions are installed and correctly setup",
+  "time" : {
+    "start" : 1631109303018,
+    "stop" : 1631109391277,
+    "duration" : 88259
+  },
+  "status" : "passed",
+  "severity" : "normal"
+}, {
+  "uid" : "af0bf66e32cc27c7",
+  "name" : "Validate that Frontend retrieves AssetInfo data",
+  "time" : {
+    "start" : 1631109546103,
+    "stop" : 1631109562045,
+    "duration" : 15942
+  },
+  "status" : "passed",
+  "severity" : "normal"
+}, {
+  "uid" : "57f6fb84fc31dc3a",
+  "name" : "As a User I get the right values for Pool investment",
+  "time" : {
+    "start" : 1631109169777,
+    "stop" : 1631109282373,
+    "duration" : 112596
+  },
+  "status" : "passed",
+  "severity" : "normal"
+}, {
+  "uid" : "34c916df0e0942d8",
+  "name" : "Validate that Mangata Frontend up and running",
+  "time" : {
+    "start" : 1631109543334,
+    "stop" : 1631109546103,
+    "duration" : 2769
+  },
+  "status" : "passed",
+  "severity" : "normal"
+}, {
+  "uid" : "38167eb848eb7fc3",
+  "name" : "As a User I can create a pool",
+  "time" : {
+    "start" : 1631109014605,
+    "stop" : 1631109078684,
+    "duration" : 64079
+  },
+  "status" : "passed",
+  "severity" : "normal"
+}, {
+  "uid" : "257a256525d38292",
+  "name" : "As a User I can get test tokens from the faucet",
+  "time" : {
+    "start" : 1631109395390,
+    "stop" : 1631109541976,
+    "duration" : 146586
+  },
+  "status" : "passed",
+  "severity" : "normal"
+}, {
+  "uid" : "2ed7f84412c74902",
+  "name" : "As a User I can Swap tokens - MGA - mETH",
+  "time" : {
+    "start" : 1631108761702,
+    "stop" : 1631108826637,
+    "duration" : 64935
+  },
+  "status" : "passed",
+  "severity" : "normal"
+}, {
+  "uid" : "b51fe4a262c96484",
+  "name" : "As a User I can mint some tokens MGA - mETH",
+  "time" : {
+    "start" : 1631108826637,
+    "stop" : 1631108886679,
+    "duration" : 60042
+  },
+  "status" : "passed",
+  "severity" : "normal"
+}, {
+  "uid" : "bf2a97897275fa05",
+  "name" : "As a User I get infomed whenever is neccesary to install any extension",
+  "time" : {
+    "start" : 1631109283674,
+    "stop" : 1631109303017,
+    "duration" : 19343
+  },
+  "status" : "passed",
+  "severity" : "normal"
+} ]
