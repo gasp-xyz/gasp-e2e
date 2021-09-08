@@ -1,0 +1,75 @@
+{
+  "uid" : "229d8dbdd839cea8",
+  "name" : "Validate that Frontend retrieves AssetInfo data",
+  "fullName" : "UI tests: Infra.Validate that Frontend retrieves AssetInfo data",
+  "historyId" : "88844f09ab0dc66902787b918fcff472",
+  "time" : {
+    "start" : 1631097060340,
+    "stop" : 1631097077366,
+    "duration" : 17026
+  },
+  "description" : "",
+  "descriptionHtml" : "",
+  "status" : "passed",
+  "flaky" : false,
+  "newFailed" : false,
+  "beforeStages" : [ ],
+  "afterStages" : [ ],
+  "labels" : [ {
+    "name" : "suite",
+    "value" : "UI tests: Infra"
+  }, {
+    "name" : "testClass",
+    "value" : "UI tests: Infra"
+  }, {
+    "name" : "testMethod",
+    "value" : "Validate that Frontend retrieves AssetInfo data"
+  }, {
+    "name" : "package",
+    "value" : "UI tests: Infra"
+  }, {
+    "name" : "resultFormat",
+    "value" : "allure1"
+  } ],
+  "parameters" : [ ],
+  "links" : [ ],
+  "hidden" : false,
+  "retry" : false,
+  "extra" : {
+    "severity" : "normal",
+    "retries" : [ ],
+    "categories" : [ ],
+    "history" : {
+      "statistic" : {
+        "failed" : 0,
+        "broken" : 0,
+        "skipped" : 0,
+        "passed" : 3,
+        "unknown" : 0,
+        "total" : 3
+      },
+      "items" : [ {
+        "uid" : "dc712d4e1a56446",
+        "reportUrl" : "https://mangata-finance.github.io/mangata-e2e/168//#testresult/dc712d4e1a56446",
+        "status" : "passed",
+        "time" : {
+          "start" : 1631093699155,
+          "stop" : 1631093716288,
+          "duration" : 17133
+        }
+      }, {
+        "uid" : "3309e2b01352f8c6",
+        "reportUrl" : "https://mangata-finance.github.io/mangata-e2e/167//#testresult/3309e2b01352f8c6",
+        "status" : "passed",
+        "time" : {
+          "start" : 1631089381602,
+          "stop" : 1631089397920,
+          "duration" : 16318
+        }
+      } ]
+    },
+    "tags" : [ ]
+  },
+  "source" : "229d8dbdd839cea8.json",
+  "parameterValues" : [ ]
+}
