@@ -6,6 +6,7 @@ import {
   waitForElement,
 } from "../utils/Helper";
 const { By } = require("selenium-webdriver");
+const clipboardy = require("clipboardy");
 
 //xpaths
 const XPATH_PASSWORD = "//input[@id='password']";
@@ -22,10 +23,19 @@ const XPATH_ALL_DONE =
 const XPATH_MNEMONIC = `//input[@placeholder='Paste Secret Recovery Phrase from clipboard']`;
 const XPATH_CONNECT_META = `//button[text()='Connect']`;
 const XPATH_NEXT = `//*[contains(@class,'button btn-primary')]`;
+const XPATH_ACCOUNT = `//*[@class='selected-account']`;
+const XPATH_CONFIRM_TX = "//*[@data-testid='page-container-footer-next']";
 const { uiUserPassword: userPassword, mnemonicMetaMask } =
   getEnvironmentRequiredVars();
 
 export class MetaMask {
+  async confirmAndSign(driver: WebDriver) {
+    await clickElement(driver, XPATH_CONFIRM_TX);
+  }
+  async confirmTransaction() {
+    await doActionInDifferentWindow(this.driver, this.confirmAndSign);
+  }
+
   WEB_UI_ACCESS_URL =
     "chrome-extension://nkbihfbeogaeaoehlefnkodbefgpgknn/home.html";
 
@@ -65,14 +75,17 @@ export class MetaMask {
     await this.driver.get(`${this.WEB_UI_ACCESS_URL}#initialize/end-of-flow`);
     await waitForElement(this.driver, XPATH_ALL_DONE);
     await clickElement(this.driver, XPATH_ALL_DONE);
-    await this.enable();
+    return await this.enable();
   }
 
   private async enable() {
     await waitForElement(this.driver, XPATH_POPOVER_CLOSE);
     await clickElement(this.driver, XPATH_POPOVER_CLOSE);
+    await clickElement(this.driver, XPATH_ACCOUNT);
+    const address = clipboardy.readSync();
     await clickElement(this.driver, XPATH_SELECT_NET_CMB);
     await clickElement(this.driver, XPATH_KOVAN_NETWORK);
+    return address;
   }
 
   public async connect() {

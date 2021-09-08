@@ -57,7 +57,7 @@ export async function setupAllExtensions(driver: WebDriver) {
 
   const metaMaskExtension = new MetaMask(driver);
   await metaMaskExtension.go();
-  await metaMaskExtension.setupAccount();
+  const metaUserAddress = await metaMaskExtension.setupAccount();
 
   const polkadotExtension = new Polkadot(driver);
   await polkadotExtension.go();
@@ -69,7 +69,11 @@ export async function setupAllExtensions(driver: WebDriver) {
   await polkadotExtension.acceptPermissions();
 
   await metaMaskExtension.connect();
-  return { polkUserAddress: polkUserAddress, mnemonic: usrMnemonic };
+  return {
+    polkUserAddress: polkUserAddress,
+    mnemonic: usrMnemonic,
+    metaUserAddres: metaUserAddress,
+  };
 }
 
 export async function leaveOnlyOneTab(driver: WebDriver) {
@@ -129,4 +133,13 @@ export async function doActionInDifferentWindow(
   value = iterator.next().value;
   await driver.switchTo().window(value[1]);
   return;
+}
+
+export async function selectAssetFromModalList(
+  assetName: string,
+  driver: WebDriver
+) {
+  const assetTestId = `assetSelectModal-asset-${assetName}`;
+  const assetLocator = buildDataTestIdXpath(assetTestId);
+  await clickElement(driver, assetLocator);
 }

@@ -1,9 +1,13 @@
 import { By, WebDriver } from "selenium-webdriver";
+import { WithdrawModal } from "./WithdrawModal";
+
 import {
   buildDataTestIdXpath,
+  clickElement,
   waitForElement,
   waitForElementToDissapear,
 } from "../utils/Helper";
+import { FIVE_MIN } from "../../Constants";
 
 const DIV_META_NOT_FOUND = "extensionMetamask-extensionNotFound";
 const DIV_POLK_NOT_FOUND = "extensionPolkadot-extensionNotFound";
@@ -20,14 +24,6 @@ const LBL_TOKEN_AMOUNT = "wallet-tokensAmount";
 
 const SPINNER_LOADING = `//*[@class = 'Sidebar__loading']`;
 export class Sidebar {
-  private buildPoolDataTestId(asseName1: string, assetName2: string) {
-    return `poolsOverview-item-${asseName1}-${assetName2}`;
-  }
-  async isLiquidityPoolVisible(asset1Name: string, asset2Name: string) {
-    return await this.isDisplayed(
-      buildDataTestIdXpath(this.buildPoolDataTestId(asset1Name, asset2Name))
-    );
-  }
   driver: WebDriver;
 
   constructor(driver: WebDriver) {
@@ -51,15 +47,6 @@ export class Sidebar {
       BTN_META_DEPOSIT,
       BTN_META_WITHDRAW,
     ]);
-  }
-
-  private async areVisible(listDataTestIds: string[]) {
-    const promises: Promise<Boolean>[] = [];
-    listDataTestIds.forEach((dataTestId) => {
-      promises.push(this.isDisplayed(buildDataTestIdXpath(dataTestId)));
-    });
-    const allVisible = await Promise.all(promises);
-    return allVisible.every((elem) => elem === true);
   }
 
   async isMetamaskExtensionNotFoundDisplayed() {
@@ -94,6 +81,48 @@ export class Sidebar {
     });
   }
 
+  async withdrawAllAssetsToMetaMask(tokenName: string) {
+    await this.clickOnWithdrawToEth();
+    const withdrawModal = new WithdrawModal(this.driver);
+    await withdrawModal.selectToken(tokenName);
+    await withdrawModal.selectMax();
+    await withdrawModal.clickContinue();
+    await withdrawModal.confirmAndSign();
+  }
+  async clickOnDepositToMangata() {
+    const locator = buildDataTestIdXpath(BTN_META_DEPOSIT);
+    await clickElement(this.driver, locator);
+  }
+  async clickOnWithdrawToEth() {
+    const locator = buildDataTestIdXpath(BTN_META_WITHDRAW);
+    await clickElement(this.driver, locator);
+  }
+  async waitForTokenToAppear(tokenName: string) {
+    const xpath = buildDataTestIdXpath(
+      this.buildTokenAvailableTestId(tokenName)
+    );
+    await waitForElement(this.driver, xpath, FIVE_MIN);
+  }
+  async getTokenAmount(tokenName: string) {
+    await this.waitForTokenToAppear(tokenName);
+    const tokenValueXpath = `//*[@data-testid='wallet-asset-${tokenName}']//span[@class='value']`;
+    const value = await (
+      await this.driver.findElement(By.xpath(tokenValueXpath))
+    ).getText();
+    return value;
+  }
+  async isLiquidityPoolVisible(asset1Name: string, asset2Name: string) {
+    return await this.isDisplayed(
+      buildDataTestIdXpath(this.buildPoolDataTestId(asset1Name, asset2Name))
+    );
+  }
+  private buildPoolDataTestId(asseName1: string, assetName2: string) {
+    return `poolsOverview-item-${asseName1}-${assetName2}`;
+  }
+  private buildTokenAvailableTestId(asseName1: string) {
+    return `wallet-asset-${asseName1}`;
+  }
+
   private async isDisplayed(elementXpath: string) {
     try {
       await waitForElement(this.driver, elementXpath, 2000);
@@ -104,5 +133,13 @@ export class Sidebar {
     } catch (Error) {
       return false;
     }
+  }
+  private async areVisible(listDataTestIds: string[]) {
+    const promises: Promise<Boolean>[] = [];
+    listDataTestIds.forEach((dataTestId) => {
+      promises.push(this.isDisplayed(buildDataTestIdXpath(dataTestId)));
+    });
+    const allVisible = await Promise.all(promises);
+    return allVisible.every((elem) => elem === true);
   }
 }
