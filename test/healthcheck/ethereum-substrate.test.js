@@ -1,25 +1,28 @@
+/* eslint-disable prettier/prettier */
 import BN from "bn.js";
 
 import { EthClient } from "mangata-bridge/test/src/ethclient";
 import { SubClient } from "mangata-bridge/test/src/subclient";
 
 import { waitNewBlock } from "../../utils/eventListeners";
+import { getEnvironmentRequiredVars } from "../../utils/utils";
+
 
 describe("Healtcheck - Ethereum <-> Substrate", () => {
+
+  const { 
+    ethereumWsUrl, 
+    substrateWsUrl, 
+    ethAppAddress, 
+    erc20AppAddress, 
+    polkadotRecipient, 
+    polkadotRecipientSS58 
+  } = getEnvironmentRequiredVars();
+
   let ethClient;
   let subClient;
 
-  const ethereumWsUrl = "ws://localhost:8545";
-  const substrateWsUrl = "ws://localhost:9944";
-  const ethAppAddress = "";
-  const erc20AppAddress = "";
-
   const ETH_ASSET_ID = "0x01";
-
-  // eslint-disable-next-line prettier/prettier
-  const polkadotRecipient = "0xd43593c715fdd31c61141abd04a99fd6822c8558854ccde39a5684e7a56da27d";
-  // eslint-disable-next-line prettier/prettier
-  const polkadotRecipientSS58 = "5GrwvaEF5zXb26Fz9rcQpDWS57CtERHpNehXCPcNoHGKutQY";
 
   beforeAll(async () => {
     ethClient = new EthClient(ethereumWsUrl, ethAppAddress, erc20AppAddress);
