@@ -1,0 +1,31 @@
+name: CI check
+
+on:
+  schedule:
+    - cron: "1 01,13 * * *" #lets run this job every 12 hours.
+
+  workflow_dispatch:
+      inputs:
+        scriptName:
+          description: 'Name of the script to run'
+          required: false
+          default: 'test-ci'
+
+      # For manually trigger
+ 
+jobs:
+
+  dispatch:
+
+    strategy:
+      matrix:
+        environment: ['staging','develop']
+    runs-on: ubuntu-latest
+    steps:
+      - name: Repository Dispatch
+        uses: peter-evans/repository-dispatch@v1
+        with:
+          token: ${{ secrets.PAT_TRIGGER_JOB }}
+          repository: "mangata-finance/mangata-e2e"
+          event-type: run-ci
+          client-payload: '{"scriptName": "${{ github.event.inputs.scriptName }}", "environment": "${{ matrix.environment }}"}'

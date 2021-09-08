@@ -1,4 +1,5 @@
 import { env } from "process";
+import "setimmediate";
 import winston, { Logger, format } from "winston";
 import { getEnvironmentRequiredVars } from "./utils";
 import "setimmediate";

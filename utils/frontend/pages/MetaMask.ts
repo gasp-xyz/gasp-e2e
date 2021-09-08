@@ -1,5 +1,10 @@
+import { WebDriver } from "selenium-webdriver";
 import { getEnvironmentRequiredVars, sleep } from "../../utils";
-import { clickElement, waitForElement } from "../utils/Helper";
+import {
+  clickElement,
+  doActionInDifferentWindow,
+  waitForElement,
+} from "../utils/Helper";
 const { By } = require("selenium-webdriver");
 
 //xpaths
@@ -75,31 +80,17 @@ export class MetaMask {
     await this.acceptConnectionPermissions();
   }
 
+  async acceptConnection(driver: WebDriver) {
+    await waitForElement(driver, XPATH_NEXT);
+    await clickElement(driver, XPATH_NEXT);
+    await sleep(2000);
+    //now click on connect.
+    await waitForElement(driver, XPATH_NEXT);
+    await clickElement(driver, XPATH_NEXT);
+  }
   async acceptConnectionPermissions() {
     //wait for window to be opened.
-    await sleep(4000);
-    let handle = await (await this.driver).getAllWindowHandles();
-    let iterator = handle.entries();
-    let value = iterator.next().value;
-    while (value) {
-      await this.driver.switchTo().window(value[1]);
-
-      try {
-        await waitForElement(this.driver, XPATH_NEXT);
-        await clickElement(this.driver, XPATH_NEXT);
-        await sleep(2000);
-        //now click on connect.
-        await waitForElement(this.driver, XPATH_NEXT);
-        await clickElement(this.driver, XPATH_NEXT);
-
-        break;
-      } catch (error) {}
-      value = iterator.next().value;
-    }
-    handle = await (await this.driver).getAllWindowHandles();
-    iterator = handle.entries();
-    value = iterator.next().value;
-    await this.driver.switchTo().window(value[1]);
+    await doActionInDifferentWindow(this.driver, this.acceptConnection);
     return;
   }
 }
