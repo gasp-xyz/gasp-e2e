@@ -1,8 +1,6 @@
 name: UI tests
 
 on:
-  schedule:
-    - cron: "1 00,12 * * *" #lets run this job every 12 hours.
 
   workflow_dispatch:
       inputs:
