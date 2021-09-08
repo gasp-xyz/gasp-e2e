@@ -1,0 +1,84 @@
+{
+  "uid" : "ecf88b933695b529",
+  "name" : "xyk-pallet: Liquidity sufficiency scenario",
+  "fullName" : "test/sequential/xyk-pallet.test.ts.xyk-pallet: Liquidity sufficiency scenario",
+  "historyId" : "c5625e6cf590e5e8d1b1ef2f4d4308eb",
+  "time" : {
+    "start" : 1631092783321,
+    "stop" : 1631093089141,
+    "duration" : 305820
+  },
+  "description" : "",
+  "descriptionHtml" : "",
+  "status" : "passed",
+  "flaky" : false,
+  "newFailed" : false,
+  "beforeStages" : [ ],
+  "afterStages" : [ ],
+  "labels" : [ {
+    "name" : "suite",
+    "value" : "test/sequential/xyk-pallet.test.ts"
+  }, {
+    "name" : "testClass",
+    "value" : "test/sequential/xyk-pallet.test.ts"
+  }, {
+    "name" : "testMethod",
+    "value" : "xyk-pallet: Liquidity sufficiency scenario"
+  }, {
+    "name" : "package",
+    "value" : "test/sequential/xyk-pallet.test.ts"
+  }, {
+    "name" : "resultFormat",
+    "value" : "allure1"
+  } ],
+  "parameters" : [ ],
+  "links" : [ ],
+  "hidden" : false,
+  "retry" : false,
+  "extra" : {
+    "severity" : "normal",
+    "retries" : [ ],
+    "categories" : [ ],
+    "history" : {
+      "statistic" : {
+        "failed" : 0,
+        "broken" : 0,
+        "skipped" : 0,
+        "passed" : 4,
+        "unknown" : 0,
+        "total" : 4
+      },
+      "items" : [ {
+        "uid" : "befc538878df8e0f",
+        "reportUrl" : "https://mangata-finance.github.io/mangata-e2e/286//#testresult/befc538878df8e0f",
+        "status" : "passed",
+        "time" : {
+          "start" : 1631088751034,
+          "stop" : 1631089056744,
+          "duration" : 305710
+        }
+      }, {
+        "uid" : "920d2a24122d1d1c",
+        "reportUrl" : "https://mangata-finance.github.io/mangata-e2e/285//#testresult/920d2a24122d1d1c",
+        "status" : "passed",
+        "time" : {
+          "start" : 1631086519699,
+          "stop" : 1631086825475,
+          "duration" : 305776
+        }
+      }, {
+        "uid" : "82973ef27ad060b8",
+        "reportUrl" : "https://mangata-finance.github.io/mangata-e2e/282//#testresult/82973ef27ad060b8",
+        "status" : "passed",
+        "time" : {
+          "start" : 1631084275841,
+          "stop" : 1631084582015,
+          "duration" : 306174
+        }
+      } ]
+    },
+    "tags" : [ ]
+  },
+  "source" : "ecf88b933695b529.json",
+  "parameterValues" : [ ]
+}
