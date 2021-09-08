@@ -1,3 +1,7 @@
+/*
+ *
+ * @group ui
+ */
 import { WebDriver } from "selenium-webdriver";
 import { getApi, initApi } from "../../utils/api";
 import { Mangata } from "../../utils/frontend/pages/Mangata";
@@ -7,7 +11,7 @@ import {
   setupAllExtensions,
   takeScreenshot,
 } from "../../utils/frontend/utils/Helper";
-import { FIVE_MIN } from "../../utils/utils";
+import { FIVE_MIN } from "../../utils/Constants";
 
 jest.setTimeout(FIVE_MIN);
 jest.spyOn(console, "log").mockImplementation(jest.fn());

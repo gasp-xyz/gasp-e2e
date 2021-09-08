@@ -1,3 +1,7 @@
+/*
+ *
+ * @group ui
+ */
 import { Keyring } from "@polkadot/api";
 import BN from "bn.js";
 import { WebDriver } from "selenium-webdriver";
@@ -15,12 +19,12 @@ import {
 } from "../../utils/frontend/utils/Helper";
 import { getBalanceOfPool } from "../../utils/txHandler";
 import { AssetWallet, User } from "../../utils/User";
+import { getEnvironmentRequiredVars } from "../../utils/utils";
 import {
   FIVE_MIN,
-  getEnvironmentRequiredVars,
   mETH_ASSET_NAME,
   MGA_ASSET_NAME,
-} from "../../utils/utils";
+} from "../../utils/Constants";
 
 const MGA_ASSET_ID = new BN(0);
 const ETH_ASSET_ID = new BN(1);
