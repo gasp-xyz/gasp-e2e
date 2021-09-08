@@ -6,6 +6,7 @@ import { Keyring } from "@polkadot/api";
 import BN from "bn.js";
 import { WebDriver } from "selenium-webdriver";
 import { getApi, initApi } from "../../utils/api";
+import { FIVE_MIN, MGA_ASSET_ID } from "../../utils/Constants";
 import { Mangata } from "../../utils/frontend/pages/Mangata";
 import { DriverBuilder } from "../../utils/frontend/utils/Driver";
 import {
@@ -14,7 +15,6 @@ import {
 } from "../../utils/frontend/utils/Helper";
 import { getAllAssets } from "../../utils/tx";
 import { AssetWallet, User } from "../../utils/User";
-import { FIVE_MIN, MGA_ASSET_ID } from "../../utils/utils";
 
 jest.setTimeout(FIVE_MIN);
 jest.spyOn(console, "log").mockImplementation(jest.fn());

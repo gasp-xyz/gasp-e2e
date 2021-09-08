@@ -7,6 +7,7 @@ import BN from "bn.js";
 import { WebDriver } from "selenium-webdriver";
 import { getApi, initApi } from "../../utils/api";
 import { Assets } from "../../utils/Assets";
+import { FIVE_MIN } from "../../utils/Constants";
 import { ExtrinsicResult } from "../../utils/eventListeners";
 import { Mangata } from "../../utils/frontend/pages/Mangata";
 import { DriverBuilder } from "../../utils/frontend/utils/Driver";
@@ -17,7 +18,7 @@ import {
 import { createPool } from "../../utils/tx";
 import { getEventResultFromTxWait } from "../../utils/txHandler";
 import { User } from "../../utils/User";
-import { FIVE_MIN, getEnvironmentRequiredVars } from "../../utils/utils";
+import { getEnvironmentRequiredVars } from "../../utils/utils";
 
 jest.setTimeout(FIVE_MIN);
 jest.spyOn(console, "log").mockImplementation(jest.fn());
