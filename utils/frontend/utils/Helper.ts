@@ -3,7 +3,7 @@ import { sleep } from "../../utils";
 import { Mangata } from "../pages/Mangata";
 import { MetaMask } from "../pages/MetaMask";
 import { Polkadot } from "../pages/Polkadot";
-const fs = require("fs");
+import fs from "fs";
 
 const { By, until } = require("selenium-webdriver");
 require("chromedriver");
@@ -62,7 +62,7 @@ export async function addExtraLogs(driver: WebDriver, testName = "") {
           const logLine = `[${entry.level.name}] ${entry.message}`;
           fs.appendFileSync(
             `${outputPath}/log_${value}_${testName}.txt`,
-            logLine
+            logLine + " \n"
           );
         });
       });
