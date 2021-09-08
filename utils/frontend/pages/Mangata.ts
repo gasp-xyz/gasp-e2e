@@ -1,6 +1,7 @@
 import { By, until, WebDriver } from "selenium-webdriver";
 import { getEnvironmentRequiredVars, sleep } from "../../utils";
 import { clickElement, waitForElement } from "../utils/Helper";
+import { Sidebar } from "./Sidebar";
 
 //xpaths
 const MSG_RECEIVE_TOKENS = `//div[text()='You will receive test tokens']`;
@@ -34,6 +35,7 @@ export class Mangata {
   }
   async navigate() {
     await this.go();
+    await new Sidebar(this.driver).waitForLoad();
     await waitForElement(this.driver, LBL_YOUR_TOKENS);
   }
   async isGetTokensVisible() {

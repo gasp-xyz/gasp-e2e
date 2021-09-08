@@ -1,7 +1,11 @@
 import BN from "bn.js";
 import { ExtrinsicResult, waitNewBlock } from "./eventListeners";
 import { getNextAssetId, getAssetSupply } from "./tx";
-import { getEventResultFromTxWait, sudoIssueAsset } from "./txHandler";
+import {
+  getEventResultFromTxWait,
+  setAssetInfo,
+  sudoIssueAsset,
+} from "./txHandler";
 import { User } from "./User";
 
 export class Assets {
@@ -67,7 +71,14 @@ export class Assets {
     ]);
 
     expect(eventResult.state).toEqual(ExtrinsicResult.ExtrinsicSuccess);
-
+    await setAssetInfo(
+      sudo,
+      new BN(eventResult.data[0]),
+      `TEST_${eventResult.data[0]}`,
+      `m${eventResult.data[0]}`,
+      `Test token ${eventResult.data[0]}`,
+      new BN(18)
+    );
     return new BN(eventResult.data[0]);
   }
 }
