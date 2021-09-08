@@ -17,7 +17,7 @@ import {
   transferAll,
 } from "./tx";
 import { getEventResultFromTxWait } from "./txHandler";
-import { MGA_ASSET_ID } from "./utils";
+import { MGA_ASSET_ID } from "./Constants";
 
 export enum AssetWallet {
   BEFORE,
