@@ -2,7 +2,8 @@
  *
  * @group xyk
  * @group api
- * @group parallel
+ * @group sequential
+ * @group critical
  */
 import { getApi, initApi } from "../../utils/api";
 import {
