@@ -84,7 +84,7 @@ jobs:
         if: contains(github.event.client_payload.environment, 'develop')
         run:  |
           echo 'UI_URL=https://develop.mangata.finance/' >> $GITHUB_ENV
-          echo 'API_URL=wss://develop.testnode.mangata.finance:9945' >> $GITHUB_ENV
+          echo 'API_URL=wss://develop.mangatafinance.cloud:9944' >> $GITHUB_ENV
   
       - uses: actions/checkout@v2
       - name: Install dependencies
