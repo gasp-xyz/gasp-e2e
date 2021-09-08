@@ -1,0 +1,91 @@
+[ {
+  "uid" : "c3578b7f86e9efc",
+  "name" : "As a User I can mint some tokens MGA - mETH",
+  "time" : {
+    "start" : 1631108684462,
+    "stop" : 1631108684684,
+    "duration" : 222
+  },
+  "status" : "failed",
+  "severity" : "normal"
+}, {
+  "uid" : "7765da620db8bbcf",
+  "name" : "As a User I can create a pool",
+  "time" : {
+    "start" : 1631108809756,
+    "stop" : 1631108874672,
+    "duration" : 64916
+  },
+  "status" : "passed",
+  "severity" : "normal"
+}, {
+  "uid" : "4e8d73c915b974e0",
+  "name" : "As a User I get feedback when extensions are installed and correctly setup",
+  "time" : {
+    "start" : 1631109098382,
+    "stop" : 1631109191476,
+    "duration" : 93094
+  },
+  "status" : "passed",
+  "severity" : "normal"
+}, {
+  "uid" : "1d867407a26b256f",
+  "name" : "As a User I get infomed whenever is neccesary to install any extension",
+  "time" : {
+    "start" : 1631109078296,
+    "stop" : 1631109098382,
+    "duration" : 20086
+  },
+  "status" : "passed",
+  "severity" : "normal"
+}, {
+  "uid" : "31e16cd731e60a2f",
+  "name" : "Validate that Mangata Frontend up and running",
+  "time" : {
+    "start" : 1631109402779,
+    "stop" : 1631109408609,
+    "duration" : 5830
+  },
+  "status" : "passed",
+  "severity" : "normal"
+}, {
+  "uid" : "5fa90ea0d2db1777",
+  "name" : "As a User I can get test tokens from the faucet",
+  "time" : {
+    "start" : 1631109195939,
+    "stop" : 1631109401248,
+    "duration" : 205309
+  },
+  "status" : "failed",
+  "severity" : "normal"
+}, {
+  "uid" : "3282c233dbfc05c8",
+  "name" : "Validate that Frontend retrieves AssetInfo data",
+  "time" : {
+    "start" : 1631109408609,
+    "stop" : 1631109423114,
+    "duration" : 14505
+  },
+  "status" : "passed",
+  "severity" : "normal"
+}, {
+  "uid" : "14b06a89fd83cd39",
+  "name" : "As a User I can Swap tokens - MGA - mETH",
+  "time" : {
+    "start" : 1631108684254,
+    "stop" : 1631108684462,
+    "duration" : 208
+  },
+  "status" : "failed",
+  "severity" : "normal"
+}, {
+  "uid" : "feb7810e4bc2e654",
+  "name" : "As a User I get the right values for Pool investment",
+  "time" : {
+    "start" : 1631108965599,
+    "stop" : 1631109076422,
+    "duration" : 110823
+  },
+  "status" : "passed",
+  "severity" : "normal"
+} ]
