@@ -12,12 +12,21 @@ import {
   createPool,
   getLiquidityPool,
 } from "../../utils/tx";
-import { ExtrinsicResult } from "../../utils/eventListeners";
+import { ExtrinsicResult, waitNewBlock } from "../../utils/eventListeners";
 import BN from "bn.js";
 import { AssetWallet, User } from "../../utils/User";
-import { calculateLiqAssetAmount } from "../../utils/utils";
+import {
+  calculateLiqAssetAmount,
+  getEnvironmentRequiredVars,
+} from "../../utils/utils";
 import { getEventResultFromTxWait } from "../../utils/txHandler";
 import { testLog } from "../../utils/Logger";
+import { Keyring } from "@polkadot/api";
+import { Assets } from "../../utils/Assets";
+import {
+  validateAssetsWithValues,
+  validateEmptyAssets,
+} from "../../utils/validators";
 
 jest.spyOn(console, "log").mockImplementation(jest.fn());
 jest.setTimeout(1500000);
@@ -29,6 +38,12 @@ let pallet: User;
 
 let firstCurrency: BN;
 let secondCurrency: BN;
+let keyring: Keyring;
+
+// Assuming the pallet's AccountId
+const { pallet: pallet_address, sudo: sudoUserName } =
+  getEnvironmentRequiredVars();
+const defaultCurrecyValue = new BN(250000);
 
 // Assuming the pallet's AccountId
 
@@ -38,6 +53,57 @@ beforeAll(async () => {
   } catch (e) {
     await initApi();
   }
+});
+
+beforeEach(async () => {
+  await waitNewBlock();
+  keyring = new Keyring({ type: "sr25519" });
+
+  // setup users
+  testUser1 = new User(keyring);
+  testUser2 = new User(keyring);
+  const sudo = new User(keyring, sudoUserName);
+
+  // setup Pallet.
+  pallet = new User(keyring);
+  pallet.addFromAddress(keyring, pallet_address);
+
+  //add two curerncies and balance to testUser:
+  [firstCurrency, secondCurrency] = await Assets.setupUserWithCurrencies(
+    testUser1,
+    [defaultCurrecyValue, defaultCurrecyValue.add(new BN(1))],
+    sudo
+  );
+  await testUser1.addMGATokens(sudo);
+
+  // add users to pair.
+  keyring.addPair(testUser1.keyRingPair);
+  keyring.addPair(testUser2.keyRingPair);
+  keyring.addPair(sudo.keyRingPair);
+  keyring.addPair(pallet.keyRingPair);
+
+  // check users accounts.
+  await waitNewBlock();
+  pallet.addAssets([firstCurrency, secondCurrency]);
+  testUser2.addAssets([firstCurrency, secondCurrency]);
+  await pallet.refreshAmounts(AssetWallet.BEFORE);
+  await testUser1.refreshAmounts(AssetWallet.BEFORE);
+  await testUser2.refreshAmounts(AssetWallet.BEFORE);
+
+  validateAssetsWithValues(
+    [
+      testUser1.getAsset(firstCurrency)?.amountBefore!,
+      testUser1.getAsset(secondCurrency)?.amountBefore!,
+    ],
+    [
+      defaultCurrecyValue.toNumber(),
+      defaultCurrecyValue.add(new BN(1)).toNumber(),
+    ]
+  );
+  validateEmptyAssets([
+    testUser2.getAsset(firstCurrency)?.amountBefore!,
+    testUser2.getAsset(secondCurrency)?.amountBefore!,
+  ]);
 });
 
 test("xyk-pallet - Pool tests: createPool and validate liq token", async () => {
