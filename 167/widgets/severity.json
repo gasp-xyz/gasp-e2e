@@ -1,0 +1,91 @@
+[ {
+  "uid" : "dca010ecb77d1c7d",
+  "name" : "As a User I can mint some tokens MGA - mETH",
+  "time" : {
+    "start" : 1631088816744,
+    "stop" : 1631088882804,
+    "duration" : 66060
+  },
+  "status" : "passed",
+  "severity" : "normal"
+}, {
+  "uid" : "658ebc77e0a59d18",
+  "name" : "As a User I can get test tokens from the faucet",
+  "time" : {
+    "start" : 1631089267955,
+    "stop" : 1631089375338,
+    "duration" : 107383
+  },
+  "status" : "passed",
+  "severity" : "normal"
+}, {
+  "uid" : "994b7880e1616960",
+  "name" : "As a User I get the right values for Pool investment",
+  "time" : {
+    "start" : 1631089140975,
+    "stop" : 1631089142165,
+    "duration" : 1190
+  },
+  "status" : "failed",
+  "severity" : "normal"
+}, {
+  "uid" : "4cb945da6e90ba74",
+  "name" : "As a User I can create a pool",
+  "time" : {
+    "start" : 1631089009888,
+    "stop" : 1631089080712,
+    "duration" : 70824
+  },
+  "status" : "passed",
+  "severity" : "normal"
+}, {
+  "uid" : "606849357a9ebf71",
+  "name" : "As a User I get infomed whenever is neccesary to install any extension",
+  "time" : {
+    "start" : 1631089143715,
+    "stop" : 1631089166939,
+    "duration" : 23224
+  },
+  "status" : "passed",
+  "severity" : "normal"
+}, {
+  "uid" : "3309e2b01352f8c6",
+  "name" : "Validate that Frontend retrieves AssetInfo data",
+  "time" : {
+    "start" : 1631089381602,
+    "stop" : 1631089397920,
+    "duration" : 16318
+  },
+  "status" : "passed",
+  "severity" : "normal"
+}, {
+  "uid" : "c8a2c535ea574747",
+  "name" : "As a User I get feedback when extensions are installed and correctly setup",
+  "time" : {
+    "start" : 1631089166939,
+    "stop" : 1631089263596,
+    "duration" : 96657
+  },
+  "status" : "passed",
+  "severity" : "normal"
+}, {
+  "uid" : "2a2c5853f61b950b",
+  "name" : "As a User I can Swap tokens - MGA - mETH",
+  "time" : {
+    "start" : 1631088752042,
+    "stop" : 1631088816744,
+    "duration" : 64702
+  },
+  "status" : "passed",
+  "severity" : "normal"
+}, {
+  "uid" : "cdf58ac8ca2b3a2a",
+  "name" : "Validate that Mangata Frontend up and running",
+  "time" : {
+    "start" : 1631089376670,
+    "stop" : 1631089381601,
+    "duration" : 4931
+  },
+  "status" : "passed",
+  "severity" : "normal"
+} ]

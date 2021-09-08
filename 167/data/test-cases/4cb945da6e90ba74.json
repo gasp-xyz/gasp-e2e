@@ -1,0 +1,46 @@
+{
+  "uid" : "4cb945da6e90ba74",
+  "name" : "As a User I can create a pool",
+  "fullName" : "UI tests - A user can create a pool MGA - newToken.As a User I can create a pool",
+  "historyId" : "271610054c4a7ce96b4f458d416b5c30",
+  "time" : {
+    "start" : 1631089009888,
+    "stop" : 1631089080712,
+    "duration" : 70824
+  },
+  "description" : "",
+  "descriptionHtml" : "",
+  "status" : "passed",
+  "flaky" : false,
+  "newFailed" : false,
+  "beforeStages" : [ ],
+  "afterStages" : [ ],
+  "labels" : [ {
+    "name" : "suite",
+    "value" : "UI tests - A user can create a pool MGA - newToken"
+  }, {
+    "name" : "testClass",
+    "value" : "UI tests - A user can create a pool MGA - newToken"
+  }, {
+    "name" : "testMethod",
+    "value" : "As a User I can create a pool"
+  }, {
+    "name" : "package",
+    "value" : "UI tests - A user can create a pool MGA - newToken"
+  }, {
+    "name" : "resultFormat",
+    "value" : "allure1"
+  } ],
+  "parameters" : [ ],
+  "links" : [ ],
+  "hidden" : false,
+  "retry" : false,
+  "extra" : {
+    "severity" : "normal",
+    "retries" : [ ],
+    "categories" : [ ],
+    "tags" : [ ]
+  },
+  "source" : "4cb945da6e90ba74.json",
+  "parameterValues" : [ ]
+}
