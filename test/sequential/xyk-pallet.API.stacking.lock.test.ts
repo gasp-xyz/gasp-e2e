@@ -15,11 +15,8 @@ import {
 import BN from "bn.js";
 import { Keyring } from "@polkadot/api";
 import { User } from "../../utils/User";
-import {
-  getEnvironmentRequiredVars,
-  MGA_ASSET_ID,
-  MGA_DEFAULT_LIQ_TOKEN,
-} from "../../utils/utils";
+import { getEnvironmentRequiredVars } from "../../utils/utils";
+import { MGA_ASSET_ID, MGA_DEFAULT_LIQ_TOKEN } from "../../utils/Constants";
 import { signSendAndWaitToFinishTx } from "../../utils/txHandler";
 
 jest.spyOn(console, "log").mockImplementation(jest.fn());

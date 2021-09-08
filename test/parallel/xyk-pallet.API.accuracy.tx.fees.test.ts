@@ -9,11 +9,11 @@ import { Assets } from "../../utils/Assets";
 import {
   fromBNToUnitString,
   getEnvironmentRequiredVars,
-  MGA_ASSET_ID,
 } from "../../utils/utils";
 import { SignerOptions } from "@polkadot/api/types";
 import { getEventResultFromTxWait, signAndWaitTx } from "../../utils/txHandler";
 import { RuntimeDispatchInfo } from "@polkadot/types/interfaces";
+import { MGA_ASSET_ID } from "../../utils/Constants";
 
 jest.spyOn(console, "log").mockImplementation(jest.fn());
 jest.spyOn(console, "error").mockImplementation(jest.fn());
