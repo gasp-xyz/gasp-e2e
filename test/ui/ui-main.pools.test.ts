@@ -14,7 +14,7 @@ import { Sidebar } from "../../utils/frontend/pages/Sidebar";
 import { DriverBuilder } from "../../utils/frontend/utils/Driver";
 import {
   setupAllExtensions,
-  takeScreenshot,
+  addExtraLogs,
 } from "../../utils/frontend/utils/Helper";
 import { AssetWallet, User } from "../../utils/User";
 import { getEnvironmentRequiredVars } from "../../utils/utils";
@@ -103,7 +103,7 @@ describe("UI tests - A user can create a pool MGA - newToken", () => {
 
   afterEach(async () => {
     const session = await driver.getSession();
-    await takeScreenshot(
+    await addExtraLogs(
       driver,
       expect.getState().currentTestName + " - " + session.getId()
     );
