@@ -1,0 +1,179 @@
+{
+  "uid" : "4b4757e66a1912dae1a509f688f20b0f",
+  "children" : [ {
+    "name" : "Product defects",
+    "children" : [ {
+      "name" : "Error: Expected: [ 50000,50000 ] \n                  Actual: [ 0,0 ] \n                 ",
+      "children" : [ {
+        "name" : "xyk-pallet: Happy case scenario",
+        "uid" : "4af8132efe0e7c46",
+        "parentUid" : "9ed1312a058fd8fc4ca454ca4603563a",
+        "status" : "failed",
+        "time" : {
+          "start" : 1631097558619,
+          "stop" : 1631097613422,
+          "duration" : 54803
+        },
+        "flaky" : false,
+        "newFailed" : true,
+        "parameters" : [ ]
+      } ],
+      "uid" : "9ed1312a058fd8fc4ca454ca4603563a"
+    }, {
+      "name" : "Error: Expected: [ 60000,60000 ] \n                  Actual: [ 0,0 ] \n                 ",
+      "children" : [ {
+        "name" : "xyk-pallet: Liquidity sufficiency scenario",
+        "uid" : "aa62613d1d4968e4",
+        "parentUid" : "a063bc976336e78770f896b30a46c23e",
+        "status" : "failed",
+        "time" : {
+          "start" : 1631097613422,
+          "stop" : 1631097702916,
+          "duration" : 89494
+        },
+        "flaky" : false,
+        "newFailed" : true,
+        "parameters" : [ ]
+      } ],
+      "uid" : "a063bc976336e78770f896b30a46c23e"
+    }, {
+      "name" : "Error: Expected: 5 \n                  Actual: 6 \n                 ",
+      "children" : [ {
+        "name" : "assets won when assets are sold [Selling Mangata] - 5",
+        "uid" : "14c2058b339ccb26",
+        "parentUid" : "b8784a882c54ce862f95cd41a3ead3bb",
+        "status" : "failed",
+        "time" : {
+          "start" : 1631097705455,
+          "stop" : 1631097811115,
+          "duration" : 105660
+        },
+        "flaky" : false,
+        "newFailed" : true,
+        "parameters" : [ ]
+      } ],
+      "uid" : "b8784a882c54ce862f95cd41a3ead3bb"
+    }, {
+      "name" : "Error: Expected: 8 \n                  Actual: 5 \n                 ",
+      "children" : [ {
+        "name" : "assets won when assets are bought [Buying Mangata]",
+        "uid" : "3579c397260d54ec",
+        "parentUid" : "be343c531a9719cbbead4c250ee307e8",
+        "status" : "failed",
+        "time" : {
+          "start" : 1631097811115,
+          "stop" : 1631097919360,
+          "duration" : 108245
+        },
+        "flaky" : false,
+        "newFailed" : true,
+        "parameters" : [ ]
+      } ],
+      "uid" : "be343c531a9719cbbead4c250ee307e8"
+    }, {
+      "name" : "Error: Expected: 14 \n                  Actual: 8 \n                 ",
+      "children" : [ {
+        "name" : "assets won when assets are sold [Selling other in MGA pool] - 6",
+        "uid" : "73fbac9c747caf86",
+        "parentUid" : "c1f90bedb2c53f7ae82d90d671991bfe",
+        "status" : "failed",
+        "time" : {
+          "start" : 1631097919361,
+          "stop" : 1631098027595,
+          "duration" : 108234
+        },
+        "flaky" : false,
+        "newFailed" : true,
+        "parameters" : [ ]
+      } ],
+      "uid" : "c1f90bedb2c53f7ae82d90d671991bfe"
+    }, {
+      "name" : "Error: Expected: 30 \n                  Actual: 31 \n                 ",
+      "children" : [ {
+        "name" : "assets won when assets are bought [Buying other in MGA pool]",
+        "uid" : "c943e027e95bd32d",
+        "parentUid" : "40d2eefabd744a012b68d3e466d48a44",
+        "status" : "failed",
+        "time" : {
+          "start" : 1631098027595,
+          "stop" : 1631098135827,
+          "duration" : 108232
+        },
+        "flaky" : false,
+        "newFailed" : true,
+        "parameters" : [ ]
+      } ],
+      "uid" : "40d2eefabd744a012b68d3e466d48a44"
+    }, {
+      "name" : "Error: Expected: 49 \n                  Actual: 30 \n                 ",
+      "children" : [ {
+        "name" : "assets won when assets are sold [Selling X connected to MGA pool] - 10",
+        "uid" : "4f9aa95964f5280",
+        "parentUid" : "3d7c400afc91f0f2b662f078fe85b498",
+        "status" : "failed",
+        "time" : {
+          "start" : 1631098135834,
+          "stop" : 1631098297523,
+          "duration" : 161689
+        },
+        "flaky" : false,
+        "newFailed" : true,
+        "parameters" : [ ]
+      } ],
+      "uid" : "3d7c400afc91f0f2b662f078fe85b498"
+    }, {
+      "name" : "Error: Expected: 66 \n                  Actual: 49 \n                 ",
+      "children" : [ {
+        "name" : "assets won when assets are bought [Buying X connected to MGA pool]",
+        "uid" : "1b278dbf0192a58c",
+        "parentUid" : "477125e7b4f994875c5fc3f67e55c741",
+        "status" : "failed",
+        "time" : {
+          "start" : 1631098297523,
+          "stop" : 1631098459211,
+          "duration" : 161688
+        },
+        "flaky" : false,
+        "newFailed" : true,
+        "parameters" : [ ]
+      } ],
+      "uid" : "477125e7b4f994875c5fc3f67e55c741"
+    }, {
+      "name" : "Error: Expected: 77 \n                  Actual: 66 \n                 ",
+      "children" : [ {
+        "name" : "assets won when assets are sold [Selling Y - X connected toMGA pool] - 6",
+        "uid" : "ae21a76a00bce158",
+        "parentUid" : "8f68f6929f4424620d556501f17f9b11",
+        "status" : "failed",
+        "time" : {
+          "start" : 1631098459211,
+          "stop" : 1631098620913,
+          "duration" : 161702
+        },
+        "flaky" : false,
+        "newFailed" : true,
+        "parameters" : [ ]
+      } ],
+      "uid" : "8f68f6929f4424620d556501f17f9b11"
+    }, {
+      "name" : "Error: Expected: 90 \n                  Actual: 77 \n                 ",
+      "children" : [ {
+        "name" : "assets won when assets are bought [Buying Y - X connected toMGA pool] - 6",
+        "uid" : "9cce1eec722f60d",
+        "parentUid" : "912e3a085181b148eca1feed6cfa97cb",
+        "status" : "failed",
+        "time" : {
+          "start" : 1631098620913,
+          "stop" : 1631098789323,
+          "duration" : 168410
+        },
+        "flaky" : false,
+        "newFailed" : true,
+        "parameters" : [ ]
+      } ],
+      "uid" : "912e3a085181b148eca1feed6cfa97cb"
+    } ],
+    "uid" : "8fb3a91ba5aaf9de24cc8a92edc82b5d"
+  } ],
+  "name" : "categories"
+}
