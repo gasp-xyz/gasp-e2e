@@ -1,0 +1,91 @@
+[ {
+  "uid" : "e7b32db05f9f8a52",
+  "name" : "xyk-CI - validate pools created: Pool[4,6]",
+  "time" : {
+    "start" : 1631104623251,
+    "stop" : 1631104623569,
+    "duration" : 318
+  },
+  "status" : "passed",
+  "severity" : "normal"
+}, {
+  "uid" : "c3b57b8ae4f6cb25",
+  "name" : "xyk-CI - validate pools created: Pool[4,5]",
+  "time" : {
+    "start" : 1631104622292,
+    "stop" : 1631104622616,
+    "duration" : 324
+  },
+  "status" : "passed",
+  "severity" : "normal"
+}, {
+  "uid" : "460fa30c9ddacb45",
+  "name" : "xyk-CI - validate pools created: Pool[0,5]",
+  "time" : {
+    "start" : 1631104622616,
+    "stop" : 1631104622933,
+    "duration" : 317
+  },
+  "status" : "passed",
+  "severity" : "normal"
+}, {
+  "uid" : "24a869b805772c84",
+  "name" : "xyk-CI - Node is up and running",
+  "time" : {
+    "start" : 1631104647164,
+    "stop" : 1631104650103,
+    "duration" : 2939
+  },
+  "status" : "passed",
+  "severity" : "normal"
+}, {
+  "uid" : "529fc83575b0c36",
+  "name" : "xyk-CI - validate user got the right Assets",
+  "time" : {
+    "start" : 1631104623569,
+    "stop" : 1631104624229,
+    "duration" : 660
+  },
+  "status" : "passed",
+  "severity" : "normal"
+}, {
+  "uid" : "84f967eaee3d61e7",
+  "name" : "Validate that Frontend retrieves AssetInfo data",
+  "time" : {
+    "start" : 1631104630030,
+    "stop" : 1631104643829,
+    "duration" : 13799
+  },
+  "status" : "passed",
+  "severity" : "normal"
+}, {
+  "uid" : "6f1b281a90f336ff",
+  "name" : "xyk-CI - validate pools created: Pool[0,6]",
+  "time" : {
+    "start" : 1631104622933,
+    "stop" : 1631104623251,
+    "duration" : 318
+  },
+  "status" : "passed",
+  "severity" : "normal"
+}, {
+  "uid" : "1389c9777344ceae",
+  "name" : "xyk-CI - AssetInfo contains assets for MGA and Ether",
+  "time" : {
+    "start" : 1631104653320,
+    "stop" : 1631104654067,
+    "duration" : 747
+  },
+  "status" : "passed",
+  "severity" : "normal"
+}, {
+  "uid" : "fa483503c0d27d98",
+  "name" : "Validate that Mangata Frontend up and running",
+  "time" : {
+    "start" : 1631104624745,
+    "stop" : 1631104630030,
+    "duration" : 5285
+  },
+  "status" : "passed",
+  "severity" : "normal"
+} ]
