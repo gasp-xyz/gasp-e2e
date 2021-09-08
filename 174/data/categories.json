@@ -1,0 +1,94 @@
+{
+  "uid" : "4b4757e66a1912dae1a509f688f20b0f",
+  "children" : [ {
+    "name" : "Product defects",
+    "children" : [ {
+      "name" : "Error: Trade btn is not enabled!",
+      "children" : [ {
+        "name" : "As a User I can Swap tokens - MGA - mETH",
+        "uid" : "ade4c669dfd8beb6",
+        "parentUid" : "ef1c87a10cfcc23c8a9c5471f2db012a",
+        "status" : "failed",
+        "time" : {
+          "start" : 1631106776215,
+          "stop" : 1631106796665,
+          "duration" : 20450
+        },
+        "flaky" : false,
+        "newFailed" : false,
+        "parameters" : [ ]
+      } ],
+      "uid" : "ef1c87a10cfcc23c8a9c5471f2db012a"
+    }, {
+      "name" : "Error: Provide btn is not enabled!",
+      "children" : [ {
+        "name" : "As a User I can mint some tokens MGA - mETH",
+        "uid" : "face1e3dbe6d948f",
+        "parentUid" : "89d88dbfdb1a9ca9f14266fdb5c6f4ea",
+        "status" : "failed",
+        "time" : {
+          "start" : 1631106796665,
+          "stop" : 1631106817222,
+          "duration" : 20557
+        },
+        "flaky" : false,
+        "newFailed" : false,
+        "parameters" : [ ]
+      } ],
+      "uid" : "89d88dbfdb1a9ca9f14266fdb5c6f4ea"
+    }, {
+      "name" : "TimeoutError: Waiting for element to be located By(xpath, //*[@data-testid='assetSelectModal-asset-m366'])\n                Wait timed out after 10005ms",
+      "children" : [ {
+        "name" : "As a User I can create a pool",
+        "uid" : "1bcb6557aa3e14ce",
+        "parentUid" : "e7a65b1b7079e632b001a249bafb7a03",
+        "status" : "failed",
+        "time" : {
+          "start" : 1631106931227,
+          "stop" : 1631106959387,
+          "duration" : 28160
+        },
+        "flaky" : false,
+        "newFailed" : false,
+        "parameters" : [ ]
+      } ],
+      "uid" : "e7a65b1b7079e632b001a249bafb7a03"
+    }, {
+      "name" : "TimeoutError: Waiting for element to be located By(xpath, //div[@class='PoolsOverview__inner__list__item'])\n                Wait timed out after 10003ms",
+      "children" : [ {
+        "name" : "As a User I get the right values for Pool investment",
+        "uid" : "c073f60c802c1ff4",
+        "parentUid" : "897bd00294171e1434ddf712aa52d4bd",
+        "status" : "failed",
+        "time" : {
+          "start" : 1631107058163,
+          "stop" : 1631107171611,
+          "duration" : 113448
+        },
+        "flaky" : false,
+        "newFailed" : false,
+        "parameters" : [ ]
+      } ],
+      "uid" : "897bd00294171e1434ddf712aa52d4bd"
+    }, {
+      "name" : "Error: Expected: 0 \n                  Actual: 10000000000000000000 \n                 ",
+      "children" : [ {
+        "name" : "As a User I can get test tokens from the faucet",
+        "uid" : "7326136d5511289e",
+        "parentUid" : "896e53f5457ffeab2d41e031122fdf7c",
+        "status" : "failed",
+        "time" : {
+          "start" : 1631107279167,
+          "stop" : 1631107416978,
+          "duration" : 137811
+        },
+        "flaky" : false,
+        "newFailed" : false,
+        "parameters" : [ ]
+      } ],
+      "uid" : "896e53f5457ffeab2d41e031122fdf7c"
+    } ],
+    "uid" : "8fb3a91ba5aaf9de24cc8a92edc82b5d"
+  } ],
+  "name" : "categories"
+}
