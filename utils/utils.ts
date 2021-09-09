@@ -78,10 +78,6 @@ export function getEnvironmentRequiredVars() {
     ? process.env.ETH_APP_ADDRESS
     : "ws://localhost:8545";
 
-  const substrateWsUrl = process.env.SUBSTRATE_WEBSOCKET_URL
-    ? process.env.ETH_APP_ADDRESS
-    : "ws://localhost:9944";
-
   const ethAppAddress = process.env.ETH_APP_ADDRESS
     ? process.env.ETH_APP_ADDRESS
     : " oh oh";

@@ -17,7 +17,7 @@ describe("Healtcheck - Ethereum <-> Substrate", () => {
 
   const { 
     ethereumWsUrl, 
-    substrateWsUrl, 
+    uri, 
     ethAppAddress, 
     erc20AppAddress, 
     polkadotRecipient, 
@@ -31,7 +31,7 @@ describe("Healtcheck - Ethereum <-> Substrate", () => {
 
   beforeAll(async () => {
     ethClient = new EthClient(ethereumWsUrl, ethAppAddress, erc20AppAddress);
-    subClient = new SubClient(substrateWsUrl);
+    subClient = new SubClient(uri);
 
     await subClient.connect();
     await ethClient.initialize();
