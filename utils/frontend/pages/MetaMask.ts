@@ -76,6 +76,7 @@ export class MetaMask {
   }
 
   public async connect() {
+    await sleep(4000);
     await clickElement(this.driver, XPATH_CONNECT_META);
     await this.acceptConnectionPermissions();
   }

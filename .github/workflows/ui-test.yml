@@ -118,7 +118,7 @@ jobs:
 
       - name: Copy video files to reports folder
         if: success() || failure()
-        run: "cp ~/.aerokube/selenoid/video/* reports/artifacts/"
+        run: "cp ~/.aerokube/selenoid/* -r  reports/artifacts/"
 
       - name: Create  reports zip
         uses: papeloto/action-zip@v1
