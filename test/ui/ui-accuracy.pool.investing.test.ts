@@ -10,6 +10,7 @@ import { Assets } from "../../utils/Assets";
 import { FIVE_MIN } from "../../utils/Constants";
 import { ExtrinsicResult } from "../../utils/eventListeners";
 import { Mangata } from "../../utils/frontend/pages/Mangata";
+import { Pool } from "../../utils/frontend/pages/Pool";
 import { DriverBuilder } from "../../utils/frontend/utils/Driver";
 import {
   setupAllExtensions,
@@ -57,24 +58,39 @@ describe("UI tests - Get Tokens from Faucet", () => {
     sudo = new User(keyring, sudoUserName);
     await sudo.mint(new BN(0), testUser1, new BN(visibleValueNumber));
   });
-  beforeEach(async () => {
-    [firstCurrency, secondCurrency] = await Assets.setupUserWithCurrencies(
-      testUser1,
-      [new BN(visibleValueNumber), new BN(visibleValueNumber)],
-      sudo
-    );
-  });
-  ///TODO: Extend when locators available.Right now I can not select more liq. pools- I dont have Ids, and I dont have asset names :S
   test.each([
     [
-      new BN(Math.pow(10, 19).toString()).div(new BN(2)),
-      new BN(Math.pow(10, 19).toString()).div(new BN(2)),
+      new BN(Math.pow(10, 19).toString()).div(new BN(2)), //5E19X
+      new BN(Math.pow(10, 19).toString()).div(
+        new BN(Math.pow(10, 17).toString()) //100Y
+      ), // there is a difference of 17 decimals. Pool[ 5E19 X - 100Y]
+      "100000000000",
+      "0.000002",
+    ],
+    [
+      new BN(Math.pow(10, 19).toString()).div(new BN(2)), //5X
+      new BN(Math.pow(10, 19).toString()).div(new BN(2)), //5Y
       "0.123",
       "0.123",
     ],
+    [
+      new BN(Math.pow(10, 19).toString()).div(new BN(4)), //2.5X
+      new BN(Math.pow(10, 19).toString()).div(new BN(2)), //5Y
+      "0.100",
+      "0.200",
+    ],
   ])(
-    "As a User I get the right values for Pool investment",
+    `As a User I get the right values for Pool investment P[%s, %s] - I-> %s -Expected - %s`,
     async (assetValue1, assetValue2, inputAmount, expectedAmount) => {
+      [firstCurrency, secondCurrency] = await Assets.setupUserWithCurrencies(
+        testUser1,
+        [
+          new BN(visibleValueNumber).add(new BN(assetValue1)),
+          new BN(visibleValueNumber).add(new BN(assetValue2)),
+        ],
+        sudo
+      );
+
       await createPool(
         testUser1.keyRingPair,
         firstCurrency,
@@ -92,10 +108,13 @@ describe("UI tests - Get Tokens from Faucet", () => {
 
       const mga = new Mangata(driver);
       await mga.navigate();
-      await mga.clickOnFirstOwnedLiquidityPool();
-      await mga.clickOnAddLiquidityPoolBtn();
-      await mga.addAmount(inputAmount, 1);
-      const value = await mga.getAmount(2);
+
+      const pool = new Pool(driver);
+      await pool.togglePool();
+      await pool.selectToken1Asset(`m${firstCurrency}`);
+      await pool.selectToken2Asset(`m${secondCurrency}`);
+      await pool.addToken1AssetAmount(inputAmount);
+      const value = await pool.getToken2Text();
       expect(parseFloat(expectedAmount)).toBe(parseFloat(value));
     }
   );
@@ -106,6 +125,9 @@ describe("UI tests - Get Tokens from Faucet", () => {
       driver,
       expect.getState().currentTestName + " - " + session.getId()
     );
+  });
+
+  afterAll(async () => {
     await driver.quit();
     const api = getApi();
     await api.disconnect();
