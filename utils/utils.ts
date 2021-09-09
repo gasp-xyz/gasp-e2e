@@ -9,10 +9,6 @@ import { User } from "./User";
 import Keyring from "@polkadot/keyring";
 import { getAccountJSON } from "./frontend/utils/Helper";
 
-export const MGA_ASSET_ID = new BN(0);
-export const MGA_ASSET_NAME = "MGA";
-export const MGA_DEFAULT_LIQ_TOKEN = new BN(3);
-
 export function sleep(ms: number) {
   return new Promise((resolve) => {
     setTimeout(resolve, ms);

@@ -1,6 +1,11 @@
 import { WebDriver } from "selenium-webdriver";
 import { getEnvironmentRequiredVars } from "../../utils";
-import { clickElement, waitForElement } from "../utils/Helper";
+import {
+  clickElement,
+  doActionInDifferentWindow,
+  waitForElement,
+  writeText,
+} from "../utils/Helper";
 const { By } = require("selenium-webdriver");
 
 //xpaths
@@ -20,6 +25,8 @@ const XPATH_EXPORT = "//a[text()='Export Account']";
 const XPATH_EXPORT_CONFIRM = "//*[text()='I want to export this account']";
 const XPATH_DATA_ADDRESS = "//*[@data-field = 'address']";
 const XPATH_TEXT_AREA = "//textarea";
+const XPATH_SIGN_PASSWORD = "//*[@type='password']";
+const XPATH_SIGN_BTN = "//button[//div[text() = 'Sign the transaction']]";
 
 const { uiUserPassword: userPassword, mnemonicPolkadot } =
   getEnvironmentRequiredVars();
@@ -108,25 +115,21 @@ export class Polkadot {
     return accoundAddress;
   }
 
+  async acceptModal(driver: WebDriver) {
+    await waitForElement(driver, XPATH_ACCEPT_PERMISSIONS);
+    await clickElement(driver, XPATH_ACCEPT_PERMISSIONS);
+  }
   async acceptPermissions() {
-    let handle = await (await this.driver).getAllWindowHandles();
-    let iterator = handle.entries();
-    let value = iterator.next().value;
-    while (value) {
-      await this.driver.switchTo().window(value[1]);
+    await doActionInDifferentWindow(this.driver, this.acceptModal);
+  }
 
-      try {
-        await waitForElement(this.driver, XPATH_ACCEPT_PERMISSIONS);
-        await clickElement(this.driver, XPATH_ACCEPT_PERMISSIONS);
+  static async signTransactionModal(driver: WebDriver) {
+    await writeText(driver, XPATH_SIGN_PASSWORD, userPassword);
+    await clickElement(driver, XPATH_SIGN_BTN);
+  }
 
-        break;
-      } catch (error) {}
-      value = iterator.next().value;
-    }
-    handle = await (await this.driver).getAllWindowHandles();
-    iterator = handle.entries();
-    value = iterator.next().value;
-    await this.driver.switchTo().window(value[1]);
+  static async signTransaction(driver: WebDriver) {
+    await doActionInDifferentWindow(driver, Polkadot.signTransactionModal);
     return;
   }
 }

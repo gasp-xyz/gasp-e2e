@@ -1,8 +1,6 @@
 name: UI tests
 
 on:
-  schedule:
-    - cron: "1 00,12 * * *" #lets run this job every 12 hours.
 
   workflow_dispatch:
       inputs:
@@ -16,7 +14,10 @@ on:
           default: 'false'
       # For manually trigger
  
+  repository_dispatch:
+    types: [run-ci]
 jobs:
+
   build:
     name: Build docker image
     if: contains(github.event.inputs.publishDockerImage, 'true')
@@ -67,9 +68,30 @@ jobs:
           selenoid-start-arguments: |
             --args "-timeout 300s" --browsers 'chrome' --last-versions 2
         
-      - name: Set variables
+      - name: Set Script to run
         run:  |
           echo "TEST_SCRIPT=${{ github.event.inputs.scriptName || env.TEST_SCRIPT }}" >> $GITHUB_ENV
+          echo "TEST_SCRIPT=${{ github.event.client_payload.scriptName || env.TEST_SCRIPT }}" >> $GITHUB_ENV
+          echo ${{ github.event.client_payload.environment }}
+
+      - name: Set Configuration - Staging
+        if: contains(github.event.client_payload.environment, 'staging')
+        run:  |
+          echo 'UI_URL=https://staging.mangata.finance/' >> $GITHUB_ENV
+          echo 'API_URL=wss://staging.mangatafinance.cloud:9944/' >> $GITHUB_ENV
+  
+      - name: Set Configuration - Develop
+        if: contains(github.event.client_payload.environment, 'develop')
+        run:  |
+          echo 'UI_URL=https://develop.mangata.finance/' >> $GITHUB_ENV
+          echo 'API_URL=wss://develop.mangatafinance.cloud:9944' >> $GITHUB_ENV
+        
+      - name: Set Configuration - Integration
+        if: contains(github.event.client_payload.environment, 'integration')
+        run:  |
+          echo 'UI_URL=https://integration.mangata.finance/' >> $GITHUB_ENV
+          echo 'API_URL=wss://integration.mangatafinance.cloud:9944' >> $GITHUB_ENV
+  
       - uses: actions/checkout@v2
       - name: Install dependencies
         run: yarn
@@ -96,7 +118,7 @@ jobs:
 
       - name: Copy video files to reports folder
         if: success() || failure()
-        run: "cp ~/.aerokube/selenoid/video/* reports/artifacts/"
+        run: "cp ~/.aerokube/selenoid/* -r  reports/artifacts/"
 
       - name: Create  reports zip
         uses: papeloto/action-zip@v1

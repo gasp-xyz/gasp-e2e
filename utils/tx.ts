@@ -6,7 +6,8 @@ import { env } from "process";
 import { SudoDB } from "./SudoDB";
 import { AccountData } from "@polkadot/types/interfaces/balances";
 import { signAndWaitTx, signSendAndWaitToFinishTx } from "./txHandler";
-import { getEnvironmentRequiredVars, MGA_DEFAULT_LIQ_TOKEN } from "./utils";
+import { getEnvironmentRequiredVars } from "./utils";
+import { MGA_DEFAULT_LIQ_TOKEN } from "./Constants";
 import { Keyring } from "@polkadot/api";
 import { User } from "./User";
 import { testLog } from "./Logger";
@@ -579,4 +580,10 @@ export async function getAllAssetsInfo(): Promise<any[]> {
   );
 
   return assetsInfo;
+}
+
+export async function calculateTxCost(transactionExtrinsic: string) {
+  const api = getApi();
+  const queryInfoResult = await api.rpc.payment.queryInfo(transactionExtrinsic);
+  return queryInfoResult.toHuman();
 }

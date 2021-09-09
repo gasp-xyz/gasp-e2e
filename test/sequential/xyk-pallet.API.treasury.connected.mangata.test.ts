@@ -1,3 +1,10 @@
+/*
+ *
+ * @group xyk
+ * @group api
+ * @group sequential
+ * @group critical
+ */
 import { api, getApi, initApi } from "../../utils/api";
 import {
   sellAsset,
@@ -14,7 +21,8 @@ import { Keyring } from "@polkadot/api";
 import { AssetWallet, User } from "../../utils/User";
 import { validateTreasuryAmountsEqual } from "../../utils/validators";
 import { Assets } from "../../utils/Assets";
-import { getEnvironmentRequiredVars, MGA_ASSET_NAME } from "../../utils/utils";
+import { getEnvironmentRequiredVars } from "../../utils/utils";
+import { MGA_ASSET_NAME } from "../../utils/Constants";
 import {
   getEventResultFromTxWait,
   signSendAndWaitToFinishTx,

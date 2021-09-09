@@ -1,24 +1,54 @@
-import { WebDriver } from "selenium-webdriver";
+import { logging, WebDriver } from "selenium-webdriver";
 import { sleep } from "../../utils";
 import { Mangata } from "../pages/Mangata";
 import { MetaMask } from "../pages/MetaMask";
 import { Polkadot } from "../pages/Polkadot";
-const fs = require("fs");
+import fs from "fs";
 
 const { By, until } = require("selenium-webdriver");
 require("chromedriver");
 
-export async function waitForElement(driver: WebDriver, xpath: string) {
-  await driver.wait(until.elementLocated(By.xpath(xpath)), 10000);
+export async function waitForElement(
+  driver: WebDriver,
+  xpath: string,
+  timeout = 10000
+) {
+  await driver.wait(until.elementLocated(By.xpath(xpath)), timeout);
+}
+
+export async function waitForElementToDissapear(
+  driver: WebDriver,
+  xpath: string
+) {
+  let continueWaiting = false;
+  do {
+    try {
+      await driver.wait(until.elementLocated(By.xpath(xpath)), 10000);
+      continueWaiting = true;
+    } catch (error) {
+      sleep(1000);
+      continueWaiting = false;
+    }
+  } while (continueWaiting);
 }
 
 export async function clickElement(driver: WebDriver, xpath: string) {
   await waitForElement(driver, xpath);
   const element = await driver.findElement(By.xpath(xpath));
-  await driver.wait(until.elementIsVisible(element), 10000);
+  await driver.wait(until.elementIsVisible(element), 20000);
   await sleep(1000);
   await element.click();
 }
+
+export async function writeText(
+  driver: WebDriver,
+  elementXpath: string,
+  text: string
+) {
+  await waitForElement(driver, elementXpath);
+  await (await driver.findElement(By.xpath(elementXpath))).sendKeys(text);
+}
+
 ///Setup both extensions
 //Setup Metamask from "MNEMONIC_META" global env.
 //Polkadot extension creating an account.
@@ -50,13 +80,26 @@ export async function leaveOnlyOneTab(driver: WebDriver) {
   }
 }
 
-export async function takeScreenshot(driver: WebDriver, testName = "") {
+export async function addExtraLogs(driver: WebDriver, testName = "") {
+  const outputPath = `reports/artifacts`;
+  [logging.Type.BROWSER, logging.Type.DRIVER].forEach(async (value) => {
+    await driver
+      .manage()
+      .logs()
+      .get(value)
+      .then(function (entries) {
+        entries.forEach(function (entry) {
+          const logLine = `[${entry.level.name}] ${entry.message}`;
+          fs.appendFileSync(
+            `${outputPath}/log_${value}_${testName}.txt`,
+            logLine + " \n"
+          );
+        });
+      });
+  });
+
   const img = await driver.takeScreenshot();
-  fs.writeFileSync(
-    `reports/artifacts/screenshot_${testName}.png`,
-    img,
-    "base64"
-  );
+  fs.writeFileSync(`${outputPath}/screenshot_${testName}.png`, img, "base64");
 }
 
 export async function getAccountJSON() {
@@ -66,4 +109,37 @@ export async function getAccountJSON() {
     fs.readFileSync(polkadotUserJson, { encoding: "utf8", flag: "r" })
   );
   return jsonContent;
+}
+
+export function buildDataTestIdSelector(dataTestId: string) {
+  return By.xpath(buildDataTestIdXpath(dataTestId));
+}
+
+export function buildDataTestIdXpath(dataTestId: string) {
+  const xpathSelector = `//*[@data-testid='${dataTestId}']`;
+  return xpathSelector;
+}
+
+export async function doActionInDifferentWindow(
+  driver: WebDriver,
+  fn: (driver: WebDriver) => void
+) {
+  await sleep(4000);
+  let handle = await (await driver).getAllWindowHandles();
+  let iterator = handle.entries();
+  let value = iterator.next().value;
+  while (value) {
+    await driver.switchTo().window(value[1]);
+
+    try {
+      await fn(driver);
+      break;
+    } catch (error) {}
+    value = iterator.next().value;
+  }
+  handle = await (await driver).getAllWindowHandles();
+  iterator = handle.entries();
+  value = iterator.next().value;
+  await driver.switchTo().window(value[1]);
+  return;
 }

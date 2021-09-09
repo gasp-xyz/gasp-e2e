@@ -1,7 +1,13 @@
+/*
+ *
+ * @group ui
+ * @group ci
+ */
+
 import { WebDriver } from "selenium-webdriver";
 import { Mangata } from "../../utils/frontend/pages/Mangata";
 import { DriverBuilder } from "../../utils/frontend/utils/Driver";
-import { takeScreenshot } from "../../utils/frontend/utils/Helper";
+import { addExtraLogs } from "../../utils/frontend/utils/Helper";
 import { sleep } from "../../utils/utils";
 
 jest.setTimeout(1500000);
@@ -41,9 +47,9 @@ describe("UI tests: Infra", () => {
 
   afterEach(async () => {
     const session = await driver.getSession();
-    await takeScreenshot(
+    await addExtraLogs(
       driver,
-      expect.getState().currentTestName + " - " + session
+      expect.getState().currentTestName + " - " + session.getId()
     );
     await driver.quit();
     await DriverBuilder.destroy();

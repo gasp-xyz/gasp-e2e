@@ -1,3 +1,9 @@
+/*
+ *
+ * @group xyk
+ * @group sequential
+ * @group critical
+ */
 import { getApi, initApi } from "../../utils/api";
 import {
   calcuate_mint_liquidity_price_local,
