@@ -1,4 +1,9 @@
-/* eslint-disable prettier/prettier */
+/* 
+ * eslint-disable prettier/prettier 
+ *
+ * @group ci
+ */
+
 import BN from "bn.js";
 
 import { EthClient } from "mangata-bridge/test/src/ethclient";
