@@ -1,0 +1,91 @@
+[ {
+  "uid" : "375dc2086297dfbe",
+  "name" : "As a User I can create a pool",
+  "time" : {
+    "start" : 1631151356181,
+    "stop" : 1631151420668,
+    "duration" : 64487
+  },
+  "status" : "passed",
+  "severity" : "normal"
+}, {
+  "uid" : "c0afe069a4265d3b",
+  "name" : "As a User I can mint some tokens MGA - mETH",
+  "time" : {
+    "start" : 1631151168585,
+    "stop" : 1631151228619,
+    "duration" : 60034
+  },
+  "status" : "passed",
+  "severity" : "normal"
+}, {
+  "uid" : "bbc908962c861011",
+  "name" : "As a User I get the right values for Pool investment",
+  "time" : {
+    "start" : 1631151506577,
+    "stop" : 1631151619297,
+    "duration" : 112720
+  },
+  "status" : "passed",
+  "severity" : "normal"
+}, {
+  "uid" : "6b86545ff03e646f",
+  "name" : "Validate that Mangata Frontend up and running",
+  "time" : {
+    "start" : 1631151879247,
+    "stop" : 1631151883487,
+    "duration" : 4240
+  },
+  "status" : "passed",
+  "severity" : "normal"
+}, {
+  "uid" : "d573855caa05de11",
+  "name" : "As a User I get infomed whenever is neccesary to install any extension",
+  "time" : {
+    "start" : 1631151620638,
+    "stop" : 1631151640206,
+    "duration" : 19568
+  },
+  "status" : "passed",
+  "severity" : "normal"
+}, {
+  "uid" : "b7822da10623a013",
+  "name" : "Validate that Frontend retrieves AssetInfo data",
+  "time" : {
+    "start" : 1631151883487,
+    "stop" : 1631151898474,
+    "duration" : 14987
+  },
+  "status" : "passed",
+  "severity" : "normal"
+}, {
+  "uid" : "19be2ba375aed167",
+  "name" : "As a User I can get test tokens from the faucet",
+  "time" : {
+    "start" : 1631151733031,
+    "stop" : 1631151877822,
+    "duration" : 144791
+  },
+  "status" : "passed",
+  "severity" : "normal"
+}, {
+  "uid" : "95d3e5e31ae573f0",
+  "name" : "As a User I get feedback when extensions are installed and correctly setup",
+  "time" : {
+    "start" : 1631151640206,
+    "stop" : 1631151729161,
+    "duration" : 88955
+  },
+  "status" : "passed",
+  "severity" : "normal"
+}, {
+  "uid" : "90d0f7617d10575b",
+  "name" : "As a User I can Swap tokens - MGA - mETH",
+  "time" : {
+    "start" : 1631151103747,
+    "stop" : 1631151168585,
+    "duration" : 64838
+  },
+  "status" : "passed",
+  "severity" : "normal"
+} ]
