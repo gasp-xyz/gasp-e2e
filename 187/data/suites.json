@@ -1,0 +1,138 @@
+{
+  "uid" : "98d3104e051c652961429bf95fa0b5d6",
+  "children" : [ {
+    "name" : "test/ci/xyk-ci.validate.setup.test.ts",
+    "children" : [ {
+      "name" : "xyk-CI - validate pools created: Pool[4,5]",
+      "uid" : "771b35366c9bf219",
+      "parentUid" : "05de620d5ad4a39552aa66263f5ceea3",
+      "status" : "passed",
+      "time" : {
+        "start" : 1631179164094,
+        "stop" : 1631179164292,
+        "duration" : 198
+      },
+      "flaky" : false,
+      "newFailed" : false,
+      "parameters" : [ ]
+    }, {
+      "name" : "xyk-CI - validate pools created: Pool[0,5]",
+      "uid" : "d05e5a6cb01a2e8",
+      "parentUid" : "05de620d5ad4a39552aa66263f5ceea3",
+      "status" : "passed",
+      "time" : {
+        "start" : 1631179164292,
+        "stop" : 1631179164484,
+        "duration" : 192
+      },
+      "flaky" : false,
+      "newFailed" : false,
+      "parameters" : [ ]
+    }, {
+      "name" : "xyk-CI - validate pools created: Pool[0,6]",
+      "uid" : "a6f5e12a5db7f302",
+      "parentUid" : "05de620d5ad4a39552aa66263f5ceea3",
+      "status" : "passed",
+      "time" : {
+        "start" : 1631179164484,
+        "stop" : 1631179164676,
+        "duration" : 192
+      },
+      "flaky" : false,
+      "newFailed" : false,
+      "parameters" : [ ]
+    }, {
+      "name" : "xyk-CI - validate pools created: Pool[4,6]",
+      "uid" : "6d1604e08d401e11",
+      "parentUid" : "05de620d5ad4a39552aa66263f5ceea3",
+      "status" : "passed",
+      "time" : {
+        "start" : 1631179164676,
+        "stop" : 1631179164873,
+        "duration" : 197
+      },
+      "flaky" : false,
+      "newFailed" : false,
+      "parameters" : [ ]
+    }, {
+      "name" : "xyk-CI - validate user got the right Assets",
+      "uid" : "49abd25f4961acd3",
+      "parentUid" : "05de620d5ad4a39552aa66263f5ceea3",
+      "status" : "passed",
+      "time" : {
+        "start" : 1631179164873,
+        "stop" : 1631179165287,
+        "duration" : 414
+      },
+      "flaky" : false,
+      "newFailed" : false,
+      "parameters" : [ ]
+    } ],
+    "uid" : "05de620d5ad4a39552aa66263f5ceea3"
+  }, {
+    "name" : "UI tests: Infra",
+    "children" : [ {
+      "name" : "Validate that Mangata Frontend up and running",
+      "uid" : "97f27034f282f46c",
+      "parentUid" : "07350b18651d800cd32bb450b07e1093",
+      "status" : "passed",
+      "time" : {
+        "start" : 1631179165726,
+        "stop" : 1631179168382,
+        "duration" : 2656
+      },
+      "flaky" : false,
+      "newFailed" : false,
+      "parameters" : [ ]
+    }, {
+      "name" : "Validate that Frontend retrieves AssetInfo data",
+      "uid" : "ab05f55a8e9b058e",
+      "parentUid" : "07350b18651d800cd32bb450b07e1093",
+      "status" : "passed",
+      "time" : {
+        "start" : 1631179168382,
+        "stop" : 1631179181780,
+        "duration" : 13398
+      },
+      "flaky" : false,
+      "newFailed" : false,
+      "parameters" : [ ]
+    } ],
+    "uid" : "07350b18651d800cd32bb450b07e1093"
+  }, {
+    "name" : "test/ci/xyk-ci.validate.node.test.ts",
+    "children" : [ {
+      "name" : "xyk-CI - Node is up and running",
+      "uid" : "e8ffe7b9091bcef0",
+      "parentUid" : "dd18d827826f1340dd69681dd2474126",
+      "status" : "passed",
+      "time" : {
+        "start" : 1631179184347,
+        "stop" : 1631179188078,
+        "duration" : 3731
+      },
+      "flaky" : false,
+      "newFailed" : false,
+      "parameters" : [ ]
+    } ],
+    "uid" : "dd18d827826f1340dd69681dd2474126"
+  }, {
+    "name" : "test/ci/xyk-ci.validate.assetInfo.test.ts",
+    "children" : [ {
+      "name" : "xyk-CI - AssetInfo contains assets for MGA and Ether",
+      "uid" : "a89f52cb170b6579",
+      "parentUid" : "8d496109ad1e586392a8f3bbc845a884",
+      "status" : "passed",
+      "time" : {
+        "start" : 1631179190478,
+        "stop" : 1631179190689,
+        "duration" : 211
+      },
+      "flaky" : false,
+      "newFailed" : false,
+      "parameters" : [ ]
+    } ],
+    "uid" : "8d496109ad1e586392a8f3bbc845a884"
+  } ],
+  "name" : "suites"
+}
