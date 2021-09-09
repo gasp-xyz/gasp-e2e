@@ -1,0 +1,46 @@
+{
+  "uid" : "2e83c4e112879f8f",
+  "name" : "Create x-y and y-x pool",
+  "fullName" : "xyk-pallet - Sell Asset: validate Errors:.Create x-y and y-x pool",
+  "historyId" : "1e1b9c331e42e2d52320e04ab3d82096",
+  "time" : {
+    "start" : 1631176430170,
+    "stop" : 1631176447691,
+    "duration" : 17521
+  },
+  "description" : "",
+  "descriptionHtml" : "",
+  "status" : "passed",
+  "flaky" : false,
+  "newFailed" : false,
+  "beforeStages" : [ ],
+  "afterStages" : [ ],
+  "labels" : [ {
+    "name" : "suite",
+    "value" : "xyk-pallet - Sell Asset: validate Errors:"
+  }, {
+    "name" : "testClass",
+    "value" : "xyk-pallet - Sell Asset: validate Errors:"
+  }, {
+    "name" : "testMethod",
+    "value" : "Create x-y and y-x pool"
+  }, {
+    "name" : "package",
+    "value" : "xyk-pallet - Sell Asset: validate Errors:"
+  }, {
+    "name" : "resultFormat",
+    "value" : "allure1"
+  } ],
+  "parameters" : [ ],
+  "links" : [ ],
+  "hidden" : false,
+  "retry" : false,
+  "extra" : {
+    "severity" : "normal",
+    "retries" : [ ],
+    "categories" : [ ],
+    "tags" : [ ]
+  },
+  "source" : "2e83c4e112879f8f.json",
+  "parameterValues" : [ ]
+}

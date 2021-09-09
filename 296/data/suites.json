@@ -1,0 +1,1503 @@
+{
+  "uid" : "98d3104e051c652961429bf95fa0b5d6",
+  "children" : [ {
+    "name" : "xyk-pallet - Check operations are not executed because of overflow in asset token",
+    "children" : [ {
+      "name" : "Create pool of [MAX,MAX]: OverFlow [a+b] - liquidityAsset calculation",
+      "uid" : "ac626a3587c4f284",
+      "parentUid" : "37f5bf25d509356a6de7175a21f6fbff",
+      "status" : "passed",
+      "time" : {
+        "start" : 1631176319900,
+        "stop" : 1631176447649,
+        "duration" : 127749
+      },
+      "flaky" : false,
+      "newFailed" : false,
+      "parameters" : [ ]
+    }, {
+      "name" : "Transfer [MAX] assets to other user when that user has 1 asset. Max+1 => overflow.",
+      "uid" : "4f9afef1819d6266",
+      "parentUid" : "37f5bf25d509356a6de7175a21f6fbff",
+      "status" : "passed",
+      "time" : {
+        "start" : 1631176447649,
+        "stop" : 1631176574057,
+        "duration" : 126408
+      },
+      "flaky" : false,
+      "newFailed" : false,
+      "parameters" : [ ]
+    } ],
+    "uid" : "37f5bf25d509356a6de7175a21f6fbff"
+  }, {
+    "name" : "test/parallel/xyk-pallet.liquidity.test.ts",
+    "children" : [ {
+      "name" : "xyk-pallet - Liqudity : Burn part of the liquidity",
+      "uid" : "d277f79715b88da",
+      "parentUid" : "241ed9fac4fdc264803710ee20b5919a",
+      "status" : "passed",
+      "time" : {
+        "start" : 1631176322645,
+        "stop" : 1631176447713,
+        "duration" : 125068
+      },
+      "flaky" : false,
+      "newFailed" : false,
+      "parameters" : [ ]
+    }, {
+      "name" : "xyk-pallet - Liqudity : Burn all the liquidity",
+      "uid" : "65e379bca44122e7",
+      "parentUid" : "241ed9fac4fdc264803710ee20b5919a",
+      "status" : "passed",
+      "time" : {
+        "start" : 1631176447713,
+        "stop" : 1631176574112,
+        "duration" : 126399
+      },
+      "flaky" : false,
+      "newFailed" : false,
+      "parameters" : [ ]
+    }, {
+      "name" : "xyk-pallet - LiquidityOperation: mintLiquidity",
+      "uid" : "fe17ef759ee07221",
+      "parentUid" : "241ed9fac4fdc264803710ee20b5919a",
+      "status" : "passed",
+      "time" : {
+        "start" : 1631176574112,
+        "stop" : 1631176699099,
+        "duration" : 124987
+      },
+      "flaky" : false,
+      "newFailed" : false,
+      "parameters" : [ ]
+    } ],
+    "uid" : "241ed9fac4fdc264803710ee20b5919a"
+  }, {
+    "name" : "xyk-pallet - Burn liquidity tests: when burning liquidity you can",
+    "children" : [ {
+      "name" : "Get affected after a transaction that devaluates X wallet & destroy the pool",
+      "uid" : "7b19c04935ed18b6",
+      "parentUid" : "07e062b4641707e21a88819c4602d1d3",
+      "status" : "passed",
+      "time" : {
+        "start" : 1631176322962,
+        "stop" : 1631176501466,
+        "duration" : 178504
+      },
+      "flaky" : false,
+      "newFailed" : false,
+      "parameters" : [ ]
+    }, {
+      "name" : "Burning liquidities provides Burn and settle",
+      "uid" : "61bfb9c3d2865c64",
+      "parentUid" : "07e062b4641707e21a88819c4602d1d3",
+      "status" : "passed",
+      "time" : {
+        "start" : 1631176501466,
+        "stop" : 1631176645247,
+        "duration" : 143781
+      },
+      "flaky" : false,
+      "newFailed" : false,
+      "parameters" : [ ]
+    }, {
+      "name" : "Burning liquidities generates a Liquidity burned event",
+      "uid" : "9491341c2afd1134",
+      "parentUid" : "07e062b4641707e21a88819c4602d1d3",
+      "status" : "passed",
+      "time" : {
+        "start" : 1631176645247,
+        "stop" : 1631176789168,
+        "duration" : 143921
+      },
+      "flaky" : false,
+      "newFailed" : false,
+      "parameters" : [ ]
+    } ],
+    "uid" : "07e062b4641707e21a88819c4602d1d3"
+  }, {
+    "name" : "xyk-pallet - Sell assets tests: SellAsset Errors:",
+    "children" : [ {
+      "name" : "Sell assets that does not belong to any pool",
+      "uid" : "cd0824c420517354",
+      "parentUid" : "c8b8df8dee4010b5133aa84767480f8f",
+      "status" : "passed",
+      "time" : {
+        "start" : 1631176322966,
+        "stop" : 1631176465118,
+        "duration" : 142152
+      },
+      "flaky" : false,
+      "newFailed" : false,
+      "parameters" : [ ]
+    }, {
+      "name" : "Try sell more assets than owned",
+      "uid" : "2223bc682f02cf5c",
+      "parentUid" : "c8b8df8dee4010b5133aa84767480f8f",
+      "status" : "passed",
+      "time" : {
+        "start" : 1631176465119,
+        "stop" : 1631176609058,
+        "duration" : 143939
+      },
+      "flaky" : false,
+      "newFailed" : false,
+      "parameters" : [ ]
+    }, {
+      "name" : "Sell assets with a high expectation: limit +1",
+      "uid" : "3f47d1ab2a8167a5",
+      "parentUid" : "c8b8df8dee4010b5133aa84767480f8f",
+      "status" : "passed",
+      "time" : {
+        "start" : 1631176609058,
+        "stop" : 1631176735335,
+        "duration" : 126277
+      },
+      "flaky" : false,
+      "newFailed" : false,
+      "parameters" : [ ]
+    } ],
+    "uid" : "c8b8df8dee4010b5133aa84767480f8f"
+  }, {
+    "name" : "xyk-pallet - Mint liquidity tests: MintLiquidity Errors:",
+    "children" : [ {
+      "name" : "Mint liquidity when not enough assetY for minting Xamount",
+      "uid" : "5163cd4cf6796345",
+      "parentUid" : "00b9589f48cc6d38cf12882590d71eb3",
+      "status" : "passed",
+      "time" : {
+        "start" : 1631176322966,
+        "stop" : 1631176465109,
+        "duration" : 142143
+      },
+      "flaky" : false,
+      "newFailed" : false,
+      "parameters" : [ ]
+    }, {
+      "name" : "Mint liquidity when not enough assetX for minting Yamount",
+      "uid" : "45d4fcdcb67af366",
+      "parentUid" : "00b9589f48cc6d38cf12882590d71eb3",
+      "status" : "passed",
+      "time" : {
+        "start" : 1631176465109,
+        "stop" : 1631176609045,
+        "duration" : 143936
+      },
+      "flaky" : false,
+      "newFailed" : false,
+      "parameters" : [ ]
+    }, {
+      "name" : "Mint liquidity assets that does not belong to any pool",
+      "uid" : "bd43594e42e17a46",
+      "parentUid" : "00b9589f48cc6d38cf12882590d71eb3",
+      "status" : "passed",
+      "time" : {
+        "start" : 1631176609045,
+        "stop" : 1631176789148,
+        "duration" : 180103
+      },
+      "flaky" : false,
+      "newFailed" : false,
+      "parameters" : [ ]
+    }, {
+      "name" : "Mint liquidity more assets than I own",
+      "uid" : "a22c6232b43f3b89",
+      "parentUid" : "00b9589f48cc6d38cf12882590d71eb3",
+      "status" : "passed",
+      "time" : {
+        "start" : 1631176789148,
+        "stop" : 1631176982074,
+        "duration" : 192926
+      },
+      "flaky" : false,
+      "newFailed" : false,
+      "parameters" : [ ]
+    }, {
+      "name" : "Min liquidity, SecondAssetAmount parameter expectation not met",
+      "uid" : "f3165fd09fc275be",
+      "parentUid" : "00b9589f48cc6d38cf12882590d71eb3",
+      "status" : "passed",
+      "time" : {
+        "start" : 1631176982074,
+        "stop" : 1631177180128,
+        "duration" : 198054
+      },
+      "flaky" : false,
+      "newFailed" : false,
+      "parameters" : [ ]
+    } ],
+    "uid" : "00b9589f48cc6d38cf12882590d71eb3"
+  }, {
+    "name" : "xyk-pallet - Buy assets tests: BuyAssets Errors:",
+    "children" : [ {
+      "name" : "Buy assets that does not belong to any pool",
+      "uid" : "8008cf89e1443057",
+      "parentUid" : "6a330a7a3eb9027de4a09dddc7a5d599",
+      "status" : "passed",
+      "time" : {
+        "start" : 1631176323070,
+        "stop" : 1631176465155,
+        "duration" : 142085
+      },
+      "flaky" : false,
+      "newFailed" : false,
+      "parameters" : [ ]
+    }, {
+      "name" : "Buy more assets than exists in the pool",
+      "uid" : "272ee85e9446efa4",
+      "parentUid" : "6a330a7a3eb9027de4a09dddc7a5d599",
+      "status" : "passed",
+      "time" : {
+        "start" : 1631176465155,
+        "stop" : 1631176591549,
+        "duration" : 126394
+      },
+      "flaky" : false,
+      "newFailed" : false,
+      "parameters" : [ ]
+    }, {
+      "name" : "Buy all assets from the the pool",
+      "uid" : "e6d5006c858fab84",
+      "parentUid" : "6a330a7a3eb9027de4a09dddc7a5d599",
+      "status" : "passed",
+      "time" : {
+        "start" : 1631176591549,
+        "stop" : 1631176717873,
+        "duration" : 126324
+      },
+      "flaky" : false,
+      "newFailed" : false,
+      "parameters" : [ ]
+    }, {
+      "name" : "Buy assets with a high expectation: maxInput -1",
+      "uid" : "3969d71176e4f039",
+      "parentUid" : "6a330a7a3eb9027de4a09dddc7a5d599",
+      "status" : "passed",
+      "time" : {
+        "start" : 1631176717873,
+        "stop" : 1631176861475,
+        "duration" : 143602
+      },
+      "flaky" : false,
+      "newFailed" : false,
+      "parameters" : [ ]
+    } ],
+    "uid" : "6a330a7a3eb9027de4a09dddc7a5d599"
+  }, {
+    "name" : "xyk-pallet - Sell Asset: validate Errors:",
+    "children" : [ {
+      "name" : "Create x-y and y-x pool",
+      "uid" : "2e83c4e112879f8f",
+      "parentUid" : "51f864e0cd66a5f59a9db7c25597c6c7",
+      "status" : "passed",
+      "time" : {
+        "start" : 1631176430170,
+        "stop" : 1631176447691,
+        "duration" : 17521
+      },
+      "flaky" : false,
+      "newFailed" : false,
+      "parameters" : [ ]
+    }, {
+      "name" : "Create pool with zero",
+      "uid" : "ab55a24eb250dd6b",
+      "parentUid" : "51f864e0cd66a5f59a9db7c25597c6c7",
+      "status" : "passed",
+      "time" : {
+        "start" : 1631176447694,
+        "stop" : 1631176465133,
+        "duration" : 17439
+      },
+      "flaky" : false,
+      "newFailed" : false,
+      "parameters" : [ ]
+    }, {
+      "name" : "Not enough assets",
+      "uid" : "53dc188bcd2ec651",
+      "parentUid" : "51f864e0cd66a5f59a9db7c25597c6c7",
+      "status" : "passed",
+      "time" : {
+        "start" : 1631176465133,
+        "stop" : 1631176518994,
+        "duration" : 53861
+      },
+      "flaky" : false,
+      "newFailed" : false,
+      "parameters" : [ ]
+    } ],
+    "uid" : "51f864e0cd66a5f59a9db7c25597c6c7"
+  }, {
+    "name" : "xyk-pallet - Pool tests: a pool can:",
+    "children" : [ {
+      "name" : "be minted",
+      "uid" : "8de6db40ae0402a7",
+      "parentUid" : "6a319d2c1a12596f59f8c20ebbe7424e",
+      "status" : "passed",
+      "time" : {
+        "start" : 1631176519002,
+        "stop" : 1631176699093,
+        "duration" : 180091
+      },
+      "flaky" : false,
+      "newFailed" : false,
+      "parameters" : [ ]
+    }, {
+      "name" : "be burn",
+      "uid" : "69d5177121dbe29f",
+      "parentUid" : "6a319d2c1a12596f59f8c20ebbe7424e",
+      "status" : "passed",
+      "time" : {
+        "start" : 1631176699094,
+        "stop" : 1631176897694,
+        "duration" : 198600
+      },
+      "flaky" : false,
+      "newFailed" : false,
+      "parameters" : [ ]
+    } ],
+    "uid" : "6a319d2c1a12596f59f8c20ebbe7424e"
+  }, {
+    "name" : "test/parallel/xyk-pallet.pool.test.ts",
+    "children" : [ {
+      "name" : "xyk-pallet - Pool tests: createPool and validate liq token",
+      "uid" : "863ff6d25aebf899",
+      "parentUid" : "bc1cfd6743ac1ab486f018fdd793be9c",
+      "status" : "passed",
+      "time" : {
+        "start" : 1631176701907,
+        "stop" : 1631176807905,
+        "duration" : 105998
+      },
+      "flaky" : false,
+      "newFailed" : false,
+      "parameters" : [ ]
+    }, {
+      "name" : "xyk-pallet - Pool tests: createPool",
+      "uid" : "c799a3bf57c78b43",
+      "parentUid" : "bc1cfd6743ac1ab486f018fdd793be9c",
+      "status" : "failed",
+      "time" : {
+        "start" : 1631176807906,
+        "stop" : 1631176927206,
+        "duration" : 119300
+      },
+      "flaky" : false,
+      "newFailed" : false,
+      "parameters" : [ ]
+    } ],
+    "uid" : "bc1cfd6743ac1ab486f018fdd793be9c"
+  }, {
+    "name" : "xyk-pallet - Operate with a pool close to overflow",
+    "children" : [ {
+      "name" : "Sell [MAX -2] assets to a wallet with Max-1000,1000 => overflow.",
+      "uid" : "d7350df7683f4908",
+      "parentUid" : "3fe9c2fca49db24b761a7f444e90091a",
+      "status" : "passed",
+      "time" : {
+        "start" : 1631176735340,
+        "stop" : 1631176754181,
+        "duration" : 18841
+      },
+      "flaky" : false,
+      "newFailed" : false,
+      "parameters" : [ ]
+    }, {
+      "name" : "Buy [100] assets to a wallet with Max-1000,1000 => overflow.",
+      "uid" : "19063f7cdbba6335",
+      "parentUid" : "3fe9c2fca49db24b761a7f444e90091a",
+      "status" : "passed",
+      "time" : {
+        "start" : 1631176754181,
+        "stop" : 1631176771661,
+        "duration" : 17480
+      },
+      "flaky" : false,
+      "newFailed" : false,
+      "parameters" : [ ]
+    }, {
+      "name" : "Mint liquidities [1000] assets to a wallet with Max-1000,1000 => overflow.",
+      "uid" : "a18cba3ad377f42d",
+      "parentUid" : "3fe9c2fca49db24b761a7f444e90091a",
+      "status" : "passed",
+      "time" : {
+        "start" : 1631176771662,
+        "stop" : 1631176789115,
+        "duration" : 17453
+      },
+      "flaky" : false,
+      "newFailed" : false,
+      "parameters" : [ ]
+    }, {
+      "name" : "[BUG] Burn liquidities [MAX -1] assets to a wallet wich is full => overflow. NOT  a bug https://trello.com/c/J3fzuwH5",
+      "uid" : "b2fda8c66179e2b8",
+      "parentUid" : "3fe9c2fca49db24b761a7f444e90091a",
+      "status" : "skipped",
+      "time" : {
+        "start" : 1631176789115,
+        "stop" : 1631176789115,
+        "duration" : 0
+      },
+      "flaky" : false,
+      "newFailed" : false,
+      "parameters" : [ ]
+    } ],
+    "uid" : "3fe9c2fca49db24b761a7f444e90091a"
+  }, {
+    "name" : "xyk-pallet - Sell assets tests: Selling Assets you can",
+    "children" : [ {
+      "name" : "Sell assets with a high expectation: limit - OK",
+      "uid" : "2b8656f6933b4cc6",
+      "parentUid" : "35ecd73eb862f6c09a6eb5853fb7e789",
+      "status" : "passed",
+      "time" : {
+        "start" : 1631176735350,
+        "stop" : 1631176861490,
+        "duration" : 126140
+      },
+      "flaky" : false,
+      "newFailed" : false,
+      "parameters" : [ ]
+    }, {
+      "name" : "Sell assets from a wallet I own into a wallet I do not own: limit",
+      "uid" : "380deaa03b270e1b",
+      "parentUid" : "35ecd73eb862f6c09a6eb5853fb7e789",
+      "status" : "passed",
+      "time" : {
+        "start" : 1631176861490,
+        "stop" : 1631177071768,
+        "duration" : 210278
+      },
+      "flaky" : false,
+      "newFailed" : false,
+      "parameters" : [ ]
+    } ],
+    "uid" : "35ecd73eb862f6c09a6eb5853fb7e789"
+  }, {
+    "name" : "xyk-pallet - Operate with a user account close to overflow",
+    "children" : [ {
+      "name" : "Sell a few assets to a wallet that is full => overflow. NOT A BUG: https://trello.com/c/J3fzuwH5",
+      "uid" : "acfc7aa2718f05ed",
+      "parentUid" : "e0cb9b7409590b1a61820507043aaaed",
+      "status" : "skipped",
+      "time" : {
+        "start" : 1631176789119,
+        "stop" : 1631176789120,
+        "duration" : 1
+      },
+      "flaky" : false,
+      "newFailed" : false,
+      "parameters" : [ ]
+    }, {
+      "name" : "Buy a few assets to a wallet that is full  => overflow. NOT A BUG: https://trello.com/c/J3fzuwH5",
+      "uid" : "a09b38e7491969ab",
+      "parentUid" : "e0cb9b7409590b1a61820507043aaaed",
+      "status" : "skipped",
+      "time" : {
+        "start" : 1631176789120,
+        "stop" : 1631176789120,
+        "duration" : 0
+      },
+      "flaky" : false,
+      "newFailed" : false,
+      "parameters" : [ ]
+    } ],
+    "uid" : "e0cb9b7409590b1a61820507043aaaed"
+  }, {
+    "name" : "xyk-pallet - Operate with a highly unbalanced pool [mg - newAsset]",
+    "children" : [ {
+      "name" : "[BUG] Buy a few assets to a wallet linked to MGA  => overflow.",
+      "uid" : "c7c021e42b557464",
+      "parentUid" : "b038c85272068339f2fd8049ec60f776",
+      "status" : "skipped",
+      "time" : {
+        "start" : 1631176789122,
+        "stop" : 1631176789122,
+        "duration" : 0
+      },
+      "flaky" : false,
+      "newFailed" : false,
+      "parameters" : [ ]
+    } ],
+    "uid" : "b038c85272068339f2fd8049ec60f776"
+  }, {
+    "name" : "xyk-pallet - Mint liquidity tests: with minting you can",
+    "children" : [ {
+      "name" : "Add all the wallet assets to the pool",
+      "uid" : "7887862ce2c22eb",
+      "parentUid" : "18dc62eb95e0e0d7be426263ba59591b",
+      "status" : "passed",
+      "time" : {
+        "start" : 1631176792567,
+        "stop" : 1631176927187,
+        "duration" : 134620
+      },
+      "flaky" : false,
+      "newFailed" : false,
+      "parameters" : [ ]
+    }, {
+      "name" : "Expect an event when liquidirty is minted",
+      "uid" : "f2023cd898474de",
+      "parentUid" : "18dc62eb95e0e0d7be426263ba59591b",
+      "status" : "passed",
+      "time" : {
+        "start" : 1631176927187,
+        "stop" : 1631177053133,
+        "duration" : 125946
+      },
+      "flaky" : false,
+      "newFailed" : false,
+      "parameters" : [ ]
+    } ],
+    "uid" : "18dc62eb95e0e0d7be426263ba59591b"
+  }, {
+    "name" : "xyk-pallet - Buy assets tests: Buying assets you can",
+    "children" : [ {
+      "name" : "Leave only one asset in the pool",
+      "uid" : "649024913a1e1b9b",
+      "parentUid" : "c4ff653e853aec0bd87fdcd4dc58ee1d",
+      "status" : "passed",
+      "time" : {
+        "start" : 1631176861489,
+        "stop" : 1631177016942,
+        "duration" : 155453
+      },
+      "flaky" : false,
+      "newFailed" : false,
+      "parameters" : [ ]
+    }, {
+      "name" : "Buy from a wallet I own into a wallet I do not own",
+      "uid" : "f59b62eb5e161d37",
+      "parentUid" : "c4ff653e853aec0bd87fdcd4dc58ee1d",
+      "status" : "passed",
+      "time" : {
+        "start" : 1631177016942,
+        "stop" : 1631177214998,
+        "duration" : 198056
+      },
+      "flaky" : false,
+      "newFailed" : false,
+      "parameters" : [ ]
+    } ],
+    "uid" : "c4ff653e853aec0bd87fdcd4dc58ee1d"
+  }, {
+    "name" : "xyk-rpc - calculate get_burn amount: OK",
+    "children" : [ {
+      "name" : "validate parameters - burn from pool [firstIdx->0,secondIdx->1,amount->1000,expected->1.0000 nUnit]",
+      "uid" : "3fe61a0a164564b0",
+      "parentUid" : "1adabc2b2a5a32cdb4362e91db344710",
+      "status" : "passed",
+      "time" : {
+        "start" : 1631176878866,
+        "stop" : 1631176878873,
+        "duration" : 7
+      },
+      "flaky" : false,
+      "newFailed" : false,
+      "parameters" : [ ]
+    }, {
+      "name" : "validate parameters - burn from pool [firstIdx->1,secondIdx->0,amount->1000,expected->1.0000 nUnit]",
+      "uid" : "c3e179c268aaeebc",
+      "parentUid" : "1adabc2b2a5a32cdb4362e91db344710",
+      "status" : "passed",
+      "time" : {
+        "start" : 1631176878873,
+        "stop" : 1631176878877,
+        "duration" : 4
+      },
+      "flaky" : false,
+      "newFailed" : false,
+      "parameters" : [ ]
+    }, {
+      "name" : "validate parameters - burn from pool [firstIdx->0,secondIdx->1,amount->10000,expected->10.0000 nUnit]",
+      "uid" : "6763e19492bc2a08",
+      "parentUid" : "1adabc2b2a5a32cdb4362e91db344710",
+      "status" : "passed",
+      "time" : {
+        "start" : 1631176878877,
+        "stop" : 1631176878882,
+        "duration" : 5
+      },
+      "flaky" : false,
+      "newFailed" : false,
+      "parameters" : [ ]
+    }, {
+      "name" : "validate parameters - burn from pool [firstIdx->0,secondIdx->1,amount->100000,expected->100.0000 nUnit]",
+      "uid" : "9a69c16254d54677",
+      "parentUid" : "1adabc2b2a5a32cdb4362e91db344710",
+      "status" : "passed",
+      "time" : {
+        "start" : 1631176878882,
+        "stop" : 1631176878888,
+        "duration" : 6
+      },
+      "flaky" : false,
+      "newFailed" : false,
+      "parameters" : [ ]
+    } ],
+    "uid" : "1adabc2b2a5a32cdb4362e91db344710"
+  }, {
+    "name" : "test/parallel/xyk-pallet.asset.buy.test.ts",
+    "children" : [ {
+      "name" : "xyk-pallet - AssetsOperation: buyAsset [maxAmountIn = 1M], buy asset",
+      "uid" : "ec691c66c2eedd4c",
+      "parentUid" : "2eb843f0428e1db35b04fea67bfc6ad8",
+      "status" : "passed",
+      "time" : {
+        "start" : 1631176900199,
+        "stop" : 1631177035701,
+        "duration" : 135502
+      },
+      "flaky" : false,
+      "newFailed" : false,
+      "parameters" : [ ]
+    }, {
+      "name" : "xyk-pallet - AssetsOperation: buyAsset [maxAmountIn = 1M], sell a bought asset",
+      "uid" : "ea643e0ab1020907",
+      "parentUid" : "2eb843f0428e1db35b04fea67bfc6ad8",
+      "status" : "passed",
+      "time" : {
+        "start" : 1631177035702,
+        "stop" : 1631177180148,
+        "duration" : 144446
+      },
+      "flaky" : false,
+      "newFailed" : false,
+      "parameters" : [ ]
+    } ],
+    "uid" : "2eb843f0428e1db35b04fea67bfc6ad8"
+  }, {
+    "name" : "test/parallel/xyk-rpc.errors.test.ts",
+    "children" : [ {
+      "name" : "xyk-rpc - calculate_sell_price validates parameters - Negative params",
+      "uid" : "99dc12fb2024a1d7",
+      "parentUid" : "32dd2522f9ef14203f8d3929c2f28fd2",
+      "status" : "passed",
+      "time" : {
+        "start" : 1631176929785,
+        "stop" : 1631176929796,
+        "duration" : 11
+      },
+      "flaky" : false,
+      "newFailed" : false,
+      "parameters" : [ ]
+    }, {
+      "name" : "xyk-rpc - calculate_sell_price validates parameters - Zeroes [inputReserve->1,outputReserve->1,amount->0,expected->0]",
+      "uid" : "9c6378f1e4c6b798",
+      "parentUid" : "32dd2522f9ef14203f8d3929c2f28fd2",
+      "status" : "passed",
+      "time" : {
+        "start" : 1631176929796,
+        "stop" : 1631176929799,
+        "duration" : 3
+      },
+      "flaky" : false,
+      "newFailed" : false,
+      "parameters" : [ ]
+    }, {
+      "name" : "xyk-rpc - calculate_sell_price validates parameters - Zeroes [inputReserve->0,outputReserve->0,amount->0,expected->0]",
+      "uid" : "cdd52110284a9ff1",
+      "parentUid" : "32dd2522f9ef14203f8d3929c2f28fd2",
+      "status" : "passed",
+      "time" : {
+        "start" : 1631176929799,
+        "stop" : 1631176929802,
+        "duration" : 3
+      },
+      "flaky" : false,
+      "newFailed" : false,
+      "parameters" : [ ]
+    }, {
+      "name" : "xyk-rpc - calculate_sell_price validates parameters - Zeroes [inputReserve->0,outputReserve->1,amount->1,expected->1]",
+      "uid" : "aaa36b3aad6bf8c6",
+      "parentUid" : "32dd2522f9ef14203f8d3929c2f28fd2",
+      "status" : "passed",
+      "time" : {
+        "start" : 1631176929802,
+        "stop" : 1631176929804,
+        "duration" : 2
+      },
+      "flaky" : false,
+      "newFailed" : false,
+      "parameters" : [ ]
+    }, {
+      "name" : "xyk-rpc - calculate_sell_price validates parameters - Zeroes [inputReserve->0,outputReserve->0,amount->1,expected->0]",
+      "uid" : "2f2681b03a25dce4",
+      "parentUid" : "32dd2522f9ef14203f8d3929c2f28fd2",
+      "status" : "passed",
+      "time" : {
+        "start" : 1631176929804,
+        "stop" : 1631176929806,
+        "duration" : 2
+      },
+      "flaky" : false,
+      "newFailed" : false,
+      "parameters" : [ ]
+    }, {
+      "name" : "xyk-rpc - calculate_buy_price validates parameters - Zeroes [inputReserve->1,outputReserve->1,amount->0,expected->1]",
+      "uid" : "84e53582b834a20c",
+      "parentUid" : "32dd2522f9ef14203f8d3929c2f28fd2",
+      "status" : "passed",
+      "time" : {
+        "start" : 1631176929806,
+        "stop" : 1631176929809,
+        "duration" : 3
+      },
+      "flaky" : false,
+      "newFailed" : false,
+      "parameters" : [ ]
+    }, {
+      "name" : "xyk-rpc - calculate_buy_price validates parameters - Zeroes [inputReserve->0,outputReserve->0,amount->0,expected->0]",
+      "uid" : "c194736cf24a2591",
+      "parentUid" : "32dd2522f9ef14203f8d3929c2f28fd2",
+      "status" : "passed",
+      "time" : {
+        "start" : 1631176929809,
+        "stop" : 1631176929811,
+        "duration" : 2
+      },
+      "flaky" : false,
+      "newFailed" : false,
+      "parameters" : [ ]
+    }, {
+      "name" : "xyk-rpc - calculate_buy_price validates parameters - Zeroes [inputReserve->0,outputReserve->1,amount->1,expected->0]",
+      "uid" : "60a3062def8bf510",
+      "parentUid" : "32dd2522f9ef14203f8d3929c2f28fd2",
+      "status" : "passed",
+      "time" : {
+        "start" : 1631176929812,
+        "stop" : 1631176929814,
+        "duration" : 2
+      },
+      "flaky" : false,
+      "newFailed" : false,
+      "parameters" : [ ]
+    }, {
+      "name" : "xyk-rpc - calculate_buy_price validates parameters - Zeroes [inputReserve->0,outputReserve->0,amount->1,expected->0]",
+      "uid" : "deb6e05757e7f96",
+      "parentUid" : "32dd2522f9ef14203f8d3929c2f28fd2",
+      "status" : "passed",
+      "time" : {
+        "start" : 1631176929814,
+        "stop" : 1631176929817,
+        "duration" : 3
+      },
+      "flaky" : false,
+      "newFailed" : false,
+      "parameters" : [ ]
+    }, {
+      "name" : "xyk-rpc - calculate_buy_price validates parameters - Zeroes [inputReserve->1,outputReserve->0,amount->0,expected->0]",
+      "uid" : "54f4d563e325955e",
+      "parentUid" : "32dd2522f9ef14203f8d3929c2f28fd2",
+      "status" : "passed",
+      "time" : {
+        "start" : 1631176929817,
+        "stop" : 1631176929821,
+        "duration" : 4
+      },
+      "flaky" : false,
+      "newFailed" : false,
+      "parameters" : [ ]
+    }, {
+      "name" : "validate parameters: negative asset ids [soldTokenId->-1,boughtTokenId->0,amount->0,expected->createType(TokenId):: u32: Negative number passed to unsigned type]",
+      "uid" : "56032ca7a76df5ef",
+      "parentUid" : "32dd2522f9ef14203f8d3929c2f28fd2",
+      "status" : "passed",
+      "time" : {
+        "start" : 1631176999514,
+        "stop" : 1631176999567,
+        "duration" : 53
+      },
+      "flaky" : false,
+      "newFailed" : false,
+      "parameters" : [ ]
+    }, {
+      "name" : "validate parameters: negative asset ids [soldTokenId->0,boughtTokenId->-1,amount->0,expected->createType(TokenId):: u32: Negative number passed to unsigned type]",
+      "uid" : "90da4390a94fb282",
+      "parentUid" : "32dd2522f9ef14203f8d3929c2f28fd2",
+      "status" : "passed",
+      "time" : {
+        "start" : 1631176999567,
+        "stop" : 1631176999615,
+        "duration" : 48
+      },
+      "flaky" : false,
+      "newFailed" : false,
+      "parameters" : [ ]
+    }, {
+      "name" : "RPC big numbers : negative asset ids [amount->100000000]",
+      "uid" : "9296c027d8da9e8",
+      "parentUid" : "32dd2522f9ef14203f8d3929c2f28fd2",
+      "status" : "passed",
+      "time" : {
+        "start" : 1631176999615,
+        "stop" : 1631176999619,
+        "duration" : 4
+      },
+      "flaky" : false,
+      "newFailed" : false,
+      "parameters" : [ ]
+    }, {
+      "name" : "RPC big numbers : negative asset ids [amount->100000000000000]",
+      "uid" : "a417c3cfdec320a5",
+      "parentUid" : "32dd2522f9ef14203f8d3929c2f28fd2",
+      "status" : "passed",
+      "time" : {
+        "start" : 1631176999620,
+        "stop" : 1631176999632,
+        "duration" : 12
+      },
+      "flaky" : false,
+      "newFailed" : false,
+      "parameters" : [ ]
+    }, {
+      "name" : "RPC big numbers : negative asset ids [amount->10000000000000000000000]",
+      "uid" : "9c6707204beee449",
+      "parentUid" : "32dd2522f9ef14203f8d3929c2f28fd2",
+      "status" : "passed",
+      "time" : {
+        "start" : 1631176999632,
+        "stop" : 1631176999637,
+        "duration" : 5
+      },
+      "flaky" : false,
+      "newFailed" : false,
+      "parameters" : [ ]
+    } ],
+    "uid" : "32dd2522f9ef14203f8d3929c2f28fd2"
+  }, {
+    "name" : "xyk-rpc - calculate get_burn amount: Missing requirements",
+    "children" : [ {
+      "name" : "validate parameters - get_burn from not generated pool [soldTokenId->0,boughtTokenId->1,amount->1000,expected->0]",
+      "uid" : "8c281e61d77309fc",
+      "parentUid" : "0aabadbc88d5afc69e25074542837550",
+      "status" : "passed",
+      "time" : {
+        "start" : 1631176963359,
+        "stop" : 1631176963363,
+        "duration" : 4
+      },
+      "flaky" : false,
+      "newFailed" : false,
+      "parameters" : [ ]
+    }, {
+      "name" : "validate parameters - get_burn from not created assets",
+      "uid" : "6dcfa8eabd470963",
+      "parentUid" : "0aabadbc88d5afc69e25074542837550",
+      "status" : "passed",
+      "time" : {
+        "start" : 1631176963363,
+        "stop" : 1631176963369,
+        "duration" : 6
+      },
+      "flaky" : false,
+      "newFailed" : false,
+      "parameters" : [ ]
+    } ],
+    "uid" : "0aabadbc88d5afc69e25074542837550"
+  }, {
+    "name" : "xyk-rpc - calculate_buy_price_by_id:No pool assotiated with the assets",
+    "children" : [ {
+      "name" : "validate parameters [soldTokenId->0,boughtTokenId->1,amount->0,expected->0]",
+      "uid" : "921da3a13c2a7c44",
+      "parentUid" : "d2d8ee8f93f70c26601864174d8da3db",
+      "status" : "passed",
+      "time" : {
+        "start" : 1631176999490,
+        "stop" : 1631176999496,
+        "duration" : 6
+      },
+      "flaky" : false,
+      "newFailed" : false,
+      "parameters" : [ ]
+    }, {
+      "name" : "validate parameters [soldTokenId->1,boughtTokenId->0,amount->1,expected->0]",
+      "uid" : "aded23aca00d1c2f",
+      "parentUid" : "d2d8ee8f93f70c26601864174d8da3db",
+      "status" : "passed",
+      "time" : {
+        "start" : 1631176999496,
+        "stop" : 1631176999502,
+        "duration" : 6
+      },
+      "flaky" : false,
+      "newFailed" : false,
+      "parameters" : [ ]
+    } ],
+    "uid" : "d2d8ee8f93f70c26601864174d8da3db"
+  }, {
+    "name" : "xyk-pallet - treasury tests [No Mangata]: on treasury we store",
+    "children" : [ {
+      "name" : "assets won when assets are sold - 5 [no connected to MGA]",
+      "uid" : "a2e4ed21d718e14b",
+      "parentUid" : "0339e15039ac2e1fb3458a9b5641e8d8",
+      "status" : "passed",
+      "time" : {
+        "start" : 1631177001474,
+        "stop" : 1631177125239,
+        "duration" : 123765
+      },
+      "flaky" : false,
+      "newFailed" : false,
+      "parameters" : [ ]
+    }, {
+      "name" : "assets won when assets are sold - 0 [rounding] [no connected to MGA]",
+      "uid" : "6e7abc10e42da53e",
+      "parentUid" : "0339e15039ac2e1fb3458a9b5641e8d8",
+      "status" : "passed",
+      "time" : {
+        "start" : 1631177125239,
+        "stop" : 1631177251174,
+        "duration" : 125935
+      },
+      "flaky" : false,
+      "newFailed" : false,
+      "parameters" : [ ]
+    }, {
+      "name" : "assets won when assets are bought - 2 [no connected to MGA]",
+      "uid" : "58566e3de93488ec",
+      "parentUid" : "0339e15039ac2e1fb3458a9b5641e8d8",
+      "status" : "passed",
+      "time" : {
+        "start" : 1631177251174,
+        "stop" : 1631177377105,
+        "duration" : 125931
+      },
+      "flaky" : false,
+      "newFailed" : false,
+      "parameters" : [ ]
+    }, {
+      "name" : "assets won when assets are bought - 1 [no connected to MGA]",
+      "uid" : "57bae8a8c448fa28",
+      "parentUid" : "0339e15039ac2e1fb3458a9b5641e8d8",
+      "status" : "passed",
+      "time" : {
+        "start" : 1631177377105,
+        "stop" : 1631177502871,
+        "duration" : 125766
+      },
+      "flaky" : false,
+      "newFailed" : false,
+      "parameters" : [ ]
+    } ],
+    "uid" : "0339e15039ac2e1fb3458a9b5641e8d8"
+  }, {
+    "name" : "xyk-rpc - calculate get_burn amount: RPC result matches with burn amount",
+    "children" : [ {
+      "name" : "validate get_burn_amount that matches with real burn operation",
+      "uid" : "f96b48666cca7a3d",
+      "parentUid" : "87b15c4c158fc613014ff74f4eadc326",
+      "status" : "passed",
+      "time" : {
+        "start" : 1631177053092,
+        "stop" : 1631177071792,
+        "duration" : 18700
+      },
+      "flaky" : false,
+      "newFailed" : false,
+      "parameters" : [ ]
+    } ],
+    "uid" : "87b15c4c158fc613014ff74f4eadc326"
+  }, {
+    "name" : "test/parallel/xyk-pallet.API.testMGArequired.test.ts",
+    "children" : [ {
+      "name" : "xyk-pallet - User Balance - Creating a pool requires paying fees",
+      "uid" : "843a94f9feff19e4",
+      "parentUid" : "869d468d849671c149b8647828a1d954",
+      "status" : "passed",
+      "time" : {
+        "start" : 1631177073185,
+        "stop" : 1631177161485,
+        "duration" : 88300
+      },
+      "flaky" : false,
+      "newFailed" : false,
+      "parameters" : [ ]
+    }, {
+      "name" : "xyk-pallet - User Balance - mint liquidity requires paying fees",
+      "uid" : "d81b3bb0898d11f0",
+      "parentUid" : "869d468d849671c149b8647828a1d954",
+      "status" : "passed",
+      "time" : {
+        "start" : 1631177161485,
+        "stop" : 1631177251242,
+        "duration" : 89757
+      },
+      "flaky" : false,
+      "newFailed" : false,
+      "parameters" : [ ]
+    }, {
+      "name" : "xyk-pallet - User Balance - Selling an asset does not require paying fees",
+      "uid" : "d66e024668572875",
+      "parentUid" : "869d468d849671c149b8647828a1d954",
+      "status" : "passed",
+      "time" : {
+        "start" : 1631177251242,
+        "stop" : 1631177341013,
+        "duration" : 89771
+      },
+      "flaky" : false,
+      "newFailed" : false,
+      "parameters" : [ ]
+    }, {
+      "name" : "xyk-pallet - User Balance - Buying an asset does not require paying fees",
+      "uid" : "305ec8bc179899d8",
+      "parentUid" : "869d468d849671c149b8647828a1d954",
+      "status" : "passed",
+      "time" : {
+        "start" : 1631177341013,
+        "stop" : 1631177432106,
+        "duration" : 91093
+      },
+      "flaky" : false,
+      "newFailed" : false,
+      "parameters" : [ ]
+    } ],
+    "uid" : "869d468d849671c149b8647828a1d954"
+  }, {
+    "name" : "test/parallel/xyk-pallet.asset.sell.test.ts",
+    "children" : [ {
+      "name" : "xyk-pallet - AssetsOperation: sellAsset [minAmountOut = 0] , first to second currency",
+      "uid" : "504f028beda15008",
+      "parentUid" : "6ba8616e401be8d9779a437571171fa1",
+      "status" : "passed",
+      "time" : {
+        "start" : 1631177074572,
+        "stop" : 1631177197663,
+        "duration" : 123091
+      },
+      "flaky" : false,
+      "newFailed" : false,
+      "parameters" : [ ]
+    }, {
+      "name" : "xyk-pallet - AssetsOperation: sellAsset [minAmountOut = 0], sell an already sold asset",
+      "uid" : "5e7fef323be48761",
+      "parentUid" : "6ba8616e401be8d9779a437571171fa1",
+      "status" : "passed",
+      "time" : {
+        "start" : 1631177197663,
+        "stop" : 1631177340973,
+        "duration" : 143310
+      },
+      "flaky" : false,
+      "newFailed" : false,
+      "parameters" : [ ]
+    } ],
+    "uid" : "6ba8616e401be8d9779a437571171fa1"
+  }, {
+    "name" : "test/parallel/xyk-rpc.calculate.test.ts",
+    "children" : [ {
+      "name" : "xyk-rpc - calculate_sell_price and calculate_buy_price matches, 1000,1000",
+      "uid" : "313cfb71f67247f9",
+      "parentUid" : "81f7d674e70a338cfa5e78e8f8314e8e",
+      "status" : "passed",
+      "time" : {
+        "start" : 1631177161406,
+        "stop" : 1631177161430,
+        "duration" : 24
+      },
+      "flaky" : false,
+      "newFailed" : false,
+      "parameters" : [ ]
+    }, {
+      "name" : "xyk-rpc - calculate_sell_price and calculate_buy_price matches, 2000,1000",
+      "uid" : "b3ffc5d61f3aafa0",
+      "parentUid" : "81f7d674e70a338cfa5e78e8f8314e8e",
+      "status" : "passed",
+      "time" : {
+        "start" : 1631177161430,
+        "stop" : 1631177161454,
+        "duration" : 24
+      },
+      "flaky" : false,
+      "newFailed" : false,
+      "parameters" : [ ]
+    }, {
+      "name" : "xyk-rpc - calculate_sell_price matches with the real sell",
+      "uid" : "51cd2b013f4da7a",
+      "parentUid" : "81f7d674e70a338cfa5e78e8f8314e8e",
+      "status" : "passed",
+      "time" : {
+        "start" : 1631177161455,
+        "stop" : 1631177180154,
+        "duration" : 18699
+      },
+      "flaky" : false,
+      "newFailed" : false,
+      "parameters" : [ ]
+    }, {
+      "name" : "xyk-rpc - calculate_buy_price matches with the real buy",
+      "uid" : "f4e27615f6653d2b",
+      "parentUid" : "81f7d674e70a338cfa5e78e8f8314e8e",
+      "status" : "passed",
+      "time" : {
+        "start" : 1631177180154,
+        "stop" : 1631177197641,
+        "duration" : 17487
+      },
+      "flaky" : false,
+      "newFailed" : false,
+      "parameters" : [ ]
+    } ],
+    "uid" : "81f7d674e70a338cfa5e78e8f8314e8e"
+  }, {
+    "name" : "xyk-pallet - Burn liquidity tests: BurnLiquidity Errors:",
+    "children" : [ {
+      "name" : "Burn liquidity assets that does not belong to any pool",
+      "uid" : "42767b929fa439f2",
+      "parentUid" : "ffad8e249a6ee343501409e49f4a8997",
+      "status" : "passed",
+      "time" : {
+        "start" : 1631177182741,
+        "stop" : 1631177306185,
+        "duration" : 123444
+      },
+      "flaky" : false,
+      "newFailed" : false,
+      "parameters" : [ ]
+    }, {
+      "name" : "Burn liquidity  for more assets than the liquidity pool has issued",
+      "uid" : "8e77aa40b1d751ab",
+      "parentUid" : "ffad8e249a6ee343501409e49f4a8997",
+      "status" : "passed",
+      "time" : {
+        "start" : 1631177306186,
+        "stop" : 1631177466810,
+        "duration" : 160624
+      },
+      "flaky" : false,
+      "newFailed" : false,
+      "parameters" : [ ]
+    }, {
+      "name" : "Burn someone else liquidities",
+      "uid" : "98ac9ac57432ddf5",
+      "parentUid" : "ffad8e249a6ee343501409e49f4a8997",
+      "status" : "passed",
+      "time" : {
+        "start" : 1631177466810,
+        "stop" : 1631177652928,
+        "duration" : 186118
+      },
+      "flaky" : false,
+      "newFailed" : false,
+      "parameters" : [ ]
+    } ],
+    "uid" : "ffad8e249a6ee343501409e49f4a8997"
+  }, {
+    "name" : "test/parallel/xyk-pallet.asset.transfer.test.ts",
+    "children" : [ {
+      "name" : "xyk-pallet - AssetsOperation: transferAsset",
+      "uid" : "8afd85dce013df0",
+      "parentUid" : "5820bf63c27ec7e18cdc8227ea65d232",
+      "status" : "passed",
+      "time" : {
+        "start" : 1631177182822,
+        "stop" : 1631177287459,
+        "duration" : 104637
+      },
+      "flaky" : false,
+      "newFailed" : false,
+      "parameters" : [ ]
+    }, {
+      "name" : "xyk-pallet - AssetsOperation: transferAll",
+      "uid" : "2e7bf41a2d3d6430",
+      "parentUid" : "5820bf63c27ec7e18cdc8227ea65d232",
+      "status" : "passed",
+      "time" : {
+        "start" : 1631177287459,
+        "stop" : 1631177395915,
+        "duration" : 108456
+      },
+      "flaky" : false,
+      "newFailed" : false,
+      "parameters" : [ ]
+    } ],
+    "uid" : "5820bf63c27ec7e18cdc8227ea65d232"
+  }, {
+    "name" : "test/parallel/xyk-pallet.sudo.security.test.ts",
+    "children" : [ {
+      "name" : "xyk-pallet - SecurityTests - Only sudo can perform actions [tokens.create]",
+      "uid" : "32f21bfdeb2f15cf",
+      "parentUid" : "12621c0232313162324a881597c3477b",
+      "status" : "passed",
+      "time" : {
+        "start" : 1631177214999,
+        "stop" : 1631177233725,
+        "duration" : 18726
+      },
+      "flaky" : false,
+      "newFailed" : false,
+      "parameters" : [ ]
+    }, {
+      "name" : "xyk-pallet - SecurityTests - Only sudo can perform actions [tokens.create to itself]",
+      "uid" : "34ce6497f968176b",
+      "parentUid" : "12621c0232313162324a881597c3477b",
+      "status" : "passed",
+      "time" : {
+        "start" : 1631177233725,
+        "stop" : 1631177251157,
+        "duration" : 17432
+      },
+      "flaky" : false,
+      "newFailed" : false,
+      "parameters" : [ ]
+    }, {
+      "name" : "xyk-pallet - SecurityTests - Only sudo can perform actions [tokens.mint]",
+      "uid" : "f3298e13bf774be3",
+      "parentUid" : "12621c0232313162324a881597c3477b",
+      "status" : "passed",
+      "time" : {
+        "start" : 1631177251157,
+        "stop" : 1631177269879,
+        "duration" : 18722
+      },
+      "flaky" : false,
+      "newFailed" : false,
+      "parameters" : [ ]
+    }, {
+      "name" : "xyk-pallet - SecurityTests - Only sudo can perform actions [tokens.mint to itself]",
+      "uid" : "6fe49d884716deea",
+      "parentUid" : "12621c0232313162324a881597c3477b",
+      "status" : "passed",
+      "time" : {
+        "start" : 1631177269879,
+        "stop" : 1631177287404,
+        "duration" : 17525
+      },
+      "flaky" : false,
+      "newFailed" : false,
+      "parameters" : [ ]
+    } ],
+    "uid" : "12621c0232313162324a881597c3477b"
+  }, {
+    "name" : "test/parallel/xyk-pallet.sudo.test.ts",
+    "children" : [ {
+      "name" : "xyk-pallet - Sudo tests: Sudo Issue an asset",
+      "uid" : "cbd01e0cdc0625fb",
+      "parentUid" : "0c34400a78612f1a3fd5efb1c8401e85",
+      "status" : "passed",
+      "time" : {
+        "start" : 1631177289253,
+        "stop" : 1631177306193,
+        "duration" : 16940
+      },
+      "flaky" : false,
+      "newFailed" : false,
+      "parameters" : [ ]
+    }, {
+      "name" : "xyk-pallet - Sudo tests: Sudo Issue two  different assets to the same account",
+      "uid" : "78050f9903ccaf24",
+      "parentUid" : "0c34400a78612f1a3fd5efb1c8401e85",
+      "status" : "passed",
+      "time" : {
+        "start" : 1631177306194,
+        "stop" : 1631177340927,
+        "duration" : 34733
+      },
+      "flaky" : false,
+      "newFailed" : false,
+      "parameters" : [ ]
+    } ],
+    "uid" : "0c34400a78612f1a3fd5efb1c8401e85"
+  }, {
+    "name" : "xyk-rpc - calculate_buy_price_by_id, calculate_sell_price_by_id",
+    "children" : [ {
+      "name" : "validate parameters - buy [soldTokenId->0,boughtTokenId->1,amount->0,expected->1]",
+      "uid" : "25191067685d51c2",
+      "parentUid" : "a8b47772fd2857c68983b46bca09a4e4",
+      "status" : "passed",
+      "time" : {
+        "start" : 1631177466840,
+        "stop" : 1631177466854,
+        "duration" : 14
+      },
+      "flaky" : false,
+      "newFailed" : false,
+      "parameters" : [ ]
+    }, {
+      "name" : "validate parameters - buy [soldTokenId->0,boughtTokenId->1,amount->1,expected->0]",
+      "uid" : "ccc90f9474550ce",
+      "parentUid" : "a8b47772fd2857c68983b46bca09a4e4",
+      "status" : "passed",
+      "time" : {
+        "start" : 1631177466854,
+        "stop" : 1631177466864,
+        "duration" : 10
+      },
+      "flaky" : false,
+      "newFailed" : false,
+      "parameters" : [ ]
+    }, {
+      "name" : "validate parameters - buy [soldTokenId->1,boughtTokenId->2,amount->0,expected->1]",
+      "uid" : "5dbca0360b9caf54",
+      "parentUid" : "a8b47772fd2857c68983b46bca09a4e4",
+      "status" : "passed",
+      "time" : {
+        "start" : 1631177466864,
+        "stop" : 1631177466873,
+        "duration" : 9
+      },
+      "flaky" : false,
+      "newFailed" : false,
+      "parameters" : [ ]
+    }, {
+      "name" : "validate parameters - buy [soldTokenId->1,boughtTokenId->2,amount->1,expected->2]",
+      "uid" : "f7216b8d897fcdad",
+      "parentUid" : "a8b47772fd2857c68983b46bca09a4e4",
+      "status" : "passed",
+      "time" : {
+        "start" : 1631177466873,
+        "stop" : 1631177466882,
+        "duration" : 9
+      },
+      "flaky" : false,
+      "newFailed" : false,
+      "parameters" : [ ]
+    }, {
+      "name" : "validate parameters - buy [soldTokenId->2,boughtTokenId->1,amount->1,expected->0]",
+      "uid" : "ebbf0d3bd830f5f6",
+      "parentUid" : "a8b47772fd2857c68983b46bca09a4e4",
+      "status" : "passed",
+      "time" : {
+        "start" : 1631177466882,
+        "stop" : 1631177466892,
+        "duration" : 10
+      },
+      "flaky" : false,
+      "newFailed" : false,
+      "parameters" : [ ]
+    }, {
+      "name" : "validate parameters - buy [soldTokenId->2,boughtTokenId->3,amount->1,expected->3]",
+      "uid" : "3b793408a9ed0268",
+      "parentUid" : "a8b47772fd2857c68983b46bca09a4e4",
+      "status" : "passed",
+      "time" : {
+        "start" : 1631177466892,
+        "stop" : 1631177466900,
+        "duration" : 8
+      },
+      "flaky" : false,
+      "newFailed" : false,
+      "parameters" : [ ]
+    }, {
+      "name" : "validate parameters - buy [soldTokenId->3,boughtTokenId->2,amount->1,expected->3]",
+      "uid" : "a0c7b0dcc94df578",
+      "parentUid" : "a8b47772fd2857c68983b46bca09a4e4",
+      "status" : "passed",
+      "time" : {
+        "start" : 1631177466900,
+        "stop" : 1631177466909,
+        "duration" : 9
+      },
+      "flaky" : false,
+      "newFailed" : false,
+      "parameters" : [ ]
+    }, {
+      "name" : "validate parameters - buy [soldTokenId->3,boughtTokenId->2,amount->2,expected->0]",
+      "uid" : "3a1b7a7eb48b13dd",
+      "parentUid" : "a8b47772fd2857c68983b46bca09a4e4",
+      "status" : "passed",
+      "time" : {
+        "start" : 1631177466909,
+        "stop" : 1631177466917,
+        "duration" : 8
+      },
+      "flaky" : false,
+      "newFailed" : false,
+      "parameters" : [ ]
+    }, {
+      "name" : "validate parameters - sell [soldTokenId->0,boughtTokenId->1,amount->0,expected->0]",
+      "uid" : "7ebcd98dc84de3be",
+      "parentUid" : "a8b47772fd2857c68983b46bca09a4e4",
+      "status" : "passed",
+      "time" : {
+        "start" : 1631177466917,
+        "stop" : 1631177466926,
+        "duration" : 9
+      },
+      "flaky" : false,
+      "newFailed" : false,
+      "parameters" : [ ]
+    }, {
+      "name" : "validate parameters - sell [soldTokenId->0,boughtTokenId->1,amount->1,expected->0]",
+      "uid" : "90bcb35f88678ea4",
+      "parentUid" : "a8b47772fd2857c68983b46bca09a4e4",
+      "status" : "passed",
+      "time" : {
+        "start" : 1631177466926,
+        "stop" : 1631177466936,
+        "duration" : 10
+      },
+      "flaky" : false,
+      "newFailed" : false,
+      "parameters" : [ ]
+    }, {
+      "name" : "validate parameters - sell [soldTokenId->1,boughtTokenId->2,amount->0,expected->0]",
+      "uid" : "80514e37fdfac5ac",
+      "parentUid" : "a8b47772fd2857c68983b46bca09a4e4",
+      "status" : "passed",
+      "time" : {
+        "start" : 1631177466936,
+        "stop" : 1631177466944,
+        "duration" : 8
+      },
+      "flaky" : false,
+      "newFailed" : false,
+      "parameters" : [ ]
+    }, {
+      "name" : "validate parameters - sell [soldTokenId->1,boughtTokenId->2,amount->1,expected->0]",
+      "uid" : "d4e565889cc48dc5",
+      "parentUid" : "a8b47772fd2857c68983b46bca09a4e4",
+      "status" : "passed",
+      "time" : {
+        "start" : 1631177466944,
+        "stop" : 1631177466951,
+        "duration" : 7
+      },
+      "flaky" : false,
+      "newFailed" : false,
+      "parameters" : [ ]
+    }, {
+      "name" : "validate parameters - sell [soldTokenId->2,boughtTokenId->1,amount->1,expected->0]",
+      "uid" : "d269897b516b028c",
+      "parentUid" : "a8b47772fd2857c68983b46bca09a4e4",
+      "status" : "passed",
+      "time" : {
+        "start" : 1631177466951,
+        "stop" : 1631177466959,
+        "duration" : 8
+      },
+      "flaky" : false,
+      "newFailed" : false,
+      "parameters" : [ ]
+    }, {
+      "name" : "validate parameters - sell [soldTokenId->3,boughtTokenId->2,amount->1,expected->0]",
+      "uid" : "c12d21c062547b18",
+      "parentUid" : "a8b47772fd2857c68983b46bca09a4e4",
+      "status" : "passed",
+      "time" : {
+        "start" : 1631177466959,
+        "stop" : 1631177466968,
+        "duration" : 9
+      },
+      "flaky" : false,
+      "newFailed" : false,
+      "parameters" : [ ]
+    }, {
+      "name" : "validate parameters - sell [soldTokenId->2,boughtTokenId->3,amount->1,expected->0]",
+      "uid" : "6fbb493da95160f4",
+      "parentUid" : "a8b47772fd2857c68983b46bca09a4e4",
+      "status" : "passed",
+      "time" : {
+        "start" : 1631177466968,
+        "stop" : 1631177466976,
+        "duration" : 8
+      },
+      "flaky" : false,
+      "newFailed" : false,
+      "parameters" : [ ]
+    } ],
+    "uid" : "a8b47772fd2857c68983b46bca09a4e4"
+  } ],
+  "name" : "suites"
+}

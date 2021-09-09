@@ -1,0 +1,46 @@
+{
+  "uid" : "649024913a1e1b9b",
+  "name" : "Leave only one asset in the pool",
+  "fullName" : "xyk-pallet - Buy assets tests: Buying assets you can.Leave only one asset in the pool",
+  "historyId" : "c75875a552d479f41ec91ef046fa6d42",
+  "time" : {
+    "start" : 1631176861489,
+    "stop" : 1631177016942,
+    "duration" : 155453
+  },
+  "description" : "",
+  "descriptionHtml" : "",
+  "status" : "passed",
+  "flaky" : false,
+  "newFailed" : false,
+  "beforeStages" : [ ],
+  "afterStages" : [ ],
+  "labels" : [ {
+    "name" : "suite",
+    "value" : "xyk-pallet - Buy assets tests: Buying assets you can"
+  }, {
+    "name" : "testClass",
+    "value" : "xyk-pallet - Buy assets tests: Buying assets you can"
+  }, {
+    "name" : "testMethod",
+    "value" : "Leave only one asset in the pool"
+  }, {
+    "name" : "package",
+    "value" : "xyk-pallet - Buy assets tests: Buying assets you can"
+  }, {
+    "name" : "resultFormat",
+    "value" : "allure1"
+  } ],
+  "parameters" : [ ],
+  "links" : [ ],
+  "hidden" : false,
+  "retry" : false,
+  "extra" : {
+    "severity" : "normal",
+    "retries" : [ ],
+    "categories" : [ ],
+    "tags" : [ ]
+  },
+  "source" : "649024913a1e1b9b.json",
+  "parameterValues" : [ ]
+}

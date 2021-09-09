@@ -1,0 +1,26 @@
+{
+  "uid" : "4b4757e66a1912dae1a509f688f20b0f",
+  "children" : [ {
+    "name" : "Product defects",
+    "children" : [ {
+      "name" : "Error: Expected: 50000 \n                  Actual: 100000 \n                 ",
+      "children" : [ {
+        "name" : "xyk-pallet - Pool tests: createPool",
+        "uid" : "c799a3bf57c78b43",
+        "parentUid" : "f3a7f0df95a6c78effad6f723c59cac0",
+        "status" : "failed",
+        "time" : {
+          "start" : 1631176807906,
+          "stop" : 1631176927206,
+          "duration" : 119300
+        },
+        "flaky" : false,
+        "newFailed" : false,
+        "parameters" : [ ]
+      } ],
+      "uid" : "f3a7f0df95a6c78effad6f723c59cac0"
+    } ],
+    "uid" : "8fb3a91ba5aaf9de24cc8a92edc82b5d"
+  } ],
+  "name" : "categories"
+}
