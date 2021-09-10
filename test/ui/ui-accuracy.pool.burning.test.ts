@@ -14,8 +14,8 @@ import { BrunLiquidityModal } from "../../utils/frontend/pages/BrunLiquidityModa
 import { Sidebar } from "../../utils/frontend/pages/Sidebar";
 import { DriverBuilder } from "../../utils/frontend/utils/Driver";
 import {
+  addExtraLogs,
   setupAllExtensions,
-  takeScreenshot,
 } from "../../utils/frontend/utils/Helper";
 import { createPool } from "../../utils/tx";
 import { getEventResultFromTxWait } from "../../utils/txHandler";
@@ -130,7 +130,7 @@ describe("Accuracy tests:", () => {
 
   afterEach(async () => {
     const session = await driver.getSession();
-    await takeScreenshot(
+    await addExtraLogs(
       driver,
       expect.getState().currentTestName + " - " + session
     );
