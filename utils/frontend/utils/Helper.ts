@@ -95,7 +95,7 @@ export async function addExtraLogs(driver: WebDriver, testName = "") {
         entries.forEach(function (entry) {
           const logLine = `[${entry.level.name}] ${entry.message}`;
           fs.appendFileSync(
-            `${outputPath}/log_${value}_${testName}.txt`,
+            `${outputPath}/log_${value}_${testName}_${Date.now().toString()}.txt`,
             logLine + " \n"
           );
         });
