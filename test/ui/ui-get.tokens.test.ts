@@ -6,7 +6,14 @@ import { Keyring } from "@polkadot/api";
 import BN from "bn.js";
 import { WebDriver } from "selenium-webdriver";
 import { getApi, initApi } from "../../utils/api";
-import { FIVE_MIN, MGA_ASSET_ID } from "../../utils/Constants";
+import {
+  BTC_ASSET_NAME,
+  DOT_ASSET_NAME,
+  FIVE_MIN,
+  MGA_ASSET_ID,
+  MGA_ASSET_NAME,
+  USDC_ASSET_NAME,
+} from "../../utils/Constants";
 import { Mangata } from "../../utils/frontend/pages/Mangata";
 import { DriverBuilder } from "../../utils/frontend/utils/Driver";
 import {
@@ -16,7 +23,9 @@ import {
 import { getAllAssets } from "../../utils/tx";
 import { AssetWallet, User } from "../../utils/User";
 
-jest.setTimeout(FIVE_MIN);
+//time-out to 7.5 min.Faucet takes some time.
+jest.setTimeout(FIVE_MIN * 1.5);
+
 jest.spyOn(console, "log").mockImplementation(jest.fn());
 let driver: WebDriver;
 
@@ -57,8 +66,9 @@ describe("UI tests - Get Tokens from Faucet", () => {
     expect(getTokensAvailable).toBeTruthy();
     await mga.clickOnGetTokens();
     await mga.waitForFaucetToGenerateTokens();
-    const tokens = await mga.getAssetValue();
-    expect(tokens).toBe("10.000");
+    await validateAllAssetsValues(mga);
+
+    //lets validate one asset to check if environment is correctly configured.
     await testUser1.refreshAmounts(AssetWallet.AFTER);
     expect(testUser1.getAsset(MGA_ASSET_ID)?.amountAfter).bnEqual(
       new BN("10000000000000000000")
@@ -78,3 +88,13 @@ describe("UI tests - Get Tokens from Faucet", () => {
     await api.disconnect();
   });
 });
+async function validateAllAssetsValues(mga: Mangata, value = "10.000") {
+  const promises: Promise<string>[] = [];
+  [MGA_ASSET_NAME, DOT_ASSET_NAME, BTC_ASSET_NAME, USDC_ASSET_NAME].forEach(
+    async function (value) {
+      promises.push(mga.getAssetValue(value));
+    }
+  );
+  const result = await Promise.all(promises);
+  expect(result.every((x) => x === value)).toBeTruthy();
+}
