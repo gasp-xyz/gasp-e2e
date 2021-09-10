@@ -8,6 +8,7 @@ import {
   waitForElement,
   waitForElementToDissapear,
 } from "../utils/Helper";
+import { DepositModal } from "./DepositModal";
 
 const DIV_META_NOT_FOUND = "extensionMetamask-extensionNotFound";
 const DIV_POLK_NOT_FOUND = "extensionPolkadot-extensionNotFound";
@@ -158,5 +159,19 @@ export class Sidebar {
     return await this.isDisplayed(
       buildDataTestIdXpath(this.buildPoolDataTestId(asset1Name, asset2Name))
     );
+  }
+  async depositAseetsFromMetamask(metaAssetName: string, amount: string) {
+    await this.clickOnDepositToMangata();
+    const modal = new DepositModal(this.driver);
+    await modal.selectToken(metaAssetName);
+    await modal.enterValue(amount);
+    await modal.clickContinue();
+    await modal.confirmAndSign();
+  }
+  async waitForTokenToDissapear(assetName: string, timeout = FIVE_MIN) {
+    const xpath = buildDataTestIdXpath(
+      LBL_TOKEN_NAME.replace("tokenName", assetName)
+    );
+    await waitForElementToDissapear(this.driver, xpath);
   }
 }
