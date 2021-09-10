@@ -1,0 +1,75 @@
+{
+  "uid" : "fe6f5d0a837aeba3",
+  "name" : "assets won when assets are bought [Buying X connected to MGA pool]",
+  "fullName" : "xyk-pallet - treasury tests [Connected - Mangata]: on treasury we store.assets won when assets are bought [Buying X connected to MGA pool]",
+  "historyId" : "7fa2856547086651d7f62b3628e0d674",
+  "time" : {
+    "start" : 1631285635426,
+    "stop" : 1631285803701,
+    "duration" : 168275
+  },
+  "description" : "",
+  "descriptionHtml" : "",
+  "status" : "passed",
+  "flaky" : false,
+  "newFailed" : false,
+  "beforeStages" : [ ],
+  "afterStages" : [ ],
+  "labels" : [ {
+    "name" : "suite",
+    "value" : "xyk-pallet - treasury tests [Connected - Mangata]: on treasury we store"
+  }, {
+    "name" : "testClass",
+    "value" : "xyk-pallet - treasury tests [Connected - Mangata]: on treasury we store"
+  }, {
+    "name" : "testMethod",
+    "value" : "assets won when assets are bought [Buying X connected to MGA pool]"
+  }, {
+    "name" : "package",
+    "value" : "xyk-pallet - treasury tests [Connected - Mangata]: on treasury we store"
+  }, {
+    "name" : "resultFormat",
+    "value" : "allure1"
+  } ],
+  "parameters" : [ ],
+  "links" : [ ],
+  "hidden" : false,
+  "retry" : false,
+  "extra" : {
+    "severity" : "normal",
+    "retries" : [ ],
+    "categories" : [ ],
+    "history" : {
+      "statistic" : {
+        "failed" : 0,
+        "broken" : 0,
+        "skipped" : 0,
+        "passed" : 3,
+        "unknown" : 0,
+        "total" : 3
+      },
+      "items" : [ {
+        "uid" : "5842b7a9f36acc48",
+        "reportUrl" : "https://mangata-finance.github.io/mangata-e2e/302//#testresult/5842b7a9f36acc48",
+        "status" : "passed",
+        "time" : {
+          "start" : 1631270605339,
+          "stop" : 1631270773846,
+          "duration" : 168507
+        }
+      }, {
+        "uid" : "4ca75e70c3e3572f",
+        "reportUrl" : "https://mangata-finance.github.io/mangata-e2e/301//#testresult/4ca75e70c3e3572f",
+        "status" : "passed",
+        "time" : {
+          "start" : 1631270280837,
+          "stop" : 1631270449182,
+          "duration" : 168345
+        }
+      } ]
+    },
+    "tags" : [ ]
+  },
+  "source" : "fe6f5d0a837aeba3.json",
+  "parameterValues" : [ ]
+}
