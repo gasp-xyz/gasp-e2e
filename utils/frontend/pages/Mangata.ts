@@ -1,4 +1,11 @@
-import { By, until, WebDriver } from "selenium-webdriver";
+import { By, WebDriver } from "selenium-webdriver";
+import {
+  BTC_ASSET_NAME,
+  DOT_ASSET_NAME,
+  FIVE_MIN,
+  MGA_ASSET_NAME,
+  USDC_ASSET_NAME,
+} from "../../Constants";
 import { getEnvironmentRequiredVars, sleep } from "../../utils";
 import { clickElement, waitForElement } from "../utils/Helper";
 import { Sidebar } from "./Sidebar";
@@ -7,9 +14,6 @@ import { Sidebar } from "./Sidebar";
 const MSG_RECEIVE_TOKENS = `//div[text()='You will receive test tokens']`;
 const LBL_YOUR_TOKENS = `//*[contains(text(),'Your tokens')]`;
 const BTN_GET_TOKENS = `//button[contains(text(), 'Get Tokens')] `;
-const DIV_ASSETS_ITEM = `//div[@class='assets']/div[@class='AssetBox']`;
-//const DIV_ASSETS_ITEM_VALUE = `${DIV_ASSETS_ITEM}/span[@class ='value']`
-const DIV_MGA_ASSETS_ITEM_VALUE = `//div[@class = 'AssetBox' and //*[text()='MGA']]/span[@class='value']`;
 
 const DIV_MGA_SWAP = `//*[@class='Swap']`;
 const DIV_MGA_LOGO = `//*[contains(@class,'bg-mangata-logo')]`;
@@ -47,17 +51,19 @@ export class Mangata {
     await waitForElement(this.driver, BTN_GET_TOKENS);
     await clickElement(this.driver, BTN_GET_TOKENS);
   }
-  async waitForFaucetToGenerateTokens(timeOut = 120000) {
-    await this.driver.wait(
-      until.elementLocated(By.xpath(DIV_ASSETS_ITEM)),
-      timeOut
+  async waitForFaucetToGenerateTokens(timeOut = FIVE_MIN) {
+    const sidebar = new Sidebar(this.driver);
+    const promises: Promise<void>[] = [];
+    [MGA_ASSET_NAME, DOT_ASSET_NAME, BTC_ASSET_NAME, USDC_ASSET_NAME].forEach(
+      async function (value) {
+        promises.push(sidebar.waitUntilTokenAvailable(value, timeOut));
+      }
     );
+    await Promise.all(promises);
   }
-  async getAssetValue() {
-    await waitForElement(this.driver, DIV_MGA_ASSETS_ITEM_VALUE);
-    const value = await (
-      await this.driver.findElement(By.xpath(DIV_MGA_ASSETS_ITEM_VALUE))
-    ).getText();
+  async getAssetValue(assetName: string) {
+    const sidebar = new Sidebar(this.driver);
+    const value = await sidebar.getAssetValue(assetName);
     return value;
   }
 

@@ -5,6 +5,7 @@ import {
   waitForElement,
   writeText,
 } from "../utils/Helper";
+import { Mangata } from "./Mangata";
 
 //SELECTORS
 const TAB_POOL_TEST_ID = "trading-poolTab";
@@ -68,5 +69,11 @@ export class Pool {
     const assetTestId = `assetSelectModal-asset-${assetName}`;
     const assetLocator = buildDataTestIdXpath(assetTestId);
     await clickElement(this.driver, assetLocator);
+  }
+  async getToken2Text(): Promise<string> {
+    return await new Mangata(this.driver).getAmount(2);
+  }
+  async getToken1Text(): Promise<string> {
+    return await new Mangata(this.driver).getAmount(1);
   }
 }

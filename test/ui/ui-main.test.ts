@@ -15,7 +15,7 @@ import { Sidebar } from "../../utils/frontend/pages/Sidebar";
 import { DriverBuilder } from "../../utils/frontend/utils/Driver";
 import {
   setupAllExtensions,
-  takeScreenshot,
+  addExtraLogs,
 } from "../../utils/frontend/utils/Helper";
 import { getBalanceOfPool } from "../../utils/txHandler";
 import { AssetWallet, User } from "../../utils/User";
@@ -133,9 +133,9 @@ describe("UI tests - A user can swap and mint tokens", () => {
 
   afterEach(async () => {
     const session = await driver.getSession();
-    await takeScreenshot(
+    await addExtraLogs(
       driver,
-      expect.getState().currentTestName + " - " + session
+      expect.getState().currentTestName + " - " + session.getId()
     );
   });
 

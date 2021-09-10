@@ -209,7 +209,10 @@ test("xyk-pallet - Pool tests: createPool", async () => {
     firstCurrency,
     secondCurrency
   );
-  const liquidity_assets_minted = first_asset_amount.add(second_asset_amount);
+  const liquidity_assets_minted = calculateLiqAssetAmount(
+    first_asset_amount,
+    second_asset_amount
+  );
 
   testUser1.addAsset(liquidity_asset_id, new BN(0));
   testUser2.addAsset(liquidity_asset_id, new BN(0));

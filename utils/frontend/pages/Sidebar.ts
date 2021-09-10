@@ -1,5 +1,6 @@
-import { By, WebDriver } from "selenium-webdriver";
 import { WithdrawModal } from "./WithdrawModal";
+import { By, until, WebDriver } from "selenium-webdriver";
+import { FIVE_MIN } from "../../Constants";
 
 import {
   buildDataTestIdXpath,
@@ -7,7 +8,6 @@ import {
   waitForElement,
   waitForElementToDissapear,
 } from "../utils/Helper";
-import { FIVE_MIN } from "../../Constants";
 
 const DIV_META_NOT_FOUND = "extensionMetamask-extensionNotFound";
 const DIV_POLK_NOT_FOUND = "extensionPolkadot-extensionNotFound";
@@ -23,6 +23,9 @@ const DIV_FAUCET_READY = "faucet-isReady-header";
 const LBL_TOKEN_AMOUNT = "wallet-tokensAmount";
 
 const SPINNER_LOADING = `//*[@class = 'Sidebar__loading']`;
+const LBL_TOKEN_NAME = "wallet-asset-tokenName";
+const DIV_ASSETS_ITEM_VALUE = `//div[@class = 'AssetBox' and //*[text()='tokenName']]/span[@class='value']`;
+
 export class Sidebar {
   driver: WebDriver;
 
@@ -111,14 +114,6 @@ export class Sidebar {
     ).getText();
     return value;
   }
-  async isLiquidityPoolVisible(asset1Name: string, asset2Name: string) {
-    return await this.isDisplayed(
-      buildDataTestIdXpath(this.buildPoolDataTestId(asset1Name, asset2Name))
-    );
-  }
-  private buildPoolDataTestId(asseName1: string, assetName2: string) {
-    return `poolsOverview-item-${asseName1}-${assetName2}`;
-  }
   private buildTokenAvailableTestId(asseName1: string) {
     return `wallet-asset-${asseName1}`;
   }
@@ -141,5 +136,27 @@ export class Sidebar {
     });
     const allVisible = await Promise.all(promises);
     return allVisible.every((elem) => elem === true);
+  }
+  async waitUntilTokenAvailable(assetName: string, timeout = FIVE_MIN) {
+    const xpath = buildDataTestIdXpath(
+      LBL_TOKEN_NAME.replace("tokenName", assetName)
+    );
+    await this.driver.wait(until.elementLocated(By.xpath(xpath)), timeout);
+  }
+  async getAssetValue(assetName: string) {
+    const xpath = DIV_ASSETS_ITEM_VALUE.replace("tokenName", assetName);
+    await waitForElement(this.driver, xpath);
+    const value = await (
+      await this.driver.findElement(By.xpath(xpath))
+    ).getText();
+    return value;
+  }
+  private buildPoolDataTestId(asseName1: string, assetName2: string) {
+    return `poolsOverview-item-${asseName1}-${assetName2}`;
+  }
+  async isLiquidityPoolVisible(asset1Name: string, asset2Name: string) {
+    return await this.isDisplayed(
+      buildDataTestIdXpath(this.buildPoolDataTestId(asset1Name, asset2Name))
+    );
   }
 }
