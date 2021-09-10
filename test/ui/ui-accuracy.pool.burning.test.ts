@@ -10,7 +10,8 @@ import { Assets } from "../../utils/Assets";
 import { FIVE_MIN } from "../../utils/Constants";
 import { ExtrinsicResult } from "../../utils/eventListeners";
 import { Mangata } from "../../utils/frontend/pages/Mangata";
-import { Pool } from "../../utils/frontend/pages/Pool";
+import { BrunLiquidityModal } from "../../utils/frontend/pages/BrunLiquidityModal";
+import { Sidebar } from "../../utils/frontend/pages/Sidebar";
 import { DriverBuilder } from "../../utils/frontend/utils/Driver";
 import {
   setupAllExtensions,
@@ -34,7 +35,7 @@ const { sudo: sudoUserName } = getEnvironmentRequiredVars();
 let firstCurrency: BN;
 let secondCurrency: BN;
 
-describe("Accuracy tests", () => {
+describe("Accuracy tests:", () => {
   let testUser1: User;
   let sudo: User;
   let keyring: Keyring;
@@ -60,28 +61,28 @@ describe("Accuracy tests", () => {
   });
   test.each([
     [
-      new BN(Math.pow(10, 19).toString()).div(new BN(2)), //5E19X
-      new BN(Math.pow(10, 19).toString()).div(
-        new BN(Math.pow(10, 17).toString()) //100Y
-      ), // there is a difference of 17 decimals. Pool[ 5E19 X - 100Y]
-      "100000000000",
-      "0.000002",
-    ],
-    [
-      new BN(Math.pow(10, 19).toString()).div(new BN(2)), //5X
+      new BN(Math.pow(10, 19).toString()).sub(new BN(1)).div(new BN(4)), //2.499999X
       new BN(Math.pow(10, 19).toString()).div(new BN(2)), //5Y
-      "0.123",
-      "0.123",
+      "2",
+      "0.050",
+      "0.100",
     ],
     [
       new BN(Math.pow(10, 19).toString()).div(new BN(4)), //2.5X
       new BN(Math.pow(10, 19).toString()).div(new BN(2)), //5Y
-      "0.100",
-      "0.200",
+      "1",
+      "0.025",
+      "0.05",
     ],
   ])(
-    `As a User I get the right values for Pool investment P[%s, %s] - I-> %s -Expected - %s`,
-    async (assetValue1, assetValue2, inputAmount, expectedAmount) => {
+    `As a User I get the right values for Pool removal P[%s, %s] - I-> %s -Expected - %s , %s`,
+    async (
+      assetValue1,
+      assetValue2,
+      inputAmount,
+      expectedAmount1,
+      expectedAmount2
+    ) => {
       [firstCurrency, secondCurrency] = await Assets.setupUserWithCurrencies(
         testUser1,
         [
@@ -105,17 +106,25 @@ describe("Accuracy tests", () => {
         ]);
         expect(eventResponse.state).toEqual(ExtrinsicResult.ExtrinsicSuccess);
       });
+      const poolAsset1Name = Assets.getAssetName(firstCurrency.toString());
+      const poolAsset2Name = Assets.getAssetName(secondCurrency.toString());
 
       const mga = new Mangata(driver);
       await mga.navigate();
+      const sidebar = new Sidebar(driver);
+      await sidebar.clickOnLiquidityPool(poolAsset1Name, poolAsset2Name);
+      await sidebar.clickOnRemoveLiquidity();
+      const liquidityModal = new BrunLiquidityModal(driver);
+      await liquidityModal.setAmount(inputAmount);
+      const calculatedAsset1 = await liquidityModal.getAssetAmount(
+        poolAsset1Name
+      );
+      const calculatedAsset2 = await liquidityModal.getAssetAmount(
+        poolAsset2Name
+      );
 
-      const pool = new Pool(driver);
-      await pool.togglePool();
-      await pool.selectToken1Asset(`m${firstCurrency}`);
-      await pool.selectToken2Asset(`m${secondCurrency}`);
-      await pool.addToken1AssetAmount(inputAmount);
-      const value = await pool.getToken2Text();
-      expect(parseFloat(expectedAmount)).toBe(parseFloat(value));
+      expect(parseFloat(expectedAmount1)).toBe(parseFloat(calculatedAsset1));
+      expect(parseFloat(expectedAmount2)).toBe(parseFloat(calculatedAsset2));
     }
   );
 
