@@ -23,7 +23,7 @@ jest.setTimeout(FIVE_MIN);
 jest.spyOn(console, "log").mockImplementation(jest.fn());
 let driver: WebDriver;
 
-describe("UI main tests - Deposit - withdraw ETH", () => {
+describe("UI main tests - Deposit - ETH", () => {
   let testUser1: User;
   let keyring: Keyring;
   const { sudo: sudoUserName } = getEnvironmentRequiredVars();
@@ -57,7 +57,7 @@ describe("UI main tests - Deposit - withdraw ETH", () => {
     await sudo.mint(MGA_ASSET_ID, testUser1, new BN(10000000000));
   });
 
-  it("As a User I can get - put test tokens from Meta extension", async () => {
+  it("As a User I can deposit ETH from Meta extension", async () => {
     const sidebar = new Sidebar(driver);
     await sidebar.clickOnDepositToMangata();
     const modal = new DepositModal(driver);
