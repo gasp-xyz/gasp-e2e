@@ -1,0 +1,81 @@
+{
+  "uid" : "9a7e6c4e02a1da25",
+  "name" : "As a User I get feedback when extensions are installed and correctly setup",
+  "fullName" : "UI tests - Extension management.As a User I get feedback when extensions are installed and correctly setup",
+  "historyId" : "7365b4e6dd98ca21f75fccaf5b1ca8dd",
+  "time" : {
+    "start" : 1631238369146,
+    "stop" : 1631238510141,
+    "duration" : 140995
+  },
+  "description" : "",
+  "descriptionHtml" : "",
+  "status" : "failed",
+  "statusMessage" : "Error: Failed: \"TIMEOUT: Waiting for //*[@class = 'Sidebar__loading'] to dissapear\"",
+  "statusTrace" : "Error: \n                    at Env.it (/home/runner/work/mangata-e2e/mangata-e2e/node_modules/jest-jasmine2/build/jasmineAsyncInstall.js:95:24)\n                    at it (/home/runner/work/mangata-e2e/mangata-e2e/node_modules/jest-jasmine2/build/jasmine/jasmineLight.js:100:21)\n                    at Suite.<anonymous> (/home/runner/work/mangata-e2e/mangata-e2e/test/ui/ui-main.extensions.test.ts:31:3)\n                    at addSpecsToSuite (/home/runner/work/mangata-e2e/mangata-e2e/node_modules/jest-jasmine2/build/jasmine/Env.js:444:51)\n                    at Env.describe (/home/runner/work/mangata-e2e/mangata-e2e/node_modules/jest-jasmine2/build/jasmine/Env.js:414:11)\n                    at describe (/home/runner/work/mangata-e2e/mangata-e2e/node_modules/jest-jasmine2/build/jasmine/jasmineLight.js:88:18)\n                    at Object.<anonymous> (/home/runner/work/mangata-e2e/mangata-e2e/test/ui/ui-main.extensions.test.ts:20:1)\n                    at Runtime._execModule (/home/runner/work/mangata-e2e/mangata-e2e/node_modules/jest-runtime/build/index.js:1299:24)\n                    at Runtime._loadModule (/home/runner/work/mangata-e2e/mangata-e2e/node_modules/jest-runtime/build/index.js:898:12)\n                    at Runtime.requireModule (/home/runner/work/mangata-e2e/mangata-e2e/node_modules/jest-runtime/build/index.js:746:10)",
+  "flaky" : false,
+  "newFailed" : true,
+  "beforeStages" : [ ],
+  "afterStages" : [ ],
+  "labels" : [ {
+    "name" : "suite",
+    "value" : "UI tests - Extension management"
+  }, {
+    "name" : "testClass",
+    "value" : "UI tests - Extension management"
+  }, {
+    "name" : "testMethod",
+    "value" : "As a User I get feedback when extensions are installed and correctly setup"
+  }, {
+    "name" : "package",
+    "value" : "UI tests - Extension management"
+  }, {
+    "name" : "resultFormat",
+    "value" : "allure1"
+  } ],
+  "parameters" : [ ],
+  "links" : [ ],
+  "hidden" : false,
+  "retry" : false,
+  "extra" : {
+    "severity" : "normal",
+    "retries" : [ ],
+    "categories" : [ {
+      "name" : "Product defects",
+      "matchedStatuses" : [ ],
+      "flaky" : false
+    } ],
+    "history" : {
+      "statistic" : {
+        "failed" : 1,
+        "broken" : 0,
+        "skipped" : 0,
+        "passed" : 2,
+        "unknown" : 0,
+        "total" : 3
+      },
+      "items" : [ {
+        "uid" : "a285a3cb30d7c4c",
+        "reportUrl" : "https://mangata-finance.github.io/mangata-e2e/193//#testresult/a285a3cb30d7c4c",
+        "status" : "passed",
+        "time" : {
+          "start" : 1631238325235,
+          "stop" : 1631238410609,
+          "duration" : 85374
+        }
+      }, {
+        "uid" : "6f405624e5b72d0d",
+        "reportUrl" : "https://mangata-finance.github.io/mangata-e2e/194//#testresult/6f405624e5b72d0d",
+        "status" : "passed",
+        "time" : {
+          "start" : 1631238337678,
+          "stop" : 1631238425910,
+          "duration" : 88232
+        }
+      } ]
+    },
+    "tags" : [ ]
+  },
+  "source" : "9a7e6c4e02a1da25.json",
+  "parameterValues" : [ ]
+}
