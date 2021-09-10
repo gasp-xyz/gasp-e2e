@@ -9,7 +9,7 @@ import { Sidebar } from "../../utils/frontend/pages/Sidebar";
 import { DriverBuilder } from "../../utils/frontend/utils/Driver";
 import {
   setupAllExtensions,
-  takeScreenshot,
+  addExtraLogs,
 } from "../../utils/frontend/utils/Helper";
 import { FIVE_MIN } from "../../utils/Constants";
 
@@ -71,9 +71,9 @@ describe("UI tests - Extension management", () => {
 
   afterEach(async () => {
     const session = await driver.getSession();
-    await takeScreenshot(
+    await addExtraLogs(
       driver,
-      expect.getState().currentTestName + " - " + session
+      expect.getState().currentTestName + " - " + session.getId()
     );
     await driver.quit();
     DriverBuilder.destroy();
