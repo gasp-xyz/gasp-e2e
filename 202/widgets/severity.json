@@ -1,0 +1,111 @@
+[ {
+  "uid" : "9170d95c3f858672",
+  "name" : "Validate that Mangata Frontend up and running",
+  "time" : {
+    "start" : 1631366800271,
+    "stop" : 1631366800304,
+    "duration" : 33
+  },
+  "status" : "failed",
+  "severity" : "normal"
+}, {
+  "uid" : "1b4027b5a70966b",
+  "name" : "As a User I get feedback when extensions are installed and correctly setup",
+  "time" : {
+    "start" : 1631366799862,
+    "stop" : 1631366799863,
+    "duration" : 1
+  },
+  "status" : "failed",
+  "severity" : "normal"
+}, {
+  "uid" : "9f4b067842fc7d5c",
+  "name" : "Validate that Frontend retrieves AssetInfo data",
+  "time" : {
+    "start" : 1631366800304,
+    "stop" : 1631366800305,
+    "duration" : 1
+  },
+  "status" : "failed",
+  "severity" : "normal"
+}, {
+  "uid" : "3cb4793f16f4ddb1",
+  "name" : "As a User I get the right values for Pool investment P[5000000000000000000, 100] - I-> 100000000000 -Expected - 0.000002",
+  "time" : {
+    "start" : 1631366490137,
+    "stop" : 1631366490256,
+    "duration" : 119
+  },
+  "status" : "failed",
+  "severity" : "normal"
+}, {
+  "uid" : "46500ce5d0cba69a",
+  "name" : "As a User I can create a pool",
+  "time" : {
+    "start" : 1631366793514,
+    "stop" : 1631366793519,
+    "duration" : 5
+  },
+  "status" : "failed",
+  "severity" : "normal"
+}, {
+  "uid" : "2dfb39f2ff9b50c0",
+  "name" : "As a User I get infomed whenever is neccesary to install any extension",
+  "time" : {
+    "start" : 1631366797750,
+    "stop" : 1631366799862,
+    "duration" : 2112
+  },
+  "status" : "failed",
+  "severity" : "normal"
+}, {
+  "uid" : "b45e3555136cc486",
+  "name" : "As a User I get the right values for Pool investment P[5000000000000000000, 5000000000000000000] - I-> 0.123 -Expected - 0.123",
+  "time" : {
+    "start" : 1631366490256,
+    "stop" : 1631366490258,
+    "duration" : 2
+  },
+  "status" : "failed",
+  "severity" : "normal"
+}, {
+  "uid" : "7842dc4ee068d748",
+  "name" : "As a User I get the right values for Pool investment P[2500000000000000000, 5000000000000000000] - I-> 0.100 -Expected - 0.200",
+  "time" : {
+    "start" : 1631366490258,
+    "stop" : 1631366490261,
+    "duration" : 3
+  },
+  "status" : "failed",
+  "severity" : "normal"
+}, {
+  "uid" : "80a0eec2e6028bf6",
+  "name" : "As a User I can Swap tokens - MGA - mETH",
+  "time" : {
+    "start" : 1631366188984,
+    "stop" : 1631366188988,
+    "duration" : 4
+  },
+  "status" : "failed",
+  "severity" : "normal"
+}, {
+  "uid" : "d66509136f976d4c",
+  "name" : "As a User I can get test tokens from the faucet",
+  "time" : {
+    "start" : 1631366796694,
+    "stop" : 1631366797292,
+    "duration" : 598
+  },
+  "status" : "failed",
+  "severity" : "normal"
+}, {
+  "uid" : "cb78dede60a50cbd",
+  "name" : "As a User I can mint some tokens MGA - mETH",
+  "time" : {
+    "start" : 1631366188988,
+    "stop" : 1631366188989,
+    "duration" : 1
+  },
+  "status" : "failed",
+  "severity" : "normal"
+} ]
