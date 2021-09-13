@@ -118,13 +118,21 @@ test("xyk-pallet - AssetsOperation: sellAsset [minAmountOut = 0] , first to seco
   await testUser2.refreshAmounts(AssetWallet.AFTER);
   await pallet.refreshAmounts(AssetWallet.AFTER);
 
-  let diffFromWallet = testUser1.getAsset(soldAssetId)?.amountBefore!.sub(amount);
-  expect(testUser1.getAsset(soldAssetId)?.amountAfter!).bnEqual(diffFromWallet!);
+  let diffFromWallet = testUser1
+    .getAsset(soldAssetId)
+    ?.amountBefore!.sub(amount);
+  expect(testUser1.getAsset(soldAssetId)?.amountAfter!).bnEqual(
+    diffFromWallet!
+  );
 
   testUser1.validateWalletIncreased(boughtAssetId, sellPriceLocal);
-  testUser2.assets.forEach((asset) => {expect(asset.amountBefore).bnEqual(asset.amountAfter);});
+  testUser2.assets.forEach((asset) => {
+    expect(asset.amountBefore).bnEqual(asset.amountAfter);
+  });
 
-  diffFromWallet = pallet.getAsset(boughtAssetId)?.amountBefore!.sub(sellPriceLocal);
+  diffFromWallet = pallet
+    .getAsset(boughtAssetId)
+    ?.amountBefore!.sub(sellPriceLocal);
   expect(pallet.getAsset(boughtAssetId)?.amountAfter!).bnEqual(diffFromWallet!);
 
   pallet.validateWalletIncreased(soldAssetId, amount);
@@ -175,13 +183,21 @@ test("xyk-pallet - AssetsOperation: sellAsset [minAmountOut = 0], sell an alread
   await testUser2.refreshAmounts(AssetWallet.AFTER);
   await pallet.refreshAmounts(AssetWallet.AFTER);
 
-  let diffFromWallet = testUser1.getAsset(soldAssetId)?.amountBefore!.sub(amount);
-  expect(testUser1.getAsset(soldAssetId)?.amountAfter!).bnEqual(diffFromWallet!);
+  let diffFromWallet = testUser1
+    .getAsset(soldAssetId)
+    ?.amountBefore!.sub(amount);
+  expect(testUser1.getAsset(soldAssetId)?.amountAfter!).bnEqual(
+    diffFromWallet!
+  );
 
   testUser1.validateWalletIncreased(boughtAssetId, sellPriceLocal);
-  testUser2.assets.forEach((asset) => {expect(asset.amountBefore).bnEqual(asset.amountAfter);});
+  testUser2.assets.forEach((asset) => {
+    expect(asset.amountBefore).bnEqual(asset.amountAfter);
+  });
 
-  diffFromWallet = pallet.getAsset(boughtAssetId)?.amountBefore!.sub(sellPriceLocal);
+  diffFromWallet = pallet
+    .getAsset(boughtAssetId)
+    ?.amountBefore!.sub(sellPriceLocal);
   expect(pallet.getAsset(boughtAssetId)?.amountAfter!).bnEqual(diffFromWallet!);
 
   pallet.validateWalletIncreased(soldAssetId, amount);

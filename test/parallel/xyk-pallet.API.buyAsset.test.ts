@@ -345,7 +345,7 @@ describe("xyk-pallet - Buy assets tests: Buying assets you can", () => {
       poolAmountSecondCurrency.sub(new BN(1))
     );
 
-    let amount = testUser1.getAsset(firstCurrency)?.amountBefore!;
+    const amount = testUser1.getAsset(firstCurrency)?.amountBefore!;
     expect(testUser1.getAsset(firstCurrency)?.amountAfter!).bnEqual(amount);
 
     //lets get the treasure amounts!
@@ -451,7 +451,9 @@ describe("xyk-pallet - Buy assets tests: Buying assets you can", () => {
       diffFromWallet!
     );
 
-    expect(testUser2.getAsset(firstCurrency)?.amountAfter!).bnEqual(amountToBuy);
+    expect(testUser2.getAsset(firstCurrency)?.amountAfter!).bnEqual(
+      amountToBuy
+    );
 
     const poolBalanceAfter = await getBalanceOfPool(
       firstCurrency,

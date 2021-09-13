@@ -122,11 +122,19 @@ export async function validateStatusWhenPoolCreated(
 
   await testUser1.refreshAmounts(AssetWallet.AFTER);
 
-  let diffFromWallet = testUser1.getAsset(firstCurrency)?.amountBefore!.sub(first_asset_amount);
-  expect(testUser1.getAsset(firstCurrency)?.amountAfter!).bnEqual(diffFromWallet!);
+  let diffFromWallet = testUser1
+    .getAsset(firstCurrency)
+    ?.amountBefore!.sub(first_asset_amount);
+  expect(testUser1.getAsset(firstCurrency)?.amountAfter!).bnEqual(
+    diffFromWallet!
+  );
 
-  diffFromWallet = testUser1.getAsset(secondCurrency)?.amountBefore!.sub(second_asset_amount);
-  expect(testUser1.getAsset(secondCurrency)?.amountAfter!).bnEqual(diffFromWallet!);
+  diffFromWallet = testUser1
+    .getAsset(secondCurrency)
+    ?.amountBefore!.sub(second_asset_amount);
+  expect(testUser1.getAsset(secondCurrency)?.amountAfter!).bnEqual(
+    diffFromWallet!
+  );
 
   await testUser1.validateWalletIncreased(
     liquidity_asset_id,
@@ -159,7 +167,9 @@ export async function validateUnmodified(
 ) {
   await testUser1.refreshAmounts(AssetWallet.AFTER);
 
-  testUser1.assets.forEach((asset) => {expect(asset.amountBefore).bnEqual(asset.amountAfter);});
+  testUser1.assets.forEach((asset) => {
+    expect(asset.amountBefore).bnEqual(asset.amountAfter);
+  });
 
   const pool_balance = await getBalanceOfPool(firstCurrency, secondCurrency);
   expect([pool_balance_before[0], pool_balance_before[1]]).toEqual(
@@ -198,11 +208,13 @@ export async function validateUserPaidFeeForFailedTx(
 
   //when failed Tx, we remove 3% and put it in the pool.
   await user.refreshAmounts(AssetWallet.AFTER);
-  let diffFromWallet = user.getAsset(assetSoldId)?.amountBefore!.sub(completeFee);
+  const diffFromWallet = user
+    .getAsset(assetSoldId)
+    ?.amountBefore!.sub(completeFee);
   expect(user.getAsset(assetSoldId)?.amountAfter!).bnEqual(diffFromWallet!);
 
   //second wallet should not be modified.
-  let amount = user.getAsset(failedBoughtAssetId)?.amountBefore!;
+  const amount = user.getAsset(failedBoughtAssetId)?.amountBefore!;
   expect(user.getAsset(failedBoughtAssetId)?.amountAfter!).bnEqual(amount);
 
   const treasuryTokens = await getTreasury(assetSoldId);

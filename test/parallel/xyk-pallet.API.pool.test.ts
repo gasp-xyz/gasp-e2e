@@ -358,7 +358,7 @@ describe("xyk-pallet - Pool tests: a pool can:", () => {
 
     await testUser2.refreshAmounts(AssetWallet.AFTER);
 
-    let diffFromWallet = testUser2
+    const diffFromWallet = testUser2
       .getAsset(liquidity_asset_id)
       ?.amountBefore!.sub(new BN(2500));
     expect(testUser2.getAsset(liquidity_asset_id)?.amountAfter!).bnEqual(

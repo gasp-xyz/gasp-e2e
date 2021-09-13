@@ -264,11 +264,15 @@ describe("xyk-pallet - Sell assets tests: SellAsset Errors:", () => {
     const feeToAvoidFrontRunning = new BN(603);
     await testUser1.refreshAmounts(AssetWallet.AFTER);
 
-    let diffFromWallet = testUser1.getAsset(firstCurrency)?.amountBefore!.sub(feeToAvoidFrontRunning);
-    expect(testUser1.getAsset(firstCurrency)?.amountAfter!).bnEqual(diffFromWallet!);
+    const diffFromWallet = testUser1
+      .getAsset(firstCurrency)
+      ?.amountBefore!.sub(feeToAvoidFrontRunning);
+    expect(testUser1.getAsset(firstCurrency)?.amountAfter!).bnEqual(
+      diffFromWallet!
+    );
 
     //second wallet should not be modified.
-    let amount = testUser1.getAsset(secondCurrency)?.amountBefore!;
+    const amount = testUser1.getAsset(secondCurrency)?.amountBefore!;
     expect(testUser1.getAsset(secondCurrency)?.amountAfter!).bnEqual(amount);
 
     const treasury = await getTreasury(firstCurrency);
@@ -368,7 +372,7 @@ describe("xyk-pallet - Sell assets tests: Selling Assets you can", () => {
     await testUser1.refreshAmounts(AssetWallet.AFTER);
     //spent all the money!
 
-    let amount = new BN(0);
+    const amount = new BN(0);
     expect(testUser1.getAsset(firstCurrency)?.amountAfter!).bnEqual(amount);
     //amounAsset2 = issued  - spent in the pool + bought selling all firstCurerncy.
     const amountAsset2 = defaultCurrecyValue
@@ -376,7 +380,9 @@ describe("xyk-pallet - Sell assets tests: Selling Assets you can", () => {
       .sub(second_asset_amount.div(new BN(2)))
       .add(sellPriceLocal);
 
-    expect(testUser1.getAsset(secondCurrency)?.amountAfter!).bnEqual(amountAsset2);
+    expect(testUser1.getAsset(secondCurrency)?.amountAfter!).bnEqual(
+      amountAsset2
+    );
   });
 
   test("Sell assets from a wallet I own into a wallet I do not own: limit", async () => {

@@ -140,16 +140,28 @@ test("xyk-pallet - Liqudity : Burn part of the liquidity", async () => {
   testUser1.validateWalletIncreased(firstCurrency, firstAssetAmount);
   testUser1.validateWalletIncreased(secondCurrency, second_asset_amount);
 
-  let diffFromWallet = testUser1.getAsset(liquidityAssetId)?.amountBefore!.sub(liquidityAssetsBurned);
-  expect(testUser1.getAsset(liquidityAssetId)?.amountAfter!).bnEqual(diffFromWallet!);
+  let diffFromWallet = testUser1
+    .getAsset(liquidityAssetId)
+    ?.amountBefore!.sub(liquidityAssetsBurned);
+  expect(testUser1.getAsset(liquidityAssetId)?.amountAfter!).bnEqual(
+    diffFromWallet!
+  );
 
-  testUser2.assets.forEach((asset) => {expect(asset.amountBefore).bnEqual(asset.amountAfter);});
+  testUser2.assets.forEach((asset) => {
+    expect(asset.amountBefore).bnEqual(asset.amountAfter);
+  });
 
-  diffFromWallet = pallet.getAsset(firstCurrency)?.amountBefore!.sub(firstAssetAmount);
+  diffFromWallet = pallet
+    .getAsset(firstCurrency)
+    ?.amountBefore!.sub(firstAssetAmount);
   expect(pallet.getAsset(firstCurrency)?.amountAfter!).bnEqual(diffFromWallet!);
 
-  diffFromWallet = pallet.getAsset(secondCurrency)?.amountBefore!.sub(second_asset_amount);
-  expect(pallet.getAsset(secondCurrency)?.amountAfter!).bnEqual(diffFromWallet!);
+  diffFromWallet = pallet
+    .getAsset(secondCurrency)
+    ?.amountBefore!.sub(second_asset_amount);
+  expect(pallet.getAsset(secondCurrency)?.amountAfter!).bnEqual(
+    diffFromWallet!
+  );
 
   const pool_balance = await getBalanceOfPool(firstCurrency, secondCurrency);
   expect([
@@ -211,16 +223,28 @@ test("xyk-pallet - Liqudity : Burn all the liquidity", async () => {
   testUser1.validateWalletIncreased(firstCurrency, firstAssetAmount);
   testUser1.validateWalletIncreased(secondCurrency, secondAssetAmount);
 
-  let diffFromWallet = testUser1.getAsset(liquidityAssetId)?.amountBefore!.sub(liquidityAssetsBurned);
-  expect(testUser1.getAsset(liquidityAssetId)?.amountAfter!).bnEqual(diffFromWallet!);
+  let diffFromWallet = testUser1
+    .getAsset(liquidityAssetId)
+    ?.amountBefore!.sub(liquidityAssetsBurned);
+  expect(testUser1.getAsset(liquidityAssetId)?.amountAfter!).bnEqual(
+    diffFromWallet!
+  );
 
-  testUser2.assets.forEach((asset) => {expect(asset.amountBefore).bnEqual(asset.amountAfter);});
+  testUser2.assets.forEach((asset) => {
+    expect(asset.amountBefore).bnEqual(asset.amountAfter);
+  });
 
-  diffFromWallet = pallet.getAsset(firstCurrency)?.amountBefore!.sub(firstAssetAmount);
+  diffFromWallet = pallet
+    .getAsset(firstCurrency)
+    ?.amountBefore!.sub(firstAssetAmount);
   expect(pallet.getAsset(firstCurrency)?.amountAfter!).bnEqual(diffFromWallet!);
 
-  diffFromWallet = pallet.getAsset(secondCurrency)?.amountBefore!.sub(secondAssetAmount);
-  expect(pallet.getAsset(secondCurrency)?.amountAfter!).bnEqual(diffFromWallet!);
+  diffFromWallet = pallet
+    .getAsset(secondCurrency)
+    ?.amountBefore!.sub(secondAssetAmount);
+  expect(pallet.getAsset(secondCurrency)?.amountAfter!).bnEqual(
+    diffFromWallet!
+  );
 
   const pool_balance = await getBalanceOfPool(firstCurrency, secondCurrency);
   expect([
@@ -270,15 +294,25 @@ test("xyk-pallet - LiquidityOperation: mintLiquidity", async () => {
   await testUser2.refreshAmounts(AssetWallet.AFTER);
   await pallet.refreshAmounts(AssetWallet.AFTER);
 
-  let diffFromWallet = testUser1.getAsset(firstCurrency)?.amountBefore!.sub(firstCurrencyAssetAmount);
-  expect(testUser1.getAsset(firstCurrency)?.amountAfter!).bnEqual(diffFromWallet!);
+  let diffFromWallet = testUser1
+    .getAsset(firstCurrency)
+    ?.amountBefore!.sub(firstCurrencyAssetAmount);
+  expect(testUser1.getAsset(firstCurrency)?.amountAfter!).bnEqual(
+    diffFromWallet!
+  );
 
-  diffFromWallet = testUser1.getAsset(secondCurrency)?.amountBefore!.sub(secondAssetAmount);
-  expect(testUser1.getAsset(secondCurrency)?.amountAfter!).bnEqual(diffFromWallet!);
+  diffFromWallet = testUser1
+    .getAsset(secondCurrency)
+    ?.amountBefore!.sub(secondAssetAmount);
+  expect(testUser1.getAsset(secondCurrency)?.amountAfter!).bnEqual(
+    diffFromWallet!
+  );
 
   testUser1.validateWalletIncreased(liquidityAssetId, liquidityAssetsMinted);
 
-  testUser2.assets.forEach((asset) => {expect(asset.amountBefore).bnEqual(asset.amountAfter);});
+  testUser2.assets.forEach((asset) => {
+    expect(asset.amountBefore).bnEqual(asset.amountAfter);
+  });
 
   pallet.validateWalletIncreased(firstCurrency, firstCurrencyAssetAmount);
   pallet.validateWalletIncreased(secondCurrency, secondAssetAmount);

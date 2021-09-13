@@ -183,7 +183,9 @@ afterEach(async () => {
   //validate
   await testUser1.refreshAmounts(AssetWallet.AFTER);
 
-  testUser1.assets.forEach((asset) => {expect(asset.amountBefore).bnEqual(asset.amountAfter);});
+  testUser1.assets.forEach((asset) => {
+    expect(asset.amountBefore).bnEqual(asset.amountAfter);
+  });
 
   const pool_balance = await getBalanceOfPool(firstCurrency, secondCurrency);
   expect([pool_balance_before[0], pool_balance_before[1]]).toEqual(

@@ -144,7 +144,9 @@ test("xyk-pallet - AssetsOperation: buyAsset [maxAmountIn = 1M], buy asset", asy
     diffFromWallet!
   );
 
-  testUser2.assets.forEach((asset) => {expect(asset.amountBefore).bnEqual(asset.amountAfter);});
+  testUser2.assets.forEach((asset) => {
+    expect(asset.amountBefore).bnEqual(asset.amountAfter);
+  });
   pallet.validateWalletIncreased(soldAssetId, buyPriceLocal);
 
   diffFromWallet = pallet.getAsset(boughtAssetId)?.amountBefore!.sub(amount);
@@ -209,11 +211,15 @@ test("xyk-pallet - AssetsOperation: buyAsset [maxAmountIn = 1M], sell a bought a
   let diffFromWallet = testUser1
     .getAsset(soldAssetId)
     ?.amountBefore!.sub(buyPriceLocal);
-  expect(testUser1.getAsset(soldAssetId)?.amountAfter!).bnEqual(diffFromWallet!);
+  expect(testUser1.getAsset(soldAssetId)?.amountAfter!).bnEqual(
+    diffFromWallet!
+  );
 
-  testUser2.assets.forEach((asset) => {expect(asset.amountBefore).bnEqual(asset.amountAfter);});
+  testUser2.assets.forEach((asset) => {
+    expect(asset.amountBefore).bnEqual(asset.amountAfter);
+  });
   pallet.validateWalletIncreased(soldAssetId, buyPriceLocal);
-  
+
   diffFromWallet = pallet.getAsset(boughtAssetId)?.amountBefore!.sub(amount);
   expect(pallet.getAsset(boughtAssetId)?.amountAfter!).bnEqual(diffFromWallet!);
 
