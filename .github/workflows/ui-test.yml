@@ -78,13 +78,19 @@ jobs:
         if: contains(github.event.client_payload.environment, 'staging')
         run:  |
           echo 'UI_URL=https://staging.mangata.finance/' >> $GITHUB_ENV
-          echo 'API_URL=wss://staging.testnode.mangata.finance:9945' >> $GITHUB_ENV
+          echo 'API_URL=wss://staging.mangatafinance.cloud:9944/' >> $GITHUB_ENV
   
       - name: Set Configuration - Develop
         if: contains(github.event.client_payload.environment, 'develop')
         run:  |
           echo 'UI_URL=https://develop.mangata.finance/' >> $GITHUB_ENV
-          echo 'API_URL=wss://develop.testnode.mangata.finance:9945' >> $GITHUB_ENV
+          echo 'API_URL=wss://develop.mangatafinance.cloud:9944' >> $GITHUB_ENV
+        
+      - name: Set Configuration - Integration
+        if: contains(github.event.client_payload.environment, 'integration')
+        run:  |
+          echo 'UI_URL=https://integration.mangata.finance/' >> $GITHUB_ENV
+          echo 'API_URL=wss://integration.mangatafinance.cloud:9944' >> $GITHUB_ENV
   
       - uses: actions/checkout@v2
       - name: Install dependencies
@@ -112,7 +118,7 @@ jobs:
 
       - name: Copy video files to reports folder
         if: success() || failure()
-        run: "cp ~/.aerokube/selenoid/video/* reports/artifacts/"
+        run: "cp ~/.aerokube/selenoid/* -r  reports/artifacts/"
 
       - name: Create  reports zip
         uses: papeloto/action-zip@v1

@@ -1,4 +1,4 @@
-import { WebDriver, Capabilities } from "selenium-webdriver";
+import { WebDriver, Capabilities, logging } from "selenium-webdriver";
 
 require("chromedriver");
 const { Builder } = require("selenium-webdriver");
@@ -15,6 +15,13 @@ export const DriverBuilder = (function () {
       options.addExtensions(polkadotExtensionPath);
       options.addExtensions(metamaskExtensionPath);
     }
+    const prefs = new logging.Preferences();
+    prefs.setLevel(logging.Type.BROWSER, logging.Level.DEBUG);
+    prefs.setLevel(logging.Type.CLIENT, logging.Level.DEBUG);
+    prefs.setLevel(logging.Type.DRIVER, logging.Level.DEBUG);
+    prefs.setLevel(logging.Type.PERFORMANCE, logging.Level.DEBUG);
+    prefs.setLevel(logging.Type.SERVER, logging.Level.DEBUG);
+
     let caps: Capabilities = new Capabilities();
     caps = Capabilities.chrome();
     caps.set("version", "91.0");

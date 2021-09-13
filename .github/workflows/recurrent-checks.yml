@@ -19,7 +19,7 @@ jobs:
 
     strategy:
       matrix:
-        environment: ['staging','develop']
+        environment: ['staging','develop','integration']
     runs-on: ubuntu-latest
     steps:
       - name: Repository Dispatch
