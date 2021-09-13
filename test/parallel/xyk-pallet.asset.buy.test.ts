@@ -135,7 +135,12 @@ test("xyk-pallet - AssetsOperation: buyAsset [maxAmountIn = 1M], buy asset", asy
   await testUser2.refreshAmounts(AssetWallet.AFTER);
   await pallet.refreshAmounts(AssetWallet.AFTER);
 
-  testUser1.validateWalletIncreased(boughtAssetId, amount);
+  let addFromWallet = testUser1
+    .getAsset(boughtAssetId)
+    ?.amountBefore!.add(amount);
+  expect(testUser1.getAsset(boughtAssetId)?.amountAfter!).bnEqual(
+    addFromWallet!
+  );
 
   let diffFromWallet = testUser1
     .getAsset(soldAssetId)
@@ -147,7 +152,11 @@ test("xyk-pallet - AssetsOperation: buyAsset [maxAmountIn = 1M], buy asset", asy
   testUser2.assets.forEach((asset) => {
     expect(asset.amountBefore).bnEqual(asset.amountAfter);
   });
-  pallet.validateWalletIncreased(soldAssetId, buyPriceLocal);
+
+  addFromWallet = pallet
+    .getAsset(soldAssetId)
+    ?.amountBefore!.add(buyPriceLocal);
+  expect(pallet.getAsset(soldAssetId)?.amountAfter!).bnEqual(addFromWallet!);
 
   diffFromWallet = pallet.getAsset(boughtAssetId)?.amountBefore!.sub(amount);
   expect(testUser1.getAsset(boughtAssetId)?.amountAfter!).bnEqual(
@@ -206,7 +215,12 @@ test("xyk-pallet - AssetsOperation: buyAsset [maxAmountIn = 1M], sell a bought a
   await testUser2.refreshAmounts(AssetWallet.AFTER);
   await pallet.refreshAmounts(AssetWallet.AFTER);
 
-  testUser1.validateWalletIncreased(boughtAssetId, amount);
+  let addFromWallet = testUser1
+    .getAsset(boughtAssetId)
+    ?.amountBefore!.add(amount);
+  expect(testUser1.getAsset(boughtAssetId)?.amountAfter!).bnEqual(
+    addFromWallet!
+  );
 
   let diffFromWallet = testUser1
     .getAsset(soldAssetId)
@@ -218,7 +232,11 @@ test("xyk-pallet - AssetsOperation: buyAsset [maxAmountIn = 1M], sell a bought a
   testUser2.assets.forEach((asset) => {
     expect(asset.amountBefore).bnEqual(asset.amountAfter);
   });
-  pallet.validateWalletIncreased(soldAssetId, buyPriceLocal);
+
+  addFromWallet = pallet
+    .getAsset(soldAssetId)
+    ?.amountBefore!.add(buyPriceLocal);
+  expect(pallet.getAsset(soldAssetId)?.amountAfter!).bnEqual(addFromWallet!);
 
   diffFromWallet = pallet.getAsset(boughtAssetId)?.amountBefore!.sub(amount);
   expect(pallet.getAsset(boughtAssetId)?.amountAfter!).bnEqual(diffFromWallet!);

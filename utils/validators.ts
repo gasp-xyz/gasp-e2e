@@ -136,9 +136,11 @@ export async function validateStatusWhenPoolCreated(
     diffFromWallet!
   );
 
-  await testUser1.validateWalletIncreased(
-    liquidity_asset_id,
-    liquidity_assets_minted
+  const addFromWallet = testUser1
+    .getAsset(liquidity_asset_id)
+    ?.amountBefore!.add(liquidity_assets_minted);
+  expect(testUser1.getAsset(liquidity_asset_id)?.amountAfter!).bnEqual(
+    addFromWallet!
   );
 
   const pool_balance = await getBalanceOfPool(firstCurrency, secondCurrency);

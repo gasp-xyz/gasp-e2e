@@ -277,7 +277,12 @@ describe("xyk-pallet - Pool tests: a pool can:", () => {
     testUser2.addAsset(liquidity_asset_id, new BN(0));
     await testUser2.refreshAmounts(AssetWallet.AFTER);
 
-    await testUser2.validateWalletIncreased(liquidity_asset_id, new BN(5000));
+    const addFromWallet = testUser2
+      .getAsset(liquidity_asset_id)
+      ?.amountBefore!.add(new BN(5000));
+    expect(testUser2.getAsset(liquidity_asset_id)?.amountAfter!).bnEqual(
+      addFromWallet!
+    );
 
     let diffFromWallet = testUser2
       .getAsset(liquidity_asset_id)
@@ -365,8 +370,20 @@ describe("xyk-pallet - Pool tests: a pool can:", () => {
       diffFromWallet!
     );
 
-    await testUser2.validateWalletIncreased(firstCurrency, new BN(2500));
-    await testUser2.validateWalletIncreased(secondCurrency, new BN(2500));
+    let addFromWallet = testUser2
+      .getAsset(firstCurrency)
+      ?.amountBefore!.add(new BN(2500));
+    expect(testUser2.getAsset(firstCurrency)?.amountAfter!).bnEqual(
+      addFromWallet!
+    );
+
+    addFromWallet = testUser2
+      .getAsset(secondCurrency)
+      ?.amountBefore!.add(new BN(2500));
+    expect(testUser2.getAsset(secondCurrency)?.amountAfter!).bnEqual(
+      addFromWallet!
+    );
+
     //TODO: pending to validate.
     const pool_balance = await getBalanceOfPool(firstCurrency, secondCurrency);
     expect([
@@ -409,9 +426,11 @@ describe("xyk-pallet - Pool tests: a pool can:", () => {
       diffFromWallet!
     );
 
-    await testUser1.validateWalletIncreased(
-      liquidity_asset_id,
-      liquidity_assets_minted
+    const addFromWallet = testUser1
+      .getAsset(liquidity_asset_id)
+      ?.amountBefore!.add(liquidity_assets_minted);
+    expect(testUser1.getAsset(liquidity_asset_id)?.amountAfter!).bnEqual(
+      addFromWallet!
     );
   });
 });

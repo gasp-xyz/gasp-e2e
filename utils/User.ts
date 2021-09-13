@@ -63,11 +63,6 @@ export class User {
     this.name = "addres_created_account";
   }
 
-  validateWalletIncreased(currencyId: BN, amount: BN) {
-    const addFromWallet = this.getAsset(currencyId)?.amountBefore!.add(amount);
-    expect(this.getAsset(currencyId)?.amountAfter!).bnEqual(addFromWallet!);
-  }
-
   addAsset(currecncyId: any, amountBefore = new BN(0)) {
     const asset = new Asset(currecncyId, amountBefore);
     if (

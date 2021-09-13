@@ -142,10 +142,17 @@ describe("xyk-pallet - Mint liquidity tests: with minting you can", () => {
     );
 
     //minting must not add any treasury
-    testUser1.validateWalletIncreased(
-      liquidityAssetId,
-      calculateLiqAssetAmount(defaultCurrencyValue, defaultCurrencyValue)
+    const amount = calculateLiqAssetAmount(
+      defaultCurrencyValue,
+      defaultCurrencyValue
     );
+    const addFromWallet = testUser1
+      .getAsset(liquidityAssetId)
+      ?.amountBefore!.add(amount);
+    expect(testUser1.getAsset(liquidityAssetId)?.amountAfter!).bnEqual(
+      addFromWallet!
+    );
+
     await validateTreasuryAmountsEqual(firstCurrency, [new BN(0), new BN(0)]);
     await validateTreasuryAmountsEqual(secondCurrency, [new BN(0), new BN(0)]);
   });
@@ -238,10 +245,14 @@ describe("xyk-pallet - Mint liquidity tests: with minting you can", () => {
     );
 
     //No trading - no Treasure added.
-    testUser1.validateWalletIncreased(
-      liquidityAssetId,
-      calculateLiqAssetAmount(injectedValue, injectedValue)
+    const amount = calculateLiqAssetAmount(injectedValue, injectedValue);
+    const addFromWallet = testUser1
+      .getAsset(liquidityAssetId)
+      ?.amountBefore!.add(amount);
+    expect(testUser1.getAsset(liquidityAssetId)?.amountAfter!).bnEqual(
+      addFromWallet!
     );
+
     await validateTreasuryAmountsEqual(firstCurrency, [new BN(0), new BN(0)]);
     await validateTreasuryAmountsEqual(secondCurrency, [new BN(0), new BN(0)]);
   });

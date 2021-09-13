@@ -340,12 +340,15 @@ describe("xyk-pallet - Buy assets tests: Buying assets you can", () => {
       new BN(1),
     ]).collectionBnEqual(pool_balance);
 
-    testUser1.validateWalletIncreased(
-      secondCurrency,
-      poolAmountSecondCurrency.sub(new BN(1))
+    let amount = poolAmountSecondCurrency.sub(new BN(1));
+    const addFromWallet = testUser1
+      .getAsset(secondCurrency)
+      ?.amountBefore!.add(amount);
+    expect(testUser1.getAsset(secondCurrency)?.amountAfter!).bnEqual(
+      addFromWallet!
     );
 
-    const amount = testUser1.getAsset(firstCurrency)?.amountBefore!;
+    amount = testUser1.getAsset(firstCurrency)?.amountBefore!;
     expect(testUser1.getAsset(firstCurrency)?.amountAfter!).bnEqual(amount);
 
     //lets get the treasure amounts!

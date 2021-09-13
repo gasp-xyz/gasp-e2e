@@ -125,7 +125,13 @@ test("xyk-pallet - AssetsOperation: sellAsset [minAmountOut = 0] , first to seco
     diffFromWallet!
   );
 
-  testUser1.validateWalletIncreased(boughtAssetId, sellPriceLocal);
+  let addFromWallet = testUser1
+    .getAsset(boughtAssetId)
+    ?.amountBefore!.add(sellPriceLocal);
+  expect(testUser1.getAsset(boughtAssetId)?.amountAfter!).bnEqual(
+    addFromWallet!
+  );
+
   testUser2.assets.forEach((asset) => {
     expect(asset.amountBefore).bnEqual(asset.amountAfter);
   });
@@ -135,7 +141,9 @@ test("xyk-pallet - AssetsOperation: sellAsset [minAmountOut = 0] , first to seco
     ?.amountBefore!.sub(sellPriceLocal);
   expect(pallet.getAsset(boughtAssetId)?.amountAfter!).bnEqual(diffFromWallet!);
 
-  pallet.validateWalletIncreased(soldAssetId, amount);
+  addFromWallet = pallet.getAsset(soldAssetId)?.amountBefore!.add(amount);
+  expect(pallet.getAsset(soldAssetId)?.amountAfter!).bnEqual(addFromWallet!);
+
   const pool_balance = await getBalanceOfPool(firstCurrency, secondCurrency);
   //we sell 30k:
   //In the pool we will find: AmountBefore + (30k - 0.05% -0.05%) => 30k - 0.1% => 30k - 30Tkns
@@ -190,7 +198,13 @@ test("xyk-pallet - AssetsOperation: sellAsset [minAmountOut = 0], sell an alread
     diffFromWallet!
   );
 
-  testUser1.validateWalletIncreased(boughtAssetId, sellPriceLocal);
+  let addFromWallet = testUser1
+    .getAsset(boughtAssetId)
+    ?.amountBefore!.add(sellPriceLocal);
+  expect(testUser1.getAsset(boughtAssetId)?.amountAfter!).bnEqual(
+    addFromWallet!
+  );
+
   testUser2.assets.forEach((asset) => {
     expect(asset.amountBefore).bnEqual(asset.amountAfter);
   });
@@ -200,7 +214,9 @@ test("xyk-pallet - AssetsOperation: sellAsset [minAmountOut = 0], sell an alread
     ?.amountBefore!.sub(sellPriceLocal);
   expect(pallet.getAsset(boughtAssetId)?.amountAfter!).bnEqual(diffFromWallet!);
 
-  pallet.validateWalletIncreased(soldAssetId, amount);
+  addFromWallet = pallet.getAsset(soldAssetId)?.amountBefore!.add(amount);
+  expect(pallet.getAsset(soldAssetId)?.amountAfter!).bnEqual(addFromWallet!);
+
   const { treasury, treasuryBurn } = calculateFees(amount);
   const bothFees = treasury.add(treasuryBurn);
   const pool_balance = await getBalanceOfPool(firstCurrency, secondCurrency);
