@@ -26,5 +26,15 @@
     		"expect(${1:User}.getAsset(${2:CurrencyId})?.amountAfter!).bnEqual(addFromWallet!);"
 		],
 		"description": "Validate wallet has been increased"
-	}
+	},
+
+
+	"validateWalletsUnmodified": {
+		"scope": "typescript",
+		"prefix": "test-wallet-is-unmodified",
+		"body": [
+			"${1|testUser1,testUser2|}.assets.forEach((asset) => {expect(asset.amountBefore).bnEqual(asset.amountAfter);});"
+		],
+		"description": "Validate users wallet is unmodified"
+	  }
 }

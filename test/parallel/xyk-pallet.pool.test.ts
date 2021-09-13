@@ -160,7 +160,7 @@ test("xyk-pallet - Pool tests: createPool and validate liq token", async () => {
     liquidity_assets_minted
   );
 
-  await testUser2.validateWalletsUnmodified();
+  testUser2.assets.forEach((asset) => {expect(asset.amountBefore).bnEqual(asset.amountAfter);});
 
   await pallet.validateWalletIncreased(firstCurrency, first_asset_amount);
   await pallet.validateWalletIncreased(secondCurrency, second_asset_amount);
@@ -237,7 +237,7 @@ test("xyk-pallet - Pool tests: createPool", async () => {
     liquidity_assets_minted
   );
 
-  await testUser2.validateWalletsUnmodified();
+  testUser2.assets.forEach((asset) => {expect(asset.amountBefore).bnEqual(asset.amountAfter);});
 
   await pallet.validateWalletIncreased(firstCurrency, first_asset_amount);
   await pallet.validateWalletIncreased(secondCurrency, second_asset_amount);

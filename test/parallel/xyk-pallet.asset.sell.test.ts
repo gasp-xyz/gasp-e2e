@@ -123,7 +123,7 @@ test("xyk-pallet - AssetsOperation: sellAsset [minAmountOut = 0] , first to seco
   expect(testUser1.getAsset(soldAssetId)?.amountAfter!).bnEqual(diffFromWallet!);
 
   testUser1.validateWalletIncreased(boughtAssetId, sellPriceLocal);
-  testUser2.validateWalletsUnmodified();
+  testUser2.assets.forEach((asset) => {expect(asset.amountBefore).bnEqual(asset.amountAfter);});
 
   diffFromWallet = pallet.getAsset(boughtAssetId)?.amountBefore!.sub(sellPriceLocal);
   expect(pallet.getAsset(boughtAssetId)?.amountAfter!).bnEqual(diffFromWallet!);
@@ -178,7 +178,7 @@ test("xyk-pallet - AssetsOperation: sellAsset [minAmountOut = 0], sell an alread
   expect(testUser1.getAsset(soldAssetId)?.amountAfter!).bnEqual(diffFromWallet!);
 
   testUser1.validateWalletIncreased(boughtAssetId, sellPriceLocal);
-  testUser2.validateWalletsUnmodified();
+  testUser2.assets.forEach((asset) => {expect(asset.amountBefore).bnEqual(asset.amountAfter);});
 
   diffFromWallet = pallet.getAsset(boughtAssetId)?.amountBefore!.sub(sellPriceLocal);
   expect(pallet.getAsset(boughtAssetId)?.amountAfter!).bnEqual(diffFromWallet!);
