@@ -20,9 +20,10 @@ import { AssetWallet, User } from "../../utils/User";
 import {
   validateAssetsSwappedEvent,
   validateUnmodified,
+  validateUserPaidFeeForFailedTx,
 } from "../../utils/validators";
 import { Assets } from "../../utils/Assets";
-import { getEnvironmentRequiredVars } from "../../utils/utils";
+import { calculateFees, getEnvironmentRequiredVars } from "../../utils/utils";
 import {
   getEventResultFromTxWait,
   signSendAndWaitToFinishTx,
@@ -240,11 +241,14 @@ describe("xyk-pallet - Buy assets tests: BuyAssets Errors:", () => {
       expect(eventResponse.data).toEqual(7);
     });
 
-    await testUser1.refreshAmounts(AssetWallet.AFTER);
-    await validateUnmodified(firstCurrency, secondCurrency, testUser1, [
-      firstAssetAmount,
-      secondAssetAmount.div(new BN(2)),
-    ]);
+    await validateUserPaidFeeForFailedTx(
+      buyPriceLocal,
+      testUser1,
+      firstCurrency,
+      secondCurrency,
+      poolAmountSecondCurrency,
+      firstAssetAmount
+    );
   });
 });
 
@@ -328,10 +332,13 @@ describe("xyk-pallet - Buy assets tests: Buying assets you can", () => {
 
     await waitNewBlock();
     await testUser1.refreshAmounts(AssetWallet.AFTER);
+    const { treasury, treasuryBurn } = calculateFees(buyPriceLocal);
+    const fee = treasury.add(treasuryBurn);
     const pool_balance = await getBalanceOfPool(firstCurrency, secondCurrency);
-    expect([buyPriceLocal.add(firstAssetAmount), new BN(1)]).toEqual(
-      pool_balance
-    );
+    expect([
+      buyPriceLocal.add(firstAssetAmount).sub(fee),
+      new BN(1),
+    ]).collectionBnEqual(pool_balance);
 
     testUser1.validateWalletIncreased(
       secondCurrency,
@@ -347,14 +354,14 @@ describe("xyk-pallet - Buy assets tests: Buying assets you can", () => {
     const treasuryBurnSecondCurrency = await getTreasuryBurn(secondCurrency);
     const treasuryBurnFirstCurrency = await getTreasuryBurn(firstCurrency);
 
-    expect([treasurySecondCurrency, treasuryBurnSecondCurrency]).toEqual([
-      new BN(0),
-      new BN(0),
-    ]);
-    expect([treasuryFirstCurrency, treasuryBurnFirstCurrency]).toEqual([
-      new BN(0),
-      new BN(0),
-    ]);
+    expect([
+      treasurySecondCurrency,
+      treasuryBurnSecondCurrency,
+    ]).collectionBnEqual([new BN(0), new BN(0)]);
+    expect([
+      treasuryFirstCurrency,
+      treasuryBurnFirstCurrency,
+    ]).collectionBnEqual([treasury, treasuryBurn]);
   });
 
   test("Buy from a wallet I own into a wallet I do not own", async () => {
@@ -450,9 +457,11 @@ describe("xyk-pallet - Buy assets tests: Buying assets you can", () => {
       firstCurrency,
       thirdCurrency
     );
+    const { treasury, treasuryBurn } = calculateFees(buyPriceLocal);
+    const fee = treasury.add(treasuryBurn);
     expect([
       poolBalanceBefore[0].sub(amountToBuy),
-      poolBalanceBefore[1].add(buyPriceLocal),
+      poolBalanceBefore[1].add(buyPriceLocal).sub(fee),
     ]).toEqual(poolBalanceAfter);
   });
 });

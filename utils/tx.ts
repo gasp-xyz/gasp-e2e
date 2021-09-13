@@ -12,6 +12,7 @@ import { Keyring } from "@polkadot/api";
 import { User } from "./User";
 import { testLog } from "./Logger";
 import { KeyringPair } from "@polkadot/keyring/types";
+import { hexToBn } from "@polkadot/util";
 
 export const signTx = async (
   tx: SubmittableExtrinsic<"promise">,
@@ -237,11 +238,25 @@ export async function getBalanceOfAsset(assetId: BN, account: any) {
 
 export async function getBalanceOfPool(assetId1: BN, assetId2: BN) {
   const api = getApi();
+  let reversed = false;
+  const emptyPool = "[0,0]";
 
   const balance1 = await api.query.xyk.pools([assetId1, assetId2]);
   const balance2 = await api.query.xyk.pools([assetId2, assetId1]);
-
-  return [new BN(balance1.toString()), new BN(balance2.toString())];
+  let balanceWithData = balance1;
+  if (balance2.toString() !== emptyPool) {
+    balanceWithData = balance2;
+    reversed = true;
+  }
+  const assetValue1 = JSON.parse(balanceWithData.toString())[0];
+  const assetValue2 = JSON.parse(balanceWithData.toString())[1];
+  const a = hexToBn(assetValue1);
+  const b = hexToBn(assetValue2);
+  if (reversed) {
+    return [b, a];
+  } else {
+    return [a, b];
+  }
 }
 
 export async function getLiquidityAssetId(assetId1: BN, assetId2: BN) {
