@@ -198,12 +198,12 @@ export async function validateUserPaidFeeForFailedTx(
 
   //when failed Tx, we remove 3% and put it in the pool.
   await user.refreshAmounts(AssetWallet.AFTER);
-  user.validateWalletReduced(assetSoldId, completeFee);
+  let diffFromWallet = user.getAsset(assetSoldId)?.amountBefore!.sub(completeFee);
+  expect(user.getAsset(assetSoldId)?.amountAfter!).bnEqual(diffFromWallet!);
+
   //second wallet should not be modified.
-  user.validateWalletEquals(
-    failedBoughtAssetId,
-    user.getAsset(failedBoughtAssetId)?.amountBefore!
-  );
+  let amount = user.getAsset(failedBoughtAssetId)?.amountBefore!;
+  expect(user.getAsset(failedBoughtAssetId)?.amountAfter!).bnEqual(amount);
 
   const treasuryTokens = await getTreasury(assetSoldId);
   const treasuryBurnTokens = await getTreasuryBurn(assetSoldId);

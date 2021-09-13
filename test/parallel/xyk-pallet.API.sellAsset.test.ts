@@ -263,12 +263,13 @@ describe("xyk-pallet - Sell assets tests: SellAsset Errors:", () => {
     //fee: 603 ??  //TODO: validate with Stano.
     const feeToAvoidFrontRunning = new BN(603);
     await testUser1.refreshAmounts(AssetWallet.AFTER);
-    testUser1.validateWalletReduced(firstCurrency, feeToAvoidFrontRunning);
+
+    let diffFromWallet = testUser1.getAsset(firstCurrency)?.amountBefore!.sub(feeToAvoidFrontRunning);
+    expect(testUser1.getAsset(firstCurrency)?.amountAfter!).bnEqual(diffFromWallet!);
+
     //second wallet should not be modified.
-    testUser1.validateWalletEquals(
-      secondCurrency,
-      testUser1.getAsset(secondCurrency)?.amountBefore!
-    );
+    let amount = testUser1.getAsset(secondCurrency)?.amountBefore!;
+    expect(testUser1.getAsset(secondCurrency)?.amountAfter!).bnEqual(amount);
 
     const treasury = await getTreasury(firstCurrency);
     const treasuryBurn = await getTreasuryBurn(firstCurrency);
