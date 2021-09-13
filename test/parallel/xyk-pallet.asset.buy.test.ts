@@ -137,10 +137,22 @@ test("xyk-pallet - AssetsOperation: buyAsset [maxAmountIn = 1M], buy asset", asy
   await pallet.refreshAmounts(AssetWallet.AFTER);
 
   testUser1.validateWalletIncreased(boughtAssetId, amount);
-  testUser1.validateWalletReduced(soldAssetId, buyPriceLocal);
+
+  let diffFromWallet = testUser1
+    .getAsset(soldAssetId)
+    ?.amountBefore!.sub(buyPriceLocal);
+  expect(testUser1.getAsset(soldAssetId)?.amountAfter!).bnEqual(
+    diffFromWallet!
+  );
+
   testUser2.validateWalletsUnmodified();
   pallet.validateWalletIncreased(soldAssetId, buyPriceLocal);
-  pallet.validateWalletReduced(boughtAssetId, amount);
+
+  diffFromWallet = pallet.getAsset(boughtAssetId)?.amountBefore!.sub(amount);
+  expect(testUser1.getAsset(boughtAssetId)?.amountAfter!).bnEqual(
+    diffFromWallet!
+  );
+
   const pool_balance = await getBalanceOfPool(firstCurrency, secondCurrency);
 
   expect([
@@ -194,10 +206,18 @@ test("xyk-pallet - AssetsOperation: buyAsset [maxAmountIn = 1M], sell a bought a
   await pallet.refreshAmounts(AssetWallet.AFTER);
 
   testUser1.validateWalletIncreased(boughtAssetId, amount);
-  testUser1.validateWalletReduced(soldAssetId, buyPriceLocal);
+
+  let diffFromWallet = testUser1
+    .getAsset(soldAssetId)
+    ?.amountBefore!.sub(buyPriceLocal);
+  expect(testUser1.getAsset(soldAssetId)?.amountAfter!).bnEqual(diffFromWallet!);
+
   testUser2.validateWalletsUnmodified();
   pallet.validateWalletIncreased(soldAssetId, buyPriceLocal);
-  pallet.validateWalletReduced(boughtAssetId, amount);
+
+  diffFromWallet = pallet.getAsset(boughtAssetId)?.amountBefore!.sub(amount);
+  expect(pallet.getAsset(boughtAssetId)?.amountAfter!).bnEqual(diffFromWallet!);
+
   const pool_balance = await getBalanceOfPool(secondCurrency, firstCurrency);
   expect([
     poolBalanceBefore[0].add(buyPriceLocal),

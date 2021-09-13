@@ -124,7 +124,9 @@ test("xyk-pallet - AssetsOperation: transferAsset", async () => {
   await testUser2.refreshAmounts(AssetWallet.AFTER);
   await pallet.refreshAmounts(AssetWallet.AFTER);
 
-  testUser1.validateWalletReduced(firstCurrency, amount);
+  let diffFromWallet = testUser1.getAsset(firstCurrency)?.amountBefore!.sub(amount);
+  expect(testUser1.getAsset(firstCurrency)?.amountAfter!).bnEqual(diffFromWallet!);
+
   testUser1.validateWalletIncreased(secondCurrency, new BN(0));
 
   testUser2.validateWalletIncreased(firstCurrency, amount);
@@ -164,7 +166,9 @@ test("xyk-pallet - AssetsOperation: transferAll", async () => {
   await testUser2.refreshAmounts(AssetWallet.AFTER);
   await pallet.refreshAmounts(AssetWallet.AFTER);
 
-  testUser1.validateWalletReduced(firstCurrency, amount);
+  let diffFromWallet = testUser1.getAsset(firstCurrency)?.amountBefore!.sub(amount);
+  expect(testUser1.getAsset(firstCurrency)?.amountAfter!).bnEqual(diffFromWallet!);
+
   testUser1.validateWalletIncreased(secondCurrency, new BN(0));
 
   testUser2.validateWalletIncreased(firstCurrency, amount);

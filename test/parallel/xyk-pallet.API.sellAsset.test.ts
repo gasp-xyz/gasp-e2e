@@ -181,10 +181,14 @@ describe("xyk-pallet - Sell assets tests: SellAsset Errors:", () => {
     });
 
     await testUser1.refreshAmounts(AssetWallet.AFTER);
-    await testUser1.validateWalletReduced(
-      firstCurrency,
-      new BN(defaultCurrecyValue).sub(new BN(1))
+
+    const diffFromWallet = testUser1
+      .getAsset(firstCurrency)
+      ?.amountBefore!.sub(new BN(defaultCurrecyValue).sub(new BN(1)));
+    expect(testUser1.getAsset(firstCurrency)?.amountAfter!).bnEqual(
+      diffFromWallet!
     );
+
     await testUser1.validateWalletEquals(secondCurrency, secondWalletAmount);
 
     const pool_balance = await getBalanceOfPool(firstCurrency, secondCurrency);

@@ -119,10 +119,15 @@ test("xyk-pallet - AssetsOperation: sellAsset [minAmountOut = 0] , first to seco
   await testUser2.refreshAmounts(AssetWallet.AFTER);
   await pallet.refreshAmounts(AssetWallet.AFTER);
 
-  testUser1.validateWalletReduced(soldAssetId, amount);
+  let diffFromWallet = testUser1.getAsset(soldAssetId)?.amountBefore!.sub(amount);
+  expect(testUser1.getAsset(soldAssetId)?.amountAfter!).bnEqual(diffFromWallet!);
+
   testUser1.validateWalletIncreased(boughtAssetId, sellPriceLocal);
   testUser2.validateWalletsUnmodified();
-  pallet.validateWalletReduced(boughtAssetId, sellPriceLocal);
+
+  diffFromWallet = pallet.getAsset(boughtAssetId)?.amountBefore!.sub(sellPriceLocal);
+  expect(pallet.getAsset(boughtAssetId)?.amountAfter!).bnEqual(diffFromWallet!);
+
   pallet.validateWalletIncreased(soldAssetId, amount);
   const pool_balance = await getBalanceOfPool(firstCurrency, secondCurrency);
 
@@ -169,10 +174,15 @@ test("xyk-pallet - AssetsOperation: sellAsset [minAmountOut = 0], sell an alread
   await testUser2.refreshAmounts(AssetWallet.AFTER);
   await pallet.refreshAmounts(AssetWallet.AFTER);
 
-  testUser1.validateWalletReduced(soldAssetId, amount);
+  let diffFromWallet = testUser1.getAsset(soldAssetId)?.amountBefore!.sub(amount);
+  expect(testUser1.getAsset(soldAssetId)?.amountAfter!).bnEqual(diffFromWallet!);
+
   testUser1.validateWalletIncreased(boughtAssetId, sellPriceLocal);
   testUser2.validateWalletsUnmodified();
-  pallet.validateWalletReduced(boughtAssetId, sellPriceLocal);
+
+  diffFromWallet = pallet.getAsset(boughtAssetId)?.amountBefore!.sub(sellPriceLocal);
+  expect(pallet.getAsset(boughtAssetId)?.amountAfter!).bnEqual(diffFromWallet!);
+
   pallet.validateWalletIncreased(soldAssetId, amount);
 
   const pool_balance = await getBalanceOfPool(firstCurrency, secondCurrency);

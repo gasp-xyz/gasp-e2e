@@ -116,8 +116,13 @@ export async function validateStatusWhenPoolCreated(
   testUser1.addAsset(liquidity_asset_id, new BN(0));
 
   await testUser1.refreshAmounts(AssetWallet.AFTER);
-  await testUser1.validateWalletReduced(firstCurrency, first_asset_amount);
-  await testUser1.validateWalletReduced(secondCurrency, second_asset_amount);
+
+  let diffFromWallet = testUser1.getAsset(firstCurrency)?.amountBefore!.sub(first_asset_amount);
+  expect(testUser1.getAsset(firstCurrency)?.amountAfter!).bnEqual(diffFromWallet!);
+
+  diffFromWallet = testUser1.getAsset(secondCurrency)?.amountBefore!.sub(second_asset_amount);
+  expect(testUser1.getAsset(secondCurrency)?.amountAfter!).bnEqual(diffFromWallet!);
+
   await testUser1.validateWalletIncreased(
     liquidity_asset_id,
     liquidity_assets_minted

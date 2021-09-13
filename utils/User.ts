@@ -63,10 +63,6 @@ export class User {
     this.name = "addres_created_account";
   }
 
-  validateWalletReduced(currencyId: BN, amount: BN) {
-    const diffFromWallet = this.getAsset(currencyId)?.amountBefore!.sub(amount);
-    expect(this.getAsset(currencyId)?.amountAfter!).bnEqual(diffFromWallet!);
-  }
   validateWalletIncreased(currencyId: BN, amount: BN) {
     const addFromWallet = this.getAsset(currencyId)?.amountBefore!.add(amount);
     expect(this.getAsset(currencyId)?.amountAfter!).bnEqual(addFromWallet!);

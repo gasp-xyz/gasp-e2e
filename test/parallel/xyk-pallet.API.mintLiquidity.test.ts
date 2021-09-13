@@ -127,13 +127,18 @@ describe("xyk-pallet - Mint liquidity tests: with minting you can", () => {
         .add(roundingIssue),
     ]).collectionBnEqual(poolBalanceAfterMinting);
 
-    testUser1.validateWalletReduced(
-      firstCurrency,
-      new BN(defaultCurrencyValue)
+    let diffFromWallet = testUser1
+      .getAsset(firstCurrency)
+      ?.amountBefore!.sub(defaultCurrencyValue);
+    expect(testUser1.getAsset(firstCurrency)?.amountAfter!).bnEqual(
+      diffFromWallet!
     );
-    testUser1.validateWalletReduced(
-      secondCurrency,
-      new BN(defaultCurrencyValue).add(roundingIssue)
+
+    diffFromWallet = testUser1
+      .getAsset(secondCurrency)
+      ?.amountBefore!.sub(defaultCurrencyValue.add(roundingIssue));
+    expect(testUser1.getAsset(firstCurrency)?.amountAfter!).bnEqual(
+      diffFromWallet!
     );
 
     //minting must not add any treasury
@@ -218,8 +223,20 @@ describe("xyk-pallet - Mint liquidity tests: with minting you can", () => {
       poolBalanceWhenCreated[1].add(secondCurrencyAmountLost),
     ]).collectionBnEqual(poolBalanceAfterMinting);
 
-    testUser1.validateWalletReduced(firstCurrency, injectedValue);
-    testUser1.validateWalletReduced(secondCurrency, secondCurrencyAmountLost);
+    let diffFromWallet = testUser1
+      .getAsset(secondCurrency)
+      ?.amountBefore!.sub(injectedValue);
+    expect(testUser1.getAsset(firstCurrency)?.amountAfter!).bnEqual(
+      diffFromWallet!
+    );
+
+    diffFromWallet = testUser1
+      .getAsset(secondCurrency)
+      ?.amountBefore!.sub(secondCurrencyAmountLost);
+    expect(testUser1.getAsset(firstCurrency)?.amountAfter!).bnEqual(
+      diffFromWallet!
+    );
+
     //No trading - no Treasure added.
     testUser1.validateWalletIncreased(
       liquidityAssetId,

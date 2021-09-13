@@ -436,7 +436,15 @@ describe("xyk-pallet - Buy assets tests: Buying assets you can", () => {
 
     testUser2.addAsset(firstCurrency);
     await testUser2.refreshAmounts(AssetWallet.AFTER);
-    testUser2.validateWalletReduced(thirdCurrency, buyPriceLocal);
+
+    const diffFromWallet = testUser2
+      .getAsset(thirdCurrency)
+      ?.amountBefore!.sub(buyPriceLocal);
+
+    expect(testUser2.getAsset(thirdCurrency)?.amountAfter!).bnEqual(
+      diffFromWallet!
+    );
+
     testUser2.validateWalletEquals(firstCurrency, amountToBuy);
 
     const poolBalanceAfter = await getBalanceOfPool(
