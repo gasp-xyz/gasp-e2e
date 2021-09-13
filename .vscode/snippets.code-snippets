@@ -12,8 +12,8 @@
 		"scope": "typescript",
 		"prefix": "test-wallet-reduced",
 		"body": [
-			"const diffFromWallet = ${1:User}.getAsset(${2:CurrencyId})?.amountBefore!.sub(${3:Amount});",
-    		"expect(this.getAsset(${2:CurrencyId})?.amountAfter!).bnEqual(diffFromWallet!);"
+			"let diffFromWallet = ${1:User}.getAsset(${2:CurrencyId})?.amountBefore!.sub(${3:Amount});",
+    		"expect(${1:User}.getAsset(${2:CurrencyId})?.amountAfter!).bnEqual(diffFromWallet!);"
 		],
 		"description": "Validate wallet has been reduced"
 	},
@@ -23,7 +23,7 @@
 		"prefix": "test-wallet-increased",
 		"body": [
 			"let addFromWallet = ${1:User}.getAsset(${2:CurrencyId})?.amountBefore!.add(${3:Amount});",
-    		"expect(this.getAsset(${2:CurrencyId})?.amountAfter!).bnEqual(addFromWallet!);"
+    		"expect(${1:User}.getAsset(${2:CurrencyId})?.amountAfter!).bnEqual(addFromWallet!);"
 		],
 		"description": "Validate wallet has been increased"
 	}
