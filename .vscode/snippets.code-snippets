@@ -1,0 +1,30 @@
+{
+	"validateWalletEqual": {
+		"scope": "typescript",
+		"prefix": "test-wallet-equal",
+		"body": [
+			"expect(${1:User}.getAsset(${2:CurrencyId})?.amountAfter!).bnEqual(${3:Amount});"
+		],
+		"description": "Validate wallet is equal"
+	},
+
+	"validateWalletReduced": {
+		"scope": "typescript",
+		"prefix": "test-wallet-reduced",
+		"body": [
+			"const diffFromWallet = ${1:User}.getAsset(${2:CurrencyId})?.amountBefore!.sub(${3:Amount});",
+    		"expect(this.getAsset(${2:CurrencyId})?.amountAfter!).bnEqual(diffFromWallet!);"
+		],
+		"description": "Validate wallet has been reduced"
+	},
+
+	"validateWalletIncreased": {
+		"scope": "typescript",
+		"prefix": "test-wallet-increased",
+		"body": [
+			"let addFromWallet = ${1:User}.getAsset(${2:CurrencyId})?.amountBefore!.add(${3:Amount});",
+    		"expect(this.getAsset(${2:CurrencyId})?.amountAfter!).bnEqual(addFromWallet!);"
+		],
+		"description": "Validate wallet has been increased"
+	}
+}
