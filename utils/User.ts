@@ -67,9 +67,6 @@ export class User {
     const addFromWallet = this.getAsset(currencyId)?.amountBefore!.add(amount);
     expect(this.getAsset(currencyId)?.amountAfter!).bnEqual(addFromWallet!);
   }
-  validateWalletEquals(currencyId: BN, amount: BN) {
-    expect(this.getAsset(currencyId)?.amountAfter!).bnEqual(amount);
-  }
 
   addAsset(currecncyId: any, amountBefore = new BN(0)) {
     const asset = new Asset(currecncyId, amountBefore);

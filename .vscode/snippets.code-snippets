@@ -3,7 +3,7 @@
 		"scope": "typescript",
 		"prefix": "test-wallet-is-equal",
 		"body": [
-			"expect(${1:User}.getAsset(${2:CurrencyId})?.amountAfter!).bnEqual(${3:Amount});"
+			"expect(${1:User}.getAsset(${2:CurrencyId})?.amountAfter!).bnEqual(${3:amount});"
 		],
 		"description": "Validate wallet is equal"
 	},

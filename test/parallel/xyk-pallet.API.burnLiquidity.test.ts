@@ -140,11 +140,12 @@ describe("xyk-pallet - Burn liquidity tests: when burning liquidity you can", ()
     expect(liqId).bnEqual(new BN(-1));
     const poolBalance = await getBalanceOfPool(firstCurrency, secondCurrency);
     await testUser1.refreshAmounts(AssetWallet.AFTER);
-    testUser1.validateWalletEquals(
-      firstCurrency,
-      amountOfX.add(new BN(assetXamount))
-    );
-    testUser1.validateWalletEquals(secondCurrency, new BN(1));
+
+    let amount = amountOfX.add(new BN(assetXamount));
+    expect(testUser1.getAsset(firstCurrency)?.amountAfter!).bnEqual(amount);
+
+    amount = new BN(1);
+    expect(testUser1.getAsset(secondCurrency)?.amountAfter!).bnEqual(amount);
 
     expect([new BN(0), new BN(0)]).collectionBnEqual(poolBalance);
 
