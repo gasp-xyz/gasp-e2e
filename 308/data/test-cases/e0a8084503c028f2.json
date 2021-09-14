@@ -1,0 +1,46 @@
+{
+  "uid" : "e0a8084503c028f2",
+  "name" : "Sell assets with a high expectation: limit +1",
+  "fullName" : "xyk-pallet - Sell assets tests: SellAsset Errors:.Sell assets with a high expectation: limit +1",
+  "historyId" : "597ce623cd52737dde11f09675711579",
+  "time" : {
+    "start" : 1631601895836,
+    "stop" : 1631602021690,
+    "duration" : 125854
+  },
+  "description" : "",
+  "descriptionHtml" : "",
+  "status" : "passed",
+  "flaky" : false,
+  "newFailed" : false,
+  "beforeStages" : [ ],
+  "afterStages" : [ ],
+  "labels" : [ {
+    "name" : "suite",
+    "value" : "xyk-pallet - Sell assets tests: SellAsset Errors:"
+  }, {
+    "name" : "testClass",
+    "value" : "xyk-pallet - Sell assets tests: SellAsset Errors:"
+  }, {
+    "name" : "testMethod",
+    "value" : "Sell assets with a high expectation: limit +1"
+  }, {
+    "name" : "package",
+    "value" : "xyk-pallet - Sell assets tests: SellAsset Errors:"
+  }, {
+    "name" : "resultFormat",
+    "value" : "allure1"
+  } ],
+  "parameters" : [ ],
+  "links" : [ ],
+  "hidden" : false,
+  "retry" : false,
+  "extra" : {
+    "severity" : "normal",
+    "retries" : [ ],
+    "categories" : [ ],
+    "tags" : [ ]
+  },
+  "source" : "e0a8084503c028f2.json",
+  "parameterValues" : [ ]
+}
