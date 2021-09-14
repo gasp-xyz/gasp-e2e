@@ -25,6 +25,7 @@ import {
   mETH_ASSET_NAME,
   MGA_ASSET_NAME,
 } from "../../utils/Constants";
+import { BrunLiquidityModal } from "../../utils/frontend/pages/BrunLiquidityModal";
 
 const MGA_ASSET_ID = new BN(0);
 const ETH_ASSET_ID = new BN(1);
@@ -129,6 +130,32 @@ describe("UI tests - A user can swap and mint tokens", () => {
     );
     expect(poolInvested).toBeTruthy();
     expect(swapped).toBeTruthy();
+  });
+
+  it("As a User I can burn all liquidity MGA - mETH", async () => {
+    await testUser1.refreshAmounts(AssetWallet.BEFORE);
+    const amountToMint = new BN(visibleValueNumber).div(new BN(2000));
+    await testUser1.mintLiquidity(ETH_ASSET_ID, MGA_ASSET_ID, amountToMint);
+    const mga = new Mangata(driver);
+    await mga.navigate();
+    const sidebar = new Sidebar(driver);
+    await sidebar.clickOnLiquidityPool(MGA_ASSET_NAME, mETH_ASSET_NAME);
+    await sidebar.clickOnRemoveLiquidity();
+    const modal = new BrunLiquidityModal(driver);
+    await modal.setAmount("100");
+    await modal.confirmAndSign();
+    for (let index = 0; index < 4; index++) {
+      await waitNewBlock(true);
+    }
+    await testUser1.refreshAmounts(AssetWallet.AFTER);
+    const isPoolVisible = await sidebar.isLiquidityPoolVisible(
+      MGA_ASSET_NAME,
+      mETH_ASSET_NAME
+    );
+    expect(isPoolVisible).toBeFalsy();
+    expect(testUser1.getAsset(ETH_ASSET_ID)?.amountBefore).bnEqual(
+      testUser1.getAsset(ETH_ASSET_ID)?.amountAfter!
+    );
   });
 
   afterEach(async () => {
