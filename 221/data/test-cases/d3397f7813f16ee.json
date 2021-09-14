@@ -1,0 +1,46 @@
+{
+  "uid" : "d3397f7813f16ee",
+  "name" : "xyk-CI - validate user got the right Assets",
+  "fullName" : "test/ci/xyk-ci.validate.setup.test.ts.xyk-CI - validate user got the right Assets",
+  "historyId" : "7a64941900b8e70dd40d5d9b833c38bc",
+  "time" : {
+    "start" : 1631603335967,
+    "stop" : 1631603336501,
+    "duration" : 534
+  },
+  "description" : "",
+  "descriptionHtml" : "",
+  "status" : "passed",
+  "flaky" : false,
+  "newFailed" : false,
+  "beforeStages" : [ ],
+  "afterStages" : [ ],
+  "labels" : [ {
+    "name" : "suite",
+    "value" : "test/ci/xyk-ci.validate.setup.test.ts"
+  }, {
+    "name" : "testClass",
+    "value" : "test/ci/xyk-ci.validate.setup.test.ts"
+  }, {
+    "name" : "testMethod",
+    "value" : "xyk-CI - validate user got the right Assets"
+  }, {
+    "name" : "package",
+    "value" : "test/ci/xyk-ci.validate.setup.test.ts"
+  }, {
+    "name" : "resultFormat",
+    "value" : "allure1"
+  } ],
+  "parameters" : [ ],
+  "links" : [ ],
+  "hidden" : false,
+  "retry" : false,
+  "extra" : {
+    "severity" : "normal",
+    "retries" : [ ],
+    "categories" : [ ],
+    "tags" : [ ]
+  },
+  "source" : "d3397f7813f16ee.json",
+  "parameterValues" : [ ]
+}
