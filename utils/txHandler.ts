@@ -190,7 +190,7 @@ export const signAndWaitTx = async (
       async ({ events = [], status }) => {
         //testLog.getLog().warn((status);
         if (status.isInBlock) {
-          const unsub_new_heads = await api.derive.chain.subscribeNewHeads(
+          const unsub_new_heads = await api.rpc.chain.subscribeNewHeads(
             async (lastHeader) => {
               if (
                 lastHeader.parentHash.toString() === status.asInBlock.toString()
@@ -199,28 +199,15 @@ export const signAndWaitTx = async (
                 const prev_block_extrinsics = (
                   await api.rpc.chain.getBlock(lastHeader.parentHash)
                 ).block.extrinsics;
-                const curr_block_extrinsics = (
-                  await api.rpc.chain.getBlock(lastHeader.hash)
-                ).block.extrinsics;
                 const curr_block_events = await api.query.system.events.at(
                   lastHeader.hash
                 );
 
-                const extrinsic_with_seed = curr_block_extrinsics.find((e) => {
-                  return (
-                    e.method.method === "set" && e.method.section === "random"
-                  );
-                });
-                if (!extrinsic_with_seed) {
-                  return;
-                }
-
-                const json_response = JSON.parse(
-                  extrinsic_with_seed.method.args[0].toString()
-                );
+                const json_response = JSON.parse(lastHeader.toString());
                 const seed_bytes = Uint8Array.from(
-                  Buffer.from(json_response["seed"].substring(2), "hex")
+                  Buffer.from(json_response["seed"]["seed"].substring(2), "hex")
                 );
+
                 const shuffled_extrinsics = recreateExtrinsicsOrder(
                   prev_block_extrinsics,
                   seed_bytes
