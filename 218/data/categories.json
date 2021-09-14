@@ -1,0 +1,160 @@
+{
+  "uid" : "4b4757e66a1912dae1a509f688f20b0f",
+  "children" : [ {
+    "name" : "Product defects",
+    "children" : [ {
+      "name" : "Error: Timeout - Async callback was not invoked within the 300000 ms timeout specified by jest.setTimeout.",
+      "children" : [ {
+        "name" : "As a User I can Swap tokens - MGA - mETH",
+        "uid" : "f80622e9d7f05ff",
+        "parentUid" : "f66f4947f88d0ce9c6a938c68bc699c1",
+        "status" : "failed",
+        "time" : {
+          "start" : 1631583306094,
+          "stop" : 1631583306098,
+          "duration" : 4
+        },
+        "flaky" : false,
+        "newFailed" : false,
+        "parameters" : [ ]
+      }, {
+        "name" : "As a User I can mint some tokens MGA - mETH",
+        "uid" : "7b58c1a0bfc2ac73",
+        "parentUid" : "f66f4947f88d0ce9c6a938c68bc699c1",
+        "status" : "failed",
+        "time" : {
+          "start" : 1631583306098,
+          "stop" : 1631583306100,
+          "duration" : 2
+        },
+        "flaky" : false,
+        "newFailed" : false,
+        "parameters" : [ ]
+      }, {
+        "name" : "As a User I get the right values for Pool investment P[5000000000000000000, 100] - I-> 100000000000 -Expected - 0.000002",
+        "uid" : "1507ed33f91d8213",
+        "parentUid" : "f66f4947f88d0ce9c6a938c68bc699c1",
+        "status" : "failed",
+        "time" : {
+          "start" : 1631583607100,
+          "stop" : 1631583607220,
+          "duration" : 120
+        },
+        "flaky" : false,
+        "newFailed" : false,
+        "parameters" : [ ]
+      }, {
+        "name" : "As a User I get the right values for Pool investment P[5000000000000000000, 5000000000000000000] - I-> 0.123 -Expected - 0.123",
+        "uid" : "e461b1c61f24ccdd",
+        "parentUid" : "f66f4947f88d0ce9c6a938c68bc699c1",
+        "status" : "failed",
+        "time" : {
+          "start" : 1631583607220,
+          "stop" : 1631583607224,
+          "duration" : 4
+        },
+        "flaky" : false,
+        "newFailed" : false,
+        "parameters" : [ ]
+      }, {
+        "name" : "As a User I get the right values for Pool investment P[2500000000000000000, 5000000000000000000] - I-> 0.100 -Expected - 0.200",
+        "uid" : "53c2d98ec007f6d6",
+        "parentUid" : "f66f4947f88d0ce9c6a938c68bc699c1",
+        "status" : "failed",
+        "time" : {
+          "start" : 1631583607224,
+          "stop" : 1631583607226,
+          "duration" : 2
+        },
+        "flaky" : false,
+        "newFailed" : false,
+        "parameters" : [ ]
+      }, {
+        "name" : "As a User I can create a pool",
+        "uid" : "1685de9715dd62c4",
+        "parentUid" : "f66f4947f88d0ce9c6a938c68bc699c1",
+        "status" : "failed",
+        "time" : {
+          "start" : 1631583910270,
+          "stop" : 1631583910274,
+          "duration" : 4
+        },
+        "flaky" : false,
+        "newFailed" : false,
+        "parameters" : [ ]
+      } ],
+      "uid" : "f66f4947f88d0ce9c6a938c68bc699c1"
+    }, {
+      "name" : "WebDriverError: Requested environment is not available",
+      "children" : [ {
+        "name" : "As a User I can get test tokens from the faucet",
+        "uid" : "208147a095e9b0b1",
+        "parentUid" : "a6d6113a4f4058fbed4d9e46e292ead6",
+        "status" : "failed",
+        "time" : {
+          "start" : 1631583913403,
+          "stop" : 1631583913979,
+          "duration" : 576
+        },
+        "flaky" : false,
+        "newFailed" : false,
+        "parameters" : [ ]
+      }, {
+        "name" : "As a User I get infomed whenever is neccesary to install any extension",
+        "uid" : "3f6100faf8526fa4",
+        "parentUid" : "a6d6113a4f4058fbed4d9e46e292ead6",
+        "status" : "failed",
+        "time" : {
+          "start" : 1631583914422,
+          "stop" : 1631583916495,
+          "duration" : 2073
+        },
+        "flaky" : false,
+        "newFailed" : false,
+        "parameters" : [ ]
+      }, {
+        "name" : "As a User I get feedback when extensions are installed and correctly setup",
+        "uid" : "b6a528be8d0ae482",
+        "parentUid" : "a6d6113a4f4058fbed4d9e46e292ead6",
+        "status" : "failed",
+        "time" : {
+          "start" : 1631583916495,
+          "stop" : 1631583916496,
+          "duration" : 1
+        },
+        "flaky" : false,
+        "newFailed" : false,
+        "parameters" : [ ]
+      }, {
+        "name" : "Validate that Mangata Frontend up and running",
+        "uid" : "a1bb2913c7d12781",
+        "parentUid" : "a6d6113a4f4058fbed4d9e46e292ead6",
+        "status" : "failed",
+        "time" : {
+          "start" : 1631583917043,
+          "stop" : 1631583917067,
+          "duration" : 24
+        },
+        "flaky" : false,
+        "newFailed" : false,
+        "parameters" : [ ]
+      }, {
+        "name" : "Validate that Frontend retrieves AssetInfo data",
+        "uid" : "dc97e912ef0ac801",
+        "parentUid" : "a6d6113a4f4058fbed4d9e46e292ead6",
+        "status" : "failed",
+        "time" : {
+          "start" : 1631583917067,
+          "stop" : 1631583917068,
+          "duration" : 1
+        },
+        "flaky" : false,
+        "newFailed" : false,
+        "parameters" : [ ]
+      } ],
+      "uid" : "a6d6113a4f4058fbed4d9e46e292ead6"
+    } ],
+    "uid" : "8fb3a91ba5aaf9de24cc8a92edc82b5d"
+  } ],
+  "name" : "categories"
+}
