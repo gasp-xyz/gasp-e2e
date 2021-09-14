@@ -1,0 +1,130 @@
+{
+  "uid" : "ceca25d5fa12f04c",
+  "name" : "assets won when assets are sold [Selling Mangata] - 5",
+  "fullName" : "xyk-pallet - treasury tests [Mangata]: on treasury we store.assets won when assets are sold [Selling Mangata] - 5",
+  "historyId" : "dd6031c39dad92c2f0d6040402ed7ebf",
+  "time" : {
+    "start" : 1631621469940,
+    "stop" : 1631621575994,
+    "duration" : 106054
+  },
+  "description" : "",
+  "descriptionHtml" : "",
+  "status" : "passed",
+  "flaky" : false,
+  "newFailed" : false,
+  "beforeStages" : [ ],
+  "afterStages" : [ ],
+  "labels" : [ {
+    "name" : "suite",
+    "value" : "xyk-pallet - treasury tests [Mangata]: on treasury we store"
+  }, {
+    "name" : "testClass",
+    "value" : "xyk-pallet - treasury tests [Mangata]: on treasury we store"
+  }, {
+    "name" : "testMethod",
+    "value" : "assets won when assets are sold [Selling Mangata] - 5"
+  }, {
+    "name" : "package",
+    "value" : "xyk-pallet - treasury tests [Mangata]: on treasury we store"
+  }, {
+    "name" : "resultFormat",
+    "value" : "allure1"
+  } ],
+  "parameters" : [ ],
+  "links" : [ ],
+  "hidden" : false,
+  "retry" : false,
+  "extra" : {
+    "severity" : "normal",
+    "retries" : [ ],
+    "categories" : [ ],
+    "history" : {
+      "statistic" : {
+        "failed" : 1,
+        "broken" : 0,
+        "skipped" : 0,
+        "passed" : 8,
+        "unknown" : 0,
+        "total" : 9
+      },
+      "items" : [ {
+        "uid" : "53a1eb68eb834d2e",
+        "reportUrl" : "https://mangata-finance.github.io/mangata-e2e/309//#testresult/53a1eb68eb834d2e",
+        "status" : "passed",
+        "time" : {
+          "start" : 1631608065659,
+          "stop" : 1631608171522,
+          "duration" : 105863
+        }
+      }, {
+        "uid" : "739b7f3d51ac76fe",
+        "reportUrl" : "https://mangata-finance.github.io/mangata-e2e/307//#testresult/739b7f3d51ac76fe",
+        "status" : "passed",
+        "time" : {
+          "start" : 1631599317201,
+          "stop" : 1631599429963,
+          "duration" : 112762
+        }
+      }, {
+        "uid" : "a9ff91c0e0f5af93",
+        "reportUrl" : "https://mangata-finance.github.io/mangata-e2e/306//#testresult/a9ff91c0e0f5af93",
+        "status" : "passed",
+        "time" : {
+          "start" : 1631571177380,
+          "stop" : 1631571289991,
+          "duration" : 112611
+        }
+      }, {
+        "uid" : "3b19dfd7bb7e2fc1",
+        "reportUrl" : "https://mangata-finance.github.io/mangata-e2e/305//#testresult/3b19dfd7bb7e2fc1",
+        "status" : "passed",
+        "time" : {
+          "start" : 1631561517461,
+          "stop" : 1631561628855,
+          "duration" : 111394
+        }
+      }, {
+        "uid" : "24b68147cbe614ad",
+        "reportUrl" : "https://mangata-finance.github.io/mangata-e2e/304//#testresult/24b68147cbe614ad",
+        "status" : "failed",
+        "statusDetails" : "Error: Expected: 5 \n                  Actual: 6 \n                 ",
+        "time" : {
+          "start" : 1631517393178,
+          "stop" : 1631517499187,
+          "duration" : 106009
+        }
+      }, {
+        "uid" : "c49d57da1365f8b0",
+        "reportUrl" : "https://mangata-finance.github.io/mangata-e2e/303//#testresult/c49d57da1365f8b0",
+        "status" : "passed",
+        "time" : {
+          "start" : 1631285043276,
+          "stop" : 1631285149284,
+          "duration" : 106008
+        }
+      }, {
+        "uid" : "27c93020c64d3bb9",
+        "reportUrl" : "https://mangata-finance.github.io/mangata-e2e/302//#testresult/27c93020c64d3bb9",
+        "status" : "passed",
+        "time" : {
+          "start" : 1631270013830,
+          "stop" : 1631270119745,
+          "duration" : 105915
+        }
+      }, {
+        "uid" : "6a6665c32ab88f84",
+        "reportUrl" : "https://mangata-finance.github.io/mangata-e2e/301//#testresult/6a6665c32ab88f84",
+        "status" : "passed",
+        "time" : {
+          "start" : 1631269690092,
+          "stop" : 1631269795885,
+          "duration" : 105793
+        }
+      } ]
+    },
+    "tags" : [ ]
+  },
+  "source" : "ceca25d5fa12f04c.json",
+  "parameterValues" : [ ]
+}
