@@ -5,14 +5,14 @@
  * @group parallel
  */
 import { api, getApi, initApi } from "../../utils/api";
-import { sellAsset, buyAsset } from "../../utils/tx";
+import { sellAsset, buyAsset, calculate_buy_price_rpc } from "../../utils/tx";
 import { waitNewBlock, ExtrinsicResult } from "../../utils/eventListeners";
 import BN from "bn.js";
 import { Keyring } from "@polkadot/api";
 import { AssetWallet, User } from "../../utils/User";
 import { validateTreasuryAmountsEqual } from "../../utils/validators";
 import { Assets } from "../../utils/Assets";
-import { getEnvironmentRequiredVars } from "../../utils/utils";
+import { calculateFees, getEnvironmentRequiredVars } from "../../utils/utils";
 import {
   getEventResultFromTxWait,
   signSendAndWaitToFinishTx,
@@ -96,15 +96,18 @@ describe("xyk-pallet - treasury tests [No Mangata]: on treasury we store", () =>
     });
 
     await testUser1.refreshAmounts(AssetWallet.AFTER);
-    //pool is [50000X,25000Y]
-    //user sell [10000] of Y.
-    //Stano sheet tells: Burn - 5 5
-    await validateTreasuryAmountsEqual(firstCurrency, [new BN(5), new BN(5)]);
-    await validateTreasuryAmountsEqual(secondCurrency, [new BN(0), new BN(0)]);
+
+    const { treasury, treasuryBurn } = calculateFees(sellAssetAmount);
+
+    await validateTreasuryAmountsEqual(firstCurrency, [new BN(0), new BN(0)]);
+    await validateTreasuryAmountsEqual(secondCurrency, [
+      treasury,
+      treasuryBurn,
+    ]);
   });
-  test("assets won when assets are sold - 0 [rounding] [no connected to MGA]", async () => {
+  test("assets won when assets are sold - 1 [rounding] [no connected to MGA]", async () => {
     await waitNewBlock();
-    const sellAssetAmount = new BN(5000);
+    const sellAssetAmount = new BN(500);
 
     await sellAsset(
       testUser1.keyRingPair,
@@ -122,17 +125,19 @@ describe("xyk-pallet - treasury tests [No Mangata]: on treasury we store", () =>
     });
 
     await testUser1.refreshAmounts(AssetWallet.AFTER);
-    //pool is [50000X,25000Y]
-    //user sell [5000] of Y.
-    //Stano sheet tells: Burn - 0,0
-    await validateTreasuryAmountsEqual(firstCurrency, [new BN(0), new BN(0)]);
+    const { treasury, treasuryBurn } = calculateFees(sellAssetAmount);
+    await validateTreasuryAmountsEqual(firstCurrency, [treasury, treasuryBurn]);
     await validateTreasuryAmountsEqual(secondCurrency, [new BN(0), new BN(0)]);
   });
 
   test("assets won when assets are bought - 2 [no connected to MGA]", async () => {
     await waitNewBlock();
     const buyAssetAmount = new BN(10000);
-
+    const sellPriceRpc = await calculate_buy_price_rpc(
+      first_asset_amount,
+      first_asset_amount.div(new BN(2)),
+      buyAssetAmount
+    );
     await buyAsset(
       testUser1.keyRingPair,
       firstCurrency,
@@ -149,18 +154,20 @@ describe("xyk-pallet - treasury tests [No Mangata]: on treasury we store", () =>
     });
 
     await testUser1.refreshAmounts(AssetWallet.AFTER);
-    //pool is [50000X,25000Y]
-    //user buy [10000] of X.
-    //Stano sheet tells: Burn - 2,2
-    await validateTreasuryAmountsEqual(secondCurrency, [new BN(2), new BN(2)]);
-    //treasuries are stored in the bought assets wallet, not the fitst, so must be zero.
-    await validateTreasuryAmountsEqual(firstCurrency, [new BN(0), new BN(0)]);
+    const { treasury, treasuryBurn } = calculateFees(sellPriceRpc);
+    await validateTreasuryAmountsEqual(secondCurrency, [new BN(0), new BN(0)]);
+    //treasuries are stored always in the sold asset
+    await validateTreasuryAmountsEqual(firstCurrency, [treasury, treasuryBurn]);
   });
 
   test("assets won when assets are bought - 1 [no connected to MGA]", async () => {
     await waitNewBlock();
-    const buyAssetAmount = new BN(5000);
-
+    const buyAssetAmount = new BN(100);
+    const sellPriceRpc = await calculate_buy_price_rpc(
+      first_asset_amount,
+      first_asset_amount.div(new BN(2)),
+      buyAssetAmount
+    );
     await buyAsset(
       testUser1.keyRingPair,
       firstCurrency,
@@ -177,11 +184,8 @@ describe("xyk-pallet - treasury tests [No Mangata]: on treasury we store", () =>
     });
 
     await testUser1.refreshAmounts(AssetWallet.AFTER);
-    //pool is [50000X,25000Y]
-    //user buy [5000] of Y.
-    //Stano sheet tells: Burn - 1,1
-    await validateTreasuryAmountsEqual(secondCurrency, [new BN(1), new BN(1)]);
-    //treasuries are stored in the bought assets wallet, not the fitst, so must be zero.
-    await validateTreasuryAmountsEqual(firstCurrency, [new BN(0), new BN(0)]);
+    const { treasury, treasuryBurn } = calculateFees(sellPriceRpc);
+    await validateTreasuryAmountsEqual(firstCurrency, [treasury, treasuryBurn]);
+    await validateTreasuryAmountsEqual(secondCurrency, [new BN(0), new BN(0)]);
   });
 });

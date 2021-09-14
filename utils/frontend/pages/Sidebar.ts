@@ -1,4 +1,5 @@
-import { By, WebDriver } from "selenium-webdriver";
+import { By, until, WebDriver } from "selenium-webdriver";
+import { FIVE_MIN } from "../../Constants";
 import {
   buildDataTestIdXpath,
   clickElement,
@@ -22,16 +23,10 @@ const LBL_TOKEN_AMOUNT = "wallet-tokensAmount";
 const SPINNER_LOADING = `//*[@class = 'Sidebar__loading']`;
 const BTN_POOL_OVERVIEW = `poolsOverview-item-tkn1-tkn2`;
 const BTN_REMOVE_LIQUIDITY = `poolDetail-removeBtn`;
+const LBL_TOKEN_NAME = "wallet-asset-tokenName";
+const DIV_ASSETS_ITEM_VALUE = `//div[@class = 'AssetBox' and //*[text()='tokenName']]/span[@class='value']`;
 
 export class Sidebar {
-  private buildPoolDataTestId(asseName1: string, assetName2: string) {
-    return `poolsOverview-item-${asseName1}-${assetName2}`;
-  }
-  async isLiquidityPoolVisible(asset1Name: string, asset2Name: string) {
-    return await this.isDisplayed(
-      buildDataTestIdXpath(this.buildPoolDataTestId(asset1Name, asset2Name))
-    );
-  }
   driver: WebDriver;
 
   constructor(driver: WebDriver) {
@@ -133,5 +128,27 @@ export class Sidebar {
   async clickOnRemoveLiquidity() {
     const xpath = buildDataTestIdXpath(BTN_REMOVE_LIQUIDITY);
     await clickElement(this.driver, xpath);
+  }
+  async waitUntilTokenAvailable(assetName: string, timeout = FIVE_MIN) {
+    const xpath = buildDataTestIdXpath(
+      LBL_TOKEN_NAME.replace("tokenName", assetName)
+    );
+    await this.driver.wait(until.elementLocated(By.xpath(xpath)), timeout);
+  }
+  async getAssetValue(assetName: string) {
+    const xpath = DIV_ASSETS_ITEM_VALUE.replace("tokenName", assetName);
+    await waitForElement(this.driver, xpath);
+    const value = await (
+      await this.driver.findElement(By.xpath(xpath))
+    ).getText();
+    return value;
+  }
+  private buildPoolDataTestId(asseName1: string, assetName2: string) {
+    return `poolsOverview-item-${asseName1}-${assetName2}`;
+  }
+  async isLiquidityPoolVisible(asset1Name: string, asset2Name: string) {
+    return await this.isDisplayed(
+      buildDataTestIdXpath(this.buildPoolDataTestId(asset1Name, asset2Name))
+    );
   }
 }
