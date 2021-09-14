@@ -153,9 +153,11 @@ describe("UI tests - A user can swap and mint tokens", () => {
       mETH_ASSET_NAME
     );
     expect(isPoolVisible).toBeFalsy();
-    expect(testUser1.getAsset(ETH_ASSET_ID)?.amountBefore).bnEqual(
-      testUser1.getAsset(ETH_ASSET_ID)?.amountAfter!
-    );
+    // removing 1 token because of rounding either when minting, either when burning. 
+    // Checked with Stano.
+    expect(
+      testUser1.getAsset(ETH_ASSET_ID)?.amountBefore!.sub(new BN(1))
+    ).bnEqual(testUser1.getAsset(ETH_ASSET_ID)?.amountAfter!);
   });
 
   afterEach(async () => {
