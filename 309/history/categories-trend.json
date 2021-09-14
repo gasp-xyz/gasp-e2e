@@ -4,6 +4,11 @@
   "reportName" : "Allure Report with history",
   "data" : { }
 }, {
+  "buildOrder" : 309,
+  "reportUrl" : "https://mangata-finance.github.io/mangata-e2e/309/",
+  "reportName" : "Allure Report with history",
+  "data" : { }
+}, {
   "buildOrder" : 222,
   "reportUrl" : "https://mangata-finance.github.io/mangata-e2e/222/",
   "reportName" : "Allure Report with history",
@@ -117,13 +122,6 @@
 }, {
   "buildOrder" : 205,
   "reportUrl" : "https://mangata-finance.github.io/mangata-e2e/205/",
-  "reportName" : "Allure Report with history",
-  "data" : {
-    "Product defects" : 11
-  }
-}, {
-  "buildOrder" : 207,
-  "reportUrl" : "https://mangata-finance.github.io/mangata-e2e/207/",
   "reportName" : "Allure Report with history",
   "data" : {
     "Product defects" : 11
