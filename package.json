@@ -19,7 +19,7 @@
     "eslint": "^7.26.0",
     "ganache-cli": "^6.12.2",
     "husky": "^7.0.2",
-    "mangata-sdk": "^0.1.0",
+    "mangata-sdk": "^v0.2.0-alpha.1",
     "package.json": "^2.0.1",
     "prettier": "^2.3.0",
     "selenium-webdriver": "3.6.0",
