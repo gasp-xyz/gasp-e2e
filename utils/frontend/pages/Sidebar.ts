@@ -1,8 +1,10 @@
 import { By, until, WebDriver } from "selenium-webdriver";
 import { FIVE_MIN } from "../../Constants";
+import { sleep } from "../../utils";
 import {
   buildDataTestIdXpath,
   clickElement,
+  getText,
   waitForElement,
   waitForElementToDissapear,
 } from "../utils/Helper";
@@ -123,6 +125,7 @@ export class Sidebar {
       );
     }
     await clickElement(this.driver, xpath);
+    await sleep(2000);
   }
 
   async clickOnRemoveLiquidity() {
@@ -150,5 +153,10 @@ export class Sidebar {
     return await this.isDisplayed(
       buildDataTestIdXpath(this.buildPoolDataTestId(asset1Name, asset2Name))
     );
+  }
+  async getAssetValueInvested(assetName: string) {
+    const LBL_TOKEN_AMOUNT_INVESTED = `//*[contains(@data-testid,'poolDetail') and span[text()='${assetName}']]`;
+    const value = await getText(this.driver, LBL_TOKEN_AMOUNT_INVESTED);
+    return value;
   }
 }
