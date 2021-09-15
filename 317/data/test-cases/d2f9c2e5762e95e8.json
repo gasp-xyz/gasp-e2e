@@ -1,0 +1,86 @@
+{
+  "uid" : "d2f9c2e5762e95e8",
+  "name" : "assets won when assets are bought [Buying other in MGA pool]",
+  "fullName" : "xyk-pallet - treasury tests [Mangata]: on treasury we store.assets won when assets are bought [Buying other in MGA pool]",
+  "historyId" : "f417a1d75905b23a9c51e749a26502cd",
+  "time" : {
+    "start" : 1631704765367,
+    "stop" : 1631704873609,
+    "duration" : 108242
+  },
+  "description" : "",
+  "descriptionHtml" : "",
+  "status" : "passed",
+  "flaky" : false,
+  "newFailed" : false,
+  "beforeStages" : [ ],
+  "afterStages" : [ ],
+  "labels" : [ {
+    "name" : "suite",
+    "value" : "xyk-pallet - treasury tests [Mangata]: on treasury we store"
+  }, {
+    "name" : "testClass",
+    "value" : "xyk-pallet - treasury tests [Mangata]: on treasury we store"
+  }, {
+    "name" : "testMethod",
+    "value" : "assets won when assets are bought [Buying other in MGA pool]"
+  }, {
+    "name" : "package",
+    "value" : "xyk-pallet - treasury tests [Mangata]: on treasury we store"
+  }, {
+    "name" : "resultFormat",
+    "value" : "allure1"
+  } ],
+  "parameters" : [ ],
+  "links" : [ ],
+  "hidden" : false,
+  "retry" : false,
+  "extra" : {
+    "severity" : "normal",
+    "retries" : [ ],
+    "categories" : [ ],
+    "history" : {
+      "statistic" : {
+        "failed" : 2,
+        "broken" : 0,
+        "skipped" : 0,
+        "passed" : 2,
+        "unknown" : 0,
+        "total" : 4
+      },
+      "items" : [ {
+        "uid" : "21958918ecc6bb80",
+        "reportUrl" : "https://mangata-finance.github.io/mangata-e2e/316//#testresult/21958918ecc6bb80",
+        "status" : "passed",
+        "time" : {
+          "start" : 1631696701931,
+          "stop" : 1631696808770,
+          "duration" : 106839
+        }
+      }, {
+        "uid" : "c908fb6139a3baaa",
+        "reportUrl" : "https://mangata-finance.github.io/mangata-e2e/315//#testresult/c908fb6139a3baaa",
+        "status" : "failed",
+        "statusDetails" : "Error: 1010: Invalid Transaction: Transaction has a bad signature",
+        "time" : {
+          "start" : 1631694609429,
+          "stop" : 1631694609594,
+          "duration" : 165
+        }
+      }, {
+        "uid" : "a958455038441a23",
+        "reportUrl" : "https://mangata-finance.github.io/mangata-e2e/314//#testresult/a958455038441a23",
+        "status" : "failed",
+        "statusDetails" : "Error: expect(received).toEqual(expected) // deep equality\n                \n                Expected: 0\n                Received: -1",
+        "time" : {
+          "start" : 1631689278063,
+          "stop" : 1631689290055,
+          "duration" : 11992
+        }
+      } ]
+    },
+    "tags" : [ ]
+  },
+  "source" : "d2f9c2e5762e95e8.json",
+  "parameterValues" : [ ]
+}

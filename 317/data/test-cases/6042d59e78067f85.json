@@ -1,0 +1,86 @@
+{
+  "uid" : "6042d59e78067f85",
+  "name" : "assets won when assets are bought [Buying Y - X connected toMGA pool] - 6",
+  "fullName" : "xyk-pallet - treasury tests [Connected - Mangata]: on treasury we store.assets won when assets are bought [Buying Y - X connected toMGA pool] - 6",
+  "historyId" : "7967eeadd35f234dba8c5ca88c563c78",
+  "time" : {
+    "start" : 1631705365219,
+    "stop" : 1631705526811,
+    "duration" : 161592
+  },
+  "description" : "",
+  "descriptionHtml" : "",
+  "status" : "passed",
+  "flaky" : false,
+  "newFailed" : false,
+  "beforeStages" : [ ],
+  "afterStages" : [ ],
+  "labels" : [ {
+    "name" : "suite",
+    "value" : "xyk-pallet - treasury tests [Connected - Mangata]: on treasury we store"
+  }, {
+    "name" : "testClass",
+    "value" : "xyk-pallet - treasury tests [Connected - Mangata]: on treasury we store"
+  }, {
+    "name" : "testMethod",
+    "value" : "assets won when assets are bought [Buying Y - X connected toMGA pool] - 6"
+  }, {
+    "name" : "package",
+    "value" : "xyk-pallet - treasury tests [Connected - Mangata]: on treasury we store"
+  }, {
+    "name" : "resultFormat",
+    "value" : "allure1"
+  } ],
+  "parameters" : [ ],
+  "links" : [ ],
+  "hidden" : false,
+  "retry" : false,
+  "extra" : {
+    "severity" : "normal",
+    "retries" : [ ],
+    "categories" : [ ],
+    "history" : {
+      "statistic" : {
+        "failed" : 2,
+        "broken" : 0,
+        "skipped" : 0,
+        "passed" : 2,
+        "unknown" : 0,
+        "total" : 4
+      },
+      "items" : [ {
+        "uid" : "461400f715b4dc93",
+        "reportUrl" : "https://mangata-finance.github.io/mangata-e2e/316//#testresult/461400f715b4dc93",
+        "status" : "passed",
+        "time" : {
+          "start" : 1631697301605,
+          "stop" : 1631697463155,
+          "duration" : 161550
+        }
+      }, {
+        "uid" : "50657388a0e37880",
+        "reportUrl" : "https://mangata-finance.github.io/mangata-e2e/315//#testresult/50657388a0e37880",
+        "status" : "failed",
+        "statusDetails" : "Error: xyk.treasury(TokenId) is a map, requiring 1 argument, 0 found",
+        "time" : {
+          "start" : 1631694609856,
+          "stop" : 1631694609970,
+          "duration" : 114
+        }
+      }, {
+        "uid" : "25c9260562bc1751",
+        "reportUrl" : "https://mangata-finance.github.io/mangata-e2e/314//#testresult/25c9260562bc1751",
+        "status" : "failed",
+        "statusDetails" : "Error: xyk.treasury(TokenId) is a map, requiring 1 argument, 0 found",
+        "time" : {
+          "start" : 1631689326070,
+          "stop" : 1631689338054,
+          "duration" : 11984
+        }
+      } ]
+    },
+    "tags" : [ ]
+  },
+  "source" : "6042d59e78067f85.json",
+  "parameterValues" : [ ]
+}
