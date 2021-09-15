@@ -134,7 +134,8 @@ describe("UI tests - A user can swap and mint tokens", () => {
 
   it("As a User I can burn all liquidity MGA - mETH", async () => {
     await testUser1.refreshAmounts(AssetWallet.BEFORE);
-    const amountToMint = new BN(visibleValueNumber).div(new BN(2000));
+    let amountToMint = new BN(visibleValueNumber).div(new BN(2000));
+    amountToMint = amountToMint.add(new BN(123456789));
     await testUser1.mintLiquidity(ETH_ASSET_ID, MGA_ASSET_ID, amountToMint);
     const mga = new Mangata(driver);
     await mga.navigate();
