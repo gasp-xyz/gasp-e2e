@@ -75,10 +75,14 @@ export class Assets {
       sudo,
       new BN(eventResult.data[0]),
       `TEST_${eventResult.data[0]}`,
-      `m${eventResult.data[0]}`,
+      this.getAssetName(eventResult.data[0]),
       `Test token ${eventResult.data[0]}`,
       new BN(18)
     );
     return new BN(eventResult.data[0]);
+  }
+
+  static getAssetName(assetID: string) {
+    return `m${assetID}`;
   }
 }

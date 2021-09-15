@@ -24,6 +24,8 @@ const DIV_FAUCET_READY = "faucet-isReady-header";
 const LBL_TOKEN_AMOUNT = "wallet-tokensAmount";
 
 const SPINNER_LOADING = `//*[@class = 'Sidebar__loading']`;
+const BTN_POOL_OVERVIEW = `poolsOverview-item-tkn1-tkn2`;
+const BTN_REMOVE_LIQUIDITY = `poolDetail-removeBtn`;
 const LBL_TOKEN_NAME = "wallet-asset-tokenName";
 const DIV_ASSETS_ITEM_VALUE = `//div[@class = 'AssetBox' and //*[text()='tokenName']]/span[@class='value']`;
 
@@ -130,6 +132,7 @@ export class Sidebar {
       return false;
     }
   }
+  
   private async areVisible(listDataTestIds: string[]) {
     const promises: Promise<Boolean>[] = [];
     listDataTestIds.forEach((dataTestId) => {
@@ -138,6 +141,32 @@ export class Sidebar {
     const allVisible = await Promise.all(promises);
     return allVisible.every((elem) => elem === true);
   }
+      
+  async clickOnLiquidityPool(poolAsset1Name: string, poolAsset2Name: string) {
+    let xpath = buildDataTestIdXpath(
+      BTN_POOL_OVERVIEW.replace("tkn1", poolAsset1Name).replace(
+        "tkn2",
+        poolAsset2Name
+      )
+    );
+    const displayed = await this.isDisplayed(xpath);
+    if (!displayed) {
+      //lets try in the other way around.
+      xpath = buildDataTestIdXpath(
+        BTN_POOL_OVERVIEW.replace("tkn1", poolAsset2Name).replace(
+          "tkn2",
+          poolAsset1Name
+        )
+      );
+    }
+    await clickElement(this.driver, xpath);
+  }
+
+  async clickOnRemoveLiquidity() {
+    const xpath = buildDataTestIdXpath(BTN_REMOVE_LIQUIDITY);
+    await clickElement(this.driver, xpath);
+  }
+
   async waitUntilTokenAvailable(assetName: string, timeout = FIVE_MIN) {
     const xpath = buildDataTestIdXpath(
       LBL_TOKEN_NAME.replace("tokenName", assetName)

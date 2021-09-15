@@ -30,6 +30,7 @@ import { waitNewBlock, ExtrinsicResult } from "../../utils/eventListeners";
 import BN from "bn.js";
 import { Keyring } from "@polkadot/api";
 import {
+  calculateFees,
   calculateLiqAssetAmount,
   getEnvironmentRequiredVars,
 } from "../../utils/utils";
@@ -452,10 +453,10 @@ test("xyk-pallet: Happy case scenario", async () => {
   ]).collectionBnEqual(pallet_assets);
   testLog.getLog().debug(pallet_assets.toString());
   pool_balance = await getBalanceOfPool(firstAssetId, secondAssetId);
-  const buyAndBurn = new BN(7).mul(new BN(2));
+  let { treasury, treasuryBurn } = calculateFees(amount);
   expect([
-    pool_balance_before[0].add(amount),
-    pool_balance_before[1].sub(sell_price_local).sub(buyAndBurn),
+    pool_balance_before[0].add(amount).sub(treasury.add(treasuryBurn)),
+    pool_balance_before[1].sub(sell_price_local),
   ]).collectionBnEqual(pool_balance);
   testLog.getLog().debug(pool_balance.toString());
   total_liquidity_assets = await getAssetSupply(liquidity_asset_id);
@@ -545,16 +546,19 @@ test("xyk-pallet: Happy case scenario", async () => {
     firstAssetId,
     secondAssetId,
   ]);
+  pool_balance = await getBalanceOfPool(firstAssetId, secondAssetId);
   expect([
     pallet_assets_before[0].sub(sell_price_local),
     pallet_assets_before[1].add(amount),
   ]).collectionBnEqual(pallet_assets);
   testLog.getLog().debug(pallet_assets.toString());
   pool_balance = await getBalanceOfPool(firstAssetId, secondAssetId);
-  const buyAndBurnReSelling = new BN(10).mul(new BN(2));
+  treasury = calculateFees(amount).treasury;
+  treasuryBurn = calculateFees(amount).treasuryBurn;
+
   expect([
-    pool_balance_before[0].sub(sell_price_local).sub(buyAndBurnReSelling),
-    pool_balance_before[1].add(amount),
+    pool_balance_before[0].sub(sell_price_local),
+    pool_balance_before[1].add(amount).sub(treasury.add(treasuryBurn)),
   ]).collectionBnEqual(pool_balance);
   testLog.getLog().debug(pool_balance.toString());
   total_liquidity_assets = await getAssetSupply(liquidity_asset_id);
@@ -648,16 +652,20 @@ test("xyk-pallet: Happy case scenario", async () => {
     firstAssetId,
     secondAssetId,
   ]);
+
   expect([
     pallet_assets_before[0].add(buy_price_local),
     pallet_assets_before[1].sub(amount),
   ]).collectionBnEqual(pallet_assets);
   testLog.getLog().debug(pallet_assets.toString());
   pool_balance = await getBalanceOfPool(firstAssetId, secondAssetId);
-  const buyAndBurnBuy = new BN(4).mul(new BN(2));
+
+  treasury = calculateFees(buy_price_local).treasury;
+  treasuryBurn = calculateFees(buy_price_local).treasuryBurn;
+
   expect([
-    pool_balance_before[0].add(buy_price_local),
-    pool_balance_before[1].sub(amount).sub(buyAndBurnBuy),
+    pool_balance_before[0].add(buy_price_local).sub(treasury.add(treasuryBurn)),
+    pool_balance_before[1].sub(amount),
   ]).collectionBnEqual(pool_balance);
   testLog.getLog().debug(pool_balance.toString());
   total_liquidity_assets = await getAssetSupply(liquidity_asset_id);
@@ -757,10 +765,11 @@ test("xyk-pallet: Happy case scenario", async () => {
   ]).collectionBnEqual(pallet_assets);
   testLog.getLog().debug(pallet_assets.toString());
   pool_balance = await getBalanceOfPool(firstAssetId, secondAssetId);
-  const buyAndBurnReBuy = new BN(4).mul(new BN(2));
+  treasury = calculateFees(buy_price_local).treasury;
+  treasuryBurn = calculateFees(buy_price_local).treasuryBurn;
   expect([
-    pool_balance_before[0].sub(amount).sub(buyAndBurnReBuy),
-    pool_balance_before[1].add(buy_price_local),
+    pool_balance_before[0].sub(amount),
+    pool_balance_before[1].add(buy_price_local).sub(treasury.add(treasuryBurn)),
   ]).collectionBnEqual(pool_balance);
   testLog.getLog().debug(pool_balance.toString());
   total_liquidity_assets = await getAssetSupply(liquidity_asset_id);

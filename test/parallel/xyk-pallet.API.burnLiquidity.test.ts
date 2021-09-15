@@ -140,9 +140,11 @@ describe("xyk-pallet - Burn liquidity tests: when burning liquidity you can", ()
     expect(liqId).bnEqual(new BN(-1));
     const poolBalance = await getBalanceOfPool(firstCurrency, secondCurrency);
     await testUser1.refreshAmounts(AssetWallet.AFTER);
+    //TODO: validate with Stano.
+    const fee = new BN(10);
     testUser1.validateWalletEquals(
       firstCurrency,
-      amountOfX.add(new BN(assetXamount))
+      amountOfX.add(new BN(assetXamount)).sub(fee)
     );
     testUser1.validateWalletEquals(secondCurrency, new BN(1));
 
