@@ -1,0 +1,124 @@
+{
+  "uid" : "e65648f3c2293d04",
+  "name" : "assets won when assets are sold [Selling Y - X connected toMGA pool] - 6",
+  "fullName" : "xyk-pallet - treasury tests [Connected - Mangata]: on treasury we store.assets won when assets are sold [Selling Y - X connected toMGA pool] - 6",
+  "historyId" : "e58ecb6383b7b2f35858a4f6e7e13f71",
+  "time" : {
+    "start" : 1631713795206,
+    "stop" : 1631713956934,
+    "duration" : 161728
+  },
+  "description" : "",
+  "descriptionHtml" : "",
+  "status" : "passed",
+  "flaky" : false,
+  "newFailed" : false,
+  "beforeStages" : [ ],
+  "afterStages" : [ ],
+  "labels" : [ {
+    "name" : "suite",
+    "value" : "xyk-pallet - treasury tests [Connected - Mangata]: on treasury we store"
+  }, {
+    "name" : "testClass",
+    "value" : "xyk-pallet - treasury tests [Connected - Mangata]: on treasury we store"
+  }, {
+    "name" : "testMethod",
+    "value" : "assets won when assets are sold [Selling Y - X connected toMGA pool] - 6"
+  }, {
+    "name" : "package",
+    "value" : "xyk-pallet - treasury tests [Connected - Mangata]: on treasury we store"
+  }, {
+    "name" : "resultFormat",
+    "value" : "allure1"
+  } ],
+  "parameters" : [ ],
+  "links" : [ ],
+  "hidden" : false,
+  "retry" : false,
+  "extra" : {
+    "severity" : "normal",
+    "retries" : [ ],
+    "categories" : [ ],
+    "history" : {
+      "statistic" : {
+        "failed" : 4,
+        "broken" : 0,
+        "skipped" : 0,
+        "passed" : 4,
+        "unknown" : 0,
+        "total" : 8
+      },
+      "items" : [ {
+        "uid" : "9d63a24c72da4138",
+        "reportUrl" : "https://mangata-finance.github.io/mangata-e2e/318//#testresult/9d63a24c72da4138",
+        "status" : "passed",
+        "time" : {
+          "start" : 1631707896777,
+          "stop" : 1631708059746,
+          "duration" : 162969
+        }
+      }, {
+        "uid" : "24b1b6284bf7439d",
+        "reportUrl" : "https://mangata-finance.github.io/mangata-e2e/319//#testresult/24b1b6284bf7439d",
+        "status" : "failed",
+        "statusDetails" : "Error: 1010: Invalid Transaction: Transaction has a bad signature",
+        "time" : {
+          "start" : 1631707977846,
+          "stop" : 1631707978070,
+          "duration" : 224
+        }
+      }, {
+        "uid" : "d9006ceb1b404d9d",
+        "reportUrl" : "https://mangata-finance.github.io/mangata-e2e/315//#testresult/d9006ceb1b404d9d",
+        "status" : "failed",
+        "statusDetails" : "Error: 1010: Invalid Transaction: Transaction has a bad signature",
+        "time" : {
+          "start" : 1631707719975,
+          "stop" : 1631707720119,
+          "duration" : 144
+        }
+      }, {
+        "uid" : "2ed6e741b263d8e6",
+        "reportUrl" : "https://mangata-finance.github.io/mangata-e2e/317//#testresult/2ed6e741b263d8e6",
+        "status" : "passed",
+        "time" : {
+          "start" : 1631705203583,
+          "stop" : 1631705365219,
+          "duration" : 161636
+        }
+      }, {
+        "uid" : "b40d62861940dca3",
+        "reportUrl" : "https://mangata-finance.github.io/mangata-e2e/316//#testresult/b40d62861940dca3",
+        "status" : "passed",
+        "time" : {
+          "start" : 1631697140013,
+          "stop" : 1631697301605,
+          "duration" : 161592
+        }
+      }, {
+        "uid" : "81be6ff75e799229",
+        "reportUrl" : "https://mangata-finance.github.io/mangata-e2e/315//#testresult/81be6ff75e799229",
+        "status" : "failed",
+        "statusDetails" : "Error: 1010: Invalid Transaction: Transaction has a bad signature",
+        "time" : {
+          "start" : 1631694609694,
+          "stop" : 1631694609856,
+          "duration" : 162
+        }
+      }, {
+        "uid" : "b6f49c69a2fc9a64",
+        "reportUrl" : "https://mangata-finance.github.io/mangata-e2e/314//#testresult/b6f49c69a2fc9a64",
+        "status" : "failed",
+        "statusDetails" : "Error: expect(received).toEqual(expected) // deep equality\n                \n                Expected: 0\n                Received: -1",
+        "time" : {
+          "start" : 1631689314062,
+          "stop" : 1631689326070,
+          "duration" : 12008
+        }
+      } ]
+    },
+    "tags" : [ ]
+  },
+  "source" : "e65648f3c2293d04.json",
+  "parameterValues" : [ ]
+}

@@ -1,0 +1,124 @@
+{
+  "uid" : "fb9751ab77a1346d",
+  "name" : "assets won when assets are bought [Buying Mangata]",
+  "fullName" : "xyk-pallet - treasury tests [Mangata]: on treasury we store.assets won when assets are bought [Buying Mangata]",
+  "historyId" : "d8aef4a46a05e4d14611e567583cd514",
+  "time" : {
+    "start" : 1631713141763,
+    "stop" : 1631713249945,
+    "duration" : 108182
+  },
+  "description" : "",
+  "descriptionHtml" : "",
+  "status" : "passed",
+  "flaky" : false,
+  "newFailed" : false,
+  "beforeStages" : [ ],
+  "afterStages" : [ ],
+  "labels" : [ {
+    "name" : "suite",
+    "value" : "xyk-pallet - treasury tests [Mangata]: on treasury we store"
+  }, {
+    "name" : "testClass",
+    "value" : "xyk-pallet - treasury tests [Mangata]: on treasury we store"
+  }, {
+    "name" : "testMethod",
+    "value" : "assets won when assets are bought [Buying Mangata]"
+  }, {
+    "name" : "package",
+    "value" : "xyk-pallet - treasury tests [Mangata]: on treasury we store"
+  }, {
+    "name" : "resultFormat",
+    "value" : "allure1"
+  } ],
+  "parameters" : [ ],
+  "links" : [ ],
+  "hidden" : false,
+  "retry" : false,
+  "extra" : {
+    "severity" : "normal",
+    "retries" : [ ],
+    "categories" : [ ],
+    "history" : {
+      "statistic" : {
+        "failed" : 4,
+        "broken" : 0,
+        "skipped" : 0,
+        "passed" : 4,
+        "unknown" : 0,
+        "total" : 8
+      },
+      "items" : [ {
+        "uid" : "e14ab23150a0d216",
+        "reportUrl" : "https://mangata-finance.github.io/mangata-e2e/318//#testresult/e14ab23150a0d216",
+        "status" : "passed",
+        "time" : {
+          "start" : 1631707243531,
+          "stop" : 1631707351734,
+          "duration" : 108203
+        }
+      }, {
+        "uid" : "b8d9b5fcaabdda6b",
+        "reportUrl" : "https://mangata-finance.github.io/mangata-e2e/319//#testresult/b8d9b5fcaabdda6b",
+        "status" : "failed",
+        "statusDetails" : "Error: 1010: Invalid Transaction: Transaction has a bad signature",
+        "time" : {
+          "start" : 1631707977345,
+          "stop" : 1631707977519,
+          "duration" : 174
+        }
+      }, {
+        "uid" : "c7f130e32ed7944f",
+        "reportUrl" : "https://mangata-finance.github.io/mangata-e2e/315//#testresult/c7f130e32ed7944f",
+        "status" : "failed",
+        "statusDetails" : "Error: 1010: Invalid Transaction: Transaction has a bad signature",
+        "time" : {
+          "start" : 1631707719595,
+          "stop" : 1631707719694,
+          "duration" : 99
+        }
+      }, {
+        "uid" : "a6e2353fe28f35e5",
+        "reportUrl" : "https://mangata-finance.github.io/mangata-e2e/317//#testresult/a6e2353fe28f35e5",
+        "status" : "passed",
+        "time" : {
+          "start" : 1631704548955,
+          "stop" : 1631704657201,
+          "duration" : 108246
+        }
+      }, {
+        "uid" : "46a055d3cf2aa573",
+        "reportUrl" : "https://mangata-finance.github.io/mangata-e2e/316//#testresult/46a055d3cf2aa573",
+        "status" : "passed",
+        "time" : {
+          "start" : 1631696485623,
+          "stop" : 1631696593798,
+          "duration" : 108175
+        }
+      }, {
+        "uid" : "5cd36e9726051f34",
+        "reportUrl" : "https://mangata-finance.github.io/mangata-e2e/315//#testresult/5cd36e9726051f34",
+        "status" : "failed",
+        "statusDetails" : "Error: 1010: Invalid Transaction: Transaction has a bad signature",
+        "time" : {
+          "start" : 1631694609248,
+          "stop" : 1631694609365,
+          "duration" : 117
+        }
+      }, {
+        "uid" : "8b5c13bb7d0a7296",
+        "reportUrl" : "https://mangata-finance.github.io/mangata-e2e/314//#testresult/8b5c13bb7d0a7296",
+        "status" : "failed",
+        "statusDetails" : "Error: expect(received).toEqual(expected) // deep equality\n                \n                Expected: 0\n                Received: -1",
+        "time" : {
+          "start" : 1631689254052,
+          "stop" : 1631689266051,
+          "duration" : 11999
+        }
+      } ]
+    },
+    "tags" : [ ]
+  },
+  "source" : "fb9751ab77a1346d.json",
+  "parameterValues" : [ ]
+}

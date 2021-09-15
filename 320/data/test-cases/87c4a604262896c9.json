@@ -1,0 +1,124 @@
+{
+  "uid" : "87c4a604262896c9",
+  "name" : "assets won when assets are bought [Buying Y - X connected toMGA pool] - 6",
+  "fullName" : "xyk-pallet - treasury tests [Connected - Mangata]: on treasury we store.assets won when assets are bought [Buying Y - X connected toMGA pool] - 6",
+  "historyId" : "7967eeadd35f234dba8c5ca88c563c78",
+  "time" : {
+    "start" : 1631713956934,
+    "stop" : 1631714120005,
+    "duration" : 163071
+  },
+  "description" : "",
+  "descriptionHtml" : "",
+  "status" : "passed",
+  "flaky" : false,
+  "newFailed" : false,
+  "beforeStages" : [ ],
+  "afterStages" : [ ],
+  "labels" : [ {
+    "name" : "suite",
+    "value" : "xyk-pallet - treasury tests [Connected - Mangata]: on treasury we store"
+  }, {
+    "name" : "testClass",
+    "value" : "xyk-pallet - treasury tests [Connected - Mangata]: on treasury we store"
+  }, {
+    "name" : "testMethod",
+    "value" : "assets won when assets are bought [Buying Y - X connected toMGA pool] - 6"
+  }, {
+    "name" : "package",
+    "value" : "xyk-pallet - treasury tests [Connected - Mangata]: on treasury we store"
+  }, {
+    "name" : "resultFormat",
+    "value" : "allure1"
+  } ],
+  "parameters" : [ ],
+  "links" : [ ],
+  "hidden" : false,
+  "retry" : false,
+  "extra" : {
+    "severity" : "normal",
+    "retries" : [ ],
+    "categories" : [ ],
+    "history" : {
+      "statistic" : {
+        "failed" : 4,
+        "broken" : 0,
+        "skipped" : 0,
+        "passed" : 4,
+        "unknown" : 0,
+        "total" : 8
+      },
+      "items" : [ {
+        "uid" : "ac1ca33fbd7c4f26",
+        "reportUrl" : "https://mangata-finance.github.io/mangata-e2e/318//#testresult/ac1ca33fbd7c4f26",
+        "status" : "passed",
+        "time" : {
+          "start" : 1631708059746,
+          "stop" : 1631708221429,
+          "duration" : 161683
+        }
+      }, {
+        "uid" : "d8d1a1c8723a0844",
+        "reportUrl" : "https://mangata-finance.github.io/mangata-e2e/319//#testresult/d8d1a1c8723a0844",
+        "status" : "failed",
+        "statusDetails" : "Error: 1010: Invalid Transaction: Transaction has a bad signature",
+        "time" : {
+          "start" : 1631707978070,
+          "stop" : 1631707978125,
+          "duration" : 55
+        }
+      }, {
+        "uid" : "9f758d83d7052e17",
+        "reportUrl" : "https://mangata-finance.github.io/mangata-e2e/315//#testresult/9f758d83d7052e17",
+        "status" : "failed",
+        "statusDetails" : "Error: 1010: Invalid Transaction: Transaction has a bad signature",
+        "time" : {
+          "start" : 1631707720119,
+          "stop" : 1631707720191,
+          "duration" : 72
+        }
+      }, {
+        "uid" : "6042d59e78067f85",
+        "reportUrl" : "https://mangata-finance.github.io/mangata-e2e/317//#testresult/6042d59e78067f85",
+        "status" : "passed",
+        "time" : {
+          "start" : 1631705365219,
+          "stop" : 1631705526811,
+          "duration" : 161592
+        }
+      }, {
+        "uid" : "461400f715b4dc93",
+        "reportUrl" : "https://mangata-finance.github.io/mangata-e2e/316//#testresult/461400f715b4dc93",
+        "status" : "passed",
+        "time" : {
+          "start" : 1631697301605,
+          "stop" : 1631697463155,
+          "duration" : 161550
+        }
+      }, {
+        "uid" : "50657388a0e37880",
+        "reportUrl" : "https://mangata-finance.github.io/mangata-e2e/315//#testresult/50657388a0e37880",
+        "status" : "failed",
+        "statusDetails" : "Error: xyk.treasury(TokenId) is a map, requiring 1 argument, 0 found",
+        "time" : {
+          "start" : 1631694609856,
+          "stop" : 1631694609970,
+          "duration" : 114
+        }
+      }, {
+        "uid" : "25c9260562bc1751",
+        "reportUrl" : "https://mangata-finance.github.io/mangata-e2e/314//#testresult/25c9260562bc1751",
+        "status" : "failed",
+        "statusDetails" : "Error: xyk.treasury(TokenId) is a map, requiring 1 argument, 0 found",
+        "time" : {
+          "start" : 1631689326070,
+          "stop" : 1631689338054,
+          "duration" : 11984
+        }
+      } ]
+    },
+    "tags" : [ ]
+  },
+  "source" : "87c4a604262896c9.json",
+  "parameterValues" : [ ]
+}

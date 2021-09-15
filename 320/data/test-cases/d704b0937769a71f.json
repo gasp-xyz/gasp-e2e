@@ -1,0 +1,124 @@
+{
+  "uid" : "d704b0937769a71f",
+  "name" : "assets won when assets are sold [Selling Mangata] - 5",
+  "fullName" : "xyk-pallet - treasury tests [Mangata]: on treasury we store.assets won when assets are sold [Selling Mangata] - 5",
+  "historyId" : "dd6031c39dad92c2f0d6040402ed7ebf",
+  "time" : {
+    "start" : 1631713029467,
+    "stop" : 1631713141763,
+    "duration" : 112296
+  },
+  "description" : "",
+  "descriptionHtml" : "",
+  "status" : "passed",
+  "flaky" : false,
+  "newFailed" : false,
+  "beforeStages" : [ ],
+  "afterStages" : [ ],
+  "labels" : [ {
+    "name" : "suite",
+    "value" : "xyk-pallet - treasury tests [Mangata]: on treasury we store"
+  }, {
+    "name" : "testClass",
+    "value" : "xyk-pallet - treasury tests [Mangata]: on treasury we store"
+  }, {
+    "name" : "testMethod",
+    "value" : "assets won when assets are sold [Selling Mangata] - 5"
+  }, {
+    "name" : "package",
+    "value" : "xyk-pallet - treasury tests [Mangata]: on treasury we store"
+  }, {
+    "name" : "resultFormat",
+    "value" : "allure1"
+  } ],
+  "parameters" : [ ],
+  "links" : [ ],
+  "hidden" : false,
+  "retry" : false,
+  "extra" : {
+    "severity" : "normal",
+    "retries" : [ ],
+    "categories" : [ ],
+    "history" : {
+      "statistic" : {
+        "failed" : 4,
+        "broken" : 0,
+        "skipped" : 0,
+        "passed" : 4,
+        "unknown" : 0,
+        "total" : 8
+      },
+      "items" : [ {
+        "uid" : "9e2e3b8fb424eb85",
+        "reportUrl" : "https://mangata-finance.github.io/mangata-e2e/318//#testresult/9e2e3b8fb424eb85",
+        "status" : "passed",
+        "time" : {
+          "start" : 1631707132874,
+          "stop" : 1631707243531,
+          "duration" : 110657
+        }
+      }, {
+        "uid" : "35b6f8609d8ade72",
+        "reportUrl" : "https://mangata-finance.github.io/mangata-e2e/319//#testresult/35b6f8609d8ade72",
+        "status" : "failed",
+        "statusDetails" : "Error: 1010: Invalid Transaction: Transaction has a bad signature",
+        "time" : {
+          "start" : 1631707977231,
+          "stop" : 1631707977345,
+          "duration" : 114
+        }
+      }, {
+        "uid" : "75b74b286e5232ef",
+        "reportUrl" : "https://mangata-finance.github.io/mangata-e2e/315//#testresult/75b74b286e5232ef",
+        "status" : "failed",
+        "statusDetails" : "Error: 1010: Invalid Transaction: Transaction has a bad signature",
+        "time" : {
+          "start" : 1631707719512,
+          "stop" : 1631707719595,
+          "duration" : 83
+        }
+      }, {
+        "uid" : "2dcb9a05f68b1dc7",
+        "reportUrl" : "https://mangata-finance.github.io/mangata-e2e/317//#testresult/2dcb9a05f68b1dc7",
+        "status" : "passed",
+        "time" : {
+          "start" : 1631704443666,
+          "stop" : 1631704548955,
+          "duration" : 105289
+        }
+      }, {
+        "uid" : "12b987d998f55f94",
+        "reportUrl" : "https://mangata-finance.github.io/mangata-e2e/316//#testresult/12b987d998f55f94",
+        "status" : "passed",
+        "time" : {
+          "start" : 1631696379561,
+          "stop" : 1631696485623,
+          "duration" : 106062
+        }
+      }, {
+        "uid" : "f34279bd34d960c0",
+        "reportUrl" : "https://mangata-finance.github.io/mangata-e2e/315//#testresult/f34279bd34d960c0",
+        "status" : "failed",
+        "statusDetails" : "Error: 1010: Invalid Transaction: Transaction has a bad signature",
+        "time" : {
+          "start" : 1631694609148,
+          "stop" : 1631694609248,
+          "duration" : 100
+        }
+      }, {
+        "uid" : "f6ff2e98c03b0ee5",
+        "reportUrl" : "https://mangata-finance.github.io/mangata-e2e/314//#testresult/f6ff2e98c03b0ee5",
+        "status" : "failed",
+        "statusDetails" : "TypeError: Cannot read property 'seed' of undefined",
+        "time" : {
+          "start" : 1631689243526,
+          "stop" : 1631689254052,
+          "duration" : 10526
+        }
+      } ]
+    },
+    "tags" : [ ]
+  },
+  "source" : "d704b0937769a71f.json",
+  "parameterValues" : [ ]
+}
