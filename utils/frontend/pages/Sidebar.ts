@@ -132,7 +132,6 @@ export class Sidebar {
       return false;
     }
   }
-  
   private async areVisible(listDataTestIds: string[]) {
     const promises: Promise<Boolean>[] = [];
     listDataTestIds.forEach((dataTestId) => {
@@ -141,7 +140,6 @@ export class Sidebar {
     const allVisible = await Promise.all(promises);
     return allVisible.every((elem) => elem === true);
   }
-      
   async clickOnLiquidityPool(poolAsset1Name: string, poolAsset2Name: string) {
     let xpath = buildDataTestIdXpath(
       BTN_POOL_OVERVIEW.replace("tkn1", poolAsset1Name).replace(
