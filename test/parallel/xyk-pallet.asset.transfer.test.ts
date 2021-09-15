@@ -132,9 +132,9 @@ test("xyk-pallet - AssetsOperation: transferAsset", async () => {
   );
 
   let addFromWallet = testUser1
-    .getAsset(firstCurrency)
+    .getAsset(secondCurrency)
     ?.amountBefore!.add(new BN(0));
-  expect(testUser1.getAsset(firstCurrency)?.amountAfter!).bnEqual(
+  expect(testUser1.getAsset(secondCurrency)?.amountAfter!).bnEqual(
     addFromWallet!
   );
 

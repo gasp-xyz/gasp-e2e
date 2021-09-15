@@ -285,9 +285,9 @@ describe("xyk-pallet - Pool tests: a pool can:", () => {
     );
 
     let diffFromWallet = testUser2
-      .getAsset(liquidity_asset_id)
+      .getAsset(firstCurrency)
       ?.amountBefore!.sub(new BN(5000));
-    expect(testUser2.getAsset(liquidity_asset_id)?.amountAfter!).bnEqual(
+    expect(testUser2.getAsset(firstCurrency)?.amountAfter!).bnEqual(
       diffFromWallet!
     );
 

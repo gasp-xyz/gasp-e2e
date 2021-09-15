@@ -211,7 +211,7 @@ test("xyk-pallet - MGA tokens are not substracted as fee : SellAsset", async () 
   ).toBeLessThan(testUser1.getAsset(MGA_ASSET_ID)!.amountAfter.toNumber());
   const addFromWallet = pallet
     .getAsset(MGA_ASSET_ID)
-    ?.amountBefore!.add(new BN(diff));
+    ?.amountBefore!.add(new BN(0));
   expect(pallet.getAsset(MGA_ASSET_ID)?.amountAfter!).bnEqual(addFromWallet!);
 });
 test("xyk-pallet - MGA tokens are not substracted as fee : BuyAsset", async () => {

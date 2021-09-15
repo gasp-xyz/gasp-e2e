@@ -143,6 +143,7 @@ describe("xyk-pallet - Burn liquidity tests: when burning liquidity you can", ()
     //TODO: validate with Stano.
     const fee = new BN(10);
     let amount = amountOfX.add(new BN(assetXamount)).sub(fee);
+    expect(testUser1.getAsset(firstCurrency)?.amountAfter!).bnEqual(amount);
 
     amount = new BN(1);
     expect(testUser1.getAsset(secondCurrency)?.amountAfter!).bnEqual(amount);
