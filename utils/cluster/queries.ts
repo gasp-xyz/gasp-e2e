@@ -7,17 +7,17 @@ async function getBalanceAtHash(node: Node, hash: string, address: string) {
   return balance;
 }
 
-async function getLastBlockHash(node: Node) {
+async function getLastBlockHash(node: Node): Promise<string> {
   const response = await node.api?.rpc.chain.getHeader();
 
   if (response?.hash) {
-    return response.hash;
+    return response.hash.toString();
   } else {
     return null;
   }
 }
 
-const getAllNodesLatestHash = async (nodes: Node[]) => {
+const getAllNodesLatestHash = async (nodes: Node[]): Promise<string[]> => {
   const hashes = Promise.all(
     nodes.map(async (node) => {
       const hash = await getLastBlockHash(node);
