@@ -80,13 +80,12 @@ export const sudoIssueAsset = async (
   const nonce = await SudoDB.getInstance().getSudoNonce(sudoAccount.address);
   testLog.getLog().info(`W[${env.JEST_WORKER_ID}] - sudoNonce: ${nonce} `);
 
-  const mangata = await getMangataInstance();
-  const events = await mangata.createToken(
-    targetAddress,
+  const api = getApi();
+  return signAndWaitTx(
+    api.tx.sudo.sudo(api.tx.tokens.create(targetAddress, total_balance)),
     sudoAccount,
-    total_balance
+    nonce
   );
-  return events;
 };
 
 export const transferAssets = async (
