@@ -1,0 +1,48 @@
+{
+  "uid" : "1b9628c4a9e7ddbd",
+  "name" : "[BUG?] SDK- Nonce management - RPC Failure - Not enough balance",
+  "fullName" : "test/sequential/xyk-SDK.nonce.test.ts.[BUG?] SDK- Nonce management - RPC Failure - Not enough balance",
+  "historyId" : "1f422518ec0d5e8a26827bd75ca8f67e",
+  "time" : {
+    "start" : 1631793828783,
+    "stop" : 1631793828783,
+    "duration" : 0
+  },
+  "description" : "",
+  "descriptionHtml" : "",
+  "status" : "skipped",
+  "statusMessage" : "Temporarily disabled with xit",
+  "statusTrace" : "undefined",
+  "flaky" : false,
+  "newFailed" : false,
+  "beforeStages" : [ ],
+  "afterStages" : [ ],
+  "labels" : [ {
+    "name" : "suite",
+    "value" : "test/sequential/xyk-SDK.nonce.test.ts"
+  }, {
+    "name" : "testClass",
+    "value" : "test/sequential/xyk-SDK.nonce.test.ts"
+  }, {
+    "name" : "testMethod",
+    "value" : "[BUG?] SDK- Nonce management - RPC Failure - Not enough balance"
+  }, {
+    "name" : "package",
+    "value" : "test/sequential/xyk-SDK.nonce.test.ts"
+  }, {
+    "name" : "resultFormat",
+    "value" : "allure1"
+  } ],
+  "parameters" : [ ],
+  "links" : [ ],
+  "hidden" : false,
+  "retry" : false,
+  "extra" : {
+    "severity" : "normal",
+    "retries" : [ ],
+    "categories" : [ ],
+    "tags" : [ ]
+  },
+  "source" : "1b9628c4a9e7ddbd.json",
+  "parameterValues" : [ ]
+}
