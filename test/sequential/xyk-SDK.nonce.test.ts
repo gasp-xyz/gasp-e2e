@@ -146,7 +146,7 @@ test("SDK- Nonce management - Using custom nonce", async () => {
   );
 });
 
-test.skip("[BUG?] SDK- Nonce management - RPC Failure - Not enough balance", async () => {
+test("[BUG?] SDK- Nonce management - RPC Failure - Not enough balance", async () => {
   const userNonce = [];
   const sudoNonce = [];
   userNonce.push(await mangata.getNonce(testUser.keyRingPair.address));
