@@ -2,7 +2,7 @@
  *
  * @group xyk
  * @group errors
- * @group parallel
+ * @group sequential
  * @group sdk
  */
 import { getApi, getMangataInstance, initApi } from "../../utils/api";
