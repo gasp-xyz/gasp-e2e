@@ -122,7 +122,10 @@ test("xyk-pallet - MGA tokens are substracted as fee : CreatePool", async () => 
     mgaUserToken.amountBefore.toNumber() - mgaUserToken.amountAfter.toNumber();
   expect(diff).toBeGreaterThan(0);
   await treasury.refreshAmounts(AssetWallet.AFTER);
-  treasury.validateWalletIncreased(MGA_ASSET_ID, new BN(diff));
+  const addFromWallet = treasury
+    .getAsset(MGA_ASSET_ID)
+    ?.amountBefore!.add(new BN(diff));
+  expect(treasury.getAsset(MGA_ASSET_ID)?.amountAfter!).bnEqual(addFromWallet!);
 });
 test("xyk-pallet - MGA tokens are substracted as fee : MintLiquidity", async () => {
   await mintLiquidity(
@@ -137,7 +140,10 @@ test("xyk-pallet - MGA tokens are substracted as fee : MintLiquidity", async () 
     mgaUserToken.amountBefore.toNumber() - mgaUserToken.amountAfter.toNumber();
   expect(diff).toBeGreaterThan(0);
   await treasury.refreshAmounts(AssetWallet.AFTER);
-  treasury.validateWalletIncreased(MGA_ASSET_ID, new BN(diff));
+  const addFromWallet = treasury
+    .getAsset(MGA_ASSET_ID)
+    ?.amountBefore!.add(new BN(diff));
+  expect(treasury.getAsset(MGA_ASSET_ID)?.amountAfter!).bnEqual(addFromWallet!);
 });
 test("xyk-pallet - MGA tokens are substracted as fee : BurnLiquidity", async () => {
   await burnLiquidity(
@@ -152,7 +158,10 @@ test("xyk-pallet - MGA tokens are substracted as fee : BurnLiquidity", async () 
     mgaUserToken.amountBefore.toNumber() - mgaUserToken.amountAfter.toNumber();
   expect(diff).toBeGreaterThan(0);
   await treasury.refreshAmounts(AssetWallet.AFTER);
-  treasury.validateWalletIncreased(MGA_ASSET_ID, new BN(diff));
+  const addFromWallet = treasury
+    .getAsset(MGA_ASSET_ID)
+    ?.amountBefore!.add(new BN(diff));
+  expect(treasury.getAsset(MGA_ASSET_ID)?.amountAfter!).bnEqual(addFromWallet!);
 });
 test("xyk-pallet - MGA tokens are substracted as fee : Transfer", async () => {
   await transferAsset(
@@ -167,7 +176,10 @@ test("xyk-pallet - MGA tokens are substracted as fee : Transfer", async () => {
     mgaUserToken.amountBefore.toNumber() - mgaUserToken.amountAfter.toNumber();
   expect(diff).toBeGreaterThan(0);
   await treasury.refreshAmounts(AssetWallet.AFTER);
-  treasury.validateWalletIncreased(MGA_ASSET_ID, new BN(diff));
+  const addFromWallet = treasury
+    .getAsset(MGA_ASSET_ID)
+    ?.amountBefore!.add(new BN(diff));
+  expect(treasury.getAsset(MGA_ASSET_ID)?.amountAfter!).bnEqual(addFromWallet!);
 });
 test("xyk-pallet - MGA tokens are substracted as fee : TransferAll", async () => {
   await sudo.mint(firstCurrency, testUser2, new BN(1000));
@@ -182,7 +194,10 @@ test("xyk-pallet - MGA tokens are substracted as fee : TransferAll", async () =>
     mgaUserToken.amountBefore.toNumber() - mgaUserToken.amountAfter.toNumber();
   expect(diff).toBeGreaterThan(0);
   await treasury.refreshAmounts(AssetWallet.AFTER);
-  treasury.validateWalletIncreased(MGA_ASSET_ID, new BN(diff));
+  const addFromWallet = treasury
+    .getAsset(MGA_ASSET_ID)
+    ?.amountBefore!.add(new BN(diff));
+  expect(treasury.getAsset(MGA_ASSET_ID)?.amountAfter!).bnEqual(addFromWallet!);
 });
 test("xyk-pallet - MGA tokens are not substracted as fee : SellAsset", async () => {
   await testUser1.sellAssets(firstCurrency, secondCurrency, new BN(50));
@@ -194,7 +209,10 @@ test("xyk-pallet - MGA tokens are not substracted as fee : SellAsset", async () 
   expect(
     testUser1.getAsset(firstCurrency)!.amountBefore.toNumber()
   ).toBeLessThan(testUser1.getAsset(MGA_ASSET_ID)!.amountAfter.toNumber());
-  pallet.validateWalletIncreased(MGA_ASSET_ID, new BN(0));
+  const addFromWallet = pallet
+    .getAsset(MGA_ASSET_ID)
+    ?.amountBefore!.add(new BN(0));
+  expect(pallet.getAsset(MGA_ASSET_ID)?.amountAfter!).bnEqual(addFromWallet!);
 });
 test("xyk-pallet - MGA tokens are not substracted as fee : BuyAsset", async () => {
   await testUser1.buyAssets(firstCurrency, secondCurrency, new BN(50));
@@ -206,5 +224,8 @@ test("xyk-pallet - MGA tokens are not substracted as fee : BuyAsset", async () =
   expect(
     testUser1.getAsset(firstCurrency)!.amountBefore.toNumber()
   ).toBeGreaterThan(testUser1.getAsset(firstCurrency)!.amountAfter.toNumber());
-  pallet.validateWalletIncreased(MGA_ASSET_ID, new BN(0));
+  const addFromWallet = pallet
+    .getAsset(MGA_ASSET_ID)
+    ?.amountBefore!.add(new BN(0));
+  expect(pallet.getAsset(MGA_ASSET_ID)?.amountAfter!).bnEqual(addFromWallet!);
 });

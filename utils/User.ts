@@ -63,24 +63,6 @@ export class User {
     this.name = "addres_created_account";
   }
 
-  validateWalletReduced(currencyId: BN, amount: BN) {
-    const diffFromWallet = this.getAsset(currencyId)?.amountBefore!.sub(amount);
-    expect(this.getAsset(currencyId)?.amountAfter!).bnEqual(diffFromWallet!);
-  }
-  validateWalletIncreased(currencyId: BN, amount: BN) {
-    const addFromWallet = this.getAsset(currencyId)?.amountBefore!.add(amount);
-    expect(this.getAsset(currencyId)?.amountAfter!).bnEqual(addFromWallet!);
-  }
-  validateWalletEquals(currencyId: BN, amount: BN) {
-    expect(this.getAsset(currencyId)?.amountAfter!).bnEqual(amount);
-  }
-
-  validateWalletsUnmodified() {
-    this.assets.forEach((asset) => {
-      expect(asset.amountBefore).bnEqual(asset.amountAfter);
-    });
-  }
-
   addAsset(currecncyId: any, amountBefore = new BN(0)) {
     const asset = new Asset(currecncyId, amountBefore);
     if (

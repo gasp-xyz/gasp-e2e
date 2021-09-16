@@ -135,11 +135,34 @@ test("xyk-pallet - AssetsOperation: buyAsset [maxAmountIn = 1M], buy asset", asy
   await testUser2.refreshAmounts(AssetWallet.AFTER);
   await pallet.refreshAmounts(AssetWallet.AFTER);
 
-  testUser1.validateWalletIncreased(boughtAssetId, amount);
-  testUser1.validateWalletReduced(soldAssetId, buyPriceLocal);
-  testUser2.validateWalletsUnmodified();
-  pallet.validateWalletIncreased(soldAssetId, buyPriceLocal);
-  pallet.validateWalletReduced(boughtAssetId, amount);
+  let addFromWallet = testUser1
+    .getAsset(boughtAssetId)
+    ?.amountBefore!.add(amount);
+  expect(testUser1.getAsset(boughtAssetId)?.amountAfter!).bnEqual(
+    addFromWallet!
+  );
+
+  let diffFromWallet = testUser1
+    .getAsset(soldAssetId)
+    ?.amountBefore!.sub(buyPriceLocal);
+  expect(testUser1.getAsset(soldAssetId)?.amountAfter!).bnEqual(
+    diffFromWallet!
+  );
+
+  testUser2.assets.forEach((asset) => {
+    expect(asset.amountBefore).bnEqual(asset.amountAfter);
+  });
+
+  addFromWallet = pallet
+    .getAsset(soldAssetId)
+    ?.amountBefore!.add(buyPriceLocal);
+  expect(pallet.getAsset(soldAssetId)?.amountAfter!).bnEqual(addFromWallet!);
+
+  diffFromWallet = pallet.getAsset(boughtAssetId)?.amountBefore!.sub(amount);
+  expect(testUser1.getAsset(boughtAssetId)?.amountAfter!).bnEqual(
+    diffFromWallet!
+  );
+
   const pool_balance = await getBalanceOfPool(firstCurrency, secondCurrency);
   const { treasury, treasuryBurn } = calculateFees(buyPriceLocal);
   const bothFees = treasury.add(treasuryBurn);
@@ -192,11 +215,32 @@ test("xyk-pallet - AssetsOperation: buyAsset [maxAmountIn = 1M], sell a bought a
   await testUser2.refreshAmounts(AssetWallet.AFTER);
   await pallet.refreshAmounts(AssetWallet.AFTER);
 
-  testUser1.validateWalletIncreased(boughtAssetId, amount);
-  testUser1.validateWalletReduced(soldAssetId, buyPriceLocal);
-  testUser2.validateWalletsUnmodified();
-  pallet.validateWalletIncreased(soldAssetId, buyPriceLocal);
-  pallet.validateWalletReduced(boughtAssetId, amount);
+  let addFromWallet = testUser1
+    .getAsset(boughtAssetId)
+    ?.amountBefore!.add(amount);
+  expect(testUser1.getAsset(boughtAssetId)?.amountAfter!).bnEqual(
+    addFromWallet!
+  );
+
+  let diffFromWallet = testUser1
+    .getAsset(soldAssetId)
+    ?.amountBefore!.sub(buyPriceLocal);
+  expect(testUser1.getAsset(soldAssetId)?.amountAfter!).bnEqual(
+    diffFromWallet!
+  );
+
+  testUser2.assets.forEach((asset) => {
+    expect(asset.amountBefore).bnEqual(asset.amountAfter);
+  });
+
+  addFromWallet = pallet
+    .getAsset(soldAssetId)
+    ?.amountBefore!.add(buyPriceLocal);
+  expect(pallet.getAsset(soldAssetId)?.amountAfter!).bnEqual(addFromWallet!);
+
+  diffFromWallet = pallet.getAsset(boughtAssetId)?.amountBefore!.sub(amount);
+  expect(pallet.getAsset(boughtAssetId)?.amountAfter!).bnEqual(diffFromWallet!);
+
   const { treasury, treasuryBurn } = calculateFees(buyPriceLocal);
   const bothFees = treasury.add(treasuryBurn);
   const pool_balance = await getBalanceOfPool(secondCurrency, firstCurrency);
