@@ -1,0 +1,66 @@
+{
+  "uid" : "3b3fab765a1162be",
+  "name" : "xyk-pallet - MGA tokens are substracted as fee : TransferAll",
+  "fullName" : "test/sequential/xyk-pallet.API.fees.test.ts.xyk-pallet - MGA tokens are substracted as fee : TransferAll",
+  "historyId" : "8e8476ba63feab8d233525ca7b6579d2",
+  "time" : {
+    "start" : 1631803723942,
+    "stop" : 1631803760067,
+    "duration" : 36125
+  },
+  "description" : "",
+  "descriptionHtml" : "",
+  "status" : "passed",
+  "flaky" : false,
+  "newFailed" : false,
+  "beforeStages" : [ ],
+  "afterStages" : [ ],
+  "labels" : [ {
+    "name" : "suite",
+    "value" : "test/sequential/xyk-pallet.API.fees.test.ts"
+  }, {
+    "name" : "testClass",
+    "value" : "test/sequential/xyk-pallet.API.fees.test.ts"
+  }, {
+    "name" : "testMethod",
+    "value" : "xyk-pallet - MGA tokens are substracted as fee : TransferAll"
+  }, {
+    "name" : "package",
+    "value" : "test/sequential/xyk-pallet.API.fees.test.ts"
+  }, {
+    "name" : "resultFormat",
+    "value" : "allure1"
+  } ],
+  "parameters" : [ ],
+  "links" : [ ],
+  "hidden" : false,
+  "retry" : false,
+  "extra" : {
+    "severity" : "normal",
+    "retries" : [ ],
+    "categories" : [ ],
+    "history" : {
+      "statistic" : {
+        "failed" : 0,
+        "broken" : 0,
+        "skipped" : 0,
+        "passed" : 2,
+        "unknown" : 0,
+        "total" : 2
+      },
+      "items" : [ {
+        "uid" : "ecadabaa1bbf5bc8",
+        "reportUrl" : "https://mangata-finance.github.io/mangata-e2e/339//#testresult/ecadabaa1bbf5bc8",
+        "status" : "passed",
+        "time" : {
+          "start" : 1631802331312,
+          "stop" : 1631802367404,
+          "duration" : 36092
+        }
+      } ]
+    },
+    "tags" : [ ]
+  },
+  "source" : "3b3fab765a1162be.json",
+  "parameterValues" : [ ]
+}
