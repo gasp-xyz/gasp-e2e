@@ -1,0 +1,84 @@
+{
+  "uid" : "b6f0a9183cc1a1c1",
+  "name" : "assets won when assets are bought [Buying X connected to MGA pool]",
+  "fullName" : "xyk-pallet - treasury tests [Connected - Mangata]: on treasury we store.assets won when assets are bought [Buying X connected to MGA pool]",
+  "historyId" : "7fa2856547086651d7f62b3628e0d674",
+  "time" : {
+    "start" : 1631803927016,
+    "stop" : 1631804095253,
+    "duration" : 168237
+  },
+  "description" : "",
+  "descriptionHtml" : "",
+  "status" : "passed",
+  "flaky" : false,
+  "newFailed" : false,
+  "beforeStages" : [ ],
+  "afterStages" : [ ],
+  "labels" : [ {
+    "name" : "suite",
+    "value" : "xyk-pallet - treasury tests [Connected - Mangata]: on treasury we store"
+  }, {
+    "name" : "testClass",
+    "value" : "xyk-pallet - treasury tests [Connected - Mangata]: on treasury we store"
+  }, {
+    "name" : "testMethod",
+    "value" : "assets won when assets are bought [Buying X connected to MGA pool]"
+  }, {
+    "name" : "package",
+    "value" : "xyk-pallet - treasury tests [Connected - Mangata]: on treasury we store"
+  }, {
+    "name" : "resultFormat",
+    "value" : "allure1"
+  } ],
+  "parameters" : [ ],
+  "links" : [ ],
+  "hidden" : false,
+  "retry" : false,
+  "extra" : {
+    "severity" : "normal",
+    "retries" : [ ],
+    "categories" : [ ],
+    "history" : {
+      "statistic" : {
+        "failed" : 0,
+        "broken" : 0,
+        "skipped" : 0,
+        "passed" : 4,
+        "unknown" : 0,
+        "total" : 4
+      },
+      "items" : [ {
+        "uid" : "5c1d9270aeb51c5",
+        "reportUrl" : "https://mangata-finance.github.io/mangata-e2e/341//#testresult/5c1d9270aeb51c5",
+        "status" : "passed",
+        "time" : {
+          "start" : 1631803351789,
+          "stop" : 1631803518821,
+          "duration" : 167032
+        }
+      }, {
+        "uid" : "b6be1d9dcd0931ff",
+        "reportUrl" : "https://mangata-finance.github.io/mangata-e2e/340//#testresult/b6be1d9dcd0931ff",
+        "status" : "passed",
+        "time" : {
+          "start" : 1631802955325,
+          "stop" : 1631803123707,
+          "duration" : 168382
+        }
+      }, {
+        "uid" : "59b50c1f5d9f67ed",
+        "reportUrl" : "https://mangata-finance.github.io/mangata-e2e/339//#testresult/59b50c1f5d9f67ed",
+        "status" : "passed",
+        "time" : {
+          "start" : 1631801563351,
+          "stop" : 1631801731603,
+          "duration" : 168252
+        }
+      } ]
+    },
+    "tags" : [ ]
+  },
+  "source" : "b6f0a9183cc1a1c1.json",
+  "parameterValues" : [ ]
+}
