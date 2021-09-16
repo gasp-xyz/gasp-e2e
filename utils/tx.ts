@@ -236,7 +236,10 @@ export async function getBalanceOfAsset(assetId: BN, account: any) {
   return new BN(accountData.free.toBigInt().toString());
 }
 
-export async function getBalanceOfPool(assetId1: BN, assetId2: BN) {
+export async function getBalanceOfPool(
+  assetId1: BN,
+  assetId2: BN
+): Promise<BN[]> {
   const api = getApi();
   let reversed = false;
   const emptyPool = "[0,0]";

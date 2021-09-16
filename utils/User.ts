@@ -17,7 +17,7 @@ import {
   transferAll,
 } from "./tx";
 import { getEventResultFromTxWait } from "./txHandler";
-import { MGA_ASSET_ID } from "./Constants";
+import { MAX_BALANCE, MGA_ASSET_ID } from "./Constants";
 
 export enum AssetWallet {
   BEFORE,
@@ -156,7 +156,7 @@ export class User {
     firstCurrency: BN,
     secondCurrency: BN,
     firstCurrencyAmount: BN,
-    secondCurrencyAmount: BN = new BN(Number.MAX_SAFE_INTEGER)
+    secondCurrencyAmount: BN = new BN(MAX_BALANCE)
   ) {
     await mintLiquidity(
       this.keyRingPair,
