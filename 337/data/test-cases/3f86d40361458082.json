@@ -1,0 +1,46 @@
+{
+  "uid" : "3f86d40361458082",
+  "name" : "SDK- Nonce management - Extrinsic failed",
+  "fullName" : "test/sequential/xyk-SDK.nonce.test.ts.SDK- Nonce management - Extrinsic failed",
+  "historyId" : "1c4247f56ee03da6ac995fd083d18747",
+  "time" : {
+    "start" : 1631793762934,
+    "stop" : 1631793798960,
+    "duration" : 36026
+  },
+  "description" : "",
+  "descriptionHtml" : "",
+  "status" : "passed",
+  "flaky" : false,
+  "newFailed" : false,
+  "beforeStages" : [ ],
+  "afterStages" : [ ],
+  "labels" : [ {
+    "name" : "suite",
+    "value" : "test/sequential/xyk-SDK.nonce.test.ts"
+  }, {
+    "name" : "testClass",
+    "value" : "test/sequential/xyk-SDK.nonce.test.ts"
+  }, {
+    "name" : "testMethod",
+    "value" : "SDK- Nonce management - Extrinsic failed"
+  }, {
+    "name" : "package",
+    "value" : "test/sequential/xyk-SDK.nonce.test.ts"
+  }, {
+    "name" : "resultFormat",
+    "value" : "allure1"
+  } ],
+  "parameters" : [ ],
+  "links" : [ ],
+  "hidden" : false,
+  "retry" : false,
+  "extra" : {
+    "severity" : "normal",
+    "retries" : [ ],
+    "categories" : [ ],
+    "tags" : [ ]
+  },
+  "source" : "3f86d40361458082.json",
+  "parameterValues" : [ ]
+}

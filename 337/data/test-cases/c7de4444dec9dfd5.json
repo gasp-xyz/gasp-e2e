@@ -1,0 +1,46 @@
+{
+  "uid" : "c7de4444dec9dfd5",
+  "name" : "SDK- Nonce management - sudo",
+  "fullName" : "test/sequential/xyk-SDK.nonce.test.ts.SDK- Nonce management - sudo",
+  "historyId" : "45dd7d7f9a0a8d4c488e541f662e831",
+  "time" : {
+    "start" : 1631793730792,
+    "stop" : 1631793745547,
+    "duration" : 14755
+  },
+  "description" : "",
+  "descriptionHtml" : "",
+  "status" : "passed",
+  "flaky" : false,
+  "newFailed" : false,
+  "beforeStages" : [ ],
+  "afterStages" : [ ],
+  "labels" : [ {
+    "name" : "suite",
+    "value" : "test/sequential/xyk-SDK.nonce.test.ts"
+  }, {
+    "name" : "testClass",
+    "value" : "test/sequential/xyk-SDK.nonce.test.ts"
+  }, {
+    "name" : "testMethod",
+    "value" : "SDK- Nonce management - sudo"
+  }, {
+    "name" : "package",
+    "value" : "test/sequential/xyk-SDK.nonce.test.ts"
+  }, {
+    "name" : "resultFormat",
+    "value" : "allure1"
+  } ],
+  "parameters" : [ ],
+  "links" : [ ],
+  "hidden" : false,
+  "retry" : false,
+  "extra" : {
+    "severity" : "normal",
+    "retries" : [ ],
+    "categories" : [ ],
+    "tags" : [ ]
+  },
+  "source" : "c7de4444dec9dfd5.json",
+  "parameterValues" : [ ]
+}

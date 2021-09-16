@@ -1,0 +1,74 @@
+{
+  "uid" : "83edc06c07f9ae9e47eb6dd1b683e4e2",
+  "children" : [ {
+    "name" : "test/sequential/xyk-SDK.nonce.test.ts",
+    "children" : [ {
+      "name" : "SDK- Nonce management - sudo",
+      "uid" : "c7de4444dec9dfd5",
+      "parentUid" : "6206f4094f9db37fe2a6170cc0915cd9",
+      "status" : "passed",
+      "time" : {
+        "start" : 1631793730792,
+        "stop" : 1631793745547,
+        "duration" : 14755
+      },
+      "flaky" : false,
+      "newFailed" : false,
+      "parameters" : [ ]
+    }, {
+      "name" : "SDK- Nonce management - sudo - parallel",
+      "uid" : "602e222ae940dca9",
+      "parentUid" : "6206f4094f9db37fe2a6170cc0915cd9",
+      "status" : "passed",
+      "time" : {
+        "start" : 1631793745547,
+        "stop" : 1631793762934,
+        "duration" : 17387
+      },
+      "flaky" : false,
+      "newFailed" : false,
+      "parameters" : [ ]
+    }, {
+      "name" : "SDK- Nonce management - Extrinsic failed",
+      "uid" : "3f86d40361458082",
+      "parentUid" : "6206f4094f9db37fe2a6170cc0915cd9",
+      "status" : "passed",
+      "time" : {
+        "start" : 1631793762934,
+        "stop" : 1631793798960,
+        "duration" : 36026
+      },
+      "flaky" : false,
+      "newFailed" : false,
+      "parameters" : [ ]
+    }, {
+      "name" : "SDK- Nonce management - Using custom nonce",
+      "uid" : "b6e89c90076c809a",
+      "parentUid" : "6206f4094f9db37fe2a6170cc0915cd9",
+      "status" : "passed",
+      "time" : {
+        "start" : 1631793798960,
+        "stop" : 1631793835016,
+        "duration" : 36056
+      },
+      "flaky" : false,
+      "newFailed" : false,
+      "parameters" : [ ]
+    }, {
+      "name" : "[BUG?] SDK- Nonce management - RPC Failure - Not enough balance",
+      "uid" : "df1f94e542e29d98",
+      "parentUid" : "6206f4094f9db37fe2a6170cc0915cd9",
+      "status" : "failed",
+      "time" : {
+        "start" : 1631793835016,
+        "stop" : 1631793835103,
+        "duration" : 87
+      },
+      "flaky" : false,
+      "newFailed" : false,
+      "parameters" : [ ]
+    } ],
+    "uid" : "test/sequential/xyk-SDK.nonce.test.ts"
+  } ],
+  "name" : "packages"
+}
