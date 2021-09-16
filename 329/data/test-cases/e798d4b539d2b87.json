@@ -1,0 +1,46 @@
+{
+  "uid" : "e798d4b539d2b87",
+  "name" : "Sell assets from a wallet I own into a wallet I do not own: limit",
+  "fullName" : "xyk-pallet - Sell assets tests: Selling Assets you can.Sell assets from a wallet I own into a wallet I do not own: limit",
+  "historyId" : "7677dc7ca32ec73b71d691f5e0d1f5bb",
+  "time" : {
+    "start" : 1631774821463,
+    "stop" : 1631775031552,
+    "duration" : 210089
+  },
+  "description" : "",
+  "descriptionHtml" : "",
+  "status" : "passed",
+  "flaky" : false,
+  "newFailed" : false,
+  "beforeStages" : [ ],
+  "afterStages" : [ ],
+  "labels" : [ {
+    "name" : "suite",
+    "value" : "xyk-pallet - Sell assets tests: Selling Assets you can"
+  }, {
+    "name" : "testClass",
+    "value" : "xyk-pallet - Sell assets tests: Selling Assets you can"
+  }, {
+    "name" : "testMethod",
+    "value" : "Sell assets from a wallet I own into a wallet I do not own: limit"
+  }, {
+    "name" : "package",
+    "value" : "xyk-pallet - Sell assets tests: Selling Assets you can"
+  }, {
+    "name" : "resultFormat",
+    "value" : "allure1"
+  } ],
+  "parameters" : [ ],
+  "links" : [ ],
+  "hidden" : false,
+  "retry" : false,
+  "extra" : {
+    "severity" : "normal",
+    "retries" : [ ],
+    "categories" : [ ],
+    "tags" : [ ]
+  },
+  "source" : "e798d4b539d2b87.json",
+  "parameterValues" : [ ]
+}

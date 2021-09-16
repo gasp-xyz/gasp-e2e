@@ -1,0 +1,46 @@
+{
+  "uid" : "47ffd6b13fedf21",
+  "name" : "Create pool of [MAX,MAX]: OverFlow [a+b] - liquidityAsset calculation",
+  "fullName" : "xyk-pallet - Check operations are not executed because of overflow in asset token.Create pool of [MAX,MAX]: OverFlow [a+b] - liquidityAsset calculation",
+  "historyId" : "10bc28cea766100769f4a96417b71619",
+  "time" : {
+    "start" : 1631774282304,
+    "stop" : 1631774413389,
+    "duration" : 131085
+  },
+  "description" : "",
+  "descriptionHtml" : "",
+  "status" : "passed",
+  "flaky" : false,
+  "newFailed" : false,
+  "beforeStages" : [ ],
+  "afterStages" : [ ],
+  "labels" : [ {
+    "name" : "suite",
+    "value" : "xyk-pallet - Check operations are not executed because of overflow in asset token"
+  }, {
+    "name" : "testClass",
+    "value" : "xyk-pallet - Check operations are not executed because of overflow in asset token"
+  }, {
+    "name" : "testMethod",
+    "value" : "Create pool of [MAX,MAX]: OverFlow [a+b] - liquidityAsset calculation"
+  }, {
+    "name" : "package",
+    "value" : "xyk-pallet - Check operations are not executed because of overflow in asset token"
+  }, {
+    "name" : "resultFormat",
+    "value" : "allure1"
+  } ],
+  "parameters" : [ ],
+  "links" : [ ],
+  "hidden" : false,
+  "retry" : false,
+  "extra" : {
+    "severity" : "normal",
+    "retries" : [ ],
+    "categories" : [ ],
+    "tags" : [ ]
+  },
+  "source" : "47ffd6b13fedf21.json",
+  "parameterValues" : [ ]
+}

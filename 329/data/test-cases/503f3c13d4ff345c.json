@@ -1,0 +1,46 @@
+{
+  "uid" : "503f3c13d4ff345c",
+  "name" : "Burn liquidity assets that does not belong to any pool",
+  "fullName" : "xyk-pallet - Burn liquidity tests: BurnLiquidity Errors:.Burn liquidity assets that does not belong to any pool",
+  "historyId" : "d36e2113c2dff46ef1124d7c09e3c463",
+  "time" : {
+    "start" : 1631774285925,
+    "stop" : 1631774413385,
+    "duration" : 127460
+  },
+  "description" : "",
+  "descriptionHtml" : "",
+  "status" : "passed",
+  "flaky" : false,
+  "newFailed" : false,
+  "beforeStages" : [ ],
+  "afterStages" : [ ],
+  "labels" : [ {
+    "name" : "suite",
+    "value" : "xyk-pallet - Burn liquidity tests: BurnLiquidity Errors:"
+  }, {
+    "name" : "testClass",
+    "value" : "xyk-pallet - Burn liquidity tests: BurnLiquidity Errors:"
+  }, {
+    "name" : "testMethod",
+    "value" : "Burn liquidity assets that does not belong to any pool"
+  }, {
+    "name" : "package",
+    "value" : "xyk-pallet - Burn liquidity tests: BurnLiquidity Errors:"
+  }, {
+    "name" : "resultFormat",
+    "value" : "allure1"
+  } ],
+  "parameters" : [ ],
+  "links" : [ ],
+  "hidden" : false,
+  "retry" : false,
+  "extra" : {
+    "severity" : "normal",
+    "retries" : [ ],
+    "categories" : [ ],
+    "tags" : [ ]
+  },
+  "source" : "503f3c13d4ff345c.json",
+  "parameterValues" : [ ]
+}
