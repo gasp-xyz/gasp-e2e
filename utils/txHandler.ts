@@ -1,6 +1,6 @@
 import { SubmittableExtrinsic } from "@polkadot/api/types";
 import { AnyJson } from "@polkadot/types/types";
-import { getApi, getMangataInstance } from "./api";
+import { getApi } from "./api";
 import { GenericExtrinsic, GenericEvent } from "@polkadot/types";
 import { KeyringPair } from "@polkadot/keyring/types";
 import xoshiro from "xoshiro";
