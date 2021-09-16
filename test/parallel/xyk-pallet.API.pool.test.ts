@@ -35,6 +35,7 @@ import {
 } from "../../utils/utils";
 import { getEventResultFromTxWait } from "../../utils/txHandler";
 import { testLog } from "../../utils/Logger";
+import { hexToBn } from "@polkadot/util";
 
 jest.spyOn(console, "log").mockImplementation(jest.fn());
 jest.setTimeout(1500000);
@@ -451,9 +452,25 @@ describe("xyk-pallet - Pool opeations: Simmetry", () => {
     });
   });
   test("GetBalance x-y and y-x pool", async () => {
-    const poolAssetsXY = await getBalanceOfPool(firstCurrency, secondCurrency);
-    const poolAssetsYX = await getBalanceOfPool(secondCurrency, firstCurrency);
-    expect(poolAssetsXY).collectionBnEqual(poolAssetsYX);
+    const api = await getApi();
+    const poolAssetsXY = await api.query.xyk.pools([
+      firstCurrency,
+      secondCurrency,
+    ]);
+    const assetValueXY = [
+      hexToBn(JSON.parse(poolAssetsXY.toString())[0]),
+      hexToBn(JSON.parse(poolAssetsXY.toString())[1]),
+    ];
+    const poolAssetsYX = await api.query.xyk.pools([
+      secondCurrency,
+      firstCurrency,
+    ]);
+    const assetValueYX = [
+      hexToBn(JSON.parse(poolAssetsYX.toString())[0]),
+      hexToBn(JSON.parse(poolAssetsYX.toString())[1]),
+    ];
+
+    expect(assetValueXY).collectionBnEqual(assetValueYX);
   });
   test("Minting x-y and y-x pool", async () => {
     await testUser1.mintLiquidity(firstCurrency, secondCurrency, new BN(100));
@@ -487,3 +504,4 @@ describe("xyk-pallet - Pool opeations: Simmetry", () => {
     expect(liqXY).bnEqual(liqYX);
   });
 });
+
