@@ -79,13 +79,19 @@ jobs:
         run:  |
           echo 'UI_URL=https://staging.mangata.finance/' >> $GITHUB_ENV
           echo 'API_URL=wss://staging.mangatafinance.cloud:9944/' >> $GITHUB_ENV
-  
+          echo 'ETHEREUM_WEBSOCKET_URL=ws://localhost:8545' >> $GITHUB_ENV
+          echo 'ETH_APP_ADDRESS=0xDd514baA317bF095ddBa2C0a847765fEb389c6a0' >> $GITHUB_ENV
+          echo 'ETH_20_APP_ADDRESS=0x00e392C04743359e39f00CD268A5390D27Ef6b44' >> $GITHUB_ENV
+
       - name: Set Configuration - Develop
         if: contains(github.event.client_payload.environment, 'develop')
         run:  |
           echo 'UI_URL=https://develop.mangata.finance/' >> $GITHUB_ENV
           echo 'API_URL=wss://develop.mangatafinance.cloud:9944' >> $GITHUB_ENV
-        
+          echo 'ETHEREUM_WEBSOCKET_URL=ws://localhost:8545' >> $GITHUB_ENV
+          echo 'ETH_APP_ADDRESS=0xDd514baA317bF095ddBa2C0a847765fEb389c6a0' >> $GITHUB_ENV
+          echo 'ETH_20_APP_ADDRESS=0x00e392C04743359e39f00CD268A5390D27Ef6b44' >> $GITHUB_ENV
+
       - name: Set Configuration - Integration
         if: contains(github.event.client_payload.environment, 'integration')
         run:  |
