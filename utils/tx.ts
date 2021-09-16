@@ -335,24 +335,6 @@ export const balanceTransfer = async (
   return txResult;
 };
 
-export const sudoIssueAsset = async (
-  account: any,
-  total_balance: BN,
-  target: any
-) => {
-  const api = getApi();
-  const nonce = await SudoDB.getInstance().getSudoNonce(account.address);
-  testLog.getLog().info(`W[${env.JEST_WORKER_ID}] - sudoNonce: ${nonce} `);
-
-  const txResult = await signAndWaitTx(
-    api.tx.sudo.sudo(api.tx.tokens.create(target, total_balance)),
-    account,
-    nonce
-  );
-  testLog.getLog().info(txResult);
-  return txResult;
-};
-
 export const transferAsset = async (
   account: any,
   asset_id: BN,

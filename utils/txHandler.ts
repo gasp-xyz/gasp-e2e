@@ -1,6 +1,6 @@
 import { SubmittableExtrinsic } from "@polkadot/api/types";
 import { AnyJson } from "@polkadot/types/types";
-import { getApi } from "./api";
+import { getApi, getMangataInstance } from "./api";
 import { GenericExtrinsic, GenericEvent } from "@polkadot/types";
 import { KeyringPair } from "@polkadot/keyring/types";
 import xoshiro from "xoshiro";
@@ -73,19 +73,20 @@ export const getNextAssetId = async () => {
 };
 
 export const sudoIssueAsset = async (
-  account: KeyringPair,
+  sudoAccount: KeyringPair,
   total_balance: BN,
-  target: any
+  targetAddress: string
 ): Promise<GenericEvent[]> => {
-  const nonce = await SudoDB.getInstance().getSudoNonce(account.address);
+  const nonce = await SudoDB.getInstance().getSudoNonce(sudoAccount.address);
   testLog.getLog().info(`W[${env.JEST_WORKER_ID}] - sudoNonce: ${nonce} `);
 
-  const api = getApi();
-  return signAndWaitTx(
-    api.tx.sudo.sudo(api.tx.tokens.create(target, total_balance)),
-    account,
-    nonce
+  const mangata = await getMangataInstance();
+  const events = await mangata.createToken(
+    targetAddress,
+    sudoAccount,
+    total_balance
   );
+  return events;
 };
 
 export const transferAssets = async (
