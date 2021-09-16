@@ -1,0 +1,75 @@
+{
+  "uid" : "90a3f71988bd8f16",
+  "name" : "assets won when assets are bought [Buying Y - X connected toMGA pool] - 6",
+  "fullName" : "xyk-pallet - treasury tests [Connected - Mangata]: on treasury we store.assets won when assets are bought [Buying Y - X connected toMGA pool] - 6",
+  "historyId" : "7967eeadd35f234dba8c5ca88c563c78",
+  "time" : {
+    "start" : 1631803681947,
+    "stop" : 1631803843761,
+    "duration" : 161814
+  },
+  "description" : "",
+  "descriptionHtml" : "",
+  "status" : "passed",
+  "flaky" : false,
+  "newFailed" : false,
+  "beforeStages" : [ ],
+  "afterStages" : [ ],
+  "labels" : [ {
+    "name" : "suite",
+    "value" : "xyk-pallet - treasury tests [Connected - Mangata]: on treasury we store"
+  }, {
+    "name" : "testClass",
+    "value" : "xyk-pallet - treasury tests [Connected - Mangata]: on treasury we store"
+  }, {
+    "name" : "testMethod",
+    "value" : "assets won when assets are bought [Buying Y - X connected toMGA pool] - 6"
+  }, {
+    "name" : "package",
+    "value" : "xyk-pallet - treasury tests [Connected - Mangata]: on treasury we store"
+  }, {
+    "name" : "resultFormat",
+    "value" : "allure1"
+  } ],
+  "parameters" : [ ],
+  "links" : [ ],
+  "hidden" : false,
+  "retry" : false,
+  "extra" : {
+    "severity" : "normal",
+    "retries" : [ ],
+    "categories" : [ ],
+    "history" : {
+      "statistic" : {
+        "failed" : 0,
+        "broken" : 0,
+        "skipped" : 0,
+        "passed" : 3,
+        "unknown" : 0,
+        "total" : 3
+      },
+      "items" : [ {
+        "uid" : "2250c3853e9961e2",
+        "reportUrl" : "https://mangata-finance.github.io/mangata-e2e/340//#testresult/2250c3853e9961e2",
+        "status" : "passed",
+        "time" : {
+          "start" : 1631803285493,
+          "stop" : 1631803447197,
+          "duration" : 161704
+        }
+      }, {
+        "uid" : "423b678d304e3157",
+        "reportUrl" : "https://mangata-finance.github.io/mangata-e2e/339//#testresult/423b678d304e3157",
+        "status" : "passed",
+        "time" : {
+          "start" : 1631801893214,
+          "stop" : 1631802054866,
+          "duration" : 161652
+        }
+      } ]
+    },
+    "tags" : [ ]
+  },
+  "source" : "90a3f71988bd8f16.json",
+  "parameterValues" : [ ]
+}
