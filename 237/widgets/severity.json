@@ -1,0 +1,151 @@
+[ {
+  "uid" : "14c40fce9e7033bd",
+  "name" : "As a User I can deposit ETH from Meta extension",
+  "time" : {
+    "start" : 1631797959408,
+    "stop" : 1631797959880,
+    "duration" : 472
+  },
+  "status" : "failed",
+  "severity" : "normal"
+}, {
+  "uid" : "d8d1f0757dfabbb0",
+  "name" : "As a User I get the right values for Pool investment P[2500000000000000000, 5000000000000000000] - I-> 0.100 -Expected - 0.200",
+  "time" : {
+    "start" : 1631798862610,
+    "stop" : 1631798862613,
+    "duration" : 3
+  },
+  "status" : "failed",
+  "severity" : "normal"
+}, {
+  "uid" : "1a9b58764016a468",
+  "name" : "As a User I get the right values for Pool removal P[2500000000000000000, 5000000000000000000] - I-> 1 -Expected - 0.025 , 0.05",
+  "time" : {
+    "start" : 1631798561445,
+    "stop" : 1631798561447,
+    "duration" : 2
+  },
+  "status" : "failed",
+  "severity" : "normal"
+}, {
+  "uid" : "7638506b4468d321",
+  "name" : "As a User I get feedback when extensions are installed and correctly setup",
+  "time" : {
+    "start" : 1631799171701,
+    "stop" : 1631799171701,
+    "duration" : 0
+  },
+  "status" : "failed",
+  "severity" : "normal"
+}, {
+  "uid" : "4f7ffbe52ee0a145",
+  "name" : "Validate that Mangata Frontend up and running",
+  "time" : {
+    "start" : 1631799172056,
+    "stop" : 1631799172085,
+    "duration" : 29
+  },
+  "status" : "failed",
+  "severity" : "normal"
+}, {
+  "uid" : "f4a8d644825b60b3",
+  "name" : "As a User I can mint some tokens MGA - mETH",
+  "time" : {
+    "start" : 1631798260372,
+    "stop" : 1631798260373,
+    "duration" : 1
+  },
+  "status" : "failed",
+  "severity" : "normal"
+}, {
+  "uid" : "3faffd231dd7a389",
+  "name" : "As a User I can deposit ETH from Meta extension",
+  "time" : {
+    "start" : 1631797959885,
+    "stop" : 1631797959886,
+    "duration" : 1
+  },
+  "status" : "failed",
+  "severity" : "normal"
+}, {
+  "uid" : "9af57952835818a9",
+  "name" : "As a User I get the right values for Pool removal P[2499999999999999999, 5000000000000000000] - I-> 2 -Expected - 0.050 , 0.100",
+  "time" : {
+    "start" : 1631798561330,
+    "stop" : 1631798561445,
+    "duration" : 115
+  },
+  "status" : "failed",
+  "severity" : "normal"
+}, {
+  "uid" : "272ce19b0df8c272",
+  "name" : "As a User I get the right values for Pool investment P[5000000000000000000, 5000000000000000000] - I-> 0.123 -Expected - 0.123",
+  "time" : {
+    "start" : 1631798862606,
+    "stop" : 1631798862610,
+    "duration" : 4
+  },
+  "status" : "failed",
+  "severity" : "normal"
+}, {
+  "uid" : "cdaaa37cd7c3fc61",
+  "name" : "Validate that Frontend retrieves AssetInfo data",
+  "time" : {
+    "start" : 1631799172085,
+    "stop" : 1631799172086,
+    "duration" : 1
+  },
+  "status" : "failed",
+  "severity" : "normal"
+}, {
+  "uid" : "ea292eeba5f475d1",
+  "name" : "As a User I get infomed whenever is neccesary to install any extension",
+  "time" : {
+    "start" : 1631799169747,
+    "stop" : 1631799171701,
+    "duration" : 1954
+  },
+  "status" : "failed",
+  "severity" : "normal"
+}, {
+  "uid" : "68b134d97591d82",
+  "name" : "As a User I get the right values for Pool investment P[5000000000000000000, 100] - I-> 100000000000 -Expected - 0.000002",
+  "time" : {
+    "start" : 1631798862485,
+    "stop" : 1631798862606,
+    "duration" : 121
+  },
+  "status" : "failed",
+  "severity" : "normal"
+}, {
+  "uid" : "11d3fd1e1b3fe6ad",
+  "name" : "As a User I can create a pool",
+  "time" : {
+    "start" : 1631799165782,
+    "stop" : 1631799165785,
+    "duration" : 3
+  },
+  "status" : "failed",
+  "severity" : "normal"
+}, {
+  "uid" : "a235b0751625f476",
+  "name" : "As a User I can get test tokens from the faucet",
+  "time" : {
+    "start" : 1631799168788,
+    "stop" : 1631799169320,
+    "duration" : 532
+  },
+  "status" : "failed",
+  "severity" : "normal"
+}, {
+  "uid" : "582abf4991ea945b",
+  "name" : "As a User I can Swap tokens - MGA - mETH",
+  "time" : {
+    "start" : 1631798260370,
+    "stop" : 1631798260372,
+    "duration" : 2
+  },
+  "status" : "failed",
+  "severity" : "normal"
+} ]
