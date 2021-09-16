@@ -5,6 +5,8 @@ on:
     branches:
       - main
       - develop
+  push:
+    branches: [ main ]
 
   workflow_dispatch:
       inputs:
