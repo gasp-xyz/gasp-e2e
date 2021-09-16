@@ -1,3 +1,4 @@
+import { WithdrawModal } from "./WithdrawModal";
 import { By, until, WebDriver } from "selenium-webdriver";
 import { FIVE_MIN } from "../../Constants";
 import { sleep } from "../../utils";
@@ -8,6 +9,7 @@ import {
   waitForElement,
   waitForElementToDissapear,
 } from "../utils/Helper";
+import { DepositModal } from "./DepositModal";
 
 const DIV_META_NOT_FOUND = "extensionMetamask-extensionNotFound";
 const DIV_POLK_NOT_FOUND = "extensionPolkadot-extensionNotFound";
@@ -54,15 +56,6 @@ export class Sidebar {
     ]);
   }
 
-  private async areVisible(listDataTestIds: string[]) {
-    const promises: Promise<Boolean>[] = [];
-    listDataTestIds.forEach((dataTestId) => {
-      promises.push(this.isDisplayed(buildDataTestIdXpath(dataTestId)));
-    });
-    const allVisible = await Promise.all(promises);
-    return allVisible.every((elem) => elem === true);
-  }
-
   async isMetamaskExtensionNotFoundDisplayed() {
     const notInstalledXpath = buildDataTestIdXpath(DIV_META_NOT_FOUND);
     const displayed = await this.isDisplayed(notInstalledXpath);
@@ -95,6 +88,40 @@ export class Sidebar {
     });
   }
 
+  async withdrawAllAssetsToMetaMask(tokenName: string) {
+    await this.clickOnWithdrawToEth();
+    const withdrawModal = new WithdrawModal(this.driver);
+    await withdrawModal.selectToken(tokenName);
+    await withdrawModal.selectMax();
+    await withdrawModal.clickContinue();
+    await withdrawModal.confirmAndSign();
+  }
+  async clickOnDepositToMangata() {
+    const locator = buildDataTestIdXpath(BTN_META_DEPOSIT);
+    await clickElement(this.driver, locator);
+  }
+  async clickOnWithdrawToEth() {
+    const locator = buildDataTestIdXpath(BTN_META_WITHDRAW);
+    await clickElement(this.driver, locator);
+  }
+  async waitForTokenToAppear(tokenName: string) {
+    const xpath = buildDataTestIdXpath(
+      this.buildTokenAvailableTestId(tokenName)
+    );
+    await waitForElement(this.driver, xpath, FIVE_MIN);
+  }
+  async getTokenAmount(tokenName: string) {
+    await this.waitForTokenToAppear(tokenName);
+    const tokenValueXpath = `//*[@data-testid='wallet-asset-${tokenName}']//span[@class='value']`;
+    const value = await (
+      await this.driver.findElement(By.xpath(tokenValueXpath))
+    ).getText();
+    return value;
+  }
+  private buildTokenAvailableTestId(asseName1: string) {
+    return `wallet-asset-${asseName1}`;
+  }
+
   private async isDisplayed(elementXpath: string) {
     try {
       await waitForElement(this.driver, elementXpath, 2000);
@@ -106,7 +133,14 @@ export class Sidebar {
       return false;
     }
   }
-
+  private async areVisible(listDataTestIds: string[]) {
+    const promises: Promise<Boolean>[] = [];
+    listDataTestIds.forEach((dataTestId) => {
+      promises.push(this.isDisplayed(buildDataTestIdXpath(dataTestId)));
+    });
+    const allVisible = await Promise.all(promises);
+    return allVisible.every((elem) => elem === true);
+  }
   async clickOnLiquidityPool(poolAsset1Name: string, poolAsset2Name: string) {
     let xpath = buildDataTestIdXpath(
       BTN_POOL_OVERVIEW.replace("tkn1", poolAsset1Name).replace(
@@ -132,6 +166,7 @@ export class Sidebar {
     const xpath = buildDataTestIdXpath(BTN_REMOVE_LIQUIDITY);
     await clickElement(this.driver, xpath);
   }
+
   async waitUntilTokenAvailable(assetName: string, timeout = FIVE_MIN) {
     const xpath = buildDataTestIdXpath(
       LBL_TOKEN_NAME.replace("tokenName", assetName)
@@ -154,9 +189,24 @@ export class Sidebar {
       buildDataTestIdXpath(this.buildPoolDataTestId(asset1Name, asset2Name))
     );
   }
+
   async getAssetValueInvested(assetName: string) {
     const LBL_TOKEN_AMOUNT_INVESTED = `//*[contains(@data-testid,'poolDetail') and span[text()='${assetName}']]`;
     const value = await getText(this.driver, LBL_TOKEN_AMOUNT_INVESTED);
     return value;
+  }
+  async depositAseetsFromMetamask(metaAssetName: string, amount: string) {
+    await this.clickOnDepositToMangata();
+    const modal = new DepositModal(this.driver);
+    await modal.selectToken(metaAssetName);
+    await modal.enterValue(amount);
+    await modal.clickContinue();
+    await modal.confirmAndSign();
+  }
+  async waitForTokenToDissapear(assetName: string, timeout = FIVE_MIN) {
+    const xpath = buildDataTestIdXpath(
+      LBL_TOKEN_NAME.replace("tokenName", assetName)
+    );
+    await waitForElementToDissapear(this.driver, xpath);
   }
 }
