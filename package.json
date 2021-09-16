@@ -32,6 +32,7 @@
     "yarn": "^1.22.10"
   },
   "scripts": {
+    "postinstall": "husky install",
     "start": "ts-node --project tsconfig.json index.ts",
     "start-prod": "node ./build/index.js",
     "build": "tsc --project tsconfig.json",
@@ -94,10 +95,5 @@
         }
       ]
     ]
-  },
-  "husky": {
-    "hooks": {
-      "pre-commit": "yarn tsc-lint && yarn eslint"
-    }
   }
 }
