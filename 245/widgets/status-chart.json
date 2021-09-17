@@ -1,0 +1,111 @@
+[ {
+  "uid" : "b88f3077baa5aed7",
+  "name" : "Validate that Mangata Frontend up and running",
+  "time" : {
+    "start" : 1631885136438,
+    "stop" : 1631885136463,
+    "duration" : 25
+  },
+  "status" : "failed",
+  "severity" : "normal"
+}, {
+  "uid" : "730705ce5f4b9316",
+  "name" : "xyk-CI - validate pools created: Pool[0,5]",
+  "time" : {
+    "start" : 1631885134955,
+    "stop" : 1631885135149,
+    "duration" : 194
+  },
+  "status" : "failed",
+  "severity" : "normal"
+}, {
+  "uid" : "61dd51067dd9a55f",
+  "name" : "xyk-CI - validate pools created: Pool[4,6]",
+  "time" : {
+    "start" : 1631885135345,
+    "stop" : 1631885135539,
+    "duration" : 194
+  },
+  "status" : "failed",
+  "severity" : "normal"
+}, {
+  "uid" : "a0ce0193bf835671",
+  "name" : "xyk-CI - validate user got the right Assets",
+  "time" : {
+    "start" : 1631885135540,
+    "stop" : 1631885135951,
+    "duration" : 411
+  },
+  "status" : "passed",
+  "severity" : "normal"
+}, {
+  "uid" : "9a0b00785c370280",
+  "name" : "As a User I can deposit ETH from Meta extension",
+  "time" : {
+    "start" : 1631885131606,
+    "stop" : 1631885132075,
+    "duration" : 469
+  },
+  "status" : "failed",
+  "severity" : "normal"
+}, {
+  "uid" : "7c81312723dd9488",
+  "name" : "Validate that Frontend retrieves AssetInfo data",
+  "time" : {
+    "start" : 1631885136463,
+    "stop" : 1631885136464,
+    "duration" : 1
+  },
+  "status" : "failed",
+  "severity" : "normal"
+}, {
+  "uid" : "dc99db8dec695656",
+  "name" : "xyk-CI - validate pools created: Pool[4,5]",
+  "time" : {
+    "start" : 1631885134756,
+    "stop" : 1631885134955,
+    "duration" : 199
+  },
+  "status" : "failed",
+  "severity" : "normal"
+}, {
+  "uid" : "4dc6fd541fc2cafb",
+  "name" : "xyk-CI - Node is up and running",
+  "time" : {
+    "start" : 1631885139139,
+    "stop" : 1631885142150,
+    "duration" : 3011
+  },
+  "status" : "passed",
+  "severity" : "normal"
+}, {
+  "uid" : "157586d5b50c156",
+  "name" : "xyk-CI - AssetInfo contains assets for MGA and Ether",
+  "time" : {
+    "start" : 1631885144810,
+    "stop" : 1631885145090,
+    "duration" : 280
+  },
+  "status" : "passed",
+  "severity" : "normal"
+}, {
+  "uid" : "760abacacdac2faa",
+  "name" : "xyk-CI - validate pools created: Pool[0,6]",
+  "time" : {
+    "start" : 1631885135149,
+    "stop" : 1631885135345,
+    "duration" : 196
+  },
+  "status" : "failed",
+  "severity" : "normal"
+}, {
+  "uid" : "bd8d5b759138ec60",
+  "name" : "As a User I can deposit ETH from Meta extension",
+  "time" : {
+    "start" : 1631885132082,
+    "stop" : 1631885132083,
+    "duration" : 1
+  },
+  "status" : "failed",
+  "severity" : "normal"
+} ]
