@@ -146,9 +146,41 @@ describe("SDK test - Nonce tests - user", () => {
       parseFloat(userNonce[0].toString())
     );
   });
+  test.skip("[BUG?] SDK- Nonce management - Transaction outdated", async () => {
+    const userNonce = [];
+    // perform an operation to have nonce > 0.
+    await mangata.sellAsset(
+      testUser.keyRingPair,
+      ETH_ASSET_ID.toString(),
+      MGA_ASSET_ID.toString(),
+      new BN(1000),
+      new BN(0)
+    );
+
+    userNonce.push(await mangata.getNonce(testUser.keyRingPair.address));
+    let exception = false;
+    await expect(
+      mangata
+        .sellAsset(
+          testUser.keyRingPair,
+          ETH_ASSET_ID.toString(),
+          MGA_ASSET_ID.toString(),
+          new BN(1000),
+          new BN(0),
+          {
+            nonce: new BN(0),
+          }
+        )
+        .catch((reason) => {
+          exception = true;
+          throw new Error(reason);
+        })
+    ).rejects.toThrow("1010: Invalid Transaction: Transaction is outdated");
+    expect(exception).toBeTruthy();
+  });
 });
 
-describe("SDK test - Nonce tests - No Balance", () => {
+describe("SDK test - Nonce tests - Errors", () => {
   test.skip("[BUG?] SDK- Nonce management - RPC Failure - Not enough balance", async () => {
     const testUser2 = new User(keyring);
     keyring.addPair(testUser2.keyRingPair);
