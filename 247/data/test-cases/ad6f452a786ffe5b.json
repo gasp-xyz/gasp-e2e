@@ -1,0 +1,83 @@
+{
+  "uid" : "ad6f452a786ffe5b",
+  "name" : "xyk-CI - validate pools created: Pool[0,6]",
+  "fullName" : "test/ci/xyk-ci.validate.setup.test.ts.xyk-CI - validate pools created: Pool[0,6]",
+  "historyId" : "69aae11422e03671a4cb76df6952decd",
+  "time" : {
+    "start" : 1631885153697,
+    "stop" : 1631885153889,
+    "duration" : 192
+  },
+  "description" : "",
+  "descriptionHtml" : "",
+  "status" : "failed",
+  "statusMessage" : "Error: Expected: 0 \n                  Actual: 0 \n                 ",
+  "statusTrace" : "Error: Expected: 0 \n                  Actual: 0 \n                 \n                    at /home/runner/work/mangata-e2e/mangata-e2e/test/ci/xyk-ci.validate.setup.test.ts:49:32\n                    at processTicksAndRejections (internal/process/task_queues.js:95:5)",
+  "flaky" : false,
+  "newFailed" : false,
+  "beforeStages" : [ ],
+  "afterStages" : [ ],
+  "labels" : [ {
+    "name" : "suite",
+    "value" : "test/ci/xyk-ci.validate.setup.test.ts"
+  }, {
+    "name" : "testClass",
+    "value" : "test/ci/xyk-ci.validate.setup.test.ts"
+  }, {
+    "name" : "testMethod",
+    "value" : "xyk-CI - validate pools created: Pool[0,6]"
+  }, {
+    "name" : "package",
+    "value" : "test/ci/xyk-ci.validate.setup.test.ts"
+  }, {
+    "name" : "resultFormat",
+    "value" : "allure1"
+  } ],
+  "parameters" : [ ],
+  "links" : [ ],
+  "hidden" : false,
+  "retry" : false,
+  "extra" : {
+    "severity" : "normal",
+    "retries" : [ ],
+    "categories" : [ {
+      "name" : "Product defects",
+      "matchedStatuses" : [ ],
+      "flaky" : false
+    } ],
+    "history" : {
+      "statistic" : {
+        "failed" : 3,
+        "broken" : 0,
+        "skipped" : 0,
+        "passed" : 0,
+        "unknown" : 0,
+        "total" : 3
+      },
+      "items" : [ {
+        "uid" : "760abacacdac2faa",
+        "reportUrl" : "https://mangata-finance.github.io/mangata-e2e/245//#testresult/760abacacdac2faa",
+        "status" : "failed",
+        "statusDetails" : "Error: Expected: 0 \n                  Actual: 0 \n                 ",
+        "time" : {
+          "start" : 1631885135149,
+          "stop" : 1631885135345,
+          "duration" : 196
+        }
+      }, {
+        "uid" : "b813e24242d117d6",
+        "reportUrl" : "https://mangata-finance.github.io/mangata-e2e/246//#testresult/b813e24242d117d6",
+        "status" : "failed",
+        "statusDetails" : "Error: Expected: 0 \n                  Actual: 0 \n                 ",
+        "time" : {
+          "start" : 1631885095453,
+          "stop" : 1631885095646,
+          "duration" : 193
+        }
+      } ]
+    },
+    "tags" : [ ]
+  },
+  "source" : "ad6f452a786ffe5b.json",
+  "parameterValues" : [ ]
+}
