@@ -13,7 +13,12 @@ import { User } from "../../utils/User";
 import { Mangata } from "mangata-sdk";
 import { getEventResultFromTxWait } from "../../utils/txHandler";
 import { ExtrinsicResult } from "mangata-sdk/build/types";
-import { MGA_ASSET_ID } from "../../utils/Constants";
+import {
+  ETH_ASSET_ID,
+  mETH_ASSET_NAME,
+  MGA_ASSET_ID,
+} from "../../utils/Constants";
+import { Assets } from "../../utils/Assets";
 
 jest.spyOn(console, "log").mockImplementation(jest.fn());
 jest.setTimeout(1500000);
@@ -33,9 +38,7 @@ beforeAll(async () => {
   }
   await getApi();
   mangata = await getMangataInstance();
-});
 
-beforeEach(async () => {
   keyring = new Keyring({ type: "sr25519" });
   // setup users
   testUser = new User(keyring);
@@ -43,61 +46,53 @@ beforeEach(async () => {
   // add users to pair.
   keyring.addPair(testUser.keyRingPair);
   keyring.addPair(sudo.keyRingPair);
+  await sudo.mint(MGA_ASSET_ID, testUser, new BN(1000));
+  await sudo.mint(ETH_ASSET_ID, testUser, new BN(1000));
 });
 
-test("SDK- Nonce management - sudo", async () => {
-  const userNonce = [];
-  const sudoNonce = [];
-  userNonce.push(await mangata.getNonce(testUser.keyRingPair.address));
-  sudoNonce.push(await mangata.getNonce(sudo.keyRingPair.address));
+beforeEach(async () => {});
 
-  const event = await mangata.createToken(
-    testUser.keyRingPair.address,
-    sudo.keyRingPair,
-    new BN(1000)
+test("SDK- Nonce management - user", async () => {
+  const userNonce = [];
+  userNonce.push(await mangata.getNonce(testUser.keyRingPair.address));
+  const event = await mangata.sellAsset(
+    testUser.keyRingPair,
+    ETH_ASSET_ID.toString(),
+    MGA_ASSET_ID.toString(),
+    new BN(1),
+    new BN(0)
   );
   const eventResult = getEventResultFromTxWait(event);
   expect(eventResult.state).toEqual(ExtrinsicResult.ExtrinsicSuccess);
   userNonce.push(await mangata.getNonce(testUser.keyRingPair.address));
-  sudoNonce.push(await mangata.getNonce(sudo.keyRingPair.address));
-  expect(parseFloat(sudoNonce[1].toString())).toBeGreaterThan(
-    parseFloat(sudoNonce[0].toString())
-  );
-  expect(userNonce[0]).bnEqual(userNonce[1]);
+  expect(userNonce[1]).bnEqual(userNonce[0].add(new BN(1)));
 });
-test("SDK- Nonce management - sudo - parallel", async () => {
-  const sudoNonce = [];
-  sudoNonce.push(await mangata.getNonce(sudo.keyRingPair.address));
+test("SDK- Nonce management - user - parallel", async () => {
+  const userNonce = [];
+  userNonce.push(await mangata.getNonce(testUser.keyRingPair.address));
   const promises = [];
   for (let index = 0; index < 10; index++) {
     promises.push(
-      mangata.createToken(
-        testUser.keyRingPair.address,
-        sudo.keyRingPair,
-        new BN(1000)
+      mangata.sellAsset(
+        testUser.keyRingPair,
+        ETH_ASSET_ID.toString(),
+        MGA_ASSET_ID.toString(),
+        new BN(1),
+        new BN(0)
       )
     );
   }
   await Promise.all(promises);
-  sudoNonce.push(await mangata.getNonce(sudo.keyRingPair.address));
-  expect(parseFloat(sudoNonce[1].toString())).toBeGreaterThan(
-    parseFloat(sudoNonce[0].toString()) + 9
+  userNonce.push(await mangata.getNonce(testUser.keyRingPair.address));
+  expect(parseFloat(userNonce[1].toString())).toBeGreaterThan(
+    parseFloat(userNonce[0].toString()) + 9
   );
 });
 
 test("SDK- Nonce management - Extrinsic failed", async () => {
   const userNonce = [];
-  const sudoNonce = [];
   userNonce.push(await mangata.getNonce(testUser.keyRingPair.address));
-  sudoNonce.push(await mangata.getNonce(sudo.keyRingPair.address));
-  const mintEventResult = await mangata.mintAsset(
-    sudo.keyRingPair,
-    MGA_ASSET_ID,
-    testUser.keyRingPair.address,
-    new BN(2000)
-  );
-  let eventResult = getEventResultFromTxWait(mintEventResult);
-  expect(eventResult.state).toEqual(ExtrinsicResult.ExtrinsicSuccess);
+
   //pool does not exist.
   const MAX_INT = 4294967295;
   const event = await mangata.sellAsset(
@@ -107,49 +102,51 @@ test("SDK- Nonce management - Extrinsic failed", async () => {
     new BN(1000),
     new BN(1)
   );
-  eventResult = getEventResultFromTxWait(event);
+  const eventResult = getEventResultFromTxWait(event);
   expect(eventResult.state).toEqual(ExtrinsicResult.ExtrinsicFailed);
   userNonce.push(await mangata.getNonce(testUser.keyRingPair.address));
-  sudoNonce.push(await mangata.getNonce(sudo.keyRingPair.address));
-  expect(parseFloat(sudoNonce[1].toString())).toBeGreaterThan(
-    parseFloat(sudoNonce[0].toString())
-  );
   expect(parseFloat(userNonce[1].toString())).toBeGreaterThan(
     parseFloat(userNonce[0].toString())
   );
 });
 test("SDK- Nonce management - Using custom nonce", async () => {
-  const sudoNonce = [];
-  sudoNonce.push(await mangata.getNonce(sudo.keyRingPair.address));
-  const mintEventResult = await mangata.mintAsset(
-    sudo.keyRingPair,
-    MGA_ASSET_ID,
-    testUser.keyRingPair.address,
-    new BN(2000),
-    { nonce: sudoNonce[0] }
+  const userNonce = [];
+  userNonce.push(await mangata.getNonce(testUser.keyRingPair.address));
+  const events = await mangata.sellAsset(
+    testUser.keyRingPair,
+    ETH_ASSET_ID.toString(),
+    MGA_ASSET_ID.toString(),
+    new BN(1),
+    new BN(0),
+    {
+      nonce: userNonce[0],
+    }
   );
-  let eventResult = getEventResultFromTxWait(mintEventResult);
+  let eventResult = getEventResultFromTxWait(events);
   expect(eventResult.state).toEqual(ExtrinsicResult.ExtrinsicSuccess);
   //perform an operation without custom nonce.
-  const mintEventResult2 = await mangata.mintAsset(
-    sudo.keyRingPair,
-    MGA_ASSET_ID,
-    testUser.keyRingPair.address,
-    new BN(2001)
+  const events2 = await mangata.sellAsset(
+    testUser.keyRingPair,
+    ETH_ASSET_ID.toString(),
+    MGA_ASSET_ID.toString(),
+    new BN(1),
+    new BN(0)
   );
-  eventResult = getEventResultFromTxWait(mintEventResult2);
+  eventResult = getEventResultFromTxWait(events2);
   expect(eventResult.state).toEqual(ExtrinsicResult.ExtrinsicSuccess);
 
-  sudoNonce.push(await mangata.getNonce(sudo.keyRingPair.address));
-  expect(parseFloat(sudoNonce[1].toString())).toBeGreaterThan(
-    parseFloat(sudoNonce[0].toString())
+  userNonce.push(await mangata.getNonce(testUser.keyRingPair.address));
+  expect(parseFloat(userNonce[1].toString())).toBeGreaterThan(
+    parseFloat(userNonce[0].toString())
   );
 });
 
 test("[BUG?] SDK- Nonce management - RPC Failure - Not enough balance", async () => {
+  const testUser2 = new User(keyring);
+  keyring.addPair(testUser2.keyRingPair);
   const userNonce = [];
   const sudoNonce = [];
-  userNonce.push(await mangata.getNonce(testUser.keyRingPair.address));
+  userNonce.push(await mangata.getNonce(testUser2.keyRingPair.address));
   sudoNonce.push(await mangata.getNonce(sudo.keyRingPair.address));
 
   //pool does not exist.
@@ -173,7 +170,7 @@ test("[BUG?] SDK- Nonce management - RPC Failure - Not enough balance", async ()
   );
   expect(exception).toBeTruthy();
 
-  userNonce.push(await mangata.getNonce(testUser.keyRingPair.address));
+  userNonce.push(await mangata.getNonce(testUser2.keyRingPair.address));
   sudoNonce.push(await mangata.getNonce(sudo.keyRingPair.address));
   expect(sudoNonce[1]).bnEqual(sudoNonce[0]);
   expect(userNonce[1]).bnEqual(sudoNonce[0]);
