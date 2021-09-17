@@ -1,0 +1,111 @@
+[ {
+  "uid" : "aed9f7ec3f79112a",
+  "name" : "xyk-CI - AssetInfo contains assets for MGA and Ether",
+  "time" : {
+    "start" : 1631885102332,
+    "stop" : 1631885102546,
+    "duration" : 214
+  },
+  "status" : "passed",
+  "severity" : "normal"
+}, {
+  "uid" : "a9cf9f240e56390e",
+  "name" : "Validate that Frontend retrieves AssetInfo data",
+  "time" : {
+    "start" : 1631885096642,
+    "stop" : 1631885096643,
+    "duration" : 1
+  },
+  "status" : "failed",
+  "severity" : "normal"
+}, {
+  "uid" : "687a631b52ceac25",
+  "name" : "xyk-CI - validate pools created: Pool[0,5]",
+  "time" : {
+    "start" : 1631885095260,
+    "stop" : 1631885095453,
+    "duration" : 193
+  },
+  "status" : "failed",
+  "severity" : "normal"
+}, {
+  "uid" : "269c94b6b2be86ea",
+  "name" : "xyk-CI - validate user got the right Assets",
+  "time" : {
+    "start" : 1631885095840,
+    "stop" : 1631885096254,
+    "duration" : 414
+  },
+  "status" : "passed",
+  "severity" : "normal"
+}, {
+  "uid" : "578b0e5ed420fcfd",
+  "name" : "Validate that Mangata Frontend up and running",
+  "time" : {
+    "start" : 1631885096621,
+    "stop" : 1631885096642,
+    "duration" : 21
+  },
+  "status" : "failed",
+  "severity" : "normal"
+}, {
+  "uid" : "2b7b4fcd77d17b4e",
+  "name" : "xyk-CI - validate pools created: Pool[4,5]",
+  "time" : {
+    "start" : 1631885095064,
+    "stop" : 1631885095260,
+    "duration" : 196
+  },
+  "status" : "failed",
+  "severity" : "normal"
+}, {
+  "uid" : "b813e24242d117d6",
+  "name" : "xyk-CI - validate pools created: Pool[0,6]",
+  "time" : {
+    "start" : 1631885095453,
+    "stop" : 1631885095646,
+    "duration" : 193
+  },
+  "status" : "failed",
+  "severity" : "normal"
+}, {
+  "uid" : "d62c68a00e45f0df",
+  "name" : "As a User I can deposit ETH from Meta extension",
+  "time" : {
+    "start" : 1631885092751,
+    "stop" : 1631885092753,
+    "duration" : 2
+  },
+  "status" : "failed",
+  "severity" : "normal"
+}, {
+  "uid" : "12fe34fa9184dff8",
+  "name" : "xyk-CI - Node is up and running",
+  "time" : {
+    "start" : 1631885098873,
+    "stop" : 1631885100089,
+    "duration" : 1216
+  },
+  "status" : "passed",
+  "severity" : "normal"
+}, {
+  "uid" : "d6801d5da10dadb8",
+  "name" : "As a User I can deposit ETH from Meta extension",
+  "time" : {
+    "start" : 1631885092292,
+    "stop" : 1631885092747,
+    "duration" : 455
+  },
+  "status" : "failed",
+  "severity" : "normal"
+}, {
+  "uid" : "19ddb75641a7093d",
+  "name" : "xyk-CI - validate pools created: Pool[4,6]",
+  "time" : {
+    "start" : 1631885095646,
+    "stop" : 1631885095839,
+    "duration" : 193
+  },
+  "status" : "failed",
+  "severity" : "normal"
+} ]
