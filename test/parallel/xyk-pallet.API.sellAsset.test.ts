@@ -181,11 +181,17 @@ describe("xyk-pallet - Sell assets tests: SellAsset Errors:", () => {
     });
 
     await testUser1.refreshAmounts(AssetWallet.AFTER);
-    await testUser1.validateWalletReduced(
-      firstCurrency,
-      new BN(defaultCurrecyValue).sub(new BN(1))
+
+    const diffFromWallet = testUser1
+      .getAsset(firstCurrency)
+      ?.amountBefore!.sub(new BN(defaultCurrecyValue).sub(new BN(1)));
+    expect(testUser1.getAsset(firstCurrency)?.amountAfter!).bnEqual(
+      diffFromWallet!
     );
-    await testUser1.validateWalletEquals(secondCurrency, secondWalletAmount);
+
+    expect(testUser1.getAsset(secondCurrency)?.amountAfter!).bnEqual(
+      secondWalletAmount
+    );
 
     const pool_balance = await getBalanceOfPool(firstCurrency, secondCurrency);
 
@@ -257,12 +263,17 @@ describe("xyk-pallet - Sell assets tests: SellAsset Errors:", () => {
     //fee: 603 ??  //TODO: validate with Stano.
     const feeToAvoidFrontRunning = new BN(603);
     await testUser1.refreshAmounts(AssetWallet.AFTER);
-    testUser1.validateWalletReduced(firstCurrency, feeToAvoidFrontRunning);
-    //second wallet should not be modified.
-    testUser1.validateWalletEquals(
-      secondCurrency,
-      testUser1.getAsset(secondCurrency)?.amountBefore!
+
+    const diffFromWallet = testUser1
+      .getAsset(firstCurrency)
+      ?.amountBefore!.sub(feeToAvoidFrontRunning);
+    expect(testUser1.getAsset(firstCurrency)?.amountAfter!).bnEqual(
+      diffFromWallet!
     );
+
+    //second wallet should not be modified.
+    const amount = testUser1.getAsset(secondCurrency)?.amountBefore!;
+    expect(testUser1.getAsset(secondCurrency)?.amountAfter!).bnEqual(amount);
 
     const treasury = await getTreasury(firstCurrency);
     const treasuryBurn = await getTreasuryBurn(firstCurrency);
@@ -360,13 +371,18 @@ describe("xyk-pallet - Sell assets tests: Selling Assets you can", () => {
 
     await testUser1.refreshAmounts(AssetWallet.AFTER);
     //spent all the money!
-    await testUser1.validateWalletEquals(firstCurrency, new BN(0));
+
+    const amount = new BN(0);
+    expect(testUser1.getAsset(firstCurrency)?.amountAfter!).bnEqual(amount);
     //amounAsset2 = issued  - spent in the pool + bought selling all firstCurerncy.
-    const amounAsset2 = defaultCurrecyValue
+    const amountAsset2 = defaultCurrecyValue
       .add(new BN(1))
       .sub(second_asset_amount.div(new BN(2)))
       .add(sellPriceLocal);
-    await testUser1.validateWalletEquals(secondCurrency, amounAsset2);
+
+    expect(testUser1.getAsset(secondCurrency)?.amountAfter!).bnEqual(
+      amountAsset2
+    );
   });
 
   test("Sell assets from a wallet I own into a wallet I do not own: limit", async () => {
@@ -440,7 +456,11 @@ describe("xyk-pallet - Sell assets tests: Selling Assets you can", () => {
     });
     testUser2.addAsset(firstCurrency);
     await testUser2.refreshAmounts(AssetWallet.AFTER);
-    testUser2.validateWalletEquals(thirdCurrency, new BN(0));
-    testUser2.validateWalletEquals(firstCurrency, sellPriceLocal);
+
+    let amount = new BN(0);
+    expect(testUser2.getAsset(thirdCurrency)?.amountAfter!).bnEqual(amount);
+
+    amount = sellPriceLocal;
+    expect(testUser2.getAsset(firstCurrency)?.amountAfter!).bnEqual(amount);
   });
 });
