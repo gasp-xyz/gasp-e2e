@@ -539,7 +539,7 @@ describe("xyk-pallet - treasury tests [Connected - Mangata]: Error cases", () =>
   let sudo: User;
 
   let keyring: Keyring;
-  let connectedToMGA: BN, indirectlyConnected: BN;
+  let connectedToMGA: BN;
   let mgaTokenId: BN;
 
   beforeAll(async () => {
@@ -574,9 +574,6 @@ describe("xyk-pallet - treasury tests [Connected - Mangata]: Error cases", () =>
     await sudo.mint(mgaTokenId, testUser1, new BN(defaultCurrecyValue));
     testUser1.addAsset(mgaTokenId);
     connectedToMGA = (
-      await Assets.setupUserWithCurrencies(testUser1, [MAX_BALANCE], sudo)
-    )[0];
-    indirectlyConnected = (
       await Assets.setupUserWithCurrencies(testUser1, [MAX_BALANCE], sudo)
     )[0];
     await testUser1.addMGATokens(sudo);
