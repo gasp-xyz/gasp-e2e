@@ -17,9 +17,11 @@ import {
   setupAllExtensions,
   addExtraLogs,
 } from "../../utils/frontend/utils/Helper";
-import { getBalanceOfPool } from "../../utils/txHandler";
 import { AssetWallet, User } from "../../utils/User";
-import { getEnvironmentRequiredVars } from "../../utils/utils";
+import {
+  createPoolIfMissing,
+  getEnvironmentRequiredVars,
+} from "../../utils/utils";
 import {
   FIVE_MIN,
   mETH_ASSET_NAME,
@@ -56,23 +58,12 @@ describe("UI tests - A user can swap and mint tokens", () => {
     testUser1.addFromMnemonic(keyring, mnemonic);
     sudo = new User(keyring, sudoUserName);
     await sudo.mint(MGA_ASSET_ID, testUser1, new BN(visibleValueNumber));
-    const balance = await getBalanceOfPool(MGA_ASSET_ID, ETH_ASSET_ID);
     await sudo.mint(
       ETH_ASSET_ID,
       testUser1,
       new BN((parseInt(visibleValueNumber) / 1000).toString())
     );
-    if (balance[0].isEmpty || balance[1].isEmpty) {
-      await sudo.mint(MGA_ASSET_ID, sudo, new BN(visibleValueNumber));
-      await sudo.mint(ETH_ASSET_ID, sudo, new BN(visibleValueNumber));
-      const poolValue = new BN(visibleValueNumber).div(new BN(2));
-      await sudo.createPoolToAsset(
-        poolValue,
-        poolValue,
-        MGA_ASSET_ID,
-        ETH_ASSET_ID
-      );
-    }
+    await createPoolIfMissing(sudo, visibleValueNumber);
     testUser1.addAsset(MGA_ASSET_ID);
     testUser1.addAsset(ETH_ASSET_ID);
   });
