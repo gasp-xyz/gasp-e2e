@@ -17,6 +17,7 @@ import { Mangata } from "mangata-sdk";
 import { getEventResultFromTxWait } from "../../utils/txHandler";
 import { ExtrinsicResult } from "mangata-sdk/build/types";
 import { ETH_ASSET_ID, MGA_ASSET_ID } from "../../utils/Constants";
+import { waitNewBlock } from "../../utils/eventListeners";
 
 jest.spyOn(console, "log").mockImplementation(jest.fn());
 jest.setTimeout(1500000);
@@ -48,8 +49,8 @@ beforeAll(async () => {
 
 describe("SDK test - Nonce tests - user", () => {
   beforeAll(async () => {
-    await sudo.mint(MGA_ASSET_ID, testUser, new BN(100000));
-    await sudo.mint(ETH_ASSET_ID, testUser, new BN(100000));
+    await sudo.mint(MGA_ASSET_ID, testUser, new BN(1000000));
+    await sudo.mint(ETH_ASSET_ID, testUser, new BN(1000000));
     await createPoolIfMissing(
       sudo,
       new BN(100000).toString(),
@@ -83,7 +84,7 @@ describe("SDK test - Nonce tests - user", () => {
           testUser.keyRingPair,
           ETH_ASSET_ID.toString(),
           MGA_ASSET_ID.toString(),
-          new BN(1),
+          new BN(1000),
           new BN(0)
         )
       );
@@ -94,7 +95,40 @@ describe("SDK test - Nonce tests - user", () => {
       parseFloat(userNonce[0].toString()) + 9
     );
   });
-
+  test("SDK- Nonce management - user - future Tx-", async () => {
+    const userNonce = [];
+    userNonce.push(await mangata.getNonce(testUser.keyRingPair.address));
+    const promises = [];
+    const maxFutureNonce = userNonce[0].toNumber() + 3;
+    for (
+      let index = maxFutureNonce;
+      index >= userNonce[0].toNumber();
+      index--
+    ) {
+      promises.push(
+        mangata.sellAsset(
+          testUser.keyRingPair,
+          ETH_ASSET_ID.toString(),
+          MGA_ASSET_ID.toString(),
+          new BN(1000 + index),
+          new BN(0),
+          {
+            nonce: new BN(index),
+          }
+        )
+      );
+      await waitNewBlock(true);
+    }
+    const promisesEvents = await Promise.all(promises);
+    promisesEvents.forEach((events) => {
+      const result = getEventResultFromTxWait(events);
+      expect(result.state).toEqual(ExtrinsicResult.ExtrinsicSuccess);
+    });
+    userNonce.push(await mangata.getNonce(testUser.keyRingPair.address));
+    expect(parseFloat(userNonce[1].toString())).toBeGreaterThanOrEqual(
+      parseFloat(userNonce[0].toString()) + 2
+    );
+  });
   test("SDK- Nonce management - Extrinsic failed", async () => {
     const userNonce = [];
     userNonce.push(await mangata.getNonce(testUser.keyRingPair.address));
