@@ -1,0 +1,238 @@
+{
+  "uid" : "4b4757e66a1912dae1a509f688f20b0f",
+  "children" : [ {
+    "name" : "Product defects",
+    "children" : [ {
+      "name" : "Error: Timeout - Async callback was not invoked within the 300000 ms timeout specified by jest.setTimeout.",
+      "children" : [ {
+        "name" : "As a User I can Swap tokens - MGA - mETH",
+        "uid" : "c4a89bc5b466dd7c",
+        "parentUid" : "f66f4947f88d0ce9c6a938c68bc699c1",
+        "status" : "failed",
+        "time" : {
+          "start" : 1631970972998,
+          "stop" : 1631970973003,
+          "duration" : 5
+        },
+        "flaky" : false,
+        "newFailed" : false,
+        "parameters" : [ ]
+      }, {
+        "name" : "As a User I can mint some tokens MGA - mETH",
+        "uid" : "7f3361060d874d0",
+        "parentUid" : "f66f4947f88d0ce9c6a938c68bc699c1",
+        "status" : "failed",
+        "time" : {
+          "start" : 1631970973003,
+          "stop" : 1631970973005,
+          "duration" : 2
+        },
+        "flaky" : false,
+        "newFailed" : false,
+        "parameters" : [ ]
+      }, {
+        "name" : "As a User I can burn all liquidity MGA - mETH",
+        "uid" : "10685906a7b1c56d",
+        "parentUid" : "f66f4947f88d0ce9c6a938c68bc699c1",
+        "status" : "failed",
+        "time" : {
+          "start" : 1631970973005,
+          "stop" : 1631970973007,
+          "duration" : 2
+        },
+        "flaky" : false,
+        "newFailed" : false,
+        "parameters" : [ ]
+      }, {
+        "name" : "As a User I can mint in more than one pool [ MGA - mETH ] [ MGA - newTokn ] and get invested values",
+        "uid" : "d437d88985daa8f5",
+        "parentUid" : "f66f4947f88d0ce9c6a938c68bc699c1",
+        "status" : "failed",
+        "time" : {
+          "start" : 1631970973007,
+          "stop" : 1631970973008,
+          "duration" : 1
+        },
+        "flaky" : false,
+        "newFailed" : false,
+        "parameters" : [ ]
+      }, {
+        "name" : "As a User I get the right values for Pool removal P[2499999999999999999, 5000000000000000000] - I-> 2 -Expected - 0.050 , 0.100",
+        "uid" : "22070efe3b3d2611",
+        "parentUid" : "f66f4947f88d0ce9c6a938c68bc699c1",
+        "status" : "failed",
+        "time" : {
+          "start" : 1631971277299,
+          "stop" : 1631971277413,
+          "duration" : 114
+        },
+        "flaky" : false,
+        "newFailed" : false,
+        "parameters" : [ ]
+      }, {
+        "name" : "As a User I get the right values for Pool removal P[2500000000000000000, 5000000000000000000] - I-> 1 -Expected - 0.025 , 0.05",
+        "uid" : "626a238bab72ffaa",
+        "parentUid" : "f66f4947f88d0ce9c6a938c68bc699c1",
+        "status" : "failed",
+        "time" : {
+          "start" : 1631971277413,
+          "stop" : 1631971277415,
+          "duration" : 2
+        },
+        "flaky" : false,
+        "newFailed" : false,
+        "parameters" : [ ]
+      }, {
+        "name" : "As a User I get the right values for Pool investment P[5000000000000000000, 100] - I-> 100000000000 -Expected - 0.000002",
+        "uid" : "e623a0e29cdd776d",
+        "parentUid" : "f66f4947f88d0ce9c6a938c68bc699c1",
+        "status" : "failed",
+        "time" : {
+          "start" : 1631971578470,
+          "stop" : 1631971578587,
+          "duration" : 117
+        },
+        "flaky" : false,
+        "newFailed" : false,
+        "parameters" : [ ]
+      }, {
+        "name" : "As a User I get the right values for Pool investment P[5000000000000000000, 5000000000000000000] - I-> 0.123 -Expected - 0.123",
+        "uid" : "bd5a1abf5ac726b1",
+        "parentUid" : "f66f4947f88d0ce9c6a938c68bc699c1",
+        "status" : "failed",
+        "time" : {
+          "start" : 1631971578587,
+          "stop" : 1631971578589,
+          "duration" : 2
+        },
+        "flaky" : false,
+        "newFailed" : false,
+        "parameters" : [ ]
+      }, {
+        "name" : "As a User I get the right values for Pool investment P[2500000000000000000, 5000000000000000000] - I-> 0.100 -Expected - 0.200",
+        "uid" : "d8b6e8bb27bc03cc",
+        "parentUid" : "f66f4947f88d0ce9c6a938c68bc699c1",
+        "status" : "failed",
+        "time" : {
+          "start" : 1631971578589,
+          "stop" : 1631971578592,
+          "duration" : 3
+        },
+        "flaky" : false,
+        "newFailed" : false,
+        "parameters" : [ ]
+      }, {
+        "name" : "As a User I can create a pool",
+        "uid" : "2e166132f2d71fab",
+        "parentUid" : "f66f4947f88d0ce9c6a938c68bc699c1",
+        "status" : "failed",
+        "time" : {
+          "start" : 1631971881925,
+          "stop" : 1631971881931,
+          "duration" : 6
+        },
+        "flaky" : false,
+        "newFailed" : false,
+        "parameters" : [ ]
+      } ],
+      "uid" : "f66f4947f88d0ce9c6a938c68bc699c1"
+    }, {
+      "name" : "WebDriverError: Requested environment is not available",
+      "children" : [ {
+        "name" : "As a User I can deposit ETH from Meta extension",
+        "uid" : "27932829cefacb06",
+        "parentUid" : "a6d6113a4f4058fbed4d9e46e292ead6",
+        "status" : "failed",
+        "time" : {
+          "start" : 1631970976233,
+          "stop" : 1631970976728,
+          "duration" : 495
+        },
+        "flaky" : false,
+        "newFailed" : false,
+        "parameters" : [ ]
+      }, {
+        "name" : "As a User I can deposit ETH from Meta extension",
+        "uid" : "e9e328f3c7d956f7",
+        "parentUid" : "a6d6113a4f4058fbed4d9e46e292ead6",
+        "status" : "failed",
+        "time" : {
+          "start" : 1631970976733,
+          "stop" : 1631970976735,
+          "duration" : 2
+        },
+        "flaky" : false,
+        "newFailed" : false,
+        "parameters" : [ ]
+      }, {
+        "name" : "As a User I can get test tokens from the faucet",
+        "uid" : "b129b1d2bc538e06",
+        "parentUid" : "a6d6113a4f4058fbed4d9e46e292ead6",
+        "status" : "failed",
+        "time" : {
+          "start" : 1631971885116,
+          "stop" : 1631971885697,
+          "duration" : 581
+        },
+        "flaky" : false,
+        "newFailed" : false,
+        "parameters" : [ ]
+      }, {
+        "name" : "As a User I get infomed whenever is neccesary to install any extension",
+        "uid" : "48c5f2d196ab5943",
+        "parentUid" : "a6d6113a4f4058fbed4d9e46e292ead6",
+        "status" : "failed",
+        "time" : {
+          "start" : 1631971886158,
+          "stop" : 1631971888179,
+          "duration" : 2021
+        },
+        "flaky" : false,
+        "newFailed" : false,
+        "parameters" : [ ]
+      }, {
+        "name" : "As a User I get feedback when extensions are installed and correctly setup",
+        "uid" : "7f75c46e2bda1288",
+        "parentUid" : "a6d6113a4f4058fbed4d9e46e292ead6",
+        "status" : "failed",
+        "time" : {
+          "start" : 1631971888179,
+          "stop" : 1631971888180,
+          "duration" : 1
+        },
+        "flaky" : false,
+        "newFailed" : false,
+        "parameters" : [ ]
+      }, {
+        "name" : "Validate that Mangata Frontend up and running",
+        "uid" : "acddd9a5557ee3a3",
+        "parentUid" : "a6d6113a4f4058fbed4d9e46e292ead6",
+        "status" : "failed",
+        "time" : {
+          "start" : 1631971888563,
+          "stop" : 1631971888595,
+          "duration" : 32
+        },
+        "flaky" : false,
+        "newFailed" : false,
+        "parameters" : [ ]
+      }, {
+        "name" : "Validate that Frontend retrieves AssetInfo data",
+        "uid" : "d0cd985dc9290192",
+        "parentUid" : "a6d6113a4f4058fbed4d9e46e292ead6",
+        "status" : "failed",
+        "time" : {
+          "start" : 1631971888595,
+          "stop" : 1631971888596,
+          "duration" : 1
+        },
+        "flaky" : false,
+        "newFailed" : false,
+        "parameters" : [ ]
+      } ],
+      "uid" : "a6d6113a4f4058fbed4d9e46e292ead6"
+    } ],
+    "uid" : "8fb3a91ba5aaf9de24cc8a92edc82b5d"
+  } ],
+  "name" : "categories"
+}
