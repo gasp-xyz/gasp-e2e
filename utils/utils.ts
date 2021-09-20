@@ -1,10 +1,9 @@
 import { formatBalance } from "@polkadot/util/format";
 import BN from "bn.js";
-import { getApi } from "./api";
+import { getApi, getMangataInstance } from "./api";
 
 import { waitNewBlock } from "./eventListeners";
 import { Assets } from "./Assets";
-import { signSendAndWaitToFinishTx } from "./txHandler";
 import { User } from "./User";
 import Keyring from "@polkadot/keyring";
 import { getAccountJSON } from "./frontend/utils/Helper";
@@ -86,21 +85,20 @@ export async function UserCreatesAPoolAndMintliquidity(
   mintAmount: BN = new BN(userAmount).div(new BN(4))
 ) {
   await waitNewBlock();
-  const api = getApi();
   const [firstCurrency, secondCurrency] = await Assets.setupUserWithCurrencies(
     testUser1,
     [userAmount, userAmount],
     sudo
   );
   await testUser1.addMGATokens(sudo);
-  await signSendAndWaitToFinishTx(
-    api?.tx.xyk.createPool(
-      firstCurrency,
-      poolAmount,
-      secondCurrency,
-      poolAmount
-    ),
-    testUser1.keyRingPair
+  await (
+    await getMangataInstance()
+  ).createPool(
+    testUser1.keyRingPair,
+    firstCurrency.toString(),
+    poolAmount,
+    secondCurrency.toString(),
+    poolAmount
   );
   await waitNewBlock();
   await testUser1.mintLiquidity(firstCurrency, secondCurrency, mintAmount);

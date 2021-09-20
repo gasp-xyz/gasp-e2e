@@ -4,7 +4,7 @@
  * @group api
  * @group parallel
  */
-import { api, getApi, initApi } from "../../utils/api";
+import { getApi, getMangataInstance, initApi } from "../../utils/api";
 import {
   getBalanceOfPool,
   sellAsset,
@@ -22,10 +22,7 @@ import {
 } from "../../utils/validators";
 import { Assets } from "../../utils/Assets";
 import { getEnvironmentRequiredVars } from "../../utils/utils";
-import {
-  getEventResultFromTxWait,
-  signSendAndWaitToFinishTx,
-} from "../../utils/txHandler";
+import { getEventResultFromTxWait } from "../../utils/txHandler";
 
 jest.spyOn(console, "log").mockImplementation(jest.fn());
 jest.setTimeout(1500000);
@@ -124,14 +121,14 @@ describe("xyk-pallet - Sell assets tests: SellAsset Errors:", () => {
     );
     await testUser1.addMGATokens(sudo);
     await testUser1.refreshAmounts(AssetWallet.BEFORE);
-    await signSendAndWaitToFinishTx(
-      api?.tx.xyk.createPool(
-        firstCurrency,
-        first_asset_amount,
-        secondCurrency,
-        second_asset_amount.div(new BN(2))
-      ),
-      testUser1.keyRingPair
+    await (
+      await getMangataInstance()
+    ).createPool(
+      testUser1.keyRingPair,
+      firstCurrency.toString(),
+      first_asset_amount,
+      secondCurrency.toString(),
+      second_asset_amount.div(new BN(2))
     );
     await waitNewBlock();
     let remainingOfCurrency1 = testUser1
@@ -230,14 +227,14 @@ describe("xyk-pallet - Sell assets tests: SellAsset Errors:", () => {
     );
     await testUser1.addMGATokens(sudo);
     const secondAssetAmount = second_asset_amount.div(new BN(2));
-    await signSendAndWaitToFinishTx(
-      api?.tx.xyk.createPool(
-        firstCurrency,
-        first_asset_amount,
-        secondCurrency,
-        secondAssetAmount
-      ),
-      testUser1.keyRingPair
+    await (
+      await getMangataInstance()
+    ).createPool(
+      testUser1.keyRingPair,
+      firstCurrency.toString(),
+      first_asset_amount,
+      secondCurrency.toString(),
+      secondAssetAmount
     );
     await testUser1.refreshAmounts(AssetWallet.BEFORE);
     const remainingOfCurrency1 =
@@ -327,15 +324,16 @@ describe("xyk-pallet - Sell assets tests: Selling Assets you can", () => {
       sudo
     );
     await testUser1.addMGATokens(sudo);
-    await signSendAndWaitToFinishTx(
-      api?.tx.xyk.createPool(
-        firstCurrency,
-        first_asset_amount,
-        secondCurrency,
-        second_asset_amount.div(new BN(2))
-      ),
-      testUser1.keyRingPair
+    await (
+      await getMangataInstance()
+    ).createPool(
+      testUser1.keyRingPair,
+      firstCurrency.toString(),
+      first_asset_amount,
+      secondCurrency.toString(),
+      second_asset_amount.div(new BN(2))
     );
+
     await testUser1.refreshAmounts(AssetWallet.BEFORE);
     const remainingOfCurrency1 =
       testUser1.getAsset(firstCurrency)?.amountBefore!;
@@ -403,23 +401,24 @@ describe("xyk-pallet - Sell assets tests: Selling Assets you can", () => {
 
     await sudo.mint(thirdCurrency, testUser1, new BN(10000));
     await testUser1.addMGATokens(sudo);
-    await signSendAndWaitToFinishTx(
-      api?.tx.xyk.createPool(
-        firstCurrency,
-        first_asset_amount,
-        secondCurrency,
-        second_asset_amount.div(new BN(2))
-      ),
-      testUser1.keyRingPair
+    await (
+      await getMangataInstance()
+    ).createPool(
+      testUser1.keyRingPair,
+      firstCurrency.toString(),
+      first_asset_amount,
+      secondCurrency.toString(),
+      second_asset_amount.div(new BN(2))
     );
-    await signSendAndWaitToFinishTx(
-      api?.tx.xyk.createPool(
-        firstCurrency,
-        new BN(10000),
-        thirdCurrency,
-        new BN(10000).div(new BN(2))
-      ),
-      testUser1.keyRingPair
+
+    await (
+      await getMangataInstance()
+    ).createPool(
+      testUser1.keyRingPair,
+      firstCurrency.toString(),
+      new BN(10000),
+      thirdCurrency.toString(),
+      new BN(10000).div(new BN(2))
     );
 
     await testUser2.refreshAmounts(AssetWallet.BEFORE);
