@@ -121,11 +121,26 @@ export async function validateStatusWhenPoolCreated(
   testUser1.addAsset(liquidity_asset_id, new BN(0));
 
   await testUser1.refreshAmounts(AssetWallet.AFTER);
-  await testUser1.validateWalletReduced(firstCurrency, first_asset_amount);
-  await testUser1.validateWalletReduced(secondCurrency, second_asset_amount);
-  await testUser1.validateWalletIncreased(
-    liquidity_asset_id,
-    liquidity_assets_minted
+
+  let diffFromWallet = testUser1
+    .getAsset(firstCurrency)
+    ?.amountBefore!.sub(first_asset_amount);
+  expect(testUser1.getAsset(firstCurrency)?.amountAfter!).bnEqual(
+    diffFromWallet!
+  );
+
+  diffFromWallet = testUser1
+    .getAsset(secondCurrency)
+    ?.amountBefore!.sub(second_asset_amount);
+  expect(testUser1.getAsset(secondCurrency)?.amountAfter!).bnEqual(
+    diffFromWallet!
+  );
+
+  const addFromWallet = testUser1
+    .getAsset(liquidity_asset_id)
+    ?.amountBefore!.add(liquidity_assets_minted);
+  expect(testUser1.getAsset(liquidity_asset_id)?.amountAfter!).bnEqual(
+    addFromWallet!
   );
 
   const pool_balance = await getBalanceOfPool(firstCurrency, secondCurrency);
@@ -153,7 +168,10 @@ export async function validateUnmodified(
   pool_balance_before: BN[]
 ) {
   await testUser1.refreshAmounts(AssetWallet.AFTER);
-  await testUser1.validateWalletsUnmodified();
+
+  testUser1.assets.forEach((asset) => {
+    expect(asset.amountBefore).bnEqual(asset.amountAfter);
+  });
 
   const pool_balance = await getBalanceOfPool(firstCurrency, secondCurrency);
   expect([pool_balance_before[0], pool_balance_before[1]]).toEqual(
@@ -192,12 +210,14 @@ export async function validateUserPaidFeeForFailedTx(
 
   //when failed Tx, we remove 3% and put it in the pool.
   await user.refreshAmounts(AssetWallet.AFTER);
-  user.validateWalletReduced(assetSoldId, completeFee);
+  const diffFromWallet = user
+    .getAsset(assetSoldId)
+    ?.amountBefore!.sub(completeFee);
+  expect(user.getAsset(assetSoldId)?.amountAfter!).bnEqual(diffFromWallet!);
+
   //second wallet should not be modified.
-  user.validateWalletEquals(
-    failedBoughtAssetId,
-    user.getAsset(failedBoughtAssetId)?.amountBefore!
-  );
+  const amount = user.getAsset(failedBoughtAssetId)?.amountBefore!;
+  expect(user.getAsset(failedBoughtAssetId)?.amountAfter!).bnEqual(amount);
 
   const treasuryTokens = await getTreasury(assetSoldId);
   const treasuryBurnTokens = await getTreasuryBurn(assetSoldId);

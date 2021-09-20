@@ -110,8 +110,8 @@ test("xyk-pallet - Pool tests: createPool and validate liq token", async () => {
   const pool_balance_before = [new BN(0), new BN(0)];
   const total_liquidity_assets_before = new BN(0);
 
-  const first_asset_amount = new BN(50000);
-  const second_asset_amount = new BN(50000);
+  const firstAssetAmount = new BN(50000);
+  const secondAssetAmount = new BN(50000);
 
   testLog
     .getLog()
@@ -120,9 +120,9 @@ test("xyk-pallet - Pool tests: createPool and validate liq token", async () => {
   await createPool(
     testUser1.keyRingPair,
     firstCurrency,
-    first_asset_amount,
+    firstAssetAmount,
     secondCurrency,
-    second_asset_amount
+    secondAssetAmount
   ).then((result) => {
     const eventResponse = getEventResultFromTxWait(result, [
       "xyk",
@@ -137,8 +137,8 @@ test("xyk-pallet - Pool tests: createPool and validate liq token", async () => {
     secondCurrency
   );
   const liquidity_assets_minted = calculateLiqAssetAmount(
-    first_asset_amount,
-    second_asset_amount
+    firstAssetAmount,
+    secondAssetAmount
   );
 
   testUser1.addAsset(liquidity_asset_id, new BN(0));
@@ -149,23 +149,45 @@ test("xyk-pallet - Pool tests: createPool and validate liq token", async () => {
   await testUser2.refreshAmounts(AssetWallet.AFTER);
   await pallet.refreshAmounts(AssetWallet.AFTER);
 
-  await testUser1.validateWalletReduced(firstCurrency, first_asset_amount);
-  await testUser1.validateWalletReduced(secondCurrency, second_asset_amount);
-  await testUser1.validateWalletIncreased(
-    liquidity_asset_id,
-    liquidity_assets_minted
+  let diffFromWallet = testUser1
+    .getAsset(firstCurrency)
+    ?.amountBefore!.sub(firstAssetAmount);
+  expect(testUser1.getAsset(firstCurrency)?.amountAfter!).bnEqual(
+    diffFromWallet!
   );
 
-  await testUser2.validateWalletsUnmodified();
+  diffFromWallet = testUser1
+    .getAsset(secondCurrency)
+    ?.amountBefore!.sub(secondAssetAmount);
+  expect(testUser1.getAsset(secondCurrency)?.amountAfter!).bnEqual(
+    diffFromWallet!
+  );
 
-  await pallet.validateWalletIncreased(firstCurrency, first_asset_amount);
-  await pallet.validateWalletIncreased(secondCurrency, second_asset_amount);
+  let addFromWallet = testUser1
+    .getAsset(liquidity_asset_id)
+    ?.amountBefore!.add(liquidity_assets_minted);
+  expect(testUser1.getAsset(liquidity_asset_id)?.amountAfter!).bnEqual(
+    addFromWallet!
+  );
 
+  testUser2.assets.forEach((asset) => {
+    expect(asset.amountBefore).bnEqual(asset.amountAfter);
+  });
+
+  addFromWallet = pallet
+    .getAsset(firstCurrency)
+    ?.amountBefore!.add(firstAssetAmount);
+  expect(pallet.getAsset(firstCurrency)?.amountAfter!).bnEqual(addFromWallet!);
+
+  addFromWallet = pallet
+    .getAsset(secondCurrency)
+    ?.amountBefore!.add(secondAssetAmount);
+  expect(pallet.getAsset(secondCurrency)?.amountAfter!).bnEqual(addFromWallet!);
   //TODO: pending to validate.
   const pool_balance = await getBalanceOfPool(firstCurrency, secondCurrency);
   expect([
-    pool_balance_before[0].add(first_asset_amount),
-    pool_balance_before[1].add(second_asset_amount),
+    pool_balance_before[0].add(firstAssetAmount),
+    pool_balance_before[1].add(secondAssetAmount),
   ]).toEqual(pool_balance);
 
   const total_liquidity_assets = await getAssetSupply(liquidity_asset_id);
@@ -183,8 +205,8 @@ test("xyk-pallet - Pool tests: createPool", async () => {
   const pool_balance_before = [new BN(0), new BN(0)];
   const total_liquidity_assets_before = new BN(0);
 
-  const first_asset_amount = new BN(50000);
-  const second_asset_amount = new BN(50000);
+  const firstAssetAmount = new BN(50000);
+  const secondAssetAmount = new BN(50000);
 
   testLog
     .getLog()
@@ -193,9 +215,9 @@ test("xyk-pallet - Pool tests: createPool", async () => {
   await createPool(
     testUser1.keyRingPair,
     firstCurrency,
-    first_asset_amount,
+    firstAssetAmount,
     secondCurrency,
-    second_asset_amount
+    secondAssetAmount
   ).then((result) => {
     const eventResponse = getEventResultFromTxWait(result, [
       "xyk",
@@ -210,8 +232,8 @@ test("xyk-pallet - Pool tests: createPool", async () => {
     secondCurrency
   );
   const liquidity_assets_minted = calculateLiqAssetAmount(
-    first_asset_amount,
-    second_asset_amount
+    firstAssetAmount,
+    secondAssetAmount
   );
 
   testUser1.addAsset(liquidity_asset_id, new BN(0));
@@ -222,23 +244,45 @@ test("xyk-pallet - Pool tests: createPool", async () => {
   await testUser2.refreshAmounts(AssetWallet.AFTER);
   await pallet.refreshAmounts(AssetWallet.AFTER);
 
-  await testUser1.validateWalletReduced(firstCurrency, first_asset_amount);
-  await testUser1.validateWalletReduced(secondCurrency, second_asset_amount);
-  await testUser1.validateWalletIncreased(
-    liquidity_asset_id,
-    liquidity_assets_minted
+  let diffFromWallet = testUser1
+    .getAsset(firstCurrency)
+    ?.amountBefore!.sub(firstAssetAmount);
+  expect(testUser1.getAsset(firstCurrency)?.amountAfter!).bnEqual(
+    diffFromWallet!
   );
 
-  await testUser2.validateWalletsUnmodified();
+  diffFromWallet = testUser1
+    .getAsset(secondCurrency)
+    ?.amountBefore!.sub(secondAssetAmount);
+  expect(testUser1.getAsset(secondCurrency)?.amountAfter!).bnEqual(
+    diffFromWallet!
+  );
 
-  await pallet.validateWalletIncreased(firstCurrency, first_asset_amount);
-  await pallet.validateWalletIncreased(secondCurrency, second_asset_amount);
+  let addFromWallet = testUser1
+    .getAsset(liquidity_asset_id)
+    ?.amountBefore!.add(liquidity_assets_minted);
+  expect(testUser1.getAsset(liquidity_asset_id)?.amountAfter!).bnEqual(
+    addFromWallet!
+  );
 
+  testUser2.assets.forEach((asset) => {
+    expect(asset.amountBefore).bnEqual(asset.amountAfter);
+  });
+
+  addFromWallet = pallet
+    .getAsset(firstCurrency)
+    ?.amountBefore!.add(firstAssetAmount);
+  expect(pallet.getAsset(firstCurrency)?.amountAfter!).bnEqual(addFromWallet!);
+
+  addFromWallet = pallet
+    .getAsset(secondCurrency)
+    ?.amountBefore!.add(secondAssetAmount);
+  expect(pallet.getAsset(secondCurrency)?.amountAfter!).bnEqual(addFromWallet!);
   //TODO: pending to validate.
   const pool_balance = await getBalanceOfPool(firstCurrency, secondCurrency);
   expect([
-    pool_balance_before[0].add(first_asset_amount),
-    pool_balance_before[1].add(second_asset_amount),
+    pool_balance_before[0].add(firstAssetAmount),
+    pool_balance_before[1].add(secondAssetAmount),
   ]).toEqual(pool_balance);
 
   const total_liquidity_assets = await getAssetSupply(liquidity_asset_id);
