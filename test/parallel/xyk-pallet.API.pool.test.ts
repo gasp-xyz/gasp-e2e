@@ -519,7 +519,10 @@ describe("xyk-pallet - Pool opeations: Simmetry", () => {
       hexToBn(JSON.parse(poolAssetsYX.toString())[1]),
     ];
 
-    expect(assetValueXY).collectionBnEqual(assetValueYX);
+    expect(assetValueXY).not.collectionBnEqual(assetValueYX);
+    const poolValuesXY = await getBalanceOfPool(secondCurrency, firstCurrency);
+    const poolValuesYX = await getBalanceOfPool(firstCurrency, secondCurrency);
+    expect(poolValuesXY).collectionBnEqual(poolValuesYX);
   });
   test("Minting x-y and y-x pool", async () => {
     await testUser1.mintLiquidity(firstCurrency, secondCurrency, new BN(100));
@@ -540,6 +543,17 @@ describe("xyk-pallet - Pool opeations: Simmetry", () => {
     );
   });
   test("GetLiquidityAssetID x-y and y-x pool", async () => {
+    const api = getApi();
+    const liqXYK = await api.query.xyk.liquidityAssets([
+      firstCurrency,
+      secondCurrency,
+    ]);
+    const liqYXK = await api.query.xyk.liquidityAssets([
+      secondCurrency,
+      firstCurrency,
+    ]);
+    expect(new BN(liqXYK.toString())).not.bnEqual(new BN(liqYXK.toString()));
+
     const liqXY = await getLiquidityAssetId(firstCurrency, secondCurrency);
     const liqYX = await getLiquidityAssetId(secondCurrency, firstCurrency);
     const pool = await getLiquidityPool(liqYX);
@@ -549,7 +563,6 @@ describe("xyk-pallet - Pool opeations: Simmetry", () => {
     expect(
       pool.some((x) => x.toString() === secondCurrency.toString())
     ).toBeTruthy();
-
     expect(liqXY).bnEqual(liqYX);
   });
 });
