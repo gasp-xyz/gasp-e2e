@@ -240,7 +240,7 @@ describe("xyk-pallet - Mint liquidity tests: with minting you can", () => {
     diffFromWallet = testUser1
       .getAsset(secondCurrency)
       ?.amountBefore!.sub(secondCurrencyAmountLost);
-    expect(testUser1.getAsset(firstCurrency)?.amountAfter!).bnEqual(
+    expect(testUser1.getAsset(secondCurrency)?.amountAfter!).bnEqual(
       diffFromWallet!
     );
 
