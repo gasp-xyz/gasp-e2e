@@ -340,14 +340,16 @@ describe("xyk-pallet - Buy assets tests: Buying assets you can", () => {
       new BN(1),
     ]).collectionBnEqual(pool_balance);
 
-    testUser1.validateWalletIncreased(
-      secondCurrency,
-      poolAmountSecondCurrency.sub(new BN(1))
+    let amount = poolAmountSecondCurrency.sub(new BN(1));
+    const addFromWallet = testUser1
+      .getAsset(secondCurrency)
+      ?.amountBefore!.add(amount);
+    expect(testUser1.getAsset(secondCurrency)?.amountAfter!).bnEqual(
+      addFromWallet!
     );
-    testUser1.validateWalletEquals(
-      firstCurrency,
-      testUser1.getAsset(firstCurrency)?.amountBefore!
-    );
+
+    amount = testUser1.getAsset(firstCurrency)?.amountBefore!;
+    expect(testUser1.getAsset(firstCurrency)?.amountAfter!).bnEqual(amount);
 
     //lets get the treasure amounts!
     const treasurySecondCurrency = await getTreasury(secondCurrency);
@@ -443,8 +445,18 @@ describe("xyk-pallet - Buy assets tests: Buying assets you can", () => {
 
     testUser2.addAsset(firstCurrency);
     await testUser2.refreshAmounts(AssetWallet.AFTER);
-    testUser2.validateWalletReduced(thirdCurrency, buyPriceLocal);
-    testUser2.validateWalletEquals(firstCurrency, amountToBuy);
+
+    const diffFromWallet = testUser2
+      .getAsset(thirdCurrency)
+      ?.amountBefore!.sub(buyPriceLocal);
+
+    expect(testUser2.getAsset(thirdCurrency)?.amountAfter!).bnEqual(
+      diffFromWallet!
+    );
+
+    expect(testUser2.getAsset(firstCurrency)?.amountAfter!).bnEqual(
+      amountToBuy
+    );
 
     const poolBalanceAfter = await getBalanceOfPool(
       firstCurrency,

@@ -15,11 +15,12 @@
     "@types/web3": "^1.2.2",
     "bn.js": "^5.1.3",
     "chromedriver": "^92.0.0",
+    "clipboardy": "^2.3.0",
     "dotenv": "^8.2.0",
     "eslint": "^7.26.0",
     "ganache-cli": "^6.12.2",
     "husky": "^7.0.2",
-    "mangata-sdk": "^0.1.0",
+    "mangata-sdk": "^0.2.1",
     "package.json": "^2.0.1",
     "prettier": "^2.3.0",
     "selenium-webdriver": "3.6.0",
@@ -58,7 +59,9 @@
     "jest-allure": "^0.1.3",
     "jest-html-reporters": "^2.1.6",
     "jest-junit": "^12.2.0",
-    "jest-runner-groups": "^2.1.0"
+    "jest-runner-groups": "^2.1.0",
+    "mangata-bridge": "https://github.com/mangata-finance/mangata-bridge",
+    "mangata-node": "https://github.com/mangata-finance/mangata-node"
   },
   "jest-junit": {
     "outputDirectory": "reports",
