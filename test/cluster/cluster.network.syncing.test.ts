@@ -44,23 +44,23 @@ let nodes: Node[];
 
 beforeAll(async () => {
   try {
-    alice.api = await initApi(clusterNodeA);
-    alice.worker = await spawn<NodeWorker>(new Worker(nodeWorkerPath));
+    alice.api      = await initApi(clusterNodeA);
+    alice.worker   = await spawn<NodeWorker>(new Worker(nodeWorkerPath));
 
-    bob.api = await initApi(clusterNodeB);
-    bob.worker = await spawn<NodeWorker>(new Worker(nodeWorkerPath));
+    bob.api        = await initApi(clusterNodeB);
+    bob.worker     = await spawn<NodeWorker>(new Worker(nodeWorkerPath));
 
-    charlie.api = await initApi(clusterNodeC);
+    charlie.api    = await initApi(clusterNodeC);
     charlie.worker = await spawn<NodeWorker>(new Worker(nodeWorkerPath));
 
-    dave.api = await initApi(clusterNodeD);
-    dave.worker = await spawn<NodeWorker>(new Worker(nodeWorkerPath));
+    dave.api       = await initApi(clusterNodeD);
+    dave.worker    = await spawn<NodeWorker>(new Worker(nodeWorkerPath));
+ 
+    eve.api        = await initApi(clusterNodeE);
+    eve.worker     = await spawn<NodeWorker>(new Worker(nodeWorkerPath));
 
-    eve.api = await initApi(clusterNodeE);
-    eve.worker = await spawn<NodeWorker>(new Worker(nodeWorkerPath));
-
-    ferdie.api = await initApi(clusterNodeF);
-    ferdie.worker = await spawn<NodeWorker>(new Worker(nodeWorkerPath));
+    ferdie.api     = await initApi(clusterNodeF);
+    ferdie.worker  = await spawn<NodeWorker>(new Worker(nodeWorkerPath));
 
     nodes = [alice, bob, charlie, dave, eve, ferdie];
   } catch (e) {
