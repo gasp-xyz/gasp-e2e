@@ -1,4 +1,5 @@
 import { ApiPromise } from "@polkadot/api";
+import { NodeWorker } from "./workers/nodeWorker";
 
 export { Name, Node };
 
@@ -6,5 +7,6 @@ type Name = string;
 
 type Node = {
   name: Name;
-  api?: ApiPromise;
+  worker?: NodeWorker | null;
+  api?: ApiPromise | null;
 };
