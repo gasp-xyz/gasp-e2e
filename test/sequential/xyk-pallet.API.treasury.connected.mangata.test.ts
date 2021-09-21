@@ -5,7 +5,7 @@
  * @group sequential
  * @group critical
  */
-import { api, getApi, initApi } from "../../utils/api";
+import { getApi, getMangataInstance, initApi } from "../../utils/api";
 import {
   sellAsset,
   getTreasury,
@@ -27,10 +27,7 @@ import { validateTreasuryAmountsEqual } from "../../utils/validators";
 import { Assets } from "../../utils/Assets";
 import { MAX_BALANCE, MGA_ASSET_NAME } from "../../utils/Constants";
 import { calculateFees, getEnvironmentRequiredVars } from "../../utils/utils";
-import {
-  getEventResultFromTxWait,
-  signSendAndWaitToFinishTx,
-} from "../../utils/txHandler";
+import { getEventResultFromTxWait } from "../../utils/txHandler";
 
 jest.spyOn(console, "log").mockImplementation(jest.fn());
 jest.setTimeout(1500000);
@@ -84,14 +81,14 @@ describe("xyk-pallet - treasury tests [Mangata]: on treasury we store", () => {
       )
     )[0];
     await testUser1.addMGATokens(sudo);
-    await signSendAndWaitToFinishTx(
-      api?.tx.xyk.createPool(
-        mgaTokenId,
-        first_asset_amount,
-        secondCurrency,
-        seccond_asset_amount
-      ),
-      testUser1.keyRingPair
+    await (
+      await getMangataInstance()
+    ).createPool(
+      testUser1.keyRingPair,
+      mgaTokenId.toString(),
+      first_asset_amount,
+      secondCurrency.toString(),
+      seccond_asset_amount
     );
     await testUser1.refreshAmounts(AssetWallet.BEFORE);
   });
@@ -311,25 +308,23 @@ describe("xyk-pallet - treasury tests [Connected - Mangata]: on treasury we stor
       )
     )[0];
     await testUser1.addMGATokens(sudo);
-
-    await signSendAndWaitToFinishTx(
-      api?.tx.xyk.createPool(
-        mgaTokenId,
-        first_asset_amount,
-        connectedToMGA,
-        first_asset_amount.div(new BN(2))
-      ),
-      testUser1.keyRingPair
+    await (
+      await getMangataInstance()
+    ).createPool(
+      testUser1.keyRingPair,
+      mgaTokenId.toString(),
+      first_asset_amount,
+      connectedToMGA.toString(),
+      first_asset_amount.div(new BN(2))
     );
-
-    await signSendAndWaitToFinishTx(
-      api?.tx.xyk.createPool(
-        connectedToMGA,
-        first_asset_amount,
-        indirectlyConnected,
-        first_asset_amount.div(new BN(2))
-      ),
-      testUser1.keyRingPair
+    await (
+      await getMangataInstance()
+    ).createPool(
+      testUser1.keyRingPair,
+      connectedToMGA.toString(),
+      first_asset_amount,
+      indirectlyConnected.toString(),
+      first_asset_amount.div(new BN(2))
     );
     await testUser1.refreshAmounts(AssetWallet.BEFORE);
   });

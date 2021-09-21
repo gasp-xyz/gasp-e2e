@@ -265,12 +265,15 @@ export async function getBalanceOfPool(
 export async function getLiquidityAssetId(assetId1: BN, assetId2: BN) {
   const api = getApi();
 
-  const liquidity_asset_id = await api.query.xyk.liquidityAssets([
+  let liquidity_asset_id = await api.query.xyk.liquidityAssets([
     assetId1,
     assetId2,
   ]);
   if (liquidity_asset_id.isEmpty) {
-    return new BN(-1);
+    liquidity_asset_id = await api.query.xyk.liquidityAssets([
+      assetId2,
+      assetId1,
+    ]);
   }
   return new BN(liquidity_asset_id.toString());
 }
@@ -335,24 +338,6 @@ export const balanceTransfer = async (
     account,
     await (await getCurrentNonce(account.address)).toNumber()
   );
-  return txResult;
-};
-
-export const sudoIssueAsset = async (
-  account: any,
-  total_balance: BN,
-  target: any
-) => {
-  const api = getApi();
-  const nonce = await SudoDB.getInstance().getSudoNonce(account.address);
-  testLog.getLog().info(`W[${env.JEST_WORKER_ID}] - sudoNonce: ${nonce} `);
-
-  const txResult = await signAndWaitTx(
-    api.tx.sudo.sudo(api.tx.tokens.create(target, total_balance)),
-    account,
-    nonce
-  );
-  testLog.getLog().info(txResult);
   return txResult;
 };
 
