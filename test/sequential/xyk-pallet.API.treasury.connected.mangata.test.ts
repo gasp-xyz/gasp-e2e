@@ -575,14 +575,14 @@ describe("xyk-pallet - treasury tests [Connected - Mangata]: Error cases", () =>
   });
 
   test("Not enough tokens to convert fee", async () => {
-    await signSendAndWaitToFinishTx(
-      api?.tx.xyk.createPool(
-        mgaTokenId,
-        new BN(100),
-        connectedToMGA,
-        first_asset_amount
-      ),
-      testUser1.keyRingPair
+    await (
+      await getMangataInstance()
+    ).createPool(
+      testUser1.keyRingPair,
+      mgaTokenId.toString(),
+      new BN(100),
+      connectedToMGA.toString(),
+      first_asset_amount
     );
 
     await testUser1.refreshAmounts(AssetWallet.BEFORE);
