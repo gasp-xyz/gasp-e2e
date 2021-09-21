@@ -18,7 +18,6 @@ import {
   getLiquidityAssetId,
   getAssetSupply,
   getSudoKey,
-  sudoIssueAsset,
   transferAsset,
   createPool,
   sellAsset,
@@ -34,7 +33,10 @@ import {
   calculateLiqAssetAmount,
   getEnvironmentRequiredVars,
 } from "../../utils/utils";
-import { getEventResultFromTxWait } from "../../utils/txHandler";
+import {
+  getEventResultFromTxWait,
+  sudoIssueAsset,
+} from "../../utils/txHandler";
 import { testLog } from "../../utils/Logger";
 
 jest.spyOn(console, "log").mockImplementation(jest.fn());

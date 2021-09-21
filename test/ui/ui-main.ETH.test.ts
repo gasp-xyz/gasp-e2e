@@ -128,7 +128,7 @@ describe("UI main tests - Withdraw - ETH", () => {
     await testUser1.refreshAmounts(AssetWallet.BEFORE);
   });
 
-  it("As a User I can deposit ETH from Meta extension", async () => {
+  it("As a User I can Withdraw ETH from Meta extension", async () => {
     const sidebar = new Sidebar(driver);
     await sidebar.withdrawAllAssetsToMetaMask("mETH");
     await sidebar.waitForTokenToDissapear("mETH");
