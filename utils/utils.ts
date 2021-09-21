@@ -61,6 +61,25 @@ export function getEnvironmentRequiredVars() {
     ? process.env.MNEMONIC_POLK
     : " oh oh";
 
+  const clusterNodeA = process.env.CLUSTER_NODE_A
+    ? process.env.CLUSTER_NODE_A
+    : "ws://node_alice:9944";
+  const clusterNodeB = process.env.CLUSTER_NODE_B
+    ? process.env.CLUSTER_NODE_B
+    : "ws://node_bob:9944";
+  const clusterNodeC = process.env.CLUSTER_NODE_C
+    ? process.env.CLUSTER_NODE_C
+    : "ws://node_charlie:9944";
+  const clusterNodeD = process.env.CLUSTER_NODE_D
+    ? process.env.CLUSTER_NODE_D
+    : "ws://node_dave:9944";
+  const clusterNodeE = process.env.CLUSTER_NODE_E
+    ? process.env.CLUSTER_NODE_E
+    : "ws://node_eve:9944";
+  const clusterNodeF = process.env.CLUSTER_NODE_F
+    ? process.env.CLUSTER_NODE_F
+    : "ws://node_ferdie:9944";
+
   return {
     pallet: palletAddress,
     sudo: sudoUserName,
@@ -73,6 +92,12 @@ export function getEnvironmentRequiredVars() {
     logLevel: logLevel,
     xykPalletAddress: xykPalletAddress,
     treasuryPalletAddress: treasuryPalletAddress,
+    clusterNodeA: clusterNodeA,
+    clusterNodeB: clusterNodeB,
+    clusterNodeC: clusterNodeC,
+    clusterNodeD: clusterNodeD,
+    clusterNodeE: clusterNodeE,
+    clusterNodeF: clusterNodeF,
   };
 }
 
@@ -167,4 +192,19 @@ export function calculateCompleteFees(soldAmount: BN) {
   //We remove those two added by treasury_treasury_burn.
   threePercent = threePercent.sub(new BN(2));
   return { completeFee: threePercent };
+}
+
+export const repeatOverNBlocks = (n: number) => (f: () => void) => {
+  if (n > 0) {
+    f();
+    waitNewBlock();
+    repeatOverNBlocks(n - 1)(f);
+  }
+};
+
+export const waitForNBlocks = (n: number) => {
+  if (n > 0) {
+    waitNewBlock();
+    waitForNBlocks(n - 1);
+  }
 }

@@ -10,12 +10,26 @@ import { spawn, Worker } from "threads";
 import { initApi } from "../../utils/api";
 import { NodeWorker } from "../../utils/cluster/workers/nodeWorker";
 import { Node } from "../../utils/cluster/types";
-import { waitNewBlock } from "../../utils/eventListeners";
+
+import {
+  getEnvironmentRequiredVars,
+  repeatOverNBlocks,
+  waitForNBlocks,
+} from "../../utils/utils";
 
 jest.spyOn(console, "log").mockImplementation(jest.fn());
 jest.spyOn(console, "error").mockImplementation(jest.fn());
 jest.setTimeout(1500000);
 process.env.NODE_ENV = "test";
+
+const {
+  clusterNodeA,
+  clusterNodeB,
+  clusterNodeC,
+  clusterNodeD,
+  clusterNodeE,
+  clusterNodeF,
+} = getEnvironmentRequiredVars();
 
 const nodeWorkerPath = "../../utils/cluster/workers/nodeWorker";
 
@@ -30,22 +44,22 @@ let nodes: Node[];
 
 beforeAll(async () => {
   try {
-    alice.api = await initApi("ws://node_alice:9944");
+    alice.api = await initApi(clusterNodeA);
     alice.worker = await spawn<NodeWorker>(new Worker(nodeWorkerPath));
 
-    bob.api = await initApi("ws://node_bob:9944");
+    bob.api = await initApi(clusterNodeB);
     bob.worker = await spawn<NodeWorker>(new Worker(nodeWorkerPath));
 
-    charlie.api = await initApi("ws://node_charlie:9944");
+    charlie.api = await initApi(clusterNodeC);
     charlie.worker = await spawn<NodeWorker>(new Worker(nodeWorkerPath));
 
-    dave.api = await initApi("ws://node_dave:9944");
+    dave.api = await initApi(clusterNodeD);
     dave.worker = await spawn<NodeWorker>(new Worker(nodeWorkerPath));
 
-    eve.api = await initApi("ws://node_eve:9944");
+    eve.api = await initApi(clusterNodeE);
     eve.worker = await spawn<NodeWorker>(new Worker(nodeWorkerPath));
 
-    ferdie.api = await initApi("ws://node_ferdie:9944");
+    ferdie.api = await initApi(clusterNodeF);
     ferdie.worker = await spawn<NodeWorker>(new Worker(nodeWorkerPath));
 
     nodes = [alice, bob, charlie, dave, eve, ferdie];
@@ -58,17 +72,16 @@ describe("Cluster -> Network -> Syncing", () => {
   test("Cluster does not fork", async () => {
     const nodeHashes: Map<String, Set<String> | undefined> = new Map();
 
-    const blocksToWait = 3;
-    for (let i = 0; i < blocksToWait; i++) {
+    waitForNBlocks(10);
+
+    repeatOverNBlocks(3)(() => {
       nodes.map(async (node) =>
         nodeHashes.set(
           node.name,
           nodeHashes.get(node.name)?.add((await node.worker?.getHash(node))!)
         )
       );
-
-      waitNewBlock();
-    }
+    });
 
     expect(
       intersection(Array.from(nodeHashes.values())).length
