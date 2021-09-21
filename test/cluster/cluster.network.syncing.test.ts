@@ -33,12 +33,12 @@ const {
 
 const nodeWorkerPath = "../../utils/cluster/workers/nodeWorker";
 
-const alice: Node = { name: "Alice" };
-const bob: Node = { name: "Bob" };
+const alice  : Node = { name: "Alice"   };
+const bob    : Node = { name: "Bob"     };
 const charlie: Node = { name: "Charlie" };
-const dave: Node = { name: "Dave" };
-const eve: Node = { name: "Eve" };
-const ferdie: Node = { name: "Ferdie" };
+const dave   : Node = { name: "Dave"    };
+const eve    : Node = { name: "Eve"     };
+const ferdie : Node = { name: "Ferdie"  };
 
 let nodes: Node[];
 
@@ -70,7 +70,12 @@ beforeAll(async () => {
 
 describe("Cluster -> Network -> Syncing", () => {
   test("Cluster does not fork", async () => {
-    const nodeHashes: Map<String, Set<String> | undefined> = new Map();
+    type NodeName     = String;
+    type Hash         = String
+    type Hashes       = Set<Hash>
+    type KVNodeHashes = Map<NodeName, Hashes>;
+
+    const nodeHashes: KVNodeHashes = new Map();
 
     waitForNBlocks(10);
 
@@ -78,7 +83,7 @@ describe("Cluster -> Network -> Syncing", () => {
       nodes.map(async (node) =>
         nodeHashes.set(
           node.name,
-          nodeHashes.get(node.name)?.add((await node.worker?.getHash(node))!)
+          nodeHashes.get(node.name)!.add((await node.worker?.getHash(node))!)
         )
       );
     });
