@@ -4,7 +4,7 @@
  * @group api
  * @group parallel
  */
-import { api, getApi, initApi } from "../../utils/api";
+import { getApi, getMangataInstance, initApi } from "../../utils/api";
 import {
   getBalanceOfPool,
   mintLiquidity,
@@ -27,10 +27,7 @@ import {
   calculateLiqAssetAmount,
   getEnvironmentRequiredVars,
 } from "../../utils/utils";
-import {
-  getEventResultFromTxWait,
-  signSendAndWaitToFinishTx,
-} from "../../utils/txHandler";
+import { getEventResultFromTxWait } from "../../utils/txHandler";
 
 jest.spyOn(console, "log").mockImplementation(jest.fn());
 jest.setTimeout(1500000);
@@ -87,14 +84,14 @@ describe("xyk-pallet - Mint liquidity tests: with minting you can", () => {
     );
     await testUser1.addMGATokens(sudo);
     const amounttoThePool = new BN(1);
-    await signSendAndWaitToFinishTx(
-      api?.tx.xyk.createPool(
-        firstCurrency,
-        amounttoThePool,
-        secondCurrency,
-        amounttoThePool
-      ),
-      testUser1.keyRingPair
+    await (
+      await getMangataInstance()
+    ).createPool(
+      testUser1.keyRingPair,
+      firstCurrency.toString(),
+      amounttoThePool,
+      secondCurrency.toString(),
+      amounttoThePool
     );
     const liquidityAssetId = await getLiquidityAssetId(
       firstCurrency,
@@ -167,15 +164,16 @@ describe("xyk-pallet - Mint liquidity tests: with minting you can", () => {
     );
     await testUser1.addMGATokens(sudo);
     const amounttoThePool = new BN(defaultCurrencyValue).div(new BN(2));
-    await signSendAndWaitToFinishTx(
-      api?.tx.xyk.createPool(
-        firstCurrency,
-        amounttoThePool,
-        secondCurrency,
-        amounttoThePool
-      ),
-      testUser1.keyRingPair
+    await (
+      await getMangataInstance()
+    ).createPool(
+      testUser1.keyRingPair,
+      firstCurrency.toString(),
+      amounttoThePool,
+      secondCurrency.toString(),
+      amounttoThePool
     );
+
     const liquidityAssetId = await getLiquidityAssetId(
       firstCurrency,
       secondCurrency
@@ -240,7 +238,7 @@ describe("xyk-pallet - Mint liquidity tests: with minting you can", () => {
     diffFromWallet = testUser1
       .getAsset(secondCurrency)
       ?.amountBefore!.sub(secondCurrencyAmountLost);
-    expect(testUser1.getAsset(firstCurrency)?.amountAfter!).bnEqual(
+    expect(testUser1.getAsset(secondCurrency)?.amountAfter!).bnEqual(
       diffFromWallet!
     );
 

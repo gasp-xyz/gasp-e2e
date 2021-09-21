@@ -159,9 +159,7 @@ test("xyk-pallet - AssetsOperation: buyAsset [maxAmountIn = 1M], buy asset", asy
   expect(pallet.getAsset(soldAssetId)?.amountAfter!).bnEqual(addFromWallet!);
 
   diffFromWallet = pallet.getAsset(boughtAssetId)?.amountBefore!.sub(amount);
-  expect(testUser1.getAsset(boughtAssetId)?.amountAfter!).bnEqual(
-    diffFromWallet!
-  );
+  expect(pallet.getAsset(boughtAssetId)?.amountAfter!).bnEqual(diffFromWallet!);
 
   const pool_balance = await getBalanceOfPool(firstCurrency, secondCurrency);
   const { treasury, treasuryBurn } = calculateFees(buyPriceLocal);

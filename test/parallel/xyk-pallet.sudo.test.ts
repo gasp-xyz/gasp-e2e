@@ -5,14 +5,17 @@
  * @group parallel
  */
 import { getApi, initApi } from "../../utils/api";
-import { getUserAssets, getSudoKey, sudoIssueAsset } from "../../utils/tx";
+import { getUserAssets, getSudoKey } from "../../utils/tx";
 import { waitNewBlock } from "../../utils/eventListeners";
 import BN from "bn.js";
 import { Keyring } from "@polkadot/api";
 import { User } from "../../utils/User";
 import { validateTransactionSucessful } from "../../utils/validators";
 import { getEnvironmentRequiredVars } from "../../utils/utils";
-import { getEventResultFromTxWait } from "../../utils/txHandler";
+import {
+  getEventResultFromTxWait,
+  sudoIssueAsset,
+} from "../../utils/txHandler";
 import { testLog } from "../../utils/Logger";
 
 jest.spyOn(console, "log").mockImplementation(jest.fn());
