@@ -460,7 +460,7 @@ describe("xyk-pallet - Pool opeations: Simmetry", () => {
 
     sudo = new User(keyring, sudoUserName);
 
-    //add two curerncies and balance to testUser:
+    //add two currencies and balance to testUser:
     [firstCurrency, secondCurrency] = await Assets.setupUserWithCurrencies(
       testUser1,
       [defaultCurrecyValue, defaultCurrecyValue.add(new BN(1))],
