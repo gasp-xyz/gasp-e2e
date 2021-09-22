@@ -15,11 +15,7 @@ import {
   createPool,
   getLiquidityPool,
 } from "../../utils/tx";
-import {
-  waitNewBlock,
-  ExtrinsicResult,
-  EventResult,
-} from "../../utils/eventListeners";
+import { ExtrinsicResult, EventResult } from "../../utils/eventListeners";
 import BN from "bn.js";
 import { Keyring } from "@polkadot/api";
 import { AssetWallet, User } from "../../utils/User";
@@ -65,7 +61,6 @@ describe("xyk-pallet - Poll creation: Errors:", () => {
       await initApi();
     }
 
-    await waitNewBlock();
     keyring = new Keyring({ type: "sr25519" });
 
     // setup users
@@ -124,7 +119,6 @@ describe("xyk-pallet - Poll creation: Errors:", () => {
     );
   });
   test("Create x-y and y-x pool", async () => {
-    await waitNewBlock();
     testLog
       .getLog()
       .info(
@@ -146,7 +140,6 @@ describe("xyk-pallet - Poll creation: Errors:", () => {
     });
   });
   test("Create pool with zero", async () => {
-    await waitNewBlock();
     const nextAssetId = await getNextAssetId();
     const emptyAssetID = new BN(nextAssetId.toString());
 
@@ -166,7 +159,6 @@ describe("xyk-pallet - Poll creation: Errors:", () => {
     expect(balance).toEqual([new BN(0), new BN(0)]);
   });
   test("Not enough assets", async () => {
-    await waitNewBlock();
     const txAmount = new BN(100000000000000);
     const testAssetId = await Assets.setupUserWithCurrencies(
       testUser1,
@@ -452,7 +444,6 @@ describe("xyk-pallet - Pool opeations: Simmetry", () => {
       await initApi();
     }
 
-    await waitNewBlock();
     keyring = new Keyring({ type: "sr25519" });
 
     // setup users

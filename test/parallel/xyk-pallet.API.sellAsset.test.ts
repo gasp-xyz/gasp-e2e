@@ -12,7 +12,7 @@ import {
   getTreasury,
   getTreasuryBurn,
 } from "../../utils/tx";
-import { waitNewBlock, ExtrinsicResult } from "../../utils/eventListeners";
+import { ExtrinsicResult } from "../../utils/eventListeners";
 import BN from "bn.js";
 import { Keyring } from "@polkadot/api";
 import { AssetWallet, User } from "../../utils/User";
@@ -52,7 +52,6 @@ describe("xyk-pallet - Sell assets tests: SellAsset Errors:", () => {
   });
 
   beforeEach(async () => {
-    await waitNewBlock();
     keyring = new Keyring({ type: "sr25519" });
 
     // setup users
@@ -74,7 +73,6 @@ describe("xyk-pallet - Sell assets tests: SellAsset Errors:", () => {
     );
     await testUser1.refreshAmounts(AssetWallet.BEFORE);
 
-    await waitNewBlock();
     const [thirdCurrency] = await Assets.setupUserWithCurrencies(
       testUser1,
       [defaultCurrecyValue],
@@ -113,7 +111,6 @@ describe("xyk-pallet - Sell assets tests: SellAsset Errors:", () => {
   });
 
   test("Try sell more assets than owned", async () => {
-    await waitNewBlock();
     [firstCurrency, secondCurrency] = await Assets.setupUserWithCurrencies(
       testUser1,
       [defaultCurrecyValue, defaultCurrecyValue.add(new BN(1))],
@@ -130,7 +127,7 @@ describe("xyk-pallet - Sell assets tests: SellAsset Errors:", () => {
       secondCurrency.toString(),
       second_asset_amount.div(new BN(2))
     );
-    await waitNewBlock();
+
     let remainingOfCurrency1 = testUser1
       .getAsset(firstCurrency)
       ?.amountBefore!.sub(first_asset_amount)!;
@@ -155,7 +152,6 @@ describe("xyk-pallet - Sell assets tests: SellAsset Errors:", () => {
       expect(eventResponse.state).toEqual(ExtrinsicResult.ExtrinsicSuccess);
     });
 
-    await waitNewBlock();
     await testUser1.refreshAmounts(AssetWallet.AFTER);
     remainingOfCurrency1 = testUser1.getAsset(firstCurrency)?.amountAfter!;
     expect(remainingOfCurrency1).bnEqual(new BN(1));
@@ -219,7 +215,6 @@ describe("xyk-pallet - Sell assets tests: SellAsset Errors:", () => {
   });
 
   test("Sell assets with a high expectation: limit +1", async () => {
-    await waitNewBlock();
     [firstCurrency, secondCurrency] = await Assets.setupUserWithCurrencies(
       testUser1,
       [defaultCurrecyValue, defaultCurrecyValue.add(new BN(1))],
@@ -239,7 +234,6 @@ describe("xyk-pallet - Sell assets tests: SellAsset Errors:", () => {
     await testUser1.refreshAmounts(AssetWallet.BEFORE);
     const remainingOfCurrency1 =
       testUser1.getAsset(firstCurrency)?.amountBefore!;
-    await waitNewBlock();
 
     const sellPriceLocal = calculate_sell_price_local(
       first_asset_amount,
@@ -303,7 +297,6 @@ describe("xyk-pallet - Sell assets tests: Selling Assets you can", () => {
   });
 
   beforeEach(async () => {
-    await waitNewBlock();
     keyring = new Keyring({ type: "sr25519" });
 
     // setup users
@@ -317,7 +310,6 @@ describe("xyk-pallet - Sell assets tests: Selling Assets you can", () => {
   });
 
   test("Sell assets with a high expectation: limit - OK", async () => {
-    await waitNewBlock();
     [firstCurrency, secondCurrency] = await Assets.setupUserWithCurrencies(
       testUser1,
       [defaultCurrecyValue, defaultCurrecyValue.add(new BN(1))],
@@ -337,7 +329,6 @@ describe("xyk-pallet - Sell assets tests: Selling Assets you can", () => {
     await testUser1.refreshAmounts(AssetWallet.BEFORE);
     const remainingOfCurrency1 =
       testUser1.getAsset(firstCurrency)?.amountBefore!;
-    await waitNewBlock();
 
     const sellPriceLocal = calculate_sell_price_local(
       first_asset_amount,
@@ -384,7 +375,6 @@ describe("xyk-pallet - Sell assets tests: Selling Assets you can", () => {
   });
 
   test("Sell assets from a wallet I own into a wallet I do not own: limit", async () => {
-    await waitNewBlock();
     // setup users
     const testUser2 = new User(keyring);
     keyring.addPair(testUser2.keyRingPair);
@@ -424,7 +414,7 @@ describe("xyk-pallet - Sell assets tests: Selling Assets you can", () => {
     await testUser2.refreshAmounts(AssetWallet.BEFORE);
     const remainingOfCurrency3 =
       testUser2.getAsset(thirdCurrency)?.amountBefore!;
-    await waitNewBlock();
+
     const sellPriceLocal = calculate_sell_price_local(
       new BN(10000).div(new BN(2)),
       new BN(10000),

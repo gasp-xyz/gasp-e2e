@@ -10,7 +10,6 @@ import {
   calculate_sell_price_rpc,
   getBalanceOfPool,
 } from "../../utils/tx";
-import { waitNewBlock } from "../../utils/eventListeners";
 import BN from "bn.js";
 import { Keyring } from "@polkadot/api";
 import { AssetWallet, User } from "../../utils/User";
@@ -38,7 +37,7 @@ beforeAll(async () => {
   } catch (e) {
     await initApi();
   }
-  await waitNewBlock();
+
   keyring = new Keyring({ type: "sr25519" });
 
   // setup users
@@ -66,7 +65,7 @@ beforeAll(async () => {
 
 beforeEach(async () => {
   // check users accounts.
-  await waitNewBlock();
+
   await testUser1.refreshAmounts(AssetWallet.BEFORE);
 });
 

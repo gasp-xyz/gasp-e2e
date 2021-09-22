@@ -1,6 +1,6 @@
 import { getApi, getMangataInstance, initApi } from "../../utils/api";
 import { getCurrentNonce } from "../../utils/tx";
-import { ExtrinsicResult, waitNewBlock } from "../../utils/eventListeners";
+import { ExtrinsicResult } from "../../utils/eventListeners";
 import BN from "bn.js";
 import { Keyring } from "@polkadot/api";
 import { AssetWallet, User } from "../../utils/User";
@@ -43,7 +43,6 @@ beforeEach(async () => {
     await initApi();
   }
 
-  await waitNewBlock();
   keyring = new Keyring({ type: "sr25519" });
 
   // setup users

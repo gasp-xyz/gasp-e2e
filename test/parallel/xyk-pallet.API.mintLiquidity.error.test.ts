@@ -6,7 +6,7 @@
  */
 import { api, getApi, getMangataInstance, initApi } from "../../utils/api";
 import { getBalanceOfPool, mintLiquidity } from "../../utils/tx";
-import { waitNewBlock, ExtrinsicResult } from "../../utils/eventListeners";
+import { ExtrinsicResult } from "../../utils/eventListeners";
 import BN from "bn.js";
 import { Keyring } from "@polkadot/api";
 import { AssetWallet, User } from "../../utils/User";
@@ -47,7 +47,6 @@ describe("xyk-pallet - Mint liquidity tests: MintLiquidity Errors:", () => {
   });
 
   beforeEach(async () => {
-    await waitNewBlock();
     keyring = new Keyring({ type: "sr25519" });
 
     // setup users
@@ -62,7 +61,6 @@ describe("xyk-pallet - Mint liquidity tests: MintLiquidity Errors:", () => {
   });
 
   test("Mint liquidity when not enough assetY for minting Xamount", async () => {
-    await waitNewBlock();
     //Adding 1000 and 1 more than default. So the user when the pool is created has 1000,1.
     [firstCurrency, secondCurrency] = await Assets.setupUserWithCurrencies(
       testUser1,
@@ -104,7 +102,6 @@ describe("xyk-pallet - Mint liquidity tests: MintLiquidity Errors:", () => {
     ]);
   });
   test("Mint liquidity when not enough assetX for minting Yamount", async () => {
-    await waitNewBlock();
     //Adding 1000 and 1 more than default. So the user when the pool is created has 1000,1.
     [firstCurrency, secondCurrency] = await Assets.setupUserWithCurrencies(
       testUser1,
@@ -169,7 +166,7 @@ describe("xyk-pallet - Mint liquidity tests: MintLiquidity Errors:", () => {
       thirdCurrency.toString(),
       secondAssetAmount
     );
-    await waitNewBlock();
+
     await testUser1.refreshAmounts(AssetWallet.BEFORE);
 
     //lets try to mint with asset 1 and 2
@@ -184,7 +181,6 @@ describe("xyk-pallet - Mint liquidity tests: MintLiquidity Errors:", () => {
       expect(eventResponse.data).toEqual(3);
     });
 
-    await waitNewBlock();
     //lets try to mint with asset 2 and 3
     await mintLiquidity(
       testUser1.keyRingPair,
@@ -206,7 +202,6 @@ describe("xyk-pallet - Mint liquidity tests: MintLiquidity Errors:", () => {
   });
 
   test("Mint liquidity more assets than I own", async () => {
-    await waitNewBlock();
     [firstCurrency, secondCurrency] = await Assets.setupUserWithCurrencies(
       testUser1,
       [defaultCurrecyValue, defaultCurrecyValue],
@@ -224,7 +219,7 @@ describe("xyk-pallet - Mint liquidity tests: MintLiquidity Errors:", () => {
       secondCurrency.toString(),
       poolAmountSecondCurrency
     );
-    await waitNewBlock();
+
     await testUser1.refreshAmounts(AssetWallet.BEFORE);
 
     await mintLiquidity(
@@ -237,7 +232,7 @@ describe("xyk-pallet - Mint liquidity tests: MintLiquidity Errors:", () => {
       expect(eventResponse.state).toEqual(ExtrinsicResult.ExtrinsicFailed);
       expect(eventResponse.data).toEqual(2);
     });
-    await waitNewBlock();
+
     await validateUnmodified(firstCurrency, secondCurrency, testUser1, [
       firstAssetAmount,
       poolAmountSecondCurrency,
@@ -253,7 +248,7 @@ describe("xyk-pallet - Mint liquidity tests: MintLiquidity Errors:", () => {
       ),
       testUser1.keyRingPair
     );
-    await waitNewBlock();
+
     const poolBalanceAfterSelling = await getBalanceOfPool(
       firstCurrency,
       secondCurrency
@@ -279,7 +274,6 @@ describe("xyk-pallet - Mint liquidity tests: MintLiquidity Errors:", () => {
   });
 
   test("Min liquidity, SecondAssetAmount parameter expectation not met", async () => {
-    await waitNewBlock();
     [firstCurrency, secondCurrency] = await Assets.setupUserWithCurrencies(
       testUser1,
       [defaultCurrecyValue, defaultCurrecyValue],
@@ -297,7 +291,7 @@ describe("xyk-pallet - Mint liquidity tests: MintLiquidity Errors:", () => {
       secondCurrency.toString(),
       poolAmountSecondCurrency
     );
-    await waitNewBlock();
+
     await testUser1.refreshAmounts(AssetWallet.BEFORE);
 
     //lets test with 1.
@@ -316,7 +310,6 @@ describe("xyk-pallet - Mint liquidity tests: MintLiquidity Errors:", () => {
       poolAmountSecondCurrency,
     ]);
 
-    await waitNewBlock();
     //lets test with 0
     const resultZero = await mintLiquidity(
       testUser1.keyRingPair,
@@ -335,7 +328,7 @@ describe("xyk-pallet - Mint liquidity tests: MintLiquidity Errors:", () => {
 
     //lest test with 5000 ( boundary value for unexpected ) the pool was generated with [50000,25000]
     //so we must expect at least 5001 for an amount of 10000
-    await waitNewBlock();
+
     let resultExpectation = await mintLiquidity(
       testUser1.keyRingPair,
       firstCurrency,
@@ -352,7 +345,7 @@ describe("xyk-pallet - Mint liquidity tests: MintLiquidity Errors:", () => {
     ]);
 
     //lets test the boundary value of 5001 ( lowest expectation possible )
-    await waitNewBlock();
+
     resultExpectation = await mintLiquidity(
       testUser1.keyRingPair,
       firstCurrency,

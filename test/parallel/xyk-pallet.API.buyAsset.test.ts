@@ -13,7 +13,7 @@ import {
   buyAsset,
   calculate_buy_price_rpc,
 } from "../../utils/tx";
-import { waitNewBlock, ExtrinsicResult } from "../../utils/eventListeners";
+import { ExtrinsicResult } from "../../utils/eventListeners";
 import BN from "bn.js";
 import { Keyring } from "@polkadot/api";
 import { AssetWallet, User } from "../../utils/User";
@@ -54,7 +54,6 @@ describe("xyk-pallet - Buy assets tests: BuyAssets Errors:", () => {
   });
 
   beforeEach(async () => {
-    await waitNewBlock();
     keyring = new Keyring({ type: "sr25519" });
 
     // setup users
@@ -76,7 +75,6 @@ describe("xyk-pallet - Buy assets tests: BuyAssets Errors:", () => {
     );
     await testUser1.refreshAmounts(AssetWallet.BEFORE);
 
-    await waitNewBlock();
     const [thirdCurrency] = await Assets.setupUserWithCurrencies(
       testUser1,
       [defaultCurrecyValue],
@@ -94,8 +92,6 @@ describe("xyk-pallet - Buy assets tests: BuyAssets Errors:", () => {
       expect(eventResponse.state).toEqual(ExtrinsicResult.ExtrinsicFailed);
       expect(eventResponse.data).toEqual(3);
     });
-
-    await waitNewBlock();
 
     await buyAsset(
       testUser1.keyRingPair,
@@ -118,7 +114,6 @@ describe("xyk-pallet - Buy assets tests: BuyAssets Errors:", () => {
   });
 
   test("Buy more assets than exists in the pool", async () => {
-    await waitNewBlock();
     [firstCurrency, secondCurrency] = await Assets.setupUserWithCurrencies(
       testUser1,
       [defaultCurrecyValue, defaultCurrecyValue.add(new BN(1))],
@@ -136,7 +131,7 @@ describe("xyk-pallet - Buy assets tests: BuyAssets Errors:", () => {
       secondCurrency.toString(),
       poolAmountSecondCurrency
     );
-    await waitNewBlock();
+
     await testUser1.refreshAmounts(AssetWallet.BEFORE);
 
     await buyAsset(
@@ -158,7 +153,6 @@ describe("xyk-pallet - Buy assets tests: BuyAssets Errors:", () => {
   });
 
   test("Buy all assets from the the pool", async () => {
-    await waitNewBlock();
     [firstCurrency, secondCurrency] = await Assets.setupUserWithCurrencies(
       testUser1,
       [defaultCurrecyValue, defaultCurrecyValue.add(new BN(1))],
@@ -176,7 +170,7 @@ describe("xyk-pallet - Buy assets tests: BuyAssets Errors:", () => {
       secondCurrency.toString(),
       poolAmountSecondCurrency
     );
-    await waitNewBlock();
+
     await testUser1.refreshAmounts(AssetWallet.BEFORE);
 
     await buyAsset(
@@ -198,7 +192,6 @@ describe("xyk-pallet - Buy assets tests: BuyAssets Errors:", () => {
   });
 
   test("Buy assets with a high expectation: maxInput -1", async () => {
-    await waitNewBlock();
     [firstCurrency, secondCurrency] = await Assets.setupUserWithCurrencies(
       testUser1,
       [defaultCurrecyValue, defaultCurrecyValue.add(new BN(1))],
@@ -216,7 +209,6 @@ describe("xyk-pallet - Buy assets tests: BuyAssets Errors:", () => {
       secondCurrency.toString(),
       poolAmountSecondCurrency
     );
-    await waitNewBlock();
 
     const buyPriceLocal = await calculate_buy_price_rpc(
       firstAssetAmount,
@@ -268,7 +260,6 @@ describe("xyk-pallet - Buy assets tests: Buying assets you can", () => {
   });
 
   beforeEach(async () => {
-    await waitNewBlock();
     keyring = new Keyring({ type: "sr25519" });
 
     // setup users
@@ -282,7 +273,6 @@ describe("xyk-pallet - Buy assets tests: Buying assets you can", () => {
   });
 
   test("Leave only one asset in the pool", async () => {
-    await waitNewBlock();
     [firstCurrency, secondCurrency] = await Assets.setupUserWithCurrencies(
       testUser1,
       [defaultCurrecyValue, defaultCurrecyValue.add(new BN(1))],
@@ -300,7 +290,6 @@ describe("xyk-pallet - Buy assets tests: Buying assets you can", () => {
       secondCurrency.toString(),
       poolAmountSecondCurrency
     );
-    await waitNewBlock();
 
     const buyPriceLocal = await calculate_buy_price_rpc(
       firstAssetAmount,
@@ -309,7 +298,7 @@ describe("xyk-pallet - Buy assets tests: Buying assets you can", () => {
     );
 
     await testUser1.refreshAmounts(AssetWallet.BEFORE);
-    await waitNewBlock();
+
     await sudo.mint(firstCurrency, testUser1, new BN(buyPriceLocal));
 
     await buyAsset(
@@ -327,7 +316,6 @@ describe("xyk-pallet - Buy assets tests: Buying assets you can", () => {
       expect(eventResponse.state).toEqual(ExtrinsicResult.ExtrinsicSuccess);
     });
 
-    await waitNewBlock();
     await testUser1.refreshAmounts(AssetWallet.AFTER);
     const { treasury, treasuryBurn } = calculateFees(buyPriceLocal);
     const fee = treasury.add(treasuryBurn);
@@ -365,7 +353,6 @@ describe("xyk-pallet - Buy assets tests: Buying assets you can", () => {
   });
 
   test("Buy from a wallet I own into a wallet I do not own", async () => {
-    await waitNewBlock();
     const thirdAssetAmount = new BN(10000);
     const amountToBuy = new BN(2000);
     // setup users
@@ -409,7 +396,7 @@ describe("xyk-pallet - Buy assets tests: Buying assets you can", () => {
     );
 
     await testUser2.refreshAmounts(AssetWallet.BEFORE);
-    await waitNewBlock();
+
     const buyPriceLocal = calculate_buy_price_local(
       thirdAssetAmount.div(new BN(2)),
       thirdAssetAmount,

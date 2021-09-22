@@ -63,13 +63,13 @@ export const getEventResult = (
   });
 };
 
-export const waitNewBlock = (forceWait = false) => {
+export const waitNewBlock = () => {
   const api = getApi();
   let count = 0;
   return new Promise(async (resolve) => {
     const unsubscribe = await api.rpc.chain.subscribeNewHeads((header: any) => {
       testLog.getLog().info(`Chain is at block: #${header.number}`);
-      if (!forceWait || ++count === 2) {
+      if (++count === 2) {
         unsubscribe();
         resolve(true);
       }

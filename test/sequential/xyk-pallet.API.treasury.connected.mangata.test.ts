@@ -17,7 +17,7 @@ import {
   calculate_sell_price_rpc,
   calculate_buy_price_rpc,
 } from "../../utils/tx";
-import { waitNewBlock, ExtrinsicResult } from "../../utils/eventListeners";
+import { ExtrinsicResult } from "../../utils/eventListeners";
 import BN from "bn.js";
 import { Keyring } from "@polkadot/api";
 import { AssetWallet, User } from "../../utils/User";
@@ -55,7 +55,6 @@ describe("xyk-pallet - treasury tests [Mangata]: on treasury we store", () => {
   });
 
   beforeEach(async () => {
-    await waitNewBlock();
     keyring = new Keyring({ type: "sr25519" });
 
     // setup users
@@ -67,7 +66,6 @@ describe("xyk-pallet - treasury tests [Mangata]: on treasury we store", () => {
     keyring.addPair(testUser1.keyRingPair);
     keyring.addPair(sudo.keyRingPair);
 
-    await waitNewBlock();
     mgaTokenId = await getAssetId(MGA_ASSET_NAME);
     await sudo.mint(mgaTokenId, testUser1, new BN(defaultCurrecyValue));
     testUser1.addAsset(mgaTokenId);
@@ -92,7 +90,6 @@ describe("xyk-pallet - treasury tests [Mangata]: on treasury we store", () => {
   });
 
   test("assets won when assets are sold [Selling Mangata] - 5", async () => {
-    await waitNewBlock();
     const sellAssetAmount = new BN(10000);
 
     const treasuryBefore = await getTreasury(mgaTokenId);
@@ -126,7 +123,6 @@ describe("xyk-pallet - treasury tests [Mangata]: on treasury we store", () => {
   });
 
   test("assets won when assets are bought [Buying Mangata]", async () => {
-    await waitNewBlock();
     const buyAssetAmount = new BN(10000);
 
     const treasuryBefore = await getTreasury(mgaTokenId);
@@ -171,7 +167,6 @@ describe("xyk-pallet - treasury tests [Mangata]: on treasury we store", () => {
   });
 
   test("assets won when assets are sold [Selling other in MGA pool] - 6", async () => {
-    await waitNewBlock();
     const sellAssetAmount = new BN(20000);
 
     const treasuryBefore = await getTreasury(mgaTokenId);
@@ -211,7 +206,6 @@ describe("xyk-pallet - treasury tests [Mangata]: on treasury we store", () => {
   });
 
   test("assets won when assets are bought [Buying other in MGA pool]", async () => {
-    await waitNewBlock();
     const buyAssetAmount = new BN(10000);
 
     const treasuryBefore = await getTreasury(mgaTokenId);
@@ -275,7 +269,6 @@ describe("xyk-pallet - treasury tests [Connected - Mangata]: on treasury we stor
       await initApi();
     }
 
-    await waitNewBlock();
     keyring = new Keyring({ type: "sr25519" });
 
     // setup users
@@ -287,7 +280,6 @@ describe("xyk-pallet - treasury tests [Connected - Mangata]: on treasury we stor
     keyring.addPair(testUser1.keyRingPair);
     keyring.addPair(sudo.keyRingPair);
 
-    await waitNewBlock();
     mgaTokenId = await getAssetId(MGA_ASSET_NAME);
     await sudo.mint(mgaTokenId, testUser1, new BN(defaultCurrecyValue));
     testUser1.addAsset(mgaTokenId);
@@ -328,7 +320,6 @@ describe("xyk-pallet - treasury tests [Connected - Mangata]: on treasury we stor
   });
 
   test("assets won when assets are sold [Selling X connected to MGA pool] - 10", async () => {
-    await waitNewBlock();
     const sellAssetAmount = new BN(20000);
 
     const mgPoolAmount = await getBalanceOfPool(mgaTokenId, connectedToMGA);
@@ -373,7 +364,6 @@ describe("xyk-pallet - treasury tests [Connected - Mangata]: on treasury we stor
   });
 
   test("assets won when assets are bought [Buying X connected to MGA pool]", async () => {
-    await waitNewBlock();
     const buyAssetAmount = new BN(7000);
 
     const PoolAmount = await getBalanceOfPool(
@@ -429,7 +419,6 @@ describe("xyk-pallet - treasury tests [Connected - Mangata]: on treasury we stor
   });
 
   test("assets won when assets are sold [Selling Y - X connected toMGA pool] - 6", async () => {
-    await waitNewBlock();
     const sellAssetAmount = new BN(20000);
 
     const treasuryBefore = await getTreasury(mgaTokenId);
@@ -473,7 +462,6 @@ describe("xyk-pallet - treasury tests [Connected - Mangata]: on treasury we stor
   });
 
   test("assets won when assets are bought [Buying Y - X connected toMGA pool] - 6", async () => {
-    await waitNewBlock();
     const buyAssetAmount = new BN(6000);
 
     const treasuryBefore = await getTreasury(mgaTokenId);

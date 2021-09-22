@@ -89,7 +89,7 @@ describe("UI tests - A user can swap and mint tokens", () => {
     await Polkadot.signTransaction(driver);
     //wait four blocks to complete the action.
     for (let index = 0; index < 4; index++) {
-      await waitNewBlock(true);
+      await waitNewBlock();
     }
 
     await testUser1.refreshAmounts(AssetWallet.AFTER);
@@ -114,7 +114,7 @@ describe("UI tests - A user can swap and mint tokens", () => {
     await Polkadot.signTransaction(driver);
     //wait four blocks to complete the action.
     for (let index = 0; index < 4; index++) {
-      await waitNewBlock(true);
+      await waitNewBlock();
     }
 
     await testUser1.refreshAmounts(AssetWallet.AFTER);
@@ -143,7 +143,7 @@ describe("UI tests - A user can swap and mint tokens", () => {
     await modal.setAmount("100");
     await modal.confirmAndSign();
     for (let index = 0; index < 4; index++) {
-      await waitNewBlock(true);
+      await waitNewBlock();
     }
     await testUser1.refreshAmounts(AssetWallet.AFTER);
     const isPoolVisible = await sidebar.isLiquidityPoolVisible(
