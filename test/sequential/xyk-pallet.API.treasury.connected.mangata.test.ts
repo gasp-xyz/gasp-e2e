@@ -574,7 +574,7 @@ describe("xyk-pallet - treasury tests [Connected - Mangata]: Error cases", () =>
     await testUser1.addMGATokens(sudo);
   });
 
-  test("Not enough tokens to convert fee", async () => {
+  test.skip("[BUG]Not enough tokens to convert fee LINK[https://trello.com/c/p77t0atO]", async () => {
     await (
       await getMangataInstance()
     ).createPool(
