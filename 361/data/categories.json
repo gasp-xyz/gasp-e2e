@@ -1,0 +1,78 @@
+{
+  "uid" : "4b4757e66a1912dae1a509f688f20b0f",
+  "children" : [ {
+    "name" : "Product defects",
+    "children" : [ {
+      "name" : "Error: Expected: 0 \n                  Actual: -1 \n                 ",
+      "children" : [ {
+        "name" : "Get affected after a transaction that devaluates X wallet & destroy the pool",
+        "uid" : "852d61f08d6a9ae4",
+        "parentUid" : "a60aea431169bbc408c07a15f6db476a",
+        "status" : "failed",
+        "time" : {
+          "start" : 1632290055677,
+          "stop" : 1632290244927,
+          "duration" : 189250
+        },
+        "flaky" : false,
+        "newFailed" : false,
+        "parameters" : [ ]
+      }, {
+        "name" : "xyk-pallet - User Balance - Creating a pool requires paying fees",
+        "uid" : "666cec92f23a0de0",
+        "parentUid" : "a60aea431169bbc408c07a15f6db476a",
+        "status" : "failed",
+        "time" : {
+          "start" : 1632290090540,
+          "stop" : 1632290191365,
+          "duration" : 100825
+        },
+        "flaky" : false,
+        "newFailed" : false,
+        "parameters" : [ ]
+      }, {
+        "name" : "xyk-pallet - User Balance - mint liquidity requires paying fees",
+        "uid" : "77b9595175d3ca8",
+        "parentUid" : "a60aea431169bbc408c07a15f6db476a",
+        "status" : "failed",
+        "time" : {
+          "start" : 1632290191366,
+          "stop" : 1632290281148,
+          "duration" : 89782
+        },
+        "flaky" : false,
+        "newFailed" : false,
+        "parameters" : [ ]
+      }, {
+        "name" : "xyk-pallet - User Balance - Selling an asset does not require paying fees",
+        "uid" : "e88beedad44083ee",
+        "parentUid" : "a60aea431169bbc408c07a15f6db476a",
+        "status" : "failed",
+        "time" : {
+          "start" : 1632290281148,
+          "stop" : 1632290371045,
+          "duration" : 89897
+        },
+        "flaky" : false,
+        "newFailed" : false,
+        "parameters" : [ ]
+      }, {
+        "name" : "xyk-pallet - User Balance - Buying an asset does not require paying fees",
+        "uid" : "27830411b3afa7df",
+        "parentUid" : "a60aea431169bbc408c07a15f6db476a",
+        "status" : "failed",
+        "time" : {
+          "start" : 1632290371045,
+          "stop" : 1632290460866,
+          "duration" : 89821
+        },
+        "flaky" : false,
+        "newFailed" : false,
+        "parameters" : [ ]
+      } ],
+      "uid" : "a60aea431169bbc408c07a15f6db476a"
+    } ],
+    "uid" : "8fb3a91ba5aaf9de24cc8a92edc82b5d"
+  } ],
+  "name" : "categories"
+}

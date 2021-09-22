@@ -1,0 +1,46 @@
+{
+  "uid" : "fc33919a94fa03d5",
+  "name" : "xyk-pallet - AssetsOperation: sellAsset [minAmountOut = 0] , first to second currency",
+  "fullName" : "test/parallel/xyk-pallet.asset.sell.test.ts.xyk-pallet - AssetsOperation: sellAsset [minAmountOut = 0] , first to second currency",
+  "historyId" : "375413e458fc80142d2863221fc5ac5a",
+  "time" : {
+    "start" : 1632290355861,
+    "stop" : 1632290479742,
+    "duration" : 123881
+  },
+  "description" : "",
+  "descriptionHtml" : "",
+  "status" : "passed",
+  "flaky" : false,
+  "newFailed" : false,
+  "beforeStages" : [ ],
+  "afterStages" : [ ],
+  "labels" : [ {
+    "name" : "suite",
+    "value" : "test/parallel/xyk-pallet.asset.sell.test.ts"
+  }, {
+    "name" : "testClass",
+    "value" : "test/parallel/xyk-pallet.asset.sell.test.ts"
+  }, {
+    "name" : "testMethod",
+    "value" : "xyk-pallet - AssetsOperation: sellAsset [minAmountOut = 0] , first to second currency"
+  }, {
+    "name" : "package",
+    "value" : "test/parallel/xyk-pallet.asset.sell.test.ts"
+  }, {
+    "name" : "resultFormat",
+    "value" : "allure1"
+  } ],
+  "parameters" : [ ],
+  "links" : [ ],
+  "hidden" : false,
+  "retry" : false,
+  "extra" : {
+    "severity" : "normal",
+    "retries" : [ ],
+    "categories" : [ ],
+    "tags" : [ ]
+  },
+  "source" : "fc33919a94fa03d5.json",
+  "parameterValues" : [ ]
+}

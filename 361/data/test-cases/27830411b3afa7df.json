@@ -1,0 +1,52 @@
+{
+  "uid" : "27830411b3afa7df",
+  "name" : "xyk-pallet - User Balance - Buying an asset does not require paying fees",
+  "fullName" : "test/parallel/xyk-pallet.API.testMGArequired.test.ts.xyk-pallet - User Balance - Buying an asset does not require paying fees",
+  "historyId" : "fdee160a228d32a63d435b68102e4894",
+  "time" : {
+    "start" : 1632290371045,
+    "stop" : 1632290460866,
+    "duration" : 89821
+  },
+  "description" : "",
+  "descriptionHtml" : "",
+  "status" : "failed",
+  "statusMessage" : "Error: Expected: 0 \n                  Actual: -1 \n                 ",
+  "statusTrace" : "Error: Expected: 0 \n                  Actual: -1 \n                 \n                    at Object.<anonymous> (/home/goncer/projects/ghActions/actions-runner/_work/mangata-e2e/mangata-e2e/test/parallel/xyk-pallet.API.testMGArequired.test.ts:182:30)\n                    at runMicrotasks (<anonymous>)\n                    at processTicksAndRejections (internal/process/task_queues.js:95:5)",
+  "flaky" : false,
+  "newFailed" : false,
+  "beforeStages" : [ ],
+  "afterStages" : [ ],
+  "labels" : [ {
+    "name" : "suite",
+    "value" : "test/parallel/xyk-pallet.API.testMGArequired.test.ts"
+  }, {
+    "name" : "testClass",
+    "value" : "test/parallel/xyk-pallet.API.testMGArequired.test.ts"
+  }, {
+    "name" : "testMethod",
+    "value" : "xyk-pallet - User Balance - Buying an asset does not require paying fees"
+  }, {
+    "name" : "package",
+    "value" : "test/parallel/xyk-pallet.API.testMGArequired.test.ts"
+  }, {
+    "name" : "resultFormat",
+    "value" : "allure1"
+  } ],
+  "parameters" : [ ],
+  "links" : [ ],
+  "hidden" : false,
+  "retry" : false,
+  "extra" : {
+    "severity" : "normal",
+    "retries" : [ ],
+    "categories" : [ {
+      "name" : "Product defects",
+      "matchedStatuses" : [ ],
+      "flaky" : false
+    } ],
+    "tags" : [ ]
+  },
+  "source" : "27830411b3afa7df.json",
+  "parameterValues" : [ ]
+}

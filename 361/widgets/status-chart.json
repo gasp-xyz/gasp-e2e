@@ -1,0 +1,1101 @@
+[ {
+  "uid" : "d10d88467a39cf8b",
+  "name" : "xyk-pallet - Sudo tests: Sudo Issue an asset",
+  "time" : {
+    "start" : 1632290697834,
+    "stop" : 1632290714098,
+    "duration" : 16264
+  },
+  "status" : "passed",
+  "severity" : "normal"
+}, {
+  "uid" : "d714460a517e8f3f",
+  "name" : "validate parameters - sell [soldTokenId->2,boughtTokenId->1,amount->1,expected->0]",
+  "time" : {
+    "start" : 1632290695481,
+    "stop" : 1632290695491,
+    "duration" : 10
+  },
+  "status" : "passed",
+  "severity" : "normal"
+}, {
+  "uid" : "1dda30996fb89c1e",
+  "name" : "xyk-pallet - Pool tests: createPool",
+  "time" : {
+    "start" : 1632290641777,
+    "stop" : 1632290748926,
+    "duration" : 107149
+  },
+  "status" : "passed",
+  "severity" : "normal"
+}, {
+  "uid" : "a0e47e2f49375e5a",
+  "name" : "xyk-rpc - calculate_sell_price validates parameters - Negative params",
+  "time" : {
+    "start" : 1632290697739,
+    "stop" : 1632290697752,
+    "duration" : 13
+  },
+  "status" : "passed",
+  "severity" : "normal"
+}, {
+  "uid" : "d5562202a43fb2a5",
+  "name" : "xyk-rpc - calculate_sell_price validates parameters - Zeroes [inputReserve->0,outputReserve->1,amount->1,expected->1]",
+  "time" : {
+    "start" : 1632290697759,
+    "stop" : 1632290697763,
+    "duration" : 4
+  },
+  "status" : "passed",
+  "severity" : "normal"
+}, {
+  "uid" : "f062ec85b968fe6f",
+  "name" : "Burn liquidity assets that does not belong to any pool",
+  "time" : {
+    "start" : 1632289584790,
+    "stop" : 1632289711358,
+    "duration" : 126568
+  },
+  "status" : "passed",
+  "severity" : "normal"
+}, {
+  "uid" : "7170dd77fbcf1fe4",
+  "name" : "validate parameters - burn from pool [firstIdx->0,secondIdx->1,amount->1000,expected->1.0000 nUnit]",
+  "time" : {
+    "start" : 1632290425965,
+    "stop" : 1632290425970,
+    "duration" : 5
+  },
+  "status" : "passed",
+  "severity" : "normal"
+}, {
+  "uid" : "3a1cae1da7e49afd",
+  "name" : "RPC big numbers : negative asset ids [amount->10000000000000000000000]",
+  "time" : {
+    "start" : 1632290767732,
+    "stop" : 1632290767734,
+    "duration" : 2
+  },
+  "status" : "passed",
+  "severity" : "normal"
+}, {
+  "uid" : "b72042bf43accca",
+  "name" : "validate parameters: negative asset ids [soldTokenId->-1,boughtTokenId->0,amount->0,expected->createType(TokenId):: u32: Negative number passed to unsigned type]",
+  "time" : {
+    "start" : 1632290767691,
+    "stop" : 1632290767709,
+    "duration" : 18
+  },
+  "status" : "passed",
+  "severity" : "normal"
+}, {
+  "uid" : "88f733ffcc5f648b",
+  "name" : "xyk-rpc - calculate_buy_price validates parameters - Zeroes [inputReserve->0,outputReserve->1,amount->1,expected->0]",
+  "time" : {
+    "start" : 1632290697771,
+    "stop" : 1632290697774,
+    "duration" : 3
+  },
+  "status" : "passed",
+  "severity" : "normal"
+}, {
+  "uid" : "d30e11b421f901fc",
+  "name" : "xyk-pallet - AssetsOperation: buyAsset [maxAmountIn = 1M], sell a bought asset",
+  "time" : {
+    "start" : 1632290569385,
+    "stop" : 1632290714147,
+    "duration" : 144762
+  },
+  "status" : "passed",
+  "severity" : "normal"
+}, {
+  "uid" : "c1af9ece56cc8e2b",
+  "name" : "xyk-pallet - SecurityTests - Only sudo can perform actions [tokens.create to itself]",
+  "time" : {
+    "start" : 1632290659136,
+    "stop" : 1632290677916,
+    "duration" : 18780
+  },
+  "status" : "passed",
+  "severity" : "normal"
+}, {
+  "uid" : "869bd274f85331d0",
+  "name" : "xyk-pallet - SecurityTests - Only sudo can perform actions [tokens.mint]",
+  "time" : {
+    "start" : 1632290677916,
+    "stop" : 1632290695331,
+    "duration" : 17415
+  },
+  "status" : "passed",
+  "severity" : "normal"
+}, {
+  "uid" : "16eadd877fffd22c",
+  "name" : "xyk-pallet - Pool tests: createPool and validate liq token",
+  "time" : {
+    "start" : 1632290535569,
+    "stop" : 1632290641777,
+    "duration" : 106208
+  },
+  "status" : "passed",
+  "severity" : "normal"
+}, {
+  "uid" : "71e24941310ba117",
+  "name" : "be burn",
+  "time" : {
+    "start" : 1632289963338,
+    "stop" : 1632290161773,
+    "duration" : 198435
+  },
+  "status" : "passed",
+  "severity" : "normal"
+}, {
+  "uid" : "11dc38b3fe29561b",
+  "name" : "xyk-rpc - calculate_buy_price validates parameters - Zeroes [inputReserve->0,outputReserve->0,amount->1,expected->0]",
+  "time" : {
+    "start" : 1632290697774,
+    "stop" : 1632290697777,
+    "duration" : 3
+  },
+  "status" : "passed",
+  "severity" : "normal"
+}, {
+  "uid" : "870caee4b4568c52",
+  "name" : "Try sell more assets than owned",
+  "time" : {
+    "start" : 1632289728891,
+    "stop" : 1632289873551,
+    "duration" : 144660
+  },
+  "status" : "passed",
+  "severity" : "normal"
+}, {
+  "uid" : "147882707934cfc6",
+  "name" : "xyk-rpc - calculate_sell_price matches with the real sell",
+  "time" : {
+    "start" : 1632290714195,
+    "stop" : 1632290731535,
+    "duration" : 17340
+  },
+  "status" : "passed",
+  "severity" : "normal"
+}, {
+  "uid" : "457f865dc7db7c43",
+  "name" : "Sell assets from a wallet I own into a wallet I do not own: limit",
+  "time" : {
+    "start" : 1632290125575,
+    "stop" : 1632290336125,
+    "duration" : 210550
+  },
+  "status" : "passed",
+  "severity" : "normal"
+}, {
+  "uid" : "a8970dea5ae48e9c",
+  "name" : "xyk-pallet - LiquidityOperation: mintLiquidity",
+  "time" : {
+    "start" : 1632290317370,
+    "stop" : 1632290443434,
+    "duration" : 126064
+  },
+  "status" : "passed",
+  "severity" : "normal"
+}, {
+  "uid" : "dd499412912cff3c",
+  "name" : "Burning x-y and y-x pool",
+  "time" : {
+    "start" : 1632290317333,
+    "stop" : 1632290353518,
+    "duration" : 36185
+  },
+  "status" : "passed",
+  "severity" : "normal"
+}, {
+  "uid" : "d5ed26174beaaa36",
+  "name" : "Mint liquidity more assets than I own",
+  "time" : {
+    "start" : 1632290053197,
+    "stop" : 1632290244926,
+    "duration" : 191729
+  },
+  "status" : "passed",
+  "severity" : "normal"
+}, {
+  "uid" : "7f9083a7a5dac33",
+  "name" : "Sell assets that does not belong to any pool",
+  "time" : {
+    "start" : 1632289584837,
+    "stop" : 1632289728890,
+    "duration" : 144053
+  },
+  "status" : "passed",
+  "severity" : "normal"
+}, {
+  "uid" : "ce0f9d09fdf03fcf",
+  "name" : "xyk-rpc - calculate_sell_price validates parameters - Zeroes [inputReserve->0,outputReserve->0,amount->1,expected->0]",
+  "time" : {
+    "start" : 1632290697763,
+    "stop" : 1632290697765,
+    "duration" : 2
+  },
+  "status" : "passed",
+  "severity" : "normal"
+}, {
+  "uid" : "9feed7a90ad75e18",
+  "name" : "RPC big numbers : negative asset ids [amount->100000000]",
+  "time" : {
+    "start" : 1632290767723,
+    "stop" : 1632290767727,
+    "duration" : 4
+  },
+  "status" : "passed",
+  "severity" : "normal"
+}, {
+  "uid" : "cc2af9ca4ca21099",
+  "name" : "assets won when assets are sold - 1 [rounding] [no connected to MGA]",
+  "time" : {
+    "start" : 1632289711386,
+    "stop" : 1632289837361,
+    "duration" : 125975
+  },
+  "status" : "passed",
+  "severity" : "normal"
+}, {
+  "uid" : "b1d1df70fcdb1fa9",
+  "name" : "validate parameters - sell [soldTokenId->1,boughtTokenId->2,amount->1,expected->0]",
+  "time" : {
+    "start" : 1632290695471,
+    "stop" : 1632290695481,
+    "duration" : 10
+  },
+  "status" : "passed",
+  "severity" : "normal"
+}, {
+  "uid" : "60b93f20142b0dca",
+  "name" : "xyk-pallet - AssetsOperation: sellAsset [minAmountOut = 0], sell an already sold asset",
+  "time" : {
+    "start" : 1632290479742,
+    "stop" : 1632290622990,
+    "duration" : 143248
+  },
+  "status" : "passed",
+  "severity" : "normal"
+}, {
+  "uid" : "f6308bf4bbb1acea",
+  "name" : "xyk-pallet - Liqudity : Burn part of the liquidity",
+  "time" : {
+    "start" : 1632290055725,
+    "stop" : 1632290191314,
+    "duration" : 135589
+  },
+  "status" : "passed",
+  "severity" : "normal"
+}, {
+  "uid" : "56a327070707756f",
+  "name" : "validate parameters - sell [soldTokenId->1,boughtTokenId->2,amount->0,expected->0]",
+  "time" : {
+    "start" : 1632290695462,
+    "stop" : 1632290695471,
+    "duration" : 9
+  },
+  "status" : "passed",
+  "severity" : "normal"
+}, {
+  "uid" : "ca6675f455853e65",
+  "name" : "xyk-rpc - calculate_sell_price and calculate_buy_price matches, 1000,1000",
+  "time" : {
+    "start" : 1632290714131,
+    "stop" : 1632290714165,
+    "duration" : 34
+  },
+  "status" : "passed",
+  "severity" : "normal"
+}, {
+  "uid" : "3790cc107358e50b",
+  "name" : "assets won when assets are sold - 5 [no connected to MGA]",
+  "time" : {
+    "start" : 1632289584821,
+    "stop" : 1632289711386,
+    "duration" : 126565
+  },
+  "status" : "passed",
+  "severity" : "normal"
+}, {
+  "uid" : "b535855abf257ed2",
+  "name" : "validate parameters - buy [soldTokenId->0,boughtTokenId->1,amount->0,expected->1]",
+  "time" : {
+    "start" : 1632290695327,
+    "stop" : 1632290695361,
+    "duration" : 34
+  },
+  "status" : "passed",
+  "severity" : "normal"
+}, {
+  "uid" : "d57d7ead7ba74288",
+  "name" : "Buy assets with a high expectation: maxInput -1",
+  "time" : {
+    "start" : 1632289982128,
+    "stop" : 1632290125622,
+    "duration" : 143494
+  },
+  "status" : "passed",
+  "severity" : "normal"
+}, {
+  "uid" : "85897ed4bc3e791",
+  "name" : "validate parameters - burn from pool [firstIdx->0,secondIdx->1,amount->100000,expected->100.0000 nUnit]",
+  "time" : {
+    "start" : 1632290425977,
+    "stop" : 1632290425980,
+    "duration" : 3
+  },
+  "status" : "passed",
+  "severity" : "normal"
+}, {
+  "uid" : "7791542c1d4186a7",
+  "name" : "Buy more assets than exists in the pool",
+  "time" : {
+    "start" : 1632289728866,
+    "stop" : 1632289856118,
+    "duration" : 127252
+  },
+  "status" : "passed",
+  "severity" : "normal"
+}, {
+  "uid" : "6f9d0efd2834bcde",
+  "name" : "xyk-pallet - AssetsOperation: transferAsset",
+  "time" : {
+    "start" : 1632290482105,
+    "stop" : 1632290588173,
+    "duration" : 106068
+  },
+  "status" : "passed",
+  "severity" : "normal"
+}, {
+  "uid" : "ac9b955cdd4f290d",
+  "name" : "Min liquidity, SecondAssetAmount parameter expectation not met",
+  "time" : {
+    "start" : 1632290244926,
+    "stop" : 1632290443380,
+    "duration" : 198454
+  },
+  "status" : "passed",
+  "severity" : "normal"
+}, {
+  "uid" : "162b652e806dd9ec",
+  "name" : "validate parameters - buy [soldTokenId->1,boughtTokenId->2,amount->1,expected->2]",
+  "time" : {
+    "start" : 1632290695392,
+    "stop" : 1632290695405,
+    "duration" : 13
+  },
+  "status" : "passed",
+  "severity" : "normal"
+}, {
+  "uid" : "27830411b3afa7df",
+  "name" : "xyk-pallet - User Balance - Buying an asset does not require paying fees",
+  "time" : {
+    "start" : 1632290371045,
+    "stop" : 1632290460866,
+    "duration" : 89821
+  },
+  "status" : "failed",
+  "severity" : "normal"
+}, {
+  "uid" : "3584179141b0a12c",
+  "name" : "assets won when assets are bought - 1 [no connected to MGA]",
+  "time" : {
+    "start" : 1632289963323,
+    "stop" : 1632290089360,
+    "duration" : 126037
+  },
+  "status" : "passed",
+  "severity" : "normal"
+}, {
+  "uid" : "83a711af0aecbf8e",
+  "name" : "Not enough assets",
+  "time" : {
+    "start" : 1632289728856,
+    "stop" : 1632289783822,
+    "duration" : 54966
+  },
+  "status" : "passed",
+  "severity" : "normal"
+}, {
+  "uid" : "45167bd3974ec5f9",
+  "name" : "Burn liquidity  for more assets than the liquidity pool has issued",
+  "time" : {
+    "start" : 1632289711358,
+    "stop" : 1632289873537,
+    "duration" : 162179
+  },
+  "status" : "passed",
+  "severity" : "normal"
+}, {
+  "uid" : "ba666056e9ef47f6",
+  "name" : "[BUG] Burn liquidities [MAX -1] assets to a wallet wich is full => overflow. NOT  a bug https://trello.com/c/J3fzuwH5",
+  "time" : {
+    "start" : 1632290053161,
+    "stop" : 1632290053161,
+    "duration" : 0
+  },
+  "status" : "skipped",
+  "severity" : "normal"
+}, {
+  "uid" : "d142dbd2db76a7ee",
+  "name" : "Sell [MAX -2] assets to a wallet with Max-1000,1000 => overflow.",
+  "time" : {
+    "start" : 1632289999526,
+    "stop" : 1632290016954,
+    "duration" : 17428
+  },
+  "status" : "passed",
+  "severity" : "normal"
+}, {
+  "uid" : "f627ef3e5a2d1390",
+  "name" : "validate parameters - buy [soldTokenId->1,boughtTokenId->2,amount->0,expected->1]",
+  "time" : {
+    "start" : 1632290695379,
+    "stop" : 1632290695392,
+    "duration" : 13
+  },
+  "status" : "passed",
+  "severity" : "normal"
+}, {
+  "uid" : "43f14a81052caa6e",
+  "name" : "xyk-rpc - calculate_buy_price matches with the real buy",
+  "time" : {
+    "start" : 1632290731535,
+    "stop" : 1632290748909,
+    "duration" : 17374
+  },
+  "status" : "passed",
+  "severity" : "normal"
+}, {
+  "uid" : "666cec92f23a0de0",
+  "name" : "xyk-pallet - User Balance - Creating a pool requires paying fees",
+  "time" : {
+    "start" : 1632290090540,
+    "stop" : 1632290191365,
+    "duration" : 100825
+  },
+  "status" : "failed",
+  "severity" : "normal"
+}, {
+  "uid" : "501143e335a68b2c",
+  "name" : "Mint liquidity assets that does not belong to any pool",
+  "time" : {
+    "start" : 1632289873535,
+    "stop" : 1632290053197,
+    "duration" : 179662
+  },
+  "status" : "passed",
+  "severity" : "normal"
+}, {
+  "uid" : "32bbcdb086a30507",
+  "name" : "validate parameters - buy [soldTokenId->0,boughtTokenId->1,amount->1,expected->0]",
+  "time" : {
+    "start" : 1632290695361,
+    "stop" : 1632290695379,
+    "duration" : 18
+  },
+  "status" : "passed",
+  "severity" : "normal"
+}, {
+  "uid" : "852d61f08d6a9ae4",
+  "name" : "Get affected after a transaction that devaluates X wallet & destroy the pool",
+  "time" : {
+    "start" : 1632290055677,
+    "stop" : 1632290244927,
+    "duration" : 189250
+  },
+  "status" : "failed",
+  "severity" : "normal"
+}, {
+  "uid" : "c900edad132dcff3",
+  "name" : "Create pool of [MAX,MAX]: OverFlow [a+b] - liquidityAsset calculation",
+  "time" : {
+    "start" : 1632289582608,
+    "stop" : 1632289711377,
+    "duration" : 128769
+  },
+  "status" : "passed",
+  "severity" : "normal"
+}, {
+  "uid" : "cd89cc5f12f711af",
+  "name" : "xyk-pallet - AssetsOperation: transferAll",
+  "time" : {
+    "start" : 1632290588174,
+    "stop" : 1632290695359,
+    "duration" : 107185
+  },
+  "status" : "passed",
+  "severity" : "normal"
+}, {
+  "uid" : "cf075476dee75f8f",
+  "name" : "Sell a few assets to a wallet that is full => overflow. NOT A BUG: https://trello.com/c/J3fzuwH5",
+  "time" : {
+    "start" : 1632290053166,
+    "stop" : 1632290053166,
+    "duration" : 0
+  },
+  "status" : "skipped",
+  "severity" : "normal"
+}, {
+  "uid" : "2f7b26252fb6605c",
+  "name" : "xyk-pallet - Sudo tests: Sudo Issue two  different assets to the same account",
+  "time" : {
+    "start" : 1632290714099,
+    "stop" : 1632290748903,
+    "duration" : 34804
+  },
+  "status" : "passed",
+  "severity" : "normal"
+}, {
+  "uid" : "ab5acbea358b9c6a",
+  "name" : "Sell assets with a high expectation: limit +1",
+  "time" : {
+    "start" : 1632289873551,
+    "stop" : 1632289999560,
+    "duration" : 126009
+  },
+  "status" : "passed",
+  "severity" : "normal"
+}, {
+  "uid" : "f9c556cce7521c37",
+  "name" : "validate parameters [soldTokenId->1,boughtTokenId->0,amount->1,expected->0]",
+  "time" : {
+    "start" : 1632290767682,
+    "stop" : 1632290767685,
+    "duration" : 3
+  },
+  "status" : "passed",
+  "severity" : "normal"
+}, {
+  "uid" : "81b8443982d4c15f",
+  "name" : "xyk-rpc - calculate_buy_price validates parameters - Zeroes [inputReserve->1,outputReserve->0,amount->0,expected->0]",
+  "time" : {
+    "start" : 1632290697777,
+    "stop" : 1632290697779,
+    "duration" : 2
+  },
+  "status" : "passed",
+  "severity" : "normal"
+}, {
+  "uid" : "f5c0ecbeb17f6c79",
+  "name" : "Buy a few assets to a wallet that is full  => overflow. NOT A BUG: https://trello.com/c/J3fzuwH5",
+  "time" : {
+    "start" : 1632290053166,
+    "stop" : 1632290053166,
+    "duration" : 0
+  },
+  "status" : "skipped",
+  "severity" : "normal"
+}, {
+  "uid" : "7eaab597989de65d",
+  "name" : "GetLiquidityAssetID x-y and y-x pool",
+  "time" : {
+    "start" : 1632290353518,
+    "stop" : 1632290353547,
+    "duration" : 29
+  },
+  "status" : "passed",
+  "severity" : "normal"
+}, {
+  "uid" : "c88cb1058bd5745",
+  "name" : "Buy all assets from the the pool",
+  "time" : {
+    "start" : 1632289856118,
+    "stop" : 1632289982128,
+    "duration" : 126010
+  },
+  "status" : "passed",
+  "severity" : "normal"
+}, {
+  "uid" : "f636dc03d562b7bb",
+  "name" : "validate parameters - sell [soldTokenId->0,boughtTokenId->1,amount->1,expected->0]",
+  "time" : {
+    "start" : 1632290695453,
+    "stop" : 1632290695462,
+    "duration" : 9
+  },
+  "status" : "passed",
+  "severity" : "normal"
+}, {
+  "uid" : "12ba63176e66cdca",
+  "name" : "Buy [100] assets to a wallet with Max-1000,1000 => overflow.",
+  "time" : {
+    "start" : 1632290016954,
+    "stop" : 1632290035727,
+    "duration" : 18773
+  },
+  "status" : "passed",
+  "severity" : "normal"
+}, {
+  "uid" : "372eafd806971ff3",
+  "name" : "validate parameters - burn from pool [firstIdx->0,secondIdx->1,amount->10000,expected->10.0000 nUnit]",
+  "time" : {
+    "start" : 1632290425974,
+    "stop" : 1632290425977,
+    "duration" : 3
+  },
+  "status" : "passed",
+  "severity" : "normal"
+}, {
+  "uid" : "e12a369e5fea2817",
+  "name" : "Mint liquidity when not enough assetY for minting Xamount",
+  "time" : {
+    "start" : 1632289584873,
+    "stop" : 1632289728864,
+    "duration" : 143991
+  },
+  "status" : "passed",
+  "severity" : "normal"
+}, {
+  "uid" : "a4e642ddf5576771",
+  "name" : "Mint liquidities [1000] assets to a wallet with Max-1000,1000 => overflow.",
+  "time" : {
+    "start" : 1632290035727,
+    "stop" : 1632290053161,
+    "duration" : 17434
+  },
+  "status" : "passed",
+  "severity" : "normal"
+}, {
+  "uid" : "ee2fa08e9dda72b5",
+  "name" : "Buy from a wallet I own into a wallet I do not own",
+  "time" : {
+    "start" : 1632290281115,
+    "stop" : 1632290479659,
+    "duration" : 198544
+  },
+  "status" : "passed",
+  "severity" : "normal"
+}, {
+  "uid" : "3f7fb20a785d027d",
+  "name" : "Sell assets with a high expectation: limit - OK",
+  "time" : {
+    "start" : 1632289999576,
+    "stop" : 1632290125575,
+    "duration" : 125999
+  },
+  "status" : "passed",
+  "severity" : "normal"
+}, {
+  "uid" : "298e388e8a514a5b",
+  "name" : "Burning liquidities provides Burn and settle",
+  "time" : {
+    "start" : 1632290244927,
+    "stop" : 1632290389776,
+    "duration" : 144849
+  },
+  "status" : "passed",
+  "severity" : "normal"
+}, {
+  "uid" : "f3075944648cb7f5",
+  "name" : "validate parameters - buy [soldTokenId->2,boughtTokenId->3,amount->1,expected->3]",
+  "time" : {
+    "start" : 1632290695415,
+    "stop" : 1632290695426,
+    "duration" : 11
+  },
+  "status" : "passed",
+  "severity" : "normal"
+}, {
+  "uid" : "a0b4929a10e5f444",
+  "name" : "validate parameters - buy [soldTokenId->3,boughtTokenId->2,amount->2,expected->0]",
+  "time" : {
+    "start" : 1632290695434,
+    "stop" : 1632290695443,
+    "duration" : 9
+  },
+  "status" : "passed",
+  "severity" : "normal"
+}, {
+  "uid" : "639ceee91a3e3dfa",
+  "name" : "xyk-pallet - AssetsOperation: buyAsset [maxAmountIn = 1M], buy asset",
+  "time" : {
+    "start" : 1632290445901,
+    "stop" : 1632290569384,
+    "duration" : 123483
+  },
+  "status" : "passed",
+  "severity" : "normal"
+}, {
+  "uid" : "ecc6f6f883214bb0",
+  "name" : "xyk-pallet - Liqudity : Burn all the liquidity",
+  "time" : {
+    "start" : 1632290191314,
+    "stop" : 1632290317369,
+    "duration" : 126055
+  },
+  "status" : "passed",
+  "severity" : "normal"
+}, {
+  "uid" : "b6fdc65429fd9ce2",
+  "name" : "xyk-pallet - SecurityTests - Only sudo can perform actions [tokens.mint to itself]",
+  "time" : {
+    "start" : 1632290695331,
+    "stop" : 1632290714102,
+    "duration" : 18771
+  },
+  "status" : "passed",
+  "severity" : "normal"
+}, {
+  "uid" : "80cfd0fb7a9eccb9",
+  "name" : "be minted",
+  "time" : {
+    "start" : 1632289783829,
+    "stop" : 1632289963338,
+    "duration" : 179509
+  },
+  "status" : "passed",
+  "severity" : "normal"
+}, {
+  "uid" : "36e831da524cd849",
+  "name" : "GetBalance x-y and y-x pool",
+  "time" : {
+    "start" : 1632290281077,
+    "stop" : 1632290281126,
+    "duration" : 49
+  },
+  "status" : "passed",
+  "severity" : "normal"
+}, {
+  "uid" : "1af083a1206320fe",
+  "name" : "Add all the wallet assets to the pool",
+  "time" : {
+    "start" : 1632290463344,
+    "stop" : 1632290588189,
+    "duration" : 124845
+  },
+  "status" : "passed",
+  "severity" : "normal"
+}, {
+  "uid" : "149176de74b92a2d",
+  "name" : "xyk-rpc - calculate_buy_price validates parameters - Zeroes [inputReserve->1,outputReserve->1,amount->0,expected->1]",
+  "time" : {
+    "start" : 1632290697765,
+    "stop" : 1632290697769,
+    "duration" : 4
+  },
+  "status" : "passed",
+  "severity" : "normal"
+}, {
+  "uid" : "af253b2e9dba4713",
+  "name" : "xyk-pallet - SecurityTests - Only sudo can perform actions [tokens.create]",
+  "time" : {
+    "start" : 1632290641735,
+    "stop" : 1632290659136,
+    "duration" : 17401
+  },
+  "status" : "passed",
+  "severity" : "normal"
+}, {
+  "uid" : "77b9595175d3ca8",
+  "name" : "xyk-pallet - User Balance - mint liquidity requires paying fees",
+  "time" : {
+    "start" : 1632290191366,
+    "stop" : 1632290281148,
+    "duration" : 89782
+  },
+  "status" : "failed",
+  "severity" : "normal"
+}, {
+  "uid" : "e88beedad44083ee",
+  "name" : "xyk-pallet - User Balance - Selling an asset does not require paying fees",
+  "time" : {
+    "start" : 1632290281148,
+    "stop" : 1632290371045,
+    "duration" : 89897
+  },
+  "status" : "failed",
+  "severity" : "normal"
+}, {
+  "uid" : "141dfb52a78520c",
+  "name" : "xyk-rpc - calculate_sell_price validates parameters - Zeroes [inputReserve->0,outputReserve->0,amount->0,expected->0]",
+  "time" : {
+    "start" : 1632290697757,
+    "stop" : 1632290697759,
+    "duration" : 2
+  },
+  "status" : "passed",
+  "severity" : "normal"
+}, {
+  "uid" : "bb0c04fbbbfcd99a",
+  "name" : "Create pool with zero",
+  "time" : {
+    "start" : 1632289711397,
+    "stop" : 1632289728856,
+    "duration" : 17459
+  },
+  "status" : "passed",
+  "severity" : "normal"
+}, {
+  "uid" : "d8ff90d7220c8243",
+  "name" : "validate parameters - sell [soldTokenId->2,boughtTokenId->3,amount->1,expected->0]",
+  "time" : {
+    "start" : 1632290695502,
+    "stop" : 1632290695511,
+    "duration" : 9
+  },
+  "status" : "passed",
+  "severity" : "normal"
+}, {
+  "uid" : "72fc93fbfdb23ae0",
+  "name" : "Burn someone else liquidities",
+  "time" : {
+    "start" : 1632289873537,
+    "stop" : 1632290053159,
+    "duration" : 179622
+  },
+  "status" : "passed",
+  "severity" : "normal"
+}, {
+  "uid" : "2b075a40b1a88ddc",
+  "name" : "validate parameters - buy [soldTokenId->3,boughtTokenId->2,amount->1,expected->3]",
+  "time" : {
+    "start" : 1632290695426,
+    "stop" : 1632290695434,
+    "duration" : 8
+  },
+  "status" : "passed",
+  "severity" : "normal"
+}, {
+  "uid" : "c877c72f9dde734e",
+  "name" : "validate parameters - sell [soldTokenId->3,boughtTokenId->2,amount->1,expected->0]",
+  "time" : {
+    "start" : 1632290695491,
+    "stop" : 1632290695501,
+    "duration" : 10
+  },
+  "status" : "passed",
+  "severity" : "normal"
+}, {
+  "uid" : "ff74d9e6051a3ea9",
+  "name" : "validate parameters - get_burn from not created assets",
+  "time" : {
+    "start" : 1632290497000,
+    "stop" : 1632290497005,
+    "duration" : 5
+  },
+  "status" : "passed",
+  "severity" : "normal"
+}, {
+  "uid" : "904ac045104cd399",
+  "name" : "validate parameters: negative asset ids [soldTokenId->0,boughtTokenId->-1,amount->0,expected->createType(TokenId):: u32: Negative number passed to unsigned type]",
+  "time" : {
+    "start" : 1632290767709,
+    "stop" : 1632290767722,
+    "duration" : 13
+  },
+  "status" : "passed",
+  "severity" : "normal"
+}, {
+  "uid" : "e5a1fca9798643df",
+  "name" : "xyk-rpc - calculate_sell_price and calculate_buy_price matches, 2000,1000",
+  "time" : {
+    "start" : 1632290714165,
+    "stop" : 1632290714195,
+    "duration" : 30
+  },
+  "status" : "passed",
+  "severity" : "normal"
+}, {
+  "uid" : "2ae52b363453e894",
+  "name" : "Burning liquidities generates a Liquidity burned event",
+  "time" : {
+    "start" : 1632290389777,
+    "stop" : 1632290533138,
+    "duration" : 143361
+  },
+  "status" : "passed",
+  "severity" : "normal"
+}, {
+  "uid" : "17e9a869d1f91425",
+  "name" : "Leave only one asset in the pool",
+  "time" : {
+    "start" : 1632290125635,
+    "stop" : 1632290281115,
+    "duration" : 155480
+  },
+  "status" : "passed",
+  "severity" : "normal"
+}, {
+  "uid" : "4905771d22850fef",
+  "name" : "validate parameters - get_burn from not generated pool [soldTokenId->0,boughtTokenId->1,amount->1000,expected->0]",
+  "time" : {
+    "start" : 1632290496995,
+    "stop" : 1632290497000,
+    "duration" : 5
+  },
+  "status" : "passed",
+  "severity" : "normal"
+}, {
+  "uid" : "7e19d765fad97f73",
+  "name" : "validate get_burn_amount that matches with real burn operation",
+  "time" : {
+    "start" : 1632290588137,
+    "stop" : 1632290605554,
+    "duration" : 17417
+  },
+  "status" : "passed",
+  "severity" : "normal"
+}, {
+  "uid" : "46cd3a5afeb4a26d",
+  "name" : "validate parameters - burn from pool [firstIdx->1,secondIdx->0,amount->1000,expected->1.0000 nUnit]",
+  "time" : {
+    "start" : 1632290425970,
+    "stop" : 1632290425974,
+    "duration" : 4
+  },
+  "status" : "passed",
+  "severity" : "normal"
+}, {
+  "uid" : "f876bc4ba1a78fc8",
+  "name" : "validate parameters - sell [soldTokenId->0,boughtTokenId->1,amount->0,expected->0]",
+  "time" : {
+    "start" : 1632290695443,
+    "stop" : 1632290695453,
+    "duration" : 10
+  },
+  "status" : "passed",
+  "severity" : "normal"
+}, {
+  "uid" : "56468cf1a9323aab",
+  "name" : "assets won when assets are bought - 2 [no connected to MGA]",
+  "time" : {
+    "start" : 1632289837361,
+    "stop" : 1632289963323,
+    "duration" : 125962
+  },
+  "status" : "passed",
+  "severity" : "normal"
+}, {
+  "uid" : "d18c24fc906caa32",
+  "name" : "validate parameters - buy [soldTokenId->2,boughtTokenId->1,amount->1,expected->0]",
+  "time" : {
+    "start" : 1632290695405,
+    "stop" : 1632290695415,
+    "duration" : 10
+  },
+  "status" : "passed",
+  "severity" : "normal"
+}, {
+  "uid" : "401131a4ae5f7aa",
+  "name" : "Buy assets that does not belong to any pool",
+  "time" : {
+    "start" : 1632289584766,
+    "stop" : 1632289728865,
+    "duration" : 144099
+  },
+  "status" : "passed",
+  "severity" : "normal"
+}, {
+  "uid" : "3210710e6ee03739",
+  "name" : "RPC big numbers : negative asset ids [amount->100000000000000]",
+  "time" : {
+    "start" : 1632290767728,
+    "stop" : 1632290767732,
+    "duration" : 4
+  },
+  "status" : "passed",
+  "severity" : "normal"
+}, {
+  "uid" : "39bca2bd4effaaf7",
+  "name" : "Expect an event when liquidirty is minted",
+  "time" : {
+    "start" : 1632290588189,
+    "stop" : 1632290714160,
+    "duration" : 125971
+  },
+  "status" : "passed",
+  "severity" : "normal"
+}, {
+  "uid" : "6fb3dedd07aa699a",
+  "name" : "Mint liquidity when not enough assetX for minting Yamount",
+  "time" : {
+    "start" : 1632289728864,
+    "stop" : 1632289873535,
+    "duration" : 144671
+  },
+  "status" : "passed",
+  "severity" : "normal"
+}, {
+  "uid" : "43033e72938b85d1",
+  "name" : "validate parameters [soldTokenId->0,boughtTokenId->1,amount->0,expected->0]",
+  "time" : {
+    "start" : 1632290767679,
+    "stop" : 1632290767682,
+    "duration" : 3
+  },
+  "status" : "passed",
+  "severity" : "normal"
+}, {
+  "uid" : "c92080bdf07941ac",
+  "name" : "Transfer [MAX] assets to other user when that user has 1 asset. Max+1 => overflow.",
+  "time" : {
+    "start" : 1632289711377,
+    "stop" : 1632289837344,
+    "duration" : 125967
+  },
+  "status" : "passed",
+  "severity" : "normal"
+}, {
+  "uid" : "208ad87c17a8b8bf",
+  "name" : "xyk-rpc - calculate_sell_price validates parameters - Zeroes [inputReserve->1,outputReserve->1,amount->0,expected->0]",
+  "time" : {
+    "start" : 1632290697752,
+    "stop" : 1632290697757,
+    "duration" : 5
+  },
+  "status" : "passed",
+  "severity" : "normal"
+}, {
+  "uid" : "dc900738a15f4fd2",
+  "name" : "Minting x-y and y-x pool",
+  "time" : {
+    "start" : 1632290281126,
+    "stop" : 1632290317333,
+    "duration" : 36207
+  },
+  "status" : "passed",
+  "severity" : "normal"
+}, {
+  "uid" : "3c12c79b198c9785",
+  "name" : "xyk-rpc - calculate_buy_price validates parameters - Zeroes [inputReserve->0,outputReserve->0,amount->0,expected->0]",
+  "time" : {
+    "start" : 1632290697769,
+    "stop" : 1632290697771,
+    "duration" : 2
+  },
+  "status" : "passed",
+  "severity" : "normal"
+}, {
+  "uid" : "c987448824d36e92",
+  "name" : "[BUG] Buy a few assets to a wallet linked to MGA  => overflow.",
+  "time" : {
+    "start" : 1632290053168,
+    "stop" : 1632290053168,
+    "duration" : 0
+  },
+  "status" : "skipped",
+  "severity" : "normal"
+}, {
+  "uid" : "8a0ce82f51db95ee",
+  "name" : "Create x-y and y-x pool",
+  "time" : {
+    "start" : 1632289693956,
+    "stop" : 1632289711397,
+    "duration" : 17441
+  },
+  "status" : "passed",
+  "severity" : "normal"
+}, {
+  "uid" : "fc33919a94fa03d5",
+  "name" : "xyk-pallet - AssetsOperation: sellAsset [minAmountOut = 0] , first to second currency",
+  "time" : {
+    "start" : 1632290355861,
+    "stop" : 1632290479742,
+    "duration" : 123881
+  },
+  "status" : "passed",
+  "severity" : "normal"
+} ]
