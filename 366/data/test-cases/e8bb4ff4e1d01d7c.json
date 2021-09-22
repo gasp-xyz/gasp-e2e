@@ -1,0 +1,67 @@
+{
+  "uid" : "e8bb4ff4e1d01d7c",
+  "name" : "xyk-pallet - User Balance - Selling an asset does not require paying fees",
+  "fullName" : "test/parallel/xyk-pallet.API.testMGArequired.test.ts.xyk-pallet - User Balance - Selling an asset does not require paying fees",
+  "historyId" : "4864eb37ab5cc3fb0c61ba25501b9833",
+  "time" : {
+    "start" : 1632309367304,
+    "stop" : 1632309457159,
+    "duration" : 89855
+  },
+  "description" : "",
+  "descriptionHtml" : "",
+  "status" : "passed",
+  "flaky" : false,
+  "newFailed" : false,
+  "beforeStages" : [ ],
+  "afterStages" : [ ],
+  "labels" : [ {
+    "name" : "suite",
+    "value" : "test/parallel/xyk-pallet.API.testMGArequired.test.ts"
+  }, {
+    "name" : "testClass",
+    "value" : "test/parallel/xyk-pallet.API.testMGArequired.test.ts"
+  }, {
+    "name" : "testMethod",
+    "value" : "xyk-pallet - User Balance - Selling an asset does not require paying fees"
+  }, {
+    "name" : "package",
+    "value" : "test/parallel/xyk-pallet.API.testMGArequired.test.ts"
+  }, {
+    "name" : "resultFormat",
+    "value" : "allure1"
+  } ],
+  "parameters" : [ ],
+  "links" : [ ],
+  "hidden" : false,
+  "retry" : false,
+  "extra" : {
+    "severity" : "normal",
+    "retries" : [ ],
+    "categories" : [ ],
+    "history" : {
+      "statistic" : {
+        "failed" : 1,
+        "broken" : 0,
+        "skipped" : 0,
+        "passed" : 1,
+        "unknown" : 0,
+        "total" : 2
+      },
+      "items" : [ {
+        "uid" : "e88beedad44083ee",
+        "reportUrl" : "https://mangata-finance.github.io/mangata-e2e/361//#testresult/e88beedad44083ee",
+        "status" : "failed",
+        "statusDetails" : "Error: Expected: 0 \n                  Actual: -1 \n                 ",
+        "time" : {
+          "start" : 1632290281148,
+          "stop" : 1632290371045,
+          "duration" : 89897
+        }
+      } ]
+    },
+    "tags" : [ ]
+  },
+  "source" : "e8bb4ff4e1d01d7c.json",
+  "parameterValues" : [ ]
+}

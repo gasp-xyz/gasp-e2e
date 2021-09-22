@@ -1,0 +1,66 @@
+{
+  "uid" : "9ff5c5bd849d7582",
+  "name" : "RPC big numbers : negative asset ids [amount->100000000000000]",
+  "fullName" : "test/parallel/xyk-rpc.errors.test.ts.RPC big numbers : negative asset ids [amount->100000000000000]",
+  "historyId" : "49c05a2d73475baadfdcec15edaa1942",
+  "time" : {
+    "start" : 1632310357455,
+    "stop" : 1632310357458,
+    "duration" : 3
+  },
+  "description" : "",
+  "descriptionHtml" : "",
+  "status" : "passed",
+  "flaky" : false,
+  "newFailed" : false,
+  "beforeStages" : [ ],
+  "afterStages" : [ ],
+  "labels" : [ {
+    "name" : "suite",
+    "value" : "test/parallel/xyk-rpc.errors.test.ts"
+  }, {
+    "name" : "testClass",
+    "value" : "test/parallel/xyk-rpc.errors.test.ts"
+  }, {
+    "name" : "testMethod",
+    "value" : "RPC big numbers : negative asset ids [amount->100000000000000]"
+  }, {
+    "name" : "package",
+    "value" : "test/parallel/xyk-rpc.errors.test.ts"
+  }, {
+    "name" : "resultFormat",
+    "value" : "allure1"
+  } ],
+  "parameters" : [ ],
+  "links" : [ ],
+  "hidden" : false,
+  "retry" : false,
+  "extra" : {
+    "severity" : "normal",
+    "retries" : [ ],
+    "categories" : [ ],
+    "history" : {
+      "statistic" : {
+        "failed" : 0,
+        "broken" : 0,
+        "skipped" : 0,
+        "passed" : 2,
+        "unknown" : 0,
+        "total" : 2
+      },
+      "items" : [ {
+        "uid" : "3210710e6ee03739",
+        "reportUrl" : "https://mangata-finance.github.io/mangata-e2e/361//#testresult/3210710e6ee03739",
+        "status" : "passed",
+        "time" : {
+          "start" : 1632290767728,
+          "stop" : 1632290767732,
+          "duration" : 4
+        }
+      } ]
+    },
+    "tags" : [ ]
+  },
+  "source" : "9ff5c5bd849d7582.json",
+  "parameterValues" : [ ]
+}

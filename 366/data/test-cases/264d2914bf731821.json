@@ -1,0 +1,66 @@
+{
+  "uid" : "264d2914bf731821",
+  "name" : "validate parameters - burn from pool [firstIdx->0,secondIdx->1,amount->10000,expected->10.0000 nUnit]",
+  "fullName" : "xyk-rpc - calculate get_burn amount: OK.validate parameters - burn from pool [firstIdx->0,secondIdx->1,amount->10000,expected->10.0000 nUnit]",
+  "historyId" : "b6f5b56c461ad2d3eb68202be911500f",
+  "time" : {
+    "start" : 1632310105743,
+    "stop" : 1632310105747,
+    "duration" : 4
+  },
+  "description" : "",
+  "descriptionHtml" : "",
+  "status" : "passed",
+  "flaky" : false,
+  "newFailed" : false,
+  "beforeStages" : [ ],
+  "afterStages" : [ ],
+  "labels" : [ {
+    "name" : "suite",
+    "value" : "xyk-rpc - calculate get_burn amount: OK"
+  }, {
+    "name" : "testClass",
+    "value" : "xyk-rpc - calculate get_burn amount: OK"
+  }, {
+    "name" : "testMethod",
+    "value" : "validate parameters - burn from pool [firstIdx->0,secondIdx->1,amount->10000,expected->10.0000 nUnit]"
+  }, {
+    "name" : "package",
+    "value" : "xyk-rpc - calculate get_burn amount: OK"
+  }, {
+    "name" : "resultFormat",
+    "value" : "allure1"
+  } ],
+  "parameters" : [ ],
+  "links" : [ ],
+  "hidden" : false,
+  "retry" : false,
+  "extra" : {
+    "severity" : "normal",
+    "retries" : [ ],
+    "categories" : [ ],
+    "history" : {
+      "statistic" : {
+        "failed" : 0,
+        "broken" : 0,
+        "skipped" : 0,
+        "passed" : 2,
+        "unknown" : 0,
+        "total" : 2
+      },
+      "items" : [ {
+        "uid" : "372eafd806971ff3",
+        "reportUrl" : "https://mangata-finance.github.io/mangata-e2e/361//#testresult/372eafd806971ff3",
+        "status" : "passed",
+        "time" : {
+          "start" : 1632290425974,
+          "stop" : 1632290425977,
+          "duration" : 3
+        }
+      } ]
+    },
+    "tags" : [ ]
+  },
+  "source" : "264d2914bf731821.json",
+  "parameterValues" : [ ]
+}

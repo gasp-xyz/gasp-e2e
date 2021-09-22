@@ -1,0 +1,66 @@
+{
+  "uid" : "a5f1474b97f033e5",
+  "name" : "Buy all assets from the the pool",
+  "fullName" : "xyk-pallet - Buy assets tests: BuyAssets Errors:.Buy all assets from the the pool",
+  "historyId" : "6050aaf7611020722f7b4ed250987b21",
+  "time" : {
+    "start" : 1632309457097,
+    "stop" : 1632309583124,
+    "duration" : 126027
+  },
+  "description" : "",
+  "descriptionHtml" : "",
+  "status" : "passed",
+  "flaky" : false,
+  "newFailed" : false,
+  "beforeStages" : [ ],
+  "afterStages" : [ ],
+  "labels" : [ {
+    "name" : "suite",
+    "value" : "xyk-pallet - Buy assets tests: BuyAssets Errors:"
+  }, {
+    "name" : "testClass",
+    "value" : "xyk-pallet - Buy assets tests: BuyAssets Errors:"
+  }, {
+    "name" : "testMethod",
+    "value" : "Buy all assets from the the pool"
+  }, {
+    "name" : "package",
+    "value" : "xyk-pallet - Buy assets tests: BuyAssets Errors:"
+  }, {
+    "name" : "resultFormat",
+    "value" : "allure1"
+  } ],
+  "parameters" : [ ],
+  "links" : [ ],
+  "hidden" : false,
+  "retry" : false,
+  "extra" : {
+    "severity" : "normal",
+    "retries" : [ ],
+    "categories" : [ ],
+    "history" : {
+      "statistic" : {
+        "failed" : 0,
+        "broken" : 0,
+        "skipped" : 0,
+        "passed" : 2,
+        "unknown" : 0,
+        "total" : 2
+      },
+      "items" : [ {
+        "uid" : "c88cb1058bd5745",
+        "reportUrl" : "https://mangata-finance.github.io/mangata-e2e/361//#testresult/c88cb1058bd5745",
+        "status" : "passed",
+        "time" : {
+          "start" : 1632289856118,
+          "stop" : 1632289982128,
+          "duration" : 126010
+        }
+      } ]
+    },
+    "tags" : [ ]
+  },
+  "source" : "a5f1474b97f033e5.json",
+  "parameterValues" : [ ]
+}

@@ -1,0 +1,66 @@
+{
+  "uid" : "5123fbbc45189d49",
+  "name" : "xyk-pallet - SecurityTests - Only sudo can perform actions [tokens.create]",
+  "fullName" : "test/parallel/xyk-pallet.sudo.security.test.ts.xyk-pallet - SecurityTests - Only sudo can perform actions [tokens.create]",
+  "historyId" : "60ed4fbbc7e2552787061b58f2515823",
+  "time" : {
+    "start" : 1632310231672,
+    "stop" : 1632310249080,
+    "duration" : 17408
+  },
+  "description" : "",
+  "descriptionHtml" : "",
+  "status" : "passed",
+  "flaky" : false,
+  "newFailed" : false,
+  "beforeStages" : [ ],
+  "afterStages" : [ ],
+  "labels" : [ {
+    "name" : "suite",
+    "value" : "test/parallel/xyk-pallet.sudo.security.test.ts"
+  }, {
+    "name" : "testClass",
+    "value" : "test/parallel/xyk-pallet.sudo.security.test.ts"
+  }, {
+    "name" : "testMethod",
+    "value" : "xyk-pallet - SecurityTests - Only sudo can perform actions [tokens.create]"
+  }, {
+    "name" : "package",
+    "value" : "test/parallel/xyk-pallet.sudo.security.test.ts"
+  }, {
+    "name" : "resultFormat",
+    "value" : "allure1"
+  } ],
+  "parameters" : [ ],
+  "links" : [ ],
+  "hidden" : false,
+  "retry" : false,
+  "extra" : {
+    "severity" : "normal",
+    "retries" : [ ],
+    "categories" : [ ],
+    "history" : {
+      "statistic" : {
+        "failed" : 0,
+        "broken" : 0,
+        "skipped" : 0,
+        "passed" : 2,
+        "unknown" : 0,
+        "total" : 2
+      },
+      "items" : [ {
+        "uid" : "af253b2e9dba4713",
+        "reportUrl" : "https://mangata-finance.github.io/mangata-e2e/361//#testresult/af253b2e9dba4713",
+        "status" : "passed",
+        "time" : {
+          "start" : 1632290641735,
+          "stop" : 1632290659136,
+          "duration" : 17401
+        }
+      } ]
+    },
+    "tags" : [ ]
+  },
+  "source" : "5123fbbc45189d49.json",
+  "parameterValues" : [ ]
+}

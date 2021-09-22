@@ -1,0 +1,66 @@
+{
+  "uid" : "caca50f75216edce",
+  "name" : "be minted",
+  "fullName" : "xyk-pallet - Pool tests: a pool can:.be minted",
+  "historyId" : "6d03ac696f73bb946bbe4981468e8ab7",
+  "time" : {
+    "start" : 1632309386022,
+    "stop" : 1632309565712,
+    "duration" : 179690
+  },
+  "description" : "",
+  "descriptionHtml" : "",
+  "status" : "passed",
+  "flaky" : false,
+  "newFailed" : false,
+  "beforeStages" : [ ],
+  "afterStages" : [ ],
+  "labels" : [ {
+    "name" : "suite",
+    "value" : "xyk-pallet - Pool tests: a pool can:"
+  }, {
+    "name" : "testClass",
+    "value" : "xyk-pallet - Pool tests: a pool can:"
+  }, {
+    "name" : "testMethod",
+    "value" : "be minted"
+  }, {
+    "name" : "package",
+    "value" : "xyk-pallet - Pool tests: a pool can:"
+  }, {
+    "name" : "resultFormat",
+    "value" : "allure1"
+  } ],
+  "parameters" : [ ],
+  "links" : [ ],
+  "hidden" : false,
+  "retry" : false,
+  "extra" : {
+    "severity" : "normal",
+    "retries" : [ ],
+    "categories" : [ ],
+    "history" : {
+      "statistic" : {
+        "failed" : 0,
+        "broken" : 0,
+        "skipped" : 0,
+        "passed" : 2,
+        "unknown" : 0,
+        "total" : 2
+      },
+      "items" : [ {
+        "uid" : "80cfd0fb7a9eccb9",
+        "reportUrl" : "https://mangata-finance.github.io/mangata-e2e/361//#testresult/80cfd0fb7a9eccb9",
+        "status" : "passed",
+        "time" : {
+          "start" : 1632289783829,
+          "stop" : 1632289963338,
+          "duration" : 179509
+        }
+      } ]
+    },
+    "tags" : [ ]
+  },
+  "source" : "caca50f75216edce.json",
+  "parameterValues" : [ ]
+}

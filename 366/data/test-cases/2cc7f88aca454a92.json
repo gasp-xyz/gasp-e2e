@@ -1,0 +1,66 @@
+{
+  "uid" : "2cc7f88aca454a92",
+  "name" : "Minting x-y and y-x pool",
+  "fullName" : "xyk-pallet - Pool opeations: Simmetry.Minting x-y and y-x pool",
+  "historyId" : "923ba238fc3a684c7f84d27924b5865e",
+  "time" : {
+    "start" : 1632309871162,
+    "stop" : 1632309907300,
+    "duration" : 36138
+  },
+  "description" : "",
+  "descriptionHtml" : "",
+  "status" : "passed",
+  "flaky" : false,
+  "newFailed" : false,
+  "beforeStages" : [ ],
+  "afterStages" : [ ],
+  "labels" : [ {
+    "name" : "suite",
+    "value" : "xyk-pallet - Pool opeations: Simmetry"
+  }, {
+    "name" : "testClass",
+    "value" : "xyk-pallet - Pool opeations: Simmetry"
+  }, {
+    "name" : "testMethod",
+    "value" : "Minting x-y and y-x pool"
+  }, {
+    "name" : "package",
+    "value" : "xyk-pallet - Pool opeations: Simmetry"
+  }, {
+    "name" : "resultFormat",
+    "value" : "allure1"
+  } ],
+  "parameters" : [ ],
+  "links" : [ ],
+  "hidden" : false,
+  "retry" : false,
+  "extra" : {
+    "severity" : "normal",
+    "retries" : [ ],
+    "categories" : [ ],
+    "history" : {
+      "statistic" : {
+        "failed" : 0,
+        "broken" : 0,
+        "skipped" : 0,
+        "passed" : 2,
+        "unknown" : 0,
+        "total" : 2
+      },
+      "items" : [ {
+        "uid" : "dc900738a15f4fd2",
+        "reportUrl" : "https://mangata-finance.github.io/mangata-e2e/361//#testresult/dc900738a15f4fd2",
+        "status" : "passed",
+        "time" : {
+          "start" : 1632290281126,
+          "stop" : 1632290317333,
+          "duration" : 36207
+        }
+      } ]
+    },
+    "tags" : [ ]
+  },
+  "source" : "2cc7f88aca454a92.json",
+  "parameterValues" : [ ]
+}

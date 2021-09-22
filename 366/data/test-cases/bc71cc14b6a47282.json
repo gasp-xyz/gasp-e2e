@@ -1,0 +1,66 @@
+{
+  "uid" : "bc71cc14b6a47282",
+  "name" : "validate parameters - get_burn from not created assets",
+  "fullName" : "xyk-rpc - calculate get_burn amount: Missing requirements.validate parameters - get_burn from not created assets",
+  "historyId" : "7f488ce0c557865c93ff24f167a92fbc",
+  "time" : {
+    "start" : 1632310178128,
+    "stop" : 1632310178133,
+    "duration" : 5
+  },
+  "description" : "",
+  "descriptionHtml" : "",
+  "status" : "passed",
+  "flaky" : false,
+  "newFailed" : false,
+  "beforeStages" : [ ],
+  "afterStages" : [ ],
+  "labels" : [ {
+    "name" : "suite",
+    "value" : "xyk-rpc - calculate get_burn amount: Missing requirements"
+  }, {
+    "name" : "testClass",
+    "value" : "xyk-rpc - calculate get_burn amount: Missing requirements"
+  }, {
+    "name" : "testMethod",
+    "value" : "validate parameters - get_burn from not created assets"
+  }, {
+    "name" : "package",
+    "value" : "xyk-rpc - calculate get_burn amount: Missing requirements"
+  }, {
+    "name" : "resultFormat",
+    "value" : "allure1"
+  } ],
+  "parameters" : [ ],
+  "links" : [ ],
+  "hidden" : false,
+  "retry" : false,
+  "extra" : {
+    "severity" : "normal",
+    "retries" : [ ],
+    "categories" : [ ],
+    "history" : {
+      "statistic" : {
+        "failed" : 0,
+        "broken" : 0,
+        "skipped" : 0,
+        "passed" : 2,
+        "unknown" : 0,
+        "total" : 2
+      },
+      "items" : [ {
+        "uid" : "ff74d9e6051a3ea9",
+        "reportUrl" : "https://mangata-finance.github.io/mangata-e2e/361//#testresult/ff74d9e6051a3ea9",
+        "status" : "passed",
+        "time" : {
+          "start" : 1632290497000,
+          "stop" : 1632290497005,
+          "duration" : 5
+        }
+      } ]
+    },
+    "tags" : [ ]
+  },
+  "source" : "bc71cc14b6a47282.json",
+  "parameterValues" : [ ]
+}

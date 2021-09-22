@@ -1,0 +1,66 @@
+{
+  "uid" : "5080fb69c6c22e7b",
+  "name" : "Mint liquidity when not enough assetY for minting Xamount",
+  "fullName" : "xyk-pallet - Mint liquidity tests: MintLiquidity Errors:.Mint liquidity when not enough assetY for minting Xamount",
+  "historyId" : "b2d075f90e328573a39d1ca3480e7c9c",
+  "time" : {
+    "start" : 1632309190251,
+    "stop" : 1632309330986,
+    "duration" : 140735
+  },
+  "description" : "",
+  "descriptionHtml" : "",
+  "status" : "passed",
+  "flaky" : false,
+  "newFailed" : false,
+  "beforeStages" : [ ],
+  "afterStages" : [ ],
+  "labels" : [ {
+    "name" : "suite",
+    "value" : "xyk-pallet - Mint liquidity tests: MintLiquidity Errors:"
+  }, {
+    "name" : "testClass",
+    "value" : "xyk-pallet - Mint liquidity tests: MintLiquidity Errors:"
+  }, {
+    "name" : "testMethod",
+    "value" : "Mint liquidity when not enough assetY for minting Xamount"
+  }, {
+    "name" : "package",
+    "value" : "xyk-pallet - Mint liquidity tests: MintLiquidity Errors:"
+  }, {
+    "name" : "resultFormat",
+    "value" : "allure1"
+  } ],
+  "parameters" : [ ],
+  "links" : [ ],
+  "hidden" : false,
+  "retry" : false,
+  "extra" : {
+    "severity" : "normal",
+    "retries" : [ ],
+    "categories" : [ ],
+    "history" : {
+      "statistic" : {
+        "failed" : 0,
+        "broken" : 0,
+        "skipped" : 0,
+        "passed" : 2,
+        "unknown" : 0,
+        "total" : 2
+      },
+      "items" : [ {
+        "uid" : "e12a369e5fea2817",
+        "reportUrl" : "https://mangata-finance.github.io/mangata-e2e/361//#testresult/e12a369e5fea2817",
+        "status" : "passed",
+        "time" : {
+          "start" : 1632289584873,
+          "stop" : 1632289728864,
+          "duration" : 143991
+        }
+      } ]
+    },
+    "tags" : [ ]
+  },
+  "source" : "5080fb69c6c22e7b.json",
+  "parameterValues" : [ ]
+}

@@ -1,0 +1,66 @@
+{
+  "uid" : "76a6f675fead60df",
+  "name" : "Expect an event when liquidirty is minted",
+  "fullName" : "xyk-pallet - Mint liquidity tests: with minting you can.Expect an event when liquidirty is minted",
+  "historyId" : "c548fe04beb3eff101e468e856d1a193",
+  "time" : {
+    "start" : 1632310159404,
+    "stop" : 1632310285278,
+    "duration" : 125874
+  },
+  "description" : "",
+  "descriptionHtml" : "",
+  "status" : "passed",
+  "flaky" : false,
+  "newFailed" : false,
+  "beforeStages" : [ ],
+  "afterStages" : [ ],
+  "labels" : [ {
+    "name" : "suite",
+    "value" : "xyk-pallet - Mint liquidity tests: with minting you can"
+  }, {
+    "name" : "testClass",
+    "value" : "xyk-pallet - Mint liquidity tests: with minting you can"
+  }, {
+    "name" : "testMethod",
+    "value" : "Expect an event when liquidirty is minted"
+  }, {
+    "name" : "package",
+    "value" : "xyk-pallet - Mint liquidity tests: with minting you can"
+  }, {
+    "name" : "resultFormat",
+    "value" : "allure1"
+  } ],
+  "parameters" : [ ],
+  "links" : [ ],
+  "hidden" : false,
+  "retry" : false,
+  "extra" : {
+    "severity" : "normal",
+    "retries" : [ ],
+    "categories" : [ ],
+    "history" : {
+      "statistic" : {
+        "failed" : 0,
+        "broken" : 0,
+        "skipped" : 0,
+        "passed" : 2,
+        "unknown" : 0,
+        "total" : 2
+      },
+      "items" : [ {
+        "uid" : "39bca2bd4effaaf7",
+        "reportUrl" : "https://mangata-finance.github.io/mangata-e2e/361//#testresult/39bca2bd4effaaf7",
+        "status" : "passed",
+        "time" : {
+          "start" : 1632290588189,
+          "stop" : 1632290714160,
+          "duration" : 125971
+        }
+      } ]
+    },
+    "tags" : [ ]
+  },
+  "source" : "76a6f675fead60df.json",
+  "parameterValues" : [ ]
+}

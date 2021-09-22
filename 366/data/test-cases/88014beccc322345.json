@@ -1,0 +1,66 @@
+{
+  "uid" : "88014beccc322345",
+  "name" : "Min liquidity, SecondAssetAmount parameter expectation not met",
+  "fullName" : "xyk-pallet - Mint liquidity tests: MintLiquidity Errors:.Min liquidity, SecondAssetAmount parameter expectation not met",
+  "historyId" : "5e5af97f847f5c7cba0ecc681e37f8fb",
+  "time" : {
+    "start" : 1632309834982,
+    "stop" : 1632310033335,
+    "duration" : 198353
+  },
+  "description" : "",
+  "descriptionHtml" : "",
+  "status" : "passed",
+  "flaky" : false,
+  "newFailed" : false,
+  "beforeStages" : [ ],
+  "afterStages" : [ ],
+  "labels" : [ {
+    "name" : "suite",
+    "value" : "xyk-pallet - Mint liquidity tests: MintLiquidity Errors:"
+  }, {
+    "name" : "testClass",
+    "value" : "xyk-pallet - Mint liquidity tests: MintLiquidity Errors:"
+  }, {
+    "name" : "testMethod",
+    "value" : "Min liquidity, SecondAssetAmount parameter expectation not met"
+  }, {
+    "name" : "package",
+    "value" : "xyk-pallet - Mint liquidity tests: MintLiquidity Errors:"
+  }, {
+    "name" : "resultFormat",
+    "value" : "allure1"
+  } ],
+  "parameters" : [ ],
+  "links" : [ ],
+  "hidden" : false,
+  "retry" : false,
+  "extra" : {
+    "severity" : "normal",
+    "retries" : [ ],
+    "categories" : [ ],
+    "history" : {
+      "statistic" : {
+        "failed" : 0,
+        "broken" : 0,
+        "skipped" : 0,
+        "passed" : 2,
+        "unknown" : 0,
+        "total" : 2
+      },
+      "items" : [ {
+        "uid" : "ac9b955cdd4f290d",
+        "reportUrl" : "https://mangata-finance.github.io/mangata-e2e/361//#testresult/ac9b955cdd4f290d",
+        "status" : "passed",
+        "time" : {
+          "start" : 1632290244926,
+          "stop" : 1632290443380,
+          "duration" : 198454
+        }
+      } ]
+    },
+    "tags" : [ ]
+  },
+  "source" : "88014beccc322345.json",
+  "parameterValues" : [ ]
+}

@@ -1,0 +1,66 @@
+{
+  "uid" : "aa3a95704e274631",
+  "name" : "Burn liquidity assets that does not belong to any pool",
+  "fullName" : "xyk-pallet - Burn liquidity tests: BurnLiquidity Errors:.Burn liquidity assets that does not belong to any pool",
+  "historyId" : "d36e2113c2dff46ef1124d7c09e3c463",
+  "time" : {
+    "start" : 1632309549291,
+    "stop" : 1632309672859,
+    "duration" : 123568
+  },
+  "description" : "",
+  "descriptionHtml" : "",
+  "status" : "passed",
+  "flaky" : false,
+  "newFailed" : false,
+  "beforeStages" : [ ],
+  "afterStages" : [ ],
+  "labels" : [ {
+    "name" : "suite",
+    "value" : "xyk-pallet - Burn liquidity tests: BurnLiquidity Errors:"
+  }, {
+    "name" : "testClass",
+    "value" : "xyk-pallet - Burn liquidity tests: BurnLiquidity Errors:"
+  }, {
+    "name" : "testMethod",
+    "value" : "Burn liquidity assets that does not belong to any pool"
+  }, {
+    "name" : "package",
+    "value" : "xyk-pallet - Burn liquidity tests: BurnLiquidity Errors:"
+  }, {
+    "name" : "resultFormat",
+    "value" : "allure1"
+  } ],
+  "parameters" : [ ],
+  "links" : [ ],
+  "hidden" : false,
+  "retry" : false,
+  "extra" : {
+    "severity" : "normal",
+    "retries" : [ ],
+    "categories" : [ ],
+    "history" : {
+      "statistic" : {
+        "failed" : 0,
+        "broken" : 0,
+        "skipped" : 0,
+        "passed" : 2,
+        "unknown" : 0,
+        "total" : 2
+      },
+      "items" : [ {
+        "uid" : "f062ec85b968fe6f",
+        "reportUrl" : "https://mangata-finance.github.io/mangata-e2e/361//#testresult/f062ec85b968fe6f",
+        "status" : "passed",
+        "time" : {
+          "start" : 1632289584790,
+          "stop" : 1632289711358,
+          "duration" : 126568
+        }
+      } ]
+    },
+    "tags" : [ ]
+  },
+  "source" : "aa3a95704e274631.json",
+  "parameterValues" : [ ]
+}

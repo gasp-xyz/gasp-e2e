@@ -1,0 +1,66 @@
+{
+  "uid" : "b9c668aa20e0ad48",
+  "name" : "xyk-pallet - Sudo tests: Sudo Issue two  different assets to the same account",
+  "fullName" : "test/parallel/xyk-pallet.sudo.test.ts.xyk-pallet - Sudo tests: Sudo Issue two  different assets to the same account",
+  "historyId" : "6eb0937e1b0c7f2b465d76b42adc78a6",
+  "time" : {
+    "start" : 1632310303940,
+    "stop" : 1632310340025,
+    "duration" : 36085
+  },
+  "description" : "",
+  "descriptionHtml" : "",
+  "status" : "passed",
+  "flaky" : false,
+  "newFailed" : false,
+  "beforeStages" : [ ],
+  "afterStages" : [ ],
+  "labels" : [ {
+    "name" : "suite",
+    "value" : "test/parallel/xyk-pallet.sudo.test.ts"
+  }, {
+    "name" : "testClass",
+    "value" : "test/parallel/xyk-pallet.sudo.test.ts"
+  }, {
+    "name" : "testMethod",
+    "value" : "xyk-pallet - Sudo tests: Sudo Issue two  different assets to the same account"
+  }, {
+    "name" : "package",
+    "value" : "test/parallel/xyk-pallet.sudo.test.ts"
+  }, {
+    "name" : "resultFormat",
+    "value" : "allure1"
+  } ],
+  "parameters" : [ ],
+  "links" : [ ],
+  "hidden" : false,
+  "retry" : false,
+  "extra" : {
+    "severity" : "normal",
+    "retries" : [ ],
+    "categories" : [ ],
+    "history" : {
+      "statistic" : {
+        "failed" : 0,
+        "broken" : 0,
+        "skipped" : 0,
+        "passed" : 2,
+        "unknown" : 0,
+        "total" : 2
+      },
+      "items" : [ {
+        "uid" : "2f7b26252fb6605c",
+        "reportUrl" : "https://mangata-finance.github.io/mangata-e2e/361//#testresult/2f7b26252fb6605c",
+        "status" : "passed",
+        "time" : {
+          "start" : 1632290714099,
+          "stop" : 1632290748903,
+          "duration" : 34804
+        }
+      } ]
+    },
+    "tags" : [ ]
+  },
+  "source" : "b9c668aa20e0ad48.json",
+  "parameterValues" : [ ]
+}

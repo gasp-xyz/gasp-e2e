@@ -1,0 +1,66 @@
+{
+  "uid" : "948846fb69cba0b1",
+  "name" : "xyk-pallet - Pool tests: createPool and validate liq token",
+  "fullName" : "test/parallel/xyk-pallet.pool.test.ts.xyk-pallet - Pool tests: createPool and validate liq token",
+  "historyId" : "5a3deac01b9498313a515f6d78eb4d85",
+  "time" : {
+    "start" : 1632310071853,
+    "stop" : 1632310178192,
+    "duration" : 106339
+  },
+  "description" : "",
+  "descriptionHtml" : "",
+  "status" : "passed",
+  "flaky" : false,
+  "newFailed" : false,
+  "beforeStages" : [ ],
+  "afterStages" : [ ],
+  "labels" : [ {
+    "name" : "suite",
+    "value" : "test/parallel/xyk-pallet.pool.test.ts"
+  }, {
+    "name" : "testClass",
+    "value" : "test/parallel/xyk-pallet.pool.test.ts"
+  }, {
+    "name" : "testMethod",
+    "value" : "xyk-pallet - Pool tests: createPool and validate liq token"
+  }, {
+    "name" : "package",
+    "value" : "test/parallel/xyk-pallet.pool.test.ts"
+  }, {
+    "name" : "resultFormat",
+    "value" : "allure1"
+  } ],
+  "parameters" : [ ],
+  "links" : [ ],
+  "hidden" : false,
+  "retry" : false,
+  "extra" : {
+    "severity" : "normal",
+    "retries" : [ ],
+    "categories" : [ ],
+    "history" : {
+      "statistic" : {
+        "failed" : 0,
+        "broken" : 0,
+        "skipped" : 0,
+        "passed" : 2,
+        "unknown" : 0,
+        "total" : 2
+      },
+      "items" : [ {
+        "uid" : "16eadd877fffd22c",
+        "reportUrl" : "https://mangata-finance.github.io/mangata-e2e/361//#testresult/16eadd877fffd22c",
+        "status" : "passed",
+        "time" : {
+          "start" : 1632290535569,
+          "stop" : 1632290641777,
+          "duration" : 106208
+        }
+      } ]
+    },
+    "tags" : [ ]
+  },
+  "source" : "948846fb69cba0b1.json",
+  "parameterValues" : [ ]
+}

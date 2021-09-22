@@ -1,0 +1,66 @@
+{
+  "uid" : "4e8e8b0c7bfce312",
+  "name" : "validate parameters - get_burn from not generated pool [soldTokenId->0,boughtTokenId->1,amount->1000,expected->0]",
+  "fullName" : "xyk-rpc - calculate get_burn amount: Missing requirements.validate parameters - get_burn from not generated pool [soldTokenId->0,boughtTokenId->1,amount->1000,expected->0]",
+  "historyId" : "1744d0c95625b6a751a5bd10c4787f24",
+  "time" : {
+    "start" : 1632310178120,
+    "stop" : 1632310178128,
+    "duration" : 8
+  },
+  "description" : "",
+  "descriptionHtml" : "",
+  "status" : "passed",
+  "flaky" : false,
+  "newFailed" : false,
+  "beforeStages" : [ ],
+  "afterStages" : [ ],
+  "labels" : [ {
+    "name" : "suite",
+    "value" : "xyk-rpc - calculate get_burn amount: Missing requirements"
+  }, {
+    "name" : "testClass",
+    "value" : "xyk-rpc - calculate get_burn amount: Missing requirements"
+  }, {
+    "name" : "testMethod",
+    "value" : "validate parameters - get_burn from not generated pool [soldTokenId->0,boughtTokenId->1,amount->1000,expected->0]"
+  }, {
+    "name" : "package",
+    "value" : "xyk-rpc - calculate get_burn amount: Missing requirements"
+  }, {
+    "name" : "resultFormat",
+    "value" : "allure1"
+  } ],
+  "parameters" : [ ],
+  "links" : [ ],
+  "hidden" : false,
+  "retry" : false,
+  "extra" : {
+    "severity" : "normal",
+    "retries" : [ ],
+    "categories" : [ ],
+    "history" : {
+      "statistic" : {
+        "failed" : 0,
+        "broken" : 0,
+        "skipped" : 0,
+        "passed" : 2,
+        "unknown" : 0,
+        "total" : 2
+      },
+      "items" : [ {
+        "uid" : "4905771d22850fef",
+        "reportUrl" : "https://mangata-finance.github.io/mangata-e2e/361//#testresult/4905771d22850fef",
+        "status" : "passed",
+        "time" : {
+          "start" : 1632290496995,
+          "stop" : 1632290497000,
+          "duration" : 5
+        }
+      } ]
+    },
+    "tags" : [ ]
+  },
+  "source" : "4e8e8b0c7bfce312.json",
+  "parameterValues" : [ ]
+}

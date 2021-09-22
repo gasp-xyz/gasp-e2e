@@ -1,0 +1,66 @@
+{
+  "uid" : "31023a031d7629e7",
+  "name" : "xyk-pallet - Liqudity : Burn all the liquidity",
+  "fullName" : "test/parallel/xyk-pallet.liquidity.test.ts.xyk-pallet - Liqudity : Burn all the liquidity",
+  "historyId" : "428f08acf1d8168d209f5297642396fa",
+  "time" : {
+    "start" : 1632309817629,
+    "stop" : 1632309943591,
+    "duration" : 125962
+  },
+  "description" : "",
+  "descriptionHtml" : "",
+  "status" : "passed",
+  "flaky" : false,
+  "newFailed" : false,
+  "beforeStages" : [ ],
+  "afterStages" : [ ],
+  "labels" : [ {
+    "name" : "suite",
+    "value" : "test/parallel/xyk-pallet.liquidity.test.ts"
+  }, {
+    "name" : "testClass",
+    "value" : "test/parallel/xyk-pallet.liquidity.test.ts"
+  }, {
+    "name" : "testMethod",
+    "value" : "xyk-pallet - Liqudity : Burn all the liquidity"
+  }, {
+    "name" : "package",
+    "value" : "test/parallel/xyk-pallet.liquidity.test.ts"
+  }, {
+    "name" : "resultFormat",
+    "value" : "allure1"
+  } ],
+  "parameters" : [ ],
+  "links" : [ ],
+  "hidden" : false,
+  "retry" : false,
+  "extra" : {
+    "severity" : "normal",
+    "retries" : [ ],
+    "categories" : [ ],
+    "history" : {
+      "statistic" : {
+        "failed" : 0,
+        "broken" : 0,
+        "skipped" : 0,
+        "passed" : 2,
+        "unknown" : 0,
+        "total" : 2
+      },
+      "items" : [ {
+        "uid" : "ecc6f6f883214bb0",
+        "reportUrl" : "https://mangata-finance.github.io/mangata-e2e/361//#testresult/ecc6f6f883214bb0",
+        "status" : "passed",
+        "time" : {
+          "start" : 1632290191314,
+          "stop" : 1632290317369,
+          "duration" : 126055
+        }
+      } ]
+    },
+    "tags" : [ ]
+  },
+  "source" : "31023a031d7629e7.json",
+  "parameterValues" : [ ]
+}

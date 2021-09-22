@@ -1,0 +1,66 @@
+{
+  "uid" : "3450b6ce8c6e4c19",
+  "name" : "Create pool with zero",
+  "fullName" : "xyk-pallet - Poll creation: Errors:.Create pool with zero",
+  "historyId" : "8799d7ad365b8aa8ae7eaca5e02987b3",
+  "time" : {
+    "start" : 1632309313547,
+    "stop" : 1632309331022,
+    "duration" : 17475
+  },
+  "description" : "",
+  "descriptionHtml" : "",
+  "status" : "passed",
+  "flaky" : false,
+  "newFailed" : false,
+  "beforeStages" : [ ],
+  "afterStages" : [ ],
+  "labels" : [ {
+    "name" : "suite",
+    "value" : "xyk-pallet - Poll creation: Errors:"
+  }, {
+    "name" : "testClass",
+    "value" : "xyk-pallet - Poll creation: Errors:"
+  }, {
+    "name" : "testMethod",
+    "value" : "Create pool with zero"
+  }, {
+    "name" : "package",
+    "value" : "xyk-pallet - Poll creation: Errors:"
+  }, {
+    "name" : "resultFormat",
+    "value" : "allure1"
+  } ],
+  "parameters" : [ ],
+  "links" : [ ],
+  "hidden" : false,
+  "retry" : false,
+  "extra" : {
+    "severity" : "normal",
+    "retries" : [ ],
+    "categories" : [ ],
+    "history" : {
+      "statistic" : {
+        "failed" : 0,
+        "broken" : 0,
+        "skipped" : 0,
+        "passed" : 2,
+        "unknown" : 0,
+        "total" : 2
+      },
+      "items" : [ {
+        "uid" : "bb0c04fbbbfcd99a",
+        "reportUrl" : "https://mangata-finance.github.io/mangata-e2e/361//#testresult/bb0c04fbbbfcd99a",
+        "status" : "passed",
+        "time" : {
+          "start" : 1632289711397,
+          "stop" : 1632289728856,
+          "duration" : 17459
+        }
+      } ]
+    },
+    "tags" : [ ]
+  },
+  "source" : "3450b6ce8c6e4c19.json",
+  "parameterValues" : [ ]
+}

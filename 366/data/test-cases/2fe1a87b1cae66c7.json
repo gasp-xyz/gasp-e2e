@@ -1,0 +1,67 @@
+{
+  "uid" : "2fe1a87b1cae66c7",
+  "name" : "xyk-pallet - User Balance - mint liquidity requires paying fees",
+  "fullName" : "test/parallel/xyk-pallet.API.testMGArequired.test.ts.xyk-pallet - User Balance - mint liquidity requires paying fees",
+  "historyId" : "5966405679402f6625274bcb7721a4ed",
+  "time" : {
+    "start" : 1632309277392,
+    "stop" : 1632309367304,
+    "duration" : 89912
+  },
+  "description" : "",
+  "descriptionHtml" : "",
+  "status" : "passed",
+  "flaky" : false,
+  "newFailed" : false,
+  "beforeStages" : [ ],
+  "afterStages" : [ ],
+  "labels" : [ {
+    "name" : "suite",
+    "value" : "test/parallel/xyk-pallet.API.testMGArequired.test.ts"
+  }, {
+    "name" : "testClass",
+    "value" : "test/parallel/xyk-pallet.API.testMGArequired.test.ts"
+  }, {
+    "name" : "testMethod",
+    "value" : "xyk-pallet - User Balance - mint liquidity requires paying fees"
+  }, {
+    "name" : "package",
+    "value" : "test/parallel/xyk-pallet.API.testMGArequired.test.ts"
+  }, {
+    "name" : "resultFormat",
+    "value" : "allure1"
+  } ],
+  "parameters" : [ ],
+  "links" : [ ],
+  "hidden" : false,
+  "retry" : false,
+  "extra" : {
+    "severity" : "normal",
+    "retries" : [ ],
+    "categories" : [ ],
+    "history" : {
+      "statistic" : {
+        "failed" : 1,
+        "broken" : 0,
+        "skipped" : 0,
+        "passed" : 1,
+        "unknown" : 0,
+        "total" : 2
+      },
+      "items" : [ {
+        "uid" : "77b9595175d3ca8",
+        "reportUrl" : "https://mangata-finance.github.io/mangata-e2e/361//#testresult/77b9595175d3ca8",
+        "status" : "failed",
+        "statusDetails" : "Error: Expected: 0 \n                  Actual: -1 \n                 ",
+        "time" : {
+          "start" : 1632290191366,
+          "stop" : 1632290281148,
+          "duration" : 89782
+        }
+      } ]
+    },
+    "tags" : [ ]
+  },
+  "source" : "2fe1a87b1cae66c7.json",
+  "parameterValues" : [ ]
+}

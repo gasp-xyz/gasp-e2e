@@ -1,0 +1,66 @@
+{
+  "uid" : "db26d36ebe202336",
+  "name" : "Not enough assets",
+  "fullName" : "xyk-pallet - Poll creation: Errors:.Not enough assets",
+  "historyId" : "276107f6850f2c5d26cdc338432ce5eb",
+  "time" : {
+    "start" : 1632309331022,
+    "stop" : 1632309386011,
+    "duration" : 54989
+  },
+  "description" : "",
+  "descriptionHtml" : "",
+  "status" : "passed",
+  "flaky" : false,
+  "newFailed" : false,
+  "beforeStages" : [ ],
+  "afterStages" : [ ],
+  "labels" : [ {
+    "name" : "suite",
+    "value" : "xyk-pallet - Poll creation: Errors:"
+  }, {
+    "name" : "testClass",
+    "value" : "xyk-pallet - Poll creation: Errors:"
+  }, {
+    "name" : "testMethod",
+    "value" : "Not enough assets"
+  }, {
+    "name" : "package",
+    "value" : "xyk-pallet - Poll creation: Errors:"
+  }, {
+    "name" : "resultFormat",
+    "value" : "allure1"
+  } ],
+  "parameters" : [ ],
+  "links" : [ ],
+  "hidden" : false,
+  "retry" : false,
+  "extra" : {
+    "severity" : "normal",
+    "retries" : [ ],
+    "categories" : [ ],
+    "history" : {
+      "statistic" : {
+        "failed" : 0,
+        "broken" : 0,
+        "skipped" : 0,
+        "passed" : 2,
+        "unknown" : 0,
+        "total" : 2
+      },
+      "items" : [ {
+        "uid" : "83a711af0aecbf8e",
+        "reportUrl" : "https://mangata-finance.github.io/mangata-e2e/361//#testresult/83a711af0aecbf8e",
+        "status" : "passed",
+        "time" : {
+          "start" : 1632289728856,
+          "stop" : 1632289783822,
+          "duration" : 54966
+        }
+      } ]
+    },
+    "tags" : [ ]
+  },
+  "source" : "db26d36ebe202336.json",
+  "parameterValues" : [ ]
+}
