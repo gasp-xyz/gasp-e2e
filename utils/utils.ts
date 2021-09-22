@@ -2,7 +2,7 @@ import { formatBalance } from "@polkadot/util/format";
 import BN from "bn.js";
 import { getApi } from "./api";
 
-import { waitNewBlock } from "./eventListeners";
+import { waitNewBlock, waitNewBlock2 } from "./eventListeners";
 import { Assets } from "./Assets";
 import { signSendAndWaitToFinishTx } from "./txHandler";
 import { User } from "./User";
@@ -194,17 +194,17 @@ export function calculateCompleteFees(soldAmount: BN) {
   return { completeFee: threePercent };
 }
 
-export const repeatOverNBlocks = (n: number) => (f: () => void) => {
+export const repeatOverNBlocks = (n: number) => async (f: () => void) => {
   if (n > 0) {
+    await waitNewBlock(true);
     f();
-    waitNewBlock();
-    repeatOverNBlocks(n - 1)(f);
+    await repeatOverNBlocks(n - 1)(f);
   }
 };
 
-export const waitForNBlocks = (n: number) => {
+export const waitForNBlocks = async (n: number) => {
   if (n > 0) {
-    waitNewBlock();
-    waitForNBlocks(n - 1);
+    await waitNewBlock(true);
+    await waitForNBlocks(n - 1);
   }
-}
+};

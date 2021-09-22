@@ -1,3 +1,4 @@
+/* eslint-disable no-loop-func */
 import { getApi } from "./api";
 import { testLog } from "./Logger";
 
@@ -68,8 +69,8 @@ export const waitNewBlock = (forceWait = false) => {
   let count = 0;
   return new Promise(async (resolve) => {
     const unsubscribe = await api.rpc.chain.subscribeNewHeads((header: any) => {
-      testLog.getLog().info(`Chain is at block: #${header.number}`);
-      if (!forceWait || ++count === 2) {
+      if (++count === 2) {
+        testLog.getLog().info(`Chain is at block: #${header.number}`);
         unsubscribe();
         resolve(true);
       }

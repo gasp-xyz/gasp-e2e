@@ -4,18 +4,12 @@
  * eslint-disable no-loop-func
  * eslint-disable no-console
  */
-import { intersection } from "lodash";
-import { spawn, Worker } from "threads";
+import { forEachRight, intersection, takeRight } from "lodash";
 
-import { initApi } from "../../utils/api";
-import { NodeWorker } from "../../utils/cluster/workers/nodeWorker";
-import { Node } from "../../utils/cluster/types";
+import { Node } from "../../utils/cluster/Node";
+import { testLog } from "../../utils/Logger";
 
-import {
-  getEnvironmentRequiredVars,
-  repeatOverNBlocks,
-  waitForNBlocks,
-} from "../../utils/utils";
+import { getEnvironmentRequiredVars, waitForNBlocks } from "../../utils/utils";
 
 jest.spyOn(console, "log").mockImplementation(jest.fn());
 jest.spyOn(console, "error").mockImplementation(jest.fn());
@@ -31,36 +25,34 @@ const {
   clusterNodeF,
 } = getEnvironmentRequiredVars();
 
-const nodeWorkerPath = "../../utils/cluster/workers/nodeWorker";
-
-const alice  : Node = { name: "Alice"   };
-const bob    : Node = { name: "Bob"     };
-const charlie: Node = { name: "Charlie" };
-const dave   : Node = { name: "Dave"    };
-const eve    : Node = { name: "Eve"     };
-const ferdie : Node = { name: "Ferdie"  };
+const alice: Node = new Node("Alice");
+const bob: Node = new Node("Bob");
+const charlie: Node = new Node("Charlie");
+const dave: Node = new Node("Dave");
+const eve: Node = new Node("Eve");
+const ferdie: Node = new Node("Ferdie");
 
 let nodes: Node[];
 
 beforeAll(async () => {
   try {
-    alice.api      = await initApi(clusterNodeA);
-    alice.worker   = await spawn<NodeWorker>(new Worker(nodeWorkerPath));
+    await alice.connect(clusterNodeA);
+    alice.start();
 
-    bob.api        = await initApi(clusterNodeB);
-    bob.worker     = await spawn<NodeWorker>(new Worker(nodeWorkerPath));
+    await bob.connect(clusterNodeB);
+    bob.start();
 
-    charlie.api    = await initApi(clusterNodeC);
-    charlie.worker = await spawn<NodeWorker>(new Worker(nodeWorkerPath));
+    await charlie.connect(clusterNodeC);
+    charlie.start();
 
-    dave.api       = await initApi(clusterNodeD);
-    dave.worker    = await spawn<NodeWorker>(new Worker(nodeWorkerPath));
- 
-    eve.api        = await initApi(clusterNodeE);
-    eve.worker     = await spawn<NodeWorker>(new Worker(nodeWorkerPath));
+    await dave.connect(clusterNodeD);
+    dave.start();
 
-    ferdie.api     = await initApi(clusterNodeF);
-    ferdie.worker  = await spawn<NodeWorker>(new Worker(nodeWorkerPath));
+    await eve.connect(clusterNodeE);
+    eve.start();
+
+    await ferdie.connect(clusterNodeF);
+    ferdie.start();
 
     nodes = [alice, bob, charlie, dave, eve, ferdie];
   } catch (e) {
@@ -68,28 +60,29 @@ beforeAll(async () => {
   }
 });
 
+afterAll(async () => {
+  await alice.stop();
+  await bob.stop();
+  await charlie.stop();
+  await dave.stop();
+  await eve.stop();
+  await ferdie.stop();
+});
+
 describe("Cluster -> Network -> Syncing", () => {
   test("Cluster does not fork", async () => {
-    type NodeName     = String;
-    type Hash         = String
-    type Hashes       = Set<Hash>
-    type KVNodeHashes = Map<NodeName, Hashes>;
+    const nodeHashMap: Map<string, Set<string>> = new Map();
 
-    const nodeHashes: KVNodeHashes = new Map();
+    await waitForNBlocks(5);
 
-    waitForNBlocks(10);
-
-    repeatOverNBlocks(3)(() => {
-      nodes.map(async (node) =>
-        nodeHashes.set(
-          node.name,
-          nodeHashes.get(node.name)!.add((await node.worker?.getHash(node))!)
-        )
-      );
+    nodes.map(async (node) => {
+      const hashes = takeRight(Array.from(node.hashes.values()), 3);
+      testLog.getLog().info(`${node.name}'s Hashes: ${hashes}`);
+      nodeHashMap.set(node.name, new Set(hashes));
     });
 
     expect(
-      intersection(Array.from(nodeHashes.values())).length
+      intersection(Array.from(nodeHashMap.values())).length
     ).toBeGreaterThan(0);
   });
 });
