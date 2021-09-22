@@ -2,7 +2,7 @@ import { formatBalance } from "@polkadot/util/format";
 import BN from "bn.js";
 import { getApi } from "./api";
 
-import { waitNewBlock, waitNewBlock2 } from "./eventListeners";
+import { waitNewBlock } from "./eventListeners";
 import { Assets } from "./Assets";
 import { signSendAndWaitToFinishTx } from "./txHandler";
 import { User } from "./User";
