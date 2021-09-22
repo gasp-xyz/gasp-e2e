@@ -1,0 +1,129 @@
+{
+  "uid" : "6cc6ef518601cd21",
+  "name" : "assets won when assets are bought [Buying Mangata]",
+  "fullName" : "xyk-pallet - treasury tests [Mangata]: on treasury we store.assets won when assets are bought [Buying Mangata]",
+  "historyId" : "d8aef4a46a05e4d14611e567583cd514",
+  "time" : {
+    "start" : 1632312619934,
+    "stop" : 1632312726744,
+    "duration" : 106810
+  },
+  "description" : "",
+  "descriptionHtml" : "",
+  "status" : "passed",
+  "flaky" : false,
+  "newFailed" : false,
+  "beforeStages" : [ ],
+  "afterStages" : [ ],
+  "labels" : [ {
+    "name" : "suite",
+    "value" : "xyk-pallet - treasury tests [Mangata]: on treasury we store"
+  }, {
+    "name" : "testClass",
+    "value" : "xyk-pallet - treasury tests [Mangata]: on treasury we store"
+  }, {
+    "name" : "testMethod",
+    "value" : "assets won when assets are bought [Buying Mangata]"
+  }, {
+    "name" : "package",
+    "value" : "xyk-pallet - treasury tests [Mangata]: on treasury we store"
+  }, {
+    "name" : "resultFormat",
+    "value" : "allure1"
+  } ],
+  "parameters" : [ ],
+  "links" : [ ],
+  "hidden" : false,
+  "retry" : false,
+  "extra" : {
+    "severity" : "normal",
+    "retries" : [ ],
+    "categories" : [ ],
+    "history" : {
+      "statistic" : {
+        "failed" : 0,
+        "broken" : 0,
+        "skipped" : 0,
+        "passed" : 9,
+        "unknown" : 0,
+        "total" : 9
+      },
+      "items" : [ {
+        "uid" : "c1a4b69aeed22853",
+        "reportUrl" : "https://mangata-finance.github.io/mangata-e2e/364//#testresult/c1a4b69aeed22853",
+        "status" : "passed",
+        "time" : {
+          "start" : 1632309559906,
+          "stop" : 1632309668038,
+          "duration" : 108132
+        }
+      }, {
+        "uid" : "99fc4791ed9b1dc",
+        "reportUrl" : "https://mangata-finance.github.io/mangata-e2e/365//#testresult/99fc4791ed9b1dc",
+        "status" : "passed",
+        "time" : {
+          "start" : 1632309541397,
+          "stop" : 1632309649583,
+          "duration" : 108186
+        }
+      }, {
+        "uid" : "803da931f9bcd9a1",
+        "reportUrl" : "https://mangata-finance.github.io/mangata-e2e/363//#testresult/803da931f9bcd9a1",
+        "status" : "passed",
+        "time" : {
+          "start" : 1632306949907,
+          "stop" : 1632307058054,
+          "duration" : 108147
+        }
+      }, {
+        "uid" : "3c76e9c12586a3fb",
+        "reportUrl" : "https://mangata-finance.github.io/mangata-e2e/362//#testresult/3c76e9c12586a3fb",
+        "status" : "passed",
+        "time" : {
+          "start" : 1632290275856,
+          "stop" : 1632290384066,
+          "duration" : 108210
+        }
+      }, {
+        "uid" : "b3683cee0f475f0b",
+        "reportUrl" : "https://mangata-finance.github.io/mangata-e2e/360//#testresult/b3683cee0f475f0b",
+        "status" : "passed",
+        "time" : {
+          "start" : 1632236947484,
+          "stop" : 1632237055796,
+          "duration" : 108312
+        }
+      }, {
+        "uid" : "3b918e2ddb51cecf",
+        "reportUrl" : "https://mangata-finance.github.io/mangata-e2e/359//#testresult/3b918e2ddb51cecf",
+        "status" : "passed",
+        "time" : {
+          "start" : 1632236713264,
+          "stop" : 1632236821465,
+          "duration" : 108201
+        }
+      }, {
+        "uid" : "1bfa8c170396a6a8",
+        "reportUrl" : "https://mangata-finance.github.io/mangata-e2e/358//#testresult/1bfa8c170396a6a8",
+        "status" : "passed",
+        "time" : {
+          "start" : 1632218569052,
+          "stop" : 1632218677202,
+          "duration" : 108150
+        }
+      }, {
+        "uid" : "b75c2afe063bd98d",
+        "reportUrl" : "https://mangata-finance.github.io/mangata-e2e/356//#testresult/b75c2afe063bd98d",
+        "status" : "passed",
+        "time" : {
+          "start" : 1632216937508,
+          "stop" : 1632217045691,
+          "duration" : 108183
+        }
+      } ]
+    },
+    "tags" : [ ]
+  },
+  "source" : "6cc6ef518601cd21.json",
+  "parameterValues" : [ ]
+}
