@@ -38,13 +38,13 @@ export function getEnvironmentRequiredVars() {
   const testUserName = process.env.TEST_USER_NAME
     ? process.env.TEST_USER_NAME
     : "//Alice";
-  // if (
-  //   (palletAddress.length === 0 && xykPalletAddress.length === 0) ||
-  //   sudoUserName.length === 0 ||
-  //   treasuryPalletAddress.length === 0
-  // ) {
-  //   throw new Error("PALLET ADDRESS OR SUDO USERNAME NOT FOUND AS GLOBAL ENV");
-  // }
+  if (
+    (palletAddress.length === 0 && xykPalletAddress.length === 0) ||
+    sudoUserName.length === 0 ||
+    treasuryPalletAddress.length === 0
+  ) {
+    throw new Error("PALLET ADDRESS OR SUDO USERNAME NOT FOUND AS GLOBAL ENV");
+  }
 
   const logLevel = process.env.LOG_LEVEL ? process.env.LOG_LEVEL : "info";
   const uri = process.env.API_URL ? process.env.API_URL : "ws://127.0.0.1:9944";
