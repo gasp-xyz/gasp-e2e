@@ -275,6 +275,9 @@ export async function getLiquidityAssetId(assetId1: BN, assetId2: BN) {
       assetId1,
     ]);
   }
+  if (!liquidity_asset_id.toString()) {
+    return new BN(-1);
+  }
   return new BN(liquidity_asset_id.toString());
 }
 
