@@ -28,7 +28,10 @@ class Node {
     this.connected = true;
   }
 
-  async start(): Promise<void> {
+  async subscribeToHead(): Promise<void> {
+    if (!this.connected) {
+      throw new Error("The node is not connected yet.");
+    }
     this.subscription = await this.api!.rpc.chain.subscribeNewHeads(
       (lastHeader) => {
         if (!this.firstBlock) {
@@ -46,6 +49,9 @@ class Node {
   }
 
   async stop(): Promise<void> {
+    if (!this.connected) {
+      throw new Error("The node is not connected yet.");
+    }
     this.subscription();
   }
 }

@@ -45,7 +45,7 @@ beforeAll(async () => {
     ]);
 
     nodes.forEach((node) => {
-      node.start();
+      node.subscribeToHead();
     });
   } catch (e) {
     throw e;
