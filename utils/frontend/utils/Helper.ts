@@ -23,7 +23,7 @@ export async function waitForElementToDissapear(
   let continueWaiting = false;
   do {
     try {
-      await driver.wait(until.elementLocated(By.xpath(xpath)), 10000);
+      await driver.wait(until.elementLocated(By.xpath(xpath)), 500);
       continueWaiting = true;
     } catch (error) {
       sleep(1000);

@@ -1,13 +1,14 @@
 import { formatBalance } from "@polkadot/util/format";
 import BN from "bn.js";
-import { getApi } from "./api";
+import { getApi, getMangataInstance } from "./api";
 
 import { waitNewBlock } from "./eventListeners";
 import { Assets } from "./Assets";
-import { signSendAndWaitToFinishTx } from "./txHandler";
 import { User } from "./User";
 import Keyring from "@polkadot/keyring";
 import { getAccountJSON } from "./frontend/utils/Helper";
+import { ETH_ASSET_ID, MGA_ASSET_ID } from "./Constants";
+import { getBalanceOfPool } from "./tx";
 
 export function sleep(ms: number) {
   return new Promise((resolve) => {
@@ -109,21 +110,20 @@ export async function UserCreatesAPoolAndMintliquidity(
   mintAmount: BN = new BN(userAmount).div(new BN(4))
 ) {
   await waitNewBlock();
-  const api = getApi();
   const [firstCurrency, secondCurrency] = await Assets.setupUserWithCurrencies(
     testUser1,
     [userAmount, userAmount],
     sudo
   );
   await testUser1.addMGATokens(sudo);
-  await signSendAndWaitToFinishTx(
-    api?.tx.xyk.createPool(
-      firstCurrency,
-      poolAmount,
-      secondCurrency,
-      poolAmount
-    ),
-    testUser1.keyRingPair
+  await (
+    await getMangataInstance()
+  ).createPool(
+    testUser1.keyRingPair,
+    firstCurrency.toString(),
+    poolAmount,
+    secondCurrency.toString(),
+    poolAmount
   );
   await waitNewBlock();
   await testUser1.mintLiquidity(firstCurrency, secondCurrency, mintAmount);
@@ -208,3 +208,22 @@ export const waitForNBlocks = async (n: number) => {
     await waitForNBlocks(n - 1);
   }
 };
+export async function createPoolIfMissing(
+  sudo: User,
+  amountInPool: string,
+  firstAssetId = MGA_ASSET_ID,
+  seccondAssetID = ETH_ASSET_ID
+) {
+  const balance = await getBalanceOfPool(firstAssetId, seccondAssetID);
+  if (balance[0].isZero() || balance[1].isZero()) {
+    await sudo.mint(firstAssetId, sudo, new BN(amountInPool));
+    await sudo.mint(ETH_ASSET_ID, sudo, new BN(amountInPool));
+    const poolValue = new BN(amountInPool).div(new BN(2));
+    await sudo.createPoolToAsset(
+      poolValue,
+      poolValue,
+      firstAssetId,
+      seccondAssetID
+    );
+  }
+}
