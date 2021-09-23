@@ -25,6 +25,7 @@ class Node {
     if (!this.connected) {
       this.api = await initApi(wsPath);
     }
+    this.connected = true;
   }
 
   async start(): Promise<void> {
