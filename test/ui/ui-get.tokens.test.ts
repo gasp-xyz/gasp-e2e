@@ -85,8 +85,6 @@ describe("UI tests - Get Tokens from Faucet", () => {
     );
     await driver.quit();
     await DriverBuilder.destroy();
-    const api = getApi();
-    await api.disconnect();
   });
 });
 async function validateAllAssetsValues(mga: Mangata, value = "10.000") {

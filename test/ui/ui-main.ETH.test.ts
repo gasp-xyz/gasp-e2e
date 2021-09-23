@@ -84,8 +84,6 @@ describe("UI main tests - Deposit - ETH", () => {
     );
     await driver.quit();
     await DriverBuilder.destroy();
-    const api = getApi();
-    await api.disconnect();
   });
 });
 
@@ -153,7 +151,10 @@ describe("UI main tests - Withdraw - ETH", () => {
     );
     await driver.quit();
     await DriverBuilder.destroy();
-    const api = getApi();
-    await api.disconnect();
   });
+});
+
+afterAll(async () => {
+  const api = getApi();
+  await api.disconnect();
 });
