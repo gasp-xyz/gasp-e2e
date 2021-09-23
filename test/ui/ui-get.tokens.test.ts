@@ -84,6 +84,7 @@ describe("UI tests - Get Tokens from Faucet", () => {
       expect.getState().currentTestName + " - " + session.getId()
     );
     await driver.quit();
+    await DriverBuilder.destroy();
     const api = getApi();
     await api.disconnect();
   });

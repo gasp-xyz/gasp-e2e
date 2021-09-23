@@ -210,6 +210,7 @@ describe("UI tests - A user can swap and mint tokens", () => {
 
   afterAll(async () => {
     await driver.quit();
+    await DriverBuilder.destroy();
     const api = getApi();
     await api.disconnect();
   });

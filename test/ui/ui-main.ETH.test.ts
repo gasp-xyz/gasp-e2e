@@ -83,6 +83,7 @@ describe("UI main tests - Deposit - ETH", () => {
       expect.getState().currentTestName + " - " + session.getId()
     );
     await driver.quit();
+    await DriverBuilder.destroy();
     const api = getApi();
     await api.disconnect();
   });
@@ -151,6 +152,7 @@ describe("UI main tests - Withdraw - ETH", () => {
       expect.getState().currentTestName + " - " + session.getId()
     );
     await driver.quit();
+    await DriverBuilder.destroy();
     const api = getApi();
     await api.disconnect();
   });
