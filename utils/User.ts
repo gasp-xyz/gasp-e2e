@@ -230,8 +230,11 @@ export class User {
     await this.waitUntilBalanceIsNotZero();
   }
 
-  async addMGATokens(sudo: User, amountFree: number = Math.pow(10, 11)) {
-    await sudo.mint(MGA_ASSET_ID, this, new BN(amountFree));
+  async addMGATokens(
+    sudo: User,
+    amountFree: BN = new BN(Math.pow(10, 11).toString())
+  ) {
+    await sudo.mint(MGA_ASSET_ID, this, amountFree);
   }
   async getUserAccountInfo() {
     const accountInfo = await getAccountInfo(this.keyRingPair.address);
