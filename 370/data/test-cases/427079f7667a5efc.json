@@ -1,0 +1,75 @@
+{
+  "uid" : "427079f7667a5efc",
+  "name" : "xyk-pallet: Happy case scenario",
+  "fullName" : "test/sequential/xyk-pallet.test.ts.xyk-pallet: Happy case scenario",
+  "historyId" : "31b3a07db373fe04b185d770d93dc95d",
+  "time" : {
+    "start" : 1632382309702,
+    "stop" : 1632382507623,
+    "duration" : 197921
+  },
+  "description" : "",
+  "descriptionHtml" : "",
+  "status" : "passed",
+  "flaky" : false,
+  "newFailed" : false,
+  "beforeStages" : [ ],
+  "afterStages" : [ ],
+  "labels" : [ {
+    "name" : "suite",
+    "value" : "test/sequential/xyk-pallet.test.ts"
+  }, {
+    "name" : "testClass",
+    "value" : "test/sequential/xyk-pallet.test.ts"
+  }, {
+    "name" : "testMethod",
+    "value" : "xyk-pallet: Happy case scenario"
+  }, {
+    "name" : "package",
+    "value" : "test/sequential/xyk-pallet.test.ts"
+  }, {
+    "name" : "resultFormat",
+    "value" : "allure1"
+  } ],
+  "parameters" : [ ],
+  "links" : [ ],
+  "hidden" : false,
+  "retry" : false,
+  "extra" : {
+    "severity" : "normal",
+    "retries" : [ ],
+    "categories" : [ ],
+    "history" : {
+      "statistic" : {
+        "failed" : 0,
+        "broken" : 0,
+        "skipped" : 0,
+        "passed" : 3,
+        "unknown" : 0,
+        "total" : 3
+      },
+      "items" : [ {
+        "uid" : "3894a8c34c1d273a",
+        "reportUrl" : "https://mangata-finance.github.io/mangata-e2e/369//#testresult/3894a8c34c1d273a",
+        "status" : "passed",
+        "time" : {
+          "start" : 1632329999523,
+          "stop" : 1632330199102,
+          "duration" : 199579
+        }
+      }, {
+        "uid" : "124c874258fed81c",
+        "reportUrl" : "https://mangata-finance.github.io/mangata-e2e/368//#testresult/124c874258fed81c",
+        "status" : "passed",
+        "time" : {
+          "start" : 1632320113691,
+          "stop" : 1632320311275,
+          "duration" : 197584
+        }
+      } ]
+    },
+    "tags" : [ ]
+  },
+  "source" : "427079f7667a5efc.json",
+  "parameterValues" : [ ]
+}
