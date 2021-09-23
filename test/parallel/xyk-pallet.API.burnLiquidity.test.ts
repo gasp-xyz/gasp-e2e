@@ -4,7 +4,7 @@
  * @group api
  * @group parallel
  */
-import { api, getApi, initApi } from "../../utils/api";
+import { getApi, getMangataInstance, initApi } from "../../utils/api";
 import {
   getBalanceOfPool,
   getLiquidityAssetId,
@@ -29,10 +29,7 @@ import {
   calculateLiqAssetAmount,
   getEnvironmentRequiredVars,
 } from "../../utils/utils";
-import {
-  getEventResultFromTxWait,
-  signSendAndWaitToFinishTx,
-} from "../../utils/txHandler";
+import { getEventResultFromTxWait } from "../../utils/txHandler";
 
 const { sudo: sudoUserName } = getEnvironmentRequiredVars();
 
@@ -87,14 +84,14 @@ describe("xyk-pallet - Burn liquidity tests: when burning liquidity you can", ()
     );
     await testUser1.addMGATokens(sudo);
     //lets create a pool
-    await signSendAndWaitToFinishTx(
-      api?.tx.xyk.createPool(
-        firstCurrency,
-        new BN(assetXamount),
-        secondCurrency,
-        new BN(assetYamount)
-      ),
-      testUser1.keyRingPair
+    await (
+      await getMangataInstance()
+    ).createPool(
+      testUser1.keyRingPair,
+      firstCurrency.toString(),
+      assetXamount,
+      secondCurrency.toString(),
+      assetYamount
     );
     const liquidityAssetId = await getLiquidityAssetId(
       firstCurrency,
@@ -140,11 +137,13 @@ describe("xyk-pallet - Burn liquidity tests: when burning liquidity you can", ()
     expect(liqId).bnEqual(new BN(-1));
     const poolBalance = await getBalanceOfPool(firstCurrency, secondCurrency);
     await testUser1.refreshAmounts(AssetWallet.AFTER);
-    testUser1.validateWalletEquals(
-      firstCurrency,
-      amountOfX.add(new BN(assetXamount))
-    );
-    testUser1.validateWalletEquals(secondCurrency, new BN(1));
+    //TODO: validate with Stano.
+    const fee = new BN(10);
+    let amount = amountOfX.add(new BN(assetXamount)).sub(fee);
+    expect(testUser1.getAsset(firstCurrency)?.amountAfter!).bnEqual(amount);
+
+    amount = new BN(1);
+    expect(testUser1.getAsset(secondCurrency)?.amountAfter!).bnEqual(amount);
 
     expect([new BN(0), new BN(0)]).collectionBnEqual(poolBalance);
 
@@ -253,14 +252,14 @@ async function UserCreatesAPoolAndMintliquidity(
     sudo
   );
   await testUser1.addMGATokens(sudo);
-  await signSendAndWaitToFinishTx(
-    api?.tx.xyk.createPool(
-      firstCurrency,
-      poolAmount,
-      secondCurrency,
-      poolAmount
-    ),
-    testUser1.keyRingPair
+  await (
+    await getMangataInstance()
+  ).createPool(
+    testUser1.keyRingPair,
+    firstCurrency.toString(),
+    poolAmount,
+    secondCurrency.toString(),
+    poolAmount
   );
   await waitNewBlock();
   await testUser1.mintLiquidity(firstCurrency, secondCurrency, mintAmount);

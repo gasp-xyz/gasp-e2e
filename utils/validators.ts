@@ -8,7 +8,12 @@ import {
   getTreasuryBurn,
 } from "./tx";
 import { AssetWallet, User } from "./User";
-import { calculateLiqAssetAmount, fromBNToUnitString } from "./utils";
+import {
+  calculateCompleteFees,
+  calculateFees,
+  calculateLiqAssetAmount,
+  fromBNToUnitString,
+} from "./utils";
 
 export function validateTransactionSucessful(
   eventResult: EventResult,
@@ -116,11 +121,26 @@ export async function validateStatusWhenPoolCreated(
   testUser1.addAsset(liquidity_asset_id, new BN(0));
 
   await testUser1.refreshAmounts(AssetWallet.AFTER);
-  await testUser1.validateWalletReduced(firstCurrency, first_asset_amount);
-  await testUser1.validateWalletReduced(secondCurrency, second_asset_amount);
-  await testUser1.validateWalletIncreased(
-    liquidity_asset_id,
-    liquidity_assets_minted
+
+  let diffFromWallet = testUser1
+    .getAsset(firstCurrency)
+    ?.amountBefore!.sub(first_asset_amount);
+  expect(testUser1.getAsset(firstCurrency)?.amountAfter!).bnEqual(
+    diffFromWallet!
+  );
+
+  diffFromWallet = testUser1
+    .getAsset(secondCurrency)
+    ?.amountBefore!.sub(second_asset_amount);
+  expect(testUser1.getAsset(secondCurrency)?.amountAfter!).bnEqual(
+    diffFromWallet!
+  );
+
+  const addFromWallet = testUser1
+    .getAsset(liquidity_asset_id)
+    ?.amountBefore!.add(liquidity_assets_minted);
+  expect(testUser1.getAsset(liquidity_asset_id)?.amountAfter!).bnEqual(
+    addFromWallet!
   );
 
   const pool_balance = await getBalanceOfPool(firstCurrency, secondCurrency);
@@ -148,7 +168,10 @@ export async function validateUnmodified(
   pool_balance_before: BN[]
 ) {
   await testUser1.refreshAmounts(AssetWallet.AFTER);
-  await testUser1.validateWalletsUnmodified();
+
+  testUser1.assets.forEach((asset) => {
+    expect(asset.amountBefore).bnEqual(asset.amountAfter);
+  });
 
   const pool_balance = await getBalanceOfPool(firstCurrency, secondCurrency);
   expect([pool_balance_before[0], pool_balance_before[1]]).toEqual(
@@ -172,4 +195,39 @@ export async function validateTreasuryAmountsEqual(
 
   expect(treasuryAsset).bnEqual(expectedTreasury);
   expect(treasuryBurn).bnEqual(expectedTreasuryBurn);
+}
+
+export async function validateUserPaidFeeForFailedTx(
+  soldAmount: BN,
+  user: User,
+  assetSoldId: BN,
+  failedBoughtAssetId: BN,
+  poolAmountFailedBought: BN,
+  initialPoolValueSoldAssetId: BN
+) {
+  const { treasury, treasuryBurn } = calculateFees(soldAmount);
+  const { completeFee } = calculateCompleteFees(soldAmount);
+
+  //when failed Tx, we remove 3% and put it in the pool.
+  await user.refreshAmounts(AssetWallet.AFTER);
+  const diffFromWallet = user
+    .getAsset(assetSoldId)
+    ?.amountBefore!.sub(completeFee);
+  expect(user.getAsset(assetSoldId)?.amountAfter!).bnEqual(diffFromWallet!);
+
+  //second wallet should not be modified.
+  const amount = user.getAsset(failedBoughtAssetId)?.amountBefore!;
+  expect(user.getAsset(failedBoughtAssetId)?.amountAfter!).bnEqual(amount);
+
+  const treasuryTokens = await getTreasury(assetSoldId);
+  const treasuryBurnTokens = await getTreasuryBurn(assetSoldId);
+  expect(treasuryTokens).bnEqual(treasury);
+  expect(treasuryBurnTokens).bnEqual(treasuryBurn);
+
+  const increasedInPool = completeFee.sub(treasury.add(treasuryBurn));
+  const poolBalances = await getBalanceOfPool(assetSoldId, failedBoughtAssetId);
+  expect(poolBalances[0]).bnEqual(
+    initialPoolValueSoldAssetId.add(increasedInPool)
+  );
+  expect(poolBalances[1]).bnEqual(poolAmountFailedBought);
 }

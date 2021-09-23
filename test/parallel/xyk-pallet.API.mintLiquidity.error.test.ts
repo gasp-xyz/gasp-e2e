@@ -4,7 +4,7 @@
  * @group api
  * @group parallel
  */
-import { api, getApi, initApi } from "../../utils/api";
+import { api, getApi, getMangataInstance, initApi } from "../../utils/api";
 import { getBalanceOfPool, mintLiquidity } from "../../utils/tx";
 import { waitNewBlock, ExtrinsicResult } from "../../utils/eventListeners";
 import BN from "bn.js";
@@ -74,14 +74,14 @@ describe("xyk-pallet - Mint liquidity tests: MintLiquidity Errors:", () => {
     );
     await testUser1.addMGATokens(sudo);
     //lets create a pool with equal balances
-    await signSendAndWaitToFinishTx(
-      api?.tx.xyk.createPool(
-        firstCurrency,
-        defaultCurrecyValue,
-        secondCurrency,
-        defaultCurrecyValue
-      ),
-      testUser1.keyRingPair
+    await (
+      await getMangataInstance()
+    ).createPool(
+      testUser1.keyRingPair,
+      firstCurrency.toString(),
+      defaultCurrecyValue,
+      secondCurrency.toString(),
+      defaultCurrecyValue
     );
     // now we have quite a lot of X and only a few Y, but the pool is 1:1,
     // force the error minting almost all of X
@@ -116,14 +116,14 @@ describe("xyk-pallet - Mint liquidity tests: MintLiquidity Errors:", () => {
     );
     await testUser1.addMGATokens(sudo);
     //lets create a pool with equal balances
-    await signSendAndWaitToFinishTx(
-      api?.tx.xyk.createPool(
-        firstCurrency,
-        defaultCurrecyValue,
-        secondCurrency,
-        defaultCurrecyValue
-      ),
-      testUser1.keyRingPair
+    await (
+      await getMangataInstance()
+    ).createPool(
+      testUser1.keyRingPair,
+      firstCurrency.toString(),
+      defaultCurrecyValue,
+      secondCurrency.toString(),
+      defaultCurrecyValue
     );
     await testUser1.refreshAmounts(AssetWallet.BEFORE);
     // now we have quite a lot of X and only a few Y, but the pool is 1:1,
@@ -160,14 +160,14 @@ describe("xyk-pallet - Mint liquidity tests: MintLiquidity Errors:", () => {
       sudo
     );
     //lets create a pool between asset 1 and 3.
-    await signSendAndWaitToFinishTx(
-      api?.tx.xyk.createPool(
-        firstCurrency,
-        firstAssetAmount,
-        thirdCurrency,
-        secondAssetAmount
-      ),
-      testUser1.keyRingPair
+    await (
+      await getMangataInstance()
+    ).createPool(
+      testUser1.keyRingPair,
+      firstCurrency.toString(),
+      firstAssetAmount,
+      thirdCurrency.toString(),
+      secondAssetAmount
     );
     await waitNewBlock();
     await testUser1.refreshAmounts(AssetWallet.BEFORE);
@@ -215,14 +215,14 @@ describe("xyk-pallet - Mint liquidity tests: MintLiquidity Errors:", () => {
     await testUser1.addMGATokens(sudo);
     await testUser1.refreshAmounts(AssetWallet.BEFORE);
     const poolAmountSecondCurrency = secondAssetAmount.div(new BN(2));
-    await signSendAndWaitToFinishTx(
-      api?.tx.xyk.createPool(
-        firstCurrency,
-        firstAssetAmount,
-        secondCurrency,
-        poolAmountSecondCurrency
-      ),
-      testUser1.keyRingPair
+    await (
+      await getMangataInstance()
+    ).createPool(
+      testUser1.keyRingPair,
+      firstCurrency.toString(),
+      firstAssetAmount,
+      secondCurrency.toString(),
+      poolAmountSecondCurrency
     );
     await waitNewBlock();
     await testUser1.refreshAmounts(AssetWallet.BEFORE);
@@ -288,14 +288,14 @@ describe("xyk-pallet - Mint liquidity tests: MintLiquidity Errors:", () => {
     await testUser1.addMGATokens(sudo);
     await testUser1.refreshAmounts(AssetWallet.BEFORE);
     const poolAmountSecondCurrency = secondAssetAmount.div(new BN(2));
-    await signSendAndWaitToFinishTx(
-      api?.tx.xyk.createPool(
-        firstCurrency,
-        firstAssetAmount,
-        secondCurrency,
-        poolAmountSecondCurrency
-      ),
-      testUser1.keyRingPair
+    await (
+      await getMangataInstance()
+    ).createPool(
+      testUser1.keyRingPair,
+      firstCurrency.toString(),
+      firstAssetAmount,
+      secondCurrency.toString(),
+      poolAmountSecondCurrency
     );
     await waitNewBlock();
     await testUser1.refreshAmounts(AssetWallet.BEFORE);

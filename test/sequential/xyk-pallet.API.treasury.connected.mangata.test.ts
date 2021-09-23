@@ -5,7 +5,7 @@
  * @group sequential
  * @group critical
  */
-import { api, getApi, initApi } from "../../utils/api";
+import { getApi, getMangataInstance, initApi } from "../../utils/api";
 import {
   sellAsset,
   getTreasury,
@@ -14,6 +14,10 @@ import {
   getBalanceOfPool,
   calculate_sell_price_local_no_fee,
   buyAsset,
+  calculate_sell_price_rpc,
+  calculate_buy_price_rpc,
+  calculate_buy_price_id_rpc,
+  calculate_sell_price_id_rpc,
 } from "../../utils/tx";
 import { waitNewBlock, ExtrinsicResult } from "../../utils/eventListeners";
 import BN from "bn.js";
@@ -21,18 +25,16 @@ import { Keyring } from "@polkadot/api";
 import { AssetWallet, User } from "../../utils/User";
 import { validateTreasuryAmountsEqual } from "../../utils/validators";
 import { Assets } from "../../utils/Assets";
-import { getEnvironmentRequiredVars } from "../../utils/utils";
-import { MGA_ASSET_NAME } from "../../utils/Constants";
-import {
-  getEventResultFromTxWait,
-  signSendAndWaitToFinishTx,
-} from "../../utils/txHandler";
+import { MAX_BALANCE, MGA_ASSET_NAME } from "../../utils/Constants";
+import { calculateFees, getEnvironmentRequiredVars } from "../../utils/utils";
+import { getEventResultFromTxWait } from "../../utils/txHandler";
 
 jest.spyOn(console, "log").mockImplementation(jest.fn());
 jest.setTimeout(1500000);
 process.env.NODE_ENV = "test";
 
 const first_asset_amount = new BN(50000);
+const seccond_asset_amount = first_asset_amount.div(new BN(2));
 const defaultCurrecyValue = new BN(250000);
 const { sudo: sudoUserName } = getEnvironmentRequiredVars();
 
@@ -79,14 +81,14 @@ describe("xyk-pallet - treasury tests [Mangata]: on treasury we store", () => {
       )
     )[0];
     await testUser1.addMGATokens(sudo);
-    await signSendAndWaitToFinishTx(
-      api?.tx.xyk.createPool(
-        mgaTokenId,
-        first_asset_amount,
-        secondCurrency,
-        first_asset_amount.div(new BN(2))
-      ),
-      testUser1.keyRingPair
+    await (
+      await getMangataInstance()
+    ).createPool(
+      testUser1.keyRingPair,
+      mgaTokenId.toString(),
+      first_asset_amount,
+      secondCurrency.toString(),
+      seccond_asset_amount
     );
     await testUser1.refreshAmounts(AssetWallet.BEFORE);
   });
@@ -115,13 +117,12 @@ describe("xyk-pallet - treasury tests [Mangata]: on treasury we store", () => {
 
     await testUser1.refreshAmounts(AssetWallet.AFTER);
 
-    //pool is [50000M,25000Y]
-    //user sell [10000] of M.
-    //Stano sheet tells: Treasury- 5 , burned destroyed!
+    const { treasury } = calculateFees(sellAssetAmount);
+
     const treasuryAfter = await getTreasury(mgaTokenId);
     const treasuryBurnAfter = await getTreasuryBurn(mgaTokenId);
 
-    expect(treasuryAfter).bnEqual(treasuryBefore.add(new BN(5)));
+    expect(treasuryAfter).bnEqual(treasuryBefore.add(treasury));
     expect(treasuryBurnAfter).bnEqual(treasuryBurnBefore);
     await validateTreasuryAmountsEqual(secondCurrency, [new BN(0), new BN(0)]);
   });
@@ -132,6 +133,19 @@ describe("xyk-pallet - treasury tests [Mangata]: on treasury we store", () => {
 
     const treasuryBefore = await getTreasury(mgaTokenId);
     const treasuryBurnBefore = await getTreasuryBurn(mgaTokenId);
+
+    const sellPrice = await calculate_buy_price_rpc(
+      seccond_asset_amount,
+      first_asset_amount,
+      buyAssetAmount
+    );
+    const poolBalance = await getBalanceOfPool(mgaTokenId, secondCurrency);
+    const { treasury } = calculateFees(sellPrice);
+    const feeInMGAPrice = await calculate_sell_price_rpc(
+      poolBalance[1],
+      poolBalance[0],
+      treasury
+    );
 
     await buyAsset(
       testUser1.keyRingPair,
@@ -150,13 +164,10 @@ describe("xyk-pallet - treasury tests [Mangata]: on treasury we store", () => {
 
     await testUser1.refreshAmounts(AssetWallet.AFTER);
 
-    //pool is [50000M,25000Y]
-    //user buy [10000] of M.
-    //Stano buy spreasheet tells: Treasury- 3 , burned is destroyed!
     const treasuryAfter = await getTreasury(mgaTokenId);
     const treasuryBurnAfter = await getTreasuryBurn(mgaTokenId);
 
-    expect(treasuryAfter).bnEqual(treasuryBefore.add(new BN(3)));
+    expect(treasuryAfter).bnEqual(treasuryBefore.add(feeInMGAPrice));
     expect(treasuryBurnAfter).bnEqual(treasuryBurnBefore);
     await validateTreasuryAmountsEqual(secondCurrency, [new BN(0), new BN(0)]);
   });
@@ -167,6 +178,14 @@ describe("xyk-pallet - treasury tests [Mangata]: on treasury we store", () => {
 
     const treasuryBefore = await getTreasury(mgaTokenId);
     const treasuryBurnBefore = await getTreasuryBurn(mgaTokenId);
+
+    const { treasury } = calculateFees(sellAssetAmount);
+    const poolBalance = await getBalanceOfPool(mgaTokenId, secondCurrency);
+    const feeInMGAPrice = await calculate_sell_price_rpc(
+      poolBalance[1],
+      poolBalance[0],
+      treasury
+    );
 
     await sellAsset(
       testUser1.keyRingPair,
@@ -185,15 +204,10 @@ describe("xyk-pallet - treasury tests [Mangata]: on treasury we store", () => {
 
     await testUser1.refreshAmounts(AssetWallet.AFTER);
 
-    //pool is [50000M,25000Y]
-    //user sell [20000] of Y.
-    //Changed to 20kY, in order to unbalance the pools. ->MGA value increases [10Y=6MNG].
-    //Stano sheet tells: Treasury- 6 , burned destroyed!
-
     const treasuryAfter = await getTreasury(mgaTokenId);
     const treasuryBurnAfter = await getTreasuryBurn(mgaTokenId);
 
-    expect(treasuryAfter).bnEqual(treasuryBefore.add(new BN(6)));
+    expect(treasuryAfter).bnEqual(treasuryBefore.add(feeInMGAPrice));
     expect(treasuryBurnAfter).bnEqual(treasuryBurnBefore);
     await validateTreasuryAmountsEqual(secondCurrency, [new BN(0), new BN(0)]);
   });
@@ -204,6 +218,13 @@ describe("xyk-pallet - treasury tests [Mangata]: on treasury we store", () => {
 
     const treasuryBefore = await getTreasury(mgaTokenId);
     const treasuryBurnBefore = await getTreasuryBurn(mgaTokenId);
+
+    const sellPrice = await calculate_buy_price_rpc(
+      first_asset_amount,
+      seccond_asset_amount,
+      buyAssetAmount
+    );
+    const { treasury } = calculateFees(sellPrice);
 
     await buyAsset(
       testUser1.keyRingPair,
@@ -222,13 +243,10 @@ describe("xyk-pallet - treasury tests [Mangata]: on treasury we store", () => {
 
     await testUser1.refreshAmounts(AssetWallet.AFTER);
 
-    //pool is [50000M,25000Y]
-    //user buy [10000] of Y.
-    //Stano sheet tells: Treasury- 16 , burned destroyed!
     const treasuryAfter = await getTreasury(mgaTokenId);
     const treasuryBurnAfter = await getTreasuryBurn(mgaTokenId);
 
-    expect(treasuryAfter).bnEqual(treasuryBefore.add(new BN(16)));
+    expect(treasuryAfter).bnEqual(treasuryBefore.add(treasury));
     expect(treasuryBurnAfter).bnEqual(treasuryBurnBefore);
     await validateTreasuryAmountsEqual(secondCurrency, [new BN(0), new BN(0)]);
   });
@@ -290,25 +308,23 @@ describe("xyk-pallet - treasury tests [Connected - Mangata]: on treasury we stor
       )
     )[0];
     await testUser1.addMGATokens(sudo);
-
-    await signSendAndWaitToFinishTx(
-      api?.tx.xyk.createPool(
-        mgaTokenId,
-        first_asset_amount,
-        connectedToMGA,
-        first_asset_amount.div(new BN(2))
-      ),
-      testUser1.keyRingPair
+    await (
+      await getMangataInstance()
+    ).createPool(
+      testUser1.keyRingPair,
+      mgaTokenId.toString(),
+      first_asset_amount,
+      connectedToMGA.toString(),
+      first_asset_amount.div(new BN(2))
     );
-
-    await signSendAndWaitToFinishTx(
-      api?.tx.xyk.createPool(
-        connectedToMGA,
-        first_asset_amount,
-        indirectlyConnected,
-        first_asset_amount.div(new BN(2))
-      ),
-      testUser1.keyRingPair
+    await (
+      await getMangataInstance()
+    ).createPool(
+      testUser1.keyRingPair,
+      connectedToMGA.toString(),
+      first_asset_amount,
+      indirectlyConnected.toString(),
+      first_asset_amount.div(new BN(2))
     );
     await testUser1.refreshAmounts(AssetWallet.BEFORE);
   });
@@ -318,16 +334,11 @@ describe("xyk-pallet - treasury tests [Connected - Mangata]: on treasury we stor
     const sellAssetAmount = new BN(20000);
 
     const mgPoolAmount = await getBalanceOfPool(mgaTokenId, connectedToMGA);
-
-    //10 Is the outcome of the spreasheet created by stano.
-    //pool is [50000X,25000Y]
-    //user sell [20000] of X.
-    //Stano sheet tells: Treasury- 10 [IF SELLING  X. X HAS A POOL WITH MANGATA. Y DOESN'T] scenario.
-
+    const { treasury } = calculateFees(sellAssetAmount);
     const swapTreasuryInMG = calculate_sell_price_local_no_fee(
       mgPoolAmount[1],
       mgPoolAmount[0],
-      new BN(10)
+      treasury
     );
 
     const treasuryBefore = await getTreasury(mgaTokenId);
@@ -367,18 +378,23 @@ describe("xyk-pallet - treasury tests [Connected - Mangata]: on treasury we stor
     await waitNewBlock();
     const buyAssetAmount = new BN(7000);
 
+    const PoolAmount = await getBalanceOfPool(
+      indirectlyConnected,
+      connectedToMGA
+    );
+
+    const sellPrice = await calculate_buy_price_rpc(
+      PoolAmount[1],
+      PoolAmount[0],
+      buyAssetAmount
+    );
+    const { treasury } = calculateFees(sellPrice);
+
     const mgPoolAmount = await getBalanceOfPool(mgaTokenId, connectedToMGA);
-
-    //10 Is the outcome of the spreasheet created by stano.
-    //pool is [50000X,25000Y]
-    //user buy [7000] of X.
-    //Stano sheet tells: Treasury- 9 [IF SELLING  X. X HAS A POOL WITH MANGATA. Y DOESN'T] scenario.
-
-    //Calculation tell us that 9 of Y belongs to treasury -> sell to swap inMGA
     const swapTreasuryInMG = calculate_sell_price_local_no_fee(
       mgPoolAmount[1],
       mgPoolAmount[0],
-      new BN(9)
+      treasury
     );
 
     const treasuryBefore = await getTreasury(mgaTokenId);
@@ -421,6 +437,11 @@ describe("xyk-pallet - treasury tests [Connected - Mangata]: on treasury we stor
     const treasuryBefore = await getTreasury(mgaTokenId);
     const treasuryBurnBefore = await getTreasuryBurn(mgaTokenId);
 
+    const treasuryBeforeInd = await getTreasury(indirectlyConnected);
+    const treasuryBurnBeforeInd = await getTreasuryBurn(indirectlyConnected);
+
+    const { treasury, treasuryBurn } = calculateFees(sellAssetAmount);
+
     await sellAsset(
       testUser1.keyRingPair,
       indirectlyConnected,
@@ -440,27 +461,17 @@ describe("xyk-pallet - treasury tests [Connected - Mangata]: on treasury we stor
 
     const treasuryAfter = await getTreasury(mgaTokenId);
     const treasuryBurnAfter = await getTreasuryBurn(mgaTokenId);
-    const mgPoolAmount = await getBalanceOfPool(connectedToMGA, mgaTokenId);
 
-    //10 Is the outcome of the spreasheet created by stano.
-    //pool is [50000X,25000Y]
-    //user sell [20000] of Y.
-    //Stano sheet tells: Treasury- 6 [IF SELLING  X. Y HAS A POOL WITH MANGATA. X DOESN'T] scenario.
+    const treasuryAfterInd = await getTreasury(indirectlyConnected);
+    const treasuryBurnAfterInd = await getTreasuryBurn(indirectlyConnected);
 
-    const swapTreasuryInMG = calculate_sell_price_local_no_fee(
-      mgPoolAmount[0],
-      mgPoolAmount[1],
-      new BN(6)
-    );
-
-    expect(treasuryAfter).bnEqual(treasuryBefore.add(swapTreasuryInMG));
-
-    //burned destroyed! because is translated toMGA
+    expect(treasuryAfter).bnEqual(treasuryBefore);
     expect(treasuryBurnAfter).bnEqual(treasuryBurnBefore);
-    await validateTreasuryAmountsEqual(indirectlyConnected, [
-      new BN(0),
-      new BN(0),
-    ]);
+
+    expect(treasuryAfterInd).bnEqual(treasuryBeforeInd.add(treasury));
+    expect(treasuryBurnAfterInd).bnEqual(
+      treasuryBurnBeforeInd.add(treasuryBurn)
+    );
   });
 
   test("assets won when assets are bought [Buying Y - X connected toMGA pool] - 6", async () => {
@@ -469,6 +480,24 @@ describe("xyk-pallet - treasury tests [Connected - Mangata]: on treasury we stor
 
     const treasuryBefore = await getTreasury(mgaTokenId);
     const treasuryBurnBefore = await getTreasuryBurn(mgaTokenId);
+
+    const PoolAmount = await getBalanceOfPool(
+      indirectlyConnected,
+      connectedToMGA
+    );
+    const sellPrice = await calculate_buy_price_rpc(
+      PoolAmount[1],
+      PoolAmount[0],
+      buyAssetAmount
+    );
+    const { treasury } = calculateFees(sellPrice);
+
+    const mgPoolAmount = await getBalanceOfPool(mgaTokenId, connectedToMGA);
+    const swapTreasuryInMG = calculate_sell_price_local_no_fee(
+      mgPoolAmount[1],
+      mgPoolAmount[0],
+      treasury
+    );
 
     await buyAsset(
       testUser1.keyRingPair,
@@ -489,25 +518,126 @@ describe("xyk-pallet - treasury tests [Connected - Mangata]: on treasury we stor
 
     const treasuryAfter = await getTreasury(mgaTokenId);
     const treasuryBurnAfter = await getTreasuryBurn(mgaTokenId);
-    const mgPoolAmount = await getBalanceOfPool(connectedToMGA, mgaTokenId);
-
-    //10 Is the outcome of the spreasheet created by stano.
-    //pool is [50000X,25000Y]
-    //user sell [6000] of Y.
-    //Stano sheet tells: Treasury- 7 [IF SELLING  X. Y HAS A POOL WITH MANGATA. X DOESN'T] scenario.
-
-    const swapTreasuryInMG = calculate_sell_price_local_no_fee(
-      mgPoolAmount[0],
-      mgPoolAmount[1],
-      new BN(7)
-    );
 
     expect(treasuryAfter).bnEqual(treasuryBefore.add(swapTreasuryInMG));
-    //burned destroyed! because is translated toMGA
     expect(treasuryBurnAfter).bnEqual(treasuryBurnBefore);
+
     await validateTreasuryAmountsEqual(indirectlyConnected, [
       new BN(0),
       new BN(0),
     ]);
+  });
+});
+
+describe("xyk-pallet - treasury tests [Connected - Mangata]: Error cases", () => {
+  let testUser1: User;
+  let sudo: User;
+
+  let keyring: Keyring;
+  let connectedToMGA: BN;
+  let mgaTokenId: BN;
+
+  beforeAll(async () => {
+    try {
+      getApi();
+    } catch (e) {
+      await initApi();
+    }
+  });
+
+  beforeEach(async () => {
+    try {
+      getApi();
+    } catch (e) {
+      await initApi();
+    }
+
+    await waitNewBlock();
+    keyring = new Keyring({ type: "sr25519" });
+
+    // setup users
+    testUser1 = new User(keyring);
+
+    sudo = new User(keyring, sudoUserName);
+
+    // add users to pair.
+    keyring.addPair(testUser1.keyRingPair);
+    keyring.addPair(sudo.keyRingPair);
+
+    await waitNewBlock();
+    mgaTokenId = await getAssetId(MGA_ASSET_NAME);
+    await sudo.mint(mgaTokenId, testUser1, new BN(defaultCurrecyValue));
+    testUser1.addAsset(mgaTokenId);
+    connectedToMGA = (
+      await Assets.setupUserWithCurrencies(testUser1, [MAX_BALANCE], sudo)
+    )[0];
+    await testUser1.addMGATokens(sudo);
+  });
+
+  test.skip("[BUG]Not enough tokens to convert fee LINK[https://trello.com/c/p77t0atO]", async () => {
+    await (
+      await getMangataInstance()
+    ).createPool(
+      testUser1.keyRingPair,
+      mgaTokenId.toString(),
+      new BN(100),
+      connectedToMGA.toString(),
+      first_asset_amount
+    );
+
+    await testUser1.refreshAmounts(AssetWallet.BEFORE);
+    await waitNewBlock();
+    const mgPoolAmount = await getBalanceOfPool(mgaTokenId, connectedToMGA);
+
+    const leaveOnlyOneToken = await calculate_buy_price_id_rpc(
+      connectedToMGA,
+      mgaTokenId,
+      mgPoolAmount[0].sub(new BN(1))
+    );
+    const { treasury } = calculateFees(leaveOnlyOneToken);
+    const treasuryBefore = await getTreasury(mgaTokenId);
+    const treasuryBurnBefore = await getTreasuryBurn(mgaTokenId);
+
+    const treasuryInMGA = await calculate_sell_price_id_rpc(
+      connectedToMGA,
+      mgaTokenId,
+      treasury
+    );
+
+    await buyAsset(
+      testUser1.keyRingPair,
+      connectedToMGA,
+      mgaTokenId,
+      mgPoolAmount[0].sub(new BN(1)),
+      new BN(MAX_BALANCE)
+    ).then((result) => {
+      const eventResponse = getEventResultFromTxWait(result, [
+        "xyk",
+        "AssetsSwapped",
+        testUser1.keyRingPair.address,
+      ]);
+      expect(eventResponse.state).toEqual(ExtrinsicResult.ExtrinsicSuccess);
+    });
+
+    await testUser1.refreshAmounts(AssetWallet.AFTER);
+
+    const treasuryAfter = await getTreasury(mgaTokenId);
+    const treasuryBurnAfter = await getTreasuryBurn(mgaTokenId);
+    const poolAfter = await getBalanceOfPool(mgaTokenId, connectedToMGA);
+
+    //Check that the pool has only one MGA token.
+    expect(poolAfter[0]).bnEqual(new BN(1));
+    //Check that the user has the right amount of MGA tokens.
+    //The ones he had before + bought. 99
+    const expectedValue = testUser1
+      .getAsset(mgaTokenId)!
+      .amountAfter.sub(mgPoolAmount[0].sub(new BN(1)));
+
+    expect(testUser1.getAsset(mgaTokenId)!.amountBefore).bnEqual(expectedValue);
+    //burned destroyed! because is translated toMGA
+    expect(treasuryBurnAfter).bnEqual(treasuryBurnBefore);
+    //check that treasury got the right amount.
+    //TODO, validate with Stano.
+    expect(treasuryAfter).bnEqual(treasuryBefore.add(treasuryInMGA));
   });
 });

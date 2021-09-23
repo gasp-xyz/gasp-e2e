@@ -123,7 +123,7 @@ export class Polkadot {
     await doActionInDifferentWindow(this.driver, this.acceptModal);
   }
 
-  static async signTransactionModal(driver: WebDriver) {
+  private static async signTransactionModal(driver: WebDriver) {
     await writeText(driver, XPATH_SIGN_PASSWORD, userPassword);
     await clickElement(driver, XPATH_SIGN_BTN);
   }

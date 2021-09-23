@@ -23,7 +23,7 @@ export async function waitForElementToDissapear(
   let continueWaiting = false;
   do {
     try {
-      await driver.wait(until.elementLocated(By.xpath(xpath)), 10000);
+      await driver.wait(until.elementLocated(By.xpath(xpath)), 500);
       continueWaiting = true;
     } catch (error) {
       sleep(1000);
@@ -46,7 +46,15 @@ export async function writeText(
   text: string
 ) {
   await waitForElement(driver, elementXpath);
+  await (await driver.findElement(By.xpath(elementXpath))).clear();
   await (await driver.findElement(By.xpath(elementXpath))).sendKeys(text);
+}
+export async function getText(driver: WebDriver, elementXpath: string) {
+  await waitForElement(driver, elementXpath);
+  const text = await (
+    await driver.findElement(By.xpath(elementXpath))
+  ).getText();
+  return text;
 }
 
 ///Setup both extensions
@@ -57,7 +65,7 @@ export async function setupAllExtensions(driver: WebDriver) {
 
   const metaMaskExtension = new MetaMask(driver);
   await metaMaskExtension.go();
-  await metaMaskExtension.setupAccount();
+  const metaUserAddress = await metaMaskExtension.setupAccount();
 
   const polkadotExtension = new Polkadot(driver);
   await polkadotExtension.go();
@@ -69,7 +77,11 @@ export async function setupAllExtensions(driver: WebDriver) {
   await polkadotExtension.acceptPermissions();
 
   await metaMaskExtension.connect();
-  return { polkUserAddress: polkUserAddress, mnemonic: usrMnemonic };
+  return {
+    polkUserAddress: polkUserAddress,
+    mnemonic: usrMnemonic,
+    metaUserAddres: metaUserAddress,
+  };
 }
 
 export async function leaveOnlyOneTab(driver: WebDriver) {
@@ -91,7 +103,7 @@ export async function addExtraLogs(driver: WebDriver, testName = "") {
         entries.forEach(function (entry) {
           const logLine = `[${entry.level.name}] ${entry.message}`;
           fs.appendFileSync(
-            `${outputPath}/log_${value}_${testName}.txt`,
+            `${outputPath}/log_${value}_${testName}_${Date.now().toString()}.txt`,
             logLine + " \n"
           );
         });
@@ -142,4 +154,13 @@ export async function doActionInDifferentWindow(
   value = iterator.next().value;
   await driver.switchTo().window(value[1]);
   return;
+}
+
+export async function selectAssetFromModalList(
+  assetName: string,
+  driver: WebDriver
+) {
+  const assetTestId = `assetSelectModal-asset-${assetName}`;
+  const assetLocator = buildDataTestIdXpath(assetTestId);
+  await clickElement(driver, assetLocator);
 }

@@ -17,7 +17,7 @@ import {
   transferAll,
 } from "./tx";
 import { getEventResultFromTxWait } from "./txHandler";
-import { MGA_ASSET_ID } from "./Constants";
+import { MAX_BALANCE, MGA_ASSET_ID } from "./Constants";
 
 export enum AssetWallet {
   BEFORE,
@@ -61,24 +61,6 @@ export class User {
   addFromAddress(keyring: Keyring, address: string) {
     this.keyRingPair = keyring.addFromAddress(address);
     this.name = "addres_created_account";
-  }
-
-  validateWalletReduced(currencyId: BN, amount: BN) {
-    const diffFromWallet = this.getAsset(currencyId)?.amountBefore!.sub(amount);
-    expect(this.getAsset(currencyId)?.amountAfter!).bnEqual(diffFromWallet!);
-  }
-  validateWalletIncreased(currencyId: BN, amount: BN) {
-    const addFromWallet = this.getAsset(currencyId)?.amountBefore!.add(amount);
-    expect(this.getAsset(currencyId)?.amountAfter!).bnEqual(addFromWallet!);
-  }
-  validateWalletEquals(currencyId: BN, amount: BN) {
-    expect(this.getAsset(currencyId)?.amountAfter!).bnEqual(amount);
-  }
-
-  validateWalletsUnmodified() {
-    this.assets.forEach((asset) => {
-      expect(asset.amountBefore).bnEqual(asset.amountAfter);
-    });
   }
 
   addAsset(currecncyId: any, amountBefore = new BN(0)) {
@@ -174,7 +156,7 @@ export class User {
     firstCurrency: BN,
     secondCurrency: BN,
     firstCurrencyAmount: BN,
-    secondCurrencyAmount: BN = new BN(Number.MAX_SAFE_INTEGER)
+    secondCurrencyAmount: BN = new BN(MAX_BALANCE)
   ) {
     await mintLiquidity(
       this.keyRingPair,
@@ -248,8 +230,11 @@ export class User {
     await this.waitUntilBalanceIsNotZero();
   }
 
-  async addMGATokens(sudo: User, amountFree: number = Math.pow(10, 11)) {
-    await sudo.mint(MGA_ASSET_ID, this, new BN(amountFree));
+  async addMGATokens(
+    sudo: User,
+    amountFree: BN = new BN(Math.pow(10, 11).toString())
+  ) {
+    await sudo.mint(MGA_ASSET_ID, this, amountFree);
   }
   async getUserAccountInfo() {
     const accountInfo = await getAccountInfo(this.keyRingPair.address);
