@@ -31,29 +31,22 @@ const dave: Node = new Node("Dave");
 const eve: Node = new Node("Eve");
 const ferdie: Node = new Node("Ferdie");
 
-let nodes: Node[];
+const nodes = [alice, bob, charlie, dave, eve, ferdie];
 
 beforeAll(async () => {
   try {
-    await alice.connect(clusterNodeA);
-    alice.start();
+    Promise.all([
+      await alice.connect(clusterNodeA),
+      await bob.connect(clusterNodeB),
+      await charlie.connect(clusterNodeC),
+      await dave.connect(clusterNodeD),
+      await eve.connect(clusterNodeE),
+      await ferdie.connect(clusterNodeF),
+    ]);
 
-    await bob.connect(clusterNodeB);
-    bob.start();
-
-    await charlie.connect(clusterNodeC);
-    charlie.start();
-
-    await dave.connect(clusterNodeD);
-    dave.start();
-
-    await eve.connect(clusterNodeE);
-    eve.start();
-
-    await ferdie.connect(clusterNodeF);
-    ferdie.start();
-
-    nodes = [alice, bob, charlie, dave, eve, ferdie];
+    nodes.forEach((node) => {
+      node.start();
+    });
   } catch (e) {
     throw e;
   }
