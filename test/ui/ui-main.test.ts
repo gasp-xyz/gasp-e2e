@@ -1,6 +1,7 @@
 /*
  *
  * @group ui
+ * @group sequential
  */
 import { Keyring } from "@polkadot/api";
 import BN from "bn.js";
@@ -153,9 +154,9 @@ describe("UI tests - A user can swap and mint tokens", () => {
     expect(isPoolVisible).toBeFalsy();
     // removing 1 token because of rounding either when minting, either when burning.
     // Checked with Stano.
-    expect(
-      testUser1.getAsset(ETH_ASSET_ID)?.amountBefore!.sub(new BN(1))
-    ).bnEqual(testUser1.getAsset(ETH_ASSET_ID)?.amountAfter!);
+    expect(testUser1.getAsset(ETH_ASSET_ID)?.amountBefore!).bnEqual(
+      testUser1.getAsset(ETH_ASSET_ID)?.amountAfter!
+    );
   });
 
   it("As a User I can mint in more than one pool [ MGA - mETH ] [ MGA - newTokn ] and get invested values", async () => {
