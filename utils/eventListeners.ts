@@ -68,8 +68,8 @@ export const waitNewBlock = () => {
   let count = 0;
   return new Promise(async (resolve) => {
     const unsubscribe = await api.rpc.chain.subscribeNewHeads((header: any) => {
-      testLog.getLog().info(`Chain is at block: #${header.number}`);
       if (++count === 2) {
+        testLog.getLog().info(`Chain is at block: #${header.number}`);
         unsubscribe();
         resolve(true);
       }
