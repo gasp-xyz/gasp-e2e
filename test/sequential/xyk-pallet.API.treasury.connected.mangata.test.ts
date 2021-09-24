@@ -19,7 +19,7 @@ import {
   calculate_buy_price_id_rpc,
   calculate_sell_price_id_rpc,
 } from "../../utils/tx";
-import { ExtrinsicResult } from "../../utils/eventListeners";
+import { ExtrinsicResult, waitNewBlock } from "../../utils/eventListeners";
 import BN from "bn.js";
 import { Keyring } from "@polkadot/api";
 import { AssetWallet, User } from "../../utils/User";

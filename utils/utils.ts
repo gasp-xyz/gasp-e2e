@@ -8,6 +8,7 @@ import Keyring from "@polkadot/keyring";
 import { getAccountJSON } from "./frontend/utils/Helper";
 import { ETH_ASSET_ID, MGA_ASSET_ID } from "./Constants";
 import { getBalanceOfPool } from "./tx";
+import { waitNewBlock } from "./eventListeners";
 
 export function sleep(ms: number) {
   return new Promise((resolve) => {
@@ -194,7 +195,7 @@ export function calculateCompleteFees(soldAmount: BN) {
 
 export const repeatOverNBlocks = (n: number) => async (f: () => void) => {
   if (n > 0) {
-    await waitNewBlock(true);
+    await waitNewBlock();
     f();
     await repeatOverNBlocks(n - 1)(f);
   }
@@ -202,7 +203,7 @@ export const repeatOverNBlocks = (n: number) => async (f: () => void) => {
 
 export const waitForNBlocks = async (n: number) => {
   if (n > 0) {
-    await waitNewBlock(true);
+    await waitNewBlock();
     await waitForNBlocks(n - 1);
   }
 };
