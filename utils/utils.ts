@@ -39,13 +39,13 @@ export function getEnvironmentRequiredVars() {
   const testUserName = process.env.TEST_USER_NAME
     ? process.env.TEST_USER_NAME
     : "//Alice";
-  if (
-    (palletAddress.length === 0 && xykPalletAddress.length === 0) ||
-    sudoUserName.length === 0 ||
-    treasuryPalletAddress.length === 0
-  ) {
-    throw new Error("PALLET ADDRESS OR SUDO USERNAME NOT FOUND AS GLOBAL ENV");
-  }
+  // if (
+  //   (palletAddress.length === 0 && xykPalletAddress.length === 0) ||
+  //   sudoUserName.length === 0 ||
+  //   treasuryPalletAddress.length === 0
+  // ) {
+  //   throw new Error("PALLET ADDRESS OR SUDO USERNAME NOT FOUND AS GLOBAL ENV");
+  // }
 
   const logLevel = process.env.LOG_LEVEL ? process.env.LOG_LEVEL : "info";
   const uri = process.env.API_URL ? process.env.API_URL : "ws://127.0.0.1:9944";
@@ -62,6 +62,25 @@ export function getEnvironmentRequiredVars() {
     ? process.env.MNEMONIC_POLK
     : " oh oh";
 
+  const clusterNodeA = process.env.CLUSTER_NODE_A
+    ? process.env.CLUSTER_NODE_A
+    : "ws://node_alice:9944";
+  const clusterNodeB = process.env.CLUSTER_NODE_B
+    ? process.env.CLUSTER_NODE_B
+    : "ws://node_bob:9944";
+  const clusterNodeC = process.env.CLUSTER_NODE_C
+    ? process.env.CLUSTER_NODE_C
+    : "ws://node_charlie:9944";
+  const clusterNodeD = process.env.CLUSTER_NODE_D
+    ? process.env.CLUSTER_NODE_D
+    : "ws://node_dave:9944";
+  const clusterNodeE = process.env.CLUSTER_NODE_E
+    ? process.env.CLUSTER_NODE_E
+    : "ws://node_eve:9944";
+  const clusterNodeF = process.env.CLUSTER_NODE_F
+    ? process.env.CLUSTER_NODE_F
+    : "ws://node_ferdie:9944";
+
   return {
     pallet: palletAddress,
     sudo: sudoUserName,
@@ -74,6 +93,12 @@ export function getEnvironmentRequiredVars() {
     logLevel: logLevel,
     xykPalletAddress: xykPalletAddress,
     treasuryPalletAddress: treasuryPalletAddress,
+    clusterNodeA: clusterNodeA,
+    clusterNodeB: clusterNodeB,
+    clusterNodeC: clusterNodeC,
+    clusterNodeD: clusterNodeD,
+    clusterNodeE: clusterNodeE,
+    clusterNodeF: clusterNodeF,
   };
 }
 
@@ -168,6 +193,21 @@ export function calculateCompleteFees(soldAmount: BN) {
   threePercent = threePercent.sub(new BN(2));
   return { completeFee: threePercent };
 }
+
+export const repeatOverNBlocks = (n: number) => async (f: () => void) => {
+  if (n > 0) {
+    await waitNewBlock(true);
+    f();
+    await repeatOverNBlocks(n - 1)(f);
+  }
+};
+
+export const waitForNBlocks = async (n: number) => {
+  if (n > 0) {
+    await waitNewBlock(true);
+    await waitForNBlocks(n - 1);
+  }
+};
 export async function createPoolIfMissing(
   sudo: User,
   amountInPool: string,
