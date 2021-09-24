@@ -2,13 +2,13 @@ import { formatBalance } from "@polkadot/util/format";
 import BN from "bn.js";
 import { getApi, getMangataInstance } from "./api";
 
-import { waitNewBlock } from "./eventListeners";
 import { Assets } from "./Assets";
 import { User } from "./User";
 import Keyring from "@polkadot/keyring";
 import { getAccountJSON } from "./frontend/utils/Helper";
 import { ETH_ASSET_ID, MGA_ASSET_ID } from "./Constants";
 import { getBalanceOfPool } from "./tx";
+import { waitNewBlock } from "./eventListeners";
 
 export function sleep(ms: number) {
   return new Promise((resolve) => {
@@ -109,7 +109,6 @@ export async function UserCreatesAPoolAndMintliquidity(
   poolAmount: BN = new BN(userAmount).div(new BN(2)),
   mintAmount: BN = new BN(userAmount).div(new BN(4))
 ) {
-  await waitNewBlock();
   const [firstCurrency, secondCurrency] = await Assets.setupUserWithCurrencies(
     testUser1,
     [userAmount, userAmount],
@@ -125,7 +124,7 @@ export async function UserCreatesAPoolAndMintliquidity(
     secondCurrency.toString(),
     poolAmount
   );
-  await waitNewBlock();
+
   await testUser1.mintLiquidity(firstCurrency, secondCurrency, mintAmount);
   return [firstCurrency, secondCurrency];
 }
@@ -196,7 +195,7 @@ export function calculateCompleteFees(soldAmount: BN) {
 
 export const repeatOverNBlocks = (n: number) => async (f: () => void) => {
   if (n > 0) {
-    await waitNewBlock(true);
+    await waitNewBlock();
     f();
     await repeatOverNBlocks(n - 1)(f);
   }
@@ -204,7 +203,7 @@ export const repeatOverNBlocks = (n: number) => async (f: () => void) => {
 
 export const waitForNBlocks = async (n: number) => {
   if (n > 0) {
-    await waitNewBlock(true);
+    await waitNewBlock();
     await waitForNBlocks(n - 1);
   }
 };

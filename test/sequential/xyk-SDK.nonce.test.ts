@@ -117,7 +117,7 @@ describe("SDK test - Nonce tests - user", () => {
           }
         )
       );
-      await waitNewBlock(true);
+      await waitNewBlock();
     }
     const promisesEvents = await Promise.all(promises);
     promisesEvents.forEach((events) => {

@@ -10,11 +10,7 @@ import {
   mintLiquidity,
   getLiquidityAssetId,
 } from "../../utils/tx";
-import {
-  waitNewBlock,
-  ExtrinsicResult,
-  EventResult,
-} from "../../utils/eventListeners";
+import { ExtrinsicResult, EventResult } from "../../utils/eventListeners";
 import BN from "bn.js";
 import { Keyring } from "@polkadot/api";
 import { AssetWallet, User } from "../../utils/User";
@@ -56,7 +52,6 @@ describe("xyk-pallet - Mint liquidity tests: with minting you can", () => {
   });
 
   beforeEach(async () => {
-    await waitNewBlock();
     keyring = new Keyring({ type: "sr25519" });
 
     // setup users
@@ -72,7 +67,7 @@ describe("xyk-pallet - Mint liquidity tests: with minting you can", () => {
   test("Add all the wallet assets to the pool", async () => {
     //valdiated with Gleb the rounding issue to preserve the x*y =k
     const roundingIssue = new BN(1);
-    await waitNewBlock();
+
     // The second currecy value is : defaultCurrecyValue, one to create the pool later, and the other one because of the rounding issue.
     [firstCurrency, secondCurrency] = await Assets.setupUserWithCurrencies(
       testUser1,
@@ -103,7 +98,6 @@ describe("xyk-pallet - Mint liquidity tests: with minting you can", () => {
       firstCurrency,
       secondCurrency
     );
-    await waitNewBlock();
 
     await testUser1.refreshAmounts(AssetWallet.BEFORE);
     await testUser1.mintLiquidity(
@@ -155,7 +149,6 @@ describe("xyk-pallet - Mint liquidity tests: with minting you can", () => {
   });
 
   test("Expect an event when liquidirty is minted", async () => {
-    await waitNewBlock();
     // The second currecy value is : defaultCurrecyValue, one to create the pool later, and the other one because of the rounding issue.
     [firstCurrency, secondCurrency] = await Assets.setupUserWithCurrencies(
       testUser1,
@@ -184,7 +177,6 @@ describe("xyk-pallet - Mint liquidity tests: with minting you can", () => {
       firstCurrency,
       secondCurrency
     );
-    await waitNewBlock();
 
     await testUser1.refreshAmounts(AssetWallet.BEFORE);
     const injectedValue = amounttoThePool.div(new BN(2));

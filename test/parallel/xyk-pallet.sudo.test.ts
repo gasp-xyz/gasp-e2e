@@ -6,7 +6,6 @@
  */
 import { getApi, initApi } from "../../utils/api";
 import { getUserAssets, getSudoKey } from "../../utils/tx";
-import { waitNewBlock } from "../../utils/eventListeners";
 import BN from "bn.js";
 import { Keyring } from "@polkadot/api";
 import { User } from "../../utils/User";
@@ -35,7 +34,6 @@ beforeAll(async () => {
 });
 
 beforeEach(async () => {
-  await waitNewBlock();
   keyring = new Keyring({ type: "sr25519" });
 
   // setup users
@@ -105,7 +103,6 @@ test("xyk-pallet - Sudo tests: Sudo Issue two  different assets to the same acco
     .getLog()
     .info("Sudo: asset issued " + assetId + " to " + testUser.name);
 
-  await waitNewBlock();
   // act2 : send the second asset issue.
   const tokensSecondAmount = 120000;
   let secondAssetId = new BN(0);

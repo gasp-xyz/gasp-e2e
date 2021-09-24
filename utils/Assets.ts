@@ -1,5 +1,5 @@
 import BN from "bn.js";
-import { ExtrinsicResult, waitNewBlock } from "./eventListeners";
+import { ExtrinsicResult } from "./eventListeners";
 import { getNextAssetId, getAssetSupply } from "./tx";
 import {
   getEventResultFromTxWait,
@@ -40,7 +40,6 @@ export class Assets {
   ): Promise<BN[]> {
     const currencies = [];
     for (let currency = 0; currency < currencyValues.length; currency++) {
-      await waitNewBlock();
       const currencyId = await this.issueAssetToUser(
         user,
         currencyValues[currency],
@@ -49,7 +48,7 @@ export class Assets {
       currencies.push(currencyId);
       user.addAsset(currencyId, new BN(currencyValues[currency]));
     }
-    await waitNewBlock();
+
     return currencies;
   }
 

@@ -2,7 +2,7 @@ import { Keyring } from "@polkadot/api";
 import { KeyringPair } from "@polkadot/keyring/types";
 import BN from "bn.js";
 import { v4 as uuid } from "uuid";
-import { ExtrinsicResult, waitNewBlock } from "./eventListeners";
+import { ExtrinsicResult } from "./eventListeners";
 import { testLog } from "./Logger";
 import {
   balanceTransfer,
@@ -117,8 +117,6 @@ export class User {
   }
 
   async mint(assetId: BN, user: User, amount: BN) {
-    await waitNewBlock();
-
     await mintAsset(
       this.keyRingPair,
       assetId,
@@ -132,7 +130,6 @@ export class User {
       ]);
       expect(eventResponse.state).toEqual(ExtrinsicResult.ExtrinsicSuccess);
     });
-    await waitNewBlock();
   }
 
   async sellAssets(soldAssetId: BN, boughtAssetId: BN, amount: BN) {
@@ -150,7 +147,6 @@ export class User {
       ]);
       expect(eventResponse.state).toEqual(ExtrinsicResult.ExtrinsicSuccess);
     });
-    await waitNewBlock();
   }
   async mintLiquidity(
     firstCurrency: BN,
@@ -172,7 +168,6 @@ export class User {
       ]);
       expect(eventResponse.state).toEqual(ExtrinsicResult.ExtrinsicSuccess);
     });
-    await waitNewBlock();
   }
 
   async removeTokens() {
@@ -207,7 +202,6 @@ export class User {
       ]);
       expect(eventResponse.state).toEqual(ExtrinsicResult.ExtrinsicSuccess);
     });
-    await waitNewBlock();
   }
 
   async addBalance(
@@ -243,7 +237,6 @@ export class User {
   async waitUntilBalanceIsNotZero() {
     let amount = "0";
     do {
-      await waitNewBlock();
       const accountData = await this.getUserAccountInfo();
       amount = accountData.free;
     } while (amount === "0");

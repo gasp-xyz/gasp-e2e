@@ -64,7 +64,7 @@ export const getEventResult = (
   });
 };
 
-export const waitNewBlock = (forceWait = false) => {
+export const waitNewBlock = () => {
   const api = getApi();
   let count = 0;
   return new Promise(async (resolve) => {

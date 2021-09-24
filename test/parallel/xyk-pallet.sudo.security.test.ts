@@ -6,7 +6,7 @@
  */
 import { getApi, initApi } from "../../utils/api";
 import { getCurrentNonce } from "../../utils/tx";
-import { ExtrinsicResult, waitNewBlock } from "../../utils/eventListeners";
+import { ExtrinsicResult } from "../../utils/eventListeners";
 import { Keyring } from "@polkadot/api";
 import { AssetWallet, User } from "../../utils/User";
 import { getEnvironmentRequiredVars } from "../../utils/utils";
@@ -36,7 +36,6 @@ beforeAll(async () => {
     await initApi();
   }
 
-  await waitNewBlock();
   keyring = new Keyring({ type: "sr25519" });
 
   // setup users
