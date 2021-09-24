@@ -1,3 +1,4 @@
+/* eslint-disable no-loop-func */
 import { getApi } from "./api";
 import { testLog } from "./Logger";
 

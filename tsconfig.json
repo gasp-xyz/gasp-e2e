@@ -1,6 +1,6 @@
 {
   "extends": "eslint-config-mangata/tsconfig.json",
-  "include": ["index.ts", "test/**/*", "utils/*"],
+  "include": ["index.ts", "test/**/*", "utils/*", "utils/cluster/workers"],
   "exclude": [
         "node_modules",
     ],
