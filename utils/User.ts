@@ -5,7 +5,6 @@ import { v4 as uuid } from "uuid";
 import { ExtrinsicResult, waitNewBlock } from "./eventListeners";
 import { testLog } from "./Logger";
 import {
-  balanceTransfer,
   buyAsset,
   createPool,
   getAccountInfo,
@@ -210,26 +209,6 @@ export class User {
     await waitNewBlock();
   }
 
-  async addBalance(
-    user: string = "//Alice",
-    amount: number = Math.pow(10, 11)
-  ) {
-    await balanceTransfer(
-      new User(this.keyring, user).keyRingPair,
-      this.keyRingPair.address,
-      amount
-    ).then((result) => {
-      const eventResponse = getEventResultFromTxWait(result, [
-        "balances",
-        "Transfer",
-        this.keyRingPair.address,
-      ]);
-      expect(eventResponse.state).toEqual(ExtrinsicResult.ExtrinsicSuccess);
-    });
-
-    await this.waitUntilBalanceIsNotZero();
-  }
-
   async addMGATokens(
     sudo: User,
     amountFree: BN = new BN(Math.pow(10, 11).toString())
@@ -240,13 +219,16 @@ export class User {
     const accountInfo = await getAccountInfo(this.keyRingPair.address);
     return accountInfo;
   }
-  async waitUntilBalanceIsNotZero() {
-    let amount = "0";
+  static async waitUntilBNChanged(
+    amountBefore: BN,
+    fn: () => Promise<BN>
+  ): Promise<void> {
+    let amount: BN;
     do {
       await waitNewBlock();
-      const accountData = await this.getUserAccountInfo();
-      amount = accountData.free;
-    } while (amount === "0");
+      const newBalance = await fn();
+      amount = newBalance;
+    } while (amount.eq(amountBefore));
   }
 }
 

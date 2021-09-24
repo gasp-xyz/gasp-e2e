@@ -71,9 +71,9 @@ export function getEnvironmentRequiredVars() {
     ? process.env.MNEMONIC_POLK
     : " oh oh";
 
-  const ethereumWsUrl = process.env.ETHEREUM_WEBSOCKET_URL
-    ? process.env.ETH_APP_ADDRESS
-    : "ws://localhost:8545";
+  const ethereumHTTPUrl = process.env.ETH_HTTP_URL
+    ? process.env.ETH_HTTP_URL
+    : "https://kovan.infura.io/v3/3592e9c20d9b4169a394a608a310c85f";
 
   const ethAppAddress = process.env.ETH_APP_ADDRESS
     ? process.env.ETH_APP_ADDRESS
@@ -82,14 +82,6 @@ export function getEnvironmentRequiredVars() {
   const erc20AppAddress = process.env.ETH_20_APP_ADDRESS
     ? process.env.ETH_20_APP_ADDRESS
     : " oh oh";
-
-  const polkadotRecipient = process.env.POLKADOT_RECIPIENT
-    ? process.env.POLKADOT_RECIPIENT
-    : "0xd43593c715fdd31c61141abd04a99fd6822c8558854ccde39a5684e7a56da27d";
-
-  const polkadotRecipientSS58 = process.env.POLKADOT_RECIPIENT_SS58
-    ? process.env.POLKADOT_RECIPIENT_SS58
-    : "5GrwvaEF5zXb26Fz9rcQpDWS57CtERHpNehXCPcNoHGKutQY";
 
   return {
     pallet: palletAddress,
@@ -103,12 +95,9 @@ export function getEnvironmentRequiredVars() {
     logLevel: logLevel,
     xykPalletAddress: xykPalletAddress,
     treasuryPalletAddress: treasuryPalletAddress,
-    ethereumWsUrl: ethereumWsUrl,
-    substrateWsUrl: substrateWsUrl,
+    ethereumHttpUrl: ethereumHTTPUrl,
     ethAppAddress: ethAppAddress,
     erc20AppAddress: erc20AppAddress,
-    polkadotRecipient: polkadotRecipient,
-    polkadotRecipientSS58: polkadotRecipientSS58,
   };
 }
 
