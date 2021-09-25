@@ -7,6 +7,7 @@ export { Node };
 class Node {
   name: string;
   connected: boolean;
+  wsPath: string;
   api?: ApiPromise;
 
   firstBlock?: number;
@@ -16,15 +17,17 @@ class Node {
   blockHashes: Map<number, string> = new Map();
   subscription: any;
 
-  constructor(name: string) {
+  constructor(name: string, wsPath: string) {
     this.name = name;
+    this.wsPath = wsPath;
     this.connected = false;
   }
 
-  async connect(wsPath: string): Promise<void> {
-    if (!this.connected) {
-      this.api = await initApi(wsPath);
+  async connect(): Promise<void> {
+    if (this.connected) {
+      return;
     }
+    this.api = await initApi(this.wsPath);
     this.connected = true;
   }
 
@@ -52,6 +55,19 @@ class Node {
     if (!this.connected) {
       throw new Error("The node is not connected yet.");
     }
-    this.subscription();
+    this.subscribeToHead();
+  }
+
+  prettyPrint(): string {
+    return `
+    ________________________________________
+    | ${this.name}                          
+    | ${this.wsPath}                        
+    |_______________________________________
+    | Connected       | ${this.connected}   
+    | Block connected | ${this.firstBlock}  
+    | Latest block    | ${this.lastBlock}   
+    | Latest hash     | ${this.lastHash}    
+    |_______________________________________`;
   }
 }
