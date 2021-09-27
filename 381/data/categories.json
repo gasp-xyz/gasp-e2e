@@ -1,0 +1,145 @@
+{
+  "uid" : "4b4757e66a1912dae1a509f688f20b0f",
+  "children" : [ {
+    "name" : "Product defects",
+    "children" : [ {
+      "name" : "Error: Expected: 3277044440 \n                  Actual: 3277044446 \n                 ",
+      "children" : [ {
+        "name" : "assets won when assets are sold [Selling Mangata] - 5",
+        "uid" : "c6cc9d1fdba4ba0c",
+        "parentUid" : "9f16b8716b9331515647e99cf264dd62",
+        "status" : "failed",
+        "time" : {
+          "start" : 1632741627384,
+          "stop" : 1632741733293,
+          "duration" : 105909
+        },
+        "flaky" : false,
+        "newFailed" : true,
+        "parameters" : [ ]
+      } ],
+      "uid" : "9f16b8716b9331515647e99cf264dd62"
+    }, {
+      "name" : "Error: Expected: 3402054583 \n                  Actual: 3402054590 \n                 ",
+      "children" : [ {
+        "name" : "assets won when assets are bought [Buying Mangata]",
+        "uid" : "e76f168b573f77fd",
+        "parentUid" : "75c08cae5de6975790d75488aa2b372e",
+        "status" : "failed",
+        "time" : {
+          "start" : 1632741733293,
+          "stop" : 1632741841492,
+          "duration" : 108199
+        },
+        "flaky" : false,
+        "newFailed" : true,
+        "parameters" : [ ]
+      } ],
+      "uid" : "75c08cae5de6975790d75488aa2b372e"
+    }, {
+      "name" : "Error: Expected: 3527064725 \n                  Actual: 3527064746 \n                 ",
+      "children" : [ {
+        "name" : "assets won when assets are sold [Selling other in MGA pool] - 6",
+        "uid" : "6fe58876f0260447",
+        "parentUid" : "f7a185f697b61b744ad619c3559fcc87",
+        "status" : "failed",
+        "time" : {
+          "start" : 1632741841492,
+          "stop" : 1632741949690,
+          "duration" : 108198
+        },
+        "flaky" : false,
+        "newFailed" : true,
+        "parameters" : [ ]
+      } ],
+      "uid" : "f7a185f697b61b744ad619c3559fcc87"
+    }, {
+      "name" : "Error: Expected: 3652074867 \n                  Actual: 3652074884 \n                 ",
+      "children" : [ {
+        "name" : "assets won when assets are bought [Buying other in MGA pool]",
+        "uid" : "4b0d2899a1953629",
+        "parentUid" : "eeb6e5341207114a0c0885ed6769a608",
+        "status" : "failed",
+        "time" : {
+          "start" : 1632741949690,
+          "stop" : 1632742057824,
+          "duration" : 108134
+        },
+        "flaky" : false,
+        "newFailed" : true,
+        "parameters" : [ ]
+      } ],
+      "uid" : "eeb6e5341207114a0c0885ed6769a608"
+    }, {
+      "name" : "Error: Expected: 3902095149 \n                  Actual: 3902095170 \n                 ",
+      "children" : [ {
+        "name" : "assets won when assets are sold [Selling X connected to MGA pool] - 10",
+        "uid" : "9e0ad8ebeb227c2d",
+        "parentUid" : "2d7b0beb73b89d33313b7b0bede4beab",
+        "status" : "failed",
+        "time" : {
+          "start" : 1632742057830,
+          "stop" : 1632742219475,
+          "duration" : 161645
+        },
+        "flaky" : false,
+        "newFailed" : true,
+        "parameters" : [ ]
+      } ],
+      "uid" : "2d7b0beb73b89d33313b7b0bede4beab"
+    }, {
+      "name" : "Error: Expected: 4152115431 \n                  Actual: 4152115450 \n                 ",
+      "children" : [ {
+        "name" : "assets won when assets are bought [Buying X connected to MGA pool]",
+        "uid" : "634d1f16c4760330",
+        "parentUid" : "dc032b246b7c0f1af58a22349fe75e0b",
+        "status" : "failed",
+        "time" : {
+          "start" : 1632742219475,
+          "stop" : 1632742387714,
+          "duration" : 168239
+        },
+        "flaky" : false,
+        "newFailed" : true,
+        "parameters" : [ ]
+      } ],
+      "uid" : "dc032b246b7c0f1af58a22349fe75e0b"
+    }, {
+      "name" : "Error: Expected: 0 \n                  Actual: 11 \n                 ",
+      "children" : [ {
+        "name" : "assets won when assets are sold [Selling Y - X connected toMGA pool] - 6",
+        "uid" : "9a31885d54d4d459",
+        "parentUid" : "eb75d4a59f3f11fae19372c134e21f5e",
+        "status" : "failed",
+        "time" : {
+          "start" : 1632742387714,
+          "stop" : 1632742549355,
+          "duration" : 161641
+        },
+        "flaky" : false,
+        "newFailed" : true,
+        "parameters" : [ ]
+      } ],
+      "uid" : "eb75d4a59f3f11fae19372c134e21f5e"
+    }, {
+      "name" : "Error: Expected: 4652155989 \n                  Actual: 4652156004 \n                 ",
+      "children" : [ {
+        "name" : "assets won when assets are bought [Buying Y - X connected toMGA pool] - 6",
+        "uid" : "f861c30cccd6c4e8",
+        "parentUid" : "2157d2255a610f44761500217716e925",
+        "status" : "failed",
+        "time" : {
+          "start" : 1632742549355,
+          "stop" : 1632742710913,
+          "duration" : 161558
+        },
+        "flaky" : false,
+        "newFailed" : true,
+        "parameters" : [ ]
+      } ],
+      "uid" : "2157d2255a610f44761500217716e925"
+    } ],
+    "uid" : "8fb3a91ba5aaf9de24cc8a92edc82b5d"
+  } ],
+  "name" : "categories"
+}
