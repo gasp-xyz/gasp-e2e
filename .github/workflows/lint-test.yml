@@ -95,11 +95,13 @@ jobs:
       - name: Generate Allure Report [Deploy to GH]
         if: always()
         uses: peaceiris/actions-gh-pages@v2
+        with:
+          external_repository: mangata-finance/mangata-node
+        
         env:
           PERSONAL_TOKEN: ${{ secrets.GITHUB_TOKEN }}
           PUBLISH_BRANCH: feature/gh-pages-for-e2e-test-report
           PUBLISH_DIR: allure-history
-          GITHUB_REPOSITORY: mangata-finance/mangata-node
 
 
       - name: Stop Containers
