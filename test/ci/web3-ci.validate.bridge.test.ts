@@ -27,6 +27,12 @@ jest.setTimeout(1500000);
 
 describe("test ether", () => {
   let testUser1: User;
+  let metaMaskUser: ethUser;
+  let ethApp: any;
+  let api: any;
+  let ethUserAddress: string;
+  let uri: string;
+
   const {
     mnemonicMetaMask,
     ethereumHttpUrl,
@@ -47,21 +53,20 @@ describe("test ether", () => {
     testUser1 = new User(keyring);
     const sudo = new User(keyring, sudoUserName);
     await testUser1.addMGATokens(sudo);
-  });
-  test("that Eth arrive to User TokenId 1 in Mangata and can be sent back", async () => {
-    const api = await getApi();
-    const uri = ethereumHttpUrl;
-
+    api = await getApi();
+    // setup eth user and web3
+    uri = ethereumHttpUrl;
     const mnemonic = mnemonicMetaMask;
     const provider = new HDWalletProvider(mnemonic, uri);
-    const ethUserAddress = provider.addresses[0];
-    const metaMaskUser = new ethUser(ethUserAddress, uri);
+    ethUserAddress = provider.addresses[0];
+    metaMaskUser = new ethUser(ethUserAddress, uri);
     const web3 = new Web3(provider);
-
-    const ethApp = new web3.eth.Contract(
+    ethApp = new web3.eth.Contract(
       JSON.parse(JSON.stringify(ethAppABI)),
       ethAppAddress
     );
+  });
+  test("that Eth arrive to User TokenId 1 in Mangata and can be sent back", async () => {
     testUser1.addAsset(ETH_ASSET_ID);
     await testUser1.refreshAmounts();
     const userAddressInMGA = testUser1.keyRingPair.address;
