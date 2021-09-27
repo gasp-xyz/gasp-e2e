@@ -33,6 +33,9 @@ export function getEnvironmentRequiredVars() {
   const treasuryPalletAddress = process.env.E2E_TREASURY_PALLET_ADDRESS
     ? process.env.E2E_TREASURY_PALLET_ADDRESS
     : "";
+  const treasuryBurnPalletAddress = process.env.E2E_TREASURY_BURN_PALLET_ADDRESS
+    ? process.env.E2E_TREASURY_BURN_PALLET_ADDRESS
+    : "";
   const sudoUserName = process.env.TEST_SUDO_NAME
     ? process.env.TEST_SUDO_NAME
     : "";
@@ -93,6 +96,7 @@ export function getEnvironmentRequiredVars() {
     logLevel: logLevel,
     xykPalletAddress: xykPalletAddress,
     treasuryPalletAddress: treasuryPalletAddress,
+    treasuryBurnPalletAddress: treasuryBurnPalletAddress,
     clusterNodeA: clusterNodeA,
     clusterNodeB: clusterNodeB,
     clusterNodeC: clusterNodeC,
