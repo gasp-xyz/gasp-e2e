@@ -13,7 +13,6 @@ import {
   transferAll,
   transferAsset,
 } from "../../utils/tx";
-import { waitNewBlock } from "../../utils/eventListeners";
 import BN from "bn.js";
 import { Keyring } from "@polkadot/api";
 import { AssetWallet, User } from "../../utils/User";
@@ -51,7 +50,6 @@ beforeAll(async () => {
     await initApi();
   }
 
-  await waitNewBlock();
   keyring = new Keyring({ type: "sr25519" });
 
   // setup users

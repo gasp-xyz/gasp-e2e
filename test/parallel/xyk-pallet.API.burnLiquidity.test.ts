@@ -58,7 +58,6 @@ describe("xyk-pallet - Burn liquidity tests: when burning liquidity you can", ()
   });
 
   beforeEach(async () => {
-    await waitNewBlock();
     keyring = new Keyring({ type: "sr25519" });
 
     // setup users
@@ -132,7 +131,7 @@ describe("xyk-pallet - Burn liquidity tests: when burning liquidity you can", ()
       ]);
       expect(eventResponse.state).toEqual(ExtrinsicResult.ExtrinsicSuccess);
     });
-    waitNewBlock(true); //lets wait one block until liquidity asset Id gets destroyed. Avoid flakiness ;)
+    await waitNewBlock(); //lets wait one block until liquidity asset Id gets destroyed. Avoid flakiness ;)
     const liqId = await getLiquidityAssetId(firstCurrency, secondCurrency);
     expect(liqId).bnEqual(new BN(-1));
     const poolBalance = await getBalanceOfPool(firstCurrency, secondCurrency);
@@ -157,7 +156,6 @@ describe("xyk-pallet - Burn liquidity tests: when burning liquidity you can", ()
   });
 
   test("Burning liquidities provides Burn and settle", async () => {
-    await waitNewBlock();
     // The second currecy value is : defaultCurrecyValue, one to create the pool later, and the other one because of the rounding issue.
     [firstCurrency, secondCurrency] = await UserCreatesAPoolAndMintliquidity(
       testUser1,
@@ -187,7 +185,6 @@ describe("xyk-pallet - Burn liquidity tests: when burning liquidity you can", ()
   });
 
   test("Burning liquidities generates a Liquidity burned event", async () => {
-    await waitNewBlock();
     // The second currecy value is : defaultCurrecyValue, one to create the pool later, and the other one because of the rounding issue.
     [firstCurrency, secondCurrency] = await UserCreatesAPoolAndMintliquidity(
       testUser1,
@@ -245,7 +242,6 @@ async function UserCreatesAPoolAndMintliquidity(
   poolAmount: BN = new BN(userAmount).div(new BN(2)),
   mintAmount: BN = new BN(userAmount).div(new BN(4))
 ) {
-  await waitNewBlock();
   const [firstCurrency, secondCurrency] = await Assets.setupUserWithCurrencies(
     testUser1,
     [userAmount, userAmount],
@@ -261,7 +257,7 @@ async function UserCreatesAPoolAndMintliquidity(
     secondCurrency.toString(),
     poolAmount
   );
-  await waitNewBlock();
+
   await testUser1.mintLiquidity(firstCurrency, secondCurrency, mintAmount);
   return [firstCurrency, secondCurrency];
 }

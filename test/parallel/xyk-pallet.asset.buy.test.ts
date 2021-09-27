@@ -11,7 +11,7 @@ import {
   getBalanceOfPool,
   buyAsset,
 } from "../../utils/tx";
-import { waitNewBlock, ExtrinsicResult } from "../../utils/eventListeners";
+import { ExtrinsicResult } from "../../utils/eventListeners";
 import BN from "bn.js";
 import { Keyring } from "@polkadot/api";
 import { AssetWallet, User } from "../../utils/User";
@@ -46,7 +46,6 @@ beforeAll(async () => {
 });
 
 beforeEach(async () => {
-  await waitNewBlock();
   keyring = new Keyring({ type: "sr25519" });
 
   // setup users
@@ -65,7 +64,7 @@ beforeEach(async () => {
     sudo
   );
   await testUser1.addMGATokens(sudo);
-  await waitNewBlock();
+
   await testUser1.createPoolToAsset(
     new BN(50000),
     new BN(50000),
@@ -80,7 +79,7 @@ beforeEach(async () => {
   keyring.addPair(pallet.keyRingPair);
 
   // check users accounts.
-  await waitNewBlock();
+
   pallet.addAssets([firstCurrency, secondCurrency]);
   testUser2.addAssets([firstCurrency, secondCurrency]);
   await pallet.refreshAmounts(AssetWallet.BEFORE);

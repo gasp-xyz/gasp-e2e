@@ -7,11 +7,7 @@
 import { api, getApi, initApi } from "../../utils/api";
 import { getLock } from "../../utils/tx";
 
-import {
-  waitNewBlock,
-  ExtrinsicResult,
-  getEventResult,
-} from "../../utils/eventListeners";
+import { ExtrinsicResult, getEventResult } from "../../utils/eventListeners";
 import BN from "bn.js";
 import { Keyring } from "@polkadot/api";
 import { User } from "../../utils/User";
@@ -40,7 +36,6 @@ describe("xyk-pallet - Sell Asset: validate Errors:", () => {
       await initApi();
     }
 
-    await waitNewBlock();
     keyring = new Keyring({ type: "sr25519" });
 
     // setup users
@@ -54,7 +49,6 @@ describe("xyk-pallet - Sell Asset: validate Errors:", () => {
   });
 
   test("Bond operation locks some amount", async () => {
-    await waitNewBlock();
     const eventPromise = getEventResult("staking", "Bonded", 14);
     await signSendAndWaitToFinishTx(
       api?.tx.staking.bond(

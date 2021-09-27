@@ -2,13 +2,13 @@ import { formatBalance } from "@polkadot/util/format";
 import BN from "bn.js";
 import { getApi, getMangataInstance } from "./api";
 
-import { waitNewBlock } from "./eventListeners";
 import { Assets } from "./Assets";
 import { User } from "./User";
 import Keyring from "@polkadot/keyring";
 import { getAccountJSON } from "./frontend/utils/Helper";
 import { ETH_ASSET_ID, MGA_ASSET_ID } from "./Constants";
 import { getBalanceOfPool } from "./tx";
+import { waitNewBlock } from "./eventListeners";
 
 export function sleep(ms: number) {
   return new Promise((resolve) => {
@@ -43,13 +43,13 @@ export function getEnvironmentRequiredVars() {
   const testUserName = process.env.TEST_USER_NAME
     ? process.env.TEST_USER_NAME
     : "//Alice";
-  if (
-    (palletAddress.length === 0 && xykPalletAddress.length === 0) ||
-    sudoUserName.length === 0 ||
-    treasuryPalletAddress.length === 0
-  ) {
-    throw new Error("PALLET ADDRESS OR SUDO USERNAME NOT FOUND AS GLOBAL ENV");
-  }
+  // if (
+  //   (palletAddress.length === 0 && xykPalletAddress.length === 0) ||
+  //   sudoUserName.length === 0 ||
+  //   treasuryPalletAddress.length === 0
+  // ) {
+  //   throw new Error("PALLET ADDRESS OR SUDO USERNAME NOT FOUND AS GLOBAL ENV");
+  // }
 
   const logLevel = process.env.LOG_LEVEL ? process.env.LOG_LEVEL : "info";
 
@@ -82,6 +82,24 @@ export function getEnvironmentRequiredVars() {
   const erc20AppAddress = process.env.ETH_20_APP_ADDRESS
     ? process.env.ETH_20_APP_ADDRESS
     : " oh oh";
+  const clusterNodeA = process.env.CLUSTER_NODE_A
+    ? process.env.CLUSTER_NODE_A
+    : "ws://node_alice:9944";
+  const clusterNodeB = process.env.CLUSTER_NODE_B
+    ? process.env.CLUSTER_NODE_B
+    : "ws://node_bob:9944";
+  const clusterNodeC = process.env.CLUSTER_NODE_C
+    ? process.env.CLUSTER_NODE_C
+    : "ws://node_charlie:9944";
+  const clusterNodeD = process.env.CLUSTER_NODE_D
+    ? process.env.CLUSTER_NODE_D
+    : "ws://node_dave:9944";
+  const clusterNodeE = process.env.CLUSTER_NODE_E
+    ? process.env.CLUSTER_NODE_E
+    : "ws://node_eve:9944";
+  const clusterNodeF = process.env.CLUSTER_NODE_F
+    ? process.env.CLUSTER_NODE_F
+    : "ws://node_ferdie:9944";
 
   return {
     pallet: palletAddress,
@@ -98,6 +116,12 @@ export function getEnvironmentRequiredVars() {
     ethereumHttpUrl: ethereumHTTPUrl,
     ethAppAddress: ethAppAddress,
     erc20AppAddress: erc20AppAddress,
+    clusterNodeA: clusterNodeA,
+    clusterNodeB: clusterNodeB,
+    clusterNodeC: clusterNodeC,
+    clusterNodeD: clusterNodeD,
+    clusterNodeE: clusterNodeE,
+    clusterNodeF: clusterNodeF,
   };
 }
 
@@ -108,7 +132,6 @@ export async function UserCreatesAPoolAndMintliquidity(
   poolAmount: BN = new BN(userAmount).div(new BN(2)),
   mintAmount: BN = new BN(userAmount).div(new BN(4))
 ) {
-  await waitNewBlock();
   const [firstCurrency, secondCurrency] = await Assets.setupUserWithCurrencies(
     testUser1,
     [userAmount, userAmount],
@@ -124,7 +147,7 @@ export async function UserCreatesAPoolAndMintliquidity(
     secondCurrency.toString(),
     poolAmount
   );
-  await waitNewBlock();
+
   await testUser1.mintLiquidity(firstCurrency, secondCurrency, mintAmount);
   return [firstCurrency, secondCurrency];
 }
@@ -192,6 +215,21 @@ export function calculateCompleteFees(soldAmount: BN) {
   threePercent = threePercent.sub(new BN(2));
   return { completeFee: threePercent };
 }
+
+export const repeatOverNBlocks = (n: number) => async (f: () => void) => {
+  if (n > 0) {
+    await waitNewBlock();
+    f();
+    await repeatOverNBlocks(n - 1)(f);
+  }
+};
+
+export const waitForNBlocks = async (n: number) => {
+  if (n > 0) {
+    await waitNewBlock();
+    await waitForNBlocks(n - 1);
+  }
+};
 export async function createPoolIfMissing(
   sudo: User,
   amountInPool: string,

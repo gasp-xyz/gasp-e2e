@@ -116,8 +116,6 @@ export class User {
   }
 
   async mint(assetId: BN, user: User, amount: BN) {
-    await waitNewBlock();
-
     await mintAsset(
       this.keyRingPair,
       assetId,
@@ -131,7 +129,6 @@ export class User {
       ]);
       expect(eventResponse.state).toEqual(ExtrinsicResult.ExtrinsicSuccess);
     });
-    await waitNewBlock();
   }
 
   async sellAssets(soldAssetId: BN, boughtAssetId: BN, amount: BN) {
@@ -149,7 +146,6 @@ export class User {
       ]);
       expect(eventResponse.state).toEqual(ExtrinsicResult.ExtrinsicSuccess);
     });
-    await waitNewBlock();
   }
   async mintLiquidity(
     firstCurrency: BN,
@@ -171,7 +167,6 @@ export class User {
       ]);
       expect(eventResponse.state).toEqual(ExtrinsicResult.ExtrinsicSuccess);
     });
-    await waitNewBlock();
   }
 
   async removeTokens() {
@@ -206,7 +201,6 @@ export class User {
       ]);
       expect(eventResponse.state).toEqual(ExtrinsicResult.ExtrinsicSuccess);
     });
-    await waitNewBlock();
   }
 
   async addMGATokens(
