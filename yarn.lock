@@ -11498,10 +11498,6 @@ makeerror@1.0.x:
   dependencies:
     tmpl "1.0.x"
 
-"mangata-bridge@https://github.com/mangata-finance/mangata-bridge":
-  version "0.1.2"
-  resolved "https://github.com/mangata-finance/mangata-bridge#a0727f27c3425fa248f29c8d7e2965ed1dc9fc72"
-
 "mangata-node@https://github.com/mangata-finance/mangata-node":
   version "0.2.0"
   resolved "https://github.com/mangata-finance/mangata-node#576e46eb8690a6f4b4f1d6dcae75e74c8e602b80"
