@@ -99,6 +99,7 @@ jobs:
           PERSONAL_TOKEN: ${{ secrets.GITHUB_TOKEN }}
           PUBLISH_BRANCH: feature/gh-pages-for-e2e-test-report
           PUBLISH_DIR: allure-history
+          GITHUB_REPOSITORY: mangata-finance/mangata-node
 
 
       - name: Stop Containers
