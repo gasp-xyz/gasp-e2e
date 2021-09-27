@@ -27,8 +27,12 @@ jest.setTimeout(1500000);
 
 describe("test ether", () => {
   let testUser1: User;
-  const { mnemonicMetaMask, ethereumHttpUrl, ethAppAddress } =
-    getEnvironmentRequiredVars();
+  const {
+    mnemonicMetaMask,
+    ethereumHttpUrl,
+    ethAppAddress,
+    sudo: sudoUserName,
+  } = getEnvironmentRequiredVars();
 
   beforeEach(async () => {
     try {
@@ -40,7 +44,9 @@ describe("test ether", () => {
     const keyring = new Keyring({ type: "sr25519" });
 
     // setup users
-    testUser1 = new User(keyring, "//Alice");
+    testUser1 = new User(keyring);
+    const sudo = new User(keyring, sudoUserName);
+    await testUser1.addMGATokens(sudo);
   });
   test("that Eth arrive to User TokenId 1 in Mangata and can be sent back", async () => {
     const api = await getApi();
@@ -84,17 +90,20 @@ describe("test ether", () => {
     const ethBalanceAfter = await metaMaskUser.getBalance();
     await testUser1.refreshAmounts(AssetWallet.AFTER);
 
-    const receivedAmountInMGA = testUser1.getAsset(ETH_ASSET_ID);
+    const receivedAmountInMGA = testUser1
+      .getAsset(ETH_ASSET_ID)
+      ?.amountAfter!.sub(testUser1.getAsset(ETH_ASSET_ID)?.amountBefore!);
     testLog
       .getLog()
-      .info(
-        ` received Amount : ${receivedAmountInMGA!.amountAfter.toString()} `
-      );
+      .info(` received Amount : ${receivedAmountInMGA!.toString()} `);
 
     //send the money back!
 
     await signSendAndWaitToFinishTx(
-      api.tx.eth.burn(ethUserAddress, amountBN),
+      api.tx.eth.burn(
+        ethUserAddress,
+        testUser1.getAsset(ETH_ASSET_ID)?.amountAfter!
+      ),
       testUser1.keyRingPair
     );
     await User.waitUntilBNChanged(
