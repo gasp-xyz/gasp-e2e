@@ -96,6 +96,7 @@ jobs:
         if: always()
         uses: peaceiris/actions-gh-pages@v3.7.3
         with:
+          deploy_key: ${{ secrets.PUSH_GH_PAGE_TOKEN }}
           external_repository: mangata-finance/mangata-node
           personal_token: ${{ secrets.PUSH_GH_PAGE_TOKEN }}
           publish_dir: allure-history
