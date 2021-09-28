@@ -97,12 +97,9 @@ jobs:
         uses: peaceiris/actions-gh-pages@v3.7.3
         with:
           external_repository: mangata-finance/mangata-node
-        
-        env:
-          PERSONAL_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-          PUBLISH_BRANCH: feature/gh-pages-for-e2e-test-report
-          PUBLISH_DIR: allure-history
-
+          github_token: ${{ secrets.GITHUB_TOKEN }}
+          publish_dir: allure-history
+          publish_branch: feature/gh-pages-for-e2e-test-report
 
       - name: Stop Containers
         if: always()
