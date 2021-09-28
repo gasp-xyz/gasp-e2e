@@ -97,7 +97,7 @@ jobs:
         uses: peaceiris/actions-gh-pages@v3.7.3
         with:
           external_repository: mangata-finance/mangata-node
-          personal_token: ${{ secrets.PUSH_GH_PAGE_TOKEN }}
+          deploy_key: ${{ secrets.PUSH_GH_PAGE_TOKEN }}
           publish_dir: allure-history
           publish_branch: feature/gh-pages-for-e2e-test-report
 
