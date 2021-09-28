@@ -1,0 +1,72 @@
+{
+  "uid" : "fa3135561371b213",
+  "name" : "xyk-CI - validate pools created: Pool[0,6]",
+  "fullName" : "test/ci/xyk-ci.validate.setup.test.ts.xyk-CI - validate pools created: Pool[0,6]",
+  "historyId" : "69aae11422e03671a4cb76df6952decd",
+  "time" : {
+    "start" : 1632845700215,
+    "stop" : 1632845700470,
+    "duration" : 255
+  },
+  "description" : "",
+  "descriptionHtml" : "",
+  "status" : "failed",
+  "statusMessage" : "Error: Expected: 0 \n                  Actual: 0 \n                 ",
+  "statusTrace" : "Error: Expected: 0 \n                  Actual: 0 \n                 \n                    at /home/runner/work/mangata-e2e/mangata-e2e/test/ci/xyk-ci.validate.setup.test.ts:49:32\n                    at processTicksAndRejections (internal/process/task_queues.js:95:5)",
+  "flaky" : false,
+  "newFailed" : true,
+  "beforeStages" : [ ],
+  "afterStages" : [ ],
+  "labels" : [ {
+    "name" : "suite",
+    "value" : "test/ci/xyk-ci.validate.setup.test.ts"
+  }, {
+    "name" : "testClass",
+    "value" : "test/ci/xyk-ci.validate.setup.test.ts"
+  }, {
+    "name" : "testMethod",
+    "value" : "xyk-CI - validate pools created: Pool[0,6]"
+  }, {
+    "name" : "package",
+    "value" : "test/ci/xyk-ci.validate.setup.test.ts"
+  }, {
+    "name" : "resultFormat",
+    "value" : "allure1"
+  } ],
+  "parameters" : [ ],
+  "links" : [ ],
+  "hidden" : false,
+  "retry" : false,
+  "extra" : {
+    "severity" : "normal",
+    "retries" : [ ],
+    "categories" : [ {
+      "name" : "Product defects",
+      "matchedStatuses" : [ ],
+      "flaky" : false
+    } ],
+    "history" : {
+      "statistic" : {
+        "failed" : 1,
+        "broken" : 0,
+        "skipped" : 0,
+        "passed" : 1,
+        "unknown" : 0,
+        "total" : 2
+      },
+      "items" : [ {
+        "uid" : "7589d7710c8ecf4c",
+        "reportUrl" : "https://mangata-finance.github.io/mangata-e2e/321//#testresult/7589d7710c8ecf4c",
+        "status" : "passed",
+        "time" : {
+          "start" : 1632845681025,
+          "stop" : 1632845681226,
+          "duration" : 201
+        }
+      } ]
+    },
+    "tags" : [ ]
+  },
+  "source" : "fa3135561371b213.json",
+  "parameterValues" : [ ]
+}

@@ -1,0 +1,66 @@
+{
+  "uid" : "fb970a839adb903c",
+  "name" : "xyk-CI - validate pools created: Pool[4,6]",
+  "fullName" : "test/ci/xyk-ci.validate.setup.test.ts.xyk-CI - validate pools created: Pool[4,6]",
+  "historyId" : "835fa5a9e9caafb8f4931f4cdb69ae8f",
+  "time" : {
+    "start" : 1632845700470,
+    "stop" : 1632845700725,
+    "duration" : 255
+  },
+  "description" : "",
+  "descriptionHtml" : "",
+  "status" : "passed",
+  "flaky" : false,
+  "newFailed" : false,
+  "beforeStages" : [ ],
+  "afterStages" : [ ],
+  "labels" : [ {
+    "name" : "suite",
+    "value" : "test/ci/xyk-ci.validate.setup.test.ts"
+  }, {
+    "name" : "testClass",
+    "value" : "test/ci/xyk-ci.validate.setup.test.ts"
+  }, {
+    "name" : "testMethod",
+    "value" : "xyk-CI - validate pools created: Pool[4,6]"
+  }, {
+    "name" : "package",
+    "value" : "test/ci/xyk-ci.validate.setup.test.ts"
+  }, {
+    "name" : "resultFormat",
+    "value" : "allure1"
+  } ],
+  "parameters" : [ ],
+  "links" : [ ],
+  "hidden" : false,
+  "retry" : false,
+  "extra" : {
+    "severity" : "normal",
+    "retries" : [ ],
+    "categories" : [ ],
+    "history" : {
+      "statistic" : {
+        "failed" : 0,
+        "broken" : 0,
+        "skipped" : 0,
+        "passed" : 2,
+        "unknown" : 0,
+        "total" : 2
+      },
+      "items" : [ {
+        "uid" : "a45eed13a27531f1",
+        "reportUrl" : "https://mangata-finance.github.io/mangata-e2e/321//#testresult/a45eed13a27531f1",
+        "status" : "passed",
+        "time" : {
+          "start" : 1632845681227,
+          "stop" : 1632845681427,
+          "duration" : 200
+        }
+      } ]
+    },
+    "tags" : [ ]
+  },
+  "source" : "fb970a839adb903c.json",
+  "parameterValues" : [ ]
+}

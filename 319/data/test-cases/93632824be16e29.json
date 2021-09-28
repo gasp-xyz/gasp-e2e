@@ -1,0 +1,66 @@
+{
+  "uid" : "93632824be16e29",
+  "name" : "xyk-CI - AssetInfo contains assets for MGA and Ether",
+  "fullName" : "test/ci/xyk-ci.validate.assetInfo.test.ts.xyk-CI - AssetInfo contains assets for MGA and Ether",
+  "historyId" : "16033ac11d5c3e34e518da599466c153",
+  "time" : {
+    "start" : 1632845708878,
+    "stop" : 1632845709154,
+    "duration" : 276
+  },
+  "description" : "",
+  "descriptionHtml" : "",
+  "status" : "passed",
+  "flaky" : false,
+  "newFailed" : false,
+  "beforeStages" : [ ],
+  "afterStages" : [ ],
+  "labels" : [ {
+    "name" : "suite",
+    "value" : "test/ci/xyk-ci.validate.assetInfo.test.ts"
+  }, {
+    "name" : "testClass",
+    "value" : "test/ci/xyk-ci.validate.assetInfo.test.ts"
+  }, {
+    "name" : "testMethod",
+    "value" : "xyk-CI - AssetInfo contains assets for MGA and Ether"
+  }, {
+    "name" : "package",
+    "value" : "test/ci/xyk-ci.validate.assetInfo.test.ts"
+  }, {
+    "name" : "resultFormat",
+    "value" : "allure1"
+  } ],
+  "parameters" : [ ],
+  "links" : [ ],
+  "hidden" : false,
+  "retry" : false,
+  "extra" : {
+    "severity" : "normal",
+    "retries" : [ ],
+    "categories" : [ ],
+    "history" : {
+      "statistic" : {
+        "failed" : 0,
+        "broken" : 0,
+        "skipped" : 0,
+        "passed" : 2,
+        "unknown" : 0,
+        "total" : 2
+      },
+      "items" : [ {
+        "uid" : "4ba3db570e2ce2f2",
+        "reportUrl" : "https://mangata-finance.github.io/mangata-e2e/321//#testresult/4ba3db570e2ce2f2",
+        "status" : "passed",
+        "time" : {
+          "start" : 1632845690272,
+          "stop" : 1632845690662,
+          "duration" : 390
+        }
+      } ]
+    },
+    "tags" : [ ]
+  },
+  "source" : "93632824be16e29.json",
+  "parameterValues" : [ ]
+}
