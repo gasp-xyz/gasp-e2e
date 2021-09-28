@@ -1,5 +1,5 @@
 /*
- * @group cluster
+ * @group cluster-healthcheck
  *
  * eslint-disable no-loop-func
  * eslint-disable no-console
@@ -21,28 +21,16 @@ const json = `
     "id": 1, 
     "mangata_nodes": [ 
       { 
-        "name": "Alice", 
-        "wsPath": "ws://node_alice:9944" 
+        "name": "Node A", 
+        "wsPath": "wss://develop.mangatafinance.cloud:9944" 
       },
       { 
-        "name": "Bob", 
-        "wsPath": "ws://node_bob:9944" 
+        "name": "Node B", 
+        "wsPath": "wss://develop.mangatafinance.cloud:9945" 
       },
       { 
-        "name": "Charlie", 
-        "wsPath": "ws://node_charlie:9944" 
-      },
-      { 
-        "name": "Dave", 
-        "wsPath": "ws://node_dave:9944" 
-      },
-      { 
-        "name": "Eve", 
-        "wsPath": "ws://node_eve:9944" 
-      },
-      { 
-        "name": "Ferdie", 
-        "wsPath": "ws://node_ferdie:9944" 
+        "name": "Node C", 
+        "wsPath": "wss://develop.mangatafinance.cloud:9946" 
       }
     ]
   }`;
