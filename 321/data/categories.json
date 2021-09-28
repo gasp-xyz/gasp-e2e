@@ -1,0 +1,82 @@
+{
+  "uid" : "4b4757e66a1912dae1a509f688f20b0f",
+  "children" : [ {
+    "name" : "Product defects",
+    "children" : [ {
+      "name" : "WebDriverError: Requested environment is not available",
+      "children" : [ {
+        "name" : "As a User I can deposit ETH from Meta extension",
+        "uid" : "9e979ad2eb752454",
+        "parentUid" : "a6d6113a4f4058fbed4d9e46e292ead6",
+        "status" : "failed",
+        "time" : {
+          "start" : 1632845648204,
+          "stop" : 1632845648711,
+          "duration" : 507
+        },
+        "flaky" : false,
+        "newFailed" : false,
+        "parameters" : [ ]
+      }, {
+        "name" : "As a User I can Withdraw ETH from Meta extension",
+        "uid" : "b533a67773dce5d4",
+        "parentUid" : "a6d6113a4f4058fbed4d9e46e292ead6",
+        "status" : "failed",
+        "time" : {
+          "start" : 1632845648715,
+          "stop" : 1632845648717,
+          "duration" : 2
+        },
+        "flaky" : false,
+        "newFailed" : false,
+        "parameters" : [ ]
+      }, {
+        "name" : "Validate that Mangata Frontend up and running",
+        "uid" : "cc786dad89c0fc59",
+        "parentUid" : "a6d6113a4f4058fbed4d9e46e292ead6",
+        "status" : "failed",
+        "time" : {
+          "start" : 1632845682208,
+          "stop" : 1632845682244,
+          "duration" : 36
+        },
+        "flaky" : false,
+        "newFailed" : false,
+        "parameters" : [ ]
+      }, {
+        "name" : "Validate that Frontend retrieves AssetInfo data",
+        "uid" : "f015e7ff5b9de098",
+        "parentUid" : "a6d6113a4f4058fbed4d9e46e292ead6",
+        "status" : "failed",
+        "time" : {
+          "start" : 1632845682244,
+          "stop" : 1632845682245,
+          "duration" : 1
+        },
+        "flaky" : false,
+        "newFailed" : false,
+        "parameters" : [ ]
+      } ],
+      "uid" : "a6d6113a4f4058fbed4d9e46e292ead6"
+    }, {
+      "name" : "Error: Insufficient funds. The account you tried to send transaction from does not have enough funds. Required 2000000000000000 and got: 0.",
+      "children" : [ {
+        "name" : "that Eth arrive to User TokenId 1 in Mangata and can be sent back",
+        "uid" : "c3a062c0cce7d601",
+        "parentUid" : "48824bafb7a17c7885e2d0280fb15571",
+        "status" : "failed",
+        "time" : {
+          "start" : 1632845650816,
+          "stop" : 1632845678291,
+          "duration" : 27475
+        },
+        "flaky" : false,
+        "newFailed" : false,
+        "parameters" : [ ]
+      } ],
+      "uid" : "48824bafb7a17c7885e2d0280fb15571"
+    } ],
+    "uid" : "8fb3a91ba5aaf9de24cc8a92edc82b5d"
+  } ],
+  "name" : "categories"
+}
