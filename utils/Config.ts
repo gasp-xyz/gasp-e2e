@@ -1,3 +1,4 @@
+/* eslint-disable */
 /*
  * Generated with https://app.quicktype.io/
 

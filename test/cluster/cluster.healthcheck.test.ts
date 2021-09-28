@@ -53,18 +53,23 @@ beforeAll(async () => {
   Convert.toTestConfig(json).mangata_nodes.forEach((arr) => {
     nodes.push(new Node(arr.name, arr.wsPath));
   });
+  const promises = [];
+  for (let index = 0; index < nodes.length; index++) {
+    const element = nodes[index];
+    promises.push(element.connect());
+  }
+  await Promise.all(promises);
 
-  Promise.all([nodes.map((node) => node.connect())]).catch((err) =>
-    testLog.getLog().error(err)
-  );
-  Promise.all([nodes.map((node) => node.subscribeToHead())]).catch((err) =>
-    testLog.getLog().error(err)
-  );
+  for (let index = 0; index < nodes.length; index++) {
+    const element = nodes[index];
+    promises.push(element.subscribeToHead());
+  }
+  await Promise.all(promises);
 });
 
 afterAll(async () => {
-  Promise.all([nodes.map((node) => node.stop())]).catch((err) =>
-    testLog.getLog().error(err)
+  await Promise.all([nodes.map(async (node) => await node.stop())]).catch(
+    (err) => testLog.getLog().error(err)
   );
 });
 
