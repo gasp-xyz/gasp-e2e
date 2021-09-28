@@ -437,10 +437,7 @@ test("xyk-pallet: Happy case scenario", async () => {
     firstAssetId,
     secondAssetId,
   ]);
-  expect([
-    pallet_assets_before[0].add(amount),
-    pallet_assets_before[1].sub(sell_price_local),
-  ]).collectionBnEqual(pallet_assets);
+
   testLog.getLog().debug(pallet_assets.toString());
   pool_balance = await getBalanceOfPool(firstAssetId, secondAssetId);
   let { treasury, treasuryBurn } = calculateFees(amount);
@@ -448,6 +445,11 @@ test("xyk-pallet: Happy case scenario", async () => {
     pool_balance_before[0].add(amount).sub(treasury.add(treasuryBurn)),
     pool_balance_before[1].sub(sell_price_local),
   ]).collectionBnEqual(pool_balance);
+  expect([
+    pallet_assets_before[0].add(amount).sub(treasury.add(treasuryBurn)),
+    pallet_assets_before[1].sub(sell_price_local),
+  ]).collectionBnEqual(pallet_assets);
+
   testLog.getLog().debug(pool_balance.toString());
   total_liquidity_assets = await getAssetSupply(liquidity_asset_id);
   expect(total_liquidity_assets_before).toEqual(total_liquidity_assets);
@@ -535,14 +537,14 @@ test("xyk-pallet: Happy case scenario", async () => {
     secondAssetId,
   ]);
   pool_balance = await getBalanceOfPool(firstAssetId, secondAssetId);
+  treasury = calculateFees(amount).treasury;
+  treasuryBurn = calculateFees(amount).treasuryBurn;
   expect([
     pallet_assets_before[0].sub(sell_price_local),
-    pallet_assets_before[1].add(amount),
+    pallet_assets_before[1].add(amount).sub(treasury.add(treasuryBurn)),
   ]).collectionBnEqual(pallet_assets);
   testLog.getLog().debug(pallet_assets.toString());
   pool_balance = await getBalanceOfPool(firstAssetId, secondAssetId);
-  treasury = calculateFees(amount).treasury;
-  treasuryBurn = calculateFees(amount).treasuryBurn;
 
   expect([
     pool_balance_before[0].sub(sell_price_local),
@@ -639,15 +641,17 @@ test("xyk-pallet: Happy case scenario", async () => {
     secondAssetId,
   ]);
 
+  treasury = calculateFees(buy_price_local).treasury;
+  treasuryBurn = calculateFees(buy_price_local).treasuryBurn;
+
   expect([
-    pallet_assets_before[0].add(buy_price_local),
+    pallet_assets_before[0]
+      .add(buy_price_local)
+      .sub(treasury.add(treasuryBurn)),
     pallet_assets_before[1].sub(amount),
   ]).collectionBnEqual(pallet_assets);
   testLog.getLog().debug(pallet_assets.toString());
   pool_balance = await getBalanceOfPool(firstAssetId, secondAssetId);
-
-  treasury = calculateFees(buy_price_local).treasury;
-  treasuryBurn = calculateFees(buy_price_local).treasuryBurn;
 
   expect([
     pool_balance_before[0].add(buy_price_local).sub(treasury.add(treasuryBurn)),
@@ -743,14 +747,17 @@ test("xyk-pallet: Happy case scenario", async () => {
     firstAssetId,
     secondAssetId,
   ]);
+  treasury = calculateFees(buy_price_local).treasury;
+  treasuryBurn = calculateFees(buy_price_local).treasuryBurn;
   expect([
     pallet_assets_before[0].sub(amount),
-    pallet_assets_before[1].add(buy_price_local),
+    pallet_assets_before[1]
+      .add(buy_price_local)
+      .sub(treasury.add(treasuryBurn)),
   ]).collectionBnEqual(pallet_assets);
   testLog.getLog().debug(pallet_assets.toString());
   pool_balance = await getBalanceOfPool(firstAssetId, secondAssetId);
-  treasury = calculateFees(buy_price_local).treasury;
-  treasuryBurn = calculateFees(buy_price_local).treasuryBurn;
+
   expect([
     pool_balance_before[0].sub(amount),
     pool_balance_before[1].add(buy_price_local).sub(treasury.add(treasuryBurn)),
