@@ -1,0 +1,193 @@
+{
+  "uid" : "83edc06c07f9ae9e47eb6dd1b683e4e2",
+  "children" : [ {
+    "name" : "UI main tests - Deposit - ETH",
+    "children" : [ {
+      "name" : "As a User I can deposit ETH from Meta extension",
+      "uid" : "6c246d7b3435c01e",
+      "parentUid" : "8f3ca0b6efa5f1bdbdcf0d06ec51732c",
+      "status" : "failed",
+      "time" : {
+        "start" : 1632911038890,
+        "stop" : 1632911159588,
+        "duration" : 120698
+      },
+      "flaky" : false,
+      "newFailed" : false,
+      "parameters" : [ ]
+    } ],
+    "uid" : "8f3ca0b6efa5f1bdbdcf0d06ec51732c"
+  }, {
+    "name" : "UI main tests - Withdraw - ETH",
+    "children" : [ {
+      "name" : "As a User I can Withdraw ETH from Meta extension",
+      "uid" : "442d887abeb5b7c8",
+      "parentUid" : "b0add5a8a03b7bc1414fff4e80a9cf34",
+      "status" : "failed",
+      "time" : {
+        "start" : 1632911159594,
+        "stop" : 1632911180832,
+        "duration" : 21238
+      },
+      "flaky" : false,
+      "newFailed" : false,
+      "parameters" : [ ]
+    } ],
+    "uid" : "b0add5a8a03b7bc1414fff4e80a9cf34"
+  }, {
+    "name" : "test ether",
+    "children" : [ {
+      "name" : "that Eth arrive to User TokenId 1 in Mangata and can be sent back",
+      "uid" : "c1cd53e18a2b80bf",
+      "parentUid" : "8022aa83f2e0065395ad68c9d6c90f2d",
+      "status" : "failed",
+      "time" : {
+        "start" : 1632911183778,
+        "stop" : 1632911209857,
+        "duration" : 26079
+      },
+      "flaky" : false,
+      "newFailed" : false,
+      "parameters" : [ ]
+    } ],
+    "uid" : "8022aa83f2e0065395ad68c9d6c90f2d"
+  }, {
+    "name" : "test/ci/xyk-ci.validate",
+    "children" : [ {
+      "name" : "setup.test.ts",
+      "children" : [ {
+        "name" : "xyk-CI - validate pools created: Pool[4,5]",
+        "uid" : "905a593d5f6dfe82",
+        "parentUid" : "d297bf9cb0fb63197799c574d03fb1c2",
+        "status" : "passed",
+        "time" : {
+          "start" : 1632911212163,
+          "stop" : 1632911212355,
+          "duration" : 192
+        },
+        "flaky" : false,
+        "newFailed" : false,
+        "parameters" : [ ]
+      }, {
+        "name" : "xyk-CI - validate pools created: Pool[0,5]",
+        "uid" : "e7ff10ec43c1c138",
+        "parentUid" : "d297bf9cb0fb63197799c574d03fb1c2",
+        "status" : "passed",
+        "time" : {
+          "start" : 1632911212355,
+          "stop" : 1632911212544,
+          "duration" : 189
+        },
+        "flaky" : false,
+        "newFailed" : false,
+        "parameters" : [ ]
+      }, {
+        "name" : "xyk-CI - validate pools created: Pool[0,6]",
+        "uid" : "d43218272faa1dd0",
+        "parentUid" : "d297bf9cb0fb63197799c574d03fb1c2",
+        "status" : "passed",
+        "time" : {
+          "start" : 1632911212544,
+          "stop" : 1632911212733,
+          "duration" : 189
+        },
+        "flaky" : false,
+        "newFailed" : false,
+        "parameters" : [ ]
+      }, {
+        "name" : "xyk-CI - validate pools created: Pool[4,6]",
+        "uid" : "12ffed775db38845",
+        "parentUid" : "d297bf9cb0fb63197799c574d03fb1c2",
+        "status" : "passed",
+        "time" : {
+          "start" : 1632911212733,
+          "stop" : 1632911212921,
+          "duration" : 188
+        },
+        "flaky" : false,
+        "newFailed" : false,
+        "parameters" : [ ]
+      }, {
+        "name" : "xyk-CI - validate user got the right Assets",
+        "uid" : "be67841e52c3ea65",
+        "parentUid" : "d297bf9cb0fb63197799c574d03fb1c2",
+        "status" : "passed",
+        "time" : {
+          "start" : 1632911212921,
+          "stop" : 1632911213320,
+          "duration" : 399
+        },
+        "flaky" : false,
+        "newFailed" : false,
+        "parameters" : [ ]
+      } ],
+      "uid" : "setup.test.ts"
+    }, {
+      "name" : "node.test.ts",
+      "children" : [ {
+        "name" : "xyk-CI - Node is up and running",
+        "uid" : "b8c2df0ffba83bb1",
+        "parentUid" : "6d4ff15d07106bc7d5c87e79c36210fc",
+        "status" : "passed",
+        "time" : {
+          "start" : 1632911232046,
+          "stop" : 1632911238074,
+          "duration" : 6028
+        },
+        "flaky" : false,
+        "newFailed" : false,
+        "parameters" : [ ]
+      } ],
+      "uid" : "node.test.ts"
+    }, {
+      "name" : "assetInfo.test.ts",
+      "children" : [ {
+        "name" : "xyk-CI - AssetInfo contains assets for MGA and Ether",
+        "uid" : "9cc831752de1c8d7",
+        "parentUid" : "cf4510bdf0aeeaecf387372cdc0653d3",
+        "status" : "passed",
+        "time" : {
+          "start" : 1632911240237,
+          "stop" : 1632911240507,
+          "duration" : 270
+        },
+        "flaky" : false,
+        "newFailed" : false,
+        "parameters" : [ ]
+      } ],
+      "uid" : "assetInfo.test.ts"
+    } ],
+    "uid" : "test/ci/xyk-ci.validate"
+  }, {
+    "name" : "UI tests: Infra",
+    "children" : [ {
+      "name" : "Validate that Mangata Frontend up and running",
+      "uid" : "a4ed4b8fc4648b42",
+      "parentUid" : "4da232abacc86f64ea7024eed46f94f2",
+      "status" : "passed",
+      "time" : {
+        "start" : 1632911213650,
+        "stop" : 1632911215864,
+        "duration" : 2214
+      },
+      "flaky" : false,
+      "newFailed" : false,
+      "parameters" : [ ]
+    }, {
+      "name" : "Validate that Frontend retrieves AssetInfo data",
+      "uid" : "da26d926bc3cc70e",
+      "parentUid" : "4da232abacc86f64ea7024eed46f94f2",
+      "status" : "passed",
+      "time" : {
+        "start" : 1632911215864,
+        "stop" : 1632911229596,
+        "duration" : 13732
+      },
+      "flaky" : false,
+      "newFailed" : false,
+      "parameters" : [ ]
+    } ],
+    "uid" : "4da232abacc86f64ea7024eed46f94f2"
+  } ],
+  "name" : "packages"
+}
