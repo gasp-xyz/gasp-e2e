@@ -1,0 +1,101 @@
+[ {
+  "uid" : "a8b5808c78c253e1",
+  "name" : "xyk-CI - validate pools created: Pool[0,5]",
+  "time" : {
+    "start" : 1632925203454,
+    "stop" : 1632925203654,
+    "duration" : 200
+  },
+  "status" : "passed",
+  "severity" : "normal"
+}, {
+  "uid" : "4385080e0fba59af",
+  "name" : "xyk-CI - validate pools created: Pool[4,5]",
+  "time" : {
+    "start" : 1632925203250,
+    "stop" : 1632925203454,
+    "duration" : 204
+  },
+  "status" : "passed",
+  "severity" : "normal"
+}, {
+  "uid" : "6cbb84f90683f121",
+  "name" : "xyk-CI - validate user got the right Assets",
+  "time" : {
+    "start" : 1632925203654,
+    "stop" : 1632925203986,
+    "duration" : 332
+  },
+  "status" : "failed",
+  "severity" : "normal"
+}, {
+  "uid" : "1ac6f2b5b218e74b",
+  "name" : "As a User I can Withdraw ETH from Meta extension",
+  "time" : {
+    "start" : 1632924954061,
+    "stop" : 1632925117572,
+    "duration" : 163511
+  },
+  "status" : "passed",
+  "severity" : "normal"
+}, {
+  "uid" : "be65e9dd2f17aa16",
+  "name" : "As a User I can deposit ETH from Meta extension",
+  "time" : {
+    "start" : 1632924804674,
+    "stop" : 1632924954056,
+    "duration" : 149382
+  },
+  "status" : "passed",
+  "severity" : "normal"
+}, {
+  "uid" : "bd3831de3ba464dc",
+  "name" : "xyk-CI - AssetInfo contains assets for MGA and Ether",
+  "time" : {
+    "start" : 1632925226416,
+    "stop" : 1632925226654,
+    "duration" : 238
+  },
+  "status" : "passed",
+  "severity" : "normal"
+}, {
+  "uid" : "6ccc67721a5f7fb2",
+  "name" : "Validate that Frontend retrieves AssetInfo data",
+  "time" : {
+    "start" : 1632925207222,
+    "stop" : 1632925221033,
+    "duration" : 13811
+  },
+  "status" : "passed",
+  "severity" : "normal"
+}, {
+  "uid" : "54d8ccf908113709",
+  "name" : "xyk-CI - Node is up and running",
+  "time" : {
+    "start" : 1632925223530,
+    "stop" : 1632925224110,
+    "duration" : 580
+  },
+  "status" : "passed",
+  "severity" : "normal"
+}, {
+  "uid" : "2372be4f6b11c9cd",
+  "name" : "Validate that Mangata Frontend up and running",
+  "time" : {
+    "start" : 1632925204407,
+    "stop" : 1632925207222,
+    "duration" : 2815
+  },
+  "status" : "passed",
+  "severity" : "normal"
+}, {
+  "uid" : "54c4b3d5a81e41c9",
+  "name" : "that Eth arrive to User TokenId 1 in Mangata and can be sent back",
+  "time" : {
+    "start" : 1632925120653,
+    "stop" : 1632925200212,
+    "duration" : 79559
+  },
+  "status" : "passed",
+  "severity" : "normal"
+} ]
