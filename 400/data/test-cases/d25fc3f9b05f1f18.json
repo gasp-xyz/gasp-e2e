@@ -1,0 +1,76 @@
+{
+  "uid" : "d25fc3f9b05f1f18",
+  "name" : "assets won when assets are bought [Buying X connected to MGA pool]",
+  "fullName" : "xyk-pallet - treasury tests [Connected - Mangata]: on treasury we store.assets won when assets are bought [Buying X connected to MGA pool]",
+  "historyId" : "7fa2856547086651d7f62b3628e0d674",
+  "time" : {
+    "start" : 1632905743469,
+    "stop" : 1632905911755,
+    "duration" : 168286
+  },
+  "description" : "",
+  "descriptionHtml" : "",
+  "status" : "passed",
+  "flaky" : false,
+  "newFailed" : false,
+  "beforeStages" : [ ],
+  "afterStages" : [ ],
+  "labels" : [ {
+    "name" : "suite",
+    "value" : "xyk-pallet - treasury tests [Connected - Mangata]: on treasury we store"
+  }, {
+    "name" : "testClass",
+    "value" : "xyk-pallet - treasury tests [Connected - Mangata]: on treasury we store"
+  }, {
+    "name" : "testMethod",
+    "value" : "assets won when assets are bought [Buying X connected to MGA pool]"
+  }, {
+    "name" : "package",
+    "value" : "xyk-pallet - treasury tests [Connected - Mangata]: on treasury we store"
+  }, {
+    "name" : "resultFormat",
+    "value" : "allure1"
+  } ],
+  "parameters" : [ ],
+  "links" : [ ],
+  "hidden" : false,
+  "retry" : false,
+  "extra" : {
+    "severity" : "normal",
+    "retries" : [ ],
+    "categories" : [ ],
+    "history" : {
+      "statistic" : {
+        "failed" : 1,
+        "broken" : 0,
+        "skipped" : 0,
+        "passed" : 2,
+        "unknown" : 0,
+        "total" : 3
+      },
+      "items" : [ {
+        "uid" : "582e88fbb67003b9",
+        "reportUrl" : "https://mangata-finance.github.io/mangata-e2e/399//#testresult/582e88fbb67003b9",
+        "status" : "passed",
+        "time" : {
+          "start" : 1632900192829,
+          "stop" : 1632900361184,
+          "duration" : 168355
+        }
+      }, {
+        "uid" : "1ab21ed38a789a30",
+        "reportUrl" : "https://mangata-finance.github.io/mangata-e2e/397//#testresult/1ab21ed38a789a30",
+        "status" : "failed",
+        "statusDetails" : "Error: Expected: 3902123968 \n                  Actual: 3902123987 \n                 ",
+        "time" : {
+          "start" : 1632896929604,
+          "stop" : 1632897091139,
+          "duration" : 161535
+        }
+      } ]
+    },
+    "tags" : [ ]
+  },
+  "source" : "d25fc3f9b05f1f18.json",
+  "parameterValues" : [ ]
+}

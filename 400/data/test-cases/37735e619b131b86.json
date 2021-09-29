@@ -1,0 +1,76 @@
+{
+  "uid" : "37735e619b131b86",
+  "name" : "xyk-pallet: Happy case scenario",
+  "fullName" : "test/sequential/xyk-pallet.test.ts.xyk-pallet: Happy case scenario",
+  "historyId" : "31b3a07db373fe04b185d770d93dc95d",
+  "time" : {
+    "start" : 1632904646385,
+    "stop" : 1632904843270,
+    "duration" : 196885
+  },
+  "description" : "",
+  "descriptionHtml" : "",
+  "status" : "passed",
+  "flaky" : false,
+  "newFailed" : false,
+  "beforeStages" : [ ],
+  "afterStages" : [ ],
+  "labels" : [ {
+    "name" : "suite",
+    "value" : "test/sequential/xyk-pallet.test.ts"
+  }, {
+    "name" : "testClass",
+    "value" : "test/sequential/xyk-pallet.test.ts"
+  }, {
+    "name" : "testMethod",
+    "value" : "xyk-pallet: Happy case scenario"
+  }, {
+    "name" : "package",
+    "value" : "test/sequential/xyk-pallet.test.ts"
+  }, {
+    "name" : "resultFormat",
+    "value" : "allure1"
+  } ],
+  "parameters" : [ ],
+  "links" : [ ],
+  "hidden" : false,
+  "retry" : false,
+  "extra" : {
+    "severity" : "normal",
+    "retries" : [ ],
+    "categories" : [ ],
+    "history" : {
+      "statistic" : {
+        "failed" : 1,
+        "broken" : 0,
+        "skipped" : 0,
+        "passed" : 2,
+        "unknown" : 0,
+        "total" : 3
+      },
+      "items" : [ {
+        "uid" : "b73e19897ae7be6a",
+        "reportUrl" : "https://mangata-finance.github.io/mangata-e2e/399//#testresult/b73e19897ae7be6a",
+        "status" : "passed",
+        "time" : {
+          "start" : 1632899095132,
+          "stop" : 1632899293835,
+          "duration" : 198703
+        }
+      }, {
+        "uid" : "3b38739155c2427b",
+        "reportUrl" : "https://mangata-finance.github.io/mangata-e2e/397//#testresult/3b38739155c2427b",
+        "status" : "failed",
+        "statusDetails" : "Error: Expected: [ 109968,58231 ] \n                  Actual: [ 110000,58231 ] \n                 ",
+        "time" : {
+          "start" : 1632895919307,
+          "stop" : 1632896029549,
+          "duration" : 110242
+        }
+      } ]
+    },
+    "tags" : [ ]
+  },
+  "source" : "37735e619b131b86.json",
+  "parameterValues" : [ ]
+}
