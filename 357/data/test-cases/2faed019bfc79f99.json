@@ -1,0 +1,255 @@
+{
+  "uid" : "2faed019bfc79f99",
+  "name" : "that Eth arrive to User TokenId 1 in Mangata and can be sent back",
+  "fullName" : "test ether.that Eth arrive to User TokenId 1 in Mangata and can be sent back",
+  "historyId" : "6a7c882af5d738738ff42ac96eb6c6ec",
+  "time" : {
+    "start" : 1632918953415,
+    "stop" : 1632919033029,
+    "duration" : 79614
+  },
+  "description" : "",
+  "descriptionHtml" : "",
+  "status" : "passed",
+  "flaky" : false,
+  "newFailed" : false,
+  "beforeStages" : [ ],
+  "afterStages" : [ ],
+  "labels" : [ {
+    "name" : "suite",
+    "value" : "test ether"
+  }, {
+    "name" : "testClass",
+    "value" : "test ether"
+  }, {
+    "name" : "testMethod",
+    "value" : "that Eth arrive to User TokenId 1 in Mangata and can be sent back"
+  }, {
+    "name" : "package",
+    "value" : "test ether"
+  }, {
+    "name" : "resultFormat",
+    "value" : "allure1"
+  } ],
+  "parameters" : [ ],
+  "links" : [ ],
+  "hidden" : false,
+  "retry" : false,
+  "extra" : {
+    "severity" : "normal",
+    "retries" : [ ],
+    "categories" : [ ],
+    "history" : {
+      "statistic" : {
+        "failed" : 18,
+        "broken" : 0,
+        "skipped" : 0,
+        "passed" : 3,
+        "unknown" : 0,
+        "total" : 21
+      },
+      "items" : [ {
+        "uid" : "8e7b9d7543ef00e7",
+        "reportUrl" : "https://mangata-finance.github.io/mangata-e2e/356//#testresult/8e7b9d7543ef00e7",
+        "status" : "passed",
+        "time" : {
+          "start" : 1632918904670,
+          "stop" : 1632918984570,
+          "duration" : 79900
+        }
+      }, {
+        "uid" : "54860c64511f35a7",
+        "reportUrl" : "https://mangata-finance.github.io/mangata-e2e/354//#testresult/54860c64511f35a7",
+        "status" : "passed",
+        "time" : {
+          "start" : 1632913019522,
+          "stop" : 1632913086610,
+          "duration" : 67088
+        }
+      }, {
+        "uid" : "d6345710ae6fb9d3",
+        "reportUrl" : "https://mangata-finance.github.io/mangata-e2e/355//#testresult/d6345710ae6fb9d3",
+        "status" : "failed",
+        "statusDetails" : "Error: expect(received).toBeTruthy()\n                \n                Received: false",
+        "time" : {
+          "start" : 1632913006826,
+          "stop" : 1632913074216,
+          "duration" : 67390
+        }
+      }, {
+        "uid" : "8d8e20ad4bd270f9",
+        "reportUrl" : "https://mangata-finance.github.io/mangata-e2e/353//#testresult/8d8e20ad4bd270f9",
+        "status" : "failed",
+        "statusDetails" : "thrown: Event {\n                  \"isTrusted\": true,\n                }",
+        "time" : {
+          "start" : 1632912823307,
+          "stop" : 1632912823796,
+          "duration" : 489
+        }
+      }, {
+        "uid" : "41f4309952379675",
+        "reportUrl" : "https://mangata-finance.github.io/mangata-e2e/351//#testresult/41f4309952379675",
+        "status" : "failed",
+        "statusDetails" : "Error: Insufficient funds. The account you tried to send transaction from does not have enough funds. Required 2000000000000000 and got: 0.",
+        "time" : {
+          "start" : 1632911305333,
+          "stop" : 1632911330160,
+          "duration" : 24827
+        }
+      }, {
+        "uid" : "cfbbe6214461dc5a",
+        "reportUrl" : "https://mangata-finance.github.io/mangata-e2e/352//#testresult/cfbbe6214461dc5a",
+        "status" : "failed",
+        "statusDetails" : "Error: Insufficient funds. The account you tried to send transaction from does not have enough funds. Required 2000000000000000 and got: 0.",
+        "time" : {
+          "start" : 1632911239071,
+          "stop" : 1632911264081,
+          "duration" : 25010
+        }
+      }, {
+        "uid" : "c1cd53e18a2b80bf",
+        "reportUrl" : "https://mangata-finance.github.io/mangata-e2e/350//#testresult/c1cd53e18a2b80bf",
+        "status" : "failed",
+        "statusDetails" : "Error: Insufficient funds. The account you tried to send transaction from does not have enough funds. Required 2000000000000000 and got: 0.",
+        "time" : {
+          "start" : 1632911183778,
+          "stop" : 1632911209857,
+          "duration" : 26079
+        }
+      }, {
+        "uid" : "6e885fb9300916f9",
+        "reportUrl" : "https://mangata-finance.github.io/mangata-e2e/347//#testresult/6e885fb9300916f9",
+        "status" : "failed",
+        "statusDetails" : "Error: Insufficient funds. The account you tried to send transaction from does not have enough funds. Required 2000000000000000 and got: 0.",
+        "time" : {
+          "start" : 1632910598786,
+          "stop" : 1632910623659,
+          "duration" : 24873
+        }
+      }, {
+        "uid" : "b00f6fc6fe71042d",
+        "reportUrl" : "https://mangata-finance.github.io/mangata-e2e/348//#testresult/b00f6fc6fe71042d",
+        "status" : "failed",
+        "statusDetails" : "Error: Insufficient funds. The account you tried to send transaction from does not have enough funds. Required 2000000000000000 and got: 0.",
+        "time" : {
+          "start" : 1632910547493,
+          "stop" : 1632910575117,
+          "duration" : 27624
+        }
+      }, {
+        "uid" : "f4736dc76ba1ca43",
+        "reportUrl" : "https://mangata-finance.github.io/mangata-e2e/349//#testresult/f4736dc76ba1ca43",
+        "status" : "failed",
+        "statusDetails" : "Error: Insufficient funds. The account you tried to send transaction from does not have enough funds. Required 2000000000000000 and got: 0.",
+        "time" : {
+          "start" : 1632910519175,
+          "stop" : 1632910545087,
+          "duration" : 25912
+        }
+      }, {
+        "uid" : "cf578545426c63bf",
+        "reportUrl" : "https://mangata-finance.github.io/mangata-e2e/345//#testresult/cf578545426c63bf",
+        "status" : "failed",
+        "statusDetails" : "Error: Insufficient funds. The account you tried to send transaction from does not have enough funds. Required 2000000000000000 and got: 0.",
+        "time" : {
+          "start" : 1632908640638,
+          "stop" : 1632908667401,
+          "duration" : 26763
+        }
+      }, {
+        "uid" : "9dc456f32388df67",
+        "reportUrl" : "https://mangata-finance.github.io/mangata-e2e/344//#testresult/9dc456f32388df67",
+        "status" : "failed",
+        "statusDetails" : "Error: Insufficient funds. The account you tried to send transaction from does not have enough funds. Required 2000000000000000 and got: 0.",
+        "time" : {
+          "start" : 1632908612662,
+          "stop" : 1632908637040,
+          "duration" : 24378
+        }
+      }, {
+        "uid" : "99344b7f5d054127",
+        "reportUrl" : "https://mangata-finance.github.io/mangata-e2e/342//#testresult/99344b7f5d054127",
+        "status" : "failed",
+        "statusDetails" : "Error: Insufficient funds. The account you tried to send transaction from does not have enough funds. Required 2000000000000000 and got: 0.",
+        "time" : {
+          "start" : 1632907995467,
+          "stop" : 1632908017889,
+          "duration" : 22422
+        }
+      }, {
+        "uid" : "664da1fe8c25cc17",
+        "reportUrl" : "https://mangata-finance.github.io/mangata-e2e/343//#testresult/664da1fe8c25cc17",
+        "status" : "failed",
+        "statusDetails" : "Error: Insufficient funds. The account you tried to send transaction from does not have enough funds. Required 2000000000000000 and got: 0.",
+        "time" : {
+          "start" : 1632907884621,
+          "stop" : 1632907911147,
+          "duration" : 26526
+        }
+      }, {
+        "uid" : "a63a8114647cc73b",
+        "reportUrl" : "https://mangata-finance.github.io/mangata-e2e/341//#testresult/a63a8114647cc73b",
+        "status" : "failed",
+        "statusDetails" : "Error: Insufficient funds. The account you tried to send transaction from does not have enough funds. Required 2000000000000000 and got: 0.",
+        "time" : {
+          "start" : 1632907847685,
+          "stop" : 1632907874883,
+          "duration" : 27198
+        }
+      }, {
+        "uid" : "5b57ade0856154f1",
+        "reportUrl" : "https://mangata-finance.github.io/mangata-e2e/338//#testresult/5b57ade0856154f1",
+        "status" : "failed",
+        "statusDetails" : "Error: Insufficient funds. The account you tried to send transaction from does not have enough funds. Required 2000000000000000 and got: 0.",
+        "time" : {
+          "start" : 1632904866191,
+          "stop" : 1632904905264,
+          "duration" : 39073
+        }
+      }, {
+        "uid" : "a657e26552342344",
+        "reportUrl" : "https://mangata-finance.github.io/mangata-e2e/339//#testresult/a657e26552342344",
+        "status" : "failed",
+        "statusDetails" : "Error: Insufficient funds. The account you tried to send transaction from does not have enough funds. Required 2000000000000000 and got: 0.",
+        "time" : {
+          "start" : 1632904857382,
+          "stop" : 1632904880108,
+          "duration" : 22726
+        }
+      }, {
+        "uid" : "2c238aad2fb3edfd",
+        "reportUrl" : "https://mangata-finance.github.io/mangata-e2e/340//#testresult/2c238aad2fb3edfd",
+        "status" : "failed",
+        "statusDetails" : "Error: Insufficient funds. The account you tried to send transaction from does not have enough funds. Required 2000000000000000 and got: 0.",
+        "time" : {
+          "start" : 1632904789017,
+          "stop" : 1632904815510,
+          "duration" : 26493
+        }
+      }, {
+        "uid" : "d54e8e54c589d330",
+        "reportUrl" : "https://mangata-finance.github.io/mangata-e2e/335//#testresult/d54e8e54c589d330",
+        "status" : "failed",
+        "statusDetails" : "Error: Insufficient funds. The account you tried to send transaction from does not have enough funds. Required 2000000000000000 and got: 0.",
+        "time" : {
+          "start" : 1632899151627,
+          "stop" : 1632899180855,
+          "duration" : 29228
+        }
+      }, {
+        "uid" : "aa9228649887b50",
+        "reportUrl" : "https://mangata-finance.github.io/mangata-e2e/336//#testresult/aa9228649887b50",
+        "status" : "failed",
+        "statusDetails" : "Error: Insufficient funds. The account you tried to send transaction from does not have enough funds. Required 2000000000000000 and got: 0.",
+        "time" : {
+          "start" : 1632899114834,
+          "stop" : 1632899137799,
+          "duration" : 22965
+        }
+      } ]
+    },
+    "tags" : [ ]
+  },
+  "source" : "2faed019bfc79f99.json",
+  "parameterValues" : [ ]
+}
