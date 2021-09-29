@@ -1,0 +1,133 @@
+{
+  "uid" : "2f9bfc7a64cef8c0",
+  "name" : "As a User I can deposit ETH from Meta extension",
+  "fullName" : "UI main tests - Deposit - ETH.As a User I can deposit ETH from Meta extension",
+  "historyId" : "3f230497b028a09bdae1c560fcc1f271",
+  "time" : {
+    "start" : 1632907931991,
+    "stop" : 1632907970184,
+    "duration" : 38193
+  },
+  "description" : "",
+  "descriptionHtml" : "",
+  "status" : "failed",
+  "statusMessage" : "Error: Couldn't find the `xsel` binary and fallback didn't work. On Debian/Ubuntu you can install xsel with: sudo apt install xsel",
+  "statusTrace" : "Error: Couldn't find the `xsel` binary and fallback didn't work. On Debian/Ubuntu you can install xsel with: sudo apt install xsel\n                    at makeError (/home/runner/work/mangata-e2e/mangata-e2e/node_modules/clipboardy/lib/linux.js:14:11)\n                    at xselWithFallbackSync (/home/runner/work/mangata-e2e/mangata-e2e/node_modules/clipboardy/lib/linux.js:43:10)\n                    at Object.pasteSync (/home/runner/work/mangata-e2e/mangata-e2e/node_modules/clipboardy/lib/linux.js:56:24)\n                    at Object.readSync (/home/runner/work/mangata-e2e/mangata-e2e/node_modules/clipboardy/index.js:48:38)\n                    at MetaMask.enable (/home/runner/work/mangata-e2e/mangata-e2e/utils/frontend/pages/MetaMask.ts:85:32)\n                    at processTicksAndRejections (internal/process/task_queues.js:95:5)\n                    at MetaMask.setupAccount (/home/runner/work/mangata-e2e/mangata-e2e/utils/frontend/pages/MetaMask.ts:78:12)\n                    at setupAllExtensions (/home/runner/work/mangata-e2e/mangata-e2e/utils/frontend/utils/Helper.ts:68:27)\n                    at Object.<anonymous> (/home/runner/work/mangata-e2e/mangata-e2e/test/ui/ui-main.ETH.test.ts:42:33)",
+  "flaky" : false,
+  "newFailed" : false,
+  "beforeStages" : [ ],
+  "afterStages" : [ ],
+  "labels" : [ {
+    "name" : "suite",
+    "value" : "UI main tests - Deposit - ETH"
+  }, {
+    "name" : "testClass",
+    "value" : "UI main tests - Deposit - ETH"
+  }, {
+    "name" : "testMethod",
+    "value" : "As a User I can deposit ETH from Meta extension"
+  }, {
+    "name" : "package",
+    "value" : "UI main tests - Deposit - ETH"
+  }, {
+    "name" : "resultFormat",
+    "value" : "allure1"
+  } ],
+  "parameters" : [ ],
+  "links" : [ ],
+  "hidden" : false,
+  "retry" : false,
+  "extra" : {
+    "severity" : "normal",
+    "retries" : [ ],
+    "categories" : [ {
+      "name" : "Product defects",
+      "matchedStatuses" : [ ],
+      "flaky" : false
+    } ],
+    "history" : {
+      "statistic" : {
+        "failed" : 8,
+        "broken" : 0,
+        "skipped" : 0,
+        "passed" : 0,
+        "unknown" : 0,
+        "total" : 8
+      },
+      "items" : [ {
+        "uid" : "41219849b3503efb",
+        "reportUrl" : "https://mangata-finance.github.io/mangata-e2e/343//#testresult/41219849b3503efb",
+        "status" : "failed",
+        "statusDetails" : "Error: Couldn't find the `xsel` binary and fallback didn't work. On Debian/Ubuntu you can install xsel with: sudo apt install xsel",
+        "time" : {
+          "start" : 1632907818594,
+          "stop" : 1632907858424,
+          "duration" : 39830
+        }
+      }, {
+        "uid" : "eb842eb193e877bc",
+        "reportUrl" : "https://mangata-finance.github.io/mangata-e2e/341//#testresult/eb842eb193e877bc",
+        "status" : "failed",
+        "statusDetails" : "Error: Couldn't find the `xsel` binary and fallback didn't work. On Debian/Ubuntu you can install xsel with: sudo apt install xsel",
+        "time" : {
+          "start" : 1632907785342,
+          "stop" : 1632907821914,
+          "duration" : 36572
+        }
+      }, {
+        "uid" : "b4cc8a974ca3cf46",
+        "reportUrl" : "https://mangata-finance.github.io/mangata-e2e/338//#testresult/b4cc8a974ca3cf46",
+        "status" : "failed",
+        "statusDetails" : "WebDriverError: Requested environment is not available",
+        "time" : {
+          "start" : 1632904862997,
+          "stop" : 1632904863536,
+          "duration" : 539
+        }
+      }, {
+        "uid" : "134d2bd85debd9ed",
+        "reportUrl" : "https://mangata-finance.github.io/mangata-e2e/339//#testresult/134d2bd85debd9ed",
+        "status" : "failed",
+        "statusDetails" : "WebDriverError: Requested environment is not available",
+        "time" : {
+          "start" : 1632904854217,
+          "stop" : 1632904854751,
+          "duration" : 534
+        }
+      }, {
+        "uid" : "fb33ee019ba0569",
+        "reportUrl" : "https://mangata-finance.github.io/mangata-e2e/340//#testresult/fb33ee019ba0569",
+        "status" : "failed",
+        "statusDetails" : "WebDriverError: Requested environment is not available",
+        "time" : {
+          "start" : 1632904786822,
+          "stop" : 1632904787190,
+          "duration" : 368
+        }
+      }, {
+        "uid" : "433f20d0fbbb9850",
+        "reportUrl" : "https://mangata-finance.github.io/mangata-e2e/335//#testresult/433f20d0fbbb9850",
+        "status" : "failed",
+        "statusDetails" : "WebDriverError: Requested environment is not available",
+        "time" : {
+          "start" : 1632899148956,
+          "stop" : 1632899149459,
+          "duration" : 503
+        }
+      }, {
+        "uid" : "50a38289a43f717e",
+        "reportUrl" : "https://mangata-finance.github.io/mangata-e2e/336//#testresult/50a38289a43f717e",
+        "status" : "failed",
+        "statusDetails" : "WebDriverError: Requested environment is not available",
+        "time" : {
+          "start" : 1632899112405,
+          "stop" : 1632899112826,
+          "duration" : 421
+        }
+      } ]
+    },
+    "tags" : [ ]
+  },
+  "source" : "2f9bfc7a64cef8c0.json",
+  "parameterValues" : [ ]
+}
