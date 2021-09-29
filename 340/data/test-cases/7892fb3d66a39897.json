@@ -1,0 +1,75 @@
+{
+  "uid" : "7892fb3d66a39897",
+  "name" : "xyk-CI - validate pools created: Pool[0,5]",
+  "fullName" : "test/ci/xyk-ci.validate.setup.test.ts.xyk-CI - validate pools created: Pool[0,5]",
+  "historyId" : "aca39bd06c125c225d0094d52d8218d5",
+  "time" : {
+    "start" : 1632904818182,
+    "stop" : 1632904818427,
+    "duration" : 245
+  },
+  "description" : "",
+  "descriptionHtml" : "",
+  "status" : "passed",
+  "flaky" : false,
+  "newFailed" : false,
+  "beforeStages" : [ ],
+  "afterStages" : [ ],
+  "labels" : [ {
+    "name" : "suite",
+    "value" : "test/ci/xyk-ci.validate.setup.test.ts"
+  }, {
+    "name" : "testClass",
+    "value" : "test/ci/xyk-ci.validate.setup.test.ts"
+  }, {
+    "name" : "testMethod",
+    "value" : "xyk-CI - validate pools created: Pool[0,5]"
+  }, {
+    "name" : "package",
+    "value" : "test/ci/xyk-ci.validate.setup.test.ts"
+  }, {
+    "name" : "resultFormat",
+    "value" : "allure1"
+  } ],
+  "parameters" : [ ],
+  "links" : [ ],
+  "hidden" : false,
+  "retry" : false,
+  "extra" : {
+    "severity" : "normal",
+    "retries" : [ ],
+    "categories" : [ ],
+    "history" : {
+      "statistic" : {
+        "failed" : 0,
+        "broken" : 0,
+        "skipped" : 0,
+        "passed" : 3,
+        "unknown" : 0,
+        "total" : 3
+      },
+      "items" : [ {
+        "uid" : "912e1755bb1cfcc9",
+        "reportUrl" : "https://mangata-finance.github.io/mangata-e2e/335//#testresult/912e1755bb1cfcc9",
+        "status" : "passed",
+        "time" : {
+          "start" : 1632899183968,
+          "stop" : 1632899184221,
+          "duration" : 253
+        }
+      }, {
+        "uid" : "a3bdae87d190d420",
+        "reportUrl" : "https://mangata-finance.github.io/mangata-e2e/336//#testresult/a3bdae87d190d420",
+        "status" : "passed",
+        "time" : {
+          "start" : 1632899140437,
+          "stop" : 1632899140629,
+          "duration" : 192
+        }
+      } ]
+    },
+    "tags" : [ ]
+  },
+  "source" : "7892fb3d66a39897.json",
+  "parameterValues" : [ ]
+}
