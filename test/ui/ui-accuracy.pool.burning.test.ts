@@ -138,6 +138,7 @@ describe("Accuracy tests:", () => {
 
   afterAll(async () => {
     await driver.quit();
+    await DriverBuilder.destroy();
     const api = getApi();
     await api.disconnect();
   });

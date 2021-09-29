@@ -1,6 +1,7 @@
 /*
  *
  * @group ui
+ * @group sequential
  */
 import { Keyring } from "@polkadot/api";
 import BN from "bn.js";
@@ -44,7 +45,7 @@ describe("UI tests - A user can swap and mint tokens", () => {
   const { sudo: sudoUserName } = getEnvironmentRequiredVars();
   const visibleValueNumber = Math.pow(10, 19).toString();
 
-  beforeAll(async () => {
+  beforeEach(async () => {
     try {
       getApi();
     } catch (e) {
@@ -145,14 +146,13 @@ describe("UI tests - A user can swap and mint tokens", () => {
     for (let index = 0; index < 4; index++) {
       await waitNewBlock();
     }
-    await testUser1.refreshAmounts(AssetWallet.AFTER);
     const isPoolVisible = await sidebar.isLiquidityPoolVisible(
       MGA_ASSET_NAME,
       mETH_ASSET_NAME
     );
     expect(isPoolVisible).toBeFalsy();
-    // removing 1 token because of rounding either when minting, either when burning.
-    // Checked with Stano.
+
+    await testUser1.refreshAmounts(AssetWallet.AFTER);
     expect(
       testUser1.getAsset(ETH_ASSET_ID)?.amountBefore!.sub(new BN(1))
     ).bnEqual(testUser1.getAsset(ETH_ASSET_ID)?.amountAfter!);
@@ -206,10 +206,11 @@ describe("UI tests - A user can swap and mint tokens", () => {
       driver,
       expect.getState().currentTestName + " - " + session.getId()
     );
+    await driver.quit();
+    await DriverBuilder.destroy();
   });
 
   afterAll(async () => {
-    await driver.quit();
     const api = getApi();
     await api.disconnect();
   });
