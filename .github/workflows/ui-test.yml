@@ -62,10 +62,7 @@ jobs:
       SELENIUM_REMOTE_URL: http://localhost:4444/wd/hub
       ETH_20_APP_ADDRESS: https://kovan.infura.io/v3/3592e9c20d9b4169a394a608a310c85f
 
-    steps:
-      - name: Install 
-        run: sudo sudo apt install xsel
-  
+    steps:  
       - name: Start Selenoid Server
         uses: Xotabu4/selenoid-github-action@v2
         with:
