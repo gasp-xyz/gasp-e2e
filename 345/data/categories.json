@@ -1,0 +1,60 @@
+{
+  "uid" : "4b4757e66a1912dae1a509f688f20b0f",
+  "children" : [ {
+    "name" : "Product defects",
+    "children" : [ {
+      "name" : "Error: Both xsel and fallback failed",
+      "children" : [ {
+        "name" : "As a User I can deposit ETH from Meta extension",
+        "uid" : "5cc593965d3b8f1d",
+        "parentUid" : "1b33ec2fe392171a4737e20c47e9593c",
+        "status" : "failed",
+        "time" : {
+          "start" : 1632908578807,
+          "stop" : 1632908615343,
+          "duration" : 36536
+        },
+        "flaky" : false,
+        "newFailed" : false,
+        "parameters" : [ ]
+      } ],
+      "uid" : "1b33ec2fe392171a4737e20c47e9593c"
+    }, {
+      "name" : "TimeoutError: Waiting for element to be located By(xpath, //input[@placeholder='Paste Secret Recovery Phrase from clipboard'])\n                Wait timed out after 10008ms",
+      "children" : [ {
+        "name" : "As a User I can Withdraw ETH from Meta extension",
+        "uid" : "7758fca37932ca42",
+        "parentUid" : "32ddbd0774aa9ee7eadd28e9f2154060",
+        "status" : "failed",
+        "time" : {
+          "start" : 1632908615350,
+          "stop" : 1632908636986,
+          "duration" : 21636
+        },
+        "flaky" : false,
+        "newFailed" : false,
+        "parameters" : [ ]
+      } ],
+      "uid" : "32ddbd0774aa9ee7eadd28e9f2154060"
+    }, {
+      "name" : "Error: Insufficient funds. The account you tried to send transaction from does not have enough funds. Required 2000000000000000 and got: 0.",
+      "children" : [ {
+        "name" : "that Eth arrive to User TokenId 1 in Mangata and can be sent back",
+        "uid" : "cf578545426c63bf",
+        "parentUid" : "48824bafb7a17c7885e2d0280fb15571",
+        "status" : "failed",
+        "time" : {
+          "start" : 1632908640638,
+          "stop" : 1632908667401,
+          "duration" : 26763
+        },
+        "flaky" : false,
+        "newFailed" : false,
+        "parameters" : [ ]
+      } ],
+      "uid" : "48824bafb7a17c7885e2d0280fb15571"
+    } ],
+    "uid" : "8fb3a91ba5aaf9de24cc8a92edc82b5d"
+  } ],
+  "name" : "categories"
+}
