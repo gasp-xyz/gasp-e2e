@@ -1,0 +1,239 @@
+{
+  "uid" : "b1a8273437954620fa374b796ffaacdd",
+  "children" : [ {
+    "name" : "xyk-pallet: Happy case scenario",
+    "uid" : "b73e19897ae7be6a",
+    "parentUid" : "b1a8273437954620fa374b796ffaacdd",
+    "status" : "passed",
+    "time" : {
+      "start" : 1632899095132,
+      "stop" : 1632899293835,
+      "duration" : 198703
+    },
+    "flaky" : false,
+    "newFailed" : false,
+    "parameters" : [ ]
+  }, {
+    "name" : "xyk-pallet: Liquidity sufficiency scenario",
+    "uid" : "73c74bd0519e2b6b",
+    "parentUid" : "b1a8273437954620fa374b796ffaacdd",
+    "status" : "passed",
+    "time" : {
+      "start" : 1632899293835,
+      "stop" : 1632899599785,
+      "duration" : 305950
+    },
+    "flaky" : false,
+    "newFailed" : false,
+    "parameters" : [ ]
+  }, {
+    "name" : "assets won when assets are sold [Selling Mangata] - 5",
+    "uid" : "afe8a49774bcba67",
+    "parentUid" : "b1a8273437954620fa374b796ffaacdd",
+    "status" : "passed",
+    "time" : {
+      "start" : 1632899602679,
+      "stop" : 1632899707918,
+      "duration" : 105239
+    },
+    "flaky" : false,
+    "newFailed" : false,
+    "parameters" : [ ]
+  }, {
+    "name" : "assets won when assets are bought [Buying Mangata]",
+    "uid" : "ba06396f17a3a26e",
+    "parentUid" : "b1a8273437954620fa374b796ffaacdd",
+    "status" : "passed",
+    "time" : {
+      "start" : 1632899707918,
+      "stop" : 1632899814790,
+      "duration" : 106872
+    },
+    "flaky" : false,
+    "newFailed" : false,
+    "parameters" : [ ]
+  }, {
+    "name" : "assets won when assets are sold [Selling other in MGA pool] - 6",
+    "uid" : "ed13da6ae919ea89",
+    "parentUid" : "b1a8273437954620fa374b796ffaacdd",
+    "status" : "passed",
+    "time" : {
+      "start" : 1632899814790,
+      "stop" : 1632899922992,
+      "duration" : 108202
+    },
+    "flaky" : false,
+    "newFailed" : false,
+    "parameters" : [ ]
+  }, {
+    "name" : "assets won when assets are bought [Buying other in MGA pool]",
+    "uid" : "71d596a4891f14ae",
+    "parentUid" : "b1a8273437954620fa374b796ffaacdd",
+    "status" : "passed",
+    "time" : {
+      "start" : 1632899922992,
+      "stop" : 1632900031231,
+      "duration" : 108239
+    },
+    "flaky" : false,
+    "newFailed" : false,
+    "parameters" : [ ]
+  }, {
+    "name" : "assets won when assets are sold [Selling X connected to MGA pool] - 10",
+    "uid" : "dcdb2440a7c7ef80",
+    "parentUid" : "b1a8273437954620fa374b796ffaacdd",
+    "status" : "passed",
+    "time" : {
+      "start" : 1632900031238,
+      "stop" : 1632900192829,
+      "duration" : 161591
+    },
+    "flaky" : false,
+    "newFailed" : false,
+    "parameters" : [ ]
+  }, {
+    "name" : "assets won when assets are bought [Buying X connected to MGA pool]",
+    "uid" : "582e88fbb67003b9",
+    "parentUid" : "b1a8273437954620fa374b796ffaacdd",
+    "status" : "passed",
+    "time" : {
+      "start" : 1632900192829,
+      "stop" : 1632900361184,
+      "duration" : 168355
+    },
+    "flaky" : false,
+    "newFailed" : false,
+    "parameters" : [ ]
+  }, {
+    "name" : "assets won when assets are sold [Selling Y - X connected toMGA pool] - 6",
+    "uid" : "11cf51544cf36101",
+    "parentUid" : "b1a8273437954620fa374b796ffaacdd",
+    "status" : "passed",
+    "time" : {
+      "start" : 1632900361184,
+      "stop" : 1632900522777,
+      "duration" : 161593
+    },
+    "flaky" : false,
+    "newFailed" : false,
+    "parameters" : [ ]
+  }, {
+    "name" : "assets won when assets are bought [Buying Y - X connected toMGA pool] - 6",
+    "uid" : "da0fcb66ad6e0323",
+    "parentUid" : "b1a8273437954620fa374b796ffaacdd",
+    "status" : "passed",
+    "time" : {
+      "start" : 1632900522777,
+      "stop" : 1632900685792,
+      "duration" : 163015
+    },
+    "flaky" : false,
+    "newFailed" : false,
+    "parameters" : [ ]
+  }, {
+    "name" : "[BUG]Not enough tokens to convert fee LINK[https://trello.com/c/p77t0atO]",
+    "uid" : "a94519dba245c376",
+    "parentUid" : "b1a8273437954620fa374b796ffaacdd",
+    "status" : "skipped",
+    "time" : {
+      "start" : 1632900685795,
+      "stop" : 1632900685795,
+      "duration" : 0
+    },
+    "flaky" : false,
+    "newFailed" : false,
+    "parameters" : [ ]
+  }, {
+    "name" : "xyk-pallet - MGA tokens are substracted as fee : CreatePool",
+    "uid" : "8e285d01f098a376",
+    "parentUid" : "b1a8273437954620fa374b796ffaacdd",
+    "status" : "passed",
+    "time" : {
+      "start" : 1632900811346,
+      "stop" : 1632900907545,
+      "duration" : 96199
+    },
+    "flaky" : false,
+    "newFailed" : false,
+    "parameters" : [ ]
+  }, {
+    "name" : "xyk-pallet - MGA tokens are substracted as fee : MintLiquidity",
+    "uid" : "220a330432769774",
+    "parentUid" : "b1a8273437954620fa374b796ffaacdd",
+    "status" : "passed",
+    "time" : {
+      "start" : 1632900907546,
+      "stop" : 1632900924861,
+      "duration" : 17315
+    },
+    "flaky" : false,
+    "newFailed" : false,
+    "parameters" : [ ]
+  }, {
+    "name" : "xyk-pallet - MGA tokens are substracted as fee : BurnLiquidity",
+    "uid" : "df28c2af98a73b2",
+    "parentUid" : "b1a8273437954620fa374b796ffaacdd",
+    "status" : "passed",
+    "time" : {
+      "start" : 1632900924861,
+      "stop" : 1632900943607,
+      "duration" : 18746
+    },
+    "flaky" : false,
+    "newFailed" : false,
+    "parameters" : [ ]
+  }, {
+    "name" : "xyk-pallet - MGA tokens are substracted as fee : Transfer",
+    "uid" : "60fb2310bee45e47",
+    "parentUid" : "b1a8273437954620fa374b796ffaacdd",
+    "status" : "passed",
+    "time" : {
+      "start" : 1632900943607,
+      "stop" : 1632900960972,
+      "duration" : 17365
+    },
+    "flaky" : false,
+    "newFailed" : false,
+    "parameters" : [ ]
+  }, {
+    "name" : "xyk-pallet - MGA tokens are substracted as fee : TransferAll",
+    "uid" : "ebb1028e1da48bbb",
+    "parentUid" : "b1a8273437954620fa374b796ffaacdd",
+    "status" : "passed",
+    "time" : {
+      "start" : 1632900960972,
+      "stop" : 1632900997023,
+      "duration" : 36051
+    },
+    "flaky" : false,
+    "newFailed" : false,
+    "parameters" : [ ]
+  }, {
+    "name" : "xyk-pallet - MGA tokens are not substracted as fee : SellAsset",
+    "uid" : "4a0108a68e719807",
+    "parentUid" : "b1a8273437954620fa374b796ffaacdd",
+    "status" : "passed",
+    "time" : {
+      "start" : 1632900997023,
+      "stop" : 1632901015693,
+      "duration" : 18670
+    },
+    "flaky" : false,
+    "newFailed" : false,
+    "parameters" : [ ]
+  }, {
+    "name" : "xyk-pallet - MGA tokens are not substracted as fee : BuyAsset",
+    "uid" : "da7aeef72e848666",
+    "parentUid" : "b1a8273437954620fa374b796ffaacdd",
+    "status" : "passed",
+    "time" : {
+      "start" : 1632901015693,
+      "stop" : 1632901033068,
+      "duration" : 17375
+    },
+    "flaky" : false,
+    "newFailed" : false,
+    "parameters" : [ ]
+  } ],
+  "name" : "behaviors"
+}
