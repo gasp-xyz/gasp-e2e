@@ -1,0 +1,121 @@
+[ {
+  "uid" : "5a2058554ea5a185",
+  "name" : "As a User I can Withdraw ETH from Meta extension",
+  "time" : {
+    "start" : 1632899112831,
+    "stop" : 1632899112832,
+    "duration" : 1
+  },
+  "status" : "failed",
+  "severity" : "normal"
+}, {
+  "uid" : "1580c765ad14f50f",
+  "name" : "xyk-CI - validate pools created: Pool[0,6]",
+  "time" : {
+    "start" : 1632899140629,
+    "stop" : 1632899140821,
+    "duration" : 192
+  },
+  "status" : "passed",
+  "severity" : "normal"
+}, {
+  "uid" : "a5856e3003c22f27",
+  "name" : "Validate that Frontend retrieves AssetInfo data",
+  "time" : {
+    "start" : 1632899141788,
+    "stop" : 1632899141789,
+    "duration" : 1
+  },
+  "status" : "failed",
+  "severity" : "normal"
+}, {
+  "uid" : "2108bf5b7423812",
+  "name" : "xyk-CI - validate user got the right Assets",
+  "time" : {
+    "start" : 1632899141013,
+    "stop" : 1632899141418,
+    "duration" : 405
+  },
+  "status" : "passed",
+  "severity" : "normal"
+}, {
+  "uid" : "47e4e7cf1f22bd96",
+  "name" : "xyk-CI - validate pools created: Pool[4,6]",
+  "time" : {
+    "start" : 1632899140821,
+    "stop" : 1632899141013,
+    "duration" : 192
+  },
+  "status" : "passed",
+  "severity" : "normal"
+}, {
+  "uid" : "505257c38b077dc3",
+  "name" : "xyk-CI - Node is up and running",
+  "time" : {
+    "start" : 1632899146009,
+    "stop" : 1632899148112,
+    "duration" : 2103
+  },
+  "status" : "passed",
+  "severity" : "normal"
+}, {
+  "uid" : "6eb22d69eb241666",
+  "name" : "xyk-CI - validate pools created: Pool[4,5]",
+  "time" : {
+    "start" : 1632899140242,
+    "stop" : 1632899140437,
+    "duration" : 195
+  },
+  "status" : "passed",
+  "severity" : "normal"
+}, {
+  "uid" : "50a38289a43f717e",
+  "name" : "As a User I can deposit ETH from Meta extension",
+  "time" : {
+    "start" : 1632899112405,
+    "stop" : 1632899112826,
+    "duration" : 421
+  },
+  "status" : "failed",
+  "severity" : "normal"
+}, {
+  "uid" : "a3bdae87d190d420",
+  "name" : "xyk-CI - validate pools created: Pool[0,5]",
+  "time" : {
+    "start" : 1632899140437,
+    "stop" : 1632899140629,
+    "duration" : 192
+  },
+  "status" : "passed",
+  "severity" : "normal"
+}, {
+  "uid" : "8fcd76258f3b5cda",
+  "name" : "Validate that Mangata Frontend up and running",
+  "time" : {
+    "start" : 1632899141757,
+    "stop" : 1632899141788,
+    "duration" : 31
+  },
+  "status" : "failed",
+  "severity" : "normal"
+}, {
+  "uid" : "aa9228649887b50",
+  "name" : "that Eth arrive to User TokenId 1 in Mangata and can be sent back",
+  "time" : {
+    "start" : 1632899114834,
+    "stop" : 1632899137799,
+    "duration" : 22965
+  },
+  "status" : "failed",
+  "severity" : "normal"
+}, {
+  "uid" : "6d53d09f24cfaec7",
+  "name" : "xyk-CI - AssetInfo contains assets for MGA and Ether",
+  "time" : {
+    "start" : 1632899150289,
+    "stop" : 1632899150498,
+    "duration" : 209
+  },
+  "status" : "passed",
+  "severity" : "normal"
+} ]
