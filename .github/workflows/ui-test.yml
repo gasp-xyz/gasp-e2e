@@ -115,6 +115,16 @@ jobs:
       - name: is selenoid started?
         run: curl http://localhost:4444/status
 
+      - name: Add test context to allure
+        run: |
+          echo 'ENV=${{ github.event.client_payload.environment }}' >> ./environment.properties
+          echo 'TEST_SCRIPT=${{ env.TEST_SCRIPT }}' >> ./environment.properties
+          echo 'UI_URL=${{ env.UI_URL }}' >> ./environment.properties
+          echo 'API_URL=${{ env.API_URL }}' >> ./environment.properties
+          echo 'ETH_APP_ADDRESS=${{ env.ETH_APP_ADDRESS }}' >> ./environment.properties
+          echo 'ETH_20_APP_ADDRESS=${{ env.ETH_20_APP_ADDRESS }}' >> ./environment.properties
+
+  
       - name: Run e2e tests
         run: yarn ${{ env.TEST_SCRIPT }}
       
