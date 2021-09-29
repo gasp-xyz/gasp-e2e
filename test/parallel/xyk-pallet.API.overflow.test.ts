@@ -199,7 +199,8 @@ describe("xyk-pallet - Operate with a pool close to overflow", () => {
 
     expect(testUser1.getAsset(firstCurrency)?.amountAfter).bnEqual(MAX_BALANCE);
   });
-  test("Mint liquidities [1000] assets to a wallet with Max-1000,1000 => overflow.", async () => {
+  //not suported scenario. We are creasing pool og Max-10 and then minting another 100.
+  test.skip("Mint liquidities [1000] assets to a wallet with Max-1000,1000 => overflow.", async () => {
     await mintLiquidity(
       testUser1.keyRingPair,
       firstCurrency,
@@ -209,8 +210,8 @@ describe("xyk-pallet - Operate with a pool close to overflow", () => {
     ).then((result) => {
       const eventResponse = getEventResultFromTxWait(result);
       expect(eventResponse.state).toEqual(ExtrinsicResult.ExtrinsicFailed);
-      //TODO: validate with Stano.
-      //expect(eventResponse.data).toEqual(XyzErrorCodes.MathOverflow);
+
+      //This error is right, the enum comes from the pallet overflow.
       expect(eventResponse.data).toEqual(XyzErrorCodes.PoolAlreadyExists);
     });
     await testUser1.refreshAmounts(AssetWallet.AFTER);
