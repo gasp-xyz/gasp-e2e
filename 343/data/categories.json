@@ -1,0 +1,60 @@
+{
+  "uid" : "4b4757e66a1912dae1a509f688f20b0f",
+  "children" : [ {
+    "name" : "Product defects",
+    "children" : [ {
+      "name" : "Error: Couldn't find the `xsel` binary and fallback didn't work. On Debian/Ubuntu you can install xsel with: sudo apt install xsel",
+      "children" : [ {
+        "name" : "As a User I can deposit ETH from Meta extension",
+        "uid" : "41219849b3503efb",
+        "parentUid" : "b5021865e0e3e7e4ca7bfc75b05c15dc",
+        "status" : "failed",
+        "time" : {
+          "start" : 1632907818594,
+          "stop" : 1632907858424,
+          "duration" : 39830
+        },
+        "flaky" : false,
+        "newFailed" : false,
+        "parameters" : [ ]
+      } ],
+      "uid" : "b5021865e0e3e7e4ca7bfc75b05c15dc"
+    }, {
+      "name" : "TimeoutError: Waiting for element to be located By(xpath, //input[@placeholder='Paste Secret Recovery Phrase from clipboard'])\n                Wait timed out after 10012ms",
+      "children" : [ {
+        "name" : "As a User I can Withdraw ETH from Meta extension",
+        "uid" : "2337672255907e44",
+        "parentUid" : "e1bfb4c5764608425892b25b81e59027",
+        "status" : "failed",
+        "time" : {
+          "start" : 1632907858432,
+          "stop" : 1632907880456,
+          "duration" : 22024
+        },
+        "flaky" : false,
+        "newFailed" : false,
+        "parameters" : [ ]
+      } ],
+      "uid" : "e1bfb4c5764608425892b25b81e59027"
+    }, {
+      "name" : "Error: Insufficient funds. The account you tried to send transaction from does not have enough funds. Required 2000000000000000 and got: 0.",
+      "children" : [ {
+        "name" : "that Eth arrive to User TokenId 1 in Mangata and can be sent back",
+        "uid" : "664da1fe8c25cc17",
+        "parentUid" : "48824bafb7a17c7885e2d0280fb15571",
+        "status" : "failed",
+        "time" : {
+          "start" : 1632907884621,
+          "stop" : 1632907911147,
+          "duration" : 26526
+        },
+        "flaky" : false,
+        "newFailed" : false,
+        "parameters" : [ ]
+      } ],
+      "uid" : "48824bafb7a17c7885e2d0280fb15571"
+    } ],
+    "uid" : "8fb3a91ba5aaf9de24cc8a92edc82b5d"
+  } ],
+  "name" : "categories"
+}
