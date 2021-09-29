@@ -14,7 +14,7 @@ import {
   burnLiquidity,
   mintLiquidity,
 } from "../../utils/tx";
-import { waitNewBlock, ExtrinsicResult } from "../../utils/eventListeners";
+import { ExtrinsicResult } from "../../utils/eventListeners";
 import BN from "bn.js";
 import { Keyring } from "@polkadot/api";
 import { AssetWallet, User } from "../../utils/User";
@@ -48,7 +48,6 @@ describe("xyk-pallet - Check operations are not executed because of overflow in 
       await initApi();
     }
 
-    await waitNewBlock();
     keyring = new Keyring({ type: "sr25519" });
 
     // setup users
@@ -70,7 +69,6 @@ describe("xyk-pallet - Check operations are not executed because of overflow in 
     await testUser1.refreshAmounts(AssetWallet.BEFORE);
   });
   test("Create pool of [MAX,MAX]: OverFlow [a+b] - liquidityAsset calculation", async () => {
-    await waitNewBlock();
     await sudo.mint(secondCurrency, testUser1, new BN(1));
     //UPDATE: Liq assets  = asset1 /2 + asset2/2.
     await createPool(
@@ -128,7 +126,6 @@ describe("xyk-pallet - Operate with a pool close to overflow", () => {
       await initApi();
     }
 
-    await waitNewBlock();
     keyring = new Keyring({ type: "sr25519" });
 
     // setup users
@@ -268,7 +265,6 @@ describe("xyk-pallet - Operate with a user account close to overflow", () => {
       await initApi();
     }
 
-    await waitNewBlock();
     keyring = new Keyring({ type: "sr25519" });
 
     // setup users
@@ -375,7 +371,6 @@ describe.skip("xyk-pallet - Operate with a highly unbalanced pool [mg - newAsset
       await initApi();
     }
 
-    await waitNewBlock();
     keyring = new Keyring({ type: "sr25519" });
 
     // setup users

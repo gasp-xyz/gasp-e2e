@@ -5,9 +5,11 @@ import {
   getText,
   writeText,
 } from "../utils/Helper";
+import { Polkadot } from "./Polkadot";
 
 //SELECTORS
 const INPUT_PERCENTAGE = "removeLiquidityModal-amountCard-amountInput";
+const BTN_CONFIRM = "removeLiquidityModal-confirmBtn";
 
 export class BrunLiquidityModal {
   driver: WebDriver;
@@ -25,5 +27,9 @@ export class BrunLiquidityModal {
     const selector = buildDataTestIdXpath(INPUT_PERCENTAGE);
     await clickElement(this.driver, selector);
     await writeText(this.driver, selector, inputAmount);
+  }
+  async confirmAndSign() {
+    await clickElement(this.driver, buildDataTestIdXpath(BTN_CONFIRM));
+    await Polkadot.signTransaction(this.driver);
   }
 }

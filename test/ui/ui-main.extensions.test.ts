@@ -77,10 +77,10 @@ describe("UI tests - Extension management", () => {
     );
     await driver.quit();
     DriverBuilder.destroy();
-    const api = getApi();
-    const isConnected = await api.isConnected;
-    if (isConnected) {
-      await api.disconnect();
-    }
   });
+});
+
+afterAll(async () => {
+  const api = getApi();
+  await api.disconnect();
 });

@@ -4,17 +4,13 @@
  * @group api
  * @group parallel
  */
-import { api, getApi, initApi } from "../../utils/api";
+import { getApi, getMangataInstance, initApi } from "../../utils/api";
 import {
   getBalanceOfPool,
   mintLiquidity,
   getLiquidityAssetId,
 } from "../../utils/tx";
-import {
-  waitNewBlock,
-  ExtrinsicResult,
-  EventResult,
-} from "../../utils/eventListeners";
+import { ExtrinsicResult, EventResult } from "../../utils/eventListeners";
 import BN from "bn.js";
 import { Keyring } from "@polkadot/api";
 import { AssetWallet, User } from "../../utils/User";
@@ -27,10 +23,7 @@ import {
   calculateLiqAssetAmount,
   getEnvironmentRequiredVars,
 } from "../../utils/utils";
-import {
-  getEventResultFromTxWait,
-  signSendAndWaitToFinishTx,
-} from "../../utils/txHandler";
+import { getEventResultFromTxWait } from "../../utils/txHandler";
 
 jest.spyOn(console, "log").mockImplementation(jest.fn());
 jest.setTimeout(1500000);
@@ -59,7 +52,6 @@ describe("xyk-pallet - Mint liquidity tests: with minting you can", () => {
   });
 
   beforeEach(async () => {
-    await waitNewBlock();
     keyring = new Keyring({ type: "sr25519" });
 
     // setup users
@@ -75,7 +67,7 @@ describe("xyk-pallet - Mint liquidity tests: with minting you can", () => {
   test("Add all the wallet assets to the pool", async () => {
     //valdiated with Gleb the rounding issue to preserve the x*y =k
     const roundingIssue = new BN(1);
-    await waitNewBlock();
+
     // The second currecy value is : defaultCurrecyValue, one to create the pool later, and the other one because of the rounding issue.
     [firstCurrency, secondCurrency] = await Assets.setupUserWithCurrencies(
       testUser1,
@@ -87,14 +79,14 @@ describe("xyk-pallet - Mint liquidity tests: with minting you can", () => {
     );
     await testUser1.addMGATokens(sudo);
     const amounttoThePool = new BN(1);
-    await signSendAndWaitToFinishTx(
-      api?.tx.xyk.createPool(
-        firstCurrency,
-        amounttoThePool,
-        secondCurrency,
-        amounttoThePool
-      ),
-      testUser1.keyRingPair
+    await (
+      await getMangataInstance()
+    ).createPool(
+      testUser1.keyRingPair,
+      firstCurrency.toString(),
+      amounttoThePool,
+      secondCurrency.toString(),
+      amounttoThePool
     );
     const liquidityAssetId = await getLiquidityAssetId(
       firstCurrency,
@@ -106,7 +98,6 @@ describe("xyk-pallet - Mint liquidity tests: with minting you can", () => {
       firstCurrency,
       secondCurrency
     );
-    await waitNewBlock();
 
     await testUser1.refreshAmounts(AssetWallet.BEFORE);
     await testUser1.mintLiquidity(
@@ -127,26 +118,37 @@ describe("xyk-pallet - Mint liquidity tests: with minting you can", () => {
         .add(roundingIssue),
     ]).collectionBnEqual(poolBalanceAfterMinting);
 
-    testUser1.validateWalletReduced(
-      firstCurrency,
-      new BN(defaultCurrencyValue)
+    let diffFromWallet = testUser1
+      .getAsset(firstCurrency)
+      ?.amountBefore!.sub(defaultCurrencyValue);
+    expect(testUser1.getAsset(firstCurrency)?.amountAfter!).bnEqual(
+      diffFromWallet!
     );
-    testUser1.validateWalletReduced(
-      secondCurrency,
-      new BN(defaultCurrencyValue).add(roundingIssue)
+
+    diffFromWallet = testUser1
+      .getAsset(secondCurrency)
+      ?.amountBefore!.sub(defaultCurrencyValue.add(roundingIssue));
+    expect(testUser1.getAsset(firstCurrency)?.amountAfter!).bnEqual(
+      diffFromWallet!
     );
 
     //minting must not add any treasury
-    testUser1.validateWalletIncreased(
-      liquidityAssetId,
-      calculateLiqAssetAmount(defaultCurrencyValue, defaultCurrencyValue)
+    const amount = calculateLiqAssetAmount(
+      defaultCurrencyValue,
+      defaultCurrencyValue
     );
+    const addFromWallet = testUser1
+      .getAsset(liquidityAssetId)
+      ?.amountBefore!.add(amount);
+    expect(testUser1.getAsset(liquidityAssetId)?.amountAfter!).bnEqual(
+      addFromWallet!
+    );
+
     await validateTreasuryAmountsEqual(firstCurrency, [new BN(0), new BN(0)]);
     await validateTreasuryAmountsEqual(secondCurrency, [new BN(0), new BN(0)]);
   });
 
   test("Expect an event when liquidirty is minted", async () => {
-    await waitNewBlock();
     // The second currecy value is : defaultCurrecyValue, one to create the pool later, and the other one because of the rounding issue.
     [firstCurrency, secondCurrency] = await Assets.setupUserWithCurrencies(
       testUser1,
@@ -155,15 +157,16 @@ describe("xyk-pallet - Mint liquidity tests: with minting you can", () => {
     );
     await testUser1.addMGATokens(sudo);
     const amounttoThePool = new BN(defaultCurrencyValue).div(new BN(2));
-    await signSendAndWaitToFinishTx(
-      api?.tx.xyk.createPool(
-        firstCurrency,
-        amounttoThePool,
-        secondCurrency,
-        amounttoThePool
-      ),
-      testUser1.keyRingPair
+    await (
+      await getMangataInstance()
+    ).createPool(
+      testUser1.keyRingPair,
+      firstCurrency.toString(),
+      amounttoThePool,
+      secondCurrency.toString(),
+      amounttoThePool
     );
+
     const liquidityAssetId = await getLiquidityAssetId(
       firstCurrency,
       secondCurrency
@@ -174,7 +177,6 @@ describe("xyk-pallet - Mint liquidity tests: with minting you can", () => {
       firstCurrency,
       secondCurrency
     );
-    await waitNewBlock();
 
     await testUser1.refreshAmounts(AssetWallet.BEFORE);
     const injectedValue = amounttoThePool.div(new BN(2));
@@ -218,13 +220,29 @@ describe("xyk-pallet - Mint liquidity tests: with minting you can", () => {
       poolBalanceWhenCreated[1].add(secondCurrencyAmountLost),
     ]).collectionBnEqual(poolBalanceAfterMinting);
 
-    testUser1.validateWalletReduced(firstCurrency, injectedValue);
-    testUser1.validateWalletReduced(secondCurrency, secondCurrencyAmountLost);
-    //No trading - no Treasure added.
-    testUser1.validateWalletIncreased(
-      liquidityAssetId,
-      calculateLiqAssetAmount(injectedValue, injectedValue)
+    let diffFromWallet = testUser1
+      .getAsset(secondCurrency)
+      ?.amountBefore!.sub(injectedValue);
+    expect(testUser1.getAsset(firstCurrency)?.amountAfter!).bnEqual(
+      diffFromWallet!
     );
+
+    diffFromWallet = testUser1
+      .getAsset(secondCurrency)
+      ?.amountBefore!.sub(secondCurrencyAmountLost);
+    expect(testUser1.getAsset(secondCurrency)?.amountAfter!).bnEqual(
+      diffFromWallet!
+    );
+
+    //No trading - no Treasure added.
+    const amount = calculateLiqAssetAmount(injectedValue, injectedValue);
+    const addFromWallet = testUser1
+      .getAsset(liquidityAssetId)
+      ?.amountBefore!.add(amount);
+    expect(testUser1.getAsset(liquidityAssetId)?.amountAfter!).bnEqual(
+      addFromWallet!
+    );
+
     await validateTreasuryAmountsEqual(firstCurrency, [new BN(0), new BN(0)]);
     await validateTreasuryAmountsEqual(secondCurrency, [new BN(0), new BN(0)]);
   });

@@ -11,7 +11,6 @@ import {
   getLiquidityAssetId,
   signTx,
 } from "../../utils/tx";
-import { waitNewBlock } from "../../utils/eventListeners";
 import BN from "bn.js";
 import { Keyring } from "@polkadot/api";
 import { AssetWallet, User } from "../../utils/User";
@@ -46,7 +45,6 @@ beforeEach(async () => {
     await initApi();
   }
 
-  await waitNewBlock();
   keyring = new Keyring({ type: "sr25519" });
 
   // setup users
@@ -60,7 +58,7 @@ beforeEach(async () => {
     sudo
   );
   //add zero MGA tokens.
-  await testUser1.addMGATokens(sudo, 0);
+  await testUser1.addMGATokens(sudo, new BN(0));
   // add users to pair.
   keyring.addPair(testUser1.keyRingPair);
   keyring.addPair(sudo.keyRingPair);
@@ -183,7 +181,9 @@ afterEach(async () => {
   //validate
   await testUser1.refreshAmounts(AssetWallet.AFTER);
 
-  await testUser1.validateWalletsUnmodified();
+  testUser1.assets.forEach((asset) => {
+    expect(asset.amountBefore).bnEqual(asset.amountAfter);
+  });
 
   const pool_balance = await getBalanceOfPool(firstCurrency, secondCurrency);
   expect([pool_balance_before[0], pool_balance_before[1]]).toEqual(

@@ -1,6 +1,6 @@
-import { getApi, initApi } from "../../utils/api";
+import { getApi, getMangataInstance, initApi } from "../../utils/api";
 import { getCurrentNonce } from "../../utils/tx";
-import { ExtrinsicResult, waitNewBlock } from "../../utils/eventListeners";
+import { ExtrinsicResult } from "../../utils/eventListeners";
 import BN from "bn.js";
 import { Keyring } from "@polkadot/api";
 import { AssetWallet, User } from "../../utils/User";
@@ -43,7 +43,6 @@ beforeEach(async () => {
     await initApi();
   }
 
-  await waitNewBlock();
   keyring = new Keyring({ type: "sr25519" });
 
   // setup users
@@ -91,19 +90,18 @@ test("xyk-pallet - Calculate required MGA fee - CreatePool", async () => {
       second_asset_amount
     )
     .paymentInfo(testUser1.keyRingPair, opt);
-  await signAndWaitTx(
-    api?.tx.xyk.createPool(
-      firstCurrency,
+  await (await getMangataInstance())
+    .createPool(
+      testUser1.keyRingPair,
+      firstCurrency.toString(),
       first_asset_amount,
-      secondCurrency,
+      secondCurrency.toString(),
       second_asset_amount
-    ),
-    testUser1.keyRingPair,
-    await (await getCurrentNonce(testUser1.keyRingPair.address)).toNumber()
-  ).then((result) => {
-    const eventResponse = getEventResultFromTxWait(result);
-    expect(eventResponse.state).toEqual(ExtrinsicResult.ExtrinsicSuccess);
-  });
+    )
+    .then((result) => {
+      const eventResponse = getEventResultFromTxWait(result);
+      expect(eventResponse.state).toEqual(ExtrinsicResult.ExtrinsicSuccess);
+    });
 });
 
 test("xyk-pallet - Calculate required MGA fee - BuyAsset", async () => {

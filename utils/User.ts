@@ -5,7 +5,6 @@ import { v4 as uuid } from "uuid";
 import { ExtrinsicResult, waitNewBlock } from "./eventListeners";
 import { testLog } from "./Logger";
 import {
-  balanceTransfer,
   buyAsset,
   createPool,
   getAccountInfo,
@@ -17,7 +16,7 @@ import {
   transferAll,
 } from "./tx";
 import { getEventResultFromTxWait } from "./txHandler";
-import { MGA_ASSET_ID } from "./Constants";
+import { MAX_BALANCE, MGA_ASSET_ID } from "./Constants";
 
 export enum AssetWallet {
   BEFORE,
@@ -61,24 +60,6 @@ export class User {
   addFromAddress(keyring: Keyring, address: string) {
     this.keyRingPair = keyring.addFromAddress(address);
     this.name = "addres_created_account";
-  }
-
-  validateWalletReduced(currencyId: BN, amount: BN) {
-    const diffFromWallet = this.getAsset(currencyId)?.amountBefore!.sub(amount);
-    expect(this.getAsset(currencyId)?.amountAfter!).bnEqual(diffFromWallet!);
-  }
-  validateWalletIncreased(currencyId: BN, amount: BN) {
-    const addFromWallet = this.getAsset(currencyId)?.amountBefore!.add(amount);
-    expect(this.getAsset(currencyId)?.amountAfter!).bnEqual(addFromWallet!);
-  }
-  validateWalletEquals(currencyId: BN, amount: BN) {
-    expect(this.getAsset(currencyId)?.amountAfter!).bnEqual(amount);
-  }
-
-  validateWalletsUnmodified() {
-    this.assets.forEach((asset) => {
-      expect(asset.amountBefore).bnEqual(asset.amountAfter);
-    });
   }
 
   addAsset(currecncyId: any, amountBefore = new BN(0)) {
@@ -135,8 +116,6 @@ export class User {
   }
 
   async mint(assetId: BN, user: User, amount: BN) {
-    await waitNewBlock();
-
     await mintAsset(
       this.keyRingPair,
       assetId,
@@ -150,7 +129,6 @@ export class User {
       ]);
       expect(eventResponse.state).toEqual(ExtrinsicResult.ExtrinsicSuccess);
     });
-    await waitNewBlock();
   }
 
   async sellAssets(soldAssetId: BN, boughtAssetId: BN, amount: BN) {
@@ -168,13 +146,12 @@ export class User {
       ]);
       expect(eventResponse.state).toEqual(ExtrinsicResult.ExtrinsicSuccess);
     });
-    await waitNewBlock();
   }
   async mintLiquidity(
     firstCurrency: BN,
     secondCurrency: BN,
     firstCurrencyAmount: BN,
-    secondCurrencyAmount: BN = new BN(Number.MAX_SAFE_INTEGER)
+    secondCurrencyAmount: BN = new BN(MAX_BALANCE)
   ) {
     await mintLiquidity(
       this.keyRingPair,
@@ -190,7 +167,6 @@ export class User {
       ]);
       expect(eventResponse.state).toEqual(ExtrinsicResult.ExtrinsicSuccess);
     });
-    await waitNewBlock();
   }
 
   async removeTokens() {
@@ -225,43 +201,28 @@ export class User {
       ]);
       expect(eventResponse.state).toEqual(ExtrinsicResult.ExtrinsicSuccess);
     });
-    await waitNewBlock();
   }
 
-  async addBalance(
-    user: string = "//Alice",
-    amount: number = Math.pow(10, 11)
+  async addMGATokens(
+    sudo: User,
+    amountFree: BN = new BN(Math.pow(10, 11).toString())
   ) {
-    await balanceTransfer(
-      new User(this.keyring, user).keyRingPair,
-      this.keyRingPair.address,
-      amount
-    ).then((result) => {
-      const eventResponse = getEventResultFromTxWait(result, [
-        "balances",
-        "Transfer",
-        this.keyRingPair.address,
-      ]);
-      expect(eventResponse.state).toEqual(ExtrinsicResult.ExtrinsicSuccess);
-    });
-
-    await this.waitUntilBalanceIsNotZero();
-  }
-
-  async addMGATokens(sudo: User, amountFree: number = Math.pow(10, 11)) {
-    await sudo.mint(MGA_ASSET_ID, this, new BN(amountFree));
+    await sudo.mint(MGA_ASSET_ID, this, amountFree);
   }
   async getUserAccountInfo() {
     const accountInfo = await getAccountInfo(this.keyRingPair.address);
     return accountInfo;
   }
-  async waitUntilBalanceIsNotZero() {
-    let amount = "0";
+  static async waitUntilBNChanged(
+    amountBefore: BN,
+    fn: () => Promise<BN>
+  ): Promise<void> {
+    let amount: BN;
     do {
       await waitNewBlock();
-      const accountData = await this.getUserAccountInfo();
-      amount = accountData.free;
-    } while (amount === "0");
+      const newBalance = await fn();
+      amount = newBalance;
+    } while (amount.eq(amountBefore));
   }
 }
 

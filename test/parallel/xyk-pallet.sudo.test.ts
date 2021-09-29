@@ -5,14 +5,16 @@
  * @group parallel
  */
 import { getApi, initApi } from "../../utils/api";
-import { getUserAssets, getSudoKey, sudoIssueAsset } from "../../utils/tx";
-import { waitNewBlock } from "../../utils/eventListeners";
+import { getUserAssets, getSudoKey } from "../../utils/tx";
 import BN from "bn.js";
 import { Keyring } from "@polkadot/api";
 import { User } from "../../utils/User";
 import { validateTransactionSucessful } from "../../utils/validators";
 import { getEnvironmentRequiredVars } from "../../utils/utils";
-import { getEventResultFromTxWait } from "../../utils/txHandler";
+import {
+  getEventResultFromTxWait,
+  sudoIssueAsset,
+} from "../../utils/txHandler";
 import { testLog } from "../../utils/Logger";
 
 jest.spyOn(console, "log").mockImplementation(jest.fn());
@@ -32,7 +34,6 @@ beforeAll(async () => {
 });
 
 beforeEach(async () => {
-  await waitNewBlock();
   keyring = new Keyring({ type: "sr25519" });
 
   // setup users
@@ -102,7 +103,6 @@ test("xyk-pallet - Sudo tests: Sudo Issue two  different assets to the same acco
     .getLog()
     .info("Sudo: asset issued " + assetId + " to " + testUser.name);
 
-  await waitNewBlock();
   // act2 : send the second asset issue.
   const tokensSecondAmount = 120000;
   let secondAssetId = new BN(0);

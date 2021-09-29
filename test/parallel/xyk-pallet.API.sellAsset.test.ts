@@ -4,7 +4,7 @@
  * @group api
  * @group parallel
  */
-import { api, getApi, initApi } from "../../utils/api";
+import { getApi, getMangataInstance, initApi } from "../../utils/api";
 import {
   getBalanceOfPool,
   sellAsset,
@@ -12,7 +12,7 @@ import {
   getTreasury,
   getTreasuryBurn,
 } from "../../utils/tx";
-import { waitNewBlock, ExtrinsicResult } from "../../utils/eventListeners";
+import { ExtrinsicResult } from "../../utils/eventListeners";
 import BN from "bn.js";
 import { Keyring } from "@polkadot/api";
 import { AssetWallet, User } from "../../utils/User";
@@ -22,10 +22,7 @@ import {
 } from "../../utils/validators";
 import { Assets } from "../../utils/Assets";
 import { getEnvironmentRequiredVars } from "../../utils/utils";
-import {
-  getEventResultFromTxWait,
-  signSendAndWaitToFinishTx,
-} from "../../utils/txHandler";
+import { getEventResultFromTxWait } from "../../utils/txHandler";
 
 jest.spyOn(console, "log").mockImplementation(jest.fn());
 jest.setTimeout(1500000);
@@ -55,7 +52,6 @@ describe("xyk-pallet - Sell assets tests: SellAsset Errors:", () => {
   });
 
   beforeEach(async () => {
-    await waitNewBlock();
     keyring = new Keyring({ type: "sr25519" });
 
     // setup users
@@ -77,7 +73,6 @@ describe("xyk-pallet - Sell assets tests: SellAsset Errors:", () => {
     );
     await testUser1.refreshAmounts(AssetWallet.BEFORE);
 
-    await waitNewBlock();
     const [thirdCurrency] = await Assets.setupUserWithCurrencies(
       testUser1,
       [defaultCurrecyValue],
@@ -116,7 +111,6 @@ describe("xyk-pallet - Sell assets tests: SellAsset Errors:", () => {
   });
 
   test("Try sell more assets than owned", async () => {
-    await waitNewBlock();
     [firstCurrency, secondCurrency] = await Assets.setupUserWithCurrencies(
       testUser1,
       [defaultCurrecyValue, defaultCurrecyValue.add(new BN(1))],
@@ -124,16 +118,16 @@ describe("xyk-pallet - Sell assets tests: SellAsset Errors:", () => {
     );
     await testUser1.addMGATokens(sudo);
     await testUser1.refreshAmounts(AssetWallet.BEFORE);
-    await signSendAndWaitToFinishTx(
-      api?.tx.xyk.createPool(
-        firstCurrency,
-        first_asset_amount,
-        secondCurrency,
-        second_asset_amount.div(new BN(2))
-      ),
-      testUser1.keyRingPair
+    await (
+      await getMangataInstance()
+    ).createPool(
+      testUser1.keyRingPair,
+      firstCurrency.toString(),
+      first_asset_amount,
+      secondCurrency.toString(),
+      second_asset_amount.div(new BN(2))
     );
-    await waitNewBlock();
+
     let remainingOfCurrency1 = testUser1
       .getAsset(firstCurrency)
       ?.amountBefore!.sub(first_asset_amount)!;
@@ -158,7 +152,6 @@ describe("xyk-pallet - Sell assets tests: SellAsset Errors:", () => {
       expect(eventResponse.state).toEqual(ExtrinsicResult.ExtrinsicSuccess);
     });
 
-    await waitNewBlock();
     await testUser1.refreshAmounts(AssetWallet.AFTER);
     remainingOfCurrency1 = testUser1.getAsset(firstCurrency)?.amountAfter!;
     expect(remainingOfCurrency1).bnEqual(new BN(1));
@@ -181,11 +174,17 @@ describe("xyk-pallet - Sell assets tests: SellAsset Errors:", () => {
     });
 
     await testUser1.refreshAmounts(AssetWallet.AFTER);
-    await testUser1.validateWalletReduced(
-      firstCurrency,
-      new BN(defaultCurrecyValue).sub(new BN(1))
+
+    const diffFromWallet = testUser1
+      .getAsset(firstCurrency)
+      ?.amountBefore!.sub(new BN(defaultCurrecyValue).sub(new BN(1)));
+    expect(testUser1.getAsset(firstCurrency)?.amountAfter!).bnEqual(
+      diffFromWallet!
     );
-    await testUser1.validateWalletEquals(secondCurrency, secondWalletAmount);
+
+    expect(testUser1.getAsset(secondCurrency)?.amountAfter!).bnEqual(
+      secondWalletAmount
+    );
 
     const pool_balance = await getBalanceOfPool(firstCurrency, secondCurrency);
 
@@ -216,7 +215,6 @@ describe("xyk-pallet - Sell assets tests: SellAsset Errors:", () => {
   });
 
   test("Sell assets with a high expectation: limit +1", async () => {
-    await waitNewBlock();
     [firstCurrency, secondCurrency] = await Assets.setupUserWithCurrencies(
       testUser1,
       [defaultCurrecyValue, defaultCurrecyValue.add(new BN(1))],
@@ -224,19 +222,18 @@ describe("xyk-pallet - Sell assets tests: SellAsset Errors:", () => {
     );
     await testUser1.addMGATokens(sudo);
     const secondAssetAmount = second_asset_amount.div(new BN(2));
-    await signSendAndWaitToFinishTx(
-      api?.tx.xyk.createPool(
-        firstCurrency,
-        first_asset_amount,
-        secondCurrency,
-        secondAssetAmount
-      ),
-      testUser1.keyRingPair
+    await (
+      await getMangataInstance()
+    ).createPool(
+      testUser1.keyRingPair,
+      firstCurrency.toString(),
+      first_asset_amount,
+      secondCurrency.toString(),
+      secondAssetAmount
     );
     await testUser1.refreshAmounts(AssetWallet.BEFORE);
     const remainingOfCurrency1 =
       testUser1.getAsset(firstCurrency)?.amountBefore!;
-    await waitNewBlock();
 
     const sellPriceLocal = calculate_sell_price_local(
       first_asset_amount,
@@ -257,12 +254,17 @@ describe("xyk-pallet - Sell assets tests: SellAsset Errors:", () => {
     //fee: 603 ??  //TODO: validate with Stano.
     const feeToAvoidFrontRunning = new BN(603);
     await testUser1.refreshAmounts(AssetWallet.AFTER);
-    testUser1.validateWalletReduced(firstCurrency, feeToAvoidFrontRunning);
-    //second wallet should not be modified.
-    testUser1.validateWalletEquals(
-      secondCurrency,
-      testUser1.getAsset(secondCurrency)?.amountBefore!
+
+    const diffFromWallet = testUser1
+      .getAsset(firstCurrency)
+      ?.amountBefore!.sub(feeToAvoidFrontRunning);
+    expect(testUser1.getAsset(firstCurrency)?.amountAfter!).bnEqual(
+      diffFromWallet!
     );
+
+    //second wallet should not be modified.
+    const amount = testUser1.getAsset(secondCurrency)?.amountBefore!;
+    expect(testUser1.getAsset(secondCurrency)?.amountAfter!).bnEqual(amount);
 
     const treasury = await getTreasury(firstCurrency);
     const treasuryBurn = await getTreasuryBurn(firstCurrency);
@@ -295,7 +297,6 @@ describe("xyk-pallet - Sell assets tests: Selling Assets you can", () => {
   });
 
   beforeEach(async () => {
-    await waitNewBlock();
     keyring = new Keyring({ type: "sr25519" });
 
     // setup users
@@ -309,26 +310,25 @@ describe("xyk-pallet - Sell assets tests: Selling Assets you can", () => {
   });
 
   test("Sell assets with a high expectation: limit - OK", async () => {
-    await waitNewBlock();
     [firstCurrency, secondCurrency] = await Assets.setupUserWithCurrencies(
       testUser1,
       [defaultCurrecyValue, defaultCurrecyValue.add(new BN(1))],
       sudo
     );
     await testUser1.addMGATokens(sudo);
-    await signSendAndWaitToFinishTx(
-      api?.tx.xyk.createPool(
-        firstCurrency,
-        first_asset_amount,
-        secondCurrency,
-        second_asset_amount.div(new BN(2))
-      ),
-      testUser1.keyRingPair
+    await (
+      await getMangataInstance()
+    ).createPool(
+      testUser1.keyRingPair,
+      firstCurrency.toString(),
+      first_asset_amount,
+      secondCurrency.toString(),
+      second_asset_amount.div(new BN(2))
     );
+
     await testUser1.refreshAmounts(AssetWallet.BEFORE);
     const remainingOfCurrency1 =
       testUser1.getAsset(firstCurrency)?.amountBefore!;
-    await waitNewBlock();
 
     const sellPriceLocal = calculate_sell_price_local(
       first_asset_amount,
@@ -360,17 +360,21 @@ describe("xyk-pallet - Sell assets tests: Selling Assets you can", () => {
 
     await testUser1.refreshAmounts(AssetWallet.AFTER);
     //spent all the money!
-    await testUser1.validateWalletEquals(firstCurrency, new BN(0));
+
+    const amount = new BN(0);
+    expect(testUser1.getAsset(firstCurrency)?.amountAfter!).bnEqual(amount);
     //amounAsset2 = issued  - spent in the pool + bought selling all firstCurerncy.
-    const amounAsset2 = defaultCurrecyValue
+    const amountAsset2 = defaultCurrecyValue
       .add(new BN(1))
       .sub(second_asset_amount.div(new BN(2)))
       .add(sellPriceLocal);
-    await testUser1.validateWalletEquals(secondCurrency, amounAsset2);
+
+    expect(testUser1.getAsset(secondCurrency)?.amountAfter!).bnEqual(
+      amountAsset2
+    );
   });
 
   test("Sell assets from a wallet I own into a wallet I do not own: limit", async () => {
-    await waitNewBlock();
     // setup users
     const testUser2 = new User(keyring);
     keyring.addPair(testUser2.keyRingPair);
@@ -387,29 +391,30 @@ describe("xyk-pallet - Sell assets tests: Selling Assets you can", () => {
 
     await sudo.mint(thirdCurrency, testUser1, new BN(10000));
     await testUser1.addMGATokens(sudo);
-    await signSendAndWaitToFinishTx(
-      api?.tx.xyk.createPool(
-        firstCurrency,
-        first_asset_amount,
-        secondCurrency,
-        second_asset_amount.div(new BN(2))
-      ),
-      testUser1.keyRingPair
+    await (
+      await getMangataInstance()
+    ).createPool(
+      testUser1.keyRingPair,
+      firstCurrency.toString(),
+      first_asset_amount,
+      secondCurrency.toString(),
+      second_asset_amount.div(new BN(2))
     );
-    await signSendAndWaitToFinishTx(
-      api?.tx.xyk.createPool(
-        firstCurrency,
-        new BN(10000),
-        thirdCurrency,
-        new BN(10000).div(new BN(2))
-      ),
-      testUser1.keyRingPair
+
+    await (
+      await getMangataInstance()
+    ).createPool(
+      testUser1.keyRingPair,
+      firstCurrency.toString(),
+      new BN(10000),
+      thirdCurrency.toString(),
+      new BN(10000).div(new BN(2))
     );
 
     await testUser2.refreshAmounts(AssetWallet.BEFORE);
     const remainingOfCurrency3 =
       testUser2.getAsset(thirdCurrency)?.amountBefore!;
-    await waitNewBlock();
+
     const sellPriceLocal = calculate_sell_price_local(
       new BN(10000).div(new BN(2)),
       new BN(10000),
@@ -440,7 +445,11 @@ describe("xyk-pallet - Sell assets tests: Selling Assets you can", () => {
     });
     testUser2.addAsset(firstCurrency);
     await testUser2.refreshAmounts(AssetWallet.AFTER);
-    testUser2.validateWalletEquals(thirdCurrency, new BN(0));
-    testUser2.validateWalletEquals(firstCurrency, sellPriceLocal);
+
+    let amount = new BN(0);
+    expect(testUser2.getAsset(thirdCurrency)?.amountAfter!).bnEqual(amount);
+
+    amount = sellPriceLocal;
+    expect(testUser2.getAsset(firstCurrency)?.amountAfter!).bnEqual(amount);
   });
 });

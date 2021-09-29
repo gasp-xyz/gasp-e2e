@@ -13,12 +13,9 @@ import {
   mintLiquidity,
   burnLiquidity,
   createPool,
+  getLiquidityPool,
 } from "../../utils/tx";
-import {
-  waitNewBlock,
-  ExtrinsicResult,
-  EventResult,
-} from "../../utils/eventListeners";
+import { ExtrinsicResult, EventResult } from "../../utils/eventListeners";
 import BN from "bn.js";
 import { Keyring } from "@polkadot/api";
 import { AssetWallet, User } from "../../utils/User";
@@ -34,6 +31,7 @@ import {
 } from "../../utils/utils";
 import { getEventResultFromTxWait } from "../../utils/txHandler";
 import { testLog } from "../../utils/Logger";
+import { hexToBn } from "@polkadot/util";
 
 jest.spyOn(console, "log").mockImplementation(jest.fn());
 jest.setTimeout(1500000);
@@ -44,7 +42,7 @@ const first_asset_amount = new BN(50000);
 const second_asset_amount = new BN(50000);
 const defaultCurrecyValue = new BN(250000);
 
-describe("xyk-pallet - Sell Asset: validate Errors:", () => {
+describe("xyk-pallet - Poll creation: Errors:", () => {
   let testUser1: User;
   let sudo: User;
 
@@ -63,7 +61,6 @@ describe("xyk-pallet - Sell Asset: validate Errors:", () => {
       await initApi();
     }
 
-    await waitNewBlock();
     keyring = new Keyring({ type: "sr25519" });
 
     // setup users
@@ -122,7 +119,6 @@ describe("xyk-pallet - Sell Asset: validate Errors:", () => {
     );
   });
   test("Create x-y and y-x pool", async () => {
-    await waitNewBlock();
     testLog
       .getLog()
       .info(
@@ -144,7 +140,6 @@ describe("xyk-pallet - Sell Asset: validate Errors:", () => {
     });
   });
   test("Create pool with zero", async () => {
-    await waitNewBlock();
     const nextAssetId = await getNextAssetId();
     const emptyAssetID = new BN(nextAssetId.toString());
 
@@ -164,7 +159,6 @@ describe("xyk-pallet - Sell Asset: validate Errors:", () => {
     expect(balance).toEqual([new BN(0), new BN(0)]);
   });
   test("Not enough assets", async () => {
-    await waitNewBlock();
     const txAmount = new BN(100000000000000);
     const testAssetId = await Assets.setupUserWithCurrencies(
       testUser1,
@@ -277,12 +271,27 @@ describe("xyk-pallet - Pool tests: a pool can:", () => {
     testUser2.addAsset(liquidity_asset_id, new BN(0));
     await testUser2.refreshAmounts(AssetWallet.AFTER);
 
-    await testUser2.validateWalletIncreased(liquidity_asset_id, new BN(5000));
-    await testUser2.validateWalletReduced(firstCurrency, new BN(5000));
-    await testUser2.validateWalletReduced(
-      secondCurrency,
-      new BN(5000).add(new BN(1))
+    const addFromWallet = testUser2
+      .getAsset(liquidity_asset_id)
+      ?.amountBefore!.add(new BN(5000));
+    expect(testUser2.getAsset(liquidity_asset_id)?.amountAfter!).bnEqual(
+      addFromWallet!
     );
+
+    let diffFromWallet = testUser2
+      .getAsset(firstCurrency)
+      ?.amountBefore!.sub(new BN(5000));
+    expect(testUser2.getAsset(firstCurrency)?.amountAfter!).bnEqual(
+      diffFromWallet!
+    );
+
+    diffFromWallet = testUser2
+      .getAsset(secondCurrency)
+      ?.amountBefore!.sub(new BN(5000).add(new BN(1)));
+    expect(testUser2.getAsset(secondCurrency)?.amountAfter!).bnEqual(
+      diffFromWallet!
+    );
+
     //TODO: pending to validate.
     const pool_balance = await getBalanceOfPool(firstCurrency, secondCurrency);
     expect([
@@ -347,9 +356,28 @@ describe("xyk-pallet - Pool tests: a pool can:", () => {
     });
 
     await testUser2.refreshAmounts(AssetWallet.AFTER);
-    await testUser2.validateWalletReduced(liquidity_asset_id, new BN(2500));
-    await testUser2.validateWalletIncreased(firstCurrency, new BN(2500));
-    await testUser2.validateWalletIncreased(secondCurrency, new BN(2500));
+
+    const diffFromWallet = testUser2
+      .getAsset(liquidity_asset_id)
+      ?.amountBefore!.sub(new BN(2500));
+    expect(testUser2.getAsset(liquidity_asset_id)?.amountAfter!).bnEqual(
+      diffFromWallet!
+    );
+
+    let addFromWallet = testUser2
+      .getAsset(firstCurrency)
+      ?.amountBefore!.add(new BN(2500));
+    expect(testUser2.getAsset(firstCurrency)?.amountAfter!).bnEqual(
+      addFromWallet!
+    );
+
+    addFromWallet = testUser2
+      .getAsset(secondCurrency)
+      ?.amountBefore!.add(new BN(2500));
+    expect(testUser2.getAsset(secondCurrency)?.amountAfter!).bnEqual(
+      addFromWallet!
+    );
+
     //TODO: pending to validate.
     const pool_balance = await getBalanceOfPool(firstCurrency, secondCurrency);
     expect([
@@ -377,11 +405,155 @@ describe("xyk-pallet - Pool tests: a pool can:", () => {
     testUser1.addAsset(liquidity_asset_id, new BN(0));
     //validate
     await testUser1.refreshAmounts(AssetWallet.AFTER);
-    await testUser1.validateWalletReduced(firstCurrency, first_asset_amount);
-    await testUser1.validateWalletReduced(secondCurrency, second_asset_amount);
-    await testUser1.validateWalletIncreased(
-      liquidity_asset_id,
-      liquidity_assets_minted
+
+    let diffFromWallet = testUser1
+      .getAsset(firstCurrency)
+      ?.amountBefore!.sub(first_asset_amount);
+    expect(testUser1.getAsset(firstCurrency)?.amountAfter!).bnEqual(
+      diffFromWallet!
     );
+
+    diffFromWallet = testUser1
+      .getAsset(secondCurrency)
+      ?.amountBefore!.sub(second_asset_amount);
+    expect(testUser1.getAsset(secondCurrency)?.amountAfter!).bnEqual(
+      diffFromWallet!
+    );
+
+    const addFromWallet = testUser1
+      .getAsset(liquidity_asset_id)
+      ?.amountBefore!.add(liquidity_assets_minted);
+    expect(testUser1.getAsset(liquidity_asset_id)?.amountAfter!).bnEqual(
+      addFromWallet!
+    );
+  });
+});
+
+describe("xyk-pallet - Pool opeations: Simmetry", () => {
+  let testUser1: User;
+  let sudo: User;
+
+  let keyring: Keyring;
+  let firstCurrency: BN;
+  let secondCurrency: BN;
+
+  beforeAll(async () => {
+    try {
+      getApi();
+    } catch (e) {
+      await initApi();
+    }
+
+    keyring = new Keyring({ type: "sr25519" });
+
+    // setup users
+    testUser1 = new User(keyring);
+
+    sudo = new User(keyring, sudoUserName);
+
+    //add two currencies and balance to testUser:
+    [firstCurrency, secondCurrency] = await Assets.setupUserWithCurrencies(
+      testUser1,
+      [defaultCurrecyValue, defaultCurrecyValue.add(new BN(1))],
+      sudo
+    );
+    await testUser1.addMGATokens(sudo);
+    // add users to pair.
+    keyring.addPair(testUser1.keyRingPair);
+    keyring.addPair(sudo.keyRingPair);
+
+    // check users accounts.
+    await testUser1.refreshAmounts(AssetWallet.BEFORE);
+    validateAssetsWithValues(
+      [
+        testUser1.getAsset(firstCurrency)?.amountBefore!,
+        testUser1.getAsset(secondCurrency)?.amountBefore!,
+      ],
+      [
+        defaultCurrecyValue.toNumber(),
+        defaultCurrecyValue.add(new BN(1)).toNumber(),
+      ]
+    );
+
+    let eventResponse: EventResult = new EventResult(0, "");
+    await createPool(
+      testUser1.keyRingPair,
+      secondCurrency,
+      first_asset_amount,
+      firstCurrency,
+      second_asset_amount
+    ).then((result) => {
+      eventResponse = getEventResultFromTxWait(result, [
+        "xyk",
+        "PoolCreated",
+        testUser1.keyRingPair.address,
+      ]);
+      expect(eventResponse.state).toEqual(ExtrinsicResult.ExtrinsicSuccess);
+    });
+  });
+  test("GetBalance x-y and y-x pool", async () => {
+    const api = await getApi();
+    const poolAssetsXY = await api.query.xyk.pools([
+      firstCurrency,
+      secondCurrency,
+    ]);
+    const assetValueXY = [
+      hexToBn(JSON.parse(poolAssetsXY.toString())[0]),
+      hexToBn(JSON.parse(poolAssetsXY.toString())[1]),
+    ];
+    const poolAssetsYX = await api.query.xyk.pools([
+      secondCurrency,
+      firstCurrency,
+    ]);
+    const assetValueYX = [
+      hexToBn(JSON.parse(poolAssetsYX.toString())[0]),
+      hexToBn(JSON.parse(poolAssetsYX.toString())[1]),
+    ];
+
+    expect(assetValueXY).not.collectionBnEqual(assetValueYX);
+    const poolValuesXY = await getBalanceOfPool(secondCurrency, firstCurrency);
+    const poolValuesYX = await getBalanceOfPool(firstCurrency, secondCurrency);
+    expect(poolValuesXY).collectionBnEqual(poolValuesYX);
+  });
+  test("Minting x-y and y-x pool", async () => {
+    await testUser1.mintLiquidity(firstCurrency, secondCurrency, new BN(100));
+    await testUser1.mintLiquidity(secondCurrency, firstCurrency, new BN(100));
+  });
+  test("Burning x-y and y-x pool", async () => {
+    await burnLiquidity(
+      testUser1.keyRingPair,
+      firstCurrency,
+      secondCurrency,
+      new BN(100)
+    );
+    await burnLiquidity(
+      testUser1.keyRingPair,
+      secondCurrency,
+      firstCurrency,
+      new BN(100)
+    );
+  });
+  test("GetLiquidityAssetID x-y and y-x pool", async () => {
+    const api = getApi();
+    const liqXYK = await api.query.xyk.liquidityAssets([
+      firstCurrency,
+      secondCurrency,
+    ]);
+    const liqYXK = await api.query.xyk.liquidityAssets([
+      secondCurrency,
+      firstCurrency,
+    ]);
+    expect(new BN(liqXYK.toString())).not.bnEqual(new BN(liqYXK.toString()));
+
+    const liqXY = await getLiquidityAssetId(firstCurrency, secondCurrency);
+    const liqYX = await getLiquidityAssetId(secondCurrency, firstCurrency);
+    const pool = await getLiquidityPool(liqYX);
+    expect(
+      pool.some((x) => x.toString() === firstCurrency.toString())
+    ).toBeTruthy();
+    expect(
+      pool.some((x) => x.toString() === secondCurrency.toString())
+    ).toBeTruthy();
+    expect(liqXY).bnEqual(liqYX);
   });
 });

@@ -4,6 +4,7 @@ import { getEnvironmentRequiredVars } from "./utils";
 import { Mangata } from "mangata-sdk";
 
 export let api: ApiPromise | null = null;
+export let mangata: Mangata | null = null;
 
 const { chainUri: envUri } = getEnvironmentRequiredVars();
 export const getApi = () => {
@@ -19,7 +20,14 @@ export const initApi = async (uri = "") => {
   }
 
   testLog.getLog().info(`TEST_INFO: Running test in ${uri}`);
-  const mangata = Mangata.getInstance(uri);
+  mangata = Mangata.getInstance(uri);
   api = await mangata.getApi();
   return api;
 };
+
+export async function getMangataInstance(uri = ""): Promise<Mangata> {
+  if (!api) {
+    await initApi(uri);
+  }
+  return mangata!;
+}

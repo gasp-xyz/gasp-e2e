@@ -63,9 +63,13 @@ describe("UI main tests - Deposit - ETH", () => {
     const tokenValue = await sidebar.getTokenAmount("mETH");
     expect(tokenValue).toEqual("0.001");
     await testUser1.refreshAmounts(AssetWallet.AFTER);
-    await testUser1.validateWalletIncreased(
-      ETH_ASSET_ID,
-      new BN(Math.pow(10, 15).toString())
+
+    const amount = new BN(Math.pow(10, 15).toString());
+    const addFromWallet = testUser1
+      .getAsset(ETH_ASSET_ID)
+      ?.amountBefore!.add(amount);
+    expect(testUser1.getAsset(ETH_ASSET_ID)?.amountAfter!).bnEqual(
+      addFromWallet!
     );
   });
 
@@ -79,8 +83,7 @@ describe("UI main tests - Deposit - ETH", () => {
       expect.getState().currentTestName + " - " + session.getId()
     );
     await driver.quit();
-    const api = getApi();
-    await api.disconnect();
+    await DriverBuilder.destroy();
   });
 });
 
@@ -124,14 +127,18 @@ describe("UI main tests - Withdraw - ETH", () => {
     await testUser1.refreshAmounts(AssetWallet.BEFORE);
   });
 
-  it("As a User I can deposit ETH from Meta extension", async () => {
+  it("As a User I can Withdraw ETH from Meta extension", async () => {
     const sidebar = new Sidebar(driver);
     await sidebar.withdrawAllAssetsToMetaMask("mETH");
     await sidebar.waitForTokenToDissapear("mETH");
     await testUser1.refreshAmounts(AssetWallet.AFTER);
-    await testUser1.validateWalletReduced(
-      ETH_ASSET_ID,
-      new BN(Math.pow(10, 15).toString())
+
+    const amount = new BN(Math.pow(10, 15).toString());
+    const diffFromWallet = testUser1
+      .getAsset(ETH_ASSET_ID)
+      ?.amountBefore!.sub(amount);
+    expect(testUser1.getAsset(ETH_ASSET_ID)?.amountAfter!).bnEqual(
+      diffFromWallet!
     );
     // TODO, validate in eth that user now has the tokens back!
   });
@@ -143,7 +150,11 @@ describe("UI main tests - Withdraw - ETH", () => {
       expect.getState().currentTestName + " - " + session.getId()
     );
     await driver.quit();
-    const api = getApi();
-    await api.disconnect();
+    await DriverBuilder.destroy();
   });
+});
+
+afterAll(async () => {
+  const api = getApi();
+  await api.disconnect();
 });

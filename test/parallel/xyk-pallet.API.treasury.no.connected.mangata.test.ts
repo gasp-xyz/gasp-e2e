@@ -4,19 +4,16 @@
  * @group api
  * @group parallel
  */
-import { api, getApi, initApi } from "../../utils/api";
+import { getApi, getMangataInstance, initApi } from "../../utils/api";
 import { sellAsset, buyAsset, calculate_buy_price_rpc } from "../../utils/tx";
-import { waitNewBlock, ExtrinsicResult } from "../../utils/eventListeners";
+import { ExtrinsicResult } from "../../utils/eventListeners";
 import BN from "bn.js";
 import { Keyring } from "@polkadot/api";
 import { AssetWallet, User } from "../../utils/User";
 import { validateTreasuryAmountsEqual } from "../../utils/validators";
 import { Assets } from "../../utils/Assets";
 import { calculateFees, getEnvironmentRequiredVars } from "../../utils/utils";
-import {
-  getEventResultFromTxWait,
-  signSendAndWaitToFinishTx,
-} from "../../utils/txHandler";
+import { getEventResultFromTxWait } from "../../utils/txHandler";
 
 jest.spyOn(console, "log").mockImplementation(jest.fn());
 jest.setTimeout(1500000);
@@ -45,7 +42,6 @@ describe("xyk-pallet - treasury tests [No Mangata]: on treasury we store", () =>
   });
 
   beforeEach(async () => {
-    await waitNewBlock();
     keyring = new Keyring({ type: "sr25519" });
 
     // setup users
@@ -57,27 +53,26 @@ describe("xyk-pallet - treasury tests [No Mangata]: on treasury we store", () =>
     keyring.addPair(testUser1.keyRingPair);
     keyring.addPair(sudo.keyRingPair);
 
-    await waitNewBlock();
     [firstCurrency, secondCurrency] = await Assets.setupUserWithCurrencies(
       testUser1,
       [defaultCurrecyValue, defaultCurrecyValue],
       sudo
     );
     await testUser1.addMGATokens(sudo);
-    await signSendAndWaitToFinishTx(
-      api?.tx.xyk.createPool(
-        firstCurrency,
-        first_asset_amount,
-        secondCurrency,
-        first_asset_amount.div(new BN(2))
-      ),
-      testUser1.keyRingPair
+    await (
+      await getMangataInstance()
+    ).createPool(
+      testUser1.keyRingPair,
+      firstCurrency.toString(),
+      first_asset_amount,
+      secondCurrency.toString(),
+      first_asset_amount.div(new BN(2))
     );
+
     await testUser1.refreshAmounts(AssetWallet.BEFORE);
   });
 
   test("assets won when assets are sold - 5 [no connected to MGA]", async () => {
-    await waitNewBlock();
     const sellAssetAmount = new BN(10000);
 
     await sellAsset(
@@ -106,7 +101,6 @@ describe("xyk-pallet - treasury tests [No Mangata]: on treasury we store", () =>
     ]);
   });
   test("assets won when assets are sold - 1 [rounding] [no connected to MGA]", async () => {
-    await waitNewBlock();
     const sellAssetAmount = new BN(500);
 
     await sellAsset(
@@ -131,7 +125,6 @@ describe("xyk-pallet - treasury tests [No Mangata]: on treasury we store", () =>
   });
 
   test("assets won when assets are bought - 2 [no connected to MGA]", async () => {
-    await waitNewBlock();
     const buyAssetAmount = new BN(10000);
     const sellPriceRpc = await calculate_buy_price_rpc(
       first_asset_amount,
@@ -161,7 +154,6 @@ describe("xyk-pallet - treasury tests [No Mangata]: on treasury we store", () =>
   });
 
   test("assets won when assets are bought - 1 [no connected to MGA]", async () => {
-    await waitNewBlock();
     const buyAssetAmount = new BN(100);
     const sellPriceRpc = await calculate_buy_price_rpc(
       first_asset_amount,

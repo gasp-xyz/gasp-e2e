@@ -80,7 +80,7 @@ describe("UI tests - A user can create a pool MGA - newToken", () => {
     await Polkadot.signTransaction(driver);
     //wait four blocks to complete the action.
     for (let index = 0; index < 4; index++) {
-      await waitNewBlock(true);
+      await waitNewBlock();
     }
 
     await testUser1.refreshAmounts(AssetWallet.AFTER);
@@ -111,6 +111,7 @@ describe("UI tests - A user can create a pool MGA - newToken", () => {
 
   afterAll(async () => {
     await driver.quit();
+    await DriverBuilder.destroy();
     const api = getApi();
     await api.disconnect();
   });

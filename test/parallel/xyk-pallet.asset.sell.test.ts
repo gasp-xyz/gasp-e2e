@@ -10,7 +10,6 @@ import {
   calculate_sell_price_rpc,
   getBalanceOfPool,
 } from "../../utils/tx";
-import { waitNewBlock } from "../../utils/eventListeners";
 import BN from "bn.js";
 import { Keyring } from "@polkadot/api";
 import { AssetWallet, User } from "../../utils/User";
@@ -44,7 +43,6 @@ beforeAll(async () => {
 });
 
 beforeEach(async () => {
-  await waitNewBlock();
   keyring = new Keyring({ type: "sr25519" });
 
   // setup users
@@ -77,7 +75,7 @@ beforeEach(async () => {
   keyring.addPair(pallet.keyRingPair);
 
   // check users accounts.
-  await waitNewBlock();
+
   pallet.addAssets([firstCurrency, secondCurrency]);
   testUser2.addAssets([firstCurrency, secondCurrency]);
   await pallet.refreshAmounts(AssetWallet.BEFORE);
@@ -118,11 +116,32 @@ test("xyk-pallet - AssetsOperation: sellAsset [minAmountOut = 0] , first to seco
   await testUser2.refreshAmounts(AssetWallet.AFTER);
   await pallet.refreshAmounts(AssetWallet.AFTER);
 
-  testUser1.validateWalletReduced(soldAssetId, amount);
-  testUser1.validateWalletIncreased(boughtAssetId, sellPriceLocal);
-  testUser2.validateWalletsUnmodified();
-  pallet.validateWalletReduced(boughtAssetId, sellPriceLocal);
-  pallet.validateWalletIncreased(soldAssetId, amount);
+  let diffFromWallet = testUser1
+    .getAsset(soldAssetId)
+    ?.amountBefore!.sub(amount);
+  expect(testUser1.getAsset(soldAssetId)?.amountAfter!).bnEqual(
+    diffFromWallet!
+  );
+
+  let addFromWallet = testUser1
+    .getAsset(boughtAssetId)
+    ?.amountBefore!.add(sellPriceLocal);
+  expect(testUser1.getAsset(boughtAssetId)?.amountAfter!).bnEqual(
+    addFromWallet!
+  );
+
+  testUser2.assets.forEach((asset) => {
+    expect(asset.amountBefore).bnEqual(asset.amountAfter);
+  });
+
+  diffFromWallet = pallet
+    .getAsset(boughtAssetId)
+    ?.amountBefore!.sub(sellPriceLocal);
+  expect(pallet.getAsset(boughtAssetId)?.amountAfter!).bnEqual(diffFromWallet!);
+
+  addFromWallet = pallet.getAsset(soldAssetId)?.amountBefore!.add(amount);
+  expect(pallet.getAsset(soldAssetId)?.amountAfter!).bnEqual(addFromWallet!);
+
   const pool_balance = await getBalanceOfPool(firstCurrency, secondCurrency);
   //we sell 30k:
   //In the pool we will find: AmountBefore + (30k - 0.05% -0.05%) => 30k - 0.1% => 30k - 30Tkns
@@ -170,11 +189,32 @@ test("xyk-pallet - AssetsOperation: sellAsset [minAmountOut = 0], sell an alread
   await testUser2.refreshAmounts(AssetWallet.AFTER);
   await pallet.refreshAmounts(AssetWallet.AFTER);
 
-  testUser1.validateWalletReduced(soldAssetId, amount);
-  testUser1.validateWalletIncreased(boughtAssetId, sellPriceLocal);
-  testUser2.validateWalletsUnmodified();
-  pallet.validateWalletReduced(boughtAssetId, sellPriceLocal);
-  pallet.validateWalletIncreased(soldAssetId, amount);
+  let diffFromWallet = testUser1
+    .getAsset(soldAssetId)
+    ?.amountBefore!.sub(amount);
+  expect(testUser1.getAsset(soldAssetId)?.amountAfter!).bnEqual(
+    diffFromWallet!
+  );
+
+  let addFromWallet = testUser1
+    .getAsset(boughtAssetId)
+    ?.amountBefore!.add(sellPriceLocal);
+  expect(testUser1.getAsset(boughtAssetId)?.amountAfter!).bnEqual(
+    addFromWallet!
+  );
+
+  testUser2.assets.forEach((asset) => {
+    expect(asset.amountBefore).bnEqual(asset.amountAfter);
+  });
+
+  diffFromWallet = pallet
+    .getAsset(boughtAssetId)
+    ?.amountBefore!.sub(sellPriceLocal);
+  expect(pallet.getAsset(boughtAssetId)?.amountAfter!).bnEqual(diffFromWallet!);
+
+  addFromWallet = pallet.getAsset(soldAssetId)?.amountBefore!.add(amount);
+  expect(pallet.getAsset(soldAssetId)?.amountAfter!).bnEqual(addFromWallet!);
+
   const { treasury, treasuryBurn } = calculateFees(amount);
   const bothFees = treasury.add(treasuryBurn);
   const pool_balance = await getBalanceOfPool(firstCurrency, secondCurrency);

@@ -1,0 +1,39 @@
+{
+	"validateWalletEqual": {
+		"scope": "typescript",
+		"prefix": "test-wallet-is-equal",
+		"body": [
+			"expect(${1:User}.getAsset(${2:CurrencyId})?.amountAfter!).bnEqual(${3:amount});"
+		],
+		"description": "Validate wallet is equal"
+	},
+
+	"validateWalletDecreased": {
+		"scope": "typescript",
+		"prefix": "test-wallet-has-decreased",
+		"body": [
+			"let diffFromWallet = ${1:User}.getAsset(${2:CurrencyId})?.amountBefore!.sub(${3:amount});",
+    		"expect(${1:User}.getAsset(${2:CurrencyId})?.amountAfter!).bnEqual(diffFromWallet!);"
+		],
+		"description": "Validate wallet amount has been decreased"
+	},
+
+	"validateWalletIncreased": {
+		"scope": "typescript",
+		"prefix": "test-wallet-has-increased",
+		"body": [
+			"let addFromWallet = ${1:User}.getAsset(${2:CurrencyId})?.amountBefore!.add(${3:amount});",
+    		"expect(${1:User}.getAsset(${2:CurrencyId})?.amountAfter!).bnEqual(addFromWallet!);"
+		],
+		"description": "Validate wallet has been increased"
+	},
+
+	"validateWalletsUnmodified": {
+		"scope": "typescript",
+		"prefix": "test-wallet-is-unmodified",
+		"body": [
+			"${1|testUser1,testUser2,pallet,treasury|}.assets.forEach((asset) => {expect(asset.amountBefore).bnEqual(asset.amountAfter);});"
+		],
+		"description": "Validate users wallet is unmodified"
+	  }
+}
