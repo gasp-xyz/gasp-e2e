@@ -111,6 +111,7 @@ describe("UI tests - A user can create a pool MGA - newToken", () => {
 
   afterAll(async () => {
     await driver.quit();
+    await DriverBuilder.destroy();
     const api = getApi();
     await api.disconnect();
   });

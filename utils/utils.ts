@@ -27,15 +27,19 @@ export function getEnvironmentRequiredVars() {
   const palletAddress = process.env.TEST_PALLET_ADDRESS
     ? process.env.TEST_PALLET_ADDRESS
     : "";
+
   const xykPalletAddress = process.env.E2E_XYK_PALLET_ADDRESS
     ? process.env.E2E_XYK_PALLET_ADDRESS
     : "";
+
   const treasuryPalletAddress = process.env.E2E_TREASURY_PALLET_ADDRESS
     ? process.env.E2E_TREASURY_PALLET_ADDRESS
     : "";
+
   const sudoUserName = process.env.TEST_SUDO_NAME
     ? process.env.TEST_SUDO_NAME
     : "";
+
   const testUserName = process.env.TEST_USER_NAME
     ? process.env.TEST_USER_NAME
     : "//Alice";
@@ -48,20 +52,36 @@ export function getEnvironmentRequiredVars() {
   // }
 
   const logLevel = process.env.LOG_LEVEL ? process.env.LOG_LEVEL : "info";
+
   const uri = process.env.API_URL ? process.env.API_URL : "ws://127.0.0.1:9944";
+
   const userPassword = process.env.UI_USR_PWD
     ? process.env.UI_USR_PWD
     : "mangata123";
+
   const uiUri = process.env.UI_URL
     ? process.env.UI_URL
     : "https://staging.mangata.finance/";
+
   const mnemonicMetaMask = process.env.MNEMONIC_META
     ? process.env.MNEMONIC_META
     : " oh oh";
+
   const mnemonicPolkadot = process.env.MNEMONIC_POLK
     ? process.env.MNEMONIC_POLK
     : " oh oh";
 
+  const ethereumHTTPUrl = process.env.ETH_HTTP_URL
+    ? process.env.ETH_HTTP_URL
+    : "https://kovan.infura.io/v3/3592e9c20d9b4169a394a608a310c85f";
+
+  const ethAppAddress = process.env.ETH_APP_ADDRESS
+    ? process.env.ETH_APP_ADDRESS
+    : " oh oh";
+
+  const erc20AppAddress = process.env.ETH_20_APP_ADDRESS
+    ? process.env.ETH_20_APP_ADDRESS
+    : " oh oh";
   const clusterNodeA = process.env.CLUSTER_NODE_A
     ? process.env.CLUSTER_NODE_A
     : "ws://node_alice:9944";
@@ -93,6 +113,9 @@ export function getEnvironmentRequiredVars() {
     logLevel: logLevel,
     xykPalletAddress: xykPalletAddress,
     treasuryPalletAddress: treasuryPalletAddress,
+    ethereumHttpUrl: ethereumHTTPUrl,
+    ethAppAddress: ethAppAddress,
+    erc20AppAddress: erc20AppAddress,
     clusterNodeA: clusterNodeA,
     clusterNodeB: clusterNodeB,
     clusterNodeC: clusterNodeC,

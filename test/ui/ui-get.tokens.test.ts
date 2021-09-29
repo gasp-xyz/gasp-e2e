@@ -84,8 +84,7 @@ describe("UI tests - Get Tokens from Faucet", () => {
       expect.getState().currentTestName + " - " + session.getId()
     );
     await driver.quit();
-    const api = getApi();
-    await api.disconnect();
+    await DriverBuilder.destroy();
   });
 });
 async function validateAllAssetsValues(mga: Mangata, value = "10.000") {
