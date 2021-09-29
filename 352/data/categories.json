@@ -1,0 +1,77 @@
+{
+  "uid" : "4b4757e66a1912dae1a509f688f20b0f",
+  "children" : [ {
+    "name" : "Product defects",
+    "children" : [ {
+      "name" : "TimeoutError: Waiting until element is visible\n                Wait timed out after 20007ms",
+      "children" : [ {
+        "name" : "As a User I can deposit ETH from Meta extension",
+        "uid" : "a80eddd2a7333c2",
+        "parentUid" : "7db70bd667b92786dd7729910510c7c9",
+        "status" : "failed",
+        "time" : {
+          "start" : 1632911087099,
+          "stop" : 1632911213808,
+          "duration" : 126709
+        },
+        "flaky" : false,
+        "newFailed" : false,
+        "parameters" : [ ]
+      } ],
+      "uid" : "7db70bd667b92786dd7729910510c7c9"
+    }, {
+      "name" : "TimeoutError: Waiting for element to be located By(xpath, //input[@placeholder='Paste Secret Recovery Phrase from clipboard'])\n                Wait timed out after 10011ms",
+      "children" : [ {
+        "name" : "As a User I can Withdraw ETH from Meta extension",
+        "uid" : "904600e3bf6146da",
+        "parentUid" : "1cfaca9443853b6b12c43bb87ba3ee4d",
+        "status" : "failed",
+        "time" : {
+          "start" : 1632911213817,
+          "stop" : 1632911235228,
+          "duration" : 21411
+        },
+        "flaky" : false,
+        "newFailed" : false,
+        "parameters" : [ ]
+      } ],
+      "uid" : "1cfaca9443853b6b12c43bb87ba3ee4d"
+    }, {
+      "name" : "Error: Insufficient funds. The account you tried to send transaction from does not have enough funds. Required 2000000000000000 and got: 0.",
+      "children" : [ {
+        "name" : "that Eth arrive to User TokenId 1 in Mangata and can be sent back",
+        "uid" : "cfbbe6214461dc5a",
+        "parentUid" : "48824bafb7a17c7885e2d0280fb15571",
+        "status" : "failed",
+        "time" : {
+          "start" : 1632911239071,
+          "stop" : 1632911264081,
+          "duration" : 25010
+        },
+        "flaky" : false,
+        "newFailed" : false,
+        "parameters" : [ ]
+      } ],
+      "uid" : "48824bafb7a17c7885e2d0280fb15571"
+    }, {
+      "name" : "Error: Expected: 0 \n                  Actual: 0 \n                 ",
+      "children" : [ {
+        "name" : "xyk-CI - validate pools created: Pool[0,6]",
+        "uid" : "3b49e3223705b8f3",
+        "parentUid" : "fbe6e7e8b5e51a3184df723e0c154742",
+        "status" : "failed",
+        "time" : {
+          "start" : 1632911267183,
+          "stop" : 1632911267376,
+          "duration" : 193
+        },
+        "flaky" : true,
+        "newFailed" : true,
+        "parameters" : [ ]
+      } ],
+      "uid" : "fbe6e7e8b5e51a3184df723e0c154742"
+    } ],
+    "uid" : "8fb3a91ba5aaf9de24cc8a92edc82b5d"
+  } ],
+  "name" : "categories"
+}
