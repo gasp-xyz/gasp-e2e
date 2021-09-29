@@ -1,0 +1,93 @@
+{
+  "uid" : "a911b67018e6f1f3",
+  "name" : "that Eth arrive to User TokenId 1 in Mangata and can be sent back",
+  "fullName" : "test ether.that Eth arrive to User TokenId 1 in Mangata and can be sent back",
+  "historyId" : "6a7c882af5d738738ff42ac96eb6c6ec",
+  "time" : {
+    "start" : 1632896046280,
+    "stop" : 1632896049610,
+    "duration" : 3330
+  },
+  "description" : "",
+  "descriptionHtml" : "",
+  "status" : "failed",
+  "statusMessage" : "thrown: Event {\n                  \"isTrusted\": true,\n                }",
+  "statusTrace" : "thrown: Event {\n                  \"isTrusted\": true,\n                }\n                \n                Error: \n                    at new Spec (/home/runner/work/mangata-e2e/mangata-e2e/node_modules/jest-jasmine2/build/jasmine/Spec.js:116:22)\n                    at new Spec (/home/runner/work/mangata-e2e/mangata-e2e/node_modules/jest-jasmine2/build/setup_jest_globals.js:78:9)\n                    at specFactory (/home/runner/work/mangata-e2e/mangata-e2e/node_modules/jest-jasmine2/build/jasmine/Env.js:523:24)\n                    at Env.it (/home/runner/work/mangata-e2e/mangata-e2e/node_modules/jest-jasmine2/build/jasmine/Env.js:592:24)\n                    at Env.it (/home/runner/work/mangata-e2e/mangata-e2e/node_modules/jest-jasmine2/build/jasmineAsyncInstall.js:134:23)\n                    at test (/home/runner/work/mangata-e2e/mangata-e2e/node_modules/jest-jasmine2/build/jasmine/jasmineLight.js:100:21)\n                    at Suite.<anonymous> (/home/runner/work/mangata-e2e/mangata-e2e/test/ci/web3-ci.validate.bridge.test.ts:69:3)\n                    at addSpecsToSuite (/home/runner/work/mangata-e2e/mangata-e2e/node_modules/jest-jasmine2/build/jasmine/Env.js:444:51)\n                    at Env.describe (/home/runner/work/mangata-e2e/mangata-e2e/node_modules/jest-jasmine2/build/jasmine/Env.js:414:11)\n                    at describe (/home/runner/work/mangata-e2e/mangata-e2e/node_modules/jest-jasmine2/build/jasmine/jasmineLight.js:88:18)\n                    at Object.<anonymous> (/home/runner/work/mangata-e2e/mangata-e2e/test/ci/web3-ci.validate.bridge.test.ts:28:1)\n                    at Runtime._execModule (/home/runner/work/mangata-e2e/mangata-e2e/node_modules/jest-runtime/build/index.js:1299:24)\n                    at Runtime._loadModule (/home/runner/work/mangata-e2e/mangata-e2e/node_modules/jest-runtime/build/index.js:898:12)\n                    at Runtime.requireModule (/home/runner/work/mangata-e2e/mangata-e2e/node_modules/jest-runtime/build/index.js:746:10)\n                    at jasmine2 (/home/runner/work/mangata-e2e/mangata-e2e/node_modules/jest-jasmine2/build/index.js:230:13)\n                    at runTestInternal (/home/runner/work/mangata-e2e/mangata-e2e/node_modules/jest-runner/build/runTest.js:380:22)\n                    at runTest (/home/runner/work/mangata-e2e/mangata-e2e/node_modules/jest-runner/build/runTest.js:472:34)",
+  "flaky" : false,
+  "newFailed" : false,
+  "beforeStages" : [ ],
+  "afterStages" : [ ],
+  "labels" : [ {
+    "name" : "suite",
+    "value" : "test ether"
+  }, {
+    "name" : "testClass",
+    "value" : "test ether"
+  }, {
+    "name" : "testMethod",
+    "value" : "that Eth arrive to User TokenId 1 in Mangata and can be sent back"
+  }, {
+    "name" : "package",
+    "value" : "test ether"
+  }, {
+    "name" : "resultFormat",
+    "value" : "allure1"
+  } ],
+  "parameters" : [ ],
+  "links" : [ ],
+  "hidden" : false,
+  "retry" : false,
+  "extra" : {
+    "severity" : "normal",
+    "retries" : [ ],
+    "categories" : [ {
+      "name" : "Product defects",
+      "matchedStatuses" : [ ],
+      "flaky" : false
+    } ],
+    "history" : {
+      "statistic" : {
+        "failed" : 4,
+        "broken" : 0,
+        "skipped" : 0,
+        "passed" : 0,
+        "unknown" : 0,
+        "total" : 4
+      },
+      "items" : [ {
+        "uid" : "27ab9fcf7dc8c959",
+        "reportUrl" : "https://mangata-finance.github.io/mangata-e2e/324//#testresult/27ab9fcf7dc8c959",
+        "status" : "failed",
+        "statusDetails" : "Error: Insufficient funds. The account you tried to send transaction from does not have enough funds. Required 2000000000000000 and got: 0.",
+        "time" : {
+          "start" : 1632846063720,
+          "stop" : 1632846106193,
+          "duration" : 42473
+        }
+      }, {
+        "uid" : "9868d0cfe8e1eb87",
+        "reportUrl" : "https://mangata-finance.github.io/mangata-e2e/327//#testresult/9868d0cfe8e1eb87",
+        "status" : "failed",
+        "statusDetails" : "Error: Insufficient funds. The account you tried to send transaction from does not have enough funds. Required 2000000000000000 and got: 0.",
+        "time" : {
+          "start" : 1632846037160,
+          "stop" : 1632846062777,
+          "duration" : 25617
+        }
+      }, {
+        "uid" : "8f943b58f0ef7bde",
+        "reportUrl" : "https://mangata-finance.github.io/mangata-e2e/323//#testresult/8f943b58f0ef7bde",
+        "status" : "failed",
+        "statusDetails" : "Error: Insufficient funds. The account you tried to send transaction from does not have enough funds. Required 2000000000000000 and got: 0.",
+        "time" : {
+          "start" : 1632846012855,
+          "stop" : 1632846038511,
+          "duration" : 25656
+        }
+      } ]
+    },
+    "tags" : [ ]
+  },
+  "source" : "a911b67018e6f1f3.json",
+  "parameterValues" : [ ]
+}
