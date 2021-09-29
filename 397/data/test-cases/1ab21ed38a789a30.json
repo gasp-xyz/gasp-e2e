@@ -1,0 +1,52 @@
+{
+  "uid" : "1ab21ed38a789a30",
+  "name" : "assets won when assets are bought [Buying X connected to MGA pool]",
+  "fullName" : "xyk-pallet - treasury tests [Connected - Mangata]: on treasury we store.assets won when assets are bought [Buying X connected to MGA pool]",
+  "historyId" : "7fa2856547086651d7f62b3628e0d674",
+  "time" : {
+    "start" : 1632896929604,
+    "stop" : 1632897091139,
+    "duration" : 161535
+  },
+  "description" : "",
+  "descriptionHtml" : "",
+  "status" : "failed",
+  "statusMessage" : "Error: Expected: 3902123968 \n                  Actual: 3902123987 \n                 ",
+  "statusTrace" : "Error: Expected: 3902123968 \n                  Actual: 3902123987 \n                 \n                    at Object.<anonymous> (/home/runner/work/mangata-e2e/mangata-e2e/test/sequential/xyk-pallet.API.treasury.connected.mangata.test.ts:413:27)\n                    at runMicrotasks (<anonymous>)\n                    at processTicksAndRejections (internal/process/task_queues.js:95:5)",
+  "flaky" : false,
+  "newFailed" : false,
+  "beforeStages" : [ ],
+  "afterStages" : [ ],
+  "labels" : [ {
+    "name" : "suite",
+    "value" : "xyk-pallet - treasury tests [Connected - Mangata]: on treasury we store"
+  }, {
+    "name" : "testClass",
+    "value" : "xyk-pallet - treasury tests [Connected - Mangata]: on treasury we store"
+  }, {
+    "name" : "testMethod",
+    "value" : "assets won when assets are bought [Buying X connected to MGA pool]"
+  }, {
+    "name" : "package",
+    "value" : "xyk-pallet - treasury tests [Connected - Mangata]: on treasury we store"
+  }, {
+    "name" : "resultFormat",
+    "value" : "allure1"
+  } ],
+  "parameters" : [ ],
+  "links" : [ ],
+  "hidden" : false,
+  "retry" : false,
+  "extra" : {
+    "severity" : "normal",
+    "retries" : [ ],
+    "categories" : [ {
+      "name" : "Product defects",
+      "matchedStatuses" : [ ],
+      "flaky" : false
+    } ],
+    "tags" : [ ]
+  },
+  "source" : "1ab21ed38a789a30.json",
+  "parameterValues" : [ ]
+}

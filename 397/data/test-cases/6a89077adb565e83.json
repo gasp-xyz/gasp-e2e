@@ -1,0 +1,52 @@
+{
+  "uid" : "6a89077adb565e83",
+  "name" : "assets won when assets are sold [Selling other in MGA pool] - 6",
+  "fullName" : "xyk-pallet - treasury tests [Mangata]: on treasury we store.assets won when assets are sold [Selling other in MGA pool] - 6",
+  "historyId" : "4ae0a162e28f0536f77bf33476afe0e7",
+  "time" : {
+    "start" : 1632896551648,
+    "stop" : 1632896659815,
+    "duration" : 108167
+  },
+  "description" : "",
+  "descriptionHtml" : "",
+  "status" : "failed",
+  "statusMessage" : "Error: Expected: 3277073261 \n                  Actual: 3277073282 \n                 ",
+  "statusTrace" : "Error: Expected: 3277073261 \n                  Actual: 3277073282 \n                 \n                    at Object.<anonymous> (/home/runner/work/mangata-e2e/mangata-e2e/test/sequential/xyk-pallet.API.treasury.connected.mangata.test.ts:205:27)\n                    at processTicksAndRejections (internal/process/task_queues.js:95:5)",
+  "flaky" : false,
+  "newFailed" : false,
+  "beforeStages" : [ ],
+  "afterStages" : [ ],
+  "labels" : [ {
+    "name" : "suite",
+    "value" : "xyk-pallet - treasury tests [Mangata]: on treasury we store"
+  }, {
+    "name" : "testClass",
+    "value" : "xyk-pallet - treasury tests [Mangata]: on treasury we store"
+  }, {
+    "name" : "testMethod",
+    "value" : "assets won when assets are sold [Selling other in MGA pool] - 6"
+  }, {
+    "name" : "package",
+    "value" : "xyk-pallet - treasury tests [Mangata]: on treasury we store"
+  }, {
+    "name" : "resultFormat",
+    "value" : "allure1"
+  } ],
+  "parameters" : [ ],
+  "links" : [ ],
+  "hidden" : false,
+  "retry" : false,
+  "extra" : {
+    "severity" : "normal",
+    "retries" : [ ],
+    "categories" : [ {
+      "name" : "Product defects",
+      "matchedStatuses" : [ ],
+      "flaky" : false
+    } ],
+    "tags" : [ ]
+  },
+  "source" : "6a89077adb565e83.json",
+  "parameterValues" : [ ]
+}
