@@ -3,10 +3,10 @@ import { getEnvironmentRequiredVars, sleep } from "../../utils";
 import {
   clickElement,
   doActionInDifferentWindow,
+  getAttribute,
   waitForElement,
 } from "../utils/Helper";
 const { By } = require("selenium-webdriver");
-const clipboardy = require("clipboardy");
 
 //xpaths
 const XPATH_PASSWORD = "//input[@id='password']";
@@ -25,6 +25,12 @@ const XPATH_CONNECT_META = `//button[text()='Connect']`;
 const XPATH_NEXT = `//*[contains(@class,'button btn-primary')]`;
 const XPATH_ACCOUNT = `//*[@class='selected-account']`;
 const XPATH_CONFIRM_TX = "//*[@data-testid='page-container-footer-next']";
+const BTN_MENU_DOTS = "//*[@data-testid='account-options-menu-button']";
+const SELECT_ACCOUNT_DETAILS =
+  "//*[@data-testid='account-options-menu__account-details']";
+const INPUT_READONLY = `//*[@class='readonly-input__input']`;
+const BTN_CLOSE_MODAL = `//*[@class='account-modal__close']`;
+
 const { uiUserPassword: userPassword, mnemonicMetaMask } =
   getEnvironmentRequiredVars();
 
@@ -82,9 +88,16 @@ export class MetaMask {
     await waitForElement(this.driver, XPATH_POPOVER_CLOSE);
     await clickElement(this.driver, XPATH_POPOVER_CLOSE);
     await clickElement(this.driver, XPATH_ACCOUNT);
-    const address = clipboardy.readSync();
+    const address = await this.getAccountAddressFromUI();
     await clickElement(this.driver, XPATH_SELECT_NET_CMB);
     await clickElement(this.driver, XPATH_KOVAN_NETWORK);
+    return address;
+  }
+  private async getAccountAddressFromUI() {
+    await clickElement(this.driver, BTN_MENU_DOTS);
+    await clickElement(this.driver, SELECT_ACCOUNT_DETAILS);
+    const address = await getAttribute(this.driver, INPUT_READONLY);
+    await clickElement(this.driver, BTN_CLOSE_MODAL);
     return address;
   }
 

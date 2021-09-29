@@ -56,6 +56,17 @@ export async function getText(driver: WebDriver, elementXpath: string) {
   ).getText();
   return text;
 }
+export async function getAttribute(
+  driver: WebDriver,
+  elementXpath: string,
+  attrName = "value"
+) {
+  await waitForElement(driver, elementXpath);
+  const attr = await (
+    await driver.findElement(By.xpath(elementXpath))
+  ).getAttribute(attrName);
+  return attr;
+}
 
 ///Setup both extensions
 //Setup Metamask from "MNEMONIC_META" global env.
