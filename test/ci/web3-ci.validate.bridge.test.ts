@@ -29,7 +29,7 @@ const HDWalletProvider = require("truffle-hdwallet-provider");
 jest.spyOn(console, "log").mockImplementation(jest.fn());
 jest.setTimeout(1500000);
 
-describe("test ether", () => {
+describe("Test Withdraw - Deposit", () => {
   let testUser1: User;
   let ethMetaMaskUser: ethUser;
   let erc20MetaMaskUser: erc20User;
@@ -156,7 +156,7 @@ describe("test ether", () => {
     [mDOTAdrress, "XXX"],
     [mMNGAdrress, "MGA"],
   ])(
-    "that MGA and mDOT arrive to User TokenId 0 in Mangata and can be sent back",
+    "that %s - %s can be sent to MetaMask wallet and can be deposited",
     async (assetAddress: string, assetName: string) => {
       const assetId = (await getAssetId(assetName)).toString();
       await testUser1.refreshAmounts();
