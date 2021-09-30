@@ -1,7 +1,7 @@
 /*
  *
  * @group ci
- * @group erc20
+ * @group bridge
  */
 
 import BN from "bn.js";
@@ -49,7 +49,7 @@ describe("Test Withdraw - Deposit", () => {
     erc20AppAddress,
   } = getEnvironmentRequiredVars();
 
-  beforeEach(async () => {
+  beforeAll(async () => {
     try {
       getApi();
     } catch (e) {
@@ -219,7 +219,7 @@ describe("Test Withdraw - Deposit", () => {
       expect(
         assetBalanceAfterWithdraw.sub(amountBN).gte(assetBalanceAfterDeposit)
       ).toBeTruthy();
-      expect(amountAfterwithdraw!.gt(amountBN.mul(new BN(10)))).toBeTruthy();
+      expect(amountAfterwithdraw!.gte(amountBN.mul(new BN(10)))).toBeTruthy();
 
       async function getAssetBalance(): Promise<BN> {
         const balance = erc20MetaMaskUser.getBalance(assetAddress);
