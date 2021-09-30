@@ -31,7 +31,7 @@ let keyring: Keyring;
 let firstCurrency: BN;
 let secondCurrency: BN;
 
-const { pallet: pallet_address, sudo: sudoUserName } =
+const { xykPalletAddress: pallet_address, sudo: sudoUserName } =
   getEnvironmentRequiredVars();
 
 const defaultCurrecyValue = new BN(250000);

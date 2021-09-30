@@ -24,22 +24,18 @@ export function fromBNToUnitString(value: BN) {
 }
 
 export function getEnvironmentRequiredVars() {
-  const palletAddress = process.env.TEST_PALLET_ADDRESS
-    ? process.env.TEST_PALLET_ADDRESS
-    : "";
-
   const xykPalletAddress = process.env.E2E_XYK_PALLET_ADDRESS
     ? process.env.E2E_XYK_PALLET_ADDRESS
     : "";
-
   const treasuryPalletAddress = process.env.E2E_TREASURY_PALLET_ADDRESS
     ? process.env.E2E_TREASURY_PALLET_ADDRESS
     : "";
-
+  const treasuryBurnPalletAddress = process.env.E2E_TREASURY_BURN_PALLET_ADDRESS
+    ? process.env.E2E_TREASURY_BURN_PALLET_ADDRESS
+    : "";
   const sudoUserName = process.env.TEST_SUDO_NAME
     ? process.env.TEST_SUDO_NAME
     : "";
-
   const testUserName = process.env.TEST_USER_NAME
     ? process.env.TEST_USER_NAME
     : "//Alice";
@@ -102,7 +98,6 @@ export function getEnvironmentRequiredVars() {
     : "ws://node_ferdie:9944";
 
   return {
-    pallet: palletAddress,
     sudo: sudoUserName,
     chainUri: uri,
     alice: testUserName,
@@ -113,6 +108,7 @@ export function getEnvironmentRequiredVars() {
     logLevel: logLevel,
     xykPalletAddress: xykPalletAddress,
     treasuryPalletAddress: treasuryPalletAddress,
+    treasuryBurnPalletAddress: treasuryBurnPalletAddress,
     ethereumHttpUrl: ethereumHTTPUrl,
     ethAppAddress: ethAppAddress,
     erc20AppAddress: erc20AppAddress,

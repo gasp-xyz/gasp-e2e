@@ -41,7 +41,7 @@ let secondCurrency: BN;
 let keyring: Keyring;
 
 // Assuming the pallet's AccountId
-const { pallet: pallet_address, sudo: sudoUserName } =
+const { xykPalletAddress: pallet_address, sudo: sudoUserName } =
   getEnvironmentRequiredVars();
 const defaultCurrecyValue = new BN(250000);
 

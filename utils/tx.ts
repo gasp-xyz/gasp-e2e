@@ -501,16 +501,22 @@ export async function getAccountInfo(account?: string) {
   return -1;
 }
 
-export async function getTreasury(currencyId: BN): Promise<BN> {
-  const api = getApi();
-  const treasuryBalance = await api.query.xyk.treasury(currencyId);
+export async function getTreasury(tokenId: BN): Promise<BN> {
+  const { treasuryPalletAddress } = getEnvironmentRequiredVars();
+  const treasuryBalance = await getBalanceOfAsset(
+    tokenId,
+    treasuryPalletAddress
+  );
   const treasuryBalanceBN = new BN(treasuryBalance.toString());
   return treasuryBalanceBN;
 }
 
-export async function getTreasuryBurn(currencyId: BN): Promise<BN> {
-  const api = getApi();
-  const treasuryBalance = await api.query.xyk.treasuryBurn(currencyId);
+export async function getTreasuryBurn(tokenId: BN): Promise<BN> {
+  const { treasuryBurnPalletAddress } = getEnvironmentRequiredVars();
+  const treasuryBalance = await getBalanceOfAsset(
+    tokenId,
+    treasuryBurnPalletAddress
+  );
   const treasuryBalanceBN = new BN(treasuryBalance.toString());
   return treasuryBalanceBN;
 }
