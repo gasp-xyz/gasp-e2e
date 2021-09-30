@@ -1,5 +1,5 @@
 /*
- * @group cluster
+ * @group cluster-healthcheck
  *
  * eslint-disable no-loop-func
  * eslint-disable no-console
@@ -8,66 +8,63 @@ import { uniq, intersection, takeRight } from "lodash";
 
 import { Node } from "../../utils/cluster/Node";
 import { testLog } from "../../utils/Logger";
-import { getEnvironmentRequiredVars, waitForNBlocks } from "../../utils/utils";
+import { waitForNBlocks } from "../../utils/utils";
+import { Convert } from "../../utils/Config";
 
 jest.spyOn(console, "log").mockImplementation(jest.fn());
 jest.spyOn(console, "error").mockImplementation(jest.fn());
 jest.setTimeout(1500000);
 process.env.NODE_ENV = "test";
 
-const {
-  clusterNodeA,
-  clusterNodeB,
-  clusterNodeC,
-  clusterNodeD,
-  clusterNodeE,
-  clusterNodeF,
-} = getEnvironmentRequiredVars();
+const json = `
+  { 
+    "id": 1, 
+    "mangata_nodes": [ 
+      { 
+        "name": "Node A", 
+        "wsPath": "wss://develop.mangatafinance.cloud:9944" 
+      },
+      { 
+        "name": "Node B", 
+        "wsPath": "wss://develop.mangatafinance.cloud:9945" 
+      },
+      { 
+        "name": "Node C", 
+        "wsPath": "wss://develop.mangatafinance.cloud:9946" 
+      }
+    ]
+  }`;
 
-const alice: Node = new Node("Alice", clusterNodeA);
-const bob: Node = new Node("Bob", clusterNodeB);
-const charlie: Node = new Node("Charlie", clusterNodeC);
-const dave: Node = new Node("Dave", clusterNodeD);
-const eve: Node = new Node("Eve", clusterNodeE);
-const ferdie: Node = new Node("Ferdie", clusterNodeF);
-
-const nodes = [alice, bob, charlie, dave, eve, ferdie];
+const nodes: Node[] = new Array<Node>();
 
 beforeAll(async () => {
-  try {
-    Promise.all([
-      await alice.connect(),
-      await bob.connect(),
-      await charlie.connect(),
-      await dave.connect(),
-      await eve.connect(),
-      await ferdie.connect(),
-    ]);
-
-    nodes.forEach((node) => {
-      node.subscribeToHead();
-    });
-  } catch (e) {
-    throw e;
+  Convert.toTestConfig(json).mangata_nodes.forEach((arr) => {
+    nodes.push(new Node(arr.name, arr.wsPath));
+  });
+  const promises = [];
+  for (let index = 0; index < nodes.length; index++) {
+    const element = nodes[index];
+    promises.push(element.connect());
   }
+  await Promise.all(promises);
+
+  for (let index = 0; index < nodes.length; index++) {
+    const element = nodes[index];
+    promises.push(element.subscribeToHead());
+  }
+  await Promise.all(promises);
 });
 
 afterAll(async () => {
-  Promise.all([
-    alice.stop(),
-    bob.stop(),
-    charlie.stop(),
-    dave.stop(),
-    eve.stop(),
-    ferdie.stop(),
-  ]);
+  await Promise.all([nodes.map(async (node) => await node.stop())]).catch(
+    (err) => testLog.getLog().error(err)
+  );
 });
 
-describe("Cluster -> Network -> Syncing", () => {
+describe("Cluster -> Healthcheck", () => {
   test("Nodes are up and syncing", async () => {
     const numberOfHashesToCheck = 2;
     const nodeHashMap: Map<string, Set<string>> = new Map();
-
     await waitForNBlocks(5);
 
     nodes.map(async (node) => {
@@ -86,8 +83,8 @@ describe("Cluster -> Network -> Syncing", () => {
 
   test("Block merkle hash matches across all nodes", async () => {
     const randomBlockNumber = Math.floor(
-      Math.random() * (alice.lastBlock! - alice.firstBlock! + 1) +
-        alice.firstBlock!
+      Math.random() * (nodes[0].lastBlock! - nodes[0].firstBlock! + 1) +
+        nodes[0].firstBlock!
     );
 
     await waitForNBlocks(5);

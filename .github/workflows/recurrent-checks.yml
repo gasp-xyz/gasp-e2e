@@ -10,6 +10,10 @@ on:
           description: 'Name of the script to run'
           required: false
           default: 'test-ci'
+        cluster-healthcheck:
+          description: 'Run a healthcheck against wss://develop.mangatafinance.cloud*'
+          required: true
+          default: 'test-cluster-healthcheck'
 
       # For manually trigger
  
@@ -20,6 +24,7 @@ jobs:
     strategy:
       matrix:
         environment: ['staging','develop','integration']
+        cluster: ['staging']
     runs-on: ubuntu-latest
     steps:
       - name: Repository Dispatch
@@ -29,3 +34,10 @@ jobs:
           repository: "mangata-finance/mangata-e2e"
           event-type: run-ci
           client-payload: '{"scriptName": "${{ github.event.inputs.scriptName }}", "environment": "${{ matrix.environment }}"}'
+      - name: Repository Dispatch
+        uses: peter-evans/repository-dispatch@v1
+        with:
+          token: ${{ secrets.PAT_TRIGGER_JOB }}
+          repository: "mangata-finance/mangata-e2e"
+          event-type: run-ci
+          client-payload: '{"scriptName": "${{ github.event.inputs.cluster-healthcheck }}", "environment": "${{ matrix.cluster }}"}'

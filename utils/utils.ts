@@ -212,20 +212,13 @@ export function calculateCompleteFees(soldAmount: BN) {
   return { completeFee: threePercent };
 }
 
-export const repeatOverNBlocks = (n: number) => async (f: () => void) => {
-  if (n > 0) {
-    await waitNewBlock();
-    f();
-    await repeatOverNBlocks(n - 1)(f);
-  }
-};
-
 export const waitForNBlocks = async (n: number) => {
   if (n > 0) {
     await waitNewBlock();
     await waitForNBlocks(n - 1);
   }
 };
+
 export async function createPoolIfMissing(
   sudo: User,
   amountInPool: string,
