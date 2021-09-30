@@ -4,6 +4,7 @@ import { Mangata } from "../pages/Mangata";
 import { MetaMask } from "../pages/MetaMask";
 import { Polkadot } from "../pages/Polkadot";
 import fs from "fs";
+import { testLog } from "../../Logger";
 
 const { By, until } = require("selenium-webdriver");
 require("chromedriver");
@@ -163,6 +164,7 @@ export async function doActionInDifferentWindow(
   handle = await (await driver).getAllWindowHandles();
   iterator = handle.entries();
   value = iterator.next().value;
+  testLog.getLog().info("Windows:" + JSON.stringify(handle));
   await driver.switchTo().window(value[1]);
   return;
 }
