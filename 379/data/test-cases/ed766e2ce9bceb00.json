@@ -1,12 +1,12 @@
 {
-  "uid" : "63324ec8a1d3a4c0",
+  "uid" : "ed766e2ce9bceb00",
   "name" : "Block merkle hash matches across all nodes",
   "fullName" : "Cluster -> Healthcheck.Block merkle hash matches across all nodes",
   "historyId" : "eb15943bbc27448789b5dffbfd60553e",
   "time" : {
-    "start" : 1633013364157,
-    "stop" : 1633013394132,
-    "duration" : 29975
+    "start" : 1633013388150,
+    "stop" : 1633013418128,
+    "duration" : 29978
   },
   "description" : "",
   "descriptionHtml" : "",
@@ -39,8 +39,28 @@
     "severity" : "normal",
     "retries" : [ ],
     "categories" : [ ],
+    "history" : {
+      "statistic" : {
+        "failed" : 0,
+        "broken" : 0,
+        "skipped" : 0,
+        "passed" : 2,
+        "unknown" : 0,
+        "total" : 2
+      },
+      "items" : [ {
+        "uid" : "63324ec8a1d3a4c0",
+        "reportUrl" : "https://mangata-finance.github.io/mangata-e2e/375//#testresult/63324ec8a1d3a4c0",
+        "status" : "passed",
+        "time" : {
+          "start" : 1633013364157,
+          "stop" : 1633013394132,
+          "duration" : 29975
+        }
+      } ]
+    },
     "tags" : [ ]
   },
-  "source" : "63324ec8a1d3a4c0.json",
+  "source" : "ed766e2ce9bceb00.json",
   "parameterValues" : [ ]
 }

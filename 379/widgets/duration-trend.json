@@ -1,161 +1,139 @@
 [ {
+  "buildOrder" : 379,
+  "reportUrl" : "https://mangata-finance.github.io/mangata-e2e/379/",
+  "reportName" : "Allure Report with history",
+  "data" : {
+    "duration" : 85660
+  }
+}, {
   "buildOrder" : 375,
   "reportUrl" : "https://mangata-finance.github.io/mangata-e2e/375/",
   "reportName" : "Allure Report with history",
   "data" : {
-    "run" : 3,
-    "retry" : 0
+    "duration" : 90022
   }
 }, {
   "buildOrder" : 377,
   "reportUrl" : "https://mangata-finance.github.io/mangata-e2e/377/",
   "reportName" : "Allure Report with history",
-  "data" : {
-    "run" : 0,
-    "retry" : 0
-  }
+  "data" : { }
 }, {
   "buildOrder" : 371,
   "reportUrl" : "https://mangata-finance.github.io/mangata-e2e/371/",
   "reportName" : "Allure Report with history",
   "data" : {
-    "run" : 17,
-    "retry" : 0
+    "duration" : 2879350
   }
 }, {
   "buildOrder" : 372,
   "reportUrl" : "https://mangata-finance.github.io/mangata-e2e/372/",
   "reportName" : "Allure Report with history",
   "data" : {
-    "run" : 17,
-    "retry" : 0
+    "duration" : 2579975
   }
 }, {
   "buildOrder" : 373,
   "reportUrl" : "https://mangata-finance.github.io/mangata-e2e/373/",
   "reportName" : "Allure Report with history",
   "data" : {
-    "run" : 17,
-    "retry" : 0
+    "duration" : 2443854
   }
 }, {
   "buildOrder" : 370,
   "reportUrl" : "https://mangata-finance.github.io/mangata-e2e/370/",
   "reportName" : "Allure Report with history",
   "data" : {
-    "run" : 17,
-    "retry" : 0
+    "duration" : 2191632
   }
 }, {
   "buildOrder" : 369,
   "reportUrl" : "https://mangata-finance.github.io/mangata-e2e/369/",
   "reportName" : "Allure Report with history",
   "data" : {
-    "run" : 17,
-    "retry" : 0
+    "duration" : 1982179
   }
 }, {
   "buildOrder" : 368,
   "reportUrl" : "https://mangata-finance.github.io/mangata-e2e/368/",
   "reportName" : "Allure Report with history",
   "data" : {
-    "run" : 17,
-    "retry" : 0
+    "duration" : 1295035
   }
 }, {
   "buildOrder" : 365,
   "reportUrl" : "https://mangata-finance.github.io/mangata-e2e/365/",
   "reportName" : "Allure Report with history",
   "data" : {
-    "run" : 10,
-    "retry" : 0
+    "duration" : 425304
   }
 }, {
   "buildOrder" : 366,
   "reportUrl" : "https://mangata-finance.github.io/mangata-e2e/366/",
   "reportName" : "Allure Report with history",
   "data" : {
-    "run" : 10,
-    "retry" : 0
+    "duration" : 421980
   }
 }, {
   "buildOrder" : 367,
   "reportUrl" : "https://mangata-finance.github.io/mangata-e2e/367/",
   "reportName" : "Allure Report with history",
   "data" : {
-    "run" : 10,
-    "retry" : 0
+    "duration" : 339405
   }
 }, {
   "buildOrder" : 411,
   "reportUrl" : "https://mangata-finance.github.io/mangata-e2e/411/",
   "reportName" : "Allure Report with history",
   "data" : {
-    "run" : 18,
-    "retry" : 0
+    "duration" : 1939415
   }
 }, {
   "buildOrder" : 362,
   "reportUrl" : "https://mangata-finance.github.io/mangata-e2e/362/",
   "reportName" : "Allure Report with history",
   "data" : {
-    "run" : 17,
-    "retry" : 0
+    "duration" : 2200507
   }
 }, {
   "buildOrder" : 364,
   "reportUrl" : "https://mangata-finance.github.io/mangata-e2e/364/",
   "reportName" : "Allure Report with history",
   "data" : {
-    "run" : 17,
-    "retry" : 0
+    "duration" : 2145980
   }
 }, {
   "buildOrder" : 363,
   "reportUrl" : "https://mangata-finance.github.io/mangata-e2e/363/",
   "reportName" : "Allure Report with history",
   "data" : {
-    "run" : 17,
-    "retry" : 0
+    "duration" : 1958728
   }
 }, {
   "buildOrder" : 409,
   "reportUrl" : "https://mangata-finance.github.io/mangata-e2e/409/",
   "reportName" : "Allure Report with history",
   "data" : {
-    "run" : 18,
-    "retry" : 0
+    "duration" : 1939896
   }
 }, {
   "buildOrder" : 408,
   "reportUrl" : "https://mangata-finance.github.io/mangata-e2e/408/",
   "reportName" : "Allure Report with history",
   "data" : {
-    "run" : 18,
-    "retry" : 0
+    "duration" : 1939341
   }
 }, {
   "buildOrder" : 361,
   "reportUrl" : "https://mangata-finance.github.io/mangata-e2e/361/",
   "reportName" : "Allure Report with history",
   "data" : {
-    "run" : 10,
-    "retry" : 0
+    "duration" : 832143
   }
 }, {
   "buildOrder" : 359,
   "reportUrl" : "https://mangata-finance.github.io/mangata-e2e/359/",
   "reportName" : "Allure Report with history",
   "data" : {
-    "run" : 10,
-    "retry" : 0
-  }
-}, {
-  "buildOrder" : 360,
-  "reportUrl" : "https://mangata-finance.github.io/mangata-e2e/360/",
-  "reportName" : "Allure Report with history",
-  "data" : {
-    "run" : 10,
-    "retry" : 0
+    "duration" : 506827
   }
 } ]

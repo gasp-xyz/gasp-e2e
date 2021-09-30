@@ -1,10 +1,13 @@
 [ {
+  "buildOrder" : 379,
+  "reportUrl" : "https://mangata-finance.github.io/mangata-e2e/379/",
+  "reportName" : "Allure Report with history",
+  "data" : { }
+}, {
   "buildOrder" : 375,
   "reportUrl" : "https://mangata-finance.github.io/mangata-e2e/375/",
   "reportName" : "Allure Report with history",
-  "data" : {
-    "duration" : 90022
-  }
+  "data" : { }
 }, {
   "buildOrder" : 377,
   "reportUrl" : "https://mangata-finance.github.io/mangata-e2e/377/",
@@ -15,125 +18,110 @@
   "reportUrl" : "https://mangata-finance.github.io/mangata-e2e/371/",
   "reportName" : "Allure Report with history",
   "data" : {
-    "duration" : 2879350
+    "Product defects" : 3
   }
 }, {
   "buildOrder" : 372,
   "reportUrl" : "https://mangata-finance.github.io/mangata-e2e/372/",
   "reportName" : "Allure Report with history",
   "data" : {
-    "duration" : 2579975
+    "Product defects" : 1
   }
 }, {
   "buildOrder" : 373,
   "reportUrl" : "https://mangata-finance.github.io/mangata-e2e/373/",
   "reportName" : "Allure Report with history",
-  "data" : {
-    "duration" : 2443854
-  }
+  "data" : { }
 }, {
   "buildOrder" : 370,
   "reportUrl" : "https://mangata-finance.github.io/mangata-e2e/370/",
   "reportName" : "Allure Report with history",
   "data" : {
-    "duration" : 2191632
+    "Product defects" : 1
   }
 }, {
   "buildOrder" : 369,
   "reportUrl" : "https://mangata-finance.github.io/mangata-e2e/369/",
   "reportName" : "Allure Report with history",
   "data" : {
-    "duration" : 1982179
+    "Product defects" : 4
   }
 }, {
   "buildOrder" : 368,
   "reportUrl" : "https://mangata-finance.github.io/mangata-e2e/368/",
   "reportName" : "Allure Report with history",
   "data" : {
-    "duration" : 1295035
+    "Product defects" : 6
   }
 }, {
   "buildOrder" : 365,
   "reportUrl" : "https://mangata-finance.github.io/mangata-e2e/365/",
   "reportName" : "Allure Report with history",
   "data" : {
-    "duration" : 425304
+    "Product defects" : 1
   }
 }, {
   "buildOrder" : 366,
   "reportUrl" : "https://mangata-finance.github.io/mangata-e2e/366/",
   "reportName" : "Allure Report with history",
   "data" : {
-    "duration" : 421980
+    "Product defects" : 1
   }
 }, {
   "buildOrder" : 367,
   "reportUrl" : "https://mangata-finance.github.io/mangata-e2e/367/",
   "reportName" : "Allure Report with history",
   "data" : {
-    "duration" : 339405
+    "Product defects" : 2
   }
 }, {
   "buildOrder" : 411,
   "reportUrl" : "https://mangata-finance.github.io/mangata-e2e/411/",
   "reportName" : "Allure Report with history",
-  "data" : {
-    "duration" : 1939415
-  }
+  "data" : { }
 }, {
   "buildOrder" : 362,
   "reportUrl" : "https://mangata-finance.github.io/mangata-e2e/362/",
   "reportName" : "Allure Report with history",
   "data" : {
-    "duration" : 2200507
+    "Product defects" : 7
   }
 }, {
   "buildOrder" : 364,
   "reportUrl" : "https://mangata-finance.github.io/mangata-e2e/364/",
   "reportName" : "Allure Report with history",
   "data" : {
-    "duration" : 2145980
+    "Product defects" : 1
   }
 }, {
   "buildOrder" : 363,
   "reportUrl" : "https://mangata-finance.github.io/mangata-e2e/363/",
   "reportName" : "Allure Report with history",
   "data" : {
-    "duration" : 1958728
+    "Product defects" : 4
   }
 }, {
   "buildOrder" : 409,
   "reportUrl" : "https://mangata-finance.github.io/mangata-e2e/409/",
   "reportName" : "Allure Report with history",
-  "data" : {
-    "duration" : 1939896
-  }
+  "data" : { }
 }, {
   "buildOrder" : 408,
   "reportUrl" : "https://mangata-finance.github.io/mangata-e2e/408/",
   "reportName" : "Allure Report with history",
-  "data" : {
-    "duration" : 1939341
-  }
+  "data" : { }
 }, {
   "buildOrder" : 361,
   "reportUrl" : "https://mangata-finance.github.io/mangata-e2e/361/",
   "reportName" : "Allure Report with history",
   "data" : {
-    "duration" : 832143
+    "Product defects" : 3
   }
 }, {
   "buildOrder" : 359,
   "reportUrl" : "https://mangata-finance.github.io/mangata-e2e/359/",
   "reportName" : "Allure Report with history",
   "data" : {
-    "duration" : 506827
-  }
-}, {
-  "buildOrder" : 360,
-  "reportUrl" : "https://mangata-finance.github.io/mangata-e2e/360/",
-  "reportName" : "Allure Report with history",
-  "data" : {
-    "duration" : 447001
+    "Product defects" : 1
   }
 } ]
