@@ -1,0 +1,129 @@
+{
+  "uid" : "8c0ba25b624c21ff",
+  "name" : "As a User I get the right values for Pool investment P[5000000000000000000, 100] - I-> 100000000000 -Expected - 0.000002",
+  "fullName" : "Accuracy tests.As a User I get the right values for Pool investment P[5000000000000000000, 100] - I-> 100000000000 -Expected - 0.000002",
+  "historyId" : "740e3a889fe6f9515e754703a4ebf44e",
+  "time" : {
+    "start" : 1633009321481,
+    "stop" : 1633009432594,
+    "duration" : 111113
+  },
+  "description" : "",
+  "descriptionHtml" : "",
+  "status" : "passed",
+  "flaky" : false,
+  "newFailed" : false,
+  "beforeStages" : [ ],
+  "afterStages" : [ ],
+  "labels" : [ {
+    "name" : "suite",
+    "value" : "Accuracy tests"
+  }, {
+    "name" : "testClass",
+    "value" : "Accuracy tests"
+  }, {
+    "name" : "testMethod",
+    "value" : "As a User I get the right values for Pool investment P[5000000000000000000, 100] - I-> 100000000000 -Expected - 0.000002"
+  }, {
+    "name" : "package",
+    "value" : "Accuracy tests"
+  }, {
+    "name" : "resultFormat",
+    "value" : "allure1"
+  } ],
+  "parameters" : [ ],
+  "links" : [ ],
+  "hidden" : false,
+  "retry" : false,
+  "extra" : {
+    "severity" : "normal",
+    "retries" : [ ],
+    "categories" : [ ],
+    "history" : {
+      "statistic" : {
+        "failed" : 0,
+        "broken" : 0,
+        "skipped" : 0,
+        "passed" : 9,
+        "unknown" : 0,
+        "total" : 9
+      },
+      "items" : [ {
+        "uid" : "89f6833f2876ee4d",
+        "reportUrl" : "https://mangata-finance.github.io/mangata-e2e/372//#testresult/89f6833f2876ee4d",
+        "status" : "passed",
+        "time" : {
+          "start" : 1633009280356,
+          "stop" : 1633009389991,
+          "duration" : 109635
+        }
+      }, {
+        "uid" : "82f4ab4097636af3",
+        "reportUrl" : "https://mangata-finance.github.io/mangata-e2e/373//#testresult/82f4ab4097636af3",
+        "status" : "passed",
+        "time" : {
+          "start" : 1633009165202,
+          "stop" : 1633009270861,
+          "duration" : 105659
+        }
+      }, {
+        "uid" : "f2b6f57d5af514a9",
+        "reportUrl" : "https://mangata-finance.github.io/mangata-e2e/370//#testresult/f2b6f57d5af514a9",
+        "status" : "passed",
+        "time" : {
+          "start" : 1632966961474,
+          "stop" : 1632967069502,
+          "duration" : 108028
+        }
+      }, {
+        "uid" : "c01ee77c821fa26d",
+        "reportUrl" : "https://mangata-finance.github.io/mangata-e2e/369//#testresult/c01ee77c821fa26d",
+        "status" : "passed",
+        "time" : {
+          "start" : 1632966794263,
+          "stop" : 1632966900192,
+          "duration" : 105929
+        }
+      }, {
+        "uid" : "398094ea6839437e",
+        "reportUrl" : "https://mangata-finance.github.io/mangata-e2e/368//#testresult/398094ea6839437e",
+        "status" : "passed",
+        "time" : {
+          "start" : 1632966032517,
+          "stop" : 1632966143724,
+          "duration" : 111207
+        }
+      }, {
+        "uid" : "8cc5d8adbf04fb78",
+        "reportUrl" : "https://mangata-finance.github.io/mangata-e2e/362//#testresult/8cc5d8adbf04fb78",
+        "status" : "passed",
+        "time" : {
+          "start" : 1632922556360,
+          "stop" : 1632922662991,
+          "duration" : 106631
+        }
+      }, {
+        "uid" : "e8978b0672e4990f",
+        "reportUrl" : "https://mangata-finance.github.io/mangata-e2e/364//#testresult/e8978b0672e4990f",
+        "status" : "passed",
+        "time" : {
+          "start" : 1632922520112,
+          "stop" : 1632922628772,
+          "duration" : 108660
+        }
+      }, {
+        "uid" : "5f84e1052bcd7577",
+        "reportUrl" : "https://mangata-finance.github.io/mangata-e2e/363//#testresult/5f84e1052bcd7577",
+        "status" : "passed",
+        "time" : {
+          "start" : 1632922304068,
+          "stop" : 1632922423611,
+          "duration" : 119543
+        }
+      } ]
+    },
+    "tags" : [ ]
+  },
+  "source" : "8c0ba25b624c21ff.json",
+  "parameterValues" : [ ]
+}
