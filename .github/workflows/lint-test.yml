@@ -53,9 +53,15 @@ jobs:
       - name: Sleep for 5 seconds
         run: sleep 5s #we need to sleep to avoid block Number 0.
         shell: bash
+      - name: Add test context to allure
+        run: |
+          echo 'ENV=${{ github.event.client_payload.environment }}' >> ./environment.properties
+          echo 'TEST_SCRIPT=${{ env.TEST_SCRIPT }}' >> ./environment.properties
+          echo 'MANGATA_NODE_VERSION=${{ env.MANGATA_NODE_VERSION }}' >> ./environment.properties
+          echo 'API_URL=${{ env.API_URL }}' >> ./environment.properties
+
       - name: Run e2e tests
         run: yarn ${{ env.TEST_SCRIPT }}
-      
       - name: Test Report
         uses: dorny/test-reporter@v1
         if: success() || failure()    # run this step even if previous step failed
@@ -76,8 +82,9 @@ jobs:
         if: always()
         continue-on-error: true
         with:
-          ref: gh-pages
+          ref: feature/gh-pages-for-e2e-test-report
           path: gh-pages
+          repository: mangata-finance/mangata-node
 
       - name: Generate Allure Report [History]
         uses: simple-elf/allure-report-action@master
@@ -85,29 +92,20 @@ jobs:
         #id: allure-report
         with:
           allure_results: allure-results
-          #gh_pages: gh-pages
+          #gh_pages: feature/gh-pages-for-e2e-test-report
           #allure_report: allure-report
           allure_history: allure-history
           keep_reports: 20
+          github_repo: mangata-finance/mangata-node
 
       - name: Generate Allure Report [Deploy to GH]
         if: always()
-        uses: peaceiris/actions-gh-pages@v2
-        env:
-          PERSONAL_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-          PUBLISH_BRANCH: gh-pages
-          PUBLISH_DIR: allure-history
-
-
-      - name: Generate Allure Report [Add Link] - https://mangata-finance.github.io/mangata-e2e/
-        if: always()
-        uses: Sibz/github-status-action@v1
-        with: 
-            authToken: ${{secrets.GITHUB_TOKEN}}
-            context: 'Test report'
-            state: 'success'
-            sha: ${{ github.event.pull_request.head.sha  || github.sha }}
-            target_url: 'https://mangata-finance.github.io/mangata-e2e/${{ github.run_number }}'
+        uses: peaceiris/actions-gh-pages@v3.7.3
+        with:
+          external_repository: mangata-finance/mangata-node
+          deploy_key: ${{ secrets.PUSH_GH_PAGE_TOKEN }}
+          publish_dir: allure-history
+          publish_branch: feature/gh-pages-for-e2e-test-report
 
       - name: Stop Containers
         if: always()
