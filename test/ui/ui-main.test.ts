@@ -1,7 +1,6 @@
 /*
  *
  * @group ui
- * @group sequential
  */
 import { Keyring } from "@polkadot/api";
 import BN from "bn.js";
