@@ -1,0 +1,126 @@
+{
+  "uid" : "e8e3c410a1f26d8d",
+  "name" : "As a User I can create a pool",
+  "fullName" : "UI tests - A user can create a pool MGA - newToken.As a User I can create a pool",
+  "historyId" : "271610054c4a7ce96b4f458d416b5c30",
+  "time" : {
+    "start" : 1633009753478,
+    "stop" : 1633009774690,
+    "duration" : 21212
+  },
+  "description" : "",
+  "descriptionHtml" : "",
+  "status" : "failed",
+  "statusMessage" : "Error: Failed: \"TIMEOUT: Waiting for //*[@class = 'Sidebar__loading'] to dissapear\"",
+  "statusTrace" : "Error: \n                    at Env.it (/home/runner/work/mangata-e2e/mangata-e2e/node_modules/jest-jasmine2/build/jasmineAsyncInstall.js:95:24)\n                    at it (/home/runner/work/mangata-e2e/mangata-e2e/node_modules/jest-jasmine2/build/jasmine/jasmineLight.js:100:21)\n                    at Suite.<anonymous> (/home/runner/work/mangata-e2e/mangata-e2e/test/ui/ui-main.pools.test.ts:68:3)\n                    at addSpecsToSuite (/home/runner/work/mangata-e2e/mangata-e2e/node_modules/jest-jasmine2/build/jasmine/Env.js:444:51)\n                    at Env.describe (/home/runner/work/mangata-e2e/mangata-e2e/node_modules/jest-jasmine2/build/jasmine/Env.js:414:11)\n                    at describe (/home/runner/work/mangata-e2e/mangata-e2e/node_modules/jest-jasmine2/build/jasmine/jasmineLight.js:88:18)\n                    at Object.<anonymous> (/home/runner/work/mangata-e2e/mangata-e2e/test/ui/ui-main.pools.test.ts:32:1)\n                    at Runtime._execModule (/home/runner/work/mangata-e2e/mangata-e2e/node_modules/jest-runtime/build/index.js:1299:24)\n                    at Runtime._loadModule (/home/runner/work/mangata-e2e/mangata-e2e/node_modules/jest-runtime/build/index.js:898:12)\n                    at Runtime.requireModule (/home/runner/work/mangata-e2e/mangata-e2e/node_modules/jest-runtime/build/index.js:746:10)",
+  "flaky" : false,
+  "newFailed" : true,
+  "beforeStages" : [ ],
+  "afterStages" : [ ],
+  "labels" : [ {
+    "name" : "suite",
+    "value" : "UI tests - A user can create a pool MGA - newToken"
+  }, {
+    "name" : "testClass",
+    "value" : "UI tests - A user can create a pool MGA - newToken"
+  }, {
+    "name" : "testMethod",
+    "value" : "As a User I can create a pool"
+  }, {
+    "name" : "package",
+    "value" : "UI tests - A user can create a pool MGA - newToken"
+  }, {
+    "name" : "resultFormat",
+    "value" : "allure1"
+  } ],
+  "parameters" : [ ],
+  "links" : [ ],
+  "hidden" : false,
+  "retry" : false,
+  "extra" : {
+    "severity" : "normal",
+    "retries" : [ ],
+    "categories" : [ {
+      "name" : "Product defects",
+      "matchedStatuses" : [ ],
+      "flaky" : false
+    } ],
+    "history" : {
+      "statistic" : {
+        "failed" : 1,
+        "broken" : 0,
+        "skipped" : 0,
+        "passed" : 7,
+        "unknown" : 0,
+        "total" : 8
+      },
+      "items" : [ {
+        "uid" : "d8676d4cb88c1d32",
+        "reportUrl" : "https://mangata-finance.github.io/mangata-e2e/373//#testresult/d8676d4cb88c1d32",
+        "status" : "passed",
+        "time" : {
+          "start" : 1633009616308,
+          "stop" : 1633009680609,
+          "duration" : 64301
+        }
+      }, {
+        "uid" : "3818be9598e645ce",
+        "reportUrl" : "https://mangata-finance.github.io/mangata-e2e/370//#testresult/3818be9598e645ce",
+        "status" : "passed",
+        "time" : {
+          "start" : 1632967423847,
+          "stop" : 1632967476853,
+          "duration" : 53006
+        }
+      }, {
+        "uid" : "83984325fe6b2892",
+        "reportUrl" : "https://mangata-finance.github.io/mangata-e2e/369//#testresult/83984325fe6b2892",
+        "status" : "passed",
+        "time" : {
+          "start" : 1632967243795,
+          "stop" : 1632967296652,
+          "duration" : 52857
+        }
+      }, {
+        "uid" : "bd0fddccdf3ca596",
+        "reportUrl" : "https://mangata-finance.github.io/mangata-e2e/368//#testresult/bd0fddccdf3ca596",
+        "status" : "passed",
+        "time" : {
+          "start" : 1632966482360,
+          "stop" : 1632966540666,
+          "duration" : 58306
+        }
+      }, {
+        "uid" : "97c6083c7254dfc7",
+        "reportUrl" : "https://mangata-finance.github.io/mangata-e2e/362//#testresult/97c6083c7254dfc7",
+        "status" : "passed",
+        "time" : {
+          "start" : 1632923035657,
+          "stop" : 1632923094702,
+          "duration" : 59045
+        }
+      }, {
+        "uid" : "716beca699d29bc8",
+        "reportUrl" : "https://mangata-finance.github.io/mangata-e2e/364//#testresult/716beca699d29bc8",
+        "status" : "passed",
+        "time" : {
+          "start" : 1632922969202,
+          "stop" : 1632923022697,
+          "duration" : 53495
+        }
+      }, {
+        "uid" : "835cddfcc1469591",
+        "reportUrl" : "https://mangata-finance.github.io/mangata-e2e/363//#testresult/835cddfcc1469591",
+        "status" : "passed",
+        "time" : {
+          "start" : 1632922759135,
+          "stop" : 1632922812577,
+          "duration" : 53442
+        }
+      } ]
+    },
+    "tags" : [ ]
+  },
+  "source" : "e8e3c410a1f26d8d.json",
+  "parameterValues" : [ ]
+}

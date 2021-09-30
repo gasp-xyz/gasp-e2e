@@ -1,0 +1,124 @@
+{
+  "uid" : "8a800837a7acd7f5",
+  "name" : "As a User I can Swap tokens - MGA - mETH",
+  "fullName" : "UI tests - A user can swap and mint tokens.As a User I can Swap tokens - MGA - mETH",
+  "historyId" : "c9939ab6b05fdb3664bf90f9f2159e2e",
+  "time" : {
+    "start" : 1633007596129,
+    "stop" : 1633007796825,
+    "duration" : 200696
+  },
+  "description" : "",
+  "descriptionHtml" : "",
+  "status" : "passed",
+  "flaky" : false,
+  "newFailed" : false,
+  "beforeStages" : [ ],
+  "afterStages" : [ ],
+  "labels" : [ {
+    "name" : "suite",
+    "value" : "UI tests - A user can swap and mint tokens"
+  }, {
+    "name" : "testClass",
+    "value" : "UI tests - A user can swap and mint tokens"
+  }, {
+    "name" : "testMethod",
+    "value" : "As a User I can Swap tokens - MGA - mETH"
+  }, {
+    "name" : "package",
+    "value" : "UI tests - A user can swap and mint tokens"
+  }, {
+    "name" : "resultFormat",
+    "value" : "allure1"
+  } ],
+  "parameters" : [ ],
+  "links" : [ ],
+  "hidden" : false,
+  "retry" : false,
+  "extra" : {
+    "severity" : "normal",
+    "retries" : [ ],
+    "categories" : [ ],
+    "history" : {
+      "statistic" : {
+        "failed" : 4,
+        "broken" : 0,
+        "skipped" : 0,
+        "passed" : 4,
+        "unknown" : 0,
+        "total" : 8
+      },
+      "items" : [ {
+        "uid" : "77a36af1ea4e7f33",
+        "reportUrl" : "https://mangata-finance.github.io/mangata-e2e/373//#testresult/77a36af1ea4e7f33",
+        "status" : "passed",
+        "time" : {
+          "start" : 1633007531490,
+          "stop" : 1633007772530,
+          "duration" : 241040
+        }
+      }, {
+        "uid" : "d4fb3787fdbc86e3",
+        "reportUrl" : "https://mangata-finance.github.io/mangata-e2e/370//#testresult/d4fb3787fdbc86e3",
+        "status" : "passed",
+        "time" : {
+          "start" : 1632965590434,
+          "stop" : 1632965754621,
+          "duration" : 164187
+        }
+      }, {
+        "uid" : "2b6da409dbca3909",
+        "reportUrl" : "https://mangata-finance.github.io/mangata-e2e/369//#testresult/2b6da409dbca3909",
+        "status" : "failed",
+        "statusDetails" : "Error: Trade btn is not enabled!",
+        "time" : {
+          "start" : 1632965566747,
+          "stop" : 1632965692288,
+          "duration" : 125541
+        }
+      }, {
+        "uid" : "958e369fbc718906",
+        "reportUrl" : "https://mangata-finance.github.io/mangata-e2e/368//#testresult/958e369fbc718906",
+        "status" : "failed",
+        "statusDetails" : "thrown: Event {\n                  \"isTrusted\": true,\n                }",
+        "time" : {
+          "start" : 1632965537107,
+          "stop" : 1632965537609,
+          "duration" : 502
+        }
+      }, {
+        "uid" : "9c4ba8fabf64e307",
+        "reportUrl" : "https://mangata-finance.github.io/mangata-e2e/362//#testresult/9c4ba8fabf64e307",
+        "status" : "failed",
+        "statusDetails" : "Error: Failed: \"W[1] timeout in - signAndWaitTx - \\\" + 5HQ9Mm9L1HG53htEGDMsnhkkL7hEfF9vLstEQPtMLX5Gupqx + \\\" - \\\" + 20 + \\\" - \\\" + {\\\"isSigned\\\":true,\\\"method\\\":{\\\"args\\\":[{\\\"args\\\":[\\\"1\\\",\\\"5HQ9Mm9L1HG53htEGDMsnhkkL7hEfF9vLstEQPtMLX5Gupqx\\\",\\\"10.0000 MUnit\\\"],\\\"method\\\":\\\"mint\\\",\\\"section\\\":\\\"tokens\\\"}],\\\"method\\\":\\\"sudo\\\",\\\"section\\\":\\\"sudo\\\"},\\\"era\\\":{\\\"MortalEra\\\":{\\\"period\\\":\\\"64\\\",\\\"phase\\\":\\\"59\\\"}},\\\"nonce\\\":\\\"20\\\",\\\"signature\\\":\\\"0xce6c4c79d84e76b4a3c46323cc452c1b410f0330f9f2ea2498e52096ccfdfd4b552cd583fa95acf50ee4b0ec2e54c4962e889fe0b840f37b4433ee28f9c66189\\\",\\\"signer\\\":\\\"5HQ9Mm9L1HG53htEGDMsnhkkL7hEfF9vLstEQPtMLX5Gupqx\\\",\\\"tip\\\":\\\"0\\\"}\"",
+        "time" : {
+          "start" : 1632921169917,
+          "stop" : 1632921357790,
+          "duration" : 187873
+        }
+      }, {
+        "uid" : "1bfaf88c121f4c57",
+        "reportUrl" : "https://mangata-finance.github.io/mangata-e2e/364//#testresult/1bfaf88c121f4c57",
+        "status" : "passed",
+        "time" : {
+          "start" : 1632921167817,
+          "stop" : 1632921330626,
+          "duration" : 162809
+        }
+      }, {
+        "uid" : "1395c1a583f6ec5d",
+        "reportUrl" : "https://mangata-finance.github.io/mangata-e2e/363//#testresult/1395c1a583f6ec5d",
+        "status" : "failed",
+        "statusDetails" : "Error: Trade btn is not enabled!",
+        "time" : {
+          "start" : 1632921112615,
+          "stop" : 1632921235308,
+          "duration" : 122693
+        }
+      } ]
+    },
+    "tags" : [ ]
+  },
+  "source" : "8a800837a7acd7f5.json",
+  "parameterValues" : [ ]
+}
