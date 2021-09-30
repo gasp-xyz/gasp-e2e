@@ -33,7 +33,7 @@ let firstCurrency: BN;
 let secondCurrency: BN;
 
 // Assuming the pallet's AccountId
-const { pallet: pallet_address, sudo: sudoUserName } =
+const { xykPalletAddress: pallet_address, sudo: sudoUserName } =
   getEnvironmentRequiredVars();
 const defaultCurrecyValue = new BN(250000);
 
@@ -151,18 +151,19 @@ test("xyk-pallet - AssetsOperation: buyAsset [maxAmountIn = 1M], buy asset", asy
   testUser2.assets.forEach((asset) => {
     expect(asset.amountBefore).bnEqual(asset.amountAfter);
   });
-
+  const { treasury, treasuryBurn } = calculateFees(buyPriceLocal);
+  const bothFees = treasury.add(treasuryBurn);
   addFromWallet = pallet
     .getAsset(soldAssetId)
-    ?.amountBefore!.add(buyPriceLocal);
+    ?.amountBefore!.add(buyPriceLocal)
+    .sub(bothFees);
   expect(pallet.getAsset(soldAssetId)?.amountAfter!).bnEqual(addFromWallet!);
 
   diffFromWallet = pallet.getAsset(boughtAssetId)?.amountBefore!.sub(amount);
   expect(pallet.getAsset(boughtAssetId)?.amountAfter!).bnEqual(diffFromWallet!);
 
   const pool_balance = await getBalanceOfPool(firstCurrency, secondCurrency);
-  const { treasury, treasuryBurn } = calculateFees(buyPriceLocal);
-  const bothFees = treasury.add(treasuryBurn);
+
   expect([
     poolBalanceBefore[0].add(buyPriceLocal).sub(bothFees),
     poolBalanceBefore[1].sub(amount),
@@ -229,17 +230,18 @@ test("xyk-pallet - AssetsOperation: buyAsset [maxAmountIn = 1M], sell a bought a
   testUser2.assets.forEach((asset) => {
     expect(asset.amountBefore).bnEqual(asset.amountAfter);
   });
+  const { treasury, treasuryBurn } = calculateFees(buyPriceLocal);
+  const bothFees = treasury.add(treasuryBurn);
 
   addFromWallet = pallet
     .getAsset(soldAssetId)
-    ?.amountBefore!.add(buyPriceLocal);
+    ?.amountBefore!.add(buyPriceLocal)
+    .sub(bothFees);
   expect(pallet.getAsset(soldAssetId)?.amountAfter!).bnEqual(addFromWallet!);
 
   diffFromWallet = pallet.getAsset(boughtAssetId)?.amountBefore!.sub(amount);
   expect(pallet.getAsset(boughtAssetId)?.amountAfter!).bnEqual(diffFromWallet!);
 
-  const { treasury, treasuryBurn } = calculateFees(buyPriceLocal);
-  const bothFees = treasury.add(treasuryBurn);
   const pool_balance = await getBalanceOfPool(secondCurrency, firstCurrency);
   expect([
     poolBalanceBefore[0].add(buyPriceLocal).sub(bothFees),

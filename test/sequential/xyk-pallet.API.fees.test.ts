@@ -36,7 +36,7 @@ let firstCurrency: BN;
 let secondCurrency: BN;
 
 const {
-  pallet: pallet_address,
+  xykPalletAddress: pallet_address,
   sudo: sudoUserName,
   treasuryPalletAddress,
 } = getEnvironmentRequiredVars();
