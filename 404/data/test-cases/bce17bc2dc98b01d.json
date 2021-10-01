@@ -1,12 +1,12 @@
 {
-  "uid" : "c4bcb18c0c371949",
+  "uid" : "bce17bc2dc98b01d",
   "name" : "that Eth arrive to User TokenId 1 in Mangata and can be sent back",
   "fullName" : "test ether.that Eth arrive to User TokenId 1 in Mangata and can be sent back",
   "historyId" : "6a7c882af5d738738ff42ac96eb6c6ec",
   "time" : {
-    "start" : 1633100987266,
-    "stop" : 1633101060617,
-    "duration" : 73351
+    "start" : 1633100968360,
+    "stop" : 1633101054249,
+    "duration" : 85889
   },
   "description" : "",
   "descriptionHtml" : "",
@@ -239,6 +239,6 @@
     },
     "tags" : [ ]
   },
-  "source" : "c4bcb18c0c371949.json",
+  "source" : "bce17bc2dc98b01d.json",
   "parameterValues" : [ ]
 }

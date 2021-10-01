@@ -1,12 +1,12 @@
 {
-  "uid" : "cd649d7e16cb42d8",
+  "uid" : "ba945e101cb45fbe",
   "name" : "xyk-CI - validate user got the right Assets",
   "fullName" : "test/ci/xyk-ci.validate.setup.test.ts.xyk-CI - validate user got the right Assets",
   "historyId" : "7a64941900b8e70dd40d5d9b833c38bc",
   "time" : {
-    "start" : 1633101064343,
-    "stop" : 1633101064746,
-    "duration" : 403
+    "start" : 1633101060444,
+    "stop" : 1633101060763,
+    "duration" : 319
   },
   "description" : "",
   "descriptionHtml" : "",
@@ -249,6 +249,6 @@
     },
     "tags" : [ ]
   },
-  "source" : "cd649d7e16cb42d8.json",
+  "source" : "ba945e101cb45fbe.json",
   "parameterValues" : [ ]
 }

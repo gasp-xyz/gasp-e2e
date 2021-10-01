@@ -1,18 +1,20 @@
 {
-  "uid" : "b599aadb7a1274c8",
+  "uid" : "d79f060b7cbd8e08",
   "name" : "As a User I can Withdraw ETH from Meta extension",
   "fullName" : "UI main tests - Withdraw - ETH.As a User I can Withdraw ETH from Meta extension",
   "historyId" : "eac55faabce1aad19e0827a3afd71b78",
   "time" : {
-    "start" : 1633100782816,
-    "stop" : 1633100984010,
-    "duration" : 201194
+    "start" : 1633100855792,
+    "stop" : 1633100964046,
+    "duration" : 108254
   },
   "description" : "",
   "descriptionHtml" : "",
-  "status" : "passed",
-  "flaky" : false,
-  "newFailed" : false,
+  "status" : "failed",
+  "statusMessage" : "TimeoutError: Waiting for element to be located By(xpath, //button[text()='Connect'])\n                Wait timed out after 20015ms",
+  "statusTrace" : "TimeoutError: Waiting for element to be located By(xpath, //button[text()='Connect'])\n                Wait timed out after 20015ms\n                    at /home/runner/work/mangata-e2e/mangata-e2e/node_modules/selenium-webdriver/lib/promise.js:2201:17\n                    at ManagedPromise.invokeCallback_ (/home/runner/work/mangata-e2e/mangata-e2e/node_modules/selenium-webdriver/lib/promise.js:1376:14)\n                    at TaskQueue.execute_ (/home/runner/work/mangata-e2e/mangata-e2e/node_modules/selenium-webdriver/lib/promise.js:3084:14)\n                    at TaskQueue.executeNext_ (/home/runner/work/mangata-e2e/mangata-e2e/node_modules/selenium-webdriver/lib/promise.js:3067:27)\n                    at /home/runner/work/mangata-e2e/mangata-e2e/node_modules/selenium-webdriver/lib/promise.js:2927:27\n                    at /home/runner/work/mangata-e2e/mangata-e2e/node_modules/selenium-webdriver/lib/promise.js:668:7\n                    at runMicrotasks (<anonymous>)\n                    at processTicksAndRejections (internal/process/task_queues.js:95:5)\n                From: Task: Waiting for element to be located By(xpath, //button[text()='Connect'])\n                    at scheduleWait (/home/runner/work/mangata-e2e/mangata-e2e/node_modules/selenium-webdriver/lib/promise.js:2188:20)\n                    at ControlFlow.wait (/home/runner/work/mangata-e2e/mangata-e2e/node_modules/selenium-webdriver/lib/promise.js:2517:12)\n                    at mixin.wait (/home/runner/work/mangata-e2e/mangata-e2e/node_modules/selenium-webdriver/lib/webdriver.js:934:29)\n                    at waitForElement (/home/runner/work/mangata-e2e/mangata-e2e/utils/frontend/utils/Helper.ts:16:16)\n                    at clickElement (/home/runner/work/mangata-e2e/mangata-e2e/utils/frontend/utils/Helper.ts:36:9)\n                    at MetaMask.connect (/home/runner/work/mangata-e2e/mangata-e2e/utils/frontend/pages/MetaMask.ts:106:11)\n                    at setupAllExtensions (/home/runner/work/mangata-e2e/mangata-e2e/utils/frontend/utils/Helper.ts:90:3)\n                    at Object.<anonymous> (/home/runner/work/mangata-e2e/mangata-e2e/test/ui/ui-main.ETH.test.ts:107:33)",
+  "flaky" : true,
+  "newFailed" : true,
   "beforeStages" : [ ],
   "afterStages" : [ ],
   "labels" : [ {
@@ -38,13 +40,17 @@
   "extra" : {
     "severity" : "normal",
     "retries" : [ ],
-    "categories" : [ ],
+    "categories" : [ {
+      "name" : "Product defects",
+      "matchedStatuses" : [ ],
+      "flaky" : false
+    } ],
     "history" : {
       "statistic" : {
-        "failed" : 27,
+        "failed" : 28,
         "broken" : 0,
         "skipped" : 0,
-        "passed" : 30,
+        "passed" : 29,
         "unknown" : 0,
         "total" : 57
       },
@@ -239,6 +245,6 @@
     },
     "tags" : [ ]
   },
-  "source" : "b599aadb7a1274c8.json",
+  "source" : "d79f060b7cbd8e08.json",
   "parameterValues" : [ ]
 }

@@ -1,12 +1,12 @@
 {
-  "uid" : "a45c8dfd6bc99755",
+  "uid" : "a0c40e91473ef0ce",
   "name" : "Validate that Mangata Frontend up and running",
   "fullName" : "UI tests: Infra.Validate that Mangata Frontend up and running",
   "historyId" : "8422b22f4ca0fa2b11be83bcdc18911d",
   "time" : {
-    "start" : 1633101065152,
-    "stop" : 1633101068354,
-    "duration" : 3202
+    "start" : 1633101061378,
+    "stop" : 1633101064037,
+    "duration" : 2659
   },
   "description" : "",
   "descriptionHtml" : "",
@@ -232,6 +232,6 @@
     },
     "tags" : [ ]
   },
-  "source" : "a45c8dfd6bc99755.json",
+  "source" : "a0c40e91473ef0ce.json",
   "parameterValues" : [ ]
 }

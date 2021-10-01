@@ -1,12 +1,12 @@
 {
-  "uid" : "e1163f51f1415537",
+  "uid" : "7f2fb0843be3b73",
   "name" : "xyk-CI - AssetInfo contains assets for MGA and Ether",
   "fullName" : "test/ci/xyk-ci.validate.assetInfo.test.ts.xyk-CI - AssetInfo contains assets for MGA and Ether",
   "historyId" : "16033ac11d5c3e34e518da599466c153",
   "time" : {
-    "start" : 1633101092704,
-    "stop" : 1633101093067,
-    "duration" : 363
+    "start" : 1633101094156,
+    "stop" : 1633101094799,
+    "duration" : 643
   },
   "description" : "",
   "descriptionHtml" : "",
@@ -232,6 +232,6 @@
     },
     "tags" : [ ]
   },
-  "source" : "e1163f51f1415537.json",
+  "source" : "7f2fb0843be3b73.json",
   "parameterValues" : [ ]
 }

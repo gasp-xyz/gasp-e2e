@@ -1,12 +1,12 @@
 {
-  "uid" : "b1a121605ab3dc52",
+  "uid" : "b6aed00a230faa4c",
   "name" : "As a User I can deposit ETH from Meta extension",
   "fullName" : "UI main tests - Deposit - ETH.As a User I can deposit ETH from Meta extension",
   "historyId" : "3f230497b028a09bdae1c560fcc1f271",
   "time" : {
-    "start" : 1633100589574,
-    "stop" : 1633100782801,
-    "duration" : 193227
+    "start" : 1633100652679,
+    "stop" : 1633100855775,
+    "duration" : 203096
   },
   "description" : "",
   "descriptionHtml" : "",
@@ -237,6 +237,6 @@
     },
     "tags" : [ ]
   },
-  "source" : "b1a121605ab3dc52.json",
+  "source" : "b6aed00a230faa4c.json",
   "parameterValues" : [ ]
 }

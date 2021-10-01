@@ -1,12 +1,12 @@
 {
-  "uid" : "7a3ff24c7873ab27",
+  "uid" : "a3aa75f467b32066",
   "name" : "xyk-CI - Node is up and running",
   "fullName" : "test/ci/xyk-ci.validate.node.test.ts.xyk-CI - Node is up and running",
   "historyId" : "3cd1e9ba8c208d679717ed71612e25c9",
   "time" : {
-    "start" : 1633101086604,
-    "stop" : 1633101090110,
-    "duration" : 3506
+    "start" : 1633101085062,
+    "stop" : 1633101090114,
+    "duration" : 5052
   },
   "description" : "",
   "descriptionHtml" : "",
@@ -232,6 +232,6 @@
     },
     "tags" : [ ]
   },
-  "source" : "7a3ff24c7873ab27.json",
+  "source" : "a3aa75f467b32066.json",
   "parameterValues" : [ ]
 }
