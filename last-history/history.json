@@ -312,11 +312,20 @@
       "failed" : 0,
       "broken" : 0,
       "skipped" : 0,
-      "passed" : 9,
+      "passed" : 10,
       "unknown" : 0,
-      "total" : 9
+      "total" : 10
     },
     "items" : [ {
+      "uid" : "7abe8e2e2e4a21aa",
+      "reportUrl" : "https://mangata-finance.github.io/mangata-e2e/407//#testresult/7abe8e2e2e4a21aa",
+      "status" : "passed",
+      "time" : {
+        "start" : 1633100666656,
+        "stop" : 1633100694162,
+        "duration" : 27506
+      }
+    }, {
       "uid" : "6b3f5cbae615f199",
       "reportUrl" : "https://mangata-finance.github.io/mangata-e2e/405//#testresult/6b3f5cbae615f199",
       "status" : "passed",
@@ -1218,11 +1227,20 @@
       "failed" : 0,
       "broken" : 0,
       "skipped" : 0,
-      "passed" : 9,
+      "passed" : 10,
       "unknown" : 0,
-      "total" : 9
+      "total" : 10
     },
     "items" : [ {
+      "uid" : "52d291faf304c45d",
+      "reportUrl" : "https://mangata-finance.github.io/mangata-e2e/407//#testresult/52d291faf304c45d",
+      "status" : "passed",
+      "time" : {
+        "start" : 1633100724194,
+        "stop" : 1633100754140,
+        "duration" : 29946
+      }
+    }, {
       "uid" : "e01fba975eac0cce",
       "reportUrl" : "https://mangata-finance.github.io/mangata-e2e/405//#testresult/e01fba975eac0cce",
       "status" : "passed",
@@ -2714,11 +2732,20 @@
       "failed" : 0,
       "broken" : 0,
       "skipped" : 0,
-      "passed" : 9,
+      "passed" : 10,
       "unknown" : 0,
-      "total" : 9
+      "total" : 10
     },
     "items" : [ {
+      "uid" : "542854dcea50871e",
+      "reportUrl" : "https://mangata-finance.github.io/mangata-e2e/407//#testresult/542854dcea50871e",
+      "status" : "passed",
+      "time" : {
+        "start" : 1633100694162,
+        "stop" : 1633100724194,
+        "duration" : 30032
+      }
+    }, {
       "uid" : "f3ba9091f611dc4f",
       "reportUrl" : "https://mangata-finance.github.io/mangata-e2e/405//#testresult/f3ba9091f611dc4f",
       "status" : "passed",
