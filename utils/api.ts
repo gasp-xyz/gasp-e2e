@@ -4,7 +4,7 @@ import { getEnvironmentRequiredVars } from "./utils";
 import { Mangata } from "mangata-sdk";
 
 export let api: ApiPromise | null = null;
-export let mangata: Mangata | null = null;
+let mangata: Mangata | null = null;
 
 const { chainUri: envUri } = getEnvironmentRequiredVars();
 export const getApi = () => {
