@@ -4,39 +4,39 @@
     "name" : "Cluster -> Healthcheck",
     "children" : [ {
       "name" : "Nodes are up and syncing",
-      "uid" : "f36e6986f25dcabc",
+      "uid" : "86719d6627b34472",
       "parentUid" : "bab4c1ad94616c7d965ee98fb5554440",
       "status" : "passed",
       "time" : {
-        "start" : 1633077326695,
-        "stop" : 1633077354152,
-        "duration" : 27457
+        "start" : 1633077365255,
+        "stop" : 1633077390136,
+        "duration" : 24881
       },
       "flaky" : false,
       "newFailed" : false,
       "parameters" : [ ]
     }, {
       "name" : "Block merkle hash matches across all nodes",
-      "uid" : "8db7c80e1ee96f7",
+      "uid" : "a656d0dd1c87dd86",
       "parentUid" : "bab4c1ad94616c7d965ee98fb5554440",
       "status" : "passed",
       "time" : {
-        "start" : 1633077354152,
-        "stop" : 1633077384134,
-        "duration" : 29982
+        "start" : 1633077390136,
+        "stop" : 1633077420171,
+        "duration" : 30035
       },
       "flaky" : false,
       "newFailed" : false,
       "parameters" : [ ]
     }, {
       "name" : "Cluster does not fork",
-      "uid" : "75868c7cea3e6629",
+      "uid" : "a86f8567042a1a33",
       "parentUid" : "bab4c1ad94616c7d965ee98fb5554440",
       "status" : "passed",
       "time" : {
-        "start" : 1633077384134,
-        "stop" : 1633077414138,
-        "duration" : 30004
+        "start" : 1633077420171,
+        "stop" : 1633077450159,
+        "duration" : 29988
       },
       "flaky" : false,
       "newFailed" : false,
