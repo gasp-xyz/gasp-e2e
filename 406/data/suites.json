@@ -1,259 +1,163 @@
 {
   "uid" : "98d3104e051c652961429bf95fa0b5d6",
   "children" : [ {
-    "name" : "test/sequential/xyk-pallet.test.ts",
+    "name" : "UI main tests - Deposit - ETH",
     "children" : [ {
-      "name" : "xyk-pallet: Happy case scenario",
-      "uid" : "511482ad6bb6e664",
-      "parentUid" : "7c932ff5fdb9624b56fc99866d13104d",
+      "name" : "As a User I can deposit ETH from Meta extension",
+      "uid" : "f3f79c848845d89e",
+      "parentUid" : "57b6b43286b76c01e05a10e6fc56c7dc",
       "status" : "passed",
       "time" : {
-        "start" : 1632918548255,
-        "stop" : 1632918745622,
-        "duration" : 197367
-      },
-      "flaky" : false,
-      "newFailed" : false,
-      "parameters" : [ ]
-    }, {
-      "name" : "xyk-pallet: Liquidity sufficiency scenario",
-      "uid" : "4fe0d32a2cc1c98a",
-      "parentUid" : "7c932ff5fdb9624b56fc99866d13104d",
-      "status" : "passed",
-      "time" : {
-        "start" : 1632918745622,
-        "stop" : 1632919051464,
-        "duration" : 305842
+        "start" : 1633100620906,
+        "stop" : 1633100820088,
+        "duration" : 199182
       },
       "flaky" : false,
       "newFailed" : false,
       "parameters" : [ ]
     } ],
-    "uid" : "7c932ff5fdb9624b56fc99866d13104d"
+    "uid" : "57b6b43286b76c01e05a10e6fc56c7dc"
   }, {
-    "name" : "xyk-pallet - treasury tests [Mangata]: on treasury we store",
+    "name" : "UI main tests - Withdraw - ETH",
     "children" : [ {
-      "name" : "assets won when assets are sold [Selling Mangata] - 5",
-      "uid" : "f6f11c78c39c4e8e",
-      "parentUid" : "dd0c8d27829bd9fa6c614b8009117e89",
+      "name" : "As a User I can Withdraw ETH from Meta extension",
+      "uid" : "125e5366fd227193",
+      "parentUid" : "7237a7d549feb593b78e7bc93ad5bc12",
       "status" : "passed",
       "time" : {
-        "start" : 1632919053936,
-        "stop" : 1632919159566,
-        "duration" : 105630
+        "start" : 1633100820105,
+        "stop" : 1633101032196,
+        "duration" : 212091
       },
       "flaky" : false,
-      "newFailed" : false,
-      "parameters" : [ ]
-    }, {
-      "name" : "assets won when assets are bought [Buying Mangata]",
-      "uid" : "f4ae9c186e82cc44",
-      "parentUid" : "dd0c8d27829bd9fa6c614b8009117e89",
-      "status" : "passed",
-      "time" : {
-        "start" : 1632919159567,
-        "stop" : 1632919267769,
-        "duration" : 108202
-      },
-      "flaky" : false,
-      "newFailed" : false,
-      "parameters" : [ ]
-    }, {
-      "name" : "assets won when assets are sold [Selling other in MGA pool] - 6",
-      "uid" : "8be035b6154c6ee4",
-      "parentUid" : "dd0c8d27829bd9fa6c614b8009117e89",
-      "status" : "passed",
-      "time" : {
-        "start" : 1632919267769,
-        "stop" : 1632919375931,
-        "duration" : 108162
-      },
-      "flaky" : false,
-      "newFailed" : false,
-      "parameters" : [ ]
-    }, {
-      "name" : "assets won when assets are bought [Buying other in MGA pool]",
-      "uid" : "c5d1d9512c22f5c5",
-      "parentUid" : "dd0c8d27829bd9fa6c614b8009117e89",
-      "status" : "passed",
-      "time" : {
-        "start" : 1632919375931,
-        "stop" : 1632919482758,
-        "duration" : 106827
-      },
-      "flaky" : false,
-      "newFailed" : false,
+      "newFailed" : true,
       "parameters" : [ ]
     } ],
-    "uid" : "dd0c8d27829bd9fa6c614b8009117e89"
+    "uid" : "7237a7d549feb593b78e7bc93ad5bc12"
   }, {
-    "name" : "xyk-pallet - treasury tests [Connected - Mangata]: on treasury we store",
+    "name" : "test ether",
     "children" : [ {
-      "name" : "assets won when assets are sold [Selling X connected to MGA pool] - 10",
-      "uid" : "bc2534bf7b810e3c",
-      "parentUid" : "6f44ca105b926385238dffcbc4e2cf02",
+      "name" : "that Eth arrive to User TokenId 1 in Mangata and can be sent back",
+      "uid" : "1b99ce699e480d64",
+      "parentUid" : "0c08ef977563cb07da34af91f38f5c5e",
       "status" : "passed",
       "time" : {
-        "start" : 1632919482767,
-        "stop" : 1632919645705,
-        "duration" : 162938
-      },
-      "flaky" : false,
-      "newFailed" : false,
-      "parameters" : [ ]
-    }, {
-      "name" : "assets won when assets are bought [Buying X connected to MGA pool]",
-      "uid" : "38a26cd9cfe24fb2",
-      "parentUid" : "6f44ca105b926385238dffcbc4e2cf02",
-      "status" : "passed",
-      "time" : {
-        "start" : 1632919645705,
-        "stop" : 1632919813934,
-        "duration" : 168229
-      },
-      "flaky" : false,
-      "newFailed" : false,
-      "parameters" : [ ]
-    }, {
-      "name" : "assets won when assets are sold [Selling Y - X connected toMGA pool] - 6",
-      "uid" : "c85ea016abd8e2a8",
-      "parentUid" : "6f44ca105b926385238dffcbc4e2cf02",
-      "status" : "passed",
-      "time" : {
-        "start" : 1632919813934,
-        "stop" : 1632919975537,
-        "duration" : 161603
-      },
-      "flaky" : false,
-      "newFailed" : false,
-      "parameters" : [ ]
-    }, {
-      "name" : "assets won when assets are bought [Buying Y - X connected toMGA pool] - 6",
-      "uid" : "65bec88c3ac7c66e",
-      "parentUid" : "6f44ca105b926385238dffcbc4e2cf02",
-      "status" : "passed",
-      "time" : {
-        "start" : 1632919975537,
-        "stop" : 1632920137129,
-        "duration" : 161592
+        "start" : 1633101035983,
+        "stop" : 1633101114203,
+        "duration" : 78220
       },
       "flaky" : false,
       "newFailed" : false,
       "parameters" : [ ]
     } ],
-    "uid" : "6f44ca105b926385238dffcbc4e2cf02"
+    "uid" : "0c08ef977563cb07da34af91f38f5c5e"
   }, {
-    "name" : "xyk-pallet - treasury tests [Connected - Mangata]: Error cases",
+    "name" : "test/ci/xyk-ci.validate.setup.test.ts",
     "children" : [ {
-      "name" : "[BUG]Not enough tokens to convert fee LINK[https://trello.com/c/p77t0atO]",
-      "uid" : "54cb2cf31f85ecfc",
-      "parentUid" : "eac2cb15f3137664fa53f9b9f5e1a304",
-      "status" : "skipped",
+      "name" : "xyk-CI - validate pools created: Pool[4,5]",
+      "uid" : "c16f6b6acabef21f",
+      "parentUid" : "05de620d5ad4a39552aa66263f5ceea3",
+      "status" : "passed",
       "time" : {
-        "start" : 1632920137133,
-        "stop" : 1632920137133,
-        "duration" : 0
+        "start" : 1633101117901,
+        "stop" : 1633101118104,
+        "duration" : 203
+      },
+      "flaky" : false,
+      "newFailed" : false,
+      "parameters" : [ ]
+    }, {
+      "name" : "xyk-CI - validate pools created: Pool[0,5]",
+      "uid" : "ff1d92a1ff7748a1",
+      "parentUid" : "05de620d5ad4a39552aa66263f5ceea3",
+      "status" : "passed",
+      "time" : {
+        "start" : 1633101118104,
+        "stop" : 1633101118300,
+        "duration" : 196
+      },
+      "flaky" : false,
+      "newFailed" : false,
+      "parameters" : [ ]
+    }, {
+      "name" : "xyk-CI - validate user got the right Assets",
+      "uid" : "522a0c6cfa6aabb4",
+      "parentUid" : "05de620d5ad4a39552aa66263f5ceea3",
+      "status" : "failed",
+      "time" : {
+        "start" : 1633101118300,
+        "stop" : 1633101118627,
+        "duration" : 327
       },
       "flaky" : false,
       "newFailed" : false,
       "parameters" : [ ]
     } ],
-    "uid" : "eac2cb15f3137664fa53f9b9f5e1a304"
+    "uid" : "05de620d5ad4a39552aa66263f5ceea3"
   }, {
-    "name" : "test/sequential/xyk-pallet.API.fees.test.ts",
+    "name" : "UI tests: Infra",
     "children" : [ {
-      "name" : "xyk-pallet - MGA tokens are substracted as fee : CreatePool",
-      "uid" : "1b0525c0841837b5",
-      "parentUid" : "7e2322dc234531441d591fbdec84f284",
+      "name" : "Validate that Mangata Frontend up and running",
+      "uid" : "b8a1bb0aac67ea35",
+      "parentUid" : "07350b18651d800cd32bb450b07e1093",
       "status" : "passed",
       "time" : {
-        "start" : 1632920263972,
-        "stop" : 1632920358802,
-        "duration" : 94830
+        "start" : 1633101119190,
+        "stop" : 1633101121957,
+        "duration" : 2767
       },
       "flaky" : false,
       "newFailed" : false,
       "parameters" : [ ]
     }, {
-      "name" : "xyk-pallet - MGA tokens are substracted as fee : MintLiquidity",
-      "uid" : "d4c67d308ba26ba7",
-      "parentUid" : "7e2322dc234531441d591fbdec84f284",
+      "name" : "Validate that Frontend retrieves AssetInfo data",
+      "uid" : "9796f2c37d918538",
+      "parentUid" : "07350b18651d800cd32bb450b07e1093",
       "status" : "passed",
       "time" : {
-        "start" : 1632920358802,
-        "stop" : 1632920377540,
-        "duration" : 18738
-      },
-      "flaky" : false,
-      "newFailed" : false,
-      "parameters" : [ ]
-    }, {
-      "name" : "xyk-pallet - MGA tokens are substracted as fee : BurnLiquidity",
-      "uid" : "9d59e25c58106855",
-      "parentUid" : "7e2322dc234531441d591fbdec84f284",
-      "status" : "passed",
-      "time" : {
-        "start" : 1632920377540,
-        "stop" : 1632920394870,
-        "duration" : 17330
-      },
-      "flaky" : false,
-      "newFailed" : false,
-      "parameters" : [ ]
-    }, {
-      "name" : "xyk-pallet - MGA tokens are substracted as fee : Transfer",
-      "uid" : "1635a32f7e5a538d",
-      "parentUid" : "7e2322dc234531441d591fbdec84f284",
-      "status" : "passed",
-      "time" : {
-        "start" : 1632920394870,
-        "stop" : 1632920413575,
-        "duration" : 18705
-      },
-      "flaky" : false,
-      "newFailed" : false,
-      "parameters" : [ ]
-    }, {
-      "name" : "xyk-pallet - MGA tokens are substracted as fee : TransferAll",
-      "uid" : "40ec7f830ff7f8f5",
-      "parentUid" : "7e2322dc234531441d591fbdec84f284",
-      "status" : "passed",
-      "time" : {
-        "start" : 1632920413575,
-        "stop" : 1632920449625,
-        "duration" : 36050
-      },
-      "flaky" : false,
-      "newFailed" : false,
-      "parameters" : [ ]
-    }, {
-      "name" : "xyk-pallet - MGA tokens are not substracted as fee : SellAsset",
-      "uid" : "f577bbc06d5891ae",
-      "parentUid" : "7e2322dc234531441d591fbdec84f284",
-      "status" : "passed",
-      "time" : {
-        "start" : 1632920449625,
-        "stop" : 1632920467009,
-        "duration" : 17384
-      },
-      "flaky" : false,
-      "newFailed" : false,
-      "parameters" : [ ]
-    }, {
-      "name" : "xyk-pallet - MGA tokens are not substracted as fee : BuyAsset",
-      "uid" : "cf3f18fd5c7623a8",
-      "parentUid" : "7e2322dc234531441d591fbdec84f284",
-      "status" : "passed",
-      "time" : {
-        "start" : 1632920467009,
-        "stop" : 1632920485711,
-        "duration" : 18702
+        "start" : 1633101121957,
+        "stop" : 1633101140306,
+        "duration" : 18349
       },
       "flaky" : false,
       "newFailed" : false,
       "parameters" : [ ]
     } ],
-    "uid" : "7e2322dc234531441d591fbdec84f284"
+    "uid" : "07350b18651d800cd32bb450b07e1093"
+  }, {
+    "name" : "test/ci/xyk-ci.validate.node.test.ts",
+    "children" : [ {
+      "name" : "xyk-CI - Node is up and running",
+      "uid" : "3899bbd98787638d",
+      "parentUid" : "dd18d827826f1340dd69681dd2474126",
+      "status" : "passed",
+      "time" : {
+        "start" : 1633101143459,
+        "stop" : 1633101144074,
+        "duration" : 615
+      },
+      "flaky" : false,
+      "newFailed" : false,
+      "parameters" : [ ]
+    } ],
+    "uid" : "dd18d827826f1340dd69681dd2474126"
+  }, {
+    "name" : "test/ci/xyk-ci.validate.assetInfo.test.ts",
+    "children" : [ {
+      "name" : "xyk-CI - AssetInfo contains assets for MGA and Ether",
+      "uid" : "d04d8a19cd04d4d3",
+      "parentUid" : "8d496109ad1e586392a8f3bbc845a884",
+      "status" : "passed",
+      "time" : {
+        "start" : 1633101146828,
+        "stop" : 1633101147641,
+        "duration" : 813
+      },
+      "flaky" : false,
+      "newFailed" : false,
+      "parameters" : [ ]
+    } ],
+    "uid" : "8d496109ad1e586392a8f3bbc845a884"
   } ],
   "name" : "suites"
 }
