@@ -1,0 +1,120 @@
+{
+  "uid" : "4b4757e66a1912dae1a509f688f20b0f",
+  "children" : [ {
+    "name" : "Product defects",
+    "children" : [ {
+      "name" : "Error: 1014: Priority is too low: (8828981539665 vs 4071143647460): The transaction has too low priority to replace another transaction already in the pool.",
+      "children" : [ {
+        "name" : "As a User I can Withdraw ETH from Meta extension",
+        "uid" : "744c94a7f7a7d01d",
+        "parentUid" : "f849479cc48fe6f766b543eb6497918e",
+        "status" : "failed",
+        "time" : {
+          "start" : 1633052969006,
+          "stop" : 1633053068558,
+          "duration" : 99552
+        },
+        "flaky" : true,
+        "newFailed" : false,
+        "parameters" : [ ]
+      } ],
+      "uid" : "f849479cc48fe6f766b543eb6497918e"
+    }, {
+      "name" : "Error: Failed: \"W[1] timeout in - signAndWaitTx - \\\" + 5HQ9Mm9L1HG53htEGDMsnhkkL7hEfF9vLstEQPtMLX5Gupqx + \\\" - \\\" + 92 + \\\" - \\\" + {\\\"isSigned\\\":true,\\\"method\\\":{\\\"args\\\":[{\\\"args\\\":[\\\"42\\\",\\\"TEST_42\\\",\\\"m42\\\",\\\"Test token 42\\\",\\\"18\\\"],\\\"method\\\":\\\"setInfo\\\",\\\"section\\\":\\\"assetsInfo\\\"}],\\\"method\\\":\\\"sudo\\\",\\\"section\\\":\\\"sudo\\\"},\\\"era\\\":{\\\"MortalEra\\\":{\\\"period\\\":\\\"64\\\",\\\"phase\\\":\\\"18\\\"}},\\\"nonce\\\":\\\"92\\\",\\\"signature\\\":\\\"0x06a328ac1c9934899491bfc16024da01b3cf3e4cd373f05dcec02e2fee8043752380d5f3add1c8a80ad7c3d8a5142b6b168cc54104a1636160c2f28e1febf681\\\",\\\"signer\\\":\\\"5HQ9Mm9L1HG53htEGDMsnhkkL7hEfF9vLstEQPtMLX5Gupqx\\\",\\\"tip\\\":\\\"0\\\"}\"",
+      "children" : [ {
+        "name" : "As a User I get the right values for Pool removal P[2499999999999999999, 5000000000000000000] - I-> 2 -Expected - 0.050 , 0.100",
+        "uid" : "f9785fc36c634c4e",
+        "parentUid" : "f470c3d93b63782e1c7e2140a587dd09",
+        "status" : "failed",
+        "time" : {
+          "start" : 1633053182519,
+          "stop" : 1633053242293,
+          "duration" : 59774
+        },
+        "flaky" : true,
+        "newFailed" : true,
+        "parameters" : [ ]
+      } ],
+      "uid" : "f470c3d93b63782e1c7e2140a587dd09"
+    }, {
+      "name" : "Error: 1014: Priority is too low: (4174909885440 vs 4174909885440): The transaction has too low priority to replace another transaction already in the pool.",
+      "children" : [ {
+        "name" : "As a User I get the right values for Pool removal P[2500000000000000000, 5000000000000000000] - I-> 1 -Expected - 0.025 , 0.05",
+        "uid" : "c12f16fecce11b31",
+        "parentUid" : "222e1e9729e9b085627d5bda1b37198b",
+        "status" : "failed",
+        "time" : {
+          "start" : 1633053242293,
+          "stop" : 1633053278196,
+          "duration" : 35903
+        },
+        "flaky" : false,
+        "newFailed" : true,
+        "parameters" : [ ]
+      } ],
+      "uid" : "222e1e9729e9b085627d5bda1b37198b"
+    }, {
+      "name" : "TimeoutError: Waiting for element to be located By(xpath, //button[text()='Connect'])\n                Wait timed out after 20004ms",
+      "children" : [ {
+        "name" : "As a User I get the right values for Pool investment P[5000000000000000000, 100] - I-> 100000000000 -Expected - 0.000002",
+        "uid" : "c5d61e8b54d9b287",
+        "parentUid" : "af93ec1ede2b373f0aad9cdc313a12a5",
+        "status" : "failed",
+        "time" : {
+          "start" : 1633053368796,
+          "stop" : 1633053369087,
+          "duration" : 291
+        },
+        "flaky" : false,
+        "newFailed" : true,
+        "parameters" : [ ]
+      }, {
+        "name" : "As a User I get the right values for Pool investment P[5000000000000000000, 5000000000000000000] - I-> 0.123 -Expected - 0.123",
+        "uid" : "ffdd371793a8a8c6",
+        "parentUid" : "af93ec1ede2b373f0aad9cdc313a12a5",
+        "status" : "failed",
+        "time" : {
+          "start" : 1633053369088,
+          "stop" : 1633053369359,
+          "duration" : 271
+        },
+        "flaky" : false,
+        "newFailed" : true,
+        "parameters" : [ ]
+      }, {
+        "name" : "As a User I get the right values for Pool investment P[2500000000000000000, 5000000000000000000] - I-> 0.100 -Expected - 0.200",
+        "uid" : "e2062b769d33b00c",
+        "parentUid" : "af93ec1ede2b373f0aad9cdc313a12a5",
+        "status" : "failed",
+        "time" : {
+          "start" : 1633053369359,
+          "stop" : 1633053369615,
+          "duration" : 256
+        },
+        "flaky" : false,
+        "newFailed" : true,
+        "parameters" : [ ]
+      } ],
+      "uid" : "af93ec1ede2b373f0aad9cdc313a12a5"
+    }, {
+      "name" : "TimeoutError: Waiting for element to be located By(xpath, //button[text()='Connect'])\n                Wait timed out after 20002ms",
+      "children" : [ {
+        "name" : "As a User I can create a pool",
+        "uid" : "3cb2f526941e45a3",
+        "parentUid" : "59ae8aaa5e50bab145d46a5ab1932f77",
+        "status" : "failed",
+        "time" : {
+          "start" : 1633053506240,
+          "stop" : 1633053506481,
+          "duration" : 241
+        },
+        "flaky" : true,
+        "newFailed" : true,
+        "parameters" : [ ]
+      } ],
+      "uid" : "59ae8aaa5e50bab145d46a5ab1932f77"
+    } ],
+    "uid" : "8fb3a91ba5aaf9de24cc8a92edc82b5d"
+  } ],
+  "name" : "categories"
+}
