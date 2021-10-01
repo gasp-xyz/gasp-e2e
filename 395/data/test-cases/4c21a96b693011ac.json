@@ -1,12 +1,12 @@
 {
-  "uid" : "d51fb7c1d342be04",
+  "uid" : "4c21a96b693011ac",
   "name" : "Cluster does not fork",
   "fullName" : "Cluster -> Healthcheck.Cluster does not fork",
   "historyId" : "c60708daa452883022480d8f0ac2dc39",
   "time" : {
-    "start" : 1633083474153,
-    "stop" : 1633083504115,
-    "duration" : 29962
+    "start" : 1633083534165,
+    "stop" : 1633083564153,
+    "duration" : 29988
   },
   "description" : "",
   "descriptionHtml" : "",
@@ -44,11 +44,20 @@
         "failed" : 0,
         "broken" : 0,
         "skipped" : 0,
-        "passed" : 5,
+        "passed" : 6,
         "unknown" : 0,
-        "total" : 5
+        "total" : 6
       },
       "items" : [ {
+        "uid" : "d51fb7c1d342be04",
+        "reportUrl" : "https://mangata-finance.github.io/mangata-e2e/396//#testresult/d51fb7c1d342be04",
+        "status" : "passed",
+        "time" : {
+          "start" : 1633083474153,
+          "stop" : 1633083504115,
+          "duration" : 29962
+        }
+      }, {
         "uid" : "a86f8567042a1a33",
         "reportUrl" : "https://mangata-finance.github.io/mangata-e2e/390//#testresult/a86f8567042a1a33",
         "status" : "passed",
@@ -88,6 +97,6 @@
     },
     "tags" : [ ]
   },
-  "source" : "d51fb7c1d342be04.json",
+  "source" : "4c21a96b693011ac.json",
   "parameterValues" : [ ]
 }

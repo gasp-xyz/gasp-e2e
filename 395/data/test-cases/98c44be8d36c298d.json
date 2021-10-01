@@ -1,12 +1,12 @@
 {
-  "uid" : "4cdf0e9508a0fc4e",
+  "uid" : "98c44be8d36c298d",
   "name" : "Nodes are up and syncing",
   "fullName" : "Cluster -> Healthcheck.Nodes are up and syncing",
   "historyId" : "f8b79e72eb1c1018f8bf18c56909f1c7",
   "time" : {
-    "start" : 1633083418573,
-    "stop" : 1633083444130,
-    "duration" : 25557
+    "start" : 1633083480026,
+    "stop" : 1633083504158,
+    "duration" : 24132
   },
   "description" : "",
   "descriptionHtml" : "",
@@ -44,11 +44,20 @@
         "failed" : 0,
         "broken" : 0,
         "skipped" : 0,
-        "passed" : 5,
+        "passed" : 6,
         "unknown" : 0,
-        "total" : 5
+        "total" : 6
       },
       "items" : [ {
+        "uid" : "4cdf0e9508a0fc4e",
+        "reportUrl" : "https://mangata-finance.github.io/mangata-e2e/396//#testresult/4cdf0e9508a0fc4e",
+        "status" : "passed",
+        "time" : {
+          "start" : 1633083418573,
+          "stop" : 1633083444130,
+          "duration" : 25557
+        }
+      }, {
         "uid" : "86719d6627b34472",
         "reportUrl" : "https://mangata-finance.github.io/mangata-e2e/390//#testresult/86719d6627b34472",
         "status" : "passed",
@@ -88,6 +97,6 @@
     },
     "tags" : [ ]
   },
-  "source" : "4cdf0e9508a0fc4e.json",
+  "source" : "98c44be8d36c298d.json",
   "parameterValues" : [ ]
 }
