@@ -1,0 +1,26 @@
+{
+  "uid" : "4b4757e66a1912dae1a509f688f20b0f",
+  "children" : [ {
+    "name" : "Product defects",
+    "children" : [ {
+      "name" : "TypeError: Cannot read property 'eq' of undefined",
+      "children" : [ {
+        "name" : "xyk-CI - validate user got the right Assets",
+        "uid" : "9050b490746aa892",
+        "parentUid" : "952e25ebfd710e009c4b065341ad3775",
+        "status" : "failed",
+        "time" : {
+          "start" : 1633083958258,
+          "stop" : 1633083958593,
+          "duration" : 335
+        },
+        "flaky" : false,
+        "newFailed" : false,
+        "parameters" : [ ]
+      } ],
+      "uid" : "952e25ebfd710e009c4b065341ad3775"
+    } ],
+    "uid" : "8fb3a91ba5aaf9de24cc8a92edc82b5d"
+  } ],
+  "name" : "categories"
+}
