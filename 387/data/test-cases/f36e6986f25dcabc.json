@@ -1,12 +1,12 @@
 {
-  "uid" : "4fd2175a57bd5fbb",
-  "name" : "Cluster does not fork",
-  "fullName" : "Cluster -> Healthcheck.Cluster does not fork",
-  "historyId" : "c60708daa452883022480d8f0ac2dc39",
+  "uid" : "f36e6986f25dcabc",
+  "name" : "Nodes are up and syncing",
+  "fullName" : "Cluster -> Healthcheck.Nodes are up and syncing",
+  "historyId" : "f8b79e72eb1c1018f8bf18c56909f1c7",
   "time" : {
-    "start" : 1633077378145,
-    "stop" : 1633077408129,
-    "duration" : 29984
+    "start" : 1633077326695,
+    "stop" : 1633077354152,
+    "duration" : 27457
   },
   "description" : "",
   "descriptionHtml" : "",
@@ -23,7 +23,7 @@
     "value" : "Cluster -> Healthcheck"
   }, {
     "name" : "testMethod",
-    "value" : "Cluster does not fork"
+    "value" : "Nodes are up and syncing"
   }, {
     "name" : "package",
     "value" : "Cluster -> Healthcheck"
@@ -49,27 +49,27 @@
         "total" : 3
       },
       "items" : [ {
-        "uid" : "f53d59e4310660bf",
-        "reportUrl" : "https://mangata-finance.github.io/mangata-e2e/379//#testresult/f53d59e4310660bf",
+        "uid" : "d4d61112f58de38f",
+        "reportUrl" : "https://mangata-finance.github.io/mangata-e2e/379//#testresult/d4d61112f58de38f",
         "status" : "passed",
         "time" : {
-          "start" : 1633013418128,
-          "stop" : 1633013448185,
-          "duration" : 30057
+          "start" : 1633013362525,
+          "stop" : 1633013388150,
+          "duration" : 25625
         }
       }, {
-        "uid" : "5b2ebea7c278638a",
-        "reportUrl" : "https://mangata-finance.github.io/mangata-e2e/375//#testresult/5b2ebea7c278638a",
+        "uid" : "6ed96a4b66ecc8a7",
+        "reportUrl" : "https://mangata-finance.github.io/mangata-e2e/375//#testresult/6ed96a4b66ecc8a7",
         "status" : "passed",
         "time" : {
-          "start" : 1633013394132,
-          "stop" : 1633013424145,
-          "duration" : 30013
+          "start" : 1633013334123,
+          "stop" : 1633013364157,
+          "duration" : 30034
         }
       } ]
     },
     "tags" : [ ]
   },
-  "source" : "4fd2175a57bd5fbb.json",
+  "source" : "f36e6986f25dcabc.json",
   "parameterValues" : [ ]
 }
