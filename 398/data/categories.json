@@ -1,0 +1,112 @@
+{
+  "uid" : "4b4757e66a1912dae1a509f688f20b0f",
+  "children" : [ {
+    "name" : "Product defects",
+    "children" : [ {
+      "name" : "thrown: Event {\n                  \"isTrusted\": true,\n                }",
+      "children" : [ {
+        "name" : "As a User I can Swap tokens - MGA - mETH",
+        "uid" : "61fef00ca928fda1",
+        "parentUid" : "e8f352723731311c936d9a158342e751",
+        "status" : "failed",
+        "time" : {
+          "start" : 1633093919079,
+          "stop" : 1633093919594,
+          "duration" : 515
+        },
+        "flaky" : true,
+        "newFailed" : true,
+        "parameters" : [ ]
+      }, {
+        "name" : "As a User I can mint some tokens MGA - mETH",
+        "uid" : "ae598ed81a26e761",
+        "parentUid" : "e8f352723731311c936d9a158342e751",
+        "status" : "failed",
+        "time" : {
+          "start" : 1633093919594,
+          "stop" : 1633093920024,
+          "duration" : 430
+        },
+        "flaky" : true,
+        "newFailed" : true,
+        "parameters" : [ ]
+      }, {
+        "name" : "As a User I can burn all liquidity MGA - mETH",
+        "uid" : "b1f028c0d5c9a4ba",
+        "parentUid" : "e8f352723731311c936d9a158342e751",
+        "status" : "failed",
+        "time" : {
+          "start" : 1633093920024,
+          "stop" : 1633093920475,
+          "duration" : 451
+        },
+        "flaky" : true,
+        "newFailed" : true,
+        "parameters" : [ ]
+      }, {
+        "name" : "As a User I can mint in more than one pool [ MGA - mETH ] [ MGA - newTokn ] and get invested values",
+        "uid" : "472e68ca6bc56f05",
+        "parentUid" : "e8f352723731311c936d9a158342e751",
+        "status" : "failed",
+        "time" : {
+          "start" : 1633093920475,
+          "stop" : 1633093920911,
+          "duration" : 436
+        },
+        "flaky" : true,
+        "newFailed" : false,
+        "parameters" : [ ]
+      } ],
+      "uid" : "e8f352723731311c936d9a158342e751"
+    }, {
+      "name" : "Error: Failed: \"TIMEOUT: Waiting for //*[@class = 'Sidebar__loading'] to dissapear\"",
+      "children" : [ {
+        "name" : "As a User I can deposit ETH from Meta extension",
+        "uid" : "f09d365a54aa709e",
+        "parentUid" : "949fce9c21683c22bcec487901b1b36f",
+        "status" : "failed",
+        "time" : {
+          "start" : 1633093951655,
+          "stop" : 1633094152763,
+          "duration" : 201108
+        },
+        "flaky" : true,
+        "newFailed" : true,
+        "parameters" : [ ]
+      }, {
+        "name" : "As a User I get the right values for Pool investment P[2500000000000000000, 5000000000000000000] - I-> 0.100 -Expected - 0.200",
+        "uid" : "b3a34f34a79aa7a9",
+        "parentUid" : "949fce9c21683c22bcec487901b1b36f",
+        "status" : "failed",
+        "time" : {
+          "start" : 1633095012791,
+          "stop" : 1633095124281,
+          "duration" : 111490
+        },
+        "flaky" : true,
+        "newFailed" : true,
+        "parameters" : [ ]
+      } ],
+      "uid" : "949fce9c21683c22bcec487901b1b36f"
+    }, {
+      "name" : "TimeoutError: Waiting for element to be located By(xpath, //button[text()='Connect'])\n                Wait timed out after 20001ms",
+      "children" : [ {
+        "name" : "As a User I can create a pool",
+        "uid" : "8167b4a6fd1dd66f",
+        "parentUid" : "e43a4f7c90c20261628e6210046180b5",
+        "status" : "failed",
+        "time" : {
+          "start" : 1633095205499,
+          "stop" : 1633095206647,
+          "duration" : 1148
+        },
+        "flaky" : true,
+        "newFailed" : true,
+        "parameters" : [ ]
+      } ],
+      "uid" : "e43a4f7c90c20261628e6210046180b5"
+    } ],
+    "uid" : "8fb3a91ba5aaf9de24cc8a92edc82b5d"
+  } ],
+  "name" : "categories"
+}
