@@ -1,237 +1,224 @@
 {
   "uid" : "ab17fc5a4eb3bca4b216b548c7f9fcbc",
   "children" : [ {
-    "name" : "xyk-pallet - MGA tokens are not substracted as fee : SellAsset",
-    "uid" : "50b0d7a6a35ceb73",
+    "name" : "As a User I get the right values for Pool investment P[5000000000000000000, 5000000000000000000] - I-> 0.123 -Expected - 0.123",
+    "uid" : "2176701cf7014503",
     "parentUid" : "ab17fc5a4eb3bca4b216b548c7f9fcbc",
     "status" : "passed",
     "time" : {
-      "start" : 1633005391999,
-      "stop" : 1633005409426,
-      "duration" : 17427
+      "start" : 1633181575796,
+      "stop" : 1633181697556,
+      "duration" : 121760
     },
     "flaky" : false,
     "newFailed" : false,
     "parameters" : [ ]
   }, {
-    "name" : "assets won when assets are bought [Buying Mangata]",
-    "uid" : "c7c0d39b62ea8184",
+    "name" : "Validate that Mangata Frontend up and running",
+    "uid" : "582398d7972ba0a0",
     "parentUid" : "ab17fc5a4eb3bca4b216b548c7f9fcbc",
     "status" : "passed",
     "time" : {
-      "start" : 1633004101785,
-      "stop" : 1633004209981,
-      "duration" : 108196
+      "start" : 1633181930093,
+      "stop" : 1633181933317,
+      "duration" : 3224
     },
     "flaky" : false,
     "newFailed" : false,
     "parameters" : [ ]
   }, {
-    "name" : "xyk-pallet - MGA tokens are substracted as fee : Transfer",
-    "uid" : "25d59071892bec3d",
+    "name" : "As a User I get the right values for Pool removal P[2500000000000000000, 5000000000000000000] - I-> 1 -Expected - 0.025 , 0.05",
+    "uid" : "92bf3028b7e78ef4",
+    "parentUid" : "ab17fc5a4eb3bca4b216b548c7f9fcbc",
+    "status" : "failed",
+    "time" : {
+      "start" : 1633181402757,
+      "stop" : 1633181403175,
+      "duration" : 418
+    },
+    "flaky" : true,
+    "newFailed" : false,
+    "parameters" : [ ]
+  }, {
+    "name" : "As a User I get the right values for Pool removal P[2499999999999999999, 5000000000000000000] - I-> 2 -Expected - 0.050 , 0.100",
+    "uid" : "b523aacce1e22714",
+    "parentUid" : "ab17fc5a4eb3bca4b216b548c7f9fcbc",
+    "status" : "failed",
+    "time" : {
+      "start" : 1633181359464,
+      "stop" : 1633181402757,
+      "duration" : 43293
+    },
+    "flaky" : true,
+    "newFailed" : false,
+    "parameters" : [ ]
+  }, {
+    "name" : "As a User I can create a pool",
+    "uid" : "421870fecd103a8f",
+    "parentUid" : "ab17fc5a4eb3bca4b216b548c7f9fcbc",
+    "status" : "failed",
+    "time" : {
+      "start" : 1633181822737,
+      "stop" : 1633181822972,
+      "duration" : 235
+    },
+    "flaky" : true,
+    "newFailed" : true,
+    "parameters" : [ ]
+  }, {
+    "name" : "As a User I get infomed whenever is neccesary to install any extension",
+    "uid" : "c979c06bc32cf6c0",
+    "parentUid" : "ab17fc5a4eb3bca4b216b548c7f9fcbc",
+    "status" : "failed",
+    "time" : {
+      "start" : 1633181928366,
+      "stop" : 1633181928710,
+      "duration" : 344
+    },
+    "flaky" : true,
+    "newFailed" : false,
+    "parameters" : [ ]
+  }, {
+    "name" : "As a User I get the right values for Pool investment P[2500000000000000000, 5000000000000000000] - I-> 0.100 -Expected - 0.200",
+    "uid" : "869b45e67950bc03",
+    "parentUid" : "ab17fc5a4eb3bca4b216b548c7f9fcbc",
+    "status" : "failed",
+    "time" : {
+      "start" : 1633181697556,
+      "stop" : 1633181739840,
+      "duration" : 42284
+    },
+    "flaky" : true,
+    "newFailed" : false,
+    "parameters" : [ ]
+  }, {
+    "name" : "As a User I get the right values for Pool investment P[5000000000000000000, 100] - I-> 100000000000 -Expected - 0.000002",
+    "uid" : "46073f65ae10ac65",
+    "parentUid" : "ab17fc5a4eb3bca4b216b548c7f9fcbc",
+    "status" : "failed",
+    "time" : {
+      "start" : 1633181516090,
+      "stop" : 1633181575796,
+      "duration" : 59706
+    },
+    "flaky" : true,
+    "newFailed" : true,
+    "parameters" : [ ]
+  }, {
+    "name" : "As a User I can mint some tokens MGA - mETH",
+    "uid" : "98603ce390bd63b0",
     "parentUid" : "ab17fc5a4eb3bca4b216b548c7f9fcbc",
     "status" : "passed",
     "time" : {
-      "start" : 1633005337254,
-      "stop" : 1633005355953,
-      "duration" : 18699
+      "start" : 1633180512378,
+      "stop" : 1633180705085,
+      "duration" : 192707
     },
     "flaky" : false,
     "newFailed" : false,
     "parameters" : [ ]
   }, {
-    "name" : "xyk-pallet - MGA tokens are substracted as fee : MintLiquidity",
-    "uid" : "db1ab4b1f87c7e89",
+    "name" : "As a User I can mint in more than one pool [ MGA - mETH ] [ MGA - newTokn ] and get invested values",
+    "uid" : "34728a4c8422b9bb",
+    "parentUid" : "ab17fc5a4eb3bca4b216b548c7f9fcbc",
+    "status" : "failed",
+    "time" : {
+      "start" : 1633180922603,
+      "stop" : 1633181100363,
+      "duration" : 177760
+    },
+    "flaky" : true,
+    "newFailed" : false,
+    "parameters" : [ ]
+  }, {
+    "name" : "Validate that Frontend retrieves AssetInfo data",
+    "uid" : "1c304f94ba6757db",
+    "parentUid" : "ab17fc5a4eb3bca4b216b548c7f9fcbc",
+    "status" : "failed",
+    "time" : {
+      "start" : 1633181933317,
+      "stop" : 1633181947521,
+      "duration" : 14204
+    },
+    "flaky" : true,
+    "newFailed" : false,
+    "parameters" : [ ]
+  }, {
+    "name" : "As a User I can burn all liquidity MGA - mETH",
+    "uid" : "d1ccec4026f89cf6",
     "parentUid" : "ab17fc5a4eb3bca4b216b548c7f9fcbc",
     "status" : "passed",
     "time" : {
-      "start" : 1633005301287,
-      "stop" : 1633005319937,
-      "duration" : 18650
+      "start" : 1633180705085,
+      "stop" : 1633180922603,
+      "duration" : 217518
     },
     "flaky" : false,
     "newFailed" : false,
     "parameters" : [ ]
   }, {
-    "name" : "assets won when assets are sold [Selling Mangata] - 5",
-    "uid" : "3c26279718fb15d4",
+    "name" : "As a User I get feedback when extensions are installed and correctly setup",
+    "uid" : "470ffb45e23612cd",
     "parentUid" : "ab17fc5a4eb3bca4b216b548c7f9fcbc",
-    "status" : "passed",
+    "status" : "failed",
     "time" : {
-      "start" : 1633003996728,
-      "stop" : 1633004101785,
-      "duration" : 105057
+      "start" : 1633181928710,
+      "stop" : 1633181929069,
+      "duration" : 359
     },
-    "flaky" : false,
+    "flaky" : true,
     "newFailed" : false,
     "parameters" : [ ]
   }, {
-    "name" : "xyk-pallet - MGA tokens are substracted as fee : BurnLiquidity",
-    "uid" : "78f5ba1bca908c4",
+    "name" : "As a User I can Swap tokens - MGA - mETH",
+    "uid" : "45b4b61205280281",
     "parentUid" : "ab17fc5a4eb3bca4b216b548c7f9fcbc",
-    "status" : "passed",
+    "status" : "failed",
     "time" : {
-      "start" : 1633005319937,
-      "stop" : 1633005337254,
-      "duration" : 17317
+      "start" : 1633180291507,
+      "stop" : 1633180512378,
+      "duration" : 220871
     },
-    "flaky" : false,
+    "flaky" : true,
     "newFailed" : false,
     "parameters" : [ ]
   }, {
-    "name" : "xyk-pallet: Liquidity sufficiency scenario",
-    "uid" : "828d14278ce4d930",
+    "name" : "As a User I can Withdraw ETH from Meta extension",
+    "uid" : "60c29ed6c2e00586",
     "parentUid" : "ab17fc5a4eb3bca4b216b548c7f9fcbc",
-    "status" : "passed",
+    "status" : "failed",
     "time" : {
-      "start" : 1633003687742,
-      "stop" : 1633003993612,
-      "duration" : 305870
+      "start" : 1633181205354,
+      "stop" : 1633181247491,
+      "duration" : 42137
     },
-    "flaky" : false,
+    "flaky" : true,
     "newFailed" : false,
     "parameters" : [ ]
   }, {
-    "name" : "assets won when assets are bought [Buying X connected to MGA pool]",
-    "uid" : "fe92b214af6e9159",
+    "name" : "As a User I can deposit ETH from Meta extension",
+    "uid" : "ef10421926acbf10",
     "parentUid" : "ab17fc5a4eb3bca4b216b548c7f9fcbc",
-    "status" : "passed",
+    "status" : "failed",
     "time" : {
-      "start" : 1633004588003,
-      "stop" : 1633004754921,
-      "duration" : 166918
+      "start" : 1633181104924,
+      "stop" : 1633181205346,
+      "duration" : 100422
     },
-    "flaky" : false,
-    "newFailed" : false,
+    "flaky" : true,
+    "newFailed" : true,
     "parameters" : [ ]
   }, {
-    "name" : "assets won when assets are sold [Selling Y - X connected toMGA pool] - 6",
-    "uid" : "854eba6754a5e396",
+    "name" : "As a User I can get test tokens from the faucet",
+    "uid" : "1d7bb94408fbfc75",
     "parentUid" : "ab17fc5a4eb3bca4b216b548c7f9fcbc",
-    "status" : "passed",
+    "status" : "failed",
     "time" : {
-      "start" : 1633004754921,
-      "stop" : 1633004917903,
-      "duration" : 162982
+      "start" : 1633181826980,
+      "stop" : 1633181926888,
+      "duration" : 99908
     },
-    "flaky" : false,
-    "newFailed" : false,
-    "parameters" : [ ]
-  }, {
-    "name" : "assets won when assets are bought [Buying other in MGA pool]",
-    "uid" : "f206c4df3132cae5",
-    "parentUid" : "ab17fc5a4eb3bca4b216b548c7f9fcbc",
-    "status" : "passed",
-    "time" : {
-      "start" : 1633004316813,
-      "stop" : 1633004425008,
-      "duration" : 108195
-    },
-    "flaky" : false,
-    "newFailed" : false,
-    "parameters" : [ ]
-  }, {
-    "name" : "assets won when assets are bought [Buying Y - X connected toMGA pool] - 6",
-    "uid" : "a99a7f626200b221",
-    "parentUid" : "ab17fc5a4eb3bca4b216b548c7f9fcbc",
-    "status" : "passed",
-    "time" : {
-      "start" : 1633004917903,
-      "stop" : 1633005079476,
-      "duration" : 161573
-    },
-    "flaky" : false,
-    "newFailed" : false,
-    "parameters" : [ ]
-  }, {
-    "name" : "assets won when assets are sold [Selling X connected to MGA pool] - 10",
-    "uid" : "b036b155b5b636de",
-    "parentUid" : "ab17fc5a4eb3bca4b216b548c7f9fcbc",
-    "status" : "passed",
-    "time" : {
-      "start" : 1633004425016,
-      "stop" : 1633004588003,
-      "duration" : 162987
-    },
-    "flaky" : false,
-    "newFailed" : false,
-    "parameters" : [ ]
-  }, {
-    "name" : "assets won when assets are sold [Selling other in MGA pool] - 6",
-    "uid" : "4d4cbff69d2a71ef",
-    "parentUid" : "ab17fc5a4eb3bca4b216b548c7f9fcbc",
-    "status" : "passed",
-    "time" : {
-      "start" : 1633004209981,
-      "stop" : 1633004316813,
-      "duration" : 106832
-    },
-    "flaky" : false,
-    "newFailed" : false,
-    "parameters" : [ ]
-  }, {
-    "name" : "xyk-pallet: Happy case scenario",
-    "uid" : "871d273f28b20f87",
-    "parentUid" : "ab17fc5a4eb3bca4b216b548c7f9fcbc",
-    "status" : "passed",
-    "time" : {
-      "start" : 1633003491548,
-      "stop" : 1633003687742,
-      "duration" : 196194
-    },
-    "flaky" : false,
-    "newFailed" : false,
-    "parameters" : [ ]
-  }, {
-    "name" : "xyk-pallet - MGA tokens are substracted as fee : TransferAll",
-    "uid" : "dc91629f1dd3d249",
-    "parentUid" : "ab17fc5a4eb3bca4b216b548c7f9fcbc",
-    "status" : "passed",
-    "time" : {
-      "start" : 1633005355953,
-      "stop" : 1633005391998,
-      "duration" : 36045
-    },
-    "flaky" : false,
-    "newFailed" : false,
-    "parameters" : [ ]
-  }, {
-    "name" : "[BUG]Not enough tokens to convert fee LINK[https://trello.com/c/p77t0atO]",
-    "uid" : "bfe6e9cad82f1700",
-    "parentUid" : "ab17fc5a4eb3bca4b216b548c7f9fcbc",
-    "status" : "skipped",
-    "time" : {
-      "start" : 1633005079479,
-      "stop" : 1633005079479,
-      "duration" : 0
-    },
-    "flaky" : false,
-    "newFailed" : false,
-    "parameters" : [ ]
-  }, {
-    "name" : "xyk-pallet - MGA tokens are substracted as fee : CreatePool",
-    "uid" : "ec8f53c636b96039",
-    "parentUid" : "ab17fc5a4eb3bca4b216b548c7f9fcbc",
-    "status" : "passed",
-    "time" : {
-      "start" : 1633005205006,
-      "stop" : 1633005301286,
-      "duration" : 96280
-    },
-    "flaky" : false,
-    "newFailed" : false,
-    "parameters" : [ ]
-  }, {
-    "name" : "xyk-pallet - MGA tokens are not substracted as fee : BuyAsset",
-    "uid" : "4294b54284b867af",
-    "parentUid" : "ab17fc5a4eb3bca4b216b548c7f9fcbc",
-    "status" : "passed",
-    "time" : {
-      "start" : 1633005409426,
-      "stop" : 1633005426750,
-      "duration" : 17324
-    },
-    "flaky" : false,
+    "flaky" : true,
     "newFailed" : false,
     "parameters" : [ ]
   } ],
