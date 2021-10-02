@@ -1,310 +1,170 @@
 [ {
-  "uid" : "3b05946aa80194a1",
-  "name" : "Bond operation locks some amount",
+  "uid" : "3bf066d681244e7d",
+  "name" : "Validate that Mangata Frontend up and running",
   "time" : {
-    "start" : 1633004268829,
-    "stop" : 1633004287606,
-    "duration" : 18777
+    "start" : 1633140386439,
+    "stop" : 1633140388891,
+    "duration" : 2452
   },
   "status" : "passed",
   "severity" : "normal"
 }, {
-  "uid" : "aaf891f5d37361b2",
-  "name" : "assets won when assets are sold [Selling Mangata] - 5",
+  "uid" : "c61f22e172075940",
+  "name" : "As a User I get infomed whenever is neccesary to install any extension",
   "time" : {
-    "start" : 1633002430050,
-    "stop" : 1633002535791,
-    "duration" : 105741
+    "start" : 1633140278602,
+    "stop" : 1633140286014,
+    "duration" : 7412
   },
   "status" : "passed",
   "severity" : "normal"
 }, {
-  "uid" : "2b31aa8ea7462d2d",
-  "name" : "SDK- Nonce management - Extrinsic failed",
+  "uid" : "524a8f8efae29011",
+  "name" : "As a User I can get test tokens from the faucet",
   "time" : {
-    "start" : 1633003675120,
-    "stop" : 1633003693823,
-    "duration" : 18703
-  },
-  "status" : "passed",
-  "severity" : "normal"
-}, {
-  "uid" : "5faf39eedb380d14",
-  "name" : "As a User I can burn all liquidity MGA - mETH",
-  "time" : {
-    "start" : 1633004082085,
-    "stop" : 1633004082086,
-    "duration" : 1
+    "start" : 1633139807909,
+    "stop" : 1633140277164,
+    "duration" : 469255
   },
   "status" : "failed",
   "severity" : "normal"
 }, {
-  "uid" : "80535f503339308",
-  "name" : "xyk-pallet - MGA tokens are substracted as fee : Transfer",
-  "time" : {
-    "start" : 1633003988063,
-    "stop" : 1633004005445,
-    "duration" : 17382
-  },
-  "status" : "passed",
-  "severity" : "normal"
-}, {
-  "uid" : "28dc7f0ed78e12c",
-  "name" : "xyk-pallet: Liquidity sufficiency scenario",
-  "time" : {
-    "start" : 1633002121258,
-    "stop" : 1633002427472,
-    "duration" : 306214
-  },
-  "status" : "passed",
-  "severity" : "normal"
-}, {
-  "uid" : "1d2bc0ef8f10b7c0",
-  "name" : "assets won when assets are bought [Buying X connected to MGA pool]",
-  "time" : {
-    "start" : 1633003021209,
-    "stop" : 1633003189758,
-    "duration" : 168549
-  },
-  "status" : "passed",
-  "severity" : "normal"
-}, {
-  "uid" : "2ffad23781d0e93e",
-  "name" : "xyk-pallet: Happy case scenario",
-  "time" : {
-    "start" : 1633001923780,
-    "stop" : 1633002121258,
-    "duration" : 197478
-  },
-  "status" : "passed",
-  "severity" : "normal"
-}, {
-  "uid" : "ad9dfe5566f069b6",
-  "name" : "[BUG]Not enough tokens to convert fee LINK[https://trello.com/c/p77t0atO]",
-  "time" : {
-    "start" : 1633003513330,
-    "stop" : 1633003513330,
-    "duration" : 0
-  },
-  "status" : "skipped",
-  "severity" : "normal"
-}, {
-  "uid" : "4a3479497bb97937",
-  "name" : "assets won when assets are bought [Buying Y - X connected toMGA pool] - 6",
-  "time" : {
-    "start" : 1633003351564,
-    "stop" : 1633003513328,
-    "duration" : 161764
-  },
-  "status" : "passed",
-  "severity" : "normal"
-}, {
-  "uid" : "519947a02b869bc2",
-  "name" : "assets won when assets are sold [Selling other in MGA pool] - 6",
-  "time" : {
-    "start" : 1633002642774,
-    "stop" : 1633002751131,
-    "duration" : 108357
-  },
-  "status" : "passed",
-  "severity" : "normal"
-}, {
-  "uid" : "3bb07dbbfc5e903f",
-  "name" : "As a User I can Swap tokens - MGA - mETH",
-  "time" : {
-    "start" : 1633004078887,
-    "stop" : 1633004082084,
-    "duration" : 3197
-  },
-  "status" : "failed",
-  "severity" : "normal"
-}, {
-  "uid" : "251f11fc4d206406",
-  "name" : "SDK- Nonce management - Using custom nonce",
-  "time" : {
-    "start" : 1633003693823,
-    "stop" : 1633003735285,
-    "duration" : 41462
-  },
-  "status" : "passed",
-  "severity" : "normal"
-}, {
-  "uid" : "921b45210d66ca10",
-  "name" : "SDK- Nonce management - user - future Tx-",
-  "time" : {
-    "start" : 1633003639067,
-    "stop" : 1633003675120,
-    "duration" : 36053
-  },
-  "status" : "passed",
-  "severity" : "normal"
-}, {
-  "uid" : "d934a53278dfc1fd",
-  "name" : "assets won when assets are sold [Selling X connected to MGA pool] - 10",
-  "time" : {
-    "start" : 1633002859444,
-    "stop" : 1633003021209,
-    "duration" : 161765
-  },
-  "status" : "passed",
-  "severity" : "normal"
-}, {
-  "uid" : "f8cffed5e8d373a9",
-  "name" : "assets won when assets are sold [Selling Y - X connected toMGA pool] - 6",
-  "time" : {
-    "start" : 1633003189758,
-    "stop" : 1633003351564,
-    "duration" : 161806
-  },
-  "status" : "passed",
-  "severity" : "normal"
-}, {
-  "uid" : "e5f682f1dfe42813",
-  "name" : "xyk-pallet - MGA tokens are substracted as fee : BurnLiquidity",
-  "time" : {
-    "start" : 1633003969288,
-    "stop" : 1633003988063,
-    "duration" : 18775
-  },
-  "status" : "passed",
-  "severity" : "normal"
-}, {
-  "uid" : "7b6a77f86bdd164d",
-  "name" : "xyk-pallet - MGA tokens are not substracted as fee : SellAsset",
-  "time" : {
-    "start" : 1633004041545,
-    "stop" : 1633004058899,
-    "duration" : 17354
-  },
-  "status" : "passed",
-  "severity" : "normal"
-}, {
-  "uid" : "9d5c712680f6d951",
-  "name" : "As a User I can mint some tokens MGA - mETH",
-  "time" : {
-    "start" : 1633004082084,
-    "stop" : 1633004082085,
-    "duration" : 1
-  },
-  "status" : "failed",
-  "severity" : "normal"
-}, {
-  "uid" : "e0038a9a24014204",
-  "name" : "[BUG?] SDK- Nonce management - RPC Failure - Not enough balance",
-  "time" : {
-    "start" : 1633003735293,
-    "stop" : 1633003735293,
-    "duration" : 0
-  },
-  "status" : "skipped",
-  "severity" : "normal"
-}, {
-  "uid" : "6dc1d0e9bbf11cc6",
-  "name" : "xyk-pallet - MGA tokens are substracted as fee : TransferAll",
-  "time" : {
-    "start" : 1633004005445,
-    "stop" : 1633004041545,
-    "duration" : 36100
-  },
-  "status" : "passed",
-  "severity" : "normal"
-}, {
-  "uid" : "1e93730483670f39",
-  "name" : "xyk-pallet - MGA tokens are substracted as fee : MintLiquidity",
-  "time" : {
-    "start" : 1633003951962,
-    "stop" : 1633003969288,
-    "duration" : 17326
-  },
-  "status" : "passed",
-  "severity" : "normal"
-}, {
-  "uid" : "fee08d6c9c20d01b",
-  "name" : "xyk-pallet - MGA tokens are not substracted as fee : BuyAsset",
-  "time" : {
-    "start" : 1633004058899,
-    "stop" : 1633004077627,
-    "duration" : 18728
-  },
-  "status" : "passed",
-  "severity" : "normal"
-}, {
-  "uid" : "2e845ea3fa66aaec",
-  "name" : "xyk-pallet - Assets substracted are incremented by 1 - MGA- SellAsset",
-  "time" : {
-    "start" : 1633004082640,
-    "stop" : 1633004215408,
-    "duration" : 132768
-  },
-  "status" : "passed",
-  "severity" : "normal"
-}, {
-  "uid" : "dcd7299aa7f2ab19",
-  "name" : "xyk-pallet - MGA tokens are substracted as fee : CreatePool",
-  "time" : {
-    "start" : 1633003860958,
-    "stop" : 1633003951962,
-    "duration" : 91004
-  },
-  "status" : "passed",
-  "severity" : "normal"
-}, {
-  "uid" : "49be46dde120b8e0",
-  "name" : "SDK- Nonce management - user",
-  "time" : {
-    "start" : 1633003602942,
-    "stop" : 1633003621619,
-    "duration" : 18677
-  },
-  "status" : "passed",
-  "severity" : "normal"
-}, {
-  "uid" : "eb8a990c8a69e80c",
-  "name" : "[BUG?] SDK- Nonce management - Transaction outdated",
-  "time" : {
-    "start" : 1633003735285,
-    "stop" : 1633003735285,
-    "duration" : 0
-  },
-  "status" : "skipped",
-  "severity" : "normal"
-}, {
-  "uid" : "1ed3ac0ed55c2476",
-  "name" : "SDK- Nonce management - user - parallel",
-  "time" : {
-    "start" : 1633003621619,
-    "stop" : 1633003639067,
-    "duration" : 17448
-  },
-  "status" : "passed",
-  "severity" : "normal"
-}, {
-  "uid" : "55422ff532be2fa",
-  "name" : "assets won when assets are bought [Buying Mangata]",
-  "time" : {
-    "start" : 1633002535791,
-    "stop" : 1633002642774,
-    "duration" : 106983
-  },
-  "status" : "passed",
-  "severity" : "normal"
-}, {
-  "uid" : "c41101deb91ee784",
-  "name" : "assets won when assets are bought [Buying other in MGA pool]",
-  "time" : {
-    "start" : 1633002751131,
-    "stop" : 1633002859437,
-    "duration" : 108306
-  },
-  "status" : "passed",
-  "severity" : "normal"
-}, {
-  "uid" : "8a53da14dd93d4eb",
+  "uid" : "46a65c57045d250d",
   "name" : "As a User I can mint in more than one pool [ MGA - mETH ] [ MGA - newTokn ] and get invested values",
   "time" : {
-    "start" : 1633004082086,
-    "stop" : 1633004082087,
-    "duration" : 1
+    "start" : 1633138706496,
+    "stop" : 1633138905552,
+    "duration" : 199056
+  },
+  "status" : "passed",
+  "severity" : "normal"
+}, {
+  "uid" : "f6955fa64497273f",
+  "name" : "As a User I get the right values for Pool investment P[5000000000000000000, 5000000000000000000] - I-> 0.123 -Expected - 0.123",
+  "time" : {
+    "start" : 1633139420699,
+    "stop" : 1633139497361,
+    "duration" : 76662
+  },
+  "status" : "failed",
+  "severity" : "normal"
+}, {
+  "uid" : "97ea122e25c4fdde",
+  "name" : "As a User I get the right values for Pool investment P[2500000000000000000, 5000000000000000000] - I-> 0.100 -Expected - 0.200",
+  "time" : {
+    "start" : 1633139497361,
+    "stop" : 1633139539624,
+    "duration" : 42263
+  },
+  "status" : "failed",
+  "severity" : "normal"
+}, {
+  "uid" : "31d33b43715fc83f",
+  "name" : "As a User I can burn all liquidity MGA - mETH",
+  "time" : {
+    "start" : 1633138506631,
+    "stop" : 1633138706495,
+    "duration" : 199864
+  },
+  "status" : "passed",
+  "severity" : "normal"
+}, {
+  "uid" : "250ce3289893b60c",
+  "name" : "As a User I get the right values for Pool removal P[2499999999999999999, 5000000000000000000] - I-> 2 -Expected - 0.050 , 0.100",
+  "time" : {
+    "start" : 1633139149992,
+    "stop" : 1633139192241,
+    "duration" : 42249
+  },
+  "status" : "failed",
+  "severity" : "normal"
+}, {
+  "uid" : "c299f981bb4a6d1f",
+  "name" : "As a User I can Swap tokens - MGA - mETH",
+  "time" : {
+    "start" : 1633138142605,
+    "stop" : 1633138326581,
+    "duration" : 183976
+  },
+  "status" : "passed",
+  "severity" : "normal"
+}, {
+  "uid" : "c9a5ab9741c140d",
+  "name" : "As a User I get the right values for Pool investment P[5000000000000000000, 100] - I-> 100000000000 -Expected - 0.000002",
+  "time" : {
+    "start" : 1633139340989,
+    "stop" : 1633139420699,
+    "duration" : 79710
+  },
+  "status" : "failed",
+  "severity" : "normal"
+}, {
+  "uid" : "5da6e1cf33edda37",
+  "name" : "Validate that Frontend retrieves AssetInfo data",
+  "time" : {
+    "start" : 1633140388891,
+    "stop" : 1633140403852,
+    "duration" : 14961
+  },
+  "status" : "passed",
+  "severity" : "normal"
+}, {
+  "uid" : "7512bc04f743adfa",
+  "name" : "As a User I get feedback when extensions are installed and correctly setup",
+  "time" : {
+    "start" : 1633140286014,
+    "stop" : 1633140385603,
+    "duration" : 99589
+  },
+  "status" : "passed",
+  "severity" : "normal"
+}, {
+  "uid" : "74b8a9fabf77ca31",
+  "name" : "As a User I can Withdraw ETH from Meta extension",
+  "time" : {
+    "start" : 1633139000293,
+    "stop" : 1633139041668,
+    "duration" : 41375
+  },
+  "status" : "failed",
+  "severity" : "normal"
+}, {
+  "uid" : "a96c2a7e9552762",
+  "name" : "As a User I can mint some tokens MGA - mETH",
+  "time" : {
+    "start" : 1633138326581,
+    "stop" : 1633138506630,
+    "duration" : 180049
+  },
+  "status" : "passed",
+  "severity" : "normal"
+}, {
+  "uid" : "620d41991b056546",
+  "name" : "As a User I can deposit ETH from Meta extension",
+  "time" : {
+    "start" : 1633138908801,
+    "stop" : 1633139000287,
+    "duration" : 91486
+  },
+  "status" : "failed",
+  "severity" : "normal"
+}, {
+  "uid" : "fdbf55b74a4a00ea",
+  "name" : "As a User I get the right values for Pool removal P[2500000000000000000, 5000000000000000000] - I-> 1 -Expected - 0.025 , 0.05",
+  "time" : {
+    "start" : 1633139192241,
+    "stop" : 1633139192655,
+    "duration" : 414
+  },
+  "status" : "failed",
+  "severity" : "normal"
+}, {
+  "uid" : "fa8e771ba172dfa0",
+  "name" : "As a User I can create a pool",
+  "time" : {
+    "start" : 1633139655820,
+    "stop" : 1633139656036,
+    "duration" : 216
   },
   "status" : "failed",
   "severity" : "normal"
