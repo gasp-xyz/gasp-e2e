@@ -1,4 +1,16 @@
 [ {
+  "buildOrder" : 412,
+  "reportUrl" : "https://mangata-finance.github.io/mangata-e2e/412/",
+  "reportName" : "Allure Report with history",
+  "data" : {
+    "failed" : 3,
+    "broken" : 0,
+    "skipped" : 0,
+    "passed" : 14,
+    "unknown" : 0,
+    "total" : 17
+  }
+}, {
   "buildOrder" : 415,
   "reportUrl" : "https://mangata-finance.github.io/mangata-e2e/415/",
   "reportName" : "Allure Report with history",
@@ -217,18 +229,6 @@
 }, {
   "buildOrder" : 388,
   "reportUrl" : "https://mangata-finance.github.io/mangata-e2e/388/",
-  "reportName" : "Allure Report with history",
-  "data" : {
-    "failed" : 0,
-    "broken" : 0,
-    "skipped" : 0,
-    "passed" : 17,
-    "unknown" : 0,
-    "total" : 17
-  }
-}, {
-  "buildOrder" : 391,
-  "reportUrl" : "https://mangata-finance.github.io/mangata-e2e/391/",
   "reportName" : "Allure Report with history",
   "data" : {
     "failed" : 0,

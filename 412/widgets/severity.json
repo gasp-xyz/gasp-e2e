@@ -1,180 +1,170 @@
 [ {
-  "uid" : "9e18c9e52be6ec33",
-  "name" : "xyk-pallet - MGA tokens are substracted as fee : CreatePool",
+  "uid" : "9f879f80ceaf7c59",
+  "name" : "As a User I can mint in more than one pool [ MGA - mETH ] [ MGA - newTokn ] and get invested values",
   "time" : {
-    "start" : 1632985477174,
-    "stop" : 1632985573368,
-    "duration" : 96194
+    "start" : 1633138685016,
+    "stop" : 1633138890148,
+    "duration" : 205132
   },
   "status" : "passed",
   "severity" : "normal"
 }, {
-  "uid" : "df5fb6d0d2fe60a7",
-  "name" : "xyk-pallet - MGA tokens are not substracted as fee : SellAsset",
+  "uid" : "40d39a1e48a39ce8",
+  "name" : "As a User I can create a pool",
   "time" : {
-    "start" : 1632985662848,
-    "stop" : 1632985681605,
-    "duration" : 18757
+    "start" : 1633140205913,
+    "stop" : 1633140276628,
+    "duration" : 70715
   },
   "status" : "passed",
   "severity" : "normal"
 }, {
-  "uid" : "11a81a35635f1dd0",
-  "name" : "xyk-pallet - MGA tokens are not substracted as fee : BuyAsset",
+  "uid" : "699328e5696f592c",
+  "name" : "As a User I get infomed whenever is neccesary to install any extension",
   "time" : {
-    "start" : 1632985681605,
-    "stop" : 1632985698928,
-    "duration" : 17323
+    "start" : 1633140436797,
+    "stop" : 1633140444822,
+    "duration" : 8025
   },
   "status" : "passed",
   "severity" : "normal"
 }, {
-  "uid" : "67c162771c789513",
-  "name" : "[BUG]Not enough tokens to convert fee LINK[https://trello.com/c/p77t0atO]",
+  "uid" : "6082024273c5cf04",
+  "name" : "As a User I can deposit ETH from Meta extension",
   "time" : {
-    "start" : 1632985351632,
-    "stop" : 1632985351632,
-    "duration" : 0
-  },
-  "status" : "skipped",
-  "severity" : "normal"
-}, {
-  "uid" : "ecb0219904a81403",
-  "name" : "assets won when assets are sold [Selling X connected to MGA pool] - 10",
-  "time" : {
-    "start" : 1632984697138,
-    "stop" : 1632984860054,
-    "duration" : 162916
+    "start" : 1633138893396,
+    "stop" : 1633139087492,
+    "duration" : 194096
   },
   "status" : "passed",
   "severity" : "normal"
 }, {
-  "uid" : "88815051451b448b",
-  "name" : "xyk-pallet - MGA tokens are substracted as fee : BurnLiquidity",
+  "uid" : "83897369c25c5c6d",
+  "name" : "As a User I can burn all liquidity MGA - mETH",
   "time" : {
-    "start" : 1632985590734,
-    "stop" : 1632985609437,
-    "duration" : 18703
+    "start" : 1633138518712,
+    "stop" : 1633138685016,
+    "duration" : 166304
+  },
+  "status" : "failed",
+  "severity" : "normal"
+}, {
+  "uid" : "d1c21f72b62efc39",
+  "name" : "As a User I can Swap tokens - MGA - mETH",
+  "time" : {
+    "start" : 1633138141421,
+    "stop" : 1633138332692,
+    "duration" : 191271
   },
   "status" : "passed",
   "severity" : "normal"
 }, {
-  "uid" : "60752a38bb1413c7",
-  "name" : "xyk-pallet: Liquidity sufficiency scenario",
+  "uid" : "a3268d43b0b2cefb",
+  "name" : "Validate that Mangata Frontend up and running",
   "time" : {
-    "start" : 1632983959768,
-    "stop" : 1632984265639,
-    "duration" : 305871
+    "start" : 1633140548009,
+    "stop" : 1633140550270,
+    "duration" : 2261
   },
   "status" : "passed",
   "severity" : "normal"
 }, {
-  "uid" : "8d846a3d8f46cc75",
-  "name" : "assets won when assets are bought [Buying Mangata]",
+  "uid" : "3a0b04788e339f1c",
+  "name" : "As a User I get feedback when extensions are installed and correctly setup",
   "time" : {
-    "start" : 1632984373833,
-    "stop" : 1632984482068,
-    "duration" : 108235
+    "start" : 1633140444822,
+    "stop" : 1633140546469,
+    "duration" : 101647
   },
   "status" : "passed",
   "severity" : "normal"
 }, {
-  "uid" : "9ec2baa4ed8c1dc8",
-  "name" : "xyk-pallet - MGA tokens are substracted as fee : MintLiquidity",
+  "uid" : "629eec4fc10a6e73",
+  "name" : "As a User I can Withdraw ETH from Meta extension",
   "time" : {
-    "start" : 1632985573368,
-    "stop" : 1632985590734,
-    "duration" : 17366
+    "start" : 1633139087501,
+    "stop" : 1633139299901,
+    "duration" : 212400
   },
   "status" : "passed",
   "severity" : "normal"
 }, {
-  "uid" : "2ec8cd782b7fcd86",
-  "name" : "xyk-pallet - MGA tokens are substracted as fee : TransferAll",
+  "uid" : "7c39227294a81394",
+  "name" : "As a User I get the right values for Pool investment P[2500000000000000000, 5000000000000000000] - I-> 0.100 -Expected - 0.200",
   "time" : {
-    "start" : 1632985626799,
-    "stop" : 1632985662848,
-    "duration" : 36049
+    "start" : 1633139953555,
+    "stop" : 1633140061555,
+    "duration" : 108000
   },
   "status" : "passed",
   "severity" : "normal"
 }, {
-  "uid" : "a67719ec3a96840b",
-  "name" : "assets won when assets are bought [Buying Y - X connected toMGA pool] - 6",
+  "uid" : "e27f336a2147dc60",
+  "name" : "As a User I can get test tokens from the faucet",
   "time" : {
-    "start" : 1632985190003,
-    "stop" : 1632985351629,
-    "duration" : 161626
+    "start" : 1633140280079,
+    "stop" : 1633140435677,
+    "duration" : 155598
   },
   "status" : "passed",
   "severity" : "normal"
 }, {
-  "uid" : "df3943cdaffac7ab",
-  "name" : "assets won when assets are sold [Selling Mangata] - 5",
+  "uid" : "f567553009afee83",
+  "name" : "As a User I get the right values for Pool investment P[5000000000000000000, 100] - I-> 100000000000 -Expected - 0.000002",
   "time" : {
-    "start" : 1632984268535,
-    "stop" : 1632984373832,
-    "duration" : 105297
+    "start" : 1633139738241,
+    "stop" : 1633139844266,
+    "duration" : 106025
   },
   "status" : "passed",
   "severity" : "normal"
 }, {
-  "uid" : "a033bc059945d656",
-  "name" : "assets won when assets are bought [Buying other in MGA pool]",
+  "uid" : "8cd80f54b842785d",
+  "name" : "As a User I get the right values for Pool investment P[5000000000000000000, 5000000000000000000] - I-> 0.123 -Expected - 0.123",
   "time" : {
-    "start" : 1632984588933,
-    "stop" : 1632984697129,
-    "duration" : 108196
+    "start" : 1633139844266,
+    "stop" : 1633139953555,
+    "duration" : 109289
   },
   "status" : "passed",
   "severity" : "normal"
 }, {
-  "uid" : "b3afa7aa0c31d451",
-  "name" : "assets won when assets are bought [Buying X connected to MGA pool]",
+  "uid" : "8ed8cb0ea599c531",
+  "name" : "As a User I get the right values for Pool removal P[2499999999999999999, 5000000000000000000] - I-> 2 -Expected - 0.050 , 0.100",
   "time" : {
-    "start" : 1632984860054,
-    "stop" : 1632985027026,
-    "duration" : 166972
+    "start" : 1633139408109,
+    "stop" : 1633139509925,
+    "duration" : 101816
+  },
+  "status" : "failed",
+  "severity" : "normal"
+}, {
+  "uid" : "7ee1632cf74925e5",
+  "name" : "As a User I can mint some tokens MGA - mETH",
+  "time" : {
+    "start" : 1633138332693,
+    "stop" : 1633138518712,
+    "duration" : 186019
   },
   "status" : "passed",
   "severity" : "normal"
 }, {
-  "uid" : "128a50e8ccf4a78f",
-  "name" : "assets won when assets are sold [Selling Y - X connected toMGA pool] - 6",
+  "uid" : "434e69c0fc25e6af",
+  "name" : "As a User I get the right values for Pool removal P[2500000000000000000, 5000000000000000000] - I-> 1 -Expected - 0.025 , 0.05",
   "time" : {
-    "start" : 1632985027026,
-    "stop" : 1632985190003,
-    "duration" : 162977
+    "start" : 1633139509925,
+    "stop" : 1633139620009,
+    "duration" : 110084
   },
-  "status" : "passed",
+  "status" : "failed",
   "severity" : "normal"
 }, {
-  "uid" : "f07c0d43417bbb93",
-  "name" : "xyk-pallet: Happy case scenario",
+  "uid" : "6fb46cac6e6dc712",
+  "name" : "Validate that Frontend retrieves AssetInfo data",
   "time" : {
-    "start" : 1632983761745,
-    "stop" : 1632983959768,
-    "duration" : 198023
-  },
-  "status" : "passed",
-  "severity" : "normal"
-}, {
-  "uid" : "305aa91c1203bba6",
-  "name" : "xyk-pallet - MGA tokens are substracted as fee : Transfer",
-  "time" : {
-    "start" : 1632985609437,
-    "stop" : 1632985626799,
-    "duration" : 17362
-  },
-  "status" : "passed",
-  "severity" : "normal"
-}, {
-  "uid" : "6543287ee888598e",
-  "name" : "assets won when assets are sold [Selling other in MGA pool] - 6",
-  "time" : {
-    "start" : 1632984482068,
-    "stop" : 1632984588933,
-    "duration" : 106865
+    "start" : 1633140550270,
+    "stop" : 1633140567305,
+    "duration" : 17035
   },
   "status" : "passed",
   "severity" : "normal"
