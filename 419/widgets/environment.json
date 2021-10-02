@@ -1,16 +1,22 @@
 [ {
-  "values" : [ "" ],
+  "values" : [ "integration" ],
   "name" : "ENV"
 }, {
-  "values" : [ "test-parallel" ],
+  "values" : [ "test-ui" ],
   "name" : "TEST_SCRIPT"
 }, {
-  "values" : [ "latest" ],
-  "name" : "MANGATA_NODE_VERSION"
+  "values" : [ "https://integration.mangata.finance/" ],
+  "name" : "UI_URL"
 }, {
-  "values" : [ "ws://172.16.238.10:9944" ],
+  "values" : [ "wss://integration.mangatafinance.cloud:9944" ],
   "name" : "API_URL"
 }, {
-  "values" : [ "https://mangata-finance.github.io/mangata-node" ],
+  "values" : [ "0xeAA7Ddc7586CFfb417078E56Fd61DE37a6Be373E" ],
+  "name" : "ETH_APP_ADDRESS"
+}, {
+  "values" : [ "0xb508A5Dfa2a16269a5cb47C67824cF823Db44ca7" ],
+  "name" : "ETH_20_APP_ADDRESS"
+}, {
+  "values" : [ "https://mangata-finance.github.io/mangata-e2e" ],
   "name" : "URL"
 } ]
