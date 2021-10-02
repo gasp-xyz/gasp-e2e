@@ -1,181 +1,171 @@
 [ {
-  "uid" : "92097d4f04618ec7",
-  "name" : "[BUG]Not enough tokens to convert fee LINK[https://trello.com/c/p77t0atO]",
+  "uid" : "523273749673623d",
+  "name" : "As a User I can burn all liquidity MGA - mETH",
   "time" : {
-    "start" : 1633011469426,
-    "stop" : 1633011469426,
-    "duration" : 0
-  },
-  "status" : "skipped",
-  "severity" : "normal"
-}, {
-  "uid" : "4d487d59b4358e8f",
-  "name" : "xyk-pallet - MGA tokens are substracted as fee : BurnLiquidity",
-  "time" : {
-    "start" : 1633011709833,
-    "stop" : 1633011727204,
-    "duration" : 17371
+    "start" : 1633180650756,
+    "stop" : 1633180856584,
+    "duration" : 205828
   },
   "status" : "passed",
   "severity" : "normal"
 }, {
-  "uid" : "be062e9994f35b4",
-  "name" : "assets won when assets are sold [Selling Y - X connected toMGA pool] - 6",
+  "uid" : "639a956ff67708a1",
+  "name" : "As a User I get the right values for Pool investment P[5000000000000000000, 5000000000000000000] - I-> 0.123 -Expected - 0.123",
   "time" : {
-    "start" : 1633011144806,
-    "stop" : 1633011307732,
-    "duration" : 162926
+    "start" : 1633182087331,
+    "stop" : 1633182193220,
+    "duration" : 105889
   },
   "status" : "passed",
   "severity" : "normal"
 }, {
-  "uid" : "72cc541e2fa525a2",
-  "name" : "xyk-pallet - MGA tokens are not substracted as fee : SellAsset",
+  "uid" : "b37c4d949c736842",
+  "name" : "As a User I can Swap tokens - MGA - mETH",
   "time" : {
-    "start" : 1633011781997,
-    "stop" : 1633011799341,
-    "duration" : 17344
+    "start" : 1633180267275,
+    "stop" : 1633180458699,
+    "duration" : 191424
   },
   "status" : "passed",
   "severity" : "normal"
 }, {
-  "uid" : "1a36c3e32d34cf9c",
-  "name" : "xyk-pallet - MGA tokens are substracted as fee : Transfer",
+  "uid" : "98e361ad31862e43",
+  "name" : "As a User I can create a pool",
   "time" : {
-    "start" : 1633011727204,
-    "stop" : 1633011745909,
-    "duration" : 18705
+    "start" : 1633182451825,
+    "stop" : 1633182516800,
+    "duration" : 64975
   },
   "status" : "passed",
   "severity" : "normal"
 }, {
-  "uid" : "64597f763b9f3512",
-  "name" : "xyk-pallet: Happy case scenario",
+  "uid" : "95ce66e2d14de138",
+  "name" : "As a User I can mint some tokens MGA - mETH",
   "time" : {
-    "start" : 1633009879406,
-    "stop" : 1633010077473,
-    "duration" : 198067
+    "start" : 1633180458700,
+    "stop" : 1633180650755,
+    "duration" : 192055
   },
   "status" : "passed",
   "severity" : "normal"
 }, {
-  "uid" : "b34e0ee27e74a02c",
-  "name" : "assets won when assets are bought [Buying X connected to MGA pool]",
+  "uid" : "5c2a3ae4fefdd3ec",
+  "name" : "As a User I get the right values for Pool investment P[5000000000000000000, 100] - I-> 100000000000 -Expected - 0.000002",
   "time" : {
-    "start" : 1633010977818,
-    "stop" : 1633011144806,
-    "duration" : 166988
+    "start" : 1633181971158,
+    "stop" : 1633182087331,
+    "duration" : 116173
   },
   "status" : "passed",
   "severity" : "normal"
 }, {
-  "uid" : "7660933dd61dfe42",
-  "name" : "assets won when assets are bought [Buying Mangata]",
+  "uid" : "639ea6c22156070c",
+  "name" : "Validate that Frontend retrieves AssetInfo data",
   "time" : {
-    "start" : 1633010491536,
-    "stop" : 1633010599786,
-    "duration" : 108250
+    "start" : 1633182715360,
+    "stop" : 1633182729018,
+    "duration" : 13658
+  },
+  "status" : "failed",
+  "severity" : "normal"
+}, {
+  "uid" : "5a85c47fd46aa5",
+  "name" : "As a User I can Withdraw ETH from Meta extension",
+  "time" : {
+    "start" : 1633181314695,
+    "stop" : 1633181539864,
+    "duration" : 225169
   },
   "status" : "passed",
   "severity" : "normal"
 }, {
-  "uid" : "142fd61f5b5f31d2",
-  "name" : "xyk-pallet - MGA tokens are substracted as fee : CreatePool",
+  "uid" : "88c1c0c7a09f8638",
+  "name" : "As a User I get the right values for Pool investment P[2500000000000000000, 5000000000000000000] - I-> 0.100 -Expected - 0.200",
   "time" : {
-    "start" : 1633011594930,
-    "stop" : 1633011691137,
-    "duration" : 96207
+    "start" : 1633182193220,
+    "stop" : 1633182304839,
+    "duration" : 111619
   },
   "status" : "passed",
   "severity" : "normal"
 }, {
-  "uid" : "4915d421e8582750",
-  "name" : "assets won when assets are sold [Selling X connected to MGA pool] - 10",
+  "uid" : "f20e934afc650107",
+  "name" : "As a User I get infomed whenever is neccesary to install any extension",
   "time" : {
-    "start" : 1633010814858,
-    "stop" : 1633010977817,
-    "duration" : 162959
+    "start" : 1633182710846,
+    "stop" : 1633182711443,
+    "duration" : 597
+  },
+  "status" : "failed",
+  "severity" : "normal"
+}, {
+  "uid" : "a5661e4a798ed793",
+  "name" : "As a User I get feedback when extensions are installed and correctly setup",
+  "time" : {
+    "start" : 1633182711443,
+    "stop" : 1633182711752,
+    "duration" : 309
+  },
+  "status" : "failed",
+  "severity" : "normal"
+}, {
+  "uid" : "f8cc5f37b47d961f",
+  "name" : "As a User I can deposit ETH from Meta extension",
+  "time" : {
+    "start" : 1633181123273,
+    "stop" : 1633181314682,
+    "duration" : 191409
   },
   "status" : "passed",
   "severity" : "normal"
 }, {
-  "uid" : "50a556b0e754a7ae",
-  "name" : "xyk-pallet - MGA tokens are substracted as fee : MintLiquidity",
+  "uid" : "8ee74a910275d54b",
+  "name" : "Validate that Mangata Frontend up and running",
   "time" : {
-    "start" : 1633011691137,
-    "stop" : 1633011709833,
-    "duration" : 18696
+    "start" : 1633182712630,
+    "stop" : 1633182715360,
+    "duration" : 2730
   },
   "status" : "passed",
   "severity" : "normal"
 }, {
-  "uid" : "a3609f73f7b93913",
-  "name" : "assets won when assets are bought [Buying Y - X connected toMGA pool] - 6",
+  "uid" : "2f12988015ef4c18",
+  "name" : "As a User I get the right values for Pool removal P[2499999999999999999, 5000000000000000000] - I-> 2 -Expected - 0.050 , 0.100",
   "time" : {
-    "start" : 1633011307732,
-    "stop" : 1633011469423,
-    "duration" : 161691
+    "start" : 1633181659671,
+    "stop" : 1633181761855,
+    "duration" : 102184
   },
   "status" : "passed",
   "severity" : "normal"
 }, {
-  "uid" : "9b04396c900b201b",
-  "name" : "assets won when assets are bought [Buying other in MGA pool]",
+  "uid" : "47ef4fe1f26e87e5",
+  "name" : "As a User I get the right values for Pool removal P[2500000000000000000, 5000000000000000000] - I-> 1 -Expected - 0.025 , 0.05",
   "time" : {
-    "start" : 1633010707935,
-    "stop" : 1633010814849,
-    "duration" : 106914
+    "start" : 1633181761855,
+    "stop" : 1633181864757,
+    "duration" : 102902
   },
   "status" : "passed",
   "severity" : "normal"
 }, {
-  "uid" : "14ed8ffedb167075",
-  "name" : "assets won when assets are sold [Selling other in MGA pool] - 6",
+  "uid" : "3a70c12d0bb52513",
+  "name" : "As a User I can mint in more than one pool [ MGA - mETH ] [ MGA - newTokn ] and get invested values",
   "time" : {
-    "start" : 1633010599786,
-    "stop" : 1633010707935,
-    "duration" : 108149
+    "start" : 1633180856587,
+    "stop" : 1633181080396,
+    "duration" : 223809
   },
-  "status" : "passed",
+  "status" : "failed",
   "severity" : "normal"
 }, {
-  "uid" : "bb9c62db87cb46b9",
-  "name" : "xyk-pallet - MGA tokens are substracted as fee : TransferAll",
+  "uid" : "4a85e010d0a78727",
+  "name" : "As a User I can get test tokens from the faucet",
   "time" : {
-    "start" : 1633011745909,
-    "stop" : 1633011781997,
-    "duration" : 36088
+    "start" : 1633182520422,
+    "stop" : 1633182709669,
+    "duration" : 189247
   },
-  "status" : "passed",
-  "severity" : "normal"
-}, {
-  "uid" : "ad44e540efd58d38",
-  "name" : "assets won when assets are sold [Selling Mangata] - 5",
-  "time" : {
-    "start" : 1633010386318,
-    "stop" : 1633010491536,
-    "duration" : 105218
-  },
-  "status" : "passed",
-  "severity" : "normal"
-}, {
-  "uid" : "7eb00ff19cafa2af",
-  "name" : "xyk-pallet - MGA tokens are not substracted as fee : BuyAsset",
-  "time" : {
-    "start" : 1633011799342,
-    "stop" : 1633011818039,
-    "duration" : 18697
-  },
-  "status" : "passed",
-  "severity" : "normal"
-}, {
-  "uid" : "17f28c0e2ff1b436",
-  "name" : "xyk-pallet: Liquidity sufficiency scenario",
-  "time" : {
-    "start" : 1633010077473,
-    "stop" : 1633010383330,
-    "duration" : 305857
-  },
-  "status" : "passed",
+  "status" : "failed",
   "severity" : "normal"
 } ]

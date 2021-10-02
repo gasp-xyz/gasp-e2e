@@ -1,41 +1,63 @@
 {
-  "total" : 5,
+  "total" : 9,
   "items" : [ {
-    "uid" : "7e2322dc234531441d591fbdec84f284",
-    "name" : "test/sequential/xyk-pallet.API.fees.test.ts",
+    "uid" : "ed569433fe9bd7039bbcb4533e10eb78",
+    "name" : "UI tests - Extension management",
     "statistic" : {
-      "failed" : 0,
+      "failed" : 2,
       "broken" : 0,
       "skipped" : 0,
-      "passed" : 7,
+      "passed" : 0,
       "unknown" : 0,
-      "total" : 7
+      "total" : 2
     }
   }, {
-    "uid" : "dd0c8d27829bd9fa6c614b8009117e89",
-    "name" : "xyk-pallet - treasury tests [Mangata]: on treasury we store",
+    "uid" : "6bb869dde07ad565c8edb24dc1fc6596",
+    "name" : "UI tests - A user can swap and mint tokens",
     "statistic" : {
-      "failed" : 0,
+      "failed" : 1,
       "broken" : 0,
       "skipped" : 0,
-      "passed" : 4,
-      "unknown" : 0,
-      "total" : 4
-    }
-  }, {
-    "uid" : "6f44ca105b926385238dffcbc4e2cf02",
-    "name" : "xyk-pallet - treasury tests [Connected - Mangata]: on treasury we store",
-    "statistic" : {
-      "failed" : 0,
-      "broken" : 0,
-      "skipped" : 0,
-      "passed" : 4,
+      "passed" : 3,
       "unknown" : 0,
       "total" : 4
     }
   }, {
-    "uid" : "7c932ff5fdb9624b56fc99866d13104d",
-    "name" : "test/sequential/xyk-pallet.test.ts",
+    "uid" : "07350b18651d800cd32bb450b07e1093",
+    "name" : "UI tests: Infra",
+    "statistic" : {
+      "failed" : 1,
+      "broken" : 0,
+      "skipped" : 0,
+      "passed" : 1,
+      "unknown" : 0,
+      "total" : 2
+    }
+  }, {
+    "uid" : "7f01ef1c38b8c53ee90c160ef83936f7",
+    "name" : "UI tests - Get Tokens from Faucet",
+    "statistic" : {
+      "failed" : 1,
+      "broken" : 0,
+      "skipped" : 0,
+      "passed" : 0,
+      "unknown" : 0,
+      "total" : 1
+    }
+  }, {
+    "uid" : "da0b04b16d779b75e795d5ef6278f6f4",
+    "name" : "Accuracy tests",
+    "statistic" : {
+      "failed" : 0,
+      "broken" : 0,
+      "skipped" : 0,
+      "passed" : 3,
+      "unknown" : 0,
+      "total" : 3
+    }
+  }, {
+    "uid" : "90d5736e18ea111c1c371a9210c50a96",
+    "name" : "Accuracy tests:",
     "statistic" : {
       "failed" : 0,
       "broken" : 0,
@@ -45,13 +67,35 @@
       "total" : 2
     }
   }, {
-    "uid" : "eac2cb15f3137664fa53f9b9f5e1a304",
-    "name" : "xyk-pallet - treasury tests [Connected - Mangata]: Error cases",
+    "uid" : "57b6b43286b76c01e05a10e6fc56c7dc",
+    "name" : "UI main tests - Deposit - ETH",
     "statistic" : {
       "failed" : 0,
       "broken" : 0,
-      "skipped" : 1,
-      "passed" : 0,
+      "skipped" : 0,
+      "passed" : 1,
+      "unknown" : 0,
+      "total" : 1
+    }
+  }, {
+    "uid" : "7237a7d549feb593b78e7bc93ad5bc12",
+    "name" : "UI main tests - Withdraw - ETH",
+    "statistic" : {
+      "failed" : 0,
+      "broken" : 0,
+      "skipped" : 0,
+      "passed" : 1,
+      "unknown" : 0,
+      "total" : 1
+    }
+  }, {
+    "uid" : "efa7e924be1c95313e5fc0246cfa00b1",
+    "name" : "UI tests - A user can create a pool MGA - newToken",
+    "statistic" : {
+      "failed" : 0,
+      "broken" : 0,
+      "skipped" : 0,
+      "passed" : 1,
       "unknown" : 0,
       "total" : 1
     }
