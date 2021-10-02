@@ -1,16 +1,22 @@
 [ {
-  "values" : [ "" ],
+  "values" : [ "staging" ],
   "name" : "ENV"
 }, {
-  "values" : [ "test-sequential-e2e" ],
+  "values" : [ "test-ui" ],
   "name" : "TEST_SCRIPT"
 }, {
-  "values" : [ "latest" ],
-  "name" : "MANGATA_NODE_VERSION"
+  "values" : [ "https://staging.mangata.finance/" ],
+  "name" : "UI_URL"
 }, {
-  "values" : [ "ws://172.16.238.10:9944" ],
+  "values" : [ "wss://staging.mangatafinance.cloud:9944/" ],
   "name" : "API_URL"
 }, {
-  "values" : [ "https://mangata-finance.github.io/mangata-node" ],
+  "values" : [ "0x4C5B51CFC44865Ac2DE4c8Ebd1df91d02d15523C" ],
+  "name" : "ETH_APP_ADDRESS"
+}, {
+  "values" : [ "0x944f7e5Ef36e09F94Bfece0C455A72963166F172" ],
+  "name" : "ETH_20_APP_ADDRESS"
+}, {
+  "values" : [ "https://mangata-finance.github.io/mangata-e2e" ],
   "name" : "URL"
 } ]
