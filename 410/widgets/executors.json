@@ -1,10 +1,10 @@
 [ {
   "name" : "GitHub Actions",
   "type" : "github",
-  "url" : "https://mangata-finance.github.io/mangata-node",
+  "url" : "https://mangata-finance.github.io/mangata-e2e",
   "buildOrder" : 410,
-  "buildName" : "GitHub Actions Run #1286915083",
-  "buildUrl" : "https://github.com/mangata-finance/mangata-node/actions/runs/1286915083",
+  "buildName" : "GitHub Actions Run #1297184157",
+  "buildUrl" : "https://github.com/mangata-finance/mangata-e2e/actions/runs/1297184157",
   "reportName" : "Allure Report with history",
-  "reportUrl" : "https://mangata-finance.github.io/mangata-node/410/"
+  "reportUrl" : "https://mangata-finance.github.io/mangata-e2e/410/"
 } ]
