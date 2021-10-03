@@ -1,5 +1,99 @@
 {
   "uid" : "4b4757e66a1912dae1a509f688f20b0f",
-  "children" : [ ],
+  "children" : [ {
+    "name" : "Product defects",
+    "children" : [ {
+      "name" : "TimeoutError: Waiting for element to be located By(xpath, //button[text()='Connect'])\n                Wait timed out after 20004ms",
+      "children" : [ {
+        "name" : "As a User I can Swap tokens - MGA - mETH",
+        "uid" : "457308ba96a3290a",
+        "parentUid" : "af93ec1ede2b373f0aad9cdc313a12a5",
+        "status" : "failed",
+        "time" : {
+          "start" : 1633224673829,
+          "stop" : 1633224755204,
+          "duration" : 81375
+        },
+        "flaky" : true,
+        "newFailed" : true,
+        "parameters" : [ ]
+      } ],
+      "uid" : "af93ec1ede2b373f0aad9cdc313a12a5"
+    }, {
+      "name" : "Error: Failed: \"TIMEOUT: Waiting for //*[@class = 'Sidebar__loading'] to dissapear\"",
+      "children" : [ {
+        "name" : "As a User I can deposit ETH from Meta extension",
+        "uid" : "abfd35b68ec450d",
+        "parentUid" : "949fce9c21683c22bcec487901b1b36f",
+        "status" : "failed",
+        "time" : {
+          "start" : 1633225353464,
+          "stop" : 1633225540910,
+          "duration" : 187446
+        },
+        "flaky" : true,
+        "newFailed" : true,
+        "parameters" : [ ]
+      }, {
+        "name" : "As a User I get feedback when extensions are installed and correctly setup",
+        "uid" : "f0954aff7d18972f",
+        "parentUid" : "949fce9c21683c22bcec487901b1b36f",
+        "status" : "failed",
+        "time" : {
+          "start" : 1633226532955,
+          "stop" : 1633226644666,
+          "duration" : 111711
+        },
+        "flaky" : true,
+        "newFailed" : true,
+        "parameters" : [ ]
+      } ],
+      "uid" : "949fce9c21683c22bcec487901b1b36f"
+    }, {
+      "name" : "TimeoutError: Waiting for element to be located By(xpath, //button[text()='Connect'])\n                Wait timed out after 20006ms",
+      "children" : [ {
+        "name" : "As a User I get the right values for Pool investment P[5000000000000000000, 100] - I-> 100000000000 -Expected - 0.000002",
+        "uid" : "74e6bf4490b9d34a",
+        "parentUid" : "903bec7c8841cd7d31f468a5b113df43",
+        "status" : "failed",
+        "time" : {
+          "start" : 1633226153212,
+          "stop" : 1633226153408,
+          "duration" : 196
+        },
+        "flaky" : true,
+        "newFailed" : false,
+        "parameters" : [ ]
+      }, {
+        "name" : "As a User I get the right values for Pool investment P[5000000000000000000, 5000000000000000000] - I-> 0.123 -Expected - 0.123",
+        "uid" : "a67d545226af0af9",
+        "parentUid" : "903bec7c8841cd7d31f468a5b113df43",
+        "status" : "failed",
+        "time" : {
+          "start" : 1633226153408,
+          "stop" : 1633226153614,
+          "duration" : 206
+        },
+        "flaky" : true,
+        "newFailed" : false,
+        "parameters" : [ ]
+      }, {
+        "name" : "As a User I get the right values for Pool investment P[2500000000000000000, 5000000000000000000] - I-> 0.100 -Expected - 0.200",
+        "uid" : "9fa93eb9102b11b4",
+        "parentUid" : "903bec7c8841cd7d31f468a5b113df43",
+        "status" : "failed",
+        "time" : {
+          "start" : 1633226153614,
+          "stop" : 1633226153819,
+          "duration" : 205
+        },
+        "flaky" : true,
+        "newFailed" : false,
+        "parameters" : [ ]
+      } ],
+      "uid" : "903bec7c8841cd7d31f468a5b113df43"
+    } ],
+    "uid" : "8fb3a91ba5aaf9de24cc8a92edc82b5d"
+  } ],
   "name" : "categories"
 }
