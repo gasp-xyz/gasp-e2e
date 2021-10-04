@@ -12,6 +12,7 @@ import { AssetWallet, User } from "../../utils/User";
 import { validateAssetsWithValues } from "../../utils/validators";
 import { Assets } from "../../utils/Assets";
 import { getEnvironmentRequiredVars } from "../../utils/utils";
+import { MAX_BALANCE } from "../../utils/Constants";
 
 jest.spyOn(console, "log").mockImplementation(jest.fn());
 jest.spyOn(console, "error").mockImplementation(jest.fn());
@@ -72,114 +73,131 @@ beforeEach(async () => {
   );
 });
 
-test("xyk-pallet - User Balance - Creating a pool requires paying fees", async () => {
-  let exception = false;
-  const mangata = await getMangataInstance();
-  await expect(
-    mangata
-      .createPool(
-        testUser1.keyRingPair,
-        firstCurrency.toString(),
-        first_asset_amount,
-        secondCurrency.toString(),
-        second_asset_amount
-      )
-      .catch((reason) => {
-        exception = true;
-        throw new Error(reason.data);
-      })
-  ).rejects.toThrow(
-    "1010: Invalid Transaction: Inability to pay some fees , e.g. account balance too low"
-  );
-  expect(exception).toBeTruthy();
-});
+describe("Wallets unmodified", () => {
+  test("xyk-pallet - User Balance - Creating a pool requires paying fees", async () => {
+    let exception = false;
+    const mangata = await getMangataInstance();
+    await expect(
+      mangata
+        .createPool(
+          testUser1.keyRingPair,
+          firstCurrency.toString(),
+          first_asset_amount,
+          secondCurrency.toString(),
+          second_asset_amount
+        )
+        .catch((reason) => {
+          exception = true;
+          throw new Error(reason.data);
+        })
+    ).rejects.toThrow(
+      "1010: Invalid Transaction: Inability to pay some fees , e.g. account balance too low"
+    );
+    expect(exception).toBeTruthy();
+  });
 
-test("xyk-pallet - User Balance - mint liquidity requires paying fees", async () => {
-  let exception = false;
-  const mangata = await getMangataInstance();
-  await expect(
-    mangata
-      .mintLiquidity(
-        testUser1.keyRingPair,
-        firstCurrency.toString(),
-        secondCurrency.toString(),
-        first_asset_amount,
-        new BN(Number.MAX_SAFE_INTEGER)
-      )
-      .catch((reason) => {
-        exception = true;
-        throw new Error(reason.data);
-      })
-  ).rejects.toThrow(
-    "1010: Invalid Transaction: Inability to pay some fees , e.g. account balance too low"
-  );
-  expect(exception).toBeTruthy();
-});
+  test("xyk-pallet - User Balance - mint liquidity requires paying fees", async () => {
+    let exception = false;
+    const mangata = await getMangataInstance();
+    await expect(
+      mangata
+        .mintLiquidity(
+          testUser1.keyRingPair,
+          firstCurrency.toString(),
+          secondCurrency.toString(),
+          first_asset_amount,
+          new BN(Number.MAX_SAFE_INTEGER)
+        )
+        .catch((reason) => {
+          exception = true;
+          throw new Error(reason.data);
+        })
+    ).rejects.toThrow(
+      "1010: Invalid Transaction: Inability to pay some fees , e.g. account balance too low"
+    );
+    expect(exception).toBeTruthy();
+  });
 
+  afterEach(async () => {
+    const liquidity_asset_id = await getLiquidityAssetId(
+      firstCurrency,
+      secondCurrency
+    );
+    expect(liquidity_asset_id).bnEqual(new BN(-1));
+    //validate
+    await testUser1.refreshAmounts(AssetWallet.AFTER);
+
+    testUser1.assets.forEach((asset) => {
+      expect(asset.amountBefore).bnEqual(asset.amountAfter);
+    });
+
+    const pool_balance = await getBalanceOfPool(firstCurrency, secondCurrency);
+    expect([pool_balance_before[0], pool_balance_before[1]]).toEqual(
+      pool_balance
+    );
+    const balance = await getBalanceOfPool(secondCurrency, firstCurrency);
+    expect([pool_balance_before[0], pool_balance_before[1]]).toEqual([
+      balance[1],
+      balance[0],
+    ]);
+  });
+});
 test("xyk-pallet - User Balance - Selling an asset does not require paying fees", async () => {
+  await sudo.mint(firstCurrency, sudo, defaultCurrecyValue);
+  await sudo.mint(secondCurrency, sudo, defaultCurrecyValue);
+  await sudo.createPoolToAsset(
+    defaultCurrecyValue,
+    defaultCurrecyValue,
+    firstCurrency,
+    secondCurrency
+  );
+
   let exception = false;
   await testUser1.refreshAmounts(AssetWallet.BEFORE);
   const amountInWallet = testUser1.getAsset(firstCurrency)?.amountBefore!;
   const mangata = await getMangataInstance();
-  await expect(
-    mangata
-      .sellAsset(
-        testUser1.keyRingPair,
-        firstCurrency.toString(),
-        secondCurrency.toString(),
-        amountInWallet.sub(new BN(1)),
-        first_asset_amount.mul(first_asset_amount)
-      )
-      .catch((reason) => {
-        exception = true;
-        throw new Error(reason);
-      })
-  ).resolves.toBeUndefined();
+  const soldEvent = await mangata
+    .sellAsset(
+      testUser1.keyRingPair,
+      firstCurrency.toString(),
+      secondCurrency.toString(),
+      amountInWallet.sub(new BN(1)),
+      new BN(1)
+    )
+    .catch((reason) => {
+      exception = true;
+      throw new Error(reason);
+    });
+  expect(soldEvent[0].method).toEqual("AssetsSwapped");
   expect(exception).toBeFalsy();
 });
 
 test("xyk-pallet - User Balance - Buying an asset does not require paying fees", async () => {
+  await sudo.mint(firstCurrency, sudo, defaultCurrecyValue);
+  await sudo.mint(secondCurrency, sudo, defaultCurrecyValue);
+  await sudo.createPoolToAsset(
+    defaultCurrecyValue,
+    defaultCurrecyValue,
+    firstCurrency,
+    secondCurrency
+  );
+
   let exception = false;
   await testUser1.refreshAmounts(AssetWallet.BEFORE);
   const amountInWallet = testUser1.getAsset(firstCurrency)?.amountBefore!;
   const mangata = await getMangataInstance();
-  await expect(
-    mangata
-      .buyAsset(
-        testUser1.keyRingPair,
-        firstCurrency.toString(),
-        secondCurrency.toString(),
-        new BN(1),
-        amountInWallet
-      )
-      .catch((reason) => {
-        exception = true;
-        throw new Error(reason.data);
-      })
-  ).resolves.toBeUndefined();
+  const boughtEvent = await mangata
+    .buyAsset(
+      testUser1.keyRingPair,
+      firstCurrency.toString(),
+      secondCurrency.toString(),
+      MAX_BALANCE,
+      amountInWallet
+    )
+    .catch((reason) => {
+      exception = true;
+      throw new Error(reason.data);
+    });
+  expect(boughtEvent[0].method).toEqual("AssetsSwapped");
   expect(exception).toBeFalsy();
-});
-
-afterEach(async () => {
-  const liquidity_asset_id = await getLiquidityAssetId(
-    firstCurrency,
-    secondCurrency
-  );
-  expect(liquidity_asset_id).bnEqual(new BN(-1));
-  //validate
-  await testUser1.refreshAmounts(AssetWallet.AFTER);
-
-  testUser1.assets.forEach((asset) => {
-    expect(asset.amountBefore).bnEqual(asset.amountAfter);
-  });
-
-  const pool_balance = await getBalanceOfPool(firstCurrency, secondCurrency);
-  expect([pool_balance_before[0], pool_balance_before[1]]).toEqual(
-    pool_balance
-  );
-  const balance = await getBalanceOfPool(secondCurrency, firstCurrency);
-  expect([pool_balance_before[0], pool_balance_before[1]]).toEqual([
-    balance[1],
-    balance[0],
-  ]);
 });

@@ -76,7 +76,7 @@ test.each([
       output_reserve,
       amount
     );
-    expect(priceSell).toEqual(expected);
+    expect(priceSell).bnEqual(expected);
   }
 );
 
@@ -94,7 +94,7 @@ test.each([
       output_reserve,
       amount
     );
-    expect(priceSell).toEqual(expected);
+    expect(priceSell).bnEqual(expected);
   }
 );
 
@@ -130,7 +130,7 @@ describe("xyk-rpc - calculate_buy_price_by_id:No pool assotiated with the assets
         dictAssets.get(boughtTokenId)!,
         amount
       );
-      expect(priceBuy).toEqual(expected);
+      expect(priceBuy).bnEqual(expected);
     }
   );
 });
