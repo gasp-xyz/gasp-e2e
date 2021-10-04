@@ -417,20 +417,21 @@ export const createPool = async (
 };
 
 export const sellAsset = async (
-  account: any,
+  account: KeyringPair,
   soldAssetId: BN,
   boughtAssetId: BN,
   amount: BN,
   minAmountOut: BN
 ) => {
-  const api = getApi();
-  const nonce = await getCurrentNonce(account.address);
-  const txResult = await signAndWaitTx(
-    api.tx.xyk.sellAsset(soldAssetId, boughtAssetId, amount, minAmountOut),
+  const mangata = await getMangataInstance();
+  const result = await mangata.sellAsset(
     account,
-    nonce.toNumber()
+    soldAssetId.toString(),
+    boughtAssetId.toString(),
+    amount,
+    minAmountOut
   );
-  return txResult;
+  return result;
 };
 
 export const buyAsset = async (
@@ -440,14 +441,15 @@ export const buyAsset = async (
   amount: BN,
   maxAmountIn: BN
 ) => {
-  const api = getApi();
-  const nonce = await getCurrentNonce(account.address);
-  const txResult = await signAndWaitTx(
-    api.tx.xyk.buyAsset(soldAssetId, boughtAssetId, amount, maxAmountIn),
+  const mangata = await getMangataInstance();
+  const result = await mangata.sellAsset(
     account,
-    nonce.toNumber()
+    soldAssetId.toString(),
+    boughtAssetId.toString(),
+    amount,
+    maxAmountIn
   );
-  return txResult;
+  return result;
 };
 
 export const mintLiquidity = async (
@@ -457,19 +459,15 @@ export const mintLiquidity = async (
   firstAssetAmount: BN,
   expectedSecondAssetAmount: BN = new BN(Number.MAX_SAFE_INTEGER)
 ) => {
-  const api = getApi();
-  const nonce = await (await getCurrentNonce(account.address)).toNumber();
-  const txResult = await signAndWaitTx(
-    api.tx.xyk.mintLiquidity(
-      firstAssetId,
-      secondAssetId,
-      firstAssetAmount,
-      expectedSecondAssetAmount
-    ),
+  const mangata = await getMangataInstance();
+  const result = await mangata.mintLiquidity(
     account,
-    nonce
+    firstAssetId.toString(),
+    secondAssetId.toString(),
+    firstAssetAmount,
+    expectedSecondAssetAmount
   );
-  return txResult;
+  return result;
 };
 
 export const burnLiquidity = async (
