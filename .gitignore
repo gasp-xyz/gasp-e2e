@@ -9,3 +9,5 @@ nonce.db
 test/exploratory/testPad.ts
 allure-results/*.xml
 reports/**/*
+dev-test-encrypted-transactions/node_modules
+dev-test-encrypted-transactions/yarn.lock
