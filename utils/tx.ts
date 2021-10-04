@@ -1,6 +1,6 @@
 import { AddressOrPair, SubmittableExtrinsic } from "@polkadot/api/types";
 import { StorageKey } from "@polkadot/types";
-import { getApi } from "./api";
+import { getApi, getMangataInstance } from "./api";
 import BN from "bn.js";
 import { env } from "process";
 import { SudoDB } from "./SudoDB";
@@ -145,14 +145,14 @@ export async function calculate_sell_price_rpc(
   input_reserve: BN,
   output_reserve: BN,
   sell_amount: BN
-) {
-  const api = getApi();
-  const result = await (api.rpc as any).xyk.calculate_sell_price(
+): Promise<BN> {
+  const mangata = await getMangataInstance();
+  const result = await mangata.calculateSellPrice(
     input_reserve,
     output_reserve,
     sell_amount
   );
-  return new BN(result.price.toString());
+  return result;
 }
 
 export async function calculate_buy_price_rpc(

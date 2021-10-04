@@ -100,7 +100,7 @@ test("xyk-pallet - AssetsOperation: sellAsset [minAmountOut = 0] , first to seco
     poolBalanceBefore[1],
     amount
   );
-  expect(sellPriceLocal).toEqual(sellPriceRpc);
+  expect(sellPriceLocal).bnEqual(sellPriceRpc);
   testLog
     .getLog()
     .info(
