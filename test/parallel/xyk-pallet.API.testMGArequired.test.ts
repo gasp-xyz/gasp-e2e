@@ -12,7 +12,6 @@ import { AssetWallet, User } from "../../utils/User";
 import { validateAssetsWithValues } from "../../utils/validators";
 import { Assets } from "../../utils/Assets";
 import { getEnvironmentRequiredVars } from "../../utils/utils";
-import { MAX_BALANCE } from "../../utils/Constants";
 
 jest.spyOn(console, "log").mockImplementation(jest.fn());
 jest.spyOn(console, "error").mockImplementation(jest.fn());
@@ -184,15 +183,14 @@ test("xyk-pallet - User Balance - Buying an asset does not require paying fees",
 
   let exception = false;
   await testUser1.refreshAmounts(AssetWallet.BEFORE);
-  const amountInWallet = testUser1.getAsset(firstCurrency)?.amountBefore!;
   const mangata = await getMangataInstance();
   const boughtEvent = await mangata
     .buyAsset(
       testUser1.keyRingPair,
       firstCurrency.toString(),
       secondCurrency.toString(),
-      MAX_BALANCE,
-      amountInWallet
+      new BN(100),
+      new BN(10000000)
     )
     .catch((reason) => {
       exception = true;

@@ -442,7 +442,7 @@ export const buyAsset = async (
   maxAmountIn: BN
 ) => {
   const mangata = await getMangataInstance();
-  const result = await mangata.sellAsset(
+  const result = await mangata.buyAsset(
     account,
     soldAssetId.toString(),
     boughtAssetId.toString(),
