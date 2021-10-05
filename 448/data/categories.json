@@ -1,0 +1,137 @@
+{
+  "uid" : "4b4757e66a1912dae1a509f688f20b0f",
+  "children" : [ {
+    "name" : "Product defects",
+    "children" : [ {
+      "name" : "Error: Failed: \"W[1] timeout in - signAndWaitTx - \\\" + 5HQ9Mm9L1HG53htEGDMsnhkkL7hEfF9vLstEQPtMLX5Gupqx + \\\" - \\\" + 620 + \\\" - \\\" + {\\\"isSigned\\\":true,\\\"method\\\":{\\\"args\\\":[{\\\"args\\\":[\\\"0\\\",\\\"5FnCYWH5zbfP1keqUDnvQToHb5UHwjESdsU6PvYqdVKN4cyh\\\",\\\"10.0000 MUnit\\\"],\\\"method\\\":\\\"mint\\\",\\\"section\\\":\\\"tokens\\\"}],\\\"method\\\":\\\"sudo\\\",\\\"section\\\":\\\"sudo\\\"},\\\"era\\\":{\\\"MortalEra\\\":{\\\"period\\\":\\\"64\\\",\\\"phase\\\":\\\"51\\\"}},\\\"nonce\\\":\\\"620\\\",\\\"signature\\\":\\\"0x6292189debe8e9fa0396a5b2957e7eca6c460fd454aa9cc9e1239e2f6a31e91365f051e17b42cb64ab30e95805097441d94c6663dba43c5a6304ec9224347880\\\",\\\"signer\\\":\\\"5HQ9Mm9L1HG53htEGDMsnhkkL7hEfF9vLstEQPtMLX5Gupqx\\\",\\\"tip\\\":\\\"0\\\"}\"",
+      "children" : [ {
+        "name" : "As a User I can Swap tokens - MGA - mETH",
+        "uid" : "c31a4024b4632b0f",
+        "parentUid" : "e539375ce14013e1d5977d0219ff91b5",
+        "status" : "failed",
+        "time" : {
+          "start" : 1633397442785,
+          "stop" : 1633397603202,
+          "duration" : 160417
+        },
+        "flaky" : true,
+        "newFailed" : false,
+        "parameters" : [ ]
+      } ],
+      "uid" : "e539375ce14013e1d5977d0219ff91b5"
+    }, {
+      "name" : "Error: Failed: \"W[1] timeout in - signAndWaitTx - \\\" + 5HQ9Mm9L1HG53htEGDMsnhkkL7hEfF9vLstEQPtMLX5Gupqx + \\\" - \\\" + 624 + \\\" - \\\" + {\\\"isSigned\\\":true,\\\"method\\\":{\\\"args\\\":[{\\\"args\\\":[\\\"1\\\",\\\"5DJMsnKHXhbicr9oWCgxUnuuMSBy4oXnokQiUSq3kEfia5Tc\\\",\\\"10.0000 kUnit\\\"],\\\"method\\\":\\\"mint\\\",\\\"section\\\":\\\"tokens\\\"}],\\\"method\\\":\\\"sudo\\\",\\\"section\\\":\\\"sudo\\\"},\\\"era\\\":{\\\"MortalEra\\\":{\\\"period\\\":\\\"64\\\",\\\"phase\\\":\\\"16\\\"}},\\\"nonce\\\":\\\"624\\\",\\\"signature\\\":\\\"0xd278c65667ae2a8ae102e022577c9b4c08b748c5039bd2f03eb1c6ab39e04578dfeac8a3a6c6e8e62f541cf542ca32c2c5a311203d3ac4ab34323dea1f09498f\\\",\\\"signer\\\":\\\"5HQ9Mm9L1HG53htEGDMsnhkkL7hEfF9vLstEQPtMLX5Gupqx\\\",\\\"tip\\\":\\\"0\\\"}\"",
+      "children" : [ {
+        "name" : "As a User I can mint some tokens MGA - mETH",
+        "uid" : "b72265a45caff8de",
+        "parentUid" : "940b3084b91d2be91911d23315161a0c",
+        "status" : "failed",
+        "time" : {
+          "start" : 1633397603203,
+          "stop" : 1633397774644,
+          "duration" : 171441
+        },
+        "flaky" : true,
+        "newFailed" : false,
+        "parameters" : [ ]
+      } ],
+      "uid" : "940b3084b91d2be91911d23315161a0c"
+    }, {
+      "name" : "Error: 1014: Priority is too low: (4071061455924 vs 4071061455924): The transaction has too low priority to replace another transaction already in the pool.",
+      "children" : [ {
+        "name" : "As a User I can burn all liquidity MGA - mETH",
+        "uid" : "60cca95443c89a5d",
+        "parentUid" : "9c97cb529a06c2407c645524e5eec50e",
+        "status" : "failed",
+        "time" : {
+          "start" : 1633397774644,
+          "stop" : 1633397867568,
+          "duration" : 92924
+        },
+        "flaky" : true,
+        "newFailed" : false,
+        "parameters" : [ ]
+      } ],
+      "uid" : "9c97cb529a06c2407c645524e5eec50e"
+    }, {
+      "name" : "NoSuchWindowError: no such window: target window already closed\n                from unknown error: web view not found\n                  (Session info: chrome=94.0.4606.61)\n                  (Driver info: chromedriver=94.0.4606.61 (418b78f5838ed0b1c69bb4e51ea0252171854915-refs/branch-heads/4606@{#1204}),platform=Linux 5.8.0-1042-azure x86_64)",
+      "children" : [ {
+        "name" : "As a User I can mint in more than one pool [ MGA - mETH ] [ MGA - newTokn ] and get invested values",
+        "uid" : "5e6997a778eeb7e9",
+        "parentUid" : "96f8337f683e768d9f054ae66905fe34",
+        "status" : "failed",
+        "time" : {
+          "start" : 1633397867569,
+          "stop" : 1633397867987,
+          "duration" : 418
+        },
+        "flaky" : true,
+        "newFailed" : false,
+        "parameters" : [ ]
+      } ],
+      "uid" : "96f8337f683e768d9f054ae66905fe34"
+    }, {
+      "name" : "Error: Failed: \"W[1] timeout in - signAndWaitTx - \\\" + 5HQ9Mm9L1HG53htEGDMsnhkkL7hEfF9vLstEQPtMLX5Gupqx + \\\" - \\\" + 651 + \\\" - \\\" + {\\\"isSigned\\\":true,\\\"method\\\":{\\\"args\\\":[{\\\"args\\\":[\\\"5CCnZcAWz8TQUN9cpUrmNL5waSkoibkMhfmyhWZ2GEyttu4z\\\",\\\"15.0000 MUnit\\\"],\\\"method\\\":\\\"create\\\",\\\"section\\\":\\\"tokens\\\"}],\\\"method\\\":\\\"sudo\\\",\\\"section\\\":\\\"sudo\\\"},\\\"era\\\":{\\\"MortalEra\\\":{\\\"period\\\":\\\"64\\\",\\\"phase\\\":\\\"12\\\"}},\\\"nonce\\\":\\\"651\\\",\\\"signature\\\":\\\"0x740a6ca5fb31b3f1556254da96e4a1d8cee3ef43c7f22d028bc7f4eec58c026295c867ce73a080a7683d9d3eb888584d054e5e6ada0340997379474cd542e287\\\",\\\"signer\\\":\\\"5HQ9Mm9L1HG53htEGDMsnhkkL7hEfF9vLstEQPtMLX5Gupqx\\\",\\\"tip\\\":\\\"0\\\"}\"",
+      "children" : [ {
+        "name" : "As a User I get the right values for Pool removal P[2499999999999999999, 5000000000000000000] - I-> 2 -Expected - 0.050 , 0.100",
+        "uid" : "b84be8eda504786b",
+        "parentUid" : "01995bcfbc207a1120bdd1b90a857eda",
+        "status" : "failed",
+        "time" : {
+          "start" : 1633398421969,
+          "stop" : 1633398500412,
+          "duration" : 78443
+        },
+        "flaky" : true,
+        "newFailed" : false,
+        "parameters" : [ ]
+      } ],
+      "uid" : "01995bcfbc207a1120bdd1b90a857eda"
+    }, {
+      "name" : "Error: Failed: \"W[1] timeout in - signAndWaitTx - \\\" + 5HQ9Mm9L1HG53htEGDMsnhkkL7hEfF9vLstEQPtMLX5Gupqx + \\\" - \\\" + 666 + \\\" - \\\" + {\\\"isSigned\\\":true,\\\"method\\\":{\\\"args\\\":[{\\\"args\\\":[\\\"0\\\",\\\"5ECAADsfRDJ2Vc6tjyc9hVHbkEFP8oo2SoXKpQRR2B46YN4s\\\",\\\"10.0000 MUnit\\\"],\\\"method\\\":\\\"mint\\\",\\\"section\\\":\\\"tokens\\\"}],\\\"method\\\":\\\"sudo\\\",\\\"section\\\":\\\"sudo\\\"},\\\"era\\\":{\\\"MortalEra\\\":{\\\"period\\\":\\\"64\\\",\\\"phase\\\":\\\"54\\\"}},\\\"nonce\\\":\\\"666\\\",\\\"signature\\\":\\\"0x285ee004bda16f2384315b1dc6faaf3271339985435a1d75b11da68ced9bb86c14334146dce7524206a6037640cf2118db4725d28725696f120cbb1498dc3681\\\",\\\"signer\\\":\\\"5HQ9Mm9L1HG53htEGDMsnhkkL7hEfF9vLstEQPtMLX5Gupqx\\\",\\\"tip\\\":\\\"0\\\"}\"",
+      "children" : [ {
+        "name" : "As a User I get the right values for Pool investment P[5000000000000000000, 100] - I-> 100000000000 -Expected - 0.000002",
+        "uid" : "2594de08cf4bf7d3",
+        "parentUid" : "835a1b3964d9c402ea27af0dba4143b4",
+        "status" : "failed",
+        "time" : {
+          "start" : 1633398754797,
+          "stop" : 1633398848543,
+          "duration" : 93746
+        },
+        "flaky" : true,
+        "newFailed" : false,
+        "parameters" : [ ]
+      }, {
+        "name" : "As a User I get the right values for Pool investment P[5000000000000000000, 5000000000000000000] - I-> 0.123 -Expected - 0.123",
+        "uid" : "15dfefd617754455",
+        "parentUid" : "835a1b3964d9c402ea27af0dba4143b4",
+        "status" : "failed",
+        "time" : {
+          "start" : 1633398848543,
+          "stop" : 1633398920338,
+          "duration" : 71795
+        },
+        "flaky" : true,
+        "newFailed" : false,
+        "parameters" : [ ]
+      }, {
+        "name" : "As a User I get the right values for Pool investment P[2500000000000000000, 5000000000000000000] - I-> 0.100 -Expected - 0.200",
+        "uid" : "be586bcac386005d",
+        "parentUid" : "835a1b3964d9c402ea27af0dba4143b4",
+        "status" : "failed",
+        "time" : {
+          "start" : 1633398920338,
+          "stop" : 1633398992644,
+          "duration" : 72306
+        },
+        "flaky" : true,
+        "newFailed" : false,
+        "parameters" : [ ]
+      } ],
+      "uid" : "835a1b3964d9c402ea27af0dba4143b4"
+    } ],
+    "uid" : "8fb3a91ba5aaf9de24cc8a92edc82b5d"
+  } ],
+  "name" : "categories"
+}
