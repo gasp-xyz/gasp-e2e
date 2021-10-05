@@ -6,6 +6,8 @@
  */
 import { uniq, intersection, takeRight } from "lodash";
 
+import * as path from "path";
+import { promises as fs } from "fs";
 import { Node } from "../../utils/cluster/Node";
 import { testLog } from "../../utils/Logger";
 import { waitForNBlocks } from "../../utils/utils";
@@ -16,31 +18,16 @@ jest.spyOn(console, "error").mockImplementation(jest.fn());
 jest.setTimeout(1500000);
 process.env.NODE_ENV = "test";
 
-const json = `
-  { 
-    "id": 1, 
-    "mangata_nodes": [ 
-      { 
-        "name": "Node A", 
-        "wsPath": "wss://develop.mangatafinance.cloud:9944" 
-      },
-      { 
-        "name": "Node B", 
-        "wsPath": "wss://develop.mangatafinance.cloud:9945" 
-      },
-      { 
-        "name": "Node C", 
-        "wsPath": "wss://develop.mangatafinance.cloud:9946" 
-      }
-    ]
-  }`;
-
 const nodes: Node[] = new Array<Node>();
 
 beforeAll(async () => {
-  Convert.toTestConfig(json).mangata_nodes.forEach((arr) => {
+  const filePath = path.resolve(__dirname, "./cluster-healthcheck.config");
+  const fileContents = await fs.readFile(filePath, "utf-8");
+
+  Convert.toTestConfig(fileContents).mangata_nodes.forEach((arr) => {
     nodes.push(new Node(arr.name, arr.wsPath));
   });
+
   const promises = [];
   for (let index = 0; index < nodes.length; index++) {
     const element = nodes[index];
