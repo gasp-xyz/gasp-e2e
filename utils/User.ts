@@ -15,7 +15,10 @@ import {
   sellAsset,
   transferAll,
 } from "./tx";
-import { getEventResultFromTxWait } from "./txHandler";
+import {
+  getEventResultFromMangataTx,
+  getEventResultFromTxWait,
+} from "./txHandler";
 import { MAX_BALANCE, MGA_ASSET_ID } from "./Constants";
 
 export enum AssetWallet {
@@ -106,7 +109,7 @@ export class User {
       amount,
       maxExpected
     ).then((result) => {
-      const eventResponse = getEventResultFromTxWait(result, [
+      const eventResponse = getEventResultFromMangataTx(result, [
         "xyk",
         "AssetsSwapped",
         this.keyRingPair.address,
@@ -139,7 +142,7 @@ export class User {
       amount,
       new BN(0)
     ).then((result) => {
-      const eventResponse = getEventResultFromTxWait(result, [
+      const eventResponse = getEventResultFromMangataTx(result, [
         "xyk",
         "AssetsSwapped",
         this.keyRingPair.address,
@@ -160,7 +163,7 @@ export class User {
       firstCurrencyAmount,
       secondCurrencyAmount
     ).then((result) => {
-      const eventResponse = getEventResultFromTxWait(result, [
+      const eventResponse = getEventResultFromMangataTx(result, [
         "xyk",
         "LiquidityMinted",
         this.keyRingPair.address,
@@ -194,7 +197,7 @@ export class User {
       secondCurrency,
       second_asset_amount
     ).then((result) => {
-      const eventResponse = getEventResultFromTxWait(result, [
+      const eventResponse = getEventResultFromMangataTx(result, [
         "xyk",
         "PoolCreated",
         this.keyRingPair.address,

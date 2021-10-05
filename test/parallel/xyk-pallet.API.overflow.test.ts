@@ -24,7 +24,7 @@ import {
   TokensErrorCodes,
   XyzErrorCodes,
 } from "../../utils/utils";
-import { getEventResultFromTxWait } from "../../utils/txHandler";
+import { getEventResultFromMangataTx } from "../../utils/txHandler";
 
 jest.spyOn(console, "log").mockImplementation(jest.fn());
 jest.setTimeout(1500000);
@@ -78,7 +78,7 @@ describe("xyk-pallet - Check operations are not executed because of overflow in 
       firstCurrency,
       MAX_BALANCE
     ).then((result) => {
-      const eventResponse = getEventResultFromTxWait(result);
+      const eventResponse = getEventResultFromMangataTx(result);
       expect(eventResponse.state).toEqual(ExtrinsicResult.ExtrinsicSuccess);
     });
     const poolBalances = await getBalanceOfPool(firstCurrency, secondCurrency);
@@ -98,7 +98,7 @@ describe("xyk-pallet - Check operations are not executed because of overflow in 
       testUser2.keyRingPair.address,
       MAX_BALANCE
     ).then((result) => {
-      const eventResponse = getEventResultFromTxWait(result);
+      const eventResponse = getEventResultFromMangataTx(result);
       expect(eventResponse.state).toEqual(ExtrinsicResult.ExtrinsicFailed);
       expect(eventResponse.data).toEqual(TokensErrorCodes.BalanceOverflow);
     });
@@ -160,7 +160,7 @@ describe("xyk-pallet - Operate with a pool close to overflow", () => {
       firstCurrency,
       MAX_BALANCE.sub(new BN(10))
     ).then((result) => {
-      const eventResponse = getEventResultFromTxWait(result);
+      const eventResponse = getEventResultFromMangataTx(result);
       expect(eventResponse.state).toEqual(ExtrinsicResult.ExtrinsicSuccess);
     });
 
@@ -175,7 +175,7 @@ describe("xyk-pallet - Operate with a pool close to overflow", () => {
       MAX_BALANCE.sub(new BN(2)),
       new BN(1)
     ).then((result) => {
-      const eventResponse = getEventResultFromTxWait(result);
+      const eventResponse = getEventResultFromMangataTx(result);
       expect(eventResponse.state).toEqual(ExtrinsicResult.ExtrinsicFailed);
       expect(eventResponse.data).toEqual(XyzErrorCodes.MathOverflow);
     });
@@ -191,7 +191,7 @@ describe("xyk-pallet - Operate with a pool close to overflow", () => {
       new BN(100),
       MAX_BALANCE
     ).then((result) => {
-      const eventResponse = getEventResultFromTxWait(result);
+      const eventResponse = getEventResultFromMangataTx(result);
       expect(eventResponse.state).toEqual(ExtrinsicResult.ExtrinsicFailed);
       expect(eventResponse.data).toEqual(XyzErrorCodes.MathOverflow);
     });
@@ -208,7 +208,7 @@ describe("xyk-pallet - Operate with a pool close to overflow", () => {
       new BN(100),
       MAX_BALANCE
     ).then((result) => {
-      const eventResponse = getEventResultFromTxWait(result);
+      const eventResponse = getEventResultFromMangataTx(result);
       expect(eventResponse.state).toEqual(ExtrinsicResult.ExtrinsicFailed);
 
       //This error is right, the enum comes from the pallet overflow.
@@ -235,7 +235,7 @@ describe("xyk-pallet - Operate with a pool close to overflow", () => {
       firstCurrency,
       MAX_BALANCE.sub(new BN(1001))
     ).then((result) => {
-      const eventResponse = getEventResultFromTxWait(result);
+      const eventResponse = getEventResultFromMangataTx(result);
       expect(eventResponse.state).toEqual(ExtrinsicResult.ExtrinsicFailed);
       expect(eventResponse.data).toEqual(XyzErrorCodes.MathOverflow);
     });
@@ -300,7 +300,7 @@ describe("xyk-pallet - Operate with a user account close to overflow", () => {
       firstCurrency,
       new BN(5000000)
     ).then((result) => {
-      const eventResponse = getEventResultFromTxWait(result);
+      const eventResponse = getEventResultFromMangataTx(result);
       expect(eventResponse.state).toEqual(ExtrinsicResult.ExtrinsicSuccess);
     });
 
@@ -315,7 +315,7 @@ describe("xyk-pallet - Operate with a user account close to overflow", () => {
       new BN(10000),
       new BN(1)
     ).then((result) => {
-      const eventResponse = getEventResultFromTxWait(result);
+      const eventResponse = getEventResultFromMangataTx(result);
       expect(eventResponse.state).toEqual(ExtrinsicResult.ExtrinsicFailed);
       expect(eventResponse.data).toEqual(XyzErrorCodes.MathOverflow);
     });
@@ -336,7 +336,7 @@ describe("xyk-pallet - Operate with a user account close to overflow", () => {
       new BN(100),
       MAX_BALANCE
     ).then((result) => {
-      const eventResponse = getEventResultFromTxWait(result);
+      const eventResponse = getEventResultFromMangataTx(result);
       expect(eventResponse.state).toEqual(ExtrinsicResult.ExtrinsicFailed);
       expect(eventResponse.data).toEqual(XyzErrorCodes.MathOverflow);
     });
@@ -408,7 +408,7 @@ describe.skip("xyk-pallet - Operate with a highly unbalanced pool [mg - newAsset
       secondCurrency,
       divNumber
     ).then((result) => {
-      const eventResponse = getEventResultFromTxWait(result);
+      const eventResponse = getEventResultFromMangataTx(result);
       expect(eventResponse.state).toEqual(ExtrinsicResult.ExtrinsicSuccess);
     });
     await createPool(
@@ -418,7 +418,7 @@ describe.skip("xyk-pallet - Operate with a highly unbalanced pool [mg - newAsset
       secondCurrency,
       MAX_BALANCE.div(divNumber)
     ).then((result) => {
-      const eventResponse = getEventResultFromTxWait(result);
+      const eventResponse = getEventResultFromMangataTx(result);
       expect(eventResponse.state).toEqual(ExtrinsicResult.ExtrinsicSuccess);
     });
 
@@ -443,7 +443,7 @@ describe.skip("xyk-pallet - Operate with a highly unbalanced pool [mg - newAsset
       MAX_BALANCE.div(new BN("100000000000")),
       MAX_BALANCE
     ).then((result) => {
-      const eventResponse = getEventResultFromTxWait(result);
+      const eventResponse = getEventResultFromMangataTx(result);
       expect(eventResponse.state).toEqual(ExtrinsicResult.ExtrinsicSuccess);
     });
     const poolBalanceAssetsAfter = await getBalanceOfPool(

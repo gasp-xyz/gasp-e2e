@@ -22,7 +22,7 @@ import {
 } from "../../utils/validators";
 import { Assets } from "../../utils/Assets";
 import { getEnvironmentRequiredVars } from "../../utils/utils";
-import { getEventResultFromTxWait } from "../../utils/txHandler";
+import { getEventResultFromMangataTx } from "../../utils/txHandler";
 
 jest.spyOn(console, "log").mockImplementation(jest.fn());
 jest.setTimeout(1500000);
@@ -86,7 +86,7 @@ describe("xyk-pallet - Sell assets tests: SellAsset Errors:", () => {
       first_asset_amount.div(new BN(2)),
       new BN(0)
     ).then((result) => {
-      const eventResponse = getEventResultFromTxWait(result);
+      const eventResponse = getEventResultFromMangataTx(result);
       expect(eventResponse.state).toEqual(ExtrinsicResult.ExtrinsicFailed);
       expect(eventResponse.data).toEqual(3);
     });
@@ -97,7 +97,7 @@ describe("xyk-pallet - Sell assets tests: SellAsset Errors:", () => {
       first_asset_amount.div(new BN(2)),
       new BN(0)
     ).then((result) => {
-      const eventResponse = getEventResultFromTxWait(result);
+      const eventResponse = getEventResultFromMangataTx(result);
       expect(eventResponse.state).toEqual(ExtrinsicResult.ExtrinsicFailed);
       expect(eventResponse.data).toEqual(3);
     });
@@ -144,7 +144,7 @@ describe("xyk-pallet - Sell assets tests: SellAsset Errors:", () => {
       remainingOfCurrency1.sub(new BN(1)),
       new BN(0)
     ).then((result) => {
-      const eventResponse = getEventResultFromTxWait(result, [
+      const eventResponse = getEventResultFromMangataTx(result, [
         "xyk",
         "AssetsSwapped",
         testUser1.keyRingPair.address,
@@ -168,7 +168,7 @@ describe("xyk-pallet - Sell assets tests: SellAsset Errors:", () => {
       remainingOfCurrency1.add(new BN(1)),
       new BN(0)
     ).then((result) => {
-      const eventResponse = getEventResultFromTxWait(result);
+      const eventResponse = getEventResultFromMangataTx(result);
       expect(eventResponse.state).toEqual(ExtrinsicResult.ExtrinsicFailed);
       expect(eventResponse.data).toEqual(2);
     });
@@ -247,7 +247,7 @@ describe("xyk-pallet - Sell assets tests: SellAsset Errors:", () => {
       remainingOfCurrency1,
       sellPriceLocal.add(new BN(1))
     ).then((result) => {
-      const eventResponse = getEventResultFromTxWait(result);
+      const eventResponse = getEventResultFromMangataTx(result);
       expect(eventResponse.state).toEqual(ExtrinsicResult.ExtrinsicFailed);
       expect(eventResponse.data).toEqual(8);
     });
@@ -342,7 +342,7 @@ describe("xyk-pallet - Sell assets tests: Selling Assets you can", () => {
       remainingOfCurrency1,
       sellPriceLocal
     ).then((result) => {
-      const eventResponse = getEventResultFromTxWait(result, [
+      const eventResponse = getEventResultFromMangataTx(result, [
         "xyk",
         "AssetsSwapped",
         testUser1.keyRingPair.address,
@@ -428,7 +428,7 @@ describe("xyk-pallet - Sell assets tests: Selling Assets you can", () => {
       remainingOfCurrency3,
       sellPriceLocal
     ).then((result) => {
-      const eventResponse = getEventResultFromTxWait(result, [
+      const eventResponse = getEventResultFromMangataTx(result, [
         "xyk",
         "AssetsSwapped",
         testUser2.keyRingPair.address,

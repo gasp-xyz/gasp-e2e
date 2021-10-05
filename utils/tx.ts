@@ -132,8 +132,8 @@ export async function getBurnAmount(
 ) {
   const mangata = await getMangataInstance();
   const result = await mangata.getBurnAmount(
-    firstAssetId,
-    secondAssetId,
+    firstAssetId.toString(),
+    secondAssetId.toString(),
     liquidityAssetAmount
   );
   testLog.getLog().info(result.firstAssetAmount);
@@ -175,8 +175,8 @@ export async function calculate_buy_price_id_rpc(
 ) {
   const mangata = await getMangataInstance();
   const result = await mangata.calculateBuyPriceId(
-    soldTokenId,
-    boughtTokenId,
+    soldTokenId.toString(),
+    boughtTokenId.toString(),
     buyAmount
   );
   return result;
@@ -189,8 +189,8 @@ export async function calculate_sell_price_id_rpc(
 ) {
   const mangata = await getMangataInstance();
   const result = await mangata.calculateSellPriceId(
-    soldTokenId,
-    boughtTokenId,
+    soldTokenId.toString(),
+    boughtTokenId.toString(),
     sellAmount
   );
   return result;
@@ -227,7 +227,7 @@ export async function getUserAssets(account: any, assets: BN[]) {
 
 export async function getBalanceOfAsset(assetId: BN, account: any) {
   const mangata = await getMangataInstance();
-  const balance = await mangata.getAssetBalanceForAddress(assetId, account);
+  const balance = await mangata.getTokenBalance(assetId.toString(), account);
   return balance;
 }
 
@@ -238,8 +238,14 @@ export async function getBalanceOfPool(
   let reversed = false;
   const emptyPool = "[0,0]";
   const mangata = await getMangataInstance();
-  const balance1 = await mangata.getAmountOfTokenIdInPool(assetId1, assetId2);
-  const balance2 = await mangata.getAmountOfTokenIdInPool(assetId2, assetId1);
+  const balance1 = await mangata.getAmountOfTokenIdInPool(
+    assetId1.toString(),
+    assetId2.toString()
+  );
+  const balance2 = await mangata.getAmountOfTokenIdInPool(
+    assetId2.toString(),
+    assetId1.toString()
+  );
 
   //  const balance1 = await api.query.xyk.pools([assetId1, assetId2]);
   //  const balance2 = await api.query.xyk.pools([assetId2, assetId1]);
@@ -342,34 +348,37 @@ export const balanceTransfer = async (
 };
 
 export const transferAsset = async (
-  account: any,
-  asset_id: BN,
+  account: KeyringPair,
+  tokenId: BN,
   targetAddress: string,
   amount: BN
 ) => {
-  const api = getApi();
-  const nonce = await (await getCurrentNonce(account.address)).toString();
-  const txResult = signAndWaitTx(
-    api.tx.tokens.transfer(targetAddress, asset_id, amount),
+  const mangata = await getMangataInstance();
+  const nonce = await getCurrentNonce(account.address);
+  const result = await mangata.transferToken(
     account,
-    parseInt(nonce)
+    tokenId.toString(),
+    targetAddress,
+    amount,
+    { nonce: nonce }
   );
-  return txResult;
+  return result;
 };
 
 export const transferAll = async (
   account: KeyringPair,
-  asset_id: BN,
+  tokenId: BN,
   target: any
 ) => {
-  const api = getApi();
-
-  const txResult = await signAndWaitTx(
-    api.tx.tokens.transferAll(target, asset_id),
+  const mangata = await getMangataInstance();
+  const nonce = await getCurrentNonce(account.address);
+  const result = await mangata.transferTokenAll(
     account,
-    await (await getCurrentNonce(account.address)).toNumber()
+    tokenId.toString(),
+    target,
+    { nonce: nonce }
   );
-  return txResult;
+  return result;
 };
 
 export const mintAsset = async (
@@ -396,24 +405,22 @@ export const createPool = async (
   secondAssetId: BN,
   secondAssetAmount: BN
 ) => {
-  const api = getApi();
   const nonce = await getCurrentNonce(account.address);
   testLog
     .getLog()
     .info(
       `Creating pool:${firstAssetId},${firstAssetAmount},${secondAssetId},${secondAssetAmount}`
     );
-  const txResult = await signAndWaitTx(
-    api.tx.xyk.createPool(
-      firstAssetId,
-      firstAssetAmount,
-      secondAssetId,
-      secondAssetAmount
-    ),
+  const mangata = await getMangataInstance();
+  const result = await mangata.createPool(
     account,
-    nonce.toNumber()
+    firstAssetId.toString(),
+    firstAssetAmount,
+    secondAssetId.toString(),
+    secondAssetAmount,
+    { nonce: nonce }
   );
-  return txResult;
+  return result;
 };
 
 export const sellAsset = async (
@@ -476,14 +483,16 @@ export const burnLiquidity = async (
   secondAssetId: BN,
   liquidityAssetAmount: BN
 ) => {
-  const api = getApi();
+  const mangata = await getMangataInstance();
   const nonce = await getCurrentNonce(account.address);
-  const txResult = await signAndWaitTx(
-    api.tx.xyk.burnLiquidity(firstAssetId, secondAssetId, liquidityAssetAmount),
+  const result = await mangata.burnLiquidity(
     account,
-    nonce.toNumber()
+    firstAssetId.toString(),
+    secondAssetId.toString(),
+    liquidityAssetAmount,
+    { nonce: nonce }
   );
-  return txResult;
+  return result;
 };
 
 export async function getAccountInfo(account?: string) {

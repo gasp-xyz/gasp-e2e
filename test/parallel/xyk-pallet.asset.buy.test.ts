@@ -17,8 +17,8 @@ import { Keyring } from "@polkadot/api";
 import { AssetWallet, User } from "../../utils/User";
 import { Assets } from "../../utils/Assets";
 import { calculateFees, getEnvironmentRequiredVars } from "../../utils/utils";
-import { getEventResultFromTxWait } from "../../utils/txHandler";
 import { testLog } from "../../utils/Logger";
+import { getEventResultFromMangataTx } from "../../utils/txHandler";
 
 jest.spyOn(console, "log").mockImplementation(jest.fn());
 jest.setTimeout(1500000);
@@ -122,7 +122,7 @@ test("xyk-pallet - AssetsOperation: buyAsset [maxAmountIn = 1M], buy asset", asy
     amount,
     new BN(1000000)
   ).then((result) => {
-    const eventResponse = getEventResultFromTxWait(result, [
+    const eventResponse = getEventResultFromMangataTx(result, [
       "xyk",
       "AssetsSwapped",
       testUser1.keyRingPair.address,

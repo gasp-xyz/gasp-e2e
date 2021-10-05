@@ -29,7 +29,7 @@ import {
   calculateLiqAssetAmount,
   getEnvironmentRequiredVars,
 } from "../../utils/utils";
-import { getEventResultFromTxWait } from "../../utils/txHandler";
+import { getEventResultFromMangataTx } from "../../utils/txHandler";
 
 const { sudo: sudoUserName } = getEnvironmentRequiredVars();
 
@@ -124,7 +124,7 @@ describe("xyk-pallet - Burn liquidity tests: when burning liquidity you can", ()
       secondCurrency,
       ownedLiquidityAssets
     ).then((result) => {
-      const eventResponse = getEventResultFromTxWait(result, [
+      const eventResponse = getEventResultFromMangataTx(result, [
         "xyk",
         "LiquidityBurned",
         testUser1.keyRingPair.address,
@@ -171,7 +171,7 @@ describe("xyk-pallet - Burn liquidity tests: when burning liquidity you can", ()
       secondCurrency,
       new BN(defaultCurrecyValue).div(new BN(4))
     ).then((result) => {
-      const eventResponse = getEventResultFromTxWait(result, [
+      const eventResponse = getEventResultFromMangataTx(result, [
         "xyk",
         "LiquidityBurned",
         testUser1.keyRingPair.address,
@@ -203,7 +203,7 @@ describe("xyk-pallet - Burn liquidity tests: when burning liquidity you can", ()
       secondCurrency,
       burnAmount
     ).then((result) => {
-      eventResponse = getEventResultFromTxWait(result, [
+      eventResponse = getEventResultFromMangataTx(result, [
         "xyk",
         "LiquidityBurned",
         testUser1.keyRingPair.address,

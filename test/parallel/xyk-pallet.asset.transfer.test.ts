@@ -16,8 +16,8 @@ import {
 } from "../../utils/validators";
 import { Assets } from "../../utils/Assets";
 import { getEnvironmentRequiredVars } from "../../utils/utils";
-import { getEventResultFromTxWait } from "../../utils/txHandler";
 import { testLog } from "../../utils/Logger";
+import { getEventResultFromMangataTx } from "../../utils/txHandler";
 
 jest.spyOn(console, "log").mockImplementation(jest.fn());
 jest.setTimeout(1500000);
@@ -111,7 +111,7 @@ test("xyk-pallet - AssetsOperation: transferAsset", async () => {
     testUser2.keyRingPair.address,
     amount
   ).then((result) => {
-    const eventResponse = getEventResultFromTxWait(result, [
+    const eventResponse = getEventResultFromMangataTx(result, [
       "tokens",
       "Transferred",
       testUser1.keyRingPair.address,
@@ -171,7 +171,7 @@ test("xyk-pallet - AssetsOperation: transferAll", async () => {
     firstCurrency,
     testUser2.keyRingPair.address
   ).then((result) => {
-    const eventResponse = getEventResultFromTxWait(result, [
+    const eventResponse = getEventResultFromMangataTx(result, [
       "tokens",
       "Transferred",
       testUser1.keyRingPair.address,

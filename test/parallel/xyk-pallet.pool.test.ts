@@ -19,7 +19,6 @@ import {
   calculateLiqAssetAmount,
   getEnvironmentRequiredVars,
 } from "../../utils/utils";
-import { getEventResultFromTxWait } from "../../utils/txHandler";
 import { testLog } from "../../utils/Logger";
 import { Keyring } from "@polkadot/api";
 import { Assets } from "../../utils/Assets";
@@ -27,6 +26,7 @@ import {
   validateAssetsWithValues,
   validateEmptyAssets,
 } from "../../utils/validators";
+import { getEventResultFromMangataTx } from "../../utils/txHandler";
 
 jest.spyOn(console, "log").mockImplementation(jest.fn());
 jest.setTimeout(1500000);
@@ -123,7 +123,7 @@ test("xyk-pallet - Pool tests: createPool and validate liq token", async () => {
     secondCurrency,
     secondAssetAmount
   ).then((result) => {
-    const eventResponse = getEventResultFromTxWait(result, [
+    const eventResponse = getEventResultFromMangataTx(result, [
       "xyk",
       "PoolCreated",
       testUser1.keyRingPair.address,
@@ -218,7 +218,7 @@ test("xyk-pallet - Pool tests: createPool", async () => {
     secondCurrency,
     secondAssetAmount
   ).then((result) => {
-    const eventResponse = getEventResultFromTxWait(result, [
+    const eventResponse = getEventResultFromMangataTx(result, [
       "xyk",
       "PoolCreated",
       testUser1.keyRingPair.address,

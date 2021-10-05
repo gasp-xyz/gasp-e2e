@@ -15,7 +15,7 @@ import {
   getEnvironmentRequiredVars,
 } from "../../utils/utils";
 import { ExtrinsicResult } from "../../utils/eventListeners";
-import { getEventResultFromTxWait } from "../../utils/txHandler";
+import { getEventResultFromMangataTx } from "../../utils/txHandler";
 
 jest.spyOn(console, "log").mockImplementation(jest.fn());
 jest.setTimeout(1500000);
@@ -165,7 +165,7 @@ describe("xyk-rpc - calculate get_burn amount: RPC result matches with burn amou
       secondAssetId,
       toBurn
     ).then((result) => {
-      const eventResponse = getEventResultFromTxWait(result, [
+      const eventResponse = getEventResultFromMangataTx(result, [
         "xyk",
         "LiquidityBurned",
         sudo.keyRingPair.address,

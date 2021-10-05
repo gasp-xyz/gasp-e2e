@@ -11486,16 +11486,16 @@ makeerror@1.0.x:
   version "0.2.0"
   resolved "https://github.com/mangata-finance/mangata-node#71c66222107e4df007cb4085ed1f74ede272fbac"
 
-mangata-sdk@0.3.2:
-  version "0.3.2"
-  resolved "https://registry.yarnpkg.com/mangata-sdk/-/mangata-sdk-0.3.2.tgz#628a41cdbb413482295dd9f2086f75032b162678"
-  integrity sha512-wH7f5ReOQWIn9/1f4dJgY2xwT+L5E035TbEZjMvX9WJi2i1xI07Jxv2kY2KU6MMoQOu5UK/qpYA2yrrQfPFc9A==
+mangata-sdk@0.4.0:
+  version "0.4.0"
+  resolved "https://registry.yarnpkg.com/mangata-sdk/-/mangata-sdk-0.4.0.tgz#3fe2eba854708a3d1d5c1ac103f01bccbdf1d358"
+  integrity sha512-sUx3FqZNilJkrqYJNT+vLXseQTWvSNiOG+oJciWO29gu+6diURL6HZBOLawOjAP4lXah02Ow5jB0YFRscCEGbw==
   dependencies:
     "@polkadot/api" "^2.10.1"
     bn.js "^5.2.0"
+    prng-xoshiro "^1.0.1"
     tslog "^3.2.2"
     uuid "^8.3.2"
-    xoshiro "^2.0.3"
 
 map-age-cleaner@^0.1.1:
   version "0.1.3"
@@ -13604,6 +13604,11 @@ printj@~1.1.0:
   version "1.1.2"
   resolved "https://registry.yarnpkg.com/printj/-/printj-1.1.2.tgz#d90deb2975a8b9f600fb3a1c94e3f4c53c78a222"
   integrity sha512-zA2SmoLaxZyArQTOPj5LXecR+RagfPSU5Kw1qP+jkWeNlrq+eJZyY2oS68SU1Z/7/myXM4lo9716laOFAVStCQ==
+
+prng-xoshiro@^1.0.1:
+  version "1.0.1"
+  resolved "https://registry.yarnpkg.com/prng-xoshiro/-/prng-xoshiro-1.0.1.tgz#5d9021c84cb38defd9c2827f817bd1183af29c98"
+  integrity sha512-PZWg48zx2mxZaWKO0SfgAfUsKXOUBgkANRCoJ2eU8Otnkwjtsy5H+ogJkX8j74FoWxyCmepBsFVegDXQycJ/Gg==
 
 process-nextick-args@~1.0.6:
   version "1.0.7"

@@ -23,7 +23,7 @@ import {
   calculateLiqAssetAmount,
   getEnvironmentRequiredVars,
 } from "../../utils/utils";
-import { getEventResultFromTxWait } from "../../utils/txHandler";
+import { getEventResultFromMangataTx } from "../../utils/txHandler";
 
 jest.spyOn(console, "log").mockImplementation(jest.fn());
 jest.setTimeout(1500000);
@@ -187,7 +187,7 @@ describe("xyk-pallet - Mint liquidity tests: with minting you can", () => {
       secondCurrency,
       injectedValue
     ).then((result) => {
-      eventResponse = getEventResultFromTxWait(result, [
+      eventResponse = getEventResultFromMangataTx(result, [
         "xyk",
         "LiquidityMinted",
         testUser1.keyRingPair.address,

@@ -29,9 +29,9 @@ import {
   calculateLiqAssetAmount,
   getEnvironmentRequiredVars,
 } from "../../utils/utils";
-import { getEventResultFromTxWait } from "../../utils/txHandler";
 import { testLog } from "../../utils/Logger";
 import { hexToBn } from "@polkadot/util";
+import { getEventResultFromMangataTx } from "../../utils/txHandler";
 
 jest.spyOn(console, "log").mockImplementation(jest.fn());
 jest.setTimeout(1500000);
@@ -100,7 +100,7 @@ describe("xyk-pallet - Poll creation: Errors:", () => {
       secondCurrency,
       second_asset_amount
     ).then((result) => {
-      eventResponse = getEventResultFromTxWait(result, [
+      eventResponse = getEventResultFromMangataTx(result, [
         "xyk",
         "PoolCreated",
         testUser1.keyRingPair.address,
@@ -134,7 +134,7 @@ describe("xyk-pallet - Poll creation: Errors:", () => {
       firstCurrency,
       new BN(666)
     ).then((result) => {
-      const eventResponse = getEventResultFromTxWait(result);
+      const eventResponse = getEventResultFromMangataTx(result);
       expect(eventResponse.state).toEqual(ExtrinsicResult.ExtrinsicFailed);
       expect(eventResponse.data).toEqual(1);
     });
@@ -150,7 +150,7 @@ describe("xyk-pallet - Poll creation: Errors:", () => {
       emptyAssetID,
       new BN(0)
     ).then((result) => {
-      const eventResponse = getEventResultFromTxWait(result);
+      const eventResponse = getEventResultFromMangataTx(result);
       expect(eventResponse.state).toEqual(ExtrinsicResult.ExtrinsicFailed);
       expect(eventResponse.data).toEqual(6);
     });
@@ -173,7 +173,7 @@ describe("xyk-pallet - Poll creation: Errors:", () => {
       testAssetId[0],
       new BN(txAmount).add(new BN(1))
     ).then((result) => {
-      const eventResponse = getEventResultFromTxWait(result);
+      const eventResponse = getEventResultFromMangataTx(result);
       expect(eventResponse.state).toEqual(ExtrinsicResult.ExtrinsicFailed);
       expect(eventResponse.data).toEqual(2);
     });
@@ -252,7 +252,7 @@ describe("xyk-pallet - Pool tests: a pool can:", () => {
       secondCurrency,
       new BN(5000)
     ).then((result) => {
-      const eventResponse = getEventResultFromTxWait(result, [
+      const eventResponse = getEventResultFromMangataTx(result, [
         "xyk",
         "LiquidityMinted",
         testUser2.keyRingPair.address,
@@ -317,7 +317,7 @@ describe("xyk-pallet - Pool tests: a pool can:", () => {
       secondCurrency,
       new BN(5000)
     ).then((result) => {
-      const eventResponse = getEventResultFromTxWait(result, [
+      const eventResponse = getEventResultFromMangataTx(result, [
         "xyk",
         "LiquidityMinted",
         testUser2.keyRingPair.address,
@@ -347,7 +347,7 @@ describe("xyk-pallet - Pool tests: a pool can:", () => {
       secondCurrency,
       new BN(2500)
     ).then((result) => {
-      const eventResponse = getEventResultFromTxWait(result, [
+      const eventResponse = getEventResultFromMangataTx(result, [
         "xyk",
         "LiquidityBurned",
         testUser2.keyRingPair.address,
@@ -483,7 +483,7 @@ describe("xyk-pallet - Pool opeations: Simmetry", () => {
       firstCurrency,
       second_asset_amount
     ).then((result) => {
-      eventResponse = getEventResultFromTxWait(result, [
+      eventResponse = getEventResultFromMangataTx(result, [
         "xyk",
         "PoolCreated",
         testUser1.keyRingPair.address,

@@ -20,8 +20,8 @@ import { Keyring } from "@polkadot/api";
 import { AssetWallet, User } from "../../utils/User";
 import { Assets } from "../../utils/Assets";
 import { getEnvironmentRequiredVars } from "../../utils/utils";
-import { getEventResultFromTxWait } from "../../utils/txHandler";
 import { testLog } from "../../utils/Logger";
+import { getEventResultFromMangataTx } from "../../utils/txHandler";
 
 jest.spyOn(console, "log").mockImplementation(jest.fn());
 jest.setTimeout(1500000);
@@ -124,7 +124,7 @@ test("xyk-pallet - Liqudity : Burn part of the liquidity", async () => {
     secondCurrency,
     liquidityAssetsBurned
   ).then((result) => {
-    const eventResponse = getEventResultFromTxWait(result, [
+    const eventResponse = getEventResultFromMangataTx(result, [
       "xyk",
       "LiquidityBurned",
       testUser1.keyRingPair.address,
@@ -218,7 +218,7 @@ test("xyk-pallet - Liqudity : Burn all the liquidity", async () => {
     secondCurrency,
     liquidityAssetsBurned
   ).then((result) => {
-    const eventResponse = getEventResultFromTxWait(result, [
+    const eventResponse = getEventResultFromMangataTx(result, [
       "xyk",
       "LiquidityBurned",
       testUser1.keyRingPair.address,
@@ -303,7 +303,7 @@ test("xyk-pallet - LiquidityOperation: mintLiquidity", async () => {
     secondCurrency,
     firstCurrencyAssetAmount
   ).then((result) => {
-    const eventResponse = getEventResultFromTxWait(result, [
+    const eventResponse = getEventResultFromMangataTx(result, [
       "xyk",
       "LiquidityMinted",
       testUser1.keyRingPair.address,

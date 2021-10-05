@@ -34,6 +34,7 @@ import {
   getEnvironmentRequiredVars,
 } from "../../utils/utils";
 import {
+  getEventResultFromMangataTx,
   getEventResultFromTxWait,
   sudoIssueAsset,
 } from "../../utils/txHandler";
@@ -137,7 +138,7 @@ test("xyk-pallet: Happy case scenario", async () => {
     secondAssetId,
     second_asset_amount
   ).then((result) => {
-    const eventResponse = getEventResultFromTxWait(result, [
+    const eventResponse = getEventResultFromMangataTx(result, [
       "xyk",
       "PoolCreated",
       user.address,
@@ -234,7 +235,7 @@ test("xyk-pallet: Happy case scenario", async () => {
     first_asset_amount,
     second_asset_amount
   ).then((result) => {
-    const eventResponse = getEventResultFromTxWait(result, [
+    const eventResponse = getEventResultFromMangataTx(result, [
       "xyk",
       "LiquidityMinted",
       user.address,
@@ -312,7 +313,7 @@ test("xyk-pallet: Happy case scenario", async () => {
 
   await transferAsset(user, firstAssetId, bob.address, amount).then(
     (result) => {
-      const eventResponse = getEventResultFromTxWait(result, [
+      const eventResponse = getEventResultFromMangataTx(result, [
         "tokens",
         "Transferred",
         user.address,
@@ -403,7 +404,7 @@ test("xyk-pallet: Happy case scenario", async () => {
 
   await sellAsset(user, soldAssetId, boughtAssetId, amount, new BN(0)).then(
     (result) => {
-      const eventResponse = getEventResultFromTxWait(result, [
+      const eventResponse = getEventResultFromMangataTx(result, [
         "xyk",
         "AssetsSwapped",
         user.address,
@@ -502,7 +503,7 @@ test("xyk-pallet: Happy case scenario", async () => {
 
   await sellAsset(user, soldAssetId, boughtAssetId, amount, new BN(0)).then(
     (result) => {
-      const eventResponse = getEventResultFromTxWait(result, [
+      const eventResponse = getEventResultFromMangataTx(result, [
         "xyk",
         "AssetsSwapped",
         user.address,
@@ -607,7 +608,7 @@ test("xyk-pallet: Happy case scenario", async () => {
     amount,
     new BN(1000000)
   ).then((result) => {
-    const eventResponse = getEventResultFromTxWait(result, [
+    const eventResponse = getEventResultFromMangataTx(result, [
       "xyk",
       "AssetsSwapped",
       user.address,
@@ -714,7 +715,7 @@ test("xyk-pallet: Happy case scenario", async () => {
     amount,
     new BN(1000000)
   ).then((result) => {
-    const eventResponse = getEventResultFromTxWait(result, [
+    const eventResponse = getEventResultFromMangataTx(result, [
       "xyk",
       "AssetsSwapped",
       user.address,
@@ -815,7 +816,7 @@ test("xyk-pallet: Happy case scenario", async () => {
     secondAssetId,
     liquidity_assets_burned
   ).then((result) => {
-    const eventResponse = getEventResultFromTxWait(result, [
+    const eventResponse = getEventResultFromMangataTx(result, [
       "xyk",
       "LiquidityBurned",
       user.address,
@@ -907,7 +908,7 @@ test("xyk-pallet: Happy case scenario", async () => {
     secondAssetId,
     liquidity_assets_burned
   ).then((result) => {
-    const eventResponse = getEventResultFromTxWait(result, [
+    const eventResponse = getEventResultFromMangataTx(result, [
       "xyk",
       "LiquidityBurned",
       user.address,
@@ -1028,7 +1029,7 @@ test("xyk-pallet: Liquidity sufficiency scenario", async () => {
 
   await transferAsset(user, firstAssetId, bob.address, amount).then(
     (result) => {
-      const eventResponse = getEventResultFromTxWait(result, [
+      const eventResponse = getEventResultFromMangataTx(result, [
         "tokens",
         "Transferred",
         user.address,
@@ -1076,7 +1077,7 @@ test("xyk-pallet: Liquidity sufficiency scenario", async () => {
 
   await transferAsset(user, secondAssetId, bob.address, amount).then(
     (result) => {
-      const eventResponse = getEventResultFromTxWait(result, [
+      const eventResponse = getEventResultFromMangataTx(result, [
         "tokens",
         "Transferred",
         user.address,
@@ -1137,7 +1138,7 @@ test("xyk-pallet: Liquidity sufficiency scenario", async () => {
     secondAssetId,
     second_asset_amount
   ).then((result) => {
-    const eventResponse = getEventResultFromTxWait(result, [
+    const eventResponse = getEventResultFromMangataTx(result, [
       "xyk",
       "PoolCreated",
       user.address,
@@ -1233,7 +1234,7 @@ test("xyk-pallet: Liquidity sufficiency scenario", async () => {
     first_asset_amount,
     second_asset_amount
   ).then((result) => {
-    const eventResponse = getEventResultFromTxWait(result, [
+    const eventResponse = getEventResultFromMangataTx(result, [
       "xyk",
       "LiquidityMinted",
       user.address,
@@ -1324,7 +1325,7 @@ test("xyk-pallet: Liquidity sufficiency scenario", async () => {
     first_asset_amount,
     second_asset_amount
   ).then((result) => {
-    const eventResponse = getEventResultFromTxWait(result, [
+    const eventResponse = getEventResultFromMangataTx(result, [
       "xyk",
       "LiquidityMinted",
       user.address,
@@ -1422,7 +1423,7 @@ test("xyk-pallet: Liquidity sufficiency scenario", async () => {
     secondAssetId,
     liquidity_assets_burned_excess
   ).then((result) => {
-    const eventResponse = getEventResultFromTxWait(result);
+    const eventResponse = getEventResultFromMangataTx(result);
     expect(eventResponse.state).toEqual(ExtrinsicResult.ExtrinsicFailed);
     expect(eventResponse.data).toEqual(2);
   });
@@ -1509,7 +1510,7 @@ test("xyk-pallet: Liquidity sufficiency scenario", async () => {
     secondAssetId,
     liquidity_asset_amount_excess
   ).then((result) => {
-    const eventResponse = getEventResultFromTxWait(result);
+    const eventResponse = getEventResultFromMangataTx(result);
     expect(eventResponse.state).toEqual(ExtrinsicResult.ExtrinsicFailed);
     expect(eventResponse.data).toEqual(2);
   });
@@ -1588,7 +1589,7 @@ test("xyk-pallet: Liquidity sufficiency scenario", async () => {
     secondAssetId,
     liquidity_assets_burned
   ).then((result) => {
-    const eventResponse = getEventResultFromTxWait(result, [
+    const eventResponse = getEventResultFromMangataTx(result, [
       "xyk",
       "LiquidityBurned",
       user.address,
@@ -1688,7 +1689,7 @@ test("xyk-pallet: Liquidity sufficiency scenario", async () => {
     secondAssetId,
     liquidity_assets_burned_excess
   ).then((result) => {
-    const eventResponse = getEventResultFromTxWait(result);
+    const eventResponse = getEventResultFromMangataTx(result);
     expect(eventResponse.state).toEqual(ExtrinsicResult.ExtrinsicFailed);
     expect(eventResponse.data).toEqual(2);
   });
@@ -1765,7 +1766,7 @@ test("xyk-pallet: Liquidity sufficiency scenario", async () => {
     secondAssetId,
     liquidity_assets_burned
   ).then((result) => {
-    const eventResponse = getEventResultFromTxWait(result, [
+    const eventResponse = getEventResultFromMangataTx(result, [
       "xyk",
       "LiquidityBurned",
       user.address,
@@ -1856,7 +1857,7 @@ test("xyk-pallet: Liquidity sufficiency scenario", async () => {
     secondAssetId,
     liquidity_asset_amount
   ).then((result) => {
-    const eventResponse = getEventResultFromTxWait(result);
+    const eventResponse = getEventResultFromMangataTx(result);
     expect(eventResponse.state).toEqual(ExtrinsicResult.ExtrinsicFailed);
     expect(eventResponse.data).toEqual(3);
   });
@@ -1930,7 +1931,7 @@ test("xyk-pallet: Liquidity sufficiency scenario", async () => {
 
   await sellAsset(user, soldAssetId, boughtAssetId, amount, new BN(0)).then(
     (result) => {
-      const eventResponse = getEventResultFromTxWait(result);
+      const eventResponse = getEventResultFromMangataTx(result);
       expect(eventResponse.state).toEqual(ExtrinsicResult.ExtrinsicFailed);
       expect(eventResponse.data).toEqual(3);
     }
@@ -2000,7 +2001,7 @@ test("xyk-pallet: Liquidity sufficiency scenario", async () => {
 
   await sellAsset(user, soldAssetId, boughtAssetId, amount, new BN(0)).then(
     (result) => {
-      const eventResponse = getEventResultFromTxWait(result);
+      const eventResponse = getEventResultFromMangataTx(result);
       expect(eventResponse.state).toEqual(ExtrinsicResult.ExtrinsicFailed);
       expect(eventResponse.data).toEqual(3);
     }
@@ -2076,7 +2077,7 @@ test("xyk-pallet: Liquidity sufficiency scenario", async () => {
     amount,
     new BN(1000000)
   ).then((result) => {
-    const eventResponse = getEventResultFromTxWait(result);
+    const eventResponse = getEventResultFromMangataTx(result);
     expect(eventResponse.state).toEqual(ExtrinsicResult.ExtrinsicFailed);
     expect(eventResponse.data).toEqual(3);
   });
@@ -2151,7 +2152,7 @@ test("xyk-pallet: Liquidity sufficiency scenario", async () => {
     amount,
     new BN(1000000)
   ).then((result) => {
-    const eventResponse = getEventResultFromTxWait(result);
+    const eventResponse = getEventResultFromMangataTx(result);
     expect(eventResponse.state).toEqual(ExtrinsicResult.ExtrinsicFailed);
     expect(eventResponse.data).toEqual(3);
   });

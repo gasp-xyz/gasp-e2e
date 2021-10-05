@@ -27,8 +27,7 @@ import { validateTreasuryAmountsEqual } from "../../utils/validators";
 import { Assets } from "../../utils/Assets";
 import { MAX_BALANCE, MGA_ASSET_NAME } from "../../utils/Constants";
 import { calculateFees, getEnvironmentRequiredVars } from "../../utils/utils";
-import { getEventResultFromTxWait } from "../../utils/txHandler";
-
+import { getEventResultFromMangataTx } from "../../utils/txHandler";
 jest.spyOn(console, "log").mockImplementation(jest.fn());
 jest.setTimeout(1500000);
 process.env.NODE_ENV = "test";
@@ -104,7 +103,7 @@ describe("xyk-pallet - treasury tests [Mangata]: on treasury we store", () => {
       sellAssetAmount,
       new BN(1)
     ).then((result) => {
-      const eventResponse = getEventResultFromTxWait(result, [
+      const eventResponse = getEventResultFromMangataTx(result, [
         "xyk",
         "AssetsSwapped",
         testUser1.keyRingPair.address,
@@ -150,7 +149,7 @@ describe("xyk-pallet - treasury tests [Mangata]: on treasury we store", () => {
       buyAssetAmount,
       new BN(100000000)
     ).then((result) => {
-      const eventResponse = getEventResultFromTxWait(result, [
+      const eventResponse = getEventResultFromMangataTx(result, [
         "xyk",
         "AssetsSwapped",
         testUser1.keyRingPair.address,
@@ -189,7 +188,7 @@ describe("xyk-pallet - treasury tests [Mangata]: on treasury we store", () => {
       sellAssetAmount,
       new BN(1)
     ).then((result) => {
-      const eventResponse = getEventResultFromTxWait(result, [
+      const eventResponse = getEventResultFromMangataTx(result, [
         "xyk",
         "AssetsSwapped",
         testUser1.keyRingPair.address,
@@ -227,7 +226,7 @@ describe("xyk-pallet - treasury tests [Mangata]: on treasury we store", () => {
       buyAssetAmount,
       new BN(100000000)
     ).then((result) => {
-      const eventResponse = getEventResultFromTxWait(result, [
+      const eventResponse = getEventResultFromMangataTx(result, [
         "xyk",
         "AssetsSwapped",
         testUser1.keyRingPair.address,
@@ -342,7 +341,7 @@ describe("xyk-pallet - treasury tests [Connected - Mangata]: on treasury we stor
       sellAssetAmount,
       new BN(1)
     ).then((result) => {
-      const eventResponse = getEventResultFromTxWait(result, [
+      const eventResponse = getEventResultFromMangataTx(result, [
         "xyk",
         "AssetsSwapped",
         testUser1.keyRingPair.address,
@@ -397,7 +396,7 @@ describe("xyk-pallet - treasury tests [Connected - Mangata]: on treasury we stor
       buyAssetAmount,
       new BN(10000000)
     ).then((result) => {
-      const eventResponse = getEventResultFromTxWait(result, [
+      const eventResponse = getEventResultFromMangataTx(result, [
         "xyk",
         "AssetsSwapped",
         testUser1.keyRingPair.address,
@@ -438,7 +437,7 @@ describe("xyk-pallet - treasury tests [Connected - Mangata]: on treasury we stor
       sellAssetAmount,
       new BN(1)
     ).then((result) => {
-      const eventResponse = getEventResultFromTxWait(result, [
+      const eventResponse = getEventResultFromMangataTx(result, [
         "xyk",
         "AssetsSwapped",
         testUser1.keyRingPair.address,
@@ -494,7 +493,7 @@ describe("xyk-pallet - treasury tests [Connected - Mangata]: on treasury we stor
       buyAssetAmount,
       new BN(1000000)
     ).then((result) => {
-      const eventResponse = getEventResultFromTxWait(result, [
+      const eventResponse = getEventResultFromMangataTx(result, [
         "xyk",
         "AssetsSwapped",
         testUser1.keyRingPair.address,
@@ -599,7 +598,7 @@ describe("xyk-pallet - treasury tests [Connected - Mangata]: Error cases", () =>
       mgPoolAmount[0].sub(new BN(1)),
       new BN(MAX_BALANCE)
     ).then((result) => {
-      const eventResponse = getEventResultFromTxWait(result, [
+      const eventResponse = getEventResultFromMangataTx(result, [
         "xyk",
         "AssetsSwapped",
         testUser1.keyRingPair.address,
