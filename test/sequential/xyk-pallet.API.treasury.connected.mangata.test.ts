@@ -17,7 +17,6 @@ import {
   calculate_sell_price_rpc,
   calculate_buy_price_rpc,
   calculate_buy_price_id_rpc,
-  calculate_sell_price_id_rpc,
 } from "../../utils/tx";
 import { ExtrinsicResult, waitNewBlock } from "../../utils/eventListeners";
 import BN from "bn.js";
@@ -562,7 +561,7 @@ describe("xyk-pallet - treasury tests [Connected - Mangata]: Error cases", () =>
     await testUser1.addMGATokens(sudo);
   });
 
-  test.skip("[BUG]Not enough tokens to convert fee LINK[https://trello.com/c/p77t0atO]", async () => {
+  test("[BUG]Not enough tokens to convert fee LINK[https://trello.com/c/p77t0atO]", async () => {
     await (
       await getMangataInstance()
     ).createPool(
@@ -586,11 +585,16 @@ describe("xyk-pallet - treasury tests [Connected - Mangata]: Error cases", () =>
     const treasuryBefore = await getTreasury(mgaTokenId);
     const treasuryBurnBefore = await getTreasuryBurn(mgaTokenId);
 
-    const treasuryInMGA = await calculate_sell_price_id_rpc(
-      connectedToMGA,
-      mgaTokenId,
-      treasury
+    const treasuryBeforeConnectedAsset = await getTreasury(connectedToMGA);
+    const treasuryBurnBeforeConnectedAsset = await getTreasuryBurn(
+      connectedToMGA
     );
+
+    //    const treasuryInMGA = await calculate_sell_price_id_rpc(
+    //      connectedToMGA,
+    //      mgaTokenId,
+    //      treasury
+    //    );
 
     await buyAsset(
       testUser1.keyRingPair,
@@ -611,6 +615,12 @@ describe("xyk-pallet - treasury tests [Connected - Mangata]: Error cases", () =>
 
     const treasuryAfter = await getTreasury(mgaTokenId);
     const treasuryBurnAfter = await getTreasuryBurn(mgaTokenId);
+
+    const treasuryAfterConnectedAsset = await getTreasury(connectedToMGA);
+    const treasuryBurnAfterConnectedAsset = await getTreasuryBurn(
+      connectedToMGA
+    );
+
     const poolAfter = await getBalanceOfPool(mgaTokenId, connectedToMGA);
 
     //Check that the pool has only one MGA token.
@@ -625,7 +635,13 @@ describe("xyk-pallet - treasury tests [Connected - Mangata]: Error cases", () =>
     //burned destroyed! because is translated toMGA
     expect(treasuryBurnAfter).bnEqual(treasuryBurnBefore);
     //check that treasury got the right amount.
-    //TODO, validate with Stano.
-    expect(treasuryAfter).bnEqual(treasuryBefore.add(treasuryInMGA));
+    //not enough tokens to get the fee.
+    expect(treasuryAfter).bnEqual(treasuryBefore);
+    expect(
+      treasuryAfterConnectedAsset.sub(treasuryBeforeConnectedAsset)
+    ).bnEqual(treasury);
+    expect(
+      treasuryBurnAfterConnectedAsset.sub(treasuryBurnBeforeConnectedAsset)
+    ).bnEqual(treasury);
   });
 });
