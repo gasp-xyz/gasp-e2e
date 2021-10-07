@@ -11,7 +11,6 @@ import { Keyring } from "@polkadot/api";
 import { User } from "./User";
 import { testLog } from "./Logger";
 import { KeyringPair } from "@polkadot/keyring/types";
-import { hexToBn } from "@polkadot/util";
 
 export const signTx = async (
   tx: SubmittableExtrinsic<"promise">,
@@ -236,7 +235,7 @@ export async function getBalanceOfPool(
   assetId2: BN
 ): Promise<BN[]> {
   let reversed = false;
-  const emptyPool = "[0,0]";
+  const emptyPool = "0,0";
   const mangata = await getMangataInstance();
   const balance1 = await mangata.getAmountOfTokenIdInPool(
     assetId1.toString(),
@@ -254,10 +253,12 @@ export async function getBalanceOfPool(
     balanceWithData = balance2;
     reversed = true;
   }
-  const assetValue1 = JSON.parse(balanceWithData.toString())[0];
-  const assetValue2 = JSON.parse(balanceWithData.toString())[1];
-  const a = hexToBn(assetValue1);
-  const b = hexToBn(assetValue2);
+  //  const assetValue1 = JSON.parse(balanceWithData.toString())[0];
+  //  const assetValue2 = JSON.parse(balanceWithData.toString())[1];
+  //  const a = hexToBn(assetValue1);
+  const a = balanceWithData[0];
+  //  const b = hexToBn(assetValue2);
+  const b = balanceWithData[1];
   if (reversed) {
     return [b, a];
   } else {
