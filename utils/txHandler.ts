@@ -331,6 +331,12 @@ export const getEventResultFromMangataTx = function (
         )
     );
   }
+  if ((extrinsicResult?.event as GenericEvent) === undefined) {
+    testLog.getLog().warn("WARN: Event is undefined.");
+    testLog.getLog().warn(JSON.stringify(relatedEvents));
+    testLog.getLog().warn(searchTerm);
+    throw new Error("  --- TX Mapping issue --- ");
+  }
   return createEventResultfromExtrinsic(extrinsicResult?.event as GenericEvent);
 };
 // From the events that a waitForTx, create an EventResponse filtering by search term or by extrinsic results.
