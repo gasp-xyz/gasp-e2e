@@ -1,0 +1,167 @@
+{
+  "uid" : "4b4757e66a1912dae1a509f688f20b0f",
+  "children" : [ {
+    "name" : "Product defects",
+    "children" : [ {
+      "name" : "Error: 1014: Priority is too low: (4071024365528 vs 4071024365528): The transaction has too low priority to replace another transaction already in the pool.",
+      "children" : [ {
+        "name" : "As a User I can Swap tokens - MGA - mETH",
+        "uid" : "14eec99b448f4542",
+        "parentUid" : "7e28d03907bde7ad54a8ba821485f649",
+        "status" : "failed",
+        "time" : {
+          "start" : 1633570280527,
+          "stop" : 1633570378038,
+          "duration" : 97511
+        },
+        "flaky" : true,
+        "newFailed" : true,
+        "parameters" : [ ]
+      } ],
+      "uid" : "7e28d03907bde7ad54a8ba821485f649"
+    }, {
+      "name" : "NoSuchWindowError: no such window: target window already closed\n                from unknown error: web view not found\n                  (Session info: chrome=94.0.4606.61)\n                  (Driver info: chromedriver=94.0.4606.61 (418b78f5838ed0b1c69bb4e51ea0252171854915-refs/branch-heads/4606@{#1204}),platform=Linux 5.8.0-1042-azure x86_64)",
+      "children" : [ {
+        "name" : "As a User I can mint some tokens MGA - mETH",
+        "uid" : "28341c6792eac951",
+        "parentUid" : "96f8337f683e768d9f054ae66905fe34",
+        "status" : "failed",
+        "time" : {
+          "start" : 1633570378039,
+          "stop" : 1633570378586,
+          "duration" : 547
+        },
+        "flaky" : true,
+        "newFailed" : false,
+        "parameters" : [ ]
+      }, {
+        "name" : "As a User I can burn all liquidity MGA - mETH",
+        "uid" : "dc626647d7d10c13",
+        "parentUid" : "96f8337f683e768d9f054ae66905fe34",
+        "status" : "failed",
+        "time" : {
+          "start" : 1633570378586,
+          "stop" : 1633570379040,
+          "duration" : 454
+        },
+        "flaky" : true,
+        "newFailed" : false,
+        "parameters" : [ ]
+      } ],
+      "uid" : "96f8337f683e768d9f054ae66905fe34"
+    }, {
+      "name" : "WebDriverError: chrome not reachable\n                  (Session info: chrome=94.0.4606.61)\n                  (Driver info: chromedriver=94.0.4606.61 (418b78f5838ed0b1c69bb4e51ea0252171854915-refs/branch-heads/4606@{#1204}),platform=Linux 5.8.0-1042-azure x86_64)",
+      "children" : [ {
+        "name" : "As a User I can mint in more than one pool [ MGA - mETH ] [ MGA - newTokn ] and get invested values",
+        "uid" : "da9faea6777f22f",
+        "parentUid" : "d4e703f8715e2b3c4c60df2a1a65449c",
+        "status" : "failed",
+        "time" : {
+          "start" : 1633570379040,
+          "stop" : 1633570411807,
+          "duration" : 32767
+        },
+        "flaky" : true,
+        "newFailed" : false,
+        "parameters" : [ ]
+      } ],
+      "uid" : "d4e703f8715e2b3c4c60df2a1a65449c"
+    }, {
+      "name" : "Error: 1014: Priority is too low: (4071024332964 vs 4071024332964): The transaction has too low priority to replace another transaction already in the pool.",
+      "children" : [ {
+        "name" : "As a User I can deposit ETH from Meta extension",
+        "uid" : "4f571bbb57bf882a",
+        "parentUid" : "7f3b59ef99159df25680cb7ae69775fd",
+        "status" : "failed",
+        "time" : {
+          "start" : 1633570415843,
+          "stop" : 1633570534551,
+          "duration" : 118708
+        },
+        "flaky" : true,
+        "newFailed" : false,
+        "parameters" : [ ]
+      } ],
+      "uid" : "7f3b59ef99159df25680cb7ae69775fd"
+    }, {
+      "name" : "NoSuchElementError: no such element: Unable to locate element: {\"method\":\"xpath\",\"selector\":\"//*[@data-testid='bridge-showWithdrawModalBtn']\"}\n                  (Session info: chrome=94.0.4606.61)\n                  (Driver info: chromedriver=94.0.4606.61 (418b78f5838ed0b1c69bb4e51ea0252171854915-refs/branch-heads/4606@{#1204}),platform=Linux 5.8.0-1042-azure x86_64)",
+      "children" : [ {
+        "name" : "As a User I can Withdraw ETH from Meta extension",
+        "uid" : "a8734bddf9022e7a",
+        "parentUid" : "3cae7795c1663bd08fa5575ab96530cd",
+        "status" : "failed",
+        "time" : {
+          "start" : 1633570534561,
+          "stop" : 1633570577343,
+          "duration" : 42782
+        },
+        "flaky" : true,
+        "newFailed" : false,
+        "parameters" : [ ]
+      } ],
+      "uid" : "3cae7795c1663bd08fa5575ab96530cd"
+    }, {
+      "name" : "Error: Failed: \"W[1] timeout in - signAndWaitTx - \\\" + 5HQ9Mm9L1HG53htEGDMsnhkkL7hEfF9vLstEQPtMLX5Gupqx + \\\" - \\\" + 919 + \\\" - \\\" + {\\\"isSigned\\\":true,\\\"method\\\":{\\\"args\\\":[{\\\"args\\\":[\\\"0\\\",\\\"5CfPyCaNJ359oVonfEU66L7Lrb7u6KA4AJtGSBbDzasu2kWo\\\",\\\"10.0000 MUnit\\\"],\\\"method\\\":\\\"mint\\\",\\\"section\\\":\\\"tokens\\\"}],\\\"method\\\":\\\"sudo\\\",\\\"section\\\":\\\"sudo\\\"},\\\"era\\\":{\\\"MortalEra\\\":{\\\"period\\\":\\\"64\\\",\\\"phase\\\":\\\"36\\\"}},\\\"nonce\\\":\\\"919\\\",\\\"signature\\\":\\\"0x70201099465100b7fe1688db135dd75f92b52c5a41b91a2a36280845f1a2394e80db0bfdc820079d21f403c64a37023daa4b573d5b8462aa098f330a56eaaf8f\\\",\\\"signer\\\":\\\"5HQ9Mm9L1HG53htEGDMsnhkkL7hEfF9vLstEQPtMLX5Gupqx\\\",\\\"tip\\\":\\\"0\\\"}\"",
+      "children" : [ {
+        "name" : "As a User I get the right values for Pool investment P[5000000000000000000, 100] - I-> 100000000000 -Expected - 0.000002",
+        "uid" : "731aa813e1a36601",
+        "parentUid" : "b70973ea6bee434e168112bbd81b5a4f",
+        "status" : "failed",
+        "time" : {
+          "start" : 1633571059682,
+          "stop" : 1633571156584,
+          "duration" : 96902
+        },
+        "flaky" : true,
+        "newFailed" : false,
+        "parameters" : [ ]
+      }, {
+        "name" : "As a User I get the right values for Pool investment P[5000000000000000000, 5000000000000000000] - I-> 0.123 -Expected - 0.123",
+        "uid" : "617f76e697058e2c",
+        "parentUid" : "b70973ea6bee434e168112bbd81b5a4f",
+        "status" : "failed",
+        "time" : {
+          "start" : 1633571156585,
+          "stop" : 1633571192658,
+          "duration" : 36073
+        },
+        "flaky" : true,
+        "newFailed" : false,
+        "parameters" : [ ]
+      }, {
+        "name" : "As a User I get the right values for Pool investment P[2500000000000000000, 5000000000000000000] - I-> 0.100 -Expected - 0.200",
+        "uid" : "2778a22a73629a08",
+        "parentUid" : "b70973ea6bee434e168112bbd81b5a4f",
+        "status" : "failed",
+        "time" : {
+          "start" : 1633571192658,
+          "stop" : 1633571193090,
+          "duration" : 432
+        },
+        "flaky" : true,
+        "newFailed" : false,
+        "parameters" : [ ]
+      } ],
+      "uid" : "b70973ea6bee434e168112bbd81b5a4f"
+    }, {
+      "name" : "Error: Failed: \"W[1] timeout in - signAndWaitTx - \\\" + 5HQ9Mm9L1HG53htEGDMsnhkkL7hEfF9vLstEQPtMLX5Gupqx + \\\" - \\\" + 936 + \\\" - \\\" + {\\\"isSigned\\\":true,\\\"method\\\":{\\\"args\\\":[{\\\"args\\\":[\\\"0\\\",\\\"5FyUAFnuUmRncbBucD8iT8VooMAtRrVX9V7KsMrYJPqTQf1w\\\",\\\"10.0000 MUnit\\\"],\\\"method\\\":\\\"mint\\\",\\\"section\\\":\\\"tokens\\\"}],\\\"method\\\":\\\"sudo\\\",\\\"section\\\":\\\"sudo\\\"},\\\"era\\\":{\\\"MortalEra\\\":{\\\"period\\\":\\\"64\\\",\\\"phase\\\":\\\"17\\\"}},\\\"nonce\\\":\\\"936\\\",\\\"signature\\\":\\\"0x6cbff47dc3d4b0be2cbba04253cd5a1c7a023d870948748e5f0fc1be5b26011fa306159edf5796ebd3b9681600630ed1eca9d33ea42a390e4d3f6af56f3bc585\\\",\\\"signer\\\":\\\"5HQ9Mm9L1HG53htEGDMsnhkkL7hEfF9vLstEQPtMLX5Gupqx\\\",\\\"tip\\\":\\\"0\\\"}\"",
+      "children" : [ {
+        "name" : "As a User I can create a pool",
+        "uid" : "2ad3d5aea6c650d1",
+        "parentUid" : "fd1a31589a980a1bcd5edf5ca7c2fd12",
+        "status" : "failed",
+        "time" : {
+          "start" : 1633571331879,
+          "stop" : 1633571366302,
+          "duration" : 34423
+        },
+        "flaky" : true,
+        "newFailed" : false,
+        "parameters" : [ ]
+      } ],
+      "uid" : "fd1a31589a980a1bcd5edf5ca7c2fd12"
+    } ],
+    "uid" : "8fb3a91ba5aaf9de24cc8a92edc82b5d"
+  } ],
+  "name" : "categories"
+}
