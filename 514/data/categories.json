@@ -1,0 +1,142 @@
+{
+  "uid" : "4b4757e66a1912dae1a509f688f20b0f",
+  "children" : [ {
+    "name" : "Product defects",
+    "children" : [ {
+      "name" : "thrown: Event {\n                  \"isTrusted\": true,\n                }",
+      "children" : [ {
+        "name" : "As a User I can Swap tokens - MGA - mETH",
+        "uid" : "2149752f673fff8e",
+        "parentUid" : "e8f352723731311c936d9a158342e751",
+        "status" : "failed",
+        "time" : {
+          "start" : 1633871438234,
+          "stop" : 1633871438636,
+          "duration" : 402
+        },
+        "flaky" : true,
+        "newFailed" : true,
+        "parameters" : [ ]
+      }, {
+        "name" : "As a User I can mint some tokens MGA - mETH",
+        "uid" : "bb95e29bea8a1535",
+        "parentUid" : "e8f352723731311c936d9a158342e751",
+        "status" : "failed",
+        "time" : {
+          "start" : 1633871438636,
+          "stop" : 1633871438983,
+          "duration" : 347
+        },
+        "flaky" : true,
+        "newFailed" : true,
+        "parameters" : [ ]
+      }, {
+        "name" : "As a User I can burn all liquidity MGA - mETH",
+        "uid" : "1c41482422350e8a",
+        "parentUid" : "e8f352723731311c936d9a158342e751",
+        "status" : "failed",
+        "time" : {
+          "start" : 1633871438983,
+          "stop" : 1633871439308,
+          "duration" : 325
+        },
+        "flaky" : true,
+        "newFailed" : true,
+        "parameters" : [ ]
+      }, {
+        "name" : "As a User I can mint in more than one pool [ MGA - mETH ] [ MGA - newTokn ] and get invested values",
+        "uid" : "177e09eb496c9276",
+        "parentUid" : "e8f352723731311c936d9a158342e751",
+        "status" : "failed",
+        "time" : {
+          "start" : 1633871439308,
+          "stop" : 1633871439593,
+          "duration" : 285
+        },
+        "flaky" : true,
+        "newFailed" : true,
+        "parameters" : [ ]
+      }, {
+        "name" : "As a User I get infomed whenever is neccesary to install any extension",
+        "uid" : "8c848154db0e5a9a",
+        "parentUid" : "e8f352723731311c936d9a158342e751",
+        "status" : "failed",
+        "time" : {
+          "start" : 1633872745834,
+          "stop" : 1633872746195,
+          "duration" : 361
+        },
+        "flaky" : false,
+        "newFailed" : true,
+        "parameters" : [ ]
+      }, {
+        "name" : "As a User I get feedback when extensions are installed and correctly setup",
+        "uid" : "dbee22190cab9d00",
+        "parentUid" : "e8f352723731311c936d9a158342e751",
+        "status" : "failed",
+        "time" : {
+          "start" : 1633872746196,
+          "stop" : 1633872746498,
+          "duration" : 302
+        },
+        "flaky" : false,
+        "newFailed" : true,
+        "parameters" : [ ]
+      } ],
+      "uid" : "e8f352723731311c936d9a158342e751"
+    }, {
+      "name" : "TimeoutError: Waiting for element to be located By(xpath, //button[text()='Connect'])\n                Wait timed out after 20125ms",
+      "children" : [ {
+        "name" : "As a User I can deposit ETH from Meta extension",
+        "uid" : "c2887c0373042d7c",
+        "parentUid" : "5e6b591db5d2e957292d6c06f3f41249",
+        "status" : "failed",
+        "time" : {
+          "start" : 1633871462406,
+          "stop" : 1633871585825,
+          "duration" : 123419
+        },
+        "flaky" : true,
+        "newFailed" : true,
+        "parameters" : [ ]
+      } ],
+      "uid" : "5e6b591db5d2e957292d6c06f3f41249"
+    }, {
+      "name" : "TimeoutError: Waiting for element to be located By(xpath, //input[@placeholder='Paste Secret Recovery Phrase from clipboard'])\n                Wait timed out after 20003ms",
+      "children" : [ {
+        "name" : "As a User I can Withdraw ETH from Meta extension",
+        "uid" : "2608f0bd77201308",
+        "parentUid" : "bd01009d55aa9c49f5a00646f5072bb8",
+        "status" : "failed",
+        "time" : {
+          "start" : 1633871585831,
+          "stop" : 1633871627295,
+          "duration" : 41464
+        },
+        "flaky" : true,
+        "newFailed" : false,
+        "parameters" : [ ]
+      } ],
+      "uid" : "bd01009d55aa9c49f5a00646f5072bb8"
+    }, {
+      "name" : "Error: Failed: \"TIMEOUT: Waiting for //*[@class = 'Sidebar__loading'] to dissapear\"",
+      "children" : [ {
+        "name" : "As a User I can get test tokens from the faucet",
+        "uid" : "86425dfebafb2741",
+        "parentUid" : "949fce9c21683c22bcec487901b1b36f",
+        "status" : "failed",
+        "time" : {
+          "start" : 1633872634229,
+          "stop" : 1633872744345,
+          "duration" : 110116
+        },
+        "flaky" : true,
+        "newFailed" : true,
+        "parameters" : [ ]
+      } ],
+      "uid" : "949fce9c21683c22bcec487901b1b36f"
+    } ],
+    "uid" : "8fb3a91ba5aaf9de24cc8a92edc82b5d"
+  } ],
+  "name" : "categories"
+}
