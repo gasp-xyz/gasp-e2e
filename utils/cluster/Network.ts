@@ -1,4 +1,5 @@
 import { Keyring } from "@polkadot/api";
+import { VoidFn } from "@polkadot/api/types";
 
 import { promises as fs } from "fs";
 import { Convert } from "../Config";
@@ -11,6 +12,8 @@ export class Network {
   nodes: [Node];
   users: [User];
   keyring: Keyring;
+
+  unsubscribe: VoidFn;
 
   state: {};
 
@@ -46,6 +49,20 @@ export class Network {
       promises.push(element.subscribeToHead());
     }
     await Promise.all(promises);
+  }
+
+  async sync(): Promise<void> {
+    this.unsubscribe = await this.master.api.rpc.chain.subscribeNewHeads(
+      (lastHeader) => {
+        this.users.forEach((user) => {
+          user.refresh();
+        });
+      }
+    );
+  }
+
+  async stop(): Promise<void> {
+    this.unsubscribe();
   }
 
   async createCurrency(): Promise<void> {}
