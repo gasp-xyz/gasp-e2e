@@ -44,6 +44,11 @@ export class User {
   }
 
   refresh() {
+    function proposeProposal() {}
+    function voteOnProposal() {}
+    function close() {}
+    function defaultVote() {}
+
     if (
       this.governanceStatus === "RegularUser" ||
       this.governanceStatus === "RunnerUp"
@@ -53,18 +58,18 @@ export class User {
 
     if (this.governanceStatus === "CouncilMember") {
       return {
-        proposeProposal() {},
-        voteOnProposal() {},
-        close() {},
+        proposeProposal,
+        voteOnProposal,
+        close,
       };
     }
 
     if (this.governanceStatus === "PrimeCouncilMember") {
       return {
-        proposeProposal() {},
-        voteOnProposal() {},
-        close() {},
-        defaultVote() {},
+        proposeProposal,
+        voteOnProposal,
+        close,
+        defaultVote,
       };
     }
   }
