@@ -24,7 +24,7 @@ beforeAll(async () => {
   const filePath = path.resolve(__dirname, "./cluster-healthcheck.config");
   const fileContents = await fs.readFile(filePath, "utf-8");
 
-  Convert.toTestConfig(fileContents).mangata_nodes.forEach((arr) => {
+  Convert.toTestConfig(fileContents).nodes.forEach((arr) => {
     nodes.push(new Node(arr.name, arr.wsPath));
   });
 
