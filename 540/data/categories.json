@@ -1,0 +1,167 @@
+{
+  "uid" : "4b4757e66a1912dae1a509f688f20b0f",
+  "children" : [ {
+    "name" : "Product defects",
+    "children" : [ {
+      "name" : "thrown: Event {\n                  \"isTrusted\": true,\n                }",
+      "children" : [ {
+        "name" : "As a User I can Swap tokens - MGA - mETH",
+        "uid" : "1360f96279394c13",
+        "parentUid" : "e8f352723731311c936d9a158342e751",
+        "status" : "failed",
+        "time" : {
+          "start" : 1634044310160,
+          "stop" : 1634044310578,
+          "duration" : 418
+        },
+        "flaky" : true,
+        "newFailed" : true,
+        "parameters" : [ ]
+      }, {
+        "name" : "As a User I can mint some tokens MGA - mETH",
+        "uid" : "20b1b8754859e910",
+        "parentUid" : "e8f352723731311c936d9a158342e751",
+        "status" : "failed",
+        "time" : {
+          "start" : 1634044310578,
+          "stop" : 1634044310869,
+          "duration" : 291
+        },
+        "flaky" : true,
+        "newFailed" : false,
+        "parameters" : [ ]
+      }, {
+        "name" : "As a User I can burn all liquidity MGA - mETH",
+        "uid" : "8966beef541fc2e1",
+        "parentUid" : "e8f352723731311c936d9a158342e751",
+        "status" : "failed",
+        "time" : {
+          "start" : 1634044310869,
+          "stop" : 1634044311208,
+          "duration" : 339
+        },
+        "flaky" : true,
+        "newFailed" : true,
+        "parameters" : [ ]
+      }, {
+        "name" : "As a User I can mint in more than one pool [ MGA - mETH ] [ MGA - newTokn ] and get invested values",
+        "uid" : "4a1130859cc8b23d",
+        "parentUid" : "e8f352723731311c936d9a158342e751",
+        "status" : "failed",
+        "time" : {
+          "start" : 1634044311208,
+          "stop" : 1634044311621,
+          "duration" : 413
+        },
+        "flaky" : true,
+        "newFailed" : false,
+        "parameters" : [ ]
+      } ],
+      "uid" : "e8f352723731311c936d9a158342e751"
+    }, {
+      "name" : ": Timeout - Async callback was not invoked within the 300000 ms timeout specified by jest.setTimeout.",
+      "children" : [ {
+        "name" : "As a User I can deposit ETH from Meta extension",
+        "uid" : "980fe11a716d5831",
+        "parentUid" : "6f061b37a2a6ffb801a8fe904244be6d",
+        "status" : "failed",
+        "time" : {
+          "start" : 1634044343840,
+          "stop" : 1634044781831,
+          "duration" : 437991
+        },
+        "flaky" : true,
+        "newFailed" : true,
+        "parameters" : [ ]
+      } ],
+      "uid" : "6f061b37a2a6ffb801a8fe904244be6d"
+    }, {
+      "name" : "TimeoutError: Waiting for element to be located By(xpath, //*[@data-testid='wallet-asset-mETH'])\n                Wait timed out after 300006ms",
+      "children" : [ {
+        "name" : "As a User I can Withdraw ETH from Meta extension",
+        "uid" : "231182accf54e486",
+        "parentUid" : "e9e87fe602c06d49f69df620521f4f62",
+        "status" : "failed",
+        "time" : {
+          "start" : 1634044781837,
+          "stop" : 1634044823519,
+          "duration" : 41682
+        },
+        "flaky" : true,
+        "newFailed" : true,
+        "parameters" : [ ]
+      } ],
+      "uid" : "e9e87fe602c06d49f69df620521f4f62"
+    }, {
+      "name" : "Error: Failed: \"W[1] timeout in - signAndWaitTx - \\\" + 5FhBEbd8SP6YeVDiSwhdfeZyN7ZVCKupC7Qz1hA3wwGXU4V3 + \\\" - \\\" + 1 + \\\" - \\\" + {\\\"isSigned\\\":true,\\\"method\\\":{\\\"args\\\":[\\\"474\\\",\\\"2.5000 MUnit\\\",\\\"475\\\",\\\"5.0000 MUnit\\\"],\\\"method\\\":\\\"createPool\\\",\\\"section\\\":\\\"xyk\\\"},\\\"era\\\":{\\\"MortalEra\\\":{\\\"period\\\":\\\"64\\\",\\\"phase\\\":\\\"34\\\"}},\\\"nonce\\\":\\\"1\\\",\\\"signature\\\":\\\"0x8a6776941de600393b88fde2f09d9102f82a328cf40f6501527244db0e2f935d4b3f2254274e1a1d8eea19158968977eeb9f6f536df7fe24068979bdcf2dc482\\\",\\\"signer\\\":\\\"5FhBEbd8SP6YeVDiSwhdfeZyN7ZVCKupC7Qz1hA3wwGXU4V3\\\",\\\"tip\\\":\\\"0\\\"}\"",
+      "children" : [ {
+        "name" : "As a User I get the right values for Pool removal P[2500000000000000000, 5000000000000000000] - I-> 1 -Expected - 0.025 , 0.05",
+        "uid" : "ccde316b69164f9",
+        "parentUid" : "6a8bdaf039a88191e409870a3d06ae0a",
+        "status" : "failed",
+        "time" : {
+          "start" : 1634045050898,
+          "stop" : 1634045162881,
+          "duration" : 111983
+        },
+        "flaky" : true,
+        "newFailed" : true,
+        "parameters" : [ ]
+      } ],
+      "uid" : "6a8bdaf039a88191e409870a3d06ae0a"
+    }, {
+      "name" : "Error: Failed: \"TIMEOUT: Waiting for //*[@class = 'Sidebar__loading'] to dissapear\"",
+      "children" : [ {
+        "name" : "As a User I get the right values for Pool investment P[5000000000000000000, 100] - I-> 100000000000 -Expected - 0.000002",
+        "uid" : "99ff04fcdeb2d133",
+        "parentUid" : "949fce9c21683c22bcec487901b1b36f",
+        "status" : "failed",
+        "time" : {
+          "start" : 1634045282245,
+          "stop" : 1634045398326,
+          "duration" : 116081
+        },
+        "flaky" : true,
+        "newFailed" : true,
+        "parameters" : [ ]
+      } ],
+      "uid" : "949fce9c21683c22bcec487901b1b36f"
+    }, {
+      "name" : "TimeoutError: Waiting for element to be located By(xpath, //button[text()='Connect'])\n                Wait timed out after 20025ms",
+      "children" : [ {
+        "name" : "As a User I can get test tokens from the faucet",
+        "uid" : "b718e6b1145e572f",
+        "parentUid" : "ece95ddd034a0e123e9d0dca96afdfc8",
+        "status" : "failed",
+        "time" : {
+          "start" : 1634045855480,
+          "stop" : 1634045955913,
+          "duration" : 100433
+        },
+        "flaky" : true,
+        "newFailed" : true,
+        "parameters" : [ ]
+      } ],
+      "uid" : "ece95ddd034a0e123e9d0dca96afdfc8"
+    }, {
+      "name" : "Error: expect(received).toContain(expected) // indexOf\n                \n                Expected value: \"Mangata\n                MGA\"\n                Received array: []",
+      "children" : [ {
+        "name" : "Validate that Frontend retrieves AssetInfo data",
+        "uid" : "5c5e78ce24699bba",
+        "parentUid" : "3a580f76ae919485b3db15428b3328d1",
+        "status" : "failed",
+        "time" : {
+          "start" : 1634046096056,
+          "stop" : 1634046111640,
+          "duration" : 15584
+        },
+        "flaky" : true,
+        "newFailed" : true,
+        "parameters" : [ ]
+      } ],
+      "uid" : "3a580f76ae919485b3db15428b3328d1"
+    } ],
+    "uid" : "8fb3a91ba5aaf9de24cc8a92edc82b5d"
+  } ],
+  "name" : "categories"
+}
