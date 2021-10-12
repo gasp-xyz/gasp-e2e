@@ -1,10 +1,11 @@
 import { Node } from "./Node";
 
 export class Token {
-  node: Node;
+  name: string;
   supply: number;
+  node: Node;
 
-  constructor(supply: number, node: Node) {
+  constructor(name: string, supply: number, node: Node) {
     this.node = node;
     this.supply = supply;
   }

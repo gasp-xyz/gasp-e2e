@@ -9,7 +9,7 @@ import { User } from "./User";
 import { Token } from "./Token";
 
 export class Network {
-  master: Node;
+  bootnode: Node;
   nodes: [Node];
   users: [User];
   tokens: [Token];
@@ -24,13 +24,18 @@ export class Network {
       const config = Convert.toTestConfig(fileContents);
       config.nodes.forEach((node) => {
         this.nodes.push(new Node(node.name, node.wsPath));
+        if (!this.bootnode) {
+          this.bootnode = this.nodes[0];
+        }
       });
       config.users.forEach((user) => {
         this.users.push(new User(user.name));
       });
+      config.tokens.forEach((token) => {
+        this.tokens.push(new Token(token.name, token.supply, this.bootnode));
+      });
     });
 
-    this.master = this.nodes[0];
     this.keyring = new Keyring({ type: "sr25519" });
 
     this.users.forEach((user) => {
@@ -38,7 +43,7 @@ export class Network {
     });
   }
 
-  async startNodes(): Promise<void> {
+  async startNetwork(): Promise<void> {
     const promises = [];
     for (let index = 0; index < this.nodes.length; index++) {
       const element = this.nodes[index];
@@ -51,10 +56,16 @@ export class Network {
       promises.push(element.subscribeToHead());
     }
     await Promise.all(promises);
+
+    for (let index = 0; index < this.tokens.length; index++) {
+      const element = this.tokens[index];
+      promises.push(element.mint(""));
+    }
+    await Promise.all(promises);
   }
 
   async sync(): Promise<void> {
-    this.unsubscribe = await this.master.api.rpc.chain.subscribeNewHeads(
+    this.unsubscribe = await this.bootnode.api.rpc.chain.subscribeNewHeads(
       (lastHeader) => {
         this.users.forEach((user) => {
           user.refresh();

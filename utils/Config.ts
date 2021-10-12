@@ -7,15 +7,18 @@
     "nodes": [ 
       { 
         "name": "Alice", 
-        "wsPath": "ws://node_alice:9944" 
+        "wsPath": "ws://node_alice:9944",
+        "validator": true
       },
       { 
         "name": "Bob", 
-        "wsPath": "ws://node_bob:9944" 
+        "wsPath": "ws://node_bob:9944",
+        "validator": false
       },
       { 
         "name": "Charlie", 
-        "wsPath": "ws://node_charlie:9944" 
+        "wsPath": "ws://node_charlie:9944",
+        "validator": false
       }
     ],
     "users": [
@@ -25,19 +28,41 @@
       {
           "name": "Eddy"
       }
+    ],
+    "tokens": [
+        {
+            "name": "mgaToken",
+            "supply": 10000000000
+        }
     ]
   }
 */
 
+// To parse this data:
+//
+//   import { Convert, TestConfig } from "./file";
+//
+//   const testConfig = Convert.toTestConfig(json);
+//
+// These functions will throw an error if the JSON doesn't
+// match the expected interface, even if the JSON is valid.
+
 export interface TestConfig {
-  id:    number;
-  nodes: Node[];
-  users: User[];
+  id:     number;
+  nodes:  Node[];
+  users:  User[];
+  tokens: Token[];
 }
 
 export interface Node {
+  name:      string;
+  wsPath:    string;
+  validator: boolean;
+}
+
+export interface Token {
   name:   string;
-  wsPath: string;
+  supply: number;
 }
 
 export interface User {
@@ -193,10 +218,16 @@ const typeMap: any = {
       { json: "id", js: "id", typ: 0 },
       { json: "nodes", js: "nodes", typ: a(r("Node")) },
       { json: "users", js: "users", typ: a(r("User")) },
+      { json: "tokens", js: "tokens", typ: a(r("Token")) },
   ], false),
   "Node": o([
       { json: "name", js: "name", typ: "" },
       { json: "wsPath", js: "wsPath", typ: "" },
+      { json: "validator", js: "validator", typ: true },
+  ], false),
+  "Token": o([
+      { json: "name", js: "name", typ: "" },
+      { json: "supply", js: "supply", typ: 0 },
   ], false),
   "User": o([
       { json: "name", js: "name", typ: "" },
