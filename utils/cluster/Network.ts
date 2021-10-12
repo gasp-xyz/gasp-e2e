@@ -1,4 +1,5 @@
 import { Keyring } from "@polkadot/api";
+import { mnemonicGenerate } from "@polkadot/util-crypto";
 
 import { testLog } from "../Logger";
 
@@ -31,12 +32,12 @@ export class Network {
 
     testLog.getLog().info(`Nodes:`);
     this._nodes!.forEach((node) => {
-      node.prettyPrint();
+      testLog.getLog().info(`${node.prettyPrint()}`);
     });
 
     testLog.getLog().info(`Users:`);
     this._users!.forEach((user) => {
-      testLog.getLog().info(`${user.name}`);
+      testLog.getLog().info(`${user.name} - ${user.address}`);
     });
 
     testLog.getLog().info(`Tokens:`);
@@ -65,11 +66,17 @@ export class Network {
       testLog.getLog().info(`Bootnode Name: ${this._bootnode.name}`);
 
       config.users.forEach((user) => {
+        const newUser: User = new User(user.name);
         if (this._users === undefined) {
-          this._users = [new User(user.name)];
+          this._users = [newUser];
         } else {
-          this._users!.push(new User(user.name));
+          this._users!.push(newUser);
         }
+        newUser.account.mnemonic = mnemonicGenerate(12);
+        newUser.account.keyringPair = this._keyring!.addFromMnemonic(
+          newUser.account.mnemonic
+        );
+        newUser.address = newUser.account.keyringPair!.address;
       });
 
       config.tokens.forEach((token) => {
