@@ -85,7 +85,9 @@ test("xyk-pallet: Happy case scenario", async () => {
   );
 
   let alice_assets = await getUserAssets(alice.address, [firstAssetId]);
-  expect(alice_assets).collectionBnEqual([new BN(220000)]);
+  expect(alice_assets.map((asset) => asset.free)).collectionBnEqual([
+    new BN(220000),
+  ]);
 
   testLog.getLog().info("Sudo: issuing asset " + secondAssetId + " to Alice");
 
@@ -101,16 +103,20 @@ test("xyk-pallet: Happy case scenario", async () => {
   );
 
   alice_assets = await getUserAssets(alice.address, [secondAssetId]);
-  expect(alice_assets).collectionBnEqual([new BN(120000)]);
+  expect(alice_assets.map((asset) => asset.free)).collectionBnEqual([
+    new BN(120000),
+  ]);
 
   let alice_assets_before = await getUserAssets(alice.address, [
     firstAssetId,
     secondAssetId,
+    new BN(0),
   ]);
   testLog.getLog().debug(alice_assets_before.toString());
   let bob_assets_before = await getUserAssets(bob.address, [
     firstAssetId,
     secondAssetId,
+    new BN(0),
   ]);
   testLog.getLog().debug(bob_assets_before.toString());
   let pallet_assets_before = await getUserAssets(pallet_address, [
@@ -119,8 +125,8 @@ test("xyk-pallet: Happy case scenario", async () => {
   ]);
   testLog.getLog().debug(pallet_assets_before.toString());
 
-  alice_assets_before.push(new BN(0));
-  bob_assets_before.push(new BN(0));
+  //  alice_assets_before.push(new BN(0));
+  //  bob_assets_before.push(new BN(0));
   pool_balance_before = [new BN(0), new BN(0)];
   total_liquidity_assets_before = new BN(0);
 
@@ -160,10 +166,10 @@ test("xyk-pallet: Happy case scenario", async () => {
     liquidity_asset_id,
   ]);
   expect([
-    alice_assets_before[0].sub(first_asset_amount),
-    alice_assets_before[1].sub(second_asset_amount),
-    alice_assets_before[2].add(liquidity_assets_minted),
-  ]).collectionBnEqual(alice_assets);
+    alice_assets_before[0].free.sub(first_asset_amount),
+    alice_assets_before[1].free.sub(second_asset_amount),
+    alice_assets_before[2].free.add(liquidity_assets_minted),
+  ]).collectionBnEqual(alice_assets.map((asset) => asset.free));
   testLog.getLog().debug(alice_assets.toString());
   let bob_assets = await getUserAssets(bob.address, [
     firstAssetId,
@@ -993,7 +999,9 @@ test("xyk-pallet: Liquidity sufficiency scenario", async () => {
   );
 
   let alice_assets = await getUserAssets(alice.address, [firstAssetId]);
-  expect(alice_assets).collectionBnEqual([new BN(200000)]);
+  expect(alice_assets.map((asset) => asset.free)).collectionBnEqual([
+    new BN(200000),
+  ]);
 
   testLog.getLog().info("Sudo: issuing asset " + secondAssetId + " to Alice");
 

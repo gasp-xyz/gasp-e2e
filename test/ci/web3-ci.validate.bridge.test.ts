@@ -130,7 +130,7 @@ describe("test ether", () => {
       const assetsValue = await (
         await getUserAssets(testUser1.keyRingPair.address, [ETH_ASSET_ID])
       )[0];
-      return assetsValue;
+      return assetsValue.free;
     }
   });
 });

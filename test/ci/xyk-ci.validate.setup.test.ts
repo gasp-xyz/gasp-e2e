@@ -62,10 +62,10 @@ test("xyk-CI - validate user got the right Assets", async () => {
     new BN(4),
     new BN(5),
   ]);
-  testLog.getLog().info(`AssetID[0] - ${fromBNToUnitString(aliceBalances[0])}`);
-  testLog.getLog().info(`AssetID[4] - ${fromBNToUnitString(aliceBalances[1])}`);
-  testLog.getLog().info(`AssetID[5] - ${fromBNToUnitString(aliceBalances[2])}`);
-  testLog.getLog().info(`AssetID[6] - ${fromBNToUnitString(aliceBalances[3])}`);
+  testLog.getLog().info(`AssetID[0] - ${fromBNToUnitString(aliceBalances[0].free)}`);
+  testLog.getLog().info(`AssetID[4] - ${fromBNToUnitString(aliceBalances[1].free)}`);
+  testLog.getLog().info(`AssetID[5] - ${fromBNToUnitString(aliceBalances[2].free)}`);
+  testLog.getLog().info(`AssetID[6] - ${fromBNToUnitString(aliceBalances[3].free)}`);
   expect(aliceBalances[0]).not.bnEqual(new BN(0));
   expect(aliceBalances[1]).not.bnEqual(new BN(0));
   expect(aliceBalances[2]).not.bnEqual(new BN(0));
