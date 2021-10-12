@@ -1,4 +1,4 @@
-import { Keyring } from "@polkadot/api";
+import { InvalidGovernanceStatus } from "./Errors";
 
 export class User {
   name: string;
@@ -6,15 +6,11 @@ export class User {
   candidacy: Candidacy;
   votingStatus: VotingStatus;
 
-  keyring: Keyring;
-
   constructor(name: string) {
     this.name = name;
     this.governanceStatus = "RegularUser";
     this.candidacy = "NotRunning";
     this.votingStatus = "NotVoted";
-
-    this.refresh();
   }
 
   vote(users: [User]): void {
@@ -43,35 +39,39 @@ export class User {
     this.candidacy = "NotRunning";
   }
 
-  refresh() {
-    // Set type changes here
-    function proposeProposal() {}
-    function voteOnProposal() {}
-    function close() {}
-    function defaultVote() {}
-
-    if (
-      this.governanceStatus === "RegularUser" ||
-      this.governanceStatus === "RunnerUp"
-    ) {
-      return {};
+  proposeProposal(): void {
+    if (this.governanceStatus in ["CouncilMember", "PrimeCouncilMember"]) {
+    } else {
+      throw new InvalidGovernanceStatus(
+        `${this.name} is unable to call proposeProposal. GovernanceStatus: ${this.governanceStatus}`
+      );
     }
+  }
 
-    if (this.governanceStatus === "CouncilMember") {
-      return {
-        proposeProposal,
-        voteOnProposal,
-        close,
-      };
+  voteOnProposal(): void {
+    if (this.governanceStatus in ["CouncilMember", "PrimeCouncilMember"]) {
+    } else {
+      throw new InvalidGovernanceStatus(
+        `${this.name} is unable to call proposeProposal. GovernanceStatus: ${this.governanceStatus}`
+      );
     }
+  }
 
-    if (this.governanceStatus === "PrimeCouncilMember") {
-      return {
-        proposeProposal,
-        voteOnProposal,
-        close,
-        defaultVote,
-      };
+  close(): void {
+    if (this.governanceStatus in ["CouncilMember", "PrimeCouncilMember"]) {
+    } else {
+      throw new InvalidGovernanceStatus(
+        `${this.name} is unable to call proposeProposal. GovernanceStatus: ${this.governanceStatus}`
+      );
+    }
+  }
+
+  defaultVote(): void {
+    if (this.governanceStatus in ["PrimeCouncilMember"]) {
+    } else {
+      throw new InvalidGovernanceStatus(
+        `${this.name} is unable to call proposeProposal. GovernanceStatus: ${this.governanceStatus}`
+      );
     }
   }
 }

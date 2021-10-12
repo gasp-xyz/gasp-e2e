@@ -55,9 +55,8 @@ export interface TestConfig {
 }
 
 export interface Node {
-  name:      string;
-  wsPath:    string;
-  validator: boolean;
+  name:   string;
+  wsPath: string;
 }
 
 export interface Token {
@@ -223,7 +222,6 @@ const typeMap: any = {
   "Node": o([
       { json: "name", js: "name", typ: "" },
       { json: "wsPath", js: "wsPath", typ: "" },
-      { json: "validator", js: "validator", typ: true },
   ], false),
   "Token": o([
       { json: "name", js: "name", typ: "" },

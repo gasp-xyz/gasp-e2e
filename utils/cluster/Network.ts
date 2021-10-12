@@ -1,5 +1,6 @@
 import { Keyring } from "@polkadot/api";
-import { VoidFn } from "@polkadot/api/types";
+
+import { testLog } from "../Logger";
 
 import { promises as fs } from "fs";
 import { Convert } from "../Config";
@@ -9,73 +10,91 @@ import { User } from "./User";
 import { Token } from "./Token";
 
 export class Network {
-  bootnode: Node;
-  nodes: [Node];
-  users: [User];
-  tokens: [Token];
-  keyring: Keyring;
+  private _keyring: Keyring | undefined;
+  private _bootnode: Node | undefined;
+  private _nodes: Array<Node> | undefined;
+  private _users: Array<User> | undefined;
+  private _tokens: Array<Token> | undefined;
 
-  unsubscribe: VoidFn;
+  public getState() {
+    return {
+      nodes: this._nodes,
+      bootnode: this._bootnode,
+      users: this._users,
+      tokens: this._tokens,
+    };
+  }
 
-  state: {};
+  public prettyPrintState() {
+    testLog.getLog().info(`Bootnode:`);
+    testLog.getLog().info(`${this._bootnode?.name}`);
 
-  constructor(filePath: string) {
-    fs.readFile(filePath, "utf-8").then((fileContents) => {
-      const config = Convert.toTestConfig(fileContents);
-      config.nodes.forEach((node) => {
-        this.nodes.push(new Node(node.name, node.wsPath));
-        if (!this.bootnode) {
-          this.bootnode = this.nodes[0];
-        }
-      });
-      config.users.forEach((user) => {
-        this.users.push(new User(user.name));
-      });
-      config.tokens.forEach((token) => {
-        this.tokens.push(new Token(token.name, token.supply, this.bootnode));
-      });
+    testLog.getLog().info(`Nodes:`);
+    this._nodes!.forEach((node) => {
+      node.prettyPrint();
     });
 
-    this.keyring = new Keyring({ type: "sr25519" });
+    testLog.getLog().info(`Users:`);
+    this._users!.forEach((user) => {
+      testLog.getLog().info(`${user.name}`);
+    });
 
-    this.users.forEach((user) => {
-      this.keyring.addFromUri(user.name);
+    testLog.getLog().info(`Tokens:`);
+    this._tokens!.forEach((token) => {
+      testLog.getLog().info(`${token.name} - ${token.supply}`);
     });
   }
 
-  async startNetwork(): Promise<void> {
+  constructor() {
+    this._keyring = new Keyring({ type: "sr25519" });
+  }
+
+  async init(filePath: string): Promise<void> {
+    await fs.readFile(filePath, "utf-8").then((fileContents) => {
+      const config = Convert.toTestConfig(fileContents);
+
+      config.nodes.forEach((node) => {
+        if (this._nodes === undefined) {
+          this._nodes = [new Node(node.name, node.wsPath)];
+        } else {
+          this._nodes!.push(new Node(node.name, node.wsPath));
+        }
+      });
+
+      this._bootnode = this._nodes![0];
+      testLog.getLog().info(`Bootnode Name: ${this._bootnode.name}`);
+
+      config.users.forEach((user) => {
+        if (this._users === undefined) {
+          this._users = [new User(user.name)];
+        } else {
+          this._users!.push(new User(user.name));
+        }
+      });
+
+      config.tokens.forEach((token) => {
+        if (this._tokens === undefined) {
+          this._tokens = [new Token(token.name, token.supply, this._bootnode!)];
+        } else {
+          this._tokens!.push(
+            new Token(token.name, token.supply, this._bootnode!)
+          );
+        }
+      });
+    });
+
     const promises = [];
-    for (let index = 0; index < this.nodes.length; index++) {
-      const element = this.nodes[index];
+    for (let index = 0; index < this._nodes!.length; index++) {
+      const element = this._nodes![index];
       promises.push(element.connect());
     }
     await Promise.all(promises);
 
-    for (let index = 0; index < this.nodes.length; index++) {
-      const element = this.nodes[index];
+    for (let index = 0; index < this._nodes!.length; index++) {
+      const element = this._nodes![index];
       promises.push(element.subscribeToHead());
     }
     await Promise.all(promises);
-
-    for (let index = 0; index < this.tokens.length; index++) {
-      const element = this.tokens[index];
-      promises.push(element.mint(""));
-    }
-    await Promise.all(promises);
-  }
-
-  async sync(): Promise<void> {
-    this.unsubscribe = await this.bootnode.api.rpc.chain.subscribeNewHeads(
-      (lastHeader) => {
-        this.users.forEach((user) => {
-          user.refresh();
-        });
-      }
-    );
-  }
-
-  async stop(): Promise<void> {
-    this.unsubscribe();
   }
 
   async createToken(): Promise<void> {}

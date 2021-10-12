@@ -7,46 +7,32 @@
 import { uniq, intersection, takeRight } from "lodash";
 
 import * as path from "path";
-import { promises as fs } from "fs";
-import { Node } from "../../utils/cluster/Node";
 import { testLog } from "../../utils/Logger";
 import { waitForNBlocks } from "../../utils/utils";
-import { Convert } from "../../utils/Config";
+import { Network } from "../../utils/cluster/Network";
+import { Node } from "../../utils/cluster/Node";
 
 jest.spyOn(console, "log").mockImplementation(jest.fn());
 jest.spyOn(console, "error").mockImplementation(jest.fn());
 jest.setTimeout(1500000);
 process.env.NODE_ENV = "test";
 
-const nodes: Node[] = new Array<Node>();
+let nodes: Array<Node>;
+let network: Network;
 
 beforeAll(async () => {
   const filePath = path.resolve(__dirname, "./cluster-healthcheck.config");
-  const fileContents = await fs.readFile(filePath, "utf-8");
 
-  Convert.toTestConfig(fileContents).nodes.forEach((arr) => {
-    nodes.push(new Node(arr.name, arr.wsPath));
-  });
-
-  const promises = [];
-  for (let index = 0; index < nodes.length; index++) {
-    const element = nodes[index];
-    promises.push(element.connect());
-  }
-  await Promise.all(promises);
-
-  for (let index = 0; index < nodes.length; index++) {
-    const element = nodes[index];
-    promises.push(element.subscribeToHead());
-  }
-  await Promise.all(promises);
+  network = new Network();
+  await network.init(filePath);
+  nodes = network.getState().nodes!;
 });
 
-afterAll(async () => {
-  await Promise.all([nodes.map(async (node) => await node.stop())]).catch(
-    (err) => testLog.getLog().error(err)
-  );
+beforeEach(async () => {
+  network.prettyPrintState();
 });
+
+afterAll(async () => {});
 
 describe("Cluster -> Healthcheck", () => {
   test("Nodes are up and syncing", async () => {
