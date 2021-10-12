@@ -44,6 +44,7 @@ export class User {
   }
 
   refresh() {
+    // Set type changes here
     function proposeProposal() {}
     function voteOnProposal() {}
     function close() {}

@@ -6,11 +6,13 @@ import { Convert } from "../Config";
 
 import { Node } from "./Node";
 import { User } from "./User";
+import { Token } from "./Token";
 
 export class Network {
   master: Node;
   nodes: [Node];
   users: [User];
+  tokens: [Token];
   keyring: Keyring;
 
   unsubscribe: VoidFn;
@@ -65,7 +67,7 @@ export class Network {
     this.unsubscribe();
   }
 
-  async createCurrency(): Promise<void> {}
+  async createToken(): Promise<void> {}
 
   async fundUser(user: User): Promise<void> {}
 }
