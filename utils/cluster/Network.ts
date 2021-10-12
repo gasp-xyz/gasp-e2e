@@ -46,7 +46,7 @@ export class Network {
       testLog.getLog().info(`Bootnode Name: ${this._bootnode.name}`);
 
       config.users.forEach((user) => {
-        const newUser: User = new User(user.name);
+        const newUser: User = new User(user.name, this._bootnode!);
         if (this._users === undefined) {
           this._users = [newUser];
         } else {

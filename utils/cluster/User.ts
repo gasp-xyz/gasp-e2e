@@ -1,5 +1,7 @@
 import { KeyringPair } from "@polkadot/keyring/types";
 import { Token } from "./Token";
+import { Node } from "./Node";
+import { Proposal } from "./Proposal";
 
 import * as E from "./Errors";
 
@@ -9,23 +11,40 @@ export class User {
   candidacy: Candidacy;
   votingStatus: VotingStatus;
   address: string | undefined;
+  node: Node;
 
   account: {
+    id?: number;
     mnemonic?: string;
     keyringPair?: KeyringPair;
     assets?: [Token];
   } = {};
 
-  constructor(name: string) {
+  constructor(name: string, node: Node) {
+    this.node = node;
+
     this.name = name;
     this.governanceStatus = "RegularUser";
     this.candidacy = "NotRunning";
     this.votingStatus = "NotVoted";
   }
 
-  vote(users: [User]): void {
+  async vote(users: [User], stake: number): Promise<void> {
     if (this.votingStatus === "Voted") {
       throw new Error("User has voted already");
+    }
+
+    const userAddresses: string[] = [];
+
+    users.forEach((user) => {
+      userAddresses.push(user.address!);
+    });
+
+    try {
+      this.node.api!.tx.elections.vote(userAddresses, stake);
+      this.votingStatus = "Voted";
+    } catch (e) {
+      throw new Error(e);
     }
   }
 
@@ -33,29 +52,58 @@ export class User {
     if (this.votingStatus === "NotVoted") {
       throw new Error("User has not voted yet");
     }
+
+    try {
+      this.node.api!.tx.elections.removeVoter();
+      this.votingStatus = "NotVoted";
+    } catch (e) {
+      throw new Error(e);
+    }
   }
 
   report(user: User): void {}
 
-  runForCouncil(): void {
+  async runForCouncil(): Promise<void> {
     if (this.candidacy !== "NotRunning") {
       throw new E.InvalidCandidacyStatus(
         "User is already running for council."
       );
     }
 
-    this.candidacy = "Candidate";
+    try {
+      const candidates = await this.node.api!.query.elections.candidates();
+      this.node!.api!.tx.elections.submitCandidacy(candidates.length);
+      this.candidacy = "Candidate";
+    } catch (e) {
+      throw new Error(e);
+    }
   }
 
-  renounceCandidacy(): void {
+  async renounceCandidacy(): Promise<void> {
     if (this.candidacy === "NotRunning") {
-      throw new E.InvalidCandidacyStatus("User is not running for council.");
+      throw new E.InvalidCandidacyStatus("User is not running for council");
     }
 
-    this.candidacy = "NotRunning";
+    try {
+      let candidacyArgument: string;
+
+      if (this.governanceStatus in ["PrimeCouncilMember", "CouncilMember"]) {
+        candidacyArgument = "Member";
+      } else if (this.governanceStatus in ["RunnerUp"]) {
+        candidacyArgument = "RunnerUp";
+      } else {
+        const candidates = await this.node.api!.query.elections.candidates();
+        candidacyArgument = "Candidate" + candidates.length;
+      }
+
+      this.node.api!.tx.elections.renounceCandidacy(candidacyArgument);
+      this.candidacy = "NotRunning";
+    } catch (e) {
+      throw new Error(e);
+    }
   }
 
-  proposeProposal(): void {
+  proposeProposal(proposal: Proposal): void {
     if (this.governanceStatus in ["CouncilMember", "PrimeCouncilMember"]) {
     } else {
       throw new E.InvalidGovernanceStatus(
@@ -64,7 +112,7 @@ export class User {
     }
   }
 
-  voteOnProposal(): void {
+  voteOnProposal(proposal: Proposal, vote: boolean): void {
     if (this.governanceStatus in ["CouncilMember", "PrimeCouncilMember"]) {
     } else {
       throw new E.InvalidGovernanceStatus(
@@ -73,7 +121,7 @@ export class User {
     }
   }
 
-  close(): void {
+  close(proposal: Proposal): void {
     if (this.governanceStatus in ["CouncilMember", "PrimeCouncilMember"]) {
     } else {
       throw new E.InvalidGovernanceStatus(
@@ -82,7 +130,7 @@ export class User {
     }
   }
 
-  defaultVote(): void {
+  defaultVote(vote: boolean): void {
     if (this.governanceStatus in ["PrimeCouncilMember"]) {
     } else {
       throw new E.InvalidGovernanceStatus(
