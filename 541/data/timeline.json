@@ -1,0 +1,226 @@
+{
+  "uid" : "ab17fc5a4eb3bca4b216b548c7f9fcbc",
+  "children" : [ {
+    "name" : "As a User I can get test tokens from the faucet",
+    "uid" : "80725223b97dea19",
+    "parentUid" : "ab17fc5a4eb3bca4b216b548c7f9fcbc",
+    "status" : "passed",
+    "time" : {
+      "start" : 1634046250224,
+      "stop" : 1634046480425,
+      "duration" : 230201
+    },
+    "flaky" : false,
+    "newFailed" : false,
+    "parameters" : [ ]
+  }, {
+    "name" : "As a User I can mint some tokens MGA - mETH",
+    "uid" : "e3cee02ef2838da7",
+    "parentUid" : "ab17fc5a4eb3bca4b216b548c7f9fcbc",
+    "status" : "failed",
+    "time" : {
+      "start" : 1634044614774,
+      "stop" : 1634044733921,
+      "duration" : 119147
+    },
+    "flaky" : true,
+    "newFailed" : false,
+    "parameters" : [ ]
+  }, {
+    "name" : "As a User I get the right values for Pool removal P[2500000000000000000, 5000000000000000000] - I-> 1 -Expected - 0.025 , 0.05",
+    "uid" : "63b8293afc773db2",
+    "parentUid" : "ab17fc5a4eb3bca4b216b548c7f9fcbc",
+    "status" : "failed",
+    "time" : {
+      "start" : 1634045670449,
+      "stop" : 1634045713828,
+      "duration" : 43379
+    },
+    "flaky" : true,
+    "newFailed" : true,
+    "parameters" : [ ]
+  }, {
+    "name" : "As a User I can Withdraw ETH from Meta extension",
+    "uid" : "413e21cccfa72f24",
+    "parentUid" : "ab17fc5a4eb3bca4b216b548c7f9fcbc",
+    "status" : "failed",
+    "time" : {
+      "start" : 1634045373629,
+      "stop" : 1634045416177,
+      "duration" : 42548
+    },
+    "flaky" : true,
+    "newFailed" : false,
+    "parameters" : [ ]
+  }, {
+    "name" : "As a User I get the right values for Pool investment P[2500000000000000000, 5000000000000000000] - I-> 0.100 -Expected - 0.200",
+    "uid" : "425be6451397b51c",
+    "parentUid" : "ab17fc5a4eb3bca4b216b548c7f9fcbc",
+    "status" : "failed",
+    "time" : {
+      "start" : 1634045952336,
+      "stop" : 1634046038111,
+      "duration" : 85775
+    },
+    "flaky" : true,
+    "newFailed" : false,
+    "parameters" : [ ]
+  }, {
+    "name" : "As a User I can Swap tokens - MGA - mETH",
+    "uid" : "e3524b7b22620c9c",
+    "parentUid" : "ab17fc5a4eb3bca4b216b548c7f9fcbc",
+    "status" : "passed",
+    "time" : {
+      "start" : 1634044378066,
+      "stop" : 1634044614774,
+      "duration" : 236708
+    },
+    "flaky" : false,
+    "newFailed" : false,
+    "parameters" : [ ]
+  }, {
+    "name" : "As a User I can burn all liquidity MGA - mETH",
+    "uid" : "4a3f243c7d1ec53d",
+    "parentUid" : "ab17fc5a4eb3bca4b216b548c7f9fcbc",
+    "status" : "failed",
+    "time" : {
+      "start" : 1634044733922,
+      "stop" : 1634044842093,
+      "duration" : 108171
+    },
+    "flaky" : true,
+    "newFailed" : false,
+    "parameters" : [ ]
+  }, {
+    "name" : "As a User I get the right values for Pool investment P[5000000000000000000, 100] - I-> 100000000000 -Expected - 0.000002",
+    "uid" : "d58f3926b4b29c5d",
+    "parentUid" : "ab17fc5a4eb3bca4b216b548c7f9fcbc",
+    "status" : "failed",
+    "time" : {
+      "start" : 1634045867577,
+      "stop" : 1634045909950,
+      "duration" : 42373
+    },
+    "flaky" : true,
+    "newFailed" : true,
+    "parameters" : [ ]
+  }, {
+    "name" : "As a User I get feedback when extensions are installed and correctly setup",
+    "uid" : "27947f4752620fbf",
+    "parentUid" : "ab17fc5a4eb3bca4b216b548c7f9fcbc",
+    "status" : "passed",
+    "time" : {
+      "start" : 1634046496201,
+      "stop" : 1634046643534,
+      "duration" : 147333
+    },
+    "flaky" : false,
+    "newFailed" : false,
+    "parameters" : [ ]
+  }, {
+    "name" : "As a User I can mint in more than one pool [ MGA - mETH ] [ MGA - newTokn ] and get invested values",
+    "uid" : "9c86c39757d9981a",
+    "parentUid" : "ab17fc5a4eb3bca4b216b548c7f9fcbc",
+    "status" : "failed",
+    "time" : {
+      "start" : 1634044842093,
+      "stop" : 1634044842767,
+      "duration" : 674
+    },
+    "flaky" : true,
+    "newFailed" : false,
+    "parameters" : [ ]
+  }, {
+    "name" : "As a User I get the right values for Pool removal P[2499999999999999999, 5000000000000000000] - I-> 2 -Expected - 0.050 , 0.100",
+    "uid" : "f61d96c140bca1cc",
+    "parentUid" : "ab17fc5a4eb3bca4b216b548c7f9fcbc",
+    "status" : "passed",
+    "time" : {
+      "start" : 1634045545509,
+      "stop" : 1634045670449,
+      "duration" : 124940
+    },
+    "flaky" : false,
+    "newFailed" : false,
+    "parameters" : [ ]
+  }, {
+    "name" : "As a User I can deposit ETH from Meta extension",
+    "uid" : "7e07d6cc7fbc7e25",
+    "parentUid" : "ab17fc5a4eb3bca4b216b548c7f9fcbc",
+    "status" : "failed",
+    "time" : {
+      "start" : 1634044847687,
+      "stop" : 1634045373621,
+      "duration" : 525934
+    },
+    "flaky" : true,
+    "newFailed" : false,
+    "parameters" : [ ]
+  }, {
+    "name" : "Validate that Frontend retrieves AssetInfo data",
+    "uid" : "fdae1807dd17fae1",
+    "parentUid" : "ab17fc5a4eb3bca4b216b548c7f9fcbc",
+    "status" : "passed",
+    "time" : {
+      "start" : 1634046650423,
+      "stop" : 1634046690112,
+      "duration" : 39689
+    },
+    "flaky" : false,
+    "newFailed" : false,
+    "parameters" : [ ]
+  }, {
+    "name" : "Validate that Mangata Frontend up and running",
+    "uid" : "4f03dbe6be02966f",
+    "parentUid" : "ab17fc5a4eb3bca4b216b548c7f9fcbc",
+    "status" : "passed",
+    "time" : {
+      "start" : 1634046645679,
+      "stop" : 1634046650423,
+      "duration" : 4744
+    },
+    "flaky" : false,
+    "newFailed" : false,
+    "parameters" : [ ]
+  }, {
+    "name" : "As a User I get the right values for Pool investment P[5000000000000000000, 5000000000000000000] - I-> 0.123 -Expected - 0.123",
+    "uid" : "775cbcb0fff6e845",
+    "parentUid" : "ab17fc5a4eb3bca4b216b548c7f9fcbc",
+    "status" : "failed",
+    "time" : {
+      "start" : 1634045909951,
+      "stop" : 1634045952336,
+      "duration" : 42385
+    },
+    "flaky" : true,
+    "newFailed" : false,
+    "parameters" : [ ]
+  }, {
+    "name" : "As a User I get infomed whenever is neccesary to install any extension",
+    "uid" : "29149eaf60b0be1e",
+    "parentUid" : "ab17fc5a4eb3bca4b216b548c7f9fcbc",
+    "status" : "passed",
+    "time" : {
+      "start" : 1634046482115,
+      "stop" : 1634046496201,
+      "duration" : 14086
+    },
+    "flaky" : false,
+    "newFailed" : false,
+    "parameters" : [ ]
+  }, {
+    "name" : "As a User I can create a pool",
+    "uid" : "4c9e208c654e138",
+    "parentUid" : "ab17fc5a4eb3bca4b216b548c7f9fcbc",
+    "status" : "failed",
+    "time" : {
+      "start" : 1634046194574,
+      "stop" : 1634046244403,
+      "duration" : 49829
+    },
+    "flaky" : true,
+    "newFailed" : false,
+    "parameters" : [ ]
+  } ],
+  "name" : "timeline"
+}
