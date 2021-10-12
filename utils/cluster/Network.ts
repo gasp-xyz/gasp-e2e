@@ -26,26 +26,6 @@ export class Network {
     };
   }
 
-  public prettyPrintState() {
-    testLog.getLog().info(`Bootnode:`);
-    testLog.getLog().info(`${this._bootnode?.name}`);
-
-    testLog.getLog().info(`Nodes:`);
-    this._nodes!.forEach((node) => {
-      testLog.getLog().info(`${node.prettyPrint()}`);
-    });
-
-    testLog.getLog().info(`Users:`);
-    this._users!.forEach((user) => {
-      testLog.getLog().info(`${user.name} - ${user.address}`);
-    });
-
-    testLog.getLog().info(`Tokens:`);
-    this._tokens!.forEach((token) => {
-      testLog.getLog().info(`${token.name} - ${token.supply}`);
-    });
-  }
-
   constructor() {
     this._keyring = new Keyring({ type: "sr25519" });
   }
@@ -107,4 +87,23 @@ export class Network {
   async createToken(): Promise<void> {}
 
   async fundUser(user: User): Promise<void> {}
+
+  public prettyPrintState() {
+    testLog.getLog().info(`Bootnode: ${this._bootnode?.name}`);
+
+    testLog.getLog().info(`Nodes:`);
+    this._nodes!.forEach((node) => {
+      testLog.getLog().info(`${node.prettyPrint()}`);
+    });
+
+    testLog.getLog().info(`Users:`);
+    this._users!.forEach((user) => {
+      testLog.getLog().info(`${user.name} - ${user.address}`);
+    });
+
+    testLog.getLog().info(`Tokens:`);
+    this._tokens!.forEach((token) => {
+      testLog.getLog().info(`${token.name} - ${token.supply}`);
+    });
+  }
 }

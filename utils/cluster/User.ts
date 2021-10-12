@@ -1,4 +1,5 @@
 import { KeyringPair } from "@polkadot/keyring/types";
+import { Token } from "./Token";
 
 import * as E from "./Errors";
 
@@ -12,6 +13,7 @@ export class User {
   account: {
     mnemonic?: string;
     keyringPair?: KeyringPair;
+    assets?: [Token];
   } = {};
 
   constructor(name: string) {
