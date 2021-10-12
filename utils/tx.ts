@@ -512,7 +512,7 @@ export async function getTreasury(tokenId: BN): Promise<BN> {
     tokenId,
     treasuryPalletAddress
   );
-  const treasuryBalanceBN = new BN(treasuryBalance.toString());
+  const treasuryBalanceBN = new BN(treasuryBalance.free.toString());
   return treasuryBalanceBN;
 }
 
@@ -522,7 +522,7 @@ export async function getTreasuryBurn(tokenId: BN): Promise<BN> {
     tokenId,
     treasuryBurnPalletAddress
   );
-  const treasuryBalanceBN = new BN(treasuryBalance.toString());
+  const treasuryBalanceBN = new BN(treasuryBalance.free.toString());
   return treasuryBalanceBN;
 }
 

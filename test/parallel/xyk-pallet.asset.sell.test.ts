@@ -130,7 +130,7 @@ test("xyk-pallet - AssetsOperation: sellAsset [minAmountOut = 0] , first to seco
     addFromWallet!
   );
 
-  testUser2.assets.forEach((asset) => {
+  testUser2.getFreeAssetAmounts().forEach((asset) => {
     expect(asset.amountBefore).bnEqual(asset.amountAfter);
   });
 
@@ -205,7 +205,7 @@ test("xyk-pallet - AssetsOperation: sellAsset [minAmountOut = 0], sell an alread
     addFromWallet!
   );
 
-  testUser2.assets.forEach((asset) => {
+  testUser2.getFreeAssetAmounts().forEach((asset) => {
     expect(asset.amountBefore).bnEqual(asset.amountAfter);
   });
 

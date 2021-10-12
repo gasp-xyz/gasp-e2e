@@ -342,11 +342,11 @@ describe("xyk-pallet - Operate with a user account close to overflow", () => {
     });
     await testUser1.refreshAmounts(AssetWallet.AFTER);
 
-    expect(testUser1.getAsset(firstCurrency)?.amountAfter).toEqual(
-      testUser1.getAsset(firstCurrency)?.amountBefore
+    expect(testUser1.getAsset(firstCurrency)?.amountAfter).bnEqual(
+      testUser1.getAsset(firstCurrency)?.amountBefore!
     );
-    expect(testUser1.getAsset(secondCurrency)?.amountAfter).toEqual(
-      testUser1.getAsset(secondCurrency)?.amountBefore
+    expect(testUser1.getAsset(secondCurrency)?.amountAfter).bnEqual(
+      testUser1.getAsset(secondCurrency)?.amountBefore!
     );
   });
 });

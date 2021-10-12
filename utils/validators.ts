@@ -169,17 +169,17 @@ export async function validateUnmodified(
 ) {
   await testUser1.refreshAmounts(AssetWallet.AFTER);
 
-  testUser1.assets.forEach((asset) => {
+  testUser1.getFreeAssetAmounts().forEach((asset) => {
     expect(asset.amountBefore).bnEqual(asset.amountAfter);
   });
 
   const pool_balance = await getBalanceOfPool(firstCurrency, secondCurrency);
-  expect([pool_balance_before[0], pool_balance_before[1]]).toEqual(
+  expect([pool_balance_before[0], pool_balance_before[1]]).collectionBnEqual(
     pool_balance
   );
 
   const balance = await getBalanceOfPool(secondCurrency, firstCurrency);
-  expect([pool_balance_before[0], pool_balance_before[1]]).toEqual([
+  expect([pool_balance_before[0], pool_balance_before[1]]).collectionBnEqual([
     balance[1],
     balance[0],
   ]);

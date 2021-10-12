@@ -85,7 +85,7 @@ test("xyk-pallet: Happy case scenario", async () => {
   );
 
   let alice_assets = await getUserAssets(alice.address, [firstAssetId]);
-  expect(alice_assets).toEqual([new BN(220000)]);
+  expect(alice_assets).collectionBnEqual([new BN(220000)]);
 
   testLog.getLog().info("Sudo: issuing asset " + secondAssetId + " to Alice");
 
@@ -101,7 +101,7 @@ test("xyk-pallet: Happy case scenario", async () => {
   );
 
   alice_assets = await getUserAssets(alice.address, [secondAssetId]);
-  expect(alice_assets).toEqual([new BN(120000)]);
+  expect(alice_assets).collectionBnEqual([new BN(120000)]);
 
   let alice_assets_before = await getUserAssets(alice.address, [
     firstAssetId,
@@ -188,7 +188,7 @@ test("xyk-pallet: Happy case scenario", async () => {
   ]).collectionBnEqual(pool_balance);
   testLog.getLog().debug(pool_balance.toString());
   let total_liquidity_assets = await getAssetSupply(liquidity_asset_id);
-  expect(total_liquidity_assets_before.add(liquidity_assets_minted)).toEqual(
+  expect(total_liquidity_assets_before.add(liquidity_assets_minted)).bnEqual(
     total_liquidity_assets
   );
   testLog.getLog().debug(total_liquidity_assets.toString());
@@ -279,7 +279,7 @@ test("xyk-pallet: Happy case scenario", async () => {
   ]).collectionBnEqual(pool_balance);
   testLog.getLog().debug(pool_balance.toString());
   total_liquidity_assets = await getAssetSupply(liquidity_asset_id);
-  expect(total_liquidity_assets_before.add(liquidity_assets_minted)).toEqual(
+  expect(total_liquidity_assets_before.add(liquidity_assets_minted)).bnEqual(
     total_liquidity_assets
   );
   testLog.getLog().debug(total_liquidity_assets.toString());
@@ -351,10 +351,10 @@ test("xyk-pallet: Happy case scenario", async () => {
   expect(pallet_assets_before).toEqual(pallet_assets);
   testLog.getLog().debug(pallet_assets.toString());
   pool_balance = await getBalanceOfPool(firstAssetId, secondAssetId);
-  expect(pool_balance_before).toEqual(pool_balance);
+  expect(pool_balance_before).collectionBnEqual(pool_balance);
   testLog.getLog().debug(pool_balance.toString());
   total_liquidity_assets = await getAssetSupply(liquidity_asset_id);
-  expect(total_liquidity_assets_before).toEqual(total_liquidity_assets);
+  expect(total_liquidity_assets_before).bnEqual(total_liquidity_assets);
   testLog.getLog().debug(total_liquidity_assets.toString());
 
   alice_assets_before = await getUserAssets(alice.address, [
@@ -453,7 +453,7 @@ test("xyk-pallet: Happy case scenario", async () => {
 
   testLog.getLog().debug(pool_balance.toString());
   total_liquidity_assets = await getAssetSupply(liquidity_asset_id);
-  expect(total_liquidity_assets_before).toEqual(total_liquidity_assets);
+  expect(total_liquidity_assets_before).bnEqual(total_liquidity_assets);
   testLog.getLog().debug(total_liquidity_assets.toString());
 
   alice_assets_before = await getUserAssets(alice.address, [
@@ -553,7 +553,7 @@ test("xyk-pallet: Happy case scenario", async () => {
   ]).collectionBnEqual(pool_balance);
   testLog.getLog().debug(pool_balance.toString());
   total_liquidity_assets = await getAssetSupply(liquidity_asset_id);
-  expect(total_liquidity_assets_before).toEqual(total_liquidity_assets);
+  expect(total_liquidity_assets_before).bnEqual(total_liquidity_assets);
   testLog.getLog().debug(total_liquidity_assets.toString());
 
   alice_assets_before = await getUserAssets(alice.address, [
@@ -660,7 +660,7 @@ test("xyk-pallet: Happy case scenario", async () => {
   ]).collectionBnEqual(pool_balance);
   testLog.getLog().debug(pool_balance.toString());
   total_liquidity_assets = await getAssetSupply(liquidity_asset_id);
-  expect(total_liquidity_assets_before).toEqual(total_liquidity_assets);
+  expect(total_liquidity_assets_before).bnEqual(total_liquidity_assets);
   testLog.getLog().debug(total_liquidity_assets.toString());
 
   alice_assets_before = await getUserAssets(alice.address, [
@@ -765,7 +765,7 @@ test("xyk-pallet: Happy case scenario", async () => {
   ]).collectionBnEqual(pool_balance);
   testLog.getLog().debug(pool_balance.toString());
   total_liquidity_assets = await getAssetSupply(liquidity_asset_id);
-  expect(total_liquidity_assets_before).toEqual(total_liquidity_assets);
+  expect(total_liquidity_assets_before).bnEqual(total_liquidity_assets);
   testLog.getLog().debug(total_liquidity_assets.toString());
 
   alice_assets_before = await getUserAssets(alice.address, [
@@ -862,7 +862,7 @@ test("xyk-pallet: Happy case scenario", async () => {
   ]).collectionBnEqual(pool_balance);
   testLog.getLog().debug(pool_balance.toString());
   total_liquidity_assets = await getAssetSupply(liquidity_asset_id);
-  expect(total_liquidity_assets_before.sub(liquidity_assets_burned)).toEqual(
+  expect(total_liquidity_assets_before.sub(liquidity_assets_burned)).bnEqual(
     total_liquidity_assets
   );
   testLog.getLog().debug(total_liquidity_assets.toString());
@@ -954,7 +954,7 @@ test("xyk-pallet: Happy case scenario", async () => {
   ]).collectionBnEqual(pool_balance);
   testLog.getLog().debug(pool_balance.toString());
   total_liquidity_assets = await getAssetSupply(liquidity_asset_id);
-  expect(total_liquidity_assets_before.sub(liquidity_assets_burned)).toEqual(
+  expect(total_liquidity_assets_before.sub(liquidity_assets_burned)).bnEqual(
     total_liquidity_assets
   );
   testLog.getLog().debug(total_liquidity_assets.toString());
@@ -993,7 +993,7 @@ test("xyk-pallet: Liquidity sufficiency scenario", async () => {
   );
 
   let alice_assets = await getUserAssets(alice.address, [firstAssetId]);
-  expect(alice_assets).toEqual([new BN(200000)]);
+  expect(alice_assets).collectionBnEqual([new BN(200000)]);
 
   testLog.getLog().info("Sudo: issuing asset " + secondAssetId + " to Alice");
 
@@ -1009,7 +1009,7 @@ test("xyk-pallet: Liquidity sufficiency scenario", async () => {
   );
 
   alice_assets = await getUserAssets(alice.address, [secondAssetId]);
-  expect(alice_assets).toEqual([new BN(200000)]);
+  expect(alice_assets[0].free).bnEqual(new BN(200000));
 
   let alice_assets_before = await getUserAssets(alice.address, [
     firstAssetId,
@@ -1188,7 +1188,7 @@ test("xyk-pallet: Liquidity sufficiency scenario", async () => {
   ]).collectionBnEqual(pool_balance);
   testLog.getLog().debug(pool_balance.toString());
   let total_liquidity_assets = await getAssetSupply(liquidity_asset_id);
-  expect(total_liquidity_assets_before.add(liquidity_assets_minted)).toEqual(
+  expect(total_liquidity_assets_before.add(liquidity_assets_minted)).bnEqual(
     total_liquidity_assets
   );
   testLog.getLog().debug(total_liquidity_assets.toString());
@@ -1278,7 +1278,7 @@ test("xyk-pallet: Liquidity sufficiency scenario", async () => {
   ]).collectionBnEqual(pool_balance);
   testLog.getLog().debug(pool_balance.toString());
   total_liquidity_assets = await getAssetSupply(liquidity_asset_id);
-  expect(total_liquidity_assets_before.add(liquidity_assets_minted)).toEqual(
+  expect(total_liquidity_assets_before.add(liquidity_assets_minted)).bnEqual(
     total_liquidity_assets
   );
   testLog.getLog().debug(total_liquidity_assets.toString());
@@ -1370,7 +1370,7 @@ test("xyk-pallet: Liquidity sufficiency scenario", async () => {
   ]).collectionBnEqual(pool_balance);
   testLog.getLog().debug(pool_balance.toString());
   total_liquidity_assets = await getAssetSupply(liquidity_asset_id);
-  expect(total_liquidity_assets_before.add(liquidity_assets_minted)).toEqual(
+  expect(total_liquidity_assets_before.add(liquidity_assets_minted)).bnEqual(
     total_liquidity_assets
   );
   testLog.getLog().debug(total_liquidity_assets.toString());
@@ -1453,10 +1453,10 @@ test("xyk-pallet: Liquidity sufficiency scenario", async () => {
   expect(pallet_assets_before).toEqual(pallet_assets);
   testLog.getLog().debug(pallet_assets.toString());
   pool_balance = await getBalanceOfPool(firstAssetId, secondAssetId);
-  expect(pool_balance_before).toEqual(pool_balance);
+  expect(pool_balance_before).collectionBnEqual(pool_balance);
   testLog.getLog().debug(pool_balance.toString());
   total_liquidity_assets = await getAssetSupply(liquidity_asset_id);
-  expect(total_liquidity_assets_before).toEqual(total_liquidity_assets);
+  expect(total_liquidity_assets_before).bnEqual(total_liquidity_assets);
   testLog.getLog().debug(total_liquidity_assets.toString());
 
   alice_assets_before = await getUserAssets(alice.address, [
@@ -1540,10 +1540,10 @@ test("xyk-pallet: Liquidity sufficiency scenario", async () => {
   expect(pallet_assets_before).toEqual(pallet_assets);
   testLog.getLog().debug(pallet_assets.toString());
   pool_balance = await getBalanceOfPool(firstAssetId, secondAssetId);
-  expect(pool_balance_before).toEqual(pool_balance);
+  expect(pool_balance_before).collectionBnEqual(pool_balance);
   testLog.getLog().debug(pool_balance.toString());
   total_liquidity_assets = await getAssetSupply(liquidity_asset_id);
-  expect(total_liquidity_assets_before).toEqual(total_liquidity_assets);
+  expect(total_liquidity_assets_before).bnEqual(total_liquidity_assets);
   testLog.getLog().debug(total_liquidity_assets.toString());
 
   alice_assets_before = await getUserAssets(alice.address, [
@@ -1635,9 +1635,9 @@ test("xyk-pallet: Liquidity sufficiency scenario", async () => {
   ]).collectionBnEqual(pool_balance);
   testLog.getLog().debug(pool_balance.toString());
   total_liquidity_assets = await getAssetSupply(liquidity_asset_id);
-  expect(total_liquidity_assets_before.sub(liquidity_assets_burned)).toEqual(
-    total_liquidity_assets
-  );
+  expect(
+    total_liquidity_assets_before.sub(liquidity_assets_burned.free)
+  ).bnEqual(total_liquidity_assets);
   testLog.getLog().debug(total_liquidity_assets.toString());
 
   alice_assets_before = await getUserAssets(alice.address, [
@@ -1719,10 +1719,10 @@ test("xyk-pallet: Liquidity sufficiency scenario", async () => {
   expect(pallet_assets_before).toEqual(pallet_assets);
   testLog.getLog().debug(pallet_assets.toString());
   pool_balance = await getBalanceOfPool(firstAssetId, secondAssetId);
-  expect(pool_balance_before).toEqual(pool_balance);
+  expect(pool_balance_before).collectionBnEqual(pool_balance);
   testLog.getLog().debug(pool_balance.toString());
   total_liquidity_assets = await getAssetSupply(liquidity_asset_id);
-  expect(total_liquidity_assets_before).toEqual(total_liquidity_assets);
+  expect(total_liquidity_assets_before).bnEqual(total_liquidity_assets);
   testLog.getLog().debug(total_liquidity_assets.toString());
 
   alice_assets_before = await getUserAssets(alice.address, [
@@ -1812,9 +1812,9 @@ test("xyk-pallet: Liquidity sufficiency scenario", async () => {
   ]).collectionBnEqual(pool_balance);
   testLog.getLog().debug(pool_balance.toString());
   total_liquidity_assets = await getAssetSupply(liquidity_asset_id);
-  expect(total_liquidity_assets_before.sub(liquidity_assets_burned)).toEqual(
-    total_liquidity_assets
-  );
+  expect(
+    total_liquidity_assets_before.sub(liquidity_assets_burned.free)
+  ).bnEqual(total_liquidity_assets);
   testLog.getLog().debug(total_liquidity_assets.toString());
 
   alice_assets_before = await getUserAssets(alice.address, [
@@ -1887,10 +1887,10 @@ test("xyk-pallet: Liquidity sufficiency scenario", async () => {
   expect(pallet_assets_before).toEqual(pallet_assets);
   testLog.getLog().debug(pallet_assets.toString());
   pool_balance = await getBalanceOfPool(firstAssetId, secondAssetId);
-  expect(pool_balance_before).toEqual(pool_balance);
+  expect(pool_balance_before).collectionBnEqual(pool_balance);
   testLog.getLog().debug(pool_balance.toString());
   total_liquidity_assets = await getAssetSupply(liquidity_asset_id);
-  expect(total_liquidity_assets_before).toEqual(total_liquidity_assets);
+  expect(total_liquidity_assets_before).bnEqual(total_liquidity_assets);
   testLog.getLog().debug(total_liquidity_assets.toString());
 
   alice_assets_before = await getUserAssets(alice.address, [
@@ -1958,10 +1958,10 @@ test("xyk-pallet: Liquidity sufficiency scenario", async () => {
   expect(pallet_assets_before).toEqual(pallet_assets);
   testLog.getLog().debug(pallet_assets.toString());
   pool_balance = await getBalanceOfPool(firstAssetId, secondAssetId);
-  expect(pool_balance_before).toEqual(pool_balance);
+  expect(pool_balance_before).collectionBnEqual(pool_balance);
   testLog.getLog().debug(pool_balance.toString());
   total_liquidity_assets = await getAssetSupply(liquidity_asset_id);
-  expect(total_liquidity_assets_before).toEqual(total_liquidity_assets);
+  expect(total_liquidity_assets_before).bnEqual(total_liquidity_assets);
   testLog.getLog().debug(total_liquidity_assets.toString());
 
   alice_assets_before = await getUserAssets(alice.address, [
@@ -2028,10 +2028,10 @@ test("xyk-pallet: Liquidity sufficiency scenario", async () => {
   expect(pallet_assets_before).toEqual(pallet_assets);
   testLog.getLog().debug(pallet_assets.toString());
   pool_balance = await getBalanceOfPool(firstAssetId, secondAssetId);
-  expect(pool_balance_before).toEqual(pool_balance);
+  expect(pool_balance_before).collectionBnEqual(pool_balance);
   testLog.getLog().debug(pool_balance.toString());
   total_liquidity_assets = await getAssetSupply(liquidity_asset_id);
-  expect(total_liquidity_assets_before).toEqual(total_liquidity_assets);
+  expect(total_liquidity_assets_before).bnEqual(total_liquidity_assets);
   testLog.getLog().debug(total_liquidity_assets.toString());
 
   alice_assets_before = await getUserAssets(alice.address, [
@@ -2103,10 +2103,10 @@ test("xyk-pallet: Liquidity sufficiency scenario", async () => {
   expect(pallet_assets_before).toEqual(pallet_assets);
   testLog.getLog().debug(pallet_assets.toString());
   pool_balance = await getBalanceOfPool(firstAssetId, secondAssetId);
-  expect(pool_balance_before).toEqual(pool_balance);
+  expect(pool_balance_before).collectionBnEqual(pool_balance);
   testLog.getLog().debug(pool_balance.toString());
   total_liquidity_assets = await getAssetSupply(liquidity_asset_id);
-  expect(total_liquidity_assets_before).toEqual(total_liquidity_assets);
+  expect(total_liquidity_assets_before).bnEqual(total_liquidity_assets);
   testLog.getLog().debug(total_liquidity_assets.toString());
 
   alice_assets_before = await getUserAssets(alice.address, [
@@ -2178,9 +2178,9 @@ test("xyk-pallet: Liquidity sufficiency scenario", async () => {
   expect(pallet_assets_before).toEqual(pallet_assets);
   testLog.getLog().debug(pallet_assets.toString());
   pool_balance = await getBalanceOfPool(firstAssetId, secondAssetId);
-  expect(pool_balance_before).toEqual(pool_balance);
+  expect(pool_balance_before).collectionBnEqual(pool_balance);
   testLog.getLog().debug(pool_balance.toString());
   total_liquidity_assets = await getAssetSupply(liquidity_asset_id);
-  expect(total_liquidity_assets_before).toEqual(total_liquidity_assets);
+  expect(total_liquidity_assets_before).bnEqual(total_liquidity_assets);
   testLog.getLog().debug(total_liquidity_assets.toString());
 });

@@ -105,7 +105,7 @@ test("xyk-pallet - AssetsOperation: buyAsset [maxAmountIn = 1M], buy asset", asy
     poolBalanceBefore[1],
     amount
   );
-  expect(buyPriceLocal).toEqual(buyPriceRpc);
+  expect(buyPriceLocal).bnEqual(buyPriceRpc);
 
   testLog
     .getLog()
@@ -148,7 +148,7 @@ test("xyk-pallet - AssetsOperation: buyAsset [maxAmountIn = 1M], buy asset", asy
     diffFromWallet!
   );
 
-  testUser2.assets.forEach((asset) => {
+  testUser2.getFreeAssetAmounts().forEach((asset) => {
     expect(asset.amountBefore).bnEqual(asset.amountAfter);
   });
   const { treasury, treasuryBurn } = calculateFees(buyPriceLocal);
@@ -227,7 +227,7 @@ test("xyk-pallet - AssetsOperation: buyAsset [maxAmountIn = 1M], sell a bought a
     diffFromWallet!
   );
 
-  testUser2.assets.forEach((asset) => {
+  testUser2.getFreeAssetAmounts().forEach((asset) => {
     expect(asset.amountBefore).bnEqual(asset.amountAfter);
   });
   const { treasury, treasuryBurn } = calculateFees(buyPriceLocal);

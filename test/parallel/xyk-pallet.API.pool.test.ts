@@ -156,7 +156,7 @@ describe("xyk-pallet - Poll creation: Errors:", () => {
     });
 
     const balance = await getBalanceOfPool(firstCurrency, emptyAssetID);
-    expect(balance).toEqual([new BN(0), new BN(0)]);
+    expect(balance).collectionBnEqual([new BN(0), new BN(0)]);
   });
   test("Not enough assets", async () => {
     const txAmount = new BN(100000000000000);
@@ -179,7 +179,7 @@ describe("xyk-pallet - Poll creation: Errors:", () => {
     });
 
     const balance = await getBalanceOfPool(firstCurrency, testAssetId[0]);
-    expect(balance).toEqual([new BN(0), new BN(0)]);
+    expect(balance).collectionBnEqual([new BN(0), new BN(0)]);
   });
 
   afterEach(async () => {
@@ -297,10 +297,10 @@ describe("xyk-pallet - Pool tests: a pool can:", () => {
     expect([
       new BN(first_asset_amount).add(new BN(5000)),
       new BN(second_asset_amount).add(new BN(5000).add(new BN(1))),
-    ]).toEqual(pool_balance);
+    ]).collectionBnEqual(pool_balance);
 
     const total_liquidity_assets = await getAssetSupply(liquidity_asset_id);
-    expect(liquidity_assets_minted.add(new BN(5000))).toEqual(
+    expect(liquidity_assets_minted.add(new BN(5000))).bnEqual(
       total_liquidity_assets
     );
   });
@@ -386,7 +386,7 @@ describe("xyk-pallet - Pool tests: a pool can:", () => {
     ]).collectionBnEqual(pool_balance);
 
     const total_liquidity_assets = await getAssetSupply(liquidity_asset_id);
-    expect(liquidity_assets_minted.add(new BN(2500))).toEqual(
+    expect(liquidity_assets_minted.add(new BN(2500))).bnEqual(
       total_liquidity_assets
     );
   });

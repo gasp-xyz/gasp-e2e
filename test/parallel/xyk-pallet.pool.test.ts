@@ -169,7 +169,7 @@ test("xyk-pallet - Pool tests: createPool and validate liq token", async () => {
     addFromWallet!
   );
 
-  testUser2.assets.forEach((asset) => {
+  testUser2.getFreeAssetAmounts().forEach((asset) => {
     expect(asset.amountBefore).bnEqual(asset.amountAfter);
   });
 
@@ -264,7 +264,7 @@ test("xyk-pallet - Pool tests: createPool", async () => {
     addFromWallet!
   );
 
-  testUser2.assets.forEach((asset) => {
+  testUser2.getFreeAssetAmounts().forEach((asset) => {
     expect(asset.amountBefore).bnEqual(asset.amountAfter);
   });
 

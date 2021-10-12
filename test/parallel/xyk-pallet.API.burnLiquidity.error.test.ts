@@ -95,10 +95,9 @@ describe("xyk-pallet - Burn liquidity tests: BurnLiquidity Errors:", () => {
       firstCurrency,
       secondCurrency
     );
-    const liquidityBalance = await getBalanceOfAsset(
-      liquidityAssetId,
-      testUser1.keyRingPair.address
-    );
+    const liquidityBalance = (
+      await getBalanceOfAsset(liquidityAssetId, testUser1.keyRingPair.address)
+    ).free;
     await testUser1.refreshAmounts(AssetWallet.BEFORE);
 
     await burnLiquidity(

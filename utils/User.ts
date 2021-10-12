@@ -20,6 +20,7 @@ import {
   getEventResultFromTxWait,
 } from "./txHandler";
 import { MAX_BALANCE, MGA_ASSET_ID } from "./Constants";
+import { AccountData } from "@polkadot/types/interfaces/balances";
 
 export enum AssetWallet {
   BEFORE,
@@ -66,7 +67,12 @@ export class User {
   }
 
   addAsset(currecncyId: any, amountBefore = new BN(0)) {
-    const asset = new Asset(currecncyId, amountBefore);
+    const assetData = {
+      free: amountBefore,
+    };
+    const amountBeforeAsAccData = assetData as AccountData;
+    const asset = new Asset(currecncyId, amountBeforeAsAccData);
+
     if (
       this.assets.find((asset) => asset.currencyId === currecncyId) ===
       undefined
@@ -79,8 +85,27 @@ export class User {
       this.addAsset(element);
     });
   }
-  getAsset(currecncyId: any) {
+  getAsset(currecncyId: any, onlyFreeValues = true) {
+    if (onlyFreeValues) {
+      return this.getFreeAssetAmount(currecncyId);
+    }
     return this.assets.find((asset) => asset.currencyId === currecncyId);
+  }
+  getFreeAssetAmount(currecncyId: any, onlyFreeValue = true) {
+    const wallet = this.assets.find(
+      (asset) => asset.currencyId === currecncyId
+    );
+    return new Asset(
+      currecncyId,
+      wallet.amountBefore.free,
+      wallet.amountAfter.free
+    );
+  }
+  getFreeAssetAmounts() {
+    const assets = this.assets.map((asset) =>
+      this.getFreeAssetAmount(asset.currencyId, true)
+    );
+    return assets;
   }
   async refreshAmounts(beforeOrAfter: AssetWallet = AssetWallet.BEFORE) {
     const currencies = this.assets.map((asset) => new BN(asset.currencyId));

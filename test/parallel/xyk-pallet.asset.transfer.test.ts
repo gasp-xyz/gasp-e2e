@@ -210,5 +210,5 @@ test("xyk-pallet - AssetsOperation: transferAll", async () => {
   );
 
   const pool_balance = await getBalanceOfPool(firstCurrency, secondCurrency);
-  expect(pool_balance_before).toEqual(pool_balance);
+  expect(pool_balance_before).collectionBnEqual(pool_balance);
 });

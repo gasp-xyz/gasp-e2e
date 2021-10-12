@@ -188,10 +188,10 @@ test("xyk-rpc - calculate_buy_price matches with the real buy", async () => {
   const assetsSold = testUser1.getAsset(firstCurrency)?.amountAfter;
   const assetsBought = testUser1.getAsset(secondCurrency)?.amountAfter;
 
-  expect(assetsSold).toEqual(
-    testUser1.getAsset(firstCurrency)?.amountBefore.sub(sellPriceRpc)
+  expect(assetsSold).bnEqual(
+    testUser1.getAsset(firstCurrency)?.amountBefore.sub(sellPriceRpc)!
   );
-  expect(assetsBought).toEqual(
-    testUser1.getAsset(secondCurrency)?.amountBefore.add(numberOfAssets)
+  expect(assetsBought).bnEqual(
+    testUser1.getAsset(secondCurrency)?.amountBefore.add(numberOfAssets)!
   );
 });

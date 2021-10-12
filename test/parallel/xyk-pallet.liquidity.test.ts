@@ -157,7 +157,7 @@ test("xyk-pallet - Liqudity : Burn part of the liquidity", async () => {
     diffFromWallet!
   );
 
-  testUser2.assets.forEach((asset) => {
+  testUser2.getFreeAssetAmounts().forEach((asset) => {
     expect(asset.amountBefore).bnEqual(asset.amountAfter);
   });
 
@@ -251,7 +251,7 @@ test("xyk-pallet - Liqudity : Burn all the liquidity", async () => {
     diffFromWallet!
   );
 
-  testUser2.assets.forEach((asset) => {
+  testUser2.getFreeAssetAmounts().forEach((asset) => {
     expect(asset.amountBefore).bnEqual(asset.amountAfter);
   });
 
@@ -336,7 +336,7 @@ test("xyk-pallet - LiquidityOperation: mintLiquidity", async () => {
     addFromWallet!
   );
 
-  testUser2.assets.forEach((asset) => {
+  testUser2.getFreeAssetAmounts().forEach((asset) => {
     expect(asset.amountBefore).bnEqual(asset.amountAfter);
   });
 
