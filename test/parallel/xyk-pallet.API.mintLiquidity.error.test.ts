@@ -243,7 +243,7 @@ describe("xyk-pallet - Mint liquidity tests: MintLiquidity Errors:", () => {
       api?.tx.xyk.sellAsset(
         secondCurrency,
         firstCurrency,
-        testUser1.getAsset(secondCurrency)?.amountBefore!,
+        testUser1.getAsset(secondCurrency)?.amountBefore.free!,
         new BN(0)
       ),
       testUser1.keyRingPair

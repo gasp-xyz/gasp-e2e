@@ -330,6 +330,12 @@ export const getEventResultFromMangataTx = function (
           ).includes(filterTerm)
         )
     );
+  } else {
+    extrinsicResult = relatedEvents.find(
+      (e) =>
+        e.event.toHuman().method !== null &&
+        extrinsicResultMethods.includes(e.event.toHuman().method!.toString())
+    );
   }
   if ((extrinsicResult?.event as GenericEvent) === undefined) {
     testLog.getLog().warn("WARN: Event is undefined.");

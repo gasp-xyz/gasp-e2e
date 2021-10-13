@@ -76,7 +76,9 @@ test("xyk-pallet - Sudo tests: Sudo Issue an asset", async () => {
   const userAssets = await getUserAssets(testUser.keyRingPair.address, [
     assetId,
   ]);
-  expect(userAssets).collectionBnEqual([new BN(tokensAmount)]);
+  expect(userAssets.map((asset) => asset.free)).collectionBnEqual([
+    new BN(tokensAmount),
+  ]);
 });
 
 test("xyk-pallet - Sudo tests: Sudo Issue two  different assets to the same account", async () => {
@@ -125,6 +127,6 @@ test("xyk-pallet - Sudo tests: Sudo Issue two  different assets to the same acco
     secondAssetId,
   ]);
 
-  expect(parseInt(userAssets[0].toString())).toEqual(tokensFirstAmount);
-  expect(parseInt(userAssets[1].toString())).toEqual(tokensSecondAmount);
+  expect(parseInt(userAssets[0].free.toString())).toEqual(tokensFirstAmount);
+  expect(parseInt(userAssets[1].free.toString())).toEqual(tokensSecondAmount);
 });

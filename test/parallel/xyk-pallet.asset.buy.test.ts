@@ -149,7 +149,7 @@ test("xyk-pallet - AssetsOperation: buyAsset [maxAmountIn = 1M], buy asset", asy
   );
 
   testUser2.getFreeAssetAmounts().forEach((asset) => {
-    expect(asset.amountBefore).bnEqual(asset.amountAfter.free);
+    expect(asset.amountBefore.free).bnEqual(asset.amountAfter.free);
   });
   const { treasury, treasuryBurn } = calculateFees(buyPriceLocal);
   const bothFees = treasury.add(treasuryBurn);
@@ -234,7 +234,7 @@ test("xyk-pallet - AssetsOperation: buyAsset [maxAmountIn = 1M], sell a bought a
   );
 
   testUser2.getFreeAssetAmounts().forEach((asset) => {
-    expect(asset.amountBefore).bnEqual(asset.amountAfter.free);
+    expect(asset.amountBefore.free).bnEqual(asset.amountAfter.free);
   });
   const { treasury, treasuryBurn } = calculateFees(buyPriceLocal);
   const bothFees = treasury.add(treasuryBurn);

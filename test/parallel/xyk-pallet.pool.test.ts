@@ -269,7 +269,7 @@ test("xyk-pallet - Pool tests: createPool", async () => {
   );
 
   testUser2.getFreeAssetAmounts().forEach((asset) => {
-    expect(asset.amountBefore).toEqual(asset.amountAfter);
+    expect(asset.amountBefore.free).bnEqual(asset.amountAfter.free);
   });
 
   addFromWallet = pallet

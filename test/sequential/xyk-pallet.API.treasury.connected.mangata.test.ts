@@ -620,7 +620,9 @@ describe("xyk-pallet - treasury tests [Connected - Mangata]: Error cases", () =>
       .getAsset(mgaTokenId)!
       .amountAfter.free.sub(mgPoolAmount[0].sub(new BN(1)));
 
-    expect(testUser1.getAsset(mgaTokenId)!.amountBefore).bnEqual(expectedValue);
+    expect(testUser1.getAsset(mgaTokenId)!.amountBefore.free).bnEqual(
+      expectedValue
+    );
     //burned destroyed! because is translated toMGA
     expect(treasuryBurnAfter).bnEqual(treasuryBurnBefore);
     //check that treasury got the right amount.
