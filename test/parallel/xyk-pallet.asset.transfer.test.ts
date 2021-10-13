@@ -80,8 +80,8 @@ beforeEach(async () => {
 
   validateAssetsWithValues(
     [
-      testUser1.getAsset(firstCurrency)?.amountBefore!,
-      testUser1.getAsset(secondCurrency)?.amountBefore!,
+      testUser1.getAsset(firstCurrency)?.amountBefore.free!,
+      testUser1.getAsset(secondCurrency)?.amountBefore.free!,
     ],
     [
       defaultCurrecyValue.toNumber(),
@@ -89,8 +89,8 @@ beforeEach(async () => {
     ]
   );
   validateEmptyAssets([
-    testUser2.getAsset(firstCurrency)?.amountBefore!,
-    testUser2.getAsset(secondCurrency)?.amountBefore!,
+    testUser2.getAsset(firstCurrency)?.amountBefore.free!,
+    testUser2.getAsset(secondCurrency)?.amountBefore.free!,
   ]);
 });
 
@@ -125,27 +125,29 @@ test("xyk-pallet - AssetsOperation: transferAsset", async () => {
 
   const diffFromWallet = testUser1
     .getAsset(firstCurrency)
-    ?.amountBefore!.sub(amount);
-  expect(testUser1.getAsset(firstCurrency)?.amountAfter!).bnEqual(
+    ?.amountBefore.free!.sub(amount);
+  expect(testUser1.getAsset(firstCurrency)?.amountAfter.free!).bnEqual(
     diffFromWallet!
   );
 
   let addFromWallet = testUser1
     .getAsset(secondCurrency)
-    ?.amountBefore!.add(new BN(0));
-  expect(testUser1.getAsset(secondCurrency)?.amountAfter!).bnEqual(
+    ?.amountBefore.free!.add(new BN(0));
+  expect(testUser1.getAsset(secondCurrency)?.amountAfter.free!).bnEqual(
     addFromWallet!
   );
 
-  addFromWallet = testUser2.getAsset(firstCurrency)?.amountBefore!.add(amount);
-  expect(testUser2.getAsset(firstCurrency)?.amountAfter!).bnEqual(
+  addFromWallet = testUser2
+    .getAsset(firstCurrency)
+    ?.amountBefore.free!.add(amount);
+  expect(testUser2.getAsset(firstCurrency)?.amountAfter.free!).bnEqual(
     addFromWallet!
   );
 
   addFromWallet = testUser1
     .getAsset(secondCurrency)
-    ?.amountBefore!.add(new BN(0));
-  expect(testUser1.getAsset(secondCurrency)?.amountAfter!).bnEqual(
+    ?.amountBefore.free!.add(new BN(0));
+  expect(testUser1.getAsset(secondCurrency)?.amountAfter.free!).bnEqual(
     addFromWallet!
   );
 
@@ -185,26 +187,28 @@ test("xyk-pallet - AssetsOperation: transferAll", async () => {
 
   const diffFromWallet = testUser1
     .getAsset(firstCurrency)
-    ?.amountBefore!.sub(amount);
+    ?.amountBefore.free!.sub(amount.free);
   expect(testUser1.getAsset(firstCurrency)?.amountAfter!).bnEqual(
     diffFromWallet!
   );
 
   let addFromWallet = testUser1
     .getAsset(secondCurrency)
-    ?.amountBefore!.add(new BN(0));
-  expect(testUser1.getAsset(secondCurrency)?.amountAfter!).bnEqual(
+    ?.amountBefore.free!.add(new BN(0));
+  expect(testUser1.getAsset(secondCurrency)?.amountAfter.free!).bnEqual(
     addFromWallet!
   );
 
-  addFromWallet = testUser2.getAsset(firstCurrency)?.amountBefore!.add(amount);
+  addFromWallet = testUser2
+    .getAsset(firstCurrency)
+    ?.amountBefore.free!.add(amount.free);
   expect(testUser2.getAsset(firstCurrency)?.amountAfter!).bnEqual(
     addFromWallet!
   );
 
   addFromWallet = testUser1
     .getAsset(secondCurrency)
-    ?.amountBefore!.add(new BN(0));
+    ?.amountBefore.free!.add(new BN(0));
   expect(testUser1.getAsset(secondCurrency)?.amountAfter!).bnEqual(
     addFromWallet!
   );

@@ -67,7 +67,7 @@ describe("UI main tests - Deposit - ETH", () => {
     const amount = new BN(Math.pow(10, 15).toString());
     const addFromWallet = testUser1
       .getAsset(ETH_ASSET_ID)
-      ?.amountBefore!.add(amount);
+      ?.amountBefore.free!.add(amount);
     expect(testUser1.getAsset(ETH_ASSET_ID)?.amountAfter!).bnEqual(
       addFromWallet!
     );
@@ -136,7 +136,7 @@ describe("UI main tests - Withdraw - ETH", () => {
     const amount = new BN(Math.pow(10, 15).toString());
     const diffFromWallet = testUser1
       .getAsset(ETH_ASSET_ID)
-      ?.amountBefore!.sub(amount);
+      ?.amountBefore.free!.sub(amount);
     expect(testUser1.getAsset(ETH_ASSET_ID)?.amountAfter!).bnEqual(
       diffFromWallet!
     );

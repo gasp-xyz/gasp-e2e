@@ -95,11 +95,7 @@ export class User {
     const wallet = this.assets.find(
       (asset) => asset.currencyId === currecncyId
     );
-    return new Asset(
-      currecncyId,
-      wallet.amountBefore.free,
-      wallet.amountAfter.free
-    );
+    return new Asset(currecncyId, wallet!.amountBefore, wallet!.amountAfter);
   }
   getFreeAssetAmounts() {
     const assets = this.assets.map((asset) =>
@@ -255,17 +251,17 @@ export class User {
 }
 
 export class Asset {
-  amountBefore: BN;
-  amountAfter: BN;
+  amountBefore: AccountData;
+  amountAfter: AccountData;
   currencyId: BN;
 
   constructor(
     currencyId: BN,
-    amountBefore = new BN(0),
-    amountAfter = new BN(0)
+    amountBefore = { free: new BN(0) } as AccountData,
+    amountAfter = { free: new BN(0) } as AccountData
   ) {
     this.currencyId = currencyId;
-    this.amountBefore = amountBefore;
-    this.amountAfter = amountAfter;
+    this.amountBefore = { free: new BN(0) } as AccountData;
+    this.amountAfter = { free: new BN(0) } as AccountData;
   }
 }

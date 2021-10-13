@@ -83,8 +83,8 @@ describe("xyk-pallet - Poll creation: Errors:", () => {
     await testUser1.refreshAmounts(AssetWallet.BEFORE);
     validateAssetsWithValues(
       [
-        testUser1.getAsset(firstCurrency)?.amountBefore!,
-        testUser1.getAsset(secondCurrency)?.amountBefore!,
+        testUser1.getAsset(firstCurrency)?.amountBefore.free!,
+        testUser1.getAsset(secondCurrency)?.amountBefore.free!,
       ],
       [
         defaultCurrecyValue.toNumber(),
@@ -238,8 +238,8 @@ describe("xyk-pallet - Pool tests: a pool can:", () => {
     await testUser2.refreshAmounts(AssetWallet.BEFORE);
     validateAssetsWithValues(
       [
-        testUser2.getAsset(firstCurrency)?.amountBefore!,
-        testUser2.getAsset(secondCurrency)?.amountBefore!,
+        testUser2.getAsset(firstCurrency)?.amountBefore.free!,
+        testUser2.getAsset(secondCurrency)?.amountBefore.free!,
       ],
       [10000, 10000]
     );
@@ -273,22 +273,22 @@ describe("xyk-pallet - Pool tests: a pool can:", () => {
 
     const addFromWallet = testUser2
       .getAsset(liquidity_asset_id)
-      ?.amountBefore!.add(new BN(5000));
-    expect(testUser2.getAsset(liquidity_asset_id)?.amountAfter!).bnEqual(
+      ?.amountBefore.free!.add(new BN(5000));
+    expect(testUser2.getAsset(liquidity_asset_id)?.amountAfter.free!).bnEqual(
       addFromWallet!
     );
 
     let diffFromWallet = testUser2
       .getAsset(firstCurrency)
-      ?.amountBefore!.sub(new BN(5000));
-    expect(testUser2.getAsset(firstCurrency)?.amountAfter!).bnEqual(
+      ?.amountBefore.free!.sub(new BN(5000));
+    expect(testUser2.getAsset(firstCurrency)?.amountAfter.free!).bnEqual(
       diffFromWallet!
     );
 
     diffFromWallet = testUser2
       .getAsset(secondCurrency)
-      ?.amountBefore!.sub(new BN(5000).add(new BN(1)));
-    expect(testUser2.getAsset(secondCurrency)?.amountAfter!).bnEqual(
+      ?.amountBefore.free!.sub(new BN(5000).add(new BN(1)));
+    expect(testUser2.getAsset(secondCurrency)?.amountAfter.free!).bnEqual(
       diffFromWallet!
     );
 
@@ -359,22 +359,22 @@ describe("xyk-pallet - Pool tests: a pool can:", () => {
 
     const diffFromWallet = testUser2
       .getAsset(liquidity_asset_id)
-      ?.amountBefore!.sub(new BN(2500));
-    expect(testUser2.getAsset(liquidity_asset_id)?.amountAfter!).bnEqual(
+      ?.amountBefore.free!.sub(new BN(2500));
+    expect(testUser2.getAsset(liquidity_asset_id)?.amountAfter.free!).bnEqual(
       diffFromWallet!
     );
 
     let addFromWallet = testUser2
       .getAsset(firstCurrency)
-      ?.amountBefore!.add(new BN(2500));
-    expect(testUser2.getAsset(firstCurrency)?.amountAfter!).bnEqual(
+      ?.amountBefore.free!.add(new BN(2500));
+    expect(testUser2.getAsset(firstCurrency)?.amountAfter.free!).bnEqual(
       addFromWallet!
     );
 
     addFromWallet = testUser2
       .getAsset(secondCurrency)
-      ?.amountBefore!.add(new BN(2500));
-    expect(testUser2.getAsset(secondCurrency)?.amountAfter!).bnEqual(
+      ?.amountBefore.free!.add(new BN(2500));
+    expect(testUser2.getAsset(secondCurrency)?.amountAfter.free!).bnEqual(
       addFromWallet!
     );
 
@@ -408,22 +408,22 @@ describe("xyk-pallet - Pool tests: a pool can:", () => {
 
     let diffFromWallet = testUser1
       .getAsset(firstCurrency)
-      ?.amountBefore!.sub(first_asset_amount);
-    expect(testUser1.getAsset(firstCurrency)?.amountAfter!).bnEqual(
+      ?.amountBefore.free!.sub(first_asset_amount);
+    expect(testUser1.getAsset(firstCurrency)?.amountAfter.free!).bnEqual(
       diffFromWallet!
     );
 
     diffFromWallet = testUser1
       .getAsset(secondCurrency)
-      ?.amountBefore!.sub(second_asset_amount);
-    expect(testUser1.getAsset(secondCurrency)?.amountAfter!).bnEqual(
+      ?.amountBefore.free!.sub(second_asset_amount);
+    expect(testUser1.getAsset(secondCurrency)?.amountAfter.free!).bnEqual(
       diffFromWallet!
     );
 
     const addFromWallet = testUser1
       .getAsset(liquidity_asset_id)
-      ?.amountBefore!.add(liquidity_assets_minted);
-    expect(testUser1.getAsset(liquidity_asset_id)?.amountAfter!).bnEqual(
+      ?.amountBefore.free!.add(liquidity_assets_minted);
+    expect(testUser1.getAsset(liquidity_asset_id)?.amountAfter.free!).bnEqual(
       addFromWallet!
     );
   });
@@ -466,8 +466,8 @@ describe("xyk-pallet - Pool opeations: Simmetry", () => {
     await testUser1.refreshAmounts(AssetWallet.BEFORE);
     validateAssetsWithValues(
       [
-        testUser1.getAsset(firstCurrency)?.amountBefore!,
-        testUser1.getAsset(secondCurrency)?.amountBefore!,
+        testUser1.getAsset(firstCurrency)?.amountBefore.free!,
+        testUser1.getAsset(secondCurrency)?.amountBefore.free!,
       ],
       [
         defaultCurrecyValue.toNumber(),

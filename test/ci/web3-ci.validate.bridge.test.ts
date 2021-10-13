@@ -88,7 +88,7 @@ describe("test ether", () => {
 
     await User.waitUntilBNChanged(ethBalanceBefore, getEthBalance);
     await User.waitUntilBNChanged(
-      testUser1.getAsset(ETH_ASSET_ID)?.amountBefore!,
+      testUser1.getAsset(ETH_ASSET_ID)?.amountBefore.free!,
       getUserTokensBalance
     );
 
@@ -97,7 +97,9 @@ describe("test ether", () => {
 
     const receivedAmountInMGA = testUser1
       .getAsset(ETH_ASSET_ID)
-      ?.amountAfter!.sub(testUser1.getAsset(ETH_ASSET_ID)?.amountBefore!);
+      ?.amountAfter.free!.sub(
+        testUser1.getAsset(ETH_ASSET_ID)?.amountBefore.free!
+      );
     testLog
       .getLog()
       .info(` received Amount : ${receivedAmountInMGA!.toString()} `);
@@ -112,7 +114,7 @@ describe("test ether", () => {
       testUser1.keyRingPair
     );
     await User.waitUntilBNChanged(
-      testUser1.getAsset(ETH_ASSET_ID)?.amountAfter!,
+      testUser1.getAsset(ETH_ASSET_ID)?.amountAfter.free!,
       getUserTokensBalance
     );
     await User.waitUntilBNChanged(ethBalanceAfter, getEthBalance);

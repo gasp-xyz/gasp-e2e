@@ -184,13 +184,15 @@ describe("xyk-rpc - calculate get_burn amount: RPC result matches with burn amou
     );
 
     expect(
-      fromBNToUnitString(sudo.getAsset(firstAssetId)?.amountAfter!)
+      fromBNToUnitString(sudo.getAsset(firstAssetId)?.amountAfter.free!)
     ).toEqual(burnAmount.firstAssetAmount);
     expect(
       fromBNToUnitString(
         sudo
           .getAsset(secondAssetId)
-          ?.amountAfter.sub(sudo.getAsset(secondAssetId)?.amountBefore!)!
+          ?.amountAfter.free.sub(
+            sudo.getAsset(secondAssetId)?.amountBefore.free!
+          )!
       )
     ).toEqual(burnAmount.secondAssetAmount);
   });

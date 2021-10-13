@@ -88,7 +88,7 @@ describe("xyk-pallet - Mint liquidity tests: MintLiquidity Errors:", () => {
       testUser1.keyRingPair,
       firstCurrency,
       secondCurrency,
-      testUser1.getAsset(firstCurrency)?.amountBefore.sub(new BN(1))!
+      testUser1.getAsset(firstCurrency)?.amountBefore.free.sub(new BN(1))!
     ).then((result) => {
       const eventResponse = getEventResultFromMangataTx(result);
       expect(eventResponse.state).toEqual(ExtrinsicResult.ExtrinsicFailed);
@@ -131,7 +131,7 @@ describe("xyk-pallet - Mint liquidity tests: MintLiquidity Errors:", () => {
       testUser1.keyRingPair,
       firstCurrency,
       secondCurrency,
-      testUser1.getAsset(secondCurrency)?.amountBefore.sub(new BN(1))!
+      testUser1.getAsset(secondCurrency)?.amountBefore.free.sub(new BN(1))!
     ).then((result) => {
       const eventResponse = getEventResultFromMangataTx(result);
       expect(eventResponse.state).toEqual(ExtrinsicResult.ExtrinsicFailed);
@@ -226,7 +226,7 @@ describe("xyk-pallet - Mint liquidity tests: MintLiquidity Errors:", () => {
       testUser1.keyRingPair,
       firstCurrency,
       secondCurrency,
-      testUser1.getAsset(firstCurrency)?.amountBefore.add(new BN(1))!
+      testUser1.getAsset(firstCurrency)?.amountBefore.free.add(new BN(1))!
     ).then((result) => {
       const eventResponse = getEventResultFromMangataTx(result);
       expect(eventResponse.state).toEqual(ExtrinsicResult.ExtrinsicFailed);
@@ -259,7 +259,7 @@ describe("xyk-pallet - Mint liquidity tests: MintLiquidity Errors:", () => {
       testUser1.keyRingPair,
       firstCurrency,
       secondCurrency,
-      testUser1.getAsset(firstCurrency)?.amountBefore.sub(new BN(1))!
+      testUser1.getAsset(firstCurrency)?.amountBefore.free.sub(new BN(1))!
     ).then((result) => {
       const eventResponse = getEventResultFromMangataTx(result);
       expect(eventResponse.state).toEqual(ExtrinsicResult.ExtrinsicFailed);
@@ -299,7 +299,7 @@ describe("xyk-pallet - Mint liquidity tests: MintLiquidity Errors:", () => {
       testUser1.keyRingPair,
       firstCurrency,
       secondCurrency,
-      testUser1.getAsset(firstCurrency)?.amountBefore.sub(new BN(1))!,
+      testUser1.getAsset(firstCurrency)?.amountBefore.free.sub(new BN(1))!,
       new BN(1)
     );
     let eventResponse = getEventResultFromMangataTx(result);
@@ -315,7 +315,7 @@ describe("xyk-pallet - Mint liquidity tests: MintLiquidity Errors:", () => {
       testUser1.keyRingPair,
       firstCurrency,
       secondCurrency,
-      testUser1.getAsset(firstCurrency)?.amountBefore.sub(new BN(1))!,
+      testUser1.getAsset(firstCurrency)?.amountBefore.free.sub(new BN(1))!,
       new BN(0)
     );
     eventResponse = getEventResultFromMangataTx(resultZero);

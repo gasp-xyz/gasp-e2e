@@ -65,8 +65,8 @@ beforeEach(async () => {
   await testUser1.refreshAmounts(AssetWallet.BEFORE);
   validateAssetsWithValues(
     [
-      testUser1.getAsset(firstCurrency)?.amountBefore!,
-      testUser1.getAsset(secondCurrency)?.amountBefore!,
+      testUser1.getAsset(firstCurrency)?.amountBefore.free!,
+      testUser1.getAsset(secondCurrency)?.amountBefore.free!,
     ],
     [
       defaultCurrecyValue.toNumber(),
@@ -145,7 +145,9 @@ afterEach(async () => {
   await testUser1.refreshAmounts(AssetWallet.AFTER);
   const deductedMGATkns = testUser1
     .getAsset(MGA_ASSET_ID)
-    ?.amountBefore.sub(testUser1.getAsset(MGA_ASSET_ID)?.amountAfter!);
+    ?.amountBefore.free.sub(
+      testUser1.getAsset(MGA_ASSET_ID)?.amountAfter.free!
+    );
   const deductedMGAString = fromBNToUnitString(deductedMGATkns!);
   expect(deductedMGAString).toEqual(getFeeString(cost));
 });

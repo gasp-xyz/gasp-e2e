@@ -62,8 +62,8 @@ beforeEach(async () => {
   await testUser1.refreshAmounts(AssetWallet.BEFORE);
   validateAssetsWithValues(
     [
-      testUser1.getAsset(firstCurrency)?.amountBefore!,
-      testUser1.getAsset(secondCurrency)?.amountBefore!,
+      testUser1.getAsset(firstCurrency)?.amountBefore.free!,
+      testUser1.getAsset(secondCurrency)?.amountBefore.free!,
     ],
     [
       defaultCurrecyValue.toNumber(),
@@ -127,7 +127,7 @@ describe("Wallets unmodified", () => {
     await testUser1.refreshAmounts(AssetWallet.AFTER);
 
     testUser1.getFreeAssetAmounts().forEach((asset) => {
-      expect(asset.amountBefore).bnEqual(asset.amountAfter);
+      expect(asset.amountBefore).bnEqual(asset.amountAfter.free);
     });
 
     const pool_balance = await getBalanceOfPool(firstCurrency, secondCurrency);
@@ -160,7 +160,7 @@ test("xyk-pallet - User Balance - Selling an asset does not require paying fees"
       testUser1.keyRingPair,
       firstCurrency.toString(),
       secondCurrency.toString(),
-      amountInWallet.sub(new BN(1)),
+      amountInWallet.free.sub(new BN(1)),
       new BN(1)
     )
     .catch((reason) => {

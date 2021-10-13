@@ -214,10 +214,14 @@ describe("xyk-pallet - Burn liquidity tests: when burning liquidity you can", ()
     await testUser1.refreshAmounts(AssetWallet.AFTER);
     const secondCurrencyAmount = testUser1
       .getAsset(secondCurrency)
-      ?.amountAfter.sub(testUser1.getAsset(secondCurrency)?.amountBefore!)!;
+      ?.amountAfter.free.sub(
+        testUser1.getAsset(secondCurrency)?.amountBefore.free!
+      )!;
     const firstCurrencyAmount = testUser1
       .getAsset(firstCurrency)
-      ?.amountAfter.sub(testUser1.getAsset(firstCurrency)?.amountBefore!)!;
+      ?.amountAfter.free.sub(
+        testUser1.getAsset(firstCurrency)?.amountBefore.free!
+      )!;
     const liquidityAssetId = await getLiquidityAssetId(
       firstCurrency,
       secondCurrency

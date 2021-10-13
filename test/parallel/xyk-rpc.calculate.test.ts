@@ -164,10 +164,10 @@ test("xyk-rpc - calculate_sell_price matches with the real sell", async () => {
   const assetsBought = testUser1.getAsset(secondCurrency)?.amountAfter;
 
   expect(assetsSold).bnEqual(
-    testUser1.getAsset(firstCurrency)?.amountBefore.sub(numberOfAssets)!
+    testUser1.getAsset(firstCurrency)?.amountBefore.free.sub(numberOfAssets)!
   );
   expect(assetsBought).bnEqual(
-    testUser1.getAsset(secondCurrency)?.amountBefore.add(sellPriceRpc)!
+    testUser1.getAsset(secondCurrency)?.amountBefore.free.add(sellPriceRpc)!
   );
 });
 
@@ -189,9 +189,9 @@ test("xyk-rpc - calculate_buy_price matches with the real buy", async () => {
   const assetsBought = testUser1.getAsset(secondCurrency)?.amountAfter;
 
   expect(assetsSold).bnEqual(
-    testUser1.getAsset(firstCurrency)?.amountBefore.sub(sellPriceRpc)!
+    testUser1.getAsset(firstCurrency)?.amountBefore.free.sub(sellPriceRpc)!
   );
   expect(assetsBought).bnEqual(
-    testUser1.getAsset(secondCurrency)?.amountBefore.add(numberOfAssets)!
+    testUser1.getAsset(secondCurrency)?.amountBefore.free.add(numberOfAssets)!
   );
 });

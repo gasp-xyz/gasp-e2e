@@ -220,10 +220,10 @@ describe("xyk-pallet - Operate with a pool close to overflow", () => {
   });
   test.skip("[BUG] Burn liquidities [MAX -1] assets to a wallet wich is full => overflow. NOT  a bug https://trello.com/c/J3fzuwH5", async () => {
     const amountToFillAsset = MAX_BALANCE.sub(
-      testUser2.getAsset(firstCurrency)?.amountBefore!
+      testUser2.getAsset(firstCurrency)?.amountBefore.free!
     ).sub(new BN(2));
     const amountToFillAssetSeccondC = MAX_BALANCE.sub(
-      testUser2.getAsset(secondCurrency)?.amountBefore!
+      testUser2.getAsset(secondCurrency)?.amountBefore.free!
     ).sub(new BN(2));
     await sudo.mint(firstCurrency, testUser2, amountToFillAsset);
     await sudo.mint(secondCurrency, testUser2, amountToFillAssetSeccondC);
@@ -321,11 +321,11 @@ describe("xyk-pallet - Operate with a user account close to overflow", () => {
     });
     await testUser1.refreshAmounts(AssetWallet.AFTER);
 
-    expect(testUser1.getAsset(firstCurrency)?.amountAfter).bnEqual(
-      testUser1.getAsset(firstCurrency)?.amountBefore!
+    expect(testUser1.getAsset(firstCurrency)?.amountAfter.free).bnEqual(
+      testUser1.getAsset(firstCurrency)?.amountBefore.free!
     );
-    expect(testUser1.getAsset(secondCurrency)?.amountAfter).bnEqual(
-      testUser1.getAsset(secondCurrency)?.amountBefore!
+    expect(testUser1.getAsset(secondCurrency)?.amountAfter.free).bnEqual(
+      testUser1.getAsset(secondCurrency)?.amountBefore.free!
     );
   });
   test.skip("Buy a few assets to a wallet that is full  => overflow. NOT A BUG: https://trello.com/c/J3fzuwH5", async () => {
@@ -342,11 +342,11 @@ describe("xyk-pallet - Operate with a user account close to overflow", () => {
     });
     await testUser1.refreshAmounts(AssetWallet.AFTER);
 
-    expect(testUser1.getAsset(firstCurrency)?.amountAfter).bnEqual(
-      testUser1.getAsset(firstCurrency)?.amountBefore!
+    expect(testUser1.getAsset(firstCurrency)?.amountAfter.free).bnEqual(
+      testUser1.getAsset(firstCurrency)?.amountBefore.free!
     );
-    expect(testUser1.getAsset(secondCurrency)?.amountAfter).bnEqual(
-      testUser1.getAsset(secondCurrency)?.amountBefore!
+    expect(testUser1.getAsset(secondCurrency)?.amountAfter.free).bnEqual(
+      testUser1.getAsset(secondCurrency)?.amountBefore.free!
     );
   });
 });

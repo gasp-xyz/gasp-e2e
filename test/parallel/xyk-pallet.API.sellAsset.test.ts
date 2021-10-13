@@ -130,7 +130,7 @@ describe("xyk-pallet - Sell assets tests: SellAsset Errors:", () => {
 
     let remainingOfCurrency1 = testUser1
       .getAsset(firstCurrency)
-      ?.amountBefore!.sub(first_asset_amount)!;
+      ?.amountBefore.free!.sub(first_asset_amount)!;
     const sellPriceLocal = calculate_sell_price_local(
       first_asset_amount,
       second_asset_amount.div(new BN(2)),
@@ -153,7 +153,7 @@ describe("xyk-pallet - Sell assets tests: SellAsset Errors:", () => {
     });
 
     await testUser1.refreshAmounts(AssetWallet.AFTER);
-    remainingOfCurrency1 = testUser1.getAsset(firstCurrency)?.amountAfter!;
+    remainingOfCurrency1 = testUser1.getAsset(firstCurrency)?.amountAfter.free!;
     expect(remainingOfCurrency1).bnEqual(new BN(1));
 
     const secondWalletAmount = defaultCurrecyValue
@@ -177,8 +177,8 @@ describe("xyk-pallet - Sell assets tests: SellAsset Errors:", () => {
 
     const diffFromWallet = testUser1
       .getAsset(firstCurrency)
-      ?.amountBefore!.sub(new BN(defaultCurrecyValue).sub(new BN(1)));
-    expect(testUser1.getAsset(firstCurrency)?.amountAfter!).bnEqual(
+      ?.amountBefore.free!.sub(new BN(defaultCurrecyValue).sub(new BN(1)));
+    expect(testUser1.getAsset(firstCurrency)?.amountAfter.free!).bnEqual(
       diffFromWallet!
     );
 
@@ -238,13 +238,13 @@ describe("xyk-pallet - Sell assets tests: SellAsset Errors:", () => {
     const sellPriceLocal = calculate_sell_price_local(
       first_asset_amount,
       secondAssetAmount,
-      remainingOfCurrency1
+      remainingOfCurrency1.free
     );
     await sellAsset(
       testUser1.keyRingPair,
       firstCurrency,
       secondCurrency,
-      remainingOfCurrency1,
+      remainingOfCurrency1.free,
       sellPriceLocal.add(new BN(1))
     ).then((result) => {
       const eventResponse = getEventResultFromMangataTx(result);
@@ -257,14 +257,16 @@ describe("xyk-pallet - Sell assets tests: SellAsset Errors:", () => {
 
     const diffFromWallet = testUser1
       .getAsset(firstCurrency)
-      ?.amountBefore!.sub(feeToAvoidFrontRunning);
-    expect(testUser1.getAsset(firstCurrency)?.amountAfter!).bnEqual(
+      ?.amountBefore.free!.sub(feeToAvoidFrontRunning);
+    expect(testUser1.getAsset(firstCurrency)?.amountAfter.free!).bnEqual(
       diffFromWallet!
     );
 
     //second wallet should not be modified.
     const amount = testUser1.getAsset(secondCurrency)?.amountBefore!;
-    expect(testUser1.getAsset(secondCurrency)?.amountAfter!).bnEqual(amount);
+    expect(testUser1.getAsset(secondCurrency)?.amountAfter!).bnEqual(
+      amount.free
+    );
 
     const treasury = await getTreasury(firstCurrency);
     const treasuryBurn = await getTreasuryBurn(firstCurrency);
@@ -333,13 +335,13 @@ describe("xyk-pallet - Sell assets tests: Selling Assets you can", () => {
     const sellPriceLocal = calculate_sell_price_local(
       first_asset_amount,
       second_asset_amount.div(new BN(2)),
-      remainingOfCurrency1
+      remainingOfCurrency1.free
     );
     await sellAsset(
       testUser1.keyRingPair,
       firstCurrency,
       secondCurrency,
-      remainingOfCurrency1,
+      remainingOfCurrency1.free,
       sellPriceLocal
     ).then((result) => {
       const eventResponse = getEventResultFromMangataTx(result, [
@@ -352,7 +354,7 @@ describe("xyk-pallet - Sell assets tests: Selling Assets you can", () => {
         eventResponse,
         testUser1.keyRingPair.address,
         firstCurrency,
-        remainingOfCurrency1,
+        remainingOfCurrency1.free,
         secondCurrency,
         sellPriceLocal
       );
@@ -418,14 +420,14 @@ describe("xyk-pallet - Sell assets tests: Selling Assets you can", () => {
     const sellPriceLocal = calculate_sell_price_local(
       new BN(10000).div(new BN(2)),
       new BN(10000),
-      remainingOfCurrency3
+      remainingOfCurrency3.free
     );
 
     await sellAsset(
       testUser2.keyRingPair,
       thirdCurrency,
       firstCurrency,
-      remainingOfCurrency3,
+      remainingOfCurrency3.free,
       sellPriceLocal
     ).then((result) => {
       const eventResponse = getEventResultFromMangataTx(result, [
@@ -438,7 +440,7 @@ describe("xyk-pallet - Sell assets tests: Selling Assets you can", () => {
         eventResponse,
         testUser2.keyRingPair.address,
         thirdCurrency,
-        remainingOfCurrency3,
+        remainingOfCurrency3.free,
         firstCurrency,
         sellPriceLocal
       );

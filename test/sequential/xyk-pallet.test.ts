@@ -28,6 +28,7 @@ import {
 import { ExtrinsicResult } from "../../utils/eventListeners";
 import BN from "bn.js";
 import { Keyring } from "@polkadot/api";
+import { AccountData } from "@polkadot/types/interfaces/balances";
 import {
   calculateFees,
   calculateLiqAssetAmount,
@@ -183,9 +184,9 @@ test("xyk-pallet: Happy case scenario", async () => {
     secondAssetId,
   ]);
   expect([
-    pallet_assets_before[0].add(first_asset_amount),
-    pallet_assets_before[1].add(second_asset_amount),
-  ]).collectionBnEqual(pallet_assets);
+    pallet_assets_before[0].free.add(first_asset_amount),
+    pallet_assets_before[1].free.add(second_asset_amount),
+  ]).collectionBnEqual(pallet_assets.map((asset) => asset.free));
   testLog.getLog().debug(pallet_assets.toString());
   let pool_balance = await getBalanceOfPool(firstAssetId, secondAssetId);
   expect([
@@ -257,10 +258,10 @@ test("xyk-pallet: Happy case scenario", async () => {
     liquidity_asset_id,
   ]);
   expect([
-    alice_assets_before[0].sub(first_asset_amount),
-    alice_assets_before[1].sub(second_asset_amount),
-    alice_assets_before[2].add(liquidity_assets_minted),
-  ]).collectionBnEqual(alice_assets);
+    alice_assets_before[0].free.sub(first_asset_amount),
+    alice_assets_before[1].free.sub(second_asset_amount),
+    alice_assets_before[2].free.add(liquidity_assets_minted),
+  ]).collectionBnEqual(alice_assets.map((asset) => asset.free));
   testLog.getLog().debug(alice_assets.toString());
   bob_assets = await getUserAssets(bob.address, [
     firstAssetId,
@@ -274,9 +275,9 @@ test("xyk-pallet: Happy case scenario", async () => {
     secondAssetId,
   ]);
   expect([
-    pallet_assets_before[0].add(first_asset_amount),
-    pallet_assets_before[1].add(second_asset_amount),
-  ]).collectionBnEqual(pallet_assets);
+    pallet_assets_before[0].free.add(first_asset_amount),
+    pallet_assets_before[1].free.add(second_asset_amount),
+  ]).collectionBnEqual(pallet_assets.map((asset) => asset.free));
   testLog.getLog().debug(pallet_assets.toString());
   pool_balance = await getBalanceOfPool(firstAssetId, secondAssetId);
   expect([
@@ -334,10 +335,10 @@ test("xyk-pallet: Happy case scenario", async () => {
     liquidity_asset_id,
   ]);
   expect([
-    alice_assets_before[0].sub(amount),
-    alice_assets_before[1],
-    alice_assets_before[2],
-  ]).collectionBnEqual(alice_assets);
+    alice_assets_before[0].free.sub(amount),
+    alice_assets_before[1].free,
+    alice_assets_before[2].free,
+  ]).collectionBnEqual(alice_assets.map((asset) => asset.free));
   testLog.getLog().debug(alice_assets.toString());
   bob_assets = await getUserAssets(bob.address, [
     firstAssetId,
@@ -345,10 +346,10 @@ test("xyk-pallet: Happy case scenario", async () => {
     liquidity_asset_id,
   ]);
   expect([
-    bob_assets_before[0].add(amount),
-    bob_assets_before[1],
-    bob_assets_before[2],
-  ]).collectionBnEqual(bob_assets);
+    bob_assets_before[0].free.add(amount),
+    bob_assets_before[1].free,
+    bob_assets_before[2].free,
+  ]).collectionBnEqual(bob_assets.map((asset) => asset.free));
   testLog.getLog().debug(bob_assets.toString());
   pallet_assets = await getUserAssets(pallet_address, [
     firstAssetId,
@@ -435,10 +436,10 @@ test("xyk-pallet: Happy case scenario", async () => {
     liquidity_asset_id,
   ]);
   expect([
-    bob_assets_before[0].sub(amount),
-    bob_assets_before[1].add(sell_price_local),
-    bob_assets_before[2],
-  ]).collectionBnEqual(bob_assets);
+    bob_assets_before[0].free.sub(amount),
+    bob_assets_before[1].free.add(sell_price_local),
+    bob_assets_before[2].free,
+  ]).collectionBnEqual(bob_assets.map((asset) => asset.free));
   testLog.getLog().debug(bob_assets.toString());
   pallet_assets = await getUserAssets(pallet_address, [
     firstAssetId,
@@ -453,9 +454,9 @@ test("xyk-pallet: Happy case scenario", async () => {
     pool_balance_before[1].sub(sell_price_local),
   ]).collectionBnEqual(pool_balance);
   expect([
-    pallet_assets_before[0].add(amount).sub(treasury.add(treasuryBurn)),
-    pallet_assets_before[1].sub(sell_price_local),
-  ]).collectionBnEqual(pallet_assets);
+    pallet_assets_before[0].free.add(amount).sub(treasury.add(treasuryBurn)),
+    pallet_assets_before[1].free.sub(sell_price_local),
+  ]).collectionBnEqual(pallet_assets.map((asset) => asset.free));
 
   testLog.getLog().debug(pool_balance.toString());
   total_liquidity_assets = await getAssetSupply(liquidity_asset_id);
@@ -534,10 +535,10 @@ test("xyk-pallet: Happy case scenario", async () => {
     liquidity_asset_id,
   ]);
   expect([
-    bob_assets_before[0].add(sell_price_local),
-    bob_assets_before[1].sub(amount),
-    bob_assets_before[2],
-  ]).collectionBnEqual(bob_assets);
+    bob_assets_before[0].free.add(sell_price_local),
+    bob_assets_before[1].free.sub(amount),
+    bob_assets_before[2].free,
+  ]).collectionBnEqual(bob_assets.map((asset) => asset.free));
   testLog.getLog().debug(bob_assets.toString());
   pallet_assets = await getUserAssets(pallet_address, [
     firstAssetId,
@@ -547,9 +548,9 @@ test("xyk-pallet: Happy case scenario", async () => {
   treasury = calculateFees(amount).treasury;
   treasuryBurn = calculateFees(amount).treasuryBurn;
   expect([
-    pallet_assets_before[0].sub(sell_price_local),
-    pallet_assets_before[1].add(amount).sub(treasury.add(treasuryBurn)),
-  ]).collectionBnEqual(pallet_assets);
+    pallet_assets_before[0].free.sub(sell_price_local),
+    pallet_assets_before[1].free.add(amount).sub(treasury.add(treasuryBurn)),
+  ]).collectionBnEqual(pallet_assets.map((asset) => asset.free));
   testLog.getLog().debug(pallet_assets.toString());
   pool_balance = await getBalanceOfPool(firstAssetId, secondAssetId);
 
@@ -638,10 +639,10 @@ test("xyk-pallet: Happy case scenario", async () => {
     liquidity_asset_id,
   ]);
   expect([
-    bob_assets_before[0].sub(buy_price_local),
-    bob_assets_before[1].add(amount),
-    bob_assets_before[2],
-  ]).collectionBnEqual(bob_assets);
+    bob_assets_before[0].free.sub(buy_price_local),
+    bob_assets_before[1].free.add(amount),
+    bob_assets_before[2].free,
+  ]).collectionBnEqual(bob_assets.map((asset) => asset.free));
   testLog.getLog().debug(bob_assets.toString());
   pallet_assets = await getUserAssets(pallet_address, [
     firstAssetId,
@@ -652,11 +653,11 @@ test("xyk-pallet: Happy case scenario", async () => {
   treasuryBurn = calculateFees(buy_price_local).treasuryBurn;
 
   expect([
-    pallet_assets_before[0]
+    pallet_assets_before[0].free
       .add(buy_price_local)
       .sub(treasury.add(treasuryBurn)),
-    pallet_assets_before[1].sub(amount),
-  ]).collectionBnEqual(pallet_assets);
+    pallet_assets_before[1].free.sub(amount),
+  ]).collectionBnEqual(pallet_assets.map((asset) => asset.free));
   testLog.getLog().debug(pallet_assets.toString());
   pool_balance = await getBalanceOfPool(firstAssetId, secondAssetId);
 
@@ -745,10 +746,10 @@ test("xyk-pallet: Happy case scenario", async () => {
     liquidity_asset_id,
   ]);
   expect([
-    bob_assets_before[0].add(amount),
-    bob_assets_before[1].sub(buy_price_local),
-    bob_assets_before[2],
-  ]).collectionBnEqual(bob_assets);
+    bob_assets_before[0].free.add(amount),
+    bob_assets_before[1].free.sub(buy_price_local),
+    bob_assets_before[2].free,
+  ]).collectionBnEqual(bob_assets.map((asset) => asset.free));
   testLog.getLog().debug(bob_assets.toString());
   pallet_assets = await getUserAssets(pallet_address, [
     firstAssetId,
@@ -757,11 +758,11 @@ test("xyk-pallet: Happy case scenario", async () => {
   treasury = calculateFees(buy_price_local).treasury;
   treasuryBurn = calculateFees(buy_price_local).treasuryBurn;
   expect([
-    pallet_assets_before[0].sub(amount),
-    pallet_assets_before[1]
+    pallet_assets_before[0].free.sub(amount),
+    pallet_assets_before[1].free
       .add(buy_price_local)
       .sub(treasury.add(treasuryBurn)),
-  ]).collectionBnEqual(pallet_assets);
+  ]).collectionBnEqual(pallet_assets.map((asset) => asset.free));
   testLog.getLog().debug(pallet_assets.toString());
   pool_balance = await getBalanceOfPool(firstAssetId, secondAssetId);
 
@@ -840,10 +841,10 @@ test("xyk-pallet: Happy case scenario", async () => {
     liquidity_asset_id,
   ]);
   expect([
-    alice_assets_before[0].add(first_asset_amount),
-    alice_assets_before[1].add(second_asset_amount),
-    alice_assets_before[2].sub(liquidity_assets_burned),
-  ]).collectionBnEqual(alice_assets);
+    alice_assets_before[0].free.add(first_asset_amount),
+    alice_assets_before[1].free.add(second_asset_amount),
+    alice_assets_before[2].free.sub(liquidity_assets_burned),
+  ]).collectionBnEqual(alice_assets.map((asset) => asset.free));
   testLog.getLog().debug(alice_assets.toString());
   bob_assets = await getUserAssets(bob.address, [
     firstAssetId,
@@ -857,9 +858,9 @@ test("xyk-pallet: Happy case scenario", async () => {
     secondAssetId,
   ]);
   expect([
-    pallet_assets_before[0].sub(first_asset_amount),
-    pallet_assets_before[1].sub(second_asset_amount),
-  ]).collectionBnEqual(pallet_assets);
+    pallet_assets_before[0].free.sub(first_asset_amount),
+    pallet_assets_before[1].free.sub(second_asset_amount),
+  ]).collectionBnEqual(pallet_assets.map((asset) => asset.free));
   testLog.getLog().debug(pallet_assets.toString());
   pool_balance = await getBalanceOfPool(firstAssetId, secondAssetId);
   expect([
@@ -932,10 +933,10 @@ test("xyk-pallet: Happy case scenario", async () => {
     liquidity_asset_id,
   ]);
   expect([
-    alice_assets_before[0].add(first_asset_amount),
-    alice_assets_before[1].add(second_asset_amount),
-    alice_assets_before[2].sub(liquidity_assets_burned),
-  ]).collectionBnEqual(alice_assets);
+    alice_assets_before[0].free.add(first_asset_amount),
+    alice_assets_before[1].free.add(second_asset_amount),
+    alice_assets_before[2].free.sub(liquidity_assets_burned),
+  ]).collectionBnEqual(alice_assets.map((asset) => asset.free));
   testLog.getLog().debug(alice_assets.toString());
   bob_assets = await getUserAssets(bob.address, [
     firstAssetId,
@@ -949,9 +950,9 @@ test("xyk-pallet: Happy case scenario", async () => {
     secondAssetId,
   ]);
   expect([
-    pallet_assets_before[0].sub(first_asset_amount),
-    pallet_assets_before[1].sub(second_asset_amount),
-  ]).collectionBnEqual(pallet_assets);
+    pallet_assets_before[0].free.sub(first_asset_amount),
+    pallet_assets_before[1].free.sub(second_asset_amount),
+  ]).collectionBnEqual(pallet_assets.map((asset) => asset.free));
   testLog.getLog().debug(pallet_assets.toString());
   pool_balance = await getBalanceOfPool(firstAssetId, secondAssetId);
   expect([
@@ -1051,18 +1052,18 @@ test("xyk-pallet: Liquidity sufficiency scenario", async () => {
     secondAssetId,
   ]);
   expect([
-    alice_assets_before[0].sub(amount),
-    alice_assets_before[1],
-  ]).collectionBnEqual(alice_assets);
+    alice_assets_before[0].free.sub(amount),
+    alice_assets_before[1].free,
+  ]).collectionBnEqual(alice_assets.map((asset) => asset.free));
   testLog.getLog().debug(alice_assets.toString());
   let bob_assets = await getUserAssets(bob.address, [
     firstAssetId,
     secondAssetId,
   ]);
   expect([
-    bob_assets_before[0].add(amount),
-    bob_assets_before[1],
-  ]).collectionBnEqual(bob_assets);
+    bob_assets_before[0].free.add(amount),
+    bob_assets_before[1].free,
+  ]).collectionBnEqual(bob_assets.map((asset) => asset.free));
   testLog.getLog().debug(bob_assets.toString());
 
   alice_assets_before = await getUserAssets(alice.address, [
@@ -1099,15 +1100,15 @@ test("xyk-pallet: Liquidity sufficiency scenario", async () => {
     secondAssetId,
   ]);
   expect([
-    alice_assets_before[0],
-    alice_assets_before[1].sub(amount),
-  ]).collectionBnEqual(alice_assets);
+    alice_assets_before[0].free,
+    alice_assets_before[1].free.sub(amount),
+  ]).collectionBnEqual(alice_assets.map((asset) => asset.free));
   testLog.getLog().debug(alice_assets.toString());
   bob_assets = await getUserAssets(bob.address, [firstAssetId, secondAssetId]);
   expect([
-    bob_assets_before[0],
-    bob_assets_before[1].add(amount),
-  ]).collectionBnEqual(bob_assets);
+    bob_assets_before[0].free,
+    bob_assets_before[1].free.add(amount),
+  ]).collectionBnEqual(bob_assets.map((asset) => asset.free));
   testLog.getLog().debug(bob_assets.toString());
 
   alice_assets_before = await getUserAssets(alice.address, [
@@ -1126,8 +1127,8 @@ test("xyk-pallet: Liquidity sufficiency scenario", async () => {
   ]);
   testLog.getLog().debug(pallet_assets_before.toString());
   let pool_balance_before, total_liquidity_assets_before;
-  alice_assets_before.push(new BN(0));
-  bob_assets_before.push(new BN(0));
+  alice_assets_before.push({ free: new BN(0) } as AccountData);
+  bob_assets_before.push({ free: new BN(0) } as AccountData);
   pool_balance_before = [new BN(0), new BN(0)];
   total_liquidity_assets_before = new BN(0);
 
@@ -1168,10 +1169,10 @@ test("xyk-pallet: Liquidity sufficiency scenario", async () => {
     liquidity_asset_id,
   ]);
   expect([
-    alice_assets_before[0].sub(first_asset_amount),
-    alice_assets_before[1].sub(second_asset_amount),
-    alice_assets_before[2].add(liquidity_assets_minted),
-  ]).collectionBnEqual(alice_assets);
+    alice_assets_before[0].free.sub(first_asset_amount),
+    alice_assets_before[1].free.sub(second_asset_amount),
+    alice_assets_before[2].free.add(liquidity_assets_minted),
+  ]).collectionBnEqual(alice_assets.map((asset) => asset.free));
   testLog.getLog().debug(alice_assets.toString());
   bob_assets = await getUserAssets(bob.address, [
     firstAssetId,
@@ -1185,9 +1186,9 @@ test("xyk-pallet: Liquidity sufficiency scenario", async () => {
     secondAssetId,
   ]);
   expect([
-    pallet_assets_before[0].add(first_asset_amount),
-    pallet_assets_before[1].add(second_asset_amount),
-  ]).collectionBnEqual(pallet_assets);
+    pallet_assets_before[0].free.add(first_asset_amount),
+    pallet_assets_before[1].free.add(second_asset_amount),
+  ]).collectionBnEqual(pallet_assets.map((asset) => asset.free));
   testLog.getLog().debug(pallet_assets.toString());
   let pool_balance = await getBalanceOfPool(firstAssetId, secondAssetId);
   expect([
@@ -1258,10 +1259,10 @@ test("xyk-pallet: Liquidity sufficiency scenario", async () => {
     liquidity_asset_id,
   ]);
   expect([
-    alice_assets_before[0].sub(first_asset_amount),
-    alice_assets_before[1].sub(second_asset_amount),
-    alice_assets_before[2].add(liquidity_assets_minted),
-  ]).collectionBnEqual(alice_assets);
+    alice_assets_before[0].free.sub(first_asset_amount),
+    alice_assets_before[1].free.sub(second_asset_amount),
+    alice_assets_before[2].free.add(liquidity_assets_minted),
+  ]).collectionBnEqual(alice_assets.map((asset) => asset.free));
   testLog.getLog().debug(alice_assets.toString());
   bob_assets = await getUserAssets(bob.address, [
     firstAssetId,
@@ -1275,9 +1276,9 @@ test("xyk-pallet: Liquidity sufficiency scenario", async () => {
     secondAssetId,
   ]);
   expect([
-    pallet_assets_before[0].add(first_asset_amount),
-    pallet_assets_before[1].add(second_asset_amount),
-  ]).collectionBnEqual(pallet_assets);
+    pallet_assets_before[0].free.add(first_asset_amount),
+    pallet_assets_before[1].free.add(second_asset_amount),
+  ]).collectionBnEqual(pallet_assets.map((asset) => asset.free));
   testLog.getLog().debug(pallet_assets.toString());
   pool_balance = await getBalanceOfPool(firstAssetId, secondAssetId);
   expect([
@@ -1357,19 +1358,19 @@ test("xyk-pallet: Liquidity sufficiency scenario", async () => {
     liquidity_asset_id,
   ]);
   expect([
-    bob_assets_before[0].sub(first_asset_amount),
-    bob_assets_before[1].sub(second_asset_amount),
-    bob_assets_before[2].add(liquidity_assets_minted),
-  ]).collectionBnEqual(bob_assets);
+    bob_assets_before[0].free.sub(first_asset_amount),
+    bob_assets_before[1].free.sub(second_asset_amount),
+    bob_assets_before[2].free.add(liquidity_assets_minted),
+  ]).collectionBnEqual(bob_assets.map((asset) => asset.free));
   testLog.getLog().debug(bob_assets.toString());
   pallet_assets = await getUserAssets(pallet_address, [
     firstAssetId,
     secondAssetId,
   ]);
   expect([
-    pallet_assets_before[0].add(first_asset_amount),
-    pallet_assets_before[1].add(second_asset_amount),
-  ]).collectionBnEqual(pallet_assets);
+    pallet_assets_before[0].free.add(first_asset_amount),
+    pallet_assets_before[1].free.add(second_asset_amount),
+  ]).collectionBnEqual(pallet_assets.map((asset) => asset.free));
   testLog.getLog().debug(pallet_assets.toString());
   pool_balance = await getBalanceOfPool(firstAssetId, secondAssetId);
   expect([
@@ -1413,7 +1414,7 @@ test("xyk-pallet: Liquidity sufficiency scenario", async () => {
       secondAssetId,
       first_asset_amount
     );
-  let liquidity_assets_burned_excess = liquidity_assets_burned
+  let liquidity_assets_burned_excess = liquidity_assets_burned.free
     .mul(new BN(105))
     .div(new BN(100));
 
@@ -1490,7 +1491,7 @@ test("xyk-pallet: Liquidity sufficiency scenario", async () => {
   testLog.getLog().debug(total_liquidity_assets_before.toString());
 
   user = bob;
-  let liquidity_asset_amount: BN = bob_assets_before[2];
+  let liquidity_asset_amount: BN = bob_assets_before[2].free;
   [first_asset_amount, second_asset_amount] =
     await calcuate_burn_liquidity_price_local(
       firstAssetId,
@@ -1582,7 +1583,7 @@ test("xyk-pallet: Liquidity sufficiency scenario", async () => {
     await calcuate_burn_liquidity_price_local(
       firstAssetId,
       secondAssetId,
-      liquidity_assets_burned
+      liquidity_assets_burned.free
     );
 
   testLog
@@ -1595,7 +1596,7 @@ test("xyk-pallet: Liquidity sufficiency scenario", async () => {
     user,
     firstAssetId,
     secondAssetId,
-    liquidity_assets_burned
+    liquidity_assets_burned.free
   ).then((result) => {
     const eventResponse = getEventResultFromMangataTx(result, [
       "xyk",
@@ -1615,10 +1616,10 @@ test("xyk-pallet: Liquidity sufficiency scenario", async () => {
     liquidity_asset_id,
   ]);
   expect([
-    alice_assets_before[0].add(first_asset_amount),
-    alice_assets_before[1].add(second_asset_amount),
-    alice_assets_before[2].sub(liquidity_assets_burned),
-  ]).collectionBnEqual(alice_assets);
+    alice_assets_before[0].free.add(first_asset_amount),
+    alice_assets_before[1].free.add(second_asset_amount),
+    alice_assets_before[2].free.sub(liquidity_assets_burned.free),
+  ]).collectionBnEqual(alice_assets.map((asset) => asset.free));
   testLog.getLog().debug(alice_assets.toString());
   bob_assets = await getUserAssets(bob.address, [
     firstAssetId,
@@ -1632,9 +1633,9 @@ test("xyk-pallet: Liquidity sufficiency scenario", async () => {
     secondAssetId,
   ]);
   expect([
-    pallet_assets_before[0].sub(first_asset_amount),
-    pallet_assets_before[1].sub(second_asset_amount),
-  ]).collectionBnEqual(pallet_assets);
+    pallet_assets_before[0].free.sub(first_asset_amount),
+    pallet_assets_before[1].free.sub(second_asset_amount),
+  ]).collectionBnEqual(pallet_assets.map((asset) => asset.free));
   testLog.getLog().debug(pallet_assets.toString());
   pool_balance = await getBalanceOfPool(firstAssetId, secondAssetId);
   expect([
@@ -1676,9 +1677,9 @@ test("xyk-pallet: Liquidity sufficiency scenario", async () => {
     await calcuate_burn_liquidity_price_local(
       firstAssetId,
       secondAssetId,
-      liquidity_assets_burned
+      liquidity_assets_burned.free
     );
-  liquidity_assets_burned_excess = liquidity_assets_burned
+  liquidity_assets_burned_excess = liquidity_assets_burned.free
     .mul(new BN(105))
     .div(new BN(100));
 
@@ -1761,7 +1762,7 @@ test("xyk-pallet: Liquidity sufficiency scenario", async () => {
     await calcuate_burn_liquidity_price_local(
       firstAssetId,
       secondAssetId,
-      liquidity_assets_burned
+      liquidity_assets_burned.free
     );
 
   testLog
@@ -1772,7 +1773,7 @@ test("xyk-pallet: Liquidity sufficiency scenario", async () => {
     user,
     firstAssetId,
     secondAssetId,
-    liquidity_assets_burned
+    liquidity_assets_burned.free
   ).then((result) => {
     const eventResponse = getEventResultFromMangataTx(result, [
       "xyk",
@@ -1799,19 +1800,19 @@ test("xyk-pallet: Liquidity sufficiency scenario", async () => {
     liquidity_asset_id,
   ]);
   expect([
-    bob_assets_before[0].add(first_asset_amount),
-    bob_assets_before[1].add(second_asset_amount),
-    bob_assets_before[2].sub(liquidity_assets_burned),
-  ]).collectionBnEqual(bob_assets);
+    bob_assets_before[0].free.add(first_asset_amount),
+    bob_assets_before[1].free.add(second_asset_amount),
+    bob_assets_before[2].free.sub(liquidity_assets_burned.free),
+  ]).collectionBnEqual(bob_assets.map((asset) => asset.free));
   testLog.getLog().debug(bob_assets.toString());
   pallet_assets = await getUserAssets(pallet_address, [
     firstAssetId,
     secondAssetId,
   ]);
   expect([
-    pallet_assets_before[0].sub(first_asset_amount),
-    pallet_assets_before[1].sub(second_asset_amount),
-  ]).collectionBnEqual(pallet_assets);
+    pallet_assets_before[0].free.sub(first_asset_amount),
+    pallet_assets_before[1].free.sub(second_asset_amount),
+  ]).collectionBnEqual(pallet_assets.map((asset) => asset.free));
   testLog.getLog().debug(pallet_assets.toString());
   pool_balance = await getBalanceOfPool(firstAssetId, secondAssetId);
   expect([

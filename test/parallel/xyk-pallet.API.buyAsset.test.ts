@@ -328,13 +328,15 @@ describe("xyk-pallet - Buy assets tests: Buying assets you can", () => {
     let amount = poolAmountSecondCurrency.sub(new BN(1));
     const addFromWallet = testUser1
       .getAsset(secondCurrency)
-      ?.amountBefore!.add(amount);
-    expect(testUser1.getAsset(secondCurrency)?.amountAfter!).bnEqual(
+      ?.amountBefore.free!.add(amount);
+    expect(testUser1.getAsset(secondCurrency)?.amountAfter.free!).bnEqual(
       addFromWallet!
     );
 
-    amount = testUser1.getAsset(firstCurrency)?.amountBefore!;
-    expect(testUser1.getAsset(firstCurrency)?.amountAfter!).bnEqual(amount);
+    amount = testUser1.getAsset(firstCurrency)?.amountBefore.free!;
+    expect(testUser1.getAsset(firstCurrency)?.amountAfter.free!).bnEqual(
+      amount
+    );
 
     //lets get the treasure amounts!
     const treasurySecondCurrency = await getTreasury(secondCurrency);
@@ -431,9 +433,9 @@ describe("xyk-pallet - Buy assets tests: Buying assets you can", () => {
 
     const diffFromWallet = testUser2
       .getAsset(thirdCurrency)
-      ?.amountBefore!.sub(buyPriceLocal);
+      ?.amountBefore.free!.sub(buyPriceLocal);
 
-    expect(testUser2.getAsset(thirdCurrency)?.amountAfter!).bnEqual(
+    expect(testUser2.getAsset(thirdCurrency)?.amountAfter.free!).bnEqual(
       diffFromWallet!
     );
 

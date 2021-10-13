@@ -618,7 +618,7 @@ describe("xyk-pallet - treasury tests [Connected - Mangata]: Error cases", () =>
     //The ones he had before + bought. 99
     const expectedValue = testUser1
       .getAsset(mgaTokenId)!
-      .amountAfter.sub(mgPoolAmount[0].sub(new BN(1)));
+      .amountAfter.free.sub(mgPoolAmount[0].sub(new BN(1)));
 
     expect(testUser1.getAsset(mgaTokenId)!.amountBefore).bnEqual(expectedValue);
     //burned destroyed! because is translated toMGA
