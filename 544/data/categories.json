@@ -1,0 +1,94 @@
+{
+  "uid" : "4b4757e66a1912dae1a509f688f20b0f",
+  "children" : [ {
+    "name" : "Product defects",
+    "children" : [ {
+      "name" : "TimeoutError: Waiting for element to be located By(xpath, //button[text()='Connect'])\n                Wait timed out after 20001ms",
+      "children" : [ {
+        "name" : "As a User I can mint some tokens MGA - mETH",
+        "uid" : "b7faaa2da72f8a11",
+        "parentUid" : "e43a4f7c90c20261628e6210046180b5",
+        "status" : "failed",
+        "time" : {
+          "start" : 1634088864591,
+          "stop" : 1634088972195,
+          "duration" : 107604
+        },
+        "flaky" : true,
+        "newFailed" : false,
+        "parameters" : [ ]
+      } ],
+      "uid" : "e43a4f7c90c20261628e6210046180b5"
+    }, {
+      "name" : "TimeoutError: Waiting for element to be located By(xpath, //button[text()='Connect'])\n                Wait timed out after 20005ms",
+      "children" : [ {
+        "name" : "As a User I can burn all liquidity MGA - mETH",
+        "uid" : "b8fc4b31f0bbfbf0",
+        "parentUid" : "0dfb7b36ac970a64643fc45a3edf67b9",
+        "status" : "failed",
+        "time" : {
+          "start" : 1634088972196,
+          "stop" : 1634089109656,
+          "duration" : 137460
+        },
+        "flaky" : true,
+        "newFailed" : true,
+        "parameters" : [ ]
+      } ],
+      "uid" : "0dfb7b36ac970a64643fc45a3edf67b9"
+    }, {
+      "name" : ": Timeout - Async callback was not invoked within the 300000 ms timeout specified by jest.setTimeout.",
+      "children" : [ {
+        "name" : "As a User I can deposit ETH from Meta extension",
+        "uid" : "bbaabbe814de4df7",
+        "parentUid" : "6f061b37a2a6ffb801a8fe904244be6d",
+        "status" : "failed",
+        "time" : {
+          "start" : 1634089340124,
+          "stop" : 1634089796400,
+          "duration" : 456276
+        },
+        "flaky" : true,
+        "newFailed" : false,
+        "parameters" : [ ]
+      } ],
+      "uid" : "6f061b37a2a6ffb801a8fe904244be6d"
+    }, {
+      "name" : "TimeoutError: Waiting for element to be located By(xpath, //*[@data-testid='wallet-asset-mETH'])\n                Wait timed out after 300009ms",
+      "children" : [ {
+        "name" : "As a User I can Withdraw ETH from Meta extension",
+        "uid" : "aa835cc83b92070e",
+        "parentUid" : "928442016005c17c3df9e4cc3f43fa68",
+        "status" : "failed",
+        "time" : {
+          "start" : 1634089796406,
+          "stop" : 1634089838044,
+          "duration" : 41638
+        },
+        "flaky" : true,
+        "newFailed" : true,
+        "parameters" : [ ]
+      } ],
+      "uid" : "928442016005c17c3df9e4cc3f43fa68"
+    }, {
+      "name" : "TimeoutError: Waiting for element to be located By(xpath, //*[@data-testid='wallet-asset-mDOT'])\n                Wait timed out after 300161ms",
+      "children" : [ {
+        "name" : "As a User I can get test tokens from the faucet",
+        "uid" : "1f42e361ed888b6e",
+        "parentUid" : "c54d5a7f378b089341cd80d4d3f1e8bc",
+        "status" : "failed",
+        "time" : {
+          "start" : 1634090864746,
+          "stop" : 1634091315531,
+          "duration" : 450785
+        },
+        "flaky" : true,
+        "newFailed" : false,
+        "parameters" : [ ]
+      } ],
+      "uid" : "c54d5a7f378b089341cd80d4d3f1e8bc"
+    } ],
+    "uid" : "8fb3a91ba5aaf9de24cc8a92edc82b5d"
+  } ],
+  "name" : "categories"
+}
