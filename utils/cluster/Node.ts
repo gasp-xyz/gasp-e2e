@@ -17,6 +17,8 @@ class Node {
   blockHashes: Map<number, string> = new Map();
   subscription: any;
 
+  electionEvents: Map<number, {}> = new Map();
+
   constructor(name: string, wsPath: string) {
     this.name = name;
     this.wsPath = wsPath;
@@ -36,7 +38,7 @@ class Node {
       throw new Error("The node is not connected yet.");
     }
     this.subscription = await this.api!.rpc.chain.subscribeNewHeads(
-      (lastHeader) => {
+      async (lastHeader) => {
         if (!this.firstBlock) {
           this.firstBlock = lastHeader.number.toNumber();
         }
@@ -47,6 +49,20 @@ class Node {
         testLog
           .getLog()
           .info(`${this.name} - #${this.lastBlock} - ${this.lastHash}`);
+
+        await this.api!.queryMulti(
+          [
+            this.api!.query.system.number,
+            this.api!.query.elections.candidates,
+            this.api!.query.elections.members,
+          ],
+          ([number, candidates, members]) => {
+            this.electionEvents.set(parseInt(number.toString()), {
+              candidates: candidates.toJSON(),
+              members: members.toJSON(),
+            });
+          }
+        );
       }
     );
   }
@@ -58,7 +74,11 @@ class Node {
     this.subscribeToHead();
   }
 
-  prettyPrint(): string {
+  public checkElectionCandidates(block: number) {
+    return this.electionEvents.get(block)!;
+  }
+
+  public prettyPrint(): string {
     return `
     ________________________________________
     | ${this.name}                          

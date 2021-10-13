@@ -86,7 +86,16 @@ export class Network {
 
   async createToken(): Promise<void> {}
 
-  async fundUser(user: User): Promise<void> {}
+  async fundUser(user: User, token: Token, amount: number): Promise<void> {}
+
+  public getUser(name: string): User | null {
+    this._users?.forEach((user) => {
+      if (user.name === name) {
+        return User;
+      }
+    });
+    return null;
+  }
 
   public prettyPrintState() {
     testLog.getLog().info(`Bootnode: ${this._bootnode?.name}`);
