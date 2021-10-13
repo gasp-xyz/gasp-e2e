@@ -125,21 +125,21 @@ export async function validateStatusWhenPoolCreated(
   let diffFromWallet = testUser1
     .getAsset(firstCurrency)
     ?.amountBefore.free!.sub(first_asset_amount);
-  expect(testUser1.getAsset(firstCurrency)?.amountAfter!).bnEqual(
+  expect(testUser1.getAsset(firstCurrency)?.amountAfter.free!).bnEqual(
     diffFromWallet!
   );
 
   diffFromWallet = testUser1
     .getAsset(secondCurrency)
     ?.amountBefore.free!.sub(second_asset_amount);
-  expect(testUser1.getAsset(secondCurrency)?.amountAfter!).bnEqual(
+  expect(testUser1.getAsset(secondCurrency)?.amountAfter.free!).bnEqual(
     diffFromWallet!
   );
 
   const addFromWallet = testUser1
     .getAsset(liquidity_asset_id)
     ?.amountBefore.free!.add(liquidity_assets_minted);
-  expect(testUser1.getAsset(liquidity_asset_id)?.amountAfter!).bnEqual(
+  expect(testUser1.getAsset(liquidity_asset_id)?.amountAfter.free!).bnEqual(
     addFromWallet!
   );
 
@@ -170,7 +170,7 @@ export async function validateUnmodified(
   await testUser1.refreshAmounts(AssetWallet.AFTER);
 
   testUser1.getFreeAssetAmounts().forEach((asset) => {
-    expect(asset.amountBefore).bnEqual(asset.amountAfter.free);
+    expect(asset.amountBefore.free).bnEqual(asset.amountAfter.free);
   });
 
   const pool_balance = await getBalanceOfPool(firstCurrency, secondCurrency);
@@ -213,11 +213,15 @@ export async function validateUserPaidFeeForFailedTx(
   const diffFromWallet = user
     .getAsset(assetSoldId)
     ?.amountBefore.free!.sub(completeFee);
-  expect(user.getAsset(assetSoldId)?.amountAfter!).bnEqual(diffFromWallet!);
+  expect(user.getAsset(assetSoldId)?.amountAfter.free!).bnEqual(
+    diffFromWallet!
+  );
 
   //second wallet should not be modified.
   const amount = user.getAsset(failedBoughtAssetId)?.amountBefore!;
-  expect(user.getAsset(failedBoughtAssetId)?.amountAfter!).bnEqual(amount.free);
+  expect(user.getAsset(failedBoughtAssetId)?.amountAfter.free!).bnEqual(
+    amount.free
+  );
 
   const treasuryTokens = await getTreasury(assetSoldId);
   const treasuryBurnTokens = await getTreasuryBurn(assetSoldId);

@@ -439,7 +439,7 @@ describe("xyk-pallet - Buy assets tests: Buying assets you can", () => {
       diffFromWallet!
     );
 
-    expect(testUser2.getAsset(firstCurrency)?.amountAfter!).bnEqual(
+    expect(testUser2.getAsset(firstCurrency)?.amountAfter.free!).bnEqual(
       amountToBuy
     );
 

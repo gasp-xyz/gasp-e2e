@@ -137,14 +137,14 @@ test("xyk-pallet - AssetsOperation: buyAsset [maxAmountIn = 1M], buy asset", asy
   let addFromWallet = testUser1
     .getAsset(boughtAssetId)
     ?.amountBefore.free!.add(amount);
-  expect(testUser1.getAsset(boughtAssetId)?.amountAfter!).bnEqual(
+  expect(testUser1.getAsset(boughtAssetId)?.amountAfter.free!).bnEqual(
     addFromWallet!
   );
 
   let diffFromWallet = testUser1
     .getAsset(soldAssetId)
     ?.amountBefore.free!.sub(buyPriceLocal);
-  expect(testUser1.getAsset(soldAssetId)?.amountAfter!).bnEqual(
+  expect(testUser1.getAsset(soldAssetId)?.amountAfter.free!).bnEqual(
     diffFromWallet!
   );
 
@@ -222,14 +222,14 @@ test("xyk-pallet - AssetsOperation: buyAsset [maxAmountIn = 1M], sell a bought a
   let addFromWallet = testUser1
     .getAsset(boughtAssetId)
     ?.amountBefore.free!.add(amount);
-  expect(testUser1.getAsset(boughtAssetId)?.amountAfter!).bnEqual(
+  expect(testUser1.getAsset(boughtAssetId)?.amountAfter.free!).bnEqual(
     addFromWallet!
   );
 
   let diffFromWallet = testUser1
     .getAsset(soldAssetId)
     ?.amountBefore.free!.sub(buyPriceLocal);
-  expect(testUser1.getAsset(soldAssetId)?.amountAfter!).bnEqual(
+  expect(testUser1.getAsset(soldAssetId)?.amountAfter.free!).bnEqual(
     diffFromWallet!
   );
 

@@ -124,7 +124,9 @@ test("xyk-pallet - MGA tokens are substracted as fee : CreatePool", async () => 
   const addFromWallet = treasury
     .getAsset(MGA_ASSET_ID)
     ?.amountBefore.free!.add(new BN(diff));
-  expect(treasury.getAsset(MGA_ASSET_ID)?.amountAfter!).bnEqual(addFromWallet!);
+  expect(treasury.getAsset(MGA_ASSET_ID)?.amountAfter.free!).bnEqual(
+    addFromWallet!
+  );
 });
 test("xyk-pallet - MGA tokens are substracted as fee : MintLiquidity", async () => {
   await mintLiquidity(
@@ -143,7 +145,9 @@ test("xyk-pallet - MGA tokens are substracted as fee : MintLiquidity", async () 
   const addFromWallet = treasury
     .getAsset(MGA_ASSET_ID)
     ?.amountBefore.free!.add(new BN(diff));
-  expect(treasury.getAsset(MGA_ASSET_ID)?.amountAfter!).bnEqual(addFromWallet!);
+  expect(treasury.getAsset(MGA_ASSET_ID)?.amountAfter.free!).bnEqual(
+    addFromWallet!
+  );
 });
 test("xyk-pallet - MGA tokens are substracted as fee : BurnLiquidity", async () => {
   await burnLiquidity(
@@ -162,7 +166,9 @@ test("xyk-pallet - MGA tokens are substracted as fee : BurnLiquidity", async () 
   const addFromWallet = treasury
     .getAsset(MGA_ASSET_ID)
     ?.amountBefore.free!.add(new BN(diff));
-  expect(treasury.getAsset(MGA_ASSET_ID)?.amountAfter!).bnEqual(addFromWallet!);
+  expect(treasury.getAsset(MGA_ASSET_ID)?.amountAfter.free!).bnEqual(
+    addFromWallet!
+  );
 });
 test("xyk-pallet - MGA tokens are substracted as fee : Transfer", async () => {
   await transferAsset(
@@ -181,7 +187,9 @@ test("xyk-pallet - MGA tokens are substracted as fee : Transfer", async () => {
   const addFromWallet = treasury
     .getAsset(MGA_ASSET_ID)
     ?.amountBefore.free!.add(new BN(diff));
-  expect(treasury.getAsset(MGA_ASSET_ID)?.amountAfter!).bnEqual(addFromWallet!);
+  expect(treasury.getAsset(MGA_ASSET_ID)?.amountAfter.free!).bnEqual(
+    addFromWallet!
+  );
 });
 test("xyk-pallet - MGA tokens are substracted as fee : TransferAll", async () => {
   await sudo.mint(firstCurrency, testUser2, new BN(1000));
@@ -200,7 +208,9 @@ test("xyk-pallet - MGA tokens are substracted as fee : TransferAll", async () =>
   const addFromWallet = treasury
     .getAsset(MGA_ASSET_ID)
     ?.amountBefore.free!.add(new BN(diff));
-  expect(treasury.getAsset(MGA_ASSET_ID)?.amountAfter!).bnEqual(addFromWallet!);
+  expect(treasury.getAsset(MGA_ASSET_ID)?.amountAfter.free!).bnEqual(
+    addFromWallet!
+  );
 });
 test("xyk-pallet - MGA tokens are not substracted as fee : SellAsset", async () => {
   await testUser1.sellAssets(firstCurrency, secondCurrency, new BN(50));
@@ -216,7 +226,9 @@ test("xyk-pallet - MGA tokens are not substracted as fee : SellAsset", async () 
   const addFromWallet = pallet
     .getAsset(MGA_ASSET_ID)
     ?.amountBefore.free!.add(new BN(0));
-  expect(pallet.getAsset(MGA_ASSET_ID)?.amountAfter!).bnEqual(addFromWallet!);
+  expect(pallet.getAsset(MGA_ASSET_ID)?.amountAfter.free!).bnEqual(
+    addFromWallet!
+  );
 });
 test("xyk-pallet - MGA tokens are not substracted as fee : BuyAsset", async () => {
   await testUser1.buyAssets(firstCurrency, secondCurrency, new BN(50));
@@ -234,5 +246,7 @@ test("xyk-pallet - MGA tokens are not substracted as fee : BuyAsset", async () =
   const addFromWallet = pallet
     .getAsset(MGA_ASSET_ID)
     ?.amountBefore.free!.add(new BN(0));
-  expect(pallet.getAsset(MGA_ASSET_ID)?.amountAfter!).bnEqual(addFromWallet!);
+  expect(pallet.getAsset(MGA_ASSET_ID)?.amountAfter.free!).bnEqual(
+    addFromWallet!
+  );
 });

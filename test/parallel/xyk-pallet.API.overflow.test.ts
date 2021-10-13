@@ -105,8 +105,12 @@ describe("xyk-pallet - Check operations are not executed because of overflow in 
     await testUser1.refreshAmounts(AssetWallet.AFTER);
     await testUser2.refreshAmounts(AssetWallet.AFTER);
 
-    expect(testUser1.getAsset(firstCurrency)?.amountAfter).bnEqual(MAX_BALANCE);
-    expect(testUser2.getAsset(firstCurrency)?.amountAfter).bnEqual(new BN(1));
+    expect(testUser1.getAsset(firstCurrency)?.amountAfter.free).bnEqual(
+      MAX_BALANCE
+    );
+    expect(testUser2.getAsset(firstCurrency)?.amountAfter.free).bnEqual(
+      new BN(1)
+    );
   });
 });
 
@@ -181,7 +185,9 @@ describe("xyk-pallet - Operate with a pool close to overflow", () => {
     });
     await testUser1.refreshAmounts(AssetWallet.AFTER);
 
-    expect(testUser1.getAsset(firstCurrency)?.amountAfter).bnEqual(MAX_BALANCE);
+    expect(testUser1.getAsset(firstCurrency)?.amountAfter.free).bnEqual(
+      MAX_BALANCE
+    );
   });
   test("Buy [100] assets to a wallet with Max-1000,1000 => overflow.", async () => {
     await buyAsset(
@@ -197,7 +203,9 @@ describe("xyk-pallet - Operate with a pool close to overflow", () => {
     });
     await testUser1.refreshAmounts(AssetWallet.AFTER);
 
-    expect(testUser1.getAsset(firstCurrency)?.amountAfter).bnEqual(MAX_BALANCE);
+    expect(testUser1.getAsset(firstCurrency)?.amountAfter.free).bnEqual(
+      MAX_BALANCE
+    );
   });
   //not suported scenario. We are creasing pool og Max-10 and then minting another 100.
   test.skip("Mint liquidities [1000] assets to a wallet with Max-1000,1000 => overflow.", async () => {
@@ -216,7 +224,9 @@ describe("xyk-pallet - Operate with a pool close to overflow", () => {
     });
     await testUser1.refreshAmounts(AssetWallet.AFTER);
 
-    expect(testUser1.getAsset(firstCurrency)?.amountAfter).bnEqual(MAX_BALANCE);
+    expect(testUser1.getAsset(firstCurrency)?.amountAfter.free).bnEqual(
+      MAX_BALANCE
+    );
   });
   test.skip("[BUG] Burn liquidities [MAX -1] assets to a wallet wich is full => overflow. NOT  a bug https://trello.com/c/J3fzuwH5", async () => {
     const amountToFillAsset = MAX_BALANCE.sub(
@@ -241,10 +251,10 @@ describe("xyk-pallet - Operate with a pool close to overflow", () => {
     });
     await testUser2.refreshAmounts(AssetWallet.AFTER);
 
-    expect(testUser2.getAsset(firstCurrency)?.amountAfter).bnEqual(
+    expect(testUser2.getAsset(firstCurrency)?.amountAfter.free).bnEqual(
       MAX_BALANCE.sub(new BN(2))
     );
-    expect(testUser2.getAsset(secondCurrency)?.amountAfter).bnEqual(
+    expect(testUser2.getAsset(secondCurrency)?.amountAfter.free).bnEqual(
       MAX_BALANCE.sub(new BN(2))
     );
   });

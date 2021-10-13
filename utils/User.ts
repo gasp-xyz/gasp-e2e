@@ -261,7 +261,7 @@ export class Asset {
     amountAfter = { free: new BN(0) } as AccountData
   ) {
     this.currencyId = currencyId;
-    this.amountBefore = { free: new BN(0) } as AccountData;
-    this.amountAfter = { free: new BN(0) } as AccountData;
+    this.amountBefore = amountBefore;
+    this.amountAfter = amountAfter;
   }
 }

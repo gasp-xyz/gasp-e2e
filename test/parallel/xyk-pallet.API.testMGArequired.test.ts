@@ -127,7 +127,7 @@ describe("Wallets unmodified", () => {
     await testUser1.refreshAmounts(AssetWallet.AFTER);
 
     testUser1.getFreeAssetAmounts().forEach((asset) => {
-      expect(asset.amountBefore).bnEqual(asset.amountAfter.free);
+      expect(asset.amountBefore.free).bnEqual(asset.amountAfter.free);
     });
 
     const pool_balance = await getBalanceOfPool(firstCurrency, secondCurrency);

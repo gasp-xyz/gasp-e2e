@@ -182,7 +182,7 @@ describe("xyk-pallet - Sell assets tests: SellAsset Errors:", () => {
       diffFromWallet!
     );
 
-    expect(testUser1.getAsset(secondCurrency)?.amountAfter!).bnEqual(
+    expect(testUser1.getAsset(secondCurrency)?.amountAfter.free!).bnEqual(
       secondWalletAmount
     );
 
@@ -264,7 +264,7 @@ describe("xyk-pallet - Sell assets tests: SellAsset Errors:", () => {
 
     //second wallet should not be modified.
     const amount = testUser1.getAsset(secondCurrency)?.amountBefore!;
-    expect(testUser1.getAsset(secondCurrency)?.amountAfter!).bnEqual(
+    expect(testUser1.getAsset(secondCurrency)?.amountAfter.free!).bnEqual(
       amount.free
     );
 
@@ -364,14 +364,16 @@ describe("xyk-pallet - Sell assets tests: Selling Assets you can", () => {
     //spent all the money!
 
     const amount = new BN(0);
-    expect(testUser1.getAsset(firstCurrency)?.amountAfter!).bnEqual(amount);
+    expect(testUser1.getAsset(firstCurrency)?.amountAfter.free!).bnEqual(
+      amount
+    );
     //amounAsset2 = issued  - spent in the pool + bought selling all firstCurerncy.
     const amountAsset2 = defaultCurrecyValue
       .add(new BN(1))
       .sub(second_asset_amount.div(new BN(2)))
       .add(sellPriceLocal);
 
-    expect(testUser1.getAsset(secondCurrency)?.amountAfter!).bnEqual(
+    expect(testUser1.getAsset(secondCurrency)?.amountAfter.free!).bnEqual(
       amountAsset2
     );
   });
@@ -449,9 +451,13 @@ describe("xyk-pallet - Sell assets tests: Selling Assets you can", () => {
     await testUser2.refreshAmounts(AssetWallet.AFTER);
 
     let amount = new BN(0);
-    expect(testUser2.getAsset(thirdCurrency)?.amountAfter!).bnEqual(amount);
+    expect(testUser2.getAsset(thirdCurrency)?.amountAfter.free!).bnEqual(
+      amount
+    );
 
     amount = sellPriceLocal;
-    expect(testUser2.getAsset(firstCurrency)?.amountAfter!).bnEqual(amount);
+    expect(testUser2.getAsset(firstCurrency)?.amountAfter.free!).bnEqual(
+      amount
+    );
   });
 });
