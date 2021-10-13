@@ -1,0 +1,250 @@
+{
+  "uid" : "614e393e0e4af7a0",
+  "name" : "As a User I can Withdraw ETH from Meta extension",
+  "fullName" : "UI main tests - Withdraw - ETH.As a User I can Withdraw ETH from Meta extension",
+  "historyId" : "eac55faabce1aad19e0827a3afd71b78",
+  "time" : {
+    "start" : 1634089816401,
+    "stop" : 1634090069069,
+    "duration" : 252668
+  },
+  "description" : "",
+  "descriptionHtml" : "",
+  "status" : "passed",
+  "flaky" : false,
+  "newFailed" : false,
+  "beforeStages" : [ ],
+  "afterStages" : [ ],
+  "labels" : [ {
+    "name" : "suite",
+    "value" : "UI main tests - Withdraw - ETH"
+  }, {
+    "name" : "testClass",
+    "value" : "UI main tests - Withdraw - ETH"
+  }, {
+    "name" : "testMethod",
+    "value" : "As a User I can Withdraw ETH from Meta extension"
+  }, {
+    "name" : "package",
+    "value" : "UI main tests - Withdraw - ETH"
+  }, {
+    "name" : "resultFormat",
+    "value" : "allure1"
+  } ],
+  "parameters" : [ ],
+  "links" : [ ],
+  "hidden" : false,
+  "retry" : false,
+  "extra" : {
+    "severity" : "normal",
+    "retries" : [ ],
+    "categories" : [ ],
+    "history" : {
+      "statistic" : {
+        "failed" : 87,
+        "broken" : 0,
+        "skipped" : 0,
+        "passed" : 106,
+        "unknown" : 0,
+        "total" : 193
+      },
+      "items" : [ {
+        "uid" : "aa835cc83b92070e",
+        "reportUrl" : "https://mangata-finance.github.io/mangata-e2e/544//#testresult/aa835cc83b92070e",
+        "status" : "failed",
+        "statusDetails" : "TimeoutError: Waiting for element to be located By(xpath, //*[@data-testid='wallet-asset-mETH'])\n                Wait timed out after 300009ms",
+        "time" : {
+          "start" : 1634089796406,
+          "stop" : 1634089838044,
+          "duration" : 41638
+        }
+      }, {
+        "uid" : "e60770c321f56148",
+        "reportUrl" : "https://mangata-finance.github.io/mangata-e2e/547//#testresult/e60770c321f56148",
+        "status" : "passed",
+        "time" : {
+          "start" : 1634089716414,
+          "stop" : 1634089942001,
+          "duration" : 225587
+        }
+      }, {
+        "uid" : "a81937e5ab087030",
+        "reportUrl" : "https://mangata-finance.github.io/mangata-e2e/542//#testresult/a81937e5ab087030",
+        "status" : "passed",
+        "time" : {
+          "start" : 1634089544044,
+          "stop" : 1634089805636,
+          "duration" : 261592
+        }
+      }, {
+        "uid" : "4fe1f4b985401693",
+        "reportUrl" : "https://mangata-finance.github.io/mangata-e2e/543//#testresult/4fe1f4b985401693",
+        "status" : "failed",
+        "statusDetails" : "TimeoutError: Waiting for element to be located By(xpath, //button[text()='Connect'])\n                Wait timed out after 20017ms",
+        "time" : {
+          "start" : 1634089036330,
+          "stop" : 1634089155798,
+          "duration" : 119468
+        }
+      }, {
+        "uid" : "c9ecaf7ac53d5683",
+        "reportUrl" : "https://mangata-finance.github.io/mangata-e2e/537//#testresult/c9ecaf7ac53d5683",
+        "status" : "failed",
+        "statusDetails" : "Error: 1010: Invalid Transaction: Transaction is outdated",
+        "time" : {
+          "start" : 1634045567328,
+          "stop" : 1634045694361,
+          "duration" : 127033
+        }
+      }, {
+        "uid" : "6ff65c2ecfdb203",
+        "reportUrl" : "https://mangata-finance.github.io/mangata-e2e/536//#testresult/6ff65c2ecfdb203",
+        "status" : "failed",
+        "statusDetails" : "TimeoutError: Waiting for element to be located By(xpath, //input[@placeholder='Paste Secret Recovery Phrase from clipboard'])\n                Wait timed out after 20000ms",
+        "time" : {
+          "start" : 1634045392727,
+          "stop" : 1634045434163,
+          "duration" : 41436
+        }
+      }, {
+        "uid" : "d7f80537ac3ea9df",
+        "reportUrl" : "https://mangata-finance.github.io/mangata-e2e/538//#testresult/d7f80537ac3ea9df",
+        "status" : "failed",
+        "statusDetails" : "Error: 1010: Invalid Transaction: Transaction is outdated",
+        "time" : {
+          "start" : 1634045458526,
+          "stop" : 1634045574318,
+          "duration" : 115792
+        }
+      }, {
+        "uid" : "413e21cccfa72f24",
+        "reportUrl" : "https://mangata-finance.github.io/mangata-e2e/541//#testresult/413e21cccfa72f24",
+        "status" : "failed",
+        "statusDetails" : "TimeoutError: Waiting for element to be located By(xpath, //input[@placeholder='Paste Secret Recovery Phrase from clipboard'])\n                Wait timed out after 20009ms",
+        "time" : {
+          "start" : 1634045373629,
+          "stop" : 1634045416177,
+          "duration" : 42548
+        }
+      }, {
+        "uid" : "891465d738c2898c",
+        "reportUrl" : "https://mangata-finance.github.io/mangata-e2e/539//#testresult/891465d738c2898c",
+        "status" : "failed",
+        "statusDetails" : "Error: Failed: \"W[1] timeout in - signAndWaitTx - \\\" + 5HQ9Mm9L1HG53htEGDMsnhkkL7hEfF9vLstEQPtMLX5Gupqx + \\\" - \\\" + 1743 + \\\" - \\\" + {\\\"isSigned\\\":true,\\\"method\\\":{\\\"args\\\":[{\\\"args\\\":[\\\"0\\\",\\\"5D84PQh4MyqLxUbe5mDUA7RfvzAAUXhhJyrpkm51tV4frf38\\\",\\\"10.0000 mUnit\\\"],\\\"method\\\":\\\"mint\\\",\\\"section\\\":\\\"tokens\\\"}],\\\"method\\\":\\\"sudo\\\",\\\"section\\\":\\\"sudo\\\"},\\\"era\\\":{\\\"MortalEra\\\":{\\\"period\\\":\\\"64\\\",\\\"phase\\\":\\\"12\\\"}},\\\"nonce\\\":\\\"1,743\\\",\\\"signature\\\":\\\"0xa66614bb1826305ed46233f35d9f60efe3a05529b75df4d4ba4208b5b609ba4d4b883e160fb1a04c57de92b9bc5be3f5a0eba5c818d5c5ec5f102c53a28c6a83\\\",\\\"signer\\\":\\\"5HQ9Mm9L1HG53htEGDMsnhkkL7hEfF9vLstEQPtMLX5Gupqx\\\",\\\"tip\\\":\\\"0\\\"}\"",
+        "time" : {
+          "start" : 1634045001800,
+          "stop" : 1634045196642,
+          "duration" : 194842
+        }
+      }, {
+        "uid" : "231182accf54e486",
+        "reportUrl" : "https://mangata-finance.github.io/mangata-e2e/540//#testresult/231182accf54e486",
+        "status" : "failed",
+        "statusDetails" : "TimeoutError: Waiting for element to be located By(xpath, //*[@data-testid='wallet-asset-mETH'])\n                Wait timed out after 300006ms",
+        "time" : {
+          "start" : 1634044781837,
+          "stop" : 1634044823519,
+          "duration" : 41682
+        }
+      }, {
+        "uid" : "acaf382d9e6aaf2",
+        "reportUrl" : "https://mangata-finance.github.io/mangata-e2e/532//#testresult/acaf382d9e6aaf2",
+        "status" : "passed",
+        "time" : {
+          "start" : 1634003333404,
+          "stop" : 1634003560272,
+          "duration" : 226868
+        }
+      }, {
+        "uid" : "430235e98414a4ac",
+        "reportUrl" : "https://mangata-finance.github.io/mangata-e2e/535//#testresult/430235e98414a4ac",
+        "status" : "failed",
+        "statusDetails" : "Error: Failed: \"W[1] timeout in - signAndWaitTx - \\\" + 5HQ9Mm9L1HG53htEGDMsnhkkL7hEfF9vLstEQPtMLX5Gupqx + \\\" - \\\" + 1690 + \\\" - \\\" + {\\\"isSigned\\\":true,\\\"method\\\":{\\\"args\\\":[{\\\"args\\\":[\\\"0\\\",\\\"5Caiy92mYNYt9UAuWo1HngZcdTPvMbfYFzqvvwVz6mH5GZ8V\\\",\\\"10.0000 mUnit\\\"],\\\"method\\\":\\\"mint\\\",\\\"section\\\":\\\"tokens\\\"}],\\\"method\\\":\\\"sudo\\\",\\\"section\\\":\\\"sudo\\\"},\\\"era\\\":{\\\"MortalEra\\\":{\\\"period\\\":\\\"64\\\",\\\"phase\\\":\\\"38\\\"}},\\\"nonce\\\":\\\"1,690\\\",\\\"signature\\\":\\\"0x7a4da1b6761647ecabd7933739280784d038ff3b51c9c6934b09fee0da1f7b1fad33033261b120b345c986587a449d2bb09ce04141833895415e12844e217483\\\",\\\"signer\\\":\\\"5HQ9Mm9L1HG53htEGDMsnhkkL7hEfF9vLstEQPtMLX5Gupqx\\\",\\\"tip\\\":\\\"0\\\"}\"",
+        "time" : {
+          "start" : 1634003299932,
+          "stop" : 1634003493978,
+          "duration" : 194046
+        }
+      }, {
+        "uid" : "552da9c511489a5e",
+        "reportUrl" : "https://mangata-finance.github.io/mangata-e2e/534//#testresult/552da9c511489a5e",
+        "status" : "failed",
+        "statusDetails" : "TimeoutError: Waiting for element to be located By(xpath, //*[@data-testid='wallet-asset-mETH'])\n                Wait timed out after 300009ms",
+        "time" : {
+          "start" : 1634002734292,
+          "stop" : 1634002775828,
+          "duration" : 41536
+        }
+      }, {
+        "uid" : "1a12b01b0f6aa0ec",
+        "reportUrl" : "https://mangata-finance.github.io/mangata-e2e/533//#testresult/1a12b01b0f6aa0ec",
+        "status" : "failed",
+        "statusDetails" : "NoSuchWindowError: no such window: target window already closed\n                from unknown error: web view not found\n                  (Session info: chrome=94.0.4606.61)\n                  (Driver info: chromedriver=94.0.4606.61 (418b78f5838ed0b1c69bb4e51ea0252171854915-refs/branch-heads/4606@{#1204}),platform=Linux 5.8.0-1042-azure x86_64)",
+        "time" : {
+          "start" : 1634003165447,
+          "stop" : 1634003165565,
+          "duration" : 118
+        }
+      }, {
+        "uid" : "b48a4e1f996b4054",
+        "reportUrl" : "https://mangata-finance.github.io/mangata-e2e/531//#testresult/b48a4e1f996b4054",
+        "status" : "passed",
+        "time" : {
+          "start" : 1634002655669,
+          "stop" : 1634002894843,
+          "duration" : 239174
+        }
+      }, {
+        "uid" : "3b6c5b3ae1f43d0a",
+        "reportUrl" : "https://mangata-finance.github.io/mangata-e2e/530//#testresult/3b6c5b3ae1f43d0a",
+        "status" : "passed",
+        "time" : {
+          "start" : 1634002630783,
+          "stop" : 1634002869984,
+          "duration" : 239201
+        }
+      }, {
+        "uid" : "fa978d10150be4e7",
+        "reportUrl" : "https://mangata-finance.github.io/mangata-e2e/525//#testresult/fa978d10150be4e7",
+        "status" : "passed",
+        "time" : {
+          "start" : 1633959152009,
+          "stop" : 1633959425906,
+          "duration" : 273897
+        }
+      }, {
+        "uid" : "e9d30ba5a3717118",
+        "reportUrl" : "https://mangata-finance.github.io/mangata-e2e/529//#testresult/e9d30ba5a3717118",
+        "status" : "failed",
+        "statusDetails" : "TimeoutError: Waiting for element to be located By(xpath, //*[@data-testid='wallet-asset-mETH'])\n                Wait timed out after 300001ms",
+        "time" : {
+          "start" : 1633959210752,
+          "stop" : 1633959252471,
+          "duration" : 41719
+        }
+      }, {
+        "uid" : "8e75de3b59a9980f",
+        "reportUrl" : "https://mangata-finance.github.io/mangata-e2e/526//#testresult/8e75de3b59a9980f",
+        "status" : "failed",
+        "statusDetails" : "Error: 1010: Invalid Transaction: Transaction is outdated",
+        "time" : {
+          "start" : 1633958998085,
+          "stop" : 1633959126436,
+          "duration" : 128351
+        }
+      }, {
+        "uid" : "33950ce864b0a970",
+        "reportUrl" : "https://mangata-finance.github.io/mangata-e2e/527//#testresult/33950ce864b0a970",
+        "status" : "passed",
+        "time" : {
+          "start" : 1633958925135,
+          "stop" : 1633959147561,
+          "duration" : 222426
+        }
+      } ]
+    },
+    "tags" : [ ]
+  },
+  "source" : "614e393e0e4af7a0.json",
+  "parameterValues" : [ ]
+}
