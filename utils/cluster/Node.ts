@@ -17,7 +17,7 @@ class Node {
   blockHashes: Map<number, string> = new Map();
   subscription: any;
 
-  electionEvents: Map<number, {}> = new Map();
+  electionEvents: Map<number, { candidates: any; members: any }> = new Map();
 
   constructor(name: string, wsPath: string) {
     this.name = name;
@@ -57,6 +57,10 @@ class Node {
             this.api!.query.elections.members,
           ],
           ([number, candidates, members]) => {
+            testLog.getLog().info(`Election Information - ${this.lastBlock}
+              Candidates: ${candidates.toJSON()}
+              Members: ${members.toJSON()}`);
+
             this.electionEvents.set(parseInt(number.toString()), {
               candidates: candidates.toJSON(),
               members: members.toJSON(),

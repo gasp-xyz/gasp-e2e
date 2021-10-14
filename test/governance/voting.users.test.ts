@@ -40,8 +40,6 @@ describe("Governance -> Voting -> Users", () => {
     await voter.vote([candidate], 10000);
     await waitForNBlocks(1);
 
-    const candidates = bootnode.checkElectionCandidates(bootnode.lastBlock!);
-
     // Check candidate in candidates, need to add typing to candidates object in nodes
   });
 });

@@ -48,13 +48,15 @@ export class User {
     }
   }
 
-  removeVote(): void {
+  async removeVote(): Promise<void> {
     if (this.votingStatus === "NotVoted") {
       throw new Error("User has not voted yet");
     }
 
     try {
-      this.node.api!.tx.elections.removeVoter();
+      await this.node
+        .api!.tx.elections.removeVoter()
+        .signAndSend(this.account.keyringPair!);
       this.votingStatus = "NotVoted";
     } catch (e) {
       throw new Error(e);
@@ -72,7 +74,9 @@ export class User {
 
     try {
       const candidates = await this.node.api!.query.elections.candidates();
-      this.node!.api!.tx.elections.submitCandidacy(candidates.length);
+      await this.node!.api!.tx.elections.submitCandidacy(
+        candidates.length
+      ).signAndSend(this.account.keyringPair!);
       this.candidacy = "Candidate";
     } catch (e) {
       throw new Error(e);
@@ -96,7 +100,9 @@ export class User {
         candidacyArgument = "Candidate" + candidates.length;
       }
 
-      this.node.api!.tx.elections.renounceCandidacy(candidacyArgument);
+      this.node
+        .api!.tx.elections.renounceCandidacy(candidacyArgument)
+        .signAndSend(this.account.keyringPair!);
       this.candidacy = "NotRunning";
     } catch (e) {
       throw new Error(e);
