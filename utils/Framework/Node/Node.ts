@@ -77,10 +77,6 @@ export class Node {
     this.subscribeToHead();
   }
 
-  public checkElectionCandidates(block: number) {
-    return this.electionEvents.get(block)!;
-  }
-
   public prettyPrint(): string {
     return `
     ________________________________________

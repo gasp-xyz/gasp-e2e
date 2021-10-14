@@ -1,0 +1,43 @@
+import BN from "bn.js";
+import { ExtrinsicResult } from "../../eventListeners";
+import { SudoUser } from "../../Framework/User/SudoUser";
+import { mintAsset } from "../../tx";
+import { getEventResultFromTxWait } from "../../txHandler";
+import { Token } from "./Token";
+
+export class Bank {
+  sudoUser: SudoUser;
+  tokens: Token[] | undefined;
+  #id = new BN(0);
+
+  constructor(sudoUser: SudoUser) {
+    this.sudoUser = sudoUser;
+  }
+
+  public async mintToken(supply: BN): Promise<Token> {
+    this.#id.add(new BN(1));
+    const token = new Token(this.#id, supply);
+
+    await mintAsset(
+      this.sudoUser.keyRingPair,
+      this.#id,
+      this.sudoUser.keyRingPair.address,
+      supply
+    ).then((result) => {
+      const eventResponse = getEventResultFromTxWait(result, [
+        "tokens",
+        "Minted",
+        this.sudoUser.keyRingPair.address,
+      ]);
+      expect(eventResponse.state).toEqual(ExtrinsicResult.ExtrinsicSuccess);
+    });
+
+    if (this.tokens === undefined) {
+      this.tokens = [token];
+    } else {
+      this.tokens.push(token);
+    }
+
+    return token;
+  }
+}

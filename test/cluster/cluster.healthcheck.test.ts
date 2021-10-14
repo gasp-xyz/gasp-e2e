@@ -9,8 +9,8 @@ import { uniq, intersection, takeRight } from "lodash";
 import * as path from "path";
 import { testLog } from "../../utils/Logger";
 import { waitForNBlocks } from "../../utils/utils";
-import { Network } from "../../utils/cluster/Network";
-import { Node } from "../../utils/cluster/Node";
+import { Network } from "../../utils/Framework/Network";
+import { Node } from "../../utils/Framework/Node";
 
 jest.spyOn(console, "log").mockImplementation(jest.fn());
 jest.spyOn(console, "error").mockImplementation(jest.fn());

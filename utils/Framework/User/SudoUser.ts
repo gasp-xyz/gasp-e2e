@@ -1,6 +1,9 @@
 import BN from "bn.js";
 import { BaseUser } from "./BaseUser";
+import { ExtrinsicResult } from "../../eventListeners";
+import { getEventResultFromTxWait } from "../../txHandler";
 import { Keyring } from "@polkadot/api";
+import { mintAsset } from "../../tx";
 import { Node } from "../Node/Node";
 import { Token } from "../Token";
 
@@ -12,8 +15,22 @@ export class SudoUser extends BaseUser {
     this.node = node;
   }
 
-  async mintToken(supply: BN): Promise<Token> {
-    return new Token();
+  async mintToken(assetId: BN, amount: BN): Promise<Token> {
+    await mintAsset(
+      this.keyRingPair,
+      assetId,
+      this.keyRingPair.address,
+      amount
+    ).then((result) => {
+      const eventResponse = getEventResultFromTxWait(result, [
+        "tokens",
+        "Minted",
+        this.keyRingPair.address,
+      ]);
+      expect(eventResponse.state).toEqual(ExtrinsicResult.ExtrinsicSuccess);
+    });
+
+    return new Token(assetId, amount);
   }
 
   async fundUser(user: BaseUser, token: Token, amount: BN): Promise<void> {}

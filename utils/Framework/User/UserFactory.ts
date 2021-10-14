@@ -1,6 +1,6 @@
 import { Keyring } from "@polkadot/api";
 
-import { Node } from "../Node";
+import { Node } from "../Node/Node";
 
 import { GovernanceUser } from "./GovernanceUser";
 import { SudoUser } from "./SudoUser";
