@@ -1,0 +1,247 @@
+{
+  "uid" : "3ddd8fba9b8c7d9f",
+  "name" : "As a User I can mint some tokens MGA - mETH",
+  "fullName" : "UI tests - A user can swap and mint tokens.As a User I can mint some tokens MGA - mETH",
+  "historyId" : "d61eda4c5635d823f9db1036b3f5b551",
+  "time" : {
+    "start" : 1634175306793,
+    "stop" : 1634175546907,
+    "duration" : 240114
+  },
+  "description" : "",
+  "descriptionHtml" : "",
+  "status" : "passed",
+  "flaky" : false,
+  "newFailed" : false,
+  "beforeStages" : [ ],
+  "afterStages" : [ ],
+  "labels" : [ {
+    "name" : "suite",
+    "value" : "UI tests - A user can swap and mint tokens"
+  }, {
+    "name" : "testClass",
+    "value" : "UI tests - A user can swap and mint tokens"
+  }, {
+    "name" : "testMethod",
+    "value" : "As a User I can mint some tokens MGA - mETH"
+  }, {
+    "name" : "package",
+    "value" : "UI tests - A user can swap and mint tokens"
+  }, {
+    "name" : "resultFormat",
+    "value" : "allure1"
+  } ],
+  "parameters" : [ ],
+  "links" : [ ],
+  "hidden" : false,
+  "retry" : false,
+  "extra" : {
+    "severity" : "normal",
+    "retries" : [ ],
+    "categories" : [ ],
+    "history" : {
+      "statistic" : {
+        "failed" : 74,
+        "broken" : 0,
+        "skipped" : 0,
+        "passed" : 100,
+        "unknown" : 0,
+        "total" : 174
+      },
+      "items" : [ {
+        "uid" : "20a31441327cd9c4",
+        "reportUrl" : "https://mangata-finance.github.io/mangata-e2e/565//#testresult/20a31441327cd9c4",
+        "status" : "failed",
+        "statusDetails" : "Error: Failed: \"W[1] timeout in - signAndWaitTx - \\\" + 5HQ9Mm9L1HG53htEGDMsnhkkL7hEfF9vLstEQPtMLX5Gupqx + \\\" - \\\" + 2006 + \\\" - \\\" + {\\\"isSigned\\\":true,\\\"method\\\":{\\\"args\\\":[{\\\"args\\\":[\\\"1\\\",\\\"5G7CkMkxJywVfKPVQz6DSwStHFtHxFqf41nafn62dyx9JNmj\\\",\\\"10.0000 kUnit\\\"],\\\"method\\\":\\\"mint\\\",\\\"section\\\":\\\"tokens\\\"}],\\\"method\\\":\\\"sudo\\\",\\\"section\\\":\\\"sudo\\\"},\\\"era\\\":{\\\"MortalEra\\\":{\\\"period\\\":\\\"64\\\",\\\"phase\\\":\\\"29\\\"}},\\\"nonce\\\":\\\"2,006\\\",\\\"signature\\\":\\\"0x5cfcea9d3a7b4fa6225c7afd712e301a398272245d422015f22c2e96e8eb185b58b4fd277e22c1b6f5cb5e781c35da65e0be7613d73d2366ebdabf7ffc37638a\\\",\\\"signer\\\":\\\"5HQ9Mm9L1HG53htEGDMsnhkkL7hEfF9vLstEQPtMLX5Gupqx\\\",\\\"tip\\\":\\\"0\\\"}\"",
+        "time" : {
+          "start" : 1634175260471,
+          "stop" : 1634175546020,
+          "duration" : 285549
+        }
+      }, {
+        "uid" : "c3dd299c578c082f",
+        "reportUrl" : "https://mangata-finance.github.io/mangata-e2e/566//#testresult/c3dd299c578c082f",
+        "status" : "passed",
+        "time" : {
+          "start" : 1634175330738,
+          "stop" : 1634175584170,
+          "duration" : 253432
+        }
+      }, {
+        "uid" : "9f98133de0ea1276",
+        "reportUrl" : "https://mangata-finance.github.io/mangata-e2e/564//#testresult/9f98133de0ea1276",
+        "status" : "passed",
+        "time" : {
+          "start" : 1634175284041,
+          "stop" : 1634175511980,
+          "duration" : 227939
+        }
+      }, {
+        "uid" : "27ab98c2b615297b",
+        "reportUrl" : "https://mangata-finance.github.io/mangata-e2e/562//#testresult/27ab98c2b615297b",
+        "status" : "failed",
+        "statusDetails" : "thrown: Event {\n                  \"isTrusted\": true,\n                }",
+        "time" : {
+          "start" : 1634175021409,
+          "stop" : 1634175021749,
+          "duration" : 340
+        }
+      }, {
+        "uid" : "d39d2913a54a7b78",
+        "reportUrl" : "https://mangata-finance.github.io/mangata-e2e/563//#testresult/d39d2913a54a7b78",
+        "status" : "failed",
+        "statusDetails" : "NoSuchSessionError: invalid session id",
+        "time" : {
+          "start" : 1634175171945,
+          "stop" : 1634175173979,
+          "duration" : 2034
+        }
+      }, {
+        "uid" : "77d22a7e0eb9ca06",
+        "reportUrl" : "https://mangata-finance.github.io/mangata-e2e/559//#testresult/77d22a7e0eb9ca06",
+        "status" : "passed",
+        "time" : {
+          "start" : 1634130936574,
+          "stop" : 1634131146625,
+          "duration" : 210051
+        }
+      }, {
+        "uid" : "3f2342621f2bb723",
+        "reportUrl" : "https://mangata-finance.github.io/mangata-e2e/558//#testresult/3f2342621f2bb723",
+        "status" : "passed",
+        "time" : {
+          "start" : 1634131027876,
+          "stop" : 1634131292046,
+          "duration" : 264170
+        }
+      }, {
+        "uid" : "989365102c1fd2c0",
+        "reportUrl" : "https://mangata-finance.github.io/mangata-e2e/557//#testresult/989365102c1fd2c0",
+        "status" : "passed",
+        "time" : {
+          "start" : 1634130930572,
+          "stop" : 1634131140656,
+          "duration" : 210084
+        }
+      }, {
+        "uid" : "66c2d220b5a3bcd1",
+        "reportUrl" : "https://mangata-finance.github.io/mangata-e2e/556//#testresult/66c2d220b5a3bcd1",
+        "status" : "failed",
+        "statusDetails" : "Error: 1014: Priority is too low: (4070920095600 vs 4070920095600): The transaction has too low priority to replace another transaction already in the pool.",
+        "time" : {
+          "start" : 1634130936312,
+          "stop" : 1634131031282,
+          "duration" : 94970
+        }
+      }, {
+        "uid" : "b1f8e16918cd967e",
+        "reportUrl" : "https://mangata-finance.github.io/mangata-e2e/555//#testresult/b1f8e16918cd967e",
+        "status" : "failed",
+        "statusDetails" : "NoSuchWindowError: no such window: target window already closed\n                from unknown error: web view not found\n                  (Session info: chrome=94.0.4606.61)\n                  (Driver info: chromedriver=94.0.4606.61 (418b78f5838ed0b1c69bb4e51ea0252171854915-refs/branch-heads/4606@{#1204}),platform=Linux 5.8.0-1042-azure x86_64)",
+        "time" : {
+          "start" : 1634130716798,
+          "stop" : 1634130726297,
+          "duration" : 9499
+        }
+      }, {
+        "uid" : "9a7df3b974d7885b",
+        "reportUrl" : "https://mangata-finance.github.io/mangata-e2e/560//#testresult/9a7df3b974d7885b",
+        "status" : "failed",
+        "statusDetails" : "NoSuchSessionError: invalid session id",
+        "time" : {
+          "start" : 1634130819218,
+          "stop" : 1634130820055,
+          "duration" : 837
+        }
+      }, {
+        "uid" : "a3ca45ea39091e6f",
+        "reportUrl" : "https://mangata-finance.github.io/mangata-e2e/549//#testresult/a3ca45ea39091e6f",
+        "status" : "passed",
+        "time" : {
+          "start" : 1634112864683,
+          "stop" : 1634113086719,
+          "duration" : 222036
+        }
+      }, {
+        "uid" : "8da515cc1f4fc900",
+        "reportUrl" : "https://mangata-finance.github.io/mangata-e2e/551//#testresult/8da515cc1f4fc900",
+        "status" : "passed",
+        "time" : {
+          "start" : 1634112852581,
+          "stop" : 1634113068590,
+          "duration" : 216009
+        }
+      }, {
+        "uid" : "3d7a302c2467b4bd",
+        "reportUrl" : "https://mangata-finance.github.io/mangata-e2e/548//#testresult/3d7a302c2467b4bd",
+        "status" : "failed",
+        "statusDetails" : "thrown: Event {\n                  \"isTrusted\": true,\n                }",
+        "time" : {
+          "start" : 1634112609998,
+          "stop" : 1634112610338,
+          "duration" : 340
+        }
+      }, {
+        "uid" : "f9f5a6501be74fbb",
+        "reportUrl" : "https://mangata-finance.github.io/mangata-e2e/545//#testresult/f9f5a6501be74fbb",
+        "status" : "passed",
+        "time" : {
+          "start" : 1634088919870,
+          "stop" : 1634089171850,
+          "duration" : 251980
+        }
+      }, {
+        "uid" : "b7faaa2da72f8a11",
+        "reportUrl" : "https://mangata-finance.github.io/mangata-e2e/544//#testresult/b7faaa2da72f8a11",
+        "status" : "failed",
+        "statusDetails" : "TimeoutError: Waiting for element to be located By(xpath, //button[text()='Connect'])\n                Wait timed out after 20001ms",
+        "time" : {
+          "start" : 1634088864591,
+          "stop" : 1634088972195,
+          "duration" : 107604
+        }
+      }, {
+        "uid" : "718bad73d19741af",
+        "reportUrl" : "https://mangata-finance.github.io/mangata-e2e/547//#testresult/718bad73d19741af",
+        "status" : "passed",
+        "time" : {
+          "start" : 1634088864553,
+          "stop" : 1634089074566,
+          "duration" : 210013
+        }
+      }, {
+        "uid" : "8b27f91e36a23bd1",
+        "reportUrl" : "https://mangata-finance.github.io/mangata-e2e/542//#testresult/8b27f91e36a23bd1",
+        "status" : "failed",
+        "statusDetails" : "TimeoutError: Waiting for element to be located By(xpath, //button[text()='Connect'])\n                Wait timed out after 20519ms",
+        "time" : {
+          "start" : 1634088961883,
+          "stop" : 1634089091472,
+          "duration" : 129589
+        }
+      }, {
+        "uid" : "ca2d7acc6ce8089b",
+        "reportUrl" : "https://mangata-finance.github.io/mangata-e2e/543//#testresult/ca2d7acc6ce8089b",
+        "status" : "failed",
+        "statusDetails" : "NoSuchWindowError: no such window: target window already closed\n                from unknown error: web view not found\n                  (Session info: chrome=94.0.4606.61)\n                  (Driver info: chromedriver=94.0.4606.61 (418b78f5838ed0b1c69bb4e51ea0252171854915-refs/branch-heads/4606@{#1204}),platform=Linux 5.8.0-1042-azure x86_64)",
+        "time" : {
+          "start" : 1634088755299,
+          "stop" : 1634088755937,
+          "duration" : 638
+        }
+      }, {
+        "uid" : "c981dd8a35ef77d2",
+        "reportUrl" : "https://mangata-finance.github.io/mangata-e2e/537//#testresult/c981dd8a35ef77d2",
+        "status" : "passed",
+        "time" : {
+          "start" : 1634044578630,
+          "stop" : 1634044813775,
+          "duration" : 235145
+        }
+      } ]
+    },
+    "tags" : [ ]
+  },
+  "source" : "3ddd8fba9b8c7d9f.json",
+  "parameterValues" : [ ]
+}
