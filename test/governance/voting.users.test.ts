@@ -1,45 +1,49 @@
 /* eslint-disable @typescript-eslint/no-unused-vars */
-import { resolve } from "path";
 
-import { Network } from "../../utils/cluster/Network";
-import { Node } from "../../utils/cluster/Node";
-import { User } from "../../utils/cluster/User";
-import { Token } from "../../utils/cluster/Token";
-import { waitForNBlocks } from "../../utils/utils";
+import BN from "bn.js";
+import { GovernanceUser } from "../../utils/Framework/User/GovernanceUser";
+import { Keyring } from "@polkadot/api";
+import { Network } from "../../utils/Framework/Network";
+import { Node } from "../../utils/Framework/Node/Node";
+import { SudoUser } from "../../utils/Framework/User/SudoUser";
+import { Token } from "../../utils/Framework/Token";
+import { UserFactory, Users } from "../../utils/Framework/User/UserFactory";
 
-let network: Network;
 let bootnode: Node;
-let users: Array<User>;
-let nodes: Array<Node>;
-let tokens: Array<Token>;
+let keyring: Keyring;
+let sudo: SudoUser;
 
 beforeAll(async () => {
-  network = new Network();
-  await network.init(resolve(__dirname, "./governance.config"));
-  users = network.getState().users!;
-  nodes = network.getState().nodes!;
-  tokens = network.getState().tokens!;
-  bootnode = nodes[0];
-});
-
-beforeEach(() => {
-  network.prettyPrintState();
+  bootnode = new Node("wss://develop.mangatafinance.cloud:9944");
+  keyring = new Keyring({ type: "sr25519" });
+  sudo = UserFactory.createUser(Users.SudoUser, keyring, bootnode) as SudoUser;
 });
 
 describe("Governance -> Voting -> Users", () => {
   test("Users can vote for a new council", async () => {
-    const candidate = network.getUser("Gonzalo")!;
-    const voter = network.getUser("Eddy")!;
+    const candidate = UserFactory.createUser(
+      Users.GovernanceUser,
+      keyring,
+      bootnode
+    ) as GovernanceUser;
 
-    network.fundUser(candidate, tokens[0], 100000);
-    network.fundUser(voter, tokens[0], 100000);
+    const voter = UserFactory.createUser(
+      Users.GovernanceUser,
+      keyring,
+      bootnode
+    ) as GovernanceUser;
+
+    const network = new Network(keyring, bootnode, [bootnode], sudo, [
+      candidate,
+      voter,
+    ]);
+
+    const mgaToken: Token = await sudo.mintToken(new BN(10000000));
+
+    sudo.fundUser(candidate, mgaToken, new BN(10000));
+    sudo.fundUser(voter, mgaToken, new BN(10000));
 
     await candidate.runForCouncil();
-    await waitForNBlocks(1);
-
-    await voter.vote([candidate], 10000);
-    await waitForNBlocks(1);
-
-    // Check candidate in candidates, need to add typing to candidates object in nodes
+    await voter.vote([candidate], 5000);
   });
 });
