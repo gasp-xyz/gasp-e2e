@@ -1,0 +1,124 @@
+{
+  "uid" : "4b4757e66a1912dae1a509f688f20b0f",
+  "children" : [ {
+    "name" : "Product defects",
+    "children" : [ {
+      "name" : "Error: Failed: \"TIMEOUT: Waiting for //*[@class = 'Sidebar__loading'] to dissapear\"",
+      "children" : [ {
+        "name" : "As a User I can Swap tokens - MGA - mETH",
+        "uid" : "61627e4e4fa104d1",
+        "parentUid" : "949fce9c21683c22bcec487901b1b36f",
+        "status" : "failed",
+        "time" : {
+          "start" : 1634217142124,
+          "stop" : 1634217353368,
+          "duration" : 211244
+        },
+        "flaky" : true,
+        "newFailed" : false,
+        "parameters" : [ ]
+      }, {
+        "name" : "As a User I get the right values for Pool investment P[5000000000000000000, 100] - I-> 100000000000 -Expected - 0.000002",
+        "uid" : "396e043f9dd771e4",
+        "parentUid" : "949fce9c21683c22bcec487901b1b36f",
+        "status" : "failed",
+        "time" : {
+          "start" : 1634218580162,
+          "stop" : 1634218690991,
+          "duration" : 110829
+        },
+        "flaky" : true,
+        "newFailed" : false,
+        "parameters" : [ ]
+      } ],
+      "uid" : "949fce9c21683c22bcec487901b1b36f"
+    }, {
+      "name" : "Error: Expected: 9999999999999999 \n                  Actual: 10000000000000000 \n                 ",
+      "children" : [ {
+        "name" : "As a User I can burn all liquidity MGA - mETH",
+        "uid" : "b4ff836be5f6ef1f",
+        "parentUid" : "524df757b86bded921b1391f1a7670e7",
+        "status" : "failed",
+        "time" : {
+          "start" : 1634217540603,
+          "stop" : 1634217752564,
+          "duration" : 211961
+        },
+        "flaky" : true,
+        "newFailed" : true,
+        "parameters" : [ ]
+      } ],
+      "uid" : "524df757b86bded921b1391f1a7670e7"
+    }, {
+      "name" : "TimeoutError: Waiting for element to be located By(xpath, //button[text()='Connect'])\n                Wait timed out after 20015ms",
+      "children" : [ {
+        "name" : "As a User I can deposit ETH from Meta extension",
+        "uid" : "f1dcd0381224a1fd",
+        "parentUid" : "2d800435263cd9fd69d18a34173e1818",
+        "status" : "failed",
+        "time" : {
+          "start" : 1634217968597,
+          "stop" : 1634218108896,
+          "duration" : 140299
+        },
+        "flaky" : true,
+        "newFailed" : false,
+        "parameters" : [ ]
+      } ],
+      "uid" : "2d800435263cd9fd69d18a34173e1818"
+    }, {
+      "name" : "TimeoutError: Waiting for element to be located By(xpath, //input[@placeholder='Paste Secret Recovery Phrase from clipboard'])\n                Wait timed out after 20033ms",
+      "children" : [ {
+        "name" : "As a User I can Withdraw ETH from Meta extension",
+        "uid" : "6e54147844b5380a",
+        "parentUid" : "0ec17355fcf0a1e7d49d1201f4fb273b",
+        "status" : "failed",
+        "time" : {
+          "start" : 1634218108902,
+          "stop" : 1634218150723,
+          "duration" : 41821
+        },
+        "flaky" : true,
+        "newFailed" : false,
+        "parameters" : [ ]
+      } ],
+      "uid" : "0ec17355fcf0a1e7d49d1201f4fb273b"
+    }, {
+      "name" : "Error: expect(received).toBe(expected) // Object.is equality\n                \n                Expected: 6.3\n                Received: 0.05",
+      "children" : [ {
+        "name" : "As a User I get the right values for Pool removal P[2499999999999999999, 5000000000000000000] - I-> 2 -Expected - 0.050 , 0.100",
+        "uid" : "627aede55654d391",
+        "parentUid" : "cf92951c5b68b130170ef29d1a6b60d9",
+        "status" : "failed",
+        "time" : {
+          "start" : 1634218261752,
+          "stop" : 1634218363614,
+          "duration" : 101862
+        },
+        "flaky" : true,
+        "newFailed" : false,
+        "parameters" : [ ]
+      } ],
+      "uid" : "cf92951c5b68b130170ef29d1a6b60d9"
+    }, {
+      "name" : "TimeoutError: Waiting for element to be located By(xpath, //*[@data-testid='wallet-asset-mUSDC'])\n                Wait timed out after 300000ms",
+      "children" : [ {
+        "name" : "As a User I can get test tokens from the faucet",
+        "uid" : "2e621d6ed43a59a",
+        "parentUid" : "363a5bb906aa123124bde67eb9cd98be",
+        "status" : "failed",
+        "time" : {
+          "start" : 1634219140097,
+          "stop" : 1634219599028,
+          "duration" : 458931
+        },
+        "flaky" : true,
+        "newFailed" : false,
+        "parameters" : [ ]
+      } ],
+      "uid" : "363a5bb906aa123124bde67eb9cd98be"
+    } ],
+    "uid" : "8fb3a91ba5aaf9de24cc8a92edc82b5d"
+  } ],
+  "name" : "categories"
+}
