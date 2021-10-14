@@ -64,7 +64,7 @@ export class Network {
           this._tokens = [new Token(token.name, token.supply, this._bootnode!)];
         } else {
           this._tokens!.push(
-            new Token(token.name, token.supply, this._bootnode!)
+            new Token(token.name, token.supply, this._bootnode as Node)
           );
         }
       });
@@ -86,7 +86,9 @@ export class Network {
 
   async createToken(): Promise<void> {}
 
-  async fundUser(user: User, token: Token, amount: number): Promise<void> {}
+  async fundUser(user: User, token: Token, amount: number): Promise<void> {
+    await user.getTokens(token, amount);
+  }
 
   public getUser(name: string): User | null {
     this._users?.forEach((user) => {

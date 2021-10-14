@@ -4,7 +4,10 @@ import { Node } from "./Node";
 import { Proposal } from "./Proposal";
 
 import * as E from "./Errors";
-
+import { Keyring } from "@polkadot/api";
+import BN from "bn.js";
+import { getEnvironmentRequiredVars } from "../utils";
+import { User as NodeUser } from "../User";
 export class User {
   name: string;
   governanceStatus: UserGovernanceStatus;
@@ -143,6 +146,14 @@ export class User {
         `${this.name} is unable to call proposeProposal. GovernanceStatus: ${this.governanceStatus}`
       );
     }
+  }
+  async getTokens(token: Token, amount: number) {
+    const { sudo: sudoName } = getEnvironmentRequiredVars();
+    const keyring = new Keyring({ type: "sr25519" });
+    const sudo = new NodeUser(keyring, sudoName);
+    const nodeUser = await new NodeUser(keyring);
+    nodeUser.addFromAddress(keyring, this.address!);
+    await sudo.mint(token.tokenId, nodeUser, new BN(amount));
   }
 }
 
