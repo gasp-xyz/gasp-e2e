@@ -1,8 +1,8 @@
 import { Keyring } from "@polkadot/api";
-import { User } from "../../User";
 import { Node } from "../Node/Node";
+import { BaseUser } from "./BaseUser";
 
-export class SudoUser extends User {
+export class SudoUser extends BaseUser {
   node: Node;
 
   constructor(keyring: Keyring, name: string, json: any, node: Node) {

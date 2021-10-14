@@ -6,10 +6,10 @@ import {
   getEventResultFromTxWait,
   signAndWaitTx,
 } from "../../txHandler";
-import { User } from "../../User";
+import { BaseUser } from "./BaseUser";
 import { Node } from "../Node/Node";
 
-export class GovernanceUser extends User {
+export class GovernanceUser extends BaseUser {
   node: Node;
   api: ApiPromise;
 
@@ -19,7 +19,9 @@ export class GovernanceUser extends User {
     this.api = node.api!;
   }
 
-  async vote(users: [User], stake: number): Promise<void> {
+  async runForCouncil(): Promise<void> {}
+
+  async vote(users: [BaseUser], stake: number): Promise<void> {
     const userAddresses: string[] = [];
 
     users.forEach((user) => {
