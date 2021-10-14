@@ -19,7 +19,22 @@ export class GovernanceUser extends BaseUser {
     this.api = node.api!;
   }
 
-  async runForCouncil(): Promise<void> {}
+  async runForCouncil(): Promise<void> {
+    await signAndWaitTx(
+      this.api.tx.elections.submitCandidacy(
+        (
+          await this.api.query.elections.candidates()
+        ).length
+      ),
+      this.keyRingPair.address,
+      await getCurrentNonce(this.keyRingPair.address)
+    ).then((result) => {
+      const eventResponse = getEventResultFromTxWait(result, [
+        // Events we need to filter for
+      ]);
+      expect(eventResponse.state).toEqual(ExtrinsicResult.ExtrinsicSuccess);
+    });
+  }
 
   async vote(users: [BaseUser], stake: number): Promise<void> {
     const userAddresses: string[] = [];
@@ -36,9 +51,7 @@ export class GovernanceUser extends BaseUser {
       await getCurrentNonce(this.keyRingPair.address)
     ).then((result) => {
       const eventResponse = getEventResultFromTxWait(result, [
-        "xyk",
-        "AssetsSwapped",
-        this.keyRingPair.address,
+        // Events we need to filter for
       ]);
       expect(eventResponse.state).toEqual(ExtrinsicResult.ExtrinsicSuccess);
     });
