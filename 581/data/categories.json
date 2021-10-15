@@ -1,0 +1,73 @@
+{
+  "uid" : "4b4757e66a1912dae1a509f688f20b0f",
+  "children" : [ {
+    "name" : "Product defects",
+    "children" : [ {
+      "name" : "TimeoutError: Waiting for element to be located By(xpath, //button[text()='Connect'])\n                Wait timed out after 20000ms",
+      "children" : [ {
+        "name" : "As a User I can Swap tokens - MGA - mETH",
+        "uid" : "5d5358fc10cbe4d3",
+        "parentUid" : "573dcd7015f256af866eb80ed58d5fd2",
+        "status" : "failed",
+        "time" : {
+          "start" : 1634303547922,
+          "stop" : 1634303633338,
+          "duration" : 85416
+        },
+        "flaky" : true,
+        "newFailed" : true,
+        "parameters" : [ ]
+      }, {
+        "name" : "As a User I can create a pool",
+        "uid" : "2209434fac0e8d50",
+        "parentUid" : "573dcd7015f256af866eb80ed58d5fd2",
+        "status" : "failed",
+        "time" : {
+          "start" : 1634305388830,
+          "stop" : 1634305389097,
+          "duration" : 267
+        },
+        "flaky" : true,
+        "newFailed" : false,
+        "parameters" : [ ]
+      } ],
+      "uid" : "573dcd7015f256af866eb80ed58d5fd2"
+    }, {
+      "name" : "TimeoutError: Waiting for element to be located By(xpath, //button[text()='Connect'])\n                Wait timed out after 20007ms",
+      "children" : [ {
+        "name" : "As a User I can mint some tokens MGA - mETH",
+        "uid" : "9683928891e000d5",
+        "parentUid" : "24e13c3a59403b0e51557acbfa8d9ccd",
+        "status" : "failed",
+        "time" : {
+          "start" : 1634303633338,
+          "stop" : 1634303717884,
+          "duration" : 84546
+        },
+        "flaky" : true,
+        "newFailed" : false,
+        "parameters" : [ ]
+      } ],
+      "uid" : "24e13c3a59403b0e51557acbfa8d9ccd"
+    }, {
+      "name" : "TimeoutError: Waiting for element to be located By(xpath, //*[@data-testid='wallet-asset-mUSDC'])\n                Wait timed out after 300023ms",
+      "children" : [ {
+        "name" : "As a User I can get test tokens from the faucet",
+        "uid" : "2c68b6f4eaf9b402",
+        "parentUid" : "83259dd4a808c6c993e35ce7b57dbe06",
+        "status" : "failed",
+        "time" : {
+          "start" : 1634305460759,
+          "stop" : 1634305963225,
+          "duration" : 502466
+        },
+        "flaky" : false,
+        "newFailed" : false,
+        "parameters" : [ ]
+      } ],
+      "uid" : "83259dd4a808c6c993e35ce7b57dbe06"
+    } ],
+    "uid" : "8fb3a91ba5aaf9de24cc8a92edc82b5d"
+  } ],
+  "name" : "categories"
+}
