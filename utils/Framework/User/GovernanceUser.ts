@@ -1,11 +1,6 @@
 import { ApiPromise } from "@polkadot/api";
 import Keyring from "@polkadot/keyring";
-import { ExtrinsicResult } from "../../eventListeners";
-import {
-  getCurrentNonce,
-  getEventResultFromTxWait,
-  signAndWaitTx,
-} from "../../txHandler";
+import { signSendAndWaitToFinishTx } from "../../txHandler";
 import { BaseUser } from "./BaseUser";
 import { Node } from "../Node/Node";
 
@@ -20,20 +15,14 @@ export class GovernanceUser extends BaseUser {
   }
 
   async runForCouncil(): Promise<void> {
-    await signAndWaitTx(
+    await signSendAndWaitToFinishTx(
       this.api.tx.elections.submitCandidacy(
         (
           await this.api.query.elections.candidates()
         ).length
       ),
-      this.keyRingPair.address,
-      await getCurrentNonce(this.keyRingPair.address)
-    ).then((result) => {
-      const eventResponse = getEventResultFromTxWait(result, [
-        // Events we need to filter for
-      ]);
-      expect(eventResponse.state).toEqual(ExtrinsicResult.ExtrinsicSuccess);
-    });
+      this.keyRingPair
+    );
   }
 
   async vote(users: [BaseUser], stake: number): Promise<void> {
@@ -43,17 +32,9 @@ export class GovernanceUser extends BaseUser {
       userAddresses.push(user.keyRingPair.address);
     });
 
-    await signAndWaitTx(
-      this.api.tx.elections
-        .vote(userAddresses, stake)
-        .signAndSend(this.keyRingPair),
-      this.keyRingPair.address,
-      await getCurrentNonce(this.keyRingPair.address)
-    ).then((result) => {
-      const eventResponse = getEventResultFromTxWait(result, [
-        // Events we need to filter for
-      ]);
-      expect(eventResponse.state).toEqual(ExtrinsicResult.ExtrinsicSuccess);
-    });
+    await signSendAndWaitToFinishTx(
+      this.api.tx.elections.vote(userAddresses, stake),
+      this.keyRingPair
+    );
   }
 }

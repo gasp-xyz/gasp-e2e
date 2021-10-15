@@ -172,7 +172,7 @@ export const signAndWaitTx = async (
 
   return new Promise<GenericEvent[]>(async (resolve, reject) => {
     const api = getApi();
-    let result: GenericEvent[] = [];
+    let result: any[] = [];
 
     if (timeout_ms > 0) {
       setTimeout(() => {
