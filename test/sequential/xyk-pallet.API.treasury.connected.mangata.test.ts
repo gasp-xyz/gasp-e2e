@@ -318,7 +318,7 @@ describe("xyk-pallet - treasury tests [Connected - Mangata]: on treasury we stor
     await testUser1.refreshAmounts(AssetWallet.BEFORE);
   });
 
-  test("assets won when assets are sold [Selling X connected to MGA pool] - 10", async () => {
+  test("assets won when assets are sold [Selling X connected to MGA pool] - rounding", async () => {
     const sellAssetAmount = new BN(20000);
 
     const mgPoolAmount = await getBalanceOfPool(mgaTokenId, connectedToMGA);
@@ -352,8 +352,21 @@ describe("xyk-pallet - treasury tests [Connected - Mangata]: on treasury we stor
     const treasuryAfter = await getTreasury(mgaTokenId);
     const treasuryBurnAfter = await getTreasuryBurn(mgaTokenId);
 
+    const mgPoolAmountAfter = await getBalanceOfPool(
+      mgaTokenId,
+      connectedToMGA
+    );
+    expect(mgPoolAmountAfter[1].sub(mgPoolAmount[1])).bnEqual(
+      treasury.add(treasury)
+    );
+    //( mgPoolAmount[0].toNumber() * 11 * 1000 ) / (  ( ( mgPoolAmount[1].toNumber() + 11) * 1000) )
+    // 21.990324257326776 <-- rounding issue, so 21 goes to trasury, that is: swapTreasuryInMG
     expect(treasuryAfter).bnEqual(treasuryBefore.add(swapTreasuryInMG));
-
+    const twotreasuries = swapTreasuryInMG.add(swapTreasuryInMG);
+    //since the fee burn is calculated like: TotalBurn - fee, so its 45 - 22 = 23.
+    expect(mgPoolAmountAfter[0].add(twotreasuries)).bnEqual(
+      mgPoolAmount[0].sub(new BN(1))
+    );
     //burned destroyed! because is translated toMGA
     expect(treasuryBurnAfter).bnEqual(treasuryBurnBefore);
     await validateTreasuryAmountsEqual(indirectlyConnected, [
