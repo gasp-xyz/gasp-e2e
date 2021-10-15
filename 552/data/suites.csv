@@ -1,4 +1,0 @@
-"Status","Start Time","Stop Time","Duration in ms","Parent Suite","Suite","Sub Suite","Test Class","Test Method","Name","Description"
-"passed","Wed Oct 13 08:11:22 GMT 2021","Wed Oct 13 08:11:48 GMT 2021","25225","","Cluster -> Healthcheck","","Cluster -> Healthcheck","Nodes are up and syncing","Nodes are up and syncing",""
-"passed","Wed Oct 13 08:12:18 GMT 2021","Wed Oct 13 08:12:48 GMT 2021","29979","","Cluster -> Healthcheck","","Cluster -> Healthcheck","Cluster does not fork","Cluster does not fork",""
-"passed","Wed Oct 13 08:11:48 GMT 2021","Wed Oct 13 08:12:18 GMT 2021","30046","","Cluster -> Healthcheck","","Cluster -> Healthcheck","Block merkle hash matches across all nodes","Block merkle hash matches across all nodes",""
