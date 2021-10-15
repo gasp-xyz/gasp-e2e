@@ -127,7 +127,7 @@ describe("Test Withdraw - Deposit", () => {
     await signSendAndWaitToFinishTx(
       api.tx.eth.burn(
         ethUserAddress,
-        testUser1.getAsset(ETH_ASSET_ID)?.amountAfter!
+        testUser1.getAsset(ETH_ASSET_ID)?.amountAfter!.free
       ),
       testUser1.keyRingPair
     );
