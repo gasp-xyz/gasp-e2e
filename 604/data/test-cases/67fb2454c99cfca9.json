@@ -1,0 +1,77 @@
+{
+  "uid" : "67fb2454c99cfca9",
+  "name" : "As a User I can create a pool",
+  "fullName" : "UI tests - A user can create a pool MGA - newToken.As a User I can create a pool",
+  "historyId" : "271610054c4a7ce96b4f458d416b5c30",
+  "time" : {
+    "start" : 1634478715110,
+    "stop" : 1634478804491,
+    "duration" : 89381
+  },
+  "description" : "",
+  "descriptionHtml" : "",
+  "status" : "passed",
+  "flaky" : false,
+  "newFailed" : false,
+  "beforeStages" : [ ],
+  "afterStages" : [ ],
+  "labels" : [ {
+    "name" : "suite",
+    "value" : "UI tests - A user can create a pool MGA - newToken"
+  }, {
+    "name" : "testClass",
+    "value" : "UI tests - A user can create a pool MGA - newToken"
+  }, {
+    "name" : "testMethod",
+    "value" : "As a User I can create a pool"
+  }, {
+    "name" : "package",
+    "value" : "UI tests - A user can create a pool MGA - newToken"
+  }, {
+    "name" : "resultFormat",
+    "value" : "allure1"
+  } ],
+  "parameters" : [ ],
+  "links" : [ ],
+  "hidden" : false,
+  "retry" : false,
+  "extra" : {
+    "severity" : "normal",
+    "retries" : [ ],
+    "categories" : [ ],
+    "history" : {
+      "statistic" : {
+        "failed" : 2,
+        "broken" : 0,
+        "skipped" : 0,
+        "passed" : 1,
+        "unknown" : 0,
+        "total" : 3
+      },
+      "items" : [ {
+        "uid" : "e181b272b693ddd5",
+        "reportUrl" : "https://mangata-finance.github.io/mangata-e2e/608//#testresult/e181b272b693ddd5",
+        "status" : "failed",
+        "statusDetails" : "Error: Invalid character",
+        "time" : {
+          "start" : 1634478098492,
+          "stop" : 1634478177999,
+          "duration" : 79507
+        }
+      }, {
+        "uid" : "cfdf99854a3819c7",
+        "reportUrl" : "https://mangata-finance.github.io/mangata-e2e/605//#testresult/cfdf99854a3819c7",
+        "status" : "failed",
+        "statusDetails" : "Error: Invalid character",
+        "time" : {
+          "start" : 1634478157438,
+          "stop" : 1634478203110,
+          "duration" : 45672
+        }
+      } ]
+    },
+    "tags" : [ ]
+  },
+  "source" : "67fb2454c99cfca9.json",
+  "parameterValues" : [ ]
+}

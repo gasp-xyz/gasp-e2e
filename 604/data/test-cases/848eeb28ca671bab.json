@@ -1,0 +1,77 @@
+{
+  "uid" : "848eeb28ca671bab",
+  "name" : "As a User I get the right values for Pool investment P[2500000000000000000, 5000000000000000000] - I-> 0.100 -Expected - 0.200",
+  "fullName" : "Accuracy tests.As a User I get the right values for Pool investment P[2500000000000000000, 5000000000000000000] - I-> 0.100 -Expected - 0.200",
+  "historyId" : "c19dceea19dd2e493fbf2430f2fba757",
+  "time" : {
+    "start" : 1634478401195,
+    "stop" : 1634478556982,
+    "duration" : 155787
+  },
+  "description" : "",
+  "descriptionHtml" : "",
+  "status" : "passed",
+  "flaky" : false,
+  "newFailed" : false,
+  "beforeStages" : [ ],
+  "afterStages" : [ ],
+  "labels" : [ {
+    "name" : "suite",
+    "value" : "Accuracy tests"
+  }, {
+    "name" : "testClass",
+    "value" : "Accuracy tests"
+  }, {
+    "name" : "testMethod",
+    "value" : "As a User I get the right values for Pool investment P[2500000000000000000, 5000000000000000000] - I-> 0.100 -Expected - 0.200"
+  }, {
+    "name" : "package",
+    "value" : "Accuracy tests"
+  }, {
+    "name" : "resultFormat",
+    "value" : "allure1"
+  } ],
+  "parameters" : [ ],
+  "links" : [ ],
+  "hidden" : false,
+  "retry" : false,
+  "extra" : {
+    "severity" : "normal",
+    "retries" : [ ],
+    "categories" : [ ],
+    "history" : {
+      "statistic" : {
+        "failed" : 2,
+        "broken" : 0,
+        "skipped" : 0,
+        "passed" : 1,
+        "unknown" : 0,
+        "total" : 3
+      },
+      "items" : [ {
+        "uid" : "9bb7b378372fa8f8",
+        "reportUrl" : "https://mangata-finance.github.io/mangata-e2e/608//#testresult/9bb7b378372fa8f8",
+        "status" : "failed",
+        "statusDetails" : "Error: Invalid character",
+        "time" : {
+          "start" : 1634477928292,
+          "stop" : 1634477952375,
+          "duration" : 24083
+        }
+      }, {
+        "uid" : "ea5e132a4c23cd50",
+        "reportUrl" : "https://mangata-finance.github.io/mangata-e2e/605//#testresult/ea5e132a4c23cd50",
+        "status" : "failed",
+        "statusDetails" : "Error: Invalid character",
+        "time" : {
+          "start" : 1634477998089,
+          "stop" : 1634478016635,
+          "duration" : 18546
+        }
+      } ]
+    },
+    "tags" : [ ]
+  },
+  "source" : "848eeb28ca671bab.json",
+  "parameterValues" : [ ]
+}
