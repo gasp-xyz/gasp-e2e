@@ -1,0 +1,94 @@
+{
+  "uid" : "4b4757e66a1912dae1a509f688f20b0f",
+  "children" : [ {
+    "name" : "Product defects",
+    "children" : [ {
+      "name" : "Error: expect(received).toBeFalsy()\n                \n                Received: true",
+      "children" : [ {
+        "name" : "As a User I can burn all liquidity MGA - mETH",
+        "uid" : "476640e6a0701797",
+        "parentUid" : "b983cd53ac27a8c48594af2e3196a36d",
+        "status" : "failed",
+        "time" : {
+          "start" : 1634434915901,
+          "stop" : 1634435234170,
+          "duration" : 318269
+        },
+        "flaky" : true,
+        "newFailed" : true,
+        "parameters" : [ ]
+      } ],
+      "uid" : "b983cd53ac27a8c48594af2e3196a36d"
+    }, {
+      "name" : "Error: expect(received).toBe(expected) // Object.is equality\n                \n                Expected: 6.3\n                Received: 0.05",
+      "children" : [ {
+        "name" : "As a User I get the right values for Pool removal P[2499999999999999999, 5000000000000000000] - I-> 2 -Expected - 0.050 , 0.100",
+        "uid" : "f3577dabebf6391d",
+        "parentUid" : "cf92951c5b68b130170ef29d1a6b60d9",
+        "status" : "failed",
+        "time" : {
+          "start" : 1634436368008,
+          "stop" : 1634436573555,
+          "duration" : 205547
+        },
+        "flaky" : true,
+        "newFailed" : false,
+        "parameters" : [ ]
+      } ],
+      "uid" : "cf92951c5b68b130170ef29d1a6b60d9"
+    }, {
+      "name" : "Error: expect(received).toBe(expected) // Object.is equality\n                \n                Expected: 6.275\n                Received: 0.025",
+      "children" : [ {
+        "name" : "As a User I get the right values for Pool removal P[2500000000000000000, 5000000000000000000] - I-> 1 -Expected - 0.025 , 0.05",
+        "uid" : "7bbf105ba1609f78",
+        "parentUid" : "6c3c2cb60a3e032da07d96542341eabe",
+        "status" : "failed",
+        "time" : {
+          "start" : 1634436573555,
+          "stop" : 1634436769067,
+          "duration" : 195512
+        },
+        "flaky" : true,
+        "newFailed" : false,
+        "parameters" : [ ]
+      } ],
+      "uid" : "6c3c2cb60a3e032da07d96542341eabe"
+    }, {
+      "name" : "Error: expect(received).toBeTruthy()\n                \n                Received: false",
+      "children" : [ {
+        "name" : "As a User I can create a pool",
+        "uid" : "7614efcac9007221",
+        "parentUid" : "ffcd8928d6543ed53c85f4784defae24",
+        "status" : "failed",
+        "time" : {
+          "start" : 1634437784369,
+          "stop" : 1634438034369,
+          "duration" : 250000
+        },
+        "flaky" : true,
+        "newFailed" : false,
+        "parameters" : [ ]
+      } ],
+      "uid" : "ffcd8928d6543ed53c85f4784defae24"
+    }, {
+      "name" : "TimeoutError: Waiting for element to be located By(xpath, //*[contains(text(),'Your tokens')])\n                Wait timed out after 20014ms",
+      "children" : [ {
+        "name" : "As a User I can get test tokens from the faucet",
+        "uid" : "a0b2c092553a03a9",
+        "parentUid" : "f472868fdcecd2217503275ef419ae80",
+        "status" : "failed",
+        "time" : {
+          "start" : 1634438039463,
+          "stop" : 1634438178345,
+          "duration" : 138882
+        },
+        "flaky" : false,
+        "newFailed" : false,
+        "parameters" : [ ]
+      } ],
+      "uid" : "f472868fdcecd2217503275ef419ae80"
+    } ],
+    "uid" : "8fb3a91ba5aaf9de24cc8a92edc82b5d"
+  } ],
+  "name" : "categories"
+}
