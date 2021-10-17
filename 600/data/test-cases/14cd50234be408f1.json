@@ -1,0 +1,247 @@
+{
+  "uid" : "14cd50234be408f1",
+  "name" : "As a User I can Withdraw ETH from Meta extension",
+  "fullName" : "UI main tests - Withdraw - ETH.As a User I can Withdraw ETH from Meta extension",
+  "historyId" : "eac55faabce1aad19e0827a3afd71b78",
+  "time" : {
+    "start" : 1634434596473,
+    "stop" : 1634434865973,
+    "duration" : 269500
+  },
+  "description" : "",
+  "descriptionHtml" : "",
+  "status" : "passed",
+  "flaky" : false,
+  "newFailed" : false,
+  "beforeStages" : [ ],
+  "afterStages" : [ ],
+  "labels" : [ {
+    "name" : "suite",
+    "value" : "UI main tests - Withdraw - ETH"
+  }, {
+    "name" : "testClass",
+    "value" : "UI main tests - Withdraw - ETH"
+  }, {
+    "name" : "testMethod",
+    "value" : "As a User I can Withdraw ETH from Meta extension"
+  }, {
+    "name" : "package",
+    "value" : "UI main tests - Withdraw - ETH"
+  }, {
+    "name" : "resultFormat",
+    "value" : "allure1"
+  } ],
+  "parameters" : [ ],
+  "links" : [ ],
+  "hidden" : false,
+  "retry" : false,
+  "extra" : {
+    "severity" : "normal",
+    "retries" : [ ],
+    "categories" : [ ],
+    "history" : {
+      "statistic" : {
+        "failed" : 107,
+        "broken" : 0,
+        "skipped" : 0,
+        "passed" : 129,
+        "unknown" : 0,
+        "total" : 236
+      },
+      "items" : [ {
+        "uid" : "df0edddcc5d096da",
+        "reportUrl" : "https://mangata-finance.github.io/mangata-e2e/593//#testresult/df0edddcc5d096da",
+        "status" : "failed",
+        "statusDetails" : "Error: Timeout - Async callback was not invoked within the 300000 ms timeout specified by jest.setTimeout.",
+        "time" : {
+          "start" : 1634391344593,
+          "stop" : 1634391678427,
+          "duration" : 333834
+        }
+      }, {
+        "uid" : "27f927c64a0b1d16",
+        "reportUrl" : "https://mangata-finance.github.io/mangata-e2e/592//#testresult/27f927c64a0b1d16",
+        "status" : "failed",
+        "statusDetails" : "Error: Timeout - Async callback was not invoked within the 300000 ms timeout specified by jest.setTimeout.",
+        "time" : {
+          "start" : 1634391513528,
+          "stop" : 1634391954176,
+          "duration" : 440648
+        }
+      }, {
+        "uid" : "5be45da3d0ca5c64",
+        "reportUrl" : "https://mangata-finance.github.io/mangata-e2e/595//#testresult/5be45da3d0ca5c64",
+        "status" : "failed",
+        "statusDetails" : "TimeoutError: Waiting for element to be located By(xpath, //input[@placeholder='Paste Secret Recovery Phrase from clipboard'])\n                Wait timed out after 20004ms",
+        "time" : {
+          "start" : 1634390804177,
+          "stop" : 1634390845623,
+          "duration" : 41446
+        }
+      }, {
+        "uid" : "c217b0e83d832778",
+        "reportUrl" : "https://mangata-finance.github.io/mangata-e2e/591//#testresult/c217b0e83d832778",
+        "status" : "passed",
+        "time" : {
+          "start" : 1634391006273,
+          "stop" : 1634391275032,
+          "duration" : 268759
+        }
+      }, {
+        "uid" : "5002a04f6b44df30",
+        "reportUrl" : "https://mangata-finance.github.io/mangata-e2e/594//#testresult/5002a04f6b44df30",
+        "status" : "passed",
+        "time" : {
+          "start" : 1634390670246,
+          "stop" : 1634390909239,
+          "duration" : 238993
+        }
+      }, {
+        "uid" : "5452f86589794424",
+        "reportUrl" : "https://mangata-finance.github.io/mangata-e2e/589//#testresult/5452f86589794424",
+        "status" : "passed",
+        "time" : {
+          "start" : 1634348962784,
+          "stop" : 1634349169780,
+          "duration" : 206996
+        }
+      }, {
+        "uid" : "ba1e1a6c20c61a85",
+        "reportUrl" : "https://mangata-finance.github.io/mangata-e2e/586//#testresult/ba1e1a6c20c61a85",
+        "status" : "failed",
+        "statusDetails" : "Error: 1014: Priority is too low: (4174645137808 vs 4070885447504): The transaction has too low priority to replace another transaction already in the pool.",
+        "time" : {
+          "start" : 1634349197899,
+          "stop" : 1634349333773,
+          "duration" : 135874
+        }
+      }, {
+        "uid" : "9d94b63893b9de3a",
+        "reportUrl" : "https://mangata-finance.github.io/mangata-e2e/585//#testresult/9d94b63893b9de3a",
+        "status" : "failed",
+        "statusDetails" : "TimeoutError: Waiting for element to be located By(xpath, //input[@placeholder='Paste Secret Recovery Phrase from clipboard'])\n                Wait timed out after 20000ms",
+        "time" : {
+          "start" : 1634349038711,
+          "stop" : 1634349080925,
+          "duration" : 42214
+        }
+      }, {
+        "uid" : "997705a8935a7901",
+        "reportUrl" : "https://mangata-finance.github.io/mangata-e2e/590//#testresult/997705a8935a7901",
+        "status" : "failed",
+        "statusDetails" : "Error: Failed: \"W[1] timeout in - signAndWaitTx - \\\" + 5HQ9Mm9L1HG53htEGDMsnhkkL7hEfF9vLstEQPtMLX5Gupqx + \\\" - \\\" + 2309 + \\\" - \\\" + {\\\"isSigned\\\":true,\\\"method\\\":{\\\"args\\\":[{\\\"args\\\":[\\\"0\\\",\\\"5FCKhG53n9MkS65EZABrBSGd8NTbP5MdH2AUyyJELxJAjij5\\\",\\\"10.0000 mUnit\\\"],\\\"method\\\":\\\"mint\\\",\\\"section\\\":\\\"tokens\\\"}],\\\"method\\\":\\\"sudo\\\",\\\"section\\\":\\\"sudo\\\"},\\\"era\\\":{\\\"MortalEra\\\":{\\\"period\\\":\\\"64\\\",\\\"phase\\\":\\\"55\\\"}},\\\"nonce\\\":\\\"2,309\\\",\\\"signature\\\":\\\"0xaae2a48683bfe4d1a00836a7f22136a8683414cd7d49f6a4fe2c55a63c18ae32232f2d939981164ffdb7b5912133a77d27ad346014282848f9017cd8eb412e8f\\\",\\\"signer\\\":\\\"5HQ9Mm9L1HG53htEGDMsnhkkL7hEfF9vLstEQPtMLX5Gupqx\\\",\\\"tip\\\":\\\"0\\\"}\"",
+        "time" : {
+          "start" : 1634349006284,
+          "stop" : 1634349197831,
+          "duration" : 191547
+        }
+      }, {
+        "uid" : "eaf11317932f9659",
+        "reportUrl" : "https://mangata-finance.github.io/mangata-e2e/588//#testresult/eaf11317932f9659",
+        "status" : "passed",
+        "time" : {
+          "start" : 1634348758918,
+          "stop" : 1634349035597,
+          "duration" : 276679
+        }
+      }, {
+        "uid" : "efd8b362d513eec6",
+        "reportUrl" : "https://mangata-finance.github.io/mangata-e2e/587//#testresult/efd8b362d513eec6",
+        "status" : "failed",
+        "statusDetails" : "NoSuchElementError: no such element: Unable to locate element: {\"method\":\"xpath\",\"selector\":\"//*[@data-testid='bridge-showDepositModalBtn']\"}\n                  (Session info: chrome=94.0.4606.61)\n                  (Driver info: chromedriver=94.0.4606.61 (418b78f5838ed0b1c69bb4e51ea0252171854915-refs/branch-heads/4606@{#1204}),platform=Linux 5.8.0-1042-azure x86_64)",
+        "time" : {
+          "start" : 1634348728186,
+          "stop" : 1634348783682,
+          "duration" : 55496
+        }
+      }, {
+        "uid" : "ebcdd7dc53e2a233",
+        "reportUrl" : "https://mangata-finance.github.io/mangata-e2e/583//#testresult/ebcdd7dc53e2a233",
+        "status" : "failed",
+        "statusDetails" : "Error: Timeout - Async callback was not invoked within the 300000 ms timeout specified by jest.setTimeout.",
+        "time" : {
+          "start" : 1634305112350,
+          "stop" : 1634305480437,
+          "duration" : 368087
+        }
+      }, {
+        "uid" : "a6263c740b8d2485",
+        "reportUrl" : "https://mangata-finance.github.io/mangata-e2e/582//#testresult/a6263c740b8d2485",
+        "status" : "passed",
+        "time" : {
+          "start" : 1634304696277,
+          "stop" : 1634304953230,
+          "duration" : 256953
+        }
+      }, {
+        "uid" : "1ac3ee9a13e5e397",
+        "reportUrl" : "https://mangata-finance.github.io/mangata-e2e/581//#testresult/1ac3ee9a13e5e397",
+        "status" : "passed",
+        "time" : {
+          "start" : 1634304340821,
+          "stop" : 1634304547840,
+          "duration" : 207019
+        }
+      }, {
+        "uid" : "36f124ebaa7cb3e7",
+        "reportUrl" : "https://mangata-finance.github.io/mangata-e2e/580//#testresult/36f124ebaa7cb3e7",
+        "status" : "passed",
+        "time" : {
+          "start" : 1634304437312,
+          "stop" : 1634304707581,
+          "duration" : 270269
+        }
+      }, {
+        "uid" : "505bc976a7edfc72",
+        "reportUrl" : "https://mangata-finance.github.io/mangata-e2e/584//#testresult/505bc976a7edfc72",
+        "status" : "failed",
+        "statusDetails" : ": Timeout - Async callback was not invoked within the 300000 ms timeout specified by jest.setTimeout.",
+        "time" : {
+          "start" : 1634304071526,
+          "stop" : 1634304587881,
+          "duration" : 516355
+        }
+      }, {
+        "uid" : "21a0302ae115ff78",
+        "reportUrl" : "https://mangata-finance.github.io/mangata-e2e/579//#testresult/21a0302ae115ff78",
+        "status" : "failed",
+        "statusDetails" : "TimeoutError: Waiting for element to be located By(xpath, //button[text()='Connect'])\n                Wait timed out after 20002ms",
+        "time" : {
+          "start" : 1634303866582,
+          "stop" : 1634303982499,
+          "duration" : 115917
+        }
+      }, {
+        "uid" : "7f010c5a105c39e5",
+        "reportUrl" : "https://mangata-finance.github.io/mangata-e2e/574//#testresult/7f010c5a105c39e5",
+        "status" : "passed",
+        "time" : {
+          "start" : 1634263272054,
+          "stop" : 1634263642599,
+          "duration" : 370545
+        }
+      }, {
+        "uid" : "fca98906f58d6e34",
+        "reportUrl" : "https://mangata-finance.github.io/mangata-e2e/578//#testresult/fca98906f58d6e34",
+        "status" : "passed",
+        "time" : {
+          "start" : 1634262962357,
+          "stop" : 1634263342220,
+          "duration" : 379863
+        }
+      }, {
+        "uid" : "8f039410fbbaea40",
+        "reportUrl" : "https://mangata-finance.github.io/mangata-e2e/573//#testresult/8f039410fbbaea40",
+        "status" : "passed",
+        "time" : {
+          "start" : 1634262604753,
+          "stop" : 1634262856782,
+          "duration" : 252029
+        }
+      } ]
+    },
+    "tags" : [ ]
+  },
+  "source" : "14cd50234be408f1.json",
+  "parameterValues" : [ ]
+}
