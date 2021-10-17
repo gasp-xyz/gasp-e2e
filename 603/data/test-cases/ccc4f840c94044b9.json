@@ -1,0 +1,93 @@
+{
+  "uid" : "ccc4f840c94044b9",
+  "name" : "As a User I can get test tokens from the faucet",
+  "fullName" : "UI tests - Get Tokens from Faucet.As a User I can get test tokens from the faucet",
+  "historyId" : "eec88a440f5cd4c786967d8a5233a8c0",
+  "time" : {
+    "start" : 1634478908423,
+    "stop" : 1634479201152,
+    "duration" : 292729
+  },
+  "description" : "",
+  "descriptionHtml" : "",
+  "status" : "failed",
+  "statusMessage" : "Error: expect(received).toBeTruthy()\n                \n                Received: false",
+  "statusTrace" : "Error: expect(received).toBeTruthy()\n                \n                Received: false\n                    at validateAllAssetsValues (/home/runner/work/mangata-e2e/mangata-e2e/test/ui/ui-get.tokens.test.ts:98:44)\n                    at runMicrotasks (<anonymous>)\n                    at processTicksAndRejections (internal/process/task_queues.js:95:5)\n                    at Object.<anonymous> (/home/runner/work/mangata-e2e/mangata-e2e/test/ui/ui-get.tokens.test.ts:69:5)",
+  "flaky" : false,
+  "newFailed" : false,
+  "beforeStages" : [ ],
+  "afterStages" : [ ],
+  "labels" : [ {
+    "name" : "suite",
+    "value" : "UI tests - Get Tokens from Faucet"
+  }, {
+    "name" : "testClass",
+    "value" : "UI tests - Get Tokens from Faucet"
+  }, {
+    "name" : "testMethod",
+    "value" : "As a User I can get test tokens from the faucet"
+  }, {
+    "name" : "package",
+    "value" : "UI tests - Get Tokens from Faucet"
+  }, {
+    "name" : "resultFormat",
+    "value" : "allure1"
+  } ],
+  "parameters" : [ ],
+  "links" : [ ],
+  "hidden" : false,
+  "retry" : false,
+  "extra" : {
+    "severity" : "normal",
+    "retries" : [ ],
+    "categories" : [ {
+      "name" : "Product defects",
+      "matchedStatuses" : [ ],
+      "flaky" : false
+    } ],
+    "history" : {
+      "statistic" : {
+        "failed" : 4,
+        "broken" : 0,
+        "skipped" : 0,
+        "passed" : 0,
+        "unknown" : 0,
+        "total" : 4
+      },
+      "items" : [ {
+        "uid" : "21a8af73a8c11200",
+        "reportUrl" : "https://mangata-finance.github.io/mangata-e2e/604//#testresult/21a8af73a8c11200",
+        "status" : "failed",
+        "statusDetails" : "Error: expect(received).toBeTruthy()\n                \n                Received: false",
+        "time" : {
+          "start" : 1634478808068,
+          "stop" : 1634479007056,
+          "duration" : 198988
+        }
+      }, {
+        "uid" : "cd1723837824c0e1",
+        "reportUrl" : "https://mangata-finance.github.io/mangata-e2e/608//#testresult/cd1723837824c0e1",
+        "status" : "failed",
+        "statusDetails" : "Error: Failed: \"TIMEOUT: Waiting for //*[@class = 'Sidebar__loading'] to dissapear\"",
+        "time" : {
+          "start" : 1634478182539,
+          "stop" : 1634478330023,
+          "duration" : 147484
+        }
+      }, {
+        "uid" : "f9141edeaf4b7a36",
+        "reportUrl" : "https://mangata-finance.github.io/mangata-e2e/605//#testresult/f9141edeaf4b7a36",
+        "status" : "failed",
+        "statusDetails" : "Error: expect(received).toBeTruthy()\n                \n                Received: false",
+        "time" : {
+          "start" : 1634478207099,
+          "stop" : 1634478425485,
+          "duration" : 218386
+        }
+      } ]
+    },
+    "tags" : [ ]
+  },
+  "source" : "ccc4f840c94044b9.json",
+  "parameterValues" : [ ]
+}

@@ -1,0 +1,91 @@
+{
+  "uid" : "3b5388d84a4823c9",
+  "name" : "As a User I can mint some tokens MGA - mETH",
+  "fullName" : "UI tests - A user can swap and mint tokens.As a User I can mint some tokens MGA - mETH",
+  "historyId" : "d61eda4c5635d823f9db1036b3f5b551",
+  "time" : {
+    "start" : 1634477278523,
+    "stop" : 1634477735175,
+    "duration" : 456652
+  },
+  "description" : "",
+  "descriptionHtml" : "",
+  "status" : "failed",
+  "statusMessage" : "Error: expect(received).toBeTruthy()\n                \n                Received: false",
+  "statusTrace" : "Error: expect(received).toBeTruthy()\n                \n                Received: false\n                    at Object.<anonymous> (/home/runner/work/mangata-e2e/mangata-e2e/test/ui/ui-main.test.ts:100:21)\n                    at processTicksAndRejections (internal/process/task_queues.js:95:5)",
+  "flaky" : false,
+  "newFailed" : false,
+  "beforeStages" : [ ],
+  "afterStages" : [ ],
+  "labels" : [ {
+    "name" : "suite",
+    "value" : "UI tests - A user can swap and mint tokens"
+  }, {
+    "name" : "testClass",
+    "value" : "UI tests - A user can swap and mint tokens"
+  }, {
+    "name" : "testMethod",
+    "value" : "As a User I can mint some tokens MGA - mETH"
+  }, {
+    "name" : "package",
+    "value" : "UI tests - A user can swap and mint tokens"
+  }, {
+    "name" : "resultFormat",
+    "value" : "allure1"
+  } ],
+  "parameters" : [ ],
+  "links" : [ ],
+  "hidden" : false,
+  "retry" : false,
+  "extra" : {
+    "severity" : "normal",
+    "retries" : [ ],
+    "categories" : [ {
+      "name" : "Product defects",
+      "matchedStatuses" : [ ],
+      "flaky" : false
+    } ],
+    "history" : {
+      "statistic" : {
+        "failed" : 2,
+        "broken" : 0,
+        "skipped" : 0,
+        "passed" : 2,
+        "unknown" : 0,
+        "total" : 4
+      },
+      "items" : [ {
+        "uid" : "cac09c0f0887a556",
+        "reportUrl" : "https://mangata-finance.github.io/mangata-e2e/604//#testresult/cac09c0f0887a556",
+        "status" : "passed",
+        "time" : {
+          "start" : 1634476464528,
+          "stop" : 1634476686589,
+          "duration" : 222061
+        }
+      }, {
+        "uid" : "f004704127ef5789",
+        "reportUrl" : "https://mangata-finance.github.io/mangata-e2e/608//#testresult/f004704127ef5789",
+        "status" : "failed",
+        "statusDetails" : ": Timeout - Async callback was not invoked within the 300000 ms timeout specified by jest.setTimeout.",
+        "time" : {
+          "start" : 1634476671255,
+          "stop" : 1634477125456,
+          "duration" : 454201
+        }
+      }, {
+        "uid" : "15b71b5df8e8ce04",
+        "reportUrl" : "https://mangata-finance.github.io/mangata-e2e/605//#testresult/15b71b5df8e8ce04",
+        "status" : "passed",
+        "time" : {
+          "start" : 1634476470535,
+          "stop" : 1634476704571,
+          "duration" : 234036
+        }
+      } ]
+    },
+    "tags" : [ ]
+  },
+  "source" : "3b5388d84a4823c9.json",
+  "parameterValues" : [ ]
+}

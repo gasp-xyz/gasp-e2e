@@ -1,0 +1,84 @@
+{
+  "uid" : "616b99333c336cc4",
+  "name" : "As a User I get feedback when extensions are installed and correctly setup",
+  "fullName" : "UI tests - Extension management.As a User I get feedback when extensions are installed and correctly setup",
+  "historyId" : "7365b4e6dd98ca21f75fccaf5b1ca8dd",
+  "time" : {
+    "start" : 1634479220037,
+    "stop" : 1634479403093,
+    "duration" : 183056
+  },
+  "description" : "",
+  "descriptionHtml" : "",
+  "status" : "passed",
+  "flaky" : false,
+  "newFailed" : false,
+  "beforeStages" : [ ],
+  "afterStages" : [ ],
+  "labels" : [ {
+    "name" : "suite",
+    "value" : "UI tests - Extension management"
+  }, {
+    "name" : "testClass",
+    "value" : "UI tests - Extension management"
+  }, {
+    "name" : "testMethod",
+    "value" : "As a User I get feedback when extensions are installed and correctly setup"
+  }, {
+    "name" : "package",
+    "value" : "UI tests - Extension management"
+  }, {
+    "name" : "resultFormat",
+    "value" : "allure1"
+  } ],
+  "parameters" : [ ],
+  "links" : [ ],
+  "hidden" : false,
+  "retry" : false,
+  "extra" : {
+    "severity" : "normal",
+    "retries" : [ ],
+    "categories" : [ ],
+    "history" : {
+      "statistic" : {
+        "failed" : 0,
+        "broken" : 0,
+        "skipped" : 0,
+        "passed" : 4,
+        "unknown" : 0,
+        "total" : 4
+      },
+      "items" : [ {
+        "uid" : "9eca5c536ed90a2c",
+        "reportUrl" : "https://mangata-finance.github.io/mangata-e2e/604//#testresult/9eca5c536ed90a2c",
+        "status" : "passed",
+        "time" : {
+          "start" : 1634479019272,
+          "stop" : 1634479147038,
+          "duration" : 127766
+        }
+      }, {
+        "uid" : "ea92d56a3044f385",
+        "reportUrl" : "https://mangata-finance.github.io/mangata-e2e/608//#testresult/ea92d56a3044f385",
+        "status" : "passed",
+        "time" : {
+          "start" : 1634478347944,
+          "stop" : 1634478572819,
+          "duration" : 224875
+        }
+      }, {
+        "uid" : "117be333dcd39d62",
+        "reportUrl" : "https://mangata-finance.github.io/mangata-e2e/605//#testresult/117be333dcd39d62",
+        "status" : "passed",
+        "time" : {
+          "start" : 1634478438298,
+          "stop" : 1634478575488,
+          "duration" : 137190
+        }
+      } ]
+    },
+    "tags" : [ ]
+  },
+  "source" : "616b99333c336cc4.json",
+  "parameterValues" : [ ]
+}
