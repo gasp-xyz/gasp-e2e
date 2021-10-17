@@ -1,0 +1,66 @@
+{
+  "uid" : "1348b9f97dc68ae9",
+  "name" : "As a User I get infomed whenever is neccesary to install any extension",
+  "fullName" : "UI tests - Extension management.As a User I get infomed whenever is neccesary to install any extension",
+  "historyId" : "dbac81719cd3c0d8613ffc8fdf7c937c",
+  "time" : {
+    "start" : 1634478331888,
+    "stop" : 1634478347944,
+    "duration" : 16056
+  },
+  "description" : "",
+  "descriptionHtml" : "",
+  "status" : "passed",
+  "flaky" : false,
+  "newFailed" : false,
+  "beforeStages" : [ ],
+  "afterStages" : [ ],
+  "labels" : [ {
+    "name" : "suite",
+    "value" : "UI tests - Extension management"
+  }, {
+    "name" : "testClass",
+    "value" : "UI tests - Extension management"
+  }, {
+    "name" : "testMethod",
+    "value" : "As a User I get infomed whenever is neccesary to install any extension"
+  }, {
+    "name" : "package",
+    "value" : "UI tests - Extension management"
+  }, {
+    "name" : "resultFormat",
+    "value" : "allure1"
+  } ],
+  "parameters" : [ ],
+  "links" : [ ],
+  "hidden" : false,
+  "retry" : false,
+  "extra" : {
+    "severity" : "normal",
+    "retries" : [ ],
+    "categories" : [ ],
+    "history" : {
+      "statistic" : {
+        "failed" : 0,
+        "broken" : 0,
+        "skipped" : 0,
+        "passed" : 2,
+        "unknown" : 0,
+        "total" : 2
+      },
+      "items" : [ {
+        "uid" : "211e7d2ea8649b69",
+        "reportUrl" : "https://mangata-finance.github.io/mangata-e2e/605//#testresult/211e7d2ea8649b69",
+        "status" : "passed",
+        "time" : {
+          "start" : 1634478427015,
+          "stop" : 1634478438298,
+          "duration" : 11283
+        }
+      } ]
+    },
+    "tags" : [ ]
+  },
+  "source" : "1348b9f97dc68ae9.json",
+  "parameterValues" : [ ]
+}
