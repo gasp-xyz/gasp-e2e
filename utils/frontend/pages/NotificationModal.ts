@@ -41,9 +41,13 @@ export class NotificationModal {
 
   public async isModalVisible(type: ModalType) {
     const modalXpath = this.getModalXpath(type);
-    return await (
-      await this.driver.findElement(By.xpath(modalXpath))
-    ).isDisplayed();
+    try {
+      return await (
+        await this.driver.findElement(By.xpath(modalXpath))
+      ).isDisplayed();
+    } catch (e) {
+      return false;
+    }
   }
   public async clickInDone() {
     await clickElement(this.driver, buildDataTestIdXpath(MODAL_DONE_BTN));
@@ -56,7 +60,7 @@ export class NotificationModal {
     const locator = this.getModalTextXpath(modalState);
     const text = await getText(this.driver, locator);
     const [headerText, txInfo] = text.split("\n");
-    const regexfindValues = /([0-9]?.[0-9]+)/g;
+    const regexfindValues = /([0-9]?.[0-9]+)\s/g;
     const amounts = txInfo.match(regexfindValues)!;
     const regexfindAssetNames = /[0-9]?.[0-9]+\s(?<AssetName>[a-zA-Z]+)/gm;
     const iterator = txInfo.matchAll(regexfindAssetNames);
