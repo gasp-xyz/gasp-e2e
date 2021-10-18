@@ -10,6 +10,7 @@ import { env } from "process";
 import { EventResult, ExtrinsicResult } from "./eventListeners";
 import { testLog } from "./Logger";
 import { User } from "./User";
+import { MangataGenericEvent } from "mangata-sdk/build/";
 //let wait 7 blocks - 6000 * 7 = 42000; depends on the number of workers.
 const DEFAULT_TIME_OUT_MS = 42000;
 
@@ -301,16 +302,54 @@ export const signAndWaitTx = async (
     );
   });
 };
+
+const extrinsicResultMethods = [
+  "ExtrinsicSuccess",
+  "ExtrinsicFailed",
+  "ExtrinsicUndefined",
+];
+
+export const getEventResultFromMangataTx = function (
+  relatedEvents: MangataGenericEvent[],
+  searchTerm: string[] = []
+): EventResult {
+  let extrinsicResult;
+  extrinsicResult = relatedEvents.find(
+    (e) =>
+      e.event.toHuman().method !== null &&
+      extrinsicResultMethods.includes(e.event.toHuman().method!.toString())
+  );
+  if (searchTerm.length > 0) {
+    extrinsicResult = relatedEvents.find(
+      (e) =>
+        e.event.toHuman().method !== null &&
+        searchTerm.every((filterTerm) =>
+          (
+            JSON.stringify(e.event.toHuman()) +
+            JSON.stringify(e.event.toHuman().data)
+          ).includes(filterTerm)
+        )
+    );
+  } else {
+    extrinsicResult = relatedEvents.find(
+      (e) =>
+        e.event.toHuman().method !== null &&
+        extrinsicResultMethods.includes(e.event.toHuman().method!.toString())
+    );
+  }
+  if ((extrinsicResult?.event as GenericEvent) === undefined) {
+    testLog.getLog().warn("WARN: Event is undefined.");
+    testLog.getLog().warn(JSON.stringify(relatedEvents));
+    testLog.getLog().warn(searchTerm);
+    throw new Error("  --- TX Mapping issue --- ");
+  }
+  return createEventResultfromExtrinsic(extrinsicResult?.event as GenericEvent);
+};
 // From the events that a waitForTx, create an EventResponse filtering by search term or by extrinsic results.
 export const getEventResultFromTxWait = function (
   relatedEvents: GenericEvent[],
   searchTerm: string[] = []
 ): EventResult {
-  const extrinsicResultMethods = [
-    "ExtrinsicSuccess",
-    "ExtrinsicFailed",
-    "ExtrinsicUndefined",
-  ];
   let extrinsicResult;
   if (searchTerm.length > 0) {
     extrinsicResult = relatedEvents.find(
@@ -331,29 +370,7 @@ export const getEventResultFromTxWait = function (
   }
 
   if (extrinsicResult) {
-    const eventResult = extrinsicResult.toHuman();
-    switch (eventResult.method) {
-      case extrinsicResultMethods[1]:
-        const data = eventResult.data as AnyJson[];
-        const error = JSON.stringify(data[0]);
-        const errorNumber = JSON.parse(error).Module.error;
-        return new EventResult(
-          ExtrinsicResult.ExtrinsicFailed,
-          parseInt(errorNumber)
-        );
-
-      case extrinsicResultMethods[2]:
-        return new EventResult(
-          ExtrinsicResult.ExtrinsicUndefined,
-          eventResult.data
-        );
-
-      default:
-        return new EventResult(
-          ExtrinsicResult.ExtrinsicSuccess,
-          eventResult.data
-        );
-    }
+    return createEventResultfromExtrinsic(extrinsicResult);
   }
   testLog
     .getLog()
@@ -372,6 +389,32 @@ export const getEventResultFromTxWait = function (
     );
   return new EventResult(-1, "ERROR: NO TX FOUND");
 };
+
+function createEventResultfromExtrinsic(extrinsicResult: GenericEvent) {
+  const eventResult = extrinsicResult.toHuman();
+  switch (eventResult.method) {
+    case extrinsicResultMethods[1]:
+      const data = eventResult.data as AnyJson[];
+      const error = JSON.stringify(data[0]);
+      const errorNumber = JSON.parse(error).Module.error;
+      return new EventResult(
+        ExtrinsicResult.ExtrinsicFailed,
+        parseInt(errorNumber)
+      );
+
+    case extrinsicResultMethods[2]:
+      return new EventResult(
+        ExtrinsicResult.ExtrinsicUndefined,
+        eventResult.data
+      );
+
+    default:
+      return new EventResult(
+        ExtrinsicResult.ExtrinsicSuccess,
+        eventResult.data
+      );
+  }
+}
 
 /// Do a Tx and expect a success. Good for setups.
 export async function signSendAndWaitToFinishTx(

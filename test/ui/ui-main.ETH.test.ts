@@ -67,8 +67,8 @@ describe("UI main tests - Deposit - ETH", () => {
     const amount = new BN(Math.pow(10, 15).toString());
     const addFromWallet = testUser1
       .getAsset(ETH_ASSET_ID)
-      ?.amountBefore!.add(amount);
-    expect(testUser1.getAsset(ETH_ASSET_ID)?.amountAfter!).bnEqual(
+      ?.amountBefore.free!.add(amount);
+    expect(testUser1.getAsset(ETH_ASSET_ID)?.amountAfter.free!).bnEqual(
       addFromWallet!
     );
   });
@@ -136,8 +136,8 @@ describe("UI main tests - Withdraw - ETH", () => {
     const amount = new BN(Math.pow(10, 15).toString());
     const diffFromWallet = testUser1
       .getAsset(ETH_ASSET_ID)
-      ?.amountBefore!.sub(amount);
-    expect(testUser1.getAsset(ETH_ASSET_ID)?.amountAfter!).bnEqual(
+      ?.amountBefore.free!.sub(amount);
+    expect(testUser1.getAsset(ETH_ASSET_ID)?.amountAfter.free!).bnEqual(
       diffFromWallet!
     );
     // TODO, validate in eth that user now has the tokens back!

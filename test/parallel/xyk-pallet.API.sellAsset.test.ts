@@ -22,7 +22,7 @@ import {
 } from "../../utils/validators";
 import { Assets } from "../../utils/Assets";
 import { getEnvironmentRequiredVars } from "../../utils/utils";
-import { getEventResultFromTxWait } from "../../utils/txHandler";
+import { getEventResultFromMangataTx } from "../../utils/txHandler";
 
 jest.spyOn(console, "log").mockImplementation(jest.fn());
 jest.setTimeout(1500000);
@@ -86,7 +86,7 @@ describe("xyk-pallet - Sell assets tests: SellAsset Errors:", () => {
       first_asset_amount.div(new BN(2)),
       new BN(0)
     ).then((result) => {
-      const eventResponse = getEventResultFromTxWait(result);
+      const eventResponse = getEventResultFromMangataTx(result);
       expect(eventResponse.state).toEqual(ExtrinsicResult.ExtrinsicFailed);
       expect(eventResponse.data).toEqual(3);
     });
@@ -97,7 +97,7 @@ describe("xyk-pallet - Sell assets tests: SellAsset Errors:", () => {
       first_asset_amount.div(new BN(2)),
       new BN(0)
     ).then((result) => {
-      const eventResponse = getEventResultFromTxWait(result);
+      const eventResponse = getEventResultFromMangataTx(result);
       expect(eventResponse.state).toEqual(ExtrinsicResult.ExtrinsicFailed);
       expect(eventResponse.data).toEqual(3);
     });
@@ -130,7 +130,7 @@ describe("xyk-pallet - Sell assets tests: SellAsset Errors:", () => {
 
     let remainingOfCurrency1 = testUser1
       .getAsset(firstCurrency)
-      ?.amountBefore!.sub(first_asset_amount)!;
+      ?.amountBefore.free!.sub(first_asset_amount)!;
     const sellPriceLocal = calculate_sell_price_local(
       first_asset_amount,
       second_asset_amount.div(new BN(2)),
@@ -144,7 +144,7 @@ describe("xyk-pallet - Sell assets tests: SellAsset Errors:", () => {
       remainingOfCurrency1.sub(new BN(1)),
       new BN(0)
     ).then((result) => {
-      const eventResponse = getEventResultFromTxWait(result, [
+      const eventResponse = getEventResultFromMangataTx(result, [
         "xyk",
         "AssetsSwapped",
         testUser1.keyRingPair.address,
@@ -153,7 +153,7 @@ describe("xyk-pallet - Sell assets tests: SellAsset Errors:", () => {
     });
 
     await testUser1.refreshAmounts(AssetWallet.AFTER);
-    remainingOfCurrency1 = testUser1.getAsset(firstCurrency)?.amountAfter!;
+    remainingOfCurrency1 = testUser1.getAsset(firstCurrency)?.amountAfter.free!;
     expect(remainingOfCurrency1).bnEqual(new BN(1));
 
     const secondWalletAmount = defaultCurrecyValue
@@ -168,7 +168,7 @@ describe("xyk-pallet - Sell assets tests: SellAsset Errors:", () => {
       remainingOfCurrency1.add(new BN(1)),
       new BN(0)
     ).then((result) => {
-      const eventResponse = getEventResultFromTxWait(result);
+      const eventResponse = getEventResultFromMangataTx(result);
       expect(eventResponse.state).toEqual(ExtrinsicResult.ExtrinsicFailed);
       expect(eventResponse.data).toEqual(2);
     });
@@ -177,12 +177,12 @@ describe("xyk-pallet - Sell assets tests: SellAsset Errors:", () => {
 
     const diffFromWallet = testUser1
       .getAsset(firstCurrency)
-      ?.amountBefore!.sub(new BN(defaultCurrecyValue).sub(new BN(1)));
-    expect(testUser1.getAsset(firstCurrency)?.amountAfter!).bnEqual(
+      ?.amountBefore.free!.sub(new BN(defaultCurrecyValue).sub(new BN(1)));
+    expect(testUser1.getAsset(firstCurrency)?.amountAfter.free!).bnEqual(
       diffFromWallet!
     );
 
-    expect(testUser1.getAsset(secondCurrency)?.amountAfter!).bnEqual(
+    expect(testUser1.getAsset(secondCurrency)?.amountAfter.free!).bnEqual(
       secondWalletAmount
     );
 
@@ -238,16 +238,16 @@ describe("xyk-pallet - Sell assets tests: SellAsset Errors:", () => {
     const sellPriceLocal = calculate_sell_price_local(
       first_asset_amount,
       secondAssetAmount,
-      remainingOfCurrency1
+      remainingOfCurrency1.free
     );
     await sellAsset(
       testUser1.keyRingPair,
       firstCurrency,
       secondCurrency,
-      remainingOfCurrency1,
+      remainingOfCurrency1.free,
       sellPriceLocal.add(new BN(1))
     ).then((result) => {
-      const eventResponse = getEventResultFromTxWait(result);
+      const eventResponse = getEventResultFromMangataTx(result);
       expect(eventResponse.state).toEqual(ExtrinsicResult.ExtrinsicFailed);
       expect(eventResponse.data).toEqual(8);
     });
@@ -257,14 +257,16 @@ describe("xyk-pallet - Sell assets tests: SellAsset Errors:", () => {
 
     const diffFromWallet = testUser1
       .getAsset(firstCurrency)
-      ?.amountBefore!.sub(feeToAvoidFrontRunning);
-    expect(testUser1.getAsset(firstCurrency)?.amountAfter!).bnEqual(
+      ?.amountBefore.free!.sub(feeToAvoidFrontRunning);
+    expect(testUser1.getAsset(firstCurrency)?.amountAfter.free!).bnEqual(
       diffFromWallet!
     );
 
     //second wallet should not be modified.
     const amount = testUser1.getAsset(secondCurrency)?.amountBefore!;
-    expect(testUser1.getAsset(secondCurrency)?.amountAfter!).bnEqual(amount);
+    expect(testUser1.getAsset(secondCurrency)?.amountAfter.free!).bnEqual(
+      amount.free
+    );
 
     const treasury = await getTreasury(firstCurrency);
     const treasuryBurn = await getTreasuryBurn(firstCurrency);
@@ -333,16 +335,16 @@ describe("xyk-pallet - Sell assets tests: Selling Assets you can", () => {
     const sellPriceLocal = calculate_sell_price_local(
       first_asset_amount,
       second_asset_amount.div(new BN(2)),
-      remainingOfCurrency1
+      remainingOfCurrency1.free
     );
     await sellAsset(
       testUser1.keyRingPair,
       firstCurrency,
       secondCurrency,
-      remainingOfCurrency1,
+      remainingOfCurrency1.free,
       sellPriceLocal
     ).then((result) => {
-      const eventResponse = getEventResultFromTxWait(result, [
+      const eventResponse = getEventResultFromMangataTx(result, [
         "xyk",
         "AssetsSwapped",
         testUser1.keyRingPair.address,
@@ -352,7 +354,7 @@ describe("xyk-pallet - Sell assets tests: Selling Assets you can", () => {
         eventResponse,
         testUser1.keyRingPair.address,
         firstCurrency,
-        remainingOfCurrency1,
+        remainingOfCurrency1.free,
         secondCurrency,
         sellPriceLocal
       );
@@ -362,14 +364,16 @@ describe("xyk-pallet - Sell assets tests: Selling Assets you can", () => {
     //spent all the money!
 
     const amount = new BN(0);
-    expect(testUser1.getAsset(firstCurrency)?.amountAfter!).bnEqual(amount);
+    expect(testUser1.getAsset(firstCurrency)?.amountAfter.free!).bnEqual(
+      amount
+    );
     //amounAsset2 = issued  - spent in the pool + bought selling all firstCurerncy.
     const amountAsset2 = defaultCurrecyValue
       .add(new BN(1))
       .sub(second_asset_amount.div(new BN(2)))
       .add(sellPriceLocal);
 
-    expect(testUser1.getAsset(secondCurrency)?.amountAfter!).bnEqual(
+    expect(testUser1.getAsset(secondCurrency)?.amountAfter.free!).bnEqual(
       amountAsset2
     );
   });
@@ -418,17 +422,17 @@ describe("xyk-pallet - Sell assets tests: Selling Assets you can", () => {
     const sellPriceLocal = calculate_sell_price_local(
       new BN(10000).div(new BN(2)),
       new BN(10000),
-      remainingOfCurrency3
+      remainingOfCurrency3.free
     );
 
     await sellAsset(
       testUser2.keyRingPair,
       thirdCurrency,
       firstCurrency,
-      remainingOfCurrency3,
+      remainingOfCurrency3.free,
       sellPriceLocal
     ).then((result) => {
-      const eventResponse = getEventResultFromTxWait(result, [
+      const eventResponse = getEventResultFromMangataTx(result, [
         "xyk",
         "AssetsSwapped",
         testUser2.keyRingPair.address,
@@ -438,7 +442,7 @@ describe("xyk-pallet - Sell assets tests: Selling Assets you can", () => {
         eventResponse,
         testUser2.keyRingPair.address,
         thirdCurrency,
-        remainingOfCurrency3,
+        remainingOfCurrency3.free,
         firstCurrency,
         sellPriceLocal
       );
@@ -447,9 +451,13 @@ describe("xyk-pallet - Sell assets tests: Selling Assets you can", () => {
     await testUser2.refreshAmounts(AssetWallet.AFTER);
 
     let amount = new BN(0);
-    expect(testUser2.getAsset(thirdCurrency)?.amountAfter!).bnEqual(amount);
+    expect(testUser2.getAsset(thirdCurrency)?.amountAfter.free!).bnEqual(
+      amount
+    );
 
     amount = sellPriceLocal;
-    expect(testUser2.getAsset(firstCurrency)?.amountAfter!).bnEqual(amount);
+    expect(testUser2.getAsset(firstCurrency)?.amountAfter.free!).bnEqual(
+      amount
+    );
   });
 });

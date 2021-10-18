@@ -95,7 +95,9 @@ describe("UI tests - A user can swap and mint tokens", () => {
     await testUser1.refreshAmounts(AssetWallet.AFTER);
     const swapped = testUser1
       .getAsset(ETH_ASSET_ID)
-      ?.amountBefore!.lt(testUser1.getAsset(ETH_ASSET_ID)?.amountAfter!);
+      ?.amountBefore.free!.lt(
+        testUser1.getAsset(ETH_ASSET_ID)?.amountAfter.free!
+      );
 
     expect(swapped).toBeTruthy();
   });
@@ -120,7 +122,9 @@ describe("UI tests - A user can swap and mint tokens", () => {
     await testUser1.refreshAmounts(AssetWallet.AFTER);
     const swapped = testUser1
       .getAsset(ETH_ASSET_ID)
-      ?.amountBefore!.gt(testUser1.getAsset(ETH_ASSET_ID)?.amountAfter!);
+      ?.amountBefore.free!.gt(
+        testUser1.getAsset(ETH_ASSET_ID)?.amountAfter.free!
+      );
     const poolInvested = await new Sidebar(driver).isLiquidityPoolVisible(
       MGA_ASSET_NAME,
       mETH_ASSET_NAME
@@ -153,8 +157,8 @@ describe("UI tests - A user can swap and mint tokens", () => {
 
     await testUser1.refreshAmounts(AssetWallet.AFTER);
     expect(
-      testUser1.getAsset(ETH_ASSET_ID)?.amountBefore!.sub(new BN(1))
-    ).bnEqual(testUser1.getAsset(ETH_ASSET_ID)?.amountAfter!);
+      testUser1.getAsset(ETH_ASSET_ID)?.amountBefore.free!.sub(new BN(1))
+    ).bnEqual(testUser1.getAsset(ETH_ASSET_ID)?.amountAfter.free!);
   });
 
   it("As a User I can mint in more than one pool [ MGA - mETH ] [ MGA - newTokn ] and get invested values", async () => {

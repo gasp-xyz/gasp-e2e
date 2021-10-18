@@ -106,7 +106,7 @@ describe("Test Withdraw - Deposit", () => {
 
     await User.waitUntilBNChanged(ethBalanceBefore, getEthBalance);
     await User.waitUntilBNChanged(
-      testUser1.getAsset(ETH_ASSET_ID)?.amountBefore!,
+      testUser1.getAsset(ETH_ASSET_ID)?.amountBefore.free!,
       getUserTokensBalance
     );
 
@@ -115,7 +115,9 @@ describe("Test Withdraw - Deposit", () => {
 
     const receivedAmountInMGA = testUser1
       .getAsset(ETH_ASSET_ID)
-      ?.amountAfter!.sub(testUser1.getAsset(ETH_ASSET_ID)?.amountBefore!);
+      ?.amountAfter.free!.sub(
+        testUser1.getAsset(ETH_ASSET_ID)?.amountBefore.free!
+      );
     testLog
       .getLog()
       .info(` received Amount : ${receivedAmountInMGA!.toString()} `);
@@ -125,12 +127,12 @@ describe("Test Withdraw - Deposit", () => {
     await signSendAndWaitToFinishTx(
       api.tx.eth.burn(
         ethUserAddress,
-        testUser1.getAsset(ETH_ASSET_ID)?.amountAfter!
+        testUser1.getAsset(ETH_ASSET_ID)?.amountAfter!.free
       ),
       testUser1.keyRingPair
     );
     await User.waitUntilBNChanged(
-      testUser1.getAsset(ETH_ASSET_ID)?.amountAfter!,
+      testUser1.getAsset(ETH_ASSET_ID)?.amountAfter.free!,
       getUserTokensBalance
     );
     await User.waitUntilBNChanged(ethBalanceAfter, getEthBalance);
@@ -148,7 +150,7 @@ describe("Test Withdraw - Deposit", () => {
       const assetsValue = await (
         await getUserAssets(testUser1.keyRingPair.address, [ETH_ASSET_ID])
       )[0];
-      return assetsValue;
+      return assetsValue.free;
     }
   });
 
@@ -181,9 +183,9 @@ describe("Test Withdraw - Deposit", () => {
       );
       await User.waitUntilBNChanged(assetBalanceBefore, getAssetBalance);
       await testUser1.refreshAmounts(AssetWallet.AFTER);
-      const amountAfterwithdraw = testUser1
-        .getAsset(assetId)
-        ?.amountBefore!.sub(testUser1.getAsset(assetId)?.amountAfter!);
+      const amountAfterwithdraw = (
+        testUser1.getAsset(assetId)?.amountBefore!.free.toBn() as BN
+      ).sub(testUser1.getAsset(assetId)?.amountAfter!.free.toBn() as BN)!;
 
       const assetBalanceAfterWithdraw = await erc20MetaMaskUser.getBalance(
         assetAddress

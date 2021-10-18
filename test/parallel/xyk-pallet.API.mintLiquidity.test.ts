@@ -23,7 +23,7 @@ import {
   calculateLiqAssetAmount,
   getEnvironmentRequiredVars,
 } from "../../utils/utils";
-import { getEventResultFromTxWait } from "../../utils/txHandler";
+import { getEventResultFromMangataTx } from "../../utils/txHandler";
 
 jest.spyOn(console, "log").mockImplementation(jest.fn());
 jest.setTimeout(1500000);
@@ -120,15 +120,15 @@ describe("xyk-pallet - Mint liquidity tests: with minting you can", () => {
 
     let diffFromWallet = testUser1
       .getAsset(firstCurrency)
-      ?.amountBefore!.sub(defaultCurrencyValue);
-    expect(testUser1.getAsset(firstCurrency)?.amountAfter!).bnEqual(
+      ?.amountBefore.free!.sub(defaultCurrencyValue);
+    expect(testUser1.getAsset(firstCurrency)?.amountAfter.free!).bnEqual(
       diffFromWallet!
     );
 
     diffFromWallet = testUser1
       .getAsset(secondCurrency)
-      ?.amountBefore!.sub(defaultCurrencyValue.add(roundingIssue));
-    expect(testUser1.getAsset(firstCurrency)?.amountAfter!).bnEqual(
+      ?.amountBefore.free!.sub(defaultCurrencyValue.add(roundingIssue));
+    expect(testUser1.getAsset(firstCurrency)?.amountAfter.free!).bnEqual(
       diffFromWallet!
     );
 
@@ -139,8 +139,8 @@ describe("xyk-pallet - Mint liquidity tests: with minting you can", () => {
     );
     const addFromWallet = testUser1
       .getAsset(liquidityAssetId)
-      ?.amountBefore!.add(amount);
-    expect(testUser1.getAsset(liquidityAssetId)?.amountAfter!).bnEqual(
+      ?.amountBefore.free!.add(amount);
+    expect(testUser1.getAsset(liquidityAssetId)?.amountAfter.free!).bnEqual(
       addFromWallet!
     );
 
@@ -187,7 +187,7 @@ describe("xyk-pallet - Mint liquidity tests: with minting you can", () => {
       secondCurrency,
       injectedValue
     ).then((result) => {
-      eventResponse = getEventResultFromTxWait(result, [
+      eventResponse = getEventResultFromMangataTx(result, [
         "xyk",
         "LiquidityMinted",
         testUser1.keyRingPair.address,
@@ -202,7 +202,9 @@ describe("xyk-pallet - Mint liquidity tests: with minting you can", () => {
     );
     const secondCurrencyAmountLost = testUser1
       .getAsset(secondCurrency)
-      ?.amountBefore.sub(testUser1.getAsset(secondCurrency)?.amountAfter!)!;
+      ?.amountBefore.free.sub(
+        testUser1.getAsset(secondCurrency)?.amountAfter.free!
+      )!;
     // liquidity value matches with 2*minted_amount, since the pool is balanced.
     validateMintedLiquidityEvent(
       eventResponse,
@@ -222,15 +224,15 @@ describe("xyk-pallet - Mint liquidity tests: with minting you can", () => {
 
     let diffFromWallet = testUser1
       .getAsset(secondCurrency)
-      ?.amountBefore!.sub(injectedValue);
-    expect(testUser1.getAsset(firstCurrency)?.amountAfter!).bnEqual(
+      ?.amountBefore.free!.sub(injectedValue);
+    expect(testUser1.getAsset(firstCurrency)?.amountAfter.free!).bnEqual(
       diffFromWallet!
     );
 
     diffFromWallet = testUser1
       .getAsset(secondCurrency)
-      ?.amountBefore!.sub(secondCurrencyAmountLost);
-    expect(testUser1.getAsset(secondCurrency)?.amountAfter!).bnEqual(
+      ?.amountBefore.free!.sub(secondCurrencyAmountLost);
+    expect(testUser1.getAsset(secondCurrency)?.amountAfter.free!).bnEqual(
       diffFromWallet!
     );
 
@@ -238,8 +240,8 @@ describe("xyk-pallet - Mint liquidity tests: with minting you can", () => {
     const amount = calculateLiqAssetAmount(injectedValue, injectedValue);
     const addFromWallet = testUser1
       .getAsset(liquidityAssetId)
-      ?.amountBefore!.add(amount);
-    expect(testUser1.getAsset(liquidityAssetId)?.amountAfter!).bnEqual(
+      ?.amountBefore.free!.add(amount);
+    expect(testUser1.getAsset(liquidityAssetId)?.amountAfter.free!).bnEqual(
       addFromWallet!
     );
 

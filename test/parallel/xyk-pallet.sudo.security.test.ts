@@ -130,7 +130,7 @@ afterEach(async () => {
   const infoUser1After = await testUser1.getUserAccountInfo();
   expect(infoUser1Before).toEqual(infoUser1After);
   const assetValue = testUser1.getAsset(MGA_ASSET_ID);
-  expect(assetValue?.amountBefore.toNumber()).toBeGreaterThan(
-    assetValue?.amountAfter.toNumber()!
+  expect(assetValue?.amountBefore.free.toNumber()).toBeGreaterThan(
+    assetValue?.amountAfter.free.toNumber()!
   );
 });

@@ -24,7 +24,7 @@ import {
 } from "../../utils/validators";
 import { Assets } from "../../utils/Assets";
 import { calculateFees, getEnvironmentRequiredVars } from "../../utils/utils";
-import { getEventResultFromTxWait } from "../../utils/txHandler";
+import { getEventResultFromMangataTx } from "../../utils/txHandler";
 
 jest.spyOn(console, "log").mockImplementation(jest.fn());
 jest.setTimeout(1500000);
@@ -88,7 +88,7 @@ describe("xyk-pallet - Buy assets tests: BuyAssets Errors:", () => {
       firstAssetAmount.div(new BN(2)),
       new BN(0)
     ).then((result) => {
-      const eventResponse = getEventResultFromTxWait(result);
+      const eventResponse = getEventResultFromMangataTx(result);
       expect(eventResponse.state).toEqual(ExtrinsicResult.ExtrinsicFailed);
       expect(eventResponse.data).toEqual(3);
     });
@@ -100,7 +100,7 @@ describe("xyk-pallet - Buy assets tests: BuyAssets Errors:", () => {
       firstAssetAmount.div(new BN(2)),
       new BN(0)
     ).then((result) => {
-      const eventResponse = getEventResultFromTxWait(result);
+      const eventResponse = getEventResultFromMangataTx(result);
       expect(eventResponse.state).toEqual(ExtrinsicResult.ExtrinsicFailed);
       expect(eventResponse.data).toEqual(3);
     });
@@ -141,7 +141,7 @@ describe("xyk-pallet - Buy assets tests: BuyAssets Errors:", () => {
       poolAmountSecondCurrency.add(new BN(1)),
       new BN(1000000)
     ).then((result) => {
-      const eventResponse = getEventResultFromTxWait(result);
+      const eventResponse = getEventResultFromMangataTx(result);
       expect(eventResponse.state).toEqual(ExtrinsicResult.ExtrinsicFailed);
       expect(eventResponse.data).toEqual(5);
     });
@@ -180,7 +180,7 @@ describe("xyk-pallet - Buy assets tests: BuyAssets Errors:", () => {
       poolAmountSecondCurrency,
       new BN(100000000)
     ).then((result) => {
-      const eventResponse = getEventResultFromTxWait(result);
+      const eventResponse = getEventResultFromMangataTx(result);
       expect(eventResponse.state).toEqual(ExtrinsicResult.ExtrinsicFailed);
       expect(eventResponse.data).toEqual(5);
     });
@@ -225,7 +225,7 @@ describe("xyk-pallet - Buy assets tests: BuyAssets Errors:", () => {
       poolAmountSecondCurrency.sub(new BN(1)),
       buyPriceLocal.sub(new BN(1))
     ).then((result) => {
-      const eventResponse = getEventResultFromTxWait(result);
+      const eventResponse = getEventResultFromMangataTx(result);
       expect(eventResponse.state).toEqual(ExtrinsicResult.ExtrinsicFailed);
       expect(eventResponse.data).toEqual(7);
     });
@@ -308,7 +308,7 @@ describe("xyk-pallet - Buy assets tests: Buying assets you can", () => {
       poolAmountSecondCurrency.sub(new BN(1)),
       buyPriceLocal.add(new BN(1))
     ).then((result) => {
-      const eventResponse = getEventResultFromTxWait(result, [
+      const eventResponse = getEventResultFromMangataTx(result, [
         "xyk",
         "AssetsSwapped",
         testUser1.keyRingPair.address,
@@ -328,13 +328,15 @@ describe("xyk-pallet - Buy assets tests: Buying assets you can", () => {
     let amount = poolAmountSecondCurrency.sub(new BN(1));
     const addFromWallet = testUser1
       .getAsset(secondCurrency)
-      ?.amountBefore!.add(amount);
-    expect(testUser1.getAsset(secondCurrency)?.amountAfter!).bnEqual(
+      ?.amountBefore.free!.add(amount);
+    expect(testUser1.getAsset(secondCurrency)?.amountAfter.free!).bnEqual(
       addFromWallet!
     );
 
-    amount = testUser1.getAsset(firstCurrency)?.amountBefore!;
-    expect(testUser1.getAsset(firstCurrency)?.amountAfter!).bnEqual(amount);
+    amount = testUser1.getAsset(firstCurrency)?.amountBefore.free!;
+    expect(testUser1.getAsset(firstCurrency)?.amountAfter.free!).bnEqual(
+      amount
+    );
 
     //lets get the treasure amounts!
     const treasurySecondCurrency = await getTreasury(secondCurrency);
@@ -410,7 +412,7 @@ describe("xyk-pallet - Buy assets tests: Buying assets you can", () => {
       amountToBuy,
       buyPriceLocal
     ).then((result) => {
-      const eventResponse = getEventResultFromTxWait(result, [
+      const eventResponse = getEventResultFromMangataTx(result, [
         "xyk",
         "AssetsSwapped",
         testUser2.keyRingPair.address,
@@ -431,13 +433,13 @@ describe("xyk-pallet - Buy assets tests: Buying assets you can", () => {
 
     const diffFromWallet = testUser2
       .getAsset(thirdCurrency)
-      ?.amountBefore!.sub(buyPriceLocal);
+      ?.amountBefore.free!.sub(buyPriceLocal);
 
-    expect(testUser2.getAsset(thirdCurrency)?.amountAfter!).bnEqual(
+    expect(testUser2.getAsset(thirdCurrency)?.amountAfter.free!).bnEqual(
       diffFromWallet!
     );
 
-    expect(testUser2.getAsset(firstCurrency)?.amountAfter!).bnEqual(
+    expect(testUser2.getAsset(firstCurrency)?.amountAfter.free!).bnEqual(
       amountToBuy
     );
 

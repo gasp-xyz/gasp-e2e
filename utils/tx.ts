@@ -1,10 +1,9 @@
 import { AddressOrPair, SubmittableExtrinsic } from "@polkadot/api/types";
 import { StorageKey } from "@polkadot/types";
-import { getApi } from "./api";
+import { getApi, getMangataInstance } from "./api";
 import BN from "bn.js";
 import { env } from "process";
 import { SudoDB } from "./SudoDB";
-import { AccountData } from "@polkadot/types/interfaces/balances";
 import { signAndWaitTx, signSendAndWaitToFinishTx } from "./txHandler";
 import { getEnvironmentRequiredVars } from "./utils";
 import { MGA_DEFAULT_LIQ_TOKEN } from "./Constants";
@@ -12,7 +11,6 @@ import { Keyring } from "@polkadot/api";
 import { User } from "./User";
 import { testLog } from "./Logger";
 import { KeyringPair } from "@polkadot/keyring/types";
-import { hexToBn } from "@polkadot/util";
 
 export const signTx = async (
   tx: SubmittableExtrinsic<"promise">,
@@ -126,76 +124,75 @@ export function calculate_buy_price_local_no_fee(
   return new BN(result.toString());
 }
 
-export async function get_burn_amount(
+export async function getBurnAmount(
   firstAssetId: BN,
   secondAssetId: BN,
-  liquidity_asset_amount: BN
+  liquidityAssetAmount: BN
 ) {
-  const api = getApi();
-  //I could not find a way to get and inject the xyk interface in the api builder.
-  const result = await (api.rpc as any).xyk.get_burn_amount(
-    firstAssetId,
-    secondAssetId,
-    liquidity_asset_amount
+  const mangata = await getMangataInstance();
+  const result = await mangata.getBurnAmount(
+    firstAssetId.toString(),
+    secondAssetId.toString(),
+    liquidityAssetAmount
   );
-  return result.toHuman();
+  testLog.getLog().info(result.firstAssetAmount);
+  return result;
 }
 
 export async function calculate_sell_price_rpc(
   input_reserve: BN,
   output_reserve: BN,
   sell_amount: BN
-) {
-  const api = getApi();
-  const result = await (api.rpc as any).xyk.calculate_sell_price(
+): Promise<BN> {
+  const mangata = await getMangataInstance();
+  const result = await mangata.calculateSellPrice(
     input_reserve,
     output_reserve,
     sell_amount
   );
-  return new BN(result.price.toString());
+  return result;
 }
 
 export async function calculate_buy_price_rpc(
-  input_reserve: BN,
-  output_reserve: BN,
-  buy_amount: BN
+  inputReserve: BN,
+  outputReserve: BN,
+  buyAmount: BN
 ) {
-  const api = getApi();
-  //I could not find a way to get and inject the xyk interface in the api builder.
-  const result = await (api.rpc as any).xyk.calculate_buy_price(
-    input_reserve,
-    output_reserve,
-    buy_amount
+  const mangata = await getMangataInstance();
+  const result = await mangata.calculateBuyPrice(
+    inputReserve,
+    outputReserve,
+    buyAmount
   );
-  return new BN(result.price.toString());
+  return result;
 }
 
 export async function calculate_buy_price_id_rpc(
   soldTokenId: BN,
   boughtTokenId: BN,
-  buy_amount: BN
+  buyAmount: BN
 ) {
-  const api = getApi();
-  const result = await (api.rpc as any).xyk.calculate_buy_price_id(
-    soldTokenId,
-    boughtTokenId,
-    buy_amount
+  const mangata = await getMangataInstance();
+  const result = await mangata.calculateBuyPriceId(
+    soldTokenId.toString(),
+    boughtTokenId.toString(),
+    buyAmount
   );
-  return new BN(result.price.toString());
+  return result;
 }
 
 export async function calculate_sell_price_id_rpc(
   soldTokenId: BN,
   boughtTokenId: BN,
-  sell_amount: BN
+  sellAmount: BN
 ) {
-  const api = getApi();
-  const result = await (api.rpc as any).xyk.calculate_sell_price_id(
-    soldTokenId,
-    boughtTokenId,
-    sell_amount
+  const mangata = await getMangataInstance();
+  const result = await mangata.calculateSellPriceId(
+    soldTokenId.toString(),
+    boughtTokenId.toString(),
+    sellAmount
   );
-  return new BN(result.price.toString());
+  return result;
 }
 
 export async function getCurrentNonce(account?: string) {
@@ -213,10 +210,9 @@ export async function getCurrentNonce(account?: string) {
 }
 
 export async function getChainNonce(address: string) {
-  const api = getApi();
-  const { nonce } = await api.query.system.account(address);
-
-  return new BN(nonce.toString());
+  const mangata = await getMangataInstance();
+  const nonce = await mangata.getNonce(address);
+  return nonce;
 }
 
 export async function getUserAssets(account: any, assets: BN[]) {
@@ -229,32 +225,40 @@ export async function getUserAssets(account: any, assets: BN[]) {
 }
 
 export async function getBalanceOfAsset(assetId: BN, account: any) {
-  const api = getApi();
-
-  const balance = await api.query.tokens.accounts(account, assetId);
-  const accountData = balance as AccountData;
-  return new BN(accountData.free.toBigInt().toString());
+  const mangata = await getMangataInstance();
+  const balance = await mangata.getTokenBalance(assetId.toString(), account);
+  return balance;
 }
 
 export async function getBalanceOfPool(
   assetId1: BN,
   assetId2: BN
 ): Promise<BN[]> {
-  const api = getApi();
   let reversed = false;
-  const emptyPool = "[0,0]";
+  const emptyPool = "0,0";
+  const mangata = await getMangataInstance();
+  const balance1 = await mangata.getAmountOfTokenIdInPool(
+    assetId1.toString(),
+    assetId2.toString()
+  );
+  const balance2 = await mangata.getAmountOfTokenIdInPool(
+    assetId2.toString(),
+    assetId1.toString()
+  );
 
-  const balance1 = await api.query.xyk.pools([assetId1, assetId2]);
-  const balance2 = await api.query.xyk.pools([assetId2, assetId1]);
+  //  const balance1 = await api.query.xyk.pools([assetId1, assetId2]);
+  //  const balance2 = await api.query.xyk.pools([assetId2, assetId1]);
   let balanceWithData = balance1;
   if (balance2.toString() !== emptyPool) {
     balanceWithData = balance2;
     reversed = true;
   }
-  const assetValue1 = JSON.parse(balanceWithData.toString())[0];
-  const assetValue2 = JSON.parse(balanceWithData.toString())[1];
-  const a = hexToBn(assetValue1);
-  const b = hexToBn(assetValue2);
+  //  const assetValue1 = JSON.parse(balanceWithData.toString())[0];
+  //  const assetValue2 = JSON.parse(balanceWithData.toString())[1];
+  //  const a = hexToBn(assetValue1);
+  const a = balanceWithData[0];
+  //  const b = hexToBn(assetValue2);
+  const b = balanceWithData[1];
   if (reversed) {
     return [b, a];
   } else {
@@ -345,34 +349,37 @@ export const balanceTransfer = async (
 };
 
 export const transferAsset = async (
-  account: any,
-  asset_id: BN,
+  account: KeyringPair,
+  tokenId: BN,
   targetAddress: string,
   amount: BN
 ) => {
-  const api = getApi();
-  const nonce = await (await getCurrentNonce(account.address)).toString();
-  const txResult = signAndWaitTx(
-    api.tx.tokens.transfer(targetAddress, asset_id, amount),
+  const mangata = await getMangataInstance();
+  const nonce = await getCurrentNonce(account.address);
+  const result = await mangata.transferToken(
     account,
-    parseInt(nonce)
+    tokenId.toString(),
+    targetAddress,
+    amount,
+    { nonce: nonce }
   );
-  return txResult;
+  return result;
 };
 
 export const transferAll = async (
   account: KeyringPair,
-  asset_id: BN,
+  tokenId: BN,
   target: any
 ) => {
-  const api = getApi();
-
-  const txResult = await signAndWaitTx(
-    api.tx.tokens.transferAll(target, asset_id),
+  const mangata = await getMangataInstance();
+  const nonce = await getCurrentNonce(account.address);
+  const result = await mangata.transferTokenAll(
     account,
-    await (await getCurrentNonce(account.address)).toNumber()
+    tokenId.toString(),
+    target,
+    { nonce: nonce }
   );
-  return txResult;
+  return result;
 };
 
 export const mintAsset = async (
@@ -399,41 +406,40 @@ export const createPool = async (
   secondAssetId: BN,
   secondAssetAmount: BN
 ) => {
-  const api = getApi();
   const nonce = await getCurrentNonce(account.address);
   testLog
     .getLog()
     .info(
       `Creating pool:${firstAssetId},${firstAssetAmount},${secondAssetId},${secondAssetAmount}`
     );
-  const txResult = await signAndWaitTx(
-    api.tx.xyk.createPool(
-      firstAssetId,
-      firstAssetAmount,
-      secondAssetId,
-      secondAssetAmount
-    ),
+  const mangata = await getMangataInstance();
+  const result = await mangata.createPool(
     account,
-    nonce.toNumber()
+    firstAssetId.toString(),
+    firstAssetAmount,
+    secondAssetId.toString(),
+    secondAssetAmount,
+    { nonce: nonce }
   );
-  return txResult;
+  return result;
 };
 
 export const sellAsset = async (
-  account: any,
+  account: KeyringPair,
   soldAssetId: BN,
   boughtAssetId: BN,
   amount: BN,
   minAmountOut: BN
 ) => {
-  const api = getApi();
-  const nonce = await getCurrentNonce(account.address);
-  const txResult = await signAndWaitTx(
-    api.tx.xyk.sellAsset(soldAssetId, boughtAssetId, amount, minAmountOut),
+  const mangata = await getMangataInstance();
+  const result = await mangata.sellAsset(
     account,
-    nonce.toNumber()
+    soldAssetId.toString(),
+    boughtAssetId.toString(),
+    amount,
+    minAmountOut
   );
-  return txResult;
+  return result;
 };
 
 export const buyAsset = async (
@@ -443,14 +449,15 @@ export const buyAsset = async (
   amount: BN,
   maxAmountIn: BN
 ) => {
-  const api = getApi();
-  const nonce = await getCurrentNonce(account.address);
-  const txResult = await signAndWaitTx(
-    api.tx.xyk.buyAsset(soldAssetId, boughtAssetId, amount, maxAmountIn),
+  const mangata = await getMangataInstance();
+  const result = await mangata.buyAsset(
     account,
-    nonce.toNumber()
+    soldAssetId.toString(),
+    boughtAssetId.toString(),
+    amount,
+    maxAmountIn
   );
-  return txResult;
+  return result;
 };
 
 export const mintLiquidity = async (
@@ -460,19 +467,15 @@ export const mintLiquidity = async (
   firstAssetAmount: BN,
   expectedSecondAssetAmount: BN = new BN(Number.MAX_SAFE_INTEGER)
 ) => {
-  const api = getApi();
-  const nonce = await (await getCurrentNonce(account.address)).toNumber();
-  const txResult = await signAndWaitTx(
-    api.tx.xyk.mintLiquidity(
-      firstAssetId,
-      secondAssetId,
-      firstAssetAmount,
-      expectedSecondAssetAmount
-    ),
+  const mangata = await getMangataInstance();
+  const result = await mangata.mintLiquidity(
     account,
-    nonce
+    firstAssetId.toString(),
+    secondAssetId.toString(),
+    firstAssetAmount,
+    expectedSecondAssetAmount
   );
-  return txResult;
+  return result;
 };
 
 export const burnLiquidity = async (
@@ -481,14 +484,16 @@ export const burnLiquidity = async (
   secondAssetId: BN,
   liquidityAssetAmount: BN
 ) => {
-  const api = getApi();
+  const mangata = await getMangataInstance();
   const nonce = await getCurrentNonce(account.address);
-  const txResult = await signAndWaitTx(
-    api.tx.xyk.burnLiquidity(firstAssetId, secondAssetId, liquidityAssetAmount),
+  const result = await mangata.burnLiquidity(
     account,
-    nonce.toNumber()
+    firstAssetId.toString(),
+    secondAssetId.toString(),
+    liquidityAssetAmount,
+    { nonce: nonce }
   );
-  return txResult;
+  return result;
 };
 
 export async function getAccountInfo(account?: string) {
@@ -507,7 +512,7 @@ export async function getTreasury(tokenId: BN): Promise<BN> {
     tokenId,
     treasuryPalletAddress
   );
-  const treasuryBalanceBN = new BN(treasuryBalance.toString());
+  const treasuryBalanceBN = new BN(treasuryBalance.free.toString());
   return treasuryBalanceBN;
 }
 
@@ -517,7 +522,7 @@ export async function getTreasuryBurn(tokenId: BN): Promise<BN> {
     tokenId,
     treasuryBurnPalletAddress
   );
-  const treasuryBalanceBN = new BN(treasuryBalance.toString());
+  const treasuryBalanceBN = new BN(treasuryBalance.free.toString());
   return treasuryBalanceBN;
 }
 
