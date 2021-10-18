@@ -1,0 +1,161 @@
+{
+  "uid" : "fa5e4239d66d3e15",
+  "name" : "As a User I can create a pool",
+  "fullName" : "UI tests - A user can create a pool MGA - newToken.As a User I can create a pool",
+  "historyId" : "271610054c4a7ce96b4f458d416b5c30",
+  "time" : {
+    "start" : 1634563891728,
+    "stop" : 1634563938707,
+    "duration" : 46979
+  },
+  "description" : "",
+  "descriptionHtml" : "",
+  "status" : "failed",
+  "statusMessage" : "Error: Invalid character",
+  "statusTrace" : "Error: Invalid character\n                    at assert (/home/runner/work/mangata-e2e/mangata-e2e/node_modules/bn.js/lib/bn.js:6:21)\n                    at parseBase (/home/runner/work/mangata-e2e/mangata-e2e/node_modules/bn.js/lib/bn.js:274:7)\n                    at BN._parseBase (/home/runner/work/mangata-e2e/mangata-e2e/node_modules/bn.js/lib/bn.js:310:14)\n                    at BN.init [as _init] (/home/runner/work/mangata-e2e/mangata-e2e/node_modules/bn.js/lib/bn.js:105:14)\n                    at new BN (/home/runner/work/mangata-e2e/mangata-e2e/node_modules/bn.js/lib/bn.js:39:12)\n                    at Function.issueAssetToUser (/home/runner/work/mangata-e2e/mangata-e2e/utils/Assets.ts:75:7)\n                    at runMicrotasks (<anonymous>)\n                    at processTicksAndRejections (internal/process/task_queues.js:95:5)\n                    at Function.setupUserWithCurrencies (/home/runner/work/mangata-e2e/mangata-e2e/utils/Assets.ts:43:26)\n                    at Object.<anonymous> (/home/runner/work/mangata-e2e/mangata-e2e/test/ui/ui-main.pools.test.ts:57:22)",
+  "flaky" : true,
+  "newFailed" : false,
+  "beforeStages" : [ ],
+  "afterStages" : [ ],
+  "labels" : [ {
+    "name" : "suite",
+    "value" : "UI tests - A user can create a pool MGA - newToken"
+  }, {
+    "name" : "testClass",
+    "value" : "UI tests - A user can create a pool MGA - newToken"
+  }, {
+    "name" : "testMethod",
+    "value" : "As a User I can create a pool"
+  }, {
+    "name" : "package",
+    "value" : "UI tests - A user can create a pool MGA - newToken"
+  }, {
+    "name" : "resultFormat",
+    "value" : "allure1"
+  } ],
+  "parameters" : [ ],
+  "links" : [ ],
+  "hidden" : false,
+  "retry" : false,
+  "extra" : {
+    "severity" : "normal",
+    "retries" : [ ],
+    "categories" : [ {
+      "name" : "Product defects",
+      "matchedStatuses" : [ ],
+      "flaky" : false
+    } ],
+    "history" : {
+      "statistic" : {
+        "failed" : 9,
+        "broken" : 0,
+        "skipped" : 0,
+        "passed" : 2,
+        "unknown" : 0,
+        "total" : 11
+      },
+      "items" : [ {
+        "uid" : "9bd741b1c2d8c991",
+        "reportUrl" : "https://mangata-finance.github.io/mangata-e2e/614//#testresult/9bd741b1c2d8c991",
+        "status" : "failed",
+        "statusDetails" : "Error: Invalid character",
+        "time" : {
+          "start" : 1634523404233,
+          "stop" : 1634523499685,
+          "duration" : 95452
+        }
+      }, {
+        "uid" : "aae471541926d0e3",
+        "reportUrl" : "https://mangata-finance.github.io/mangata-e2e/610//#testresult/aae471541926d0e3",
+        "status" : "failed",
+        "statusDetails" : "Error: Invalid character",
+        "time" : {
+          "start" : 1634523073249,
+          "stop" : 1634523184634,
+          "duration" : 111385
+        }
+      }, {
+        "uid" : "2d3f5e002ac44ca8",
+        "reportUrl" : "https://mangata-finance.github.io/mangata-e2e/612//#testresult/2d3f5e002ac44ca8",
+        "status" : "failed",
+        "statusDetails" : "Error: Invalid character",
+        "time" : {
+          "start" : 1634523164533,
+          "stop" : 1634523250353,
+          "duration" : 85820
+        }
+      }, {
+        "uid" : "8af4607207ab71b5",
+        "reportUrl" : "https://mangata-finance.github.io/mangata-e2e/611//#testresult/8af4607207ab71b5",
+        "status" : "passed",
+        "time" : {
+          "start" : 1634522882006,
+          "stop" : 1634522970492,
+          "duration" : 88486
+        }
+      }, {
+        "uid" : "551788a1a6bc1e7",
+        "reportUrl" : "https://mangata-finance.github.io/mangata-e2e/609//#testresult/551788a1a6bc1e7",
+        "status" : "failed",
+        "statusDetails" : "Error: expect(received).toBeTruthy()\n                \n                Received: false",
+        "time" : {
+          "start" : 1634522467746,
+          "stop" : 1634522540763,
+          "duration" : 73017
+        }
+      }, {
+        "uid" : "52242c675eee457b",
+        "reportUrl" : "https://mangata-finance.github.io/mangata-e2e/606//#testresult/52242c675eee457b",
+        "status" : "failed",
+        "statusDetails" : "Error: Invalid character",
+        "time" : {
+          "start" : 1634478962472,
+          "stop" : 1634479039067,
+          "duration" : 76595
+        }
+      }, {
+        "uid" : "d35f0270aa485f81",
+        "reportUrl" : "https://mangata-finance.github.io/mangata-e2e/603//#testresult/d35f0270aa485f81",
+        "status" : "failed",
+        "statusDetails" : "WebDriverError: element click intercepted: Element <button class=\"button btn-primary first-time-flow__button\" role=\"button\" tabindex=\"0\">...</button> is not clickable at point (692, 620). Other element would receive the click: <div class=\"loading-overlay\">...</div>\n                  (Session info: chrome=94.0.4606.61)\n                  (Driver info: chromedriver=94.0.4606.61 (418b78f5838ed0b1c69bb4e51ea0252171854915-refs/branch-heads/4606@{#1204}),platform=Linux 5.8.0-1042-azure x86_64)",
+        "time" : {
+          "start" : 1634478904304,
+          "stop" : 1634478904513,
+          "duration" : 209
+        }
+      }, {
+        "uid" : "67fb2454c99cfca9",
+        "reportUrl" : "https://mangata-finance.github.io/mangata-e2e/604//#testresult/67fb2454c99cfca9",
+        "status" : "passed",
+        "time" : {
+          "start" : 1634478715110,
+          "stop" : 1634478804491,
+          "duration" : 89381
+        }
+      }, {
+        "uid" : "e181b272b693ddd5",
+        "reportUrl" : "https://mangata-finance.github.io/mangata-e2e/608//#testresult/e181b272b693ddd5",
+        "status" : "failed",
+        "statusDetails" : "Error: Invalid character",
+        "time" : {
+          "start" : 1634478098492,
+          "stop" : 1634478177999,
+          "duration" : 79507
+        }
+      }, {
+        "uid" : "cfdf99854a3819c7",
+        "reportUrl" : "https://mangata-finance.github.io/mangata-e2e/605//#testresult/cfdf99854a3819c7",
+        "status" : "failed",
+        "statusDetails" : "Error: Invalid character",
+        "time" : {
+          "start" : 1634478157438,
+          "stop" : 1634478203110,
+          "duration" : 45672
+        }
+      } ]
+    },
+    "tags" : [ ]
+  },
+  "source" : "fa5e4239d66d3e15.json",
+  "parameterValues" : [ ]
+}
