@@ -73,10 +73,10 @@ export class NotificationModal {
       //Confirm Trade in Polkadot extension\nSwapping 0.001 MGA for 0.000976 mETH'
       header: headerText,
       txInfo: info,
-      fromAmount: amounts[0],
-      ToAmount: amounts[1],
-      fromAsset: assetNames[0],
-      toAsset: assetNames[1],
+      fromAmount: amounts[0].trim(),
+      ToAmount: amounts[1].trim(),
+      fromAsset: assetNames[0].trim(),
+      toAsset: assetNames[1].trim(),
     };
   }
 }
