@@ -1,0 +1,151 @@
+{
+  "uid" : "720d6b01bb1adb2e",
+  "name" : "As a User I can Withdraw ETH from Meta extension",
+  "fullName" : "UI main tests - Withdraw - ETH.As a User I can Withdraw ETH from Meta extension",
+  "historyId" : "eac55faabce1aad19e0827a3afd71b78",
+  "time" : {
+    "start" : 1634522653932,
+    "stop" : 1634522800623,
+    "duration" : 146691
+  },
+  "description" : "",
+  "descriptionHtml" : "",
+  "status" : "failed",
+  "statusMessage" : "Error: 1014: Priority is too low: (4174618990306 vs 4070859949892): The transaction has too low priority to replace another transaction already in the pool.",
+  "statusTrace" : "Error: 1014: Priority is too low: (4174618990306 vs 4070859949892): The transaction has too low priority to replace another transaction already in the pool.\n                    at RpcCoder._checkError (/home/runner/work/mangata-e2e/mangata-e2e/node_modules/@polkadot/rpc-provider/coder/index.js:84:13)\n                    at RpcCoder.decodeResponse (/home/runner/work/mangata-e2e/mangata-e2e/node_modules/@polkadot/rpc-provider/coder/index.js:47:10)\n                    at WsProvider.value (/home/runner/work/mangata-e2e/mangata-e2e/node_modules/@polkadot/rpc-provider/ws/index.js:212:90)\n                    at WebSocket.value (/home/runner/work/mangata-e2e/mangata-e2e/node_modules/@polkadot/rpc-provider/ws/index.js:192:153)\n                    at WebSocket.invokeTheCallbackFunction (/home/runner/work/mangata-e2e/mangata-e2e/node_modules/jsdom/lib/jsdom/living/generated/EventHandlerNonNull.js:18:28)\n                    at WebSocket.<anonymous> (/home/runner/work/mangata-e2e/mangata-e2e/node_modules/jsdom/lib/jsdom/living/helpers/create-event-accessor.js:35:32)\n                    at innerInvokeEventListeners (/home/runner/work/mangata-e2e/mangata-e2e/node_modules/jsdom/lib/jsdom/living/events/EventTarget-impl.js:338:25)\n                    at invokeEventListeners (/home/runner/work/mangata-e2e/mangata-e2e/node_modules/jsdom/lib/jsdom/living/events/EventTarget-impl.js:274:3)\n                    at WebSocketImpl._dispatch (/home/runner/work/mangata-e2e/mangata-e2e/node_modules/jsdom/lib/jsdom/living/events/EventTarget-impl.js:221:9)\n                    at fireAnEvent (/home/runner/work/mangata-e2e/mangata-e2e/node_modules/jsdom/lib/jsdom/living/helpers/events.js:18:36)\n                    at WebSocketImpl._onMessageReceived (/home/runner/work/mangata-e2e/mangata-e2e/node_modules/jsdom/lib/jsdom/living/websockets/WebSocket-impl.js:221:5)\n                    at WebSocket.emit (events.js:400:28)\n                    at Receiver.receiverOnMessage (/home/runner/work/mangata-e2e/mangata-e2e/node_modules/ws/lib/websocket.js:983:20)\n                    at Receiver.emit (events.js:400:28)\n                    at Receiver.dataMessage (/home/runner/work/mangata-e2e/mangata-e2e/node_modules/ws/lib/receiver.js:517:14)\n                    at Receiver.getData (/home/runner/work/mangata-e2e/mangata-e2e/node_modules/ws/lib/receiver.js:435:17)\n                    at Receiver.startLoop (/home/runner/work/mangata-e2e/mangata-e2e/node_modules/ws/lib/receiver.js:143:22)\n                    at Receiver._write (/home/runner/work/mangata-e2e/mangata-e2e/node_modules/ws/lib/receiver.js:78:10)\n                    at writeOrBuffer (internal/streams/writable.js:358:12)\n                    at Receiver.Writable.write (internal/streams/writable.js:303:10)\n                    at TLSSocket.socketOnData (/home/runner/work/mangata-e2e/mangata-e2e/node_modules/ws/lib/websocket.js:1077:35)\n                    at TLSSocket.emit (events.js:400:28)\n                    at addChunk (internal/streams/readable.js:293:12)\n                    at readableAddChunk (internal/streams/readable.js:267:9)\n                    at TLSSocket.Readable.push (internal/streams/readable.js:206:10)\n                    at TLSWrap.onStreamRead (internal/stream_base_commons.js:188:23)",
+  "flaky" : false,
+  "newFailed" : false,
+  "beforeStages" : [ ],
+  "afterStages" : [ ],
+  "labels" : [ {
+    "name" : "suite",
+    "value" : "UI main tests - Withdraw - ETH"
+  }, {
+    "name" : "testClass",
+    "value" : "UI main tests - Withdraw - ETH"
+  }, {
+    "name" : "testMethod",
+    "value" : "As a User I can Withdraw ETH from Meta extension"
+  }, {
+    "name" : "package",
+    "value" : "UI main tests - Withdraw - ETH"
+  }, {
+    "name" : "resultFormat",
+    "value" : "allure1"
+  } ],
+  "parameters" : [ ],
+  "links" : [ ],
+  "hidden" : false,
+  "retry" : false,
+  "extra" : {
+    "severity" : "normal",
+    "retries" : [ ],
+    "categories" : [ {
+      "name" : "Product defects",
+      "matchedStatuses" : [ ],
+      "flaky" : false
+    } ],
+    "history" : {
+      "statistic" : {
+        "failed" : 8,
+        "broken" : 0,
+        "skipped" : 0,
+        "passed" : 2,
+        "unknown" : 0,
+        "total" : 10
+      },
+      "items" : [ {
+        "uid" : "88102fa27ee34081",
+        "reportUrl" : "https://mangata-finance.github.io/mangata-e2e/610//#testresult/88102fa27ee34081",
+        "status" : "failed",
+        "statusDetails" : "TimeoutError: Waiting for element to be located By(xpath, //input[@placeholder='Paste Secret Recovery Phrase from clipboard'])\n                Wait timed out after 20007ms",
+        "time" : {
+          "start" : 1634522427050,
+          "stop" : 1634522470200,
+          "duration" : 43150
+        }
+      }, {
+        "uid" : "c05403523bec6c19",
+        "reportUrl" : "https://mangata-finance.github.io/mangata-e2e/612//#testresult/c05403523bec6c19",
+        "status" : "failed",
+        "statusDetails" : "TimeoutError: Waiting for element to be located By(xpath, //input[@placeholder='Paste Secret Recovery Phrase from clipboard'])\n                Wait timed out after 20004ms",
+        "time" : {
+          "start" : 1634522593005,
+          "stop" : 1634522638212,
+          "duration" : 45207
+        }
+      }, {
+        "uid" : "d0131aca48c3786c",
+        "reportUrl" : "https://mangata-finance.github.io/mangata-e2e/611//#testresult/d0131aca48c3786c",
+        "status" : "failed",
+        "statusDetails" : "TimeoutError: Waiting for element to be located By(xpath, //input[@placeholder='Paste Secret Recovery Phrase from clipboard'])\n                Wait timed out after 20002ms",
+        "time" : {
+          "start" : 1634521802587,
+          "stop" : 1634521844625,
+          "duration" : 42038
+        }
+      }, {
+        "uid" : "90f9ac262a3b54ba",
+        "reportUrl" : "https://mangata-finance.github.io/mangata-e2e/609//#testresult/90f9ac262a3b54ba",
+        "status" : "failed",
+        "statusDetails" : "TimeoutError: Waiting for element to be located By(xpath, //input[@placeholder='Paste Secret Recovery Phrase from clipboard'])\n                Wait timed out after 20000ms",
+        "time" : {
+          "start" : 1634521690794,
+          "stop" : 1634521732396,
+          "duration" : 41602
+        }
+      }, {
+        "uid" : "f2fed87b24f9f6ae",
+        "reportUrl" : "https://mangata-finance.github.io/mangata-e2e/606//#testresult/f2fed87b24f9f6ae",
+        "status" : "failed",
+        "statusDetails" : "Error: 1014: Priority is too low: (4070866299872 vs 4070866299872): The transaction has too low priority to replace another transaction already in the pool.",
+        "time" : {
+          "start" : 1634478226714,
+          "stop" : 1634478384948,
+          "duration" : 158234
+        }
+      }, {
+        "uid" : "9c2760d4c9d5951c",
+        "reportUrl" : "https://mangata-finance.github.io/mangata-e2e/603//#testresult/9c2760d4c9d5951c",
+        "status" : "failed",
+        "statusDetails" : "TimeoutError: Waiting for element to be located By(xpath, //input[@placeholder='Paste Secret Recovery Phrase from clipboard'])\n                Wait timed out after 20002ms",
+        "time" : {
+          "start" : 1634478462940,
+          "stop" : 1634478509230,
+          "duration" : 46290
+        }
+      }, {
+        "uid" : "635307a576799f0d",
+        "reportUrl" : "https://mangata-finance.github.io/mangata-e2e/604//#testresult/635307a576799f0d",
+        "status" : "passed",
+        "time" : {
+          "start" : 1634477410817,
+          "stop" : 1634477668756,
+          "duration" : 257939
+        }
+      }, {
+        "uid" : "40335edf9c987014",
+        "reportUrl" : "https://mangata-finance.github.io/mangata-e2e/608//#testresult/40335edf9c987014",
+        "status" : "failed",
+        "statusDetails" : "NoSuchElementError: no such element: Unable to locate element: {\"method\":\"xpath\",\"selector\":\"//*[@data-testid='bridge-showWithdrawModalBtn']\"}\n                  (Session info: chrome=94.0.4606.61)\n                  (Driver info: chromedriver=94.0.4606.61 (418b78f5838ed0b1c69bb4e51ea0252171854915-refs/branch-heads/4606@{#1204}),platform=Linux 5.8.0-1042-azure x86_64)",
+        "time" : {
+          "start" : 1634477534912,
+          "stop" : 1634477595554,
+          "duration" : 60642
+        }
+      }, {
+        "uid" : "e1952eca17f13635",
+        "reportUrl" : "https://mangata-finance.github.io/mangata-e2e/605//#testresult/e1952eca17f13635",
+        "status" : "passed",
+        "time" : {
+          "start" : 1634477374256,
+          "stop" : 1634477626823,
+          "duration" : 252567
+        }
+      } ]
+    },
+    "tags" : [ ]
+  },
+  "source" : "720d6b01bb1adb2e.json",
+  "parameterValues" : [ ]
+}
