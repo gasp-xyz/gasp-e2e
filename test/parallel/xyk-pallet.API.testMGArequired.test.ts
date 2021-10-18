@@ -4,13 +4,8 @@
  * @group api
  * @group parallel
  */
-import { getApi, initApi } from "../../utils/api";
-import {
-  getBalanceOfPool,
-  getCurrentNonce,
-  getLiquidityAssetId,
-  signTx,
-} from "../../utils/tx";
+import { getApi, getMangataInstance, initApi } from "../../utils/api";
+import { getBalanceOfPool, getLiquidityAssetId } from "../../utils/tx";
 import BN from "bn.js";
 import { Keyring } from "@polkadot/api";
 import { AssetWallet, User } from "../../utils/User";
@@ -67,8 +62,8 @@ beforeEach(async () => {
   await testUser1.refreshAmounts(AssetWallet.BEFORE);
   validateAssetsWithValues(
     [
-      testUser1.getAsset(firstCurrency)?.amountBefore!,
-      testUser1.getAsset(secondCurrency)?.amountBefore!,
+      testUser1.getAsset(firstCurrency)?.amountBefore.free!,
+      testUser1.getAsset(secondCurrency)?.amountBefore.free!,
     ],
     [
       defaultCurrecyValue.toNumber(),
@@ -77,121 +72,130 @@ beforeEach(async () => {
   );
 });
 
-test("xyk-pallet - User Balance - Creating a pool requires paying fees", async () => {
-  let exception = false;
-  const api = getApi();
+describe("Wallets unmodified", () => {
+  test("xyk-pallet - User Balance - Creating a pool requires paying fees", async () => {
+    let exception = false;
+    const mangata = await getMangataInstance();
+    await expect(
+      mangata
+        .createPool(
+          testUser1.keyRingPair,
+          firstCurrency.toString(),
+          first_asset_amount,
+          secondCurrency.toString(),
+          second_asset_amount
+        )
+        .catch((reason) => {
+          exception = true;
+          throw new Error(reason.data);
+        })
+    ).rejects.toThrow(
+      "1010: Invalid Transaction: Inability to pay some fees , e.g. account balance too low"
+    );
+    expect(exception).toBeTruthy();
+  });
 
-  await expect(
-    signTx(
-      api?.tx.xyk.createPool(
-        firstCurrency,
-        first_asset_amount,
-        secondCurrency,
-        second_asset_amount
-      ),
-      testUser1.keyRingPair,
-      await getCurrentNonce(testUser1.keyRingPair.address)
-    ).catch((reason) => {
-      exception = true;
-      throw new Error(reason);
-    })
-  ).rejects.toThrow(
-    "1010: Invalid Transaction: Inability to pay some fees , e.g. account balance too low"
-  );
-  expect(exception).toBeTruthy();
+  test("xyk-pallet - User Balance - mint liquidity requires paying fees", async () => {
+    let exception = false;
+    const mangata = await getMangataInstance();
+    await expect(
+      mangata
+        .mintLiquidity(
+          testUser1.keyRingPair,
+          firstCurrency.toString(),
+          secondCurrency.toString(),
+          first_asset_amount,
+          new BN(Number.MAX_SAFE_INTEGER)
+        )
+        .catch((reason) => {
+          exception = true;
+          throw new Error(reason.data);
+        })
+    ).rejects.toThrow(
+      "1010: Invalid Transaction: Inability to pay some fees , e.g. account balance too low"
+    );
+    expect(exception).toBeTruthy();
+  });
+
+  afterEach(async () => {
+    const liquidity_asset_id = await getLiquidityAssetId(
+      firstCurrency,
+      secondCurrency
+    );
+    expect(liquidity_asset_id).bnEqual(new BN(-1));
+    //validate
+    await testUser1.refreshAmounts(AssetWallet.AFTER);
+
+    testUser1.getFreeAssetAmounts().forEach((asset) => {
+      expect(asset.amountBefore.free).bnEqual(asset.amountAfter.free);
+    });
+
+    const pool_balance = await getBalanceOfPool(firstCurrency, secondCurrency);
+    expect([pool_balance_before[0], pool_balance_before[1]]).collectionBnEqual(
+      pool_balance
+    );
+    const balance = await getBalanceOfPool(secondCurrency, firstCurrency);
+    expect([pool_balance_before[0], pool_balance_before[1]]).collectionBnEqual([
+      balance[1],
+      balance[0],
+    ]);
+  });
 });
-
-test("xyk-pallet - User Balance - mint liquidity requires paying fees", async () => {
-  let exception = false;
-  const api = getApi();
-  await expect(
-    signTx(
-      api.tx.xyk.mintLiquidity(
-        firstCurrency,
-        secondCurrency,
-        first_asset_amount,
-        new BN(Number.MAX_SAFE_INTEGER)
-      ),
-      testUser1.keyRingPair,
-      await getCurrentNonce(testUser1.keyRingPair.address)
-    ).catch((reason) => {
-      exception = true;
-      throw new Error(reason);
-    })
-  ).rejects.toThrow(
-    "1010: Invalid Transaction: Inability to pay some fees , e.g. account balance too low"
-  );
-  expect(exception).toBeTruthy();
-});
-
 test("xyk-pallet - User Balance - Selling an asset does not require paying fees", async () => {
+  await sudo.mint(firstCurrency, sudo, defaultCurrecyValue);
+  await sudo.mint(secondCurrency, sudo, defaultCurrecyValue);
+  await sudo.createPoolToAsset(
+    defaultCurrecyValue,
+    defaultCurrecyValue,
+    firstCurrency,
+    secondCurrency
+  );
+
   let exception = false;
-  const api = getApi();
   await testUser1.refreshAmounts(AssetWallet.BEFORE);
   const amountInWallet = testUser1.getAsset(firstCurrency)?.amountBefore!;
-  const nonce = await getCurrentNonce(testUser1.keyRingPair.address);
-  await expect(
-    signTx(
-      api.tx.xyk.sellAsset(
-        firstCurrency,
-        secondCurrency,
-        amountInWallet.sub(new BN(1)),
-        first_asset_amount.mul(first_asset_amount)
-      ),
+  const mangata = await getMangataInstance();
+  const soldEvent = await mangata
+    .sellAsset(
       testUser1.keyRingPair,
-      nonce
-    ).catch((reason) => {
+      firstCurrency.toString(),
+      secondCurrency.toString(),
+      amountInWallet.free.sub(new BN(1)),
+      new BN(1)
+    )
+    .catch((reason) => {
       exception = true;
       throw new Error(reason);
-    })
-  ).resolves.toBeUndefined();
+    });
+  expect(soldEvent[0].method).toEqual("AssetsSwapped");
   expect(exception).toBeFalsy();
 });
 
 test("xyk-pallet - User Balance - Buying an asset does not require paying fees", async () => {
-  let exception = false;
-  const api = getApi();
-  await testUser1.refreshAmounts(AssetWallet.BEFORE);
-  const amountInWallet = testUser1.getAsset(firstCurrency)?.amountBefore!;
-  const nonce = await getCurrentNonce(testUser1.keyRingPair.address);
-  await expect(
-    signTx(
-      api.tx.xyk.buyAsset(
-        firstCurrency,
-        secondCurrency,
-        new BN(1),
-        amountInWallet
-      ),
-      testUser1.keyRingPair,
-      nonce
-    ).catch((reason) => {
-      exception = true;
-      throw new Error(reason);
-    })
-  ).resolves.toBeUndefined();
-  expect(exception).toBeFalsy();
-});
-
-afterEach(async () => {
-  const liquidity_asset_id = await getLiquidityAssetId(
+  await sudo.mint(firstCurrency, sudo, defaultCurrecyValue);
+  await sudo.mint(secondCurrency, sudo, defaultCurrecyValue);
+  await sudo.createPoolToAsset(
+    defaultCurrecyValue,
+    defaultCurrecyValue,
     firstCurrency,
     secondCurrency
   );
-  expect(liquidity_asset_id).bnEqual(new BN(-1));
-  //validate
-  await testUser1.refreshAmounts(AssetWallet.AFTER);
 
-  testUser1.assets.forEach((asset) => {
-    expect(asset.amountBefore).bnEqual(asset.amountAfter);
-  });
-
-  const pool_balance = await getBalanceOfPool(firstCurrency, secondCurrency);
-  expect([pool_balance_before[0], pool_balance_before[1]]).toEqual(
-    pool_balance
-  );
-  const balance = await getBalanceOfPool(secondCurrency, firstCurrency);
-  expect([pool_balance_before[0], pool_balance_before[1]]).toEqual([
-    balance[1],
-    balance[0],
-  ]);
+  let exception = false;
+  await testUser1.refreshAmounts(AssetWallet.BEFORE);
+  const mangata = await getMangataInstance();
+  const boughtEvent = await mangata
+    .buyAsset(
+      testUser1.keyRingPair,
+      firstCurrency.toString(),
+      secondCurrency.toString(),
+      new BN(100),
+      new BN(10000000)
+    )
+    .catch((reason) => {
+      exception = true;
+      throw new Error(reason.data);
+    });
+  expect(boughtEvent[0].method).toEqual("AssetsSwapped");
+  expect(exception).toBeFalsy();
 });

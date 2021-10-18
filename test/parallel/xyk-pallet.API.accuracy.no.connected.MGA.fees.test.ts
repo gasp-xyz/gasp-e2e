@@ -64,8 +64,8 @@ beforeEach(async () => {
   await testUser1.refreshAmounts(AssetWallet.BEFORE);
   validateAssetsWithValues(
     [
-      testUser1.getAsset(firstCurrency)?.amountBefore!,
-      testUser1.getAsset(secondCurrency)?.amountBefore!,
+      testUser1.getAsset(firstCurrency)?.amountBefore.free!,
+      testUser1.getAsset(secondCurrency)?.amountBefore.free!,
     ],
     [
       defaultCurrecyValue.toNumber(),
@@ -103,11 +103,15 @@ test("xyk-pallet - Assets substracted are incremented by 1 - SellAsset", async (
   await testUser1.refreshAmounts(AssetWallet.AFTER);
   const tokensLost = testUser1
     .getAsset(firstCurrency)
-    ?.amountBefore.sub(testUser1.getAsset(firstCurrency)?.amountAfter!);
+    ?.amountBefore.free.sub(
+      testUser1.getAsset(firstCurrency)?.amountAfter.free!
+    );
 
   const tokensWon = testUser1
     .getAsset(secondCurrency)
-    ?.amountAfter.sub(testUser1.getAsset(secondCurrency)?.amountBefore!)!;
+    ?.amountAfter.free.sub(
+      testUser1.getAsset(secondCurrency)?.amountBefore.free!
+    )!;
 
   expect(tokensWon).bnEqual(tokensToReceive);
   expect(tokensLost).bnEqual(sellingAmount);

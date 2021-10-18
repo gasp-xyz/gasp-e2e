@@ -86,11 +86,15 @@ describe("UI tests - A user can create a pool MGA - newToken", () => {
     await testUser1.refreshAmounts(AssetWallet.AFTER);
     const mgaReduced = testUser1
       .getAsset(MGA_ASSET_ID)
-      ?.amountBefore!.gt(testUser1.getAsset(MGA_ASSET_ID)?.amountAfter!);
+      ?.amountBefore.free!.gt(
+        testUser1.getAsset(MGA_ASSET_ID)?.amountAfter.free!
+      );
 
     const assetReduced = testUser1
       .getAsset(createdAssetID)
-      ?.amountBefore!.gt(testUser1.getAsset(createdAssetID)?.amountAfter!);
+      ?.amountBefore.free!.gt(
+        testUser1.getAsset(createdAssetID)?.amountAfter.free!
+      );
 
     const poolInvested = await new Sidebar(driver).isLiquidityPoolVisible(
       assetName,

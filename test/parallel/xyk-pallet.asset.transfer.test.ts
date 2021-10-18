@@ -16,8 +16,8 @@ import {
 } from "../../utils/validators";
 import { Assets } from "../../utils/Assets";
 import { getEnvironmentRequiredVars } from "../../utils/utils";
-import { getEventResultFromTxWait } from "../../utils/txHandler";
 import { testLog } from "../../utils/Logger";
+import { getEventResultFromMangataTx } from "../../utils/txHandler";
 
 jest.spyOn(console, "log").mockImplementation(jest.fn());
 jest.setTimeout(1500000);
@@ -80,8 +80,8 @@ beforeEach(async () => {
 
   validateAssetsWithValues(
     [
-      testUser1.getAsset(firstCurrency)?.amountBefore!,
-      testUser1.getAsset(secondCurrency)?.amountBefore!,
+      testUser1.getAsset(firstCurrency)?.amountBefore.free!,
+      testUser1.getAsset(secondCurrency)?.amountBefore.free!,
     ],
     [
       defaultCurrecyValue.toNumber(),
@@ -89,8 +89,8 @@ beforeEach(async () => {
     ]
   );
   validateEmptyAssets([
-    testUser2.getAsset(firstCurrency)?.amountBefore!,
-    testUser2.getAsset(secondCurrency)?.amountBefore!,
+    testUser2.getAsset(firstCurrency)?.amountBefore.free!,
+    testUser2.getAsset(secondCurrency)?.amountBefore.free!,
   ]);
 });
 
@@ -111,7 +111,7 @@ test("xyk-pallet - AssetsOperation: transferAsset", async () => {
     testUser2.keyRingPair.address,
     amount
   ).then((result) => {
-    const eventResponse = getEventResultFromTxWait(result, [
+    const eventResponse = getEventResultFromMangataTx(result, [
       "tokens",
       "Transferred",
       testUser1.keyRingPair.address,
@@ -125,27 +125,29 @@ test("xyk-pallet - AssetsOperation: transferAsset", async () => {
 
   const diffFromWallet = testUser1
     .getAsset(firstCurrency)
-    ?.amountBefore!.sub(amount);
-  expect(testUser1.getAsset(firstCurrency)?.amountAfter!).bnEqual(
+    ?.amountBefore.free!.sub(amount);
+  expect(testUser1.getAsset(firstCurrency)?.amountAfter.free!).bnEqual(
     diffFromWallet!
   );
 
   let addFromWallet = testUser1
     .getAsset(secondCurrency)
-    ?.amountBefore!.add(new BN(0));
-  expect(testUser1.getAsset(secondCurrency)?.amountAfter!).bnEqual(
+    ?.amountBefore.free!.add(new BN(0));
+  expect(testUser1.getAsset(secondCurrency)?.amountAfter.free!).bnEqual(
     addFromWallet!
   );
 
-  addFromWallet = testUser2.getAsset(firstCurrency)?.amountBefore!.add(amount);
-  expect(testUser2.getAsset(firstCurrency)?.amountAfter!).bnEqual(
+  addFromWallet = testUser2
+    .getAsset(firstCurrency)
+    ?.amountBefore.free!.add(amount);
+  expect(testUser2.getAsset(firstCurrency)?.amountAfter.free!).bnEqual(
     addFromWallet!
   );
 
   addFromWallet = testUser1
     .getAsset(secondCurrency)
-    ?.amountBefore!.add(new BN(0));
-  expect(testUser1.getAsset(secondCurrency)?.amountAfter!).bnEqual(
+    ?.amountBefore.free!.add(new BN(0));
+  expect(testUser1.getAsset(secondCurrency)?.amountAfter.free!).bnEqual(
     addFromWallet!
   );
 
@@ -171,7 +173,7 @@ test("xyk-pallet - AssetsOperation: transferAll", async () => {
     firstCurrency,
     testUser2.keyRingPair.address
   ).then((result) => {
-    const eventResponse = getEventResultFromTxWait(result, [
+    const eventResponse = getEventResultFromMangataTx(result, [
       "tokens",
       "Transferred",
       testUser1.keyRingPair.address,
@@ -185,30 +187,32 @@ test("xyk-pallet - AssetsOperation: transferAll", async () => {
 
   const diffFromWallet = testUser1
     .getAsset(firstCurrency)
-    ?.amountBefore!.sub(amount);
-  expect(testUser1.getAsset(firstCurrency)?.amountAfter!).bnEqual(
+    ?.amountBefore.free!.sub(amount.free);
+  expect(testUser1.getAsset(firstCurrency)?.amountAfter.free!).bnEqual(
     diffFromWallet!
   );
 
   let addFromWallet = testUser1
     .getAsset(secondCurrency)
-    ?.amountBefore!.add(new BN(0));
-  expect(testUser1.getAsset(secondCurrency)?.amountAfter!).bnEqual(
+    ?.amountBefore.free!.add(new BN(0));
+  expect(testUser1.getAsset(secondCurrency)?.amountAfter.free!).bnEqual(
     addFromWallet!
   );
 
-  addFromWallet = testUser2.getAsset(firstCurrency)?.amountBefore!.add(amount);
-  expect(testUser2.getAsset(firstCurrency)?.amountAfter!).bnEqual(
+  addFromWallet = testUser2
+    .getAsset(firstCurrency)
+    ?.amountBefore.free!.add(amount.free);
+  expect(testUser2.getAsset(firstCurrency)?.amountAfter.free!).bnEqual(
     addFromWallet!
   );
 
   addFromWallet = testUser1
     .getAsset(secondCurrency)
-    ?.amountBefore!.add(new BN(0));
-  expect(testUser1.getAsset(secondCurrency)?.amountAfter!).bnEqual(
+    ?.amountBefore.free!.add(new BN(0));
+  expect(testUser1.getAsset(secondCurrency)?.amountAfter.free!).bnEqual(
     addFromWallet!
   );
 
   const pool_balance = await getBalanceOfPool(firstCurrency, secondCurrency);
-  expect(pool_balance_before).toEqual(pool_balance);
+  expect(pool_balance_before).collectionBnEqual(pool_balance);
 });

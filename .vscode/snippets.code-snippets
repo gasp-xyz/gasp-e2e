@@ -35,5 +35,14 @@
 			"${1|testUser1,testUser2,pallet,treasury|}.assets.forEach((asset) => {expect(asset.amountBefore).bnEqual(asset.amountAfter);});"
 		],
 		"description": "Validate users wallet is unmodified"
+	  },
+	  "mgnata-sdk": {
+		"scope": "typescript",
+		"prefix": "example-sdk",
+		"body": [
+			"const mangata = await getMangataInstance();", 
+			"const result = await mangata."
+		],
+		"description": "get example of mga sdk call"
 	  }
 }

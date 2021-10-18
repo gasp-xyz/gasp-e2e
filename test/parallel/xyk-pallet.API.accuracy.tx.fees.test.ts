@@ -11,7 +11,7 @@ import {
   getEnvironmentRequiredVars,
 } from "../../utils/utils";
 import { SignerOptions } from "@polkadot/api/types";
-import { getEventResultFromTxWait, signAndWaitTx } from "../../utils/txHandler";
+import { getEventResultFromMangataTx } from "../../utils/txHandler";
 import { RuntimeDispatchInfo } from "@polkadot/types/interfaces";
 import { MGA_ASSET_ID } from "../../utils/Constants";
 
@@ -65,8 +65,8 @@ beforeEach(async () => {
   await testUser1.refreshAmounts(AssetWallet.BEFORE);
   validateAssetsWithValues(
     [
-      testUser1.getAsset(firstCurrency)?.amountBefore!,
-      testUser1.getAsset(secondCurrency)?.amountBefore!,
+      testUser1.getAsset(firstCurrency)?.amountBefore.free!,
+      testUser1.getAsset(secondCurrency)?.amountBefore.free!,
     ],
     [
       defaultCurrecyValue.toNumber(),
@@ -99,7 +99,7 @@ test("xyk-pallet - Calculate required MGA fee - CreatePool", async () => {
       second_asset_amount
     )
     .then((result) => {
-      const eventResponse = getEventResultFromTxWait(result);
+      const eventResponse = getEventResultFromMangataTx(result);
       expect(eventResponse.state).toEqual(ExtrinsicResult.ExtrinsicSuccess);
     });
 });
@@ -125,19 +125,19 @@ test("xyk-pallet - Calculate required MGA fee - BuyAsset", async () => {
   cost = await api.tx.xyk
     .buyAsset(firstCurrency, secondCurrency, new BN(100), new BN(1000000))
     .paymentInfo(testUser1.keyRingPair, opt);
-  await signAndWaitTx(
-    api.tx.xyk.buyAsset(
-      firstCurrency,
-      secondCurrency,
+  const mangata = await getMangataInstance();
+  await mangata
+    .buyAsset(
+      testUser1.keyRingPair,
+      firstCurrency.toString(),
+      secondCurrency.toString(),
       new BN(100),
       new BN(1000000)
-    ),
-    testUser1.keyRingPair,
-    await (await getCurrentNonce(testUser1.keyRingPair.address)).toNumber()
-  ).then((result) => {
-    const eventResponse = getEventResultFromTxWait(result);
-    expect(eventResponse.state).toEqual(ExtrinsicResult.ExtrinsicSuccess);
-  });
+    )
+    .then((result) => {
+      const eventResponse = getEventResultFromMangataTx(result);
+      expect(eventResponse.state).toEqual(ExtrinsicResult.ExtrinsicSuccess);
+    });
   expect(getFeeString(cost)).toEqual("0");
 });
 
@@ -145,7 +145,9 @@ afterEach(async () => {
   await testUser1.refreshAmounts(AssetWallet.AFTER);
   const deductedMGATkns = testUser1
     .getAsset(MGA_ASSET_ID)
-    ?.amountBefore.sub(testUser1.getAsset(MGA_ASSET_ID)?.amountAfter!);
+    ?.amountBefore.free.sub(
+      testUser1.getAsset(MGA_ASSET_ID)?.amountAfter.free!
+    );
   const deductedMGAString = fromBNToUnitString(deductedMGATkns!);
   expect(deductedMGAString).toEqual(getFeeString(cost));
 });

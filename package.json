@@ -5,6 +5,7 @@
   "main": "index.ts",
   "author": "Gleb Urvanov",
   "license": "GPLv3",
+  "type": "module",
   "private": true,
   "dependencies": {
     "@polkadot/api": "^2.10.1",
@@ -22,7 +23,7 @@
     "ethers": "^5.4.7",
     "ganache-cli": "^6.12.2",
     "loadsh": "^0.0.4",
-    "mangata-sdk": "^0.2.1",
+    "mangata-sdk": "0.5.9",
     "package.json": "^2.0.1",
     "prettier": "^2.3.0",
     "selenium-webdriver": "3.6.0",

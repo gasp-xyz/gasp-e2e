@@ -24,7 +24,7 @@ import {
   TokensErrorCodes,
   XyzErrorCodes,
 } from "../../utils/utils";
-import { getEventResultFromTxWait } from "../../utils/txHandler";
+import { getEventResultFromMangataTx } from "../../utils/txHandler";
 
 jest.spyOn(console, "log").mockImplementation(jest.fn());
 jest.setTimeout(1500000);
@@ -78,7 +78,7 @@ describe("xyk-pallet - Check operations are not executed because of overflow in 
       firstCurrency,
       MAX_BALANCE
     ).then((result) => {
-      const eventResponse = getEventResultFromTxWait(result);
+      const eventResponse = getEventResultFromMangataTx(result);
       expect(eventResponse.state).toEqual(ExtrinsicResult.ExtrinsicSuccess);
     });
     const poolBalances = await getBalanceOfPool(firstCurrency, secondCurrency);
@@ -98,15 +98,19 @@ describe("xyk-pallet - Check operations are not executed because of overflow in 
       testUser2.keyRingPair.address,
       MAX_BALANCE
     ).then((result) => {
-      const eventResponse = getEventResultFromTxWait(result);
+      const eventResponse = getEventResultFromMangataTx(result);
       expect(eventResponse.state).toEqual(ExtrinsicResult.ExtrinsicFailed);
       expect(eventResponse.data).toEqual(TokensErrorCodes.BalanceOverflow);
     });
     await testUser1.refreshAmounts(AssetWallet.AFTER);
     await testUser2.refreshAmounts(AssetWallet.AFTER);
 
-    expect(testUser1.getAsset(firstCurrency)?.amountAfter).bnEqual(MAX_BALANCE);
-    expect(testUser2.getAsset(firstCurrency)?.amountAfter).bnEqual(new BN(1));
+    expect(testUser1.getAsset(firstCurrency)?.amountAfter.free).bnEqual(
+      MAX_BALANCE
+    );
+    expect(testUser2.getAsset(firstCurrency)?.amountAfter.free).bnEqual(
+      new BN(1)
+    );
   });
 });
 
@@ -160,7 +164,7 @@ describe("xyk-pallet - Operate with a pool close to overflow", () => {
       firstCurrency,
       MAX_BALANCE.sub(new BN(10))
     ).then((result) => {
-      const eventResponse = getEventResultFromTxWait(result);
+      const eventResponse = getEventResultFromMangataTx(result);
       expect(eventResponse.state).toEqual(ExtrinsicResult.ExtrinsicSuccess);
     });
 
@@ -175,13 +179,15 @@ describe("xyk-pallet - Operate with a pool close to overflow", () => {
       MAX_BALANCE.sub(new BN(2)),
       new BN(1)
     ).then((result) => {
-      const eventResponse = getEventResultFromTxWait(result);
+      const eventResponse = getEventResultFromMangataTx(result);
       expect(eventResponse.state).toEqual(ExtrinsicResult.ExtrinsicFailed);
       expect(eventResponse.data).toEqual(XyzErrorCodes.MathOverflow);
     });
     await testUser1.refreshAmounts(AssetWallet.AFTER);
 
-    expect(testUser1.getAsset(firstCurrency)?.amountAfter).bnEqual(MAX_BALANCE);
+    expect(testUser1.getAsset(firstCurrency)?.amountAfter.free).bnEqual(
+      MAX_BALANCE
+    );
   });
   test("Buy [100] assets to a wallet with Max-1000,1000 => overflow.", async () => {
     await buyAsset(
@@ -191,13 +197,15 @@ describe("xyk-pallet - Operate with a pool close to overflow", () => {
       new BN(100),
       MAX_BALANCE
     ).then((result) => {
-      const eventResponse = getEventResultFromTxWait(result);
+      const eventResponse = getEventResultFromMangataTx(result);
       expect(eventResponse.state).toEqual(ExtrinsicResult.ExtrinsicFailed);
       expect(eventResponse.data).toEqual(XyzErrorCodes.MathOverflow);
     });
     await testUser1.refreshAmounts(AssetWallet.AFTER);
 
-    expect(testUser1.getAsset(firstCurrency)?.amountAfter).bnEqual(MAX_BALANCE);
+    expect(testUser1.getAsset(firstCurrency)?.amountAfter.free).bnEqual(
+      MAX_BALANCE
+    );
   });
   //not suported scenario. We are creasing pool og Max-10 and then minting another 100.
   test.skip("Mint liquidities [1000] assets to a wallet with Max-1000,1000 => overflow.", async () => {
@@ -208,7 +216,7 @@ describe("xyk-pallet - Operate with a pool close to overflow", () => {
       new BN(100),
       MAX_BALANCE
     ).then((result) => {
-      const eventResponse = getEventResultFromTxWait(result);
+      const eventResponse = getEventResultFromMangataTx(result);
       expect(eventResponse.state).toEqual(ExtrinsicResult.ExtrinsicFailed);
 
       //This error is right, the enum comes from the pallet overflow.
@@ -216,14 +224,16 @@ describe("xyk-pallet - Operate with a pool close to overflow", () => {
     });
     await testUser1.refreshAmounts(AssetWallet.AFTER);
 
-    expect(testUser1.getAsset(firstCurrency)?.amountAfter).bnEqual(MAX_BALANCE);
+    expect(testUser1.getAsset(firstCurrency)?.amountAfter.free).bnEqual(
+      MAX_BALANCE
+    );
   });
   test.skip("[BUG] Burn liquidities [MAX -1] assets to a wallet wich is full => overflow. NOT  a bug https://trello.com/c/J3fzuwH5", async () => {
     const amountToFillAsset = MAX_BALANCE.sub(
-      testUser2.getAsset(firstCurrency)?.amountBefore!
+      testUser2.getAsset(firstCurrency)?.amountBefore.free!
     ).sub(new BN(2));
     const amountToFillAssetSeccondC = MAX_BALANCE.sub(
-      testUser2.getAsset(secondCurrency)?.amountBefore!
+      testUser2.getAsset(secondCurrency)?.amountBefore.free!
     ).sub(new BN(2));
     await sudo.mint(firstCurrency, testUser2, amountToFillAsset);
     await sudo.mint(secondCurrency, testUser2, amountToFillAssetSeccondC);
@@ -235,16 +245,16 @@ describe("xyk-pallet - Operate with a pool close to overflow", () => {
       firstCurrency,
       MAX_BALANCE.sub(new BN(1001))
     ).then((result) => {
-      const eventResponse = getEventResultFromTxWait(result);
+      const eventResponse = getEventResultFromMangataTx(result);
       expect(eventResponse.state).toEqual(ExtrinsicResult.ExtrinsicFailed);
       expect(eventResponse.data).toEqual(XyzErrorCodes.MathOverflow);
     });
     await testUser2.refreshAmounts(AssetWallet.AFTER);
 
-    expect(testUser2.getAsset(firstCurrency)?.amountAfter).bnEqual(
+    expect(testUser2.getAsset(firstCurrency)?.amountAfter.free).bnEqual(
       MAX_BALANCE.sub(new BN(2))
     );
-    expect(testUser2.getAsset(secondCurrency)?.amountAfter).bnEqual(
+    expect(testUser2.getAsset(secondCurrency)?.amountAfter.free).bnEqual(
       MAX_BALANCE.sub(new BN(2))
     );
   });
@@ -300,7 +310,7 @@ describe("xyk-pallet - Operate with a user account close to overflow", () => {
       firstCurrency,
       new BN(5000000)
     ).then((result) => {
-      const eventResponse = getEventResultFromTxWait(result);
+      const eventResponse = getEventResultFromMangataTx(result);
       expect(eventResponse.state).toEqual(ExtrinsicResult.ExtrinsicSuccess);
     });
 
@@ -315,17 +325,17 @@ describe("xyk-pallet - Operate with a user account close to overflow", () => {
       new BN(10000),
       new BN(1)
     ).then((result) => {
-      const eventResponse = getEventResultFromTxWait(result);
+      const eventResponse = getEventResultFromMangataTx(result);
       expect(eventResponse.state).toEqual(ExtrinsicResult.ExtrinsicFailed);
       expect(eventResponse.data).toEqual(XyzErrorCodes.MathOverflow);
     });
     await testUser1.refreshAmounts(AssetWallet.AFTER);
 
-    expect(testUser1.getAsset(firstCurrency)?.amountAfter).bnEqual(
-      testUser1.getAsset(firstCurrency)?.amountBefore!
+    expect(testUser1.getAsset(firstCurrency)?.amountAfter.free).bnEqual(
+      testUser1.getAsset(firstCurrency)?.amountBefore.free!
     );
-    expect(testUser1.getAsset(secondCurrency)?.amountAfter).bnEqual(
-      testUser1.getAsset(secondCurrency)?.amountBefore!
+    expect(testUser1.getAsset(secondCurrency)?.amountAfter.free).bnEqual(
+      testUser1.getAsset(secondCurrency)?.amountBefore.free!
     );
   });
   test.skip("Buy a few assets to a wallet that is full  => overflow. NOT A BUG: https://trello.com/c/J3fzuwH5", async () => {
@@ -336,17 +346,17 @@ describe("xyk-pallet - Operate with a user account close to overflow", () => {
       new BN(100),
       MAX_BALANCE
     ).then((result) => {
-      const eventResponse = getEventResultFromTxWait(result);
+      const eventResponse = getEventResultFromMangataTx(result);
       expect(eventResponse.state).toEqual(ExtrinsicResult.ExtrinsicFailed);
       expect(eventResponse.data).toEqual(XyzErrorCodes.MathOverflow);
     });
     await testUser1.refreshAmounts(AssetWallet.AFTER);
 
-    expect(testUser1.getAsset(firstCurrency)?.amountAfter).toEqual(
-      testUser1.getAsset(firstCurrency)?.amountBefore
+    expect(testUser1.getAsset(firstCurrency)?.amountAfter.free).bnEqual(
+      testUser1.getAsset(firstCurrency)?.amountBefore.free!
     );
-    expect(testUser1.getAsset(secondCurrency)?.amountAfter).toEqual(
-      testUser1.getAsset(secondCurrency)?.amountBefore
+    expect(testUser1.getAsset(secondCurrency)?.amountAfter.free).bnEqual(
+      testUser1.getAsset(secondCurrency)?.amountBefore.free!
     );
   });
 });
@@ -408,7 +418,7 @@ describe.skip("xyk-pallet - Operate with a highly unbalanced pool [mg - newAsset
       secondCurrency,
       divNumber
     ).then((result) => {
-      const eventResponse = getEventResultFromTxWait(result);
+      const eventResponse = getEventResultFromMangataTx(result);
       expect(eventResponse.state).toEqual(ExtrinsicResult.ExtrinsicSuccess);
     });
     await createPool(
@@ -418,7 +428,7 @@ describe.skip("xyk-pallet - Operate with a highly unbalanced pool [mg - newAsset
       secondCurrency,
       MAX_BALANCE.div(divNumber)
     ).then((result) => {
-      const eventResponse = getEventResultFromTxWait(result);
+      const eventResponse = getEventResultFromMangataTx(result);
       expect(eventResponse.state).toEqual(ExtrinsicResult.ExtrinsicSuccess);
     });
 
@@ -443,7 +453,7 @@ describe.skip("xyk-pallet - Operate with a highly unbalanced pool [mg - newAsset
       MAX_BALANCE.div(new BN("100000000000")),
       MAX_BALANCE
     ).then((result) => {
-      const eventResponse = getEventResultFromTxWait(result);
+      const eventResponse = getEventResultFromMangataTx(result);
       expect(eventResponse.state).toEqual(ExtrinsicResult.ExtrinsicSuccess);
     });
     const poolBalanceAssetsAfter = await getBalanceOfPool(

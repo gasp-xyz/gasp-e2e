@@ -14,8 +14,8 @@ import {
 import { Keyring } from "@polkadot/api";
 import { User } from "../../utils/User";
 import { Mangata } from "mangata-sdk";
-import { getEventResultFromTxWait } from "../../utils/txHandler";
-import { ExtrinsicResult } from "mangata-sdk/build/types";
+import { getEventResultFromMangataTx } from "../../utils/txHandler";
+import { ExtrinsicResult } from "../../utils/eventListeners";
 import { ETH_ASSET_ID, MGA_ASSET_ID } from "../../utils/Constants";
 import { waitNewBlock } from "../../utils/eventListeners";
 
@@ -69,7 +69,7 @@ describe("SDK test - Nonce tests - user", () => {
       new BN(1000),
       new BN(0)
     );
-    const eventResult = getEventResultFromTxWait(event);
+    const eventResult = getEventResultFromMangataTx(event);
     expect(eventResult.state).toEqual(ExtrinsicResult.ExtrinsicSuccess);
     userNonce.push(await mangata.getNonce(testUser.keyRingPair.address));
     expect(userNonce[1]).bnEqual(userNonce[0].add(new BN(1)));
@@ -119,9 +119,9 @@ describe("SDK test - Nonce tests - user", () => {
       );
       await waitNewBlock();
     }
-    const promisesEvents = await Promise.all(promises);
+    const promisesEvents = await await Promise.all(promises);
     promisesEvents.forEach((events) => {
-      const result = getEventResultFromTxWait(events);
+      const result = getEventResultFromMangataTx(events);
       expect(result.state).toEqual(ExtrinsicResult.ExtrinsicSuccess);
     });
     userNonce.push(await mangata.getNonce(testUser.keyRingPair.address));
@@ -142,7 +142,7 @@ describe("SDK test - Nonce tests - user", () => {
       new BN(1000),
       new BN(1)
     );
-    const eventResult = getEventResultFromTxWait(event);
+    const eventResult = getEventResultFromMangataTx(event);
     expect(eventResult.state).toEqual(ExtrinsicResult.ExtrinsicFailed);
     userNonce.push(await mangata.getNonce(testUser.keyRingPair.address));
     expect(parseFloat(userNonce[1].toString())).toBeGreaterThan(
@@ -162,7 +162,7 @@ describe("SDK test - Nonce tests - user", () => {
         nonce: userNonce[0],
       }
     );
-    let eventResult = getEventResultFromTxWait(events);
+    let eventResult = getEventResultFromMangataTx(events);
     expect(eventResult.state).toEqual(ExtrinsicResult.ExtrinsicSuccess);
     //perform an operation without custom nonce.
     const events2 = await mangata.sellAsset(
@@ -172,7 +172,7 @@ describe("SDK test - Nonce tests - user", () => {
       new BN(1000),
       new BN(0)
     );
-    eventResult = getEventResultFromTxWait(events2);
+    eventResult = getEventResultFromMangataTx(events2);
     expect(eventResult.state).toEqual(ExtrinsicResult.ExtrinsicSuccess);
 
     userNonce.push(await mangata.getNonce(testUser.keyRingPair.address));

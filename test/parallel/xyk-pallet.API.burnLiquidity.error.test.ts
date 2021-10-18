@@ -8,8 +8,8 @@ import { getApi, initApi } from "../../utils/api";
 import {
   getBalanceOfPool,
   getLiquidityAssetId,
-  burnLiquidity,
   getBalanceOfAsset,
+  burnLiquidity,
 } from "../../utils/tx";
 import { ExtrinsicResult } from "../../utils/eventListeners";
 import BN from "bn.js";
@@ -21,7 +21,7 @@ import {
   getEnvironmentRequiredVars,
   UserCreatesAPoolAndMintliquidity,
 } from "../../utils/utils";
-import { getEventResultFromTxWait } from "../../utils/txHandler";
+import { getEventResultFromMangataTx } from "../../utils/txHandler";
 
 const { sudo: sudoUserName } = getEnvironmentRequiredVars();
 
@@ -69,13 +69,14 @@ describe("xyk-pallet - Burn liquidity tests: BurnLiquidity Errors:", () => {
         [defaultCurrecyValue, defaultCurrecyValue],
         sudo
       );
+
     await burnLiquidity(
       testUser1.keyRingPair,
       firstCurrency,
       secondCurrency,
       new BN(1)
     ).then((result) => {
-      const eventResponse = getEventResultFromTxWait(result);
+      const eventResponse = getEventResultFromMangataTx(result);
       expect(eventResponse.state).toEqual(ExtrinsicResult.ExtrinsicFailed);
       expect(eventResponse.data).toEqual(3);
     });
@@ -94,10 +95,9 @@ describe("xyk-pallet - Burn liquidity tests: BurnLiquidity Errors:", () => {
       firstCurrency,
       secondCurrency
     );
-    const liquidityBalance = await getBalanceOfAsset(
-      liquidityAssetId,
-      testUser1.keyRingPair.address
-    );
+    const liquidityBalance = (
+      await getBalanceOfAsset(liquidityAssetId, testUser1.keyRingPair.address)
+    ).free;
     await testUser1.refreshAmounts(AssetWallet.BEFORE);
 
     await burnLiquidity(
@@ -106,7 +106,7 @@ describe("xyk-pallet - Burn liquidity tests: BurnLiquidity Errors:", () => {
       secondCurrency,
       liquidityBalance.add(new BN(1))
     ).then((result) => {
-      const eventResponse = getEventResultFromTxWait(result);
+      const eventResponse = getEventResultFromMangataTx(result);
       expect(eventResponse.state).toEqual(ExtrinsicResult.ExtrinsicFailed);
       expect(eventResponse.data).toEqual(2);
     });
@@ -143,7 +143,7 @@ describe("xyk-pallet - Burn liquidity tests: BurnLiquidity Errors:", () => {
       secondCurrency,
       aFewAssetsToBurn
     ).then((result) => {
-      const eventResponse = getEventResultFromTxWait(result);
+      const eventResponse = getEventResultFromMangataTx(result);
       expect(eventResponse.state).toEqual(ExtrinsicResult.ExtrinsicFailed);
       expect(eventResponse.data).toEqual(2);
     });

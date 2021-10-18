@@ -29,9 +29,9 @@ import {
   calculateLiqAssetAmount,
   getEnvironmentRequiredVars,
 } from "../../utils/utils";
-import { getEventResultFromTxWait } from "../../utils/txHandler";
 import { testLog } from "../../utils/Logger";
 import { hexToBn } from "@polkadot/util";
+import { getEventResultFromMangataTx } from "../../utils/txHandler";
 
 jest.spyOn(console, "log").mockImplementation(jest.fn());
 jest.setTimeout(1500000);
@@ -83,8 +83,8 @@ describe("xyk-pallet - Poll creation: Errors:", () => {
     await testUser1.refreshAmounts(AssetWallet.BEFORE);
     validateAssetsWithValues(
       [
-        testUser1.getAsset(firstCurrency)?.amountBefore!,
-        testUser1.getAsset(secondCurrency)?.amountBefore!,
+        testUser1.getAsset(firstCurrency)?.amountBefore.free!,
+        testUser1.getAsset(secondCurrency)?.amountBefore.free!,
       ],
       [
         defaultCurrecyValue.toNumber(),
@@ -100,7 +100,7 @@ describe("xyk-pallet - Poll creation: Errors:", () => {
       secondCurrency,
       second_asset_amount
     ).then((result) => {
-      eventResponse = getEventResultFromTxWait(result, [
+      eventResponse = getEventResultFromMangataTx(result, [
         "xyk",
         "PoolCreated",
         testUser1.keyRingPair.address,
@@ -134,7 +134,7 @@ describe("xyk-pallet - Poll creation: Errors:", () => {
       firstCurrency,
       new BN(666)
     ).then((result) => {
-      const eventResponse = getEventResultFromTxWait(result);
+      const eventResponse = getEventResultFromMangataTx(result);
       expect(eventResponse.state).toEqual(ExtrinsicResult.ExtrinsicFailed);
       expect(eventResponse.data).toEqual(1);
     });
@@ -150,13 +150,13 @@ describe("xyk-pallet - Poll creation: Errors:", () => {
       emptyAssetID,
       new BN(0)
     ).then((result) => {
-      const eventResponse = getEventResultFromTxWait(result);
+      const eventResponse = getEventResultFromMangataTx(result);
       expect(eventResponse.state).toEqual(ExtrinsicResult.ExtrinsicFailed);
       expect(eventResponse.data).toEqual(6);
     });
 
     const balance = await getBalanceOfPool(firstCurrency, emptyAssetID);
-    expect(balance).toEqual([new BN(0), new BN(0)]);
+    expect(balance).collectionBnEqual([new BN(0), new BN(0)]);
   });
   test("Not enough assets", async () => {
     const txAmount = new BN(100000000000000);
@@ -173,13 +173,13 @@ describe("xyk-pallet - Poll creation: Errors:", () => {
       testAssetId[0],
       new BN(txAmount).add(new BN(1))
     ).then((result) => {
-      const eventResponse = getEventResultFromTxWait(result);
+      const eventResponse = getEventResultFromMangataTx(result);
       expect(eventResponse.state).toEqual(ExtrinsicResult.ExtrinsicFailed);
       expect(eventResponse.data).toEqual(2);
     });
 
     const balance = await getBalanceOfPool(firstCurrency, testAssetId[0]);
-    expect(balance).toEqual([new BN(0), new BN(0)]);
+    expect(balance).collectionBnEqual([new BN(0), new BN(0)]);
   });
 
   afterEach(async () => {
@@ -238,8 +238,8 @@ describe("xyk-pallet - Pool tests: a pool can:", () => {
     await testUser2.refreshAmounts(AssetWallet.BEFORE);
     validateAssetsWithValues(
       [
-        testUser2.getAsset(firstCurrency)?.amountBefore!,
-        testUser2.getAsset(secondCurrency)?.amountBefore!,
+        testUser2.getAsset(firstCurrency)?.amountBefore.free!,
+        testUser2.getAsset(secondCurrency)?.amountBefore.free!,
       ],
       [10000, 10000]
     );
@@ -252,7 +252,7 @@ describe("xyk-pallet - Pool tests: a pool can:", () => {
       secondCurrency,
       new BN(5000)
     ).then((result) => {
-      const eventResponse = getEventResultFromTxWait(result, [
+      const eventResponse = getEventResultFromMangataTx(result, [
         "xyk",
         "LiquidityMinted",
         testUser2.keyRingPair.address,
@@ -273,22 +273,22 @@ describe("xyk-pallet - Pool tests: a pool can:", () => {
 
     const addFromWallet = testUser2
       .getAsset(liquidity_asset_id)
-      ?.amountBefore!.add(new BN(5000));
-    expect(testUser2.getAsset(liquidity_asset_id)?.amountAfter!).bnEqual(
+      ?.amountBefore.free!.add(new BN(5000));
+    expect(testUser2.getAsset(liquidity_asset_id)?.amountAfter.free!).bnEqual(
       addFromWallet!
     );
 
     let diffFromWallet = testUser2
       .getAsset(firstCurrency)
-      ?.amountBefore!.sub(new BN(5000));
-    expect(testUser2.getAsset(firstCurrency)?.amountAfter!).bnEqual(
+      ?.amountBefore.free!.sub(new BN(5000));
+    expect(testUser2.getAsset(firstCurrency)?.amountAfter.free!).bnEqual(
       diffFromWallet!
     );
 
     diffFromWallet = testUser2
       .getAsset(secondCurrency)
-      ?.amountBefore!.sub(new BN(5000).add(new BN(1)));
-    expect(testUser2.getAsset(secondCurrency)?.amountAfter!).bnEqual(
+      ?.amountBefore.free!.sub(new BN(5000).add(new BN(1)));
+    expect(testUser2.getAsset(secondCurrency)?.amountAfter.free!).bnEqual(
       diffFromWallet!
     );
 
@@ -297,10 +297,10 @@ describe("xyk-pallet - Pool tests: a pool can:", () => {
     expect([
       new BN(first_asset_amount).add(new BN(5000)),
       new BN(second_asset_amount).add(new BN(5000).add(new BN(1))),
-    ]).toEqual(pool_balance);
+    ]).collectionBnEqual(pool_balance);
 
     const total_liquidity_assets = await getAssetSupply(liquidity_asset_id);
-    expect(liquidity_assets_minted.add(new BN(5000))).toEqual(
+    expect(liquidity_assets_minted.add(new BN(5000))).bnEqual(
       total_liquidity_assets
     );
   });
@@ -317,7 +317,7 @@ describe("xyk-pallet - Pool tests: a pool can:", () => {
       secondCurrency,
       new BN(5000)
     ).then((result) => {
-      const eventResponse = getEventResultFromTxWait(result, [
+      const eventResponse = getEventResultFromMangataTx(result, [
         "xyk",
         "LiquidityMinted",
         testUser2.keyRingPair.address,
@@ -347,7 +347,7 @@ describe("xyk-pallet - Pool tests: a pool can:", () => {
       secondCurrency,
       new BN(2500)
     ).then((result) => {
-      const eventResponse = getEventResultFromTxWait(result, [
+      const eventResponse = getEventResultFromMangataTx(result, [
         "xyk",
         "LiquidityBurned",
         testUser2.keyRingPair.address,
@@ -359,22 +359,22 @@ describe("xyk-pallet - Pool tests: a pool can:", () => {
 
     const diffFromWallet = testUser2
       .getAsset(liquidity_asset_id)
-      ?.amountBefore!.sub(new BN(2500));
-    expect(testUser2.getAsset(liquidity_asset_id)?.amountAfter!).bnEqual(
+      ?.amountBefore.free!.sub(new BN(2500));
+    expect(testUser2.getAsset(liquidity_asset_id)?.amountAfter.free!).bnEqual(
       diffFromWallet!
     );
 
     let addFromWallet = testUser2
       .getAsset(firstCurrency)
-      ?.amountBefore!.add(new BN(2500));
-    expect(testUser2.getAsset(firstCurrency)?.amountAfter!).bnEqual(
+      ?.amountBefore.free!.add(new BN(2500));
+    expect(testUser2.getAsset(firstCurrency)?.amountAfter.free!).bnEqual(
       addFromWallet!
     );
 
     addFromWallet = testUser2
       .getAsset(secondCurrency)
-      ?.amountBefore!.add(new BN(2500));
-    expect(testUser2.getAsset(secondCurrency)?.amountAfter!).bnEqual(
+      ?.amountBefore.free!.add(new BN(2500));
+    expect(testUser2.getAsset(secondCurrency)?.amountAfter.free!).bnEqual(
       addFromWallet!
     );
 
@@ -386,7 +386,7 @@ describe("xyk-pallet - Pool tests: a pool can:", () => {
     ]).collectionBnEqual(pool_balance);
 
     const total_liquidity_assets = await getAssetSupply(liquidity_asset_id);
-    expect(liquidity_assets_minted.add(new BN(2500))).toEqual(
+    expect(liquidity_assets_minted.add(new BN(2500))).bnEqual(
       total_liquidity_assets
     );
   });
@@ -408,22 +408,22 @@ describe("xyk-pallet - Pool tests: a pool can:", () => {
 
     let diffFromWallet = testUser1
       .getAsset(firstCurrency)
-      ?.amountBefore!.sub(first_asset_amount);
-    expect(testUser1.getAsset(firstCurrency)?.amountAfter!).bnEqual(
+      ?.amountBefore.free!.sub(first_asset_amount);
+    expect(testUser1.getAsset(firstCurrency)?.amountAfter.free!).bnEqual(
       diffFromWallet!
     );
 
     diffFromWallet = testUser1
       .getAsset(secondCurrency)
-      ?.amountBefore!.sub(second_asset_amount);
-    expect(testUser1.getAsset(secondCurrency)?.amountAfter!).bnEqual(
+      ?.amountBefore.free!.sub(second_asset_amount);
+    expect(testUser1.getAsset(secondCurrency)?.amountAfter.free!).bnEqual(
       diffFromWallet!
     );
 
     const addFromWallet = testUser1
       .getAsset(liquidity_asset_id)
-      ?.amountBefore!.add(liquidity_assets_minted);
-    expect(testUser1.getAsset(liquidity_asset_id)?.amountAfter!).bnEqual(
+      ?.amountBefore.free!.add(liquidity_assets_minted);
+    expect(testUser1.getAsset(liquidity_asset_id)?.amountAfter.free!).bnEqual(
       addFromWallet!
     );
   });
@@ -466,8 +466,8 @@ describe("xyk-pallet - Pool opeations: Simmetry", () => {
     await testUser1.refreshAmounts(AssetWallet.BEFORE);
     validateAssetsWithValues(
       [
-        testUser1.getAsset(firstCurrency)?.amountBefore!,
-        testUser1.getAsset(secondCurrency)?.amountBefore!,
+        testUser1.getAsset(firstCurrency)?.amountBefore.free!,
+        testUser1.getAsset(secondCurrency)?.amountBefore.free!,
       ],
       [
         defaultCurrecyValue.toNumber(),
@@ -483,7 +483,7 @@ describe("xyk-pallet - Pool opeations: Simmetry", () => {
       firstCurrency,
       second_asset_amount
     ).then((result) => {
-      eventResponse = getEventResultFromTxWait(result, [
+      eventResponse = getEventResultFromMangataTx(result, [
         "xyk",
         "PoolCreated",
         testUser1.keyRingPair.address,

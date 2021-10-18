@@ -17,7 +17,7 @@ import {
   addExtraLogs,
 } from "../../utils/frontend/utils/Helper";
 import { createPool } from "../../utils/tx";
-import { getEventResultFromTxWait } from "../../utils/txHandler";
+import { getEventResultFromMangataTx } from "../../utils/txHandler";
 import { User } from "../../utils/User";
 import { getEnvironmentRequiredVars } from "../../utils/utils";
 
@@ -98,7 +98,7 @@ describe("Accuracy tests", () => {
         secondCurrency,
         new BN(assetValue2)
       ).then((result) => {
-        const eventResponse = getEventResultFromTxWait(result, [
+        const eventResponse = getEventResultFromMangataTx(result, [
           "xyk",
           "PoolCreated",
           testUser1.keyRingPair.address,

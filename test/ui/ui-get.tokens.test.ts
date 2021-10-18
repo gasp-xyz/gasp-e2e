@@ -70,7 +70,7 @@ describe("UI tests - Get Tokens from Faucet", () => {
 
     //lets validate one asset to check if environment is correctly configured.
     await testUser1.refreshAmounts(AssetWallet.AFTER);
-    expect(testUser1.getAsset(MGA_ASSET_ID)?.amountAfter).bnEqual(
+    expect(testUser1.getAsset(MGA_ASSET_ID)?.amountAfter.free).bnEqual(
       new BN("10000000000000000000")
     );
     const assets = await getAllAssets(testUser1.keyRingPair.address);

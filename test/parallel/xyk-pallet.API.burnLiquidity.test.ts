@@ -29,7 +29,7 @@ import {
   calculateLiqAssetAmount,
   getEnvironmentRequiredVars,
 } from "../../utils/utils";
-import { getEventResultFromTxWait } from "../../utils/txHandler";
+import { getEventResultFromMangataTx } from "../../utils/txHandler";
 
 const { sudo: sudoUserName } = getEnvironmentRequiredVars();
 
@@ -124,7 +124,7 @@ describe("xyk-pallet - Burn liquidity tests: when burning liquidity you can", ()
       secondCurrency,
       ownedLiquidityAssets
     ).then((result) => {
-      const eventResponse = getEventResultFromTxWait(result, [
+      const eventResponse = getEventResultFromMangataTx(result, [
         "xyk",
         "LiquidityBurned",
         testUser1.keyRingPair.address,
@@ -139,10 +139,14 @@ describe("xyk-pallet - Burn liquidity tests: when burning liquidity you can", ()
     //TODO: validate with Stano.
     const fee = new BN(10);
     let amount = amountOfX.add(new BN(assetXamount)).sub(fee);
-    expect(testUser1.getAsset(firstCurrency)?.amountAfter!).bnEqual(amount);
+    expect(testUser1.getAsset(firstCurrency)?.amountAfter.free!).bnEqual(
+      amount
+    );
 
     amount = new BN(1);
-    expect(testUser1.getAsset(secondCurrency)?.amountAfter!).bnEqual(amount);
+    expect(testUser1.getAsset(secondCurrency)?.amountAfter.free!).bnEqual(
+      amount
+    );
 
     expect([new BN(0), new BN(0)]).collectionBnEqual(poolBalance);
 
@@ -171,7 +175,7 @@ describe("xyk-pallet - Burn liquidity tests: when burning liquidity you can", ()
       secondCurrency,
       new BN(defaultCurrecyValue).div(new BN(4))
     ).then((result) => {
-      const eventResponse = getEventResultFromTxWait(result, [
+      const eventResponse = getEventResultFromMangataTx(result, [
         "xyk",
         "LiquidityBurned",
         testUser1.keyRingPair.address,
@@ -203,7 +207,7 @@ describe("xyk-pallet - Burn liquidity tests: when burning liquidity you can", ()
       secondCurrency,
       burnAmount
     ).then((result) => {
-      eventResponse = getEventResultFromTxWait(result, [
+      eventResponse = getEventResultFromMangataTx(result, [
         "xyk",
         "LiquidityBurned",
         testUser1.keyRingPair.address,
@@ -214,10 +218,14 @@ describe("xyk-pallet - Burn liquidity tests: when burning liquidity you can", ()
     await testUser1.refreshAmounts(AssetWallet.AFTER);
     const secondCurrencyAmount = testUser1
       .getAsset(secondCurrency)
-      ?.amountAfter.sub(testUser1.getAsset(secondCurrency)?.amountBefore!)!;
+      ?.amountAfter.free.sub(
+        testUser1.getAsset(secondCurrency)?.amountBefore.free!
+      )!;
     const firstCurrencyAmount = testUser1
       .getAsset(firstCurrency)
-      ?.amountAfter.sub(testUser1.getAsset(firstCurrency)?.amountBefore!)!;
+      ?.amountAfter.free.sub(
+        testUser1.getAsset(firstCurrency)?.amountBefore.free!
+      )!;
     const liquidityAssetId = await getLiquidityAssetId(
       firstCurrency,
       secondCurrency

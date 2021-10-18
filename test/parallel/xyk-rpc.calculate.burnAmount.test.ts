@@ -5,11 +5,7 @@
  * @group parallel
  */
 import { getApi, initApi } from "../../utils/api";
-import {
-  burnLiquidity,
-  getBalanceOfPool,
-  get_burn_amount,
-} from "../../utils/tx";
+import { burnLiquidity, getBalanceOfPool, getBurnAmount } from "../../utils/tx";
 import BN from "bn.js";
 import { Keyring } from "@polkadot/api";
 import { AssetWallet, User } from "../../utils/User";
@@ -19,7 +15,7 @@ import {
   getEnvironmentRequiredVars,
 } from "../../utils/utils";
 import { ExtrinsicResult } from "../../utils/eventListeners";
-import { getEventResultFromTxWait } from "../../utils/txHandler";
+import { getEventResultFromMangataTx } from "../../utils/txHandler";
 
 jest.spyOn(console, "log").mockImplementation(jest.fn());
 jest.setTimeout(1500000);
@@ -73,7 +69,7 @@ describe("xyk-rpc - calculate get_burn amount: OK", () => {
   ])(
     "validate parameters - burn from pool [firstIdx->%s,secondIdx->%s,amount->%s,expected->%s]",
     async (firstIdx, secondIdx, amount, expected) => {
-      const burnAmount = await get_burn_amount(
+      const burnAmount = await getBurnAmount(
         dictAssets.get(firstIdx)!,
         dictAssets.get(secondIdx)!,
         amount
@@ -109,7 +105,7 @@ describe("xyk-rpc - calculate get_burn amount: Missing requirements", () => {
   test.each([[0, 1, new BN(1000), "0"]])(
     "validate parameters - get_burn from not generated pool [soldTokenId->%s,boughtTokenId->%s,amount->%s,expected->%s]",
     async (firstIdx, secondIdx, amount, expected) => {
-      const burnAmount = await get_burn_amount(
+      const burnAmount = await getBurnAmount(
         dictAssets.get(firstIdx)!,
         dictAssets.get(secondIdx)!,
         amount
@@ -120,7 +116,7 @@ describe("xyk-rpc - calculate get_burn amount: Missing requirements", () => {
   );
 
   test("validate parameters - get_burn from not created assets", async () => {
-    const burnAmount = await get_burn_amount(
+    const burnAmount = await getBurnAmount(
       new BN(12345),
       new BN(12346),
       new BN(10000000)
@@ -160,11 +156,7 @@ describe("xyk-rpc - calculate get_burn amount: RPC result matches with burn amou
   test("validate get_burn_amount that matches with real burn operation", async () => {
     await sudo.refreshAmounts(AssetWallet.BEFORE);
     const toBurn = new BN(defaultCurrencyAmount).div(new BN(2));
-    const burnAmount = await get_burn_amount(
-      firstAssetId,
-      secondAssetId,
-      toBurn
-    );
+    const burnAmount = await getBurnAmount(firstAssetId, secondAssetId, toBurn);
     const poolBefore = await getBalanceOfPool(firstAssetId, secondAssetId);
 
     await burnLiquidity(
@@ -173,7 +165,7 @@ describe("xyk-rpc - calculate get_burn amount: RPC result matches with burn amou
       secondAssetId,
       toBurn
     ).then((result) => {
-      const eventResponse = getEventResultFromTxWait(result, [
+      const eventResponse = getEventResultFromMangataTx(result, [
         "xyk",
         "LiquidityBurned",
         sudo.keyRingPair.address,
@@ -192,13 +184,15 @@ describe("xyk-rpc - calculate get_burn amount: RPC result matches with burn amou
     );
 
     expect(
-      fromBNToUnitString(sudo.getAsset(firstAssetId)?.amountAfter!)
+      fromBNToUnitString(sudo.getAsset(firstAssetId)?.amountAfter.free!)
     ).toEqual(burnAmount.firstAssetAmount);
     expect(
       fromBNToUnitString(
         sudo
           .getAsset(secondAssetId)
-          ?.amountAfter.sub(sudo.getAsset(secondAssetId)?.amountBefore!)!
+          ?.amountAfter.free.sub(
+            sudo.getAsset(secondAssetId)?.amountBefore.free!
+          )!
       )
     ).toEqual(burnAmount.secondAssetAmount);
   });
