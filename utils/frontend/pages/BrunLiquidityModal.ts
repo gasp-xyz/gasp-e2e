@@ -28,8 +28,11 @@ export class BrunLiquidityModal {
     await clickElement(this.driver, selector);
     await writeText(this.driver, selector, inputAmount);
   }
-  async confirmAndSign() {
+  async confirm() {
     await clickElement(this.driver, buildDataTestIdXpath(BTN_CONFIRM));
+  }
+  async confirmAndSign() {
+    await this.confirm();
     await Polkadot.signTransaction(this.driver);
   }
 }

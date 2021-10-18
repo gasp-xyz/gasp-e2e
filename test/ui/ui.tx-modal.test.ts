@@ -6,9 +6,8 @@ import { Keyring } from "@polkadot/api";
 import BN from "bn.js";
 import { WebDriver } from "selenium-webdriver";
 import { getApi, initApi } from "../../utils/api";
-import { waitNewBlock } from "../../utils/eventListeners";
 import { Mangata } from "../../utils/frontend/pages/Mangata";
-import { Polkadot } from "../../utils/frontend/pages/Polkadot";
+
 import {
   NotificationModal,
   ModalType,
@@ -96,7 +95,7 @@ describe("UI tests - A user can see the new Modal", () => {
     expect(modalInfo.toAsset).toEqual(MGA_ASSET_NAME);
   });
 
-  it("As a User I can mint some tokens MGA - mETH", async () => {
+  it("Modal contains currencies and amounts when providing liquidity", async () => {
     testUser1.refreshAmounts(AssetWallet.BEFORE);
     const mga = new Mangata(driver);
     await mga.navigate();
@@ -107,25 +106,18 @@ describe("UI tests - A user can see the new Modal", () => {
     await poolView.addToken1AssetAmount("0.001");
     await poolView.provideToPool();
 
-    await Polkadot.signTransaction(driver);
-    //wait four blocks to complete the action.
-    for (let index = 0; index < 4; index++) {
-      await waitNewBlock();
-    }
-
-    await testUser1.refreshAmounts(AssetWallet.AFTER);
-    const swapped = testUser1
-      .getAsset(ETH_ASSET_ID)
-      ?.amountBefore!.gt(testUser1.getAsset(ETH_ASSET_ID)?.amountAfter!);
-    const poolInvested = await new Sidebar(driver).isLiquidityPoolVisible(
-      MGA_ASSET_NAME,
-      mETH_ASSET_NAME
+    const modal = new NotificationModal(driver);
+    const isModalWaitingForSignVisible = await modal.isModalVisible(
+      ModalType.Confirm
     );
-    expect(poolInvested).toBeTruthy();
-    expect(swapped).toBeTruthy();
+    expect(isModalWaitingForSignVisible).toBeTruthy();
+    const modalInfo = await modal.getModalInfo(ModalType.Confirm);
+    expect(modalInfo.fromAmount).toEqual("0.001");
+    expect(modalInfo.fromAsset).toEqual(mETH_ASSET_NAME);
+    expect(modalInfo.toAsset).toEqual(MGA_ASSET_NAME);
   });
 
-  it("As a User I can burn all liquidity MGA - mETH", async () => {
+  it("Modal is not visible when burning liquidity", async () => {
     await testUser1.refreshAmounts(AssetWallet.BEFORE);
     let amountToMint = new BN(visibleValueNumber).div(new BN(2000));
     amountToMint = amountToMint.add(new BN("123456789123456"));
@@ -135,22 +127,14 @@ describe("UI tests - A user can see the new Modal", () => {
     const sidebar = new Sidebar(driver);
     await sidebar.clickOnLiquidityPool(MGA_ASSET_NAME, mETH_ASSET_NAME);
     await sidebar.clickOnRemoveLiquidity();
-    const modal = new BrunLiquidityModal(driver);
-    await modal.setAmount("100");
-    await modal.confirmAndSign();
-    for (let index = 0; index < 4; index++) {
-      await waitNewBlock();
-    }
-    const isPoolVisible = await sidebar.isLiquidityPoolVisible(
-      MGA_ASSET_NAME,
-      mETH_ASSET_NAME
+    const burnModal = new BrunLiquidityModal(driver);
+    await burnModal.setAmount("100");
+    await burnModal.confirm();
+    const notificationModal = new NotificationModal(driver);
+    const isModalWaitingForSignVisible = await notificationModal.isModalVisible(
+      ModalType.Confirm
     );
-    expect(isPoolVisible).toBeFalsy();
-
-    await testUser1.refreshAmounts(AssetWallet.AFTER);
-    expect(
-      testUser1.getAsset(ETH_ASSET_ID)?.amountBefore!.sub(new BN(1))
-    ).bnEqual(testUser1.getAsset(ETH_ASSET_ID)?.amountAfter!);
+    expect(isModalWaitingForSignVisible).toBeFalsy();
   });
 
   afterEach(async () => {
