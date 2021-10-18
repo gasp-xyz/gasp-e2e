@@ -1,7 +1,9 @@
+import { info } from "console";
 import { By, WebDriver } from "selenium-webdriver";
 import {
   buildDataTestIdXpath,
   clickElement,
+  getText,
   waitForElementToDissapear,
 } from "../utils/Helper";
 
@@ -49,5 +51,28 @@ export class NotificationModal {
       this.driver,
       this.getModalXpath(ModalType.Success)
     );
+  }
+  async getModalInfo(modalState: ModalType) {
+    const locator = this.getModalTextXpath(modalState);
+    const text = await getText(this.driver, locator);
+    const [headerText, txInfo] = text.split("\n");
+    const regexfindValues = /([0-9].[0-9]+)/g;
+    const amounts = txInfo.match(regexfindValues)!;
+    const regexfindAssetNames = /[0-9].[0-9]+\s(?<AssetName>[a-zA-Z]+)/gm;
+    const iterator = txInfo.matchAll(regexfindAssetNames);
+    const assetNames: string[] = [];
+    for (const match of iterator) {
+      assetNames.push(match.groups!.AssetName);
+    }
+
+    return {
+      //Confirm Trade in Polkadot extension\nSwapping 0.001 MGA for 0.000976 mETH'
+      header: headerText,
+      txInfo: info,
+      fromAmount: amounts[0],
+      ToAmount: amounts[1],
+      fromAsset: assetNames[0],
+      toAsset: assetNames[1],
+    };
   }
 }
