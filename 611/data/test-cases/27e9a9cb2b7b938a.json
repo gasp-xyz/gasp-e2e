@@ -1,0 +1,116 @@
+{
+  "uid" : "27e9a9cb2b7b938a",
+  "name" : "As a User I get the right values for Pool investment P[5000000000000000000, 100] - I-> 100000000000 -Expected - 0.000002",
+  "fullName" : "Accuracy tests.As a User I get the right values for Pool investment P[5000000000000000000, 100] - I-> 100000000000 -Expected - 0.000002",
+  "historyId" : "740e3a889fe6f9515e754703a4ebf44e",
+  "time" : {
+    "start" : 1634522330194,
+    "stop" : 1634522465058,
+    "duration" : 134864
+  },
+  "description" : "",
+  "descriptionHtml" : "",
+  "status" : "passed",
+  "flaky" : false,
+  "newFailed" : false,
+  "beforeStages" : [ ],
+  "afterStages" : [ ],
+  "labels" : [ {
+    "name" : "suite",
+    "value" : "Accuracy tests"
+  }, {
+    "name" : "testClass",
+    "value" : "Accuracy tests"
+  }, {
+    "name" : "testMethod",
+    "value" : "As a User I get the right values for Pool investment P[5000000000000000000, 100] - I-> 100000000000 -Expected - 0.000002"
+  }, {
+    "name" : "package",
+    "value" : "Accuracy tests"
+  }, {
+    "name" : "resultFormat",
+    "value" : "allure1"
+  } ],
+  "parameters" : [ ],
+  "links" : [ ],
+  "hidden" : false,
+  "retry" : false,
+  "extra" : {
+    "severity" : "normal",
+    "retries" : [ ],
+    "categories" : [ ],
+    "history" : {
+      "statistic" : {
+        "failed" : 5,
+        "broken" : 0,
+        "skipped" : 0,
+        "passed" : 2,
+        "unknown" : 0,
+        "total" : 7
+      },
+      "items" : [ {
+        "uid" : "59dc8509c7854ecd",
+        "reportUrl" : "https://mangata-finance.github.io/mangata-e2e/609//#testresult/59dc8509c7854ecd",
+        "status" : "failed",
+        "statusDetails" : "Error: expect(received).toBe(expected) // Object.is equality\n                \n                Expected: NaN\n                Received: 0.000002",
+        "time" : {
+          "start" : 1634521963833,
+          "stop" : 1634522077734,
+          "duration" : 113901
+        }
+      }, {
+        "uid" : "7ea6b9d6809754bc",
+        "reportUrl" : "https://mangata-finance.github.io/mangata-e2e/606//#testresult/7ea6b9d6809754bc",
+        "status" : "failed",
+        "statusDetails" : "Error: Invalid character",
+        "time" : {
+          "start" : 1634478733573,
+          "stop" : 1634478760925,
+          "duration" : 27352
+        }
+      }, {
+        "uid" : "a817c726cf3fcd",
+        "reportUrl" : "https://mangata-finance.github.io/mangata-e2e/603//#testresult/a817c726cf3fcd",
+        "status" : "failed",
+        "statusDetails" : "Error: Invalid character",
+        "time" : {
+          "start" : 1634478812584,
+          "stop" : 1634478837164,
+          "duration" : 24580
+        }
+      }, {
+        "uid" : "822c768772d22d04",
+        "reportUrl" : "https://mangata-finance.github.io/mangata-e2e/604//#testresult/822c768772d22d04",
+        "status" : "passed",
+        "time" : {
+          "start" : 1634478145948,
+          "stop" : 1634478274859,
+          "duration" : 128911
+        }
+      }, {
+        "uid" : "6d4e9c15bc5f38d8",
+        "reportUrl" : "https://mangata-finance.github.io/mangata-e2e/608//#testresult/6d4e9c15bc5f38d8",
+        "status" : "failed",
+        "statusDetails" : "Error: Invalid character",
+        "time" : {
+          "start" : 1634477905492,
+          "stop" : 1634477927801,
+          "duration" : 22309
+        }
+      }, {
+        "uid" : "758caed7d21f1e49",
+        "reportUrl" : "https://mangata-finance.github.io/mangata-e2e/605//#testresult/758caed7d21f1e49",
+        "status" : "failed",
+        "statusDetails" : "Error: Failed: \"W[1] timeout in - signAndWaitTx - \\\" + 5HQ9Mm9L1HG53htEGDMsnhkkL7hEfF9vLstEQPtMLX5Gupqx + \\\" - \\\" + 2478 + \\\" - \\\" + {\\\"isSigned\\\":true,\\\"method\\\":{\\\"args\\\":[{\\\"args\\\":[\\\"5Co7YhZDkkeh9VGf48uJSFCtHQMCwiwxxjFvdrfje1cGkqEV\\\",\\\"15.0000 MUnit\\\"],\\\"method\\\":\\\"create\\\",\\\"section\\\":\\\"tokens\\\"}],\\\"method\\\":\\\"sudo\\\",\\\"section\\\":\\\"sudo\\\"},\\\"era\\\":{\\\"MortalEra\\\":{\\\"period\\\":\\\"64\\\",\\\"phase\\\":\\\"21\\\"}},\\\"nonce\\\":\\\"2,478\\\",\\\"signature\\\":\\\"0xfaebe416d633c7f00b32bda7f0f940f3b8501735460dffb3e9ecfda43836ab5ae58857642617738ab8e180a2f582df23421da644cd2dda20ddf29a4975cb378e\\\",\\\"signer\\\":\\\"5HQ9Mm9L1HG53htEGDMsnhkkL7hEfF9vLstEQPtMLX5Gupqx\\\",\\\"tip\\\":\\\"0\\\"}\"",
+        "time" : {
+          "start" : 1634477936292,
+          "stop" : 1634477980679,
+          "duration" : 44387
+        }
+      } ]
+    },
+    "tags" : [ ]
+  },
+  "source" : "27e9a9cb2b7b938a.json",
+  "parameterValues" : [ ]
+}
