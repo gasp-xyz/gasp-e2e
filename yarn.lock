@@ -11491,10 +11491,10 @@ mangata-prng-xoshiro@^1.2.0:
   resolved "https://registry.yarnpkg.com/mangata-prng-xoshiro/-/mangata-prng-xoshiro-1.2.0.tgz#b0931c4bb91b4e574812b019cf5debaedc4e6a54"
   integrity sha512-kuG0evoSLdYr6k1W5+ctDcqfHAkm7TlhVqCNPrANg2EKp82L/OdShkhbDGDt6kb2P6r4MYHelo1DzhfnCG3JWw==
 
-mangata-sdk@0.5.8:
-  version "0.5.8"
-  resolved "https://registry.yarnpkg.com/mangata-sdk/-/mangata-sdk-0.5.8.tgz#3522bc31ad5cf4760a26e44716f2932b3b5356b0"
-  integrity sha512-LWs4QJwcAydhEOIU6PiP+CzarkpyG2P2ZKO9xNy3NLnutNNpl+9yQM+0viSG1KSfYQA1+socwoSnz/lH760/qA==
+mangata-sdk@0.5.9:
+  version "0.5.9"
+  resolved "https://registry.yarnpkg.com/mangata-sdk/-/mangata-sdk-0.5.9.tgz#9e8fd7cb8c6437d0ca6640fb8423fd092de5cd4c"
+  integrity sha512-wA0Ssgjh7051ApiINFiL3ls3n2xO+LnN+dug9h/2vYhr6WglQAsAoa0tlVyngXNtY3CHmo3gMj7Ov6IYqoWP8A==
   dependencies:
     "@polkadot/api" "^2.10.1"
     bn.js "^5.2.0"
@@ -16625,10 +16625,8 @@ watchpack@^1.4.0:
   resolved "https://registry.yarnpkg.com/watchpack/-/watchpack-1.7.5.tgz#1267e6c55e0b9b5be44c2023aed5437a2c26c453"
   integrity sha512-9P3MWk6SrKjHsGkLT2KHXdQ/9SNkyoJbabxnKOoJepsvJjJG8uYTR3yTPxPQvNDI3w4Nz1xnE0TLHK4RIVe/MQ==
   dependencies:
-    chokidar "^3.4.1"
     graceful-fs "^4.1.2"
     neo-async "^2.5.0"
-    watchpack-chokidar2 "^2.0.1"
   optionalDependencies:
     chokidar "^3.4.1"
     watchpack-chokidar2 "^2.0.1"
