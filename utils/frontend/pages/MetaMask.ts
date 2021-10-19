@@ -31,9 +31,6 @@ const SELECT_ACCOUNT_DETAILS =
 const INPUT_READONLY = `//*[@class='readonly-input__input']`;
 const BTN_CLOSE_MODAL = `//*[@class='account-modal__close']`;
 
-const { uiUserPassword: userPassword, mnemonicMetaMask } =
-  getEnvironmentRequiredVars();
-
 export class MetaMask {
   async confirmAndSign(driver: WebDriver) {
     await clickElement(driver, XPATH_CONFIRM_TX);
@@ -46,12 +43,17 @@ export class MetaMask {
     "chrome-extension://nkbihfbeogaeaoehlefnkodbefgpgknn/home.html";
 
   //TEST ACCOUNT
-  ACCOUNT_MNEMONIC = mnemonicMetaMask;
   ACCOUNT_ADDRESS = "0x5cf5710342d514Fe5A0b61923a1e5c91B23FA0Ef";
   driver: any;
+  userPassword: string;
+  mnemonicMetaMask: string;
 
   constructor(driver: any) {
     this.driver = driver;
+    const { uiUserPassword: userPassword, mnemonicMetaMask } =
+      getEnvironmentRequiredVars();
+    this.userPassword = userPassword;
+    this.mnemonicMetaMask = mnemonicMetaMask;
   }
 
   getAccountAddress() {
@@ -69,13 +71,13 @@ export class MetaMask {
     await waitForElement(this.driver, XPATH_MNEMONIC);
     await (await this.driver)
       .findElement(By.xpath(XPATH_MNEMONIC))
-      .sendKeys(this.ACCOUNT_MNEMONIC);
+      .sendKeys(this.mnemonicMetaMask);
     await (
       await this.driver.findElement(By.xpath(XPATH_PASSWORD))
-    ).sendKeys(userPassword);
+    ).sendKeys(this.userPassword);
     await (
       await this.driver.findElement(By.xpath(XPATH_CONFIRM_PASSWORD))
-    ).sendKeys(userPassword);
+    ).sendKeys(this.userPassword);
     await clickElement(this.driver, XPATH_ACCEPT_TERMS);
     await clickElement(this.driver, XPATH_SUBMIT);
     await this.driver.get(`${this.WEB_UI_ACCESS_URL}#initialize/end-of-flow`);

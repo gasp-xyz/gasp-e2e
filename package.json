@@ -5,7 +5,6 @@
   "main": "index.ts",
   "author": "Gleb Urvanov",
   "license": "GPLv3",
-  "type": "module",
   "private": true,
   "dependencies": {
     "@polkadot/api": "^2.10.1",
