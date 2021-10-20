@@ -42,19 +42,22 @@ export class Node {
 
         await this.api!.queryMulti(
           [
-            this.api!.query.system.number,
             this.api!.query.elections.candidates,
             this.api!.query.elections.members,
           ],
-          ([number, candidates, members]) => {
-            testLog.getLog().info(`Election Information - ${this.lastBlock}
-              Candidates: ${candidates.toJSON()}
-              Members: ${members.toJSON()}`);
-
-            this.electionEvents.set(parseInt(number.toString()), {
+          ([candidates, members]) => {
+            this.electionEvents.set(this.lastBlock!, {
               candidates: candidates.toJSON(),
               members: members.toJSON(),
             });
+
+            testLog.getLog().info(
+              `Saved Election Information 
+               Candidates: ${
+                 this.electionEvents.get(this.lastBlock!)?.candidates
+               }
+               Members: ${this.electionEvents.get(this.lastBlock!)?.members}`
+            );
           }
         );
       }
