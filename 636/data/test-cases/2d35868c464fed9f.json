@@ -1,0 +1,255 @@
+{
+  "uid" : "2d35868c464fed9f",
+  "name" : "As a User I can Withdraw ETH from Meta extension",
+  "fullName" : "UI main tests - Withdraw - ETH.As a User I can Withdraw ETH from Meta extension",
+  "historyId" : "eac55faabce1aad19e0827a3afd71b78",
+  "time" : {
+    "start" : 1634695221215,
+    "stop" : 1634695487523,
+    "duration" : 266308
+  },
+  "description" : "",
+  "descriptionHtml" : "",
+  "status" : "failed",
+  "statusMessage" : "Error: Failed: \"TIMEOUT: Waiting for //*[@class = 'Sidebar__loading'] to dissapear\"",
+  "statusTrace" : "Error: \n                    at Env.beforeEach (/home/runner/work/mangata-e2e/mangata-e2e/node_modules/jest-jasmine2/build/jasmineAsyncInstall.js:46:24)\n                    at beforeEach (/home/runner/work/mangata-e2e/mangata-e2e/node_modules/jest-jasmine2/build/jasmine/jasmineLight.js:118:29)\n                    at Suite.<anonymous> (/home/runner/work/mangata-e2e/mangata-e2e/test/ui/ui-main.ETH.test.ts:104:3)\n                    at addSpecsToSuite (/home/runner/work/mangata-e2e/mangata-e2e/node_modules/jest-jasmine2/build/jasmine/Env.js:444:51)\n                    at Env.describe (/home/runner/work/mangata-e2e/mangata-e2e/node_modules/jest-jasmine2/build/jasmine/Env.js:414:11)\n                    at describe (/home/runner/work/mangata-e2e/mangata-e2e/node_modules/jest-jasmine2/build/jasmine/jasmineLight.js:88:18)\n                    at Object.<anonymous> (/home/runner/work/mangata-e2e/mangata-e2e/test/ui/ui-main.ETH.test.ts:90:1)\n                    at Runtime._execModule (/home/runner/work/mangata-e2e/mangata-e2e/node_modules/jest-runtime/build/index.js:1299:24)\n                    at Runtime._loadModule (/home/runner/work/mangata-e2e/mangata-e2e/node_modules/jest-runtime/build/index.js:898:12)\n                    at Runtime.requireModule (/home/runner/work/mangata-e2e/mangata-e2e/node_modules/jest-runtime/build/index.js:746:10)",
+  "flaky" : true,
+  "newFailed" : true,
+  "beforeStages" : [ ],
+  "afterStages" : [ ],
+  "labels" : [ {
+    "name" : "suite",
+    "value" : "UI main tests - Withdraw - ETH"
+  }, {
+    "name" : "testClass",
+    "value" : "UI main tests - Withdraw - ETH"
+  }, {
+    "name" : "testMethod",
+    "value" : "As a User I can Withdraw ETH from Meta extension"
+  }, {
+    "name" : "package",
+    "value" : "UI main tests - Withdraw - ETH"
+  }, {
+    "name" : "resultFormat",
+    "value" : "allure1"
+  } ],
+  "parameters" : [ ],
+  "links" : [ ],
+  "hidden" : false,
+  "retry" : false,
+  "extra" : {
+    "severity" : "normal",
+    "retries" : [ ],
+    "categories" : [ {
+      "name" : "Product defects",
+      "matchedStatuses" : [ ],
+      "flaky" : false
+    } ],
+    "history" : {
+      "statistic" : {
+        "failed" : 22,
+        "broken" : 0,
+        "skipped" : 0,
+        "passed" : 11,
+        "unknown" : 0,
+        "total" : 33
+      },
+      "items" : [ {
+        "uid" : "4e66d93dc91448e2",
+        "reportUrl" : "https://mangata-finance.github.io/mangata-e2e/634//#testresult/4e66d93dc91448e2",
+        "status" : "failed",
+        "statusDetails" : "TimeoutError: Waiting for element to be located By(xpath, //input[@placeholder='Paste Secret Recovery Phrase from clipboard'])\n                Wait timed out after 20010ms",
+        "time" : {
+          "start" : 1634694476352,
+          "stop" : 1634694517667,
+          "duration" : 41315
+        }
+      }, {
+        "uid" : "50288a3a9b1b7c3e",
+        "reportUrl" : "https://mangata-finance.github.io/mangata-e2e/635//#testresult/50288a3a9b1b7c3e",
+        "status" : "passed",
+        "time" : {
+          "start" : 1634694682731,
+          "stop" : 1634694959747,
+          "duration" : 277016
+        }
+      }, {
+        "uid" : "e1a2e294d20608ed",
+        "reportUrl" : "https://mangata-finance.github.io/mangata-e2e/638//#testresult/e1a2e294d20608ed",
+        "status" : "failed",
+        "statusDetails" : "TimeoutError: Waiting for element to be located By(xpath, //input[@placeholder='Paste Secret Recovery Phrase from clipboard'])\n                Wait timed out after 20014ms",
+        "time" : {
+          "start" : 1634694519652,
+          "stop" : 1634694564620,
+          "duration" : 44968
+        }
+      }, {
+        "uid" : "b83be52d4c054778",
+        "reportUrl" : "https://mangata-finance.github.io/mangata-e2e/633//#testresult/b83be52d4c054778",
+        "status" : "passed",
+        "time" : {
+          "start" : 1634693875817,
+          "stop" : 1634694143048,
+          "duration" : 267231
+        }
+      }, {
+        "uid" : "f53784e619029917",
+        "reportUrl" : "https://mangata-finance.github.io/mangata-e2e/628//#testresult/f53784e619029917",
+        "status" : "failed",
+        "statusDetails" : "TimeoutError: Waiting for element to be located By(xpath, //*[@data-testid='depositModal-step0-assetInput']//button)\n                Wait timed out after 25505ms",
+        "time" : {
+          "start" : 1634651344696,
+          "stop" : 1634651668172,
+          "duration" : 323476
+        }
+      }, {
+        "uid" : "ea2efa270c7808a9",
+        "reportUrl" : "https://mangata-finance.github.io/mangata-e2e/631//#testresult/ea2efa270c7808a9",
+        "status" : "failed",
+        "statusDetails" : "Error: expect(received).toBeTruthy()\n                \n                Received: false",
+        "time" : {
+          "start" : 1634651025970,
+          "stop" : 1634651284221,
+          "duration" : 258251
+        }
+      }, {
+        "uid" : "bd06e9f7156acaab",
+        "reportUrl" : "https://mangata-finance.github.io/mangata-e2e/629//#testresult/bd06e9f7156acaab",
+        "status" : "passed",
+        "time" : {
+          "start" : 1634650314256,
+          "stop" : 1634650571543,
+          "duration" : 257287
+        }
+      }, {
+        "uid" : "d8f249b57b0c0f1a",
+        "reportUrl" : "https://mangata-finance.github.io/mangata-e2e/632//#testresult/d8f249b57b0c0f1a",
+        "status" : "failed",
+        "statusDetails" : "Error: Failed: \"TIMEOUT: Waiting for //*[@class = 'Sidebar__loading'] to dissapear\"",
+        "time" : {
+          "start" : 1634650252991,
+          "stop" : 1634650444261,
+          "duration" : 191270
+        }
+      }, {
+        "uid" : "876c41903d0a6e",
+        "reportUrl" : "https://mangata-finance.github.io/mangata-e2e/630//#testresult/876c41903d0a6e",
+        "status" : "passed",
+        "time" : {
+          "start" : 1634650120940,
+          "stop" : 1634650409201,
+          "duration" : 288261
+        }
+      }, {
+        "uid" : "d101d8f87f47485e",
+        "reportUrl" : "https://mangata-finance.github.io/mangata-e2e/627//#testresult/d101d8f87f47485e",
+        "status" : "failed",
+        "statusDetails" : "NoSuchElementError: no such element: Unable to locate element: {\"method\":\"xpath\",\"selector\":\"//*[@data-testid='wallet-asset-mETH']//span[@class='value']\"}\n                  (Session info: chrome=94.0.4606.61)\n                  (Driver info: chromedriver=94.0.4606.61 (418b78f5838ed0b1c69bb4e51ea0252171854915-refs/branch-heads/4606@{#1204}),platform=Linux 5.8.0-1042-azure x86_64)",
+        "time" : {
+          "start" : 1634649458898,
+          "stop" : 1634649693345,
+          "duration" : 234447
+        }
+      }, {
+        "uid" : "6c6cf6aadd5f3bf2",
+        "reportUrl" : "https://mangata-finance.github.io/mangata-e2e/625//#testresult/6c6cf6aadd5f3bf2",
+        "status" : "passed",
+        "time" : {
+          "start" : 1634608259181,
+          "stop" : 1634608529712,
+          "duration" : 270531
+        }
+      }, {
+        "uid" : "bb3e92e4f9b0f552",
+        "reportUrl" : "https://mangata-finance.github.io/mangata-e2e/622//#testresult/bb3e92e4f9b0f552",
+        "status" : "failed",
+        "statusDetails" : "TimeoutError: Waiting for element to be located By(xpath, //input[@placeholder='Paste Secret Recovery Phrase from clipboard'])\n                Wait timed out after 20003ms",
+        "time" : {
+          "start" : 1634608743759,
+          "stop" : 1634608790987,
+          "duration" : 47228
+        }
+      }, {
+        "uid" : "e847e968448becf",
+        "reportUrl" : "https://mangata-finance.github.io/mangata-e2e/626//#testresult/e847e968448becf",
+        "status" : "passed",
+        "time" : {
+          "start" : 1634608398531,
+          "stop" : 1634608729760,
+          "duration" : 331229
+        }
+      }, {
+        "uid" : "f9a104535f57affd",
+        "reportUrl" : "https://mangata-finance.github.io/mangata-e2e/621//#testresult/f9a104535f57affd",
+        "status" : "failed",
+        "statusDetails" : "TimeoutError: Waiting for element to be located By(xpath, //input[@placeholder='Paste Secret Recovery Phrase from clipboard'])\n                Wait timed out after 20001ms",
+        "time" : {
+          "start" : 1634607988181,
+          "stop" : 1634608029870,
+          "duration" : 41689
+        }
+      }, {
+        "uid" : "da3e6f5c7da7fcbf",
+        "reportUrl" : "https://mangata-finance.github.io/mangata-e2e/623//#testresult/da3e6f5c7da7fcbf",
+        "status" : "failed",
+        "statusDetails" : "NoSuchElementError: no such element: Unable to locate element: {\"method\":\"xpath\",\"selector\":\"//*[@data-testid='bridge-showWithdrawModalBtn']\"}\n                  (Session info: chrome=94.0.4606.61)\n                  (Driver info: chromedriver=94.0.4606.61 (418b78f5838ed0b1c69bb4e51ea0252171854915-refs/branch-heads/4606@{#1204}),platform=Linux 5.8.0-1042-azure x86_64)",
+        "time" : {
+          "start" : 1634608254448,
+          "stop" : 1634608307836,
+          "duration" : 53388
+        }
+      }, {
+        "uid" : "a933b51d1172a7d5",
+        "reportUrl" : "https://mangata-finance.github.io/mangata-e2e/624//#testresult/a933b51d1172a7d5",
+        "status" : "passed",
+        "time" : {
+          "start" : 1634607533501,
+          "stop" : 1634607859312,
+          "duration" : 325811
+        }
+      }, {
+        "uid" : "d4eb1a0102348331",
+        "reportUrl" : "https://mangata-finance.github.io/mangata-e2e/617//#testresult/d4eb1a0102348331",
+        "status" : "failed",
+        "statusDetails" : "Error: Timeout - Async callback was not invoked within the 300000 ms timeout specified by jest.setTimeout.",
+        "time" : {
+          "start" : 1634564818144,
+          "stop" : 1634565182335,
+          "duration" : 364191
+        }
+      }, {
+        "uid" : "b829ee37168bf5d9",
+        "reportUrl" : "https://mangata-finance.github.io/mangata-e2e/619//#testresult/b829ee37168bf5d9",
+        "status" : "failed",
+        "statusDetails" : "TimeoutError: Waiting for element to be located By(xpath, //input[@placeholder='Paste Secret Recovery Phrase from clipboard'])\n                Wait timed out after 20000ms",
+        "time" : {
+          "start" : 1634564547468,
+          "stop" : 1634564591393,
+          "duration" : 43925
+        }
+      }, {
+        "uid" : "3bbcd778944a3be2",
+        "reportUrl" : "https://mangata-finance.github.io/mangata-e2e/616//#testresult/3bbcd778944a3be2",
+        "status" : "passed",
+        "time" : {
+          "start" : 1634563666866,
+          "stop" : 1634563867962,
+          "duration" : 201096
+        }
+      }, {
+        "uid" : "72e6f03c8c978d8a",
+        "reportUrl" : "https://mangata-finance.github.io/mangata-e2e/618//#testresult/72e6f03c8c978d8a",
+        "status" : "failed",
+        "statusDetails" : "TimeoutError: Waiting for element to be located By(xpath, //input[@placeholder='Paste Secret Recovery Phrase from clipboard'])\n                Wait timed out after 20234ms",
+        "time" : {
+          "start" : 1634563950060,
+          "stop" : 1634563998200,
+          "duration" : 48140
+        }
+      } ]
+    },
+    "tags" : [ ]
+  },
+  "source" : "2d35868c464fed9f.json",
+  "parameterValues" : [ ]
+}
