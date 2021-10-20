@@ -3,6 +3,7 @@ import Keyring from "@polkadot/keyring";
 import { signSendAndWaitToFinishTx } from "../../txHandler";
 import { BaseUser } from "./BaseUser";
 import { Node } from "../Node/Node";
+import BN from "bn.js";
 
 export class GovernanceUser extends BaseUser {
   node: Node;
@@ -25,7 +26,7 @@ export class GovernanceUser extends BaseUser {
     );
   }
 
-  async vote(users: [BaseUser], stake: number): Promise<void> {
+  async vote(users: [BaseUser], stake: BN): Promise<void> {
     const userAddresses: string[] = [];
 
     users.forEach((user) => {

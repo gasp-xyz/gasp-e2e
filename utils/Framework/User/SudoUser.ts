@@ -6,12 +6,14 @@ import { Keyring } from "@polkadot/api";
 import { mintAsset } from "../../tx";
 import { Node } from "../Node/Node";
 import { Token } from "../Supply/Token";
+import { getEnvironmentRequiredVars } from "../../utils";
 
 export class SudoUser extends BaseUser {
   node: Node;
 
   constructor(keyring: Keyring, name: string, json: any, node: Node) {
-    super(keyring, name, json);
+    const { sudo: sudoName } = getEnvironmentRequiredVars();
+    super(keyring, sudoName, json);
     this.node = node;
   }
 

@@ -8,18 +8,21 @@ import { Keyring } from "@polkadot/api";
 import { Bank } from "../../utils/Framework/Supply/Bank";
 import { Node } from "../../utils/Framework/Node/Node";
 import { SudoUser } from "../../utils/Framework/User/SudoUser";
-import { Token } from "../../utils/Framework/Supply/Token";
 import { UserFactory, Users } from "../../utils/Framework/User/UserFactory";
 import { cryptoWaitReady } from "@polkadot/util-crypto";
+import { testLog } from "../../utils/Logger";
 
 let bootnode: Node;
 let keyring: Keyring;
 let sudo: SudoUser;
 
+jest.spyOn(console, "log").mockImplementation(jest.fn());
+jest.setTimeout(1500000);
+
 beforeAll(async () => {
   await cryptoWaitReady(); // Wait for Polkadots WASM backend
 
-  bootnode = new Node("ws://node_alice:9944");
+  bootnode = new Node("ws://localhost:9944");
   await bootnode.connect();
 
   keyring = new Keyring({ type: "sr25519" });
@@ -40,16 +43,19 @@ describe("Governance -> Voting -> Users", () => {
       bootnode
     ) as GovernanceUser;
 
-    const supply = new BN(10000000);
-
     const bank = new Bank(sudo);
 
-    const token: Token = await bank.mintToken(supply);
-
-    await sudo.fundUser(candidate, token, new BN(10000));
-    await sudo.fundUser(voter, token, new BN(10000));
+    await voter.addMGATokens(
+      bank.sudoUser,
+      new BN(Math.pow(10, 17).toString())
+    );
+    await candidate.addMGATokens(
+      bank.sudoUser,
+      new BN(Math.pow(10, 16).toString())
+    );
 
     await candidate.runForCouncil();
-    await voter.vote([candidate], 5000);
+    await voter.vote([candidate], new BN(Math.pow(10, 16).toString()));
+    testLog.getLog().info("voted");
   });
 });

@@ -14,14 +14,17 @@ export class Bank {
     this.sudoUser = sudoUser;
   }
 
-  public async mintToken(supply: BN): Promise<Token> {
+  public async mintToken(
+    supply: BN,
+    targetUserAddress: string
+  ): Promise<Token> {
     this.#id.add(new BN(1));
     const token = new Token(this.#id, supply);
 
     await mintAsset(
       this.sudoUser.keyRingPair,
       this.#id,
-      this.sudoUser.keyRingPair.address,
+      targetUserAddress,
       supply
     ).then((result) => {
       const eventResponse = getEventResultFromTxWait(result, [
