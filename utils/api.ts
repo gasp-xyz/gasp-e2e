@@ -6,7 +6,6 @@ import { Mangata } from "mangata-sdk";
 export let api: ApiPromise | null = null;
 export let mangata: Mangata | null = null;
 
-const { chainUri: envUri } = getEnvironmentRequiredVars();
 export const getApi = () => {
   if (!api) {
     throw new Error("Api not initialized");
@@ -16,6 +15,7 @@ export const getApi = () => {
 
 export const initApi = async (uri = "") => {
   if (!uri) {
+    const { chainUri: envUri } = getEnvironmentRequiredVars();
     uri = envUri;
   }
 

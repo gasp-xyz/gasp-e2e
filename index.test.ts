@@ -29,8 +29,8 @@ describe("staking - testpad", () => {
   //const address = "5GQuHf4bhNftjAfRf6PyNQ7gEsMheDVu6EVKaZDwdWwfzKe2"; //2k
   //const address2 = "5EkarfGa1tr7weepVwYB3of8YJosQTH9yc49bnrhXrhpuq5W"; // <--3k
   //const address = "5EkarfGa1tr7weepVwYB3of8YJosQTH9yc49bnrhXrhpuq5W"; // <--4k
-  const address = "5Ebqv1DfLBbf9brPHVinMtfxRfYzuoc22VZKHsVu6DomcCo3";
-  test.each(["2000", "3000", "4000"])(
+  const address = "5ETtEUWEHFagRcmdTFDcogZMHjPDx41eo6tp1y1kepHtyoRY";
+  test.each(["2000", "3000", "4000", "5000"])(
     "xyk-pallet: Create new validator",
     async (bondAmount) => {
       keyring = new Keyring({ type: "sr25519" });
@@ -39,6 +39,10 @@ describe("staking - testpad", () => {
       await fs.writeFileSync(
         testUser1.keyRingPair.address + ".json",
         JSON.stringify(testUser1.keyRingPair.toJson("mangata123"))
+      );
+      await fs.writeFileSync(
+        sudo.keyRingPair.address + ".json",
+        JSON.stringify(sudo.keyRingPair.toJson("mangata123"))
       );
       // add users to pair.
       keyring.addPair(testUser1.keyRingPair);
@@ -226,10 +230,49 @@ describe("staking - testpad", () => {
     keyring.pairs[0].decodePkcs8("mangata123");
 
     await signSendAndWaitToFinishTx(
-      api?.tx.staking.unbond(new BN(4000)),
+      api?.tx.staking.unbond(new BN(3000)),
       user.keyRingPair
     ).then();
     await waitNewBlock();
     testLog.getLog().warn("done");
+  });
+  test("xyk-pallet: withdraw", async () => {
+    try {
+      getApi();
+    } catch (e) {
+      await initApi();
+    }
+    keyring = new Keyring({ type: "sr25519" });
+
+    const json = fs.readFileSync(address + ".json", {
+      encoding: "utf8",
+      flag: "r",
+    });
+    const user = new User(keyring, "aasd", JSON.parse(json));
+    keyring.addPair(user.keyRingPair);
+    keyring.pairs[0].decodePkcs8("mangata123");
+
+    await signSendAndWaitToFinishTx(
+      api?.tx.staking.withdrawUnbonded(new BN(3000)),
+      user.keyRingPair
+    ).then();
+    await waitNewBlock();
+    testLog.getLog().warn("done");
+  });
+
+  test("xyk-pallet: force new era always", async () => {
+    try {
+      getApi();
+    } catch (e) {
+      await initApi();
+    }
+    keyring = new Keyring({ type: "sr25519" });
+    sudo = new User(keyring, sudoUserName);
+    const { nonce } = await api.query.system.account(sudo.keyRingPair.address);
+    await signAndWaitTx(
+      api.tx.sudo.sudo(api.tx.staking.forceNewEraAlways()),
+      sudo.keyRingPair,
+      nonce.toNumber()
+    );
   });
 });
