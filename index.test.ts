@@ -26,87 +26,92 @@ describe("staking - testpad", () => {
       await initApi();
     }
   });
-  //  const address1 = "5FsTyqA9zbFMmKb4126VGdZ5wKN1UTbDPt7KmgDJMx4f2H2W"; //3k
-  //  const address2 = "5H9cTQvigmvocz8QjMXbptecrbYpazCwZaFvMfSG5XUMYTUL"; // <--3k
-  //  const address3 = "5HNVF1davERpkXFLdyXNgn4j3B5mZPdGAYgrFVvv4hDrnaHq"; // <--4k
+  //const address = "5GQuHf4bhNftjAfRf6PyNQ7gEsMheDVu6EVKaZDwdWwfzKe2"; //2k
+  //const address2 = "5EkarfGa1tr7weepVwYB3of8YJosQTH9yc49bnrhXrhpuq5W"; // <--3k
+  //const address = "5EkarfGa1tr7weepVwYB3of8YJosQTH9yc49bnrhXrhpuq5W"; // <--4k
+  const address = "5Ebqv1DfLBbf9brPHVinMtfxRfYzuoc22VZKHsVu6DomcCo3";
+  test.each(["2000", "3000", "4000"])(
+    "xyk-pallet: Create new validator",
+    async (bondAmount) => {
+      keyring = new Keyring({ type: "sr25519" });
+      sudo = new User(keyring, sudoUserName);
+      testUser1 = new User(keyring);
+      await fs.writeFileSync(
+        testUser1.keyRingPair.address + ".json",
+        JSON.stringify(testUser1.keyRingPair.toJson("mangata123"))
+      );
+      // add users to pair.
+      keyring.addPair(testUser1.keyRingPair);
+      keyring.addPair(sudo.keyRingPair);
+      await testUser1.refreshAmounts(AssetWallet.BEFORE);
 
-  test.only("xyk-pallet: Create new validator", async () => {
-    keyring = new Keyring({ type: "sr25519" });
-    sudo = new User(keyring, sudoUserName);
-    testUser1 = new User(keyring);
-    await fs.writeFileSync(
-      testUser1.keyRingPair.address + ".json",
-      JSON.stringify(testUser1.keyRingPair.toJson("mangata123"))
-    );
-    // add users to pair.
-    keyring.addPair(testUser1.keyRingPair);
-    keyring.addPair(sudo.keyRingPair);
-    await testUser1.refreshAmounts(AssetWallet.BEFORE);
+      const { nonce } = await api.query.system.account(
+        sudo.keyRingPair.address
+      );
+      await signAndWaitTx(
+        api.tx.sudo.sudo(
+          api.tx.tokens.mint(
+            MGA_ASSET_ID,
+            testUser1.keyRingPair.address,
+            new BN("1000000000000")
+          )
+        ),
+        sudo.keyRingPair,
+        nonce.toNumber()
+      );
+      const nonce2 = await (
+        await api.query.system.account(sudo.keyRingPair.address)
+      ).nonce;
+      await signAndWaitTx(
+        api.tx.sudo.sudo(
+          api.tx.tokens.mint(
+            new BN(3),
+            testUser1.keyRingPair.address,
+            new BN(10000)
+          )
+        ),
+        sudo.keyRingPair,
+        nonce2.toNumber()
+      );
 
-    const { nonce } = await api.query.system.account(sudo.keyRingPair.address);
-    await signAndWaitTx(
-      api.tx.sudo.sudo(
-        api.tx.tokens.mint(
-          MGA_ASSET_ID,
+      //    await sudo.mint(MGA_ASSET_ID, testUser1, new BN("1000000000000"));
+
+      //  const [firstCurrency] = await Assets.setupUserWithCurrencies(
+      //    testUser1,
+      //    [new BN(11111)],
+      //    sudo
+      //  );
+      //  await sudo.mint(new BN(3), testUser1, new BN(10000));
+      await waitNewBlock();
+      await signSendAndWaitToFinishTx(
+        api?.tx.staking.bond(
           testUser1.keyRingPair.address,
-          new BN("1000000000000")
-        )
-      ),
-      sudo.keyRingPair,
-      nonce.toNumber()
-    );
-    const nonce2 = await (
-      await api.query.system.account(sudo.keyRingPair.address)
-    ).nonce;
-    await signAndWaitTx(
-      api.tx.sudo.sudo(
-        api.tx.tokens.mint(
-          new BN(3),
+          new BN(bondAmount),
+          "Staked",
+          // @ts-ignore - Mangata bond operation has 4 params, somehow is inheriting the bond operation from polkadot :S
+          new BN(3)
+        ),
+        testUser1.keyRingPair
+      );
+      await waitNewBlock();
+      await signSendAndWaitToFinishTx(
+        api?.tx.staking.nominate([
           testUser1.keyRingPair.address,
-          new BN(10000)
-        )
-      ),
-      sudo.keyRingPair,
-      nonce2.toNumber()
-    );
+          "5GrwvaEF5zXb26Fz9rcQpDWS57CtERHpNehXCPcNoHGKutQY",
+        ]),
+        testUser1.keyRingPair
+      ).then();
+      await waitNewBlock();
 
-    //    await sudo.mint(MGA_ASSET_ID, testUser1, new BN("1000000000000"));
+      await signSendAndWaitToFinishTx(
+        api?.tx.staking.validate({ commission: "0" }),
+        testUser1.keyRingPair
+      ).then();
+      testLog.getLog().warn("done" + testUser1.keyRingPair.address);
+    }
+  );
 
-    //  const [firstCurrency] = await Assets.setupUserWithCurrencies(
-    //    testUser1,
-    //    [new BN(11111)],
-    //    sudo
-    //  );
-    //  await sudo.mint(new BN(3), testUser1, new BN(10000));
-    await waitNewBlock();
-    await signSendAndWaitToFinishTx(
-      api?.tx.staking.bond(
-        testUser1.keyRingPair.address,
-        new BN(6000),
-        "Staked",
-        // @ts-ignore - Mangata bond operation has 4 params, somehow is inheriting the bond operation from polkadot :S
-        new BN(3)
-      ),
-      testUser1.keyRingPair
-    );
-    await waitNewBlock();
-    await signSendAndWaitToFinishTx(
-      api?.tx.staking.nominate([
-        testUser1.keyRingPair.address,
-        "5GrwvaEF5zXb26Fz9rcQpDWS57CtERHpNehXCPcNoHGKutQY",
-      ]),
-      testUser1.keyRingPair
-    ).then();
-    await waitNewBlock();
-
-    await signSendAndWaitToFinishTx(
-      api?.tx.staking.validate({ commission: "0" }),
-      testUser1.keyRingPair
-    ).then();
-    testLog.getLog().warn("done" + testUser1.keyRingPair.address);
-  });
-
-  test.skip("xyk-pallet: Drop from validator", async () => {
+  test("xyk-pallet: Drop from validator", async () => {
     try {
       getApi();
     } catch (e) {
@@ -156,7 +161,7 @@ describe("staking - testpad", () => {
     ).then();
     testLog.getLog().warn("done");
   });
-  test.skip("xyk-pallet: nominate myself and alice", async () => {
+  test("xyk-pallet: nominate", async () => {
     try {
       getApi();
     } catch (e) {
@@ -174,9 +179,54 @@ describe("staking - testpad", () => {
 
     await signSendAndWaitToFinishTx(
       api?.tx.staking.nominate([
-        user.keyRingPair.address,
-        "5GrwvaEF5zXb26Fz9rcQpDWS57CtERHpNehXCPcNoHGKutQY",
+        "5Ebqv1DfLBbf9brPHVinMtfxRfYzuoc22VZKHsVu6DomcCo3",
       ]),
+      user.keyRingPair
+    ).then();
+    await waitNewBlock();
+    testLog.getLog().warn("done");
+  });
+  test("xyk-pallet: bond_extra", async () => {
+    try {
+      getApi();
+    } catch (e) {
+      await initApi();
+    }
+    keyring = new Keyring({ type: "sr25519" });
+
+    const json = fs.readFileSync(address + ".json", {
+      encoding: "utf8",
+      flag: "r",
+    });
+    const user = new User(keyring, "aasd", JSON.parse(json));
+    keyring.addPair(user.keyRingPair);
+    keyring.pairs[0].decodePkcs8("mangata123");
+
+    await signSendAndWaitToFinishTx(
+      api?.tx.staking.bondExtra(new BN(1000)),
+      user.keyRingPair
+    ).then();
+    await waitNewBlock();
+    testLog.getLog().warn("done");
+  });
+  test("xyk-pallet: unbond", async () => {
+    try {
+      getApi();
+    } catch (e) {
+      await initApi();
+    }
+    keyring = new Keyring({ type: "sr25519" });
+
+    const json = fs.readFileSync(address + ".json", {
+      encoding: "utf8",
+      flag: "r",
+    });
+    const user = new User(keyring, "aasd", JSON.parse(json));
+    keyring.addPair(user.keyRingPair);
+    keyring.pairs[0].decodePkcs8("mangata123");
+
+    await signSendAndWaitToFinishTx(
+      api?.tx.staking.unbond(new BN(4000)),
       user.keyRingPair
     ).then();
     await waitNewBlock();
