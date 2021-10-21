@@ -11,8 +11,10 @@ import { Node } from "../../utils/Framework/Node/Node";
 import { SudoUser } from "../../utils/Framework/User/SudoUser";
 import { UserFactory, Users } from "../../utils/Framework/User/UserFactory";
 import { cryptoWaitReady } from "@polkadot/util-crypto";
-import { waitForNBlocks } from "../../utils/utils";
+import { getEnvironmentRequiredVars, waitForNBlocks } from "../../utils/utils";
 import { testLog } from "../../utils/Logger";
+
+const { chainUri: environmentUri } = getEnvironmentRequiredVars();
 
 let bootnode: Node;
 let keyring: Keyring;
@@ -24,7 +26,11 @@ jest.setTimeout(1500000);
 beforeAll(async () => {
   await cryptoWaitReady(); // Wait for Polkadots WASM backend
 
-  bootnode = new Node("ws://node_alice:9944");
+  // ws://node_alice:9944
+  const localUri = "";
+  const uri = localUri ? localUri : environmentUri;
+
+  bootnode = new Node(uri);
   await bootnode.connect();
   await bootnode.subscribeToHead();
 

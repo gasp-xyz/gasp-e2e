@@ -26,6 +26,13 @@ export class GovernanceUser extends BaseUser {
     );
   }
 
+  async renounceCandidacy(): Promise<void> {
+    await signSendAndWaitToFinishTx(
+      this.api.tx.elections.renounceCandidacy("Candidate"),
+      this.keyRingPair
+    );
+  }
+
   async vote(users: [BaseUser], stake: BN): Promise<void> {
     const userAddresses: string[] = [];
 
