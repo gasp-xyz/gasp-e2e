@@ -8,6 +8,7 @@ import { signAndWaitTx, signSendAndWaitToFinishTx } from "./utils/txHandler";
 import { User, AssetWallet } from "./utils/User";
 import { getEnvironmentRequiredVars } from "./utils/utils";
 import fs from "fs";
+import { Assets } from "./utils/Assets";
 
 require("dotenv").config();
 
@@ -26,11 +27,11 @@ describe("staking - testpad", () => {
       await initApi();
     }
   });
-  //const address = "5GQuHf4bhNftjAfRf6PyNQ7gEsMheDVu6EVKaZDwdWwfzKe2"; //2k
-  //const address2 = "5EkarfGa1tr7weepVwYB3of8YJosQTH9yc49bnrhXrhpuq5W"; // <--3k
-  //const address = "5EkarfGa1tr7weepVwYB3of8YJosQTH9yc49bnrhXrhpuq5W"; // <--4k
-  const address = "5ETtEUWEHFagRcmdTFDcogZMHjPDx41eo6tp1y1kepHtyoRY";
-  test.each(["2000", "3000", "4000", "5000"])(
+  //  const address = "5GTRSQdSShzwae79JTxTkD5GpuQ3jFYr95TXC35HCg9sjyr4"; // <--candidate1
+  const address = "5FeZz2TiZv97hDm4vCk4itBqBLPkrokAVPKeCxuo2T9ySTkd"; // <--candidate2
+  //const address = "5FACJNbD38aXkw64Tp3SMjw8azz1jSc457rj1TkVGogDYdC1"; // <--vote to candidate1
+  //  const address = "5DCmoET8xk3RS2vsh2iPY6VsdNtWcKQy2SAxZk4ZrxPCuTNt"; // <--vote to candidate2
+  test.each(["3000", "3000"])(
     "xyk-pallet: Create new validator",
     async (bondAmount) => {
       keyring = new Keyring({ type: "sr25519" });
@@ -98,20 +99,20 @@ describe("staking - testpad", () => {
         testUser1.keyRingPair
       );
       await waitNewBlock();
-      await signSendAndWaitToFinishTx(
-        api?.tx.staking.nominate([
-          testUser1.keyRingPair.address,
-          "5GrwvaEF5zXb26Fz9rcQpDWS57CtERHpNehXCPcNoHGKutQY",
-        ]),
-        testUser1.keyRingPair
-      ).then();
-      await waitNewBlock();
+      //      await signSendAndWaitToFinishTx(
+      //        api?.tx.staking.nominate([
+      //          testUser1.keyRingPair.address,
+      //          "5GrwvaEF5zXb26Fz9rcQpDWS57CtERHpNehXCPcNoHGKutQY",
+      //        ]),
+      //        testUser1.keyRingPair
+      //      ).then();
+      //      await waitNewBlock();
 
-      await signSendAndWaitToFinishTx(
-        api?.tx.staking.validate({ commission: "0" }),
-        testUser1.keyRingPair
-      ).then();
-      testLog.getLog().warn("done" + testUser1.keyRingPair.address);
+      //      await signSendAndWaitToFinishTx(
+      //        api?.tx.staking.validate({ commission: "0" }),
+      //        testUser1.keyRingPair
+      //      ).then();
+      //      testLog.getLog().warn("done" + testUser1.keyRingPair.address);
     }
   );
 
@@ -140,7 +141,7 @@ describe("staking - testpad", () => {
     ).then();
     testLog.getLog().warn("done");
   });
-  test.skip("xyk-pallet: only validate", async () => {
+  test("xyk-pallet: only validate", async () => {
     try {
       getApi();
     } catch (e) {
@@ -183,7 +184,10 @@ describe("staking - testpad", () => {
 
     await signSendAndWaitToFinishTx(
       api?.tx.staking.nominate([
-        "5Ebqv1DfLBbf9brPHVinMtfxRfYzuoc22VZKHsVu6DomcCo3",
+        "5FeZz2TiZv97hDm4vCk4itBqBLPkrokAVPKeCxuo2T9ySTkd",
+        "5FeZz2TiZv97hDm4vCk4itBqBLPkrokAVPKeCxuo2T9ySTkd",
+        "5FeZz2TiZv97hDm4vCk4itBqBLPkrokAVPKeCxuo2T9ySTkd",
+        "5FeZz2TiZv97hDm4vCk4itBqBLPkrokAVPKeCxuo2T9ySTkd",
       ]),
       user.keyRingPair
     ).then();
@@ -213,6 +217,81 @@ describe("staking - testpad", () => {
     await waitNewBlock();
     testLog.getLog().warn("done");
   });
+  test("xyk-pallet: bond", async () => {
+    try {
+      getApi();
+    } catch (e) {
+      await initApi();
+    }
+    keyring = new Keyring({ type: "sr25519" });
+
+    const json = fs.readFileSync(address + ".json", {
+      encoding: "utf8",
+      flag: "r",
+    });
+    const user = new User(keyring, "aasd", JSON.parse(json));
+    keyring.addPair(user.keyRingPair);
+    keyring.pairs[0].decodePkcs8("mangata123");
+
+    await signSendAndWaitToFinishTx(
+      api?.tx.staking.bond(
+        user.keyRingPair.address,
+        new BN("1000"),
+        "Staked",
+        // @ts-ignore - Mangata bond operation has 4 params, somehow is inheriting the bond operation from polkadot :S
+        new BN(3)
+      ),
+      user.keyRingPair
+    );
+    await waitNewBlock();
+    testLog.getLog().warn("done");
+  });
+  test("xyk-pallet: validate", async () => {
+    try {
+      getApi();
+    } catch (e) {
+      await initApi();
+    }
+    keyring = new Keyring({ type: "sr25519" });
+
+    const json = fs.readFileSync(address + ".json", {
+      encoding: "utf8",
+      flag: "r",
+    });
+    const user = new User(keyring, "aasd", JSON.parse(json));
+    keyring.addPair(user.keyRingPair);
+    keyring.pairs[0].decodePkcs8("mangata123");
+
+    await signSendAndWaitToFinishTx(
+      api?.tx.staking.validate({ commission: "110" }),
+      user.keyRingPair
+    );
+    await waitNewBlock();
+    testLog.getLog().warn("done");
+  });
+  test("xyk-pallet: rebond", async () => {
+    try {
+      getApi();
+    } catch (e) {
+      await initApi();
+    }
+    keyring = new Keyring({ type: "sr25519" });
+
+    const json = fs.readFileSync(address + ".json", {
+      encoding: "utf8",
+      flag: "r",
+    });
+    const user = new User(keyring, "aasd", JSON.parse(json));
+    keyring.addPair(user.keyRingPair);
+    keyring.pairs[0].decodePkcs8("mangata123");
+
+    await signSendAndWaitToFinishTx(
+      api?.tx.staking.rebond(new BN("1000")),
+      user.keyRingPair
+    );
+    await waitNewBlock();
+    testLog.getLog().warn("done");
+  });
   test("xyk-pallet: unbond", async () => {
     try {
       getApi();
@@ -230,7 +309,7 @@ describe("staking - testpad", () => {
     keyring.pairs[0].decodePkcs8("mangata123");
 
     await signSendAndWaitToFinishTx(
-      api?.tx.staking.unbond(new BN(3000)),
+      api?.tx.staking.unbond(new BN(1000)),
       user.keyRingPair
     ).then();
     await waitNewBlock();
@@ -274,5 +353,35 @@ describe("staking - testpad", () => {
       sudo.keyRingPair,
       nonce.toNumber()
     );
+  });
+
+  test("create token", async () => {
+    keyring = new Keyring({ type: "sr25519" });
+    sudo = new User(keyring, sudoUserName);
+    const json = fs.readFileSync(address + ".json", {
+      encoding: "utf8",
+      flag: "r",
+    });
+    const user = new User(keyring, "aasd", JSON.parse(json));
+    keyring.addPair(user.keyRingPair);
+    keyring.pairs[0].decodePkcs8("mangata123");
+    const [secondCurrency] = await Assets.setupUserWithCurrencies(
+      user,
+      [new BN("1000000000000")],
+      sudo
+    );
+  });
+  test("mint", async () => {
+    keyring = new Keyring({ type: "sr25519" });
+    sudo = new User(keyring, sudoUserName);
+    const json = fs.readFileSync(address + ".json", {
+      encoding: "utf8",
+      flag: "r",
+    });
+    const user = new User(keyring, "aasd", JSON.parse(json));
+    keyring.addPair(user.keyRingPair);
+    keyring.pairs[0].decodePkcs8("mangata123");
+    //await user.addMGATokens(sudo);
+    await sudo.mint(new BN(3), user, new BN("1000000"));
   });
 });
