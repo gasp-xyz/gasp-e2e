@@ -26,11 +26,7 @@ jest.setTimeout(1500000);
 beforeAll(async () => {
   await cryptoWaitReady(); // Wait for Polkadots WASM backend
 
-  // ws://node_alice:9944
-  const localUri = "";
-  const uri = localUri ? localUri : environmentUri;
-
-  bootnode = new Node(uri);
+  bootnode = new Node(environmentUri);
   await bootnode.connect();
   await bootnode.subscribeToHead();
 
