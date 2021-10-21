@@ -365,11 +365,7 @@ describe("staking - testpad", () => {
     const user = new User(keyring, "aasd", JSON.parse(json));
     keyring.addPair(user.keyRingPair);
     keyring.pairs[0].decodePkcs8("mangata123");
-    const [secondCurrency] = await Assets.setupUserWithCurrencies(
-      user,
-      [new BN("1000000000000")],
-      sudo
-    );
+    await Assets.setupUserWithCurrencies(user, [new BN("1000000000000")], sudo);
   });
   test("mint", async () => {
     keyring = new Keyring({ type: "sr25519" });
