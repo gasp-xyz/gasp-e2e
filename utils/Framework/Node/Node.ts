@@ -2,6 +2,8 @@ import * as uuid from "uuid";
 import { ApiPromise } from "@polkadot/api";
 import { initApi } from "../../api";
 import { testLog } from "../../Logger";
+import BN from "bn.js";
+import { GovernanceUser } from "../User/GovernanceUser";
 
 export class Node {
   name: string;
@@ -16,6 +18,10 @@ export class Node {
   subscription: any;
 
   electionEvents: Map<number, { candidates: any; members: any }> = new Map();
+  userBalancesHistory: Map<
+    number,
+    Map<number, { free: BN; reserved: BN; miscFrozen: BN; feeFrozen: BN }>
+  > = new Map();
 
   constructor(wsPath: string) {
     this.name = uuid.v4();
@@ -38,8 +44,7 @@ export class Node {
         this.blockHashes.set(this.lastBlock, this.lastHash);
         testLog
           .getLog()
-          .info(`${this.name} - #${this.lastBlock} - ${this.lastHash}`);
-
+          .debug(`${this.name} - #${this.lastBlock} - ${this.lastHash}`);
         await this.api!.queryMulti(
           [
             this.api!.query.elections.candidates,
@@ -51,7 +56,7 @@ export class Node {
               members: members.toJSON(),
             });
 
-            testLog.getLog().info(
+            testLog.getLog().debug(
               `Saved Election Information 
                Candidates: ${
                  this.electionEvents.get(this.lastBlock!)?.candidates
@@ -59,6 +64,19 @@ export class Node {
                Members: ${this.electionEvents.get(this.lastBlock!)?.members}`
             );
           }
+        );
+      }
+    );
+  }
+  async subscribeToUserBalanceChanges(
+    candidate: GovernanceUser
+  ): Promise<void> {
+    this.subscription = await this.api!.rpc.chain.subscribeNewHeads(
+      async (lastHeader) => {
+        const balancesAtblock = await candidate.getAllUserTokens();
+        this.userBalancesHistory.set(
+          lastHeader.number.toNumber(),
+          balancesAtblock
         );
       }
     );

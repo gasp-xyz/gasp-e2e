@@ -58,6 +58,8 @@ describe("Governance -> Voting -> Users", () => {
       bank.sudoUser,
       new BN(Math.pow(10, 16).toString())
     );
+    candidate.node.subscribeToUserBalanceChanges(candidate);
+    voter.node.subscribeToUserBalanceChanges(voter);
 
     await candidate.runForCouncil();
     await voter.vote([candidate], new BN(Math.pow(10, 16).toString()));
@@ -66,9 +68,22 @@ describe("Governance -> Voting -> Users", () => {
     testLog.getLog().info(`Test Info:
     Candidates:  ${electionInfo?.candidates}
     Looking for: ${candidate.keyRingPair.address}`);
-
     expect(
       includes(electionInfo?.candidates, candidate.keyRingPair.address)
     ).toBe(true);
+    // Check uer wallets.
+    // TODO: Adjust and assert user wallets.
+    const [voterBefore, voterAfter] = [
+      voter.node.userBalancesHistory.get(
+        voter.node.userBalancesHistory.keys().next().value
+      ),
+      voter.node.userBalancesHistory.get(bootnode.lastBlock! - 1),
+    ];
+    testLog.getLog().debug(`UserWallet Info:
+      Before:  ${JSON.stringify(voterBefore?.get(0))}
+      After: ${JSON.stringify(voterAfter?.get(0))}`);
+    expect(new BN(Math.pow(10, 16).toString())).bnEqual(
+      voterAfter?.get(0)?.reserved!
+    );
   });
 });

@@ -604,3 +604,7 @@ export async function calculateTxCost(transactionExtrinsic: string) {
   const queryInfoResult = await api.rpc.payment.queryInfo(transactionExtrinsic);
   return queryInfoResult.toHuman();
 }
+export async function getAllAcountEntries() {
+  const api = getApi();
+  return await api.query.tokens.accounts.entries();
+}
