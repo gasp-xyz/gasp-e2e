@@ -1,0 +1,46 @@
+{
+  "uid" : "b348be24e8e30d80",
+  "name" : "Modal contains currencies and amounts when providing liquidity",
+  "fullName" : "UI tests - A user can see the new Modal.Modal contains currencies and amounts when providing liquidity",
+  "historyId" : "8f851e11da5b03f8366fe7834b8b806f",
+  "time" : {
+    "start" : 1634901420252,
+    "stop" : 1634901618011,
+    "duration" : 197759
+  },
+  "description" : "",
+  "descriptionHtml" : "",
+  "status" : "passed",
+  "flaky" : false,
+  "newFailed" : false,
+  "beforeStages" : [ ],
+  "afterStages" : [ ],
+  "labels" : [ {
+    "name" : "suite",
+    "value" : "UI tests - A user can see the new Modal"
+  }, {
+    "name" : "testClass",
+    "value" : "UI tests - A user can see the new Modal"
+  }, {
+    "name" : "testMethod",
+    "value" : "Modal contains currencies and amounts when providing liquidity"
+  }, {
+    "name" : "package",
+    "value" : "UI tests - A user can see the new Modal"
+  }, {
+    "name" : "resultFormat",
+    "value" : "allure1"
+  } ],
+  "parameters" : [ ],
+  "links" : [ ],
+  "hidden" : false,
+  "retry" : false,
+  "extra" : {
+    "severity" : "normal",
+    "retries" : [ ],
+    "categories" : [ ],
+    "tags" : [ ]
+  },
+  "source" : "b348be24e8e30d80.json",
+  "parameterValues" : [ ]
+}
