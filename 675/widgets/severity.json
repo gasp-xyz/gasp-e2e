@@ -1,0 +1,171 @@
+[ {
+  "uid" : "5b60bac19b1a48ac",
+  "name" : "As a User I get the right values for Pool investment P[5000000000000000000, 5000000000000000000] - I-> 0.123 -Expected - 0.123",
+  "time" : {
+    "start" : 1634953588891,
+    "stop" : 1634953606805,
+    "duration" : 17914
+  },
+  "status" : "failed",
+  "severity" : "normal"
+}, {
+  "uid" : "7a65e97f5abeed08",
+  "name" : "As a User I can deposit ETH from Meta extension",
+  "time" : {
+    "start" : 1634952791724,
+    "stop" : 1634953061273,
+    "duration" : 269549
+  },
+  "status" : "passed",
+  "severity" : "normal"
+}, {
+  "uid" : "9a1383f7a6dad271",
+  "name" : "As a User I get the right values for Pool investment P[2500000000000000000, 5000000000000000000] - I-> 0.100 -Expected - 0.200",
+  "time" : {
+    "start" : 1634953606805,
+    "stop" : 1634953624438,
+    "duration" : 17633
+  },
+  "status" : "failed",
+  "severity" : "normal"
+}, {
+  "uid" : "e498384e8c1172c3",
+  "name" : "As a User I get the right values for Pool removal P[2500000000000000000, 5000000000000000000] - I-> 1 -Expected - 0.025 , 0.05",
+  "time" : {
+    "start" : 1634953408497,
+    "stop" : 1634953426892,
+    "duration" : 18395
+  },
+  "status" : "failed",
+  "severity" : "normal"
+}, {
+  "uid" : "db62bf44eafbac10",
+  "name" : "As a User I can get test tokens from the faucet",
+  "time" : {
+    "start" : 1634953815305,
+    "stop" : 1634954022005,
+    "duration" : 206700
+  },
+  "status" : "failed",
+  "severity" : "normal"
+}, {
+  "uid" : "5ca0614214fa33a6",
+  "name" : "As a User I can create a pool",
+  "time" : {
+    "start" : 1634953766800,
+    "stop" : 1634953811632,
+    "duration" : 44832
+  },
+  "status" : "failed",
+  "severity" : "normal"
+}, {
+  "uid" : "391674178d5bc160",
+  "name" : "As a User I get infomed whenever is neccesary to install any extension",
+  "time" : {
+    "start" : 1634954023823,
+    "stop" : 1634954037429,
+    "duration" : 13606
+  },
+  "status" : "passed",
+  "severity" : "normal"
+}, {
+  "uid" : "8989fdc8e6bbbf67",
+  "name" : "As a User I can Swap tokens - MGA - mETH",
+  "time" : {
+    "start" : 1634952682686,
+    "stop" : 1634952785030,
+    "duration" : 102344
+  },
+  "status" : "failed",
+  "severity" : "normal"
+}, {
+  "uid" : "9cfad2dee171d07e",
+  "name" : "As a User I get the right values for Pool removal P[2499999999999999999, 5000000000000000000] - I-> 2 -Expected - 0.050 , 0.100",
+  "time" : {
+    "start" : 1634953387811,
+    "stop" : 1634953408497,
+    "duration" : 20686
+  },
+  "status" : "failed",
+  "severity" : "normal"
+}, {
+  "uid" : "167c14ab46e9ddca",
+  "name" : "As a User I get the right values for Pool investment P[5000000000000000000, 100] - I-> 100000000000 -Expected - 0.000002",
+  "time" : {
+    "start" : 1634953571574,
+    "stop" : 1634953588891,
+    "duration" : 17317
+  },
+  "status" : "failed",
+  "severity" : "normal"
+}, {
+  "uid" : "6c544517879e2ca5",
+  "name" : "As a User I can mint some tokens MGA - mETH",
+  "time" : {
+    "start" : 1634952785030,
+    "stop" : 1634952787959,
+    "duration" : 2929
+  },
+  "status" : "failed",
+  "severity" : "normal"
+}, {
+  "uid" : "9b3e87effca93b95",
+  "name" : "As a User I can Withdraw ETH from Meta extension",
+  "time" : {
+    "start" : 1634953061279,
+    "stop" : 1634953259304,
+    "duration" : 198025
+  },
+  "status" : "failed",
+  "severity" : "normal"
+}, {
+  "uid" : "232f6517f957599f",
+  "name" : "As a User I can burn all liquidity MGA - mETH",
+  "time" : {
+    "start" : 1634952787959,
+    "stop" : 1634952787981,
+    "duration" : 22
+  },
+  "status" : "failed",
+  "severity" : "normal"
+}, {
+  "uid" : "4d8fa98ae86c40c5",
+  "name" : "As a User I can mint in more than one pool [ MGA - mETH ] [ MGA - newTokn ] and get invested values",
+  "time" : {
+    "start" : 1634952787981,
+    "stop" : 1634952787993,
+    "duration" : 12
+  },
+  "status" : "failed",
+  "severity" : "normal"
+}, {
+  "uid" : "e5ec9d78aceb972b",
+  "name" : "Validate that Mangata Frontend up and running",
+  "time" : {
+    "start" : 1634954186792,
+    "stop" : 1634954190090,
+    "duration" : 3298
+  },
+  "status" : "passed",
+  "severity" : "normal"
+}, {
+  "uid" : "f7f4e4208b109473",
+  "name" : "As a User I get feedback when extensions are installed and correctly setup",
+  "time" : {
+    "start" : 1634954037429,
+    "stop" : 1634954185004,
+    "duration" : 147575
+  },
+  "status" : "passed",
+  "severity" : "normal"
+}, {
+  "uid" : "d88d8c88acc06120",
+  "name" : "Validate that Frontend retrieves AssetInfo data",
+  "time" : {
+    "start" : 1634954190091,
+    "stop" : 1634954230498,
+    "duration" : 40407
+  },
+  "status" : "passed",
+  "severity" : "normal"
+} ]
