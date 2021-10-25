@@ -1,0 +1,258 @@
+{
+  "uid" : "19a764a4503ac41e",
+  "name" : "As a User I can deposit ETH from Meta extension",
+  "fullName" : "UI main tests - Deposit - ETH.As a User I can deposit ETH from Meta extension",
+  "historyId" : "3f230497b028a09bdae1c560fcc1f271",
+  "time" : {
+    "start" : 1635168364109,
+    "stop" : 1635168803579,
+    "duration" : 439470
+  },
+  "description" : "",
+  "descriptionHtml" : "",
+  "status" : "failed",
+  "statusMessage" : ": Timeout - Async callback was not invoked within the 300000 ms timeout specified by jest.setTimeout.",
+  "statusTrace" : "Timeout - Async callback was not invoked within the 300000 ms timeout specified by jest.setTimeout.Error: \n                    at new Spec (/home/runner/work/mangata-e2e/mangata-e2e/node_modules/jest-jasmine2/build/jasmine/Spec.js:116:22)\n                    at new Spec (/home/runner/work/mangata-e2e/mangata-e2e/node_modules/jest-jasmine2/build/setup_jest_globals.js:78:9)\n                    at specFactory (/home/runner/work/mangata-e2e/mangata-e2e/node_modules/jest-jasmine2/build/jasmine/Env.js:523:24)\n                    at Env.it (/home/runner/work/mangata-e2e/mangata-e2e/node_modules/jest-jasmine2/build/jasmine/Env.js:592:24)\n                    at Env.it (/home/runner/work/mangata-e2e/mangata-e2e/node_modules/jest-jasmine2/build/jasmineAsyncInstall.js:134:23)\n                    at it (/home/runner/work/mangata-e2e/mangata-e2e/node_modules/jest-jasmine2/build/jasmine/jasmineLight.js:100:21)\n                    at Suite.<anonymous> (/home/runner/work/mangata-e2e/mangata-e2e/test/ui/ui-main.ETH.test.ts:59:3)\n                    at addSpecsToSuite (/home/runner/work/mangata-e2e/mangata-e2e/node_modules/jest-jasmine2/build/jasmine/Env.js:444:51)\n                    at Env.describe (/home/runner/work/mangata-e2e/mangata-e2e/node_modules/jest-jasmine2/build/jasmine/Env.js:414:11)\n                    at describe (/home/runner/work/mangata-e2e/mangata-e2e/node_modules/jest-jasmine2/build/jasmine/jasmineLight.js:88:18)\n                    at Object.<anonymous> (/home/runner/work/mangata-e2e/mangata-e2e/test/ui/ui-main.ETH.test.ts:25:1)\n                    at Runtime._execModule (/home/runner/work/mangata-e2e/mangata-e2e/node_modules/jest-runtime/build/index.js:1299:24)\n                    at Runtime._loadModule (/home/runner/work/mangata-e2e/mangata-e2e/node_modules/jest-runtime/build/index.js:898:12)\n                    at Runtime.requireModule (/home/runner/work/mangata-e2e/mangata-e2e/node_modules/jest-runtime/build/index.js:746:10)\n                    at jasmine2 (/home/runner/work/mangata-e2e/mangata-e2e/node_modules/jest-jasmine2/build/index.js:230:13)\n                    at runTestInternal (/home/runner/work/mangata-e2e/mangata-e2e/node_modules/jest-runner/build/runTest.js:380:22)\n                    at runTest (/home/runner/work/mangata-e2e/mangata-e2e/node_modules/jest-runner/build/runTest.js:472:34)",
+  "flaky" : true,
+  "newFailed" : false,
+  "beforeStages" : [ ],
+  "afterStages" : [ ],
+  "labels" : [ {
+    "name" : "suite",
+    "value" : "UI main tests - Deposit - ETH"
+  }, {
+    "name" : "testClass",
+    "value" : "UI main tests - Deposit - ETH"
+  }, {
+    "name" : "testMethod",
+    "value" : "As a User I can deposit ETH from Meta extension"
+  }, {
+    "name" : "package",
+    "value" : "UI main tests - Deposit - ETH"
+  }, {
+    "name" : "resultFormat",
+    "value" : "allure1"
+  } ],
+  "parameters" : [ ],
+  "links" : [ ],
+  "hidden" : false,
+  "retry" : false,
+  "extra" : {
+    "severity" : "normal",
+    "retries" : [ ],
+    "categories" : [ {
+      "name" : "Product defects",
+      "matchedStatuses" : [ ],
+      "flaky" : false
+    } ],
+    "history" : {
+      "statistic" : {
+        "failed" : 62,
+        "broken" : 0,
+        "skipped" : 0,
+        "passed" : 38,
+        "unknown" : 0,
+        "total" : 100
+      },
+      "items" : [ {
+        "uid" : "7423ce07ec5c51f6",
+        "reportUrl" : "https://mangata-finance.github.io/mangata-e2e/707//#testresult/7423ce07ec5c51f6",
+        "status" : "failed",
+        "statusDetails" : "Error: Failed: \"TIMEOUT: Waiting for //*[@class = 'Sidebar__loading'] to dissapear\"",
+        "time" : {
+          "start" : 1635168319912,
+          "stop" : 1635168904946,
+          "duration" : 585034
+        }
+      }, {
+        "uid" : "c8779ed2701c84cc",
+        "reportUrl" : "https://mangata-finance.github.io/mangata-e2e/706//#testresult/c8779ed2701c84cc",
+        "status" : "failed",
+        "statusDetails" : "TimeoutError: Waiting for element to be located By(xpath, //*[@data-testid='depositModal-step0-assetInput']//button)\n                Wait timed out after 20527ms",
+        "time" : {
+          "start" : 1635168432824,
+          "stop" : 1635168724478,
+          "duration" : 291654
+        }
+      }, {
+        "uid" : "3f9b32c724530753",
+        "reportUrl" : "https://mangata-finance.github.io/mangata-e2e/709//#testresult/3f9b32c724530753",
+        "status" : "failed",
+        "statusDetails" : "Error: Failed: \"TIMEOUT: Waiting for //*[@class = 'Sidebar__loading'] to dissapear\"",
+        "time" : {
+          "start" : 1635168453696,
+          "stop" : 1635168624107,
+          "duration" : 170411
+        }
+      }, {
+        "uid" : "63da0c9a4f013650",
+        "reportUrl" : "https://mangata-finance.github.io/mangata-e2e/703//#testresult/63da0c9a4f013650",
+        "status" : "failed",
+        "statusDetails" : "Error: Failed: \"TIMEOUT: Waiting for //*[@class = 'Sidebar__loading'] to dissapear\"",
+        "time" : {
+          "start" : 1635165615143,
+          "stop" : 1635165815524,
+          "duration" : 200381
+        }
+      }, {
+        "uid" : "37bfc6aca01384f8",
+        "reportUrl" : "https://mangata-finance.github.io/mangata-e2e/702//#testresult/37bfc6aca01384f8",
+        "status" : "failed",
+        "statusDetails" : ": Timeout - Async callback was not invoked within the 300000 ms timeout specified by jest.setTimeout.",
+        "time" : {
+          "start" : 1635158296675,
+          "stop" : 1635158760326,
+          "duration" : 463651
+        }
+      }, {
+        "uid" : "fd216451ec4895d4",
+        "reportUrl" : "https://mangata-finance.github.io/mangata-e2e/701//#testresult/fd216451ec4895d4",
+        "status" : "failed",
+        "statusDetails" : "TimeoutError: Waiting for element to be located By(xpath, //button[text()='Connect'])\n                Wait timed out after 20000ms",
+        "time" : {
+          "start" : 1635144382213,
+          "stop" : 1635144521941,
+          "duration" : 139728
+        }
+      }, {
+        "uid" : "982a20f0cefe55e6",
+        "reportUrl" : "https://mangata-finance.github.io/mangata-e2e/697//#testresult/982a20f0cefe55e6",
+        "status" : "failed",
+        "statusDetails" : "TimeoutError: Waiting for element to be located By(xpath, //*[@data-testid='depositModal-step0-assetInput']//button)\n                Wait timed out after 23930ms",
+        "time" : {
+          "start" : 1635126681598,
+          "stop" : 1635127018542,
+          "duration" : 336944
+        }
+      }, {
+        "uid" : "dac10c16be2ad0dc",
+        "reportUrl" : "https://mangata-finance.github.io/mangata-e2e/700//#testresult/dac10c16be2ad0dc",
+        "status" : "failed",
+        "statusDetails" : "TimeoutError: Waiting for element to be located By(xpath, //*[@data-testid='depositModal-step0-assetInput']//button)\n                Wait timed out after 21645ms",
+        "time" : {
+          "start" : 1635126500816,
+          "stop" : 1635126739826,
+          "duration" : 239010
+        }
+      }, {
+        "uid" : "5f58227acc55dc67",
+        "reportUrl" : "https://mangata-finance.github.io/mangata-e2e/695//#testresult/5f58227acc55dc67",
+        "status" : "passed",
+        "time" : {
+          "start" : 1635126351169,
+          "stop" : 1635126648974,
+          "duration" : 297805
+        }
+      }, {
+        "uid" : "c63668e1b7fbef71",
+        "reportUrl" : "https://mangata-finance.github.io/mangata-e2e/699//#testresult/c63668e1b7fbef71",
+        "status" : "failed",
+        "statusDetails" : "TimeoutError: Waiting for element to be located By(xpath, //button[text()='Connect'])\n                Wait timed out after 20004ms",
+        "time" : {
+          "start" : 1635125553435,
+          "stop" : 1635125678355,
+          "duration" : 124920
+        }
+      }, {
+        "uid" : "2a57b4d4d1e741cf",
+        "reportUrl" : "https://mangata-finance.github.io/mangata-e2e/696//#testresult/2a57b4d4d1e741cf",
+        "status" : "passed",
+        "time" : {
+          "start" : 1635125569928,
+          "stop" : 1635125879572,
+          "duration" : 309644
+        }
+      }, {
+        "uid" : "82a75d570d89f6f1",
+        "reportUrl" : "https://mangata-finance.github.io/mangata-e2e/694//#testresult/82a75d570d89f6f1",
+        "status" : "passed",
+        "time" : {
+          "start" : 1635082261650,
+          "stop" : 1635082775566,
+          "duration" : 513916
+        }
+      }, {
+        "uid" : "d411e99e8899a64c",
+        "reportUrl" : "https://mangata-finance.github.io/mangata-e2e/691//#testresult/d411e99e8899a64c",
+        "status" : "failed",
+        "statusDetails" : "Error: Failed: \"TIMEOUT: Waiting for //*[@class = 'Sidebar__loading'] to dissapear\"",
+        "time" : {
+          "start" : 1635082546762,
+          "stop" : 1635082800369,
+          "duration" : 253607
+        }
+      }, {
+        "uid" : "8cf1dcb75a8f388f",
+        "reportUrl" : "https://mangata-finance.github.io/mangata-e2e/690//#testresult/8cf1dcb75a8f388f",
+        "status" : "failed",
+        "statusDetails" : "Error: Failed: \"W[1] timeout in - signAndWaitTx - \\\" + 5HQ9Mm9L1HG53htEGDMsnhkkL7hEfF9vLstEQPtMLX5Gupqx + \\\" - \\\" + 3265 + \\\" - \\\" + {\\\"isSigned\\\":true,\\\"method\\\":{\\\"args\\\":[{\\\"args\\\":[\\\"0\\\",\\\"5CFugKE1QN4sTndQWgtYMJvUqwMytfzRWQW1BssbTWAk4N3E\\\",\\\"10.0000 mUnit\\\"],\\\"method\\\":\\\"mint\\\",\\\"section\\\":\\\"tokens\\\"}],\\\"method\\\":\\\"sudo\\\",\\\"section\\\":\\\"sudo\\\"},\\\"era\\\":{\\\"MortalEra\\\":{\\\"period\\\":\\\"64\\\",\\\"phase\\\":\\\"42\\\"}},\\\"nonce\\\":\\\"3,265\\\",\\\"signature\\\":\\\"0x943dd9140224cfc7f1bcab8c5aee3081dc8b210805d1966d324a154c1ad0d560e9d9d1c17e47af4f1ed2254e22a44b1bb175aeb80c658435a6bd3ca3cad5e089\\\",\\\"signer\\\":\\\"5HQ9Mm9L1HG53htEGDMsnhkkL7hEfF9vLstEQPtMLX5Gupqx\\\",\\\"tip\\\":\\\"0\\\"}\"",
+        "time" : {
+          "start" : 1635081936352,
+          "stop" : 1635082218242,
+          "duration" : 281890
+        }
+      }, {
+        "uid" : "e4fd4abe32f7cb1f",
+        "reportUrl" : "https://mangata-finance.github.io/mangata-e2e/693//#testresult/e4fd4abe32f7cb1f",
+        "status" : "failed",
+        "statusDetails" : ": Timeout - Async callback was not invoked within the 300000 ms timeout specified by jest.setTimeout.",
+        "time" : {
+          "start" : 1635081101645,
+          "stop" : 1635081544811,
+          "duration" : 443166
+        }
+      }, {
+        "uid" : "161384d9a62196bb",
+        "reportUrl" : "https://mangata-finance.github.io/mangata-e2e/689//#testresult/161384d9a62196bb",
+        "status" : "failed",
+        "statusDetails" : "TimeoutError: Waiting for element to be located By(xpath, //*[@data-testid='depositModal-step0-assetInput']//button)\n                Wait timed out after 21152ms",
+        "time" : {
+          "start" : 1635081235250,
+          "stop" : 1635081508867,
+          "duration" : 273617
+        }
+      }, {
+        "uid" : "f822d8d6c8390880",
+        "reportUrl" : "https://mangata-finance.github.io/mangata-e2e/692//#testresult/f822d8d6c8390880",
+        "status" : "failed",
+        "statusDetails" : "Error: Failed: \"TIMEOUT: Waiting for //*[@class = 'Sidebar__loading'] to dissapear\"",
+        "time" : {
+          "start" : 1635081262989,
+          "stop" : 1635081514562,
+          "duration" : 251573
+        }
+      }, {
+        "uid" : "99f45422d96d387b",
+        "reportUrl" : "https://mangata-finance.github.io/mangata-e2e/686//#testresult/99f45422d96d387b",
+        "status" : "passed",
+        "time" : {
+          "start" : 1635039893840,
+          "stop" : 1635040409324,
+          "duration" : 515484
+        }
+      }, {
+        "uid" : "b2e36c5eaec65021",
+        "reportUrl" : "https://mangata-finance.github.io/mangata-e2e/683//#testresult/b2e36c5eaec65021",
+        "status" : "failed",
+        "statusDetails" : ": Timeout - Async callback was not invoked within the 300000 ms timeout specified by jest.setTimeout.",
+        "time" : {
+          "start" : 1635039752123,
+          "stop" : 1635040167865,
+          "duration" : 415742
+        }
+      }, {
+        "uid" : "d736530caa1dfe80",
+        "reportUrl" : "https://mangata-finance.github.io/mangata-e2e/687//#testresult/d736530caa1dfe80",
+        "status" : "passed",
+        "time" : {
+          "start" : 1635039980326,
+          "stop" : 1635040277628,
+          "duration" : 297302
+        }
+      } ]
+    },
+    "tags" : [ ]
+  },
+  "source" : "19a764a4503ac41e.json",
+  "parameterValues" : [ ]
+}
