@@ -15,6 +15,7 @@ class Node {
   lastHash?: string;
   hashes: Set<string> = new Set();
   blockHashes: Map<number, string> = new Map();
+  blockNumbers: Set<number> = new Set();
   subscription: any;
 
   constructor(name: string, wsPath: string) {
@@ -43,6 +44,7 @@ class Node {
         this.lastBlock = lastHeader.number.toNumber();
         this.lastHash = lastHeader.hash.toString();
         this.hashes.add(this.lastHash);
+        this.blockNumbers.add(this.lastBlock);
         this.blockHashes.set(this.lastBlock, this.lastHash);
         testLog
           .getLog()
