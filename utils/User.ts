@@ -249,7 +249,6 @@ export class User {
     } while (amount.eq(amountBefore));
   }
 }
-
 export class Asset {
   amountBefore: AccountData;
   amountAfter: AccountData;
