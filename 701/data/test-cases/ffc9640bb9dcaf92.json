@@ -1,0 +1,76 @@
+{
+  "uid" : "ffc9640bb9dcaf92",
+  "name" : "Modal contains currencies and amounts when Swapping",
+  "fullName" : "UI tests - A user can see the new Modal.Modal contains currencies and amounts when Swapping",
+  "historyId" : "901576b2bd5e9134b5da9513553a0f3f",
+  "time" : {
+    "start" : 1635144565893,
+    "stop" : 1635144737762,
+    "duration" : 171869
+  },
+  "description" : "",
+  "descriptionHtml" : "",
+  "status" : "passed",
+  "flaky" : false,
+  "newFailed" : false,
+  "beforeStages" : [ ],
+  "afterStages" : [ ],
+  "labels" : [ {
+    "name" : "suite",
+    "value" : "UI tests - A user can see the new Modal"
+  }, {
+    "name" : "testClass",
+    "value" : "UI tests - A user can see the new Modal"
+  }, {
+    "name" : "testMethod",
+    "value" : "Modal contains currencies and amounts when Swapping"
+  }, {
+    "name" : "package",
+    "value" : "UI tests - A user can see the new Modal"
+  }, {
+    "name" : "resultFormat",
+    "value" : "allure1"
+  } ],
+  "parameters" : [ ],
+  "links" : [ ],
+  "hidden" : false,
+  "retry" : false,
+  "extra" : {
+    "severity" : "normal",
+    "retries" : [ ],
+    "categories" : [ ],
+    "history" : {
+      "statistic" : {
+        "failed" : 1,
+        "broken" : 0,
+        "skipped" : 0,
+        "passed" : 2,
+        "unknown" : 0,
+        "total" : 3
+      },
+      "items" : [ {
+        "uid" : "13c5da0573ddba71",
+        "reportUrl" : "https://mangata-finance.github.io/mangata-e2e/664//#testresult/13c5da0573ddba71",
+        "status" : "failed",
+        "statusDetails" : "Error: Failed: \"TIMEOUT: Waiting for //*[@class = 'Sidebar__loading'] to dissapear\"",
+        "time" : {
+          "start" : 1634901894480,
+          "stop" : 1634902043451,
+          "duration" : 148971
+        }
+      }, {
+        "uid" : "d9d479f3804518b",
+        "reportUrl" : "https://mangata-finance.github.io/mangata-e2e/663//#testresult/d9d479f3804518b",
+        "status" : "passed",
+        "time" : {
+          "start" : 1634901229778,
+          "stop" : 1634901420250,
+          "duration" : 190472
+        }
+      } ]
+    },
+    "tags" : [ ]
+  },
+  "source" : "ffc9640bb9dcaf92.json",
+  "parameterValues" : [ ]
+}
