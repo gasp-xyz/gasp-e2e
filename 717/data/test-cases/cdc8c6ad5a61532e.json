@@ -1,0 +1,263 @@
+{
+  "uid" : "cdc8c6ad5a61532e",
+  "name" : "As a User I get the right values for Pool removal P[2499999999999999999, 5000000000000000000] - I-> 2 -Expected - 0.050 , 0.100",
+  "fullName" : "Accuracy tests:.As a User I get the right values for Pool removal P[2499999999999999999, 5000000000000000000] - I-> 2 -Expected - 0.050 , 0.100",
+  "historyId" : "9825e2304bb9b457d2a8f85c28b72043",
+  "time" : {
+    "start" : 1635256292182,
+    "stop" : 1635256312939,
+    "duration" : 20757
+  },
+  "description" : "",
+  "descriptionHtml" : "",
+  "status" : "failed",
+  "statusMessage" : "Error: Invalid character",
+  "statusTrace" : "Error: Invalid character\n                    at assert (/home/runner/work/mangata-e2e/mangata-e2e/node_modules/bn.js/lib/bn.js:6:21)\n                    at parseBase (/home/runner/work/mangata-e2e/mangata-e2e/node_modules/bn.js/lib/bn.js:274:7)\n                    at BN._parseBase (/home/runner/work/mangata-e2e/mangata-e2e/node_modules/bn.js/lib/bn.js:310:14)\n                    at BN.init [as _init] (/home/runner/work/mangata-e2e/mangata-e2e/node_modules/bn.js/lib/bn.js:105:14)\n                    at new BN (/home/runner/work/mangata-e2e/mangata-e2e/node_modules/bn.js/lib/bn.js:39:12)\n                    at Function.issueAssetToUser (/home/runner/work/mangata-e2e/mangata-e2e/utils/Assets.ts:75:7)\n                    at runMicrotasks (<anonymous>)\n                    at processTicksAndRejections (internal/process/task_queues.js:95:5)\n                    at Function.setupUserWithCurrencies (/home/runner/work/mangata-e2e/mangata-e2e/utils/Assets.ts:43:26)\n                    at /home/runner/work/mangata-e2e/mangata-e2e/test/ui/ui-accuracy.pool.burning.test.ts:86:41",
+  "flaky" : false,
+  "newFailed" : false,
+  "beforeStages" : [ ],
+  "afterStages" : [ ],
+  "labels" : [ {
+    "name" : "suite",
+    "value" : "Accuracy tests:"
+  }, {
+    "name" : "testClass",
+    "value" : "Accuracy tests:"
+  }, {
+    "name" : "testMethod",
+    "value" : "As a User I get the right values for Pool removal P[2499999999999999999, 5000000000000000000] - I-> 2 -Expected - 0.050 , 0.100"
+  }, {
+    "name" : "package",
+    "value" : "Accuracy tests:"
+  }, {
+    "name" : "resultFormat",
+    "value" : "allure1"
+  } ],
+  "parameters" : [ ],
+  "links" : [ ],
+  "hidden" : false,
+  "retry" : false,
+  "extra" : {
+    "severity" : "normal",
+    "retries" : [ ],
+    "categories" : [ {
+      "name" : "Product defects",
+      "matchedStatuses" : [ ],
+      "flaky" : false
+    } ],
+    "history" : {
+      "statistic" : {
+        "failed" : 104,
+        "broken" : 0,
+        "skipped" : 0,
+        "passed" : 8,
+        "unknown" : 0,
+        "total" : 112
+      },
+      "items" : [ {
+        "uid" : "63fb9e522ba03575",
+        "reportUrl" : "https://mangata-finance.github.io/mangata-e2e/719//#testresult/63fb9e522ba03575",
+        "status" : "failed",
+        "statusDetails" : "Error: Invalid character",
+        "time" : {
+          "start" : 1635255836381,
+          "stop" : 1635255856492,
+          "duration" : 20111
+        }
+      }, {
+        "uid" : "5da0140f47ee3894",
+        "reportUrl" : "https://mangata-finance.github.io/mangata-e2e/720//#testresult/5da0140f47ee3894",
+        "status" : "failed",
+        "statusDetails" : "Error: Failed: \"W[1] timeout in - signAndWaitTx - \\\" + 5HQ9Mm9L1HG53htEGDMsnhkkL7hEfF9vLstEQPtMLX5Gupqx + \\\" - \\\" + 3493 + \\\" - \\\" + {\\\"isSigned\\\":true,\\\"method\\\":{\\\"args\\\":[{\\\"args\\\":[\\\"0\\\",\\\"5G4c2Uc2vtnvV6NpUU6dPBJ5NCV14YdfBFoqAsvs7n1oYF1r\\\",\\\"10.0000 MUnit\\\"],\\\"method\\\":\\\"mint\\\",\\\"section\\\":\\\"tokens\\\"}],\\\"method\\\":\\\"sudo\\\",\\\"section\\\":\\\"sudo\\\"},\\\"era\\\":{\\\"MortalEra\\\":{\\\"period\\\":\\\"64\\\",\\\"phase\\\":\\\"9\\\"}},\\\"nonce\\\":\\\"3,493\\\",\\\"signature\\\":\\\"0x1af9dd48ff8563a96324170056d8b6129135ccff5d5dd0879115ccd216b5b541599cf0fba36e2cb7295e63bfa17e08b0145344cad31a93714aabf5e05a67c181\\\",\\\"signer\\\":\\\"5HQ9Mm9L1HG53htEGDMsnhkkL7hEfF9vLstEQPtMLX5Gupqx\\\",\\\"tip\\\":\\\"0\\\"}\"",
+        "time" : {
+          "start" : 1635255894519,
+          "stop" : 1635255924270,
+          "duration" : 29751
+        }
+      }, {
+        "uid" : "d1dd2a9586ba9363",
+        "reportUrl" : "https://mangata-finance.github.io/mangata-e2e/722//#testresult/d1dd2a9586ba9363",
+        "status" : "failed",
+        "statusDetails" : "Error: Invalid character",
+        "time" : {
+          "start" : 1635255757283,
+          "stop" : 1635255779553,
+          "duration" : 22270
+        }
+      }, {
+        "uid" : "f0c98a4d0665901d",
+        "reportUrl" : "https://mangata-finance.github.io/mangata-e2e/718//#testresult/f0c98a4d0665901d",
+        "status" : "failed",
+        "statusDetails" : "Error: Invalid character",
+        "time" : {
+          "start" : 1635255289398,
+          "stop" : 1635255319363,
+          "duration" : 29965
+        }
+      }, {
+        "uid" : "3706954b02401f08",
+        "reportUrl" : "https://mangata-finance.github.io/mangata-e2e/721//#testresult/3706954b02401f08",
+        "status" : "failed",
+        "statusDetails" : "Error: expect(received).toBe(expected) // Object.is equality\n                \n                Expected: 0.049\n                Received: 0.05",
+        "time" : {
+          "start" : 1635254335209,
+          "stop" : 1635254439954,
+          "duration" : 104745
+        }
+      }, {
+        "uid" : "87a0df8c3a51c2b0",
+        "reportUrl" : "https://mangata-finance.github.io/mangata-e2e/712//#testresult/87a0df8c3a51c2b0",
+        "status" : "failed",
+        "statusDetails" : "Error: Invalid character",
+        "time" : {
+          "start" : 1635214225758,
+          "stop" : 1635214254806,
+          "duration" : 29048
+        }
+      }, {
+        "uid" : "636bd6a0a50d38b3",
+        "reportUrl" : "https://mangata-finance.github.io/mangata-e2e/711//#testresult/636bd6a0a50d38b3",
+        "status" : "failed",
+        "statusDetails" : "Error: Invalid character",
+        "time" : {
+          "start" : 1635213902019,
+          "stop" : 1635213931001,
+          "duration" : 28982
+        }
+      }, {
+        "uid" : "5d863230194c1a3e",
+        "reportUrl" : "https://mangata-finance.github.io/mangata-e2e/714//#testresult/5d863230194c1a3e",
+        "status" : "failed",
+        "statusDetails" : "Error: Failed: \"TIMEOUT: Waiting for //*[@class = 'Sidebar__loading'] to dissapear\"",
+        "time" : {
+          "start" : 1635212984163,
+          "stop" : 1635213095647,
+          "duration" : 111484
+        }
+      }, {
+        "uid" : "3980e7f200330483",
+        "reportUrl" : "https://mangata-finance.github.io/mangata-e2e/713//#testresult/3980e7f200330483",
+        "status" : "failed",
+        "statusDetails" : "Error: Invalid character",
+        "time" : {
+          "start" : 1635213415341,
+          "stop" : 1635213438103,
+          "duration" : 22762
+        }
+      }, {
+        "uid" : "3f8cc611ff46c5b3",
+        "reportUrl" : "https://mangata-finance.github.io/mangata-e2e/710//#testresult/3f8cc611ff46c5b3",
+        "status" : "failed",
+        "statusDetails" : "Error: Failed: \"W[1] timeout in - signAndWaitTx - \\\" + 5HQ9Mm9L1HG53htEGDMsnhkkL7hEfF9vLstEQPtMLX5Gupqx + \\\" - \\\" + 3421 + \\\" - \\\" + {\\\"isSigned\\\":true,\\\"method\\\":{\\\"args\\\":[{\\\"args\\\":[\\\"5EExpJW8oHXZP9DBru6Va4mpFqc88VAqxbfS6tc3oRGZZduT\\\",\\\"12.4999 MUnit\\\"],\\\"method\\\":\\\"create\\\",\\\"section\\\":\\\"tokens\\\"}],\\\"method\\\":\\\"sudo\\\",\\\"section\\\":\\\"sudo\\\"},\\\"era\\\":{\\\"MortalEra\\\":{\\\"period\\\":\\\"64\\\",\\\"phase\\\":\\\"7\\\"}},\\\"nonce\\\":\\\"3,421\\\",\\\"signature\\\":\\\"0x96e4b7be1483612529c01e079ce9df588e7c6a60f6133f609d34bfbb17144e77401729b79fb0dfc640c5b6c85e0a4a365d2f158beef641f9e5f317dd79f3778d\\\",\\\"signer\\\":\\\"5HQ9Mm9L1HG53htEGDMsnhkkL7hEfF9vLstEQPtMLX5Gupqx\\\",\\\"tip\\\":\\\"0\\\"}\"",
+        "time" : {
+          "start" : 1635212827512,
+          "stop" : 1635212875784,
+          "duration" : 48272
+        }
+      }, {
+        "uid" : "9de90c975f5ba999",
+        "reportUrl" : "https://mangata-finance.github.io/mangata-e2e/715//#testresult/9de90c975f5ba999",
+        "status" : "failed",
+        "statusDetails" : "Error: Failed: \"W[1] timeout in - signAndWaitTx - \\\" + 5HQ9Mm9L1HG53htEGDMsnhkkL7hEfF9vLstEQPtMLX5Gupqx + \\\" - \\\" + 3415 + \\\" - \\\" + {\\\"isSigned\\\":true,\\\"method\\\":{\\\"args\\\":[{\\\"args\\\":[\\\"0\\\",\\\"5Ebpfk85Q3oBBJEmuZqWZMuwxsKcy867J9Jb6KQB6vUviwf6\\\",\\\"10.0000 MUnit\\\"],\\\"method\\\":\\\"mint\\\",\\\"section\\\":\\\"tokens\\\"}],\\\"method\\\":\\\"sudo\\\",\\\"section\\\":\\\"sudo\\\"},\\\"era\\\":{\\\"MortalEra\\\":{\\\"period\\\":\\\"64\\\",\\\"phase\\\":\\\"38\\\"}},\\\"nonce\\\":\\\"3,415\\\",\\\"signature\\\":\\\"0x7291ed7e4f0a3ab97e9264afa0046b8aba5f249ec0578312ee09b3956f45b057f627a4c25127cfce3f42b32466b9468cd3ad98f0d0839df21e6aee2b3c5fd288\\\",\\\"signer\\\":\\\"5HQ9Mm9L1HG53htEGDMsnhkkL7hEfF9vLstEQPtMLX5Gupqx\\\",\\\"tip\\\":\\\"0\\\"}\"",
+        "time" : {
+          "start" : 1635212676447,
+          "stop" : 1635212699162,
+          "duration" : 22715
+        }
+      }, {
+        "uid" : "d61b36b0a4af515",
+        "reportUrl" : "https://mangata-finance.github.io/mangata-e2e/705//#testresult/d61b36b0a4af515",
+        "status" : "failed",
+        "statusDetails" : "Error: Invalid character",
+        "time" : {
+          "start" : 1635169694021,
+          "stop" : 1635169712475,
+          "duration" : 18454
+        }
+      }, {
+        "uid" : "423164184973255a",
+        "reportUrl" : "https://mangata-finance.github.io/mangata-e2e/708//#testresult/423164184973255a",
+        "status" : "failed",
+        "statusDetails" : "Error: Invalid character",
+        "time" : {
+          "start" : 1635169682008,
+          "stop" : 1635169702227,
+          "duration" : 20219
+        }
+      }, {
+        "uid" : "cbf187099eef8a4d",
+        "reportUrl" : "https://mangata-finance.github.io/mangata-e2e/704//#testresult/cbf187099eef8a4d",
+        "status" : "failed",
+        "statusDetails" : "Error: expect(received).toBe(expected) // Object.is equality\n                \n                Expected: 0.049\n                Received: 0.05",
+        "time" : {
+          "start" : 1635168968443,
+          "stop" : 1635169085157,
+          "duration" : 116714
+        }
+      }, {
+        "uid" : "fc8f9432a77f831d",
+        "reportUrl" : "https://mangata-finance.github.io/mangata-e2e/707//#testresult/fc8f9432a77f831d",
+        "status" : "failed",
+        "statusDetails" : "Error: Invalid character",
+        "time" : {
+          "start" : 1635169087426,
+          "stop" : 1635169109966,
+          "duration" : 22540
+        }
+      }, {
+        "uid" : "b36a5cb34a02b51a",
+        "reportUrl" : "https://mangata-finance.github.io/mangata-e2e/706//#testresult/b36a5cb34a02b51a",
+        "status" : "failed",
+        "statusDetails" : "Error: Failed: \"W[1] timeout in - signAndWaitTx - \\\" + 5HQ9Mm9L1HG53htEGDMsnhkkL7hEfF9vLstEQPtMLX5Gupqx + \\\" - \\\" + 3373 + \\\" - \\\" + {\\\"isSigned\\\":true,\\\"method\\\":{\\\"args\\\":[{\\\"args\\\":[\\\"0\\\",\\\"5CArdw8gv3XrxDDLTXNXkAmbU9ZVJWsiH5w4RXApz65ixqAW\\\",\\\"10.0000 MUnit\\\"],\\\"method\\\":\\\"mint\\\",\\\"section\\\":\\\"tokens\\\"}],\\\"method\\\":\\\"sudo\\\",\\\"section\\\":\\\"sudo\\\"},\\\"era\\\":{\\\"MortalEra\\\":{\\\"period\\\":\\\"64\\\",\\\"phase\\\":\\\"42\\\"}},\\\"nonce\\\":\\\"3,373\\\",\\\"signature\\\":\\\"0xd2bebddd04054a807afbf9cbf2e2f943896838d8a48f238cb2a49ed9970972747c071c7618a453f3ef325359995e86dcce24ea29e94e0060d53f3e433c91fe81\\\",\\\"signer\\\":\\\"5HQ9Mm9L1HG53htEGDMsnhkkL7hEfF9vLstEQPtMLX5Gupqx\\\",\\\"tip\\\":\\\"0\\\"}\"",
+        "time" : {
+          "start" : 1635168921067,
+          "stop" : 1635168941818,
+          "duration" : 20751
+        }
+      }, {
+        "uid" : "3c0235efcc81530c",
+        "reportUrl" : "https://mangata-finance.github.io/mangata-e2e/709//#testresult/3c0235efcc81530c",
+        "status" : "failed",
+        "statusDetails" : "Error: Invalid character",
+        "time" : {
+          "start" : 1635168854080,
+          "stop" : 1635168875355,
+          "duration" : 21275
+        }
+      }, {
+        "uid" : "87626ae2d21c643f",
+        "reportUrl" : "https://mangata-finance.github.io/mangata-e2e/701//#testresult/87626ae2d21c643f",
+        "status" : "failed",
+        "statusDetails" : "Error: Failed: \"TIMEOUT: Waiting for //*[@class = 'Sidebar__loading'] to dissapear\"",
+        "time" : {
+          "start" : 1635145231378,
+          "stop" : 1635145350304,
+          "duration" : 118926
+        }
+      }, {
+        "uid" : "8a5dcf6de2d02368",
+        "reportUrl" : "https://mangata-finance.github.io/mangata-e2e/697//#testresult/8a5dcf6de2d02368",
+        "status" : "failed",
+        "statusDetails" : "Error: Invalid character",
+        "time" : {
+          "start" : 1635127202397,
+          "stop" : 1635127226949,
+          "duration" : 24552
+        }
+      }, {
+        "uid" : "d4e7fa4f67e60d9b",
+        "reportUrl" : "https://mangata-finance.github.io/mangata-e2e/700//#testresult/d4e7fa4f67e60d9b",
+        "status" : "failed",
+        "statusDetails" : "Error: Invalid character",
+        "time" : {
+          "start" : 1635126926072,
+          "stop" : 1635126952463,
+          "duration" : 26391
+        }
+      } ]
+    },
+    "tags" : [ ]
+  },
+  "source" : "cdc8c6ad5a61532e.json",
+  "parameterValues" : [ ]
+}
