@@ -1,0 +1,124 @@
+{
+  "uid" : "f5cb7babba7292f8",
+  "name" : "Modal contains currencies and amounts when Swapping",
+  "fullName" : "UI tests - A user can see the new Modal.Modal contains currencies and amounts when Swapping",
+  "historyId" : "901576b2bd5e9134b5da9513553a0f3f",
+  "time" : {
+    "start" : 1635333459001,
+    "stop" : 1635333685758,
+    "duration" : 226757
+  },
+  "description" : "",
+  "descriptionHtml" : "",
+  "status" : "passed",
+  "flaky" : false,
+  "newFailed" : false,
+  "beforeStages" : [ ],
+  "afterStages" : [ ],
+  "labels" : [ {
+    "name" : "suite",
+    "value" : "UI tests - A user can see the new Modal"
+  }, {
+    "name" : "testClass",
+    "value" : "UI tests - A user can see the new Modal"
+  }, {
+    "name" : "testMethod",
+    "value" : "Modal contains currencies and amounts when Swapping"
+  }, {
+    "name" : "package",
+    "value" : "UI tests - A user can see the new Modal"
+  }, {
+    "name" : "resultFormat",
+    "value" : "allure1"
+  } ],
+  "parameters" : [ ],
+  "links" : [ ],
+  "hidden" : false,
+  "retry" : false,
+  "extra" : {
+    "severity" : "normal",
+    "retries" : [ ],
+    "categories" : [ ],
+    "history" : {
+      "statistic" : {
+        "failed" : 4,
+        "broken" : 0,
+        "skipped" : 0,
+        "passed" : 4,
+        "unknown" : 0,
+        "total" : 8
+      },
+      "items" : [ {
+        "uid" : "1e06f8fc6e06e154",
+        "reportUrl" : "https://mangata-finance.github.io/mangata-e2e/729//#testresult/1e06f8fc6e06e154",
+        "status" : "failed",
+        "statusDetails" : ": Timeout - Async callback was not invoked within the 300000 ms timeout specified by jest.setTimeout.",
+        "time" : {
+          "start" : 1635323528294,
+          "stop" : 1635324061812,
+          "duration" : 533518
+        }
+      }, {
+        "uid" : "7dcb5a264646a4b3",
+        "reportUrl" : "https://mangata-finance.github.io/mangata-e2e/716//#testresult/7dcb5a264646a4b3",
+        "status" : "failed",
+        "statusDetails" : ": Timeout - Async callback was not invoked within the 300000 ms timeout specified by jest.setTimeout.",
+        "time" : {
+          "start" : 1635235789629,
+          "stop" : 1635236302299,
+          "duration" : 512670
+        }
+      }, {
+        "uid" : "d289bb421a07d42b",
+        "reportUrl" : "https://mangata-finance.github.io/mangata-e2e/703//#testresult/d289bb421a07d42b",
+        "status" : "failed",
+        "statusDetails" : "Error: Failed: \"TIMEOUT: Waiting for //*[@class = 'Sidebar__loading'] to dissapear\"",
+        "time" : {
+          "start" : 1635165879396,
+          "stop" : 1635166055599,
+          "duration" : 176203
+        }
+      }, {
+        "uid" : "a58a902c23b1db73",
+        "reportUrl" : "https://mangata-finance.github.io/mangata-e2e/702//#testresult/a58a902c23b1db73",
+        "status" : "passed",
+        "time" : {
+          "start" : 1635158825386,
+          "stop" : 1635159041715,
+          "duration" : 216329
+        }
+      }, {
+        "uid" : "ffc9640bb9dcaf92",
+        "reportUrl" : "https://mangata-finance.github.io/mangata-e2e/701//#testresult/ffc9640bb9dcaf92",
+        "status" : "passed",
+        "time" : {
+          "start" : 1635144565893,
+          "stop" : 1635144737762,
+          "duration" : 171869
+        }
+      }, {
+        "uid" : "13c5da0573ddba71",
+        "reportUrl" : "https://mangata-finance.github.io/mangata-e2e/664//#testresult/13c5da0573ddba71",
+        "status" : "failed",
+        "statusDetails" : "Error: Failed: \"TIMEOUT: Waiting for //*[@class = 'Sidebar__loading'] to dissapear\"",
+        "time" : {
+          "start" : 1634901894480,
+          "stop" : 1634902043451,
+          "duration" : 148971
+        }
+      }, {
+        "uid" : "d9d479f3804518b",
+        "reportUrl" : "https://mangata-finance.github.io/mangata-e2e/663//#testresult/d9d479f3804518b",
+        "status" : "passed",
+        "time" : {
+          "start" : 1634901229778,
+          "stop" : 1634901420250,
+          "duration" : 190472
+        }
+      } ]
+    },
+    "tags" : [ ]
+  },
+  "source" : "f5cb7babba7292f8.json",
+  "parameterValues" : [ ]
+}
