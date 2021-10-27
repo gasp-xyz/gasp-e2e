@@ -9,6 +9,7 @@ import { User, AssetWallet } from "./utils/User";
 import { getEnvironmentRequiredVars } from "./utils/utils";
 import fs from "fs";
 import { Assets } from "./utils/Assets";
+import { hexToBn } from "@polkadot/util";
 
 require("dotenv").config();
 
@@ -27,11 +28,11 @@ describe("staking - testpad", () => {
       await initApi();
     }
   });
-  //  const address = "5GTRSQdSShzwae79JTxTkD5GpuQ3jFYr95TXC35HCg9sjyr4"; // <--candidate1
-  const address = "5FeZz2TiZv97hDm4vCk4itBqBLPkrokAVPKeCxuo2T9ySTkd"; // <--candidate2
-  //const address = "5FACJNbD38aXkw64Tp3SMjw8azz1jSc457rj1TkVGogDYdC1"; // <--vote to candidate1
-  //  const address = "5DCmoET8xk3RS2vsh2iPY6VsdNtWcKQy2SAxZk4ZrxPCuTNt"; // <--vote to candidate2
-  test.each(["3000", "3000"])(
+  //const address = "5Dy7VqFgArCo6PVFAVgSjEHace12vABr1doNM8uWbENDwUzC"; // <--candidate1
+  //const address = "5CUuPs8noEQHo9rk7tbd4BxBYcUkJmNpQ8rDyV3c6uXYjrnK"; // <--candidate2
+  //const address = "5CD7LoAJCrXEMyHiYnFqMdt3ZQE5snBtZi2RowoL9cFymKu7"; // <--vote to candidate1
+  const address = "5H62MKf9UPTiRvb4s3evSk7knXNaT2HUReaNXoxdYKLhfj7C"; // <--vote to candidate2
+  test.each(["1000", "2000", "3000", "4000"])(
     "xyk-pallet: Create new validator",
     async (bondAmount) => {
       keyring = new Keyring({ type: "sr25519" });
@@ -184,10 +185,7 @@ describe("staking - testpad", () => {
 
     await signSendAndWaitToFinishTx(
       api?.tx.staking.nominate([
-        "5FeZz2TiZv97hDm4vCk4itBqBLPkrokAVPKeCxuo2T9ySTkd",
-        "5FeZz2TiZv97hDm4vCk4itBqBLPkrokAVPKeCxuo2T9ySTkd",
-        "5FeZz2TiZv97hDm4vCk4itBqBLPkrokAVPKeCxuo2T9ySTkd",
-        "5FeZz2TiZv97hDm4vCk4itBqBLPkrokAVPKeCxuo2T9ySTkd",
+        "5GrwvaEF5zXb26Fz9rcQpDWS57CtERHpNehXCPcNoHGKutQY",
       ]),
       user.keyRingPair
     ).then();
@@ -263,7 +261,7 @@ describe("staking - testpad", () => {
     keyring.pairs[0].decodePkcs8("mangata123");
 
     await signSendAndWaitToFinishTx(
-      api?.tx.staking.validate({ commission: "110" }),
+      api?.tx.staking.validate({ commission: "99" }),
       user.keyRingPair
     );
     await waitNewBlock();
@@ -286,7 +284,7 @@ describe("staking - testpad", () => {
     keyring.pairs[0].decodePkcs8("mangata123");
 
     await signSendAndWaitToFinishTx(
-      api?.tx.staking.rebond(new BN("1000")),
+      api?.tx.staking.rebond(new BN("2000")),
       user.keyRingPair
     );
     await waitNewBlock();
@@ -309,7 +307,7 @@ describe("staking - testpad", () => {
     keyring.pairs[0].decodePkcs8("mangata123");
 
     await signSendAndWaitToFinishTx(
-      api?.tx.staking.unbond(new BN(1000)),
+      api?.tx.staking.unbond(new BN(2000)),
       user.keyRingPair
     ).then();
     await waitNewBlock();
@@ -379,5 +377,36 @@ describe("staking - testpad", () => {
     keyring.pairs[0].decodePkcs8("mangata123");
     //await user.addMGATokens(sudo);
     await sudo.mint(new BN(3), user, new BN("1000000"));
+  });
+  test("getTokens", async () => {
+    keyring = new Keyring({ type: "sr25519" });
+    sudo = new User(keyring, sudoUserName);
+    const json = fs.readFileSync(address + ".json", {
+      encoding: "utf8",
+      flag: "r",
+    });
+    const user = new User(keyring, "aasd", JSON.parse(json));
+    keyring.addPair(user.keyRingPair);
+    keyring.pairs[0].decodePkcs8("mangata123");
+    //await user.addMGATokens(sudo);
+    const response = await api.query.tokens.accounts.entries();
+    const userAddress = "5FHneW46xGXgs5mUiveU4sbTyGBzmstUspZC92UhjJM694ty";
+    const userEntries = response.filter((value) =>
+      (value[0].toHuman() as string[]).includes(userAddress)
+    );
+    const tokenValues: Map<
+      BN,
+      { free: BN; reserved: BN; miscFrozen: BN; feeFrozen: BN }
+    > = new Map();
+    userEntries.forEach((value) =>
+      tokenValues.set(new BN(value[0].toHuman()[1]), {
+        free: hexToBn(JSON.parse(userEntries[0][1].toString()).free),
+        reserved: hexToBn(JSON.parse(userEntries[0][1].toString()).reserved),
+        feeFrozen: hexToBn(JSON.parse(userEntries[0][1].toString()).feeFrozen),
+        miscFrozen: hexToBn(
+          JSON.parse(userEntries[0][1].toString()).miscFrozen
+        ),
+      })
+    );
   });
 });
