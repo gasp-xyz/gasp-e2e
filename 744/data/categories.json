@@ -1,0 +1,151 @@
+{
+  "uid" : "4b4757e66a1912dae1a509f688f20b0f",
+  "children" : [ {
+    "name" : "Product defects",
+    "children" : [ {
+      "name" : "Error: Invalid character",
+      "children" : [ {
+        "name" : "As a User I can mint in more than one pool [ MGA - mETH ] [ MGA - newTokn ] and get invested values",
+        "uid" : "c8cb63aff1e7d3ff",
+        "parentUid" : "a6f4f98e4e22b4119fae9cf1ed3cd3a1",
+        "status" : "failed",
+        "time" : {
+          "start" : 1635427555651,
+          "stop" : 1635427721201,
+          "duration" : 165550
+        },
+        "flaky" : true,
+        "newFailed" : false,
+        "parameters" : [ ]
+      }, {
+        "name" : "As a User I get the right values for Pool removal P[2499999999999999999, 5000000000000000000] - I-> 2 -Expected - 0.050 , 0.100",
+        "uid" : "d17d42ccd815d7c0",
+        "parentUid" : "a6f4f98e4e22b4119fae9cf1ed3cd3a1",
+        "status" : "failed",
+        "time" : {
+          "start" : 1635428768081,
+          "stop" : 1635428786205,
+          "duration" : 18124
+        },
+        "flaky" : false,
+        "newFailed" : false,
+        "parameters" : [ ]
+      }, {
+        "name" : "As a User I get the right values for Pool removal P[2500000000000000000, 5000000000000000000] - I-> 1 -Expected - 0.025 , 0.05",
+        "uid" : "e29d216eb14d69fa",
+        "parentUid" : "a6f4f98e4e22b4119fae9cf1ed3cd3a1",
+        "status" : "failed",
+        "time" : {
+          "start" : 1635428786205,
+          "stop" : 1635428807014,
+          "duration" : 20809
+        },
+        "flaky" : true,
+        "newFailed" : false,
+        "parameters" : [ ]
+      }, {
+        "name" : "As a User I get the right values for Pool investment P[5000000000000000000, 100] - I-> 100000000000 -Expected - 0.000002",
+        "uid" : "586403fb11612c24",
+        "parentUid" : "a6f4f98e4e22b4119fae9cf1ed3cd3a1",
+        "status" : "failed",
+        "time" : {
+          "start" : 1635428929729,
+          "stop" : 1635428952864,
+          "duration" : 23135
+        },
+        "flaky" : true,
+        "newFailed" : false,
+        "parameters" : [ ]
+      }, {
+        "name" : "As a User I get the right values for Pool investment P[5000000000000000000, 5000000000000000000] - I-> 0.123 -Expected - 0.123",
+        "uid" : "f566e974050b81c9",
+        "parentUid" : "a6f4f98e4e22b4119fae9cf1ed3cd3a1",
+        "status" : "failed",
+        "time" : {
+          "start" : 1635428952865,
+          "stop" : 1635428976405,
+          "duration" : 23540
+        },
+        "flaky" : true,
+        "newFailed" : false,
+        "parameters" : [ ]
+      }, {
+        "name" : "As a User I get the right values for Pool investment P[2500000000000000000, 5000000000000000000] - I-> 0.100 -Expected - 0.200",
+        "uid" : "a0481600a8e1f93e",
+        "parentUid" : "a6f4f98e4e22b4119fae9cf1ed3cd3a1",
+        "status" : "failed",
+        "time" : {
+          "start" : 1635428976406,
+          "stop" : 1635428995512,
+          "duration" : 19106
+        },
+        "flaky" : true,
+        "newFailed" : false,
+        "parameters" : [ ]
+      }, {
+        "name" : "As a User I can create a pool",
+        "uid" : "374db22af2527846",
+        "parentUid" : "a6f4f98e4e22b4119fae9cf1ed3cd3a1",
+        "status" : "failed",
+        "time" : {
+          "start" : 1635429139498,
+          "stop" : 1635429213988,
+          "duration" : 74490
+        },
+        "flaky" : true,
+        "newFailed" : false,
+        "parameters" : [ ]
+      } ],
+      "uid" : "a6f4f98e4e22b4119fae9cf1ed3cd3a1"
+    }, {
+      "name" : "NoSuchElementError: no such element: Unable to locate element: {\"method\":\"xpath\",\"selector\":\"//*[@data-testid='wallet-asset-mETH']//span[@class='value']\"}\n                  (Session info: chrome=94.0.4606.61)\n                  (Driver info: chromedriver=94.0.4606.61 (418b78f5838ed0b1c69bb4e51ea0252171854915-refs/branch-heads/4606@{#1204}),platform=Linux 5.8.0-1042-azure x86_64)",
+      "children" : [ {
+        "name" : "As a User I can deposit ETH from Meta extension",
+        "uid" : "161f86a76e1680d9",
+        "parentUid" : "012604d5f877254e71ebdb1278a66ddd",
+        "status" : "failed",
+        "time" : {
+          "start" : 1635427725489,
+          "stop" : 1635428046626,
+          "duration" : 321137
+        },
+        "flaky" : true,
+        "newFailed" : false,
+        "parameters" : [ ]
+      }, {
+        "name" : "As a User I can Withdraw ETH from Meta extension",
+        "uid" : "16e33f2679d697c4",
+        "parentUid" : "012604d5f877254e71ebdb1278a66ddd",
+        "status" : "failed",
+        "time" : {
+          "start" : 1635428046642,
+          "stop" : 1635428623110,
+          "duration" : 576468
+        },
+        "flaky" : false,
+        "newFailed" : false,
+        "parameters" : [ ]
+      } ],
+      "uid" : "012604d5f877254e71ebdb1278a66ddd"
+    }, {
+      "name" : "TimeoutError: Waiting for element to be located By(xpath, //div[@class = 'AssetBox' and //*[text()='MGA']]/span[@class='value'])\n                Wait timed out after 22745ms",
+      "children" : [ {
+        "name" : "As a User I can get test tokens from the faucet",
+        "uid" : "f208758748bd88a3",
+        "parentUid" : "ec3ff7169d1743904ac3528ecc0749d3",
+        "status" : "failed",
+        "time" : {
+          "start" : 1635429218160,
+          "stop" : 1635429463426,
+          "duration" : 245266
+        },
+        "flaky" : false,
+        "newFailed" : false,
+        "parameters" : [ ]
+      } ],
+      "uid" : "ec3ff7169d1743904ac3528ecc0749d3"
+    } ],
+    "uid" : "8fb3a91ba5aaf9de24cc8a92edc82b5d"
+  } ],
+  "name" : "categories"
+}
