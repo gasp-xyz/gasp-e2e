@@ -30,9 +30,10 @@ describe("staking - testpad", () => {
   });
   //const address = "5Dy7VqFgArCo6PVFAVgSjEHace12vABr1doNM8uWbENDwUzC"; // <--candidate1
   //const address = "5CUuPs8noEQHo9rk7tbd4BxBYcUkJmNpQ8rDyV3c6uXYjrnK"; // <--candidate2
-  //const address = "5CD7LoAJCrXEMyHiYnFqMdt3ZQE5snBtZi2RowoL9cFymKu7"; // <--vote to candidate1
-  const address = "5H62MKf9UPTiRvb4s3evSk7knXNaT2HUReaNXoxdYKLhfj7C"; // <--vote to candidate2
-  test.each(["1000", "2000", "3000", "4000"])(
+  //const address = "5GGbPY2kmf2CQCTVKL8FkGDst6JQWF7bfk8FCbQj2HkuHosK"; // <--vote to candidate1
+  //const address = "5EWkd5fKCn36mzuqDcLfzPwHu7ckgx4Zs9o5DLE7QdSDrEuS"; // SUDO!
+  const address = "5HQ9Mm9L1HG53htEGDMsnhkkL7hEfF9vLstEQPtMLX5Gupqx"; // SUDO!
+  test.each(["6666", "6666", "6666", "6666"])(
     "xyk-pallet: Create new validator",
     async (bondAmount) => {
       keyring = new Keyring({ type: "sr25519" });
@@ -290,6 +291,36 @@ describe("staking - testpad", () => {
     await waitNewBlock();
     testLog.getLog().warn("done");
   });
+  test("xyk-pallet: payoutStakers", async () => {
+    try {
+      getApi();
+    } catch (e) {
+      await initApi();
+    }
+    keyring = new Keyring({ type: "sr25519" });
+
+    const json = fs.readFileSync(address + ".json", {
+      encoding: "utf8",
+      flag: "r",
+    });
+    const user = new User(keyring, "aasd", JSON.parse(json));
+    keyring.addPair(user.keyRingPair);
+    keyring.pairs[0].decodePkcs8("mangata123");
+    for (let index = 30; index < 31; index++) {
+      try {
+        await signSendAndWaitToFinishTx(
+          api?.tx.staking.payoutStakers(
+            "5GrwvaEF5zXb26Fz9rcQpDWS57CtERHpNehXCPcNoHGKutQY",
+            index
+          ),
+          user.keyRingPair
+        ).then();
+      } catch (error) {}
+    }
+    await waitNewBlock();
+    testLog.getLog().warn("done");
+  });
+
   test("xyk-pallet: unbond", async () => {
     try {
       getApi();
@@ -336,7 +367,6 @@ describe("staking - testpad", () => {
     await waitNewBlock();
     testLog.getLog().warn("done");
   });
-
   test("xyk-pallet: force new era always", async () => {
     try {
       getApi();
@@ -352,7 +382,6 @@ describe("staking - testpad", () => {
       nonce.toNumber()
     );
   });
-
   test("create token", async () => {
     keyring = new Keyring({ type: "sr25519" });
     sudo = new User(keyring, sudoUserName);
