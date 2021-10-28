@@ -50,6 +50,7 @@
     "test-ci": "rm nonce.db ; rm sudo.lock; jest --runInBand --verbose --ci --group=ci ",
     "test-ui": "rm nonce.db ; rm sudo.lock; jest --verbose --runInBand --ci --group=ui ",
     "test-sdk": "rm nonce.db ; rm sudo.lock; jest --verbose --runInBand --ci --group=sdk ",
+    "test-governance": "rm nonce.db ; rm sudo.lock; jest --verbose --runInBand --ci --group=governance",
     "tsc-lint": "tsc -noemit -p tsconfig.json",
     "eslint": "node_modules/.bin/eslint --max-warnings 0 . --ext .ts",
     "xoshiro": "^2.0.3"
