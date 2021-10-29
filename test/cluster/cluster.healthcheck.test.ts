@@ -68,6 +68,29 @@ describe("Cluster -> Healthcheck", () => {
     });
   });
 
+  test("Block numbers match across all nodes", async () => {
+    const numberOfBlocksToCheck = 3;
+    const nodeBlockMap: Map<string, Set<number>> = new Map();
+    await waitForNBlocks(5);
+
+    nodes.map(async (node) => {
+      const blockNumbers = takeRight(
+        Array.from(node.blockNumbers.values()),
+        numberOfBlocksToCheck
+      );
+      testLog
+        .getLog()
+        .info(
+          `${node.name}'s Last ${numberOfBlocksToCheck} Blocks: ${blockNumbers}`
+        );
+      nodeBlockMap.set(node.name, new Set(blockNumbers));
+    });
+
+    expect(
+      intersection(Array.from(nodeBlockMap.values())).length
+    ).toBeGreaterThan(0);
+  });
+
   test("Block merkle hash matches across all nodes", async () => {
     const randomBlockNumber = Math.floor(
       Math.random() * (nodes[0].lastBlock! - nodes[0].firstBlock! + 1) +
