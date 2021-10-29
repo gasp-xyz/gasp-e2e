@@ -101,6 +101,45 @@ describe("UI tests - A user can swap and mint tokens", () => {
 
     expect(swapped).toBeTruthy();
   });
+  it("As a User I can Swap All MGA tokens - newToken and vice versa", async () => {
+    await testUser1.refreshAmounts(AssetWallet.BEFORE);
+    const newToken = await Assets.issueAssetToUser(
+      testUser1,
+      new BN(visibleValueNumber),
+      sudo
+    );
+    const amountToMint = new BN(visibleValueNumber).div(new BN(2000));
+    await testUser1.mintLiquidity(ETH_ASSET_ID, MGA_ASSET_ID, amountToMint);
+    await testUser1.createPoolToAsset(
+      amountToMint,
+      amountToMint,
+      newToken,
+      MGA_ASSET_ID
+    );
+    const assetName = Assets.getAssetName(newToken.toString());
+
+    testUser1.refreshAmounts(AssetWallet.BEFORE);
+    const mga = new Mangata(driver);
+    await mga.navigate();
+    const swapView = new Swap(driver);
+    await swapView.toggleSwap();
+    await swapView.selectPayAsset(MGA_ASSET_NAME);
+    await swapView.selectGetAsset(assetName);
+    await swapView.clickPayMaxBtn();
+    const calculatedGet = await swapView.fetchGetAssetAmount();
+    await swapView.doSwap();
+    await Polkadot.signTransaction(driver);
+    //wait four blocks to complete the action.
+    for (let index = 0; index < 4; index++) {
+      await waitNewBlock();
+    }
+
+    await testUser1.refreshAmounts(AssetWallet.AFTER);
+    expect(testUser1.getAsset(MGA_ASSET_ID)?.amountAfter).bnEqual(new BN(0));
+    expect(testUser1.getAsset(newToken)?.amountAfter).bnEqual(
+      new BN(calculatedGet)
+    );
+  });
 
   it("As a User I can mint some tokens MGA - mETH", async () => {
     testUser1.refreshAmounts(AssetWallet.BEFORE);
