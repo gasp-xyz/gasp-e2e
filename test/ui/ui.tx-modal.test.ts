@@ -24,6 +24,7 @@ import { AssetWallet, User } from "../../utils/User";
 import {
   createPoolIfMissing,
   getEnvironmentRequiredVars,
+  waitForNBlocks,
 } from "../../utils/utils";
 import {
   FIVE_MIN,
@@ -117,7 +118,7 @@ describe("UI tests - A user can see the new Modal", () => {
     expect(modalInfo.toAsset).toEqual(MGA_ASSET_NAME);
   });
 
-  it("Modal is not visible when burning liquidity", async () => {
+  it("Modal is visible when burning liquidity", async () => {
     await testUser1.refreshAmounts(AssetWallet.BEFORE);
     let amountToMint = new BN(visibleValueNumber).div(new BN(2000));
     amountToMint = amountToMint.add(new BN("123456789123456"));
@@ -128,13 +129,13 @@ describe("UI tests - A user can see the new Modal", () => {
     await sidebar.clickOnLiquidityPool(MGA_ASSET_NAME, mETH_ASSET_NAME);
     await sidebar.clickOnRemoveLiquidity();
     const burnModal = new BrunLiquidityModal(driver);
-    await burnModal.setAmount("100");
     await burnModal.confirm();
     const notificationModal = new NotificationModal(driver);
+    await waitForNBlocks(3);
     const isModalWaitingForSignVisible = await notificationModal.isModalVisible(
       ModalType.Confirm
     );
-    expect(isModalWaitingForSignVisible).toBeFalsy();
+    expect(isModalWaitingForSignVisible).toBeTruthy();
   });
 
   afterEach(async () => {
