@@ -50,7 +50,7 @@ jobs:
     runs-on: ubuntu-latest
 
     env:
-      API_URL: 'wss://staging.testnode.mangata.finance:9945'
+      API_URL: 'wss://staging.mangatafinance.cloud:9944/'
       TEST_PALLET_ADDRESS: ${{ secrets.TEST_PALLET_ADDRESS }}
       E2E_XYK_PALLET_ADDRESS: ${{ secrets.E2E_XYK_PALLET_ADDRESS }}
       E2E_TREASURY_PALLET_ADDRESS: ${{ secrets.E2E_TREASURY_PALLET_ADDRESS }}
