@@ -80,8 +80,13 @@ export class Sidebar {
 
   async waitForLoad() {
     return new Promise<void>(async (resolve, reject) => {
-      setTimeout(() => {
-        reject("TIMEOUT: Waiting for " + SPINNER_LOADING + " to dissapear");
+      setTimeout(async () => {
+        const visible = await this.isDisplayed(SPINNER_LOADING);
+        if (visible) {
+          reject("TIMEOUT: Waiting for " + SPINNER_LOADING + " to dissapear");
+        } else {
+          resolve();
+        }
       }, 20000);
       await waitForElementToDissapear(this.driver, SPINNER_LOADING);
       resolve();

@@ -5,7 +5,8 @@
         "node_modules",
     ],
   "compilerOptions": {
-    "skipLibCheck": true
+    "skipLibCheck": true,
+    "lib": ["es2020"]
   },
   "target": "es6"
 }

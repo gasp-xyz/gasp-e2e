@@ -86,4 +86,11 @@ export class Swap {
     const assetLocator = buildDataTestIdXpath(assetTestId);
     await clickElement(this.driver, assetLocator);
   }
+  async swapAssets(fromAsset: string, toAsset: string, amount: string) {
+    await this.toggleSwap();
+    await this.selectPayAsset(fromAsset);
+    await this.selectGetAsset(toAsset);
+    await this.addPayAssetAmount("0.001");
+    await this.doSwap();
+  }
 }

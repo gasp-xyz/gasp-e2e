@@ -9,6 +9,10 @@ import { getApi, initApi } from "../../utils/api";
 import { waitNewBlock } from "../../utils/eventListeners";
 import { Mangata } from "../../utils/frontend/pages/Mangata";
 import { Polkadot } from "../../utils/frontend/pages/Polkadot";
+import {
+  NotificationModal,
+  ModalType,
+} from "../../utils/frontend/pages/NotificationModal";
 import { Swap } from "../../utils/frontend/pages/Swap";
 import { Pool } from "../../utils/frontend/pages/Pool";
 import { Sidebar } from "../../utils/frontend/pages/Sidebar";
@@ -85,12 +89,24 @@ describe("UI tests - A user can swap and mint tokens", () => {
     await swapView.selectGetAsset(mETH_ASSET_NAME);
     await swapView.addPayAssetAmount("0.001");
     await swapView.doSwap();
-
+    const modal = new NotificationModal(driver);
+    const isModalWaitingForSignVisible = await modal.isModalVisible(
+      ModalType.Confirm
+    );
+    expect(isModalWaitingForSignVisible).toBeTruthy();
     await Polkadot.signTransaction(driver);
     //wait four blocks to complete the action.
+    const visible: boolean[] = [];
     for (let index = 0; index < 4; index++) {
+      visible.push(await modal.isModalVisible(ModalType.Progress));
       await waitNewBlock();
     }
+    expect(
+      visible.some((visibleInBlock) => visibleInBlock === true)
+    ).toBeTruthy();
+    const isModalSuccessVisible = await modal.isModalVisible(ModalType.Success);
+    expect(isModalSuccessVisible).toBeTruthy();
+    await modal.clickInDone();
 
     await testUser1.refreshAmounts(AssetWallet.AFTER);
     const swapped = testUser1

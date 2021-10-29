@@ -12,7 +12,7 @@ require("chromedriver");
 export async function waitForElement(
   driver: WebDriver,
   xpath: string,
-  timeout = 20000
+  timeout = 30000
 ) {
   await driver.wait(until.elementLocated(By.xpath(xpath)), timeout);
 }

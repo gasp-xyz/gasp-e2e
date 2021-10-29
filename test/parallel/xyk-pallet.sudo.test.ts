@@ -62,7 +62,7 @@ test("xyk-pallet - Sudo tests: Sudo Issue an asset", async () => {
       "Issued",
       testUser.keyRingPair.address,
     ]);
-    assetId = new BN(eventResponse.data[0]);
+    assetId = new BN(eventResponse.data[0].split(",").join(""));
     validateTransactionSucessful(eventResponse, tokensAmount, testUser);
   });
 
@@ -98,7 +98,7 @@ test("xyk-pallet - Sudo tests: Sudo Issue two  different assets to the same acco
       "Issued",
       testUser.keyRingPair.address,
     ]);
-    assetId = new BN(eventResponse.data[0]);
+    assetId = new BN(eventResponse.data[0].split(",").join(""));
     validateTransactionSucessful(eventResponse, tokensFirstAmount, testUser);
   });
   testLog
@@ -118,7 +118,7 @@ test("xyk-pallet - Sudo tests: Sudo Issue two  different assets to the same acco
       "Issued",
       testUser.keyRingPair.address,
     ]);
-    secondAssetId = new BN(eventResponse.data[0]);
+    secondAssetId = new BN(eventResponse.data[0].split(",").join(""));
     validateTransactionSucessful(eventResponse, tokensSecondAmount, testUser);
   });
   // validate.

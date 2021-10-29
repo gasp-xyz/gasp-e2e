@@ -64,7 +64,7 @@ describe("Accuracy tests:", () => {
       new BN(Math.pow(10, 19).toString()).sub(new BN(1)).div(new BN(4)), //2.499999X
       new BN(Math.pow(10, 19).toString()).div(new BN(2)), //5Y
       "2",
-      "0.050",
+      "0.049",
       "0.100",
     ],
     [
