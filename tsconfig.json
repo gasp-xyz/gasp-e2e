@@ -2,7 +2,7 @@
   "extends": "eslint-config-mangata/tsconfig.json",
   "include": ["index.ts", "test/**/*", "utils/*", "utils/cluster/workers", "test/ui/**/*", "utils/**/**/*"],
   "exclude": [
-        "node_modules",
+        "node_modules","testPad/Staking.testpad.test.ts"
     ],
   "compilerOptions": {
     "skipLibCheck": true

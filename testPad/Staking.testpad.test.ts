@@ -1,14 +1,14 @@
 import { Keyring } from "@polkadot/api";
 import BN from "bn.js";
-import { api, getApi, initApi } from "./utils/api";
-import { MGA_ASSET_ID } from "./utils/Constants";
-import { waitNewBlock } from "./utils/eventListeners";
-import { testLog } from "./utils/Logger";
-import { signAndWaitTx, signSendAndWaitToFinishTx } from "./utils/txHandler";
-import { User, AssetWallet } from "./utils/User";
-import { getEnvironmentRequiredVars } from "./utils/utils";
+import { api, getApi, initApi } from "../utils/api";
+import { MGA_ASSET_ID } from "../utils/Constants";
+import { waitNewBlock } from "../utils/eventListeners";
+import { testLog } from "../utils/Logger";
+import { signAndWaitTx, signSendAndWaitToFinishTx } from "../utils/txHandler";
+import { User, AssetWallet } from "../utils/User";
+import { getEnvironmentRequiredVars } from "../utils/utils";
 import fs from "fs";
-import { Assets } from "./utils/Assets";
+import { Assets } from "../utils/Assets";
 import { hexToBn } from "@polkadot/util";
 
 require("dotenv").config();
@@ -19,6 +19,17 @@ const { sudo: sudoUserName } = getEnvironmentRequiredVars();
 jest.setTimeout(1500000);
 process.env.NODE_ENV = "test";
 let testUser1, sudo, keyring;
+
+//*******HOW TO USE******** */
+//install JEST run it extension for vs code.
+//export env. variables.
+//run xyk-pallet: Create new users with bonded amounts.
+// this ^^ will create json files with User_address as name.
+// You can import those files into polkadotJS.
+// If you want to use any action, write in the const address the user address to trigger the action.
+// this will load the .json and perform the extrinsic action.
+// have fun!
+//*******END:HOW TO USE******** */
 
 describe("staking - testpad", () => {
   beforeAll(async () => {
@@ -31,10 +42,11 @@ describe("staking - testpad", () => {
   //const address = "5Dy7VqFgArCo6PVFAVgSjEHace12vABr1doNM8uWbENDwUzC"; // <--candidate1
   //const address = "5CUuPs8noEQHo9rk7tbd4BxBYcUkJmNpQ8rDyV3c6uXYjrnK"; // <--candidate2
   //const address = "5GGbPY2kmf2CQCTVKL8FkGDst6JQWF7bfk8FCbQj2HkuHosK"; // <--vote to candidate1
-  //const address = "5EWkd5fKCn36mzuqDcLfzPwHu7ckgx4Zs9o5DLE7QdSDrEuS"; // SUDO!
-  const address = "5HQ9Mm9L1HG53htEGDMsnhkkL7hEfF9vLstEQPtMLX5Gupqx"; // SUDO!
+  //const address = "5CPFKKg6cUH2XRzzg3Zb4UYVY1cTUzrxUFiqzbF94voStUZx"; // SUDO!
+  const address = "5DLso4BvYrFx4vudEeq2YpWB4c6HuzxrSaUAg7HKdLpP1joi"; // validator!
+
   test.each(["6666", "6666", "6666", "6666"])(
-    "xyk-pallet: Create new validator",
+    "xyk-pallet: Create new users with bonded amounts.",
     async (bondAmount) => {
       keyring = new Keyring({ type: "sr25519" });
       sudo = new User(keyring, sudoUserName);
@@ -186,7 +198,7 @@ describe("staking - testpad", () => {
 
     await signSendAndWaitToFinishTx(
       api?.tx.staking.nominate([
-        "5GrwvaEF5zXb26Fz9rcQpDWS57CtERHpNehXCPcNoHGKutQY",
+        "5CPFKKg6cUH2XRzzg3Zb4UYVY1cTUzrxUFiqzbF94voStUZx",
       ]),
       user.keyRingPair
     ).then();
@@ -285,7 +297,7 @@ describe("staking - testpad", () => {
     keyring.pairs[0].decodePkcs8("mangata123");
 
     await signSendAndWaitToFinishTx(
-      api?.tx.staking.rebond(new BN("2000")),
+      api?.tx.staking.rebond(new BN("80")),
       user.keyRingPair
     );
     await waitNewBlock();
@@ -338,7 +350,7 @@ describe("staking - testpad", () => {
     keyring.pairs[0].decodePkcs8("mangata123");
 
     await signSendAndWaitToFinishTx(
-      api?.tx.staking.unbond(new BN(2000)),
+      api?.tx.staking.unbond(new BN(1111)),
       user.keyRingPair
     ).then();
     await waitNewBlock();
