@@ -1,0 +1,223 @@
+{
+  "uid" : "4b4757e66a1912dae1a509f688f20b0f",
+  "children" : [ {
+    "name" : "Product defects",
+    "children" : [ {
+      "name" : "Error: expect(received).toBeTruthy()\n                \n                Received: false",
+      "children" : [ {
+        "name" : "As a User I can Swap tokens - MGA - mETH",
+        "uid" : "a149383fe52ab387",
+        "parentUid" : "ffcd8928d6543ed53c85f4784defae24",
+        "status" : "failed",
+        "time" : {
+          "start" : 1635643822011,
+          "stop" : 1635644175553,
+          "duration" : 353542
+        },
+        "flaky" : true,
+        "newFailed" : false,
+        "parameters" : [ ]
+      } ],
+      "uid" : "ffcd8928d6543ed53c85f4784defae24"
+    }, {
+      "name" : "Error: 1014: Priority is too low: (4070731777988 vs 4070731777988): The transaction has too low priority to replace another transaction already in the pool.",
+      "children" : [ {
+        "name" : "As a User I can mint some tokens MGA - mETH",
+        "uid" : "48355e1a6cd84c2",
+        "parentUid" : "b73060ad45e52a2bba124a50d6cb6768",
+        "status" : "failed",
+        "time" : {
+          "start" : 1635644175553,
+          "stop" : 1635644277348,
+          "duration" : 101795
+        },
+        "flaky" : true,
+        "newFailed" : false,
+        "parameters" : [ ]
+      } ],
+      "uid" : "b73060ad45e52a2bba124a50d6cb6768"
+    }, {
+      "name" : "NoSuchSessionError: invalid session id",
+      "children" : [ {
+        "name" : "As a User I can burn all liquidity MGA - mETH",
+        "uid" : "4074a1360df50467",
+        "parentUid" : "7993ebbf2bd5e8ea23275bab0604158e",
+        "status" : "failed",
+        "time" : {
+          "start" : 1635644277352,
+          "stop" : 1635644281515,
+          "duration" : 4163
+        },
+        "flaky" : true,
+        "newFailed" : false,
+        "parameters" : [ ]
+      }, {
+        "name" : "As a User I can mint in more than one pool [ MGA - mETH ] [ MGA - newTokn ] and get invested values",
+        "uid" : "833b581b5be90c74",
+        "parentUid" : "7993ebbf2bd5e8ea23275bab0604158e",
+        "status" : "failed",
+        "time" : {
+          "start" : 1635644281515,
+          "stop" : 1635644281541,
+          "duration" : 26
+        },
+        "flaky" : true,
+        "newFailed" : false,
+        "parameters" : [ ]
+      } ],
+      "uid" : "7993ebbf2bd5e8ea23275bab0604158e"
+    }, {
+      "name" : "TimeoutError: Waiting for element to be located By(xpath, //*[@data-testid='depositModal-step0-assetInput']//button)\n                Wait timed out after 22820ms",
+      "children" : [ {
+        "name" : "As a User I can deposit ETH from Meta extension",
+        "uid" : "e5a180b22fafda34",
+        "parentUid" : "92528e9fefb3b9300a58e315c7731f20",
+        "status" : "failed",
+        "time" : {
+          "start" : 1635644284894,
+          "stop" : 1635644500518,
+          "duration" : 215624
+        },
+        "flaky" : true,
+        "newFailed" : false,
+        "parameters" : [ ]
+      } ],
+      "uid" : "92528e9fefb3b9300a58e315c7731f20"
+    }, {
+      "name" : "TimeoutError: Waiting for element to be located By(xpath, //input[@placeholder='Paste Secret Recovery Phrase from clipboard'])\n                Wait timed out after 20003ms",
+      "children" : [ {
+        "name" : "As a User I can Withdraw ETH from Meta extension",
+        "uid" : "a840ab5dcb838bb3",
+        "parentUid" : "bd01009d55aa9c49f5a00646f5072bb8",
+        "status" : "failed",
+        "time" : {
+          "start" : 1635644500524,
+          "stop" : 1635644543034,
+          "duration" : 42510
+        },
+        "flaky" : false,
+        "newFailed" : false,
+        "parameters" : [ ]
+      } ],
+      "uid" : "bd01009d55aa9c49f5a00646f5072bb8"
+    }, {
+      "name" : "Error: Invalid character",
+      "children" : [ {
+        "name" : "As a User I get the right values for Pool removal P[2499999999999999999, 5000000000000000000] - I-> 2 -Expected - 0.050 , 0.100",
+        "uid" : "721dec5437d4b627",
+        "parentUid" : "a6f4f98e4e22b4119fae9cf1ed3cd3a1",
+        "status" : "failed",
+        "time" : {
+          "start" : 1635644677777,
+          "stop" : 1635644699951,
+          "duration" : 22174
+        },
+        "flaky" : false,
+        "newFailed" : false,
+        "parameters" : [ ]
+      }, {
+        "name" : "As a User I get the right values for Pool removal P[2500000000000000000, 5000000000000000000] - I-> 1 -Expected - 0.025 , 0.05",
+        "uid" : "428ec4498fc1ce68",
+        "parentUid" : "a6f4f98e4e22b4119fae9cf1ed3cd3a1",
+        "status" : "failed",
+        "time" : {
+          "start" : 1635644699951,
+          "stop" : 1635644724574,
+          "duration" : 24623
+        },
+        "flaky" : true,
+        "newFailed" : false,
+        "parameters" : [ ]
+      }, {
+        "name" : "As a User I get the right values for Pool investment P[5000000000000000000, 100] - I-> 100000000000 -Expected - 0.000002",
+        "uid" : "13251f3512164f61",
+        "parentUid" : "a6f4f98e4e22b4119fae9cf1ed3cd3a1",
+        "status" : "failed",
+        "time" : {
+          "start" : 1635644881493,
+          "stop" : 1635644926926,
+          "duration" : 45433
+        },
+        "flaky" : true,
+        "newFailed" : true,
+        "parameters" : [ ]
+      }, {
+        "name" : "As a User I get the right values for Pool investment P[5000000000000000000, 5000000000000000000] - I-> 0.123 -Expected - 0.123",
+        "uid" : "584ca6984fdb3e1",
+        "parentUid" : "a6f4f98e4e22b4119fae9cf1ed3cd3a1",
+        "status" : "failed",
+        "time" : {
+          "start" : 1635644926926,
+          "stop" : 1635644960909,
+          "duration" : 33983
+        },
+        "flaky" : true,
+        "newFailed" : true,
+        "parameters" : [ ]
+      }, {
+        "name" : "As a User I get the right values for Pool investment P[2500000000000000000, 5000000000000000000] - I-> 0.100 -Expected - 0.200",
+        "uid" : "a655431feae9353c",
+        "parentUid" : "a6f4f98e4e22b4119fae9cf1ed3cd3a1",
+        "status" : "failed",
+        "time" : {
+          "start" : 1635644960909,
+          "stop" : 1635644999882,
+          "duration" : 38973
+        },
+        "flaky" : true,
+        "newFailed" : true,
+        "parameters" : [ ]
+      }, {
+        "name" : "As a User I can create a pool",
+        "uid" : "d6966850f2eb93db",
+        "parentUid" : "a6f4f98e4e22b4119fae9cf1ed3cd3a1",
+        "status" : "failed",
+        "time" : {
+          "start" : 1635645145423,
+          "stop" : 1635645187643,
+          "duration" : 42220
+        },
+        "flaky" : true,
+        "newFailed" : true,
+        "parameters" : [ ]
+      } ],
+      "uid" : "a6f4f98e4e22b4119fae9cf1ed3cd3a1"
+    }, {
+      "name" : "TimeoutError: Waiting for element to be located By(xpath, //*[@data-testid='wallet-asset-mDOT'])\n                Wait timed out after 304398ms",
+      "children" : [ {
+        "name" : "As a User I can get test tokens from the faucet",
+        "uid" : "e71f71fffd5ea8c3",
+        "parentUid" : "f428813807483778e1a5a1571290b410",
+        "status" : "failed",
+        "time" : {
+          "start" : 1635645191855,
+          "stop" : 1635645690322,
+          "duration" : 498467
+        },
+        "flaky" : false,
+        "newFailed" : false,
+        "parameters" : [ ]
+      } ],
+      "uid" : "f428813807483778e1a5a1571290b410"
+    }, {
+      "name" : "TimeoutError: Waiting for element to be located By(xpath, //button[text()='Connect'])\n                Wait timed out after 24678ms",
+      "children" : [ {
+        "name" : "As a User I get feedback when extensions are installed and correctly setup",
+        "uid" : "d93561e422182436",
+        "parentUid" : "8432545925a595f0b4a117aa86657789",
+        "status" : "failed",
+        "time" : {
+          "start" : 1635645706827,
+          "stop" : 1635645809163,
+          "duration" : 102336
+        },
+        "flaky" : true,
+        "newFailed" : true,
+        "parameters" : [ ]
+      } ],
+      "uid" : "8432545925a595f0b4a117aa86657789"
+    } ],
+    "uid" : "8fb3a91ba5aaf9de24cc8a92edc82b5d"
+  } ],
+  "name" : "categories"
+}
