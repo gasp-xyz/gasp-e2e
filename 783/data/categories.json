@@ -1,0 +1,77 @@
+{
+  "uid" : "4b4757e66a1912dae1a509f688f20b0f",
+  "children" : [ {
+    "name" : "Product defects",
+    "children" : [ {
+      "name" : "TimeoutError: Waiting for element to be located By(xpath, //button[text()='Connect'])\n                Wait timed out after 20007ms",
+      "children" : [ {
+        "name" : "As a User I can deposit ETH from Meta extension",
+        "uid" : "4ae9aba7c5e33cb4",
+        "parentUid" : "24e13c3a59403b0e51557acbfa8d9ccd",
+        "status" : "failed",
+        "time" : {
+          "start" : 1635687287617,
+          "stop" : 1635687422766,
+          "duration" : 135149
+        },
+        "flaky" : true,
+        "newFailed" : true,
+        "parameters" : [ ]
+      } ],
+      "uid" : "24e13c3a59403b0e51557acbfa8d9ccd"
+    }, {
+      "name" : "TimeoutError: Waiting for element to be located By(xpath, //input[@placeholder='Paste Secret Recovery Phrase from clipboard'])\n                Wait timed out after 20003ms",
+      "children" : [ {
+        "name" : "As a User I can Withdraw ETH from Meta extension",
+        "uid" : "caee8c2579d90d5c",
+        "parentUid" : "bd01009d55aa9c49f5a00646f5072bb8",
+        "status" : "failed",
+        "time" : {
+          "start" : 1635687422772,
+          "stop" : 1635687464129,
+          "duration" : 41357
+        },
+        "flaky" : false,
+        "newFailed" : false,
+        "parameters" : [ ]
+      } ],
+      "uid" : "bd01009d55aa9c49f5a00646f5072bb8"
+    }, {
+      "name" : "Error: expect(received).toBe(expected) // Object.is equality\n                \n                Expected: 0.049\n                Received: 0.05",
+      "children" : [ {
+        "name" : "As a User I get the right values for Pool removal P[2499999999999999999, 5000000000000000000] - I-> 2 -Expected - 0.050 , 0.100",
+        "uid" : "2f58f9320baf5308",
+        "parentUid" : "ba91973f1535807af506781cd4aac9ca",
+        "status" : "failed",
+        "time" : {
+          "start" : 1635687572525,
+          "stop" : 1635687676782,
+          "duration" : 104257
+        },
+        "flaky" : false,
+        "newFailed" : false,
+        "parameters" : [ ]
+      } ],
+      "uid" : "ba91973f1535807af506781cd4aac9ca"
+    }, {
+      "name" : "TimeoutError: Waiting for element to be located By(xpath, //*[@data-testid='wallet-asset-mUSDC'])\n                Wait timed out after 300010ms",
+      "children" : [ {
+        "name" : "As a User I can get test tokens from the faucet",
+        "uid" : "8fa2e41261c839ff",
+        "parentUid" : "47be309ee26d5c502ef6f2ffb5e46cc4",
+        "status" : "failed",
+        "time" : {
+          "start" : 1635688539257,
+          "stop" : 1635688993483,
+          "duration" : 454226
+        },
+        "flaky" : false,
+        "newFailed" : false,
+        "parameters" : [ ]
+      } ],
+      "uid" : "47be309ee26d5c502ef6f2ffb5e46cc4"
+    } ],
+    "uid" : "8fb3a91ba5aaf9de24cc8a92edc82b5d"
+  } ],
+  "name" : "categories"
+}
