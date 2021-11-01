@@ -2,10 +2,10 @@ import { By, WebDriver } from "selenium-webdriver";
 import {
   buildDataTestIdXpath,
   clickElement,
+  getAttribute,
   waitForElement,
   writeText,
 } from "../utils/Helper";
-import { Mangata } from "./Mangata";
 
 //SELECTORS
 const TAB_POOL_TEST_ID = "trading-poolTab";
@@ -26,6 +26,11 @@ export class Pool {
     buildDataTestIdXpath(DIV_POOL_TOKEN1) + "//input";
   private inputToken2Locator =
     buildDataTestIdXpath(DIV_POOL_TOKEN2) + "//input";
+
+  private btnToken1MaxLocator =
+    buildDataTestIdXpath(DIV_POOL_TOKEN1) + "//button[contains(text(),'Max')]";
+  private btnToken2MaxLocator =
+    buildDataTestIdXpath(DIV_POOL_TOKEN2) + "//button[contains(text(),'Max')]";
 
   async togglePool() {
     const selector = buildDataTestIdXpath(TAB_POOL_TEST_ID);
@@ -71,9 +76,15 @@ export class Pool {
     await clickElement(this.driver, assetLocator);
   }
   async getToken2Text(): Promise<string> {
-    return await new Mangata(this.driver).getAmount(2);
+    return await getAttribute(this.driver, this.inputToken2Locator);
   }
   async getToken1Text(): Promise<string> {
-    return await new Mangata(this.driver).getAmount(1);
+    return await getAttribute(this.driver, this.inputToken1Locator);
+  }
+  async clickToToken2MaxBtn() {
+    await clickElement(this.driver, this.btnToken2MaxLocator);
+  }
+  async clickToToken1MaxBtn() {
+    await clickElement(this.driver, this.btnToken1MaxLocator);
   }
 }

@@ -142,6 +142,9 @@ jobs:
           path: reports/jest-*.xml    # Path to test results
           reporter: jest-junit        # Format of test results
 
+      - name: Sleep for 5 seconds
+        run: sleep 10s #close buffers of videos.
+
       - name: Copy video files to reports folder
         if: success() || failure()
         run: "cp ~/.aerokube/selenoid/* -r  reports/artifacts/"
@@ -184,7 +187,7 @@ jobs:
           #gh_pages: gh-pages
           #allure_report: allure-report
           allure_history: allure-history
-          keep_reports: 20
+          keep_reports: 100
 
       - name: Deploy report to Github Pages
         if: always()

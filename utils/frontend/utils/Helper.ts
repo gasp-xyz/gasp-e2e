@@ -181,5 +181,5 @@ export async function selectAssetFromModalList(
 }
 
 export function uiStringToBN(stringValue: string) {
-  return new BN(Math.pow(10, 18) * parseFloat(stringValue));
+  return new BN((Math.pow(10, 18) * parseFloat(stringValue)).toString());
 }

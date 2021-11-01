@@ -6,7 +6,6 @@ import { Keyring } from "@polkadot/api";
 import BN from "bn.js";
 import { WebDriver } from "selenium-webdriver";
 import { getApi, initApi } from "../../utils/api";
-import { waitNewBlock } from "../../utils/eventListeners";
 import { Mangata } from "../../utils/frontend/pages/Mangata";
 import { Polkadot } from "../../utils/frontend/pages/Polkadot";
 import {
@@ -24,16 +23,10 @@ import {
 } from "../../utils/frontend/utils/Helper";
 import { AssetWallet, User } from "../../utils/User";
 import { getEnvironmentRequiredVars } from "../../utils/utils";
-import {
-  FIVE_MIN,
-  mETH_ASSET_NAME,
-  MGA_ASSET_NAME,
-} from "../../utils/Constants";
-import { BrunLiquidityModal } from "../../utils/frontend/pages/BrunLiquidityModal";
+import { FIVE_MIN, MGA_ASSET_NAME } from "../../utils/Constants";
 import { Assets } from "../../utils/Assets";
 
 const MGA_ASSET_ID = new BN(0);
-const ETH_ASSET_ID = new BN(1);
 
 jest.setTimeout(FIVE_MIN);
 jest.spyOn(console, "log").mockImplementation(jest.fn());
@@ -44,6 +37,7 @@ describe("UI tests - A user can swap and mint tokens", () => {
   let testUser1: User;
   let sudo: User;
   let newToken: BN;
+  let assetName: string;
   const { sudo: sudoUserName } = getEnvironmentRequiredVars();
   const visibleValueNumber = Math.pow(10, 19).toString();
 
@@ -69,6 +63,10 @@ describe("UI tests - A user can swap and mint tokens", () => {
         sudo
       )
     )[0];
+    assetName = Assets.getAssetName(newToken.toString());
+  });
+
+  it("As a User I can Swap All MGA tokens -> newToken", async () => {
     const amountToMint = new BN(visibleValueNumber).div(new BN(2000));
     await testUser1.createPoolToAsset(
       amountToMint,
@@ -76,11 +74,8 @@ describe("UI tests - A user can swap and mint tokens", () => {
       newToken,
       MGA_ASSET_ID
     );
-  });
 
-  it("As a User I can Swap All MGA tokens - newToken and vice versa", async () => {
     await testUser1.refreshAmounts(AssetWallet.BEFORE);
-    const assetName = Assets.getAssetName(newToken.toString());
     const mga = new Mangata(driver);
     await mga.navigate();
     const swapView = new Swap(driver);
@@ -91,10 +86,7 @@ describe("UI tests - A user can swap and mint tokens", () => {
     const calculatedGet = await swapView.fetchGetAssetAmount();
     await swapView.doSwap();
     await Polkadot.signTransaction(driver);
-    //wait four blocks to complete the action.
-    for (let index = 0; index < 4; index++) {
-      await waitNewBlock();
-    }
+
     await new NotificationModal(driver)
       .waitForModal(ModalType.Confirm)
       .then(async () => await new NotificationModal(driver).clickInDone());
@@ -110,105 +102,51 @@ describe("UI tests - A user can swap and mint tokens", () => {
     expect(walletIncrement).bnEqual(new BN(exp18StringToBN.toString()));
   });
 
-  it("As a User I can mint some tokens MGA - mETH", async () => {
+  it("As a User I can mint All tokens newToken - newToken2", async () => {
+    const newToken2 = (
+      await Assets.setupUserWithCurrencies(
+        testUser1,
+        [new BN(visibleValueNumber)],
+        sudo
+      )
+    )[0];
+    const assetName2 = Assets.getAssetName(newToken2.toString());
+
+    const amountToMint = new BN(visibleValueNumber).div(new BN(2000));
+    await testUser1.createPoolToAsset(
+      amountToMint,
+      amountToMint.sub(new BN(123456)),
+      newToken,
+      newToken2
+    );
+
     testUser1.refreshAmounts(AssetWallet.BEFORE);
     const mga = new Mangata(driver);
     await mga.navigate();
     const poolView = new Pool(driver);
     await poolView.togglePool();
-    await poolView.selectToken1Asset(mETH_ASSET_NAME);
-    await poolView.selectToken2Asset(MGA_ASSET_NAME);
-    await poolView.addToken1AssetAmount("0.001");
+    await poolView.selectToken1Asset(assetName);
+    await poolView.selectToken2Asset(assetName2);
+    await poolView.clickToToken1MaxBtn();
+    const calculatedValue = await poolView.getToken2Text();
     await poolView.provideToPool();
 
     await Polkadot.signTransaction(driver);
     //wait four blocks to complete the action.
-    for (let index = 0; index < 4; index++) {
-      await waitNewBlock();
-    }
-
+    await new NotificationModal(driver)
+      .waitForModal(ModalType.Confirm)
+      .then(async () => await new NotificationModal(driver).clickInDone());
     await testUser1.refreshAmounts(AssetWallet.AFTER);
-    const swapped = testUser1
-      .getAsset(ETH_ASSET_ID)
-      ?.amountBefore.free!.gt(
-        testUser1.getAsset(ETH_ASSET_ID)?.amountAfter.free!
-      );
     const poolInvested = await new Sidebar(driver).isLiquidityPoolVisible(
-      MGA_ASSET_NAME,
-      mETH_ASSET_NAME
+      assetName,
+      assetName2
     );
     expect(poolInvested).toBeTruthy();
-    expect(swapped).toBeTruthy();
-  });
-
-  it("As a User I can burn all liquidity MGA - mETH", async () => {
-    await testUser1.refreshAmounts(AssetWallet.BEFORE);
-    let amountToMint = new BN(visibleValueNumber).div(new BN(2000));
-    amountToMint = amountToMint.add(new BN("123456789123456"));
-    await testUser1.mintLiquidity(ETH_ASSET_ID, MGA_ASSET_ID, amountToMint);
-    const mga = new Mangata(driver);
-    await mga.navigate();
-    const sidebar = new Sidebar(driver);
-    await sidebar.clickOnLiquidityPool(MGA_ASSET_NAME, mETH_ASSET_NAME);
-    await sidebar.clickOnRemoveLiquidity();
-    const modal = new BrunLiquidityModal(driver);
-    await modal.setAmount("100");
-    await modal.confirmAndSign();
-    for (let index = 0; index < 4; index++) {
-      await waitNewBlock();
-    }
-    const isPoolVisible = await sidebar.isLiquidityPoolVisible(
-      MGA_ASSET_NAME,
-      mETH_ASSET_NAME
-    );
-    expect(isPoolVisible).toBeFalsy();
-
-    await testUser1.refreshAmounts(AssetWallet.AFTER);
+    expect(testUser1.getAsset(newToken)?.amountAfter.free!).bnEqual(new BN(0));
+    const textAsBn = uiStringToBN(calculatedValue);
     expect(
-      testUser1.getAsset(ETH_ASSET_ID)?.amountBefore.free!.sub(new BN(1))
-    ).bnEqual(testUser1.getAsset(ETH_ASSET_ID)?.amountAfter.free!);
-  });
-
-  it("As a User I can mint in more than one pool [ MGA - mETH ] [ MGA - newTokn ] and get invested values", async () => {
-    await testUser1.refreshAmounts(AssetWallet.BEFORE);
-    const newToken = await Assets.issueAssetToUser(
-      testUser1,
-      new BN(visibleValueNumber),
-      sudo
-    );
-    const amountToMint = new BN(visibleValueNumber).div(new BN(2000));
-    await testUser1.mintLiquidity(ETH_ASSET_ID, MGA_ASSET_ID, amountToMint);
-    await testUser1.createPoolToAsset(
-      amountToMint,
-      amountToMint,
-      newToken,
-      MGA_ASSET_ID
-    );
-
-    const mga = new Mangata(driver);
-    await mga.navigate();
-    const sidebar = new Sidebar(driver);
-    let isPoolVisible = await sidebar.isLiquidityPoolVisible(
-      MGA_ASSET_NAME,
-      mETH_ASSET_NAME
-    );
-    expect(isPoolVisible).toBeTruthy();
-    const assetName = Assets.getAssetName(newToken.toString());
-    isPoolVisible = await sidebar.isLiquidityPoolVisible(
-      assetName,
-      MGA_ASSET_NAME
-    );
-    expect(isPoolVisible).toBeTruthy();
-
-    await sidebar.clickOnLiquidityPool(assetName, MGA_ASSET_NAME);
-    const investedNewToken = await sidebar.getAssetValueInvested(assetName);
-    const investedMGA = await sidebar.getAssetValueInvested(MGA_ASSET_NAME);
-    //assetTokenhas18 decimals,
-    const displayedAmount =
-      parseFloat(amountToMint.toString()) / Math.pow(10, 18);
-
-    expect(investedNewToken.includes(displayedAmount.toString())).toBeTruthy();
-    expect(investedMGA.includes(displayedAmount.toString())).toBeTruthy();
+      testUser1.getAsset(newToken2)?.amountBefore.free.sub(textAsBn)
+    ).bnEqual(testUser1.getAsset(newToken2)?.amountAfter.free!);
   });
 
   afterEach(async () => {
