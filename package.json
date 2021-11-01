@@ -5,7 +5,6 @@
   "main": "index.ts",
   "author": "Gleb Urvanov",
   "license": "GPLv3",
-  "type": "module",
   "private": true,
   "dependencies": {
     "@polkadot/api": "^2.10.1",
@@ -24,6 +23,7 @@
     "ganache-cli": "^6.12.2",
     "loadsh": "^0.0.4",
     "mangata-sdk": "0.5.9",
+    "oclif": "^1.18.1",
     "package.json": "^2.0.1",
     "prettier": "^2.3.0",
     "selenium-webdriver": "3.6.0",
@@ -34,9 +34,16 @@
     "web3": "^1.5.3",
     "winston": "^3.3.3",
     "xoshiro": "^2.0.3",
-    "yarn": "^1.22.10"
+    "yarn": "^1.22.10",
+    "@oclif/command": "^1",
+    "@oclif/config": "^1",
+    "@oclif/plugin-help": "^3",
+    "tslib": "^1"
   },
   "scripts": {
+    "postpack": "rm -f oclif.manifest.json",
+    "posttest": "eslint . --ext .ts --config .eslintrc",
+    "prepack": "rm -rf lib && tsc -b && oclif-dev manifest && oclif-dev readme",
     "postinstall": "husky install",
     "start": "ts-node --project tsconfig.json index.ts",
     "start-prod": "node ./build/index.js",
@@ -103,6 +110,22 @@
           "openReport": false
         }
       ]
+    ]
+  },
+  "bin": {
+    "cheat-code": "./cheat-code/bin/run"
+  },
+  "files": [
+    "/bin",
+    "/lib",
+    "/npm-shrinkwrap.json",
+    "/oclif.manifest.json"
+  ],
+  "oclif": {
+    "commands": "./cheat-code/lib/commands",
+    "bin": "cheat-code",
+    "plugins": [
+      "@oclif/plugin-help"
     ]
   }
 }
