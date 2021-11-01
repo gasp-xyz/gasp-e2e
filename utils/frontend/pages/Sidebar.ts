@@ -28,7 +28,7 @@ const SPINNER_LOADING = `//*[@class = 'Sidebar__loading']`;
 const BTN_POOL_OVERVIEW = `poolsOverview-item-tkn1-tkn2`;
 const BTN_REMOVE_LIQUIDITY = `poolDetail-removeBtn`;
 const LBL_TOKEN_NAME = "wallet-asset-tokenName";
-const DIV_ASSETS_ITEM_VALUE = `//div[@class = 'AssetBox' and //*[text()='tokenName']]/span[@class='value']`;
+const DIV_ASSETS_ITEM_VALUE = `//div[@class = 'AssetBox' and //*[text()='tokenName']]/*[@class='value']`;
 
 export class Sidebar {
   driver: WebDriver;
