@@ -15,6 +15,7 @@ import {
   USDC_ASSET_NAME,
 } from "../../utils/Constants";
 import { Mangata } from "../../utils/frontend/pages/Mangata";
+import { Sidebar } from "../../utils/frontend/pages/Sidebar";
 import { DriverBuilder } from "../../utils/frontend/utils/Driver";
 import {
   setupAllExtensions,
@@ -87,11 +88,11 @@ describe("UI tests - Get Tokens from Faucet", () => {
     await DriverBuilder.destroy();
   });
 });
-async function validateAllAssetsValues(mga: Mangata, value = "10.000") {
+async function validateAllAssetsValues(mga: Mangata, value = "10") {
   const promises: Promise<string>[] = [];
   [MGA_ASSET_NAME, DOT_ASSET_NAME, BTC_ASSET_NAME, USDC_ASSET_NAME].forEach(
     async function (value) {
-      promises.push(mga.getAssetValue(value));
+      promises.push(new Sidebar(mga.driver).getTokenAmount(value));
     }
   );
   const result = await Promise.all(promises);
