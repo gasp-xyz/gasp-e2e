@@ -22,10 +22,7 @@ import {
   addExtraLogs,
 } from "../../utils/frontend/utils/Helper";
 import { AssetWallet, User } from "../../utils/User";
-import {
-  createPoolIfMissing,
-  getEnvironmentRequiredVars,
-} from "../../utils/utils";
+import { getEnvironmentRequiredVars } from "../../utils/utils";
 import {
   FIVE_MIN,
   mETH_ASSET_NAME,
