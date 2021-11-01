@@ -1,0 +1,84 @@
+{
+  "uid" : "f4dc4dc550753f9c",
+  "name" : "Modal is visible when burning liquidity",
+  "fullName" : "UI tests - A user can see the new Modal.Modal is visible when burning liquidity",
+  "historyId" : "d905b7c57d5643ad680989ac739cf6b",
+  "time" : {
+    "start" : 1635769313045,
+    "stop" : 1635769452496,
+    "duration" : 139451
+  },
+  "description" : "",
+  "descriptionHtml" : "",
+  "status" : "passed",
+  "flaky" : false,
+  "newFailed" : false,
+  "beforeStages" : [ ],
+  "afterStages" : [ ],
+  "labels" : [ {
+    "name" : "suite",
+    "value" : "UI tests - A user can see the new Modal"
+  }, {
+    "name" : "testClass",
+    "value" : "UI tests - A user can see the new Modal"
+  }, {
+    "name" : "testMethod",
+    "value" : "Modal is visible when burning liquidity"
+  }, {
+    "name" : "package",
+    "value" : "UI tests - A user can see the new Modal"
+  }, {
+    "name" : "resultFormat",
+    "value" : "allure1"
+  } ],
+  "parameters" : [ ],
+  "links" : [ ],
+  "hidden" : false,
+  "retry" : false,
+  "extra" : {
+    "severity" : "normal",
+    "retries" : [ ],
+    "categories" : [ ],
+    "history" : {
+      "statistic" : {
+        "failed" : 0,
+        "broken" : 0,
+        "skipped" : 0,
+        "passed" : 4,
+        "unknown" : 0,
+        "total" : 4
+      },
+      "items" : [ {
+        "uid" : "6a89bd99c33ce86e",
+        "reportUrl" : "https://mangata-finance.github.io/mangata-e2e/795//#testresult/6a89bd99c33ce86e",
+        "status" : "passed",
+        "time" : {
+          "start" : 1635765381856,
+          "stop" : 1635765516427,
+          "duration" : 134571
+        }
+      }, {
+        "uid" : "8d803d492ad44452",
+        "reportUrl" : "https://mangata-finance.github.io/mangata-e2e/793//#testresult/8d803d492ad44452",
+        "status" : "passed",
+        "time" : {
+          "start" : 1635761644521,
+          "stop" : 1635761778407,
+          "duration" : 133886
+        }
+      }, {
+        "uid" : "de26db01d3038f81",
+        "reportUrl" : "https://mangata-finance.github.io/mangata-e2e/792//#testresult/de26db01d3038f81",
+        "status" : "passed",
+        "time" : {
+          "start" : 1635755637964,
+          "stop" : 1635755832370,
+          "duration" : 194406
+        }
+      } ]
+    },
+    "tags" : [ ]
+  },
+  "source" : "f4dc4dc550753f9c.json",
+  "parameterValues" : [ ]
+}
