@@ -1,0 +1,26 @@
+{
+  "uid" : "4b4757e66a1912dae1a509f688f20b0f",
+  "children" : [ {
+    "name" : "Product defects",
+    "children" : [ {
+      "name" : "TimeoutError: Waiting for element to be located By(xpath, //*[@data-testid='wallet-asset-mUSDC'])\n                Wait timed out after 300034ms",
+      "children" : [ {
+        "name" : "As a User I can get test tokens from the faucet",
+        "uid" : "99f4e863e8b17ca9",
+        "parentUid" : "9d978bf64a59ff3ca466e4f32df03d4e",
+        "status" : "failed",
+        "time" : {
+          "start" : 1635762605555,
+          "stop" : 1635763021158,
+          "duration" : 415603
+        },
+        "flaky" : false,
+        "newFailed" : false,
+        "parameters" : [ ]
+      } ],
+      "uid" : "9d978bf64a59ff3ca466e4f32df03d4e"
+    } ],
+    "uid" : "8fb3a91ba5aaf9de24cc8a92edc82b5d"
+  } ],
+  "name" : "categories"
+}
