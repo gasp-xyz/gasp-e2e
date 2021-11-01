@@ -5,6 +5,7 @@ import { MetaMask } from "../pages/MetaMask";
 import { Polkadot } from "../pages/Polkadot";
 import fs from "fs";
 import { testLog } from "../../Logger";
+import BN from "bn.js";
 
 const { By, until } = require("selenium-webdriver");
 require("chromedriver");
@@ -177,4 +178,8 @@ export async function selectAssetFromModalList(
   const assetTestId = `assetSelectModal-asset-${assetName}`;
   const assetLocator = buildDataTestIdXpath(assetTestId);
   await clickElement(driver, assetLocator);
+}
+
+export function uiStringToBN(stringValue: string) {
+  return new BN(Math.pow(10, 18) * parseFloat(stringValue));
 }

@@ -20,6 +20,7 @@ import { DriverBuilder } from "../../utils/frontend/utils/Driver";
 import {
   setupAllExtensions,
   addExtraLogs,
+  uiStringToBN,
 } from "../../utils/frontend/utils/Helper";
 import { AssetWallet, User } from "../../utils/User";
 import { getEnvironmentRequiredVars } from "../../utils/utils";
@@ -99,10 +100,14 @@ describe("UI tests - A user can swap and mint tokens", () => {
       .then(async () => await new NotificationModal(driver).clickInDone());
 
     await testUser1.refreshAmounts(AssetWallet.AFTER);
-    expect(testUser1.getAsset(MGA_ASSET_ID)?.amountAfter).bnEqual(new BN(0));
-    expect(testUser1.getAsset(newToken)?.amountAfter).bnEqual(
-      new BN(calculatedGet)
+    expect(testUser1.getAsset(MGA_ASSET_ID)?.amountAfter.free!).bnEqual(
+      new BN(0)
     );
+    const walletIncrement = testUser1
+      .getAsset(newToken)
+      ?.amountAfter.free.sub(testUser1.getAsset(newToken)?.amountBefore.free!);
+    const exp18StringToBN = uiStringToBN(calculatedGet);
+    expect(walletIncrement).bnEqual(new BN(exp18StringToBN.toString()));
   });
 
   it("As a User I can mint some tokens MGA - mETH", async () => {
