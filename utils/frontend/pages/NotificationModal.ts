@@ -4,6 +4,7 @@ import {
   buildDataTestIdXpath,
   clickElement,
   getText,
+  waitForElement,
   waitForElementToDissapear,
 } from "../utils/Helper";
 
@@ -55,6 +56,9 @@ export class NotificationModal {
       this.driver,
       this.getModalXpath(ModalType.Success)
     );
+  }
+  public async waitForModal(modalState: ModalType) {
+    await waitForElement(this.driver, this.getModalXpath(modalState));
   }
   async getModalInfo(modalState: ModalType) {
     const locator = this.getModalTextXpath(modalState);

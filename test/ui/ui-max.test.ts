@@ -45,6 +45,7 @@ describe("UI tests - A user can swap and mint tokens", () => {
   let keyring: Keyring;
   let testUser1: User;
   let sudo: User;
+  let newToken: BN;
   const { sudo: sudoUserName } = getEnvironmentRequiredVars();
   const visibleValueNumber = Math.pow(10, 19).toString();
 
@@ -55,68 +56,58 @@ describe("UI tests - A user can swap and mint tokens", () => {
       await initApi();
     }
     keyring = new Keyring({ type: "sr25519" });
-
     driver = await DriverBuilder.getInstance();
-
     const { mnemonic } = await setupAllExtensions(driver);
 
     testUser1 = new User(keyring);
     testUser1.addFromMnemonic(keyring, mnemonic);
     sudo = new User(keyring, sudoUserName);
-    await sudo.mint(MGA_ASSET_ID, testUser1, new BN(visibleValueNumber));
-    await sudo.mint(
-      ETH_ASSET_ID,
-      testUser1,
-      new BN((parseInt(visibleValueNumber) / 1000).toString())
-    );
-    await createPoolIfMissing(
-      sudo,
-      visibleValueNumber,
-      MGA_ASSET_ID,
-      ETH_ASSET_ID
-    );
     testUser1.addAsset(MGA_ASSET_ID);
-    testUser1.addAsset(ETH_ASSET_ID);
+    await sudo.mint(MGA_ASSET_ID, testUser1, new BN(visibleValueNumber));
+    newToken = (
+      await Assets.setupUserWithCurrencies(
+        testUser1,
+        [new BN(visibleValueNumber)],
+        sudo
+      )
+    )[0];
+    const amountToMint = new BN(visibleValueNumber).div(new BN(2000));
+    await testUser1.createPoolToAsset(
+      amountToMint,
+      amountToMint,
+      newToken,
+      MGA_ASSET_ID
+    );
   });
 
-  it("As a User I can Swap tokens - MGA - mETH", async () => {
-    testUser1.refreshAmounts(AssetWallet.BEFORE);
+  it("As a User I can Swap All MGA tokens - newToken and vice versa", async () => {
+    await testUser1.refreshAmounts(AssetWallet.BEFORE);
+    const assetName = Assets.getAssetName(newToken.toString());
     const mga = new Mangata(driver);
     await mga.navigate();
     const swapView = new Swap(driver);
     await swapView.toggleSwap();
     await swapView.selectPayAsset(MGA_ASSET_NAME);
-    await swapView.selectGetAsset(mETH_ASSET_NAME);
-    await swapView.addPayAssetAmount("0.001");
+    await swapView.selectGetAsset(assetName);
+    await swapView.clickPayMaxBtn();
+    const calculatedGet = await swapView.fetchGetAssetAmount();
     await swapView.doSwap();
-    const modal = new NotificationModal(driver);
-    const isModalWaitingForSignVisible = await modal.isModalVisible(
-      ModalType.Confirm
-    );
-    expect(isModalWaitingForSignVisible).toBeTruthy();
     await Polkadot.signTransaction(driver);
     //wait four blocks to complete the action.
-    const visible: boolean[] = [];
     for (let index = 0; index < 4; index++) {
-      visible.push(await modal.isModalVisible(ModalType.Progress));
       await waitNewBlock();
     }
-    expect(
-      visible.some((visibleInBlock) => visibleInBlock === true)
-    ).toBeTruthy();
-    const isModalSuccessVisible = await modal.isModalVisible(ModalType.Success);
-    expect(isModalSuccessVisible).toBeTruthy();
-    await modal.clickInDone();
+    await new NotificationModal(driver)
+      .waitForModal(ModalType.Confirm)
+      .then(async () => await new NotificationModal(driver).clickInDone());
 
     await testUser1.refreshAmounts(AssetWallet.AFTER);
-    const swapped = testUser1
-      .getAsset(ETH_ASSET_ID)
-      ?.amountBefore.free!.lt(
-        testUser1.getAsset(ETH_ASSET_ID)?.amountAfter.free!
-      );
-
-    expect(swapped).toBeTruthy();
+    expect(testUser1.getAsset(MGA_ASSET_ID)?.amountAfter).bnEqual(new BN(0));
+    expect(testUser1.getAsset(newToken)?.amountAfter).bnEqual(
+      new BN(calculatedGet)
+    );
   });
+
   it("As a User I can mint some tokens MGA - mETH", async () => {
     testUser1.refreshAmounts(AssetWallet.BEFORE);
     const mga = new Mangata(driver);
