@@ -9,5 +9,5 @@ export const MGA_DEFAULT_LIQ_TOKEN = new BN(3);
 export const FIVE_MIN = 300000;
 export const DOT_ASSET_NAME = "mDOT";
 export const BTC_ASSET_NAME = "mBTC";
-export const USDC_ASSET_NAME = "mUSDC";
+export const USDC_ASSET_NAME = "mUSD";
 export const MAX_BALANCE = new BN("340282366920938463463374607431768211455"); //max balance
