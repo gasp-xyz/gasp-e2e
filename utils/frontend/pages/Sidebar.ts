@@ -117,7 +117,7 @@ export class Sidebar {
   }
   async getTokenAmount(tokenName: string) {
     await this.waitForTokenToAppear(tokenName);
-    const tokenValueXpath = `//*[@data-testid='wallet-asset-${tokenName}']//span[@class='value']`;
+    const tokenValueXpath = `//*[@data-testid='wallet-asset-${tokenName}']//*[@class='value']`;
     const value = await (
       await this.driver.findElement(By.xpath(tokenValueXpath))
     ).getText();

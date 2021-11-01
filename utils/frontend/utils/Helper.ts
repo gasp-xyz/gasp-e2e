@@ -150,7 +150,8 @@ export async function doActionInDifferentWindow(
 ) {
   await sleep(4000);
   let handle = await (await driver).getAllWindowHandles();
-  let iterator = handle.entries();
+  let iterator = handle.reverse().entries();
+
   let value = iterator.next().value;
   while (value) {
     await driver.switchTo().window(value[1]);
