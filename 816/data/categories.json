@@ -1,0 +1,184 @@
+{
+  "uid" : "4b4757e66a1912dae1a509f688f20b0f",
+  "children" : [ {
+    "name" : "Product defects",
+    "children" : [ {
+      "name" : "Error: 1010: Invalid Transaction: Transaction is outdated",
+      "children" : [ {
+        "name" : "As a User I can burn all liquidity MGA - mETH",
+        "uid" : "4140fd07ee7dad4a",
+        "parentUid" : "7cf9970ed4a7411b1651ba0607185e0e",
+        "status" : "failed",
+        "time" : {
+          "start" : 1635859098580,
+          "stop" : 1635859188307,
+          "duration" : 89727
+        },
+        "flaky" : true,
+        "newFailed" : false,
+        "parameters" : [ ]
+      } ],
+      "uid" : "7cf9970ed4a7411b1651ba0607185e0e"
+    }, {
+      "name" : "NoSuchWindowError: no such window: target window already closed\n                from unknown error: web view not found\n                  (Session info: chrome=94.0.4606.61)\n                  (Driver info: chromedriver=94.0.4606.61 (418b78f5838ed0b1c69bb4e51ea0252171854915-refs/branch-heads/4606@{#1204}),platform=Linux 5.8.0-1042-azure x86_64)",
+      "children" : [ {
+        "name" : "As a User I can mint in more than one pool [ MGA - mETH ] [ MGA - newTokn ] and get invested values",
+        "uid" : "1c4b1869ca970601",
+        "parentUid" : "96f8337f683e768d9f054ae66905fe34",
+        "status" : "failed",
+        "time" : {
+          "start" : 1635859188308,
+          "stop" : 1635859225608,
+          "duration" : 37300
+        },
+        "flaky" : true,
+        "newFailed" : false,
+        "parameters" : [ ]
+      } ],
+      "uid" : "96f8337f683e768d9f054ae66905fe34"
+    }, {
+      "name" : "Error: Failed: \"TIMEOUT: Waiting for //*[@class = 'Sidebar__loading'] to dissapear\"",
+      "children" : [ {
+        "name" : "As a User I can deposit ETH from Meta extension",
+        "uid" : "b88130a6d9ce8657",
+        "parentUid" : "949fce9c21683c22bcec487901b1b36f",
+        "status" : "failed",
+        "time" : {
+          "start" : 1635859243227,
+          "stop" : 1635859405671,
+          "duration" : 162444
+        },
+        "flaky" : true,
+        "newFailed" : false,
+        "parameters" : [ ]
+      }, {
+        "name" : "As a User I get the right values for Pool removal P[2500000000000000000, 5000000000000000000] - I-> 1 -Expected - 0.025 , 0.05",
+        "uid" : "b4704062196e066a",
+        "parentUid" : "949fce9c21683c22bcec487901b1b36f",
+        "status" : "failed",
+        "time" : {
+          "start" : 1635859664807,
+          "stop" : 1635859774300,
+          "duration" : 109493
+        },
+        "flaky" : true,
+        "newFailed" : false,
+        "parameters" : [ ]
+      }, {
+        "name" : "As a User I get the right values for Pool investment P[2500000000000000000, 5000000000000000000] - I-> 0.100 -Expected - 0.200",
+        "uid" : "8fd748497c53517f",
+        "parentUid" : "949fce9c21683c22bcec487901b1b36f",
+        "status" : "failed",
+        "time" : {
+          "start" : 1635860023345,
+          "stop" : 1635860134475,
+          "duration" : 111130
+        },
+        "flaky" : true,
+        "newFailed" : false,
+        "parameters" : [ ]
+      }, {
+        "name" : "As a User I can create a pool",
+        "uid" : "bead5044159e913b",
+        "parentUid" : "949fce9c21683c22bcec487901b1b36f",
+        "status" : "failed",
+        "time" : {
+          "start" : 1635860323583,
+          "stop" : 1635860344353,
+          "duration" : 20770
+        },
+        "flaky" : true,
+        "newFailed" : false,
+        "parameters" : [ ]
+      } ],
+      "uid" : "949fce9c21683c22bcec487901b1b36f"
+    }, {
+      "name" : "TimeoutError: Waiting for element to be located By(xpath, //input[@placeholder='Paste Secret Recovery Phrase from clipboard'])\n                Wait timed out after 20011ms",
+      "children" : [ {
+        "name" : "As a User I can Withdraw ETH from Meta extension",
+        "uid" : "8733abc0c4f27e17",
+        "parentUid" : "465344fb49032147988aaa081d2e2940",
+        "status" : "failed",
+        "time" : {
+          "start" : 1635859405681,
+          "stop" : 1635859447403,
+          "duration" : 41722
+        },
+        "flaky" : true,
+        "newFailed" : false,
+        "parameters" : [ ]
+      } ],
+      "uid" : "465344fb49032147988aaa081d2e2940"
+    }, {
+      "name" : "Error: expect(received).toBe(expected) // Object.is equality\n                \n                Expected: 0.049\n                Received: 0.05",
+      "children" : [ {
+        "name" : "As a User I get the right values for Pool removal P[2499999999999999999, 5000000000000000000] - I-> 2 -Expected - 0.050 , 0.100",
+        "uid" : "d9839702754a5eb5",
+        "parentUid" : "ba91973f1535807af506781cd4aac9ca",
+        "status" : "failed",
+        "time" : {
+          "start" : 1635859562266,
+          "stop" : 1635859664807,
+          "duration" : 102541
+        },
+        "flaky" : true,
+        "newFailed" : false,
+        "parameters" : [ ]
+      } ],
+      "uid" : "ba91973f1535807af506781cd4aac9ca"
+    }, {
+      "name" : "Error: Failed: \"W[1] timeout in - signAndWaitTx - \\\" + 5HQ9Mm9L1HG53htEGDMsnhkkL7hEfF9vLstEQPtMLX5Gupqx + \\\" - \\\" + 88 + \\\" - \\\" + {\\\"isSigned\\\":true,\\\"method\\\":{\\\"args\\\":[{\\\"args\\\":[\\\"5Fvu7vtMjarTqXzFaQMduxPP7BbeTKoP5wnX2B3r9Vm42oMe\\\",\\\"15.0000 MUnit\\\"],\\\"method\\\":\\\"create\\\",\\\"section\\\":\\\"tokens\\\"}],\\\"method\\\":\\\"sudo\\\",\\\"section\\\":\\\"sudo\\\"},\\\"era\\\":{\\\"MortalEra\\\":{\\\"period\\\":\\\"64\\\",\\\"phase\\\":\\\"10\\\"}},\\\"nonce\\\":\\\"88\\\",\\\"signature\\\":\\\"0xc2d2d86df40915faa41406575f591fb1339e92e9180ada184b4250ac483c6c606383db607528af642043c077e5c461902b013e1ab8681d1fad2649657d452382\\\",\\\"signer\\\":\\\"5HQ9Mm9L1HG53htEGDMsnhkkL7hEfF9vLstEQPtMLX5Gupqx\\\",\\\"tip\\\":\\\"0\\\"}\"",
+      "children" : [ {
+        "name" : "As a User I get the right values for Pool investment P[5000000000000000000, 100] - I-> 100000000000 -Expected - 0.000002",
+        "uid" : "e5ca2aab7eda5891",
+        "parentUid" : "37e0fa51f200f7e926c6e1cfe8e6f1b6",
+        "status" : "failed",
+        "time" : {
+          "start" : 1635859903444,
+          "stop" : 1635859945710,
+          "duration" : 42266
+        },
+        "flaky" : true,
+        "newFailed" : false,
+        "parameters" : [ ]
+      } ],
+      "uid" : "37e0fa51f200f7e926c6e1cfe8e6f1b6"
+    }, {
+      "name" : "Error: Failed: \"W[1] timeout in - signAndWaitTx - \\\" + 5HQ9Mm9L1HG53htEGDMsnhkkL7hEfF9vLstEQPtMLX5Gupqx + \\\" - \\\" + 93 + \\\" - \\\" + {\\\"isSigned\\\":true,\\\"method\\\":{\\\"args\\\":[{\\\"args\\\":[\\\"5Fvu7vtMjarTqXzFaQMduxPP7BbeTKoP5wnX2B3r9Vm42oMe\\\",\\\"15.0000 MUnit\\\"],\\\"method\\\":\\\"create\\\",\\\"section\\\":\\\"tokens\\\"}],\\\"method\\\":\\\"sudo\\\",\\\"section\\\":\\\"sudo\\\"},\\\"era\\\":{\\\"MortalEra\\\":{\\\"period\\\":\\\"64\\\",\\\"phase\\\":\\\"23\\\"}},\\\"nonce\\\":\\\"93\\\",\\\"signature\\\":\\\"0x8cf4a8224c612bf407e0064c66a2c2f3f38c273464af38e4a5ce8ffe3b77411da8e9c013c601ce0adc999f906e3742c94e7a45ad5c5b24652231c18347a45a8f\\\",\\\"signer\\\":\\\"5HQ9Mm9L1HG53htEGDMsnhkkL7hEfF9vLstEQPtMLX5Gupqx\\\",\\\"tip\\\":\\\"0\\\"}\"",
+      "children" : [ {
+        "name" : "As a User I get the right values for Pool investment P[5000000000000000000, 5000000000000000000] - I-> 0.123 -Expected - 0.123",
+        "uid" : "fea28848bf9d2a68",
+        "parentUid" : "c61989f1cb96eca1590a9db1adb923e3",
+        "status" : "failed",
+        "time" : {
+          "start" : 1635859945710,
+          "stop" : 1635860023345,
+          "duration" : 77635
+        },
+        "flaky" : true,
+        "newFailed" : false,
+        "parameters" : [ ]
+      } ],
+      "uid" : "c61989f1cb96eca1590a9db1adb923e3"
+    }, {
+      "name" : "TimeoutError: Waiting for element to be located By(xpath, //*[@data-testid='wallet-asset-mDOT'])\n                Wait timed out after 300006ms",
+      "children" : [ {
+        "name" : "As a User I can get test tokens from the faucet",
+        "uid" : "dae6083d96b6f489",
+        "parentUid" : "67d3c97fe1c64473074e72c608116634",
+        "status" : "failed",
+        "time" : {
+          "start" : 1635860634348,
+          "stop" : 1635861133008,
+          "duration" : 498660
+        },
+        "flaky" : true,
+        "newFailed" : false,
+        "parameters" : [ ]
+      } ],
+      "uid" : "67d3c97fe1c64473074e72c608116634"
+    } ],
+    "uid" : "8fb3a91ba5aaf9de24cc8a92edc82b5d"
+  } ],
+  "name" : "categories"
+}
