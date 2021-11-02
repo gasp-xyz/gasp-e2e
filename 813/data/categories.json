@@ -1,0 +1,197 @@
+{
+  "uid" : "4b4757e66a1912dae1a509f688f20b0f",
+  "children" : [ {
+    "name" : "Product defects",
+    "children" : [ {
+      "name" : "Error: Failed: \"TIMEOUT: Waiting for //*[@class = 'Sidebar__loading'] to dissapear\"",
+      "children" : [ {
+        "name" : "As a User I can burn all liquidity MGA - mETH",
+        "uid" : "5242dcc272ce3406",
+        "parentUid" : "949fce9c21683c22bcec487901b1b36f",
+        "status" : "failed",
+        "time" : {
+          "start" : 1635859182728,
+          "stop" : 1635859354964,
+          "duration" : 172236
+        },
+        "flaky" : true,
+        "newFailed" : false,
+        "parameters" : [ ]
+      } ],
+      "uid" : "949fce9c21683c22bcec487901b1b36f"
+    }, {
+      "name" : "TimeoutError: Waiting for element to be located By(xpath, //button[text()='Connect'])\n                Wait timed out after 20007ms",
+      "children" : [ {
+        "name" : "As a User I can deposit ETH from Meta extension",
+        "uid" : "b8feac37172e7e57",
+        "parentUid" : "24e13c3a59403b0e51557acbfa8d9ccd",
+        "status" : "failed",
+        "time" : {
+          "start" : 1635859570562,
+          "stop" : 1635859704372,
+          "duration" : 133810
+        },
+        "flaky" : true,
+        "newFailed" : false,
+        "parameters" : [ ]
+      } ],
+      "uid" : "24e13c3a59403b0e51557acbfa8d9ccd"
+    }, {
+      "name" : "TimeoutError: Waiting for element to be located By(xpath, //input[@placeholder='Paste Secret Recovery Phrase from clipboard'])\n                Wait timed out after 20005ms",
+      "children" : [ {
+        "name" : "As a User I can Withdraw ETH from Meta extension",
+        "uid" : "b342ccbb689cfbae",
+        "parentUid" : "fec88a2a9aa66e14a5502c61ea06889b",
+        "status" : "failed",
+        "time" : {
+          "start" : 1635859704383,
+          "stop" : 1635859746244,
+          "duration" : 41861
+        },
+        "flaky" : true,
+        "newFailed" : false,
+        "parameters" : [ ]
+      } ],
+      "uid" : "fec88a2a9aa66e14a5502c61ea06889b"
+    }, {
+      "name" : "Error: Failed: \"W[1] timeout in - signAndWaitTx - \\\" + 5HQ9Mm9L1HG53htEGDMsnhkkL7hEfF9vLstEQPtMLX5Gupqx + \\\" - \\\" + 87 + \\\" - \\\" + {\\\"isSigned\\\":true,\\\"method\\\":{\\\"args\\\":[{\\\"args\\\":[\\\"0\\\",\\\"5GF2mqQpe5GAWEPKNA7RBBRyMvpcFog5urWwjcikGvXynCTx\\\",\\\"10.0000 MUnit\\\"],\\\"method\\\":\\\"mint\\\",\\\"section\\\":\\\"tokens\\\"}],\\\"method\\\":\\\"sudo\\\",\\\"section\\\":\\\"sudo\\\"},\\\"era\\\":{\\\"MortalEra\\\":{\\\"period\\\":\\\"64\\\",\\\"phase\\\":\\\"8\\\"}},\\\"nonce\\\":\\\"87\\\",\\\"signature\\\":\\\"0x5e3ce037a783c5f61a3a46e30840e50801096ba9c11666263c8727734e51161af51a70494ce57dafb5afc7dad2f900d5e52b063b2e60ce74e903008bf6d1638e\\\",\\\"signer\\\":\\\"5HQ9Mm9L1HG53htEGDMsnhkkL7hEfF9vLstEQPtMLX5Gupqx\\\",\\\"tip\\\":\\\"0\\\"}\"",
+      "children" : [ {
+        "name" : "As a User I get the right values for Pool removal P[2499999999999999999, 5000000000000000000] - I-> 2 -Expected - 0.050 , 0.100",
+        "uid" : "e73b447c055a6067",
+        "parentUid" : "239904b758fb19b72f03964fb2f61a71",
+        "status" : "failed",
+        "time" : {
+          "start" : 1635859937028,
+          "stop" : 1635859937584,
+          "duration" : 556
+        },
+        "flaky" : true,
+        "newFailed" : false,
+        "parameters" : [ ]
+      }, {
+        "name" : "As a User I get the right values for Pool removal P[2500000000000000000, 5000000000000000000] - I-> 1 -Expected - 0.025 , 0.05",
+        "uid" : "14a61c91b08e1be6",
+        "parentUid" : "239904b758fb19b72f03964fb2f61a71",
+        "status" : "failed",
+        "time" : {
+          "start" : 1635859937584,
+          "stop" : 1635859979932,
+          "duration" : 42348
+        },
+        "flaky" : true,
+        "newFailed" : false,
+        "parameters" : [ ]
+      } ],
+      "uid" : "239904b758fb19b72f03964fb2f61a71"
+    }, {
+      "name" : "TimeoutError: Waiting for element to be located By(xpath, //button[text()='Connect'])\n                Wait timed out after 20020ms",
+      "children" : [ {
+        "name" : "As a User I get the right values for Pool investment P[5000000000000000000, 100] - I-> 100000000000 -Expected - 0.000002",
+        "uid" : "16eaaa6572c80ec9",
+        "parentUid" : "0e151f5ade04d80aceb91e8002cd97ec",
+        "status" : "failed",
+        "time" : {
+          "start" : 1635860067152,
+          "stop" : 1635860067422,
+          "duration" : 270
+        },
+        "flaky" : true,
+        "newFailed" : false,
+        "parameters" : [ ]
+      }, {
+        "name" : "As a User I get the right values for Pool investment P[5000000000000000000, 5000000000000000000] - I-> 0.123 -Expected - 0.123",
+        "uid" : "2fe3b32b3a2e2401",
+        "parentUid" : "0e151f5ade04d80aceb91e8002cd97ec",
+        "status" : "failed",
+        "time" : {
+          "start" : 1635860067422,
+          "stop" : 1635860067671,
+          "duration" : 249
+        },
+        "flaky" : true,
+        "newFailed" : false,
+        "parameters" : [ ]
+      }, {
+        "name" : "As a User I get the right values for Pool investment P[2500000000000000000, 5000000000000000000] - I-> 0.100 -Expected - 0.200",
+        "uid" : "7fc635505224c388",
+        "parentUid" : "0e151f5ade04d80aceb91e8002cd97ec",
+        "status" : "failed",
+        "time" : {
+          "start" : 1635860067671,
+          "stop" : 1635860067900,
+          "duration" : 229
+        },
+        "flaky" : true,
+        "newFailed" : false,
+        "parameters" : [ ]
+      } ],
+      "uid" : "0e151f5ade04d80aceb91e8002cd97ec"
+    }, {
+      "name" : "Error: Failed: \"W[1] timeout in - signAndWaitTx - \\\" + 5HQ9Mm9L1HG53htEGDMsnhkkL7hEfF9vLstEQPtMLX5Gupqx + \\\" - \\\" + 99 + \\\" - \\\" + {\\\"isSigned\\\":true,\\\"method\\\":{\\\"args\\\":[{\\\"args\\\":[\\\"0\\\",\\\"5CZn1VSQXNE3Y2YjyTLcL2e3cCrriEACaw89uqqUrPLv2BUw\\\",\\\"10.0000 MUnit\\\"],\\\"method\\\":\\\"mint\\\",\\\"section\\\":\\\"tokens\\\"}],\\\"method\\\":\\\"sudo\\\",\\\"section\\\":\\\"sudo\\\"},\\\"era\\\":{\\\"MortalEra\\\":{\\\"period\\\":\\\"64\\\",\\\"phase\\\":\\\"8\\\"}},\\\"nonce\\\":\\\"99\\\",\\\"signature\\\":\\\"0x98345b240261aee656bcbc6e5b4c66ecb5249cdbf211bb2c00901edc6b15e848e573f3253990a907880f00c7f46d1ba11f16b0275486795477a5aaa57fb7e481\\\",\\\"signer\\\":\\\"5HQ9Mm9L1HG53htEGDMsnhkkL7hEfF9vLstEQPtMLX5Gupqx\\\",\\\"tip\\\":\\\"0\\\"}\"",
+      "children" : [ {
+        "name" : "As a User I can create a pool",
+        "uid" : "ed0ac1111404a9dd",
+        "parentUid" : "259cc9623e522265232293f4cff9cf5b",
+        "status" : "failed",
+        "time" : {
+          "start" : 1635860321500,
+          "stop" : 1635860342878,
+          "duration" : 21378
+        },
+        "flaky" : true,
+        "newFailed" : false,
+        "parameters" : [ ]
+      } ],
+      "uid" : "259cc9623e522265232293f4cff9cf5b"
+    }, {
+      "name" : "TimeoutError: Waiting for element to be located By(xpath, //*[@data-testid='wallet-asset-mDOT'])\n                Wait timed out after 300005ms",
+      "children" : [ {
+        "name" : "As a User I can get test tokens from the faucet",
+        "uid" : "1a96bf1cdeedbff6",
+        "parentUid" : "a315f85cf9f079c517dcd5cdd005d552",
+        "status" : "failed",
+        "time" : {
+          "start" : 1635860634690,
+          "stop" : 1635861073280,
+          "duration" : 438590
+        },
+        "flaky" : true,
+        "newFailed" : false,
+        "parameters" : [ ]
+      } ],
+      "uid" : "a315f85cf9f079c517dcd5cdd005d552"
+    }, {
+      "name" : "thrown: Event {\n                  \"isTrusted\": true,\n                }",
+      "children" : [ {
+        "name" : "As a User I get infomed whenever is neccesary to install any extension",
+        "uid" : "4d5576347db32e11",
+        "parentUid" : "e8f352723731311c936d9a158342e751",
+        "status" : "failed",
+        "time" : {
+          "start" : 1635861075679,
+          "stop" : 1635861076141,
+          "duration" : 462
+        },
+        "flaky" : true,
+        "newFailed" : false,
+        "parameters" : [ ]
+      }, {
+        "name" : "As a User I get feedback when extensions are installed and correctly setup",
+        "uid" : "4b67dd1701329aa3",
+        "parentUid" : "e8f352723731311c936d9a158342e751",
+        "status" : "failed",
+        "time" : {
+          "start" : 1635861076142,
+          "stop" : 1635861076613,
+          "duration" : 471
+        },
+        "flaky" : true,
+        "newFailed" : false,
+        "parameters" : [ ]
+      } ],
+      "uid" : "e8f352723731311c936d9a158342e751"
+    } ],
+    "uid" : "8fb3a91ba5aaf9de24cc8a92edc82b5d"
+  } ],
+  "name" : "categories"
+}
