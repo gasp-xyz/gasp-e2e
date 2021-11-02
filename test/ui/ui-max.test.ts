@@ -32,7 +32,7 @@ jest.setTimeout(FIVE_MIN);
 jest.spyOn(console, "log").mockImplementation(jest.fn());
 let driver: WebDriver;
 
-describe("UI tests - A user can swap and mint tokens", () => {
+describe("UI tests - A user can use MAX:", () => {
   let keyring: Keyring;
   let testUser1: User;
   let sudo: User;
@@ -144,9 +144,14 @@ describe("UI tests - A user can swap and mint tokens", () => {
     expect(poolInvested).toBeTruthy();
     expect(testUser1.getAsset(newToken)?.amountAfter.free!).bnEqual(new BN(0));
     const textAsBn = uiStringToBN(calculatedValue);
+    //the amount before  - ui value must be lower than the amount extracted.
+    // the expected_second_amount set by the UI must be greater than the extracted.
     expect(
-      testUser1.getAsset(newToken2)?.amountBefore.free.sub(textAsBn)
-    ).bnEqual(testUser1.getAsset(newToken2)?.amountAfter.free!);
+      testUser1
+        .getAsset(newToken2)
+        ?.amountBefore.free.sub(textAsBn)
+        ?.lte(testUser1.getAsset(newToken2)?.amountAfter.free!)
+    ).toBeTruthy();
   });
 
   afterEach(async () => {
