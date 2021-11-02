@@ -25,17 +25,18 @@ const BTN_MGA_LIQ_POOLS_ADD = `//*[small[contains(text(),'Liquidity')] and conta
 //const BTN_MGA_LIQ_POOLS_REMOVE = `//*[small[contains(text(),'Liquidity')] and contains(text(),'Remove' ) ]`
 const INPUT_MGA_ADD_ASSET_VALUE = `//input[@placeholder='0.0']`;
 
-const { uiUri } = getEnvironmentRequiredVars();
-
 export class Mangata {
   driver: WebDriver;
+  uiUri: string;
 
   constructor(driver: WebDriver) {
     this.driver = driver;
+    const { uiUri } = getEnvironmentRequiredVars();
+    this.uiUri = uiUri;
   }
 
   async go() {
-    await this.driver.get(uiUri);
+    await this.driver.get(this.uiUri);
   }
   async navigate() {
     await this.go();

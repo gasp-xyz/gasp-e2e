@@ -21,6 +21,7 @@ import {
 } from "./txHandler";
 import { MAX_BALANCE, MGA_ASSET_ID } from "./Constants";
 import { AccountData } from "@polkadot/types/interfaces/balances";
+import { strict as assert } from "assert";
 
 export enum AssetWallet {
   BEFORE,
@@ -135,7 +136,7 @@ export class User {
         "AssetsSwapped",
         this.keyRingPair.address,
       ]);
-      expect(eventResponse.state).toEqual(ExtrinsicResult.ExtrinsicSuccess);
+      assert.equal(eventResponse.state, ExtrinsicResult.ExtrinsicSuccess);
     });
   }
 
@@ -151,7 +152,7 @@ export class User {
         "Minted",
         user.keyRingPair.address,
       ]);
-      expect(eventResponse.state).toEqual(ExtrinsicResult.ExtrinsicSuccess);
+      assert.equal(eventResponse.state, ExtrinsicResult.ExtrinsicSuccess);
     });
   }
 
@@ -168,7 +169,7 @@ export class User {
         "AssetsSwapped",
         this.keyRingPair.address,
       ]);
-      expect(eventResponse.state).toEqual(ExtrinsicResult.ExtrinsicSuccess);
+      assert.equal(eventResponse.state, ExtrinsicResult.ExtrinsicSuccess);
     });
   }
   async mintLiquidity(
@@ -189,7 +190,7 @@ export class User {
         "LiquidityMinted",
         this.keyRingPair.address,
       ]);
-      expect(eventResponse.state).toEqual(ExtrinsicResult.ExtrinsicSuccess);
+      assert.equal(eventResponse.state, ExtrinsicResult.ExtrinsicSuccess);
     });
   }
 
@@ -223,7 +224,7 @@ export class User {
         "PoolCreated",
         this.keyRingPair.address,
       ]);
-      expect(eventResponse.state).toEqual(ExtrinsicResult.ExtrinsicSuccess);
+      assert.equal(eventResponse.state, ExtrinsicResult.ExtrinsicSuccess);
     });
   }
 

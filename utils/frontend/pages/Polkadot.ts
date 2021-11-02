@@ -28,21 +28,24 @@ const XPATH_TEXT_AREA = "//textarea";
 const XPATH_SIGN_PASSWORD = "//*[@type='password']";
 const XPATH_SIGN_BTN = "//button[//div[text() = 'Sign the transaction']]";
 
-const { uiUserPassword: userPassword, mnemonicPolkadot } =
-  getEnvironmentRequiredVars();
-
 export class Polkadot {
   WEB_UI_ACCESS_URL =
     "chrome-extension://mopnmbcafieddcagagdcbnhejhlodfdd/index.html";
 
   //TEST ACCOUNT
-  ACCOUNT_MNEMONIC = mnemonicPolkadot;
+
   ACCOUNT_ADDRESS = "5FvmNMFqpeM5wTiMTbhGsHxNjD37ndaLocE3bKNhf7LGgv1E";
 
   driver: any;
+  userPassword: string;
+  mnemonicPolkadot: string;
 
   constructor(driver: WebDriver) {
     this.driver = driver;
+    const { uiUserPassword: userPassword, mnemonicPolkadot } =
+      getEnvironmentRequiredVars();
+    this.userPassword = userPassword;
+    this.mnemonicPolkadot = mnemonicPolkadot;
   }
   async go() {
     await this.driver.get(this.WEB_UI_ACCESS_URL);
@@ -57,7 +60,7 @@ export class Polkadot {
     await waitForElement(this.driver, XPATH_MNEMONIC);
     await (await this.driver)
       .findElement(By.xpath(XPATH_MNEMONIC))
-      .sendKeys(this.ACCOUNT_MNEMONIC);
+      .sendKeys(this.mnemonicPolkadot);
     await clickElement(this.driver, XPATH_NEXT);
 
     await this.fillUserPass();
@@ -70,10 +73,10 @@ export class Polkadot {
     ).sendKeys("acc_automation");
     await (
       await this.driver.findElement(By.xpath(XPATH_PASSWORD))
-    ).sendKeys(userPassword);
+    ).sendKeys(this.userPassword);
     await (
       await this.driver.findElement(By.xpath(XPATH_CONFIRM_PASSWORD))
-    ).sendKeys(userPassword);
+    ).sendKeys(this.userPassword);
   }
 
   async createAccount(): Promise<[string, string]> {
@@ -98,7 +101,7 @@ export class Polkadot {
     await this.driver.get(`${linkToExport}`);
     await (
       await this.driver.findElement(By.xpath(XPATH_PASSWORD))
-    ).sendKeys(userPassword);
+    ).sendKeys(this.userPassword);
     await clickElement(this.driver, XPATH_EXPORT_CONFIRM);
   }
 
@@ -124,6 +127,7 @@ export class Polkadot {
   }
 
   private static async signTransactionModal(driver: WebDriver) {
+    const { uiUserPassword: userPassword } = getEnvironmentRequiredVars();
     await writeText(driver, XPATH_SIGN_PASSWORD, userPassword);
     await clickElement(driver, XPATH_SIGN_BTN);
   }
