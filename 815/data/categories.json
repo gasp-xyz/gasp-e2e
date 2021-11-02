@@ -1,0 +1,90 @@
+{
+  "uid" : "4b4757e66a1912dae1a509f688f20b0f",
+  "children" : [ {
+    "name" : "Product defects",
+    "children" : [ {
+      "name" : "NoSuchElementError: no such element: Unable to locate element: {\"method\":\"xpath\",\"selector\":\"//*[@data-testid='wallet-asset-mETH']//span[@class='value']\"}\n                  (Session info: chrome=94.0.4606.61)\n                  (Driver info: chromedriver=94.0.4606.61 (418b78f5838ed0b1c69bb4e51ea0252171854915-refs/branch-heads/4606@{#1204}),platform=Linux 5.8.0-1042-azure x86_64)",
+      "children" : [ {
+        "name" : "As a User I can deposit ETH from Meta extension",
+        "uid" : "884879c0ce4c5a65",
+        "parentUid" : "012604d5f877254e71ebdb1278a66ddd",
+        "status" : "failed",
+        "time" : {
+          "start" : 1635859614685,
+          "stop" : 1635859811920,
+          "duration" : 197235
+        },
+        "flaky" : true,
+        "newFailed" : false,
+        "parameters" : [ ]
+      }, {
+        "name" : "As a User I can Withdraw ETH from Meta extension",
+        "uid" : "8d9e2d33931849ab",
+        "parentUid" : "012604d5f877254e71ebdb1278a66ddd",
+        "status" : "failed",
+        "time" : {
+          "start" : 1635859811938,
+          "stop" : 1635860030283,
+          "duration" : 218345
+        },
+        "flaky" : true,
+        "newFailed" : false,
+        "parameters" : [ ]
+      } ],
+      "uid" : "012604d5f877254e71ebdb1278a66ddd"
+    }, {
+      "name" : "Error: expect(received).toBe(expected) // Object.is equality\n                \n                Expected: 0.049\n                Received: 0.05",
+      "children" : [ {
+        "name" : "As a User I get the right values for Pool removal P[2499999999999999999, 5000000000000000000] - I-> 2 -Expected - 0.050 , 0.100",
+        "uid" : "16f8231ae1f66b7c",
+        "parentUid" : "ba91973f1535807af506781cd4aac9ca",
+        "status" : "failed",
+        "time" : {
+          "start" : 1635860143824,
+          "stop" : 1635860254843,
+          "duration" : 111019
+        },
+        "flaky" : true,
+        "newFailed" : false,
+        "parameters" : [ ]
+      } ],
+      "uid" : "ba91973f1535807af506781cd4aac9ca"
+    }, {
+      "name" : "Error: Failed: \"TIMEOUT: Waiting for //*[@class = 'Sidebar__loading'] to dissapear\"",
+      "children" : [ {
+        "name" : "As a User I get the right values for Pool investment P[5000000000000000000, 5000000000000000000] - I-> 0.123 -Expected - 0.123",
+        "uid" : "c3d23b9f4d7cf3b8",
+        "parentUid" : "949fce9c21683c22bcec487901b1b36f",
+        "status" : "failed",
+        "time" : {
+          "start" : 1635860582991,
+          "stop" : 1635860693052,
+          "duration" : 110061
+        },
+        "flaky" : true,
+        "newFailed" : false,
+        "parameters" : [ ]
+      } ],
+      "uid" : "949fce9c21683c22bcec487901b1b36f"
+    }, {
+      "name" : "TimeoutError: Waiting for element to be located By(xpath, //*[@data-testid='wallet-asset-mUSDC'])\n                Wait timed out after 300219ms",
+      "children" : [ {
+        "name" : "As a User I can get test tokens from the faucet",
+        "uid" : "75ea0f92127b92d",
+        "parentUid" : "0e589e765dee4e68e0d9c6e84cf071dd",
+        "status" : "failed",
+        "time" : {
+          "start" : 1635861141952,
+          "stop" : 1635861613930,
+          "duration" : 471978
+        },
+        "flaky" : true,
+        "newFailed" : false,
+        "parameters" : [ ]
+      } ],
+      "uid" : "0e589e765dee4e68e0d9c6e84cf071dd"
+    } ],
+    "uid" : "8fb3a91ba5aaf9de24cc8a92edc82b5d"
+  } ],
+  "name" : "categories"
+}
