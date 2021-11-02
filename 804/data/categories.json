@@ -1,0 +1,107 @@
+{
+  "uid" : "4b4757e66a1912dae1a509f688f20b0f",
+  "children" : [ {
+    "name" : "Product defects",
+    "children" : [ {
+      "name" : "Error: Failed: \"W[1] timeout in - signAndWaitTx - \\\" + 5HQ9Mm9L1HG53htEGDMsnhkkL7hEfF9vLstEQPtMLX5Gupqx + \\\" - \\\" + 96 + \\\" - \\\" + {\\\"isSigned\\\":true,\\\"method\\\":{\\\"args\\\":[{\\\"args\\\":[\\\"38\\\",\\\"TEST_38\\\",\\\"m38\\\",\\\"Test token 38\\\",\\\"18\\\"],\\\"method\\\":\\\"setInfo\\\",\\\"section\\\":\\\"assetsInfo\\\"}],\\\"method\\\":\\\"sudo\\\",\\\"section\\\":\\\"sudo\\\"},\\\"era\\\":{\\\"MortalEra\\\":{\\\"period\\\":\\\"64\\\",\\\"phase\\\":\\\"0\\\"}},\\\"nonce\\\":\\\"96\\\",\\\"signature\\\":\\\"0x4c1f86a86f40b835309816b5afee4948c3c21fc0211aeb9fed710f7f4a558b11eb39dc4ed44ed96f711637b4f555fd17b99035b76f64ce3d142fb778af69568b\\\",\\\"signer\\\":\\\"5HQ9Mm9L1HG53htEGDMsnhkkL7hEfF9vLstEQPtMLX5Gupqx\\\",\\\"tip\\\":\\\"0\\\"}\"",
+      "children" : [ {
+        "name" : "As a User I can mint in more than one pool [ MGA - mETH ] [ MGA - newTokn ] and get invested values",
+        "uid" : "e982e438d0712678",
+        "parentUid" : "deb3440a92e0edda5722d4c0dc828c3e",
+        "status" : "failed",
+        "time" : {
+          "start" : 1635817286721,
+          "stop" : 1635817478646,
+          "duration" : 191925
+        },
+        "flaky" : true,
+        "newFailed" : false,
+        "parameters" : [ ]
+      } ],
+      "uid" : "deb3440a92e0edda5722d4c0dc828c3e"
+    }, {
+      "name" : "Error: Failed: \"W[1] timeout in - signAndWaitTx - \\\" + 5HQ9Mm9L1HG53htEGDMsnhkkL7hEfF9vLstEQPtMLX5Gupqx + \\\" - \\\" + 118 + \\\" - \\\" + {\\\"isSigned\\\":true,\\\"method\\\":{\\\"args\\\":[{\\\"args\\\":[\\\"0\\\",\\\"5HK6nVo9YDicyZ3E3CZsCAv5imBNrNuPogpnFsE7vnVWCn65\\\",\\\"10.0000 MUnit\\\"],\\\"method\\\":\\\"mint\\\",\\\"section\\\":\\\"tokens\\\"}],\\\"method\\\":\\\"sudo\\\",\\\"section\\\":\\\"sudo\\\"},\\\"era\\\":{\\\"MortalEra\\\":{\\\"period\\\":\\\"64\\\",\\\"phase\\\":\\\"28\\\"}},\\\"nonce\\\":\\\"118\\\",\\\"signature\\\":\\\"0x1a066e569010d4a62f2be4c47f466cfd03d3aa6f7a9e3ebd927551f7e2a63958971f9fad14f74b8cd58df2e3e47661b0919c394289ba5bfdc82682d4ae5d4582\\\",\\\"signer\\\":\\\"5HQ9Mm9L1HG53htEGDMsnhkkL7hEfF9vLstEQPtMLX5Gupqx\\\",\\\"tip\\\":\\\"0\\\"}\"",
+      "children" : [ {
+        "name" : "As a User I get the right values for Pool removal P[2499999999999999999, 5000000000000000000] - I-> 2 -Expected - 0.050 , 0.100",
+        "uid" : "6624cea1341687e7",
+        "parentUid" : "da2a906c4d5b84d7036a2b9d59ae6537",
+        "status" : "failed",
+        "time" : {
+          "start" : 1635818032403,
+          "stop" : 1635818074763,
+          "duration" : 42360
+        },
+        "flaky" : true,
+        "newFailed" : false,
+        "parameters" : [ ]
+      }, {
+        "name" : "As a User I get the right values for Pool removal P[2500000000000000000, 5000000000000000000] - I-> 1 -Expected - 0.025 , 0.05",
+        "uid" : "eeb58976b0db246d",
+        "parentUid" : "da2a906c4d5b84d7036a2b9d59ae6537",
+        "status" : "failed",
+        "time" : {
+          "start" : 1635818074763,
+          "stop" : 1635818145070,
+          "duration" : 70307
+        },
+        "flaky" : true,
+        "newFailed" : false,
+        "parameters" : [ ]
+      } ],
+      "uid" : "da2a906c4d5b84d7036a2b9d59ae6537"
+    }, {
+      "name" : "Error: Failed: \"W[1] timeout in - signAndWaitTx - \\\" + 5HQ9Mm9L1HG53htEGDMsnhkkL7hEfF9vLstEQPtMLX5Gupqx + \\\" - \\\" + 133 + \\\" - \\\" + {\\\"isSigned\\\":true,\\\"method\\\":{\\\"args\\\":[{\\\"args\\\":[\\\"5EZ56W2zT2sUxLtoxHxX9KCQwr8pAeVwcSyAa9HdmEXKUSv9\\\",\\\"15.0000 MUnit\\\"],\\\"method\\\":\\\"create\\\",\\\"section\\\":\\\"tokens\\\"}],\\\"method\\\":\\\"sudo\\\",\\\"section\\\":\\\"sudo\\\"},\\\"era\\\":{\\\"MortalEra\\\":{\\\"period\\\":\\\"64\\\",\\\"phase\\\":\\\"30\\\"}},\\\"nonce\\\":\\\"133\\\",\\\"signature\\\":\\\"0xb4316eea68b1ebd9c515d2121c2529315f4a525bf2146d93dabcb2f365d9b91ccae001c831ac325c16256744f4c896d4fe2831b9dc3d796f366439a795ce9f81\\\",\\\"signer\\\":\\\"5HQ9Mm9L1HG53htEGDMsnhkkL7hEfF9vLstEQPtMLX5Gupqx\\\",\\\"tip\\\":\\\"0\\\"}\"",
+      "children" : [ {
+        "name" : "As a User I get the right values for Pool investment P[5000000000000000000, 5000000000000000000] - I-> 0.123 -Expected - 0.123",
+        "uid" : "22f999b0486eca0d",
+        "parentUid" : "1a50958880748c218d13354add86628c",
+        "status" : "failed",
+        "time" : {
+          "start" : 1635818383329,
+          "stop" : 1635818425747,
+          "duration" : 42418
+        },
+        "flaky" : true,
+        "newFailed" : true,
+        "parameters" : [ ]
+      } ],
+      "uid" : "1a50958880748c218d13354add86628c"
+    }, {
+      "name" : "Error: Failed: \"TIMEOUT: Waiting for //*[@class = 'Sidebar__loading'] to dissapear\"",
+      "children" : [ {
+        "name" : "As a User I get the right values for Pool investment P[2500000000000000000, 5000000000000000000] - I-> 0.100 -Expected - 0.200",
+        "uid" : "a3a61e08150d4bdd",
+        "parentUid" : "949fce9c21683c22bcec487901b1b36f",
+        "status" : "failed",
+        "time" : {
+          "start" : 1635818425747,
+          "stop" : 1635818537014,
+          "duration" : 111267
+        },
+        "flaky" : true,
+        "newFailed" : false,
+        "parameters" : [ ]
+      } ],
+      "uid" : "949fce9c21683c22bcec487901b1b36f"
+    }, {
+      "name" : "TimeoutError: Waiting for element to be located By(xpath, //*[@data-testid='wallet-asset-MGA'])\n                Wait timed out after 300000ms",
+      "children" : [ {
+        "name" : "As a User I can get test tokens from the faucet",
+        "uid" : "ce81eff3c0b268fd",
+        "parentUid" : "810d7a6843bb8e9c6205b97f9eb9b724",
+        "status" : "failed",
+        "time" : {
+          "start" : 1635818807785,
+          "stop" : 1635819209284,
+          "duration" : 401499
+        },
+        "flaky" : true,
+        "newFailed" : false,
+        "parameters" : [ ]
+      } ],
+      "uid" : "810d7a6843bb8e9c6205b97f9eb9b724"
+    } ],
+    "uid" : "8fb3a91ba5aaf9de24cc8a92edc82b5d"
+  } ],
+  "name" : "categories"
+}
