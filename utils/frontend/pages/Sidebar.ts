@@ -28,7 +28,7 @@ const SPINNER_LOADING = `//*[@class = 'Sidebar__loading']`;
 const BTN_POOL_OVERVIEW = `poolsOverview-item-tkn1-tkn2`;
 const BTN_REMOVE_LIQUIDITY = `poolDetail-removeBtn`;
 const LBL_TOKEN_NAME = "wallet-asset-tokenName";
-const DIV_ASSETS_ITEM_VALUE = `//div[@class = 'AssetBox' and //*[text()='tokenName']]/span[@class='value']`;
+const DIV_ASSETS_ITEM_VALUE = `//div[@class = 'AssetBox' and //*[text()='tokenName']]/*[@class='value']`;
 
 export class Sidebar {
   driver: WebDriver;
@@ -80,8 +80,13 @@ export class Sidebar {
 
   async waitForLoad() {
     return new Promise<void>(async (resolve, reject) => {
-      setTimeout(() => {
-        reject("TIMEOUT: Waiting for " + SPINNER_LOADING + " to dissapear");
+      setTimeout(async () => {
+        const visible = await this.isDisplayed(SPINNER_LOADING);
+        if (visible) {
+          reject("TIMEOUT: Waiting for " + SPINNER_LOADING + " to dissapear");
+        } else {
+          resolve();
+        }
       }, 20000);
       await waitForElementToDissapear(this.driver, SPINNER_LOADING);
       resolve();
@@ -112,7 +117,7 @@ export class Sidebar {
   }
   async getTokenAmount(tokenName: string) {
     await this.waitForTokenToAppear(tokenName);
-    const tokenValueXpath = `//*[@data-testid='wallet-asset-${tokenName}']//span[@class='value']`;
+    const tokenValueXpath = `//*[@data-testid='wallet-asset-${tokenName}']//*[@class='value']`;
     const value = await (
       await this.driver.findElement(By.xpath(tokenValueXpath))
     ).getText();

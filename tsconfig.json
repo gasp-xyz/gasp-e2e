@@ -5,7 +5,8 @@
         "node_modules","testPad/Staking.testpad.test.ts"
     ],
   "compilerOptions": {
-    "skipLibCheck": true
+    "skipLibCheck": true,
+    "lib": ["es2020"]
   },
   "target": "es6"
 }

@@ -5,6 +5,7 @@ import { MetaMask } from "../pages/MetaMask";
 import { Polkadot } from "../pages/Polkadot";
 import fs from "fs";
 import { testLog } from "../../Logger";
+import BN from "bn.js";
 
 const { By, until } = require("selenium-webdriver");
 require("chromedriver");
@@ -12,7 +13,7 @@ require("chromedriver");
 export async function waitForElement(
   driver: WebDriver,
   xpath: string,
-  timeout = 20000
+  timeout = 30000
 ) {
   await driver.wait(until.elementLocated(By.xpath(xpath)), timeout);
 }
@@ -150,7 +151,8 @@ export async function doActionInDifferentWindow(
 ) {
   await sleep(4000);
   let handle = await (await driver).getAllWindowHandles();
-  let iterator = handle.entries();
+  let iterator = handle.reverse().entries();
+
   let value = iterator.next().value;
   while (value) {
     await driver.switchTo().window(value[1]);
@@ -176,4 +178,8 @@ export async function selectAssetFromModalList(
   const assetTestId = `assetSelectModal-asset-${assetName}`;
   const assetLocator = buildDataTestIdXpath(assetTestId);
   await clickElement(driver, assetLocator);
+}
+
+export function uiStringToBN(stringValue: string) {
+  return new BN((Math.pow(10, 18) * parseFloat(stringValue)).toString());
 }

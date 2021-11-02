@@ -8,6 +8,10 @@ on:
           description: 'Name of the script to run'
           required: false
           default: 'test-ui'
+        environment:
+          description: 'Environment to run the tests:[staging,develop,integration]'
+          required: false
+          default: ''
         publishDockerImage:
           description: 'Generate new Docker image'
           required: false
@@ -77,7 +81,7 @@ jobs:
           echo ${{ github.event.client_payload.environment }}
 
       - name: Set Configuration - Staging
-        if: contains(github.event.client_payload.environment, 'staging')
+        if: contains(github.event.client_payload.environment, 'staging') || contains(github.event.inputs.environment, 'staging')
         run:  |
           echo 'UI_URL=https://staging.mangata.finance/' >> $GITHUB_ENV
           echo 'API_URL=wss://staging.mangatafinance.cloud:9944/' >> $GITHUB_ENV
@@ -86,7 +90,7 @@ jobs:
           echo 'MNEMONIC_META=${{ secrets.MNEMONIC_META_STG }}' >> $GITHUB_ENV
 
       - name: Set Configuration - Develop
-        if: contains(github.event.client_payload.environment, 'develop')
+        if: contains(github.event.client_payload.environment, 'develop') || contains(github.event.inputs.environment, 'develop')
         run:  |
           echo 'UI_URL=https://develop.mangata.finance/' >> $GITHUB_ENV
           echo 'API_URL=wss://develop.mangatafinance.cloud:9944' >> $GITHUB_ENV
@@ -95,7 +99,7 @@ jobs:
           echo 'MNEMONIC_META=${{ secrets.MNEMONIC_META_DEV }}' >> $GITHUB_ENV
 
       - name: Set Configuration - Integration
-        if: contains(github.event.client_payload.environment, 'integration')
+        if: contains(github.event.client_payload.environment, 'integration') || contains(github.event.inputs.environment, 'integration')
         run:  |
           echo 'UI_URL=https://integration.mangata.finance/' >> $GITHUB_ENV
           echo 'API_URL=wss://integration.mangatafinance.cloud:9944' >> $GITHUB_ENV
@@ -118,12 +122,13 @@ jobs:
 
       - name: Add test context to allure
         run: |
-          echo 'ENV=${{ github.event.client_payload.environment }}' >> ./environment.properties
+          echo 'ENV=${{ github.event.client_payload.environment }} ${{ github.event.inputs.environment }}' >> ./environment.properties
           echo 'TEST_SCRIPT=${{ env.TEST_SCRIPT }}' >> ./environment.properties
           echo 'UI_URL=${{ env.UI_URL }}' >> ./environment.properties
           echo 'API_URL=${{ env.API_URL }}' >> ./environment.properties
           echo 'ETH_APP_ADDRESS=${{ env.ETH_APP_ADDRESS }}' >> ./environment.properties
           echo 'ETH_20_APP_ADDRESS=${{ env.ETH_20_APP_ADDRESS }}' >> ./environment.properties
+          echo E2EBranch=${GITHUB_REF##*/} >> ./environment.properties
 
   
       - name: Run e2e tests
@@ -136,6 +141,9 @@ jobs:
           name: JEST Tests            # Name of the check run which will be created
           path: reports/jest-*.xml    # Path to test results
           reporter: jest-junit        # Format of test results
+
+      - name: Sleep for 5 seconds
+        run: sleep 10s #close buffers of videos.
 
       - name: Copy video files to reports folder
         if: success() || failure()
@@ -179,7 +187,7 @@ jobs:
           #gh_pages: gh-pages
           #allure_report: allure-report
           allure_history: allure-history
-          keep_reports: 20
+          keep_reports: 100
 
       - name: Deploy report to Github Pages
         if: always()

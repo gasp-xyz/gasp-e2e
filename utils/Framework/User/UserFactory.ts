@@ -4,10 +4,12 @@ import { Node } from "../Node/Node";
 
 import { GovernanceUser } from "./GovernanceUser";
 import { SudoUser } from "./SudoUser";
+import { MetamaskUser } from "./MetamaskUser";
 
 export enum Users {
   GovernanceUser,
   SudoUser,
+  MetamaskUser,
 }
 
 export abstract class UserFactory {
@@ -23,6 +25,8 @@ export abstract class UserFactory {
         return new GovernanceUser(keyring, name, json, node);
       case Users.SudoUser:
         return new SudoUser(keyring, name, json, node);
+      case Users.MetamaskUser:
+        return new MetamaskUser(keyring, json, node);
       default:
         throw new Error("Invalid User Type");
     }

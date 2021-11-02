@@ -17,6 +17,9 @@ import {
 import { AssetWallet, User } from "../../utils/User";
 import BN from "bn.js";
 import { getEnvironmentRequiredVars } from "../../utils/utils";
+import { UserFactory, Users } from "../../utils/Framework/User/UserFactory";
+import { Node } from "../../utils/Framework/Node/Node";
+import { MetamaskUser } from "../../utils/Framework/User/MetamaskUser";
 
 jest.setTimeout(FIVE_MIN);
 jest.spyOn(console, "log").mockImplementation(jest.fn());
@@ -90,7 +93,8 @@ describe("UI main tests - Deposit - ETH", () => {
 describe("UI main tests - Withdraw - ETH", () => {
   let testUser1: User;
   let keyring: Keyring;
-  const { sudo: sudoUserName } = getEnvironmentRequiredVars();
+  let metamaskUser: MetamaskUser;
+  const { sudo: sudoUserName, chainUri } = getEnvironmentRequiredVars();
   beforeAll(async () => {
     try {
       getApi();
@@ -119,16 +123,21 @@ describe("UI main tests - Withdraw - ETH", () => {
     expect(ableToContinueP).toBeTruthy();
     await sudo.mint(MGA_ASSET_ID, testUser1, new BN(10000000000));
 
-    //TODO replace this with Eddy code to give to a user some assetInfo.
     await sidebar.depositAseetsFromMetamask("kETH", "0.001");
     await sidebar.waitForTokenToAppear("mETH");
     const tokenValue = await sidebar.getTokenAmount("mETH");
     expect(tokenValue).toEqual("0.001");
     await testUser1.refreshAmounts(AssetWallet.BEFORE);
+    metamaskUser = UserFactory.createUser(
+      Users.MetamaskUser,
+      keyring,
+      new Node(chainUri)
+    ) as MetamaskUser;
   });
 
   it("As a User I can Withdraw ETH from Meta extension", async () => {
     const sidebar = new Sidebar(driver);
+    const ethBalanceBefore = await metamaskUser.getEthBalance();
     await sidebar.withdrawAllAssetsToMetaMask("mETH");
     await sidebar.waitForTokenToDissapear("mETH");
     await testUser1.refreshAmounts(AssetWallet.AFTER);
@@ -140,7 +149,10 @@ describe("UI main tests - Withdraw - ETH", () => {
     expect(testUser1.getAsset(ETH_ASSET_ID)?.amountAfter.free!).bnEqual(
       diffFromWallet!
     );
-    // TODO, validate in eth that user now has the tokens back!
+    expect(new BN(0)).bnEqual(diffFromWallet!);
+    await User.waitUntilBNChanged(ethBalanceBefore, getEthBalance);
+    const ethBalanceAfter = await metamaskUser.getEthBalance();
+    expect(ethBalanceAfter.gt(ethBalanceBefore)).toBeTruthy();
   });
 
   afterEach(async () => {
@@ -152,6 +164,11 @@ describe("UI main tests - Withdraw - ETH", () => {
     await driver.quit();
     await DriverBuilder.destroy();
   });
+
+  async function getEthBalance(): Promise<BN> {
+    const ethBalance = metamaskUser.getEthBalance();
+    return ethBalance;
+  }
 });
 
 afterAll(async () => {

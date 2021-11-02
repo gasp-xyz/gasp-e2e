@@ -2,6 +2,7 @@ import { By, WebDriver } from "selenium-webdriver";
 import {
   buildDataTestIdXpath,
   clickElement,
+  getAttribute,
   waitForElement,
   writeText,
 } from "../utils/Helper";
@@ -23,6 +24,10 @@ export class Swap {
   private btnGetLocator = buildDataTestIdXpath(DIV_SWAP_GET) + "//button";
   private inputPayLocator = buildDataTestIdXpath(DIV_SWAP_PAY) + "//input";
   private inputGetLocator = buildDataTestIdXpath(DIV_SWAP_GET) + "//input";
+  private btnPayMaxLocator =
+    buildDataTestIdXpath(DIV_SWAP_PAY) + "//button[contains(text(),'Max')]";
+  private btnGetMaxLocator =
+    buildDataTestIdXpath(DIV_SWAP_GET) + "//button[contains(text(),'Max')]";
 
   async toggleSwap() {
     const selector = buildDataTestIdXpath(TAB_SWAP_TEST_ID);
@@ -40,6 +45,12 @@ export class Swap {
     await clickElement(this.driver, this.btnGetLocator);
     await this.selectAssetFromModalList(assetName);
   }
+  async clickPayMaxBtn() {
+    await clickElement(this.driver, this.btnPayMaxLocator);
+  }
+  async clickGetMaxBtn() {
+    await clickElement(this.driver, this.btnGetMaxLocator);
+  }
 
   async doSwap() {
     const tradeBtn = buildDataTestIdXpath(BTN_SWAP_TRADE);
@@ -53,6 +64,14 @@ export class Swap {
     await clickElement(this.driver, tradeBtn);
   }
 
+  async fetchGetAssetAmount() {
+    const text = await getAttribute(this.driver, this.inputGetLocator, "value");
+    return text;
+  }
+  async fetchPayAssetAmount() {
+    const text = await getAttribute(this.driver, this.inputPayLocator, "value");
+    return text;
+  }
   async addPayAssetAmount(amount: string) {
     await clickElement(this.driver, this.inputPayLocator);
     await writeText(this.driver, this.inputPayLocator, amount);
@@ -66,5 +85,12 @@ export class Swap {
     const assetTestId = `assetSelectModal-asset-${assetName}`;
     const assetLocator = buildDataTestIdXpath(assetTestId);
     await clickElement(this.driver, assetLocator);
+  }
+  async swapAssets(fromAsset: string, toAsset: string, amount: string) {
+    await this.toggleSwap();
+    await this.selectPayAsset(fromAsset);
+    await this.selectGetAsset(toAsset);
+    await this.addPayAssetAmount("0.001");
+    await this.doSwap();
   }
 }
