@@ -1,0 +1,90 @@
+{
+  "uid" : "4b4757e66a1912dae1a509f688f20b0f",
+  "children" : [ {
+    "name" : "Product defects",
+    "children" : [ {
+      "name" : "NoSuchElementError: no such element: Unable to locate element: {\"method\":\"xpath\",\"selector\":\"//*[@data-testid='wallet-asset-mETH']//span[@class='value']\"}\n                  (Session info: chrome=94.0.4606.61)\n                  (Driver info: chromedriver=94.0.4606.61 (418b78f5838ed0b1c69bb4e51ea0252171854915-refs/branch-heads/4606@{#1204}),platform=Linux 5.8.0-1042-azure x86_64)",
+      "children" : [ {
+        "name" : "As a User I can deposit ETH from Meta extension",
+        "uid" : "858e6d846e6d6754",
+        "parentUid" : "012604d5f877254e71ebdb1278a66ddd",
+        "status" : "failed",
+        "time" : {
+          "start" : 1635817538651,
+          "stop" : 1635817748688,
+          "duration" : 210037
+        },
+        "flaky" : true,
+        "newFailed" : true,
+        "parameters" : [ ]
+      }, {
+        "name" : "As a User I can Withdraw ETH from Meta extension",
+        "uid" : "3683f846d405ed2a",
+        "parentUid" : "012604d5f877254e71ebdb1278a66ddd",
+        "status" : "failed",
+        "time" : {
+          "start" : 1635817748708,
+          "stop" : 1635817970902,
+          "duration" : 222194
+        },
+        "flaky" : true,
+        "newFailed" : true,
+        "parameters" : [ ]
+      } ],
+      "uid" : "012604d5f877254e71ebdb1278a66ddd"
+    }, {
+      "name" : "Error: expect(received).toBe(expected) // Object.is equality\n                \n                Expected: 0.049\n                Received: 0.05",
+      "children" : [ {
+        "name" : "As a User I get the right values for Pool removal P[2499999999999999999, 5000000000000000000] - I-> 2 -Expected - 0.050 , 0.100",
+        "uid" : "67191a5c8c3414f2",
+        "parentUid" : "ba91973f1535807af506781cd4aac9ca",
+        "status" : "failed",
+        "time" : {
+          "start" : 1635818089124,
+          "stop" : 1635818201046,
+          "duration" : 111922
+        },
+        "flaky" : true,
+        "newFailed" : false,
+        "parameters" : [ ]
+      } ],
+      "uid" : "ba91973f1535807af506781cd4aac9ca"
+    }, {
+      "name" : "TimeoutError: Waiting for element to be located By(xpath, //button[text()='Connect'])\n                Wait timed out after 20450ms",
+      "children" : [ {
+        "name" : "As a User I can create a pool",
+        "uid" : "ed9383811984372e",
+        "parentUid" : "d4d1996dc328adfeb1ef9ff6f101991f",
+        "status" : "failed",
+        "time" : {
+          "start" : 1635818861414,
+          "stop" : 1635818863106,
+          "duration" : 1692
+        },
+        "flaky" : true,
+        "newFailed" : true,
+        "parameters" : [ ]
+      } ],
+      "uid" : "d4d1996dc328adfeb1ef9ff6f101991f"
+    }, {
+      "name" : "TimeoutError: Waiting for element to be located By(xpath, //button[text()='Connect'])\n                Wait timed out after 20004ms",
+      "children" : [ {
+        "name" : "As a User I can get test tokens from the faucet",
+        "uid" : "209d21f325b5aa6d",
+        "parentUid" : "af93ec1ede2b373f0aad9cdc313a12a5",
+        "status" : "failed",
+        "time" : {
+          "start" : 1635818867699,
+          "stop" : 1635819338790,
+          "duration" : 471091
+        },
+        "flaky" : true,
+        "newFailed" : false,
+        "parameters" : [ ]
+      } ],
+      "uid" : "af93ec1ede2b373f0aad9cdc313a12a5"
+    } ],
+    "uid" : "8fb3a91ba5aaf9de24cc8a92edc82b5d"
+  } ],
+  "name" : "categories"
+}
