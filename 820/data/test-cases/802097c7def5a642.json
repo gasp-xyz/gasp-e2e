@@ -1,0 +1,142 @@
+{
+  "uid" : "802097c7def5a642",
+  "name" : "Modal is visible when burning liquidity",
+  "fullName" : "UI tests - A user can see the new Modal.Modal is visible when burning liquidity",
+  "historyId" : "d905b7c57d5643ad680989ac739cf6b",
+  "time" : {
+    "start" : 1635903970922,
+    "stop" : 1635904104461,
+    "duration" : 133539
+  },
+  "description" : "",
+  "descriptionHtml" : "",
+  "status" : "passed",
+  "flaky" : false,
+  "newFailed" : true,
+  "beforeStages" : [ ],
+  "afterStages" : [ ],
+  "labels" : [ {
+    "name" : "suite",
+    "value" : "UI tests - A user can see the new Modal"
+  }, {
+    "name" : "testClass",
+    "value" : "UI tests - A user can see the new Modal"
+  }, {
+    "name" : "testMethod",
+    "value" : "Modal is visible when burning liquidity"
+  }, {
+    "name" : "package",
+    "value" : "UI tests - A user can see the new Modal"
+  }, {
+    "name" : "resultFormat",
+    "value" : "allure1"
+  } ],
+  "parameters" : [ ],
+  "links" : [ ],
+  "hidden" : false,
+  "retry" : false,
+  "extra" : {
+    "severity" : "normal",
+    "retries" : [ ],
+    "categories" : [ ],
+    "history" : {
+      "statistic" : {
+        "failed" : 4,
+        "broken" : 0,
+        "skipped" : 0,
+        "passed" : 6,
+        "unknown" : 0,
+        "total" : 10
+      },
+      "items" : [ {
+        "uid" : "ab5b7c66e15f568c",
+        "reportUrl" : "https://mangata-finance.github.io/mangata-e2e/821//#testresult/ab5b7c66e15f568c",
+        "status" : "failed",
+        "statusDetails" : "thrown: Event {\n                  \"isTrusted\": true,\n                }",
+        "time" : {
+          "start" : 1635903926489,
+          "stop" : 1635903926919,
+          "duration" : 430
+        }
+      }, {
+        "uid" : "65cf63ffd971ec6",
+        "reportUrl" : "https://mangata-finance.github.io/mangata-e2e/817//#testresult/65cf63ffd971ec6",
+        "status" : "failed",
+        "statusDetails" : "WebDriverError: Session timed out or not found",
+        "time" : {
+          "start" : 1635904391391,
+          "stop" : 1635904391413,
+          "duration" : 22
+        }
+      }, {
+        "uid" : "20aae782ac427bf9",
+        "reportUrl" : "https://mangata-finance.github.io/mangata-e2e/819//#testresult/20aae782ac427bf9",
+        "status" : "failed",
+        "statusDetails" : "NoSuchSessionError: invalid session id",
+        "time" : {
+          "start" : 1635903647644,
+          "stop" : 1635903649351,
+          "duration" : 1707
+        }
+      }, {
+        "uid" : "61ea179df65e1948",
+        "reportUrl" : "https://mangata-finance.github.io/mangata-e2e/810//#testresult/61ea179df65e1948",
+        "status" : "passed",
+        "time" : {
+          "start" : 1635852903912,
+          "stop" : 1635853032469,
+          "duration" : 128557
+        }
+      }, {
+        "uid" : "f9376b72f403137",
+        "reportUrl" : "https://mangata-finance.github.io/mangata-e2e/809//#testresult/f9376b72f403137",
+        "status" : "failed",
+        "statusDetails" : "Error: Failed: \"TIMEOUT: Waiting for //*[@class = 'Sidebar__loading'] to dissapear\"",
+        "time" : {
+          "start" : 1635844326443,
+          "stop" : 1635844457149,
+          "duration" : 130706
+        }
+      }, {
+        "uid" : "f4dc4dc550753f9c",
+        "reportUrl" : "https://mangata-finance.github.io/mangata-e2e/796//#testresult/f4dc4dc550753f9c",
+        "status" : "passed",
+        "time" : {
+          "start" : 1635769313045,
+          "stop" : 1635769452496,
+          "duration" : 139451
+        }
+      }, {
+        "uid" : "6a89bd99c33ce86e",
+        "reportUrl" : "https://mangata-finance.github.io/mangata-e2e/795//#testresult/6a89bd99c33ce86e",
+        "status" : "passed",
+        "time" : {
+          "start" : 1635765381856,
+          "stop" : 1635765516427,
+          "duration" : 134571
+        }
+      }, {
+        "uid" : "8d803d492ad44452",
+        "reportUrl" : "https://mangata-finance.github.io/mangata-e2e/793//#testresult/8d803d492ad44452",
+        "status" : "passed",
+        "time" : {
+          "start" : 1635761644521,
+          "stop" : 1635761778407,
+          "duration" : 133886
+        }
+      }, {
+        "uid" : "de26db01d3038f81",
+        "reportUrl" : "https://mangata-finance.github.io/mangata-e2e/792//#testresult/de26db01d3038f81",
+        "status" : "passed",
+        "time" : {
+          "start" : 1635755637964,
+          "stop" : 1635755832370,
+          "duration" : 194406
+        }
+      } ]
+    },
+    "tags" : [ ]
+  },
+  "source" : "802097c7def5a642.json",
+  "parameterValues" : [ ]
+}
