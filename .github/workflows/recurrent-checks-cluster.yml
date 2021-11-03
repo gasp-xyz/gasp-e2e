@@ -1,0 +1,29 @@
+name: CI check
+
+on:
+  schedule:
+    - cron: "1 04,16 * * *" #lets run this job every 12 hours.
+
+  workflow_dispatch:
+      inputs:
+        cluster-healthcheck:
+          description: 'Run a healthcheck against wss://develop.mangatafinance.cloud*'
+          required: true
+          default: 'test-cluster-healthcheck'
+ 
+jobs:
+
+  dispatch:
+
+    strategy:
+      matrix:
+        cluster: ['staging']
+    runs-on: ubuntu-latest
+    steps: 
+      - name: Repository Dispatch
+        uses: peter-evans/repository-dispatch@v1
+        with:
+          token: ${{ secrets.PAT_TRIGGER_JOB }}
+          repository: "mangata-finance/mangata-e2e"
+          event-type: run-ci
+          client-payload: '{"scriptName": "${{ github.event.inputs.cluster-healthcheck }}", "environment": "${{ matrix.cluster }}"}'
