@@ -18,6 +18,20 @@
                 "${workspaceRoot}/**/*"
             ],
             "envFile": "${workspaceRoot}/.env"
-        }
+        },
+        {
+            "name": "run enc.txs",
+            "type": "node",
+            "request": "launch",
+            "runtimeExecutable": "node",
+            "runtimeArgs": ["--nolazy", "-r", "ts-node/register/transpile-only"],
+      
+            "args": ["testPad/encryptedTransactions.ts"],
+            
+            "cwd": "${workspaceRoot}",
+            "internalConsoleOptions": "openOnSessionStart",
+            "skipFiles": ["<node_internals>/**", "node_modules/**"],
+            "trace": true
+          }
     ]
 }
