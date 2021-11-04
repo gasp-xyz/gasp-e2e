@@ -235,3 +235,20 @@ export async function validateUserPaidFeeForFailedTx(
   );
   expect(poolBalances[1]).bnEqual(poolAmountFailedBought);
 }
+export function validateEncrytedTxEvents(
+  userEvents: { event: { data: any; method: any; section: any } }[]
+) {
+  const section = "encryptedTransactions";
+  const methods = [
+    "DecryptedTransactionSubmitted",
+    "SinglyEncryptedTxnSubmitted",
+    "DoublyEncryptedTxnSubmitted",
+    "CallsExecuted",
+    "Called",
+  ];
+  const onlyEncrypted = userEvents.filter(
+    (event) =>
+      event.event.section === section && methods.includes(event.event.method)
+  );
+  expect(onlyEncrypted.length).toEqual(methods.length);
+}

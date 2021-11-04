@@ -74,10 +74,10 @@ describe("Governance -> Voting -> Users", () => {
     // Check uer wallets.
     // TODO: Adjust and assert user wallets.
     const [voterBefore, voterAfter] = [
-      voter.node.userBalancesHistory.get(
-        voter.node.userBalancesHistory.keys().next().value
+      voter.userBalancesHistory.get(
+        voter.userBalancesHistory.keys().next().value
       ),
-      voter.node.userBalancesHistory.get(bootnode.lastBlock! - 1),
+      voter.userBalancesHistory.get(bootnode.lastBlock! - 1),
     ];
     testLog.getLog().debug(`UserWallet Info:
       Before:  ${JSON.stringify(voterBefore?.get(0))}

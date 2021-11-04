@@ -2,9 +2,11 @@
 import { ApiPromise } from "@polkadot/api";
 import { KeyringPair } from "@polkadot/keyring/types";
 import { utils, PrivateKey, PublicKey } from "eciesjs";
+import { Node } from "./Framework/Node/Node";
+import { waitForNBlocks } from "./utils";
 
 // eslint-disable-next-line @typescript-eslint/no-unused-vars
-function transferEncExample(api: ApiPromise, ferdie: KeyringPair) {
+export function transferEncExample(api: ApiPromise, ferdie: KeyringPair) {
   return api.createType("Vec<Call>", [
     api.tx.tokens.transfer(ferdie.address, 0, 7e15),
   ]);
@@ -14,7 +16,8 @@ export function createEncryptedTx(
   api: ApiPromise,
   alice_pub_key: any,
   user: KeyringPair,
-  transactions: any
+  transactions: any,
+  nonce: number
 ) {
   const tx_call = transactions;
   const dummy_private_key = getUserPrivateKey();
@@ -39,7 +42,7 @@ export function createEncryptedTx(
   // nonce most likely will be removed but should be unique for every transaction
   const tx = api.tx.encryptedTransactions.submitDoublyEncryptedTransaction(
     call,
-    1,
+    nonce,
     5000000000,
     user.address,
     user.address
@@ -72,4 +75,55 @@ export async function getUserPublicKey(api: ApiPromise, user: KeyringPair) {
   );
   const alice_pub_key = key_map[user.address];
   return alice_pub_key;
+}
+
+export function getUserEvents(
+  userAddress: string,
+  nonce: number,
+  node: Node,
+  txData: string
+) {
+  const userEvents: { event: { data: any; method: any; section: any } }[] = [];
+  node.extrinsicEvents.forEach((value: {}[]) => {
+    value.forEach((x: any) => {
+      if (
+        x.event.data.toString().includes(userAddress) &&
+        x.event.data.toJSON().includes(nonce)
+      ) {
+        userEvents.push(x);
+      }
+      if (x.event.data.toJSON().includes(txData)) {
+        userEvents.push(x);
+      }
+    });
+  });
+  return userEvents;
+}
+export async function waitUntilTxIsprocessed(
+  node: Node,
+  userAddress: string,
+  nonce: number,
+  expectedTxValue: string
+) {
+  let continueSearching = true;
+  const maxBlocks = 10;
+  let blockWaited = 0;
+  let userEvents = [];
+  do {
+    await waitForNBlocks(1);
+    blockWaited++;
+    userEvents = getUserEvents(userAddress, nonce, node, expectedTxValue);
+    // eslint-disable-next-line no-loop-func
+    userEvents.forEach((userEvent: any) => {
+      if (userEvent.event.data.toString().includes(expectedTxValue)) {
+        continueSearching = false;
+      }
+    });
+    if (continueSearching && blockWaited > maxBlocks) {
+      throw new Error(
+        "Transaction not found in the following " + maxBlocks + " blocks!"
+      );
+    }
+  } while (continueSearching);
+  return userEvents;
 }

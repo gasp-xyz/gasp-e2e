@@ -23,10 +23,9 @@
     "ganache-cli": "^6.12.2",
     "loadsh": "^0.0.4",
     "mangata-sdk": "0.8.4",
-    "mocha": "^9.1.3",
-    "nyc": "^15.1.0",
     "package.json": "^2.0.1",
     "prettier": "^2.3.0",
+    "secp256k1": "^4.0.2",
     "selenium-webdriver": "3.6.0",
     "truffle": "^5.4.7",
     "truffle-hdwallet-provider": "^1.0.17",
@@ -85,26 +84,6 @@
     "titleTemplate": "{title}"
   },
   "jest": {
-    "runner": "groups",
-    "verbose": true,
-    "bail": false,
-    "setupFilesAfterEnv": [
-      "jest-allure/dist/setup",
-      "./utils/setupJest.ts"
-    ],
-    "reporters": [
-      "default",
-      "jest-allure",
-      "jest-junit",
-      [
-        "jest-html-reporters",
-        {
-          "publicPath": "reports/html-report",
-          "filename": "report.html",
-          "expand": true,
-          "openReport": false
-        }
-      ]
-    ]
+    
   }
 }

@@ -11,6 +11,7 @@ declare global {
       bnEqual(expected: BN, message: string): R;
       collectionBnEqual(expected: BN[]): R;
       collectionBnEqual(expected: BN[], message: string): R;
+      bnGreaterThan(expected: BN): R;
     }
   }
 }
@@ -41,7 +42,6 @@ expect.extend({
     const pass =
       expected.length === received.length &&
       expected.every((value, index) => value.eq(received[index]));
-
     const [expectedMsg, receivedMsg] = [
       expected.toString(),
       received.toString(),
@@ -57,6 +57,27 @@ expect.extend({
       return {
         message: () =>
           `Expected: [ ${expectedMsg} ] \n  Actual: [ ${receivedMsg} ] \n ${message}`,
+        pass: false,
+      };
+    }
+  },
+  bnGreaterThan(expected: BN, received: BN, message = "") {
+    const pass = expected.gt(received);
+    const [expectedMsg, receivedMsg] = [
+      expected.toString(),
+      received.toString(),
+    ];
+
+    if (pass) {
+      return {
+        message: () =>
+          `Expected: ${expectedMsg} \n  to be Greater than: ${receivedMsg} \n ${message}`,
+        pass: true,
+      };
+    } else {
+      return {
+        message: () =>
+          `Expected: ${expectedMsg} \n  to be Greater than: ${receivedMsg} \n ${message}`,
         pass: false,
       };
     }

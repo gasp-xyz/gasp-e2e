@@ -1,13 +1,13 @@
 import * as uuid from "uuid";
 import { ApiPromise } from "@polkadot/api";
-import { initApi } from "../../api";
 import { testLog } from "../../Logger";
-import BN from "bn.js";
-import { GovernanceUser } from "../User/GovernanceUser";
+import { Mangata } from "mangata-sdk";
+import { assert } from "console";
+import { BaseUser } from "../User/BaseUser";
 
 export class Node {
   name: string;
-  wsPath: string;
+  wsPath: string | undefined;
   api?: ApiPromise;
 
   firstBlock?: number;
@@ -18,18 +18,25 @@ export class Node {
   subscription: any;
 
   electionEvents: Map<number, { candidates: any; members: any }> = new Map();
-  userBalancesHistory: Map<
+
+  extrinsicEvents: Map<
     number,
-    Map<number, { free: BN; reserved: BN; miscFrozen: BN; feeFrozen: BN }>
+    { event: { data: any; method: any; section: any } }[]
   > = new Map();
 
-  constructor(wsPath: string) {
+  constructor(wsPath?: string, api?: ApiPromise) {
     this.name = uuid.v4();
-    this.wsPath = wsPath;
+    if (!wsPath && !api) {
+      assert(false, "Node must have a wsPath or an api");
+    }
+    if (wsPath) this.wsPath = wsPath;
+    if (api) this.api = api;
   }
 
   async connect(): Promise<void> {
-    this.api = await initApi(this.wsPath);
+    if (this.wsPath) {
+      this.api = await Mangata.getInstance(this.wsPath).getApi();
+    }
   }
 
   async subscribeToHead(): Promise<void> {
@@ -68,16 +75,31 @@ export class Node {
       }
     );
   }
-  async subscribeToUserBalanceChanges(
-    candidate: GovernanceUser
-  ): Promise<void> {
+  async subscribeToUserBalanceChanges(user: BaseUser): Promise<void> {
     this.subscription = await this.api!.rpc.chain.subscribeNewHeads(
       async (lastHeader) => {
-        const balancesAtblock = await candidate.getAllUserTokens();
-        this.userBalancesHistory.set(
+        const balancesAtblock = await user.getAllUserTokens();
+        user.userBalancesHistory.set(
           lastHeader.number.toNumber(),
           balancesAtblock
         );
+      }
+    );
+  }
+  async subscribeToTransactionsEvents(): Promise<void> {
+    this.subscription = await this.api!.rpc.chain.subscribeNewHeads(
+      async (lastHeader) => {
+        const currentBlockEvents = await this.api!.query.system.events.at(
+          lastHeader.hash
+        );
+        const listEvents: {
+          event: { data: any; method: any; section: any };
+        }[] = [];
+
+        currentBlockEvents.forEach(({ event: { data, method, section } }) => {
+          listEvents.push({ event: { data, method, section } });
+        });
+        this.extrinsicEvents.set(lastHeader.number.toNumber(), listEvents);
       }
     );
   }
