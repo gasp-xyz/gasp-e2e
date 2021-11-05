@@ -58,6 +58,16 @@ export class BaseUser extends User {
       number,
       { free: BN; reserved: BN; miscFrozen: BN; feeFrozen: BN }
     > = new Map();
+    //Add by default MGA asset Id = 0.
+    if (userEntries.length === 0) {
+      tokenValues.set(0, {
+        free: new BN(0),
+        reserved: new BN(0),
+        miscFrozen: new BN(0),
+        feeFrozen: new BN(0),
+      });
+    }
+
     // Its an object like [ assetId, {free, reserved,feeFrozen,miscFrozen}]
     userEntries.forEach((value) => {
       tokenValues.set(

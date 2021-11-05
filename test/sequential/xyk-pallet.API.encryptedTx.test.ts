@@ -87,14 +87,6 @@ test("xyk-pallet - Encrypt a transaction - OK : Transfer", async () => {
     alice.userBalancesHistory.get(alice.node.lastBlock! - 1)!,
   ];
   const mangataAssetId = MGA_ASSET_ID.toNumber();
-  if (ferdieBefore.get(mangataAssetId)?.free === undefined) {
-    ferdieBefore.set(mangataAssetId, {
-      free: new BN(0),
-      reserved: new BN(0),
-      miscFrozen: new BN(0),
-      feeFrozen: new BN(0),
-    });
-  }
   expect(
     ferdieBefore.get(mangataAssetId)?.free.add(new BN((7e15).toString()))
   ).bnEqual(ferdieAfter.get(mangataAssetId)?.free!);
