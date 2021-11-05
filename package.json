@@ -82,8 +82,5 @@
     "suiteNameTemplate": "{filepath}",
     "classNameTemplate": "{classname}",
     "titleTemplate": "{title}"
-  },
-  "jest": {
-    
   }
 }
