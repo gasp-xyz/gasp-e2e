@@ -72,15 +72,20 @@ jobs:
         run:  |
           echo ${{ github.event.inputs.scriptName }}
           echo ${{ env.TEST_SCRIPT }}
-          if [ "${{ github.event.inputs.scriptName}}" != "" ]; then
+          if [ "$FROM_INPUT" != "" ]; then
+            echo "Input"
             echo "TEST_SCRIPT=${{ github.event.inputs.scriptName }}" >> $GITHUB_ENV
           fi
           echo ${{ env.TEST_SCRIPT }}
-          if [ "${{ github.event.client_payload.scriptName }}" != "" ]; then
+          if [ "$FROM_PAYLOAD" != "" ]; then
+            echo "Payload"
             echo "TEST_SCRIPT=${{ github.event.client_payload.scriptName }}" >> $GITHUB_ENV
           fi
           echo ${{ env.TEST_SCRIPT }}
           echo 'WEBHOOK_URL=${{ secrets.STG_SLACK_WEBHOOK }}' >> $GITHUB_ENV
+        env:
+          FROM_INPUT: ${{ github.event.inputs.scriptName }}
+          FROM_PAYLOAD: ${{ github.event.client_payload.scriptName }}
 
       - name: Start Selenoid Server
         uses: Xotabu4/selenoid-github-action@v2
