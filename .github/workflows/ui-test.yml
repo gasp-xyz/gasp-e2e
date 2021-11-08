@@ -76,9 +76,12 @@ jobs:
         
       - name: Set Script to run
         run:  |
+          echo ${{ github.event.inputs.scriptName }}
+          echo ${{ env.TEST_SCRIPT }}
           echo "TEST_SCRIPT=${{ github.event.inputs.scriptName || env.TEST_SCRIPT }}" >> $GITHUB_ENV
+          echo ${{ env.TEST_SCRIPT }}
           echo "TEST_SCRIPT=${{ github.event.client_payload.scriptName || env.TEST_SCRIPT }}" >> $GITHUB_ENV
-          echo ${{ github.event.client_payload.environment }}
+          echo ${{ env.TEST_SCRIPT }}
           echo 'WEBHOOK_URL=${{ secrets.STG_SLACK_WEBHOOK }}' >> $GITHUB_ENV
 
 
@@ -217,8 +220,9 @@ jobs:
         uses: bryannice/gitactions-slack-notification@2.0.0
         env:
           SLACK_INCOMING_WEBHOOK: ${{ env.WEBHOOK_URL }}
-          SLACK_MESSAGE: 'Slack Notification - results - OK - $(cat ./environment.properties)'
-          SLACK_TITLE: 'Test succeed in: '
+          SLACK_MESSAGE: 'Slack Notification - results - OK'
+          SLACK_COLOR: "#00ff11"
+          SLACK_TITLE: 'Test succeed in ${{ env.TEST_SCRIPT }} - ${{ env.UI_URL }} - ${{ env.API_URL }} '
           GITHUB_REF: 'https://mangata-finance.github.io/mangata-e2e/${{ github.run_number }}'
     
       - name: Slack Notification - Error
@@ -226,6 +230,7 @@ jobs:
         uses: bryannice/gitactions-slack-notification@2.0.0
         env:
           SLACK_INCOMING_WEBHOOK: ${{ env.WEBHOOK_URL }}
-          SLACK_MESSAGE: 'Slack Notification - results - NOOK $(cat ./environment.properties)'
-          SLACK_TITLE: 'Test failures'
+          SLACK_MESSAGE: 'Slack Notification - results - NOOK'
+          SLACK_COLOR: "#ff0011"
+          SLACK_TITLE: 'Test failures ${{ env.TEST_SCRIPT }} - ${{ env.UI_URL }} - ${{ env.API_URL }}'
           GITHUB_REF: 'https://mangata-finance.github.io/mangata-e2e/${{ github.run_number }}'
