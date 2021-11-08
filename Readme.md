@@ -1,5 +1,19 @@
-# E2E tests
-This project has been created to test individual and combined API functionalities that Mangata exchange offers.
+<p align="center">
+    <a href="https://https://mangata.finance/">
+    <img width="132" height="101" src="https://mangata.finance/images/logo-without-text.svg" class="attachment-full size-full" alt="Mangata brand" loading="lazy" /></a>
+</p>
+
+<h2 align="center">Mangata E2E Tests</h2>
+
+<p align="center">
+    This project has been created to test individual and combined API functionalities that Mangata exchange offers.
+</p>
+
+![Issues](https://img.shields.io/github/issues/mangata-finance/mangata-e2e)
+![Pull Request](https://img.shields.io/github/issues-pr/mangata-finance/mangata-e2e)
+![GitHub last commit](https://img.shields.io/github/last-commit/mangata-finance/mangata-e2e)
+![Build Status](https://img.shields.io/endpoint.svg?url=https%3A%2F%2Factions-badge.atrox.dev%2Fmangata-finance%2Fmangata-e2e%2Fbadge%3Fref%3Dmain&style=flat)
+![Language](https://img.shields.io/github/languages/top/mangata-finance/mangata-e2e)
 
 ---
 ###  How to setup
