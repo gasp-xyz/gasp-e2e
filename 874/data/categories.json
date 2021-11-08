@@ -1,0 +1,60 @@
+{
+  "uid" : "4b4757e66a1912dae1a509f688f20b0f",
+  "children" : [ {
+    "name" : "Product defects",
+    "children" : [ {
+      "name" : "Error: Failed: \"W[1] timeout in - signAndWaitTx - \\\" + 5HQ9Mm9L1HG53htEGDMsnhkkL7hEfF9vLstEQPtMLX5Gupqx + \\\" - \\\" + 650 + \\\" - \\\" + {\\\"isSigned\\\":true,\\\"method\\\":{\\\"args\\\":[{\\\"args\\\":[\\\"0\\\",\\\"5DcU2f4e1T2v8FQd92adWar3LpGsYpKeMib9y1ycDaHLA2JC\\\",\\\"10.0000 MUnit\\\"],\\\"method\\\":\\\"mint\\\",\\\"section\\\":\\\"tokens\\\"}],\\\"method\\\":\\\"sudo\\\",\\\"section\\\":\\\"sudo\\\"},\\\"era\\\":{\\\"MortalEra\\\":{\\\"period\\\":\\\"64\\\",\\\"phase\\\":\\\"55\\\"}},\\\"nonce\\\":\\\"650\\\",\\\"signature\\\":\\\"0xa6efed71cd909838406d36e69eb53728eec03e627bf4740725cea57ebf1827596892c3da3f8fe1038916008a11fe288a99f2ff9221bfb80fc8d1bdaa51330084\\\",\\\"signer\\\":\\\"5HQ9Mm9L1HG53htEGDMsnhkkL7hEfF9vLstEQPtMLX5Gupqx\\\",\\\"tip\\\":\\\"0\\\"}\"",
+      "children" : [ {
+        "name" : "As a User I can mint some tokens MGA - mETH",
+        "uid" : "bae61ee8e476063c",
+        "parentUid" : "db3915ab8f4bd89c7f77de6a39da66ad",
+        "status" : "failed",
+        "time" : {
+          "start" : 1636377272935,
+          "stop" : 1636377382657,
+          "duration" : 109722
+        },
+        "flaky" : true,
+        "newFailed" : false,
+        "parameters" : [ ]
+      } ],
+      "uid" : "db3915ab8f4bd89c7f77de6a39da66ad"
+    }, {
+      "name" : "Error: Failed: \"W[1] timeout in - signAndWaitTx - \\\" + 5HQ9Mm9L1HG53htEGDMsnhkkL7hEfF9vLstEQPtMLX5Gupqx + \\\" - \\\" + 662 + \\\" - \\\" + {\\\"isSigned\\\":true,\\\"method\\\":{\\\"args\\\":[{\\\"args\\\":[\\\"1\\\",\\\"5Hn8ZuH9LMfTsanXG4rJpJGJuZNtwPLdBEAN5YpGq9C5m9Be\\\",\\\"10.0000 kUnit\\\"],\\\"method\\\":\\\"mint\\\",\\\"section\\\":\\\"tokens\\\"}],\\\"method\\\":\\\"sudo\\\",\\\"section\\\":\\\"sudo\\\"},\\\"era\\\":{\\\"MortalEra\\\":{\\\"period\\\":\\\"64\\\",\\\"phase\\\":\\\"38\\\"}},\\\"nonce\\\":\\\"662\\\",\\\"signature\\\":\\\"0x3ef2334d45b132c8f76eb8515113b93e330a307319cd3a8254eddc0a1eb6165ba55abf729f3f7adf2c11da40679eb601a983e745324e1e38e60cb35c2824a280\\\",\\\"signer\\\":\\\"5HQ9Mm9L1HG53htEGDMsnhkkL7hEfF9vLstEQPtMLX5Gupqx\\\",\\\"tip\\\":\\\"0\\\"}\"",
+      "children" : [ {
+        "name" : "As a User I can mint in more than one pool [ MGA - mETH ] [ MGA - newTokn ] and get invested values",
+        "uid" : "fcb2738f86ee335f",
+        "parentUid" : "f04bed4493a5a2541c32cfdc77e68b6b",
+        "status" : "failed",
+        "time" : {
+          "start" : 1636377530622,
+          "stop" : 1636377698622,
+          "duration" : 168000
+        },
+        "flaky" : true,
+        "newFailed" : false,
+        "parameters" : [ ]
+      } ],
+      "uid" : "f04bed4493a5a2541c32cfdc77e68b6b"
+    }, {
+      "name" : "Error: 1014: Priority is too low: (4174855954130 vs 4071091024036): The transaction has too low priority to replace another transaction already in the pool.",
+      "children" : [ {
+        "name" : "As a User I can Withdraw ETH from Meta extension",
+        "uid" : "f8c204c758e0aba4",
+        "parentUid" : "2f8f27257c084ea403c53eec8ab18f04",
+        "status" : "failed",
+        "time" : {
+          "start" : 1636377820899,
+          "stop" : 1636377880398,
+          "duration" : 59499
+        },
+        "flaky" : true,
+        "newFailed" : false,
+        "parameters" : [ ]
+      } ],
+      "uid" : "2f8f27257c084ea403c53eec8ab18f04"
+    } ],
+    "uid" : "8fb3a91ba5aaf9de24cc8a92edc82b5d"
+  } ],
+  "name" : "categories"
+}
