@@ -226,9 +226,9 @@ jobs:
         uses: bryannice/gitactions-slack-notification@2.0.0
         env:
           SLACK_INCOMING_WEBHOOK: ${{ env.WEBHOOK_URL }}
-          SLACK_MESSAGE: 'Slack Notification - results - OK'
+          SLACK_TITLE: 'Slack Notification - results - OK'
           SLACK_COLOR: "#00ff11"
-          SLACK_TITLE: 'Test succeed in ${{ env.TEST_SCRIPT }} - ${{ env.UI_URL }} - ${{ env.API_URL }} '
+          SLACK_MESSAGE: 'Test succeed in [ ${{ env.TEST_SCRIPT }} ]- ${{ env.UI_URL }} - ${{ env.API_URL }} \n https://mangata-finance.github.io/mangata-e2e/${{ github.run_number }}'
           GITHUB_REF: 'https://mangata-finance.github.io/mangata-e2e/${{ github.run_number }}'
     
       - name: Slack Notification - Error
@@ -236,7 +236,7 @@ jobs:
         uses: bryannice/gitactions-slack-notification@2.0.0
         env:
           SLACK_INCOMING_WEBHOOK: ${{ env.WEBHOOK_URL }}
-          SLACK_MESSAGE: 'Slack Notification - results - NOOK'
+          SLACK_TITLE: 'Slack Notification - results - NOOK'
           SLACK_COLOR: "#ff0011"
-          SLACK_TITLE: 'Test failures ${{ env.TEST_SCRIPT }} - ${{ env.UI_URL }} - ${{ env.API_URL }}'
+          SLACK_MESSAGE: 'Test failures [ ${{ env.TEST_SCRIPT }} ]- ${{ env.UI_URL }} - ${{ env.API_URL }} \n https://mangata-finance.github.io/mangata-e2e/${{ github.run_number }}'
           GITHUB_REF: 'https://mangata-finance.github.io/mangata-e2e/${{ github.run_number }}'
