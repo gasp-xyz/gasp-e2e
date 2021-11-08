@@ -1,0 +1,66 @@
+{
+  "uid" : "7e27bd0aebdb543a",
+  "name" : "SDK- Nonce management - user",
+  "fullName" : "SDK test - Nonce tests - user.SDK- Nonce management - user",
+  "historyId" : "3b25cb446d6fefe9b79c7912ed4b96aa",
+  "time" : {
+    "start" : 1636385875442,
+    "stop" : 1636385894243,
+    "duration" : 18801
+  },
+  "description" : "",
+  "descriptionHtml" : "",
+  "status" : "passed",
+  "flaky" : false,
+  "newFailed" : false,
+  "beforeStages" : [ ],
+  "afterStages" : [ ],
+  "labels" : [ {
+    "name" : "suite",
+    "value" : "SDK test - Nonce tests - user"
+  }, {
+    "name" : "testClass",
+    "value" : "SDK test - Nonce tests - user"
+  }, {
+    "name" : "testMethod",
+    "value" : "SDK- Nonce management - user"
+  }, {
+    "name" : "package",
+    "value" : "SDK test - Nonce tests - user"
+  }, {
+    "name" : "resultFormat",
+    "value" : "allure1"
+  } ],
+  "parameters" : [ ],
+  "links" : [ ],
+  "hidden" : false,
+  "retry" : false,
+  "extra" : {
+    "severity" : "normal",
+    "retries" : [ ],
+    "categories" : [ ],
+    "history" : {
+      "statistic" : {
+        "failed" : 0,
+        "broken" : 0,
+        "skipped" : 0,
+        "passed" : 2,
+        "unknown" : 0,
+        "total" : 2
+      },
+      "items" : [ {
+        "uid" : "3f03a580622e0466",
+        "reportUrl" : "https://mangata-finance.github.io/mangata-e2e/881//#testresult/3f03a580622e0466",
+        "status" : "passed",
+        "time" : {
+          "start" : 1636384987735,
+          "stop" : 1636385006381,
+          "duration" : 18646
+        }
+      } ]
+    },
+    "tags" : [ ]
+  },
+  "source" : "7e27bd0aebdb543a.json",
+  "parameterValues" : [ ]
+}

@@ -1,0 +1,104 @@
+{
+  "uid" : "98d3104e051c652961429bf95fa0b5d6",
+  "children" : [ {
+    "name" : "SDK test - Nonce tests - user",
+    "children" : [ {
+      "name" : "SDK- Nonce management - user",
+      "uid" : "7e27bd0aebdb543a",
+      "parentUid" : "f4d0d433dde3f5f0852d12aa006dccc9",
+      "status" : "passed",
+      "time" : {
+        "start" : 1636385875442,
+        "stop" : 1636385894243,
+        "duration" : 18801
+      },
+      "flaky" : false,
+      "newFailed" : false,
+      "parameters" : [ ]
+    }, {
+      "name" : "SDK- Nonce management - user - parallel",
+      "uid" : "e6585827729682bc",
+      "parentUid" : "f4d0d433dde3f5f0852d12aa006dccc9",
+      "status" : "passed",
+      "time" : {
+        "start" : 1636385894243,
+        "stop" : 1636385911573,
+        "duration" : 17330
+      },
+      "flaky" : false,
+      "newFailed" : false,
+      "parameters" : [ ]
+    }, {
+      "name" : "SDK- Nonce management - user - future Tx-",
+      "uid" : "b511d9821906c15f",
+      "parentUid" : "f4d0d433dde3f5f0852d12aa006dccc9",
+      "status" : "passed",
+      "time" : {
+        "start" : 1636385911573,
+        "stop" : 1636385947700,
+        "duration" : 36127
+      },
+      "flaky" : false,
+      "newFailed" : false,
+      "parameters" : [ ]
+    }, {
+      "name" : "SDK- Nonce management - Extrinsic failed",
+      "uid" : "9cd3a97bb3bc57b3",
+      "parentUid" : "f4d0d433dde3f5f0852d12aa006dccc9",
+      "status" : "passed",
+      "time" : {
+        "start" : 1636385947700,
+        "stop" : 1636385966428,
+        "duration" : 18728
+      },
+      "flaky" : false,
+      "newFailed" : false,
+      "parameters" : [ ]
+    }, {
+      "name" : "SDK- Nonce management - Using custom nonce",
+      "uid" : "e81887e1f10ae420",
+      "parentUid" : "f4d0d433dde3f5f0852d12aa006dccc9",
+      "status" : "passed",
+      "time" : {
+        "start" : 1636385966428,
+        "stop" : 1636386001222,
+        "duration" : 34794
+      },
+      "flaky" : false,
+      "newFailed" : false,
+      "parameters" : [ ]
+    }, {
+      "name" : "[BUG?] SDK- Nonce management - Transaction outdated",
+      "uid" : "2c9de4b8d85ff16a",
+      "parentUid" : "f4d0d433dde3f5f0852d12aa006dccc9",
+      "status" : "skipped",
+      "time" : {
+        "start" : 1636386001222,
+        "stop" : 1636386001222,
+        "duration" : 0
+      },
+      "flaky" : false,
+      "newFailed" : false,
+      "parameters" : [ ]
+    } ],
+    "uid" : "f4d0d433dde3f5f0852d12aa006dccc9"
+  }, {
+    "name" : "SDK test - Nonce tests - Errors",
+    "children" : [ {
+      "name" : "[BUG?] SDK- Nonce management - RPC Failure - Not enough balance",
+      "uid" : "d42f4ebf71a46d4b",
+      "parentUid" : "bb4ff585647fd795bce17a9c7e14da5d",
+      "status" : "skipped",
+      "time" : {
+        "start" : 1636386001228,
+        "stop" : 1636386001228,
+        "duration" : 0
+      },
+      "flaky" : false,
+      "newFailed" : false,
+      "parameters" : [ ]
+    } ],
+    "uid" : "bb4ff585647fd795bce17a9c7e14da5d"
+  } ],
+  "name" : "suites"
+}
