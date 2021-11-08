@@ -1,0 +1,26 @@
+{
+  "uid" : "4b4757e66a1912dae1a509f688f20b0f",
+  "children" : [ {
+    "name" : "Product defects",
+    "children" : [ {
+      "name" : "TimeoutError: Waiting until element is visible\n                Wait timed out after 20119ms",
+      "children" : [ {
+        "name" : "As a User I can Swap All MGA tokens -> newToken",
+        "uid" : "156570afd0d356a6",
+        "parentUid" : "3ccec1a99004ece6ef9c0f5bc692d936",
+        "status" : "failed",
+        "time" : {
+          "start" : 1636388588453,
+          "stop" : 1636388763464,
+          "duration" : 175011
+        },
+        "flaky" : false,
+        "newFailed" : true,
+        "parameters" : [ ]
+      } ],
+      "uid" : "3ccec1a99004ece6ef9c0f5bc692d936"
+    } ],
+    "uid" : "8fb3a91ba5aaf9de24cc8a92edc82b5d"
+  } ],
+  "name" : "categories"
+}

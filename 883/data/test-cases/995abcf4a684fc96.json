@@ -1,0 +1,66 @@
+{
+  "uid" : "995abcf4a684fc96",
+  "name" : "Modal contains currencies and amounts when Swapping",
+  "fullName" : "UI tests - A user can see the new Modal.Modal contains currencies and amounts when Swapping",
+  "historyId" : "901576b2bd5e9134b5da9513553a0f3f",
+  "time" : {
+    "start" : 1636388983442,
+    "stop" : 1636389096213,
+    "duration" : 112771
+  },
+  "description" : "",
+  "descriptionHtml" : "",
+  "status" : "passed",
+  "flaky" : false,
+  "newFailed" : false,
+  "beforeStages" : [ ],
+  "afterStages" : [ ],
+  "labels" : [ {
+    "name" : "suite",
+    "value" : "UI tests - A user can see the new Modal"
+  }, {
+    "name" : "testClass",
+    "value" : "UI tests - A user can see the new Modal"
+  }, {
+    "name" : "testMethod",
+    "value" : "Modal contains currencies and amounts when Swapping"
+  }, {
+    "name" : "package",
+    "value" : "UI tests - A user can see the new Modal"
+  }, {
+    "name" : "resultFormat",
+    "value" : "allure1"
+  } ],
+  "parameters" : [ ],
+  "links" : [ ],
+  "hidden" : false,
+  "retry" : false,
+  "extra" : {
+    "severity" : "normal",
+    "retries" : [ ],
+    "categories" : [ ],
+    "history" : {
+      "statistic" : {
+        "failed" : 0,
+        "broken" : 0,
+        "skipped" : 0,
+        "passed" : 2,
+        "unknown" : 0,
+        "total" : 2
+      },
+      "items" : [ {
+        "uid" : "14b006ff3ecaf8ec",
+        "reportUrl" : "https://mangata-finance.github.io/mangata-e2e/879//#testresult/14b006ff3ecaf8ec",
+        "status" : "passed",
+        "time" : {
+          "start" : 1636384764851,
+          "stop" : 1636384871569,
+          "duration" : 106718
+        }
+      } ]
+    },
+    "tags" : [ ]
+  },
+  "source" : "995abcf4a684fc96.json",
+  "parameterValues" : [ ]
+}

@@ -1,0 +1,66 @@
+{
+  "uid" : "cffd2abe0e34849c",
+  "name" : "Modal contains currencies and amounts when providing liquidity",
+  "fullName" : "UI tests - A user can see the new Modal.Modal contains currencies and amounts when providing liquidity",
+  "historyId" : "8f851e11da5b03f8366fe7834b8b806f",
+  "time" : {
+    "start" : 1636389096213,
+    "stop" : 1636389210316,
+    "duration" : 114103
+  },
+  "description" : "",
+  "descriptionHtml" : "",
+  "status" : "passed",
+  "flaky" : false,
+  "newFailed" : false,
+  "beforeStages" : [ ],
+  "afterStages" : [ ],
+  "labels" : [ {
+    "name" : "suite",
+    "value" : "UI tests - A user can see the new Modal"
+  }, {
+    "name" : "testClass",
+    "value" : "UI tests - A user can see the new Modal"
+  }, {
+    "name" : "testMethod",
+    "value" : "Modal contains currencies and amounts when providing liquidity"
+  }, {
+    "name" : "package",
+    "value" : "UI tests - A user can see the new Modal"
+  }, {
+    "name" : "resultFormat",
+    "value" : "allure1"
+  } ],
+  "parameters" : [ ],
+  "links" : [ ],
+  "hidden" : false,
+  "retry" : false,
+  "extra" : {
+    "severity" : "normal",
+    "retries" : [ ],
+    "categories" : [ ],
+    "history" : {
+      "statistic" : {
+        "failed" : 0,
+        "broken" : 0,
+        "skipped" : 0,
+        "passed" : 2,
+        "unknown" : 0,
+        "total" : 2
+      },
+      "items" : [ {
+        "uid" : "f3e4f079a566101",
+        "reportUrl" : "https://mangata-finance.github.io/mangata-e2e/879//#testresult/f3e4f079a566101",
+        "status" : "passed",
+        "time" : {
+          "start" : 1636384871569,
+          "stop" : 1636384979852,
+          "duration" : 108283
+        }
+      } ]
+    },
+    "tags" : [ ]
+  },
+  "source" : "cffd2abe0e34849c.json",
+  "parameterValues" : [ ]
+}
