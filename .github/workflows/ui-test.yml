@@ -79,6 +79,8 @@ jobs:
           echo "TEST_SCRIPT=${{ github.event.inputs.scriptName || env.TEST_SCRIPT }}" >> $GITHUB_ENV
           echo "TEST_SCRIPT=${{ github.event.client_payload.scriptName || env.TEST_SCRIPT }}" >> $GITHUB_ENV
           echo ${{ github.event.client_payload.environment }}
+          echo 'WEBHOOK_URL=${{ secrets.STG_SLACK_WEBHOOK }}' >> $GITHUB_ENV
+
 
       - name: Set Configuration - Staging
         if: contains(github.event.client_payload.environment, 'staging') || contains(github.event.inputs.environment, 'staging')
@@ -88,6 +90,7 @@ jobs:
           echo 'ETH_APP_ADDRESS=0x4C5B51CFC44865Ac2DE4c8Ebd1df91d02d15523C' >> $GITHUB_ENV
           echo 'ETH_20_APP_ADDRESS=0x944f7e5Ef36e09F94Bfece0C455A72963166F172' >> $GITHUB_ENV
           echo 'MNEMONIC_META=${{ secrets.MNEMONIC_META_STG }}' >> $GITHUB_ENV
+          echo 'WEBHOOK_URL=${{ secrets.STG_SLACK_WEBHOOK }}' >> $GITHUB_ENV
 
       - name: Set Configuration - Develop
         if: contains(github.event.client_payload.environment, 'develop') || contains(github.event.inputs.environment, 'develop')
@@ -207,3 +210,22 @@ jobs:
             state: 'success'
             sha: ${{ github.event.pull_request.head.sha  || github.sha }}
             target_url: 'https://mangata-finance.github.io/mangata-e2e/${{ github.run_number }}'
+
+      
+      - name: Slack Notification - OK
+        if: success()
+        uses: bryannice/gitactions-slack-notification@2.0.0
+          env:
+            SLACK_INCOMING_WEBHOOK: ${{ secrets.WEBHOOK_URL }}
+            SLACK_MESSAGE: 'Slack Notification - results - OK'
+            SLACK_TITLE: 'Test succeed in: '
+            GITHUB_REF: 'https://mangata-finance.github.io/mangata-e2e/${{ github.run_number }}'
+      
+      - name: Slack Notification - Error
+        if: failure()
+        uses: bryannice/gitactions-slack-notification@2.0.0
+          env:
+            SLACK_INCOMING_WEBHOOK: ${{ secrets.WEBHOOK_URL }}
+            SLACK_MESSAGE: 'Slack Notification - results - NOOK $(cat ./environment.properties)'
+            SLACK_TITLE: 'Test failures'
+            GITHUB_REF: 'https://mangata-finance.github.io/mangata-e2e/${{ github.run_number }}'
