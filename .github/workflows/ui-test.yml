@@ -68,22 +68,26 @@ jobs:
       ETH_20_APP_ADDRESS: https://kovan.infura.io/v3/3592e9c20d9b4169a394a608a310c85f
 
     steps:  
+      - name: Set Script to run
+        run:  |
+          echo ${{ github.event.inputs.scriptName }}
+          echo ${{ env.TEST_SCRIPT }}
+          if [ "${{ github.event.inputs.scriptName}}" != "" ]; then
+            echo "TEST_SCRIPT=${{ github.event.inputs.scriptName }}" >> $GITHUB_ENV
+          fi
+          echo ${{ env.TEST_SCRIPT }}
+          if [ "${{ github.event.client_payload.scriptName }}" != "" ]; then
+            echo "TEST_SCRIPT=${{ github.event.client_payload.scriptName }}" >> $GITHUB_ENV
+          fi
+          echo ${{ env.TEST_SCRIPT }}
+          echo 'WEBHOOK_URL=${{ secrets.STG_SLACK_WEBHOOK }}' >> $GITHUB_ENV
+
       - name: Start Selenoid Server
         uses: Xotabu4/selenoid-github-action@v2
         with:
           selenoid-start-arguments: |
             --args "-timeout 300s" --browsers 'chrome' --last-versions 2
         
-      - name: Set Script to run
-        run:  |
-          echo ${{ github.event.inputs.scriptName }}
-          echo ${{ env.TEST_SCRIPT }}
-          echo "TEST_SCRIPT=${{ github.event.inputs.scriptName || env.TEST_SCRIPT }}" >> $GITHUB_ENV
-          echo ${{ env.TEST_SCRIPT }}
-          echo "TEST_SCRIPT=${{ github.event.client_payload.scriptName || env.TEST_SCRIPT }}" >> $GITHUB_ENV
-          echo ${{ env.TEST_SCRIPT }}
-          echo 'WEBHOOK_URL=${{ secrets.STG_SLACK_WEBHOOK }}' >> $GITHUB_ENV
-
 
       - name: Set Configuration - Staging
         if: contains(github.event.client_payload.environment, 'staging') || contains(github.event.inputs.environment, 'staging')
