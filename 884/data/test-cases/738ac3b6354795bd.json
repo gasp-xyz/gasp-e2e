@@ -1,0 +1,75 @@
+{
+  "uid" : "738ac3b6354795bd",
+  "name" : "As a User I can mint some tokens MGA - mETH",
+  "fullName" : "UI tests - A user can swap and mint tokens.As a User I can mint some tokens MGA - mETH",
+  "historyId" : "d61eda4c5635d823f9db1036b3f5b551",
+  "time" : {
+    "start" : 1636421498344,
+    "stop" : 1636421628818,
+    "duration" : 130474
+  },
+  "description" : "",
+  "descriptionHtml" : "",
+  "status" : "passed",
+  "flaky" : false,
+  "newFailed" : false,
+  "beforeStages" : [ ],
+  "afterStages" : [ ],
+  "labels" : [ {
+    "name" : "suite",
+    "value" : "UI tests - A user can swap and mint tokens"
+  }, {
+    "name" : "testClass",
+    "value" : "UI tests - A user can swap and mint tokens"
+  }, {
+    "name" : "testMethod",
+    "value" : "As a User I can mint some tokens MGA - mETH"
+  }, {
+    "name" : "package",
+    "value" : "UI tests - A user can swap and mint tokens"
+  }, {
+    "name" : "resultFormat",
+    "value" : "allure1"
+  } ],
+  "parameters" : [ ],
+  "links" : [ ],
+  "hidden" : false,
+  "retry" : false,
+  "extra" : {
+    "severity" : "normal",
+    "retries" : [ ],
+    "categories" : [ ],
+    "history" : {
+      "statistic" : {
+        "failed" : 0,
+        "broken" : 0,
+        "skipped" : 0,
+        "passed" : 3,
+        "unknown" : 0,
+        "total" : 3
+      },
+      "items" : [ {
+        "uid" : "33351f554462cf37",
+        "reportUrl" : "https://mangata-finance.github.io/mangata-e2e/883//#testresult/33351f554462cf37",
+        "status" : "passed",
+        "time" : {
+          "start" : 1636387791740,
+          "stop" : 1636387938622,
+          "duration" : 146882
+        }
+      }, {
+        "uid" : "5dca0fc2a9b77640",
+        "reportUrl" : "https://mangata-finance.github.io/mangata-e2e/879//#testresult/5dca0fc2a9b77640",
+        "status" : "passed",
+        "time" : {
+          "start" : 1636383627093,
+          "stop" : 1636383762594,
+          "duration" : 135501
+        }
+      } ]
+    },
+    "tags" : [ ]
+  },
+  "source" : "738ac3b6354795bd.json",
+  "parameterValues" : [ ]
+}

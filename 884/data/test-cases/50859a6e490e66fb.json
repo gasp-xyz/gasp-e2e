@@ -1,0 +1,75 @@
+{
+  "uid" : "50859a6e490e66fb",
+  "name" : "As a User I get feedback when extensions are installed and correctly setup",
+  "fullName" : "UI tests - Extension management.As a User I get feedback when extensions are installed and correctly setup",
+  "historyId" : "7365b4e6dd98ca21f75fccaf5b1ca8dd",
+  "time" : {
+    "start" : 1636424079476,
+    "stop" : 1636424144573,
+    "duration" : 65097
+  },
+  "description" : "",
+  "descriptionHtml" : "",
+  "status" : "passed",
+  "flaky" : false,
+  "newFailed" : false,
+  "beforeStages" : [ ],
+  "afterStages" : [ ],
+  "labels" : [ {
+    "name" : "suite",
+    "value" : "UI tests - Extension management"
+  }, {
+    "name" : "testClass",
+    "value" : "UI tests - Extension management"
+  }, {
+    "name" : "testMethod",
+    "value" : "As a User I get feedback when extensions are installed and correctly setup"
+  }, {
+    "name" : "package",
+    "value" : "UI tests - Extension management"
+  }, {
+    "name" : "resultFormat",
+    "value" : "allure1"
+  } ],
+  "parameters" : [ ],
+  "links" : [ ],
+  "hidden" : false,
+  "retry" : false,
+  "extra" : {
+    "severity" : "normal",
+    "retries" : [ ],
+    "categories" : [ ],
+    "history" : {
+      "statistic" : {
+        "failed" : 0,
+        "broken" : 0,
+        "skipped" : 0,
+        "passed" : 3,
+        "unknown" : 0,
+        "total" : 3
+      },
+      "items" : [ {
+        "uid" : "72bf2d774909b9c0",
+        "reportUrl" : "https://mangata-finance.github.io/mangata-e2e/883//#testresult/72bf2d774909b9c0",
+        "status" : "passed",
+        "time" : {
+          "start" : 1636390410327,
+          "stop" : 1636390486533,
+          "duration" : 76206
+        }
+      }, {
+        "uid" : "4798957c3af55a45",
+        "reportUrl" : "https://mangata-finance.github.io/mangata-e2e/879//#testresult/4798957c3af55a45",
+        "status" : "passed",
+        "time" : {
+          "start" : 1636386143963,
+          "stop" : 1636386213288,
+          "duration" : 69325
+        }
+      } ]
+    },
+    "tags" : [ ]
+  },
+  "source" : "50859a6e490e66fb.json",
+  "parameterValues" : [ ]
+}

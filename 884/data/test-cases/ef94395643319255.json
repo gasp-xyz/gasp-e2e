@@ -1,0 +1,75 @@
+{
+  "uid" : "ef94395643319255",
+  "name" : "As a User I can Withdraw ETH from Meta extension",
+  "fullName" : "UI main tests - Withdraw - ETH.As a User I can Withdraw ETH from Meta extension",
+  "historyId" : "eac55faabce1aad19e0827a3afd71b78",
+  "time" : {
+    "start" : 1636422087105,
+    "stop" : 1636422235088,
+    "duration" : 147983
+  },
+  "description" : "",
+  "descriptionHtml" : "",
+  "status" : "passed",
+  "flaky" : false,
+  "newFailed" : false,
+  "beforeStages" : [ ],
+  "afterStages" : [ ],
+  "labels" : [ {
+    "name" : "suite",
+    "value" : "UI main tests - Withdraw - ETH"
+  }, {
+    "name" : "testClass",
+    "value" : "UI main tests - Withdraw - ETH"
+  }, {
+    "name" : "testMethod",
+    "value" : "As a User I can Withdraw ETH from Meta extension"
+  }, {
+    "name" : "package",
+    "value" : "UI main tests - Withdraw - ETH"
+  }, {
+    "name" : "resultFormat",
+    "value" : "allure1"
+  } ],
+  "parameters" : [ ],
+  "links" : [ ],
+  "hidden" : false,
+  "retry" : false,
+  "extra" : {
+    "severity" : "normal",
+    "retries" : [ ],
+    "categories" : [ ],
+    "history" : {
+      "statistic" : {
+        "failed" : 0,
+        "broken" : 0,
+        "skipped" : 0,
+        "passed" : 3,
+        "unknown" : 0,
+        "total" : 3
+      },
+      "items" : [ {
+        "uid" : "f2e56532995ecc22",
+        "reportUrl" : "https://mangata-finance.github.io/mangata-e2e/883//#testresult/f2e56532995ecc22",
+        "status" : "passed",
+        "time" : {
+          "start" : 1636388421180,
+          "stop" : 1636388586455,
+          "duration" : 165275
+        }
+      }, {
+        "uid" : "1c28d95fd4bb7cca",
+        "reportUrl" : "https://mangata-finance.github.io/mangata-e2e/879//#testresult/1c28d95fd4bb7cca",
+        "status" : "passed",
+        "time" : {
+          "start" : 1636384223018,
+          "stop" : 1636384386467,
+          "duration" : 163449
+        }
+      } ]
+    },
+    "tags" : [ ]
+  },
+  "source" : "ef94395643319255.json",
+  "parameterValues" : [ ]
+}

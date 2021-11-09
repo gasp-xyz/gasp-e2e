@@ -1,0 +1,75 @@
+{
+  "uid" : "a47f7a7c2fa53779",
+  "name" : "As a User I can get test tokens from the faucet",
+  "fullName" : "UI tests - Get Tokens from Faucet.As a User I can get test tokens from the faucet",
+  "historyId" : "eec88a440f5cd4c786967d8a5233a8c0",
+  "time" : {
+    "start" : 1636423920864,
+    "stop" : 1636424067597,
+    "duration" : 146733
+  },
+  "description" : "",
+  "descriptionHtml" : "",
+  "status" : "passed",
+  "flaky" : false,
+  "newFailed" : false,
+  "beforeStages" : [ ],
+  "afterStages" : [ ],
+  "labels" : [ {
+    "name" : "suite",
+    "value" : "UI tests - Get Tokens from Faucet"
+  }, {
+    "name" : "testClass",
+    "value" : "UI tests - Get Tokens from Faucet"
+  }, {
+    "name" : "testMethod",
+    "value" : "As a User I can get test tokens from the faucet"
+  }, {
+    "name" : "package",
+    "value" : "UI tests - Get Tokens from Faucet"
+  }, {
+    "name" : "resultFormat",
+    "value" : "allure1"
+  } ],
+  "parameters" : [ ],
+  "links" : [ ],
+  "hidden" : false,
+  "retry" : false,
+  "extra" : {
+    "severity" : "normal",
+    "retries" : [ ],
+    "categories" : [ ],
+    "history" : {
+      "statistic" : {
+        "failed" : 0,
+        "broken" : 0,
+        "skipped" : 0,
+        "passed" : 3,
+        "unknown" : 0,
+        "total" : 3
+      },
+      "items" : [ {
+        "uid" : "c9623c464973ec3d",
+        "reportUrl" : "https://mangata-finance.github.io/mangata-e2e/883//#testresult/c9623c464973ec3d",
+        "status" : "passed",
+        "time" : {
+          "start" : 1636390216732,
+          "stop" : 1636390397931,
+          "duration" : 181199
+        }
+      }, {
+        "uid" : "8034b0a86a571b4b",
+        "reportUrl" : "https://mangata-finance.github.io/mangata-e2e/879//#testresult/8034b0a86a571b4b",
+        "status" : "passed",
+        "time" : {
+          "start" : 1636385957673,
+          "stop" : 1636386131512,
+          "duration" : 173839
+        }
+      } ]
+    },
+    "tags" : [ ]
+  },
+  "source" : "a47f7a7c2fa53779.json",
+  "parameterValues" : [ ]
+}
