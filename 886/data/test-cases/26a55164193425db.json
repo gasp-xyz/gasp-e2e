@@ -1,0 +1,84 @@
+{
+  "uid" : "26a55164193425db",
+  "name" : "As a User I get the right values for Pool removal P[2499999999999999999, 5000000000000000000] - I-> 2 -Expected - 0.049 , 0.100",
+  "fullName" : "Accuracy tests:.As a User I get the right values for Pool removal P[2499999999999999999, 5000000000000000000] - I-> 2 -Expected - 0.049 , 0.100",
+  "historyId" : "a0f9e8ee4b036a009dfe858e1f3bc7d3",
+  "time" : {
+    "start" : 1636423454320,
+    "stop" : 1636423570941,
+    "duration" : 116621
+  },
+  "description" : "",
+  "descriptionHtml" : "",
+  "status" : "passed",
+  "flaky" : false,
+  "newFailed" : false,
+  "beforeStages" : [ ],
+  "afterStages" : [ ],
+  "labels" : [ {
+    "name" : "suite",
+    "value" : "Accuracy tests:"
+  }, {
+    "name" : "testClass",
+    "value" : "Accuracy tests:"
+  }, {
+    "name" : "testMethod",
+    "value" : "As a User I get the right values for Pool removal P[2499999999999999999, 5000000000000000000] - I-> 2 -Expected - 0.049 , 0.100"
+  }, {
+    "name" : "package",
+    "value" : "Accuracy tests:"
+  }, {
+    "name" : "resultFormat",
+    "value" : "allure1"
+  } ],
+  "parameters" : [ ],
+  "links" : [ ],
+  "hidden" : false,
+  "retry" : false,
+  "extra" : {
+    "severity" : "normal",
+    "retries" : [ ],
+    "categories" : [ ],
+    "history" : {
+      "statistic" : {
+        "failed" : 0,
+        "broken" : 0,
+        "skipped" : 0,
+        "passed" : 4,
+        "unknown" : 0,
+        "total" : 4
+      },
+      "items" : [ {
+        "uid" : "224ba424446741db",
+        "reportUrl" : "https://mangata-finance.github.io/mangata-e2e/884//#testresult/224ba424446741db",
+        "status" : "passed",
+        "time" : {
+          "start" : 1636423015900,
+          "stop" : 1636423118601,
+          "duration" : 102701
+        }
+      }, {
+        "uid" : "f12b58970fa39d3",
+        "reportUrl" : "https://mangata-finance.github.io/mangata-e2e/883//#testresult/f12b58970fa39d3",
+        "status" : "passed",
+        "time" : {
+          "start" : 1636389427799,
+          "stop" : 1636389537722,
+          "duration" : 109923
+        }
+      }, {
+        "uid" : "c14bedc3c500c0f5",
+        "reportUrl" : "https://mangata-finance.github.io/mangata-e2e/879//#testresult/c14bedc3c500c0f5",
+        "status" : "passed",
+        "time" : {
+          "start" : 1636385192398,
+          "stop" : 1636385298972,
+          "duration" : 106574
+        }
+      } ]
+    },
+    "tags" : [ ]
+  },
+  "source" : "26a55164193425db.json",
+  "parameterValues" : [ ]
+}

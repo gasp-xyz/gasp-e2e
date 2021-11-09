@@ -1,0 +1,84 @@
+{
+  "uid" : "aa1e9c714a3630e1",
+  "name" : "Validate that Frontend retrieves AssetInfo data",
+  "fullName" : "UI tests: Infra.Validate that Frontend retrieves AssetInfo data",
+  "historyId" : "88844f09ab0dc66902787b918fcff472",
+  "time" : {
+    "start" : 1636424670473,
+    "stop" : 1636424703442,
+    "duration" : 32969
+  },
+  "description" : "",
+  "descriptionHtml" : "",
+  "status" : "passed",
+  "flaky" : false,
+  "newFailed" : false,
+  "beforeStages" : [ ],
+  "afterStages" : [ ],
+  "labels" : [ {
+    "name" : "suite",
+    "value" : "UI tests: Infra"
+  }, {
+    "name" : "testClass",
+    "value" : "UI tests: Infra"
+  }, {
+    "name" : "testMethod",
+    "value" : "Validate that Frontend retrieves AssetInfo data"
+  }, {
+    "name" : "package",
+    "value" : "UI tests: Infra"
+  }, {
+    "name" : "resultFormat",
+    "value" : "allure1"
+  } ],
+  "parameters" : [ ],
+  "links" : [ ],
+  "hidden" : false,
+  "retry" : false,
+  "extra" : {
+    "severity" : "normal",
+    "retries" : [ ],
+    "categories" : [ ],
+    "history" : {
+      "statistic" : {
+        "failed" : 0,
+        "broken" : 0,
+        "skipped" : 0,
+        "passed" : 4,
+        "unknown" : 0,
+        "total" : 4
+      },
+      "items" : [ {
+        "uid" : "7cfa1fc20a295a85",
+        "reportUrl" : "https://mangata-finance.github.io/mangata-e2e/884//#testresult/7cfa1fc20a295a85",
+        "status" : "passed",
+        "time" : {
+          "start" : 1636424149518,
+          "stop" : 1636424168466,
+          "duration" : 18948
+        }
+      }, {
+        "uid" : "48e3f1e1d8a7c8a0",
+        "reportUrl" : "https://mangata-finance.github.io/mangata-e2e/883//#testresult/48e3f1e1d8a7c8a0",
+        "status" : "passed",
+        "time" : {
+          "start" : 1636390492577,
+          "stop" : 1636390517628,
+          "duration" : 25051
+        }
+      }, {
+        "uid" : "6037223f9b74bf22",
+        "reportUrl" : "https://mangata-finance.github.io/mangata-e2e/879//#testresult/6037223f9b74bf22",
+        "status" : "passed",
+        "time" : {
+          "start" : 1636386218257,
+          "stop" : 1636386242577,
+          "duration" : 24320
+        }
+      } ]
+    },
+    "tags" : [ ]
+  },
+  "source" : "aa1e9c714a3630e1.json",
+  "parameterValues" : [ ]
+}
