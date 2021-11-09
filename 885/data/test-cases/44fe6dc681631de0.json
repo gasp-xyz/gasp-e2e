@@ -1,0 +1,100 @@
+{
+  "uid" : "44fe6dc681631de0",
+  "name" : "As a User I can Swap All MGA tokens -> newToken",
+  "fullName" : "UI tests - A user can use MAX:.As a User I can Swap All MGA tokens -> newToken",
+  "historyId" : "b4431a2043f5c89a607fb3d724e06254",
+  "time" : {
+    "start" : 1636422230354,
+    "stop" : 1636422394864,
+    "duration" : 164510
+  },
+  "description" : "",
+  "descriptionHtml" : "",
+  "status" : "failed",
+  "statusMessage" : "Error: Failed: \"TIMEOUT: Waiting for //*[@class = 'Sidebar__loading'] to dissapear\"",
+  "statusTrace" : "Error: \n                    at Env.it (/home/runner/work/mangata-e2e/mangata-e2e/node_modules/jest-jasmine2/build/jasmineAsyncInstall.js:95:24)\n                    at it (/home/runner/work/mangata-e2e/mangata-e2e/node_modules/jest-jasmine2/build/jasmine/jasmineLight.js:100:21)\n                    at Suite.<anonymous> (/home/runner/work/mangata-e2e/mangata-e2e/test/ui/ui-max.test.ts:69:3)\n                    at addSpecsToSuite (/home/runner/work/mangata-e2e/mangata-e2e/node_modules/jest-jasmine2/build/jasmine/Env.js:444:51)\n                    at Env.describe (/home/runner/work/mangata-e2e/mangata-e2e/node_modules/jest-jasmine2/build/jasmine/Env.js:414:11)\n                    at describe (/home/runner/work/mangata-e2e/mangata-e2e/node_modules/jest-jasmine2/build/jasmine/jasmineLight.js:88:18)\n                    at Object.<anonymous> (/home/runner/work/mangata-e2e/mangata-e2e/test/ui/ui-max.test.ts:35:1)\n                    at Runtime._execModule (/home/runner/work/mangata-e2e/mangata-e2e/node_modules/jest-runtime/build/index.js:1299:24)\n                    at Runtime._loadModule (/home/runner/work/mangata-e2e/mangata-e2e/node_modules/jest-runtime/build/index.js:898:12)\n                    at Runtime.requireModule (/home/runner/work/mangata-e2e/mangata-e2e/node_modules/jest-runtime/build/index.js:746:10)",
+  "flaky" : true,
+  "newFailed" : false,
+  "beforeStages" : [ ],
+  "afterStages" : [ ],
+  "labels" : [ {
+    "name" : "suite",
+    "value" : "UI tests - A user can use MAX:"
+  }, {
+    "name" : "testClass",
+    "value" : "UI tests - A user can use MAX:"
+  }, {
+    "name" : "testMethod",
+    "value" : "As a User I can Swap All MGA tokens -> newToken"
+  }, {
+    "name" : "package",
+    "value" : "UI tests - A user can use MAX:"
+  }, {
+    "name" : "resultFormat",
+    "value" : "allure1"
+  } ],
+  "parameters" : [ ],
+  "links" : [ ],
+  "hidden" : false,
+  "retry" : false,
+  "extra" : {
+    "severity" : "normal",
+    "retries" : [ ],
+    "categories" : [ {
+      "name" : "Product defects",
+      "matchedStatuses" : [ ],
+      "flaky" : false
+    } ],
+    "history" : {
+      "statistic" : {
+        "failed" : 2,
+        "broken" : 0,
+        "skipped" : 0,
+        "passed" : 3,
+        "unknown" : 0,
+        "total" : 5
+      },
+      "items" : [ {
+        "uid" : "90c7a4292a9d894b",
+        "reportUrl" : "https://mangata-finance.github.io/mangata-e2e/886//#testresult/90c7a4292a9d894b",
+        "status" : "passed",
+        "time" : {
+          "start" : 1636422509170,
+          "stop" : 1636422702544,
+          "duration" : 193374
+        }
+      }, {
+        "uid" : "288bd88c05623639",
+        "reportUrl" : "https://mangata-finance.github.io/mangata-e2e/884//#testresult/288bd88c05623639",
+        "status" : "passed",
+        "time" : {
+          "start" : 1636422236923,
+          "stop" : 1636422406115,
+          "duration" : 169192
+        }
+      }, {
+        "uid" : "156570afd0d356a6",
+        "reportUrl" : "https://mangata-finance.github.io/mangata-e2e/883//#testresult/156570afd0d356a6",
+        "status" : "failed",
+        "statusDetails" : "TimeoutError: Waiting until element is visible\n                Wait timed out after 20119ms",
+        "time" : {
+          "start" : 1636388588453,
+          "stop" : 1636388763464,
+          "duration" : 175011
+        }
+      }, {
+        "uid" : "9c37c759e9c84b9",
+        "reportUrl" : "https://mangata-finance.github.io/mangata-e2e/879//#testresult/9c37c759e9c84b9",
+        "status" : "passed",
+        "time" : {
+          "start" : 1636384387916,
+          "stop" : 1636384558988,
+          "duration" : 171072
+        }
+      } ]
+    },
+    "tags" : [ ]
+  },
+  "source" : "44fe6dc681631de0.json",
+  "parameterValues" : [ ]
+}

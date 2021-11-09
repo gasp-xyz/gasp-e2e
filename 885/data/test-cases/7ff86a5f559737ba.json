@@ -1,0 +1,100 @@
+{
+  "uid" : "7ff86a5f559737ba",
+  "name" : "As a User I get the right values for Pool investment P[5000000000000000000, 100] - I-> 100000000000 -Expected - 0.000002",
+  "fullName" : "Accuracy tests.As a User I get the right values for Pool investment P[5000000000000000000, 100] - I-> 100000000000 -Expected - 0.000002",
+  "historyId" : "740e3a889fe6f9515e754703a4ebf44e",
+  "time" : {
+    "start" : 1636423543983,
+    "stop" : 1636423668043,
+    "duration" : 124060
+  },
+  "description" : "",
+  "descriptionHtml" : "",
+  "status" : "failed",
+  "statusMessage" : "Error: Failed: \"TIMEOUT: Waiting for //*[@class = 'Sidebar__loading'] to dissapear\"",
+  "statusTrace" : "Error: \n                    at Env.it (/home/runner/work/mangata-e2e/mangata-e2e/node_modules/jest-jasmine2/build/jasmineAsyncInstall.js:95:24)\n                    at it (/home/runner/work/mangata-e2e/mangata-e2e/node_modules/jest-jasmine2/build/jasmine/jasmineLight.js:100:21)\n                    at /home/runner/work/mangata-e2e/mangata-e2e/node_modules/jest-each/build/bind.js:42:9\n                    at Array.forEach (<anonymous>)\n                    at eachBind (/home/runner/work/mangata-e2e/mangata-e2e/node_modules/jest-each/build/bind.js:41:20)\n                    at Suite.<anonymous> (/home/runner/work/mangata-e2e/mangata-e2e/test/ui/ui-accuracy.pool.investing.test.ts:61:3)\n                    at addSpecsToSuite (/home/runner/work/mangata-e2e/mangata-e2e/node_modules/jest-jasmine2/build/jasmine/Env.js:444:51)\n                    at Env.describe (/home/runner/work/mangata-e2e/mangata-e2e/node_modules/jest-jasmine2/build/jasmine/Env.js:414:11)\n                    at describe (/home/runner/work/mangata-e2e/mangata-e2e/node_modules/jest-jasmine2/build/jasmine/jasmineLight.js:88:18)\n                    at Object.<anonymous> (/home/runner/work/mangata-e2e/mangata-e2e/test/ui/ui-accuracy.pool.investing.test.ts:37:1)",
+  "flaky" : true,
+  "newFailed" : false,
+  "beforeStages" : [ ],
+  "afterStages" : [ ],
+  "labels" : [ {
+    "name" : "suite",
+    "value" : "Accuracy tests"
+  }, {
+    "name" : "testClass",
+    "value" : "Accuracy tests"
+  }, {
+    "name" : "testMethod",
+    "value" : "As a User I get the right values for Pool investment P[5000000000000000000, 100] - I-> 100000000000 -Expected - 0.000002"
+  }, {
+    "name" : "package",
+    "value" : "Accuracy tests"
+  }, {
+    "name" : "resultFormat",
+    "value" : "allure1"
+  } ],
+  "parameters" : [ ],
+  "links" : [ ],
+  "hidden" : false,
+  "retry" : false,
+  "extra" : {
+    "severity" : "normal",
+    "retries" : [ ],
+    "categories" : [ {
+      "name" : "Product defects",
+      "matchedStatuses" : [ ],
+      "flaky" : false
+    } ],
+    "history" : {
+      "statistic" : {
+        "failed" : 2,
+        "broken" : 0,
+        "skipped" : 0,
+        "passed" : 3,
+        "unknown" : 0,
+        "total" : 5
+      },
+      "items" : [ {
+        "uid" : "9ccf3aa8e6a7f544",
+        "reportUrl" : "https://mangata-finance.github.io/mangata-e2e/886//#testresult/9ccf3aa8e6a7f544",
+        "status" : "passed",
+        "time" : {
+          "start" : 1636423771619,
+          "stop" : 1636423955028,
+          "duration" : 183409
+        }
+      }, {
+        "uid" : "bba5fac946ce6485",
+        "reportUrl" : "https://mangata-finance.github.io/mangata-e2e/884//#testresult/bba5fac946ce6485",
+        "status" : "failed",
+        "statusDetails" : "Error: Failed: \"TIMEOUT: Waiting for //*[@class = 'Sidebar__loading'] to dissapear\"",
+        "time" : {
+          "start" : 1636423291304,
+          "stop" : 1636423414038,
+          "duration" : 122734
+        }
+      }, {
+        "uid" : "91bbd64e70b49595",
+        "reportUrl" : "https://mangata-finance.github.io/mangata-e2e/883//#testresult/91bbd64e70b49595",
+        "status" : "passed",
+        "time" : {
+          "start" : 1636389715654,
+          "stop" : 1636389827481,
+          "duration" : 111827
+        }
+      }, {
+        "uid" : "7137516e74b18e45",
+        "reportUrl" : "https://mangata-finance.github.io/mangata-e2e/879//#testresult/7137516e74b18e45",
+        "status" : "passed",
+        "time" : {
+          "start" : 1636385480220,
+          "stop" : 1636385589318,
+          "duration" : 109098
+        }
+      } ]
+    },
+    "tags" : [ ]
+  },
+  "source" : "7ff86a5f559737ba.json",
+  "parameterValues" : [ ]
+}

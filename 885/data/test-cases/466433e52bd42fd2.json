@@ -1,0 +1,99 @@
+{
+  "uid" : "466433e52bd42fd2",
+  "name" : "Modal is visible when burning liquidity",
+  "fullName" : "UI tests - A user can see the new Modal.Modal is visible when burning liquidity",
+  "historyId" : "d905b7c57d5643ad680989ac739cf6b",
+  "time" : {
+    "start" : 1636422811718,
+    "stop" : 1636422950776,
+    "duration" : 139058
+  },
+  "description" : "",
+  "descriptionHtml" : "",
+  "status" : "failed",
+  "statusMessage" : "Error: Failed: \"TIMEOUT: Waiting for //*[@class = 'Sidebar__loading'] to dissapear\"",
+  "statusTrace" : "Error: \n                    at Env.it (/home/runner/work/mangata-e2e/mangata-e2e/node_modules/jest-jasmine2/build/jasmineAsyncInstall.js:95:24)\n                    at it (/home/runner/work/mangata-e2e/mangata-e2e/node_modules/jest-jasmine2/build/jasmine/jasmineLight.js:100:21)\n                    at Suite.<anonymous> (/home/runner/work/mangata-e2e/mangata-e2e/test/ui/ui.tx-modal.test.ts:121:3)\n                    at addSpecsToSuite (/home/runner/work/mangata-e2e/mangata-e2e/node_modules/jest-jasmine2/build/jasmine/Env.js:444:51)\n                    at Env.describe (/home/runner/work/mangata-e2e/mangata-e2e/node_modules/jest-jasmine2/build/jasmine/Env.js:414:11)\n                    at describe (/home/runner/work/mangata-e2e/mangata-e2e/node_modules/jest-jasmine2/build/jasmine/jasmineLight.js:88:18)\n                    at Object.<anonymous> (/home/runner/work/mangata-e2e/mangata-e2e/test/ui/ui.tx-modal.test.ts:43:1)\n                    at Runtime._execModule (/home/runner/work/mangata-e2e/mangata-e2e/node_modules/jest-runtime/build/index.js:1299:24)\n                    at Runtime._loadModule (/home/runner/work/mangata-e2e/mangata-e2e/node_modules/jest-runtime/build/index.js:898:12)\n                    at Runtime.requireModule (/home/runner/work/mangata-e2e/mangata-e2e/node_modules/jest-runtime/build/index.js:746:10)",
+  "flaky" : false,
+  "newFailed" : false,
+  "beforeStages" : [ ],
+  "afterStages" : [ ],
+  "labels" : [ {
+    "name" : "suite",
+    "value" : "UI tests - A user can see the new Modal"
+  }, {
+    "name" : "testClass",
+    "value" : "UI tests - A user can see the new Modal"
+  }, {
+    "name" : "testMethod",
+    "value" : "Modal is visible when burning liquidity"
+  }, {
+    "name" : "package",
+    "value" : "UI tests - A user can see the new Modal"
+  }, {
+    "name" : "resultFormat",
+    "value" : "allure1"
+  } ],
+  "parameters" : [ ],
+  "links" : [ ],
+  "hidden" : false,
+  "retry" : false,
+  "extra" : {
+    "severity" : "normal",
+    "retries" : [ ],
+    "categories" : [ {
+      "name" : "Product defects",
+      "matchedStatuses" : [ ],
+      "flaky" : false
+    } ],
+    "history" : {
+      "statistic" : {
+        "failed" : 1,
+        "broken" : 0,
+        "skipped" : 0,
+        "passed" : 4,
+        "unknown" : 0,
+        "total" : 5
+      },
+      "items" : [ {
+        "uid" : "3a74ff0c15bb256a",
+        "reportUrl" : "https://mangata-finance.github.io/mangata-e2e/886//#testresult/3a74ff0c15bb256a",
+        "status" : "passed",
+        "time" : {
+          "start" : 1636423212697,
+          "stop" : 1636423368489,
+          "duration" : 155792
+        }
+      }, {
+        "uid" : "ac36c3d4694284f1",
+        "reportUrl" : "https://mangata-finance.github.io/mangata-e2e/884//#testresult/ac36c3d4694284f1",
+        "status" : "passed",
+        "time" : {
+          "start" : 1636422809215,
+          "stop" : 1636422948383,
+          "duration" : 139168
+        }
+      }, {
+        "uid" : "b09df9eac4020a04",
+        "reportUrl" : "https://mangata-finance.github.io/mangata-e2e/883//#testresult/b09df9eac4020a04",
+        "status" : "passed",
+        "time" : {
+          "start" : 1636389210317,
+          "stop" : 1636389354405,
+          "duration" : 144088
+        }
+      }, {
+        "uid" : "297bdf5e6d728a4f",
+        "reportUrl" : "https://mangata-finance.github.io/mangata-e2e/879//#testresult/297bdf5e6d728a4f",
+        "status" : "passed",
+        "time" : {
+          "start" : 1636384979853,
+          "stop" : 1636385118378,
+          "duration" : 138525
+        }
+      } ]
+    },
+    "tags" : [ ]
+  },
+  "source" : "466433e52bd42fd2.json",
+  "parameterValues" : [ ]
+}
