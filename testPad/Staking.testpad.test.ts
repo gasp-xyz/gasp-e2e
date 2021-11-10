@@ -450,4 +450,17 @@ describe("staking - testpad", () => {
       })
     );
   });
+  test("get term percentage status", async () => {
+    while (true) {
+      const metadata = await api.derive.elections.info();
+      const bestNumber = await api.derive.chain.bestNumber();
+      testLog.getLog().info(bestNumber.mod(metadata.termDuration));
+      const perrcentage = bestNumber
+        .mod(metadata.termDuration)
+        .mul(new BN(100))
+        .div(metadata.termDuration.toBn());
+      testLog.getLog().info(perrcentage);
+      await waitNewBlock();
+    }
+  });
 });
