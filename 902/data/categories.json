@@ -1,0 +1,43 @@
+{
+  "uid" : "4b4757e66a1912dae1a509f688f20b0f",
+  "children" : [ {
+    "name" : "Product defects",
+    "children" : [ {
+      "name" : "TimeoutError: Waiting until element is visible\n                Wait timed out after 20967ms",
+      "children" : [ {
+        "name" : "As a User I can Swap All MGA tokens -> newToken",
+        "uid" : "757331bc0e805544",
+        "parentUid" : "b846d57e8f7bc745fde948214ff76a25",
+        "status" : "failed",
+        "time" : {
+          "start" : 1636561562624,
+          "stop" : 1636561757150,
+          "duration" : 194526
+        },
+        "flaky" : true,
+        "newFailed" : true,
+        "parameters" : [ ]
+      } ],
+      "uid" : "b846d57e8f7bc745fde948214ff76a25"
+    }, {
+      "name" : "TimeoutError: Waiting until element is visible\n                Wait timed out after 20601ms",
+      "children" : [ {
+        "name" : "As a User I can mint All tokens newToken - newToken2",
+        "uid" : "2c871ee39369998d",
+        "parentUid" : "43930d8190249213967c2f382d3408bb",
+        "status" : "failed",
+        "time" : {
+          "start" : 1636561757151,
+          "stop" : 1636561990836,
+          "duration" : 233685
+        },
+        "flaky" : true,
+        "newFailed" : true,
+        "parameters" : [ ]
+      } ],
+      "uid" : "43930d8190249213967c2f382d3408bb"
+    } ],
+    "uid" : "8fb3a91ba5aaf9de24cc8a92edc82b5d"
+  } ],
+  "name" : "categories"
+}
