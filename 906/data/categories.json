@@ -1,0 +1,43 @@
+{
+  "uid" : "4b4757e66a1912dae1a509f688f20b0f",
+  "children" : [ {
+    "name" : "Product defects",
+    "children" : [ {
+      "name" : "TimeoutError: Waiting until element is visible\n                Wait timed out after 20928ms",
+      "children" : [ {
+        "name" : "As a User I can mint All tokens newToken - newToken2",
+        "uid" : "439a7ef84fbb9e06",
+        "parentUid" : "f4aa66adcb2657e0b07c634fabfcd4d9",
+        "status" : "failed",
+        "time" : {
+          "start" : 1636605040239,
+          "stop" : 1636605287335,
+          "duration" : 247096
+        },
+        "flaky" : true,
+        "newFailed" : true,
+        "parameters" : [ ]
+      } ],
+      "uid" : "f4aa66adcb2657e0b07c634fabfcd4d9"
+    }, {
+      "name" : "TimeoutError: Waiting for element to be located By(xpath, //button[text()='Connect'])\n                Wait timed out after 30308ms",
+      "children" : [ {
+        "name" : "Modal contains currencies and amounts when Swapping",
+        "uid" : "72c5d42ec95c0fe0",
+        "parentUid" : "2205b695e00e77f5c52de9203cae8ec2",
+        "status" : "failed",
+        "time" : {
+          "start" : 1636605289175,
+          "stop" : 1636605365088,
+          "duration" : 75913
+        },
+        "flaky" : true,
+        "newFailed" : true,
+        "parameters" : [ ]
+      } ],
+      "uid" : "2205b695e00e77f5c52de9203cae8ec2"
+    } ],
+    "uid" : "8fb3a91ba5aaf9de24cc8a92edc82b5d"
+  } ],
+  "name" : "categories"
+}
