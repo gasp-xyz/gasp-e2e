@@ -1,0 +1,255 @@
+{
+  "uid" : "ef7277b3832d90f0",
+  "name" : "As a User I can Swap All MGA tokens -> newToken",
+  "fullName" : "UI tests - A user can use MAX:.As a User I can Swap All MGA tokens -> newToken",
+  "historyId" : "b4431a2043f5c89a607fb3d724e06254",
+  "time" : {
+    "start" : 1636735380372,
+    "stop" : 1636735868533,
+    "duration" : 488161
+  },
+  "description" : "",
+  "descriptionHtml" : "",
+  "status" : "failed",
+  "statusMessage" : ": Timeout - Async callback was not invoked within the 300000 ms timeout specified by jest.setTimeout.",
+  "statusTrace" : "Timeout - Async callback was not invoked within the 300000 ms timeout specified by jest.setTimeout.Error: \n                    at new Spec (/home/runner/work/mangata-e2e/mangata-e2e/node_modules/jest-jasmine2/build/jasmine/Spec.js:116:22)\n                    at new Spec (/home/runner/work/mangata-e2e/mangata-e2e/node_modules/jest-jasmine2/build/setup_jest_globals.js:78:9)\n                    at specFactory (/home/runner/work/mangata-e2e/mangata-e2e/node_modules/jest-jasmine2/build/jasmine/Env.js:523:24)\n                    at Env.it (/home/runner/work/mangata-e2e/mangata-e2e/node_modules/jest-jasmine2/build/jasmine/Env.js:592:24)\n                    at Env.it (/home/runner/work/mangata-e2e/mangata-e2e/node_modules/jest-jasmine2/build/jasmineAsyncInstall.js:134:23)\n                    at it (/home/runner/work/mangata-e2e/mangata-e2e/node_modules/jest-jasmine2/build/jasmine/jasmineLight.js:100:21)\n                    at Suite.<anonymous> (/home/runner/work/mangata-e2e/mangata-e2e/test/ui/ui-max.test.ts:69:3)\n                    at addSpecsToSuite (/home/runner/work/mangata-e2e/mangata-e2e/node_modules/jest-jasmine2/build/jasmine/Env.js:444:51)\n                    at Env.describe (/home/runner/work/mangata-e2e/mangata-e2e/node_modules/jest-jasmine2/build/jasmine/Env.js:414:11)\n                    at describe (/home/runner/work/mangata-e2e/mangata-e2e/node_modules/jest-jasmine2/build/jasmine/jasmineLight.js:88:18)\n                    at Object.<anonymous> (/home/runner/work/mangata-e2e/mangata-e2e/test/ui/ui-max.test.ts:35:1)\n                    at Runtime._execModule (/home/runner/work/mangata-e2e/mangata-e2e/node_modules/jest-runtime/build/index.js:1299:24)\n                    at Runtime._loadModule (/home/runner/work/mangata-e2e/mangata-e2e/node_modules/jest-runtime/build/index.js:898:12)\n                    at Runtime.requireModule (/home/runner/work/mangata-e2e/mangata-e2e/node_modules/jest-runtime/build/index.js:746:10)\n                    at jasmine2 (/home/runner/work/mangata-e2e/mangata-e2e/node_modules/jest-jasmine2/build/index.js:230:13)\n                    at runTestInternal (/home/runner/work/mangata-e2e/mangata-e2e/node_modules/jest-runner/build/runTest.js:380:22)\n                    at runTest (/home/runner/work/mangata-e2e/mangata-e2e/node_modules/jest-runner/build/runTest.js:472:34)",
+  "flaky" : true,
+  "newFailed" : false,
+  "beforeStages" : [ ],
+  "afterStages" : [ ],
+  "labels" : [ {
+    "name" : "suite",
+    "value" : "UI tests - A user can use MAX:"
+  }, {
+    "name" : "testClass",
+    "value" : "UI tests - A user can use MAX:"
+  }, {
+    "name" : "testMethod",
+    "value" : "As a User I can Swap All MGA tokens -> newToken"
+  }, {
+    "name" : "package",
+    "value" : "UI tests - A user can use MAX:"
+  }, {
+    "name" : "resultFormat",
+    "value" : "allure1"
+  } ],
+  "parameters" : [ ],
+  "links" : [ ],
+  "hidden" : false,
+  "retry" : false,
+  "extra" : {
+    "severity" : "normal",
+    "retries" : [ ],
+    "categories" : [ {
+      "name" : "Product defects",
+      "matchedStatuses" : [ ],
+      "flaky" : false
+    } ],
+    "history" : {
+      "statistic" : {
+        "failed" : 17,
+        "broken" : 0,
+        "skipped" : 0,
+        "passed" : 19,
+        "unknown" : 0,
+        "total" : 36
+      },
+      "items" : [ {
+        "uid" : "e1b0183c1c2057f5",
+        "reportUrl" : "https://mangata-finance.github.io/mangata-e2e/916//#testresult/e1b0183c1c2057f5",
+        "status" : "failed",
+        "statusDetails" : "TimeoutError: Waiting until element is visible\n                Wait timed out after 23139ms",
+        "time" : {
+          "start" : 1636724133821,
+          "stop" : 1636724402732,
+          "duration" : 268911
+        }
+      }, {
+        "uid" : "865ebd6bea0d0485",
+        "reportUrl" : "https://mangata-finance.github.io/mangata-e2e/915//#testresult/865ebd6bea0d0485",
+        "status" : "failed",
+        "statusDetails" : "TimeoutError: Waiting until element is visible\n                Wait timed out after 20518ms",
+        "time" : {
+          "start" : 1636724066400,
+          "stop" : 1636724298443,
+          "duration" : 232043
+        }
+      }, {
+        "uid" : "b85ff425e684c36a",
+        "reportUrl" : "https://mangata-finance.github.io/mangata-e2e/917//#testresult/b85ff425e684c36a",
+        "status" : "failed",
+        "statusDetails" : "thrown: Event {\n                  \"isTrusted\": true,\n                }",
+        "time" : {
+          "start" : 1636723646267,
+          "stop" : 1636723649842,
+          "duration" : 3575
+        }
+      }, {
+        "uid" : "ac706353f81edb4e",
+        "reportUrl" : "https://mangata-finance.github.io/mangata-e2e/914//#testresult/ac706353f81edb4e",
+        "status" : "failed",
+        "statusDetails" : "TimeoutError: Waiting until element is visible\n                Wait timed out after 21121ms",
+        "time" : {
+          "start" : 1636691090414,
+          "stop" : 1636691297949,
+          "duration" : 207535
+        }
+      }, {
+        "uid" : "a3a0e3331726ea4d",
+        "reportUrl" : "https://mangata-finance.github.io/mangata-e2e/913//#testresult/a3a0e3331726ea4d",
+        "status" : "failed",
+        "statusDetails" : ": Timeout - Async callback was not invoked within the 300000 ms timeout specified by jest.setTimeout.",
+        "time" : {
+          "start" : 1636682378019,
+          "stop" : 1636682868623,
+          "duration" : 490604
+        }
+      }, {
+        "uid" : "d396f62458290aac",
+        "reportUrl" : "https://mangata-finance.github.io/mangata-e2e/912//#testresult/d396f62458290aac",
+        "status" : "failed",
+        "statusDetails" : "TimeoutError: Waiting until element is visible\n                Wait timed out after 20640ms",
+        "time" : {
+          "start" : 1636681905612,
+          "stop" : 1636682161674,
+          "duration" : 256062
+        }
+      }, {
+        "uid" : "743aff1db30a318a",
+        "reportUrl" : "https://mangata-finance.github.io/mangata-e2e/911//#testresult/743aff1db30a318a",
+        "status" : "passed",
+        "time" : {
+          "start" : 1636681593579,
+          "stop" : 1636681769073,
+          "duration" : 175494
+        }
+      }, {
+        "uid" : "1df7e26d81c5ba07",
+        "reportUrl" : "https://mangata-finance.github.io/mangata-e2e/910//#testresult/1df7e26d81c5ba07",
+        "status" : "failed",
+        "statusDetails" : "Error: Failed: \"TIMEOUT: Waiting for //*[@class = 'Sidebar__loading'] to dissapear\"",
+        "time" : {
+          "start" : 1636647727521,
+          "stop" : 1636647893437,
+          "duration" : 165916
+        }
+      }, {
+        "uid" : "a65f333aa270500a",
+        "reportUrl" : "https://mangata-finance.github.io/mangata-e2e/909//#testresult/a65f333aa270500a",
+        "status" : "failed",
+        "statusDetails" : "TimeoutError: Waiting until element is visible\n                Wait timed out after 20909ms",
+        "time" : {
+          "start" : 1636637696596,
+          "stop" : 1636637953566,
+          "duration" : 256970
+        }
+      }, {
+        "uid" : "ee1cc392ee9f9c75",
+        "reportUrl" : "https://mangata-finance.github.io/mangata-e2e/907//#testresult/ee1cc392ee9f9c75",
+        "status" : "passed",
+        "time" : {
+          "start" : 1636637337277,
+          "stop" : 1636637519142,
+          "duration" : 181865
+        }
+      }, {
+        "uid" : "4f30f747e9d078f",
+        "reportUrl" : "https://mangata-finance.github.io/mangata-e2e/906//#testresult/4f30f747e9d078f",
+        "status" : "passed",
+        "time" : {
+          "start" : 1636604804301,
+          "stop" : 1636605040239,
+          "duration" : 235938
+        }
+      }, {
+        "uid" : "20b1dc833eb1da01",
+        "reportUrl" : "https://mangata-finance.github.io/mangata-e2e/904//#testresult/20b1dc833eb1da01",
+        "status" : "failed",
+        "statusDetails" : "TimeoutError: Waiting until element is visible\n                Wait timed out after 21005ms",
+        "time" : {
+          "start" : 1636595505018,
+          "stop" : 1636595735632,
+          "duration" : 230614
+        }
+      }, {
+        "uid" : "434c49431d7450c2",
+        "reportUrl" : "https://mangata-finance.github.io/mangata-e2e/903//#testresult/434c49431d7450c2",
+        "status" : "passed",
+        "time" : {
+          "start" : 1636595351802,
+          "stop" : 1636595572572,
+          "duration" : 220770
+        }
+      }, {
+        "uid" : "704df49850518480",
+        "reportUrl" : "https://mangata-finance.github.io/mangata-e2e/905//#testresult/704df49850518480",
+        "status" : "failed",
+        "statusDetails" : "thrown: Event {\n                  \"isTrusted\": true,\n                }",
+        "time" : {
+          "start" : 1636594938118,
+          "stop" : 1636594938731,
+          "duration" : 613
+        }
+      }, {
+        "uid" : "757331bc0e805544",
+        "reportUrl" : "https://mangata-finance.github.io/mangata-e2e/902//#testresult/757331bc0e805544",
+        "status" : "failed",
+        "statusDetails" : "TimeoutError: Waiting until element is visible\n                Wait timed out after 20967ms",
+        "time" : {
+          "start" : 1636561562624,
+          "stop" : 1636561757150,
+          "duration" : 194526
+        }
+      }, {
+        "uid" : "e4596410af4763d1",
+        "reportUrl" : "https://mangata-finance.github.io/mangata-e2e/899//#testresult/e4596410af4763d1",
+        "status" : "passed",
+        "time" : {
+          "start" : 1636551110633,
+          "stop" : 1636551316452,
+          "duration" : 205819
+        }
+      }, {
+        "uid" : "6147a66bf7bfdab8",
+        "reportUrl" : "https://mangata-finance.github.io/mangata-e2e/900//#testresult/6147a66bf7bfdab8",
+        "status" : "failed",
+        "statusDetails" : "TimeoutError: Waiting until element is visible\n                Wait timed out after 20789ms",
+        "time" : {
+          "start" : 1636550960513,
+          "stop" : 1636551160290,
+          "duration" : 199777
+        }
+      }, {
+        "uid" : "b4beb8c0df3d27ab",
+        "reportUrl" : "https://mangata-finance.github.io/mangata-e2e/901//#testresult/b4beb8c0df3d27ab",
+        "status" : "passed",
+        "time" : {
+          "start" : 1636551014758,
+          "stop" : 1636551190461,
+          "duration" : 175703
+        }
+      }, {
+        "uid" : "e7964375a242b619",
+        "reportUrl" : "https://mangata-finance.github.io/mangata-e2e/898//#testresult/e7964375a242b619",
+        "status" : "passed",
+        "time" : {
+          "start" : 1636540394681,
+          "stop" : 1636540588728,
+          "duration" : 194047
+        }
+      }, {
+        "uid" : "51adac88ada04005",
+        "reportUrl" : "https://mangata-finance.github.io/mangata-e2e/897//#testresult/51adac88ada04005",
+        "status" : "passed",
+        "time" : {
+          "start" : 1636518326878,
+          "stop" : 1636518538200,
+          "duration" : 211322
+        }
+      } ]
+    },
+    "tags" : [ ]
+  },
+  "source" : "ef7277b3832d90f0.json",
+  "parameterValues" : [ ]
+}
