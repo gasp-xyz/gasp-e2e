@@ -1,0 +1,60 @@
+{
+  "uid" : "4b4757e66a1912dae1a509f688f20b0f",
+  "children" : [ {
+    "name" : "Product defects",
+    "children" : [ {
+      "name" : "TimeoutError: Waiting until element is visible\n                Wait timed out after 23139ms",
+      "children" : [ {
+        "name" : "As a User I can Swap All MGA tokens -> newToken",
+        "uid" : "e1b0183c1c2057f5",
+        "parentUid" : "138d60e8f3e96f551f5ea1847959eece",
+        "status" : "failed",
+        "time" : {
+          "start" : 1636724133821,
+          "stop" : 1636724402732,
+          "duration" : 268911
+        },
+        "flaky" : true,
+        "newFailed" : false,
+        "parameters" : [ ]
+      } ],
+      "uid" : "138d60e8f3e96f551f5ea1847959eece"
+    }, {
+      "name" : "TimeoutError: Waiting until element is visible\n                Wait timed out after 22451ms",
+      "children" : [ {
+        "name" : "As a User I can mint All tokens newToken - newToken2",
+        "uid" : "cfbd4f7ffe265633",
+        "parentUid" : "6ba8e6785ff75045e464963c8b1ec47a",
+        "status" : "failed",
+        "time" : {
+          "start" : 1636724402733,
+          "stop" : 1636724732897,
+          "duration" : 330164
+        },
+        "flaky" : true,
+        "newFailed" : false,
+        "parameters" : [ ]
+      } ],
+      "uid" : "6ba8e6785ff75045e464963c8b1ec47a"
+    }, {
+      "name" : "Error: expect(received).toBe(expected) // Object.is equality\n                \n                Expected: 6.275\n                Received: 0.025",
+      "children" : [ {
+        "name" : "As a User I get the right values for Pool removal P[2500000000000000000, 5000000000000000000] - I-> 1 -Expected - 0.025 , 0.05",
+        "uid" : "e57ab7bb6b4d2d61",
+        "parentUid" : "6c3c2cb60a3e032da07d96542341eabe",
+        "status" : "failed",
+        "time" : {
+          "start" : 1636725537399,
+          "stop" : 1636725681126,
+          "duration" : 143727
+        },
+        "flaky" : true,
+        "newFailed" : false,
+        "parameters" : [ ]
+      } ],
+      "uid" : "6c3c2cb60a3e032da07d96542341eabe"
+    } ],
+    "uid" : "8fb3a91ba5aaf9de24cc8a92edc82b5d"
+  } ],
+  "name" : "categories"
+}
