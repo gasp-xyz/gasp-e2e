@@ -1,0 +1,26 @@
+{
+  "uid" : "4b4757e66a1912dae1a509f688f20b0f",
+  "children" : [ {
+    "name" : "Product defects",
+    "children" : [ {
+      "name" : "TimeoutError: Waiting until element is visible\n                Wait timed out after 21513ms",
+      "children" : [ {
+        "name" : "As a User I can mint All tokens newToken - newToken2",
+        "uid" : "da17ec2240c28ec6",
+        "parentUid" : "a3cdddbcbdf3eba12a901ea0fe0fc6df",
+        "status" : "failed",
+        "time" : {
+          "start" : 1636768306982,
+          "stop" : 1636768553653,
+          "duration" : 246671
+        },
+        "flaky" : true,
+        "newFailed" : false,
+        "parameters" : [ ]
+      } ],
+      "uid" : "a3cdddbcbdf3eba12a901ea0fe0fc6df"
+    } ],
+    "uid" : "8fb3a91ba5aaf9de24cc8a92edc82b5d"
+  } ],
+  "name" : "categories"
+}
