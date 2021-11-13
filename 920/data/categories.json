@@ -1,0 +1,90 @@
+{
+  "uid" : "4b4757e66a1912dae1a509f688f20b0f",
+  "children" : [ {
+    "name" : "Product defects",
+    "children" : [ {
+      "name" : "Error: expect(received).toBeTruthy()\n                \n                Received: false",
+      "children" : [ {
+        "name" : "As a User I can mint some tokens MGA - mETH",
+        "uid" : "d775a9bed3110036",
+        "parentUid" : "ffcd8928d6543ed53c85f4784defae24",
+        "status" : "failed",
+        "time" : {
+          "start" : 1636767164865,
+          "stop" : 1636767405561,
+          "duration" : 240696
+        },
+        "flaky" : true,
+        "newFailed" : true,
+        "parameters" : [ ]
+      }, {
+        "name" : "As a User I can create a pool",
+        "uid" : "66f2f673c102a604",
+        "parentUid" : "ffcd8928d6543ed53c85f4784defae24",
+        "status" : "failed",
+        "time" : {
+          "start" : 1636770974161,
+          "stop" : 1636771162571,
+          "duration" : 188410
+        },
+        "flaky" : true,
+        "newFailed" : true,
+        "parameters" : [ ]
+      } ],
+      "uid" : "ffcd8928d6543ed53c85f4784defae24"
+    }, {
+      "name" : ": Timeout - Async callback was not invoked within the 300000 ms timeout specified by jest.setTimeout.",
+      "children" : [ {
+        "name" : "As a User I can Withdraw ETH from Meta extension",
+        "uid" : "8fa984969324bf61",
+        "parentUid" : "6f061b37a2a6ffb801a8fe904244be6d",
+        "status" : "failed",
+        "time" : {
+          "start" : 1636768105396,
+          "stop" : 1636768591797,
+          "duration" : 486401
+        },
+        "flaky" : true,
+        "newFailed" : true,
+        "parameters" : [ ]
+      } ],
+      "uid" : "6f061b37a2a6ffb801a8fe904244be6d"
+    }, {
+      "name" : "TimeoutError: Waiting until element is visible\n                Wait timed out after 20149ms",
+      "children" : [ {
+        "name" : "As a User I can mint All tokens newToken - newToken2",
+        "uid" : "11417085bd258034",
+        "parentUid" : "30b91412edecca748340f9531155dcde",
+        "status" : "failed",
+        "time" : {
+          "start" : 1636768861647,
+          "stop" : 1636769170787,
+          "duration" : 309140
+        },
+        "flaky" : true,
+        "newFailed" : false,
+        "parameters" : [ ]
+      } ],
+      "uid" : "30b91412edecca748340f9531155dcde"
+    }, {
+      "name" : "Error: expect(received).toBe(expected) // Object.is equality\n                \n                Expected: 6.275\n                Received: 0.025",
+      "children" : [ {
+        "name" : "As a User I get the right values for Pool removal P[2500000000000000000, 5000000000000000000] - I-> 1 -Expected - 0.025 , 0.05",
+        "uid" : "13b8ccdbceb8f6cc",
+        "parentUid" : "6c3c2cb60a3e032da07d96542341eabe",
+        "status" : "failed",
+        "time" : {
+          "start" : 1636770068486,
+          "stop" : 1636770219349,
+          "duration" : 150863
+        },
+        "flaky" : true,
+        "newFailed" : true,
+        "parameters" : [ ]
+      } ],
+      "uid" : "6c3c2cb60a3e032da07d96542341eabe"
+    } ],
+    "uid" : "8fb3a91ba5aaf9de24cc8a92edc82b5d"
+  } ],
+  "name" : "categories"
+}
