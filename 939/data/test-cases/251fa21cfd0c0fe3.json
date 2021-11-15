@@ -1,0 +1,244 @@
+{
+  "uid" : "251fa21cfd0c0fe3",
+  "name" : "As a User I can Withdraw ETH from Meta extension",
+  "fullName" : "UI main tests - Withdraw - ETH.As a User I can Withdraw ETH from Meta extension",
+  "historyId" : "eac55faabce1aad19e0827a3afd71b78",
+  "time" : {
+    "start" : 1636981360055,
+    "stop" : 1636981651463,
+    "duration" : 291408
+  },
+  "description" : "",
+  "descriptionHtml" : "",
+  "status" : "passed",
+  "flaky" : false,
+  "newFailed" : false,
+  "beforeStages" : [ ],
+  "afterStages" : [ ],
+  "labels" : [ {
+    "name" : "suite",
+    "value" : "UI main tests - Withdraw - ETH"
+  }, {
+    "name" : "testClass",
+    "value" : "UI main tests - Withdraw - ETH"
+  }, {
+    "name" : "testMethod",
+    "value" : "As a User I can Withdraw ETH from Meta extension"
+  }, {
+    "name" : "package",
+    "value" : "UI main tests - Withdraw - ETH"
+  }, {
+    "name" : "resultFormat",
+    "value" : "allure1"
+  } ],
+  "parameters" : [ ],
+  "links" : [ ],
+  "hidden" : false,
+  "retry" : false,
+  "extra" : {
+    "severity" : "normal",
+    "retries" : [ ],
+    "categories" : [ ],
+    "history" : {
+      "statistic" : {
+        "failed" : 13,
+        "broken" : 0,
+        "skipped" : 0,
+        "passed" : 44,
+        "unknown" : 0,
+        "total" : 57
+      },
+      "items" : [ {
+        "uid" : "f9f546dd8684acfd",
+        "reportUrl" : "https://mangata-finance.github.io/mangata-e2e/938//#testresult/f9f546dd8684acfd",
+        "status" : "passed",
+        "time" : {
+          "start" : 1636950284709,
+          "stop" : 1636950558453,
+          "duration" : 273744
+        }
+      }, {
+        "uid" : "5e5fd7d6a8fe2d42",
+        "reportUrl" : "https://mangata-finance.github.io/mangata-e2e/936//#testresult/5e5fd7d6a8fe2d42",
+        "status" : "failed",
+        "statusDetails" : "NoSuchWindowError: no such window: target window already closed\n                from unknown error: web view not found\n                  (Session info: chrome=94.0.4606.61)\n                  (Driver info: chromedriver=94.0.4606.61 (418b78f5838ed0b1c69bb4e51ea0252171854915-refs/branch-heads/4606@{#1204}),platform=Linux 5.11.0-1020-azure x86_64)",
+        "time" : {
+          "start" : 1636941900323,
+          "stop" : 1636941915442,
+          "duration" : 15119
+        }
+      }, {
+        "uid" : "a5f58357d15b9517",
+        "reportUrl" : "https://mangata-finance.github.io/mangata-e2e/935//#testresult/a5f58357d15b9517",
+        "status" : "passed",
+        "time" : {
+          "start" : 1636940742715,
+          "stop" : 1636940989666,
+          "duration" : 246951
+        }
+      }, {
+        "uid" : "e6f563308cb935e6",
+        "reportUrl" : "https://mangata-finance.github.io/mangata-e2e/937//#testresult/e6f563308cb935e6",
+        "status" : "passed",
+        "time" : {
+          "start" : 1636940700934,
+          "stop" : 1636940874863,
+          "duration" : 173929
+        }
+      }, {
+        "uid" : "31f9b9e76c45d87b",
+        "reportUrl" : "https://mangata-finance.github.io/mangata-e2e/934//#testresult/31f9b9e76c45d87b",
+        "status" : "failed",
+        "statusDetails" : "NoSuchWindowError: no such window: target window already closed\n                from unknown error: web view not found\n                  (Session info: chrome=94.0.4606.61)\n                  (Driver info: chromedriver=94.0.4606.61 (418b78f5838ed0b1c69bb4e51ea0252171854915-refs/branch-heads/4606@{#1204}),platform=Linux 5.11.0-1020-azure x86_64)",
+        "time" : {
+          "start" : 1636908382776,
+          "stop" : 1636908397212,
+          "duration" : 14436
+        }
+      }, {
+        "uid" : "3b081a95379d01cb",
+        "reportUrl" : "https://mangata-finance.github.io/mangata-e2e/931//#testresult/3b081a95379d01cb",
+        "status" : "failed",
+        "statusDetails" : "TimeoutError: Waiting for element to be located By(xpath, //input[@placeholder='Paste Secret Recovery Phrase from clipboard'])\n                Wait timed out after 30005ms",
+        "time" : {
+          "start" : 1636897566623,
+          "stop" : 1636897603206,
+          "duration" : 36583
+        }
+      }, {
+        "uid" : "232e94f7ba62360f",
+        "reportUrl" : "https://mangata-finance.github.io/mangata-e2e/932//#testresult/232e94f7ba62360f",
+        "status" : "failed",
+        "statusDetails" : "NoSuchWindowError: no such window: target window already closed\n                from unknown error: web view not found\n                  (Session info: chrome=94.0.4606.61)\n                  (Driver info: chromedriver=94.0.4606.61 (418b78f5838ed0b1c69bb4e51ea0252171854915-refs/branch-heads/4606@{#1204}),platform=Linux 5.11.0-1020-azure x86_64)",
+        "time" : {
+          "start" : 1636897549731,
+          "stop" : 1636897563448,
+          "duration" : 13717
+        }
+      }, {
+        "uid" : "c576167db4f0fa9",
+        "reportUrl" : "https://mangata-finance.github.io/mangata-e2e/933//#testresult/c576167db4f0fa9",
+        "status" : "passed",
+        "time" : {
+          "start" : 1636896101842,
+          "stop" : 1636896265279,
+          "duration" : 163437
+        }
+      }, {
+        "uid" : "f24d58e8a73fdacd",
+        "reportUrl" : "https://mangata-finance.github.io/mangata-e2e/930//#testresult/f24d58e8a73fdacd",
+        "status" : "passed",
+        "time" : {
+          "start" : 1636863744448,
+          "stop" : 1636863981672,
+          "duration" : 237224
+        }
+      }, {
+        "uid" : "a76a92fa04e62b5c",
+        "reportUrl" : "https://mangata-finance.github.io/mangata-e2e/928//#testresult/a76a92fa04e62b5c",
+        "status" : "passed",
+        "time" : {
+          "start" : 1636854391696,
+          "stop" : 1636854628177,
+          "duration" : 236481
+        }
+      }, {
+        "uid" : "d210d1564d4a2b36",
+        "reportUrl" : "https://mangata-finance.github.io/mangata-e2e/929//#testresult/d210d1564d4a2b36",
+        "status" : "passed",
+        "time" : {
+          "start" : 1636854350171,
+          "stop" : 1636854565539,
+          "duration" : 215368
+        }
+      }, {
+        "uid" : "3ef2a0ad3685c3b6",
+        "reportUrl" : "https://mangata-finance.github.io/mangata-e2e/927//#testresult/3ef2a0ad3685c3b6",
+        "status" : "passed",
+        "time" : {
+          "start" : 1636854268545,
+          "stop" : 1636854438507,
+          "duration" : 169962
+        }
+      }, {
+        "uid" : "9887cd7f1d4a82de",
+        "reportUrl" : "https://mangata-finance.github.io/mangata-e2e/926//#testresult/9887cd7f1d4a82de",
+        "status" : "failed",
+        "statusDetails" : "NoSuchWindowError: no such window: target window already closed\n                from unknown error: web view not found\n                  (Session info: chrome=94.0.4606.61)\n                  (Driver info: chromedriver=94.0.4606.61 (418b78f5838ed0b1c69bb4e51ea0252171854915-refs/branch-heads/4606@{#1204}),platform=Linux 5.11.0-1020-azure x86_64)",
+        "time" : {
+          "start" : 1636821922247,
+          "stop" : 1636821930266,
+          "duration" : 8019
+        }
+      }, {
+        "uid" : "1881ca05dd8779d7",
+        "reportUrl" : "https://mangata-finance.github.io/mangata-e2e/923//#testresult/1881ca05dd8779d7",
+        "status" : "failed",
+        "statusDetails" : "NoSuchWindowError: no such window: target window already closed\n                from unknown error: web view not found\n                  (Session info: chrome=94.0.4606.61)\n                  (Driver info: chromedriver=94.0.4606.61 (418b78f5838ed0b1c69bb4e51ea0252171854915-refs/branch-heads/4606@{#1204}),platform=Linux 5.11.0-1020-azure x86_64)",
+        "time" : {
+          "start" : 1636811351907,
+          "stop" : 1636811362687,
+          "duration" : 10780
+        }
+      }, {
+        "uid" : "1e27011d7cbf8b6f",
+        "reportUrl" : "https://mangata-finance.github.io/mangata-e2e/925//#testresult/1e27011d7cbf8b6f",
+        "status" : "passed",
+        "time" : {
+          "start" : 1636810018248,
+          "stop" : 1636810224749,
+          "duration" : 206501
+        }
+      }, {
+        "uid" : "2a339473b2dca4a4",
+        "reportUrl" : "https://mangata-finance.github.io/mangata-e2e/924//#testresult/2a339473b2dca4a4",
+        "status" : "passed",
+        "time" : {
+          "start" : 1636809232627,
+          "stop" : 1636809402852,
+          "duration" : 170225
+        }
+      }, {
+        "uid" : "2bbead091939ceff",
+        "reportUrl" : "https://mangata-finance.github.io/mangata-e2e/922//#testresult/2bbead091939ceff",
+        "status" : "passed",
+        "time" : {
+          "start" : 1636777627443,
+          "stop" : 1636777929451,
+          "duration" : 302008
+        }
+      }, {
+        "uid" : "8fa984969324bf61",
+        "reportUrl" : "https://mangata-finance.github.io/mangata-e2e/920//#testresult/8fa984969324bf61",
+        "status" : "failed",
+        "statusDetails" : ": Timeout - Async callback was not invoked within the 300000 ms timeout specified by jest.setTimeout.",
+        "time" : {
+          "start" : 1636768105396,
+          "stop" : 1636768591797,
+          "duration" : 486401
+        }
+      }, {
+        "uid" : "179b4af8b95083f4",
+        "reportUrl" : "https://mangata-finance.github.io/mangata-e2e/919//#testresult/179b4af8b95083f4",
+        "status" : "passed",
+        "time" : {
+          "start" : 1636767834680,
+          "stop" : 1636768092481,
+          "duration" : 257801
+        }
+      }, {
+        "uid" : "dd16cbe9065ae6be",
+        "reportUrl" : "https://mangata-finance.github.io/mangata-e2e/921//#testresult/dd16cbe9065ae6be",
+        "status" : "passed",
+        "time" : {
+          "start" : 1636767664939,
+          "stop" : 1636767817860,
+          "duration" : 152921
+        }
+      } ]
+    },
+    "tags" : [ ]
+  },
+  "source" : "251fa21cfd0c0fe3.json",
+  "parameterValues" : [ ]
+}
