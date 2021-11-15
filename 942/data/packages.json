@@ -1,0 +1,335 @@
+{
+  "uid" : "83edc06c07f9ae9e47eb6dd1b683e4e2",
+  "children" : [ {
+    "name" : "UI tests - A user can swap and mint tokens",
+    "children" : [ {
+      "name" : "As a User I can Swap tokens - MGA - mETH",
+      "uid" : "f7d162238de96189",
+      "parentUid" : "bd419ef2cd014a4eeaada3cb2b2c455c",
+      "status" : "failed",
+      "time" : {
+        "start" : 1636981979946,
+        "stop" : 1636982109168,
+        "duration" : 129222
+      },
+      "flaky" : true,
+      "newFailed" : true,
+      "parameters" : [ ]
+    }, {
+      "name" : "As a User I can mint some tokens MGA - mETH",
+      "uid" : "38278831a974b876",
+      "parentUid" : "bd419ef2cd014a4eeaada3cb2b2c455c",
+      "status" : "passed",
+      "time" : {
+        "start" : 1636982109168,
+        "stop" : 1636982256601,
+        "duration" : 147433
+      },
+      "flaky" : false,
+      "newFailed" : false,
+      "parameters" : [ ]
+    }, {
+      "name" : "As a User I can burn all liquidity MGA - mETH",
+      "uid" : "a7a87ff7d00fea4c",
+      "parentUid" : "bd419ef2cd014a4eeaada3cb2b2c455c",
+      "status" : "passed",
+      "time" : {
+        "start" : 1636982256602,
+        "stop" : 1636982415588,
+        "duration" : 158986
+      },
+      "flaky" : false,
+      "newFailed" : false,
+      "parameters" : [ ]
+    }, {
+      "name" : "As a User I can mint in more than one pool [ MGA - mETH ] [ MGA - newTokn ] and get invested values",
+      "uid" : "42685b649fc630a5",
+      "parentUid" : "bd419ef2cd014a4eeaada3cb2b2c455c",
+      "status" : "passed",
+      "time" : {
+        "start" : 1636982415588,
+        "stop" : 1636982591107,
+        "duration" : 175519
+      },
+      "flaky" : false,
+      "newFailed" : false,
+      "parameters" : [ ]
+    } ],
+    "uid" : "bd419ef2cd014a4eeaada3cb2b2c455c"
+  }, {
+    "name" : "UI main tests - Deposit - ETH",
+    "children" : [ {
+      "name" : "As a User I can deposit ETH from Meta extension",
+      "uid" : "ff9554dcf24dc362",
+      "parentUid" : "8f3ca0b6efa5f1bdbdcf0d06ec51732c",
+      "status" : "failed",
+      "time" : {
+        "start" : 1636982598114,
+        "stop" : 1636982740476,
+        "duration" : 142362
+      },
+      "flaky" : true,
+      "newFailed" : true,
+      "parameters" : [ ]
+    } ],
+    "uid" : "8f3ca0b6efa5f1bdbdcf0d06ec51732c"
+  }, {
+    "name" : "UI main tests - Withdraw - ETH",
+    "children" : [ {
+      "name" : "As a User I can Withdraw ETH from Meta extension",
+      "uid" : "16cc71e1e7f27f40",
+      "parentUid" : "b0add5a8a03b7bc1414fff4e80a9cf34",
+      "status" : "failed",
+      "time" : {
+        "start" : 1636982740483,
+        "stop" : 1636982771886,
+        "duration" : 31403
+      },
+      "flaky" : true,
+      "newFailed" : true,
+      "parameters" : [ ]
+    } ],
+    "uid" : "b0add5a8a03b7bc1414fff4e80a9cf34"
+  }, {
+    "name" : "UI tests - A user can use MAX:",
+    "children" : [ {
+      "name" : "As a User I can Swap All MGA tokens -> newToken",
+      "uid" : "572971b89d8f3ab1",
+      "parentUid" : "9f177d91955768fa4f018ee4a5a2230c",
+      "status" : "failed",
+      "time" : {
+        "start" : 1636982773900,
+        "stop" : 1636982774322,
+        "duration" : 422
+      },
+      "flaky" : true,
+      "newFailed" : false,
+      "parameters" : [ ]
+    }, {
+      "name" : "As a User I can mint All tokens newToken - newToken2",
+      "uid" : "5b7152b7b921d757",
+      "parentUid" : "9f177d91955768fa4f018ee4a5a2230c",
+      "status" : "failed",
+      "time" : {
+        "start" : 1636982774322,
+        "stop" : 1636982774662,
+        "duration" : 340
+      },
+      "flaky" : true,
+      "newFailed" : false,
+      "parameters" : [ ]
+    } ],
+    "uid" : "9f177d91955768fa4f018ee4a5a2230c"
+  }, {
+    "name" : "UI tests - A user can see the new Modal",
+    "children" : [ {
+      "name" : "Modal contains currencies and amounts when Swapping",
+      "uid" : "39651ba1cdbde6fd",
+      "parentUid" : "96c23f87635f25cc7176b973c55fa8f1",
+      "status" : "failed",
+      "time" : {
+        "start" : 1636982775416,
+        "stop" : 1636982775746,
+        "duration" : 330
+      },
+      "flaky" : true,
+      "newFailed" : true,
+      "parameters" : [ ]
+    }, {
+      "name" : "Modal contains currencies and amounts when providing liquidity",
+      "uid" : "80756393a9d36462",
+      "parentUid" : "96c23f87635f25cc7176b973c55fa8f1",
+      "status" : "failed",
+      "time" : {
+        "start" : 1636982775746,
+        "stop" : 1636982776089,
+        "duration" : 343
+      },
+      "flaky" : true,
+      "newFailed" : true,
+      "parameters" : [ ]
+    }, {
+      "name" : "Modal is visible when burning liquidity",
+      "uid" : "8fb84d576f7bc3b0",
+      "parentUid" : "96c23f87635f25cc7176b973c55fa8f1",
+      "status" : "failed",
+      "time" : {
+        "start" : 1636982776089,
+        "stop" : 1636982776481,
+        "duration" : 392
+      },
+      "flaky" : true,
+      "newFailed" : true,
+      "parameters" : [ ]
+    } ],
+    "uid" : "96c23f87635f25cc7176b973c55fa8f1"
+  }, {
+    "name" : "Accuracy tests:",
+    "children" : [ {
+      "name" : "As a User I get the right values for Pool removal P[2499999999999999999, 5000000000000000000] - I-> 2 -Expected - 0.049 , 0.100",
+      "uid" : "9ce36e875853ac70",
+      "parentUid" : "8a70071cc5ede268ec35a5750ba40439",
+      "status" : "passed",
+      "time" : {
+        "start" : 1636982858237,
+        "stop" : 1636982963773,
+        "duration" : 105536
+      },
+      "flaky" : false,
+      "newFailed" : false,
+      "parameters" : [ ]
+    }, {
+      "name" : "As a User I get the right values for Pool removal P[2500000000000000000, 5000000000000000000] - I-> 1 -Expected - 0.025 , 0.05",
+      "uid" : "c11b7cae8cdbbb23",
+      "parentUid" : "8a70071cc5ede268ec35a5750ba40439",
+      "status" : "passed",
+      "time" : {
+        "start" : 1636982963773,
+        "stop" : 1636983076919,
+        "duration" : 113146
+      },
+      "flaky" : false,
+      "newFailed" : false,
+      "parameters" : [ ]
+    } ],
+    "uid" : "8a70071cc5ede268ec35a5750ba40439"
+  }, {
+    "name" : "Accuracy tests",
+    "children" : [ {
+      "name" : "As a User I get the right values for Pool investment P[5000000000000000000, 100] - I-> 100000000000 -Expected - 0.000002",
+      "uid" : "f8dd9641d043268d",
+      "parentUid" : "6c71abb13b9ca3b12d669c60bf3ede26",
+      "status" : "passed",
+      "time" : {
+        "start" : 1636983151499,
+        "stop" : 1636983263295,
+        "duration" : 111796
+      },
+      "flaky" : false,
+      "newFailed" : false,
+      "parameters" : [ ]
+    }, {
+      "name" : "As a User I get the right values for Pool investment P[5000000000000000000, 5000000000000000000] - I-> 0.123 -Expected - 0.123",
+      "uid" : "362768db2dc9fa6",
+      "parentUid" : "6c71abb13b9ca3b12d669c60bf3ede26",
+      "status" : "passed",
+      "time" : {
+        "start" : 1636983263295,
+        "stop" : 1636983384412,
+        "duration" : 121117
+      },
+      "flaky" : false,
+      "newFailed" : false,
+      "parameters" : [ ]
+    }, {
+      "name" : "As a User I get the right values for Pool investment P[2500000000000000000, 5000000000000000000] - I-> 0.100 -Expected - 0.200",
+      "uid" : "d21752b8df0f127b",
+      "parentUid" : "6c71abb13b9ca3b12d669c60bf3ede26",
+      "status" : "passed",
+      "time" : {
+        "start" : 1636983384414,
+        "stop" : 1636983498358,
+        "duration" : 113944
+      },
+      "flaky" : false,
+      "newFailed" : false,
+      "parameters" : [ ]
+    } ],
+    "uid" : "6c71abb13b9ca3b12d669c60bf3ede26"
+  }, {
+    "name" : "UI tests - A user can create a pool MGA - newToken",
+    "children" : [ {
+      "name" : "As a User I can create a pool",
+      "uid" : "8e282a87b2ffe24d",
+      "parentUid" : "039a515b3fc90301b324a824e5f82fde",
+      "status" : "passed",
+      "time" : {
+        "start" : 1636983614358,
+        "stop" : 1636983672555,
+        "duration" : 58197
+      },
+      "flaky" : false,
+      "newFailed" : false,
+      "parameters" : [ ]
+    } ],
+    "uid" : "039a515b3fc90301b324a824e5f82fde"
+  }, {
+    "name" : "UI tests - Get Tokens from Faucet",
+    "children" : [ {
+      "name" : "As a User I can get test tokens from the faucet",
+      "uid" : "594447a81f5d8e3d",
+      "parentUid" : "e0b92ad8f9649540b463b21b6e90d991",
+      "status" : "passed",
+      "time" : {
+        "start" : 1636983676810,
+        "stop" : 1636983852447,
+        "duration" : 175637
+      },
+      "flaky" : false,
+      "newFailed" : false,
+      "parameters" : [ ]
+    } ],
+    "uid" : "e0b92ad8f9649540b463b21b6e90d991"
+  }, {
+    "name" : "UI tests - Extension management",
+    "children" : [ {
+      "name" : "As a User I get infomed whenever is neccesary to install any extension",
+      "uid" : "1876f2bc35612c90",
+      "parentUid" : "7f749799d9e3b05251bdf98eee50de84",
+      "status" : "passed",
+      "time" : {
+        "start" : 1636983854238,
+        "stop" : 1636983868489,
+        "duration" : 14251
+      },
+      "flaky" : false,
+      "newFailed" : false,
+      "parameters" : [ ]
+    }, {
+      "name" : "As a User I get feedback when extensions are installed and correctly setup",
+      "uid" : "3067560906fba362",
+      "parentUid" : "7f749799d9e3b05251bdf98eee50de84",
+      "status" : "passed",
+      "time" : {
+        "start" : 1636983868489,
+        "stop" : 1636983951949,
+        "duration" : 83460
+      },
+      "flaky" : false,
+      "newFailed" : false,
+      "parameters" : [ ]
+    } ],
+    "uid" : "7f749799d9e3b05251bdf98eee50de84"
+  }, {
+    "name" : "UI tests: Infra",
+    "children" : [ {
+      "name" : "Validate that Mangata Frontend up and running",
+      "uid" : "e22e728dced772db",
+      "parentUid" : "4da232abacc86f64ea7024eed46f94f2",
+      "status" : "passed",
+      "time" : {
+        "start" : 1636983953419,
+        "stop" : 1636983958841,
+        "duration" : 5422
+      },
+      "flaky" : false,
+      "newFailed" : false,
+      "parameters" : [ ]
+    }, {
+      "name" : "Validate that Frontend retrieves AssetInfo data",
+      "uid" : "b50e3ce827085dc",
+      "parentUid" : "4da232abacc86f64ea7024eed46f94f2",
+      "status" : "passed",
+      "time" : {
+        "start" : 1636983958841,
+        "stop" : 1636983984198,
+        "duration" : 25357
+      },
+      "flaky" : false,
+      "newFailed" : false,
+      "parameters" : [ ]
+    } ],
+    "uid" : "4da232abacc86f64ea7024eed46f94f2"
+  } ],
+  "name" : "packages"
+}
