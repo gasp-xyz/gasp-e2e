@@ -1,5 +1,5 @@
 /*
- * @group governance
+ * @group governance governance-voting
  */
 
 import BN from "bn.js";
