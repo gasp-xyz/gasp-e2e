@@ -28,7 +28,8 @@ const SPINNER_LOADING = `//*[@class = 'Sidebar__loading']`;
 const BTN_POOL_OVERVIEW = `poolsOverview-item-tkn1-tkn2`;
 const BTN_REMOVE_LIQUIDITY = `poolDetail-removeBtn`;
 const LBL_TOKEN_NAME = "wallet-asset-tokenName";
-const DIV_ASSETS_ITEM_VALUE = `//div[@class = 'AssetBox' and //*[text()='tokenName']]/*[@class='value']`;
+//const DIV_ASSETS_ITEM_VALUE = `//div[@class = 'AssetBox' and //*[text()='tokenName']]/*[@class='value']`;
+const DIV_ASSETS_ITEM_VALUE = `//div[@class = 'AssetBox' and contains(@data-testid,'tokenName')]/*[@class='value']`;
 
 export class Sidebar {
   driver: WebDriver;
@@ -213,5 +214,19 @@ export class Sidebar {
       LBL_TOKEN_NAME.replace("tokenName", assetName)
     );
     await waitForElementToDissapear(this.driver, xpath);
+  }
+  async copyAssetValue(assetName: string) {
+    const xpath = DIV_ASSETS_ITEM_VALUE.replace("tokenName", assetName);
+    await waitForElement(this.driver, xpath);
+    const element = await this.driver.findElement(By.xpath(xpath));
+    await this.driver.actions().mouseMove(element).perform();
+    const assetDataTestId = `wallet-asset-${assetName}-balance-tooltip`;
+    const xpathByDataTestId = buildDataTestIdXpath(assetDataTestId);
+    const xpathToTooltipValue = `${xpathByDataTestId}//div[@class='TruncatedNumber__tooltip__value']`;
+    const availableTooltipValue = await getText(
+      this.driver,
+      xpathToTooltipValue
+    );
+    return availableTooltipValue;
   }
 }
