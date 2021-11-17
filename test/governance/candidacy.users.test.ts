@@ -128,7 +128,7 @@ describe("Governance -> Candidacy -> Users", () => {
     );
   });
 
-  test.only("Council Member automatically runs for candidacy again", async () => {
+  test("Council Member automatically runs for candidacy again", async () => {
     const candidatesAddress = candidate.keyRingPair.address;
 
     // Gonzalo runs for Council in Term 0
