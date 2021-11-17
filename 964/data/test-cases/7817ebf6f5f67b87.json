@@ -1,0 +1,255 @@
+{
+  "uid" : "7817ebf6f5f67b87",
+  "name" : "As a User I can Swap tokens - MGA - mETH",
+  "fullName" : "UI tests - A user can swap and mint tokens.As a User I can Swap tokens - MGA - mETH",
+  "historyId" : "c9939ab6b05fdb3664bf90f9f2159e2e",
+  "time" : {
+    "start" : 1637159878867,
+    "stop" : 1637159881997,
+    "duration" : 3130
+  },
+  "description" : "",
+  "descriptionHtml" : "",
+  "status" : "failed",
+  "statusMessage" : "WebDriverError: Requested environment is not available",
+  "statusTrace" : "WebDriverError: Requested environment is not available\n                    at Object.checkLegacyResponse (/home/runner/work/mangata-e2e/mangata-e2e/node_modules/selenium-webdriver/lib/error.js:546:15)\n                    at parseHttpResponse (/home/runner/work/mangata-e2e/mangata-e2e/node_modules/selenium-webdriver/lib/http.js:509:13)\n                    at /home/runner/work/mangata-e2e/mangata-e2e/node_modules/selenium-webdriver/lib/http.js:441:30\n                    at processTicksAndRejections (internal/process/task_queues.js:95:5)\n                From: Task: WebDriver.createSession()\n                    at Function.createSession (/home/runner/work/mangata-e2e/mangata-e2e/node_modules/selenium-webdriver/lib/webdriver.js:769:24)\n                    at Function.createSession (/home/runner/work/mangata-e2e/mangata-e2e/node_modules/selenium-webdriver/chrome.js:761:15)\n                    at createDriver (/home/runner/work/mangata-e2e/mangata-e2e/node_modules/selenium-webdriver/index.js:170:33)\n                    at Builder.build (/home/runner/work/mangata-e2e/mangata-e2e/node_modules/selenium-webdriver/index.js:626:16)\n                    at buildChromeDriver (/home/runner/work/mangata-e2e/mangata-e2e/utils/frontend/utils/Driver.ts:34:8)\n                    at Object.getInstance (/home/runner/work/mangata-e2e/mangata-e2e/utils/frontend/utils/Driver.ts:45:24)\n                    at Object.<anonymous> (/home/runner/work/mangata-e2e/mangata-e2e/test/ui/ui-main.test.ts:59:34)\n                    at processTicksAndRejections (internal/process/task_queues.js:95:5)",
+  "flaky" : true,
+  "newFailed" : false,
+  "beforeStages" : [ ],
+  "afterStages" : [ ],
+  "labels" : [ {
+    "name" : "suite",
+    "value" : "UI tests - A user can swap and mint tokens"
+  }, {
+    "name" : "testClass",
+    "value" : "UI tests - A user can swap and mint tokens"
+  }, {
+    "name" : "testMethod",
+    "value" : "As a User I can Swap tokens - MGA - mETH"
+  }, {
+    "name" : "package",
+    "value" : "UI tests - A user can swap and mint tokens"
+  }, {
+    "name" : "resultFormat",
+    "value" : "allure1"
+  } ],
+  "parameters" : [ ],
+  "links" : [ ],
+  "hidden" : false,
+  "retry" : false,
+  "extra" : {
+    "severity" : "normal",
+    "retries" : [ ],
+    "categories" : [ {
+      "name" : "Product defects",
+      "matchedStatuses" : [ ],
+      "flaky" : false
+    } ],
+    "history" : {
+      "statistic" : {
+        "failed" : 30,
+        "broken" : 0,
+        "skipped" : 0,
+        "passed" : 49,
+        "unknown" : 0,
+        "total" : 79
+      },
+      "items" : [ {
+        "uid" : "b79817791860cd08",
+        "reportUrl" : "https://mangata-finance.github.io/mangata-e2e/962//#testresult/b79817791860cd08",
+        "status" : "failed",
+        "statusDetails" : "WebDriverError: Requested environment is not available",
+        "time" : {
+          "start" : 1637154796508,
+          "stop" : 1637154799448,
+          "duration" : 2940
+        }
+      }, {
+        "uid" : "6ef423b9c334fa5f",
+        "reportUrl" : "https://mangata-finance.github.io/mangata-e2e/960//#testresult/6ef423b9c334fa5f",
+        "status" : "failed",
+        "statusDetails" : "WebDriverError: Requested environment is not available",
+        "time" : {
+          "start" : 1637154770419,
+          "stop" : 1637154773158,
+          "duration" : 2739
+        }
+      }, {
+        "uid" : "79e4913dff903fb1",
+        "reportUrl" : "https://mangata-finance.github.io/mangata-e2e/959//#testresult/79e4913dff903fb1",
+        "status" : "failed",
+        "statusDetails" : "WebDriverError: Requested environment is not available",
+        "time" : {
+          "start" : 1637150847754,
+          "stop" : 1637150850605,
+          "duration" : 2851
+        }
+      }, {
+        "uid" : "89abe17e577336c7",
+        "reportUrl" : "https://mangata-finance.github.io/mangata-e2e/958//#testresult/89abe17e577336c7",
+        "status" : "failed",
+        "statusDetails" : "WebDriverError: Requested environment is not available",
+        "time" : {
+          "start" : 1637148028998,
+          "stop" : 1637148032031,
+          "duration" : 3033
+        }
+      }, {
+        "uid" : "7cca16f95a24d869",
+        "reportUrl" : "https://mangata-finance.github.io/mangata-e2e/956//#testresult/7cca16f95a24d869",
+        "status" : "failed",
+        "statusDetails" : ": Timeout - Async callback was not invoked within the 300000 ms timeout specified by jest.setTimeout.",
+        "time" : {
+          "start" : 1637122018776,
+          "stop" : 1637122438588,
+          "duration" : 419812
+        }
+      }, {
+        "uid" : "cf63ad4ab8d3c42a",
+        "reportUrl" : "https://mangata-finance.github.io/mangata-e2e/955//#testresult/cf63ad4ab8d3c42a",
+        "status" : "failed",
+        "statusDetails" : ": Timeout - Async callback was not invoked within the 300000 ms timeout specified by jest.setTimeout.",
+        "time" : {
+          "start" : 1637112589817,
+          "stop" : 1637113040798,
+          "duration" : 450981
+        }
+      }, {
+        "uid" : "2904b08382206799",
+        "reportUrl" : "https://mangata-finance.github.io/mangata-e2e/954//#testresult/2904b08382206799",
+        "status" : "passed",
+        "time" : {
+          "start" : 1637112565691,
+          "stop" : 1637112880341,
+          "duration" : 314650
+        }
+      }, {
+        "uid" : "d385c665529822ab",
+        "reportUrl" : "https://mangata-finance.github.io/mangata-e2e/953//#testresult/d385c665529822ab",
+        "status" : "failed",
+        "statusDetails" : "thrown: Event {\n                  \"isTrusted\": true,\n                }",
+        "time" : {
+          "start" : 1637112591958,
+          "stop" : 1637112592458,
+          "duration" : 500
+        }
+      }, {
+        "uid" : "1c3af78e216b13f1",
+        "reportUrl" : "https://mangata-finance.github.io/mangata-e2e/952//#testresult/1c3af78e216b13f1",
+        "status" : "failed",
+        "statusDetails" : ": Timeout - Async callback was not invoked within the 300000 ms timeout specified by jest.setTimeout.",
+        "time" : {
+          "start" : 1637078843444,
+          "stop" : 1637079257416,
+          "duration" : 413972
+        }
+      }, {
+        "uid" : "b3d6412eb72d0800",
+        "reportUrl" : "https://mangata-finance.github.io/mangata-e2e/950//#testresult/b3d6412eb72d0800",
+        "status" : "failed",
+        "statusDetails" : ": Timeout - Async callback was not invoked within the 300000 ms timeout specified by jest.setTimeout.",
+        "time" : {
+          "start" : 1637068413824,
+          "stop" : 1637068882736,
+          "duration" : 468912
+        }
+      }, {
+        "uid" : "8751133d55c261aa",
+        "reportUrl" : "https://mangata-finance.github.io/mangata-e2e/949//#testresult/8751133d55c261aa",
+        "status" : "failed",
+        "statusDetails" : ": Timeout - Async callback was not invoked within the 300000 ms timeout specified by jest.setTimeout.",
+        "time" : {
+          "start" : 1637068400077,
+          "stop" : 1637068843110,
+          "duration" : 443033
+        }
+      }, {
+        "uid" : "e189e6c83afe22cd",
+        "reportUrl" : "https://mangata-finance.github.io/mangata-e2e/951//#testresult/e189e6c83afe22cd",
+        "status" : "failed",
+        "statusDetails" : "Error: expect(received).toBeTruthy()\n                \n                Received: false",
+        "time" : {
+          "start" : 1637068369051,
+          "stop" : 1637068536502,
+          "duration" : 167451
+        }
+      }, {
+        "uid" : "6c312ebc47b2406b",
+        "reportUrl" : "https://mangata-finance.github.io/mangata-e2e/948//#testresult/6c312ebc47b2406b",
+        "status" : "passed",
+        "time" : {
+          "start" : 1637045156736,
+          "stop" : 1637045414396,
+          "duration" : 257660
+        }
+      }, {
+        "uid" : "6a022878e911f656",
+        "reportUrl" : "https://mangata-finance.github.io/mangata-e2e/947//#testresult/6a022878e911f656",
+        "status" : "passed",
+        "time" : {
+          "start" : 1637035610567,
+          "stop" : 1637035912249,
+          "duration" : 301682
+        }
+      }, {
+        "uid" : "c8f9805483da7f08",
+        "reportUrl" : "https://mangata-finance.github.io/mangata-e2e/944//#testresult/c8f9805483da7f08",
+        "status" : "passed",
+        "time" : {
+          "start" : 1637026159634,
+          "stop" : 1637026412989,
+          "duration" : 253355
+        }
+      }, {
+        "uid" : "8f09108999fe0cd4",
+        "reportUrl" : "https://mangata-finance.github.io/mangata-e2e/946//#testresult/8f09108999fe0cd4",
+        "status" : "passed",
+        "time" : {
+          "start" : 1637026160572,
+          "stop" : 1637026356289,
+          "duration" : 195717
+        }
+      }, {
+        "uid" : "905d4d924124419b",
+        "reportUrl" : "https://mangata-finance.github.io/mangata-e2e/945//#testresult/905d4d924124419b",
+        "status" : "passed",
+        "time" : {
+          "start" : 1637026208345,
+          "stop" : 1637026372215,
+          "duration" : 163870
+        }
+      }, {
+        "uid" : "40ab209bbc12aba",
+        "reportUrl" : "https://mangata-finance.github.io/mangata-e2e/943//#testresult/40ab209bbc12aba",
+        "status" : "passed",
+        "time" : {
+          "start" : 1636992437075,
+          "stop" : 1636992830344,
+          "duration" : 393269
+        }
+      }, {
+        "uid" : "3333fa12723e40f5",
+        "reportUrl" : "https://mangata-finance.github.io/mangata-e2e/940//#testresult/3333fa12723e40f5",
+        "status" : "failed",
+        "statusDetails" : ": Timeout - Async callback was not invoked within the 300000 ms timeout specified by jest.setTimeout.",
+        "time" : {
+          "start" : 1636981988580,
+          "stop" : 1636982419537,
+          "duration" : 430957
+        }
+      }, {
+        "uid" : "401206ea0d018997",
+        "reportUrl" : "https://mangata-finance.github.io/mangata-e2e/941//#testresult/401206ea0d018997",
+        "status" : "passed",
+        "time" : {
+          "start" : 1636981994214,
+          "stop" : 1636982318492,
+          "duration" : 324278
+        }
+      } ]
+    },
+    "tags" : [ ]
+  },
+  "source" : "7817ebf6f5f67b87.json",
+  "parameterValues" : [ ]
+}
