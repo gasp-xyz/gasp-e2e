@@ -9,7 +9,7 @@ import BN from "bn.js";
 
 const { By, until } = require("selenium-webdriver");
 require("chromedriver");
-
+const outputPath = `reports/artifacts`;
 export async function waitForElement(
   driver: WebDriver,
   xpath: string,
@@ -106,7 +106,6 @@ export async function leaveOnlyOneTab(driver: WebDriver) {
 }
 
 export async function addExtraLogs(driver: WebDriver, testName = "") {
-  const outputPath = `reports/artifacts`;
   [logging.Type.BROWSER, logging.Type.DRIVER].forEach(async (value) => {
     await driver
       .manage()
@@ -125,6 +124,14 @@ export async function addExtraLogs(driver: WebDriver, testName = "") {
 
   const img = await driver.takeScreenshot();
   fs.writeFileSync(`${outputPath}/screenshot_${testName}.png`, img, "base64");
+}
+export async function renameExtraLogs(testName: string, result = "failed") {
+  fs.readdirSync(outputPath).forEach((file) => {
+    if (file.includes(testName)) {
+      testLog.getLog().info(`Renaming ${file} to FAILED_${file}`);
+      fs.renameSync(`${outputPath}/${file}`, `${outputPath}/FAILED_${file}`);
+    }
+  });
 }
 
 export async function getAccountJSON() {
