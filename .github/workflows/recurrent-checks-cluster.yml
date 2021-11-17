@@ -6,7 +6,7 @@ on:
 
   workflow_dispatch:
       inputs:
-        cluster-healthcheck:
+        clusterHealthcheck:
           description: 'Run a healthcheck against wss://develop.mangatafinance.cloud*'
           required: true
           default: 'test-cluster-healthcheck'
@@ -26,4 +26,4 @@ jobs:
           token: ${{ secrets.PAT_TRIGGER_JOB }}
           repository: "mangata-finance/mangata-e2e"
           event-type: run-ci
-          client-payload: '{"scriptName": "${{ github.event.inputs.cluster-healthcheck }}", "environment": "${{ matrix.cluster }}"}'
+          client-payload: '{"scriptName": "${{ github.event.inputs.clusterHealthcheck }}", "environment": "${{ matrix.cluster }}"}'
