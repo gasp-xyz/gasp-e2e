@@ -5,7 +5,7 @@
 
 import { Mangata } from "mangata-sdk";
 
-const { testLog } = require("./utils/Logger");
+const { testLog } = require("./../utils/Logger");
 
 const uris = [
   "ws://127.0.0.1:9944",
