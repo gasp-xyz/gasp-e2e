@@ -13,7 +13,8 @@ import { cryptoWaitReady } from "@polkadot/util-crypto";
 import { getEnvironmentRequiredVars, waitForNBlocks } from "../../utils/utils";
 
 const { chainUri: environmentUri } = getEnvironmentRequiredVars();
-const termDuration = 50; // Set as a const in mangata-node
+let termDuration: number; // Set as a const in mangata-node
+const termBlockDelta = 3; // A small block delta at term boundaries
 
 let bootnode: Node;
 let keyring: Keyring;
@@ -32,6 +33,10 @@ beforeAll(async () => {
   bootnode = new Node(environmentUri);
   await bootnode.connect();
   await bootnode.subscribeToHead();
+
+  termDuration = (
+    await bootnode.api!.derive.elections.info()
+  ).termDuration.toNumber();
 
   keyring = new Keyring({ type: "sr25519" });
   sudo = UserFactory.createUser(Users.SudoUser, keyring, bootnode) as SudoUser;
@@ -161,9 +166,10 @@ async function waitForNextTerm() {
   // We know the last block, so we can work out our position in the term
   // as lastBlock % blocksPerTerm. We wait an additional 3 blocks purely to avoid
   // tests needing to manually wait a few extra blocks too.
-  const blocksPerTerm = 50;
+  const blocksPerTerm = termDuration;
   const lastBlock = bootnode.lastBlock!;
-  const blocksToWait = blocksPerTerm - (lastBlock % blocksPerTerm) + 3;
+  const blocksToWait =
+    blocksPerTerm - (lastBlock % blocksPerTerm) + termBlockDelta;
   await waitForNBlocks(blocksToWait);
 }
 
