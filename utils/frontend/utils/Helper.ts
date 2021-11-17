@@ -188,5 +188,12 @@ export async function selectAssetFromModalList(
 }
 
 export function uiStringToBN(stringValue: string) {
-  return new BN((Math.pow(10, 18) * parseFloat(stringValue)).toString());
+  if (stringValue.includes(".")) {
+    const [partInt, partDec] = stringValue.split(".");
+    const exp = new BN(10).pow(new BN(18));
+    const part1 = new BN(partInt).mul(exp);
+    return part1.add(new BN(partDec));
+  } else {
+    return new BN((Math.pow(10, 18) * parseFloat(stringValue)).toString());
+  }
 }
