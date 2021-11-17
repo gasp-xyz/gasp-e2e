@@ -116,6 +116,10 @@ describe("Governance -> Candidacy -> Users", () => {
     // Gonzalo wins the election and is council member!
     // Gonzalo subsequently renounces candidacy in Term 1
     await waitForNextTerm();
+
+    const candidates = getLastBlocksElectionData();
+    expect(candidates).toEqual(expect.arrayContaining([candidatesAddress]));
+
     await candidate.renounceCandidacy();
 
     // Gonzalo is not automatically running for candidacy in Term 2
