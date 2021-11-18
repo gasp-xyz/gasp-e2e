@@ -10,6 +10,7 @@ import {
   waitForElementToDissapear,
 } from "../utils/Helper";
 import { DepositModal } from "./DepositModal";
+import { testLog } from "../../Logger";
 
 const DIV_META_NOT_FOUND = "extensionMetamask-extensionNotFound";
 const DIV_POLK_NOT_FOUND = "extensionPolkadot-extensionNotFound";
@@ -79,19 +80,25 @@ export class Sidebar {
     return displayed;
   }
 
-  async waitForLoad() {
-    return new Promise<void>(async (resolve, reject) => {
-      setTimeout(async () => {
-        const visible = await this.isDisplayed(SPINNER_LOADING);
-        if (visible) {
-          reject("TIMEOUT: Waiting for " + SPINNER_LOADING + " to dissapear");
-        } else {
-          resolve();
-        }
-      }, 30000);
-      await waitForElementToDissapear(this.driver, SPINNER_LOADING);
-      resolve();
-    });
+  async waitForLoad(retry = true): Promise<void> {
+    try {
+      return new Promise<void>(async (resolve, reject) => {
+        setTimeout(async () => {
+          const visible = await this.isDisplayed(SPINNER_LOADING);
+          if (visible) {
+            reject("TIMEOUT: Waiting for " + SPINNER_LOADING + " to dissapear");
+          } else {
+            resolve();
+          }
+        }, 30000);
+        await waitForElementToDissapear(this.driver, SPINNER_LOADING);
+        resolve();
+      });
+    } catch (error) {
+      testLog.getLog().warn("Retrying WaitForLoad");
+      await this.driver.navigate().refresh();
+      return this.waitForLoad(false);
+    }
   }
 
   async withdrawAllAssetsToMetaMask(tokenName: string) {
