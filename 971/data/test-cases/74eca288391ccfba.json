@@ -1,0 +1,46 @@
+{
+  "uid" : "74eca288391ccfba",
+  "name" : "As a User I can mint some tokens MGA - mETH",
+  "fullName" : "UI tests - A user can swap and mint tokens.As a User I can mint some tokens MGA - mETH",
+  "historyId" : "d61eda4c5635d823f9db1036b3f5b551",
+  "time" : {
+    "start" : 1637219972229,
+    "stop" : 1637220102930,
+    "duration" : 130701
+  },
+  "description" : "",
+  "descriptionHtml" : "",
+  "status" : "passed",
+  "flaky" : false,
+  "newFailed" : false,
+  "beforeStages" : [ ],
+  "afterStages" : [ ],
+  "labels" : [ {
+    "name" : "suite",
+    "value" : "UI tests - A user can swap and mint tokens"
+  }, {
+    "name" : "testClass",
+    "value" : "UI tests - A user can swap and mint tokens"
+  }, {
+    "name" : "testMethod",
+    "value" : "As a User I can mint some tokens MGA - mETH"
+  }, {
+    "name" : "package",
+    "value" : "UI tests - A user can swap and mint tokens"
+  }, {
+    "name" : "resultFormat",
+    "value" : "allure1"
+  } ],
+  "parameters" : [ ],
+  "links" : [ ],
+  "hidden" : false,
+  "retry" : false,
+  "extra" : {
+    "severity" : "normal",
+    "retries" : [ ],
+    "categories" : [ ],
+    "tags" : [ ]
+  },
+  "source" : "74eca288391ccfba.json",
+  "parameterValues" : [ ]
+}

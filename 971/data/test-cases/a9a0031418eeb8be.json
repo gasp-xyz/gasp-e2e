@@ -1,0 +1,46 @@
+{
+  "uid" : "a9a0031418eeb8be",
+  "name" : "As a User I get the right values for Pool removal P[2500000000000000000, 5000000000000000000] - I-> 1 -Expected - 0.025 , 0.05",
+  "fullName" : "Accuracy tests:.As a User I get the right values for Pool removal P[2500000000000000000, 5000000000000000000] - I-> 1 -Expected - 0.025 , 0.05",
+  "historyId" : "73624ec2beab0d0ea6ec39eb218659d1",
+  "time" : {
+    "start" : 1637221800447,
+    "stop" : 1637221904692,
+    "duration" : 104245
+  },
+  "description" : "",
+  "descriptionHtml" : "",
+  "status" : "passed",
+  "flaky" : false,
+  "newFailed" : false,
+  "beforeStages" : [ ],
+  "afterStages" : [ ],
+  "labels" : [ {
+    "name" : "suite",
+    "value" : "Accuracy tests:"
+  }, {
+    "name" : "testClass",
+    "value" : "Accuracy tests:"
+  }, {
+    "name" : "testMethod",
+    "value" : "As a User I get the right values for Pool removal P[2500000000000000000, 5000000000000000000] - I-> 1 -Expected - 0.025 , 0.05"
+  }, {
+    "name" : "package",
+    "value" : "Accuracy tests:"
+  }, {
+    "name" : "resultFormat",
+    "value" : "allure1"
+  } ],
+  "parameters" : [ ],
+  "links" : [ ],
+  "hidden" : false,
+  "retry" : false,
+  "extra" : {
+    "severity" : "normal",
+    "retries" : [ ],
+    "categories" : [ ],
+    "tags" : [ ]
+  },
+  "source" : "a9a0031418eeb8be.json",
+  "parameterValues" : [ ]
+}

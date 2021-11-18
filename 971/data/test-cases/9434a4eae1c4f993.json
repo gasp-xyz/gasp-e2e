@@ -1,0 +1,46 @@
+{
+  "uid" : "9434a4eae1c4f993",
+  "name" : "As a User I get infomed whenever is neccesary to install any extension",
+  "fullName" : "UI tests - Extension management.As a User I get infomed whenever is neccesary to install any extension",
+  "historyId" : "dbac81719cd3c0d8613ffc8fdf7c937c",
+  "time" : {
+    "start" : 1637222680232,
+    "stop" : 1637222689914,
+    "duration" : 9682
+  },
+  "description" : "",
+  "descriptionHtml" : "",
+  "status" : "passed",
+  "flaky" : false,
+  "newFailed" : false,
+  "beforeStages" : [ ],
+  "afterStages" : [ ],
+  "labels" : [ {
+    "name" : "suite",
+    "value" : "UI tests - Extension management"
+  }, {
+    "name" : "testClass",
+    "value" : "UI tests - Extension management"
+  }, {
+    "name" : "testMethod",
+    "value" : "As a User I get infomed whenever is neccesary to install any extension"
+  }, {
+    "name" : "package",
+    "value" : "UI tests - Extension management"
+  }, {
+    "name" : "resultFormat",
+    "value" : "allure1"
+  } ],
+  "parameters" : [ ],
+  "links" : [ ],
+  "hidden" : false,
+  "retry" : false,
+  "extra" : {
+    "severity" : "normal",
+    "retries" : [ ],
+    "categories" : [ ],
+    "tags" : [ ]
+  },
+  "source" : "9434a4eae1c4f993.json",
+  "parameterValues" : [ ]
+}

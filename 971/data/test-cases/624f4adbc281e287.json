@@ -1,0 +1,46 @@
+{
+  "uid" : "624f4adbc281e287",
+  "name" : "As a User I can get test tokens from the faucet",
+  "fullName" : "UI tests - Get Tokens from Faucet.As a User I can get test tokens from the faucet",
+  "historyId" : "eec88a440f5cd4c786967d8a5233a8c0",
+  "time" : {
+    "start" : 1637222482770,
+    "stop" : 1637222678067,
+    "duration" : 195297
+  },
+  "description" : "",
+  "descriptionHtml" : "",
+  "status" : "passed",
+  "flaky" : false,
+  "newFailed" : false,
+  "beforeStages" : [ ],
+  "afterStages" : [ ],
+  "labels" : [ {
+    "name" : "suite",
+    "value" : "UI tests - Get Tokens from Faucet"
+  }, {
+    "name" : "testClass",
+    "value" : "UI tests - Get Tokens from Faucet"
+  }, {
+    "name" : "testMethod",
+    "value" : "As a User I can get test tokens from the faucet"
+  }, {
+    "name" : "package",
+    "value" : "UI tests - Get Tokens from Faucet"
+  }, {
+    "name" : "resultFormat",
+    "value" : "allure1"
+  } ],
+  "parameters" : [ ],
+  "links" : [ ],
+  "hidden" : false,
+  "retry" : false,
+  "extra" : {
+    "severity" : "normal",
+    "retries" : [ ],
+    "categories" : [ ],
+    "tags" : [ ]
+  },
+  "source" : "624f4adbc281e287.json",
+  "parameterValues" : [ ]
+}

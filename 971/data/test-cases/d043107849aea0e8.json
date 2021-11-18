@@ -1,0 +1,46 @@
+{
+  "uid" : "d043107849aea0e8",
+  "name" : "Modal is visible when burning liquidity",
+  "fullName" : "UI tests - A user can see the new Modal.Modal is visible when burning liquidity",
+  "historyId" : "d905b7c57d5643ad680989ac739cf6b",
+  "time" : {
+    "start" : 1637221497575,
+    "stop" : 1637221626460,
+    "duration" : 128885
+  },
+  "description" : "",
+  "descriptionHtml" : "",
+  "status" : "passed",
+  "flaky" : false,
+  "newFailed" : false,
+  "beforeStages" : [ ],
+  "afterStages" : [ ],
+  "labels" : [ {
+    "name" : "suite",
+    "value" : "UI tests - A user can see the new Modal"
+  }, {
+    "name" : "testClass",
+    "value" : "UI tests - A user can see the new Modal"
+  }, {
+    "name" : "testMethod",
+    "value" : "Modal is visible when burning liquidity"
+  }, {
+    "name" : "package",
+    "value" : "UI tests - A user can see the new Modal"
+  }, {
+    "name" : "resultFormat",
+    "value" : "allure1"
+  } ],
+  "parameters" : [ ],
+  "links" : [ ],
+  "hidden" : false,
+  "retry" : false,
+  "extra" : {
+    "severity" : "normal",
+    "retries" : [ ],
+    "categories" : [ ],
+    "tags" : [ ]
+  },
+  "source" : "d043107849aea0e8.json",
+  "parameterValues" : [ ]
+}

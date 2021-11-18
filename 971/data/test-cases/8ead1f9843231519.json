@@ -1,0 +1,46 @@
+{
+  "uid" : "8ead1f9843231519",
+  "name" : "As a User I can see the max possible value in UI",
+  "fullName" : "UI tests > Balances.As a User I can see the max possible value in UI",
+  "historyId" : "2160ca0fa14e27280258d3f43dcf5f35",
+  "time" : {
+    "start" : 1637220608171,
+    "stop" : 1637220625608,
+    "duration" : 17437
+  },
+  "description" : "",
+  "descriptionHtml" : "",
+  "status" : "passed",
+  "flaky" : false,
+  "newFailed" : false,
+  "beforeStages" : [ ],
+  "afterStages" : [ ],
+  "labels" : [ {
+    "name" : "suite",
+    "value" : "UI tests > Balances"
+  }, {
+    "name" : "testClass",
+    "value" : "UI tests > Balances"
+  }, {
+    "name" : "testMethod",
+    "value" : "As a User I can see the max possible value in UI"
+  }, {
+    "name" : "package",
+    "value" : "UI tests > Balances"
+  }, {
+    "name" : "resultFormat",
+    "value" : "allure1"
+  } ],
+  "parameters" : [ ],
+  "links" : [ ],
+  "hidden" : false,
+  "retry" : false,
+  "extra" : {
+    "severity" : "normal",
+    "retries" : [ ],
+    "categories" : [ ],
+    "tags" : [ ]
+  },
+  "source" : "8ead1f9843231519.json",
+  "parameterValues" : [ ]
+}
