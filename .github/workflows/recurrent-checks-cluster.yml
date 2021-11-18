@@ -26,13 +26,13 @@ jobs:
           if [ "$FROM_INPUT" != "" ]
           then
             echo "Input"
-            echo "TEST_SCRIPT=${{ github.event.inputs.scriptName }}" >> $GITHUB_ENV
+            echo "TEST_SCRIPT=${{ github.event.inputs.clusterHealthcheck }}" >> $GITHUB_ENV
           else
             echo "From Schedule"
             echo "TEST_SCRIPT=test-cluster-healthcheck" >> $GITHUB_ENV
           fi
         env:
-          FROM_INPUT: ${{ github.event.inputs.scriptName }}
+          FROM_INPUT: ${{ github.event.inputs.clusterHealthcheck }}
       
       - name: Repository Dispatch
         uses: peter-evans/repository-dispatch@v1
