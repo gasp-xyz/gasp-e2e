@@ -1,0 +1,248 @@
+{
+  "uid" : "e595b2eb76c088f0",
+  "name" : "As a User I get feedback when extensions are installed and correctly setup",
+  "fullName" : "UI tests - Extension management.As a User I get feedback when extensions are installed and correctly setup",
+  "historyId" : "7365b4e6dd98ca21f75fccaf5b1ca8dd",
+  "time" : {
+    "start" : 1637199943440,
+    "stop" : 1637199943441,
+    "duration" : 1
+  },
+  "description" : "",
+  "descriptionHtml" : "",
+  "status" : "failed",
+  "statusMessage" : "WebDriverError: Requested environment is not available",
+  "statusTrace" : "WebDriverError: Requested environment is not available\n                    at Object.checkLegacyResponse (/home/runner/work/mangata-e2e/mangata-e2e/node_modules/selenium-webdriver/lib/error.js:546:15)\n                    at parseHttpResponse (/home/runner/work/mangata-e2e/mangata-e2e/node_modules/selenium-webdriver/lib/http.js:509:13)\n                    at /home/runner/work/mangata-e2e/mangata-e2e/node_modules/selenium-webdriver/lib/http.js:441:30\n                    at processTicksAndRejections (internal/process/task_queues.js:95:5)\n                From: Task: WebDriver.createSession()\n                    at Function.createSession (/home/runner/work/mangata-e2e/mangata-e2e/node_modules/selenium-webdriver/lib/webdriver.js:769:24)\n                    at Function.createSession (/home/runner/work/mangata-e2e/mangata-e2e/node_modules/selenium-webdriver/chrome.js:761:15)\n                    at createDriver (/home/runner/work/mangata-e2e/mangata-e2e/node_modules/selenium-webdriver/index.js:170:33)\n                    at Builder.build (/home/runner/work/mangata-e2e/mangata-e2e/node_modules/selenium-webdriver/index.js:626:16)\n                    at buildChromeDriver (/home/runner/work/mangata-e2e/mangata-e2e/utils/frontend/utils/Driver.ts:34:8)\n                    at Object.getInstance (/home/runner/work/mangata-e2e/mangata-e2e/utils/frontend/utils/Driver.ts:45:24)\n                    at Object.<anonymous> (/home/runner/work/mangata-e2e/mangata-e2e/test/ui/ui-main.extensions.test.ts:32:34)\n                    at Object.asyncJestTest (/home/runner/work/mangata-e2e/mangata-e2e/node_modules/jest-jasmine2/build/jasmineAsyncInstall.js:106:37)\n                    at /home/runner/work/mangata-e2e/mangata-e2e/node_modules/jest-jasmine2/build/queueRunner.js:45:12\n                    at new Promise (<anonymous>)\n                    at mapper (/home/runner/work/mangata-e2e/mangata-e2e/node_modules/jest-jasmine2/build/queueRunner.js:28:19)\n                    at /home/runner/work/mangata-e2e/mangata-e2e/node_modules/jest-jasmine2/build/queueRunner.js:75:41\n                    at processTicksAndRejections (internal/process/task_queues.js:95:5)",
+  "flaky" : true,
+  "newFailed" : false,
+  "beforeStages" : [ ],
+  "afterStages" : [ ],
+  "labels" : [ {
+    "name" : "suite",
+    "value" : "UI tests - Extension management"
+  }, {
+    "name" : "testClass",
+    "value" : "UI tests - Extension management"
+  }, {
+    "name" : "testMethod",
+    "value" : "As a User I get feedback when extensions are installed and correctly setup"
+  }, {
+    "name" : "package",
+    "value" : "UI tests - Extension management"
+  }, {
+    "name" : "resultFormat",
+    "value" : "allure1"
+  } ],
+  "parameters" : [ ],
+  "links" : [ ],
+  "hidden" : false,
+  "retry" : false,
+  "extra" : {
+    "severity" : "normal",
+    "retries" : [ ],
+    "categories" : [ {
+      "name" : "Product defects",
+      "matchedStatuses" : [ ],
+      "flaky" : false
+    } ],
+    "history" : {
+      "statistic" : {
+        "failed" : 11,
+        "broken" : 0,
+        "skipped" : 0,
+        "passed" : 69,
+        "unknown" : 0,
+        "total" : 80
+      },
+      "items" : [ {
+        "uid" : "9174672dc2df9c1",
+        "reportUrl" : "https://mangata-finance.github.io/mangata-e2e/966//#testresult/9174672dc2df9c1",
+        "status" : "failed",
+        "statusDetails" : "WebDriverError: Requested environment is not available",
+        "time" : {
+          "start" : 1637166203788,
+          "stop" : 1637166203789,
+          "duration" : 1
+        }
+      }, {
+        "uid" : "d773500d2115e87a",
+        "reportUrl" : "https://mangata-finance.github.io/mangata-e2e/965//#testresult/d773500d2115e87a",
+        "status" : "passed",
+        "time" : {
+          "start" : 1637163857916,
+          "stop" : 1637163920893,
+          "duration" : 62977
+        }
+      }, {
+        "uid" : "377c778a2cd03cc3",
+        "reportUrl" : "https://mangata-finance.github.io/mangata-e2e/962//#testresult/377c778a2cd03cc3",
+        "status" : "failed",
+        "statusDetails" : "WebDriverError: Requested environment is not available",
+        "time" : {
+          "start" : 1637155724379,
+          "stop" : 1637155724380,
+          "duration" : 1
+        }
+      }, {
+        "uid" : "a5dd7f095e0cd340",
+        "reportUrl" : "https://mangata-finance.github.io/mangata-e2e/960//#testresult/a5dd7f095e0cd340",
+        "status" : "failed",
+        "statusDetails" : "WebDriverError: Requested environment is not available",
+        "time" : {
+          "start" : 1637155696126,
+          "stop" : 1637155696127,
+          "duration" : 1
+        }
+      }, {
+        "uid" : "747255c12a8a99c3",
+        "reportUrl" : "https://mangata-finance.github.io/mangata-e2e/959//#testresult/747255c12a8a99c3",
+        "status" : "failed",
+        "statusDetails" : "WebDriverError: Requested environment is not available",
+        "time" : {
+          "start" : 1637152074639,
+          "stop" : 1637152074640,
+          "duration" : 1
+        }
+      }, {
+        "uid" : "eff89830710371be",
+        "reportUrl" : "https://mangata-finance.github.io/mangata-e2e/958//#testresult/eff89830710371be",
+        "status" : "failed",
+        "statusDetails" : "WebDriverError: Requested environment is not available",
+        "time" : {
+          "start" : 1637149257419,
+          "stop" : 1637149257420,
+          "duration" : 1
+        }
+      }, {
+        "uid" : "c024ff78b7e5f477",
+        "reportUrl" : "https://mangata-finance.github.io/mangata-e2e/956//#testresult/c024ff78b7e5f477",
+        "status" : "passed",
+        "time" : {
+          "start" : 1637127800713,
+          "stop" : 1637127941269,
+          "duration" : 140556
+        }
+      }, {
+        "uid" : "b24b0741fae75226",
+        "reportUrl" : "https://mangata-finance.github.io/mangata-e2e/955//#testresult/b24b0741fae75226",
+        "status" : "passed",
+        "time" : {
+          "start" : 1637118822800,
+          "stop" : 1637119049995,
+          "duration" : 227195
+        }
+      }, {
+        "uid" : "392323ca9c0268e4",
+        "reportUrl" : "https://mangata-finance.github.io/mangata-e2e/954//#testresult/392323ca9c0268e4",
+        "status" : "passed",
+        "time" : {
+          "start" : 1637117789912,
+          "stop" : 1637117956635,
+          "duration" : 166723
+        }
+      }, {
+        "uid" : "2a921a81904a2400",
+        "reportUrl" : "https://mangata-finance.github.io/mangata-e2e/953//#testresult/2a921a81904a2400",
+        "status" : "passed",
+        "time" : {
+          "start" : 1637114535703,
+          "stop" : 1637114626622,
+          "duration" : 90919
+        }
+      }, {
+        "uid" : "8b6e0dd8f9da56c5",
+        "reportUrl" : "https://mangata-finance.github.io/mangata-e2e/952//#testresult/8b6e0dd8f9da56c5",
+        "status" : "passed",
+        "time" : {
+          "start" : 1637084705227,
+          "stop" : 1637084908109,
+          "duration" : 202882
+        }
+      }, {
+        "uid" : "b68caf7b280c7546",
+        "reportUrl" : "https://mangata-finance.github.io/mangata-e2e/950//#testresult/b68caf7b280c7546",
+        "status" : "passed",
+        "time" : {
+          "start" : 1637074759658,
+          "stop" : 1637075029991,
+          "duration" : 270333
+        }
+      }, {
+        "uid" : "819af243a8cd28a4",
+        "reportUrl" : "https://mangata-finance.github.io/mangata-e2e/949//#testresult/819af243a8cd28a4",
+        "status" : "passed",
+        "time" : {
+          "start" : 1637074557419,
+          "stop" : 1637074730987,
+          "duration" : 173568
+        }
+      }, {
+        "uid" : "64b6d7b69b611b8b",
+        "reportUrl" : "https://mangata-finance.github.io/mangata-e2e/951//#testresult/64b6d7b69b611b8b",
+        "status" : "passed",
+        "time" : {
+          "start" : 1637070606048,
+          "stop" : 1637070682447,
+          "duration" : 76399
+        }
+      }, {
+        "uid" : "bd2499772c15a6c5",
+        "reportUrl" : "https://mangata-finance.github.io/mangata-e2e/948//#testresult/bd2499772c15a6c5",
+        "status" : "passed",
+        "time" : {
+          "start" : 1637049569400,
+          "stop" : 1637049676269,
+          "duration" : 106869
+        }
+      }, {
+        "uid" : "67dc9f62ec310029",
+        "reportUrl" : "https://mangata-finance.github.io/mangata-e2e/947//#testresult/67dc9f62ec310029",
+        "status" : "passed",
+        "time" : {
+          "start" : 1637040306129,
+          "stop" : 1637040434581,
+          "duration" : 128452
+        }
+      }, {
+        "uid" : "5ad83066074f0ace",
+        "reportUrl" : "https://mangata-finance.github.io/mangata-e2e/944//#testresult/5ad83066074f0ace",
+        "status" : "passed",
+        "time" : {
+          "start" : 1637030614422,
+          "stop" : 1637030734555,
+          "duration" : 120133
+        }
+      }, {
+        "uid" : "cd22cd4dd66698bc",
+        "reportUrl" : "https://mangata-finance.github.io/mangata-e2e/946//#testresult/cd22cd4dd66698bc",
+        "status" : "passed",
+        "time" : {
+          "start" : 1637029912794,
+          "stop" : 1637030041429,
+          "duration" : 128635
+        }
+      }, {
+        "uid" : "e42014bdeea881a",
+        "reportUrl" : "https://mangata-finance.github.io/mangata-e2e/945//#testresult/e42014bdeea881a",
+        "status" : "passed",
+        "time" : {
+          "start" : 1637028345911,
+          "stop" : 1637028442971,
+          "duration" : 97060
+        }
+      }, {
+        "uid" : "5ddfeff7f5c28ee4",
+        "reportUrl" : "https://mangata-finance.github.io/mangata-e2e/943//#testresult/5ddfeff7f5c28ee4",
+        "status" : "passed",
+        "time" : {
+          "start" : 1636998103124,
+          "stop" : 1636998270092,
+          "duration" : 166968
+        }
+      } ]
+    },
+    "tags" : [ ]
+  },
+  "source" : "e595b2eb76c088f0.json",
+  "parameterValues" : [ ]
+}
