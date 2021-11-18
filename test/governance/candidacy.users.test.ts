@@ -139,7 +139,9 @@ describe("Governance -> Candidacy -> Users", () => {
     // Eddy votes for Gonzalo
     await candidate.runForCouncil();
     await voter.vote([candidate], new BN(Math.pow(10, 16).toString()));
+
     await waitForNBlocks(2);
+
     const candidatesTerm0 = getLastBlocksElectionData();
     expect(candidatesTerm0).toEqual(
       expect.arrayContaining([candidatesAddress])

@@ -66,7 +66,7 @@ beforeEach(async () => {
 
 describe("Governance -> Voting -> Users", () => {
   test("Users can vote for a new council member", async () => {
-    const stake = new BN(Math.pow(10, 16).toString());
+    const stake = new BN(Math.pow(10, 14).toString());
 
     // Gonzalo runs for council
     // Eddy votes for Gonzalo
