@@ -1,6 +1,7 @@
 /*
  *
  * @group ui
+ * @group test-ui-smoke
  */
 import { Keyring } from "@polkadot/api";
 import BN from "bn.js";
