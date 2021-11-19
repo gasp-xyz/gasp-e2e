@@ -9,7 +9,7 @@ import BN from "bn.js";
 import { Reporter } from "jest-allure/dist/Reporter";
 const { By, until } = require("selenium-webdriver");
 require("chromedriver");
-
+const outputPath = `reports/artifacts`;
 export async function waitForElement(
   driver: WebDriver,
   xpath: string,
@@ -49,6 +49,8 @@ export async function writeText(
 ) {
   await waitForElement(driver, elementXpath);
   await (await driver.findElement(By.xpath(elementXpath))).clear();
+  const input = await driver.findElement(By.xpath(elementXpath));
+  await driver.executeScript("arguments[0].value = '';", input);
   await (await driver.findElement(By.xpath(elementXpath))).sendKeys(text);
 }
 export async function getText(driver: WebDriver, elementXpath: string) {
@@ -106,7 +108,6 @@ export async function leaveOnlyOneTab(driver: WebDriver) {
 }
 
 export async function addExtraLogs(driver: WebDriver, testName = "") {
-  const outputPath = `reports/artifacts`;
   [logging.Type.BROWSER, logging.Type.DRIVER].forEach(async (value) => {
     await driver
       .manage()
@@ -122,11 +123,18 @@ export async function addExtraLogs(driver: WebDriver, testName = "") {
         });
       });
   });
-
   const img = await driver.takeScreenshot();
   fs.writeFileSync(`${outputPath}/screenshot_${testName}.png`, img, "base64");
   const reporter = (globalThis as any).reporter as Reporter;
   reporter.addAttachment("Screeenshot", new Buffer(img, "base64"), "image/png");
+}
+export async function renameExtraLogs(testName: string, result = "failed") {
+  fs.readdirSync(outputPath).forEach((file) => {
+    if (file.includes(testName)) {
+      testLog.getLog().info(`Renaming ${file} to FAILED_${file}`);
+      fs.renameSync(`${outputPath}/${file}`, `${outputPath}/FAILED_${file}`);
+    }
+  });
 }
 
 export async function getAccountJSON() {
@@ -183,5 +191,18 @@ export async function selectAssetFromModalList(
 }
 
 export function uiStringToBN(stringValue: string) {
-  return new BN((Math.pow(10, 18) * parseFloat(stringValue)).toString());
+  if (stringValue.includes(".")) {
+    const partInt = stringValue.split(".")[0];
+    let partDec = stringValue.split(".")[1];
+    //multiply the part int*10¹⁸
+    const exp = new BN(10).pow(new BN(18));
+    const part1 = new BN(partInt).mul(exp);
+    //add zeroes to the decimal part.
+    while (partDec.length < 18) {
+      partDec += "0";
+    }
+    return part1.add(new BN(partDec));
+  } else {
+    return new BN((Math.pow(10, 18) * parseFloat(stringValue)).toString());
+  }
 }

@@ -1,5 +1,5 @@
 import BN from "bn.js";
-
+import { renameExtraLogs } from "./frontend/utils/Helper";
 module.exports = {
   runner: "groups",
 };
@@ -62,3 +62,28 @@ expect.extend({
     }
   },
 });
+
+export const registerScreenshotReporter = () => {
+  /**
+   * jasmine reporter does not support async.
+   * So we store the screenshot promise and wait for it before each test
+   */
+  const screenshotPromise = Promise.resolve();
+  beforeEach(() => screenshotPromise);
+  afterAll(() => screenshotPromise);
+
+  (jasmine as any).getEnv().addReporter({
+    specDone: async (result: any) => {
+      if (result.status === "failed") {
+        try {
+          await renameExtraLogs(result.fullName, result.status);
+        } catch (e) {
+          // eslint-disable-next-line no-console
+          console.error(e);
+          // Lets only log the error, so tno want any side effect.
+        }
+      }
+    },
+  });
+};
+registerScreenshotReporter();

@@ -21,6 +21,7 @@ import { DriverBuilder } from "../../utils/frontend/utils/Driver";
 import {
   setupAllExtensions,
   addExtraLogs,
+  uiStringToBN,
 } from "../../utils/frontend/utils/Helper";
 import { AssetWallet, User } from "../../utils/User";
 import {
@@ -115,7 +116,10 @@ describe("UI tests - A user can swap and mint tokens", () => {
       ?.amountBefore.free!.lt(
         testUser1.getAsset(ETH_ASSET_ID)?.amountAfter.free!
       );
-
+    const methValue = await swapView.getBalanceFromAssetGet();
+    expect(testUser1.getAsset(ETH_ASSET_ID)?.amountAfter.free!).bnEqual(
+      uiStringToBN(methValue)
+    );
     expect(swapped).toBeTruthy();
   });
   it("As a User I can mint some tokens MGA - mETH", async () => {
@@ -145,6 +149,10 @@ describe("UI tests - A user can swap and mint tokens", () => {
       MGA_ASSET_NAME,
       mETH_ASSET_NAME
     );
+    const mgaValue = await poolView.getBalanceFromtoken2();
+    const userWalletValue = testUser1.getAsset(MGA_ASSET_ID)?.amountAfter.free!;
+    const mgaValueBn = uiStringToBN(mgaValue);
+    expect(userWalletValue).bnEqual(mgaValueBn);
     expect(poolInvested).toBeTruthy();
     expect(swapped).toBeTruthy();
   });
@@ -160,7 +168,7 @@ describe("UI tests - A user can swap and mint tokens", () => {
     await sidebar.clickOnLiquidityPool(MGA_ASSET_NAME, mETH_ASSET_NAME);
     await sidebar.clickOnRemoveLiquidity();
     const modal = new BrunLiquidityModal(driver);
-    await modal.setAmount("100");
+    await modal.clickOn100Amount();
     await modal.confirmAndSign();
     for (let index = 0; index < 4; index++) {
       await waitNewBlock();
