@@ -80,25 +80,25 @@ export class Sidebar {
     return displayed;
   }
 
-  async waitForLoad(retry = true): Promise<void> {
-    try {
-      return new Promise<void>(async (resolve, reject) => {
-        setTimeout(async () => {
-          const visible = await this.isDisplayed(SPINNER_LOADING);
-          if (visible) {
-            reject("TIMEOUT: Waiting for " + SPINNER_LOADING + " to dissapear");
-          } else {
-            resolve();
+  async waitForLoad(retry = 2): Promise<void> {
+    return new Promise<void>(async (resolve, reject) => {
+      setTimeout(async () => {
+        const visible = await this.isDisplayed(SPINNER_LOADING);
+        if (visible) {
+          if (retry > 0) {
+            testLog.getLog().warn("Retrying wait for load: attempt " + retry);
+            await this.driver.navigate().refresh();
+            retry = retry - 1;
+            return this.waitForLoad(retry);
           }
-        }, 30000);
-        await waitForElementToDissapear(this.driver, SPINNER_LOADING);
-        resolve();
-      });
-    } catch (error) {
-      testLog.getLog().warn("Retrying WaitForLoad");
-      await this.driver.navigate().refresh();
-      return this.waitForLoad(false);
-    }
+          reject("TIMEOUT: Waiting for " + SPINNER_LOADING + " to dissapear");
+        } else {
+          resolve();
+        }
+      }, 20000);
+      await waitForElementToDissapear(this.driver, SPINNER_LOADING);
+      resolve();
+    });
   }
 
   async withdrawAllAssetsToMetaMask(tokenName: string) {
