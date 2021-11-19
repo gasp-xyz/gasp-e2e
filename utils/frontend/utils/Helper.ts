@@ -49,6 +49,8 @@ export async function writeText(
 ) {
   await waitForElement(driver, elementXpath);
   await (await driver.findElement(By.xpath(elementXpath))).clear();
+  const input = await driver.findElement(By.xpath(elementXpath));
+  await driver.executeScript("arguments[0].value = '';", input);
   await (await driver.findElement(By.xpath(elementXpath))).sendKeys(text);
 }
 export async function getText(driver: WebDriver, elementXpath: string) {
@@ -121,7 +123,6 @@ export async function addExtraLogs(driver: WebDriver, testName = "") {
         });
       });
   });
-
   const img = await driver.takeScreenshot();
   fs.writeFileSync(`${outputPath}/screenshot_${testName}.png`, img, "base64");
 }

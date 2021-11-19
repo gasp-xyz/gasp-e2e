@@ -167,7 +167,7 @@ describe("UI tests - A user can swap and mint tokens", () => {
     await sidebar.clickOnLiquidityPool(MGA_ASSET_NAME, mETH_ASSET_NAME);
     await sidebar.clickOnRemoveLiquidity();
     const modal = new BrunLiquidityModal(driver);
-    await modal.setAmount("100");
+    await modal.clickOn100Amount();
     await modal.confirmAndSign();
     for (let index = 0; index < 4; index++) {
       await waitNewBlock();
