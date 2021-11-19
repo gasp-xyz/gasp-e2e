@@ -1,0 +1,85 @@
+{
+  "uid" : "a003cb8ec7f74637",
+  "name" : "As a User I can see the min value in UI",
+  "fullName" : "UI tests > Balances.As a User I can see the min value in UI",
+  "historyId" : "5191003e7b8596e6517640d210240c4f",
+  "time" : {
+    "start" : 1637320395784,
+    "stop" : 1637320415927,
+    "duration" : 20143
+  },
+  "description" : "",
+  "descriptionHtml" : "",
+  "status" : "passed",
+  "flaky" : false,
+  "newFailed" : false,
+  "beforeStages" : [ ],
+  "afterStages" : [ ],
+  "labels" : [ {
+    "name" : "suite",
+    "value" : "UI tests > Balances"
+  }, {
+    "name" : "testClass",
+    "value" : "UI tests > Balances"
+  }, {
+    "name" : "testMethod",
+    "value" : "As a User I can see the min value in UI"
+  }, {
+    "name" : "package",
+    "value" : "UI tests > Balances"
+  }, {
+    "name" : "resultFormat",
+    "value" : "allure1"
+  } ],
+  "parameters" : [ ],
+  "links" : [ ],
+  "hidden" : false,
+  "retry" : false,
+  "extra" : {
+    "severity" : "normal",
+    "retries" : [ ],
+    "categories" : [ ],
+    "history" : {
+      "statistic" : {
+        "failed" : 1,
+        "broken" : 0,
+        "skipped" : 0,
+        "passed" : 3,
+        "unknown" : 0,
+        "total" : 4
+      },
+      "items" : [ {
+        "uid" : "e702da4a8da4cf7f",
+        "reportUrl" : "https://mangata-finance.github.io/mangata-e2e/980//#testresult/e702da4a8da4cf7f",
+        "status" : "passed",
+        "time" : {
+          "start" : 1637311574288,
+          "stop" : 1637311592357,
+          "duration" : 18069
+        }
+      }, {
+        "uid" : "9b075793b37983cc",
+        "reportUrl" : "https://mangata-finance.github.io/mangata-e2e/974//#testresult/9b075793b37983cc",
+        "status" : "passed",
+        "time" : {
+          "start" : 1637231833679,
+          "stop" : 1637231851441,
+          "duration" : 17762
+        }
+      }, {
+        "uid" : "7d7a57011f372262",
+        "reportUrl" : "https://mangata-finance.github.io/mangata-e2e/971//#testresult/7d7a57011f372262",
+        "status" : "failed",
+        "statusDetails" : "Error: Expected: 90 \n                  Actual: 9 \n                 ",
+        "time" : {
+          "start" : 1637220625608,
+          "stop" : 1637220642332,
+          "duration" : 16724
+        }
+      } ]
+    },
+    "tags" : [ ]
+  },
+  "source" : "a003cb8ec7f74637.json",
+  "parameterValues" : [ ]
+}

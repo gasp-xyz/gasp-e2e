@@ -1,0 +1,84 @@
+{
+  "uid" : "153b283113817de4",
+  "name" : "As a User I can see the max possible value in UI",
+  "fullName" : "UI tests > Balances.As a User I can see the max possible value in UI",
+  "historyId" : "2160ca0fa14e27280258d3f43dcf5f35",
+  "time" : {
+    "start" : 1637320376034,
+    "stop" : 1637320395784,
+    "duration" : 19750
+  },
+  "description" : "",
+  "descriptionHtml" : "",
+  "status" : "passed",
+  "flaky" : false,
+  "newFailed" : false,
+  "beforeStages" : [ ],
+  "afterStages" : [ ],
+  "labels" : [ {
+    "name" : "suite",
+    "value" : "UI tests > Balances"
+  }, {
+    "name" : "testClass",
+    "value" : "UI tests > Balances"
+  }, {
+    "name" : "testMethod",
+    "value" : "As a User I can see the max possible value in UI"
+  }, {
+    "name" : "package",
+    "value" : "UI tests > Balances"
+  }, {
+    "name" : "resultFormat",
+    "value" : "allure1"
+  } ],
+  "parameters" : [ ],
+  "links" : [ ],
+  "hidden" : false,
+  "retry" : false,
+  "extra" : {
+    "severity" : "normal",
+    "retries" : [ ],
+    "categories" : [ ],
+    "history" : {
+      "statistic" : {
+        "failed" : 0,
+        "broken" : 0,
+        "skipped" : 0,
+        "passed" : 4,
+        "unknown" : 0,
+        "total" : 4
+      },
+      "items" : [ {
+        "uid" : "1a168a6fe94c7871",
+        "reportUrl" : "https://mangata-finance.github.io/mangata-e2e/980//#testresult/1a168a6fe94c7871",
+        "status" : "passed",
+        "time" : {
+          "start" : 1637311555368,
+          "stop" : 1637311574288,
+          "duration" : 18920
+        }
+      }, {
+        "uid" : "a328519a5e2468f9",
+        "reportUrl" : "https://mangata-finance.github.io/mangata-e2e/974//#testresult/a328519a5e2468f9",
+        "status" : "passed",
+        "time" : {
+          "start" : 1637231815802,
+          "stop" : 1637231833679,
+          "duration" : 17877
+        }
+      }, {
+        "uid" : "8ead1f9843231519",
+        "reportUrl" : "https://mangata-finance.github.io/mangata-e2e/971//#testresult/8ead1f9843231519",
+        "status" : "passed",
+        "time" : {
+          "start" : 1637220608171,
+          "stop" : 1637220625608,
+          "duration" : 17437
+        }
+      } ]
+    },
+    "tags" : [ ]
+  },
+  "source" : "153b283113817de4.json",
+  "parameterValues" : [ ]
+}

@@ -1,0 +1,115 @@
+{
+  "uid" : "f4738a8cde94cd2e",
+  "name" : "As a User I can mint All tokens newToken - newToken2",
+  "fullName" : "UI tests - A user can use MAX:.As a User I can mint All tokens newToken - newToken2",
+  "historyId" : "57ad81dde99b45a6f03a88cb264c4bf1",
+  "time" : {
+    "start" : 1637320858210,
+    "stop" : 1637321056697,
+    "duration" : 198487
+  },
+  "description" : "",
+  "descriptionHtml" : "",
+  "status" : "passed",
+  "flaky" : false,
+  "newFailed" : false,
+  "beforeStages" : [ ],
+  "afterStages" : [ ],
+  "labels" : [ {
+    "name" : "suite",
+    "value" : "UI tests - A user can use MAX:"
+  }, {
+    "name" : "testClass",
+    "value" : "UI tests - A user can use MAX:"
+  }, {
+    "name" : "testMethod",
+    "value" : "As a User I can mint All tokens newToken - newToken2"
+  }, {
+    "name" : "package",
+    "value" : "UI tests - A user can use MAX:"
+  }, {
+    "name" : "resultFormat",
+    "value" : "allure1"
+  } ],
+  "parameters" : [ ],
+  "links" : [ ],
+  "hidden" : false,
+  "retry" : false,
+  "extra" : {
+    "severity" : "normal",
+    "retries" : [ ],
+    "categories" : [ ],
+    "history" : {
+      "statistic" : {
+        "failed" : 4,
+        "broken" : 0,
+        "skipped" : 0,
+        "passed" : 3,
+        "unknown" : 0,
+        "total" : 7
+      },
+      "items" : [ {
+        "uid" : "b1323d214851f71e",
+        "reportUrl" : "https://mangata-finance.github.io/mangata-e2e/980//#testresult/b1323d214851f71e",
+        "status" : "passed",
+        "time" : {
+          "start" : 1637312050600,
+          "stop" : 1637312254413,
+          "duration" : 203813
+        }
+      }, {
+        "uid" : "cae214a267479190",
+        "reportUrl" : "https://mangata-finance.github.io/mangata-e2e/976//#testresult/cae214a267479190",
+        "status" : "failed",
+        "statusDetails" : "WebDriverError: Requested environment is not available",
+        "time" : {
+          "start" : 1637285414798,
+          "stop" : 1637285414805,
+          "duration" : 7
+        }
+      }, {
+        "uid" : "ac8945728c14b00d",
+        "reportUrl" : "https://mangata-finance.github.io/mangata-e2e/975//#testresult/ac8945728c14b00d",
+        "status" : "failed",
+        "statusDetails" : "WebDriverError: Requested environment is not available",
+        "time" : {
+          "start" : 1637285362662,
+          "stop" : 1637285362666,
+          "duration" : 4
+        }
+      }, {
+        "uid" : "8b207fe3b3d7a9a5",
+        "reportUrl" : "https://mangata-finance.github.io/mangata-e2e/977//#testresult/8b207fe3b3d7a9a5",
+        "status" : "failed",
+        "statusDetails" : "WebDriverError: Requested environment is not available",
+        "time" : {
+          "start" : 1637285364912,
+          "stop" : 1637285364915,
+          "duration" : 3
+        }
+      }, {
+        "uid" : "64e2458cf0c2b52d",
+        "reportUrl" : "https://mangata-finance.github.io/mangata-e2e/974//#testresult/64e2458cf0c2b52d",
+        "status" : "passed",
+        "time" : {
+          "start" : 1637232292069,
+          "stop" : 1637232490397,
+          "duration" : 198328
+        }
+      }, {
+        "uid" : "1f789a777b261704",
+        "reportUrl" : "https://mangata-finance.github.io/mangata-e2e/971//#testresult/1f789a777b261704",
+        "status" : "failed",
+        "statusDetails" : "Error: expect(received).toBeTruthy()\n                \n                Received: false",
+        "time" : {
+          "start" : 1637221096494,
+          "stop" : 1637221293615,
+          "duration" : 197121
+        }
+      } ]
+    },
+    "tags" : [ ]
+  },
+  "source" : "f4738a8cde94cd2e.json",
+  "parameterValues" : [ ]
+}
