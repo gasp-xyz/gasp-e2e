@@ -1,0 +1,41 @@
+[ {
+  "uid" : "efd727f03b51636f",
+  "name" : "As a User I can mint in more than one pool [ MGA - mETH ] [ MGA - newTokn ] and get invested values",
+  "time" : {
+    "start" : 1637323885517,
+    "stop" : 1637323885519,
+    "duration" : 2
+  },
+  "status" : "failed",
+  "severity" : "normal"
+}, {
+  "uid" : "9bcc8ce859d9b449",
+  "name" : "As a User I can mint some tokens MGA - mETH",
+  "time" : {
+    "start" : 1637323885514,
+    "stop" : 1637323885516,
+    "duration" : 2
+  },
+  "status" : "failed",
+  "severity" : "normal"
+}, {
+  "uid" : "503ee05cae71c4ee",
+  "name" : "As a User I can burn all liquidity MGA - mETH",
+  "time" : {
+    "start" : 1637323885516,
+    "stop" : 1637323885517,
+    "duration" : 1
+  },
+  "status" : "failed",
+  "severity" : "normal"
+}, {
+  "uid" : "8233becdf2b43928",
+  "name" : "As a User I can Swap tokens - MGA - mETH",
+  "time" : {
+    "start" : 1637323882353,
+    "stop" : 1637323885514,
+    "duration" : 3161
+  },
+  "status" : "failed",
+  "severity" : "normal"
+} ]
