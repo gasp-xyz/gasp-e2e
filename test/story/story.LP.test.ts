@@ -67,7 +67,7 @@ describe("Story tests > LP", () => {
     testUser2.refreshAmounts();
   });
 
-  test("Pool wins over 5% tokens when 10 swaps are done in the pool", async () => {
+  test("Pool wins over 5% tokens when 10 swaps are done in the pool [Token - MGA]", async () => {
     //lets create a pool with user1
     const mangata = await getMangataInstance();
     await mangata.createPool(
