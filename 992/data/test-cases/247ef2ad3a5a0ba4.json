@@ -1,0 +1,143 @@
+{
+  "uid" : "247ef2ad3a5a0ba4",
+  "name" : "As a User I can Swap tokens - MGA - mETH",
+  "fullName" : "UI tests - A user can swap and mint tokens.As a User I can Swap tokens - MGA - mETH",
+  "historyId" : "c9939ab6b05fdb3664bf90f9f2159e2e",
+  "time" : {
+    "start" : 1637458241346,
+    "stop" : 1637458244320,
+    "duration" : 2974
+  },
+  "description" : "",
+  "descriptionHtml" : "",
+  "status" : "failed",
+  "statusMessage" : "WebDriverError: Requested environment is not available",
+  "statusTrace" : "WebDriverError: Requested environment is not available\n                    at Object.checkLegacyResponse (/home/runner/work/mangata-e2e/mangata-e2e/node_modules/selenium-webdriver/lib/error.js:546:15)\n                    at parseHttpResponse (/home/runner/work/mangata-e2e/mangata-e2e/node_modules/selenium-webdriver/lib/http.js:509:13)\n                    at /home/runner/work/mangata-e2e/mangata-e2e/node_modules/selenium-webdriver/lib/http.js:441:30\n                    at processTicksAndRejections (internal/process/task_queues.js:95:5)\n                From: Task: WebDriver.createSession()\n                    at Function.createSession (/home/runner/work/mangata-e2e/mangata-e2e/node_modules/selenium-webdriver/lib/webdriver.js:769:24)\n                    at Function.createSession (/home/runner/work/mangata-e2e/mangata-e2e/node_modules/selenium-webdriver/chrome.js:761:15)\n                    at createDriver (/home/runner/work/mangata-e2e/mangata-e2e/node_modules/selenium-webdriver/index.js:170:33)\n                    at Builder.build (/home/runner/work/mangata-e2e/mangata-e2e/node_modules/selenium-webdriver/index.js:626:16)\n                    at buildChromeDriver (/home/runner/work/mangata-e2e/mangata-e2e/utils/frontend/utils/Driver.ts:34:8)\n                    at Object.getInstance (/home/runner/work/mangata-e2e/mangata-e2e/utils/frontend/utils/Driver.ts:45:24)\n                    at Object.<anonymous> (/home/runner/work/mangata-e2e/mangata-e2e/test/ui/ui-main.test.ts:59:34)\n                    at processTicksAndRejections (internal/process/task_queues.js:95:5)",
+  "flaky" : false,
+  "newFailed" : false,
+  "beforeStages" : [ ],
+  "afterStages" : [ ],
+  "labels" : [ {
+    "name" : "suite",
+    "value" : "UI tests - A user can swap and mint tokens"
+  }, {
+    "name" : "testClass",
+    "value" : "UI tests - A user can swap and mint tokens"
+  }, {
+    "name" : "testMethod",
+    "value" : "As a User I can Swap tokens - MGA - mETH"
+  }, {
+    "name" : "package",
+    "value" : "UI tests - A user can swap and mint tokens"
+  }, {
+    "name" : "resultFormat",
+    "value" : "allure1"
+  } ],
+  "parameters" : [ ],
+  "links" : [ ],
+  "hidden" : false,
+  "retry" : false,
+  "extra" : {
+    "severity" : "normal",
+    "retries" : [ ],
+    "categories" : [ {
+      "name" : "Product defects",
+      "matchedStatuses" : [ ],
+      "flaky" : false
+    } ],
+    "history" : {
+      "statistic" : {
+        "failed" : 9,
+        "broken" : 0,
+        "skipped" : 0,
+        "passed" : 0,
+        "unknown" : 0,
+        "total" : 9
+      },
+      "items" : [ {
+        "uid" : "681d9aaee4aa19e5",
+        "reportUrl" : "https://mangata-finance.github.io/mangata-e2e/991//#testresult/681d9aaee4aa19e5",
+        "status" : "failed",
+        "statusDetails" : "WebDriverError: Requested environment is not available",
+        "time" : {
+          "start" : 1637458223074,
+          "stop" : 1637458225907,
+          "duration" : 2833
+        }
+      }, {
+        "uid" : "b1f416d8f310ee6c",
+        "reportUrl" : "https://mangata-finance.github.io/mangata-e2e/990//#testresult/b1f416d8f310ee6c",
+        "status" : "failed",
+        "statusDetails" : "WebDriverError: Requested environment is not available",
+        "time" : {
+          "start" : 1637458206114,
+          "stop" : 1637458208691,
+          "duration" : 2577
+        }
+      }, {
+        "uid" : "96f59e8ebaf9b3c",
+        "reportUrl" : "https://mangata-finance.github.io/mangata-e2e/987//#testresult/96f59e8ebaf9b3c",
+        "status" : "failed",
+        "statusDetails" : "thrown: Event {\n                  \"isTrusted\": true,\n                }",
+        "time" : {
+          "start" : 1637371712230,
+          "stop" : 1637371715890,
+          "duration" : 3660
+        }
+      }, {
+        "uid" : "f8dd7b452c74db8a",
+        "reportUrl" : "https://mangata-finance.github.io/mangata-e2e/988//#testresult/f8dd7b452c74db8a",
+        "status" : "failed",
+        "statusDetails" : "WebDriverError: Requested environment is not available",
+        "time" : {
+          "start" : 1637371701247,
+          "stop" : 1637371703923,
+          "duration" : 2676
+        }
+      }, {
+        "uid" : "326d02715bbae688",
+        "reportUrl" : "https://mangata-finance.github.io/mangata-e2e/986//#testresult/326d02715bbae688",
+        "status" : "failed",
+        "statusDetails" : "WebDriverError: Requested environment is not available",
+        "time" : {
+          "start" : 1637371678897,
+          "stop" : 1637371681465,
+          "duration" : 2568
+        }
+      }, {
+        "uid" : "94683264ffb164b8",
+        "reportUrl" : "https://mangata-finance.github.io/mangata-e2e/985//#testresult/94683264ffb164b8",
+        "status" : "failed",
+        "statusDetails" : ": Timeout - Async callback was not invoked within the 300000 ms timeout specified by jest.setTimeout.",
+        "time" : {
+          "start" : 1637324622873,
+          "stop" : 1637325072270,
+          "duration" : 449397
+        }
+      }, {
+        "uid" : "b1b35d33cd9a7c1e",
+        "reportUrl" : "https://mangata-finance.github.io/mangata-e2e/983//#testresult/b1b35d33cd9a7c1e",
+        "status" : "failed",
+        "statusDetails" : "WebDriverError: Requested environment is not available",
+        "time" : {
+          "start" : 1637323525654,
+          "stop" : 1637323528810,
+          "duration" : 3156
+        }
+      }, {
+        "uid" : "8233becdf2b43928",
+        "reportUrl" : "https://mangata-finance.github.io/mangata-e2e/984//#testresult/8233becdf2b43928",
+        "status" : "failed",
+        "statusDetails" : "WebDriverError: Requested environment is not available",
+        "time" : {
+          "start" : 1637323882353,
+          "stop" : 1637323885514,
+          "duration" : 3161
+        }
+      } ]
+    },
+    "tags" : [ ]
+  },
+  "source" : "247ef2ad3a5a0ba4.json",
+  "parameterValues" : [ ]
+}
