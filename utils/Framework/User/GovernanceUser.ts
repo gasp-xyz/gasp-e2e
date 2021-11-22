@@ -28,10 +28,10 @@ export class GovernanceUser extends BaseUser {
   }
 
   async renounceCandidacy(): Promise<void> {
-    const renounce: Renouncing | null = null;
-
     await signSendAndWaitToFinishTx(
-      this.api.tx.elections.renounceCandidacy(renounce!),
+      this.api.tx.elections.renounceCandidacy({
+        Candidate: this.keyRingPair.address,
+      }),
       this.keyRingPair
     );
   }
