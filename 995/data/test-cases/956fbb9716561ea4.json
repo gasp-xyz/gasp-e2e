@@ -1,0 +1,133 @@
+{
+  "uid" : "956fbb9716561ea4",
+  "name" : "As a User I can Swap All MGA tokens -> newToken",
+  "fullName" : "UI tests - A user can use MAX:.As a User I can Swap All MGA tokens -> newToken",
+  "historyId" : "b4431a2043f5c89a607fb3d724e06254",
+  "time" : {
+    "start" : 1637544580865,
+    "stop" : 1637544584404,
+    "duration" : 3539
+  },
+  "description" : "",
+  "descriptionHtml" : "",
+  "status" : "failed",
+  "statusMessage" : "InvalidArgumentError: Requested environment is not available",
+  "statusTrace" : "InvalidArgumentError: Requested environment is not available\n                    at Object.throwDecodedError (/home/runner/work/mangata-e2e/mangata-e2e/node_modules/selenium-webdriver/lib/error.js:514:15)\n                    at parseHttpResponse (/home/runner/work/mangata-e2e/mangata-e2e/node_modules/selenium-webdriver/lib/http.js:519:13)\n                    at /home/runner/work/mangata-e2e/mangata-e2e/node_modules/selenium-webdriver/lib/http.js:441:30\n                    at processTicksAndRejections (internal/process/task_queues.js:95:5)\n                From: Task: WebDriver.createSession()\n                    at Function.createSession (/home/runner/work/mangata-e2e/mangata-e2e/node_modules/selenium-webdriver/lib/webdriver.js:769:24)\n                    at Function.createSession (/home/runner/work/mangata-e2e/mangata-e2e/node_modules/selenium-webdriver/chrome.js:761:15)\n                    at createDriver (/home/runner/work/mangata-e2e/mangata-e2e/node_modules/selenium-webdriver/index.js:170:33)\n                    at Builder.build (/home/runner/work/mangata-e2e/mangata-e2e/node_modules/selenium-webdriver/index.js:626:16)\n                    at buildChromeDriver (/home/runner/work/mangata-e2e/mangata-e2e/utils/frontend/utils/Driver.ts:34:8)\n                    at Object.getInstance (/home/runner/work/mangata-e2e/mangata-e2e/utils/frontend/utils/Driver.ts:45:24)\n                    at Object.<anonymous> (/home/runner/work/mangata-e2e/mangata-e2e/test/ui/ui-max.test.ts:51:34)\n                    at processTicksAndRejections (internal/process/task_queues.js:95:5)",
+  "flaky" : false,
+  "newFailed" : false,
+  "beforeStages" : [ ],
+  "afterStages" : [ ],
+  "labels" : [ {
+    "name" : "suite",
+    "value" : "UI tests - A user can use MAX:"
+  }, {
+    "name" : "testClass",
+    "value" : "UI tests - A user can use MAX:"
+  }, {
+    "name" : "testMethod",
+    "value" : "As a User I can Swap All MGA tokens -> newToken"
+  }, {
+    "name" : "package",
+    "value" : "UI tests - A user can use MAX:"
+  }, {
+    "name" : "resultFormat",
+    "value" : "allure1"
+  } ],
+  "parameters" : [ ],
+  "links" : [ ],
+  "hidden" : false,
+  "retry" : false,
+  "extra" : {
+    "severity" : "normal",
+    "retries" : [ ],
+    "categories" : [ {
+      "name" : "Product defects",
+      "matchedStatuses" : [ ],
+      "flaky" : false
+    } ],
+    "history" : {
+      "statistic" : {
+        "failed" : 8,
+        "broken" : 0,
+        "skipped" : 0,
+        "passed" : 0,
+        "unknown" : 0,
+        "total" : 8
+      },
+      "items" : [ {
+        "uid" : "ef02fbfa03a9d316",
+        "reportUrl" : "https://mangata-finance.github.io/mangata-e2e/992//#testresult/ef02fbfa03a9d316",
+        "status" : "failed",
+        "statusDetails" : "WebDriverError: Requested environment is not available",
+        "time" : {
+          "start" : 1637458251339,
+          "stop" : 1637458256234,
+          "duration" : 4895
+        }
+      }, {
+        "uid" : "96df0c75722f0bbd",
+        "reportUrl" : "https://mangata-finance.github.io/mangata-e2e/991//#testresult/96df0c75722f0bbd",
+        "status" : "failed",
+        "statusDetails" : "WebDriverError: Requested environment is not available",
+        "time" : {
+          "start" : 1637458230980,
+          "stop" : 1637458233714,
+          "duration" : 2734
+        }
+      }, {
+        "uid" : "7c47814e16fc94a6",
+        "reportUrl" : "https://mangata-finance.github.io/mangata-e2e/990//#testresult/7c47814e16fc94a6",
+        "status" : "failed",
+        "statusDetails" : "WebDriverError: Requested environment is not available",
+        "time" : {
+          "start" : 1637458213906,
+          "stop" : 1637458216501,
+          "duration" : 2595
+        }
+      }, {
+        "uid" : "f9f74aa9116b7110",
+        "reportUrl" : "https://mangata-finance.github.io/mangata-e2e/987//#testresult/f9f74aa9116b7110",
+        "status" : "failed",
+        "statusDetails" : "WebDriverError: Requested environment is not available",
+        "time" : {
+          "start" : 1637371730342,
+          "stop" : 1637371733032,
+          "duration" : 2690
+        }
+      }, {
+        "uid" : "6af36444cfe4041b",
+        "reportUrl" : "https://mangata-finance.github.io/mangata-e2e/988//#testresult/6af36444cfe4041b",
+        "status" : "failed",
+        "statusDetails" : "WebDriverError: Requested environment is not available",
+        "time" : {
+          "start" : 1637371709057,
+          "stop" : 1637371711843,
+          "duration" : 2786
+        }
+      }, {
+        "uid" : "535f4f908714f8df",
+        "reportUrl" : "https://mangata-finance.github.io/mangata-e2e/986//#testresult/535f4f908714f8df",
+        "status" : "failed",
+        "statusDetails" : "WebDriverError: Requested environment is not available",
+        "time" : {
+          "start" : 1637371686312,
+          "stop" : 1637371688631,
+          "duration" : 2319
+        }
+      }, {
+        "uid" : "437fc7455253d99",
+        "reportUrl" : "https://mangata-finance.github.io/mangata-e2e/983//#testresult/437fc7455253d99",
+        "status" : "failed",
+        "statusDetails" : "WebDriverError: Requested environment is not available",
+        "time" : {
+          "start" : 1637323534728,
+          "stop" : 1637323537806,
+          "duration" : 3078
+        }
+      } ]
+    },
+    "tags" : [ ]
+  },
+  "source" : "956fbb9716561ea4.json",
+  "parameterValues" : [ ]
+}
