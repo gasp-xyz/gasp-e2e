@@ -1,0 +1,75 @@
+{
+  "uid" : "3fa4ea44b050cd30",
+  "name" : "Cluster does not fork",
+  "fullName" : "Cluster -> Healthcheck.Cluster does not fork",
+  "historyId" : "c60708daa452883022480d8f0ac2dc39",
+  "time" : {
+    "start" : 1637554152158,
+    "stop" : 1637554182237,
+    "duration" : 30079
+  },
+  "description" : "",
+  "descriptionHtml" : "",
+  "status" : "passed",
+  "flaky" : false,
+  "newFailed" : false,
+  "beforeStages" : [ ],
+  "afterStages" : [ ],
+  "labels" : [ {
+    "name" : "suite",
+    "value" : "Cluster -> Healthcheck"
+  }, {
+    "name" : "testClass",
+    "value" : "Cluster -> Healthcheck"
+  }, {
+    "name" : "testMethod",
+    "value" : "Cluster does not fork"
+  }, {
+    "name" : "package",
+    "value" : "Cluster -> Healthcheck"
+  }, {
+    "name" : "resultFormat",
+    "value" : "allure1"
+  } ],
+  "parameters" : [ ],
+  "links" : [ ],
+  "hidden" : false,
+  "retry" : false,
+  "extra" : {
+    "severity" : "normal",
+    "retries" : [ ],
+    "categories" : [ ],
+    "history" : {
+      "statistic" : {
+        "failed" : 0,
+        "broken" : 0,
+        "skipped" : 0,
+        "passed" : 3,
+        "unknown" : 0,
+        "total" : 3
+      },
+      "items" : [ {
+        "uid" : "855d91bf65441514",
+        "reportUrl" : "https://mangata-finance.github.io/mangata-e2e/993//#testresult/855d91bf65441514",
+        "status" : "passed",
+        "time" : {
+          "start" : 1637467734108,
+          "stop" : 1637467764146,
+          "duration" : 30038
+        }
+      }, {
+        "uid" : "6854c16d4c45c377",
+        "reportUrl" : "https://mangata-finance.github.io/mangata-e2e/989//#testresult/6854c16d4c45c377",
+        "status" : "passed",
+        "time" : {
+          "start" : 1637381376132,
+          "stop" : 1637381406147,
+          "duration" : 30015
+        }
+      } ]
+    },
+    "tags" : [ ]
+  },
+  "source" : "3fa4ea44b050cd30.json",
+  "parameterValues" : [ ]
+}
