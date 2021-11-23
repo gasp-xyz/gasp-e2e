@@ -2,7 +2,7 @@ name: Cluster - Healthcheck
 
 on:
   schedule:
-    - cron: "1 04 * * *" #lets run this job every 24 hours.
+    - cron: "1 04 * * *" #lets run this job nightly.
 
   workflow_dispatch:
       inputs:
