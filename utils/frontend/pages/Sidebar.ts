@@ -10,6 +10,7 @@ import {
   waitForElementToDissapear,
 } from "../utils/Helper";
 import { DepositModal } from "./DepositModal";
+import { testLog } from "../../Logger";
 
 const DIV_META_NOT_FOUND = "extensionMetamask-extensionNotFound";
 const DIV_POLK_NOT_FOUND = "extensionPolkadot-extensionNotFound";
@@ -28,7 +29,8 @@ const SPINNER_LOADING = `//*[@class = 'Sidebar__loading']`;
 const BTN_POOL_OVERVIEW = `poolsOverview-item-tkn1-tkn2`;
 const BTN_REMOVE_LIQUIDITY = `poolDetail-removeBtn`;
 const LBL_TOKEN_NAME = "wallet-asset-tokenName";
-const DIV_ASSETS_ITEM_VALUE = `//div[@class = 'AssetBox' and //*[text()='tokenName']]/*[@class='value']`;
+//const DIV_ASSETS_ITEM_VALUE = `//div[@class = 'AssetBox' and //*[text()='tokenName']]/*[@class='value']`;
+const DIV_ASSETS_ITEM_VALUE = `//div[@class = 'AssetBox' and contains(@data-testid,'tokenName')]/*[@class='value']`;
 
 export class Sidebar {
   driver: WebDriver;
@@ -78,16 +80,22 @@ export class Sidebar {
     return displayed;
   }
 
-  async waitForLoad() {
+  async waitForLoad(retry = 2): Promise<void> {
     return new Promise<void>(async (resolve, reject) => {
       setTimeout(async () => {
         const visible = await this.isDisplayed(SPINNER_LOADING);
         if (visible) {
+          if (retry > 0) {
+            testLog.getLog().warn("Retrying wait for load: attempt " + retry);
+            await this.driver.navigate().refresh();
+            retry = retry - 1;
+            return this.waitForLoad(retry);
+          }
           reject("TIMEOUT: Waiting for " + SPINNER_LOADING + " to dissapear");
         } else {
           resolve();
         }
-      }, 30000);
+      }, 20000);
       await waitForElementToDissapear(this.driver, SPINNER_LOADING);
       resolve();
     });
@@ -213,5 +221,19 @@ export class Sidebar {
       LBL_TOKEN_NAME.replace("tokenName", assetName)
     );
     await waitForElementToDissapear(this.driver, xpath);
+  }
+  async copyAssetValue(assetName: string) {
+    const xpath = DIV_ASSETS_ITEM_VALUE.replace("tokenName", assetName);
+    await waitForElement(this.driver, xpath);
+    const element = await this.driver.findElement(By.xpath(xpath));
+    await this.driver.actions().mouseMove(element).perform();
+    const assetDataTestId = `wallet-asset-${assetName}-balance-tooltip`;
+    const xpathByDataTestId = buildDataTestIdXpath(assetDataTestId);
+    const xpathToTooltipValue = `${xpathByDataTestId}//div[@class='TruncatedNumber__tooltip__value']`;
+    const availableTooltipValue = await getText(
+      this.driver,
+      xpathToTooltipValue
+    );
+    return availableTooltipValue;
   }
 }

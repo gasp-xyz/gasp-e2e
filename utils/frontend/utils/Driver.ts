@@ -32,7 +32,7 @@ export const DriverBuilder = (function () {
       .setChromeOptions(options)
       .withCapabilities(caps)
       .build();
-
+    await driver!.manage().timeouts().setScriptTimeout(5000);
     await driver!.manage().window().maximize();
 
     return driver;

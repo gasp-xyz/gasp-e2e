@@ -3,6 +3,7 @@ import {
   buildDataTestIdXpath,
   clickElement,
   getAttribute,
+  getText,
   waitForElement,
   writeText,
 } from "../utils/Helper";
@@ -92,5 +93,13 @@ export class Swap {
     await this.selectGetAsset(toAsset);
     await this.addPayAssetAmount("0.001");
     await this.doSwap();
+  }
+
+  async getBalanceFromAssetGet() {
+    const xpathGetLocator =
+      buildDataTestIdXpath(DIV_SWAP_GET) +
+      "//*[@class='TradingInput__right__label']";
+    const text = await getText(this.driver, xpathGetLocator);
+    return text.split(":")[1].trim().replace("MAX", "");
   }
 }

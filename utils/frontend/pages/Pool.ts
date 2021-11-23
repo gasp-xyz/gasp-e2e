@@ -3,6 +3,7 @@ import {
   buildDataTestIdXpath,
   clickElement,
   getAttribute,
+  getText,
   waitForElement,
   writeText,
 } from "../utils/Helper";
@@ -86,5 +87,12 @@ export class Pool {
   }
   async clickToToken1MaxBtn() {
     await clickElement(this.driver, this.btnToken1MaxLocator);
+  }
+  async getBalanceFromtoken2() {
+    const xpathGetLocator =
+      buildDataTestIdXpath(DIV_POOL_TOKEN2) +
+      "//*[@class='TradingInput__right__label']";
+    const text = await getText(this.driver, xpathGetLocator);
+    return text.split(":")[1].trim().replace("MAX", "");
   }
 }

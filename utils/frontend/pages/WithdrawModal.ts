@@ -2,6 +2,7 @@ import { WebDriver } from "selenium-webdriver";
 import {
   buildDataTestIdXpath,
   clickElement,
+  getText,
   selectAssetFromModalList,
   writeText,
 } from "../utils/Helper";
@@ -11,6 +12,8 @@ import { Polkadot } from "./Polkadot";
 const SELECT_TOKEN = "withdrawModal-step0-assetInput";
 const STEP_O_CONT = "withdrawModal-step0-continueBtn";
 const STEP_1_CONF = "withdrawModal-step1-confirmBtn";
+const BACK_BTN =
+  "//div[@data-testId='withdrawModal-step0-title'  and //*[@class='Icon']]/button";
 
 export class WithdrawModal {
   driver: WebDriver;
@@ -42,5 +45,15 @@ export class WithdrawModal {
     const xpath = buildDataTestIdXpath(STEP_1_CONF);
     await clickElement(this.driver, xpath);
     await Polkadot.signTransaction(this.driver);
+  }
+  async getBalanceAssetAmount() {
+    const xpathGetLocator =
+      buildDataTestIdXpath(SELECT_TOKEN) +
+      "//*[@class='TradingInput__right__label']";
+    const text = await getText(this.driver, xpathGetLocator);
+    return text.split(":")[1].trim().replace("MAX", "");
+  }
+  async clickBack() {
+    await clickElement(this.driver, BACK_BTN);
   }
 }
