@@ -90,7 +90,8 @@ describe("Governance -> Candidacy -> Users", () => {
 
     await candidate.runForCouncil();
     await waitForNBlocks(2);
-    await candidate.renounceCandidacy();
+    const candidateStatus = { Candidate: 1 };
+    await candidate.renounceCandidacy(candidateStatus);
     await waitForNBlocks(2);
 
     const candidates = getLastBlocksElectionData();
@@ -116,11 +117,12 @@ describe("Governance -> Candidacy -> Users", () => {
     // Gonzalo wins the election and is council member!
     // Gonzalo subsequently renounces candidacy in Term 1
     await waitForNextTerm();
-
+    //FIX this, the candidate is a member at this point!!
     const candidates = getLastBlocksElectionData();
     expect(candidates).toEqual(expect.arrayContaining([candidatesAddress]));
 
-    await candidate.renounceCandidacy();
+    const candidateStatus = { Member: candidate.keyRingPair.address };
+    await candidate.renounceCandidacy(candidateStatus);
 
     // Gonzalo is not automatically running for candidacy in Term 2
     await waitForNextTerm();
