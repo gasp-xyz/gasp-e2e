@@ -1,0 +1,113 @@
+{
+  "uid" : "5458c5111e940e7",
+  "name" : "As a User I get the right values for Pool investment P[5000000000000000000, 5000000000000000000] - I-> 0.123 -Expected - 0.123",
+  "fullName" : "Accuracy tests.As a User I get the right values for Pool investment P[5000000000000000000, 5000000000000000000] - I-> 0.123 -Expected - 0.123",
+  "historyId" : "8b2cda9bb83546b24c6a5fd60ccdb9a1",
+  "time" : {
+    "start" : 1637677164887,
+    "stop" : 1637677272142,
+    "duration" : 107255
+  },
+  "description" : "",
+  "descriptionHtml" : "",
+  "status" : "passed",
+  "flaky" : false,
+  "newFailed" : false,
+  "beforeStages" : [ ],
+  "testStage" : {
+    "status" : "passed",
+    "steps" : [ ],
+    "attachments" : [ {
+      "uid" : "7e9c07ab8b895164",
+      "name" : "Screeenshot",
+      "source" : "7e9c07ab8b895164.png",
+      "type" : "image/png",
+      "size" : 93629
+    } ],
+    "parameters" : [ ],
+    "stepsCount" : 0,
+    "attachmentsCount" : 1,
+    "shouldDisplayMessage" : false,
+    "hasContent" : true
+  },
+  "afterStages" : [ ],
+  "labels" : [ {
+    "name" : "suite",
+    "value" : "Accuracy tests"
+  }, {
+    "name" : "testClass",
+    "value" : "Accuracy tests"
+  }, {
+    "name" : "testMethod",
+    "value" : "As a User I get the right values for Pool investment P[5000000000000000000, 5000000000000000000] - I-> 0.123 -Expected - 0.123"
+  }, {
+    "name" : "package",
+    "value" : "Accuracy tests"
+  }, {
+    "name" : "resultFormat",
+    "value" : "allure1"
+  } ],
+  "parameters" : [ ],
+  "links" : [ ],
+  "hidden" : false,
+  "retry" : false,
+  "extra" : {
+    "severity" : "normal",
+    "retries" : [ ],
+    "categories" : [ ],
+    "history" : {
+      "statistic" : {
+        "failed" : 4,
+        "broken" : 0,
+        "skipped" : 0,
+        "passed" : 1,
+        "unknown" : 0,
+        "total" : 5
+      },
+      "items" : [ {
+        "uid" : "ce126be5898ea6fa",
+        "reportUrl" : "https://mangata-finance.github.io/mangata-e2e/1001//#testresult/ce126be5898ea6fa",
+        "status" : "failed",
+        "statusDetails" : "Error: Timeout - Async callback was not invoked within the 300000 ms timeout specified by jest.setTimeout.",
+        "time" : {
+          "start" : 1637631581450,
+          "stop" : 1637631581451,
+          "duration" : 1
+        }
+      }, {
+        "uid" : "74913c72f37a587a",
+        "reportUrl" : "https://mangata-finance.github.io/mangata-e2e/1002//#testresult/74913c72f37a587a",
+        "status" : "failed",
+        "statusDetails" : "Error: Timeout - Async callback was not invoked within the 300000 ms timeout specified by jest.setTimeout.",
+        "time" : {
+          "start" : 1637631614217,
+          "stop" : 1637631614218,
+          "duration" : 1
+        }
+      }, {
+        "uid" : "ef4c4a6d7913ec4e",
+        "reportUrl" : "https://mangata-finance.github.io/mangata-e2e/1000//#testresult/ef4c4a6d7913ec4e",
+        "status" : "failed",
+        "statusDetails" : "Error: Timeout - Async callback was not invoked within the 300000 ms timeout specified by jest.setTimeout.",
+        "time" : {
+          "start" : 1637631585649,
+          "stop" : 1637631585650,
+          "duration" : 1
+        }
+      }, {
+        "uid" : "b6ded8beeda8ba00",
+        "reportUrl" : "https://mangata-finance.github.io/mangata-e2e/999//#testresult/b6ded8beeda8ba00",
+        "status" : "failed",
+        "statusDetails" : "Error: expect(received).toBe(expected) // Object.is equality\n                \n                Expected: 0\n                Received: 0.123",
+        "time" : {
+          "start" : 1637591072383,
+          "stop" : 1637591192011,
+          "duration" : 119628
+        }
+      } ]
+    },
+    "tags" : [ ]
+  },
+  "source" : "5458c5111e940e7.json",
+  "parameterValues" : [ ]
+}

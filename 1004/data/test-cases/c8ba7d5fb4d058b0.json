@@ -1,0 +1,112 @@
+{
+  "uid" : "c8ba7d5fb4d058b0",
+  "name" : "As a User I can mint some tokens MGA - mETH",
+  "fullName" : "UI tests - A user can swap and mint tokens.As a User I can mint some tokens MGA - mETH",
+  "historyId" : "d61eda4c5635d823f9db1036b3f5b551",
+  "time" : {
+    "start" : 1637674892485,
+    "stop" : 1637675035614,
+    "duration" : 143129
+  },
+  "description" : "",
+  "descriptionHtml" : "",
+  "status" : "passed",
+  "flaky" : false,
+  "newFailed" : false,
+  "beforeStages" : [ ],
+  "testStage" : {
+    "status" : "passed",
+    "steps" : [ ],
+    "attachments" : [ {
+      "uid" : "8fab349fe9719c39",
+      "name" : "Screeenshot",
+      "source" : "8fab349fe9719c39.png",
+      "type" : "image/png",
+      "size" : 78077
+    } ],
+    "parameters" : [ ],
+    "stepsCount" : 0,
+    "attachmentsCount" : 1,
+    "shouldDisplayMessage" : false,
+    "hasContent" : true
+  },
+  "afterStages" : [ ],
+  "labels" : [ {
+    "name" : "suite",
+    "value" : "UI tests - A user can swap and mint tokens"
+  }, {
+    "name" : "testClass",
+    "value" : "UI tests - A user can swap and mint tokens"
+  }, {
+    "name" : "testMethod",
+    "value" : "As a User I can mint some tokens MGA - mETH"
+  }, {
+    "name" : "package",
+    "value" : "UI tests - A user can swap and mint tokens"
+  }, {
+    "name" : "resultFormat",
+    "value" : "allure1"
+  } ],
+  "parameters" : [ ],
+  "links" : [ ],
+  "hidden" : false,
+  "retry" : false,
+  "extra" : {
+    "severity" : "normal",
+    "retries" : [ ],
+    "categories" : [ ],
+    "history" : {
+      "statistic" : {
+        "failed" : 3,
+        "broken" : 0,
+        "skipped" : 0,
+        "passed" : 2,
+        "unknown" : 0,
+        "total" : 5
+      },
+      "items" : [ {
+        "uid" : "53d70550b21b32f4",
+        "reportUrl" : "https://mangata-finance.github.io/mangata-e2e/1001//#testresult/53d70550b21b32f4",
+        "status" : "failed",
+        "statusDetails" : "InvalidArgumentError: Requested environment is not available",
+        "time" : {
+          "start" : 1637630964598,
+          "stop" : 1637630964599,
+          "duration" : 1
+        }
+      }, {
+        "uid" : "8d2c77d7f45abc9c",
+        "reportUrl" : "https://mangata-finance.github.io/mangata-e2e/1002//#testresult/8d2c77d7f45abc9c",
+        "status" : "failed",
+        "statusDetails" : "InvalidArgumentError: Requested environment is not available",
+        "time" : {
+          "start" : 1637630998774,
+          "stop" : 1637630998775,
+          "duration" : 1
+        }
+      }, {
+        "uid" : "c7695d8af4c667b0",
+        "reportUrl" : "https://mangata-finance.github.io/mangata-e2e/1000//#testresult/c7695d8af4c667b0",
+        "status" : "failed",
+        "statusDetails" : "InvalidArgumentError: Requested environment is not available",
+        "time" : {
+          "start" : 1637630971662,
+          "stop" : 1637630971664,
+          "duration" : 2
+        }
+      }, {
+        "uid" : "c0f323d0ace37e6a",
+        "reportUrl" : "https://mangata-finance.github.io/mangata-e2e/999//#testresult/c0f323d0ace37e6a",
+        "status" : "passed",
+        "time" : {
+          "start" : 1637588306328,
+          "stop" : 1637588454700,
+          "duration" : 148372
+        }
+      } ]
+    },
+    "tags" : [ ]
+  },
+  "source" : "c8ba7d5fb4d058b0.json",
+  "parameterValues" : [ ]
+}

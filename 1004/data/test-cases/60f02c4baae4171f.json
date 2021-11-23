@@ -1,0 +1,113 @@
+{
+  "uid" : "60f02c4baae4171f",
+  "name" : "As a User I can create a pool",
+  "fullName" : "UI tests - A user can create a pool MGA - newToken.As a User I can create a pool",
+  "historyId" : "271610054c4a7ce96b4f458d416b5c30",
+  "time" : {
+    "start" : 1637677501428,
+    "stop" : 1637677548791,
+    "duration" : 47363
+  },
+  "description" : "",
+  "descriptionHtml" : "",
+  "status" : "passed",
+  "flaky" : false,
+  "newFailed" : false,
+  "beforeStages" : [ ],
+  "testStage" : {
+    "status" : "passed",
+    "steps" : [ ],
+    "attachments" : [ {
+      "uid" : "f15844508c5bdf01",
+      "name" : "Screeenshot",
+      "source" : "f15844508c5bdf01.png",
+      "type" : "image/png",
+      "size" : 72992
+    } ],
+    "parameters" : [ ],
+    "stepsCount" : 0,
+    "attachmentsCount" : 1,
+    "shouldDisplayMessage" : false,
+    "hasContent" : true
+  },
+  "afterStages" : [ ],
+  "labels" : [ {
+    "name" : "suite",
+    "value" : "UI tests - A user can create a pool MGA - newToken"
+  }, {
+    "name" : "testClass",
+    "value" : "UI tests - A user can create a pool MGA - newToken"
+  }, {
+    "name" : "testMethod",
+    "value" : "As a User I can create a pool"
+  }, {
+    "name" : "package",
+    "value" : "UI tests - A user can create a pool MGA - newToken"
+  }, {
+    "name" : "resultFormat",
+    "value" : "allure1"
+  } ],
+  "parameters" : [ ],
+  "links" : [ ],
+  "hidden" : false,
+  "retry" : false,
+  "extra" : {
+    "severity" : "normal",
+    "retries" : [ ],
+    "categories" : [ ],
+    "history" : {
+      "statistic" : {
+        "failed" : 4,
+        "broken" : 0,
+        "skipped" : 0,
+        "passed" : 1,
+        "unknown" : 0,
+        "total" : 5
+      },
+      "items" : [ {
+        "uid" : "8dc13dcb1b8ccfec",
+        "reportUrl" : "https://mangata-finance.github.io/mangata-e2e/1001//#testresult/8dc13dcb1b8ccfec",
+        "status" : "failed",
+        "statusDetails" : "Error: Timeout - Async callback was not invoked within the 300000 ms timeout specified by jest.setTimeout.",
+        "time" : {
+          "start" : 1637631954590,
+          "stop" : 1637631954595,
+          "duration" : 5
+        }
+      }, {
+        "uid" : "e014469625b015e1",
+        "reportUrl" : "https://mangata-finance.github.io/mangata-e2e/1002//#testresult/e014469625b015e1",
+        "status" : "failed",
+        "statusDetails" : "Error: Timeout - Async callback was not invoked within the 300000 ms timeout specified by jest.setTimeout.",
+        "time" : {
+          "start" : 1637631918413,
+          "stop" : 1637631918419,
+          "duration" : 6
+        }
+      }, {
+        "uid" : "70c0c07d7ed30484",
+        "reportUrl" : "https://mangata-finance.github.io/mangata-e2e/1000//#testresult/70c0c07d7ed30484",
+        "status" : "failed",
+        "statusDetails" : "Error: Timeout - Async callback was not invoked within the 300000 ms timeout specified by jest.setTimeout.",
+        "time" : {
+          "start" : 1637631889411,
+          "stop" : 1637631889417,
+          "duration" : 6
+        }
+      }, {
+        "uid" : "767657471297068b",
+        "reportUrl" : "https://mangata-finance.github.io/mangata-e2e/999//#testresult/767657471297068b",
+        "status" : "failed",
+        "statusDetails" : "Error: expect(received).toBeTruthy()\n                \n                Received: false",
+        "time" : {
+          "start" : 1637591426435,
+          "stop" : 1637591480559,
+          "duration" : 54124
+        }
+      } ]
+    },
+    "tags" : [ ]
+  },
+  "source" : "60f02c4baae4171f.json",
+  "parameterValues" : [ ]
+}

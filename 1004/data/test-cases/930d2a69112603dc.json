@@ -1,0 +1,82 @@
+{
+  "uid" : "930d2a69112603dc",
+  "name" : "As a User I can see the max possible value in UI",
+  "fullName" : "UI tests > Balances.As a User I can see the max possible value in UI",
+  "historyId" : "2160ca0fa14e27280258d3f43dcf5f35",
+  "time" : {
+    "start" : 1637675551226,
+    "stop" : 1637675577423,
+    "duration" : 26197
+  },
+  "description" : "",
+  "descriptionHtml" : "",
+  "status" : "passed",
+  "flaky" : false,
+  "newFailed" : false,
+  "beforeStages" : [ ],
+  "testStage" : {
+    "status" : "passed",
+    "steps" : [ ],
+    "attachments" : [ {
+      "uid" : "d9608d89362d7c85",
+      "name" : "Screeenshot",
+      "source" : "d9608d89362d7c85.png",
+      "type" : "image/png",
+      "size" : 101133
+    } ],
+    "parameters" : [ ],
+    "stepsCount" : 0,
+    "attachmentsCount" : 1,
+    "shouldDisplayMessage" : false,
+    "hasContent" : true
+  },
+  "afterStages" : [ ],
+  "labels" : [ {
+    "name" : "suite",
+    "value" : "UI tests > Balances"
+  }, {
+    "name" : "testClass",
+    "value" : "UI tests > Balances"
+  }, {
+    "name" : "testMethod",
+    "value" : "As a User I can see the max possible value in UI"
+  }, {
+    "name" : "package",
+    "value" : "UI tests > Balances"
+  }, {
+    "name" : "resultFormat",
+    "value" : "allure1"
+  } ],
+  "parameters" : [ ],
+  "links" : [ ],
+  "hidden" : false,
+  "retry" : false,
+  "extra" : {
+    "severity" : "normal",
+    "retries" : [ ],
+    "categories" : [ ],
+    "history" : {
+      "statistic" : {
+        "failed" : 0,
+        "broken" : 0,
+        "skipped" : 0,
+        "passed" : 2,
+        "unknown" : 0,
+        "total" : 2
+      },
+      "items" : [ {
+        "uid" : "d6b8ec0a0618f1a6",
+        "reportUrl" : "https://mangata-finance.github.io/mangata-e2e/999//#testresult/d6b8ec0a0618f1a6",
+        "status" : "passed",
+        "time" : {
+          "start" : 1637588996188,
+          "stop" : 1637589026321,
+          "duration" : 30133
+        }
+      } ]
+    },
+    "tags" : [ ]
+  },
+  "source" : "930d2a69112603dc.json",
+  "parameterValues" : [ ]
+}
