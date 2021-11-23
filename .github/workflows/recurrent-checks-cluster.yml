@@ -2,11 +2,11 @@ name: Cluster - Healthcheck
 
 on:
   schedule:
-    - cron: "1 04,16 * * *" #lets run this job every 12 hours.
+    - cron: "1 04 * * *" #lets run this job nightly.
 
   workflow_dispatch:
       inputs:
-        cluster-healthcheck:
+        clusterHealthcheck:
           description: 'Run a healthcheck against wss://develop.mangatafinance.cloud*'
           required: true
           default: 'test-cluster-healthcheck'
@@ -20,10 +20,24 @@ jobs:
         cluster: ['develop']
     runs-on: ubuntu-latest
     steps: 
+      - name: Set Script to run
+        run:  |
+          echo ${{ github.event.inputs.clusterHealthcheck }}
+          if [ "$FROM_INPUT" != "" ]
+          then
+            echo "Input"
+            echo "TEST_SCRIPT=${{ github.event.inputs.clusterHealthcheck }}" >> $GITHUB_ENV
+          else
+            echo "From Schedule"
+            echo "TEST_SCRIPT=test-cluster-healthcheck" >> $GITHUB_ENV
+          fi
+        env:
+          FROM_INPUT: ${{ github.event.inputs.clusterHealthcheck }}
+      
       - name: Repository Dispatch
         uses: peter-evans/repository-dispatch@v1
         with:
           token: ${{ secrets.PAT_TRIGGER_JOB }}
           repository: "mangata-finance/mangata-e2e"
           event-type: run-ci
-          client-payload: '{"scriptName": "${{ github.event.inputs.cluster-healthcheck }}", "environment": "${{ matrix.cluster }}"}'
+          client-payload: '{"scriptName": "${{ env.TEST_SCRIPT }}", "environment": "${{ matrix.cluster }}"}'

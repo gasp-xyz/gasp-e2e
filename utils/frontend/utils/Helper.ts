@@ -6,7 +6,7 @@ import { Polkadot } from "../pages/Polkadot";
 import fs from "fs";
 import { testLog } from "../../Logger";
 import BN from "bn.js";
-
+import { Reporter } from "jest-allure/dist/Reporter";
 const { By, until } = require("selenium-webdriver");
 require("chromedriver");
 const outputPath = `reports/artifacts`;
@@ -125,6 +125,8 @@ export async function addExtraLogs(driver: WebDriver, testName = "") {
   });
   const img = await driver.takeScreenshot();
   fs.writeFileSync(`${outputPath}/screenshot_${testName}.png`, img, "base64");
+  const reporter = (globalThis as any).reporter as Reporter;
+  reporter.addAttachment("Screeenshot", new Buffer(img, "base64"), "image/png");
 }
 export async function renameExtraLogs(testName: string, result = "failed") {
   fs.readdirSync(outputPath).forEach((file) => {
