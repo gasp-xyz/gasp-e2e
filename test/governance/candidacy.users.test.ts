@@ -11,40 +11,51 @@ import { SudoUser } from "../../utils/Framework/User/SudoUser";
 import { UserFactory, Users } from "../../utils/Framework/User/UserFactory";
 import { cryptoWaitReady } from "@polkadot/util-crypto";
 import { getEnvironmentRequiredVars, waitForNBlocks } from "../../utils/utils";
+import { testLog } from "../../utils/Logger";
 
+// Global variables
 const { chainUri: environmentUri } = getEnvironmentRequiredVars();
-let termDuration: number; // Set as a const in mangata-node
-const termBlockDelta = 3; // A small block delta at term boundaries
+jest.spyOn(console, "log").mockImplementation(jest.fn());
+jest.setTimeout(15000000);
 
+// Chain variables
 let bootnode: Node;
 let keyring: Keyring;
 let sudo: SudoUser;
+let termDuration: number; // Set as a const in mangata-node
+const termBlockDelta = 3; // A small block delta at term boundaries
 
+// Test variables
 let candidate: GovernanceUser;
 let voter: GovernanceUser;
 let bank: Bank;
+const stakeAmount = new BN(Math.pow(10, 16).toString());
+const accountFundingAmount = new BN(Math.pow(10, 17).toString());
 
-jest.spyOn(console, "log").mockImplementation(jest.fn());
-jest.setTimeout(15000000);
+// Cross-test state
+const state: {
+  accounts: [GovernanceUser | null];
+} = { accounts: [null] };
 
 beforeAll(async () => {
   await cryptoWaitReady(); // Wait for Polkadots WASM backend
 
+  // Instantiate nodes
   bootnode = new Node(environmentUri);
   await bootnode.connect();
   await bootnode.subscribeToHead();
 
+  // Set chain variables
   termDuration = (
     await bootnode.api!.derive.elections.info()
   ).termDuration.toNumber();
-
   keyring = new Keyring({ type: "sr25519" });
   sudo = UserFactory.createUser(Users.SudoUser, keyring, bootnode) as SudoUser;
 });
 
 beforeEach(async () => {
   // Don't run tests at the end of a term
-  if (termDuration % bootnode.lastBlock! >= 45) {
+  if (termDuration % bootnode.lastBlock!) {
     waitForNextTerm();
   }
 
@@ -61,16 +72,22 @@ beforeEach(async () => {
   ) as GovernanceUser;
   bank = new Bank(sudo);
 
+  // Record new test state
+  state.accounts.push(voter);
+
   // Fund accounts
-  await voter.addMGATokens(bank.sudoUser, new BN(Math.pow(10, 17).toString()));
-  await candidate.addMGATokens(
-    bank.sudoUser,
-    new BN(Math.pow(10, 16).toString())
-  );
+  await voter.addMGATokens(bank.sudoUser, accountFundingAmount);
+  await candidate.addMGATokens(bank.sudoUser, stakeAmount);
 
   // Subscribe to events
   candidate.node.subscribeToUserBalanceChanges(candidate);
   voter.node.subscribeToUserBalanceChanges(voter);
+});
+
+afterAll(async () => {
+  // Tests in files are unlikely to impact each other
+  // but not clearing up over multiple test files will break
+  await cleanState();
 });
 
 describe("Governance -> Candidacy -> Users", () => {
@@ -80,9 +97,11 @@ describe("Governance -> Candidacy -> Users", () => {
     await candidate.runForCouncil();
     await waitForNBlocks(2);
 
-    const candidates = getLastBlocksElectionData();
+    const termZero = getLastBlocksElectionData();
 
-    expect(candidates).toEqual(expect.arrayContaining([candidatesAddress]));
+    expect(flattenArray(termZero.Candidates)).toEqual(
+      expect.arrayContaining([candidatesAddress])
+    );
   });
 
   test("Candidate can renounce candidacy", async () => {
@@ -90,13 +109,18 @@ describe("Governance -> Candidacy -> Users", () => {
 
     await candidate.runForCouncil();
     await waitForNBlocks(2);
-    const candidateStatus = { Candidate: 1 };
-    await candidate.renounceCandidacy(candidateStatus);
+
+    await candidate.renounceCandidacy({
+      Candidate: candidate.keyRingPair.address,
+    });
+
     await waitForNBlocks(2);
 
-    const candidates = getLastBlocksElectionData();
+    const termZero = getLastBlocksElectionData();
 
-    expect(candidates).not.toEqual(expect.arrayContaining([candidatesAddress]));
+    expect(flattenArray(termZero.Candidates)).not.toEqual(
+      expect.arrayContaining([candidatesAddress])
+    );
   });
 
   test("Council Member can renounce candidacy", async () => {
@@ -105,21 +129,23 @@ describe("Governance -> Candidacy -> Users", () => {
     // Gonzalo runs for Council in Term 0
     // Eddy votes for Gonzalo
     await candidate.runForCouncil();
-    await voter.vote([candidate], new BN(Math.pow(10, 16).toString()));
+    await voter.vote([candidate], stakeAmount);
     await waitForNBlocks(2);
 
-    const candidatesTerm0 = getLastBlocksElectionData();
+    const termZero = getLastBlocksElectionData();
 
-    expect(candidatesTerm0).toEqual(
+    expect(flattenArray(termZero.Candidates)).toEqual(
       expect.arrayContaining([candidatesAddress])
     );
 
     // Gonzalo wins the election and is council member!
     // Gonzalo subsequently renounces candidacy in Term 1
     await waitForNextTerm();
-    //FIX this, the candidate is a member at this point!!
-    const candidates = getLastBlocksElectionData();
-    expect(candidates).toEqual(expect.arrayContaining([candidatesAddress]));
+
+    const termOne = getLastBlocksElectionData();
+    expect(flattenArray(termOne.Members)).toEqual(
+      expect.arrayContaining([candidatesAddress])
+    );
 
     const candidateStatus = { Member: candidate.keyRingPair.address };
     await candidate.renounceCandidacy(candidateStatus);
@@ -127,9 +153,9 @@ describe("Governance -> Candidacy -> Users", () => {
     // Gonzalo is not automatically running for candidacy in Term 2
     await waitForNextTerm();
 
-    const candidatesTerm2 = getLastBlocksElectionData();
+    const termTwo = getLastBlocksElectionData();
 
-    expect(candidatesTerm2).not.toEqual(
+    expect(flattenArray(termTwo.Candidates)).not.toEqual(
       expect.arrayContaining([candidatesAddress])
     );
   });
@@ -140,30 +166,30 @@ describe("Governance -> Candidacy -> Users", () => {
     // Gonzalo runs for Council in Term 0
     // Eddy votes for Gonzalo
     await candidate.runForCouncil();
-    await voter.vote([candidate], new BN(Math.pow(10, 16).toString()));
+    await voter.vote([candidate], stakeAmount);
 
     await waitForNBlocks(2);
 
-    const candidatesTerm0 = getLastBlocksElectionData();
-    expect(candidatesTerm0).toEqual(
+    const termZero = getLastBlocksElectionData();
+    expect(flattenArray(termZero.Candidates)).toEqual(
       expect.arrayContaining([candidatesAddress])
     );
 
     // Gonzalo wins the election and is a council member!
     await waitForNextTerm();
 
-    const candidatesTerm1 = getLastBlocksElectionData();
+    const termOne = getLastBlocksElectionData();
 
-    expect(candidatesTerm1).toEqual(
+    expect(flattenArray(termOne.Members)).toEqual(
       expect.arrayContaining([candidatesAddress])
     );
 
     // Gonzalo is automatically running for candidacy in Term 2
     await waitForNextTerm();
 
-    const candidatesTerm2 = getLastBlocksElectionData();
+    const termTwo = getLastBlocksElectionData();
 
-    expect(candidatesTerm2).not.toEqual(
+    expect(flattenArray(termTwo.Candidates)).not.toEqual(
       expect.arrayContaining([candidatesAddress])
     );
   });
@@ -183,7 +209,25 @@ async function waitForNextTerm() {
 
 function getLastBlocksElectionData() {
   const electionData = bootnode.electionEvents.get(bootnode.lastBlock! - 1);
-  const candidates = electionData?.candidates;
 
-  return candidates;
+  return {
+    Members: electionData!.members,
+    Candidates: electionData!.candidates,
+  };
+}
+
+function flattenArray(arr: [any]) {
+  return arr.reduce((acc, val) => acc.concat(val), []);
+}
+
+async function cleanState() {
+  state.accounts.forEach(async (account) => {
+    if (account !== null) {
+      try {
+        const candidateStatus = { Member: account.keyRingPair.address };
+        await account?.renounceCandidacy(candidateStatus);
+      } catch (e) {} // This may fail if an account isn't a candidate
+    }
+  });
+  await waitForNextTerm();
 }

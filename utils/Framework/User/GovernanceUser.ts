@@ -4,7 +4,6 @@ import { signSendAndWaitToFinishTx } from "../../txHandler";
 import { BaseUser } from "./BaseUser";
 import { Node } from "../Node/Node";
 import BN from "bn.js";
-import { Renouncing } from "@polkadot/types/interfaces/elections/index";
 
 export class GovernanceUser extends BaseUser {
   node: Node;
@@ -27,9 +26,9 @@ export class GovernanceUser extends BaseUser {
     );
   }
 
-  async renounceCandidacy(candiadteStatus: any): Promise<void> {
+  async renounceCandidacy(candidateStatus: any): Promise<void> {
     await signSendAndWaitToFinishTx(
-      this.api.tx.elections.renounceCandidacy(candiadteStatus),
+      this.api.tx.elections.renounceCandidacy(candidateStatus),
       this.keyRingPair
     );
   }
