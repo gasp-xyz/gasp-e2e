@@ -1,0 +1,122 @@
+{
+  "uid" : "91bde8854d2fb2cb",
+  "name" : "As a User I get the right values for Pool removal P[2499999999999999999, 5000000000000000000] - I-> 2 -Expected - 0.049 , 0.100",
+  "fullName" : "Accuracy tests:.As a User I get the right values for Pool removal P[2499999999999999999, 5000000000000000000] - I-> 2 -Expected - 0.049 , 0.100",
+  "historyId" : "a0f9e8ee4b036a009dfe858e1f3bc7d3",
+  "time" : {
+    "start" : 1637719154249,
+    "stop" : 1637719287162,
+    "duration" : 132913
+  },
+  "description" : "",
+  "descriptionHtml" : "",
+  "status" : "passed",
+  "flaky" : false,
+  "newFailed" : false,
+  "beforeStages" : [ ],
+  "testStage" : {
+    "status" : "passed",
+    "steps" : [ ],
+    "attachments" : [ {
+      "uid" : "7f5b3bd1f156c8d3",
+      "name" : "Screeenshot",
+      "source" : "7f5b3bd1f156c8d3.png",
+      "type" : "image/png",
+      "size" : 96446
+    } ],
+    "parameters" : [ ],
+    "stepsCount" : 0,
+    "attachmentsCount" : 1,
+    "shouldDisplayMessage" : false,
+    "hasContent" : true
+  },
+  "afterStages" : [ ],
+  "labels" : [ {
+    "name" : "suite",
+    "value" : "Accuracy tests:"
+  }, {
+    "name" : "testClass",
+    "value" : "Accuracy tests:"
+  }, {
+    "name" : "testMethod",
+    "value" : "As a User I get the right values for Pool removal P[2499999999999999999, 5000000000000000000] - I-> 2 -Expected - 0.049 , 0.100"
+  }, {
+    "name" : "package",
+    "value" : "Accuracy tests:"
+  }, {
+    "name" : "resultFormat",
+    "value" : "allure1"
+  } ],
+  "parameters" : [ ],
+  "links" : [ ],
+  "hidden" : false,
+  "retry" : false,
+  "extra" : {
+    "severity" : "normal",
+    "retries" : [ ],
+    "categories" : [ ],
+    "history" : {
+      "statistic" : {
+        "failed" : 4,
+        "broken" : 0,
+        "skipped" : 0,
+        "passed" : 2,
+        "unknown" : 0,
+        "total" : 6
+      },
+      "items" : [ {
+        "uid" : "3fb71d9b8e7cd314",
+        "reportUrl" : "https://mangata-finance.github.io/mangata-e2e/1004//#testresult/3fb71d9b8e7cd314",
+        "status" : "passed",
+        "time" : {
+          "start" : 1637676775313,
+          "stop" : 1637676880808,
+          "duration" : 105495
+        }
+      }, {
+        "uid" : "7afc627299fb9df1",
+        "reportUrl" : "https://mangata-finance.github.io/mangata-e2e/1001//#testresult/7afc627299fb9df1",
+        "status" : "failed",
+        "statusDetails" : "Error: Timeout - Async callback was not invoked within the 300000 ms timeout specified by jest.setTimeout.",
+        "time" : {
+          "start" : 1637631280216,
+          "stop" : 1637631280227,
+          "duration" : 11
+        }
+      }, {
+        "uid" : "d4644571b6ef1b38",
+        "reportUrl" : "https://mangata-finance.github.io/mangata-e2e/1002//#testresult/d4644571b6ef1b38",
+        "status" : "failed",
+        "statusDetails" : "Error: Timeout - Async callback was not invoked within the 300000 ms timeout specified by jest.setTimeout.",
+        "time" : {
+          "start" : 1637631312785,
+          "stop" : 1637631312795,
+          "duration" : 10
+        }
+      }, {
+        "uid" : "f15845908674c29a",
+        "reportUrl" : "https://mangata-finance.github.io/mangata-e2e/1000//#testresult/f15845908674c29a",
+        "status" : "failed",
+        "statusDetails" : "Error: Timeout - Async callback was not invoked within the 300000 ms timeout specified by jest.setTimeout.",
+        "time" : {
+          "start" : 1637631284349,
+          "stop" : 1637631284357,
+          "duration" : 8
+        }
+      }, {
+        "uid" : "c7d396449178c0cd",
+        "reportUrl" : "https://mangata-finance.github.io/mangata-e2e/999//#testresult/c7d396449178c0cd",
+        "status" : "failed",
+        "statusDetails" : "TimeoutError: Waiting for element to be located By(xpath, //*[@data-testid='poolsOverview-item-m1141-m1140'])\n                Wait timed out after 30000ms",
+        "time" : {
+          "start" : 1637590597608,
+          "stop" : 1637590737059,
+          "duration" : 139451
+        }
+      } ]
+    },
+    "tags" : [ ]
+  },
+  "source" : "91bde8854d2fb2cb.json",
+  "parameterValues" : [ ]
+}
