@@ -87,44 +87,18 @@ describe("Accuracy > Shared pool", () => {
       default50k
     );
   });
-  test("Each user who minted onws the same % of tokens - last user gets extra token", async () => {
+  test("Each user who minted onws the same % of tokens - one user gets extra token", async () => {
     const users = [testUser1, testUser2, testUser3];
-    const liqToken = await mga.getLiquidityAssetId(
-      firstCurrency.toString(),
-      MGA_ASSET_ID.toString()
-    );
-    users.forEach((user) => user.addAsset(liqToken));
-    testUser3.addAsset(firstCurrency);
-    await Promise.all([
-      testUser2.mintLiquidity(firstCurrency, MGA_ASSET_ID, default50k),
-      testUser3.mintLiquidity(firstCurrency, MGA_ASSET_ID, default50k),
+    const sellAmount = new BN(1000);
+    const balancesFirstCurrency = await mintAndBurnTokens(users, sellAmount, [
+      default50k,
+      default50k,
+      default50k,
     ]);
-    // now pool is[user1-33%, user2-33%, user3-33%]
-    await Promise.all([
-      await users[0].refreshAmounts(AssetWallet.AFTER),
-      await users[1].refreshAmounts(AssetWallet.AFTER),
-      await users[2].refreshAmounts(AssetWallet.AFTER),
-    ]);
-    const balances = users.map(
-      (user) => user.getFreeAssetAmount(liqToken).amountAfter.free! as BN
-    );
-    expect(balances[0]).bnEqual(balances[1]);
-    expect(balances[1]).bnEqual(balances[2]);
-    expect(balances[1]).bnEqual(default50k);
-    await testUser1.sellAssets(firstCurrency, MGA_ASSET_ID, new BN(1000));
 
-    await burnAllLiquidities(users, balances);
-    await Promise.all([
-      await users[0].refreshAmounts(AssetWallet.AFTER),
-      await users[1].refreshAmounts(AssetWallet.AFTER),
-      await users[2].refreshAmounts(AssetWallet.AFTER),
-    ]);
-    const balancesFirstCurrency = users.map(
-      (user) => user.getFreeAssetAmount(firstCurrency).amountAfter.free! as BN
-    );
     balancesFirstCurrency[0] = balancesFirstCurrency[0]
       .sub(defaultCurrecyValue.sub(default50k))
-      .add(new BN(1000));
+      .add(sellAmount);
     const balancesWithCounts = getDuplicatedWithCounts(balancesFirstCurrency);
     const orderedKeys = Array.from(balancesWithCounts.keys()).sort((a, b) =>
       new BN(a).sub(new BN(b)).isNeg() ? -1 : 1
@@ -141,44 +115,18 @@ describe("Accuracy > Shared pool", () => {
         .abs()
     ).bnEqual(new BN(1));
   });
-  test("Each user who minted onws the same % of tokens - two last users gets the extra", async () => {
+  test("Each user who minted onws the same % of tokens - two users gets the extra", async () => {
     const users = [testUser1, testUser2, testUser3];
-    const liqToken = await mga.getLiquidityAssetId(
-      firstCurrency.toString(),
-      MGA_ASSET_ID.toString()
-    );
-    users.forEach((user) => user.addAsset(liqToken));
-    testUser3.addAsset(firstCurrency);
-    await Promise.all([
-      testUser2.mintLiquidity(firstCurrency, MGA_ASSET_ID, default50k),
-      testUser3.mintLiquidity(firstCurrency, MGA_ASSET_ID, default50k),
+    const sellAmount = new BN(1001);
+    const balancesFirstCurrency = await mintAndBurnTokens(users, sellAmount, [
+      default50k,
+      default50k,
+      default50k,
     ]);
-    // now pool is[user1-33%, user2-33%, user3-33%]
-    await Promise.all([
-      await users[0].refreshAmounts(AssetWallet.AFTER),
-      await users[1].refreshAmounts(AssetWallet.AFTER),
-      await users[2].refreshAmounts(AssetWallet.AFTER),
-    ]);
-    const balances = users.map(
-      (user) => user.getFreeAssetAmount(liqToken).amountAfter.free! as BN
-    );
-    expect(balances[0]).bnEqual(balances[1]);
-    expect(balances[1]).bnEqual(balances[2]);
-    expect(balances[1]).bnEqual(default50k);
-    await testUser1.sellAssets(firstCurrency, MGA_ASSET_ID, new BN(1001));
 
-    await burnAllLiquidities(users, balances);
-    await Promise.all([
-      await users[0].refreshAmounts(AssetWallet.AFTER),
-      await users[1].refreshAmounts(AssetWallet.AFTER),
-      await users[2].refreshAmounts(AssetWallet.AFTER),
-    ]);
-    const balancesFirstCurrency = users.map(
-      (user) => user.getFreeAssetAmount(firstCurrency).amountAfter.free! as BN
-    );
     balancesFirstCurrency[0] = balancesFirstCurrency[0]
       .sub(defaultCurrecyValue.sub(default50k))
-      .add(new BN(1001));
+      .add(sellAmount);
     const balancesWithCounts = getDuplicatedWithCounts(balancesFirstCurrency);
     const orderedKeys = Array.from(balancesWithCounts.keys()).sort((a, b) =>
       new BN(a).sub(new BN(b)).isNeg() ? -1 : 1
@@ -194,104 +142,108 @@ describe("Accuracy > Shared pool", () => {
         .abs()
     ).bnEqual(new BN(1));
   });
-  test.skip("TODO:Each user who minted onws the same % of tokens - divisible by 3", async () => {
+  test("Each user who minted onws the same % of tokens - divisible by 3", async () => {
     const users = [testUser1, testUser2, testUser3];
-    const liqToken = await mga.getLiquidityAssetId(
-      firstCurrency.toString(),
-      MGA_ASSET_ID.toString()
-    );
-    users.forEach((user) => user.addAsset(liqToken));
-    testUser3.addAsset(firstCurrency);
-    await Promise.all([
-      testUser2.mintLiquidity(firstCurrency, MGA_ASSET_ID, default50k),
-      testUser3.mintLiquidity(firstCurrency, MGA_ASSET_ID, default50k),
+    const sellAmount = new BN(1002);
+    const balancesFirstCurrency = await mintAndBurnTokens(users, sellAmount, [
+      default50k,
+      default50k,
+      default50k,
     ]);
-    // now pool is[user1-33%, user2-33%, user3-33%]
-    await Promise.all([
-      await users[0].refreshAmounts(AssetWallet.AFTER),
-      await users[1].refreshAmounts(AssetWallet.AFTER),
-      await users[2].refreshAmounts(AssetWallet.AFTER),
-    ]);
-    const balances = users.map(
-      (user) => user.getFreeAssetAmount(liqToken).amountAfter.free! as BN
-    );
-    expect(balances[0]).bnEqual(balances[1]);
-    expect(balances[1]).bnEqual(balances[2]);
-    expect(balances[1]).bnEqual(default50k);
-    await testUser1.sellAssets(firstCurrency, MGA_ASSET_ID, new BN(1003));
 
-    await burnAllLiquidities(users, balances);
-    await Promise.all([
-      await users[0].refreshAmounts(AssetWallet.AFTER),
-      await users[1].refreshAmounts(AssetWallet.AFTER),
-      await users[2].refreshAmounts(AssetWallet.AFTER),
-    ]);
-    const balancesFirstCurrency = users.map(
-      (user) => user.getFreeAssetAmount(firstCurrency).amountAfter.free! as BN
-    );
+    balancesFirstCurrency[0] = balancesFirstCurrency[0]
+      .sub(defaultCurrecyValue.sub(default50k))
+      .add(sellAmount);
+
+    const balancesWithCounts = getDuplicatedWithCounts(balancesFirstCurrency);
+
     expect(balancesFirstCurrency[1]).bnEqual(balancesFirstCurrency[2]);
-    //we want to exract from user0, who gets 250k tokens, the equivalent of the rest of the users
-    // user has: 250nnn - (250000 - 50000) = 50nnn, that must be equals to other users balances.
-    expect(balancesFirstCurrency[1]).bnEqual(
-      balancesFirstCurrency[0]
-        .sub(defaultCurrecyValue.sub(default50k))
-        .add(new BN(1000)) // user1 has 1000 less tokens from the swap!,
-        .sub(new BN(1)) //,last token for the last one burning?
-    );
+    expect(balancesFirstCurrency[1]).bnEqual(balancesFirstCurrency[0]);
+    expect(Array.from(balancesWithCounts).length).toEqual(1);
   });
-  test.skip("TODO:Each user who minted different % of tokens [50k,25k,5k]- divisible by 3", async () => {
+  test("Each user who minted different % of tokens [50k,25k,5k]- get diff amounts", async () => {
     const users = [testUser1, testUser2, testUser3];
-    const liqToken = await mga.getLiquidityAssetId(
-      firstCurrency.toString(),
-      MGA_ASSET_ID.toString()
-    );
-    users.forEach((user) => user.addAsset(liqToken));
-    testUser3.addAsset(firstCurrency);
-    await Promise.all([
-      testUser2.mintLiquidity(
-        firstCurrency,
-        MGA_ASSET_ID,
-        default50k.div(new BN(2))
-      ),
-      testUser3.mintLiquidity(
-        firstCurrency,
-        MGA_ASSET_ID,
-        default50k.div(new BN(5))
-      ),
-    ]);
-    await Promise.all([
-      await users[0].refreshAmounts(AssetWallet.AFTER),
-      await users[1].refreshAmounts(AssetWallet.AFTER),
-      await users[2].refreshAmounts(AssetWallet.AFTER),
-    ]);
-    const balances = users.map(
-      (user) => user.getFreeAssetAmount(liqToken).amountAfter.free! as BN
-    );
-    expect(balances[0]).bnEqual(balances[1].mul(new BN(2)));
-    expect(balances[1]).bnEqual(balances[2]);
-    expect(balances[1]).bnEqual(default50k);
-    await testUser1.sellAssets(firstCurrency, MGA_ASSET_ID, new BN(1003));
+    const sellAmount = new BN(1002);
+    const amountsToMint = [
+      default50k,
+      default50k.div(new BN(2)),
+      default50k.div(new BN(5)),
+    ];
 
-    await burnAllLiquidities(users, balances);
-    await Promise.all([
-      await users[0].refreshAmounts(AssetWallet.AFTER),
-      await users[1].refreshAmounts(AssetWallet.AFTER),
-      await users[2].refreshAmounts(AssetWallet.AFTER),
-    ]);
-    const balancesFirstCurrency = users.map(
-      (user) => user.getFreeAssetAmount(firstCurrency).amountAfter.free! as BN
+    const balancesFirstCurrency = await mintAndBurnTokens(
+      users,
+      sellAmount,
+      amountsToMint
     );
-    expect(balancesFirstCurrency[1]).bnEqual(balancesFirstCurrency[2]);
-    //we want to exract from user0, who gets 250k tokens, the equivalent of the rest of the users
-    // user has: 250nnn - (250000 - 50000) = 50nnn, that must be equals to other users balances.
-    expect(balancesFirstCurrency[1]).bnEqual(
+    balancesFirstCurrency[0] = balancesFirstCurrency[0]
+      .sub(defaultCurrecyValue.sub(default50k))
+      .add(sellAmount);
+
+    //lets remove the amount added to the user, so we only compare the benefits.
+    balancesFirstCurrency.forEach((_, index) => {
+      balancesFirstCurrency[index] =
+        balancesFirstCurrency[index].sub(default50k);
+    });
+    // test that the difference is not larger than one.1x - 2z
+    expect(
       balancesFirstCurrency[0]
-        .sub(defaultCurrecyValue.sub(default50k))
-        .add(new BN(1000)) // user1 has 1000 less tokens from the swap!,
-        .sub(new BN(1)) //,last token for the last one burning?
-    );
+        .sub(balancesFirstCurrency[1].mul(new BN(2)))
+        .abs()
+    ).bnLte(new BN(1));
+
+    // test that the difference is not larger than one. 1x = 5y
+    expect(
+      balancesFirstCurrency[0]
+        .sub(balancesFirstCurrency[2].mul(new BN(5)))
+        .abs()
+    ).bnLte(new BN(1));
   });
 });
+
+///Mint tokens for all the users, users[0] do a swap and then all the users burn them all.
+async function mintAndBurnTokens(
+  users: User[],
+  sellAmount: BN,
+  amountToMint: BN[]
+) {
+  const liqToken = await mga.getLiquidityAssetId(
+    firstCurrency.toString(),
+    MGA_ASSET_ID.toString()
+  );
+  users.forEach((user) => user.addAsset(liqToken));
+  testUser3.addAsset(firstCurrency);
+  await Promise.all([
+    testUser2.mintLiquidity(firstCurrency, MGA_ASSET_ID, amountToMint[1]),
+    testUser3.mintLiquidity(firstCurrency, MGA_ASSET_ID, amountToMint[2]),
+  ]);
+  // now pool is[user1-33%, user2-33%, user3-33%]
+  await Promise.all([
+    await users[0].refreshAmounts(AssetWallet.AFTER),
+    await users[1].refreshAmounts(AssetWallet.AFTER),
+    await users[2].refreshAmounts(AssetWallet.AFTER),
+  ]);
+  const balancesLiqToken = users.map(
+    (user) => user.getFreeAssetAmount(liqToken).amountAfter.free! as BN
+  );
+  //pool is perfectly balance
+  expect(balancesLiqToken[0]).bnEqual(amountToMint[0]);
+  expect(balancesLiqToken[1]).bnEqual(amountToMint[1]);
+  expect(balancesLiqToken[2]).bnEqual(amountToMint[2]);
+
+  await testUser1.sellAssets(firstCurrency, MGA_ASSET_ID, sellAmount);
+
+  await burnAllLiquidities(users, balancesLiqToken);
+  await Promise.all([
+    await users[0].refreshAmounts(AssetWallet.AFTER),
+    await users[1].refreshAmounts(AssetWallet.AFTER),
+    await users[2].refreshAmounts(AssetWallet.AFTER),
+  ]);
+  const balancesFirstCurrency = users.map(
+    (user) => user.getFreeAssetAmount(firstCurrency).amountAfter.free! as BN
+  );
+  return balancesFirstCurrency;
+}
+
 async function burnAllLiquidities(users: User[], balances: BN[]) {
   await Promise.all([
     mga.burnLiquidity(
@@ -314,6 +266,7 @@ async function burnAllLiquidities(users: User[], balances: BN[]) {
     ),
   ]);
 }
+
 const getDuplicatedWithCounts = (list: BN[]) => {
   const counts: Map<string, number> = new Map();
   list.forEach(function (x) {
