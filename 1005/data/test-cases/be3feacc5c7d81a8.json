@@ -1,0 +1,149 @@
+{
+  "uid" : "be3feacc5c7d81a8",
+  "name" : "As a User I can Withdraw ETH from Meta extension",
+  "fullName" : "UI main tests - Withdraw - ETH.As a User I can Withdraw ETH from Meta extension",
+  "historyId" : "eac55faabce1aad19e0827a3afd71b78",
+  "time" : {
+    "start" : 1637718778083,
+    "stop" : 1637719078383,
+    "duration" : 300300
+  },
+  "description" : "",
+  "descriptionHtml" : "",
+  "status" : "failed",
+  "statusMessage" : "Error: Timeout - Async callback was not invoked within the 300000 ms timeout specified by jest.setTimeout.",
+  "statusTrace" : "Timeout - Async callback was not invoked within the 300000 ms timeout specified by jest.setTimeout.Error: Timeout - Async callback was not invoked within the 300000 ms timeout specified by jest.setTimeout.\n                    at mapper (/home/runner/work/mangata-e2e/mangata-e2e/node_modules/jest-jasmine2/build/queueRunner.js:27:45)\n                    at /home/runner/work/mangata-e2e/mangata-e2e/node_modules/jest-jasmine2/build/queueRunner.js:75:41\n                    at runMicrotasks (<anonymous>)\n                    at processTicksAndRejections (internal/process/task_queues.js:95:5)",
+  "flaky" : true,
+  "newFailed" : true,
+  "beforeStages" : [ ],
+  "testStage" : {
+    "status" : "failed",
+    "statusMessage" : "Error: Timeout - Async callback was not invoked within the 300000 ms timeout specified by jest.setTimeout.",
+    "statusTrace" : "Timeout - Async callback was not invoked within the 300000 ms timeout specified by jest.setTimeout.Error: Timeout - Async callback was not invoked within the 300000 ms timeout specified by jest.setTimeout.\n                    at mapper (/home/runner/work/mangata-e2e/mangata-e2e/node_modules/jest-jasmine2/build/queueRunner.js:27:45)\n                    at /home/runner/work/mangata-e2e/mangata-e2e/node_modules/jest-jasmine2/build/queueRunner.js:75:41\n                    at runMicrotasks (<anonymous>)\n                    at processTicksAndRejections (internal/process/task_queues.js:95:5)",
+    "steps" : [ ],
+    "attachments" : [ {
+      "uid" : "4b075a05d005796a",
+      "name" : "Screeenshot",
+      "source" : "4b075a05d005796a.png",
+      "type" : "image/png",
+      "size" : 91856
+    } ],
+    "parameters" : [ ],
+    "stepsCount" : 0,
+    "attachmentsCount" : 1,
+    "shouldDisplayMessage" : true,
+    "hasContent" : true
+  },
+  "afterStages" : [ ],
+  "labels" : [ {
+    "name" : "suite",
+    "value" : "UI main tests - Withdraw - ETH"
+  }, {
+    "name" : "testClass",
+    "value" : "UI main tests - Withdraw - ETH"
+  }, {
+    "name" : "testMethod",
+    "value" : "As a User I can Withdraw ETH from Meta extension"
+  }, {
+    "name" : "package",
+    "value" : "UI main tests - Withdraw - ETH"
+  }, {
+    "name" : "resultFormat",
+    "value" : "allure1"
+  } ],
+  "parameters" : [ ],
+  "links" : [ ],
+  "hidden" : false,
+  "retry" : false,
+  "extra" : {
+    "severity" : "normal",
+    "retries" : [ ],
+    "categories" : [ {
+      "name" : "Product defects",
+      "matchedStatuses" : [ ],
+      "flaky" : false
+    } ],
+    "history" : {
+      "statistic" : {
+        "failed" : 6,
+        "broken" : 0,
+        "skipped" : 0,
+        "passed" : 2,
+        "unknown" : 0,
+        "total" : 8
+      },
+      "items" : [ {
+        "uid" : "f3ba0353c416a51d",
+        "reportUrl" : "https://mangata-finance.github.io/mangata-e2e/1007//#testresult/f3ba0353c416a51d",
+        "status" : "passed",
+        "time" : {
+          "start" : 1637718267042,
+          "stop" : 1637718415026,
+          "duration" : 147984
+        }
+      }, {
+        "uid" : "548b0f3c4123bb07",
+        "reportUrl" : "https://mangata-finance.github.io/mangata-e2e/1006//#testresult/548b0f3c4123bb07",
+        "status" : "failed",
+        "statusDetails" : "Error: Timeout - Async callback was not invoked within the 300000 ms timeout specified by jest.setTimeout.",
+        "time" : {
+          "start" : 1637718056875,
+          "stop" : 1637718357098,
+          "duration" : 300223
+        }
+      }, {
+        "uid" : "79ec7d09548a5bed",
+        "reportUrl" : "https://mangata-finance.github.io/mangata-e2e/1004//#testresult/79ec7d09548a5bed",
+        "status" : "passed",
+        "time" : {
+          "start" : 1637675728250,
+          "stop" : 1637675892605,
+          "duration" : 164355
+        }
+      }, {
+        "uid" : "c7f0cf2c11fbbcff",
+        "reportUrl" : "https://mangata-finance.github.io/mangata-e2e/1001//#testresult/c7f0cf2c11fbbcff",
+        "status" : "failed",
+        "statusDetails" : "InvalidArgumentError: Requested environment is not available",
+        "time" : {
+          "start" : 1637630972722,
+          "stop" : 1637630972723,
+          "duration" : 1
+        }
+      }, {
+        "uid" : "d02558379efca37e",
+        "reportUrl" : "https://mangata-finance.github.io/mangata-e2e/1002//#testresult/d02558379efca37e",
+        "status" : "failed",
+        "statusDetails" : "InvalidArgumentError: Requested environment is not available",
+        "time" : {
+          "start" : 1637631004775,
+          "stop" : 1637631004776,
+          "duration" : 1
+        }
+      }, {
+        "uid" : "927aa4613dd7e99c",
+        "reportUrl" : "https://mangata-finance.github.io/mangata-e2e/1000//#testresult/927aa4613dd7e99c",
+        "status" : "failed",
+        "statusDetails" : "InvalidArgumentError: Requested environment is not available",
+        "time" : {
+          "start" : 1637630977133,
+          "stop" : 1637630977134,
+          "duration" : 1
+        }
+      }, {
+        "uid" : "3c7b8783a43f34f4",
+        "reportUrl" : "https://mangata-finance.github.io/mangata-e2e/999//#testresult/3c7b8783a43f34f4",
+        "status" : "failed",
+        "statusDetails" : "Error: Timeout - Async callback was not invoked within the 300000 ms timeout specified by jest.setTimeout.",
+        "time" : {
+          "start" : 1637589471767,
+          "stop" : 1637589772043,
+          "duration" : 300276
+        }
+      } ]
+    },
+    "tags" : [ ]
+  },
+  "source" : "be3feacc5c7d81a8.json",
+  "parameterValues" : [ ]
+}
