@@ -1,3 +1,9 @@
+/*
+ *
+ * @group xyk
+ * @group accuracy
+ * @group parallel
+ */
 import { getApi, getMangataInstance, initApi } from "../../utils/api";
 import {
   calculate_sell_price_id_rpc,
