@@ -75,7 +75,7 @@ describe("UI tests - A user can create a pool MGA - newToken", () => {
     await poolView.selectToken2Asset(MGA_ASSET_NAME);
     await poolView.addToken1AssetAmount("1.234");
     await poolView.addToken2AssetAmount("1.234");
-    await poolView.provideToPool();
+    await poolView.provideOrCreatePool();
 
     await Polkadot.signTransaction(driver);
     //wait four blocks to complete the action.

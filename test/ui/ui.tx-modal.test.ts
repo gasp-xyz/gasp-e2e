@@ -32,6 +32,8 @@ import {
   MGA_ASSET_NAME,
 } from "../../utils/Constants";
 import { BrunLiquidityModal } from "../../utils/frontend/pages/BrunLiquidityModal";
+import { Assets } from "../../utils/Assets";
+import { Polkadot } from "../../utils/frontend/pages/Polkadot";
 
 const MGA_ASSET_ID = new BN(0);
 const ETH_ASSET_ID = new BN(1);
@@ -105,7 +107,7 @@ describe("UI tests - A user can see the new Modal", () => {
     await poolView.selectToken1Asset(mETH_ASSET_NAME);
     await poolView.selectToken2Asset(MGA_ASSET_NAME);
     await poolView.addToken1AssetAmount("0.001");
-    await poolView.provideToPool();
+    await poolView.provideOrCreatePool();
 
     const modal = new NotificationModal(driver);
     const isModalWaitingForSignVisible = await modal.isModalVisible(
@@ -148,6 +150,96 @@ describe("UI tests - A user can see the new Modal", () => {
     await DriverBuilder.destroy();
   });
 
+  afterAll(async () => {
+    const api = getApi();
+    await api.disconnect();
+  });
+});
+
+describe("UI tests - A user gets notified when error", () => {
+  let keyring: Keyring;
+  let testUser1: User;
+  let sudo: User;
+  const { sudo: sudoUserName } = getEnvironmentRequiredVars();
+  const visibleValueNumber = Math.pow(10, 19).toString();
+  let newToken1: BN;
+  let newToken2: BN;
+
+  beforeEach(async () => {
+    try {
+      getApi();
+    } catch (e) {
+      await initApi();
+    }
+
+    keyring = new Keyring({ type: "sr25519" });
+
+    driver = await DriverBuilder.getInstance();
+
+    const { mnemonic } = await setupAllExtensions(driver);
+
+    testUser1 = new User(keyring);
+    testUser1.addFromMnemonic(keyring, mnemonic);
+    sudo = new User(keyring, sudoUserName);
+  });
+
+  it("When tx front - fails, User gets notified", async () => {
+    [newToken1, newToken2] = await Assets.setupUserWithCurrencies(
+      testUser1,
+      [new BN(visibleValueNumber), new BN(visibleValueNumber)],
+      sudo
+    );
+    testUser1.refreshAmounts(AssetWallet.BEFORE);
+    const mga = new Mangata(driver);
+    await mga.navigate();
+    const poolView = new Pool(driver);
+    await poolView.togglePool();
+    await poolView.selectToken1Asset(Assets.getAssetName(newToken1.toString()));
+    await poolView.selectToken2Asset(Assets.getAssetName(newToken2.toString()));
+    await poolView.clickToToken1MaxBtn();
+    await poolView.clickToToken2MaxBtn();
+    await poolView.provideOrCreatePool();
+    await Polkadot.signTransaction(driver);
+    const modal = new NotificationModal(driver);
+    await modal.waitForModal(ModalType.Error);
+    const detailedInfo = await modal.getModalErrorInfo(ModalType.Error);
+    expect(detailedInfo.header).toEqual("Supply Failed");
+    expect(detailedInfo.txInfo).toContain("Inability to pay some fees");
+  });
+  it("When tx extrinsic - fails, User gets notified", async () => {
+    [newToken1] = await Assets.setupUserWithCurrencies(
+      testUser1,
+      [new BN(visibleValueNumber), new BN(visibleValueNumber)],
+      sudo
+    );
+    await testUser1.addMGATokens(sudo);
+    const mga = new Mangata(driver);
+    await mga.navigate();
+    const poolView = new Pool(driver);
+    await poolView.togglePool();
+    await poolView.selectToken1Asset(MGA_ASSET_NAME);
+    await poolView.selectToken2Asset(Assets.getAssetName(newToken1.toString()));
+    await poolView.clickToToken1MaxBtn();
+    await poolView.clickToToken2MaxBtn();
+    await poolView.provideOrCreatePool();
+    await Polkadot.signTransaction(driver);
+    const modal = new NotificationModal(driver);
+    await modal.waitForModal(ModalType.Error);
+    const detailedInfo = await modal.getModalErrorInfo(ModalType.Error);
+    expect(detailedInfo.header).toEqual("Supply Failed");
+    expect(detailedInfo.txInfo).toContain(
+      "Something went wrong. Please try again."
+    );
+  });
+  afterEach(async () => {
+    const session = await driver.getSession();
+    await addExtraLogs(
+      driver,
+      expect.getState().currentTestName + " - " + session.getId()
+    );
+    await driver.quit();
+    await DriverBuilder.destroy();
+  });
   afterAll(async () => {
     const api = getApi();
     await api.disconnect();
