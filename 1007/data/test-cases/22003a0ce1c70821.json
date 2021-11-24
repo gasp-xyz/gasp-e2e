@@ -1,0 +1,132 @@
+{
+  "uid" : "22003a0ce1c70821",
+  "name" : "As a User I can deposit ETH from Meta extension",
+  "fullName" : "UI main tests - Deposit - ETH.As a User I can deposit ETH from Meta extension",
+  "historyId" : "3f230497b028a09bdae1c560fcc1f271",
+  "time" : {
+    "start" : 1637718155370,
+    "stop" : 1637718267034,
+    "duration" : 111664
+  },
+  "description" : "",
+  "descriptionHtml" : "",
+  "status" : "passed",
+  "flaky" : false,
+  "newFailed" : false,
+  "beforeStages" : [ ],
+  "testStage" : {
+    "status" : "passed",
+    "steps" : [ ],
+    "attachments" : [ {
+      "uid" : "2aec72bee236b1b1",
+      "name" : "Screeenshot",
+      "source" : "2aec72bee236b1b1.png",
+      "type" : "image/png",
+      "size" : 80479
+    } ],
+    "parameters" : [ ],
+    "stepsCount" : 0,
+    "attachmentsCount" : 1,
+    "shouldDisplayMessage" : false,
+    "hasContent" : true
+  },
+  "afterStages" : [ ],
+  "labels" : [ {
+    "name" : "suite",
+    "value" : "UI main tests - Deposit - ETH"
+  }, {
+    "name" : "testClass",
+    "value" : "UI main tests - Deposit - ETH"
+  }, {
+    "name" : "testMethod",
+    "value" : "As a User I can deposit ETH from Meta extension"
+  }, {
+    "name" : "package",
+    "value" : "UI main tests - Deposit - ETH"
+  }, {
+    "name" : "resultFormat",
+    "value" : "allure1"
+  } ],
+  "parameters" : [ ],
+  "links" : [ ],
+  "hidden" : false,
+  "retry" : false,
+  "extra" : {
+    "severity" : "normal",
+    "retries" : [ ],
+    "categories" : [ ],
+    "history" : {
+      "statistic" : {
+        "failed" : 5,
+        "broken" : 0,
+        "skipped" : 0,
+        "passed" : 2,
+        "unknown" : 0,
+        "total" : 7
+      },
+      "items" : [ {
+        "uid" : "31eea6b5df42ffb",
+        "reportUrl" : "https://mangata-finance.github.io/mangata-e2e/1006//#testresult/31eea6b5df42ffb",
+        "status" : "failed",
+        "statusDetails" : ": Timeout - Async callback was not invoked within the 300000 ms timeout specified by jest.setTimeout.",
+        "time" : {
+          "start" : 1637717653434,
+          "stop" : 1637718056842,
+          "duration" : 403408
+        }
+      }, {
+        "uid" : "4598c3ba2fefff8e",
+        "reportUrl" : "https://mangata-finance.github.io/mangata-e2e/1004//#testresult/4598c3ba2fefff8e",
+        "status" : "passed",
+        "time" : {
+          "start" : 1637675608007,
+          "stop" : 1637675728229,
+          "duration" : 120222
+        }
+      }, {
+        "uid" : "dd09463e94382cb9",
+        "reportUrl" : "https://mangata-finance.github.io/mangata-e2e/1001//#testresult/dd09463e94382cb9",
+        "status" : "failed",
+        "statusDetails" : "InvalidArgumentError: Requested environment is not available",
+        "time" : {
+          "start" : 1637630972261,
+          "stop" : 1637630972720,
+          "duration" : 459
+        }
+      }, {
+        "uid" : "1b6000c7db350e2b",
+        "reportUrl" : "https://mangata-finance.github.io/mangata-e2e/1002//#testresult/1b6000c7db350e2b",
+        "status" : "failed",
+        "statusDetails" : "InvalidArgumentError: Requested environment is not available",
+        "time" : {
+          "start" : 1637631004344,
+          "stop" : 1637631004773,
+          "duration" : 429
+        }
+      }, {
+        "uid" : "7dc95903aba7a14",
+        "reportUrl" : "https://mangata-finance.github.io/mangata-e2e/1000//#testresult/7dc95903aba7a14",
+        "status" : "failed",
+        "statusDetails" : "InvalidArgumentError: Requested environment is not available",
+        "time" : {
+          "start" : 1637630976645,
+          "stop" : 1637630977131,
+          "duration" : 486
+        }
+      }, {
+        "uid" : "55d49a9af13034bb",
+        "reportUrl" : "https://mangata-finance.github.io/mangata-e2e/999//#testresult/55d49a9af13034bb",
+        "status" : "failed",
+        "statusDetails" : ": Timeout - Async callback was not invoked within the 300000 ms timeout specified by jest.setTimeout.",
+        "time" : {
+          "start" : 1637589064016,
+          "stop" : 1637589471754,
+          "duration" : 407738
+        }
+      } ]
+    },
+    "tags" : [ ]
+  },
+  "source" : "22003a0ce1c70821.json",
+  "parameterValues" : [ ]
+}

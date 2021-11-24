@@ -1,0 +1,39 @@
+{
+  "uid" : "4b4757e66a1912dae1a509f688f20b0f",
+  "children" : [ {
+    "name" : "Product defects",
+    "children" : [ {
+      "name" : "TIMEOUT: Waiting for //*[@class = 'Sidebar__loading'] to dissapear",
+      "children" : [ {
+        "name" : "As a User I get the right values for Pool investment P[5000000000000000000, 5000000000000000000] - I-> 0.123 -Expected - 0.123",
+        "uid" : "8cc56f1aeae3eb90",
+        "parentUid" : "f2cd7eefc95a5944bccb745aec47ebb6",
+        "status" : "failed",
+        "time" : {
+          "start" : 1637719648766,
+          "stop" : 1637719797140,
+          "duration" : 148374
+        },
+        "flaky" : true,
+        "newFailed" : false,
+        "parameters" : [ ]
+      }, {
+        "name" : "As a User I get the right values for Pool investment P[2500000000000000000, 5000000000000000000] - I-> 0.100 -Expected - 0.200",
+        "uid" : "407912c635228f8c",
+        "parentUid" : "f2cd7eefc95a5944bccb745aec47ebb6",
+        "status" : "failed",
+        "time" : {
+          "start" : 1637719797140,
+          "stop" : 1637719947446,
+          "duration" : 150306
+        },
+        "flaky" : true,
+        "newFailed" : false,
+        "parameters" : [ ]
+      } ],
+      "uid" : "f2cd7eefc95a5944bccb745aec47ebb6"
+    } ],
+    "uid" : "8fb3a91ba5aaf9de24cc8a92edc82b5d"
+  } ],
+  "name" : "categories"
+}

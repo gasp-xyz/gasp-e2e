@@ -1,0 +1,130 @@
+{
+  "uid" : "c51d193e33e52855",
+  "name" : "Validate that Mangata Frontend up and running",
+  "fullName" : "UI tests: Infra.Validate that Mangata Frontend up and running",
+  "historyId" : "8422b22f4ca0fa2b11be83bcdc18911d",
+  "time" : {
+    "start" : 1637720860238,
+    "stop" : 1637720866283,
+    "duration" : 6045
+  },
+  "description" : "",
+  "descriptionHtml" : "",
+  "status" : "passed",
+  "flaky" : false,
+  "newFailed" : false,
+  "beforeStages" : [ ],
+  "testStage" : {
+    "status" : "passed",
+    "steps" : [ ],
+    "attachments" : [ {
+      "uid" : "6b654f77aedc2b6f",
+      "name" : "Screeenshot",
+      "source" : "6b654f77aedc2b6f.png",
+      "type" : "image/png",
+      "size" : 42492
+    } ],
+    "parameters" : [ ],
+    "stepsCount" : 0,
+    "attachmentsCount" : 1,
+    "shouldDisplayMessage" : false,
+    "hasContent" : true
+  },
+  "afterStages" : [ ],
+  "labels" : [ {
+    "name" : "suite",
+    "value" : "UI tests: Infra"
+  }, {
+    "name" : "testClass",
+    "value" : "UI tests: Infra"
+  }, {
+    "name" : "testMethod",
+    "value" : "Validate that Mangata Frontend up and running"
+  }, {
+    "name" : "package",
+    "value" : "UI tests: Infra"
+  }, {
+    "name" : "resultFormat",
+    "value" : "allure1"
+  } ],
+  "parameters" : [ ],
+  "links" : [ ],
+  "hidden" : false,
+  "retry" : false,
+  "extra" : {
+    "severity" : "normal",
+    "retries" : [ ],
+    "categories" : [ ],
+    "history" : {
+      "statistic" : {
+        "failed" : 3,
+        "broken" : 0,
+        "skipped" : 0,
+        "passed" : 4,
+        "unknown" : 0,
+        "total" : 7
+      },
+      "items" : [ {
+        "uid" : "3cc18a673988c49",
+        "reportUrl" : "https://mangata-finance.github.io/mangata-e2e/1006//#testresult/3cc18a673988c49",
+        "status" : "passed",
+        "time" : {
+          "start" : 1637720119773,
+          "stop" : 1637720124776,
+          "duration" : 5003
+        }
+      }, {
+        "uid" : "6266ebee90240d7",
+        "reportUrl" : "https://mangata-finance.github.io/mangata-e2e/1004//#testresult/6266ebee90240d7",
+        "status" : "passed",
+        "time" : {
+          "start" : 1637677845944,
+          "stop" : 1637677852209,
+          "duration" : 6265
+        }
+      }, {
+        "uid" : "dcbdf50beae71e92",
+        "reportUrl" : "https://mangata-finance.github.io/mangata-e2e/1001//#testresult/dcbdf50beae71e92",
+        "status" : "failed",
+        "statusDetails" : "InvalidArgumentError: Requested environment is not available",
+        "time" : {
+          "start" : 1637631964278,
+          "stop" : 1637631964313,
+          "duration" : 35
+        }
+      }, {
+        "uid" : "2052710103a23e3c",
+        "reportUrl" : "https://mangata-finance.github.io/mangata-e2e/1002//#testresult/2052710103a23e3c",
+        "status" : "failed",
+        "statusDetails" : "InvalidArgumentError: Requested environment is not available",
+        "time" : {
+          "start" : 1637631926748,
+          "stop" : 1637631926783,
+          "duration" : 35
+        }
+      }, {
+        "uid" : "ec35fcd572c17002",
+        "reportUrl" : "https://mangata-finance.github.io/mangata-e2e/1000//#testresult/ec35fcd572c17002",
+        "status" : "failed",
+        "statusDetails" : "InvalidArgumentError: Requested environment is not available",
+        "time" : {
+          "start" : 1637631896808,
+          "stop" : 1637631896835,
+          "duration" : 27
+        }
+      }, {
+        "uid" : "560dbfe865e11164",
+        "reportUrl" : "https://mangata-finance.github.io/mangata-e2e/999//#testresult/560dbfe865e11164",
+        "status" : "passed",
+        "time" : {
+          "start" : 1637591972423,
+          "stop" : 1637591976723,
+          "duration" : 4300
+        }
+      } ]
+    },
+    "tags" : [ ]
+  },
+  "source" : "c51d193e33e52855.json",
+  "parameterValues" : [ ]
+}
