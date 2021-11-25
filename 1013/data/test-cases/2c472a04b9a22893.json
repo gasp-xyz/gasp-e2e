@@ -1,0 +1,167 @@
+{
+  "uid" : "2c472a04b9a22893",
+  "name" : "As a User I can burn all liquidity MGA - mETH",
+  "fullName" : "UI tests - A user can swap and mint tokens.As a User I can burn all liquidity MGA - mETH",
+  "historyId" : "4b2117138a1deb5ba9a68aabdbcc4002",
+  "time" : {
+    "start" : 1637849599739,
+    "stop" : 1637849600031,
+    "duration" : 292
+  },
+  "description" : "",
+  "descriptionHtml" : "",
+  "status" : "failed",
+  "statusMessage" : "thrown: Event {\n                  \"isTrusted\": true,\n                }",
+  "statusTrace" : "thrown: Event {\n                  \"isTrusted\": true,\n                }\n                \n                Error: \n                    at new Spec (/home/runner/work/mangata-e2e/mangata-e2e/node_modules/jest-jasmine2/build/jasmine/Spec.js:116:22)\n                    at new Spec (/home/runner/work/mangata-e2e/mangata-e2e/node_modules/jest-jasmine2/build/setup_jest_globals.js:78:9)\n                    at specFactory (/home/runner/work/mangata-e2e/mangata-e2e/node_modules/jest-jasmine2/build/jasmine/Env.js:523:24)\n                    at Env.it (/home/runner/work/mangata-e2e/mangata-e2e/node_modules/jest-jasmine2/build/jasmine/Env.js:592:24)\n                    at Env.it (/home/runner/work/mangata-e2e/mangata-e2e/node_modules/jest-jasmine2/build/jasmineAsyncInstall.js:134:23)\n                    at it (/home/runner/work/mangata-e2e/mangata-e2e/node_modules/jest-jasmine2/build/jasmine/jasmineLight.js:100:21)\n                    at Suite.<anonymous> (/home/runner/work/mangata-e2e/mangata-e2e/test/ui/ui-main.test.ts:160:3)\n                    at addSpecsToSuite (/home/runner/work/mangata-e2e/mangata-e2e/node_modules/jest-jasmine2/build/jasmine/Env.js:444:51)\n                    at Env.describe (/home/runner/work/mangata-e2e/mangata-e2e/node_modules/jest-jasmine2/build/jasmine/Env.js:414:11)\n                    at describe (/home/runner/work/mangata-e2e/mangata-e2e/node_modules/jest-jasmine2/build/jasmine/jasmineLight.js:88:18)\n                    at Object.<anonymous> (/home/runner/work/mangata-e2e/mangata-e2e/test/ui/ui-main.test.ts:46:1)\n                    at Runtime._execModule (/home/runner/work/mangata-e2e/mangata-e2e/node_modules/jest-runtime/build/index.js:1299:24)\n                    at Runtime._loadModule (/home/runner/work/mangata-e2e/mangata-e2e/node_modules/jest-runtime/build/index.js:898:12)\n                    at Runtime.requireModule (/home/runner/work/mangata-e2e/mangata-e2e/node_modules/jest-runtime/build/index.js:746:10)\n                    at jasmine2 (/home/runner/work/mangata-e2e/mangata-e2e/node_modules/jest-jasmine2/build/index.js:230:13)\n                    at runTestInternal (/home/runner/work/mangata-e2e/mangata-e2e/node_modules/jest-runner/build/runTest.js:380:22)\n                    at runTest (/home/runner/work/mangata-e2e/mangata-e2e/node_modules/jest-runner/build/runTest.js:472:34)",
+  "flaky" : true,
+  "newFailed" : true,
+  "beforeStages" : [ ],
+  "afterStages" : [ ],
+  "labels" : [ {
+    "name" : "suite",
+    "value" : "UI tests - A user can swap and mint tokens"
+  }, {
+    "name" : "testClass",
+    "value" : "UI tests - A user can swap and mint tokens"
+  }, {
+    "name" : "testMethod",
+    "value" : "As a User I can burn all liquidity MGA - mETH"
+  }, {
+    "name" : "package",
+    "value" : "UI tests - A user can swap and mint tokens"
+  }, {
+    "name" : "resultFormat",
+    "value" : "allure1"
+  } ],
+  "parameters" : [ ],
+  "links" : [ ],
+  "hidden" : false,
+  "retry" : false,
+  "extra" : {
+    "severity" : "normal",
+    "retries" : [ ],
+    "categories" : [ {
+      "name" : "Product defects",
+      "matchedStatuses" : [ ],
+      "flaky" : false
+    } ],
+    "history" : {
+      "statistic" : {
+        "failed" : 6,
+        "broken" : 0,
+        "skipped" : 0,
+        "passed" : 6,
+        "unknown" : 0,
+        "total" : 12
+      },
+      "items" : [ {
+        "uid" : "4da2191c29d7e00c",
+        "reportUrl" : "https://mangata-finance.github.io/mangata-e2e/1010//#testresult/4da2191c29d7e00c",
+        "status" : "passed",
+        "time" : {
+          "start" : 1637804100737,
+          "stop" : 1637804252623,
+          "duration" : 151886
+        }
+      }, {
+        "uid" : "605569d8d189c123",
+        "reportUrl" : "https://mangata-finance.github.io/mangata-e2e/1011//#testresult/605569d8d189c123",
+        "status" : "passed",
+        "time" : {
+          "start" : 1637804148757,
+          "stop" : 1637804312819,
+          "duration" : 164062
+        }
+      }, {
+        "uid" : "3874b5f72d803da8",
+        "reportUrl" : "https://mangata-finance.github.io/mangata-e2e/1009//#testresult/3874b5f72d803da8",
+        "status" : "passed",
+        "time" : {
+          "start" : 1637804112667,
+          "stop" : 1637804276549,
+          "duration" : 163882
+        }
+      }, {
+        "uid" : "f38b23f869a8f0ac",
+        "reportUrl" : "https://mangata-finance.github.io/mangata-e2e/1005//#testresult/f38b23f869a8f0ac",
+        "status" : "failed",
+        "statusDetails" : "TimeoutError: Waiting for element to be located By(xpath, //button[text()='Connect'])\n                Wait timed out after 30002ms",
+        "time" : {
+          "start" : 1637717718784,
+          "stop" : 1637717905290,
+          "duration" : 186506
+        }
+      }, {
+        "uid" : "22c10d973be84e06",
+        "reportUrl" : "https://mangata-finance.github.io/mangata-e2e/1007//#testresult/22c10d973be84e06",
+        "status" : "passed",
+        "time" : {
+          "start" : 1637717616868,
+          "stop" : 1637717762631,
+          "duration" : 145763
+        }
+      }, {
+        "uid" : "8b4c8474139f91a3",
+        "reportUrl" : "https://mangata-finance.github.io/mangata-e2e/1006//#testresult/8b4c8474139f91a3",
+        "status" : "failed",
+        "statusDetails" : "thrown: Event {\n                  \"isTrusted\": true,\n                }",
+        "time" : {
+          "start" : 1637717346618,
+          "stop" : 1637717347032,
+          "duration" : 414
+        }
+      }, {
+        "uid" : "609bbaea157122c6",
+        "reportUrl" : "https://mangata-finance.github.io/mangata-e2e/1004//#testresult/609bbaea157122c6",
+        "status" : "passed",
+        "time" : {
+          "start" : 1637675035614,
+          "stop" : 1637675186582,
+          "duration" : 150968
+        }
+      }, {
+        "uid" : "c9cbfebe59533650",
+        "reportUrl" : "https://mangata-finance.github.io/mangata-e2e/1001//#testresult/c9cbfebe59533650",
+        "status" : "failed",
+        "statusDetails" : "InvalidArgumentError: Requested environment is not available",
+        "time" : {
+          "start" : 1637630964599,
+          "stop" : 1637630964600,
+          "duration" : 1
+        }
+      }, {
+        "uid" : "568ee114db53137",
+        "reportUrl" : "https://mangata-finance.github.io/mangata-e2e/1002//#testresult/568ee114db53137",
+        "status" : "failed",
+        "statusDetails" : "InvalidArgumentError: Requested environment is not available",
+        "time" : {
+          "start" : 1637630998775,
+          "stop" : 1637630998777,
+          "duration" : 2
+        }
+      }, {
+        "uid" : "2f8054fbe4c41c47",
+        "reportUrl" : "https://mangata-finance.github.io/mangata-e2e/1000//#testresult/2f8054fbe4c41c47",
+        "status" : "failed",
+        "statusDetails" : "InvalidArgumentError: Requested environment is not available",
+        "time" : {
+          "start" : 1637630971664,
+          "stop" : 1637630971665,
+          "duration" : 1
+        }
+      }, {
+        "uid" : "6c26a12f5ff5eff3",
+        "reportUrl" : "https://mangata-finance.github.io/mangata-e2e/999//#testresult/6c26a12f5ff5eff3",
+        "status" : "passed",
+        "time" : {
+          "start" : 1637588454701,
+          "stop" : 1637588618647,
+          "duration" : 163946
+        }
+      } ]
+    },
+    "tags" : [ ]
+  },
+  "source" : "2c472a04b9a22893.json",
+  "parameterValues" : [ ]
+}
