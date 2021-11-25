@@ -27,6 +27,7 @@ const XPATH_DATA_ADDRESS = "//*[@data-field = 'address']";
 const XPATH_TEXT_AREA = "//textarea";
 const XPATH_SIGN_PASSWORD = "//*[@type='password']";
 const XPATH_SIGN_BTN = "//button[//div[text() = 'Sign the transaction']]";
+const XPATH_CANCEL_BTN = "//*[contains(@class,'cancelButton')]/a";
 
 export class Polkadot {
   WEB_UI_ACCESS_URL =
@@ -131,9 +132,18 @@ export class Polkadot {
     await writeText(driver, XPATH_SIGN_PASSWORD, userPassword);
     await clickElement(driver, XPATH_SIGN_BTN);
   }
+  private static async cancelOperationModal(driver: WebDriver) {
+    const { uiUserPassword: userPassword } = getEnvironmentRequiredVars();
+    await writeText(driver, XPATH_SIGN_PASSWORD, userPassword);
+    await clickElement(driver, XPATH_CANCEL_BTN);
+  }
 
   static async signTransaction(driver: WebDriver) {
     await doActionInDifferentWindow(driver, Polkadot.signTransactionModal);
+    return;
+  }
+  static async cancelOperation(driver: WebDriver) {
+    await doActionInDifferentWindow(driver, Polkadot.cancelOperationModal);
     return;
   }
 }

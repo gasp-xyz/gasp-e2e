@@ -231,6 +231,29 @@ describe("UI tests - A user gets notified when error", () => {
       "Something went wrong. Please try again."
     );
   });
+  it("When user cancel a TX, User gets notified", async () => {
+    [newToken1] = await Assets.setupUserWithCurrencies(
+      testUser1,
+      [new BN(visibleValueNumber), new BN(visibleValueNumber)],
+      sudo
+    );
+    await testUser1.addMGATokens(sudo);
+    const mga = new Mangata(driver);
+    await mga.navigate();
+    const poolView = new Pool(driver);
+    await poolView.togglePool();
+    await poolView.selectToken1Asset(MGA_ASSET_NAME);
+    await poolView.selectToken2Asset(Assets.getAssetName(newToken1.toString()));
+    await poolView.clickToToken1MaxBtn();
+    await poolView.clickToToken2MaxBtn();
+    await poolView.provideOrCreatePool();
+    await Polkadot.cancelOperation(driver);
+    const modal = new NotificationModal(driver);
+    await modal.waitForModal(ModalType.Rejected);
+    const detailedInfo = await modal.getModalErrorInfo(ModalType.Error);
+    expect(detailedInfo.header).toEqual("Supply Rejected");
+    expect(detailedInfo.txInfo).toContain("Supplying");
+  });
   afterEach(async () => {
     const session = await driver.getSession();
     await addExtraLogs(

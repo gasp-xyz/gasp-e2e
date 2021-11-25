@@ -21,6 +21,7 @@ export enum ModalType {
   Progress,
   Success,
   Error,
+  Rejected,
 }
 
 export class NotificationModal {
@@ -31,6 +32,7 @@ export class NotificationModal {
     [ModalType.Progress]: MODAL_PROGRESS_TRADE,
     [ModalType.Success]: MODAL_SUCCESS_TRADE,
     [ModalType.Error]: MODAL_ERROR,
+    [ModalType.Rejected]: MODAL_ERROR,
   };
 
   constructor(driver: WebDriver) {
