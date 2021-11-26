@@ -1,0 +1,229 @@
+{
+  "uid" : "f4d7537abdefc1c5",
+  "name" : "As a User I can create a pool",
+  "fullName" : "UI tests - A user can create a pool MGA - newToken.As a User I can create a pool",
+  "historyId" : "271610054c4a7ce96b4f458d416b5c30",
+  "time" : {
+    "start" : 1637892932323,
+    "stop" : 1637892999960,
+    "duration" : 67637
+  },
+  "description" : "",
+  "descriptionHtml" : "",
+  "status" : "failed",
+  "statusMessage" : "Error: expect(received).toBeTruthy()\n                \n                Received: false",
+  "statusTrace" : "Error: expect(received).toBeTruthy()\n                \n                Received: false\n                    at Object.<anonymous> (/home/runner/work/mangata-e2e/mangata-e2e/test/ui/ui-main.pools.test.ts:103:26)\n                    at runMicrotasks (<anonymous>)\n                    at processTicksAndRejections (internal/process/task_queues.js:95:5)",
+  "flaky" : true,
+  "newFailed" : false,
+  "beforeStages" : [ ],
+  "testStage" : {
+    "status" : "failed",
+    "statusMessage" : "Error: expect(received).toBeTruthy()\n                \n                Received: false",
+    "statusTrace" : "Error: expect(received).toBeTruthy()\n                \n                Received: false\n                    at Object.<anonymous> (/home/runner/work/mangata-e2e/mangata-e2e/test/ui/ui-main.pools.test.ts:103:26)\n                    at runMicrotasks (<anonymous>)\n                    at processTicksAndRejections (internal/process/task_queues.js:95:5)",
+    "steps" : [ ],
+    "attachments" : [ {
+      "uid" : "6a8b2c0f7fa871f6",
+      "name" : "Screeenshot",
+      "source" : "6a8b2c0f7fa871f6.png",
+      "type" : "image/png",
+      "size" : 72556
+    } ],
+    "parameters" : [ ],
+    "stepsCount" : 0,
+    "attachmentsCount" : 1,
+    "shouldDisplayMessage" : true,
+    "hasContent" : true
+  },
+  "afterStages" : [ ],
+  "labels" : [ {
+    "name" : "suite",
+    "value" : "UI tests - A user can create a pool MGA - newToken"
+  }, {
+    "name" : "testClass",
+    "value" : "UI tests - A user can create a pool MGA - newToken"
+  }, {
+    "name" : "testMethod",
+    "value" : "As a User I can create a pool"
+  }, {
+    "name" : "package",
+    "value" : "UI tests - A user can create a pool MGA - newToken"
+  }, {
+    "name" : "resultFormat",
+    "value" : "allure1"
+  } ],
+  "parameters" : [ ],
+  "links" : [ ],
+  "hidden" : false,
+  "retry" : false,
+  "extra" : {
+    "severity" : "normal",
+    "retries" : [ ],
+    "categories" : [ {
+      "name" : "Product defects",
+      "matchedStatuses" : [ ],
+      "flaky" : false
+    } ],
+    "history" : {
+      "statistic" : {
+        "failed" : 14,
+        "broken" : 0,
+        "skipped" : 0,
+        "passed" : 2,
+        "unknown" : 0,
+        "total" : 16
+      },
+      "items" : [ {
+        "uid" : "41423d7da8366c28",
+        "reportUrl" : "https://mangata-finance.github.io/mangata-e2e/1015//#testresult/41423d7da8366c28",
+        "status" : "failed",
+        "statusDetails" : "Error: expect(received).toBeTruthy()\n                \n                Received: false",
+        "time" : {
+          "start" : 1637892529388,
+          "stop" : 1637892578678,
+          "duration" : 49290
+        }
+      }, {
+        "uid" : "287a23344ed8442c",
+        "reportUrl" : "https://mangata-finance.github.io/mangata-e2e/1016//#testresult/287a23344ed8442c",
+        "status" : "failed",
+        "statusDetails" : "Error: expect(received).toBeTruthy()\n                \n                Received: false",
+        "time" : {
+          "start" : 1637891815666,
+          "stop" : 1637891870524,
+          "duration" : 54858
+        }
+      }, {
+        "uid" : "8c8faf11dd4f6525",
+        "reportUrl" : "https://mangata-finance.github.io/mangata-e2e/1014//#testresult/8c8faf11dd4f6525",
+        "status" : "failed",
+        "statusDetails" : "Error: expect(received).toBeTruthy()\n                \n                Received: false",
+        "time" : {
+          "start" : 1637854717619,
+          "stop" : 1637854772601,
+          "duration" : 54982
+        }
+      }, {
+        "uid" : "98bda140f4da7d35",
+        "reportUrl" : "https://mangata-finance.github.io/mangata-e2e/1013//#testresult/98bda140f4da7d35",
+        "status" : "failed",
+        "statusDetails" : "Error: expect(received).toBeTruthy()\n                \n                Received: false",
+        "time" : {
+          "start" : 1637851364259,
+          "stop" : 1637851412518,
+          "duration" : 48259
+        }
+      }, {
+        "uid" : "397b39f1a18a790a",
+        "reportUrl" : "https://mangata-finance.github.io/mangata-e2e/1010//#testresult/397b39f1a18a790a",
+        "status" : "failed",
+        "statusDetails" : "Error: expect(received).toBeTruthy()\n                \n                Received: false",
+        "time" : {
+          "start" : 1637806747269,
+          "stop" : 1637806796630,
+          "duration" : 49361
+        }
+      }, {
+        "uid" : "de5ebabc6158b4f9",
+        "reportUrl" : "https://mangata-finance.github.io/mangata-e2e/1011//#testresult/de5ebabc6158b4f9",
+        "status" : "failed",
+        "statusDetails" : "Error: expect(received).toBeTruthy()\n                \n                Received: false",
+        "time" : {
+          "start" : 1637806747500,
+          "stop" : 1637806802626,
+          "duration" : 55126
+        }
+      }, {
+        "uid" : "f3437ec3a0c1cd6e",
+        "reportUrl" : "https://mangata-finance.github.io/mangata-e2e/1009//#testresult/f3437ec3a0c1cd6e",
+        "status" : "failed",
+        "statusDetails" : "Error: expect(received).toBeTruthy()\n                \n                Received: false",
+        "time" : {
+          "start" : 1637806550029,
+          "stop" : 1637806604514,
+          "duration" : 54485
+        }
+      }, {
+        "uid" : "5e391287ac0a0186",
+        "reportUrl" : "https://mangata-finance.github.io/mangata-e2e/1005//#testresult/5e391287ac0a0186",
+        "status" : "failed",
+        "statusDetails" : "Error: expect(received).toBeTruthy()\n                \n                Received: false",
+        "time" : {
+          "start" : 1637720785880,
+          "stop" : 1637720846636,
+          "duration" : 60756
+        }
+      }, {
+        "uid" : "f7d291126d6ea00b",
+        "reportUrl" : "https://mangata-finance.github.io/mangata-e2e/1007//#testresult/f7d291126d6ea00b",
+        "status" : "passed",
+        "time" : {
+          "start" : 1637720294261,
+          "stop" : 1637720340759,
+          "duration" : 46498
+        }
+      }, {
+        "uid" : "531573c068f318fe",
+        "reportUrl" : "https://mangata-finance.github.io/mangata-e2e/1006//#testresult/531573c068f318fe",
+        "status" : "failed",
+        "statusDetails" : "Error: expect(received).toBeTruthy()\n                \n                Received: false",
+        "time" : {
+          "start" : 1637719597616,
+          "stop" : 1637719646484,
+          "duration" : 48868
+        }
+      }, {
+        "uid" : "60f02c4baae4171f",
+        "reportUrl" : "https://mangata-finance.github.io/mangata-e2e/1004//#testresult/60f02c4baae4171f",
+        "status" : "passed",
+        "time" : {
+          "start" : 1637677501428,
+          "stop" : 1637677548791,
+          "duration" : 47363
+        }
+      }, {
+        "uid" : "8dc13dcb1b8ccfec",
+        "reportUrl" : "https://mangata-finance.github.io/mangata-e2e/1001//#testresult/8dc13dcb1b8ccfec",
+        "status" : "failed",
+        "statusDetails" : "Error: Timeout - Async callback was not invoked within the 300000 ms timeout specified by jest.setTimeout.",
+        "time" : {
+          "start" : 1637631954590,
+          "stop" : 1637631954595,
+          "duration" : 5
+        }
+      }, {
+        "uid" : "e014469625b015e1",
+        "reportUrl" : "https://mangata-finance.github.io/mangata-e2e/1002//#testresult/e014469625b015e1",
+        "status" : "failed",
+        "statusDetails" : "Error: Timeout - Async callback was not invoked within the 300000 ms timeout specified by jest.setTimeout.",
+        "time" : {
+          "start" : 1637631918413,
+          "stop" : 1637631918419,
+          "duration" : 6
+        }
+      }, {
+        "uid" : "70c0c07d7ed30484",
+        "reportUrl" : "https://mangata-finance.github.io/mangata-e2e/1000//#testresult/70c0c07d7ed30484",
+        "status" : "failed",
+        "statusDetails" : "Error: Timeout - Async callback was not invoked within the 300000 ms timeout specified by jest.setTimeout.",
+        "time" : {
+          "start" : 1637631889411,
+          "stop" : 1637631889417,
+          "duration" : 6
+        }
+      }, {
+        "uid" : "767657471297068b",
+        "reportUrl" : "https://mangata-finance.github.io/mangata-e2e/999//#testresult/767657471297068b",
+        "status" : "failed",
+        "statusDetails" : "Error: expect(received).toBeTruthy()\n                \n                Received: false",
+        "time" : {
+          "start" : 1637591426435,
+          "stop" : 1637591480559,
+          "duration" : 54124
+        }
+      } ]
+    },
+    "tags" : [ ]
+  },
+  "source" : "f4d7537abdefc1c5.json",
+  "parameterValues" : [ ]
+}
