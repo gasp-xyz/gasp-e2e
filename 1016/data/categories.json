@@ -1,0 +1,172 @@
+{
+  "uid" : "4b4757e66a1912dae1a509f688f20b0f",
+  "children" : [ {
+    "name" : "Product defects",
+    "children" : [ {
+      "name" : "thrown: Event {\n                  \"isTrusted\": true,\n                }",
+      "children" : [ {
+        "name" : "As a User I can Swap tokens - MGA - mETH",
+        "uid" : "1dc56b005bcd75a6",
+        "parentUid" : "e8f352723731311c936d9a158342e751",
+        "status" : "failed",
+        "time" : {
+          "start" : 1637890158039,
+          "stop" : 1637890158565,
+          "duration" : 526
+        },
+        "flaky" : true,
+        "newFailed" : false,
+        "parameters" : [ ]
+      }, {
+        "name" : "As a User I can mint some tokens MGA - mETH",
+        "uid" : "69fb276dae77860",
+        "parentUid" : "e8f352723731311c936d9a158342e751",
+        "status" : "failed",
+        "time" : {
+          "start" : 1637890158566,
+          "stop" : 1637890158867,
+          "duration" : 301
+        },
+        "flaky" : true,
+        "newFailed" : false,
+        "parameters" : [ ]
+      }, {
+        "name" : "As a User I can burn all liquidity MGA - mETH",
+        "uid" : "3ec2c9329f8a18b3",
+        "parentUid" : "e8f352723731311c936d9a158342e751",
+        "status" : "failed",
+        "time" : {
+          "start" : 1637890158867,
+          "stop" : 1637890159264,
+          "duration" : 397
+        },
+        "flaky" : true,
+        "newFailed" : false,
+        "parameters" : [ ]
+      }, {
+        "name" : "As a User I can mint in more than one pool [ MGA - mETH ] [ MGA - newTokn ] and get invested values",
+        "uid" : "a4b89371d4e491fd",
+        "parentUid" : "e8f352723731311c936d9a158342e751",
+        "status" : "failed",
+        "time" : {
+          "start" : 1637890159264,
+          "stop" : 1637890159569,
+          "duration" : 305
+        },
+        "flaky" : true,
+        "newFailed" : false,
+        "parameters" : [ ]
+      }, {
+        "name" : "Modal contains currencies and amounts when Swapping",
+        "uid" : "d1796b643cab7813",
+        "parentUid" : "e8f352723731311c936d9a158342e751",
+        "status" : "failed",
+        "time" : {
+          "start" : 1637890956131,
+          "stop" : 1637890956573,
+          "duration" : 442
+        },
+        "flaky" : true,
+        "newFailed" : false,
+        "parameters" : [ ]
+      }, {
+        "name" : "Modal contains currencies and amounts when providing liquidity",
+        "uid" : "ed26554588f52cf8",
+        "parentUid" : "e8f352723731311c936d9a158342e751",
+        "status" : "failed",
+        "time" : {
+          "start" : 1637890956574,
+          "stop" : 1637890956863,
+          "duration" : 289
+        },
+        "flaky" : true,
+        "newFailed" : false,
+        "parameters" : [ ]
+      }, {
+        "name" : "Modal is visible when burning liquidity",
+        "uid" : "c13e6fe597d7e62a",
+        "parentUid" : "e8f352723731311c936d9a158342e751",
+        "status" : "failed",
+        "time" : {
+          "start" : 1637890956863,
+          "stop" : 1637890957169,
+          "duration" : 306
+        },
+        "flaky" : true,
+        "newFailed" : false,
+        "parameters" : [ ]
+      } ],
+      "uid" : "e8f352723731311c936d9a158342e751"
+    }, {
+      "name" : "TimeoutError: Waiting for element to be located By(xpath, //*[@data-testid='assetSelectModal-asset-kETH'])\n                Wait timed out after 30007ms",
+      "children" : [ {
+        "name" : "As a User I can deposit ETH from Meta extension",
+        "uid" : "58d185b1767f5e6f",
+        "parentUid" : "132132e4e303bd411cac122b8b9ba6bc",
+        "status" : "failed",
+        "time" : {
+          "start" : 1637890427032,
+          "stop" : 1637890542010,
+          "duration" : 114978
+        },
+        "flaky" : true,
+        "newFailed" : false,
+        "parameters" : [ ]
+      } ],
+      "uid" : "132132e4e303bd411cac122b8b9ba6bc"
+    }, {
+      "name" : "TimeoutError: Waiting for element to be located By(xpath, //input[@placeholder='Paste Secret Recovery Phrase from clipboard'])\n                Wait timed out after 30008ms",
+      "children" : [ {
+        "name" : "As a User I can Withdraw ETH from Meta extension",
+        "uid" : "46ebe347a9e6b831",
+        "parentUid" : "67239c8b625e962d0194feb003610ded",
+        "status" : "failed",
+        "time" : {
+          "start" : 1637890542018,
+          "stop" : 1637890574014,
+          "duration" : 31996
+        },
+        "flaky" : true,
+        "newFailed" : false,
+        "parameters" : [ ]
+      } ],
+      "uid" : "67239c8b625e962d0194feb003610ded"
+    }, {
+      "name" : "Error: expect(received).toBeTruthy()\n                \n                Received: false",
+      "children" : [ {
+        "name" : "As a User I can create a pool",
+        "uid" : "287a23344ed8442c",
+        "parentUid" : "ffcd8928d6543ed53c85f4784defae24",
+        "status" : "failed",
+        "time" : {
+          "start" : 1637891815666,
+          "stop" : 1637891870524,
+          "duration" : 54858
+        },
+        "flaky" : true,
+        "newFailed" : false,
+        "parameters" : [ ]
+      } ],
+      "uid" : "ffcd8928d6543ed53c85f4784defae24"
+    }, {
+      "name" : "TimeoutError: Waiting for element to be located By(xpath, //*[@data-testid='wallet-asset-MGA'])\n                Wait timed out after 300002ms",
+      "children" : [ {
+        "name" : "As a User I can get test tokens from the faucet",
+        "uid" : "22de71a64f950602",
+        "parentUid" : "34b08a3d4db6fe47d2b4346bd2005227",
+        "status" : "failed",
+        "time" : {
+          "start" : 1637891875006,
+          "stop" : 1637892241978,
+          "duration" : 366972
+        },
+        "flaky" : true,
+        "newFailed" : false,
+        "parameters" : [ ]
+      } ],
+      "uid" : "34b08a3d4db6fe47d2b4346bd2005227"
+    } ],
+    "uid" : "8fb3a91ba5aaf9de24cc8a92edc82b5d"
+  } ],
+  "name" : "categories"
+}
