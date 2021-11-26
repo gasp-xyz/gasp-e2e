@@ -1,0 +1,84 @@
+{
+  "uid" : "e5cbb0c215bbdfb3",
+  "name" : "Block merkle hash matches across all nodes",
+  "fullName" : "Cluster -> Healthcheck.Block merkle hash matches across all nodes",
+  "historyId" : "eb15943bbc27448789b5dffbfd60553e",
+  "time" : {
+    "start" : 1637899746115,
+    "stop" : 1637899776118,
+    "duration" : 30003
+  },
+  "description" : "",
+  "descriptionHtml" : "",
+  "status" : "passed",
+  "flaky" : false,
+  "newFailed" : false,
+  "beforeStages" : [ ],
+  "afterStages" : [ ],
+  "labels" : [ {
+    "name" : "suite",
+    "value" : "Cluster -> Healthcheck"
+  }, {
+    "name" : "testClass",
+    "value" : "Cluster -> Healthcheck"
+  }, {
+    "name" : "testMethod",
+    "value" : "Block merkle hash matches across all nodes"
+  }, {
+    "name" : "package",
+    "value" : "Cluster -> Healthcheck"
+  }, {
+    "name" : "resultFormat",
+    "value" : "allure1"
+  } ],
+  "parameters" : [ ],
+  "links" : [ ],
+  "hidden" : false,
+  "retry" : false,
+  "extra" : {
+    "severity" : "normal",
+    "retries" : [ ],
+    "categories" : [ ],
+    "history" : {
+      "statistic" : {
+        "failed" : 0,
+        "broken" : 0,
+        "skipped" : 0,
+        "passed" : 4,
+        "unknown" : 0,
+        "total" : 4
+      },
+      "items" : [ {
+        "uid" : "83c721856989af02",
+        "reportUrl" : "https://mangata-finance.github.io/mangata-e2e/1012//#testresult/83c721856989af02",
+        "status" : "passed",
+        "time" : {
+          "start" : 1637813388113,
+          "stop" : 1637813418143,
+          "duration" : 30030
+        }
+      }, {
+        "uid" : "5ed46ab1dad80155",
+        "reportUrl" : "https://mangata-finance.github.io/mangata-e2e/1008//#testresult/5ed46ab1dad80155",
+        "status" : "passed",
+        "time" : {
+          "start" : 1637726916149,
+          "stop" : 1637726946142,
+          "duration" : 29993
+        }
+      }, {
+        "uid" : "536da0afb8cfec05",
+        "reportUrl" : "https://mangata-finance.github.io/mangata-e2e/1003//#testresult/536da0afb8cfec05",
+        "status" : "passed",
+        "time" : {
+          "start" : 1637640498142,
+          "stop" : 1637640528121,
+          "duration" : 29979
+        }
+      } ]
+    },
+    "tags" : [ ]
+  },
+  "source" : "e5cbb0c215bbdfb3.json",
+  "parameterValues" : [ ]
+}
