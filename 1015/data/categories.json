@@ -1,0 +1,128 @@
+{
+  "uid" : "4b4757e66a1912dae1a509f688f20b0f",
+  "children" : [ {
+    "name" : "Product defects",
+    "children" : [ {
+      "name" : "TimeoutError: Waiting for element to be located By(xpath, //*[@data-testid='assetSelectModal-asset-kETH'])\n                Wait timed out after 30004ms",
+      "children" : [ {
+        "name" : "As a User I can deposit ETH from Meta extension",
+        "uid" : "6239676771b965ad",
+        "parentUid" : "06b8a338db8839ee9fa7402a833e487a",
+        "status" : "failed",
+        "time" : {
+          "start" : 1637890975284,
+          "stop" : 1637891082275,
+          "duration" : 106991
+        },
+        "flaky" : true,
+        "newFailed" : false,
+        "parameters" : [ ]
+      } ],
+      "uid" : "06b8a338db8839ee9fa7402a833e487a"
+    }, {
+      "name" : "TimeoutError: Waiting for element to be located By(xpath, //input[@placeholder='Paste Secret Recovery Phrase from clipboard'])\n                Wait timed out after 30007ms",
+      "children" : [ {
+        "name" : "As a User I can Withdraw ETH from Meta extension",
+        "uid" : "a54692fb7bf6b0a6",
+        "parentUid" : "539166e536644e0f9cefb0b4b1a26557",
+        "status" : "failed",
+        "time" : {
+          "start" : 1637891082282,
+          "stop" : 1637891113544,
+          "duration" : 31262
+        },
+        "flaky" : true,
+        "newFailed" : false,
+        "parameters" : [ ]
+      } ],
+      "uid" : "539166e536644e0f9cefb0b4b1a26557"
+    }, {
+      "name" : "TIMEOUT: Waiting for //*[@class = 'Sidebar__loading'] to dissapear",
+      "children" : [ {
+        "name" : "As a User I can Swap All MGA tokens -> newToken",
+        "uid" : "6cee1eb3248c1f64",
+        "parentUid" : "f2cd7eefc95a5944bccb745aec47ebb6",
+        "status" : "failed",
+        "time" : {
+          "start" : 1637891115136,
+          "stop" : 1637891303016,
+          "duration" : 187880
+        },
+        "flaky" : true,
+        "newFailed" : true,
+        "parameters" : [ ]
+      } ],
+      "uid" : "f2cd7eefc95a5944bccb745aec47ebb6"
+    }, {
+      "name" : "NoSuchSessionError: session timed out or not found",
+      "children" : [ {
+        "name" : "As a User I can mint All tokens newToken - newToken2",
+        "uid" : "b71b644cecbbd270",
+        "parentUid" : "2ef416557588516bfb8469dcf54b2c50",
+        "status" : "failed",
+        "time" : {
+          "start" : 1637891303017,
+          "stop" : 1637891359559,
+          "duration" : 56542
+        },
+        "flaky" : true,
+        "newFailed" : true,
+        "parameters" : [ ]
+      } ],
+      "uid" : "2ef416557588516bfb8469dcf54b2c50"
+    }, {
+      "name" : "TimeoutError: Waiting for element to be located By(xpath, //*[contains(text(),'Your tokens')])\n                Wait timed out after 30002ms",
+      "children" : [ {
+        "name" : "Modal contains currencies and amounts when providing liquidity",
+        "uid" : "d25307b21b4208ba",
+        "parentUid" : "f92a410758c84d844cf84bc9cc4e9e7a",
+        "status" : "failed",
+        "time" : {
+          "start" : 1637891466749,
+          "stop" : 1637891583592,
+          "duration" : 116843
+        },
+        "flaky" : true,
+        "newFailed" : false,
+        "parameters" : [ ]
+      } ],
+      "uid" : "f92a410758c84d844cf84bc9cc4e9e7a"
+    }, {
+      "name" : "Error: expect(received).toBeTruthy()\n                \n                Received: false",
+      "children" : [ {
+        "name" : "As a User I can create a pool",
+        "uid" : "41423d7da8366c28",
+        "parentUid" : "ffcd8928d6543ed53c85f4784defae24",
+        "status" : "failed",
+        "time" : {
+          "start" : 1637892529388,
+          "stop" : 1637892578678,
+          "duration" : 49290
+        },
+        "flaky" : true,
+        "newFailed" : false,
+        "parameters" : [ ]
+      } ],
+      "uid" : "ffcd8928d6543ed53c85f4784defae24"
+    }, {
+      "name" : "TimeoutError: Waiting for element to be located By(xpath, //*[@data-testid='wallet-asset-MGA'])\n                Wait timed out after 300004ms",
+      "children" : [ {
+        "name" : "As a User I can get test tokens from the faucet",
+        "uid" : "6ff13f969ca40732",
+        "parentUid" : "789ece36b118aef37ae5affa0b8ba017",
+        "status" : "failed",
+        "time" : {
+          "start" : 1637892582973,
+          "stop" : 1637892941509,
+          "duration" : 358536
+        },
+        "flaky" : true,
+        "newFailed" : false,
+        "parameters" : [ ]
+      } ],
+      "uid" : "789ece36b118aef37ae5affa0b8ba017"
+    } ],
+    "uid" : "8fb3a91ba5aaf9de24cc8a92edc82b5d"
+  } ],
+  "name" : "categories"
+}
