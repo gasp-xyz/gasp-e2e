@@ -1,0 +1,262 @@
+{
+  "uid" : "8c049e3e72639f51",
+  "name" : "As a User I can Swap All MGA tokens -> newToken",
+  "fullName" : "UI tests - A user can use MAX:.As a User I can Swap All MGA tokens -> newToken",
+  "historyId" : "b4431a2043f5c89a607fb3d724e06254",
+  "time" : {
+    "start" : 1637977671597,
+    "stop" : 1637977835532,
+    "duration" : 163935
+  },
+  "description" : "",
+  "descriptionHtml" : "",
+  "status" : "failed",
+  "statusMessage" : "Error: Trade btn is not enabled!",
+  "statusTrace" : "Error: Trade btn is not enabled!\n                    at Swap.doSwap (/home/runner/work/mangata-e2e/mangata-e2e/utils/frontend/pages/Swap.ts:63:13)\n                    at runMicrotasks (<anonymous>)\n                    at processTicksAndRejections (internal/process/task_queues.js:95:5)\n                    at Object.<anonymous> (/home/runner/work/mangata-e2e/mangata-e2e/test/ui/ui-max.test.ts:87:5)",
+  "flaky" : true,
+  "newFailed" : true,
+  "beforeStages" : [ ],
+  "testStage" : {
+    "status" : "failed",
+    "statusMessage" : "Error: Trade btn is not enabled!",
+    "statusTrace" : "Error: Trade btn is not enabled!\n                    at Swap.doSwap (/home/runner/work/mangata-e2e/mangata-e2e/utils/frontend/pages/Swap.ts:63:13)\n                    at runMicrotasks (<anonymous>)\n                    at processTicksAndRejections (internal/process/task_queues.js:95:5)\n                    at Object.<anonymous> (/home/runner/work/mangata-e2e/mangata-e2e/test/ui/ui-max.test.ts:87:5)",
+    "steps" : [ ],
+    "attachments" : [ {
+      "uid" : "4b1c1dea32118c2",
+      "name" : "Screeenshot",
+      "source" : "4b1c1dea32118c2.png",
+      "type" : "image/png",
+      "size" : 82001
+    } ],
+    "parameters" : [ ],
+    "stepsCount" : 0,
+    "attachmentsCount" : 1,
+    "shouldDisplayMessage" : true,
+    "hasContent" : true
+  },
+  "afterStages" : [ ],
+  "labels" : [ {
+    "name" : "suite",
+    "value" : "UI tests - A user can use MAX:"
+  }, {
+    "name" : "testClass",
+    "value" : "UI tests - A user can use MAX:"
+  }, {
+    "name" : "testMethod",
+    "value" : "As a User I can Swap All MGA tokens -> newToken"
+  }, {
+    "name" : "package",
+    "value" : "UI tests - A user can use MAX:"
+  }, {
+    "name" : "resultFormat",
+    "value" : "allure1"
+  } ],
+  "parameters" : [ ],
+  "links" : [ ],
+  "hidden" : false,
+  "retry" : false,
+  "extra" : {
+    "severity" : "normal",
+    "retries" : [ ],
+    "categories" : [ {
+      "name" : "Product defects",
+      "matchedStatuses" : [ ],
+      "flaky" : false
+    } ],
+    "history" : {
+      "statistic" : {
+        "failed" : 11,
+        "broken" : 0,
+        "skipped" : 0,
+        "passed" : 9,
+        "unknown" : 0,
+        "total" : 20
+      },
+      "items" : [ {
+        "uid" : "ea06c299003006e",
+        "reportUrl" : "https://mangata-finance.github.io/mangata-e2e/1022//#testresult/ea06c299003006e",
+        "status" : "passed",
+        "time" : {
+          "start" : 1637977629418,
+          "stop" : 1637977804187,
+          "duration" : 174769
+        }
+      }, {
+        "uid" : "6b10920764bd32e2",
+        "reportUrl" : "https://mangata-finance.github.io/mangata-e2e/1020//#testresult/6b10920764bd32e2",
+        "status" : "passed",
+        "time" : {
+          "start" : 1637977491674,
+          "stop" : 1637977660304,
+          "duration" : 168630
+        }
+      }, {
+        "uid" : "e74b59e88436c35e",
+        "reportUrl" : "https://mangata-finance.github.io/mangata-e2e/1019//#testresult/e74b59e88436c35e",
+        "status" : "failed",
+        "statusDetails" : "Error: Trade btn is not enabled!",
+        "time" : {
+          "start" : 1637913999342,
+          "stop" : 1637914154352,
+          "duration" : 155010
+        }
+      }, {
+        "uid" : "331b984876aa39f",
+        "reportUrl" : "https://mangata-finance.github.io/mangata-e2e/1017//#testresult/331b984876aa39f",
+        "status" : "failed",
+        "statusDetails" : "Error: Trade btn is not enabled!",
+        "time" : {
+          "start" : 1637891183061,
+          "stop" : 1637891359003,
+          "duration" : 175942
+        }
+      }, {
+        "uid" : "6cee1eb3248c1f64",
+        "reportUrl" : "https://mangata-finance.github.io/mangata-e2e/1015//#testresult/6cee1eb3248c1f64",
+        "status" : "failed",
+        "statusDetails" : "TIMEOUT: Waiting for //*[@class = 'Sidebar__loading'] to dissapear",
+        "time" : {
+          "start" : 1637891115136,
+          "stop" : 1637891303016,
+          "duration" : 187880
+        }
+      }, {
+        "uid" : "f56a401056c57121",
+        "reportUrl" : "https://mangata-finance.github.io/mangata-e2e/1016//#testresult/f56a401056c57121",
+        "status" : "passed",
+        "time" : {
+          "start" : 1637890575798,
+          "stop" : 1637890750153,
+          "duration" : 174355
+        }
+      }, {
+        "uid" : "cc56fd625264d5fe",
+        "reportUrl" : "https://mangata-finance.github.io/mangata-e2e/1014//#testresult/cc56fd625264d5fe",
+        "status" : "failed",
+        "statusDetails" : "thrown: Event {\n                  \"isTrusted\": true,\n                }",
+        "time" : {
+          "start" : 1637853782967,
+          "stop" : 1637853783444,
+          "duration" : 477
+        }
+      }, {
+        "uid" : "d4028e5cf6e22b4f",
+        "reportUrl" : "https://mangata-finance.github.io/mangata-e2e/1013//#testresult/d4028e5cf6e22b4f",
+        "status" : "passed",
+        "time" : {
+          "start" : 1637850087558,
+          "stop" : 1637850310596,
+          "duration" : 223038
+        }
+      }, {
+        "uid" : "7fc55fc7d066548a",
+        "reportUrl" : "https://mangata-finance.github.io/mangata-e2e/1010//#testresult/7fc55fc7d066548a",
+        "status" : "passed",
+        "time" : {
+          "start" : 1637804811800,
+          "stop" : 1637804985448,
+          "duration" : 173648
+        }
+      }, {
+        "uid" : "c8a87231dd8a8a9d",
+        "reportUrl" : "https://mangata-finance.github.io/mangata-e2e/1011//#testresult/c8a87231dd8a8a9d",
+        "status" : "passed",
+        "time" : {
+          "start" : 1637804932178,
+          "stop" : 1637805112097,
+          "duration" : 179919
+        }
+      }, {
+        "uid" : "cc1ab147b0d76c4d",
+        "reportUrl" : "https://mangata-finance.github.io/mangata-e2e/1009//#testresult/cc1ab147b0d76c4d",
+        "status" : "failed",
+        "statusDetails" : "Error: Trade btn is not enabled!",
+        "time" : {
+          "start" : 1637804883865,
+          "stop" : 1637805046524,
+          "duration" : 162659
+        }
+      }, {
+        "uid" : "3988153e1ab5f419",
+        "reportUrl" : "https://mangata-finance.github.io/mangata-e2e/1005//#testresult/3988153e1ab5f419",
+        "status" : "failed",
+        "statusDetails" : "Error: Trade btn is not enabled!",
+        "time" : {
+          "start" : 1637719080492,
+          "stop" : 1637719245282,
+          "duration" : 164790
+        }
+      }, {
+        "uid" : "8f5c560f2535da33",
+        "reportUrl" : "https://mangata-finance.github.io/mangata-e2e/1007//#testresult/8f5c560f2535da33",
+        "status" : "passed",
+        "time" : {
+          "start" : 1637718416594,
+          "stop" : 1637718586174,
+          "duration" : 169580
+        }
+      }, {
+        "uid" : "3a7d62a33dc66d60",
+        "reportUrl" : "https://mangata-finance.github.io/mangata-e2e/1006//#testresult/3a7d62a33dc66d60",
+        "status" : "passed",
+        "time" : {
+          "start" : 1637718358849,
+          "stop" : 1637718526129,
+          "duration" : 167280
+        }
+      }, {
+        "uid" : "e5da7a33e7fdf3ed",
+        "reportUrl" : "https://mangata-finance.github.io/mangata-e2e/1004//#testresult/e5da7a33e7fdf3ed",
+        "status" : "passed",
+        "time" : {
+          "start" : 1637675894716,
+          "stop" : 1637676064108,
+          "duration" : 169392
+        }
+      }, {
+        "uid" : "405a078ab3ae0cfa",
+        "reportUrl" : "https://mangata-finance.github.io/mangata-e2e/1001//#testresult/405a078ab3ae0cfa",
+        "status" : "failed",
+        "statusDetails" : "InvalidArgumentError: Requested environment is not available",
+        "time" : {
+          "start" : 1637630973172,
+          "stop" : 1637630976832,
+          "duration" : 3660
+        }
+      }, {
+        "uid" : "a1a54105b937d501",
+        "reportUrl" : "https://mangata-finance.github.io/mangata-e2e/1002//#testresult/a1a54105b937d501",
+        "status" : "failed",
+        "statusDetails" : "InvalidArgumentError: Requested environment is not available",
+        "time" : {
+          "start" : 1637631005336,
+          "stop" : 1637631008602,
+          "duration" : 3266
+        }
+      }, {
+        "uid" : "61aaca5aaa4b7b3d",
+        "reportUrl" : "https://mangata-finance.github.io/mangata-e2e/1000//#testresult/61aaca5aaa4b7b3d",
+        "status" : "failed",
+        "statusDetails" : "InvalidArgumentError: Requested environment is not available",
+        "time" : {
+          "start" : 1637630977593,
+          "stop" : 1637630980630,
+          "duration" : 3037
+        }
+      }, {
+        "uid" : "a5ef8dceb9127e91",
+        "reportUrl" : "https://mangata-finance.github.io/mangata-e2e/999//#testresult/a5ef8dceb9127e91",
+        "status" : "failed",
+        "statusDetails" : "Error: Trade btn is not enabled!",
+        "time" : {
+          "start" : 1637589774247,
+          "stop" : 1637589933005,
+          "duration" : 158758
+        }
+      } ]
+    },
+    "tags" : [ ]
+  },
+  "source" : "8c049e3e72639f51.json",
+  "parameterValues" : [ ]
+}
