@@ -1,0 +1,10 @@
+[ {
+  "name" : "GitHub Actions",
+  "type" : "github",
+  "url" : "https://mangata-finance.github.io/mangata-e2e",
+  "buildOrder" : 1028,
+  "buildName" : "GitHub Actions Run #1514041712",
+  "buildUrl" : "https://github.com/mangata-finance/mangata-e2e/actions/runs/1514041712",
+  "reportName" : "Allure Report with history",
+  "reportUrl" : "https://mangata-finance.github.io/mangata-e2e/1028/"
+} ]
