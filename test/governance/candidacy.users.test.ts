@@ -88,6 +88,9 @@ afterAll(async () => {
   // Tests in files are unlikely to impact each other
   // but not clearing up over multiple test files will break
   await cleanState();
+
+  // Stops duplicated bootnode subscriptions creating duplicate logs
+  await bootnode.stop();
 });
 
 describe("Governance -> Candidacy -> Users", () => {
@@ -110,9 +113,7 @@ describe("Governance -> Candidacy -> Users", () => {
     await candidate.runForCouncil();
     await waitForNBlocks(2);
 
-    await candidate.renounceCandidacy({
-      Candidate: candidate.keyRingPair.address,
-    });
+    await candidate.renounceCandidacy({ Candidate: 0 });
 
     await waitForNBlocks(2);
 
