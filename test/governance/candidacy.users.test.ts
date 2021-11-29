@@ -11,7 +11,6 @@ import { SudoUser } from "../../utils/Framework/User/SudoUser";
 import { UserFactory, Users } from "../../utils/Framework/User/UserFactory";
 import { cryptoWaitReady } from "@polkadot/util-crypto";
 import { getEnvironmentRequiredVars, waitForNBlocks } from "../../utils/utils";
-import { testLog } from "../../utils/Logger";
 
 // Global variables
 const { chainUri: environmentUri } = getEnvironmentRequiredVars();
