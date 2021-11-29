@@ -26,9 +26,9 @@ export class GovernanceUser extends BaseUser {
     );
   }
 
-  async renounceCandidacy(): Promise<void> {
+  async renounceCandidacy(candidateStatus: any): Promise<void> {
     await signSendAndWaitToFinishTx(
-      this.api.tx.elections.renounceCandidacy("Candidate"),
+      this.api.tx.elections.renounceCandidacy(candidateStatus),
       this.keyRingPair
     );
   }
