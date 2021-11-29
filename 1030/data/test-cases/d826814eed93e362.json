@@ -1,0 +1,255 @@
+{
+  "uid" : "d826814eed93e362",
+  "name" : "Validate that Frontend retrieves AssetInfo data",
+  "fullName" : "UI tests: Infra.Validate that Frontend retrieves AssetInfo data",
+  "historyId" : "88844f09ab0dc66902787b918fcff472",
+  "time" : {
+    "start" : 1638152559182,
+    "stop" : 1638152589002,
+    "duration" : 29820
+  },
+  "description" : "",
+  "descriptionHtml" : "",
+  "status" : "passed",
+  "flaky" : false,
+  "newFailed" : false,
+  "beforeStages" : [ ],
+  "testStage" : {
+    "status" : "passed",
+    "steps" : [ ],
+    "attachments" : [ {
+      "uid" : "b8c331f99eff6bcb",
+      "name" : "Screeenshot",
+      "source" : "b8c331f99eff6bcb.png",
+      "type" : "image/png",
+      "size" : 108607
+    } ],
+    "parameters" : [ ],
+    "stepsCount" : 0,
+    "attachmentsCount" : 1,
+    "shouldDisplayMessage" : false,
+    "hasContent" : true
+  },
+  "afterStages" : [ ],
+  "labels" : [ {
+    "name" : "suite",
+    "value" : "UI tests: Infra"
+  }, {
+    "name" : "testClass",
+    "value" : "UI tests: Infra"
+  }, {
+    "name" : "testMethod",
+    "value" : "Validate that Frontend retrieves AssetInfo data"
+  }, {
+    "name" : "package",
+    "value" : "UI tests: Infra"
+  }, {
+    "name" : "resultFormat",
+    "value" : "allure1"
+  } ],
+  "parameters" : [ ],
+  "links" : [ ],
+  "hidden" : false,
+  "retry" : false,
+  "extra" : {
+    "severity" : "normal",
+    "retries" : [ ],
+    "categories" : [ ],
+    "history" : {
+      "statistic" : {
+        "failed" : 5,
+        "broken" : 0,
+        "skipped" : 0,
+        "passed" : 20,
+        "unknown" : 0,
+        "total" : 25
+      },
+      "items" : [ {
+        "uid" : "5951a30b025a207f",
+        "reportUrl" : "https://mangata-finance.github.io/mangata-e2e/1028//#testresult/5951a30b025a207f",
+        "status" : "passed",
+        "time" : {
+          "start" : 1638152228399,
+          "stop" : 1638152247458,
+          "duration" : 19059
+        }
+      }, {
+        "uid" : "549304670b564a23",
+        "reportUrl" : "https://mangata-finance.github.io/mangata-e2e/1025//#testresult/549304670b564a23",
+        "status" : "passed",
+        "time" : {
+          "start" : 1638066071318,
+          "stop" : 1638066107119,
+          "duration" : 35801
+        }
+      }, {
+        "uid" : "f02073b7a07304ff",
+        "reportUrl" : "https://mangata-finance.github.io/mangata-e2e/1024//#testresult/f02073b7a07304ff",
+        "status" : "passed",
+        "time" : {
+          "start" : 1638065954906,
+          "stop" : 1638065975360,
+          "duration" : 20454
+        }
+      }, {
+        "uid" : "436b76fe6181412d",
+        "reportUrl" : "https://mangata-finance.github.io/mangata-e2e/1026//#testresult/436b76fe6181412d",
+        "status" : "passed",
+        "time" : {
+          "start" : 1638065213877,
+          "stop" : 1638065243922,
+          "duration" : 30045
+        }
+      }, {
+        "uid" : "eec16a51ae5c28a5",
+        "reportUrl" : "https://mangata-finance.github.io/mangata-e2e/1021//#testresult/eec16a51ae5c28a5",
+        "status" : "passed",
+        "time" : {
+          "start" : 1637979945677,
+          "stop" : 1637979991099,
+          "duration" : 45422
+        }
+      }, {
+        "uid" : "ac4ca61746985415",
+        "reportUrl" : "https://mangata-finance.github.io/mangata-e2e/1022//#testresult/ac4ca61746985415",
+        "status" : "passed",
+        "time" : {
+          "start" : 1637979744159,
+          "stop" : 1637979770679,
+          "duration" : 26520
+        }
+      }, {
+        "uid" : "c81506a9b11be2d8",
+        "reportUrl" : "https://mangata-finance.github.io/mangata-e2e/1020//#testresult/c81506a9b11be2d8",
+        "status" : "passed",
+        "time" : {
+          "start" : 1637979595093,
+          "stop" : 1637979620709,
+          "duration" : 25616
+        }
+      }, {
+        "uid" : "b923abf6953385cd",
+        "reportUrl" : "https://mangata-finance.github.io/mangata-e2e/1019//#testresult/b923abf6953385cd",
+        "status" : "passed",
+        "time" : {
+          "start" : 1637915776425,
+          "stop" : 1637915816957,
+          "duration" : 40532
+        }
+      }, {
+        "uid" : "4b410c4ec07a7909",
+        "reportUrl" : "https://mangata-finance.github.io/mangata-e2e/1017//#testresult/4b410c4ec07a7909",
+        "status" : "passed",
+        "time" : {
+          "start" : 1637893509468,
+          "stop" : 1637893557760,
+          "duration" : 48292
+        }
+      }, {
+        "uid" : "37171505697083df",
+        "reportUrl" : "https://mangata-finance.github.io/mangata-e2e/1015//#testresult/37171505697083df",
+        "status" : "passed",
+        "time" : {
+          "start" : 1637893028795,
+          "stop" : 1637893047624,
+          "duration" : 18829
+        }
+      }, {
+        "uid" : "1b3489512e87e7e4",
+        "reportUrl" : "https://mangata-finance.github.io/mangata-e2e/1016//#testresult/1b3489512e87e7e4",
+        "status" : "passed",
+        "time" : {
+          "start" : 1637892340885,
+          "stop" : 1637892366314,
+          "duration" : 25429
+        }
+      }, {
+        "uid" : "66f8177a5ce8ed54",
+        "reportUrl" : "https://mangata-finance.github.io/mangata-e2e/1014//#testresult/66f8177a5ce8ed54",
+        "status" : "passed",
+        "time" : {
+          "start" : 1637855243553,
+          "stop" : 1637855269076,
+          "duration" : 25523
+        }
+      }, {
+        "uid" : "98867b69d4d7fbdb",
+        "reportUrl" : "https://mangata-finance.github.io/mangata-e2e/1013//#testresult/98867b69d4d7fbdb",
+        "status" : "failed",
+        "statusDetails" : "Error: expect(received).toContain(expected) // indexOf\n                \n                Expected value: \"Mangata\n                MGA\"\n                Received array: []",
+        "time" : {
+          "start" : 1637851885414,
+          "stop" : 1637851899873,
+          "duration" : 14459
+        }
+      }, {
+        "uid" : "ff2a29d15d20f666",
+        "reportUrl" : "https://mangata-finance.github.io/mangata-e2e/1010//#testresult/ff2a29d15d20f666",
+        "status" : "passed",
+        "time" : {
+          "start" : 1637807563298,
+          "stop" : 1637807585405,
+          "duration" : 22107
+        }
+      }, {
+        "uid" : "85918fbc53637c1",
+        "reportUrl" : "https://mangata-finance.github.io/mangata-e2e/1011//#testresult/85918fbc53637c1",
+        "status" : "passed",
+        "time" : {
+          "start" : 1637807284730,
+          "stop" : 1637807312062,
+          "duration" : 27332
+        }
+      }, {
+        "uid" : "ebc92ced77d8066c",
+        "reportUrl" : "https://mangata-finance.github.io/mangata-e2e/1009//#testresult/ebc92ced77d8066c",
+        "status" : "passed",
+        "time" : {
+          "start" : 1637807098289,
+          "stop" : 1637807139392,
+          "duration" : 41103
+        }
+      }, {
+        "uid" : "8a6d327fae632248",
+        "reportUrl" : "https://mangata-finance.github.io/mangata-e2e/1005//#testresult/8a6d327fae632248",
+        "status" : "failed",
+        "statusDetails" : "TimeoutError: Waiting for element to be located By(xpath, //*[text() = 'Select Token' ])\n                Wait timed out after 30006ms",
+        "time" : {
+          "start" : 1637721338126,
+          "stop" : 1637721381440,
+          "duration" : 43314
+        }
+      }, {
+        "uid" : "d64ee891d1c8c5a9",
+        "reportUrl" : "https://mangata-finance.github.io/mangata-e2e/1007//#testresult/d64ee891d1c8c5a9",
+        "status" : "passed",
+        "time" : {
+          "start" : 1637720866283,
+          "stop" : 1637720885352,
+          "duration" : 19069
+        }
+      }, {
+        "uid" : "6cae0e0d39a288ac",
+        "reportUrl" : "https://mangata-finance.github.io/mangata-e2e/1006//#testresult/6cae0e0d39a288ac",
+        "status" : "passed",
+        "time" : {
+          "start" : 1637720124776,
+          "stop" : 1637720147849,
+          "duration" : 23073
+        }
+      }, {
+        "uid" : "582258ce82656baf",
+        "reportUrl" : "https://mangata-finance.github.io/mangata-e2e/1004//#testresult/582258ce82656baf",
+        "status" : "passed",
+        "time" : {
+          "start" : 1637677852209,
+          "stop" : 1637677873736,
+          "duration" : 21527
+        }
+      } ]
+    },
+    "tags" : [ ]
+  },
+  "source" : "d826814eed93e362.json",
+  "parameterValues" : [ ]
+}
