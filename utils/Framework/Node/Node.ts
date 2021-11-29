@@ -16,6 +16,7 @@ export class Node {
   hashes: Set<string> = new Set();
   blockHashes: Map<number, string> = new Map();
   subscription: any;
+  blocks: any;
 
   electionEvents: Map<number, { candidates: any; members: any }> = new Map();
   userBalancesHistory: Map<
