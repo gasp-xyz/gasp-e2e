@@ -129,7 +129,7 @@ describe("UI tests - A user can use MAX:", () => {
     await poolView.selectToken2Asset(assetName2);
     await poolView.clickToToken1MaxBtn();
     const calculatedValue = await poolView.getToken2Text();
-    await poolView.provideToPool();
+    await poolView.provideOrCreatePool();
 
     await Polkadot.signTransaction(driver);
     //wait four blocks to complete the action.

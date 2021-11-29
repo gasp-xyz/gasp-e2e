@@ -50,7 +50,7 @@ export class Pool {
     await this.selectAssetFromModalList(assetName);
   }
 
-  async provideToPool() {
+  async provideOrCreatePool() {
     const tradeBtn = buildDataTestIdXpath(BTN_POOL_PROVIDE);
     await waitForElement(this.driver, tradeBtn);
     const enabled = await (
