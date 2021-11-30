@@ -131,7 +131,7 @@ describe("UI tests - A user can swap and mint tokens", () => {
     await poolView.selectToken1Asset(mETH_ASSET_NAME);
     await poolView.selectToken2Asset(MGA_ASSET_NAME);
     await poolView.addToken1AssetAmount("0.001");
-    await poolView.provideToPool();
+    await poolView.provideOrCreatePool();
 
     await Polkadot.signTransaction(driver);
     //wait four blocks to complete the action.

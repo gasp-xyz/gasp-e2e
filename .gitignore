@@ -7,5 +7,5 @@ build
 yarn-error.log
 nonce.db
 test/exploratory/testPad.ts
-allure-results/*.xml
+allure-results/*
 reports/**/*
