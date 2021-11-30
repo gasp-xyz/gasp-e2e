@@ -11,6 +11,7 @@ import { EventResult, ExtrinsicResult } from "./eventListeners";
 import { testLog } from "./Logger";
 import { User } from "./User";
 import { MangataGenericEvent } from "mangata-sdk/build/";
+import { signTx } from "mangata-sdk";
 //let wait 7 blocks - 6000 * 7 = 42000; depends on the number of workers.
 const DEFAULT_TIME_OUT_MS = 42000;
 
@@ -77,16 +78,21 @@ export const sudoIssueAsset = async (
   sudoAccount: KeyringPair,
   total_balance: BN,
   targetAddress: string
-): Promise<GenericEvent[]> => {
+): Promise<MangataGenericEvent[]> => {
   const nonce = await SudoDB.getInstance().getSudoNonce(sudoAccount.address);
   testLog.getLog().info(`W[${env.JEST_WORKER_ID}] - sudoNonce: ${nonce} `);
-
   const api = getApi();
-  return signAndWaitTx(
+  return signTx(
+    api,
     api.tx.sudo.sudo(api.tx.tokens.create(targetAddress, total_balance)),
     sudoAccount,
-    nonce
+    { nonce: new BN(nonce) }
   );
+  //  return signAndWaitTx(
+  //    api.tx.sudo.sudo(api.tx.tokens.create(targetAddress, total_balance)),
+  //    sudoAccount,
+  //    nonce
+  //  );
 };
 
 export const transferAssets = async (
@@ -95,13 +101,11 @@ export const transferAssets = async (
   asset_id: BN,
   amount: BN,
   nonce: number
-): Promise<GenericEvent[]> => {
+): Promise<MangataGenericEvent[]> => {
   const api = getApi();
-  return signAndWaitTx(
-    api.tx.tokens.transfer(to, asset_id, amount),
-    from,
-    nonce
-  );
+  return signTx(api, api.tx.tokens.transfer(to, asset_id, amount), from, {
+    nonce: new BN(nonce),
+  });
 };
 
 /**
@@ -422,8 +426,11 @@ export async function signSendAndWaitToFinishTx(
   account: KeyringPair
 ) {
   const nonce = await getCurrentNonce(account.address);
-  const result = await signAndWaitTx(fun!, account, nonce).then((result) => {
-    return getEventResultFromTxWait(result);
+  const api = getApi();
+  const result = await signTx(api, fun!, account, {
+    nonce: new BN(nonce),
+  }).then((result) => {
+    return getEventResultFromMangataTx(result);
   });
   expect(result.state).toEqual(ExtrinsicResult.ExtrinsicSuccess);
   return result;
@@ -443,7 +450,8 @@ export async function setAssetInfo(
   testLog.getLog().info(`W[${env.JEST_WORKER_ID}] - sudoNonce: ${nonce} `);
 
   const api = getApi();
-  const result = await signAndWaitTx(
+  const result = await signTx(
+    api,
     api.tx.sudo.sudo(
       api.tx.assetsInfo.setInfo(
         id,
@@ -456,7 +464,7 @@ export async function setAssetInfo(
     sudo.keyRingPair,
     nonce
   ).then((result) => {
-    return getEventResultFromTxWait(result);
+    return getEventResultFromMangataTx(result);
   });
 
   return result;
