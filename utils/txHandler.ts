@@ -1,9 +1,8 @@
 import { SubmittableExtrinsic } from "@polkadot/api/types";
 import { AnyJson } from "@polkadot/types/types";
 import { getApi } from "./api";
-import { GenericExtrinsic, GenericEvent } from "@polkadot/types";
+import { GenericEvent } from "@polkadot/types";
 import { KeyringPair } from "@polkadot/keyring/types";
-import xoshiro from "xoshiro";
 import BN from "bn.js";
 import { SudoDB } from "./SudoDB";
 import { env } from "process";
@@ -13,7 +12,6 @@ import { User } from "./User";
 import { MangataGenericEvent } from "mangata-sdk/build/";
 import { signTx } from "mangata-sdk";
 //let wait 7 blocks - 6000 * 7 = 42000; depends on the number of workers.
-const DEFAULT_TIME_OUT_MS = 42000;
 
 export async function getCurrentNonce(account?: string) {
   const api = getApi();
@@ -105,205 +103,6 @@ export const transferAssets = async (
   const api = getApi();
   return signTx(api, api.tx.tokens.transfer(to, asset_id, amount), from, {
     nonce: new BN(nonce),
-  });
-};
-
-/**
- * shuffles input array in place using Fisher-Yates shuffling algorithm. Xoshiro-256+
- * is used as the source of of pseudo random number generator
- * @param objects - input array
- * @param seed - 32 bytes long seed for pseudo random number generator
- */
-function fisher_yates_shuffle<K>(objects: K[], seed: Uint8Array) {
-  const prng = xoshiro.create("256+", seed);
-  for (let i = objects.length - 1; i > 0; i--) {
-    const j = prng.roll() % i;
-    const tmp = objects[i];
-    objects[i] = objects[j];
-    objects[j] = tmp;
-  }
-}
-
-function recreateExtrinsicsOrder(
-  extrinsics: GenericExtrinsic[],
-  seed_bytes: Uint8Array
-) {
-  const slots = extrinsics.map((ev) => {
-    if (ev.isSigned) {
-      return ev.signer.toString();
-    } else {
-      return "None";
-    }
-  });
-
-  fisher_yates_shuffle(slots, seed_bytes);
-
-  const map = new Map();
-
-  for (const e of extrinsics) {
-    let who = "None";
-    if (e.isSigned) {
-      who = e.signer.toString();
-    }
-
-    if (map.has(who)) {
-      map.get(who).push(e);
-    } else {
-      map.set(who, [e]);
-    }
-  }
-
-  const shuffled_extrinsics = slots.map((who) => {
-    return map.get(who).shift();
-  });
-  return shuffled_extrinsics;
-}
-
-export const signAndWaitTx = async (
-  tx: SubmittableExtrinsic<"promise">,
-  who: any,
-  nonce: number,
-  timeout_ms: number = DEFAULT_TIME_OUT_MS
-): Promise<GenericEvent[]> => {
-  testLog
-    .getLog()
-    .info(
-      `W[${env.JEST_WORKER_ID}] - who: ${
-        who.address
-      } - nonce ${nonce} - tx : ${JSON.stringify(
-        tx.toHuman()
-      )} - timeout_ms : ${timeout_ms}`
-    );
-
-  return new Promise<GenericEvent[]>(async (resolve, reject) => {
-    const api = getApi();
-    let result: GenericEvent[] = [];
-
-    if (timeout_ms > 0) {
-      setTimeout(() => {
-        reject(
-          `W[${env.JEST_WORKER_ID}] timeout in - signAndWaitTx - " + ${
-            who.address
-          } + " - " + ${nonce} + " - " + ${JSON.stringify(tx.toHuman())}`
-        );
-      }, timeout_ms);
-    }
-
-    const unsub = await tx.signAndSend(
-      who,
-      { nonce },
-      async ({ events = [], status }) => {
-        //testLog.getLog().warn((status);
-        if (status.isInBlock) {
-          const unsub_new_heads = await api.rpc.chain.subscribeNewHeads(
-            async (lastHeader) => {
-              if (
-                lastHeader.parentHash.toString() === status.asInBlock.toString()
-              ) {
-                unsub_new_heads();
-                const prev_block_extrinsics = (
-                  await api.rpc.chain.getBlock(lastHeader.parentHash)
-                ).block.extrinsics;
-                const curr_block_events = await api.query.system.events.at(
-                  lastHeader.hash
-                );
-
-                const json_response = JSON.parse(lastHeader.toString());
-                const seed_bytes = Uint8Array.from(
-                  Buffer.from(json_response["seed"]["seed"].substring(2), "hex")
-                );
-
-                const shuffled_extrinsics = recreateExtrinsicsOrder(
-                  prev_block_extrinsics,
-                  seed_bytes
-                );
-
-                // filter extrinsic triggered by current request
-                const index = shuffled_extrinsics.findIndex((e) => {
-                  return (
-                    e.isSigned &&
-                    e.signer.toString() === who.address &&
-                    e.nonce.toString() === nonce.toString()
-                  );
-                });
-                if (index < 0) {
-                  return;
-                }
-
-                const req_events = curr_block_events
-                  .filter((event) => {
-                    return (
-                      event.phase.isApplyExtrinsic &&
-                      event.phase.asApplyExtrinsic.toNumber() === index
-                    );
-                  })
-                  .map(({ phase, event }) => {
-                    return event;
-                  });
-                testLog.getLog().info(
-                  `W[${env.JEST_WORKER_ID}]` +
-                    "--block - no " +
-                    lastHeader.number +
-                    " \n --curr_block " +
-                    JSON.stringify(curr_block_events.toJSON()) +
-                    " \n --curr_block[toHuman]: " +
-                    curr_block_events
-                      .map(({ event }) => {
-                        return event;
-                      })
-                      .map(
-                        (e) =>
-                          JSON.stringify(e.toHuman()) +
-                          JSON.stringify(e.toHuman().data)
-                      )
-                      .toString() +
-                    " \n --req_events " +
-                    req_events.toString() +
-                    " \n --index: " +
-                    index +
-                    " \n --who.address: " +
-                    who.address +
-                    " \n --nonce: " +
-                    nonce.toString() +
-                    " \n --toHuman: " +
-                    req_events
-                      .map(
-                        (e) =>
-                          JSON.stringify(e.toHuman()) +
-                          JSON.stringify(e.toHuman().data)
-                      )
-                      .toString()
-                );
-                result = result.concat(req_events);
-              }
-            }
-          );
-        } else if (status.isFinalized) {
-          unsub();
-          // resolve only if transaction has been finalized
-          testLog
-            .getLog()
-            .info(
-              `RESULT W[${env.JEST_WORKER_ID}]` +
-                " \n --req_events " +
-                result.toString() +
-                " \n --who.address: " +
-                who.address +
-                " \n --nonce: " +
-                nonce.toString() +
-                " \n --toHuman: " +
-                result
-                  .map(
-                    (e) =>
-                      JSON.stringify(e.toHuman()) +
-                      JSON.stringify(e.toHuman().data)
-                  )
-                  .toString()
-            );
-          resolve(result);
-        }
-      }
-    );
   });
 };
 
@@ -462,7 +261,7 @@ export async function setAssetInfo(
       )
     ),
     sudo.keyRingPair,
-    nonce
+    { nonce: new BN(nonce) }
   ).then((result) => {
     return getEventResultFromMangataTx(result);
   });
