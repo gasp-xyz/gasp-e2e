@@ -1,9 +1,9 @@
+/* eslint-disable no-console */
+/* eslint-disable no-loop-func */
 import { Keyring } from "@polkadot/api";
 import BN from "bn.js";
 import { User } from "../utils/User";
 import { Mangata } from "mangata-sdk";
-import { each } from "lodash";
-import { error } from "console";
 
 require("dotenv").config();
 
@@ -13,19 +13,13 @@ const uris = [
   //    'ws://172.28.1.1:9944',
 ];
 
-const ipRegex = /\d{1,3}\.\d{1,3}\.\d{1,3}\.\d{1,3}/gm;
-
 //this constant will skip some traces.
-const onlyrelevant = true;
 // this will handle if printing in pretty-multilines.
-const pretty = false;
 
 async function main() {
-  const promises = [];
   let count = 0;
   const uri = uris[0];
   const mangata = Mangata.getInstance(uri);
-  const api = await mangata.getApi();
   const keyring = new Keyring({ type: "sr25519" });
   const alice = new User(keyring, "//Alice");
   const bob = new User(keyring, "//Bob");
