@@ -1,0 +1,113 @@
+{
+  "uid" : "fb08f287971b563a",
+  "name" : "When tx extrinsic - fails, User gets notified",
+  "fullName" : "UI tests - A user gets notified when error.When tx extrinsic - fails, User gets notified",
+  "historyId" : "9e5572744a0a4db47103f34aae647423",
+  "time" : {
+    "start" : 1638322277105,
+    "stop" : 1638322277406,
+    "duration" : 301
+  },
+  "description" : "",
+  "descriptionHtml" : "",
+  "status" : "failed",
+  "statusMessage" : "thrown: Event {\n                  \"isTrusted\": true,\n                }",
+  "statusTrace" : "thrown: Event {\n                  \"isTrusted\": true,\n                }\n                \n                Error: \n                    at new Spec (/home/runner/work/mangata-e2e/mangata-e2e/node_modules/jest-jasmine2/build/jasmine/Spec.js:116:22)\n                    at new Spec (/home/runner/work/mangata-e2e/mangata-e2e/node_modules/jest-jasmine2/build/setup_jest_globals.js:78:9)\n                    at specFactory (/home/runner/work/mangata-e2e/mangata-e2e/node_modules/jest-jasmine2/build/jasmine/Env.js:523:24)\n                    at Env.it (/home/runner/work/mangata-e2e/mangata-e2e/node_modules/jest-jasmine2/build/jasmine/Env.js:592:24)\n                    at Env.it (/home/runner/work/mangata-e2e/mangata-e2e/node_modules/jest-jasmine2/build/jasmineAsyncInstall.js:134:23)\n                    at it (/home/runner/work/mangata-e2e/mangata-e2e/node_modules/jest-jasmine2/build/jasmine/jasmineLight.js:100:21)\n                    at Suite.<anonymous> (/home/runner/work/mangata-e2e/mangata-e2e/test/ui/ui.tx-modal.test.ts:209:3)\n                    at addSpecsToSuite (/home/runner/work/mangata-e2e/mangata-e2e/node_modules/jest-jasmine2/build/jasmine/Env.js:444:51)\n                    at Env.describe (/home/runner/work/mangata-e2e/mangata-e2e/node_modules/jest-jasmine2/build/jasmine/Env.js:414:11)\n                    at describe (/home/runner/work/mangata-e2e/mangata-e2e/node_modules/jest-jasmine2/build/jasmine/jasmineLight.js:88:18)\n                    at Object.<anonymous> (/home/runner/work/mangata-e2e/mangata-e2e/test/ui/ui.tx-modal.test.ts:159:1)\n                    at Runtime._execModule (/home/runner/work/mangata-e2e/mangata-e2e/node_modules/jest-runtime/build/index.js:1299:24)\n                    at Runtime._loadModule (/home/runner/work/mangata-e2e/mangata-e2e/node_modules/jest-runtime/build/index.js:898:12)\n                    at Runtime.requireModule (/home/runner/work/mangata-e2e/mangata-e2e/node_modules/jest-runtime/build/index.js:746:10)\n                    at jasmine2 (/home/runner/work/mangata-e2e/mangata-e2e/node_modules/jest-jasmine2/build/index.js:230:13)\n                    at runTestInternal (/home/runner/work/mangata-e2e/mangata-e2e/node_modules/jest-runner/build/runTest.js:380:22)\n                    at runTest (/home/runner/work/mangata-e2e/mangata-e2e/node_modules/jest-runner/build/runTest.js:472:34)",
+  "flaky" : false,
+  "newFailed" : false,
+  "beforeStages" : [ ],
+  "afterStages" : [ ],
+  "labels" : [ {
+    "name" : "suite",
+    "value" : "UI tests - A user gets notified when error"
+  }, {
+    "name" : "testClass",
+    "value" : "UI tests - A user gets notified when error"
+  }, {
+    "name" : "testMethod",
+    "value" : "When tx extrinsic - fails, User gets notified"
+  }, {
+    "name" : "package",
+    "value" : "UI tests - A user gets notified when error"
+  }, {
+    "name" : "resultFormat",
+    "value" : "allure1"
+  } ],
+  "parameters" : [ ],
+  "links" : [ ],
+  "hidden" : false,
+  "retry" : false,
+  "extra" : {
+    "severity" : "normal",
+    "retries" : [ ],
+    "categories" : [ {
+      "name" : "Product defects",
+      "matchedStatuses" : [ ],
+      "flaky" : false
+    } ],
+    "history" : {
+      "statistic" : {
+        "failed" : 6,
+        "broken" : 0,
+        "skipped" : 0,
+        "passed" : 0,
+        "unknown" : 0,
+        "total" : 6
+      },
+      "items" : [ {
+        "uid" : "9a703cd3f7e2642e",
+        "reportUrl" : "https://mangata-finance.github.io/mangata-e2e/1037//#testresult/9a703cd3f7e2642e",
+        "status" : "failed",
+        "statusDetails" : "Error: WebSocket is not connected",
+        "time" : {
+          "start" : 1638273269906,
+          "stop" : 1638273323401,
+          "duration" : 53495
+        }
+      }, {
+        "uid" : "9a8cad7e6a17d8b",
+        "reportUrl" : "https://mangata-finance.github.io/mangata-e2e/1035//#testresult/9a8cad7e6a17d8b",
+        "status" : "failed",
+        "statusDetails" : "Error: WebSocket is not connected",
+        "time" : {
+          "start" : 1638236163759,
+          "stop" : 1638236221416,
+          "duration" : 57657
+        }
+      }, {
+        "uid" : "91935eb61b031141",
+        "reportUrl" : "https://mangata-finance.github.io/mangata-e2e/1033//#testresult/91935eb61b031141",
+        "status" : "failed",
+        "statusDetails" : "Error: WebSocket is not connected",
+        "time" : {
+          "start" : 1638236168788,
+          "stop" : 1638236224351,
+          "duration" : 55563
+        }
+      }, {
+        "uid" : "55a45b14b17a91fc",
+        "reportUrl" : "https://mangata-finance.github.io/mangata-e2e/1032//#testresult/55a45b14b17a91fc",
+        "status" : "failed",
+        "statusDetails" : "Error: WebSocket is not connected",
+        "time" : {
+          "start" : 1638176045243,
+          "stop" : 1638176097317,
+          "duration" : 52074
+        }
+      }, {
+        "uid" : "3b98b1c659974277",
+        "reportUrl" : "https://mangata-finance.github.io/mangata-e2e/1019//#testresult/3b98b1c659974277",
+        "status" : "failed",
+        "statusDetails" : "Error: WebSocket is not connected",
+        "time" : {
+          "start" : 1637912819049,
+          "stop" : 1637912880919,
+          "duration" : 61870
+        }
+      } ]
+    },
+    "tags" : [ ]
+  },
+  "source" : "fb08f287971b563a.json",
+  "parameterValues" : [ ]
+}
