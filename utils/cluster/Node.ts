@@ -1,6 +1,7 @@
 import { ApiPromise } from "@polkadot/api";
 import { initApi } from "../../utils/api";
 import { testLog } from "../Logger";
+import { Header } from "@polkadot/types/interfaces/types";
 
 export { Node };
 
@@ -17,6 +18,7 @@ class Node {
   blockHashes: Map<number, string> = new Map();
   blockNumbers: Set<number> = new Set();
   subscription: any;
+  blockAuthors: Array<string> = new Array();
 
   constructor(name: string, wsPath: string) {
     this.name = name;
@@ -37,10 +39,11 @@ class Node {
       throw new Error("The node is not connected yet.");
     }
     this.subscription = await this.api!.rpc.chain.subscribeNewHeads(
-      (lastHeader) => {
+      async (lastHeader) => {
         if (!this.firstBlock) {
           this.firstBlock = lastHeader.number.toNumber();
         }
+        this.blockAuthors.push((await this.api!.derive.chain.getHeader(lastHeader.hash.toString())).author.toString());
         this.lastBlock = lastHeader.number.toNumber();
         this.lastHash = lastHeader.hash.toString();
         this.hashes.add(this.lastHash);
