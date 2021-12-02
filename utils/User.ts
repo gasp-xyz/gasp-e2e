@@ -15,10 +15,7 @@ import {
   sellAsset,
   transferAll,
 } from "./tx";
-import {
-  getEventResultFromMangataTx,
-  getEventResultFromTxWait,
-} from "./txHandler";
+import { getEventResultFromMangataTx } from "./txHandler";
 import { MAX_BALANCE, MGA_ASSET_ID } from "./Constants";
 import { AccountData } from "@polkadot/types/interfaces/balances";
 import { strict as assert } from "assert";
@@ -147,7 +144,7 @@ export class User {
       user.keyRingPair.address,
       amount
     ).then((result) => {
-      const eventResponse = getEventResultFromTxWait(result, [
+      const eventResponse = getEventResultFromMangataTx(result, [
         "tokens",
         "Minted",
         user.keyRingPair.address,
