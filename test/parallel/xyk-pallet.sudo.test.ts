@@ -12,7 +12,7 @@ import { User } from "../../utils/User";
 import { validateTransactionSucessful } from "../../utils/validators";
 import { getEnvironmentRequiredVars } from "../../utils/utils";
 import {
-  getEventResultFromTxWait,
+  getEventResultFromMangataTx,
   sudoIssueAsset,
 } from "../../utils/txHandler";
 import { testLog } from "../../utils/Logger";
@@ -57,7 +57,7 @@ test("xyk-pallet - Sudo tests: Sudo Issue an asset", async () => {
     new BN(tokensAmount),
     testUser.keyRingPair.address
   ).then((result) => {
-    const eventResponse = getEventResultFromTxWait(result, [
+    const eventResponse = getEventResultFromMangataTx(result, [
       "tokens",
       "Issued",
       testUser.keyRingPair.address,
@@ -93,7 +93,7 @@ test("xyk-pallet - Sudo tests: Sudo Issue two  different assets to the same acco
     new BN(tokensFirstAmount),
     testUser.keyRingPair.address
   ).then((result) => {
-    const eventResponse = getEventResultFromTxWait(result, [
+    const eventResponse = getEventResultFromMangataTx(result, [
       "tokens",
       "Issued",
       testUser.keyRingPair.address,
@@ -113,7 +113,7 @@ test("xyk-pallet - Sudo tests: Sudo Issue two  different assets to the same acco
     new BN(tokensSecondAmount),
     testUser.keyRingPair.address
   ).then((result) => {
-    const eventResponse = getEventResultFromTxWait(result, [
+    const eventResponse = getEventResultFromMangataTx(result, [
       "tokens",
       "Issued",
       testUser.keyRingPair.address,

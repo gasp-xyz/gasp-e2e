@@ -22,7 +22,7 @@
     "ethers": "^5.4.7",
     "ganache-cli": "^6.12.2",
     "loadsh": "^0.0.4",
-    "mangata-sdk": "0.8.5",
+    "mangata-sdk": "0.9.0",
     "package.json": "^2.0.1",
     "prettier": "^2.3.0",
     "selenium-webdriver": "3.6.0",
@@ -32,7 +32,6 @@
     "typescript": "3",
     "web3": "^1.5.3",
     "winston": "^3.3.3",
-    "xoshiro": "^2.0.3",
     "yarn": "^1.22.10"
   },
   "scripts": {

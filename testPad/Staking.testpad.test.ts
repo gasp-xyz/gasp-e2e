@@ -4,12 +4,13 @@ import { api, getApi, initApi } from "../utils/api";
 import { MGA_ASSET_ID } from "../utils/Constants";
 import { waitNewBlock } from "../utils/eventListeners";
 import { testLog } from "../utils/Logger";
-import { signAndWaitTx, signSendAndWaitToFinishTx } from "../utils/txHandler";
+import { signSendAndWaitToFinishTx } from "../utils/txHandler";
 import { User, AssetWallet } from "../utils/User";
 import { getEnvironmentRequiredVars } from "../utils/utils";
 import fs from "fs";
 import { Assets } from "../utils/Assets";
 import { hexToBn } from "@polkadot/util";
+import { signTx } from "mangata-sdk";
 
 require("dotenv").config();
 
@@ -67,7 +68,8 @@ describe("staking - testpad", () => {
       const { nonce } = await api.query.system.account(
         sudo.keyRingPair.address
       );
-      await signAndWaitTx(
+      await signTx(
+        api,
         api.tx.sudo.sudo(
           api.tx.tokens.mint(
             MGA_ASSET_ID,
@@ -76,12 +78,13 @@ describe("staking - testpad", () => {
           )
         ),
         sudo.keyRingPair,
-        nonce.toNumber()
+        { nonce: new BN(nonce) }
       );
       const nonce2 = await (
         await api.query.system.account(sudo.keyRingPair.address)
       ).nonce;
-      await signAndWaitTx(
+      await signTx(
+        api,
         api.tx.sudo.sudo(
           api.tx.tokens.mint(
             new BN(3),
@@ -90,7 +93,7 @@ describe("staking - testpad", () => {
           )
         ),
         sudo.keyRingPair,
-        nonce2.toNumber()
+        { nonce: new BN(nonce2.toNumber()) }
       );
 
       //    await sudo.mint(MGA_ASSET_ID, testUser1, new BN("1000000000000"));
@@ -388,10 +391,11 @@ describe("staking - testpad", () => {
     keyring = new Keyring({ type: "sr25519" });
     sudo = new User(keyring, sudoUserName);
     const { nonce } = await api.query.system.account(sudo.keyRingPair.address);
-    await signAndWaitTx(
+    await signTx(
+      api,
       api.tx.sudo.sudo(api.tx.staking.forceNewEraAlways()),
       sudo.keyRingPair,
-      nonce.toNumber()
+      { nonce: nonce }
     );
   });
   test("create token", async () => {
