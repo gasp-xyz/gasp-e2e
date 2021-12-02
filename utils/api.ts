@@ -1,7 +1,7 @@
-import { ApiPromise } from "@polkadot/api";
-import { testLog } from "./Logger";
-import { getEnvironmentRequiredVars } from "./utils";
-import { Mangata } from "mangata-sdk";
+import {ApiPromise} from "@polkadot/api";
+import {testLog} from "./Logger";
+import {getEnvironmentRequiredVars} from "./utils";
+import {Mangata} from "mangata-sdk";
 
 export let api: ApiPromise | null = null;
 export let mangata: Mangata | null = null;
@@ -15,7 +15,7 @@ export const getApi = () => {
 
 export const initApi = async (uri = "") => {
   if (!uri) {
-    const { chainUri: envUri } = getEnvironmentRequiredVars();
+    const {chainUri: envUri} = getEnvironmentRequiredVars();
     uri = envUri;
   }
 

@@ -3,9 +3,9 @@
  * @group xyk
  * @group ci
  */
-import { getApi, initApi } from "../../utils/api";
-import { testLog } from "../../utils/Logger";
-import { Header } from "@polkadot/types/interfaces/runtime";
+import {getApi, initApi} from "../../utils/api";
+import {testLog} from "../../utils/Logger";
+import {Header} from "@polkadot/types/interfaces/runtime";
 
 jest.spyOn(console, "log").mockImplementation(jest.fn());
 jest.setTimeout(1500000);

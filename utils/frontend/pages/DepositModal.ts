@@ -1,11 +1,11 @@
-import { WebDriver } from "selenium-webdriver";
+import {WebDriver} from "selenium-webdriver";
 import {
   buildDataTestIdXpath,
   clickElement,
   selectAssetFromModalList,
   writeText,
 } from "../utils/Helper";
-import { MetaMask } from "./MetaMask";
+import {MetaMask} from "./MetaMask";
 
 //SELECTORS
 const SELECT_TOKEN = "depositModal-step0-assetInput";

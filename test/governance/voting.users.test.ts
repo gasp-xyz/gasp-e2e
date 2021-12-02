@@ -3,16 +3,16 @@
  */
 
 import BN from "bn.js";
-import { GovernanceUser } from "../../utils/Framework/User/GovernanceUser";
-import { Keyring } from "@polkadot/api";
-import { Bank } from "../../utils/Framework/Supply/Bank";
-import { Node } from "../../utils/Framework/Node/Node";
-import { SudoUser } from "../../utils/Framework/User/SudoUser";
-import { UserFactory, Users } from "../../utils/Framework/User/UserFactory";
-import { cryptoWaitReady } from "@polkadot/util-crypto";
-import { getEnvironmentRequiredVars, waitForNBlocks } from "../../utils/utils";
+import {GovernanceUser} from "../../utils/Framework/User/GovernanceUser";
+import {Keyring} from "@polkadot/api";
+import {Bank} from "../../utils/Framework/Supply/Bank";
+import {Node} from "../../utils/Framework/Node/Node";
+import {SudoUser} from "../../utils/Framework/User/SudoUser";
+import {UserFactory, Users} from "../../utils/Framework/User/UserFactory";
+import {cryptoWaitReady} from "@polkadot/util-crypto";
+import {getEnvironmentRequiredVars, waitForNBlocks} from "../../utils/utils";
 
-const { chainUri: environmentUri } = getEnvironmentRequiredVars();
+const {chainUri: environmentUri} = getEnvironmentRequiredVars();
 
 let bootnode: Node;
 let keyring: Keyring;
@@ -32,7 +32,7 @@ beforeAll(async () => {
   await bootnode.connect();
   await bootnode.subscribeToHead();
 
-  keyring = new Keyring({ type: "sr25519" });
+  keyring = new Keyring({type: "sr25519"});
   sudo = UserFactory.createUser(Users.SudoUser, keyring, bootnode) as SudoUser;
 });
 

@@ -4,19 +4,19 @@
  * @group errors
  * @group parallel
  */
-import { getApi, initApi } from "../../utils/api";
+import {getApi, initApi} from "../../utils/api";
 import {
   calculate_buy_price_id_rpc,
   calculate_buy_price_rpc,
   calculate_sell_price_rpc,
 } from "../../utils/tx";
 import BN from "bn.js";
-import { bnToHex } from "@polkadot/util";
-import { getEnvironmentRequiredVars } from "../../utils/utils";
-import { Assets } from "../../utils/Assets";
-import { ApiPromise, Keyring } from "@polkadot/api";
-import { User } from "../../utils/User";
-import { testLog } from "../../utils/Logger";
+import {bnToHex} from "@polkadot/util";
+import {getEnvironmentRequiredVars} from "../../utils/utils";
+import {Assets} from "../../utils/Assets";
+import {ApiPromise, Keyring} from "@polkadot/api";
+import {User} from "../../utils/User";
+import {testLog} from "../../utils/Logger";
 
 jest.spyOn(console, "log").mockImplementation(jest.fn());
 jest.setTimeout(1500000);
@@ -102,8 +102,8 @@ describe("xyk-rpc - calculate_buy_price_by_id:No pool assotiated with the assets
   const dictAssets = new Map<number, BN>();
 
   beforeAll(async () => {
-    const { sudo: sudoUserName } = getEnvironmentRequiredVars();
-    const keyring = new Keyring({ type: "sr25519" });
+    const {sudo: sudoUserName} = getEnvironmentRequiredVars();
+    const keyring = new Keyring({type: "sr25519"});
     const sudo = new User(keyring, sudoUserName);
     keyring.addPair(sudo.keyRingPair);
 

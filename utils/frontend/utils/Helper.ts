@@ -1,13 +1,13 @@
-import { logging, WebDriver } from "selenium-webdriver";
-import { sleep } from "../../utils";
-import { Mangata } from "../pages/Mangata";
-import { MetaMask } from "../pages/MetaMask";
-import { Polkadot } from "../pages/Polkadot";
+import {logging, WebDriver} from "selenium-webdriver";
+import {sleep} from "../../utils";
+import {Mangata} from "../pages/Mangata";
+import {MetaMask} from "../pages/MetaMask";
+import {Polkadot} from "../pages/Polkadot";
 import fs from "fs";
-import { testLog } from "../../Logger";
+import {testLog} from "../../Logger";
 import BN from "bn.js";
-import { Reporter } from "jest-allure/dist/Reporter";
-const { By, until } = require("selenium-webdriver");
+import {Reporter} from "jest-allure/dist/Reporter";
+const {By, until} = require("selenium-webdriver");
 require("chromedriver");
 const outputPath = `reports/artifacts`;
 export async function waitForElement(
@@ -141,7 +141,7 @@ export async function getAccountJSON() {
   const path = "utils/frontend/utils/extensions";
   const polkadotUserJson = `${path}/polkadotExportedUser.json`;
   const jsonContent = JSON.parse(
-    fs.readFileSync(polkadotUserJson, { encoding: "utf8", flag: "r" })
+    fs.readFileSync(polkadotUserJson, {encoding: "utf8", flag: "r"})
   );
   return jsonContent;
 }

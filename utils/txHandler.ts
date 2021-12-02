@@ -1,22 +1,22 @@
-import { SubmittableExtrinsic } from "@polkadot/api/types";
-import { AnyJson } from "@polkadot/types/types";
-import { getApi } from "./api";
-import { GenericEvent } from "@polkadot/types";
-import { KeyringPair } from "@polkadot/keyring/types";
+import {SubmittableExtrinsic} from "@polkadot/api/types";
+import {AnyJson} from "@polkadot/types/types";
+import {getApi} from "./api";
+import {GenericEvent} from "@polkadot/types";
+import {KeyringPair} from "@polkadot/keyring/types";
 import BN from "bn.js";
-import { SudoDB } from "./SudoDB";
-import { env } from "process";
-import { EventResult, ExtrinsicResult } from "./eventListeners";
-import { testLog } from "./Logger";
-import { User } from "./User";
-import { MangataGenericEvent } from "mangata-sdk/build/";
-import { signTx } from "mangata-sdk";
+import {SudoDB} from "./SudoDB";
+import {env} from "process";
+import {EventResult, ExtrinsicResult} from "./eventListeners";
+import {testLog} from "./Logger";
+import {User} from "./User";
+import {MangataGenericEvent} from "mangata-sdk/build/";
+import {signTx} from "mangata-sdk";
 //let wait 7 blocks - 6000 * 7 = 42000; depends on the number of workers.
 
 export async function getCurrentNonce(account?: string) {
   const api = getApi();
   if (account) {
-    const { nonce } = await api.query.system.account(account);
+    const {nonce} = await api.query.system.account(account);
     return nonce.toNumber();
   }
   return -1;
@@ -84,7 +84,7 @@ export const sudoIssueAsset = async (
     api,
     api.tx.sudo.sudo(api.tx.tokens.create(targetAddress, total_balance)),
     sudoAccount,
-    { nonce: new BN(nonce) }
+    {nonce: new BN(nonce)}
   );
   //  return signAndWaitTx(
   //    api.tx.sudo.sudo(api.tx.tokens.create(targetAddress, total_balance)),
@@ -261,7 +261,7 @@ export async function setAssetInfo(
       )
     ),
     sudo.keyRingPair,
-    { nonce: new BN(nonce) }
+    {nonce: new BN(nonce)}
   ).then((result) => {
     return getEventResultFromMangataTx(result);
   });
