@@ -36,7 +36,6 @@ import {
 } from "../../utils/utils";
 import {
   getEventResultFromMangataTx,
-  getEventResultFromTxWait,
   sudoIssueAsset,
 } from "../../utils/txHandler";
 import { testLog } from "../../utils/Logger";
@@ -76,7 +75,7 @@ test("xyk-pallet: Happy case scenario", async () => {
 
   await sudoIssueAsset(sudoPair, new BN(220000), alice.address).then(
     (result) => {
-      const eventResponse = getEventResultFromTxWait(result, [
+      const eventResponse = getEventResultFromMangataTx(result, [
         "tokens",
         "Issued",
         alice.address,
@@ -94,7 +93,7 @@ test("xyk-pallet: Happy case scenario", async () => {
 
   await sudoIssueAsset(sudoPair, new BN(120000), alice.address).then(
     (result) => {
-      const eventResponse = getEventResultFromTxWait(result, [
+      const eventResponse = getEventResultFromMangataTx(result, [
         "tokens",
         "Issued",
         alice.address,
@@ -1006,7 +1005,7 @@ test("xyk-pallet: Liquidity sufficiency scenario", async () => {
   testLog.getLog().info("Sudo: issuing asset " + firstAssetId + " to Alice");
   await sudoIssueAsset(sudoPair, new BN(200000), alice.address).then(
     (result) => {
-      const eventResponse = getEventResultFromTxWait(result, [
+      const eventResponse = getEventResultFromMangataTx(result, [
         "tokens",
         "Issued",
         alice.address,
@@ -1024,7 +1023,7 @@ test("xyk-pallet: Liquidity sufficiency scenario", async () => {
 
   await sudoIssueAsset(sudoPair, new BN(200000), alice.address).then(
     (result) => {
-      const eventResponse = getEventResultFromTxWait(result, [
+      const eventResponse = getEventResultFromMangataTx(result, [
         "tokens",
         "Issued",
         alice.address,

@@ -4,15 +4,16 @@ import { getApi, getMangataInstance } from "./api";
 import BN from "bn.js";
 import { env } from "process";
 import { SudoDB } from "./SudoDB";
-import { signAndWaitTx, signSendAndWaitToFinishTx } from "./txHandler";
+import { signSendAndWaitToFinishTx } from "./txHandler";
 import { getEnvironmentRequiredVars } from "./utils";
 import { MGA_DEFAULT_LIQ_TOKEN } from "./Constants";
 import { Keyring } from "@polkadot/api";
 import { User } from "./User";
 import { testLog } from "./Logger";
 import { KeyringPair } from "@polkadot/keyring/types";
+import { signTx } from "mangata-sdk";
 
-export const signTx = async (
+export const signTxDeprecated = async (
   tx: SubmittableExtrinsic<"promise">,
   address: AddressOrPair,
   nonce: BN
@@ -340,10 +341,11 @@ export const balanceTransfer = async (
 ) => {
   const api = getApi();
 
-  const txResult = await signAndWaitTx(
+  const txResult = await signTx(
+    api,
     api.tx.balances.transfer(target, amount),
     account,
-    await (await getCurrentNonce(account.address)).toNumber()
+    { nonce: await getCurrentNonce(account.address) }
   );
   return txResult;
 };
@@ -391,10 +393,11 @@ export const mintAsset = async (
   const api = getApi();
   const nonce = await SudoDB.getInstance().getSudoNonce(account.address);
   testLog.getLog().info(`W[${env.JEST_WORKER_ID}] - sudoNonce: ${nonce} `);
-  const txResult = await signAndWaitTx(
+  const txResult = await signTx(
+    api,
     api.tx.sudo.sudo(api.tx.tokens.mint(asset_id, target, amount)),
     account,
-    nonce
+    { nonce: new BN(nonce) }
   );
   return txResult;
 };
