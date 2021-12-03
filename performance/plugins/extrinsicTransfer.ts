@@ -15,17 +15,14 @@ function seedFromNum(seed: number): string {
   return "//user//" + ("0000" + seed).slice(-4);
 }
 
+const mgaNodeandUsers = new Map<
+  number,
+  { mgaSdk: Mangata; users: { nonce: BN; keyPair: KeyringPair }[] }
+>();
+
 export class ExtrinsicTransfer implements TestItem {
   async arrange(numberOfThreads: number, nodes: string[]): Promise<boolean> {
-    //lets create as many of users as threads.
-    //lets mint some new assets and MGA to pay fees
-    //doing all the above for each node.^^
     const keyring = new Keyring({ type: "sr25519" });
-    const mgaNodeandUsers = new Map<
-      number,
-      { mgaSdk: Mangata; users: { nonce: BN; keyPair: KeyringPair }[] }
-    >();
-
     const mintPromises = [];
     for (let nodeNumber = 0; nodeNumber < nodes.length; nodeNumber++) {
       const node = nodes[nodeNumber];
@@ -35,10 +32,14 @@ export class ExtrinsicTransfer implements TestItem {
 
       const users: { nonce: BN; keyPair: KeyringPair }[] = [];
       testLog.getLog().info("Fetching nonces for node " + nodeNumber);
+
+      //lets create as many of users as threads.
       for (let i = 0; i < numberOfThreads; i++) {
         const stringSeed = seedFromNum(i);
         const keyPair = keyring.addFromUri(stringSeed);
         const nonce = await mga.getNonce(keyPair.address);
+
+        //lets mint some MGA assets to pay fees
         mintPromises.push(
           mintAsset(
             sudo.keyRingPair,
