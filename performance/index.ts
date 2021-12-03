@@ -10,10 +10,9 @@ async function main() {
   const command = args[0];
   const commandArguments = args.slice(1);
 
-  const testParams = new TestParams();
-
   switch (command) {
     case "transfer":
+      const testParams = new TestParams();
       commandArguments.forEach((commandArgument: string) => {
         const [arg, value] = commandArgument.split("=");
         switch (arg) {
