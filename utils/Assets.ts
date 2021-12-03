@@ -2,7 +2,7 @@ import BN from "bn.js";
 import { ExtrinsicResult } from "./eventListeners";
 import { getNextAssetId, getAssetSupply } from "./tx";
 import {
-  getEventResultFromTxWait,
+  getEventResultFromMangataTx,
   setAssetInfo,
   sudoIssueAsset,
 } from "./txHandler";
@@ -63,7 +63,7 @@ export class Assets {
       num,
       user.keyRingPair.address
     );
-    const eventResult = await getEventResultFromTxWait(result, [
+    const eventResult = await getEventResultFromMangataTx(result, [
       "tokens",
       "Issued",
       user.keyRingPair.address,

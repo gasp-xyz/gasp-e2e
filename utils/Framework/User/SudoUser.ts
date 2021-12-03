@@ -1,7 +1,7 @@
 import BN from "bn.js";
 import { BaseUser } from "./BaseUser";
 import { ExtrinsicResult } from "../../eventListeners";
-import { getEventResultFromTxWait } from "../../txHandler";
+import { getEventResultFromMangataTx } from "../../txHandler";
 import { Keyring } from "@polkadot/api";
 import { mintAsset } from "../../tx";
 import { Node } from "../Node/Node";
@@ -24,7 +24,7 @@ export class SudoUser extends BaseUser {
       this.keyRingPair.address,
       amount
     ).then((result) => {
-      const eventResponse = getEventResultFromTxWait(result, [
+      const eventResponse = getEventResultFromMangataTx(result, [
         "tokens",
         "Minted",
         this.keyRingPair.address,

@@ -2,7 +2,7 @@ import BN from "bn.js";
 import { ExtrinsicResult } from "../../eventListeners";
 import { SudoUser } from "../../Framework/User/SudoUser";
 import { mintAsset } from "../../tx";
-import { getEventResultFromTxWait } from "../../txHandler";
+import { getEventResultFromMangataTx } from "../../txHandler";
 import { Token } from "./Token";
 
 export class Bank {
@@ -27,7 +27,7 @@ export class Bank {
       targetUserAddress,
       supply
     ).then((result) => {
-      const eventResponse = getEventResultFromTxWait(result, [
+      const eventResponse = getEventResultFromMangataTx(result, [
         "tokens",
         "Minted",
         this.sudoUser.keyRingPair.address,
