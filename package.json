@@ -28,7 +28,7 @@
     "selenium-webdriver": "3.6.0",
     "truffle": "^5.4.7",
     "truffle-hdwallet-provider": "^1.0.17",
-    "ts-node": "^10.2.1",
+    "ts-node": "^10.4.0",
     "typescript": "3",
     "web3": "^1.5.3",
     "winston": "^3.3.3",
