@@ -54,8 +54,6 @@ async function main() {
     default:
       throw new Error(`Invalid command: ${command}`);
   }
-
-  return testParams;
 }
 
 async function runExtrinsicTransfer(params: TestParams) {
