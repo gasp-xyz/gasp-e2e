@@ -1,7 +1,9 @@
+import { TestParams } from "../testParams";
+
 export interface TestItem {
-  arrange: (param1: string, param2: string) => Promise<boolean>;
+  arrange: (numberOfThreads: number, nodes: string[]) => Promise<boolean>;
   act: () => Promise<boolean>;
   expect: () => Promise<boolean>;
   teardown: () => Promise<boolean>;
-  run: () => Promise<boolean>;
+  run: (testParams: TestParams) => Promise<boolean>;
 }

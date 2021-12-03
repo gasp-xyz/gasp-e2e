@@ -18,6 +18,20 @@
                 "${workspaceRoot}/**/*"
             ],
             "envFile": "${workspaceRoot}/.env"
+        },
+        {
+            "name": "Current TS File",
+            "type": "node",
+            "request": "launch",
+            "args": ["${relativeFile}"],
+            "runtimeArgs": ["--nolazy", "-r", "ts-node/register"],
+            "sourceMaps": true,
+            "cwd": "${workspaceRoot}",
+            "protocol": "inspector",
+            "env": {
+                "TEST_SUDO_NAME": ""
+              }
         }
+        
     ]
 }
