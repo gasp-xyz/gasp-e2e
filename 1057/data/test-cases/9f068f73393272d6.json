@@ -1,0 +1,259 @@
+{
+  "uid" : "9f068f73393272d6",
+  "name" : "As a User I can mint some tokens MGA - mETH",
+  "fullName" : "UI tests - A user can swap and mint tokens.As a User I can mint some tokens MGA - mETH",
+  "historyId" : "d61eda4c5635d823f9db1036b3f5b551",
+  "time" : {
+    "start" : 1638668588181,
+    "stop" : 1638668730594,
+    "duration" : 142413
+  },
+  "description" : "",
+  "descriptionHtml" : "",
+  "status" : "passed",
+  "flaky" : false,
+  "newFailed" : false,
+  "beforeStages" : [ ],
+  "testStage" : {
+    "status" : "passed",
+    "steps" : [ ],
+    "attachments" : [ {
+      "uid" : "d09d4eea0b3f3594",
+      "name" : "Screeenshot",
+      "source" : "d09d4eea0b3f3594.png",
+      "type" : "image/png",
+      "size" : 74309
+    } ],
+    "parameters" : [ ],
+    "stepsCount" : 0,
+    "attachmentsCount" : 1,
+    "shouldDisplayMessage" : false,
+    "hasContent" : true
+  },
+  "afterStages" : [ ],
+  "labels" : [ {
+    "name" : "suite",
+    "value" : "UI tests - A user can swap and mint tokens"
+  }, {
+    "name" : "testClass",
+    "value" : "UI tests - A user can swap and mint tokens"
+  }, {
+    "name" : "testMethod",
+    "value" : "As a User I can mint some tokens MGA - mETH"
+  }, {
+    "name" : "package",
+    "value" : "UI tests - A user can swap and mint tokens"
+  }, {
+    "name" : "resultFormat",
+    "value" : "allure1"
+  } ],
+  "parameters" : [ ],
+  "links" : [ ],
+  "hidden" : false,
+  "retry" : false,
+  "extra" : {
+    "severity" : "normal",
+    "retries" : [ ],
+    "categories" : [ ],
+    "history" : {
+      "statistic" : {
+        "failed" : 14,
+        "broken" : 0,
+        "skipped" : 0,
+        "passed" : 31,
+        "unknown" : 0,
+        "total" : 45
+      },
+      "items" : [ {
+        "uid" : "6624dcf6c913ec5",
+        "reportUrl" : "https://mangata-finance.github.io/mangata-e2e/1056//#testresult/6624dcf6c913ec5",
+        "status" : "passed",
+        "time" : {
+          "start" : 1638668516193,
+          "stop" : 1638668646593,
+          "duration" : 130400
+        }
+      }, {
+        "uid" : "4e783ef7202348ca",
+        "reportUrl" : "https://mangata-finance.github.io/mangata-e2e/1052//#testresult/4e783ef7202348ca",
+        "status" : "passed",
+        "time" : {
+          "start" : 1638582122267,
+          "stop" : 1638582264626,
+          "duration" : 142359
+        }
+      }, {
+        "uid" : "86524bf3587feadb",
+        "reportUrl" : "https://mangata-finance.github.io/mangata-e2e/1051//#testresult/86524bf3587feadb",
+        "status" : "passed",
+        "time" : {
+          "start" : 1638581996222,
+          "stop" : 1638582126642,
+          "duration" : 130420
+        }
+      }, {
+        "uid" : "38259835f5f6cca2",
+        "reportUrl" : "https://mangata-finance.github.io/mangata-e2e/1053//#testresult/38259835f5f6cca2",
+        "status" : "failed",
+        "statusDetails" : "NoSuchSessionError: session timed out or not found",
+        "time" : {
+          "start" : 1638581527021,
+          "stop" : 1638581527029,
+          "duration" : 8
+        }
+      }, {
+        "uid" : "a4fef2b47178e9d3",
+        "reportUrl" : "https://mangata-finance.github.io/mangata-e2e/1050//#testresult/a4fef2b47178e9d3",
+        "status" : "failed",
+        "statusDetails" : "Error: Failed: Object {\n                  \"data\": \"1014: Priority is too low: (6142921746010 vs 4070751316388): The transaction has too low priority to replace another transaction already in the pool.\",\n                }",
+        "time" : {
+          "start" : 1638546698201,
+          "stop" : 1638546775042,
+          "duration" : 76841
+        }
+      }, {
+        "uid" : "fe24957cea411a7e",
+        "reportUrl" : "https://mangata-finance.github.io/mangata-e2e/1047//#testresult/fe24957cea411a7e",
+        "status" : "passed",
+        "time" : {
+          "start" : 1638495776312,
+          "stop" : 1638495930663,
+          "duration" : 154351
+        }
+      }, {
+        "uid" : "f07c559b3b0e726d",
+        "reportUrl" : "https://mangata-finance.github.io/mangata-e2e/1048//#testresult/f07c559b3b0e726d",
+        "status" : "passed",
+        "time" : {
+          "start" : 1638495656324,
+          "stop" : 1638495792715,
+          "duration" : 136391
+        }
+      }, {
+        "uid" : "e98d404827fd0603",
+        "reportUrl" : "https://mangata-finance.github.io/mangata-e2e/1046//#testresult/e98d404827fd0603",
+        "status" : "failed",
+        "statusDetails" : "thrown: Event {\n                  \"isTrusted\": true,\n                }",
+        "time" : {
+          "start" : 1638495559188,
+          "stop" : 1638495559526,
+          "duration" : 338
+        }
+      }, {
+        "uid" : "2ee8805c36bc12",
+        "reportUrl" : "https://mangata-finance.github.io/mangata-e2e/1044//#testresult/2ee8805c36bc12",
+        "status" : "passed",
+        "time" : {
+          "start" : 1638409370316,
+          "stop" : 1638409506760,
+          "duration" : 136444
+        }
+      }, {
+        "uid" : "b50dfbd23a8d1d3c",
+        "reportUrl" : "https://mangata-finance.github.io/mangata-e2e/1043//#testresult/b50dfbd23a8d1d3c",
+        "status" : "passed",
+        "time" : {
+          "start" : 1638409316211,
+          "stop" : 1638409458642,
+          "duration" : 142431
+        }
+      }, {
+        "uid" : "83e6f213b246bbe4",
+        "reportUrl" : "https://mangata-finance.github.io/mangata-e2e/1042//#testresult/83e6f213b246bbe4",
+        "status" : "passed",
+        "time" : {
+          "start" : 1638409256204,
+          "stop" : 1638409386574,
+          "duration" : 130370
+        }
+      }, {
+        "uid" : "6f8dc95f725fe028",
+        "reportUrl" : "https://mangata-finance.github.io/mangata-e2e/1038//#testresult/6f8dc95f725fe028",
+        "status" : "passed",
+        "time" : {
+          "start" : 1638322976226,
+          "stop" : 1638323118675,
+          "duration" : 142449
+        }
+      }, {
+        "uid" : "a3b8b4c51a3409cb",
+        "reportUrl" : "https://mangata-finance.github.io/mangata-e2e/1039//#testresult/a3b8b4c51a3409cb",
+        "status" : "passed",
+        "time" : {
+          "start" : 1638322958391,
+          "stop" : 1638323094793,
+          "duration" : 136402
+        }
+      }, {
+        "uid" : "ae374e04c6254029",
+        "reportUrl" : "https://mangata-finance.github.io/mangata-e2e/1040//#testresult/ae374e04c6254029",
+        "status" : "failed",
+        "statusDetails" : "thrown: Event {\n                  \"isTrusted\": true,\n                }",
+        "time" : {
+          "start" : 1638322278936,
+          "stop" : 1638322279241,
+          "duration" : 305
+        }
+      }, {
+        "uid" : "b0dc2b8fc92c2fdc",
+        "reportUrl" : "https://mangata-finance.github.io/mangata-e2e/1037//#testresult/b0dc2b8fc92c2fdc",
+        "status" : "passed",
+        "time" : {
+          "start" : 1638273518310,
+          "stop" : 1638273654711,
+          "duration" : 136401
+        }
+      }, {
+        "uid" : "18040379b80be5e",
+        "reportUrl" : "https://mangata-finance.github.io/mangata-e2e/1035//#testresult/18040379b80be5e",
+        "status" : "failed",
+        "statusDetails" : "TimeoutError: Waiting for element to be located By(xpath, //button[text()='Connect'])\n                Wait timed out after 30007ms",
+        "time" : {
+          "start" : 1638236426430,
+          "stop" : 1638236545426,
+          "duration" : 118996
+        }
+      }, {
+        "uid" : "7a3c2595ac88853f",
+        "reportUrl" : "https://mangata-finance.github.io/mangata-e2e/1033//#testresult/7a3c2595ac88853f",
+        "status" : "passed",
+        "time" : {
+          "start" : 1638236426437,
+          "stop" : 1638236562883,
+          "duration" : 136446
+        }
+      }, {
+        "uid" : "cbd6cef41203a84e",
+        "reportUrl" : "https://mangata-finance.github.io/mangata-e2e/1032//#testresult/cbd6cef41203a84e",
+        "status" : "failed",
+        "statusDetails" : "WebDriverError: element click intercepted: Element <button class=\"button btn-primary first-time-flow__button\" role=\"button\" tabindex=\"0\">...</button> is not clickable at point (692, 620). Other element would receive the click: <div class=\"loading-overlay\">...</div>\n                  (Session info: chrome=94.0.4606.61)\n                  (Driver info: chromedriver=94.0.4606.61 (418b78f5838ed0b1c69bb4e51ea0252171854915-refs/branch-heads/4606@{#1204}),platform=Linux 5.11.0-1021-azure x86_64)",
+        "time" : {
+          "start" : 1638176288409,
+          "stop" : 1638176360184,
+          "duration" : 71775
+        }
+      }, {
+        "uid" : "14741dab93d6ed13",
+        "reportUrl" : "https://mangata-finance.github.io/mangata-e2e/1029//#testresult/14741dab93d6ed13",
+        "status" : "passed",
+        "time" : {
+          "start" : 1638149552223,
+          "stop" : 1638149700647,
+          "duration" : 148424
+        }
+      }, {
+        "uid" : "97e5ccb1bab19102",
+        "reportUrl" : "https://mangata-finance.github.io/mangata-e2e/1030//#testresult/97e5ccb1bab19102",
+        "status" : "passed",
+        "time" : {
+          "start" : 1638149564432,
+          "stop" : 1638149712688,
+          "duration" : 148256
+        }
+      } ]
+    },
+    "tags" : [ ]
+  },
+  "source" : "9f068f73393272d6.json",
+  "parameterValues" : [ ]
+}
