@@ -1,0 +1,281 @@
+{
+  "uid" : "7444fa38daff8a75",
+  "name" : "As a User I can Withdraw ETH from Meta extension",
+  "fullName" : "UI main tests - Withdraw - ETH.As a User I can Withdraw ETH from Meta extension",
+  "historyId" : "eac55faabce1aad19e0827a3afd71b78",
+  "time" : {
+    "start" : 1638669425844,
+    "stop" : 1638669457117,
+    "duration" : 31273
+  },
+  "description" : "",
+  "descriptionHtml" : "",
+  "status" : "failed",
+  "statusMessage" : "TimeoutError: Waiting for element to be located By(xpath, //input[@placeholder='Paste Secret Recovery Phrase from clipboard'])\n                Wait timed out after 30000ms",
+  "statusTrace" : "TimeoutError: Waiting for element to be located By(xpath, //input[@placeholder='Paste Secret Recovery Phrase from clipboard'])\n                Wait timed out after 30000ms\n                    at /home/runner/work/mangata-e2e/mangata-e2e/node_modules/selenium-webdriver/lib/promise.js:2201:17\n                    at ManagedPromise.invokeCallback_ (/home/runner/work/mangata-e2e/mangata-e2e/node_modules/selenium-webdriver/lib/promise.js:1376:14)\n                    at TaskQueue.execute_ (/home/runner/work/mangata-e2e/mangata-e2e/node_modules/selenium-webdriver/lib/promise.js:3084:14)\n                    at TaskQueue.executeNext_ (/home/runner/work/mangata-e2e/mangata-e2e/node_modules/selenium-webdriver/lib/promise.js:3067:27)\n                    at /home/runner/work/mangata-e2e/mangata-e2e/node_modules/selenium-webdriver/lib/promise.js:2927:27\n                    at /home/runner/work/mangata-e2e/mangata-e2e/node_modules/selenium-webdriver/lib/promise.js:668:7\n                    at runMicrotasks (<anonymous>)\n                    at processTicksAndRejections (node:internal/process/task_queues:96:5)\n                From: Task: Waiting for element to be located By(xpath, //input[@placeholder='Paste Secret Recovery Phrase from clipboard'])\n                    at scheduleWait (/home/runner/work/mangata-e2e/mangata-e2e/node_modules/selenium-webdriver/lib/promise.js:2188:20)\n                    at ControlFlow.wait (/home/runner/work/mangata-e2e/mangata-e2e/node_modules/selenium-webdriver/lib/promise.js:2517:12)\n                    at mixin.wait (/home/runner/work/mangata-e2e/mangata-e2e/node_modules/selenium-webdriver/lib/webdriver.js:934:29)\n                    at waitForElement (/home/runner/work/mangata-e2e/mangata-e2e/utils/frontend/utils/Helper.ts:18:16)\n                    at MetaMask.setupAccount (/home/runner/work/mangata-e2e/mangata-e2e/utils/frontend/pages/MetaMask.ts:71:11)\n                    at runMicrotasks (<anonymous>)\n                    at processTicksAndRejections (node:internal/process/task_queues:96:5)\n                    at setupAllExtensions (/home/runner/work/mangata-e2e/mangata-e2e/utils/frontend/utils/Helper.ts:83:27)\n                    at Object.<anonymous> (/home/runner/work/mangata-e2e/mangata-e2e/test/ui/ui-main.ETH.test.ts:111:33)",
+  "flaky" : false,
+  "newFailed" : false,
+  "beforeStages" : [ ],
+  "testStage" : {
+    "status" : "failed",
+    "statusMessage" : "TimeoutError: Waiting for element to be located By(xpath, //input[@placeholder='Paste Secret Recovery Phrase from clipboard'])\n                Wait timed out after 30000ms",
+    "statusTrace" : "TimeoutError: Waiting for element to be located By(xpath, //input[@placeholder='Paste Secret Recovery Phrase from clipboard'])\n                Wait timed out after 30000ms\n                    at /home/runner/work/mangata-e2e/mangata-e2e/node_modules/selenium-webdriver/lib/promise.js:2201:17\n                    at ManagedPromise.invokeCallback_ (/home/runner/work/mangata-e2e/mangata-e2e/node_modules/selenium-webdriver/lib/promise.js:1376:14)\n                    at TaskQueue.execute_ (/home/runner/work/mangata-e2e/mangata-e2e/node_modules/selenium-webdriver/lib/promise.js:3084:14)\n                    at TaskQueue.executeNext_ (/home/runner/work/mangata-e2e/mangata-e2e/node_modules/selenium-webdriver/lib/promise.js:3067:27)\n                    at /home/runner/work/mangata-e2e/mangata-e2e/node_modules/selenium-webdriver/lib/promise.js:2927:27\n                    at /home/runner/work/mangata-e2e/mangata-e2e/node_modules/selenium-webdriver/lib/promise.js:668:7\n                    at runMicrotasks (<anonymous>)\n                    at processTicksAndRejections (node:internal/process/task_queues:96:5)\n                From: Task: Waiting for element to be located By(xpath, //input[@placeholder='Paste Secret Recovery Phrase from clipboard'])\n                    at scheduleWait (/home/runner/work/mangata-e2e/mangata-e2e/node_modules/selenium-webdriver/lib/promise.js:2188:20)\n                    at ControlFlow.wait (/home/runner/work/mangata-e2e/mangata-e2e/node_modules/selenium-webdriver/lib/promise.js:2517:12)\n                    at mixin.wait (/home/runner/work/mangata-e2e/mangata-e2e/node_modules/selenium-webdriver/lib/webdriver.js:934:29)\n                    at waitForElement (/home/runner/work/mangata-e2e/mangata-e2e/utils/frontend/utils/Helper.ts:18:16)\n                    at MetaMask.setupAccount (/home/runner/work/mangata-e2e/mangata-e2e/utils/frontend/pages/MetaMask.ts:71:11)\n                    at runMicrotasks (<anonymous>)\n                    at processTicksAndRejections (node:internal/process/task_queues:96:5)\n                    at setupAllExtensions (/home/runner/work/mangata-e2e/mangata-e2e/utils/frontend/utils/Helper.ts:83:27)\n                    at Object.<anonymous> (/home/runner/work/mangata-e2e/mangata-e2e/test/ui/ui-main.ETH.test.ts:111:33)",
+    "steps" : [ ],
+    "attachments" : [ {
+      "uid" : "e4593f063f8eb7f7",
+      "name" : "Screeenshot",
+      "source" : "e4593f063f8eb7f7.png",
+      "type" : "image/png",
+      "size" : 129354
+    } ],
+    "parameters" : [ ],
+    "stepsCount" : 0,
+    "attachmentsCount" : 1,
+    "shouldDisplayMessage" : true,
+    "hasContent" : true
+  },
+  "afterStages" : [ ],
+  "labels" : [ {
+    "name" : "suite",
+    "value" : "UI main tests - Withdraw - ETH"
+  }, {
+    "name" : "testClass",
+    "value" : "UI main tests - Withdraw - ETH"
+  }, {
+    "name" : "testMethod",
+    "value" : "As a User I can Withdraw ETH from Meta extension"
+  }, {
+    "name" : "package",
+    "value" : "UI main tests - Withdraw - ETH"
+  }, {
+    "name" : "resultFormat",
+    "value" : "allure1"
+  } ],
+  "parameters" : [ ],
+  "links" : [ ],
+  "hidden" : false,
+  "retry" : false,
+  "extra" : {
+    "severity" : "normal",
+    "retries" : [ ],
+    "categories" : [ {
+      "name" : "Product defects",
+      "matchedStatuses" : [ ],
+      "flaky" : false
+    } ],
+    "history" : {
+      "statistic" : {
+        "failed" : 41,
+        "broken" : 0,
+        "skipped" : 0,
+        "passed" : 2,
+        "unknown" : 0,
+        "total" : 43
+      },
+      "items" : [ {
+        "uid" : "be316d8c409adaf0",
+        "reportUrl" : "https://mangata-finance.github.io/mangata-e2e/1052//#testresult/be316d8c409adaf0",
+        "status" : "failed",
+        "statusDetails" : "TimeoutError: Waiting for element to be located By(xpath, //input[@placeholder='Paste Secret Recovery Phrase from clipboard'])\n                Wait timed out after 30003ms",
+        "time" : {
+          "start" : 1638583002328,
+          "stop" : 1638583033577,
+          "duration" : 31249
+        }
+      }, {
+        "uid" : "d94e3e180e29d78e",
+        "reportUrl" : "https://mangata-finance.github.io/mangata-e2e/1051//#testresult/d94e3e180e29d78e",
+        "status" : "failed",
+        "statusDetails" : "TimeoutError: Waiting for element to be located By(xpath, //input[@placeholder='Paste Secret Recovery Phrase from clipboard'])\n                Wait timed out after 30002ms",
+        "time" : {
+          "start" : 1638582767870,
+          "stop" : 1638582799215,
+          "duration" : 31345
+        }
+      }, {
+        "uid" : "34b084d138e83838",
+        "reportUrl" : "https://mangata-finance.github.io/mangata-e2e/1050//#testresult/34b084d138e83838",
+        "status" : "failed",
+        "statusDetails" : "TimeoutError: Waiting for element to be located By(xpath, //input[@placeholder='Paste Secret Recovery Phrase from clipboard'])\n                Wait timed out after 30001ms",
+        "time" : {
+          "start" : 1638547535678,
+          "stop" : 1638547566904,
+          "duration" : 31226
+        }
+      }, {
+        "uid" : "d421874fe9292f35",
+        "reportUrl" : "https://mangata-finance.github.io/mangata-e2e/1047//#testresult/d421874fe9292f35",
+        "status" : "failed",
+        "statusDetails" : "TimeoutError: Waiting for element to be located By(xpath, //input[@placeholder='Paste Secret Recovery Phrase from clipboard'])\n                Wait timed out after 30009ms",
+        "time" : {
+          "start" : 1638496686870,
+          "stop" : 1638496718733,
+          "duration" : 31863
+        }
+      }, {
+        "uid" : "c7c6bdfee091cbcf",
+        "reportUrl" : "https://mangata-finance.github.io/mangata-e2e/1048//#testresult/c7c6bdfee091cbcf",
+        "status" : "failed",
+        "statusDetails" : "TimeoutError: Waiting for element to be located By(xpath, //input[@placeholder='Paste Secret Recovery Phrase from clipboard'])\n                Wait timed out after 30011ms",
+        "time" : {
+          "start" : 1638496482508,
+          "stop" : 1638496513984,
+          "duration" : 31476
+        }
+      }, {
+        "uid" : "3ed618b93f820278",
+        "reportUrl" : "https://mangata-finance.github.io/mangata-e2e/1046//#testresult/3ed618b93f820278",
+        "status" : "failed",
+        "statusDetails" : "TimeoutError: Waiting for element to be located By(xpath, //input[@placeholder='Paste Secret Recovery Phrase from clipboard'])\n                Wait timed out after 30003ms",
+        "time" : {
+          "start" : 1638495786746,
+          "stop" : 1638495818728,
+          "duration" : 31982
+        }
+      }, {
+        "uid" : "9bc9250e8eace072",
+        "reportUrl" : "https://mangata-finance.github.io/mangata-e2e/1044//#testresult/9bc9250e8eace072",
+        "status" : "failed",
+        "statusDetails" : "TimeoutError: Waiting for element to be located By(xpath, //input[@placeholder='Paste Secret Recovery Phrase from clipboard'])\n                Wait timed out after 30004ms",
+        "time" : {
+          "start" : 1638410201869,
+          "stop" : 1638410233260,
+          "duration" : 31391
+        }
+      }, {
+        "uid" : "a7b8efa90e2024b8",
+        "reportUrl" : "https://mangata-finance.github.io/mangata-e2e/1043//#testresult/a7b8efa90e2024b8",
+        "status" : "failed",
+        "statusDetails" : "TimeoutError: Waiting for element to be located By(xpath, //input[@placeholder='Paste Secret Recovery Phrase from clipboard'])\n                Wait timed out after 30001ms",
+        "time" : {
+          "start" : 1638410159602,
+          "stop" : 1638410190987,
+          "duration" : 31385
+        }
+      }, {
+        "uid" : "ed799f365cc305f6",
+        "reportUrl" : "https://mangata-finance.github.io/mangata-e2e/1042//#testresult/ed799f365cc305f6",
+        "status" : "failed",
+        "statusDetails" : "TimeoutError: Waiting for element to be located By(xpath, //input[@placeholder='Paste Secret Recovery Phrase from clipboard'])\n                Wait timed out after 30005ms",
+        "time" : {
+          "start" : 1638410040479,
+          "stop" : 1638410071823,
+          "duration" : 31344
+        }
+      }, {
+        "uid" : "8092eae0862c3770",
+        "reportUrl" : "https://mangata-finance.github.io/mangata-e2e/1038//#testresult/8092eae0862c3770",
+        "status" : "failed",
+        "statusDetails" : "TimeoutError: Waiting for element to be located By(xpath, //input[@placeholder='Paste Secret Recovery Phrase from clipboard'])\n                Wait timed out after 30000ms",
+        "time" : {
+          "start" : 1638323820883,
+          "stop" : 1638323852103,
+          "duration" : 31220
+        }
+      }, {
+        "uid" : "605a554341d1d973",
+        "reportUrl" : "https://mangata-finance.github.io/mangata-e2e/1039//#testresult/605a554341d1d973",
+        "status" : "failed",
+        "statusDetails" : "TimeoutError: Waiting for element to be located By(xpath, //input[@placeholder='Paste Secret Recovery Phrase from clipboard'])\n                Wait timed out after 30009ms",
+        "time" : {
+          "start" : 1638323766325,
+          "stop" : 1638323797623,
+          "duration" : 31298
+        }
+      }, {
+        "uid" : "d43e4cc693c8118c",
+        "reportUrl" : "https://mangata-finance.github.io/mangata-e2e/1040//#testresult/d43e4cc693c8118c",
+        "status" : "failed",
+        "statusDetails" : "TimeoutError: Waiting for element to be located By(xpath, //input[@placeholder='Paste Secret Recovery Phrase from clipboard'])\n                Wait timed out after 30001ms",
+        "time" : {
+          "start" : 1638322686796,
+          "stop" : 1638322718334,
+          "duration" : 31538
+        }
+      }, {
+        "uid" : "45dbd83b2baf6069",
+        "reportUrl" : "https://mangata-finance.github.io/mangata-e2e/1037//#testresult/45dbd83b2baf6069",
+        "status" : "failed",
+        "statusDetails" : "TimeoutError: Waiting for element to be located By(xpath, //input[@placeholder='Paste Secret Recovery Phrase from clipboard'])\n                Wait timed out after 30002ms",
+        "time" : {
+          "start" : 1638274338625,
+          "stop" : 1638274370246,
+          "duration" : 31621
+        }
+      }, {
+        "uid" : "85b4d9849a05a451",
+        "reportUrl" : "https://mangata-finance.github.io/mangata-e2e/1035//#testresult/85b4d9849a05a451",
+        "status" : "failed",
+        "statusDetails" : "TimeoutError: Waiting for element to be located By(xpath, //input[@placeholder='Paste Secret Recovery Phrase from clipboard'])\n                Wait timed out after 30008ms",
+        "time" : {
+          "start" : 1638237413154,
+          "stop" : 1638237444711,
+          "duration" : 31557
+        }
+      }, {
+        "uid" : "513cfd1f05c71cb6",
+        "reportUrl" : "https://mangata-finance.github.io/mangata-e2e/1033//#testresult/513cfd1f05c71cb6",
+        "status" : "failed",
+        "statusDetails" : "TimeoutError: Waiting for element to be located By(xpath, //input[@placeholder='Paste Secret Recovery Phrase from clipboard'])\n                Wait timed out after 30002ms",
+        "time" : {
+          "start" : 1638237341725,
+          "stop" : 1638237373867,
+          "duration" : 32142
+        }
+      }, {
+        "uid" : "141a939cee5ad2a6",
+        "reportUrl" : "https://mangata-finance.github.io/mangata-e2e/1032//#testresult/141a939cee5ad2a6",
+        "status" : "failed",
+        "statusDetails" : "TimeoutError: Waiting for element to be located By(xpath, //input[@placeholder='Paste Secret Recovery Phrase from clipboard'])\n                Wait timed out after 30002ms",
+        "time" : {
+          "start" : 1638177036063,
+          "stop" : 1638177067727,
+          "duration" : 31664
+        }
+      }, {
+        "uid" : "ea7cf783e543b799",
+        "reportUrl" : "https://mangata-finance.github.io/mangata-e2e/1029//#testresult/ea7cf783e543b799",
+        "status" : "failed",
+        "statusDetails" : "TimeoutError: Waiting for element to be located By(xpath, //input[@placeholder='Paste Secret Recovery Phrase from clipboard'])\n                Wait timed out after 30005ms",
+        "time" : {
+          "start" : 1638150419792,
+          "stop" : 1638150451366,
+          "duration" : 31574
+        }
+      }, {
+        "uid" : "19a3805bac577508",
+        "reportUrl" : "https://mangata-finance.github.io/mangata-e2e/1030//#testresult/19a3805bac577508",
+        "status" : "failed",
+        "statusDetails" : "TimeoutError: Waiting for element to be located By(xpath, //input[@placeholder='Paste Secret Recovery Phrase from clipboard'])\n                Wait timed out after 30009ms",
+        "time" : {
+          "start" : 1638150353774,
+          "stop" : 1638150385388,
+          "duration" : 31614
+        }
+      }, {
+        "uid" : "3a9e2dd3e253fc1f",
+        "reportUrl" : "https://mangata-finance.github.io/mangata-e2e/1028//#testresult/3a9e2dd3e253fc1f",
+        "status" : "failed",
+        "statusDetails" : "TimeoutError: Waiting for element to be located By(xpath, //input[@placeholder='Paste Secret Recovery Phrase from clipboard'])\n                Wait timed out after 30005ms",
+        "time" : {
+          "start" : 1638150257595,
+          "stop" : 1638150289012,
+          "duration" : 31417
+        }
+      }, {
+        "uid" : "ff70f28b95dea8f7",
+        "reportUrl" : "https://mangata-finance.github.io/mangata-e2e/1025//#testresult/ff70f28b95dea8f7",
+        "status" : "failed",
+        "statusDetails" : "TimeoutError: Waiting for element to be located By(xpath, //input[@placeholder='Paste Secret Recovery Phrase from clipboard'])\n                Wait timed out after 30007ms",
+        "time" : {
+          "start" : 1638063971564,
+          "stop" : 1638064003009,
+          "duration" : 31445
+        }
+      } ]
+    },
+    "tags" : [ ]
+  },
+  "source" : "7444fa38daff8a75.json",
+  "parameterValues" : [ ]
+}
