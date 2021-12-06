@@ -2,29 +2,29 @@
  *
  * @group ui
  */
-import { Keyring } from "@polkadot/api";
+import {Keyring} from "@polkadot/api";
 import BN from "bn.js";
-import { WebDriver } from "selenium-webdriver";
-import { getApi, initApi } from "../../utils/api";
-import { Mangata } from "../../utils/frontend/pages/Mangata";
-import { Polkadot } from "../../utils/frontend/pages/Polkadot";
+import {WebDriver} from "selenium-webdriver";
+import {getApi, initApi} from "../../utils/api";
+import {Mangata} from "../../utils/frontend/pages/Mangata";
+import {Polkadot} from "../../utils/frontend/pages/Polkadot";
 import {
   NotificationModal,
   ModalType,
 } from "../../utils/frontend/pages/NotificationModal";
-import { Swap } from "../../utils/frontend/pages/Swap";
-import { Pool } from "../../utils/frontend/pages/Pool";
-import { Sidebar } from "../../utils/frontend/pages/Sidebar";
-import { DriverBuilder } from "../../utils/frontend/utils/Driver";
+import {Swap} from "../../utils/frontend/pages/Swap";
+import {Pool} from "../../utils/frontend/pages/Pool";
+import {Sidebar} from "../../utils/frontend/pages/Sidebar";
+import {DriverBuilder} from "../../utils/frontend/utils/Driver";
 import {
   setupAllExtensions,
   addExtraLogs,
   uiStringToBN,
 } from "../../utils/frontend/utils/Helper";
-import { AssetWallet, User } from "../../utils/User";
-import { getEnvironmentRequiredVars } from "../../utils/utils";
-import { FIVE_MIN, MGA_ASSET_NAME } from "../../utils/Constants";
-import { Assets } from "../../utils/Assets";
+import {AssetWallet, User} from "../../utils/User";
+import {getEnvironmentRequiredVars} from "../../utils/utils";
+import {FIVE_MIN, MGA_ASSET_NAME} from "../../utils/Constants";
+import {Assets} from "../../utils/Assets";
 
 const MGA_ASSET_ID = new BN(0);
 
@@ -38,7 +38,7 @@ describe("UI tests - A user can use MAX:", () => {
   let sudo: User;
   let newToken: BN;
   let assetName: string;
-  const { sudo: sudoUserName } = getEnvironmentRequiredVars();
+  const {sudo: sudoUserName} = getEnvironmentRequiredVars();
   const visibleValueNumber = Math.pow(10, 19).toString();
 
   beforeEach(async () => {
@@ -47,9 +47,9 @@ describe("UI tests - A user can use MAX:", () => {
     } catch (e) {
       await initApi();
     }
-    keyring = new Keyring({ type: "sr25519" });
+    keyring = new Keyring({type: "sr25519"});
     driver = await DriverBuilder.getInstance();
-    const { mnemonic } = await setupAllExtensions(driver);
+    const {mnemonic} = await setupAllExtensions(driver);
 
     testUser1 = new User(keyring);
     testUser1.addFromMnemonic(keyring, mnemonic);

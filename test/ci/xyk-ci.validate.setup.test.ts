@@ -3,15 +3,15 @@
  * @group xyk
  * @group ci
  */
-import { getApi, initApi } from "../../utils/api";
+import {getApi, initApi} from "../../utils/api";
 import BN from "bn.js";
-import { Keyring } from "@polkadot/api";
+import {Keyring} from "@polkadot/api";
 import {
   fromBNToUnitString,
   getEnvironmentRequiredVars,
 } from "../../utils/utils";
-import { getBalanceOfPool, getUserAssets } from "../../utils/tx";
-import { testLog } from "../../utils/Logger";
+import {getBalanceOfPool, getUserAssets} from "../../utils/tx";
+import {testLog} from "../../utils/Logger";
 
 jest.spyOn(console, "log").mockImplementation(jest.fn());
 jest.setTimeout(1500000);
@@ -19,7 +19,7 @@ process.env.NODE_ENV = "test";
 
 let keyring: Keyring;
 
-const { alice: testUserName } = getEnvironmentRequiredVars();
+const {alice: testUserName} = getEnvironmentRequiredVars();
 
 beforeAll(async () => {
   try {
@@ -27,7 +27,7 @@ beforeAll(async () => {
   } catch (e) {
     await initApi();
   }
-  keyring = new Keyring({ type: "sr25519" });
+  keyring = new Keyring({type: "sr25519"});
 });
 
 test.each([

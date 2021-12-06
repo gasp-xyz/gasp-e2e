@@ -1,11 +1,11 @@
-import { WebDriver } from "selenium-webdriver";
+import {WebDriver} from "selenium-webdriver";
 import {
   buildDataTestIdXpath,
   clickElement,
   getText,
   writeText,
 } from "../utils/Helper";
-import { Polkadot } from "./Polkadot";
+import {Polkadot} from "./Polkadot";
 
 //SELECTORS
 const INPUT_PERCENTAGE = "removeLiquidityModal-amountCard-amountInput";

@@ -4,21 +4,21 @@
  * @group api
  * @group sequential
  */
-import { api, getApi, initApi } from "../../utils/api";
-import { getLock } from "../../utils/tx";
+import {api, getApi, initApi} from "../../utils/api";
+import {getLock} from "../../utils/tx";
 
-import { ExtrinsicResult, getEventResult } from "../../utils/eventListeners";
+import {ExtrinsicResult, getEventResult} from "../../utils/eventListeners";
 import BN from "bn.js";
-import { Keyring } from "@polkadot/api";
-import { User } from "../../utils/User";
-import { getEnvironmentRequiredVars } from "../../utils/utils";
-import { MGA_ASSET_ID, MGA_DEFAULT_LIQ_TOKEN } from "../../utils/Constants";
-import { signSendAndWaitToFinishTx } from "../../utils/txHandler";
+import {Keyring} from "@polkadot/api";
+import {User} from "../../utils/User";
+import {getEnvironmentRequiredVars} from "../../utils/utils";
+import {MGA_ASSET_ID, MGA_DEFAULT_LIQ_TOKEN} from "../../utils/Constants";
+import {signSendAndWaitToFinishTx} from "../../utils/txHandler";
 
 jest.spyOn(console, "log").mockImplementation(jest.fn());
 jest.setTimeout(1500000);
 process.env.NODE_ENV = "test";
-const { sudo: sudoUserName } = getEnvironmentRequiredVars();
+const {sudo: sudoUserName} = getEnvironmentRequiredVars();
 
 const ASSET_ID_MGA_ETH = MGA_DEFAULT_LIQ_TOKEN;
 const ASSET_ID_MGA = MGA_ASSET_ID;
@@ -36,7 +36,7 @@ describe("xyk-pallet - Sell Asset: validate Errors:", () => {
       await initApi();
     }
 
-    keyring = new Keyring({ type: "sr25519" });
+    keyring = new Keyring({type: "sr25519"});
 
     // setup users
     testUser1 = new User(keyring);

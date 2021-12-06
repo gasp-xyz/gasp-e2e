@@ -1,6 +1,6 @@
 import BN from "bn.js";
-import { ethers } from "ethers";
-import { JsonRpcProvider } from "@ethersproject/providers";
+import {ethers} from "ethers";
+import {JsonRpcProvider} from "@ethersproject/providers";
 
 export class ethUser {
   private provider: JsonRpcProvider;

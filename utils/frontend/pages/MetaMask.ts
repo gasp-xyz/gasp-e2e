@@ -1,12 +1,12 @@
-import { WebDriver } from "selenium-webdriver";
-import { getEnvironmentRequiredVars, sleep } from "../../utils";
+import {WebDriver} from "selenium-webdriver";
+import {getEnvironmentRequiredVars, sleep} from "../../utils";
 import {
   clickElement,
   doActionInDifferentWindow,
   getAttribute,
   waitForElement,
 } from "../utils/Helper";
-const { By } = require("selenium-webdriver");
+const {By} = require("selenium-webdriver");
 
 //xpaths
 const XPATH_PASSWORD = "//input[@id='password']";
@@ -50,7 +50,7 @@ export class MetaMask {
 
   constructor(driver: any) {
     this.driver = driver;
-    const { uiUserPassword: userPassword, mnemonicMetaMask } =
+    const {uiUserPassword: userPassword, mnemonicMetaMask} =
       getEnvironmentRequiredVars();
     this.userPassword = userPassword;
     this.mnemonicMetaMask = mnemonicMetaMask;

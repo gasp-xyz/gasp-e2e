@@ -5,16 +5,16 @@
  * eslint-disable no-console
  */
 import BN from "bn.js";
-import { uniq, intersection, takeRight } from "lodash";
+import {uniq, intersection, takeRight} from "lodash";
 
-import { cryptoWaitReady } from "@polkadot/util-crypto";
-import { Keyring } from "@polkadot/api";
+import {cryptoWaitReady} from "@polkadot/util-crypto";
+import {Keyring} from "@polkadot/api";
 
-import { SudoUser } from "../../utils/Framework/User/SudoUser";
-import { UserFactory, Users } from "../../utils/Framework/User/UserFactory";
-import { Node } from "../../utils/Framework/Node/Node";
-import { testLog } from "../../utils/Logger";
-import { getEnvironmentRequiredVars, waitForNBlocks } from "../../utils/utils";
+import {SudoUser} from "../../utils/Framework/User/SudoUser";
+import {UserFactory, Users} from "../../utils/Framework/User/UserFactory";
+import {Node} from "../../utils/Framework/Node/Node";
+import {testLog} from "../../utils/Logger";
+import {getEnvironmentRequiredVars, waitForNBlocks} from "../../utils/utils";
 import {GovernanceUser} from "../../utils/Framework/User/GovernanceUser";
 import {Bank} from "../../utils/Framework/Supply/Bank";
 
@@ -30,10 +30,18 @@ let sudo: SudoUser;
 
 const ValidatorA: Node = new Node(getEnvironmentRequiredVars().validatorA);
 const ValidatorB: Node = new Node(getEnvironmentRequiredVars().validatorB);
-const ValidatorANode1: Node = new Node(getEnvironmentRequiredVars().validatorANode1);
-const ValidatorANode2: Node = new Node(getEnvironmentRequiredVars().validatorANode2);
-const ValidatorBNode1: Node = new Node(getEnvironmentRequiredVars().validatorBNode1);
-const ValidatorBNode2: Node = new Node(getEnvironmentRequiredVars().validatorBNode2);
+const ValidatorANode1: Node = new Node(
+  getEnvironmentRequiredVars().validatorANode1
+);
+const ValidatorANode2: Node = new Node(
+  getEnvironmentRequiredVars().validatorANode2
+);
+const ValidatorBNode1: Node = new Node(
+  getEnvironmentRequiredVars().validatorBNode1
+);
+const ValidatorBNode2: Node = new Node(
+  getEnvironmentRequiredVars().validatorBNode2
+);
 
 const nodes = [
   ValidatorA,
@@ -72,7 +80,7 @@ beforeAll(async () => {
   await bootnodeB.connect();
   await bootnodeB.subscribeToHead();
 
-  keyring = new Keyring({ type: "sr25519" });
+  keyring = new Keyring({type: "sr25519"});
   sudo = UserFactory.createUser(Users.SudoUser, keyring, bootnodeA) as SudoUser;
 });
 
@@ -161,23 +169,29 @@ describe("Multi-Validator -> Network -> Syncing", () => {
   });
 
   test("Extrinsics propogate correctly", async () => {
-    let candidate = UserFactory.createUser(
+    const candidate = UserFactory.createUser(
       Users.GovernanceUser,
       keyring,
       bootnodeA
     ) as GovernanceUser;
 
-    let voter = UserFactory.createUser(
+    const voter = UserFactory.createUser(
       Users.GovernanceUser,
       keyring,
       bootnodeB
     ) as GovernanceUser;
 
-    let bank = new Bank(sudo);
-  
-    await voter.addMGATokens(bank.sudoUser, new BN(Math.pow(10, 17).toString()));
-    await candidate.addMGATokens(bank.sudoUser, new BN(Math.pow(10, 16).toString()));
-  
+    const bank = new Bank(sudo);
+
+    await voter.addMGATokens(
+      bank.sudoUser,
+      new BN(Math.pow(10, 17).toString())
+    );
+    await candidate.addMGATokens(
+      bank.sudoUser,
+      new BN(Math.pow(10, 16).toString())
+    );
+
     candidate.node.subscribeToUserBalanceChanges(candidate);
     voter.node.subscribeToUserBalanceChanges(voter);
 

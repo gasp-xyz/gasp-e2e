@@ -1,9 +1,9 @@
 import * as uuid from "uuid";
-import { ApiPromise } from "@polkadot/api";
-import { initApi } from "../../api";
-import { testLog } from "../../Logger";
+import {ApiPromise} from "@polkadot/api";
+import {initApi} from "../../api";
+import {testLog} from "../../Logger";
 import BN from "bn.js";
-import { GovernanceUser } from "../User/GovernanceUser";
+import {GovernanceUser} from "../User/GovernanceUser";
 
 export class Node {
   name: string;
@@ -16,12 +16,12 @@ export class Node {
   hashes: Set<string> = new Set();
   blockHashes: Map<number, string> = new Map();
   subscription: any;
-  blockAuthors: Array<string> = new Array();
+  blockAuthors: Array<string> = [];
 
-  electionEvents: Map<number, { candidates: any; members: any }> = new Map();
+  electionEvents: Map<number, {candidates: any; members: any}> = new Map();
   userBalancesHistory: Map<
     number,
-    Map<number, { free: BN; reserved: BN; miscFrozen: BN; feeFrozen: BN }>
+    Map<number, {free: BN; reserved: BN; miscFrozen: BN; feeFrozen: BN}>
   > = new Map();
 
   constructor(wsPath: string) {
@@ -39,7 +39,11 @@ export class Node {
         if (!this.firstBlock) {
           this.firstBlock = lastHeader.number.toNumber();
         }
-        this.blockAuthors.push((await this.api!.derive.chain.getHeader(lastHeader.hash.toString())).author.toString());
+        this.blockAuthors.push(
+          (
+            await this.api!.derive.chain.getHeader(lastHeader.hash.toString())
+          ).author.toString()
+        );
         this.lastBlock = lastHeader.number.toNumber();
         this.lastHash = lastHeader.hash.toString();
         this.hashes.add(this.lastHash);

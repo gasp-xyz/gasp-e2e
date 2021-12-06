@@ -4,17 +4,17 @@
  * @group calculate
  * @group parallel
  */
-import { getApi, initApi } from "../../utils/api";
+import {getApi, initApi} from "../../utils/api";
 import {
   calculate_buy_price_rpc,
   calculate_sell_price_rpc,
   getBalanceOfPool,
 } from "../../utils/tx";
 import BN from "bn.js";
-import { Keyring } from "@polkadot/api";
-import { AssetWallet, User } from "../../utils/User";
-import { Assets } from "../../utils/Assets";
-import { getEnvironmentRequiredVars } from "../../utils/utils";
+import {Keyring} from "@polkadot/api";
+import {AssetWallet, User} from "../../utils/User";
+import {Assets} from "../../utils/Assets";
+import {getEnvironmentRequiredVars} from "../../utils/utils";
 
 jest.spyOn(console, "log").mockImplementation(jest.fn());
 jest.setTimeout(1500000);
@@ -27,7 +27,7 @@ let firstCurrency: BN;
 let secondCurrency: BN;
 
 // Assuming the pallet's AccountId
-const { sudo: sudoUserName } = getEnvironmentRequiredVars();
+const {sudo: sudoUserName} = getEnvironmentRequiredVars();
 const firstAssetAmount = 1000;
 const seccondAssetAmount = 1000;
 
@@ -38,7 +38,7 @@ beforeAll(async () => {
     await initApi();
   }
 
-  keyring = new Keyring({ type: "sr25519" });
+  keyring = new Keyring({type: "sr25519"});
 
   // setup users
   testUser1 = new User(keyring);

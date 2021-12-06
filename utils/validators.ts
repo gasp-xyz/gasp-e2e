@@ -1,5 +1,5 @@
 import BN from "bn.js";
-import { EventResult, ExtrinsicResult } from "./eventListeners";
+import {EventResult, ExtrinsicResult} from "./eventListeners";
 import {
   getAssetSupply,
   getBalanceOfPool,
@@ -7,7 +7,7 @@ import {
   getTreasury,
   getTreasuryBurn,
 } from "./tx";
-import { AssetWallet, User } from "./User";
+import {AssetWallet, User} from "./User";
 import {
   calculateCompleteFees,
   calculateFees,
@@ -205,8 +205,8 @@ export async function validateUserPaidFeeForFailedTx(
   poolAmountFailedBought: BN,
   initialPoolValueSoldAssetId: BN
 ) {
-  const { treasury, treasuryBurn } = calculateFees(soldAmount);
-  const { completeFee } = calculateCompleteFees(soldAmount);
+  const {treasury, treasuryBurn} = calculateFees(soldAmount);
+  const {completeFee} = calculateCompleteFees(soldAmount);
 
   //when failed Tx, we remove 3% and put it in the pool.
   await user.refreshAmounts(AssetWallet.AFTER);

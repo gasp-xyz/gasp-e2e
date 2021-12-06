@@ -4,7 +4,7 @@
  * @group api
  * @group parallel
  */
-import { getApi, initApi } from "../../utils/api";
+import {getApi, initApi} from "../../utils/api";
 import {
   getBalanceOfPool,
   createPool,
@@ -14,22 +14,22 @@ import {
   burnLiquidity,
   mintLiquidity,
 } from "../../utils/tx";
-import { ExtrinsicResult } from "../../utils/eventListeners";
+import {ExtrinsicResult} from "../../utils/eventListeners";
 import BN from "bn.js";
-import { Keyring } from "@polkadot/api";
-import { AssetWallet, User } from "../../utils/User";
-import { Assets } from "../../utils/Assets";
+import {Keyring} from "@polkadot/api";
+import {AssetWallet, User} from "../../utils/User";
+import {Assets} from "../../utils/Assets";
 import {
   getEnvironmentRequiredVars,
   TokensErrorCodes,
   XyzErrorCodes,
 } from "../../utils/utils";
-import { getEventResultFromMangataTx } from "../../utils/txHandler";
+import {getEventResultFromMangataTx} from "../../utils/txHandler";
 
 jest.spyOn(console, "log").mockImplementation(jest.fn());
 jest.setTimeout(1500000);
 process.env.NODE_ENV = "test";
-const { sudo: sudoUserName } = getEnvironmentRequiredVars();
+const {sudo: sudoUserName} = getEnvironmentRequiredVars();
 
 const MAX_BALANCE = new BN("340282366920938463463374607431768211455"); //max balance
 
@@ -48,7 +48,7 @@ describe("xyk-pallet - Check operations are not executed because of overflow in 
       await initApi();
     }
 
-    keyring = new Keyring({ type: "sr25519" });
+    keyring = new Keyring({type: "sr25519"});
 
     // setup users
     testUser1 = new User(keyring);
@@ -130,7 +130,7 @@ describe("xyk-pallet - Operate with a pool close to overflow", () => {
       await initApi();
     }
 
-    keyring = new Keyring({ type: "sr25519" });
+    keyring = new Keyring({type: "sr25519"});
 
     // setup users
     testUser1 = new User(keyring);
@@ -276,7 +276,7 @@ describe("xyk-pallet - Operate with a user account close to overflow", () => {
       await initApi();
     }
 
-    keyring = new Keyring({ type: "sr25519" });
+    keyring = new Keyring({type: "sr25519"});
 
     // setup users
     testUser1 = new User(keyring);
@@ -382,7 +382,7 @@ describe.skip("xyk-pallet - Operate with a highly unbalanced pool [mg - newAsset
       await initApi();
     }
 
-    keyring = new Keyring({ type: "sr25519" });
+    keyring = new Keyring({type: "sr25519"});
 
     // setup users
     testUser1 = new User(keyring);

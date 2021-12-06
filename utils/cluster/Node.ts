@@ -1,9 +1,8 @@
-import { ApiPromise } from "@polkadot/api";
-import { initApi } from "../../utils/api";
-import { testLog } from "../Logger";
-import { Header } from "@polkadot/types/interfaces/types";
+import {ApiPromise} from "@polkadot/api";
+import {initApi} from "../../utils/api";
+import {testLog} from "../Logger";
 
-export { Node };
+export {Node};
 
 class Node {
   name: string;
@@ -18,7 +17,7 @@ class Node {
   blockHashes: Map<number, string> = new Map();
   blockNumbers: Set<number> = new Set();
   subscription: any;
-  blockAuthors: Array<string> = new Array();
+  blockAuthors: Array<string> = [];
 
   constructor(name: string, wsPath: string) {
     this.name = name;
@@ -43,7 +42,11 @@ class Node {
         if (!this.firstBlock) {
           this.firstBlock = lastHeader.number.toNumber();
         }
-        this.blockAuthors.push((await this.api!.derive.chain.getHeader(lastHeader.hash.toString())).author.toString());
+        this.blockAuthors.push(
+          (
+            await this.api!.derive.chain.getHeader(lastHeader.hash.toString())
+          ).author.toString()
+        );
         this.lastBlock = lastHeader.number.toNumber();
         this.lastHash = lastHeader.hash.toString();
         this.hashes.add(this.lastHash);

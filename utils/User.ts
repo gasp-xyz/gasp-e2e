@@ -1,9 +1,9 @@
-import { Keyring } from "@polkadot/api";
-import { KeyringPair } from "@polkadot/keyring/types";
+import {Keyring} from "@polkadot/api";
+import {KeyringPair} from "@polkadot/keyring/types";
 import BN from "bn.js";
-import { v4 as uuid } from "uuid";
-import { ExtrinsicResult, waitNewBlock } from "./eventListeners";
-import { testLog } from "./Logger";
+import {v4 as uuid} from "uuid";
+import {ExtrinsicResult, waitNewBlock} from "./eventListeners";
+import {testLog} from "./Logger";
 import {
   buyAsset,
   createPool,
@@ -15,10 +15,10 @@ import {
   sellAsset,
   transferAll,
 } from "./tx";
-import { getEventResultFromMangataTx } from "./txHandler";
-import { MAX_BALANCE, MGA_ASSET_ID } from "./Constants";
-import { AccountData } from "@polkadot/types/interfaces/balances";
-import { strict as assert } from "assert";
+import {getEventResultFromMangataTx} from "./txHandler";
+import {MAX_BALANCE, MGA_ASSET_ID} from "./Constants";
+import {AccountData} from "@polkadot/types/interfaces/balances";
+import {strict as assert} from "assert";
 
 export enum AssetWallet {
   BEFORE,
@@ -254,8 +254,8 @@ export class Asset {
 
   constructor(
     currencyId: BN,
-    amountBefore = { free: new BN(0) } as AccountData,
-    amountAfter = { free: new BN(0) } as AccountData
+    amountBefore = {free: new BN(0)} as AccountData,
+    amountAfter = {free: new BN(0)} as AccountData
   ) {
     this.currencyId = currencyId;
     this.amountBefore = amountBefore;
