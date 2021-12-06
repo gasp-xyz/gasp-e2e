@@ -51,6 +51,8 @@
     "test-sdk": "rm nonce.db ; rm sudo.lock; jest --verbose --runInBand --ci --group=sdk ",
     "test-ui-smoke": "rm nonce.db ; rm sudo.lock; jest --verbose --runInBand --ci --group=ui-smoke ",
     "test-governance": "rm nonce.db ; rm sudo.lock; jest --verbose --runInBand --ci --group=governance",
+    "test-governance-candidacy": "rm nonce.db ; rm sudo.lock; jest --verbose --runInBand --ci --group=governance-candidacy",
+    "test-governance-voting": "rm nonce.db ; rm sudo.lock; jest --verbose --runInBand --ci --group=governance-voting",
     "test-multi-validator": "rm nonce.db ; rm sudo.lock; jest --verbose --runInBand --ci --group=multi-validator",
     "tsc-lint": "tsc -noemit -p tsconfig.json",
     "eslint": "node_modules/.bin/eslint --max-warnings 0 . --ext .ts",
