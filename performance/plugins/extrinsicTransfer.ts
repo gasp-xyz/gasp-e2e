@@ -10,6 +10,7 @@ import { Node } from "../../utils/Framework/Node/Node";
 import { MGA_ASSET_ID } from "../../utils/Constants";
 import { mintAsset } from "../../utils/tx";
 import { getApi, initApi } from "../../utils/api";
+import { preGenerateTransactions } from "./testRunner";
 
 function seedFromNum(seed: number): string {
   return "//user//" + ("0000" + seed).slice(-4);
@@ -59,7 +60,13 @@ export class ExtrinsicTransfer implements TestItem {
 
     return true;
   }
-  async act(): Promise<boolean> {
+  async act(testParams: TestParams): Promise<boolean> {
+    const preSetupThreads = await preGenerateTransactions(
+      testParams,
+      mgaNodeandUsers
+    );
+    const tx = await preSetupThreads[0][0][0];
+    await tx.send();
     return true;
   }
   async expect(): Promise<boolean> {
@@ -74,7 +81,7 @@ export class ExtrinsicTransfer implements TestItem {
         testLog.getLog().info("Done Arrange");
         return (
           result &&
-          (await this.act().then(async (resultAct) => {
+          (await this.act(testparams).then(async (resultAct) => {
             testLog.getLog().info("Done Act");
             return (
               resultAct &&
