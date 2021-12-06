@@ -16,7 +16,7 @@ export class Node {
   hashes: Set<string> = new Set();
   blockHashes: Map<number, string> = new Map();
   subscription: any;
-  blockAuthors: Array<string> = [];
+  blockAuthors: Array<string | void> = [];
 
   electionEvents: Map<number, {candidates: any; members: any}> = new Map();
   userBalancesHistory: Map<
@@ -40,9 +40,13 @@ export class Node {
           this.firstBlock = lastHeader.number.toNumber();
         }
         this.blockAuthors.push(
-          (
-            await this.api!.derive.chain.getHeader(lastHeader.hash.toString())
-          ).author.toString()
+          await this.api!.derive.chain.getHeader(
+            lastHeader.hash.toString()
+          )!.then((res) => {
+            if (res!.author!) {
+              res!.author!;
+            }
+          })
         );
         this.lastBlock = lastHeader.number.toNumber();
         this.lastHash = lastHeader.hash.toString();

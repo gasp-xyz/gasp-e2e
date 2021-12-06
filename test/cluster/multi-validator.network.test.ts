@@ -161,7 +161,7 @@ describe("Multi-Validator -> Network -> Syncing", () => {
     nodes.map(async (node: Node) => {
       const blocks = takeRight(Array.from(node.blockAuthors), 3);
       blocks.forEach((block) => {
-        blockProducer.add(block);
+        blockProducer.add(block!);
       });
     });
 
