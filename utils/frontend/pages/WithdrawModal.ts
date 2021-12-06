@@ -1,4 +1,4 @@
-import { WebDriver } from "selenium-webdriver";
+import {WebDriver} from "selenium-webdriver";
 import {
   buildDataTestIdXpath,
   clickElement,
@@ -6,7 +6,7 @@ import {
   selectAssetFromModalList,
   writeText,
 } from "../utils/Helper";
-import { Polkadot } from "./Polkadot";
+import {Polkadot} from "./Polkadot";
 
 //SELECTORS
 const SELECT_TOKEN = "withdrawModal-step0-assetInput";

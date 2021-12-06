@@ -1,8 +1,8 @@
-import { ApiPromise } from "@polkadot/api";
+import {ApiPromise} from "@polkadot/api";
 import Keyring from "@polkadot/keyring";
-import { signSendAndWaitToFinishTx } from "../../txHandler";
-import { BaseUser } from "./BaseUser";
-import { Node } from "../Node/Node";
+import {signSendAndWaitToFinishTx} from "../../txHandler";
+import {BaseUser} from "./BaseUser";
+import {Node} from "../Node/Node";
 import BN from "bn.js";
 
 export class GovernanceUser extends BaseUser {
@@ -26,9 +26,9 @@ export class GovernanceUser extends BaseUser {
     );
   }
 
-  async renounceCandidacy(): Promise<void> {
+  async renounceCandidacy(candidateStatus: any): Promise<void> {
     await signSendAndWaitToFinishTx(
-      this.api.tx.elections.renounceCandidacy("Candidate"),
+      this.api.tx.elections.renounceCandidacy(candidateStatus),
       this.keyRingPair
     );
   }

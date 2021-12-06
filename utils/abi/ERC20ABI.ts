@@ -1,8 +1,8 @@
 export const ERC20ABI = [
   {
-    inputs: [{ internalType: "address", name: "account", type: "address" }],
+    inputs: [{internalType: "address", name: "account", type: "address"}],
     name: "balanceOf",
-    outputs: [{ internalType: "uint256", name: "", type: "uint256" }],
+    outputs: [{internalType: "uint256", name: "", type: "uint256"}],
     stateMutability: "view",
     type: "function",
     constant: true,
@@ -10,7 +10,7 @@ export const ERC20ABI = [
   {
     inputs: [],
     name: "decimals",
-    outputs: [{ internalType: "uint8", name: "", type: "uint8" }],
+    outputs: [{internalType: "uint8", name: "", type: "uint8"}],
     stateMutability: "view",
     type: "function",
     constant: true,
@@ -18,7 +18,7 @@ export const ERC20ABI = [
   {
     inputs: [],
     name: "symbol",
-    outputs: [{ internalType: "string", name: "", type: "string" }],
+    outputs: [{internalType: "string", name: "", type: "string"}],
     stateMutability: "view",
     type: "function",
     constant: true,
@@ -49,7 +49,7 @@ export const ERC20ABI = [
   {
     inputs: [],
     name: "totalSupply",
-    outputs: [{ internalType: "uint256", name: "", type: "uint256" }],
+    outputs: [{internalType: "uint256", name: "", type: "uint256"}],
     stateMutability: "view",
     type: "function",
     constant: true,

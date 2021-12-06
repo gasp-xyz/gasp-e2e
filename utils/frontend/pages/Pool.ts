@@ -1,4 +1,4 @@
-import { By, WebDriver } from "selenium-webdriver";
+import {By, WebDriver} from "selenium-webdriver";
 import {
   buildDataTestIdXpath,
   clickElement,

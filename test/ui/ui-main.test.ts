@@ -3,38 +3,34 @@
  * @group ui
  * @group ui-smoke
  */
-import { Keyring } from "@polkadot/api";
+import {Keyring} from "@polkadot/api";
 import BN from "bn.js";
-import { WebDriver } from "selenium-webdriver";
-import { getApi, initApi } from "../../utils/api";
-import { waitNewBlock } from "../../utils/eventListeners";
-import { Mangata } from "../../utils/frontend/pages/Mangata";
-import { Polkadot } from "../../utils/frontend/pages/Polkadot";
+import {WebDriver} from "selenium-webdriver";
+import {getApi, initApi} from "../../utils/api";
+import {waitNewBlock} from "../../utils/eventListeners";
+import {Mangata} from "../../utils/frontend/pages/Mangata";
+import {Polkadot} from "../../utils/frontend/pages/Polkadot";
 import {
   NotificationModal,
   ModalType,
 } from "../../utils/frontend/pages/NotificationModal";
-import { Swap } from "../../utils/frontend/pages/Swap";
-import { Pool } from "../../utils/frontend/pages/Pool";
-import { Sidebar } from "../../utils/frontend/pages/Sidebar";
-import { DriverBuilder } from "../../utils/frontend/utils/Driver";
+import {Swap} from "../../utils/frontend/pages/Swap";
+import {Pool} from "../../utils/frontend/pages/Pool";
+import {Sidebar} from "../../utils/frontend/pages/Sidebar";
+import {DriverBuilder} from "../../utils/frontend/utils/Driver";
 import {
   setupAllExtensions,
   addExtraLogs,
   uiStringToBN,
 } from "../../utils/frontend/utils/Helper";
-import { AssetWallet, User } from "../../utils/User";
+import {AssetWallet, User} from "../../utils/User";
 import {
   createPoolIfMissing,
   getEnvironmentRequiredVars,
 } from "../../utils/utils";
-import {
-  FIVE_MIN,
-  mETH_ASSET_NAME,
-  MGA_ASSET_NAME,
-} from "../../utils/Constants";
-import { BrunLiquidityModal } from "../../utils/frontend/pages/BrunLiquidityModal";
-import { Assets } from "../../utils/Assets";
+import {FIVE_MIN, mETH_ASSET_NAME, MGA_ASSET_NAME} from "../../utils/Constants";
+import {BrunLiquidityModal} from "../../utils/frontend/pages/BrunLiquidityModal";
+import {Assets} from "../../utils/Assets";
 
 const MGA_ASSET_ID = new BN(0);
 const ETH_ASSET_ID = new BN(1);
@@ -47,7 +43,7 @@ describe("UI tests - A user can swap and mint tokens", () => {
   let keyring: Keyring;
   let testUser1: User;
   let sudo: User;
-  const { sudo: sudoUserName } = getEnvironmentRequiredVars();
+  const {sudo: sudoUserName} = getEnvironmentRequiredVars();
   const visibleValueNumber = Math.pow(10, 19).toString();
 
   beforeEach(async () => {
@@ -56,11 +52,11 @@ describe("UI tests - A user can swap and mint tokens", () => {
     } catch (e) {
       await initApi();
     }
-    keyring = new Keyring({ type: "sr25519" });
+    keyring = new Keyring({type: "sr25519"});
 
     driver = await DriverBuilder.getInstance();
 
-    const { mnemonic } = await setupAllExtensions(driver);
+    const {mnemonic} = await setupAllExtensions(driver);
 
     testUser1 = new User(keyring);
     testUser1.addFromMnemonic(keyring, mnemonic);

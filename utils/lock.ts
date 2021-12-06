@@ -1,5 +1,5 @@
 const file = "sudo.lock";
-const { promises, constants } = require("fs");
+const {promises, constants} = require("fs");
 
 export const lockSudoFile = function () {
   const lockPath = file;

@@ -4,23 +4,23 @@
  * @group sudo
  * @group parallel
  */
-import { getApi, initApi } from "../../utils/api";
-import { getUserAssets, getSudoKey } from "../../utils/tx";
+import {getApi, initApi} from "../../utils/api";
+import {getUserAssets, getSudoKey} from "../../utils/tx";
 import BN from "bn.js";
-import { Keyring } from "@polkadot/api";
-import { User } from "../../utils/User";
-import { validateTransactionSucessful } from "../../utils/validators";
-import { getEnvironmentRequiredVars } from "../../utils/utils";
+import {Keyring} from "@polkadot/api";
+import {User} from "../../utils/User";
+import {validateTransactionSucessful} from "../../utils/validators";
+import {getEnvironmentRequiredVars} from "../../utils/utils";
 import {
   getEventResultFromMangataTx,
   sudoIssueAsset,
 } from "../../utils/txHandler";
-import { testLog } from "../../utils/Logger";
+import {testLog} from "../../utils/Logger";
 
 jest.spyOn(console, "log").mockImplementation(jest.fn());
 jest.setTimeout(1500000);
 process.env.NODE_ENV = "test";
-const { sudo: sudoUserName } = getEnvironmentRequiredVars();
+const {sudo: sudoUserName} = getEnvironmentRequiredVars();
 
 let testUser: User;
 let keyring: Keyring;
@@ -34,7 +34,7 @@ beforeAll(async () => {
 });
 
 beforeEach(async () => {
-  keyring = new Keyring({ type: "sr25519" });
+  keyring = new Keyring({type: "sr25519"});
 
   // setup users
   testUser = new User(keyring);

@@ -2,10 +2,10 @@
  *
  * @group ui
  */
-import { Keyring } from "@polkadot/api";
+import {Keyring} from "@polkadot/api";
 import BN from "bn.js";
-import { WebDriver } from "selenium-webdriver";
-import { getApi, initApi } from "../../utils/api";
+import {WebDriver} from "selenium-webdriver";
+import {getApi, initApi} from "../../utils/api";
 import {
   BTC_ASSET_NAME,
   DOT_ASSET_NAME,
@@ -14,15 +14,15 @@ import {
   MGA_ASSET_NAME,
   USDC_ASSET_NAME,
 } from "../../utils/Constants";
-import { Mangata } from "../../utils/frontend/pages/Mangata";
-import { Sidebar } from "../../utils/frontend/pages/Sidebar";
-import { DriverBuilder } from "../../utils/frontend/utils/Driver";
+import {Mangata} from "../../utils/frontend/pages/Mangata";
+import {Sidebar} from "../../utils/frontend/pages/Sidebar";
+import {DriverBuilder} from "../../utils/frontend/utils/Driver";
 import {
   setupAllExtensions,
   addExtraLogs,
 } from "../../utils/frontend/utils/Helper";
-import { getAllAssets } from "../../utils/tx";
-import { AssetWallet, User } from "../../utils/User";
+import {getAllAssets} from "../../utils/tx";
+import {AssetWallet, User} from "../../utils/User";
 
 //time-out to 7.5 min.Faucet takes some time.
 jest.setTimeout(FIVE_MIN * 1.5);
@@ -46,13 +46,13 @@ describe("UI tests - Get Tokens from Faucet", () => {
       await initApi();
     }
 
-    keyring = new Keyring({ type: "sr25519" });
+    keyring = new Keyring({type: "sr25519"});
   });
 
   beforeEach(async () => {
     driver = await DriverBuilder.getInstance();
 
-    const { polkUserAddress } = await setupAllExtensions(driver);
+    const {polkUserAddress} = await setupAllExtensions(driver);
 
     testUser1 = new User(keyring, undefined);
     testUser1.addFromAddress(keyring, polkUserAddress);

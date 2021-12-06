@@ -1,15 +1,15 @@
-import { env } from "process";
+import {env} from "process";
 import "setimmediate";
-import winston, { Logger, format } from "winston";
-import { getEnvironmentRequiredVars } from "./utils";
+import winston, {Logger, format} from "winston";
+import {getEnvironmentRequiredVars} from "./utils";
 import "setimmediate";
-const { combine, timestamp, printf } = format;
+const {combine, timestamp, printf} = format;
 
 export class testLog {
   private static instance: Logger;
 
   private static initializeLogger(): Logger {
-    const myFormat = printf(({ level, message, timestamp }) => {
+    const myFormat = printf(({level, message, timestamp}) => {
       return `[${timestamp}] - W[${env.JEST_WORKER_ID}] - [${level}]: ${message}`;
     });
 
