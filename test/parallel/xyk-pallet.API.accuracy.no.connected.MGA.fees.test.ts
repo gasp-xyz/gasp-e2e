@@ -4,7 +4,7 @@
  * @group accuracy
  * @group parallel
  */
-import { getApi, getMangataInstance, initApi } from "../../utils/api";
+import {getApi, getMangataInstance, initApi} from "../../utils/api";
 import {
   calculate_sell_price_id_rpc,
   calculate_sell_price_local_no_fee,

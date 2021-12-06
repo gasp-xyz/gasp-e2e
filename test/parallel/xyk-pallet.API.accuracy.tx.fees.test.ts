@@ -4,9 +4,9 @@
  * @group accuracy
  * @group parallel
  */
-import { getApi, getMangataInstance, initApi } from "../../utils/api";
-import { getCurrentNonce } from "../../utils/tx";
-import { ExtrinsicResult } from "../../utils/eventListeners";
+import {getApi, getMangataInstance, initApi} from "../../utils/api";
+import {getCurrentNonce} from "../../utils/tx";
+import {ExtrinsicResult} from "../../utils/eventListeners";
 import BN from "bn.js";
 import {Keyring} from "@polkadot/api";
 import {AssetWallet, User} from "../../utils/User";
