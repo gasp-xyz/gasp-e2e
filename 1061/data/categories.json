@@ -1,0 +1,120 @@
+{
+  "uid" : "4b4757e66a1912dae1a509f688f20b0f",
+  "children" : [ {
+    "name" : "Product defects",
+    "children" : [ {
+      "name" : "Error: WebSocket is not connected",
+      "children" : [ {
+        "name" : "When tx front - fails, User gets notified",
+        "uid" : "8a290bf2ba66e672",
+        "parentUid" : "d87cc0f26d462c8160f75c645ea55e17",
+        "status" : "failed",
+        "time" : {
+          "start" : 1638754584422,
+          "stop" : 1638754635296,
+          "duration" : 50874
+        },
+        "flaky" : false,
+        "newFailed" : false,
+        "parameters" : [ ]
+      }, {
+        "name" : "When tx extrinsic - fails, User gets notified",
+        "uid" : "9f3e7a9abc4f8ad2",
+        "parentUid" : "d87cc0f26d462c8160f75c645ea55e17",
+        "status" : "failed",
+        "time" : {
+          "start" : 1638754635299,
+          "stop" : 1638754685931,
+          "duration" : 50632
+        },
+        "flaky" : false,
+        "newFailed" : false,
+        "parameters" : [ ]
+      }, {
+        "name" : "When user cancel a TX, User gets notified",
+        "uid" : "7df45e78740e76a3",
+        "parentUid" : "d87cc0f26d462c8160f75c645ea55e17",
+        "status" : "failed",
+        "time" : {
+          "start" : 1638754685940,
+          "stop" : 1638754736716,
+          "duration" : 50776
+        },
+        "flaky" : false,
+        "newFailed" : false,
+        "parameters" : [ ]
+      } ],
+      "uid" : "d87cc0f26d462c8160f75c645ea55e17"
+    }, {
+      "name" : "TimeoutError: Waiting for element to be located By(xpath, //*[@data-testid='assetSelectModal-asset-kETH'])\n                Wait timed out after 30013ms",
+      "children" : [ {
+        "name" : "As a User I can deposit ETH from Meta extension",
+        "uid" : "ffeea0e3c5b7faac",
+        "parentUid" : "783d2fbf481b17f3f52f959442652a53",
+        "status" : "failed",
+        "time" : {
+          "start" : 1638755561008,
+          "stop" : 1638755670848,
+          "duration" : 109840
+        },
+        "flaky" : false,
+        "newFailed" : false,
+        "parameters" : [ ]
+      } ],
+      "uid" : "783d2fbf481b17f3f52f959442652a53"
+    }, {
+      "name" : "TimeoutError: Waiting for element to be located By(xpath, //input[@placeholder='Paste Secret Recovery Phrase from clipboard'])\n                Wait timed out after 30006ms",
+      "children" : [ {
+        "name" : "As a User I can Withdraw ETH from Meta extension",
+        "uid" : "2db75d4bb9c3fb52",
+        "parentUid" : "d4e8db01e2c201d852cc6d74c6cbb169",
+        "status" : "failed",
+        "time" : {
+          "start" : 1638755670854,
+          "stop" : 1638755702400,
+          "duration" : 31546
+        },
+        "flaky" : false,
+        "newFailed" : false,
+        "parameters" : [ ]
+      } ],
+      "uid" : "d4e8db01e2c201d852cc6d74c6cbb169"
+    }, {
+      "name" : "Error: expect(received).toBeTruthy()\n                \n                Received: false",
+      "children" : [ {
+        "name" : "As a User I can create a pool",
+        "uid" : "4b02e63881248280",
+        "parentUid" : "ffcd8928d6543ed53c85f4784defae24",
+        "status" : "failed",
+        "time" : {
+          "start" : 1638756883469,
+          "stop" : 1638756932525,
+          "duration" : 49056
+        },
+        "flaky" : false,
+        "newFailed" : false,
+        "parameters" : [ ]
+      } ],
+      "uid" : "ffcd8928d6543ed53c85f4784defae24"
+    }, {
+      "name" : "TimeoutError: Waiting for element to be located By(xpath, //*[@data-testid='wallet-asset-MGA'])\n                Wait timed out after 300010ms",
+      "children" : [ {
+        "name" : "As a User I can get test tokens from the faucet",
+        "uid" : "5520ce31dae561da",
+        "parentUid" : "597ec735c7c83ff3babfa3bd7f3168c3",
+        "status" : "failed",
+        "time" : {
+          "start" : 1638756936120,
+          "stop" : 1638757296435,
+          "duration" : 360315
+        },
+        "flaky" : false,
+        "newFailed" : false,
+        "parameters" : [ ]
+      } ],
+      "uid" : "597ec735c7c83ff3babfa3bd7f3168c3"
+    } ],
+    "uid" : "8fb3a91ba5aaf9de24cc8a92edc82b5d"
+  } ],
+  "name" : "categories"
+}
