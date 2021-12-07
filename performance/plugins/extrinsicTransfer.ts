@@ -20,7 +20,6 @@ const mgaNodeandUsers = new Map<
   number,
   { mgaSdk: Mangata; users: { nonce: BN; keyPair: KeyringPair }[] }
 >();
-
 export class ExtrinsicTransfer implements TestItem {
   async arrange(numberOfThreads: number, nodes: string[]): Promise<boolean> {
     const keyring = new Keyring({ type: "sr25519" });
@@ -65,8 +64,20 @@ export class ExtrinsicTransfer implements TestItem {
       testParams,
       mgaNodeandUsers
     );
-    const tx = await preSetupThreads[0][0][0];
-    await tx.send();
+    const p = new Promise<number>(async (resolve) => {
+      const transaction = await preSetupThreads[0][0][0];
+      await transaction
+        .send(({ status }) => {
+          if (status.isFinalized) {
+            resolve(1);
+            return;
+          }
+        })
+        .catch((err: any) => {
+          return -1;
+        });
+    });
+    await Promise.all([p]);
     return true;
   }
   async expect(): Promise<boolean> {
