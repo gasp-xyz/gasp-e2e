@@ -1,0 +1,269 @@
+{
+  "uid" : "d845e3e80034791b",
+  "name" : "As a User I can mint All tokens newToken - newToken2",
+  "fullName" : "UI tests - A user can use MAX:.As a User I can mint All tokens newToken - newToken2",
+  "historyId" : "57ad81dde99b45a6f03a88cb264c4bf1",
+  "time" : {
+    "start" : 1638842708410,
+    "stop" : 1638842912591,
+    "duration" : 204181
+  },
+  "description" : "",
+  "descriptionHtml" : "",
+  "status" : "failed",
+  "statusMessage" : "Error: Provide btn is not enabled!",
+  "statusTrace" : "Error: Provide btn is not enabled!\n                    at Pool.provideOrCreatePool (/home/runner/work/mangata-e2e/mangata-e2e/utils/frontend/pages/Pool.ts:60:13)\n                    at runMicrotasks (<anonymous>)\n                    at processTicksAndRejections (node:internal/process/task_queues:96:5)\n                    at Object.<anonymous> (/home/runner/work/mangata-e2e/mangata-e2e/test/ui/ui-max.test.ts:132:5)",
+  "flaky" : true,
+  "newFailed" : false,
+  "beforeStages" : [ ],
+  "testStage" : {
+    "status" : "failed",
+    "statusMessage" : "Error: Provide btn is not enabled!",
+    "statusTrace" : "Error: Provide btn is not enabled!\n                    at Pool.provideOrCreatePool (/home/runner/work/mangata-e2e/mangata-e2e/utils/frontend/pages/Pool.ts:60:13)\n                    at runMicrotasks (<anonymous>)\n                    at processTicksAndRejections (node:internal/process/task_queues:96:5)\n                    at Object.<anonymous> (/home/runner/work/mangata-e2e/mangata-e2e/test/ui/ui-max.test.ts:132:5)",
+    "steps" : [ ],
+    "attachments" : [ {
+      "uid" : "81e6c2d0ddf840d7",
+      "name" : "Screeenshot",
+      "source" : "81e6c2d0ddf840d7.png",
+      "type" : "image/png",
+      "size" : 90015
+    } ],
+    "parameters" : [ ],
+    "stepsCount" : 0,
+    "attachmentsCount" : 1,
+    "shouldDisplayMessage" : true,
+    "hasContent" : true
+  },
+  "afterStages" : [ ],
+  "labels" : [ {
+    "name" : "suite",
+    "value" : "UI tests - A user can use MAX:"
+  }, {
+    "name" : "testClass",
+    "value" : "UI tests - A user can use MAX:"
+  }, {
+    "name" : "testMethod",
+    "value" : "As a User I can mint All tokens newToken - newToken2"
+  }, {
+    "name" : "package",
+    "value" : "UI tests - A user can use MAX:"
+  }, {
+    "name" : "resultFormat",
+    "value" : "allure1"
+  } ],
+  "parameters" : [ ],
+  "links" : [ ],
+  "hidden" : false,
+  "retry" : false,
+  "extra" : {
+    "severity" : "normal",
+    "retries" : [ ],
+    "categories" : [ {
+      "name" : "Product defects",
+      "matchedStatuses" : [ ],
+      "flaky" : false
+    } ],
+    "history" : {
+      "statistic" : {
+        "failed" : 24,
+        "broken" : 0,
+        "skipped" : 0,
+        "passed" : 26,
+        "unknown" : 0,
+        "total" : 50
+      },
+      "items" : [ {
+        "uid" : "3d03d092829aa962",
+        "reportUrl" : "https://mangata-finance.github.io/mangata-e2e/1064//#testresult/3d03d092829aa962",
+        "status" : "failed",
+        "statusDetails" : "TimeoutError: Waiting for element to be located By(xpath, //button[text()='Connect'])\n                Wait timed out after 30001ms",
+        "time" : {
+          "start" : 1638842397773,
+          "stop" : 1638842505189,
+          "duration" : 107416
+        }
+      }, {
+        "uid" : "e7f520773a40370",
+        "reportUrl" : "https://mangata-finance.github.io/mangata-e2e/1065//#testresult/e7f520773a40370",
+        "status" : "passed",
+        "time" : {
+          "start" : 1638842326713,
+          "stop" : 1638842530318,
+          "duration" : 203605
+        }
+      }, {
+        "uid" : "14f859a4f545d398",
+        "reportUrl" : "https://mangata-finance.github.io/mangata-e2e/1059//#testresult/14f859a4f545d398",
+        "status" : "passed",
+        "time" : {
+          "start" : 1638756051912,
+          "stop" : 1638756261517,
+          "duration" : 209605
+        }
+      }, {
+        "uid" : "2d7b7cfb4c28110d",
+        "reportUrl" : "https://mangata-finance.github.io/mangata-e2e/1060//#testresult/2d7b7cfb4c28110d",
+        "status" : "failed",
+        "statusDetails" : "Error: Provide btn is not enabled!",
+        "time" : {
+          "start" : 1638755938584,
+          "stop" : 1638756118932,
+          "duration" : 180348
+        }
+      }, {
+        "uid" : "a9811ffbd85015cb",
+        "reportUrl" : "https://mangata-finance.github.io/mangata-e2e/1061//#testresult/a9811ffbd85015cb",
+        "status" : "passed",
+        "time" : {
+          "start" : 1638755871444,
+          "stop" : 1638756076308,
+          "duration" : 204864
+        }
+      }, {
+        "uid" : "8b56ccdb2f0a7f91",
+        "reportUrl" : "https://mangata-finance.github.io/mangata-e2e/1057//#testresult/8b56ccdb2f0a7f91",
+        "status" : "failed",
+        "statusDetails" : "Error: Provide btn is not enabled!",
+        "time" : {
+          "start" : 1638669630588,
+          "stop" : 1638669816956,
+          "duration" : 186368
+        }
+      }, {
+        "uid" : "c4b927c4271d3aa7",
+        "reportUrl" : "https://mangata-finance.github.io/mangata-e2e/1056//#testresult/c4b927c4271d3aa7",
+        "status" : "passed",
+        "time" : {
+          "start" : 1638669627777,
+          "stop" : 1638669826048,
+          "duration" : 198271
+        }
+      }, {
+        "uid" : "67377c4286aa8d4f",
+        "reportUrl" : "https://mangata-finance.github.io/mangata-e2e/1052//#testresult/67377c4286aa8d4f",
+        "status" : "failed",
+        "statusDetails" : "Error: Provide btn is not enabled!",
+        "time" : {
+          "start" : 1638583190106,
+          "stop" : 1638583383421,
+          "duration" : 193315
+        }
+      }, {
+        "uid" : "5c0168ba59098999",
+        "reportUrl" : "https://mangata-finance.github.io/mangata-e2e/1051//#testresult/5c0168ba59098999",
+        "status" : "passed",
+        "time" : {
+          "start" : 1638582981803,
+          "stop" : 1638583180014,
+          "duration" : 198211
+        }
+      }, {
+        "uid" : "be0f763eee7f837b",
+        "reportUrl" : "https://mangata-finance.github.io/mangata-e2e/1050//#testresult/be0f763eee7f837b",
+        "status" : "failed",
+        "statusDetails" : "Error: Provide btn is not enabled!",
+        "time" : {
+          "start" : 1638547638286,
+          "stop" : 1638547826448,
+          "duration" : 188162
+        }
+      }, {
+        "uid" : "968d9924d8f369bc",
+        "reportUrl" : "https://mangata-finance.github.io/mangata-e2e/1047//#testresult/968d9924d8f369bc",
+        "status" : "failed",
+        "statusDetails" : "Error: Provide btn is not enabled!",
+        "time" : {
+          "start" : 1638496883669,
+          "stop" : 1638497081343,
+          "duration" : 197674
+        }
+      }, {
+        "uid" : "285ef65821a90d92",
+        "reportUrl" : "https://mangata-finance.github.io/mangata-e2e/1048//#testresult/285ef65821a90d92",
+        "status" : "passed",
+        "time" : {
+          "start" : 1638496689831,
+          "stop" : 1638496900060,
+          "duration" : 210229
+        }
+      }, {
+        "uid" : "2346ef36a81b9332",
+        "reportUrl" : "https://mangata-finance.github.io/mangata-e2e/1046//#testresult/2346ef36a81b9332",
+        "status" : "passed",
+        "time" : {
+          "start" : 1638496012355,
+          "stop" : 1638496246260,
+          "duration" : 233905
+        }
+      }, {
+        "uid" : "d836c39a4beae7c4",
+        "reportUrl" : "https://mangata-finance.github.io/mangata-e2e/1044//#testresult/d836c39a4beae7c4",
+        "status" : "passed",
+        "time" : {
+          "start" : 1638410434276,
+          "stop" : 1638410638688,
+          "duration" : 204412
+        }
+      }, {
+        "uid" : "2b0a2f3bee69e174",
+        "reportUrl" : "https://mangata-finance.github.io/mangata-e2e/1043//#testresult/2b0a2f3bee69e174",
+        "status" : "failed",
+        "statusDetails" : "Error: Provide btn is not enabled!",
+        "time" : {
+          "start" : 1638410346441,
+          "stop" : 1638410532719,
+          "duration" : 186278
+        }
+      }, {
+        "uid" : "4f50af49a0d8a083",
+        "reportUrl" : "https://mangata-finance.github.io/mangata-e2e/1042//#testresult/4f50af49a0d8a083",
+        "status" : "passed",
+        "time" : {
+          "start" : 1638410235674,
+          "stop" : 1638410433831,
+          "duration" : 198157
+        }
+      }, {
+        "uid" : "55cdbf868e9b0b73",
+        "reportUrl" : "https://mangata-finance.github.io/mangata-e2e/1038//#testresult/55cdbf868e9b0b73",
+        "status" : "failed",
+        "statusDetails" : "Error: Provide btn is not enabled!",
+        "time" : {
+          "start" : 1638324007488,
+          "stop" : 1638324192830,
+          "duration" : 185342
+        }
+      }, {
+        "uid" : "435fd8de95ed9230",
+        "reportUrl" : "https://mangata-finance.github.io/mangata-e2e/1039//#testresult/435fd8de95ed9230",
+        "status" : "passed",
+        "time" : {
+          "start" : 1638323968295,
+          "stop" : 1638324171979,
+          "duration" : 203684
+        }
+      }, {
+        "uid" : "3c7b0d8973d81ed9",
+        "reportUrl" : "https://mangata-finance.github.io/mangata-e2e/1040//#testresult/3c7b0d8973d81ed9",
+        "status" : "passed",
+        "time" : {
+          "start" : 1638322900175,
+          "stop" : 1638323158174,
+          "duration" : 257999
+        }
+      }, {
+        "uid" : "7db021ae4375e36b",
+        "reportUrl" : "https://mangata-finance.github.io/mangata-e2e/1037//#testresult/7db021ae4375e36b",
+        "status" : "passed",
+        "time" : {
+          "start" : 1638274545943,
+          "stop" : 1638274749523,
+          "duration" : 203580
+        }
+      } ]
+    },
+    "tags" : [ ]
+  },
+  "source" : "d845e3e80034791b.json",
+  "parameterValues" : [ ]
+}
