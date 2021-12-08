@@ -7,13 +7,15 @@ import { MGA_ASSET_ID } from "../../utils/Constants";
 import { SubmittableExtrinsic } from "@polkadot/api/types";
 import { SubmittableResult } from "@polkadot/api";
 
+import asyncPool from "tiny-async-pool";
+
 export async function preGenerateTransactions(
   testParams: TestParams,
   mgaNodeandUsers: Map<
     number,
     { mgaSdk: Mangata; users: { nonce: BN; keyPair: KeyringPair }[] }
   >
-): Promise<SubmittableExtrinsic<"promise", SubmittableResult>[][][]> {
+): Promise<SubmittableExtrinsic<"promise", SubmittableResult>[][]> {
   testLog
     .getLog()
     .info(
@@ -25,7 +27,7 @@ export async function preGenerateTransactions(
   const thread_payloads: SubmittableExtrinsic<
     "promise",
     SubmittableResult
-  >[][][] = [];
+  >[][] = [];
   let sanityCounter = 0;
   for (let nodeThread = 0; nodeThread < testParams.nodes.length; nodeThread++) {
     const batches = [];
@@ -56,23 +58,59 @@ export async function preGenerateTransactions(
           new BN(1)
         );
         mgaValue.users[userNo]!.nonce! = userNonceIncremented;
-        //        const signedTx = mgaNodeandUsers
-        //          .get(nodeThread)
-        //          ?.mgaSdk.transferToken(
-        //            srcUser!.keyPair,
-        //            MGA_ASSET_ID.toString(),
-        //            destUser.keyPair.address,
-        //            new BN(1),
-        //            { nonce: userNonceIncremented }
-        //          );
         batch.push(signed);
 
         sanityCounter++;
       }
       batches.push(batch);
     }
-    thread_payloads.push(batches);
+    const flatten = batches.reduce(
+      (accumulator, value) => accumulator.concat(value),
+      []
+    );
+    thread_payloads.push(flatten);
   }
   testLog.getLog().info(`Done pregenerating transactions (${sanityCounter}).`);
   return thread_payloads;
+}
+
+export async function runTransactions(
+  testParams: TestParams,
+  preSetupThreads: SubmittableExtrinsic<"promise", SubmittableResult>[][]
+) {
+  const nodePromises = [];
+  for (let nodeIdx = 0; nodeIdx < testParams.nodes.length; nodeIdx++) {
+    const nodeThreads = testParams.threads;
+    const runNodeTxs = (i: number) =>
+      new Promise<[number, number]>(async (resolve) => {
+        const transaction = await preSetupThreads[0][i];
+        const start = new Date().getTime();
+        await transaction
+          .send(({ status }) => {
+            if (status.isFinalized) {
+              const finalized = new Date().getTime();
+              const diff = finalized - start;
+              resolve([i, diff]);
+              return;
+            }
+          })
+          .catch((err: any) => {
+            return -1;
+          });
+      });
+    const nodeTxs = preSetupThreads[nodeIdx];
+    const indexArray = nodeTxs.map((_, index) => {
+      return index;
+    });
+    nodePromises.push(asyncPool(nodeThreads, indexArray, runNodeTxs));
+  }
+  const results = await Promise.all(nodePromises);
+  // eslint-disable-next-line no-console
+  console.info(
+    "Test results \n --------- \n" +
+      JSON.stringify(results) +
+      "\n  ----------- Test results"
+  );
+  testLog.getLog().info("All promises fulfilled");
+  return results;
 }

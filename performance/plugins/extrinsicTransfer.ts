@@ -10,7 +10,7 @@ import { Node } from "../../utils/Framework/Node/Node";
 import { MGA_ASSET_ID } from "../../utils/Constants";
 import { mintAsset } from "../../utils/tx";
 import { getApi, initApi } from "../../utils/api";
-import { preGenerateTransactions } from "./testRunner";
+import { preGenerateTransactions, runTransactions } from "./testRunner";
 
 function seedFromNum(seed: number): string {
   return "//user//" + ("0000" + seed).slice(-4);
@@ -64,20 +64,7 @@ export class ExtrinsicTransfer implements TestItem {
       testParams,
       mgaNodeandUsers
     );
-    const p = new Promise<number>(async (resolve) => {
-      const transaction = await preSetupThreads[0][0][0];
-      await transaction
-        .send(({ status }) => {
-          if (status.isFinalized) {
-            resolve(1);
-            return;
-          }
-        })
-        .catch((err: any) => {
-          return -1;
-        });
-    });
-    await Promise.all([p]);
+    await runTransactions(testParams, preSetupThreads);
     return true;
   }
   async expect(): Promise<boolean> {
