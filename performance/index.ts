@@ -4,8 +4,8 @@
 
 //npx ts-node ./performance/index.ts transfer threadNumber=3 testCaseName=transfer duration=1000 totalTransactions=25000 nodes=ws://ws1,ws://ws2
 
-import { TestParams } from "./testParams";
-import { Tests, TestFactory } from "./testFactory";
+import {TestParams} from "./testParams";
+import {Tests, TestFactory} from "./testFactory";
 
 async function main() {
   const args = process.argv.slice(2);

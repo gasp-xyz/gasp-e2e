@@ -1,5 +1,5 @@
-import { ExtrinsicTransfer } from "./plugins/extrinsicTransfer";
-import { TestItem } from "./plugins/testItem";
+import {ExtrinsicTransfer} from "./plugins/extrinsicTransfer";
+import {TestItem} from "./plugins/testItem";
 
 export enum Tests {
   ExtrinsicTransfer,

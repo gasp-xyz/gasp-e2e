@@ -1,10 +1,10 @@
 import BN from "bn.js";
-import { Mangata } from "mangata-sdk";
-import { testLog } from "../../utils/Logger";
-import { TestParams } from "../testParams";
-import { KeyringPair } from "@polkadot/keyring/types";
-import { SubmittableExtrinsic } from "@polkadot/api/types";
-import { SubmittableResult } from "@polkadot/api";
+import {Mangata} from "mangata-sdk";
+import {testLog} from "../../utils/Logger";
+import {TestParams} from "../testParams";
+import {KeyringPair} from "@polkadot/keyring/types";
+import {SubmittableExtrinsic} from "@polkadot/api/types";
+import {SubmittableResult} from "@polkadot/api";
 
 import asyncPool from "tiny-async-pool";
 
@@ -12,7 +12,7 @@ export async function preGenerateTransactions(
   testParams: TestParams,
   mgaNodeandUsers: Map<
     number,
-    { mgaSdk: Mangata; users: { nonce: BN; keyPair: KeyringPair }[] }
+    {mgaSdk: Mangata; users: {nonce: BN; keyPair: KeyringPair}[]}
   >,
   fn: any
 ): Promise<SubmittableExtrinsic<"promise", SubmittableResult>[][]> {
@@ -38,7 +38,7 @@ export async function preGenerateTransactions(
         userNo < mgaNodeandUsers.get(nodeThread)!.users.length;
         userNo++
       ) {
-        const { mgaValue, signed } = await fn(
+        const {mgaValue, signed} = await fn(
           mgaNodeandUsers,
           nodeThread,
           userNo
@@ -75,7 +75,7 @@ export async function runTransactions(
         const transaction = await preSetupThreads[0][i];
         const start = new Date().getTime();
         await transaction
-          .send(({ status }) => {
+          .send(({status}) => {
             if (status.isFinalized) {
               const finalized = new Date().getTime();
               const diff = finalized - start;

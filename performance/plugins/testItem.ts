@@ -1,4 +1,4 @@
-import { TestParams } from "../testParams";
+import {TestParams} from "../testParams";
 
 export interface TestItem {
   arrange: (numberOfThreads: number, nodes: string[]) => Promise<boolean>;

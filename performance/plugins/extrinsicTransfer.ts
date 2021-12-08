@@ -1,16 +1,16 @@
-import { Keyring } from "@polkadot/api";
+import {Keyring} from "@polkadot/api";
 import BN from "bn.js";
-import { Mangata } from "mangata-sdk";
-import { testLog } from "../../utils/Logger";
-import { TestParams } from "../testParams";
-import { TestItem } from "./testItem";
-import { KeyringPair } from "@polkadot/keyring/types";
-import { UserFactory, Users } from "../../utils/Framework/User/UserFactory";
-import { Node } from "../../utils/Framework/Node/Node";
-import { MGA_ASSET_ID } from "../../utils/Constants";
-import { mintAsset } from "../../utils/tx";
-import { getApi, initApi } from "../../utils/api";
-import { preGenerateTransactions, runTransactions } from "./testRunner";
+import {Mangata} from "mangata-sdk";
+import {testLog} from "../../utils/Logger";
+import {TestParams} from "../testParams";
+import {TestItem} from "./testItem";
+import {KeyringPair} from "@polkadot/keyring/types";
+import {UserFactory, Users} from "../../utils/Framework/User/UserFactory";
+import {Node} from "../../utils/Framework/Node/Node";
+import {MGA_ASSET_ID} from "../../utils/Constants";
+import {mintAsset} from "../../utils/tx";
+import {getApi, initApi} from "../../utils/api";
+import {preGenerateTransactions, runTransactions} from "./testRunner";
 
 function seedFromNum(seed: number): string {
   return "//user//" + ("0000" + seed).slice(-4);
@@ -18,11 +18,11 @@ function seedFromNum(seed: number): string {
 
 const mgaNodeandUsers = new Map<
   number,
-  { mgaSdk: Mangata; users: { nonce: BN; keyPair: KeyringPair }[] }
+  {mgaSdk: Mangata; users: {nonce: BN; keyPair: KeyringPair}[]}
 >();
 export class ExtrinsicTransfer implements TestItem {
   async arrange(numberOfThreads: number, nodes: string[]): Promise<boolean> {
-    const keyring = new Keyring({ type: "sr25519" });
+    const keyring = new Keyring({type: "sr25519"});
     const mintPromises = [];
     for (let nodeNumber = 0; nodeNumber < nodes.length; nodeNumber++) {
       const node = nodes[nodeNumber];
@@ -30,7 +30,7 @@ export class ExtrinsicTransfer implements TestItem {
       const mgaNode = new Node(node);
       const sudo = UserFactory.createUser(Users.SudoUser, keyring, mgaNode);
 
-      const users: { nonce: BN; keyPair: KeyringPair }[] = [];
+      const users: {nonce: BN; keyPair: KeyringPair}[] = [];
       testLog.getLog().info("Fetching nonces for node " + nodeNumber);
       let sudoNonce = await mga.getNonce(sudo.keyRingPair.address);
       //lets create as many of users as threads.
@@ -49,9 +49,9 @@ export class ExtrinsicTransfer implements TestItem {
           )
         );
         sudoNonce = sudoNonce.addn(1);
-        users.push({ nonce: nonce, keyPair: keyPair });
+        users.push({nonce: nonce, keyPair: keyPair});
       }
-      mgaNodeandUsers.set(nodeNumber, { mgaSdk: mga, users: users });
+      mgaNodeandUsers.set(nodeNumber, {mgaSdk: mga, users: users});
     }
     const results = await Promise.all(mintPromises);
     testLog
@@ -122,7 +122,7 @@ async function getMangata(node: string) {
 async function createAndSignTransfer(
   mgaNodeandUsers: Map<
     number,
-    { mgaSdk: Mangata; users: { nonce: BN; keyPair: KeyringPair }[] }
+    {mgaSdk: Mangata; users: {nonce: BN; keyPair: KeyringPair}[]}
   >,
   nodeThread: number,
   userNo: number
@@ -142,5 +142,5 @@ async function createAndSignTransfer(
   const signed = tx.sign(srcUser!.keyPair, {
     nonce: mgaValue.users[userNo]!.nonce,
   });
-  return { mgaValue, signed };
+  return {mgaValue, signed};
 }
