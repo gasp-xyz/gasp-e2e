@@ -83,7 +83,12 @@ export class ExtrinsicTransfer implements TestItem {
   async expect(): Promise<boolean> {
     return true;
   }
-  async teardown(): Promise<boolean> {
+  async teardown(nodes: string[]): Promise<boolean> {
+    for (let nodeNumber = 0; nodeNumber < nodes.length; nodeNumber++) {
+      const node = nodes[nodeNumber];
+      const mga = await getMangata(node);
+      (await mga.getApi()).disconnect();
+    }
     return true;
   }
   async run(testparams: TestParams): Promise<boolean> {
@@ -100,10 +105,12 @@ export class ExtrinsicTransfer implements TestItem {
                 testLog.getLog().info("Done Expect");
                 return (
                   resultAct &&
-                  (await this.teardown().then(async (resultTearDown) => {
-                    testLog.getLog().info("Done TearDown");
-                    return resultTearDown;
-                  }))
+                  (await this.teardown(testparams.nodes).then(
+                    async (resultTearDown) => {
+                      testLog.getLog().info("Done TearDown");
+                      return resultTearDown;
+                    }
+                  ))
                 );
               }))
             );
