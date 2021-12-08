@@ -2,25 +2,25 @@
  *
  * @group ui
  */
-import { Keyring } from "@polkadot/api";
+import {Keyring} from "@polkadot/api";
 import BN from "bn.js";
-import { WebDriver } from "selenium-webdriver";
-import { getApi, initApi } from "../../utils/api";
-import { Assets } from "../../utils/Assets";
-import { FIVE_MIN } from "../../utils/Constants";
-import { ExtrinsicResult } from "../../utils/eventListeners";
-import { Mangata } from "../../utils/frontend/pages/Mangata";
-import { BrunLiquidityModal } from "../../utils/frontend/pages/BrunLiquidityModal";
-import { Sidebar } from "../../utils/frontend/pages/Sidebar";
-import { DriverBuilder } from "../../utils/frontend/utils/Driver";
+import {WebDriver} from "selenium-webdriver";
+import {getApi, initApi} from "../../utils/api";
+import {Assets} from "../../utils/Assets";
+import {FIVE_MIN} from "../../utils/Constants";
+import {ExtrinsicResult} from "../../utils/eventListeners";
+import {Mangata} from "../../utils/frontend/pages/Mangata";
+import {BrunLiquidityModal} from "../../utils/frontend/pages/BrunLiquidityModal";
+import {Sidebar} from "../../utils/frontend/pages/Sidebar";
+import {DriverBuilder} from "../../utils/frontend/utils/Driver";
 import {
   addExtraLogs,
   setupAllExtensions,
 } from "../../utils/frontend/utils/Helper";
-import { createPool } from "../../utils/tx";
-import { getEventResultFromMangataTx } from "../../utils/txHandler";
-import { User } from "../../utils/User";
-import { getEnvironmentRequiredVars } from "../../utils/utils";
+import {createPool} from "../../utils/tx";
+import {getEventResultFromMangataTx} from "../../utils/txHandler";
+import {User} from "../../utils/User";
+import {getEnvironmentRequiredVars} from "../../utils/utils";
 
 jest.setTimeout(FIVE_MIN);
 jest.spyOn(console, "log").mockImplementation(jest.fn());
@@ -31,7 +31,7 @@ let driver: WebDriver;
 //export UI_URL='https://staging.mangata.finance/' ;
 //export MNEMONIC_META='dismiss .. trumpet' ( Ask Gonzalo :) )
 
-const { sudo: sudoUserName } = getEnvironmentRequiredVars();
+const {sudo: sudoUserName} = getEnvironmentRequiredVars();
 let firstCurrency: BN;
 let secondCurrency: BN;
 
@@ -48,10 +48,10 @@ describe("Accuracy tests:", () => {
       await initApi();
     }
 
-    keyring = new Keyring({ type: "sr25519" });
+    keyring = new Keyring({type: "sr25519"});
     driver = await DriverBuilder.getInstance();
 
-    const { mnemonic } = await setupAllExtensions(driver);
+    const {mnemonic} = await setupAllExtensions(driver);
 
     testUser1 = new User(keyring, undefined);
     testUser1.addFromMnemonic(keyring, mnemonic);

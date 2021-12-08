@@ -1,8 +1,8 @@
-import { ApiPromise } from "@polkadot/api";
-import { initApi } from "../../utils/api";
-import { testLog } from "../Logger";
+import {ApiPromise} from "@polkadot/api";
+import {initApi} from "../../utils/api";
+import {testLog} from "../Logger";
 
-export { Node };
+export {Node};
 
 class Node {
   name: string;

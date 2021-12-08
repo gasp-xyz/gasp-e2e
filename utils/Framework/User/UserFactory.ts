@@ -1,10 +1,10 @@
-import { Keyring } from "@polkadot/api";
+import {Keyring} from "@polkadot/api";
 
-import { Node } from "../Node/Node";
+import {Node} from "../Node/Node";
 
-import { GovernanceUser } from "./GovernanceUser";
-import { SudoUser } from "./SudoUser";
-import { MetamaskUser } from "./MetamaskUser";
+import {GovernanceUser} from "./GovernanceUser";
+import {SudoUser} from "./SudoUser";
+import {MetamaskUser} from "./MetamaskUser";
 
 export enum Users {
   GovernanceUser,

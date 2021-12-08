@@ -4,7 +4,7 @@
  * @group api
  * @group parallel
  */
-import { getApi, initApi } from "../../utils/api";
+import {getApi, initApi} from "../../utils/api";
 import {
   getBalanceOfPool,
   getLiquidityAssetId,
@@ -15,28 +15,28 @@ import {
   createPool,
   getLiquidityPool,
 } from "../../utils/tx";
-import { ExtrinsicResult, EventResult } from "../../utils/eventListeners";
+import {ExtrinsicResult, EventResult} from "../../utils/eventListeners";
 import BN from "bn.js";
-import { Keyring } from "@polkadot/api";
-import { AssetWallet, User } from "../../utils/User";
+import {Keyring} from "@polkadot/api";
+import {AssetWallet, User} from "../../utils/User";
 import {
   validateAssetsWithValues,
   validatePoolCreatedEvent,
   validateStatusWhenPoolCreated,
 } from "../../utils/validators";
-import { Assets } from "../../utils/Assets";
+import {Assets} from "../../utils/Assets";
 import {
   calculateLiqAssetAmount,
   getEnvironmentRequiredVars,
 } from "../../utils/utils";
-import { testLog } from "../../utils/Logger";
-import { hexToBn } from "@polkadot/util";
-import { getEventResultFromMangataTx } from "../../utils/txHandler";
+import {testLog} from "../../utils/Logger";
+import {hexToBn} from "@polkadot/util";
+import {getEventResultFromMangataTx} from "../../utils/txHandler";
 
 jest.spyOn(console, "log").mockImplementation(jest.fn());
 jest.setTimeout(1500000);
 process.env.NODE_ENV = "test";
-const { sudo: sudoUserName } = getEnvironmentRequiredVars();
+const {sudo: sudoUserName} = getEnvironmentRequiredVars();
 
 const first_asset_amount = new BN(50000);
 const second_asset_amount = new BN(50000);
@@ -61,7 +61,7 @@ describe("xyk-pallet - Poll creation: Errors:", () => {
       await initApi();
     }
 
-    keyring = new Keyring({ type: "sr25519" });
+    keyring = new Keyring({type: "sr25519"});
 
     // setup users
     testUser1 = new User(keyring);
@@ -208,7 +208,7 @@ describe("xyk-pallet - Pool tests: a pool can:", () => {
       await initApi();
     }
 
-    keyring = new Keyring({ type: "sr25519" });
+    keyring = new Keyring({type: "sr25519"});
     // setup a second user
     testUser2 = new User(keyring);
     testUser1 = new User(keyring);
@@ -444,7 +444,7 @@ describe("xyk-pallet - Pool opeations: Simmetry", () => {
       await initApi();
     }
 
-    keyring = new Keyring({ type: "sr25519" });
+    keyring = new Keyring({type: "sr25519"});
 
     // setup users
     testUser1 = new User(keyring);

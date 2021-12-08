@@ -4,14 +4,14 @@
  * eslint-disable no-loop-func
  * eslint-disable no-console
  */
-import { uniq, intersection, takeRight } from "lodash";
+import {uniq, intersection, takeRight} from "lodash";
 
 import * as path from "path";
-import { promises as fs } from "fs";
-import { Node } from "../../utils/cluster/Node";
-import { testLog } from "../../utils/Logger";
-import { waitForNBlocks } from "../../utils/utils";
-import { Convert } from "../../utils/Config";
+import {promises as fs} from "fs";
+import {Node} from "../../utils/cluster/Node";
+import {testLog} from "../../utils/Logger";
+import {waitForNBlocks} from "../../utils/utils";
+import {Convert} from "../../utils/Config";
 
 jest.spyOn(console, "log").mockImplementation(jest.fn());
 jest.spyOn(console, "error").mockImplementation(jest.fn());

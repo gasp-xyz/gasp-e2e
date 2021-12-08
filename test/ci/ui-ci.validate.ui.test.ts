@@ -4,11 +4,11 @@
  * @group ci
  */
 
-import { WebDriver } from "selenium-webdriver";
-import { Mangata } from "../../utils/frontend/pages/Mangata";
-import { DriverBuilder } from "../../utils/frontend/utils/Driver";
-import { addExtraLogs } from "../../utils/frontend/utils/Helper";
-import { sleep } from "../../utils/utils";
+import {WebDriver} from "selenium-webdriver";
+import {Mangata} from "../../utils/frontend/pages/Mangata";
+import {DriverBuilder} from "../../utils/frontend/utils/Driver";
+import {addExtraLogs} from "../../utils/frontend/utils/Helper";
+import {sleep} from "../../utils/utils";
 
 jest.setTimeout(1500000);
 jest.spyOn(console, "log").mockImplementation(jest.fn());

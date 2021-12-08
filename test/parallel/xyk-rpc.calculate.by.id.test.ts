@@ -4,7 +4,7 @@
  * @group calculate
  * @group parallel
  */
-import { getApi, initApi } from "../../utils/api";
+import {getApi, initApi} from "../../utils/api";
 import {
   calculate_buy_price_id_rpc,
   calculate_buy_price_rpc,
@@ -13,10 +13,10 @@ import {
   getBalanceOfPool,
 } from "../../utils/tx";
 import BN from "bn.js";
-import { Keyring } from "@polkadot/api";
-import { User } from "../../utils/User";
-import { Assets } from "../../utils/Assets";
-import { getEnvironmentRequiredVars } from "../../utils/utils";
+import {Keyring} from "@polkadot/api";
+import {User} from "../../utils/User";
+import {Assets} from "../../utils/Assets";
+import {getEnvironmentRequiredVars} from "../../utils/utils";
 
 jest.spyOn(console, "log").mockImplementation(jest.fn());
 jest.setTimeout(1500000);
@@ -34,8 +34,8 @@ describe("xyk-rpc - calculate_buy_price_by_id, calculate_sell_price_by_id", () =
   const dictAssets = new Map<number, BN>();
 
   beforeAll(async () => {
-    const { sudo: sudoUserName } = getEnvironmentRequiredVars();
-    const keyring = new Keyring({ type: "sr25519" });
+    const {sudo: sudoUserName} = getEnvironmentRequiredVars();
+    const keyring = new Keyring({type: "sr25519"});
     const sudo = new User(keyring, sudoUserName);
     keyring.addPair(sudo.keyRingPair);
 
