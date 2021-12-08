@@ -38,22 +38,11 @@ export async function preGenerateTransactions(
         userNo < mgaNodeandUsers.get(nodeThread)!.users.length;
         userNo++
       ) {
-        const mgaValue = mgaNodeandUsers.get(nodeThread)!;
-        mgaNodeandUsers.set(nodeThread, mgaValue);
-        const destUser =
-          mgaNodeandUsers.get(nodeThread)?.users![
-            (userNo + 1) % mgaNodeandUsers.get(nodeThread)!.users!.length
-          ]!;
-        const srcUser = mgaNodeandUsers.get(nodeThread)?.users![userNo];
-        const api = await mgaNodeandUsers.get(nodeThread)?.mgaSdk.getApi();
-        const tx = api!.tx.tokens.transfer(
-          destUser.keyPair.address,
-          MGA_ASSET_ID,
-          new BN(1)
+        const { mgaValue, signed } = await createAndSignTransaction(
+          mgaNodeandUsers,
+          nodeThread,
+          userNo
         );
-        const signed = tx.sign(srcUser!.keyPair, {
-          nonce: mgaValue.users[userNo]!.nonce,
-        });
         const userNonceIncremented = mgaValue.users[userNo]!.nonce.add(
           new BN(1)
         );
@@ -72,6 +61,32 @@ export async function preGenerateTransactions(
   }
   testLog.getLog().info(`Done pregenerating transactions (${sanityCounter}).`);
   return thread_payloads;
+}
+
+async function createAndSignTransaction(
+  mgaNodeandUsers: Map<
+    number,
+    { mgaSdk: Mangata; users: { nonce: BN; keyPair: KeyringPair }[] }
+  >,
+  nodeThread: number,
+  userNo: number
+) {
+  const mgaValue = mgaNodeandUsers.get(nodeThread)!;
+  const destUser =
+    mgaNodeandUsers.get(nodeThread)?.users![
+      (userNo + 1) % mgaNodeandUsers.get(nodeThread)!.users!.length
+    ]!;
+  const srcUser = mgaNodeandUsers.get(nodeThread)?.users![userNo];
+  const api = await mgaNodeandUsers.get(nodeThread)?.mgaSdk.getApi();
+  const tx = api!.tx.tokens.transfer(
+    destUser.keyPair.address,
+    MGA_ASSET_ID,
+    new BN(1)
+  );
+  const signed = tx.sign(srcUser!.keyPair, {
+    nonce: mgaValue.users[userNo]!.nonce,
+  });
+  return { mgaValue, signed };
 }
 
 export async function runTransactions(
