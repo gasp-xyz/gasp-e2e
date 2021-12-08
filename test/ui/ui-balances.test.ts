@@ -2,25 +2,25 @@
  *
  * @group ui
  */
-import { Keyring } from "@polkadot/api";
+import {Keyring} from "@polkadot/api";
 import BN from "bn.js";
-import { WebDriver } from "selenium-webdriver";
-import { getApi, initApi } from "../../utils/api";
-import { Mangata } from "../../utils/frontend/pages/Mangata";
-import { Swap } from "../../utils/frontend/pages/Swap";
-import { Sidebar } from "../../utils/frontend/pages/Sidebar";
-import { DriverBuilder } from "../../utils/frontend/utils/Driver";
+import {WebDriver} from "selenium-webdriver";
+import {getApi, initApi} from "../../utils/api";
+import {Mangata} from "../../utils/frontend/pages/Mangata";
+import {Swap} from "../../utils/frontend/pages/Swap";
+import {Sidebar} from "../../utils/frontend/pages/Sidebar";
+import {DriverBuilder} from "../../utils/frontend/utils/Driver";
 import {
   setupAllExtensions,
   addExtraLogs,
   uiStringToBN,
 } from "../../utils/frontend/utils/Helper";
-import { AssetWallet, User } from "../../utils/User";
-import { getEnvironmentRequiredVars } from "../../utils/utils";
-import { FIVE_MIN, MAX_BALANCE, MGA_ASSET_NAME } from "../../utils/Constants";
-import { Assets } from "../../utils/Assets";
-import { Pool } from "../../utils/frontend/pages/Pool";
-import { WithdrawModal } from "../../utils/frontend/pages/WithdrawModal";
+import {AssetWallet, User} from "../../utils/User";
+import {getEnvironmentRequiredVars} from "../../utils/utils";
+import {FIVE_MIN, MAX_BALANCE, MGA_ASSET_NAME} from "../../utils/Constants";
+import {Assets} from "../../utils/Assets";
+import {Pool} from "../../utils/frontend/pages/Pool";
+import {WithdrawModal} from "../../utils/frontend/pages/WithdrawModal";
 
 const MGA_ASSET_ID = new BN(0);
 
@@ -34,7 +34,7 @@ describe("UI tests > Balances", () => {
   let sudo: User;
   let maxValueToken: BN, minValueToken: BN;
   let assetNameMax: string, assetNameMin: string;
-  const { sudo: sudoUserName } = getEnvironmentRequiredVars();
+  const {sudo: sudoUserName} = getEnvironmentRequiredVars();
   const visibleValueNumber = Math.pow(10, 19).toString();
 
   beforeAll(async () => {
@@ -43,9 +43,9 @@ describe("UI tests > Balances", () => {
     } catch (e) {
       await initApi();
     }
-    keyring = new Keyring({ type: "sr25519" });
+    keyring = new Keyring({type: "sr25519"});
     driver = await DriverBuilder.getInstance();
-    const { mnemonic } = await setupAllExtensions(driver);
+    const {mnemonic} = await setupAllExtensions(driver);
 
     testUser1 = new User(keyring);
     testUser1.addFromMnemonic(keyring, mnemonic);

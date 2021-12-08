@@ -4,7 +4,7 @@
  * @group sequential
  * @group critical
  */
-import { getApi, initApi } from "../../utils/api";
+import {getApi, initApi} from "../../utils/api";
 import {
   calcuate_mint_liquidity_price_local,
   calcuate_burn_liquidity_price_local,
@@ -25,10 +25,10 @@ import {
   mintLiquidity,
   burnLiquidity,
 } from "../../utils/tx";
-import { ExtrinsicResult } from "../../utils/eventListeners";
+import {ExtrinsicResult} from "../../utils/eventListeners";
 import BN from "bn.js";
-import { Keyring } from "@polkadot/api";
-import { AccountData } from "@polkadot/types/interfaces/balances";
+import {Keyring} from "@polkadot/api";
+import {AccountData} from "@polkadot/types/interfaces/balances";
 import {
   calculateFees,
   calculateLiqAssetAmount,
@@ -38,10 +38,10 @@ import {
   getEventResultFromMangataTx,
   sudoIssueAsset,
 } from "../../utils/txHandler";
-import { testLog } from "../../utils/Logger";
+import {testLog} from "../../utils/Logger";
 
 jest.spyOn(console, "log").mockImplementation(jest.fn());
-const { xykPalletAddress, sudo: sudoUserName } = getEnvironmentRequiredVars();
+const {xykPalletAddress, sudo: sudoUserName} = getEnvironmentRequiredVars();
 
 jest.setTimeout(1500000);
 process.env.NODE_ENV = "test";
@@ -53,7 +53,7 @@ test("xyk-pallet: Happy case scenario", async () => {
     await initApi();
   }
 
-  const keyring = new Keyring({ type: "sr25519" });
+  const keyring = new Keyring({type: "sr25519"});
   const alice = keyring.addFromUri("//Alice");
   const bob = keyring.addFromUri("//Bob");
   keyring.addFromUri(sudoUserName);
@@ -111,13 +111,13 @@ test("xyk-pallet: Happy case scenario", async () => {
     firstAssetId,
     secondAssetId,
   ]);
-  alice_assets_before.push({ free: new BN(0) } as AccountData);
+  alice_assets_before.push({free: new BN(0)} as AccountData);
   testLog.getLog().debug(alice_assets_before.toString());
   let bob_assets_before = await getUserAssets(bob.address, [
     firstAssetId,
     secondAssetId,
   ]);
-  bob_assets_before.push({ free: new BN(0) } as AccountData);
+  bob_assets_before.push({free: new BN(0)} as AccountData);
   testLog.getLog().debug(bob_assets_before.toString());
   let pallet_assets_before = await getUserAssets(pallet_address, [
     firstAssetId,
@@ -453,7 +453,7 @@ test("xyk-pallet: Happy case scenario", async () => {
 
   testLog.getLog().debug(pallet_assets.toString());
   pool_balance = await getBalanceOfPool(firstAssetId, secondAssetId);
-  let { treasury, treasuryBurn } = calculateFees(amount);
+  let {treasury, treasuryBurn} = calculateFees(amount);
   expect([
     pool_balance_before[0].add(amount).sub(treasury.add(treasuryBurn)),
     pool_balance_before[1].sub(sell_price_local),
@@ -990,7 +990,7 @@ test("xyk-pallet: Liquidity sufficiency scenario", async () => {
   }
   const pallet_address = xykPalletAddress;
 
-  const keyring = new Keyring({ type: "sr25519" });
+  const keyring = new Keyring({type: "sr25519"});
   const alice = keyring.addFromUri("//Alice");
   const bob = keyring.addFromUri("//Bob");
   keyring.addFromUri(sudoUserName);
@@ -1142,8 +1142,8 @@ test("xyk-pallet: Liquidity sufficiency scenario", async () => {
   ]);
   testLog.getLog().debug(pallet_assets_before.toString());
   let pool_balance_before, total_liquidity_assets_before;
-  alice_assets_before.push({ free: new BN(0) } as AccountData);
-  bob_assets_before.push({ free: new BN(0) } as AccountData);
+  alice_assets_before.push({free: new BN(0)} as AccountData);
+  bob_assets_before.push({free: new BN(0)} as AccountData);
   pool_balance_before = [new BN(0), new BN(0)];
   total_liquidity_assets_before = new BN(0);
 

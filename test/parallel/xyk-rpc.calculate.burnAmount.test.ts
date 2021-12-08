@@ -4,18 +4,18 @@
  * @group calculate
  * @group parallel
  */
-import { getApi, initApi } from "../../utils/api";
-import { burnLiquidity, getBalanceOfPool, getBurnAmount } from "../../utils/tx";
+import {getApi, initApi} from "../../utils/api";
+import {burnLiquidity, getBalanceOfPool, getBurnAmount} from "../../utils/tx";
 import BN from "bn.js";
-import { Keyring } from "@polkadot/api";
-import { AssetWallet, User } from "../../utils/User";
-import { Assets } from "../../utils/Assets";
+import {Keyring} from "@polkadot/api";
+import {AssetWallet, User} from "../../utils/User";
+import {Assets} from "../../utils/Assets";
 import {
   fromBNToUnitString,
   getEnvironmentRequiredVars,
 } from "../../utils/utils";
-import { ExtrinsicResult } from "../../utils/eventListeners";
-import { getEventResultFromMangataTx } from "../../utils/txHandler";
+import {ExtrinsicResult} from "../../utils/eventListeners";
+import {getEventResultFromMangataTx} from "../../utils/txHandler";
 
 jest.spyOn(console, "log").mockImplementation(jest.fn());
 jest.setTimeout(1500000);
@@ -34,8 +34,8 @@ describe("xyk-rpc - calculate get_burn amount: OK", () => {
   const dictAssets = new Map<number, BN>();
 
   beforeAll(async () => {
-    const { sudo: sudoUserName } = getEnvironmentRequiredVars();
-    const keyring = new Keyring({ type: "sr25519" });
+    const {sudo: sudoUserName} = getEnvironmentRequiredVars();
+    const keyring = new Keyring({type: "sr25519"});
     const sudo = new User(keyring, sudoUserName);
     keyring.addPair(sudo.keyRingPair);
 
@@ -84,8 +84,8 @@ describe("xyk-rpc - calculate get_burn amount: Missing requirements", () => {
   const dictAssets = new Map<number, BN>();
 
   beforeAll(async () => {
-    const { sudo: sudoUserName } = getEnvironmentRequiredVars();
-    const keyring = new Keyring({ type: "sr25519" });
+    const {sudo: sudoUserName} = getEnvironmentRequiredVars();
+    const keyring = new Keyring({type: "sr25519"});
     const sudo = new User(keyring, sudoUserName);
     keyring.addPair(sudo.keyRingPair);
 
@@ -132,8 +132,8 @@ describe("xyk-rpc - calculate get_burn amount: RPC result matches with burn amou
   let secondAssetId: BN;
 
   beforeAll(async () => {
-    const { sudo: sudoUserName } = getEnvironmentRequiredVars();
-    const keyring = new Keyring({ type: "sr25519" });
+    const {sudo: sudoUserName} = getEnvironmentRequiredVars();
+    const keyring = new Keyring({type: "sr25519"});
     sudo = new User(keyring, sudoUserName);
     keyring.addPair(sudo.keyRingPair);
 
