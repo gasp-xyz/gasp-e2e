@@ -3,7 +3,6 @@ import { Mangata } from "mangata-sdk";
 import { testLog } from "../../utils/Logger";
 import { TestParams } from "../testParams";
 import { KeyringPair } from "@polkadot/keyring/types";
-import { MGA_ASSET_ID } from "../../utils/Constants";
 import { SubmittableExtrinsic } from "@polkadot/api/types";
 import { SubmittableResult } from "@polkadot/api";
 
@@ -14,7 +13,8 @@ export async function preGenerateTransactions(
   mgaNodeandUsers: Map<
     number,
     { mgaSdk: Mangata; users: { nonce: BN; keyPair: KeyringPair }[] }
-  >
+  >,
+  fn: any
 ): Promise<SubmittableExtrinsic<"promise", SubmittableResult>[][]> {
   testLog
     .getLog()
@@ -38,7 +38,7 @@ export async function preGenerateTransactions(
         userNo < mgaNodeandUsers.get(nodeThread)!.users.length;
         userNo++
       ) {
-        const { mgaValue, signed } = await createAndSignTransaction(
+        const { mgaValue, signed } = await fn(
           mgaNodeandUsers,
           nodeThread,
           userNo
@@ -61,32 +61,6 @@ export async function preGenerateTransactions(
   }
   testLog.getLog().info(`Done pregenerating transactions (${sanityCounter}).`);
   return thread_payloads;
-}
-
-async function createAndSignTransaction(
-  mgaNodeandUsers: Map<
-    number,
-    { mgaSdk: Mangata; users: { nonce: BN; keyPair: KeyringPair }[] }
-  >,
-  nodeThread: number,
-  userNo: number
-) {
-  const mgaValue = mgaNodeandUsers.get(nodeThread)!;
-  const destUser =
-    mgaNodeandUsers.get(nodeThread)?.users![
-      (userNo + 1) % mgaNodeandUsers.get(nodeThread)!.users!.length
-    ]!;
-  const srcUser = mgaNodeandUsers.get(nodeThread)?.users![userNo];
-  const api = await mgaNodeandUsers.get(nodeThread)?.mgaSdk.getApi();
-  const tx = api!.tx.tokens.transfer(
-    destUser.keyPair.address,
-    MGA_ASSET_ID,
-    new BN(1)
-  );
-  const signed = tx.sign(srcUser!.keyPair, {
-    nonce: mgaValue.users[userNo]!.nonce,
-  });
-  return { mgaValue, signed };
 }
 
 export async function runTransactions(

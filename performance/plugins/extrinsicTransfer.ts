@@ -63,7 +63,8 @@ export class ExtrinsicTransfer implements TestItem {
   async act(testParams: TestParams): Promise<boolean> {
     const preSetupThreads = await preGenerateTransactions(
       testParams,
-      mgaNodeandUsers
+      mgaNodeandUsers,
+      createAndSignTransfer
     );
     await runTransactions(testParams, preSetupThreads);
     return true;
@@ -116,4 +117,30 @@ async function getMangata(node: string) {
     await initApi(node);
   }
   return mga;
+}
+
+async function createAndSignTransfer(
+  mgaNodeandUsers: Map<
+    number,
+    { mgaSdk: Mangata; users: { nonce: BN; keyPair: KeyringPair }[] }
+  >,
+  nodeThread: number,
+  userNo: number
+) {
+  const mgaValue = mgaNodeandUsers.get(nodeThread)!;
+  const destUser =
+    mgaNodeandUsers.get(nodeThread)?.users![
+      (userNo + 1) % mgaNodeandUsers.get(nodeThread)!.users!.length
+    ]!;
+  const srcUser = mgaNodeandUsers.get(nodeThread)?.users![userNo];
+  const api = await mgaNodeandUsers.get(nodeThread)?.mgaSdk.getApi();
+  const tx = api!.tx.tokens.transfer(
+    destUser.keyPair.address,
+    MGA_ASSET_ID,
+    new BN(1)
+  );
+  const signed = tx.sign(srcUser!.keyPair, {
+    nonce: mgaValue.users[userNo]!.nonce,
+  });
+  return { mgaValue, signed };
 }
