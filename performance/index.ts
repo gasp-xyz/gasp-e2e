@@ -50,10 +50,69 @@ async function main() {
             throw new Error(`Unknown argument: ${value}`);
         }
       });
+      verifyArgs(testParams, "transfer"); // Will throw an error if invalid args
       await runExtrinsicTransfer(testParams);
       break;
     default:
       throw new Error(`Invalid command: ${command}`);
+  }
+}
+
+function verifyArgs(params: TestParams, test: string) {
+  switch (test) {
+    case "Transfer":
+      if (
+        params.threads == null ||
+        params.testCaseName == null ||
+        params.duration == null ||
+        params.nodes == null ||
+        params.totalTx == null
+      ) {
+        throw new Error(`You must pass in the following arugments:
+        threadNumber: number
+        testCaseName: transfer | mint | burn | swap
+        duration: number
+        totalTransactions: number
+        nodes: string (web socket url, ws://foobar...)`);
+      }
+
+      if (params.threads <= 0 || params.threads > 10) {
+        throw new Error(`threadNumber must be between 1 and 10`);
+      }
+
+      if (!["transfer", "mint", "burn", "swap"].includes(params.testCaseName)) {
+        throw new Error(
+          `testCaseName must be either transfer, mint, burn, or swap`
+        );
+      }
+
+      if (params.duration <= 0 || params.duration > 10000) {
+        throw new Error(`duration must be between 1 and 10000`);
+      }
+
+      if (params.totalTx <= 0 || params.totalTx > 100000) {
+        throw new Error(`totalTransactions must be between 1 and 100000`);
+      }
+
+      const reWs = new RegExp(
+        "/^(ws?://)([0-9]{1,3}(?:.[0-9]{1,3}){3}|[a-zA-Z]+):([0-9]{1,5})$/"
+      );
+      const reWss = new RegExp(
+        "/^(wss?://)([0-9]{1,3}(?:.[0-9]{1,3}){3}|[a-zA-Z]+):([0-9]{1,5})$/"
+      );
+
+      params.nodes.forEach((node) => {
+        if (!(reWs.test(node) || reWss.test(node))) {
+          throw new Error(
+            `Invalid node url. You must use a valid websocket endpoint.`
+          );
+        }
+      });
+
+      break;
+
+    default:
+      break;
   }
 }
 
