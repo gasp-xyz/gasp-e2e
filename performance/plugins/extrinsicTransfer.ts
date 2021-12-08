@@ -32,22 +32,23 @@ export class ExtrinsicTransfer implements TestItem {
 
       const users: { nonce: BN; keyPair: KeyringPair }[] = [];
       testLog.getLog().info("Fetching nonces for node " + nodeNumber);
-
+      let sudoNonce = await mga.getNonce(sudo.keyRingPair.address);
       //lets create as many of users as threads.
       for (let i = 0; i < numberOfThreads; i++) {
         const stringSeed = seedFromNum(i);
         const keyPair = keyring.addFromUri(stringSeed);
         const nonce = await mga.getNonce(keyPair.address);
-
         //lets mint some MGA assets to pay fees
         mintPromises.push(
           mintAsset(
             sudo.keyRingPair,
             MGA_ASSET_ID,
             keyPair.address,
-            new BN(10).pow(new BN(18))
+            new BN(10).pow(new BN(18)),
+            sudoNonce
           )
         );
+        sudoNonce = sudoNonce.addn(1);
         users.push({ nonce: nonce, keyPair: keyPair });
       }
       mgaNodeandUsers.set(nodeNumber, { mgaSdk: mga, users: users });
