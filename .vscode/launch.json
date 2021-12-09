@@ -23,7 +23,7 @@
             "name": "Current TS File",
             "type": "node",
             "request": "launch",
-            "args": ["${relativeFile}" , "transfer",  "threadNumber=2" ],
+            "args": ["${relativeFile}" , "swap",  "threadNumber=2" ],
             "runtimeArgs": ["--nolazy", "-r", "ts-node/register"],
             "sourceMaps": true,
             "cwd": "${workspaceRoot}",

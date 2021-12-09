@@ -11,7 +11,6 @@ async function main() {
   const args = process.argv.slice(2);
   const command = args[0];
   const commandArguments = args.slice(1);
-
   switch (command) {
     case "transfer":
       const testParams = new TestParams();
@@ -53,6 +52,7 @@ async function main() {
       verifyArgs(testParams, "transfer"); // Will throw an error if invalid args
       await runExtrinsicTransfer(testParams);
       break;
+
     default:
       throw new Error(`Invalid command: ${command}`);
   }
@@ -116,8 +116,11 @@ function verifyArgs(params: TestParams, test: string) {
   }
 }
 
-async function runExtrinsicTransfer(params: TestParams) {
+export async function runExtrinsicTransfer(params: TestParams) {
   await TestFactory.BuildTestItem(Tests.ExtrinsicTransfer).run(params);
+}
+export async function runExtrinsicSwap(params: TestParams) {
+  await TestFactory.BuildTestItem(Tests.Swap).run(params);
 }
 
 main();
