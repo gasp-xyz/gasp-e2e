@@ -2,17 +2,21 @@ import {ExtrinsicSwap} from "./plugins/extrinsicSwap";
 import {ExtrinsicTransfer} from "./plugins/extrinsicTransfer";
 import {TestItem} from "./plugins/testItem";
 
-export enum Tests {
-  Undefined,
+export enum Commands {
   ExtrinsicTransfer,
   Swap,
 }
+
+export enum TestsCases {
+  ConcurrentTest,
+  Rampup,
+}
 export class TestFactory {
-  public static BuildTestItem(type: Tests): TestItem {
-    if (type === Tests.ExtrinsicTransfer) {
+  public static BuildTestItem(type: Commands): TestItem {
+    if (type === Commands.ExtrinsicTransfer) {
       return new ExtrinsicTransfer();
     }
-    if (type === Tests.Swap) {
+    if (type === Commands.Swap) {
       return new ExtrinsicSwap();
     }
     throw Error("TestItem not found");

@@ -1,8 +1,9 @@
-import {Tests} from "./testFactory";
+import {Commands, TestsCases} from "./testFactory";
 
 export class TestParams {
   public threads = 2;
-  public testCase: Tests = Tests.Undefined;
+  public testCase?: TestsCases = undefined;
+  public command?: Commands = undefined;
   public duration: number = 0;
   public totalTx: number = 4;
   public nodes: string[] = [

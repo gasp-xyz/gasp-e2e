@@ -109,8 +109,7 @@ export class performanceTestItem implements TestItem {
     mgaNodeandUsers: Map<
       number,
       {mgaSdk: Mangata; users: {nonce: BN; keyPair: KeyringPair}[]}
-    >,
-    nodes: string[]
+    >
   ) {
     const keyring = new Keyring({type: "sr25519"});
     const mintPromises = [];
@@ -118,7 +117,7 @@ export class performanceTestItem implements TestItem {
     for (let nodeNumber = 0; nodeNumber < mgaNodeandUsers.size; nodeNumber++) {
       const mga = mgaNodeandUsers.get(nodeNumber)?.mgaSdk!;
       const users = mgaNodeandUsers.get(nodeNumber)?.users!;
-      const mgaNode = new Node(nodes[nodeNumber]);
+      const mgaNode = new Node(mga.getUri());
       const sudo = UserFactory.createUser(Users.SudoUser, keyring, mgaNode);
 
       testLog.getLog().info("Fetching nonces for node " + nodeNumber);
@@ -149,10 +148,6 @@ export class performanceTestItem implements TestItem {
 
 export async function getMangata(node: string) {
   const mga = Mangata.getInstance(node);
-  try {
-    getApi();
-  } catch (e) {
-    await initApi(node);
-  }
+  await initApi(node);
   return mga;
 }

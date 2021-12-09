@@ -10,7 +10,7 @@ export class ExtrinsicSwap extends performanceTestItem {
   async arrange(numberOfThreads: number, nodes: string[]): Promise<boolean> {
     tokens = [4, 5];
     await this.mintMGATokensToUsers(numberOfThreads, nodes);
-    await this.mintERC20TokensToUsers(tokens, this.mgaNodeandUsers, nodes);
+    await this.mintERC20TokensToUsers(tokens, this.mgaNodeandUsers);
     return true;
   }
   async act(testParams: TestParams): Promise<boolean> {

@@ -5,11 +5,12 @@
 //npx ts-node ./performance/index.ts threadNumber=3 testCaseName=transfer duration=1000 totalTransactions=25000 nodes=ws://ws1,ws://ws2
 
 import {TestParams} from "./testParams";
-import {Tests, TestFactory} from "./testFactory";
+import {Commands, TestFactory, TestsCases} from "./testFactory";
 
 async function main() {
   const args = process.argv.slice(2);
-  const commandArguments = args;
+  const command = args[0];
+  const commandArguments = args.slice(1);
   const testParams = new TestParams();
   commandArguments.forEach((commandArgument: string) => {
     const [arg, value] = commandArgument.split("=");
@@ -19,13 +20,11 @@ async function main() {
         break;
       case "testCaseName":
         switch (value) {
-          case "transfer":
-            testParams.testCase = Tests.ExtrinsicTransfer;
+          case "ConcurrentTest":
+            testParams.testCase = TestsCases.ConcurrentTest;
             break;
-          case "mint":
-          case "burn":
-          case "swap":
-            testParams.testCase = Tests.Swap;
+          case "Rampup":
+            testParams.testCase = TestsCases.Rampup;
             break;
           default:
             throw new Error(`Unknown testCaseName: ${value}`);
@@ -50,8 +49,22 @@ async function main() {
         throw new Error(`Unknown argument: ${value}`);
     }
   });
+  switch (command) {
+    case "transfer":
+      testParams.command = Commands.ExtrinsicTransfer;
+      break;
+    case "mint":
+    case "burn":
+    case "swap":
+      testParams.command = Commands.Swap;
+      break;
+    default:
+      throw new Error(
+        `Unknown command: ${command}, available: "transfer", "mint", "burn", "swap"`
+      );
+  }
   verifyArgs(testParams, "transfer"); // Will throw an error if invalid args
-  await TestFactory.BuildTestItem(testParams.testCase).run(testParams);
+  await TestFactory.BuildTestItem(testParams.command!).run(testParams);
 }
 
 function verifyArgs(params: TestParams, test: string) {
@@ -74,10 +87,8 @@ function verifyArgs(params: TestParams, test: string) {
     throw new Error(`threadNumber must be between 1 and 10`);
   }
 
-  if (Tests.Undefined === params.testCase) {
-    throw new Error(
-      `testCaseName must be either transfer, mint, burn, or swap`
-    );
+  if (params.testCase === undefined) {
+    throw new Error(`testCaseName must be either ConcurrentTest, Rampup`);
   }
 
   if (params.duration <= 0 || params.duration > 10000) {
@@ -97,18 +108,18 @@ function verifyArgs(params: TestParams, test: string) {
 
   params.nodes.forEach((node) => {
     if (!(reWs.test(node) || reWss.test(node))) {
-      throw new Error(
-        `Invalid node url. You must use a valid websocket endpoint.`
-      );
+      //      throw new Error(
+      //        `Invalid node url. You must use a valid websocket endpoint.`
+      //      );
     }
   });
 }
 
 export async function runExtrinsicTransfer(params: TestParams) {
-  await TestFactory.BuildTestItem(Tests.ExtrinsicTransfer).run(params);
+  await TestFactory.BuildTestItem(Commands.ExtrinsicTransfer).run(params);
 }
 export async function runExtrinsicSwap(params: TestParams) {
-  await TestFactory.BuildTestItem(Tests.Swap).run(params);
+  await TestFactory.BuildTestItem(Commands.Swap).run(params);
 }
 
 main();
