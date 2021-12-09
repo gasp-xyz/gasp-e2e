@@ -23,7 +23,7 @@
             "name": "Current TS File",
             "type": "node",
             "request": "launch",
-            "args": ["${relativeFile}" , "swap",  "threadNumber=2" ],
+            "args": ["${relativeFile}" , "testCaseName=transfer",  "threadNumber=2", "duration=1000", "totalTransactions=2", "nodes=wss://integration.mangatafinance.cloud:9944," ],
             "runtimeArgs": ["--nolazy", "-r", "ts-node/register"],
             "sourceMaps": true,
             "cwd": "${workspaceRoot}",

@@ -3,6 +3,7 @@ import {ExtrinsicTransfer} from "./plugins/extrinsicTransfer";
 import {TestItem} from "./plugins/testItem";
 
 export enum Tests {
+  Undefined,
   ExtrinsicTransfer,
   Swap,
 }

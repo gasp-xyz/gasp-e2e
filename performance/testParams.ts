@@ -1,6 +1,8 @@
+import {Tests} from "./testFactory";
+
 export class TestParams {
   public threads = 2;
-  public testCaseName: string = "transfer";
+  public testCase: Tests = Tests.Undefined;
   public duration: number = 0;
   public totalTx: number = 4;
   public nodes: string[] = [
