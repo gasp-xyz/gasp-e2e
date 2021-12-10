@@ -72,7 +72,7 @@ export async function runTransactions(
     const nodeThreads = testParams.threads;
     const runNodeTxs = (i: number) =>
       new Promise<[number, number]>(async (resolve) => {
-        const transaction = await preSetupThreads[0][i];
+        const transaction = await preSetupThreads[nodeIdx][i];
         const start = new Date().getTime();
         await transaction
           .send(({status}) => {
