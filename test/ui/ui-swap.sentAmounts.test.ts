@@ -112,7 +112,9 @@ describe("UI tests - A user swapping tokens:", () => {
         )
       )
     );
-    expect([BigInt(calculatedGet.replace(".", "")).toString()]).toEqual(
+    const minBoughtAmount =
+      (BigInt(calculatedGet.replace(".", "")) * BigInt(99)) / BigInt(100);
+    expect([minBoughtAmount.toString()]).toEqual(
       expect.arrayContaining(
         boughtAssetAmounts.flatMap((amount) =>
           BigInt(amount.toString()).toString()
