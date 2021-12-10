@@ -9,7 +9,7 @@ import {UserFactory, Users} from "../../utils/Framework/User/UserFactory";
 import {Node} from "../../utils/Framework/Node/Node";
 import {MGA_ASSET_ID} from "../../utils/Constants";
 import {mintAsset} from "../../utils/tx";
-import {getApi, initApi} from "../../utils/api";
+import {initApi} from "../../utils/api";
 
 function seedFromNum(seed: number): string {
   return "//user//" + ("0000" + seed).slice(-4);
