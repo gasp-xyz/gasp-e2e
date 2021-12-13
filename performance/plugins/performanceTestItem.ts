@@ -144,6 +144,23 @@ export class performanceTestItem implements TestItem {
 
     return true;
   }
+  async buildMgaNodeandUsers(numberOfThreads: number, nodes: string[]) {
+    const keyring = new Keyring({type: "sr25519"});
+    for (let nodeNumber = 0; nodeNumber < nodes.length; nodeNumber++) {
+      const node = nodes[nodeNumber];
+      const mga = await getMangata(node);
+      const users: {nonce: BN; keyPair: KeyringPair}[] = [];
+      testLog.getLog().info("Fetching nonces for node " + nodeNumber);
+      //lets create as many of users as threads.
+      for (let i = 0; i < numberOfThreads; i++) {
+        const stringSeed = seedFromNum(i);
+        const keyPair = keyring.addFromUri(stringSeed);
+        const nonce = await mga.getNonce(keyPair.address);
+        users.push({nonce: nonce, keyPair: keyPair});
+      }
+      this.mgaNodeandUsers.set(nodeNumber, {mgaSdk: mga, users: users});
+    }
+  }
 }
 
 export async function getMangata(node: string) {

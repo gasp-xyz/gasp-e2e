@@ -103,3 +103,36 @@ export async function runTransactions(
   testLog.getLog().info("All promises fulfilled");
   return results;
 }
+
+export async function runQuery(
+  testParams: TestParams,
+  preSetupThreads: SubmittableExtrinsic<"promise", SubmittableResult>[][]
+) {
+  const nodePromises = [];
+  for (let nodeIdx = 0; nodeIdx < testParams.nodes.length; nodeIdx++) {
+    const nodeThreads = testParams.threads;
+    const runNodeTxs = (i: number) =>
+      new Promise<[number, number]>(async (resolve) => {
+        const transaction = preSetupThreads[nodeIdx][i];
+        const start = new Date().getTime();
+        await transaction;
+        const finalized = new Date().getTime();
+        const diff = finalized - start;
+        resolve([i, diff]);
+      });
+    const nodeTxs = preSetupThreads[nodeIdx];
+    const indexArray = nodeTxs.map((_, index) => {
+      return index;
+    });
+    nodePromises.push(asyncPool(nodeThreads, indexArray, runNodeTxs));
+  }
+  const results = await Promise.all(nodePromises);
+  // eslint-disable-next-line no-console
+  console.info(
+    "Test results \n --------- \n" +
+      JSON.stringify(results) +
+      "\n  ----------- Test results"
+  );
+  testLog.getLog().info("All promises fulfilled");
+  return results;
+}

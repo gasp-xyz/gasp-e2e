@@ -23,7 +23,7 @@
             "name": "Current TS File",
             "type": "node",
             "request": "launch",
-            "args": ["${relativeFile}" ,"transfer", "testCaseName=ConcurrentTest",  "threadNumber=2", "duration=1000", "totalTransactions=2", "nodes=wss://integration.mangatafinance.cloud:9944,wss://staging.mangatafinance.cloud:9944" ],
+            "args": ["${relativeFile}" ,"ping", "testCaseName=SustainedLoadTest",  "threadNumber=2", "duration=1000", "totalTransactions=2", "nodes=wss://integration.mangatafinance.cloud:9944,wss://develop.mangatafinance.cloud:9944" ],
             "runtimeArgs": ["--nolazy", "-r", "ts-node/register"],
             "sourceMaps": true,
             "cwd": "${workspaceRoot}",

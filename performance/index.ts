@@ -23,6 +23,9 @@ async function main() {
           case "ConcurrentTest":
             testParams.testCase = TestsCases.ConcurrentTest;
             break;
+          case "SustainedLoadTest":
+            testParams.testCase = TestsCases.SustainedLoad;
+            break;
           case "Rampup":
             testParams.testCase = TestsCases.Rampup;
             break;
@@ -57,6 +60,9 @@ async function main() {
     case "burn":
     case "swap":
       testParams.command = Commands.Swap;
+      break;
+    case "ping":
+      testParams.command = Commands.Ping;
       break;
     default:
       throw new Error(
