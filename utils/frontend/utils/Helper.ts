@@ -206,3 +206,20 @@ export function uiStringToBN(stringValue: string) {
     return new BN((Math.pow(10, 18) * parseFloat(stringValue)).toString());
   }
 }
+
+export async function openInNewTab(driver: WebDriver, url: string) {
+  const windowsBefore = await driver.getAllWindowHandles();
+  await driver.executeScript(`window.open("${url}");`);
+  const windowsAfterNewTab = await driver.getAllWindowHandles();
+  const newTabHandler = windowsAfterNewTab.filter(
+    (item) => windowsBefore.indexOf(item) < 0
+  )[0];
+  await driver.switchTo().window(newTabHandler);
+}
+
+export async function swithToTheOtherTab(driver: WebDriver) {
+  const availableTabs = await driver.getAllWindowHandles();
+  const currentTab = await driver.getWindowHandle();
+  const otherTab = availableTabs.filter((tab) => tab !== currentTab)[0];
+  await driver.switchTo().window(otherTab);
+}

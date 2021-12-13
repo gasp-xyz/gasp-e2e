@@ -31,6 +31,7 @@ const BTN_REMOVE_LIQUIDITY = `poolDetail-removeBtn`;
 const LBL_TOKEN_NAME = "wallet-asset-tokenName";
 //const DIV_ASSETS_ITEM_VALUE = `//div[@class = 'AssetBox' and //*[text()='tokenName']]/*[@class='value']`;
 const DIV_ASSETS_ITEM_VALUE = `//div[@class = 'AssetBox' and contains(@data-testid,'tokenName')]/*[@class='value']`;
+const POLK_DIV_USER_NAME = `//div[@data-testid='connect-address']//div[@data-testid='undefined-trigger']/div`;
 
 export class Sidebar {
   driver: WebDriver;
@@ -221,6 +222,11 @@ export class Sidebar {
       LBL_TOKEN_NAME.replace("tokenName", assetName)
     );
     await waitForElementToDissapear(this.driver, xpath);
+  }
+  async getUserName() {
+    await waitForElement(this.driver, POLK_DIV_USER_NAME);
+    const userName = await getText(this.driver, POLK_DIV_USER_NAME);
+    return userName;
   }
   async copyAssetValue(assetName: string) {
     const xpath = DIV_ASSETS_ITEM_VALUE.replace("tokenName", assetName);
