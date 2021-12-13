@@ -238,10 +238,13 @@ export class Sidebar {
   }
   async getAvailableAccountsFromChangeModal(): Promise<string[]> {
     //TODO: write the locatos here
-    const AllListItemsFromModal = `//*[contains(@data-testid, "connect-accounts")]`;
+    let AllListItemsFromModal = `//*[contains(@data-testid, "connect-accounts")]`;
+    AllListItemsFromModal = `//*[contains(@class, "AccountsModal__account--address")]`;
     const btnxpath = buildDataTestIdXpath(BTN_CHANGE_PLK);
     await clickElement(this.driver, btnxpath);
-    const available = await this.driver.findElements(AllListItemsFromModal);
+    const available = await this.driver.findElements(
+      By.xpath(AllListItemsFromModal)
+    );
     const items = [];
     for (let index = 0; index < available.length; index++) {
       const element = available[index];
