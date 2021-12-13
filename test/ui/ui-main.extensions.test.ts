@@ -110,7 +110,6 @@ describe("UI tests - Extension management", () => {
     ispolkOK = await sidebar.isPolkadotExtensionOK();
     expect(ispolkOK).toBeFalsy();
   });
-
   it("As a User I can switch between polkadot wallets using the modal", async () => {
     driver = await DriverBuilder.getInstance();
     await (
@@ -140,7 +139,7 @@ describe("UI tests - Extension management", () => {
     ispolkOK = await sidebar.isPolkadotExtensionOK();
     expect(ispolkOK).toBeTruthy();
   });
-  it("TODO:As a User I can not see hidden wallets in the modal", async () => {
+  it("As a User I can not see hidden wallets in the modal", async () => {
     driver = await DriverBuilder.getInstance();
     const firstUserAddress = await (
       await setupAllExtensions(driver)
@@ -154,13 +153,14 @@ describe("UI tests - Extension management", () => {
     expect(isMetaOK).toBeTruthy();
     expect(ispolkOK).toBeTruthy();
     const accountsBefore = await sidebar.getAvailableAccountsFromChangeModal();
-    expect(accountsBefore).toBe([firstUserAddress]);
+    expect(accountsBefore).toEqual([firstUserAddress]);
 
     const extensionManager = new Polkadot(driver);
     await openInNewTab(driver, extensionManager.WEB_UI_ACCESS_URL);
     const [secondUserAddress] = await extensionManager.createAccount(1);
     await extensionManager.hideAccount(firstUserAddress);
     await extensionManager.hideAccount(secondUserAddress);
+    await swithToTheOtherTab(driver);
     ispolkOK = await sidebar.isPolkadotExtensionOK();
     expect(ispolkOK).toBeFalsy();
 
