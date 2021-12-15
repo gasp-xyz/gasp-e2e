@@ -1,0 +1,61 @@
+[ {
+  "uid" : "378942ae203000db",
+  "name" : "When tx front - fails, User gets notified",
+  "time" : {
+    "start" : 1639531972304,
+    "stop" : 1639531972312,
+    "duration" : 8
+  },
+  "status" : "failed",
+  "severity" : "normal"
+}, {
+  "uid" : "be26493f360c0d36",
+  "name" : "Modal is visible when burning liquidity",
+  "time" : {
+    "start" : 1639531972290,
+    "stop" : 1639531972295,
+    "duration" : 5
+  },
+  "status" : "failed",
+  "severity" : "normal"
+}, {
+  "uid" : "23b1bc20b052965d",
+  "name" : "Modal contains currencies and amounts when Swapping",
+  "time" : {
+    "start" : 1639531821693,
+    "stop" : 1639531970838,
+    "duration" : 149145
+  },
+  "status" : "failed",
+  "severity" : "normal"
+}, {
+  "uid" : "b02d455c69f79c9",
+  "name" : "When user cancel a TX, User gets notified",
+  "time" : {
+    "start" : 1639531972319,
+    "stop" : 1639531972322,
+    "duration" : 3
+  },
+  "status" : "failed",
+  "severity" : "normal"
+}, {
+  "uid" : "4590e904c8a39bd8",
+  "name" : "Modal contains currencies and amounts when providing liquidity",
+  "time" : {
+    "start" : 1639531970838,
+    "stop" : 1639531972290,
+    "duration" : 1452
+  },
+  "status" : "failed",
+  "severity" : "normal"
+}, {
+  "uid" : "316346b8659a68fd",
+  "name" : "When tx extrinsic - fails, User gets notified",
+  "time" : {
+    "start" : 1639531972312,
+    "stop" : 1639531972319,
+    "duration" : 7
+  },
+  "status" : "failed",
+  "severity" : "normal"
+} ]
