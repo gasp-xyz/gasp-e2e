@@ -86,6 +86,8 @@
     "titleTemplate": "{title}"
   },
   "jest": {
+    "transformIgnorePatterns": ["<rootDir>/node_modules/(?!@polkadot|@babel/runtime/helpers/esm/)"],
+
     "runner": "groups",
     "verbose": true,
     "bail": false,
