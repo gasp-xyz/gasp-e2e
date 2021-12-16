@@ -11,6 +11,7 @@ import {testLog} from "./Logger";
 import {User} from "./User";
 import {MangataGenericEvent} from "mangata-sdk/build/";
 import {signTx} from "mangata-sdk";
+
 //let wait 7 blocks - 6000 * 7 = 42000; depends on the number of workers.
 
 export async function getCurrentNonce(account?: string) {
@@ -80,12 +81,19 @@ export const sudoIssueAsset = async (
   const nonce = await SudoDB.getInstance().getSudoNonce(sudoAccount.address);
   testLog.getLog().info(`W[${env.JEST_WORKER_ID}] - sudoNonce: ${nonce} `);
   const api = getApi();
-  return signTx(
-    api,
-    api.tx.sudo.sudo(api.tx.tokens.create(targetAddress, total_balance)),
-    sudoAccount,
-    {nonce: new BN(nonce)}
-  );
+  let results: MangataGenericEvent[] = [];
+  try {
+    results = await signTx(
+      api,
+      api.tx.sudo.sudo(api.tx.tokens.create(targetAddress, total_balance)),
+      sudoAccount,
+      {nonce: new BN(nonce)}
+    );
+  } catch (error) {
+    // eslint-disable-next-line no-console
+    console.error(error);
+  }
+  return results;
   //  return signAndWaitTx(
   //    api.tx.sudo.sudo(api.tx.tokens.create(targetAddress, total_balance)),
   //    sudoAccount,
