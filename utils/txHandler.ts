@@ -1,8 +1,9 @@
-import {SubmittableExtrinsic} from "@polkadot/api/types";
-import {AnyJson} from "@polkadot/types/types";
+import {SubmittableExtrinsic} from "mangata-sdk/node_modules/@polkadot/api/types";
+import {AnyJson} from "mangata-sdk/node_modules/@polkadot/types/types";
 import {getApi} from "./api";
-import {GenericEvent} from "@polkadot/types";
-import {KeyringPair} from "@polkadot/keyring/types";
+import {GenericEvent} from "mangata-sdk/node_modules/@polkadot/types";
+import {Codec} from "mangata-sdk/node_modules/@polkadot/types/types";
+import {KeyringPair} from "mangata-sdk/node_modules/@polkadot/keyring/types";
 import BN from "bn.js";
 import {SudoDB} from "./SudoDB";
 import {env} from "process";
@@ -11,6 +12,7 @@ import {testLog} from "./Logger";
 import {User} from "./User";
 import {MangataGenericEvent} from "mangata-sdk/build/";
 import {signTx} from "mangata-sdk";
+import {AccountId32} from "mangata-sdk/node_modules/@polkadot/types/interfaces";
 
 //let wait 7 blocks - 6000 * 7 = 42000; depends on the number of workers.
 
@@ -37,7 +39,10 @@ export async function getBalanceOfAsset(assetId: BN, account: any) {
   return balance.toString();
 }
 
-export async function getBalanceOfPool(assetId1: BN, assetId2: BN) {
+export async function getBalanceOfPool(
+  assetId1: BN,
+  assetId2: BN
+): Promise<Codec[]> {
   const api = getApi();
 
   const balance1 = await api.query.xyk.pools([assetId1, assetId2]);
@@ -59,7 +64,7 @@ export async function getBalanceOfPool(assetId1: BN, assetId2: BN) {
   return [balance1, balance2];
 }
 
-export async function getSudoKey() {
+export async function getSudoKey(): Promise<AccountId32> {
   const api = getApi();
 
   const sudoKey = await api.query.sudo.key();

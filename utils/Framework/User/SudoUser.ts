@@ -2,7 +2,7 @@ import BN from "bn.js";
 import {BaseUser} from "./BaseUser";
 import {ExtrinsicResult} from "../../eventListeners";
 import {getEventResultFromMangataTx} from "../../txHandler";
-import {Keyring} from "@polkadot/api";
+import {Keyring} from "mangata-sdk/node_modules/@polkadot/api";
 import {mintAsset} from "../../tx";
 import {Node} from "../Node/Node";
 import {Token} from "../Supply/Token";

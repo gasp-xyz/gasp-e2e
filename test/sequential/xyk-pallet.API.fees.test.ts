@@ -14,7 +14,7 @@ import {
   transferAsset,
 } from "../../utils/tx";
 import BN from "bn.js";
-import {Keyring} from "@polkadot/api";
+import {Keyring} from "mangata-sdk/node_modules/@polkadot/api";
 import {AssetWallet, User} from "../../utils/User";
 import {Assets} from "../../utils/Assets";
 import {getEnvironmentRequiredVars} from "../../utils/utils";
@@ -215,6 +215,7 @@ test("xyk-pallet - MGA tokens are substracted as fee : TransferAll", async () =>
 test("xyk-pallet - MGA tokens are not substracted as fee : SellAsset", async () => {
   await testUser1.sellAssets(firstCurrency, secondCurrency, new BN(50));
   await testUser1.refreshAmounts(AssetWallet.AFTER);
+  await pallet.refreshAmounts(AssetWallet.AFTER);
   const mgaUserToken = testUser1.getAsset(MGA_ASSET_ID)!;
   const diff =
     mgaUserToken.amountBefore.free.toNumber() -

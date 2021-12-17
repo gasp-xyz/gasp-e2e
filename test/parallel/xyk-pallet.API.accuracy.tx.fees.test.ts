@@ -8,7 +8,7 @@ import {getApi, getMangataInstance, initApi} from "../../utils/api";
 import {getCurrentNonce} from "../../utils/tx";
 import {ExtrinsicResult} from "../../utils/eventListeners";
 import BN from "bn.js";
-import {Keyring} from "@polkadot/api";
+import {Keyring} from "mangata-sdk/node_modules/@polkadot/api";
 import {AssetWallet, User} from "../../utils/User";
 import {validateAssetsWithValues} from "../../utils/validators";
 import {Assets} from "../../utils/Assets";
@@ -16,9 +16,9 @@ import {
   fromBNToUnitString,
   getEnvironmentRequiredVars,
 } from "../../utils/utils";
-import {SignerOptions} from "@polkadot/api/types";
+import {SignerOptions} from "mangata-sdk/node_modules/@polkadot/api/types";
 import {getEventResultFromMangataTx} from "../../utils/txHandler";
-import {RuntimeDispatchInfo} from "@polkadot/types/interfaces";
+import {RuntimeDispatchInfo} from "mangata-sdk/node_modules/@polkadot/types/interfaces";
 import {MGA_ASSET_ID} from "../../utils/Constants";
 
 jest.spyOn(console, "log").mockImplementation(jest.fn());

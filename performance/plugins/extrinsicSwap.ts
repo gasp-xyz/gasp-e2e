@@ -1,7 +1,7 @@
 import BN from "bn.js";
 import {Mangata} from "mangata-sdk";
 import {TestParams} from "../testParams";
-import {KeyringPair} from "@polkadot/keyring/types";
+import {KeyringPair} from "mangata-sdk/node_modules/@polkadot/keyring/types";
 import {preGenerateTransactions, runTransactions} from "./testRunner";
 import {performanceTestItem} from "./performanceTestItem";
 //not proud about this, but lets leave it like this until we send some optional params.

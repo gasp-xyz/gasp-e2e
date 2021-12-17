@@ -20,7 +20,7 @@ import {
   getEnvironmentRequiredVars,
 } from "../../utils/utils";
 import {testLog} from "../../utils/Logger";
-import {Keyring} from "@polkadot/api";
+import {Keyring} from "mangata-sdk/node_modules/@polkadot/api";
 import {Assets} from "../../utils/Assets";
 import {
   validateAssetsWithValues,

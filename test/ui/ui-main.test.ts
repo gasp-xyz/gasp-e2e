@@ -3,7 +3,7 @@
  * @group ui
  * @group ui-smoke
  */
-import {Keyring} from "@polkadot/api";
+import {Keyring} from "mangata-sdk/node_modules/@polkadot/api";
 import BN from "bn.js";
 import {WebDriver} from "selenium-webdriver";
 import {getApi, initApi} from "../../utils/api";

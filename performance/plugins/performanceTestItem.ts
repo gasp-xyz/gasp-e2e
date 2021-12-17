@@ -1,10 +1,10 @@
-import {Keyring} from "@polkadot/api";
+import {Keyring} from "mangata-sdk/node_modules/@polkadot/api";
 import BN from "bn.js";
 import {Mangata} from "mangata-sdk";
 import {testLog} from "../../utils/Logger";
 import {TestParams} from "../testParams";
 import {TestItem} from "./testItem";
-import {KeyringPair} from "@polkadot/keyring/types";
+import {KeyringPair} from "mangata-sdk/node_modules/@polkadot/keyring/types";
 import {UserFactory, Users} from "../../utils/Framework/User/UserFactory";
 import {Node} from "../../utils/Framework/Node/Node";
 import {MGA_ASSET_ID} from "../../utils/Constants";

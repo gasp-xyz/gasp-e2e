@@ -1,4 +1,8 @@
-import {ApiPromise, Keyring, WsProvider} from "@polkadot/api";
+import {
+  ApiPromise,
+  Keyring,
+  WsProvider,
+} from "mangata-sdk/node_modules/@polkadot/api";
 import BN from "bn.js";
 import {getApi, initApi} from "../utils/api";
 import {waitNewBlock} from "../utils/eventListeners";

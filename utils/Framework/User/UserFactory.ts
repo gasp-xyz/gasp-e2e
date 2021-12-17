@@ -1,4 +1,4 @@
-import {Keyring} from "@polkadot/api";
+import {Keyring} from "mangata-sdk/node_modules/@polkadot/api";
 
 import {Node} from "../Node/Node";
 

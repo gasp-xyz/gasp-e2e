@@ -3,7 +3,7 @@
  * @group ui
  * @group ci
  */
-import {Keyring} from "@polkadot/api";
+import {Keyring} from "mangata-sdk/node_modules/@polkadot/api";
 import {WebDriver} from "selenium-webdriver";
 import {getApi, initApi} from "../../utils/api";
 import {ETH_ASSET_ID, FIVE_MIN, MGA_ASSET_ID} from "../../utils/Constants";

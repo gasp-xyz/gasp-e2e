@@ -17,7 +17,7 @@ import {
 } from "../../utils/tx";
 import {ExtrinsicResult, EventResult} from "../../utils/eventListeners";
 import BN from "bn.js";
-import {Keyring} from "@polkadot/api";
+import {Keyring} from "mangata-sdk/node_modules/@polkadot/api";
 import {AssetWallet, User} from "../../utils/User";
 import {
   validateAssetsWithValues,
@@ -30,7 +30,7 @@ import {
   getEnvironmentRequiredVars,
 } from "../../utils/utils";
 import {testLog} from "../../utils/Logger";
-import {hexToBn} from "@polkadot/util";
+import {hexToBn} from "mangata-sdk/node_modules/@polkadot/util";
 import {getEventResultFromMangataTx} from "../../utils/txHandler";
 
 jest.spyOn(console, "log").mockImplementation(jest.fn());

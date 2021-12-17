@@ -1,5 +1,13 @@
-import {AddressOrPair, SubmittableExtrinsic} from "@polkadot/api/types";
-import {StorageKey} from "@polkadot/types";
+import {
+  AddressOrPair,
+  SubmittableExtrinsic,
+} from "mangata-sdk/node_modules/@polkadot/api/types";
+import {
+  AccountData,
+  AccountId32,
+} from "mangata-sdk/node_modules/@polkadot/types/interfaces";
+import {AnyTuple, Codec} from "mangata-sdk/node_modules/@polkadot/types/types";
+import {StorageKey} from "mangata-sdk/node_modules/@polkadot/types";
 import {getApi, getMangataInstance} from "./api";
 import BN from "bn.js";
 import {env} from "process";
@@ -7,18 +15,19 @@ import {SudoDB} from "./SudoDB";
 import {signSendAndWaitToFinishTx} from "./txHandler";
 import {getEnvironmentRequiredVars} from "./utils";
 import {MGA_DEFAULT_LIQ_TOKEN} from "./Constants";
-import {Keyring} from "@polkadot/api";
+import {Keyring} from "mangata-sdk/node_modules/@polkadot/api";
 import {User} from "./User";
 import {testLog} from "./Logger";
-import {KeyringPair} from "@polkadot/keyring/types";
+import {KeyringPair} from "mangata-sdk/node_modules/@polkadot/keyring/types";
 import {signTx} from "mangata-sdk";
+import {AnyJson} from "@polkadot/types/types";
 
 export const signTxDeprecated = async (
   tx: SubmittableExtrinsic<"promise">,
   address: AddressOrPair,
   nonce: BN
 ) => {
-  await tx.signAndSend(address, {nonce}, (result: any) => {
+  await tx.signAndSend(address, {nonce}, () => {
     // handleTx(result, unsub)
   });
   //   setNonce(nonce + 1)
@@ -320,13 +329,13 @@ export async function getNextAssetId() {
   return new BN(nextAssetId.toString());
 }
 
-export async function getAvailableCurrencies() {
+export async function getAvailableCurrencies(): Promise<AccountData[]> {
   const api = getApi();
   const curerncies = await api.query.tokens.totalIssuance();
-  return curerncies;
+  return curerncies as unknown as AccountData[];
 }
 
-export async function getSudoKey() {
+export async function getSudoKey(): Promise<AccountId32> {
   const api = getApi();
 
   const sudoKey = await api.query.sudo.key();
@@ -570,7 +579,7 @@ export async function getAllAssets(accountAddress: string) {
   return userOnes;
 }
 
-export async function lockAsset(user: User, assetId: BN, amount: BN) {
+export async function lockAsset(user: User, amount: BN) {
   const api = getApi();
 
   await signSendAndWaitToFinishTx(
@@ -609,12 +618,16 @@ export async function getAllAssetsInfo(): Promise<any[]> {
   return assetsInfo;
 }
 
-export async function calculateTxCost(transactionExtrinsic: string) {
+export async function calculateTxCost(
+  transactionExtrinsic: string
+): Promise<Record<string, AnyJson>> {
   const api = getApi();
   const queryInfoResult = await api.rpc.payment.queryInfo(transactionExtrinsic);
   return queryInfoResult.toHuman();
 }
-export async function getAllAcountEntries() {
+export async function getAllAcountEntries(): Promise<
+  [StorageKey<AnyTuple>, Codec][]
+> {
   const api = getApi();
   return await api.query.tokens.accounts.entries();
 }

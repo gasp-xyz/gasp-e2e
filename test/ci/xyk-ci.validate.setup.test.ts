@@ -5,7 +5,7 @@
  */
 import {getApi, initApi} from "../../utils/api";
 import BN from "bn.js";
-import {Keyring} from "@polkadot/api";
+import {Keyring} from "mangata-sdk/node_modules/@polkadot/api";
 import {
   fromBNToUnitString,
   getEnvironmentRequiredVars,

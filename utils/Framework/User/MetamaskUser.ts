@@ -1,6 +1,6 @@
 import BN from "bn.js";
 import {BaseUser} from "./BaseUser";
-import {Keyring} from "@polkadot/api";
+import {Keyring} from "mangata-sdk/node_modules/@polkadot/api";
 import {Node} from "../Node/Node";
 import {getEnvironmentRequiredVars} from "../../utils";
 import {erc20User, mMNGAdrress} from "../../../utils/erc20Utils";

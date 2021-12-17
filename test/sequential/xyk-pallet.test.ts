@@ -27,8 +27,8 @@ import {
 } from "../../utils/tx";
 import {ExtrinsicResult} from "../../utils/eventListeners";
 import BN from "bn.js";
-import {Keyring} from "@polkadot/api";
-import {AccountData} from "@polkadot/types/interfaces/balances";
+import {Keyring} from "mangata-sdk/node_modules/@polkadot/api";
+import {AccountData} from "mangata-sdk/node_modules/@polkadot/types/interfaces/balances";
 import {
   calculateFees,
   calculateLiqAssetAmount,
@@ -325,7 +325,7 @@ test("xyk-pallet: Happy case scenario", async () => {
     (result) => {
       const eventResponse = getEventResultFromMangataTx(result, [
         "tokens",
-        "Transferred",
+        "Transfer",
         user.address,
       ]);
       expect(eventResponse.state).toEqual(ExtrinsicResult.ExtrinsicSuccess);
@@ -1055,7 +1055,7 @@ test("xyk-pallet: Liquidity sufficiency scenario", async () => {
     (result) => {
       const eventResponse = getEventResultFromMangataTx(result, [
         "tokens",
-        "Transferred",
+        "Transfer",
         user.address,
       ]);
       expect(eventResponse.state).toEqual(ExtrinsicResult.ExtrinsicSuccess);
@@ -1103,7 +1103,7 @@ test("xyk-pallet: Liquidity sufficiency scenario", async () => {
     (result) => {
       const eventResponse = getEventResultFromMangataTx(result, [
         "tokens",
-        "Transferred",
+        "Transfer",
         user.address,
       ]);
       expect(eventResponse.state).toEqual(ExtrinsicResult.ExtrinsicSuccess);

@@ -1,4 +1,4 @@
-import {ApiPromise} from "@polkadot/api";
+import {ApiPromise} from "mangata-sdk/node_modules/@polkadot/api";
 import {initApi} from "../../utils/api";
 import {testLog} from "../Logger";
 
