@@ -4,52 +4,52 @@
     "name" : "Cluster -> Healthcheck",
     "children" : [ {
       "name" : "Nodes are up and syncing",
-      "uid" : "adff1f879c3bc750",
+      "uid" : "1767d628b1db728c",
       "parentUid" : "bab4c1ad94616c7d965ee98fb5554440",
       "status" : "passed",
       "time" : {
-        "start" : 1637813330091,
-        "stop" : 1637813358152,
-        "duration" : 28061
+        "start" : 1639886819211,
+        "stop" : 1639886844112,
+        "duration" : 24901
       },
       "flaky" : false,
       "newFailed" : false,
       "parameters" : [ ]
     }, {
       "name" : "Block numbers match across all nodes",
-      "uid" : "1c69b4afae570822",
+      "uid" : "a6c6249874b9f19",
       "parentUid" : "bab4c1ad94616c7d965ee98fb5554440",
       "status" : "passed",
       "time" : {
-        "start" : 1637813358152,
-        "stop" : 1637813388113,
-        "duration" : 29961
+        "start" : 1639886844113,
+        "stop" : 1639886874121,
+        "duration" : 30008
       },
       "flaky" : false,
       "newFailed" : false,
       "parameters" : [ ]
     }, {
       "name" : "Block merkle hash matches across all nodes",
-      "uid" : "83c721856989af02",
+      "uid" : "d74a8be9d2ee75c2",
       "parentUid" : "bab4c1ad94616c7d965ee98fb5554440",
       "status" : "passed",
       "time" : {
-        "start" : 1637813388113,
-        "stop" : 1637813418143,
-        "duration" : 30030
+        "start" : 1639886874121,
+        "stop" : 1639886904127,
+        "duration" : 30006
       },
       "flaky" : false,
       "newFailed" : false,
       "parameters" : [ ]
     }, {
       "name" : "Cluster does not fork",
-      "uid" : "dc664528c2cd7b3e",
+      "uid" : "7dae3df40864631a",
       "parentUid" : "bab4c1ad94616c7d965ee98fb5554440",
       "status" : "passed",
       "time" : {
-        "start" : 1637813418143,
-        "stop" : 1637813448153,
-        "duration" : 30010
+        "start" : 1639886904127,
+        "stop" : 1639886934156,
+        "duration" : 30029
       },
       "flaky" : false,
       "newFailed" : false,
