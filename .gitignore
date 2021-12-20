@@ -9,3 +9,7 @@ nonce.db
 test/exploratory/testPad.ts
 allure-results/*
 reports/**/*
+
+cypress/videos/*
+cypress/screenshots/*
+.DS_Store
