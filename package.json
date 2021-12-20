@@ -35,7 +35,7 @@
     "yarn": "^1.22.10"
   },
   "scripts": {
-    "postinstall": "husky install",
+    "postinstall": "husky install ;  yarn config set enableTelemetry 0 ;",
     "start": "ts-node --project tsconfig.json index.ts",
     "start-prod": "node ./build/index.js",
     "build": "tsc --project tsconfig.json",
@@ -54,8 +54,7 @@
     "test-governance-candidacy": "rm nonce.db ; rm sudo.lock; jest --verbose --runInBand --ci --group=governance-candidacy",
     "test-governance-voting": "rm nonce.db ; rm sudo.lock; jest --verbose --runInBand --ci --group=governance-voting",
     "tsc-lint": "tsc -noemit -p tsconfig.json",
-    "eslint": "node_modules/.bin/eslint --max-warnings 0 . --ext .ts",
-    "xoshiro": "^2.0.3"
+    "eslint": "node_modules/.bin/eslint --max-warnings 0 . --ext .ts"
   },
   "devDependencies": {
     "@babel/core": "^7.13.10",
