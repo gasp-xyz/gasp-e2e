@@ -1,0 +1,281 @@
+{
+  "uid" : "d7447a4c8ab25484",
+  "name" : "As a User I can get test tokens from the faucet",
+  "fullName" : "UI tests - Get Tokens from Faucet.As a User I can get test tokens from the faucet",
+  "historyId" : "eec88a440f5cd4c786967d8a5233a8c0",
+  "time" : {
+    "start" : 1639966970298,
+    "stop" : 1639967356056,
+    "duration" : 385758
+  },
+  "description" : "",
+  "descriptionHtml" : "",
+  "status" : "failed",
+  "statusMessage" : "TimeoutError: Waiting for element to be located By(xpath, //*[@data-testid='wallet-asset-MGA'])\n                Wait timed out after 300008ms",
+  "statusTrace" : "TimeoutError: Waiting for element to be located By(xpath, //*[@data-testid='wallet-asset-MGA'])\n                Wait timed out after 300008ms\n                    at /home/runner/work/mangata-e2e/mangata-e2e/node_modules/selenium-webdriver/lib/promise.js:2201:17\n                    at ManagedPromise.invokeCallback_ (/home/runner/work/mangata-e2e/mangata-e2e/node_modules/selenium-webdriver/lib/promise.js:1376:14)\n                    at TaskQueue.execute_ (/home/runner/work/mangata-e2e/mangata-e2e/node_modules/selenium-webdriver/lib/promise.js:3084:14)\n                    at TaskQueue.executeNext_ (/home/runner/work/mangata-e2e/mangata-e2e/node_modules/selenium-webdriver/lib/promise.js:3067:27)\n                    at /home/runner/work/mangata-e2e/mangata-e2e/node_modules/selenium-webdriver/lib/promise.js:2927:27\n                    at /home/runner/work/mangata-e2e/mangata-e2e/node_modules/selenium-webdriver/lib/promise.js:668:7\n                    at runMicrotasks (<anonymous>)\n                    at processTicksAndRejections (node:internal/process/task_queues:96:5)\n                From: Task: Waiting for element to be located By(xpath, //*[@data-testid='wallet-asset-MGA'])\n                    at scheduleWait (/home/runner/work/mangata-e2e/mangata-e2e/node_modules/selenium-webdriver/lib/promise.js:2188:20)\n                    at ControlFlow.wait (/home/runner/work/mangata-e2e/mangata-e2e/node_modules/selenium-webdriver/lib/promise.js:2517:12)\n                    at mixin.wait (/home/runner/work/mangata-e2e/mangata-e2e/node_modules/selenium-webdriver/lib/webdriver.js:934:29)\n                    at Sidebar.waitUntilTokenAvailable (/home/runner/work/mangata-e2e/mangata-e2e/utils/frontend/pages/Sidebar.ts:187:23)\n                    at forEach (/home/runner/work/mangata-e2e/mangata-e2e/utils/frontend/pages/Mangata.ts:60:31)\n                    at Array.forEach (<anonymous>)\n                    at Mangata.waitForFaucetToGenerateTokens (/home/runner/work/mangata-e2e/mangata-e2e/utils/frontend/pages/Mangata.ts:58:71)\n                    at Object.<anonymous> (/home/runner/work/mangata-e2e/mangata-e2e/test/ui/ui-get.tokens.test.ts:69:15)\n                    at runMicrotasks (<anonymous>)\n                    at processTicksAndRejections (node:internal/process/task_queues:96:5)",
+  "flaky" : false,
+  "newFailed" : false,
+  "beforeStages" : [ ],
+  "testStage" : {
+    "status" : "failed",
+    "statusMessage" : "TimeoutError: Waiting for element to be located By(xpath, //*[@data-testid='wallet-asset-MGA'])\n                Wait timed out after 300008ms",
+    "statusTrace" : "TimeoutError: Waiting for element to be located By(xpath, //*[@data-testid='wallet-asset-MGA'])\n                Wait timed out after 300008ms\n                    at /home/runner/work/mangata-e2e/mangata-e2e/node_modules/selenium-webdriver/lib/promise.js:2201:17\n                    at ManagedPromise.invokeCallback_ (/home/runner/work/mangata-e2e/mangata-e2e/node_modules/selenium-webdriver/lib/promise.js:1376:14)\n                    at TaskQueue.execute_ (/home/runner/work/mangata-e2e/mangata-e2e/node_modules/selenium-webdriver/lib/promise.js:3084:14)\n                    at TaskQueue.executeNext_ (/home/runner/work/mangata-e2e/mangata-e2e/node_modules/selenium-webdriver/lib/promise.js:3067:27)\n                    at /home/runner/work/mangata-e2e/mangata-e2e/node_modules/selenium-webdriver/lib/promise.js:2927:27\n                    at /home/runner/work/mangata-e2e/mangata-e2e/node_modules/selenium-webdriver/lib/promise.js:668:7\n                    at runMicrotasks (<anonymous>)\n                    at processTicksAndRejections (node:internal/process/task_queues:96:5)\n                From: Task: Waiting for element to be located By(xpath, //*[@data-testid='wallet-asset-MGA'])\n                    at scheduleWait (/home/runner/work/mangata-e2e/mangata-e2e/node_modules/selenium-webdriver/lib/promise.js:2188:20)\n                    at ControlFlow.wait (/home/runner/work/mangata-e2e/mangata-e2e/node_modules/selenium-webdriver/lib/promise.js:2517:12)\n                    at mixin.wait (/home/runner/work/mangata-e2e/mangata-e2e/node_modules/selenium-webdriver/lib/webdriver.js:934:29)\n                    at Sidebar.waitUntilTokenAvailable (/home/runner/work/mangata-e2e/mangata-e2e/utils/frontend/pages/Sidebar.ts:187:23)\n                    at forEach (/home/runner/work/mangata-e2e/mangata-e2e/utils/frontend/pages/Mangata.ts:60:31)\n                    at Array.forEach (<anonymous>)\n                    at Mangata.waitForFaucetToGenerateTokens (/home/runner/work/mangata-e2e/mangata-e2e/utils/frontend/pages/Mangata.ts:58:71)\n                    at Object.<anonymous> (/home/runner/work/mangata-e2e/mangata-e2e/test/ui/ui-get.tokens.test.ts:69:15)\n                    at runMicrotasks (<anonymous>)\n                    at processTicksAndRejections (node:internal/process/task_queues:96:5)",
+    "steps" : [ ],
+    "attachments" : [ {
+      "uid" : "701c8839320ecbfe",
+      "name" : "Screeenshot",
+      "source" : "701c8839320ecbfe.png",
+      "type" : "image/png",
+      "size" : 87867
+    } ],
+    "parameters" : [ ],
+    "stepsCount" : 0,
+    "attachmentsCount" : 1,
+    "shouldDisplayMessage" : true,
+    "hasContent" : true
+  },
+  "afterStages" : [ ],
+  "labels" : [ {
+    "name" : "suite",
+    "value" : "UI tests - Get Tokens from Faucet"
+  }, {
+    "name" : "testClass",
+    "value" : "UI tests - Get Tokens from Faucet"
+  }, {
+    "name" : "testMethod",
+    "value" : "As a User I can get test tokens from the faucet"
+  }, {
+    "name" : "package",
+    "value" : "UI tests - Get Tokens from Faucet"
+  }, {
+    "name" : "resultFormat",
+    "value" : "allure1"
+  } ],
+  "parameters" : [ ],
+  "links" : [ ],
+  "hidden" : false,
+  "retry" : false,
+  "extra" : {
+    "severity" : "normal",
+    "retries" : [ ],
+    "categories" : [ {
+      "name" : "Product defects",
+      "matchedStatuses" : [ ],
+      "flaky" : false
+    } ],
+    "history" : {
+      "statistic" : {
+        "failed" : 85,
+        "broken" : 0,
+        "skipped" : 0,
+        "passed" : 2,
+        "unknown" : 0,
+        "total" : 87
+      },
+      "items" : [ {
+        "uid" : "3e42fd36b00b0702",
+        "reportUrl" : "https://mangata-finance.github.io/mangata-e2e/1117//#testresult/3e42fd36b00b0702",
+        "status" : "failed",
+        "statusDetails" : "TimeoutError: Waiting for element to be located By(xpath, //button[text()='Connect'])\n                Wait timed out after 30011ms",
+        "time" : {
+          "start" : 1639965225582,
+          "stop" : 1639965332343,
+          "duration" : 106761
+        }
+      }, {
+        "uid" : "e7678e635b3613e5",
+        "reportUrl" : "https://mangata-finance.github.io/mangata-e2e/1116//#testresult/e7678e635b3613e5",
+        "status" : "failed",
+        "statusDetails" : "TimeoutError: Waiting for element to be located By(xpath, //button[text()='Connect'])\n                Wait timed out after 30002ms",
+        "time" : {
+          "start" : 1639965163936,
+          "stop" : 1639965280298,
+          "duration" : 116362
+        }
+      }, {
+        "uid" : "fb80ea37639eb2d",
+        "reportUrl" : "https://mangata-finance.github.io/mangata-e2e/1112//#testresult/fb80ea37639eb2d",
+        "status" : "failed",
+        "statusDetails" : "TimeoutError: Waiting for element to be located By(xpath, //*[@data-testid='wallet-asset-MGA'])\n                Wait timed out after 300000ms",
+        "time" : {
+          "start" : 1639880472592,
+          "stop" : 1639880844021,
+          "duration" : 371429
+        }
+      }, {
+        "uid" : "7eba259279e7f548",
+        "reportUrl" : "https://mangata-finance.github.io/mangata-e2e/1114//#testresult/7eba259279e7f548",
+        "status" : "failed",
+        "statusDetails" : "TimeoutError: Waiting for element to be located By(xpath, //button[text()='Connect'])\n                Wait timed out after 30004ms",
+        "time" : {
+          "start" : 1639878834589,
+          "stop" : 1639878946657,
+          "duration" : 112068
+        }
+      }, {
+        "uid" : "5d392d0f0e841f82",
+        "reportUrl" : "https://mangata-finance.github.io/mangata-e2e/1113//#testresult/5d392d0f0e841f82",
+        "status" : "failed",
+        "statusDetails" : "TimeoutError: Waiting for element to be located By(xpath, //button[text()='Connect'])\n                Wait timed out after 30003ms",
+        "time" : {
+          "start" : 1639878160575,
+          "stop" : 1639878262401,
+          "duration" : 101826
+        }
+      }, {
+        "uid" : "1df58290e1c72b9",
+        "reportUrl" : "https://mangata-finance.github.io/mangata-e2e/1111//#testresult/1df58290e1c72b9",
+        "status" : "failed",
+        "statusDetails" : "TimeoutError: Waiting for element to be located By(xpath, //button[text()='Connect'])\n                Wait timed out after 30006ms",
+        "time" : {
+          "start" : 1639816260069,
+          "stop" : 1639816378668,
+          "duration" : 118599
+        }
+      }, {
+        "uid" : "e0044fa96d77e4a6",
+        "reportUrl" : "https://mangata-finance.github.io/mangata-e2e/1109//#testresult/e0044fa96d77e4a6",
+        "status" : "failed",
+        "statusDetails" : "TimeoutError: Waiting for element to be located By(xpath, //*[@data-testid='wallet-asset-MGA'])\n                Wait timed out after 300015ms",
+        "time" : {
+          "start" : 1639793953450,
+          "stop" : 1639794323033,
+          "duration" : 369583
+        }
+      }, {
+        "uid" : "8bf1a489d800726c",
+        "reportUrl" : "https://mangata-finance.github.io/mangata-e2e/1107//#testresult/8bf1a489d800726c",
+        "status" : "failed",
+        "statusDetails" : "TimeoutError: Waiting for element to be located By(xpath, //button[text()='Connect'])\n                Wait timed out after 30005ms",
+        "time" : {
+          "start" : 1639792444334,
+          "stop" : 1639792551370,
+          "duration" : 107036
+        }
+      }, {
+        "uid" : "2c6781ae922ef30a",
+        "reportUrl" : "https://mangata-finance.github.io/mangata-e2e/1108//#testresult/2c6781ae922ef30a",
+        "status" : "failed",
+        "statusDetails" : "TimeoutError: Waiting for element to be located By(xpath, //button[text()='Connect'])\n                Wait timed out after 30006ms",
+        "time" : {
+          "start" : 1639792380587,
+          "stop" : 1639792498079,
+          "duration" : 117492
+        }
+      }, {
+        "uid" : "5df11bc7419d8cd5",
+        "reportUrl" : "https://mangata-finance.github.io/mangata-e2e/1103//#testresult/5df11bc7419d8cd5",
+        "status" : "failed",
+        "statusDetails" : "TimeoutError: Waiting for element to be located By(xpath, //*[@data-testid='wallet-asset-MGA'])\n                Wait timed out after 300000ms",
+        "time" : {
+          "start" : 1639707563994,
+          "stop" : 1639707936778,
+          "duration" : 372784
+        }
+      }, {
+        "uid" : "58370cdb11077977",
+        "reportUrl" : "https://mangata-finance.github.io/mangata-e2e/1104//#testresult/58370cdb11077977",
+        "status" : "failed",
+        "statusDetails" : "TimeoutError: Waiting for element to be located By(xpath, //*[@data-testid='wallet-asset-MGA'])\n                Wait timed out after 300005ms",
+        "time" : {
+          "start" : 1639707419775,
+          "stop" : 1639707785243,
+          "duration" : 365468
+        }
+      }, {
+        "uid" : "519ec3ccebdc0efa",
+        "reportUrl" : "https://mangata-finance.github.io/mangata-e2e/1105//#testresult/519ec3ccebdc0efa",
+        "status" : "failed",
+        "statusDetails" : "TimeoutError: Waiting for element to be located By(xpath, //*[@data-testid='wallet-asset-MGA'])\n                Wait timed out after 300005ms",
+        "time" : {
+          "start" : 1639706888305,
+          "stop" : 1639707249599,
+          "duration" : 361294
+        }
+      }, {
+        "uid" : "13597058d02e9bc8",
+        "reportUrl" : "https://mangata-finance.github.io/mangata-e2e/1101//#testresult/13597058d02e9bc8",
+        "status" : "failed",
+        "statusDetails" : "TimeoutError: Waiting for element to be located By(xpath, //*[@data-testid='wallet-asset-MGA'])\n                Wait timed out after 300001ms",
+        "time" : {
+          "start" : 1639621868093,
+          "stop" : 1639622244660,
+          "duration" : 376567
+        }
+      }, {
+        "uid" : "604626d4625f335e",
+        "reportUrl" : "https://mangata-finance.github.io/mangata-e2e/1099//#testresult/604626d4625f335e",
+        "status" : "failed",
+        "statusDetails" : "TimeoutError: Waiting for element to be located By(xpath, //*[@data-testid='wallet-asset-MGA'])\n                Wait timed out after 300001ms",
+        "time" : {
+          "start" : 1639620917801,
+          "stop" : 1639621281954,
+          "duration" : 364153
+        }
+      }, {
+        "uid" : "a73ce2bbb1cacd6c",
+        "reportUrl" : "https://mangata-finance.github.io/mangata-e2e/1100//#testresult/a73ce2bbb1cacd6c",
+        "status" : "failed",
+        "statusDetails" : "TimeoutError: Waiting for element to be located By(xpath, //*[contains(text(),'Your tokens')])\n                Wait timed out after 30000ms",
+        "time" : {
+          "start" : 1639620620070,
+          "stop" : 1639620703549,
+          "duration" : 83479
+        }
+      }, {
+        "uid" : "ae43610a5be15e9f",
+        "reportUrl" : "https://mangata-finance.github.io/mangata-e2e/1095//#testresult/ae43610a5be15e9f",
+        "status" : "failed",
+        "statusDetails" : "TimeoutError: Waiting for element to be located By(xpath, //*[@data-testid='wallet-asset-MGA'])\n                Wait timed out after 300008ms",
+        "time" : {
+          "start" : 1639534685896,
+          "stop" : 1639535060876,
+          "duration" : 374980
+        }
+      }, {
+        "uid" : "bdee6d12ec615070",
+        "reportUrl" : "https://mangata-finance.github.io/mangata-e2e/1097//#testresult/bdee6d12ec615070",
+        "status" : "failed",
+        "statusDetails" : "TimeoutError: Waiting for element to be located By(xpath, //*[@data-testid='wallet-asset-MGA'])\n                Wait timed out after 300005ms",
+        "time" : {
+          "start" : 1639534631937,
+          "stop" : 1639534997512,
+          "duration" : 365575
+        }
+      }, {
+        "uid" : "184d0bc3e4f2d0f1",
+        "reportUrl" : "https://mangata-finance.github.io/mangata-e2e/1092//#testresult/184d0bc3e4f2d0f1",
+        "status" : "failed",
+        "statusDetails" : "TimeoutError: Waiting for element to be located By(xpath, //*[contains(text(),'Your tokens')])\n                Wait timed out after 30003ms",
+        "time" : {
+          "start" : 1639448799307,
+          "stop" : 1639448898201,
+          "duration" : 98894
+        }
+      }, {
+        "uid" : "a98e7d3b4b0eccb7",
+        "reportUrl" : "https://mangata-finance.github.io/mangata-e2e/1091//#testresult/a98e7d3b4b0eccb7",
+        "status" : "failed",
+        "statusDetails" : "TimeoutError: Waiting for element to be located By(xpath, //*[@data-testid='wallet-asset-MGA'])\n                Wait timed out after 300004ms",
+        "time" : {
+          "start" : 1639448142539,
+          "stop" : 1639448509160,
+          "duration" : 366621
+        }
+      }, {
+        "uid" : "887ba9cdf63a6e17",
+        "reportUrl" : "https://mangata-finance.github.io/mangata-e2e/1089//#testresult/887ba9cdf63a6e17",
+        "status" : "failed",
+        "statusDetails" : "TimeoutError: Waiting for element to be located By(xpath, //*[@data-testid='wallet-asset-MGA'])\n                Wait timed out after 300016ms",
+        "time" : {
+          "start" : 1639362402486,
+          "stop" : 1639362781256,
+          "duration" : 378770
+        }
+      } ]
+    },
+    "tags" : [ ]
+  },
+  "source" : "d7447a4c8ab25484.json",
+  "parameterValues" : [ ]
+}
