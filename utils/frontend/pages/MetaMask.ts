@@ -1,6 +1,7 @@
 import {WebDriver} from "selenium-webdriver";
 import {getEnvironmentRequiredVars, sleep} from "../../utils";
 import {
+  buildDataTestIdXpath,
   clickElement,
   doActionInDifferentWindow,
   getAttribute,
