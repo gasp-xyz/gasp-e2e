@@ -21,7 +21,7 @@ const XPATH_KOVAN_NETWORK = "//span[text()='Kovan Test Network']";
 const XPATH_ALL_DONE =
   "//*[contains(@class,'button btn-primary first-time-flow__button')]";
 const XPATH_MNEMONIC = `//input[@placeholder='Paste Secret Recovery Phrase from clipboard']`;
-const XPATH_CONNECT_META = `//button[text()='Connect']`;
+const TEST_ID_CONNECT_META = `extensionMetamask-accountNotFound-connectBtn`;
 const XPATH_NEXT = `//*[contains(@class,'button btn-primary')]`;
 const XPATH_ACCOUNT = `//*[@class='selected-account']`;
 const XPATH_CONFIRM_TX = "//*[@data-testid='page-container-footer-next']";
@@ -105,7 +105,8 @@ export class MetaMask {
 
   public async connect() {
     await sleep(4000);
-    await clickElement(this.driver, XPATH_CONNECT_META);
+    const xpath = buildDataTestIdXpath(TEST_ID_CONNECT_META);
+    await clickElement(this.driver, xpath);
     await this.acceptConnectionPermissions();
   }
 
