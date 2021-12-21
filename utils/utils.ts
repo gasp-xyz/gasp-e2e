@@ -23,6 +23,13 @@ export function fromBNToUnitString(value: BN) {
   return valueFormatted;
 }
 
+export function fromStringToUnitString(value: string) {
+  const stringWithoutCommas = value.split(",").join("");
+  const valueBN = new BN(stringWithoutCommas);
+  const unitString = fromBNToUnitString(valueBN);
+  return unitString;
+}
+
 export function getEnvironmentRequiredVars() {
   const xykPalletAddress = process.env.E2E_XYK_PALLET_ADDRESS
     ? process.env.E2E_XYK_PALLET_ADDRESS
