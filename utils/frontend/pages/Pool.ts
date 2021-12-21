@@ -1,4 +1,5 @@
 import {By, WebDriver} from "selenium-webdriver";
+import {waitNewBlock} from "../../eventListeners";
 import {
   buildDataTestIdXpath,
   clickElement,
@@ -56,6 +57,7 @@ export class Pool {
     const enabled = await (
       await this.driver.findElement(By.xpath(tradeBtn))
     ).isEnabled();
+    await waitNewBlock();
     if (!enabled) {
       throw new Error("Provide btn is not enabled!");
     }
