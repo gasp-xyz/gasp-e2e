@@ -1,0 +1,412 @@
+{
+  "uid" : "4b4757e66a1912dae1a509f688f20b0f",
+  "children" : [ {
+    "name" : "Product defects",
+    "children" : [ {
+      "name" : "TimeoutError: Waiting for element to be located By(xpath, //button[text()='Connect'])\n                Wait timed out after 30006ms",
+      "children" : [ {
+        "name" : "Modal contains currencies and amounts when Swapping",
+        "uid" : "a45265cef9bba49a",
+        "parentUid" : "b015011a77b8b934f4f5827fd99f62e4",
+        "status" : "failed",
+        "time" : {
+          "start" : 1640050327609,
+          "stop" : 1640050399309,
+          "duration" : 71700
+        },
+        "flaky" : false,
+        "newFailed" : false,
+        "parameters" : [ ]
+      }, {
+        "name" : "When user cancel a TX, User gets notified",
+        "uid" : "2774d67a57797c5c",
+        "parentUid" : "b015011a77b8b934f4f5827fd99f62e4",
+        "status" : "failed",
+        "time" : {
+          "start" : 1640050675309,
+          "stop" : 1640050743831,
+          "duration" : 68522
+        },
+        "flaky" : false,
+        "newFailed" : false,
+        "parameters" : [ ]
+      }, {
+        "name" : "As a User I get the right values for Pool investment P[5000000000000000000, 100] - I-> 100000000000 -Expected - 0.000002",
+        "uid" : "bc52b19d37b98301",
+        "parentUid" : "b015011a77b8b934f4f5827fd99f62e4",
+        "status" : "failed",
+        "time" : {
+          "start" : 1640051547485,
+          "stop" : 1640051547673,
+          "duration" : 188
+        },
+        "flaky" : false,
+        "newFailed" : false,
+        "parameters" : [ ]
+      }, {
+        "name" : "As a User I get the right values for Pool investment P[5000000000000000000, 5000000000000000000] - I-> 0.123 -Expected - 0.123",
+        "uid" : "d1fa1f4146087792",
+        "parentUid" : "b015011a77b8b934f4f5827fd99f62e4",
+        "status" : "failed",
+        "time" : {
+          "start" : 1640051547675,
+          "stop" : 1640051547859,
+          "duration" : 184
+        },
+        "flaky" : false,
+        "newFailed" : false,
+        "parameters" : [ ]
+      }, {
+        "name" : "As a User I get the right values for Pool investment P[2500000000000000000, 5000000000000000000] - I-> 0.100 -Expected - 0.200",
+        "uid" : "ac7980ad398e7f5a",
+        "parentUid" : "b015011a77b8b934f4f5827fd99f62e4",
+        "status" : "failed",
+        "time" : {
+          "start" : 1640051547860,
+          "stop" : 1640051548056,
+          "duration" : 196
+        },
+        "flaky" : false,
+        "newFailed" : false,
+        "parameters" : [ ]
+      } ],
+      "uid" : "b015011a77b8b934f4f5827fd99f62e4"
+    }, {
+      "name" : "TimeoutError: Waiting for element to be located By(xpath, //button[text()='Connect'])\n                Wait timed out after 30020ms",
+      "children" : [ {
+        "name" : "Modal contains currencies and amounts when providing liquidity",
+        "uid" : "66a25fca01b2607b",
+        "parentUid" : "ebc3fe3a3d3ca76d640ba5ef3db76d6e",
+        "status" : "failed",
+        "time" : {
+          "start" : 1640050399319,
+          "stop" : 1640050469094,
+          "duration" : 69775
+        },
+        "flaky" : false,
+        "newFailed" : false,
+        "parameters" : [ ]
+      } ],
+      "uid" : "ebc3fe3a3d3ca76d640ba5ef3db76d6e"
+    }, {
+      "name" : "TimeoutError: Waiting for element to be located By(xpath, //button[text()='Connect'])\n                Wait timed out after 30000ms",
+      "children" : [ {
+        "name" : "Modal is visible when burning liquidity",
+        "uid" : "c89c40f76316c518",
+        "parentUid" : "f175e2b8b820aea65fe4e46d8a1b6cb3",
+        "status" : "failed",
+        "time" : {
+          "start" : 1640050469095,
+          "stop" : 1640050537862,
+          "duration" : 68767
+        },
+        "flaky" : true,
+        "newFailed" : false,
+        "parameters" : [ ]
+      }, {
+        "name" : "As a User I can mint some tokens MGA - mETH",
+        "uid" : "ccd23cab85a8d65b",
+        "parentUid" : "f175e2b8b820aea65fe4e46d8a1b6cb3",
+        "status" : "failed",
+        "time" : {
+          "start" : 1640050816288,
+          "stop" : 1640050884867,
+          "duration" : 68579
+        },
+        "flaky" : false,
+        "newFailed" : false,
+        "parameters" : [ ]
+      }, {
+        "name" : "As a User I can get test tokens from the faucet",
+        "uid" : "14333c062eeca90d",
+        "parentUid" : "f175e2b8b820aea65fe4e46d8a1b6cb3",
+        "status" : "failed",
+        "time" : {
+          "start" : 1640051623856,
+          "stop" : 1640051742968,
+          "duration" : 119112
+        },
+        "flaky" : false,
+        "newFailed" : false,
+        "parameters" : [ ]
+      } ],
+      "uid" : "f175e2b8b820aea65fe4e46d8a1b6cb3"
+    }, {
+      "name" : "TimeoutError: Waiting for element to be located By(xpath, //button[text()='Connect'])\n                Wait timed out after 30001ms",
+      "children" : [ {
+        "name" : "When tx front - fails, User gets notified",
+        "uid" : "b1a67183fc546f66",
+        "parentUid" : "857c1cf04f8f3983f32fdde20454a41a",
+        "status" : "failed",
+        "time" : {
+          "start" : 1640050537882,
+          "stop" : 1640050605942,
+          "duration" : 68060
+        },
+        "flaky" : false,
+        "newFailed" : false,
+        "parameters" : [ ]
+      }, {
+        "name" : "As a User I can Swap tokens - MGA - mETH",
+        "uid" : "e4bfde82dc225620",
+        "parentUid" : "857c1cf04f8f3983f32fdde20454a41a",
+        "status" : "failed",
+        "time" : {
+          "start" : 1640050745453,
+          "stop" : 1640050816286,
+          "duration" : 70833
+        },
+        "flaky" : false,
+        "newFailed" : false,
+        "parameters" : [ ]
+      } ],
+      "uid" : "857c1cf04f8f3983f32fdde20454a41a"
+    }, {
+      "name" : "TimeoutError: Waiting for element to be located By(xpath, //button[text()='Connect'])\n                Wait timed out after 30004ms",
+      "children" : [ {
+        "name" : "When tx extrinsic - fails, User gets notified",
+        "uid" : "6c6ef628b1656ea5",
+        "parentUid" : "13d05706eaf9ed81d3f2af2f430f6510",
+        "status" : "failed",
+        "time" : {
+          "start" : 1640050605945,
+          "stop" : 1640050675308,
+          "duration" : 69363
+        },
+        "flaky" : false,
+        "newFailed" : false,
+        "parameters" : [ ]
+      }, {
+        "name" : "As a User I can see the max possible value in UI",
+        "uid" : "55e21e66c7cecfc",
+        "parentUid" : "13d05706eaf9ed81d3f2af2f430f6510",
+        "status" : "failed",
+        "time" : {
+          "start" : 1640051093549,
+          "stop" : 1640051093723,
+          "duration" : 174
+        },
+        "flaky" : false,
+        "newFailed" : false,
+        "parameters" : [ ]
+      }, {
+        "name" : "As a User I can see the min value in UI",
+        "uid" : "788d79bb6cd1c908",
+        "parentUid" : "13d05706eaf9ed81d3f2af2f430f6510",
+        "status" : "failed",
+        "time" : {
+          "start" : 1640051093724,
+          "stop" : 1640051093898,
+          "duration" : 174
+        },
+        "flaky" : false,
+        "newFailed" : false,
+        "parameters" : [ ]
+      } ],
+      "uid" : "13d05706eaf9ed81d3f2af2f430f6510"
+    }, {
+      "name" : "TimeoutError: Waiting for element to be located By(xpath, //button[text()='Connect'])\n                Wait timed out after 30003ms",
+      "children" : [ {
+        "name" : "As a User I can burn all liquidity MGA - mETH",
+        "uid" : "9e02430ae082e7bb",
+        "parentUid" : "99187af02fdf800390f90d383c16e399",
+        "status" : "failed",
+        "time" : {
+          "start" : 1640050884869,
+          "stop" : 1640050952984,
+          "duration" : 68115
+        },
+        "flaky" : false,
+        "newFailed" : false,
+        "parameters" : [ ]
+      } ],
+      "uid" : "99187af02fdf800390f90d383c16e399"
+    }, {
+      "name" : "TimeoutError: Waiting for element to be located By(xpath, //button[text()='Connect'])\n                Wait timed out after 30010ms",
+      "children" : [ {
+        "name" : "As a User I can mint in more than one pool [ MGA - mETH ] [ MGA - newTokn ] and get invested values",
+        "uid" : "43eb35c5ecc07d4e",
+        "parentUid" : "d0f8b7004b23b6942e68f5dee93b254e",
+        "status" : "failed",
+        "time" : {
+          "start" : 1640050952985,
+          "stop" : 1640051021782,
+          "duration" : 68797
+        },
+        "flaky" : false,
+        "newFailed" : false,
+        "parameters" : [ ]
+      }, {
+        "name" : "As a User I can deposit ETH from Meta extension",
+        "uid" : "3eb0abd8e1ed3877",
+        "parentUid" : "d0f8b7004b23b6942e68f5dee93b254e",
+        "status" : "failed",
+        "time" : {
+          "start" : 1640051100394,
+          "stop" : 1640051230831,
+          "duration" : 130437
+        },
+        "flaky" : false,
+        "newFailed" : false,
+        "parameters" : [ ]
+      } ],
+      "uid" : "d0f8b7004b23b6942e68f5dee93b254e"
+    }, {
+      "name" : "TimeoutError: Waiting for element to be located By(xpath, //input[@placeholder='Paste Secret Recovery Phrase from clipboard'])\n                Wait timed out after 30007ms",
+      "children" : [ {
+        "name" : "As a User I can Withdraw ETH from Meta extension",
+        "uid" : "c549baadddfa0c87",
+        "parentUid" : "539166e536644e0f9cefb0b4b1a26557",
+        "status" : "failed",
+        "time" : {
+          "start" : 1640051230837,
+          "stop" : 1640051262076,
+          "duration" : 31239
+        },
+        "flaky" : false,
+        "newFailed" : false,
+        "parameters" : [ ]
+      } ],
+      "uid" : "539166e536644e0f9cefb0b4b1a26557"
+    }, {
+      "name" : "TimeoutError: Waiting for element to be located By(xpath, //button[text()='Connect'])\n                Wait timed out after 30002ms",
+      "children" : [ {
+        "name" : "As a User I can Swap All MGA tokens -> newToken",
+        "uid" : "437cf65376c6cc0c",
+        "parentUid" : "339704e682ccc9d3d696cd201f31f96b",
+        "status" : "failed",
+        "time" : {
+          "start" : 1640051263534,
+          "stop" : 1640051334400,
+          "duration" : 70866
+        },
+        "flaky" : false,
+        "newFailed" : false,
+        "parameters" : [ ]
+      }, {
+        "name" : "As a User I get the right values for Pool removal P[2499999999999999999, 5000000000000000000] - I-> 2 -Expected - 0.049 , 0.100",
+        "uid" : "ccac29b4d0bfc929",
+        "parentUid" : "339704e682ccc9d3d696cd201f31f96b",
+        "status" : "failed",
+        "time" : {
+          "start" : 1640051475541,
+          "stop" : 1640051475724,
+          "duration" : 183
+        },
+        "flaky" : false,
+        "newFailed" : false,
+        "parameters" : [ ]
+      }, {
+        "name" : "As a User I get the right values for Pool removal P[2500000000000000000, 5000000000000000000] - I-> 1 -Expected - 0.025 , 0.05",
+        "uid" : "49be1bb2cefcf456",
+        "parentUid" : "339704e682ccc9d3d696cd201f31f96b",
+        "status" : "failed",
+        "time" : {
+          "start" : 1640051475725,
+          "stop" : 1640051475910,
+          "duration" : 185
+        },
+        "flaky" : false,
+        "newFailed" : false,
+        "parameters" : [ ]
+      }, {
+        "name" : "As a User I can create a pool",
+        "uid" : "4948a2e17e2e6f26",
+        "parentUid" : "339704e682ccc9d3d696cd201f31f96b",
+        "status" : "failed",
+        "time" : {
+          "start" : 1640051619799,
+          "stop" : 1640051620013,
+          "duration" : 214
+        },
+        "flaky" : false,
+        "newFailed" : false,
+        "parameters" : [ ]
+      } ],
+      "uid" : "339704e682ccc9d3d696cd201f31f96b"
+    }, {
+      "name" : "TimeoutError: Waiting for element to be located By(xpath, //button[text()='Connect'])\n                Wait timed out after 30012ms",
+      "children" : [ {
+        "name" : "As a User I can mint All tokens newToken - newToken2",
+        "uid" : "8f2527c20f36b215",
+        "parentUid" : "0adec42a0dbc21cb5bb2411d6187bb89",
+        "status" : "failed",
+        "time" : {
+          "start" : 1640051334401,
+          "stop" : 1640051403428,
+          "duration" : 69027
+        },
+        "flaky" : false,
+        "newFailed" : false,
+        "parameters" : [ ]
+      } ],
+      "uid" : "0adec42a0dbc21cb5bb2411d6187bb89"
+    }, {
+      "name" : "TIMEOUT: Waiting for //*[@class = 'Sidebar__loading'] to dissapear",
+      "children" : [ {
+        "name" : "As a User I get infomed whenever is neccesary to install any extension",
+        "uid" : "944e61eca4c9c2df",
+        "parentUid" : "f2cd7eefc95a5944bccb745aec47ebb6",
+        "status" : "failed",
+        "time" : {
+          "start" : 1640051744184,
+          "stop" : 1640051809299,
+          "duration" : 65115
+        },
+        "flaky" : false,
+        "newFailed" : false,
+        "parameters" : [ ]
+      } ],
+      "uid" : "f2cd7eefc95a5944bccb745aec47ebb6"
+    }, {
+      "name" : "NoSuchSessionError: session timed out or not found",
+      "children" : [ {
+        "name" : "As a User I get feedback when extensions are installed and correctly setup",
+        "uid" : "7b2343a525e8e290",
+        "parentUid" : "2ef416557588516bfb8469dcf54b2c50",
+        "status" : "failed",
+        "time" : {
+          "start" : 1640051809299,
+          "stop" : 1640051809807,
+          "duration" : 508
+        },
+        "flaky" : false,
+        "newFailed" : false,
+        "parameters" : [ ]
+      }, {
+        "name" : "Validate that Mangata Frontend up and running",
+        "uid" : "186a0bdeafd774dd",
+        "parentUid" : "2ef416557588516bfb8469dcf54b2c50",
+        "status" : "failed",
+        "time" : {
+          "start" : 1640051810761,
+          "stop" : 1640051810896,
+          "duration" : 135
+        },
+        "flaky" : false,
+        "newFailed" : false,
+        "parameters" : [ ]
+      } ],
+      "uid" : "2ef416557588516bfb8469dcf54b2c50"
+    }, {
+      "name" : "Error: Caught error after test environment was torn down\n                \n                expect(received).toBeTruthy()\n                \n                Received: false",
+      "children" : [ {
+        "name" : "Validate that Frontend retrieves AssetInfo data",
+        "uid" : "bbbeb895dab5a6bf",
+        "parentUid" : "9f76259d1db37526086c6020c3d3ed8c",
+        "status" : "failed",
+        "time" : {
+          "start" : 1640051810896,
+          "stop" : 1640051810907,
+          "duration" : 11
+        },
+        "flaky" : false,
+        "newFailed" : false,
+        "parameters" : [ ]
+      } ],
+      "uid" : "9f76259d1db37526086c6020c3d3ed8c"
+    } ],
+    "uid" : "8fb3a91ba5aaf9de24cc8a92edc82b5d"
+  } ],
+  "name" : "categories"
+}
