@@ -3,13 +3,15 @@ describe("Mangata Finance Subscriptions", () => {
   const randomNumber = Math.floor(Math.random() * 1000000).toString();
   const testEmail = "mangata-test+" + randomNumber + "@wcuadbsp.mailosaur.net";
 
+  let subscriptionLink = "";
+
   it("User can subscribe", () => {
     cy.visit("https://mangata.finance/");
     cy.get('input[name="email"]').type(testEmail);
     cy.contains("Subscribe").click();
   });
 
-  it("User receives subscription email", () => {
+  it("User receives subscription email",  () => {
     cy.mailosaurGetMessage(serverId, {
       sentTo: testEmail
     }).then(email => {
@@ -19,6 +21,7 @@ describe("Mangata Finance Subscriptions", () => {
   })
 
   it('User can confirm subscription from link in the email', () => {
+    console.log("Attempting to go to => " + subscriptionLink);
     cy.visit(subscriptionLink);
     cy.contains('Subscription Confirmed');
   })
@@ -26,6 +29,6 @@ describe("Mangata Finance Subscriptions", () => {
   it('User can continue to Mangata after confirming subscription', () => {
     cy.visit(subscriptionLink);
     cy.contains('continue to our website').click();
-    expect(cy.url()).to.equal('https://mangata.finance');
+    cy.url().should('eq', 'https://mangata.finance/');
   })
 });

@@ -23,6 +23,7 @@
     "ethers": "^5.4.7",
     "ganache-cli": "^6.12.2",
     "loadsh": "^0.0.4",
+    "mailosaur": "^8.1.0",
     "mangata-sdk": "0.9.0",
     "package.json": "^2.0.1",
     "prettier": "^2.3.0",
