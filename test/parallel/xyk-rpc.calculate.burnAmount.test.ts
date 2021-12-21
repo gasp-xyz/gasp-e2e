@@ -12,6 +12,7 @@ import {AssetWallet, User} from "../../utils/User";
 import {Assets} from "../../utils/Assets";
 import {
   fromBNToUnitString,
+  fromStringToUnitString,
   getEnvironmentRequiredVars,
 } from "../../utils/utils";
 import {ExtrinsicResult} from "../../utils/eventListeners";
@@ -62,10 +63,10 @@ describe("xyk-rpc - calculate get_burn amount: OK", () => {
   //now with the dict indexes we do the testing.
   //ie, pool1, assets(0 and 1) in the dictionary, requesting amount of 0 , we expect 1. Weird.
   test.each([
-    [0, 1, new BN(1000), "1.0000 nUnit"],
-    [1, 0, new BN(1000), "1.0000 nUnit"],
-    [0, 1, new BN(10000), "10.0000 nUnit"],
-    [0, 1, new BN(100000), "100.0000 nUnit"],
+    [0, 1, new BN(1000), "1.0000 nUNIT"],
+    [1, 0, new BN(1000), "1.0000 nUNIT"],
+    [0, 1, new BN(10000), "10.0000 nUNIT"],
+    [0, 1, new BN(100000), "100.0000 nUNIT"],
   ])(
     "validate parameters - burn from pool [firstIdx->%s,secondIdx->%s,amount->%s,expected->%s]",
     async (firstIdx, secondIdx, amount, expected) => {
@@ -176,16 +177,16 @@ describe("xyk-rpc - calculate get_burn amount: RPC result matches with burn amou
     await sudo.refreshAmounts(AssetWallet.AFTER);
     const poolAfter = await getBalanceOfPool(firstAssetId, secondAssetId);
 
-    expect(burnAmount.firstAssetAmount).toEqual(
+    expect(fromStringToUnitString(burnAmount.firstAssetAmount)).toEqual(
       fromBNToUnitString(poolBefore[0].sub(poolAfter[0]))
     );
-    expect(burnAmount.secondAssetAmount).toEqual(
+    expect(fromStringToUnitString(burnAmount.secondAssetAmount)).toEqual(
       fromBNToUnitString(poolBefore[1].sub(poolAfter[1]))
     );
 
     expect(
       fromBNToUnitString(sudo.getAsset(firstAssetId)?.amountAfter.free!)
-    ).toEqual(burnAmount.firstAssetAmount);
+    ).toEqual(fromStringToUnitString(burnAmount.firstAssetAmount));
     expect(
       fromBNToUnitString(
         sudo
@@ -194,6 +195,6 @@ describe("xyk-rpc - calculate get_burn amount: RPC result matches with burn amou
             sudo.getAsset(secondAssetId)?.amountBefore.free!
           )!
       )
-    ).toEqual(burnAmount.secondAssetAmount);
+    ).toEqual(fromStringToUnitString(burnAmount.secondAssetAmount));
   });
 });
