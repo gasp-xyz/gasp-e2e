@@ -1,0 +1,101 @@
+{
+  "uid" : "b8db6c6a87925ddb",
+  "name" : "As a User I can mint All tokens newToken - newToken2",
+  "fullName" : "UI tests - A user can use MAX:.As a User I can mint All tokens newToken - newToken2",
+  "historyId" : "57ad81dde99b45a6f03a88cb264c4bf1",
+  "time" : {
+    "start" : 1640052049340,
+    "stop" : 1640052233694,
+    "duration" : 184354
+  },
+  "description" : "",
+  "descriptionHtml" : "",
+  "status" : "failed",
+  "statusMessage" : "Error: Provide btn is not enabled!",
+  "statusTrace" : "Error: Provide btn is not enabled!\n                    at Pool.provideOrCreatePool (/home/runner/work/mangata-e2e/mangata-e2e/utils/frontend/pages/Pool.ts:60:13)\n                    at runMicrotasks (<anonymous>)\n                    at processTicksAndRejections (node:internal/process/task_queues:96:5)\n                    at Object.<anonymous> (/home/runner/work/mangata-e2e/mangata-e2e/test/ui/ui-max.test.ts:132:5)",
+  "flaky" : false,
+  "newFailed" : false,
+  "beforeStages" : [ ],
+  "testStage" : {
+    "status" : "failed",
+    "statusMessage" : "Error: Provide btn is not enabled!",
+    "statusTrace" : "Error: Provide btn is not enabled!\n                    at Pool.provideOrCreatePool (/home/runner/work/mangata-e2e/mangata-e2e/utils/frontend/pages/Pool.ts:60:13)\n                    at runMicrotasks (<anonymous>)\n                    at processTicksAndRejections (node:internal/process/task_queues:96:5)\n                    at Object.<anonymous> (/home/runner/work/mangata-e2e/mangata-e2e/test/ui/ui-max.test.ts:132:5)",
+    "steps" : [ ],
+    "attachments" : [ {
+      "uid" : "a550e3bf57297559",
+      "name" : "Screeenshot",
+      "source" : "a550e3bf57297559.png",
+      "type" : "image/png",
+      "size" : 89111
+    } ],
+    "parameters" : [ ],
+    "stepsCount" : 0,
+    "attachmentsCount" : 1,
+    "shouldDisplayMessage" : true,
+    "hasContent" : true
+  },
+  "afterStages" : [ ],
+  "labels" : [ {
+    "name" : "suite",
+    "value" : "UI tests - A user can use MAX:"
+  }, {
+    "name" : "testClass",
+    "value" : "UI tests - A user can use MAX:"
+  }, {
+    "name" : "testMethod",
+    "value" : "As a User I can mint All tokens newToken - newToken2"
+  }, {
+    "name" : "package",
+    "value" : "UI tests - A user can use MAX:"
+  }, {
+    "name" : "resultFormat",
+    "value" : "allure1"
+  } ],
+  "parameters" : [ ],
+  "links" : [ ],
+  "hidden" : false,
+  "retry" : false,
+  "extra" : {
+    "severity" : "normal",
+    "retries" : [ ],
+    "categories" : [ {
+      "name" : "Product defects",
+      "matchedStatuses" : [ ],
+      "flaky" : false
+    } ],
+    "history" : {
+      "statistic" : {
+        "failed" : 3,
+        "broken" : 0,
+        "skipped" : 0,
+        "passed" : 0,
+        "unknown" : 0,
+        "total" : 3
+      },
+      "items" : [ {
+        "uid" : "8f2527c20f36b215",
+        "reportUrl" : "https://mangata-finance.github.io/mangata-e2e/1125//#testresult/8f2527c20f36b215",
+        "status" : "failed",
+        "statusDetails" : "TimeoutError: Waiting for element to be located By(xpath, //button[text()='Connect'])\n                Wait timed out after 30012ms",
+        "time" : {
+          "start" : 1640051334401,
+          "stop" : 1640051403428,
+          "duration" : 69027
+        }
+      }, {
+        "uid" : "4a944d6b2d33831e",
+        "reportUrl" : "https://mangata-finance.github.io/mangata-e2e/1123//#testresult/4a944d6b2d33831e",
+        "status" : "failed",
+        "statusDetails" : "thrown: Event {\n                  \"isTrusted\": true,\n                }",
+        "time" : {
+          "start" : 1640051302921,
+          "stop" : 1640051303224,
+          "duration" : 303
+        }
+      } ]
+    },
+    "tags" : [ ]
+  },
+  "source" : "b8db6c6a87925ddb.json",
+  "parameterValues" : [ ]
+}

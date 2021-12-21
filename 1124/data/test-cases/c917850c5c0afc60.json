@@ -1,0 +1,101 @@
+{
+  "uid" : "c917850c5c0afc60",
+  "name" : "As a User I can Swap All MGA tokens -> newToken",
+  "fullName" : "UI tests - A user can use MAX:.As a User I can Swap All MGA tokens -> newToken",
+  "historyId" : "b4431a2043f5c89a607fb3d724e06254",
+  "time" : {
+    "start" : 1640051895236,
+    "stop" : 1640052049329,
+    "duration" : 154093
+  },
+  "description" : "",
+  "descriptionHtml" : "",
+  "status" : "failed",
+  "statusMessage" : "Error: Trade btn is not enabled!",
+  "statusTrace" : "Error: Trade btn is not enabled!\n                    at Swap.doSwap (/home/runner/work/mangata-e2e/mangata-e2e/utils/frontend/pages/Swap.ts:63:13)\n                    at runMicrotasks (<anonymous>)\n                    at processTicksAndRejections (node:internal/process/task_queues:96:5)\n                    at Object.<anonymous> (/home/runner/work/mangata-e2e/mangata-e2e/test/ui/ui-max.test.ts:87:5)",
+  "flaky" : false,
+  "newFailed" : false,
+  "beforeStages" : [ ],
+  "testStage" : {
+    "status" : "failed",
+    "statusMessage" : "Error: Trade btn is not enabled!",
+    "statusTrace" : "Error: Trade btn is not enabled!\n                    at Swap.doSwap (/home/runner/work/mangata-e2e/mangata-e2e/utils/frontend/pages/Swap.ts:63:13)\n                    at runMicrotasks (<anonymous>)\n                    at processTicksAndRejections (node:internal/process/task_queues:96:5)\n                    at Object.<anonymous> (/home/runner/work/mangata-e2e/mangata-e2e/test/ui/ui-max.test.ts:87:5)",
+    "steps" : [ ],
+    "attachments" : [ {
+      "uid" : "e759a0c151e29b76",
+      "name" : "Screeenshot",
+      "source" : "e759a0c151e29b76.png",
+      "type" : "image/png",
+      "size" : 75597
+    } ],
+    "parameters" : [ ],
+    "stepsCount" : 0,
+    "attachmentsCount" : 1,
+    "shouldDisplayMessage" : true,
+    "hasContent" : true
+  },
+  "afterStages" : [ ],
+  "labels" : [ {
+    "name" : "suite",
+    "value" : "UI tests - A user can use MAX:"
+  }, {
+    "name" : "testClass",
+    "value" : "UI tests - A user can use MAX:"
+  }, {
+    "name" : "testMethod",
+    "value" : "As a User I can Swap All MGA tokens -> newToken"
+  }, {
+    "name" : "package",
+    "value" : "UI tests - A user can use MAX:"
+  }, {
+    "name" : "resultFormat",
+    "value" : "allure1"
+  } ],
+  "parameters" : [ ],
+  "links" : [ ],
+  "hidden" : false,
+  "retry" : false,
+  "extra" : {
+    "severity" : "normal",
+    "retries" : [ ],
+    "categories" : [ {
+      "name" : "Product defects",
+      "matchedStatuses" : [ ],
+      "flaky" : false
+    } ],
+    "history" : {
+      "statistic" : {
+        "failed" : 3,
+        "broken" : 0,
+        "skipped" : 0,
+        "passed" : 0,
+        "unknown" : 0,
+        "total" : 3
+      },
+      "items" : [ {
+        "uid" : "437cf65376c6cc0c",
+        "reportUrl" : "https://mangata-finance.github.io/mangata-e2e/1125//#testresult/437cf65376c6cc0c",
+        "status" : "failed",
+        "statusDetails" : "TimeoutError: Waiting for element to be located By(xpath, //button[text()='Connect'])\n                Wait timed out after 30002ms",
+        "time" : {
+          "start" : 1640051263534,
+          "stop" : 1640051334400,
+          "duration" : 70866
+        }
+      }, {
+        "uid" : "15e95540548e96f1",
+        "reportUrl" : "https://mangata-finance.github.io/mangata-e2e/1123//#testresult/15e95540548e96f1",
+        "status" : "failed",
+        "statusDetails" : "thrown: Event {\n                  \"isTrusted\": true,\n                }",
+        "time" : {
+          "start" : 1640051302513,
+          "stop" : 1640051302921,
+          "duration" : 408
+        }
+      } ]
+    },
+    "tags" : [ ]
+  },
+  "source" : "c917850c5c0afc60.json",
+  "parameterValues" : [ ]
+}

@@ -1,0 +1,112 @@
+{
+  "uid" : "780426c3eb149d8d",
+  "name" : "Modal is visible when burning liquidity",
+  "fullName" : "UI tests - A user can see the new Modal.Modal is visible when burning liquidity",
+  "historyId" : "d905b7c57d5643ad680989ac739cf6b",
+  "time" : {
+    "start" : 1640050550606,
+    "stop" : 1640050692371,
+    "duration" : 141765
+  },
+  "description" : "",
+  "descriptionHtml" : "",
+  "status" : "passed",
+  "flaky" : false,
+  "newFailed" : false,
+  "beforeStages" : [ ],
+  "testStage" : {
+    "status" : "passed",
+    "steps" : [ ],
+    "attachments" : [ {
+      "uid" : "9e7f825598780c51",
+      "name" : "Screeenshot",
+      "source" : "9e7f825598780c51.png",
+      "type" : "image/png",
+      "size" : 78163
+    } ],
+    "parameters" : [ ],
+    "stepsCount" : 0,
+    "attachmentsCount" : 1,
+    "shouldDisplayMessage" : false,
+    "hasContent" : true
+  },
+  "afterStages" : [ ],
+  "labels" : [ {
+    "name" : "suite",
+    "value" : "UI tests - A user can see the new Modal"
+  }, {
+    "name" : "testClass",
+    "value" : "UI tests - A user can see the new Modal"
+  }, {
+    "name" : "testMethod",
+    "value" : "Modal is visible when burning liquidity"
+  }, {
+    "name" : "package",
+    "value" : "UI tests - A user can see the new Modal"
+  }, {
+    "name" : "resultFormat",
+    "value" : "allure1"
+  } ],
+  "parameters" : [ ],
+  "links" : [ ],
+  "hidden" : false,
+  "retry" : false,
+  "extra" : {
+    "severity" : "normal",
+    "retries" : [ ],
+    "categories" : [ ],
+    "history" : {
+      "statistic" : {
+        "failed" : 3,
+        "broken" : 0,
+        "skipped" : 0,
+        "passed" : 2,
+        "unknown" : 0,
+        "total" : 5
+      },
+      "items" : [ {
+        "uid" : "c89c40f76316c518",
+        "reportUrl" : "https://mangata-finance.github.io/mangata-e2e/1125//#testresult/c89c40f76316c518",
+        "status" : "failed",
+        "statusDetails" : "TimeoutError: Waiting for element to be located By(xpath, //button[text()='Connect'])\n                Wait timed out after 30000ms",
+        "time" : {
+          "start" : 1640050469095,
+          "stop" : 1640050537862,
+          "duration" : 68767
+        }
+      }, {
+        "uid" : "af39d7b2e4222942",
+        "reportUrl" : "https://mangata-finance.github.io/mangata-e2e/1123//#testresult/af39d7b2e4222942",
+        "status" : "failed",
+        "statusDetails" : "TimeoutError: Waiting for element to be located By(xpath, //button[text()='Connect'])\n                Wait timed out after 30004ms",
+        "time" : {
+          "start" : 1640050476850,
+          "stop" : 1640050547854,
+          "duration" : 71004
+        }
+      }, {
+        "uid" : "9aa3128ca50fc194",
+        "reportUrl" : "https://mangata-finance.github.io/mangata-e2e/1122//#testresult/9aa3128ca50fc194",
+        "status" : "passed",
+        "time" : {
+          "start" : 1640004076138,
+          "stop" : 1640004228374,
+          "duration" : 152236
+        }
+      }, {
+        "uid" : "26f70ae1455ab142",
+        "reportUrl" : "https://mangata-finance.github.io/mangata-e2e/1121//#testresult/26f70ae1455ab142",
+        "status" : "failed",
+        "statusDetails" : "NoSuchSessionError: session timed out or not found",
+        "time" : {
+          "start" : 1640000323445,
+          "stop" : 1640000342360,
+          "duration" : 18915
+        }
+      } ]
+    },
+    "tags" : [ ]
+  },
+  "source" : "780426c3eb149d8d.json",
+  "parameterValues" : [ ]
+}
