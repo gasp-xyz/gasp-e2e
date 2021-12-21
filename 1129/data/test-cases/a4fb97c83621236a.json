@@ -1,0 +1,62 @@
+{
+  "uid" : "a4fb97c83621236a",
+  "name" : "Modal is visible when burning liquidity",
+  "fullName" : "UI tests - A user can see the new Modal.Modal is visible when burning liquidity",
+  "historyId" : "d905b7c57d5643ad680989ac739cf6b",
+  "time" : {
+    "start" : 1640103723599,
+    "stop" : 1640103858491,
+    "duration" : 134892
+  },
+  "description" : "",
+  "descriptionHtml" : "",
+  "status" : "passed",
+  "flaky" : false,
+  "newFailed" : false,
+  "beforeStages" : [ ],
+  "testStage" : {
+    "status" : "passed",
+    "steps" : [ ],
+    "attachments" : [ {
+      "uid" : "7b1f4f2f910ac73",
+      "name" : "Screeenshot",
+      "source" : "7b1f4f2f910ac73.png",
+      "type" : "image/png",
+      "size" : 84428
+    } ],
+    "parameters" : [ ],
+    "stepsCount" : 0,
+    "attachmentsCount" : 1,
+    "shouldDisplayMessage" : false,
+    "hasContent" : true
+  },
+  "afterStages" : [ ],
+  "labels" : [ {
+    "name" : "suite",
+    "value" : "UI tests - A user can see the new Modal"
+  }, {
+    "name" : "testClass",
+    "value" : "UI tests - A user can see the new Modal"
+  }, {
+    "name" : "testMethod",
+    "value" : "Modal is visible when burning liquidity"
+  }, {
+    "name" : "package",
+    "value" : "UI tests - A user can see the new Modal"
+  }, {
+    "name" : "resultFormat",
+    "value" : "allure1"
+  } ],
+  "parameters" : [ ],
+  "links" : [ ],
+  "hidden" : false,
+  "retry" : false,
+  "extra" : {
+    "severity" : "normal",
+    "retries" : [ ],
+    "categories" : [ ],
+    "tags" : [ ]
+  },
+  "source" : "a4fb97c83621236a.json",
+  "parameterValues" : [ ]
+}

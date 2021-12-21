@@ -1,0 +1,70 @@
+{
+  "uid" : "700eb59193e389e2",
+  "name" : "As a User I can mint All tokens newToken - newToken2",
+  "fullName" : "UI tests - A user can use MAX:.As a User I can mint All tokens newToken - newToken2",
+  "historyId" : "57ad81dde99b45a6f03a88cb264c4bf1",
+  "time" : {
+    "start" : 1640105160924,
+    "stop" : 1640105170441,
+    "duration" : 9517
+  },
+  "description" : "",
+  "descriptionHtml" : "",
+  "status" : "failed",
+  "statusMessage" : "NoSuchWindowError: no such window: target window already closed\n                from unknown error: web view not found\n                  (Session info: chrome=94.0.4606.61)\n                  (Driver info: chromedriver=94.0.4606.61 (418b78f5838ed0b1c69bb4e51ea0252171854915-refs/branch-heads/4606@{#1204}),platform=Linux 5.11.0-1022-azure x86_64)",
+  "statusTrace" : "NoSuchWindowError: no such window: target window already closed\n                from unknown error: web view not found\n                  (Session info: chrome=94.0.4606.61)\n                  (Driver info: chromedriver=94.0.4606.61 (418b78f5838ed0b1c69bb4e51ea0252171854915-refs/branch-heads/4606@{#1204}),platform=Linux 5.11.0-1022-azure x86_64)\n                    at Object.checkLegacyResponse (/home/runner/work/mangata-e2e/mangata-e2e/node_modules/selenium-webdriver/lib/error.js:546:15)\n                    at parseHttpResponse (/home/runner/work/mangata-e2e/mangata-e2e/node_modules/selenium-webdriver/lib/http.js:509:13)\n                    at /home/runner/work/mangata-e2e/mangata-e2e/node_modules/selenium-webdriver/lib/http.js:441:30\n                    at runMicrotasks (<anonymous>)\n                    at processTicksAndRejections (node:internal/process/task_queues:96:5)\n                From: Task: WebDriver.manage().window().maximize()\n                    at thenableWebDriverProxy.schedule (/home/runner/work/mangata-e2e/mangata-e2e/node_modules/selenium-webdriver/lib/webdriver.js:807:17)\n                    at Window.maximize (/home/runner/work/mangata-e2e/mangata-e2e/node_modules/selenium-webdriver/lib/webdriver.js:1686:25)\n                    at buildChromeDriver (/home/runner/work/mangata-e2e/mangata-e2e/utils/frontend/utils/Driver.ts:36:37)\n                    at runMicrotasks (<anonymous>)\n                    at processTicksAndRejections (node:internal/process/task_queues:96:5)\n                    at Object.getInstance (/home/runner/work/mangata-e2e/mangata-e2e/utils/frontend/utils/Driver.ts:45:18)\n                    at Object.<anonymous> (/home/runner/work/mangata-e2e/mangata-e2e/test/ui/ui-max.test.ts:51:14)",
+  "flaky" : false,
+  "newFailed" : false,
+  "beforeStages" : [ ],
+  "testStage" : {
+    "status" : "failed",
+    "statusMessage" : "NoSuchWindowError: no such window: target window already closed\n                from unknown error: web view not found\n                  (Session info: chrome=94.0.4606.61)\n                  (Driver info: chromedriver=94.0.4606.61 (418b78f5838ed0b1c69bb4e51ea0252171854915-refs/branch-heads/4606@{#1204}),platform=Linux 5.11.0-1022-azure x86_64)",
+    "statusTrace" : "NoSuchWindowError: no such window: target window already closed\n                from unknown error: web view not found\n                  (Session info: chrome=94.0.4606.61)\n                  (Driver info: chromedriver=94.0.4606.61 (418b78f5838ed0b1c69bb4e51ea0252171854915-refs/branch-heads/4606@{#1204}),platform=Linux 5.11.0-1022-azure x86_64)\n                    at Object.checkLegacyResponse (/home/runner/work/mangata-e2e/mangata-e2e/node_modules/selenium-webdriver/lib/error.js:546:15)\n                    at parseHttpResponse (/home/runner/work/mangata-e2e/mangata-e2e/node_modules/selenium-webdriver/lib/http.js:509:13)\n                    at /home/runner/work/mangata-e2e/mangata-e2e/node_modules/selenium-webdriver/lib/http.js:441:30\n                    at runMicrotasks (<anonymous>)\n                    at processTicksAndRejections (node:internal/process/task_queues:96:5)\n                From: Task: WebDriver.manage().window().maximize()\n                    at thenableWebDriverProxy.schedule (/home/runner/work/mangata-e2e/mangata-e2e/node_modules/selenium-webdriver/lib/webdriver.js:807:17)\n                    at Window.maximize (/home/runner/work/mangata-e2e/mangata-e2e/node_modules/selenium-webdriver/lib/webdriver.js:1686:25)\n                    at buildChromeDriver (/home/runner/work/mangata-e2e/mangata-e2e/utils/frontend/utils/Driver.ts:36:37)\n                    at runMicrotasks (<anonymous>)\n                    at processTicksAndRejections (node:internal/process/task_queues:96:5)\n                    at Object.getInstance (/home/runner/work/mangata-e2e/mangata-e2e/utils/frontend/utils/Driver.ts:45:18)\n                    at Object.<anonymous> (/home/runner/work/mangata-e2e/mangata-e2e/test/ui/ui-max.test.ts:51:14)",
+    "steps" : [ ],
+    "attachments" : [ {
+      "uid" : "ce6117a9c144b257",
+      "name" : "Screeenshot",
+      "source" : "ce6117a9c144b257.png",
+      "type" : "image/png",
+      "size" : 11232
+    } ],
+    "parameters" : [ ],
+    "stepsCount" : 0,
+    "attachmentsCount" : 1,
+    "shouldDisplayMessage" : true,
+    "hasContent" : true
+  },
+  "afterStages" : [ ],
+  "labels" : [ {
+    "name" : "suite",
+    "value" : "UI tests - A user can use MAX:"
+  }, {
+    "name" : "testClass",
+    "value" : "UI tests - A user can use MAX:"
+  }, {
+    "name" : "testMethod",
+    "value" : "As a User I can mint All tokens newToken - newToken2"
+  }, {
+    "name" : "package",
+    "value" : "UI tests - A user can use MAX:"
+  }, {
+    "name" : "resultFormat",
+    "value" : "allure1"
+  } ],
+  "parameters" : [ ],
+  "links" : [ ],
+  "hidden" : false,
+  "retry" : false,
+  "extra" : {
+    "severity" : "normal",
+    "retries" : [ ],
+    "categories" : [ {
+      "name" : "Product defects",
+      "matchedStatuses" : [ ],
+      "flaky" : false
+    } ],
+    "tags" : [ ]
+  },
+  "source" : "700eb59193e389e2.json",
+  "parameterValues" : [ ]
+}

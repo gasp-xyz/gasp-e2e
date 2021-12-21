@@ -1,0 +1,70 @@
+{
+  "uid" : "32212adb646c2f66",
+  "name" : "Modal contains currencies and amounts when Swapping",
+  "fullName" : "UI tests - A user can see the new Modal.Modal contains currencies and amounts when Swapping",
+  "historyId" : "901576b2bd5e9134b5da9513553a0f3f",
+  "time" : {
+    "start" : 1640103474583,
+    "stop" : 1640103588637,
+    "duration" : 114054
+  },
+  "description" : "",
+  "descriptionHtml" : "",
+  "status" : "failed",
+  "statusMessage" : "Error: Trade btn is not enabled!",
+  "statusTrace" : "Error: Trade btn is not enabled!\n                    at Swap.doSwap (/home/runner/work/mangata-e2e/mangata-e2e/utils/frontend/pages/Swap.ts:65:13)\n                    at runMicrotasks (<anonymous>)\n                    at processTicksAndRejections (node:internal/process/task_queues:96:5)\n                    at Swap.swapAssets (/home/runner/work/mangata-e2e/mangata-e2e/utils/frontend/pages/Swap.ts:97:5)\n                    at Object.<anonymous> (/home/runner/work/mangata-e2e/mangata-e2e/test/ui/ui.tx-modal.test.ts:85:5)",
+  "flaky" : false,
+  "newFailed" : false,
+  "beforeStages" : [ ],
+  "testStage" : {
+    "status" : "failed",
+    "statusMessage" : "Error: Trade btn is not enabled!",
+    "statusTrace" : "Error: Trade btn is not enabled!\n                    at Swap.doSwap (/home/runner/work/mangata-e2e/mangata-e2e/utils/frontend/pages/Swap.ts:65:13)\n                    at runMicrotasks (<anonymous>)\n                    at processTicksAndRejections (node:internal/process/task_queues:96:5)\n                    at Swap.swapAssets (/home/runner/work/mangata-e2e/mangata-e2e/utils/frontend/pages/Swap.ts:97:5)\n                    at Object.<anonymous> (/home/runner/work/mangata-e2e/mangata-e2e/test/ui/ui.tx-modal.test.ts:85:5)",
+    "steps" : [ ],
+    "attachments" : [ {
+      "uid" : "81fe8c8311b7fb30",
+      "name" : "Screeenshot",
+      "source" : "81fe8c8311b7fb30.png",
+      "type" : "image/png",
+      "size" : 85791
+    } ],
+    "parameters" : [ ],
+    "stepsCount" : 0,
+    "attachmentsCount" : 1,
+    "shouldDisplayMessage" : true,
+    "hasContent" : true
+  },
+  "afterStages" : [ ],
+  "labels" : [ {
+    "name" : "suite",
+    "value" : "UI tests - A user can see the new Modal"
+  }, {
+    "name" : "testClass",
+    "value" : "UI tests - A user can see the new Modal"
+  }, {
+    "name" : "testMethod",
+    "value" : "Modal contains currencies and amounts when Swapping"
+  }, {
+    "name" : "package",
+    "value" : "UI tests - A user can see the new Modal"
+  }, {
+    "name" : "resultFormat",
+    "value" : "allure1"
+  } ],
+  "parameters" : [ ],
+  "links" : [ ],
+  "hidden" : false,
+  "retry" : false,
+  "extra" : {
+    "severity" : "normal",
+    "retries" : [ ],
+    "categories" : [ {
+      "name" : "Product defects",
+      "matchedStatuses" : [ ],
+      "flaky" : false
+    } ],
+    "tags" : [ ]
+  },
+  "source" : "32212adb646c2f66.json",
+  "parameterValues" : [ ]
+}
