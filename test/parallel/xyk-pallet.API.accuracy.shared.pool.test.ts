@@ -12,6 +12,7 @@ import {Assets} from "../../utils/Assets";
 import {getEnvironmentRequiredVars} from "../../utils/utils";
 import {MGA_ASSET_ID} from "../../utils/Constants";
 import {Mangata} from "mangata-sdk";
+import {testLog} from "../../utils/Logger";
 
 jest.spyOn(console, "log").mockImplementation(jest.fn());
 jest.spyOn(console, "error").mockImplementation(jest.fn());
@@ -190,6 +191,18 @@ describe("Accuracy > Shared pool", () => {
       balancesFirstCurrency[index] =
         balancesFirstCurrency[index].sub(default50k);
     });
+    testLog
+      .getLog()
+      .info(
+        "Test user - 50k tokens get " +
+          balancesFirstCurrency[0].toString() +
+          "\n" +
+          "Test user - 20k tokens get *2 " +
+          (balancesFirstCurrency[1].toNumber() * 2).toString() +
+          "\n" +
+          "Test user - 50k tokens get *5 " +
+          (balancesFirstCurrency[2].toNumber() * 5).toString()
+      );
     // test that the difference is not larger than one.1x - 2z
     expect(
       balancesFirstCurrency[0]
