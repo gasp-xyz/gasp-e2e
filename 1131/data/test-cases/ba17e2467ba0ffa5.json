@@ -1,0 +1,93 @@
+{
+  "uid" : "ba17e2467ba0ffa5",
+  "name" : "As a User I can see the max possible value in UI",
+  "fullName" : "UI tests > Balances.As a User I can see the max possible value in UI",
+  "historyId" : "2160ca0fa14e27280258d3f43dcf5f35",
+  "time" : {
+    "start" : 1640138239510,
+    "stop" : 1640138269356,
+    "duration" : 29846
+  },
+  "description" : "",
+  "descriptionHtml" : "",
+  "status" : "passed",
+  "flaky" : false,
+  "newFailed" : false,
+  "beforeStages" : [ ],
+  "testStage" : {
+    "status" : "passed",
+    "steps" : [ ],
+    "attachments" : [ {
+      "uid" : "a0358ff3935c38f0",
+      "name" : "Screeenshot",
+      "source" : "a0358ff3935c38f0.png",
+      "type" : "image/png",
+      "size" : 95445
+    } ],
+    "parameters" : [ ],
+    "stepsCount" : 0,
+    "attachmentsCount" : 1,
+    "shouldDisplayMessage" : false,
+    "hasContent" : true
+  },
+  "afterStages" : [ ],
+  "labels" : [ {
+    "name" : "suite",
+    "value" : "UI tests > Balances"
+  }, {
+    "name" : "testClass",
+    "value" : "UI tests > Balances"
+  }, {
+    "name" : "testMethod",
+    "value" : "As a User I can see the max possible value in UI"
+  }, {
+    "name" : "package",
+    "value" : "UI tests > Balances"
+  }, {
+    "name" : "resultFormat",
+    "value" : "allure1"
+  } ],
+  "parameters" : [ ],
+  "links" : [ ],
+  "hidden" : false,
+  "retry" : false,
+  "extra" : {
+    "severity" : "normal",
+    "retries" : [ ],
+    "categories" : [ ],
+    "history" : {
+      "statistic" : {
+        "failed" : 2,
+        "broken" : 0,
+        "skipped" : 0,
+        "passed" : 1,
+        "unknown" : 0,
+        "total" : 3
+      },
+      "items" : [ {
+        "uid" : "a63417c5fffbc7d7",
+        "reportUrl" : "https://mangata-finance.github.io/mangata-e2e/1132//#testresult/a63417c5fffbc7d7",
+        "status" : "failed",
+        "statusDetails" : "TimeoutError: Waiting for element to be located By(xpath, //button[text()='Connect'])\n                Wait timed out after 30003ms",
+        "time" : {
+          "start" : 1640137574727,
+          "stop" : 1640137574907,
+          "duration" : 180
+        }
+      }, {
+        "uid" : "e444b3a4e908ec5f",
+        "reportUrl" : "https://mangata-finance.github.io/mangata-e2e/1129//#testresult/e444b3a4e908ec5f",
+        "status" : "failed",
+        "statusDetails" : "TimeoutError: Waiting for element to be located By(xpath, //*[@data-testid='assetSelectModal-asset-MGA'])\n                Wait timed out after 30007ms",
+        "time" : {
+          "start" : 1640104897497,
+          "stop" : 1640104945105,
+          "duration" : 47608
+        }
+      } ]
+    },
+    "tags" : [ ]
+  },
+  "source" : "ba17e2467ba0ffa5.json",
+  "parameterValues" : [ ]
+}

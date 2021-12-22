@@ -1,0 +1,101 @@
+{
+  "uid" : "26bb0b878b0c4654",
+  "name" : "As a User I get the right values for Pool investment P[5000000000000000000, 5000000000000000000] - I-> 0.123 -Expected - 0.123",
+  "fullName" : "Accuracy tests.As a User I get the right values for Pool investment P[5000000000000000000, 5000000000000000000] - I-> 0.123 -Expected - 0.123",
+  "historyId" : "8b2cda9bb83546b24c6a5fd60ccdb9a1",
+  "time" : {
+    "start" : 1640139360735,
+    "stop" : 1640139475543,
+    "duration" : 114808
+  },
+  "description" : "",
+  "descriptionHtml" : "",
+  "status" : "failed",
+  "statusMessage" : "Error: expect(received).toBe(expected) // Object.is equality\n                \n                Expected: 0\n                Received: 0.123",
+  "statusTrace" : "Error: expect(received).toBe(expected) // Object.is equality\n                \n                Expected: 0\n                Received: 0.123\n                    at /home/runner/work/mangata-e2e/mangata-e2e/test/ui/ui-accuracy.pool.investing.test.ts:118:42\n                    at runMicrotasks (<anonymous>)\n                    at processTicksAndRejections (node:internal/process/task_queues:96:5)",
+  "flaky" : false,
+  "newFailed" : false,
+  "beforeStages" : [ ],
+  "testStage" : {
+    "status" : "failed",
+    "statusMessage" : "Error: expect(received).toBe(expected) // Object.is equality\n                \n                Expected: 0\n                Received: 0.123",
+    "statusTrace" : "Error: expect(received).toBe(expected) // Object.is equality\n                \n                Expected: 0\n                Received: 0.123\n                    at /home/runner/work/mangata-e2e/mangata-e2e/test/ui/ui-accuracy.pool.investing.test.ts:118:42\n                    at runMicrotasks (<anonymous>)\n                    at processTicksAndRejections (node:internal/process/task_queues:96:5)",
+    "steps" : [ ],
+    "attachments" : [ {
+      "uid" : "40da2f57cc65e6cb",
+      "name" : "Screeenshot",
+      "source" : "40da2f57cc65e6cb.png",
+      "type" : "image/png",
+      "size" : 90330
+    } ],
+    "parameters" : [ ],
+    "stepsCount" : 0,
+    "attachmentsCount" : 1,
+    "shouldDisplayMessage" : true,
+    "hasContent" : true
+  },
+  "afterStages" : [ ],
+  "labels" : [ {
+    "name" : "suite",
+    "value" : "Accuracy tests"
+  }, {
+    "name" : "testClass",
+    "value" : "Accuracy tests"
+  }, {
+    "name" : "testMethod",
+    "value" : "As a User I get the right values for Pool investment P[5000000000000000000, 5000000000000000000] - I-> 0.123 -Expected - 0.123"
+  }, {
+    "name" : "package",
+    "value" : "Accuracy tests"
+  }, {
+    "name" : "resultFormat",
+    "value" : "allure1"
+  } ],
+  "parameters" : [ ],
+  "links" : [ ],
+  "hidden" : false,
+  "retry" : false,
+  "extra" : {
+    "severity" : "normal",
+    "retries" : [ ],
+    "categories" : [ {
+      "name" : "Product defects",
+      "matchedStatuses" : [ ],
+      "flaky" : false
+    } ],
+    "history" : {
+      "statistic" : {
+        "failed" : 3,
+        "broken" : 0,
+        "skipped" : 0,
+        "passed" : 0,
+        "unknown" : 0,
+        "total" : 3
+      },
+      "items" : [ {
+        "uid" : "5b7c21df532fdf01",
+        "reportUrl" : "https://mangata-finance.github.io/mangata-e2e/1132//#testresult/5b7c21df532fdf01",
+        "status" : "failed",
+        "statusDetails" : "TimeoutError: Waiting for element to be located By(xpath, //button[text()='Connect'])\n                Wait timed out after 30007ms",
+        "time" : {
+          "start" : 1640138024993,
+          "stop" : 1640138025164,
+          "duration" : 171
+        }
+      }, {
+        "uid" : "a55eb02f1a7240d5",
+        "reportUrl" : "https://mangata-finance.github.io/mangata-e2e/1129//#testresult/a55eb02f1a7240d5",
+        "status" : "failed",
+        "statusDetails" : "TimeoutError: Waiting for element to be located By(xpath, //*[contains(text(),'Your tokens')])\n                Wait timed out after 30000ms",
+        "time" : {
+          "start" : 1640105884341,
+          "stop" : 1640106032143,
+          "duration" : 147802
+        }
+      } ]
+    },
+    "tags" : [ ]
+  },
+  "source" : "26bb0b878b0c4654.json",
+  "parameterValues" : [ ]
+}

@@ -1,0 +1,92 @@
+{
+  "uid" : "2c43eddffadede1c",
+  "name" : "As a User I can burn all liquidity MGA - mETH",
+  "fullName" : "UI tests - A user can swap and mint tokens.As a User I can burn all liquidity MGA - mETH",
+  "historyId" : "4b2117138a1deb5ba9a68aabdbcc4002",
+  "time" : {
+    "start" : 1640137704678,
+    "stop" : 1640137868534,
+    "duration" : 163856
+  },
+  "description" : "",
+  "descriptionHtml" : "",
+  "status" : "passed",
+  "flaky" : false,
+  "newFailed" : false,
+  "beforeStages" : [ ],
+  "testStage" : {
+    "status" : "passed",
+    "steps" : [ ],
+    "attachments" : [ {
+      "uid" : "be1181cc5164f7a5",
+      "name" : "Screeenshot",
+      "source" : "be1181cc5164f7a5.png",
+      "type" : "image/png",
+      "size" : 57753
+    } ],
+    "parameters" : [ ],
+    "stepsCount" : 0,
+    "attachmentsCount" : 1,
+    "shouldDisplayMessage" : false,
+    "hasContent" : true
+  },
+  "afterStages" : [ ],
+  "labels" : [ {
+    "name" : "suite",
+    "value" : "UI tests - A user can swap and mint tokens"
+  }, {
+    "name" : "testClass",
+    "value" : "UI tests - A user can swap and mint tokens"
+  }, {
+    "name" : "testMethod",
+    "value" : "As a User I can burn all liquidity MGA - mETH"
+  }, {
+    "name" : "package",
+    "value" : "UI tests - A user can swap and mint tokens"
+  }, {
+    "name" : "resultFormat",
+    "value" : "allure1"
+  } ],
+  "parameters" : [ ],
+  "links" : [ ],
+  "hidden" : false,
+  "retry" : false,
+  "extra" : {
+    "severity" : "normal",
+    "retries" : [ ],
+    "categories" : [ ],
+    "history" : {
+      "statistic" : {
+        "failed" : 1,
+        "broken" : 0,
+        "skipped" : 0,
+        "passed" : 2,
+        "unknown" : 0,
+        "total" : 3
+      },
+      "items" : [ {
+        "uid" : "f6607dd928069af2",
+        "reportUrl" : "https://mangata-finance.github.io/mangata-e2e/1132//#testresult/f6607dd928069af2",
+        "status" : "failed",
+        "statusDetails" : "TimeoutError: Waiting for element to be located By(xpath, //button[text()='Connect'])\n                Wait timed out after 30006ms",
+        "time" : {
+          "start" : 1640137366833,
+          "stop" : 1640137434959,
+          "duration" : 68126
+        }
+      }, {
+        "uid" : "601515d7dcfeea9f",
+        "reportUrl" : "https://mangata-finance.github.io/mangata-e2e/1129//#testresult/601515d7dcfeea9f",
+        "status" : "passed",
+        "time" : {
+          "start" : 1640104321886,
+          "stop" : 1640104478735,
+          "duration" : 156849
+        }
+      } ]
+    },
+    "tags" : [ ]
+  },
+  "source" : "2c43eddffadede1c.json",
+  "parameterValues" : [ ]
+}

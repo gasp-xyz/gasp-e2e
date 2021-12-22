@@ -1,0 +1,101 @@
+{
+  "uid" : "1847e28373eee006",
+  "name" : "As a User I get the right values for Pool investment P[2500000000000000000, 5000000000000000000] - I-> 0.100 -Expected - 0.200",
+  "fullName" : "Accuracy tests.As a User I get the right values for Pool investment P[2500000000000000000, 5000000000000000000] - I-> 0.100 -Expected - 0.200",
+  "historyId" : "c19dceea19dd2e493fbf2430f2fba757",
+  "time" : {
+    "start" : 1640139475543,
+    "stop" : 1640139588486,
+    "duration" : 112943
+  },
+  "description" : "",
+  "descriptionHtml" : "",
+  "status" : "failed",
+  "statusMessage" : "Error: expect(received).toBe(expected) // Object.is equality\n                \n                Expected: 0\n                Received: 0.2",
+  "statusTrace" : "Error: expect(received).toBe(expected) // Object.is equality\n                \n                Expected: 0\n                Received: 0.2\n                    at /home/runner/work/mangata-e2e/mangata-e2e/test/ui/ui-accuracy.pool.investing.test.ts:118:42\n                    at runMicrotasks (<anonymous>)\n                    at processTicksAndRejections (node:internal/process/task_queues:96:5)",
+  "flaky" : false,
+  "newFailed" : false,
+  "beforeStages" : [ ],
+  "testStage" : {
+    "status" : "failed",
+    "statusMessage" : "Error: expect(received).toBe(expected) // Object.is equality\n                \n                Expected: 0\n                Received: 0.2",
+    "statusTrace" : "Error: expect(received).toBe(expected) // Object.is equality\n                \n                Expected: 0\n                Received: 0.2\n                    at /home/runner/work/mangata-e2e/mangata-e2e/test/ui/ui-accuracy.pool.investing.test.ts:118:42\n                    at runMicrotasks (<anonymous>)\n                    at processTicksAndRejections (node:internal/process/task_queues:96:5)",
+    "steps" : [ ],
+    "attachments" : [ {
+      "uid" : "4ec0d1d0d6f14dbe",
+      "name" : "Screeenshot",
+      "source" : "4ec0d1d0d6f14dbe.png",
+      "type" : "image/png",
+      "size" : 94640
+    } ],
+    "parameters" : [ ],
+    "stepsCount" : 0,
+    "attachmentsCount" : 1,
+    "shouldDisplayMessage" : true,
+    "hasContent" : true
+  },
+  "afterStages" : [ ],
+  "labels" : [ {
+    "name" : "suite",
+    "value" : "Accuracy tests"
+  }, {
+    "name" : "testClass",
+    "value" : "Accuracy tests"
+  }, {
+    "name" : "testMethod",
+    "value" : "As a User I get the right values for Pool investment P[2500000000000000000, 5000000000000000000] - I-> 0.100 -Expected - 0.200"
+  }, {
+    "name" : "package",
+    "value" : "Accuracy tests"
+  }, {
+    "name" : "resultFormat",
+    "value" : "allure1"
+  } ],
+  "parameters" : [ ],
+  "links" : [ ],
+  "hidden" : false,
+  "retry" : false,
+  "extra" : {
+    "severity" : "normal",
+    "retries" : [ ],
+    "categories" : [ {
+      "name" : "Product defects",
+      "matchedStatuses" : [ ],
+      "flaky" : false
+    } ],
+    "history" : {
+      "statistic" : {
+        "failed" : 3,
+        "broken" : 0,
+        "skipped" : 0,
+        "passed" : 0,
+        "unknown" : 0,
+        "total" : 3
+      },
+      "items" : [ {
+        "uid" : "e3f6d5edabf3fd71",
+        "reportUrl" : "https://mangata-finance.github.io/mangata-e2e/1132//#testresult/e3f6d5edabf3fd71",
+        "status" : "failed",
+        "statusDetails" : "TimeoutError: Waiting for element to be located By(xpath, //button[text()='Connect'])\n                Wait timed out after 30007ms",
+        "time" : {
+          "start" : 1640138025165,
+          "stop" : 1640138025359,
+          "duration" : 194
+        }
+      }, {
+        "uid" : "4b3681bedfe9a8b8",
+        "reportUrl" : "https://mangata-finance.github.io/mangata-e2e/1129//#testresult/4b3681bedfe9a8b8",
+        "status" : "failed",
+        "statusDetails" : "TIMEOUT: Waiting for //*[@class = 'Sidebar__loading'] to dissapear",
+        "time" : {
+          "start" : 1640106032143,
+          "stop" : 1640106182952,
+          "duration" : 150809
+        }
+      } ]
+    },
+    "tags" : [ ]
+  },
+  "source" : "1847e28373eee006.json",
+  "parameterValues" : [ ]
+}

@@ -1,0 +1,93 @@
+{
+  "uid" : "ae5b946ddc95925d",
+  "name" : "As a User I get infomed whenever is neccesary to install any extension",
+  "fullName" : "UI tests - Extension management.As a User I get infomed whenever is neccesary to install any extension",
+  "historyId" : "dbac81719cd3c0d8613ffc8fdf7c937c",
+  "time" : {
+    "start" : 1640140139969,
+    "stop" : 1640140154468,
+    "duration" : 14499
+  },
+  "description" : "",
+  "descriptionHtml" : "",
+  "status" : "passed",
+  "flaky" : false,
+  "newFailed" : false,
+  "beforeStages" : [ ],
+  "testStage" : {
+    "status" : "passed",
+    "steps" : [ ],
+    "attachments" : [ {
+      "uid" : "890bbfc860609e54",
+      "name" : "Screeenshot",
+      "source" : "890bbfc860609e54.png",
+      "type" : "image/png",
+      "size" : 76111
+    } ],
+    "parameters" : [ ],
+    "stepsCount" : 0,
+    "attachmentsCount" : 1,
+    "shouldDisplayMessage" : false,
+    "hasContent" : true
+  },
+  "afterStages" : [ ],
+  "labels" : [ {
+    "name" : "suite",
+    "value" : "UI tests - Extension management"
+  }, {
+    "name" : "testClass",
+    "value" : "UI tests - Extension management"
+  }, {
+    "name" : "testMethod",
+    "value" : "As a User I get infomed whenever is neccesary to install any extension"
+  }, {
+    "name" : "package",
+    "value" : "UI tests - Extension management"
+  }, {
+    "name" : "resultFormat",
+    "value" : "allure1"
+  } ],
+  "parameters" : [ ],
+  "links" : [ ],
+  "hidden" : false,
+  "retry" : false,
+  "extra" : {
+    "severity" : "normal",
+    "retries" : [ ],
+    "categories" : [ ],
+    "history" : {
+      "statistic" : {
+        "failed" : 2,
+        "broken" : 0,
+        "skipped" : 0,
+        "passed" : 1,
+        "unknown" : 0,
+        "total" : 3
+      },
+      "items" : [ {
+        "uid" : "b05324a79925aa84",
+        "reportUrl" : "https://mangata-finance.github.io/mangata-e2e/1132//#testresult/b05324a79925aa84",
+        "status" : "failed",
+        "statusDetails" : "TIMEOUT: Waiting for //*[@class = 'Sidebar__loading'] to dissapear",
+        "time" : {
+          "start" : 1640138218495,
+          "stop" : 1640138284249,
+          "duration" : 65754
+        }
+      }, {
+        "uid" : "9df9dc866b8da924",
+        "reportUrl" : "https://mangata-finance.github.io/mangata-e2e/1129//#testresult/9df9dc866b8da924",
+        "status" : "failed",
+        "statusDetails" : "TIMEOUT: Waiting for //*[@class = 'Sidebar__loading'] to dissapear",
+        "time" : {
+          "start" : 1640104642901,
+          "stop" : 1640104711869,
+          "duration" : 68968
+        }
+      } ]
+    },
+    "tags" : [ ]
+  },
+  "source" : "ae5b946ddc95925d.json",
+  "parameterValues" : [ ]
+}
