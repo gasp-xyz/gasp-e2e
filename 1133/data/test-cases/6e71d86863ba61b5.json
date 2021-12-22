@@ -1,0 +1,46 @@
+{
+  "uid" : "6e71d86863ba61b5",
+  "name" : "Nodes are up and syncing",
+  "fullName" : "Cluster -> Healthcheck.Nodes are up and syncing",
+  "historyId" : "f8b79e72eb1c1018f8bf18c56909f1c7",
+  "time" : {
+    "start" : 1640146039456,
+    "stop" : 1640146068129,
+    "duration" : 28673
+  },
+  "description" : "",
+  "descriptionHtml" : "",
+  "status" : "passed",
+  "flaky" : false,
+  "newFailed" : false,
+  "beforeStages" : [ ],
+  "afterStages" : [ ],
+  "labels" : [ {
+    "name" : "suite",
+    "value" : "Cluster -> Healthcheck"
+  }, {
+    "name" : "testClass",
+    "value" : "Cluster -> Healthcheck"
+  }, {
+    "name" : "testMethod",
+    "value" : "Nodes are up and syncing"
+  }, {
+    "name" : "package",
+    "value" : "Cluster -> Healthcheck"
+  }, {
+    "name" : "resultFormat",
+    "value" : "allure1"
+  } ],
+  "parameters" : [ ],
+  "links" : [ ],
+  "hidden" : false,
+  "retry" : false,
+  "extra" : {
+    "severity" : "normal",
+    "retries" : [ ],
+    "categories" : [ ],
+    "tags" : [ ]
+  },
+  "source" : "6e71d86863ba61b5.json",
+  "parameterValues" : [ ]
+}
