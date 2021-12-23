@@ -16,6 +16,7 @@ import {formatBalance} from "mangata-sdk/node_modules/@polkadot/util/format";
 
 import {
   fromBNToUnitString,
+  fromStringToUnitString,
   getEnvironmentRequiredVars,
 } from "../../utils/utils";
 import {SignerOptions} from "mangata-sdk/node_modules/@polkadot/api/types";
@@ -146,7 +147,7 @@ test("xyk-pallet - Calculate required MGA fee - BuyAsset", async () => {
       const eventResponse = getEventResultFromMangataTx(result);
       expect(eventResponse.state).toEqual(ExtrinsicResult.ExtrinsicSuccess);
     });
-  expect(getFeeString(cost)).toEqual("0");
+  expect(getFeeString(cost)).toEqual(fromStringToUnitString("0"));
 });
 
 afterEach(async () => {
