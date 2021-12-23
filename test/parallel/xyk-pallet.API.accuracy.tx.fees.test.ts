@@ -12,6 +12,8 @@ import {Keyring} from "mangata-sdk/node_modules/@polkadot/api";
 import {AssetWallet, User} from "../../utils/User";
 import {validateAssetsWithValues} from "../../utils/validators";
 import {Assets} from "../../utils/Assets";
+import {formatBalance} from "mangata-sdk/node_modules/@polkadot/util/format";
+
 import {
   fromBNToUnitString,
   getEnvironmentRequiredVars,
@@ -157,6 +159,7 @@ afterEach(async () => {
   const deductedMGAString = fromBNToUnitString(deductedMGATkns!);
   expect(deductedMGAString).toEqual(getFeeString(cost));
 });
-function getFeeString(cost: RuntimeDispatchInfo) {
-  return JSON.parse(JSON.stringify(cost.toHuman())).partialFee;
+function getFeeString(cost: RuntimeDispatchInfo): string {
+  const fee = new BN(cost.partialFee.toString());
+  return fromBNToUnitString(fee);
 }
