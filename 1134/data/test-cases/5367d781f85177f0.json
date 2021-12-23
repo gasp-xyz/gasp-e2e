@@ -1,0 +1,122 @@
+{
+  "uid" : "5367d781f85177f0",
+  "name" : "As a User I can Swap tokens - MGA - mETH",
+  "fullName" : "UI tests - A user can swap and mint tokens.As a User I can Swap tokens - MGA - mETH",
+  "historyId" : "c9939ab6b05fdb3664bf90f9f2159e2e",
+  "time" : {
+    "start" : 1640223569300,
+    "stop" : 1640223716146,
+    "duration" : 146846
+  },
+  "description" : "",
+  "descriptionHtml" : "",
+  "status" : "passed",
+  "flaky" : false,
+  "newFailed" : false,
+  "beforeStages" : [ ],
+  "testStage" : {
+    "status" : "passed",
+    "steps" : [ ],
+    "attachments" : [ {
+      "uid" : "c0b1d842638f4ea",
+      "name" : "Screeenshot",
+      "source" : "c0b1d842638f4ea.png",
+      "type" : "image/png",
+      "size" : 81508
+    } ],
+    "parameters" : [ ],
+    "stepsCount" : 0,
+    "attachmentsCount" : 1,
+    "shouldDisplayMessage" : false,
+    "hasContent" : true
+  },
+  "afterStages" : [ ],
+  "labels" : [ {
+    "name" : "suite",
+    "value" : "UI tests - A user can swap and mint tokens"
+  }, {
+    "name" : "testClass",
+    "value" : "UI tests - A user can swap and mint tokens"
+  }, {
+    "name" : "testMethod",
+    "value" : "As a User I can Swap tokens - MGA - mETH"
+  }, {
+    "name" : "package",
+    "value" : "UI tests - A user can swap and mint tokens"
+  }, {
+    "name" : "resultFormat",
+    "value" : "allure1"
+  } ],
+  "parameters" : [ ],
+  "links" : [ ],
+  "hidden" : false,
+  "retry" : false,
+  "extra" : {
+    "severity" : "normal",
+    "retries" : [ ],
+    "categories" : [ ],
+    "history" : {
+      "statistic" : {
+        "failed" : 4,
+        "broken" : 0,
+        "skipped" : 0,
+        "passed" : 2,
+        "unknown" : 0,
+        "total" : 6
+      },
+      "items" : [ {
+        "uid" : "c4f54a2ae49a248f",
+        "reportUrl" : "https://mangata-finance.github.io/mangata-e2e/1136//#testresult/c4f54a2ae49a248f",
+        "status" : "failed",
+        "statusDetails" : "TimeoutError: Waiting for element to be located By(xpath, //button[text()='Connect'])\n                Wait timed out after 30002ms",
+        "time" : {
+          "start" : 1640223466742,
+          "stop" : 1640223536988,
+          "duration" : 70246
+        }
+      }, {
+        "uid" : "dd4560f2a1374a58",
+        "reportUrl" : "https://mangata-finance.github.io/mangata-e2e/1135//#testresult/dd4560f2a1374a58",
+        "status" : "failed",
+        "statusDetails" : "thrown: Event {\n                  \"isTrusted\": true,\n                }",
+        "time" : {
+          "start" : 1640223079870,
+          "stop" : 1640223080280,
+          "duration" : 410
+        }
+      }, {
+        "uid" : "fb9567d6f121cfad",
+        "reportUrl" : "https://mangata-finance.github.io/mangata-e2e/1131//#testresult/fb9567d6f121cfad",
+        "status" : "passed",
+        "time" : {
+          "start" : 1640137406605,
+          "stop" : 1640137556297,
+          "duration" : 149692
+        }
+      }, {
+        "uid" : "ec282fbc379d9c71",
+        "reportUrl" : "https://mangata-finance.github.io/mangata-e2e/1132//#testresult/ec282fbc379d9c71",
+        "status" : "failed",
+        "statusDetails" : "TimeoutError: Waiting for element to be located By(xpath, //button[text()='Connect'])\n                Wait timed out after 30017ms",
+        "time" : {
+          "start" : 1640137228687,
+          "stop" : 1640137298646,
+          "duration" : 69959
+        }
+      }, {
+        "uid" : "a9a284411df8a44b",
+        "reportUrl" : "https://mangata-finance.github.io/mangata-e2e/1129//#testresult/a9a284411df8a44b",
+        "status" : "failed",
+        "statusDetails" : "Error: Expected: 10969100218581960 \n                  Actual: 1096910021858196 \n                 ",
+        "time" : {
+          "start" : 1640104042150,
+          "stop" : 1640104190617,
+          "duration" : 148467
+        }
+      } ]
+    },
+    "tags" : [ ]
+  },
+  "source" : "5367d781f85177f0.json",
+  "parameterValues" : [ ]
+}
