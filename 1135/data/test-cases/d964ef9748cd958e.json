@@ -1,0 +1,110 @@
+{
+  "uid" : "d964ef9748cd958e",
+  "name" : "As a User I get feedback when extensions are installed and correctly setup",
+  "fullName" : "UI tests - Extension management.As a User I get feedback when extensions are installed and correctly setup",
+  "historyId" : "7365b4e6dd98ca21f75fccaf5b1ca8dd",
+  "time" : {
+    "start" : 1640223955741,
+    "stop" : 1640223956343,
+    "duration" : 602
+  },
+  "description" : "",
+  "descriptionHtml" : "",
+  "status" : "failed",
+  "statusMessage" : "Error: expect(received).toBeTruthy()\n                \n                Received: false",
+  "statusTrace" : "Error: expect(received).toBeTruthy()\n                \n                Received: false\n                    at Object.<anonymous> (/home/runner/work/mangata-e2e/mangata-e2e/test/ui/ui-main.extensions.test.ts:42:21)\n                    at runMicrotasks (<anonymous>)\n                    at processTicksAndRejections (node:internal/process/task_queues:96:5)",
+  "flaky" : true,
+  "newFailed" : true,
+  "beforeStages" : [ ],
+  "testStage" : {
+    "status" : "failed",
+    "statusMessage" : "Error: expect(received).toBeTruthy()\n                \n                Received: false",
+    "statusTrace" : "Error: expect(received).toBeTruthy()\n                \n                Received: false\n                    at Object.<anonymous> (/home/runner/work/mangata-e2e/mangata-e2e/test/ui/ui-main.extensions.test.ts:42:21)\n                    at runMicrotasks (<anonymous>)\n                    at processTicksAndRejections (node:internal/process/task_queues:96:5)",
+    "steps" : [ ],
+    "attachments" : [ {
+      "uid" : "713f05bab7bb211d",
+      "name" : "Screeenshot",
+      "source" : "713f05bab7bb211d.png",
+      "type" : "image/png",
+      "size" : 29261
+    } ],
+    "parameters" : [ ],
+    "stepsCount" : 0,
+    "attachmentsCount" : 1,
+    "shouldDisplayMessage" : true,
+    "hasContent" : true
+  },
+  "afterStages" : [ ],
+  "labels" : [ {
+    "name" : "suite",
+    "value" : "UI tests - Extension management"
+  }, {
+    "name" : "testClass",
+    "value" : "UI tests - Extension management"
+  }, {
+    "name" : "testMethod",
+    "value" : "As a User I get feedback when extensions are installed and correctly setup"
+  }, {
+    "name" : "package",
+    "value" : "UI tests - Extension management"
+  }, {
+    "name" : "resultFormat",
+    "value" : "allure1"
+  } ],
+  "parameters" : [ ],
+  "links" : [ ],
+  "hidden" : false,
+  "retry" : false,
+  "extra" : {
+    "severity" : "normal",
+    "retries" : [ ],
+    "categories" : [ {
+      "name" : "Product defects",
+      "matchedStatuses" : [ ],
+      "flaky" : false
+    } ],
+    "history" : {
+      "statistic" : {
+        "failed" : 3,
+        "broken" : 0,
+        "skipped" : 0,
+        "passed" : 1,
+        "unknown" : 0,
+        "total" : 4
+      },
+      "items" : [ {
+        "uid" : "7ad1bc03e0452c07",
+        "reportUrl" : "https://mangata-finance.github.io/mangata-e2e/1131//#testresult/7ad1bc03e0452c07",
+        "status" : "passed",
+        "time" : {
+          "start" : 1640140154468,
+          "stop" : 1640140237162,
+          "duration" : 82694
+        }
+      }, {
+        "uid" : "54196b476550c7d4",
+        "reportUrl" : "https://mangata-finance.github.io/mangata-e2e/1132//#testresult/54196b476550c7d4",
+        "status" : "failed",
+        "statusDetails" : "NoSuchSessionError: session timed out or not found",
+        "time" : {
+          "start" : 1640138284249,
+          "stop" : 1640138284737,
+          "duration" : 488
+        }
+      }, {
+        "uid" : "d08b21a9547e30d7",
+        "reportUrl" : "https://mangata-finance.github.io/mangata-e2e/1129//#testresult/d08b21a9547e30d7",
+        "status" : "failed",
+        "statusDetails" : "Error: expect(received).toBeTruthy()\n                \n                Received: false",
+        "time" : {
+          "start" : 1640104711870,
+          "stop" : 1640104712560,
+          "duration" : 690
+        }
+      } ]
+    },
+    "tags" : [ ]
+  },
+  "source" : "d964ef9748cd958e.json",
+  "parameterValues" : [ ]
+}
