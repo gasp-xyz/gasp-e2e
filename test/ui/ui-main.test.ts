@@ -31,6 +31,7 @@ import {
 import {FIVE_MIN, mETH_ASSET_NAME, MGA_ASSET_NAME} from "../../utils/Constants";
 import {BrunLiquidityModal} from "../../utils/frontend/pages/BrunLiquidityModal";
 import {Assets} from "../../utils/Assets";
+import {testLog} from "../../utils/Logger";
 
 const MGA_ASSET_ID = new BN(0);
 const ETH_ASSET_ID = new BN(1);
@@ -76,7 +77,8 @@ describe("UI tests - A user can swap and mint tokens", () => {
     testUser1.addAsset(MGA_ASSET_ID);
     testUser1.addAsset(ETH_ASSET_ID);
   });
-
+  //✕ As a User I can Swap tokens - MGA - mETH (67321 ms)
+  //✕ As a User I can mint some tokens MGA - mETH (119392 ms)
   it("As a User I can Swap tokens - MGA - mETH", async () => {
     testUser1.refreshAmounts(AssetWallet.BEFORE);
     const mga = new Mangata(driver);
@@ -152,7 +154,6 @@ describe("UI tests - A user can swap and mint tokens", () => {
     expect(poolInvested).toBeTruthy();
     expect(swapped).toBeTruthy();
   });
-
   it("As a User I can burn all liquidity MGA - mETH", async () => {
     await testUser1.refreshAmounts(AssetWallet.BEFORE);
     let amountToMint = new BN(visibleValueNumber).div(new BN(2000));
@@ -180,7 +181,6 @@ describe("UI tests - A user can swap and mint tokens", () => {
       testUser1.getAsset(ETH_ASSET_ID)?.amountBefore.free!.sub(new BN(1))
     ).bnEqual(testUser1.getAsset(ETH_ASSET_ID)?.amountAfter.free!);
   });
-
   it("As a User I can mint in more than one pool [ MGA - mETH ] [ MGA - newTokn ] and get invested values", async () => {
     await testUser1.refreshAmounts(AssetWallet.BEFORE);
     const newToken = await Assets.issueAssetToUser(
@@ -224,13 +224,18 @@ describe("UI tests - A user can swap and mint tokens", () => {
   });
 
   afterEach(async () => {
-    const session = await driver.getSession();
-    await addExtraLogs(
-      driver,
-      expect.getState().currentTestName + " - " + session.getId()
-    );
-    await driver.quit();
-    await DriverBuilder.destroy();
+    try {
+      const session = await driver.getSession();
+      await addExtraLogs(
+        driver,
+        expect.getState().currentTestName + " - " + session.getId()
+      );
+    } catch (error) {
+      testLog.getLog().warn(error);
+    } finally {
+      await driver.quit();
+      await DriverBuilder.destroy();
+    }
   });
 
   afterAll(async () => {

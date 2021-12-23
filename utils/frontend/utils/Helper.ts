@@ -185,7 +185,7 @@ export async function selectAssetFromModalList(
   assetName: string,
   driver: WebDriver
 ) {
-  const assetTestId = `assetSelectModal-asset-${assetName}`;
+  const assetTestId = `TokensModal-asset-${assetName}`;
   const assetLocator = buildDataTestIdXpath(assetTestId);
   await clickElement(driver, assetLocator);
 }

@@ -54,10 +54,10 @@ export class Pool {
   async provideOrCreatePool() {
     const tradeBtn = buildDataTestIdXpath(BTN_POOL_PROVIDE);
     await waitForElement(this.driver, tradeBtn);
+    await waitNewBlock();
     const enabled = await (
       await this.driver.findElement(By.xpath(tradeBtn))
     ).isEnabled();
-    await waitNewBlock();
     if (!enabled) {
       throw new Error("Provide btn is not enabled!");
     }
@@ -74,7 +74,7 @@ export class Pool {
   }
 
   private async selectAssetFromModalList(assetName: string) {
-    const assetTestId = `assetSelectModal-asset-${assetName}`;
+    const assetTestId = `TokensModal-asset-${assetName}`;
     const assetLocator = buildDataTestIdXpath(assetTestId);
     await clickElement(this.driver, assetLocator);
   }
