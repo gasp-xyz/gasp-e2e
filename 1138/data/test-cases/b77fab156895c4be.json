@@ -1,0 +1,130 @@
+{
+  "uid" : "b77fab156895c4be",
+  "name" : "Validate that Mangata Frontend up and running",
+  "fullName" : "UI tests: Infra.Validate that Mangata Frontend up and running",
+  "historyId" : "8422b22f4ca0fa2b11be83bcdc18911d",
+  "time" : {
+    "start" : 1640251203983,
+    "stop" : 1640251207177,
+    "duration" : 3194
+  },
+  "description" : "",
+  "descriptionHtml" : "",
+  "status" : "passed",
+  "flaky" : false,
+  "newFailed" : false,
+  "beforeStages" : [ ],
+  "testStage" : {
+    "status" : "passed",
+    "steps" : [ ],
+    "attachments" : [ {
+      "uid" : "b42e1aee115da92b",
+      "name" : "Screeenshot",
+      "source" : "b42e1aee115da92b.png",
+      "type" : "image/png",
+      "size" : 52144
+    } ],
+    "parameters" : [ ],
+    "stepsCount" : 0,
+    "attachmentsCount" : 1,
+    "shouldDisplayMessage" : false,
+    "hasContent" : true
+  },
+  "afterStages" : [ ],
+  "labels" : [ {
+    "name" : "suite",
+    "value" : "UI tests: Infra"
+  }, {
+    "name" : "testClass",
+    "value" : "UI tests: Infra"
+  }, {
+    "name" : "testMethod",
+    "value" : "Validate that Mangata Frontend up and running"
+  }, {
+    "name" : "package",
+    "value" : "UI tests: Infra"
+  }, {
+    "name" : "resultFormat",
+    "value" : "allure1"
+  } ],
+  "parameters" : [ ],
+  "links" : [ ],
+  "hidden" : false,
+  "retry" : false,
+  "extra" : {
+    "severity" : "normal",
+    "retries" : [ ],
+    "categories" : [ ],
+    "history" : {
+      "statistic" : {
+        "failed" : 3,
+        "broken" : 0,
+        "skipped" : 0,
+        "passed" : 4,
+        "unknown" : 0,
+        "total" : 7
+      },
+      "items" : [ {
+        "uid" : "f9e94122e91daabd",
+        "reportUrl" : "https://mangata-finance.github.io/mangata-e2e/1134//#testresult/f9e94122e91daabd",
+        "status" : "passed",
+        "time" : {
+          "start" : 1640225455908,
+          "stop" : 1640225458418,
+          "duration" : 2510
+        }
+      }, {
+        "uid" : "3585f52701a3ae1",
+        "reportUrl" : "https://mangata-finance.github.io/mangata-e2e/1136//#testresult/3585f52701a3ae1",
+        "status" : "failed",
+        "statusDetails" : "NoSuchSessionError: session timed out or not found",
+        "time" : {
+          "start" : 1640224525952,
+          "stop" : 1640224525995,
+          "duration" : 43
+        }
+      }, {
+        "uid" : "bd8c1d2f874e109b",
+        "reportUrl" : "https://mangata-finance.github.io/mangata-e2e/1135//#testresult/bd8c1d2f874e109b",
+        "status" : "failed",
+        "statusDetails" : "NoSuchSessionError: session timed out or not found",
+        "time" : {
+          "start" : 1640223957571,
+          "stop" : 1640223957718,
+          "duration" : 147
+        }
+      }, {
+        "uid" : "5f2591f4eefca8ff",
+        "reportUrl" : "https://mangata-finance.github.io/mangata-e2e/1131//#testresult/5f2591f4eefca8ff",
+        "status" : "passed",
+        "time" : {
+          "start" : 1640140238461,
+          "stop" : 1640140241226,
+          "duration" : 2765
+        }
+      }, {
+        "uid" : "6b86fe10fba5e9fc",
+        "reportUrl" : "https://mangata-finance.github.io/mangata-e2e/1132//#testresult/6b86fe10fba5e9fc",
+        "status" : "failed",
+        "statusDetails" : "NoSuchSessionError: session timed out or not found",
+        "time" : {
+          "start" : 1640138285621,
+          "stop" : 1640138285697,
+          "duration" : 76
+        }
+      }, {
+        "uid" : "6e00da33fb288414",
+        "reportUrl" : "https://mangata-finance.github.io/mangata-e2e/1129//#testresult/6e00da33fb288414",
+        "status" : "passed",
+        "time" : {
+          "start" : 1640106482480,
+          "stop" : 1640106485777,
+          "duration" : 3297
+        }
+      } ]
+    },
+    "tags" : [ ]
+  },
+  "source" : "b77fab156895c4be.json",
+  "parameterValues" : [ ]
+}

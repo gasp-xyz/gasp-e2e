@@ -1,0 +1,130 @@
+{
+  "uid" : "79b727007c8c95c7",
+  "name" : "Modal is visible when burning liquidity",
+  "fullName" : "UI tests - A user can see the new Modal.Modal is visible when burning liquidity",
+  "historyId" : "d905b7c57d5643ad680989ac739cf6b",
+  "time" : {
+    "start" : 1640249117958,
+    "stop" : 1640249274419,
+    "duration" : 156461
+  },
+  "description" : "",
+  "descriptionHtml" : "",
+  "status" : "passed",
+  "flaky" : false,
+  "newFailed" : false,
+  "beforeStages" : [ ],
+  "testStage" : {
+    "status" : "passed",
+    "steps" : [ ],
+    "attachments" : [ {
+      "uid" : "2f3e226443845ceb",
+      "name" : "Screeenshot",
+      "source" : "2f3e226443845ceb.png",
+      "type" : "image/png",
+      "size" : 84433
+    } ],
+    "parameters" : [ ],
+    "stepsCount" : 0,
+    "attachmentsCount" : 1,
+    "shouldDisplayMessage" : false,
+    "hasContent" : true
+  },
+  "afterStages" : [ ],
+  "labels" : [ {
+    "name" : "suite",
+    "value" : "UI tests - A user can see the new Modal"
+  }, {
+    "name" : "testClass",
+    "value" : "UI tests - A user can see the new Modal"
+  }, {
+    "name" : "testMethod",
+    "value" : "Modal is visible when burning liquidity"
+  }, {
+    "name" : "package",
+    "value" : "UI tests - A user can see the new Modal"
+  }, {
+    "name" : "resultFormat",
+    "value" : "allure1"
+  } ],
+  "parameters" : [ ],
+  "links" : [ ],
+  "hidden" : false,
+  "retry" : false,
+  "extra" : {
+    "severity" : "normal",
+    "retries" : [ ],
+    "categories" : [ ],
+    "history" : {
+      "statistic" : {
+        "failed" : 3,
+        "broken" : 0,
+        "skipped" : 0,
+        "passed" : 4,
+        "unknown" : 0,
+        "total" : 7
+      },
+      "items" : [ {
+        "uid" : "e1df39c64e9365e6",
+        "reportUrl" : "https://mangata-finance.github.io/mangata-e2e/1134//#testresult/e1df39c64e9365e6",
+        "status" : "passed",
+        "time" : {
+          "start" : 1640223259738,
+          "stop" : 1640223402372,
+          "duration" : 142634
+        }
+      }, {
+        "uid" : "63769550aa942eed",
+        "reportUrl" : "https://mangata-finance.github.io/mangata-e2e/1136//#testresult/63769550aa942eed",
+        "status" : "failed",
+        "statusDetails" : "TimeoutError: Waiting for element to be located By(xpath, //button[text()='Connect'])\n                Wait timed out after 30005ms",
+        "time" : {
+          "start" : 1640223190425,
+          "stop" : 1640223259349,
+          "duration" : 68924
+        }
+      }, {
+        "uid" : "5862a359c85bf641",
+        "reportUrl" : "https://mangata-finance.github.io/mangata-e2e/1135//#testresult/5862a359c85bf641",
+        "status" : "failed",
+        "statusDetails" : "thrown: Event {\n                  \"isTrusted\": true,\n                }",
+        "time" : {
+          "start" : 1640223077004,
+          "stop" : 1640223077354,
+          "duration" : 350
+        }
+      }, {
+        "uid" : "c7a655a87aac600c",
+        "reportUrl" : "https://mangata-finance.github.io/mangata-e2e/1131//#testresult/c7a655a87aac600c",
+        "status" : "passed",
+        "time" : {
+          "start" : 1640137075797,
+          "stop" : 1640137224375,
+          "duration" : 148578
+        }
+      }, {
+        "uid" : "120c0cd63f7fb33d",
+        "reportUrl" : "https://mangata-finance.github.io/mangata-e2e/1132//#testresult/120c0cd63f7fb33d",
+        "status" : "failed",
+        "statusDetails" : "TimeoutError: Waiting for element to be located By(xpath, //button[text()='Connect'])\n                Wait timed out after 30011ms",
+        "time" : {
+          "start" : 1640136953596,
+          "stop" : 1640137022091,
+          "duration" : 68495
+        }
+      }, {
+        "uid" : "a4fb97c83621236a",
+        "reportUrl" : "https://mangata-finance.github.io/mangata-e2e/1129//#testresult/a4fb97c83621236a",
+        "status" : "passed",
+        "time" : {
+          "start" : 1640103723599,
+          "stop" : 1640103858491,
+          "duration" : 134892
+        }
+      } ]
+    },
+    "tags" : [ ]
+  },
+  "source" : "79b727007c8c95c7.json",
+  "parameterValues" : [ ]
+}

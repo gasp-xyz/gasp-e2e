@@ -1,0 +1,90 @@
+{
+  "uid" : "3563f40fe8c480ed",
+  "name" : "Token amounts are correectly propagated to the node",
+  "fullName" : "UI tests - A user swapping tokens:.Token amounts are correectly propagated to the node",
+  "historyId" : "b8ee99851734c83991c748be83f79dd9",
+  "time" : {
+    "start" : 1640250266941,
+    "stop" : 1640250408448,
+    "duration" : 141507
+  },
+  "description" : "",
+  "descriptionHtml" : "",
+  "status" : "failed",
+  "statusMessage" : "Error: Trade btn is not enabled!",
+  "statusTrace" : "Error: Trade btn is not enabled!\n                    at Swap.doSwap (/home/runner/work/mangata-e2e/mangata-e2e/utils/frontend/pages/Swap.ts:65:13)\n                    at runMicrotasks (<anonymous>)\n                    at processTicksAndRejections (node:internal/process/task_queues:96:5)\n                    at Object.<anonymous> (/home/runner/work/mangata-e2e/mangata-e2e/test/ui/ui-swap.sentAmounts.test.ts:87:5)",
+  "flaky" : false,
+  "newFailed" : true,
+  "beforeStages" : [ ],
+  "testStage" : {
+    "status" : "failed",
+    "statusMessage" : "Error: Trade btn is not enabled!",
+    "statusTrace" : "Error: Trade btn is not enabled!\n                    at Swap.doSwap (/home/runner/work/mangata-e2e/mangata-e2e/utils/frontend/pages/Swap.ts:65:13)\n                    at runMicrotasks (<anonymous>)\n                    at processTicksAndRejections (node:internal/process/task_queues:96:5)\n                    at Object.<anonymous> (/home/runner/work/mangata-e2e/mangata-e2e/test/ui/ui-swap.sentAmounts.test.ts:87:5)",
+    "steps" : [ ],
+    "attachments" : [ {
+      "uid" : "87fc77b523c8ff47",
+      "name" : "Screeenshot",
+      "source" : "87fc77b523c8ff47.png",
+      "type" : "image/png",
+      "size" : 96282
+    } ],
+    "parameters" : [ ],
+    "stepsCount" : 0,
+    "attachmentsCount" : 1,
+    "shouldDisplayMessage" : true,
+    "hasContent" : true
+  },
+  "afterStages" : [ ],
+  "labels" : [ {
+    "name" : "suite",
+    "value" : "UI tests - A user swapping tokens:"
+  }, {
+    "name" : "testClass",
+    "value" : "UI tests - A user swapping tokens:"
+  }, {
+    "name" : "testMethod",
+    "value" : "Token amounts are correectly propagated to the node"
+  }, {
+    "name" : "package",
+    "value" : "UI tests - A user swapping tokens:"
+  }, {
+    "name" : "resultFormat",
+    "value" : "allure1"
+  } ],
+  "parameters" : [ ],
+  "links" : [ ],
+  "hidden" : false,
+  "retry" : false,
+  "extra" : {
+    "severity" : "normal",
+    "retries" : [ ],
+    "categories" : [ {
+      "name" : "Product defects",
+      "matchedStatuses" : [ ],
+      "flaky" : false
+    } ],
+    "history" : {
+      "statistic" : {
+        "failed" : 1,
+        "broken" : 0,
+        "skipped" : 0,
+        "passed" : 1,
+        "unknown" : 0,
+        "total" : 2
+      },
+      "items" : [ {
+        "uid" : "48115c5cf3e210c1",
+        "reportUrl" : "https://mangata-finance.github.io/mangata-e2e/1129//#testresult/48115c5cf3e210c1",
+        "status" : "passed",
+        "time" : {
+          "start" : 1640105453656,
+          "stop" : 1640105631946,
+          "duration" : 178290
+        }
+      } ]
+    },
+    "tags" : [ ]
+  },
+  "source" : "3563f40fe8c480ed.json",
+  "parameterValues" : [ ]
+}
