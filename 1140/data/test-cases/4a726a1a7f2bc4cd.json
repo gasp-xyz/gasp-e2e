@@ -1,0 +1,181 @@
+{
+  "uid" : "4a726a1a7f2bc4cd",
+  "name" : "As a User I can mint All tokens newToken - newToken2",
+  "fullName" : "UI tests - A user can use MAX:.As a User I can mint All tokens newToken - newToken2",
+  "historyId" : "57ad81dde99b45a6f03a88cb264c4bf1",
+  "time" : {
+    "start" : 1640311323194,
+    "stop" : 1640311532010,
+    "duration" : 208816
+  },
+  "description" : "",
+  "descriptionHtml" : "",
+  "status" : "failed",
+  "statusMessage" : "Error: Provide btn is not enabled!",
+  "statusTrace" : "Error: Provide btn is not enabled!\n                    at Pool.provideOrCreatePool (/home/runner/work/mangata-e2e/mangata-e2e/utils/frontend/pages/Pool.ts:60:13)\n                    at runMicrotasks (<anonymous>)\n                    at processTicksAndRejections (node:internal/process/task_queues:96:5)\n                    at Object.<anonymous> (/home/runner/work/mangata-e2e/mangata-e2e/test/ui/ui-max.test.ts:132:5)",
+  "flaky" : false,
+  "newFailed" : false,
+  "beforeStages" : [ ],
+  "testStage" : {
+    "status" : "failed",
+    "statusMessage" : "Error: Provide btn is not enabled!",
+    "statusTrace" : "Error: Provide btn is not enabled!\n                    at Pool.provideOrCreatePool (/home/runner/work/mangata-e2e/mangata-e2e/utils/frontend/pages/Pool.ts:60:13)\n                    at runMicrotasks (<anonymous>)\n                    at processTicksAndRejections (node:internal/process/task_queues:96:5)\n                    at Object.<anonymous> (/home/runner/work/mangata-e2e/mangata-e2e/test/ui/ui-max.test.ts:132:5)",
+    "steps" : [ ],
+    "attachments" : [ {
+      "uid" : "55b0ecfabb1611ee",
+      "name" : "Screeenshot",
+      "source" : "55b0ecfabb1611ee.png",
+      "type" : "image/png",
+      "size" : 90190
+    } ],
+    "parameters" : [ ],
+    "stepsCount" : 0,
+    "attachmentsCount" : 1,
+    "shouldDisplayMessage" : true,
+    "hasContent" : true
+  },
+  "afterStages" : [ ],
+  "labels" : [ {
+    "name" : "suite",
+    "value" : "UI tests - A user can use MAX:"
+  }, {
+    "name" : "testClass",
+    "value" : "UI tests - A user can use MAX:"
+  }, {
+    "name" : "testMethod",
+    "value" : "As a User I can mint All tokens newToken - newToken2"
+  }, {
+    "name" : "package",
+    "value" : "UI tests - A user can use MAX:"
+  }, {
+    "name" : "resultFormat",
+    "value" : "allure1"
+  } ],
+  "parameters" : [ ],
+  "links" : [ ],
+  "hidden" : false,
+  "retry" : false,
+  "extra" : {
+    "severity" : "normal",
+    "retries" : [ ],
+    "categories" : [ {
+      "name" : "Product defects",
+      "matchedStatuses" : [ ],
+      "flaky" : false
+    } ],
+    "history" : {
+      "statistic" : {
+        "failed" : 11,
+        "broken" : 0,
+        "skipped" : 0,
+        "passed" : 0,
+        "unknown" : 0,
+        "total" : 11
+      },
+      "items" : [ {
+        "uid" : "494b1690bee31cef",
+        "reportUrl" : "https://mangata-finance.github.io/mangata-e2e/1141//#testresult/494b1690bee31cef",
+        "status" : "failed",
+        "statusDetails" : "TimeoutError: Waiting for element to be located By(xpath, //button[text()='Connect'])\n                Wait timed out after 30008ms",
+        "time" : {
+          "start" : 1640310537943,
+          "stop" : 1640310610828,
+          "duration" : 72885
+        }
+      }, {
+        "uid" : "45adf435a412807c",
+        "reportUrl" : "https://mangata-finance.github.io/mangata-e2e/1142//#testresult/45adf435a412807c",
+        "status" : "failed",
+        "statusDetails" : "TimeoutError: Waiting for element to be located By(xpath, //button[text()='Connect'])\n                Wait timed out after 30007ms",
+        "time" : {
+          "start" : 1640310419376,
+          "stop" : 1640310487580,
+          "duration" : 68204
+        }
+      }, {
+        "uid" : "4a81e08a3189f1f4",
+        "reportUrl" : "https://mangata-finance.github.io/mangata-e2e/1139//#testresult/4a81e08a3189f1f4",
+        "status" : "failed",
+        "statusDetails" : "TimeoutError: Waiting for element to be located By(xpath, //*[@data-testid='tradingPoolTab-leftAssetInput']//button[contains(text(),'Max')])\n                Wait timed out after 30005ms",
+        "time" : {
+          "start" : 1640264919697,
+          "stop" : 1640265117996,
+          "duration" : 198299
+        }
+      }, {
+        "uid" : "65f7eedd729d08d1",
+        "reportUrl" : "https://mangata-finance.github.io/mangata-e2e/1138//#testresult/65f7eedd729d08d1",
+        "status" : "failed",
+        "statusDetails" : "NoSuchWindowError: no such window: target window already closed\n                from unknown error: web view not found\n                  (Session info: chrome=94.0.4606.61)\n                  (Driver info: chromedriver=94.0.4606.61 (418b78f5838ed0b1c69bb4e51ea0252171854915-refs/branch-heads/4606@{#1204}),platform=Linux 5.11.0-1022-azure x86_64)",
+        "time" : {
+          "start" : 1640249917703,
+          "stop" : 1640249929004,
+          "duration" : 11301
+        }
+      }, {
+        "uid" : "672a20535ac45900",
+        "reportUrl" : "https://mangata-finance.github.io/mangata-e2e/1134//#testresult/672a20535ac45900",
+        "status" : "failed",
+        "statusDetails" : "Error: Failed: \"Transaction error\"",
+        "time" : {
+          "start" : 1640224536512,
+          "stop" : 1640224638283,
+          "duration" : 101771
+        }
+      }, {
+        "uid" : "a0d2a30af43f6a04",
+        "reportUrl" : "https://mangata-finance.github.io/mangata-e2e/1136//#testresult/a0d2a30af43f6a04",
+        "status" : "failed",
+        "statusDetails" : "TimeoutError: Waiting for element to be located By(xpath, //button[text()='Connect'])\n                Wait timed out after 30005ms",
+        "time" : {
+          "start" : 1640224053675,
+          "stop" : 1640224122757,
+          "duration" : 69082
+        }
+      }, {
+        "uid" : "4c2dbfd1c7ab1555",
+        "reportUrl" : "https://mangata-finance.github.io/mangata-e2e/1135//#testresult/4c2dbfd1c7ab1555",
+        "status" : "failed",
+        "statusDetails" : "TimeoutError: Waiting for element to be located By(xpath, //button[text()='Connect'])\n                Wait timed out after 30006ms",
+        "time" : {
+          "start" : 1640223472730,
+          "stop" : 1640223544637,
+          "duration" : 71907
+        }
+      }, {
+        "uid" : "76bb4d954e3623ff",
+        "reportUrl" : "https://mangata-finance.github.io/mangata-e2e/1131//#testresult/76bb4d954e3623ff",
+        "status" : "failed",
+        "statusDetails" : "Error: Provide btn is not enabled!",
+        "time" : {
+          "start" : 1640138618031,
+          "stop" : 1640138808251,
+          "duration" : 190220
+        }
+      }, {
+        "uid" : "d48aa876f2dfdf0e",
+        "reportUrl" : "https://mangata-finance.github.io/mangata-e2e/1132//#testresult/d48aa876f2dfdf0e",
+        "status" : "failed",
+        "statusDetails" : "TimeoutError: Waiting for element to be located By(xpath, //button[text()='Connect'])\n                Wait timed out after 30001ms",
+        "time" : {
+          "start" : 1640137814480,
+          "stop" : 1640137882819,
+          "duration" : 68339
+        }
+      }, {
+        "uid" : "700eb59193e389e2",
+        "reportUrl" : "https://mangata-finance.github.io/mangata-e2e/1129//#testresult/700eb59193e389e2",
+        "status" : "failed",
+        "statusDetails" : "NoSuchWindowError: no such window: target window already closed\n                from unknown error: web view not found\n                  (Session info: chrome=94.0.4606.61)\n                  (Driver info: chromedriver=94.0.4606.61 (418b78f5838ed0b1c69bb4e51ea0252171854915-refs/branch-heads/4606@{#1204}),platform=Linux 5.11.0-1022-azure x86_64)",
+        "time" : {
+          "start" : 1640105160924,
+          "stop" : 1640105170441,
+          "duration" : 9517
+        }
+      } ]
+    },
+    "tags" : [ ]
+  },
+  "source" : "4a726a1a7f2bc4cd.json",
+  "parameterValues" : [ ]
+}
