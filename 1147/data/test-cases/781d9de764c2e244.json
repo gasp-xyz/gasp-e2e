@@ -1,0 +1,84 @@
+{
+  "uid" : "781d9de764c2e244",
+  "name" : "Cluster does not fork",
+  "fullName" : "Cluster -> Healthcheck.Cluster does not fork",
+  "historyId" : "c60708daa452883022480d8f0ac2dc39",
+  "time" : {
+    "start" : 1640405334124,
+    "stop" : 1640405364168,
+    "duration" : 30044
+  },
+  "description" : "",
+  "descriptionHtml" : "",
+  "status" : "passed",
+  "flaky" : false,
+  "newFailed" : false,
+  "beforeStages" : [ ],
+  "afterStages" : [ ],
+  "labels" : [ {
+    "name" : "suite",
+    "value" : "Cluster -> Healthcheck"
+  }, {
+    "name" : "testClass",
+    "value" : "Cluster -> Healthcheck"
+  }, {
+    "name" : "testMethod",
+    "value" : "Cluster does not fork"
+  }, {
+    "name" : "package",
+    "value" : "Cluster -> Healthcheck"
+  }, {
+    "name" : "resultFormat",
+    "value" : "allure1"
+  } ],
+  "parameters" : [ ],
+  "links" : [ ],
+  "hidden" : false,
+  "retry" : false,
+  "extra" : {
+    "severity" : "normal",
+    "retries" : [ ],
+    "categories" : [ ],
+    "history" : {
+      "statistic" : {
+        "failed" : 0,
+        "broken" : 0,
+        "skipped" : 0,
+        "passed" : 4,
+        "unknown" : 0,
+        "total" : 4
+      },
+      "items" : [ {
+        "uid" : "cd1913a721435172",
+        "reportUrl" : "https://mangata-finance.github.io/mangata-e2e/1143//#testresult/cd1913a721435172",
+        "status" : "passed",
+        "time" : {
+          "start" : 1640319000164,
+          "stop" : 1640319030167,
+          "duration" : 30003
+        }
+      }, {
+        "uid" : "443f39103f8f6b82",
+        "reportUrl" : "https://mangata-finance.github.io/mangata-e2e/1137//#testresult/443f39103f8f6b82",
+        "status" : "passed",
+        "time" : {
+          "start" : 1640232576128,
+          "stop" : 1640232606164,
+          "duration" : 30036
+        }
+      }, {
+        "uid" : "3068c0230e000e25",
+        "reportUrl" : "https://mangata-finance.github.io/mangata-e2e/1133//#testresult/3068c0230e000e25",
+        "status" : "passed",
+        "time" : {
+          "start" : 1640146128155,
+          "stop" : 1640146158121,
+          "duration" : 29966
+        }
+      } ]
+    },
+    "tags" : [ ]
+  },
+  "source" : "781d9de764c2e244.json",
+  "parameterValues" : [ ]
+}
