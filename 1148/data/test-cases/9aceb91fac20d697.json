@@ -1,0 +1,217 @@
+{
+  "uid" : "9aceb91fac20d697",
+  "name" : "As a User I can Swap tokens - MGA - mETH",
+  "fullName" : "UI tests - A user can swap and mint tokens.As a User I can Swap tokens - MGA - mETH",
+  "historyId" : "c9939ab6b05fdb3664bf90f9f2159e2e",
+  "time" : {
+    "start" : 1640482801137,
+    "stop" : 1640482873648,
+    "duration" : 72511
+  },
+  "description" : "",
+  "descriptionHtml" : "",
+  "status" : "failed",
+  "statusMessage" : "TimeoutError: Waiting for element to be located By(xpath, //button[text()='Connect'])\n                Wait timed out after 30005ms",
+  "statusTrace" : "TimeoutError: Waiting for element to be located By(xpath, //button[text()='Connect'])\n                Wait timed out after 30005ms\n                    at /home/runner/work/mangata-e2e/mangata-e2e/node_modules/selenium-webdriver/lib/promise.js:2201:17\n                    at ManagedPromise.invokeCallback_ (/home/runner/work/mangata-e2e/mangata-e2e/node_modules/selenium-webdriver/lib/promise.js:1376:14)\n                    at TaskQueue.execute_ (/home/runner/work/mangata-e2e/mangata-e2e/node_modules/selenium-webdriver/lib/promise.js:3084:14)\n                    at TaskQueue.executeNext_ (/home/runner/work/mangata-e2e/mangata-e2e/node_modules/selenium-webdriver/lib/promise.js:3067:27)\n                    at /home/runner/work/mangata-e2e/mangata-e2e/node_modules/selenium-webdriver/lib/promise.js:2927:27\n                    at /home/runner/work/mangata-e2e/mangata-e2e/node_modules/selenium-webdriver/lib/promise.js:668:7\n                    at runMicrotasks (<anonymous>)\n                    at processTicksAndRejections (node:internal/process/task_queues:96:5)\n                From: Task: Waiting for element to be located By(xpath, //button[text()='Connect'])\n                    at scheduleWait (/home/runner/work/mangata-e2e/mangata-e2e/node_modules/selenium-webdriver/lib/promise.js:2188:20)\n                    at ControlFlow.wait (/home/runner/work/mangata-e2e/mangata-e2e/node_modules/selenium-webdriver/lib/promise.js:2517:12)\n                    at mixin.wait (/home/runner/work/mangata-e2e/mangata-e2e/node_modules/selenium-webdriver/lib/webdriver.js:934:29)\n                    at waitForElement (/home/runner/work/mangata-e2e/mangata-e2e/utils/frontend/utils/Helper.ts:18:16)\n                    at clickElement (/home/runner/work/mangata-e2e/mangata-e2e/utils/frontend/utils/Helper.ts:38:9)\n                    at MetaMask.connect (/home/runner/work/mangata-e2e/mangata-e2e/utils/frontend/pages/MetaMask.ts:108:11)\n                    at setupAllExtensions (/home/runner/work/mangata-e2e/mangata-e2e/utils/frontend/utils/Helper.ts:94:3)\n                    at Object.<anonymous> (/home/runner/work/mangata-e2e/mangata-e2e/test/ui/ui-main.test.ts:59:24)",
+  "flaky" : true,
+  "newFailed" : false,
+  "beforeStages" : [ ],
+  "testStage" : {
+    "status" : "failed",
+    "statusMessage" : "TimeoutError: Waiting for element to be located By(xpath, //button[text()='Connect'])\n                Wait timed out after 30005ms",
+    "statusTrace" : "TimeoutError: Waiting for element to be located By(xpath, //button[text()='Connect'])\n                Wait timed out after 30005ms\n                    at /home/runner/work/mangata-e2e/mangata-e2e/node_modules/selenium-webdriver/lib/promise.js:2201:17\n                    at ManagedPromise.invokeCallback_ (/home/runner/work/mangata-e2e/mangata-e2e/node_modules/selenium-webdriver/lib/promise.js:1376:14)\n                    at TaskQueue.execute_ (/home/runner/work/mangata-e2e/mangata-e2e/node_modules/selenium-webdriver/lib/promise.js:3084:14)\n                    at TaskQueue.executeNext_ (/home/runner/work/mangata-e2e/mangata-e2e/node_modules/selenium-webdriver/lib/promise.js:3067:27)\n                    at /home/runner/work/mangata-e2e/mangata-e2e/node_modules/selenium-webdriver/lib/promise.js:2927:27\n                    at /home/runner/work/mangata-e2e/mangata-e2e/node_modules/selenium-webdriver/lib/promise.js:668:7\n                    at runMicrotasks (<anonymous>)\n                    at processTicksAndRejections (node:internal/process/task_queues:96:5)\n                From: Task: Waiting for element to be located By(xpath, //button[text()='Connect'])\n                    at scheduleWait (/home/runner/work/mangata-e2e/mangata-e2e/node_modules/selenium-webdriver/lib/promise.js:2188:20)\n                    at ControlFlow.wait (/home/runner/work/mangata-e2e/mangata-e2e/node_modules/selenium-webdriver/lib/promise.js:2517:12)\n                    at mixin.wait (/home/runner/work/mangata-e2e/mangata-e2e/node_modules/selenium-webdriver/lib/webdriver.js:934:29)\n                    at waitForElement (/home/runner/work/mangata-e2e/mangata-e2e/utils/frontend/utils/Helper.ts:18:16)\n                    at clickElement (/home/runner/work/mangata-e2e/mangata-e2e/utils/frontend/utils/Helper.ts:38:9)\n                    at MetaMask.connect (/home/runner/work/mangata-e2e/mangata-e2e/utils/frontend/pages/MetaMask.ts:108:11)\n                    at setupAllExtensions (/home/runner/work/mangata-e2e/mangata-e2e/utils/frontend/utils/Helper.ts:94:3)\n                    at Object.<anonymous> (/home/runner/work/mangata-e2e/mangata-e2e/test/ui/ui-main.test.ts:59:24)",
+    "steps" : [ ],
+    "attachments" : [ {
+      "uid" : "5e83ea5d66110ab6",
+      "name" : "Screeenshot",
+      "source" : "5e83ea5d66110ab6.png",
+      "type" : "image/png",
+      "size" : 100430
+    } ],
+    "parameters" : [ ],
+    "hasContent" : true,
+    "stepsCount" : 0,
+    "attachmentsCount" : 1,
+    "shouldDisplayMessage" : true
+  },
+  "afterStages" : [ ],
+  "labels" : [ {
+    "name" : "suite",
+    "value" : "UI tests - A user can swap and mint tokens"
+  }, {
+    "name" : "testClass",
+    "value" : "UI tests - A user can swap and mint tokens"
+  }, {
+    "name" : "testMethod",
+    "value" : "As a User I can Swap tokens - MGA - mETH"
+  }, {
+    "name" : "package",
+    "value" : "UI tests - A user can swap and mint tokens"
+  }, {
+    "name" : "resultFormat",
+    "value" : "allure1"
+  } ],
+  "parameters" : [ ],
+  "links" : [ ],
+  "hidden" : false,
+  "retry" : false,
+  "extra" : {
+    "severity" : "normal",
+    "retries" : [ ],
+    "categories" : [ {
+      "name" : "Product defects",
+      "matchedStatuses" : [ ],
+      "flaky" : false
+    } ],
+    "history" : {
+      "statistic" : {
+        "failed" : 11,
+        "broken" : 0,
+        "skipped" : 0,
+        "passed" : 4,
+        "unknown" : 0,
+        "total" : 15
+      },
+      "items" : [ {
+        "uid" : "494bb9fac158460b",
+        "reportUrl" : "https://mangata-finance.github.io/mangata-e2e/1149//#testresult/494bb9fac158460b",
+        "status" : "failed",
+        "statusDetails" : "thrown: Event {\n                  \"isTrusted\": true,\n                }",
+        "time" : {
+          "start" : 1640482355746,
+          "stop" : 1640482356158,
+          "duration" : 412
+        }
+      }, {
+        "uid" : "eb5a8c0b7db99b74",
+        "reportUrl" : "https://mangata-finance.github.io/mangata-e2e/1145//#testresult/eb5a8c0b7db99b74",
+        "status" : "passed",
+        "time" : {
+          "start" : 1640396405294,
+          "stop" : 1640396558296,
+          "duration" : 153002
+        }
+      }, {
+        "uid" : "f5f775925ed2d3a5",
+        "reportUrl" : "https://mangata-finance.github.io/mangata-e2e/1146//#testresult/f5f775925ed2d3a5",
+        "status" : "failed",
+        "statusDetails" : "TimeoutError: Waiting for element to be located By(xpath, //button[text()='Connect'])\n                Wait timed out after 30004ms",
+        "time" : {
+          "start" : 1640396224761,
+          "stop" : 1640396293988,
+          "duration" : 69227
+        }
+      }, {
+        "uid" : "6996c2a6c1f969b3",
+        "reportUrl" : "https://mangata-finance.github.io/mangata-e2e/1140//#testresult/6996c2a6c1f969b3",
+        "status" : "passed",
+        "time" : {
+          "start" : 1640310051633,
+          "stop" : 1640310206271,
+          "duration" : 154638
+        }
+      }, {
+        "uid" : "f6a491cc5308bb74",
+        "reportUrl" : "https://mangata-finance.github.io/mangata-e2e/1141//#testresult/f6a491cc5308bb74",
+        "status" : "failed",
+        "statusDetails" : "TimeoutError: Waiting for element to be located By(xpath, //button[text()='Connect'])\n                Wait timed out after 30004ms",
+        "time" : {
+          "start" : 1640309916927,
+          "stop" : 1640309991437,
+          "duration" : 74510
+        }
+      }, {
+        "uid" : "ad74901e0715a22d",
+        "reportUrl" : "https://mangata-finance.github.io/mangata-e2e/1142//#testresult/ad74901e0715a22d",
+        "status" : "failed",
+        "statusDetails" : "TimeoutError: Waiting for element to be located By(xpath, //button[text()='Connect'])\n                Wait timed out after 30006ms",
+        "time" : {
+          "start" : 1640309838822,
+          "stop" : 1640309908124,
+          "duration" : 69302
+        }
+      }, {
+        "uid" : "53079a907f22d445",
+        "reportUrl" : "https://mangata-finance.github.io/mangata-e2e/1139//#testresult/53079a907f22d445",
+        "status" : "failed",
+        "statusDetails" : "Error: Trade btn is not enabled!",
+        "time" : {
+          "start" : 1640263688649,
+          "stop" : 1640263800480,
+          "duration" : 111831
+        }
+      }, {
+        "uid" : "f67cdaa20f4c251f",
+        "reportUrl" : "https://mangata-finance.github.io/mangata-e2e/1138//#testresult/f67cdaa20f4c251f",
+        "status" : "failed",
+        "statusDetails" : "thrown: Event {\n                  \"isTrusted\": true,\n                }",
+        "time" : {
+          "start" : 1640249432062,
+          "stop" : 1640249432616,
+          "duration" : 554
+        }
+      }, {
+        "uid" : "5367d781f85177f0",
+        "reportUrl" : "https://mangata-finance.github.io/mangata-e2e/1134//#testresult/5367d781f85177f0",
+        "status" : "passed",
+        "time" : {
+          "start" : 1640223569300,
+          "stop" : 1640223716146,
+          "duration" : 146846
+        }
+      }, {
+        "uid" : "c4f54a2ae49a248f",
+        "reportUrl" : "https://mangata-finance.github.io/mangata-e2e/1136//#testresult/c4f54a2ae49a248f",
+        "status" : "failed",
+        "statusDetails" : "TimeoutError: Waiting for element to be located By(xpath, //button[text()='Connect'])\n                Wait timed out after 30002ms",
+        "time" : {
+          "start" : 1640223466742,
+          "stop" : 1640223536988,
+          "duration" : 70246
+        }
+      }, {
+        "uid" : "dd4560f2a1374a58",
+        "reportUrl" : "https://mangata-finance.github.io/mangata-e2e/1135//#testresult/dd4560f2a1374a58",
+        "status" : "failed",
+        "statusDetails" : "thrown: Event {\n                  \"isTrusted\": true,\n                }",
+        "time" : {
+          "start" : 1640223079870,
+          "stop" : 1640223080280,
+          "duration" : 410
+        }
+      }, {
+        "uid" : "fb9567d6f121cfad",
+        "reportUrl" : "https://mangata-finance.github.io/mangata-e2e/1131//#testresult/fb9567d6f121cfad",
+        "status" : "passed",
+        "time" : {
+          "start" : 1640137406605,
+          "stop" : 1640137556297,
+          "duration" : 149692
+        }
+      }, {
+        "uid" : "ec282fbc379d9c71",
+        "reportUrl" : "https://mangata-finance.github.io/mangata-e2e/1132//#testresult/ec282fbc379d9c71",
+        "status" : "failed",
+        "statusDetails" : "TimeoutError: Waiting for element to be located By(xpath, //button[text()='Connect'])\n                Wait timed out after 30017ms",
+        "time" : {
+          "start" : 1640137228687,
+          "stop" : 1640137298646,
+          "duration" : 69959
+        }
+      }, {
+        "uid" : "a9a284411df8a44b",
+        "reportUrl" : "https://mangata-finance.github.io/mangata-e2e/1129//#testresult/a9a284411df8a44b",
+        "status" : "failed",
+        "statusDetails" : "Error: Expected: 10969100218581960 \n                  Actual: 1096910021858196 \n                 ",
+        "time" : {
+          "start" : 1640104042150,
+          "stop" : 1640104190617,
+          "duration" : 148467
+        }
+      } ]
+    },
+    "tags" : [ ]
+  },
+  "source" : "9aceb91fac20d697.json",
+  "parameterValues" : [ ]
+}
