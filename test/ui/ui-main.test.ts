@@ -77,8 +77,6 @@ describe("UI tests - A user can swap and mint tokens", () => {
     testUser1.addAsset(MGA_ASSET_ID);
     testUser1.addAsset(ETH_ASSET_ID);
   });
-  //✕ As a User I can Swap tokens - MGA - mETH (67321 ms)
-  //✕ As a User I can mint some tokens MGA - mETH (119392 ms)
   it("As a User I can Swap tokens - MGA - mETH", async () => {
     testUser1.refreshAmounts(AssetWallet.BEFORE);
     const mga = new Mangata(driver);

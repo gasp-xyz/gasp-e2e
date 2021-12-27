@@ -8,12 +8,13 @@ import {testLog} from "../../Logger";
 import BN from "bn.js";
 import {Reporter} from "jest-allure/dist/Reporter";
 const {By, until} = require("selenium-webdriver");
+const timeOut = 60000;
 require("chromedriver");
 const outputPath = `reports/artifacts`;
 export async function waitForElement(
   driver: WebDriver,
   xpath: string,
-  timeout = 30000
+  timeout = timeOut
 ) {
   await driver.wait(until.elementLocated(By.xpath(xpath)), timeout);
 }
@@ -37,7 +38,7 @@ export async function waitForElementToDissapear(
 export async function clickElement(driver: WebDriver, xpath: string) {
   await waitForElement(driver, xpath);
   const element = await driver.findElement(By.xpath(xpath));
-  await driver.wait(until.elementIsVisible(element), 20000);
+  await driver.wait(until.elementIsVisible(element), timeOut);
   await sleep(1000);
   await element.click();
 }
