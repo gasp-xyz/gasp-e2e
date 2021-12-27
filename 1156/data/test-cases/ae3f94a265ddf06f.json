@@ -1,0 +1,111 @@
+{
+  "uid" : "ae3f94a265ddf06f",
+  "name" : "As a User I can not see hidden wallets in the modal",
+  "fullName" : "UI tests - Extension management.As a User I can not see hidden wallets in the modal",
+  "historyId" : "8d5a9ab04c304541e3710fd2828233d6",
+  "time" : {
+    "start" : 1640607565757,
+    "stop" : 1640607690407,
+    "duration" : 124650
+  },
+  "description" : "",
+  "descriptionHtml" : "",
+  "status" : "failed",
+  "statusMessage" : "Error: expect(received).toBeTruthy()\n                \n                Received: false",
+  "statusTrace" : "Error: expect(received).toBeTruthy()\n                \n                Received: false\n                    at Object.<anonymous> (/home/runner/work/mangata-e2e/mangata-e2e/test/ui/ui-main.extensions.test.ts:154:22)\n                    at runMicrotasks (<anonymous>)\n                    at processTicksAndRejections (node:internal/process/task_queues:96:5)",
+  "flaky" : false,
+  "newFailed" : false,
+  "beforeStages" : [ ],
+  "testStage" : {
+    "status" : "failed",
+    "statusMessage" : "Error: expect(received).toBeTruthy()\n                \n                Received: false",
+    "statusTrace" : "Error: expect(received).toBeTruthy()\n                \n                Received: false\n                    at Object.<anonymous> (/home/runner/work/mangata-e2e/mangata-e2e/test/ui/ui-main.extensions.test.ts:154:22)\n                    at runMicrotasks (<anonymous>)\n                    at processTicksAndRejections (node:internal/process/task_queues:96:5)",
+    "steps" : [ ],
+    "attachments" : [ {
+      "uid" : "f4d53ac28c1e0441",
+      "name" : "Screeenshot",
+      "source" : "f4d53ac28c1e0441.png",
+      "type" : "image/png",
+      "size" : 68753
+    } ],
+    "parameters" : [ ],
+    "stepsCount" : 0,
+    "attachmentsCount" : 1,
+    "shouldDisplayMessage" : true,
+    "hasContent" : true
+  },
+  "afterStages" : [ ],
+  "labels" : [ {
+    "name" : "suite",
+    "value" : "UI tests - Extension management"
+  }, {
+    "name" : "testClass",
+    "value" : "UI tests - Extension management"
+  }, {
+    "name" : "testMethod",
+    "value" : "As a User I can not see hidden wallets in the modal"
+  }, {
+    "name" : "package",
+    "value" : "UI tests - Extension management"
+  }, {
+    "name" : "resultFormat",
+    "value" : "allure1"
+  } ],
+  "parameters" : [ ],
+  "links" : [ ],
+  "hidden" : false,
+  "retry" : false,
+  "extra" : {
+    "severity" : "normal",
+    "retries" : [ ],
+    "categories" : [ {
+      "name" : "Product defects",
+      "matchedStatuses" : [ ],
+      "flaky" : false
+    } ],
+    "history" : {
+      "statistic" : {
+        "failed" : 4,
+        "broken" : 0,
+        "skipped" : 0,
+        "passed" : 0,
+        "unknown" : 0,
+        "total" : 4
+      },
+      "items" : [ {
+        "uid" : "695ddf4857f0ad5d",
+        "reportUrl" : "https://mangata-finance.github.io/mangata-e2e/1139//#testresult/695ddf4857f0ad5d",
+        "status" : "failed",
+        "statusDetails" : "thrown: Event {\n                  \"isTrusted\": true,\n                }",
+        "time" : {
+          "start" : 1640264316022,
+          "stop" : 1640264316420,
+          "duration" : 398
+        }
+      }, {
+        "uid" : "279a4bd3f6539691",
+        "reportUrl" : "https://mangata-finance.github.io/mangata-e2e/1138//#testresult/279a4bd3f6539691",
+        "status" : "failed",
+        "statusDetails" : "thrown: Event {\n                  \"isTrusted\": true,\n                }",
+        "time" : {
+          "start" : 1640249438793,
+          "stop" : 1640249439748,
+          "duration" : 955
+        }
+      }, {
+        "uid" : "35b1a9af0a36c864",
+        "reportUrl" : "https://mangata-finance.github.io/mangata-e2e/1129//#testresult/35b1a9af0a36c864",
+        "status" : "failed",
+        "statusDetails" : "NoSuchSessionError: session timed out or not found",
+        "time" : {
+          "start" : 1640104712575,
+          "stop" : 1640104712581,
+          "duration" : 6
+        }
+      } ]
+    },
+    "tags" : [ ]
+  },
+  "source" : "ae3f94a265ddf06f.json",
+  "parameterValues" : [ ]
+}
