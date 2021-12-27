@@ -1,0 +1,252 @@
+{
+  "uid" : "4b4757e66a1912dae1a509f688f20b0f",
+  "children" : [ {
+    "name" : "Product defects",
+    "children" : [ {
+      "name" : "Error: WebSocket is not connected",
+      "children" : [ {
+        "name" : "When tx front - fails, User gets notified",
+        "uid" : "78652f7379f79b73",
+        "parentUid" : "d87cc0f26d462c8160f75c645ea55e17",
+        "status" : "failed",
+        "time" : {
+          "start" : 1640569590448,
+          "stop" : 1640569650241,
+          "duration" : 59793
+        },
+        "flaky" : false,
+        "newFailed" : false,
+        "parameters" : [ ]
+      }, {
+        "name" : "When tx extrinsic - fails, User gets notified",
+        "uid" : "f1d29f26a135fb24",
+        "parentUid" : "d87cc0f26d462c8160f75c645ea55e17",
+        "status" : "failed",
+        "time" : {
+          "start" : 1640569650242,
+          "stop" : 1640569710865,
+          "duration" : 60623
+        },
+        "flaky" : false,
+        "newFailed" : false,
+        "parameters" : [ ]
+      }, {
+        "name" : "When user cancel a TX, User gets notified",
+        "uid" : "9bf90204b56def20",
+        "parentUid" : "d87cc0f26d462c8160f75c645ea55e17",
+        "status" : "failed",
+        "time" : {
+          "start" : 1640569710866,
+          "stop" : 1640569770758,
+          "duration" : 59892
+        },
+        "flaky" : false,
+        "newFailed" : false,
+        "parameters" : [ ]
+      } ],
+      "uid" : "d87cc0f26d462c8160f75c645ea55e17"
+    }, {
+      "name" : "Error: expect(received).toBeTruthy()\n                \n                Received: false",
+      "children" : [ {
+        "name" : "As a User I can mint in more than one pool [ MGA - mETH ] [ MGA - newTokn ] and get invested values",
+        "uid" : "717bf5f398b641a4",
+        "parentUid" : "ffcd8928d6543ed53c85f4784defae24",
+        "status" : "failed",
+        "time" : {
+          "start" : 1640570240562,
+          "stop" : 1640570427617,
+          "duration" : 187055
+        },
+        "flaky" : false,
+        "newFailed" : false,
+        "parameters" : [ ]
+      }, {
+        "name" : "As a User I can create a pool",
+        "uid" : "f1b53ca68e187b1e",
+        "parentUid" : "ffcd8928d6543ed53c85f4784defae24",
+        "status" : "failed",
+        "time" : {
+          "start" : 1640572105983,
+          "stop" : 1640572166506,
+          "duration" : 60523
+        },
+        "flaky" : false,
+        "newFailed" : false,
+        "parameters" : [ ]
+      } ],
+      "uid" : "ffcd8928d6543ed53c85f4784defae24"
+    }, {
+      "name" : "TimeoutError: Waiting for element to be located By(xpath, //*[@data-testid='assetSelectModal-asset-kETH'])\n                Wait timed out after 30002ms",
+      "children" : [ {
+        "name" : "As a User I can deposit ETH from Meta extension",
+        "uid" : "f8b2b2c9925d3650",
+        "parentUid" : "3484616d23a6db88168a790c6c9a64a2",
+        "status" : "failed",
+        "time" : {
+          "start" : 1640570690253,
+          "stop" : 1640570819761,
+          "duration" : 129508
+        },
+        "flaky" : false,
+        "newFailed" : false,
+        "parameters" : [ ]
+      } ],
+      "uid" : "3484616d23a6db88168a790c6c9a64a2"
+    }, {
+      "name" : "TimeoutError: Waiting for element to be located By(xpath, //input[@placeholder='Paste Secret Recovery Phrase from clipboard'])\n                Wait timed out after 30001ms",
+      "children" : [ {
+        "name" : "As a User I can Withdraw ETH from Meta extension",
+        "uid" : "994241d953d2227f",
+        "parentUid" : "25cf74eb870b93ccd3154092b73b6217",
+        "status" : "failed",
+        "time" : {
+          "start" : 1640570819768,
+          "stop" : 1640570851230,
+          "duration" : 31462
+        },
+        "flaky" : false,
+        "newFailed" : false,
+        "parameters" : [ ]
+      } ],
+      "uid" : "25cf74eb870b93ccd3154092b73b6217"
+    }, {
+      "name" : "Error: Trade btn is not enabled!",
+      "children" : [ {
+        "name" : "As a User I can Swap All MGA tokens -> newToken",
+        "uid" : "1c672311cd2c8a65",
+        "parentUid" : "ef1c87a10cfcc23c8a9c5471f2db012a",
+        "status" : "failed",
+        "time" : {
+          "start" : 1640570852803,
+          "stop" : 1640571017160,
+          "duration" : 164357
+        },
+        "flaky" : false,
+        "newFailed" : false,
+        "parameters" : [ ]
+      } ],
+      "uid" : "ef1c87a10cfcc23c8a9c5471f2db012a"
+    }, {
+      "name" : "Error: Provide btn is not enabled!",
+      "children" : [ {
+        "name" : "As a User I can mint All tokens newToken - newToken2",
+        "uid" : "8e2337ce7986a3ca",
+        "parentUid" : "89d88dbfdb1a9ca9f14266fdb5c6f4ea",
+        "status" : "failed",
+        "time" : {
+          "start" : 1640571017163,
+          "stop" : 1640571208221,
+          "duration" : 191058
+        },
+        "flaky" : false,
+        "newFailed" : false,
+        "parameters" : [ ]
+      } ],
+      "uid" : "89d88dbfdb1a9ca9f14266fdb5c6f4ea"
+    }, {
+      "name" : "TimeoutError: Waiting for element to be located By(xpath, //*[@data-testid='poolsOverview-item-m1742-m1741'])\n                Wait timed out after 30002ms",
+      "children" : [ {
+        "name" : "As a User I get the right values for Pool removal P[2499999999999999999, 5000000000000000000] - I-> 2 -Expected - 0.049 , 0.100",
+        "uid" : "9cfcc6b83bb2d031",
+        "parentUid" : "80d15a9fb96723c3e71d527fb957acb9",
+        "status" : "failed",
+        "time" : {
+          "start" : 1640571289811,
+          "stop" : 1640571428400,
+          "duration" : 138589
+        },
+        "flaky" : true,
+        "newFailed" : false,
+        "parameters" : [ ]
+      } ],
+      "uid" : "80d15a9fb96723c3e71d527fb957acb9"
+    }, {
+      "name" : "TimeoutError: Waiting for element to be located By(xpath, //*[@data-testid='poolsOverview-item-m1745-m1744'])\n                Wait timed out after 30002ms",
+      "children" : [ {
+        "name" : "As a User I get the right values for Pool removal P[2500000000000000000, 5000000000000000000] - I-> 1 -Expected - 0.025 , 0.05",
+        "uid" : "9a65181fcc8dc560",
+        "parentUid" : "1e27f93626555e8bf70f7e6a75ab488f",
+        "status" : "failed",
+        "time" : {
+          "start" : 1640571428401,
+          "stop" : 1640571565760,
+          "duration" : 137359
+        },
+        "flaky" : true,
+        "newFailed" : false,
+        "parameters" : [ ]
+      } ],
+      "uid" : "1e27f93626555e8bf70f7e6a75ab488f"
+    }, {
+      "name" : "Error: expect(received).toBe(expected) // Object.is equality\n                \n                Expected: NaN\n                Received: 0.000002",
+      "children" : [ {
+        "name" : "As a User I get the right values for Pool investment P[5000000000000000000, 100] - I-> 100000000000 -Expected - 0.000002",
+        "uid" : "41b98db9f3dfc276",
+        "parentUid" : "43c47b8567647f5dbda80602c288ac6e",
+        "status" : "failed",
+        "time" : {
+          "start" : 1640571644374,
+          "stop" : 1640571760968,
+          "duration" : 116594
+        },
+        "flaky" : true,
+        "newFailed" : false,
+        "parameters" : [ ]
+      } ],
+      "uid" : "43c47b8567647f5dbda80602c288ac6e"
+    }, {
+      "name" : "Error: expect(received).toBe(expected) // Object.is equality\n                \n                Expected: 0\n                Received: 0.123",
+      "children" : [ {
+        "name" : "As a User I get the right values for Pool investment P[5000000000000000000, 5000000000000000000] - I-> 0.123 -Expected - 0.123",
+        "uid" : "4ea63cede6d71fe",
+        "parentUid" : "f29a8f680f20c50723d0b9cda7bc8a9a",
+        "status" : "failed",
+        "time" : {
+          "start" : 1640571760969,
+          "stop" : 1640571874790,
+          "duration" : 113821
+        },
+        "flaky" : true,
+        "newFailed" : false,
+        "parameters" : [ ]
+      } ],
+      "uid" : "f29a8f680f20c50723d0b9cda7bc8a9a"
+    }, {
+      "name" : "Error: expect(received).toBe(expected) // Object.is equality\n                \n                Expected: 0\n                Received: 0.2",
+      "children" : [ {
+        "name" : "As a User I get the right values for Pool investment P[2500000000000000000, 5000000000000000000] - I-> 0.100 -Expected - 0.200",
+        "uid" : "98471bdeaee9ca8b",
+        "parentUid" : "ba03fa85ce9e9313b0f8fd45d36a48e7",
+        "status" : "failed",
+        "time" : {
+          "start" : 1640571874790,
+          "stop" : 1640571988510,
+          "duration" : 113720
+        },
+        "flaky" : true,
+        "newFailed" : false,
+        "parameters" : [ ]
+      } ],
+      "uid" : "ba03fa85ce9e9313b0f8fd45d36a48e7"
+    }, {
+      "name" : "TimeoutError: Waiting for element to be located By(xpath, //*[@data-testid='wallet-asset-MGA'])\n                Wait timed out after 300000ms",
+      "children" : [ {
+        "name" : "As a User I can get test tokens from the faucet",
+        "uid" : "98a94000cf73e1ae",
+        "parentUid" : "810d7a6843bb8e9c6205b97f9eb9b724",
+        "status" : "failed",
+        "time" : {
+          "start" : 1640572170241,
+          "stop" : 1640572549334,
+          "duration" : 379093
+        },
+        "flaky" : false,
+        "newFailed" : false,
+        "parameters" : [ ]
+      } ],
+      "uid" : "810d7a6843bb8e9c6205b97f9eb9b724"
+    } ],
+    "uid" : "8fb3a91ba5aaf9de24cc8a92edc82b5d"
+  } ],
+  "name" : "categories"
+}
