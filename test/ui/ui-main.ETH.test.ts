@@ -21,7 +21,7 @@ import {UserFactory, Users} from "../../utils/Framework/User/UserFactory";
 import {Node} from "../../utils/Framework/Node/Node";
 import {MetamaskUser} from "../../utils/Framework/User/MetamaskUser";
 
-jest.setTimeout(FIVE_MIN);
+jest.setTimeout(FIVE_MIN * 2);
 jest.spyOn(console, "log").mockImplementation(jest.fn());
 let driver: WebDriver;
 
