@@ -1,5 +1,5 @@
 import {By, WebDriver} from "selenium-webdriver";
-import {waitNewBlock} from "../../eventListeners";
+import {waitForNBlocks} from "../../utils";
 import {
   buildDataTestIdXpath,
   clickElement,
@@ -30,9 +30,11 @@ export class Pool {
     buildDataTestIdXpath(DIV_POOL_TOKEN2) + "//input";
 
   private btnToken1MaxLocator =
-    buildDataTestIdXpath(DIV_POOL_TOKEN1) + "//button[contains(text(),'Max')]";
+    buildDataTestIdXpath(DIV_POOL_TOKEN1) +
+    "//button[span[contains(text(),'Max')]]";
   private btnToken2MaxLocator =
-    buildDataTestIdXpath(DIV_POOL_TOKEN2) + "//button[contains(text(),'Max')]";
+    buildDataTestIdXpath(DIV_POOL_TOKEN2) +
+    "//button[span[contains(text(),'Max')]]";
 
   async togglePool() {
     const selector = buildDataTestIdXpath(TAB_POOL_TEST_ID);
@@ -54,7 +56,7 @@ export class Pool {
   async provideOrCreatePool() {
     const tradeBtn = buildDataTestIdXpath(BTN_POOL_PROVIDE);
     await waitForElement(this.driver, tradeBtn);
-    await waitNewBlock();
+    await waitForNBlocks(2);
     const enabled = await (
       await this.driver.findElement(By.xpath(tradeBtn))
     ).isEnabled();
