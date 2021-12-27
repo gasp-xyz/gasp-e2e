@@ -193,8 +193,8 @@ export async function selectAssetFromModalList(
 
 export function uiStringToBN(stringValue: string) {
   if (stringValue.includes(".")) {
-    const partInt = stringValue.split(".")[0];
-    let partDec = stringValue.split(".")[1];
+    const partInt = stringValue.split(".")[0].trim();
+    let partDec = stringValue.split(".")[1].trim();
     //multiply the part int*10¹⁸
     const exp = new BN(10).pow(new BN(18));
     const part1 = new BN(partInt).mul(exp);
