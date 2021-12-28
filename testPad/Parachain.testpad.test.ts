@@ -45,7 +45,7 @@ describe("staking - testpad", () => {
   test.each([user])("xyk-pallet: Reserve pair", async (bondAmount) => {
     const wsUrl = "ws://127.0.0.1:9944";
     const paraId = 2000;
-    const pathToFiles = "../mangata-node/";
+    const pathToFiles = "/home/goncer/runner/mangata-node/";
     keyring = new Keyring({type: "sr25519"});
     sudo = new User(keyring, sudoUserName);
     testUser1 = new User(keyring, user);
@@ -78,9 +78,11 @@ describe("staking - testpad", () => {
     );
     expect(nextParaIdBefore.lt(requestedNextParaIdAfter)).toBeTruthy();
     const genesis = fs
-      .readFileSync(pathToFiles + "para-2000-genesis")
+      .readFileSync(pathToFiles + "para-2000-genesis_mangata_dev_v4")
       .toString();
-    const wasm = fs.readFileSync(pathToFiles + "para-2000-wasm").toString();
+    const wasm = fs
+      .readFileSync(pathToFiles + "para-2000-wasm_mangata_dev_v4")
+      .toString();
 
     const scheduleParaInit = api.tx.parasSudoWrapper.sudoScheduleParaInitialize(
       new BN(paraId),
