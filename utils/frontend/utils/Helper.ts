@@ -128,11 +128,11 @@ export async function addExtraLogs(driver: WebDriver, testName = "") {
   const reporter = (globalThis as any).reporter as Reporter;
   reporter.addAttachment("Screeenshot", new Buffer(img, "base64"), "image/png");
 }
-export async function renameExtraLogs(testName: string, result = "failed") {
+export async function renameExtraLogs(testName: string, result = "FAILED_") {
   fs.readdirSync(outputPath).forEach((file) => {
     if (file.includes(testName)) {
-      testLog.getLog().info(`Renaming ${file} to FAILED_${file}`);
-      fs.renameSync(`${outputPath}/${file}`, `${outputPath}/FAILED_${file}`);
+      testLog.getLog().info(`Renaming ${file} to ${result}${file}`);
+      fs.renameSync(`${outputPath}/${file}`, `${outputPath}/${result}${file}`);
     }
   });
 }

@@ -216,7 +216,7 @@ export class Sidebar {
     await modal.clickContinue();
     await modal.confirmAndSign();
   }
-  async waitForTokenToDissapear(assetName: string, timeout = FIVE_MIN) {
+  async waitForTokenToDissapear(assetName: string) {
     const xpath = buildDataTestIdXpath(
       LBL_TOKEN_NAME.replace("tokenName", assetName)
     );

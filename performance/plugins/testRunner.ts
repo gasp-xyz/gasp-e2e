@@ -84,6 +84,7 @@ export async function runTransactions(
             }
           })
           .catch((err: any) => {
+            testLog.getLog().warn(err);
             return -1;
           });
       });

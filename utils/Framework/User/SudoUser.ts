@@ -11,7 +11,7 @@ import {getEnvironmentRequiredVars} from "../../utils";
 export class SudoUser extends BaseUser {
   node: Node;
 
-  constructor(keyring: Keyring, name: string, json: any, node: Node) {
+  constructor(keyring: Keyring, json: any, node: Node) {
     const {sudo: sudoName} = getEnvironmentRequiredVars();
     super(keyring, sudoName, json);
     this.node = node;
@@ -34,6 +34,4 @@ export class SudoUser extends BaseUser {
 
     return new Token(assetId, amount);
   }
-
-  async fundUser(user: BaseUser, token: Token, amount: BN): Promise<void> {}
 }

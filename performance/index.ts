@@ -79,7 +79,8 @@ function verifyArgs(params: TestParams, test: string) {
     params.testCase == null ||
     params.duration == null ||
     params.nodes == null ||
-    params.totalTx == null
+    params.totalTx == null ||
+    test == null
   ) {
     throw new Error(`You must pass in the following arugments:
         threadNumber: number

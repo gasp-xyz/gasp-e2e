@@ -12,7 +12,6 @@ import {Keyring} from "mangata-sdk/node_modules/@polkadot/api";
 import {AssetWallet, User} from "../../utils/User";
 import {validateAssetsWithValues} from "../../utils/validators";
 import {Assets} from "../../utils/Assets";
-import {formatBalance} from "mangata-sdk/node_modules/@polkadot/util/format";
 
 import {
   fromBNToUnitString,

@@ -30,7 +30,7 @@
     "truffle": "^5.4.7",
     "truffle-hdwallet-provider": "^1.0.17",
     "ts-node": "^10.4.0",
-    "typescript": "3",
+    "typescript": "3.7.3",
     "web3": "^1.5.3",
     "winston": "^3.3.3",
     "yarn": "^1.22.10"
@@ -47,6 +47,7 @@
     "test-cluster-healthcheck": "rm nonce.db; rm sudo.lock; jest --verbose --group=cluster-healthcheck",
     "test-sequential": "rm nonce.db ; rm sudo.lock; jest --verbose --runInBand --group=sequential",
     "test-sequential-e2e": "rm nonce.db ; rm sudo.lock; jest --verbose --runInBand --ci --group=critical ",
+    "test-sequential-accuracy": "rm nonce.db ; rm sudo.lock; jest --verbose --runInBand --ci --group=accuracy ",
     "test-ci": "rm nonce.db ; rm sudo.lock; jest --runInBand --verbose --ci --group=ci ",
     "test-ui": "rm nonce.db ; rm sudo.lock; jest --verbose --runInBand --ci --group=ui ",
     "test-sdk": "rm nonce.db ; rm sudo.lock; jest --verbose --runInBand --ci --group=sdk ",
@@ -54,7 +55,7 @@
     "test-governance": "rm nonce.db ; rm sudo.lock; jest --verbose --runInBand --ci --group=governance",
     "test-governance-candidacy": "rm nonce.db ; rm sudo.lock; jest --verbose --runInBand --ci --group=governance-candidacy",
     "test-governance-voting": "rm nonce.db ; rm sudo.lock; jest --verbose --runInBand --ci --group=governance-voting",
-    "tsc-lint": "tsc -noemit -p tsconfig.json",
+    "tsc-lint": "tsc  --project tsconfig.json --noEmit",
     "eslint": "node_modules/.bin/eslint --max-warnings 0 . --ext .ts",
     "xoshiro": "^2.0.3"
   },

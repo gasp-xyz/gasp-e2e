@@ -34,8 +34,8 @@ async function createPings(
     number,
     {mgaSdk: Mangata; users: {nonce: BN; keyPair: KeyringPair}[]}
   >,
-  nodeThread: number,
-  userNo: number
+  nodeThread: number
+  //  userNo: number
 ) {
   const mgaValue = mgaNodeandUsers.get(nodeThread)!;
   const api = await mgaNodeandUsers.get(nodeThread)?.mgaSdk.getApi();

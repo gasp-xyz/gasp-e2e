@@ -22,9 +22,11 @@ export class performanceTestItem implements TestItem {
   >();
 
   async arrange(numberOfThreads: number, nodes: string[]): Promise<boolean> {
+    testLog.getLog().info("Arrange" + numberOfThreads + nodes);
     return true;
   }
   async act(testParams: TestParams): Promise<boolean> {
+    testLog.getLog().info("Act" + testParams);
     return true;
   }
   async expect(): Promise<boolean> {
@@ -49,7 +51,7 @@ export class performanceTestItem implements TestItem {
             return (
               resultAct &&
               (await this.expect().then(async (resultExpect) => {
-                testLog.getLog().info("Done Expect");
+                testLog.getLog().info("Done Expect" + resultExpect);
                 return (
                   resultAct &&
                   (await this.teardown(testparams.nodes).then(
