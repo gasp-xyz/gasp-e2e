@@ -31,6 +31,9 @@ const BTN_REMOVE_LIQUIDITY = `poolDetail-removeBtn`;
 const LBL_TOKEN_NAME = "wallet-asset-tokenName";
 //const DIV_ASSETS_ITEM_VALUE = `//div[@class = 'AssetBox' and //*[text()='tokenName']]/*[@class='value']`;
 const DIV_ASSETS_ITEM_VALUE = `//div[@class = 'AssetBox' and contains(@data-testid,'tokenName')]/*[@class='value']`;
+const POLK_DIV_USER_NAME = `//div[@data-testid='connect-address']//div[@data-testid='undefined-trigger']/div`;
+const BTN_CHANGE_PLK = `connect-changePolkadotAccount`;
+const CLOSE_MODAL_BTN_XPATH = `//*[contains(@class,'AccountsModal__title--icon')]`;
 
 export class Sidebar {
   driver: WebDriver;
@@ -221,6 +224,34 @@ export class Sidebar {
       LBL_TOKEN_NAME.replace("tokenName", assetName)
     );
     await waitForElementToDissapear(this.driver, xpath);
+  }
+  async getUserName() {
+    await waitForElement(this.driver, POLK_DIV_USER_NAME);
+    const userName = await getText(this.driver, POLK_DIV_USER_NAME);
+    return userName;
+  }
+  async switchAccountTo(userAddress: string) {
+    //TODO: write the locatos here
+    const listItemWithAddress = `//*[@data-testid='user-address-${userAddress}']`;
+    const btnxpath = buildDataTestIdXpath(BTN_CHANGE_PLK);
+    await clickElement(this.driver, btnxpath);
+    await clickElement(this.driver, listItemWithAddress);
+  }
+  async getAvailableAccountsFromChangeModal(): Promise<string[]> {
+    //user-address-5GFC5MEG6N3RKMG4sg42MPrvHWcTbEdtkXKB41nTkm3E7fNP
+    const AllListItemsFromModal = `//*[contains(@data-testid, "user-address-")]`;
+    const btnxpath = buildDataTestIdXpath(BTN_CHANGE_PLK);
+    await clickElement(this.driver, btnxpath);
+    const available = await this.driver.findElements(
+      By.xpath(AllListItemsFromModal)
+    );
+    const items = [];
+    for (let index = 0; index < available.length; index++) {
+      const element = available[index];
+      items.push(await element.getText());
+    }
+    await clickElement(this.driver, CLOSE_MODAL_BTN_XPATH);
+    return items;
   }
   async copyAssetValue(assetName: string) {
     const xpath = DIV_ASSETS_ITEM_VALUE.replace("tokenName", assetName);
