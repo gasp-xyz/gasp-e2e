@@ -2,52 +2,52 @@
   "uid" : "b1a8273437954620fa374b796ffaacdd",
   "children" : [ {
     "name" : "Nodes are up and syncing",
-    "uid" : "843366190cb5a456",
+    "uid" : "9041bd93b59aa771",
     "parentUid" : "b1a8273437954620fa374b796ffaacdd",
     "status" : "passed",
     "time" : {
-      "start" : 1638590932176,
-      "stop" : 1638590958159,
-      "duration" : 25983
+      "start" : 1640664422276,
+      "stop" : 1640664450136,
+      "duration" : 27860
     },
     "flaky" : false,
     "newFailed" : false,
     "parameters" : [ ]
   }, {
     "name" : "Block numbers match across all nodes",
-    "uid" : "2c03fc8f23d607b0",
+    "uid" : "68f494c5dab5848b",
     "parentUid" : "b1a8273437954620fa374b796ffaacdd",
     "status" : "passed",
     "time" : {
-      "start" : 1638590958159,
-      "stop" : 1638590988193,
-      "duration" : 30034
+      "start" : 1640664450136,
+      "stop" : 1640664480223,
+      "duration" : 30087
     },
     "flaky" : false,
     "newFailed" : false,
     "parameters" : [ ]
   }, {
     "name" : "Block merkle hash matches across all nodes",
-    "uid" : "80e7e91c36b1c08d",
+    "uid" : "f9e9262eec03f6ef",
     "parentUid" : "b1a8273437954620fa374b796ffaacdd",
     "status" : "passed",
     "time" : {
-      "start" : 1638590988193,
-      "stop" : 1638591018166,
-      "duration" : 29973
+      "start" : 1640664480223,
+      "stop" : 1640664510140,
+      "duration" : 29917
     },
     "flaky" : false,
     "newFailed" : false,
     "parameters" : [ ]
   }, {
     "name" : "Cluster does not fork",
-    "uid" : "3a73d1ddedc50184",
+    "uid" : "806996e9c259132f",
     "parentUid" : "b1a8273437954620fa374b796ffaacdd",
     "status" : "passed",
     "time" : {
-      "start" : 1638591018166,
-      "stop" : 1638591048158,
-      "duration" : 29992
+      "start" : 1640664510140,
+      "stop" : 1640664540135,
+      "duration" : 29995
     },
     "flaky" : false,
     "newFailed" : false,
