@@ -1,0 +1,103 @@
+{
+  "uid" : "99dd19edff38e46e",
+  "name" : "As a User I can switch between polkadot wallets",
+  "fullName" : "UI tests - Extension management.As a User I can switch between polkadot wallets",
+  "historyId" : "d1408037d6d86bd1ec748115bdf919ad",
+  "time" : {
+    "start" : 1640742564717,
+    "stop" : 1640742564725,
+    "duration" : 8
+  },
+  "description" : "",
+  "descriptionHtml" : "",
+  "status" : "failed",
+  "statusMessage" : "NoSuchSessionError: session timed out or not found",
+  "statusTrace" : "NoSuchSessionError: session timed out or not found\n                    at Object.throwDecodedError (/home/runner/work/mangata-e2e/mangata-e2e/node_modules/selenium-webdriver/lib/error.js:514:15)\n                    at parseHttpResponse (/home/runner/work/mangata-e2e/mangata-e2e/node_modules/selenium-webdriver/lib/http.js:519:13)\n                    at /home/runner/work/mangata-e2e/mangata-e2e/node_modules/selenium-webdriver/lib/http.js:441:30\n                    at runMicrotasks (<anonymous>)\n                    at processTicksAndRejections (node:internal/process/task_queues:96:5)\n                From: Task: WebDriver.getAllWindowHandles()\n                    at mixin.schedule (/home/runner/work/mangata-e2e/mangata-e2e/node_modules/selenium-webdriver/lib/webdriver.js:807:17)\n                    at mixin.getAllWindowHandles (/home/runner/work/mangata-e2e/mangata-e2e/node_modules/selenium-webdriver/lib/webdriver.js:968:17)\n                    at leaveOnlyOneTab (/home/runner/work/mangata-e2e/mangata-e2e/utils/frontend/utils/Helper.ts:104:40)\n                    at runMicrotasks (<anonymous>)\n                    at processTicksAndRejections (node:internal/process/task_queues:96:5)\n                    at setupAllExtensions (/home/runner/work/mangata-e2e/mangata-e2e/utils/frontend/utils/Helper.ts:80:3)\n                    at Object.<anonymous> (/home/runner/work/mangata-e2e/mangata-e2e/test/ui/ui-main.extensions.test.ts:78:7)",
+  "flaky" : false,
+  "newFailed" : false,
+  "beforeStages" : [ ],
+  "afterStages" : [ ],
+  "labels" : [ {
+    "name" : "suite",
+    "value" : "UI tests - Extension management"
+  }, {
+    "name" : "testClass",
+    "value" : "UI tests - Extension management"
+  }, {
+    "name" : "testMethod",
+    "value" : "As a User I can switch between polkadot wallets"
+  }, {
+    "name" : "package",
+    "value" : "UI tests - Extension management"
+  }, {
+    "name" : "resultFormat",
+    "value" : "allure1"
+  } ],
+  "parameters" : [ ],
+  "links" : [ ],
+  "hidden" : false,
+  "retry" : false,
+  "extra" : {
+    "severity" : "normal",
+    "retries" : [ ],
+    "categories" : [ {
+      "name" : "Product defects",
+      "matchedStatuses" : [ ],
+      "flaky" : false
+    } ],
+    "history" : {
+      "statistic" : {
+        "failed" : 5,
+        "broken" : 0,
+        "skipped" : 0,
+        "passed" : 0,
+        "unknown" : 0,
+        "total" : 5
+      },
+      "items" : [ {
+        "uid" : "24a421f4ebc5b6f8",
+        "reportUrl" : "https://mangata-finance.github.io/mangata-e2e/1156//#testresult/24a421f4ebc5b6f8",
+        "status" : "failed",
+        "statusDetails" : "NoSuchSessionError: Caught error after test environment was torn down\n                \n                session timed out or not found",
+        "time" : {
+          "start" : 1640607496184,
+          "stop" : 1640607496245,
+          "duration" : 61
+        }
+      }, {
+        "uid" : "c62f3f0c13103ad3",
+        "reportUrl" : "https://mangata-finance.github.io/mangata-e2e/1139//#testresult/c62f3f0c13103ad3",
+        "status" : "failed",
+        "statusDetails" : "thrown: Event {\n                  \"isTrusted\": true,\n                }",
+        "time" : {
+          "start" : 1640264315204,
+          "stop" : 1640264315614,
+          "duration" : 410
+        }
+      }, {
+        "uid" : "ad39a01c7dbb701",
+        "reportUrl" : "https://mangata-finance.github.io/mangata-e2e/1138//#testresult/ad39a01c7dbb701",
+        "status" : "failed",
+        "statusDetails" : "thrown: Event {\n                  \"isTrusted\": true,\n                }",
+        "time" : {
+          "start" : 1640249437331,
+          "stop" : 1640249437831,
+          "duration" : 500
+        }
+      }, {
+        "uid" : "33d05d70209fa25e",
+        "reportUrl" : "https://mangata-finance.github.io/mangata-e2e/1129//#testresult/33d05d70209fa25e",
+        "status" : "failed",
+        "statusDetails" : "NoSuchSessionError: session timed out or not found",
+        "time" : {
+          "start" : 1640104712561,
+          "stop" : 1640104712570,
+          "duration" : 9
+        }
+      } ]
+    },
+    "tags" : [ ]
+  },
+  "source" : "99dd19edff38e46e.json",
+  "parameterValues" : [ ]
+}
