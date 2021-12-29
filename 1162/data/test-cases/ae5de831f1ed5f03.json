@@ -1,0 +1,119 @@
+{
+  "uid" : "ae5de831f1ed5f03",
+  "name" : "Token amounts are correectly propagated to the node",
+  "fullName" : "UI tests - A user swapping tokens:.Token amounts are correectly propagated to the node",
+  "historyId" : "b8ee99851734c83991c748be83f79dd9",
+  "time" : {
+    "start" : 1640744870145,
+    "stop" : 1640745032621,
+    "duration" : 162476
+  },
+  "description" : "",
+  "descriptionHtml" : "",
+  "status" : "failed",
+  "statusMessage" : "InvalidElementStateError: invalid element state: Element is not currently interactable and may not be manipulated\n                  (Session info: chrome=94.0.4606.61)\n                  (Driver info: chromedriver=94.0.4606.61 (418b78f5838ed0b1c69bb4e51ea0252171854915-refs/branch-heads/4606@{#1204}),platform=Linux 5.11.0-1022-azure x86_64)",
+  "statusTrace" : "InvalidElementStateError: invalid element state: Element is not currently interactable and may not be manipulated\n                  (Session info: chrome=94.0.4606.61)\n                  (Driver info: chromedriver=94.0.4606.61 (418b78f5838ed0b1c69bb4e51ea0252171854915-refs/branch-heads/4606@{#1204}),platform=Linux 5.11.0-1022-azure x86_64)\n                    at Object.checkLegacyResponse (/home/runner/work/mangata-e2e/mangata-e2e/node_modules/selenium-webdriver/lib/error.js:546:15)\n                    at parseHttpResponse (/home/runner/work/mangata-e2e/mangata-e2e/node_modules/selenium-webdriver/lib/http.js:509:13)\n                    at /home/runner/work/mangata-e2e/mangata-e2e/node_modules/selenium-webdriver/lib/http.js:441:30\n                    at runMicrotasks (<anonymous>)\n                    at processTicksAndRejections (node:internal/process/task_queues:96:5)\n                From: Task: WebElement.clear()\n                    at mixin.schedule (/home/runner/work/mangata-e2e/mangata-e2e/node_modules/selenium-webdriver/lib/webdriver.js:807:17)\n                    at WebElement.schedule_ (/home/runner/work/mangata-e2e/mangata-e2e/node_modules/selenium-webdriver/lib/webdriver.js:2010:25)\n                    at WebElement.clear (/home/runner/work/mangata-e2e/mangata-e2e/node_modules/selenium-webdriver/lib/webdriver.js:2351:17)\n                    at writeText (/home/runner/work/mangata-e2e/mangata-e2e/utils/frontend/utils/Helper.ts:52:60)\n                    at runMicrotasks (<anonymous>)\n                    at processTicksAndRejections (node:internal/process/task_queues:96:5)\n                    at Swap.addPayAssetAmount (/home/runner/work/mangata-e2e/mangata-e2e/utils/frontend/pages/Swap.ts:80:5)\n                    at Object.<anonymous> (/home/runner/work/mangata-e2e/mangata-e2e/test/ui/ui-swap.sentAmounts.test.ts:85:5)",
+  "flaky" : true,
+  "newFailed" : false,
+  "beforeStages" : [ ],
+  "testStage" : {
+    "status" : "failed",
+    "statusMessage" : "InvalidElementStateError: invalid element state: Element is not currently interactable and may not be manipulated\n                  (Session info: chrome=94.0.4606.61)\n                  (Driver info: chromedriver=94.0.4606.61 (418b78f5838ed0b1c69bb4e51ea0252171854915-refs/branch-heads/4606@{#1204}),platform=Linux 5.11.0-1022-azure x86_64)",
+    "statusTrace" : "InvalidElementStateError: invalid element state: Element is not currently interactable and may not be manipulated\n                  (Session info: chrome=94.0.4606.61)\n                  (Driver info: chromedriver=94.0.4606.61 (418b78f5838ed0b1c69bb4e51ea0252171854915-refs/branch-heads/4606@{#1204}),platform=Linux 5.11.0-1022-azure x86_64)\n                    at Object.checkLegacyResponse (/home/runner/work/mangata-e2e/mangata-e2e/node_modules/selenium-webdriver/lib/error.js:546:15)\n                    at parseHttpResponse (/home/runner/work/mangata-e2e/mangata-e2e/node_modules/selenium-webdriver/lib/http.js:509:13)\n                    at /home/runner/work/mangata-e2e/mangata-e2e/node_modules/selenium-webdriver/lib/http.js:441:30\n                    at runMicrotasks (<anonymous>)\n                    at processTicksAndRejections (node:internal/process/task_queues:96:5)\n                From: Task: WebElement.clear()\n                    at mixin.schedule (/home/runner/work/mangata-e2e/mangata-e2e/node_modules/selenium-webdriver/lib/webdriver.js:807:17)\n                    at WebElement.schedule_ (/home/runner/work/mangata-e2e/mangata-e2e/node_modules/selenium-webdriver/lib/webdriver.js:2010:25)\n                    at WebElement.clear (/home/runner/work/mangata-e2e/mangata-e2e/node_modules/selenium-webdriver/lib/webdriver.js:2351:17)\n                    at writeText (/home/runner/work/mangata-e2e/mangata-e2e/utils/frontend/utils/Helper.ts:52:60)\n                    at runMicrotasks (<anonymous>)\n                    at processTicksAndRejections (node:internal/process/task_queues:96:5)\n                    at Swap.addPayAssetAmount (/home/runner/work/mangata-e2e/mangata-e2e/utils/frontend/pages/Swap.ts:80:5)\n                    at Object.<anonymous> (/home/runner/work/mangata-e2e/mangata-e2e/test/ui/ui-swap.sentAmounts.test.ts:85:5)",
+    "steps" : [ ],
+    "attachments" : [ {
+      "uid" : "ef876262a1960357",
+      "name" : "Screeenshot",
+      "source" : "ef876262a1960357.png",
+      "type" : "image/png",
+      "size" : 82143
+    } ],
+    "parameters" : [ ],
+    "stepsCount" : 0,
+    "attachmentsCount" : 1,
+    "shouldDisplayMessage" : true,
+    "hasContent" : true
+  },
+  "afterStages" : [ ],
+  "labels" : [ {
+    "name" : "suite",
+    "value" : "UI tests - A user swapping tokens:"
+  }, {
+    "name" : "testClass",
+    "value" : "UI tests - A user swapping tokens:"
+  }, {
+    "name" : "testMethod",
+    "value" : "Token amounts are correectly propagated to the node"
+  }, {
+    "name" : "package",
+    "value" : "UI tests - A user swapping tokens:"
+  }, {
+    "name" : "resultFormat",
+    "value" : "allure1"
+  } ],
+  "parameters" : [ ],
+  "links" : [ ],
+  "hidden" : false,
+  "retry" : false,
+  "extra" : {
+    "severity" : "normal",
+    "retries" : [ ],
+    "categories" : [ {
+      "name" : "Product defects",
+      "matchedStatuses" : [ ],
+      "flaky" : false
+    } ],
+    "history" : {
+      "statistic" : {
+        "failed" : 3,
+        "broken" : 0,
+        "skipped" : 0,
+        "passed" : 2,
+        "unknown" : 0,
+        "total" : 5
+      },
+      "items" : [ {
+        "uid" : "a0b3c891789a0ac4",
+        "reportUrl" : "https://mangata-finance.github.io/mangata-e2e/1156//#testresult/a0b3c891789a0ac4",
+        "status" : "failed",
+        "statusDetails" : "InvalidElementStateError: invalid element state: Element is not currently interactable and may not be manipulated\n                  (Session info: chrome=94.0.4606.61)\n                  (Driver info: chromedriver=94.0.4606.61 (418b78f5838ed0b1c69bb4e51ea0252171854915-refs/branch-heads/4606@{#1204}),platform=Linux 5.11.0-1022-azure x86_64)",
+        "time" : {
+          "start" : 1640609812654,
+          "stop" : 1640610017160,
+          "duration" : 204506
+        }
+      }, {
+        "uid" : "84cf4fa679565f0e",
+        "reportUrl" : "https://mangata-finance.github.io/mangata-e2e/1139//#testresult/84cf4fa679565f0e",
+        "status" : "passed",
+        "time" : {
+          "start" : 1640265496818,
+          "stop" : 1640265706393,
+          "duration" : 209575
+        }
+      }, {
+        "uid" : "3563f40fe8c480ed",
+        "reportUrl" : "https://mangata-finance.github.io/mangata-e2e/1138//#testresult/3563f40fe8c480ed",
+        "status" : "failed",
+        "statusDetails" : "Error: Trade btn is not enabled!",
+        "time" : {
+          "start" : 1640250266941,
+          "stop" : 1640250408448,
+          "duration" : 141507
+        }
+      }, {
+        "uid" : "48115c5cf3e210c1",
+        "reportUrl" : "https://mangata-finance.github.io/mangata-e2e/1129//#testresult/48115c5cf3e210c1",
+        "status" : "passed",
+        "time" : {
+          "start" : 1640105453656,
+          "stop" : 1640105631946,
+          "duration" : 178290
+        }
+      } ]
+    },
+    "tags" : [ ]
+  },
+  "source" : "ae5de831f1ed5f03.json",
+  "parameterValues" : [ ]
+}
