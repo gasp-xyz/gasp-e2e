@@ -10,11 +10,7 @@ import BN from "bn.js";
 import {Keyring} from "mangata-sdk/node_modules/@polkadot/api";
 import {AssetWallet, User} from "../../utils/User";
 import {Assets} from "../../utils/Assets";
-import {
-  fromBNToUnitString,
-  fromStringToUnitString,
-  getEnvironmentRequiredVars,
-} from "../../utils/utils";
+import {getEnvironmentRequiredVars} from "../../utils/utils";
 import {ExtrinsicResult} from "../../utils/eventListeners";
 import {getEventResultFromMangataTx} from "../../utils/txHandler";
 
@@ -35,8 +31,8 @@ describe("xyk-rpc - calculate get_burn amount: OK", () => {
   const dictAssets = new Map<number, BN>();
 
   beforeAll(async () => {
-    const {sudo: sudoUserName} = getEnvironmentRequiredVars();
-    const keyring = new Keyring({type: "sr25519"});
+    const { sudo: sudoUserName } = getEnvironmentRequiredVars();
+    const keyring = new Keyring({ type: "sr25519" });
     const sudo = new User(keyring, sudoUserName);
     keyring.addPair(sudo.keyRingPair);
 
@@ -177,24 +173,22 @@ describe("xyk-rpc - calculate get_burn amount: RPC result matches with burn amou
     await sudo.refreshAmounts(AssetWallet.AFTER);
     const poolAfter = await getBalanceOfPool(firstAssetId, secondAssetId);
 
-    expect(fromStringToUnitString(burnAmount.firstAssetAmount)).toEqual(
-      fromBNToUnitString(poolBefore[0].sub(poolAfter[0]))
+    expect(new BN(burnAmount.firstAssetAmount)).bnEqual(
+      poolBefore[0].sub(poolAfter[0])
     );
-    expect(fromStringToUnitString(burnAmount.secondAssetAmount)).toEqual(
-      fromBNToUnitString(poolBefore[1].sub(poolAfter[1]))
+    expect(new BN(burnAmount.secondAssetAmount)).bnEqual(
+      poolBefore[1].sub(poolAfter[1])
     );
 
+    expect(sudo.getAsset(firstAssetId)?.amountAfter.free!).bnEqual(
+      new BN(burnAmount.firstAssetAmount)
+    );
     expect(
-      fromBNToUnitString(sudo.getAsset(firstAssetId)?.amountAfter.free!)
-    ).toEqual(fromStringToUnitString(burnAmount.firstAssetAmount));
-    expect(
-      fromBNToUnitString(
-        sudo
-          .getAsset(secondAssetId)
-          ?.amountAfter.free.sub(
-            sudo.getAsset(secondAssetId)?.amountBefore.free!
-          )!
-      )
-    ).toEqual(fromStringToUnitString(burnAmount.secondAssetAmount));
+      sudo
+        .getAsset(secondAssetId)
+        ?.amountAfter.free.sub(
+          sudo.getAsset(secondAssetId)?.amountBefore.free!
+        )!
+    ).bnEqual(new BN(burnAmount.secondAssetAmount));
   });
 });
