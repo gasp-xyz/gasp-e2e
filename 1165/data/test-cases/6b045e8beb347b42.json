@@ -1,0 +1,276 @@
+{
+  "uid" : "6b045e8beb347b42",
+  "name" : "As a User I get feedback when extensions are installed and correctly setup",
+  "fullName" : "UI tests - Extension management.As a User I get feedback when extensions are installed and correctly setup",
+  "historyId" : "7365b4e6dd98ca21f75fccaf5b1ca8dd",
+  "time" : {
+    "start" : 1640829063086,
+    "stop" : 1640829063687,
+    "duration" : 601
+  },
+  "description" : "",
+  "descriptionHtml" : "",
+  "status" : "failed",
+  "statusMessage" : "NoSuchSessionError: session timed out or not found",
+  "statusTrace" : "NoSuchSessionError: session timed out or not found\n                    at Object.throwDecodedError (/home/runner/work/mangata-e2e/mangata-e2e/node_modules/selenium-webdriver/lib/error.js:514:15)\n                    at parseHttpResponse (/home/runner/work/mangata-e2e/mangata-e2e/node_modules/selenium-webdriver/lib/http.js:519:13)\n                    at /home/runner/work/mangata-e2e/mangata-e2e/node_modules/selenium-webdriver/lib/http.js:441:30\n                    at runMicrotasks (<anonymous>)\n                    at processTicksAndRejections (node:internal/process/task_queues:96:5)\n                From: Task: WebDriver.findElements(By(xpath, //input[@placeholder='Paste Secret Recovery Phrase from clipboard']))\n                    at mixin.schedule (/home/runner/work/mangata-e2e/mangata-e2e/node_modules/selenium-webdriver/lib/webdriver.js:807:17)\n                    at mixin.findElements (/home/runner/work/mangata-e2e/mangata-e2e/node_modules/selenium-webdriver/lib/webdriver.js:1048:19)\n                    at /home/runner/work/mangata-e2e/mangata-e2e/node_modules/selenium-webdriver/lib/until.js:243:23\n                    at /home/runner/work/mangata-e2e/mangata-e2e/node_modules/selenium-webdriver/lib/webdriver.js:938:14\n                    at TaskQueue.execute_ (/home/runner/work/mangata-e2e/mangata-e2e/node_modules/selenium-webdriver/lib/promise.js:3084:14)\n                    at TaskQueue.executeNext_ (/home/runner/work/mangata-e2e/mangata-e2e/node_modules/selenium-webdriver/lib/promise.js:3067:27)\n                    at /home/runner/work/mangata-e2e/mangata-e2e/node_modules/selenium-webdriver/lib/promise.js:2974:25\n                    at /home/runner/work/mangata-e2e/mangata-e2e/node_modules/selenium-webdriver/lib/promise.js:668:7\n                From: Task: <anonymous>\n                    at pollCondition (/home/runner/work/mangata-e2e/mangata-e2e/node_modules/selenium-webdriver/lib/promise.js:2195:19)\n                    at Timeout.task [as _onTimeout] (/home/runner/work/mangata-e2e/mangata-e2e/node_modules/jsdom/lib/jsdom/browser/Window.js:516:19)\n                    at listOnTimeout (node:internal/timers:557:17)\n                    at processTimers (node:internal/timers:500:7)\n                From: Task: Waiting for element to be located By(xpath, //input[@placeholder='Paste Secret Recovery Phrase from clipboard'])\n                    at scheduleWait (/home/runner/work/mangata-e2e/mangata-e2e/node_modules/selenium-webdriver/lib/promise.js:2188:20)\n                    at ControlFlow.wait (/home/runner/work/mangata-e2e/mangata-e2e/node_modules/selenium-webdriver/lib/promise.js:2517:12)\n                    at mixin.wait (/home/runner/work/mangata-e2e/mangata-e2e/node_modules/selenium-webdriver/lib/webdriver.js:934:29)\n                    at waitForElement (/home/runner/work/mangata-e2e/mangata-e2e/utils/frontend/utils/Helper.ts:19:16)\n                    at MetaMask.setupAccount (/home/runner/work/mangata-e2e/mangata-e2e/utils/frontend/pages/MetaMask.ts:72:11)\n                    at runMicrotasks (<anonymous>)\n                    at processTicksAndRejections (node:internal/process/task_queues:96:5)\n                    at setupAllExtensions (/home/runner/work/mangata-e2e/mangata-e2e/utils/frontend/utils/Helper.ts:84:27)\n                    at Object.<anonymous> (/home/runner/work/mangata-e2e/mangata-e2e/test/ui/ui-main.extensions.test.ts:53:5)",
+  "flaky" : true,
+  "newFailed" : false,
+  "beforeStages" : [ ],
+  "testStage" : {
+    "status" : "failed",
+    "statusMessage" : "NoSuchSessionError: session timed out or not found",
+    "statusTrace" : "NoSuchSessionError: session timed out or not found\n                    at Object.throwDecodedError (/home/runner/work/mangata-e2e/mangata-e2e/node_modules/selenium-webdriver/lib/error.js:514:15)\n                    at parseHttpResponse (/home/runner/work/mangata-e2e/mangata-e2e/node_modules/selenium-webdriver/lib/http.js:519:13)\n                    at /home/runner/work/mangata-e2e/mangata-e2e/node_modules/selenium-webdriver/lib/http.js:441:30\n                    at runMicrotasks (<anonymous>)\n                    at processTicksAndRejections (node:internal/process/task_queues:96:5)\n                From: Task: WebDriver.findElements(By(xpath, //input[@placeholder='Paste Secret Recovery Phrase from clipboard']))\n                    at mixin.schedule (/home/runner/work/mangata-e2e/mangata-e2e/node_modules/selenium-webdriver/lib/webdriver.js:807:17)\n                    at mixin.findElements (/home/runner/work/mangata-e2e/mangata-e2e/node_modules/selenium-webdriver/lib/webdriver.js:1048:19)\n                    at /home/runner/work/mangata-e2e/mangata-e2e/node_modules/selenium-webdriver/lib/until.js:243:23\n                    at /home/runner/work/mangata-e2e/mangata-e2e/node_modules/selenium-webdriver/lib/webdriver.js:938:14\n                    at TaskQueue.execute_ (/home/runner/work/mangata-e2e/mangata-e2e/node_modules/selenium-webdriver/lib/promise.js:3084:14)\n                    at TaskQueue.executeNext_ (/home/runner/work/mangata-e2e/mangata-e2e/node_modules/selenium-webdriver/lib/promise.js:3067:27)\n                    at /home/runner/work/mangata-e2e/mangata-e2e/node_modules/selenium-webdriver/lib/promise.js:2974:25\n                    at /home/runner/work/mangata-e2e/mangata-e2e/node_modules/selenium-webdriver/lib/promise.js:668:7\n                From: Task: <anonymous>\n                    at pollCondition (/home/runner/work/mangata-e2e/mangata-e2e/node_modules/selenium-webdriver/lib/promise.js:2195:19)\n                    at Timeout.task [as _onTimeout] (/home/runner/work/mangata-e2e/mangata-e2e/node_modules/jsdom/lib/jsdom/browser/Window.js:516:19)\n                    at listOnTimeout (node:internal/timers:557:17)\n                    at processTimers (node:internal/timers:500:7)\n                From: Task: Waiting for element to be located By(xpath, //input[@placeholder='Paste Secret Recovery Phrase from clipboard'])\n                    at scheduleWait (/home/runner/work/mangata-e2e/mangata-e2e/node_modules/selenium-webdriver/lib/promise.js:2188:20)\n                    at ControlFlow.wait (/home/runner/work/mangata-e2e/mangata-e2e/node_modules/selenium-webdriver/lib/promise.js:2517:12)\n                    at mixin.wait (/home/runner/work/mangata-e2e/mangata-e2e/node_modules/selenium-webdriver/lib/webdriver.js:934:29)\n                    at waitForElement (/home/runner/work/mangata-e2e/mangata-e2e/utils/frontend/utils/Helper.ts:19:16)\n                    at MetaMask.setupAccount (/home/runner/work/mangata-e2e/mangata-e2e/utils/frontend/pages/MetaMask.ts:72:11)\n                    at runMicrotasks (<anonymous>)\n                    at processTicksAndRejections (node:internal/process/task_queues:96:5)\n                    at setupAllExtensions (/home/runner/work/mangata-e2e/mangata-e2e/utils/frontend/utils/Helper.ts:84:27)\n                    at Object.<anonymous> (/home/runner/work/mangata-e2e/mangata-e2e/test/ui/ui-main.extensions.test.ts:53:5)",
+    "steps" : [ ],
+    "attachments" : [ {
+      "uid" : "c525be28457aa53",
+      "name" : "Screeenshot",
+      "source" : "c525be28457aa53.png",
+      "type" : "image/png",
+      "size" : 29261
+    } ],
+    "parameters" : [ ],
+    "stepsCount" : 0,
+    "attachmentsCount" : 1,
+    "shouldDisplayMessage" : true,
+    "hasContent" : true
+  },
+  "afterStages" : [ ],
+  "labels" : [ {
+    "name" : "suite",
+    "value" : "UI tests - Extension management"
+  }, {
+    "name" : "testClass",
+    "value" : "UI tests - Extension management"
+  }, {
+    "name" : "testMethod",
+    "value" : "As a User I get feedback when extensions are installed and correctly setup"
+  }, {
+    "name" : "package",
+    "value" : "UI tests - Extension management"
+  }, {
+    "name" : "resultFormat",
+    "value" : "allure1"
+  } ],
+  "parameters" : [ ],
+  "links" : [ ],
+  "hidden" : false,
+  "retry" : false,
+  "extra" : {
+    "severity" : "normal",
+    "retries" : [ ],
+    "categories" : [ {
+      "name" : "Product defects",
+      "matchedStatuses" : [ ],
+      "flaky" : false
+    } ],
+    "history" : {
+      "statistic" : {
+        "failed" : 20,
+        "broken" : 0,
+        "skipped" : 0,
+        "passed" : 7,
+        "unknown" : 0,
+        "total" : 27
+      },
+      "items" : [ {
+        "uid" : "ec902c30ec6aea19",
+        "reportUrl" : "https://mangata-finance.github.io/mangata-e2e/1167//#testresult/ec902c30ec6aea19",
+        "status" : "failed",
+        "statusDetails" : "NoSuchSessionError: session timed out or not found",
+        "time" : {
+          "start" : 1640829276409,
+          "stop" : 1640829276895,
+          "duration" : 486
+        }
+      }, {
+        "uid" : "d934c0610b09f4b2",
+        "reportUrl" : "https://mangata-finance.github.io/mangata-e2e/1162//#testresult/d934c0610b09f4b2",
+        "status" : "failed",
+        "statusDetails" : "Error: expect(received).toBeTruthy()\n                \n                Received: false",
+        "time" : {
+          "start" : 1640742799254,
+          "stop" : 1640742799852,
+          "duration" : 598
+        }
+      }, {
+        "uid" : "a15ab608591fe45c",
+        "reportUrl" : "https://mangata-finance.github.io/mangata-e2e/1163//#testresult/a15ab608591fe45c",
+        "status" : "failed",
+        "statusDetails" : "NoSuchSessionError: session timed out or not found",
+        "time" : {
+          "start" : 1640742853946,
+          "stop" : 1640742854548,
+          "duration" : 602
+        }
+      }, {
+        "uid" : "57ecd46f53dec64c",
+        "reportUrl" : "https://mangata-finance.github.io/mangata-e2e/1161//#testresult/57ecd46f53dec64c",
+        "status" : "failed",
+        "statusDetails" : "NoSuchSessionError: session timed out or not found",
+        "time" : {
+          "start" : 1640742564164,
+          "stop" : 1640742564717,
+          "duration" : 553
+        }
+      }, {
+        "uid" : "e3ebd32544aa6111",
+        "reportUrl" : "https://mangata-finance.github.io/mangata-e2e/1157//#testresult/e3ebd32544aa6111",
+        "status" : "passed",
+        "time" : {
+          "start" : 1640658354169,
+          "stop" : 1640658436063,
+          "duration" : 81894
+        }
+      }, {
+        "uid" : "32fb5b91dcea1e2e",
+        "reportUrl" : "https://mangata-finance.github.io/mangata-e2e/1158//#testresult/32fb5b91dcea1e2e",
+        "status" : "failed",
+        "statusDetails" : "Error: expect(received).toBeTruthy()\n                \n                Received: false",
+        "time" : {
+          "start" : 1640656602448,
+          "stop" : 1640656603107,
+          "duration" : 659
+        }
+      }, {
+        "uid" : "5bfb79a015f600b3",
+        "reportUrl" : "https://mangata-finance.github.io/mangata-e2e/1159//#testresult/5bfb79a015f600b3",
+        "status" : "failed",
+        "statusDetails" : "Error: expect(received).toBeTruthy()\n                \n                Received: false",
+        "time" : {
+          "start" : 1640656420745,
+          "stop" : 1640656421285,
+          "duration" : 540
+        }
+      }, {
+        "uid" : "c51e484d09ee5cec",
+        "reportUrl" : "https://mangata-finance.github.io/mangata-e2e/1156//#testresult/c51e484d09ee5cec",
+        "status" : "failed",
+        "statusDetails" : "NoSuchSessionError: Caught error after test environment was torn down\n                \n                session timed out or not found",
+        "time" : {
+          "start" : 1640607496077,
+          "stop" : 1640607496184,
+          "duration" : 107
+        }
+      }, {
+        "uid" : "53a87e97e1caa40a",
+        "reportUrl" : "https://mangata-finance.github.io/mangata-e2e/1153//#testresult/53a87e97e1caa40a",
+        "status" : "passed",
+        "time" : {
+          "start" : 1640572565072,
+          "stop" : 1640572650347,
+          "duration" : 85275
+        }
+      }, {
+        "uid" : "9c8559103cebae47",
+        "reportUrl" : "https://mangata-finance.github.io/mangata-e2e/1152//#testresult/9c8559103cebae47",
+        "status" : "failed",
+        "statusDetails" : "NoSuchSessionError: session timed out or not found",
+        "time" : {
+          "start" : 1640570184065,
+          "stop" : 1640570184590,
+          "duration" : 525
+        }
+      }, {
+        "uid" : "f0e873a2400c88a9",
+        "reportUrl" : "https://mangata-finance.github.io/mangata-e2e/1150//#testresult/f0e873a2400c88a9",
+        "status" : "passed",
+        "time" : {
+          "start" : 1640485634061,
+          "stop" : 1640485712793,
+          "duration" : 78732
+        }
+      }, {
+        "uid" : "32e7b064113e46e5",
+        "reportUrl" : "https://mangata-finance.github.io/mangata-e2e/1148//#testresult/32e7b064113e46e5",
+        "status" : "failed",
+        "statusDetails" : "NoSuchSessionError: session timed out or not found",
+        "time" : {
+          "start" : 1640483898048,
+          "stop" : 1640483898660,
+          "duration" : 612
+        }
+      }, {
+        "uid" : "b5fc395994d519f9",
+        "reportUrl" : "https://mangata-finance.github.io/mangata-e2e/1149//#testresult/b5fc395994d519f9",
+        "status" : "failed",
+        "statusDetails" : "NoSuchSessionError: session timed out or not found",
+        "time" : {
+          "start" : 1640483169702,
+          "stop" : 1640483170304,
+          "duration" : 602
+        }
+      }, {
+        "uid" : "b516966aedba3e21",
+        "reportUrl" : "https://mangata-finance.github.io/mangata-e2e/1145//#testresult/b516966aedba3e21",
+        "status" : "passed",
+        "time" : {
+          "start" : 1640399181799,
+          "stop" : 1640399266607,
+          "duration" : 84808
+        }
+      }, {
+        "uid" : "db46915348f33e40",
+        "reportUrl" : "https://mangata-finance.github.io/mangata-e2e/1146//#testresult/db46915348f33e40",
+        "status" : "failed",
+        "statusDetails" : "Error: expect(received).toBeTruthy()\n                \n                Received: false",
+        "time" : {
+          "start" : 1640397276120,
+          "stop" : 1640397276701,
+          "duration" : 581
+        }
+      }, {
+        "uid" : "6a0bfe788656d950",
+        "reportUrl" : "https://mangata-finance.github.io/mangata-e2e/1140//#testresult/6a0bfe788656d950",
+        "status" : "passed",
+        "time" : {
+          "start" : 1640312932690,
+          "stop" : 1640313022391,
+          "duration" : 89701
+        }
+      }, {
+        "uid" : "d229ec27eb1e1a99",
+        "reportUrl" : "https://mangata-finance.github.io/mangata-e2e/1141//#testresult/d229ec27eb1e1a99",
+        "status" : "failed",
+        "statusDetails" : "NoSuchSessionError: session timed out or not found",
+        "time" : {
+          "start" : 1640311047897,
+          "stop" : 1640311048543,
+          "duration" : 646
+        }
+      }, {
+        "uid" : "27570ad79c4f316",
+        "reportUrl" : "https://mangata-finance.github.io/mangata-e2e/1142//#testresult/27570ad79c4f316",
+        "status" : "failed",
+        "statusDetails" : "Error: expect(received).toBeTruthy()\n                \n                Received: false",
+        "time" : {
+          "start" : 1640310887168,
+          "stop" : 1640310887689,
+          "duration" : 521
+        }
+      }, {
+        "uid" : "7ef3fdda297621eb",
+        "reportUrl" : "https://mangata-finance.github.io/mangata-e2e/1139//#testresult/7ef3fdda297621eb",
+        "status" : "failed",
+        "statusDetails" : "thrown: Event {\n                  \"isTrusted\": true,\n                }",
+        "time" : {
+          "start" : 1640264315085,
+          "stop" : 1640264315204,
+          "duration" : 119
+        }
+      }, {
+        "uid" : "3427e0380bdda29a",
+        "reportUrl" : "https://mangata-finance.github.io/mangata-e2e/1138//#testresult/3427e0380bdda29a",
+        "status" : "failed",
+        "statusDetails" : "thrown: Event {\n                  \"isTrusted\": true,\n                }",
+        "time" : {
+          "start" : 1640249436805,
+          "stop" : 1640249437331,
+          "duration" : 526
+        }
+      } ]
+    },
+    "tags" : [ ]
+  },
+  "source" : "6b045e8beb347b42.json",
+  "parameterValues" : [ ]
+}

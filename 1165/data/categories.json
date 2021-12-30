@@ -1,0 +1,201 @@
+{
+  "uid" : "4b4757e66a1912dae1a509f688f20b0f",
+  "children" : [ {
+    "name" : "Product defects",
+    "children" : [ {
+      "name" : "Error: WebSocket is not connected",
+      "children" : [ {
+        "name" : "When tx front - fails, User gets notified",
+        "uid" : "5d7ada01b6c278d1",
+        "parentUid" : "d87cc0f26d462c8160f75c645ea55e17",
+        "status" : "failed",
+        "time" : {
+          "start" : 1640828226470,
+          "stop" : 1640828279204,
+          "duration" : 52734
+        },
+        "flaky" : false,
+        "newFailed" : false,
+        "parameters" : [ ]
+      }, {
+        "name" : "When tx extrinsic - fails, User gets notified",
+        "uid" : "39b9b343a84680a3",
+        "parentUid" : "d87cc0f26d462c8160f75c645ea55e17",
+        "status" : "failed",
+        "time" : {
+          "start" : 1640828279205,
+          "stop" : 1640828336600,
+          "duration" : 57395
+        },
+        "flaky" : false,
+        "newFailed" : false,
+        "parameters" : [ ]
+      }, {
+        "name" : "When user cancel a TX, User gets notified",
+        "uid" : "7eab4f32f4094661",
+        "parentUid" : "d87cc0f26d462c8160f75c645ea55e17",
+        "status" : "failed",
+        "time" : {
+          "start" : 1640828336601,
+          "stop" : 1640828395597,
+          "duration" : 58996
+        },
+        "flaky" : false,
+        "newFailed" : false,
+        "parameters" : [ ]
+      } ],
+      "uid" : "d87cc0f26d462c8160f75c645ea55e17"
+    }, {
+      "name" : "StaleElementReferenceError: stale element reference: element is not attached to the page document\n                  (Session info: chrome=94.0.4606.61)\n                  (Driver info: chromedriver=94.0.4606.61 (418b78f5838ed0b1c69bb4e51ea0252171854915-refs/branch-heads/4606@{#1204}),platform=Linux 5.11.0-1022-azure x86_64)",
+      "children" : [ {
+        "name" : "As a User I can Swap tokens - MGA - mETH",
+        "uid" : "ce860d13ae6bc163",
+        "parentUid" : "85e25b1935fd62b0e2b03a1ff693d589",
+        "status" : "failed",
+        "time" : {
+          "start" : 1640828397141,
+          "stop" : 1640828497886,
+          "duration" : 100745
+        },
+        "flaky" : true,
+        "newFailed" : false,
+        "parameters" : [ ]
+      } ],
+      "uid" : "85e25b1935fd62b0e2b03a1ff693d589"
+    }, {
+      "name" : "TIMEOUT: Waiting for //*[@class = 'Sidebar__loading'] to dissapear",
+      "children" : [ {
+        "name" : "As a User I get infomed whenever is neccesary to install any extension",
+        "uid" : "a431116a2b409a38",
+        "parentUid" : "f2cd7eefc95a5944bccb745aec47ebb6",
+        "status" : "failed",
+        "time" : {
+          "start" : 1640828997670,
+          "stop" : 1640829063085,
+          "duration" : 65415
+        },
+        "flaky" : true,
+        "newFailed" : false,
+        "parameters" : [ ]
+      } ],
+      "uid" : "f2cd7eefc95a5944bccb745aec47ebb6"
+    }, {
+      "name" : "NoSuchSessionError: session timed out or not found",
+      "children" : [ {
+        "name" : "As a User I get feedback when extensions are installed and correctly setup",
+        "uid" : "6b045e8beb347b42",
+        "parentUid" : "2ef416557588516bfb8469dcf54b2c50",
+        "status" : "failed",
+        "time" : {
+          "start" : 1640829063086,
+          "stop" : 1640829063687,
+          "duration" : 601
+        },
+        "flaky" : true,
+        "newFailed" : false,
+        "parameters" : [ ]
+      }, {
+        "name" : "As a User I can switch between polkadot wallets using the modal",
+        "uid" : "b2fd5f9f01c42b43",
+        "parentUid" : "2ef416557588516bfb8469dcf54b2c50",
+        "status" : "failed",
+        "time" : {
+          "start" : 1640829063709,
+          "stop" : 1640829133649,
+          "duration" : 69940
+        },
+        "flaky" : false,
+        "newFailed" : false,
+        "parameters" : [ ]
+      } ],
+      "uid" : "2ef416557588516bfb8469dcf54b2c50"
+    }, {
+      "name" : "Error: expect(received).toBeTruthy()\n                \n                Received: false",
+      "children" : [ {
+        "name" : "As a User I can switch between polkadot wallets",
+        "uid" : "5adf09748c07c346",
+        "parentUid" : "ffcd8928d6543ed53c85f4784defae24",
+        "status" : "failed",
+        "time" : {
+          "start" : 1640829063688,
+          "stop" : 1640829063709,
+          "duration" : 21
+        },
+        "flaky" : false,
+        "newFailed" : false,
+        "parameters" : [ ]
+      } ],
+      "uid" : "ffcd8928d6543ed53c85f4784defae24"
+    }, {
+      "name" : "TimeoutError: Waiting for element to be located By(xpath, //*[@data-testid='wallet-asset-mETH'])\n                Wait timed out after 300020ms",
+      "children" : [ {
+        "name" : "As a User I can deposit ETH from Meta extension",
+        "uid" : "1731065898ea5a4e",
+        "parentUid" : "bc9964a73c224ef101258f1bba3a8b84",
+        "status" : "failed",
+        "time" : {
+          "start" : 1640829452053,
+          "stop" : 1640829868087,
+          "duration" : 416034
+        },
+        "flaky" : false,
+        "newFailed" : false,
+        "parameters" : [ ]
+      } ],
+      "uid" : "bc9964a73c224ef101258f1bba3a8b84"
+    }, {
+      "name" : "TimeoutError: Waiting for element to be located By(xpath, //*[@data-testid='wallet-asset-mETH'])\n                Wait timed out after 300009ms",
+      "children" : [ {
+        "name" : "As a User I can Withdraw ETH from Meta extension",
+        "uid" : "eb399d8885abf515",
+        "parentUid" : "928442016005c17c3df9e4cc3f43fa68",
+        "status" : "failed",
+        "time" : {
+          "start" : 1640829868118,
+          "stop" : 1640830268366,
+          "duration" : 400248
+        },
+        "flaky" : false,
+        "newFailed" : false,
+        "parameters" : [ ]
+      } ],
+      "uid" : "928442016005c17c3df9e4cc3f43fa68"
+    }, {
+      "name" : "TimeoutError: Waiting for element to be located By(xpath, //*[@data-testid='tradingSwapTab-leftAssetInput']//button[contains(text(),'Max')])\n                Wait timed out after 60007ms",
+      "children" : [ {
+        "name" : "As a User I can Swap All MGA tokens -> newToken",
+        "uid" : "bbb0d1076ee72633",
+        "parentUid" : "498881b6b53ef389bc0826d8281b1d05",
+        "status" : "failed",
+        "time" : {
+          "start" : 1640830269882,
+          "stop" : 1640830469111,
+          "duration" : 199229
+        },
+        "flaky" : false,
+        "newFailed" : false,
+        "parameters" : [ ]
+      } ],
+      "uid" : "498881b6b53ef389bc0826d8281b1d05"
+    }, {
+      "name" : "TimeoutError: Waiting for element to be located By(xpath, //button[contains(text(), 'Get Tokens')] )\n                Wait timed out after 60007ms",
+      "children" : [ {
+        "name" : "As a User I can get test tokens from the faucet",
+        "uid" : "2305e798a23cf490",
+        "parentUid" : "4f7ab5879beebd05904edf5ab5773bde",
+        "status" : "failed",
+        "time" : {
+          "start" : 1640831760232,
+          "stop" : 1640831884257,
+          "duration" : 124025
+        },
+        "flaky" : false,
+        "newFailed" : false,
+        "parameters" : [ ]
+      } ],
+      "uid" : "4f7ab5879beebd05904edf5ab5773bde"
+    } ],
+    "uid" : "8fb3a91ba5aaf9de24cc8a92edc82b5d"
+  } ],
+  "name" : "categories"
+}
