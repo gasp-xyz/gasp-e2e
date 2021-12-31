@@ -1,0 +1,265 @@
+{
+  "uid" : "61b0f7fcbd9341e",
+  "name" : "Validate that Frontend retrieves AssetInfo data",
+  "fullName" : "UI tests: Infra.Validate that Frontend retrieves AssetInfo data",
+  "historyId" : "88844f09ab0dc66902787b918fcff472",
+  "time" : {
+    "start" : 1640917944336,
+    "stop" : 1640917962999,
+    "duration" : 18663
+  },
+  "description" : "",
+  "descriptionHtml" : "",
+  "status" : "passed",
+  "flaky" : false,
+  "newFailed" : false,
+  "beforeStages" : [ ],
+  "testStage" : {
+    "status" : "passed",
+    "steps" : [ ],
+    "attachments" : [ {
+      "uid" : "a8377db3f5b9833f",
+      "name" : "Screeenshot",
+      "source" : "a8377db3f5b9833f.png",
+      "type" : "image/png",
+      "size" : 66521
+    } ],
+    "parameters" : [ ],
+    "stepsCount" : 0,
+    "attachmentsCount" : 1,
+    "shouldDisplayMessage" : false,
+    "hasContent" : true
+  },
+  "afterStages" : [ ],
+  "labels" : [ {
+    "name" : "suite",
+    "value" : "UI tests: Infra"
+  }, {
+    "name" : "testClass",
+    "value" : "UI tests: Infra"
+  }, {
+    "name" : "testMethod",
+    "value" : "Validate that Frontend retrieves AssetInfo data"
+  }, {
+    "name" : "package",
+    "value" : "UI tests: Infra"
+  }, {
+    "name" : "resultFormat",
+    "value" : "allure1"
+  } ],
+  "parameters" : [ ],
+  "links" : [ ],
+  "hidden" : false,
+  "retry" : false,
+  "extra" : {
+    "severity" : "normal",
+    "retries" : [ ],
+    "categories" : [ ],
+    "history" : {
+      "statistic" : {
+        "failed" : 15,
+        "broken" : 0,
+        "skipped" : 0,
+        "passed" : 10,
+        "unknown" : 0,
+        "total" : 25
+      },
+      "items" : [ {
+        "uid" : "948eed7ea9b080f4",
+        "reportUrl" : "https://mangata-finance.github.io/mangata-e2e/1166//#testresult/948eed7ea9b080f4",
+        "status" : "passed",
+        "time" : {
+          "start" : 1640831899320,
+          "stop" : 1640831940725,
+          "duration" : 41405
+        }
+      }, {
+        "uid" : "ef3695d7f87085b1",
+        "reportUrl" : "https://mangata-finance.github.io/mangata-e2e/1162//#testresult/ef3695d7f87085b1",
+        "status" : "passed",
+        "time" : {
+          "start" : 1640745825735,
+          "stop" : 1640745872358,
+          "duration" : 46623
+        }
+      }, {
+        "uid" : "cd4b6e44b265e6d0",
+        "reportUrl" : "https://mangata-finance.github.io/mangata-e2e/1157//#testresult/cd4b6e44b265e6d0",
+        "status" : "passed",
+        "time" : {
+          "start" : 1640658439854,
+          "stop" : 1640658484901,
+          "duration" : 45047
+        }
+      }, {
+        "uid" : "38a2cafe25f2707d",
+        "reportUrl" : "https://mangata-finance.github.io/mangata-e2e/1158//#testresult/38a2cafe25f2707d",
+        "status" : "failed",
+        "statusDetails" : "NoSuchSessionError: Caught error after test environment was torn down\n                \n                session timed out or not found",
+        "time" : {
+          "start" : 1640656604274,
+          "stop" : 1640656604290,
+          "duration" : 16
+        }
+      }, {
+        "uid" : "237125d3df213530",
+        "reportUrl" : "https://mangata-finance.github.io/mangata-e2e/1159//#testresult/237125d3df213530",
+        "status" : "failed",
+        "statusDetails" : "NoSuchSessionError: Caught error after test environment was torn down\n                \n                session timed out or not found",
+        "time" : {
+          "start" : 1640656422598,
+          "stop" : 1640656422626,
+          "duration" : 28
+        }
+      }, {
+        "uid" : "961eed4bdd227553",
+        "reportUrl" : "https://mangata-finance.github.io/mangata-e2e/1156//#testresult/961eed4bdd227553",
+        "status" : "failed",
+        "statusDetails" : "TypeError: Caught error after test environment was torn down\n                \n                Cannot read properties of undefined (reading 'currentStep')",
+        "time" : {
+          "start" : 1640610902708,
+          "stop" : 1640610906623,
+          "duration" : 3915
+        }
+      }, {
+        "uid" : "2292dda69aa76f89",
+        "reportUrl" : "https://mangata-finance.github.io/mangata-e2e/1153//#testresult/2292dda69aa76f89",
+        "status" : "passed",
+        "time" : {
+          "start" : 1640572654486,
+          "stop" : 1640572703069,
+          "duration" : 48583
+        }
+      }, {
+        "uid" : "3478afee3b5d878a",
+        "reportUrl" : "https://mangata-finance.github.io/mangata-e2e/1152//#testresult/3478afee3b5d878a",
+        "status" : "failed",
+        "statusDetails" : "Error: Caught error after test environment was torn down\n                \n                expect(received).toBeTruthy()\n                \n                Received: false",
+        "time" : {
+          "start" : 1640570186134,
+          "stop" : 1640570186254,
+          "duration" : 120
+        }
+      }, {
+        "uid" : "521d8c4a5402551",
+        "reportUrl" : "https://mangata-finance.github.io/mangata-e2e/1150//#testresult/521d8c4a5402551",
+        "status" : "passed",
+        "time" : {
+          "start" : 1640485716670,
+          "stop" : 1640485760730,
+          "duration" : 44060
+        }
+      }, {
+        "uid" : "b962a1c146ea4e0b",
+        "reportUrl" : "https://mangata-finance.github.io/mangata-e2e/1148//#testresult/b962a1c146ea4e0b",
+        "status" : "failed",
+        "statusDetails" : "Error: Caught error after test environment was torn down\n                \n                expect(received).toBeTruthy()\n                \n                Received: false",
+        "time" : {
+          "start" : 1640483899828,
+          "stop" : 1640483899877,
+          "duration" : 49
+        }
+      }, {
+        "uid" : "77a4cb08954b4966",
+        "reportUrl" : "https://mangata-finance.github.io/mangata-e2e/1149//#testresult/77a4cb08954b4966",
+        "status" : "failed",
+        "statusDetails" : "Error: Caught error after test environment was torn down\n                \n                expect(received).toBeTruthy()\n                \n                Received: false",
+        "time" : {
+          "start" : 1640483171379,
+          "stop" : 1640483171386,
+          "duration" : 7
+        }
+      }, {
+        "uid" : "44e8a838a46ab4ab",
+        "reportUrl" : "https://mangata-finance.github.io/mangata-e2e/1145//#testresult/44e8a838a46ab4ab",
+        "status" : "passed",
+        "time" : {
+          "start" : 1640399270846,
+          "stop" : 1640399316846,
+          "duration" : 46000
+        }
+      }, {
+        "uid" : "7cba490bd9d490ec",
+        "reportUrl" : "https://mangata-finance.github.io/mangata-e2e/1146//#testresult/7cba490bd9d490ec",
+        "status" : "failed",
+        "statusDetails" : "NoSuchSessionError: Caught error after test environment was torn down\n                \n                session timed out or not found",
+        "time" : {
+          "start" : 1640397277773,
+          "stop" : 1640397277778,
+          "duration" : 5
+        }
+      }, {
+        "uid" : "2e566c9e983834be",
+        "reportUrl" : "https://mangata-finance.github.io/mangata-e2e/1140//#testresult/2e566c9e983834be",
+        "status" : "passed",
+        "time" : {
+          "start" : 1640313026464,
+          "stop" : 1640313075243,
+          "duration" : 48779
+        }
+      }, {
+        "uid" : "30309c0d0571d6ec",
+        "reportUrl" : "https://mangata-finance.github.io/mangata-e2e/1141//#testresult/30309c0d0571d6ec",
+        "status" : "failed",
+        "statusDetails" : "Error: Caught error after test environment was torn down\n                \n                expect(received).toBeTruthy()\n                \n                Received: false",
+        "time" : {
+          "start" : 1640311049928,
+          "stop" : 1640311050010,
+          "duration" : 82
+        }
+      }, {
+        "uid" : "9d293e481623ab5c",
+        "reportUrl" : "https://mangata-finance.github.io/mangata-e2e/1142//#testresult/9d293e481623ab5c",
+        "status" : "failed",
+        "statusDetails" : "NoSuchSessionError: Caught error after test environment was torn down\n                \n                session timed out or not found",
+        "time" : {
+          "start" : 1640310888670,
+          "stop" : 1640310888710,
+          "duration" : 40
+        }
+      }, {
+        "uid" : "ab0005ae0fd50bc3",
+        "reportUrl" : "https://mangata-finance.github.io/mangata-e2e/1139//#testresult/ab0005ae0fd50bc3",
+        "status" : "failed",
+        "statusDetails" : "Error: expect(received).toContain(expected) // indexOf\n                \n                Expected value: \"Mangata\n                MGA\"\n                Received array: []",
+        "time" : {
+          "start" : 1640266548551,
+          "stop" : 1640266562550,
+          "duration" : 13999
+        }
+      }, {
+        "uid" : "783583d19d8582a5",
+        "reportUrl" : "https://mangata-finance.github.io/mangata-e2e/1138//#testresult/783583d19d8582a5",
+        "status" : "failed",
+        "statusDetails" : "Error: expect(received).toContain(expected) // indexOf\n                \n                Expected value: \"Mangata\n                MGA\"\n                Received array: []",
+        "time" : {
+          "start" : 1640251207178,
+          "stop" : 1640251221419,
+          "duration" : 14241
+        }
+      }, {
+        "uid" : "7a2603d556d205dd",
+        "reportUrl" : "https://mangata-finance.github.io/mangata-e2e/1134//#testresult/7a2603d556d205dd",
+        "status" : "passed",
+        "time" : {
+          "start" : 1640225458418,
+          "stop" : 1640225497058,
+          "duration" : 38640
+        }
+      }, {
+        "uid" : "9975eba128385007",
+        "reportUrl" : "https://mangata-finance.github.io/mangata-e2e/1136//#testresult/9975eba128385007",
+        "status" : "failed",
+        "statusDetails" : "Error: Caught error after test environment was torn down\n                \n                expect(received).toBeTruthy()\n                \n                Received: false",
+        "time" : {
+          "start" : 1640224525995,
+          "stop" : 1640224526054,
+          "duration" : 59
+        }
+      } ]
+    },
+    "tags" : [ ]
+  },
+  "source" : "61b0f7fcbd9341e.json",
+  "parameterValues" : [ ]
+}
