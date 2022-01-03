@@ -3,9 +3,9 @@
 //Build And Run!
 // npx ts-node test/exploratory/eventListener.ts
 import BN from "bn.js";
-import {Mangata} from "mangata-sdk";
+import { Mangata } from "mangata-sdk";
 
-const {testLog} = require("./../utils/Logger");
+const { testLog } = require("./../utils/Logger");
 
 const uri = "wss://staging.mangatafinance.cloud:9944";
 
@@ -34,7 +34,7 @@ async function main() {
   const allEvents = await api.query.system.events.at(blockHashEvents);
   allEvents
     // test the events against the specific types we are looking for
-    .forEach(async ({event}) => {
+    .forEach(async ({ event }) => {
       const eventH = event.toHuman();
       testLog.getLog().info(JSON.stringify(event.toHuman()));
 

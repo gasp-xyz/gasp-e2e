@@ -1,5 +1,5 @@
 import BN from "bn.js";
-import {renameExtraLogs} from "./frontend/utils/Helper";
+import { renameExtraLogs } from "./frontend/utils/Helper";
 module.exports = {
   runner: "groups",
 };

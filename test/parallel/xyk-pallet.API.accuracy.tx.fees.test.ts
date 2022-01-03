@@ -4,24 +4,24 @@
  * @group accuracy
  * @group parallel
  */
-import {getApi, getMangataInstance, initApi} from "../../utils/api";
-import {getCurrentNonce} from "../../utils/tx";
-import {ExtrinsicResult} from "../../utils/eventListeners";
+import { getApi, getMangataInstance, initApi } from "../../utils/api";
+import { getCurrentNonce } from "../../utils/tx";
+import { ExtrinsicResult } from "../../utils/eventListeners";
 import BN from "bn.js";
-import {Keyring} from "@polkadot/api";
-import {AssetWallet, User} from "../../utils/User";
-import {validateAssetsWithValues} from "../../utils/validators";
-import {Assets} from "../../utils/Assets";
+import { Keyring } from "@polkadot/api";
+import { AssetWallet, User } from "../../utils/User";
+import { validateAssetsWithValues } from "../../utils/validators";
+import { Assets } from "../../utils/Assets";
 
 import {
   fromBNToUnitString,
   fromStringToUnitString,
   getEnvironmentRequiredVars,
 } from "../../utils/utils";
-import {SignerOptions} from "@polkadot/api/types";
-import {getEventResultFromMangataTx} from "../../utils/txHandler";
-import {RuntimeDispatchInfo} from "@polkadot/types/interfaces";
-import {MGA_ASSET_ID} from "../../utils/Constants";
+import { SignerOptions } from "@polkadot/api/types";
+import { getEventResultFromMangataTx } from "../../utils/txHandler";
+import { RuntimeDispatchInfo } from "@polkadot/types/interfaces";
+import { MGA_ASSET_ID } from "../../utils/Constants";
 
 jest.spyOn(console, "log").mockImplementation(jest.fn());
 jest.spyOn(console, "error").mockImplementation(jest.fn());
@@ -38,7 +38,7 @@ const first_asset_amount = new BN(50000);
 const second_asset_amount = new BN(50000);
 //creating pool
 
-const {sudo: sudoUserName} = getEnvironmentRequiredVars();
+const { sudo: sudoUserName } = getEnvironmentRequiredVars();
 
 let cost: RuntimeDispatchInfo;
 
@@ -51,7 +51,7 @@ beforeEach(async () => {
     await initApi();
   }
 
-  keyring = new Keyring({type: "sr25519"});
+  keyring = new Keyring({ type: "sr25519" });
 
   // setup users
   testUser1 = new User(keyring);

@@ -1,18 +1,18 @@
-import {Keyring} from "@polkadot/api";
+import { Keyring } from "@polkadot/api";
 import BN from "bn.js";
-import {getApi, initApi} from "../utils/api";
-import {waitNewBlock} from "../utils/eventListeners";
-import {User, AssetWallet} from "../utils/User";
-import {getEnvironmentRequiredVars, sleep} from "../utils/utils";
+import { getApi, initApi } from "../utils/api";
+import { waitNewBlock } from "../utils/eventListeners";
+import { User, AssetWallet } from "../utils/User";
+import { getEnvironmentRequiredVars, sleep } from "../utils/utils";
 import fs from "fs";
-import {Mangata} from "mangata-sdk";
-import {testLog} from "../utils/Logger";
-import {Assets} from "../utils/Assets";
+import { Mangata } from "mangata-sdk";
+import { testLog } from "../utils/Logger";
+import { Assets } from "../utils/Assets";
 
 require("dotenv").config();
 
 jest.spyOn(console, "log").mockImplementation(jest.fn());
-const {sudo: sudoUserName} = getEnvironmentRequiredVars();
+const { sudo: sudoUserName } = getEnvironmentRequiredVars();
 
 jest.setTimeout(1500000);
 process.env.NODE_ENV = "test";
@@ -42,7 +42,7 @@ describe("staking - testpad", () => {
 
   test.each([user])("SendTxEachSecond", async (bondAmount) => {
     let cont = 3;
-    keyring = new Keyring({type: "sr25519"});
+    keyring = new Keyring({ type: "sr25519" });
     sudo = new User(keyring, sudoUserName);
     testUser1 = new User(keyring, user);
     await fs.writeFileSync(
@@ -89,7 +89,7 @@ describe("staking - testpad", () => {
           secondCurrency.toString(),
           new BN(10),
           new BN(0),
-          {nonce: new BN(userNonce)}
+          { nonce: new BN(userNonce) }
         )
       );
       userNonce++;

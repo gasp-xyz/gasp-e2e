@@ -5,24 +5,24 @@
  * @group sequential
  * @group sdk
  */
-import {getApi, getMangataInstance, initApi} from "../../utils/api";
+import { getApi, getMangataInstance, initApi } from "../../utils/api";
 import BN from "bn.js";
 import {
   createPoolIfMissing,
   getEnvironmentRequiredVars,
 } from "../../utils/utils";
-import {Keyring} from "@polkadot/api";
-import {User} from "../../utils/User";
-import {Mangata} from "mangata-sdk";
-import {getEventResultFromMangataTx} from "../../utils/txHandler";
-import {ExtrinsicResult} from "../../utils/eventListeners";
-import {ETH_ASSET_ID, MGA_ASSET_ID} from "../../utils/Constants";
-import {waitNewBlock} from "../../utils/eventListeners";
+import { Keyring } from "@polkadot/api";
+import { User } from "../../utils/User";
+import { Mangata } from "mangata-sdk";
+import { getEventResultFromMangataTx } from "../../utils/txHandler";
+import { ExtrinsicResult } from "../../utils/eventListeners";
+import { ETH_ASSET_ID, MGA_ASSET_ID } from "../../utils/Constants";
+import { waitNewBlock } from "../../utils/eventListeners";
 
 jest.spyOn(console, "log").mockImplementation(jest.fn());
 jest.setTimeout(1500000);
 process.env.NODE_ENV = "test";
-const {sudo: sudoUserName} = getEnvironmentRequiredVars();
+const { sudo: sudoUserName } = getEnvironmentRequiredVars();
 
 let testUser: User;
 let sudo: User;
@@ -38,7 +38,7 @@ beforeAll(async () => {
   await getApi();
   mangata = await getMangataInstance();
 
-  keyring = new Keyring({type: "sr25519"});
+  keyring = new Keyring({ type: "sr25519" });
   // setup users
   testUser = new User(keyring);
   sudo = new User(keyring, sudoUserName);

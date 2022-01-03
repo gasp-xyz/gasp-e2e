@@ -1,7 +1,7 @@
-import {WithdrawModal} from "./WithdrawModal";
-import {By, until, WebDriver} from "selenium-webdriver";
-import {FIVE_MIN} from "../../Constants";
-import {sleep} from "../../utils";
+import { WithdrawModal } from "./WithdrawModal";
+import { By, until, WebDriver } from "selenium-webdriver";
+import { FIVE_MIN } from "../../Constants";
+import { sleep } from "../../utils";
 import {
   buildDataTestIdXpath,
   clickElement,
@@ -9,8 +9,8 @@ import {
   waitForElement,
   waitForElementToDissapear,
 } from "../utils/Helper";
-import {DepositModal} from "./DepositModal";
-import {testLog} from "../../Logger";
+import { DepositModal } from "./DepositModal";
+import { testLog } from "../../Logger";
 
 const DIV_META_NOT_FOUND = "extensionMetamask-extensionNotFound";
 const DIV_POLK_NOT_FOUND = "extensionPolkadot-extensionNotFound";

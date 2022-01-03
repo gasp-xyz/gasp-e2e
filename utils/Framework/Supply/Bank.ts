@@ -1,9 +1,9 @@
 import BN from "bn.js";
-import {ExtrinsicResult} from "../../eventListeners";
-import {SudoUser} from "../../Framework/User/SudoUser";
-import {mintAsset} from "../../tx";
-import {getEventResultFromMangataTx} from "../../txHandler";
-import {Token} from "./Token";
+import { ExtrinsicResult } from "../../eventListeners";
+import { SudoUser } from "../../Framework/User/SudoUser";
+import { mintAsset } from "../../tx";
+import { getEventResultFromMangataTx } from "../../txHandler";
+import { Token } from "./Token";
 
 export class Bank {
   sudoUser: SudoUser;

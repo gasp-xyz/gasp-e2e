@@ -4,16 +4,16 @@
  * @group sudo
  * @group parallel
  */
-import {getApi, initApi} from "../../utils/api";
-import {getCurrentNonce} from "../../utils/tx";
-import {ExtrinsicResult} from "../../utils/eventListeners";
-import {Keyring} from "@polkadot/api";
-import {AssetWallet, User} from "../../utils/User";
-import {getEnvironmentRequiredVars} from "../../utils/utils";
-import {MGA_ASSET_ID} from "../../utils/Constants";
+import { getApi, initApi } from "../../utils/api";
+import { getCurrentNonce } from "../../utils/tx";
+import { ExtrinsicResult } from "../../utils/eventListeners";
+import { Keyring } from "@polkadot/api";
+import { AssetWallet, User } from "../../utils/User";
+import { getEnvironmentRequiredVars } from "../../utils/utils";
+import { MGA_ASSET_ID } from "../../utils/Constants";
 import BN from "bn.js";
-import {getEventResultFromMangataTx} from "../../utils/txHandler";
-import {signTx} from "mangata-sdk";
+import { getEventResultFromMangataTx } from "../../utils/txHandler";
+import { signTx } from "mangata-sdk";
 jest.spyOn(console, "log").mockImplementation(jest.fn());
 jest.spyOn(console, "error").mockImplementation(jest.fn());
 jest.setTimeout(1500000);
@@ -27,7 +27,7 @@ let infoUser1Before: any;
 let keyring: Keyring;
 //creating pool
 
-const {sudo: sudoUserName} = getEnvironmentRequiredVars();
+const { sudo: sudoUserName } = getEnvironmentRequiredVars();
 
 beforeAll(async () => {
   try {
@@ -36,7 +36,7 @@ beforeAll(async () => {
     await initApi();
   }
 
-  keyring = new Keyring({type: "sr25519"});
+  keyring = new Keyring({ type: "sr25519" });
 
   // setup users
   testUser1 = new User(keyring);
@@ -132,7 +132,7 @@ test("xyk-pallet - SecurityTests - Only sudo can perform actions [tokens.mint to
       )
     ),
     testUser1.keyRingPair,
-    {nonce: await getCurrentNonce(testUser1.keyRingPair.address)}
+    { nonce: await getCurrentNonce(testUser1.keyRingPair.address) }
   ).then((result) => {
     const eventResponse = getEventResultFromMangataTx(result);
     expect(eventResponse.state).toEqual(ExtrinsicResult.ExtrinsicFailed);

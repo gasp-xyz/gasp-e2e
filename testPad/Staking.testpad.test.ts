@@ -1,21 +1,21 @@
-import {Keyring} from "@polkadot/api";
+import { Keyring } from "@polkadot/api";
 import BN from "bn.js";
-import {api, getApi, initApi} from "../utils/api";
-import {MGA_ASSET_ID} from "../utils/Constants";
-import {waitNewBlock} from "../utils/eventListeners";
-import {testLog} from "../utils/Logger";
-import {signSendAndWaitToFinishTx} from "../utils/txHandler";
-import {User, AssetWallet} from "../utils/User";
-import {getEnvironmentRequiredVars} from "../utils/utils";
+import { api, getApi, initApi } from "../utils/api";
+import { MGA_ASSET_ID } from "../utils/Constants";
+import { waitNewBlock } from "../utils/eventListeners";
+import { testLog } from "../utils/Logger";
+import { signSendAndWaitToFinishTx } from "../utils/txHandler";
+import { User, AssetWallet } from "../utils/User";
+import { getEnvironmentRequiredVars } from "../utils/utils";
 import fs from "fs";
-import {Assets} from "../utils/Assets";
-import {hexToBn} from "@polkadot/util";
-import {signTx} from "mangata-sdk";
+import { Assets } from "../utils/Assets";
+import { hexToBn } from "@polkadot/util";
+import { signTx } from "mangata-sdk";
 
 require("dotenv").config();
 
 jest.spyOn(console, "log").mockImplementation(jest.fn());
-const {sudo: sudoUserName} = getEnvironmentRequiredVars();
+const { sudo: sudoUserName } = getEnvironmentRequiredVars();
 
 jest.setTimeout(1500000);
 process.env.NODE_ENV = "test";
@@ -49,7 +49,7 @@ describe("staking - testpad", () => {
   test.each(["6666", "6666", "6666", "6666"])(
     "xyk-pallet: Create new users with bonded amounts.",
     async (bondAmount) => {
-      keyring = new Keyring({type: "sr25519"});
+      keyring = new Keyring({ type: "sr25519" });
       sudo = new User(keyring, sudoUserName);
       testUser1 = new User(keyring);
       await fs.writeFileSync(
@@ -65,7 +65,9 @@ describe("staking - testpad", () => {
       keyring.addPair(sudo.keyRingPair);
       await testUser1.refreshAmounts(AssetWallet.BEFORE);
 
-      const {nonce} = await api.query.system.account(sudo.keyRingPair.address);
+      const { nonce } = await api.query.system.account(
+        sudo.keyRingPair.address
+      );
       await signTx(
         api,
         api.tx.sudo.sudo(
@@ -76,7 +78,7 @@ describe("staking - testpad", () => {
           )
         ),
         sudo.keyRingPair,
-        {nonce: new BN(nonce)}
+        { nonce: new BN(nonce) }
       );
       const nonce2 = await (
         await api.query.system.account(sudo.keyRingPair.address)
@@ -91,7 +93,7 @@ describe("staking - testpad", () => {
           )
         ),
         sudo.keyRingPair,
-        {nonce: new BN(nonce2.toNumber())}
+        { nonce: new BN(nonce2.toNumber()) }
       );
 
       //    await sudo.mint(MGA_ASSET_ID, testUser1, new BN("1000000000000"));
@@ -137,7 +139,7 @@ describe("staking - testpad", () => {
     } catch (e) {
       await initApi();
     }
-    keyring = new Keyring({type: "sr25519"});
+    keyring = new Keyring({ type: "sr25519" });
     //    const json = fs.readFileSync(testUser1.keyRingPair.address + ".json", {
     //      encoding: "utf8",
     //      flag: "r",
@@ -162,7 +164,7 @@ describe("staking - testpad", () => {
     } catch (e) {
       await initApi();
     }
-    keyring = new Keyring({type: "sr25519"});
+    keyring = new Keyring({ type: "sr25519" });
     //    const json = fs.readFileSync(testUser1.keyRingPair.address + ".json", {
     //      encoding: "utf8",
     //      flag: "r",
@@ -176,7 +178,7 @@ describe("staking - testpad", () => {
     keyring.pairs[0].decodePkcs8("mangata123");
 
     await signSendAndWaitToFinishTx(
-      api?.tx.staking.validate({commission: "0"}),
+      api?.tx.staking.validate({ commission: "0" }),
       user.keyRingPair
     ).then();
     testLog.getLog().warn("done");
@@ -187,7 +189,7 @@ describe("staking - testpad", () => {
     } catch (e) {
       await initApi();
     }
-    keyring = new Keyring({type: "sr25519"});
+    keyring = new Keyring({ type: "sr25519" });
 
     const json = fs.readFileSync(address + ".json", {
       encoding: "utf8",
@@ -212,7 +214,7 @@ describe("staking - testpad", () => {
     } catch (e) {
       await initApi();
     }
-    keyring = new Keyring({type: "sr25519"});
+    keyring = new Keyring({ type: "sr25519" });
 
     const json = fs.readFileSync(address + ".json", {
       encoding: "utf8",
@@ -235,7 +237,7 @@ describe("staking - testpad", () => {
     } catch (e) {
       await initApi();
     }
-    keyring = new Keyring({type: "sr25519"});
+    keyring = new Keyring({ type: "sr25519" });
 
     const json = fs.readFileSync(address + ".json", {
       encoding: "utf8",
@@ -264,7 +266,7 @@ describe("staking - testpad", () => {
     } catch (e) {
       await initApi();
     }
-    keyring = new Keyring({type: "sr25519"});
+    keyring = new Keyring({ type: "sr25519" });
 
     const json = fs.readFileSync(address + ".json", {
       encoding: "utf8",
@@ -275,7 +277,7 @@ describe("staking - testpad", () => {
     keyring.pairs[0].decodePkcs8("mangata123");
 
     await signSendAndWaitToFinishTx(
-      api?.tx.staking.validate({commission: "99"}),
+      api?.tx.staking.validate({ commission: "99" }),
       user.keyRingPair
     );
     await waitNewBlock();
@@ -287,7 +289,7 @@ describe("staking - testpad", () => {
     } catch (e) {
       await initApi();
     }
-    keyring = new Keyring({type: "sr25519"});
+    keyring = new Keyring({ type: "sr25519" });
 
     const json = fs.readFileSync(address + ".json", {
       encoding: "utf8",
@@ -310,7 +312,7 @@ describe("staking - testpad", () => {
     } catch (e) {
       await initApi();
     }
-    keyring = new Keyring({type: "sr25519"});
+    keyring = new Keyring({ type: "sr25519" });
 
     const json = fs.readFileSync(address + ".json", {
       encoding: "utf8",
@@ -340,7 +342,7 @@ describe("staking - testpad", () => {
     } catch (e) {
       await initApi();
     }
-    keyring = new Keyring({type: "sr25519"});
+    keyring = new Keyring({ type: "sr25519" });
 
     const json = fs.readFileSync(address + ".json", {
       encoding: "utf8",
@@ -363,7 +365,7 @@ describe("staking - testpad", () => {
     } catch (e) {
       await initApi();
     }
-    keyring = new Keyring({type: "sr25519"});
+    keyring = new Keyring({ type: "sr25519" });
 
     const json = fs.readFileSync(address + ".json", {
       encoding: "utf8",
@@ -386,18 +388,18 @@ describe("staking - testpad", () => {
     } catch (e) {
       await initApi();
     }
-    keyring = new Keyring({type: "sr25519"});
+    keyring = new Keyring({ type: "sr25519" });
     sudo = new User(keyring, sudoUserName);
-    const {nonce} = await api.query.system.account(sudo.keyRingPair.address);
+    const { nonce } = await api.query.system.account(sudo.keyRingPair.address);
     await signTx(
       api,
       api.tx.sudo.sudo(api.tx.staking.forceNewEraAlways()),
       sudo.keyRingPair,
-      {nonce: nonce}
+      { nonce: nonce }
     );
   });
   test("create token", async () => {
-    keyring = new Keyring({type: "sr25519"});
+    keyring = new Keyring({ type: "sr25519" });
     sudo = new User(keyring, sudoUserName);
     const json = fs.readFileSync(address + ".json", {
       encoding: "utf8",
@@ -409,7 +411,7 @@ describe("staking - testpad", () => {
     await Assets.setupUserWithCurrencies(user, [new BN("1000000000000")], sudo);
   });
   test("mint", async () => {
-    keyring = new Keyring({type: "sr25519"});
+    keyring = new Keyring({ type: "sr25519" });
     sudo = new User(keyring, sudoUserName);
     const json = fs.readFileSync(address + ".json", {
       encoding: "utf8",
@@ -422,7 +424,7 @@ describe("staking - testpad", () => {
     await sudo.mint(new BN(3), user, new BN("1000000"));
   });
   test("getTokens", async () => {
-    keyring = new Keyring({type: "sr25519"});
+    keyring = new Keyring({ type: "sr25519" });
     sudo = new User(keyring, sudoUserName);
     const json = fs.readFileSync(address + ".json", {
       encoding: "utf8",
@@ -439,7 +441,7 @@ describe("staking - testpad", () => {
     );
     const tokenValues: Map<
       BN,
-      {free: BN; reserved: BN; miscFrozen: BN; feeFrozen: BN}
+      { free: BN; reserved: BN; miscFrozen: BN; feeFrozen: BN }
     > = new Map();
     userEntries.forEach((value) =>
       tokenValues.set(new BN(value[0].toHuman()[1]), {

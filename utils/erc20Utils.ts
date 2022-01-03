@@ -1,5 +1,5 @@
 import BN from "bn.js";
-import {ERC20ABI} from "../utils/abi/ERC20ABI";
+import { ERC20ABI } from "../utils/abi/ERC20ABI";
 
 //CCC
 export const mUSDCAdrress = "0x7abd0fe503c9fcb6b1344f5284c42e6ae48b76b7";

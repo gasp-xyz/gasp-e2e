@@ -3,17 +3,17 @@
  */
 
 import BN from "bn.js";
-import {GovernanceUser} from "../../utils/Framework/User/GovernanceUser";
-import {Keyring} from "@polkadot/api";
-import {Bank} from "../../utils/Framework/Supply/Bank";
-import {Node} from "../../utils/Framework/Node/Node";
-import {SudoUser} from "../../utils/Framework/User/SudoUser";
-import {UserFactory, Users} from "../../utils/Framework/User/UserFactory";
-import {cryptoWaitReady} from "@polkadot/util-crypto";
-import {getEnvironmentRequiredVars, waitForNBlocks} from "../../utils/utils";
+import { GovernanceUser } from "../../utils/Framework/User/GovernanceUser";
+import { Keyring } from "@polkadot/api";
+import { Bank } from "../../utils/Framework/Supply/Bank";
+import { Node } from "../../utils/Framework/Node/Node";
+import { SudoUser } from "../../utils/Framework/User/SudoUser";
+import { UserFactory, Users } from "../../utils/Framework/User/UserFactory";
+import { cryptoWaitReady } from "@polkadot/util-crypto";
+import { getEnvironmentRequiredVars, waitForNBlocks } from "../../utils/utils";
 
 // Global variables
-const {chainUri: environmentUri} = getEnvironmentRequiredVars();
+const { chainUri: environmentUri } = getEnvironmentRequiredVars();
 jest.spyOn(console, "log").mockImplementation(jest.fn());
 jest.setTimeout(15000000);
 
@@ -34,7 +34,7 @@ const accountFundingAmount = new BN(Math.pow(10, 17).toString());
 // Cross-test state
 const state: {
   accounts: [GovernanceUser | null];
-} = {accounts: [null]};
+} = { accounts: [null] };
 
 beforeAll(async () => {
   await cryptoWaitReady(); // Wait for Polkadots WASM backend
@@ -47,7 +47,7 @@ beforeAll(async () => {
   // Set chain variables
   termDuration =
     (await bootnode.api!.derive.elections.info())!.termDuration!.toNumber();
-  keyring = new Keyring({type: "sr25519"});
+  keyring = new Keyring({ type: "sr25519" });
   sudo = UserFactory.createUser(Users.SudoUser, keyring, bootnode) as SudoUser;
 });
 
@@ -111,7 +111,7 @@ describe("Governance -> Candidacy -> Users", () => {
     await candidate.runForCouncil();
     await waitForNBlocks(2);
 
-    await candidate.renounceCandidacy({Candidate: 1});
+    await candidate.renounceCandidacy({ Candidate: 1 });
 
     await waitForNBlocks(2);
 
@@ -146,7 +146,7 @@ describe("Governance -> Candidacy -> Users", () => {
       expect.arrayContaining([candidatesAddress])
     );
 
-    const candidateStatus = {Member: candidate.keyRingPair.address};
+    const candidateStatus = { Member: candidate.keyRingPair.address };
     await candidate.renounceCandidacy(candidateStatus);
 
     // Gonzalo is not automatically running for candidacy in Term 2
@@ -224,11 +224,11 @@ async function cleanState() {
     if (account !== null) {
       // Force clean state
       try {
-        const candidateStatus = {Member: account.keyRingPair.address};
+        const candidateStatus = { Member: account.keyRingPair.address };
         await account?.renounceCandidacy(candidateStatus);
       } catch (e) {}
       try {
-        const candidateStatus = {Candidate: 0};
+        const candidateStatus = { Candidate: 0 };
         await account?.renounceCandidacy(candidateStatus);
       } catch (e) {}
     }

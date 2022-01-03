@@ -1,9 +1,9 @@
 import BN from "bn.js";
-import {Mangata} from "mangata-sdk";
-import {TestParams} from "../testParams";
-import {KeyringPair} from "@polkadot/keyring/types";
-import {preGenerateTransactions, runQuery} from "./testRunner";
-import {performanceTestItem} from "./performanceTestItem";
+import { Mangata } from "mangata-sdk";
+import { TestParams } from "../testParams";
+import { KeyringPair } from "@polkadot/keyring/types";
+import { preGenerateTransactions, runQuery } from "./testRunner";
+import { performanceTestItem } from "./performanceTestItem";
 //not proud about this, but lets leave it like this until we send some optional params.
 export class Ping extends performanceTestItem {
   async arrange(numberOfThreads: number, nodes: string[]): Promise<boolean> {
@@ -32,7 +32,7 @@ export class Ping extends performanceTestItem {
 async function createPings(
   mgaNodeandUsers: Map<
     number,
-    {mgaSdk: Mangata; users: {nonce: BN; keyPair: KeyringPair}[]}
+    { mgaSdk: Mangata; users: { nonce: BN; keyPair: KeyringPair }[] }
   >,
   nodeThread: number
   //  userNo: number
@@ -40,5 +40,5 @@ async function createPings(
   const mgaValue = mgaNodeandUsers.get(nodeThread)!;
   const api = await mgaNodeandUsers.get(nodeThread)?.mgaSdk.getApi();
   const tx = api!.query.timestamp.now();
-  return {mgaValue, tx};
+  return { mgaValue, tx };
 }
