@@ -21,7 +21,7 @@ import {UserFactory, Users} from "../../utils/Framework/User/UserFactory";
 import {Node} from "../../utils/Framework/Node/Node";
 import {MetamaskUser} from "../../utils/Framework/User/MetamaskUser";
 
-jest.setTimeout(FIVE_MIN);
+jest.setTimeout(FIVE_MIN * 2);
 jest.spyOn(console, "log").mockImplementation(jest.fn());
 let driver: WebDriver;
 
@@ -61,7 +61,7 @@ describe("UI main tests - Deposit - ETH", () => {
 
   it("As a User I can deposit ETH from Meta extension", async () => {
     const sidebar = new Sidebar(driver);
-    await sidebar.depositAseetsFromMetamask("kETH", "0.001");
+    await sidebar.depositAseetsFromMetamask("ETH", "0.001");
     await sidebar.waitForTokenToAppear("mETH");
     const tokenValue = await sidebar.getTokenAmount("mETH");
     expect(tokenValue).toEqual("0.001");
@@ -123,7 +123,7 @@ describe("UI main tests - Withdraw - ETH", () => {
     expect(ableToContinueP).toBeTruthy();
     await sudo.mint(MGA_ASSET_ID, testUser1, new BN(10000000000));
 
-    await sidebar.depositAseetsFromMetamask("kETH", "0.001");
+    await sidebar.depositAseetsFromMetamask("ETH", "0.001");
     await sidebar.waitForTokenToAppear("mETH");
     const tokenValue = await sidebar.getTokenAmount("mETH");
     expect(tokenValue).toEqual("0.001");
@@ -138,7 +138,7 @@ describe("UI main tests - Withdraw - ETH", () => {
   it("As a User I can Withdraw ETH from Meta extension", async () => {
     const sidebar = new Sidebar(driver);
     const ethBalanceBefore = await metamaskUser.getEthBalance();
-    await sidebar.withdrawAllAssetsToMetaMask("mETH");
+    await sidebar.withdrawAllAssetsToMetaMask("ETH");
     await sidebar.waitForTokenToDissapear("mETH");
     await testUser1.refreshAmounts(AssetWallet.AFTER);
 

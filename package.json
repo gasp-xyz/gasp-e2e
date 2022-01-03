@@ -9,6 +9,7 @@
   "dependencies": {
     "@types/bn.js": "^4.11.6",
     "@types/bs58": "^4.0.1",
+    "@types/jsonpath": "^0.2.0",
     "@types/node": "^14.14.10",
     "@types/selenium-webdriver": "3.0.19",
     "@types/tiny-async-pool": "^1.0.0",
@@ -21,6 +22,7 @@
     "eslint": "7.26.0",
     "ethers": "^5.4.7",
     "ganache-cli": "^6.12.2",
+    "jsonpath": "^1.1.1",
     "loadsh": "^0.0.4",
     "mangata-sdk": "^0.11.0",
     "package.json": "^2.0.1",
@@ -36,7 +38,7 @@
     "yarn": "^1.22.10"
   },
   "scripts": {
-    "postinstall": "husky install",
+    "postinstall": "husky install ;  yarn config set enableTelemetry 0 ;",
     "start": "ts-node --project tsconfig.json index.ts",
     "start-prod": "node ./build/index.js",
     "build": "tsc --project tsconfig.json",
@@ -57,7 +59,7 @@
     "test-governance-voting": "rm nonce.db ; rm sudo.lock; jest --verbose --runInBand --ci --group=governance-voting",
     "tsc-lint": "tsc  --project tsconfig.json --noEmit",
     "eslint": "node_modules/.bin/eslint --max-warnings 0 . --ext .ts",
-    "xoshiro": "^2.0.3"
+
   },
   "devDependencies": {
     "@babel/core": "^7.13.10",
