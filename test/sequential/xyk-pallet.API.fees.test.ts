@@ -14,7 +14,7 @@ import {
   transferAsset,
 } from "../../utils/tx";
 import BN from "bn.js";
-import {Keyring} from "mangata-sdk/node_modules/@polkadot/api";
+import {Keyring} from "@polkadot/api";
 import {AssetWallet, User} from "../../utils/User";
 import {Assets} from "../../utils/Assets";
 import {getEnvironmentRequiredVars} from "../../utils/utils";

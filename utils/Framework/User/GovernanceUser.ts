@@ -1,5 +1,5 @@
-import {ApiPromise} from "mangata-sdk/node_modules/@polkadot/api";
-import Keyring from "mangata-sdk/node_modules/@polkadot/keyring";
+import {ApiPromise} from "@polkadot/api";
+import Keyring from "@polkadot/keyring";
 import {signSendAndWaitToFinishTx} from "../../txHandler";
 import {BaseUser} from "./BaseUser";
 import {Node} from "../Node/Node";

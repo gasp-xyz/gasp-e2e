@@ -1,5 +1,5 @@
-import {Keyring} from "mangata-sdk/node_modules/@polkadot/api";
-import {KeyringPair} from "mangata-sdk/node_modules/@polkadot/keyring/types";
+import {Keyring} from "@polkadot/api";
+import {KeyringPair} from "@polkadot/keyring/types";
 import BN from "bn.js";
 import {v4 as uuid} from "uuid";
 import {ExtrinsicResult, waitNewBlock} from "./eventListeners";
@@ -17,7 +17,7 @@ import {
 } from "./tx";
 import {getEventResultFromMangataTx} from "./txHandler";
 import {MAX_BALANCE, MGA_ASSET_ID} from "./Constants";
-import {AccountData} from "mangata-sdk/node_modules/@polkadot/types/interfaces/balances";
+import {AccountData} from "@polkadot/types/interfaces/balances";
 import {strict as assert} from "assert";
 
 export enum AssetWallet {

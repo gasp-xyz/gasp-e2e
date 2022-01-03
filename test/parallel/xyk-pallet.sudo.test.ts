@@ -7,7 +7,7 @@
 import {getApi, initApi} from "../../utils/api";
 import {getUserAssets, getSudoKey} from "../../utils/tx";
 import BN from "bn.js";
-import {Keyring} from "mangata-sdk/node_modules/@polkadot/api";
+import {Keyring} from "@polkadot/api";
 import {User} from "../../utils/User";
 import {validateTransactionSucessful} from "../../utils/validators";
 import {getEnvironmentRequiredVars} from "../../utils/utils";

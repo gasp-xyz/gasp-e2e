@@ -1,13 +1,13 @@
 import {
   AddressOrPair,
   SubmittableExtrinsic,
-} from "mangata-sdk/node_modules/@polkadot/api/types";
+} from "@polkadot/api/types";
 import {
   AccountData,
   AccountId32,
-} from "mangata-sdk/node_modules/@polkadot/types/interfaces";
-import {AnyTuple, Codec} from "mangata-sdk/node_modules/@polkadot/types/types";
-import {StorageKey} from "mangata-sdk/node_modules/@polkadot/types";
+} from "@polkadot/types/interfaces";
+import {AnyTuple, Codec} from "@polkadot/types/types";
+import {StorageKey} from "@polkadot/types";
 import {getApi, getMangataInstance} from "./api";
 import BN from "bn.js";
 import {env} from "process";
@@ -15,10 +15,10 @@ import {SudoDB} from "./SudoDB";
 import {signSendAndWaitToFinishTx} from "./txHandler";
 import {getEnvironmentRequiredVars} from "./utils";
 import {MGA_DEFAULT_LIQ_TOKEN} from "./Constants";
-import {Keyring} from "mangata-sdk/node_modules/@polkadot/api";
+import {Keyring} from "@polkadot/api";
 import {User} from "./User";
 import {testLog} from "./Logger";
-import {KeyringPair} from "mangata-sdk/node_modules/@polkadot/keyring/types";
+import {KeyringPair} from "@polkadot/keyring/types";
 import {signTx} from "mangata-sdk";
 import {AnyJson} from "@polkadot/types/types";
 

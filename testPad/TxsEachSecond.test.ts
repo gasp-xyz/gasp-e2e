@@ -1,4 +1,4 @@
-import {Keyring} from "mangata-sdk/node_modules/@polkadot/api";
+import {Keyring} from "@polkadot/api";
 import BN from "bn.js";
 import {getApi, initApi} from "../utils/api";
 import {waitNewBlock} from "../utils/eventListeners";

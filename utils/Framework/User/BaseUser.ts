@@ -1,7 +1,7 @@
 import BN from "bn.js";
 import {getAllAcountEntries} from "../../tx";
 import {User} from "../../User";
-import {hexToBn} from "mangata-sdk/node_modules/@polkadot/util";
+import {hexToBn} from "@polkadot/util";
 export class BaseUser extends User {
   protected userTokens: Map<
     BN,

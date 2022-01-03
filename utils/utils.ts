@@ -1,10 +1,10 @@
-import {formatBalance} from "mangata-sdk/node_modules/@polkadot/util/format";
+import {formatBalance} from "@polkadot/util/format";
 import BN from "bn.js";
 import {getApi, getMangataInstance} from "./api";
 
 import {Assets} from "./Assets";
 import {User} from "./User";
-import Keyring from "mangata-sdk/node_modules/@polkadot/keyring";
+import Keyring from "@polkadot/keyring";
 import {getAccountJSON} from "./frontend/utils/Helper";
 import {ETH_ASSET_ID, MGA_ASSET_ID} from "./Constants";
 import {getBalanceOfPool} from "./tx";

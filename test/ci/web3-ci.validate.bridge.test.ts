@@ -8,7 +8,7 @@ import BN from "bn.js";
 //@ts-ignore
 import bs58 from "bs58";
 import {getApi, initApi} from "../../utils/api";
-import {Keyring} from "mangata-sdk/node_modules/@polkadot/api";
+import {Keyring} from "@polkadot/api";
 import {AssetWallet, User} from "../../utils/User";
 import {waitNewBlock} from "../../utils/eventListeners";
 import {getEnvironmentRequiredVars} from "../../utils/utils";

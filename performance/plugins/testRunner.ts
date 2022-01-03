@@ -2,9 +2,9 @@ import BN from "bn.js";
 import {Mangata} from "mangata-sdk";
 import {testLog} from "../../utils/Logger";
 import {TestParams} from "../testParams";
-import {KeyringPair} from "mangata-sdk/node_modules/@polkadot/keyring/types";
-import {SubmittableExtrinsic} from "mangata-sdk/node_modules/@polkadot/api/types";
-import {SubmittableResult} from "mangata-sdk/node_modules/@polkadot/api";
+import {KeyringPair} from "@polkadot/keyring/types";
+import {SubmittableExtrinsic} from "@polkadot/api/types";
+import {SubmittableResult} from "@polkadot/api";
 
 import asyncPool from "tiny-async-pool";
 

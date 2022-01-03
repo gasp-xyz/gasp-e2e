@@ -7,10 +7,13 @@
 import {getApi, initApi} from "../../utils/api";
 import {burnLiquidity, getBalanceOfPool, getBurnAmount} from "../../utils/tx";
 import BN from "bn.js";
-import {Keyring} from "mangata-sdk/node_modules/@polkadot/api";
+import {Keyring} from "@polkadot/api";
 import {AssetWallet, User} from "../../utils/User";
 import {Assets} from "../../utils/Assets";
-import {fromBNToUnitString, fromStringToUnitString, getEnvironmentRequiredVars} from "../../utils/utils";
+import {
+  fromBNToUnitString,
+  getEnvironmentRequiredVars,
+} from "../../utils/utils";
 import {ExtrinsicResult} from "../../utils/eventListeners";
 import {getEventResultFromMangataTx} from "../../utils/txHandler";
 

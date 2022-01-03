@@ -1,9 +1,9 @@
-import {SubmittableExtrinsic} from "mangata-sdk/node_modules/@polkadot/api/types";
-import {AnyJson} from "mangata-sdk/node_modules/@polkadot/types/types";
+import {SubmittableExtrinsic} from "@polkadot/api/types";
+import {AnyJson} from "@polkadot/types/types";
 import {getApi} from "./api";
-import {GenericEvent} from "mangata-sdk/node_modules/@polkadot/types";
-import {Codec} from "mangata-sdk/node_modules/@polkadot/types/types";
-import {KeyringPair} from "mangata-sdk/node_modules/@polkadot/keyring/types";
+import {GenericEvent} from "@polkadot/types";
+import {Codec} from "@polkadot/types/types";
+import {KeyringPair} from "@polkadot/keyring/types";
 import BN from "bn.js";
 import {SudoDB} from "./SudoDB";
 import {env} from "process";
@@ -12,7 +12,7 @@ import {testLog} from "./Logger";
 import {User} from "./User";
 import {MangataGenericEvent} from "mangata-sdk/build/";
 import {signTx} from "mangata-sdk";
-import {AccountId32} from "mangata-sdk/node_modules/@polkadot/types/interfaces";
+import {AccountId32} from "@polkadot/types/interfaces";
 
 //let wait 7 blocks - 6000 * 7 = 42000; depends on the number of workers.
 
