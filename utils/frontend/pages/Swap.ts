@@ -1,4 +1,5 @@
 import {By, WebDriver} from "selenium-webdriver";
+import {waitNewBlock} from "../../eventListeners";
 import {
   buildDataTestIdXpath,
   clickElement,
@@ -56,6 +57,7 @@ export class Swap {
   async doSwap() {
     const tradeBtn = buildDataTestIdXpath(BTN_SWAP_TRADE);
     await waitForElement(this.driver, tradeBtn);
+    await waitNewBlock();
     const enabled = await (
       await this.driver.findElement(By.xpath(tradeBtn))
     ).isEnabled();
@@ -83,7 +85,7 @@ export class Swap {
   }
 
   private async selectAssetFromModalList(assetName: string) {
-    const assetTestId = `assetSelectModal-asset-${assetName}`;
+    const assetTestId = `TokensModal-asset-${assetName}`;
     const assetLocator = buildDataTestIdXpath(assetTestId);
     await clickElement(this.driver, assetLocator);
   }
@@ -104,6 +106,6 @@ export class Swap {
       buildDataTestIdXpath(DIV_SWAP_GET) +
       "//*[@class='TradingInput__right__label']";
     const text = await getText(this.driver, xpathGetLocator);
-    return text.split(":")[1].trim().replace("MAX", "");
+    return text.split(":")[1].trim().replace("MAX", "").trim();
   }
 }
