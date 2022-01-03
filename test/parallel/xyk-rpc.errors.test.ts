@@ -11,10 +11,10 @@ import {
   calculate_sell_price_rpc,
 } from "../../utils/tx";
 import BN from "bn.js";
-import {bnToHex} from "mangata-sdk/node_modules/@polkadot/util";
+import {bnToHex} from "@polkadot/util";
 import {getEnvironmentRequiredVars} from "../../utils/utils";
 import {Assets} from "../../utils/Assets";
-import {ApiPromise, Keyring} from "mangata-sdk/node_modules/@polkadot/api";
+import {ApiPromise, Keyring} from "@polkadot/api";
 import {User} from "../../utils/User";
 import {testLog} from "../../utils/Logger";
 

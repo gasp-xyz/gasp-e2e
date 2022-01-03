@@ -1,7 +1,7 @@
 import BN from "bn.js";
 import {Mangata} from "mangata-sdk";
 import {TestParams} from "../testParams";
-import {KeyringPair} from "mangata-sdk/node_modules/@polkadot/keyring/types";
+import {KeyringPair} from "@polkadot/keyring/types";
 import {MGA_ASSET_ID} from "../../utils/Constants";
 import {preGenerateTransactions, runTransactions} from "./testRunner";
 import {performanceTestItem} from "./performanceTestItem";

@@ -9,7 +9,7 @@ import {getLock} from "../../utils/tx";
 
 import {ExtrinsicResult, getEventResult} from "../../utils/eventListeners";
 import BN from "bn.js";
-import {Keyring} from "mangata-sdk/node_modules/@polkadot/api";
+import {Keyring} from "@polkadot/api";
 import {User} from "../../utils/User";
 import {getEnvironmentRequiredVars} from "../../utils/utils";
 import {MGA_ASSET_ID, MGA_DEFAULT_LIQ_TOKEN} from "../../utils/Constants";

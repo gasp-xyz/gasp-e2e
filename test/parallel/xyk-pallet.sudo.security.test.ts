@@ -7,7 +7,7 @@
 import {getApi, initApi} from "../../utils/api";
 import {getCurrentNonce} from "../../utils/tx";
 import {ExtrinsicResult} from "../../utils/eventListeners";
-import {Keyring} from "mangata-sdk/node_modules/@polkadot/api";
+import {Keyring} from "@polkadot/api";
 import {AssetWallet, User} from "../../utils/User";
 import {getEnvironmentRequiredVars} from "../../utils/utils";
 import {MGA_ASSET_ID} from "../../utils/Constants";

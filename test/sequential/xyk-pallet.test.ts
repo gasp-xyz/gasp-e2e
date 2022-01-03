@@ -27,8 +27,8 @@ import {
 } from "../../utils/tx";
 import {ExtrinsicResult} from "../../utils/eventListeners";
 import BN from "bn.js";
-import {Keyring} from "mangata-sdk/node_modules/@polkadot/api";
-import {AccountData} from "mangata-sdk/node_modules/@polkadot/types/interfaces/balances";
+import {Keyring} from "@polkadot/api";
+import {AccountData} from "@polkadot/types/interfaces/balances";
 import {
   calculateFees,
   calculateLiqAssetAmount,

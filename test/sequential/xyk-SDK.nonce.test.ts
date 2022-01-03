@@ -11,7 +11,7 @@ import {
   createPoolIfMissing,
   getEnvironmentRequiredVars,
 } from "../../utils/utils";
-import {Keyring} from "mangata-sdk/node_modules/@polkadot/api";
+import {Keyring} from "@polkadot/api";
 import {User} from "../../utils/User";
 import {Mangata} from "mangata-sdk";
 import {getEventResultFromMangataTx} from "../../utils/txHandler";

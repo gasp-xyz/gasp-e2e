@@ -1,5 +1,5 @@
 import * as uuid from "uuid";
-import {ApiPromise} from "mangata-sdk/node_modules/@polkadot/api";
+import {ApiPromise} from "@polkadot/api";
 import {initApi} from "../../api";
 import {testLog} from "../../Logger";
 import BN from "bn.js";

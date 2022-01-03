@@ -12,7 +12,7 @@ import {
 } from "../../utils/tx";
 import {ExtrinsicResult, EventResult} from "../../utils/eventListeners";
 import BN from "bn.js";
-import {Keyring} from "mangata-sdk/node_modules/@polkadot/api";
+import {Keyring} from "@polkadot/api";
 import {AssetWallet, User} from "../../utils/User";
 import {
   validateMintedLiquidityEvent,
