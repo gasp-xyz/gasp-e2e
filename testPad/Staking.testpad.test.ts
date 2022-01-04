@@ -46,7 +46,7 @@ describe("staking - testpad", () => {
   //const address = "5CPFKKg6cUH2XRzzg3Zb4UYVY1cTUzrxUFiqzbF94voStUZx"; // SUDO!
   //const address = "5H8QjhHEtbrttHDJL4ha5Kry2KBgLkerB6cbKFSfJqG44tcW"; // aura!
   //const address = "5HLsUSDLyQjDSNriuhzbzWBNEbfXjUjt5WmALLpQkLLCU2Ex"; // granpa
-  
+
   const address = "5FRL15Qj6DdoULKswCz7zevqe97bnHuEix794pTeGK7MhfDS"; // pair1
   //const address = "5FA3LcCrKMgr9WHqyvtDhDarAXRkJjoYrSy6XnZPKfwiB3sY"; // michal
 
@@ -391,8 +391,8 @@ describe("staking - testpad", () => {
 
     const testUser1 = new User(keyring, "aasd", JSON.parse(json));
     const user = testUser1;
-//    const pk = u8aToHex(user.keyRingPair.publicKey);
-//    const stringPk = pk.toString();
+    //    const pk = u8aToHex(user.keyRingPair.publicKey);
+    //    const stringPk = pk.toString();
     keyring.addPair(user.keyRingPair);
     keyring.pairs[0].decodePkcs8("mangata123");
     sudo = new User(keyring, sudoUserName);
