@@ -5,9 +5,8 @@
  * @group sequential
  */
 import { api, getApi, initApi } from "../../utils/api";
-import { getLock } from "../../utils/tx";
+import { getTokensAccountInfo } from "../../utils/tx";
 
-import { ExtrinsicResult, getEventResult } from "../../utils/eventListeners";
 import BN from "bn.js";
 import { Keyring } from "@polkadot/api";
 import { User } from "../../utils/User";
@@ -44,30 +43,33 @@ describe("xyk-pallet - Sell Asset: validate Errors:", () => {
     keyring.addFromUri(sudoUserName);
 
     await sudo.mint(ASSET_ID_MGA, testUser1, new BN(10000));
-    await sudo.mint(ASSET_ID_MGA_ETH, testUser1, new BN(10000));
+    await sudo.mint(
+      ASSET_ID_MGA_ETH,
+      testUser1,
+      new BN("20000000000000000000")
+    );
     await testUser1.addMGATokens(sudo);
   });
 
-  test("Bond operation locks some amount", async () => {
-    const eventPromise = getEventResult("staking", "Bonded", 14);
+  test("joinCandidates operation reserves some tokens", async () => {
+    const candidates = JSON.parse(
+      JSON.stringify(await api?.query.parachainStaking.candidatePool())
+    );
     await signSendAndWaitToFinishTx(
-      api?.tx.staking.bond(
-        testUser1.keyRingPair.address,
-        new BN(1000),
-        "Staked",
+      api?.tx.parachainStaking.joinCandidates(
+        new BN("10000000000000000000"),
+        new BN(3),
         // @ts-ignore - Mangata bond operation has 4 params, somehow is inheriting the bond operation from polkadot :S
-        new BN(3)
+        new BN(candidates.length)
       ),
       testUser1.keyRingPair
     );
-    const eventResponse = await eventPromise;
-    expect(eventResponse.state).toEqual(ExtrinsicResult.ExtrinsicSuccess);
-    expect(eventResponse.data[1]).toEqual(1000);
-    const lockStatus = await getLock(
+    const tokenStatuses = await getTokensAccountInfo(
       testUser1.keyRingPair.address,
-      ASSET_ID_MGA_ETH
+      new BN(3)
     );
-    expect(lockStatus[0].id).toContain("staking");
-    expect(lockStatus[0].amount).toContain("1.0000 nUnit");
+    expect(tokenStatuses.free.toString()).toEqual("10000000000000000000");
+    expect(tokenStatuses.reserved.toString()).toEqual("10000000000000000000");
+    expect(tokenStatuses.frozen.toString()).toEqual("0");
   });
 });

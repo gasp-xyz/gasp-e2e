@@ -509,14 +509,10 @@ export const burnLiquidity = async (
   return result;
 };
 
-export async function getTokensAccountInfo(account?: string) {
+export async function getTokensAccountInfo(account: string, assetId: BN) {
   const api = getApi();
-  if (account) {
-    const data = await api.query.tokens.accounts(account, new BN(0));
-
-    return JSON.parse(data.toString());
-  }
-  return -1;
+  const data = await api.query.tokens.accounts(account, assetId);
+  return JSON.parse(data.toString());
 }
 
 export async function getTreasury(tokenId: BN): Promise<BN> {

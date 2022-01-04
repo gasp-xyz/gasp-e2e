@@ -232,7 +232,10 @@ export class User {
     await sudo.mint(MGA_ASSET_ID, this, amountFree);
   }
   async getUserTokensAccountInfo() {
-    const accountInfo = await getTokensAccountInfo(this.keyRingPair.address);
+    const accountInfo = await getTokensAccountInfo(
+      this.keyRingPair.address,
+      new BN(0)
+    );
     return accountInfo;
   }
   static async waitUntilBNChanged(
