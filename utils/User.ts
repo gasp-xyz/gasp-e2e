@@ -7,8 +7,8 @@ import {testLog} from "./Logger";
 import {
   buyAsset,
   createPool,
-  getAccountInfo,
   getAllAssets,
+  getTokensAccountInfo,
   getUserAssets,
   mintAsset,
   mintLiquidity,
@@ -231,8 +231,8 @@ export class User {
   ) {
     await sudo.mint(MGA_ASSET_ID, this, amountFree);
   }
-  async getUserAccountInfo() {
-    const accountInfo = await getAccountInfo(this.keyRingPair.address);
+  async getUserTokensAccountInfo() {
+    const accountInfo = await getTokensAccountInfo(this.keyRingPair.address);
     return accountInfo;
   }
   static async waitUntilBNChanged(

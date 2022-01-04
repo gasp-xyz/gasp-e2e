@@ -22,7 +22,6 @@ process.env.NODE_ENV = "test";
 let testUser1: User;
 let testUser2: User;
 let sudo: User;
-let infoUser1Before: any;
 
 let keyring: Keyring;
 //creating pool
@@ -53,7 +52,6 @@ beforeAll(async () => {
 });
 
 beforeEach(async () => {
-  infoUser1Before = await testUser1.getUserAccountInfo();
   await testUser1.refreshAmounts(AssetWallet.BEFORE);
 });
 
@@ -141,8 +139,6 @@ test("xyk-pallet - SecurityTests - Only sudo can perform actions [tokens.mint to
 
 afterEach(async () => {
   await testUser1.refreshAmounts(AssetWallet.AFTER);
-  const infoUser1After = await testUser1.getUserAccountInfo();
-  expect(infoUser1Before).toEqual(infoUser1After);
   const assetValue = testUser1.getAsset(MGA_ASSET_ID);
   expect(assetValue?.amountBefore.free.toNumber()).toBeGreaterThan(
     assetValue?.amountAfter.free.toNumber()!

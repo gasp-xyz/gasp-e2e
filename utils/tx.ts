@@ -515,10 +515,10 @@ export const burnLiquidity = async (
   return result;
 };
 
-export async function getAccountInfo(account?: string) {
+export async function getTokensAccountInfo(account?: string) {
   const api = getApi();
   if (account) {
-    const {data} = await api.query.system.account(account);
+    const data = await api.query.tokens.accounts(account, new BN(0));
 
     return JSON.parse(data.toString());
   }

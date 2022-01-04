@@ -20,7 +20,7 @@ export function fromBNToUnitString(value: BN) {
   const api = getApi();
   const decimals = api?.registry.chainDecimals;
   const valueFormatted = formatBalance(value, {decimals: decimals[0]});
-  return valueFormatted;
+  return valueFormatted.toUpperCase();
 }
 
 export function fromStringToUnitString(value: string) {
