@@ -1,3 +1,4 @@
+//howTorun: ts-node SetupParachain.ts
 import { Keyring } from "@polkadot/api";
 import BN from "bn.js";
 import { waitNewBlock } from "../utils/eventListeners";
