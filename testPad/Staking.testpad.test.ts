@@ -1,4 +1,4 @@
-import {Keyring} from "@polkadot/api";
+import { Keyring } from "@polkadot/api";
 import BN from "bn.js";
 import { api, getApi, initApi } from "../utils/api";
 import { MGA_ASSET_ID } from "../utils/Constants";
@@ -8,9 +8,9 @@ import { signSendAndWaitToFinishTx } from "../utils/txHandler";
 import { User, AssetWallet } from "../utils/User";
 import { getEnvironmentRequiredVars } from "../utils/utils";
 import fs from "fs";
-import {Assets} from "../utils/Assets";
-import {hexToBn} from "@polkadot/util";
-import {signTx} from "mangata-sdk";
+import { Assets } from "../utils/Assets";
+import { hexToBn } from "@polkadot/util";
+import { signTx } from "mangata-sdk";
 
 require("dotenv").config();
 

@@ -1,20 +1,16 @@
-import {
-  ApiPromise,
-  Keyring,
-  WsProvider,
-} from "@polkadot/api";
+import { ApiPromise, Keyring, WsProvider } from "@polkadot/api";
 import BN from "bn.js";
-import {getApi, initApi} from "../utils/api";
-import {waitNewBlock} from "../utils/eventListeners";
-import {User, AssetWallet} from "../utils/User";
-import {getEnvironmentRequiredVars} from "../utils/utils";
+import { getApi, initApi } from "../utils/api";
+import { waitNewBlock } from "../utils/eventListeners";
+import { User, AssetWallet } from "../utils/User";
+import { getEnvironmentRequiredVars } from "../utils/utils";
 import fs from "fs";
-import {signTx} from "mangata-sdk";
+import { signTx } from "mangata-sdk";
 
 require("dotenv").config();
 
 jest.spyOn(console, "log").mockImplementation(jest.fn());
-const {sudo: sudoUserName} = getEnvironmentRequiredVars();
+const { sudo: sudoUserName } = getEnvironmentRequiredVars();
 
 jest.setTimeout(1500000);
 process.env.NODE_ENV = "test";
@@ -46,7 +42,7 @@ describe("staking - testpad", () => {
     const wsUrl = "ws://127.0.0.1:9944";
     const paraId = 2000;
     const pathToFiles = "/home/goncer/runner/mangata-node/";
-    keyring = new Keyring({type: "sr25519"});
+    keyring = new Keyring({ type: "sr25519" });
     sudo = new User(keyring, sudoUserName);
     testUser1 = new User(keyring, user);
     await fs.writeFileSync(

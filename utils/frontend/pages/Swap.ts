@@ -1,5 +1,5 @@
-import {By, WebDriver} from "selenium-webdriver";
-import {waitNewBlock} from "../../eventListeners";
+import { By, WebDriver } from "selenium-webdriver";
+import { waitNewBlock } from "../../eventListeners";
 import {
   buildDataTestIdXpath,
   clickElement,

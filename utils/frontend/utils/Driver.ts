@@ -1,7 +1,7 @@
-import {WebDriver, Capabilities, logging} from "selenium-webdriver";
+import { WebDriver, Capabilities, logging } from "selenium-webdriver";
 
 require("chromedriver");
-const {Builder} = require("selenium-webdriver");
+const { Builder } = require("selenium-webdriver");
 const chrome = require("selenium-webdriver/chrome");
 const path = "utils/frontend/utils/extensions";
 const polkadotExtensionPath = `${path}/polkadot_v0.38.3.crx`;
@@ -25,7 +25,7 @@ export const DriverBuilder = (function () {
     let caps: Capabilities = new Capabilities();
     caps = Capabilities.chrome();
     caps.set("version", "94.0");
-    caps.set("selenoid:options", {enableVNC: true, enableVideo: true});
+    caps.set("selenoid:options", { enableVNC: true, enableVideo: true });
 
     driver = new Builder()
       .forBrowser("chrome")

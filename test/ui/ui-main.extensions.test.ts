@@ -2,19 +2,19 @@
  *
  * @group ui
  */
-import {WebDriver} from "selenium-webdriver";
-import {getApi, initApi} from "../../utils/api";
-import {Mangata} from "../../utils/frontend/pages/Mangata";
-import {Sidebar} from "../../utils/frontend/pages/Sidebar";
-import {DriverBuilder} from "../../utils/frontend/utils/Driver";
+import { WebDriver } from "selenium-webdriver";
+import { getApi, initApi } from "../../utils/api";
+import { Mangata } from "../../utils/frontend/pages/Mangata";
+import { Sidebar } from "../../utils/frontend/pages/Sidebar";
+import { DriverBuilder } from "../../utils/frontend/utils/Driver";
 import {
   setupAllExtensions,
   addExtraLogs,
   openInNewTab,
   swithToTheOtherTab,
 } from "../../utils/frontend/utils/Helper";
-import {FIVE_MIN} from "../../utils/Constants";
-import {Polkadot} from "../../utils/frontend/pages/Polkadot";
+import { FIVE_MIN } from "../../utils/Constants";
+import { Polkadot } from "../../utils/frontend/pages/Polkadot";
 
 jest.setTimeout(FIVE_MIN);
 jest.spyOn(console, "log").mockImplementation(jest.fn());
