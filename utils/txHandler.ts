@@ -235,7 +235,8 @@ function createEventResultfromExtrinsic(extrinsicResult: GenericEvent) {
 /// Do a Tx and expect a success. Good for setups.
 export async function signSendAndWaitToFinishTx(
   fun: SubmittableExtrinsic<"promise"> | undefined,
-  account: KeyringPair
+  account: KeyringPair,
+  strictSuccess: boolean = true
 ) {
   const nonce = await getCurrentNonce(account.address);
   const api = getApi();
@@ -244,7 +245,10 @@ export async function signSendAndWaitToFinishTx(
   }).then((result) => {
     return getEventResultFromMangataTx(result);
   });
-  expect(result.state).toEqual(ExtrinsicResult.ExtrinsicSuccess);
+  if (strictSuccess) {
+    expect(result.state).toEqual(ExtrinsicResult.ExtrinsicSuccess);
+  }
+
   return result;
 }
 
