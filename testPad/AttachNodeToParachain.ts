@@ -135,4 +135,3 @@ main()
   .then(() => {
     testLog.getLog().info("Done -> run Crl+C for api disconnect");
   });
-
