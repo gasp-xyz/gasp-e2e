@@ -388,10 +388,17 @@ export const mintAsset = async (
   account: any,
   asset_id: BN,
   target: any,
-  amount: BN
+  amount: BN,
+  sudoNonce: BN = new BN(-1)
 ) => {
   const api = getApi();
-  const nonce = await SudoDB.getInstance().getSudoNonce(account.address);
+  let nonce;
+  if (sudoNonce.lte(new BN(-1))) {
+    nonce = new BN(await SudoDB.getInstance().getSudoNonce(account.address));
+  } else {
+    nonce = sudoNonce;
+  }
+
   testLog.getLog().info(`W[${env.JEST_WORKER_ID}] - sudoNonce: ${nonce} `);
   const txResult = await signTx(
     api,
