@@ -16,8 +16,9 @@ import { User } from "../../utils/User";
 import { Mangata } from "mangata-sdk";
 import { getEventResultFromMangataTx } from "../../utils/txHandler";
 import { ExtrinsicResult } from "../../utils/eventListeners";
-import { ETH_ASSET_ID, MGA_ASSET_ID } from "../../utils/Constants";
+import { MGA_ASSET_ID } from "../../utils/Constants";
 import { waitNewBlock } from "../../utils/eventListeners";
+import { Assets } from "../../utils/Assets";
 
 jest.spyOn(console, "log").mockImplementation(jest.fn());
 jest.setTimeout(1500000);
@@ -25,6 +26,7 @@ process.env.NODE_ENV = "test";
 const { sudo: sudoUserName } = getEnvironmentRequiredVars();
 
 let testUser: User;
+let firstCurrency: BN;
 let sudo: User;
 let keyring: Keyring;
 let mangata: Mangata;
@@ -49,13 +51,18 @@ beforeAll(async () => {
 
 describe("SDK test - Nonce tests - user", () => {
   beforeAll(async () => {
-    await sudo.mint(MGA_ASSET_ID, testUser, new BN(1000000));
-    await sudo.mint(ETH_ASSET_ID, testUser, new BN(1000000));
+    await sudo.mint(MGA_ASSET_ID, testUser, new BN(10000000000));
+    //add two curerncies and balance to testUser:
+    [firstCurrency] = await Assets.setupUserWithCurrencies(
+      testUser,
+      [new BN(10000000000)],
+      sudo
+    );
     await createPoolIfMissing(
       sudo,
       new BN(100000).toString(),
       MGA_ASSET_ID,
-      ETH_ASSET_ID
+      firstCurrency
     );
   });
 
@@ -64,7 +71,7 @@ describe("SDK test - Nonce tests - user", () => {
     userNonce.push(await mangata.getNonce(testUser.keyRingPair.address));
     const event = await mangata.sellAsset(
       testUser.keyRingPair,
-      ETH_ASSET_ID.toString(),
+      firstCurrency.toString(),
       MGA_ASSET_ID.toString(),
       new BN(1000),
       new BN(0)
@@ -82,7 +89,7 @@ describe("SDK test - Nonce tests - user", () => {
       promises.push(
         mangata.sellAsset(
           testUser.keyRingPair,
-          ETH_ASSET_ID.toString(),
+          firstCurrency.toString(),
           MGA_ASSET_ID.toString(),
           new BN(1000),
           new BN(0)
@@ -108,7 +115,7 @@ describe("SDK test - Nonce tests - user", () => {
       promises.push(
         mangata.sellAsset(
           testUser.keyRingPair,
-          ETH_ASSET_ID.toString(),
+          firstCurrency.toString(),
           MGA_ASSET_ID.toString(),
           new BN(1000 + index),
           new BN(0),
@@ -154,7 +161,7 @@ describe("SDK test - Nonce tests - user", () => {
     userNonce.push(await mangata.getNonce(testUser.keyRingPair.address));
     const events = await mangata.sellAsset(
       testUser.keyRingPair,
-      ETH_ASSET_ID.toString(),
+      firstCurrency.toString(),
       MGA_ASSET_ID.toString(),
       new BN(1000),
       new BN(0),
@@ -167,7 +174,7 @@ describe("SDK test - Nonce tests - user", () => {
     //perform an operation without custom nonce.
     const events2 = await mangata.sellAsset(
       testUser.keyRingPair,
-      ETH_ASSET_ID.toString(),
+      firstCurrency.toString(),
       MGA_ASSET_ID.toString(),
       new BN(1000),
       new BN(0)
@@ -185,7 +192,7 @@ describe("SDK test - Nonce tests - user", () => {
     // perform an operation to have nonce > 0.
     await mangata.sellAsset(
       testUser.keyRingPair,
-      ETH_ASSET_ID.toString(),
+      firstCurrency.toString(),
       MGA_ASSET_ID.toString(),
       new BN(1000),
       new BN(0)
@@ -197,7 +204,7 @@ describe("SDK test - Nonce tests - user", () => {
       mangata
         .sellAsset(
           testUser.keyRingPair,
-          ETH_ASSET_ID.toString(),
+          firstCurrency.toString(),
           MGA_ASSET_ID.toString(),
           new BN(1000),
           new BN(0),
