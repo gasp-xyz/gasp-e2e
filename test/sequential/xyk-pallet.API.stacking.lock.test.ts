@@ -6,6 +6,7 @@
  */
 import { api, getApi, initApi } from "../../utils/api";
 import { getTokensAccountInfo } from "../../utils/tx";
+import { hexToBn } from "@polkadot/util";
 
 import BN from "bn.js";
 import { Keyring } from "@polkadot/api";
@@ -68,8 +69,12 @@ describe("xyk-pallet - Sell Asset: validate Errors:", () => {
       testUser1.keyRingPair.address,
       new BN(3)
     );
-    expect(tokenStatuses.free.toString()).toEqual("10000000000000000000");
-    expect(tokenStatuses.reserved.toString()).toEqual("10000000000000000000");
+    expect(hexToBn(tokenStatuses.free.toString())).bnEqual(
+      new BN("10000000000000000000")
+    );
+    expect(hexToBn(tokenStatuses.reserved.toString())).bnEqual(
+      new BN("10000000000000000000")
+    );
     expect(tokenStatuses.frozen.toString()).toEqual("0");
   });
 });

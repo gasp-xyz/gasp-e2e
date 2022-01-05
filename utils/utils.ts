@@ -230,18 +230,18 @@ export async function createPoolIfMissing(
   sudo: User,
   amountInPool: string,
   firstAssetId = MGA_ASSET_ID,
-  seccondAssetID = ETH_ASSET_ID
+  seccondAssetId = ETH_ASSET_ID
 ) {
-  const balance = await getBalanceOfPool(firstAssetId, seccondAssetID);
+  const balance = await getBalanceOfPool(firstAssetId, seccondAssetId);
   if (balance[0].isZero() || balance[1].isZero()) {
     await sudo.mint(firstAssetId, sudo, new BN(amountInPool));
-    await sudo.mint(ETH_ASSET_ID, sudo, new BN(amountInPool));
+    await sudo.mint(seccondAssetId, sudo, new BN(amountInPool));
     const poolValue = new BN(amountInPool).div(new BN(2));
     await sudo.createPoolToAsset(
       poolValue,
       poolValue,
       firstAssetId,
-      seccondAssetID
+      seccondAssetId
     );
   }
 }
