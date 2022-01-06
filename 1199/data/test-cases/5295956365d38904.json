@@ -1,0 +1,263 @@
+{
+  "uid" : "5295956365d38904",
+  "name" : "When user cancel a TX, User gets notified",
+  "fullName" : "UI tests - A user gets notified when error.When user cancel a TX, User gets notified",
+  "historyId" : "b8780b9695d4c1399fef30246f623413",
+  "time" : {
+    "start" : 1641478389619,
+    "stop" : 1641478389648,
+    "duration" : 29
+  },
+  "description" : "",
+  "descriptionHtml" : "",
+  "status" : "failed",
+  "statusMessage" : "NoSuchSessionError: session timed out or not found",
+  "statusTrace" : "NoSuchSessionError: session timed out or not found\n                    at Object.throwDecodedError (/home/runner/work/mangata-e2e/mangata-e2e/node_modules/selenium-webdriver/lib/error.js:514:15)\n                    at parseHttpResponse (/home/runner/work/mangata-e2e/mangata-e2e/node_modules/selenium-webdriver/lib/http.js:519:13)\n                    at /home/runner/work/mangata-e2e/mangata-e2e/node_modules/selenium-webdriver/lib/http.js:441:30\n                    at runMicrotasks (<anonymous>)\n                    at processTicksAndRejections (node:internal/process/task_queues:96:5)\n                From: Task: WebDriver.manage().logs().get(browser)\n                    at mixin.schedule (/home/runner/work/mangata-e2e/mangata-e2e/node_modules/selenium-webdriver/lib/webdriver.js:807:17)\n                    at Logs.get (/home/runner/work/mangata-e2e/mangata-e2e/node_modules/selenium-webdriver/lib/webdriver.js:1731:25)\n                    at forEach (/home/runner/work/mangata-e2e/mangata-e2e/utils/frontend/utils/Helper.ts:116:8)\n                    at Array.forEach (<anonymous>)\n                    at addExtraLogs (/home/runner/work/mangata-e2e/mangata-e2e/utils/frontend/utils/Helper.ts:112:47)\n                    at Object.<anonymous> (/home/runner/work/mangata-e2e/mangata-e2e/test/ui/ui.tx-modal.test.ts:255:11)\n                    at runMicrotasks (<anonymous>)\n                    at processTicksAndRejections (node:internal/process/task_queues:96:5)",
+  "flaky" : false,
+  "newFailed" : false,
+  "beforeStages" : [ ],
+  "afterStages" : [ ],
+  "labels" : [ {
+    "name" : "suite",
+    "value" : "UI tests - A user gets notified when error"
+  }, {
+    "name" : "testClass",
+    "value" : "UI tests - A user gets notified when error"
+  }, {
+    "name" : "testMethod",
+    "value" : "When user cancel a TX, User gets notified"
+  }, {
+    "name" : "package",
+    "value" : "UI tests - A user gets notified when error"
+  }, {
+    "name" : "resultFormat",
+    "value" : "allure1"
+  } ],
+  "parameters" : [ ],
+  "links" : [ ],
+  "hidden" : false,
+  "retry" : false,
+  "extra" : {
+    "severity" : "normal",
+    "retries" : [ ],
+    "categories" : [ {
+      "name" : "Product defects",
+      "matchedStatuses" : [ ],
+      "flaky" : false
+    } ],
+    "history" : {
+      "statistic" : {
+        "failed" : 34,
+        "broken" : 0,
+        "skipped" : 0,
+        "passed" : 0,
+        "unknown" : 0,
+        "total" : 34
+      },
+      "items" : [ {
+        "uid" : "7c60e590da5b8fc8",
+        "reportUrl" : "https://mangata-finance.github.io/mangata-e2e/1197//#testresult/7c60e590da5b8fc8",
+        "status" : "failed",
+        "statusDetails" : "Error: WebSocket is not connected",
+        "time" : {
+          "start" : 1641433334321,
+          "stop" : 1641433392845,
+          "duration" : 58524
+        }
+      }, {
+        "uid" : "608f3a3c298c93f5",
+        "reportUrl" : "https://mangata-finance.github.io/mangata-e2e/1195//#testresult/608f3a3c298c93f5",
+        "status" : "failed",
+        "statusDetails" : "Error: WebSocket is not connected",
+        "time" : {
+          "start" : 1641433414632,
+          "stop" : 1641433476590,
+          "duration" : 61958
+        }
+      }, {
+        "uid" : "b8458b666eabf76c",
+        "reportUrl" : "https://mangata-finance.github.io/mangata-e2e/1196//#testresult/b8458b666eabf76c",
+        "status" : "failed",
+        "statusDetails" : "Error: WebSocket is not connected",
+        "time" : {
+          "start" : 1641433154048,
+          "stop" : 1641433208173,
+          "duration" : 54125
+        }
+      }, {
+        "uid" : "d954463eb8c87f9",
+        "reportUrl" : "https://mangata-finance.github.io/mangata-e2e/1194//#testresult/d954463eb8c87f9",
+        "status" : "failed",
+        "statusDetails" : "NoSuchSessionError: session timed out or not found",
+        "time" : {
+          "start" : 1641375239559,
+          "stop" : 1641375239562,
+          "duration" : 3
+        }
+      }, {
+        "uid" : "a6476186c9497ce7",
+        "reportUrl" : "https://mangata-finance.github.io/mangata-e2e/1170//#testresult/a6476186c9497ce7",
+        "status" : "failed",
+        "statusDetails" : "Error: WebSocket is not connected",
+        "time" : {
+          "start" : 1640914824322,
+          "stop" : 1640914883794,
+          "duration" : 59472
+        }
+      }, {
+        "uid" : "a34c4387368f196c",
+        "reportUrl" : "https://mangata-finance.github.io/mangata-e2e/1169//#testresult/a34c4387368f196c",
+        "status" : "failed",
+        "statusDetails" : "Error: WebSocket is not connected",
+        "time" : {
+          "start" : 1640914763133,
+          "stop" : 1640914815358,
+          "duration" : 52225
+        }
+      }, {
+        "uid" : "2a7225ac29043849",
+        "reportUrl" : "https://mangata-finance.github.io/mangata-e2e/1166//#testresult/2a7225ac29043849",
+        "status" : "failed",
+        "statusDetails" : "Error: WebSocket is not connected",
+        "time" : {
+          "start" : 1640828385119,
+          "stop" : 1640828443841,
+          "duration" : 58722
+        }
+      }, {
+        "uid" : "e6da73c14b651643",
+        "reportUrl" : "https://mangata-finance.github.io/mangata-e2e/1167//#testresult/e6da73c14b651643",
+        "status" : "failed",
+        "statusDetails" : "Error: WebSocket is not connected",
+        "time" : {
+          "start" : 1640828435605,
+          "stop" : 1640828500189,
+          "duration" : 64584
+        }
+      }, {
+        "uid" : "be578830bbe7ad20",
+        "reportUrl" : "https://mangata-finance.github.io/mangata-e2e/1162//#testresult/be578830bbe7ad20",
+        "status" : "failed",
+        "statusDetails" : "Error: WebSocket is not connected",
+        "time" : {
+          "start" : 1640741984552,
+          "stop" : 1640742045459,
+          "duration" : 60907
+        }
+      }, {
+        "uid" : "12b7c2d6a0968be3",
+        "reportUrl" : "https://mangata-finance.github.io/mangata-e2e/1163//#testresult/12b7c2d6a0968be3",
+        "status" : "failed",
+        "statusDetails" : "Error: WebSocket is not connected",
+        "time" : {
+          "start" : 1640742066756,
+          "stop" : 1640742120981,
+          "duration" : 54225
+        }
+      }, {
+        "uid" : "8ed0067f3c485bf9",
+        "reportUrl" : "https://mangata-finance.github.io/mangata-e2e/1161//#testresult/8ed0067f3c485bf9",
+        "status" : "failed",
+        "statusDetails" : "Error: WebSocket is not connected",
+        "time" : {
+          "start" : 1640741766813,
+          "stop" : 1640741847850,
+          "duration" : 81037
+        }
+      }, {
+        "uid" : "1f0cb929980a6f3b",
+        "reportUrl" : "https://mangata-finance.github.io/mangata-e2e/1157//#testresult/1f0cb929980a6f3b",
+        "status" : "failed",
+        "statusDetails" : "Error: WebSocket is not connected",
+        "time" : {
+          "start" : 1640655535977,
+          "stop" : 1640655594024,
+          "duration" : 58047
+        }
+      }, {
+        "uid" : "5dd8cf6452513844",
+        "reportUrl" : "https://mangata-finance.github.io/mangata-e2e/1158//#testresult/5dd8cf6452513844",
+        "status" : "failed",
+        "statusDetails" : "TimeoutError: Waiting for element to be located By(xpath, //button[text()='Connect'])\n                Wait timed out after 30000ms",
+        "time" : {
+          "start" : 1640655432525,
+          "stop" : 1640655503287,
+          "duration" : 70762
+        }
+      }, {
+        "uid" : "54feabdc6a8ee53",
+        "reportUrl" : "https://mangata-finance.github.io/mangata-e2e/1159//#testresult/54feabdc6a8ee53",
+        "status" : "failed",
+        "statusDetails" : "TimeoutError: Waiting for element to be located By(xpath, //button[text()='Connect'])\n                Wait timed out after 30000ms",
+        "time" : {
+          "start" : 1640655419977,
+          "stop" : 1640655489576,
+          "duration" : 69599
+        }
+      }, {
+        "uid" : "1f96b3c85fc48ac7",
+        "reportUrl" : "https://mangata-finance.github.io/mangata-e2e/1156//#testresult/1f96b3c85fc48ac7",
+        "status" : "failed",
+        "statusDetails" : "NoSuchSessionError: session timed out or not found",
+        "time" : {
+          "start" : 1640607492263,
+          "stop" : 1640607492271,
+          "duration" : 8
+        }
+      }, {
+        "uid" : "9bf90204b56def20",
+        "reportUrl" : "https://mangata-finance.github.io/mangata-e2e/1153//#testresult/9bf90204b56def20",
+        "status" : "failed",
+        "statusDetails" : "Error: WebSocket is not connected",
+        "time" : {
+          "start" : 1640569710866,
+          "stop" : 1640569770758,
+          "duration" : 59892
+        }
+      }, {
+        "uid" : "ef66ef24ccf0cb91",
+        "reportUrl" : "https://mangata-finance.github.io/mangata-e2e/1152//#testresult/ef66ef24ccf0cb91",
+        "status" : "failed",
+        "statusDetails" : "TimeoutError: Waiting for element to be located By(xpath, //button[text()='Connect'])\n                Wait timed out after 30003ms",
+        "time" : {
+          "start" : 1640569008434,
+          "stop" : 1640569076561,
+          "duration" : 68127
+        }
+      }, {
+        "uid" : "772639c42a5b764c",
+        "reportUrl" : "https://mangata-finance.github.io/mangata-e2e/1150//#testresult/772639c42a5b764c",
+        "status" : "failed",
+        "statusDetails" : "Error: WebSocket is not connected",
+        "time" : {
+          "start" : 1640482835781,
+          "stop" : 1640482892140,
+          "duration" : 56359
+        }
+      }, {
+        "uid" : "829d4101685397f3",
+        "reportUrl" : "https://mangata-finance.github.io/mangata-e2e/1148//#testresult/829d4101685397f3",
+        "status" : "failed",
+        "statusDetails" : "TimeoutError: Waiting for element to be located By(xpath, //button[text()='Connect'])\n                Wait timed out after 30005ms",
+        "time" : {
+          "start" : 1640482728503,
+          "stop" : 1640482799426,
+          "duration" : 70923
+        }
+      }, {
+        "uid" : "226a8a62e69af6b2",
+        "reportUrl" : "https://mangata-finance.github.io/mangata-e2e/1149//#testresult/226a8a62e69af6b2",
+        "status" : "failed",
+        "statusDetails" : "thrown: Event {\n                  \"isTrusted\": true,\n                }",
+        "time" : {
+          "start" : 1640482353583,
+          "stop" : 1640482354836,
+          "duration" : 1253
+        }
+      } ]
+    },
+    "tags" : [ ]
+  },
+  "source" : "5295956365d38904.json",
+  "parameterValues" : [ ]
+}
