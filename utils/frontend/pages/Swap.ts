@@ -1,11 +1,10 @@
 import {By, WebDriver} from "selenium-webdriver";
-import {waitNewBlock} from "../../eventListeners";
 import {
   buildDataTestIdXpath,
   clickElement,
   getAttribute,
   getText,
-  waitForElement,
+  waitForElementEnabled,
   writeText,
 } from "../utils/Helper";
 
@@ -56,8 +55,7 @@ export class Swap {
 
   async doSwap() {
     const tradeBtn = buildDataTestIdXpath(BTN_SWAP_TRADE);
-    await waitForElement(this.driver, tradeBtn);
-    await waitNewBlock();
+    await waitForElementEnabled(this.driver, tradeBtn);
     const enabled = await (
       await this.driver.findElement(By.xpath(tradeBtn))
     ).isEnabled();
