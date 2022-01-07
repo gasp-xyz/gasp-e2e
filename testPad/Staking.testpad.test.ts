@@ -367,7 +367,6 @@ describe("staking - testpad", () => {
       api?.tx.parachainStaking.joinCandidates(
         new BN("100000000000000000000"),
         new BN(3),
-        // @ts-ignore - Mangata bond operation has 4 params, somehow is inheriting the bond operation from polkadot :S
         new BN(3)
       ),
       user.keyRingPair
@@ -461,7 +460,7 @@ describe("staking - testpad", () => {
 
     await signSendAndWaitToFinishTx(
       api?.tx.session.setKeys(
-        "0x14e27b6f63c2bda95660f4f9e4b9bc44c264ff53974ec30d6e70212863774900aa7d4cb1c033c94c5e43a11663dd135312ac952390d44daf06d33db80ed17e21a673135fdcd8ef78760921a67e94fc47be6c38fa5cd26ee6daa0c67ddad77d032ea8dff6ef2c247031055272e7c7e891670e104116948780dadb14d8ee7f2a0f76e05564c6033b0b38d5c2e216ae66bafd74e08f112cf9003e9286d5bdb36857649eefa3b0c07abc361e89f7a7ca4d429cdc23710cf0e2b2e3ba982ef1ff8b5a02aec943eb0c864f62ba890fe16d4267b1c34c4dd374b3d81757364bf2c5b6aef0",
+        "0x7026878018ff63c8796cfac4d601adc294937d1c5ec838ab13264cc2e842ba4e",
         "0x00"
       ),
       user.keyRingPair
