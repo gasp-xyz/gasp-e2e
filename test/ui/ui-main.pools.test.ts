@@ -4,6 +4,7 @@
  */
 import { Keyring } from "@polkadot/api";
 import BN from "bn.js";
+
 import { WebDriver } from "selenium-webdriver";
 import { getApi, initApi } from "../../utils/api";
 import { Mangata } from "../../utils/frontend/pages/Mangata";
@@ -15,6 +16,7 @@ import {
   setupAllExtensions,
   addExtraLogs,
 } from "../../utils/frontend/utils/Helper";
+
 import { AssetWallet, User } from "../../utils/User";
 import { getEnvironmentRequiredVars, waitForNBlocks } from "../../utils/utils";
 import { FIVE_MIN, MGA_ASSET_NAME } from "../../utils/Constants";

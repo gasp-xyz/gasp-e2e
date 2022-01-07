@@ -6,8 +6,10 @@ import { Polkadot } from "../pages/Polkadot";
 import fs from "fs";
 import { testLog } from "../../Logger";
 import BN from "bn.js";
+
 import { Reporter } from "jest-allure/dist/Reporter";
 const { By, until } = require("selenium-webdriver");
+
 const timeOut = 60000;
 require("chromedriver");
 const outputPath = `reports/artifacts`;

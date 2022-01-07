@@ -1,5 +1,7 @@
+
 import { By, WebDriver } from "selenium-webdriver";
 import { waitForNBlocks } from "../../utils";
+
 import {
   buildDataTestIdXpath,
   clickElement,
