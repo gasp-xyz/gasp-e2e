@@ -26,9 +26,9 @@ export class Swap {
   private inputPayLocator = buildDataTestIdXpath(DIV_SWAP_PAY) + "//input";
   private inputGetLocator = buildDataTestIdXpath(DIV_SWAP_GET) + "//input";
   private btnPayMaxLocator =
-    buildDataTestIdXpath(DIV_SWAP_PAY) + "//button[contains(text(),'Max')]";
+    buildDataTestIdXpath(DIV_SWAP_PAY) + "//*[contains(text(),'Max')]";
   private btnGetMaxLocator =
-    buildDataTestIdXpath(DIV_SWAP_GET) + "//button[contains(text(),'Max')]";
+    buildDataTestIdXpath(DIV_SWAP_GET) + "//*[contains(text(),'Max')]";
 
   async toggleSwap() {
     const selector = buildDataTestIdXpath(TAB_SWAP_TEST_ID);

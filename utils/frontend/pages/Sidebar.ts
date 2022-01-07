@@ -98,7 +98,7 @@ export class Sidebar {
         } else {
           resolve();
         }
-      }, 20000);
+      }, 60000);
       await waitForElementToDissapear(this.driver, SPINNER_LOADING);
       resolve();
     });
