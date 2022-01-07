@@ -1,0 +1,264 @@
+{
+  "uid" : "2776c5f6d87586b",
+  "name" : "Modal contains currencies and amounts when providing liquidity",
+  "fullName" : "UI tests - A user can see the new Modal.Modal contains currencies and amounts when providing liquidity",
+  "historyId" : "8f851e11da5b03f8366fe7834b8b806f",
+  "time" : {
+    "start" : 1641519348489,
+    "stop" : 1641519481650,
+    "duration" : 133161
+  },
+  "description" : "",
+  "descriptionHtml" : "",
+  "status" : "passed",
+  "flaky" : false,
+  "newFailed" : true,
+  "beforeStages" : [ ],
+  "testStage" : {
+    "status" : "passed",
+    "steps" : [ ],
+    "attachments" : [ {
+      "uid" : "73e9a8f254896497",
+      "name" : "Screeenshot",
+      "source" : "73e9a8f254896497.png",
+      "type" : "image/png",
+      "size" : 80856
+    } ],
+    "parameters" : [ ],
+    "stepsCount" : 0,
+    "attachmentsCount" : 1,
+    "shouldDisplayMessage" : false,
+    "hasContent" : true
+  },
+  "afterStages" : [ ],
+  "labels" : [ {
+    "name" : "suite",
+    "value" : "UI tests - A user can see the new Modal"
+  }, {
+    "name" : "testClass",
+    "value" : "UI tests - A user can see the new Modal"
+  }, {
+    "name" : "testMethod",
+    "value" : "Modal contains currencies and amounts when providing liquidity"
+  }, {
+    "name" : "package",
+    "value" : "UI tests - A user can see the new Modal"
+  }, {
+    "name" : "resultFormat",
+    "value" : "allure1"
+  } ],
+  "parameters" : [ ],
+  "links" : [ ],
+  "hidden" : false,
+  "retry" : false,
+  "extra" : {
+    "severity" : "normal",
+    "retries" : [ ],
+    "categories" : [ ],
+    "history" : {
+      "statistic" : {
+        "failed" : 21,
+        "broken" : 0,
+        "skipped" : 0,
+        "passed" : 16,
+        "unknown" : 0,
+        "total" : 37
+      },
+      "items" : [ {
+        "uid" : "5ffaa82074c65d7f",
+        "reportUrl" : "https://mangata-finance.github.io/mangata-e2e/1202//#testresult/5ffaa82074c65d7f",
+        "status" : "passed",
+        "time" : {
+          "start" : 1641519373774,
+          "stop" : 1641519523638,
+          "duration" : 149864
+        }
+      }, {
+        "uid" : "7e7b4b3889a80f52",
+        "reportUrl" : "https://mangata-finance.github.io/mangata-e2e/1200//#testresult/7e7b4b3889a80f52",
+        "status" : "failed",
+        "statusDetails" : "NoSuchSessionError: session timed out or not found",
+        "time" : {
+          "start" : 1641519466296,
+          "stop" : 1641519468482,
+          "duration" : 2186
+        }
+      }, {
+        "uid" : "c118ae0ba586d61c",
+        "reportUrl" : "https://mangata-finance.github.io/mangata-e2e/1199//#testresult/c118ae0ba586d61c",
+        "status" : "failed",
+        "statusDetails" : "NoSuchSessionError: session timed out or not found",
+        "time" : {
+          "start" : 1641478386976,
+          "stop" : 1641478389492,
+          "duration" : 2516
+        }
+      }, {
+        "uid" : "6de689641beaa80c",
+        "reportUrl" : "https://mangata-finance.github.io/mangata-e2e/1197//#testresult/6de689641beaa80c",
+        "status" : "passed",
+        "time" : {
+          "start" : 1641432943590,
+          "stop" : 1641433069557,
+          "duration" : 125967
+        }
+      }, {
+        "uid" : "24a285fb4ac2d621",
+        "reportUrl" : "https://mangata-finance.github.io/mangata-e2e/1195//#testresult/24a285fb4ac2d621",
+        "status" : "passed",
+        "time" : {
+          "start" : 1641432994534,
+          "stop" : 1641433135551,
+          "duration" : 141017
+        }
+      }, {
+        "uid" : "4ee9390bf8aa4c2d",
+        "reportUrl" : "https://mangata-finance.github.io/mangata-e2e/1196//#testresult/4ee9390bf8aa4c2d",
+        "status" : "failed",
+        "statusDetails" : "WebDriverError: element click intercepted: Element <button class=\"button btn-primary first-time-flow__button\" disabled=\"\" type=\"submit\">...</button> is not clickable at point (674, 828). Other element would receive the click: <form class=\"first-time-flow__form\">...</form>\n                  (Session info: chrome=94.0.4606.61)\n                  (Driver info: chromedriver=94.0.4606.61 (418b78f5838ed0b1c69bb4e51ea0252171854915-refs/branch-heads/4606@{#1204}),platform=Linux 5.11.0-1022-azure x86_64)",
+        "time" : {
+          "start" : 1641432874867,
+          "stop" : 1641432904777,
+          "duration" : 29910
+        }
+      }, {
+        "uid" : "cb3cff87cadf367a",
+        "reportUrl" : "https://mangata-finance.github.io/mangata-e2e/1194//#testresult/cb3cff87cadf367a",
+        "status" : "failed",
+        "statusDetails" : "NoSuchSessionError: session timed out or not found",
+        "time" : {
+          "start" : 1641375237242,
+          "stop" : 1641375239470,
+          "duration" : 2228
+        }
+      }, {
+        "uid" : "2436b57d047dada6",
+        "reportUrl" : "https://mangata-finance.github.io/mangata-e2e/1170//#testresult/2436b57d047dada6",
+        "status" : "passed",
+        "time" : {
+          "start" : 1640914422556,
+          "stop" : 1640914549608,
+          "duration" : 127052
+        }
+      }, {
+        "uid" : "9bc35a68a4792f4b",
+        "reportUrl" : "https://mangata-finance.github.io/mangata-e2e/1169//#testresult/9bc35a68a4792f4b",
+        "status" : "passed",
+        "time" : {
+          "start" : 1640914411807,
+          "stop" : 1640914525642,
+          "duration" : 113835
+        }
+      }, {
+        "uid" : "c38956324ae01ad9",
+        "reportUrl" : "https://mangata-finance.github.io/mangata-e2e/1166//#testresult/c38956324ae01ad9",
+        "status" : "failed",
+        "statusDetails" : "TimeoutError: Waiting for element to be located By(xpath, //*[contains(text(),'Your tokens')])\n                Wait timed out after 60002ms",
+        "time" : {
+          "start" : 1640827956444,
+          "stop" : 1640828118448,
+          "duration" : 162004
+        }
+      }, {
+        "uid" : "960a884c1fda15b0",
+        "reportUrl" : "https://mangata-finance.github.io/mangata-e2e/1167//#testresult/960a884c1fda15b0",
+        "status" : "passed",
+        "time" : {
+          "start" : 1640828004457,
+          "stop" : 1640828143611,
+          "duration" : 139154
+        }
+      }, {
+        "uid" : "29e00e8af4b31075",
+        "reportUrl" : "https://mangata-finance.github.io/mangata-e2e/1162//#testresult/29e00e8af4b31075",
+        "status" : "passed",
+        "time" : {
+          "start" : 1640741569562,
+          "stop" : 1640741707615,
+          "duration" : 138053
+        }
+      }, {
+        "uid" : "c49d6ce25937acb3",
+        "reportUrl" : "https://mangata-finance.github.io/mangata-e2e/1163//#testresult/c49d6ce25937acb3",
+        "status" : "failed",
+        "statusDetails" : "TimeoutError: Waiting for element to be located By(xpath, //*[contains(text(),'Your tokens')])\n                Wait timed out after 60005ms",
+        "time" : {
+          "start" : 1640741625748,
+          "stop" : 1640741784404,
+          "duration" : 158656
+        }
+      }, {
+        "uid" : "3af3d8ea0f180447",
+        "reportUrl" : "https://mangata-finance.github.io/mangata-e2e/1161//#testresult/3af3d8ea0f180447",
+        "status" : "failed",
+        "statusDetails" : "NoSuchSessionError: session timed out or not found",
+        "time" : {
+          "start" : 1640741676874,
+          "stop" : 1640741679003,
+          "duration" : 2129
+        }
+      }, {
+        "uid" : "aa7bbff0e12d8d55",
+        "reportUrl" : "https://mangata-finance.github.io/mangata-e2e/1157//#testresult/aa7bbff0e12d8d55",
+        "status" : "passed",
+        "time" : {
+          "start" : 1640655154641,
+          "stop" : 1640655274644,
+          "duration" : 120003
+        }
+      }, {
+        "uid" : "4a66b402e4fd5dd3",
+        "reportUrl" : "https://mangata-finance.github.io/mangata-e2e/1158//#testresult/4a66b402e4fd5dd3",
+        "status" : "failed",
+        "statusDetails" : "TimeoutError: Waiting for element to be located By(xpath, //button[text()='Connect'])\n                Wait timed out after 30006ms",
+        "time" : {
+          "start" : 1640655148628,
+          "stop" : 1640655219923,
+          "duration" : 71295
+        }
+      }, {
+        "uid" : "3184fa4cb8817274",
+        "reportUrl" : "https://mangata-finance.github.io/mangata-e2e/1159//#testresult/3184fa4cb8817274",
+        "status" : "failed",
+        "statusDetails" : "TimeoutError: Waiting for element to be located By(xpath, //button[text()='Connect'])\n                Wait timed out after 30016ms",
+        "time" : {
+          "start" : 1640655143621,
+          "stop" : 1640655211473,
+          "duration" : 67852
+        }
+      }, {
+        "uid" : "4dac50601d6d00b4",
+        "reportUrl" : "https://mangata-finance.github.io/mangata-e2e/1156//#testresult/4dac50601d6d00b4",
+        "status" : "failed",
+        "statusDetails" : "NoSuchSessionError: session timed out or not found",
+        "time" : {
+          "start" : 1640607489684,
+          "stop" : 1640607492209,
+          "duration" : 2525
+        }
+      }, {
+        "uid" : "a4ab4aaf50fa558f",
+        "reportUrl" : "https://mangata-finance.github.io/mangata-e2e/1153//#testresult/a4ab4aaf50fa558f",
+        "status" : "passed",
+        "time" : {
+          "start" : 1640569319754,
+          "stop" : 1640569445440,
+          "duration" : 125686
+        }
+      }, {
+        "uid" : "ebb4ab450f16f2b3",
+        "reportUrl" : "https://mangata-finance.github.io/mangata-e2e/1152//#testresult/ebb4ab450f16f2b3",
+        "status" : "failed",
+        "statusDetails" : "TimeoutError: Waiting for element to be located By(xpath, //button[text()='Connect'])\n                Wait timed out after 30003ms",
+        "time" : {
+          "start" : 1640568735205,
+          "stop" : 1640568803287,
+          "duration" : 68082
+        }
+      } ]
+    },
+    "tags" : [ ]
+  },
+  "source" : "2776c5f6d87586b.json",
+  "parameterValues" : [ ]
+}
