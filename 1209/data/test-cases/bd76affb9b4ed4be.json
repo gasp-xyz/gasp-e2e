@@ -1,0 +1,193 @@
+{
+  "uid" : "bd76affb9b4ed4be",
+  "name" : "Nodes are up and syncing",
+  "fullName" : "Cluster -> Healthcheck.Nodes are up and syncing",
+  "historyId" : "f8b79e72eb1c1018f8bf18c56909f1c7",
+  "time" : {
+    "start" : 1641787641923,
+    "stop" : 1641789141926,
+    "duration" : 1500003
+  },
+  "description" : "",
+  "descriptionHtml" : "",
+  "status" : "failed",
+  "statusMessage" : ": Timeout - Async callback was not invoked within the 1500000 ms timeout specified by jest.setTimeout.",
+  "statusTrace" : "Timeout - Async callback was not invoked within the 1500000 ms timeout specified by jest.setTimeout.Error: \n                    at new Spec (/home/runner/work/mangata-e2e/mangata-e2e/node_modules/jest-jasmine2/build/jasmine/Spec.js:116:22)\n                    at new Spec (/home/runner/work/mangata-e2e/mangata-e2e/node_modules/jest-jasmine2/build/setup_jest_globals.js:78:9)\n                    at specFactory (/home/runner/work/mangata-e2e/mangata-e2e/node_modules/jest-jasmine2/build/jasmine/Env.js:523:24)\n                    at Env.it (/home/runner/work/mangata-e2e/mangata-e2e/node_modules/jest-jasmine2/build/jasmine/Env.js:592:24)\n                    at Env.it (/home/runner/work/mangata-e2e/mangata-e2e/node_modules/jest-jasmine2/build/jasmineAsyncInstall.js:134:23)\n                    at test (/home/runner/work/mangata-e2e/mangata-e2e/node_modules/jest-jasmine2/build/jasmine/jasmineLight.js:100:21)\n                    at Suite.<anonymous> (/home/runner/work/mangata-e2e/mangata-e2e/test/cluster/cluster.healthcheck.test.ts:52:3)\n                    at addSpecsToSuite (/home/runner/work/mangata-e2e/mangata-e2e/node_modules/jest-jasmine2/build/jasmine/Env.js:444:51)\n                    at Env.describe (/home/runner/work/mangata-e2e/mangata-e2e/node_modules/jest-jasmine2/build/jasmine/Env.js:414:11)\n                    at describe (/home/runner/work/mangata-e2e/mangata-e2e/node_modules/jest-jasmine2/build/jasmine/jasmineLight.js:88:18)\n                    at Object.<anonymous> (/home/runner/work/mangata-e2e/mangata-e2e/test/cluster/cluster.healthcheck.test.ts:51:1)\n                    at Runtime._execModule (/home/runner/work/mangata-e2e/mangata-e2e/node_modules/jest-runtime/build/index.js:1299:24)\n                    at Runtime._loadModule (/home/runner/work/mangata-e2e/mangata-e2e/node_modules/jest-runtime/build/index.js:898:12)\n                    at Runtime.requireModule (/home/runner/work/mangata-e2e/mangata-e2e/node_modules/jest-runtime/build/index.js:746:10)\n                    at jasmine2 (/home/runner/work/mangata-e2e/mangata-e2e/node_modules/jest-jasmine2/build/index.js:230:13)\n                    at runTestInternal (/home/runner/work/mangata-e2e/mangata-e2e/node_modules/jest-runner/build/runTest.js:380:22)\n                    at runTest (/home/runner/work/mangata-e2e/mangata-e2e/node_modules/jest-runner/build/runTest.js:472:34)",
+  "flaky" : false,
+  "newFailed" : false,
+  "beforeStages" : [ ],
+  "afterStages" : [ ],
+  "labels" : [ {
+    "name" : "suite",
+    "value" : "Cluster -> Healthcheck"
+  }, {
+    "name" : "testClass",
+    "value" : "Cluster -> Healthcheck"
+  }, {
+    "name" : "testMethod",
+    "value" : "Nodes are up and syncing"
+  }, {
+    "name" : "package",
+    "value" : "Cluster -> Healthcheck"
+  }, {
+    "name" : "resultFormat",
+    "value" : "allure1"
+  } ],
+  "parameters" : [ ],
+  "links" : [ ],
+  "hidden" : false,
+  "retry" : false,
+  "extra" : {
+    "severity" : "normal",
+    "retries" : [ ],
+    "categories" : [ {
+      "name" : "Product defects",
+      "matchedStatuses" : [ ],
+      "flaky" : false
+    } ],
+    "history" : {
+      "statistic" : {
+        "failed" : 5,
+        "broken" : 0,
+        "skipped" : 0,
+        "passed" : 10,
+        "unknown" : 0,
+        "total" : 15
+      },
+      "items" : [ {
+        "uid" : "34d88a8da6a363cf",
+        "reportUrl" : "https://mangata-finance.github.io/mangata-e2e/1207//#testresult/34d88a8da6a363cf",
+        "status" : "failed",
+        "statusDetails" : ": Timeout - Async callback was not invoked within the 1500000 ms timeout specified by jest.setTimeout.",
+        "time" : {
+          "start" : 1641701297865,
+          "stop" : 1641702797869,
+          "duration" : 1500004
+        }
+      }, {
+        "uid" : "8db7d7e6a1865006",
+        "reportUrl" : "https://mangata-finance.github.io/mangata-e2e/1205//#testresult/8db7d7e6a1865006",
+        "status" : "failed",
+        "statusDetails" : ": Timeout - Async callback was not invoked within the 1500000 ms timeout specified by jest.setTimeout.",
+        "time" : {
+          "start" : 1641614849799,
+          "stop" : 1641616349802,
+          "duration" : 1500003
+        }
+      }, {
+        "uid" : "5a6db6bf58b5e97f",
+        "reportUrl" : "https://mangata-finance.github.io/mangata-e2e/1203//#testresult/5a6db6bf58b5e97f",
+        "status" : "failed",
+        "statusDetails" : ": Timeout - Async callback was not invoked within the 1500000 ms timeout specified by jest.setTimeout.",
+        "time" : {
+          "start" : 1641528445606,
+          "stop" : 1641529945609,
+          "duration" : 1500003
+        }
+      }, {
+        "uid" : "6480045c160d74f0",
+        "reportUrl" : "https://mangata-finance.github.io/mangata-e2e/1198//#testresult/6480045c160d74f0",
+        "status" : "failed",
+        "statusDetails" : "Error: Timeout - Async callback was not invoked within the 1500000 ms timeout specified by jest.setTimeout.",
+        "time" : {
+          "start" : 1641443583576,
+          "stop" : 1641445083580,
+          "duration" : 1500004
+        }
+      }, {
+        "uid" : "cdd32b35a9a8c70f",
+        "reportUrl" : "https://mangata-finance.github.io/mangata-e2e/1172//#testresult/cdd32b35a9a8c70f",
+        "status" : "passed",
+        "time" : {
+          "start" : 1640923672659,
+          "stop" : 1640923698118,
+          "duration" : 25459
+        }
+      }, {
+        "uid" : "79050766b3deb2",
+        "reportUrl" : "https://mangata-finance.github.io/mangata-e2e/1168//#testresult/79050766b3deb2",
+        "status" : "passed",
+        "time" : {
+          "start" : 1640837283626,
+          "stop" : 1640837310174,
+          "duration" : 26548
+        }
+      }, {
+        "uid" : "52444155dfcef322",
+        "reportUrl" : "https://mangata-finance.github.io/mangata-e2e/1164//#testresult/52444155dfcef322",
+        "status" : "passed",
+        "time" : {
+          "start" : 1640750934891,
+          "stop" : 1640750964164,
+          "duration" : 29273
+        }
+      }, {
+        "uid" : "9041bd93b59aa771",
+        "reportUrl" : "https://mangata-finance.github.io/mangata-e2e/1160//#testresult/9041bd93b59aa771",
+        "status" : "passed",
+        "time" : {
+          "start" : 1640664422276,
+          "stop" : 1640664450136,
+          "duration" : 27860
+        }
+      }, {
+        "uid" : "6bea0f3ac784b4bf",
+        "reportUrl" : "https://mangata-finance.github.io/mangata-e2e/1155//#testresult/6bea0f3ac784b4bf",
+        "status" : "passed",
+        "time" : {
+          "start" : 1640578166421,
+          "stop" : 1640578194149,
+          "duration" : 27728
+        }
+      }, {
+        "uid" : "5901ffc8c8cdf559",
+        "reportUrl" : "https://mangata-finance.github.io/mangata-e2e/1151//#testresult/5901ffc8c8cdf559",
+        "status" : "passed",
+        "time" : {
+          "start" : 1640491704794,
+          "stop" : 1640491734125,
+          "duration" : 29331
+        }
+      }, {
+        "uid" : "9b68e2194405c7da",
+        "reportUrl" : "https://mangata-finance.github.io/mangata-e2e/1147//#testresult/9b68e2194405c7da",
+        "status" : "passed",
+        "time" : {
+          "start" : 1640405245001,
+          "stop" : 1640405274132,
+          "duration" : 29131
+        }
+      }, {
+        "uid" : "bcae6d8045aa8079",
+        "reportUrl" : "https://mangata-finance.github.io/mangata-e2e/1143//#testresult/bcae6d8045aa8079",
+        "status" : "passed",
+        "time" : {
+          "start" : 1640318911499,
+          "stop" : 1640318940235,
+          "duration" : 28736
+        }
+      }, {
+        "uid" : "7f00c3d656789eee",
+        "reportUrl" : "https://mangata-finance.github.io/mangata-e2e/1137//#testresult/7f00c3d656789eee",
+        "status" : "passed",
+        "time" : {
+          "start" : 1640232488526,
+          "stop" : 1640232516134,
+          "duration" : 27608
+        }
+      }, {
+        "uid" : "6e71d86863ba61b5",
+        "reportUrl" : "https://mangata-finance.github.io/mangata-e2e/1133//#testresult/6e71d86863ba61b5",
+        "status" : "passed",
+        "time" : {
+          "start" : 1640146039456,
+          "stop" : 1640146068129,
+          "duration" : 28673
+        }
+      } ]
+    },
+    "tags" : [ ]
+  },
+  "source" : "bd76affb9b4ed4be.json",
+  "parameterValues" : [ ]
+}
