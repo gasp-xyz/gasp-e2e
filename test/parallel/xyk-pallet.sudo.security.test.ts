@@ -140,7 +140,5 @@ test("xyk-pallet - SecurityTests - Only sudo can perform actions [tokens.mint to
 afterEach(async () => {
   await testUser1.refreshAmounts(AssetWallet.AFTER);
   const assetValue = testUser1.getAsset(MGA_ASSET_ID);
-  expect(assetValue?.amountBefore.free.toNumber()).toBeGreaterThan(
-    assetValue?.amountAfter.free.toNumber()!
-  );
+  expect(assetValue?.amountAfter.free).bnLt(assetValue?.amountBefore.free!);
 });

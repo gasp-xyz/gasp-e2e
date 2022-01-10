@@ -66,7 +66,11 @@ describe("xyk-pallet - treasury tests [Mangata]: on treasury we store", () => {
     keyring.addPair(sudo.keyRingPair);
 
     mgaTokenId = await getAssetId(MGA_ASSET_NAME);
-    await sudo.mint(mgaTokenId, testUser1, new BN(defaultCurrecyValue));
+    await sudo.mint(
+      mgaTokenId,
+      testUser1,
+      new BN(defaultCurrecyValue).add(new BN(Math.pow(10, 18).toString()))
+    );
     testUser1.addAsset(mgaTokenId);
     secondCurrency = (
       await Assets.setupUserWithCurrencies(
@@ -279,7 +283,11 @@ describe("xyk-pallet - treasury tests [Connected - Mangata]: on treasury we stor
     keyring.addPair(sudo.keyRingPair);
 
     mgaTokenId = await getAssetId(MGA_ASSET_NAME);
-    await sudo.mint(mgaTokenId, testUser1, new BN(defaultCurrecyValue));
+    await sudo.mint(
+      mgaTokenId,
+      testUser1,
+      new BN(defaultCurrecyValue).add(new BN(Math.pow(10, 18).toString()))
+    );
     testUser1.addAsset(mgaTokenId);
     connectedToMGA = (
       await Assets.setupUserWithCurrencies(
@@ -567,7 +575,11 @@ describe("xyk-pallet - treasury tests [Connected - Mangata]: Error cases", () =>
 
     await waitNewBlock();
     mgaTokenId = await getAssetId(MGA_ASSET_NAME);
-    await sudo.mint(mgaTokenId, testUser1, new BN(defaultCurrecyValue));
+    await sudo.mint(
+      mgaTokenId,
+      testUser1,
+      new BN(defaultCurrecyValue).add(new BN(Math.pow(10, 18).toString()))
+    );
     testUser1.addAsset(mgaTokenId);
     connectedToMGA = (
       await Assets.setupUserWithCurrencies(testUser1, [MAX_BALANCE], sudo)

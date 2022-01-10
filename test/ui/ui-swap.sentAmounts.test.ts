@@ -30,7 +30,6 @@ import { FIVE_MIN, MGA_ASSET_NAME } from "../../utils/Constants";
 import { Assets } from "../../utils/Assets";
 import { Node } from "../../utils/Framework/Node/Node";
 
-
 const MGA_ASSET_ID = new BN(0);
 
 jest.setTimeout(FIVE_MIN);
@@ -58,7 +57,6 @@ describe("UI tests - A user swapping tokens:", () => {
     keyring = new Keyring({ type: "sr25519" });
     driver = await DriverBuilder.getInstance();
     const { mnemonic } = await setupAllExtensions(driver);
-
 
     testUser1 = new User(keyring);
     testUser1.addFromMnemonic(keyring, mnemonic);

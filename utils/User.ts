@@ -227,7 +227,7 @@ export class User {
 
   async addMGATokens(
     sudo: User,
-    amountFree: BN = new BN(Math.pow(10, 11).toString())
+    amountFree: BN = new BN(Math.pow(10, 18).toString())
   ) {
     await sudo.mint(MGA_ASSET_ID, this, amountFree);
   }

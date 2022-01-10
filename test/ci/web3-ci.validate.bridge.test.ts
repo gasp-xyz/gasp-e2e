@@ -66,7 +66,7 @@ describe("Test Withdraw - Deposit", () => {
     await sudo.mint(
       mDOTAssetId,
       testUser1,
-      new BN(Math.pow(10, 11).toString())
+      new BN(Math.pow(10, 18).toString())
     );
     testUser1.addAsset(MGA_ASSET_ID.toString());
     testUser1.addAsset(mDOTAssetId.toString());

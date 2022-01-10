@@ -43,7 +43,11 @@ describe("xyk-pallet - Sell Asset: validate Errors:", () => {
     sudo = new User(keyring, sudoUserName);
     keyring.addFromUri(sudoUserName);
 
-    await sudo.mint(ASSET_ID_MGA, testUser1, new BN(10000));
+    await sudo.mint(
+      ASSET_ID_MGA,
+      testUser1,
+      new BN(10000).add(new BN(Math.pow(10, 18).toString()))
+    );
     await sudo.mint(
       ASSET_ID_MGA_ETH,
       testUser1,
