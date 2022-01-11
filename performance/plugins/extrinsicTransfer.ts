@@ -1,10 +1,10 @@
 import BN from "bn.js";
-import {Mangata} from "mangata-sdk";
-import {TestParams} from "../testParams";
-import {KeyringPair} from "@polkadot/keyring/types";
-import {MGA_ASSET_ID} from "../../utils/Constants";
-import {preGenerateTransactions, runTransactions} from "./testRunner";
-import {performanceTestItem} from "./performanceTestItem";
+import { Mangata } from "mangata-sdk";
+import { TestParams } from "../testParams";
+import { KeyringPair } from "@polkadot/keyring/types";
+import { MGA_ASSET_ID } from "../../utils/Constants";
+import { preGenerateTransactions, runTransactions } from "./testRunner";
+import { performanceTestItem } from "./performanceTestItem";
 
 export class ExtrinsicTransfer extends performanceTestItem {
   async arrange(numberOfThreads: number, nodes: string[]): Promise<boolean> {
@@ -25,7 +25,7 @@ export class ExtrinsicTransfer extends performanceTestItem {
 async function createAndSignTransfer(
   mgaNodeandUsers: Map<
     number,
-    {mgaSdk: Mangata; users: {nonce: BN; keyPair: KeyringPair}[]}
+    { mgaSdk: Mangata; users: { nonce: BN; keyPair: KeyringPair }[] }
   >,
   nodeThread: number,
   userNo: number
@@ -45,5 +45,5 @@ async function createAndSignTransfer(
   const signed = tx.sign(srcUser!.keyPair, {
     nonce: mgaValue.users[userNo]!.nonce,
   });
-  return {mgaValue, signed};
+  return { mgaValue, signed };
 }

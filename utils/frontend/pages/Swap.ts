@@ -1,4 +1,7 @@
-import {By, WebDriver} from "selenium-webdriver";
+
+import { By, WebDriver } from "selenium-webdriver";
+import { waitNewBlock } from "../../eventListeners";
+
 import {
   buildDataTestIdXpath,
   clickElement,
@@ -87,11 +90,15 @@ export class Swap {
     const assetLocator = buildDataTestIdXpath(assetTestId);
     await clickElement(this.driver, assetLocator);
   }
-  async swapAssets(fromAsset: string, toAsset: string, amount: string) {
+  async swapAssets(
+    fromAsset: string,
+    toAsset: string,
+    amount: string = "0.001"
+  ) {
     await this.toggleSwap();
     await this.selectPayAsset(fromAsset);
     await this.selectGetAsset(toAsset);
-    await this.addPayAssetAmount("0.001");
+    await this.addPayAssetAmount(amount);
     await this.doSwap();
   }
 

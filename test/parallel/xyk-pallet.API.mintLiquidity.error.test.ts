@@ -4,15 +4,15 @@
  * @group api
  * @group parallel
  */
-import {api, getApi, getMangataInstance, initApi} from "../../utils/api";
-import {getBalanceOfPool, mintLiquidity} from "../../utils/tx";
-import {ExtrinsicResult} from "../../utils/eventListeners";
+import { api, getApi, getMangataInstance, initApi } from "../../utils/api";
+import { getBalanceOfPool, mintLiquidity } from "../../utils/tx";
+import { ExtrinsicResult } from "../../utils/eventListeners";
 import BN from "bn.js";
-import {Keyring} from "@polkadot/api";
-import {AssetWallet, User} from "../../utils/User";
-import {validateUnmodified} from "../../utils/validators";
-import {Assets} from "../../utils/Assets";
-import {getEnvironmentRequiredVars} from "../../utils/utils";
+import { Keyring } from "@polkadot/api";
+import { AssetWallet, User } from "../../utils/User";
+import { validateUnmodified } from "../../utils/validators";
+import { Assets } from "../../utils/Assets";
+import { getEnvironmentRequiredVars } from "../../utils/utils";
 import {
   getEventResultFromMangataTx,
   signSendAndWaitToFinishTx,
@@ -22,7 +22,7 @@ jest.spyOn(console, "log").mockImplementation(jest.fn());
 jest.setTimeout(1500000);
 process.env.NODE_ENV = "test";
 
-const {sudo: sudoUserName} = getEnvironmentRequiredVars();
+const { sudo: sudoUserName } = getEnvironmentRequiredVars();
 
 const firstAssetAmount = new BN(50000);
 const secondAssetAmount = new BN(50000);
@@ -47,7 +47,7 @@ describe("xyk-pallet - Mint liquidity tests: MintLiquidity Errors:", () => {
   });
 
   beforeEach(async () => {
-    keyring = new Keyring({type: "sr25519"});
+    keyring = new Keyring({ type: "sr25519" });
 
     // setup users
     testUser1 = new User(keyring);

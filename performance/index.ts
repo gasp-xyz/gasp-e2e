@@ -4,8 +4,8 @@
 
 //npx ts-node ./performance/index.ts threadNumber=3 testCaseName=transfer duration=1000 totalTransactions=25000 nodes=ws://ws1,ws://ws2
 
-import {TestParams} from "./testParams";
-import {Commands, TestFactory, TestsCases} from "./testFactory";
+import { TestParams } from "./testParams";
+import { Commands, TestFactory, TestsCases } from "./testFactory";
 
 async function main() {
   const args = process.argv.slice(2);
@@ -79,7 +79,8 @@ function verifyArgs(params: TestParams, test: string) {
     params.testCase == null ||
     params.duration == null ||
     params.nodes == null ||
-    params.totalTx == null
+    params.totalTx == null ||
+    test == null
   ) {
     throw new Error(`You must pass in the following arugments:
         threadNumber: number

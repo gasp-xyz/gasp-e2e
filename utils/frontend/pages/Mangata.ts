@@ -1,4 +1,4 @@
-import {By, WebDriver} from "selenium-webdriver";
+import { By, WebDriver } from "selenium-webdriver";
 import {
   BTC_ASSET_NAME,
   DOT_ASSET_NAME,
@@ -6,9 +6,9 @@ import {
   MGA_ASSET_NAME,
   USDC_ASSET_NAME,
 } from "../../Constants";
-import {getEnvironmentRequiredVars, sleep} from "../../utils";
-import {clickElement, waitForElement} from "../utils/Helper";
-import {Sidebar} from "./Sidebar";
+import { getEnvironmentRequiredVars, sleep } from "../../utils";
+import { clickElement, waitForElement } from "../utils/Helper";
+import { Sidebar } from "./Sidebar";
 
 //xpaths
 const MSG_RECEIVE_TOKENS = `//div[text()='You will receive test tokens']`;
@@ -31,7 +31,7 @@ export class Mangata {
 
   constructor(driver: WebDriver) {
     this.driver = driver;
-    const {uiUri} = getEnvironmentRequiredVars();
+    const { uiUri } = getEnvironmentRequiredVars();
     this.uiUri = uiUri;
   }
 

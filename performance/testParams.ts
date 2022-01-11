@@ -1,4 +1,4 @@
-import {Commands, TestsCases} from "./testFactory";
+import { Commands, TestsCases } from "./testFactory";
 
 export class TestParams {
   public threads = 2;

@@ -4,18 +4,18 @@
  * @group asset
  * @group parallel
  */
-import {getApi, initApi} from "../../utils/api";
+import { getApi, initApi } from "../../utils/api";
 import {
   calculate_sell_price_local,
   calculate_sell_price_rpc,
   getBalanceOfPool,
 } from "../../utils/tx";
 import BN from "bn.js";
-import {Keyring} from "@polkadot/api";
-import {AssetWallet, User} from "../../utils/User";
-import {Assets} from "../../utils/Assets";
-import {calculateFees, getEnvironmentRequiredVars} from "../../utils/utils";
-import {testLog} from "../../utils/Logger";
+import { Keyring } from "@polkadot/api";
+import { AssetWallet, User } from "../../utils/User";
+import { Assets } from "../../utils/Assets";
+import { calculateFees, getEnvironmentRequiredVars } from "../../utils/utils";
+import { testLog } from "../../utils/Logger";
 
 jest.spyOn(console, "log").mockImplementation(jest.fn());
 jest.setTimeout(1500000);
@@ -30,7 +30,7 @@ let firstCurrency: BN;
 let secondCurrency: BN;
 
 // Assuming the pallet's AccountId
-const {xykPalletAddress: pallet_address, sudo: sudoUserName} =
+const { xykPalletAddress: pallet_address, sudo: sudoUserName } =
   getEnvironmentRequiredVars();
 const defaultCurrecyValue = new BN(250000);
 
@@ -43,7 +43,7 @@ beforeAll(async () => {
 });
 
 beforeEach(async () => {
-  keyring = new Keyring({type: "sr25519"});
+  keyring = new Keyring({ type: "sr25519" });
 
   // setup users
   testUser1 = new User(keyring);
@@ -215,7 +215,7 @@ test("xyk-pallet - AssetsOperation: sellAsset [minAmountOut = 0], sell an alread
     .getAsset(boughtAssetId)
     ?.amountBefore.free!.sub(sellPriceLocal);
 
-  const {treasury, treasuryBurn} = calculateFees(amount);
+  const { treasury, treasuryBurn } = calculateFees(amount);
   const bothFees = treasury.add(treasuryBurn);
   expect(pallet.getAsset(boughtAssetId)?.amountAfter.free!).bnEqual(
     diffFromWallet!

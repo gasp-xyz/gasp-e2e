@@ -1,24 +1,24 @@
-import {Keyring} from "@polkadot/api";
-import {KeyringPair} from "@polkadot/keyring/types";
+import { Keyring } from "@polkadot/api";
+import { KeyringPair } from "@polkadot/keyring/types";
 import BN from "bn.js";
-import {v4 as uuid} from "uuid";
-import {ExtrinsicResult, waitNewBlock} from "./eventListeners";
-import {testLog} from "./Logger";
+import { v4 as uuid } from "uuid";
+import { ExtrinsicResult, waitNewBlock } from "./eventListeners";
+import { testLog } from "./Logger";
 import {
   buyAsset,
   createPool,
-  getAccountInfo,
   getAllAssets,
+  getTokensAccountInfo,
   getUserAssets,
   mintAsset,
   mintLiquidity,
   sellAsset,
   transferAll,
 } from "./tx";
-import {getEventResultFromMangataTx} from "./txHandler";
-import {MAX_BALANCE, MGA_ASSET_ID} from "./Constants";
-import {AccountData} from "@polkadot/types/interfaces/balances";
-import {strict as assert} from "assert";
+import { getEventResultFromMangataTx } from "./txHandler";
+import { MAX_BALANCE, MGA_ASSET_ID } from "./Constants";
+import { AccountData } from "@polkadot/types/interfaces/balances";
+import { strict as assert } from "assert";
 
 export enum AssetWallet {
   BEFORE,
@@ -89,7 +89,7 @@ export class User {
     }
     return this.assets.find((asset) => asset.currencyId === currecncyId);
   }
-  getFreeAssetAmount(currecncyId: any, onlyFreeValue = true) {
+  getFreeAssetAmount(currecncyId: any) {
     const wallet = this.assets.find(
       (asset) => asset.currencyId === currecncyId
     );
@@ -97,7 +97,7 @@ export class User {
   }
   getFreeAssetAmounts() {
     const assets = this.assets.map((asset) =>
-      this.getFreeAssetAmount(asset.currencyId, true)
+      this.getFreeAssetAmount(asset.currencyId)
     );
     return assets;
   }
@@ -227,12 +227,15 @@ export class User {
 
   async addMGATokens(
     sudo: User,
-    amountFree: BN = new BN(Math.pow(10, 11).toString())
+    amountFree: BN = new BN(Math.pow(10, 18).toString())
   ) {
     await sudo.mint(MGA_ASSET_ID, this, amountFree);
   }
-  async getUserAccountInfo() {
-    const accountInfo = await getAccountInfo(this.keyRingPair.address);
+  async getUserTokensAccountInfo() {
+    const accountInfo = await getTokensAccountInfo(
+      this.keyRingPair.address,
+      new BN(0)
+    );
     return accountInfo;
   }
   static async waitUntilBNChanged(
@@ -254,8 +257,8 @@ export class Asset {
 
   constructor(
     currencyId: BN,
-    amountBefore = {free: new BN(0)} as AccountData,
-    amountAfter = {free: new BN(0)} as AccountData
+    amountBefore = { free: new BN(0) } as AccountData,
+    amountAfter = { free: new BN(0) } as AccountData
   ) {
     this.currencyId = currencyId;
     this.amountBefore = amountBefore;

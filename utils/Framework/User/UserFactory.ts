@@ -1,10 +1,10 @@
-import {Keyring} from "@polkadot/api";
+import { Keyring } from "@polkadot/api";
 
-import {Node} from "../Node/Node";
+import { Node } from "../Node/Node";
 
-import {GovernanceUser} from "./GovernanceUser";
-import {SudoUser} from "./SudoUser";
-import {MetamaskUser} from "./MetamaskUser";
+import { GovernanceUser } from "./GovernanceUser";
+import { SudoUser } from "./SudoUser";
+import { MetamaskUser } from "./MetamaskUser";
 
 export enum Users {
   GovernanceUser,
@@ -24,7 +24,7 @@ export abstract class UserFactory {
       case Users.GovernanceUser:
         return new GovernanceUser(keyring, name, json, node);
       case Users.SudoUser:
-        return new SudoUser(keyring, name, json, node);
+        return new SudoUser(keyring, json, node);
       case Users.MetamaskUser:
         return new MetamaskUser(keyring, json, node);
       default:

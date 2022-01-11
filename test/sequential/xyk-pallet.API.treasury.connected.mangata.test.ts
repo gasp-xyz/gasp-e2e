@@ -5,7 +5,7 @@
  * @group sequential
  * @group critical
  */
-import {getApi, getMangataInstance, initApi} from "../../utils/api";
+import { getApi, getMangataInstance, initApi } from "../../utils/api";
 import {
   sellAsset,
   getTreasury,
@@ -17,15 +17,15 @@ import {
   calculate_sell_price_rpc,
   calculate_buy_price_rpc,
 } from "../../utils/tx";
-import {ExtrinsicResult, waitNewBlock} from "../../utils/eventListeners";
+import { ExtrinsicResult, waitNewBlock } from "../../utils/eventListeners";
 import BN from "bn.js";
-import {Keyring} from "@polkadot/api";
-import {AssetWallet, User} from "../../utils/User";
-import {validateTreasuryAmountsEqual} from "../../utils/validators";
-import {Assets} from "../../utils/Assets";
-import {MAX_BALANCE, MGA_ASSET_NAME} from "../../utils/Constants";
-import {calculateFees, getEnvironmentRequiredVars} from "../../utils/utils";
-import {getEventResultFromMangataTx} from "../../utils/txHandler";
+import { Keyring } from "@polkadot/api";
+import { AssetWallet, User } from "../../utils/User";
+import { validateTreasuryAmountsEqual } from "../../utils/validators";
+import { Assets } from "../../utils/Assets";
+import { MAX_BALANCE, MGA_ASSET_NAME } from "../../utils/Constants";
+import { calculateFees, getEnvironmentRequiredVars } from "../../utils/utils";
+import { getEventResultFromMangataTx } from "../../utils/txHandler";
 jest.spyOn(console, "log").mockImplementation(jest.fn());
 jest.setTimeout(1500000);
 process.env.NODE_ENV = "test";
@@ -33,7 +33,7 @@ process.env.NODE_ENV = "test";
 const first_asset_amount = new BN(50000);
 const seccond_asset_amount = first_asset_amount.div(new BN(2));
 const defaultCurrecyValue = new BN(250000);
-const {sudo: sudoUserName} = getEnvironmentRequiredVars();
+const { sudo: sudoUserName } = getEnvironmentRequiredVars();
 
 describe("xyk-pallet - treasury tests [Mangata]: on treasury we store", () => {
   let testUser1: User;
@@ -54,7 +54,7 @@ describe("xyk-pallet - treasury tests [Mangata]: on treasury we store", () => {
   });
 
   beforeEach(async () => {
-    keyring = new Keyring({type: "sr25519"});
+    keyring = new Keyring({ type: "sr25519" });
 
     // setup users
     testUser1 = new User(keyring);
@@ -66,7 +66,11 @@ describe("xyk-pallet - treasury tests [Mangata]: on treasury we store", () => {
     keyring.addPair(sudo.keyRingPair);
 
     mgaTokenId = await getAssetId(MGA_ASSET_NAME);
-    await sudo.mint(mgaTokenId, testUser1, new BN(defaultCurrecyValue));
+    await sudo.mint(
+      mgaTokenId,
+      testUser1,
+      new BN(defaultCurrecyValue).add(new BN(Math.pow(10, 18).toString()))
+    );
     testUser1.addAsset(mgaTokenId);
     secondCurrency = (
       await Assets.setupUserWithCurrencies(
@@ -111,7 +115,7 @@ describe("xyk-pallet - treasury tests [Mangata]: on treasury we store", () => {
 
     await testUser1.refreshAmounts(AssetWallet.AFTER);
 
-    const {treasury} = calculateFees(sellAssetAmount);
+    const { treasury } = calculateFees(sellAssetAmount);
 
     const treasuryAfter = await getTreasury(mgaTokenId);
     const treasuryBurnAfter = await getTreasuryBurn(mgaTokenId);
@@ -132,7 +136,7 @@ describe("xyk-pallet - treasury tests [Mangata]: on treasury we store", () => {
       first_asset_amount,
       buyAssetAmount
     );
-    const {treasury} = calculateFees(sellPrice);
+    const { treasury } = calculateFees(sellPrice);
 
     await buyAsset(
       testUser1.keyRingPair,
@@ -172,7 +176,7 @@ describe("xyk-pallet - treasury tests [Mangata]: on treasury we store", () => {
     const treasuryBefore = await getTreasury(mgaTokenId);
     const treasuryBurnBefore = await getTreasuryBurn(mgaTokenId);
 
-    const {treasury} = calculateFees(sellAssetAmount);
+    const { treasury } = calculateFees(sellAssetAmount);
     await sellAsset(
       testUser1.keyRingPair,
       secondCurrency,
@@ -214,7 +218,7 @@ describe("xyk-pallet - treasury tests [Mangata]: on treasury we store", () => {
       seccond_asset_amount,
       buyAssetAmount
     );
-    const {treasury} = calculateFees(sellPrice);
+    const { treasury } = calculateFees(sellPrice);
 
     await buyAsset(
       testUser1.keyRingPair,
@@ -267,7 +271,7 @@ describe("xyk-pallet - treasury tests [Connected - Mangata]: on treasury we stor
       await initApi();
     }
 
-    keyring = new Keyring({type: "sr25519"});
+    keyring = new Keyring({ type: "sr25519" });
 
     // setup users
     testUser1 = new User(keyring);
@@ -279,7 +283,11 @@ describe("xyk-pallet - treasury tests [Connected - Mangata]: on treasury we stor
     keyring.addPair(sudo.keyRingPair);
 
     mgaTokenId = await getAssetId(MGA_ASSET_NAME);
-    await sudo.mint(mgaTokenId, testUser1, new BN(defaultCurrecyValue));
+    await sudo.mint(
+      mgaTokenId,
+      testUser1,
+      new BN(defaultCurrecyValue).add(new BN(Math.pow(10, 18).toString()))
+    );
     testUser1.addAsset(mgaTokenId);
     connectedToMGA = (
       await Assets.setupUserWithCurrencies(
@@ -321,11 +329,16 @@ describe("xyk-pallet - treasury tests [Connected - Mangata]: on treasury we stor
     const sellAssetAmount = new BN(20000);
 
     const mgPoolAmount = await getBalanceOfPool(mgaTokenId, connectedToMGA);
-    const {treasury} = calculateFees(sellAssetAmount);
+    const { treasury } = calculateFees(sellAssetAmount);
     const swapTreasuryInMG = calculate_sell_price_local_no_fee(
       mgPoolAmount[1],
       mgPoolAmount[0],
       treasury
+    );
+    const twotreasuries = calculate_sell_price_local_no_fee(
+      mgPoolAmount[1],
+      mgPoolAmount[0],
+      treasury.mul(new BN(2))
     );
 
     const treasuryBefore = await getTreasury(mgaTokenId);
@@ -361,7 +374,6 @@ describe("xyk-pallet - treasury tests [Connected - Mangata]: on treasury we stor
     //( mgPoolAmount[0].toNumber() * 11 * 1000 ) / (  ( ( mgPoolAmount[1].toNumber() + 11) * 1000) )
     // 21.990324257326776 <-- rounding issue, so 21 goes to trasury, that is: swapTreasuryInMG
     expect(treasuryAfter).bnEqual(treasuryBefore.add(swapTreasuryInMG));
-    const twotreasuries = swapTreasuryInMG.add(swapTreasuryInMG);
     //since the fee burn is calculated like: TotalBurn - fee, so its 45 - 22 = 23.
     expect(mgPoolAmountAfter[0].add(twotreasuries)).bnEqual(
       mgPoolAmount[0].sub(new BN(1))
@@ -387,7 +399,7 @@ describe("xyk-pallet - treasury tests [Connected - Mangata]: on treasury we stor
       PoolAmount[0],
       buyAssetAmount
     );
-    const {treasury} = calculateFees(sellPrice);
+    const { treasury } = calculateFees(sellPrice);
 
     const mgPoolAmount = await getBalanceOfPool(mgaTokenId, connectedToMGA);
     const swapTreasuryInMG = calculate_sell_price_local_no_fee(
@@ -438,7 +450,7 @@ describe("xyk-pallet - treasury tests [Connected - Mangata]: on treasury we stor
     const treasuryBeforeInd = await getTreasury(indirectlyConnected);
     const treasuryBurnBeforeInd = await getTreasuryBurn(indirectlyConnected);
 
-    const {treasury, treasuryBurn} = calculateFees(sellAssetAmount);
+    const { treasury, treasuryBurn } = calculateFees(sellAssetAmount);
 
     await sellAsset(
       testUser1.keyRingPair,
@@ -487,7 +499,7 @@ describe("xyk-pallet - treasury tests [Connected - Mangata]: on treasury we stor
       PoolAmount[0],
       buyAssetAmount
     );
-    const {treasury} = calculateFees(sellPrice);
+    const { treasury } = calculateFees(sellPrice);
 
     const mgPoolAmount = await getBalanceOfPool(mgaTokenId, connectedToMGA);
     const swapTreasuryInMG = calculate_sell_price_local_no_fee(
@@ -550,7 +562,7 @@ describe("xyk-pallet - treasury tests [Connected - Mangata]: Error cases", () =>
     }
 
     await waitNewBlock();
-    keyring = new Keyring({type: "sr25519"});
+    keyring = new Keyring({ type: "sr25519" });
 
     // setup users
     testUser1 = new User(keyring);
@@ -563,7 +575,11 @@ describe("xyk-pallet - treasury tests [Connected - Mangata]: Error cases", () =>
 
     await waitNewBlock();
     mgaTokenId = await getAssetId(MGA_ASSET_NAME);
-    await sudo.mint(mgaTokenId, testUser1, new BN(defaultCurrecyValue));
+    await sudo.mint(
+      mgaTokenId,
+      testUser1,
+      new BN(defaultCurrecyValue).add(new BN(Math.pow(10, 18).toString()))
+    );
     testUser1.addAsset(mgaTokenId);
     connectedToMGA = (
       await Assets.setupUserWithCurrencies(testUser1, [MAX_BALANCE], sudo)

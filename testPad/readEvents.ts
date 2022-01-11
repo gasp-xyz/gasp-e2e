@@ -3,9 +3,9 @@
 //Build And Run!
 // npx ts-node test/exploratory/eventListener.ts
 
-import {Mangata} from "mangata-sdk";
+import { Mangata } from "mangata-sdk";
 
-const {testLog} = require("./../utils/Logger");
+const { testLog } = require("./../utils/Logger");
 
 const uris = [
   "wss://staging.mangatafinance.cloud:9944",
@@ -37,7 +37,7 @@ async function main() {
         // Loop through the Vec<EventRecord>
         events.forEach((record: any) => {
           // Extract the phase, event and the event types
-          const {event, phase} = record;
+          const { event, phase } = record;
           const types = event.typeDef;
 
           // Show what we are busy with
