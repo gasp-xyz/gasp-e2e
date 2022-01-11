@@ -28,28 +28,16 @@ let bootnodeB: Node;
 let keyring: Keyring;
 let sudo: SudoUser;
 
-const ValidatorA: Node = new Node(getEnvironmentRequiredVars().validatorA);
-const ValidatorB: Node = new Node(getEnvironmentRequiredVars().validatorB);
-const ValidatorANode1: Node = new Node(
-  getEnvironmentRequiredVars().validatorANode1
-);
-const ValidatorANode2: Node = new Node(
-  getEnvironmentRequiredVars().validatorANode2
-);
-const ValidatorBNode1: Node = new Node(
-  getEnvironmentRequiredVars().validatorBNode1
-);
-const ValidatorBNode2: Node = new Node(
-  getEnvironmentRequiredVars().validatorBNode2
-);
+const RelayOne: Node = new Node(getEnvironmentRequiredVars().relayOne);
+const RelayTwo: Node = new Node(getEnvironmentRequiredVars().relayTwo);
+const CollatorOne: Node = new Node(getEnvironmentRequiredVars().collatorOne);
+const CollatorTwo: Node = new Node(getEnvironmentRequiredVars().collatorTwo);
 
 const nodes = [
-  ValidatorA,
-  ValidatorB,
-  ValidatorANode1,
-  ValidatorANode2,
-  ValidatorBNode1,
-  ValidatorBNode2,
+  RelayOne,
+  RelayTwo,
+  CollatorOne,
+  CollatorTwo,
 ];
 
 beforeAll(async () => {
@@ -57,12 +45,10 @@ beforeAll(async () => {
 
   try {
     Promise.all([
-      await ValidatorA.connect(),
-      await ValidatorB.connect(),
-      await ValidatorANode1.connect(),
-      await ValidatorANode2.connect(),
-      await ValidatorBNode1.connect(),
-      await ValidatorBNode2.connect(),
+      await RelayOne.connect(),
+      await RelayTwo.connect(),
+      await CollatorOne.connect(),
+      await CollatorTwo.connect(),
     ]);
 
     nodes.forEach((node) => {
@@ -72,11 +58,11 @@ beforeAll(async () => {
     throw e;
   }
 
-  bootnodeA = ValidatorANode1;
+  bootnodeA = RelayOne;
   await bootnodeA.connect();
   await bootnodeA.subscribeToHead();
 
-  bootnodeB = ValidatorBNode1;
+  bootnodeB = RelayTwo;
   await bootnodeB.connect();
   await bootnodeB.subscribeToHead();
 
@@ -86,12 +72,10 @@ beforeAll(async () => {
 
 afterAll(async () => {
   Promise.all([
-    ValidatorA.stop(),
-    ValidatorB.stop(),
-    ValidatorANode1.stop(),
-    ValidatorANode2.stop(),
-    ValidatorBNode1.stop(),
-    ValidatorBNode2.stop(),
+    RelayOne.stop(),
+    RelayTwo.stop(),
+    CollatorOne.stop(),
+    CollatorTwo.stop(),
   ]);
 });
 
@@ -118,8 +102,8 @@ describe("Multi-Validator -> Network -> Syncing", () => {
 
   test("Block merkle hash matches across all nodes", async () => {
     const randomBlockNumber = Math.floor(
-      Math.random() * (ValidatorA.lastBlock! - ValidatorA.firstBlock! + 1) +
-        ValidatorA.firstBlock!
+      Math.random() * (RelayOne.lastBlock! - RelayOne.firstBlock! + 1) +
+      RelayOne.firstBlock!
     );
 
     await waitForNBlocks(5);

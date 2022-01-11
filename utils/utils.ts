@@ -97,24 +97,18 @@ export function getEnvironmentRequiredVars() {
     ? process.env.CLUSTER_NODE_F
     : "ws://node_ferdie:9944";
 
-  const validatorA = process.env.VALIDATOR_A
-    ? process.env.VALIDATOR_A
+  const relayOne = process.env.RELAY_ONE
+    ? process.env.RELAY_ONE
     : "ws://node_alice:9944";
-  const validatorB = process.env.VALIDATOR_B
-    ? process.env.VALIDATOR_B
+  const relayTwo = process.env.RELAY_TWO
+    ? process.env.RELAY_TWO
     : "ws://node_bob:9944";
-  const validatorANode1 = process.env.VALIDATOR_A_NODE_1
-    ? process.env.VALIDATOR_A_NODE_1
+  const collatorOne = process.env.COLLATOR_ONE
+    ? process.env.COLLATOR_ONE
     : "ws://node_charlie:9944";
-  const validatorANode2 = process.env.VALIDATOR_A_NODE_2
-    ? process.env.VALIDATOR_A_NODE_2
+  const collatorTwo = process.env.COLLATOR_TWO
+    ? process.env.COLLATOR_TWO
     : "ws://node_dave:9944";
-  const validatorBNode1 = process.env.VALIDATOR_B_NODE_1
-    ? process.env.VALIDATOR_B_NODE_1
-    : "ws://node_eve:9944";
-  const validatorBNode2 = process.env.VALIDATOR_B_NODE_2
-    ? process.env.VALIDATOR_B_NODE_2
-    : "ws://node_ferdie:9944";
 
   return {
     sudo: sudoUserName,
@@ -137,12 +131,10 @@ export function getEnvironmentRequiredVars() {
     clusterNodeD: clusterNodeD,
     clusterNodeE: clusterNodeE,
     clusterNodeF: clusterNodeF,
-    validatorA: validatorA,
-    validatorB: validatorB,
-    validatorANode1: validatorANode1,
-    validatorANode2: validatorANode2,
-    validatorBNode1: validatorBNode1,
-    validatorBNode2: validatorBNode2,
+    relayOne: relayOne,
+    relayTwo: relayTwo,
+    collatorOne: collatorOne,
+    collatorTwo: collatorTwo,
   };
 }
 
