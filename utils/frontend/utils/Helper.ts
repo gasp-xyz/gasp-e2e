@@ -7,15 +7,26 @@ import fs from "fs";
 import {testLog} from "../../Logger";
 import BN from "bn.js";
 import {Reporter} from "jest-allure/dist/Reporter";
-const {By, until} = require("selenium-webdriver");
+import {By, until} from "selenium-webdriver";
+const timeOut = 60000;
 require("chromedriver");
 const outputPath = `reports/artifacts`;
 export async function waitForElement(
   driver: WebDriver,
   xpath: string,
-  timeout = 30000
+  timeout = timeOut
 ) {
   await driver.wait(until.elementLocated(By.xpath(xpath)), timeout);
+}
+
+export async function waitForElementEnabled(
+  driver: WebDriver,
+  xpath: string,
+  timeout = timeOut
+) {
+  await waitForElement(driver, xpath, timeout);
+  const element = await driver.findElement(By.xpath(xpath));
+  await driver.wait(until.elementIsEnabled(element), timeout);
 }
 
 export async function waitForElementToDissapear(
@@ -37,7 +48,7 @@ export async function waitForElementToDissapear(
 export async function clickElement(driver: WebDriver, xpath: string) {
   await waitForElement(driver, xpath);
   const element = await driver.findElement(By.xpath(xpath));
-  await driver.wait(until.elementIsVisible(element), 20000);
+  await driver.wait(until.elementIsVisible(element), timeOut);
   await sleep(1000);
   await element.click();
 }
@@ -185,15 +196,15 @@ export async function selectAssetFromModalList(
   assetName: string,
   driver: WebDriver
 ) {
-  const assetTestId = `assetSelectModal-asset-${assetName}`;
+  const assetTestId = `TokensModal-asset-${assetName}`;
   const assetLocator = buildDataTestIdXpath(assetTestId);
   await clickElement(driver, assetLocator);
 }
 
 export function uiStringToBN(stringValue: string) {
   if (stringValue.includes(".")) {
-    const partInt = stringValue.split(".")[0];
-    let partDec = stringValue.split(".")[1];
+    const partInt = stringValue.split(".")[0].trim();
+    let partDec = stringValue.split(".")[1].trim();
     //multiply the part int*10¹⁸
     const exp = new BN(10).pow(new BN(18));
     const part1 = new BN(partInt).mul(exp);
@@ -205,4 +216,21 @@ export function uiStringToBN(stringValue: string) {
   } else {
     return new BN((Math.pow(10, 18) * parseFloat(stringValue)).toString());
   }
+}
+
+export async function openInNewTab(driver: WebDriver, url: string) {
+  const windowsBefore = await driver.getAllWindowHandles();
+  await driver.executeScript(`window.open("${url}");`);
+  const windowsAfterNewTab = await driver.getAllWindowHandles();
+  const newTabHandler = windowsAfterNewTab.filter(
+    (item) => windowsBefore.indexOf(item) < 0
+  )[0];
+  await driver.switchTo().window(newTabHandler);
+}
+
+export async function swithToTheOtherTab(driver: WebDriver) {
+  const availableTabs = await driver.getAllWindowHandles();
+  const currentTab = await driver.getWindowHandle();
+  const otherTab = availableTabs.filter((tab) => tab !== currentTab)[0];
+  await driver.switchTo().window(otherTab);
 }

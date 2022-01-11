@@ -4,7 +4,7 @@ import {
   clickElement,
   getAttribute,
   getText,
-  waitForElement,
+  waitForElementEnabled,
   writeText,
 } from "../utils/Helper";
 
@@ -26,9 +26,9 @@ export class Swap {
   private inputPayLocator = buildDataTestIdXpath(DIV_SWAP_PAY) + "//input";
   private inputGetLocator = buildDataTestIdXpath(DIV_SWAP_GET) + "//input";
   private btnPayMaxLocator =
-    buildDataTestIdXpath(DIV_SWAP_PAY) + "//button[contains(text(),'Max')]";
+    buildDataTestIdXpath(DIV_SWAP_PAY) + "//*[contains(text(),'Max')]";
   private btnGetMaxLocator =
-    buildDataTestIdXpath(DIV_SWAP_GET) + "//button[contains(text(),'Max')]";
+    buildDataTestIdXpath(DIV_SWAP_GET) + "//*[contains(text(),'Max')]";
 
   async toggleSwap() {
     const selector = buildDataTestIdXpath(TAB_SWAP_TEST_ID);
@@ -55,7 +55,7 @@ export class Swap {
 
   async doSwap() {
     const tradeBtn = buildDataTestIdXpath(BTN_SWAP_TRADE);
-    await waitForElement(this.driver, tradeBtn);
+    await waitForElementEnabled(this.driver, tradeBtn);
     const enabled = await (
       await this.driver.findElement(By.xpath(tradeBtn))
     ).isEnabled();
@@ -83,7 +83,7 @@ export class Swap {
   }
 
   private async selectAssetFromModalList(assetName: string) {
-    const assetTestId = `assetSelectModal-asset-${assetName}`;
+    const assetTestId = `TokensModal-asset-${assetName}`;
     const assetLocator = buildDataTestIdXpath(assetTestId);
     await clickElement(this.driver, assetLocator);
   }
@@ -100,6 +100,6 @@ export class Swap {
       buildDataTestIdXpath(DIV_SWAP_GET) +
       "//*[@class='TradingInput__right__label']";
     const text = await getText(this.driver, xpathGetLocator);
-    return text.split(":")[1].trim().replace("MAX", "");
+    return text.split(":")[1].trim().replace("MAX", "").trim();
   }
 }
