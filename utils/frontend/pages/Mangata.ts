@@ -13,7 +13,7 @@ import { Sidebar } from "./Sidebar";
 //xpaths
 const MSG_RECEIVE_TOKENS = `//div[text()='You will receive test tokens']`;
 const LBL_YOUR_TOKENS = `//*[contains(text(),'Your tokens')]`;
-const BTN_GET_TOKENS = `//button[contains(text(), 'Get Tokens')] `;
+const BTN_GET_TOKENS = `//*[contains(text(), 'Get Tokens')] `;
 
 const DIV_MGA_SWAP = `//*[@class='Swap']`;
 const DIV_MGA_LOGO = `//*[contains(@class,'bg-mangata-logo')]`;
