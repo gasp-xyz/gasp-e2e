@@ -2,16 +2,20 @@
  *
  * @group ui
  */
-import {WebDriver} from "selenium-webdriver";
-import {getApi, initApi} from "../../utils/api";
-import {Mangata} from "../../utils/frontend/pages/Mangata";
-import {Sidebar} from "../../utils/frontend/pages/Sidebar";
-import {DriverBuilder} from "../../utils/frontend/utils/Driver";
+import { WebDriver } from "selenium-webdriver";
+import { getApi, initApi } from "../../utils/api";
+import { Mangata } from "../../utils/frontend/pages/Mangata";
+import { Sidebar } from "../../utils/frontend/pages/Sidebar";
+import { DriverBuilder } from "../../utils/frontend/utils/Driver";
 import {
   setupAllExtensions,
   addExtraLogs,
+  openInNewTab,
+  swithToTheOtherTab,
 } from "../../utils/frontend/utils/Helper";
-import {FIVE_MIN} from "../../utils/Constants";
+
+import { FIVE_MIN } from "../../utils/Constants";
+import { Polkadot } from "../../utils/frontend/pages/Polkadot";
 
 jest.setTimeout(FIVE_MIN);
 jest.spyOn(console, "log").mockImplementation(jest.fn());
@@ -67,6 +71,102 @@ describe("UI tests - Extension management", () => {
 
     expect(isMetaOK).toBeTruthy();
     expect(ispolkOK).toBeTruthy();
+  });
+
+  it("As a User I can switch between polkadot wallets", async () => {
+    driver = await DriverBuilder.getInstance();
+    const polkUserAddress = await (
+      await setupAllExtensions(driver)
+    ).polkUserAddress;
+    const mga = new Mangata(driver);
+    await mga.go();
+    const sidebar = new Sidebar(driver);
+    await sidebar.waitForLoad();
+    const isMetaOK = await sidebar.isMetamaskExtensionOK();
+    let ispolkOK = await sidebar.isPolkadotExtensionOK();
+    expect(isMetaOK).toBeTruthy();
+    expect(ispolkOK).toBeTruthy();
+
+    const extensionManager = new Polkadot(driver);
+    await openInNewTab(driver, extensionManager.WEB_UI_ACCESS_URL);
+    const [polkUserAddress2] = await extensionManager.createAccount(1);
+    await swithToTheOtherTab(driver);
+    let userSelected = await sidebar.getUserName();
+    expect(userSelected).toEqual("acc_automation");
+    ispolkOK = await sidebar.isPolkadotExtensionOK();
+    expect(ispolkOK).toBeTruthy();
+
+    await swithToTheOtherTab(driver);
+    await extensionManager.hideAccount(polkUserAddress);
+    await swithToTheOtherTab(driver);
+    userSelected = await sidebar.getUserName();
+    expect(userSelected).toEqual("acc_automation_1");
+    ispolkOK = await sidebar.isPolkadotExtensionOK();
+    expect(ispolkOK).toBeTruthy();
+
+    await swithToTheOtherTab(driver);
+    await extensionManager.hideAccount(polkUserAddress2);
+    await swithToTheOtherTab(driver);
+
+    ispolkOK = await sidebar.isPolkadotExtensionOK();
+    expect(ispolkOK).toBeFalsy();
+  });
+  it("As a User I can switch between polkadot wallets using the modal", async () => {
+    driver = await DriverBuilder.getInstance();
+    await (
+      await setupAllExtensions(driver)
+    ).polkUserAddress;
+    const mga = new Mangata(driver);
+    await mga.go();
+    const sidebar = new Sidebar(driver);
+    await sidebar.waitForLoad();
+    const isMetaOK = await sidebar.isMetamaskExtensionOK();
+    let ispolkOK = await sidebar.isPolkadotExtensionOK();
+    expect(isMetaOK).toBeTruthy();
+    expect(ispolkOK).toBeTruthy();
+
+    const extensionManager = new Polkadot(driver);
+    await openInNewTab(driver, extensionManager.WEB_UI_ACCESS_URL);
+    const [polkUserAddress2] = await extensionManager.createAccount(1);
+    await swithToTheOtherTab(driver);
+    let userSelected = await sidebar.getUserName();
+    expect(userSelected).toEqual("acc_automation");
+    ispolkOK = await sidebar.isPolkadotExtensionOK();
+    expect(ispolkOK).toBeTruthy();
+
+    await sidebar.switchAccountTo(polkUserAddress2);
+    userSelected = await sidebar.getUserName();
+    expect(userSelected).toEqual("acc_automation_1");
+    ispolkOK = await sidebar.isPolkadotExtensionOK();
+    expect(ispolkOK).toBeTruthy();
+  });
+  it("As a User I can not see hidden wallets in the modal", async () => {
+    driver = await DriverBuilder.getInstance();
+    const firstUserAddress = await (
+      await setupAllExtensions(driver)
+    ).polkUserAddress;
+    const mga = new Mangata(driver);
+    await mga.go();
+    const sidebar = new Sidebar(driver);
+    await sidebar.waitForLoad();
+    const isMetaOK = await sidebar.isMetamaskExtensionOK();
+    let ispolkOK = await sidebar.isPolkadotExtensionOK();
+    expect(isMetaOK).toBeTruthy();
+    expect(ispolkOK).toBeTruthy();
+    const accountsBefore = await sidebar.getAvailableAccountsFromChangeModal();
+    expect(accountsBefore).toEqual([firstUserAddress]);
+
+    const extensionManager = new Polkadot(driver);
+    await openInNewTab(driver, extensionManager.WEB_UI_ACCESS_URL);
+    const [secondUserAddress] = await extensionManager.createAccount(1);
+    await extensionManager.hideAccount(firstUserAddress);
+    await extensionManager.hideAccount(secondUserAddress);
+    await swithToTheOtherTab(driver);
+    ispolkOK = await sidebar.isPolkadotExtensionOK();
+    expect(ispolkOK).toBeFalsy();
+
+    const accounts = await sidebar.getAvailableAccountsFromChangeModal();
+    expect(accounts.length).toEqual(0);
   });
 
   afterEach(async () => {

@@ -1,9 +1,9 @@
 import * as uuid from "uuid";
-import {ApiPromise} from "@polkadot/api";
-import {initApi} from "../../api";
-import {testLog} from "../../Logger";
+import { ApiPromise } from "@polkadot/api";
+import { initApi } from "../../api";
+import { testLog } from "../../Logger";
 import BN from "bn.js";
-import {GovernanceUser} from "../User/GovernanceUser";
+import { GovernanceUser } from "../User/GovernanceUser";
 
 export class Node {
   name: string;
@@ -17,12 +17,12 @@ export class Node {
   blockHashes: Map<number, string> = new Map();
   subscription: any;
 
-  electionEvents: Map<number, {candidates: any; members: any}> = new Map();
+  electionEvents: Map<number, { candidates: any; members: any }> = new Map();
   userBalancesHistory: Map<
     number,
-    Map<number, {free: BN; reserved: BN; miscFrozen: BN; feeFrozen: BN}>
+    Map<number, { free: BN; reserved: BN; miscFrozen: BN; feeFrozen: BN }>
   > = new Map();
-
+  systemExtrinics: any[] = [];
   constructor(wsPath: string) {
     this.name = uuid.v4();
     this.wsPath = wsPath;
@@ -81,7 +81,23 @@ export class Node {
       }
     );
   }
+  async subscribeToExtrinsics(): Promise<void> {
+    this.subscription = await this.api!.rpc.chain.subscribeNewHeads(
+      async (lastHeader) => {
+        const blockNo = lastHeader.number.toBn();
+        const blockHash = await this.api!.rpc.chain.getBlockHash(blockNo);
+        const signedBlock = await this.api!.rpc.chain.getBlock(blockHash);
 
+        testLog.getLog().info(signedBlock.block.header.hash.toHex());
+
+        // the hash for each extrinsic in the block
+        signedBlock.block.extrinsics.forEach((ex, index) => {
+          testLog.getLog().info(index + JSON.stringify(ex.toHuman()));
+          this.systemExtrinics.push(ex);
+        });
+      }
+    );
+  }
   async stop(): Promise<void> {
     this.subscribeToHead();
   }

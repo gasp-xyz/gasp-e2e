@@ -1,24 +1,27 @@
-import {AddressOrPair, SubmittableExtrinsic} from "@polkadot/api/types";
-import {StorageKey} from "@polkadot/types";
-import {getApi, getMangataInstance} from "./api";
+import { AddressOrPair, SubmittableExtrinsic } from "@polkadot/api/types";
+import { AccountData, AccountId32 } from "@polkadot/types/interfaces";
+import { AnyTuple, Codec } from "@polkadot/types/types";
+import { StorageKey } from "@polkadot/types";
+import { getApi, getMangataInstance } from "./api";
 import BN from "bn.js";
-import {env} from "process";
-import {SudoDB} from "./SudoDB";
-import {signSendAndWaitToFinishTx} from "./txHandler";
-import {getEnvironmentRequiredVars} from "./utils";
-import {MGA_DEFAULT_LIQ_TOKEN} from "./Constants";
-import {Keyring} from "@polkadot/api";
-import {User} from "./User";
-import {testLog} from "./Logger";
-import {KeyringPair} from "@polkadot/keyring/types";
-import {signTx} from "mangata-sdk";
+import { env } from "process";
+import { SudoDB } from "./SudoDB";
+import { signSendAndWaitToFinishTx } from "./txHandler";
+import { getEnvironmentRequiredVars } from "./utils";
+import { MGA_DEFAULT_LIQ_TOKEN } from "./Constants";
+import { Keyring } from "@polkadot/api";
+import { User } from "./User";
+import { testLog } from "./Logger";
+import { KeyringPair } from "@polkadot/keyring/types";
+import { signTx } from "mangata-sdk";
+import { AnyJson } from "@polkadot/types/types";
 
 export const signTxDeprecated = async (
   tx: SubmittableExtrinsic<"promise">,
   address: AddressOrPair,
   nonce: BN
 ) => {
-  await tx.signAndSend(address, {nonce}, (result: any) => {
+  await tx.signAndSend(address, { nonce }, () => {
     // handleTx(result, unsub)
   });
   //   setNonce(nonce + 1)
@@ -197,8 +200,8 @@ export async function calculate_sell_price_id_rpc(
 }
 
 export async function getCurrentNonce(account?: string) {
-  const {sudo: sudoUserName} = getEnvironmentRequiredVars();
-  const sudo = new User(new Keyring({type: "sr25519"}), sudoUserName);
+  const { sudo: sudoUserName } = getEnvironmentRequiredVars();
+  const sudo = new User(new Keyring({ type: "sr25519" }), sudoUserName);
   // lets check if sudo -> calculate manually nonce.
   if (account === sudo.keyRingPair.address) {
     const nonce = new BN(await SudoDB.getInstance().getSudoNonce(account));
@@ -320,13 +323,13 @@ export async function getNextAssetId() {
   return new BN(nextAssetId.toString());
 }
 
-export async function getAvailableCurrencies() {
+export async function getAvailableCurrencies(): Promise<AccountData[]> {
   const api = getApi();
   const curerncies = await api.query.tokens.totalIssuance();
-  return curerncies;
+  return curerncies as unknown as AccountData[];
 }
 
-export async function getSudoKey() {
+export async function getSudoKey(): Promise<AccountId32> {
   const api = getApi();
 
   const sudoKey = await api.query.sudo.key();
@@ -345,7 +348,7 @@ export const balanceTransfer = async (
     api,
     api.tx.balances.transfer(target, amount),
     account,
-    {nonce: await getCurrentNonce(account.address)}
+    { nonce: await getCurrentNonce(account.address) }
   );
   return txResult;
 };
@@ -363,7 +366,7 @@ export const transferAsset = async (
     tokenId.toString(),
     targetAddress,
     amount,
-    {nonce: nonce}
+    { nonce: nonce }
   );
   return result;
 };
@@ -379,7 +382,7 @@ export const transferAll = async (
     account,
     tokenId.toString(),
     target,
-    {nonce: nonce}
+    { nonce: nonce }
   );
   return result;
 };
@@ -388,16 +391,23 @@ export const mintAsset = async (
   account: any,
   asset_id: BN,
   target: any,
-  amount: BN
+  amount: BN,
+  sudoNonce: BN = new BN(-1)
 ) => {
   const api = getApi();
-  const nonce = await SudoDB.getInstance().getSudoNonce(account.address);
+  let nonce;
+  if (sudoNonce.lte(new BN(-1))) {
+    nonce = new BN(await SudoDB.getInstance().getSudoNonce(account.address));
+  } else {
+    nonce = sudoNonce;
+  }
+
   testLog.getLog().info(`W[${env.JEST_WORKER_ID}] - sudoNonce: ${nonce} `);
   const txResult = await signTx(
     api,
     api.tx.sudo.sudo(api.tx.tokens.mint(asset_id, target, amount)),
     account,
-    {nonce: new BN(nonce)}
+    { nonce: new BN(nonce) }
   );
   return txResult;
 };
@@ -422,7 +432,7 @@ export const createPool = async (
     firstAssetAmount,
     secondAssetId.toString(),
     secondAssetAmount,
-    {nonce: nonce}
+    { nonce: nonce }
   );
   return result;
 };
@@ -494,23 +504,19 @@ export const burnLiquidity = async (
     firstAssetId.toString(),
     secondAssetId.toString(),
     liquidityAssetAmount,
-    {nonce: nonce}
+    { nonce: nonce }
   );
   return result;
 };
 
-export async function getAccountInfo(account?: string) {
+export async function getTokensAccountInfo(account: string, assetId: BN) {
   const api = getApi();
-  if (account) {
-    const {data} = await api.query.system.account(account);
-
-    return JSON.parse(data.toString());
-  }
-  return -1;
+  const data = await api.query.tokens.accounts(account, assetId);
+  return JSON.parse(data.toString());
 }
 
 export async function getTreasury(tokenId: BN): Promise<BN> {
-  const {treasuryPalletAddress} = getEnvironmentRequiredVars();
+  const { treasuryPalletAddress } = getEnvironmentRequiredVars();
   const treasuryBalance = await getBalanceOfAsset(
     tokenId,
     treasuryPalletAddress
@@ -520,7 +526,7 @@ export async function getTreasury(tokenId: BN): Promise<BN> {
 }
 
 export async function getTreasuryBurn(tokenId: BN): Promise<BN> {
-  const {treasuryBurnPalletAddress} = getEnvironmentRequiredVars();
+  const { treasuryBurnPalletAddress } = getEnvironmentRequiredVars();
   const treasuryBalance = await getBalanceOfAsset(
     tokenId,
     treasuryBurnPalletAddress
@@ -563,7 +569,7 @@ export async function getAllAssets(accountAddress: string) {
   return userOnes;
 }
 
-export async function lockAsset(user: User, assetId: BN, amount: BN) {
+export async function lockAsset(user: User, amount: BN) {
   const api = getApi();
 
   await signSendAndWaitToFinishTx(
@@ -602,12 +608,16 @@ export async function getAllAssetsInfo(): Promise<any[]> {
   return assetsInfo;
 }
 
-export async function calculateTxCost(transactionExtrinsic: string) {
+export async function calculateTxCost(
+  transactionExtrinsic: string
+): Promise<Record<string, AnyJson>> {
   const api = getApi();
   const queryInfoResult = await api.rpc.payment.queryInfo(transactionExtrinsic);
   return queryInfoResult.toHuman();
 }
-export async function getAllAcountEntries() {
+export async function getAllAcountEntries(): Promise<
+  [StorageKey<AnyTuple>, Codec][]
+> {
   const api = getApi();
   return await api.query.tokens.accounts.entries();
 }

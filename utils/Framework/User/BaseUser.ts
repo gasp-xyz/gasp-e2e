@@ -1,16 +1,16 @@
 import BN from "bn.js";
-import {getAllAcountEntries} from "../../tx";
-import {User} from "../../User";
-import {hexToBn} from "@polkadot/util";
+import { getAllAcountEntries } from "../../tx";
+import { User } from "../../User";
+import { hexToBn } from "@polkadot/util";
 export class BaseUser extends User {
   protected userTokens: Map<
     BN,
-    {free: BN; reserved: BN; miscFrozen: BN; feeFrozen: BN}
+    { free: BN; reserved: BN; miscFrozen: BN; feeFrozen: BN }
   > = new Map();
 
   public get UserTokens(): Map<
     BN,
-    {free: BN; reserved: BN; miscFrozen: BN; feeFrozen: BN}
+    { free: BN; reserved: BN; miscFrozen: BN; feeFrozen: BN }
   > {
     return this.userTokens;
   }
@@ -26,7 +26,7 @@ export class BaseUser extends User {
     //now, from the filtered list we get all the amounts from the second entry.
     const tokenValues: Map<
       number,
-      {free: BN; reserved: BN; miscFrozen: BN; feeFrozen: BN}
+      { free: BN; reserved: BN; miscFrozen: BN; feeFrozen: BN }
     > = new Map();
 
     userEntries.forEach((value) => {

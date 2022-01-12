@@ -1,22 +1,25 @@
-import {SubmittableExtrinsic} from "@polkadot/api/types";
-import {AnyJson} from "@polkadot/types/types";
-import {getApi} from "./api";
-import {GenericEvent} from "@polkadot/types";
-import {KeyringPair} from "@polkadot/keyring/types";
+import { SubmittableExtrinsic } from "@polkadot/api/types";
+import { AnyJson } from "@polkadot/types/types";
+import { getApi } from "./api";
+import { GenericEvent } from "@polkadot/types";
+import { Codec } from "@polkadot/types/types";
+import { KeyringPair } from "@polkadot/keyring/types";
 import BN from "bn.js";
-import {SudoDB} from "./SudoDB";
-import {env} from "process";
-import {EventResult, ExtrinsicResult} from "./eventListeners";
-import {testLog} from "./Logger";
-import {User} from "./User";
-import {MangataGenericEvent} from "mangata-sdk/build/";
-import {signTx} from "mangata-sdk";
+import { SudoDB } from "./SudoDB";
+import { env } from "process";
+import { EventResult, ExtrinsicResult } from "./eventListeners";
+import { testLog } from "./Logger";
+import { User } from "./User";
+import { MangataGenericEvent } from "mangata-sdk/build/";
+import { signTx } from "mangata-sdk";
+import { AccountId32 } from "@polkadot/types/interfaces";
+
 //let wait 7 blocks - 6000 * 7 = 42000; depends on the number of workers.
 
 export async function getCurrentNonce(account?: string) {
   const api = getApi();
   if (account) {
-    const {nonce} = await api.query.system.account(account);
+    const { nonce } = await api.query.system.account(account);
     return nonce.toNumber();
   }
   return -1;
@@ -36,7 +39,10 @@ export async function getBalanceOfAsset(assetId: BN, account: any) {
   return balance.toString();
 }
 
-export async function getBalanceOfPool(assetId1: BN, assetId2: BN) {
+export async function getBalanceOfPool(
+  assetId1: BN,
+  assetId2: BN
+): Promise<Codec[]> {
   const api = getApi();
 
   const balance1 = await api.query.xyk.pools([assetId1, assetId2]);
@@ -58,7 +64,7 @@ export async function getBalanceOfPool(assetId1: BN, assetId2: BN) {
   return [balance1, balance2];
 }
 
-export async function getSudoKey() {
+export async function getSudoKey(): Promise<AccountId32> {
   const api = getApi();
 
   const sudoKey = await api.query.sudo.key();
@@ -80,12 +86,19 @@ export const sudoIssueAsset = async (
   const nonce = await SudoDB.getInstance().getSudoNonce(sudoAccount.address);
   testLog.getLog().info(`W[${env.JEST_WORKER_ID}] - sudoNonce: ${nonce} `);
   const api = getApi();
-  return signTx(
-    api,
-    api.tx.sudo.sudo(api.tx.tokens.create(targetAddress, total_balance)),
-    sudoAccount,
-    {nonce: new BN(nonce)}
-  );
+  let results: MangataGenericEvent[] = [];
+  try {
+    results = await signTx(
+      api,
+      api.tx.sudo.sudo(api.tx.tokens.create(targetAddress, total_balance)),
+      sudoAccount,
+      { nonce: new BN(nonce) }
+    );
+  } catch (error) {
+    // eslint-disable-next-line no-console
+    console.error(error);
+  }
+  return results;
   //  return signAndWaitTx(
   //    api.tx.sudo.sudo(api.tx.tokens.create(targetAddress, total_balance)),
   //    sudoAccount,
@@ -222,7 +235,8 @@ function createEventResultfromExtrinsic(extrinsicResult: GenericEvent) {
 /// Do a Tx and expect a success. Good for setups.
 export async function signSendAndWaitToFinishTx(
   fun: SubmittableExtrinsic<"promise"> | undefined,
-  account: KeyringPair
+  account: KeyringPair,
+  strictSuccess: boolean = true
 ) {
   const nonce = await getCurrentNonce(account.address);
   const api = getApi();
@@ -231,7 +245,10 @@ export async function signSendAndWaitToFinishTx(
   }).then((result) => {
     return getEventResultFromMangataTx(result);
   });
-  expect(result.state).toEqual(ExtrinsicResult.ExtrinsicSuccess);
+  if (strictSuccess) {
+    expect(result.state).toEqual(ExtrinsicResult.ExtrinsicSuccess);
+  }
+
   return result;
 }
 
@@ -261,7 +278,7 @@ export async function setAssetInfo(
       )
     ),
     sudo.keyRingPair,
-    {nonce: new BN(nonce)}
+    { nonce: new BN(nonce) }
   ).then((result) => {
     return getEventResultFromMangataTx(result);
   });

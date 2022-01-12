@@ -1,7 +1,7 @@
 import BN from "bn.js";
-import {lockSudoFile, unlockSudoFile} from "./lock";
-import {getChainNonce} from "./tx";
-import {getCurrentNonce} from "./txHandler";
+import { lockSudoFile, unlockSudoFile } from "./lock";
+import { getChainNonce } from "./tx";
+import { getCurrentNonce } from "./txHandler";
 const fs = require("fs");
 
 export class SudoDB {
@@ -21,7 +21,8 @@ export class SudoDB {
     //we are debugging, so we dont need sudo nonce.
     if (
       process.env.VSCODE_INSPECTOR_OPTIONS !== undefined &&
-      process.env.VSCODE_INSPECTOR_OPTIONS.length > 0
+      process.env.VSCODE_INSPECTOR_OPTIONS.length > 0 &&
+      process.env.PERF_TEST === undefined
     )
       return await getCurrentNonce(sudoAddress);
 

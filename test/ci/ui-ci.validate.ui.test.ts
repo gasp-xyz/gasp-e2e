@@ -4,11 +4,11 @@
  * @group ci
  */
 
-import {WebDriver} from "selenium-webdriver";
-import {Mangata} from "../../utils/frontend/pages/Mangata";
-import {DriverBuilder} from "../../utils/frontend/utils/Driver";
-import {addExtraLogs} from "../../utils/frontend/utils/Helper";
-import {sleep} from "../../utils/utils";
+import { WebDriver } from "selenium-webdriver";
+import { Mangata } from "../../utils/frontend/pages/Mangata";
+import { DriverBuilder } from "../../utils/frontend/utils/Driver";
+import { addExtraLogs } from "../../utils/frontend/utils/Helper";
+import { sleep } from "../../utils/utils";
 
 jest.setTimeout(1500000);
 jest.spyOn(console, "log").mockImplementation(jest.fn());
@@ -41,8 +41,18 @@ describe("UI tests: Infra", () => {
     await mga.clickOnSelectTokens();
     const tokenList = await mga.getAvailableTokenList();
 
-    expect(tokenList).toContain("Mangata\nMGA");
-    expect(tokenList).toContain("mEthereum\nmETH");
+    expect(
+      tokenList.find((tokenElement) => tokenElement.includes("MGA"))
+    ).toBeTruthy();
+    expect(
+      tokenList.find((tokenElement) => tokenElement.includes("Mangata"))
+    ).toBeTruthy();
+    expect(
+      tokenList.find((tokenElement) => tokenElement.includes("mETH"))
+    ).toBeTruthy();
+    expect(
+      tokenList.find((tokenElement) => tokenElement.includes("mEthereum"))
+    ).toBeTruthy();
   });
 
   afterEach(async () => {

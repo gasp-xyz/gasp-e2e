@@ -1,5 +1,5 @@
 import BN from "bn.js";
-import {renameExtraLogs} from "./frontend/utils/Helper";
+import { renameExtraLogs } from "./frontend/utils/Helper";
 module.exports = {
   runner: "groups",
 };
@@ -11,6 +11,8 @@ declare global {
       bnEqual(expected: BN, message: string): R;
       bnLte(expected: BN): R;
       bnLte(expected: BN, message: string): R;
+      bnLt(expected: BN): R;
+      bnLt(expected: BN, message: string): R;
       collectionBnEqual(expected: BN[]): R;
       collectionBnEqual(expected: BN[], message: string): R;
     }
@@ -56,6 +58,27 @@ expect.extend({
       return {
         message: () =>
           `Expected: ${expectedMsg} \n  Actual: ${receivedMsg} \n ${message}`,
+        pass: false,
+      };
+    }
+  },
+  bnLt(expected: BN, received: BN, message = "") {
+    const pass = expected.lt(received);
+    const [expectedMsg, receivedMsg] =
+      expected.bitLength() < 53 && received.bitLength() < 53
+        ? [expected.toNumber(), received.toNumber()]
+        : [expected.toString(), received.toString()];
+
+    if (pass) {
+      return {
+        message: () =>
+          `Expected: ${expectedMsg} \n lt Actual: ${receivedMsg} \n ${message}`,
+        pass: true,
+      };
+    } else {
+      return {
+        message: () =>
+          `Expected: ${expectedMsg} \n lt Actual: ${receivedMsg} \n ${message}`,
         pass: false,
       };
     }

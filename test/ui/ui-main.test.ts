@@ -3,34 +3,40 @@
  * @group ui
  * @group ui-smoke
  */
-import {Keyring} from "@polkadot/api";
+import { Keyring } from "@polkadot/api";
 import BN from "bn.js";
-import {WebDriver} from "selenium-webdriver";
-import {getApi, initApi} from "../../utils/api";
-import {waitNewBlock} from "../../utils/eventListeners";
-import {Mangata} from "../../utils/frontend/pages/Mangata";
-import {Polkadot} from "../../utils/frontend/pages/Polkadot";
+import { WebDriver } from "selenium-webdriver";
+import { getApi, initApi } from "../../utils/api";
+import { waitNewBlock } from "../../utils/eventListeners";
+import { Mangata } from "../../utils/frontend/pages/Mangata";
+import { Polkadot } from "../../utils/frontend/pages/Polkadot";
 import {
   NotificationModal,
   ModalType,
 } from "../../utils/frontend/pages/NotificationModal";
-import {Swap} from "../../utils/frontend/pages/Swap";
-import {Pool} from "../../utils/frontend/pages/Pool";
-import {Sidebar} from "../../utils/frontend/pages/Sidebar";
-import {DriverBuilder} from "../../utils/frontend/utils/Driver";
+import { Swap } from "../../utils/frontend/pages/Swap";
+import { Pool } from "../../utils/frontend/pages/Pool";
+import { Sidebar } from "../../utils/frontend/pages/Sidebar";
+import { DriverBuilder } from "../../utils/frontend/utils/Driver";
 import {
   setupAllExtensions,
   addExtraLogs,
   uiStringToBN,
 } from "../../utils/frontend/utils/Helper";
-import {AssetWallet, User} from "../../utils/User";
+import { AssetWallet, User } from "../../utils/User";
 import {
   createPoolIfMissing,
   getEnvironmentRequiredVars,
 } from "../../utils/utils";
-import {FIVE_MIN, mETH_ASSET_NAME, MGA_ASSET_NAME} from "../../utils/Constants";
-import {BrunLiquidityModal} from "../../utils/frontend/pages/BrunLiquidityModal";
-import {Assets} from "../../utils/Assets";
+
+import {
+  FIVE_MIN,
+  mETH_ASSET_NAME,
+  MGA_ASSET_NAME,
+} from "../../utils/Constants";
+import { BrunLiquidityModal } from "../../utils/frontend/pages/BrunLiquidityModal";
+import { Assets } from "../../utils/Assets";
+import { testLog } from "../../utils/Logger";
 
 const MGA_ASSET_ID = new BN(0);
 const ETH_ASSET_ID = new BN(1);
@@ -43,7 +49,7 @@ describe("UI tests - A user can swap and mint tokens", () => {
   let keyring: Keyring;
   let testUser1: User;
   let sudo: User;
-  const {sudo: sudoUserName} = getEnvironmentRequiredVars();
+  const { sudo: sudoUserName } = getEnvironmentRequiredVars();
   const visibleValueNumber = Math.pow(10, 19).toString();
 
   beforeEach(async () => {
@@ -52,11 +58,11 @@ describe("UI tests - A user can swap and mint tokens", () => {
     } catch (e) {
       await initApi();
     }
-    keyring = new Keyring({type: "sr25519"});
+    keyring = new Keyring({ type: "sr25519" });
 
     driver = await DriverBuilder.getInstance();
 
-    const {mnemonic} = await setupAllExtensions(driver);
+    const { mnemonic } = await setupAllExtensions(driver);
 
     testUser1 = new User(keyring);
     testUser1.addFromMnemonic(keyring, mnemonic);
@@ -76,7 +82,6 @@ describe("UI tests - A user can swap and mint tokens", () => {
     testUser1.addAsset(MGA_ASSET_ID);
     testUser1.addAsset(ETH_ASSET_ID);
   });
-
   it("As a User I can Swap tokens - MGA - mETH", async () => {
     testUser1.refreshAmounts(AssetWallet.BEFORE);
     const mga = new Mangata(driver);
@@ -152,7 +157,6 @@ describe("UI tests - A user can swap and mint tokens", () => {
     expect(poolInvested).toBeTruthy();
     expect(swapped).toBeTruthy();
   });
-
   it("As a User I can burn all liquidity MGA - mETH", async () => {
     await testUser1.refreshAmounts(AssetWallet.BEFORE);
     let amountToMint = new BN(visibleValueNumber).div(new BN(2000));
@@ -180,7 +184,6 @@ describe("UI tests - A user can swap and mint tokens", () => {
       testUser1.getAsset(ETH_ASSET_ID)?.amountBefore.free!.sub(new BN(1))
     ).bnEqual(testUser1.getAsset(ETH_ASSET_ID)?.amountAfter.free!);
   });
-
   it("As a User I can mint in more than one pool [ MGA - mETH ] [ MGA - newTokn ] and get invested values", async () => {
     await testUser1.refreshAmounts(AssetWallet.BEFORE);
     const newToken = await Assets.issueAssetToUser(
@@ -224,13 +227,18 @@ describe("UI tests - A user can swap and mint tokens", () => {
   });
 
   afterEach(async () => {
-    const session = await driver.getSession();
-    await addExtraLogs(
-      driver,
-      expect.getState().currentTestName + " - " + session.getId()
-    );
-    await driver.quit();
-    await DriverBuilder.destroy();
+    try {
+      const session = await driver.getSession();
+      await addExtraLogs(
+        driver,
+        expect.getState().currentTestName + " - " + session.getId()
+      );
+    } catch (error) {
+      testLog.getLog().warn(error);
+    } finally {
+      await driver.quit();
+      await DriverBuilder.destroy();
+    }
   });
 
   afterAll(async () => {

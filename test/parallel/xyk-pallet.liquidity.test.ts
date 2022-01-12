@@ -4,7 +4,7 @@
  * @group liquidity
  * @group parallel
  */
-import {getApi, initApi} from "../../utils/api";
+import { getApi, initApi } from "../../utils/api";
 import {
   calcuate_mint_liquidity_price_local,
   calcuate_burn_liquidity_price_local,
@@ -14,14 +14,14 @@ import {
   mintLiquidity,
   burnLiquidity,
 } from "../../utils/tx";
-import {ExtrinsicResult} from "../../utils/eventListeners";
+import { ExtrinsicResult } from "../../utils/eventListeners";
 import BN from "bn.js";
-import {Keyring} from "@polkadot/api";
-import {AssetWallet, User} from "../../utils/User";
-import {Assets} from "../../utils/Assets";
-import {getEnvironmentRequiredVars} from "../../utils/utils";
-import {testLog} from "../../utils/Logger";
-import {getEventResultFromMangataTx} from "../../utils/txHandler";
+import { Keyring } from "@polkadot/api";
+import { AssetWallet, User } from "../../utils/User";
+import { Assets } from "../../utils/Assets";
+import { getEnvironmentRequiredVars } from "../../utils/utils";
+import { testLog } from "../../utils/Logger";
+import { getEventResultFromMangataTx } from "../../utils/txHandler";
 
 jest.spyOn(console, "log").mockImplementation(jest.fn());
 jest.setTimeout(1500000);
@@ -36,7 +36,7 @@ let firstCurrency: BN;
 let secondCurrency: BN;
 let liquidityAssetId: BN;
 
-const {xykPalletAddress: pallet_address, sudo: sudoUserName} =
+const { xykPalletAddress: pallet_address, sudo: sudoUserName } =
   getEnvironmentRequiredVars();
 const defaultCurrecyValue = new BN(250000);
 
@@ -49,7 +49,7 @@ beforeAll(async () => {
 });
 
 beforeEach(async () => {
-  keyring = new Keyring({type: "sr25519"});
+  keyring = new Keyring({ type: "sr25519" });
 
   // setup users
   testUser1 = new User(keyring);

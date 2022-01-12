@@ -1,4 +1,4 @@
-import {By, WebDriver} from "selenium-webdriver";
+import { By, WebDriver } from "selenium-webdriver";
 import {
   BTC_ASSET_NAME,
   DOT_ASSET_NAME,
@@ -6,19 +6,19 @@ import {
   MGA_ASSET_NAME,
   USDC_ASSET_NAME,
 } from "../../Constants";
-import {getEnvironmentRequiredVars, sleep} from "../../utils";
-import {clickElement, waitForElement} from "../utils/Helper";
-import {Sidebar} from "./Sidebar";
+import { getEnvironmentRequiredVars, sleep } from "../../utils";
+import { clickElement, waitForElement } from "../utils/Helper";
+import { Sidebar } from "./Sidebar";
 
 //xpaths
 const MSG_RECEIVE_TOKENS = `//div[text()='You will receive test tokens']`;
 const LBL_YOUR_TOKENS = `//*[contains(text(),'Your tokens')]`;
-const BTN_GET_TOKENS = `//button[contains(text(), 'Get Tokens')] `;
+const BTN_GET_TOKENS = `//*[contains(text(), 'Get Tokens')] `;
 
 const DIV_MGA_SWAP = `//*[@class='Swap']`;
 const DIV_MGA_LOGO = `//*[contains(@class,'bg-mangata-logo')]`;
 const BTN_SELECT_TOKENS = `//*[text() = 'Select Token' ]`;
-const LI_TOKEN_ELEM = `//*[@class = 'assets' ]/ul/li`;
+const LI_TOKEN_ELEM = `//*[contains(@data-testId, 'TokensModal-asset' )]`;
 
 const DIV_MGA_LIQ_POOLS = `//div[@class='PoolsOverview__inner__list__item']`;
 const BTN_MGA_LIQ_POOLS_ADD = `//*[small[contains(text(),'Liquidity')] and contains(text(),'Add' ) ]`;
@@ -31,7 +31,7 @@ export class Mangata {
 
   constructor(driver: WebDriver) {
     this.driver = driver;
-    const {uiUri} = getEnvironmentRequiredVars();
+    const { uiUri } = getEnvironmentRequiredVars();
     this.uiUri = uiUri;
   }
 

@@ -19,7 +19,7 @@ jobs:
 
     strategy:
       matrix:
-        environment: ['staging','develop','integration']
+        environment: ['staging']
         cluster: ['staging']
     runs-on: ubuntu-latest
     steps:

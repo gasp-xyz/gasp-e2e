@@ -3,8 +3,8 @@
  * @group xyk
  * @group ci
  */
-import {getApi, initApi} from "../../utils/api";
-import {getAllAssetsInfo} from "../../utils/tx";
+import { getApi, initApi } from "../../utils/api";
+import { getAllAssetsInfo } from "../../utils/tx";
 
 jest.spyOn(console, "log").mockImplementation(jest.fn());
 jest.setTimeout(1500000);

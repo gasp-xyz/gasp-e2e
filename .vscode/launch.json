@@ -18,6 +18,21 @@
                 "${workspaceRoot}/**/*"
             ],
             "envFile": "${workspaceRoot}/.env"
+        },
+        {
+            "name": "Current TS File",
+            "type": "node",
+            "request": "launch",
+            "args": ["${relativeFile}" ,"ping", "testCaseName=SustainedLoadTest",  "threadNumber=2", "duration=1000", "totalTransactions=2", "nodes=wss://integration.mangatafinance.cloud:9944,wss://develop.mangatafinance.cloud:9944" ],
+            "runtimeArgs": ["--nolazy", "-r", "ts-node/register"],
+            "sourceMaps": true,
+            "cwd": "${workspaceRoot}",
+            "protocol": "inspector",
+            "env": {
+                "TEST_SUDO_NAME": "",
+                "PERF_TEST" : "true"
+              }
         }
+        
     ]
 }

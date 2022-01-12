@@ -1,12 +1,12 @@
-import {WebDriver} from "selenium-webdriver";
-import {getEnvironmentRequiredVars} from "../../utils";
+import { WebDriver } from "selenium-webdriver";
+import { getEnvironmentRequiredVars } from "../../utils";
 import {
   clickElement,
   doActionInDifferentWindow,
   waitForElement,
   writeText,
 } from "../utils/Helper";
-const {By} = require("selenium-webdriver");
+const { By } = require("selenium-webdriver");
 
 //xpaths
 const XPATH_NEXT = "//*[text()='Next']";
@@ -43,7 +43,7 @@ export class Polkadot {
 
   constructor(driver: WebDriver) {
     this.driver = driver;
-    const {uiUserPassword: userPassword, mnemonicPolkadot} =
+    const { uiUserPassword: userPassword, mnemonicPolkadot } =
       getEnvironmentRequiredVars();
     this.userPassword = userPassword;
     this.mnemonicPolkadot = mnemonicPolkadot;
@@ -67,11 +67,15 @@ export class Polkadot {
     await this.fillUserPass();
     await this.enable();
   }
-  private async fillUserPass() {
+  private async fillUserPass(userNo: number = 0) {
     await waitForElement(this.driver, XPATH_USER_NAME);
+    let name = "acc_automation";
+    if (userNo > 0) {
+      name += `_${userNo}`;
+    }
     await (
       await this.driver.findElement(By.xpath(XPATH_USER_NAME))
-    ).sendKeys("acc_automation");
+    ).sendKeys(name);
     await (
       await this.driver.findElement(By.xpath(XPATH_PASSWORD))
     ).sendKeys(this.userPassword);
@@ -80,17 +84,20 @@ export class Polkadot {
     ).sendKeys(this.userPassword);
   }
 
-  async createAccount(): Promise<[string, string]> {
+  async createAccount(userNo: number = 0): Promise<[string, string]> {
     await this.driver.get(`${this.WEB_UI_ACCESS_URL}#/account/create`);
+    const accountAddress = await (
+      await this.driver.findElement(By.xpath(XPATH_DATA_ADDRESS))
+    ).getText();
     await clickElement(this.driver, XPATH_CHECK_ISAVED);
     const mnemonic = await (
       await this.driver.findElement(By.xpath(XPATH_TEXT_AREA))
     ).getText();
     await clickElement(this.driver, XPATH_NEXT_STEP);
-    await this.fillUserPass();
-    const userAddress = await this.enable();
-    this.ACCOUNT_ADDRESS = userAddress;
-    return [userAddress, mnemonic];
+    await this.fillUserPass(userNo);
+    await this.enable(userNo === 0); //if first time --> we need to aknowlege.
+    this.ACCOUNT_ADDRESS = accountAddress;
+    return [accountAddress, mnemonic];
   }
 
   async exportAccount() {
@@ -106,17 +113,14 @@ export class Polkadot {
     await clickElement(this.driver, XPATH_EXPORT_CONFIRM);
   }
 
-  private async enable(): Promise<string> {
+  private async enable(aknowledge: boolean = true): Promise<void> {
     await waitForElement(this.driver, XPATH_ADD_ACCOUNT);
     await clickElement(this.driver, XPATH_ADD_ACCOUNT);
-
-    await waitForElement(this.driver, XPATH_UNDERSTOOD);
-    await clickElement(this.driver, XPATH_UNDERSTOOD);
-    await waitForElement(this.driver, XPATH_DATA_ADDRESS);
-    const accoundAddress = await (
-      await this.driver.findElement(By.xpath(XPATH_DATA_ADDRESS))
-    ).getText();
-    return accoundAddress;
+    if (aknowledge) {
+      await waitForElement(this.driver, XPATH_UNDERSTOOD);
+      await clickElement(this.driver, XPATH_UNDERSTOOD);
+      await waitForElement(this.driver, XPATH_DATA_ADDRESS);
+    }
   }
 
   async acceptModal(driver: WebDriver) {
@@ -128,12 +132,12 @@ export class Polkadot {
   }
 
   private static async signTransactionModal(driver: WebDriver) {
-    const {uiUserPassword: userPassword} = getEnvironmentRequiredVars();
+    const { uiUserPassword: userPassword } = getEnvironmentRequiredVars();
     await writeText(driver, XPATH_SIGN_PASSWORD, userPassword);
     await clickElement(driver, XPATH_SIGN_BTN);
   }
   private static async cancelOperationModal(driver: WebDriver) {
-    const {uiUserPassword: userPassword} = getEnvironmentRequiredVars();
+    const { uiUserPassword: userPassword } = getEnvironmentRequiredVars();
     await writeText(driver, XPATH_SIGN_PASSWORD, userPassword);
     await clickElement(driver, XPATH_CANCEL_BTN);
   }
@@ -144,6 +148,16 @@ export class Polkadot {
   }
   static async cancelOperation(driver: WebDriver) {
     await doActionInDifferentWindow(driver, Polkadot.cancelOperationModal);
+    return;
+  }
+  async hideAccount(userAddress: string) {
+    const eyeIconXpath = `//div[div[text()='${userAddress}']]//*[@data-icon='eye']`;
+    await clickElement(this.driver, eyeIconXpath);
+    return;
+  }
+  async unHideAccount(userAddress: string) {
+    const eyeIconXpath = `//div[div[text()='${userAddress}']]//*[@data-icon='eye-slash']`;
+    await clickElement(this.driver, eyeIconXpath);
     return;
   }
 }

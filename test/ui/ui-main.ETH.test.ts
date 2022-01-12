@@ -3,32 +3,32 @@
  * @group ui
  * @group ci
  */
-import {Keyring} from "@polkadot/api";
-import {WebDriver} from "selenium-webdriver";
-import {getApi, initApi} from "../../utils/api";
-import {ETH_ASSET_ID, FIVE_MIN, MGA_ASSET_ID} from "../../utils/Constants";
-import {Mangata} from "../../utils/frontend/pages/Mangata";
-import {Sidebar} from "../../utils/frontend/pages/Sidebar";
-import {DriverBuilder} from "../../utils/frontend/utils/Driver";
+import { Keyring } from "@polkadot/api";
+import { WebDriver } from "selenium-webdriver";
+import { getApi, initApi } from "../../utils/api";
+import { ETH_ASSET_ID, FIVE_MIN, MGA_ASSET_ID } from "../../utils/Constants";
+import { Mangata } from "../../utils/frontend/pages/Mangata";
+import { Sidebar } from "../../utils/frontend/pages/Sidebar";
+import { DriverBuilder } from "../../utils/frontend/utils/Driver";
 import {
   addExtraLogs,
   setupAllExtensions,
 } from "../../utils/frontend/utils/Helper";
-import {AssetWallet, User} from "../../utils/User";
+import { AssetWallet, User } from "../../utils/User";
 import BN from "bn.js";
-import {getEnvironmentRequiredVars} from "../../utils/utils";
-import {UserFactory, Users} from "../../utils/Framework/User/UserFactory";
-import {Node} from "../../utils/Framework/Node/Node";
-import {MetamaskUser} from "../../utils/Framework/User/MetamaskUser";
+import { getEnvironmentRequiredVars } from "../../utils/utils";
+import { UserFactory, Users } from "../../utils/Framework/User/UserFactory";
+import { Node } from "../../utils/Framework/Node/Node";
+import { MetamaskUser } from "../../utils/Framework/User/MetamaskUser";
 
-jest.setTimeout(FIVE_MIN);
+jest.setTimeout(FIVE_MIN * 2);
 jest.spyOn(console, "log").mockImplementation(jest.fn());
 let driver: WebDriver;
 
 describe("UI main tests - Deposit - ETH", () => {
   let testUser1: User;
   let keyring: Keyring;
-  const {sudo: sudoUserName} = getEnvironmentRequiredVars();
+  const { sudo: sudoUserName } = getEnvironmentRequiredVars();
   beforeAll(async () => {
     try {
       getApi();
@@ -36,13 +36,13 @@ describe("UI main tests - Deposit - ETH", () => {
       await initApi();
     }
 
-    keyring = new Keyring({type: "sr25519"});
+    keyring = new Keyring({ type: "sr25519" });
   });
 
   beforeEach(async () => {
     driver = await DriverBuilder.getInstance();
     const sudo = new User(keyring, sudoUserName);
-    const {polkUserAddress} = await setupAllExtensions(driver);
+    const { polkUserAddress } = await setupAllExtensions(driver);
     testUser1 = new User(keyring, undefined);
     testUser1.addFromAddress(keyring, polkUserAddress);
     testUser1.addAsset(MGA_ASSET_ID);
@@ -56,12 +56,16 @@ describe("UI main tests - Deposit - ETH", () => {
     const ableToContinueP = await sidebar.isPolkadotExtensionOK();
     expect(ableToContinueM).toBeTruthy();
     expect(ableToContinueP).toBeTruthy();
-    await sudo.mint(MGA_ASSET_ID, testUser1, new BN(10000000000));
+    await sudo.mint(
+      MGA_ASSET_ID,
+      testUser1,
+      new BN(Math.pow(10, 18).toString())
+    );
   });
 
   it("As a User I can deposit ETH from Meta extension", async () => {
     const sidebar = new Sidebar(driver);
-    await sidebar.depositAseetsFromMetamask("kETH", "0.001");
+    await sidebar.depositAseetsFromMetamask("ETH", "0.001");
     await sidebar.waitForTokenToAppear("mETH");
     const tokenValue = await sidebar.getTokenAmount("mETH");
     expect(tokenValue).toEqual("0.001");
@@ -94,7 +98,7 @@ describe("UI main tests - Withdraw - ETH", () => {
   let testUser1: User;
   let keyring: Keyring;
   let metamaskUser: MetamaskUser;
-  const {sudo: sudoUserName, chainUri} = getEnvironmentRequiredVars();
+  const { sudo: sudoUserName, chainUri } = getEnvironmentRequiredVars();
   beforeAll(async () => {
     try {
       getApi();
@@ -102,13 +106,13 @@ describe("UI main tests - Withdraw - ETH", () => {
       await initApi();
     }
 
-    keyring = new Keyring({type: "sr25519"});
+    keyring = new Keyring({ type: "sr25519" });
   });
 
   beforeEach(async () => {
     driver = await DriverBuilder.getInstance();
     const sudo = new User(keyring, sudoUserName);
-    const {polkUserAddress} = await setupAllExtensions(driver);
+    const { polkUserAddress } = await setupAllExtensions(driver);
     testUser1 = new User(keyring, undefined);
     testUser1.addFromAddress(keyring, polkUserAddress);
     testUser1.addAsset(MGA_ASSET_ID);
@@ -121,9 +125,13 @@ describe("UI main tests - Withdraw - ETH", () => {
     const ableToContinueP = await sidebar.isPolkadotExtensionOK();
     expect(ableToContinueM).toBeTruthy();
     expect(ableToContinueP).toBeTruthy();
-    await sudo.mint(MGA_ASSET_ID, testUser1, new BN(10000000000));
+    await sudo.mint(
+      MGA_ASSET_ID,
+      testUser1,
+      new BN(Math.pow(10, 18).toString())
+    );
 
-    await sidebar.depositAseetsFromMetamask("kETH", "0.001");
+    await sidebar.depositAseetsFromMetamask("ETH", "0.001");
     await sidebar.waitForTokenToAppear("mETH");
     const tokenValue = await sidebar.getTokenAmount("mETH");
     expect(tokenValue).toEqual("0.001");
@@ -138,7 +146,7 @@ describe("UI main tests - Withdraw - ETH", () => {
   it("As a User I can Withdraw ETH from Meta extension", async () => {
     const sidebar = new Sidebar(driver);
     const ethBalanceBefore = await metamaskUser.getEthBalance();
-    await sidebar.withdrawAllAssetsToMetaMask("mETH");
+    await sidebar.withdrawAllAssetsToMetaMask("ETH");
     await sidebar.waitForTokenToDissapear("mETH");
     await testUser1.refreshAmounts(AssetWallet.AFTER);
 
