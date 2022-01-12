@@ -43,9 +43,9 @@ class Node {
           this.firstBlock = lastHeader.number.toNumber();
         }
         this.blockAuthors.push(
-          (
-            await this.api!.derive.chain.getHeader(lastHeader.hash.toString())
-          ).author.toString()
+          (await this.api!.derive.chain.getHeader(
+            lastHeader.hash.toString()
+          ))!.author!.toString()
         );
         this.lastBlock = lastHeader.number.toNumber();
         this.lastHash = lastHeader.hash.toString();

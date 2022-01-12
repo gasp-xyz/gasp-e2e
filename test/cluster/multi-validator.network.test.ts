@@ -5,18 +5,18 @@
  * eslint-disable no-console
  */
 import BN from "bn.js";
-import {uniq, intersection, takeRight} from "lodash";
+import { uniq, intersection, takeRight } from "lodash";
 
-import {cryptoWaitReady} from "@polkadot/util-crypto";
-import {Keyring} from "@polkadot/api";
+import { cryptoWaitReady } from "@polkadot/util-crypto";
+import { Keyring } from "@polkadot/api";
 
-import {SudoUser} from "../../utils/Framework/User/SudoUser";
-import {UserFactory, Users} from "../../utils/Framework/User/UserFactory";
-import {Node} from "../../utils/Framework/Node/Node";
-import {testLog} from "../../utils/Logger";
-import {getEnvironmentRequiredVars, waitForNBlocks} from "../../utils/utils";
-import {GovernanceUser} from "../../utils/Framework/User/GovernanceUser";
-import {Bank} from "../../utils/Framework/Supply/Bank";
+import { SudoUser } from "../../utils/Framework/User/SudoUser";
+import { UserFactory, Users } from "../../utils/Framework/User/UserFactory";
+import { Node } from "../../utils/Framework/Node/Node";
+import { testLog } from "../../utils/Logger";
+import { getEnvironmentRequiredVars, waitForNBlocks } from "../../utils/utils";
+import { GovernanceUser } from "../../utils/Framework/User/GovernanceUser";
+import { Bank } from "../../utils/Framework/Supply/Bank";
 
 jest.spyOn(console, "log").mockImplementation(jest.fn());
 jest.spyOn(console, "error").mockImplementation(jest.fn());
@@ -33,12 +33,7 @@ const RelayTwo: Node = new Node(getEnvironmentRequiredVars().relayTwo);
 const CollatorOne: Node = new Node(getEnvironmentRequiredVars().collatorOne);
 const CollatorTwo: Node = new Node(getEnvironmentRequiredVars().collatorTwo);
 
-const nodes = [
-  RelayOne,
-  RelayTwo,
-  CollatorOne,
-  CollatorTwo,
-];
+const nodes = [RelayOne, RelayTwo, CollatorOne, CollatorTwo];
 
 beforeAll(async () => {
   await cryptoWaitReady(); // Wait for Polkadots WASM backend
@@ -66,7 +61,7 @@ beforeAll(async () => {
   await bootnodeB.connect();
   await bootnodeB.subscribeToHead();
 
-  keyring = new Keyring({type: "sr25519"});
+  keyring = new Keyring({ type: "sr25519" });
   sudo = UserFactory.createUser(Users.SudoUser, keyring, bootnodeA) as SudoUser;
 });
 
@@ -103,7 +98,7 @@ describe("Multi-Validator -> Network -> Syncing", () => {
   test("Block merkle hash matches across all nodes", async () => {
     const randomBlockNumber = Math.floor(
       Math.random() * (RelayOne.lastBlock! - RelayOne.firstBlock! + 1) +
-      RelayOne.firstBlock!
+        RelayOne.firstBlock!
     );
 
     await waitForNBlocks(5);
