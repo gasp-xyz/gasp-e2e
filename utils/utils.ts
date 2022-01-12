@@ -106,16 +106,16 @@ export function getEnvironmentRequiredVars() {
 
   const relayOne = process.env.RELAY_ONE
     ? process.env.RELAY_ONE
-    : "ws://node_alice:9944";
+    : "wss://v4-alice.mangatafinance.cloud";
   const relayTwo = process.env.RELAY_TWO
     ? process.env.RELAY_TWO
-    : "ws://node_bob:9944";
+    : "wss://v4-bob.mangatafinance.cloud";
   const collatorOne = process.env.COLLATOR_ONE
     ? process.env.COLLATOR_ONE
-    : "ws://node_charlie:9944";
+    : "wss://v4-collator-01.mangatafinance.cloud";
   const collatorTwo = process.env.COLLATOR_TWO
     ? process.env.COLLATOR_TWO
-    : "ws://node_dave:9944";
+    : "wss://v4-collator-02.mangatafinance.cloud";
 
   return {
     sudo: sudoUserName,
