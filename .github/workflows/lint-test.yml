@@ -27,7 +27,7 @@ jobs:
     name: Test code quality and run tests
     runs-on: ubuntu-latest
     env:
-      API_URL: 'ws://172.16.238.10:9944'
+      API_URL: 'wss://v4-alice.mangatafinance.cloud'
       TEST_PALLET_ADDRESS: ${{ secrets.TEST_PALLET_ADDRESS }}
       E2E_XYK_PALLET_ADDRESS: ${{ secrets.E2E_XYK_PALLET_ADDRESS }}
       E2E_TREASURY_PALLET_ADDRESS: ${{ secrets.E2E_TREASURY_PALLET_ADDRESS }}
