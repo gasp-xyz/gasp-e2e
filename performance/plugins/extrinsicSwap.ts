@@ -1,9 +1,9 @@
 import BN from "bn.js";
-import {Mangata} from "mangata-sdk";
-import {TestParams} from "../testParams";
-import {KeyringPair} from "@polkadot/keyring/types";
-import {preGenerateTransactions, runTransactions} from "./testRunner";
-import {performanceTestItem} from "./performanceTestItem";
+import { Mangata } from "mangata-sdk";
+import { TestParams } from "../testParams";
+import { KeyringPair } from "@polkadot/keyring/types";
+import { preGenerateTransactions, runTransactions } from "./testRunner";
+import { performanceTestItem } from "./performanceTestItem";
 //not proud about this, but lets leave it like this until we send some optional params.
 let tokens: number[] = [];
 export class ExtrinsicSwap extends performanceTestItem {
@@ -27,7 +27,7 @@ export class ExtrinsicSwap extends performanceTestItem {
 async function createAndSignSwaps(
   mgaNodeandUsers: Map<
     number,
-    {mgaSdk: Mangata; users: {nonce: BN; keyPair: KeyringPair}[]}
+    { mgaSdk: Mangata; users: { nonce: BN; keyPair: KeyringPair }[] }
   >,
   nodeThread: number,
   userNo: number
@@ -45,5 +45,5 @@ async function createAndSignSwaps(
   const signed = tx.sign(srcUser!.keyPair, {
     nonce: mgaValue.users[userNo]!.nonce,
   });
-  return {mgaValue, signed};
+  return { mgaValue, signed };
 }

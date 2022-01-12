@@ -1,14 +1,14 @@
-import {formatBalance} from "@polkadot/util/format";
+import { formatBalance } from "@polkadot/util/format";
 import BN from "bn.js";
-import {getApi, getMangataInstance} from "./api";
+import { getApi, getMangataInstance } from "./api";
 
-import {Assets} from "./Assets";
-import {User} from "./User";
+import { Assets } from "./Assets";
+import { User } from "./User";
 import Keyring from "@polkadot/keyring";
-import {getAccountJSON} from "./frontend/utils/Helper";
-import {ETH_ASSET_ID, MGA_ASSET_ID} from "./Constants";
-import {getBalanceOfPool} from "./tx";
-import {waitNewBlock} from "./eventListeners";
+import { getAccountJSON } from "./frontend/utils/Helper";
+import { ETH_ASSET_ID, MGA_ASSET_ID } from "./Constants";
+import { getBalanceOfPool } from "./tx";
+import { waitNewBlock } from "./eventListeners";
 
 export function sleep(ms: number) {
   return new Promise((resolve) => {
@@ -19,8 +19,15 @@ export function sleep(ms: number) {
 export function fromBNToUnitString(value: BN) {
   const api = getApi();
   const decimals = api?.registry.chainDecimals;
-  const valueFormatted = formatBalance(value, {decimals: decimals});
-  return valueFormatted;
+  const valueFormatted = formatBalance(value, { decimals: decimals[0] });
+  return valueFormatted.toUpperCase();
+}
+
+export function fromStringToUnitString(value: string) {
+  const stringWithoutCommas = value.split(",").join("");
+  const valueBN = new BN(stringWithoutCommas);
+  const unitString = fromBNToUnitString(valueBN);
+  return unitString;
 }
 
 export function getEnvironmentRequiredVars() {
@@ -218,15 +225,15 @@ export function calculateLiqAssetAmount(
 export function calculateFees(soldAmount: BN) {
   const treasury = soldAmount.mul(new BN(5)).div(new BN(10000));
   const treasuryFee = treasury.add(new BN(1));
-  return {treasury: treasuryFee, treasuryBurn: treasuryFee};
+  return { treasury: treasuryFee, treasuryBurn: treasuryFee };
 }
 export function calculateCompleteFees(soldAmount: BN) {
-  const {treasury, treasuryBurn} = calculateFees(soldAmount);
+  const { treasury, treasuryBurn } = calculateFees(soldAmount);
   let threePercent = treasury.add(treasuryBurn).mul(new BN(3));
   threePercent = threePercent.add(new BN(1));
   //We remove those two added by treasury_treasury_burn.
   threePercent = threePercent.sub(new BN(2));
-  return {completeFee: threePercent};
+  return { completeFee: threePercent };
 }
 
 export const waitForNBlocks = async (n: number) => {
@@ -240,18 +247,18 @@ export async function createPoolIfMissing(
   sudo: User,
   amountInPool: string,
   firstAssetId = MGA_ASSET_ID,
-  seccondAssetID = ETH_ASSET_ID
+  seccondAssetId = ETH_ASSET_ID
 ) {
-  const balance = await getBalanceOfPool(firstAssetId, seccondAssetID);
+  const balance = await getBalanceOfPool(firstAssetId, seccondAssetId);
   if (balance[0].isZero() || balance[1].isZero()) {
     await sudo.mint(firstAssetId, sudo, new BN(amountInPool));
-    await sudo.mint(ETH_ASSET_ID, sudo, new BN(amountInPool));
+    await sudo.mint(seccondAssetId, sudo, new BN(amountInPool));
     const poolValue = new BN(amountInPool).div(new BN(2));
     await sudo.createPoolToAsset(
       poolValue,
       poolValue,
       firstAssetId,
-      seccondAssetID
+      seccondAssetId
     );
   }
 }

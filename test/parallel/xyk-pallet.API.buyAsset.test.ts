@@ -4,7 +4,7 @@
  * @group api
  * @group parallel
  */
-import {getApi, getMangataInstance, initApi} from "../../utils/api";
+import { getApi, getMangataInstance, initApi } from "../../utils/api";
 import {
   getBalanceOfPool,
   getTreasury,
@@ -13,23 +13,23 @@ import {
   buyAsset,
   calculate_buy_price_rpc,
 } from "../../utils/tx";
-import {ExtrinsicResult} from "../../utils/eventListeners";
+import { ExtrinsicResult } from "../../utils/eventListeners";
 import BN from "bn.js";
-import {Keyring} from "@polkadot/api";
-import {AssetWallet, User} from "../../utils/User";
+import { Keyring } from "@polkadot/api";
+import { AssetWallet, User } from "../../utils/User";
 import {
   validateAssetsSwappedEvent,
   validateUnmodified,
   validateUserPaidFeeForFailedTx,
 } from "../../utils/validators";
-import {Assets} from "../../utils/Assets";
-import {calculateFees, getEnvironmentRequiredVars} from "../../utils/utils";
-import {getEventResultFromMangataTx} from "../../utils/txHandler";
+import { Assets } from "../../utils/Assets";
+import { calculateFees, getEnvironmentRequiredVars } from "../../utils/utils";
+import { getEventResultFromMangataTx } from "../../utils/txHandler";
 
 jest.spyOn(console, "log").mockImplementation(jest.fn());
 jest.setTimeout(1500000);
 process.env.NODE_ENV = "test";
-const {sudo: sudoUserName} = getEnvironmentRequiredVars();
+const { sudo: sudoUserName } = getEnvironmentRequiredVars();
 
 const firstAssetAmount = new BN(50000);
 const secondAssetAmount = new BN(50000);
@@ -54,7 +54,7 @@ describe("xyk-pallet - Buy assets tests: BuyAssets Errors:", () => {
   });
 
   beforeEach(async () => {
-    keyring = new Keyring({type: "sr25519"});
+    keyring = new Keyring({ type: "sr25519" });
 
     // setup users
     testUser1 = new User(keyring);
@@ -260,7 +260,7 @@ describe("xyk-pallet - Buy assets tests: Buying assets you can", () => {
   });
 
   beforeEach(async () => {
-    keyring = new Keyring({type: "sr25519"});
+    keyring = new Keyring({ type: "sr25519" });
 
     // setup users
     testUser1 = new User(keyring);
@@ -317,7 +317,7 @@ describe("xyk-pallet - Buy assets tests: Buying assets you can", () => {
     });
 
     await testUser1.refreshAmounts(AssetWallet.AFTER);
-    const {treasury, treasuryBurn} = calculateFees(buyPriceLocal);
+    const { treasury, treasuryBurn } = calculateFees(buyPriceLocal);
     const fee = treasury.add(treasuryBurn);
     const pool_balance = await getBalanceOfPool(firstCurrency, secondCurrency);
     expect([
@@ -447,7 +447,7 @@ describe("xyk-pallet - Buy assets tests: Buying assets you can", () => {
       firstCurrency,
       thirdCurrency
     );
-    const {treasury, treasuryBurn} = calculateFees(buyPriceLocal);
+    const { treasury, treasuryBurn } = calculateFees(buyPriceLocal);
     const fee = treasury.add(treasuryBurn);
     expect([
       poolBalanceBefore[0].sub(amountToBuy),

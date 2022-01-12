@@ -1,10 +1,10 @@
 import BN from "bn.js";
-import {BaseUser} from "./BaseUser";
-import {Keyring} from "@polkadot/api";
-import {Node} from "../Node/Node";
-import {getEnvironmentRequiredVars} from "../../utils";
-import {erc20User, mMNGAdrress} from "../../../utils/erc20Utils";
-import {ethUser} from "../../../utils/ethUtils";
+import { BaseUser } from "./BaseUser";
+import { Keyring } from "@polkadot/api";
+import { Node } from "../Node/Node";
+import { getEnvironmentRequiredVars } from "../../utils";
+import { erc20User, mMNGAdrress } from "../../../utils/erc20Utils";
+import { ethUser } from "../../../utils/ethUtils";
 const Web3 = require("web3");
 const HDWalletProvider = require("truffle-hdwallet-provider");
 

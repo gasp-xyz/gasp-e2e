@@ -1,12 +1,12 @@
-import {WebDriver} from "selenium-webdriver";
-import {getEnvironmentRequiredVars} from "../../utils";
+import { WebDriver } from "selenium-webdriver";
+import { getEnvironmentRequiredVars } from "../../utils";
 import {
   clickElement,
   doActionInDifferentWindow,
   waitForElement,
   writeText,
 } from "../utils/Helper";
-const {By} = require("selenium-webdriver");
+const { By } = require("selenium-webdriver");
 
 //xpaths
 const XPATH_NEXT = "//*[text()='Next']";
@@ -43,7 +43,7 @@ export class Polkadot {
 
   constructor(driver: WebDriver) {
     this.driver = driver;
-    const {uiUserPassword: userPassword, mnemonicPolkadot} =
+    const { uiUserPassword: userPassword, mnemonicPolkadot } =
       getEnvironmentRequiredVars();
     this.userPassword = userPassword;
     this.mnemonicPolkadot = mnemonicPolkadot;
@@ -132,12 +132,12 @@ export class Polkadot {
   }
 
   private static async signTransactionModal(driver: WebDriver) {
-    const {uiUserPassword: userPassword} = getEnvironmentRequiredVars();
+    const { uiUserPassword: userPassword } = getEnvironmentRequiredVars();
     await writeText(driver, XPATH_SIGN_PASSWORD, userPassword);
     await clickElement(driver, XPATH_SIGN_BTN);
   }
   private static async cancelOperationModal(driver: WebDriver) {
-    const {uiUserPassword: userPassword} = getEnvironmentRequiredVars();
+    const { uiUserPassword: userPassword } = getEnvironmentRequiredVars();
     await writeText(driver, XPATH_SIGN_PASSWORD, userPassword);
     await clickElement(driver, XPATH_CANCEL_BTN);
   }

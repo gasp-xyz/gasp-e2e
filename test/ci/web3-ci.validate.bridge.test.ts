@@ -7,22 +7,22 @@
 import BN from "bn.js";
 //@ts-ignore
 import bs58 from "bs58";
-import {getApi, initApi} from "../../utils/api";
-import {Keyring} from "@polkadot/api";
-import {AssetWallet, User} from "../../utils/User";
-import {waitNewBlock} from "../../utils/eventListeners";
-import {getEnvironmentRequiredVars} from "../../utils/utils";
+import { getApi, initApi } from "../../utils/api";
+import { Keyring } from "@polkadot/api";
+import { AssetWallet, User } from "../../utils/User";
+import { waitNewBlock } from "../../utils/eventListeners";
+import { getEnvironmentRequiredVars } from "../../utils/utils";
 
-import {ethAppABI} from "../../utils/abi/EthAppABI";
-import {ERC20AppABI} from "../../utils/abi/ERC20AppABI";
+import { ethAppABI } from "../../utils/abi/EthAppABI";
+import { ERC20AppABI } from "../../utils/abi/ERC20AppABI";
 
-import {ETH_ASSET_ID, MGA_ASSET_ID} from "../../utils/Constants";
-import {signSendAndWaitToFinishTx} from "../../utils/txHandler";
-import {testLog} from "../../utils/Logger";
-import {ethUser} from "../../utils/ethUtils";
-import {getAssetId, getUserAssets} from "../../utils/tx";
-import {erc20User, mDOTAdrress, mMNGAdrress} from "../../utils/erc20Utils";
-import {ERC20ABI} from "../../utils/abi/ERC20ABI";
+import { ETH_ASSET_ID, MGA_ASSET_ID } from "../../utils/Constants";
+import { signSendAndWaitToFinishTx } from "../../utils/txHandler";
+import { testLog } from "../../utils/Logger";
+import { ethUser } from "../../utils/ethUtils";
+import { getAssetId, getUserAssets } from "../../utils/tx";
+import { erc20User, mDOTAdrress, mMNGAdrress } from "../../utils/erc20Utils";
+import { ERC20ABI } from "../../utils/abi/ERC20ABI";
 const Web3 = require("web3");
 const HDWalletProvider = require("truffle-hdwallet-provider");
 
@@ -56,7 +56,7 @@ describe("Test Withdraw - Deposit", () => {
       await initApi();
     }
     await waitNewBlock();
-    const keyring = new Keyring({type: "sr25519"});
+    const keyring = new Keyring({ type: "sr25519" });
 
     // setup users
     testUser1 = new User(keyring, "//Alice");
@@ -66,7 +66,7 @@ describe("Test Withdraw - Deposit", () => {
     await sudo.mint(
       mDOTAssetId,
       testUser1,
-      new BN(Math.pow(10, 11).toString())
+      new BN(Math.pow(10, 18).toString())
     );
     testUser1.addAsset(MGA_ASSET_ID.toString());
     testUser1.addAsset(mDOTAssetId.toString());

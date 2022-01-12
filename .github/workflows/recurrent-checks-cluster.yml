@@ -3,7 +3,6 @@ name: Cluster - Healthcheck
 on:
   schedule:
     - cron: "1 04 * * *" #lets run this job nightly.
-
   workflow_dispatch:
       inputs:
         clusterHealthcheck:
@@ -12,9 +11,7 @@ on:
           default: 'test-cluster-healthcheck'
  
 jobs:
-
   dispatch:
-
     strategy:
       matrix:
         cluster: ['develop']
@@ -33,7 +30,7 @@ jobs:
           fi
         env:
           FROM_INPUT: ${{ github.event.inputs.clusterHealthcheck }}
-      
+          
       - name: Repository Dispatch
         uses: peter-evans/repository-dispatch@v1
         with:

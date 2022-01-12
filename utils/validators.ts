@@ -1,5 +1,5 @@
 import BN from "bn.js";
-import {EventResult, ExtrinsicResult} from "./eventListeners";
+import { EventResult, ExtrinsicResult } from "./eventListeners";
 import {
   getAssetSupply,
   getBalanceOfPool,
@@ -7,12 +7,13 @@ import {
   getTreasury,
   getTreasuryBurn,
 } from "./tx";
-import {AssetWallet, User} from "./User";
+import { AssetWallet, User } from "./User";
 import {
   calculateCompleteFees,
   calculateFees,
   calculateLiqAssetAmount,
   fromBNToUnitString,
+  fromStringToUnitString,
 } from "./utils";
 
 export function validateTransactionSucessful(
@@ -22,7 +23,9 @@ export function validateTransactionSucessful(
 ) {
   expect(eventResult.state).toEqual(ExtrinsicResult.ExtrinsicSuccess);
   expect(eventResult.data[1]).toEqual(user.keyRingPair.address);
-  expect(eventResult.data[2]).toEqual(fromBNToUnitString(new BN(tokensAmount)));
+  expect(fromStringToUnitString(eventResult.data[2])).toEqual(
+    fromBNToUnitString(new BN(tokensAmount))
+  );
 }
 
 export function validateEmptyAssets(assets: BN[]) {
@@ -49,9 +52,11 @@ export function validatePoolCreatedEvent(
   expect(rawData).not.toBeNull();
   expect(rawData[0]).toEqual(userAddress);
   expect(parseInt(rawData[1])).toEqual(parseInt(firstCurrency.toString()));
-  expect(rawData[2].toString()).toEqual(fromBNToUnitString(first_asset_amount));
+  expect(fromStringToUnitString(rawData[2])).toEqual(
+    fromBNToUnitString(first_asset_amount)
+  );
   expect(parseInt(rawData[3])).toEqual(parseInt(secondCurrency.toString()));
-  expect(rawData[4].toString()).toEqual(
+  expect(fromStringToUnitString(rawData[4])).toEqual(
     fromBNToUnitString(second_asset_amount)
   );
 }
@@ -89,15 +94,17 @@ export function validateMintedLiquidityEvent(
   expect(rawData).not.toBeNull();
   expect(rawData[0]).toEqual(address);
   expect(rawData[1]).toEqual(firstCurrency.toString());
-  expect(rawData[2].toString()).toEqual(
+  expect(fromStringToUnitString(rawData[2])).toEqual(
     fromBNToUnitString(firstCurerncyAmount)
   );
   expect(rawData[3]).toEqual(secondCurrency.toString());
-  expect(rawData[4].toString()).toEqual(
+  expect(fromStringToUnitString(rawData[4])).toEqual(
     fromBNToUnitString(secondCurrencyAmount)
   );
   expect(rawData[5].toString()).toEqual(liquidityAssetId.toString());
-  expect(rawData[6].toString()).toEqual(fromBNToUnitString(txAmount));
+  expect(fromStringToUnitString(rawData[6])).toEqual(
+    fromBNToUnitString(txAmount)
+  );
 }
 
 export async function validateStatusWhenPoolCreated(
@@ -205,8 +212,8 @@ export async function validateUserPaidFeeForFailedTx(
   poolAmountFailedBought: BN,
   initialPoolValueSoldAssetId: BN
 ) {
-  const {treasury, treasuryBurn} = calculateFees(soldAmount);
-  const {completeFee} = calculateCompleteFees(soldAmount);
+  const { treasury, treasuryBurn } = calculateFees(soldAmount);
+  const { completeFee } = calculateCompleteFees(soldAmount);
 
   //when failed Tx, we remove 3% and put it in the pool.
   await user.refreshAmounts(AssetWallet.AFTER);

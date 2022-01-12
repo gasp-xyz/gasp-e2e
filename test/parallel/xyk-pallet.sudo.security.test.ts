@@ -4,16 +4,16 @@
  * @group sudo
  * @group parallel
  */
-import {getApi, initApi} from "../../utils/api";
-import {getCurrentNonce} from "../../utils/tx";
-import {ExtrinsicResult} from "../../utils/eventListeners";
-import {Keyring} from "@polkadot/api";
-import {AssetWallet, User} from "../../utils/User";
-import {getEnvironmentRequiredVars} from "../../utils/utils";
-import {MGA_ASSET_ID} from "../../utils/Constants";
+import { getApi, initApi } from "../../utils/api";
+import { getCurrentNonce } from "../../utils/tx";
+import { ExtrinsicResult } from "../../utils/eventListeners";
+import { Keyring } from "@polkadot/api";
+import { AssetWallet, User } from "../../utils/User";
+import { getEnvironmentRequiredVars } from "../../utils/utils";
+import { MGA_ASSET_ID } from "../../utils/Constants";
 import BN from "bn.js";
-import {getEventResultFromMangataTx} from "../../utils/txHandler";
-import {signTx} from "mangata-sdk";
+import { getEventResultFromMangataTx } from "../../utils/txHandler";
+import { signTx } from "mangata-sdk";
 jest.spyOn(console, "log").mockImplementation(jest.fn());
 jest.spyOn(console, "error").mockImplementation(jest.fn());
 jest.setTimeout(1500000);
@@ -22,12 +22,11 @@ process.env.NODE_ENV = "test";
 let testUser1: User;
 let testUser2: User;
 let sudo: User;
-let infoUser1Before: any;
 
 let keyring: Keyring;
 //creating pool
 
-const {sudo: sudoUserName} = getEnvironmentRequiredVars();
+const { sudo: sudoUserName } = getEnvironmentRequiredVars();
 
 beforeAll(async () => {
   try {
@@ -36,7 +35,7 @@ beforeAll(async () => {
     await initApi();
   }
 
-  keyring = new Keyring({type: "sr25519"});
+  keyring = new Keyring({ type: "sr25519" });
 
   // setup users
   testUser1 = new User(keyring);
@@ -53,7 +52,6 @@ beforeAll(async () => {
 });
 
 beforeEach(async () => {
-  infoUser1Before = await testUser1.getUserAccountInfo();
   await testUser1.refreshAmounts(AssetWallet.BEFORE);
 });
 
@@ -132,7 +130,7 @@ test("xyk-pallet - SecurityTests - Only sudo can perform actions [tokens.mint to
       )
     ),
     testUser1.keyRingPair,
-    {nonce: await getCurrentNonce(testUser1.keyRingPair.address)}
+    { nonce: await getCurrentNonce(testUser1.keyRingPair.address) }
   ).then((result) => {
     const eventResponse = getEventResultFromMangataTx(result);
     expect(eventResponse.state).toEqual(ExtrinsicResult.ExtrinsicFailed);
@@ -141,10 +139,6 @@ test("xyk-pallet - SecurityTests - Only sudo can perform actions [tokens.mint to
 
 afterEach(async () => {
   await testUser1.refreshAmounts(AssetWallet.AFTER);
-  const infoUser1After = await testUser1.getUserAccountInfo();
-  expect(infoUser1Before).toEqual(infoUser1After);
   const assetValue = testUser1.getAsset(MGA_ASSET_ID);
-  expect(assetValue?.amountBefore.free.toNumber()).toBeGreaterThan(
-    assetValue?.amountAfter.free.toNumber()!
-  );
+  expect(assetValue?.amountAfter.free).bnLt(assetValue?.amountBefore.free!);
 });

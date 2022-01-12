@@ -1,9 +1,9 @@
 import * as uuid from "uuid";
-import {ApiPromise} from "@polkadot/api";
-import {initApi} from "../../api";
-import {testLog} from "../../Logger";
+import { ApiPromise } from "@polkadot/api";
+import { initApi } from "../../api";
+import { testLog } from "../../Logger";
 import BN from "bn.js";
-import {GovernanceUser} from "../User/GovernanceUser";
+import { GovernanceUser } from "../User/GovernanceUser";
 
 export class Node {
   name: string;
@@ -18,10 +18,10 @@ export class Node {
   subscription: any;
   blockAuthors: Array<string | void> = [];
 
-  electionEvents: Map<number, {candidates: any; members: any}> = new Map();
+  electionEvents: Map<number, { candidates: any; members: any }> = new Map();
   userBalancesHistory: Map<
     number,
-    Map<number, {free: BN; reserved: BN; miscFrozen: BN; feeFrozen: BN}>
+    Map<number, { free: BN; reserved: BN; miscFrozen: BN; feeFrozen: BN }>
   > = new Map();
   systemExtrinics: any[] = [];
   constructor(wsPath: string) {

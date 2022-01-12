@@ -1,13 +1,15 @@
-import {logging, WebDriver} from "selenium-webdriver";
-import {sleep} from "../../utils";
-import {Mangata} from "../pages/Mangata";
-import {MetaMask} from "../pages/MetaMask";
-import {Polkadot} from "../pages/Polkadot";
+import { logging, WebDriver } from "selenium-webdriver";
+import { sleep } from "../../utils";
+import { Mangata } from "../pages/Mangata";
+import { MetaMask } from "../pages/MetaMask";
+import { Polkadot } from "../pages/Polkadot";
 import fs from "fs";
-import {testLog} from "../../Logger";
+import { testLog } from "../../Logger";
 import BN from "bn.js";
-import {Reporter} from "jest-allure/dist/Reporter";
-import {By, until} from "selenium-webdriver";
+
+import { Reporter } from "jest-allure/dist/Reporter";
+const { By, until } = require("selenium-webdriver");
+
 const timeOut = 60000;
 require("chromedriver");
 const outputPath = `reports/artifacts`;
@@ -139,11 +141,11 @@ export async function addExtraLogs(driver: WebDriver, testName = "") {
   const reporter = (globalThis as any).reporter as Reporter;
   reporter.addAttachment("Screeenshot", new Buffer(img, "base64"), "image/png");
 }
-export async function renameExtraLogs(testName: string, result = "failed") {
+export async function renameExtraLogs(testName: string, result = "FAILED_") {
   fs.readdirSync(outputPath).forEach((file) => {
     if (file.includes(testName)) {
-      testLog.getLog().info(`Renaming ${file} to FAILED_${file}`);
-      fs.renameSync(`${outputPath}/${file}`, `${outputPath}/FAILED_${file}`);
+      testLog.getLog().info(`Renaming ${file} to ${result}${file}`);
+      fs.renameSync(`${outputPath}/${file}`, `${outputPath}/${result}${file}`);
     }
   });
 }
@@ -152,7 +154,7 @@ export async function getAccountJSON() {
   const path = "utils/frontend/utils/extensions";
   const polkadotUserJson = `${path}/polkadotExportedUser.json`;
   const jsonContent = JSON.parse(
-    fs.readFileSync(polkadotUserJson, {encoding: "utf8", flag: "r"})
+    fs.readFileSync(polkadotUserJson, { encoding: "utf8", flag: "r" })
   );
   return jsonContent;
 }

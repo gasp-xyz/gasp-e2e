@@ -1,12 +1,12 @@
 import BN from "bn.js";
-import {ExtrinsicResult} from "./eventListeners";
-import {getNextAssetId, getAssetSupply} from "./tx";
+import { ExtrinsicResult } from "./eventListeners";
+import { getNextAssetId, getAssetSupply } from "./tx";
 import {
   getEventResultFromMangataTx,
   setAssetInfo,
   sudoIssueAsset,
 } from "./txHandler";
-import {User} from "./User";
+import { User } from "./User";
 
 export class Assets {
   ///This method create or return the specified number of available assets
