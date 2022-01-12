@@ -21,6 +21,16 @@ export async function waitForElement(
   await driver.wait(until.elementLocated(By.xpath(xpath)), timeout);
 }
 
+export async function waitForElementEnabled(
+  driver: WebDriver,
+  xpath: string,
+  timeout = timeOut
+) {
+  await waitForElement(driver, xpath, timeout);
+  const element = await driver.findElement(By.xpath(xpath));
+  await driver.wait(until.elementIsEnabled(element), timeout);
+}
+
 export async function waitForElementToDissapear(
   driver: WebDriver,
   xpath: string
