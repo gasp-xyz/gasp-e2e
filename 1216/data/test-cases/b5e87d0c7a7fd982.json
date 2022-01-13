@@ -1,0 +1,46 @@
+{
+  "uid" : "b5e87d0c7a7fd982",
+  "name" : "SDK- Nonce management - user - future Tx-",
+  "fullName" : "SDK test - Nonce tests - user.SDK- Nonce management - user - future Tx-",
+  "historyId" : "51d1c4aefcefecab4aed95187930329e",
+  "time" : {
+    "start" : 1642075069199,
+    "stop" : 1642075137182,
+    "duration" : 67983
+  },
+  "description" : "",
+  "descriptionHtml" : "",
+  "status" : "passed",
+  "flaky" : false,
+  "newFailed" : false,
+  "beforeStages" : [ ],
+  "afterStages" : [ ],
+  "labels" : [ {
+    "name" : "suite",
+    "value" : "SDK test - Nonce tests - user"
+  }, {
+    "name" : "testClass",
+    "value" : "SDK test - Nonce tests - user"
+  }, {
+    "name" : "testMethod",
+    "value" : "SDK- Nonce management - user - future Tx-"
+  }, {
+    "name" : "package",
+    "value" : "SDK test - Nonce tests - user"
+  }, {
+    "name" : "resultFormat",
+    "value" : "allure1"
+  } ],
+  "parameters" : [ ],
+  "links" : [ ],
+  "hidden" : false,
+  "retry" : false,
+  "extra" : {
+    "severity" : "normal",
+    "retries" : [ ],
+    "categories" : [ ],
+    "tags" : [ ]
+  },
+  "source" : "b5e87d0c7a7fd982.json",
+  "parameterValues" : [ ]
+}

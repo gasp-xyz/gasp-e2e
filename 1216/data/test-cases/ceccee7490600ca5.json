@@ -1,0 +1,46 @@
+{
+  "uid" : "ceccee7490600ca5",
+  "name" : "joinCandidates operation reserves some tokens",
+  "fullName" : "xyk-pallet - Sell Asset: validate Errors:.joinCandidates operation reserves some tokens",
+  "historyId" : "3df09f946861923e5a5184dce07d4b22",
+  "time" : {
+    "start" : 1642076303540,
+    "stop" : 1642076339762,
+    "duration" : 36222
+  },
+  "description" : "",
+  "descriptionHtml" : "",
+  "status" : "passed",
+  "flaky" : false,
+  "newFailed" : false,
+  "beforeStages" : [ ],
+  "afterStages" : [ ],
+  "labels" : [ {
+    "name" : "suite",
+    "value" : "xyk-pallet - Sell Asset: validate Errors:"
+  }, {
+    "name" : "testClass",
+    "value" : "xyk-pallet - Sell Asset: validate Errors:"
+  }, {
+    "name" : "testMethod",
+    "value" : "joinCandidates operation reserves some tokens"
+  }, {
+    "name" : "package",
+    "value" : "xyk-pallet - Sell Asset: validate Errors:"
+  }, {
+    "name" : "resultFormat",
+    "value" : "allure1"
+  } ],
+  "parameters" : [ ],
+  "links" : [ ],
+  "hidden" : false,
+  "retry" : false,
+  "extra" : {
+    "severity" : "normal",
+    "retries" : [ ],
+    "categories" : [ ],
+    "tags" : [ ]
+  },
+  "source" : "ceccee7490600ca5.json",
+  "parameterValues" : [ ]
+}

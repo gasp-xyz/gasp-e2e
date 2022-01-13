@@ -1,0 +1,25 @@
+[ {
+  "values" : [ "v4" ],
+  "name" : "ENV"
+}, {
+  "values" : [ "test-sequential" ],
+  "name" : "TEST_SCRIPT"
+}, {
+  "values" : [ "https://notDefined.TODO.com/" ],
+  "name" : "UI_URL"
+}, {
+  "values" : [ "wss://v4-collator-01.mangatafinance.cloud" ],
+  "name" : "API_URL"
+}, {
+  "values" : [ "0xeAA7Ddc7586CFfb417078E56Fd61DE37a6Be373E" ],
+  "name" : "ETH_APP_ADDRESS"
+}, {
+  "values" : [ "0xb508A5Dfa2a16269a5cb47C67824cF823Db44ca7" ],
+  "name" : "ETH_20_APP_ADDRESS"
+}, {
+  "values" : [ "main" ],
+  "name" : "E2EBranch"
+}, {
+  "values" : [ "https://mangata-finance.github.io/mangata-e2e" ],
+  "name" : "URL"
+} ]

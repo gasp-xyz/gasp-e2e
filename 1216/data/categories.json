@@ -1,0 +1,145 @@
+{
+  "uid" : "4b4757e66a1912dae1a509f688f20b0f",
+  "children" : [ {
+    "name" : "Product defects",
+    "children" : [ {
+      "name" : "Error: Expected: 2192228578481086565662 \n                  Actual: 1644179700641451030912 \n                 ",
+      "children" : [ {
+        "name" : "assets won when assets are bought [Buying Y - X connected toMGA pool] - 6",
+        "uid" : "35af0f5f320fa5ef",
+        "parentUid" : "25b2f7de55ae832d540a12c61555e220",
+        "status" : "failed",
+        "time" : {
+          "start" : 1642074191496,
+          "stop" : 1642074527907,
+          "duration" : 336411
+        },
+        "flaky" : false,
+        "newFailed" : false,
+        "parameters" : [ ]
+      } ],
+      "uid" : "25b2f7de55ae832d540a12c61555e220"
+    }, {
+      "name" : "Error: expect(received).toBeGreaterThan(expected)\n                \n                Matcher error: received value must be a number or bigint\n                \n                Received has type:  object\n                Received has value: \"593e9e3d2b702\"",
+      "children" : [ {
+        "name" : "xyk-pallet - MGA tokens are substracted as fee : CreatePool",
+        "uid" : "e77752127561a22",
+        "parentUid" : "d8a125a1c51aa1b7a494aea13edb8f90",
+        "status" : "failed",
+        "time" : {
+          "start" : 1642075497718,
+          "stop" : 1642075678811,
+          "duration" : 181093
+        },
+        "flaky" : false,
+        "newFailed" : false,
+        "parameters" : [ ]
+      } ],
+      "uid" : "d8a125a1c51aa1b7a494aea13edb8f90"
+    }, {
+      "name" : "Error: expect(received).toBeGreaterThan(expected)\n                \n                Matcher error: received value must be a number or bigint\n                \n                Received has type:  object\n                Received has value: \"593e9e3d0179d\"",
+      "children" : [ {
+        "name" : "xyk-pallet - MGA tokens are substracted as fee : MintLiquidity",
+        "uid" : "f84f0e18cd9e4439",
+        "parentUid" : "7a5663ccee5fe3a88c60ba06a4d1b6a9",
+        "status" : "failed",
+        "time" : {
+          "start" : 1642075678811,
+          "stop" : 1642075714756,
+          "duration" : 35945
+        },
+        "flaky" : false,
+        "newFailed" : false,
+        "parameters" : [ ]
+      } ],
+      "uid" : "7a5663ccee5fe3a88c60ba06a4d1b6a9"
+    }, {
+      "name" : "Error: expect(received).toBeGreaterThan(expected)\n                \n                Matcher error: received value must be a number or bigint\n                \n                Received has type:  object\n                Received has value: \"50264fca3783c\"",
+      "children" : [ {
+        "name" : "xyk-pallet - MGA tokens are substracted as fee : BurnLiquidity",
+        "uid" : "abad887899f01da7",
+        "parentUid" : "41a5fe8cd6bb3141517f86e22ec89675",
+        "status" : "failed",
+        "time" : {
+          "start" : 1642075714756,
+          "stop" : 1642075750843,
+          "duration" : 36087
+        },
+        "flaky" : false,
+        "newFailed" : false,
+        "parameters" : [ ]
+      } ],
+      "uid" : "41a5fe8cd6bb3141517f86e22ec89675"
+    }, {
+      "name" : "Error: expect(received).toBeGreaterThan(expected)\n                \n                Matcher error: received value must be a number or bigint\n                \n                Received has type:  object\n                Received has value: \"727a8e159f599\"",
+      "children" : [ {
+        "name" : "xyk-pallet - MGA tokens are substracted as fee : Transfer",
+        "uid" : "4613cff2505b5083",
+        "parentUid" : "582da1c16f59e534402b4291cd3b60ee",
+        "status" : "failed",
+        "time" : {
+          "start" : 1642075750843,
+          "stop" : 1642075786937,
+          "duration" : 36094
+        },
+        "flaky" : false,
+        "newFailed" : false,
+        "parameters" : [ ]
+      } ],
+      "uid" : "582da1c16f59e534402b4291cd3b60ee"
+    }, {
+      "name" : "Error: expect(received).toBeGreaterThan(expected)\n                \n                Matcher error: received value must be a number or bigint\n                \n                Received has type:  object\n                Received has value: \"71e8bd3383dff\"",
+      "children" : [ {
+        "name" : "xyk-pallet - MGA tokens are substracted as fee : TransferAll",
+        "uid" : "7f396d53bd4f1e5c",
+        "parentUid" : "ed67835bafe80477cedeb84ebb0665e9",
+        "status" : "failed",
+        "time" : {
+          "start" : 1642075786937,
+          "stop" : 1642075858780,
+          "duration" : 71843
+        },
+        "flaky" : false,
+        "newFailed" : false,
+        "parameters" : [ ]
+      } ],
+      "uid" : "ed67835bafe80477cedeb84ebb0665e9"
+    }, {
+      "name" : "Error: expect(received).toBe(expected) // Object.is equality\n                \n                Expected: 0\n                Received: \"0\"",
+      "children" : [ {
+        "name" : "xyk-pallet - MGA tokens are not substracted as fee : SellAsset",
+        "uid" : "daccf8312d87608d",
+        "parentUid" : "41fc9f220c83ed5002be099f8c18c586",
+        "status" : "failed",
+        "time" : {
+          "start" : 1642075858780,
+          "stop" : 1642075895383,
+          "duration" : 36603
+        },
+        "flaky" : false,
+        "newFailed" : false,
+        "parameters" : [ ]
+      } ],
+      "uid" : "41fc9f220c83ed5002be099f8c18c586"
+    }, {
+      "name" : "Error: expect(received).toBe(expected) // Object.is equality\n                \n                - Expected  - 1\n                + Received  + 1\n                \n                - \"00\"\n                + \"0\"",
+      "children" : [ {
+        "name" : "xyk-pallet - MGA tokens are not substracted as fee : BuyAsset",
+        "uid" : "42e22498de0af939",
+        "parentUid" : "2341b0faa4e5b8324e9c60169eeeba52",
+        "status" : "failed",
+        "time" : {
+          "start" : 1642075895383,
+          "stop" : 1642075931378,
+          "duration" : 35995
+        },
+        "flaky" : false,
+        "newFailed" : false,
+        "parameters" : [ ]
+      } ],
+      "uid" : "2341b0faa4e5b8324e9c60169eeeba52"
+    } ],
+    "uid" : "8fb3a91ba5aaf9de24cc8a92edc82b5d"
+  } ],
+  "name" : "categories"
+}
