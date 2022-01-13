@@ -17,7 +17,10 @@ import BN from "bn.js";
 import { Keyring } from "@polkadot/api";
 import { AssetWallet, User } from "../../utils/User";
 import { Assets } from "../../utils/Assets";
-import { getEnvironmentRequiredVars, waitIfSessionWillChangeInNblocks } from "../../utils/utils";
+import {
+  getEnvironmentRequiredVars,
+  waitIfSessionWillChangeInNblocks,
+} from "../../utils/utils";
 import { MGA_ASSET_ID } from "../../utils/Constants";
 
 jest.spyOn(console, "log").mockImplementation(jest.fn());

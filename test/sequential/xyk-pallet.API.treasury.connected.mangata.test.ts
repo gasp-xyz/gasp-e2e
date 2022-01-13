@@ -24,7 +24,11 @@ import { AssetWallet, User } from "../../utils/User";
 import { validateTreasuryAmountsEqual } from "../../utils/validators";
 import { Assets } from "../../utils/Assets";
 import { MAX_BALANCE, MGA_ASSET_NAME } from "../../utils/Constants";
-import { calculateFees, getEnvironmentRequiredVars, waitIfSessionWillChangeInNblocks } from "../../utils/utils";
+import {
+  calculateFees,
+  getEnvironmentRequiredVars,
+  waitIfSessionWillChangeInNblocks,
+} from "../../utils/utils";
 import { getEventResultFromMangataTx } from "../../utils/txHandler";
 jest.spyOn(console, "log").mockImplementation(jest.fn());
 jest.setTimeout(1500000);
