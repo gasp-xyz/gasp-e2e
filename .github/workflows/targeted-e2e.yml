@@ -1,0 +1,212 @@
+name: Targeted E2E
+
+on:
+
+  workflow_dispatch:
+      inputs:
+        api_url:
+          description: 'API URL (e.g. ws://<something>:port)'
+          required: false
+          default: ''
+ 
+  repository_dispatch:
+    types: [run-ci]
+jobs:
+
+  build:
+    name: Build docker image
+    if: contains(github.event.inputs.publishDockerImage, 'true')
+    runs-on: ubuntu-latest
+    steps:
+      -
+        name: Checkout
+        uses: actions/checkout@v2
+      -
+        name: Set up Docker Buildx
+        uses: docker/setup-buildx-action@v1
+      -
+        name: Login to Docker Hub
+        uses: docker/login-action@v1
+        with:
+          username: ${{ secrets.DOCKERHUB_USERNAME }}
+          password: ${{ secrets.DOCKERHUB_TOKEN }}
+
+      -
+        name: Build Docker Image
+        uses: docker/build-push-action@v2
+        if: contains(github.event.inputs.publishDockerImage, 'true')
+        with:
+          file: "devops/dockerfiles/Dockerfile"
+          push: true
+          tags: mangatasolutions/mangata-e2e:latest
+
+  test:
+    name: Run UI tests
+    runs-on: ubuntu-latest
+
+    env:
+      TEST_PALLET_ADDRESS: ${{ secrets.TEST_PALLET_ADDRESS }}
+      E2E_XYK_PALLET_ADDRESS: ${{ secrets.E2E_XYK_PALLET_ADDRESS }}
+      E2E_TREASURY_PALLET_ADDRESS: ${{ secrets.E2E_TREASURY_PALLET_ADDRESS }}
+      E2E_TREASURY_BURN_PALLET_ADDRESS : ${{ secrets.E2E_TREASURY_BURN_PALLET_ADDRESS }}
+      TEST_SUDO_NAME: ${{ secrets.TEST_SUDO_NAME }}
+      MNEMONIC_META: ${{ secrets.MNEMONIC_META }}
+      MNEMONIC_POLK: ${{ secrets.MNEMONIC_POLK }}
+      TEST_SCRIPT: 'test-ui'
+      NODE_ENV: test
+      SELENIUM_REMOTE_URL: http://localhost:4444/wd/hub
+      ETH_20_APP_ADDRESS: https://kovan.infura.io/v3/3592e9c20d9b4169a394a608a310c85f
+
+    steps:  
+      - name: Set Script to run
+        run:  |
+          echo ${{ github.event.inputs.scriptName }}
+          if [ "$FROM_INPUT" != "" ]; then
+            echo "Input"
+            echo "TEST_SCRIPT=${{ github.event.inputs.scriptName }}" >> $GITHUB_ENV
+          fi
+          if [ "$FROM_PAYLOAD" != "" ]; then
+            echo "Payload"
+            echo "TEST_SCRIPT=${{ github.event.client_payload.scriptName }}" >> $GITHUB_ENV
+          fi
+          echo 'WEBHOOK_URL=${{ secrets.STG_SLACK_WEBHOOK }}' >> $GITHUB_ENV
+        env:
+          FROM_INPUT: ${{ github.event.inputs.scriptName }}
+          FROM_PAYLOAD: ${{ github.event.client_payload.scriptName }}
+
+      - name: Start Selenoid Server
+        uses: Xotabu4/selenoid-github-action@v2
+        with:
+          selenoid-start-arguments: |
+            --args "-timeout 300s" --browsers 'chrome:95.0;chrome:96.0;chrome:94.0'
+        
+
+      - name: Set Configuration - Staging
+        run:  |
+          echo 'UI_URL=https://staging.mangata.finance/' >> $GITHUB_ENV
+          echo 'API_URL={{ github.event.client_payload.environment }}' >> $GITHUB_ENV
+          echo 'ETH_APP_ADDRESS=0x4C5B51CFC44865Ac2DE4c8Ebd1df91d02d15523C' >> $GITHUB_ENV
+          echo 'ETH_20_APP_ADDRESS=0x944f7e5Ef36e09F94Bfece0C455A72963166F172' >> $GITHUB_ENV
+          echo 'MNEMONIC_META=${{ secrets.MNEMONIC_META_STG }}' >> $GITHUB_ENV
+          echo 'WEBHOOK_URL=${{ secrets.STG_SLACK_WEBHOOK }}' >> $GITHUB_ENV
+  
+      - uses: actions/checkout@v2
+      - name: Install dependencies
+        run: yarn
+      - name: Tsc code quality check
+        run: yarn tsc-lint
+      - name: ESLint code quality check
+        run: yarn eslint  
+      - name: installed packages
+        run: yarn list
+
+      - name: is selenoid started?
+        run: curl http://localhost:4444/status
+
+      - name: Add test context to allure
+        run: |
+          echo 'TEST_SCRIPT=${{ env.TEST_SCRIPT }}' >> ./environment.properties
+          echo 'UI_URL=${{ env.UI_URL }}' >> ./environment.properties
+          echo 'API_URL=${{ github.event.client_payload.environment }}' >> ./environment.properties
+          echo 'ETH_APP_ADDRESS=${{ env.ETH_APP_ADDRESS }}' >> ./environment.properties
+          echo 'ETH_20_APP_ADDRESS=${{ env.ETH_20_APP_ADDRESS }}' >> ./environment.properties
+          echo E2EBranch=${GITHUB_REF##*/} >> ./environment.properties
+
+  
+      - name: Run e2e tests
+        run: yarn ${{ env.TEST_SCRIPT }}
+      
+      - name: Test Report
+        uses: dorny/test-reporter@v1
+        if: success() || failure()    # run this step even if previous step failed
+        with:
+          name: JEST Tests            # Name of the check run which will be created
+          path: reports/jest-*.xml    # Path to test results
+          reporter: jest-junit        # Format of test results
+
+      - name: Sleep for 5 seconds
+        run: sleep 10s #close buffers of videos.
+
+      - name: Copy video files to reports folder
+        if: success() || failure()
+        run: "cp ~/.aerokube/selenoid/* -r  reports/artifacts/"
+
+      - name: Create  reports zip
+        uses: vimtor/action-zip@v1
+        if: success() || failure()
+        with:
+          files: reports/
+          dest: reports.zip
+
+      - name: Archive report files
+        uses: actions/upload-artifact@v2
+        if: success() || failure()
+        with:
+          name: ReportData
+          path: reports.zip
+
+      - name: Archive report files
+        uses: actions/upload-artifact@v2
+        if: success() || failure()
+        with:
+          name: TestReport
+          path: reports/html-report/report.html
+
+      - name: Get Allure history
+        uses: actions/checkout@v2
+        if: always()
+        continue-on-error: true
+        with:
+          ref: gh-pages
+          path: gh-pages
+
+      - name: Allure Report action from marketplace
+        uses: simple-elf/allure-report-action@master
+        if: always()
+        #id: allure-report
+        with:
+          allure_results: allure-results
+          #gh_pages: gh-pages
+          #allure_report: allure-report
+          allure_history: allure-history
+          keep_reports: 100
+
+      - name: Deploy report to Github Pages
+        if: always()
+        uses: peaceiris/actions-gh-pages@v2
+        env:
+          PERSONAL_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          PUBLISH_BRANCH: gh-pages
+          PUBLISH_DIR: allure-history
+
+
+      - name: Post the link to the report
+        if: always()
+        uses: Sibz/github-status-action@v1
+        with: 
+            authToken: ${{secrets.GITHUB_TOKEN}}
+            context: 'Test report'
+            state: 'success'
+            sha: ${{ github.event.pull_request.head.sha  || github.sha }}
+            target_url: 'https://mangata-finance.github.io/mangata-e2e/${{ github.run_number }}'
+
+      
+      - name: Slack Notification - OK
+        if: success()
+        uses: bryannice/gitactions-slack-notification@2.0.0
+        env:
+          SLACK_INCOMING_WEBHOOK: ${{ env.WEBHOOK_URL }}
+          SLACK_TITLE: 'Slack Notification - results - OK'
+          SLACK_COLOR: "#00ff11"
+          SLACK_MESSAGE: 'Test succeed in [ ${{ env.TEST_SCRIPT }} ]- ${{ env.UI_URL }} - ${{ github.event.client_payload.environment}} \n https://mangata-finance.github.io/mangata-e2e/${{ github.run_number }}'
+          GITHUB_REF: 'https://mangata-finance.github.io/mangata-e2e/${{ github.run_number }}'
+    
+      - name: Slack Notification - Error
+        if: failure()
+        uses: bryannice/gitactions-slack-notification@2.0.0
+        env:
+          SLACK_INCOMING_WEBHOOK: ${{ env.WEBHOOK_URL }}
+          SLACK_TITLE: 'Slack Notification - results - NOOK'
+          SLACK_COLOR: "#ff0011"
+          SLACK_MESSAGE: 'Test failures [ ${{ env.TEST_SCRIPT }} ]- ${{ env.UI_URL }} - ${{ github.event.client_payload.environment }} \n https://mangata-finance.github.io/mangata-e2e/${{ github.run_number }}'
+          GITHUB_REF: 'https://mangata-finance.github.io/mangata-e2e/${{ github.run_number }}'
