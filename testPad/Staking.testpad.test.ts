@@ -47,8 +47,9 @@ describe("staking - testpad", () => {
   //const address = "5H8QjhHEtbrttHDJL4ha5Kry2KBgLkerB6cbKFSfJqG44tcW"; // aura!
   //const address = "5HLsUSDLyQjDSNriuhzbzWBNEbfXjUjt5WmALLpQkLLCU2Ex"; // granpa
 
-  const address = "5FRL15Qj6DdoULKswCz7zevqe97bnHuEix794pTeGK7MhfDS"; // pair1
+  //  const address = "5FRL15Qj6DdoULKswCz7zevqe97bnHuEix794pTeGK7MhfDS"; // pair1
   //const address = "5FA3LcCrKMgr9WHqyvtDhDarAXRkJjoYrSy6XnZPKfwiB3sY"; // michal
+  const address = "5FA3LcCrKMgr9WHqyvtDhDarAXRkJjoYrSy6XnZPKfwiB3sY";
 
   test.each(["6666", "6666", "6666", "6666"])(
     "xyk-pallet: Create new users with bonded amounts.",
@@ -375,7 +376,7 @@ describe("staking - testpad", () => {
     testLog.getLog().warn("done");
   });
 
-  test("V4 xyk-pallet: addAssociationfull", async () => {
+  test.only("V4 xyk-pallet: full node setup.", async () => {
     try {
       getApi();
     } catch (e) {
@@ -405,7 +406,7 @@ describe("staking - testpad", () => {
         api.tx.tokens.mint(
           MGA_ASSET_ID,
           testUser1.keyRingPair.address,
-          new BN("1000000000000")
+          new BN(Math.pow(10, 18).toString())
         )
       ),
       sudo.keyRingPair,
@@ -420,7 +421,7 @@ describe("staking - testpad", () => {
         api.tx.tokens.mint(
           new BN(3),
           testUser1.keyRingPair.address,
-          new BN("10000000000000000000")
+          new BN("11000000000000000000000")
         )
       ),
       sudo.keyRingPair,
@@ -430,7 +431,7 @@ describe("staking - testpad", () => {
     await waitNewBlock();
     await signSendAndWaitToFinishTx(
       api?.tx.parachainStaking.joinCandidates(
-        new BN("10000000000000000000"),
+        new BN("11000000000000000000000"),
         new BN(3),
         // @ts-ignore - Mangata bond operation has 4 params, somehow is inheriting the bond operation from polkadot :S
         new BN(3)
@@ -438,8 +439,16 @@ describe("staking - testpad", () => {
       testUser1.keyRingPair
     );
     await waitNewBlock();
+    const rpcResult = await api?.rpc.author.rotateKeys();
+
+    await signSendAndWaitToFinishTx(
+      api?.tx.session.setKeys(rpcResult.toString(), "0x00"),
+      user.keyRingPair
+    );
+    await waitNewBlock();
     testLog.getLog().warn("done");
   });
+
   test("V4 xyk-pallet: setKeys", async () => {
     try {
       getApi();
@@ -458,13 +467,81 @@ describe("staking - testpad", () => {
     keyring.addPair(user.keyRingPair);
     keyring.pairs[0].decodePkcs8("mangata123");
 
+    const rpcResult = await api?.rpc.author.rotateKeys();
+
     await signSendAndWaitToFinishTx(
-      api?.tx.session.setKeys(
-        "0x7026878018ff63c8796cfac4d601adc294937d1c5ec838ab13264cc2e842ba4e",
-        "0x00"
-      ),
+      api?.tx.session.setKeys(rpcResult.toString(), "0x00"),
       user.keyRingPair
     );
+    await waitNewBlock();
+    testLog.getLog().warn("done");
+  });
+  test("V4 xyk-pallet: bond more", async () => {
+    try {
+      getApi();
+    } catch (e) {
+      await initApi();
+    }
+    keyring = new Keyring({ type: "sr25519" });
+
+    const json = fs.readFileSync(address + ".json", {
+      encoding: "utf8",
+      flag: "r",
+    });
+    const user = new User(keyring, "aasd", JSON.parse(json));
+    const amount = "5000000000000000000000";
+    //const pk = u8aToHex(user.keyRingPair.publicKey);
+    sudo = new User(keyring, sudoUserName);
+    keyring.addPair(sudo.keyRingPair);
+    const { nonce } = await api.query.system.account(sudo.keyRingPair.address);
+    await signTx(
+      api,
+      api.tx.sudo.sudo(
+        api.tx.tokens.mint(
+          new BN(3),
+          testUser1.keyRingPair.address,
+          new BN(amount)
+        )
+      ),
+      sudo.keyRingPair,
+      { nonce: new BN(nonce.toNumber()) }
+    );
+
+    keyring.addPair(user.keyRingPair);
+    keyring.pairs[0].decodePkcs8("mangata123");
+
+    await signSendAndWaitToFinishTx(
+      api?.tx.parachainStaking.scheduleCandidateBondMore(amount),
+      user.keyRingPair
+    );
+    await waitNewBlock();
+    testLog.getLog().warn("done");
+  });
+  test("V4 xyk-pallet: Leave candidate", async () => {
+    try {
+      getApi();
+    } catch (e) {
+      await initApi();
+    }
+    keyring = new Keyring({ type: "sr25519" });
+
+    const json = fs.readFileSync(address + ".json", {
+      encoding: "utf8",
+      flag: "r",
+    });
+    const user = new User(keyring, "aasd", JSON.parse(json));
+    //const pk = u8aToHex(user.keyRingPair.publicKey);
+    keyring.addPair(user.keyRingPair);
+    keyring.pairs[0].decodePkcs8("mangata123");
+
+    await signSendAndWaitToFinishTx(
+      api?.tx.parachainStaking.scheduleLeaveCandidates(3),
+      user.keyRingPair
+    );
+    //    await signSendAndWaitToFinishTx(
+    //      api?.tx.parachainStaking.executeLeaveCandidates(user.keyRingPair.address),
+    //      user.keyRingPair
+    //    );
     await waitNewBlock();
     testLog.getLog().warn("done");
   });
