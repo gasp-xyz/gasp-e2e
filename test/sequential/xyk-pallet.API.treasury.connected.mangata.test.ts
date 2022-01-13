@@ -371,13 +371,9 @@ describe("xyk-pallet - treasury tests [Connected - Mangata]: on treasury we stor
     expect(mgPoolAmountAfter[1].sub(mgPoolAmount[1])).bnEqual(
       treasury.add(treasury)
     );
-    //( mgPoolAmount[0].toNumber() * 11 * 1000 ) / (  ( ( mgPoolAmount[1].toNumber() + 11) * 1000) )
-    // 21.990324257326776 <-- rounding issue, so 21 goes to trasury, that is: swapTreasuryInMG
     expect(treasuryAfter).bnEqual(treasuryBefore.add(swapTreasuryInMG));
-    //since the fee burn is calculated like: TotalBurn - fee, so its 45 - 22 = 23.
-    expect(mgPoolAmountAfter[0].add(twotreasuries)).bnEqual(
-      mgPoolAmount[0].sub(new BN(1))
-    );
+    //validated with Stano that the rounding issue is no longer required.
+    expect(mgPoolAmountAfter[0].add(twotreasuries)).bnEqual(mgPoolAmount[0]);
     //burned destroyed! because is translated toMGA
     expect(treasuryBurnAfter).bnEqual(treasuryBurnBefore);
     await validateTreasuryAmountsEqual(indirectlyConnected, [

@@ -203,19 +203,18 @@ describe("Accuracy > Shared pool", () => {
           "Test user - 50k tokens get *5 " +
           (balancesFirstCurrency[2].toNumber() * 5).toString()
       );
-    // test that the difference is not larger than one.1x - 2z
+    // worst case  [-1,-1,+2] - so the fifference in worst case is +2.
     expect(
       balancesFirstCurrency[0]
         .sub(balancesFirstCurrency[1].mul(new BN(2)))
         .abs()
-    ).bnLte(new BN(1));
+    ).bnLte(new BN(2));
 
-    // test that the difference is not larger than one. 1x = 5y
     expect(
       balancesFirstCurrency[0]
         .sub(balancesFirstCurrency[2].mul(new BN(5)))
         .abs()
-    ).bnLte(new BN(1));
+    ).bnLte(new BN(2));
   });
 });
 
