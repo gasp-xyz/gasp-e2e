@@ -97,7 +97,7 @@ beforeAll(async () => {
 });
 
 beforeEach(async () => {
-  await waitIfSessionWillChangeInNblocks(6);
+  await waitIfSessionWillChangeInNblocks(7);
   await testUser1.refreshAmounts(AssetWallet.BEFORE);
   await pallet.refreshAmounts(AssetWallet.BEFORE);
   await testUser2.refreshAmounts(AssetWallet.BEFORE);
@@ -229,7 +229,7 @@ test("xyk-pallet - MGA tokens are not substracted as fee : SellAsset", async () 
     mgaUserToken.amountAfter.free
   );
   expect(diff).bnEqual(new BN(0));
-  expect(testUser1.getAsset(firstCurrency)!.amountBefore.free).bnLt(
+  expect(testUser1.getAsset(MGA_ASSET_ID)!.amountBefore.free).bnLte(
     testUser1.getAsset(MGA_ASSET_ID)!.amountAfter.free!
   );
   const addFromWallet = pallet
@@ -241,16 +241,15 @@ test("xyk-pallet - MGA tokens are not substracted as fee : SellAsset", async () 
 });
 test("xyk-pallet - MGA tokens are not substracted as fee : BuyAsset", async () => {
   await testUser1.buyAssets(firstCurrency, secondCurrency, new BN(50));
+  await pallet.refreshAmounts(AssetWallet.AFTER);
   await testUser1.refreshAmounts(AssetWallet.AFTER);
   const mgaUserToken = testUser1.getAsset(MGA_ASSET_ID)!;
   const diff = mgaUserToken.amountBefore.free.sub(
     mgaUserToken.amountAfter.free!
   );
   expect(diff).bnEqual(new BN(0));
-  expect(
-    testUser1.getAsset(firstCurrency)!.amountBefore.free.toNumber()
-  ).toBeGreaterThan(
-    testUser1.getAsset(firstCurrency)!.amountAfter.free.toNumber()
+  expect(testUser1.getAsset(firstCurrency)!.amountAfter.free).bnLt(
+    testUser1.getAsset(firstCurrency)!.amountBefore.free
   );
   const addFromWallet = pallet
     .getAsset(MGA_ASSET_ID)
