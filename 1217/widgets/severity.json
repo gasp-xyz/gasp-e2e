@@ -1,0 +1,151 @@
+[ {
+  "uid" : "f8f3cf027ecd0fbb",
+  "name" : "As a User I can switch between polkadot wallets",
+  "time" : {
+    "start" : 1642125102994,
+    "stop" : 1642125103000,
+    "duration" : 6
+  },
+  "status" : "failed",
+  "severity" : "normal"
+}, {
+  "uid" : "f9ef9387316cbea1",
+  "name" : "As a User I can mint in more than one pool [ MGA - mETH ] [ MGA - newTokn ] and get invested values",
+  "time" : {
+    "start" : 1642124850680,
+    "stop" : 1642124916693,
+    "duration" : 66013
+  },
+  "status" : "failed",
+  "severity" : "normal"
+}, {
+  "uid" : "80ecfe8f01005c85",
+  "name" : "Modal is visible when burning liquidity",
+  "time" : {
+    "start" : 1642124237685,
+    "stop" : 1642124304116,
+    "duration" : 66431
+  },
+  "status" : "failed",
+  "severity" : "normal"
+}, {
+  "uid" : "33945f69d4ee5ef1",
+  "name" : "As a User I can switch between polkadot wallets using the modal",
+  "time" : {
+    "start" : 1642125103000,
+    "stop" : 1642125103019,
+    "duration" : 19
+  },
+  "status" : "failed",
+  "severity" : "normal"
+}, {
+  "uid" : "944ae284ce66c007",
+  "name" : "As a User I can Swap tokens - MGA - mETH",
+  "time" : {
+    "start" : 1642124503140,
+    "stop" : 1642124644179,
+    "duration" : 141039
+  },
+  "status" : "failed",
+  "severity" : "normal"
+}, {
+  "uid" : "147fecf8d4c42457",
+  "name" : "As a User I can burn all liquidity MGA - mETH",
+  "time" : {
+    "start" : 1642124783614,
+    "stop" : 1642124850679,
+    "duration" : 67065
+  },
+  "status" : "failed",
+  "severity" : "normal"
+}, {
+  "uid" : "df877e0056b14669",
+  "name" : "As a User I get feedback when extensions are installed and correctly setup",
+  "time" : {
+    "start" : 1642125102347,
+    "stop" : 1642125102994,
+    "duration" : 647
+  },
+  "status" : "failed",
+  "severity" : "normal"
+}, {
+  "uid" : "e0fa1d42fb930639",
+  "name" : "As a User I can mint some tokens MGA - mETH",
+  "time" : {
+    "start" : 1642124644182,
+    "stop" : 1642124783613,
+    "duration" : 139431
+  },
+  "status" : "failed",
+  "severity" : "normal"
+}, {
+  "uid" : "9db4366b926c66e7",
+  "name" : "As a User I get infomed whenever is neccesary to install any extension",
+  "time" : {
+    "start" : 1642124918494,
+    "stop" : 1642125102346,
+    "duration" : 183852
+  },
+  "status" : "failed",
+  "severity" : "normal"
+}, {
+  "uid" : "ea735a994819b49b",
+  "name" : "Modal contains currencies and amounts when providing liquidity",
+  "time" : {
+    "start" : 1642124097956,
+    "stop" : 1642124237683,
+    "duration" : 139727
+  },
+  "status" : "failed",
+  "severity" : "normal"
+}, {
+  "uid" : "5b1fbfdd0ea381c3",
+  "name" : "When user cancel a TX, User gets notified",
+  "time" : {
+    "start" : 1642124435869,
+    "stop" : 1642124501304,
+    "duration" : 65435
+  },
+  "status" : "failed",
+  "severity" : "normal"
+}, {
+  "uid" : "f3b42d3b67983cb9",
+  "name" : "Modal contains currencies and amounts when Swapping",
+  "time" : {
+    "start" : 1642123953923,
+    "stop" : 1642124097953,
+    "duration" : 144030
+  },
+  "status" : "failed",
+  "severity" : "normal"
+}, {
+  "uid" : "bd2ad7692a3e07f5",
+  "name" : "When tx extrinsic - fails, User gets notified",
+  "time" : {
+    "start" : 1642124370480,
+    "stop" : 1642124435868,
+    "duration" : 65388
+  },
+  "status" : "failed",
+  "severity" : "normal"
+}, {
+  "uid" : "8daf3fa93a87d0ed",
+  "name" : "As a User I can not see hidden wallets in the modal",
+  "time" : {
+    "start" : 1642125103019,
+    "stop" : 1642125103023,
+    "duration" : 4
+  },
+  "status" : "failed",
+  "severity" : "normal"
+}, {
+  "uid" : "b8bf8c090d54c126",
+  "name" : "When tx front - fails, User gets notified",
+  "time" : {
+    "start" : 1642124304141,
+    "stop" : 1642124370479,
+    "duration" : 66338
+  },
+  "status" : "failed",
+  "severity" : "normal"
+} ]
