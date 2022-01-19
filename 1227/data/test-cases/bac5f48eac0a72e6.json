@@ -1,0 +1,131 @@
+{
+  "uid" : "bac5f48eac0a72e6",
+  "name" : "Modal contains currencies and amounts when providing liquidity",
+  "fullName" : "UI tests - A user can see the new Modal.Modal contains currencies and amounts when providing liquidity",
+  "historyId" : "8f851e11da5b03f8366fe7834b8b806f",
+  "time" : {
+    "start" : 1642555885089,
+    "stop" : 1642556019850,
+    "duration" : 134761
+  },
+  "description" : "",
+  "descriptionHtml" : "",
+  "status" : "failed",
+  "statusMessage" : "Error: Unable to decode storage system.account:: createType(AccountInfo):: {\"nonce\":\"u32\",\"refcount\":\"u32\",\"data\":\"BalancesAccountData\"}:: Decoded input doesn't match input, received 0x840f000001000000 (8 bytes), created 0x840f000001000000000000000000000000000000000000000000000000000000…0000000000000000000000000000000000000000000000000000000000000000 (72 bytes)",
+  "statusTrace" : "Error: Unable to decode storage system.account:: createType(AccountInfo):: {\"nonce\":\"u32\",\"refcount\":\"u32\",\"data\":\"BalancesAccountData\"}:: Decoded input doesn't match input, received 0x840f000001000000 (8 bytes), created 0x840f000001000000000000000000000000000000000000000000000000000000…0000000000000000000000000000000000000000000000000000000000000000 (72 bytes)\n                    at RpcCore._newType (/home/runner/work/mangata-e2e/mangata-e2e/node_modules/@polkadot/rpc-core/bundle.js:411:13)\n                    at RpcCore._formatStorageData (/home/runner/work/mangata-e2e/mangata-e2e/node_modules/@polkadot/rpc-core/bundle.js:360:17)\n                    at RpcCore._formatOutput (/home/runner/work/mangata-e2e/mangata-e2e/node_modules/@polkadot/rpc-core/bundle.js:337:19)\n                    at RpcCore._formatResult (/home/runner/work/mangata-e2e/mangata-e2e/node_modules/@polkadot/rpc-core/bundle.js:195:27)\n                    at callWithRegistry (/home/runner/work/mangata-e2e/mangata-e2e/node_modules/@polkadot/rpc-core/bundle.js:216:19)\n                    at runMicrotasks (<anonymous>)\n                    at processTicksAndRejections (node:internal/process/task_queues:96:5)",
+  "flaky" : false,
+  "newFailed" : false,
+  "beforeStages" : [ ],
+  "testStage" : {
+    "status" : "failed",
+    "statusMessage" : "Error: Unable to decode storage system.account:: createType(AccountInfo):: {\"nonce\":\"u32\",\"refcount\":\"u32\",\"data\":\"BalancesAccountData\"}:: Decoded input doesn't match input, received 0x840f000001000000 (8 bytes), created 0x840f000001000000000000000000000000000000000000000000000000000000…0000000000000000000000000000000000000000000000000000000000000000 (72 bytes)",
+    "statusTrace" : "Error: Unable to decode storage system.account:: createType(AccountInfo):: {\"nonce\":\"u32\",\"refcount\":\"u32\",\"data\":\"BalancesAccountData\"}:: Decoded input doesn't match input, received 0x840f000001000000 (8 bytes), created 0x840f000001000000000000000000000000000000000000000000000000000000…0000000000000000000000000000000000000000000000000000000000000000 (72 bytes)\n                    at RpcCore._newType (/home/runner/work/mangata-e2e/mangata-e2e/node_modules/@polkadot/rpc-core/bundle.js:411:13)\n                    at RpcCore._formatStorageData (/home/runner/work/mangata-e2e/mangata-e2e/node_modules/@polkadot/rpc-core/bundle.js:360:17)\n                    at RpcCore._formatOutput (/home/runner/work/mangata-e2e/mangata-e2e/node_modules/@polkadot/rpc-core/bundle.js:337:19)\n                    at RpcCore._formatResult (/home/runner/work/mangata-e2e/mangata-e2e/node_modules/@polkadot/rpc-core/bundle.js:195:27)\n                    at callWithRegistry (/home/runner/work/mangata-e2e/mangata-e2e/node_modules/@polkadot/rpc-core/bundle.js:216:19)\n                    at runMicrotasks (<anonymous>)\n                    at processTicksAndRejections (node:internal/process/task_queues:96:5)",
+    "steps" : [ ],
+    "attachments" : [ {
+      "uid" : "83b31f3fa7ca729f",
+      "name" : "Screeenshot",
+      "source" : "83b31f3fa7ca729f.png",
+      "type" : "image/png",
+      "size" : 69005
+    } ],
+    "parameters" : [ ],
+    "stepsCount" : 0,
+    "attachmentsCount" : 1,
+    "shouldDisplayMessage" : true,
+    "hasContent" : true
+  },
+  "afterStages" : [ ],
+  "labels" : [ {
+    "name" : "suite",
+    "value" : "UI tests - A user can see the new Modal"
+  }, {
+    "name" : "testClass",
+    "value" : "UI tests - A user can see the new Modal"
+  }, {
+    "name" : "testMethod",
+    "value" : "Modal contains currencies and amounts when providing liquidity"
+  }, {
+    "name" : "package",
+    "value" : "UI tests - A user can see the new Modal"
+  }, {
+    "name" : "resultFormat",
+    "value" : "allure1"
+  } ],
+  "parameters" : [ ],
+  "links" : [ ],
+  "hidden" : false,
+  "retry" : false,
+  "extra" : {
+    "severity" : "normal",
+    "retries" : [ ],
+    "categories" : [ {
+      "name" : "Product defects",
+      "matchedStatuses" : [ ],
+      "flaky" : false
+    } ],
+    "history" : {
+      "statistic" : {
+        "failed" : 6,
+        "broken" : 0,
+        "skipped" : 0,
+        "passed" : 0,
+        "unknown" : 0,
+        "total" : 6
+      },
+      "items" : [ {
+        "uid" : "84edb5119ce02a11",
+        "reportUrl" : "https://mangata-finance.github.io/mangata-e2e/1225//#testresult/84edb5119ce02a11",
+        "status" : "failed",
+        "statusDetails" : "Error: Unable to decode storage system.account:: createType(AccountInfo):: {\"nonce\":\"u32\",\"refcount\":\"u32\",\"data\":\"BalancesAccountData\"}:: Decoded input doesn't match input, received 0x840f000001000000 (8 bytes), created 0x840f000001000000000000000000000000000000000000000000000000000000…0000000000000000000000000000000000000000000000000000000000000000 (72 bytes)",
+        "time" : {
+          "start" : 1642469690501,
+          "stop" : 1642469790442,
+          "duration" : 99941
+        }
+      }, {
+        "uid" : "c6471261ea5b0856",
+        "reportUrl" : "https://mangata-finance.github.io/mangata-e2e/1223//#testresult/c6471261ea5b0856",
+        "status" : "failed",
+        "statusDetails" : "Error: Unable to decode storage system.account:: createType(AccountInfo):: {\"nonce\":\"u32\",\"refcount\":\"u32\",\"data\":\"BalancesAccountData\"}:: Decoded input doesn't match input, received 0x840f000001000000 (8 bytes), created 0x840f000001000000000000000000000000000000000000000000000000000000…0000000000000000000000000000000000000000000000000000000000000000 (72 bytes)",
+        "time" : {
+          "start" : 1642383288979,
+          "stop" : 1642383424395,
+          "duration" : 135416
+        }
+      }, {
+        "uid" : "b521081d9388bb5a",
+        "reportUrl" : "https://mangata-finance.github.io/mangata-e2e/1221//#testresult/b521081d9388bb5a",
+        "status" : "failed",
+        "statusDetails" : "Error: Unable to decode storage system.account:: createType(AccountInfo):: {\"nonce\":\"u32\",\"refcount\":\"u32\",\"data\":\"BalancesAccountData\"}:: Decoded input doesn't match input, received 0x840f000001000000 (8 bytes), created 0x840f000001000000000000000000000000000000000000000000000000000000…0000000000000000000000000000000000000000000000000000000000000000 (72 bytes)",
+        "time" : {
+          "start" : 1642296963236,
+          "stop" : 1642297068390,
+          "duration" : 105154
+        }
+      }, {
+        "uid" : "eb958a9360d6bfa3",
+        "reportUrl" : "https://mangata-finance.github.io/mangata-e2e/1219//#testresult/eb958a9360d6bfa3",
+        "status" : "failed",
+        "statusDetails" : "Error: Unable to decode storage system.account:: createType(AccountInfo):: {\"nonce\":\"u32\",\"refcount\":\"u32\",\"data\":\"BalancesAccountData\"}:: Decoded input doesn't match input, received 0x840f000001000000 (8 bytes), created 0x840f000001000000000000000000000000000000000000000000000000000000…0000000000000000000000000000000000000000000000000000000000000000 (72 bytes)",
+        "time" : {
+          "start" : 1642210408719,
+          "stop" : 1642210500340,
+          "duration" : 91621
+        }
+      }, {
+        "uid" : "ea735a994819b49b",
+        "reportUrl" : "https://mangata-finance.github.io/mangata-e2e/1217//#testresult/ea735a994819b49b",
+        "status" : "failed",
+        "statusDetails" : "Error: Unable to decode storage system.account:: createType(AccountInfo):: {\"nonce\":\"u32\",\"refcount\":\"u32\",\"data\":\"BalancesAccountData\"}:: Decoded input doesn't match input, received 0x840f000001000000 (8 bytes), created 0x840f000001000000000000000000000000000000000000000000000000000000…0000000000000000000000000000000000000000000000000000000000000000 (72 bytes)",
+        "time" : {
+          "start" : 1642124097956,
+          "stop" : 1642124237683,
+          "duration" : 139727
+        }
+      } ]
+    },
+    "tags" : [ ]
+  },
+  "source" : "bac5f48eac0a72e6.json",
+  "parameterValues" : [ ]
+}
