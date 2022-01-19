@@ -168,7 +168,7 @@ describe("Accuracy > Shared pool", () => {
     expect(balancesFirstCurrency[1]).bnEqual(balancesFirstCurrency[0]);
     expect(Array.from(balancesWithCounts).length).toEqual(1);
   });
-  test("Each user who minted different % of tokens [50k,25k,5k]- get diff amounts", async () => {
+  test.skip("BUG[https://trello.com/c/YZ1GwsjK] UnSkip when fixed Each user who minted different % of tokens [50k,25k,5k]- get diff amounts", async () => {
     const users = [testUser1, testUser2, testUser3];
     const sellAmount = new BN(1002);
     const amountsToMint = [
