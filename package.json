@@ -44,6 +44,7 @@
     "build": "tsc --project tsconfig.json",
     "test": "jest",
     "test-parallel": "rm nonce.db ; rm sudo.lock; jest --verbose --ci --group=parallel",
+    "test-parallel-inband": "rm nonce.db ; rm sudo.lock; jest --verbose --ci --group=parallel --runInBand",
     "test-playground-pararell": "rm nonce.db ; rm sudo.lock; jest test/exploratory/parallelTesting/transfer/* --verbose",
     "test-cluster": "rm nonce.db; rm sudo.lock; jest --verbose --group=cluster",
     "test-cluster-healthcheck": "rm nonce.db; rm sudo.lock; jest --verbose --group=cluster-healthcheck",
