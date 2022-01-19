@@ -9,6 +9,7 @@ import { getAccountJSON } from "./frontend/utils/Helper";
 import { ETH_ASSET_ID, MGA_ASSET_ID } from "./Constants";
 import { getBalanceOfPool } from "./tx";
 import { waitNewBlock } from "./eventListeners";
+import { testLog } from "./Logger";
 
 export function sleep(ms: number) {
   return new Promise((resolve) => {
@@ -243,5 +244,24 @@ export async function createPoolIfMissing(
       firstAssetId,
       seccondAssetId
     );
+  }
+}
+
+export async function waitIfSessionWillChangeInNblocks(numberOfBlocks: number) {
+  const api = await getApi();
+  const sessionDuration = BigInt(
+    (await api!.consts.parachainStaking.defaultBlocksPerRound!).toString()
+  );
+  const blockNumber = BigInt(
+    await (await api!.query.system.number()).toString()
+  );
+  if (
+    (blockNumber % sessionDuration) + BigInt(numberOfBlocks) >
+    sessionDuration
+  ) {
+    testLog
+      .getLog()
+      .info(`Session will end soon, waiting for ${numberOfBlocks}`);
+    await waitForNBlocks(numberOfBlocks);
   }
 }
