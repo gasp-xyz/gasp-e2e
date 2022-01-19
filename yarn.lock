@@ -6225,11 +6225,6 @@ esprima@1.2.2:
   resolved "https://registry.yarnpkg.com/esprima/-/esprima-1.2.2.tgz#76a0fd66fcfe154fd292667dc264019750b1657b"
   integrity sha1-dqD9Zvz+FU/SkmZ9wmQBl1CxZXs=
 
-esprima@1.2.2:
-  version "1.2.2"
-  resolved "https://registry.yarnpkg.com/esprima/-/esprima-1.2.2.tgz#76a0fd66fcfe154fd292667dc264019750b1657b"
-  integrity sha1-dqD9Zvz+FU/SkmZ9wmQBl1CxZXs=
-
 esprima@^4.0.0, esprima@^4.0.1:
   version "4.0.1"
   resolved "https://registry.yarnpkg.com/esprima/-/esprima-4.0.1.tgz#13b04cdb3e6c5d19df91ab6987a8695619b0aa71"
@@ -9407,13 +9402,6 @@ jsonpath@^1.1.1:
     static-eval "2.0.2"
     underscore "1.12.1"
 
-
-jsonpointer@^4.0.1:
-  version "4.1.0"
-  resolved "https://registry.yarnpkg.com/jsonpointer/-/jsonpointer-4.1.0.tgz#501fb89986a2389765ba09e6053299ceb4f2c2cc"
-  integrity sha512-CXcRvMyTlnR53xMcKnuMzfCA5i/nfblTnnr74CZb6C4vG39eu6w51t7nKmU5MfLfbTgGItliNyjO/ciNPDqClg==
-
-
 jsprim@^1.2.2:
   version "1.4.2"
   resolved "https://registry.yarnpkg.com/jsprim/-/jsprim-1.4.2.tgz#712c65533a15c878ba59e9ed5f0e26d5b77c5feb"
@@ -10024,10 +10012,10 @@ mangata-prng-xoshiro@^1.2.0:
   resolved "https://registry.yarnpkg.com/mangata-prng-xoshiro/-/mangata-prng-xoshiro-1.2.0.tgz#b0931c4bb91b4e574812b019cf5debaedc4e6a54"
   integrity sha512-kuG0evoSLdYr6k1W5+ctDcqfHAkm7TlhVqCNPrANg2EKp82L/OdShkhbDGDt6kb2P6r4MYHelo1DzhfnCG3JWw==
 
-mangata-sdk@^0.12.0:
-  version "0.12.0"
-  resolved "https://registry.yarnpkg.com/mangata-sdk/-/mangata-sdk-0.12.0.tgz#55cbf93684f4f079b86f8430669244a085819b56"
-  integrity sha512-Opb9A5ex4WE6POlecByQEkut90OZH/QPvL2V7IDAeCZNKb0qirqQsLtSI8C4TAKoOjyr8ATpauEZUVZSVN8hHg==
+mangata-sdk@^0.13.0:
+  version "0.13.0"
+  resolved "https://registry.yarnpkg.com/mangata-sdk/-/mangata-sdk-0.13.0.tgz#8c6358da8b3370d60bb1bf3feb70c5b0f7636a67"
+  integrity sha512-+xbJRC7vudE6F4d0IsAjLccjzx7FQtuO47NQoav974Y9OPlA7LXTuVvFnbifXkqIF6MI4vSuffoR5zbWLk7wnQ==
   dependencies:
     "@polkadot/api" "^6.5.3"
     big.js "^6.1.1"

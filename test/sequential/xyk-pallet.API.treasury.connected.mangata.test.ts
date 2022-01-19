@@ -24,7 +24,11 @@ import { AssetWallet, User } from "../../utils/User";
 import { validateTreasuryAmountsEqual } from "../../utils/validators";
 import { Assets } from "../../utils/Assets";
 import { MAX_BALANCE, MGA_ASSET_NAME } from "../../utils/Constants";
-import { calculateFees, getEnvironmentRequiredVars } from "../../utils/utils";
+import {
+  calculateFees,
+  getEnvironmentRequiredVars,
+  waitIfSessionWillChangeInNblocks,
+} from "../../utils/utils";
 import { getEventResultFromMangataTx } from "../../utils/txHandler";
 jest.spyOn(console, "log").mockImplementation(jest.fn());
 jest.setTimeout(1500000);
@@ -90,6 +94,7 @@ describe("xyk-pallet - treasury tests [Mangata]: on treasury we store", () => {
       seccond_asset_amount
     );
     await testUser1.refreshAmounts(AssetWallet.BEFORE);
+    await waitIfSessionWillChangeInNblocks(3);
   });
 
   test("assets won when assets are sold [Selling Mangata] - 5", async () => {
@@ -323,6 +328,7 @@ describe("xyk-pallet - treasury tests [Connected - Mangata]: on treasury we stor
       first_asset_amount.div(new BN(2))
     );
     await testUser1.refreshAmounts(AssetWallet.BEFORE);
+    await waitIfSessionWillChangeInNblocks(3);
   });
 
   test("assets won when assets are sold [Selling X connected to MGA pool] - rounding", async () => {
@@ -581,6 +587,7 @@ describe("xyk-pallet - treasury tests [Connected - Mangata]: Error cases", () =>
       await Assets.setupUserWithCurrencies(testUser1, [MAX_BALANCE], sudo)
     )[0];
     await testUser1.addMGATokens(sudo);
+    await waitIfSessionWillChangeInNblocks(3);
   });
 
   test("Not enough tokens to convert fee LINK[https://trello.com/c/p77t0atO]", async () => {
