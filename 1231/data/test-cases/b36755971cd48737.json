@@ -1,0 +1,100 @@
+{
+  "uid" : "b36755971cd48737",
+  "name" : "Validate that Mangata Frontend up and running",
+  "fullName" : "UI tests: Infra.Validate that Mangata Frontend up and running",
+  "historyId" : "8422b22f4ca0fa2b11be83bcdc18911d",
+  "time" : {
+    "start" : 1642731477695,
+    "stop" : 1642731481226,
+    "duration" : 3531
+  },
+  "description" : "",
+  "descriptionHtml" : "",
+  "status" : "passed",
+  "flaky" : false,
+  "newFailed" : false,
+  "beforeStages" : [ ],
+  "testStage" : {
+    "status" : "passed",
+    "steps" : [ ],
+    "attachments" : [ {
+      "uid" : "ad116e483a0ceb20",
+      "name" : "Screeenshot",
+      "source" : "ad116e483a0ceb20.png",
+      "type" : "image/png",
+      "size" : 52352
+    } ],
+    "parameters" : [ ],
+    "stepsCount" : 0,
+    "attachmentsCount" : 1,
+    "shouldDisplayMessage" : false,
+    "hasContent" : true
+  },
+  "afterStages" : [ ],
+  "labels" : [ {
+    "name" : "suite",
+    "value" : "UI tests: Infra"
+  }, {
+    "name" : "testClass",
+    "value" : "UI tests: Infra"
+  }, {
+    "name" : "testMethod",
+    "value" : "Validate that Mangata Frontend up and running"
+  }, {
+    "name" : "package",
+    "value" : "UI tests: Infra"
+  }, {
+    "name" : "resultFormat",
+    "value" : "allure1"
+  } ],
+  "parameters" : [ ],
+  "links" : [ ],
+  "hidden" : false,
+  "retry" : false,
+  "extra" : {
+    "severity" : "normal",
+    "retries" : [ ],
+    "categories" : [ ],
+    "history" : {
+      "statistic" : {
+        "failed" : 0,
+        "broken" : 0,
+        "skipped" : 0,
+        "passed" : 4,
+        "unknown" : 0,
+        "total" : 4
+      },
+      "items" : [ {
+        "uid" : "8ca20901420cf949",
+        "reportUrl" : "https://mangata-finance.github.io/mangata-e2e/1227//#testresult/8ca20901420cf949",
+        "status" : "passed",
+        "time" : {
+          "start" : 1642557979929,
+          "stop" : 1642557982790,
+          "duration" : 2861
+        }
+      }, {
+        "uid" : "387f50648ae3a9e",
+        "reportUrl" : "https://mangata-finance.github.io/mangata-e2e/1221//#testresult/387f50648ae3a9e",
+        "status" : "passed",
+        "time" : {
+          "start" : 1642299753436,
+          "stop" : 1642299756864,
+          "duration" : 3428
+        }
+      }, {
+        "uid" : "6e3f8f7c7231b972",
+        "reportUrl" : "https://mangata-finance.github.io/mangata-e2e/1219//#testresult/6e3f8f7c7231b972",
+        "status" : "passed",
+        "time" : {
+          "start" : 1642212861184,
+          "stop" : 1642212864063,
+          "duration" : 2879
+        }
+      } ]
+    },
+    "tags" : [ ]
+  },
+  "source" : "b36755971cd48737.json",
+  "parameterValues" : [ ]
+}
