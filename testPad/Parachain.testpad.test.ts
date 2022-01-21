@@ -38,7 +38,7 @@ describe("staking - testpad", () => {
 
   const user = "//Alice";
 
-  test.each([user])("xyk-pallet: Reserve pair", async (bondAmount) => {
+  test.each([user])("xyk-pallet: Reserve pair - MGA", async (bondAmount) => {
     const wsUrl = "ws://127.0.0.1:9944";
     const paraId = 2000;
     const pathToFiles = "/home/goncer/runner/mangata-node/";
@@ -78,6 +78,59 @@ describe("staking - testpad", () => {
       .toString();
     const wasm = fs
       .readFileSync(pathToFiles + "para-2000-wasm_mangata_dev_v4")
+      .toString();
+
+    const scheduleParaInit = api.tx.parasSudoWrapper.sudoScheduleParaInitialize(
+      new BN(paraId),
+      {
+        genesisHead: genesis,
+        validationCode: wasm,
+        parachain: true,
+      }
+    );
+    await api.tx.sudo.sudo(scheduleParaInit).signAndSend(testUser1.keyRingPair);
+    await waitNewBlock();
+  });
+  test.each([user])("xyk-pallet: Reserve pair - Alcala", async (bondAmount) => {
+    const wsUrl = "ws://127.0.0.1:9944";
+    const paraId = 2001;
+    const pathToFiles = "/home/goncer/runner/Acala/";
+    keyring = new Keyring({ type: "sr25519" });
+    sudo = new User(keyring, sudoUserName);
+    testUser1 = new User(keyring, user);
+    await fs.writeFileSync(
+      testUser1.keyRingPair.address + ".json",
+      JSON.stringify(testUser1.keyRingPair.toJson("mangata123"))
+    );
+    await fs.writeFileSync(
+      sudo.keyRingPair.address + ".json",
+      JSON.stringify(sudo.keyRingPair.toJson("mangata123"))
+    );
+    // add users to pair.
+    keyring.addPair(testUser1.keyRingPair);
+    keyring.addPair(sudo.keyRingPair);
+    await testUser1.refreshAmounts(AssetWallet.BEFORE);
+    const wsProvider = new WsProvider(wsUrl);
+    const api = await ApiPromise.create({
+      provider: wsProvider,
+    });
+    //await signTx(api, api.tx.registrar.reserve(), testUser1.keyRingPair);
+    const nextParaIdBefore = new BN(
+      await (await api.query.registrar.nextFreeParaId()).toString()
+    );
+    try {
+      await signTx(api, api.tx.registrar.reserve(), testUser1.keyRingPair);
+    } catch (error) {}
+    await waitNewBlock();
+    const requestedNextParaIdAfter = new BN(
+      await (await api.query.registrar.nextFreeParaId()).toString()
+    );
+    expect(nextParaIdBefore.lt(requestedNextParaIdAfter)).toBeTruthy();
+    const genesis = fs
+      .readFileSync(pathToFiles + "acala-pc-dev-para-2001-genesis")
+      .toString();
+    const wasm = fs
+      .readFileSync(pathToFiles + "acala-pc-dev-para-2001-wasm")
       .toString();
 
     const scheduleParaInit = api.tx.parasSudoWrapper.sudoScheduleParaInitialize(
