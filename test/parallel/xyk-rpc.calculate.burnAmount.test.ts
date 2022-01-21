@@ -62,10 +62,10 @@ describe("xyk-rpc - calculate get_burn amount: OK", () => {
   //now with the dict indexes we do the testing.
   //ie, pool1, assets(0 and 1) in the dictionary, requesting amount of 0 , we expect 1. Weird.
   test.each([
-    [0, 1, new BN(1000), "1.0000 NUNIT"],
-    [1, 0, new BN(1000), "1.0000 NUNIT"],
-    [0, 1, new BN(10000), "10.0000 NUNIT"],
-    [0, 1, new BN(100000), "100.0000 NUNIT"],
+    [0, 1, new BN(1000), 1000],
+    [1, 0, new BN(1000), 1000],
+    [0, 1, new BN(10000), 10000],
+    [0, 1, new BN(100000), 100000],
   ])(
     "validate parameters - burn from pool [firstIdx->%s,secondIdx->%s,amount->%s,expected->%s]",
     async (firstIdx, secondIdx, amount, expected) => {
@@ -74,10 +74,8 @@ describe("xyk-rpc - calculate get_burn amount: OK", () => {
         dictAssets.get(secondIdx)!,
         amount
       );
-      expect(fromBNToUnitString(burnAmount.firstAssetAmount)).toEqual(expected);
-      expect(fromBNToUnitString(burnAmount.secondAssetAmount)).toEqual(
-        expected
-      );
+      expect(burnAmount.firstAssetAmount).toEqual(expected);
+      expect(burnAmount.secondAssetAmount).toEqual(expected);
     }
   );
 });
