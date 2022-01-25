@@ -168,7 +168,7 @@ describe("Accuracy > Shared pool", () => {
     expect(balancesFirstCurrency[1]).bnEqual(balancesFirstCurrency[0]);
     expect(Array.from(balancesWithCounts).length).toEqual(1);
   });
-  test.skip("BUG[https://trello.com/c/YZ1GwsjK] UnSkip when fixed Each user who minted different % of tokens [50k,25k,5k]- get diff amounts", async () => {
+  test("Each user who minted different % of tokens [50k,25k,5k]- get diff amounts", async () => {
     const users = [testUser1, testUser2, testUser3];
     const sellAmount = new BN(1002);
     const amountsToMint = [
@@ -194,25 +194,27 @@ describe("Accuracy > Shared pool", () => {
     testLog
       .getLog()
       .info(
-        "Test user - 50k tokens get " +
-          balancesFirstCurrency[0].toString() +
+        "Test user - 50k tokens get / 5" +
+          balancesFirstCurrency[0].toNumber() / 5 +
           "\n" +
-          "Test user - 20k tokens get *2 " +
-          (balancesFirstCurrency[1].toNumber() * 2).toString() +
+          "Test user - 20k tokens get / 2.5 " +
+          (balancesFirstCurrency[1].toNumber() / 2.5).toString() +
           "\n" +
-          "Test user - 50k tokens get *5 " +
-          (balancesFirstCurrency[2].toNumber() * 5).toString()
+          "Test user - 50k tokens get " +
+          balancesFirstCurrency[2].toNumber().toString()
       );
     // worst case  [-1,-1,+2] - so the fifference in worst case is +2.
     expect(
       balancesFirstCurrency[0]
-        .sub(balancesFirstCurrency[1].mul(new BN(2)))
+        .div(new BN(5))
+        .sub(balancesFirstCurrency[1].mul(new BN(10)).div(new BN(25)))
         .abs()
     ).bnLte(new BN(2));
 
     expect(
       balancesFirstCurrency[0]
-        .sub(balancesFirstCurrency[2].mul(new BN(5)))
+        .div(new BN(5))
+        .sub(balancesFirstCurrency[2])
         .abs()
     ).bnLte(new BN(2));
   });
