@@ -6,6 +6,7 @@ import { signSendAndWaitToFinishTx } from "../utils/txHandler";
 import { User } from "../utils/User";
 import { getEnvironmentRequiredVars } from "../utils/utils";
 import { Mangata } from "mangata-sdk";
+import { ApiPromise, WsProvider } from "@polkadot/api";
 
 require("dotenv").config();
 
@@ -34,18 +35,6 @@ describe("staking - testpad", () => {
       await initApi();
     }
   });
-  //const address = "5Dy7VqFgArCo6PVFAVgSjEHace12vABr1doNM8uWbENDwUzC"; // <--candidate1
-  //const address = "5CUuPs8noEQHo9rk7tbd4BxBYcUkJmNpQ8rDyV3c6uXYjrnK"; // <--candidate2
-  //const address = "5GGbPY2kmf2CQCTVKL8FkGDst6JQWF7bfk8FCbQj2HkuHosK"; // <--vote to candidate1
-  //const address = "5CPFKKg6cUH2XRzzg3Zb4UYVY1cTUzrxUFiqzbF94voStUZx"; // SUDO!
-  //const address = "5H8QjhHEtbrttHDJL4ha5Kry2KBgLkerB6cbKFSfJqG44tcW"; // aura!
-  //const address = "5HLsUSDLyQjDSNriuhzbzWBNEbfXjUjt5WmALLpQkLLCU2Ex"; // granpa
-
-  //  const address = "5FRL15Qj6DdoULKswCz7zevqe97bnHuEix794pTeGK7MhfDS"; // pair1
-  //const address = "5FA3LcCrKMgr9WHqyvtDhDarAXRkJjoYrSy6XnZPKfwiB3sY"; // michal
-
-  //    const address =
-  //      "/home/goncer/5FA3LcCrKMgr9WHqyvtDhDarAXRkJjoYrSy6XnZPKfwiB3sY";
 
   test("V4 xtokens transfer", async () => {
     try {
@@ -140,6 +129,72 @@ describe("staking - testpad", () => {
       ),
       user.keyRingPair
     ).then();
+    testLog.getLog().warn("done");
+  });
+
+  test("V4 xtokens relyToMGA", async () => {
+    try {
+      getApi();
+    } catch (e) {
+      await initApi();
+    }
+    const wsProvider = new WsProvider(getEnvironmentRequiredVars().relyUri);
+    const api = await ApiPromise.create({
+      provider: wsProvider,
+    });
+    keyring = new Keyring({ type: "sr25519" });
+    const user = new User(keyring, "//Alice");
+    const user2 = new User(keyring);
+    testLog
+      .getLog()
+      .info("sending tokens to user: " + user2.keyRingPair.address);
+    keyring.addPair(user.keyRingPair);
+    keyring.addPair(user2.keyRingPair);
+
+    await api?.tx.xcmPallet
+      .reserveTransferAssets(
+        {
+          V1: {
+            parents: 0,
+            interior: {
+              X1: {
+                Parachain: 2000,
+              },
+            },
+          },
+        },
+        {
+          V1: {
+            parents: 0,
+            interior: {
+              X1: {
+                AccountId32: {
+                  network: "Any",
+                  id: user2.keyRingPair.publicKey,
+                },
+              },
+            },
+          },
+        },
+        {
+          V1: [
+            {
+              id: {
+                Concrete: {
+                  parents: 0,
+                  interior: "Here",
+                },
+              },
+              fun: {
+                Fungible: 10000000,
+              },
+            },
+          ],
+        },
+        new BN("0")
+      )
+      .signAndSend(user.keyRingPair);
+
     testLog.getLog().warn("done");
   });
 });

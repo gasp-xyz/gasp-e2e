@@ -58,6 +58,9 @@ export function getEnvironmentRequiredVars() {
   const logLevel = process.env.LOG_LEVEL ? process.env.LOG_LEVEL : "info";
 
   const uri = process.env.API_URL ? process.env.API_URL : "ws://127.0.0.1:9944";
+  const relyUri = process.env.RELY_API_URL
+    ? process.env.RELY_API_URL
+    : "ws://127.0.0.1:9944";
 
   const userPassword = process.env.UI_USR_PWD
     ? process.env.UI_USR_PWD
@@ -108,6 +111,7 @@ export function getEnvironmentRequiredVars() {
   return {
     sudo: sudoUserName,
     chainUri: uri,
+    relyUri: relyUri,
     alice: testUserName,
     uiUserPassword: userPassword,
     uiUri: uiUri,
