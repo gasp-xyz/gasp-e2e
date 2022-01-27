@@ -45,7 +45,8 @@ describe("staking - testpad", () => {
     const mga = Mangata.getInstance(getEnvironmentRequiredVars().chainUri);
     const api = await mga.getApi();
     keyring = new Keyring({ type: "sr25519" });
-    const user = new User(keyring, "//Charlie");
+    const user = new User(keyring, "//Alice");
+    const user2 = new User(keyring, "//Charlie");
     keyring.addPair(user.keyRingPair);
 
     await signSendAndWaitToFinishTx(
@@ -63,7 +64,7 @@ describe("staking - testpad", () => {
                 {
                   AccountId32: {
                     network: "Any",
-                    id: "5FLSigC9HGRKVhB9FiEo4Y3koPsNmBmLJbpXg2mp1hXcS59Y",
+                    id: user2.keyRingPair.publicKey,
                   },
                 },
               ],
