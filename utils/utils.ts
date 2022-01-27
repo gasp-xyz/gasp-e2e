@@ -61,6 +61,9 @@ export function getEnvironmentRequiredVars() {
   const relyUri = process.env.RELY_API_URL
     ? process.env.RELY_API_URL
     : "ws://127.0.0.1:9944";
+  const acalaUri = process.env.ACALA_API_URL
+    ? process.env.ACALA_API_URL
+    : "ws://127.0.0.1:7654";
 
   const userPassword = process.env.UI_USR_PWD
     ? process.env.UI_USR_PWD
@@ -112,6 +115,7 @@ export function getEnvironmentRequiredVars() {
     sudo: sudoUserName,
     chainUri: uri,
     relyUri: relyUri,
+    acalaUri: acalaUri,
     alice: testUserName,
     uiUserPassword: userPassword,
     uiUri: uiUri,

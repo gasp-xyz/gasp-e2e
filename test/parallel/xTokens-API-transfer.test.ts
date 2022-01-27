@@ -15,8 +15,7 @@ import { signSendAndWaitToFinishTx } from "../../utils/txHandler";
 import { AcalaNode } from "../../utils/Framework/Node/AcalaNode";
 import { hexToBn } from "@polkadot/util";
 
-const { chainUri, relyUri } = getEnvironmentRequiredVars();
-const acalaUri = "ws://127.0.0.1:7654";
+const { chainUri, relyUri, acalaUri } = getEnvironmentRequiredVars();
 let mgaParachainNode: Node;
 let acalaParachainNode: Node;
 let relayNode: Node;
