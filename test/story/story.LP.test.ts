@@ -16,6 +16,7 @@ import { getEnvironmentRequiredVars } from "../../utils/utils";
 import { getEventResultFromMangataTx } from "../../utils/txHandler";
 import { MGA_ASSET_ID } from "../../utils/Constants";
 import { Mangata } from "mangata-sdk";
+import { testLog } from "../../utils/Logger";
 
 const { sudo: sudoUserName } = getEnvironmentRequiredVars();
 
@@ -103,23 +104,15 @@ describe("Story tests > LP", () => {
 
     const userLost = userTokensBefore?.sub(userTokensAfter!)!;
     const poolWins = totalPoolAfter?.sub(totalPoolBefore!)!;
-    const percentageIncrement = poolWins.mul(new BN(100)).div(totalPoolBefore);
+    const percentageIncrement = poolWins
+      .mul(new BN(1000000))
+      .div(totalPoolBefore);
 
     //swaps expenses are higher than the liquidity pool win
     expect(userLost.gt(poolWins)).toBeTruthy();
-    //pool gains are migher than the 5%!
-    expect(percentageIncrement.gte(new BN(5))).toBeTruthy();
-    //pool balance is right.
-
-    // All but ( 2 * 0.05%  of sold amount ) of the liquidity goes to the pool
-    // (10000 * 10) = 100000 -> increased value in the pool after 10 swaps
-    // 10 * 10000  - ( 10 * 2 * 0.05% = 5tkns + 1 ) = 100000 - ( 10 * 2 * 6tkns )  = 100000 - 120 -> tokens are added to the pool by fees
-    // 250000 + 100000 - 120 = 350000 - 120 = 349880.
-    expect(poolBalance[1]).bnEqual(
-      poolBalanceBeforeSwaps[1].add(
-        new BN(10000).mul(new BN(10)).sub(new BN(120))
-      )
-    );
+    //pool gains are  ~ 0.3%!
+    testLog.getLog().info(percentageIncrement.toString());
+    expect(percentageIncrement.gte(new BN(300))).toBeTruthy();
   });
 });
 
@@ -129,18 +122,34 @@ async function do10Swaps(mangata: Mangata, testUser2: User, token1: BN) {
   const promises = [];
   const maxFutureNonce = userNonce[0].toNumber() + 9;
   for (let index = maxFutureNonce; index >= userNonce[0].toNumber(); index--) {
-    promises.push(
-      mangata.sellAsset(
-        testUser2.keyRingPair,
-        MGA_ASSET_ID.toString(),
-        token1.toString(),
-        new BN(10000),
-        new BN(0),
-        {
-          nonce: new BN(index),
-        }
-      )
-    );
+    if (index % 2 === 0) {
+      promises.push(
+        mangata.sellAsset(
+          testUser2.keyRingPair,
+          MGA_ASSET_ID.toString(),
+          token1.toString(),
+          new BN(10000),
+          new BN(0),
+          {
+            nonce: new BN(index),
+          }
+        )
+      );
+    } else {
+      promises.push(
+        mangata.sellAsset(
+          testUser2.keyRingPair,
+          token1.toString(),
+          MGA_ASSET_ID.toString(),
+          new BN(10000),
+          new BN(0),
+          {
+            nonce: new BN(index),
+          }
+        )
+      );
+    }
+
     await waitNewBlock();
   }
   const promisesEvents = await await Promise.all(promises);
