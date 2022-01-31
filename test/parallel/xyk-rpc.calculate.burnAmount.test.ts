@@ -10,10 +10,7 @@ import BN from "bn.js";
 import { Keyring } from "@polkadot/api";
 import { AssetWallet, User } from "../../utils/User";
 import { Assets } from "../../utils/Assets";
-import {
-  fromBNToUnitString,
-  getEnvironmentRequiredVars,
-} from "../../utils/utils";
+import { getEnvironmentRequiredVars } from "../../utils/utils";
 import { ExtrinsicResult } from "../../utils/eventListeners";
 import { getEventResultFromMangataTx } from "../../utils/txHandler";
 
@@ -62,10 +59,10 @@ describe("xyk-rpc - calculate get_burn amount: OK", () => {
   //now with the dict indexes we do the testing.
   //ie, pool1, assets(0 and 1) in the dictionary, requesting amount of 0 , we expect 1. Weird.
   test.each([
-    [0, 1, new BN(1000), "1.0000 nUnit"],
-    [1, 0, new BN(1000), "1.0000 nUnit"],
-    [0, 1, new BN(10000), "10.0000 nUnit"],
-    [0, 1, new BN(100000), "100.0000 nUnit"],
+    [0, 1, new BN(1000), 1000],
+    [1, 0, new BN(1000), 1000],
+    [0, 1, new BN(10000), 10000],
+    [0, 1, new BN(100000), 100000],
   ])(
     "validate parameters - burn from pool [firstIdx->%s,secondIdx->%s,amount->%s,expected->%s]",
     async (firstIdx, secondIdx, amount, expected) => {
@@ -102,7 +99,7 @@ describe("xyk-rpc - calculate get_burn amount: Missing requirements", () => {
   });
   //now with the dict indexes we do the testing.
   //ie, pool1, assets(0 and 1) in the dictionary, requesting amount of 0 , we expect 1. Weird.
-  test.each([[0, 1, new BN(1000), "0"]])(
+  test.each([[0, 1, new BN(1000), 0]])(
     "validate parameters - get_burn from not generated pool [soldTokenId->%s,boughtTokenId->%s,amount->%s,expected->%s]",
     async (firstIdx, secondIdx, amount, expected) => {
       const burnAmount = await getBurnAmount(
@@ -121,8 +118,8 @@ describe("xyk-rpc - calculate get_burn amount: Missing requirements", () => {
       new BN(12346),
       new BN(10000000)
     );
-    expect(burnAmount.firstAssetAmount).toEqual("0");
-    expect(burnAmount.secondAssetAmount).toEqual("0");
+    expect(burnAmount.firstAssetAmount).toEqual(0);
+    expect(burnAmount.secondAssetAmount).toEqual(0);
   });
 });
 
@@ -176,24 +173,22 @@ describe("xyk-rpc - calculate get_burn amount: RPC result matches with burn amou
     await sudo.refreshAmounts(AssetWallet.AFTER);
     const poolAfter = await getBalanceOfPool(firstAssetId, secondAssetId);
 
-    expect(burnAmount.firstAssetAmount).toEqual(
-      fromBNToUnitString(poolBefore[0].sub(poolAfter[0]))
+    expect(new BN(burnAmount.firstAssetAmount)).bnEqual(
+      poolBefore[0].sub(poolAfter[0])
     );
-    expect(burnAmount.secondAssetAmount).toEqual(
-      fromBNToUnitString(poolBefore[1].sub(poolAfter[1]))
+    expect(new BN(burnAmount.secondAssetAmount)).bnEqual(
+      poolBefore[1].sub(poolAfter[1])
     );
 
+    expect(sudo.getAsset(firstAssetId)?.amountAfter.free!).bnEqual(
+      new BN(burnAmount.firstAssetAmount)
+    );
     expect(
-      fromBNToUnitString(sudo.getAsset(firstAssetId)?.amountAfter.free!)
-    ).toEqual(burnAmount.firstAssetAmount);
-    expect(
-      fromBNToUnitString(
-        sudo
-          .getAsset(secondAssetId)
-          ?.amountAfter.free.sub(
-            sudo.getAsset(secondAssetId)?.amountBefore.free!
-          )!
-      )
-    ).toEqual(burnAmount.secondAssetAmount);
+      sudo
+        .getAsset(secondAssetId)
+        ?.amountAfter.free.sub(
+          sudo.getAsset(secondAssetId)?.amountBefore.free!
+        )!
+    ).bnEqual(new BN(burnAmount.secondAssetAmount));
   });
 });

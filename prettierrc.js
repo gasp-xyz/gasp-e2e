@@ -1,1 +1,1 @@
-module.exports = require('eslint-config-mangata/prettier.config')
+module.exports = require("eslint-config-mangata/prettier.config");

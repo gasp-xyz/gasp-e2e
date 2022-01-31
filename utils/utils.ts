@@ -9,6 +9,7 @@ import { getAccountJSON } from "./frontend/utils/Helper";
 import { ETH_ASSET_ID, MGA_ASSET_ID } from "./Constants";
 import { getBalanceOfPool } from "./tx";
 import { waitNewBlock } from "./eventListeners";
+import { testLog } from "./Logger";
 
 export function sleep(ms: number) {
   return new Promise((resolve) => {
@@ -19,8 +20,15 @@ export function sleep(ms: number) {
 export function fromBNToUnitString(value: BN) {
   const api = getApi();
   const decimals = api?.registry.chainDecimals;
-  const valueFormatted = formatBalance(value, { decimals: decimals });
-  return valueFormatted;
+  const valueFormatted = formatBalance(value, { decimals: decimals[0] });
+  return valueFormatted.toUpperCase();
+}
+
+export function fromStringToUnitString(value: string) {
+  const stringWithoutCommas = value.split(",").join("");
+  const valueBN = new BN(stringWithoutCommas);
+  const unitString = fromBNToUnitString(valueBN);
+  return unitString;
 }
 
 export function getEnvironmentRequiredVars() {
@@ -223,18 +231,37 @@ export async function createPoolIfMissing(
   sudo: User,
   amountInPool: string,
   firstAssetId = MGA_ASSET_ID,
-  seccondAssetID = ETH_ASSET_ID
+  seccondAssetId = ETH_ASSET_ID
 ) {
-  const balance = await getBalanceOfPool(firstAssetId, seccondAssetID);
+  const balance = await getBalanceOfPool(firstAssetId, seccondAssetId);
   if (balance[0].isZero() || balance[1].isZero()) {
     await sudo.mint(firstAssetId, sudo, new BN(amountInPool));
-    await sudo.mint(ETH_ASSET_ID, sudo, new BN(amountInPool));
+    await sudo.mint(seccondAssetId, sudo, new BN(amountInPool));
     const poolValue = new BN(amountInPool).div(new BN(2));
     await sudo.createPoolToAsset(
       poolValue,
       poolValue,
       firstAssetId,
-      seccondAssetID
+      seccondAssetId
     );
+  }
+}
+
+export async function waitIfSessionWillChangeInNblocks(numberOfBlocks: number) {
+  const api = await getApi();
+  const sessionDuration = BigInt(
+    (await api!.consts.parachainStaking.defaultBlocksPerRound!).toString()
+  );
+  const blockNumber = BigInt(
+    await (await api!.query.system.number()).toString()
+  );
+  if (
+    (blockNumber % sessionDuration) + BigInt(numberOfBlocks) >
+    sessionDuration
+  ) {
+    testLog
+      .getLog()
+      .info(`Session will end soon, waiting for ${numberOfBlocks}`);
+    await waitForNBlocks(numberOfBlocks);
   }
 }

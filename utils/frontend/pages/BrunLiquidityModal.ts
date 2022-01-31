@@ -9,6 +9,8 @@ import { Polkadot } from "./Polkadot";
 
 //SELECTORS
 const INPUT_PERCENTAGE = "removeLiquidityModal-amountCard-amountInput";
+const BTN_PERCENTAGE_MAX =
+  "removeLiquidityModal-amountCard-hardcodedAmountBtn-100";
 const BTN_CONFIRM = "removeLiquidityModal-confirmBtn";
 
 export class BrunLiquidityModal {
@@ -27,6 +29,10 @@ export class BrunLiquidityModal {
     const selector = buildDataTestIdXpath(INPUT_PERCENTAGE);
     await clickElement(this.driver, selector);
     await writeText(this.driver, selector, inputAmount);
+  }
+  async clickOn100Amount() {
+    const selector = buildDataTestIdXpath(BTN_PERCENTAGE_MAX);
+    await clickElement(this.driver, selector);
   }
   async confirm() {
     await clickElement(this.driver, buildDataTestIdXpath(BTN_CONFIRM));

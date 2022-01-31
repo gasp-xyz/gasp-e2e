@@ -41,8 +41,18 @@ describe("UI tests: Infra", () => {
     await mga.clickOnSelectTokens();
     const tokenList = await mga.getAvailableTokenList();
 
-    expect(tokenList).toContain("Mangata\nMGA");
-    expect(tokenList).toContain("mEthereum\nmETH");
+    expect(
+      tokenList.find((tokenElement) => tokenElement.includes("MGA"))
+    ).toBeTruthy();
+    expect(
+      tokenList.find((tokenElement) => tokenElement.includes("Mangata"))
+    ).toBeTruthy();
+    expect(
+      tokenList.find((tokenElement) => tokenElement.includes("mETH"))
+    ).toBeTruthy();
+    expect(
+      tokenList.find((tokenElement) => tokenElement.includes("mEthereum"))
+    ).toBeTruthy();
   });
 
   afterEach(async () => {

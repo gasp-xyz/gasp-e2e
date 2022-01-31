@@ -24,7 +24,11 @@ import { AssetWallet, User } from "../../utils/User";
 import { validateTreasuryAmountsEqual } from "../../utils/validators";
 import { Assets } from "../../utils/Assets";
 import { MAX_BALANCE, MGA_ASSET_NAME } from "../../utils/Constants";
-import { calculateFees, getEnvironmentRequiredVars } from "../../utils/utils";
+import {
+  calculateFees,
+  getEnvironmentRequiredVars,
+  waitIfSessionWillChangeInNblocks,
+} from "../../utils/utils";
 import { getEventResultFromMangataTx } from "../../utils/txHandler";
 jest.spyOn(console, "log").mockImplementation(jest.fn());
 jest.setTimeout(1500000);
@@ -66,7 +70,11 @@ describe("xyk-pallet - treasury tests [Mangata]: on treasury we store", () => {
     keyring.addPair(sudo.keyRingPair);
 
     mgaTokenId = await getAssetId(MGA_ASSET_NAME);
-    await sudo.mint(mgaTokenId, testUser1, new BN(defaultCurrecyValue));
+    await sudo.mint(
+      mgaTokenId,
+      testUser1,
+      new BN(defaultCurrecyValue).add(new BN(Math.pow(10, 18).toString()))
+    );
     testUser1.addAsset(mgaTokenId);
     secondCurrency = (
       await Assets.setupUserWithCurrencies(
@@ -86,6 +94,7 @@ describe("xyk-pallet - treasury tests [Mangata]: on treasury we store", () => {
       seccond_asset_amount
     );
     await testUser1.refreshAmounts(AssetWallet.BEFORE);
+    await waitIfSessionWillChangeInNblocks(3);
   });
 
   test("assets won when assets are sold [Selling Mangata] - 5", async () => {
@@ -279,7 +288,11 @@ describe("xyk-pallet - treasury tests [Connected - Mangata]: on treasury we stor
     keyring.addPair(sudo.keyRingPair);
 
     mgaTokenId = await getAssetId(MGA_ASSET_NAME);
-    await sudo.mint(mgaTokenId, testUser1, new BN(defaultCurrecyValue));
+    await sudo.mint(
+      mgaTokenId,
+      testUser1,
+      new BN(defaultCurrecyValue).add(new BN(Math.pow(10, 18).toString()))
+    );
     testUser1.addAsset(mgaTokenId);
     connectedToMGA = (
       await Assets.setupUserWithCurrencies(
@@ -315,6 +328,7 @@ describe("xyk-pallet - treasury tests [Connected - Mangata]: on treasury we stor
       first_asset_amount.div(new BN(2))
     );
     await testUser1.refreshAmounts(AssetWallet.BEFORE);
+    await waitIfSessionWillChangeInNblocks(3);
   });
 
   test("assets won when assets are sold [Selling X connected to MGA pool] - rounding", async () => {
@@ -326,6 +340,11 @@ describe("xyk-pallet - treasury tests [Connected - Mangata]: on treasury we stor
       mgPoolAmount[1],
       mgPoolAmount[0],
       treasury
+    );
+    const twotreasuries = calculate_sell_price_local_no_fee(
+      mgPoolAmount[1],
+      mgPoolAmount[0],
+      treasury.mul(new BN(2))
     );
 
     const treasuryBefore = await getTreasury(mgaTokenId);
@@ -358,14 +377,9 @@ describe("xyk-pallet - treasury tests [Connected - Mangata]: on treasury we stor
     expect(mgPoolAmountAfter[1].sub(mgPoolAmount[1])).bnEqual(
       treasury.add(treasury)
     );
-    //( mgPoolAmount[0].toNumber() * 11 * 1000 ) / (  ( ( mgPoolAmount[1].toNumber() + 11) * 1000) )
-    // 21.990324257326776 <-- rounding issue, so 21 goes to trasury, that is: swapTreasuryInMG
     expect(treasuryAfter).bnEqual(treasuryBefore.add(swapTreasuryInMG));
-    const twotreasuries = swapTreasuryInMG.add(swapTreasuryInMG);
-    //since the fee burn is calculated like: TotalBurn - fee, so its 45 - 22 = 23.
-    expect(mgPoolAmountAfter[0].add(twotreasuries)).bnEqual(
-      mgPoolAmount[0].sub(new BN(1))
-    );
+    //validated with Stano that the rounding issue is no longer required.
+    expect(mgPoolAmountAfter[0].add(twotreasuries)).bnEqual(mgPoolAmount[0]);
     //burned destroyed! because is translated toMGA
     expect(treasuryBurnAfter).bnEqual(treasuryBurnBefore);
     await validateTreasuryAmountsEqual(indirectlyConnected, [
@@ -563,12 +577,17 @@ describe("xyk-pallet - treasury tests [Connected - Mangata]: Error cases", () =>
 
     await waitNewBlock();
     mgaTokenId = await getAssetId(MGA_ASSET_NAME);
-    await sudo.mint(mgaTokenId, testUser1, new BN(defaultCurrecyValue));
+    await sudo.mint(
+      mgaTokenId,
+      testUser1,
+      new BN(defaultCurrecyValue).add(new BN(Math.pow(10, 18).toString()))
+    );
     testUser1.addAsset(mgaTokenId);
     connectedToMGA = (
       await Assets.setupUserWithCurrencies(testUser1, [MAX_BALANCE], sudo)
     )[0];
     await testUser1.addMGATokens(sudo);
+    await waitIfSessionWillChangeInNblocks(3);
   });
 
   test("Not enough tokens to convert fee LINK[https://trello.com/c/p77t0atO]", async () => {

@@ -7,18 +7,15 @@ import { testLog } from "./Logger";
 import {
   buyAsset,
   createPool,
-  getAccountInfo,
   getAllAssets,
+  getTokensAccountInfo,
   getUserAssets,
   mintAsset,
   mintLiquidity,
   sellAsset,
   transferAll,
 } from "./tx";
-import {
-  getEventResultFromMangataTx,
-  getEventResultFromTxWait,
-} from "./txHandler";
+import { getEventResultFromMangataTx } from "./txHandler";
 import { MAX_BALANCE, MGA_ASSET_ID } from "./Constants";
 import { AccountData } from "@polkadot/types/interfaces/balances";
 import { strict as assert } from "assert";
@@ -92,7 +89,7 @@ export class User {
     }
     return this.assets.find((asset) => asset.currencyId === currecncyId);
   }
-  getFreeAssetAmount(currecncyId: any, onlyFreeValue = true) {
+  getFreeAssetAmount(currecncyId: any) {
     const wallet = this.assets.find(
       (asset) => asset.currencyId === currecncyId
     );
@@ -100,7 +97,7 @@ export class User {
   }
   getFreeAssetAmounts() {
     const assets = this.assets.map((asset) =>
-      this.getFreeAssetAmount(asset.currencyId, true)
+      this.getFreeAssetAmount(asset.currencyId)
     );
     return assets;
   }
@@ -147,7 +144,7 @@ export class User {
       user.keyRingPair.address,
       amount
     ).then((result) => {
-      const eventResponse = getEventResultFromTxWait(result, [
+      const eventResponse = getEventResultFromMangataTx(result, [
         "tokens",
         "Minted",
         user.keyRingPair.address,
@@ -230,12 +227,15 @@ export class User {
 
   async addMGATokens(
     sudo: User,
-    amountFree: BN = new BN(Math.pow(10, 11).toString())
+    amountFree: BN = new BN(Math.pow(10, 18).toString())
   ) {
     await sudo.mint(MGA_ASSET_ID, this, amountFree);
   }
-  async getUserAccountInfo() {
-    const accountInfo = await getAccountInfo(this.keyRingPair.address);
+  async getUserTokensAccountInfo() {
+    const accountInfo = await getTokensAccountInfo(
+      this.keyRingPair.address,
+      new BN(0)
+    );
     return accountInfo;
   }
   static async waitUntilBNChanged(

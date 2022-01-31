@@ -4,9 +4,9 @@
  */
 import { Keyring } from "@polkadot/api";
 import BN from "bn.js";
+
 import { WebDriver } from "selenium-webdriver";
 import { getApi, initApi } from "../../utils/api";
-import { waitNewBlock } from "../../utils/eventListeners";
 import { Mangata } from "../../utils/frontend/pages/Mangata";
 import { Polkadot } from "../../utils/frontend/pages/Polkadot";
 import { Pool } from "../../utils/frontend/pages/Pool";
@@ -16,10 +16,12 @@ import {
   setupAllExtensions,
   addExtraLogs,
 } from "../../utils/frontend/utils/Helper";
+
 import { AssetWallet, User } from "../../utils/User";
-import { getEnvironmentRequiredVars } from "../../utils/utils";
+import { getEnvironmentRequiredVars, waitForNBlocks } from "../../utils/utils";
 import { FIVE_MIN, MGA_ASSET_NAME } from "../../utils/Constants";
 import { Assets } from "../../utils/Assets";
+import { NotificationModal } from "../../utils/frontend/pages/NotificationModal";
 
 const MGA_ASSET_ID = new BN(0);
 let createdAssetID: BN;
@@ -75,14 +77,13 @@ describe("UI tests - A user can create a pool MGA - newToken", () => {
     await poolView.selectToken2Asset(MGA_ASSET_NAME);
     await poolView.addToken1AssetAmount("1.234");
     await poolView.addToken2AssetAmount("1.234");
-    await poolView.provideToPool();
+    await poolView.provideOrCreatePool();
 
     await Polkadot.signTransaction(driver);
-    //wait four blocks to complete the action.
-    for (let index = 0; index < 4; index++) {
-      await waitNewBlock();
-    }
 
+    await waitForNBlocks(5);
+    const modal = new NotificationModal(driver);
+    await modal.clickInDone();
     await testUser1.refreshAmounts(AssetWallet.AFTER);
     const mgaReduced = testUser1
       .getAsset(MGA_ASSET_ID)

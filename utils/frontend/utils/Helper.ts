@@ -7,15 +7,28 @@ import fs from "fs";
 import { testLog } from "../../Logger";
 import BN from "bn.js";
 
+import { Reporter } from "jest-allure/dist/Reporter";
 const { By, until } = require("selenium-webdriver");
-require("chromedriver");
 
+const timeOut = 60000;
+require("chromedriver");
+const outputPath = `reports/artifacts`;
 export async function waitForElement(
   driver: WebDriver,
   xpath: string,
-  timeout = 30000
+  timeout = timeOut
 ) {
   await driver.wait(until.elementLocated(By.xpath(xpath)), timeout);
+}
+
+export async function waitForElementEnabled(
+  driver: WebDriver,
+  xpath: string,
+  timeout = timeOut
+) {
+  await waitForElement(driver, xpath, timeout);
+  const element = await driver.findElement(By.xpath(xpath));
+  await driver.wait(until.elementIsEnabled(element), timeout);
 }
 
 export async function waitForElementToDissapear(
@@ -37,7 +50,7 @@ export async function waitForElementToDissapear(
 export async function clickElement(driver: WebDriver, xpath: string) {
   await waitForElement(driver, xpath);
   const element = await driver.findElement(By.xpath(xpath));
-  await driver.wait(until.elementIsVisible(element), 20000);
+  await driver.wait(until.elementIsVisible(element), timeOut);
   await sleep(1000);
   await element.click();
 }
@@ -49,6 +62,8 @@ export async function writeText(
 ) {
   await waitForElement(driver, elementXpath);
   await (await driver.findElement(By.xpath(elementXpath))).clear();
+  const input = await driver.findElement(By.xpath(elementXpath));
+  await driver.executeScript("arguments[0].value = '';", input);
   await (await driver.findElement(By.xpath(elementXpath))).sendKeys(text);
 }
 export async function getText(driver: WebDriver, elementXpath: string) {
@@ -106,7 +121,6 @@ export async function leaveOnlyOneTab(driver: WebDriver) {
 }
 
 export async function addExtraLogs(driver: WebDriver, testName = "") {
-  const outputPath = `reports/artifacts`;
   [logging.Type.BROWSER, logging.Type.DRIVER].forEach(async (value) => {
     await driver
       .manage()
@@ -122,9 +136,18 @@ export async function addExtraLogs(driver: WebDriver, testName = "") {
         });
       });
   });
-
   const img = await driver.takeScreenshot();
   fs.writeFileSync(`${outputPath}/screenshot_${testName}.png`, img, "base64");
+  const reporter = (globalThis as any).reporter as Reporter;
+  reporter.addAttachment("Screeenshot", new Buffer(img, "base64"), "image/png");
+}
+export async function renameExtraLogs(testName: string, result = "FAILED_") {
+  fs.readdirSync(outputPath).forEach((file) => {
+    if (file.includes(testName)) {
+      testLog.getLog().info(`Renaming ${file} to ${result}${file}`);
+      fs.renameSync(`${outputPath}/${file}`, `${outputPath}/${result}${file}`);
+    }
+  });
 }
 
 export async function getAccountJSON() {
@@ -175,11 +198,41 @@ export async function selectAssetFromModalList(
   assetName: string,
   driver: WebDriver
 ) {
-  const assetTestId = `assetSelectModal-asset-${assetName}`;
+  const assetTestId = `TokensModal-asset-${assetName}`;
   const assetLocator = buildDataTestIdXpath(assetTestId);
   await clickElement(driver, assetLocator);
 }
 
 export function uiStringToBN(stringValue: string) {
-  return new BN((Math.pow(10, 18) * parseFloat(stringValue)).toString());
+  if (stringValue.includes(".")) {
+    const partInt = stringValue.split(".")[0].trim();
+    let partDec = stringValue.split(".")[1].trim();
+    //multiply the part int*10¹⁸
+    const exp = new BN(10).pow(new BN(18));
+    const part1 = new BN(partInt).mul(exp);
+    //add zeroes to the decimal part.
+    while (partDec.length < 18) {
+      partDec += "0";
+    }
+    return part1.add(new BN(partDec));
+  } else {
+    return new BN((Math.pow(10, 18) * parseFloat(stringValue)).toString());
+  }
+}
+
+export async function openInNewTab(driver: WebDriver, url: string) {
+  const windowsBefore = await driver.getAllWindowHandles();
+  await driver.executeScript(`window.open("${url}");`);
+  const windowsAfterNewTab = await driver.getAllWindowHandles();
+  const newTabHandler = windowsAfterNewTab.filter(
+    (item) => windowsBefore.indexOf(item) < 0
+  )[0];
+  await driver.switchTo().window(newTabHandler);
+}
+
+export async function swithToTheOtherTab(driver: WebDriver) {
+  const availableTabs = await driver.getAllWindowHandles();
+  const currentTab = await driver.getWindowHandle();
+  const otherTab = availableTabs.filter((tab) => tab !== currentTab)[0];
+  await driver.switchTo().window(otherTab);
 }

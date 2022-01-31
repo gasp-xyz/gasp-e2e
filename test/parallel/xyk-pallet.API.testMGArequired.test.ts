@@ -167,7 +167,9 @@ test("xyk-pallet - User Balance - Selling an asset does not require paying fees"
       exception = true;
       throw new Error(reason);
     });
-  expect(soldEvent[0].method).toEqual("AssetsSwapped");
+  expect(
+    soldEvent.filter((event) => event.method === "AssetsSwapped")
+  ).toHaveLength(1);
   expect(exception).toBeFalsy();
 });
 
@@ -196,6 +198,8 @@ test("xyk-pallet - User Balance - Buying an asset does not require paying fees",
       exception = true;
       throw new Error(reason.data);
     });
-  expect(boughtEvent[0].method).toEqual("AssetsSwapped");
+  expect(
+    boughtEvent.filter((event) => event.method === "AssetsSwapped")
+  ).toHaveLength(1);
   expect(exception).toBeFalsy();
 });

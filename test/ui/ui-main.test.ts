@@ -1,6 +1,7 @@
 /*
  *
  * @group ui
+ * @group ui-smoke
  */
 import { Keyring } from "@polkadot/api";
 import BN from "bn.js";
@@ -20,12 +21,14 @@ import { DriverBuilder } from "../../utils/frontend/utils/Driver";
 import {
   setupAllExtensions,
   addExtraLogs,
+  uiStringToBN,
 } from "../../utils/frontend/utils/Helper";
 import { AssetWallet, User } from "../../utils/User";
 import {
   createPoolIfMissing,
   getEnvironmentRequiredVars,
 } from "../../utils/utils";
+
 import {
   FIVE_MIN,
   mETH_ASSET_NAME,
@@ -33,6 +36,7 @@ import {
 } from "../../utils/Constants";
 import { BrunLiquidityModal } from "../../utils/frontend/pages/BrunLiquidityModal";
 import { Assets } from "../../utils/Assets";
+import { testLog } from "../../utils/Logger";
 
 const MGA_ASSET_ID = new BN(0);
 const ETH_ASSET_ID = new BN(1);
@@ -78,7 +82,6 @@ describe("UI tests - A user can swap and mint tokens", () => {
     testUser1.addAsset(MGA_ASSET_ID);
     testUser1.addAsset(ETH_ASSET_ID);
   });
-
   it("As a User I can Swap tokens - MGA - mETH", async () => {
     testUser1.refreshAmounts(AssetWallet.BEFORE);
     const mga = new Mangata(driver);
@@ -114,7 +117,10 @@ describe("UI tests - A user can swap and mint tokens", () => {
       ?.amountBefore.free!.lt(
         testUser1.getAsset(ETH_ASSET_ID)?.amountAfter.free!
       );
-
+    const methValue = await swapView.getBalanceFromAssetGet();
+    expect(testUser1.getAsset(ETH_ASSET_ID)?.amountAfter.free!).bnEqual(
+      uiStringToBN(methValue)
+    );
     expect(swapped).toBeTruthy();
   });
   it("As a User I can mint some tokens MGA - mETH", async () => {
@@ -126,7 +132,7 @@ describe("UI tests - A user can swap and mint tokens", () => {
     await poolView.selectToken1Asset(mETH_ASSET_NAME);
     await poolView.selectToken2Asset(MGA_ASSET_NAME);
     await poolView.addToken1AssetAmount("0.001");
-    await poolView.provideToPool();
+    await poolView.provideOrCreatePool();
 
     await Polkadot.signTransaction(driver);
     //wait four blocks to complete the action.
@@ -144,10 +150,13 @@ describe("UI tests - A user can swap and mint tokens", () => {
       MGA_ASSET_NAME,
       mETH_ASSET_NAME
     );
+    const mgaValue = await poolView.getBalanceFromtoken2();
+    const userWalletValue = testUser1.getAsset(MGA_ASSET_ID)?.amountAfter.free!;
+    const mgaValueBn = uiStringToBN(mgaValue);
+    expect(userWalletValue).bnEqual(mgaValueBn);
     expect(poolInvested).toBeTruthy();
     expect(swapped).toBeTruthy();
   });
-
   it("As a User I can burn all liquidity MGA - mETH", async () => {
     await testUser1.refreshAmounts(AssetWallet.BEFORE);
     let amountToMint = new BN(visibleValueNumber).div(new BN(2000));
@@ -159,7 +168,7 @@ describe("UI tests - A user can swap and mint tokens", () => {
     await sidebar.clickOnLiquidityPool(MGA_ASSET_NAME, mETH_ASSET_NAME);
     await sidebar.clickOnRemoveLiquidity();
     const modal = new BrunLiquidityModal(driver);
-    await modal.setAmount("100");
+    await modal.clickOn100Amount();
     await modal.confirmAndSign();
     for (let index = 0; index < 4; index++) {
       await waitNewBlock();
@@ -175,7 +184,6 @@ describe("UI tests - A user can swap and mint tokens", () => {
       testUser1.getAsset(ETH_ASSET_ID)?.amountBefore.free!.sub(new BN(1))
     ).bnEqual(testUser1.getAsset(ETH_ASSET_ID)?.amountAfter.free!);
   });
-
   it("As a User I can mint in more than one pool [ MGA - mETH ] [ MGA - newTokn ] and get invested values", async () => {
     await testUser1.refreshAmounts(AssetWallet.BEFORE);
     const newToken = await Assets.issueAssetToUser(
@@ -219,13 +227,18 @@ describe("UI tests - A user can swap and mint tokens", () => {
   });
 
   afterEach(async () => {
-    const session = await driver.getSession();
-    await addExtraLogs(
-      driver,
-      expect.getState().currentTestName + " - " + session.getId()
-    );
-    await driver.quit();
-    await DriverBuilder.destroy();
+    try {
+      const session = await driver.getSession();
+      await addExtraLogs(
+        driver,
+        expect.getState().currentTestName + " - " + session.getId()
+      );
+    } catch (error) {
+      testLog.getLog().warn(error);
+    } finally {
+      await driver.quit();
+      await DriverBuilder.destroy();
+    }
   });
 
   afterAll(async () => {

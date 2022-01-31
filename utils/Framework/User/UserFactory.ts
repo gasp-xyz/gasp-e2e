@@ -24,7 +24,7 @@ export abstract class UserFactory {
       case Users.GovernanceUser:
         return new GovernanceUser(keyring, name, json, node);
       case Users.SudoUser:
-        return new SudoUser(keyring, name, json, node);
+        return new SudoUser(keyring, json, node);
       case Users.MetamaskUser:
         return new MetamaskUser(keyring, json, node);
       default:

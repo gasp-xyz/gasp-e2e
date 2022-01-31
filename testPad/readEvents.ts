@@ -8,11 +8,9 @@ import { Mangata } from "mangata-sdk";
 const { testLog } = require("./../utils/Logger");
 
 const uris = [
-  "ws://127.0.0.1:9944",
-  //    'ws://172.28.1.1:9944',
+  "wss://staging.mangatafinance.cloud:9944",
+  "wss://integration.mangatafinance.cloud:9944",
 ];
-
-const ipRegex = /\d{1,3}\.\d{1,3}\.\d{1,3}\.\d{1,3}/gm;
 
 //this constant will skip some traces.
 const onlyrelevant = true;
@@ -23,7 +21,6 @@ async function main() {
   const promises = [];
   for (let index = 0; index < uris.length; index++) {
     const uri = uris[index];
-    const worker = ipRegex.exec(uri);
     const mangata = Mangata.getInstance(uri);
     const api = await mangata.getApi();
     const p = new Promise((): void => {
@@ -32,7 +29,7 @@ async function main() {
         testLog
           .getLog()
           .info(
-            `[ ${new Date().toUTCString()}] - W[${worker}] Received ${
+            `[ ${new Date().toUTCString()}] - W[${uri}] - Received ${
               events.length
             } events: -------`
           );
@@ -44,13 +41,13 @@ async function main() {
           const types = event.typeDef;
 
           // Show what we are busy with
-          let eventMessage = `[ ${new Date().toUTCString()}] - W[${worker}] \t${
+          let eventMessage = `[ ${new Date().toUTCString()}] - W[${uri}] \t${
             event.section
           }:${event.method}`;
 
           if (!onlyrelevant) {
             eventMessage += `:: (phase=${phase.toString()} \n
-                            W[${worker}] \t\t${event.meta.documentation.toString()}`;
+                            W[${uri}] \t\t${event.meta.documentation.toString()}`;
           }
 
           // Loop through each of the parameters, displaying the type and data

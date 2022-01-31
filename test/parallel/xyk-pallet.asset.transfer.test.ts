@@ -113,7 +113,7 @@ test("xyk-pallet - AssetsOperation: transferAsset", async () => {
   ).then((result) => {
     const eventResponse = getEventResultFromMangataTx(result, [
       "tokens",
-      "Transferred",
+      "Transfer",
       testUser1.keyRingPair.address,
     ]);
     expect(eventResponse.state).toEqual(ExtrinsicResult.ExtrinsicSuccess);
@@ -175,7 +175,7 @@ test("xyk-pallet - AssetsOperation: transferAll", async () => {
   ).then((result) => {
     const eventResponse = getEventResultFromMangataTx(result, [
       "tokens",
-      "Transferred",
+      "Transfer",
       testUser1.keyRingPair.address,
     ]);
     expect(eventResponse.state).toEqual(ExtrinsicResult.ExtrinsicSuccess);

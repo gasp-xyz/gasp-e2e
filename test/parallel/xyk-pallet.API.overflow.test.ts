@@ -13,6 +13,7 @@ import {
   buyAsset,
   burnLiquidity,
   mintLiquidity,
+  mintAsset,
 } from "../../utils/tx";
 import { ExtrinsicResult } from "../../utils/eventListeners";
 import BN from "bn.js";
@@ -85,7 +86,22 @@ describe("xyk-pallet - Check operations are not executed because of overflow in 
     expect(poolBalances[0]).bnEqual(MAX_BALANCE);
     expect(poolBalances[1]).bnEqual(MAX_BALANCE);
   });
-  test("Transfer [MAX] assets to other user when that user has 1 asset. Max+1 => overflow.", async () => {
+  test("Minting Max+1 tokens operation fails", async () => {
+    const testUser2 = new User(keyring);
+    keyring.addPair(testUser2.keyRingPair);
+    await mintAsset(
+      sudo.keyRingPair,
+      firstCurrency,
+      testUser2.keyRingPair.address,
+      new BN(1)
+    ).then((result) => {
+      const eventResponse = getEventResultFromMangataTx(result, ["Overflow"]);
+      expect(eventResponse.state).toEqual(ExtrinsicResult.ExtrinsicSuccess);
+    });
+  });
+
+  //A token can not be minted with MAX +1 value. Sudo mint token operation fails, hence skipping this test. and adding the above.(Minting Max+1 tokens operation fails)
+  test.skip("Transfer [MAX] assets to other user when that user has 1 asset. Max+1 => overflow.", async () => {
     const testUser2 = new User(keyring);
     keyring.addPair(testUser2.keyRingPair);
     await sudo.mint(firstCurrency, testUser2, new BN(1));
@@ -142,7 +158,7 @@ describe("xyk-pallet - Operate with a pool close to overflow", () => {
     //add two curerncies and balance to testUser:
     [firstCurrency, secondCurrency] = await Assets.setupUserWithCurrencies(
       testUser1,
-      [MAX_BALANCE, MAX_BALANCE.sub(new BN(1))],
+      [MAX_BALANCE.sub(new BN(10)), MAX_BALANCE.sub(new BN(10))],
       sudo
     );
     await testUser1.addMGATokens(sudo);
@@ -152,13 +168,12 @@ describe("xyk-pallet - Operate with a pool close to overflow", () => {
 
     testUser2 = new User(keyring);
     keyring.addPair(testUser2.keyRingPair);
-    await sudo.mint(firstCurrency, testUser2, MAX_BALANCE);
-    await sudo.mint(secondCurrency, testUser2, MAX_BALANCE);
+    await sudo.mint(firstCurrency, testUser2, new BN(10));
+    await sudo.mint(secondCurrency, testUser2, new BN(10));
     testUser2.addAssets([firstCurrency, secondCurrency]);
     await testUser2.addMGATokens(sudo);
-    //Lets create a pool with MAX-2,1 -> liquidity is at 1 token to be overflowed.
     await createPool(
-      testUser2.keyRingPair,
+      testUser1.keyRingPair,
       secondCurrency,
       MAX_BALANCE.sub(new BN(10)),
       firstCurrency,
@@ -173,38 +188,38 @@ describe("xyk-pallet - Operate with a pool close to overflow", () => {
 
   test("Sell [MAX -2] assets to a wallet with Max-1000,1000 => overflow.", async () => {
     await sellAsset(
-      testUser1.keyRingPair,
+      testUser2.keyRingPair,
       firstCurrency,
       secondCurrency,
-      MAX_BALANCE.sub(new BN(2)),
+      MAX_BALANCE.sub(new BN(10)),
       new BN(1)
     ).then((result) => {
       const eventResponse = getEventResultFromMangataTx(result);
       expect(eventResponse.state).toEqual(ExtrinsicResult.ExtrinsicFailed);
       expect(eventResponse.data).toEqual(XyzErrorCodes.MathOverflow);
     });
-    await testUser1.refreshAmounts(AssetWallet.AFTER);
+    await testUser2.refreshAmounts(AssetWallet.AFTER);
 
-    expect(testUser1.getAsset(firstCurrency)?.amountAfter.free).bnEqual(
-      MAX_BALANCE
+    expect(testUser2.getAsset(firstCurrency)?.amountAfter.free).bnEqual(
+      testUser2.getAsset(firstCurrency)?.amountBefore.free!
     );
   });
   test("Buy [100] assets to a wallet with Max-1000,1000 => overflow.", async () => {
     await buyAsset(
-      testUser1.keyRingPair,
+      testUser2.keyRingPair,
       secondCurrency,
       firstCurrency,
-      new BN(100),
+      new BN(10),
       MAX_BALANCE
     ).then((result) => {
       const eventResponse = getEventResultFromMangataTx(result);
       expect(eventResponse.state).toEqual(ExtrinsicResult.ExtrinsicFailed);
       expect(eventResponse.data).toEqual(XyzErrorCodes.MathOverflow);
     });
-    await testUser1.refreshAmounts(AssetWallet.AFTER);
+    await testUser2.refreshAmounts(AssetWallet.AFTER);
 
-    expect(testUser1.getAsset(firstCurrency)?.amountAfter.free).bnEqual(
-      MAX_BALANCE
+    expect(testUser2.getAsset(firstCurrency)?.amountAfter.free).bnEqual(
+      testUser2.getAsset(firstCurrency)?.amountBefore.free!
     );
   });
   //not suported scenario. We are creasing pool og Max-10 and then minting another 100.

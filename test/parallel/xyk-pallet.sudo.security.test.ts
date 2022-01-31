@@ -12,8 +12,8 @@ import { AssetWallet, User } from "../../utils/User";
 import { getEnvironmentRequiredVars } from "../../utils/utils";
 import { MGA_ASSET_ID } from "../../utils/Constants";
 import BN from "bn.js";
-import { getEventResultFromTxWait, signAndWaitTx } from "../../utils/txHandler";
-
+import { getEventResultFromMangataTx } from "../../utils/txHandler";
+import { signTx } from "mangata-sdk";
 jest.spyOn(console, "log").mockImplementation(jest.fn());
 jest.spyOn(console, "error").mockImplementation(jest.fn());
 jest.setTimeout(1500000);
@@ -22,7 +22,6 @@ process.env.NODE_ENV = "test";
 let testUser1: User;
 let testUser2: User;
 let sudo: User;
-let infoUser1Before: any;
 
 let keyring: Keyring;
 //creating pool
@@ -53,21 +52,25 @@ beforeAll(async () => {
 });
 
 beforeEach(async () => {
-  infoUser1Before = await testUser1.getUserAccountInfo();
   await testUser1.refreshAmounts(AssetWallet.BEFORE);
 });
 
 test("xyk-pallet - SecurityTests - Only sudo can perform actions [tokens.create]", async () => {
   const api = getApi();
 
-  await signAndWaitTx(
+  await signTx(
+    api,
     api.tx.sudo.sudo(
       api.tx.tokens.create(testUser2.keyRingPair.address, new BN(10000000))
     ),
     testUser1.keyRingPair,
-    await (await getCurrentNonce(testUser1.keyRingPair.address)).toNumber()
+    {
+      nonce: new BN(
+        await (await getCurrentNonce(testUser1.keyRingPair.address)).toNumber()
+      ),
+    }
   ).then((result) => {
-    const eventResponse = getEventResultFromTxWait(result);
+    const eventResponse = getEventResultFromMangataTx(result);
     expect(eventResponse.state).toEqual(ExtrinsicResult.ExtrinsicFailed);
   });
 });
@@ -75,14 +78,19 @@ test("xyk-pallet - SecurityTests - Only sudo can perform actions [tokens.create]
 test("xyk-pallet - SecurityTests - Only sudo can perform actions [tokens.create to itself]", async () => {
   const api = getApi();
 
-  await signAndWaitTx(
+  await signTx(
+    api,
     api.tx.sudo.sudo(
       api.tx.tokens.create(testUser1.keyRingPair.address, new BN(10000000))
     ),
     testUser1.keyRingPair,
-    await (await getCurrentNonce(testUser1.keyRingPair.address)).toNumber()
+    {
+      nonce: new BN(
+        await (await getCurrentNonce(testUser1.keyRingPair.address)).toNumber()
+      ),
+    }
   ).then((result) => {
-    const eventResponse = getEventResultFromTxWait(result);
+    const eventResponse = getEventResultFromMangataTx(result);
     expect(eventResponse.state).toEqual(ExtrinsicResult.ExtrinsicFailed);
   });
 });
@@ -90,7 +98,8 @@ test("xyk-pallet - SecurityTests - Only sudo can perform actions [tokens.create 
 test("xyk-pallet - SecurityTests - Only sudo can perform actions [tokens.mint]", async () => {
   const api = getApi();
 
-  await signAndWaitTx(
+  await signTx(
+    api,
     api.tx.sudo.sudo(
       api.tx.tokens.mint(
         new BN(0),
@@ -99,9 +108,11 @@ test("xyk-pallet - SecurityTests - Only sudo can perform actions [tokens.mint]",
       )
     ),
     testUser1.keyRingPair,
-    await (await getCurrentNonce(testUser1.keyRingPair.address)).toNumber()
+    {
+      nonce: await getCurrentNonce(testUser1.keyRingPair.address),
+    }
   ).then((result) => {
-    const eventResponse = getEventResultFromTxWait(result);
+    const eventResponse = getEventResultFromMangataTx(result);
     expect(eventResponse.state).toEqual(ExtrinsicResult.ExtrinsicFailed);
   });
 });
@@ -109,7 +120,8 @@ test("xyk-pallet - SecurityTests - Only sudo can perform actions [tokens.mint]",
 test("xyk-pallet - SecurityTests - Only sudo can perform actions [tokens.mint to itself]", async () => {
   const api = getApi();
 
-  await signAndWaitTx(
+  await signTx(
+    api,
     api.tx.sudo.sudo(
       api.tx.tokens.mint(
         new BN(0),
@@ -118,19 +130,15 @@ test("xyk-pallet - SecurityTests - Only sudo can perform actions [tokens.mint to
       )
     ),
     testUser1.keyRingPair,
-    await (await getCurrentNonce(testUser1.keyRingPair.address)).toNumber()
+    { nonce: await getCurrentNonce(testUser1.keyRingPair.address) }
   ).then((result) => {
-    const eventResponse = getEventResultFromTxWait(result);
+    const eventResponse = getEventResultFromMangataTx(result);
     expect(eventResponse.state).toEqual(ExtrinsicResult.ExtrinsicFailed);
   });
 });
 
 afterEach(async () => {
   await testUser1.refreshAmounts(AssetWallet.AFTER);
-  const infoUser1After = await testUser1.getUserAccountInfo();
-  expect(infoUser1Before).toEqual(infoUser1After);
   const assetValue = testUser1.getAsset(MGA_ASSET_ID);
-  expect(assetValue?.amountBefore.free.toNumber()).toBeGreaterThan(
-    assetValue?.amountAfter.free.toNumber()!
-  );
+  expect(assetValue?.amountAfter.free).bnLt(assetValue?.amountBefore.free!);
 });

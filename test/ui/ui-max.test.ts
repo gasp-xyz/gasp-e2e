@@ -129,7 +129,7 @@ describe("UI tests - A user can use MAX:", () => {
     await poolView.selectToken2Asset(assetName2);
     await poolView.clickToToken1MaxBtn();
     const calculatedValue = await poolView.getToken2Text();
-    await poolView.provideToPool();
+    await poolView.provideOrCreatePool();
 
     await Polkadot.signTransaction(driver);
     //wait four blocks to complete the action.
@@ -150,6 +150,7 @@ describe("UI tests - A user can use MAX:", () => {
       testUser1
         .getAsset(newToken2)
         ?.amountBefore.free.sub(textAsBn)
+        .sub(new BN(1)) //that unit was due to rounding.
         ?.lte(testUser1.getAsset(newToken2)?.amountAfter.free!)
     ).toBeTruthy();
   });

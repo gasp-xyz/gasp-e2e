@@ -62,11 +62,11 @@ describe("Test Withdraw - Deposit", () => {
     testUser1 = new User(keyring, "//Alice");
     const sudo = new User(keyring, sudoUserName);
     await testUser1.addMGATokens(sudo);
-    mDOTAssetId = await getAssetId("XXX");
+    mDOTAssetId = await getAssetId("mDOT");
     await sudo.mint(
       mDOTAssetId,
       testUser1,
-      new BN(Math.pow(10, 11).toString())
+      new BN(Math.pow(10, 18).toString())
     );
     testUser1.addAsset(MGA_ASSET_ID.toString());
     testUser1.addAsset(mDOTAssetId.toString());
@@ -155,7 +155,7 @@ describe("Test Withdraw - Deposit", () => {
   });
 
   test.each([
-    [mDOTAdrress, "XXX"],
+    [mDOTAdrress, "mDOT"],
     [mMNGAdrress, "MGA"],
   ])(
     "that %s - %s can be sent to MetaMask wallet and can be deposited",

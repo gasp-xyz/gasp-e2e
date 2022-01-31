@@ -1,8 +1,11 @@
 import { By, WebDriver } from "selenium-webdriver";
+import { waitForNBlocks } from "../../utils";
+
 import {
   buildDataTestIdXpath,
   clickElement,
   getAttribute,
+  getText,
   waitForElement,
   writeText,
 } from "../utils/Helper";
@@ -28,9 +31,11 @@ export class Pool {
     buildDataTestIdXpath(DIV_POOL_TOKEN2) + "//input";
 
   private btnToken1MaxLocator =
-    buildDataTestIdXpath(DIV_POOL_TOKEN1) + "//button[contains(text(),'Max')]";
+    buildDataTestIdXpath(DIV_POOL_TOKEN1) +
+    "//button[span[contains(text(),'Max')]]";
   private btnToken2MaxLocator =
-    buildDataTestIdXpath(DIV_POOL_TOKEN2) + "//button[contains(text(),'Max')]";
+    buildDataTestIdXpath(DIV_POOL_TOKEN2) +
+    "//button[span[contains(text(),'Max')]]";
 
   async togglePool() {
     const selector = buildDataTestIdXpath(TAB_POOL_TEST_ID);
@@ -49,9 +54,10 @@ export class Pool {
     await this.selectAssetFromModalList(assetName);
   }
 
-  async provideToPool() {
+  async provideOrCreatePool() {
     const tradeBtn = buildDataTestIdXpath(BTN_POOL_PROVIDE);
     await waitForElement(this.driver, tradeBtn);
+    await waitForNBlocks(2);
     const enabled = await (
       await this.driver.findElement(By.xpath(tradeBtn))
     ).isEnabled();
@@ -71,7 +77,7 @@ export class Pool {
   }
 
   private async selectAssetFromModalList(assetName: string) {
-    const assetTestId = `assetSelectModal-asset-${assetName}`;
+    const assetTestId = `TokensModal-asset-${assetName}`;
     const assetLocator = buildDataTestIdXpath(assetTestId);
     await clickElement(this.driver, assetLocator);
   }
@@ -86,5 +92,12 @@ export class Pool {
   }
   async clickToToken1MaxBtn() {
     await clickElement(this.driver, this.btnToken1MaxLocator);
+  }
+  async getBalanceFromtoken2() {
+    const xpathGetLocator =
+      buildDataTestIdXpath(DIV_POOL_TOKEN2) +
+      "//*[@class='TradingInput__right__label']";
+    const text = await getText(this.driver, xpathGetLocator);
+    return text.split(":")[1].trim().replace("MAX", "").trim();
   }
 }
