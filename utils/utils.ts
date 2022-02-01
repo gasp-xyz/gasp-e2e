@@ -250,7 +250,7 @@ export async function createPoolIfMissing(
 export async function waitIfSessionWillChangeInNblocks(numberOfBlocks: number) {
   const api = await getApi();
   const sessionDuration = BigInt(
-    (await api!.consts.parachainStaking.defaultBlocksPerRound!).toString()
+    (await api!.consts.parachainStaking.blocksPerRound!).toString()
   );
   const blockNumber = BigInt(
     await (await api!.query.system.number()).toString()
