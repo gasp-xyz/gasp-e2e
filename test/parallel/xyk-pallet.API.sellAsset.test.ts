@@ -88,7 +88,7 @@ describe("xyk-pallet - Sell assets tests: SellAsset Errors:", () => {
     ).then((result) => {
       const eventResponse = getEventResultFromMangataTx(result);
       expect(eventResponse.state).toEqual(ExtrinsicResult.ExtrinsicFailed);
-      expect(eventResponse.data).toEqual(3);
+      expect(eventResponse.data).toEqual(2);
     });
     await sellAsset(
       testUser1.keyRingPair,
@@ -99,7 +99,7 @@ describe("xyk-pallet - Sell assets tests: SellAsset Errors:", () => {
     ).then((result) => {
       const eventResponse = getEventResultFromMangataTx(result);
       expect(eventResponse.state).toEqual(ExtrinsicResult.ExtrinsicFailed);
-      expect(eventResponse.data).toEqual(3);
+      expect(eventResponse.data).toEqual(2);
     });
 
     await validateUnmodified(
@@ -170,7 +170,7 @@ describe("xyk-pallet - Sell assets tests: SellAsset Errors:", () => {
     ).then((result) => {
       const eventResponse = getEventResultFromMangataTx(result);
       expect(eventResponse.state).toEqual(ExtrinsicResult.ExtrinsicFailed);
-      expect(eventResponse.data).toEqual(2);
+      expect(eventResponse.data).toEqual(1);
     });
 
     await testUser1.refreshAmounts(AssetWallet.AFTER);
@@ -249,7 +249,7 @@ describe("xyk-pallet - Sell assets tests: SellAsset Errors:", () => {
     ).then((result) => {
       const eventResponse = getEventResultFromMangataTx(result);
       expect(eventResponse.state).toEqual(ExtrinsicResult.ExtrinsicFailed);
-      expect(eventResponse.data).toEqual(8);
+      expect(eventResponse.data).toEqual(7);
     });
     //fee: 603 ??  //TODO: validate with Stano.
     const feeToAvoidFrontRunning = new BN(603);
