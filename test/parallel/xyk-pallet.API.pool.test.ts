@@ -136,7 +136,7 @@ describe("xyk-pallet - Poll creation: Errors:", () => {
     ).then((result) => {
       const eventResponse = getEventResultFromMangataTx(result);
       expect(eventResponse.state).toEqual(ExtrinsicResult.ExtrinsicFailed);
-      expect(eventResponse.data).toEqual(1);
+      expect(eventResponse.data).toEqual(0);
     });
   });
   test("Create pool with zero", async () => {
@@ -152,7 +152,7 @@ describe("xyk-pallet - Poll creation: Errors:", () => {
     ).then((result) => {
       const eventResponse = getEventResultFromMangataTx(result);
       expect(eventResponse.state).toEqual(ExtrinsicResult.ExtrinsicFailed);
-      expect(eventResponse.data).toEqual(6);
+      expect(eventResponse.data).toEqual(5);
     });
 
     const balance = await getBalanceOfPool(firstCurrency, emptyAssetID);
@@ -175,7 +175,7 @@ describe("xyk-pallet - Poll creation: Errors:", () => {
     ).then((result) => {
       const eventResponse = getEventResultFromMangataTx(result);
       expect(eventResponse.state).toEqual(ExtrinsicResult.ExtrinsicFailed);
-      expect(eventResponse.data).toEqual(2);
+      expect(eventResponse.data).toEqual(1);
     });
 
     const balance = await getBalanceOfPool(firstCurrency, testAssetId[0]);
