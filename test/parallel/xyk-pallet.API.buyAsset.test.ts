@@ -142,17 +142,18 @@ describe("xyk-pallet - Buy assets tests: BuyAssets Errors:", () => {
 
     await testUser1.refreshAmounts(AssetWallet.BEFORE);
 
-    await expect( buyAsset(
-      testUser1.keyRingPair,
-      firstCurrency,
-      secondCurrency,
-      poolAmountSecondCurrency.add(new BN(1)),
-      new BN(1000000)
-    ).then((result) => {
-      const eventResponse = getEventResultFromMangataTx(result);
-      expect(eventResponse.state).toEqual(ExtrinsicResult.ExtrinsicFailed);
-      expect(eventResponse.data).toEqual(5);
-    })
+    await expect(
+      buyAsset(
+        testUser1.keyRingPair,
+        firstCurrency,
+        secondCurrency,
+        poolAmountSecondCurrency.add(new BN(1)),
+        new BN(1000000)
+      ).then((result) => {
+        const eventResponse = getEventResultFromMangataTx(result);
+        expect(eventResponse.state).toEqual(ExtrinsicResult.ExtrinsicFailed);
+        expect(eventResponse.data).toEqual(5);
+      })
     ).rejects.toThrow(
       "1010: Invalid Transaction: Inability to calculate fees in non native token , e.g. non existing pool, math overflow. Check node rpc for more details."
     );
