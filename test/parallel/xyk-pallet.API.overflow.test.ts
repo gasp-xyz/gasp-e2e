@@ -187,17 +187,21 @@ describe("xyk-pallet - Operate with a pool close to overflow", () => {
   });
 
   test("Sell [MAX -2] assets to a wallet with Max-1000,1000 => overflow.", async () => {
-    await sellAsset(
-      testUser2.keyRingPair,
-      firstCurrency,
-      secondCurrency,
-      MAX_BALANCE.sub(new BN(10)),
-      new BN(1)
-    ).then((result) => {
-      const eventResponse = getEventResultFromMangataTx(result);
-      expect(eventResponse.state).toEqual(ExtrinsicResult.ExtrinsicFailed);
-      expect(eventResponse.data).toEqual(XyzErrorCodes.MathOverflow);
-    });
+    await expect(
+      sellAsset(
+        testUser2.keyRingPair,
+        firstCurrency,
+        secondCurrency,
+        MAX_BALANCE.sub(new BN(10)),
+        new BN(1)
+      ).then((result) => {
+        const eventResponse = getEventResultFromMangataTx(result);
+        expect(eventResponse.state).toEqual(ExtrinsicResult.ExtrinsicFailed);
+        expect(eventResponse.data).toEqual(XyzErrorCodes.MathOverflow);
+      })
+    ).rejects.toThrow(
+      "1010: Invalid Transaction: Inability to calculate fees in non native token , e.g. non existing pool, math overflow. Check node rpc for more details."
+    );
     await testUser2.refreshAmounts(AssetWallet.AFTER);
 
     expect(testUser2.getAsset(firstCurrency)?.amountAfter.free).bnEqual(

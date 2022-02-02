@@ -143,20 +143,42 @@ describe("SDK test - Nonce tests - user", () => {
   test("SDK- Nonce management - Extrinsic failed", async () => {
     const userNonce = [];
     userNonce.push(await mangata.getNonce(testUser.keyRingPair.address));
-
-    //pool does not exist.
     const MAX_INT = 4294967295;
-    const event = await mangata.sellAsset(
+    await mangata.sellAsset(
       testUser.keyRingPair,
-      (MAX_INT - 1).toString(),
-      (MAX_INT - 2).toString(),
+      new BN(0).toString(),
+      firstCurrency.toString(),
       new BN(1000),
-      new BN(1)
+      new BN(MAX_INT)
     );
-    const eventResult = getEventResultFromMangataTx(event);
-    expect(eventResult.state).toEqual(ExtrinsicResult.ExtrinsicFailed);
+
     userNonce.push(await mangata.getNonce(testUser.keyRingPair.address));
     expect(parseFloat(userNonce[1].toString())).toBeGreaterThan(
+      parseFloat(userNonce[0].toString())
+    );
+  });
+  test("SDK- Nonce management - client error", async () => {
+    const userNonce = [];
+    userNonce.push(await mangata.getNonce(testUser.keyRingPair.address));
+    const MAX_INT = 4294967295;
+    await expect(
+      mangata
+        .sellAsset(
+          testUser.keyRingPair,
+          (MAX_INT - 1).toString(),
+          (MAX_INT - 2).toString(),
+          new BN(1000),
+          new BN(1)
+        )
+        .catch((reason) => {
+          throw new Error(reason.data);
+        })
+    ).rejects.toThrow(
+      "1010: Invalid Transaction: Inability to pay some fees in non native token , e.g. account balance too low"
+    );
+
+    userNonce.push(await mangata.getNonce(testUser.keyRingPair.address));
+    expect(parseFloat(userNonce[1].toString())).toEqual(
       parseFloat(userNonce[0].toString())
     );
   });
