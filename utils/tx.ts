@@ -445,14 +445,19 @@ export const sellAsset = async (
   minAmountOut: BN
 ) => {
   const mangata = await getMangataInstance();
-  const result = await mangata.sellAsset(
-    account,
-    soldAssetId.toString(),
-    boughtAssetId.toString(),
-    amount,
-    minAmountOut
-  );
-  return result;
+  try {
+    const result = await mangata.sellAsset(
+      account,
+      soldAssetId.toString(),
+      boughtAssetId.toString(),
+      amount,
+      minAmountOut
+    );
+    return result;
+  } catch (e) {
+    testLog.getLog().warn((e as any).data.toString());
+    return (e as any).data.toString();
+  }
 };
 
 export const buyAsset = async (
@@ -463,14 +468,19 @@ export const buyAsset = async (
   maxAmountIn: BN
 ) => {
   const mangata = await getMangataInstance();
-  const result = await mangata.buyAsset(
-    account,
-    soldAssetId.toString(),
-    boughtAssetId.toString(),
-    amount,
-    maxAmountIn
-  );
-  return result;
+  try {
+    const result = await mangata.buyAsset(
+      account,
+      soldAssetId.toString(),
+      boughtAssetId.toString(),
+      amount,
+      maxAmountIn
+    );
+    return result;
+  } catch (e) {
+    testLog.getLog().warn((e as any).data.toString());
+    return (e as any).data.toString();
+  }
 };
 
 export const mintLiquidity = async (

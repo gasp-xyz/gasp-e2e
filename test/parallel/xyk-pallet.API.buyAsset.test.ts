@@ -81,37 +81,29 @@ describe("xyk-pallet - Buy assets tests: BuyAssets Errors:", () => {
       sudo
     );
 
-    await expect(
-      buyAsset(
-        testUser1.keyRingPair,
-        thirdCurrency,
-        secondCurrency,
-        firstAssetAmount.div(new BN(2)),
-        new BN(0)
-      ).then((result) => {
-        const eventResponse = getEventResultFromMangataTx(result);
-        expect(eventResponse.state).toEqual(ExtrinsicResult.ExtrinsicFailed);
-        expect(eventResponse.data).toEqual(3);
-      })
-    ).rejects.toThrow(
-      "1010: Invalid Transaction: Inability to calculate fees in non native token , e.g. non existing pool, math overflow. Check node rpc for more details."
-    );
+    await buyAsset(
+      testUser1.keyRingPair,
+      thirdCurrency,
+      secondCurrency,
+      firstAssetAmount.div(new BN(2)),
+      new BN(0)
+    ).then((result) => {
+      expect(result).toContain(
+        "Inability to calculate fees in non native token"
+      );
+    });
 
-    await expect(
-      buyAsset(
-        testUser1.keyRingPair,
-        secondCurrency,
-        thirdCurrency,
-        firstAssetAmount.div(new BN(2)),
-        new BN(0)
-      ).then((result) => {
-        const eventResponse = getEventResultFromMangataTx(result);
-        expect(eventResponse.state).toEqual(ExtrinsicResult.ExtrinsicFailed);
-        expect(eventResponse.data).toEqual(3);
-      })
-    ).rejects.toThrow(
-      "1010: Invalid Transaction: Inability to calculate fees in non native token , e.g. non existing pool, math overflow. Check node rpc for more details."
-    );
+    await buyAsset(
+      testUser1.keyRingPair,
+      secondCurrency,
+      thirdCurrency,
+      firstAssetAmount.div(new BN(2)),
+      new BN(0)
+    ).then((result) => {
+      expect(result).toContain(
+        "Inability to calculate fees in non native token"
+      );
+    });
 
     await validateUnmodified(
       firstCurrency,
@@ -141,23 +133,17 @@ describe("xyk-pallet - Buy assets tests: BuyAssets Errors:", () => {
     );
 
     await testUser1.refreshAmounts(AssetWallet.BEFORE);
-
-    await expect(
-      buyAsset(
-        testUser1.keyRingPair,
-        firstCurrency,
-        secondCurrency,
-        poolAmountSecondCurrency.add(new BN(1)),
-        new BN(1000000)
-      ).then((result) => {
-        const eventResponse = getEventResultFromMangataTx(result);
-        expect(eventResponse.state).toEqual(ExtrinsicResult.ExtrinsicFailed);
-        expect(eventResponse.data).toEqual(5);
-      })
-    ).rejects.toThrow(
-      "1010: Invalid Transaction: Inability to calculate fees in non native token , e.g. non existing pool, math overflow. Check node rpc for more details."
-    );
-
+    await buyAsset(
+      testUser1.keyRingPair,
+      firstCurrency,
+      secondCurrency,
+      poolAmountSecondCurrency.add(new BN(1)),
+      new BN(1000000)
+    ).then((result) => {
+      expect(result).toContain(
+        "Inability to calculate fees in non native token"
+      );
+    });
     await validateUnmodified(firstCurrency, secondCurrency, testUser1, [
       firstAssetAmount,
       poolAmountSecondCurrency,
@@ -192,9 +178,9 @@ describe("xyk-pallet - Buy assets tests: BuyAssets Errors:", () => {
       poolAmountSecondCurrency,
       new BN(100000000)
     ).then((result) => {
-      const eventResponse = getEventResultFromMangataTx(result);
-      expect(eventResponse.state).toEqual(ExtrinsicResult.ExtrinsicFailed);
-      expect(eventResponse.data).toEqual(5);
+      expect(result).toContain(
+        "Inability to pay some fees in non native token"
+      );
     });
 
     await validateUnmodified(firstCurrency, secondCurrency, testUser1, [

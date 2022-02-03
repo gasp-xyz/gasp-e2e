@@ -2126,11 +2126,15 @@ test("xyk-pallet: Liquidity sufficiency scenario", async () => {
     );
   soldAssetId = firstAssetId;
   boughtAssetId = secondAssetId;
-  await expect(
-    await buyAsset(user, soldAssetId, boughtAssetId, amount, new BN(1000000))
-  ).rejects.toThrow(
-    "1010: Invalid Transaction: Inability to calculate fees in non native token , e.g. non existing pool, math overflow. Check node rpc for more details."
-  );
+  await buyAsset(
+    user,
+    soldAssetId,
+    boughtAssetId,
+    amount,
+    new BN(1000000)
+  ).then((result) => {
+    expect(result).toContain("Inability to calculate fees in non native token");
+  });
 
   alice_assets = await getUserAssets(alice.address, [
     firstAssetId,
@@ -2199,17 +2203,15 @@ test("xyk-pallet: Liquidity sufficiency scenario", async () => {
   soldAssetId = secondAssetId;
   boughtAssetId = firstAssetId;
 
-  await expect(
-    buyAsset(user, soldAssetId, boughtAssetId, amount, new BN(1000000)).then(
-      (result) => {
-        const eventResponse = getEventResultFromMangataTx(result);
-        expect(eventResponse.state).toEqual(ExtrinsicResult.ExtrinsicFailed);
-        expect(eventResponse.data).toEqual(3);
-      }
-    )
-  ).rejects.toThrow(
-    "1010: Invalid Transaction: Inability to calculate fees in non native token , e.g. non existing pool, math overflow. Check node rpc for more details."
-  );
+  await buyAsset(
+    user,
+    soldAssetId,
+    boughtAssetId,
+    amount,
+    new BN(1000000)
+  ).then((result) => {
+    expect(result).toContain("Inability to calculate fees in non native token");
+  });
   alice_assets = await getUserAssets(alice.address, [
     firstAssetId,
     secondAssetId,
