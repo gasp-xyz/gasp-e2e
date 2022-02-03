@@ -157,7 +157,6 @@ export async function UserCreatesAPoolAndMintliquidity(
 }
 
 export enum XyzErrorCodes {
-  VaultAlreadySet,
   PoolAlreadyExists,
   NotEnoughAssets,
   NoSuchPool,
