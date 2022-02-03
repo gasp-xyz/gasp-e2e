@@ -1,0 +1,216 @@
+{
+  "uid" : "83edc06c07f9ae9e47eb6dd1b683e4e2",
+  "children" : [ {
+    "name" : "UI tests - A user can see the new Modal",
+    "children" : [ {
+      "name" : "Modal contains currencies and amounts when Swapping",
+      "uid" : "6d2cabc23be67e1f",
+      "parentUid" : "96c23f87635f25cc7176b973c55fa8f1",
+      "status" : "failed",
+      "time" : {
+        "start" : 1643851725275,
+        "stop" : 1643851889069,
+        "duration" : 163794
+      },
+      "flaky" : false,
+      "newFailed" : false,
+      "parameters" : [ ]
+    }, {
+      "name" : "Modal contains currencies and amounts when providing liquidity",
+      "uid" : "3d9a759e0b4a6819",
+      "parentUid" : "96c23f87635f25cc7176b973c55fa8f1",
+      "status" : "failed",
+      "time" : {
+        "start" : 1643851889072,
+        "stop" : 1643852030686,
+        "duration" : 141614
+      },
+      "flaky" : false,
+      "newFailed" : false,
+      "parameters" : [ ]
+    }, {
+      "name" : "Modal is visible when burning liquidity",
+      "uid" : "1d28b373ca863afc",
+      "parentUid" : "96c23f87635f25cc7176b973c55fa8f1",
+      "status" : "failed",
+      "time" : {
+        "start" : 1643852030701,
+        "stop" : 1643852096896,
+        "duration" : 66195
+      },
+      "flaky" : false,
+      "newFailed" : false,
+      "parameters" : [ ]
+    } ],
+    "uid" : "96c23f87635f25cc7176b973c55fa8f1"
+  }, {
+    "name" : "UI tests - A user gets notified when error",
+    "children" : [ {
+      "name" : "When tx front - fails, User gets notified",
+      "uid" : "35443a4a57e65dd6",
+      "parentUid" : "47cb4c939c5a223aa86542609d27816d",
+      "status" : "failed",
+      "time" : {
+        "start" : 1643852096925,
+        "stop" : 1643852162431,
+        "duration" : 65506
+      },
+      "flaky" : false,
+      "newFailed" : false,
+      "parameters" : [ ]
+    }, {
+      "name" : "When tx extrinsic - fails, User gets notified",
+      "uid" : "93e8be3d5578eb53",
+      "parentUid" : "47cb4c939c5a223aa86542609d27816d",
+      "status" : "failed",
+      "time" : {
+        "start" : 1643852162432,
+        "stop" : 1643852227313,
+        "duration" : 64881
+      },
+      "flaky" : false,
+      "newFailed" : false,
+      "parameters" : [ ]
+    }, {
+      "name" : "When user cancel a TX, User gets notified",
+      "uid" : "f08f1edb7edace7e",
+      "parentUid" : "47cb4c939c5a223aa86542609d27816d",
+      "status" : "failed",
+      "time" : {
+        "start" : 1643852227314,
+        "stop" : 1643852292901,
+        "duration" : 65587
+      },
+      "flaky" : false,
+      "newFailed" : false,
+      "parameters" : [ ]
+    } ],
+    "uid" : "47cb4c939c5a223aa86542609d27816d"
+  }, {
+    "name" : "UI tests - A user can swap and mint tokens",
+    "children" : [ {
+      "name" : "As a User I can Swap tokens - MGA - mETH",
+      "uid" : "544fc2e85b33782",
+      "parentUid" : "bd419ef2cd014a4eeaada3cb2b2c455c",
+      "status" : "failed",
+      "time" : {
+        "start" : 1643852294685,
+        "stop" : 1643852455238,
+        "duration" : 160553
+      },
+      "flaky" : false,
+      "newFailed" : false,
+      "parameters" : [ ]
+    }, {
+      "name" : "As a User I can mint some tokens MGA - mETH",
+      "uid" : "d1c36fad833800f2",
+      "parentUid" : "bd419ef2cd014a4eeaada3cb2b2c455c",
+      "status" : "failed",
+      "time" : {
+        "start" : 1643852455240,
+        "stop" : 1643852821735,
+        "duration" : 366495
+      },
+      "flaky" : false,
+      "newFailed" : false,
+      "parameters" : [ ]
+    }, {
+      "name" : "As a User I can burn all liquidity MGA - mETH",
+      "uid" : "dfea5ef96a687075",
+      "parentUid" : "bd419ef2cd014a4eeaada3cb2b2c455c",
+      "status" : "failed",
+      "time" : {
+        "start" : 1643852821738,
+        "stop" : 1643852890169,
+        "duration" : 68431
+      },
+      "flaky" : false,
+      "newFailed" : false,
+      "parameters" : [ ]
+    }, {
+      "name" : "As a User I can mint in more than one pool [ MGA - mETH ] [ MGA - newTokn ] and get invested values",
+      "uid" : "68170f417f8c9e4d",
+      "parentUid" : "bd419ef2cd014a4eeaada3cb2b2c455c",
+      "status" : "failed",
+      "time" : {
+        "start" : 1643852890170,
+        "stop" : 1643852958177,
+        "duration" : 68007
+      },
+      "flaky" : false,
+      "newFailed" : false,
+      "parameters" : [ ]
+    } ],
+    "uid" : "bd419ef2cd014a4eeaada3cb2b2c455c"
+  }, {
+    "name" : "UI tests - Extension management",
+    "children" : [ {
+      "name" : "As a User I get infomed whenever is neccesary to install any extension",
+      "uid" : "ab79efc595c50f9",
+      "parentUid" : "7f749799d9e3b05251bdf98eee50de84",
+      "status" : "failed",
+      "time" : {
+        "start" : 1643852959982,
+        "stop" : 1643853144554,
+        "duration" : 184572
+      },
+      "flaky" : false,
+      "newFailed" : false,
+      "parameters" : [ ]
+    }, {
+      "name" : "As a User I get feedback when extensions are installed and correctly setup",
+      "uid" : "3ec8e685172c6896",
+      "parentUid" : "7f749799d9e3b05251bdf98eee50de84",
+      "status" : "failed",
+      "time" : {
+        "start" : 1643853144554,
+        "stop" : 1643853145276,
+        "duration" : 722
+      },
+      "flaky" : false,
+      "newFailed" : false,
+      "parameters" : [ ]
+    }, {
+      "name" : "As a User I can switch between polkadot wallets",
+      "uid" : "e6947fb2c1325674",
+      "parentUid" : "7f749799d9e3b05251bdf98eee50de84",
+      "status" : "failed",
+      "time" : {
+        "start" : 1643853145276,
+        "stop" : 1643853145291,
+        "duration" : 15
+      },
+      "flaky" : false,
+      "newFailed" : false,
+      "parameters" : [ ]
+    }, {
+      "name" : "As a User I can switch between polkadot wallets using the modal",
+      "uid" : "c2b41e299c199096",
+      "parentUid" : "7f749799d9e3b05251bdf98eee50de84",
+      "status" : "failed",
+      "time" : {
+        "start" : 1643853145292,
+        "stop" : 1643853145301,
+        "duration" : 9
+      },
+      "flaky" : false,
+      "newFailed" : false,
+      "parameters" : [ ]
+    }, {
+      "name" : "As a User I can not see hidden wallets in the modal",
+      "uid" : "2d84d98e853760d2",
+      "parentUid" : "7f749799d9e3b05251bdf98eee50de84",
+      "status" : "failed",
+      "time" : {
+        "start" : 1643853145302,
+        "stop" : 1643853145316,
+        "duration" : 14
+      },
+      "flaky" : true,
+      "newFailed" : false,
+      "parameters" : [ ]
+    } ],
+    "uid" : "7f749799d9e3b05251bdf98eee50de84"
+  } ],
+  "name" : "packages"
+}
