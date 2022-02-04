@@ -179,7 +179,7 @@ describe("xyk-pallet - Buy assets tests: BuyAssets Errors:", () => {
       new BN(100000000)
     ).then((result) => {
       expect(result).toContain(
-        "Inability to pay some fees in non native token"
+        "Inability to calculate fees in non native token"
       );
     });
 
