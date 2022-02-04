@@ -1,5 +1,5 @@
 /*
- * @group parallel
+ * @group rely-mga-acala
  */
 
 import BN from "bn.js";
