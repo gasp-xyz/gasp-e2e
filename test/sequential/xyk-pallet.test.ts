@@ -1455,7 +1455,7 @@ test("xyk-pallet: Liquidity sufficiency scenario", async () => {
   ).then((result) => {
     const eventResponse = getEventResultFromMangataTx(result);
     expect(eventResponse.state).toEqual(ExtrinsicResult.ExtrinsicFailed);
-    expect(eventResponse.data).toEqual(2);
+    expect(eventResponse.data).toEqual(1);
   });
 
   testLog.getLog().debug(first_asset_amount.toString());
@@ -1546,7 +1546,7 @@ test("xyk-pallet: Liquidity sufficiency scenario", async () => {
   ).then((result) => {
     const eventResponse = getEventResultFromMangataTx(result);
     expect(eventResponse.state).toEqual(ExtrinsicResult.ExtrinsicFailed);
-    expect(eventResponse.data).toEqual(2);
+    expect(eventResponse.data).toEqual(1);
   });
 
   testLog.getLog().debug(first_asset_amount.toString());
@@ -1731,7 +1731,7 @@ test("xyk-pallet: Liquidity sufficiency scenario", async () => {
   ).then((result) => {
     const eventResponse = getEventResultFromMangataTx(result);
     expect(eventResponse.state).toEqual(ExtrinsicResult.ExtrinsicFailed);
-    expect(eventResponse.data).toEqual(2);
+    expect(eventResponse.data).toEqual(1);
   });
 
   testLog.getLog().debug(first_asset_amount.toString());
@@ -1905,7 +1905,7 @@ test("xyk-pallet: Liquidity sufficiency scenario", async () => {
   ).then((result) => {
     const eventResponse = getEventResultFromMangataTx(result);
     expect(eventResponse.state).toEqual(ExtrinsicResult.ExtrinsicFailed);
-    expect(eventResponse.data).toEqual(3);
+    expect(eventResponse.data).toEqual(2);
   });
 
   testLog.getLog().debug(first_asset_amount.toString());
@@ -1983,7 +1983,7 @@ test("xyk-pallet: Liquidity sufficiency scenario", async () => {
     (result) => {
       const eventResponse = getEventResultFromMangataTx(result);
       expect(eventResponse.state).toEqual(ExtrinsicResult.ExtrinsicFailed);
-      expect(eventResponse.data).toEqual(3);
+      expect(eventResponse.data).toEqual(2);
     }
   );
 
@@ -2057,7 +2057,7 @@ test("xyk-pallet: Liquidity sufficiency scenario", async () => {
     (result) => {
       const eventResponse = getEventResultFromMangataTx(result);
       expect(eventResponse.state).toEqual(ExtrinsicResult.ExtrinsicFailed);
-      expect(eventResponse.data).toEqual(3);
+      expect(eventResponse.data).toEqual(2);
     }
   );
   alice_assets = await getUserAssets(alice.address, [
