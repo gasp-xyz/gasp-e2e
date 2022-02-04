@@ -225,7 +225,7 @@ describe("xyk-pallet - Buy assets tests: BuyAssets Errors:", () => {
     ).then((result) => {
       const eventResponse = getEventResultFromMangataTx(result);
       expect(eventResponse.state).toEqual(ExtrinsicResult.ExtrinsicFailed);
-      expect(eventResponse.data).toEqual(7);
+      expect(eventResponse.data).toEqual(6);
     });
 
     await validateUserPaidFeeForFailedTx(

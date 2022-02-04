@@ -78,7 +78,7 @@ describe("xyk-pallet - Burn liquidity tests: BurnLiquidity Errors:", () => {
     ).then((result) => {
       const eventResponse = getEventResultFromMangataTx(result);
       expect(eventResponse.state).toEqual(ExtrinsicResult.ExtrinsicFailed);
-      expect(eventResponse.data).toEqual(3);
+      expect(eventResponse.data).toEqual(2);
     });
   });
 
@@ -108,7 +108,7 @@ describe("xyk-pallet - Burn liquidity tests: BurnLiquidity Errors:", () => {
     ).then((result) => {
       const eventResponse = getEventResultFromMangataTx(result);
       expect(eventResponse.state).toEqual(ExtrinsicResult.ExtrinsicFailed);
-      expect(eventResponse.data).toEqual(2);
+      expect(eventResponse.data).toEqual(1);
     });
 
     await validateUnmodified(
@@ -145,7 +145,7 @@ describe("xyk-pallet - Burn liquidity tests: BurnLiquidity Errors:", () => {
     ).then((result) => {
       const eventResponse = getEventResultFromMangataTx(result);
       expect(eventResponse.state).toEqual(ExtrinsicResult.ExtrinsicFailed);
-      expect(eventResponse.data).toEqual(2);
+      expect(eventResponse.data).toEqual(1);
     });
   });
 });
