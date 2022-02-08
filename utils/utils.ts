@@ -1,7 +1,7 @@
 import { formatBalance } from "@polkadot/util/format";
 import BN from "bn.js";
-import { getApi, getMangataInstance } from "./api";
-
+import { getApi, getMangataInstance, mangata } from "./api";
+import { hexToBn } from "@polkadot/util";
 import { Assets } from "./Assets";
 import { User } from "./User";
 import Keyring from "@polkadot/keyring";
@@ -10,6 +10,7 @@ import { ETH_ASSET_ID, MGA_ASSET_ID } from "./Constants";
 import { getBalanceOfPool } from "./tx";
 import { waitNewBlock } from "./eventListeners";
 import { testLog } from "./Logger";
+import { AnyNumber } from "@polkadot/types/types";
 
 export function sleep(ms: number) {
   return new Promise((resolve) => {
@@ -249,7 +250,7 @@ export async function createPoolIfMissing(
 export async function waitIfSessionWillChangeInNblocks(numberOfBlocks: number) {
   const api = await getApi();
   const sessionDuration = BigInt(
-    (await api!.consts.parachainStaking.defaultBlocksPerRound!).toString()
+    (await api!.consts.parachainStaking.blocksPerRound!).toString()
   );
   const blockNumber = BigInt(
     await (await api!.query.system.number()).toString()
@@ -263,4 +264,54 @@ export async function waitIfSessionWillChangeInNblocks(numberOfBlocks: number) {
       .info(`Session will end soon, waiting for ${numberOfBlocks}`);
     await waitForNBlocks(numberOfBlocks);
   }
+}
+export async function getTokensDiffForBlockAuthor(blockNumber: AnyNumber) {
+  const api = await mangata?.getApi()!;
+  const blockHashSignedByUser = await api.rpc.chain.getBlockHash(blockNumber);
+  const header = await api.derive.chain.getHeader(blockHashSignedByUser);
+  const author = header!.author!.toHuman();
+  const data = await api.query.tokens.accounts.at(
+    blockHashSignedByUser,
+    author,
+    0
+  );
+  const freeAfter = hexToBn(JSON.parse(data.toString()).free);
+  const blockHashBefore = await api.rpc.chain.getBlockHash(
+    Number(blockNumber) - 1
+  );
+  const dataBefore = await api.query.tokens.accounts.at(
+    blockHashBefore,
+    author,
+    0
+  );
+  const freeBefore = hexToBn(JSON.parse(dataBefore.toString()).free);
+  return freeAfter.sub(freeBefore);
+}
+export async function getBlockNumber() {
+  const api = await mangata?.getApi()!;
+  return (await api.query.system.number()).toNumber();
+}
+export async function findBlockWithExtrinsicSigned(
+  blocks = [0, 1],
+  userAddress: string
+) {
+  const api = await mangata?.getApi()!;
+  if (blocks.length < 2) {
+    throw new Error("two blocks are required.");
+  }
+
+  const first = blocks[0];
+  const last = blocks[1];
+  for (let index = last; index >= first; index--) {
+    const blockNumber = index;
+    const blockHashSignedByUser = await api.rpc.chain.getBlockHash(blockNumber);
+    const block = await api.rpc.chain.getBlock(blockHashSignedByUser);
+    const signedByUser = (block.block.extrinsics.toHuman() as any[]).some(
+      (ext) => ext.isSigned && ext.signer.Id === userAddress
+    );
+    if (signedByUser) {
+      return blockNumber;
+    }
+  }
+  return 0;
 }
