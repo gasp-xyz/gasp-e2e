@@ -13,6 +13,8 @@ declare global {
       bnLte(expected: BN, message: string): R;
       bnLt(expected: BN): R;
       bnLt(expected: BN, message: string): R;
+      bnGt(expected: BN): R;
+      bnGt(expected: BN, message: string): R;
       collectionBnEqual(expected: BN[]): R;
       collectionBnEqual(expected: BN[], message: string): R;
     }
@@ -103,6 +105,48 @@ expect.extend({
       return {
         message: () =>
           `Expected: [ ${expectedMsg} ] \n  Actual: [ ${receivedMsg} ] \n ${message}`,
+        pass: false,
+      };
+    }
+  },
+  bnGte(expected: BN, received: BN, message = "") {
+    const pass = expected.gte(received);
+    const [expectedMsg, receivedMsg] =
+      expected.bitLength() < 53 && received.bitLength() < 53
+        ? [expected.toNumber(), received.toNumber()]
+        : [expected.toString(), received.toString()];
+
+    if (pass) {
+      return {
+        message: () =>
+          `Expected: ${expectedMsg} \n  Actual: ${receivedMsg} \n ${message}`,
+        pass: true,
+      };
+    } else {
+      return {
+        message: () =>
+          `Expected: ${expectedMsg} \n  Actual: ${receivedMsg} \n ${message}`,
+        pass: false,
+      };
+    }
+  },
+  bnGt(expected: BN, received: BN, message = "") {
+    const pass = expected.gt(received);
+    const [expectedMsg, receivedMsg] =
+      expected.bitLength() < 53 && received.bitLength() < 53
+        ? [expected.toNumber(), received.toNumber()]
+        : [expected.toString(), received.toString()];
+
+    if (pass) {
+      return {
+        message: () =>
+          `Expected: ${expectedMsg} \n lt Actual: ${receivedMsg} \n ${message}`,
+        pass: true,
+      };
+    } else {
+      return {
+        message: () =>
+          `Expected: ${expectedMsg} \n lt Actual: ${receivedMsg} \n ${message}`,
         pass: false,
       };
     }
