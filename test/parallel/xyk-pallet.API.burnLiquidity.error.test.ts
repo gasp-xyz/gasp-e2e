@@ -20,6 +20,7 @@ import { Assets } from "../../utils/Assets";
 import {
   getEnvironmentRequiredVars,
   UserCreatesAPoolAndMintliquidity,
+  xykErrors,
 } from "../../utils/utils";
 import { getEventResultFromMangataTx } from "../../utils/txHandler";
 
@@ -78,7 +79,7 @@ describe("xyk-pallet - Burn liquidity tests: BurnLiquidity Errors:", () => {
     ).then((result) => {
       const eventResponse = getEventResultFromMangataTx(result);
       expect(eventResponse.state).toEqual(ExtrinsicResult.ExtrinsicFailed);
-      expect(eventResponse.data).toEqual(2);
+      expect(eventResponse.data).toEqual(xykErrors.NoSuchPool);
     });
   });
 
@@ -108,7 +109,7 @@ describe("xyk-pallet - Burn liquidity tests: BurnLiquidity Errors:", () => {
     ).then((result) => {
       const eventResponse = getEventResultFromMangataTx(result);
       expect(eventResponse.state).toEqual(ExtrinsicResult.ExtrinsicFailed);
-      expect(eventResponse.data).toEqual(1);
+      expect(eventResponse.data).toEqual(xykErrors.NotEnoughAssets);
     });
 
     await validateUnmodified(
@@ -145,7 +146,7 @@ describe("xyk-pallet - Burn liquidity tests: BurnLiquidity Errors:", () => {
     ).then((result) => {
       const eventResponse = getEventResultFromMangataTx(result);
       expect(eventResponse.state).toEqual(ExtrinsicResult.ExtrinsicFailed);
-      expect(eventResponse.data).toEqual(1);
+      expect(eventResponse.data).toEqual(xykErrors.NotEnoughAssets);
     });
   });
 });

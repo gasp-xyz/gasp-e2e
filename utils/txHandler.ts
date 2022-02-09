@@ -1,5 +1,4 @@
 import { SubmittableExtrinsic } from "@polkadot/api/types";
-import { AnyJson } from "@polkadot/types/types";
 import { getApi } from "./api";
 import { GenericEvent } from "@polkadot/types";
 import { Codec } from "@polkadot/types/types";
@@ -159,63 +158,16 @@ export const getEventResultFromMangataTx = function (
     testLog.getLog().warn(searchTerm);
     throw new Error("  --- TX Mapping issue --- ");
   }
-  return createEventResultfromExtrinsic(extrinsicResult?.event as GenericEvent);
-};
-// From the events that a waitForTx, create an EventResponse filtering by search term or by extrinsic results.
-export const getEventResultFromTxWait = function (
-  relatedEvents: GenericEvent[],
-  searchTerm: string[] = []
-): EventResult {
-  let extrinsicResult;
-  if (searchTerm.length > 0) {
-    extrinsicResult = relatedEvents.find(
-      (e) =>
-        e.toHuman().method !== null &&
-        searchTerm.every((filterTerm) =>
-          (
-            JSON.stringify(e.toHuman()) + JSON.stringify(e.toHuman().data)
-          ).includes(filterTerm)
-        )
-    );
-  } else {
-    extrinsicResult = relatedEvents.find(
-      (e) =>
-        e.toHuman().method !== null &&
-        extrinsicResultMethods.includes(e.toHuman().method!.toString())
-    );
-  }
-
-  if (extrinsicResult) {
-    return createEventResultfromExtrinsic(extrinsicResult);
-  }
-  testLog
-    .getLog()
-    .error(
-      `W[${env.JEST_WORKER_ID}]` +
-        relatedEvents +
-        "<-found  --- Expected \n --->>" +
-        searchTerm.toString() +
-        "\n toHumanStr " +
-        relatedEvents
-          .map(
-            (e) =>
-              JSON.stringify(e.toHuman()) + JSON.stringify(e.toHuman().data)
-          )
-          .toString()
-    );
-  return new EventResult(-1, "ERROR: NO TX FOUND");
+  return createEventResultfromExtrinsic(extrinsicResult as MangataGenericEvent);
 };
 
-function createEventResultfromExtrinsic(extrinsicResult: GenericEvent) {
-  const eventResult = extrinsicResult.toHuman();
+function createEventResultfromExtrinsic(extrinsicResult: MangataGenericEvent) {
+  const eventResult = extrinsicResult.event.toHuman();
   switch (eventResult.method) {
     case extrinsicResultMethods[1]:
-      const data = eventResult.data as AnyJson[];
-      const error = JSON.stringify(data[0]);
-      const errorNumber = JSON.parse(error).Module.error;
       return new EventResult(
         ExtrinsicResult.ExtrinsicFailed,
-        parseInt(errorNumber)
+        JSON.parse(JSON.stringify(extrinsicResult.error!)).name
       );
 
     case extrinsicResultMethods[2]:

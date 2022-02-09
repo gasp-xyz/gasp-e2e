@@ -226,7 +226,7 @@ async function mintAndBurnTokens(
   sellAmount: BN,
   amountToMint: BN[]
 ) {
-  const liqToken = await mga.getLiquidityAssetId(
+  const liqToken = await mga.getLiquidityTokenId(
     firstCurrency.toString(),
     MGA_ASSET_ID.toString()
   );

@@ -157,24 +157,6 @@ export async function UserCreatesAPoolAndMintliquidity(
   return [firstCurrency, secondCurrency];
 }
 
-export enum XyzErrorCodes {
-  PoolAlreadyExists,
-  NotEnoughAssets,
-  NoSuchPool,
-  NoSuchLiquidityAsset,
-  NotEnoughReserve,
-  ZeroAmount,
-  InsufficientInputAmount,
-  InsufficientOutputAmount,
-  SameAsset,
-  AssetAlreadyExists,
-  AssetDoesNotExists,
-  DivisionByZero,
-  UnexpectedFailure,
-  NotMangataLiquidityAsset,
-  SecondAssetAmountExceededExpectations,
-  MathOverflow,
-}
 export enum TokensErrorCodes {
   /// The balance is too low
   BalanceTooLow,
@@ -314,4 +296,25 @@ export async function findBlockWithExtrinsicSigned(
     }
   }
   return 0;
+}
+
+export enum xykErrors {
+  VaultAlreadySet = "VaultAlreadySet",
+  PoolAlreadyExists = "PoolAlreadyExists",
+  NotEnoughAssets = "NotEnoughAssets",
+  NoSuchPool = "NoSuchPool",
+  NoSuchLiquidityAsset = "NoSuchLiquidityAsset",
+  NotEnoughReserve = "NotEnoughReserve",
+  ZeroAmount = "ZeroAmount",
+  InsufficientInputAmount = "InsufficientInputAmount",
+  InsufficientOutputAmount = "InsufficientOutputAmount",
+  SameAsset = "SameAsset",
+  AssetAlreadyExists = "AssetAlreadyExists",
+  AssetDoesNotExists = "AssetDoesNotExists",
+  DivisionByZero = "DivisionByZero",
+  UnexpectedFailure = "UnexpectedFailure",
+  NotMangataLiquidityAsset = "NotMangataLiquidityAsset",
+  SecondAssetAmountExceededExpectations = "SecondAssetAmountExceededExpectations",
+  MathOverflow = "MathOverflow",
+  LiquidityTokenCreationFailed = "LiquidityTokenCreationFailed",
 }
