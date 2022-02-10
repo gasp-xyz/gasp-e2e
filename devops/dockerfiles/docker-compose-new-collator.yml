@@ -8,9 +8,9 @@ networks:
 
 services:
   node_new_collator:
-    image: mangatasolutions/mangata-node@sha256:ed223b418396c28548a9f49f65e5caff90cad23af6054370d16ded59771f392d
-    container_name: new_collator
-    entrypoint: ./node --unsafe-ws-external --telemetry-url "wss://telemetry.polkadot.io/submit/ 0" --collator --force-authoring  --bootnodes  /dns/test1.mangatafinance.cloud/tcp/30333/p2p/12D3KooWSCufgHzV4fCwRijfH2k3abrpAJxTKxEvN1FDuRXA2U9x --port 30333             --rpc-port 9933 --ws-port 9944 -- --execution wasm --chain /config/chainspec_prod_v4.json --port 30334 --rpc-port 9934 --ws-port 9945 --telemetry-url "wss://telemetry.polkadot.io/submit/ 0"  --unsafe-pruning --pruning 1000 --bootnodes  /dns/alice.mangatafinance.cloud/tcp/30333/p2p/12D3KooWEyoppNCUx8Yx66oV9fJnriXwCcXwDDUA2kj6vnc6iDEp
+    image: mangatasolutions/mangata-node:0.10.0
+    container_name: new_collator_prod_testnet
+    entrypoint: ./node --unsafe-ws-external --rpc-cors=all --collator --force-authoring  --bootnodes  /dns/test1.mangatafinance.cloud/tcp/30333/p2p/12D3KooWSCufgHzV4fCwRijfH2k3abrpAJxTKxEvN1FDuRXA2U9x  --port 30333  --telemetry-url "wss://telemetry.polkadot.io/submit/ 0"           --rpc-port 9933 --ws-port 9944 --chain=public-testnet -- --execution wasm --chain /config/chainspec_prod_v4.json --port 30334 --rpc-port 9934 --ws-port 9945  --unsafe-pruning --pruning 1000 --bootnodes  /dns/alice.mangatafinance.cloud/tcp/30333/p2p/12D3KooWEyoppNCUx8Yx66oV9fJnriXwCcXwDDUA2kj6vnc6iDEp
  
     ports:
       - "30333:30333"
@@ -21,4 +21,3 @@ services:
             ipv4_address: 172.16.238.10
     volumes:
       - ./config:/config
-
