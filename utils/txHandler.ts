@@ -93,16 +93,10 @@ export const sudoIssueAsset = async (
       sudoAccount,
       { nonce: new BN(nonce) }
     );
-  } catch (error) {
-    // eslint-disable-next-line no-console
-    console.error(error);
+  } catch (e) {
+    testLog.getLog().error(JSON.stringify(e));
   }
   return results;
-  //  return signAndWaitTx(
-  //    api.tx.sudo.sudo(api.tx.tokens.create(targetAddress, total_balance)),
-  //    sudoAccount,
-  //    nonce
-  //  );
 };
 
 export const transferAssets = async (
