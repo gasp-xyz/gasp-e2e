@@ -322,7 +322,9 @@ describe("xyk-pallet - Mint liquidity tests: MintLiquidity Errors:", () => {
     );
     eventResponse = getEventResultFromMangataTx(resultZero);
     expect(eventResponse.state).toEqual(ExtrinsicResult.ExtrinsicFailed);
-    expect(eventResponse.data).toEqual(14);
+    expect(eventResponse.data).toEqual(
+      xykErrors.SecondAssetAmountExceededExpectations
+    );
     await validateUnmodified(firstCurrency, secondCurrency, testUser1, [
       firstAssetAmount,
       poolAmountSecondCurrency,
