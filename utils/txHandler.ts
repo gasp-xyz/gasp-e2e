@@ -96,6 +96,7 @@ export const sudoIssueAsset = async (
   } catch (e) {
     testLog.getLog().error(JSON.stringify(e));
   }
+  testLog.getLog().info(JSON.stringify(results));
   return results;
 };
 
