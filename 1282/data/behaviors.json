@@ -1,0 +1,57 @@
+{
+  "uid" : "b1a8273437954620fa374b796ffaacdd",
+  "children" : [ {
+    "name" : "Nodes are up and syncing",
+    "uid" : "2035b2b0a7342b30",
+    "parentUid" : "b1a8273437954620fa374b796ffaacdd",
+    "status" : "failed",
+    "time" : {
+      "start" : 1644898044410,
+      "stop" : 1644899544413,
+      "duration" : 1500003
+    },
+    "flaky" : false,
+    "newFailed" : false,
+    "parameters" : [ ]
+  }, {
+    "name" : "Block numbers match across all nodes",
+    "uid" : "377bcfe5a837161b",
+    "parentUid" : "b1a8273437954620fa374b796ffaacdd",
+    "status" : "failed",
+    "time" : {
+      "start" : 1644899544413,
+      "stop" : 1644901044416,
+      "duration" : 1500003
+    },
+    "flaky" : true,
+    "newFailed" : false,
+    "parameters" : [ ]
+  }, {
+    "name" : "Block merkle hash matches across all nodes",
+    "uid" : "87d49c433bba10fa",
+    "parentUid" : "b1a8273437954620fa374b796ffaacdd",
+    "status" : "failed",
+    "time" : {
+      "start" : 1644901044416,
+      "stop" : 1644902544417,
+      "duration" : 1500001
+    },
+    "flaky" : false,
+    "newFailed" : false,
+    "parameters" : [ ]
+  }, {
+    "name" : "Cluster does not fork",
+    "uid" : "2f501aef8f91ec18",
+    "parentUid" : "b1a8273437954620fa374b796ffaacdd",
+    "status" : "failed",
+    "time" : {
+      "start" : 1644902544417,
+      "stop" : 1644904044418,
+      "duration" : 1500001
+    },
+    "flaky" : true,
+    "newFailed" : false,
+    "parameters" : [ ]
+  } ],
+  "name" : "behaviors"
+}
