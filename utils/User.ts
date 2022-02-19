@@ -17,9 +17,8 @@ import {
 } from "./tx";
 import { getEventResultFromMangataTx } from "./txHandler";
 import { MAX_BALANCE, MGA_ASSET_ID } from "./Constants";
-import { AccountData } from "@polkadot/types/interfaces/balances";
 import { strict as assert } from "assert";
-
+import { TokenBalance } from "mangata-sdk";
 export enum AssetWallet {
   BEFORE,
   AFTER,
@@ -68,7 +67,7 @@ export class User {
     const assetData = {
       free: amountBefore,
     };
-    const amountBeforeAsAccData = assetData as AccountData;
+    const amountBeforeAsAccData = assetData as TokenBalance;
     const asset = new Asset(currecncyId, amountBeforeAsAccData);
 
     if (
@@ -251,14 +250,14 @@ export class User {
   }
 }
 export class Asset {
-  amountBefore: AccountData;
-  amountAfter: AccountData;
+  amountBefore: TokenBalance;
+  amountAfter: TokenBalance;
   currencyId: BN;
 
   constructor(
     currencyId: BN,
-    amountBefore = { free: new BN(0) } as AccountData,
-    amountAfter = { free: new BN(0) } as AccountData
+    amountBefore = { free: new BN(0) } as TokenBalance,
+    amountAfter = { free: new BN(0) } as TokenBalance
   ) {
     this.currencyId = currencyId;
     this.amountBefore = amountBefore;
