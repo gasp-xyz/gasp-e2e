@@ -184,8 +184,8 @@ describe("Test Withdraw - Deposit", () => {
       await User.waitUntilBNChanged(assetBalanceBefore, getAssetBalance);
       await testUser1.refreshAmounts(AssetWallet.AFTER);
       const amountAfterwithdraw = (
-        testUser1.getAsset(assetId)?.amountBefore!.free.toBn() as BN
-      ).sub(testUser1.getAsset(assetId)?.amountAfter!.free.toBn() as BN)!;
+        testUser1.getAsset(assetId)?.amountBefore!.free as BN
+      ).sub(testUser1.getAsset(assetId)?.amountAfter!.free as BN)!;
 
       const assetBalanceAfterWithdraw = await erc20MetaMaskUser.getBalance(
         assetAddress

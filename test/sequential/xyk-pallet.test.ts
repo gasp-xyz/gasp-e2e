@@ -28,7 +28,6 @@ import {
 import { ExtrinsicResult } from "../../utils/eventListeners";
 import BN from "bn.js";
 import { Keyring } from "@polkadot/api";
-import { AccountData } from "@polkadot/types/interfaces/balances";
 import {
   calculateFees,
   calculateLiqAssetAmount,
@@ -39,7 +38,7 @@ import {
   sudoIssueAsset,
 } from "../../utils/txHandler";
 import { testLog } from "../../utils/Logger";
-
+import { TokenBalance } from "mangata-sdk";
 jest.spyOn(console, "log").mockImplementation(jest.fn());
 const { xykPalletAddress, sudo: sudoUserName } = getEnvironmentRequiredVars();
 
@@ -111,13 +110,13 @@ test("xyk-pallet: Happy case scenario", async () => {
     firstAssetId,
     secondAssetId,
   ]);
-  alice_assets_before.push({ free: new BN(0) } as AccountData);
+  alice_assets_before.push({ free: new BN(0) } as TokenBalance);
   testLog.getLog().debug(alice_assets_before.toString());
   let bob_assets_before = await getUserAssets(bob.address, [
     firstAssetId,
     secondAssetId,
   ]);
-  bob_assets_before.push({ free: new BN(0) } as AccountData);
+  bob_assets_before.push({ free: new BN(0) } as TokenBalance);
   testLog.getLog().debug(bob_assets_before.toString());
   let pallet_assets_before = await getUserAssets(pallet_address, [
     firstAssetId,
@@ -1142,8 +1141,8 @@ test("xyk-pallet: Liquidity sufficiency scenario", async () => {
   ]);
   testLog.getLog().debug(pallet_assets_before.toString());
   let pool_balance_before, total_liquidity_assets_before;
-  alice_assets_before.push({ free: new BN(0) } as AccountData);
-  bob_assets_before.push({ free: new BN(0) } as AccountData);
+  alice_assets_before.push({ free: new BN(0) } as TokenBalance);
+  bob_assets_before.push({ free: new BN(0) } as TokenBalance);
   pool_balance_before = [new BN(0), new BN(0)];
   total_liquidity_assets_before = new BN(0);
 
