@@ -1,0 +1,220 @@
+{
+  "uid" : "4b4757e66a1912dae1a509f688f20b0f",
+  "children" : [ {
+    "name" : "Product defects",
+    "children" : [ {
+      "name" : "Error: Unable to decode storage system.account:: createType(AccountInfo):: {\"nonce\":\"u32\",\"refcount\":\"u32\",\"data\":\"BalancesAccountData\"}:: Decoded input doesn't match input, received 0x0300000001000000 (8 bytes), created 0x0300000001000000000000000000000000000000000000000000000000000000…0000000000000000000000000000000000000000000000000000000000000000 (72 bytes)",
+      "children" : [ {
+        "name" : "Modal contains currencies and amounts when Swapping",
+        "uid" : "737e105bed7e1134",
+        "parentUid" : "596257600204dcfe3ab5e93bcbc1d7ae",
+        "status" : "failed",
+        "time" : {
+          "start" : 1645752792347,
+          "stop" : 1645752853332,
+          "duration" : 60985
+        },
+        "flaky" : false,
+        "newFailed" : false,
+        "parameters" : [ ]
+      }, {
+        "name" : "Modal contains currencies and amounts when providing liquidity",
+        "uid" : "128f67d662c3a2d6",
+        "parentUid" : "596257600204dcfe3ab5e93bcbc1d7ae",
+        "status" : "failed",
+        "time" : {
+          "start" : 1645752853338,
+          "stop" : 1645752964754,
+          "duration" : 111416
+        },
+        "flaky" : false,
+        "newFailed" : false,
+        "parameters" : [ ]
+      }, {
+        "name" : "Modal is visible when burning liquidity",
+        "uid" : "b336ae3753056c63",
+        "parentUid" : "596257600204dcfe3ab5e93bcbc1d7ae",
+        "status" : "failed",
+        "time" : {
+          "start" : 1645752964756,
+          "stop" : 1645753014046,
+          "duration" : 49290
+        },
+        "flaky" : false,
+        "newFailed" : false,
+        "parameters" : [ ]
+      }, {
+        "name" : "As a User I can Swap tokens - MGA - mETH",
+        "uid" : "98d44aa8caa0dd4e",
+        "parentUid" : "596257600204dcfe3ab5e93bcbc1d7ae",
+        "status" : "failed",
+        "time" : {
+          "start" : 1645753160989,
+          "stop" : 1645753273088,
+          "duration" : 112099
+        },
+        "flaky" : false,
+        "newFailed" : false,
+        "parameters" : [ ]
+      }, {
+        "name" : "As a User I can mint some tokens MGA - mETH",
+        "uid" : "805d0ff2fe331aaf",
+        "parentUid" : "596257600204dcfe3ab5e93bcbc1d7ae",
+        "status" : "failed",
+        "time" : {
+          "start" : 1645753273090,
+          "stop" : 1645753384980,
+          "duration" : 111890
+        },
+        "flaky" : false,
+        "newFailed" : false,
+        "parameters" : [ ]
+      }, {
+        "name" : "As a User I can burn all liquidity MGA - mETH",
+        "uid" : "9b6b729718d7d1ff",
+        "parentUid" : "596257600204dcfe3ab5e93bcbc1d7ae",
+        "status" : "failed",
+        "time" : {
+          "start" : 1645753384981,
+          "stop" : 1645753434162,
+          "duration" : 49181
+        },
+        "flaky" : false,
+        "newFailed" : false,
+        "parameters" : [ ]
+      }, {
+        "name" : "As a User I can mint in more than one pool [ MGA - mETH ] [ MGA - newTokn ] and get invested values",
+        "uid" : "c6411198f288de7a",
+        "parentUid" : "596257600204dcfe3ab5e93bcbc1d7ae",
+        "status" : "failed",
+        "time" : {
+          "start" : 1645753434164,
+          "stop" : 1645753482164,
+          "duration" : 48000
+        },
+        "flaky" : false,
+        "newFailed" : false,
+        "parameters" : [ ]
+      } ],
+      "uid" : "596257600204dcfe3ab5e93bcbc1d7ae"
+    }, {
+      "name" : "Error: WebSocket is not connected",
+      "children" : [ {
+        "name" : "When tx front - fails, User gets notified",
+        "uid" : "f60a454bfa364c43",
+        "parentUid" : "d87cc0f26d462c8160f75c645ea55e17",
+        "status" : "failed",
+        "time" : {
+          "start" : 1645753014060,
+          "stop" : 1645753062031,
+          "duration" : 47971
+        },
+        "flaky" : false,
+        "newFailed" : false,
+        "parameters" : [ ]
+      }, {
+        "name" : "When tx extrinsic - fails, User gets notified",
+        "uid" : "deec38aced09df7c",
+        "parentUid" : "d87cc0f26d462c8160f75c645ea55e17",
+        "status" : "failed",
+        "time" : {
+          "start" : 1645753062032,
+          "stop" : 1645753112000,
+          "duration" : 49968
+        },
+        "flaky" : false,
+        "newFailed" : false,
+        "parameters" : [ ]
+      }, {
+        "name" : "When user cancel a TX, User gets notified",
+        "uid" : "138efca6d44f4d06",
+        "parentUid" : "d87cc0f26d462c8160f75c645ea55e17",
+        "status" : "failed",
+        "time" : {
+          "start" : 1645753112001,
+          "stop" : 1645753159354,
+          "duration" : 47353
+        },
+        "flaky" : false,
+        "newFailed" : false,
+        "parameters" : [ ]
+      } ],
+      "uid" : "d87cc0f26d462c8160f75c645ea55e17"
+    }, {
+      "name" : "TIMEOUT: Waiting for //*[@class = 'Sidebar__loading'] to dissapear",
+      "children" : [ {
+        "name" : "As a User I get infomed whenever is neccesary to install any extension",
+        "uid" : "1b05606c48698150",
+        "parentUid" : "f2cd7eefc95a5944bccb745aec47ebb6",
+        "status" : "failed",
+        "time" : {
+          "start" : 1645753483712,
+          "stop" : 1645753667237,
+          "duration" : 183525
+        },
+        "flaky" : false,
+        "newFailed" : false,
+        "parameters" : [ ]
+      } ],
+      "uid" : "f2cd7eefc95a5944bccb745aec47ebb6"
+    }, {
+      "name" : "NoSuchSessionError: session timed out or not found",
+      "children" : [ {
+        "name" : "As a User I get feedback when extensions are installed and correctly setup",
+        "uid" : "e7926dabe2419274",
+        "parentUid" : "2ef416557588516bfb8469dcf54b2c50",
+        "status" : "failed",
+        "time" : {
+          "start" : 1645753667238,
+          "stop" : 1645753667804,
+          "duration" : 566
+        },
+        "flaky" : false,
+        "newFailed" : false,
+        "parameters" : [ ]
+      }, {
+        "name" : "As a User I can switch between polkadot wallets",
+        "uid" : "8f6050eaae5c4609",
+        "parentUid" : "2ef416557588516bfb8469dcf54b2c50",
+        "status" : "failed",
+        "time" : {
+          "start" : 1645753667805,
+          "stop" : 1645753667823,
+          "duration" : 18
+        },
+        "flaky" : false,
+        "newFailed" : false,
+        "parameters" : [ ]
+      }, {
+        "name" : "As a User I can switch between polkadot wallets using the modal",
+        "uid" : "e1240ecbb782c5ca",
+        "parentUid" : "2ef416557588516bfb8469dcf54b2c50",
+        "status" : "failed",
+        "time" : {
+          "start" : 1645753667823,
+          "stop" : 1645753667852,
+          "duration" : 29
+        },
+        "flaky" : false,
+        "newFailed" : false,
+        "parameters" : [ ]
+      }, {
+        "name" : "As a User I can not see hidden wallets in the modal",
+        "uid" : "2154006bb01a8c0d",
+        "parentUid" : "2ef416557588516bfb8469dcf54b2c50",
+        "status" : "failed",
+        "time" : {
+          "start" : 1645753667853,
+          "stop" : 1645753667863,
+          "duration" : 10
+        },
+        "flaky" : true,
+        "newFailed" : false,
+        "parameters" : [ ]
+      } ],
+      "uid" : "2ef416557588516bfb8469dcf54b2c50"
+    } ],
+    "uid" : "8fb3a91ba5aaf9de24cc8a92edc82b5d"
+  } ],
+  "name" : "categories"
+}
