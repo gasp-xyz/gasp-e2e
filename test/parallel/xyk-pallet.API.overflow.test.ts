@@ -23,7 +23,7 @@ import { Assets } from "../../utils/Assets";
 import {
   getEnvironmentRequiredVars,
   TokensErrorCodes,
-  XyzErrorCodes,
+  xykErrors,
 } from "../../utils/utils";
 import { getEventResultFromMangataTx } from "../../utils/txHandler";
 
@@ -196,7 +196,7 @@ describe("xyk-pallet - Operate with a pool close to overflow", () => {
     ).then((result) => {
       const eventResponse = getEventResultFromMangataTx(result);
       expect(eventResponse.state).toEqual(ExtrinsicResult.ExtrinsicFailed);
-      expect(eventResponse.data).toEqual(XyzErrorCodes.MathOverflow);
+      expect(eventResponse.data).toEqual(xykErrors.MathOverflow);
     });
     await testUser2.refreshAmounts(AssetWallet.AFTER);
 
@@ -214,7 +214,7 @@ describe("xyk-pallet - Operate with a pool close to overflow", () => {
     ).then((result) => {
       const eventResponse = getEventResultFromMangataTx(result);
       expect(eventResponse.state).toEqual(ExtrinsicResult.ExtrinsicFailed);
-      expect(eventResponse.data).toEqual(XyzErrorCodes.MathOverflow);
+      expect(eventResponse.data).toEqual(xykErrors.MathOverflow);
     });
     await testUser2.refreshAmounts(AssetWallet.AFTER);
 
@@ -235,7 +235,7 @@ describe("xyk-pallet - Operate with a pool close to overflow", () => {
       expect(eventResponse.state).toEqual(ExtrinsicResult.ExtrinsicFailed);
 
       //This error is right, the enum comes from the pallet overflow.
-      expect(eventResponse.data).toEqual(XyzErrorCodes.PoolAlreadyExists);
+      expect(eventResponse.data).toEqual(xykErrors.PoolAlreadyExists);
     });
     await testUser1.refreshAmounts(AssetWallet.AFTER);
 
@@ -262,7 +262,7 @@ describe("xyk-pallet - Operate with a pool close to overflow", () => {
     ).then((result) => {
       const eventResponse = getEventResultFromMangataTx(result);
       expect(eventResponse.state).toEqual(ExtrinsicResult.ExtrinsicFailed);
-      expect(eventResponse.data).toEqual(XyzErrorCodes.MathOverflow);
+      expect(eventResponse.data).toEqual(xykErrors.MathOverflow);
     });
     await testUser2.refreshAmounts(AssetWallet.AFTER);
 
@@ -342,7 +342,7 @@ describe("xyk-pallet - Operate with a user account close to overflow", () => {
     ).then((result) => {
       const eventResponse = getEventResultFromMangataTx(result);
       expect(eventResponse.state).toEqual(ExtrinsicResult.ExtrinsicFailed);
-      expect(eventResponse.data).toEqual(XyzErrorCodes.MathOverflow);
+      expect(eventResponse.data).toEqual(xykErrors.MathOverflow);
     });
     await testUser1.refreshAmounts(AssetWallet.AFTER);
 
@@ -363,7 +363,7 @@ describe("xyk-pallet - Operate with a user account close to overflow", () => {
     ).then((result) => {
       const eventResponse = getEventResultFromMangataTx(result);
       expect(eventResponse.state).toEqual(ExtrinsicResult.ExtrinsicFailed);
-      expect(eventResponse.data).toEqual(XyzErrorCodes.MathOverflow);
+      expect(eventResponse.data).toEqual(xykErrors.MathOverflow);
     });
     await testUser1.refreshAmounts(AssetWallet.AFTER);
 

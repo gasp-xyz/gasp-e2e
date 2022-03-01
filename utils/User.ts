@@ -19,6 +19,7 @@ import { getEventResultFromMangataTx } from "./txHandler";
 import { MAX_BALANCE, MGA_ASSET_ID } from "./Constants";
 import { strict as assert } from "assert";
 import { TokenBalance } from "mangata-sdk";
+
 export enum AssetWallet {
   BEFORE,
   AFTER,

@@ -28,10 +28,12 @@ import {
 import { ExtrinsicResult } from "../../utils/eventListeners";
 import BN from "bn.js";
 import { Keyring } from "@polkadot/api";
+
 import {
   calculateFees,
   calculateLiqAssetAmount,
   getEnvironmentRequiredVars,
+  xykErrors,
 } from "../../utils/utils";
 import {
   getEventResultFromMangataTx,
@@ -39,6 +41,7 @@ import {
 } from "../../utils/txHandler";
 import { testLog } from "../../utils/Logger";
 import { TokenBalance } from "mangata-sdk";
+
 jest.spyOn(console, "log").mockImplementation(jest.fn());
 const { xykPalletAddress, sudo: sudoUserName } = getEnvironmentRequiredVars();
 
@@ -1454,7 +1457,7 @@ test("xyk-pallet: Liquidity sufficiency scenario", async () => {
   ).then((result) => {
     const eventResponse = getEventResultFromMangataTx(result);
     expect(eventResponse.state).toEqual(ExtrinsicResult.ExtrinsicFailed);
-    expect(eventResponse.data).toEqual(1);
+    expect(eventResponse.data).toEqual(xykErrors.NotEnoughAssets);
   });
 
   testLog.getLog().debug(first_asset_amount.toString());
@@ -1545,7 +1548,7 @@ test("xyk-pallet: Liquidity sufficiency scenario", async () => {
   ).then((result) => {
     const eventResponse = getEventResultFromMangataTx(result);
     expect(eventResponse.state).toEqual(ExtrinsicResult.ExtrinsicFailed);
-    expect(eventResponse.data).toEqual(1);
+    expect(eventResponse.data).toEqual(xykErrors.NotEnoughAssets);
   });
 
   testLog.getLog().debug(first_asset_amount.toString());
@@ -1730,7 +1733,7 @@ test("xyk-pallet: Liquidity sufficiency scenario", async () => {
   ).then((result) => {
     const eventResponse = getEventResultFromMangataTx(result);
     expect(eventResponse.state).toEqual(ExtrinsicResult.ExtrinsicFailed);
-    expect(eventResponse.data).toEqual(1);
+    expect(eventResponse.data).toEqual(xykErrors.NotEnoughAssets);
   });
 
   testLog.getLog().debug(first_asset_amount.toString());
@@ -1904,7 +1907,7 @@ test("xyk-pallet: Liquidity sufficiency scenario", async () => {
   ).then((result) => {
     const eventResponse = getEventResultFromMangataTx(result);
     expect(eventResponse.state).toEqual(ExtrinsicResult.ExtrinsicFailed);
-    expect(eventResponse.data).toEqual(2);
+    expect(eventResponse.data).toEqual(xykErrors.NoSuchPool);
   });
 
   testLog.getLog().debug(first_asset_amount.toString());
@@ -1982,7 +1985,7 @@ test("xyk-pallet: Liquidity sufficiency scenario", async () => {
     (result) => {
       const eventResponse = getEventResultFromMangataTx(result);
       expect(eventResponse.state).toEqual(ExtrinsicResult.ExtrinsicFailed);
-      expect(eventResponse.data).toEqual(2);
+      expect(eventResponse.data).toEqual(xykErrors.NoSuchPool);
     }
   );
 
@@ -2056,7 +2059,7 @@ test("xyk-pallet: Liquidity sufficiency scenario", async () => {
     (result) => {
       const eventResponse = getEventResultFromMangataTx(result);
       expect(eventResponse.state).toEqual(ExtrinsicResult.ExtrinsicFailed);
-      expect(eventResponse.data).toEqual(2);
+      expect(eventResponse.data).toEqual(xykErrors.NoSuchPool);
     }
   );
 
@@ -2136,7 +2139,7 @@ test("xyk-pallet: Liquidity sufficiency scenario", async () => {
   ).then((result) => {
     const eventResponse = getEventResultFromMangataTx(result);
     expect(eventResponse.state).toEqual(ExtrinsicResult.ExtrinsicFailed);
-    expect(eventResponse.data).toEqual(2);
+    expect(eventResponse.data).toEqual(xykErrors.NoSuchPool);
   });
 
   alice_assets = await getUserAssets(alice.address, [
@@ -2215,7 +2218,7 @@ test("xyk-pallet: Liquidity sufficiency scenario", async () => {
   ).then((result) => {
     const eventResponse = getEventResultFromMangataTx(result);
     expect(eventResponse.state).toEqual(ExtrinsicResult.ExtrinsicFailed);
-    expect(eventResponse.data).toEqual(2);
+    expect(eventResponse.data).toEqual(xykErrors.NoSuchPool);
   });
 
   alice_assets = await getUserAssets(alice.address, [
