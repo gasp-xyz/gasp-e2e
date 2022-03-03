@@ -10,4 +10,6 @@ export class TestParams {
     "wss://integration.mangatafinance.cloud:9944",
     //"wss://staging.mangatafinance.cloud:9944",
   ];
+  public logFile: string =
+    new Date().toJSON().slice(0, 10) + "_" + new Date().toLocaleTimeString();
 }

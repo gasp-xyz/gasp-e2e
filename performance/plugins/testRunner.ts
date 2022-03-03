@@ -1,7 +1,9 @@
+/* eslint-disable no-loop-func */
 import BN from "bn.js";
 import { Mangata } from "mangata-sdk";
 import { testLog } from "../../utils/Logger";
 import { TestParams } from "../testParams";
+import { captureEvents, logLine } from "./testReporter";
 import { KeyringPair } from "@polkadot/keyring/types";
 import { SubmittableExtrinsic } from "@polkadot/api/types";
 import { SubmittableResult } from "@polkadot/api";
@@ -21,6 +23,8 @@ export async function preGenerateTransactions(
     .info(
       `Pregenerating ${testParams.totalTx} transactions across ${testParams.threads} threads...`
     );
+  const api = await mgaNodeandUsers.get(0)?.mgaSdk.getApi();
+  captureEvents(testParams.logFile, api!);
   const totalBatches = testParams.totalTx / testParams.threads;
   //const userPerThread = 1;
 
@@ -68,6 +72,7 @@ export async function runTransactions(
   preSetupThreads: SubmittableExtrinsic<"promise", SubmittableResult>[][]
 ) {
   const nodePromises = [];
+
   for (let nodeIdx = 0; nodeIdx < testParams.nodes.length; nodeIdx++) {
     const nodeThreads = testParams.threads;
     const runNodeTxs = (i: number) =>
@@ -80,10 +85,24 @@ export async function runTransactions(
               const finalized = new Date().getTime();
               const diff = finalized - start;
               resolve([i, diff]);
+              logLine(
+                testParams.logFile,
+                "\n" +
+                  new Date().toUTCString() +
+                  "-" +
+                  JSON.stringify(status.toHuman()!)
+              );
               return;
             }
           })
           .catch((err: any) => {
+            logLine(
+              testParams.logFile,
+              "\n" +
+                new Date().toUTCString() +
+                "- ERROR - " +
+                JSON.stringify(err.toHuman()!)
+            );
             testLog.getLog().warn(err);
             return -1;
           });
@@ -92,6 +111,11 @@ export async function runTransactions(
     const indexArray = nodeTxs.map((_, index) => {
       return index;
     });
+    testLog
+      .getLog()
+      .info(
+        `Sending  in ${nodeThreads} Threads ${preSetupThreads[0].length} Txs...`
+      );
     nodePromises.push(asyncPool(nodeThreads, indexArray, runNodeTxs));
   }
   const results = await Promise.all(nodePromises);

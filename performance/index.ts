@@ -30,7 +30,9 @@ async function main() {
             testParams.testCase = TestsCases.Rampup;
             break;
           default:
-            throw new Error(`Unknown testCaseName: ${value}`);
+            throw new Error(
+              `Unknown testCaseName: ${value}: Expected: any of[ConcurrentTest,SustainedLoadTest,Rampup]`
+            );
         }
         break;
       case "duration":
