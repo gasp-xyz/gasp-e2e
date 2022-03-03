@@ -6,7 +6,11 @@ import { waitNewBlock } from "../utils/eventListeners";
 import { testLog } from "../utils/Logger";
 import { signSendAndWaitToFinishTx } from "../utils/txHandler";
 import { User, AssetWallet } from "../utils/User";
-import { getEnvironmentRequiredVars } from "../utils/utils";
+import {
+  findBlockWithExtrinsicSigned,
+  getEnvironmentRequiredVars,
+  getTokensDiffForBlockAuthor,
+} from "../utils/utils";
 import fs from "fs";
 import { Assets } from "../utils/Assets";
 import { hexToBn } from "@polkadot/util";
@@ -907,5 +911,13 @@ describe("staking - testpad", () => {
       testLog.getLog().info(perrcentage);
       await waitNewBlock();
     }
+  });
+  test("block author", async () => {
+    const blockNumber = await findBlockWithExtrinsicSigned(
+      [1403, 1406],
+      "5D4rciiZg4Lk4478mMsaMsx8b5KEefk15Vmf1HkzKiBrw1cT"
+    );
+    const diff = await getTokensDiffForBlockAuthor(blockNumber);
+    testLog.getLog().warn(diff.toString());
   });
 });

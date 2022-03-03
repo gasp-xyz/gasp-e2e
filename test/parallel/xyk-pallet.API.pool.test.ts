@@ -28,6 +28,7 @@ import { Assets } from "../../utils/Assets";
 import {
   calculateLiqAssetAmount,
   getEnvironmentRequiredVars,
+  xykErrors,
 } from "../../utils/utils";
 import { testLog } from "../../utils/Logger";
 import { hexToBn } from "@polkadot/util";
@@ -136,7 +137,7 @@ describe("xyk-pallet - Poll creation: Errors:", () => {
     ).then((result) => {
       const eventResponse = getEventResultFromMangataTx(result);
       expect(eventResponse.state).toEqual(ExtrinsicResult.ExtrinsicFailed);
-      expect(eventResponse.data).toEqual(0);
+      expect(eventResponse.data).toEqual(xykErrors.PoolAlreadyExists);
     });
   });
   test("Create pool with zero", async () => {
@@ -152,7 +153,7 @@ describe("xyk-pallet - Poll creation: Errors:", () => {
     ).then((result) => {
       const eventResponse = getEventResultFromMangataTx(result);
       expect(eventResponse.state).toEqual(ExtrinsicResult.ExtrinsicFailed);
-      expect(eventResponse.data).toEqual(5);
+      expect(eventResponse.data).toEqual(xykErrors.ZeroAmount);
     });
 
     const balance = await getBalanceOfPool(firstCurrency, emptyAssetID);
@@ -175,7 +176,7 @@ describe("xyk-pallet - Poll creation: Errors:", () => {
     ).then((result) => {
       const eventResponse = getEventResultFromMangataTx(result);
       expect(eventResponse.state).toEqual(ExtrinsicResult.ExtrinsicFailed);
-      expect(eventResponse.data).toEqual(1);
+      expect(eventResponse.data).toEqual(xykErrors.NotEnoughAssets);
     });
 
     const balance = await getBalanceOfPool(firstCurrency, testAssetId[0]);
