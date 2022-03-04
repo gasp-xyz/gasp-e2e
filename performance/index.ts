@@ -29,9 +29,12 @@ async function main() {
           case "Rampup":
             testParams.testCase = TestsCases.Rampup;
             break;
+          case "Burst":
+            testParams.testCase = TestsCases.Burst;
+            break;
           default:
             throw new Error(
-              `Unknown testCaseName: ${value}: Expected: any of[ConcurrentTest,SustainedLoadTest,Rampup]`
+              `Unknown testCaseName: ${value}: Expected: any of[ConcurrentTest,SustainedLoadTest,Rampup,Burst]`
             );
         }
         break;
@@ -131,4 +134,7 @@ export async function runExtrinsicSwap(params: TestParams) {
   await TestFactory.BuildTestItem(Commands.Swap).run(params);
 }
 
-main();
+main().then(() => {
+  // eslint-disable-next-line no-console
+  console.log("DONE");
+});

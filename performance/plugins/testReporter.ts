@@ -43,3 +43,17 @@ export async function captureEvents(logName: string, api: ApiPromise) {
     });
   });
 }
+
+export async function pendingExtrinsics(logName: string, api: ApiPromise) {
+  const fileName = logName + "_pendingExtrinsics";
+  await api.rpc.chain.subscribeNewHeads(async (): Promise<void> => {
+    await api.rpc.author.pendingExtrinsics(async (extrinsics) => {
+      await logLine(
+        fileName,
+        `\n \n Pending extrinsics ![ ${new Date().toUTCString()}] - PendingExtrinsics ${
+          extrinsics.length
+        }`
+      );
+    });
+  });
+}

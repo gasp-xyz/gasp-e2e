@@ -101,6 +101,7 @@ export class performanceTestItem implements TestItem {
       }
       this.mgaNodeandUsers.set(nodeNumber, { mgaSdk: mga, users: users });
     }
+    testLog.getLog().info("Waiting for mining tokens");
     const results = await Promise.all(mintPromises);
     testLog.getLog().info("¡¡ Tokens minted !!" + JSON.stringify(results));
 

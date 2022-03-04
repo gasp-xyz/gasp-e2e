@@ -13,6 +13,7 @@ export enum TestsCases {
   ConcurrentTest,
   Rampup,
   SustainedLoad,
+  Burst,
 }
 export class TestFactory {
   public static BuildTestItem(type: Commands): TestItem {
