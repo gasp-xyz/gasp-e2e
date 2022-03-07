@@ -4,7 +4,6 @@ import { TestParams } from "../testParams";
 import { KeyringPair } from "@polkadot/keyring/types";
 import { preGenerateTransactions, runTransactions } from "./testRunner";
 import { performanceTestItem } from "./performanceTestItem";
-//not proud about this, but lets leave it like this until we send some optional params.
 let tokens: number[] = [];
 export class ExtrinsicSwap extends performanceTestItem {
   async arrange(numberOfThreads: number, nodes: string[]): Promise<boolean> {

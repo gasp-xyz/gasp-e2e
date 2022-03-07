@@ -5,6 +5,7 @@ import { TestItem } from "./plugins/testItem";
 
 export enum Commands {
   ExtrinsicTransfer,
+  ExtrinsicTransferKeepAlive,
   Swap,
   Ping,
 }
@@ -17,7 +18,10 @@ export enum TestsCases {
 }
 export class TestFactory {
   public static BuildTestItem(type: Commands): TestItem {
-    if (type === Commands.ExtrinsicTransfer) {
+    if (
+      type === Commands.ExtrinsicTransfer ||
+      type === Commands.ExtrinsicTransferKeepAlive
+    ) {
       return new ExtrinsicTransfer();
     }
     if (type === Commands.Swap) {

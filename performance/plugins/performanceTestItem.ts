@@ -1,8 +1,9 @@
+/* eslint-disable no-console */
 import { Keyring } from "@polkadot/api";
 import BN from "bn.js";
 import { Mangata } from "mangata-sdk";
 import { testLog } from "../../utils/Logger";
-import { TestParams } from "../testParams";
+import { logFile, TestParams } from "../testParams";
 import { TestItem } from "./testItem";
 import { KeyringPair } from "@polkadot/keyring/types";
 import { UserFactory, Users } from "../../utils/Framework/User/UserFactory";
@@ -10,6 +11,7 @@ import { Node } from "../../utils/Framework/Node/Node";
 import { MGA_ASSET_ID } from "../../utils/Constants";
 import { mintAsset } from "../../utils/tx";
 import { initApi } from "../../utils/api";
+import { captureEvents, pendingExtrinsics } from "./testReporter";
 
 function seedFromNum(seed: number): string {
   return "//user//" + ("0000" + seed).slice(-4);
@@ -20,16 +22,32 @@ export class performanceTestItem implements TestItem {
     number,
     { mgaSdk: Mangata; users: { nonce: BN; keyPair: KeyringPair }[] }
   >();
-
+  listeners: Promise<{ p: Promise<unknown>; cancel: () => boolean }>[] = [];
   async arrange(numberOfThreads: number, nodes: string[]): Promise<boolean> {
     testLog.getLog().info("Arrange" + numberOfThreads + nodes);
+    const mga = await getMangata(nodes[0]!);
+    const api = await mga.getApi();
+    this.listeners.push(captureEvents(logFile, api!));
+    this.listeners.push(pendingExtrinsics(logFile, api!));
+
     return true;
   }
   async act(testParams: TestParams): Promise<boolean> {
     testLog.getLog().info("Act" + testParams);
     return true;
   }
-  async expect(): Promise<boolean> {
+  async expect(nodes: string[]): Promise<boolean> {
+    //wait for not Txs pending + 10 blocks.
+    const mga = await getMangata(nodes[0]!);
+    let pendingExtr: any[] = [];
+    do {
+      const api = await mga.getApi();
+      pendingExtr = await api.rpc.author.pendingExtrinsics();
+    } while (pendingExtr.length > 0);
+    console.info(`Done waiting Txs!`);
+    console.info(`Stopping listeners....`);
+    this.listeners.forEach(async (p) => (await p).cancel());
+    console.info(`...Stopped`);
     return true;
   }
   async teardown(nodes: string[]): Promise<boolean> {
@@ -50,18 +68,20 @@ export class performanceTestItem implements TestItem {
             testLog.getLog().info("Done Act");
             return (
               resultAct &&
-              (await this.expect().then(async (resultExpect) => {
-                testLog.getLog().info("Done Expect" + resultExpect);
-                return (
-                  resultAct &&
-                  (await this.teardown(testparams.nodes).then(
-                    async (resultTearDown) => {
-                      testLog.getLog().info("Done TearDown");
-                      return resultTearDown;
-                    }
-                  ))
-                );
-              }))
+              (await this.expect(testparams.nodes).then(
+                async (resultExpect) => {
+                  testLog.getLog().info("Done Expect" + resultExpect);
+                  return (
+                    resultAct &&
+                    (await this.teardown(testparams.nodes).then(
+                      async (resultTearDown) => {
+                        testLog.getLog().info("Done TearDown");
+                        return resultTearDown;
+                      }
+                    ))
+                  );
+                }
+              ))
             );
           }))
         );
@@ -92,7 +112,7 @@ export class performanceTestItem implements TestItem {
             sudo.keyRingPair,
             MGA_ASSET_ID,
             keyPair.address,
-            new BN(10).pow(new BN(18)),
+            new BN(10).pow(new BN(30)),
             sudoNonce
           )
         );

@@ -61,6 +61,9 @@ async function main() {
     case "transfer":
       testParams.command = Commands.ExtrinsicTransfer;
       break;
+    case "transferKA":
+      testParams.command = Commands.ExtrinsicTransferKeepAlive;
+      break;
     case "mint":
     case "burn":
     case "swap":
@@ -95,8 +98,8 @@ function verifyArgs(params: TestParams, test: string) {
         nodes: string (web socket url, ws://foobar...)`);
   }
 
-  if (params.threads <= 0 || params.threads > 10) {
-    throw new Error(`threadNumber must be between 1 and 10`);
+  if (params.threads <= 0 || params.threads > 50) {
+    throw new Error(`threadNumber must be between 1 and 50`);
   }
 
   if (params.testCase === undefined) {
@@ -104,7 +107,7 @@ function verifyArgs(params: TestParams, test: string) {
   }
 
   if (params.duration <= 0 || params.duration > 10000) {
-    throw new Error(`duration must be between 1 and 10000`);
+    throw new Error(`duration in minutes must be between 1 and 10000`);
   }
 
   if (params.totalTx <= 0 || params.totalTx > 100000) {

@@ -1,9 +1,10 @@
+/* eslint-disable no-console */
 /* eslint-disable no-loop-func */
 import BN from "bn.js";
 import { Mangata } from "mangata-sdk";
 import { testLog } from "../../utils/Logger";
-import { logFile, TestParams } from "../testParams";
-import { captureEvents, logLine, pendingExtrinsics } from "./testReporter";
+import { TestParams } from "../testParams";
+import { logLine } from "./testReporter";
 import { KeyringPair } from "@polkadot/keyring/types";
 import { SubmittableExtrinsic } from "@polkadot/api/types";
 import { SubmittableResult } from "@polkadot/api";
@@ -24,9 +25,6 @@ export async function preGenerateTransactions(
     .info(
       `Pregenerating ${testParams.totalTx} transactions across ${testParams.threads} threads...`
     );
-  const api = await mgaNodeandUsers.get(0)?.mgaSdk.getApi();
-  captureEvents(logFile, api!);
-  pendingExtrinsics(logFile, api!);
   const totalBatches = testParams.totalTx / testParams.threads;
   //const userPerThread = 1;
 
@@ -163,22 +161,15 @@ async function runTxsInBurstMode(
   const runNodeTxs = (i: number) =>
     new Promise<[number, number]>(async (resolve) => {
       const transaction = await sorted[i];
-      const start = new Date().getTime();
       await transaction
         .send(({ status }) => {
-          if (status.isFuture || status.isReady) {
-            const finalized = new Date().getTime();
-            const diff = finalized - start;
-            resolve([i, diff]);
-            logLine(
-              testParams.logFile,
-              "\n" +
-                new Date().toUTCString() +
-                "- Included - " +
-                i +
-                " - " +
-                JSON.stringify(status.toHuman()!)
+          if (status.isBroadcast || status.isFuture || status.isReady) {
+            // eslint-disable-next-line no-console
+            console.info(
+              "Sending Tx with nonce -> " +
+                JSON.parse(sorted[i].toString()).signature.nonce
             );
+            resolve([i, 1]);
             return;
           }
         })
@@ -191,7 +182,7 @@ async function runTxsInBurstMode(
               JSON.stringify(err.toHuman()!)
           );
           testLog.getLog().warn(err);
-          return -1;
+          return;
         });
     });
 
@@ -206,9 +197,16 @@ async function runTxsInBurstMode(
       `Sending  in ${sorted.length} Threads ${preSetupThreads[0].length} Txs...`
     );
 
-  await asyncPool(100, indexArray.slice(1), runNodeTxs);
-  await asyncPool(1, [0], runNodeTxs);
-  testLog.getLog().info(`.... Done`);
+  await asyncPool(
+    testParams.threads,
+    indexArray.slice(testParams.threads),
+    runNodeTxs
+  );
+  await asyncPool(
+    testParams.threads,
+    [...Array(testParams.threads).keys()],
+    runNodeTxs
+  );
 }
 
 export async function runQuery(
