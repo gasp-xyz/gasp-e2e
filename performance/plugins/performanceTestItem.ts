@@ -1,7 +1,7 @@
 /* eslint-disable no-console */
 import { Keyring } from "@polkadot/api";
 import BN from "bn.js";
-import { Mangata } from "mangata-sdk";
+import { Mangata, MangataGenericEvent } from "mangata-sdk";
 import { testLog } from "../../utils/Logger";
 import { logFile, TestParams } from "../testParams";
 import { TestItem } from "./testItem";
@@ -88,10 +88,13 @@ export class performanceTestItem implements TestItem {
       }
     );
   }
-
-  async mintMGATokensToUsers(numberOfThreads: number, nodes: string[]) {
+  async mintTokensToUsers(
+    numberOfThreads: number,
+    nodes: string[],
+    assets = [MGA_ASSET_ID]
+  ) {
     const keyring = new Keyring({ type: "sr25519" });
-    const mintPromises = [];
+    const mintPromises: Promise<MangataGenericEvent[]>[] = [];
     for (let nodeNumber = 0; nodeNumber < nodes.length; nodeNumber++) {
       const node = nodes[nodeNumber];
       const mga = await getMangata(node);
@@ -107,16 +110,19 @@ export class performanceTestItem implements TestItem {
         const keyPair = keyring.addFromUri(stringSeed);
         const nonce = await mga.getNonce(keyPair.address);
         //lets mint some MGA assets to pay fees
-        mintPromises.push(
-          mintAsset(
-            sudo.keyRingPair,
-            MGA_ASSET_ID,
-            keyPair.address,
-            new BN(10).pow(new BN(30)),
-            sudoNonce
-          )
-        );
-        sudoNonce = sudoNonce.addn(1);
+        // eslint-disable-next-line no-loop-func
+        assets.forEach((assetId) => {
+          mintPromises.push(
+            mintAsset(
+              sudo.keyRingPair,
+              assetId,
+              keyPair.address,
+              new BN(10).pow(new BN(30)),
+              sudoNonce
+            )
+          );
+          sudoNonce = sudoNonce.addn(1);
+        });
         users.push({ nonce: nonce, keyPair: keyPair });
       }
       this.mgaNodeandUsers.set(nodeNumber, { mgaSdk: mga, users: users });

@@ -98,8 +98,8 @@ function verifyArgs(params: TestParams, test: string) {
         nodes: string (web socket url, ws://foobar...)`);
   }
 
-  if (params.threads <= 0 || params.threads > 50) {
-    throw new Error(`threadNumber must be between 1 and 50`);
+  if (params.threads <= 0) {
+    throw new Error(`threadNumber must be between > 0`);
   }
 
   if (params.testCase === undefined) {

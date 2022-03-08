@@ -10,7 +10,8 @@ import { Commands } from "../testFactory";
 
 export class ExtrinsicTransfer extends performanceTestItem {
   async arrange(numberOfThreads: number, nodes: string[]): Promise<boolean> {
-    await this.mintMGATokensToUsers(numberOfThreads, nodes);
+    await super.arrange(numberOfThreads, nodes);
+    await this.mintTokensToUsers(numberOfThreads, nodes, [MGA_ASSET_ID]);
     return true;
   }
   async act(testParams: TestParams): Promise<boolean> {

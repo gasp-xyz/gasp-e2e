@@ -47,10 +47,9 @@ export async function preGenerateTransactions(
           nodeThread,
           userNo
         );
-        const userNonceIncremented = mgaValue.users[userNo]!.nonce.add(
+        mgaValue.users[userNo]!.nonce! = mgaValue.users[userNo]!.nonce.add(
           new BN(1)
         );
-        mgaValue.users[userNo]!.nonce! = userNonceIncremented;
         batch.push(signed);
 
         sanityCounter++;

@@ -8,7 +8,7 @@ let tokens: number[] = [];
 export class ExtrinsicSwap extends performanceTestItem {
   async arrange(numberOfThreads: number, nodes: string[]): Promise<boolean> {
     tokens = [4, 5];
-    await this.mintMGATokensToUsers(numberOfThreads, nodes);
+    await this.mintTokensToUsers(numberOfThreads, nodes);
     await this.mintERC20TokensToUsers(tokens, this.mgaNodeandUsers);
     return true;
   }
