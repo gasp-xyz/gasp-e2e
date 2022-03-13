@@ -1,0 +1,354 @@
+{
+  "uid" : "4b4757e66a1912dae1a509f688f20b0f",
+  "children" : [ {
+    "name" : "Product defects",
+    "children" : [ {
+      "name" : "Error: Unable to decode storage system.account:: createType(AccountInfo):: {\"nonce\":\"u32\",\"refcount\":\"u32\",\"data\":\"BalancesAccountData\"}:: Decoded input doesn't match input, received 0x0300000001000000 (8 bytes), created 0x0300000001000000000000000000000000000000000000000000000000000000…0000000000000000000000000000000000000000000000000000000000000000 (72 bytes)",
+      "children" : [ {
+        "name" : "Modal contains currencies and amounts when Swapping",
+        "uid" : "a71d1c3231a3acf7",
+        "parentUid" : "596257600204dcfe3ab5e93bcbc1d7ae",
+        "status" : "failed",
+        "time" : {
+          "start" : 1647135181263,
+          "stop" : 1647135304051,
+          "duration" : 122788
+        },
+        "flaky" : false,
+        "newFailed" : false,
+        "parameters" : [ ]
+      }, {
+        "name" : "Modal contains currencies and amounts when providing liquidity",
+        "uid" : "d018d697838805af",
+        "parentUid" : "596257600204dcfe3ab5e93bcbc1d7ae",
+        "status" : "failed",
+        "time" : {
+          "start" : 1647135304063,
+          "stop" : 1647135419724,
+          "duration" : 115661
+        },
+        "flaky" : false,
+        "newFailed" : false,
+        "parameters" : [ ]
+      }, {
+        "name" : "Modal is visible when burning liquidity",
+        "uid" : "b6c2d63f250cc31d",
+        "parentUid" : "596257600204dcfe3ab5e93bcbc1d7ae",
+        "status" : "failed",
+        "time" : {
+          "start" : 1647135419725,
+          "stop" : 1647135468073,
+          "duration" : 48348
+        },
+        "flaky" : false,
+        "newFailed" : false,
+        "parameters" : [ ]
+      }, {
+        "name" : "As a User I can Swap tokens - MGA - mETH",
+        "uid" : "791e3299cef78fa0",
+        "parentUid" : "596257600204dcfe3ab5e93bcbc1d7ae",
+        "status" : "failed",
+        "time" : {
+          "start" : 1647135611959,
+          "stop" : 1647135730438,
+          "duration" : 118479
+        },
+        "flaky" : false,
+        "newFailed" : false,
+        "parameters" : [ ]
+      }, {
+        "name" : "As a User I can mint some tokens MGA - mETH",
+        "uid" : "fac47cf331aad467",
+        "parentUid" : "596257600204dcfe3ab5e93bcbc1d7ae",
+        "status" : "failed",
+        "time" : {
+          "start" : 1647135730440,
+          "stop" : 1647135844891,
+          "duration" : 114451
+        },
+        "flaky" : false,
+        "newFailed" : false,
+        "parameters" : [ ]
+      }, {
+        "name" : "As a User I can burn all liquidity MGA - mETH",
+        "uid" : "f8435682f63c2595",
+        "parentUid" : "596257600204dcfe3ab5e93bcbc1d7ae",
+        "status" : "failed",
+        "time" : {
+          "start" : 1647135844892,
+          "stop" : 1647135893296,
+          "duration" : 48404
+        },
+        "flaky" : false,
+        "newFailed" : false,
+        "parameters" : [ ]
+      }, {
+        "name" : "As a User I can mint in more than one pool [ MGA - mETH ] [ MGA - newTokn ] and get invested values",
+        "uid" : "e60c032ba83ca8b1",
+        "parentUid" : "596257600204dcfe3ab5e93bcbc1d7ae",
+        "status" : "failed",
+        "time" : {
+          "start" : 1647135893301,
+          "stop" : 1647135941848,
+          "duration" : 48547
+        },
+        "flaky" : false,
+        "newFailed" : false,
+        "parameters" : [ ]
+      }, {
+        "name" : "As a User I can see the max possible value in UI",
+        "uid" : "825ea5b7e83b2d5c",
+        "parentUid" : "596257600204dcfe3ab5e93bcbc1d7ae",
+        "status" : "failed",
+        "time" : {
+          "start" : 1647136270071,
+          "stop" : 1647136340226,
+          "duration" : 70155
+        },
+        "flaky" : false,
+        "newFailed" : false,
+        "parameters" : [ ]
+      }, {
+        "name" : "As a User I can see the min value in UI",
+        "uid" : "d1ee2f898d3e14a0",
+        "parentUid" : "596257600204dcfe3ab5e93bcbc1d7ae",
+        "status" : "failed",
+        "time" : {
+          "start" : 1647136340228,
+          "stop" : 1647136410995,
+          "duration" : 70767
+        },
+        "flaky" : false,
+        "newFailed" : false,
+        "parameters" : [ ]
+      }, {
+        "name" : "As a User I can deposit ETH from Meta extension",
+        "uid" : "b44252721052ccf5",
+        "parentUid" : "596257600204dcfe3ab5e93bcbc1d7ae",
+        "status" : "failed",
+        "time" : {
+          "start" : 1647136415807,
+          "stop" : 1647136535989,
+          "duration" : 120182
+        },
+        "flaky" : false,
+        "newFailed" : false,
+        "parameters" : [ ]
+      }, {
+        "name" : "As a User I can Swap All MGA tokens -> newToken",
+        "uid" : "3bcd8342c669e12e",
+        "parentUid" : "596257600204dcfe3ab5e93bcbc1d7ae",
+        "status" : "failed",
+        "time" : {
+          "start" : 1647136537280,
+          "stop" : 1647136590211,
+          "duration" : 52931
+        },
+        "flaky" : false,
+        "newFailed" : false,
+        "parameters" : [ ]
+      }, {
+        "name" : "As a User I can mint All tokens newToken - newToken2",
+        "uid" : "9fb43920ff31876f",
+        "parentUid" : "596257600204dcfe3ab5e93bcbc1d7ae",
+        "status" : "failed",
+        "time" : {
+          "start" : 1647136590212,
+          "stop" : 1647136642008,
+          "duration" : 51796
+        },
+        "flaky" : false,
+        "newFailed" : false,
+        "parameters" : [ ]
+      }, {
+        "name" : "As a User I get the right values for Pool removal P[2499999999999999999, 5000000000000000000] - I-> 2 -Expected - 0.049 , 0.100",
+        "uid" : "e23d8147af0cefa9",
+        "parentUid" : "596257600204dcfe3ab5e93bcbc1d7ae",
+        "status" : "failed",
+        "time" : {
+          "start" : 1647136695762,
+          "stop" : 1647136696070,
+          "duration" : 308
+        },
+        "flaky" : false,
+        "newFailed" : false,
+        "parameters" : [ ]
+      }, {
+        "name" : "As a User I get the right values for Pool removal P[2500000000000000000, 5000000000000000000] - I-> 1 -Expected - 0.025 , 0.05",
+        "uid" : "1d6daa5d5e09c83f",
+        "parentUid" : "596257600204dcfe3ab5e93bcbc1d7ae",
+        "status" : "failed",
+        "time" : {
+          "start" : 1647136696074,
+          "stop" : 1647136696378,
+          "duration" : 304
+        },
+        "flaky" : false,
+        "newFailed" : false,
+        "parameters" : [ ]
+      }, {
+        "name" : "Token amounts are correectly propagated to the node",
+        "uid" : "84f5935aff9bd033",
+        "parentUid" : "596257600204dcfe3ab5e93bcbc1d7ae",
+        "status" : "failed",
+        "time" : {
+          "start" : 1647136698381,
+          "stop" : 1647136750621,
+          "duration" : 52240
+        },
+        "flaky" : false,
+        "newFailed" : false,
+        "parameters" : [ ]
+      }, {
+        "name" : "As a User I get the right values for Pool investment P[5000000000000000000, 100] - I-> 100000000000 -Expected - 0.000002",
+        "uid" : "453b5417b37b2300",
+        "parentUid" : "596257600204dcfe3ab5e93bcbc1d7ae",
+        "status" : "failed",
+        "time" : {
+          "start" : 1647136804037,
+          "stop" : 1647136804334,
+          "duration" : 297
+        },
+        "flaky" : false,
+        "newFailed" : false,
+        "parameters" : [ ]
+      }, {
+        "name" : "As a User I get the right values for Pool investment P[5000000000000000000, 5000000000000000000] - I-> 0.123 -Expected - 0.123",
+        "uid" : "8d3b98d2846d7e30",
+        "parentUid" : "596257600204dcfe3ab5e93bcbc1d7ae",
+        "status" : "failed",
+        "time" : {
+          "start" : 1647136804335,
+          "stop" : 1647136804632,
+          "duration" : 297
+        },
+        "flaky" : false,
+        "newFailed" : false,
+        "parameters" : [ ]
+      }, {
+        "name" : "As a User I get the right values for Pool investment P[2500000000000000000, 5000000000000000000] - I-> 0.100 -Expected - 0.200",
+        "uid" : "1dfc084d8b71f8b4",
+        "parentUid" : "596257600204dcfe3ab5e93bcbc1d7ae",
+        "status" : "failed",
+        "time" : {
+          "start" : 1647136804633,
+          "stop" : 1647136804943,
+          "duration" : 310
+        },
+        "flaky" : false,
+        "newFailed" : false,
+        "parameters" : [ ]
+      }, {
+        "name" : "As a User I can create a pool",
+        "uid" : "9a00082f871834e2",
+        "parentUid" : "596257600204dcfe3ab5e93bcbc1d7ae",
+        "status" : "failed",
+        "time" : {
+          "start" : 1647136858707,
+          "stop" : 1647136926384,
+          "duration" : 67677
+        },
+        "flaky" : false,
+        "newFailed" : false,
+        "parameters" : [ ]
+      } ],
+      "uid" : "596257600204dcfe3ab5e93bcbc1d7ae"
+    }, {
+      "name" : "Error: WebSocket is not connected",
+      "children" : [ {
+        "name" : "When tx front - fails, User gets notified",
+        "uid" : "ab1b665d635eaa94",
+        "parentUid" : "d87cc0f26d462c8160f75c645ea55e17",
+        "status" : "failed",
+        "time" : {
+          "start" : 1647135468082,
+          "stop" : 1647135515474,
+          "duration" : 47392
+        },
+        "flaky" : false,
+        "newFailed" : false,
+        "parameters" : [ ]
+      }, {
+        "name" : "When tx extrinsic - fails, User gets notified",
+        "uid" : "ccf530ed4a1d4cce",
+        "parentUid" : "d87cc0f26d462c8160f75c645ea55e17",
+        "status" : "failed",
+        "time" : {
+          "start" : 1647135515475,
+          "stop" : 1647135562845,
+          "duration" : 47370
+        },
+        "flaky" : false,
+        "newFailed" : false,
+        "parameters" : [ ]
+      }, {
+        "name" : "When user cancel a TX, User gets notified",
+        "uid" : "44556a07c0a48269",
+        "parentUid" : "d87cc0f26d462c8160f75c645ea55e17",
+        "status" : "failed",
+        "time" : {
+          "start" : 1647135562846,
+          "stop" : 1647135610521,
+          "duration" : 47675
+        },
+        "flaky" : false,
+        "newFailed" : false,
+        "parameters" : [ ]
+      } ],
+      "uid" : "d87cc0f26d462c8160f75c645ea55e17"
+    }, {
+      "name" : "NoSuchWindowError: no such window\n                  (Session info: chrome=94.0.4606.61)\n                  (Driver info: chromedriver=94.0.4606.61 (418b78f5838ed0b1c69bb4e51ea0252171854915-refs/branch-heads/4606@{#1204}),platform=Linux 5.11.0-1028-azure x86_64)",
+      "children" : [ {
+        "name" : "As a User I can Withdraw ETH from Meta extension",
+        "uid" : "9101666811e01403",
+        "parentUid" : "c2a8b73bb187d4489331bc6e200716f0",
+        "status" : "failed",
+        "time" : {
+          "start" : 1647136535996,
+          "stop" : 1647136536106,
+          "duration" : 110
+        },
+        "flaky" : false,
+        "newFailed" : false,
+        "parameters" : [ ]
+      } ],
+      "uid" : "c2a8b73bb187d4489331bc6e200716f0"
+    }, {
+      "name" : "TimeoutError: Waiting for element to be located By(xpath, //*[@data-testid='wallet-asset-MGA'])\n                Wait timed out after 300001ms",
+      "children" : [ {
+        "name" : "As a User I can get test tokens from the faucet",
+        "uid" : "b8ad6eab913eadaf",
+        "parentUid" : "fddddde2515f5437d81cb7fd6fc51bc5",
+        "status" : "failed",
+        "time" : {
+          "start" : 1647136929074,
+          "stop" : 1647137282793,
+          "duration" : 353719
+        },
+        "flaky" : false,
+        "newFailed" : false,
+        "parameters" : [ ]
+      } ],
+      "uid" : "fddddde2515f5437d81cb7fd6fc51bc5"
+    }, {
+      "name" : "Error: expect(received).toBeTruthy()\n                \n                Received: undefined",
+      "children" : [ {
+        "name" : "Validate that Frontend retrieves AssetInfo data",
+        "uid" : "fcc6df7fdb7e2c6e",
+        "parentUid" : "2a757e53b9bbd41a65c44eb31286f136",
+        "status" : "failed",
+        "time" : {
+          "start" : 1647137288079,
+          "stop" : 1647137301978,
+          "duration" : 13899
+        },
+        "flaky" : false,
+        "newFailed" : false,
+        "parameters" : [ ]
+      } ],
+      "uid" : "2a757e53b9bbd41a65c44eb31286f136"
+    } ],
+    "uid" : "8fb3a91ba5aaf9de24cc8a92edc82b5d"
+  } ],
+  "name" : "categories"
+}
