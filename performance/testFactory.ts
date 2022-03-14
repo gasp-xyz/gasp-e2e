@@ -1,11 +1,13 @@
 import { ExtrinsicSwap } from "./plugins/extrinsicSwap";
 import { ExtrinsicTransfer } from "./plugins/extrinsicTransfer";
+import { ExtrinsicTransferAll } from "./plugins/extrinsicTransferAll";
 import { Ping } from "./plugins/ping";
 import { TestItem } from "./plugins/testItem";
 
 export enum Commands {
   ExtrinsicTransfer,
   ExtrinsicTransferKeepAlive,
+  ExtrinsicTransferAll,
   Swap,
   Ping,
 }
@@ -29,6 +31,9 @@ export class TestFactory {
     }
     if (type === Commands.Ping) {
       return new Ping();
+    }
+    if (type === Commands.ExtrinsicTransferAll) {
+      return new ExtrinsicTransferAll();
     }
     throw Error("TestItem not found");
   }

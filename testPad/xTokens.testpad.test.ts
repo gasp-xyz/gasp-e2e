@@ -36,6 +36,22 @@ describe("staking - testpad", () => {
     }
   });
 
+  test("V4 - remarks", async () => {
+    try {
+      getApi();
+    } catch (e) {
+      await initApi();
+    }
+    const mga = Mangata.getInstance(getEnvironmentRequiredVars().chainUri);
+    const api = await mga.getApi();
+    keyring = new Keyring({ type: "sr25519" });
+    const user = new User(keyring, "//Alice");
+    keyring.addPair(user.keyRingPair);
+    await signSendAndWaitToFinishTx(
+      api?.tx.system.remark("0x00"),
+      user.keyRingPair
+    ).then();
+  });
   test("V4 xtokens transfer", async () => {
     try {
       getApi();

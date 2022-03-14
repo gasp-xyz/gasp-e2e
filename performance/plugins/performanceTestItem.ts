@@ -12,9 +12,11 @@ import { MGA_ASSET_ID } from "../../utils/Constants";
 import { mintAsset } from "../../utils/tx";
 import { initApi } from "../../utils/api";
 import { captureEvents, pendingExtrinsics } from "./testReporter";
+import { Guid } from "guid-typescript";
 
 function seedFromNum(seed: number): string {
-  return "//user//" + ("0000" + seed).slice(-4);
+  const guid = Guid.create().toString();
+  return "//user//" + ("0000" + seed + guid).slice(-4);
 }
 
 export class performanceTestItem implements TestItem {

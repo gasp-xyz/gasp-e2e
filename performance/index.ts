@@ -64,6 +64,9 @@ async function main() {
     case "transferKA":
       testParams.command = Commands.ExtrinsicTransferKeepAlive;
       break;
+    case "transferAll":
+      testParams.command = Commands.ExtrinsicTransferAll;
+      break;
     case "mint":
     case "burn":
     case "swap":

@@ -18,7 +18,8 @@ export async function preGenerateTransactions(
     number,
     { mgaSdk: Mangata; users: { nonce: BN; keyPair: KeyringPair }[] }
   >,
-  fn: any
+  fn: any,
+  options?: {}
 ): Promise<SubmittableExtrinsic<"promise", SubmittableResult>[][]> {
   testLog
     .getLog()
@@ -45,7 +46,8 @@ export async function preGenerateTransactions(
         const { mgaValue, signed } = await fn(
           mgaNodeandUsers,
           nodeThread,
-          userNo
+          userNo,
+          options
         );
         mgaValue.users[userNo]!.nonce! = mgaValue.users[userNo]!.nonce.add(
           new BN(1)
@@ -106,33 +108,43 @@ async function runTxsInConcurrentMode(
     new Promise<[number, number]>(async (resolve) => {
       const transaction = await preSetupThreads[nodeIdx][i];
       const start = new Date().getTime();
-      await transaction
-        .send(({ status }) => {
-          if (status.isInBlock) {
-            const finalized = new Date().getTime();
-            const diff = finalized - start;
-            resolve([i, diff]);
+      try {
+        await transaction
+          .send(({ status }) => {
+            if (status.isInBlock) {
+              const finalized = new Date().getTime();
+              const diff = finalized - start;
+              resolve([i, diff]);
+              logLine(
+                testParams.logFile,
+                "\n" +
+                  new Date().toUTCString() +
+                  "-" +
+                  JSON.stringify(status.toHuman()!)
+              );
+              return;
+            }
+          })
+          .catch((err: any) => {
             logLine(
               testParams.logFile,
               "\n" +
                 new Date().toUTCString() +
-                "-" +
-                JSON.stringify(status.toHuman()!)
+                "- ERROR - " +
+                JSON.stringify(err)
             );
-            return;
-          }
-        })
-        .catch((err: any) => {
-          logLine(
-            testParams.logFile,
-            "\n" +
-              new Date().toUTCString() +
-              "- ERROR - " +
-              JSON.stringify(err.toHuman()!)
-          );
-          testLog.getLog().warn(err);
-          return -1;
-        });
+            testLog.getLog().warn(err);
+            resolve([i, 0]);
+            return -1;
+          });
+      } catch (error) {
+        logLine(
+          testParams.logFile,
+          "\n" + new Date().toUTCString() + "- ERROR - " + JSON.stringify(error)
+        );
+        testLog.getLog().warn(error);
+        resolve([i, 0]);
+      }
     });
   const nodeTxs = preSetupThreads[nodeIdx];
   const indexArray = nodeTxs.map((_, index) => {
