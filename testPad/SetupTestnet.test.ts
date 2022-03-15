@@ -2,7 +2,6 @@ import { Keyring } from "@polkadot/api";
 import BN from "bn.js";
 import { getApi, getMangataInstance, initApi } from "../utils/api";
 import { User } from "../utils/User";
-import { getEnvironmentRequiredVars } from "../utils/utils";
 import fs from "fs";
 
 require("dotenv").config();
