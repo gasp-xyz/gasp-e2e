@@ -21,7 +21,7 @@ import {
   validateUnmodified,
 } from "../../utils/validators";
 import { Assets } from "../../utils/Assets";
-import { getEnvironmentRequiredVars } from "../../utils/utils";
+import { getEnvironmentRequiredVars, xykErrors } from "../../utils/utils";
 import { getEventResultFromMangataTx } from "../../utils/txHandler";
 
 jest.spyOn(console, "log").mockImplementation(jest.fn());
@@ -88,7 +88,7 @@ describe("xyk-pallet - Sell assets tests: SellAsset Errors:", () => {
     ).then((result) => {
       const eventResponse = getEventResultFromMangataTx(result);
       expect(eventResponse.state).toEqual(ExtrinsicResult.ExtrinsicFailed);
-      expect(eventResponse.data).toEqual(2);
+      expect(eventResponse.data).toEqual(xykErrors.NoSuchPool);
     });
     await sellAsset(
       testUser1.keyRingPair,
@@ -99,7 +99,7 @@ describe("xyk-pallet - Sell assets tests: SellAsset Errors:", () => {
     ).then((result) => {
       const eventResponse = getEventResultFromMangataTx(result);
       expect(eventResponse.state).toEqual(ExtrinsicResult.ExtrinsicFailed);
-      expect(eventResponse.data).toEqual(2);
+      expect(eventResponse.data).toEqual(xykErrors.NoSuchPool);
     });
 
     await validateUnmodified(
@@ -170,7 +170,7 @@ describe("xyk-pallet - Sell assets tests: SellAsset Errors:", () => {
     ).then((result) => {
       const eventResponse = getEventResultFromMangataTx(result);
       expect(eventResponse.state).toEqual(ExtrinsicResult.ExtrinsicFailed);
-      expect(eventResponse.data).toEqual(1);
+      expect(eventResponse.data).toEqual(xykErrors.NotEnoughAssets);
     });
 
     await testUser1.refreshAmounts(AssetWallet.AFTER);
@@ -249,7 +249,7 @@ describe("xyk-pallet - Sell assets tests: SellAsset Errors:", () => {
     ).then((result) => {
       const eventResponse = getEventResultFromMangataTx(result);
       expect(eventResponse.state).toEqual(ExtrinsicResult.ExtrinsicFailed);
-      expect(eventResponse.data).toEqual(7);
+      expect(eventResponse.data).toEqual(xykErrors.InsufficientOutputAmount);
     });
     //fee: 603 ??  //TODO: validate with Stano.
     const feeToAvoidFrontRunning = new BN(603);

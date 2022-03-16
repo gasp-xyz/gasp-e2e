@@ -23,8 +23,12 @@ import {
   validateUserPaidFeeForFailedTx,
 } from "../../utils/validators";
 import { Assets } from "../../utils/Assets";
-import { calculateFees, getEnvironmentRequiredVars } from "../../utils/utils";
 import { getEventResultFromMangataTx } from "../../utils/txHandler";
+import {
+  calculateFees,
+  getEnvironmentRequiredVars,
+  xykErrors,
+} from "../../utils/utils";
 
 jest.spyOn(console, "log").mockImplementation(jest.fn());
 jest.setTimeout(1500000);
@@ -90,7 +94,7 @@ describe("xyk-pallet - Buy assets tests: BuyAssets Errors:", () => {
     ).then((result) => {
       const eventResponse = getEventResultFromMangataTx(result);
       expect(eventResponse.state).toEqual(ExtrinsicResult.ExtrinsicFailed);
-      expect(eventResponse.data).toEqual(2);
+      expect(eventResponse.data).toEqual(xykErrors.NoSuchPool);
     });
 
     await buyAsset(
@@ -102,7 +106,7 @@ describe("xyk-pallet - Buy assets tests: BuyAssets Errors:", () => {
     ).then((result) => {
       const eventResponse = getEventResultFromMangataTx(result);
       expect(eventResponse.state).toEqual(ExtrinsicResult.ExtrinsicFailed);
-      expect(eventResponse.data).toEqual(2);
+      expect(eventResponse.data).toEqual(xykErrors.NoSuchPool);
     });
 
     await validateUnmodified(
@@ -143,7 +147,7 @@ describe("xyk-pallet - Buy assets tests: BuyAssets Errors:", () => {
     ).then((result) => {
       const eventResponse = getEventResultFromMangataTx(result);
       expect(eventResponse.state).toEqual(ExtrinsicResult.ExtrinsicFailed);
-      expect(eventResponse.data).toEqual(4);
+      expect(eventResponse.data).toEqual(xykErrors.NotEnoughReserve);
     });
 
     await validateUnmodified(firstCurrency, secondCurrency, testUser1, [
@@ -182,7 +186,7 @@ describe("xyk-pallet - Buy assets tests: BuyAssets Errors:", () => {
     ).then((result) => {
       const eventResponse = getEventResultFromMangataTx(result);
       expect(eventResponse.state).toEqual(ExtrinsicResult.ExtrinsicFailed);
-      expect(eventResponse.data).toEqual(4);
+      expect(eventResponse.data).toEqual(xykErrors.NotEnoughReserve);
     });
 
     await validateUnmodified(firstCurrency, secondCurrency, testUser1, [
@@ -227,7 +231,7 @@ describe("xyk-pallet - Buy assets tests: BuyAssets Errors:", () => {
     ).then((result) => {
       const eventResponse = getEventResultFromMangataTx(result);
       expect(eventResponse.state).toEqual(ExtrinsicResult.ExtrinsicFailed);
-      expect(eventResponse.data).toEqual(6);
+      expect(eventResponse.data).toEqual(xykErrors.InsufficientInputAmount);
     });
 
     await validateUserPaidFeeForFailedTx(

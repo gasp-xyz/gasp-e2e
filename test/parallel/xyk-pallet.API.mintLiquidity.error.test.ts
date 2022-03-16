@@ -12,7 +12,7 @@ import { Keyring } from "@polkadot/api";
 import { AssetWallet, User } from "../../utils/User";
 import { validateUnmodified } from "../../utils/validators";
 import { Assets } from "../../utils/Assets";
-import { getEnvironmentRequiredVars } from "../../utils/utils";
+import { getEnvironmentRequiredVars, xykErrors } from "../../utils/utils";
 import {
   getEventResultFromMangataTx,
   signSendAndWaitToFinishTx,
@@ -92,7 +92,7 @@ describe("xyk-pallet - Mint liquidity tests: MintLiquidity Errors:", () => {
     ).then((result) => {
       const eventResponse = getEventResultFromMangataTx(result);
       expect(eventResponse.state).toEqual(ExtrinsicResult.ExtrinsicFailed);
-      expect(eventResponse.data).toEqual(1);
+      expect(eventResponse.data).toEqual(xykErrors.NotEnoughAssets);
     });
 
     await testUser1.refreshAmounts(AssetWallet.AFTER);
@@ -135,7 +135,7 @@ describe("xyk-pallet - Mint liquidity tests: MintLiquidity Errors:", () => {
     ).then((result) => {
       const eventResponse = getEventResultFromMangataTx(result);
       expect(eventResponse.state).toEqual(ExtrinsicResult.ExtrinsicFailed);
-      expect(eventResponse.data).toEqual(1);
+      expect(eventResponse.data).toEqual(xykErrors.NotEnoughAssets);
     });
 
     await validateUnmodified(firstCurrency, secondCurrency, testUser1, [
@@ -178,7 +178,7 @@ describe("xyk-pallet - Mint liquidity tests: MintLiquidity Errors:", () => {
     ).then((result) => {
       const eventResponse = getEventResultFromMangataTx(result);
       expect(eventResponse.state).toEqual(ExtrinsicResult.ExtrinsicFailed);
-      expect(eventResponse.data).toEqual(2);
+      expect(eventResponse.data).toEqual(xykErrors.NoSuchPool);
     });
 
     //lets try to mint with asset 2 and 3
@@ -190,7 +190,7 @@ describe("xyk-pallet - Mint liquidity tests: MintLiquidity Errors:", () => {
     ).then((result) => {
       const eventResponse = getEventResultFromMangataTx(result);
       expect(eventResponse.state).toEqual(ExtrinsicResult.ExtrinsicFailed);
-      expect(eventResponse.data).toEqual(2);
+      expect(eventResponse.data).toEqual(xykErrors.NoSuchPool);
     });
     await testUser1.refreshAmounts(AssetWallet.AFTER);
     await validateUnmodified(
@@ -230,7 +230,7 @@ describe("xyk-pallet - Mint liquidity tests: MintLiquidity Errors:", () => {
     ).then((result) => {
       const eventResponse = getEventResultFromMangataTx(result);
       expect(eventResponse.state).toEqual(ExtrinsicResult.ExtrinsicFailed);
-      expect(eventResponse.data).toEqual(1);
+      expect(eventResponse.data).toEqual(xykErrors.NotEnoughAssets);
     });
 
     await validateUnmodified(firstCurrency, secondCurrency, testUser1, [
@@ -263,7 +263,7 @@ describe("xyk-pallet - Mint liquidity tests: MintLiquidity Errors:", () => {
     ).then((result) => {
       const eventResponse = getEventResultFromMangataTx(result);
       expect(eventResponse.state).toEqual(ExtrinsicResult.ExtrinsicFailed);
-      expect(eventResponse.data).toEqual(1);
+      expect(eventResponse.data).toEqual(xykErrors.NotEnoughAssets);
     });
     await validateUnmodified(
       firstCurrency,
@@ -304,7 +304,9 @@ describe("xyk-pallet - Mint liquidity tests: MintLiquidity Errors:", () => {
     );
     let eventResponse = getEventResultFromMangataTx(result);
     expect(eventResponse.state).toEqual(ExtrinsicResult.ExtrinsicFailed);
-    expect(eventResponse.data).toEqual(14);
+    expect(eventResponse.data).toEqual(
+      xykErrors.SecondAssetAmountExceededExpectations
+    );
     await validateUnmodified(firstCurrency, secondCurrency, testUser1, [
       firstAssetAmount,
       poolAmountSecondCurrency,
@@ -320,7 +322,9 @@ describe("xyk-pallet - Mint liquidity tests: MintLiquidity Errors:", () => {
     );
     eventResponse = getEventResultFromMangataTx(resultZero);
     expect(eventResponse.state).toEqual(ExtrinsicResult.ExtrinsicFailed);
-    expect(eventResponse.data).toEqual(14);
+    expect(eventResponse.data).toEqual(
+      xykErrors.SecondAssetAmountExceededExpectations
+    );
     await validateUnmodified(firstCurrency, secondCurrency, testUser1, [
       firstAssetAmount,
       poolAmountSecondCurrency,
@@ -338,7 +342,9 @@ describe("xyk-pallet - Mint liquidity tests: MintLiquidity Errors:", () => {
     );
     eventResponse = getEventResultFromMangataTx(resultExpectation);
     expect(eventResponse.state).toEqual(ExtrinsicResult.ExtrinsicFailed);
-    expect(eventResponse.data).toEqual(14);
+    expect(eventResponse.data).toEqual(
+      xykErrors.SecondAssetAmountExceededExpectations
+    );
     await validateUnmodified(firstCurrency, secondCurrency, testUser1, [
       firstAssetAmount,
       poolAmountSecondCurrency,
