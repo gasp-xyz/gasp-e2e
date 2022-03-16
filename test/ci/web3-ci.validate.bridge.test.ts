@@ -4,7 +4,7 @@
  * @group bridge
  */
 
-import BN from "bn.js";
+import { BN } from "@polkadot/util";
 //@ts-ignore
 import bs58 from "bs58";
 import { getApi, initApi } from "../../utils/api";

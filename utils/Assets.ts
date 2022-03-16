@@ -1,4 +1,4 @@
-import BN from "bn.js";
+import { BN } from "@polkadot/util";
 import { ExtrinsicResult } from "./eventListeners";
 import { getNextAssetId, getAssetSupply } from "./tx";
 import {

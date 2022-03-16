@@ -1,4 +1,4 @@
-import BN from "bn.js";
+import { BN } from "@polkadot/util";
 import { ethers } from "ethers";
 import { JsonRpcProvider } from "@ethersproject/providers";
 

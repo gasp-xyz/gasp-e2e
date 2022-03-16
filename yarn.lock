@@ -2728,7 +2728,7 @@
   dependencies:
     "@babel/types" "^7.3.0"
 
-"@types/bn.js@^4.11.3", "@types/bn.js@^4.11.5", "@types/bn.js@^4.11.6":
+"@types/bn.js@^4.11.3", "@types/bn.js@^4.11.5":
   version "4.11.6"
   resolved "https://registry.yarnpkg.com/@types/bn.js/-/bn.js-4.11.6.tgz#c306c70d9358aaea33cd4eda092a742b9505967c"
   integrity sha512-pqr857jrp2kPuO9uRjZ3PwnJTjoQy+fcdxvBTvHm6dkmEL9q+hDD/2j/0ELOBPtPnS8LjCX0gI9nbl8lVkadpg==
@@ -10125,14 +10125,13 @@ mangata-prng-xoshiro@^1.2.0:
   resolved "https://registry.yarnpkg.com/mangata-prng-xoshiro/-/mangata-prng-xoshiro-1.2.0.tgz#b0931c4bb91b4e574812b019cf5debaedc4e6a54"
   integrity sha512-kuG0evoSLdYr6k1W5+ctDcqfHAkm7TlhVqCNPrANg2EKp82L/OdShkhbDGDt6kb2P6r4MYHelo1DzhfnCG3JWw==
 
-mangata-sdk@^0.18.2:
-  version "0.18.2"
-  resolved "https://registry.yarnpkg.com/mangata-sdk/-/mangata-sdk-0.18.2.tgz#64a21c6897021fbd245a424dde73c2fa2e11a043"
-  integrity sha512-frJMNANqDX50Z3VSA6yWyXYoW5i/2UXV1Dub6QanhNd3vRnnD8EbLeZLplA41aK1kJ6ENOLRGY1U5d8tBU6SxQ==
+mangata-sdk@^0.18.7:
+  version "0.18.7"
+  resolved "https://registry.yarnpkg.com/mangata-sdk/-/mangata-sdk-0.18.7.tgz#14ecb74da00cee739de4f7e9d2821e00f4c56a9f"
+  integrity sha512-cXn3dXyjVxUALGOi6LpfJZH4Ux8XcYHVOC1CLckZhTxkXWnophYVYR3mOuQPOinlZ6iXsJzPtCaU9e10m9BhTg==
   dependencies:
     "@polkadot/api" "^7.10.1"
     big.js "^6.1.1"
-    bn.js "^5.2.0"
     mangata-prng-xoshiro "^1.2.0"
     uuid "^8.3.2"
 

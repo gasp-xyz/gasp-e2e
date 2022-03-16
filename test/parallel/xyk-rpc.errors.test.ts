@@ -10,7 +10,7 @@ import {
   calculate_buy_price_rpc,
   calculate_sell_price_rpc,
 } from "../../utils/tx";
-import BN from "bn.js";
+import { BN } from "@polkadot/util";
 import { bnToHex } from "@polkadot/util";
 import { getEnvironmentRequiredVars } from "../../utils/utils";
 import { Assets } from "../../utils/Assets";
@@ -175,7 +175,7 @@ test.each([
   [new BN("10000000000000000000000")], //<- Fails with:
   //-32602: Invalid params: invalid type: string "0x000000000000021e19e0c9bab2400000", expected u128.
   //assert_eq!(u128::MAX, 340282366920938463463374607431768211455);
-])("RPC big numbers : negative asset ids [amount->%s]", async (amount) => {
+])("RPC big numbers : negative asset ids [amount->%s]", async (amount: BN) => {
   const hexFrom = bnToHex(1000);
   const hexTo = bnToHex(2000);
   const hexAmount = bnToHex(amount);
