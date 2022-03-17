@@ -69,8 +69,11 @@ async function main() {
       break;
     case "mint":
     case "burn":
-    case "swap":
-      testParams.command = Commands.Swap;
+    case "Sell":
+      testParams.command = Commands.SwapSell;
+      break;
+    case "Buy":
+      testParams.command = Commands.SwapBuy;
       break;
     case "ping":
       testParams.command = Commands.Ping;
@@ -131,13 +134,6 @@ function verifyArgs(params: TestParams, test: string) {
       //      );
     }
   });
-}
-
-export async function runExtrinsicTransfer(params: TestParams) {
-  await TestFactory.BuildTestItem(Commands.ExtrinsicTransfer).run(params);
-}
-export async function runExtrinsicSwap(params: TestParams) {
-  await TestFactory.BuildTestItem(Commands.Swap).run(params);
 }
 
 main().then(() => {

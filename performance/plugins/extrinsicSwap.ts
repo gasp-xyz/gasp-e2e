@@ -9,6 +9,7 @@ import { Assets } from "../../utils/Assets";
 import { Node } from "../../utils/Framework/Node/Node";
 import { UserFactory, Users } from "../../utils/Framework/User/UserFactory";
 import { Keyring } from "@polkadot/api";
+import { Commands } from "../testFactory";
 let tokens: number[] = [];
 export class ExtrinsicSwap extends performanceTestItem {
   async arrange(numberOfThreads: number, nodes: string[]): Promise<boolean> {
@@ -41,7 +42,8 @@ export class ExtrinsicSwap extends performanceTestItem {
       const preSetupThreads = await preGenerateTransactions(
         testParams,
         this.mgaNodeandUsers,
-        createAndSignSwaps
+        createAndSignSwaps,
+        { testParams }
       );
       console.info(`running Txs..`);
       await runTransactions(testParams, preSetupThreads);
@@ -56,7 +58,8 @@ async function createAndSignSwaps(
     { mgaSdk: Mangata; users: { nonce: BN; keyPair: KeyringPair }[] }
   >,
   nodeThread: number,
-  userNo: number
+  userNo: number,
+  options: { testparams: TestParams }
 ) {
   const mgaValue = mgaNodeandUsers.get(nodeThread)!;
   const srcUser = mgaNodeandUsers.get(nodeThread)?.users![userNo];
@@ -65,13 +68,12 @@ async function createAndSignSwaps(
   if (new Date().getMilliseconds() % 2 === 0) {
     assets = [tokens[1], tokens[0]];
   }
-
-  const tx = api!.tx.xyk.sellAsset(
-    assets[0],
-    assets[1],
-    new BN(100),
-    new BN(0)
-  );
+  let tx;
+  if (options.testparams.command === Commands.SwapBuy) {
+    tx = api!.tx.xyk.buyAsset(assets[0], assets[1], new BN(100), new BN(0));
+  } else {
+    tx = api!.tx.xyk.sellAsset(assets[0], assets[1], new BN(100), new BN(0));
+  }
   const signed = tx.sign(srcUser!.keyPair, {
     nonce: mgaValue.users[userNo]!.nonce,
   });

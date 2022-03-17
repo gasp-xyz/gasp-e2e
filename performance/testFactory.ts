@@ -8,7 +8,8 @@ export enum Commands {
   ExtrinsicTransfer,
   ExtrinsicTransferKeepAlive,
   ExtrinsicTransferAll,
-  Swap,
+  SwapSell,
+  SwapBuy,
   Ping,
 }
 
@@ -26,7 +27,7 @@ export class TestFactory {
     ) {
       return new ExtrinsicTransfer();
     }
-    if (type === Commands.Swap) {
+    if (type === Commands.SwapBuy || type === Commands.SwapSell) {
       return new ExtrinsicSwap();
     }
     if (type === Commands.Ping) {
