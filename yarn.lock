@@ -10125,10 +10125,10 @@ mangata-prng-xoshiro@^1.2.0:
   resolved "https://registry.yarnpkg.com/mangata-prng-xoshiro/-/mangata-prng-xoshiro-1.2.0.tgz#b0931c4bb91b4e574812b019cf5debaedc4e6a54"
   integrity sha512-kuG0evoSLdYr6k1W5+ctDcqfHAkm7TlhVqCNPrANg2EKp82L/OdShkhbDGDt6kb2P6r4MYHelo1DzhfnCG3JWw==
 
-mangata-sdk@^0.18.7:
-  version "0.18.7"
-  resolved "https://registry.yarnpkg.com/mangata-sdk/-/mangata-sdk-0.18.7.tgz#14ecb74da00cee739de4f7e9d2821e00f4c56a9f"
-  integrity sha512-cXn3dXyjVxUALGOi6LpfJZH4Ux8XcYHVOC1CLckZhTxkXWnophYVYR3mOuQPOinlZ6iXsJzPtCaU9e10m9BhTg==
+mangata-sdk@^0.18.8:
+  version "0.18.8"
+  resolved "https://registry.yarnpkg.com/mangata-sdk/-/mangata-sdk-0.18.8.tgz#5c67e0269047aba0f4456462b1fb8b9683161b9c"
+  integrity sha512-VgrGSOg3Tluky112y5xwAIV6IxEpGsEnRG+KcIIrMKSn3zzDt5YsYssZf/tq7w8wjwDxMB35gvn2P3i5cUuhaA==
   dependencies:
     "@polkadot/api" "^7.10.1"
     big.js "^6.1.1"
