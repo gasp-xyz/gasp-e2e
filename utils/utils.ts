@@ -227,6 +227,7 @@ export async function createPoolIfMissing(
   if (balance[0].isZero() || balance[1].isZero()) {
     await sudo.mint(firstAssetId, sudo, new BN(amountInPool));
     await sudo.mint(seccondAssetId, sudo, new BN(amountInPool));
+    await sudo.addMGATokens(sudo);
     const poolValue = new BN(amountInPool).div(new BN(2));
     await sudo.createPoolToAsset(
       poolValue,

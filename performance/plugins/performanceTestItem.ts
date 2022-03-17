@@ -13,6 +13,7 @@ import { mintAsset } from "../../utils/tx";
 import { initApi } from "../../utils/api";
 import { captureEvents, pendingExtrinsics } from "./testReporter";
 import { Guid } from "guid-typescript";
+import { createPoolIfMissing } from "../../utils/utils";
 
 function seedFromNum(seed: number): string {
   const guid = Guid.create().toString();
@@ -89,6 +90,13 @@ export class performanceTestItem implements TestItem {
         );
       }
     );
+  }
+  async createPoolIfMissing(tokenId: BN, tokenId2: BN, nodes: string[]) {
+    const keyring = new Keyring({ type: "sr25519" });
+    const node = nodes[0];
+    const mgaNode = new Node(node);
+    const sudo = UserFactory.createUser(Users.SudoUser, keyring, mgaNode);
+    await createPoolIfMissing(sudo, "100000", tokenId, tokenId2);
   }
   async mintTokensToUsers(
     numberOfThreads: number,

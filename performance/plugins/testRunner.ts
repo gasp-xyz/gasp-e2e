@@ -210,14 +210,14 @@ async function runTxsInBurstMode(
 
   await asyncPool(
     testParams.threads,
-    indexArray.slice(testParams.threads),
+    indexArray, //.slice(testParams.threads),
     runNodeTxs
   );
-  await asyncPool(
-    testParams.threads,
-    [...Array(testParams.threads).keys()],
-    runNodeTxs
-  );
+  //  await asyncPool(
+  //    testParams.threads,
+  //    [...Array(testParams.threads).keys()],
+  //    runNodeTxs
+  //  );
 }
 
 export async function runQuery(
