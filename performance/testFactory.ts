@@ -1,3 +1,4 @@
+import { ExtrinsicBurn } from "./plugins/extrinsicBurn";
 import { ExtrinsicMint } from "./plugins/extrinsicMint";
 import { ExtrinsicSwap } from "./plugins/extrinsicSwap";
 import { ExtrinsicTransfer } from "./plugins/extrinsicTransfer";
@@ -13,6 +14,7 @@ export enum Commands {
   SwapBuy,
   Ping,
   Mint,
+  Burn,
 }
 
 export enum TestsCases {
@@ -40,6 +42,9 @@ export class TestFactory {
     }
     if (type === Commands.Mint) {
       return new ExtrinsicMint();
+    }
+    if (type === Commands.Burn) {
+      return new ExtrinsicBurn();
     }
     throw Error("TestItem not found");
   }

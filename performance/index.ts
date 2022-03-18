@@ -68,6 +68,8 @@ async function main() {
       testParams.command = Commands.ExtrinsicTransferAll;
       break;
     case "burn":
+      testParams.command = Commands.Burn;
+      break;
     case "sell":
       testParams.command = Commands.SwapSell;
       break;
