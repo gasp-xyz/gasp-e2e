@@ -71,9 +71,9 @@ async function createAndSignSwaps(
   }
   let tx;
   if (options.testParams.command === Commands.SwapBuy) {
-    tx = api!.tx.xyk.buyAsset(assets[0], assets[1], new BN(1), MAX_BALANCE);
+    tx = api!.tx.xyk.buyAsset(assets[0], assets[1], new BN(100), MAX_BALANCE);
   } else {
-    tx = api!.tx.xyk.sellAsset(assets[0], assets[1], new BN(1), new BN(0));
+    tx = api!.tx.xyk.sellAsset(assets[0], assets[1], new BN(100), new BN(0));
   }
   const signed = tx.sign(srcUser!.keyPair, {
     nonce: mgaValue.users[userNo]!.nonce,
