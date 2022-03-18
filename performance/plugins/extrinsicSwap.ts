@@ -11,15 +11,17 @@ import { UserFactory, Users } from "../../utils/Framework/User/UserFactory";
 import { Keyring } from "@polkadot/api";
 import { Commands } from "../testFactory";
 import { MAX_BALANCE } from "../../utils/Constants";
+
 let tokens: number[] = [];
 export class ExtrinsicSwap extends performanceTestItem {
+  tokens: number[] = [];
   async arrange(numberOfThreads: number, nodes: string[]): Promise<boolean> {
     await super.arrange(numberOfThreads, nodes);
     //create tokens for testing.
     const mgaNode = new Node(nodes[0]);
     const keyring = new Keyring({ type: "sr25519" });
     const sudo = UserFactory.createUser(Users.SudoUser, keyring, mgaNode);
-    tokens = await Assets.setupUserWithCurrencies(
+    this.tokens = await Assets.setupUserWithCurrencies(
       sudo,
       [new BN(100000), new BN(100000)],
       sudo
@@ -27,10 +29,15 @@ export class ExtrinsicSwap extends performanceTestItem {
       return values.map((val) => val.toNumber());
     });
     //create the pool
-    await this.createPoolIfMissing(new BN(tokens[0]), new BN(tokens[1]), nodes);
+    await this.createPoolIfMissing(
+      new BN(this.tokens[0]),
+      new BN(this.tokens[1]),
+      nodes
+    );
     await this.mintTokensToUsers(numberOfThreads, nodes);
-    await this.mintERC20TokensToUsers(tokens, this.mgaNodeandUsers);
+    await this.mintERC20TokensToUsers(this.tokens, this.mgaNodeandUsers);
     console.info(`Setup Done!`);
+    tokens = this.tokens;
     return true;
   }
   async act(testParams: TestParams): Promise<boolean> {

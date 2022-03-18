@@ -67,13 +67,15 @@ async function main() {
     case "transferAll":
       testParams.command = Commands.ExtrinsicTransferAll;
       break;
-    case "mint":
     case "burn":
-    case "Sell":
+    case "sell":
       testParams.command = Commands.SwapSell;
       break;
-    case "Buy":
+    case "buy":
       testParams.command = Commands.SwapBuy;
+      break;
+    case "mint":
+      testParams.command = Commands.Mint;
       break;
     case "ping":
       testParams.command = Commands.Ping;
