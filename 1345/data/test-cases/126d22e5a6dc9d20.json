@@ -1,0 +1,281 @@
+{
+  "uid" : "126d22e5a6dc9d20",
+  "name" : "When tx extrinsic - fails, User gets notified",
+  "fullName" : "UI tests - A user gets notified when error.When tx extrinsic - fails, User gets notified",
+  "historyId" : "9e5572744a0a4db47103f34aae647423",
+  "time" : {
+    "start" : 1647654031591,
+    "stop" : 1647654078827,
+    "duration" : 47236
+  },
+  "description" : "",
+  "descriptionHtml" : "",
+  "status" : "failed",
+  "statusMessage" : "Error: WebSocket is not connected",
+  "statusTrace" : "Error: WebSocket is not connected\n                    at assert (/home/runner/work/mangata-e2e/mangata-e2e/node_modules/@polkadot/util/assert.cjs:37:11)\n                    at /home/runner/work/mangata-e2e/mangata-e2e/node_modules/@polkadot/rpc-provider/ws/index.js:550:7\n                    at new Promise (<anonymous>)\n                    at WsProvider._send2 (/home/runner/work/mangata-e2e/mangata-e2e/node_modules/@polkadot/rpc-provider/ws/index.js:548:10)\n                    at WsProvider.send (/home/runner/work/mangata-e2e/mangata-e2e/node_modules/@polkadot/rpc-provider/ws/index.js:486:23)\n                    at callWithRegistry (/home/runner/work/mangata-e2e/mangata-e2e/node_modules/@polkadot/rpc-core/bundle.js:215:42)\n                    at Observable._subscribe (/home/runner/work/mangata-e2e/mangata-e2e/node_modules/@polkadot/rpc-core/bundle.js:222:9)\n                    at Observable.Object.<anonymous>.Observable._trySubscribe (/home/runner/work/mangata-e2e/mangata-e2e/node_modules/rxjs/src/internal/Observable.ts:245:19)\n                    at /home/runner/work/mangata-e2e/mangata-e2e/node_modules/rxjs/src/internal/Observable.ts:235:18\n                    at Object.errorContext (/home/runner/work/mangata-e2e/mangata-e2e/node_modules/rxjs/src/internal/util/errorContext.ts:29:5)\n                    at Observable.Object.<anonymous>.Observable.subscribe (/home/runner/work/mangata-e2e/mangata-e2e/node_modules/rxjs/src/internal/Observable.ts:221:5)\n                    at ConnectableObservable.Object.<anonymous>.ConnectableObservable.connect (/home/runner/work/mangata-e2e/mangata-e2e/node_modules/rxjs/src/internal/observable/ConnectableObservable.ts:72:21)\n                    at /home/runner/work/mangata-e2e/mangata-e2e/node_modules/rxjs/src/internal/operators/refCount.ts:116:57\n                    at OperatorSubscriber.<anonymous> (/home/runner/work/mangata-e2e/mangata-e2e/node_modules/rxjs/src/internal/util/lift.ts:24:18)\n                    at /home/runner/work/mangata-e2e/mangata-e2e/node_modules/rxjs/src/internal/Observable.ts:227:22\n                    at Object.errorContext (/home/runner/work/mangata-e2e/mangata-e2e/node_modules/rxjs/src/internal/util/errorContext.ts:29:5)\n                    at Observable.Object.<anonymous>.Observable.subscribe (/home/runner/work/mangata-e2e/mangata-e2e/node_modules/rxjs/src/internal/Observable.ts:221:5)\n                    at /home/runner/work/mangata-e2e/mangata-e2e/node_modules/rxjs/src/internal/operators/catchError.ts:115:23\n                    at SafeSubscriber.<anonymous> (/home/runner/work/mangata-e2e/mangata-e2e/node_modules/rxjs/src/internal/util/lift.ts:24:18)\n                    at /home/runner/work/mangata-e2e/mangata-e2e/node_modules/rxjs/src/internal/Observable.ts:227:22\n                    at Object.errorContext (/home/runner/work/mangata-e2e/mangata-e2e/node_modules/rxjs/src/internal/util/errorContext.ts:29:5)\n                    at Observable.subscribe (/home/runner/work/mangata-e2e/mangata-e2e/node_modules/rxjs/src/internal/Observable.ts:221:5)\n                    at /home/runner/work/mangata-e2e/mangata-e2e/node_modules/@polkadot/api/promise/decorateMethod.js:46:91\n                    at new Promise (<anonymous>)\n                    at decorateCall (/home/runner/work/mangata-e2e/mangata-e2e/node_modules/@polkadot/api/promise/decorateMethod.js:42:10)\n                    at Object.account (/home/runner/work/mangata-e2e/mangata-e2e/node_modules/@polkadot/api/promise/decorateMethod.js:74:73)\n                    at getCurrentNonce (/home/runner/work/mangata-e2e/mangata-e2e/utils/txHandler.ts:21:46)\n                    at SudoDB.getSudoNonce (/home/runner/work/mangata-e2e/mangata-e2e/utils/SudoDB.ts:31:20)\n                    at sudoIssueAsset (/home/runner/work/mangata-e2e/mangata-e2e/utils/txHandler.ts:85:44)\n                    at Function.issueAssetToUser (/home/runner/work/mangata-e2e/mangata-e2e/utils/Assets.ts:61:26)\n                    at Function.setupUserWithCurrencies (/home/runner/work/mangata-e2e/mangata-e2e/utils/Assets.ts:43:37)\n                    at Object.<anonymous> (/home/runner/work/mangata-e2e/mangata-e2e/test/ui/ui.tx-modal.test.ts:210:32)\n                    at Object.asyncJestTest (/home/runner/work/mangata-e2e/mangata-e2e/node_modules/jest-jasmine2/build/jasmineAsyncInstall.js:106:37)\n                    at /home/runner/work/mangata-e2e/mangata-e2e/node_modules/jest-jasmine2/build/queueRunner.js:45:12\n                    at new Promise (<anonymous>)\n                    at mapper (/home/runner/work/mangata-e2e/mangata-e2e/node_modules/jest-jasmine2/build/queueRunner.js:28:19)\n                    at /home/runner/work/mangata-e2e/mangata-e2e/node_modules/jest-jasmine2/build/queueRunner.js:75:41\n                    at runMicrotasks (<anonymous>)\n                    at processTicksAndRejections (node:internal/process/task_queues:96:5)",
+  "flaky" : false,
+  "newFailed" : false,
+  "beforeStages" : [ ],
+  "testStage" : {
+    "status" : "failed",
+    "statusMessage" : "Error: WebSocket is not connected",
+    "statusTrace" : "Error: WebSocket is not connected\n                    at assert (/home/runner/work/mangata-e2e/mangata-e2e/node_modules/@polkadot/util/assert.cjs:37:11)\n                    at /home/runner/work/mangata-e2e/mangata-e2e/node_modules/@polkadot/rpc-provider/ws/index.js:550:7\n                    at new Promise (<anonymous>)\n                    at WsProvider._send2 (/home/runner/work/mangata-e2e/mangata-e2e/node_modules/@polkadot/rpc-provider/ws/index.js:548:10)\n                    at WsProvider.send (/home/runner/work/mangata-e2e/mangata-e2e/node_modules/@polkadot/rpc-provider/ws/index.js:486:23)\n                    at callWithRegistry (/home/runner/work/mangata-e2e/mangata-e2e/node_modules/@polkadot/rpc-core/bundle.js:215:42)\n                    at Observable._subscribe (/home/runner/work/mangata-e2e/mangata-e2e/node_modules/@polkadot/rpc-core/bundle.js:222:9)\n                    at Observable.Object.<anonymous>.Observable._trySubscribe (/home/runner/work/mangata-e2e/mangata-e2e/node_modules/rxjs/src/internal/Observable.ts:245:19)\n                    at /home/runner/work/mangata-e2e/mangata-e2e/node_modules/rxjs/src/internal/Observable.ts:235:18\n                    at Object.errorContext (/home/runner/work/mangata-e2e/mangata-e2e/node_modules/rxjs/src/internal/util/errorContext.ts:29:5)\n                    at Observable.Object.<anonymous>.Observable.subscribe (/home/runner/work/mangata-e2e/mangata-e2e/node_modules/rxjs/src/internal/Observable.ts:221:5)\n                    at ConnectableObservable.Object.<anonymous>.ConnectableObservable.connect (/home/runner/work/mangata-e2e/mangata-e2e/node_modules/rxjs/src/internal/observable/ConnectableObservable.ts:72:21)\n                    at /home/runner/work/mangata-e2e/mangata-e2e/node_modules/rxjs/src/internal/operators/refCount.ts:116:57\n                    at OperatorSubscriber.<anonymous> (/home/runner/work/mangata-e2e/mangata-e2e/node_modules/rxjs/src/internal/util/lift.ts:24:18)\n                    at /home/runner/work/mangata-e2e/mangata-e2e/node_modules/rxjs/src/internal/Observable.ts:227:22\n                    at Object.errorContext (/home/runner/work/mangata-e2e/mangata-e2e/node_modules/rxjs/src/internal/util/errorContext.ts:29:5)\n                    at Observable.Object.<anonymous>.Observable.subscribe (/home/runner/work/mangata-e2e/mangata-e2e/node_modules/rxjs/src/internal/Observable.ts:221:5)\n                    at /home/runner/work/mangata-e2e/mangata-e2e/node_modules/rxjs/src/internal/operators/catchError.ts:115:23\n                    at SafeSubscriber.<anonymous> (/home/runner/work/mangata-e2e/mangata-e2e/node_modules/rxjs/src/internal/util/lift.ts:24:18)\n                    at /home/runner/work/mangata-e2e/mangata-e2e/node_modules/rxjs/src/internal/Observable.ts:227:22\n                    at Object.errorContext (/home/runner/work/mangata-e2e/mangata-e2e/node_modules/rxjs/src/internal/util/errorContext.ts:29:5)\n                    at Observable.subscribe (/home/runner/work/mangata-e2e/mangata-e2e/node_modules/rxjs/src/internal/Observable.ts:221:5)\n                    at /home/runner/work/mangata-e2e/mangata-e2e/node_modules/@polkadot/api/promise/decorateMethod.js:46:91\n                    at new Promise (<anonymous>)\n                    at decorateCall (/home/runner/work/mangata-e2e/mangata-e2e/node_modules/@polkadot/api/promise/decorateMethod.js:42:10)\n                    at Object.account (/home/runner/work/mangata-e2e/mangata-e2e/node_modules/@polkadot/api/promise/decorateMethod.js:74:73)\n                    at getCurrentNonce (/home/runner/work/mangata-e2e/mangata-e2e/utils/txHandler.ts:21:46)\n                    at SudoDB.getSudoNonce (/home/runner/work/mangata-e2e/mangata-e2e/utils/SudoDB.ts:31:20)\n                    at sudoIssueAsset (/home/runner/work/mangata-e2e/mangata-e2e/utils/txHandler.ts:85:44)\n                    at Function.issueAssetToUser (/home/runner/work/mangata-e2e/mangata-e2e/utils/Assets.ts:61:26)\n                    at Function.setupUserWithCurrencies (/home/runner/work/mangata-e2e/mangata-e2e/utils/Assets.ts:43:37)\n                    at Object.<anonymous> (/home/runner/work/mangata-e2e/mangata-e2e/test/ui/ui.tx-modal.test.ts:210:32)\n                    at Object.asyncJestTest (/home/runner/work/mangata-e2e/mangata-e2e/node_modules/jest-jasmine2/build/jasmineAsyncInstall.js:106:37)\n                    at /home/runner/work/mangata-e2e/mangata-e2e/node_modules/jest-jasmine2/build/queueRunner.js:45:12\n                    at new Promise (<anonymous>)\n                    at mapper (/home/runner/work/mangata-e2e/mangata-e2e/node_modules/jest-jasmine2/build/queueRunner.js:28:19)\n                    at /home/runner/work/mangata-e2e/mangata-e2e/node_modules/jest-jasmine2/build/queueRunner.js:75:41\n                    at runMicrotasks (<anonymous>)\n                    at processTicksAndRejections (node:internal/process/task_queues:96:5)",
+    "steps" : [ ],
+    "attachments" : [ {
+      "uid" : "4ae995b877c6d61a",
+      "name" : "Screeenshot",
+      "source" : "4ae995b877c6d61a.png",
+      "type" : "image/png",
+      "size" : 86916
+    } ],
+    "parameters" : [ ],
+    "stepsCount" : 0,
+    "attachmentsCount" : 1,
+    "shouldDisplayMessage" : true,
+    "hasContent" : true
+  },
+  "afterStages" : [ ],
+  "labels" : [ {
+    "name" : "suite",
+    "value" : "UI tests - A user gets notified when error"
+  }, {
+    "name" : "testClass",
+    "value" : "UI tests - A user gets notified when error"
+  }, {
+    "name" : "testMethod",
+    "value" : "When tx extrinsic - fails, User gets notified"
+  }, {
+    "name" : "package",
+    "value" : "UI tests - A user gets notified when error"
+  }, {
+    "name" : "resultFormat",
+    "value" : "allure1"
+  } ],
+  "parameters" : [ ],
+  "links" : [ ],
+  "hidden" : false,
+  "retry" : false,
+  "extra" : {
+    "severity" : "normal",
+    "retries" : [ ],
+    "categories" : [ {
+      "name" : "Product defects",
+      "matchedStatuses" : [ ],
+      "flaky" : false
+    } ],
+    "history" : {
+      "statistic" : {
+        "failed" : 64,
+        "broken" : 0,
+        "skipped" : 0,
+        "passed" : 0,
+        "unknown" : 0,
+        "total" : 64
+      },
+      "items" : [ {
+        "uid" : "743bfc0975bbc177",
+        "reportUrl" : "https://mangata-finance.github.io/mangata-e2e/1343//#testresult/743bfc0975bbc177",
+        "status" : "failed",
+        "statusDetails" : "Error: WebSocket is not connected",
+        "time" : {
+          "start" : 1647567732149,
+          "stop" : 1647567779161,
+          "duration" : 47012
+        }
+      }, {
+        "uid" : "df537e16766ef1e8",
+        "reportUrl" : "https://mangata-finance.github.io/mangata-e2e/1341//#testresult/df537e16766ef1e8",
+        "status" : "failed",
+        "statusDetails" : "Error: WebSocket is not connected",
+        "time" : {
+          "start" : 1647481284836,
+          "stop" : 1647481335350,
+          "duration" : 50514
+        }
+      }, {
+        "uid" : "35ca8af148cfa577",
+        "reportUrl" : "https://mangata-finance.github.io/mangata-e2e/1339//#testresult/35ca8af148cfa577",
+        "status" : "failed",
+        "statusDetails" : "Error: WebSocket is not connected",
+        "time" : {
+          "start" : 1647394872453,
+          "stop" : 1647394919674,
+          "duration" : 47221
+        }
+      }, {
+        "uid" : "2ccb75ee7482b5fc",
+        "reportUrl" : "https://mangata-finance.github.io/mangata-e2e/1337//#testresult/2ccb75ee7482b5fc",
+        "status" : "failed",
+        "statusDetails" : "Error: WebSocket is not connected",
+        "time" : {
+          "start" : 1647308513952,
+          "stop" : 1647308567005,
+          "duration" : 53053
+        }
+      }, {
+        "uid" : "69355e20219d9943",
+        "reportUrl" : "https://mangata-finance.github.io/mangata-e2e/1335//#testresult/69355e20219d9943",
+        "status" : "failed",
+        "statusDetails" : "Error: WebSocket is not connected",
+        "time" : {
+          "start" : 1647222068295,
+          "stop" : 1647222115413,
+          "duration" : 47118
+        }
+      }, {
+        "uid" : "ccf530ed4a1d4cce",
+        "reportUrl" : "https://mangata-finance.github.io/mangata-e2e/1333//#testresult/ccf530ed4a1d4cce",
+        "status" : "failed",
+        "statusDetails" : "Error: WebSocket is not connected",
+        "time" : {
+          "start" : 1647135515475,
+          "stop" : 1647135562845,
+          "duration" : 47370
+        }
+      }, {
+        "uid" : "ebf8f2b154230cd7",
+        "reportUrl" : "https://mangata-finance.github.io/mangata-e2e/1331//#testresult/ebf8f2b154230cd7",
+        "status" : "failed",
+        "statusDetails" : "Error: WebSocket is not connected",
+        "time" : {
+          "start" : 1647049103185,
+          "stop" : 1647049153957,
+          "duration" : 50772
+        }
+      }, {
+        "uid" : "fd041efa1c241042",
+        "reportUrl" : "https://mangata-finance.github.io/mangata-e2e/1329//#testresult/fd041efa1c241042",
+        "status" : "failed",
+        "statusDetails" : "Error: WebSocket is not connected",
+        "time" : {
+          "start" : 1646963017844,
+          "stop" : 1646963069749,
+          "duration" : 51905
+        }
+      }, {
+        "uid" : "796acbf952148d08",
+        "reportUrl" : "https://mangata-finance.github.io/mangata-e2e/1327//#testresult/796acbf952148d08",
+        "status" : "failed",
+        "statusDetails" : "Error: WebSocket is not connected",
+        "time" : {
+          "start" : 1646876530437,
+          "stop" : 1646876579900,
+          "duration" : 49463
+        }
+      }, {
+        "uid" : "b4bb93a4c0dc1915",
+        "reportUrl" : "https://mangata-finance.github.io/mangata-e2e/1325//#testresult/b4bb93a4c0dc1915",
+        "status" : "failed",
+        "statusDetails" : "Error: WebSocket is not connected",
+        "time" : {
+          "start" : 1646790094725,
+          "stop" : 1646790147303,
+          "duration" : 52578
+        }
+      }, {
+        "uid" : "cf7862685ff790bf",
+        "reportUrl" : "https://mangata-finance.github.io/mangata-e2e/1323//#testresult/cf7862685ff790bf",
+        "status" : "failed",
+        "statusDetails" : "Error: WebSocket is not connected",
+        "time" : {
+          "start" : 1646703637580,
+          "stop" : 1646703684850,
+          "duration" : 47270
+        }
+      }, {
+        "uid" : "b00c1d2021b81310",
+        "reportUrl" : "https://mangata-finance.github.io/mangata-e2e/1321//#testresult/b00c1d2021b81310",
+        "status" : "failed",
+        "statusDetails" : "Error: WebSocket is not connected",
+        "time" : {
+          "start" : 1646617236641,
+          "stop" : 1646617287532,
+          "duration" : 50891
+        }
+      }, {
+        "uid" : "8705b85825547de8",
+        "reportUrl" : "https://mangata-finance.github.io/mangata-e2e/1319//#testresult/8705b85825547de8",
+        "status" : "failed",
+        "statusDetails" : "Error: WebSocket is not connected",
+        "time" : {
+          "start" : 1646530762445,
+          "stop" : 1646530809861,
+          "duration" : 47416
+        }
+      }, {
+        "uid" : "8f54fcb3a1d72f8d",
+        "reportUrl" : "https://mangata-finance.github.io/mangata-e2e/1317//#testresult/8f54fcb3a1d72f8d",
+        "status" : "failed",
+        "statusDetails" : "Error: WebSocket is not connected",
+        "time" : {
+          "start" : 1646444399913,
+          "stop" : 1646444449177,
+          "duration" : 49264
+        }
+      }, {
+        "uid" : "a55dbdc2b3e1b40c",
+        "reportUrl" : "https://mangata-finance.github.io/mangata-e2e/1315//#testresult/a55dbdc2b3e1b40c",
+        "status" : "failed",
+        "statusDetails" : "Error: WebSocket is not connected",
+        "time" : {
+          "start" : 1646358034246,
+          "stop" : 1646358082817,
+          "duration" : 48571
+        }
+      }, {
+        "uid" : "ef10d3841e7bc451",
+        "reportUrl" : "https://mangata-finance.github.io/mangata-e2e/1313//#testresult/ef10d3841e7bc451",
+        "status" : "failed",
+        "statusDetails" : "Error: WebSocket is not connected",
+        "time" : {
+          "start" : 1646271741353,
+          "stop" : 1646271794604,
+          "duration" : 53251
+        }
+      }, {
+        "uid" : "9458bce776ff5cbf",
+        "reportUrl" : "https://mangata-finance.github.io/mangata-e2e/1311//#testresult/9458bce776ff5cbf",
+        "status" : "failed",
+        "statusDetails" : "Error: WebSocket is not connected",
+        "time" : {
+          "start" : 1646185340260,
+          "stop" : 1646185391727,
+          "duration" : 51467
+        }
+      }, {
+        "uid" : "b9b02d6c593522c1",
+        "reportUrl" : "https://mangata-finance.github.io/mangata-e2e/1309//#testresult/b9b02d6c593522c1",
+        "status" : "failed",
+        "statusDetails" : "Error: WebSocket is not connected",
+        "time" : {
+          "start" : 1646098849687,
+          "stop" : 1646098901574,
+          "duration" : 51887
+        }
+      }, {
+        "uid" : "ccc6e9d3df470154",
+        "reportUrl" : "https://mangata-finance.github.io/mangata-e2e/1307//#testresult/ccc6e9d3df470154",
+        "status" : "failed",
+        "statusDetails" : "Error: WebSocket is not connected",
+        "time" : {
+          "start" : 1646012225881,
+          "stop" : 1646012272524,
+          "duration" : 46643
+        }
+      }, {
+        "uid" : "bb2619a7bb9ef969",
+        "reportUrl" : "https://mangata-finance.github.io/mangata-e2e/1305//#testresult/bb2619a7bb9ef969",
+        "status" : "failed",
+        "statusDetails" : "Error: WebSocket is not connected",
+        "time" : {
+          "start" : 1645925935814,
+          "stop" : 1645925987372,
+          "duration" : 51558
+        }
+      } ]
+    },
+    "tags" : [ ]
+  },
+  "source" : "126d22e5a6dc9d20.json",
+  "parameterValues" : [ ]
+}
