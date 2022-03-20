@@ -1,0 +1,263 @@
+{
+  "uid" : "def5d1ffdd41df98",
+  "name" : "As a User I can Withdraw ETH from Meta extension",
+  "fullName" : "UI main tests - Withdraw - ETH.As a User I can Withdraw ETH from Meta extension",
+  "historyId" : "eac55faabce1aad19e0827a3afd71b78",
+  "time" : {
+    "start" : 1647741567453,
+    "stop" : 1647741567610,
+    "duration" : 157
+  },
+  "description" : "",
+  "descriptionHtml" : "",
+  "status" : "failed",
+  "statusMessage" : "NoSuchWindowError: no such window\n                  (Session info: chrome=94.0.4606.61)\n                  (Driver info: chromedriver=94.0.4606.61 (418b78f5838ed0b1c69bb4e51ea0252171854915-refs/branch-heads/4606@{#1204}),platform=Linux 5.11.0-1028-azure x86_64)",
+  "statusTrace" : "NoSuchWindowError: no such window\n                  (Session info: chrome=94.0.4606.61)\n                  (Driver info: chromedriver=94.0.4606.61 (418b78f5838ed0b1c69bb4e51ea0252171854915-refs/branch-heads/4606@{#1204}),platform=Linux 5.11.0-1028-azure x86_64)\n                    at Object.checkLegacyResponse (/home/runner/work/mangata-e2e/mangata-e2e/node_modules/selenium-webdriver/lib/error.js:546:15)\n                    at parseHttpResponse (/home/runner/work/mangata-e2e/mangata-e2e/node_modules/selenium-webdriver/lib/http.js:509:13)\n                    at /home/runner/work/mangata-e2e/mangata-e2e/node_modules/selenium-webdriver/lib/http.js:441:30\n                    at runMicrotasks (<anonymous>)\n                    at processTicksAndRejections (node:internal/process/task_queues:96:5)\n                From: Task: WebDriver.switchTo().window(CDwindow-E69D66A1FEA53FFBC7345FDF3CB62B93)\n                    at mixin.schedule (/home/runner/work/mangata-e2e/mangata-e2e/node_modules/selenium-webdriver/lib/webdriver.js:807:17)\n                    at TargetLocator.window (/home/runner/work/mangata-e2e/mangata-e2e/node_modules/selenium-webdriver/lib/webdriver.js:1844:25)\n                    at leaveOnlyOneTab (/home/runner/work/mangata-e2e/mangata-e2e/utils/frontend/utils/Helper.ts:119:37)\n                    at runMicrotasks (<anonymous>)\n                    at processTicksAndRejections (node:internal/process/task_queues:96:5)\n                    at setupAllExtensions (/home/runner/work/mangata-e2e/mangata-e2e/utils/frontend/utils/Helper.ts:92:3)\n                    at Object.<anonymous> (/home/runner/work/mangata-e2e/mangata-e2e/test/ui/ui-main.ETH.test.ts:115:33)",
+  "flaky" : false,
+  "newFailed" : false,
+  "beforeStages" : [ ],
+  "afterStages" : [ ],
+  "labels" : [ {
+    "name" : "suite",
+    "value" : "UI main tests - Withdraw - ETH"
+  }, {
+    "name" : "testClass",
+    "value" : "UI main tests - Withdraw - ETH"
+  }, {
+    "name" : "testMethod",
+    "value" : "As a User I can Withdraw ETH from Meta extension"
+  }, {
+    "name" : "package",
+    "value" : "UI main tests - Withdraw - ETH"
+  }, {
+    "name" : "resultFormat",
+    "value" : "allure1"
+  } ],
+  "parameters" : [ ],
+  "links" : [ ],
+  "hidden" : false,
+  "retry" : false,
+  "extra" : {
+    "severity" : "normal",
+    "retries" : [ ],
+    "categories" : [ {
+      "name" : "Product defects",
+      "matchedStatuses" : [ ],
+      "flaky" : false
+    } ],
+    "history" : {
+      "statistic" : {
+        "failed" : 47,
+        "broken" : 0,
+        "skipped" : 0,
+        "passed" : 0,
+        "unknown" : 0,
+        "total" : 47
+      },
+      "items" : [ {
+        "uid" : "62cf57eabd800a83",
+        "reportUrl" : "https://mangata-finance.github.io/mangata-e2e/1345//#testresult/62cf57eabd800a83",
+        "status" : "failed",
+        "statusDetails" : "NoSuchWindowError: no such window\n                  (Session info: chrome=94.0.4606.61)\n                  (Driver info: chromedriver=94.0.4606.61 (418b78f5838ed0b1c69bb4e51ea0252171854915-refs/branch-heads/4606@{#1204}),platform=Linux 5.11.0-1028-azure x86_64)",
+        "time" : {
+          "start" : 1647655045357,
+          "stop" : 1647655045449,
+          "duration" : 92
+        }
+      }, {
+        "uid" : "1cab365f1b0a6af9",
+        "reportUrl" : "https://mangata-finance.github.io/mangata-e2e/1343//#testresult/1cab365f1b0a6af9",
+        "status" : "failed",
+        "statusDetails" : "NoSuchWindowError: no such window\n                  (Session info: chrome=94.0.4606.61)\n                  (Driver info: chromedriver=94.0.4606.61 (418b78f5838ed0b1c69bb4e51ea0252171854915-refs/branch-heads/4606@{#1204}),platform=Linux 5.11.0-1028-azure x86_64)",
+        "time" : {
+          "start" : 1647568741145,
+          "stop" : 1647568741265,
+          "duration" : 120
+        }
+      }, {
+        "uid" : "c5a3c7a12e16d5ba",
+        "reportUrl" : "https://mangata-finance.github.io/mangata-e2e/1341//#testresult/c5a3c7a12e16d5ba",
+        "status" : "failed",
+        "statusDetails" : "NoSuchWindowError: no such window\n                  (Session info: chrome=94.0.4606.61)\n                  (Driver info: chromedriver=94.0.4606.61 (418b78f5838ed0b1c69bb4e51ea0252171854915-refs/branch-heads/4606@{#1204}),platform=Linux 5.11.0-1028-azure x86_64)",
+        "time" : {
+          "start" : 1647482338581,
+          "stop" : 1647482338728,
+          "duration" : 147
+        }
+      }, {
+        "uid" : "bf0b9591415b2846",
+        "reportUrl" : "https://mangata-finance.github.io/mangata-e2e/1339//#testresult/bf0b9591415b2846",
+        "status" : "failed",
+        "statusDetails" : "NoSuchWindowError: no such window\n                  (Session info: chrome=94.0.4606.61)\n                  (Driver info: chromedriver=94.0.4606.61 (418b78f5838ed0b1c69bb4e51ea0252171854915-refs/branch-heads/4606@{#1204}),platform=Linux 5.11.0-1028-azure x86_64)",
+        "time" : {
+          "start" : 1647395882501,
+          "stop" : 1647395882624,
+          "duration" : 123
+        }
+      }, {
+        "uid" : "237653be9b4f0075",
+        "reportUrl" : "https://mangata-finance.github.io/mangata-e2e/1337//#testresult/237653be9b4f0075",
+        "status" : "failed",
+        "statusDetails" : "NoSuchWindowError: no such window\n                  (Session info: chrome=94.0.4606.61)\n                  (Driver info: chromedriver=94.0.4606.61 (418b78f5838ed0b1c69bb4e51ea0252171854915-refs/branch-heads/4606@{#1204}),platform=Linux 5.11.0-1028-azure x86_64)",
+        "time" : {
+          "start" : 1647309608266,
+          "stop" : 1647309608422,
+          "duration" : 156
+        }
+      }, {
+        "uid" : "cb98e4828e43c4e0",
+        "reportUrl" : "https://mangata-finance.github.io/mangata-e2e/1335//#testresult/cb98e4828e43c4e0",
+        "status" : "failed",
+        "statusDetails" : "NoSuchWindowError: no such window\n                  (Session info: chrome=94.0.4606.61)\n                  (Driver info: chromedriver=94.0.4606.61 (418b78f5838ed0b1c69bb4e51ea0252171854915-refs/branch-heads/4606@{#1204}),platform=Linux 5.11.0-1028-azure x86_64)",
+        "time" : {
+          "start" : 1647223075958,
+          "stop" : 1647223076075,
+          "duration" : 117
+        }
+      }, {
+        "uid" : "9101666811e01403",
+        "reportUrl" : "https://mangata-finance.github.io/mangata-e2e/1333//#testresult/9101666811e01403",
+        "status" : "failed",
+        "statusDetails" : "NoSuchWindowError: no such window\n                  (Session info: chrome=94.0.4606.61)\n                  (Driver info: chromedriver=94.0.4606.61 (418b78f5838ed0b1c69bb4e51ea0252171854915-refs/branch-heads/4606@{#1204}),platform=Linux 5.11.0-1028-azure x86_64)",
+        "time" : {
+          "start" : 1647136535996,
+          "stop" : 1647136536106,
+          "duration" : 110
+        }
+      }, {
+        "uid" : "9cc40368ae9db553",
+        "reportUrl" : "https://mangata-finance.github.io/mangata-e2e/1331//#testresult/9cc40368ae9db553",
+        "status" : "failed",
+        "statusDetails" : "NoSuchWindowError: no such window\n                  (Session info: chrome=94.0.4606.61)\n                  (Driver info: chromedriver=94.0.4606.61 (418b78f5838ed0b1c69bb4e51ea0252171854915-refs/branch-heads/4606@{#1204}),platform=Linux 5.11.0-1028-azure x86_64)",
+        "time" : {
+          "start" : 1647050181444,
+          "stop" : 1647050181584,
+          "duration" : 140
+        }
+      }, {
+        "uid" : "e590a5f59c14112a",
+        "reportUrl" : "https://mangata-finance.github.io/mangata-e2e/1329//#testresult/e590a5f59c14112a",
+        "status" : "failed",
+        "statusDetails" : "NoSuchWindowError: no such window\n                  (Session info: chrome=94.0.4606.61)\n                  (Driver info: chromedriver=94.0.4606.61 (418b78f5838ed0b1c69bb4e51ea0252171854915-refs/branch-heads/4606@{#1204}),platform=Linux 5.13.0-1014-azure x86_64)",
+        "time" : {
+          "start" : 1646964126921,
+          "stop" : 1646964127038,
+          "duration" : 117
+        }
+      }, {
+        "uid" : "19f949916bcec2d8",
+        "reportUrl" : "https://mangata-finance.github.io/mangata-e2e/1327//#testresult/19f949916bcec2d8",
+        "status" : "failed",
+        "statusDetails" : "NoSuchWindowError: no such window\n                  (Session info: chrome=94.0.4606.61)\n                  (Driver info: chromedriver=94.0.4606.61 (418b78f5838ed0b1c69bb4e51ea0252171854915-refs/branch-heads/4606@{#1204}),platform=Linux 5.11.0-1028-azure x86_64)",
+        "time" : {
+          "start" : 1646877582701,
+          "stop" : 1646877582827,
+          "duration" : 126
+        }
+      }, {
+        "uid" : "f16e2a8fcbda290a",
+        "reportUrl" : "https://mangata-finance.github.io/mangata-e2e/1325//#testresult/f16e2a8fcbda290a",
+        "status" : "failed",
+        "statusDetails" : "NoSuchWindowError: no such window\n                  (Session info: chrome=94.0.4606.61)\n                  (Driver info: chromedriver=94.0.4606.61 (418b78f5838ed0b1c69bb4e51ea0252171854915-refs/branch-heads/4606@{#1204}),platform=Linux 5.11.0-1028-azure x86_64)",
+        "time" : {
+          "start" : 1646791201032,
+          "stop" : 1646791201170,
+          "duration" : 138
+        }
+      }, {
+        "uid" : "a3f2670ae7764313",
+        "reportUrl" : "https://mangata-finance.github.io/mangata-e2e/1323//#testresult/a3f2670ae7764313",
+        "status" : "failed",
+        "statusDetails" : "NoSuchWindowError: no such window\n                  (Session info: chrome=94.0.4606.61)\n                  (Driver info: chromedriver=94.0.4606.61 (418b78f5838ed0b1c69bb4e51ea0252171854915-refs/branch-heads/4606@{#1204}),platform=Linux 5.11.0-1028-azure x86_64)",
+        "time" : {
+          "start" : 1646704645983,
+          "stop" : 1646704646112,
+          "duration" : 129
+        }
+      }, {
+        "uid" : "bee724d5716d0145",
+        "reportUrl" : "https://mangata-finance.github.io/mangata-e2e/1321//#testresult/bee724d5716d0145",
+        "status" : "failed",
+        "statusDetails" : "NoSuchWindowError: no such window\n                  (Session info: chrome=94.0.4606.61)\n                  (Driver info: chromedriver=94.0.4606.61 (418b78f5838ed0b1c69bb4e51ea0252171854915-refs/branch-heads/4606@{#1204}),platform=Linux 5.11.0-1028-azure x86_64)",
+        "time" : {
+          "start" : 1646618297247,
+          "stop" : 1646618297401,
+          "duration" : 154
+        }
+      }, {
+        "uid" : "d88e14b22235ec41",
+        "reportUrl" : "https://mangata-finance.github.io/mangata-e2e/1319//#testresult/d88e14b22235ec41",
+        "status" : "failed",
+        "statusDetails" : "NoSuchWindowError: no such window\n                  (Session info: chrome=94.0.4606.61)\n                  (Driver info: chromedriver=94.0.4606.61 (418b78f5838ed0b1c69bb4e51ea0252171854915-refs/branch-heads/4606@{#1204}),platform=Linux 5.11.0-1028-azure x86_64)",
+        "time" : {
+          "start" : 1646531776765,
+          "stop" : 1646531776864,
+          "duration" : 99
+        }
+      }, {
+        "uid" : "b66740baab48e534",
+        "reportUrl" : "https://mangata-finance.github.io/mangata-e2e/1317//#testresult/b66740baab48e534",
+        "status" : "failed",
+        "statusDetails" : "NoSuchWindowError: no such window\n                  (Session info: chrome=94.0.4606.61)\n                  (Driver info: chromedriver=94.0.4606.61 (418b78f5838ed0b1c69bb4e51ea0252171854915-refs/branch-heads/4606@{#1204}),platform=Linux 5.11.0-1028-azure x86_64)",
+        "time" : {
+          "start" : 1646445437901,
+          "stop" : 1646445438041,
+          "duration" : 140
+        }
+      }, {
+        "uid" : "fb5fd27564790369",
+        "reportUrl" : "https://mangata-finance.github.io/mangata-e2e/1315//#testresult/fb5fd27564790369",
+        "status" : "failed",
+        "statusDetails" : "NoSuchWindowError: no such window\n                  (Session info: chrome=94.0.4606.61)\n                  (Driver info: chromedriver=94.0.4606.61 (418b78f5838ed0b1c69bb4e51ea0252171854915-refs/branch-heads/4606@{#1204}),platform=Linux 5.11.0-1028-azure x86_64)",
+        "time" : {
+          "start" : 1646359055932,
+          "stop" : 1646359056101,
+          "duration" : 169
+        }
+      }, {
+        "uid" : "e2f9ddcab60d5917",
+        "reportUrl" : "https://mangata-finance.github.io/mangata-e2e/1313//#testresult/e2f9ddcab60d5917",
+        "status" : "failed",
+        "statusDetails" : "NoSuchWindowError: no such window\n                  (Session info: chrome=94.0.4606.61)\n                  (Driver info: chromedriver=94.0.4606.61 (418b78f5838ed0b1c69bb4e51ea0252171854915-refs/branch-heads/4606@{#1204}),platform=Linux 5.11.0-1028-azure x86_64)",
+        "time" : {
+          "start" : 1646272849167,
+          "stop" : 1646272849294,
+          "duration" : 127
+        }
+      }, {
+        "uid" : "7f592ba6b40cce6a",
+        "reportUrl" : "https://mangata-finance.github.io/mangata-e2e/1311//#testresult/7f592ba6b40cce6a",
+        "status" : "failed",
+        "statusDetails" : "NoSuchWindowError: no such window\n                  (Session info: chrome=94.0.4606.61)\n                  (Driver info: chromedriver=94.0.4606.61 (418b78f5838ed0b1c69bb4e51ea0252171854915-refs/branch-heads/4606@{#1204}),platform=Linux 5.11.0-1028-azure x86_64)",
+        "time" : {
+          "start" : 1646186411973,
+          "stop" : 1646186412115,
+          "duration" : 142
+        }
+      }, {
+        "uid" : "f86d6a77cb6d619d",
+        "reportUrl" : "https://mangata-finance.github.io/mangata-e2e/1309//#testresult/f86d6a77cb6d619d",
+        "status" : "failed",
+        "statusDetails" : "TimeoutError: Waiting for element to be located By(xpath, //input[@placeholder='Paste Secret Recovery Phrase from clipboard'])\n                Wait timed out after 60012ms",
+        "time" : {
+          "start" : 1646100073475,
+          "stop" : 1646100135641,
+          "duration" : 62166
+        }
+      }, {
+        "uid" : "e3bf4ac83c7580ef",
+        "reportUrl" : "https://mangata-finance.github.io/mangata-e2e/1307//#testresult/e3bf4ac83c7580ef",
+        "status" : "failed",
+        "statusDetails" : "TimeoutError: Waiting for element to be located By(xpath, //input[@placeholder='Paste Secret Recovery Phrase from clipboard'])\n                Wait timed out after 60001ms",
+        "time" : {
+          "start" : 1646013366624,
+          "stop" : 1646013427822,
+          "duration" : 61198
+        }
+      } ]
+    },
+    "tags" : [ ]
+  },
+  "source" : "def5d1ffdd41df98.json",
+  "parameterValues" : [ ]
+}
