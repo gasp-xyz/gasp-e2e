@@ -1,4 +1,5 @@
 import BN from "bn.js";
+import { assert } from "console";
 import { ExtrinsicResult } from "./eventListeners";
 import { getNextAssetId, getAssetSupply } from "./tx";
 import {
@@ -69,7 +70,7 @@ export class Assets {
       user.keyRingPair.address,
     ]);
 
-    expect(eventResult.state).toEqual(ExtrinsicResult.ExtrinsicSuccess);
+    assert(eventResult.state === ExtrinsicResult.ExtrinsicSuccess);
     const assetId = eventResult.data[0].split(",").join("");
     await setAssetInfo(
       sudo,

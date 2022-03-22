@@ -9,10 +9,12 @@ import { KeyringPair } from "@polkadot/keyring/types";
 import { UserFactory, Users } from "../../utils/Framework/User/UserFactory";
 import { Node } from "../../utils/Framework/Node/Node";
 import { MGA_ASSET_ID } from "../../utils/Constants";
-import { mintAsset } from "../../utils/tx";
+import { mintAsset, transferAsset } from "../../utils/tx";
 import { initApi } from "../../utils/api";
 import { captureEvents, pendingExtrinsics } from "./testReporter";
 import { Guid } from "guid-typescript";
+import { createPoolIfMissing } from "../../utils/utils";
+import { User } from "../../utils/User";
 
 function seedFromNum(seed: number): string {
   const guid = Guid.create().toString();
@@ -89,6 +91,13 @@ export class performanceTestItem implements TestItem {
         );
       }
     );
+  }
+  async createPoolIfMissing(tokenId: BN, tokenId2: BN, nodes: string[]) {
+    const keyring = new Keyring({ type: "sr25519" });
+    const node = nodes[0];
+    const mgaNode = new Node(node);
+    const sudo = UserFactory.createUser(Users.SudoUser, keyring, mgaNode);
+    await createPoolIfMissing(sudo, "100000", tokenId, tokenId2);
   }
   async mintTokensToUsers(
     numberOfThreads: number,
@@ -191,6 +200,42 @@ export class performanceTestItem implements TestItem {
       }
       this.mgaNodeandUsers.set(nodeNumber, { mgaSdk: mga, users: users });
     }
+  }
+  async transferLiqTokensToUsers(
+    user: User,
+    amount: BN,
+    liqAssetId: number,
+    mgaNodeandUsers: Map<
+      number,
+      { mgaSdk: Mangata; users: { nonce: BN; keyPair: KeyringPair }[] }
+    >
+  ) {
+    const transferPromises = [];
+
+    for (let nodeNumber = 0; nodeNumber < mgaNodeandUsers.size; nodeNumber++) {
+      const mga = mgaNodeandUsers.get(nodeNumber)?.mgaSdk!;
+      const users = mgaNodeandUsers.get(nodeNumber)?.users!;
+
+      testLog.getLog().info("Fetching nonces for node " + nodeNumber);
+      let userNonce = await mga.getNonce(user.keyRingPair.address);
+      //lets create as many of users as threads.
+      for (let i = 0; i < users.length; i++) {
+        transferPromises.push(
+          transferAsset(
+            user.keyRingPair,
+            new BN(liqAssetId),
+            users[i].keyPair.address,
+            amount
+          )
+        );
+        userNonce = userNonce.addn(1);
+      }
+    }
+    const results = await Promise.all(transferPromises);
+    console.info(`transferred to each user ${amount} of AssetId-${liqAssetId}`);
+    testLog.getLog().info("¡¡ Tokens transfered !!" + JSON.stringify(results));
+
+    return true;
   }
 }
 

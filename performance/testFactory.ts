@@ -1,3 +1,5 @@
+import { ExtrinsicBurn } from "./plugins/extrinsicBurn";
+import { ExtrinsicMint } from "./plugins/extrinsicMint";
 import { ExtrinsicSwap } from "./plugins/extrinsicSwap";
 import { ExtrinsicTransfer } from "./plugins/extrinsicTransfer";
 import { ExtrinsicTransferAll } from "./plugins/extrinsicTransferAll";
@@ -8,8 +10,11 @@ export enum Commands {
   ExtrinsicTransfer,
   ExtrinsicTransferKeepAlive,
   ExtrinsicTransferAll,
-  Swap,
+  SwapSell,
+  SwapBuy,
   Ping,
+  Mint,
+  Burn,
 }
 
 export enum TestsCases {
@@ -26,7 +31,7 @@ export class TestFactory {
     ) {
       return new ExtrinsicTransfer();
     }
-    if (type === Commands.Swap) {
+    if (type === Commands.SwapBuy || type === Commands.SwapSell) {
       return new ExtrinsicSwap();
     }
     if (type === Commands.Ping) {
@@ -34,6 +39,12 @@ export class TestFactory {
     }
     if (type === Commands.ExtrinsicTransferAll) {
       return new ExtrinsicTransferAll();
+    }
+    if (type === Commands.Mint) {
+      return new ExtrinsicMint();
+    }
+    if (type === Commands.Burn) {
+      return new ExtrinsicBurn();
     }
     throw Error("TestItem not found");
   }

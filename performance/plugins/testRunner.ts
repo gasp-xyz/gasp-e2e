@@ -11,6 +11,8 @@ import { SubmittableResult } from "@polkadot/api";
 
 import asyncPool from "tiny-async-pool";
 import { TestsCases } from "../testFactory";
+import { getMangata } from "./performanceTestItem";
+import { waitNewBlock } from "../../utils/eventListeners";
 
 export async function preGenerateTransactions(
   testParams: TestParams,
@@ -208,16 +210,25 @@ async function runTxsInBurstMode(
       `Sending  in ${sorted.length} Threads ${preSetupThreads[0].length} Txs...`
     );
 
+  const mga = await getMangata(testParams.nodes[nodeIdx]!);
+  let pendingTxs = await (await mga.getApi()).rpc.author.pendingExtrinsics();
+  while (pendingTxs.length > 5000) {
+    await waitNewBlock();
+    pendingTxs = await (
+      await await mga.getApi()
+    ).rpc.author.pendingExtrinsics();
+  }
+
   await asyncPool(
     testParams.threads,
-    indexArray.slice(testParams.threads),
+    indexArray, //.slice(testParams.threads),
     runNodeTxs
   );
-  await asyncPool(
-    testParams.threads,
-    [...Array(testParams.threads).keys()],
-    runNodeTxs
-  );
+  //  await asyncPool(
+  //    testParams.threads,
+  //    [...Array(testParams.threads).keys()],
+  //    runNodeTxs
+  //  );
 }
 
 export async function runQuery(
