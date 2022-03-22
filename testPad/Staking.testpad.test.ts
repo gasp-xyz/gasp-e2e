@@ -364,10 +364,13 @@ describe("staking - testpad", () => {
     }
     keyring = new Keyring({ type: "sr25519" });
 
-    const json = fs.readFileSync(address + ".json", {
-      encoding: "utf8",
-      flag: "r",
-    });
+    const json = fs.readFileSync(
+      `/home/goncer/5FA3LcCrKMgr9WHqyvtDhDarAXRkJjoYrSy6XnZPKfwiB3sY.json`,
+      {
+        encoding: "utf8",
+        flag: "r",
+      }
+    );
     const user = new User(keyring, "aasd", JSON.parse(json));
     keyring.addPair(user.keyRingPair);
     keyring.pairs[0].decodePkcs8("mangata123");
@@ -392,10 +395,13 @@ describe("staking - testpad", () => {
     }
     keyring = new Keyring({ type: "sr25519" });
 
-    const json = fs.readFileSync(address + ".json", {
-      encoding: "utf8",
-      flag: "r",
-    });
+    const json = fs.readFileSync(
+      `/home/goncer/5FA3LcCrKMgr9WHqyvtDhDarAXRkJjoYrSy6XnZPKfwiB3sY.json`,
+      {
+        encoding: "utf8",
+        flag: "r",
+      }
+    );
 
     const testUser1 = new User(keyring, "aasd", JSON.parse(json));
     const user = testUser1;
@@ -403,49 +409,49 @@ describe("staking - testpad", () => {
     //    const stringPk = pk.toString();
     keyring.addPair(user.keyRingPair);
     keyring.pairs[0].decodePkcs8("mangata123");
-    sudo = new User(keyring, sudoUserName);
-    keyring.addPair(sudo.keyRingPair);
-    await testUser1.refreshAmounts(AssetWallet.BEFORE);
-
-    const { nonce } = await api.query.system.account(sudo.keyRingPair.address);
-    await signTx(
-      api,
-      api.tx.sudo.sudo(
-        api.tx.tokens.mint(
-          MGA_ASSET_ID,
-          testUser1.keyRingPair.address,
-          new BN(Math.pow(10, 18).toString())
-        )
-      ),
-      sudo.keyRingPair,
-      { nonce: new BN(nonce) }
-    );
-    const nonce2 = await (
-      await api.query.system.account(sudo.keyRingPair.address)
-    ).nonce;
-    await signTx(
-      api,
-      api.tx.sudo.sudo(
-        api.tx.tokens.mint(
-          new BN(3),
-          testUser1.keyRingPair.address,
-          new BN("11000000000000000000000")
-        )
-      ),
-      sudo.keyRingPair,
-      { nonce: new BN(nonce2.toNumber()) }
-    );
-
-    await waitNewBlock();
-    await signSendAndWaitToFinishTx(
-      api?.tx.parachainStaking.joinCandidates(
-        new BN("11000000000000000000000"),
-        new BN(3),
-        // @ts-ignore - Mangata bond operation has 4 params, somehow is inheriting the bond operation from polkadot :S
-        new BN(3)
-      ),
-      testUser1.keyRingPair
-    );
+    //    sudo = new User(keyring, sudoUserName);
+    //    keyring.addPair(sudo.keyRingPair);
+    //    await testUser1.refreshAmounts(AssetWallet.BEFORE);
+    //
+    //    const { nonce } = await api.query.system.account(sudo.keyRingPair.address);
+    //    await signTx(
+    //      api,
+    //      api.tx.sudo.sudo(
+    //        api.tx.tokens.mint(
+    //          MGA_ASSET_ID,
+    //          testUser1.keyRingPair.address,
+    //          new BN(Math.pow(10, 18).toString())
+    //        )
+    //      ),
+    //      sudo.keyRingPair,
+    //      { nonce: new BN(nonce) }
+    //    );
+    //    const nonce2 = await (
+    //      await api.query.system.account(sudo.keyRingPair.address)
+    //    ).nonce;
+    //    await signTx(
+    //      api,
+    //      api.tx.sudo.sudo(
+    //        api.tx.tokens.mint(
+    //          new BN(3),
+    //          testUser1.keyRingPair.address,
+    //          new BN("11000000000000000000000")
+    //        )
+    //      ),
+    //      sudo.keyRingPair,
+    //      { nonce: new BN(nonce2.toNumber()) }
+    //    );
+    //
+    //    await waitNewBlock();
+    //    await signSendAndWaitToFinishTx(
+    //      api?.tx.parachainStaking.joinCandidates(
+    //        new BN("11000000000000000000000"),
+    //        new BN(3),
+    //        // @ts-ignore - Mangata bond operation has 4 params, somehow is inheriting the bond operation from polkadot :S
+    //        new BN(3)
+    //      ),
+    //      testUser1.keyRingPair
+    //    );
     await waitNewBlock();
     const rpcResult = await api?.rpc.author.rotateKeys();
 
@@ -465,18 +471,22 @@ describe("staking - testpad", () => {
     }
     keyring = new Keyring({ type: "sr25519" });
 
-    const json = fs.readFileSync(address + ".json", {
-      encoding: "utf8",
-      flag: "r",
-    });
+    const json = fs.readFileSync(
+      `/home/goncer/5FA3LcCrKMgr9WHqyvtDhDarAXRkJjoYrSy6XnZPKfwiB3sY.json`,
+      {
+        encoding: "utf8",
+        flag: "r",
+      }
+    );
     const user = new User(keyring, "aasd", JSON.parse(json));
     //const pk = u8aToHex(user.keyRingPair.publicKey);
 
     keyring.addPair(user.keyRingPair);
     keyring.pairs[0].decodePkcs8("mangata123");
 
-    const rpcResult = await api?.rpc.author.rotateKeys();
-
+    //    const rpcResult = await api?.rpc.author.rotateKeys();
+    const rpcResult =
+      "0xa02218669065017eb04a952e24e9ec1724d639449b8871d410df44883fb22c6d";
     await signSendAndWaitToFinishTx(
       api?.tx.session.setKeys(rpcResult.toString(), "0x00"),
       user.keyRingPair

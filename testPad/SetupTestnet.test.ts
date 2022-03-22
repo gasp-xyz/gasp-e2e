@@ -46,7 +46,7 @@ describe("staking - testpad", () => {
 
   test("SetupTestNet", async () => {
     keyring = new Keyring({ type: "sr25519" });
-    const destUser = `5Ew7ERfihWfWRqWeozvf9CSEGV9qMMWmQa2bWMhUopc4PsGn`;
+    //const destUser = `5Ew7ERfihWfWRqWeozvf9CSEGV9qMMWmQa2bWMhUopc4PsGn`;
     const fileLocation = `/home/goncer/5FA3LcCrKMgr9WHqyvtDhDarAXRkJjoYrSy6XnZPKfwiB3sY.json`;
     const fileLocationSudo = `/home/goncer/5CthcoS3CYHoVHDMUacydayRLMzMWedKryjsrvzrmv3VHCKP.json`;
     const json = fs.readFileSync(fileLocation, {
@@ -81,13 +81,14 @@ describe("staking - testpad", () => {
       new BN("1800000000000000000000000000000000"),
       new BN("2700000000000000000000000000000000")
     );
-    const promises: any[] = [];
-    [3, 2, 0].forEach((tokenId) => {
-      promises.push(
-        mga.transferTokenAll(user.keyRingPair, tokenId.toString(), destUser)
-      );
-    });
-    await Promise.all(promises);
+
+    //    const promises: any[] = [];
+    //    [3, 2, 0].forEach((tokenId) => {
+    //      promises.push(
+    //        mga.transferTokenAll(user.keyRingPair, tokenId.toString(), destUser)
+    //      );
+    //    });
+    //    await Promise.all(promises);
   });
 });
 //3: [
