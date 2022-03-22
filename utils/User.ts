@@ -7,12 +7,12 @@ import { testLog } from "./Logger";
 import {
   buyAsset,
   createPool,
+  FeeTxs,
   getAllAssets,
   getTokensAccountInfo,
   getUserAssets,
   mintAsset,
   mintLiquidity,
-  sellAsset,
   transferAll,
 } from "./tx";
 import { getEventResultFromMangataTx } from "./txHandler";
@@ -153,20 +153,22 @@ export class User {
   }
 
   async sellAssets(soldAssetId: BN, boughtAssetId: BN, amount: BN) {
-    await sellAsset(
-      this.keyRingPair,
-      soldAssetId,
-      boughtAssetId,
-      amount,
-      new BN(0)
-    ).then((result) => {
-      const eventResponse = getEventResultFromMangataTx(result, [
-        "xyk",
-        "AssetsSwapped",
-        this.keyRingPair.address,
-      ]);
-      assert.equal(eventResponse.state, ExtrinsicResult.ExtrinsicSuccess);
-    });
+    await new FeeTxs()
+      .sellAsset(
+        this.keyRingPair,
+        soldAssetId,
+        boughtAssetId,
+        amount,
+        new BN(0)
+      )
+      .then((result) => {
+        const eventResponse = getEventResultFromMangataTx(result, [
+          "xyk",
+          "AssetsSwapped",
+          this.keyRingPair.address,
+        ]);
+        assert.equal(eventResponse.state, ExtrinsicResult.ExtrinsicSuccess);
+      });
   }
   async mintLiquidity(
     firstCurrency: BN,

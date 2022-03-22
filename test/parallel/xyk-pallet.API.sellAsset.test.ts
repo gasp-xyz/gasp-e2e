@@ -11,6 +11,7 @@ import {
   calculate_sell_price_local,
   getTreasury,
   getTreasuryBurn,
+  FeeTxs,
 } from "../../utils/tx";
 import { ExtrinsicResult } from "../../utils/eventListeners";
 import { BN } from "@polkadot/util";
@@ -79,17 +80,19 @@ describe("xyk-pallet - Sell assets tests: SellAsset Errors:", () => {
       sudo
     );
 
-    await sellAsset(
-      testUser1.keyRingPair,
-      thirdCurrency,
-      secondCurrency,
-      first_asset_amount.div(new BN(2)),
-      new BN(0)
-    ).then((result) => {
-      const eventResponse = getEventResultFromMangataTx(result);
-      expect(eventResponse.state).toEqual(ExtrinsicResult.ExtrinsicFailed);
-      expect(eventResponse.data).toEqual(2);
-    });
+    await new FeeTxs()
+      .sellAsset(
+        testUser1.keyRingPair,
+        thirdCurrency,
+        secondCurrency,
+        first_asset_amount.div(new BN(2)),
+        new BN(0)
+      )
+      .then((result) => {
+        const eventResponse = getEventResultFromMangataTx(result);
+        expect(eventResponse.state).toEqual(ExtrinsicResult.ExtrinsicFailed);
+        expect(eventResponse.data).toEqual(2);
+      });
     await sellAsset(
       testUser1.keyRingPair,
       secondCurrency,
@@ -425,28 +428,30 @@ describe("xyk-pallet - Sell assets tests: Selling Assets you can", () => {
       remainingOfCurrency3.free
     );
 
-    await sellAsset(
-      testUser2.keyRingPair,
-      thirdCurrency,
-      firstCurrency,
-      remainingOfCurrency3.free,
-      sellPriceLocal
-    ).then((result) => {
-      const eventResponse = getEventResultFromMangataTx(result, [
-        "xyk",
-        "AssetsSwapped",
-        testUser2.keyRingPair.address,
-      ]);
-      expect(eventResponse.state).toEqual(ExtrinsicResult.ExtrinsicSuccess);
-      validateAssetsSwappedEvent(
-        eventResponse,
-        testUser2.keyRingPair.address,
+    await new FeeTxs()
+      .sellAsset(
+        testUser2.keyRingPair,
         thirdCurrency,
-        remainingOfCurrency3.free,
         firstCurrency,
+        remainingOfCurrency3.free,
         sellPriceLocal
-      );
-    });
+      )
+      .then((result) => {
+        const eventResponse = getEventResultFromMangataTx(result, [
+          "xyk",
+          "AssetsSwapped",
+          testUser2.keyRingPair.address,
+        ]);
+        expect(eventResponse.state).toEqual(ExtrinsicResult.ExtrinsicSuccess);
+        validateAssetsSwappedEvent(
+          eventResponse,
+          testUser2.keyRingPair.address,
+          thirdCurrency,
+          remainingOfCurrency3.free,
+          firstCurrency,
+          sellPriceLocal
+        );
+      });
     testUser2.addAsset(firstCurrency);
     await testUser2.refreshAmounts(AssetWallet.AFTER);
 

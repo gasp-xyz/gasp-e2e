@@ -1,3 +1,4 @@
+/* eslint-disable no-console */
 import { AddressOrPair, SubmittableExtrinsic } from "@polkadot/api/types";
 import { AccountData, AccountId32 } from "@polkadot/types/interfaces";
 import { AnyTuple, Codec } from "@polkadot/types/types";
@@ -15,7 +16,7 @@ import { testLog } from "./Logger";
 import { KeyringPair } from "@polkadot/keyring/types";
 import { signTx } from "mangata-sdk";
 import { AnyJson } from "@polkadot/types/types";
-
+import { Fees } from "./Fees";
 export const signTxDeprecated = async (
   tx: SubmittableExtrinsic<"promise">,
   address: AddressOrPair,
@@ -442,7 +443,8 @@ export const sellAsset = async (
   soldAssetId: BN,
   boughtAssetId: BN,
   amount: BN,
-  minAmountOut: BN
+  minAmountOut: BN,
+  options = {}
 ) => {
   const mangata = await getMangataInstance();
   const result = await mangata.sellAsset(
@@ -450,7 +452,8 @@ export const sellAsset = async (
     soldAssetId.toString(),
     boughtAssetId.toString(),
     amount,
-    minAmountOut
+    minAmountOut,
+    options
   );
   return result;
 };
@@ -460,7 +463,8 @@ export const buyAsset = async (
   soldAssetId: BN,
   boughtAssetId: BN,
   amount: BN,
-  maxAmountIn: BN
+  maxAmountIn: BN,
+  options = {}
 ) => {
   const mangata = await getMangataInstance();
   const result = await mangata.buyAsset(
@@ -468,7 +472,8 @@ export const buyAsset = async (
     soldAssetId.toString(),
     boughtAssetId.toString(),
     amount,
-    maxAmountIn
+    maxAmountIn,
+    options
   );
   return result;
 };
@@ -620,4 +625,61 @@ export async function getAllAcountEntries(): Promise<
 > {
   const api = getApi();
   return await api.query.tokens.accounts.entries();
+}
+
+function requireFees() {
+  return (
+    _target: any,
+    _propertyKey: string,
+    descriptor: TypedPropertyDescriptor<(...params: any[]) => Promise<any>>
+  ) => {
+    // eslint-disable-next-line no-console
+    console.log("first(): called");
+    const oldFunc = descriptor.value;
+    descriptor.value = async function () {
+      if (Fees.swapFeesEnabled) {
+        const mgas = await getTokensAccountInfo(
+          arguments[0].address,
+          new BN(0)
+        );
+        if (mgas.free === 0) {
+          await mintMgas(arguments[0]);
+        }
+      }
+      return oldFunc!.apply(this, arguments as any);
+    };
+  };
+}
+
+async function mintMgas(account: KeyringPair) {
+  const { sudo: sudoUserName } = getEnvironmentRequiredVars();
+  const keyring = new Keyring({ type: "sr25519" });
+  const sudo = new User(keyring, sudoUserName);
+  const user = new User(keyring);
+  user.addFromAddress(keyring, account.address);
+  await user.addMGATokens(sudo);
+}
+
+export class FeeTxs {
+  @requireFees()
+  async sellAsset(
+    account: KeyringPair,
+    soldAssetId: BN,
+    boughtAssetId: BN,
+    amount: BN,
+    minAmountOut: BN
+  ) {
+    return sellAsset(account, soldAssetId, boughtAssetId, amount, minAmountOut);
+  }
+
+  @requireFees()
+  async buyAsset(
+    account: KeyringPair,
+    soldAssetId: BN,
+    boughtAssetId: BN,
+    amount: BN,
+    maxAmountIn: BN
+  ) {
+    return buyAsset(account, soldAssetId, boughtAssetId, amount, maxAmountIn);
+  }
 }
