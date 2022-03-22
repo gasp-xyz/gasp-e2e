@@ -110,6 +110,9 @@ export function getEnvironmentRequiredVars() {
   const clusterNodeF = process.env.CLUSTER_NODE_F
     ? process.env.CLUSTER_NODE_F
     : "ws://node_ferdie:9944";
+  const fees = process.env.FEES_ENABLED
+    ? process.env.FEES_ENABLED === "true"
+    : true;
 
   return {
     sudo: sudoUserName,
@@ -134,6 +137,7 @@ export function getEnvironmentRequiredVars() {
     clusterNodeD: clusterNodeD,
     clusterNodeE: clusterNodeE,
     clusterNodeF: clusterNodeF,
+    fees: fees,
   };
 }
 
