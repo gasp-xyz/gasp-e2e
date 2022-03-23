@@ -120,7 +120,7 @@ export class User {
     amount: BN,
     maxExpected = new BN(1000000)
   ) {
-    await buyAsset(
+    return await buyAsset(
       this.keyRingPair,
       soldAssetId,
       boughtAssetId,
@@ -133,6 +133,7 @@ export class User {
         this.keyRingPair.address,
       ]);
       assert.equal(eventResponse.state, ExtrinsicResult.ExtrinsicSuccess);
+      return result;
     });
   }
 
@@ -153,7 +154,7 @@ export class User {
   }
 
   async sellAssets(soldAssetId: BN, boughtAssetId: BN, amount: BN) {
-    await new FeeTxs()
+    return await new FeeTxs()
       .sellAsset(
         this.keyRingPair,
         soldAssetId,
@@ -168,6 +169,7 @@ export class User {
           this.keyRingPair.address,
         ]);
         assert.equal(eventResponse.state, ExtrinsicResult.ExtrinsicSuccess);
+        return result;
       });
   }
   async mintLiquidity(
