@@ -1,3 +1,4 @@
+/* eslint-disable jest/no-conditional-expect */
 /*
  *
  * @group xyk
@@ -5,6 +6,7 @@
  * @group sequential
  * @group critical
  */
+import fs from "fs";
 import { getApi, initApi } from "../../utils/api";
 import {
   burnLiquidity,
@@ -22,6 +24,7 @@ import {
   waitIfSessionWillChangeInNblocks,
 } from "../../utils/utils";
 import { MGA_ASSET_ID } from "../../utils/Constants";
+import { Fees } from "../../utils/Fees";
 
 jest.spyOn(console, "log").mockImplementation(jest.fn());
 jest.spyOn(console, "error").mockImplementation(jest.fn());
@@ -220,7 +223,11 @@ test("xyk-pallet - MGA tokens are substracted as fee : TransferAll", async () =>
     addFromWallet!
   );
 });
-test("xyk-pallet - MGA tokens are not substracted as fee : SellAsset", async () => {
+test("xyk-pallet - MGA tokens are /are not substracted as fee : SellAsset", async () => {
+  await fs.writeFileSync(
+    testUser1.keyRingPair.address + ".json",
+    JSON.stringify(testUser1.keyRingPair.toJson("mangata123"))
+  );
   await testUser1.sellAssets(firstCurrency, secondCurrency, new BN(50));
   await testUser1.refreshAmounts(AssetWallet.AFTER);
   await pallet.refreshAmounts(AssetWallet.AFTER);
@@ -228,18 +235,30 @@ test("xyk-pallet - MGA tokens are not substracted as fee : SellAsset", async () 
   const diff = mgaUserToken.amountBefore.free.sub(
     mgaUserToken.amountAfter.free
   );
-  expect(diff).bnEqual(new BN(0));
-  expect(testUser1.getAsset(MGA_ASSET_ID)!.amountBefore.free).bnLte(
-    testUser1.getAsset(MGA_ASSET_ID)!.amountAfter.free!
-  );
-  const addFromWallet = pallet
-    .getAsset(MGA_ASSET_ID)
-    ?.amountBefore.free!.add(new BN(0));
-  expect(pallet.getAsset(MGA_ASSET_ID)?.amountAfter.free!).bnEqual(
-    addFromWallet!
-  );
+  //TODO:swapFees:plz remove me when fees are fixed and keep the else part.
+  if (Fees.swapFeesEnabled) {
+    expect(new BN(0)).bnLt(diff);
+    await treasury.refreshAmounts(AssetWallet.AFTER);
+    const addFromWallet = treasury
+      .getAsset(MGA_ASSET_ID)
+      ?.amountBefore.free!.add(new BN(diff));
+    expect(treasury.getAsset(MGA_ASSET_ID)?.amountAfter.free!).bnEqual(
+      addFromWallet!
+    );
+  } else {
+    expect(diff).bnEqual(new BN(0));
+    expect(testUser1.getAsset(MGA_ASSET_ID)!.amountBefore.free).bnLte(
+      testUser1.getAsset(MGA_ASSET_ID)!.amountAfter.free!
+    );
+    const addFromWallet = pallet
+      .getAsset(MGA_ASSET_ID)
+      ?.amountBefore.free!.add(new BN(0));
+    expect(pallet.getAsset(MGA_ASSET_ID)?.amountAfter.free!).bnEqual(
+      addFromWallet!
+    );
+  }
 });
-test("xyk-pallet - MGA tokens are not substracted as fee : BuyAsset", async () => {
+test("xyk-pallet - MGA tokens are /are not substracted as fee : BuyAsset", async () => {
   await testUser1.buyAssets(firstCurrency, secondCurrency, new BN(50));
   await pallet.refreshAmounts(AssetWallet.AFTER);
   await testUser1.refreshAmounts(AssetWallet.AFTER);
@@ -247,14 +266,26 @@ test("xyk-pallet - MGA tokens are not substracted as fee : BuyAsset", async () =
   const diff = mgaUserToken.amountBefore.free.sub(
     mgaUserToken.amountAfter.free!
   );
-  expect(diff).bnEqual(new BN(0));
-  expect(testUser1.getAsset(firstCurrency)!.amountAfter.free).bnLt(
-    testUser1.getAsset(firstCurrency)!.amountBefore.free
-  );
-  const addFromWallet = pallet
-    .getAsset(MGA_ASSET_ID)
-    ?.amountBefore.free!.add(new BN(0));
-  expect(pallet.getAsset(MGA_ASSET_ID)?.amountAfter.free!).bnEqual(
-    addFromWallet!
-  );
+  //TODO:swapFees:plz remove me when fees are fixed and keep the else part.
+  if (Fees.swapFeesEnabled) {
+    expect(new BN(0)).bnLt(diff);
+    await treasury.refreshAmounts(AssetWallet.AFTER);
+    const addFromWallet = treasury
+      .getAsset(MGA_ASSET_ID)
+      ?.amountBefore.free!.add(new BN(diff));
+    expect(treasury.getAsset(MGA_ASSET_ID)?.amountAfter.free!).bnEqual(
+      addFromWallet!
+    );
+  } else {
+    expect(diff).bnEqual(new BN(0));
+    expect(testUser1.getAsset(MGA_ASSET_ID)!.amountBefore.free).bnLte(
+      testUser1.getAsset(MGA_ASSET_ID)!.amountAfter.free!
+    );
+    const addFromWallet = pallet
+      .getAsset(MGA_ASSET_ID)
+      ?.amountBefore.free!.add(new BN(0));
+    expect(pallet.getAsset(MGA_ASSET_ID)?.amountAfter.free!).bnEqual(
+      addFromWallet!
+    );
+  }
 });

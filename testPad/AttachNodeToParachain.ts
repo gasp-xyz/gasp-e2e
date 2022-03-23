@@ -77,6 +77,8 @@ async function addUserAsCandidate(address: string) {
       new BN("100000000000000000000000"),
       new BN(3),
       // @ts-ignore - Mangata bond operation has 4 params, somehow is inheriting the bond operation from polkadot :S
+      new BN(3),
+      // @ts-ignore
       new BN(3)
     ),
     testUser1.keyRingPair

@@ -1,3 +1,4 @@
+/* eslint-disable jest/no-conditional-expect */
 /*
  *
  * @group xyk
@@ -30,6 +31,7 @@ import {
   waitIfSessionWillChangeInNblocks,
 } from "../../utils/utils";
 import { getEventResultFromMangataTx } from "../../utils/txHandler";
+import { Fees } from "../../utils/Fees";
 jest.spyOn(console, "log").mockImplementation(jest.fn());
 jest.setTimeout(1500000);
 process.env.NODE_ENV = "test";
@@ -648,9 +650,17 @@ describe("xyk-pallet - treasury tests [Connected - Mangata]: Error cases", () =>
       .getAsset(mgaTokenId)!
       .amountAfter.free.sub(mgPoolAmount[0].sub(new BN(1)));
 
-    expect(testUser1.getAsset(mgaTokenId)!.amountBefore.free).bnEqual(
-      expectedValue
-    );
+    //TODO:swapFees keep else when fees are fixed.
+    if (Fees.swapFeesEnabled) {
+      expect(testUser1.getAsset(mgaTokenId)!.amountBefore.free).bnLt(
+        expectedValue
+      );
+    } else {
+      expect(testUser1.getAsset(mgaTokenId)!.amountBefore.free).bnEqual(
+        expectedValue
+      );
+    }
+
     //burned destroyed! because is translated toMGA
     expect(treasuryBurnAfter).bnEqual(treasuryBurnBefore);
     //check that treasury got the right amount.
