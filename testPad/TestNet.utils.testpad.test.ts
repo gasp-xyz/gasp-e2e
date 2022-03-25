@@ -114,4 +114,42 @@ describe("AssetInfo - testpad", () => {
     await sudo.mint(new BN(6), target, new BN(Math.pow(10, 20).toString()));
     await target.addMGATokens(sudo);
   });
+
+  test("Create big pools", async () => {
+    const pathToFiles = "/home/goncer/projects/";
+    keyring = new Keyring({ type: "sr25519" });
+    const json = fs.readFileSync(pathToFiles + sudoAddress + ".json", {
+      encoding: "utf8",
+      flag: "r",
+    });
+    const sudo = new User(keyring, "sudo", JSON.parse(json));
+    keyring.addPair(sudo.keyRingPair);
+    keyring.pairs[0].decodePkcs8("mangata123");
+    await sudo.addMGATokens(sudo);
+    const poolSizeAsset = new BN("100000000000000000000000000000000");
+    const poolSizeMGA = new BN("100000000000000000000000000000000");
+    await sudo.mint(new BN(0), sudo, poolSizeMGA.muln(3));
+    await sudo.mint(new BN(4), sudo, poolSizeAsset);
+    await sudo.mint(new BN(5), sudo, poolSizeAsset);
+    await sudo.mint(new BN(6), sudo, poolSizeAsset);
+
+    await sudo.createPoolToAsset(
+      poolSizeMGA,
+      poolSizeAsset,
+      new BN(0),
+      new BN(dot)
+    );
+    await sudo.createPoolToAsset(
+      poolSizeMGA,
+      poolSizeAsset,
+      new BN(0),
+      new BN(btc)
+    );
+    await sudo.createPoolToAsset(
+      poolSizeMGA,
+      poolSizeAsset,
+      new BN(0),
+      new BN(usd)
+    );
+  });
 });
