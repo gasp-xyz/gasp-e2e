@@ -29,8 +29,13 @@ async function main() {
           case "Rampup":
             testParams.testCase = TestsCases.Rampup;
             break;
+          case "Burst":
+            testParams.testCase = TestsCases.Burst;
+            break;
           default:
-            throw new Error(`Unknown testCaseName: ${value}`);
+            throw new Error(
+              `Unknown testCaseName: ${value}: Expected: any of[ConcurrentTest,SustainedLoadTest,Rampup,Burst]`
+            );
         }
         break;
       case "duration":
@@ -56,10 +61,23 @@ async function main() {
     case "transfer":
       testParams.command = Commands.ExtrinsicTransfer;
       break;
-    case "mint":
+    case "transferKA":
+      testParams.command = Commands.ExtrinsicTransferKeepAlive;
+      break;
+    case "transferAll":
+      testParams.command = Commands.ExtrinsicTransferAll;
+      break;
     case "burn":
-    case "swap":
-      testParams.command = Commands.Swap;
+      testParams.command = Commands.Burn;
+      break;
+    case "sell":
+      testParams.command = Commands.SwapSell;
+      break;
+    case "buy":
+      testParams.command = Commands.SwapBuy;
+      break;
+    case "mint":
+      testParams.command = Commands.Mint;
       break;
     case "ping":
       testParams.command = Commands.Ping;
@@ -90,8 +108,8 @@ function verifyArgs(params: TestParams, test: string) {
         nodes: string (web socket url, ws://foobar...)`);
   }
 
-  if (params.threads <= 0 || params.threads > 10) {
-    throw new Error(`threadNumber must be between 1 and 10`);
+  if (params.threads <= 0) {
+    throw new Error(`threadNumber must be between > 0`);
   }
 
   if (params.testCase === undefined) {
@@ -99,7 +117,7 @@ function verifyArgs(params: TestParams, test: string) {
   }
 
   if (params.duration <= 0 || params.duration > 10000) {
-    throw new Error(`duration must be between 1 and 10000`);
+    throw new Error(`duration in minutes must be between 1 and 10000`);
   }
 
   if (params.totalTx <= 0 || params.totalTx > 100000) {
@@ -122,11 +140,7 @@ function verifyArgs(params: TestParams, test: string) {
   });
 }
 
-export async function runExtrinsicTransfer(params: TestParams) {
-  await TestFactory.BuildTestItem(Commands.ExtrinsicTransfer).run(params);
-}
-export async function runExtrinsicSwap(params: TestParams) {
-  await TestFactory.BuildTestItem(Commands.Swap).run(params);
-}
-
-main();
+main().then(() => {
+  // eslint-disable-next-line no-console
+  console.log("DONE");
+});

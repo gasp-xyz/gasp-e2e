@@ -23,6 +23,7 @@
     "eslint": "7.26.0",
     "ethers": "^5.4.7",
     "ganache-cli": "^6.12.2",
+    "guid-typescript": "^1.0.9",
     "jsonpath": "^1.1.1",
     "loadsh": "^0.0.4",
     "mangata-sdk": "^0.18.8",
