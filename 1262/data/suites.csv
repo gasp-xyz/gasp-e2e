@@ -1,5 +1,0 @@
-"Status","Start Time","Stop Time","Duration in ms","Parent Suite","Suite","Sub Suite","Test Class","Test Method","Name","Description"
-"failed","Sat Feb 05 05:23:12 GMT 2022","Sat Feb 05 05:48:12 GMT 2022","1500002","","Cluster -> Healthcheck","","Cluster -> Healthcheck","Cluster does not fork","Cluster does not fork",""
-"failed","Sat Feb 05 04:58:12 GMT 2022","Sat Feb 05 05:23:12 GMT 2022","1500001","","Cluster -> Healthcheck","","Cluster -> Healthcheck","Block merkle hash matches across all nodes","Block merkle hash matches across all nodes",""
-"failed","Sat Feb 05 04:08:12 GMT 2022","Sat Feb 05 04:33:12 GMT 2022","1500003","","Cluster -> Healthcheck","","Cluster -> Healthcheck","Nodes are up and syncing","Nodes are up and syncing",""
-"failed","Sat Feb 05 04:33:12 GMT 2022","Sat Feb 05 04:58:12 GMT 2022","1500001","","Cluster -> Healthcheck","","Cluster -> Healthcheck","Block numbers match across all nodes","Block numbers match across all nodes",""
