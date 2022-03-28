@@ -9,14 +9,15 @@ import { env } from "process";
 import { SudoDB } from "./SudoDB";
 import { signSendAndWaitToFinishTx } from "./txHandler";
 import { getEnvironmentRequiredVars } from "./utils";
-import { MGA_DEFAULT_LIQ_TOKEN } from "./Constants";
+import { Fees } from "./Fees";
+import { ETH_ASSET_ID, MGA_ASSET_ID, MGA_DEFAULT_LIQ_TOKEN } from "./Constants";
 import { Keyring } from "@polkadot/api";
 import { User } from "./User";
 import { testLog } from "./Logger";
 import { KeyringPair } from "@polkadot/keyring/types";
 import { signTx } from "mangata-sdk";
 import { AnyJson } from "@polkadot/types/types";
-import { Fees } from "./Fees";
+
 export const signTxDeprecated = async (
   tx: SubmittableExtrinsic<"promise">,
   address: AddressOrPair,
@@ -658,6 +659,25 @@ async function mintMgas(account: KeyringPair) {
   const user = new User(keyring);
   user.addFromAddress(keyring, account.address);
   await user.addMGATokens(sudo);
+}
+export async function createPoolIfMissing(
+  sudo: User,
+  amountInPool: string,
+  firstAssetId = MGA_ASSET_ID,
+  seccondAssetId = ETH_ASSET_ID
+) {
+  const balance = await getBalanceOfPool(firstAssetId, seccondAssetId);
+  if (balance[0].isZero() || balance[1].isZero()) {
+    await sudo.mint(firstAssetId, sudo, new BN(amountInPool));
+    await sudo.mint(seccondAssetId, sudo, new BN(amountInPool));
+    const poolValue = new BN(amountInPool).div(new BN(2));
+    await sudo.createPoolToAsset(
+      poolValue,
+      poolValue,
+      firstAssetId,
+      seccondAssetId
+    );
+  }
 }
 
 export class FeeTxs {

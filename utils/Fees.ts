@@ -1,8 +1,9 @@
 import { Balance } from "@polkadot/types/interfaces";
 import { BN } from "@polkadot/util";
-import { getEnvironmentRequiredVars } from "./utils";
 export class Fees {
-  static swapFeesEnabled: boolean = getEnvironmentRequiredVars().fees;
+  static swapFeesEnabled: boolean = process.env.FEES_ENABLED
+    ? process.env.FEES_ENABLED === "true"
+    : true;
   static getSwapFees(feeValue: Balance): BN {
     if (Fees.swapFeesEnabled) {
       return feeValue;

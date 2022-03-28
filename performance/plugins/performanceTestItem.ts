@@ -9,11 +9,10 @@ import { KeyringPair } from "@polkadot/keyring/types";
 import { UserFactory, Users } from "../../utils/Framework/User/UserFactory";
 import { Node } from "../../utils/Framework/Node/Node";
 import { MGA_ASSET_ID } from "../../utils/Constants";
-import { mintAsset, transferAsset } from "../../utils/tx";
+import { createPoolIfMissing, mintAsset, transferAsset } from "../../utils/tx";
 import { initApi } from "../../utils/api";
 import { captureEvents, pendingExtrinsics } from "./testReporter";
 import { Guid } from "guid-typescript";
-import { createPoolIfMissing } from "../../utils/utils";
 import { User } from "../../utils/User";
 
 function seedFromNum(seed: number): string {

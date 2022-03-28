@@ -7,10 +7,7 @@
  */
 import { getApi, getMangataInstance, initApi } from "../../utils/api";
 import { BN } from "@polkadot/util";
-import {
-  createPoolIfMissing,
-  getEnvironmentRequiredVars,
-} from "../../utils/utils";
+import { getEnvironmentRequiredVars } from "../../utils/utils";
 import { Keyring } from "@polkadot/api";
 import { User } from "../../utils/User";
 import { Mangata } from "mangata-sdk";
@@ -19,6 +16,7 @@ import { ExtrinsicResult } from "../../utils/eventListeners";
 import { MGA_ASSET_ID } from "../../utils/Constants";
 import { waitNewBlock } from "../../utils/eventListeners";
 import { Assets } from "../../utils/Assets";
+import { createPoolIfMissing } from "../../utils/tx";
 
 jest.spyOn(console, "log").mockImplementation(jest.fn());
 jest.setTimeout(1500000);
