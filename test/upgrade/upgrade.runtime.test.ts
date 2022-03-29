@@ -39,7 +39,7 @@ describe("Story tests > LP", () => {
     const api = await mangata.getApi();
     const hash =
       "0xa4f385913ba0acb618402fe01aa20a87ed3d5b58cc7d28cb7a9165eb309c9300";
-    const wasmFile = fs.readFileSync("./RC_upgrade_0.wasm");
+    const wasmFile = fs.readFileSync("./test/upgrade/RC_upgrade_0.wasm");
     await testUser1.addMGATokens(sudo);
     await signSendAndWaitToFinishTx(
       api.tx.sudo.sudo(api!.tx.parachainSystem.authorizeUpgrade(hash)),
