@@ -41,6 +41,7 @@ So somehow we now have essentially a distributed system for developing and that 
 ---
 ###  How to build
 1. `yarn`
+
 ###  How to run esLint
 1. Follow the mangata eslint installation guide [here](https://github.com/mangata-finance/eslint-config-mangata)
 2. `yarn eslint`
@@ -51,9 +52,9 @@ So somehow we now have essentially a distributed system for developing and that 
 To point to the right environment or instance, you need to export the following environment variables:
 
 1. E2E_XYK_PALLET_ADDRESS: This contains the address to the pallet wallet. 
-`export E2E_XYK_PALLET_ADDRESS='PalletAddressComehere' ` more info available in `mangate-node: node/src/chain_spec.rs`
+`export E2E_XYK_PALLET_ADDRESS='PalletAddressComehere' ` more info available in `mangata-node: node/src/chain_spec.rs`
 2. TEST_SUDO_NAME: This contains the name of sudo user to perform required sudo perations. 
-`export TEST_SUDO_NAME='//nameofTheUser' ` more info available in `mangate-node: node/src/chain_spec.rs`
+`export TEST_SUDO_NAME='//nameofTheUser' ` more info available in `mangata-node: node/src/chain_spec.rs`
 3. API_URL: Points the API to the right environment. The default will be localhost (`ws://127.0.0.1:9944`).
 `export API_URL='ws://127.0.0.1:9944'`
 4. TEST_USER_NAME: Contains the name of the user for CI/CD validation tests. Default is `//Alice` (address `5GrwvaEF5zXb26Fz9rcQpDWS57CtERHpNehXCPcNoHGKutQY`)
@@ -74,10 +75,9 @@ After that env. variables have been exported, you can run all tests with the com
 You can specify the command `--runInBand` if you don't want to run the tests in parallel
 
 There are also some configurations to run tests, 
-- `npm run test-parallel` : Run the tests (from `test/parallel/` folder) that can be parallelized.
-- `npm run test-sequential` : Run tests (from `test/sequential/` folder) that can not be paralelized so they will run one after the other.
-
-- `npm run test-ui` : Run tests (from `test/ui/` folder). They contain UI tests.
+- `yarn test-parallel` : Run the tests (from `test/parallel/` folder) that can be parallelized.
+- `yarn test-sequential` : Run tests (from `test/sequential/` folder) that can not be paralelized so they will run one after the other.
+- `yarn test-ui` : Run tests (from `test/ui/` folder). They contain UI tests.
 
 Finally, there are groups that can be ran instead.
 
@@ -87,7 +87,7 @@ At the moment groups are split between testing configurations (parallel, sequent
 
 ###  How to run in a docker setup
 There exist a possibility to run test pointing to a dockerized setup. You only need to :
-1. Download and run docker instance:  `docker-compose -f devops/docker-compose.yml up`
+1. Download and run docker instance:  `docker-compose -f devops/dockerfiles/docker-compose.yml up`
 2. Point to that node ( ip can be obtained from the docker-compose) exporting `API_URL='ws://172.16.238.10:9944`.`
 3. Run any test `yarn test-sequential`.
 
