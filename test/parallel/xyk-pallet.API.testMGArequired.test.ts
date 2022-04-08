@@ -6,12 +6,13 @@
  */
 import { getApi, getMangataInstance, initApi } from "../../utils/api";
 import { getBalanceOfPool, getLiquidityAssetId } from "../../utils/tx";
-import BN from "bn.js";
+import { BN } from "@polkadot/util";
 import { Keyring } from "@polkadot/api";
 import { AssetWallet, User } from "../../utils/User";
 import { validateAssetsWithValues } from "../../utils/validators";
 import { Assets } from "../../utils/Assets";
 import { getEnvironmentRequiredVars } from "../../utils/utils";
+import { Fees } from "../../utils/Fees";
 
 jest.spyOn(console, "log").mockImplementation(jest.fn());
 jest.spyOn(console, "error").mockImplementation(jest.fn());
@@ -150,7 +151,10 @@ test("xyk-pallet - User Balance - Selling an asset does not require paying fees"
     firstCurrency,
     secondCurrency
   );
-
+  //TODO:swapFees
+  if (Fees.swapFeesEnabled) {
+    await testUser1.addMGATokens(sudo);
+  }
   let exception = false;
   await testUser1.refreshAmounts(AssetWallet.BEFORE);
   const amountInWallet = testUser1.getAsset(firstCurrency)?.amountBefore!;
@@ -182,7 +186,10 @@ test("xyk-pallet - User Balance - Buying an asset does not require paying fees",
     firstCurrency,
     secondCurrency
   );
-
+  //TODO:swapFees
+  if (Fees.swapFeesEnabled) {
+    await testUser1.addMGATokens(sudo);
+  }
   let exception = false;
   await testUser1.refreshAmounts(AssetWallet.BEFORE);
   const mangata = await getMangataInstance();

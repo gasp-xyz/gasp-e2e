@@ -8,7 +8,7 @@
 import { getApi, getMangataInstance, initApi } from "../../utils/api";
 import { getBalanceOfPool } from "../../utils/tx";
 import { waitNewBlock, ExtrinsicResult } from "../../utils/eventListeners";
-import BN from "bn.js";
+import { BN } from "@polkadot/util";
 import { Keyring } from "@polkadot/api";
 import { AssetWallet, User } from "../../utils/User";
 import { Assets } from "../../utils/Assets";
@@ -17,6 +17,7 @@ import { getEventResultFromMangataTx } from "../../utils/txHandler";
 import { MGA_ASSET_ID } from "../../utils/Constants";
 import { Mangata } from "mangata-sdk";
 import { testLog } from "../../utils/Logger";
+import { Fees } from "../../utils/Fees";
 
 const { sudo: sudoUserName } = getEnvironmentRequiredVars();
 
@@ -61,6 +62,10 @@ describe("Story tests > LP", () => {
     await testUser1.addMGATokens(sudo);
     await sudo.mint(MGA_ASSET_ID, testUser2, defaultCurrecyValue);
     await sudo.mint(token1, testUser2, defaultCurrecyValue);
+    //TODO:swapFees
+    if (Fees.swapFeesEnabled) {
+      await testUser2.addMGATokens(sudo);
+    }
     testUser1.addAsset(MGA_ASSET_ID);
     testUser2.addAsset(MGA_ASSET_ID);
     testUser2.addAsset(token1);
@@ -68,7 +73,7 @@ describe("Story tests > LP", () => {
     testUser2.refreshAmounts();
   });
 
-  test("Pool wins over 5% tokens when 10 swaps are done in the pool [Token - MGA]", async () => {
+  test("Pool wins over 0.3% tokens when 10 swaps are done in the pool [Token - MGA]", async () => {
     //lets create a pool with user1
     const mangata = await getMangataInstance();
     await mangata.createPool(
@@ -85,7 +90,6 @@ describe("Story tests > LP", () => {
     const poolBalance = await getBalanceOfPool(token1, MGA_ASSET_ID);
     await testUser1.refreshAmounts(AssetWallet.AFTER);
     await testUser2.refreshAmounts(AssetWallet.AFTER);
-
     const userTokensBefore = testUser2
       .getAsset(token1)
       ?.amountBefore.free!.add(

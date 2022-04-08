@@ -3,13 +3,13 @@ import { getApi } from "./api";
 import { GenericEvent } from "@polkadot/types";
 import { Codec } from "@polkadot/types/types";
 import { KeyringPair } from "@polkadot/keyring/types";
-import BN from "bn.js";
+import { BN } from "@polkadot/util";
 import { SudoDB } from "./SudoDB";
 import { env } from "process";
 import { EventResult, ExtrinsicResult } from "./eventListeners";
 import { testLog } from "./Logger";
 import { User } from "./User";
-import { MangataGenericEvent } from "mangata-sdk/build/";
+import { MangataGenericEvent } from "mangata-sdk";
 import { signTx } from "mangata-sdk";
 import { AccountId32 } from "@polkadot/types/interfaces";
 
@@ -68,7 +68,7 @@ export async function getSudoKey(): Promise<AccountId32> {
 
   const sudoKey = await api.query.sudo.key();
 
-  return sudoKey;
+  return sudoKey.unwrap();
 }
 
 export const getNextAssetId = async () => {

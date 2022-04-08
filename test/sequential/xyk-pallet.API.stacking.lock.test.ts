@@ -8,7 +8,7 @@ import { api, getApi, initApi } from "../../utils/api";
 import { getTokensAccountInfo } from "../../utils/tx";
 import { hexToBn } from "@polkadot/util";
 
-import BN from "bn.js";
+import { BN } from "@polkadot/util";
 import { Keyring } from "@polkadot/api";
 import { User } from "../../utils/User";
 import { getEnvironmentRequiredVars } from "../../utils/utils";
@@ -65,7 +65,9 @@ describe("xyk-pallet - Sell Asset: validate Errors:", () => {
         new BN("10000000000000000000"),
         new BN(3),
         // @ts-ignore - Mangata bond operation has 4 params, somehow is inheriting the bond operation from polkadot :S
-        new BN(candidates.length)
+        new BN(candidates.length),
+        // @ts-ignore
+        new BN(3)
       ),
       testUser1.keyRingPair
     );

@@ -16,7 +16,7 @@ import {
   getLiquidityPool,
 } from "../../utils/tx";
 import { ExtrinsicResult, EventResult } from "../../utils/eventListeners";
-import BN from "bn.js";
+import { BN } from "@polkadot/util";
 import { Keyring } from "@polkadot/api";
 import { AssetWallet, User } from "../../utils/User";
 import {

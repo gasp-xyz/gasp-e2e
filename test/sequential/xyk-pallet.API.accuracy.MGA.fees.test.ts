@@ -13,12 +13,13 @@ import {
   getTreasuryBurn,
 } from "../../utils/tx";
 import { waitNewBlock } from "../../utils/eventListeners";
-import BN from "bn.js";
+import { BN } from "@polkadot/util";
 import { Keyring } from "@polkadot/api";
 import { AssetWallet, User } from "../../utils/User";
 import { Assets } from "../../utils/Assets";
 import { getEnvironmentRequiredVars } from "../../utils/utils";
 import { MGA_ASSET_ID } from "../../utils/Constants";
+import { Fees } from "../../utils/Fees";
 
 jest.spyOn(console, "log").mockImplementation(jest.fn());
 jest.spyOn(console, "error").mockImplementation(jest.fn());
@@ -96,9 +97,13 @@ test("xyk-pallet - Assets substracted are incremented by 1 - MGA- SellAsset", as
   const treasuryBefore = await getTreasury(firstCurrency);
   const treasuryBurnBefore = await getTreasuryBurn(firstCurrency);
 
-  await testUser1.sellAssets(firstCurrency, secondCurrency, sellingAmount);
+  const events = await testUser1.sellAssets(
+    firstCurrency,
+    secondCurrency,
+    sellingAmount
+  );
   await testUser1.refreshAmounts(AssetWallet.AFTER);
-  const tokensLost = testUser1
+  let tokensLost = testUser1
     .getAsset(firstCurrency)
     ?.amountBefore.free.sub(
       testUser1.getAsset(firstCurrency)?.amountAfter.free!
@@ -109,7 +114,15 @@ test("xyk-pallet - Assets substracted are incremented by 1 - MGA- SellAsset", as
     ?.amountAfter.free.sub(
       testUser1.getAsset(secondCurrency)?.amountBefore.free!
     )!;
-
+  let feesPayed = new BN(0);
+  if (Fees.swapFeesEnabled) {
+    feesPayed = new BN(
+      events
+        .filter((x) => x.method === "Deposit" && x.section === "treasury")[0]
+        .eventData[0].data.toString()
+    );
+    tokensLost = tokensLost?.sub(feesPayed);
+  }
   expect(tokensWon).bnEqual(tokensToReceive);
   expect(tokensLost).bnEqual(sellingAmount);
   expect(exangeValue).bnEqual(tokensWon);
@@ -119,7 +132,7 @@ test("xyk-pallet - Assets substracted are incremented by 1 - MGA- SellAsset", as
   const expectedTreasury = new BN(5);
   const treasury = await getTreasury(firstCurrency);
   const treasuryBurn = await getTreasuryBurn(firstCurrency);
-  const incrementedTreasury = treasuryBefore.sub(treasury).abs();
+  const incrementedTreasury = treasuryBefore.sub(treasury).sub(feesPayed).abs();
   expect(incrementedTreasury).bnEqual(
     expectedTreasury.add(extraTokenForRounding)
   );

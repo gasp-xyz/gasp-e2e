@@ -3,7 +3,7 @@
  * @group ui
  */
 import { Keyring } from "@polkadot/api";
-import BN from "bn.js";
+import { BN } from "@polkadot/util";
 import { WebDriver } from "selenium-webdriver";
 import { getApi, initApi } from "../../utils/api";
 import { Mangata } from "../../utils/frontend/pages/Mangata";
@@ -21,11 +21,7 @@ import {
   addExtraLogs,
 } from "../../utils/frontend/utils/Helper";
 import { AssetWallet, User } from "../../utils/User";
-import {
-  createPoolIfMissing,
-  getEnvironmentRequiredVars,
-  waitForNBlocks,
-} from "../../utils/utils";
+import { getEnvironmentRequiredVars, waitForNBlocks } from "../../utils/utils";
 import {
   FIVE_MIN,
   mETH_ASSET_NAME,
@@ -34,6 +30,7 @@ import {
 import { BrunLiquidityModal } from "../../utils/frontend/pages/BrunLiquidityModal";
 import { Assets } from "../../utils/Assets";
 import { Polkadot } from "../../utils/frontend/pages/Polkadot";
+import { createPoolIfMissing } from "../../utils/tx";
 
 const MGA_ASSET_ID = new BN(0);
 const ETH_ASSET_ID = new BN(1);

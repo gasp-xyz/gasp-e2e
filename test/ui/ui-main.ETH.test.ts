@@ -15,7 +15,7 @@ import {
   setupAllExtensions,
 } from "../../utils/frontend/utils/Helper";
 import { AssetWallet, User } from "../../utils/User";
-import BN from "bn.js";
+import { BN } from "@polkadot/util";
 import { getEnvironmentRequiredVars } from "../../utils/utils";
 import { UserFactory, Users } from "../../utils/Framework/User/UserFactory";
 import { Node } from "../../utils/Framework/Node/Node";

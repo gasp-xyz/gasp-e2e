@@ -1,4 +1,4 @@
-import BN from "bn.js";
+import { BN } from "@polkadot/util";
 import { lockSudoFile, unlockSudoFile } from "./lock";
 import { getChainNonce } from "./tx";
 import { getCurrentNonce } from "./txHandler";
