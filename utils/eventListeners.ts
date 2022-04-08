@@ -77,3 +77,30 @@ export const waitNewBlock = () => {
     });
   });
 };
+export async function waitNewBlockMeasuringTime(
+  n: number
+): Promise<Map<number, number>> {
+  const api = getApi();
+  let count = 0;
+  let first = true;
+  let startTime = Date.now();
+  const times = new Map();
+  await new Promise(async (resolve) => {
+    const unsubscribe = await api.rpc.chain.subscribeNewHeads((header: any) => {
+      if (!first) {
+        const diff: Number = Date.now() - startTime;
+        times.set(header.number, diff);
+        startTime = Date.now();
+      } else {
+        first = false;
+        startTime = Date.now();
+      }
+      if (++count === n + 2) {
+        testLog.getLog().info(`Chain is at block: #${header.number}`);
+        unsubscribe();
+        resolve(times);
+      }
+    });
+  });
+  return times;
+}

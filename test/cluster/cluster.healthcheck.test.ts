@@ -10,7 +10,11 @@ import * as path from "path";
 import { promises as fs } from "fs";
 import { Node } from "../../utils/cluster/Node";
 import { testLog } from "../../utils/Logger";
-import { waitForNBlocks } from "../../utils/utils";
+import {
+  getEnvironmentRequiredVars,
+  waitForNBlocks,
+  waitForNBlocksAndMEasureTime,
+} from "../../utils/utils";
 import { Convert } from "../../utils/Config";
 
 jest.spyOn(console, "log").mockImplementation(jest.fn());
@@ -21,7 +25,9 @@ process.env.NODE_ENV = "test";
 const nodes: Node[] = new Array<Node>();
 
 beforeAll(async () => {
-  const filePath = path.resolve(__dirname, "./cluster-healthcheck.config");
+  const { clusterFileName } = getEnvironmentRequiredVars();
+  const clusterFile = `./${clusterFileName}.config`;
+  const filePath = path.resolve(__dirname, clusterFile);
   const fileContents = await fs.readFile(filePath, "utf-8");
 
   Convert.toTestConfig(fileContents).mangata_nodes.forEach((arr) => {
@@ -49,6 +55,13 @@ afterAll(async () => {
 });
 
 describe("Cluster -> Healthcheck", () => {
+  test("Nodes builds in less than 20 secs", async () => {
+    const times = await waitForNBlocksAndMEasureTime(5);
+    times.forEach((value) => {
+      expect(value).toBeLessThan(20 * 1000);
+    });
+    expect(times.size).toBeGreaterThanOrEqual(5);
+  });
   test("Nodes are up and syncing", async () => {
     const numberOfHashesToCheck = 2;
     const nodeHashMap: Map<string, Set<string>> = new Map();

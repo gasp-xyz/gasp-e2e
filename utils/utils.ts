@@ -6,9 +6,9 @@ import { Assets } from "./Assets";
 import { User } from "./User";
 import Keyring from "@polkadot/keyring";
 import { getAccountJSON } from "./frontend/utils/Helper";
+import { waitNewBlock, waitNewBlockMeasuringTime } from "./eventListeners";
 import { ETH_ASSET_ID, MGA_ASSET_ID } from "./Constants";
 import { getBalanceOfPool } from "./tx";
-import { waitNewBlock } from "./eventListeners";
 import { testLog } from "./Logger";
 import { AnyNumber } from "@polkadot/types/types";
 
@@ -111,6 +111,12 @@ export function getEnvironmentRequiredVars() {
   const clusterNodeF = process.env.CLUSTER_NODE_F
     ? process.env.CLUSTER_NODE_F
     : "ws://node_ferdie:9944";
+  const fees = process.env.FEES_ENABLED
+    ? process.env.FEES_ENABLED === "true"
+    : true;
+  const clusterFile = process.env.CLUSTER_CONFIG_FILE
+    ? process.env.CLUSTER_CONFIG_FILE
+    : "cluster-healthcheck-develop";
 
   return {
     sudo: sudoUserName,
@@ -135,6 +141,8 @@ export function getEnvironmentRequiredVars() {
     clusterNodeD: clusterNodeD,
     clusterNodeE: clusterNodeE,
     clusterNodeF: clusterNodeF,
+    fees: fees,
+    clusterFileName: clusterFile,
   };
 }
 
@@ -215,6 +223,9 @@ export const waitForNBlocks = async (n: number) => {
     await waitNewBlock();
     await waitForNBlocks(n - 1);
   }
+};
+export const waitForNBlocksAndMEasureTime = async (n: number) => {
+  return await waitNewBlockMeasuringTime(n);
 };
 
 export async function createPoolIfMissing(
