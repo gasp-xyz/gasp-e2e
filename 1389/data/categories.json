@@ -1,0 +1,26 @@
+{
+  "uid" : "4b4757e66a1912dae1a509f688f20b0f",
+  "children" : [ {
+    "name" : "Product defects",
+    "children" : [ {
+      "name" : "Error: expect(received).toBeLessThan(expected)\n                \n                Expected: < 20000\n                Received:   23998",
+      "children" : [ {
+        "name" : "Nodes builds in less than 20 secs",
+        "uid" : "2b9b9097b9209f05",
+        "parentUid" : "46d8d69efeac12d15178b5288f4c4d0c",
+        "status" : "failed",
+        "time" : {
+          "start" : 1649416182155,
+          "stop" : 1649416260139,
+          "duration" : 77984
+        },
+        "flaky" : false,
+        "newFailed" : false,
+        "parameters" : [ ]
+      } ],
+      "uid" : "46d8d69efeac12d15178b5288f4c4d0c"
+    } ],
+    "uid" : "8fb3a91ba5aaf9de24cc8a92edc82b5d"
+  } ],
+  "name" : "categories"
+}

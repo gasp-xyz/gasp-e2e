@@ -1,0 +1,46 @@
+{
+  "uid" : "581906ddb1774509",
+  "name" : "Cluster does not fork",
+  "fullName" : "Cluster -> Healthcheck.Cluster does not fork",
+  "historyId" : "c60708daa452883022480d8f0ac2dc39",
+  "time" : {
+    "start" : 1649416440124,
+    "stop" : 1649416500125,
+    "duration" : 60001
+  },
+  "description" : "",
+  "descriptionHtml" : "",
+  "status" : "passed",
+  "flaky" : false,
+  "newFailed" : false,
+  "beforeStages" : [ ],
+  "afterStages" : [ ],
+  "labels" : [ {
+    "name" : "suite",
+    "value" : "Cluster -> Healthcheck"
+  }, {
+    "name" : "testClass",
+    "value" : "Cluster -> Healthcheck"
+  }, {
+    "name" : "testMethod",
+    "value" : "Cluster does not fork"
+  }, {
+    "name" : "package",
+    "value" : "Cluster -> Healthcheck"
+  }, {
+    "name" : "resultFormat",
+    "value" : "allure1"
+  } ],
+  "parameters" : [ ],
+  "links" : [ ],
+  "hidden" : false,
+  "retry" : false,
+  "extra" : {
+    "severity" : "normal",
+    "retries" : [ ],
+    "categories" : [ ],
+    "tags" : [ ]
+  },
+  "source" : "581906ddb1774509.json",
+  "parameterValues" : [ ]
+}
