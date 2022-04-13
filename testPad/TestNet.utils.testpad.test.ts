@@ -22,7 +22,7 @@ describe("AssetInfo - testpad", () => {
       await initApi();
     }
   });
-
+  const ksm = true;
   const dot = "4";
   const btc = "5";
   const usd = "6";
@@ -54,14 +54,26 @@ describe("AssetInfo - testpad", () => {
         }
       );
     }
-    await setAssetInfo(
-      sudo,
-      new BN(dot),
-      "mDOT",
-      "mDOT",
-      "0x20a9b8313e040e52b6176c8cfd46dea0e3c62763",
-      new BN(18)
-    );
+    if (ksm) {
+      await setAssetInfo(
+        sudo,
+        new BN(dot),
+        "mKSM",
+        "mKSM",
+        "Relay chain Kusama token",
+        new BN(12)
+      );
+    } else {
+      await setAssetInfo(
+        sudo,
+        new BN(dot),
+        "mDOT",
+        "mDOT",
+        "Relay chain Polkadot token",
+        new BN(10)
+      );
+    }
+
     await setAssetInfo(
       sudo,
       new BN(btc),
