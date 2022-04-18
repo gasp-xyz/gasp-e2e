@@ -1,0 +1,61 @@
+[ {
+  "uid" : "8bf1914c083ba358",
+  "name" : "At least two collators",
+  "time" : {
+    "start" : 1650292512087,
+    "stop" : 1650292554492,
+    "duration" : 42405
+  },
+  "status" : "passed",
+  "severity" : "normal"
+}, {
+  "uid" : "719979322b34747c",
+  "name" : "Nodes are up and syncing",
+  "time" : {
+    "start" : 1650292554492,
+    "stop" : 1650292638074,
+    "duration" : 83582
+  },
+  "status" : "passed",
+  "severity" : "normal"
+}, {
+  "uid" : "679097f5a47c1ad6",
+  "name" : "Block merkle hash matches across all nodes",
+  "time" : {
+    "start" : 1650292734080,
+    "stop" : 1650292818075,
+    "duration" : 83995
+  },
+  "status" : "passed",
+  "severity" : "normal"
+}, {
+  "uid" : "92c598206e72c347",
+  "name" : "Block numbers match across all nodes",
+  "time" : {
+    "start" : 1650292638074,
+    "stop" : 1650292734080,
+    "duration" : 96006
+  },
+  "status" : "passed",
+  "severity" : "normal"
+}, {
+  "uid" : "ab6f229d37271c97",
+  "name" : "Nodes builds in less than 60 secs",
+  "time" : {
+    "start" : 1650292431092,
+    "stop" : 1650292512087,
+    "duration" : 80995
+  },
+  "status" : "passed",
+  "severity" : "normal"
+}, {
+  "uid" : "c6b497c03ac35929",
+  "name" : "Cluster does not fork",
+  "time" : {
+    "start" : 1650292818075,
+    "stop" : 1650292908078,
+    "duration" : 90003
+  },
+  "status" : "passed",
+  "severity" : "normal"
+} ]
