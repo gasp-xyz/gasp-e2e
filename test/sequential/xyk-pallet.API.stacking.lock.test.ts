@@ -8,7 +8,7 @@ import { api, getApi, initApi } from "../../utils/api";
 import { getTokensAccountInfo } from "../../utils/tx";
 import { hexToBn } from "@polkadot/util";
 
-import BN from "bn.js";
+import { BN } from "@polkadot/util";
 import { Keyring } from "@polkadot/api";
 import { User } from "../../utils/User";
 import { getEnvironmentRequiredVars } from "../../utils/utils";

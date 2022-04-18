@@ -1,4 +1,4 @@
-import BN from "bn.js";
+import { BN } from "@polkadot/util";
 import { ERC20ABI } from "../utils/abi/ERC20ABI";
 
 //CCC

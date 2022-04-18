@@ -4,7 +4,7 @@
  * @group ci
  */
 import { getApi, initApi } from "../../utils/api";
-import BN from "bn.js";
+import { BN } from "@polkadot/util";
 import { Keyring } from "@polkadot/api";
 import {
   fromBNToUnitString,

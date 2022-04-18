@@ -18,7 +18,7 @@ import {
   calculate_buy_price_rpc,
 } from "../../utils/tx";
 import { ExtrinsicResult, waitNewBlock } from "../../utils/eventListeners";
-import BN from "bn.js";
+import { BN } from "@polkadot/util";
 import { Keyring } from "@polkadot/api";
 import { AssetWallet, User } from "../../utils/User";
 import { validateTreasuryAmountsEqual } from "../../utils/validators";

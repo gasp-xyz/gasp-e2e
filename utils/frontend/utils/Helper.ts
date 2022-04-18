@@ -5,7 +5,7 @@ import { MetaMask } from "../pages/MetaMask";
 import { Polkadot } from "../pages/Polkadot";
 import fs from "fs";
 import { testLog } from "../../Logger";
-import BN from "bn.js";
+import { BN } from "@polkadot/util";
 
 import { Reporter } from "jest-allure/dist/Reporter";
 const { By, until } = require("selenium-webdriver");

@@ -1,4 +1,4 @@
-import BN from "bn.js";
+import { BN } from "@polkadot/util";
 import { BaseUser } from "./BaseUser";
 import { ExtrinsicResult } from "../../eventListeners";
 import { getEventResultFromMangataTx } from "../../txHandler";

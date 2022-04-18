@@ -3,7 +3,7 @@ import { AccountData, AccountId32 } from "@polkadot/types/interfaces";
 import { AnyTuple, Codec } from "@polkadot/types/types";
 import { StorageKey } from "@polkadot/types";
 import { getApi, getMangataInstance } from "./api";
-import BN from "bn.js";
+import { BN } from "@polkadot/util";
 import { env } from "process";
 import { SudoDB } from "./SudoDB";
 import { signSendAndWaitToFinishTx } from "./txHandler";
@@ -334,7 +334,7 @@ export async function getSudoKey(): Promise<AccountId32> {
 
   const sudoKey = await api.query.sudo.key();
 
-  return sudoKey;
+  return sudoKey.unwrap();
 }
 
 export const balanceTransfer = async (

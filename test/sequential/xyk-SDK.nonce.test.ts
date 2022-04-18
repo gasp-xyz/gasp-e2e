@@ -6,7 +6,7 @@
  * @group sdk
  */
 import { getApi, getMangataInstance, initApi } from "../../utils/api";
-import BN from "bn.js";
+import { BN } from "@polkadot/util";
 import {
   createPoolIfMissing,
   getEnvironmentRequiredVars,
