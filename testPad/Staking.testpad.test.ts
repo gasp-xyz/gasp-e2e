@@ -1,5 +1,5 @@
 import { Keyring } from "@polkadot/api";
-import BN from "bn.js";
+import { BN } from "@polkadot/util";
 import { api, getApi, initApi } from "../utils/api";
 import { MGA_ASSET_ID } from "../utils/Constants";
 import { waitNewBlock } from "../utils/eventListeners";

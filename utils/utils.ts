@@ -1,5 +1,5 @@
 import { formatBalance } from "@polkadot/util/format";
-import BN from "bn.js";
+import { BN } from "@polkadot/util";
 import { getApi, getMangataInstance, mangata } from "./api";
 import { hexToBn } from "@polkadot/util";
 import { Assets } from "./Assets";

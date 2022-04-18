@@ -10,7 +10,7 @@ import {
   calculate_buy_price_rpc,
   calculate_sell_price_rpc,
 } from "../../utils/tx";
-import BN from "bn.js";
+import { BN } from "@polkadot/util";
 import { bnToHex } from "@polkadot/util";
 import { getEnvironmentRequiredVars } from "../../utils/utils";
 import { Assets } from "../../utils/Assets";

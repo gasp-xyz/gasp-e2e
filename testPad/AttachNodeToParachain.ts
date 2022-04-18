@@ -2,7 +2,7 @@
 //set the account.Json ( can be exported from PolkadotJs ) on this folder and name it with AccountAddress.json.
 // for example, if you want to use the user with <address>, export the json with <address>.json ( password Mangata123 )
 import { Keyring } from "@polkadot/api";
-import BN from "bn.js";
+import { BN } from "@polkadot/util";
 import { waitNewBlock } from "../utils/eventListeners";
 import { AssetWallet, User } from "../utils/User";
 import fs from "fs";

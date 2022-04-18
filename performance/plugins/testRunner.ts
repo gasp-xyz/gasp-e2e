@@ -1,4 +1,4 @@
-import BN from "bn.js";
+import { BN } from "@polkadot/util";
 import { Mangata } from "mangata-sdk";
 import { testLog } from "../../utils/Logger";
 import { TestParams } from "../testParams";

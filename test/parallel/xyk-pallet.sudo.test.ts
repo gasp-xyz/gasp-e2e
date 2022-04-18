@@ -6,7 +6,7 @@
  */
 import { getApi, initApi } from "../../utils/api";
 import { getUserAssets, getSudoKey } from "../../utils/tx";
-import BN from "bn.js";
+import { BN } from "@polkadot/util";
 import { Keyring } from "@polkadot/api";
 import { User } from "../../utils/User";
 import { validateTransactionSucessful } from "../../utils/validators";

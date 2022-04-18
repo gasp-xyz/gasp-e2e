@@ -1,4 +1,4 @@
-import BN from "bn.js";
+import { BN } from "@polkadot/util";
 import { renameExtraLogs } from "./frontend/utils/Helper";
 module.exports = {
   runner: "groups",

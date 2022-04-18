@@ -1,6 +1,6 @@
 import { Keyring } from "@polkadot/api";
 import { KeyringPair } from "@polkadot/keyring/types";
-import BN from "bn.js";
+import { BN } from "@polkadot/util";
 import { v4 as uuid } from "uuid";
 import { ExtrinsicResult, waitNewBlock } from "./eventListeners";
 import { testLog } from "./Logger";

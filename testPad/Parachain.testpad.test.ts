@@ -1,5 +1,5 @@
 import { ApiPromise, Keyring, WsProvider } from "@polkadot/api";
-import BN from "bn.js";
+import { BN } from "@polkadot/util";
 import { getApi, initApi } from "../utils/api";
 import { waitNewBlock } from "../utils/eventListeners";
 import { User, AssetWallet } from "../utils/User";
