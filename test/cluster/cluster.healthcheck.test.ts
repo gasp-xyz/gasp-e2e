@@ -16,6 +16,7 @@ import {
   waitForNBlocksAndMEasureTime,
 } from "../../utils/utils";
 import { Convert } from "../../utils/Config";
+import { waitForAtLeastNCollators } from "../../utils/eventListeners";
 
 jest.spyOn(console, "log").mockImplementation(jest.fn());
 jest.spyOn(console, "error").mockImplementation(jest.fn());
@@ -61,6 +62,10 @@ describe("Cluster -> Healthcheck", () => {
       expect(value).toBeLessThan(60 * 1000);
     });
     expect(times.size).toBeGreaterThanOrEqual(5);
+  });
+  test("At least two collators", async () => {
+    const atLeastTwoCollators = await waitForAtLeastNCollators(2, 10);
+    expect(atLeastTwoCollators).toBeTruthy();
   });
   test("Nodes are up and syncing", async () => {
     const numberOfHashesToCheck = 2;

@@ -77,6 +77,38 @@ export const waitNewBlock = () => {
     });
   });
 };
+export const waitForAtLeastNCollators = (
+  nAuthors: number,
+  maxBlocks: number
+) => {
+  const api = getApi();
+  let count = 0;
+  const authors: string[] = [];
+  return new Promise(async (resolve) => {
+    const unsubscribe = await api.rpc.chain.subscribeNewHeads(
+      async (head: any) => {
+        const blockHashSignedByUser = await api.rpc.chain.getBlockHash(
+          head.number.toNumber()
+        );
+        const header = await api.derive.chain.getHeader(blockHashSignedByUser);
+        const author = header!.author!.toHuman() as string;
+        authors.push(author);
+        const nCollators = authors.filter(
+          (item, i, ar) => ar.indexOf(item) === i
+        ).length;
+        if (nAuthors <= nCollators) {
+          unsubscribe();
+          resolve(true);
+        }
+        if (++count === maxBlocks) {
+          testLog.getLog().info(`Chain is at block: #${header!.number}`);
+          unsubscribe();
+          resolve(false);
+        }
+      }
+    );
+  });
+};
 export async function waitNewBlockMeasuringTime(
   n: number
 ): Promise<Map<number, number>> {
