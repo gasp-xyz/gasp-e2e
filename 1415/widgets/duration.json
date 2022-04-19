@@ -1,0 +1,41 @@
+[ {
+  "uid" : "2fdd55bee6a142d2",
+  "name" : "Nodes are up and syncing",
+  "time" : {
+    "start" : 1650343250912,
+    "stop" : 1650343250934,
+    "duration" : 22
+  },
+  "status" : "failed",
+  "severity" : "normal"
+}, {
+  "uid" : "e88b80da459c7129",
+  "name" : "Cluster does not fork",
+  "time" : {
+    "start" : 1650343250936,
+    "stop" : 1650343250938,
+    "duration" : 2
+  },
+  "status" : "failed",
+  "severity" : "normal"
+}, {
+  "uid" : "cb6edcc5949d2976",
+  "name" : "Block numbers match across all nodes",
+  "time" : {
+    "start" : 1650343250934,
+    "stop" : 1650343250935,
+    "duration" : 1
+  },
+  "status" : "failed",
+  "severity" : "normal"
+}, {
+  "uid" : "7c218e7e6a8e3198",
+  "name" : "Block merkle hash matches across all nodes",
+  "time" : {
+    "start" : 1650343250935,
+    "stop" : 1650343250936,
+    "duration" : 1
+  },
+  "status" : "failed",
+  "severity" : "normal"
+} ]
