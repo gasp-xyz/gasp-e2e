@@ -1,0 +1,52 @@
+{
+  "uid" : "e20751747c2dc10b",
+  "name" : "Token amounts are correectly propagated to the node",
+  "fullName" : "UI tests - A user swapping tokens:.Token amounts are correectly propagated to the node",
+  "historyId" : "b8ee99851734c83991c748be83f79dd9",
+  "time" : {
+    "start" : 1650339173995,
+    "stop" : 1650339474025,
+    "duration" : 300030
+  },
+  "description" : "",
+  "descriptionHtml" : "",
+  "status" : "failed",
+  "statusMessage" : "Error: Timeout - Async callback was not invoked within the 300000 ms timeout specified by jest.setTimeout.",
+  "statusTrace" : "Timeout - Async callback was not invoked within the 300000 ms timeout specified by jest.setTimeout.Error: Timeout - Async callback was not invoked within the 300000 ms timeout specified by jest.setTimeout.\n                    at mapper (/home/runner/work/mangata-e2e/mangata-e2e/node_modules/jest-jasmine2/build/queueRunner.js:27:45)\n                    at /home/runner/work/mangata-e2e/mangata-e2e/node_modules/jest-jasmine2/build/queueRunner.js:75:41",
+  "flaky" : false,
+  "newFailed" : false,
+  "beforeStages" : [ ],
+  "afterStages" : [ ],
+  "labels" : [ {
+    "name" : "suite",
+    "value" : "UI tests - A user swapping tokens:"
+  }, {
+    "name" : "testClass",
+    "value" : "UI tests - A user swapping tokens:"
+  }, {
+    "name" : "testMethod",
+    "value" : "Token amounts are correectly propagated to the node"
+  }, {
+    "name" : "package",
+    "value" : "UI tests - A user swapping tokens:"
+  }, {
+    "name" : "resultFormat",
+    "value" : "allure1"
+  } ],
+  "parameters" : [ ],
+  "links" : [ ],
+  "hidden" : false,
+  "retry" : false,
+  "extra" : {
+    "severity" : "normal",
+    "retries" : [ ],
+    "categories" : [ {
+      "name" : "Product defects",
+      "matchedStatuses" : [ ],
+      "flaky" : false
+    } ],
+    "tags" : [ ]
+  },
+  "source" : "e20751747c2dc10b.json",
+  "parameterValues" : [ ]
+}

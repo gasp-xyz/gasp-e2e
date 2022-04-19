@@ -1,0 +1,70 @@
+{
+  "uid" : "df1d7f29e2755828",
+  "name" : "As a User I can not see hidden wallets in the modal",
+  "fullName" : "UI tests - Extension management.As a User I can not see hidden wallets in the modal",
+  "historyId" : "8d5a9ab04c304541e3710fd2828233d6",
+  "time" : {
+    "start" : 1650336839267,
+    "stop" : 1650337240335,
+    "duration" : 401068
+  },
+  "description" : "",
+  "descriptionHtml" : "",
+  "status" : "failed",
+  "statusMessage" : "Error: Timeout - Async callback was not invoked within the 300000 ms timeout specified by jest.setTimeout.",
+  "statusTrace" : "Timeout - Async callback was not invoked within the 300000 ms timeout specified by jest.setTimeout.Error: Timeout - Async callback was not invoked within the 300000 ms timeout specified by jest.setTimeout.\n                    at mapper (/home/runner/work/mangata-e2e/mangata-e2e/node_modules/jest-jasmine2/build/queueRunner.js:27:45)\n                    at /home/runner/work/mangata-e2e/mangata-e2e/node_modules/jest-jasmine2/build/queueRunner.js:75:41\n                    at runMicrotasks (<anonymous>)\n                    at processTicksAndRejections (node:internal/process/task_queues:96:5)",
+  "flaky" : false,
+  "newFailed" : false,
+  "beforeStages" : [ ],
+  "testStage" : {
+    "status" : "failed",
+    "statusMessage" : "Error: Timeout - Async callback was not invoked within the 300000 ms timeout specified by jest.setTimeout.",
+    "statusTrace" : "Timeout - Async callback was not invoked within the 300000 ms timeout specified by jest.setTimeout.Error: Timeout - Async callback was not invoked within the 300000 ms timeout specified by jest.setTimeout.\n                    at mapper (/home/runner/work/mangata-e2e/mangata-e2e/node_modules/jest-jasmine2/build/queueRunner.js:27:45)\n                    at /home/runner/work/mangata-e2e/mangata-e2e/node_modules/jest-jasmine2/build/queueRunner.js:75:41\n                    at runMicrotasks (<anonymous>)\n                    at processTicksAndRejections (node:internal/process/task_queues:96:5)",
+    "steps" : [ ],
+    "attachments" : [ {
+      "uid" : "139f4dfae899a4f7",
+      "name" : "Screeenshot",
+      "source" : "139f4dfae899a4f7.png",
+      "type" : "image/png",
+      "size" : 49887
+    } ],
+    "parameters" : [ ],
+    "stepsCount" : 0,
+    "attachmentsCount" : 1,
+    "shouldDisplayMessage" : true,
+    "hasContent" : true
+  },
+  "afterStages" : [ ],
+  "labels" : [ {
+    "name" : "suite",
+    "value" : "UI tests - Extension management"
+  }, {
+    "name" : "testClass",
+    "value" : "UI tests - Extension management"
+  }, {
+    "name" : "testMethod",
+    "value" : "As a User I can not see hidden wallets in the modal"
+  }, {
+    "name" : "package",
+    "value" : "UI tests - Extension management"
+  }, {
+    "name" : "resultFormat",
+    "value" : "allure1"
+  } ],
+  "parameters" : [ ],
+  "links" : [ ],
+  "hidden" : false,
+  "retry" : false,
+  "extra" : {
+    "severity" : "normal",
+    "retries" : [ ],
+    "categories" : [ {
+      "name" : "Product defects",
+      "matchedStatuses" : [ ],
+      "flaky" : false
+    } ],
+    "tags" : [ ]
+  },
+  "source" : "df1d7f29e2755828.json",
+  "parameterValues" : [ ]
+}

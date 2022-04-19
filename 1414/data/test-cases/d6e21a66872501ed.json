@@ -1,0 +1,48 @@
+{
+  "uid" : "d6e21a66872501ed",
+  "name" : "As a User I can see the min/max when withdrawing",
+  "fullName" : "UI tests > Balances.As a User I can see the min/max when withdrawing",
+  "historyId" : "2d0eecb8c7e9f428ed552b78d714b64a",
+  "time" : {
+    "start" : 1650337541810,
+    "stop" : 1650337541810,
+    "duration" : 0
+  },
+  "description" : "",
+  "descriptionHtml" : "",
+  "status" : "skipped",
+  "statusMessage" : "Error: Timeout - Async callback was not invoked within the 300000 ms timeout specified by jest.setTimeout.",
+  "statusTrace" : "Timeout - Async callback was not invoked within the 300000 ms timeout specified by jest.setTimeout.Error: Timeout - Async callback was not invoked within the 300000 ms timeout specified by jest.setTimeout.\n                    at mapper (/home/runner/work/mangata-e2e/mangata-e2e/node_modules/jest-jasmine2/build/queueRunner.js:27:45)\n                    at /home/runner/work/mangata-e2e/mangata-e2e/node_modules/jest-jasmine2/build/queueRunner.js:75:41\n                    at runMicrotasks (<anonymous>)\n                    at processTicksAndRejections (node:internal/process/task_queues:96:5)",
+  "flaky" : false,
+  "newFailed" : false,
+  "beforeStages" : [ ],
+  "afterStages" : [ ],
+  "labels" : [ {
+    "name" : "suite",
+    "value" : "UI tests > Balances"
+  }, {
+    "name" : "testClass",
+    "value" : "UI tests > Balances"
+  }, {
+    "name" : "testMethod",
+    "value" : "As a User I can see the min/max when withdrawing"
+  }, {
+    "name" : "package",
+    "value" : "UI tests > Balances"
+  }, {
+    "name" : "resultFormat",
+    "value" : "allure1"
+  } ],
+  "parameters" : [ ],
+  "links" : [ ],
+  "hidden" : false,
+  "retry" : false,
+  "extra" : {
+    "severity" : "normal",
+    "retries" : [ ],
+    "categories" : [ ],
+    "tags" : [ ]
+  },
+  "source" : "d6e21a66872501ed.json",
+  "parameterValues" : [ ]
+}
