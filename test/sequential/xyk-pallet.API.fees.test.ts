@@ -6,7 +6,6 @@
  * @group sequential
  * @group critical
  */
-import fs from "fs";
 import { getApi, initApi } from "../../utils/api";
 import {
   burnLiquidity,
