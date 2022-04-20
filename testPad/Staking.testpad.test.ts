@@ -15,6 +15,7 @@ import fs from "fs";
 import { Assets } from "../utils/Assets";
 import { hexToBn } from "@polkadot/util";
 import { signTx } from "mangata-sdk";
+import { FeeTxs } from "../utils/tx";
 
 require("dotenv").config();
 
@@ -899,6 +900,26 @@ describe("staking - testpad", () => {
       })
     );
   });
+  test("sellAsset", async () => {
+    keyring = new Keyring({ type: "sr25519" });
+    sudo = new User(keyring, sudoUserName);
+    const json = fs.readFileSync(address + ".json", {
+      encoding: "utf8",
+      flag: "r",
+    });
+    const user = new User(keyring, "aasd", JSON.parse(json));
+    keyring.addPair(user.keyRingPair);
+    keyring.pairs[0].decodePkcs8("mangata123");
+    //await user.addMGATokens(sudo);
+    await new FeeTxs().sellAsset(
+      user.keyRingPair,
+      new BN(0),
+      new BN(1),
+      new BN(0),
+      new BN(100)
+    );
+  });
+
   test("get term percentage status", async () => {
     while (true) {
       const metadata = await api.derive.elections.info();

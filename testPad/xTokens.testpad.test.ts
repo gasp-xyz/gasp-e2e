@@ -7,6 +7,8 @@ import { User } from "../utils/User";
 import { getEnvironmentRequiredVars } from "../utils/utils";
 import { Mangata } from "mangata-sdk";
 import { ApiPromise, WsProvider } from "@polkadot/api";
+import { mnemonicToMiniSecret } from "@polkadot/util-crypto";
+import { u8aToHex } from "@polkadot/util";
 
 require("dotenv").config();
 
@@ -28,6 +30,11 @@ let keyring;
 //*******END:HOW TO USE******** */
 
 describe("staking - testpad", () => {
+  const mnemonicMini = mnemonicToMiniSecret(
+    "remain flame shell morning solar filter silver lawn clarify witness sign wall"
+  );
+  // eslint-disable-next-line no-console
+  testLog.getLog().warn(u8aToHex(mnemonicMini));
   beforeAll(async () => {
     try {
       getApi();
@@ -35,7 +42,7 @@ describe("staking - testpad", () => {
       await initApi();
     }
   });
-
+  test.only("asd", () => {});
   test("V4 xtokens transfer", async () => {
     try {
       getApi();
