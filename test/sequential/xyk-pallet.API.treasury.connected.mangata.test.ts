@@ -427,6 +427,21 @@ describe("xyk-pallet - treasury tests [Connected - Mangata]: on treasury we stor
 
     const treasuryBefore = await getTreasury(mgaTokenId);
     const treasuryBurnBefore = await getTreasuryBurn(mgaTokenId);
+    await buyAsset(
+      testUser1.keyRingPair,
+      connectedToMGA,
+      indirectlyConnected,
+      buyAssetAmount,
+      new BN(10000000)
+    ).then((result) => {
+      const eventResponse = getEventResultFromMangataTx(result, [
+        "xyk",
+        "AssetsSwapped",
+        testUser1.keyRingPair.address,
+      ]);
+      expect(eventResponse.state).toEqual(ExtrinsicResult.ExtrinsicSuccess);
+      return result;
+    });
 
     await testUser1.refreshAmounts(AssetWallet.AFTER);
 
@@ -454,6 +469,21 @@ describe("xyk-pallet - treasury tests [Connected - Mangata]: on treasury we stor
 
     const { treasury, treasuryBurn } = calculateFees(sellAssetAmount);
 
+    await sellAsset(
+      testUser1.keyRingPair,
+      indirectlyConnected,
+      connectedToMGA,
+      sellAssetAmount,
+      new BN(1)
+    ).then((result) => {
+      const eventResponse = getEventResultFromMangataTx(result, [
+        "xyk",
+        "AssetsSwapped",
+        testUser1.keyRingPair.address,
+      ]);
+      expect(eventResponse.state).toEqual(ExtrinsicResult.ExtrinsicSuccess);
+      return result;
+    });
     await testUser1.refreshAmounts(AssetWallet.AFTER);
 
     const treasuryAfter = await getTreasury(mgaTokenId);
@@ -494,7 +524,21 @@ describe("xyk-pallet - treasury tests [Connected - Mangata]: on treasury we stor
       mgPoolAmount[0],
       treasury
     );
-
+    await buyAsset(
+      testUser1.keyRingPair,
+      connectedToMGA,
+      indirectlyConnected,
+      buyAssetAmount,
+      new BN(1000000)
+    ).then((result) => {
+      const eventResponse = getEventResultFromMangataTx(result, [
+        "xyk",
+        "AssetsSwapped",
+        testUser1.keyRingPair.address,
+      ]);
+      expect(eventResponse.state).toEqual(ExtrinsicResult.ExtrinsicSuccess);
+      return result;
+    });
     await testUser1.refreshAmounts(AssetWallet.AFTER);
 
     const treasuryAfter = await getTreasury(mgaTokenId);
