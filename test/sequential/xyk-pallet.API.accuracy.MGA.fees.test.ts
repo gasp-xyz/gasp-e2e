@@ -17,7 +17,12 @@ import { BN } from "@polkadot/util";
 import { Keyring } from "@polkadot/api";
 import { AssetWallet, User } from "../../utils/User";
 import { Assets } from "../../utils/Assets";
-import { getEnvironmentRequiredVars } from "../../utils/utils";
+import {
+  findBlockWithExtrinsicSigned,
+  getBlockNumber,
+  getEnvironmentRequiredVars,
+  getTokensDiffForBlockAuthor,
+} from "../../utils/utils";
 import { MGA_ASSET_ID } from "../../utils/Constants";
 import { Fees } from "../../utils/Fees";
 
@@ -96,12 +101,8 @@ test("xyk-pallet - Assets substracted are incremented by 1 - MGA- SellAsset", as
   );
   const treasuryBefore = await getTreasury(firstCurrency);
   const treasuryBurnBefore = await getTreasuryBurn(firstCurrency);
-
-  const events = await testUser1.sellAssets(
-    firstCurrency,
-    secondCurrency,
-    sellingAmount
-  );
+  const from = await getBlockNumber();
+  await testUser1.sellAssets(firstCurrency, secondCurrency, sellingAmount);
   await testUser1.refreshAmounts(AssetWallet.AFTER);
   let tokensLost = testUser1
     .getAsset(firstCurrency)
@@ -114,14 +115,16 @@ test("xyk-pallet - Assets substracted are incremented by 1 - MGA- SellAsset", as
     ?.amountAfter.free.sub(
       testUser1.getAsset(secondCurrency)?.amountBefore.free!
     )!;
-  let feesPayed = new BN(0);
+  let feesPaid = new BN(0);
   if (Fees.swapFeesEnabled) {
-    feesPayed = new BN(
-      events
-        .filter((x) => x.method === "Deposit" && x.section === "treasury")[0]
-        .eventData[0].data.toString()
+    const to = await getBlockNumber();
+    const blockNumber = await findBlockWithExtrinsicSigned(
+      [from, to],
+      testUser1.keyRingPair.address
     );
-    tokensLost = tokensLost?.sub(feesPayed);
+    const authorMGAtokens = await getTokensDiffForBlockAuthor(blockNumber);
+    feesPaid = authorMGAtokens;
+    tokensLost = tokensLost?.sub(feesPaid);
   }
   expect(tokensWon).bnEqual(tokensToReceive);
   expect(tokensLost).bnEqual(sellingAmount);
@@ -132,7 +135,7 @@ test("xyk-pallet - Assets substracted are incremented by 1 - MGA- SellAsset", as
   const expectedTreasury = new BN(5);
   const treasury = await getTreasury(firstCurrency);
   const treasuryBurn = await getTreasuryBurn(firstCurrency);
-  const incrementedTreasury = treasuryBefore.sub(treasury).sub(feesPayed).abs();
+  const incrementedTreasury = treasuryBefore.sub(treasury).sub(feesPaid).abs();
   expect(incrementedTreasury).bnEqual(
     expectedTreasury.add(extraTokenForRounding)
   );
