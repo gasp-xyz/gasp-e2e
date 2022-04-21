@@ -1,0 +1,83 @@
+{
+  "uid" : "f6e97ce7eb2e9a92",
+  "name" : "As a User I can Withdraw ETH from Meta extension",
+  "fullName" : "UI main tests - Withdraw - ETH.As a User I can Withdraw ETH from Meta extension",
+  "historyId" : "eac55faabce1aad19e0827a3afd71b78",
+  "time" : {
+    "start" : 1650511640806,
+    "stop" : 1650511640815,
+    "duration" : 9
+  },
+  "description" : "",
+  "descriptionHtml" : "",
+  "status" : "failed",
+  "statusMessage" : "Error: Timeout - Async callback was not invoked within the 600000 ms timeout specified by jest.setTimeout.",
+  "statusTrace" : "Timeout - Async callback was not invoked within the 600000 ms timeout specified by jest.setTimeout.Error: Timeout - Async callback was not invoked within the 600000 ms timeout specified by jest.setTimeout.\n                    at mapper (/home/runner/work/mangata-e2e/mangata-e2e/node_modules/jest-jasmine2/build/queueRunner.js:27:45)\n                    at /home/runner/work/mangata-e2e/mangata-e2e/node_modules/jest-jasmine2/build/queueRunner.js:75:41\n                    at runMicrotasks (<anonymous>)\n                    at processTicksAndRejections (node:internal/process/task_queues:96:5)",
+  "flaky" : false,
+  "newFailed" : false,
+  "beforeStages" : [ ],
+  "afterStages" : [ ],
+  "labels" : [ {
+    "name" : "suite",
+    "value" : "UI main tests - Withdraw - ETH"
+  }, {
+    "name" : "testClass",
+    "value" : "UI main tests - Withdraw - ETH"
+  }, {
+    "name" : "testMethod",
+    "value" : "As a User I can Withdraw ETH from Meta extension"
+  }, {
+    "name" : "package",
+    "value" : "UI main tests - Withdraw - ETH"
+  }, {
+    "name" : "resultFormat",
+    "value" : "allure1"
+  } ],
+  "parameters" : [ ],
+  "links" : [ ],
+  "hidden" : false,
+  "retry" : false,
+  "extra" : {
+    "severity" : "normal",
+    "retries" : [ ],
+    "categories" : [ {
+      "name" : "Product defects",
+      "matchedStatuses" : [ ],
+      "flaky" : false
+    } ],
+    "history" : {
+      "statistic" : {
+        "failed" : 3,
+        "broken" : 0,
+        "skipped" : 0,
+        "passed" : 0,
+        "unknown" : 0,
+        "total" : 3
+      },
+      "items" : [ {
+        "uid" : "ae1714a8408241e0",
+        "reportUrl" : "https://mangata-finance.github.io/mangata-e2e/1416//#testresult/ae1714a8408241e0",
+        "status" : "failed",
+        "statusDetails" : "Error: Timeout - Async callback was not invoked within the 600000 ms timeout specified by jest.setTimeout.",
+        "time" : {
+          "start" : 1650425395411,
+          "stop" : 1650425395421,
+          "duration" : 10
+        }
+      }, {
+        "uid" : "8318abcdc24b66ab",
+        "reportUrl" : "https://mangata-finance.github.io/mangata-e2e/1414//#testresult/8318abcdc24b66ab",
+        "status" : "failed",
+        "statusDetails" : "Error: Timeout - Async callback was not invoked within the 600000 ms timeout specified by jest.setTimeout.",
+        "time" : {
+          "start" : 1650338870355,
+          "stop" : 1650338870365,
+          "duration" : 10
+        }
+      } ]
+    },
+    "tags" : [ ]
+  },
+  "source" : "f6e97ce7eb2e9a92.json",
+  "parameterValues" : [ ]
+}
