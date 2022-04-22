@@ -2,7 +2,7 @@
  * @group governance governance-voting
  */
 
-import BN from "bn.js";
+import { BN } from "@polkadot/util";
 import { GovernanceUser } from "../../utils/Framework/User/GovernanceUser";
 import { Keyring } from "@polkadot/api";
 import { Bank } from "../../utils/Framework/Supply/Bank";

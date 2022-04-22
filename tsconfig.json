@@ -77,7 +77,7 @@
       "forceConsistentCasingInFileNames": true,  /* Disallow inconsistently-cased references to the same file. */
   
       /* Non-default available options */
-      "pretty": true
-  
+      "pretty": true,
+      "experimentalDecorators": true,
     }
 }

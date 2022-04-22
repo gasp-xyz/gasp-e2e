@@ -1,5 +1,5 @@
 import { Keyring } from "@polkadot/api";
-import BN from "bn.js";
+import { BN } from "@polkadot/util";
 import { getApi, initApi } from "../utils/api";
 import { waitNewBlock } from "../utils/eventListeners";
 import { User, AssetWallet } from "../utils/User";
@@ -41,7 +41,7 @@ describe("staking - testpad", () => {
   const user = "//Charlie";
 
   test.each([user])("SendTxEachSecond", async (bondAmount) => {
-    let cont = 3;
+    let cont = 3000;
     keyring = new Keyring({ type: "sr25519" });
     sudo = new User(keyring, sudoUserName);
     testUser1 = new User(keyring, user);
@@ -62,19 +62,19 @@ describe("staking - testpad", () => {
     const [firstCurrency, secondCurrency] =
       await Assets.setupUserWithCurrencies(
         testUser1,
-        [new BN(1000000000), new BN(1000000000)],
+        [new BN("100000000000000000"), new BN("100000000000000000")],
         sudo
       );
     await testUser1.addMGATokens(sudo);
     await testUser1.createPoolToAsset(
-      new BN(40000),
-      new BN(30000),
+      new BN("30000000000000000"),
+      new BN("30000000000000000"),
       firstCurrency,
       secondCurrency
     );
 
     const account = await (
-      await api.query.system.account(sudo.keyRingPair.address)
+      await api.query.system.account(testUser1.keyRingPair.address)
     ).toHuman();
     const nonce = JSON.parse(JSON.stringify(account)).nonce;
     let userNonce = parseInt(nonce);

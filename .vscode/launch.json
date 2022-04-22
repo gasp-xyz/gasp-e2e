@@ -4,6 +4,7 @@
     // For more information, visit: https://go.microsoft.com/fwlink/?linkid=830387
     "version": "0.2.0",
     "configurations": [
+
         {
             "type": "node",
             "request": "launch",
@@ -34,7 +35,7 @@
             "name": "Current TS File",
             "type": "node",
             "request": "launch",
-            "args": ["${relativeFile}" ,"ping", "testCaseName=SustainedLoadTest",  "threadNumber=2", "duration=1000", "totalTransactions=2", "nodes=wss://integration.mangatafinance.cloud:9944,wss://develop.mangatafinance.cloud:9944" ],
+            "args": ["${relativeFile}" ,"batch", "testCaseName=ConcurrentTest",  "threadNumber=2", "duration=20", "totalTransactions=1000", "nodes=wss://integration-v4-collator-01.mangatafinance.cloud" ],
             "runtimeArgs": ["--nolazy", "-r", "ts-node/register"],
             "sourceMaps": true,
             "cwd": "${workspaceRoot}",

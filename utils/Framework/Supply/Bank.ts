@@ -1,4 +1,4 @@
-import BN from "bn.js";
+import { BN } from "@polkadot/util";
 import { ExtrinsicResult } from "../../eventListeners";
 import { SudoUser } from "../../Framework/User/SudoUser";
 import { mintAsset } from "../../tx";

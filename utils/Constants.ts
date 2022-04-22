@@ -1,4 +1,4 @@
-import BN from "bn.js";
+import { BN } from "@polkadot/util";
 
 export const MGA_ASSET_ID = new BN(0);
 export const MGA_ASSET_NAME = "MGA";

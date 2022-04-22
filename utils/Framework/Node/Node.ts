@@ -2,7 +2,7 @@ import * as uuid from "uuid";
 import { ApiPromise } from "@polkadot/api";
 import { initApi } from "../../api";
 import { testLog } from "../../Logger";
-import BN from "bn.js";
+import { BN } from "@polkadot/util";
 import { GovernanceUser } from "../User/GovernanceUser";
 
 export class Node {

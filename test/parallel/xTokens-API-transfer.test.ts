@@ -2,7 +2,7 @@
  * @group rely-mga-acala
  */
 
-import BN from "bn.js";
+import { BN } from "@polkadot/util";
 import { GovernanceUser } from "../../utils/Framework/User/GovernanceUser";
 import { Keyring } from "@polkadot/api";
 import { Node } from "../../utils/Framework/Node/Node";
@@ -324,9 +324,7 @@ async function sendTokensFromParachainToMGA(
 ) {
   await sourceNode.api?.tx.xTokens
     .transfer(
-      {
-        Token: "DOT",
-      },
+      4,
       amount,
       {
         V1: {

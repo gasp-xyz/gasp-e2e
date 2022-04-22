@@ -4,7 +4,7 @@
  * @group ui-smoke
  */
 import { Keyring } from "@polkadot/api";
-import BN from "bn.js";
+import { BN } from "@polkadot/util";
 import { WebDriver } from "selenium-webdriver";
 import { getApi, initApi } from "../../utils/api";
 import { waitNewBlock } from "../../utils/eventListeners";
@@ -24,10 +24,7 @@ import {
   uiStringToBN,
 } from "../../utils/frontend/utils/Helper";
 import { AssetWallet, User } from "../../utils/User";
-import {
-  createPoolIfMissing,
-  getEnvironmentRequiredVars,
-} from "../../utils/utils";
+import { getEnvironmentRequiredVars } from "../../utils/utils";
 
 import {
   FIVE_MIN,
@@ -37,6 +34,7 @@ import {
 import { BrunLiquidityModal } from "../../utils/frontend/pages/BrunLiquidityModal";
 import { Assets } from "../../utils/Assets";
 import { testLog } from "../../utils/Logger";
+import { createPoolIfMissing } from "../../utils/tx";
 
 const MGA_ASSET_ID = new BN(0);
 const ETH_ASSET_ID = new BN(1);
