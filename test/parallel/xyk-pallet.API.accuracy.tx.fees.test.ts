@@ -13,15 +13,12 @@ import { AssetWallet, User } from "../../utils/User";
 import { validateAssetsWithValues } from "../../utils/validators";
 import { Assets } from "../../utils/Assets";
 
-import {
-  fromBNToUnitString,
-  fromStringToUnitString,
-  getEnvironmentRequiredVars,
-} from "../../utils/utils";
+import { getEnvironmentRequiredVars } from "../../utils/utils";
 import { SignerOptions } from "@polkadot/api/types";
 import { getEventResultFromMangataTx } from "../../utils/txHandler";
 import { RuntimeDispatchInfo } from "@polkadot/types/interfaces";
 import { MGA_ASSET_ID } from "../../utils/Constants";
+import { Fees } from "../../utils/Fees";
 
 jest.spyOn(console, "log").mockImplementation(jest.fn());
 jest.spyOn(console, "error").mockImplementation(jest.fn());
@@ -146,7 +143,8 @@ test("xyk-pallet - Calculate required MGA fee - BuyAsset", async () => {
       const eventResponse = getEventResultFromMangataTx(result);
       expect(eventResponse.state).toEqual(ExtrinsicResult.ExtrinsicSuccess);
     });
-  expect(getFeeString(cost)).toEqual(fromStringToUnitString("0"));
+  const costExpected = Fees.getSwapFees(cost.partialFee);
+  expect(cost.partialFee).bnLte(costExpected);
 });
 
 afterEach(async () => {
@@ -156,10 +154,6 @@ afterEach(async () => {
     ?.amountBefore.free.sub(
       testUser1.getAsset(MGA_ASSET_ID)?.amountAfter.free!
     );
-  const deductedMGAString = fromBNToUnitString(deductedMGATkns!);
-  expect(deductedMGAString).toEqual(getFeeString(cost));
+  const fee = cost.partialFee;
+  expect(deductedMGATkns).bnLte(fee);
 });
-function getFeeString(cost: RuntimeDispatchInfo): string {
-  const fee = new BN(cost.partialFee.toString());
-  return fromBNToUnitString(fee);
-}

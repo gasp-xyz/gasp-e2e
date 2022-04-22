@@ -7,12 +7,12 @@ import { testLog } from "./Logger";
 import {
   buyAsset,
   createPool,
+  FeeTxs,
   getAllAssets,
   getTokensAccountInfo,
   getUserAssets,
   mintAsset,
   mintLiquidity,
-  sellAsset,
   transferAll,
 } from "./tx";
 import { getEventResultFromMangataTx } from "./txHandler";
@@ -121,7 +121,7 @@ export class User {
     amount: BN,
     maxExpected = new BN(1000000)
   ) {
-    await buyAsset(
+    return await buyAsset(
       this.keyRingPair,
       soldAssetId,
       boughtAssetId,
@@ -134,6 +134,7 @@ export class User {
         this.keyRingPair.address,
       ]);
       assert.equal(eventResponse.state, ExtrinsicResult.ExtrinsicSuccess);
+      return result;
     });
   }
 
@@ -154,20 +155,23 @@ export class User {
   }
 
   async sellAssets(soldAssetId: BN, boughtAssetId: BN, amount: BN) {
-    await sellAsset(
-      this.keyRingPair,
-      soldAssetId,
-      boughtAssetId,
-      amount,
-      new BN(0)
-    ).then((result) => {
-      const eventResponse = getEventResultFromMangataTx(result, [
-        "xyk",
-        "AssetsSwapped",
-        this.keyRingPair.address,
-      ]);
-      assert.equal(eventResponse.state, ExtrinsicResult.ExtrinsicSuccess);
-    });
+    return await new FeeTxs()
+      .sellAsset(
+        this.keyRingPair,
+        soldAssetId,
+        boughtAssetId,
+        amount,
+        new BN(0)
+      )
+      .then((result) => {
+        const eventResponse = getEventResultFromMangataTx(result, [
+          "xyk",
+          "AssetsSwapped",
+          this.keyRingPair.address,
+        ]);
+        assert.equal(eventResponse.state, ExtrinsicResult.ExtrinsicSuccess);
+        return result;
+      });
   }
   async mintLiquidity(
     firstCurrency: BN,

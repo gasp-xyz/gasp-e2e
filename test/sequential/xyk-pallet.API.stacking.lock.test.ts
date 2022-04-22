@@ -65,7 +65,9 @@ describe("xyk-pallet - Sell Asset: validate Errors:", () => {
         new BN("10000000000000000000"),
         new BN(3),
         // @ts-ignore - Mangata bond operation has 4 params, somehow is inheriting the bond operation from polkadot :S
-        new BN(candidates.length)
+        new BN(candidates.length),
+        // @ts-ignore
+        new BN(3)
       ),
       testUser1.keyRingPair
     );

@@ -1,3 +1,4 @@
+/* eslint-disable jest/no-conditional-expect */
 /*
  *
  * @group xyk
@@ -26,10 +27,14 @@ import { Assets } from "../../utils/Assets";
 import { MAX_BALANCE, MGA_ASSET_NAME } from "../../utils/Constants";
 import {
   calculateFees,
+  findBlockWithExtrinsicSigned,
+  getBlockNumber,
   getEnvironmentRequiredVars,
+  getTokensDiffForBlockAuthor,
   waitIfSessionWillChangeInNblocks,
 } from "../../utils/utils";
 import { getEventResultFromMangataTx } from "../../utils/txHandler";
+import { Fees } from "../../utils/Fees";
 jest.spyOn(console, "log").mockImplementation(jest.fn());
 jest.setTimeout(1500000);
 process.env.NODE_ENV = "test";
@@ -99,7 +104,6 @@ describe("xyk-pallet - treasury tests [Mangata]: on treasury we store", () => {
 
   test("assets won when assets are sold [Selling Mangata] - 5", async () => {
     const sellAssetAmount = new BN(10000);
-
     const treasuryBefore = await getTreasury(mgaTokenId);
     const treasuryBurnBefore = await getTreasuryBurn(mgaTokenId);
 
@@ -116,8 +120,8 @@ describe("xyk-pallet - treasury tests [Mangata]: on treasury we store", () => {
         testUser1.keyRingPair.address,
       ]);
       expect(eventResponse.state).toEqual(ExtrinsicResult.ExtrinsicSuccess);
+      return result;
     });
-
     await testUser1.refreshAmounts(AssetWallet.AFTER);
 
     const { treasury } = calculateFees(sellAssetAmount);
@@ -142,7 +146,7 @@ describe("xyk-pallet - treasury tests [Mangata]: on treasury we store", () => {
       buyAssetAmount
     );
     const { treasury } = calculateFees(sellPrice);
-
+    const from = await getBlockNumber();
     await buyAsset(
       testUser1.keyRingPair,
       secondCurrency,
@@ -156,7 +160,17 @@ describe("xyk-pallet - treasury tests [Mangata]: on treasury we store", () => {
         testUser1.keyRingPair.address,
       ]);
       expect(eventResponse.state).toEqual(ExtrinsicResult.ExtrinsicSuccess);
+      return result;
     });
+    if (false) {
+      const to = await getBlockNumber();
+      const blockNumber = await findBlockWithExtrinsicSigned(
+        [from, to],
+        testUser1.keyRingPair.address
+      );
+      const authorMGAtokens = await getTokensDiffForBlockAuthor(blockNumber);
+      treasuryBefore.add(authorMGAtokens);
+    }
     //fees are now calculated after the swap
     const poolBalance = await getBalanceOfPool(mgaTokenId, secondCurrency);
     const feeInMGAPrice = await calculate_sell_price_rpc(
@@ -195,6 +209,7 @@ describe("xyk-pallet - treasury tests [Mangata]: on treasury we store", () => {
         testUser1.keyRingPair.address,
       ]);
       expect(eventResponse.state).toEqual(ExtrinsicResult.ExtrinsicSuccess);
+      return result;
     });
     const poolBalance = await getBalanceOfPool(mgaTokenId, secondCurrency);
     const feeInMGAPrice = await calculate_sell_price_rpc(
@@ -238,8 +253,8 @@ describe("xyk-pallet - treasury tests [Mangata]: on treasury we store", () => {
         testUser1.keyRingPair.address,
       ]);
       expect(eventResponse.state).toEqual(ExtrinsicResult.ExtrinsicSuccess);
+      return result;
     });
-
     await testUser1.refreshAmounts(AssetWallet.AFTER);
 
     const treasuryAfter = await getTreasury(mgaTokenId);
@@ -363,8 +378,8 @@ describe("xyk-pallet - treasury tests [Connected - Mangata]: on treasury we stor
         testUser1.keyRingPair.address,
       ]);
       expect(eventResponse.state).toEqual(ExtrinsicResult.ExtrinsicSuccess);
+      return result;
     });
-
     await testUser1.refreshAmounts(AssetWallet.AFTER);
 
     const treasuryAfter = await getTreasury(mgaTokenId);
@@ -412,7 +427,6 @@ describe("xyk-pallet - treasury tests [Connected - Mangata]: on treasury we stor
 
     const treasuryBefore = await getTreasury(mgaTokenId);
     const treasuryBurnBefore = await getTreasuryBurn(mgaTokenId);
-
     await buyAsset(
       testUser1.keyRingPair,
       connectedToMGA,
@@ -426,6 +440,7 @@ describe("xyk-pallet - treasury tests [Connected - Mangata]: on treasury we stor
         testUser1.keyRingPair.address,
       ]);
       expect(eventResponse.state).toEqual(ExtrinsicResult.ExtrinsicSuccess);
+      return result;
     });
 
     await testUser1.refreshAmounts(AssetWallet.AFTER);
@@ -467,8 +482,8 @@ describe("xyk-pallet - treasury tests [Connected - Mangata]: on treasury we stor
         testUser1.keyRingPair.address,
       ]);
       expect(eventResponse.state).toEqual(ExtrinsicResult.ExtrinsicSuccess);
+      return result;
     });
-
     await testUser1.refreshAmounts(AssetWallet.AFTER);
 
     const treasuryAfter = await getTreasury(mgaTokenId);
@@ -509,7 +524,6 @@ describe("xyk-pallet - treasury tests [Connected - Mangata]: on treasury we stor
       mgPoolAmount[0],
       treasury
     );
-
     await buyAsset(
       testUser1.keyRingPair,
       connectedToMGA,
@@ -523,8 +537,8 @@ describe("xyk-pallet - treasury tests [Connected - Mangata]: on treasury we stor
         testUser1.keyRingPair.address,
       ]);
       expect(eventResponse.state).toEqual(ExtrinsicResult.ExtrinsicSuccess);
+      return result;
     });
-
     await testUser1.refreshAmounts(AssetWallet.AFTER);
 
     const treasuryAfter = await getTreasury(mgaTokenId);
@@ -612,7 +626,7 @@ describe("xyk-pallet - treasury tests [Connected - Mangata]: Error cases", () =>
     const treasuryBurnBeforeConnectedAsset = await getTreasuryBurn(
       connectedToMGA
     );
-
+    const from = await getBlockNumber();
     await buyAsset(
       testUser1.keyRingPair,
       connectedToMGA,
@@ -626,7 +640,18 @@ describe("xyk-pallet - treasury tests [Connected - Mangata]: Error cases", () =>
         testUser1.keyRingPair.address,
       ]);
       expect(eventResponse.state).toEqual(ExtrinsicResult.ExtrinsicSuccess);
+      return result;
     });
+    let fees = new BN(0);
+    if (Fees.swapFeesEnabled) {
+      const to = await getBlockNumber();
+      const blockNumber = await findBlockWithExtrinsicSigned(
+        [from, to],
+        testUser1.keyRingPair.address
+      );
+      const authorMGAtokens = await getTokensDiffForBlockAuthor(blockNumber);
+      fees = authorMGAtokens;
+    }
 
     await testUser1.refreshAmounts(AssetWallet.AFTER);
 
@@ -649,8 +674,9 @@ describe("xyk-pallet - treasury tests [Connected - Mangata]: Error cases", () =>
       .amountAfter.free.sub(mgPoolAmount[0].sub(new BN(1)));
 
     expect(testUser1.getAsset(mgaTokenId)!.amountBefore.free).bnEqual(
-      expectedValue
+      expectedValue.add(fees)
     );
+
     //burned destroyed! because is translated toMGA
     expect(treasuryBurnAfter).bnEqual(treasuryBurnBefore);
     //check that treasury got the right amount.

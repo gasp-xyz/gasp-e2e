@@ -6,8 +6,6 @@ import { Assets } from "./Assets";
 import { User } from "./User";
 import Keyring from "@polkadot/keyring";
 import { getAccountJSON } from "./frontend/utils/Helper";
-import { ETH_ASSET_ID, MGA_ASSET_ID } from "./Constants";
-import { getBalanceOfPool } from "./tx";
 import { waitNewBlock } from "./eventListeners";
 import { testLog } from "./Logger";
 import { AnyNumber } from "@polkadot/types/types";
@@ -111,6 +109,9 @@ export function getEnvironmentRequiredVars() {
   const clusterNodeF = process.env.CLUSTER_NODE_F
     ? process.env.CLUSTER_NODE_F
     : "ws://node_ferdie:9944";
+  const fees = process.env.FEES_ENABLED
+    ? process.env.FEES_ENABLED === "true"
+    : true;
 
   return {
     sudo: sudoUserName,
@@ -135,6 +136,7 @@ export function getEnvironmentRequiredVars() {
     clusterNodeD: clusterNodeD,
     clusterNodeE: clusterNodeE,
     clusterNodeF: clusterNodeF,
+    fees: fees,
   };
 }
 
@@ -216,26 +218,6 @@ export const waitForNBlocks = async (n: number) => {
     await waitForNBlocks(n - 1);
   }
 };
-
-export async function createPoolIfMissing(
-  sudo: User,
-  amountInPool: string,
-  firstAssetId = MGA_ASSET_ID,
-  seccondAssetId = ETH_ASSET_ID
-) {
-  const balance = await getBalanceOfPool(firstAssetId, seccondAssetId);
-  if (balance[0].isZero() || balance[1].isZero()) {
-    await sudo.mint(firstAssetId, sudo, new BN(amountInPool));
-    await sudo.mint(seccondAssetId, sudo, new BN(amountInPool));
-    const poolValue = new BN(amountInPool).div(new BN(2));
-    await sudo.createPoolToAsset(
-      poolValue,
-      poolValue,
-      firstAssetId,
-      seccondAssetId
-    );
-  }
-}
 
 export async function waitIfSessionWillChangeInNblocks(numberOfBlocks: number) {
   const api = await getApi();

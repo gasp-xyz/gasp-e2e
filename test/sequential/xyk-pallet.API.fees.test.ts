@@ -1,3 +1,4 @@
+/* eslint-disable jest/no-conditional-expect */
 /*
  *
  * @group xyk
@@ -26,6 +27,7 @@ import {
 } from "../../utils/utils";
 import { MGA_ASSET_ID } from "../../utils/Constants";
 import { waitNewBlock } from "../../utils/eventListeners";
+import { Fees } from "../../utils/Fees";
 
 jest.spyOn(console, "log").mockImplementation(jest.fn());
 jest.spyOn(console, "error").mockImplementation(jest.fn());
@@ -232,13 +234,23 @@ test("xyk-pallet - MGA tokens are not substracted as fee : SellAsset", async () 
   const diff = mgaUserToken.amountBefore.free.sub(
     mgaUserToken.amountAfter.free
   );
-  expect(diff).bnEqual(new BN(0));
-  expect(testUser1.getAsset(MGA_ASSET_ID)!.amountBefore.free).bnLte(
-    testUser1.getAsset(MGA_ASSET_ID)!.amountAfter.free!
-  );
-  expect(new BN(0)).bnEqual(authorMGAtokens!);
+  //TODO:swapFees:plz remove me when fees are fixed and keep the else part.
+  if (Fees.swapFeesEnabled) {
+    expect(new BN(0)).bnLt(diff);
+    expect(new BN(0)).bnLt(authorMGAtokens);
+    expect(diff).bnEqual(authorMGAtokens);
+  } else {
+    expect(testUser1.getAsset(firstCurrency)!.amountAfter.free).bnLt(
+      testUser1.getAsset(firstCurrency)!.amountBefore.free
+    );
+    expect(new BN(0)).bnEqual(authorMGAtokens);
+    expect(diff).bnEqual(new BN(0));
+    expect(testUser1.getAsset(MGA_ASSET_ID)!.amountBefore.free).bnEqual(
+      testUser1.getAsset(MGA_ASSET_ID)!.amountAfter.free!
+    );
+  }
 });
-test("xyk-pallet - MGA tokens are not substracted as fee : BuyAsset", async () => {
+test("xyk-pallet - MGA tokens are / are not substracted as fee : BuyAsset", async () => {
   const from = await getBlockNumber();
   await testUser1.buyAssets(firstCurrency, secondCurrency, new BN(50));
   const to = await getBlockNumber();
@@ -252,9 +264,20 @@ test("xyk-pallet - MGA tokens are not substracted as fee : BuyAsset", async () =
   const diff = mgaUserToken.amountBefore.free.sub(
     mgaUserToken.amountAfter.free!
   );
-  expect(diff).bnEqual(new BN(0));
-  expect(testUser1.getAsset(firstCurrency)!.amountAfter.free).bnLt(
-    testUser1.getAsset(firstCurrency)!.amountBefore.free
-  );
-  expect(new BN(0)).bnEqual(authorMGAtokens);
+
+  //TODO:swapFees:plz remove me when fees are fixed and keep the else part.
+  if (Fees.swapFeesEnabled) {
+    expect(new BN(0)).bnLt(diff);
+    expect(new BN(0)).bnLt(authorMGAtokens);
+    expect(diff).bnEqual(authorMGAtokens);
+  } else {
+    expect(testUser1.getAsset(firstCurrency)!.amountAfter.free).bnLt(
+      testUser1.getAsset(firstCurrency)!.amountBefore.free
+    );
+    expect(new BN(0)).bnEqual(authorMGAtokens);
+    expect(diff).bnEqual(new BN(0));
+    expect(testUser1.getAsset(MGA_ASSET_ID)!.amountBefore.free).bnEqual(
+      testUser1.getAsset(MGA_ASSET_ID)!.amountAfter.free!
+    );
+  }
 });
