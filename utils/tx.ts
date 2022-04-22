@@ -15,7 +15,7 @@ import { Keyring } from "@polkadot/api";
 import { User } from "./User";
 import { testLog } from "./Logger";
 import { KeyringPair } from "@polkadot/keyring/types";
-import { signTx } from "mangata-sdk";
+import { signTx, TokenBalance } from "mangata-sdk";
 import { AnyJson } from "@polkadot/types/types";
 
 export const signTxDeprecated = async (
@@ -222,7 +222,7 @@ export async function getChainNonce(address: string) {
 }
 
 export async function getUserAssets(account: any, assets: BN[]) {
-  const user_asset_balances = [];
+  const user_asset_balances: TokenBalance[] = [];
   for (const asset of assets) {
     const user_asset_balance = await getBalanceOfAsset(asset, account);
     user_asset_balances.push(user_asset_balance);
