@@ -1,0 +1,121 @@
+{
+  "uid" : "85662d916344818e",
+  "name" : "As a User I can switch between polkadot wallets using the modal",
+  "fullName" : "UI tests - Extension management.As a User I can switch between polkadot wallets using the modal",
+  "historyId" : "50d76903a76e3d10b032c2873f4e8153",
+  "time" : {
+    "start" : 1650681948566,
+    "stop" : 1650682346304,
+    "duration" : 397738
+  },
+  "description" : "",
+  "descriptionHtml" : "",
+  "status" : "failed",
+  "statusMessage" : "Error: Timeout - Async callback was not invoked within the 300000 ms timeout specified by jest.setTimeout.",
+  "statusTrace" : "Timeout - Async callback was not invoked within the 300000 ms timeout specified by jest.setTimeout.Error: Timeout - Async callback was not invoked within the 300000 ms timeout specified by jest.setTimeout.\n                    at mapper (/home/runner/work/mangata-e2e/mangata-e2e/node_modules/jest-jasmine2/build/queueRunner.js:27:45)\n                    at /home/runner/work/mangata-e2e/mangata-e2e/node_modules/jest-jasmine2/build/queueRunner.js:75:41\n                    at runMicrotasks (<anonymous>)\n                    at processTicksAndRejections (node:internal/process/task_queues:96:5)",
+  "flaky" : false,
+  "newFailed" : false,
+  "beforeStages" : [ ],
+  "testStage" : {
+    "status" : "failed",
+    "statusMessage" : "Error: Timeout - Async callback was not invoked within the 300000 ms timeout specified by jest.setTimeout.",
+    "statusTrace" : "Timeout - Async callback was not invoked within the 300000 ms timeout specified by jest.setTimeout.Error: Timeout - Async callback was not invoked within the 300000 ms timeout specified by jest.setTimeout.\n                    at mapper (/home/runner/work/mangata-e2e/mangata-e2e/node_modules/jest-jasmine2/build/queueRunner.js:27:45)\n                    at /home/runner/work/mangata-e2e/mangata-e2e/node_modules/jest-jasmine2/build/queueRunner.js:75:41\n                    at runMicrotasks (<anonymous>)\n                    at processTicksAndRejections (node:internal/process/task_queues:96:5)",
+    "steps" : [ ],
+    "attachments" : [ {
+      "uid" : "66daa7415f4241aa",
+      "name" : "Screeenshot",
+      "source" : "66daa7415f4241aa.png",
+      "type" : "image/png",
+      "size" : 49895
+    } ],
+    "parameters" : [ ],
+    "stepsCount" : 0,
+    "attachmentsCount" : 1,
+    "shouldDisplayMessage" : true,
+    "hasContent" : true
+  },
+  "afterStages" : [ ],
+  "labels" : [ {
+    "name" : "suite",
+    "value" : "UI tests - Extension management"
+  }, {
+    "name" : "testClass",
+    "value" : "UI tests - Extension management"
+  }, {
+    "name" : "testMethod",
+    "value" : "As a User I can switch between polkadot wallets using the modal"
+  }, {
+    "name" : "package",
+    "value" : "UI tests - Extension management"
+  }, {
+    "name" : "resultFormat",
+    "value" : "allure1"
+  } ],
+  "parameters" : [ ],
+  "links" : [ ],
+  "hidden" : false,
+  "retry" : false,
+  "extra" : {
+    "severity" : "normal",
+    "retries" : [ ],
+    "categories" : [ {
+      "name" : "Product defects",
+      "matchedStatuses" : [ ],
+      "flaky" : false
+    } ],
+    "history" : {
+      "statistic" : {
+        "failed" : 5,
+        "broken" : 0,
+        "skipped" : 0,
+        "passed" : 0,
+        "unknown" : 0,
+        "total" : 5
+      },
+      "items" : [ {
+        "uid" : "5e6dfd7be1bcf540",
+        "reportUrl" : "https://mangata-finance.github.io/mangata-e2e/1420//#testresult/5e6dfd7be1bcf540",
+        "status" : "failed",
+        "statusDetails" : "Error: Timeout - Async callback was not invoked within the 300000 ms timeout specified by jest.setTimeout.",
+        "time" : {
+          "start" : 1650595676190,
+          "stop" : 1650596074276,
+          "duration" : 398086
+        }
+      }, {
+        "uid" : "a79a3c51bc573a3c",
+        "reportUrl" : "https://mangata-finance.github.io/mangata-e2e/1418//#testresult/a79a3c51bc573a3c",
+        "status" : "failed",
+        "statusDetails" : "Error: Timeout - Async callback was not invoked within the 300000 ms timeout specified by jest.setTimeout.",
+        "time" : {
+          "start" : 1650509221967,
+          "stop" : 1650509617513,
+          "duration" : 395546
+        }
+      }, {
+        "uid" : "25b773b3bde4ebfe",
+        "reportUrl" : "https://mangata-finance.github.io/mangata-e2e/1416//#testresult/25b773b3bde4ebfe",
+        "status" : "failed",
+        "statusDetails" : "Error: Timeout - Async callback was not invoked within the 300000 ms timeout specified by jest.setTimeout.",
+        "time" : {
+          "start" : 1650422971028,
+          "stop" : 1650423368595,
+          "duration" : 397567
+        }
+      }, {
+        "uid" : "36311527b4deb7fd",
+        "reportUrl" : "https://mangata-finance.github.io/mangata-e2e/1414//#testresult/36311527b4deb7fd",
+        "status" : "failed",
+        "statusDetails" : "Error: Timeout - Async callback was not invoked within the 300000 ms timeout specified by jest.setTimeout.",
+        "time" : {
+          "start" : 1650336439484,
+          "stop" : 1650336839266,
+          "duration" : 399782
+        }
+      } ]
+    },
+    "tags" : [ ]
+  },
+  "source" : "85662d916344818e.json",
+  "parameterValues" : [ ]
+}
