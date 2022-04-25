@@ -6,8 +6,6 @@
  */
 import { uniq, intersection, takeRight } from "lodash";
 
-import * as path from "path";
-import { promises as fs } from "fs";
 import { Node } from "../../utils/cluster/Node";
 import { testLog } from "../../utils/Logger";
 import {
@@ -15,7 +13,6 @@ import {
   waitForNBlocks,
   waitForNBlocksAndMEasureTime,
 } from "../../utils/utils";
-import { Convert } from "../../utils/Config";
 
 jest.spyOn(console, "log").mockImplementation(jest.fn());
 jest.spyOn(console, "error").mockImplementation(jest.fn());
@@ -25,13 +22,9 @@ process.env.NODE_ENV = "test";
 const nodes: Node[] = new Array<Node>();
 
 beforeAll(async () => {
-  const { clusterFileName } = getEnvironmentRequiredVars();
-  const clusterFile = `./${clusterFileName}.config`;
-  const filePath = path.resolve(__dirname, clusterFile);
-  const fileContents = await fs.readFile(filePath, "utf-8");
-
-  Convert.toTestConfig(fileContents).mangata_nodes.forEach((arr) => {
-    nodes.push(new Node(arr.name, arr.wsPath));
+  const { clusters } = getEnvironmentRequiredVars();
+  JSON.parse(clusters).forEach((url: string) => {
+    nodes.push(new Node(`Cluster[${url}]`, url));
   });
 
   const promises = [];
@@ -55,10 +48,10 @@ afterAll(async () => {
 });
 
 describe("Cluster -> Healthcheck", () => {
-  test("Nodes builds in less than 20 secs", async () => {
+  test("Nodes builds in less than 60 secs", async () => {
     const times = await waitForNBlocksAndMEasureTime(5);
     times.forEach((value) => {
-      expect(value).toBeLessThan(20 * 1000);
+      expect(value).toBeLessThan(60 * 1000);
     });
     expect(times.size).toBeGreaterThanOrEqual(5);
   });

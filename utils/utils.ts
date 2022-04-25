@@ -113,9 +113,9 @@ export function getEnvironmentRequiredVars() {
   const fees = process.env.FEES_ENABLED
     ? process.env.FEES_ENABLED === "true"
     : false; //disabled in develop.
-  const clusterFile = process.env.CLUSTER_CONFIG_FILE
-    ? process.env.CLUSTER_CONFIG_FILE
-    : "cluster-healthcheck-develop";
+  const clusters = process.env.CLUSTERS
+    ? process.env.CLUSTERS
+    : '["wss://v4-collator-01.mangatafinance.cloud", "wss://v4-collator-02.mangatafinance.cloud" ]';
 
   return {
     sudo: sudoUserName,
@@ -141,7 +141,7 @@ export function getEnvironmentRequiredVars() {
     clusterNodeE: clusterNodeE,
     clusterNodeF: clusterNodeF,
     fees: fees,
-    clusterFileName: clusterFile,
+    clusters: clusters,
   };
 }
 
