@@ -1,0 +1,66 @@
+{
+  "uid" : "6ec1837b55bbc10a",
+  "name" : "Nodes builds in less than 60 secs",
+  "fullName" : "Cluster -> Healthcheck.Nodes builds in less than 60 secs",
+  "historyId" : "c8413c6849bfae9fa1418ee9ca6cd0ee",
+  "time" : {
+    "start" : 1650894968485,
+    "stop" : 1650895032122,
+    "duration" : 63637
+  },
+  "description" : "",
+  "descriptionHtml" : "",
+  "status" : "passed",
+  "flaky" : false,
+  "newFailed" : false,
+  "beforeStages" : [ ],
+  "afterStages" : [ ],
+  "labels" : [ {
+    "name" : "suite",
+    "value" : "Cluster -> Healthcheck"
+  }, {
+    "name" : "testClass",
+    "value" : "Cluster -> Healthcheck"
+  }, {
+    "name" : "testMethod",
+    "value" : "Nodes builds in less than 60 secs"
+  }, {
+    "name" : "package",
+    "value" : "Cluster -> Healthcheck"
+  }, {
+    "name" : "resultFormat",
+    "value" : "allure1"
+  } ],
+  "parameters" : [ ],
+  "links" : [ ],
+  "hidden" : false,
+  "retry" : false,
+  "extra" : {
+    "severity" : "normal",
+    "retries" : [ ],
+    "categories" : [ ],
+    "history" : {
+      "statistic" : {
+        "failed" : 0,
+        "broken" : 0,
+        "skipped" : 0,
+        "passed" : 2,
+        "unknown" : 0,
+        "total" : 2
+      },
+      "items" : [ {
+        "uid" : "ab6f229d37271c97",
+        "reportUrl" : "https://mangata-finance.github.io/mangata-e2e/1413//#testresult/ab6f229d37271c97",
+        "status" : "passed",
+        "time" : {
+          "start" : 1650292431092,
+          "stop" : 1650292512087,
+          "duration" : 80995
+        }
+      } ]
+    },
+    "tags" : [ ]
+  },
+  "source" : "6ec1837b55bbc10a.json",
+  "parameterValues" : [ ]
+}
