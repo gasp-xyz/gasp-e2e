@@ -49,10 +49,10 @@ afterAll(async () => {
 });
 
 describe("Cluster -> Healthcheck", () => {
-  test("Nodes builds in less than 60 secs", async () => {
+  test("Nodes builds in less than 100 secs", async () => {
     const times = await waitForNBlocksAndMEasureTime(5);
     times.forEach((value) => {
-      expect(value).toBeLessThan(60 * 1000);
+      expect(value).toBeLessThan(100 * 1000);
     });
     expect(times.size).toBeGreaterThanOrEqual(5);
   });
