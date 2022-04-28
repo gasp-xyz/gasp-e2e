@@ -1,0 +1,149 @@
+{
+  "uid" : "79b478955b46548e",
+  "name" : "As a User I can see the min/max when withdrawing",
+  "fullName" : "UI tests > Balances.As a User I can see the min/max when withdrawing",
+  "historyId" : "2d0eecb8c7e9f428ed552b78d714b64a",
+  "time" : {
+    "start" : 1651115264940,
+    "stop" : 1651115264940,
+    "duration" : 0
+  },
+  "description" : "",
+  "descriptionHtml" : "",
+  "status" : "skipped",
+  "statusMessage" : "Error: Timeout - Async callback was not invoked within the 300000 ms timeout specified by jest.setTimeout.",
+  "statusTrace" : "Timeout - Async callback was not invoked within the 300000 ms timeout specified by jest.setTimeout.Error: Timeout - Async callback was not invoked within the 300000 ms timeout specified by jest.setTimeout.\n                    at mapper (/home/runner/work/mangata-e2e/mangata-e2e/node_modules/jest-jasmine2/build/queueRunner.js:27:45)\n                    at /home/runner/work/mangata-e2e/mangata-e2e/node_modules/jest-jasmine2/build/queueRunner.js:75:41\n                    at runMicrotasks (<anonymous>)\n                    at processTicksAndRejections (node:internal/process/task_queues:96:5)",
+  "flaky" : false,
+  "newFailed" : false,
+  "beforeStages" : [ ],
+  "afterStages" : [ ],
+  "labels" : [ {
+    "name" : "suite",
+    "value" : "UI tests > Balances"
+  }, {
+    "name" : "testClass",
+    "value" : "UI tests > Balances"
+  }, {
+    "name" : "testMethod",
+    "value" : "As a User I can see the min/max when withdrawing"
+  }, {
+    "name" : "package",
+    "value" : "UI tests > Balances"
+  }, {
+    "name" : "resultFormat",
+    "value" : "allure1"
+  } ],
+  "parameters" : [ ],
+  "links" : [ ],
+  "hidden" : false,
+  "retry" : false,
+  "extra" : {
+    "severity" : "normal",
+    "retries" : [ ],
+    "categories" : [ ],
+    "history" : {
+      "statistic" : {
+        "failed" : 0,
+        "broken" : 0,
+        "skipped" : 10,
+        "passed" : 0,
+        "unknown" : 0,
+        "total" : 10
+      },
+      "items" : [ {
+        "uid" : "ba4d8aa87fdf1bae",
+        "reportUrl" : "https://mangata-finance.github.io/mangata-e2e/1431//#testresult/ba4d8aa87fdf1bae",
+        "status" : "skipped",
+        "statusDetails" : "Error: Timeout - Async callback was not invoked within the 300000 ms timeout specified by jest.setTimeout.",
+        "time" : {
+          "start" : 1651028771706,
+          "stop" : 1651028771706,
+          "duration" : 0
+        }
+      }, {
+        "uid" : "fd6bda0f12cdcf78",
+        "reportUrl" : "https://mangata-finance.github.io/mangata-e2e/1429//#testresult/fd6bda0f12cdcf78",
+        "status" : "skipped",
+        "statusDetails" : "Error: Timeout - Async callback was not invoked within the 300000 ms timeout specified by jest.setTimeout.",
+        "time" : {
+          "start" : 1650942534873,
+          "stop" : 1650942534873,
+          "duration" : 0
+        }
+      }, {
+        "uid" : "f06331b5a7643d1",
+        "reportUrl" : "https://mangata-finance.github.io/mangata-e2e/1426//#testresult/f06331b5a7643d1",
+        "status" : "skipped",
+        "statusDetails" : "Error: Timeout - Async callback was not invoked within the 300000 ms timeout specified by jest.setTimeout.",
+        "time" : {
+          "start" : 1650855867167,
+          "stop" : 1650855867168,
+          "duration" : 1
+        }
+      }, {
+        "uid" : "6a920fdfb017efd",
+        "reportUrl" : "https://mangata-finance.github.io/mangata-e2e/1424//#testresult/6a920fdfb017efd",
+        "status" : "skipped",
+        "statusDetails" : "Error: Timeout - Async callback was not invoked within the 300000 ms timeout specified by jest.setTimeout.",
+        "time" : {
+          "start" : 1650769572261,
+          "stop" : 1650769572261,
+          "duration" : 0
+        }
+      }, {
+        "uid" : "ae40d66a3170b94e",
+        "reportUrl" : "https://mangata-finance.github.io/mangata-e2e/1422//#testresult/ae40d66a3170b94e",
+        "status" : "skipped",
+        "statusDetails" : "Error: Timeout - Async callback was not invoked within the 300000 ms timeout specified by jest.setTimeout.",
+        "time" : {
+          "start" : 1650683045277,
+          "stop" : 1650683045277,
+          "duration" : 0
+        }
+      }, {
+        "uid" : "70d2efc675182fe9",
+        "reportUrl" : "https://mangata-finance.github.io/mangata-e2e/1420//#testresult/70d2efc675182fe9",
+        "status" : "skipped",
+        "statusDetails" : "Error: Timeout - Async callback was not invoked within the 300000 ms timeout specified by jest.setTimeout.",
+        "time" : {
+          "start" : 1650596773264,
+          "stop" : 1650596773264,
+          "duration" : 0
+        }
+      }, {
+        "uid" : "dd6e4ef85289766b",
+        "reportUrl" : "https://mangata-finance.github.io/mangata-e2e/1418//#testresult/dd6e4ef85289766b",
+        "status" : "skipped",
+        "statusDetails" : "Error: Timeout - Async callback was not invoked within the 300000 ms timeout specified by jest.setTimeout.",
+        "time" : {
+          "start" : 1650510314373,
+          "stop" : 1650510314373,
+          "duration" : 0
+        }
+      }, {
+        "uid" : "2095e01721f2e726",
+        "reportUrl" : "https://mangata-finance.github.io/mangata-e2e/1416//#testresult/2095e01721f2e726",
+        "status" : "skipped",
+        "statusDetails" : "Error: Timeout - Async callback was not invoked within the 300000 ms timeout specified by jest.setTimeout.",
+        "time" : {
+          "start" : 1650424067635,
+          "stop" : 1650424067635,
+          "duration" : 0
+        }
+      }, {
+        "uid" : "d6e21a66872501ed",
+        "reportUrl" : "https://mangata-finance.github.io/mangata-e2e/1414//#testresult/d6e21a66872501ed",
+        "status" : "skipped",
+        "statusDetails" : "Error: Timeout - Async callback was not invoked within the 300000 ms timeout specified by jest.setTimeout.",
+        "time" : {
+          "start" : 1650337541810,
+          "stop" : 1650337541810,
+          "duration" : 0
+        }
+      } ]
+    },
+    "tags" : [ ]
+  },
+  "source" : "79b478955b46548e.json",
+  "parameterValues" : [ ]
+}
