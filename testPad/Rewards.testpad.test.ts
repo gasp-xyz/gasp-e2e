@@ -41,6 +41,13 @@ describe("staking - testpad", () => {
 
   const address_1 =
     "/home/goncer/5FfBQ3kwXrbdyoqLPvcXRp7ikWydXawpNs2Ceu3WwFdhZ8W4";
+
+  const address_3 =
+    "/home/goncer/5FRL15Qj6DdoULKswCz7zevqe97bnHuEix794pTeGK7MhfDS";
+
+  const address_4 =
+    "/home/goncer/5H6YCgW24Z8xJDvxytQnKTwgiJGgye3uqvfQTprBEYqhNbBy";
+
   test("xyk-pallet: Finish tge and setup pool", async () => {
     keyring = new Keyring({ type: "sr25519" });
     sudo = new User(keyring, sudoUserName);
@@ -49,9 +56,6 @@ describe("staking - testpad", () => {
       JSON.stringify(sudo.keyRingPair.toJson("mangata123"))
     );
     keyring.addPair(sudo.keyRingPair);
-    const { nonce } = (await api.query.system.account(
-      sudo.keyRingPair.address
-    )) as any;
     await signTx(
       api,
       api.tx.sudo.sudo(
@@ -61,30 +65,73 @@ describe("staking - testpad", () => {
           new BN("10000000000000000000")
         )
       ),
-      sudo.keyRingPair,
-      { nonce: new BN(nonce) }
+      sudo.keyRingPair
     );
-    const nonce2 = (
-      (await await api.query.system.account(sudo.keyRingPair.address)) as any
-    ).nonce;
     await signTx(
       api,
       api.tx.sudo.sudo(api.tx.issuance.finalizeTge()),
-      sudo.keyRingPair,
-      { nonce: new BN(nonce2) }
+      sudo.keyRingPair
     );
-
     await signTx(
       api,
       api.tx.sudo.sudo(api.tx.issuance.initIssuanceConfig()),
-      sudo.keyRingPair,
-      { nonce: new BN(nonce2).addn(1) }
+      sudo.keyRingPair
+    );
+    await createPoolIfMissing(
+      sudo,
+      "10000000000000000000",
+      MGA_ASSET_ID,
+      new BN(4)
     );
     await signTx(
       api,
       api.tx.sudo.sudo(api.tx.xyk.promotePool(new BN(5))),
-      sudo.keyRingPair,
-      { nonce: new BN(nonce2).addn(2) }
+      sudo.keyRingPair
+    );
+  });
+  test.each([
+    //address_1, address_2, address_3,
+    address_4,
+  ])("xyk-pallet: Create new users with bonded amounts.", async (address) => {
+    const file = await fs.readFileSync(address + ".json");
+    keyring = new Keyring({ type: "sr25519" });
+    sudo = new User(keyring, sudoUserName);
+    testUser1 = new User(keyring, "asd", JSON.parse(file.toString()));
+    await fs.writeFileSync(
+      testUser1.keyRingPair.address + ".json",
+      JSON.stringify(testUser1.keyRingPair.toJson("mangata123"))
+    );
+    await fs.writeFileSync(
+      sudo.keyRingPair.address + ".json",
+      JSON.stringify(sudo.keyRingPair.toJson("mangata123"))
+    );
+    // add users to pair.
+    keyring.addPair(testUser1.keyRingPair);
+    keyring.addPair(sudo.keyRingPair);
+    keyring.pairs[0].decodePkcs8("mangata123");
+    await testUser1.refreshAmounts(AssetWallet.BEFORE);
+
+    await signTx(
+      api,
+      api.tx.sudo.sudo(
+        api.tx.tokens.mint(
+          MGA_ASSET_ID,
+          testUser1.keyRingPair.address,
+          new BN("10000000000000000000")
+        )
+      ),
+      sudo.keyRingPair
+    );
+    await signTx(
+      api,
+      api.tx.sudo.sudo(
+        api.tx.tokens.mint(
+          new BN(4),
+          testUser1.keyRingPair.address,
+          new BN("10000000000000000000")
+        )
+      ),
+      sudo.keyRingPair
     );
     await createPoolIfMissing(
       sudo,
@@ -93,63 +140,18 @@ describe("staking - testpad", () => {
       new BN(4)
     );
   });
-  test.each([address_1, address_2])(
-    "xyk-pallet: Create new users with bonded amounts.",
+  test.each([address_1, address_2, address_3])(
+    "xyk-pallet: Mint into rewardd pool",
     async (address) => {
       const file = await fs.readFileSync(address + ".json");
       keyring = new Keyring({ type: "sr25519" });
       sudo = new User(keyring, sudoUserName);
       testUser1 = new User(keyring, "asd", JSON.parse(file.toString()));
-      await fs.writeFileSync(
-        testUser1.keyRingPair.address + ".json",
-        JSON.stringify(testUser1.keyRingPair.toJson("mangata123"))
-      );
-      await fs.writeFileSync(
-        sudo.keyRingPair.address + ".json",
-        JSON.stringify(sudo.keyRingPair.toJson("mangata123"))
-      );
       // add users to pair.
       keyring.addPair(testUser1.keyRingPair);
-      keyring.addPair(sudo.keyRingPair);
       keyring.pairs[0].decodePkcs8("mangata123");
       await testUser1.refreshAmounts(AssetWallet.BEFORE);
 
-      const { nonce } = (await api.query.system.account(
-        sudo.keyRingPair.address
-      )) as any;
-      await signTx(
-        api,
-        api.tx.sudo.sudo(
-          api.tx.tokens.mint(
-            MGA_ASSET_ID,
-            testUser1.keyRingPair.address,
-            new BN("10000000000000000000")
-          )
-        ),
-        sudo.keyRingPair,
-        { nonce: new BN(nonce) }
-      );
-      const nonce2 = (
-        (await await api.query.system.account(sudo.keyRingPair.address)) as any
-      ).nonce;
-      await signTx(
-        api,
-        api.tx.sudo.sudo(
-          api.tx.tokens.mint(
-            new BN(4),
-            testUser1.keyRingPair.address,
-            new BN("10000000000000000000")
-          )
-        ),
-        sudo.keyRingPair,
-        { nonce: new BN(nonce2.toNumber()) }
-      );
-      await createPoolIfMissing(
-        sudo,
-        "10000000000000000000",
-        MGA_ASSET_ID,
-        new BN(4)
-      );
       await mintLiquidity(
         testUser1.keyRingPair,
         MGA_ASSET_ID,
@@ -157,25 +159,13 @@ describe("staking - testpad", () => {
         new BN("1000000000000000"),
         new BN("1000000000000001")
       );
-    }
-  );
-  test.each([address_1, address_2])(
-    "xyk-pallet: Start rewards",
-    async (address) => {
-      const file = await fs.readFileSync(address + ".json");
-      keyring = new Keyring({ type: "sr25519" });
-      sudo = new User(keyring, sudoUserName);
-      testUser1 = new User(keyring, "asd", JSON.parse(file.toString()));
-      // add users to pair.
-      keyring.addPair(testUser1.keyRingPair);
-      keyring.pairs[0].decodePkcs8("mangata123");
-      await testUser1.refreshAmounts(AssetWallet.BEFORE);
-
-      await signTx(
-        api,
-        api.tx.xyk.activateLiquidity(new BN(5), new BN("10000000")),
-        testUser1.keyRingPair
-      );
+      if (false) {
+        await signTx(
+          api,
+          api.tx.xyk.activateLiquidity(new BN(5), new BN("10000000")),
+          testUser1.keyRingPair
+        );
+      }
     }
   );
 });

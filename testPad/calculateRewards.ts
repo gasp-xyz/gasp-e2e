@@ -10,6 +10,8 @@ async function main() {
   const users = [
     "5FA3LcCrKMgr9WHqyvtDhDarAXRkJjoYrSy6XnZPKfwiB3sY",
     "5FfBQ3kwXrbdyoqLPvcXRp7ikWydXawpNs2Ceu3WwFdhZ8W4",
+    "5FRL15Qj6DdoULKswCz7zevqe97bnHuEix794pTeGK7MhfDS",
+    "5H6YCgW24Z8xJDvxytQnKTwgiJGgye3uqvfQTprBEYqhNbBy",
   ];
   const provider = new WsProvider("ws://10.0.0.6:9944");
   const api = await new ApiPromise(options({ provider })).isReady;
