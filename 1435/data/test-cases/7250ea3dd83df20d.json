@@ -1,0 +1,163 @@
+{
+  "uid" : "7250ea3dd83df20d",
+  "name" : "As a User I get the right values for Pool investment P[5000000000000000000, 5000000000000000000] - I-> 0.123 -Expected - 0.123",
+  "fullName" : "Accuracy tests.As a User I get the right values for Pool investment P[5000000000000000000, 5000000000000000000] - I-> 0.123 -Expected - 0.123",
+  "historyId" : "8b2cda9bb83546b24c6a5fd60ccdb9a1",
+  "time" : {
+    "start" : 1651203792749,
+    "stop" : 1651203792750,
+    "duration" : 1
+  },
+  "description" : "",
+  "descriptionHtml" : "",
+  "status" : "failed",
+  "statusMessage" : "Error: Timeout - Async callback was not invoked within the 300000 ms timeout specified by jest.setTimeout.",
+  "statusTrace" : "Timeout - Async callback was not invoked within the 300000 ms timeout specified by jest.setTimeout.Error: Timeout - Async callback was not invoked within the 300000 ms timeout specified by jest.setTimeout.\n                    at mapper (/home/runner/work/mangata-e2e/mangata-e2e/node_modules/jest-jasmine2/build/queueRunner.js:27:45)\n                    at /home/runner/work/mangata-e2e/mangata-e2e/node_modules/jest-jasmine2/build/queueRunner.js:75:41",
+  "flaky" : false,
+  "newFailed" : false,
+  "beforeStages" : [ ],
+  "afterStages" : [ ],
+  "labels" : [ {
+    "name" : "suite",
+    "value" : "Accuracy tests"
+  }, {
+    "name" : "testClass",
+    "value" : "Accuracy tests"
+  }, {
+    "name" : "testMethod",
+    "value" : "As a User I get the right values for Pool investment P[5000000000000000000, 5000000000000000000] - I-> 0.123 -Expected - 0.123"
+  }, {
+    "name" : "package",
+    "value" : "Accuracy tests"
+  }, {
+    "name" : "resultFormat",
+    "value" : "allure1"
+  } ],
+  "parameters" : [ ],
+  "links" : [ ],
+  "hidden" : false,
+  "retry" : false,
+  "extra" : {
+    "severity" : "normal",
+    "retries" : [ ],
+    "categories" : [ {
+      "name" : "Product defects",
+      "matchedStatuses" : [ ],
+      "flaky" : false
+    } ],
+    "history" : {
+      "statistic" : {
+        "failed" : 11,
+        "broken" : 0,
+        "skipped" : 0,
+        "passed" : 0,
+        "unknown" : 0,
+        "total" : 11
+      },
+      "items" : [ {
+        "uid" : "cb991a8df0475df9",
+        "reportUrl" : "https://mangata-finance.github.io/mangata-e2e/1433//#testresult/cb991a8df0475df9",
+        "status" : "failed",
+        "statusDetails" : "Error: Timeout - Async callback was not invoked within the 300000 ms timeout specified by jest.setTimeout.",
+        "time" : {
+          "start" : 1651117499188,
+          "stop" : 1651117499190,
+          "duration" : 2
+        }
+      }, {
+        "uid" : "2a688ba2b0c445c6",
+        "reportUrl" : "https://mangata-finance.github.io/mangata-e2e/1431//#testresult/2a688ba2b0c445c6",
+        "status" : "failed",
+        "statusDetails" : "Error: Timeout - Async callback was not invoked within the 300000 ms timeout specified by jest.setTimeout.",
+        "time" : {
+          "start" : 1651031005980,
+          "stop" : 1651031005982,
+          "duration" : 2
+        }
+      }, {
+        "uid" : "ea46c0df575932ab",
+        "reportUrl" : "https://mangata-finance.github.io/mangata-e2e/1429//#testresult/ea46c0df575932ab",
+        "status" : "failed",
+        "statusDetails" : "Error: Timeout - Async callback was not invoked within the 300000 ms timeout specified by jest.setTimeout.",
+        "time" : {
+          "start" : 1650944769632,
+          "stop" : 1650944769634,
+          "duration" : 2
+        }
+      }, {
+        "uid" : "ed0b1ecedb2e7676",
+        "reportUrl" : "https://mangata-finance.github.io/mangata-e2e/1426//#testresult/ed0b1ecedb2e7676",
+        "status" : "failed",
+        "statusDetails" : "Error: Timeout - Async callback was not invoked within the 300000 ms timeout specified by jest.setTimeout.",
+        "time" : {
+          "start" : 1650858099058,
+          "stop" : 1650858099059,
+          "duration" : 1
+        }
+      }, {
+        "uid" : "1a669acd0a49ac5",
+        "reportUrl" : "https://mangata-finance.github.io/mangata-e2e/1424//#testresult/1a669acd0a49ac5",
+        "status" : "failed",
+        "statusDetails" : "Error: Timeout - Async callback was not invoked within the 300000 ms timeout specified by jest.setTimeout.",
+        "time" : {
+          "start" : 1650771806698,
+          "stop" : 1650771806699,
+          "duration" : 1
+        }
+      }, {
+        "uid" : "46eb0d095e090184",
+        "reportUrl" : "https://mangata-finance.github.io/mangata-e2e/1422//#testresult/46eb0d095e090184",
+        "status" : "failed",
+        "statusDetails" : "Error: Timeout - Async callback was not invoked within the 300000 ms timeout specified by jest.setTimeout.",
+        "time" : {
+          "start" : 1650685276804,
+          "stop" : 1650685276805,
+          "duration" : 1
+        }
+      }, {
+        "uid" : "b18b4c1daad01ccb",
+        "reportUrl" : "https://mangata-finance.github.io/mangata-e2e/1420//#testresult/b18b4c1daad01ccb",
+        "status" : "failed",
+        "statusDetails" : "Error: Timeout - Async callback was not invoked within the 300000 ms timeout specified by jest.setTimeout.",
+        "time" : {
+          "start" : 1650599004936,
+          "stop" : 1650599004937,
+          "duration" : 1
+        }
+      }, {
+        "uid" : "94e7c370e7f30c9b",
+        "reportUrl" : "https://mangata-finance.github.io/mangata-e2e/1418//#testresult/94e7c370e7f30c9b",
+        "status" : "failed",
+        "statusDetails" : "Error: Timeout - Async callback was not invoked within the 300000 ms timeout specified by jest.setTimeout.",
+        "time" : {
+          "start" : 1650512544399,
+          "stop" : 1650512544400,
+          "duration" : 1
+        }
+      }, {
+        "uid" : "db8ec8ffa7549069",
+        "reportUrl" : "https://mangata-finance.github.io/mangata-e2e/1416//#testresult/db8ec8ffa7549069",
+        "status" : "failed",
+        "statusDetails" : "Error: Timeout - Async callback was not invoked within the 300000 ms timeout specified by jest.setTimeout.",
+        "time" : {
+          "start" : 1650426299574,
+          "stop" : 1650426299577,
+          "duration" : 3
+        }
+      }, {
+        "uid" : "59612fe548e7e47c",
+        "reportUrl" : "https://mangata-finance.github.io/mangata-e2e/1414//#testresult/59612fe548e7e47c",
+        "status" : "failed",
+        "statusDetails" : "Error: Timeout - Async callback was not invoked within the 300000 ms timeout specified by jest.setTimeout.",
+        "time" : {
+          "start" : 1650339775196,
+          "stop" : 1650339775197,
+          "duration" : 1
+        }
+      } ]
+    },
+    "tags" : [ ]
+  },
+  "source" : "7250ea3dd83df20d.json",
+  "parameterValues" : [ ]
+}
