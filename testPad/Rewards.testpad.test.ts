@@ -6,7 +6,7 @@ import { User, AssetWallet } from "../utils/User";
 import { getEnvironmentRequiredVars } from "../utils/utils";
 import fs from "fs";
 import { signTx } from "mangata-sdk";
-import { createPoolIfMissing, mintLiquidity } from "../utils/tx";
+import { burnLiquidity, createPoolIfMissing, mintLiquidity } from "../utils/tx";
 
 require("dotenv").config();
 
@@ -89,60 +89,64 @@ describe("staking - testpad", () => {
       sudo.keyRingPair
     );
   });
-  test.each([
-    //address_1, address_2, address_3,
-    address_4,
-  ])("xyk-pallet: Create new users with bonded amounts.", async (address) => {
-    const file = await fs.readFileSync(address + ".json");
-    keyring = new Keyring({ type: "sr25519" });
-    sudo = new User(keyring, sudoUserName);
-    testUser1 = new User(keyring, "asd", JSON.parse(file.toString()));
-    await fs.writeFileSync(
-      testUser1.keyRingPair.address + ".json",
-      JSON.stringify(testUser1.keyRingPair.toJson("mangata123"))
-    );
-    await fs.writeFileSync(
-      sudo.keyRingPair.address + ".json",
-      JSON.stringify(sudo.keyRingPair.toJson("mangata123"))
-    );
-    // add users to pair.
-    keyring.addPair(testUser1.keyRingPair);
-    keyring.addPair(sudo.keyRingPair);
-    keyring.pairs[0].decodePkcs8("mangata123");
-    await testUser1.refreshAmounts(AssetWallet.BEFORE);
-
-    await signTx(
-      api,
-      api.tx.sudo.sudo(
-        api.tx.tokens.mint(
-          MGA_ASSET_ID,
-          testUser1.keyRingPair.address,
-          new BN("10000000000000000000")
-        )
-      ),
-      sudo.keyRingPair
-    );
-    await signTx(
-      api,
-      api.tx.sudo.sudo(
-        api.tx.tokens.mint(
-          new BN(4),
-          testUser1.keyRingPair.address,
-          new BN("10000000000000000000")
-        )
-      ),
-      sudo.keyRingPair
-    );
-    await createPoolIfMissing(
-      sudo,
-      "10000000000000000000",
-      MGA_ASSET_ID,
-      new BN(4)
-    );
-  });
-  test.each([address_1, address_2, address_3])(
-    "xyk-pallet: Mint into rewardd pool",
+  test.each([address_1, address_2, address_3, address_4])(
+    "xyk-pallet: Create new users with bonded amounts.",
     async (address) => {
+      const file = await fs.readFileSync(address + ".json");
+      keyring = new Keyring({ type: "sr25519" });
+      sudo = new User(keyring, sudoUserName);
+      testUser1 = new User(keyring, "asd", JSON.parse(file.toString()));
+      await fs.writeFileSync(
+        testUser1.keyRingPair.address + ".json",
+        JSON.stringify(testUser1.keyRingPair.toJson("mangata123"))
+      );
+      await fs.writeFileSync(
+        sudo.keyRingPair.address + ".json",
+        JSON.stringify(sudo.keyRingPair.toJson("mangata123"))
+      );
+      // add users to pair.
+      keyring.addPair(testUser1.keyRingPair);
+      keyring.addPair(sudo.keyRingPair);
+      keyring.pairs[0].decodePkcs8("mangata123");
+      await testUser1.refreshAmounts(AssetWallet.BEFORE);
+
+      await signTx(
+        api,
+        api.tx.sudo.sudo(
+          api.tx.tokens.mint(
+            MGA_ASSET_ID,
+            testUser1.keyRingPair.address,
+            new BN("10000000000000000000")
+          )
+        ),
+        sudo.keyRingPair
+      );
+      await signTx(
+        api,
+        api.tx.sudo.sudo(
+          api.tx.tokens.mint(
+            new BN(4),
+            testUser1.keyRingPair.address,
+            new BN("10000000000000000000")
+          )
+        ),
+        sudo.keyRingPair
+      );
+      await createPoolIfMissing(
+        sudo,
+        "10000000000000000000",
+        MGA_ASSET_ID,
+        new BN(4)
+      );
+    }
+  );
+  test("xyk-pallet: Mint / burn into rewardd pool", async () => {
+    const burn = true;
+    const mint = false;
+    const addresses = [address_1, address_2, address_3, address_4];
+    const promises = [];
+    for (let index = 0; index < addresses.length; index++) {
+      const address = addresses[index];
       const file = await fs.readFileSync(address + ".json");
       keyring = new Keyring({ type: "sr25519" });
       sudo = new User(keyring, sudoUserName);
@@ -151,14 +155,27 @@ describe("staking - testpad", () => {
       keyring.addPair(testUser1.keyRingPair);
       keyring.pairs[0].decodePkcs8("mangata123");
       await testUser1.refreshAmounts(AssetWallet.BEFORE);
-
-      await mintLiquidity(
-        testUser1.keyRingPair,
-        MGA_ASSET_ID,
-        new BN(4),
-        new BN("1000000000000000"),
-        new BN("1000000000000001")
-      );
+      if (burn) {
+        promises.push(
+          burnLiquidity(
+            testUser1.keyRingPair,
+            new BN(0),
+            new BN(4),
+            new BN("1000000000000000")
+          )
+        );
+      }
+      if (mint) {
+        promises.push(
+          mintLiquidity(
+            testUser1.keyRingPair,
+            MGA_ASSET_ID,
+            new BN(4),
+            new BN("1000000000000000"),
+            new BN("1000000000000001")
+          )
+        );
+      }
       if (false) {
         await signTx(
           api,
@@ -167,5 +184,6 @@ describe("staking - testpad", () => {
         );
       }
     }
-  );
+    await Promise.all(promises);
+  });
 });

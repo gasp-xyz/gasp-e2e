@@ -16,6 +16,12 @@ async function main() {
   const provider = new WsProvider("ws://10.0.0.6:9944");
   const api = await new ApiPromise(options({ provider })).isReady;
   await api.rpc.chain.subscribeNewHeads((header) => {
+    api.query.xyk.liquidityMiningActiveUser.entries().then((value) => {
+      value.forEach((value) => {
+        console.log(`${value[0].toHuman()} - ${value[1].toHuman()}`);
+      });
+    });
+
     users.forEach((user) => {
       (api.rpc as any).xyk
         .calculate_rewards_amount(user, new BN(5))
