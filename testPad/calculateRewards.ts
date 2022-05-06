@@ -13,6 +13,8 @@ async function main() {
     "5FRL15Qj6DdoULKswCz7zevqe97bnHuEix794pTeGK7MhfDS",
     "5H6YCgW24Z8xJDvxytQnKTwgiJGgye3uqvfQTprBEYqhNbBy",
   ];
+  const liq = process.env.liq ? process.env.liq : 5;
+  const liqId = new BN(liq);
   const provider = new WsProvider("ws://10.0.0.6:9944");
   const api = await new ApiPromise(options({ provider })).isReady;
   await api.rpc.chain.subscribeNewHeads((header) => {
@@ -24,7 +26,7 @@ async function main() {
 
     users.forEach((user) => {
       (api.rpc as any).xyk
-        .calculate_rewards_amount(user, new BN(5))
+        .calculate_rewards_amount(user, liqId)
         .then((result: any) => {
           const str = `${user}:${header.number}:${(
             result as any
@@ -33,8 +35,10 @@ async function main() {
           ).toBeClaimed.toString()}`;
           const plott = `${header.number},${(
             result as any
-          ).notYetClaimed.toString()} \n`;
-          fs.appendFile(`${user}.txt`, plott, function (err) {
+          ).notYetClaimed.toString()},${(
+            result as any
+          ).toBeClaimed.toString()} \n`;
+          fs.appendFile(`${liqId}_${user}.txt`, plott, function (err) {
             if (err) throw err;
             console.log(str);
           });

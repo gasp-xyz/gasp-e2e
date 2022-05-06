@@ -7,11 +7,14 @@ import { getEnvironmentRequiredVars } from "../utils/utils";
 import fs from "fs";
 import { signTx } from "mangata-sdk";
 import { burnLiquidity, createPoolIfMissing, mintLiquidity } from "../utils/tx";
+import { ApiPromise } from "@polkadot/api";
+import { WsProvider } from "@polkadot/rpc-provider/ws";
+import { options } from "@mangata-finance/types";
 
 require("dotenv").config();
 
 jest.spyOn(console, "log").mockImplementation(jest.fn());
-const { sudo: sudoUserName } = getEnvironmentRequiredVars();
+const { sudo: sudoUserName, chainUri } = getEnvironmentRequiredVars();
 
 jest.setTimeout(1500000);
 process.env.NODE_ENV = "test";
@@ -48,6 +51,10 @@ describe("staking - testpad", () => {
   const address_4 =
     "/home/goncer/5H6YCgW24Z8xJDvxytQnKTwgiJGgye3uqvfQTprBEYqhNbBy";
 
+  const users = [address_1, address_2, address_3, address_4]; //, address_3, address_4];
+  const tokenId = new BN(4);
+  const liqtokenId = new BN(5);
+  const amount = new BN("100000000000000000000000000000");
   test("xyk-pallet: Finish tge and setup pool", async () => {
     keyring = new Keyring({ type: "sr25519" });
     sudo = new User(keyring, sudoUserName);
@@ -81,15 +88,10 @@ describe("staking - testpad", () => {
       sudo,
       "10000000000000000000",
       MGA_ASSET_ID,
-      new BN(4)
-    );
-    await signTx(
-      api,
-      api.tx.sudo.sudo(api.tx.xyk.promotePool(new BN(5))),
-      sudo.keyRingPair
+      tokenId
     );
   });
-  test.each([address_1, address_2, address_3, address_4])(
+  test.each(users)(
     "xyk-pallet: Create new users with bonded amounts.",
     async (address) => {
       const file = await fs.readFileSync(address + ".json");
@@ -116,7 +118,7 @@ describe("staking - testpad", () => {
           api.tx.tokens.mint(
             MGA_ASSET_ID,
             testUser1.keyRingPair.address,
-            new BN("10000000000000000000")
+            new BN(amount)
           )
         ),
         sudo.keyRingPair
@@ -125,9 +127,9 @@ describe("staking - testpad", () => {
         api,
         api.tx.sudo.sudo(
           api.tx.tokens.mint(
-            new BN(4),
+            tokenId,
             testUser1.keyRingPair.address,
-            new BN("10000000000000000000")
+            new BN(amount)
           )
         ),
         sudo.keyRingPair
@@ -136,17 +138,33 @@ describe("staking - testpad", () => {
         sudo,
         "10000000000000000000",
         MGA_ASSET_ID,
-        new BN(4)
+        tokenId
       );
     }
   );
+  test("xyk-pallet: promote pool", async () => {
+    keyring = new Keyring({ type: "sr25519" });
+    sudo = new User(keyring, sudoUserName);
+    await fs.writeFileSync(
+      sudo.keyRingPair.address + ".json",
+      JSON.stringify(sudo.keyRingPair.toJson("mangata123"))
+    );
+    keyring.addPair(sudo.keyRingPair);
+    await signTx(
+      api,
+      api.tx.sudo.sudo(api.tx.xyk.promotePool(liqtokenId)),
+      sudo.keyRingPair
+    );
+  });
   test("xyk-pallet: Mint / burn into rewardd pool", async () => {
-    const burn = true;
-    const mint = false;
-    const addresses = [address_1, address_2, address_3, address_4];
+    const burn = false;
+    const mint = true;
+    const activate = false;
+    const deactivate = false;
+
     const promises = [];
-    for (let index = 0; index < addresses.length; index++) {
-      const address = addresses[index];
+    for (let index = 0; index < users.length; index++) {
+      const address = users[index];
       const file = await fs.readFileSync(address + ".json");
       keyring = new Keyring({ type: "sr25519" });
       sudo = new User(keyring, sudoUserName);
@@ -160,8 +178,8 @@ describe("staking - testpad", () => {
           burnLiquidity(
             testUser1.keyRingPair,
             new BN(0),
-            new BN(4),
-            new BN("1000000000000000")
+            tokenId,
+            amount.divn(2)
           )
         );
       }
@@ -170,19 +188,64 @@ describe("staking - testpad", () => {
           mintLiquidity(
             testUser1.keyRingPair,
             MGA_ASSET_ID,
-            new BN(4),
-            new BN("1000000000000000"),
-            new BN("1000000000000001")
+            tokenId,
+            amount.divn(2),
+            amount.divn(2).addn(5)
           )
         );
       }
-      if (false) {
-        await signTx(
-          api,
-          api.tx.xyk.activateLiquidity(new BN(5), new BN("10000000")),
-          testUser1.keyRingPair
+      if (activate) {
+        promises.push(
+          signTx(
+            api,
+            api.tx.xyk.activateLiquidity(liqtokenId, amount.divn(2)),
+            testUser1.keyRingPair
+          )
         );
       }
+      if (deactivate) {
+        promises.push(
+          signTx(
+            api,
+            api.tx.xyk.deactivateLiquidity(liqtokenId, amount.divn(2)),
+            testUser1.keyRingPair
+          )
+        );
+      }
+    }
+    await Promise.all(promises);
+  });
+  test.skip("xyk-pallet: claim rewards", async () => {
+    const addresses = users; //, address_1]; //, address_2, address_3, address_4];
+    const promises = [];
+    for (let index = 0; index < addresses.length; index++) {
+      const address = addresses[index];
+      const file = await fs.readFileSync(address + ".json");
+      keyring = new Keyring({ type: "sr25519" });
+      sudo = new User(keyring, sudoUserName);
+      testUser1 = new User(keyring, "asd", JSON.parse(file.toString()));
+      // add users to pair.
+      keyring.addPair(testUser1.keyRingPair);
+      keyring.pairs[0].decodePkcs8("mangata123");
+      await testUser1.refreshAmounts(AssetWallet.BEFORE);
+      const provider = new WsProvider(chainUri);
+      const api2 = await new ApiPromise(options({ provider })).isReady;
+      const result = await (api2.rpc as any).xyk.calculate_rewards_amount(
+        testUser1.keyRingPair.address,
+        liqtokenId
+      );
+      promises.push(
+        signTx(
+          api,
+          api.tx.xyk.claimRewards(
+            liqtokenId,
+            new BN(result.notYetClaimed.toString()).add(
+              new BN(result.toBeClaimed.toString())
+            )
+          ),
+          testUser1.keyRingPair
+        )
+      );
     }
     await Promise.all(promises);
   });

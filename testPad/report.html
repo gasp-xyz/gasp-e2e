@@ -15,76 +15,77 @@
       src="https://requirejs.org/docs/release/2.3.5/minified/require.js"
     ></script>
     <script type="text/javascript">
-        var data = [];
-            window.onload = function () {
-              
-              var dataPoints = [];
+      var data = [];
+      window.onload = function () {
+        var dataPoints = [];
 
-              function getDataPointsFromCSV(csv) {
-                var dataPoints = (csvLines = points = []);
-                csvLines = csv.split(/[\r?\n|\r|\n]+/);
+        function getDataPointsFromCSV(csv) {
+          var dataPoints = (csvLines = points = []);
+          csvLines = csv.split(/[\r?\n|\r|\n]+/);
 
-                for (var i = 0; i < csvLines.length; i++)
-                  if (csvLines[i].length > 0) {
-                    points = csvLines[i].split(",");
-                    dataPoints.push({
-                      x: parseFloat(points[0]),
-                      y: parseFloat(points[1]),
-                    });
-                  }
-                return dataPoints;
+          for (var i = 0; i < csvLines.length; i++)
+            if (csvLines[i].length > 0) {
+              points = csvLines[i].split(",");
+              if (points.length > 2) {
+                dataPoints.push({
+                  x: parseFloat(points[0]),
+                  y: parseFloat(points[1]) + parseFloat(points[2]),
+                });
+              } else {
+                dataPoints.push({
+                  x: parseFloat(points[0]),
+                  y: parseFloat(points[1]),
+                });
               }
-          
-      //        const data = "";
-      //        var chart = new CanvasJS.Chart("chartContainer", {
-      //          title: {
-      //            text: "Chart from CSV",
-      //          },
-      //          data: [
-      //            {
-      //              type: "line",
-      //              dataPoints: getDataPointsFromCSV(data),
-      //            },
-      //          ],
-      //        });
-      //        chart.render();
-            };
-            function getDataPointsFromCSV(csv) {
-                var dataPoints = (csvLines = points = []);
-                csvLines = csv.split(/[\r?\n|\r|\n]+/);
-
-                for (var i = 0; i < csvLines.length; i++)
-                  if (csvLines[i].length > 0) {
-                    points = csvLines[i].split(",");
-                    dataPoints.push({
-                      x: parseFloat(points[0]),
-                      y: parseFloat(points[1]),
-                    });
-                  }
-                return dataPoints;
-              }
-            function loadFile(file) {
-              file.text().then( (result) => {
-                data.push(
-                    {
-                        type: "line",
-                        dataPoints: getDataPointsFromCSV(result),
-                })
-                var chart = new CanvasJS.Chart("chartContainer", {
-                title: {
-                  text: "Chart from CSV",
-                },
-                data: 
-                  data
-              });
-              chart.render();
-              } );
-              
             }
+          return dataPoints;
+        }
+      };
+      function getDataPointsFromCSV(csv) {
+        var dataPoints = (csvLines = points = []);
+        csvLines = csv.split(/[\r?\n|\r|\n]+/);
+
+        for (var i = 0; i < csvLines.length; i++) {
+          if (csvLines[i].length > 0) {
+            if (i > 0) {
+              points = csvLines[i].split(",");
+              dataPoints.push({
+                x: parseFloat(points[0]),
+                y: parseFloat(
+                  csvLines[i].split(",")[1] +
+                    parseFloat(csvLines[i].split(",")[2]) -
+                    csvLines[i - 1].split(",")[1] +
+                    parseFloat(csvLines[i - 1].split(",")[2])
+                ),
+              });
+            }
+          }
+        }
+        return dataPoints;
+      }
+      function loadFile(files) {
+        console.log(JSON.stringify(files));
+        for (let index = 0; index < files.length; index++) {
+          const file = files[index];
+          file.text().then((result) => {
+            data.push({
+              type: "line",
+              dataPoints: getDataPointsFromCSV(result),
+            });
+            var chart = new CanvasJS.Chart("chartContainer", {
+              title: {
+                text: "Chart from CSV",
+              },
+              data: data,
+            });
+            chart.render();
+          });
+        }
+      }
     </script>
   </head>
   <body>
     <div id="chartContainer" style="width: 100%; height: 600px"></div>
-    <input type="file" onchange="loadFile(this.files[0])" />
+    <input type="file" multiple="multiple" onchange="loadFile(this.files)" />
   </body>
 </html>
