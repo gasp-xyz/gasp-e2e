@@ -23,6 +23,11 @@ async function main() {
         console.log(`${value[0].toHuman()} - ${value[1].toHuman()}`);
       });
     });
+    api.query.issuance.promotedPoolsRewards.entries().then((value) => {
+      value.forEach((value) => {
+        console.log(`${value[0].toHuman()} - ${value[1].toHuman()}`);
+      });
+    });
 
     users.forEach((user) => {
       (api.rpc as any).xyk
