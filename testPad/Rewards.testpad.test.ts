@@ -158,9 +158,9 @@ describe("staking - testpad", () => {
   });
   test("xyk-pallet: Mint / burn into rewardd pool", async () => {
     const burn = false;
-    const mint = false;
+    const mint = true;
     const activate = false;
-    const deactivate = true;
+    const deactivate = false;
 
     const promises = [];
     for (let index = 0; index < users.length; index++) {
