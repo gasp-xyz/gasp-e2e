@@ -49,11 +49,7 @@ beforeAll(async () => {
 
 describe("SDK test - Nonce tests - user", () => {
   beforeAll(async () => {
-    await sudo.mint(
-      MGA_ASSET_ID,
-      testUser,
-      new BN(Math.pow(10, 18).toString())
-    );
+    await testUser.addMGATokens(sudo);
     //add two curerncies and balance to testUser:
     [firstCurrency] = await Assets.setupUserWithCurrencies(
       testUser,

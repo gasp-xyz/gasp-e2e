@@ -415,7 +415,7 @@ describe("staking - testpad", () => {
         api.tx.tokens.mint(
           MGA_ASSET_ID,
           testUser1.keyRingPair.address,
-          new BN(Math.pow(10, 18).toString())
+          new BN(Math.pow(10, 20).toString())
         )
       ),
       sudo.keyRingPair,
