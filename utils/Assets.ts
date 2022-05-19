@@ -1,5 +1,5 @@
-import BN from "bn.js";
 import { assert } from "console";
+import { BN } from "@polkadot/util";
 import { ExtrinsicResult } from "./eventListeners";
 import { getNextAssetId, getAssetSupply } from "./tx";
 import {

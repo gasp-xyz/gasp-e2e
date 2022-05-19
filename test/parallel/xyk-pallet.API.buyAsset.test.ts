@@ -12,9 +12,10 @@ import {
   calculate_buy_price_local,
   buyAsset,
   calculate_buy_price_rpc,
+  FeeTxs,
 } from "../../utils/tx";
 import { ExtrinsicResult } from "../../utils/eventListeners";
-import BN from "bn.js";
+import { BN } from "@polkadot/util";
 import { Keyring } from "@polkadot/api";
 import { AssetWallet, User } from "../../utils/User";
 import {
@@ -85,29 +86,33 @@ describe("xyk-pallet - Buy assets tests: BuyAssets Errors:", () => {
       sudo
     );
 
-    await buyAsset(
-      testUser1.keyRingPair,
-      thirdCurrency,
-      secondCurrency,
-      firstAssetAmount.div(new BN(2)),
-      new BN(0)
-    ).then((result) => {
-      const eventResponse = getEventResultFromMangataTx(result);
-      expect(eventResponse.state).toEqual(ExtrinsicResult.ExtrinsicFailed);
-      expect(eventResponse.data).toEqual(xykErrors.NoSuchPool);
-    });
+    await new FeeTxs()
+      .buyAsset(
+        testUser1.keyRingPair,
+        thirdCurrency,
+        secondCurrency,
+        firstAssetAmount.div(new BN(2)),
+        new BN(0)
+      )
+      .then((result) => {
+        const eventResponse = getEventResultFromMangataTx(result);
+        expect(eventResponse.state).toEqual(ExtrinsicResult.ExtrinsicFailed);
+        expect(eventResponse.data).toEqual(xykErrors.NoSuchPool);
+      });
 
-    await buyAsset(
-      testUser1.keyRingPair,
-      secondCurrency,
-      thirdCurrency,
-      firstAssetAmount.div(new BN(2)),
-      new BN(0)
-    ).then((result) => {
-      const eventResponse = getEventResultFromMangataTx(result);
-      expect(eventResponse.state).toEqual(ExtrinsicResult.ExtrinsicFailed);
-      expect(eventResponse.data).toEqual(xykErrors.NoSuchPool);
-    });
+    await new FeeTxs()
+      .buyAsset(
+        testUser1.keyRingPair,
+        secondCurrency,
+        thirdCurrency,
+        firstAssetAmount.div(new BN(2)),
+        new BN(0)
+      )
+      .then((result) => {
+        const eventResponse = getEventResultFromMangataTx(result);
+        expect(eventResponse.state).toEqual(ExtrinsicResult.ExtrinsicFailed);
+        expect(eventResponse.data).toEqual(xykErrors.NoSuchPool);
+      });
 
     await validateUnmodified(
       firstCurrency,
@@ -409,28 +414,30 @@ describe("xyk-pallet - Buy assets tests: Buying assets you can", () => {
       amountToBuy
     );
 
-    await buyAsset(
-      testUser2.keyRingPair,
-      thirdCurrency,
-      firstCurrency,
-      amountToBuy,
-      buyPriceLocal
-    ).then((result) => {
-      const eventResponse = getEventResultFromMangataTx(result, [
-        "xyk",
-        "AssetsSwapped",
-        testUser2.keyRingPair.address,
-      ]);
-      expect(eventResponse.state).toEqual(ExtrinsicResult.ExtrinsicSuccess);
-      validateAssetsSwappedEvent(
-        eventResponse,
-        testUser2.keyRingPair.address,
+    await new FeeTxs()
+      .buyAsset(
+        testUser2.keyRingPair,
         thirdCurrency,
-        buyPriceLocal,
         firstCurrency,
-        amountToBuy
-      );
-    });
+        amountToBuy,
+        buyPriceLocal
+      )
+      .then((result) => {
+        const eventResponse = getEventResultFromMangataTx(result, [
+          "xyk",
+          "AssetsSwapped",
+          testUser2.keyRingPair.address,
+        ]);
+        expect(eventResponse.state).toEqual(ExtrinsicResult.ExtrinsicSuccess);
+        validateAssetsSwappedEvent(
+          eventResponse,
+          testUser2.keyRingPair.address,
+          thirdCurrency,
+          buyPriceLocal,
+          firstCurrency,
+          amountToBuy
+        );
+      });
 
     testUser2.addAsset(firstCurrency);
     await testUser2.refreshAmounts(AssetWallet.AFTER);

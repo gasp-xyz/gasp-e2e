@@ -12,7 +12,7 @@ import {
   calculate_sell_price_rpc,
   getBalanceOfPool,
 } from "../../utils/tx";
-import BN from "bn.js";
+import { BN } from "@polkadot/util";
 import { Keyring } from "@polkadot/api";
 import { User } from "../../utils/User";
 import { Assets } from "../../utils/Assets";

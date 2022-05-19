@@ -3,13 +3,14 @@ import { BN } from "@polkadot/util";
 import { Mangata } from "mangata-sdk";
 import { TestParams } from "../testParams";
 import { KeyringPair } from "@polkadot/keyring/types";
+import { MGA_ASSET_ID } from "../../utils/Constants";
 import { preGenerateTransactions, runTransactions } from "./testRunner";
-import { ExtrinsicSwap } from "./extrinsicSwap";
-let tokens: number[] = [];
-export class ExtrinsicMint extends ExtrinsicSwap {
+import { ExtrinsicTransfer } from "./extrinsicTransfer";
+
+export class ExtrinsicBatch extends ExtrinsicTransfer {
   async arrange(numberOfThreads: number, nodes: string[]): Promise<boolean> {
     await super.arrange(numberOfThreads, nodes);
-    tokens = this.tokens;
+    await this.mintTokensToUsers(numberOfThreads, nodes, [MGA_ASSET_ID]);
     return true;
   }
   async act(testParams: TestParams): Promise<boolean> {
@@ -18,39 +19,45 @@ export class ExtrinsicMint extends ExtrinsicSwap {
       keepCalling = false;
       //duration in minutes, transform to millisecs.
     }, testParams.duration * 60 * 1000);
+    let numberOfBatchedTxs = 0;
     while (keepCalling) {
       const preSetupThreads = await preGenerateTransactions(
         testParams,
         this.mgaNodeandUsers,
-        createAndSignMints,
-        { testParams }
+        createAndSignBatchTransfer,
+        { inBatchesOf: numberOfBatchedTxs }
       );
-      console.info(`running Txs..`);
       await runTransactions(testParams, preSetupThreads);
+      numberOfBatchedTxs += 10;
     }
-    console.info(`Done running Txs!`);
+    console.info(`.... Done Sending Txs`);
     return true;
   }
 }
-async function createAndSignMints(
+
+async function createAndSignBatchTransfer(
   mgaNodeandUsers: Map<
     number,
     { mgaSdk: Mangata; users: { nonce: BN; keyPair: KeyringPair }[] }
   >,
   nodeThread: number,
-  userNo: number
-  //  options: { testParams: TestParams }
+  userNo: number,
+  options: { inBatchesOf: number }
 ) {
   const mgaValue = mgaNodeandUsers.get(nodeThread)!;
+  const destUser =
+    mgaNodeandUsers.get(nodeThread)?.users![
+      (userNo + 1) % mgaNodeandUsers.get(nodeThread)!.users!.length
+    ]!;
   const srcUser = mgaNodeandUsers.get(nodeThread)?.users![userNo];
   const api = await mgaNodeandUsers.get(nodeThread)?.mgaSdk.getApi();
-  const tx = api!.tx.xyk.mintLiquidity(
-    tokens[0],
-    tokens[1],
-    new BN(2),
-    new BN(3)
-  );
-  const signed = tx.sign(srcUser!.keyPair, {
+  const txs: any = [];
+  Array.from(Array(options.inBatchesOf).keys()).forEach(() => {
+    txs.push(
+      api!.tx.tokens.transfer(destUser.keyPair.address, MGA_ASSET_ID, new BN(1))
+    );
+  });
+  const signed = api!.tx.utility.batch(txs).sign(srcUser!.keyPair, {
     nonce: mgaValue.users[userNo]!.nonce,
   });
   return { mgaValue, signed };

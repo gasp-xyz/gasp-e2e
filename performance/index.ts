@@ -79,6 +79,9 @@ async function main() {
     case "mint":
       testParams.command = Commands.Mint;
       break;
+    case "batch":
+      testParams.command = Commands.ExtrinsicBatch;
+      break;
     case "ping":
       testParams.command = Commands.Ping;
       break;

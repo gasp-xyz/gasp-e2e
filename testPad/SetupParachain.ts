@@ -1,6 +1,6 @@
 //howTorun: ts-node SetupParachain.ts
 import { Keyring } from "@polkadot/api";
-import BN from "bn.js";
+import { BN } from "@polkadot/util";
 import { waitNewBlock } from "../utils/eventListeners";
 import { User, AssetWallet } from "../utils/User";
 import fs from "fs";

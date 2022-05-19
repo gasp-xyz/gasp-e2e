@@ -1,4 +1,4 @@
-import BN from "bn.js";
+import { BN } from "@polkadot/util";
 import { getAllAcountEntries } from "../../tx";
 import { User } from "../../User";
 import { hexToBn } from "@polkadot/util";

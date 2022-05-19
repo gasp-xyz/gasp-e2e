@@ -3,7 +3,7 @@ import Keyring from "@polkadot/keyring";
 import { signSendAndWaitToFinishTx } from "../../txHandler";
 import { BaseUser } from "./BaseUser";
 import { Node } from "../Node/Node";
-import BN from "bn.js";
+import { BN } from "@polkadot/util";
 
 export class GovernanceUser extends BaseUser {
   node: Node;

@@ -1,3 +1,4 @@
+import { ExtrinsicBatch } from "./plugins/extrinsicBatch";
 import { ExtrinsicBurn } from "./plugins/extrinsicBurn";
 import { ExtrinsicMint } from "./plugins/extrinsicMint";
 import { ExtrinsicSwap } from "./plugins/extrinsicSwap";
@@ -15,6 +16,7 @@ export enum Commands {
   Ping,
   Mint,
   Burn,
+  ExtrinsicBatch,
 }
 
 export enum TestsCases {
@@ -45,6 +47,9 @@ export class TestFactory {
     }
     if (type === Commands.Burn) {
       return new ExtrinsicBurn();
+    }
+    if (type === Commands.ExtrinsicBatch) {
+      return new ExtrinsicBatch();
     }
     throw Error("TestItem not found");
   }

@@ -18,7 +18,18 @@
             "outFiles": [
                 "${workspaceRoot}/**/*"
             ],
-            "envFile": "${workspaceRoot}/.env"
+            "envFile": "${workspaceRoot}/.env",
+            "env": {
+                "TEST_SUDO_NAME":"",
+                "TEST_PALLET_ADDRESS":"5EYCAe5XGPRojsCSi9p1ZZQ5qgeJGFcTxPxrsFRzkASu6bT2",
+                "E2E_XYK_PALLET_ADDRESS":"5EYCAe5XGPRojsCSi9p1ZZQ5qgeJGFcTxPxrsFRzkASu6bT2",
+                "E2E_TREASURY_PALLET_ADDRESS":"5EYCAe5ijiYfyeZ2JJCGq56LmPyNRAKzpG4QkoQkkQNB5e6Z",
+                "E2E_TREASURY_BURN_PALLET_ADDRESS":"5EYCAe5ijiYfyeZ2JJezKNMZfdbiFMyQc4YVzxaiMebAZBcm",
+                "API_URL":"ws://10.0.0.6:9944",
+                "MNEMONIC_POLK":"dismiss addict reduce fitness install aisle creek they seek palace stereo trumpet",
+                "MNEMONIC_META":"escape quiz cereal ribbon eagle appear replace hub inside raccoon control addict",
+                "UI_URL":"http://localhost:3000/",
+              }
         },
         {
             "name": "Current TS File",

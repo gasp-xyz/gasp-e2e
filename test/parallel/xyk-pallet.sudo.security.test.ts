@@ -11,7 +11,7 @@ import { Keyring } from "@polkadot/api";
 import { AssetWallet, User } from "../../utils/User";
 import { getEnvironmentRequiredVars } from "../../utils/utils";
 import { MGA_ASSET_ID } from "../../utils/Constants";
-import BN from "bn.js";
+import { BN } from "@polkadot/util";
 import { getEventResultFromMangataTx } from "../../utils/txHandler";
 import { signTx } from "mangata-sdk";
 jest.spyOn(console, "log").mockImplementation(jest.fn());
