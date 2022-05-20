@@ -4,11 +4,11 @@ import { getApi, getMangataInstance, mangata } from "./api";
 import { hexToBn } from "@polkadot/util";
 import { Assets } from "./Assets";
 import { User } from "./User";
-import Keyring from "@polkadot/keyring";
 import { getAccountJSON } from "./frontend/utils/Helper";
 import { waitNewBlock } from "./eventListeners";
 import { testLog } from "./Logger";
 import { AnyNumber } from "@polkadot/types/types";
+import { Keyring } from "@polkadot/api";
 
 export function sleep(ms: number) {
   return new Promise((resolve) => {
