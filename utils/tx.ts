@@ -15,7 +15,7 @@ import { Keyring } from "@polkadot/api";
 import { User } from "./User";
 import { testLog } from "./Logger";
 import { KeyringPair } from "@polkadot/keyring/types";
-import { signTx } from "mangata-sdk";
+import { MangataGenericEvent, signTx } from "mangata-sdk";
 import { AnyJson } from "@polkadot/types/types";
 
 export const signTxDeprecated = async (
@@ -410,8 +410,12 @@ export const mintAsset = async (
     api.tx.sudo.sudo(api.tx.tokens.mint(asset_id, target, amount)),
     account,
     { nonce: new BN(nonce) }
-  );
-  return txResult;
+  ).catch((reason) => {
+    // eslint-disable-next-line no-console
+    console.error("OhOh sth went wrong. " + reason.toString());
+    testLog.getLog().error(`W[${env.JEST_WORKER_ID}] - ${reason.toString()}`);
+  });
+  return txResult as MangataGenericEvent[];
 };
 
 export const createPool = async (

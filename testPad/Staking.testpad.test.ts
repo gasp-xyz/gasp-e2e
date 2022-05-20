@@ -365,10 +365,13 @@ describe("staking - testpad", () => {
     }
     keyring = new Keyring({ type: "sr25519" });
 
-    const json = fs.readFileSync(address + ".json", {
-      encoding: "utf8",
-      flag: "r",
-    });
+    const json = fs.readFileSync(
+      `/home/goncer/5FA3LcCrKMgr9WHqyvtDhDarAXRkJjoYrSy6XnZPKfwiB3sY.json`,
+      {
+        encoding: "utf8",
+        flag: "r",
+      }
+    );
     const user = new User(keyring, "aasd", JSON.parse(json));
     keyring.addPair(user.keyRingPair);
     keyring.pairs[0].decodePkcs8("mangata123");
@@ -393,10 +396,13 @@ describe("staking - testpad", () => {
     }
     keyring = new Keyring({ type: "sr25519" });
 
-    const json = fs.readFileSync(address + ".json", {
-      encoding: "utf8",
-      flag: "r",
-    });
+    const json = fs.readFileSync(
+      `/home/goncer/5FA3LcCrKMgr9WHqyvtDhDarAXRkJjoYrSy6XnZPKfwiB3sY.json`,
+      {
+        encoding: "utf8",
+        flag: "r",
+      }
+    );
 
     const testUser1 = new User(keyring, "aasd", JSON.parse(json));
     const user = testUser1;
@@ -466,18 +472,22 @@ describe("staking - testpad", () => {
     }
     keyring = new Keyring({ type: "sr25519" });
 
-    const json = fs.readFileSync(address + ".json", {
-      encoding: "utf8",
-      flag: "r",
-    });
+    const json = fs.readFileSync(
+      `/home/goncer/5FA3LcCrKMgr9WHqyvtDhDarAXRkJjoYrSy6XnZPKfwiB3sY.json`,
+      {
+        encoding: "utf8",
+        flag: "r",
+      }
+    );
     const user = new User(keyring, "aasd", JSON.parse(json));
     //const pk = u8aToHex(user.keyRingPair.publicKey);
 
     keyring.addPair(user.keyRingPair);
     keyring.pairs[0].decodePkcs8("mangata123");
 
-    const rpcResult = await api?.rpc.author.rotateKeys();
-
+    //    const rpcResult = await api?.rpc.author.rotateKeys();
+    const rpcResult =
+      "0xa02218669065017eb04a952e24e9ec1724d639449b8871d410df44883fb22c6d";
     await signSendAndWaitToFinishTx(
       api?.tx.session.setKeys(rpcResult.toString(), "0x00"),
       user.keyRingPair
