@@ -78,7 +78,7 @@ describe("xyk-pallet - treasury tests [Mangata]: on treasury we store", () => {
     await sudo.mint(
       mgaTokenId,
       testUser1,
-      new BN(defaultCurrecyValue).add(new BN(Math.pow(10, 18).toString()))
+      new BN(defaultCurrecyValue).add(new BN(Math.pow(10, 20).toString()))
     );
     testUser1.addAsset(mgaTokenId);
     secondCurrency = (
@@ -306,7 +306,7 @@ describe("xyk-pallet - treasury tests [Connected - Mangata]: on treasury we stor
     await sudo.mint(
       mgaTokenId,
       testUser1,
-      new BN(defaultCurrecyValue).add(new BN(Math.pow(10, 18).toString()))
+      new BN(defaultCurrecyValue).add(new BN(Math.pow(10, 20).toString()))
     );
     testUser1.addAsset(mgaTokenId);
     connectedToMGA = (
@@ -594,7 +594,7 @@ describe("xyk-pallet - treasury tests [Connected - Mangata]: Error cases", () =>
     await sudo.mint(
       mgaTokenId,
       testUser1,
-      new BN(defaultCurrecyValue).add(new BN(Math.pow(10, 18).toString()))
+      new BN(defaultCurrecyValue).add(new BN(Math.pow(10, 20).toString()))
     );
     testUser1.addAsset(mgaTokenId);
     connectedToMGA = (

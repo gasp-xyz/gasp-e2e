@@ -56,11 +56,7 @@ describe("UI main tests - Deposit - ETH", () => {
     const ableToContinueP = await sidebar.isPolkadotExtensionOK();
     expect(ableToContinueM).toBeTruthy();
     expect(ableToContinueP).toBeTruthy();
-    await sudo.mint(
-      MGA_ASSET_ID,
-      testUser1,
-      new BN(Math.pow(10, 18).toString())
-    );
+    await testUser1.addMGATokens(sudo);
   });
 
   it("As a User I can deposit ETH from Meta extension", async () => {
@@ -125,11 +121,7 @@ describe("UI main tests - Withdraw - ETH", () => {
     const ableToContinueP = await sidebar.isPolkadotExtensionOK();
     expect(ableToContinueM).toBeTruthy();
     expect(ableToContinueP).toBeTruthy();
-    await sudo.mint(
-      MGA_ASSET_ID,
-      testUser1,
-      new BN(Math.pow(10, 18).toString())
-    );
+    await testUser1.addMGATokens(sudo);
 
     await sidebar.depositAseetsFromMetamask("ETH", "0.001");
     await sidebar.waitForTokenToAppear("mETH");
