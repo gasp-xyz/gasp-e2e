@@ -93,3 +93,17 @@ There exist a possibility to run test pointing to a dockerized setup. You only n
 
 ### Reports reports reports!
 https://mangata-finance.github.io/mangata-e2e
+
+
+
+### How to setup on Windows
+- Follow all the steps from here : 
+https://ubuntu.com/tutorials/working-with-visual-studio-code-on-ubuntu-on-wsl2#4-install-the-remote-development-extension
+
+- Install yarn and do yarn install
+- Install nvm: curl -sL https://raw.githubusercontent.com/nvm-sh/nvm/v0.35.0/install.sh -o install_nvm.sh
+- Install latest node version: nvm install v16.15.0
+- (Optional) sudo cp /home/<usr>/.nvm/versions/node/v16.15.0/bin/node /usr/bin/
+- Install Jest extension ( into wsl ) 
+- Debug test
+    
