@@ -52,7 +52,7 @@ If you run test on your machine first you need to set using `yarn`.
 3. If process will finish correct you'll see folder **/node_modules** and **file yarn.lock**
 
 After each running you system you need to configure some parameters for test.
-Use this pattern (dom't forget to add parameters instead of <text in the same barackets>): `export TEST_SUDO_NAME=//<You need insert name here> && export TEST_PALLET_ADDRESS=5EYCAe5XGPRojsCSi9p1ZZQ5qgeJGFcTxPxrsFRzkASu6bT2 && export E2E_XYK_PALLET_ADDRESS=5EYCAe5XGPRojsCSi9p1ZZQ5qgeJGFcTxPxrsFRzkASu6bT2 && export E2E_TREASURY_PALLET_ADDRESS=5EYCAe5ijiYfyeZ2JJCGq56LmPyNRAKzpG4QkoQkkQNB5e6Z && export E2E_TREASURY_BURN_PALLET_ADDRESS=5EYCAe5ijiYfyeZ2JJezKNMZfdbiFMyQc4YVzxaiMebAZBcm && API_URL=ws://<You need insert url here> && export MNEMONIC_POLK="<You need insert information about mnemonic polk here>" && export MNEMONIC_META="<You need insert information about mnemonic meta here>" && export UI_URL=http://localhost:3000/`
+Use this pattern (don't forget to add parameters instead of <text in the same barackets>): `export TEST_SUDO_NAME=//<You need insert name here> && export TEST_PALLET_ADDRESS=5EYCAe5XGPRojsCSi9p1ZZQ5qgeJGFcTxPxrsFRzkASu6bT2 && export E2E_XYK_PALLET_ADDRESS=5EYCAe5XGPRojsCSi9p1ZZQ5qgeJGFcTxPxrsFRzkASu6bT2 && export E2E_TREASURY_PALLET_ADDRESS=5EYCAe5ijiYfyeZ2JJCGq56LmPyNRAKzpG4QkoQkkQNB5e6Z && export E2E_TREASURY_BURN_PALLET_ADDRESS=5EYCAe5ijiYfyeZ2JJezKNMZfdbiFMyQc4YVzxaiMebAZBcm && API_URL=ws://<You need insert url here> && export MNEMONIC_POLK="<You need insert information about mnemonic polk here>" && export MNEMONIC_META="<You need insert information about mnemonic meta here>" && export UI_URL=http://localhost:3000/`
 
 
 ####  Node tests ( no UI )
