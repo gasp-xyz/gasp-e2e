@@ -46,6 +46,14 @@ So somehow we now have essentially a distributed system for developing and that 
 2. `yarn eslint`
 
 ###  How to configure
+If you run test on your machine first you need to set using `yarn`.
+1. Clone **/mangata-e2e** and then delete folder **/node_modules** and file **yarn.lock**
+2. Run `yarn` in **/mangata-e2e**. This command begin installation and creating necessary files for `yarn`.
+3. If process will finish correct you'll see folder **/node_modules** and **file yarn.lock**
+
+After each running you system you need to configure some parameters for test.
+Use this pattern (dom't forget to add parameters instead of <text in the same barackets>): `export TEST_SUDO_NAME=//<You need insert name here> && export TEST_PALLET_ADDRESS=5EYCAe5XGPRojsCSi9p1ZZQ5qgeJGFcTxPxrsFRzkASu6bT2 && export E2E_XYK_PALLET_ADDRESS=5EYCAe5XGPRojsCSi9p1ZZQ5qgeJGFcTxPxrsFRzkASu6bT2 && export E2E_TREASURY_PALLET_ADDRESS=5EYCAe5ijiYfyeZ2JJCGq56LmPyNRAKzpG4QkoQkkQNB5e6Z && export E2E_TREASURY_BURN_PALLET_ADDRESS=5EYCAe5ijiYfyeZ2JJezKNMZfdbiFMyQc4YVzxaiMebAZBcm && API_URL=ws://<You need insert url here> && export MNEMONIC_POLK="<You need insert information about mnemonic polk here>" && export MNEMONIC_META="<You need insert information about mnemonic meta here>" && export UI_URL=http://localhost:3000/`
+
 
 ####  Node tests ( no UI )
 To point to the right environment or instance, you need to export the following environment variables:
@@ -97,13 +105,14 @@ https://mangata-finance.github.io/mangata-e2e
 
 
 ### How to setup on Windows
-- Follow all the steps from here : 
-https://ubuntu.com/tutorials/working-with-visual-studio-code-on-ubuntu-on-wsl2#4-install-the-remote-development-extension
-
-- Install yarn and do yarn install
-- Install nvm: curl -sL https://raw.githubusercontent.com/nvm-sh/nvm/v0.35.0/install.sh -o install_nvm.sh
-- Install latest node version: nvm install v16.15.0
-- (Optional) sudo cp /home/<usr>/.nvm/versions/node/v16.15.0/bin/node /usr/bin/
+- Follow all the steps from [here](https://ubuntu.com/tutorials/working-with-visual-studio-code-on-ubuntu-on-wsl2#4-install-the-remote-development-extension)
+- Install `yarn` and do `yarn install`
+- Install nvm: `curl -sL https://raw.githubusercontent.com/nvm-sh/nvm/v0.35.0/install.sh -o install_nvm.sh`
+- Install latest node version: `nvm install v16.15.0`
+- (Optional) `sudo cp /home/<usr>/.nvm/versions/node/v16.15.0/bin/node /usr/bin/`
 - Install Jest extension ( into wsl ) 
+- Install python: `apt-get install python`
+- You need to check version before you will be debugging test. Use `nvm version` (or `nvm ls`) and  `yarn --version`
+- If version of nvm on your local machine is lower than v16.15.0 as default, you need to fix this: `nvm alias default v16.15.0`
 - Debug test
     
