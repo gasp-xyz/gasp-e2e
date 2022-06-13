@@ -3992,12 +3992,12 @@ axe-core@^4.3.5:
   resolved "https://registry.yarnpkg.com/axe-core/-/axe-core-4.3.5.tgz#78d6911ba317a8262bfee292aeafcc1e04b49cc5"
   integrity sha512-WKTW1+xAzhMS5dJsxWkliixlO/PqC4VhmO9T4juNYcaTg9jzWiJsou6m5pxWYGfigWbwzJWeFY6z47a+4neRXA==
 
-axios@^0.20.0:
-  version "0.20.0"
-  resolved "https://registry.yarnpkg.com/axios/-/axios-0.20.0.tgz#057ba30f04884694993a8cd07fa394cff11c50bd"
-  integrity sha512-ANA4rr2BDcmmAQLOKft2fufrtuvlqR+cXNNinUmvfeSNCOF98PZL+7M/v1zIdGo7OLjEA9J2gXJL+j4zGsl0bA==
+axios@0.26.1:
+  version "0.26.1"
+  resolved "https://registry.yarnpkg.com/axios/-/axios-0.26.1.tgz#1ede41c51fcf51bbbd6fd43669caaa4f0495aaa9"
+  integrity sha512-fPwcX4EvnSHuInCMItEhAGnaSEXRBjtzh9fOtsE6E1G6p7vl7edEeZe11QHf18+6+9gR5PbKV/sGKNaD8YaMeA==
   dependencies:
-    follow-redirects "^1.10.0"
+    follow-redirects "^1.14.8"
 
 axios@^0.21.2:
   version "0.21.4"
@@ -7285,10 +7285,15 @@ fn.name@1.x.x:
   resolved "https://registry.yarnpkg.com/fn.name/-/fn.name-1.1.0.tgz#26cad8017967aea8731bc42961d04a3d5988accc"
   integrity sha512-GRnmB5gPyJpAhTQdSZTSp9uaPSvl09KoYcMQtsB9rQoOmzs9dH6ffeccH+Z+cv6P68Hu5bC6JjRh4Ah/mHSNRw==
 
-follow-redirects@^1.10.0, follow-redirects@^1.14.0:
+follow-redirects@^1.14.0:
   version "1.14.6"
   resolved "https://registry.yarnpkg.com/follow-redirects/-/follow-redirects-1.14.6.tgz#8cfb281bbc035b3c067d6cd975b0f6ade6e855cd"
   integrity sha512-fhUl5EwSJbbl8AR+uYL2KQDxLkdSjZGR36xy46AO7cOMTrCMON6Sa28FmAnC2tRTDbd/Uuzz3aJBv7EBN7JH8A==
+
+follow-redirects@^1.14.8:
+  version "1.15.1"
+  resolved "https://registry.yarnpkg.com/follow-redirects/-/follow-redirects-1.15.1.tgz#0ca6a452306c9b276e4d3127483e29575e207ad5"
+  integrity sha512-yLAMQs+k0b2m7cVxpS1VKJVvoz7SS9Td1zss3XRwXj+ZDH00RJgnuLx7E44wx02kQLrdM3aOOy+FpzS7+8OizA==
 
 for-each@^0.3.3:
   version "0.3.3"
@@ -10413,10 +10418,10 @@ mangata-prng-xoshiro@^3.0.0:
   resolved "https://registry.yarnpkg.com/mangata-prng-xoshiro/-/mangata-prng-xoshiro-3.0.0.tgz#23c485a47615a7e4c9e4d164437091b185622a2f"
   integrity sha512-/97weqNmU3b1BxaDTVR8gYTIyRvUqfPaBEwc3eE+RixJvSATFV8bt1MBEIYv1+otFSq877sbKYgPtoM833NYbA==
 
-mangata-sdk@^0.48.1:
-  version "0.48.1"
-  resolved "https://registry.yarnpkg.com/mangata-sdk/-/mangata-sdk-0.48.1.tgz#0f4a23601ae2f7dfce31dca764f3e96a680cc6fd"
-  integrity sha512-PMGHAPLRq188a9IWTxt0KC4se9q20zwmCGbw8gQa+JJNSRHOs/J6tTiAWo+1Ec4USi4KvKCX0QQRXD4lO1agxA==
+mangata-sdk@^0.49.4:
+  version "0.49.4"
+  resolved "https://registry.yarnpkg.com/mangata-sdk/-/mangata-sdk-0.49.4.tgz#cf836d392d3fb059003e725dc3f185d661d95205"
+  integrity sha512-tp7dK4swdz0QNuV+dNYP1tyPeRnUuIM+cgkMykPgalyrdDQ2swPhEsPl1wdycbLZ1jojUj9BzLfFSNjQOglZPg==
   dependencies:
     "@mangata-finance/types" "^0.4.0"
     big.js "^6.1.1"
