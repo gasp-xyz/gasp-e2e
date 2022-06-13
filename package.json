@@ -26,7 +26,7 @@
     "guid-typescript": "^1.0.9",
     "jsonpath": "^1.1.1",
     "loadsh": "^0.0.4",
-    "mangata-sdk": "^0.18.8",
+    "mangata-sdk": "^0.48.1",
     "package.json": "^2.0.1",
     "prettier": "2.3.0",
     "selenium-webdriver": "3.6.0",
