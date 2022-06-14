@@ -239,7 +239,7 @@ export class performanceTestItem implements TestItem {
 }
 
 export async function getMangata(node: string) {
-  const mga = Mangata.getInstance(node);
+  const mga = Mangata.getInstance([node]);
   await initApi(node);
   return mga;
 }
