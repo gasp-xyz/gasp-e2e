@@ -1,7 +1,0 @@
-"Status","Start Time","Stop Time","Duration in ms","Parent Suite","Suite","Sub Suite","Test Class","Test Method","Name","Description"
-"passed","Mon Apr 25 13:56:08 GMT 2022","Mon Apr 25 13:57:12 GMT 2022","63637","","Cluster -> Healthcheck","","Cluster -> Healthcheck","Nodes builds in less than 60 secs","Nodes builds in less than 60 secs",""
-"passed","Mon Apr 25 13:57:12 GMT 2022","Mon Apr 25 13:57:24 GMT 2022","12688","","Cluster -> Healthcheck","","Cluster -> Healthcheck","At least two collators","At least two collators",""
-"passed","Mon Apr 25 13:58:36 GMT 2022","Mon Apr 25 13:59:36 GMT 2022","59992","","Cluster -> Healthcheck","","Cluster -> Healthcheck","Block numbers match across all nodes","Block numbers match across all nodes",""
-"passed","Mon Apr 25 14:00:48 GMT 2022","Mon Apr 25 14:01:48 GMT 2022","59993","","Cluster -> Healthcheck","","Cluster -> Healthcheck","Cluster does not fork","Cluster does not fork",""
-"passed","Mon Apr 25 13:59:36 GMT 2022","Mon Apr 25 14:00:48 GMT 2022","72013","","Cluster -> Healthcheck","","Cluster -> Healthcheck","Block merkle hash matches across all nodes","Block merkle hash matches across all nodes",""
-"passed","Mon Apr 25 13:57:24 GMT 2022","Mon Apr 25 13:58:36 GMT 2022","71307","","Cluster -> Healthcheck","","Cluster -> Healthcheck","Nodes are up and syncing","Nodes are up and syncing",""
