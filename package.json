@@ -8,7 +8,7 @@
   "private": true,
   "dependencies": {
     "@babel/plugin-proposal-decorators": "^7.17.8",
-    "@mangata-finance/sdk": "^1.0.0",
+    "@mangata-finance/sdk": "^1.0.2",
     "@types/bs58": "^4.0.1",
     "@types/jsonpath": "^0.2.0",
     "@types/node": "^14.14.10",
