@@ -8,6 +8,7 @@
   "private": true,
   "dependencies": {
     "@babel/plugin-proposal-decorators": "^7.17.8",
+    "@mangata-finance/sdk": "^1.0.2",
     "@types/bs58": "^4.0.1",
     "@types/jsonpath": "^0.2.0",
     "@types/node": "^14.14.10",
@@ -26,7 +27,7 @@
     "guid-typescript": "^1.0.9",
     "jsonpath": "^1.1.1",
     "loadsh": "^0.0.4",
-    "mangata-sdk": "^0.18.8",
+    "mangata-sdk": "^0.49.4",
     "package.json": "^2.0.1",
     "prettier": "2.3.0",
     "selenium-webdriver": "3.6.0",

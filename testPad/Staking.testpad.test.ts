@@ -153,7 +153,7 @@ describe("staking - testpad", () => {
     } catch (e) {
       await initApi();
     }
-    const mga = Mangata.getInstance(getEnvironmentRequiredVars().chainUri);
+    const mga = Mangata.getInstance([getEnvironmentRequiredVars().chainUri]);
     const api = await mga.getApi();
     keyring = new Keyring({ type: "sr25519" });
     const user = new User(keyring, "//Bob");
@@ -171,7 +171,7 @@ describe("staking - testpad", () => {
     } catch (e) {
       await initApi();
     }
-    const mga = Mangata.getInstance(getEnvironmentRequiredVars().chainUri);
+    const mga = Mangata.getInstance([getEnvironmentRequiredVars().chainUri]);
     const api = await mga.getApi();
     keyring = new Keyring({ type: "sr25519" });
     const user = new User(keyring, "//Bob");
@@ -189,7 +189,7 @@ describe("staking - testpad", () => {
     } catch (e) {
       await initApi();
     }
-    const mga = Mangata.getInstance(getEnvironmentRequiredVars().chainUri);
+    const mga = Mangata.getInstance([getEnvironmentRequiredVars().chainUri]);
     const api = await mga.getApi();
     keyring = new Keyring({ type: "sr25519" });
     const user = new User(keyring, "//Bob");
@@ -207,7 +207,7 @@ describe("staking - testpad", () => {
     } catch (e) {
       await initApi();
     }
-    const mga = Mangata.getInstance(getEnvironmentRequiredVars().chainUri);
+    const mga = Mangata.getInstance([getEnvironmentRequiredVars().chainUri]);
     const api = await mga.getApi();
     keyring = new Keyring({ type: "sr25519" });
     const user = new User(keyring, "//Bob");
@@ -232,7 +232,7 @@ describe("staking - testpad", () => {
     } catch (e) {
       await initApi();
     }
-    const mga = Mangata.getInstance(getEnvironmentRequiredVars().chainUri);
+    const mga = Mangata.getInstance([getEnvironmentRequiredVars().chainUri]);
     const api = await mga.getApi();
     keyring = new Keyring({ type: "sr25519" });
     const user = new User(keyring, "//Bob");
@@ -251,7 +251,7 @@ describe("staking - testpad", () => {
     } catch (e) {
       await initApi();
     }
-    const mga = Mangata.getInstance(getEnvironmentRequiredVars().chainUri);
+    const mga = Mangata.getInstance([getEnvironmentRequiredVars().chainUri]);
     const api = await mga.getApi();
     keyring = new Keyring({ type: "sr25519" });
     const user = new User(keyring, "//Bob");

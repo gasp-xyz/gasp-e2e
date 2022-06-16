@@ -20,7 +20,7 @@ export const initApi = async (uri = "") => {
   }
 
   testLog.getLog().info(`TEST_INFO: Running test in ${uri}`);
-  mangata = Mangata.getInstance(uri);
+  mangata = Mangata.getInstance([uri]);
   api = await mangata.getApi();
   return api;
 };

@@ -10,7 +10,7 @@ const { testLog } = require("./../utils/Logger");
 const uri = "wss://staging.mangatafinance.cloud:9944";
 
 async function main() {
-  const mangata = Mangata.getInstance(uri);
+  const mangata = Mangata.getInstance([uri]);
   const api = await mangata.getApi();
   //import "BN";
   const extrinsicNo = 304;
