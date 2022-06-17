@@ -4,7 +4,7 @@ import { api, getApi, initApi } from "../utils/api";
 import { User } from "../utils/User";
 import { getEnvironmentRequiredVars, waitForNBlocks } from "../utils/utils";
 import fs from "fs";
-import { signTx } from "mangata-finance@/sdk";
+import { signTx } from "@mangata-finance/sdk";
 import { testLog } from "../utils/Logger";
 
 require("dotenv").config();

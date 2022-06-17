@@ -1,7 +1,7 @@
 import { ApiPromise } from "@polkadot/api";
 import { testLog } from "./Logger";
 import { getEnvironmentRequiredVars } from "./utils";
-import { Mangata } from "mangata-finance@/sdk";
+import { Mangata } from "@mangata-finance/sdk";
 
 export let api: ApiPromise | null = null;
 export let mangata: Mangata | null = null;

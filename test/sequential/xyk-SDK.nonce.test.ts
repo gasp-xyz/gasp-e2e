@@ -10,7 +10,7 @@ import { BN } from "@polkadot/util";
 import { getEnvironmentRequiredVars } from "../../utils/utils";
 import { Keyring } from "@polkadot/api";
 import { User } from "../../utils/User";
-import { Mangata } from "mangata-finance@/sdk";
+import { Mangata } from "@mangata-finance/sdk";
 import { getEventResultFromMangataTx } from "../../utils/txHandler";
 import { ExtrinsicResult } from "../../utils/eventListeners";
 import { MGA_ASSET_ID } from "../../utils/Constants";
