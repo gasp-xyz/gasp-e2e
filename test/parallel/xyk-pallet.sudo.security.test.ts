@@ -13,7 +13,7 @@ import { getEnvironmentRequiredVars } from "../../utils/utils";
 import { MGA_ASSET_ID } from "../../utils/Constants";
 import { BN } from "@polkadot/util";
 import { getEventResultFromMangataTx } from "../../utils/txHandler";
-import { signTx } from "mangata-sdk";
+import { signTx } from "mangata-finance@/sdk";
 jest.spyOn(console, "log").mockImplementation(jest.fn());
 jest.spyOn(console, "error").mockImplementation(jest.fn());
 jest.setTimeout(1500000);

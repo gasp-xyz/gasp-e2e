@@ -15,7 +15,7 @@ import { Assets } from "../../utils/Assets";
 import { getEnvironmentRequiredVars } from "../../utils/utils";
 import { getEventResultFromMangataTx } from "../../utils/txHandler";
 import { MGA_ASSET_ID } from "../../utils/Constants";
-import { Mangata } from "mangata-sdk";
+import { Mangata } from "mangata-finance@/sdk";
 import { testLog } from "../../utils/Logger";
 import { Fees } from "../../utils/Fees";
 

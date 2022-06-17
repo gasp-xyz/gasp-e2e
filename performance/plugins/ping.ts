@@ -1,5 +1,5 @@
 import { BN } from "@polkadot/util";
-import { Mangata } from "mangata-sdk";
+import { Mangata } from "mangata-finance@/sdk";
 import { TestParams } from "../testParams";
 import { KeyringPair } from "@polkadot/keyring/types";
 import { preGenerateTransactions, runQuery } from "./testRunner";

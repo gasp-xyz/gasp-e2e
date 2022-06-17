@@ -1,7 +1,7 @@
 /* eslint-disable no-console */
 /* eslint-disable no-loop-func */
 import { BN } from "@polkadot/util";
-import { Mangata } from "mangata-sdk";
+import { Mangata } from "mangata-finance@/sdk";
 import { testLog } from "../../utils/Logger";
 import { TestParams } from "../testParams";
 import { logLine } from "./testReporter";

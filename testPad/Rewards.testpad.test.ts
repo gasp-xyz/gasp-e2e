@@ -8,7 +8,7 @@ import {
   getEnvironmentRequiredVars,
 } from "../utils/utils";
 import fs from "fs";
-import { signTx } from "mangata-sdk";
+import { signTx } from "mangata-finance@/sdk";
 import { mintLiquidity } from "../utils/tx";
 
 require("dotenv").config();

@@ -3,7 +3,7 @@
 //Build And Run!
 // npx ts-node test/exploratory/eventListener.ts
 import { BN } from "@polkadot/util";
-import { Mangata } from "mangata-sdk";
+import { Mangata } from "mangata-finance@/sdk";
 
 const { testLog } = require("./../utils/Logger");
 

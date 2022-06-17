@@ -1,7 +1,7 @@
 /* eslint-disable no-console */
 import { Keyring } from "@polkadot/api";
 import { BN } from "@polkadot/util";
-import { Mangata, MangataGenericEvent } from "mangata-sdk";
+import { Mangata, MangataGenericEvent } from "mangata-finance@/sdk";
 import { testLog } from "../../utils/Logger";
 import { logFile, TestParams } from "../testParams";
 import { TestItem } from "./testItem";
