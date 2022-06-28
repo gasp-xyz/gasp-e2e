@@ -78,29 +78,34 @@ export class User {
       this.assets.push(asset);
     }
   }
+
   addAssets(currencyIds: any[]) {
     currencyIds.forEach((element) => {
       this.addAsset(element);
     });
   }
+
   getAsset(currecncyId: any, onlyFreeValues = true) {
     if (onlyFreeValues) {
       return this.getFreeAssetAmount(currecncyId);
     }
     return this.assets.find((asset) => asset.currencyId === currecncyId);
   }
+
   getFreeAssetAmount(currecncyId: any) {
     const wallet = this.assets.find(
       (asset) => asset.currencyId === currecncyId
     );
     return new Asset(currecncyId, wallet!.amountBefore, wallet!.amountAfter);
   }
+
   getFreeAssetAmounts() {
     const assets = this.assets.map((asset) =>
       this.getFreeAssetAmount(asset.currencyId)
     );
     return assets;
   }
+
   async refreshAmounts(beforeOrAfter: AssetWallet = AssetWallet.BEFORE) {
     const currencies = this.assets.map((asset) => new BN(asset.currencyId));
     const assetValues = await getUserAssets(
@@ -235,6 +240,7 @@ export class User {
   ) {
     await sudo.mint(MGA_ASSET_ID, this, amountFree);
   }
+
   async getUserTokensAccountInfo() {
     const accountInfo = await getTokensAccountInfo(
       this.keyRingPair.address,

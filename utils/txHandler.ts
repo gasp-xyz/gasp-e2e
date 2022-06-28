@@ -12,6 +12,7 @@ import { User } from "./User";
 import { MangataGenericEvent } from "@mangata-finance/sdk";
 import { signTx } from "@mangata-finance/sdk";
 import { AccountId32 } from "@polkadot/types/interfaces";
+import { ApiPromise } from "@polkadot/api";
 
 //let wait 7 blocks - 6000 * 7 = 42000; depends on the number of workers.
 
@@ -82,17 +83,26 @@ export const sudoIssueAsset = async (
   total_balance: BN,
   targetAddress: string
 ): Promise<MangataGenericEvent[]> => {
+  const api = getApi();
+  return sudoCall(
+    api,
+    sudoAccount,
+    api.tx.tokens.create(targetAddress, total_balance)
+  );
+};
+
+export const sudoCall = async (
+  api: ApiPromise,
+  sudoAccount: KeyringPair,
+  extrinsic: SubmittableExtrinsic<any>
+): Promise<MangataGenericEvent[]> => {
   const nonce = await SudoDB.getInstance().getSudoNonce(sudoAccount.address);
   testLog.getLog().info(`W[${env.JEST_WORKER_ID}] - sudoNonce: ${nonce} `);
-  const api = getApi();
   let results: MangataGenericEvent[] = [];
   try {
-    results = await signTx(
-      api,
-      api.tx.sudo.sudo(api.tx.tokens.create(targetAddress, total_balance)),
-      sudoAccount,
-      { nonce: new BN(nonce) }
-    );
+    results = await signTx(api, api.tx.sudo.sudo(extrinsic), sudoAccount, {
+      nonce: new BN(nonce),
+    });
   } catch (e) {
     testLog.getLog().error(JSON.stringify(e));
   }

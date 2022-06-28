@@ -405,6 +405,7 @@ export const mintAsset = async (
   }
 
   testLog.getLog().info(`W[${env.JEST_WORKER_ID}] - sudoNonce: ${nonce} `);
+  // console.log(api.tx.tokens);
   const txResult = await signTx(
     api,
     api.tx.sudo.sudo(api.tx.tokens.mint(asset_id, target, amount)),
@@ -415,6 +416,7 @@ export const mintAsset = async (
     console.error("OhOh sth went wrong. " + reason.toString());
     testLog.getLog().error(`W[${env.JEST_WORKER_ID}] - ${reason.toString()}`);
   });
+  testLog.getLog().info(`W[${env.JEST_WORKER_ID}] - txResult: ${txResult} `);
   return txResult as MangataGenericEvent[];
 };
 
@@ -672,15 +674,17 @@ export async function createPoolIfMissing(
 ) {
   const balance = await getBalanceOfPool(firstAssetId, seccondAssetId);
   if (balance[0].isZero() || balance[1].isZero()) {
-    await sudo.mint(firstAssetId, sudo, new BN(amountInPool));
-    await sudo.mint(seccondAssetId, sudo, new BN(amountInPool));
     const poolValue = new BN(amountInPool).div(new BN(2));
-    await sudo.createPoolToAsset(
-      poolValue,
-      poolValue,
-      firstAssetId,
-      seccondAssetId
-    );
+    await Promise.all([
+      sudo.mint(firstAssetId, sudo, new BN(amountInPool)),
+      sudo.mint(seccondAssetId, sudo, new BN(amountInPool)),
+      sudo.createPoolToAsset(
+        poolValue,
+        poolValue,
+        firstAssetId,
+        seccondAssetId
+      ),
+    ]);
   }
 }
 

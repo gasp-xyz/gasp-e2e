@@ -14,6 +14,8 @@ export const getApi = () => {
 };
 
 export const initApi = async (uri = "") => {
+  if (api) return api;
+
   if (!uri) {
     const { chainUri: envUri } = getEnvironmentRequiredVars();
     uri = envUri;

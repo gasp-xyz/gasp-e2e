@@ -6,10 +6,11 @@
  * @group sequential
  * @group critical
  */
-import { getApi, initApi } from "../../utils/api";
+import { initApi } from "../../utils/api";
 import {
   burnLiquidity,
   createPool,
+  getNextAssetId,
   mintLiquidity,
   transferAll,
   transferAsset,
@@ -26,8 +27,8 @@ import {
   waitIfSessionWillChangeInNblocks,
 } from "../../utils/utils";
 import { MGA_ASSET_ID } from "../../utils/Constants";
-import { waitNewBlock } from "../../utils/eventListeners";
 import { Fees } from "../../utils/Fees";
+import { BN_ONE } from "@mangata-finance/sdk";
 
 jest.spyOn(console, "log").mockImplementation(jest.fn());
 jest.spyOn(console, "error").mockImplementation(jest.fn());
@@ -47,11 +48,7 @@ const { sudo: sudoUserName } = getEnvironmentRequiredVars();
 const defaultCurrecyValue = new BN(250000);
 
 beforeAll(async () => {
-  try {
-    getApi();
-  } catch (e) {
-    await initApi();
-  }
+  await initApi();
 
   keyring = new Keyring({ type: "sr25519" });
 
@@ -66,17 +63,25 @@ beforeAll(async () => {
   keyring.addPair(sudo.keyRingPair);
 
   //add two curerncies and balance to testUser:
-  [firstCurrency, secondCurrency] = await Assets.setupUserWithCurrencies(
-    testUser1,
-    [defaultCurrecyValue, defaultCurrecyValue.add(new BN(1))],
-    sudo
-  );
-  //add zero MGA tokens.
-  await testUser1.addMGATokens(sudo);
-  testUser1.addAsset(MGA_ASSET_ID);
-  await testUser2.addMGATokens(sudo);
-  testUser2.addAsset(MGA_ASSET_ID);
+  firstCurrency = await getNextAssetId();
+  secondCurrency = firstCurrency.add(BN_ONE);
 
+  await Promise.all([
+    testUser1.addMGATokens(sudo),
+    testUser2.addMGATokens(sudo),
+    Assets.setupUserWithCurrency(
+      testUser1,
+      firstCurrency,
+      defaultCurrecyValue,
+      sudo
+    ),
+    Assets.setupUserWithCurrency(
+      testUser1,
+      secondCurrency,
+      defaultCurrecyValue.add(new BN(1)),
+      sudo
+    ),
+  ]);
   await createPool(
     testUser1.keyRingPair,
     firstCurrency,
@@ -84,6 +89,9 @@ beforeAll(async () => {
     secondCurrency,
     new BN(1000)
   );
+
+  testUser1.addAsset(MGA_ASSET_ID);
+  testUser2.addAsset(MGA_ASSET_ID);
 });
 
 beforeEach(async () => {
@@ -93,35 +101,35 @@ beforeEach(async () => {
 });
 
 test("xyk-pallet - MGA tokens are substracted as fee : CreatePool", async () => {
-  const [thirdCurrency, fourthCurrency] = await Assets.setupUserWithCurrencies(
-    testUser1,
-    [defaultCurrecyValue, defaultCurrecyValue.add(new BN(1))],
-    sudo
-  );
-  await waitNewBlock();
+  const thirdCurrency = await getNextAssetId();
+  const fourthCurrency = thirdCurrency.add(BN_ONE);
+
   const from = await getBlockNumber();
-  await createPool(
-    testUser1.keyRingPair,
-    thirdCurrency,
-    new BN(1000),
-    fourthCurrency,
-    new BN(100)
-  );
+  await Promise.all([
+    Assets.setupUserWithCurrency(
+      testUser1,
+      thirdCurrency,
+      defaultCurrecyValue,
+      sudo
+    ),
+    Assets.setupUserWithCurrency(
+      testUser1,
+      thirdCurrency,
+      defaultCurrecyValue.add(BN_ONE),
+      sudo
+    ),
+    createPool(
+      testUser1.keyRingPair,
+      thirdCurrency,
+      new BN(1000),
+      fourthCurrency,
+      new BN(100)
+    ),
+  ]);
   const to = await getBlockNumber();
-  const blockNumber = await findBlockWithExtrinsicSigned(
-    [from, to],
-    testUser1.keyRingPair.address
-  );
-  const authorMGAtokens = await getTokensDiffForBlockAuthor(blockNumber);
-  await testUser1.refreshAmounts(AssetWallet.AFTER);
-  const mgaUserToken = testUser1.getAsset(MGA_ASSET_ID)!;
-  const diff = mgaUserToken.amountBefore.free.sub(
-    mgaUserToken.amountAfter.free!
-  );
-  expect(new BN(0)).bnLt(diff);
-  expect(new BN(0)).bnLt(authorMGAtokens);
-  expect(authorMGAtokens).bnEqual(diff);
+  await checkFee(from, to, testUser1);
 });
+
 test("xyk-pallet - MGA tokens are substracted as fee : MintLiquidity", async () => {
   const from = await getBlockNumber();
   await mintLiquidity(
@@ -131,20 +139,9 @@ test("xyk-pallet - MGA tokens are substracted as fee : MintLiquidity", async () 
     new BN(1000)
   );
   const to = await getBlockNumber();
-  const blockNumber = await findBlockWithExtrinsicSigned(
-    [from, to],
-    testUser1.keyRingPair.address
-  );
-  const authorMGAtokens = await getTokensDiffForBlockAuthor(blockNumber);
-  await testUser1.refreshAmounts(AssetWallet.AFTER);
-  const mgaUserToken = testUser1.getAsset(MGA_ASSET_ID)!;
-  const diff = mgaUserToken.amountBefore.free.sub(
-    mgaUserToken.amountAfter.free!
-  );
-  expect(new BN(0)).bnLt(diff);
-  expect(new BN(0)).bnLt(authorMGAtokens);
-  expect(authorMGAtokens).bnEqual(diff!);
+  await checkFee(from, to, testUser1);
 });
+
 test("xyk-pallet - MGA tokens are substracted as fee : BurnLiquidity", async () => {
   const from = await getBlockNumber();
   await burnLiquidity(
@@ -154,20 +151,9 @@ test("xyk-pallet - MGA tokens are substracted as fee : BurnLiquidity", async () 
     new BN(1000)
   );
   const to = await getBlockNumber();
-  const blockNumber = await findBlockWithExtrinsicSigned(
-    [from, to],
-    testUser1.keyRingPair.address
-  );
-  const authorMGAtokens = await getTokensDiffForBlockAuthor(blockNumber);
-  await testUser1.refreshAmounts(AssetWallet.AFTER);
-  const mgaUserToken = testUser1.getAsset(MGA_ASSET_ID)!;
-  const diff = mgaUserToken.amountBefore.free.sub(
-    mgaUserToken.amountAfter.free!
-  );
-  expect(new BN(0)).bnLt(diff);
-  expect(new BN(0)).bnLt(authorMGAtokens);
-  expect(authorMGAtokens).bnEqual(diff!);
+  await checkFee(from, to, testUser1);
 });
+
 test("xyk-pallet - MGA tokens are substracted as fee : Transfer", async () => {
   const from = await getBlockNumber();
   await transferAsset(
@@ -177,20 +163,9 @@ test("xyk-pallet - MGA tokens are substracted as fee : Transfer", async () => {
     new BN(1000)
   );
   const to = await getBlockNumber();
-  const blockNumber = await findBlockWithExtrinsicSigned(
-    [from, to],
-    testUser1.keyRingPair.address
-  );
-  const authorMGAtokens = await getTokensDiffForBlockAuthor(blockNumber);
-  await testUser1.refreshAmounts(AssetWallet.AFTER);
-  const mgaUserToken = testUser1.getAsset(MGA_ASSET_ID)!;
-  const diff = mgaUserToken.amountBefore.free.sub(
-    mgaUserToken.amountAfter.free!
-  );
-  expect(new BN(0)).bnLt(diff);
-  expect(new BN(0)).bnLt(authorMGAtokens);
-  expect(authorMGAtokens).bnEqual(diff!);
+  await checkFee(from, to, testUser1);
 });
+
 test("xyk-pallet - MGA tokens are substracted as fee : TransferAll", async () => {
   await sudo.mint(
     firstCurrency,
@@ -204,33 +179,48 @@ test("xyk-pallet - MGA tokens are substracted as fee : TransferAll", async () =>
     testUser1.keyRingPair.address
   );
   const to = await getBlockNumber();
+  await checkFee(from, to, testUser2);
+});
+
+test("xyk-pallet - MGA tokens are not substracted as fee : SellAsset", async () => {
+  const from = await getBlockNumber();
+  await testUser1.sellAssets(firstCurrency, secondCurrency, new BN(50));
+  const to = await getBlockNumber();
+  await checkFeeSwap(from, to, testUser1);
+});
+
+test("xyk-pallet - MGA tokens are / are not substracted as fee : BuyAsset", async () => {
+  const from = await getBlockNumber();
+  await testUser1.buyAssets(firstCurrency, secondCurrency, new BN(50));
+  const to = await getBlockNumber();
+  await checkFeeSwap(from, to, testUser1);
+});
+
+async function checkFee(from: number, to: number, user: User) {
   const blockNumber = await findBlockWithExtrinsicSigned(
     [from, to],
-    testUser2.keyRingPair.address
+    user.keyRingPair.address
   );
   const authorMGAtokens = await getTokensDiffForBlockAuthor(blockNumber);
-
-  await testUser2.refreshAmounts(AssetWallet.AFTER);
-  const mgaUserToken = testUser2.getAsset(MGA_ASSET_ID)!;
+  await user.refreshAmounts(AssetWallet.AFTER);
+  const mgaUserToken = user.getAsset(MGA_ASSET_ID)!;
   const diff = mgaUserToken.amountBefore.free.sub(
     mgaUserToken.amountAfter.free!
   );
   expect(new BN(0)).bnLt(diff);
   expect(new BN(0)).bnLt(authorMGAtokens);
   expect(authorMGAtokens).bnEqual(diff!);
-});
-test("xyk-pallet - MGA tokens are not substracted as fee : SellAsset", async () => {
-  const from = await getBlockNumber();
-  await testUser1.sellAssets(firstCurrency, secondCurrency, new BN(50));
-  const to = await getBlockNumber();
+}
+
+async function checkFeeSwap(from: number, to: number, user: User) {
   const blockNumber = await findBlockWithExtrinsicSigned(
     [from, to],
-    testUser1.keyRingPair.address
+    user.keyRingPair.address
   );
   const authorMGAtokens = await getTokensDiffForBlockAuthor(blockNumber);
 
-  await testUser1.refreshAmounts(AssetWallet.AFTER);
-  const mgaUserToken = testUser1.getAsset(MGA_ASSET_ID)!;
+  await user.refreshAmounts(AssetWallet.AFTER);
+  const mgaUserToken = user.getAsset(MGA_ASSET_ID)!;
   const diff = mgaUserToken.amountBefore.free.sub(
     mgaUserToken.amountAfter.free
   );
@@ -240,44 +230,13 @@ test("xyk-pallet - MGA tokens are not substracted as fee : SellAsset", async () 
     expect(new BN(0)).bnLt(authorMGAtokens);
     expect(diff).bnEqual(authorMGAtokens);
   } else {
-    expect(testUser1.getAsset(firstCurrency)!.amountAfter.free).bnLt(
-      testUser1.getAsset(firstCurrency)!.amountBefore.free
+    expect(user.getAsset(firstCurrency)!.amountAfter.free).bnLt(
+      user.getAsset(firstCurrency)!.amountBefore.free
     );
     expect(new BN(0)).bnEqual(authorMGAtokens);
     expect(diff).bnEqual(new BN(0));
-    expect(testUser1.getAsset(MGA_ASSET_ID)!.amountBefore.free).bnEqual(
-      testUser1.getAsset(MGA_ASSET_ID)!.amountAfter.free!
+    expect(user.getAsset(MGA_ASSET_ID)!.amountBefore.free).bnEqual(
+      user.getAsset(MGA_ASSET_ID)!.amountAfter.free!
     );
   }
-});
-test("xyk-pallet - MGA tokens are / are not substracted as fee : BuyAsset", async () => {
-  const from = await getBlockNumber();
-  await testUser1.buyAssets(firstCurrency, secondCurrency, new BN(50));
-  const to = await getBlockNumber();
-  const blockNumber = await findBlockWithExtrinsicSigned(
-    [from, to],
-    testUser1.keyRingPair.address
-  );
-  const authorMGAtokens = await getTokensDiffForBlockAuthor(blockNumber);
-  await testUser1.refreshAmounts(AssetWallet.AFTER);
-  const mgaUserToken = testUser1.getAsset(MGA_ASSET_ID)!;
-  const diff = mgaUserToken.amountBefore.free.sub(
-    mgaUserToken.amountAfter.free!
-  );
-
-  //TODO:swapFees:plz remove me when fees are fixed and keep the else part.
-  if (Fees.swapFeesEnabled) {
-    expect(new BN(0)).bnLt(diff);
-    expect(new BN(0)).bnLt(authorMGAtokens);
-    expect(diff).bnEqual(authorMGAtokens);
-  } else {
-    expect(testUser1.getAsset(firstCurrency)!.amountAfter.free).bnLt(
-      testUser1.getAsset(firstCurrency)!.amountBefore.free
-    );
-    expect(new BN(0)).bnEqual(authorMGAtokens);
-    expect(diff).bnEqual(new BN(0));
-    expect(testUser1.getAsset(MGA_ASSET_ID)!.amountBefore.free).bnEqual(
-      testUser1.getAsset(MGA_ASSET_ID)!.amountAfter.free!
-    );
-  }
-});
+}

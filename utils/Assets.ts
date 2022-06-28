@@ -1,12 +1,6 @@
-import { assert } from "console";
 import { BN } from "@polkadot/util";
-import { ExtrinsicResult } from "./eventListeners";
-import { getNextAssetId, getAssetSupply } from "./tx";
-import {
-  getEventResultFromMangataTx,
-  setAssetInfo,
-  sudoIssueAsset,
-} from "./txHandler";
+import { getAssetSupply, getNextAssetId } from "./tx";
+import { setAssetInfo, sudoIssueAsset } from "./txHandler";
 import { User } from "./User";
 
 export class Assets {
@@ -34,6 +28,25 @@ export class Assets {
     return currencies;
   }
 
+  static setupUserWithCurrency(
+    user: User,
+    assetId: BN,
+    value: BN,
+    sudo: User
+  ): Promise<void> {
+    return Promise.all([
+      sudoIssueAsset(sudo.keyRingPair, value, user.keyRingPair.address),
+      setAssetInfo(
+        sudo,
+        assetId,
+        `TEST_${assetId}`,
+        `m${assetId}`,
+        `Test token ${assetId}`,
+        new BN(18)
+      ),
+    ]).then();
+  }
+
   static async setupUserWithCurrencies(
     user: User,
     currencyValues = [new BN(250000), new BN(250001)],
@@ -59,31 +72,18 @@ export class Assets {
 
   //this method add a certain amount of currencies to a user into a returned currecncyId
   static async issueAssetToUser(user: User, num = new BN(1000), sudo: User) {
-    const result = await sudoIssueAsset(
-      sudo.keyRingPair,
-      num,
-      user.keyRingPair.address
-    );
-    const eventResult = await getEventResultFromMangataTx(result, [
-      "tokens",
-      "Issued",
-      user.keyRingPair.address,
+    const assetId = await getNextAssetId();
+    await Promise.all([
+      sudoIssueAsset(sudo.keyRingPair, num, user.keyRingPair.address),
+      setAssetInfo(
+        sudo,
+        assetId,
+        `TEST_${assetId}`,
+        `m${assetId}`,
+        `Test token ${assetId}`,
+        new BN(18)
+      ),
     ]);
-
-    assert(eventResult.state === ExtrinsicResult.ExtrinsicSuccess);
-    const assetId = eventResult.data[0].split(",").join("");
-    await setAssetInfo(
-      sudo,
-      new BN(assetId),
-      `TEST_${assetId}`,
-      this.getAssetName(assetId),
-      `Test token ${assetId}`,
-      new BN(18)
-    );
-    return new BN(assetId);
-  }
-
-  static getAssetName(assetID: string) {
-    return `m${assetID}`;
+    return assetId;
   }
 }
