@@ -4,15 +4,15 @@
  * @group accuracy
  * @group parallel
  */
-import { getApi, getMangataInstance, initApi } from "../../utils/api";
+import { initApi, mangata } from "../../utils/api";
 import { BN } from "@polkadot/util";
 import { Keyring } from "@polkadot/api";
 import { AssetWallet, User } from "../../utils/User";
 import { Assets } from "../../utils/Assets";
 import { getEnvironmentRequiredVars } from "../../utils/utils";
 import { MGA_ASSET_ID } from "../../utils/Constants";
-import { Mangata } from "@mangata-finance/sdk";
 import { testLog } from "../../utils/Logger";
+import { createPool, getNextAssetId } from "../../utils/tx";
 
 jest.spyOn(console, "log").mockImplementation(jest.fn());
 jest.spyOn(console, "error").mockImplementation(jest.fn());
@@ -34,14 +34,9 @@ const default50k = new BN(50000);
 const { sudo: sudoUserName } = getEnvironmentRequiredVars();
 
 const defaultCurrecyValue = new BN(250000);
-let mga: Mangata;
 
 beforeEach(async () => {
-  try {
-    getApi();
-  } catch (e) {
-    await initApi();
-  }
+  await initApi();
 
   keyring = new Keyring({ type: "sr25519" });
 
@@ -50,22 +45,26 @@ beforeEach(async () => {
   testUser2 = new User(keyring);
   testUser3 = new User(keyring);
   sudo = new User(keyring, sudoUserName);
-
-  //add two curerncies and balance to testUser:
-  [firstCurrency] = await Assets.setupUserWithCurrencies(
-    testUser1,
-    [defaultCurrecyValue, defaultCurrecyValue.add(new BN(1))],
-    sudo
-  );
-  //add zero MGA tokens.
-  await testUser1.addMGATokens(sudo);
-  await testUser2.addMGATokens(sudo);
-  await testUser3.addMGATokens(sudo);
-  // add users to pair.
   keyring.addPair(testUser1.keyRingPair);
   keyring.addPair(testUser2.keyRingPair);
   keyring.addPair(testUser3.keyRingPair);
   keyring.addPair(sudo.keyRingPair);
+
+  firstCurrency = await getNextAssetId();
+  //add two curerncies and balance to testUser:
+  await Promise.all([
+    Assets.setupUserWithCurrency(
+      testUser1,
+      firstCurrency,
+      defaultCurrecyValue,
+      sudo
+    ),
+    testUser1.addMGATokens(sudo),
+    testUser2.addMGATokens(sudo),
+    testUser3.addMGATokens(sudo),
+  ]);
+
+  //add zero MGA tokens.
   testUser1.addAsset(MGA_ASSET_ID);
   testUser2.addAsset(MGA_ASSET_ID);
   testUser3.addAsset(MGA_ASSET_ID);
@@ -74,26 +73,24 @@ beforeEach(async () => {
 
 describe("Accuracy > Shared pool", () => {
   beforeEach(async () => {
-    await sudo.mint(firstCurrency, testUser2, default50k);
-    await sudo.mint(firstCurrency, testUser3, default50k);
-    //    await Promise.all([
-    //
-    //    ]);
+    await Promise.all([
+      sudo.mint(firstCurrency, testUser2, default50k),
+      sudo.mint(firstCurrency, testUser3, default50k),
+      await createPool(
+        testUser1.keyRingPair,
+        firstCurrency,
+        default50k,
+        MGA_ASSET_ID,
+        default50k
+      ),
+    ]);
     testUser2.addAsset(firstCurrency);
     testUser3.addAsset(firstCurrency);
     await testUser1.refreshAmounts(AssetWallet.BEFORE);
     await testUser2.refreshAmounts(AssetWallet.BEFORE);
     await testUser3.refreshAmounts(AssetWallet.BEFORE);
-    mga = await getMangataInstance();
-
-    await mga.createPool(
-      testUser1.keyRingPair,
-      firstCurrency.toString(),
-      default50k,
-      MGA_ASSET_ID.toString(),
-      default50k
-    );
   });
+
   test("Each user who minted onws the same % of tokens - one user gets extra token", async () => {
     const users = [testUser1, testUser2, testUser3];
     const sellAmount = new BN(1000);
@@ -226,7 +223,7 @@ async function mintAndBurnTokens(
   sellAmount: BN,
   amountToMint: BN[]
 ) {
-  const liqToken = await mga.getLiquidityTokenId(
+  const liqToken = await mangata!.getLiquidityTokenId(
     firstCurrency.toString(),
     MGA_ASSET_ID.toString()
   );
@@ -266,19 +263,19 @@ async function mintAndBurnTokens(
 
 async function burnAllLiquidities(users: User[], balances: BN[]) {
   await Promise.all([
-    mga.burnLiquidity(
+    mangata!.burnLiquidity(
       users[0].keyRingPair,
       firstCurrency.toString(),
       MGA_ASSET_ID.toString(),
       balances[0]
     ),
-    mga.burnLiquidity(
+    mangata!.burnLiquidity(
       users[1].keyRingPair,
       firstCurrency.toString(),
       MGA_ASSET_ID.toString(),
       balances[1]
     ),
-    mga.burnLiquidity(
+    mangata!.burnLiquidity(
       users[2].keyRingPair,
       firstCurrency.toString(),
       MGA_ASSET_ID.toString(),

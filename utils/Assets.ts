@@ -28,13 +28,13 @@ export class Assets {
     return currencies;
   }
 
-  static setupUserWithCurrency(
+  static async setupUserWithCurrency(
     user: User,
     assetId: BN,
     value: BN,
     sudo: User
   ): Promise<void> {
-    return Promise.all([
+    await Promise.all([
       sudoIssueAsset(sudo.keyRingPair, value, user.keyRingPair.address),
       setAssetInfo(
         sudo,
@@ -44,7 +44,8 @@ export class Assets {
         `Test token ${assetId}`,
         new BN(18)
       ),
-    ]).then();
+    ]);
+    user.addAsset(assetId, value);
   }
 
   static async setupUserWithCurrencies(

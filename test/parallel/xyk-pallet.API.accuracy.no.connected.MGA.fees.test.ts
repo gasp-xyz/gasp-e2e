@@ -4,15 +4,15 @@
  * @group accuracy
  * @group parallel
  */
-import { getApi, getMangataInstance, initApi } from "../../utils/api";
+import { initApi, mangata } from "../../utils/api";
 import {
   calculate_sell_price_id_rpc,
-  calculate_sell_price_local_no_fee,
+  calculate_sell_price_local_no_fee, createPool,
   getBalanceOfPool,
+  getNextAssetId,
   getTreasury,
   getTreasuryBurn,
 } from "../../utils/tx";
-import { waitNewBlock } from "../../utils/eventListeners";
 import { BN } from "@polkadot/util";
 import { Keyring } from "@polkadot/api";
 import { AssetWallet, User } from "../../utils/User";
@@ -20,6 +20,7 @@ import { validateAssetsWithValues } from "../../utils/validators";
 import { Assets } from "../../utils/Assets";
 import { getEnvironmentRequiredVars } from "../../utils/utils";
 import { MGA_ASSET_ID } from "../../utils/Constants";
+import { BN_ONE } from "@mangata-finance/sdk";
 
 jest.spyOn(console, "log").mockImplementation(jest.fn());
 jest.spyOn(console, "error").mockImplementation(jest.fn());
@@ -41,30 +42,36 @@ const { sudo: sudoUserName } = getEnvironmentRequiredVars();
 const defaultCurrecyValue = new BN(250000);
 
 beforeEach(async () => {
-  try {
-    getApi();
-  } catch (e) {
-    await initApi();
-  }
+  await initApi();
 
-  await waitNewBlock();
   keyring = new Keyring({ type: "sr25519" });
 
   // setup users
   testUser1 = new User(keyring);
   sudo = new User(keyring, sudoUserName);
-
-  //add two curerncies and balance to testUser:
-  [firstCurrency, secondCurrency] = await Assets.setupUserWithCurrencies(
-    testUser1,
-    [defaultCurrecyValue, defaultCurrecyValue.add(new BN(1))],
-    sudo
-  );
-  //add zero MGA tokens.
-  await testUser1.addMGATokens(sudo);
-  // add users to pair.
   keyring.addPair(testUser1.keyRingPair);
   keyring.addPair(sudo.keyRingPair);
+
+  //add two curerncies and balance to testUser:
+  firstCurrency = await getNextAssetId();
+  secondCurrency = firstCurrency.add(BN_ONE);
+
+  await Promise.all([
+    testUser1.addMGATokens(sudo),
+    Assets.setupUserWithCurrency(
+      testUser1,
+      firstCurrency,
+      defaultCurrecyValue,
+      sudo
+    ),
+    Assets.setupUserWithCurrency(
+      testUser1,
+      secondCurrency,
+      defaultCurrecyValue.add(BN_ONE),
+      sudo
+    ),
+  ]);
+
   testUser1.addAsset(MGA_ASSET_ID);
   // check users accounts.
   await testUser1.refreshAmounts(AssetWallet.BEFORE);
@@ -78,13 +85,11 @@ beforeEach(async () => {
       defaultCurrecyValue.add(new BN(1)).toNumber(),
     ]
   );
-  await (
-    await getMangataInstance()
-  ).createPool(
+  await createPool(
     testUser1.keyRingPair,
-    firstCurrency.toString(),
+    firstCurrency,
     firstAssetAmount,
-    secondCurrency.toString(),
+    secondCurrency,
     secondAssetAmount
   );
 });
