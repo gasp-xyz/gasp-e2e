@@ -3,14 +3,14 @@
 //Build And Run!
 // npx ts-node test/exploratory/eventListener.ts
 import { BN } from "@polkadot/util";
-import { Mangata } from "mangata-sdk";
+import { Mangata } from "@mangata-finance/sdk";
 
 const { testLog } = require("./../utils/Logger");
 
 const uri = "wss://staging.mangatafinance.cloud:9944";
 
 async function main() {
-  const mangata = Mangata.getInstance(uri);
+  const mangata = Mangata.getInstance([uri]);
   const api = await mangata.getApi();
   //import "BN";
   const extrinsicNo = 304;

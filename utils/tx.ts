@@ -15,7 +15,7 @@ import { Keyring } from "@polkadot/api";
 import { User } from "./User";
 import { testLog } from "./Logger";
 import { KeyringPair } from "@polkadot/keyring/types";
-import { MangataGenericEvent, signTx } from "mangata-sdk";
+import { MangataGenericEvent, signTx } from "@mangata-finance/sdk";
 import { AnyJson } from "@polkadot/types/types";
 
 export const signTxDeprecated = async (

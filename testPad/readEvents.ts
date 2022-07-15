@@ -3,7 +3,7 @@
 //Build And Run!
 // npx ts-node test/exploratory/eventListener.ts
 
-import { Mangata } from "mangata-sdk";
+import { Mangata } from "@mangata-finance/sdk";
 
 const { testLog } = require("./../utils/Logger");
 
@@ -21,7 +21,7 @@ async function main() {
   const promises = [];
   for (let index = 0; index < uris.length; index++) {
     const uri = uris[index];
-    const mangata = Mangata.getInstance(uri);
+    const mangata = Mangata.getInstance([uri]);
     const api = await mangata.getApi();
     const p = new Promise((): void => {
       // Subscribe to system events via storage
