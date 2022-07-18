@@ -41,13 +41,13 @@ describe("Boostrap - testpad", () => {
   });
 
   const address_2 =
-    "/home/goncer/5DjvzBs66vdHm5HJzY7F7gciLBQXsFzMcfotWZHhqz9r3VRQ";
+    "/home/goncer/5EA2ReGG4XHeBi2VMVtBbSnsE7esMTEsy2FprYavCN6Sb6zv";
 
   const address_1 =
     "/home/goncer/5FA3LcCrKMgr9WHqyvtDhDarAXRkJjoYrSy6XnZPKfwiB3sY";
 
   const amount = "10000000000000000000000000";
-  test.each([address_1, address_2])(
+  test.each([address_2, address_1])(
     "xyk-pallet: Create new users with bonded amounts.",
     async (address) => {
       const file = await fs.readFileSync(address + ".json");
@@ -68,25 +68,70 @@ describe("Boostrap - testpad", () => {
       keyring.pairs[0].decodePkcs8("mangata123");
       await testUser1.refreshAmounts(AssetWallet.BEFORE);
 
-      await api.tx.utility
+      await api!.tx.utility
         .batch([
-          api.tx.sudo.sudo(
-            api.tx.tokens.mint(
+          api!.tx.sudo.sudo(
+            api!.tx.tokens.mint(
               MGA_ASSET_ID,
               testUser1.keyRingPair.address,
               new BN(amount)
             )
           ),
-          api.tx.sudo.sudo(
-            api.tx.tokens.mint(
+          api!.tx.sudo.sudo(
+            api!.tx.tokens.create(
+              testUser1.keyRingPair.address,
+              new BN(10000000)
+            )
+          ),
+          api!.tx.sudo.sudo(
+            api!.tx.tokens.create(
+              testUser1.keyRingPair.address,
+              new BN(10000000)
+            )
+          ),
+          api!.tx.sudo.sudo(
+            api!.tx.tokens.create(
+              testUser1.keyRingPair.address,
+              new BN(10000000)
+            )
+          ),
+          api!.tx.sudo.sudo(
+            api!.tx.tokens.create(
+              testUser1.keyRingPair.address,
+              new BN(10000000)
+            )
+          ),
+          api!.tx.sudo.sudo(
+            api!.tx.tokens.mint(
               new BN(4),
+              testUser1.keyRingPair.address,
+              new BN(amount)
+            )
+          ),
+          api!.tx.sudo.sudo(
+            api!.tx.tokens.mint(
+              new BN(5),
+              testUser1.keyRingPair.address,
+              new BN(amount)
+            )
+          ),
+          api!.tx.sudo.sudo(
+            api!.tx.tokens.mint(
+              new BN(6),
+              testUser1.keyRingPair.address,
+              new BN(amount)
+            )
+          ),
+          api!.tx.sudo.sudo(
+            api!.tx.tokens.mint(
+              new BN(7),
               testUser1.keyRingPair.address,
               new BN(amount)
             )
           ),
         ])
         .signAndSend(sudo.keyRingPair);
-      await waitForNBlocks(4);
+      await waitForNBlocks(5);
     }
   );
   test.each([address_1, address_2])(

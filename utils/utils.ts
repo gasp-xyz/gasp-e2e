@@ -261,7 +261,7 @@ export async function getTokensDiffForBlockAuthor(blockNumber: AnyNumber) {
 }
 export async function getBlockNumber() {
   const api = await mangata?.getApi()!;
-  return (await api.query.system.number()).toNumber();
+  return ((await api.query.system.number()) as any).toNumber();
 }
 export async function findBlockWithExtrinsicSigned(
   blocks = [0, 1],

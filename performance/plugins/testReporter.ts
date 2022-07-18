@@ -30,12 +30,12 @@ export async function captureEvents(logName: string, api: ApiPromise) {
       await logLine(
         eventsFileName,
         `\n \n [ ${new Date().toUTCString()}] - Received ${
-          events.length
+          (events as any).length
         } events: ------- Block: ${currentBlock}`
       );
 
       // Loop through the Vec<EventRecord>
-      events.forEach(async (record: any) => {
+      (events as any).forEach(async (record: any) => {
         // Extract the phase, event and the event types
         const { event } = record;
         const types = event.typeDef;

@@ -18,7 +18,7 @@ import { AccountId32 } from "@polkadot/types/interfaces";
 export async function getCurrentNonce(account?: string) {
   const api = getApi();
   if (account) {
-    const { nonce } = await api.query.system.account(account);
+    const { nonce } = (await api.query.system.account(account)) as any;
     return nonce.toNumber();
   }
   return -1;
@@ -68,7 +68,7 @@ export async function getSudoKey(): Promise<AccountId32> {
 
   const sudoKey = await api.query.sudo.key();
 
-  return sudoKey.unwrap();
+  return (sudoKey as any).unwrap();
 }
 
 export const getNextAssetId = async () => {

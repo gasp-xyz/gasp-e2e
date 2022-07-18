@@ -63,8 +63,8 @@ describe("xToken -> Transfer -> rely to Parachain", () => {
     );
     //wait for balance changes.
     await waitForNBlocks(5);
-    const blockNumber = await (
-      await destUser.node.api!.query.system.number()
+    const blockNumber = (
+      (await await destUser.node.api!.query.system.number()) as any as any
     ).toNumber();
     const balanceUpdated = destUser.node.userBalancesHistory
       .get(blockNumber - 1)!
@@ -101,8 +101,8 @@ describe("xToken -> Transfer -> rely to Parachain", () => {
     );
     //wait for balance changes.
     await waitForNBlocks(5);
-    const blockNumber = await (
-      await destUser.node.api!.query.system.number()
+    const blockNumber = (
+      (await await destUser.node.api!.query.system.number()) as any
     ).toNumber();
     const balanceUpdated = destUser.node.userBalancesHistory
       .get(blockNumber - 1)!
@@ -166,8 +166,8 @@ describe("xToken -> Transfer -> MGA <-> Acala", () => {
     //wait for balance changes.
     await waitForNBlocks(5);
 
-    const blockNumber = await (
-      await destUser.node.api!.query.system.number()
+    const blockNumber = (
+      (await await destUser.node.api!.query.system.number()) as any
     ).toNumber();
     const balanceUpdated = destUser.node.userBalancesHistory
       .get(blockNumber - 1)!

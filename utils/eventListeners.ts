@@ -35,7 +35,7 @@ export const getEventResult = (
   const api = getApi();
 
   return new Promise<EventResult>(async (resolve) => {
-    const unsubscribe = await api.query.system.events((events: any) => {
+    const unsubscribe = (await api.query.system.events((events: any) => {
       events.forEach((record: any) => {
         const { event } = record;
         if (event.section === section && event.method === method) {
@@ -60,7 +60,7 @@ export const getEventResult = (
           );
         }
       });
-    });
+    })) as any;
   });
 };
 
