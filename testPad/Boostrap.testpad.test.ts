@@ -10,6 +10,8 @@ import {
 } from "../utils/utils";
 
 import fs from "fs";
+import { createPoolIfMissing, getLiquidityAssetId, mintLiquidity } from "../utils/tx";
+import { signSendAndWaitToFinishTx } from "../utils/txHandler";
 
 require("dotenv").config();
 
@@ -41,13 +43,30 @@ describe("Boostrap - testpad", () => {
   });
 
   const address_2 =
-    "/home/goncer/5EA2ReGG4XHeBi2VMVtBbSnsE7esMTEsy2FprYavCN6Sb6zv";
+    "/home/goncer/accounts/5EA2ReGG4XHeBi2VMVtBbSnsE7esMTEsy2FprYavCN6Sb6zv";
 
+  const address_1_2 =
+    "/home/goncer/accounts/5FA3LcCrKMgr9WHqyvtDhDarAXRkJjoYrSy6XnZPKfwiB3sY";
   const address_1 =
-    "/home/goncer/5FA3LcCrKMgr9WHqyvtDhDarAXRkJjoYrSy6XnZPKfwiB3sY";
+    "/home/goncer/accounts/5EFU3vXvSRP4arboup47yftDjZU1AbcRxRGVmYMbhjywnZtB";
 
-  const amount = "10000000000000000000000000";
-  test.each([address_2, address_1])(
+  const amount2 = "10000000000000000000000000";
+  const amount = "20000000000000000000";
+  const tokenId = 6;
+  const liqCount = 2;
+
+  test("find error", async () => {
+    try {
+      getApi();
+    } catch (e) {
+      await initApi();
+    }
+    const error = "4";
+    const index = "21";
+    const err = api?.registry.findMetaError({error : new BN(error), index: new BN(index)});
+    console.info(err);
+  })
+  test.each([address_1 ])( //, address_1 ])(
     "xyk-pallet: Create new users with bonded amounts.",
     async (address) => {
       const file = await fs.readFileSync(address + ".json");
@@ -66,7 +85,6 @@ describe("Boostrap - testpad", () => {
       keyring.addPair(testUser1.keyRingPair);
       keyring.addPair(sudo.keyRingPair);
       keyring.pairs[0].decodePkcs8("mangata123");
-      await testUser1.refreshAmounts(AssetWallet.BEFORE);
 
       await api!.tx.utility
         .batch([
@@ -117,7 +135,7 @@ describe("Boostrap - testpad", () => {
           ),
           api!.tx.sudo.sudo(
             api!.tx.tokens.mint(
-              new BN(6),
+              new BN(tokenId),
               testUser1.keyRingPair.address,
               new BN(amount)
             )
@@ -131,6 +149,33 @@ describe("Boostrap - testpad", () => {
           ),
         ])
         .signAndSend(sudo.keyRingPair);
+      await waitForNBlocks(3);
+      await createPoolIfMissing(sudo, amount, new BN(0), new BN(6))
+      await mintLiquidity(testUser1.keyRingPair, new BN(0), new BN(tokenId), new BN(amount).divn(2),new BN(amount).divn(2).addn(1));
+      const liqToken = await getLiquidityAssetId(new BN(0), new BN(tokenId));
+      await api!.tx.sudo.sudo(
+        api!.tx.parachainStaking.addStakingLiquidityToken(
+          {
+            Liquidity: liqToken
+          },
+          liqCount
+        )
+      ).signAndSend(sudo.keyRingPair);
+      await waitForNBlocks(3);
+      const candidates = JSON.parse(
+        JSON.stringify(await api?.query.parachainStaking.candidatePool())
+      );
+      await signSendAndWaitToFinishTx(
+        api?.tx.parachainStaking.joinCandidates(
+          new BN(amount).divn(2),
+          new BN(liqToken),
+          'AvailableBalance' ,
+          // @ts-ignore - Mangata bond operation has 4 params, somehow is inheriting the bond operation from polkadot :S
+          new BN(candidates.length),
+          new BN(liqCount)
+        ),
+        testUser1.keyRingPair
+      );
       await waitForNBlocks(5);
     }
   );
