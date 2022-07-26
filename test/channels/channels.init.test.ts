@@ -1,13 +1,10 @@
-import { getApi, initApi } from "../../utils/api";
+import { initApi } from "../../utils/api";
 import { getEnvironmentRequiredVars } from "../../utils/utils";
 import { User } from "../../utils/User";
 import { ApiPromise, Keyring } from "@polkadot/api";
 import { AcalaNode } from "../../utils/Framework/Node/AcalaNode";
-import {} from "@mangata-finance/types/index";
 import { SubmittableExtrinsic } from "@polkadot/api/types";
-import { sudoCall } from "../../utils/txHandler";
-
-jest.setTimeout(1500000);
+import { beforeAll, test } from "vitest";
 
 const { sudo: sudoUserName, acalaUri } = getEnvironmentRequiredVars();
 
@@ -38,11 +35,6 @@ test("channels - open channel to karura", async () => {
       console.log(result);
     }
   );
-  // await sudoCall(
-  //   api,
-  //   sudo.keyRingPair,
-  //   sendAsSovereign(api, openChannelEncoded)
-  // );
 });
 
 function sendAsSovereign(
