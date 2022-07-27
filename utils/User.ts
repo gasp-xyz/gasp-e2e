@@ -235,6 +235,14 @@ export class User {
   ) {
     await sudo.mint(MGA_ASSET_ID, this, amountFree);
   }
+  
+  async addKSMTokens(
+    sudo: User,
+    amountFree: BN = toBN ('1', 13)
+  ) {
+    await sudo.mint(KSM_ASSET_ID, this, amountFree);
+  }
+  
   async getUserTokensAccountInfo() {
     const accountInfo = await getTokensAccountInfo(
       this.keyRingPair.address,
