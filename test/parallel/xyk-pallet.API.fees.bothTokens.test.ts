@@ -16,7 +16,6 @@ import { SignerOptions } from "@polkadot/api/types";
 import { getEventResultFromMangataTx } from "../../utils/txHandler";
 import { RuntimeDispatchInfo } from "@polkadot/types/interfaces";
 import { MGA_ASSET_ID, KSM_ASSET_ID } from "../../utils/Constants";
-import { toBN } from "@mangata-finance/sdk";
 
 jest.spyOn(console, "log").mockImplementation(jest.fn());
 jest.spyOn(console, "error").mockImplementation(jest.fn());
@@ -51,7 +50,7 @@ export async function UserMintCurrencyToken(
   );
 }
 
-beforeEach(async () => {
+beforeAll(async () => {
   try {
     getApi();
   } catch (e) {
@@ -60,9 +59,10 @@ beforeEach(async () => {
 
   keyring = new Keyring({ type: "sr25519" });
 
-  // setup users
-  testUser1 = new User(keyring);
   sudo = new User(keyring, sudoUserName);
+
+  //add MGA tokens for creating pool.
+  await sudo.addMGATokens(sudo);
 
   //add two curerncies and balance to sudo:
   [firstCurrency, secondCurrency] = await Assets.setupUserWithCurrencies(
@@ -71,14 +71,7 @@ beforeEach(async () => {
     sudo
   );
 
-  //add MGA tokens for creating pool.
-  await sudo.addMGATokens(sudo);
-
-  // add users to pair.
-  keyring.addPair(testUser1.keyRingPair);
   keyring.addPair(sudo.keyRingPair);
-  testUser1.addAsset(MGA_ASSET_ID);
-  testUser1.addAsset(KSM_ASSET_ID);
 
   await (await getMangataInstance())
   .createPool(
@@ -93,7 +86,17 @@ beforeEach(async () => {
     expect(eventResponse.state).toEqual(ExtrinsicResult.ExtrinsicSuccess);
   });
 
-  //await testUser1.removeTokens();
+});
+
+beforeEach(async () => {
+  // setup users
+  testUser1 = new User(keyring);
+  
+  // add users to pair.
+  keyring.addPair(testUser1.keyRingPair);
+  testUser1.addAsset(MGA_ASSET_ID);
+  testUser1.addAsset(KSM_ASSET_ID);
+
 });
 
 test("xyk-pallet - Check required fee - User with MGX only", async () => {
@@ -142,6 +145,7 @@ test("xyk-pallet - Check required fee - User with MGX only", async () => {
       );
     const fee = cost.partialFee;
     expect(deductedMGATkns).bnLte(fee);
+    expect(deductedMGATkns).bnGt(new BN(0));
 
 });
 
@@ -151,11 +155,7 @@ test("xyk-pallet - Check required fee - User with KSM only", async () => {
   await UserMintCurrencyToken(testUser1, sudo, firstCurrency, defaultCurrecyValue);
 
   //add KSM tokens.
-  await sudo.mint(
-    KSM_ASSET_ID,
-    testUser1,
-    new BN(21000000000)
-  );
+  await testUser1.addKSMTokens(sudo);
 
   await testUser1.refreshAmounts(AssetWallet.BEFORE);
 
@@ -197,11 +197,7 @@ test("xyk-pallet - Check required fee - User with very few MGA and some KSM", as
   );
 
   //add some KSM tokens.
-  await sudo.mint(
-    KSM_ASSET_ID,
-    testUser1,
-    new BN(29000000000)
-  );
+  await testUser1.addKSMTokens(sudo);
 
   await testUser1.refreshAmounts(AssetWallet.BEFORE);
 
@@ -242,17 +238,13 @@ test("xyk-pallet - Check required fee - User with some MGA and very few KSM", as
   await UserMintCurrencyToken(testUser1, sudo, firstCurrency, defaultCurrecyValue);
 
   //add some MGX tokens.
-  await sudo.mint(
-    MGA_ASSET_ID,
-    testUser1,
-    toBN ('29', 18)
-  );
+  await testUser1.addMGATokens(sudo);
 
   //add few KSM tokens.
   await sudo.mint(
     KSM_ASSET_ID,
     testUser1,
-    new BN(9000000000)
+    new BN(100000)
   );
 
   await testUser1.refreshAmounts(AssetWallet.BEFORE);
@@ -301,6 +293,7 @@ test("xyk-pallet - Check required fee - User with some MGA and very few KSM", as
   const fee = cost.partialFee;
 
   expect(deductedMGATkns).bnLte(fee);
+  expect(deductedMGATkns).bnGt(new BN(0));
   expect(deductedKSMTkns).bnEqual(new BN(0));
   
 });
@@ -321,7 +314,7 @@ test("xyk-pallet - Check required fee - User with very few  MGA and very few KSM
   await sudo.mint(
     KSM_ASSET_ID,
     testUser1,
-    new BN(9000000000)
+    new BN(100000)
   );
 
   let exception = false;
