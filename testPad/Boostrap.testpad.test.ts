@@ -220,8 +220,8 @@ describe("Boostrap - testpad", () => {
             testUser1.keyRingPair.address,
             {
               locked: amount,
-              perBlock: "10000000000",
-              startingBlock: block + 10000,
+              perBlock: "100",
+              startingBlock: block + 10,
             }
           )
         )
