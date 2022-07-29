@@ -1,5 +1,5 @@
 import { Keyring } from "@polkadot/api";
-import BN from "bn.js";
+import { BN } from "@polkadot/util";
 import { getApi, initApi } from "../utils/api";
 import { User } from "../utils/User";
 import fs from "fs";
