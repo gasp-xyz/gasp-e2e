@@ -1,5 +1,5 @@
 import { Keyring } from "@polkadot/api";
-import BN from "bn.js";
+import { BN } from "@polkadot/util";
 import { getApi, initApi } from "../utils/api";
 import { User } from "../utils/User";
 import fs from "fs";
@@ -30,7 +30,7 @@ describe("AssetInfo - testpad", () => {
   const sudoAddress = "5CthcoS3CYHoVHDMUacydayRLMzMWedKryjsrvzrmv3VHCKP";
 
   test("Add Assets info", async () => {
-    const pathToFiles = "/home/goncer/projects/";
+    const pathToFiles = "/home/goncer/accounts/";
     keyring = new Keyring({ type: "sr25519" });
     const json = fs.readFileSync(pathToFiles + sudoAddress + ".json", {
       encoding: "utf8",
@@ -93,7 +93,7 @@ describe("AssetInfo - testpad", () => {
   });
 
   test("Send tokens to Alice, the MGA provider in airdrop", async () => {
-    const pathToFiles = "/home/goncer/projects/";
+    const pathToFiles = "/home/goncer/accounts/";
     keyring = new Keyring({ type: "sr25519" });
     const json = fs.readFileSync(pathToFiles + sudoAddress + ".json", {
       encoding: "utf8",
@@ -107,7 +107,7 @@ describe("AssetInfo - testpad", () => {
   });
 
   test("Send tokens to Michal address", async () => {
-    const pathToFiles = "/home/goncer/projects/";
+    const pathToFiles = "/home/goncer/accounts/";
     keyring = new Keyring({ type: "sr25519" });
     const json = fs.readFileSync(pathToFiles + sudoAddress + ".json", {
       encoding: "utf8",
@@ -128,7 +128,7 @@ describe("AssetInfo - testpad", () => {
   });
 
   test("Create big pools", async () => {
-    const pathToFiles = "/home/goncer/projects/";
+    const pathToFiles = "/home/goncer/accounts/";
     keyring = new Keyring({ type: "sr25519" });
     const json = fs.readFileSync(pathToFiles + sudoAddress + ".json", {
       encoding: "utf8",
