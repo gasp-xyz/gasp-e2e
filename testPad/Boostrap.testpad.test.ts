@@ -54,7 +54,7 @@ describe("Boostrap - testpad", () => {
 
   const amount = "10000000000000000000000000";
   //  const amount2 = "20000000000000000000";
-  const tokenId = 6;
+  const tokenId = 5;
   //  const liqCount = 2;
 
   test("find error", async () => {
@@ -63,7 +63,7 @@ describe("Boostrap - testpad", () => {
     } catch (e) {
       await initApi();
     }
-    const error = "6";
+    const error = "5";
     const index = "21";
     const err = api?.registry.findMetaError({
       error: new BN(error),
@@ -71,6 +71,7 @@ describe("Boostrap - testpad", () => {
     });
     console.info(err);
   });
+
   test.each([address_1, address_2])(
     //, address_1 ])(
     "xyk-pallet: Create new users with bonded amounts.",
@@ -78,6 +79,7 @@ describe("Boostrap - testpad", () => {
       const file = await fs.readFileSync(address + ".json");
       keyring = new Keyring({ type: "sr25519" });
       sudo = new User(keyring, sudoUserName);
+      //testUser1 = new User(keyring, "//Alice");
       testUser1 = new User(keyring, "asd", JSON.parse(file as any));
       await fs.writeFileSync(
         testUser1.keyRingPair.address + ".json",
@@ -156,7 +158,14 @@ describe("Boostrap - testpad", () => {
         ])
         .signAndSend(sudo.keyRingPair);
       await waitForNBlocks(3);
-      await createPoolIfMissing(sudo, amount, new BN(0), new BN(tokenId));
+      await createPoolIfMissing(
+        sudo,
+        amount,
+        new BN(0),
+        new BN(tokenId),
+        false
+      );
+
       await mintLiquidity(
         testUser1.keyRingPair,
         new BN(0),
@@ -164,6 +173,7 @@ describe("Boostrap - testpad", () => {
         new BN(amount).divn(2),
         new BN(amount).divn(2).addn(1)
       );
+
       //      const liqToken = await getLiquidityAssetId(new BN(0), new BN(tokenId));
       //      await api!.tx.sudo.sudo(
       //        api!.tx.parachainStaking.addStakingLiquidityToken(
@@ -2231,7 +2241,7 @@ describe("Boostrap - testpad", () => {
     "5HTV3Xq5nk7228Wqrfj2CS4KuhLhQahrdx28ifMTUFbkFrrT",
     "5CSmYgwbJzHVdY984u3ZwBNtFgREr4bWRMJGxj3Jf6iCNHSf",
   ];
-  test("xyk-pallet: whitelist", async () => {
+  test.skip("xyk-pallet: whitelist", async () => {
     const address = address_2;
     const file = await fs.readFileSync(address + ".json");
     keyring = new Keyring({ type: "sr25519" });
