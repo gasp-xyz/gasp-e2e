@@ -27,7 +27,7 @@ let srcUser: GovernanceUser;
 jest.spyOn(console, "log").mockImplementation(jest.fn());
 jest.setTimeout(1500000);
 const amount = new BN("2000000000000");
-describe("xToken -> Transfer -> rely to Parachain", () => {
+describe.skip("xToken -> Transfer -> rely to Parachain", () => {
   beforeAll(async () => {
     await cryptoWaitReady(); // Wait for Polkadots WASM backend
 
@@ -64,7 +64,7 @@ describe("xToken -> Transfer -> rely to Parachain", () => {
     //wait for balance changes.
     await waitForNBlocks(5);
     const blockNumber = (
-      (await await destUser.node.api!.query.system.number()) as any as any
+      (await await destUser.node.api!.query.system.number()) as any
     ).toNumber();
     const balanceUpdated = destUser.node.userBalancesHistory
       .get(blockNumber - 1)!
@@ -113,7 +113,7 @@ describe("xToken -> Transfer -> rely to Parachain", () => {
   });
 });
 
-describe("xToken -> Transfer -> MGA <-> Acala", () => {
+describe.skip("xToken -> Transfer -> MGA <-> Acala", () => {
   beforeAll(async () => {
     await cryptoWaitReady(); // Wait for Polkadots WASM backend
     mgaParachainNode = new Node(chainUri);
