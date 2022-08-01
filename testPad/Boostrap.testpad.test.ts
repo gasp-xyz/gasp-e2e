@@ -1,3 +1,4 @@
+/* eslint-disable no-console */
 import { Keyring } from "@polkadot/api";
 import { BN } from "@polkadot/util";
 import { api, getApi, initApi } from "../utils/api";
@@ -10,6 +11,7 @@ import {
 } from "../utils/utils";
 
 import fs from "fs";
+import { createPoolIfMissing, mintLiquidity } from "../utils/tx";
 
 require("dotenv").config();
 
@@ -40,20 +42,45 @@ describe("Boostrap - testpad", () => {
     }
   });
 
-  const address_2 =
-    "/home/goncer/5DjvzBs66vdHm5HJzY7F7gciLBQXsFzMcfotWZHhqz9r3VRQ";
+  // const address_2 =
+  //    "/home/goncer/accounts/5EA2ReGG4XHeBi2VMVtBbSnsE7esMTEsy2FprYavCN6Sb6zv";
 
+  const address_2 =
+    "/home/goncer/accounts/5FA3LcCrKMgr9WHqyvtDhDarAXRkJjoYrSy6XnZPKfwiB3sY";
+  //const address_1 =
+  //    "/home/goncer/accounts/5EFU3vXvSRP4arboup47yftDjZU1AbcRxRGVmYMbhjywnZtB";
   const address_1 =
-    "/home/goncer/5FA3LcCrKMgr9WHqyvtDhDarAXRkJjoYrSy6XnZPKfwiB3sY";
+    "/home/goncer/accounts/5DJLm4QrbUtb3F7XaGgNidtrMKAsqJhcCXXa1n9sr6EUNCro";
 
   const amount = "10000000000000000000000000";
+  //  const amount2 = "20000000000000000000";
+  const tokenId = 5;
+  //  const liqCount = 2;
+
+  test("find error", async () => {
+    try {
+      getApi();
+    } catch (e) {
+      await initApi();
+    }
+    const error = "5";
+    const index = "21";
+    const err = api?.registry.findMetaError({
+      error: new BN(error),
+      index: new BN(index),
+    });
+    console.info(err);
+  });
+
   test.each([address_1, address_2])(
+    //, address_1 ])(
     "xyk-pallet: Create new users with bonded amounts.",
     async (address) => {
       const file = await fs.readFileSync(address + ".json");
       keyring = new Keyring({ type: "sr25519" });
       sudo = new User(keyring, sudoUserName);
-      testUser1 = new User(keyring, "asd", JSON.parse(file));
+      //testUser1 = new User(keyring, "//Alice");
+      testUser1 = new User(keyring, "asd", JSON.parse(file as any));
       await fs.writeFileSync(
         testUser1.keyRingPair.address + ".json",
         JSON.stringify(testUser1.keyRingPair.toJson("mangata123"))
@@ -66,27 +93,112 @@ describe("Boostrap - testpad", () => {
       keyring.addPair(testUser1.keyRingPair);
       keyring.addPair(sudo.keyRingPair);
       keyring.pairs[0].decodePkcs8("mangata123");
-      await testUser1.refreshAmounts(AssetWallet.BEFORE);
 
-      await api.tx.utility
+      await api!.tx.utility
         .batch([
-          api.tx.sudo.sudo(
-            api.tx.tokens.mint(
+          api!.tx.sudo.sudo(
+            api!.tx.tokens.mint(
               MGA_ASSET_ID,
               testUser1.keyRingPair.address,
               new BN(amount)
             )
           ),
-          api.tx.sudo.sudo(
-            api.tx.tokens.mint(
+          api!.tx.sudo.sudo(
+            api!.tx.tokens.create(
+              testUser1.keyRingPair.address,
+              new BN(10000000)
+            )
+          ),
+          api!.tx.sudo.sudo(
+            api!.tx.tokens.create(
+              testUser1.keyRingPair.address,
+              new BN(10000000)
+            )
+          ),
+          api!.tx.sudo.sudo(
+            api!.tx.tokens.create(
+              testUser1.keyRingPair.address,
+              new BN(10000000)
+            )
+          ),
+          api!.tx.sudo.sudo(
+            api!.tx.tokens.create(
+              testUser1.keyRingPair.address,
+              new BN(10000000)
+            )
+          ),
+          api!.tx.sudo.sudo(
+            api!.tx.tokens.mint(
               new BN(4),
+              testUser1.keyRingPair.address,
+              new BN(amount)
+            )
+          ),
+          api!.tx.sudo.sudo(
+            api!.tx.tokens.mint(
+              new BN(5),
+              testUser1.keyRingPair.address,
+              new BN(amount)
+            )
+          ),
+          api!.tx.sudo.sudo(
+            api!.tx.tokens.mint(
+              new BN(tokenId),
+              testUser1.keyRingPair.address,
+              new BN(amount)
+            )
+          ),
+          api!.tx.sudo.sudo(
+            api!.tx.tokens.mint(
+              new BN(7),
               testUser1.keyRingPair.address,
               new BN(amount)
             )
           ),
         ])
         .signAndSend(sudo.keyRingPair);
-      await waitForNBlocks(4);
+      await waitForNBlocks(3);
+      await createPoolIfMissing(
+        sudo,
+        amount,
+        new BN(0),
+        new BN(tokenId),
+        false
+      );
+
+      await mintLiquidity(
+        testUser1.keyRingPair,
+        new BN(0),
+        new BN(tokenId),
+        new BN(amount).divn(2),
+        new BN(amount).divn(2).addn(1)
+      );
+
+      //      const liqToken = await getLiquidityAssetId(new BN(0), new BN(tokenId));
+      //      await api!.tx.sudo.sudo(
+      //        api!.tx.parachainStaking.addStakingLiquidityToken(
+      //          {
+      //            Liquidity: liqToken
+      //          },
+      //          liqCount
+      //        )
+      //      ).signAndSend(sudo.keyRingPair);
+      //      await waitForNBlocks(3);
+      //      const candidates = JSON.parse(
+      //        JSON.stringify(await api?.query.parachainStaking.candidatePool())
+      //      );
+      //      await signSendAndWaitToFinishTx(
+      //        api?.tx.parachainStaking.joinCandidates(
+      //          new BN(amount).divn(2),
+      //          new BN(liqToken),
+      //          'AvailableBalance' ,
+      //          // @ts-ignore - Mangata bond operation has 4 params, somehow is inheriting the bond operation from polkadot :S
+      //          new BN(candidates.length),
+      //          new BN(liqCount)
+      //        ),
+      //        testUser1.keyRingPair
+      //      );
+      //      await waitForNBlocks(5);
     }
   );
   test.each([address_1, address_2])(
@@ -95,7 +207,7 @@ describe("Boostrap - testpad", () => {
       const file = await fs.readFileSync(address + ".json");
       keyring = new Keyring({ type: "sr25519" });
       sudo = new User(keyring, sudoUserName);
-      testUser1 = new User(keyring, "asd", JSON.parse(file));
+      testUser1 = new User(keyring, "asd", JSON.parse(file as any));
       await fs.writeFileSync(
         testUser1.keyRingPair.address + ".json",
         JSON.stringify(testUser1.keyRingPair.toJson("mangata123"))
@@ -110,16 +222,16 @@ describe("Boostrap - testpad", () => {
       keyring.pairs[0].decodePkcs8("mangata123");
       await testUser1.refreshAmounts(AssetWallet.BEFORE);
       const block = await getBlockNumber();
-      await api.tx.sudo
+      await api!.tx.sudo
         .sudo(
-          api.tx.vesting.forceVestedTransfer(
+          api!.tx.vesting.forceVestedTransfer(
             0,
             testUser1.keyRingPair.address,
             testUser1.keyRingPair.address,
             {
               locked: amount,
-              perBlock: "10000000000",
-              startingBlock: block + 10000,
+              perBlock: "100",
+              startingBlock: block + 10,
             }
           )
         )
@@ -2129,17 +2241,17 @@ describe("Boostrap - testpad", () => {
     "5HTV3Xq5nk7228Wqrfj2CS4KuhLhQahrdx28ifMTUFbkFrrT",
     "5CSmYgwbJzHVdY984u3ZwBNtFgREr4bWRMJGxj3Jf6iCNHSf",
   ];
-  test("xyk-pallet: whitelist", async () => {
+  test.skip("xyk-pallet: whitelist", async () => {
     const address = address_2;
     const file = await fs.readFileSync(address + ".json");
     keyring = new Keyring({ type: "sr25519" });
     sudo = new User(keyring, sudoUserName);
-    const addresses = [];
+    const addresses: string[] = [];
     for (let index = 2000; index < 2000; index++) {
       const user = new User(keyring);
       addresses.push(user.keyRingPair.address);
     }
-    testUser1 = new User(keyring, "asd", JSON.parse(file));
+    testUser1 = new User(keyring, "asd", JSON.parse(file as any));
     await fs.writeFileSync(
       testUser1.keyRingPair.address + ".json",
       JSON.stringify(testUser1.keyRingPair.toJson("mangata123"))
@@ -2154,8 +2266,8 @@ describe("Boostrap - testpad", () => {
     keyring.pairs[0].decodePkcs8("mangata123");
     await testUser1.refreshAmounts(AssetWallet.BEFORE);
 
-    await api.tx.sudo
-      .sudo(api.tx.bootstrap.whitelistAccounts(list.slice(0, 1000)))
+    await api!.tx.sudo
+      .sudo(api!.tx.bootstrap.whitelistAccounts(list.slice(0, 1000)))
       .signAndSend(sudo.keyRingPair);
 
     await waitForNBlocks(5);

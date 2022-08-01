@@ -336,7 +336,7 @@ export async function getSudoKey(): Promise<AccountId32> {
 
   const sudoKey = await api.query.sudo.key();
 
-  return sudoKey.unwrap();
+  return (sudoKey as any).unwrap();
 }
 
 export const balanceTransfer = async (
@@ -439,6 +439,17 @@ export const createPool = async (
     secondAssetId.toString(),
     secondAssetAmount,
     { nonce: nonce }
+  );
+  return result;
+};
+
+export const promotePool = async (sudoAccount: KeyringPair, liqAssetId: BN) => {
+  testLog.getLog().info(`Promoting pool :${liqAssetId}`);
+  const mangata = await getMangataInstance();
+  const api = await mangata.getApi();
+  const result = await signSendAndWaitToFinishTx(
+    api!.tx.sudo.sudo(api!.tx.xyk.promotePool(liqAssetId)),
+    sudoAccount
   );
   return result;
 };
@@ -668,7 +679,8 @@ export async function createPoolIfMissing(
   sudo: User,
   amountInPool: string,
   firstAssetId = MGA_ASSET_ID,
-  seccondAssetId = ETH_ASSET_ID
+  seccondAssetId = ETH_ASSET_ID,
+  promoted = false
 ) {
   const balance = await getBalanceOfPool(firstAssetId, seccondAssetId);
   if (balance[0].isZero() || balance[1].isZero()) {
@@ -681,6 +693,10 @@ export async function createPoolIfMissing(
       firstAssetId,
       seccondAssetId
     );
+    const liqToken = await getLiquidityAssetId(firstAssetId, seccondAssetId);
+    if (promoted) {
+      await sudo.promotePool(liqToken);
+    }
   }
 }
 

@@ -156,7 +156,7 @@ export class performanceTestItem implements TestItem {
     for (let nodeNumber = 0; nodeNumber < mgaNodeandUsers.size; nodeNumber++) {
       const mga = mgaNodeandUsers.get(nodeNumber)?.mgaSdk!;
       const users = mgaNodeandUsers.get(nodeNumber)?.users!;
-      const mgaNode = new Node(mga.getUri());
+      const mgaNode = new Node(mga.getUrls()[0]);
       const sudo = UserFactory.createUser(Users.SudoUser, keyring, mgaNode);
 
       testLog.getLog().info("Fetching nonces for node " + nodeNumber);
