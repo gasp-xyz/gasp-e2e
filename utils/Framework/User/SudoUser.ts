@@ -7,11 +7,16 @@ import { mintAsset } from "../../tx";
 import { Node } from "../Node/Node";
 import { Token } from "../Supply/Token";
 import { getEnvironmentRequiredVars } from "../../utils";
+import { User } from "../../User";
+import { MangataGenericEvent, signTx } from "@mangata-finance/sdk";
+import { SudoDB } from "../../SudoDB";
+import { testLog } from "../../Logger";
+import { env } from "process";
 
 export class SudoUser extends BaseUser {
-  node: Node;
+  node?: Node;
 
-  constructor(keyring: Keyring, json: any, node: Node) {
+  constructor(keyring: Keyring, json?: any, node?: Node) {
     const { sudo: sudoName } = getEnvironmentRequiredVars();
     super(keyring, sudoName, json);
     this.node = node;
@@ -33,5 +38,41 @@ export class SudoUser extends BaseUser {
     });
 
     return new Token(assetId, amount);
+  }
+  async mintTokens(
+    tokens: BN[],
+    users: User[],
+    amount: BN = new BN(Math.pow(10, 20).toString())
+  ): Promise<MangataGenericEvent[]> {
+    const mintFunctions: any[] = [];
+
+    users.forEach((user) => {
+      tokens.forEach((token) => {
+        mintFunctions.push(
+          this.node?.api!.tx.sudo.sudo(
+            this.node?.api!.tx.tokens.mint(
+              token,
+              user.keyRingPair.address,
+              amount
+            )
+          )
+        );
+      });
+    });
+
+    const nonce = new BN(
+      await SudoDB.getInstance().getSudoNonce(this.keyRingPair.address)
+    );
+    const txResult = await signTx(
+      this.node?.api!,
+      this.node?.api!.tx.utility.batch(mintFunctions)!,
+      this.keyRingPair,
+      { nonce: new BN(nonce) }
+    ).catch((reason) => {
+      // eslint-disable-next-line no-console
+      console.error("OhOh sth went wrong. " + reason.toString());
+      testLog.getLog().error(`W[${env.JEST_WORKER_ID}] - ${reason.toString()}`);
+    });
+    return txResult as MangataGenericEvent[];
   }
 }
