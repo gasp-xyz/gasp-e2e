@@ -1,7 +1,8 @@
 /* eslint-disable no-console */
 import { Keyring } from "@polkadot/api";
-import { BN } from "@polkadot/util";
+import { BN, hexToU8a } from "@polkadot/util";
 import { api, getApi, initApi } from "../utils/api";
+import { getCurrentNonce } from "../utils/tx";
 import { MGA_ASSET_ID } from "../utils/Constants";
 import { User, AssetWallet } from "../utils/User";
 import {
@@ -12,6 +13,7 @@ import {
 
 import fs from "fs";
 import { createPoolIfMissing, mintLiquidity } from "../utils/tx";
+import { signSendAndWaitToFinishTx } from "../utils/txHandler";
 
 require("dotenv").config();
 
@@ -42,19 +44,19 @@ describe("Boostrap - testpad", () => {
     }
   });
 
-  // const address_2 =
-  //    "/home/goncer/accounts/5EA2ReGG4XHeBi2VMVtBbSnsE7esMTEsy2FprYavCN6Sb6zv";
+  //const address_2 =
+  //  "/home/goncer/accounts/5EA2ReGG4XHeBi2VMVtBbSnsE7esMTEsy2FprYavCN6Sb6zv";
 
   const address_2 =
     "/home/goncer/accounts/5FA3LcCrKMgr9WHqyvtDhDarAXRkJjoYrSy6XnZPKfwiB3sY";
   //const address_1 =
-  //    "/home/goncer/accounts/5EFU3vXvSRP4arboup47yftDjZU1AbcRxRGVmYMbhjywnZtB";
+  //  "/home/goncer/accounts/5EFU3vXvSRP4arboup47yftDjZU1AbcRxRGVmYMbhjywnZtB";
   const address_1 =
     "/home/goncer/accounts/5DJLm4QrbUtb3F7XaGgNidtrMKAsqJhcCXXa1n9sr6EUNCro";
 
-  const amount = "10000000000000000000000000";
+  const amount = "9000000000000000000000";
   //  const amount2 = "20000000000000000000";
-  const tokenId = 5;
+  const tokenId = 6;
   //  const liqCount = 2;
 
   test("find error", async () => {
@@ -63,15 +65,14 @@ describe("Boostrap - testpad", () => {
     } catch (e) {
       await initApi();
     }
-    const error = "5";
+    const error = hexToU8a("0x1b000000");
     const index = "21";
     const err = api?.registry.findMetaError({
-      error: new BN(error),
+      error: error,
       index: new BN(index),
     });
     console.info(err);
   });
-
   test.each([address_1, address_2])(
     //, address_1 ])(
     "xyk-pallet: Create new users with bonded amounts.",
@@ -96,6 +97,13 @@ describe("Boostrap - testpad", () => {
 
       await api!.tx.utility
         .batch([
+          api!.tx.sudo.sudo(
+            api!.tx.tokens.mint(
+              MGA_ASSET_ID,
+              testUser1.keyRingPair.address,
+              new BN(amount).muln(3)
+            )
+          ),
           api!.tx.sudo.sudo(
             api!.tx.tokens.mint(
               MGA_ASSET_ID,
@@ -158,13 +166,7 @@ describe("Boostrap - testpad", () => {
         ])
         .signAndSend(sudo.keyRingPair);
       await waitForNBlocks(3);
-      await createPoolIfMissing(
-        sudo,
-        amount,
-        new BN(0),
-        new BN(tokenId),
-        false
-      );
+      await createPoolIfMissing(sudo, amount, new BN(0), new BN(tokenId), true);
 
       await mintLiquidity(
         testUser1.keyRingPair,
@@ -173,32 +175,6 @@ describe("Boostrap - testpad", () => {
         new BN(amount).divn(2),
         new BN(amount).divn(2).addn(1)
       );
-
-      //      const liqToken = await getLiquidityAssetId(new BN(0), new BN(tokenId));
-      //      await api!.tx.sudo.sudo(
-      //        api!.tx.parachainStaking.addStakingLiquidityToken(
-      //          {
-      //            Liquidity: liqToken
-      //          },
-      //          liqCount
-      //        )
-      //      ).signAndSend(sudo.keyRingPair);
-      //      await waitForNBlocks(3);
-      //      const candidates = JSON.parse(
-      //        JSON.stringify(await api?.query.parachainStaking.candidatePool())
-      //      );
-      //      await signSendAndWaitToFinishTx(
-      //        api?.tx.parachainStaking.joinCandidates(
-      //          new BN(amount).divn(2),
-      //          new BN(liqToken),
-      //          'AvailableBalance' ,
-      //          // @ts-ignore - Mangata bond operation has 4 params, somehow is inheriting the bond operation from polkadot :S
-      //          new BN(candidates.length),
-      //          new BN(liqCount)
-      //        ),
-      //        testUser1.keyRingPair
-      //      );
-      //      await waitForNBlocks(5);
     }
   );
   test.each([address_1, address_2])(
@@ -226,12 +202,12 @@ describe("Boostrap - testpad", () => {
         .sudo(
           api!.tx.vesting.forceVestedTransfer(
             0,
-            testUser1.keyRingPair.address,
+            sudo.keyRingPair.address,
             testUser1.keyRingPair.address,
             {
               locked: amount,
-              perBlock: "100",
-              startingBlock: block + 10,
+              perBlock: new BN(amount).divn(1000),
+              startingBlock: block + 100,
             }
           )
         )
@@ -239,6 +215,125 @@ describe("Boostrap - testpad", () => {
       await waitForNBlocks(4);
     }
   );
+
+  test("fillcandidates", async () => {
+    const n = 30;
+    keyring = new Keyring({ type: "sr25519" });
+    sudo = new User(keyring, sudoUserName);
+    const users: User[] = [];
+    //testUser1 = new User(keyring, "//Alice");
+    for (let index = 0; index < n; index++) {
+      testUser1 = new User(keyring);
+      users.push(testUser1);
+    }
+    const nonce = await getCurrentNonce(sudo.keyRingPair.address);
+    for (let index = 0; index < n; index++) {
+      const testUser1 = users[index];
+      const p = api!.tx.utility
+        .batch([
+          api!.tx.sudo.sudo(
+            api!.tx.tokens.mint(
+              MGA_ASSET_ID,
+              testUser1.keyRingPair.address,
+              new BN(amount).muln(3)
+            )
+          ),
+          api!.tx.sudo.sudo(
+            api!.tx.tokens.mint(
+              MGA_ASSET_ID,
+              testUser1.keyRingPair.address,
+              new BN(amount)
+            )
+          ),
+          api!.tx.sudo.sudo(
+            api!.tx.tokens.create(
+              testUser1.keyRingPair.address,
+              new BN(10000000)
+            )
+          ),
+          api!.tx.sudo.sudo(
+            api!.tx.tokens.create(
+              testUser1.keyRingPair.address,
+              new BN(10000000)
+            )
+          ),
+          api!.tx.sudo.sudo(
+            api!.tx.tokens.create(
+              testUser1.keyRingPair.address,
+              new BN(10000000)
+            )
+          ),
+          api!.tx.sudo.sudo(
+            api!.tx.tokens.create(
+              testUser1.keyRingPair.address,
+              new BN(10000000)
+            )
+          ),
+          api!.tx.sudo.sudo(
+            api!.tx.tokens.mint(
+              new BN(4),
+              testUser1.keyRingPair.address,
+              new BN(amount)
+            )
+          ),
+          api!.tx.sudo.sudo(
+            api!.tx.tokens.mint(
+              new BN(5),
+              testUser1.keyRingPair.address,
+              new BN(amount)
+            )
+          ),
+          api!.tx.sudo.sudo(
+            api!.tx.tokens.mint(
+              new BN(tokenId),
+              testUser1.keyRingPair.address,
+              new BN(amount)
+            )
+          ),
+          api!.tx.sudo.sudo(
+            api!.tx.tokens.mint(
+              new BN(7),
+              testUser1.keyRingPair.address,
+              new BN(amount)
+            )
+          ),
+        ])
+        .signAndSend(sudo.keyRingPair, { nonce: nonce.addn(index) });
+      await p;
+    }
+    await waitForNBlocks(10);
+    const candidates = JSON.parse(
+      JSON.stringify(await api?.query.parachainStaking.candidatePool())
+    );
+
+    for (let index = 0; index < n; index++) {
+      const testUser = users[index];
+      mintLiquidity(
+        testUser.keyRingPair,
+        new BN(0),
+        new BN(tokenId),
+        new BN(amount).divn(2),
+        new BN(amount).divn(2).addn(100)
+      ).then(async (res) => {
+        await waitForNBlocks(index * 2);
+        await signSendAndWaitToFinishTx(
+          api?.tx.parachainStaking.joinCandidates(
+            new BN(amount).divn(2),
+            new BN(11),
+            "ActivatedUnstakedLiquidity",
+            // @ts-ignore - Mangata bond operation has 4 params, somehow is inheriting the bond operation from polkadot :S
+            new BN(candidates.length + index),
+            new BN(15)
+          ),
+          testUser.keyRingPair
+        );
+      });
+    }
+    await waitForNBlocks(1000);
+  });
+  //1,217,650,526,262,469,198
+  //1,217,656,012,176,560,121
+  //1,095,890,663,000,041,491 <- 9x merges
   const list = [
     "5H1DjPmMmYFfdMSf5WtS9yCeUCURSb5w9h2dhbBGUdAANK2A",
     "5C8Gup1Ffm5f63Qs4HwwRiJFdX8gMHPMcq6GrKPCk9Wk89Lq",
