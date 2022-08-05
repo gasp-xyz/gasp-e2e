@@ -37,19 +37,6 @@ let cost: RuntimeDispatchInfo;
 
 const defaultCurrecyValue = new BN(250000);
 
-export async function UserMintCurrencyToken(
-  testUser: User,
-  sudo: User,
-  Currency: BN,
-  CurrencyValue: BN
-) {
-  await sudo.mint(
-    Currency,
-    testUser,
-    CurrencyValue
-  );
-}
-
 beforeAll(async () => {
   try {
     getApi();
@@ -73,18 +60,11 @@ beforeAll(async () => {
 
   keyring.addPair(sudo.keyRingPair);
 
-  await (await getMangataInstance())
-  .createPool(
-    sudo.keyRingPair,
-    firstCurrency.toString(),
+  await sudo.createPoolToAsset(
     first_asset_amount,
-    secondCurrency.toString(),
-    second_asset_amount
-  )
-  .then((result) => {
-    const eventResponse = getEventResultFromMangataTx(result);
-    expect(eventResponse.state).toEqual(ExtrinsicResult.ExtrinsicSuccess);
-  });
+    second_asset_amount,
+    firstCurrency,
+    secondCurrency)
 
 });
 
@@ -95,14 +75,19 @@ beforeEach(async () => {
   // add users to pair.
   keyring.addPair(testUser1.keyRingPair);
   testUser1.addAsset(MGA_ASSET_ID);
-  testUser1.addAsset(KSM_ASSET_ID);
+    testUser1.addAsset(KSM_ASSET_ID);
+
+  //add pool's tokens for user. 
+
+  await sudo.mint(
+    firstCurrency,
+    testUser1,
+    defaultCurrecyValue
+  );
 
 });
 
 test("xyk-pallet - Check required fee - User with MGX only", async () => {
-
-  //add pool's tokens for user.
-  await UserMintCurrencyToken(testUser1, sudo, firstCurrency, defaultCurrecyValue);
 
   const api = getApi();
   const nonce = await getCurrentNonce(testUser1.keyRingPair.address);
@@ -151,9 +136,6 @@ test("xyk-pallet - Check required fee - User with MGX only", async () => {
 
 test("xyk-pallet - Check required fee - User with KSM only", async () => {
 
-  //add pool's tokens for user.
-  await UserMintCurrencyToken(testUser1, sudo, firstCurrency, defaultCurrecyValue);
-
   //add KSM tokens.
   await testUser1.addKSMTokens(sudo);
 
@@ -185,9 +167,6 @@ test("xyk-pallet - Check required fee - User with KSM only", async () => {
 });
 
 test("xyk-pallet - Check required fee - User with very few MGA and some KSM", async () => {
-
-  //add pool's tokens for user.
-  await UserMintCurrencyToken(testUser1, sudo, firstCurrency, defaultCurrecyValue);
 
    //add few MGX tokens.
    await sudo.mint(
@@ -233,9 +212,6 @@ test("xyk-pallet - Check required fee - User with very few MGA and some KSM", as
 });
 
 test("xyk-pallet - Check required fee - User with some MGA and very few KSM", async () => {
-
-  //add pool's tokens for user.
-  await UserMintCurrencyToken(testUser1, sudo, firstCurrency, defaultCurrecyValue);
 
   //add some MGX tokens.
   await testUser1.addMGATokens(sudo);
@@ -299,9 +275,6 @@ test("xyk-pallet - Check required fee - User with some MGA and very few KSM", as
 });
 
 test("xyk-pallet - Check required fee - User with very few  MGA and very few KSM, operation fails", async () => {
-
-  //add pool's tokens for user.
-  await UserMintCurrencyToken(testUser1, sudo, firstCurrency, defaultCurrecyValue);
 
   //add few MGX tokens.
   await sudo.mint(
