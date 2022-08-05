@@ -1,8 +1,9 @@
 import { Keyring } from "@polkadot/api";
-import BN from "bn.js";
 import { getApi, getMangataInstance, initApi } from "../utils/api";
 import { User } from "../utils/User";
 import fs from "fs";
+import { BN } from "@polkadot/util";
+import { createPoolIfMissing } from "../utils/tx";
 
 require("dotenv").config();
 
@@ -47,8 +48,8 @@ describe("staking - testpad", () => {
   test("SetupTestNet", async () => {
     keyring = new Keyring({ type: "sr25519" });
     //const destUser = `5Ew7ERfihWfWRqWeozvf9CSEGV9qMMWmQa2bWMhUopc4PsGn`;
-    const fileLocation = `/home/goncer/5FA3LcCrKMgr9WHqyvtDhDarAXRkJjoYrSy6XnZPKfwiB3sY.json`;
-    const fileLocationSudo = `/home/goncer/5CthcoS3CYHoVHDMUacydayRLMzMWedKryjsrvzrmv3VHCKP.json`;
+    const fileLocation = `/home/goncer/accounts/5FA3LcCrKMgr9WHqyvtDhDarAXRkJjoYrSy6XnZPKfwiB3sY.json`;
+    const fileLocationSudo = `/home/goncer/accounts/5CthcoS3CYHoVHDMUacydayRLMzMWedKryjsrvzrmv3VHCKP.json`;
     const json = fs.readFileSync(fileLocation, {
       encoding: "utf8",
       flag: "r",
@@ -63,20 +64,17 @@ describe("staking - testpad", () => {
     keyring.addPair(sudo.keyRingPair);
     keyring.pairs[0].decodePkcs8("mangata123");
     keyring.pairs[1].decodePkcs8("mangata123");
-    await sudo.mint(
+
+    await createPoolIfMissing(
+      sudo,
+      "1800000000000000000000000000000000",
       new BN(0),
-      user,
-      new BN("3700000000000000000000000000000000")
-    );
-    await sudo.mint(
-      new BN(2),
-      user,
-      new BN("1800000000000000000000000000000000")
+      new BN(1)
     );
     const mga = await getMangataInstance();
     await mga.mintLiquidity(
       user.keyRingPair,
-      new BN(2).toString(),
+      new BN(1).toString(),
       new BN(0).toString(),
       new BN("1800000000000000000000000000000000"),
       new BN("2700000000000000000000000000000000")

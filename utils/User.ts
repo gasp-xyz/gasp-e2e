@@ -13,6 +13,7 @@ import {
   getUserAssets,
   mintAsset,
   mintLiquidity,
+  promotePool,
   transferAll,
 } from "./tx";
 import { getEventResultFromMangataTx } from "./txHandler";
@@ -206,6 +207,9 @@ export class User {
         process.env.E2E_XYK_PALLET_ADDRESS
       );
     }
+  }
+  async promotePool(liqAssetId: BN) {
+    await promotePool(this.keyRingPair, liqAssetId);
   }
   async createPoolToAsset(
     first_asset_amount: BN,
