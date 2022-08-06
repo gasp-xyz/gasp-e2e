@@ -4,35 +4,148 @@
  * @group liquidity
  * @group parallel
  */
-import { getLiquidityPool } from "../../utils/tx";
+import { getLiquidityAssetId, getLiquidityPool } from "../../utils/tx";
 import { Keyring } from "@polkadot/api";
 import { User } from "../../utils/User";
 import { SudoUser } from "../../utils/Framework/User/SudoUser";
 import { MGA_ASSET_ID } from "../../utils/Constants";
-import { getEnvironmentRequiredVars } from "../../utils/utils";
+import {
+  getEnvironmentRequiredVars,
+  getMultiPurposeLiquidityStatus,
+} from "../../utils/utils";
 import { Node } from "../../utils/Framework/Node/Node";
+import { BN } from "@mangata-finance/sdk";
+import { hexToBn } from "@polkadot/util";
+import { Assets } from "../../utils/Assets";
 
 jest.spyOn(console, "log").mockImplementation(jest.fn());
 jest.setTimeout(1500000);
 process.env.NODE_ENV = "test";
 
 let testUser1: User;
+let sudo: SudoUser;
 let keyring: Keyring;
+let liqTokenForCandidate: BN;
 
-beforeEach(async () => {
-  keyring = new Keyring({ type: "sr25519" });
-  const node = new Node(getEnvironmentRequiredVars().chainUri);
-  await node.connect();
-  // setup users
-  testUser1 = new User(keyring);
-  const sudo = new SudoUser(keyring, undefined, node);
-  const candidates = JSON.parse(
-    JSON.stringify(await node.api?.query.parachainStaking.candidatePool())
-  );
-  const liqToken = candidates[0].liquidityToken;
-  const tokens = await getLiquidityPool(liqToken);
-  await sudo.mintTokens(tokens.concat([MGA_ASSET_ID]), [testUser1]);
+describe("MPL: Delegator", () => {
+  beforeEach(async () => {
+    keyring = new Keyring({ type: "sr25519" });
+    const node = new Node(getEnvironmentRequiredVars().chainUri);
+    await node.connect();
+    // setup users
+    testUser1 = new User(keyring);
+    sudo = new SudoUser(keyring, node);
+    const candidates = JSON.parse(
+      JSON.stringify(await node.api?.query.parachainStaking.candidatePool())
+    );
+    liqTokenForCandidate = new BN(candidates[0].liquidityToken);
+    const tokens = await getLiquidityPool(liqTokenForCandidate);
+    // calculate this amount is crucial to not drop the chain production if new candidates are elected.
+    // ( we need existi ones with more points thatn the ones created by the tests)
+    const minAmountInCollators = new BN(
+      BigInt(
+        Math.min.apply(
+          Math,
+          candidates.map((x: { amount: string | null | undefined }) =>
+            hexToBn(x.amount)
+          )
+        )
+      ).toString()
+    ).subn(10);
+    await sudo.mintTokens(
+      tokens.concat([MGA_ASSET_ID]),
+      [testUser1],
+      minAmountInCollators
+    );
+    await testUser1.mintLiquidity(
+      tokens[0],
+      tokens[1],
+      minAmountInCollators.divn(10),
+      minAmountInCollators
+    );
+  });
+
+  test("join as delegator > verify account balances are reserved +  mpl storage", async () => {
+    const tokensBeforeJoin = await testUser1.getUserTokensAccountInfo(
+      liqTokenForCandidate
+    );
+    const liqtokens = hexToBn(tokensBeforeJoin.free);
+    await testUser1.joinAsDelegator(liqTokenForCandidate, liqtokens);
+
+    const mplStatus = await getMultiPurposeLiquidityStatus(
+      testUser1.keyRingPair.address,
+      liqTokenForCandidate
+    );
+    const tokensAfterJoin = await testUser1.getUserTokensAccountInfo(
+      liqTokenForCandidate
+    );
+    expect(hexToBn(mplStatus.stakedUnactivatedReserves)).bnEqual(liqtokens);
+    expect(hexToBn(tokensAfterJoin.reserved)).bnEqual(new BN(liqtokens));
+
+    //free - reserved = 0
+    expect(hexToBn(tokensAfterJoin.free)).bnEqual(new BN(0));
+    expect(hexToBn(mplStatus.activatedUnstakedReserves)).bnEqual(new BN(0));
+    expect(hexToBn(mplStatus.stakedAndActivatedReserves)).bnEqual(new BN(0));
+    expect(hexToBn(mplStatus.unspentReserves)).bnEqual(new BN(0));
+    expect(hexToBn(mplStatus.relockAmount)).bnEqual(new BN(0));
+  });
 });
 
-test("A User with stacked tokens can activate liquidity", async () => {});
+describe("MPL: Collators", () => {
+  beforeEach(async () => {
+    keyring = new Keyring({ type: "sr25519" });
+    const node = new Node(getEnvironmentRequiredVars().chainUri);
+    await node.connect();
+    const tokenAmount = new BN(Math.pow(10, 20).toString());
+    // setup users
+    testUser1 = new User(keyring);
+    sudo = new SudoUser(keyring, node);
+    //create two tokens + pool + sudo.activateliqtoken
+    const results = await Assets.setupUserWithCurrencies(
+      testUser1,
+      [tokenAmount],
+      sudo
+    );
+    await testUser1.addMGATokens(sudo);
+    const tokenId = results[0];
+    await testUser1.createPoolToAsset(
+      tokenAmount.divn(10),
+      tokenAmount.divn(10),
+      MGA_ASSET_ID,
+      tokenId
+    );
+    liqTokenForCandidate = await getLiquidityAssetId(MGA_ASSET_ID, tokenId);
+    await sudo.addStakingLiquidityToken(liqTokenForCandidate);
+  });
+
+  test("join as collator > verify account balances are reserved +  mpl storage", async () => {
+    const liqTokensAmount = await testUser1.getUserTokensAccountInfo(
+      liqTokenForCandidate
+    );
+    await testUser1.joinAsCandidate(
+      liqTokenForCandidate,
+      hexToBn(liqTokensAmount.free)
+    );
+
+    const mplStatus = await getMultiPurposeLiquidityStatus(
+      testUser1.keyRingPair.address,
+      liqTokenForCandidate
+    );
+    const tokensAfterJoin = await testUser1.getUserTokensAccountInfo(
+      liqTokenForCandidate
+    );
+    expect(hexToBn(mplStatus.stakedUnactivatedReserves)).bnEqual(
+      liqTokensAmount
+    );
+    expect(hexToBn(tokensAfterJoin.reserved)).bnEqual(new BN(liqTokensAmount));
+
+    //free - reserved = 0
+    expect(hexToBn(tokensAfterJoin.free)).bnEqual(new BN(0));
+    expect(hexToBn(mplStatus.activatedUnstakedReserves)).bnEqual(new BN(0));
+    expect(hexToBn(mplStatus.stakedAndActivatedReserves)).bnEqual(new BN(0));
+    expect(hexToBn(mplStatus.unspentReserves)).bnEqual(new BN(0));
+    expect(hexToBn(mplStatus.relockAmount)).bnEqual(new BN(0));
+  });
+});
+
 test("A User with activated liquidity can stake some tokens", async () => {});

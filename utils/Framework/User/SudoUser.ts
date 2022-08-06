@@ -14,9 +14,9 @@ import { testLog } from "../../Logger";
 import { env } from "process";
 
 export class SudoUser extends BaseUser {
-  node?: Node;
+  node: Node;
 
-  constructor(keyring: Keyring, json?: any, node?: Node) {
+  constructor(keyring: Keyring, node: Node, json?: any) {
     const { sudo: sudoName } = getEnvironmentRequiredVars();
     super(keyring, sudoName, json);
     this.node = node;
@@ -74,5 +74,31 @@ export class SudoUser extends BaseUser {
       testLog.getLog().error(`W[${env.JEST_WORKER_ID}] - ${reason.toString()}`);
     });
     return txResult as MangataGenericEvent[];
+  }
+
+  async addStakingLiquidityToken(liqTokenForCandidate: BN) {
+    const nonce = new BN(
+      await SudoDB.getInstance().getSudoNonce(this.keyRingPair.address)
+    );
+    testLog.getLog().info(`W[${env.JEST_WORKER_ID}] - sudoNonce: ${nonce} `);
+    const txResult = await signTx(
+      this.node.api!,
+      this.node.api!.tx.sudo.sudo(
+        this.node?.api!.tx.parachainStaking.addStakingLiquidityToken(
+          {
+            Liquidity: liqTokenForCandidate,
+          },
+          liqTokenForCandidate
+        )
+      ),
+      this.keyRingPair,
+      { nonce: new BN(nonce) }
+    ).catch((reason) => {
+      // eslint-disable-next-line no-console
+      console.error("OhOh sth went wrong. " + reason.toString());
+      testLog.getLog().error(`W[${env.JEST_WORKER_ID}] - ${reason.toString()}`);
+    });
+
+    return txResult;
   }
 }

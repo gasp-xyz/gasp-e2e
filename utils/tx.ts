@@ -473,6 +473,62 @@ export const sellAsset = async (
   );
   return result;
 };
+export const delegate = async (
+  account: KeyringPair,
+  liqToken: BN,
+  amount: BN,
+  from: "availablebalance"
+) => {
+  const mangata = await getMangataInstance();
+  const api = await mangata.getApi();
+  const candidates = JSON.parse(
+    JSON.stringify(await api?.query.parachainStaking.candidatePool())
+  );
+  const collator = candidates.filter(
+    (candidate: { liquidityToken: string | null | undefined }) =>
+      Number(candidate.liquidityToken!.toString()) === liqToken.toNumber()
+  )[0].owner;
+
+  const delegatorIdx = JSON.parse(
+    JSON.stringify(await api?.query.parachainStaking.delegatorState(collator))
+  );
+  const delCount = delegatorIdx === null ? 0 : delegatorIdx.length;
+  const result = await signSendAndWaitToFinishTx(
+    api?.tx.parachainStaking.delegate(
+      collator,
+      new BN(amount),
+      from,
+      new BN(delCount),
+      new BN(delCount)
+    ),
+    account
+  );
+  return result;
+};
+export const joinCandidate = async (
+  account: KeyringPair,
+  liqToken: BN,
+  amount: BN,
+  from: "availablebalance"
+) => {
+  const mangata = await getMangataInstance();
+  const api = await mangata.getApi();
+  const candidates = JSON.parse(
+    JSON.stringify(await api?.query.parachainStaking.candidatePool())
+  );
+  const result = await signSendAndWaitToFinishTx(
+    api?.tx.parachainStaking.joinCandidates(
+      new BN(amount),
+      new BN(liqToken),
+      from,
+      // @ts-ignore - Mangata bond operation has 4 params, somehow is inheriting the bond operation from polkadot :S
+      new BN(candidates.length),
+      new BN(3)
+    ),
+    account
+  );
+  return result;
+};
 
 export const buyAsset = async (
   account: any,

@@ -2,7 +2,16 @@ import { BN } from "@polkadot/util";
 import { getAllAcountEntries } from "../../tx";
 import { User } from "../../User";
 import { hexToBn } from "@polkadot/util";
+import { Node } from "../Node/Node";
+import Keyring from "@polkadot/keyring";
+
 export class BaseUser extends User {
+  node: Node;
+  constructor(keyring: Keyring, json: any, node: Node) {
+    super(keyring, json);
+    this.node = node;
+  }
+
   protected userTokens: Map<
     BN,
     { free: BN; reserved: BN; miscFrozen: BN; feeFrozen: BN }

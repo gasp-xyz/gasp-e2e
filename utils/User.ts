@@ -7,10 +7,12 @@ import { testLog } from "./Logger";
 import {
   buyAsset,
   createPool,
+  delegate,
   FeeTxs,
   getAllAssets,
   getTokensAccountInfo,
   getUserAssets,
+  joinCandidate,
   mintAsset,
   mintLiquidity,
   promotePool,
@@ -195,6 +197,22 @@ export class User {
       assert.equal(eventResponse.state, ExtrinsicResult.ExtrinsicSuccess);
     });
   }
+  async joinAsCandidate(liqTokenForCandidate: BN, amount: BN) {
+    await joinCandidate(
+      this.keyRingPair,
+      liqTokenForCandidate,
+      amount,
+      "availablebalance"
+    );
+  }
+  async joinAsDelegator(liqTokenForCandidate: BN, amount: BN) {
+    await delegate(
+      this.keyRingPair,
+      liqTokenForCandidate,
+      amount,
+      "availablebalance"
+    );
+  }
 
   async removeTokens() {
     //TODO: find a proper way to clean all the user tokens in one shot!
@@ -239,10 +257,10 @@ export class User {
   ) {
     await sudo.mint(MGA_ASSET_ID, this, amountFree);
   }
-  async getUserTokensAccountInfo() {
+  async getUserTokensAccountInfo(tokenId = new BN(0)) {
     const accountInfo = await getTokensAccountInfo(
       this.keyRingPair.address,
-      new BN(0)
+      tokenId
     );
     return accountInfo;
   }
