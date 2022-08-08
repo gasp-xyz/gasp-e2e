@@ -4,7 +4,12 @@
  * @group liquidity
  * @group parallel
  */
-import { getLiquidityAssetId, getLiquidityPool } from "../../utils/tx";
+import {
+  activateLiquidity,
+  deactivateLiquidity,
+  getLiquidityAssetId,
+  getLiquidityPool,
+} from "../../utils/tx";
 import { Keyring } from "@polkadot/api";
 import { User } from "../../utils/User";
 import { SudoUser } from "../../utils/Framework/User/SudoUser";
@@ -26,6 +31,7 @@ let testUser1: User;
 let sudo: SudoUser;
 let keyring: Keyring;
 let liqTokenForCandidate: BN;
+let liqTokensAmount: BN;
 
 describe("MPL: Delegator", () => {
   beforeEach(async () => {
@@ -92,7 +98,7 @@ describe("MPL: Delegator", () => {
 });
 
 describe("MPL: Collators", () => {
-  beforeEach(async () => {
+  beforeAll(async () => {
     keyring = new Keyring({ type: "sr25519" });
     const node = new Node(getEnvironmentRequiredVars().chainUri);
     await node.connect();
@@ -116,17 +122,13 @@ describe("MPL: Collators", () => {
     );
     liqTokenForCandidate = await getLiquidityAssetId(MGA_ASSET_ID, tokenId);
     await sudo.addStakingLiquidityToken(liqTokenForCandidate);
+    liqTokensAmount = hexToBn(
+      (await testUser1.getUserTokensAccountInfo(liqTokenForCandidate)).free
+    );
+    await testUser1.joinAsCandidate(liqTokenForCandidate, liqTokensAmount);
   });
 
-  test("join as collator > verify account balances are reserved +  mpl storage", async () => {
-    const liqTokensAmount = await testUser1.getUserTokensAccountInfo(
-      liqTokenForCandidate
-    );
-    await testUser1.joinAsCandidate(
-      liqTokenForCandidate,
-      hexToBn(liqTokensAmount.free)
-    );
-
+  test("join as collator > verify account balances are reserved + mpl checks", async () => {
     const mplStatus = await getMultiPurposeLiquidityStatus(
       testUser1.keyRingPair.address,
       liqTokenForCandidate
@@ -137,7 +139,7 @@ describe("MPL: Collators", () => {
     expect(hexToBn(mplStatus.stakedUnactivatedReserves)).bnEqual(
       liqTokensAmount
     );
-    expect(hexToBn(tokensAfterJoin.reserved)).bnEqual(new BN(liqTokensAmount));
+    expect(hexToBn(tokensAfterJoin.reserved)).bnEqual(liqTokensAmount);
 
     //free - reserved = 0
     expect(hexToBn(tokensAfterJoin.free)).bnEqual(new BN(0));
@@ -146,6 +148,107 @@ describe("MPL: Collators", () => {
     expect(hexToBn(mplStatus.unspentReserves)).bnEqual(new BN(0));
     expect(hexToBn(mplStatus.relockAmount)).bnEqual(new BN(0));
   });
+  test("join as collator + activate  > acount balances are reserved + mpl checks", async () => {
+    await sudo.promotePool(liqTokenForCandidate);
+    await activateLiquidity(
+      testUser1.keyRingPair,
+      liqTokenForCandidate,
+      liqTokensAmount,
+      "stakedunactivatedliquidity"
+    );
+    const mplStatus = await getMultiPurposeLiquidityStatus(
+      testUser1.keyRingPair.address,
+      liqTokenForCandidate
+    );
+    const tokensAfterJoin = await testUser1.getUserTokensAccountInfo(
+      liqTokenForCandidate
+    );
+    expect(hexToBn(mplStatus.stakedAndActivatedReserves)).bnEqual(
+      liqTokensAmount
+    );
+    expect(hexToBn(tokensAfterJoin.reserved)).bnEqual(liqTokensAmount);
+
+    //free - reserved = 0
+    expect(hexToBn(tokensAfterJoin.free)).bnEqual(new BN(0));
+    expect(hexToBn(mplStatus.activatedUnstakedReserves)).bnEqual(new BN(0));
+    expect(hexToBn(mplStatus.stakedUnactivatedReserves)).bnEqual(new BN(0));
+    expect(hexToBn(mplStatus.unspentReserves)).bnEqual(new BN(0));
+    expect(hexToBn(mplStatus.relockAmount)).bnEqual(new BN(0));
+  });
+
+  afterEach(async () => {
+    try {
+      await deactivateLiquidity(
+        testUser1.keyRingPair,
+        liqTokenForCandidate,
+        liqTokensAmount
+      );
+    } catch (error) {}
+  });
 });
 
-test("A User with activated liquidity can stake some tokens", async () => {});
+describe("MPL: Collators - Activated liq", () => {
+  beforeAll(async () => {
+    keyring = new Keyring({ type: "sr25519" });
+    const node = new Node(getEnvironmentRequiredVars().chainUri);
+    await node.connect();
+    const tokenAmount = new BN(Math.pow(10, 20).toString());
+    // setup users
+    testUser1 = new User(keyring);
+    sudo = new SudoUser(keyring, node);
+    //create two tokens + pool + sudo.activateliqtoken
+    const results = await Assets.setupUserWithCurrencies(
+      testUser1,
+      [tokenAmount],
+      sudo
+    );
+    await testUser1.addMGATokens(sudo);
+    const tokenId = results[0];
+    await testUser1.createPoolToAsset(
+      tokenAmount.divn(10),
+      tokenAmount.divn(10),
+      MGA_ASSET_ID,
+      tokenId
+    );
+    liqTokenForCandidate = await getLiquidityAssetId(MGA_ASSET_ID, tokenId);
+    await sudo.promotePool(liqTokenForCandidate);
+    await sudo.addStakingLiquidityToken(liqTokenForCandidate);
+
+    liqTokenForCandidate = await getLiquidityAssetId(MGA_ASSET_ID, tokenId);
+    liqTokensAmount = hexToBn(
+      (await testUser1.getUserTokensAccountInfo(liqTokenForCandidate)).free
+    );
+    await activateLiquidity(
+      testUser1.keyRingPair,
+      liqTokenForCandidate,
+      liqTokensAmount
+    );
+  });
+
+  test("join as collator with activated liq. > verify account balances are reserved + mpl checks", async () => {
+    await testUser1.joinAsCandidate(
+      liqTokenForCandidate,
+      liqTokensAmount,
+      "activatedunstakedliquidity"
+    );
+
+    const mplStatus = await getMultiPurposeLiquidityStatus(
+      testUser1.keyRingPair.address,
+      liqTokenForCandidate
+    );
+    const tokensAfterJoin = await testUser1.getUserTokensAccountInfo(
+      liqTokenForCandidate
+    );
+    expect(hexToBn(mplStatus.stakedAndActivatedReserves)).bnEqual(
+      liqTokensAmount
+    );
+    expect(hexToBn(tokensAfterJoin.reserved)).bnEqual(liqTokensAmount);
+
+    //free - reserved = 0
+    expect(hexToBn(tokensAfterJoin.free)).bnEqual(new BN(0));
+    expect(hexToBn(mplStatus.stakedUnactivatedReserves)).bnEqual(new BN(0));
+    expect(hexToBn(mplStatus.activatedUnstakedReserves)).bnEqual(new BN(0));
+    expect(hexToBn(mplStatus.unspentReserves)).bnEqual(new BN(0));
+    expect(hexToBn(mplStatus.relockAmount)).bnEqual(new BN(0));
+  });
+});

@@ -3,7 +3,7 @@ import { BaseUser } from "./BaseUser";
 import { ExtrinsicResult } from "../../eventListeners";
 import { getEventResultFromMangataTx } from "../../txHandler";
 import { Keyring } from "@polkadot/api";
-import { mintAsset } from "../../tx";
+import { mintAsset, promotePool } from "../../tx";
 import { Node } from "../Node/Node";
 import { Token } from "../Supply/Token";
 import { getEnvironmentRequiredVars } from "../../utils";
@@ -75,7 +75,9 @@ export class SudoUser extends BaseUser {
     });
     return txResult as MangataGenericEvent[];
   }
-
+  async promotePool(liqAssetId: BN) {
+    await promotePool(this.keyRingPair, liqAssetId);
+  }
   async addStakingLiquidityToken(liqTokenForCandidate: BN) {
     const nonce = new BN(
       await SudoDB.getInstance().getSudoNonce(this.keyRingPair.address)

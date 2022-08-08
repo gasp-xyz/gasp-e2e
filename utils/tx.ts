@@ -17,6 +17,7 @@ import { testLog } from "./Logger";
 import { KeyringPair } from "@polkadot/keyring/types";
 import { MangataGenericEvent, signTx } from "@mangata-finance/sdk";
 import { AnyJson } from "@polkadot/types/types";
+import { SudoUser } from "./Framework/User/SudoUser";
 
 export const signTxDeprecated = async (
   tx: SubmittableExtrinsic<"promise">,
@@ -509,13 +510,16 @@ export const joinCandidate = async (
   account: KeyringPair,
   liqToken: BN,
   amount: BN,
-  from: "availablebalance"
+  from = "availablebalance"
 ) => {
   const mangata = await getMangataInstance();
   const api = await mangata.getApi();
   const candidates = JSON.parse(
     JSON.stringify(await api?.query.parachainStaking.candidatePool())
   );
+  const liqTokens = await api?.query.parachainStaking.stakingLiquidityTokens();
+  const liqTokenCount = Object.keys(JSON.parse(liqTokens as any)).length;
+
   const result = await signSendAndWaitToFinishTx(
     api?.tx.parachainStaking.joinCandidates(
       new BN(amount),
@@ -523,8 +527,37 @@ export const joinCandidate = async (
       from,
       // @ts-ignore - Mangata bond operation has 4 params, somehow is inheriting the bond operation from polkadot :S
       new BN(candidates.length),
-      new BN(3)
+      new BN(liqTokenCount)
     ),
+    account
+  );
+  return result;
+};
+export const activateLiquidity = async (
+  account: KeyringPair,
+  liqToken: BN,
+  amount: BN,
+  from = "availablebalance"
+) => {
+  const mangata = await getMangataInstance();
+  const api = await mangata.getApi();
+
+  const result = await signSendAndWaitToFinishTx(
+    api?.tx.xyk.activateLiquidity(new BN(liqToken), new BN(amount), from),
+    account
+  );
+  return result;
+};
+export const deactivateLiquidity = async (
+  account: KeyringPair,
+  liqToken: BN,
+  amount: BN
+) => {
+  const mangata = await getMangataInstance();
+  const api = await mangata.getApi();
+
+  const result = await signSendAndWaitToFinishTx(
+    api?.tx.xyk.deactivateLiquidity(new BN(liqToken), new BN(amount)),
     account
   );
   return result;
@@ -732,23 +765,52 @@ async function mintMgas(account: KeyringPair) {
   await user.addMGATokens(sudo);
 }
 export async function createPoolIfMissing(
-  sudo: User,
+  sudo: SudoUser,
   amountInPool: string,
   firstAssetId = MGA_ASSET_ID,
   seccondAssetId = ETH_ASSET_ID,
   promoted = false
 ) {
   const balance = await getBalanceOfPool(firstAssetId, seccondAssetId);
+  const poolValue = new BN(amountInPool).div(new BN(2));
   if (balance[0].isZero() || balance[1].isZero()) {
-    await sudo.mint(firstAssetId, sudo, new BN(amountInPool));
-    await sudo.mint(seccondAssetId, sudo, new BN(amountInPool));
-    const poolValue = new BN(amountInPool).div(new BN(2));
-    await sudo.createPoolToAsset(
-      poolValue,
-      poolValue,
-      firstAssetId,
-      seccondAssetId
-    );
+    await sudo
+      .withFn(
+        sudo.node.api!.tx.sudo.sudo(
+          sudo.node.api!.tx.tokens.mint(
+            firstAssetId,
+            sudo.keyRingPair.address,
+            new BN(amountInPool)
+          )
+        )
+      )
+      .withFn(
+        sudo.node.api!.tx.sudo.sudo(
+          sudo.node.api!.tx.tokens.mint(
+            seccondAssetId,
+            sudo.keyRingPair.address,
+            new BN(amountInPool)
+          )
+        )
+      )
+      .withFn(
+        sudo.node.api!.tx.sudo.sudo(
+          sudo.node.api!.tx.tokens.mint(
+            MGA_ASSET_ID,
+            sudo.keyRingPair.address,
+            new BN(Math.pow(10, 20).toString())
+          )
+        )
+      )
+      .withFn(
+        sudo.node.api!.tx.xyk.createPool(
+          firstAssetId,
+          poolValue,
+          seccondAssetId,
+          poolValue
+        )
+      )
+      .sudoBatch(sudo);
     const liqToken = await getLiquidityAssetId(firstAssetId, seccondAssetId);
     if (promoted) {
       await sudo.promotePool(liqToken);

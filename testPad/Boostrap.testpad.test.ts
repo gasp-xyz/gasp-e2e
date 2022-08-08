@@ -65,7 +65,7 @@ describe("Boostrap - testpad", () => {
     } catch (e) {
       await initApi();
     }
-    const error = hexToU8a("0x1b000000");
+    const error = hexToU8a("0x25000000");
     const index = "21";
     const err = api?.registry.findMetaError({
       error: error,

@@ -15,7 +15,6 @@ import {
   joinCandidate,
   mintAsset,
   mintLiquidity,
-  promotePool,
   transferAll,
 } from "./tx";
 import { getEventResultFromMangataTx } from "./txHandler";
@@ -197,13 +196,12 @@ export class User {
       assert.equal(eventResponse.state, ExtrinsicResult.ExtrinsicSuccess);
     });
   }
-  async joinAsCandidate(liqTokenForCandidate: BN, amount: BN) {
-    await joinCandidate(
-      this.keyRingPair,
-      liqTokenForCandidate,
-      amount,
-      "availablebalance"
-    );
+  async joinAsCandidate(
+    liqTokenForCandidate: BN,
+    amount: BN,
+    from = "availablebalance"
+  ) {
+    await joinCandidate(this.keyRingPair, liqTokenForCandidate, amount, from);
   }
   async joinAsDelegator(liqTokenForCandidate: BN, amount: BN) {
     await delegate(
@@ -225,9 +223,6 @@ export class User {
         process.env.E2E_XYK_PALLET_ADDRESS
       );
     }
-  }
-  async promotePool(liqAssetId: BN) {
-    await promotePool(this.keyRingPair, liqAssetId);
   }
   async createPoolToAsset(
     first_asset_amount: BN,

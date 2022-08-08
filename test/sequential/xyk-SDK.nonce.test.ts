@@ -17,15 +17,16 @@ import { MGA_ASSET_ID } from "../../utils/Constants";
 import { waitNewBlock } from "../../utils/eventListeners";
 import { Assets } from "../../utils/Assets";
 import { createPoolIfMissing } from "../../utils/tx";
+import { SudoUser } from "../../utils/Framework/User/SudoUser";
+import { Node } from "../../utils/Framework/Node/Node";
 
 jest.spyOn(console, "log").mockImplementation(jest.fn());
 jest.setTimeout(1500000);
 process.env.NODE_ENV = "test";
-const { sudo: sudoUserName } = getEnvironmentRequiredVars();
 
 let testUser: User;
 let firstCurrency: BN;
-let sudo: User;
+let sudo: SudoUser;
 let keyring: Keyring;
 let mangata: Mangata;
 
@@ -41,7 +42,10 @@ beforeAll(async () => {
   keyring = new Keyring({ type: "sr25519" });
   // setup users
   testUser = new User(keyring);
-  sudo = new User(keyring, sudoUserName);
+  const node = new Node(getEnvironmentRequiredVars().chainUri);
+  await node.connect();
+  sudo = new SudoUser(keyring, node);
+
   // add users to pair.
   keyring.addPair(testUser.keyRingPair);
   keyring.addPair(sudo.keyRingPair);

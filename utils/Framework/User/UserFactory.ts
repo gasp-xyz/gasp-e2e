@@ -6,12 +6,7 @@ import { GovernanceUser } from "./GovernanceUser";
 import { SudoUser } from "./SudoUser";
 import { MetamaskUser } from "./MetamaskUser";
 import { RegularUser } from "./RegularUser";
-import { BN } from "@polkadot/util";
 import { BaseUser } from "./BaseUser";
-import { SudoDB } from "../../SudoDB";
-import { MangataGenericEvent, signTx } from "@mangata-finance/sdk";
-import { env } from "process";
-import { testLog } from "../../Logger";
 
 export enum Users {
   GovernanceUser,
@@ -22,7 +17,6 @@ export enum Users {
 
 export abstract class UserFactory {
   users: BaseUser[] = [];
-  batchedFucntions: any[] = [];
 
   public static createUser(
     type: Users,
@@ -49,57 +43,5 @@ export abstract class UserFactory {
     for (let i = 0; i < numUsers; i++) {
       this.users.push(UserFactory.createUser(Users.RegularUser, keyring, node));
     }
-  }
-  withTokens(
-    tokenIds: BN[],
-    amount: BN = new BN(Math.pow(10, 20).toString()),
-    testUser?: BaseUser
-  ) {
-    tokenIds.forEach((token) => {
-      if (testUser) {
-        this.batchedFucntions.push(
-          testUser.node?.api!.tx.sudo.sudo(
-            testUser.node?.api!.tx.tokens.mint(
-              token,
-              testUser.keyRingPair.address,
-              amount
-            )
-          )
-        );
-      } else {
-        this.users.forEach((user) => {
-          this.batchedFucntions.push(
-            user.node?.api!.tx.sudo.sudo(
-              user.node?.api!.tx.tokens.mint(
-                token,
-                user.keyRingPair.address,
-                amount
-              )
-            )
-          );
-        });
-      }
-    });
-    return this;
-  }
-  withFn(fn: any) {
-    this.batchedFucntions.push(fn);
-    return this;
-  }
-  async sudoBatch(sudo: SudoUser) {
-    const nonce = new BN(
-      await SudoDB.getInstance().getSudoNonce(sudo.keyRingPair.address)
-    );
-    const txResult = await signTx(
-      sudo.node?.api!,
-      sudo.node?.api!.tx.utility.batch(this.batchedFucntions)!,
-      sudo.keyRingPair,
-      { nonce: new BN(nonce) }
-    ).catch((reason) => {
-      // eslint-disable-next-line no-console
-      console.error("OhOh sth went wrong. " + reason.toString());
-      testLog.getLog().error(`W[${env.JEST_WORKER_ID}] - ${reason.toString()}`);
-    });
-    return txResult as MangataGenericEvent[];
   }
 }
