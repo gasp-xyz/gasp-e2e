@@ -537,14 +537,16 @@ export const activateLiquidity = async (
   account: KeyringPair,
   liqToken: BN,
   amount: BN,
-  from = "availablebalance"
+  from = "availablebalance",
+  strictsuccess = false
 ) => {
   const mangata = await getMangataInstance();
   const api = await mangata.getApi();
 
   const result = await signSendAndWaitToFinishTx(
     api?.tx.xyk.activateLiquidity(new BN(liqToken), new BN(amount), from),
-    account
+    account,
+    strictsuccess
   );
   return result;
 };
@@ -562,7 +564,25 @@ export const deactivateLiquidity = async (
   );
   return result;
 };
+export const reserveVestingLiquidityTokens = async (
+  keyRingPair: KeyringPair,
+  liqToken: BN,
+  amount: BN,
+  strictSuccess = true
+) => {
+  const mangata = await getMangataInstance();
+  const api = await mangata.getApi();
 
+  const result = await signSendAndWaitToFinishTx(
+    api?.tx.multiPurposeLiquidity.reserveVestingLiquidityTokens(
+      new BN(liqToken),
+      new BN(amount)
+    ),
+    keyRingPair,
+    strictSuccess
+  );
+  return result;
+};
 export const buyAsset = async (
   account: any,
   soldAssetId: BN,

@@ -5,6 +5,7 @@
  * @group parallel
  */
 import {
+  activateLiquidity,
   createPoolIfMissing,
   getLiquidityAssetId,
   getUserAssets,
@@ -12,16 +13,17 @@ import {
 import { Keyring } from "@polkadot/api";
 import { SudoUser } from "../../utils/Framework/User/SudoUser";
 import { MGA_ASSET_ID } from "../../utils/Constants";
+import { hexToBn } from "@polkadot/util";
 import {
   getBlockNumber,
   getEnvironmentRequiredVars,
   getMultiPurposeLiquidityStatus,
 } from "../../utils/utils";
 import { Node } from "../../utils/Framework/Node/Node";
-import { BN, BN_HUNDRED_THOUSAND } from "@mangata-finance/sdk";
+import { BN, BN_HUNDRED_THOUSAND, BN_ZERO } from "@mangata-finance/sdk";
 import { UserFactory, Users } from "../../utils/Framework/User/UserFactory";
 import { RegularUser } from "../../utils/Framework/User/RegularUser";
-import { hexToBn } from "@polkadot/util";
+import { ExtrinsicResult } from "../../utils/eventListeners";
 
 jest.spyOn(console, "log").mockImplementation(jest.fn());
 jest.setTimeout(1500000);
@@ -31,13 +33,16 @@ let testUser1: RegularUser;
 let sudo: SudoUser;
 let keyring: Keyring;
 let createdToken: BN;
+let node: Node;
 const vestedTokenAmount = new BN("9000000000000000000000");
 
 describe("Vesting", () => {
   beforeAll(async () => {
     keyring = new Keyring({ type: "sr25519" });
-    const node = new Node(getEnvironmentRequiredVars().chainUri);
+    node = new Node(getEnvironmentRequiredVars().chainUri);
     await node.connect();
+  });
+  beforeEach(async () => {
     // setup users
     testUser1 = UserFactory.createUser(Users.RegularUser, keyring, node);
     sudo = new SudoUser(keyring, node);
@@ -103,5 +108,46 @@ describe("Vesting", () => {
       (val) => val === 0
     );
     expect(allZeroes).toBeTruthy();
+  });
+  test("As a user, I can activate vesting-minted tokens only if reserved", async () => {
+    await testUser1.mintLiquidityWithVestedTokens(
+      BN_HUNDRED_THOUSAND,
+      createdToken
+    );
+    const liqToken = await getLiquidityAssetId(MGA_ASSET_ID, createdToken);
+    const balances = await getUserAssets(testUser1.keyRingPair.address, [
+      liqToken,
+      MGA_ASSET_ID,
+    ]);
+    const result = await activateLiquidity(
+      testUser1.keyRingPair,
+      liqToken,
+      balances[0].free,
+      "availablebalance",
+      false
+    );
+    expect(result.state).toBe(ExtrinsicResult.ExtrinsicFailed);
+    await testUser1.reserveVestingLiquidityTokens(liqToken, balances[0].frozen);
+
+    await activateLiquidity(
+      testUser1.keyRingPair,
+      liqToken,
+      balances[0].free,
+      "unspentreserves",
+      true
+    );
+    const mplStatus = await getMultiPurposeLiquidityStatus(
+      testUser1.keyRingPair.address,
+      liqToken
+    );
+    expect(hexToBn(mplStatus.stakedAndActivatedReserves)).bnEqual(BN_ZERO);
+    expect(hexToBn(mplStatus.stakedUnactivatedReserves)).bnEqual(
+      new BN(BN_ZERO)
+    );
+    expect(hexToBn(mplStatus.activatedUnstakedReserves)).bnEqual(
+      balances[0].frozen
+    );
+    expect(hexToBn(mplStatus.unspentReserves)).bnEqual(new BN(BN_ZERO));
+    expect(hexToBn(mplStatus.relockAmount)).bnEqual(balances[0].frozen);
   });
 });

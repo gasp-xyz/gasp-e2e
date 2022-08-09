@@ -16,6 +16,7 @@ import {
   mintAsset,
   mintLiquidity,
   mintLiquidityUsingVestingNativeTokens,
+  reserveVestingLiquidityTokens,
   transferAll,
 } from "./tx";
 import { getEventResultFromMangataTx } from "./txHandler";
@@ -230,6 +231,19 @@ export class User {
       liqTokenForCandidate,
       amount,
       "availablebalance"
+    );
+  }
+
+  async reserveVestingLiquidityTokens(
+    liqToken: BN,
+    amount: BN,
+    strictSuccess = true
+  ) {
+    return await reserveVestingLiquidityTokens(
+      this.keyRingPair,
+      liqToken,
+      amount,
+      strictSuccess
     );
   }
 
