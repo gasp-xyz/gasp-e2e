@@ -102,17 +102,6 @@ describe("Vesting", () => {
     const allZeroes = Object.values(JSON.parse(liqTokenStatus)).every(
       (val) => val === 0
     );
-    expect(allZeroes).toBeFalsy();
-    expect(hexToBn(liqTokenStatus.stakedUnactivatedReserves)).bnEqual(
-      new BN(0)
-    );
-    expect(hexToBn(liqTokenStatus.activatedUnstakedReserves)).bnEqual(
-      BN_HUNDRED_THOUSAND
-    );
-    expect(hexToBn(liqTokenStatus.stakedAndActivatedReserves)).bnEqual(
-      new BN(0)
-    );
-    expect(hexToBn(liqTokenStatus.unspentReserves)).bnEqual(new BN(0));
-    expect(hexToBn(liqTokenStatus.relockAmount)).bnEqual(new BN(0));
+    expect(allZeroes).toBeTruthy();
   });
 });
