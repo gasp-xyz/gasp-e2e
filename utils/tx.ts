@@ -600,6 +600,25 @@ export const mintLiquidity = async (
   );
   return result;
 };
+export const mintLiquidityUsingVestingNativeTokens = async (
+  user: KeyringPair,
+  vestingTokensAmount: BN,
+  secondAssetId: BN,
+  expectedSecondAssetAmount: BN = new BN(Number.MAX_SAFE_INTEGER)
+) => {
+  const mangata = await getMangataInstance();
+  const api = await mangata.getApi();
+  const result = await signTx(
+    api,
+    api.tx.xyk.mintLiquidityUsingVestingNativeTokens(
+      vestingTokensAmount,
+      secondAssetId.toString(),
+      expectedSecondAssetAmount
+    ),
+    user
+  );
+  return result;
+};
 
 export const burnLiquidity = async (
   account: KeyringPair,

@@ -15,6 +15,7 @@ import {
   joinCandidate,
   mintAsset,
   mintLiquidity,
+  mintLiquidityUsingVestingNativeTokens,
   transferAll,
 } from "./tx";
 import { getEventResultFromMangataTx } from "./txHandler";
@@ -187,6 +188,26 @@ export class User {
       secondCurrency,
       firstCurrencyAmount,
       secondCurrencyAmount
+    ).then((result) => {
+      const eventResponse = getEventResultFromMangataTx(result, [
+        "xyk",
+        "LiquidityMinted",
+        this.keyRingPair.address,
+      ]);
+      assert.equal(eventResponse.state, ExtrinsicResult.ExtrinsicSuccess);
+    });
+  }
+
+  async mintLiquidityWithVestedTokens(
+    vestingTokensAmount: BN,
+    secondAssetId: BN,
+    expectedSecondAssetAmount: BN = new BN(Number.MAX_SAFE_INTEGER)
+  ) {
+    await mintLiquidityUsingVestingNativeTokens(
+      this.keyRingPair,
+      vestingTokensAmount,
+      secondAssetId,
+      expectedSecondAssetAmount
     ).then((result) => {
       const eventResponse = getEventResultFromMangataTx(result, [
         "xyk",
