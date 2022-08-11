@@ -9,7 +9,7 @@ import { getApi, initApi } from "../api";
 export let api: ApiPromise;
 
 // Users
-export const { sudo: sudoUserName } = getEnvironmentRequiredVars();
+export let keyring: Keyring;
 export let sudo: User;
 export let testUser1: User;
 export let testUser2: User;
@@ -18,13 +18,17 @@ export let testUser4: User;
 
 export type Extrinsic = SubmittableExtrinsic<"promise">;
 
-export const setupApi = async (uri = "ws://127.0.0.1:9948") => {
-  await initApi(uri);
+export const setupApi = async () => {
+  if (api) {
+    await api.disconnect();
+  }
+  await initApi();
   api = getApi();
 };
 
 export const setupUsers = () => {
-  const keyring = new Keyring({ type: "sr25519" });
+  keyring = new Keyring({ type: "sr25519" });
+  const { sudo: sudoUserName } = getEnvironmentRequiredVars();
   sudo = new User(keyring, sudoUserName);
   testUser1 = new User(keyring);
   testUser2 = new User(keyring);
@@ -36,4 +40,6 @@ export const setupUsers = () => {
   keyring.addPair(testUser2.keyRingPair);
   keyring.addPair(testUser3.keyRingPair);
   keyring.addPair(testUser4.keyRingPair);
+
+  return [testUser1, testUser2, testUser3, testUser4];
 };

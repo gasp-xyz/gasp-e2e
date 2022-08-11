@@ -1,34 +1,30 @@
-import { BN_HUNDRED, BN_TEN } from "@mangata-finance/sdk";
+import { BN_TEN, BN_THOUSAND, MangataGenericEvent } from "@mangata-finance/sdk";
 import { User } from "../User";
 import { BN } from "@polkadot/util";
 import { api, Extrinsic } from "./setup";
 import { MGA_ASSET_ID } from "../Constants";
 import { Sudo } from "./sudo";
+import { findEventData } from "./event";
 
 export class Assets {
   static MG_UNIT: BN = BN_TEN.pow(new BN(18));
+  static DEFAULT_AMOUNT = BN_THOUSAND.mul(this.MG_UNIT);
 
-  static mintNative(
-    user: User,
-    amount: BN = BN_HUNDRED.mul(this.MG_UNIT)
-  ): Extrinsic {
+  static mintNative(user: User, amount: BN = this.DEFAULT_AMOUNT): Extrinsic {
     user.addAsset(MGA_ASSET_ID);
     return Sudo.sudo(
       api.tx.tokens.mint(MGA_ASSET_ID, user.keyRingPair.address, amount)
     );
   }
 
-  static issueToken(
-    user: User,
-    amount: BN = BN_HUNDRED.mul(this.MG_UNIT)
-  ): Extrinsic {
+  static issueToken(user: User, amount: BN = this.DEFAULT_AMOUNT): Extrinsic {
     return Sudo.sudo(api.tx.tokens.create(user.keyRingPair.address, amount));
   }
 
   static mintToken(
     asset: BN,
     user: User,
-    amount: BN = BN_HUNDRED.mul(this.MG_UNIT)
+    amount: BN = this.DEFAULT_AMOUNT
   ): Extrinsic {
     return Sudo.sudo(
       api.tx.tokens.mint(asset, user.keyRingPair.address, amount)
@@ -41,5 +37,11 @@ export class Assets {
 
   static transferAll(target: User, tokenId: BN): Extrinsic {
     return api.tx.tokens.transferAll(target.keyRingPair.address, tokenId, true);
+  }
+
+  static findTokenId(result: MangataGenericEvent[]): BN[] {
+    return findEventData(result, "tokens.Issued").map(
+      (data) => new BN(data[0])
+    );
   }
 }

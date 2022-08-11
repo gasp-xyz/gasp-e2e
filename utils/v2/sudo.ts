@@ -1,6 +1,8 @@
 import { api, Extrinsic, sudo } from "./setup";
 import { User } from "../User";
 import { signSendFinalized } from "./event";
+import { MangataGenericEvent } from "@mangata-finance/sdk";
+import { SudoDB } from "../SudoDB";
 
 export class Sudo {
   static sudo(tx: Extrinsic): Extrinsic {
@@ -15,7 +17,12 @@ export class Sudo {
     return api.tx.utility.batchAll(txs);
   }
 
-  static async batchAsSudoFinalized(...txs: Extrinsic[]): Promise<void> {
-    return signSendFinalized(api.tx.utility.batchAll(txs), sudo);
+  static async batchAsSudoFinalized(
+    ...txs: Extrinsic[]
+  ): Promise<MangataGenericEvent[]> {
+    const nonce = await SudoDB.getInstance().getSudoNonce(
+      sudo.keyRingPair.address
+    );
+    return signSendFinalized(api.tx.utility.batchAll(txs), sudo, nonce);
   }
 }

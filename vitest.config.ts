@@ -6,7 +6,7 @@ export default defineConfig({
     testTimeout: 3600000,
     hookTimeout: 3600000,
     threads: true,
-    reporters: ["verbose"],
+    reporters: process.env.CI ? ["default", "junit"] : "default",
     setupFiles: "./utils/v2/setupVitest.ts",
   },
 });

@@ -1,63 +1,56 @@
-/*
- *
- * @group xyk
- * @group api
- * @group sequential
- */
 import { BN } from "@polkadot/util";
-import { setupApi, setupUsers, testUser1 } from "../../../utils/v2/setup";
+import { setupApi, setupUsers } from "../../../utils/v2/setup";
 import { Sudo } from "../../../utils/v2/sudo";
 import { Assets } from "../../../utils/v2/assets";
 import {
   calculate_sell_price_id_rpc,
   calculate_sell_price_local_no_fee,
   getBalanceOfPool,
-  getNextAssetId,
   getTreasury,
   getTreasuryBurn,
 } from "../../../utils/tx";
-import { MGA_ASSET_ID } from "../../../utils/Constants";
-import { AssetWallet } from "../../../utils/User";
+import { AssetWallet, User } from "../../../utils/User";
 import {
   findBlockWithExtrinsicSigned,
   getBlockNumber,
   getTokensDiffForBlockAuthor,
 } from "../../../utils/utils";
-import { Fees } from "../../../utils/Fees";
-import { beforeEach, describe, expect } from "vitest";
+import { beforeEach, describe, expect, it } from "vitest";
 import { signSendFinalized } from "../../../utils/v2/event";
 import { Xyk } from "../../../utils/v2/xyk";
 
-let currency1: BN;
-let currency2: BN;
 const firstAssetAmount = new BN(50000);
 const secondAssetAmount = new BN(50000);
-const defaultCurrencyValue = new BN(250000);
 
-describe("XYK MGA fees test suite", () => {
+// not used in current CI setup
+describe.skip("XYK MGA fees test suite", () => {
+  let user: User;
+  let currency1: BN;
+  let currency2: BN;
+
   beforeEach(async () => {
     await setupApi();
-    setupUsers();
-
-    currency1 = MGA_ASSET_ID;
-    currency2 = await getNextAssetId();
+    [user] = setupUsers();
 
     await Sudo.batchAsSudoFinalized(
-      Assets.mintNative(testUser1),
-      Assets.issueToken(testUser1, defaultCurrencyValue),
-      Sudo.sudoAs(
-        testUser1,
+      Assets.mintNative(user),
+      Assets.issueToken(user)
+    ).then(async (result) => {
+      [currency1, currency2] = Assets.findTokenId(result);
+      user.addAsset(currency1);
+      user.addAsset(currency2);
+
+      await signSendFinalized(
         Xyk.createPool(
           currency1,
           firstAssetAmount,
           currency2,
           secondAssetAmount
-        )
-      )
-    );
-    testUser1.addAsset(currency1);
-    testUser1.addAsset(currency2);
-    await testUser1.refreshAmounts(AssetWallet.BEFORE);
+        ),
+        user
+      );
+    });
+    await user.refreshAmounts(AssetWallet.BEFORE);
   });
 
   it("xyk-pallet - Assets substracted are incremented by 1 - MGA- SellAsset", async () => {
@@ -79,29 +72,23 @@ describe("XYK MGA fees test suite", () => {
     const from = await getBlockNumber();
     await signSendFinalized(
       Xyk.sellAsset(currency1, currency2, sellingAmount),
-      testUser1
+      user
     );
-    await testUser1.refreshAmounts(AssetWallet.AFTER);
-    let tokensLost = testUser1
+    await user.refreshAmounts(AssetWallet.AFTER);
+    let tokensLost = user
       .getAsset(currency1)
-      ?.amountBefore.free.sub(testUser1.getAsset(currency1)?.amountAfter.free!);
+      ?.amountBefore.free.sub(user.getAsset(currency1)?.amountAfter.free!);
 
-    const tokensWon = testUser1
+    const tokensWon = user
       .getAsset(currency2)
-      ?.amountAfter.free.sub(
-        testUser1.getAsset(currency2)?.amountBefore.free!
-      )!;
-    let feesPaid = new BN(0);
-    if (Fees.swapFeesEnabled) {
-      const to = await getBlockNumber();
-      const blockNumber = await findBlockWithExtrinsicSigned(
-        [from, to],
-        testUser1.keyRingPair.address
-      );
-      const authorMGAtokens = await getTokensDiffForBlockAuthor(blockNumber);
-      feesPaid = authorMGAtokens;
-      tokensLost = tokensLost?.sub(feesPaid);
-    }
+      ?.amountAfter.free.sub(user.getAsset(currency2)?.amountBefore.free!)!;
+    const to = await getBlockNumber();
+    const blockNumber = await findBlockWithExtrinsicSigned(
+      [from, to],
+      user.keyRingPair.address
+    );
+    const feesPaid = await getTokensDiffForBlockAuthor(blockNumber);
+    tokensLost = tokensLost?.sub(feesPaid);
     expect(tokensWon).bnEqual(tokensToReceive);
     expect(tokensLost).bnEqual(sellingAmount);
     expect(exangeValue).bnEqual(tokensWon);

@@ -1,7 +1,8 @@
 import { api, Extrinsic } from "./setup";
 import { testLog } from "../Logger";
 import { User } from "../User";
-import { getSystemErrorName } from "util";
+import { MangataGenericEvent, signTx } from "@mangata-finance/sdk";
+import { BN } from "@polkadot/util";
 
 // @ts-ignore
 export const logEvent = (phase, data, method, section) => {
@@ -12,62 +13,30 @@ export const logEvent = (phase, data, method, section) => {
     );
 };
 
-export const awaitEvent = (lookup: string) => {
-  return new Promise<any>(async (resolve) => {
-    const unsubscribe = await api.query.system.events((events) => {
-      events.forEach(({ phase, event: { data, method, section } }) => {
-        logEvent(phase, data, method, section);
-        if (lookup === section + "." + method) {
-          unsubscribe();
-          resolve({});
-        }
-      });
-    });
-  });
-};
-
-export const awaitEventWithSend = async (
+export const signSendFinalized = async (
   tx: Extrinsic,
   user: User,
-  lookup: string
-) => {
-  await tx.signAndSend(user.keyRingPair);
-  await awaitEvent(lookup);
-};
-
-export const signSendFinalized = async (tx: Extrinsic, user: User) => {
-  await new Promise((resolve, reject) => {
-    tx.signAndSend(
-      user.keyRingPair,
-      ({ events = [], status, dispatchError }) => {
-        testLog.getLog().info(status);
-        events.forEach(({ phase, event: { data, method, section } }) => {
-          logEvent(phase, data, method, section);
-        });
-        const err = checkError(dispatchError);
-        if (err) {
-          reject(err);
-        }
-        if (status.isFinalized) {
-          resolve({});
-        }
-      }
-    );
+  nonce: BN | undefined = undefined
+): Promise<MangataGenericEvent[]> => {
+  return signTx(api, tx, user.keyRingPair, {
+    nonce: nonce,
+    statusCallback: ({ events = [], status }) => {
+      testLog.getLog().info(status);
+      events.forEach(({ phase, event: { data, method, section } }) => {
+        logEvent(phase, data, method, section);
+      });
+    },
+  }).catch((reason) => {
+    testLog.getLog().error(reason.data || reason);
+    throw reason;
   });
 };
 
-const checkError = (dispatchError: any) => {
-  if (dispatchError) {
-    if (dispatchError.isModule) {
-      // for module errors, we have the section indexed, lookup
-      const decoded = api.registry.findMetaError(dispatchError.asModule);
-      const { docs, name, section } = decoded;
-
-      return new Error(`${section}.${name}: ${docs.join(" ")}`);
-    } else {
-      // Other, CannotLookup, BadOrigin, no extra info
-      return new Error(dispatchError.toString());
-    }
-  }
-  return null;
-};
+export function findEventData(
+  result: MangataGenericEvent[],
+  method: string
+): any[] {
+  return result
+    .filter((event) => `${event.section}.${event.method}` === method)
+    .map((event) => event.event.toHuman().data);
+}
