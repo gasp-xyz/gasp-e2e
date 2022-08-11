@@ -1,6 +1,5 @@
 /*
  *
- * @group xyk
  * @group ci
  */
 import { getApi, initApi } from "../../utils/api";
@@ -26,13 +25,6 @@ test("xyk-CI - AssetInfo contains assets for MGA and Ether", async () => {
     assetsInfo.findIndex((asset) => asset.name === "Mangata")
   ).toBeGreaterThanOrEqual(0);
   expect(
-    assetsInfo.findIndex((asset) => asset.name === "Ether")
-  ).toBeGreaterThanOrEqual(0);
-
-  expect(
     assetsInfo.findIndex((asset) => asset.symbol === "MGA")
-  ).toBeGreaterThanOrEqual(0);
-  expect(
-    assetsInfo.findIndex((asset) => asset.symbol === "ETH")
   ).toBeGreaterThanOrEqual(0);
 });
