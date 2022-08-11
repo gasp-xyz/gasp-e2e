@@ -1,7 +1,6 @@
 /*
  *
  * @group ui
- * @group ci
  */
 
 import { WebDriver } from "selenium-webdriver";
