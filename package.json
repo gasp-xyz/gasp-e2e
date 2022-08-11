@@ -82,7 +82,7 @@
     "jsdom": "^20.0.0",
     "lodash": "^4.17.21",
     "mangata-node": "https://github.com/mangata-finance/mangata-node",
-    "vitest": "^0.18.1"
+    "vitest": "^0.21.1"
   },
   "jest-junit": {
     "outputDirectory": "reports",

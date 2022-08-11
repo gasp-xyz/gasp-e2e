@@ -3,7 +3,7 @@ import { getEnvironmentRequiredVars } from "../../utils/utils";
 import { User } from "../../utils/User";
 import { Keyring } from "@polkadot/api";
 import { AcalaNode } from "../../utils/Framework/Node/AcalaNode";
-import { amount, Utils } from "./Utils";
+import { Utils } from "./Utils";
 import { beforeAll, test } from "vitest";
 
 const { acalaUri } = getEnvironmentRequiredVars();
@@ -33,16 +33,17 @@ test("asset register - register MGR on Acala", async () => {
   await Utils.signAndSend(alice, acala.api!.tx.sudo.sudo(tx));
 });
 
-test.only("asset register - register LKSM on Mangata", async () => {
+test("asset register - register LKSM on Mangata", async () => {
   const tx = api!.tx.assetRegistry.registerAsset(
-    {
-      decimals: 12,
-      name: "liquid kusama",
-      symbol: "LKSM",
-      existentialDeposit: Utils.amount(10, 9), // 1000MGX
-      location: Utils.assetLocation(2000, "0x0083"),
-    },
-    null
+    Utils.assetLocation(2000, "0x0083")
+    //    {
+    //      decimals: 12,
+    //      name: "liquid kusama",
+    //      symbol: "LKSM",
+    //      existentialDeposit: Utils.amount(10, 9), // 1000MGX
+    //      location: Utils.assetLocation(2000, "0x0083"),
+    //    },
+    //    null
   );
   await Utils.signAndSend(alice, api!.tx.sudo.sudo(tx));
 });
