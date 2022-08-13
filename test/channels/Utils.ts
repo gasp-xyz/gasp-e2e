@@ -1,3 +1,4 @@
+/* eslint-disable no-console */
 import { BN } from "@polkadot/util";
 import { SubmittableExtrinsic } from "@polkadot/api/types";
 import { User } from "../../utils/User";
