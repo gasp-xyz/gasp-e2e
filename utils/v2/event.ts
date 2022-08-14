@@ -3,6 +3,8 @@ import { testLog } from "../Logger";
 import { User } from "../User";
 import { MangataGenericEvent, signTx } from "@mangata-finance/sdk";
 import { BN } from "@polkadot/util";
+import { getEventResultFromMangataTx } from "../txHandler";
+import { ExtrinsicResult } from "../eventListeners";
 
 // @ts-ignore
 export const logEvent = (phase, data, method, section) => {
@@ -26,10 +28,18 @@ export const signSendFinalized = async (
         logEvent(phase, data, method, section);
       });
     },
-  }).catch((reason) => {
-    testLog.getLog().error(reason.data || reason);
-    throw reason;
-  });
+  })
+    .catch((reason) => {
+      testLog.getLog().error(reason.data || reason);
+      throw reason;
+    })
+    .then((result) => {
+      const event = getEventResultFromMangataTx(result);
+      if (event.state === ExtrinsicResult.ExtrinsicFailed) {
+        throw new Error(event.data.toString());
+      }
+      return result;
+    });
 };
 
 export function findEventData(
