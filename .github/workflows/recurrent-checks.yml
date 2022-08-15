@@ -1,8 +1,8 @@
 name: CI check
 
 on:
-  schedule:
-    - cron: "1 01 * * *" #lets run this job every 12 hours.
+  #schedule:
+    #- cron: "1 01 * * *" #lets run this job every 12 hours.
 
   workflow_dispatch:
       inputs:
