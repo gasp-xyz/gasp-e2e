@@ -9,8 +9,8 @@ import { getCurrentNonce } from "../../utils/tx";
 import { ExtrinsicResult } from "../../utils/eventListeners";
 import { BN } from "@polkadot/util";
 import { Keyring } from "@polkadot/api";
-import { Assets } from "../../utils/Assets"
-import { AssetWallet, User } from "../../utils/User";;
+import { Assets } from "../../utils/Assets";
+import { AssetWallet, User } from "../../utils/User";
 import { getEnvironmentRequiredVars } from "../../utils/utils";
 import { SignerOptions } from "@polkadot/api/types";
 import { getEventResultFromMangataTx } from "../../utils/txHandler";
@@ -64,31 +64,25 @@ beforeAll(async () => {
     first_asset_amount,
     second_asset_amount,
     firstCurrency,
-    secondCurrency)
-
+    secondCurrency
+  );
 });
 
 beforeEach(async () => {
   // setup users
   testUser1 = new User(keyring);
-  
+
   // add users to pair.
   keyring.addPair(testUser1.keyRingPair);
   testUser1.addAsset(MGA_ASSET_ID);
-    testUser1.addAsset(KSM_ASSET_ID);
+  testUser1.addAsset(KSM_ASSET_ID);
 
-  //add pool's tokens for user. 
+  //add pool's tokens for user.
 
-  await sudo.mint(
-    firstCurrency,
-    testUser1,
-    defaultCurrecyValue
-  );
-
+  await sudo.mint(firstCurrency, testUser1, defaultCurrecyValue);
 });
 
 test("xyk-pallet - Check required fee - User with MGX only", async () => {
-
   const api = getApi();
   const nonce = await getCurrentNonce(testUser1.keyRingPair.address);
   const opt: Partial<SignerOptions> = {
@@ -97,13 +91,13 @@ test("xyk-pallet - Check required fee - User with MGX only", async () => {
   };
   cost = await api?.tx.xyk
     .buyAsset(
-    firstCurrency.toString(),
-    secondCurrency.toString(),
-    new BN(100),
-    new BN(1000000)
+      firstCurrency.toString(),
+      secondCurrency.toString(),
+      new BN(100),
+      new BN(1000000)
     )
     .paymentInfo(testUser1.keyRingPair, opt);
-  
+
   //add MGA tokens.
   await testUser1.addMGATokens(sudo);
 
@@ -124,18 +118,16 @@ test("xyk-pallet - Check required fee - User with MGX only", async () => {
 
   await testUser1.refreshAmounts(AssetWallet.AFTER);
   const deductedMGATkns = testUser1
-      .getAsset(MGA_ASSET_ID)
-      ?.amountBefore.free.sub(
-        testUser1.getAsset(MGA_ASSET_ID)?.amountAfter.free!
-      );
-    const fee = cost.partialFee;
-    expect(deductedMGATkns).bnLte(fee);
-    expect(deductedMGATkns).bnGt(new BN(0));
-
+    .getAsset(MGA_ASSET_ID)
+    ?.amountBefore.free.sub(
+      testUser1.getAsset(MGA_ASSET_ID)?.amountAfter.free!
+    );
+  const fee = cost.partialFee;
+  expect(deductedMGATkns).bnLte(fee);
+  expect(deductedMGATkns).bnGt(new BN(0));
 });
 
 test("xyk-pallet - Check required fee - User with KSM only", async () => {
-
   //add KSM tokens.
   await testUser1.addKSMTokens(sudo);
 
@@ -163,17 +155,11 @@ test("xyk-pallet - Check required fee - User with KSM only", async () => {
     );
 
   expect(deductedKSMTkns).bnGt(new BN(0));
-
 });
 
 test("xyk-pallet - Check required fee - User with very few MGA and some KSM", async () => {
-
-   //add few MGX tokens.
-   await sudo.mint(
-    MGA_ASSET_ID,
-    testUser1,
-    new BN(100000)
-  );
+  //add few MGX tokens.
+  await sudo.mint(MGA_ASSET_ID, testUser1, new BN(100000));
 
   //add some KSM tokens.
   await testUser1.addKSMTokens(sudo);
@@ -205,23 +191,17 @@ test("xyk-pallet - Check required fee - User with very few MGA and some KSM", as
     ?.amountBefore.free.sub(
       testUser1.getAsset(KSM_ASSET_ID)?.amountAfter.free!
     );
-   
+
   expect(deductedMGATkns).bnEqual(new BN(0));
   expect(deductedKSMTkns).bnGt(new BN(0));
-  
 });
 
 test("xyk-pallet - Check required fee - User with some MGA and very few KSM", async () => {
-
   //add some MGX tokens.
   await testUser1.addMGATokens(sudo);
 
   //add few KSM tokens.
-  await sudo.mint(
-    KSM_ASSET_ID,
-    testUser1,
-    new BN(100000)
-  );
+  await sudo.mint(KSM_ASSET_ID, testUser1, new BN(100000));
 
   await testUser1.refreshAmounts(AssetWallet.BEFORE);
 
@@ -234,25 +214,25 @@ test("xyk-pallet - Check required fee - User with some MGA and very few KSM", as
 
   cost = await api?.tx.xyk
     .buyAsset(
-    firstCurrency.toString(),
-    secondCurrency.toString(),
-    new BN(100),
-    new BN(1000000)
+      firstCurrency.toString(),
+      secondCurrency.toString(),
+      new BN(100),
+      new BN(1000000)
     )
     .paymentInfo(testUser1.keyRingPair, opt);
 
   await (await getMangataInstance())
-  .buyAsset(
-    testUser1.keyRingPair,
-    firstCurrency.toString(),
-    secondCurrency.toString(),
-    new BN(100),
-    new BN(1000000)
-  )
-  .then((result) => {
-    const eventResponse = getEventResultFromMangataTx(result);
-    expect(eventResponse.state).toEqual(ExtrinsicResult.ExtrinsicSuccess);
-  });
+    .buyAsset(
+      testUser1.keyRingPair,
+      firstCurrency.toString(),
+      secondCurrency.toString(),
+      new BN(100),
+      new BN(1000000)
+    )
+    .then((result) => {
+      const eventResponse = getEventResultFromMangataTx(result);
+      expect(eventResponse.state).toEqual(ExtrinsicResult.ExtrinsicSuccess);
+    });
 
   await testUser1.refreshAmounts(AssetWallet.AFTER);
   const deductedMGATkns = testUser1
@@ -265,30 +245,20 @@ test("xyk-pallet - Check required fee - User with some MGA and very few KSM", as
     ?.amountBefore.free.sub(
       testUser1.getAsset(KSM_ASSET_ID)?.amountAfter.free!
     );
- 
+
   const fee = cost.partialFee;
 
   expect(deductedMGATkns).bnLte(fee);
   expect(deductedMGATkns).bnGt(new BN(0));
   expect(deductedKSMTkns).bnEqual(new BN(0));
-  
 });
 
 test("xyk-pallet - Check required fee - User with very few  MGA and very few KSM, operation fails", async () => {
-
   //add few MGX tokens.
-  await sudo.mint(
-    MGA_ASSET_ID,
-    testUser1,
-    new BN(100000)
-  );
+  await sudo.mint(MGA_ASSET_ID, testUser1, new BN(100000));
 
   //add few KSM tokens.
-  await sudo.mint(
-    KSM_ASSET_ID,
-    testUser1,
-    new BN(100000)
-  );
+  await sudo.mint(KSM_ASSET_ID, testUser1, new BN(100000));
 
   let exception = false;
   const mangata = await getMangataInstance();
@@ -309,5 +279,4 @@ test("xyk-pallet - Check required fee - User with very few  MGA and very few KSM
     "1010: Invalid Transaction: Inability to pay some fees , e.g. account balance too low"
   );
   expect(exception).toBeTruthy();
-  
 });

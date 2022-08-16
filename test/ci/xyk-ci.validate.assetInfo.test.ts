@@ -48,5 +48,4 @@ test("xyk-CI - AssetInfo contains assets for MGA, mKSM, mBTC and mUSD", async ()
   expect(
     assetsInfo.findIndex((asset) => asset.symbol === "mUSD")
   ).toBeGreaterThanOrEqual(0);
-  
 });
