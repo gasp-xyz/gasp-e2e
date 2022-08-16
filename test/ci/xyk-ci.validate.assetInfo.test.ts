@@ -6,7 +6,7 @@ import { getApi, initApi } from "../../utils/api";
 import { getAllAssetsInfo } from "../../utils/tx";
 
 jest.spyOn(console, "log").mockImplementation(jest.fn());
-jest.setTimeout(1800000);
+jest.setTimeout(1500000);
 process.env.NODE_ENV = "test";
 
 beforeAll(async () => {
