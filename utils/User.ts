@@ -17,9 +17,9 @@ import {
   transferAll,
 } from "./tx";
 import { getEventResultFromMangataTx } from "./txHandler";
-import { MAX_BALANCE, MGA_ASSET_ID } from "./Constants";
+import { MAX_BALANCE, MGA_ASSET_ID, KSM_ASSET_ID } from "./Constants";
 import { strict as assert } from "assert";
-import { TokenBalance } from "@mangata-finance/sdk";
+import { TokenBalance, toBN } from "@mangata-finance/sdk";
 
 export enum AssetWallet {
   BEFORE,
@@ -239,6 +239,14 @@ export class User {
   ) {
     await sudo.mint(MGA_ASSET_ID, this, amountFree);
   }
+  
+  async addKSMTokens(
+    sudo: User,
+    amountFree: BN = toBN ('1', 13)
+  ) {
+    await sudo.mint(KSM_ASSET_ID, this, amountFree);
+  }
+  
   async getUserTokensAccountInfo() {
     const accountInfo = await getTokensAccountInfo(
       this.keyRingPair.address,
