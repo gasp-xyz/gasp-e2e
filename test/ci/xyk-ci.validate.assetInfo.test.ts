@@ -17,7 +17,7 @@ beforeAll(async () => {
   }
 });
 
-test("xyk-CI - AssetInfo contains assets for MGA, mKSM, mUSD and mUSD", async () => {
+test("xyk-CI - AssetInfo contains assets for MGA, mKSM, mBTC and mUSD", async () => {
   const assetsInfo = await getAllAssetsInfo();
   expect(assetsInfo).not.toBeUndefined();
 
