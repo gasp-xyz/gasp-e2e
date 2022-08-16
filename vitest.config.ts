@@ -7,6 +7,7 @@ export default defineConfig({
     hookTimeout: 3600000,
     threads: true,
     reporters: process.env.CI ? ["default", "junit"] : "default",
+    outputFile: { junit: "reports/junit-all.xml" },
     setupFiles: "./utils/v2/setupVitest.ts",
   },
 });

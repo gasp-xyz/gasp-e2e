@@ -7,7 +7,7 @@ import { beforeAll, beforeEach, describe, expect, it } from "vitest";
 import { signSendFinalized } from "../../../utils/v2/event";
 import { Xyk } from "../../../utils/v2/xyk";
 import { MGA_ASSET_ID } from "../../../utils/Constants";
-import { BN_ONE } from "@mangata-finance/sdk";
+import {BN_ONE, BN_ZERO} from "@mangata-finance/sdk";
 import { testLog } from "../../../utils/Logger";
 import { getBalanceOfAsset, getLiquidityAssetId } from "../../../utils/tx";
 
@@ -164,7 +164,7 @@ describe.concurrent("xyk-pallet: Accuracy - shared pool", () => {
 
     // check pool balance
     const liqToken = await getLiquidityAssetId(currency, MGA_ASSET_ID);
-    const balancesLiqToken = await getBalances(liqToken);
+    const balancesLiqToken = await getBalances(liqToken, BN_ZERO);
     expect(balancesLiqToken).collectionBnEqual(amounts);
 
     await Sudo.batchAsSudoFinalized(

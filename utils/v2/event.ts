@@ -36,7 +36,7 @@ export const signSendFinalized = async (
     .then((result) => {
       const event = getEventResultFromMangataTx(result);
       if (event.state === ExtrinsicResult.ExtrinsicFailed) {
-        throw new Error(event.data.toString());
+        throw event;
       }
       return result;
     });

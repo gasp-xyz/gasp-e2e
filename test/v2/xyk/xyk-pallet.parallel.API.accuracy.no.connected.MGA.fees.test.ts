@@ -10,7 +10,7 @@ import {
   getTreasuryBurn,
 } from "../../../utils/tx";
 import { AssetWallet, User } from "../../../utils/User";
-import {beforeAll, beforeEach, describe, expect, it} from "vitest";
+import { beforeAll, describe, expect, it } from "vitest";
 import { signSendFinalized } from "../../../utils/v2/event";
 import { Xyk } from "../../../utils/v2/xyk";
 

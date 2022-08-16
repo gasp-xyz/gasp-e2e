@@ -64,7 +64,8 @@
     "test-governance-candidacy": "rm nonce.db ; rm sudo.lock; jest --verbose --runInBand --ci --group=governance-candidacy",
     "test-governance-voting": "rm nonce.db ; rm sudo.lock; jest --verbose --runInBand --ci --group=governance-voting",
     "tsc-lint": "tsc  --project tsconfig.json --noEmit",
-    "eslint": "node_modules/.bin/eslint --max-warnings 0 . --ext .ts"
+    "eslint": "node_modules/.bin/eslint --max-warnings 0 . --ext .ts",
+    "reports": "allure generate reports"
   },
   "devDependencies": {
     "@babel/core": "^7.13.10",
@@ -73,6 +74,7 @@
     "@types/jest": "^26.0.23",
     "@types/lodash": "^4.14.173",
     "@vitest/ui": "^0.21.1",
+    "allure-commandline": "^2.18.1",
     "babel-jest": "^27.5.1",
     "c8": "^7.12.0",
     "eslint-config-mangata": "https://github.com/mangata-finance/eslint-config-mangata",

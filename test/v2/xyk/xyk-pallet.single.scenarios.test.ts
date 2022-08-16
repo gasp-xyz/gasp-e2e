@@ -17,15 +17,14 @@ import {
   getBalanceOfPool,
   getNextAssetId,
 } from "../../../utils/tx";
-import { BN_ONE, BN_ZERO, MangataGenericEvent } from "@mangata-finance/sdk";
+import { BN_ONE, BN_ZERO } from "@mangata-finance/sdk";
 import { Sudo } from "../../../utils/v2/sudo";
 import { Assets } from "../../../utils/v2/assets";
 import { BN } from "@polkadot/util";
 import { Xyk } from "../../../utils/v2/xyk";
 import { AssetWallet, User } from "../../../utils/User";
 import { signSendFinalized } from "../../../utils/v2/event";
-import { getEventResultFromMangataTx } from "../../../utils/txHandler";
-import { ExtrinsicResult } from "../../../utils/eventListeners";
+import { EventResult, ExtrinsicResult } from "../../../utils/eventListeners";
 
 function assetsAfterFree(user: User): BN[] {
   return user.assets.map((asset) => asset.amountAfter.free);
@@ -35,7 +34,7 @@ function assetsBeforeFree(user: User): BN[] {
   return user.assets.map((asset) => asset.amountBefore.free);
 }
 
-describe("xyk-pallet: Happy case scenario", () => {
+describe.skip("xyk-pallet: Happy case scenario", () => {
   let xykPalletUser: User;
   let assetId1: BN;
   let assetId2: BN;
@@ -624,7 +623,7 @@ describe("xyk-pallet: Liquidity sufficiency scenario", () => {
     await signSendFinalized(
       Xyk.burnLiquidity(assetId1, assetId2, amount),
       user2
-    ).then(checkError(xykErrors.NoSuchPool));
+    ).catch(checkError(xykErrors.NoSuchPool));
 
     await expectNoChange();
   });
@@ -736,7 +735,7 @@ describe("xyk-pallet: Liquidity sufficiency scenario", () => {
     await signSendFinalized(
       Xyk.burnLiquidity(assetId1, assetId2, excess),
       user
-    ).then(checkError(xykErrors.NotEnoughAssets));
+    ).catch(checkError(xykErrors.NotEnoughAssets));
 
     await expectNoChange();
   }
@@ -744,7 +743,7 @@ describe("xyk-pallet: Liquidity sufficiency scenario", () => {
   async function sellAssetFail(sell: BN, buy: BN) {
     const amount = new BN(20000);
 
-    await signSendFinalized(Xyk.sellAsset(sell, buy, amount), user2).then(
+    await signSendFinalized(Xyk.sellAsset(sell, buy, amount), user2).catch(
       checkError(xykErrors.NoSuchPool)
     );
 
@@ -754,18 +753,17 @@ describe("xyk-pallet: Liquidity sufficiency scenario", () => {
   async function buyAssetFail(sell: BN, buy: BN) {
     const amount = new BN(20000);
 
-    await signSendFinalized(Xyk.buyAsset(sell, buy, amount), user2).then(
+    await signSendFinalized(Xyk.buyAsset(sell, buy, amount), user2).catch(
       checkError(xykErrors.NoSuchPool)
     );
 
     await expectNoChange();
   }
 
-  function checkError(error: xykErrors): (ev: MangataGenericEvent[]) => void {
-    return (result) => {
-      const eventResponse = getEventResultFromMangataTx(result);
-      expect(eventResponse.state).toEqual(ExtrinsicResult.ExtrinsicFailed);
-      expect(eventResponse.data).toEqual(error);
+  function checkError(error: xykErrors): (ev: EventResult) => void {
+    return (ev) => {
+      expect(ev.state).toEqual(ExtrinsicResult.ExtrinsicFailed);
+      expect(ev.data).toEqual(error);
     };
   }
 });
