@@ -25,7 +25,7 @@ beforeAll(async () => {
 
   const keyring = new Keyring({ type: "sr25519" });
   testUser = new User(keyring, "foo");
-  testUser.addFromMnemonic(keyring, "<mnemonic>");
+  testUser.addFromMnemonic(keyring, "<manemonic>");
 });
 
 test("OAK transfer TUR to Mangata", async () => {
@@ -38,18 +38,22 @@ test("OAK transfer TUR to Mangata", async () => {
   await Utils.signAndSend(testUser, tx);
 });
 
-test.skip("FIXME:transfer TUR to Mangata-MA", async () => {
+test("transfer TUR to Mangata-MA", async () => {
   const tx = tur.api!.tx.xTokens.transferMultiasset(
     {
       V1: {
         id: {
           Concrete: {
-            parents: 0,
-            interior: "Here",
+            parents: 1,
+            interior: {
+              X1: {
+                Parachain: 2114,
+              },
+            },
           },
-          fun: {
-            Fungible: Utils.amount(10, 10),
-          },
+        },
+        fun: {
+          Fungible: Utils.amount(10, 10),
         },
       },
     },
@@ -59,38 +63,55 @@ test.skip("FIXME:transfer TUR to Mangata-MA", async () => {
   await Utils.signAndSend(testUser, tx);
 });
 
-test("FIXME: transfer back TUR to Oak-MA", async () => {
+test("transfer back TUR to Oak-MA", async () => {
   const tx = mga.api!.tx.xTokens.transferMultiasset(
     {
       V1: {
         id: {
           Concrete: {
             parents: 1,
-            interior: { X1: { Parachain: 2114 } },
+            interior: {
+              X1: {
+                Parachain: 2114,
+              },
+            },
           },
-          fun: {
-            Fungible: Utils.amount(1, 10),
-          },
+        },
+        fun: {
+          Fungible: Utils.amount(10, 10),
         },
       },
     },
     Utils.location(2114, testUser.keyRingPair.publicKey),
-    TUR_WEIGHT
+    MG_WEIGHT
   );
   await Utils.signAndSend(testUser, tx);
 });
 
-test("FIXME: transfer MGAS to Oak", async () => {
-  const tx = mga.api!.tx.xTokens.transfer(
-    0,
-    Utils.amount(6, 18),
-    Utils.location(2000, alice.keyRingPair.publicKey),
-    TUR_WEIGHT
+test.skip("Not supported - transfer MGAS to Oak", async () => {
+  const tx = mga.api!.tx.xTokens.transferMultiasset(
+    {
+      V1: {
+        id: {
+          Concrete: {
+            parents: 1,
+            interior: {
+              X2: [{ Parachain: 2110 }, { GeneralKey: "0x00000000" }],
+            },
+          },
+        },
+        fun: {
+          Fungible: Utils.amount(10000, 18),
+        },
+      },
+    },
+    Utils.location(2114, testUser.keyRingPair.publicKey),
+    MG_WEIGHT
   );
   await Utils.signAndSend(testUser, tx);
 });
 
-test("FIXME:transfer MGR from Oak to Mangata", async () => {
+test.skip("Not supported - FIXME:transfer MGR from Oak to Mangata", async () => {
   const tx = tur.api!.tx.xTokens.transfer(
     // @ts-ignore
     { ForeignAsset: 13 },
@@ -101,7 +122,7 @@ test("FIXME:transfer MGR from Oak to Mangata", async () => {
   await Utils.signAndSend(alice, tx);
 });
 
-test("FIXME: transfer multiasset MGR to Oak", async () => {
+test.skip("Not supported - FIXME: transfer multiasset MGR to Oak", async () => {
   const tx = mga.api!.tx.xTokens.transferMultiasset(
     Utils.asset(2110, "0x00000000", Utils.amount(10, 18)),
     Utils.location(2000, alice.keyRingPair.publicKey),
@@ -109,7 +130,7 @@ test("FIXME: transfer multiasset MGR to Oak", async () => {
   );
   await Utils.signAndSend(testUser, tx);
 });
-test("FIXME: transfer - transfer multiasset MGR back to Mangata", async () => {
+test.skip("Not supported - FIXME: transfer - transfer multiasset MGR back to Mangata", async () => {
   const tx = tur.api!.tx.xTokens.transferMultiasset(
     Utils.asset(2110, "0x00000000", Utils.amount(5, 18)),
     Utils.location(2110, testUser.keyRingPair.publicKey),
