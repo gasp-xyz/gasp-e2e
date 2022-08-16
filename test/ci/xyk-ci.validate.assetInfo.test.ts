@@ -6,7 +6,7 @@ import { getApi, initApi } from "../../utils/api";
 import { getAllAssetsInfo } from "../../utils/tx";
 
 jest.spyOn(console, "log").mockImplementation(jest.fn());
-jest.setTimeout(1500000);
+jest.setTimeout(1800000);
 process.env.NODE_ENV = "test";
 
 beforeAll(async () => {
@@ -17,7 +17,7 @@ beforeAll(async () => {
   }
 });
 
-test("xyk-CI - AssetInfo contains assets for MGA and Ether", async () => {
+test("xyk-CI - AssetInfo contains assets for MGA, mKSM, mUSD and mUSD", async () => {
   const assetsInfo = await getAllAssetsInfo();
   expect(assetsInfo).not.toBeUndefined();
 
@@ -27,4 +27,26 @@ test("xyk-CI - AssetInfo contains assets for MGA and Ether", async () => {
   expect(
     assetsInfo.findIndex((asset) => asset.symbol === "MGA")
   ).toBeGreaterThanOrEqual(0);
+
+  expect(
+    assetsInfo.findIndex((asset) => asset.name === "mKSM")
+  ).toBeGreaterThanOrEqual(0);
+  expect(
+    assetsInfo.findIndex((asset) => asset.symbol === "mKSM")
+  ).toBeGreaterThanOrEqual(0);
+
+  expect(
+    assetsInfo.findIndex((asset) => asset.name === "mBTC")
+  ).toBeGreaterThanOrEqual(0);
+  expect(
+    assetsInfo.findIndex((asset) => asset.symbol === "mBTC")
+  ).toBeGreaterThanOrEqual(0);
+
+  expect(
+    assetsInfo.findIndex((asset) => asset.name === "mUSD")
+  ).toBeGreaterThanOrEqual(0);
+  expect(
+    assetsInfo.findIndex((asset) => asset.symbol === "mUSD")
+  ).toBeGreaterThanOrEqual(0);
+  
 });
