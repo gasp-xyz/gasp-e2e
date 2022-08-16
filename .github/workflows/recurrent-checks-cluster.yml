@@ -1,8 +1,8 @@
 name: Cluster - Healthcheck
 
 on:
-  schedule:
-    - cron: "1 04 * * *" #lets run this job nightly.
+  #schedule:
+     #- cron: "1 04 * * *" #lets run this job nightly.
 
   workflow_dispatch:
       inputs:
