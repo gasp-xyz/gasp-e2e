@@ -19,8 +19,7 @@ jobs:
 
     strategy:
       matrix:
-        environment: ['Develop','Integration']
-        cluster: ['Develop','Integration']
+        cluster: ['develop','integration']
     runs-on: ubuntu-latest
     steps:
       - name: Repository Dispatch
