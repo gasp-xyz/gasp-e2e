@@ -1,12 +1,8 @@
 import { assert } from "console";
 import { BN } from "@polkadot/util";
 import { ExtrinsicResult } from "./eventListeners";
-import { getNextAssetId, getAssetSupply } from "./tx";
-import {
-  getEventResultFromMangataTx,
-  setAssetInfo,
-  sudoIssueAsset,
-} from "./txHandler";
+import { getAssetSupply, getNextAssetId } from "./tx";
+import { getEventResultFromMangataTx, sudoIssueAsset } from "./txHandler";
 import { User } from "./User";
 
 export class Assets {
@@ -41,16 +37,17 @@ export class Assets {
   ): Promise<BN[]> {
     const currencies = [];
     for (let currency = 0; currency < currencyValues.length; currency++) {
-      const currencyId = await this.issueAssetToUser(
-        user,
-        currencyValues[currency],
-        sudo
+      currencies.push(
+        this.issueAssetToUser(user, currencyValues[currency], sudo).then(
+          (id) => {
+            user.addAsset(id, new BN(currencyValues[currency]));
+            return id;
+          }
+        )
       );
-      currencies.push(currencyId);
-      user.addAsset(currencyId, new BN(currencyValues[currency]));
     }
 
-    return currencies;
+    return await Promise.all(currencies);
   }
 
   static async issueAssetToSudo(sudo: User) {
@@ -72,14 +69,6 @@ export class Assets {
 
     assert(eventResult.state === ExtrinsicResult.ExtrinsicSuccess);
     const assetId = eventResult.data[0].split(",").join("");
-    await setAssetInfo(
-      sudo,
-      new BN(assetId),
-      `TEST_${assetId}`,
-      this.getAssetName(assetId),
-      `Test token ${assetId}`,
-      new BN(18)
-    );
     return new BN(assetId);
   }
 
