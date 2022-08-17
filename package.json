@@ -54,8 +54,7 @@
     "test-cluster": "rm nonce.db; rm sudo.lock; jest --verbose --group=cluster",
     "test-cluster-healthcheck": "rm nonce.db; rm sudo.lock; jest --verbose --group=cluster-healthcheck",
     "test-sequential": "export JEST_HTML_REPORTERS_PUBLIC_PATH=reports/html-report-seq; rm nonce.db ; rm sudo.lock; jest --verbose --runInBand --group=sequential",
-    "test-sequential-e2e": "export JEST_HTML_REPORTERS_PUBLIC_PATH=reports/html-report-seq-e2e; rm nonce.db ; rm sudo.lock; jest --verbose --runInBand --ci --group=critical ",
-    "test-sequential-e2e-v2": "$npm_execpath init-test; vitest run single --no-threads",
+    "test-sequential-e2e": "export JEST_HTML_REPORTERS_PUBLIC_PATH=reports/html-report-seq-e2e; rm nonce.db; rm sudo.lock; jest --verbose --runInBand --ci --group=v2/critical ",
     "test-sequential-accuracy": "rm nonce.db ; rm sudo.lock; jest --verbose --runInBand --ci --group=accuracy ",
     "test-sequential-files": "export JEST_HTML_REPORTERS_PUBLIC_PATH=reports/html-report-seq-e2e; rm nonce.db ; rm sudo.lock; jest --verbose --runInBand --ci ",
     "test-ci": "rm nonce.db ; rm sudo.lock; jest --runInBand --verbose --ci --group=ci ",
@@ -110,6 +109,7 @@
       "jest-allure/dist/setup",
       "./utils/setupJest.ts"
     ],
+    "testTimeout": 1500000,
     "reporters": [
       "default",
       "jest-allure",

@@ -4,7 +4,6 @@ import {
   getEnvironmentRequiredVars,
   xykErrors,
 } from "../../../utils/utils";
-import { beforeAll, beforeEach, describe, expect, it } from "vitest";
 import { keyring, setupApi, setupUsers } from "../../../utils/v2/setup";
 import {
   calcuate_burn_liquidity_price_local,
@@ -34,7 +33,10 @@ function assetsBeforeFree(user: User): BN[] {
   return user.assets.map((asset) => asset.amountBefore.free);
 }
 
-describe.skip("xyk-pallet: Happy case scenario", () => {
+/**
+ * @group v2/critical
+ */
+describe("xyk-pallet: Happy case scenario", () => {
   let xykPalletUser: User;
   let assetId1: BN;
   let assetId2: BN;

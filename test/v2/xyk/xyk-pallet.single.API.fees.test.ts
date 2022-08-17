@@ -4,7 +4,6 @@ import { Sudo } from "../../../utils/v2/sudo";
 import { Assets } from "../../../utils/v2/assets";
 import { BN_HUNDRED, BN_ONE, BN_THOUSAND, BN_ZERO } from "@mangata-finance/sdk";
 import { AssetWallet, User } from "../../../utils/User";
-import { beforeAll, beforeEach, describe, expect, it } from "vitest";
 import {
   findBlockWithExtrinsicSigned,
   getBlockNumber,
@@ -15,6 +14,9 @@ import { signSendFinalized } from "../../../utils/v2/event";
 import { Xyk } from "../../../utils/v2/xyk";
 import { getNextAssetId } from "../../../utils/tx";
 
+/**
+ * @group v2/critical
+ */
 describe("API fees test suite", () => {
   let currency1: BN;
   let currency2: BN;

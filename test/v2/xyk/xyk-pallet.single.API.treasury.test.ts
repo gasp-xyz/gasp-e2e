@@ -1,5 +1,4 @@
 import { BN } from "@polkadot/util";
-import { beforeAll, describe, expect, it } from "vitest";
 import { setupApi, setupUsers } from "../../../utils/v2/setup";
 import { Sudo } from "../../../utils/v2/sudo";
 import { Assets } from "../../../utils/v2/assets";
@@ -41,6 +40,9 @@ async function validateTreasuryAmountsEqual(
   expect(treasuryBurn).bnEqual(expectedTreasuryBurn);
 }
 
+/**
+ * @group v2/critical
+ */
 describe("xyk-pallet - treasury tests [Mangata]: on treasury we store", () => {
   let currency: BN;
   let user: User;

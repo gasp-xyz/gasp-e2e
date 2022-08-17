@@ -1,8 +1,6 @@
 import { BN } from "@polkadot/util";
 import { renameExtraLogs } from "./frontend/utils/Helper";
-module.exports = {
-  runner: "groups",
-};
+require("dotenv").config();
 
 declare global {
   namespace jest {
