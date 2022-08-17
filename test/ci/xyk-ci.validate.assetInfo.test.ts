@@ -4,6 +4,8 @@
  */
 import { getApi, initApi } from "../../utils/api";
 import { getAllAssetsInfo } from "../../utils/tx";
+import { getBalanceOfPool } from "../../utils/tx";
+import { BN } from "@polkadot/util";
 
 jest.spyOn(console, "log").mockImplementation(jest.fn());
 jest.setTimeout(1500000);
@@ -48,4 +50,19 @@ test("xyk-CI - AssetInfo contains assets for MGA, mKSM, mBTC and mUSD", async ()
   expect(
     assetsInfo.findIndex((asset) => asset.symbol === "mUSD")
   ).toBeGreaterThanOrEqual(0);
+});
+
+test("xyk-CI - Check pools for MGA-mKSM, MGA-mBTC and MGA-mUSD", async () => {
+  const balanceMGAKSM = await getBalanceOfPool(new BN(0), new BN(4));
+  const balanceMGABTC = await getBalanceOfPool(new BN(0), new BN(5));
+  const balanceMGAUSD = await getBalanceOfPool(new BN(0), new BN(6));
+
+  expect(balanceMGAKSM[0]).not.toEqual(new BN(0));
+  expect(balanceMGAKSM[1]).not.toEqual(new BN(0));
+
+  expect(balanceMGABTC[0]).not.toEqual(new BN(0));
+  expect(balanceMGABTC[1]).not.toEqual(new BN(0));
+
+  expect(balanceMGAUSD[0]).not.toEqual(new BN(0));
+  expect(balanceMGAUSD[1]).not.toEqual(new BN(0));
 });
