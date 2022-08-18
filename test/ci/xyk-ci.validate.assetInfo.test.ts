@@ -3,9 +3,18 @@
  * @group ci
  */
 import { getApi, initApi } from "../../utils/api";
-import { getAllAssetsInfo } from "../../utils/tx";
-import { getBalanceOfPool } from "../../utils/tx";
+import { getAllAssetsInfo, getBalanceOfPool } from "../../utils/tx";
 import { BN } from "@polkadot/util";
+import {
+  MGA_ASSET_ID,
+  MGA_ASSET_NAME,
+  KSM_ASSET_ID,
+  KSM_ASSET_NAME,
+  BTC_ASSET_ID,
+  BTC_ASSET_NAME,
+  USDC_ASSET_ID,
+  USDC_ASSET_NAME,
+} from "../../utils/Constants";
 
 jest.spyOn(console, "log").mockImplementation(jest.fn());
 jest.setTimeout(1500000);
@@ -27,35 +36,35 @@ test("xyk-CI - AssetInfo contains assets for MGA, mKSM, mBTC and mUSD", async ()
     assetsInfo.findIndex((asset) => asset.name === "Mangata")
   ).toBeGreaterThanOrEqual(0);
   expect(
-    assetsInfo.findIndex((asset) => asset.symbol === "MGA")
+    assetsInfo.findIndex((asset) => asset.symbol === MGA_ASSET_NAME)
   ).toBeGreaterThanOrEqual(0);
 
   expect(
-    assetsInfo.findIndex((asset) => asset.name === "mKSM")
+    assetsInfo.findIndex((asset) => asset.name === KSM_ASSET_NAME)
   ).toBeGreaterThanOrEqual(0);
   expect(
-    assetsInfo.findIndex((asset) => asset.symbol === "mKSM")
-  ).toBeGreaterThanOrEqual(0);
-
-  expect(
-    assetsInfo.findIndex((asset) => asset.name === "mBTC")
-  ).toBeGreaterThanOrEqual(0);
-  expect(
-    assetsInfo.findIndex((asset) => asset.symbol === "mBTC")
+    assetsInfo.findIndex((asset) => asset.symbol === KSM_ASSET_NAME)
   ).toBeGreaterThanOrEqual(0);
 
   expect(
-    assetsInfo.findIndex((asset) => asset.name === "mUSD")
+    assetsInfo.findIndex((asset) => asset.name === BTC_ASSET_NAME)
   ).toBeGreaterThanOrEqual(0);
   expect(
-    assetsInfo.findIndex((asset) => asset.symbol === "mUSD")
+    assetsInfo.findIndex((asset) => asset.symbol === BTC_ASSET_NAME)
+  ).toBeGreaterThanOrEqual(0);
+
+  expect(
+    assetsInfo.findIndex((asset) => asset.name === USDC_ASSET_NAME)
+  ).toBeGreaterThanOrEqual(0);
+  expect(
+    assetsInfo.findIndex((asset) => asset.symbol === USDC_ASSET_NAME)
   ).toBeGreaterThanOrEqual(0);
 });
 
 test("xyk-CI - Check pools for MGA-mKSM, MGA-mBTC and MGA-mUSD", async () => {
-  const balanceMGAKSM = await getBalanceOfPool(new BN(0), new BN(4));
-  const balanceMGABTC = await getBalanceOfPool(new BN(0), new BN(5));
-  const balanceMGAUSD = await getBalanceOfPool(new BN(0), new BN(6));
+  const balanceMGAKSM = await getBalanceOfPool(MGA_ASSET_ID, KSM_ASSET_ID);
+  const balanceMGABTC = await getBalanceOfPool(MGA_ASSET_ID, BTC_ASSET_ID);
+  const balanceMGAUSD = await getBalanceOfPool(MGA_ASSET_ID, USDC_ASSET_ID);
 
   expect(balanceMGAKSM[0]).not.toEqual(new BN(0));
   expect(balanceMGAKSM[1]).not.toEqual(new BN(0));
