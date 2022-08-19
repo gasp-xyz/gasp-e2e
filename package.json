@@ -57,7 +57,7 @@
     "test-sequential-files": "export JEST_HTML_REPORTERS_PUBLIC_PATH=reports/html-report-seq-e2e; rm nonce.db ; rm sudo.lock; jest --verbose --runInBand --ci ",
     "test-ci": "rm nonce.db ; rm sudo.lock; jest --runInBand --verbose --ci --group=ci ",
     "test-ui": "rm nonce.db ; rm sudo.lock; jest --verbose --runInBand --ci --group=ui ",
-    "test-system": "rm nonce.db ; rm sudo.lock; jest --verbose --runInBand --ci --group=system ",
+    "test-setup": "rm nonce.db ; rm sudo.lock; jest --verbose --runInBand --ci --group=setup ",
     "test-sdk": "rm nonce.db ; rm sudo.lock; jest --verbose --runInBand --ci --group=sdk ",
     "test-ui-smoke": "rm nonce.db ; rm sudo.lock; jest --verbose --runInBand --ci --group=ui-smoke ",
     "test-governance": "rm nonce.db ; rm sudo.lock; jest --verbose --runInBand --ci --group=governance",

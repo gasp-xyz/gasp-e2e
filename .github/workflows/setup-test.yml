@@ -1,4 +1,4 @@
-name: System check
+name: Setup check
 
 on:
   # schedule:
@@ -9,7 +9,7 @@ on:
         scriptName:
           description: 'Name of the script to run'
           required: false
-          default: 'test-system'
+          default: 'test-setup'
 
       # For manually trigger
  
