@@ -1,8 +1,8 @@
 name: System check
 
 on:
-  schedule:
-    - cron: "0 4 * * 1-5" #lets run this job at 04:00 on every day-of-week from Monday through Friday.
+  # schedule:
+    - # cron: "0 4 * * 1-5" #lets run this job at 04:00 on every day-of-week from Monday through Friday.
 
   workflow_dispatch:
       inputs:
