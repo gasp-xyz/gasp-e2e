@@ -5,7 +5,7 @@ import { waitNewBlock } from "../utils/eventListeners";
 import { User, AssetWallet } from "../utils/User";
 import { getEnvironmentRequiredVars, sleep } from "../utils/utils";
 import fs from "fs";
-import { Mangata } from "mangata-sdk";
+import { Mangata } from "@mangata-finance/sdk";
 import { testLog } from "../utils/Logger";
 import { Assets } from "../utils/Assets";
 
@@ -57,7 +57,9 @@ describe("staking - testpad", () => {
     keyring.addPair(testUser1.keyRingPair);
     keyring.addPair(sudo.keyRingPair);
     await testUser1.refreshAmounts(AssetWallet.BEFORE);
-    const mangata = Mangata.getInstance(getEnvironmentRequiredVars().chainUri);
+    const mangata = Mangata.getInstance([
+      getEnvironmentRequiredVars().chainUri,
+    ]);
     const api = await mangata.getApi();
     const [firstCurrency, secondCurrency] =
       await Assets.setupUserWithCurrencies(

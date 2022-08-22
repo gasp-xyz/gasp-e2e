@@ -10,7 +10,7 @@ import { BN } from "@polkadot/util";
 import { getEnvironmentRequiredVars } from "../../utils/utils";
 import { Keyring } from "@polkadot/api";
 import { User } from "../../utils/User";
-import { Mangata } from "mangata-sdk";
+import { Mangata } from "@mangata-finance/sdk";
 import { getEventResultFromMangataTx } from "../../utils/txHandler";
 import { ExtrinsicResult } from "../../utils/eventListeners";
 import { MGA_ASSET_ID } from "../../utils/Constants";
@@ -49,11 +49,7 @@ beforeAll(async () => {
 
 describe("SDK test - Nonce tests - user", () => {
   beforeAll(async () => {
-    await sudo.mint(
-      MGA_ASSET_ID,
-      testUser,
-      new BN(Math.pow(10, 18).toString())
-    );
+    await testUser.addMGATokens(sudo);
     //add two curerncies and balance to testUser:
     [firstCurrency] = await Assets.setupUserWithCurrencies(
       testUser,

@@ -1,3 +1,4 @@
+import { assert } from "console";
 import { BN } from "@polkadot/util";
 import { ExtrinsicResult } from "./eventListeners";
 import { getNextAssetId, getAssetSupply } from "./tx";
@@ -69,7 +70,7 @@ export class Assets {
       user.keyRingPair.address,
     ]);
 
-    expect(eventResult.state).toEqual(ExtrinsicResult.ExtrinsicSuccess);
+    assert(eventResult.state === ExtrinsicResult.ExtrinsicSuccess);
     const assetId = eventResult.data[0].split(",").join("");
     await setAssetInfo(
       sudo,

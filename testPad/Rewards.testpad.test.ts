@@ -5,7 +5,7 @@ import { MGA_ASSET_ID } from "../utils/Constants";
 import { User, AssetWallet } from "../utils/User";
 import { getEnvironmentRequiredVars } from "../utils/utils";
 import fs from "fs";
-import { signTx } from "mangata-sdk";
+import { signTx } from "@mangata-finance/sdk";
 import { burnLiquidity, createPoolIfMissing, mintLiquidity } from "../utils/tx";
 import { ApiPromise } from "@polkadot/api";
 import { WsProvider } from "@polkadot/rpc-provider/ws";

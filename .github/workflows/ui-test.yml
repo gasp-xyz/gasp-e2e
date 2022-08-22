@@ -18,8 +18,8 @@ on:
           default: 'false'
       # For manually trigger
  
-  repository_dispatch:
-    types: [run-ci]
+  # repository_dispatch:
+    # types: [run-ci]
 jobs:
 
   build:
@@ -91,38 +91,19 @@ jobs:
             --args "-timeout 300s" --browsers 'chrome:95.0;chrome:96.0;chrome:94.0'
         
 
-      - name: Set Configuration - Staging
-        if: contains(github.event.client_payload.environment, 'staging') || contains(github.event.inputs.environment, 'staging')
-        run:  |
-          echo 'UI_URL=https://staging.mangata.finance/' >> $GITHUB_ENV
-          echo 'API_URL=wss://staging.mangatafinance.cloud:9944/' >> $GITHUB_ENV
-          echo 'ETH_APP_ADDRESS=0x4C5B51CFC44865Ac2DE4c8Ebd1df91d02d15523C' >> $GITHUB_ENV
-          echo 'ETH_20_APP_ADDRESS=0x944f7e5Ef36e09F94Bfece0C455A72963166F172' >> $GITHUB_ENV
-          echo 'MNEMONIC_META=${{ secrets.MNEMONIC_META_STG }}' >> $GITHUB_ENV
-          echo 'WEBHOOK_URL=${{ secrets.STG_SLACK_WEBHOOK }}' >> $GITHUB_ENV
-
-      - name: Set Configuration - Develop
-        if: contains(github.event.client_payload.environment, 'develop') || contains(github.event.inputs.environment, 'develop')
-        run:  |
-          echo 'UI_URL=https://develop.mangata.finance/' >> $GITHUB_ENV
-          echo 'API_URL=wss://develop.mangatafinance.cloud:9944' >> $GITHUB_ENV
-          echo 'ETH_APP_ADDRESS=0xfBdAAFfEFc82eC84d715E18Ee914e35fFB19E68D' >> $GITHUB_ENV
-          echo 'ETH_20_APP_ADDRESS=0x1C0c8d894850176Ed1683C5D41a2DBc2C70Cf95b' >> $GITHUB_ENV
-          echo 'MNEMONIC_META=${{ secrets.MNEMONIC_META_DEV }}' >> $GITHUB_ENV
-
       - name: Set Configuration - Integration
         if: contains(github.event.client_payload.environment, 'integration') || contains(github.event.inputs.environment, 'integration')
         run:  |
           echo 'UI_URL=https://integration.mangata.finance/' >> $GITHUB_ENV
-          echo 'API_URL=wss://integration.mangatafinance.cloud:9944' >> $GITHUB_ENV
+          echo 'API_URL=wss://integration-v4-collator-01.mangatafinance.cloud' >> $GITHUB_ENV
           echo 'ETH_APP_ADDRESS=0xeAA7Ddc7586CFfb417078E56Fd61DE37a6Be373E' >> $GITHUB_ENV
           echo 'ETH_20_APP_ADDRESS=0xb508A5Dfa2a16269a5cb47C67824cF823Db44ca7' >> $GITHUB_ENV
           echo 'MNEMONIC_META=${{ secrets.MNEMONIC_META_INT }}' >> $GITHUB_ENV
   
-      - name: Set Configuration - V4
-        if: contains(github.event.client_payload.environment, 'v4') || contains(github.event.inputs.environment, 'v4')
+      - name: Set Configuration - Develop
+        if: contains(github.event.client_payload.environment, 'develop') || contains(github.event.inputs.environment, 'develop')
         run:  |
-          echo 'UI_URL=https://notDefined.TODO.com/' >> $GITHUB_ENV
+          echo 'UI_URL=https://develop.mangata.finance/' >> $GITHUB_ENV
           echo 'API_URL=wss://v4-collator-01.mangatafinance.cloud' >> $GITHUB_ENV
           echo 'ETH_APP_ADDRESS=0xeAA7Ddc7586CFfb417078E56Fd61DE37a6Be373E' >> $GITHUB_ENV
           echo 'ETH_20_APP_ADDRESS=0xb508A5Dfa2a16269a5cb47C67824cF823Db44ca7' >> $GITHUB_ENV
@@ -152,7 +133,7 @@ jobs:
           echo E2EBranch=${GITHUB_REF##*/} >> ./environment.properties
 
   
-      - name: Run e2e tests
+      - name: Run tests
         run: yarn ${{ env.TEST_SCRIPT }}
       
       - name: Test Report

@@ -15,7 +15,11 @@ import { Keyring } from "@polkadot/api";
 import { User } from "./User";
 import { testLog } from "./Logger";
 import { KeyringPair } from "@polkadot/keyring/types";
-import { signTx, TokenBalance } from "mangata-sdk";
+import {
+  signTx,
+  TokenBalance,
+  MangataGenericEvent,
+} from "@mangata-finance/sdk";
 import { AnyJson } from "@polkadot/types/types";
 
 export const signTxDeprecated = async (
@@ -336,7 +340,7 @@ export async function getSudoKey(): Promise<AccountId32> {
 
   const sudoKey = await api.query.sudo.key();
 
-  return sudoKey.unwrap();
+  return (sudoKey as any).unwrap();
 }
 
 export const balanceTransfer = async (
@@ -410,8 +414,12 @@ export const mintAsset = async (
     api.tx.sudo.sudo(api.tx.tokens.mint(asset_id, target, amount)),
     account,
     { nonce: new BN(nonce) }
-  );
-  return txResult;
+  ).catch((reason) => {
+    // eslint-disable-next-line no-console
+    console.error("OhOh sth went wrong. " + reason.toString());
+    testLog.getLog().error(`W[${env.JEST_WORKER_ID}] - ${reason.toString()}`);
+  });
+  return txResult as MangataGenericEvent[];
 };
 
 export const createPool = async (
@@ -435,6 +443,17 @@ export const createPool = async (
     secondAssetId.toString(),
     secondAssetAmount,
     { nonce: nonce }
+  );
+  return result;
+};
+
+export const promotePool = async (sudoAccount: KeyringPair, liqAssetId: BN) => {
+  testLog.getLog().info(`Promoting pool :${liqAssetId}`);
+  const mangata = await getMangataInstance();
+  const api = await mangata.getApi();
+  const result = await signSendAndWaitToFinishTx(
+    api!.tx.sudo.sudo(api!.tx.xyk.promotePool(liqAssetId)),
+    sudoAccount
   );
   return result;
 };
@@ -664,7 +683,8 @@ export async function createPoolIfMissing(
   sudo: User,
   amountInPool: string,
   firstAssetId = MGA_ASSET_ID,
-  seccondAssetId = ETH_ASSET_ID
+  seccondAssetId = ETH_ASSET_ID,
+  promoted = false
 ) {
   const balance = await getBalanceOfPool(firstAssetId, seccondAssetId);
   if (balance[0].isZero() || balance[1].isZero()) {
@@ -677,6 +697,10 @@ export async function createPoolIfMissing(
       firstAssetId,
       seccondAssetId
     );
+    const liqToken = await getLiquidityAssetId(firstAssetId, seccondAssetId);
+    if (promoted) {
+      await sudo.promotePool(liqToken);
+    }
   }
 }
 

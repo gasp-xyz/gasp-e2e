@@ -1,7 +1,7 @@
 /* eslint-disable no-console */
 import { Keyring } from "@polkadot/api";
 import { BN } from "@polkadot/util";
-import { Mangata, MangataGenericEvent } from "mangata-sdk";
+import { Mangata, MangataGenericEvent } from "@mangata-finance/sdk";
 import { testLog } from "../../utils/Logger";
 import { logFile, TestParams } from "../testParams";
 import { TestItem } from "./testItem";
@@ -156,7 +156,7 @@ export class performanceTestItem implements TestItem {
     for (let nodeNumber = 0; nodeNumber < mgaNodeandUsers.size; nodeNumber++) {
       const mga = mgaNodeandUsers.get(nodeNumber)?.mgaSdk!;
       const users = mgaNodeandUsers.get(nodeNumber)?.users!;
-      const mgaNode = new Node(mga.getUri());
+      const mgaNode = new Node(mga.getUrls()[0]);
       const sudo = UserFactory.createUser(Users.SudoUser, keyring, mgaNode);
 
       testLog.getLog().info("Fetching nonces for node " + nodeNumber);
@@ -239,7 +239,7 @@ export class performanceTestItem implements TestItem {
 }
 
 export async function getMangata(node: string) {
-  const mga = Mangata.getInstance(node);
+  const mga = Mangata.getInstance([node]);
   await initApi(node);
   return mga;
 }

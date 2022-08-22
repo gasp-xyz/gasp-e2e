@@ -4,11 +4,11 @@ import { getApi, getMangataInstance, mangata } from "./api";
 import { hexToBn } from "@polkadot/util";
 import { Assets } from "./Assets";
 import { User } from "./User";
-import Keyring from "@polkadot/keyring";
 import { getAccountJSON } from "./frontend/utils/Helper";
 import { waitNewBlock } from "./eventListeners";
 import { testLog } from "./Logger";
 import { AnyNumber } from "@polkadot/types/types";
+import { Keyring } from "@polkadot/api";
 
 export function sleep(ms: number) {
   return new Promise((resolve) => {
@@ -261,7 +261,7 @@ export async function getTokensDiffForBlockAuthor(blockNumber: AnyNumber) {
 }
 export async function getBlockNumber() {
   const api = await mangata?.getApi()!;
-  return (await api.query.system.number()).toNumber();
+  return ((await api.query.system.number()) as any).toNumber();
 }
 export async function findBlockWithExtrinsicSigned(
   blocks = [0, 1],

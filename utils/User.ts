@@ -13,12 +13,13 @@ import {
   getUserAssets,
   mintAsset,
   mintLiquidity,
+  promotePool,
   transferAll,
 } from "./tx";
 import { getEventResultFromMangataTx } from "./txHandler";
-import { MAX_BALANCE, MGA_ASSET_ID } from "./Constants";
+import { MAX_BALANCE, MGA_ASSET_ID, KSM_ASSET_ID } from "./Constants";
 import { strict as assert } from "assert";
-import { TokenBalance } from "mangata-sdk";
+import { TokenBalance, toBN } from "@mangata-finance/sdk";
 
 export enum AssetWallet {
   BEFORE,
@@ -207,6 +208,9 @@ export class User {
       );
     }
   }
+  async promotePool(liqAssetId: BN) {
+    await promotePool(this.keyRingPair, liqAssetId);
+  }
   async createPoolToAsset(
     first_asset_amount: BN,
     second_asset_amount: BN,
@@ -231,10 +235,15 @@ export class User {
 
   async addMGATokens(
     sudo: User,
-    amountFree: BN = new BN(Math.pow(10, 18).toString())
+    amountFree: BN = new BN(Math.pow(10, 20).toString())
   ) {
     await sudo.mint(MGA_ASSET_ID, this, amountFree);
   }
+
+  async addKSMTokens(sudo: User, amountFree: BN = toBN("1", 13)) {
+    await sudo.mint(KSM_ASSET_ID, this, amountFree);
+  }
+
   async getUserTokensAccountInfo() {
     const accountInfo = await getTokensAccountInfo(
       this.keyRingPair.address,

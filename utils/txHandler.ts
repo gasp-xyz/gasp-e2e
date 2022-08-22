@@ -9,8 +9,8 @@ import { env } from "process";
 import { EventResult, ExtrinsicResult } from "./eventListeners";
 import { testLog } from "./Logger";
 import { User } from "./User";
-import { MangataGenericEvent } from "mangata-sdk";
-import { signTx } from "mangata-sdk";
+import { MangataGenericEvent } from "@mangata-finance/sdk";
+import { signTx } from "@mangata-finance/sdk";
 import { AccountId32 } from "@polkadot/types/interfaces";
 
 //let wait 7 blocks - 6000 * 7 = 42000; depends on the number of workers.
@@ -18,7 +18,7 @@ import { AccountId32 } from "@polkadot/types/interfaces";
 export async function getCurrentNonce(account?: string) {
   const api = getApi();
   if (account) {
-    const { nonce } = await api.query.system.account(account);
+    const { nonce } = (await api.query.system.account(account)) as any;
     return nonce.toNumber();
   }
   return -1;
@@ -68,7 +68,7 @@ export async function getSudoKey(): Promise<AccountId32> {
 
   const sudoKey = await api.query.sudo.key();
 
-  return sudoKey.unwrap();
+  return (sudoKey as any).unwrap();
 }
 
 export const getNextAssetId = async () => {

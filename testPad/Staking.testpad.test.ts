@@ -14,7 +14,7 @@ import {
 import fs from "fs";
 import { Assets } from "../utils/Assets";
 import { hexToBn } from "@polkadot/util";
-import { signTx } from "mangata-sdk";
+import { signTx } from "@mangata-finance/sdk";
 import { FeeTxs } from "../utils/tx";
 
 require("dotenv").config();
@@ -153,7 +153,7 @@ describe("staking - testpad", () => {
     } catch (e) {
       await initApi();
     }
-    const mga = Mangata.getInstance(getEnvironmentRequiredVars().chainUri);
+    const mga = Mangata.getInstance([getEnvironmentRequiredVars().chainUri]);
     const api = await mga.getApi();
     keyring = new Keyring({ type: "sr25519" });
     const user = new User(keyring, "//Bob");
@@ -171,7 +171,7 @@ describe("staking - testpad", () => {
     } catch (e) {
       await initApi();
     }
-    const mga = Mangata.getInstance(getEnvironmentRequiredVars().chainUri);
+    const mga = Mangata.getInstance([getEnvironmentRequiredVars().chainUri]);
     const api = await mga.getApi();
     keyring = new Keyring({ type: "sr25519" });
     const user = new User(keyring, "//Bob");
@@ -189,7 +189,7 @@ describe("staking - testpad", () => {
     } catch (e) {
       await initApi();
     }
-    const mga = Mangata.getInstance(getEnvironmentRequiredVars().chainUri);
+    const mga = Mangata.getInstance([getEnvironmentRequiredVars().chainUri]);
     const api = await mga.getApi();
     keyring = new Keyring({ type: "sr25519" });
     const user = new User(keyring, "//Bob");
@@ -207,7 +207,7 @@ describe("staking - testpad", () => {
     } catch (e) {
       await initApi();
     }
-    const mga = Mangata.getInstance(getEnvironmentRequiredVars().chainUri);
+    const mga = Mangata.getInstance([getEnvironmentRequiredVars().chainUri]);
     const api = await mga.getApi();
     keyring = new Keyring({ type: "sr25519" });
     const user = new User(keyring, "//Bob");
@@ -232,7 +232,7 @@ describe("staking - testpad", () => {
     } catch (e) {
       await initApi();
     }
-    const mga = Mangata.getInstance(getEnvironmentRequiredVars().chainUri);
+    const mga = Mangata.getInstance([getEnvironmentRequiredVars().chainUri]);
     const api = await mga.getApi();
     keyring = new Keyring({ type: "sr25519" });
     const user = new User(keyring, "//Bob");
@@ -251,7 +251,7 @@ describe("staking - testpad", () => {
     } catch (e) {
       await initApi();
     }
-    const mga = Mangata.getInstance(getEnvironmentRequiredVars().chainUri);
+    const mga = Mangata.getInstance([getEnvironmentRequiredVars().chainUri]);
     const api = await mga.getApi();
     keyring = new Keyring({ type: "sr25519" });
     const user = new User(keyring, "//Bob");
@@ -365,10 +365,13 @@ describe("staking - testpad", () => {
     }
     keyring = new Keyring({ type: "sr25519" });
 
-    const json = fs.readFileSync(address + ".json", {
-      encoding: "utf8",
-      flag: "r",
-    });
+    const json = fs.readFileSync(
+      `/home/goncer/5FA3LcCrKMgr9WHqyvtDhDarAXRkJjoYrSy6XnZPKfwiB3sY.json`,
+      {
+        encoding: "utf8",
+        flag: "r",
+      }
+    );
     const user = new User(keyring, "aasd", JSON.parse(json));
     keyring.addPair(user.keyRingPair);
     keyring.pairs[0].decodePkcs8("mangata123");
@@ -393,10 +396,13 @@ describe("staking - testpad", () => {
     }
     keyring = new Keyring({ type: "sr25519" });
 
-    const json = fs.readFileSync(address + ".json", {
-      encoding: "utf8",
-      flag: "r",
-    });
+    const json = fs.readFileSync(
+      `/home/goncer/5FA3LcCrKMgr9WHqyvtDhDarAXRkJjoYrSy6XnZPKfwiB3sY.json`,
+      {
+        encoding: "utf8",
+        flag: "r",
+      }
+    );
 
     const testUser1 = new User(keyring, "aasd", JSON.parse(json));
     const user = testUser1;
@@ -415,7 +421,7 @@ describe("staking - testpad", () => {
         api.tx.tokens.mint(
           MGA_ASSET_ID,
           testUser1.keyRingPair.address,
-          new BN(Math.pow(10, 18).toString())
+          new BN(Math.pow(10, 20).toString())
         )
       ),
       sudo.keyRingPair,
@@ -466,18 +472,22 @@ describe("staking - testpad", () => {
     }
     keyring = new Keyring({ type: "sr25519" });
 
-    const json = fs.readFileSync(address + ".json", {
-      encoding: "utf8",
-      flag: "r",
-    });
+    const json = fs.readFileSync(
+      `/home/goncer/5FA3LcCrKMgr9WHqyvtDhDarAXRkJjoYrSy6XnZPKfwiB3sY.json`,
+      {
+        encoding: "utf8",
+        flag: "r",
+      }
+    );
     const user = new User(keyring, "aasd", JSON.parse(json));
     //const pk = u8aToHex(user.keyRingPair.publicKey);
 
     keyring.addPair(user.keyRingPair);
     keyring.pairs[0].decodePkcs8("mangata123");
 
-    const rpcResult = await api?.rpc.author.rotateKeys();
-
+    //    const rpcResult = await api?.rpc.author.rotateKeys();
+    const rpcResult =
+      "0xa02218669065017eb04a952e24e9ec1724d639449b8871d410df44883fb22c6d";
     await signSendAndWaitToFinishTx(
       api?.tx.session.setKeys(rpcResult.toString(), "0x00"),
       user.keyRingPair
