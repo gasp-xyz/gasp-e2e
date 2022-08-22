@@ -27,5 +27,5 @@ jobs:
         with:
           token: ${{ secrets.PAT_TRIGGER_JOB }}
           repository: "mangata-finance/mangata-e2e"
-          event-type: run-system-check
+          event-type: run-ci
           client-payload: '{"scriptName": "${{ github.event.inputs.scriptName }}", "environment": "${{ matrix.environment }}"}'
