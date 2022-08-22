@@ -5,7 +5,7 @@ import { MGA_ASSET_ID } from "../utils/Constants";
 import { User, AssetWallet } from "../utils/User";
 import { getEnvironmentRequiredVars } from "../utils/utils";
 import fs from "fs";
-import { signTx } from "@mangata-finance/sdk";
+import { MangataGenericEvent, signTx } from "@mangata-finance/sdk";
 import { burnLiquidity, createPoolIfMissing, mintLiquidity } from "../utils/tx";
 import { ApiPromise } from "@polkadot/api";
 import { WsProvider } from "@polkadot/rpc-provider/ws";
@@ -64,9 +64,9 @@ describe("staking - testpad", () => {
     );
     keyring.addPair(sudo.keyRingPair);
     await signTx(
-      api,
-      api.tx.sudo.sudo(
-        api.tx.tokens.mint(
+      api!,
+      api!.tx.sudo.sudo(
+        api!.tx.tokens.mint(
           MGA_ASSET_ID,
           sudo.keyRingPair.address,
           new BN("10000000000000000000")
@@ -75,13 +75,13 @@ describe("staking - testpad", () => {
       sudo.keyRingPair
     );
     await signTx(
-      api,
-      api.tx.sudo.sudo(api.tx.issuance.finalizeTge()),
+      api!,
+      api!.tx.sudo.sudo(api!.tx.issuance.finalizeTge()),
       sudo.keyRingPair
     );
     await signTx(
-      api,
-      api.tx.sudo.sudo(api.tx.issuance.initIssuanceConfig()),
+      api!,
+      api!.tx.sudo.sudo(api!.tx.issuance.initIssuanceConfig()),
       sudo.keyRingPair
     );
     await createPoolIfMissing(
@@ -113,9 +113,9 @@ describe("staking - testpad", () => {
       await testUser1.refreshAmounts(AssetWallet.BEFORE);
 
       await signTx(
-        api,
-        api.tx.sudo.sudo(
-          api.tx.tokens.mint(
+        api!,
+        api!.tx.sudo.sudo(
+          api!.tx.tokens.mint(
             MGA_ASSET_ID,
             testUser1.keyRingPair.address,
             new BN(amount)
@@ -124,9 +124,9 @@ describe("staking - testpad", () => {
         sudo.keyRingPair
       );
       await signTx(
-        api,
-        api.tx.sudo.sudo(
-          api.tx.tokens.mint(
+        api!,
+        api!.tx.sudo.sudo(
+          api!.tx.tokens.mint(
             tokenId,
             testUser1.keyRingPair.address,
             new BN(amount)
@@ -151,8 +151,8 @@ describe("staking - testpad", () => {
     );
     keyring.addPair(sudo.keyRingPair);
     await signTx(
-      api,
-      api.tx.sudo.sudo(api.tx.xyk.promotePool(liqtokenId)),
+      api!,
+      api!.tx.sudo.sudo(api!.tx.xyk.promotePool(liqtokenId)),
       sudo.keyRingPair
     );
   });
@@ -162,7 +162,7 @@ describe("staking - testpad", () => {
     const activate = false;
     const deactivate = false;
 
-    const promises = [];
+    const promises: Promise<MangataGenericEvent[]>[] = [];
     for (let index = 0; index < users.length; index++) {
       const address = users[index];
       const file = await fs.readFileSync(address + ".json");
@@ -197,8 +197,8 @@ describe("staking - testpad", () => {
       if (activate) {
         promises.push(
           signTx(
-            api,
-            api.tx.xyk.activateLiquidity(liqtokenId, amount.divn(2)),
+            api!,
+            api!.tx.xyk.activateLiquidity(liqtokenId, amount.divn(2)),
             testUser1.keyRingPair
           )
         );
@@ -206,8 +206,8 @@ describe("staking - testpad", () => {
       if (deactivate) {
         promises.push(
           signTx(
-            api,
-            api.tx.xyk.deactivateLiquidity(liqtokenId, amount.divn(2)),
+            api!,
+            api!.tx.xyk.deactivateLiquidity(liqtokenId, amount.divn(2)),
             testUser1.keyRingPair
           )
         );
@@ -217,7 +217,7 @@ describe("staking - testpad", () => {
   });
   test.skip("xyk-pallet: claim rewards", async () => {
     const addresses = users; //, address_1]; //, address_2, address_3, address_4];
-    const promises = [];
+    const promises: Promise<MangataGenericEvent[]>[] = [];
     for (let index = 0; index < addresses.length; index++) {
       const address = addresses[index];
       const file = await fs.readFileSync(address + ".json");
@@ -236,8 +236,8 @@ describe("staking - testpad", () => {
       );
       promises.push(
         signTx(
-          api,
-          api.tx.xyk.claimRewards(
+          api!,
+          api!.tx.xyk.claimRewards(
             liqtokenId,
             new BN(result.notYetClaimed.toString()).add(
               new BN(result.toBeClaimed.toString())
