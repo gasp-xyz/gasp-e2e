@@ -1,0 +1,31 @@
+name: Setup check
+
+on:
+  # schedule:
+    #- cron: "0 4 * * 1-5" #lets run this job at 04:00 on every day-of-week from Monday through Friday.
+
+  workflow_dispatch:
+      inputs:
+        scriptName:
+          description: 'Name of the script to run'
+          required: false
+          default: 'test-setup'
+
+      # For manually trigger
+ 
+jobs:
+
+  dispatch:
+
+    strategy:
+      matrix:
+        environment: ['Develop','Integration']
+    runs-on: ubuntu-latest
+    steps:
+      - name: Repository Dispatch
+        uses: peter-evans/repository-dispatch@v1
+        with:
+          token: ${{ secrets.PAT_TRIGGER_JOB }}
+          repository: "mangata-finance/mangata-e2e"
+          event-type: run-ci
+          client-payload: '{"scriptName": "${{ github.event.inputs.scriptName }}", "environment": "${{ matrix.environment }}"}'

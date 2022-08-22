@@ -18,8 +18,8 @@ on:
           default: 'false'
       # For manually trigger
  
-  # repository_dispatch:
-    # types: [run-ci]
+  repository_dispatch:
+    types: [run-ci]
 jobs:
 
   build:
