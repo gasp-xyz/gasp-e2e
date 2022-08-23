@@ -1,11 +1,11 @@
-import {BN} from "@polkadot/util";
-import {setupApi, setupUsers} from "../../../utils/v2/setup";
-import {Sudo} from "../../../utils/v2/sudo";
-import {Assets} from "../../../utils/v2/assets";
-import {AssetWallet, User} from "../../../utils/User";
-import {beforeAll, describe, expect, it} from "vitest";
-import {signSendFinalized} from "../../../utils/v2/event";
-import {Xyk} from "../../../utils/v2/xyk";
+import { BN } from "@polkadot/util";
+import { setupApi, setupUsers } from "../../../utils/v2/setup";
+import { Sudo } from "../../../utils/v2/sudo";
+import { Assets } from "../../../utils/v2/assets";
+import { AssetWallet, User } from "../../../utils/User";
+import { beforeAll, describe, expect, it } from "vitest";
+import { signSendFinalized } from "../../../utils/v2/event";
+import { Xyk } from "../../../utils/v2/xyk";
 
 const firstAssetAmount = new BN(50000);
 const secondAssetAmount = new BN(50000);

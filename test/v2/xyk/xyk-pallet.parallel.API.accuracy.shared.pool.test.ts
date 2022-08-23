@@ -7,7 +7,7 @@ import { beforeAll, beforeEach, describe, expect, it } from "vitest";
 import { signSendFinalized } from "../../../utils/v2/event";
 import { Xyk } from "../../../utils/v2/xyk";
 import { MGA_ASSET_ID } from "../../../utils/Constants";
-import {BN_ONE, BN_ZERO} from "@mangata-finance/sdk";
+import { BN_ONE, BN_ZERO } from "@mangata-finance/sdk";
 import { testLog } from "../../../utils/Logger";
 import { getBalanceOfAsset, getLiquidityAssetId } from "../../../utils/tx";
 

@@ -1,5 +1,5 @@
-import {BN} from "@polkadot/util";
-import {expect} from "vitest";
+import { BN } from "@polkadot/util";
+import { expect } from "vitest";
 
 require("dotenv").config();
 

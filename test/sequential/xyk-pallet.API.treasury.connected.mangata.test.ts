@@ -6,7 +6,7 @@
  * @group sequential
  * @group critical
  */
-import {getApi, getMangataInstance, initApi} from "../../utils/api";
+import { getApi, getMangataInstance, initApi } from "../../utils/api";
 import {
   buyAsset,
   calculate_buy_price_rpc,
@@ -17,13 +17,13 @@ import {
   getTreasuryBurn,
   sellAsset,
 } from "../../utils/tx";
-import {ExtrinsicResult, waitNewBlock} from "../../utils/eventListeners";
-import {BN} from "@polkadot/util";
-import {Keyring} from "@polkadot/api";
-import {AssetWallet, User} from "../../utils/User";
-import {validateTreasuryAmountsEqual} from "../../utils/validators";
-import {Assets} from "../../utils/Assets";
-import {MAX_BALANCE, MGA_ASSET_ID,} from "../../utils/Constants";
+import { ExtrinsicResult, waitNewBlock } from "../../utils/eventListeners";
+import { BN } from "@polkadot/util";
+import { Keyring } from "@polkadot/api";
+import { AssetWallet, User } from "../../utils/User";
+import { validateTreasuryAmountsEqual } from "../../utils/validators";
+import { Assets } from "../../utils/Assets";
+import { MAX_BALANCE, MGA_ASSET_ID } from "../../utils/Constants";
 import {
   calculateFees,
   findBlockWithExtrinsicSigned,
@@ -32,8 +32,8 @@ import {
   getTokensDiffForBlockAuthor,
   waitIfSessionWillChangeInNblocks,
 } from "../../utils/utils";
-import {getEventResultFromMangataTx} from "../../utils/txHandler";
-import {Fees} from "../../utils/Fees";
+import { getEventResultFromMangataTx } from "../../utils/txHandler";
+import { Fees } from "../../utils/Fees";
 
 jest.spyOn(console, "log").mockImplementation(jest.fn());
 jest.setTimeout(1500000);
