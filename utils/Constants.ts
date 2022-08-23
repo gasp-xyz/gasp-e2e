@@ -14,4 +14,6 @@ export const BTC_ASSET_ID = new BN(5);
 export const BTC_ASSET_NAME = "mBTC";
 export const USDC_ASSET_ID = new BN(6);
 export const USDC_ASSET_NAME = "mUSD";
+export const TUR_ASSET_ID = new BN(7);
+export const TUR_ASSET_NAME = "TUR";
 export const MAX_BALANCE = new BN("340282366920938463463374607431768211455"); //max balance
