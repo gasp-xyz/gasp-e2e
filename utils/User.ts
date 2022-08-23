@@ -17,7 +17,12 @@ import {
   transferAll,
 } from "./tx";
 import { getEventResultFromMangataTx } from "./txHandler";
-import { MAX_BALANCE, MGA_ASSET_ID, KSM_ASSET_ID } from "./Constants";
+import {
+  MAX_BALANCE,
+  MGA_ASSET_ID,
+  KSM_ASSET_ID,
+  TUR_ASSET_ID,
+} from "./Constants";
 import { strict as assert } from "assert";
 import { TokenBalance, toBN } from "@mangata-finance/sdk";
 
@@ -242,6 +247,10 @@ export class User {
 
   async addKSMTokens(sudo: User, amountFree: BN = toBN("1", 13)) {
     await sudo.mint(KSM_ASSET_ID, this, amountFree);
+  }
+
+  async addTURTokens(sudo: User, amountFree: BN = toBN("1", 11)) {
+    await sudo.mint(TUR_ASSET_ID, this, amountFree);
   }
 
   async getUserTokensAccountInfo() {
