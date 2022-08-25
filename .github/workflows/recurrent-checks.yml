@@ -4,6 +4,15 @@ on:
   schedule:
     - cron: "1 01 * * *" #lets run this job every 12 hours.
 
+  workflow_call:
+      inputs:
+        scriptName:
+          description: 'Name of the script to run'
+          required: false
+          default: 'test-ci'
+
+      # For any automatic trigger
+
   workflow_dispatch:
       inputs:
         scriptName:
