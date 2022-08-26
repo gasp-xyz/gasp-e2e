@@ -23,7 +23,7 @@ function difference(a1: any, a2: any) {
   const keyring = MangataHelpers.createKeyring("sr25519");
   const user = keyring.createFromJson(JSON.parse(file as any));
   keyring.addPair(user);
-  keyring.pairs[0].decodePkcs8("mangata123");
+  keyring.pairs[0].decodePkcs8("");
 
   const claimedRewardsKeys = await api.query.bootstrap.claimedRewards.keys();
   const alreadyClaimedAddresses = claimedRewardsKeys.map(
