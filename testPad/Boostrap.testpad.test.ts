@@ -2,7 +2,7 @@
 import { Keyring } from "@polkadot/api";
 import { BN, hexToU8a } from "@polkadot/util";
 import { api, getApi, initApi } from "../utils/api";
-import { getCurrentNonce } from "../utils/tx";
+import { getCurrentNonce, getNextAssetId } from "../utils/tx";
 import { MGA_ASSET_ID } from "../utils/Constants";
 import { User, AssetWallet } from "../utils/User";
 import {
@@ -34,6 +34,7 @@ let testUser1, sudo, keyring;
 // this will load the .json and perform the extrinsic action.
 // have fun!
 //*******END:HOW TO USE******** */
+let tokenId = 4;
 
 describe("Boostrap - testpad", () => {
   beforeAll(async () => {
@@ -42,6 +43,7 @@ describe("Boostrap - testpad", () => {
     } catch (e) {
       await initApi();
     }
+    tokenId = (await getNextAssetId()).toNumber();
   });
 
   //const address_2 =
@@ -56,7 +58,6 @@ describe("Boostrap - testpad", () => {
 
   const amount = "9000000000000000000000";
   //  const amount2 = "20000000000000000000";
-  const tokenId = 6;
   //  const liqCount = 2;
 
   test.skip("find error", async () => {
@@ -190,7 +191,7 @@ describe("Boostrap - testpad", () => {
           tokenId,
           block + 5,
           1,
-          30,
+          35,
           [1, 1000000]
         )
       )
@@ -251,7 +252,22 @@ describe("Boostrap - testpad", () => {
       .signAndSend(sudo.keyRingPair);
     await waitForNBlocks(4);
   });
-
+  test.each([address_1, address_2])("vested provision", async (address) => {
+    await waitForNBlocks(2);
+    const file = await fs.readFileSync(address + ".json");
+    keyring = new Keyring({ type: "sr25519" });
+    sudo = new User(keyring, sudoUserName);
+    testUser1 = new User(keyring, "asd", JSON.parse(file as any));
+    // add users to pair.
+    keyring.addPair(testUser1.keyRingPair);
+    keyring.addPair(sudo.keyRingPair);
+    keyring.pairs[0].decodePkcs8("mangata123");
+    await testUser1.refreshAmounts(AssetWallet.BEFORE);
+    await signSendAndWaitToFinishTx(
+      api!.tx.bootstrap.provisionVested(MGA_ASSET_ID, 1000),
+      testUser1.keyRingPair
+    );
+  });
   test.skip("fillcandidates", async () => {
     const n = 30;
     keyring = new Keyring({ type: "sr25519" });
