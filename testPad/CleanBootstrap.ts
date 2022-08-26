@@ -11,11 +11,13 @@ function difference(a1: any, a2: any) {
 }
 
 (async () => {
-  const liqToken = new BN(73);
-  const api = await Mangata.getInstance(["ws://127.0.0.1:8844"]).getApi();
+  const liqToken = new BN(9);
+  const api = await Mangata.getInstance([
+    "wss://roccoco-testnet-collator-01.mangatafinance.cloud",
+  ]).getApi();
 
   const file = fs.readFileSync(
-    "/home/goncer/accounts/5HQ9Mm9L1HG53htEGDMsnhkkL7hEfF9vLstEQPtMLX5Gupqx" +
+    "/home/goncer/accounts/5CthcoS3CYHoVHDMUacydayRLMzMWedKryjsrvzrmv3VHCKP" +
       ".json"
   );
   const keyring = MangataHelpers.createKeyring("sr25519");
@@ -28,8 +30,7 @@ function difference(a1: any, a2: any) {
     ({ args: [address] }) => address.toString()
   );
 
-  const provisionedAddresses =
-    await api.query.bootstrap.vestedProvisions.keys();
+  const provisionedAddresses = await api.query.bootstrap.provisions.keys();
   const provisioned = provisionedAddresses.map(({ args: [address] }) =>
     address.toString()
   );
