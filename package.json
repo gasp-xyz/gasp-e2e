@@ -8,7 +8,7 @@
   "private": true,
   "dependencies": {
     "@babel/plugin-proposal-decorators": "^7.17.8",
-    "@mangata-finance/sdk": "^1.5.0",
+    "@mangata-finance/sdk": "git+ssh://git@github.com:mangata-finance/mangata-sdk#feature/storage_queue",
     "@types/bs58": "^4.0.1",
     "@types/jsonpath": "^0.2.0",
     "@types/node": "^14.14.10",

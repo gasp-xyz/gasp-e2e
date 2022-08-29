@@ -1807,10 +1807,9 @@
   resolved "https://registry.yarnpkg.com/@ledgerhq/logs/-/logs-5.50.0.tgz#29c6419e8379d496ab6d0426eadf3c4d100cd186"
   integrity sha512-swKHYCOZUGyVt4ge0u8a7AwNcA//h4nx5wIi0sruGye1IJ5Cva0GyK9L2/WdX+kWVTKp92ZiEo1df31lrWGPgA==
 
-"@mangata-finance/sdk@^1.5.0":
+"@mangata-finance/sdk@git+ssh://git@github.com:mangata-finance/mangata-sdk#feature/storage_queue":
   version "1.5.0"
-  resolved "https://registry.yarnpkg.com/@mangata-finance/sdk/-/sdk-1.5.0.tgz#52f812ade2ed92ac478e20dbeb7ee94f51acbdfb"
-  integrity sha512-U7TSI8AsP+DRlG8bWZ5oBxniW6i+Dmy+AybeTzLoq4SoSl2Ie7tN2Q5IyFYR/vwalfruAXdeophl1cM0NnyNsg==
+  resolved "git+ssh://git@github.com:mangata-finance/mangata-sdk#971c48e5f1b2817e7532cc4c272c5f8ba02e225a"
   dependencies:
     "@mangata-finance/types" "^0.7.0"
     "@polkadot/api" "^8.8.2"
