@@ -9,7 +9,7 @@ import { getCurrentNonce } from "../../utils/tx";
 import { ExtrinsicResult } from "../../utils/eventListeners";
 import { BN } from "@polkadot/util";
 import { Keyring } from "@polkadot/api";
-import { Asset, User } from "../../utils/User";
+import { User } from "../../utils/User";
 import {
   getEnvironmentRequiredVars,
   getBlockNumber,
@@ -51,7 +51,7 @@ beforeAll(async () => {
 
   keyring.addPair(sudo.keyRingPair);
 
-  bootstrapCurrency = await Assets.issueAssetToUser(sudo, 1, sudo);
+  bootstrapCurrency = await Assets.issueAssetToUser(sudo, new BN(1), sudo);
 });
 
 beforeEach(async () => {
