@@ -1807,21 +1807,21 @@
   resolved "https://registry.yarnpkg.com/@ledgerhq/logs/-/logs-5.50.0.tgz#29c6419e8379d496ab6d0426eadf3c4d100cd186"
   integrity sha512-swKHYCOZUGyVt4ge0u8a7AwNcA//h4nx5wIi0sruGye1IJ5Cva0GyK9L2/WdX+kWVTKp92ZiEo1df31lrWGPgA==
 
-"@mangata-finance/sdk@1.0.11":
-  version "1.0.11"
-  resolved "https://registry.yarnpkg.com/@mangata-finance/sdk/-/sdk-1.0.11.tgz#e8c2ee13625b56590bee1f87a92171ee42757238"
-  integrity sha512-saDaMk+L3DFx4aSayoOa2Qv2JseT3RIUhDaiK9LvWQ6YOpnbgCSZfVG/pd0T/12z8AaxHoVNNXM8k5BJM+6hBQ==
+"@mangata-finance/sdk@^1.5.0":
+  version "1.5.0"
+  resolved "https://registry.yarnpkg.com/@mangata-finance/sdk/-/sdk-1.5.0.tgz#52f812ade2ed92ac478e20dbeb7ee94f51acbdfb"
+  integrity sha512-U7TSI8AsP+DRlG8bWZ5oBxniW6i+Dmy+AybeTzLoq4SoSl2Ie7tN2Q5IyFYR/vwalfruAXdeophl1cM0NnyNsg==
   dependencies:
-    "@mangata-finance/types" "^0.5.0"
+    "@mangata-finance/types" "^0.7.0"
     "@polkadot/api" "^8.8.2"
     big.js "^6.1.1"
     mangata-prng-xoshiro "^3.0.0"
     uuid "^8.3.2"
 
-"@mangata-finance/types@^0.5.0":
-  version "0.5.0"
-  resolved "https://registry.yarnpkg.com/@mangata-finance/types/-/types-0.5.0.tgz#4b917b5ec714887b4f3fe53d1876e1f0f180a1f9"
-  integrity sha512-15Jwtb+w6u0GmW7/pon2zeKmEOg3dbUrZMUXuE09zu6QWgAxkdsenBBQVSSRoZYpRvP4Ypjx4JZrl/165RNGPQ==
+"@mangata-finance/types@^0.7.0":
+  version "0.7.0"
+  resolved "https://registry.yarnpkg.com/@mangata-finance/types/-/types-0.7.0.tgz#5284745304574cd0409874ec0cbd6b30386bd96d"
+  integrity sha512-jt13+gTmFov3jLEZglra8m9vxekPgR8a4x0hjY80DVMkbxmmFbRkHGzGeRSV9ckWmDjEOkMiZxYBALIJ9cMscg==
 
 "@multiformats/base-x@^4.0.1":
   version "4.0.1"
