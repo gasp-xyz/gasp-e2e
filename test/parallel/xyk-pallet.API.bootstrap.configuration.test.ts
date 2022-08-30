@@ -137,6 +137,7 @@ test("xyk-pallet - Check happy path", async () => {
   // check that user can make provision while bootstrap running
   bootstrapPhase = await api.query.bootstrap.phase();
   if (bootstrapPhase.toString() === "Public") {
+    // new token must participate in provision as first
     await signTx(
       api,
       api.tx.bootstrap.provision(bootstrapCurrency, new BN(10000000)),
@@ -152,6 +153,7 @@ test("xyk-pallet - Check happy path", async () => {
 
     await waitForNBlocks(2);
 
+    // we need to add MGA token in the provision for creating a pool
     await signTx(
       api,
       api.tx.bootstrap.provision(MGA_ASSET_ID, new BN(10000000)),
@@ -201,6 +203,7 @@ test("xyk-pallet - Check existing pool", async () => {
 
 test("xyk-pallet - Check finalize", async () => {
   const api = getApi();
+  // need claim liquidity token before finalizing
   await signTx(
     api,
     api.tx.bootstrap.claimLiquidityTokens(),
