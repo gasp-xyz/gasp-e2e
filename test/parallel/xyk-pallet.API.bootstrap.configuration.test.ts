@@ -129,7 +129,7 @@ test("xyk-pallet - Check happy path", async () => {
     });
   } else {
     // eslint-disable-next-line jest/no-jasmine-globals
-    fail("checking BeforeStart phase's provision did not pass");
+    fail("bootstrap should be in the phase BeforeStart");
   }
 
   await waitForNBlocks(waitingPeriod);
@@ -168,7 +168,7 @@ test("xyk-pallet - Check happy path", async () => {
     });
   } else {
     // eslint-disable-next-line jest/no-jasmine-globals
-    fail("checking Public phase's provision did not pass");
+    fail("bootstrap should be in the phase Public");
   }
 
   await waitForNBlocks(bootstrapPeriod);
@@ -190,7 +190,7 @@ test("xyk-pallet - Check happy path", async () => {
     });
   } else {
     // eslint-disable-next-line jest/no-jasmine-globals
-    fail("checking Finished phase's provision did not pass");
+    fail("bootstrap should be in the phase Finished");
   }
 });
 
@@ -236,6 +236,6 @@ test("xyk-pallet - Check finalize", async () => {
   if (bootstrapPhase.toString() === "BeforeStart") {
   } else {
     // eslint-disable-next-line jest/no-jasmine-globals
-    fail("checking finishing bootstrap provision did not pass");
+    fail("system should be ready for the next bootstrap");
   }
 });
