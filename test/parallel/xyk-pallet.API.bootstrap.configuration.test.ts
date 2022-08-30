@@ -30,10 +30,11 @@ let sudo: User;
 let keyring: Keyring;
 let bootstrapPhase: any;
 let bootstrapCurrency: any;
+let bootstrapPool: any;
 
 const { sudo: sudoUserName } = getEnvironmentRequiredVars();
-const waitingPeriod = 10;
-const bootstrapPeriod = 30;
+const waitingPeriod = 20;
+const bootstrapPeriod = 40;
 
 beforeAll(async () => {
   try {
@@ -44,23 +45,18 @@ beforeAll(async () => {
 
   keyring = new Keyring({ type: "sr25519" });
 
-  sudo = new User(keyring, sudoUserName);
-
-  //add MGA tokens for sudo user.
-  await sudo.addMGATokens(sudo);
-
-  keyring.addPair(sudo.keyRingPair);
-
-  bootstrapCurrency = await Assets.issueAssetToUser(sudo, new BN(1), sudo);
-});
-
-beforeEach(async () => {
   // setup users
+  sudo = new User(keyring, sudoUserName);
   testUser1 = new User(keyring);
 
   // add users to pair.
+  keyring.addPair(sudo.keyRingPair);
   keyring.addPair(testUser1.keyRingPair);
 
+  bootstrapCurrency = await Assets.issueAssetToUser(sudo, toBN("1", 20), sudo);
+
+  //add MGA tokens for users.
+  await sudo.addMGATokens(sudo);
   await testUser1.addMGATokens(sudo);
 });
 
@@ -94,7 +90,6 @@ test("xyk-pallet - Check non-sudo user cannot start bootstrap", async () => {
 test("xyk-pallet - Check happy path", async () => {
   // check that sudo user can start bootstrap
   const api = getApi();
-  await sudo.mint(bootstrapCurrency, sudo, toBN("1", 20));
   const bootstrapBlockNumber = (await getBlockNumber()) + waitingPeriod;
   await signTx(
     api,
@@ -136,6 +131,7 @@ test("xyk-pallet - Check happy path", async () => {
     // eslint-disable-next-line jest/no-jasmine-globals
     fail("checking BeforeStart phase's provision did not pass");
   }
+
   await waitForNBlocks(waitingPeriod);
 
   // check that user can make provision while bootstrap running
@@ -143,7 +139,7 @@ test("xyk-pallet - Check happy path", async () => {
   if (bootstrapPhase.toString() === "Public") {
     await signTx(
       api,
-      api.tx.bootstrap.provision(MGA_ASSET_ID, new BN(10000000000)),
+      api.tx.bootstrap.provision(bootstrapCurrency, new BN(10000000)),
       testUser1.keyRingPair,
       {
         nonce: await getCurrentNonce(testUser1.keyRingPair.address),
@@ -153,9 +149,12 @@ test("xyk-pallet - Check happy path", async () => {
       // eslint-disable-next-line jest/no-conditional-expect
       expect(eventResponse.state).toEqual(ExtrinsicResult.ExtrinsicSuccess);
     });
+
+    await waitForNBlocks(2);
+
     await signTx(
       api,
-      api.tx.bootstrap.provision(bootstrapCurrency, new BN(10000000)),
+      api.tx.bootstrap.provision(MGA_ASSET_ID, new BN(10000000)),
       testUser1.keyRingPair,
       {
         nonce: await getCurrentNonce(testUser1.keyRingPair.address),
@@ -169,6 +168,7 @@ test("xyk-pallet - Check happy path", async () => {
     // eslint-disable-next-line jest/no-jasmine-globals
     fail("checking Public phase's provision did not pass");
   }
+
   await waitForNBlocks(bootstrapPeriod);
 
   // check that user can not make provision after bootstrap
@@ -192,14 +192,47 @@ test("xyk-pallet - Check happy path", async () => {
   }
 });
 
+test("xyk-pallet - Check existing pool", async () => {
+  const api = getApi();
+  bootstrapPool = await api.query.xyk.pools([MGA_ASSET_ID, bootstrapCurrency]);
+  expect(bootstrapPool[0]).bnGt(new BN(0));
+  expect(bootstrapPool[1]).bnGt(new BN(0));
+});
+
 test("xyk-pallet - Check finalize", async () => {
   const api = getApi();
   await signTx(
     api,
-    api.tx.sudo.sudo(api.tx.bootstrap.finalize()),
+    api.tx.bootstrap.claimLiquidityTokens(),
+    testUser1.keyRingPair,
+    {
+      nonce: await getCurrentNonce(testUser1.keyRingPair.address),
+    }
+  ).then((result) => {
+    const eventResponse = getEventResultFromMangataTx(result);
+    // eslint-disable-next-line jest/no-conditional-expect
+    expect(eventResponse.state).toEqual(ExtrinsicResult.ExtrinsicSuccess);
+  });
+
+  await signTx(
+    api,
+    api.tx.sudo.sudo(api.tx.bootstrap.finalize(null)),
     sudo.keyRingPair,
     {
       nonce: await getCurrentNonce(sudo.keyRingPair.address),
     }
-  );
+  ).then((result) => {
+    const eventResponse = getEventResultFromMangataTx(result);
+    // eslint-disable-next-line jest/no-conditional-expect
+    expect(eventResponse.state).toEqual(ExtrinsicResult.ExtrinsicSuccess);
+  });
+
+  await waitForNBlocks(6);
+
+  bootstrapPhase = await api.query.bootstrap.phase();
+  if (bootstrapPhase.toString() === "BeforeStart") {
+  } else {
+    // eslint-disable-next-line jest/no-jasmine-globals
+    fail("checking finishing bootstrap provision did not pass");
+  }
 });
