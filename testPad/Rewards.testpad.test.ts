@@ -40,21 +40,21 @@ describe("staking - testpad", () => {
     }
   });
   const address_2 =
-    "/home/goncer/5FA3LcCrKMgr9WHqyvtDhDarAXRkJjoYrSy6XnZPKfwiB3sY";
+    "/home/goncer/accounts/5FA3LcCrKMgr9WHqyvtDhDarAXRkJjoYrSy6XnZPKfwiB3sY";
 
   const address_1 =
-    "/home/goncer/5FfBQ3kwXrbdyoqLPvcXRp7ikWydXawpNs2Ceu3WwFdhZ8W4";
+    "/home/goncer/accounts/5FfBQ3kwXrbdyoqLPvcXRp7ikWydXawpNs2Ceu3WwFdhZ8W4";
 
   const address_3 =
-    "/home/goncer/5FRL15Qj6DdoULKswCz7zevqe97bnHuEix794pTeGK7MhfDS";
+    "/home/goncer/accounts/5FRL15Qj6DdoULKswCz7zevqe97bnHuEix794pTeGK7MhfDS";
 
   const address_4 =
-    "/home/goncer/5H6YCgW24Z8xJDvxytQnKTwgiJGgye3uqvfQTprBEYqhNbBy";
+    "/home/goncer/accounts/5H6YCgW24Z8xJDvxytQnKTwgiJGgye3uqvfQTprBEYqhNbBy";
 
-  const users = [address_1, address_2, address_3, address_4]; //, address_3, address_4];
-  const tokenId = new BN(4);
-  const liqtokenId = new BN(5);
-  const amount = new BN("100000000000000000000000000000");
+  const users = [address_1, address_3, address_4]; //, address_3, address_4];
+  const tokenId = new BN(12);
+  const liqtokenId = new BN(13);
+  let amount = new BN("100000000000000000000000000000");
   test("xyk-pallet: Finish tge and setup pool", async () => {
     keyring = new Keyring({ type: "sr25519" });
     sudo = new User(keyring, sudoUserName);
@@ -161,6 +161,7 @@ describe("staking - testpad", () => {
     const mint = true;
     const activate = false;
     const deactivate = false;
+    amount = new BN(1000000000);
 
     const promises: Promise<MangataGenericEvent[]>[] = [];
     for (let index = 0; index < users.length; index++) {

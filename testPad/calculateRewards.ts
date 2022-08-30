@@ -15,7 +15,7 @@ async function main() {
   ];
   const liq = process.env.liq ? process.env.liq : 5;
   const liqId = new BN(liq);
-  const provider = new WsProvider("ws://10.0.0.6:9944");
+  const provider = new WsProvider("ws://127.0.0.1:8844");
   const api = await new ApiPromise(options({ provider })).isReady;
   await api.rpc.chain.subscribeNewHeads((header) => {
     api.query.xyk.liquidityMiningActiveUser.entries().then((value) => {
@@ -31,7 +31,7 @@ async function main() {
 
     users.forEach((user) => {
       (api.rpc as any).xyk
-        .calculate_rewards_amount(user, liqId)
+        .calculateRewardsAmountV2(user, liqId)
         .then((result: any) => {
           const str = `${user}:${header.number}:${(
             result as any
