@@ -729,15 +729,16 @@ export async function scheduleBootstrap(
   return result;
 }
 
-export async function provisionBootstrap(user: User, bootstrapCurrency: BN) {
+export async function provisionBootstrap(
+  user: User,
+  bootstrapCurrency: BN,
+  bootstrapAmmount: BN
+) {
   const api = getApi();
   const result = await signTx(
     api,
-    api.tx.bootstrap.provision(bootstrapCurrency, new BN(10000000000)),
-    user.keyRingPair,
-    {
-      nonce: await getCurrentNonce(user.keyRingPair.address),
-    }
+    api.tx.bootstrap.provision(bootstrapCurrency, bootstrapAmmount),
+    user.keyRingPair
   );
   return result;
 }
@@ -747,10 +748,7 @@ export async function claimRewardsBootstrap(user: User) {
   const result = await signTx(
     api,
     api.tx.bootstrap.claimLiquidityTokens(),
-    user.keyRingPair,
-    {
-      nonce: await getCurrentNonce(user.keyRingPair.address),
-    }
+    user.keyRingPair
   );
   return result;
 }
