@@ -12,7 +12,7 @@ import { User } from "./User";
 export class Assets {
   ///This method create or return the specified number of available assets
   static async getCurrencies(numAssets: number = 2, sudoUser: User) {
-    const currencies = [];
+    const currencies: string[] = [];
     const numberOfcurrencies = parseInt((await getNextAssetId()).toString());
 
     if (numAssets > numberOfcurrencies) {
@@ -39,7 +39,7 @@ export class Assets {
     currencyValues = [new BN(250000), new BN(250001)],
     sudo: User
   ): Promise<BN[]> {
-    const currencies = [];
+    const currencies: BN[] = [];
     for (let currency = 0; currency < currencyValues.length; currency++) {
       const currencyId = await this.issueAssetToUser(
         user,
