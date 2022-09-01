@@ -1,12 +1,18 @@
+/* eslint-disable no-console */
 import { Keyring } from "@polkadot/api";
 import { BN } from "@polkadot/util";
 import { api, getApi, initApi } from "../utils/api";
 import { MGA_ASSET_ID } from "../utils/Constants";
 import { User, AssetWallet } from "../utils/User";
-import { getEnvironmentRequiredVars } from "../utils/utils";
+import { getEnvironmentRequiredVars, waitForNBlocks } from "../utils/utils";
 import fs from "fs";
 import { MangataGenericEvent, signTx } from "@mangata-finance/sdk";
-import { burnLiquidity, createPoolIfMissing, mintLiquidity } from "../utils/tx";
+import {
+  burnLiquidity,
+  createPoolIfMissing,
+  getNextAssetId,
+  mintLiquidity,
+} from "../utils/tx";
 import { ApiPromise } from "@polkadot/api";
 import { WsProvider } from "@polkadot/rpc-provider/ws";
 import { options } from "@mangata-finance/types";
@@ -39,6 +45,7 @@ describe("staking - testpad", () => {
       await initApi();
     }
   });
+  //TODO:Fix paths
   const address_2 =
     "/home/goncer/accounts/5FA3LcCrKMgr9WHqyvtDhDarAXRkJjoYrSy6XnZPKfwiB3sY";
 
@@ -52,10 +59,10 @@ describe("staking - testpad", () => {
     "/home/goncer/accounts/5H6YCgW24Z8xJDvxytQnKTwgiJGgye3uqvfQTprBEYqhNbBy";
 
   const users = [address_1, address_2, address_3, address_4]; //, address_3, address_4];
-  const tokenId = new BN(12);
-  const liqtokenId = new BN(13);
+  let tokenId = new BN(0);
+  let liqtokenId = new BN(1);
   let amount = new BN("100000000000000000000000000000");
-  test("xyk-pallet: Finish tge and setup pool", async () => {
+  test.skip("xyk-pallet: Finish tge and setup pool", async () => {
     keyring = new Keyring({ type: "sr25519" });
     sudo = new User(keyring, sudoUserName);
     await fs.writeFileSync(
@@ -91,29 +98,56 @@ describe("staking - testpad", () => {
       tokenId
     );
   });
-  test.each(users)(
-    "xyk-pallet: Create new users with bonded amounts.",
-    async (address) => {
-      const file = await fs.readFileSync(address + ".json");
-      keyring = new Keyring({ type: "sr25519" });
-      sudo = new User(keyring, sudoUserName);
-      testUser1 = new User(keyring, "asd", JSON.parse(file.toString()));
-      await fs.writeFileSync(
-        testUser1.keyRingPair.address + ".json",
-        JSON.stringify(testUser1.keyRingPair.toJson("mangata123"))
-      );
-      await fs.writeFileSync(
-        sudo.keyRingPair.address + ".json",
-        JSON.stringify(sudo.keyRingPair.toJson("mangata123"))
-      );
-      // add users to pair.
-      keyring.addPair(testUser1.keyRingPair);
-      keyring.addPair(sudo.keyRingPair);
-      keyring.pairs[0].decodePkcs8("mangata123");
-      await testUser1.refreshAmounts(AssetWallet.BEFORE);
 
-      await signTx(
-        api!,
+  test("bump tokens to ids", async () => {
+    keyring = new Keyring({ type: "sr25519" });
+    sudo = new User(keyring, sudoUserName);
+    keyring.addPair(sudo.keyRingPair);
+    tokenId = (await getNextAssetId()).subn(1);
+    liqtokenId = await getNextAssetId();
+    await api!.tx.utility
+      .batch([
+        api!.tx.sudo.sudo(
+          api!.tx.tokens.create(sudo.keyRingPair.address, new BN(amount))
+        ),
+        api!.tx.sudo.sudo(
+          api!.tx.tokens.create(sudo.keyRingPair.address, new BN(amount))
+        ),
+        api!.tx.sudo.sudo(
+          api!.tx.tokens.create(sudo.keyRingPair.address, new BN(amount))
+        ),
+        api!.tx.sudo.sudo(
+          api!.tx.tokens.create(sudo.keyRingPair.address, new BN(amount))
+        ),
+        api!.tx.sudo.sudo(
+          api!.tx.tokens.create(sudo.keyRingPair.address, new BN(amount))
+        ),
+      ])
+      .signAndSend(sudo.keyRingPair);
+    await waitForNBlocks(3);
+    tokenId = (await getNextAssetId()).subn(1);
+    liqtokenId = await getNextAssetId();
+    console.info("assetID = " + tokenId.toString());
+    console.info("assetID = " + liqtokenId.toString());
+  });
+  test("mint toknes to users and create pool", async () => {
+    const file = await fs.readFileSync(address_1 + ".json");
+    const file2 = await fs.readFileSync(address_2 + ".json");
+    const file3 = await fs.readFileSync(address_3 + ".json");
+    const file4 = await fs.readFileSync(address_4 + ".json");
+    keyring = new Keyring({ type: "sr25519" });
+    sudo = new User(keyring, sudoUserName);
+    testUser1 = new User(keyring, "asd", JSON.parse(file.toString()));
+    const testUser2 = new User(keyring, "asd", JSON.parse(file2.toString()));
+    const testUser3 = new User(keyring, "asd", JSON.parse(file3.toString()));
+    const testUser4 = new User(keyring, "asd", JSON.parse(file4.toString()));
+    // add users to pair.
+    keyring.addPair(testUser1.keyRingPair);
+    keyring.addPair(sudo.keyRingPair);
+    keyring.pairs[0].decodePkcs8("mangata123");
+    await testUser1.refreshAmounts(AssetWallet.BEFORE);
+    await api!.tx.utility
+      .batch([
         api!.tx.sudo.sudo(
           api!.tx.tokens.mint(
             MGA_ASSET_ID,
@@ -121,10 +155,6 @@ describe("staking - testpad", () => {
             new BN(amount)
           )
         ),
-        sudo.keyRingPair
-      );
-      await signTx(
-        api!,
         api!.tx.sudo.sudo(
           api!.tx.tokens.mint(
             tokenId,
@@ -132,16 +162,58 @@ describe("staking - testpad", () => {
             new BN(amount)
           )
         ),
-        sudo.keyRingPair
-      );
-      await createPoolIfMissing(
-        sudo,
-        "10000000000000000000",
-        MGA_ASSET_ID,
-        tokenId
-      );
-    }
-  );
+        api!.tx.sudo.sudo(
+          api!.tx.tokens.mint(
+            MGA_ASSET_ID,
+            testUser2.keyRingPair.address,
+            new BN(amount)
+          )
+        ),
+        api!.tx.sudo.sudo(
+          api!.tx.tokens.mint(
+            tokenId,
+            testUser2.keyRingPair.address,
+            new BN(amount)
+          )
+        ),
+        api!.tx.sudo.sudo(
+          api!.tx.tokens.mint(
+            MGA_ASSET_ID,
+            testUser3.keyRingPair.address,
+            new BN(amount)
+          )
+        ),
+        api!.tx.sudo.sudo(
+          api!.tx.tokens.mint(
+            tokenId,
+            testUser3.keyRingPair.address,
+            new BN(amount)
+          )
+        ),
+        api!.tx.sudo.sudo(
+          api!.tx.tokens.mint(
+            MGA_ASSET_ID,
+            testUser4.keyRingPair.address,
+            new BN(amount)
+          )
+        ),
+        api!.tx.sudo.sudo(
+          api!.tx.tokens.mint(
+            tokenId,
+            testUser4.keyRingPair.address,
+            new BN(amount)
+          )
+        ),
+      ])
+      .signAndSend(sudo.keyRingPair);
+    await waitForNBlocks(3);
+    await createPoolIfMissing(
+      sudo,
+      "10000000000000000000",
+      MGA_ASSET_ID,
+      tokenId
+    );
+  });
   test("xyk-pallet: promote pool", async () => {
     keyring = new Keyring({ type: "sr25519" });
     sudo = new User(keyring, sudoUserName);
@@ -161,7 +233,7 @@ describe("staking - testpad", () => {
     const mint = true;
     const activate = false;
     const deactivate = false;
-    amount = new BN(1000000000);
+    amount = new BN(100000);
 
     const promises: Promise<MangataGenericEvent[]>[] = [];
     for (let index = 0; index < users.length; index++) {
