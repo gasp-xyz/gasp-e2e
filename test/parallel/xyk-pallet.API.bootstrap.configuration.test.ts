@@ -65,12 +65,9 @@ beforeAll(async () => {
 
   const api = getApi();
 
+  // check that system is ready to bootstrap
   bootstrapPhase = await api.query.bootstrap.phase();
-  if (bootstrapPhase.toString() === "BeforeStart") {
-  } else {
-    // eslint-disable-next-line jest/no-jasmine-globals
-    fail("system is not ready for the bootstrap");
-  }
+  expect(bootstrapPhase.toString()).toEqual("BeforeStart");
 });
 
 test("xyk-pallet - Check non-sudo user cannot start bootstrap", async () => {
@@ -103,7 +100,6 @@ test("xyk-pallet - Check happy path", async () => {
 
   // check that user can not make provision before bootstrap
   const api = getApi();
-
   bootstrapPhase = await api.query.bootstrap.phase();
   expect(bootstrapPhase.toString()).toEqual("BeforeStart");
   const provisionBeforeStart = await provisionBootstrap(
@@ -163,6 +159,7 @@ test("xyk-pallet - Check happy path", async () => {
   expect(bootstrapPool[0]).bnEqual(bootstrapAmount);
   expect(bootstrapPool[1]).bnEqual(bootstrapAmount);
   const bootstrapPoolBalance = bootstrapPool[0].add(bootstrapPool[1]) / 2;
+
   // need claim liquidity token before finalizing
   const claimRewards = await claimRewardsBootstrap(testUser1);
   eventResponse = getEventResultFromMangataTx(claimRewards);
@@ -172,17 +169,19 @@ test("xyk-pallet - Check happy path", async () => {
     MGA_ASSET_ID,
     bootstrapCurrency
   );
+
+  // check that the user's balance of liquidity token is equal the pool's balance
   const userBalance = await getBalanceOfAsset(
     liquidityID,
     testUser1.keyRingPair.address.toString()
   );
   expect(toNumber(userBalance.free)).toEqual(bootstrapPoolBalance);
+
   // finalaze bootstrap
   const bootstrapFinalize = await finalizeBootstrap(sudo);
   eventResponse = getEventResultFromMangataTx(bootstrapFinalize);
   // eslint-disable-next-line jest/no-conditional-expect
   expect(eventResponse.state).toEqual(ExtrinsicResult.ExtrinsicSuccess);
-
   bootstrapPhase = await api.query.bootstrap.phase();
   expect(bootstrapPhase.toString()).toEqual("BeforeStart");
 });
