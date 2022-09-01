@@ -38,7 +38,7 @@ let eventResponse: EventResult;
 const { sudo: sudoUserName } = getEnvironmentRequiredVars();
 const waitingPeriod = 20;
 const bootstrapPeriod = 40;
-const bootstrapAmmount = toBN("1", 10);
+const bootstrapAmount = toBN("1", 10);
 
 beforeAll(async () => {
   try {
@@ -109,7 +109,7 @@ test("xyk-pallet - Check happy path", async () => {
   const provisionBeforeStart = await provisionBootstrap(
     testUser1,
     bootstrapCurrency,
-    bootstrapAmmount
+    bootstrapAmount
   );
   eventResponse = getEventResultFromMangataTx(provisionBeforeStart);
   // eslint-disable-next-line jest/no-conditional-expect
@@ -126,7 +126,7 @@ test("xyk-pallet - Check happy path", async () => {
   const provisionPublicBootstrapCurrency = await provisionBootstrap(
     testUser1,
     bootstrapCurrency,
-    bootstrapAmmount
+    bootstrapAmount
   );
   eventResponse = getEventResultFromMangataTx(provisionPublicBootstrapCurrency);
   // eslint-disable-next-line jest/no-conditional-expect
@@ -136,7 +136,7 @@ test("xyk-pallet - Check happy path", async () => {
   const provisionPublicMGA = await provisionBootstrap(
     testUser1,
     MGA_ASSET_ID,
-    bootstrapAmmount
+    bootstrapAmount
   );
   eventResponse = getEventResultFromMangataTx(provisionPublicMGA);
   // eslint-disable-next-line jest/no-conditional-expect
@@ -150,7 +150,7 @@ test("xyk-pallet - Check happy path", async () => {
   const provisionFinished = await provisionBootstrap(
     testUser1,
     bootstrapCurrency,
-    bootstrapAmmount
+    bootstrapAmount
   );
   eventResponse = getEventResultFromMangataTx(provisionFinished);
   // eslint-disable-next-line jest/no-conditional-expect
@@ -160,8 +160,8 @@ test("xyk-pallet - Check happy path", async () => {
 
   // Check existing pool
   bootstrapPool = await api.query.xyk.pools([MGA_ASSET_ID, bootstrapCurrency]);
-  expect(bootstrapPool[0]).bnEqual(bootstrapAmmount);
-  expect(bootstrapPool[1]).bnEqual(bootstrapAmmount);
+  expect(bootstrapPool[0]).bnEqual(bootstrapAmount);
+  expect(bootstrapPool[1]).bnEqual(bootstrapAmount);
   const bootstrapPoolBalance = bootstrapPool[0].add(bootstrapPool[1]) / 2;
   // need claim liquidity token before finalizing
   const claimRewards = await claimRewardsBootstrap(testUser1);

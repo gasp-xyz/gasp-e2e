@@ -732,12 +732,12 @@ export async function scheduleBootstrap(
 export async function provisionBootstrap(
   user: User,
   bootstrapCurrency: BN,
-  bootstrapAmmount: BN
+  bootstrapAmount: BN
 ) {
   const api = getApi();
   const result = await signTx(
     api,
-    api.tx.bootstrap.provision(bootstrapCurrency, bootstrapAmmount),
+    api.tx.bootstrap.provision(bootstrapCurrency, bootstrapAmount),
     user.keyRingPair
   );
   return result;
