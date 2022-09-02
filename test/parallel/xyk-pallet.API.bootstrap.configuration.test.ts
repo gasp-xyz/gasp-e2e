@@ -70,7 +70,7 @@ beforeAll(async () => {
   expect(bootstrapPhase.toString()).toEqual("BeforeStart");
 });
 
-test("xyk-pallet - Check non-sudo user cannot start bootstrap", async () => {
+test("bootstrap - Check non-sudo user cannot start bootstrap", async () => {
   // check that non-sudo user can not start bootstrap
   await sudo.mint(bootstrapCurrency, testUser1, toBN("1", 20));
   const nonSudoBootstrap = await scheduleBootstrap(
@@ -85,7 +85,7 @@ test("xyk-pallet - Check non-sudo user cannot start bootstrap", async () => {
   expect(eventResponse.data).toContain("RequireSudo");
 });
 
-test("xyk-pallet - Check happy path", async () => {
+test("bootstrap - Check happy path bootstrap with one user", async () => {
   // check that sudo user can start bootstrap
   await sudo.mint(bootstrapCurrency, testUser1, toBN("1", 20));
   const sudoBootstrap = await scheduleBootstrap(
