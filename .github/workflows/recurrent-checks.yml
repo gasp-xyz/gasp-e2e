@@ -10,6 +10,7 @@ on:
           description: 'Name of the script to run'
           required: false
           default: 'test-ci'
+          type: string
 
       # For any automatic trigger
 
