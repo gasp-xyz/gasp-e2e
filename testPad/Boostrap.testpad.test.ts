@@ -2,7 +2,7 @@
 import { Keyring } from "@polkadot/api";
 import { BN, hexToU8a } from "@polkadot/util";
 import { api, getApi, initApi } from "../utils/api";
-import { getCurrentNonce } from "../utils/tx";
+import { getCurrentNonce, getNextAssetId } from "../utils/tx";
 import { MGA_ASSET_ID } from "../utils/Constants";
 import { User, AssetWallet } from "../utils/User";
 import {
@@ -12,7 +12,7 @@ import {
 } from "../utils/utils";
 
 import fs from "fs";
-import { createPoolIfMissing, mintLiquidity } from "../utils/tx";
+import { mintLiquidity } from "../utils/tx";
 import { signSendAndWaitToFinishTx } from "../utils/txHandler";
 
 require("dotenv").config();
@@ -34,6 +34,7 @@ let testUser1, sudo, keyring;
 // this will load the .json and perform the extrinsic action.
 // have fun!
 //*******END:HOW TO USE******** */
+let tokenId = 4;
 
 describe("Boostrap - testpad", () => {
   beforeAll(async () => {
@@ -42,6 +43,7 @@ describe("Boostrap - testpad", () => {
     } catch (e) {
       await initApi();
     }
+    tokenId = (await getNextAssetId()).toNumber();
   });
 
   //const address_2 =
@@ -56,10 +58,9 @@ describe("Boostrap - testpad", () => {
 
   const amount = "9000000000000000000000";
   //  const amount2 = "20000000000000000000";
-  const tokenId = 6;
   //  const liqCount = 2;
 
-  test("find error", async () => {
+  test.skip("find error", async () => {
     try {
       getApi();
     } catch (e) {
@@ -166,57 +167,108 @@ describe("Boostrap - testpad", () => {
         ])
         .signAndSend(sudo.keyRingPair);
       await waitForNBlocks(3);
-      await createPoolIfMissing(sudo, amount, new BN(0), new BN(tokenId), true);
+      //      await createPoolIfMissing(sudo, amount, new BN(1), new BN(tokenId), true);
 
-      await mintLiquidity(
-        testUser1.keyRingPair,
-        new BN(0),
-        new BN(tokenId),
-        new BN(amount).divn(2),
-        new BN(amount).divn(2).addn(1)
-      );
+      //      await mintLiquidity(
+      //        testUser1.keyRingPair,
+      //        new BN(0),
+      //        new BN(tokenId),
+      //        new BN(amount).divn(2),
+      //        new BN(amount).divn(2).addn(1)
+      //      );
     }
   );
-  test.each([address_1, address_2])(
-    "xyk-pallet: force vested",
-    async (address) => {
-      const file = await fs.readFileSync(address + ".json");
-      keyring = new Keyring({ type: "sr25519" });
-      sudo = new User(keyring, sudoUserName);
-      testUser1 = new User(keyring, "asd", JSON.parse(file as any));
-      await fs.writeFileSync(
-        testUser1.keyRingPair.address + ".json",
-        JSON.stringify(testUser1.keyRingPair.toJson("mangata123"))
-      );
-      await fs.writeFileSync(
-        sudo.keyRingPair.address + ".json",
-        JSON.stringify(sudo.keyRingPair.toJson("mangata123"))
-      );
-      // add users to pair.
-      keyring.addPair(testUser1.keyRingPair);
-      keyring.addPair(sudo.keyRingPair);
-      keyring.pairs[0].decodePkcs8("mangata123");
-      await testUser1.refreshAmounts(AssetWallet.BEFORE);
-      const block = await getBlockNumber();
-      await api!.tx.sudo
-        .sudo(
-          api!.tx.vesting.forceVestedTransfer(
-            0,
-            sudo.keyRingPair.address,
-            testUser1.keyRingPair.address,
-            {
-              locked: amount,
-              perBlock: new BN(amount).divn(1000),
-              startingBlock: block + 100,
-            }
-          )
+  test("schedule boostrap", async () => {
+    keyring = new Keyring({ type: "sr25519" });
+    sudo = new User(keyring, sudoUserName);
+    // add users to pair.
+    keyring.addPair(sudo.keyRingPair);
+    const block = await getBlockNumber();
+    await api!.tx.sudo
+      .sudo(
+        api!.tx.bootstrap.scheduleBootstrap(
+          MGA_ASSET_ID,
+          tokenId,
+          block + 5,
+          1,
+          35,
+          [1, 1000000]
         )
-        .signAndSend(sudo.keyRingPair);
-      await waitForNBlocks(4);
-    }
-  );
-
-  test("fillcandidates", async () => {
+      )
+      .signAndSend(sudo.keyRingPair);
+  });
+  test.each([address_1, address_2])("provision", async (address) => {
+    await waitForNBlocks(2);
+    const file = await fs.readFileSync(address + ".json");
+    keyring = new Keyring({ type: "sr25519" });
+    sudo = new User(keyring, sudoUserName);
+    testUser1 = new User(keyring, "asd", JSON.parse(file as any));
+    // add users to pair.
+    keyring.addPair(testUser1.keyRingPair);
+    keyring.addPair(sudo.keyRingPair);
+    keyring.pairs[0].decodePkcs8("mangata123");
+    await testUser1.refreshAmounts(AssetWallet.BEFORE);
+    await signSendAndWaitToFinishTx(
+      api!.tx.bootstrap.provision(tokenId, 1000000000000),
+      testUser1.keyRingPair
+    );
+    await signSendAndWaitToFinishTx(
+      api!.tx.bootstrap.provision(MGA_ASSET_ID, 1000),
+      testUser1.keyRingPair
+    );
+  });
+  test.each([address_1, address_2])("force vested", async (address) => {
+    const file = await fs.readFileSync(address + ".json");
+    keyring = new Keyring({ type: "sr25519" });
+    sudo = new User(keyring, sudoUserName);
+    testUser1 = new User(keyring, "asd", JSON.parse(file as any));
+    await fs.writeFileSync(
+      testUser1.keyRingPair.address + ".json",
+      JSON.stringify(testUser1.keyRingPair.toJson("mangata123"))
+    );
+    await fs.writeFileSync(
+      sudo.keyRingPair.address + ".json",
+      JSON.stringify(sudo.keyRingPair.toJson("mangata123"))
+    );
+    // add users to pair.
+    keyring.addPair(testUser1.keyRingPair);
+    keyring.addPair(sudo.keyRingPair);
+    keyring.pairs[0].decodePkcs8("mangata123");
+    await testUser1.refreshAmounts(AssetWallet.BEFORE);
+    const block = await getBlockNumber();
+    await api!.tx.sudo
+      .sudo(
+        api!.tx.vesting.forceVestedTransfer(
+          0,
+          sudo.keyRingPair.address,
+          testUser1.keyRingPair.address,
+          {
+            locked: amount,
+            perBlock: new BN(amount).divn(1000),
+            startingBlock: block + 100,
+          }
+        )
+      )
+      .signAndSend(sudo.keyRingPair);
+    await waitForNBlocks(4);
+  });
+  test.each([address_1, address_2])("vested provision", async (address) => {
+    await waitForNBlocks(2);
+    const file = await fs.readFileSync(address + ".json");
+    keyring = new Keyring({ type: "sr25519" });
+    sudo = new User(keyring, sudoUserName);
+    testUser1 = new User(keyring, "asd", JSON.parse(file as any));
+    // add users to pair.
+    keyring.addPair(testUser1.keyRingPair);
+    keyring.addPair(sudo.keyRingPair);
+    keyring.pairs[0].decodePkcs8("mangata123");
+    await testUser1.refreshAmounts(AssetWallet.BEFORE);
+    await signSendAndWaitToFinishTx(
+      api!.tx.bootstrap.provisionVested(MGA_ASSET_ID, 1000),
+      testUser1.keyRingPair
+    );
+  });
+  test.skip("fillcandidates", async () => {
     const n = 30;
     keyring = new Keyring({ type: "sr25519" });
     sudo = new User(keyring, sudoUserName);
@@ -331,9 +383,7 @@ describe("Boostrap - testpad", () => {
     }
     await waitForNBlocks(1000);
   });
-  //1,217,650,526,262,469,198
-  //1,217,656,012,176,560,121
-  //1,095,890,663,000,041,491 <- 9x merges
+
   const list = [
     "5H1DjPmMmYFfdMSf5WtS9yCeUCURSb5w9h2dhbBGUdAANK2A",
     "5C8Gup1Ffm5f63Qs4HwwRiJFdX8gMHPMcq6GrKPCk9Wk89Lq",
