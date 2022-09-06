@@ -3,11 +3,11 @@ name: CI check
 on:
   schedule:
     - cron: "1 14 * * *" #lets run this job every 12 hours.
- 
+  workflow_dispatch:
 jobs:
 
   dispatch:
-
+  
     strategy:
       matrix:
         environment: ['Develop','Integration']
