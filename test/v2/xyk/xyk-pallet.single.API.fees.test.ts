@@ -1,7 +1,6 @@
 import { BN } from "@polkadot/util";
-import { setupApi, setupUsers } from "../../../utils/v2/setup";
-import { Sudo } from "../../../utils/v2/sudo";
-import { Assets } from "../../../utils/v2/assets";
+import { setupApi, setupUsers } from "../../../utils/setup";
+import { Sudo } from "../../../utils/sudo";
 import { BN_HUNDRED, BN_ONE, BN_THOUSAND, BN_ZERO } from "@mangata-finance/sdk";
 import { AssetWallet, User } from "../../../utils/User";
 import {
@@ -10,9 +9,10 @@ import {
   getTokensDiffForBlockAuthor,
 } from "../../../utils/utils";
 import { MGA_ASSET_ID } from "../../../utils/Constants";
-import { signSendFinalized } from "../../../utils/v2/event";
-import { Xyk } from "../../../utils/v2/xyk";
+import { Xyk } from "../../../utils/xyk";
 import { getNextAssetId } from "../../../utils/tx";
+import { Assets } from "../../../utils/Assets";
+import { signSendFinalized } from "../../../utils/eventListeners";
 
 /**
  * @group v2/critical

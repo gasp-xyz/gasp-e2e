@@ -1,9 +1,9 @@
 import { ApiPromise, Keyring } from "@polkadot/api";
-import { getEnvironmentRequiredVars } from "../utils";
-import { User } from "../User";
+import { getEnvironmentRequiredVars } from "./utils";
+import { User } from "./User";
 import "@mangata-finance/types";
 import { SubmittableExtrinsic } from "@polkadot/api/types";
-import { getApi, initApi } from "../api";
+import { getApi, initApi } from "./api";
 
 // API
 export let api: ApiPromise;

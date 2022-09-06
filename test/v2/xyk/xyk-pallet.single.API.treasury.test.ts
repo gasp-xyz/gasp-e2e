@@ -1,7 +1,6 @@
 import { BN } from "@polkadot/util";
-import { setupApi, setupUsers } from "../../../utils/v2/setup";
-import { Sudo } from "../../../utils/v2/sudo";
-import { Assets } from "../../../utils/v2/assets";
+import { setupApi, setupUsers } from "../../../utils/setup";
+import { Sudo } from "../../../utils/sudo";
 import {
   calculate_buy_price_id_rpc,
   calculate_buy_price_rpc,
@@ -12,10 +11,9 @@ import {
   getTreasury,
   getTreasuryBurn,
 } from "../../../utils/tx";
-import { Xyk } from "../../../utils/v2/xyk";
+import { Xyk } from "../../../utils/xyk";
 import { MGA_ASSET_ID } from "../../../utils/Constants";
 import { AssetWallet, User } from "../../../utils/User";
-import { signSendFinalized } from "../../../utils/v2/event";
 import {
   calculateFees,
   findBlockWithExtrinsicSigned,
@@ -24,6 +22,8 @@ import {
 } from "../../../utils/utils";
 import { BN_ONE, BN_ZERO } from "@mangata-finance/sdk";
 import { testLog } from "../../../utils/Logger";
+import { Assets } from "../../../utils/Assets";
+import { signSendFinalized } from "../../../utils/eventListeners";
 
 const asset_amount1 = new BN(500000);
 const asset_amount2 = asset_amount1.div(new BN(2));

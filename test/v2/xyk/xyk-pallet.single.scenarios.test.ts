@@ -4,7 +4,6 @@ import {
   getEnvironmentRequiredVars,
   xykErrors,
 } from "../../../utils/utils";
-import { keyring, setupApi, setupUsers } from "../../../utils/v2/setup";
 import {
   calcuate_burn_liquidity_price_local,
   calcuate_mint_liquidity_price_local,
@@ -17,13 +16,18 @@ import {
   getNextAssetId,
 } from "../../../utils/tx";
 import { BN_ONE, BN_ZERO } from "@mangata-finance/sdk";
-import { Sudo } from "../../../utils/v2/sudo";
-import { Assets } from "../../../utils/v2/assets";
-import { BN } from "@polkadot/util";
-import { Xyk } from "../../../utils/v2/xyk";
+import {
+  EventResult,
+  ExtrinsicResult,
+  signSendFinalized,
+} from "../../../utils/eventListeners";
 import { AssetWallet, User } from "../../../utils/User";
-import { signSendFinalized } from "../../../utils/v2/event";
-import { EventResult, ExtrinsicResult } from "../../../utils/eventListeners";
+import { BN } from "@polkadot/util";
+import { keyring, setupApi, setupUsers } from "../../../utils/setup";
+import { Assets } from "../../../utils/Assets";
+import { Sudo } from "../../../utils/sudo";
+import { Xyk } from "../../../utils/xyk";
+import { testLog } from "../../../utils/Logger";
 
 function assetsAfterFree(user: User): BN[] {
   return user.assets.map((asset) => asset.amountAfter.free);
@@ -78,15 +82,49 @@ describe("xyk-pallet: Happy case scenario", () => {
     user2.assets.pop();
   });
 
-  beforeEach(async () => {
+  it("xyk-pallet: Happy case scenario", async () => {
+    testLog.getLog().info("running section: createPoolTest");
+    await refreshAmounts();
+    await createPoolTest();
+
+    testLog.getLog().info("running section: mintLiquidityTest");
+    await refreshAmounts();
+    await mintLiquidityTest();
+
+    testLog.getLog().info("running section: transferTest");
+    await refreshAmounts();
+    await transferTest();
+
+    testLog.getLog().info("running section: sellAsset1Test");
+    await refreshAmounts();
+    await sellAsset1Test();
+
+    testLog.getLog().info("running section: sellAsset2Test");
+    await refreshAmounts();
+    await sellAsset2Test();
+
+    testLog.getLog().info("running section: buyAsset2Test");
+    await refreshAmounts();
+    await buyAsset2Test();
+
+    testLog.getLog().info("running section: buyAsset1Test");
+    await refreshAmounts();
+    await buyAsset1Test();
+
+    testLog.getLog().info("running section: burnLiquidityTest");
+    await refreshAmounts();
+    await burnLiquidityTest();
+  });
+
+  async function refreshAmounts() {
     await user1.refreshAmounts(AssetWallet.BEFORE);
     await user2.refreshAmounts(AssetWallet.BEFORE);
     await xykPalletUser.refreshAmounts(AssetWallet.BEFORE);
     poolBalanceBefore = await getBalanceOfPool(assetId1, assetId2);
     totalLiquidityAssetsBefore = await getAssetSupply(liquidityAssetId);
-  });
+  }
 
-  it("xyk-pallet: create pool", async () => {
+  async function createPoolTest() {
     const assetAmount1 = new BN(50000);
     const assetAmount2 = new BN(50000);
 
@@ -128,9 +166,9 @@ describe("xyk-pallet: Happy case scenario", () => {
     expect(totalLiquidityAssetsBefore.add(liquidityAssetsMinted)).bnEqual(
       totalLiquidityAssets
     );
-  });
+  }
 
-  it("xyk-pallet: mint liquidity", async () => {
+  async function mintLiquidityTest() {
     const assetAmount1 = new BN(30000);
     const [assetAmount2, liquidityAssetsMinted] =
       await calcuate_mint_liquidity_price_local(
@@ -173,9 +211,9 @@ describe("xyk-pallet: Happy case scenario", () => {
     expect(totalLiquidityAssetsBefore.add(liquidityAssetsMinted)).bnEqual(
       totalLiquidityAssets
     );
-  });
+  }
 
-  it("xyk-pallet: transfer", async () => {
+  async function transferTest() {
     const amount = new BN(100000);
     await signSendFinalized(Assets.transfer(user2, assetId1, amount), user1);
 
@@ -204,9 +242,9 @@ describe("xyk-pallet: Happy case scenario", () => {
 
     const totalLiquidityAssets = await getAssetSupply(liquidityAssetId);
     expect(totalLiquidityAssetsBefore).bnEqual(totalLiquidityAssets);
-  });
+  }
 
-  it("xyk-pallet: sell asset1", async () => {
+  async function sellAsset1Test() {
     const amount = new BN(30000);
     const sellPriceLocal = calculate_sell_price_local(
       poolBalanceBefore[0],
@@ -250,9 +288,9 @@ describe("xyk-pallet: Happy case scenario", () => {
 
     const totalLiquidityAssets = await getAssetSupply(liquidityAssetId);
     expect(totalLiquidityAssetsBefore).bnEqual(totalLiquidityAssets);
-  });
+  }
 
-  it("xyk-pallet: sell asset2", async () => {
+  async function sellAsset2Test() {
     const amount = new BN(20000);
     const sellPriceLocal = calculate_sell_price_local(
       poolBalanceBefore[1],
@@ -296,9 +334,9 @@ describe("xyk-pallet: Happy case scenario", () => {
 
     const totalLiquidityAssets = await getAssetSupply(liquidityAssetId);
     expect(totalLiquidityAssetsBefore).bnEqual(totalLiquidityAssets);
-  });
+  }
 
-  it("xyk-pallet: buy asset2", async () => {
+  async function buyAsset2Test() {
     const amount = new BN(10000);
     const buyPriceLocal = calculate_buy_price_local(
       poolBalanceBefore[0],
@@ -345,9 +383,9 @@ describe("xyk-pallet: Happy case scenario", () => {
 
     const totalLiquidityAssets = await getAssetSupply(liquidityAssetId);
     expect(totalLiquidityAssetsBefore).bnEqual(totalLiquidityAssets);
-  });
+  }
 
-  it("xyk-pallet: buy asset1", async () => {
+  async function buyAsset1Test() {
     const amount = new BN(10000);
     const buyPriceLocal = calculate_buy_price_local(
       poolBalanceBefore[1],
@@ -394,9 +432,9 @@ describe("xyk-pallet: Happy case scenario", () => {
 
     const totalLiquidityAssets = await getAssetSupply(liquidityAssetId);
     expect(totalLiquidityAssetsBefore).bnEqual(totalLiquidityAssets);
-  });
+  }
 
-  it("xyk-pallet: burn liquidity", async () => {
+  async function burnLiquidityTest() {
     const amount = new BN(20000);
     const [assetAmount1, assetAmount2] =
       await calcuate_burn_liquidity_price_local(assetId1, assetId2, amount);
@@ -433,7 +471,7 @@ describe("xyk-pallet: Happy case scenario", () => {
     expect(totalLiquidityAssetsBefore.sub(amount)).bnEqual(
       totalLiquidityAssets
     );
-  });
+  }
 });
 
 describe("xyk-pallet: Liquidity sufficiency scenario", () => {
@@ -497,15 +535,83 @@ describe("xyk-pallet: Liquidity sufficiency scenario", () => {
     user2.assets.pop();
   });
 
-  beforeEach(async () => {
+  it("xyk-pallet: Liquidity sufficiency scenario", async () => {
+    testLog.getLog().info("running section: transferAasset1Test");
+    await refreshAmounts();
+    await transferAasset1Test();
+
+    testLog.getLog().info("running section: transferAsset2Test");
+    await refreshAmounts();
+    await transferAsset2Test();
+
+    testLog.getLog().info("running section: createPoolTest");
+    await refreshAmounts();
+    await createPoolTest();
+
+    testLog.getLog().info("running section: mintLiquidityTest");
+    await refreshAmounts();
+    await mintLiquidityTest();
+
+    testLog.getLog().info("running section: mintLiquidityUser2Test");
+    await refreshAmounts();
+    await mintLiquidityUser2Test();
+
+    testLog.getLog().info("running section: burnMoreLiquidityThanTheyHaveTest");
+    await refreshAmounts();
+    await burnMoreLiquidityThanTheyHaveTest();
+
+    testLog
+      .getLog()
+      .info("running section: burnMoreLiquidityThanTheyHaveUser2Test");
+    await refreshAmounts();
+    await burnMoreLiquidityThanTheyHaveUser2Test();
+
+    testLog.getLog().info("running section: burnAllLiquidityTest");
+    await refreshAmounts();
+    await burnAllLiquidityTest();
+
+    testLog
+      .getLog()
+      .info(
+        "running section: burnMoreLiquidityThanTheyHaveUser2Has100OfThePoolTest"
+      );
+    await refreshAmounts();
+    await burnMoreLiquidityThanTheyHaveUser2Has100OfThePoolTest();
+
+    testLog.getLog().info("running section: burnAllLiquidityUser2Test");
+    await refreshAmounts();
+    await burnAllLiquidityUser2Test();
+
+    testLog.getLog().info("running section: burnLiquidityFromEmptyPoolTest");
+    await refreshAmounts();
+    await burnLiquidityFromEmptyPoolTest();
+
+    testLog.getLog().info("running section: sellAsset1FromEmptyPoolTest");
+    await refreshAmounts();
+    await sellAsset1FromEmptyPoolTest();
+
+    testLog.getLog().info("running section: sellAsset2FromEmptyPoolTest");
+    await refreshAmounts();
+    await sellAsset2FromEmptyPoolTest();
+
+    testLog.getLog().info("running section: buyAsset1FromEmptyPoolTest");
+    await refreshAmounts();
+    await buyAsset1FromEmptyPoolTest();
+
+    testLog.getLog().info("running section: buyAsset2FromEmptyPoolTest");
+    await refreshAmounts();
+    await buyAsset2FromEmptyPoolTest();
+  });
+
+  async function refreshAmounts() {
     await user1.refreshAmounts(AssetWallet.BEFORE);
     await user2.refreshAmounts(AssetWallet.BEFORE);
     await xykPalletUser.refreshAmounts(AssetWallet.BEFORE);
     poolBalanceBefore = await getBalanceOfPool(assetId1, assetId2);
     totalLiquidityAssetsBefore = await getAssetSupply(liquidityAssetId);
-  });
+  }
 
-  it("xyk-pallet: transfer asset1", async () => {
+  async function transferAasset1Test() {
     const amount = new BN(100000);
     await signSendFinalized(Assets.transfer(user2, assetId1, amount), user1);
 
@@ -524,9 +630,9 @@ describe("xyk-pallet: Liquidity sufficiency scenario", () => {
       user2.getAsset(assetId2)!.amountBefore.free,
       BN_ZERO,
     ]).collectionBnEqual(assetsAfterFree(user2));
-  });
+  }
 
-  it("xyk-pallet: transfer asset2", async () => {
+  async function transferAsset2Test() {
     const amount = new BN(100000);
     await signSendFinalized(Assets.transfer(user2, assetId2, amount), user1);
 
@@ -545,9 +651,9 @@ describe("xyk-pallet: Liquidity sufficiency scenario", () => {
       user2.getAsset(assetId2)!.amountBefore.free.add(amount),
       BN_ZERO,
     ]).collectionBnEqual(assetsAfterFree(user2));
-  });
+  }
 
-  it("xyk-pallet: create pool", async () => {
+  async function createPoolTest() {
     const assetAmount1 = new BN(60000);
     const assetAmount2 = new BN(60000);
 
@@ -589,37 +695,37 @@ describe("xyk-pallet: Liquidity sufficiency scenario", () => {
     expect(totalLiquidityAssetsBefore.add(liquidityAssetsMinted)).bnEqual(
       totalLiquidityAssets
     );
-  });
+  }
 
-  it("xyk-pallet: mint liquidity", async () => {
+  async function mintLiquidityTest() {
     await mint(user1, user2);
-  });
+  }
 
-  it("xyk-pallet: mint liquidity, user2", async () => {
+  async function mintLiquidityUser2Test() {
     await mint(user2, user1);
-  });
+  }
 
-  it("xyk-pallet: burn more liquidity than they have", async () => {
+  async function burnMoreLiquidityThanTheyHaveTest() {
     await burnLiquidityFail(user1);
-  });
+  }
 
-  it("xyk-pallet: burn more liquidity than they have, user2", async () => {
+  async function burnMoreLiquidityThanTheyHaveUser2Test() {
     await burnLiquidityFail(user2);
-  });
+  }
 
-  it("xyk-pallet: burn all liquidity", async () => {
+  async function burnAllLiquidityTest() {
     await burnAll(user1, user2);
-  });
+  }
 
-  it("xyk-pallet: burn more liquidity than they have, user2 has 100% of the pool", async () => {
+  async function burnMoreLiquidityThanTheyHaveUser2Has100OfThePoolTest() {
     await burnLiquidityFail(user2);
-  });
+  }
 
-  it("xyk-pallet: burn all liquidity, user2", async () => {
+  async function burnAllLiquidityUser2Test() {
     await burnAll(user2, user1);
-  });
+  }
 
-  it("xyk-pallet: burn liquidity from empty pool", async () => {
+  async function burnLiquidityFromEmptyPoolTest() {
     const amount = new BN(10000);
 
     await signSendFinalized(
@@ -628,23 +734,23 @@ describe("xyk-pallet: Liquidity sufficiency scenario", () => {
     ).catch(checkError(xykErrors.NoSuchPool));
 
     await expectNoChange();
-  });
+  }
 
-  it("xyk-pallet: sell asset1 from empty pool", async () => {
+  async function sellAsset1FromEmptyPoolTest() {
     await sellAssetFail(assetId1, assetId2);
-  });
+  }
 
-  it("xyk-pallet: sell asset2 from empty pool", async () => {
+  async function sellAsset2FromEmptyPoolTest() {
     await sellAssetFail(assetId2, assetId1);
-  });
+  }
 
-  it("xyk-pallet: buy asset1 from empty pool", async () => {
+  async function buyAsset1FromEmptyPoolTest() {
     await buyAssetFail(assetId1, assetId2);
-  });
+  }
 
-  it("xyk-pallet: buy asset2 from empty pool", async () => {
+  async function buyAsset2FromEmptyPoolTest() {
     await buyAssetFail(assetId2, assetId1);
-  });
+  }
 
   async function mint(user: User, other: User) {
     const assetAmount1 = new BN(20000);
