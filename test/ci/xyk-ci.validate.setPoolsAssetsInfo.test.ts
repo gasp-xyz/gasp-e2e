@@ -106,7 +106,7 @@ test("xyk-CI - Check if pool MGA-mKSM, MGA-mBTC and MGA-mUSD exist", async () =>
   const balanceMGABTC = await getBalanceOfPool(MGA_ASSET_ID, BTC_ASSET_ID);
   const balanceMGAUSD = await getBalanceOfPool(MGA_ASSET_ID, USDC_ASSET_ID);
 
-  if (balanceMGAKSM[0] === new BN(0)) {
+  if (balanceMGAKSM[0].isZero()) {
     await sudo.mint(KSM_ASSET_ID, sudo, toBN("1", 17));
     await sudo.createPoolToAsset(
       oth_asets_amount,
@@ -116,7 +116,7 @@ test("xyk-CI - Check if pool MGA-mKSM, MGA-mBTC and MGA-mUSD exist", async () =>
     );
   }
 
-  if (balanceMGABTC[0] === new BN(0)) {
+  if (balanceMGABTC[0].isZero()) {
     await sudo.mint(BTC_ASSET_ID, sudo, toBN("1", 23));
     await sudo.createPoolToAsset(
       oth_asets_amount,
@@ -126,7 +126,7 @@ test("xyk-CI - Check if pool MGA-mKSM, MGA-mBTC and MGA-mUSD exist", async () =>
     );
   }
 
-  if (balanceMGAUSD[0] === new BN(0)) {
+  if (balanceMGAUSD[0].isZero()) {
     await sudo.mint(USDC_ASSET_ID, sudo, toBN("1", 23));
     await sudo.createPoolToAsset(
       oth_asets_amount,
