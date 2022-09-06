@@ -154,7 +154,7 @@ describe("MPL: Collators", () => {
       testUser1.keyRingPair,
       liqTokenForCandidate,
       liqTokensAmount,
-      "stakedunactivatedliquidity"
+      "stakedunactivatedreserves"
     );
     const mplStatus = await getMultiPurposeLiquidityStatus(
       testUser1.keyRingPair.address,
@@ -229,7 +229,7 @@ describe("MPL: Collators - Activated liq", () => {
     await testUser1.joinAsCandidate(
       liqTokenForCandidate,
       liqTokensAmount,
-      "activatedunstakedliquidity"
+      "activatedunstakedreserves"
     );
 
     const mplStatus = await getMultiPurposeLiquidityStatus(

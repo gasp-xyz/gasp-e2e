@@ -20,16 +20,7 @@ RUN wget -q -O - https://dl-ssl.google.com/linux/linux_signing_key.pub | apt-key
 RUN apt-get update && apt-get -y install google-chrome-stable
 
 RUN git clone -b ${BRANCH} https://github.com/mangata-finance/mangata-e2e.git 
-WORKDIR mangata-e2e
+WORKDIR /mangata-e2e
 
 RUN rm -rf ./node_modules yarn.lock 
 RUN yarn
-
-
-
-
-
-
-
-
-
