@@ -2,16 +2,7 @@ name: CI check
 
 on:
   schedule:
-    - cron: "1 01 * * *" #lets run this job every 12 hours.
-
-  workflow_dispatch:
-      inputs:
-        scriptName:
-          description: 'Name of the script to run'
-          required: false
-          default: 'test-ci'
-
-      # For manually trigger
+    - cron: "1 14 * * *" #lets run this job every 12 hours.
  
 jobs:
 
@@ -28,4 +19,4 @@ jobs:
           token: ${{ secrets.PAT_TRIGGER_JOB }}
           repository: "mangata-finance/mangata-e2e"
           event-type: run-ci
-          client-payload: '{"scriptName": "${{ github.event.inputs.scriptName || 'test-ci' }}", "environment": "${{ matrix.environment }}"}'
+          client-payload: '{"scriptName": "test-ci", "environment": "${{ matrix.environment }}"}'
