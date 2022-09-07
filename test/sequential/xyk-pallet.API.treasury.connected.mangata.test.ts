@@ -1,11 +1,5 @@
 /* eslint-disable jest/no-conditional-expect */
-/*
- *
- * @group xyk
- * @group api
- * @group sequential
- * @group critical
- */
+// todo remove test once v2 is passing on CI for some time
 import { getApi, getMangataInstance, initApi } from "../../utils/api";
 import {
   buyAsset,

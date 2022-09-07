@@ -3,7 +3,7 @@ import {
   calculateLiqAssetAmount,
   getEnvironmentRequiredVars,
   xykErrors,
-} from "../../../utils/utils";
+} from "../../utils/utils";
 import {
   calcuate_burn_liquidity_price_local,
   calcuate_mint_liquidity_price_local,
@@ -14,20 +14,20 @@ import {
   getAssetSupply,
   getBalanceOfPool,
   getNextAssetId,
-} from "../../../utils/tx";
+} from "../../utils/tx";
 import { BN_ONE, BN_ZERO } from "@mangata-finance/sdk";
 import {
   EventResult,
   ExtrinsicResult,
   signSendFinalized,
-} from "../../../utils/eventListeners";
-import { AssetWallet, User } from "../../../utils/User";
+} from "../../utils/eventListeners";
+import { AssetWallet, User } from "../../utils/User";
 import { BN } from "@polkadot/util";
-import { keyring, setupApi, setupUsers } from "../../../utils/setup";
-import { Assets } from "../../../utils/Assets";
-import { Sudo } from "../../../utils/sudo";
-import { Xyk } from "../../../utils/xyk";
-import { testLog } from "../../../utils/Logger";
+import { keyring, setupApi, setupUsers } from "../../utils/setup";
+import { Assets } from "../../utils/Assets";
+import { Sudo } from "../../utils/sudo";
+import { Xyk } from "../../utils/xyk";
+import { testLog } from "../../utils/Logger";
 
 function assetsAfterFree(user: User): BN[] {
   return user.assets.map((asset) => asset.amountAfter.free);
@@ -38,7 +38,9 @@ function assetsBeforeFree(user: User): BN[] {
 }
 
 /**
- * @group v2/critical
+ * @group xyk
+ * @group sequential
+ * @group critical
  */
 describe("xyk-pallet: Happy case scenario", () => {
   let xykPalletUser: User;

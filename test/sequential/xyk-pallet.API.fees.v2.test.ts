@@ -1,21 +1,24 @@
 import { BN } from "@polkadot/util";
-import { setupApi, setupUsers } from "../../../utils/setup";
-import { Sudo } from "../../../utils/sudo";
+import { setupApi, setupUsers } from "../../utils/setup";
+import { Sudo } from "../../utils/sudo";
 import { BN_HUNDRED, BN_ONE, BN_THOUSAND, BN_ZERO } from "@mangata-finance/sdk";
-import { AssetWallet, User } from "../../../utils/User";
+import { AssetWallet, User } from "../../utils/User";
 import {
   findBlockWithExtrinsicSigned,
   getBlockNumber,
   getTokensDiffForBlockAuthor,
-} from "../../../utils/utils";
-import { MGA_ASSET_ID } from "../../../utils/Constants";
-import { Xyk } from "../../../utils/xyk";
-import { getNextAssetId } from "../../../utils/tx";
-import { Assets } from "../../../utils/Assets";
-import { signSendFinalized } from "../../../utils/eventListeners";
+} from "../../utils/utils";
+import { MGA_ASSET_ID } from "../../utils/Constants";
+import { Xyk } from "../../utils/xyk";
+import { getNextAssetId } from "../../utils/tx";
+import { Assets } from "../../utils/Assets";
+import { signSendFinalized } from "../../utils/eventListeners";
 
 /**
- * @group v2/critical
+ * @group xyk
+ * @group api
+ * @group sequential
+ * @group critical
  */
 describe("API fees test suite", () => {
   let currency1: BN;

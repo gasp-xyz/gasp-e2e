@@ -1,6 +1,6 @@
 import { BN } from "@polkadot/util";
-import { setupApi, setupUsers } from "../../../utils/setup";
-import { Sudo } from "../../../utils/sudo";
+import { setupApi, setupUsers } from "../../utils/setup";
+import { Sudo } from "../../utils/sudo";
 import {
   calculate_buy_price_id_rpc,
   calculate_buy_price_rpc,
@@ -10,20 +10,20 @@ import {
   getNextAssetId,
   getTreasury,
   getTreasuryBurn,
-} from "../../../utils/tx";
-import { Xyk } from "../../../utils/xyk";
-import { MGA_ASSET_ID } from "../../../utils/Constants";
-import { AssetWallet, User } from "../../../utils/User";
+} from "../../utils/tx";
+import { Xyk } from "../../utils/xyk";
+import { MGA_ASSET_ID } from "../../utils/Constants";
+import { AssetWallet, User } from "../../utils/User";
 import {
   calculateFees,
   findBlockWithExtrinsicSigned,
   getBlockNumber,
   getTokensDiffForBlockAuthor,
-} from "../../../utils/utils";
+} from "../../utils/utils";
 import { BN_ONE, BN_ZERO } from "@mangata-finance/sdk";
-import { testLog } from "../../../utils/Logger";
-import { Assets } from "../../../utils/Assets";
-import { signSendFinalized } from "../../../utils/eventListeners";
+import { testLog } from "../../utils/Logger";
+import { Assets } from "../../utils/Assets";
+import { signSendFinalized } from "../../utils/eventListeners";
 
 const asset_amount1 = new BN(500000);
 const asset_amount2 = asset_amount1.div(new BN(2));
@@ -41,7 +41,10 @@ async function validateTreasuryAmountsEqual(
 }
 
 /**
- * @group v2/critical
+ * @group xyk
+ * @group api
+ * @group sequential
+ * @group critical
  */
 describe("xyk-pallet - treasury tests [Mangata]: on treasury we store", () => {
   let currency: BN;
