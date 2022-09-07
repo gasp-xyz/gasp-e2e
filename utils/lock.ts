@@ -14,5 +14,5 @@ export const unlockSudoFile = function () {
 
 export const removeSudoDb = function () {
   const lockPath = "nonce.db";
-  return promises.unlink(lockPath);
+  return promises.unlink(lockPath).catch(() => {});
 };
