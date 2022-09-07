@@ -9,8 +9,9 @@ export class testLog {
   private static instance: Logger;
 
   private static initializeLogger(): Logger {
+    const id = env.JEST_WORKER_ID || env.VITEST_WORKER_ID;
     const myFormat = printf(({ level, message, timestamp }) => {
-      return `[${timestamp}] - W[${env.JEST_WORKER_ID}] - [${level}]: ${message}`;
+      return `[${timestamp}] - W[${id}] - [${level}]: ${message}`;
     });
 
     const files = new winston.transports.File({
