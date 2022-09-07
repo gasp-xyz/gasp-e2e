@@ -1,7 +1,7 @@
 /*
  *
  * @group bootstrap
- * @group parallel
+ * @group sequential
  */
 import { getApi, initApi } from "../../utils/api";
 import {
