@@ -17,7 +17,6 @@ import { testLog } from "./Logger";
 import { KeyringPair } from "@polkadot/keyring/types";
 import { MangataGenericEvent, signTx, toBN } from "@mangata-finance/sdk";
 import { AnyJson } from "@polkadot/types/types";
-import { isInteger, toInteger, toSafeInteger } from "lodash";
 
 export const signTxDeprecated = async (
   tx: SubmittableExtrinsic<"promise">,
@@ -757,7 +756,6 @@ export async function provisionVestedBootstrap(
   );
   return result;
 }
-
 
 export async function claimRewardsBootstrap(user: User) {
   const api = getApi();
