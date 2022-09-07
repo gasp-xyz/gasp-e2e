@@ -61,6 +61,7 @@ describe("xyk-pallet - Sell Asset: validate Errors:", () => {
       JSON.stringify(await api?.query.parachainStaking.candidatePool())
     );
     await signSendAndWaitToFinishTx(
+      // @ts-ignore
       api?.tx.parachainStaking.joinCandidates(
         new BN("10000000000000000000"),
         new BN(3),
