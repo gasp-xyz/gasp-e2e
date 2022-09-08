@@ -1,3 +1,4 @@
+/* eslint-disable jest/no-conditional-expect */
 /*
  *
  * @group bootstrap
@@ -41,6 +42,7 @@ let bootstrapCurrency: any;
 let bootstrapPool: any;
 let bootstrapUser1Liquidity: any;
 let bootstrapUser2Liquidity: any;
+let bootstrapExpectedUserLiquidity: BN;
 let eventResponse: EventResult;
 
 const { sudo: sudoUserName } = getEnvironmentRequiredVars();
@@ -167,7 +169,7 @@ async function bootstrapRunning(
   );
 
   const bootstrapUser2Liquidity = await api.query.tokens.accounts(
-    testUser1.keyRingPair.address,
+    testUser2.keyRingPair.address,
     liquidityID
   );
 
@@ -178,109 +180,99 @@ async function bootstrapRunning(
   };
 }
 
-describe.each`
-  prompoted | vested
-    true | true
-    true | true
-    true | true
-`("bootstrap - checking bootstrapped pool in different situations", () => {
-  beforeAll(async () => {
-    try {
-      getApi();
-    } catch (e) {
-      await initApi();
-    }
+beforeAll(async () => {
+  try {
+    getApi();
+  } catch (e) {
+    await initApi();
+  }
 
-    keyring = new Keyring({ type: "sr25519" });
+  keyring = new Keyring({ type: "sr25519" });
 
-    sudo = new User(keyring, sudoUserName);
-    keyring.addPair(sudo.keyRingPair);
+  sudo = new User(keyring, sudoUserName);
+  keyring.addPair(sudo.keyRingPair);
 
-    await sudo.addMGATokens(sudo);
-  });
-
-  beforeEach(async () => {
-    const api = getApi();
-    bootstrapPhase = await api.query.bootstrap.phase();
-    if (bootstrapPhase.toString() === "Finished") {
-      const bootstrapFinalize = await finalizeBootstrap(sudo);
-      eventResponse = getEventResultFromMangataTx(bootstrapFinalize);
-      expect(eventResponse.state).toEqual(ExtrinsicResult.ExtrinsicSuccess);
-
-      await waitForNBlocks(4);
-    }
-
-    expect(bootstrapPhase.toString()).toEqual("BeforeStart");
-
-    bootstrapCurrency = await Assets.issueAssetToUser(
-      sudo,
-      toBN("1", 20),
-      sudo
-    );
-
-    testUser1 = new User(keyring);
-    keyring.addPair(testUser1.keyRingPair);
-
-    testUser2 = new User(keyring);
-    keyring.addPair(testUser2.keyRingPair);
-  });
-
-  test("bootstrap - GIVEN a user who provisioned  AND  bootstrap is finished WHEN pool was  promoted THEN claim and activate successfully works AND rewards are activated", async () => {
-    const bootstrapFunction = await bootstrapRunning(true, false);
-    bootstrapUser1Liquidity = bootstrapFunction.bootstrapUser1Liquidity;
-    bootstrapUser2Liquidity = bootstrapFunction.bootstrapUser2Liquidity;
-    const bootstrapExpectedUserLiquidity =
-      bootstrapFunction.bootstrapExpectedUserLiquidity;
-
-    expect(bootstrapUser1Liquidity.reserved).bnEqual(
-      bootstrapExpectedUserLiquidity
-    );
-    expect(bootstrapUser2Liquidity.reserved).bnEqual(
-      bootstrapExpectedUserLiquidity
-    );
-  });
-
-  test("bootstrap - GIVEN a bootstrap finished WHEN pool was not promoted THEN claim and activate fails AND Only claim is done", async () => {
-    const bootstrapFunction = await bootstrapRunning(false, false);
-    bootstrapUser1Liquidity = bootstrapFunction.bootstrapUser1Liquidity;
-    bootstrapUser2Liquidity = bootstrapFunction.bootstrapUser2Liquidity;
-    const bootstrapExpectedUserLiquidity =
-      bootstrapFunction.bootstrapExpectedUserLiquidity;
-
-    expect(bootstrapUser1Liquidity.free).bnEqual(
-      bootstrapExpectedUserLiquidity
-    );
-    expect(bootstrapUser1Liquidity.reserved).bnEqual(new BN(0));
-
-    expect(bootstrapUser2Liquidity.free).bnEqual(
-      bootstrapExpectedUserLiquidity
-    );
-    expect(bootstrapUser2Liquidity.reserved).bnEqual(new BN(0));
-  });
-
-  test("bootstrap - GIVEN a user who vested-provision AND  bootstrap is finished WHEN pool was  promoted THEN claim and activate fails AND Only claim is done", async () => {
-    const bootstrapFunction = await bootstrapRunning(false, true);
-    bootstrapUser1Liquidity = bootstrapFunction.bootstrapUser1Liquidity;
-    bootstrapUser2Liquidity = bootstrapFunction.bootstrapUser2Liquidity;
-    const bootstrapExpectedUserLiquidity =
-      bootstrapFunction.bootstrapExpectedUserLiquidity;
-
-    expect(bootstrapUser1Liquidity.free).bnEqual(
-      bootstrapExpectedUserLiquidity
-    );
-    expect(bootstrapUser1Liquidity.reserved).bnEqual(new BN(0));
-    expect(bootstrapUser1Liquidity.frozen).bnGt(new BN(0));
-
-    expect(bootstrapUser2Liquidity.free).bnEqual(
-      bootstrapExpectedUserLiquidity
-    );
-    expect(bootstrapUser2Liquidity.reserved).bnEqual(new BN(0));
-    expect(bootstrapUser2Liquidity.frozen).bnEqual(new BN(0));
-  });
-
-  afterEach(async () => {
-    const api = getApi();
-    bootstrapPhase = await api.query.bootstrap.phase();
-    expect(bootstrapPhase.toString()).toEqual("BeforeStart");
-  });
+  await sudo.addMGATokens(sudo);
 });
+
+describe.each`
+  promoting | vesting
+  ${true}   | ${false}
+  ${false}  | ${false}
+  ${false}  | ${true}
+`(
+  "bootstrap - checking bootstrapped pool in different situations",
+  ({ promoting, vesting }) => {
+    beforeEach(async () => {
+      const api = getApi();
+      bootstrapPhase = await api.query.bootstrap.phase();
+      if (bootstrapPhase.toString() === "Finished") {
+        const bootstrapFinalize = await finalizeBootstrap(sudo);
+        eventResponse = getEventResultFromMangataTx(bootstrapFinalize);
+        expect(eventResponse.state).toEqual(ExtrinsicResult.ExtrinsicSuccess);
+
+        await waitForNBlocks(4);
+      }
+
+      expect(bootstrapPhase.toString()).toEqual("BeforeStart");
+
+      bootstrapCurrency = await Assets.issueAssetToUser(
+        sudo,
+        toBN("1", 20),
+        sudo
+      );
+
+      testUser1 = new User(keyring);
+      keyring.addPair(testUser1.keyRingPair);
+
+      testUser2 = new User(keyring);
+      keyring.addPair(testUser2.keyRingPair);
+    });
+
+    test(
+      "bootstrap - checking claiming and activating rewards. Promoting pool is " +
+        promoting.toString() +
+        ", vesting MGA token for User1 is " +
+        vesting.toString(),
+      async () => {
+        const bootstrapFunction = await bootstrapRunning(promoting, vesting);
+        bootstrapUser1Liquidity = bootstrapFunction.bootstrapUser1Liquidity;
+        bootstrapUser2Liquidity = bootstrapFunction.bootstrapUser2Liquidity;
+        bootstrapExpectedUserLiquidity =
+          bootstrapFunction.bootstrapExpectedUserLiquidity;
+        if (promoting === true) {
+          expect(bootstrapUser1Liquidity.free).bnEqual(new BN(0));
+          expect(bootstrapUser1Liquidity.reserved).bnEqual(
+            bootstrapExpectedUserLiquidity
+          );
+          expect(bootstrapUser2Liquidity.free).bnEqual(new BN(0));
+          expect(bootstrapUser2Liquidity.reserved).bnEqual(
+            bootstrapExpectedUserLiquidity
+          );
+        } else {
+          expect(bootstrapUser1Liquidity.reserved).bnEqual(new BN(0));
+          expect(bootstrapUser1Liquidity.free).bnEqual(
+            bootstrapExpectedUserLiquidity
+          );
+          expect(bootstrapUser2Liquidity.reserved).bnEqual(new BN(0));
+          expect(bootstrapUser2Liquidity.free).bnEqual(
+            bootstrapExpectedUserLiquidity
+          );
+        }
+        if (vesting === true) {
+          expect(bootstrapUser1Liquidity.frozen).bnGt(new BN(0));
+          expect(bootstrapUser2Liquidity.frozen).bnEqual(new BN(0));
+        } else {
+          expect(bootstrapUser1Liquidity.frozen).bnEqual(new BN(0));
+          expect(bootstrapUser2Liquidity.frozen).bnEqual(new BN(0));
+        }
+      }
+    );
+
+    afterEach(async () => {
+      const api = getApi();
+      bootstrapPhase = await api.query.bootstrap.phase();
+      expect(bootstrapPhase.toString()).toEqual("BeforeStart");
+    });
+  }
+);
