@@ -2,7 +2,7 @@
 import { Keyring } from "@polkadot/api";
 import { BN } from "@polkadot/util";
 import { api, getApi, initApi } from "../utils/api";
-import { MGA_ASSET_ID } from "../utils/Constants";
+import { MAX_BALANCE, MGA_ASSET_ID } from "../utils/Constants";
 import { User, AssetWallet } from "../utils/User";
 import { getEnvironmentRequiredVars, waitForNBlocks } from "../utils/utils";
 import fs from "fs";
@@ -46,23 +46,21 @@ describe("staking - testpad", () => {
     }
   });
   //TODO:Fix paths
-  const address_2 =
-    "/home/goncer/accounts/5FA3LcCrKMgr9WHqyvtDhDarAXRkJjoYrSy6XnZPKfwiB3sY";
-
   const address_1 =
     "/home/goncer/accounts/5FfBQ3kwXrbdyoqLPvcXRp7ikWydXawpNs2Ceu3WwFdhZ8W4";
-
+  const address_2 =
+    "/home/goncer/accounts/5FA3LcCrKMgr9WHqyvtDhDarAXRkJjoYrSy6XnZPKfwiB3sY";
   const address_3 =
     "/home/goncer/accounts/5FRL15Qj6DdoULKswCz7zevqe97bnHuEix794pTeGK7MhfDS";
-
   const address_4 =
     "/home/goncer/accounts/5H6YCgW24Z8xJDvxytQnKTwgiJGgye3uqvfQTprBEYqhNbBy";
 
-  const users = [address_1, address_2, address_3, address_4]; //, address_3, address_4];
-  let tokenId = new BN(0);
+  const users = [address_2, address_1, address_3, address_4]; //, address_3, address_4];
+  let tokenId = new BN(2);
   let liqtokenId = new BN(1);
   let amount = new BN("100000000000000000000000000000");
-  test.skip("xyk-pallet: Finish tge and setup pool", async () => {
+
+  test("xyk-pallet: Finish tge and setup pool", async () => {
     keyring = new Keyring({ type: "sr25519" });
     sudo = new User(keyring, sudoUserName);
     await fs.writeFileSync(
@@ -98,7 +96,6 @@ describe("staking - testpad", () => {
       tokenId
     );
   });
-
   test("bump tokens to ids", async () => {
     keyring = new Keyring({ type: "sr25519" });
     sudo = new User(keyring, sudoUserName);
@@ -146,6 +143,7 @@ describe("staking - testpad", () => {
     keyring.addPair(sudo.keyRingPair);
     keyring.pairs[0].decodePkcs8("mangata123");
     await testUser1.refreshAmounts(AssetWallet.BEFORE);
+    tokenId = (await getNextAssetId()).subn(1);
     await api!.tx.utility
       .batch([
         api!.tx.sudo.sudo(
@@ -217,6 +215,7 @@ describe("staking - testpad", () => {
   test("xyk-pallet: promote pool", async () => {
     keyring = new Keyring({ type: "sr25519" });
     sudo = new User(keyring, sudoUserName);
+    liqtokenId = (await getNextAssetId()).subn(1);
     await fs.writeFileSync(
       sudo.keyRingPair.address + ".json",
       JSON.stringify(sudo.keyRingPair.toJson("mangata123"))
@@ -233,8 +232,8 @@ describe("staking - testpad", () => {
     const mint = true;
     const activate = false;
     const deactivate = false;
-    amount = new BN(100000);
-
+    tokenId = (await getNextAssetId()).subn(2);
+    amount = new BN(10000);
     const promises: Promise<MangataGenericEvent[]>[] = [];
     for (let index = 0; index < users.length; index++) {
       const address = users[index];
@@ -263,7 +262,7 @@ describe("staking - testpad", () => {
             MGA_ASSET_ID,
             tokenId,
             amount.divn(2),
-            amount.divn(2).addn(5)
+            MAX_BALANCE
           )
         );
       }
@@ -285,6 +284,34 @@ describe("staking - testpad", () => {
           )
         );
       }
+    }
+    await Promise.all(promises);
+  });
+  test.skip("xyk-pallet: Step 2: first user will be skipped. Mint once rewards are generated", async () => {
+    tokenId = (await getNextAssetId()).subn(2);
+    amount = new BN(1000000000000);
+    const promises: Promise<MangataGenericEvent[]>[] = [];
+    const users2 = [address_2, address_3, address_4];
+    for (let index = 0; index < users2.length; index++) {
+      const address = users2[index];
+      const file = await fs.readFileSync(address + ".json");
+      keyring = new Keyring({ type: "sr25519" });
+      sudo = new User(keyring, sudoUserName);
+      testUser1 = new User(keyring, "asd", JSON.parse(file.toString()));
+      // add users to pair.
+      keyring.addPair(testUser1.keyRingPair);
+      keyring.pairs[0].decodePkcs8("mangata123");
+      await testUser1.refreshAmounts(AssetWallet.BEFORE);
+
+      promises.push(
+        mintLiquidity(
+          testUser1.keyRingPair,
+          MGA_ASSET_ID,
+          tokenId,
+          amount.divn(2),
+          MAX_BALANCE
+        )
+      );
     }
     await Promise.all(promises);
   });
