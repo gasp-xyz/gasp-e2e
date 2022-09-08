@@ -1859,7 +1859,7 @@
     "@jridgewell/resolve-uri" "^3.0.3"
     "@jridgewell/sourcemap-codec" "^1.4.10"
 
-"@mangata-finance/sdk@^1.3.1":
+"@mangata-finance/sdk@^1.6.1":
   version "1.6.1"
   resolved "https://registry.yarnpkg.com/@mangata-finance/sdk/-/sdk-1.6.1.tgz#e7c694e1407ed55333730a065f052d67048a04e6"
   integrity sha512-oDCs0dyDTeOuitJF1KCUUpGvlkAfyfk4eFQCRaoS13wOZXJ2joOqTojFoK23b1LMziP+SzBaJBDyW5FlvCed0Q==
@@ -2412,13 +2412,12 @@
   resolved "https://registry.yarnpkg.com/@tootallnate/once/-/once-1.1.2.tgz#ccb91445360179a04e7fe6aff78c00ffc1eeaf82"
   integrity sha512-RbzJvlNzmRq5c3O09UipeuXno4tA1FE6ikOjxZK0tuxVv3412l64l5t1W5pj4+rJq9vpkm/kwiR07aZXnsKPxw==
 
-"@truffle/abi-utils@^0.3.0":
-  version "0.3.0"
-  resolved "https://registry.yarnpkg.com/@truffle/abi-utils/-/abi-utils-0.3.0.tgz#edbdce6152c6ee711b7b8e267ff5745891931c59"
-  integrity sha512-W4Kbm17+QQeeK/uXB80t10gw1H8lEnAu+B7bu7NZl2Zy74kwhsrGC+qCjynhRQtGsFnCcsI58VxjjNkn1PsgSg==
+"@truffle/abi-utils@^0.3.1":
+  version "0.3.1"
+  resolved "https://registry.yarnpkg.com/@truffle/abi-utils/-/abi-utils-0.3.1.tgz#08390ca44e4f091518c9022b27416f25e6f4339c"
+  integrity sha512-tieaDgwDm2IH1wJuVF/waREVFvzXHSF6AkQfd71DQwpwnrl/9I1iKu+1WpQyFqxu+6WMfCYhzMEbssQBt4Zniw==
   dependencies:
     change-case "3.0.2"
-    faker "5.5.3"
     fast-check "3.1.1"
     web3-utils "1.7.4"
 
@@ -2429,12 +2428,12 @@
   dependencies:
     cbor "^5.2.0"
 
-"@truffle/codec@^0.14.3":
-  version "0.14.3"
-  resolved "https://registry.yarnpkg.com/@truffle/codec/-/codec-0.14.3.tgz#2b37f7763390391b488c927b12f2310fe7cdb129"
-  integrity sha512-8lwWQXkbrmewwiDSekZPUiweysGKXOpFSNhtWCi1CS6gtla3bNK8/xE1nUi3ALsuKw2745kzzLZpwKsipGtGKg==
+"@truffle/codec@^0.14.4":
+  version "0.14.4"
+  resolved "https://registry.yarnpkg.com/@truffle/codec/-/codec-0.14.4.tgz#164839445804f9f304b6e3844a28ef71ac6aacd0"
+  integrity sha512-il9dFzALUbd1JMPOVcxnIjTQ1fiJEPHfBYbqVQfWZfzAN0Kw+x1eaKunIU+NvrNRycvkXk4itWUTui5sMlXBBA==
   dependencies:
-    "@truffle/abi-utils" "^0.3.0"
+    "@truffle/abi-utils" "^0.3.1"
     "@truffle/compile-common" "^0.8.0"
     big.js "^6.0.3"
     bn.js "^5.1.3"
@@ -2486,21 +2485,21 @@
   resolved "https://registry.yarnpkg.com/@truffle/dashboard-message-bus-common/-/dashboard-message-bus-common-0.1.4.tgz#f5b5326eb4774d5d209c310c135309f4b3f42bea"
   integrity sha512-R+16jYcr/mxhz5pI+0GAJI14XUvYySLTB650kWubMBrVf4vi4QaIOdAOrx4KxAIA6e/5Nq9j0le59Y2c+xAHYg==
 
-"@truffle/db-loader@^0.1.30":
-  version "0.1.30"
-  resolved "https://registry.yarnpkg.com/@truffle/db-loader/-/db-loader-0.1.30.tgz#707a8e0cb01347a63e737a80512c9271f87bd376"
-  integrity sha512-k01GZfrHxY9tEL0iX2ZkxHVo/IlNSEEdqABxTex2p+/s/C1mGnCDdyEbtGTwhUsq074zWHFFLDVQoUCKfCAqtQ==
+"@truffle/db-loader@^0.1.31":
+  version "0.1.31"
+  resolved "https://registry.yarnpkg.com/@truffle/db-loader/-/db-loader-0.1.31.tgz#85af5a3d83fed0207cdf751edb3a343b2295a29f"
+  integrity sha512-A1Hw7O3E4uA3148v7QhXwww3utVyOiPKduggKwiT9CaSJ582WAAJSLEpqkawKdJPcUHNNnASWSAnA7w30voBrQ==
   optionalDependencies:
-    "@truffle/db" "^1.0.20"
+    "@truffle/db" "^1.0.21"
 
-"@truffle/db@^1.0.20":
-  version "1.0.20"
-  resolved "https://registry.yarnpkg.com/@truffle/db/-/db-1.0.20.tgz#d18e1e682494e26d2f32baedd1467564b746469d"
-  integrity sha512-sZuPOZNUTVi/O2kGgNWf+SpufyIcr1xdio2AQCuKqJjk9p5ECgZRKwPHyzQaOfQQW4d/OWPHpn4jGcISA4BiNw==
+"@truffle/db@^1.0.21":
+  version "1.0.21"
+  resolved "https://registry.yarnpkg.com/@truffle/db/-/db-1.0.21.tgz#3fbc4704b7b9812fc57937d1cb8434e46f22b1e0"
+  integrity sha512-ouxGUyrdNgwGd/3OH9sWagZTcnyz9SXtnrxvvET6aDxyudtB5Ygn1uEsjAyeKN7+Xc1UfIr4wuL6jr8j/EKBuQ==
   dependencies:
     "@graphql-tools/delegate" "^8.4.3"
     "@graphql-tools/schema" "^8.3.1"
-    "@truffle/abi-utils" "^0.3.0"
+    "@truffle/abi-utils" "^0.3.1"
     "@truffle/code-utils" "^2.0.1"
     "@truffle/config" "^1.3.37"
     abstract-leveldown "^7.2.0"
@@ -2519,14 +2518,14 @@
     pouchdb-find "^7.0.0"
     web3-utils "1.7.4"
 
-"@truffle/debugger@^11.0.6":
-  version "11.0.6"
-  resolved "https://registry.yarnpkg.com/@truffle/debugger/-/debugger-11.0.6.tgz#f4e74c95760ac541171a66fc0a01f1be481bb1f2"
-  integrity sha512-R/u/y1QS6f5Ql5PnxapOlpOeA9NQn9ssfATTojHUEkcp2rQx3LzC9PmlCypVhULyaJorcEtjls26HwKsA1bA5Q==
+"@truffle/debugger@^11.0.7":
+  version "11.0.7"
+  resolved "https://registry.yarnpkg.com/@truffle/debugger/-/debugger-11.0.7.tgz#bcc787349ff7c951be05863f18bfae91901f4454"
+  integrity sha512-oJM9Ar51/fdZc2UoRef/+AUsAlzB3sMpqZwA04GOAY8NEK3NbJz/s+/JfGl7DLNsIgQc9zlDtG+h/e268mSO8A==
   dependencies:
-    "@truffle/abi-utils" "^0.3.0"
-    "@truffle/codec" "^0.14.3"
-    "@truffle/source-map-utils" "^1.3.93"
+    "@truffle/abi-utils" "^0.3.1"
+    "@truffle/codec" "^0.14.4"
+    "@truffle/source-map-utils" "^1.3.94"
     bn.js "^5.1.3"
     debug "^4.3.1"
     json-pointer "^0.6.1"
@@ -2579,13 +2578,13 @@
     debug "^4.3.1"
     web3 "1.7.4"
 
-"@truffle/source-map-utils@^1.3.93":
-  version "1.3.93"
-  resolved "https://registry.yarnpkg.com/@truffle/source-map-utils/-/source-map-utils-1.3.93.tgz#c90e7874542e9cb622762b98d1d85b3859260f61"
-  integrity sha512-B9V5SkgGt+c2PqJMOZwrO4LniMq+Rp5ADEatfm9MHC2aPq9k07Y2/z0hAvzQdFT+svL6eGVRCyoKXiB6neEi5Q==
+"@truffle/source-map-utils@^1.3.94":
+  version "1.3.94"
+  resolved "https://registry.yarnpkg.com/@truffle/source-map-utils/-/source-map-utils-1.3.94.tgz#f42bd0b2eb63e543b286544f7cee8d5fd13565ae"
+  integrity sha512-6fC1WQKkXjt95+n1g4u+FtR8xDp1g4zwN326bj5YeOA4k2RF9l9y8wrBRbL/Z01aZXizU3Jg/nnxs2Zn83VNBg==
   dependencies:
     "@truffle/code-utils" "^2.0.1"
-    "@truffle/codec" "^0.14.3"
+    "@truffle/codec" "^0.14.4"
     debug "^4.3.1"
     json-pointer "^0.6.1"
     node-interval-tree "^1.3.3"
@@ -2844,9 +2843,9 @@
     form-data "^3.0.0"
 
 "@types/node@*":
-  version "18.7.15"
-  resolved "https://registry.yarnpkg.com/@types/node/-/node-18.7.15.tgz#20ae1ec80c57ee844b469f968a1cd511d4088b29"
-  integrity sha512-XnjpaI8Bgc3eBag2Aw4t2Uj/49lLBSStHWfqKvIuXD7FIrZyMLWp8KuAFHAqxMZYTF9l08N1ctUn9YNybZJVmQ==
+  version "18.7.16"
+  resolved "https://registry.yarnpkg.com/@types/node/-/node-18.7.16.tgz#0eb3cce1e37c79619943d2fd903919fc30850601"
+  integrity sha512-EQHhixfu+mkqHMZl1R2Ovuvn47PUw18azMJOTwSZr9/fhzHNGXAJ0ma0dayRVchprpCj0Kc1K1xKoWaATWF1qg==
 
 "@types/node@^10.1.0", "@types/node@^10.1.2", "@types/node@^10.3.2":
   version "10.17.60"
@@ -2859,9 +2858,9 @@
   integrity sha512-J8xLz7q2OFulZ2cyGTLE1TbbZcjpno7FaN6zdJNrgAdrJ+DZzh/uFR6YrTb4C+nXakvud8Q4+rbhoIWlYQbUFQ==
 
 "@types/node@^14.14.10":
-  version "14.18.27"
-  resolved "https://registry.yarnpkg.com/@types/node/-/node-14.18.27.tgz#940c1d419143fd9fbdc46ae1320b86077aef8155"
-  integrity sha512-DcTUcwT9xEcf4rp2UHyGAcmlqG4Mhe7acozl5vY2xzSrwP1z19ZVyjzQ6DsNUrvIadpiyZoQCTHFt4t2omYIZQ==
+  version "14.18.28"
+  resolved "https://registry.yarnpkg.com/@types/node/-/node-14.18.28.tgz#ddb82da2fff476a8e827e8773c84c19d9c235278"
+  integrity sha512-CK2fnrQlIgKlCV3N2kM+Gznb5USlwA1KFX3rJVHmgVk6NJxFPuQ86pAcvKnu37IA4BGlSRz7sEE1lHL1aLZ/eQ==
 
 "@types/normalize-package-data@^2.4.0":
   version "2.4.1"
@@ -4305,9 +4304,9 @@ camelcase@^6.0.0:
   integrity sha512-Gmy6FhYlCY7uOElZUSbxo2UCDH8owEk996gkbrpsgGtrJLM3J7jGxl9Ic7Qwwj4ivOE5AWZWRMecDdF7hqGjFA==
 
 caniuse-lite@^1.0.30001370:
-  version "1.0.30001390"
-  resolved "https://registry.yarnpkg.com/caniuse-lite/-/caniuse-lite-1.0.30001390.tgz#158a43011e7068ef7fc73590e9fd91a7cece5e7f"
-  integrity sha512-sS4CaUM+/+vqQUlCvCJ2WtDlV81aWtHhqeEVkLokVJJa3ViN4zDxAGfq9R8i1m90uGHxo99cy10Od+lvn3hf0g==
+  version "1.0.30001393"
+  resolved "https://registry.yarnpkg.com/caniuse-lite/-/caniuse-lite-1.0.30001393.tgz#1aa161e24fe6af2e2ccda000fc2b94be0b0db356"
+  integrity sha512-N/od11RX+Gsk+1qY/jbPa0R6zJupEa0lxeBG598EbrtblxVCTJsQwbRBm6+V+rxpc5lHKdsXb9RY83cZIPLseA==
 
 capture-exit@^2.0.0:
   version "2.0.0"
@@ -4710,17 +4709,16 @@ copy-descriptor@^0.1.0:
   integrity sha512-XgZ0pFcakEUlbwQEVNg3+QAis1FyTL3Qel9FYy8pSkQqoG3PNoT0bOCQtOXcOkur21r2Eq2kI+IE+gsmAEVlYw==
 
 core-js-compat@^3.21.0, core-js-compat@^3.22.1:
-  version "3.25.0"
-  resolved "https://registry.yarnpkg.com/core-js-compat/-/core-js-compat-3.25.0.tgz#489affbfbf9cb3fa56192fe2dd9ebaee985a66c5"
-  integrity sha512-extKQM0g8/3GjFx9US12FAgx8KJawB7RCQ5y8ipYLbmfzEzmFRWdDjIlxDx82g7ygcNG85qMVUSRyABouELdow==
+  version "3.25.1"
+  resolved "https://registry.yarnpkg.com/core-js-compat/-/core-js-compat-3.25.1.tgz#6f13a90de52f89bbe6267e5620a412c7f7ff7e42"
+  integrity sha512-pOHS7O0i8Qt4zlPW/eIFjwp+NrTPx+wTL0ctgI2fHn31sZOq89rDsmtc/A2vAX7r6shl+bmVI+678He46jgBlw==
   dependencies:
     browserslist "^4.21.3"
-    semver "7.0.0"
 
 core-js-pure@^3.20.2:
-  version "3.25.0"
-  resolved "https://registry.yarnpkg.com/core-js-pure/-/core-js-pure-3.25.0.tgz#f8d1f176ff29abbfeb610110de891d5ae5a361d4"
-  integrity sha512-IeHpLwk3uoci37yoI2Laty59+YqH9x5uR65/yiA0ARAJrTrN4YU0rmauLWfvqOuk77SlNJXj2rM6oT/dBD87+A==
+  version "3.25.1"
+  resolved "https://registry.yarnpkg.com/core-js-pure/-/core-js-pure-3.25.1.tgz#79546518ae87cc362c991d9c2d211f45107991ee"
+  integrity sha512-7Fr74bliUDdeJCBMxkkIuQ4xfxn/SwrVg+HkJUAoNEXVqYLv55l6Af0dJ5Lq2YBUW9yKqSkLXaS5SYPK6MGa/A==
 
 core-js@^2.4.0:
   version "2.6.12"
@@ -5280,9 +5278,9 @@ ee-first@1.1.1:
   integrity sha512-WMwm9LhRUo+WUaRN+vRuETqG89IgZphVSNkdFgeb6sS/E4OrDIN7t48CAewSHXc6C8lefD8KKfr5vY61brQlow==
 
 electron-to-chromium@^1.4.202:
-  version "1.4.243"
-  resolved "https://registry.yarnpkg.com/electron-to-chromium/-/electron-to-chromium-1.4.243.tgz#9d5f1b10eafd6e434b687a88f1e7b0441dee168a"
-  integrity sha512-BgLD2gBX43OSXwlT01oYRRD5NIB4n3okTRxkzEAC6G0SZG4TTlyrWMjbOo0fajCwqwpRtMHXQNMjtRN6qpNtfw==
+  version "1.4.244"
+  resolved "https://registry.yarnpkg.com/electron-to-chromium/-/electron-to-chromium-1.4.244.tgz#ae9b56ed4ae2107e3a860dad80ed662c936e369e"
+  integrity sha512-E21saXLt2eTDaTxgUtiJtBUqanF9A32wZasAwDZ8gvrqXoxrBrbwtDCx7c/PQTLp81wj4X0OLDeoGQg7eMo3+w==
 
 elliptic@6.3.3:
   version "6.3.3"
@@ -6164,11 +6162,6 @@ extsprintf@^1.2.0:
   version "1.4.1"
   resolved "https://registry.yarnpkg.com/extsprintf/-/extsprintf-1.4.1.tgz#8d172c064867f235c0c84a596806d279bf4bcc07"
   integrity sha512-Wrk35e8ydCKDj/ArClo1VrPVmN8zph5V4AtHwIuHhvMXsKf73UT3BOD+azBIW+3wOJ4FhEH7zyaJCFvChjYvMA==
-
-faker@5.5.3:
-  version "5.5.3"
-  resolved "https://registry.yarnpkg.com/faker/-/faker-5.5.3.tgz#c57974ee484431b25205c2c8dc09fda861e51e0e"
-  integrity sha512-wLTv2a28wjUyWkbnX7u/ABZBkUkIF2fCd73V6P2oFqEGEktDfzWx4UxrSqtPRw0xPRAcjeAOIiJWqZm3pP4u3g==
 
 fast-check@3.1.1:
   version "3.1.1"
@@ -11080,11 +11073,6 @@ semver@6.2.0:
   resolved "https://registry.yarnpkg.com/semver/-/semver-6.2.0.tgz#4d813d9590aaf8a9192693d6c85b9344de5901db"
   integrity sha512-jdFC1VdUGT/2Scgbimf7FSx9iJLXoqfglSF+gJeuNWVpiE37OIbc1jywR/GJyFdz3mnkz2/id0L0J/cr0izR5A==
 
-semver@7.0.0:
-  version "7.0.0"
-  resolved "https://registry.yarnpkg.com/semver/-/semver-7.0.0.tgz#5f3ca35761e47e05b206c6daff2cf814f0316b8e"
-  integrity sha512-+GB6zVA9LWh6zovYQLALHwv5rb2PHGlJi3lfiqIHxR0uuwCgefcOJc59v9fv1w8GbStwxuuqqAjI9NMAOOgq1A==
-
 semver@7.3.7, semver@^7.2.1, semver@^7.3.2, semver@^7.3.5:
   version "7.3.7"
   resolved "https://registry.yarnpkg.com/semver/-/semver-7.3.7.tgz#12c5b649afdbf9049707796e22a4028814ce523f"
@@ -11987,18 +11975,18 @@ truffle-hdwallet-provider@^1.0.17:
     websocket "^1.0.28"
 
 truffle@^5.4.7:
-  version "5.5.28"
-  resolved "https://registry.yarnpkg.com/truffle/-/truffle-5.5.28.tgz#aa55693e69cbecb6afbe9ad86cca76105fe5446b"
-  integrity sha512-QXcjR+o8vrT6ctAxu4xs9OlG5JFSaZFvM/xDxVNtenBSwuoJZaUkZ0i9hZtXzZmNMGe28skDW3wd5VXgjivPQg==
+  version "5.5.29"
+  resolved "https://registry.yarnpkg.com/truffle/-/truffle-5.5.29.tgz#6fb445b208f19290acc5c6c33ea4a7dd8461cf46"
+  integrity sha512-PEuI+9KdQ0ALSchwug7/KPVTuL9JqP4KfjkdzoQUotSzql2nd1HHiJ5Gh6ca67jSmzkOBF8VqrwXtvC+Zcif8g==
   dependencies:
-    "@truffle/db-loader" "^0.1.30"
-    "@truffle/debugger" "^11.0.6"
+    "@truffle/db-loader" "^0.1.31"
+    "@truffle/debugger" "^11.0.7"
     app-module-path "^2.2.0"
     ganache "7.4.0"
     mocha "9.2.2"
     original-require "^1.0.1"
   optionalDependencies:
-    "@truffle/db" "^1.0.20"
+    "@truffle/db" "^1.0.21"
 
 ts-node@^10.4.0:
   version "10.9.1"
@@ -13318,10 +13306,11 @@ winston-transport@^4.5.0:
     triple-beam "^1.3.0"
 
 winston@^3.3.3:
-  version "3.8.1"
-  resolved "https://registry.yarnpkg.com/winston/-/winston-3.8.1.tgz#76f15b3478cde170b780234e0c4cf805c5a7fb57"
-  integrity sha512-r+6YAiCR4uI3N8eQNOg8k3P3PqwAm20cLKlzVD9E66Ch39+LZC+VH1UKf9JemQj2B3QoUHfKD7Poewn0Pr3Y1w==
+  version "3.8.2"
+  resolved "https://registry.yarnpkg.com/winston/-/winston-3.8.2.tgz#56e16b34022eb4cff2638196d9646d7430fdad50"
+  integrity sha512-MsE1gRx1m5jdTTO9Ld/vND4krP2To+lgDoMEHGGa4HIlAUyXJtfc7CxQcGXVyz2IBpw5hbFkj2b/AtUdQwyRew==
   dependencies:
+    "@colors/colors" "1.5.0"
     "@dabh/diagnostics" "^2.0.2"
     async "^3.2.3"
     is-stream "^2.0.0"

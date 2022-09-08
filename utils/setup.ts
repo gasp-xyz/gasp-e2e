@@ -15,11 +15,10 @@ export let sudo: User;
 export type Extrinsic = SubmittableExtrinsic<"promise">;
 
 export const setupApi = async () => {
-  if (api) {
-    await api.disconnect();
+  if (!api || (api && !api.isConnected)) {
+    await initApi();
+    api = getApi();
   }
-  await initApi();
-  api = getApi();
 };
 
 export const setupUsers = () => {
