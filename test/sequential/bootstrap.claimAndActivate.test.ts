@@ -14,6 +14,7 @@ import {
   claimAndActivateBootstrap,
   promotePool,
   vestingTransfer,
+  //getNextAssetId,
 } from "../../utils/tx";
 import { EventResult, ExtrinsicResult } from "../../utils/eventListeners";
 import { Keyring } from "@polkadot/api";
@@ -23,12 +24,15 @@ import {
   getBlockNumber,
   waitForBootstrapStatus,
 } from "../../utils/utils";
-import { getEventResultFromMangataTx } from "../../utils/txHandler";
+import {
+  getEventResultFromMangataTx,
+  sudoIssueAsset,
+} from "../../utils/txHandler";
 import { MGA_ASSET_ID } from "../../utils/Constants";
 import { BN, toBN } from "@mangata-finance/sdk";
 import { Assets } from "../../utils/Assets";
 import { Sudo } from "../../utils/sudo";
-import { setupApi } from "../../utils/setup";
+import { setupApi, setupUsers } from "../../utils/setup";
 
 jest.spyOn(console, "log").mockImplementation(jest.fn());
 jest.spyOn(console, "error").mockImplementation(jest.fn());
@@ -92,7 +96,7 @@ async function bootstrapRunning(
   );
   eventResponse = getEventResultFromMangataTx(sudoBootstrap);
   expect(eventResponse.state).toEqual(ExtrinsicResult.ExtrinsicSuccess);
-  await waitForBootstrapStatus("Public", bootstrapPeriod);
+  await waitForBootstrapStatus("Public", waitingPeriod);
 
   //await waitForNBlocks(waitingPeriod);
 
@@ -224,17 +228,26 @@ describe.each`
       bootstrapPhase = await api.query.bootstrap.phase();
       expect(bootstrapPhase.toString()).toEqual("BeforeStart");
 
-      bootstrapCurrency = await Assets.issueAssetToUser(
-        sudo,
+      const bootstrapCurrencyIssue = await sudoIssueAsset(
+        sudo.keyRingPair,
         toBN("1", 20),
-        sudo
+        sudo.keyRingPair.address
       );
+      const bootstrapEventResult = await getEventResultFromMangataTx(
+        bootstrapCurrencyIssue,
+        ["tokens", "Issued", sudo.keyRingPair.address]
+      );
+      const bootstrapAssetId = bootstrapEventResult.data[0].split(",").join("");
+      bootstrapCurrency = new BN(bootstrapAssetId);
+      // bootstrapCurrency = await getNextAssetId();
+      //testUser1.addAsset(bootstrapCurrency);
 
-      testUser1 = new User(keyring);
-      keyring.addPair(testUser1.keyRingPair);
+      [testUser1, testUser2] = setupUsers();
+      // testUser1 = new User(keyring);
+      // keyring.addPair(testUser1.keyRingPair);
 
-      testUser2 = new User(keyring);
-      keyring.addPair(testUser2.keyRingPair);
+      // testUser2 = new User(keyring);
+      // keyring.addPair(testUser2.keyRingPair);
     });
 
     test(
