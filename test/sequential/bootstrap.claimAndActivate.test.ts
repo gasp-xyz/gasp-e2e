@@ -210,10 +210,9 @@ describe.each`
         const bootstrapFinalize = await finalizeBootstrap(sudo);
         eventResponse = getEventResultFromMangataTx(bootstrapFinalize);
         expect(eventResponse.state).toEqual(ExtrinsicResult.ExtrinsicSuccess);
-
-        await waitForNBlocks(4);
       }
 
+      bootstrapPhase = await api.query.bootstrap.phase();
       expect(bootstrapPhase.toString()).toEqual("BeforeStart");
 
       bootstrapCurrency = await Assets.issueAssetToUser(
