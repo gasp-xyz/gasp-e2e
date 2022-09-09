@@ -1,9 +1,4 @@
-/*
- *
- * @group xyk
- * @group sequential
- * @group critical
- */
+// todo remove test once v2 is passing on CI for some time
 import { getApi, initApi } from "../../utils/api";
 import {
   calcuate_mint_liquidity_price_local,

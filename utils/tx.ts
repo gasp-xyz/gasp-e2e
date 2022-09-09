@@ -650,7 +650,7 @@ function requireFees() {
     descriptor: TypedPropertyDescriptor<(...params: any[]) => Promise<any>>
   ) => {
     // eslint-disable-next-line no-console
-    console.log("first(): called");
+    // console.log("first(): called");
     const oldFunc = descriptor.value;
     descriptor.value = async function () {
       if (Fees.swapFeesEnabled) {

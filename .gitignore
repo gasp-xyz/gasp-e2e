@@ -8,4 +8,5 @@ yarn-error.log
 nonce.db
 test/exploratory/testPad.ts
 allure-results/*
+allure-report
 reports/**/*
