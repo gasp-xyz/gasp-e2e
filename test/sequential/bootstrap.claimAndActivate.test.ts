@@ -20,13 +20,15 @@ import { Keyring } from "@polkadot/api";
 import { User } from "../../utils/User";
 import {
   getEnvironmentRequiredVars,
-  waitForNBlocks,
   getBlockNumber,
+  waitForBootstrapStatus,
 } from "../../utils/utils";
 import { getEventResultFromMangataTx } from "../../utils/txHandler";
 import { MGA_ASSET_ID } from "../../utils/Constants";
 import { BN, toBN } from "@mangata-finance/sdk";
 import { Assets } from "../../utils/Assets";
+import { Sudo } from "../../utils/sudo";
+import { setupApi } from "../../utils/setup";
 
 jest.spyOn(console, "log").mockImplementation(jest.fn());
 jest.spyOn(console, "error").mockImplementation(jest.fn());
@@ -55,9 +57,17 @@ async function bootstrapRunning(
   vestedProvision: boolean
 ) {
   const api = getApi();
+  await setupApi();
+  await Sudo.batchAsSudoFinalized(
+    Assets.mintToken(bootstrapCurrency, testUser1), // transferAll test
+    Assets.mintToken(bootstrapCurrency, testUser2), // transferAll test
+    Assets.mintToken(bootstrapCurrency, sudo), // transferAll test
+    Assets.mintNative(testUser1),
+    Assets.mintNative(testUser2)
+  );
+
   if (vestedProvision === true) {
     const bootstrapBlockNumber = (await getBlockNumber()) + 10;
-    await sudo.addMGATokens(sudo);
     const vestingUser = await vestingTransfer(
       sudo,
       MGA_ASSET_ID,
@@ -68,10 +78,10 @@ async function bootstrapRunning(
     eventResponse = getEventResultFromMangataTx(vestingUser);
     expect(eventResponse.state).toEqual(ExtrinsicResult.ExtrinsicSuccess);
   }
-  await testUser1.addMGATokens(sudo);
-  await sudo.mint(bootstrapCurrency, testUser1, toBN("1", 20));
-  await testUser2.addMGATokens(sudo);
-  await sudo.mint(bootstrapCurrency, testUser2, toBN("1", 20));
+  //await testUser1.addMGATokens(sudo);
+  //await sudo.mint(bootstrapCurrency, testUser1, toBN("1", 20));
+  //await testUser2.addMGATokens(sudo);
+  //await sudo.mint(bootstrapCurrency, testUser2, toBN("1", 20));
 
   const sudoBootstrap = await scheduleBootstrap(
     sudo,
@@ -82,8 +92,9 @@ async function bootstrapRunning(
   );
   eventResponse = getEventResultFromMangataTx(sudoBootstrap);
   expect(eventResponse.state).toEqual(ExtrinsicResult.ExtrinsicSuccess);
+  await waitForBootstrapStatus("Public", bootstrapPeriod);
 
-  await waitForNBlocks(waitingPeriod);
+  //await waitForNBlocks(waitingPeriod);
 
   bootstrapPhase = await api.query.bootstrap.phase();
   expect(bootstrapPhase.toString()).toEqual("Public");
@@ -129,8 +140,8 @@ async function bootstrapRunning(
   );
   eventResponse = getEventResultFromMangataTx(provisionMGAUser2);
   expect(eventResponse.state).toEqual(ExtrinsicResult.ExtrinsicSuccess);
-
-  await waitForNBlocks(bootstrapPeriod);
+  await waitForBootstrapStatus("Finished", bootstrapPeriod);
+  // FingersCrossed :) await waitForNBlocks(bootstrapPeriod);
 
   const bootstrapAmountPool = bootstrapAmount.muln(2);
   bootstrapPool = await api.query.xyk.pools([MGA_ASSET_ID, bootstrapCurrency]);
@@ -191,8 +202,6 @@ beforeAll(async () => {
 
   sudo = new User(keyring, sudoUserName);
   keyring.addPair(sudo.keyRingPair);
-
-  await sudo.addMGATokens(sudo);
 });
 
 describe.each`
