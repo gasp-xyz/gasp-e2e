@@ -218,6 +218,7 @@ export const waitForNBlocks = async (n: number) => {
     await waitForNBlocks(n - 1);
   }
 };
+
 export async function waitForBootstrapStatus(
   bootstrapStatus: string,
   maxNumberBlocks: number
@@ -227,12 +228,15 @@ export async function waitForBootstrapStatus(
   const api = await getApi();
   let bootstrapPhase = await api.query.bootstrap.phase();
   testLog.getLog().info("Waiting for boostrap to be " + bootstrapStatus);
-  while (lastBlock > currentBlock && bootstrapPhase !== bootstrapStatus) {
+  while (
+    lastBlock > currentBlock &&
+    bootstrapPhase.toString() !== bootstrapStatus
+  ) {
     await waitNewBlock();
     bootstrapPhase = await api.query.bootstrap.phase();
     currentBlock = await getBlockNumber();
   }
-  testLog.getLog().info("... Done waiting" + bootstrapStatus);
+  testLog.getLog().info("... Done waiting " + bootstrapStatus);
   if (bootstrapPhase !== bootstrapStatus) {
     testLog.getLog().warn("TIMEDOUT waiting for the new boostrap phase");
   }
