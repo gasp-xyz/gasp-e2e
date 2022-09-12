@@ -263,6 +263,16 @@ export async function getBlockNumber() {
   const api = await mangata?.getApi()!;
   return ((await api.query.system.number()) as any).toNumber();
 }
+export async function getMultiPurposeLiquidityStatus(
+  address: string,
+  tokenId: BN
+) {
+  const api = await mangata?.getApi()!;
+  return (await api.query.multiPurposeLiquidity.reserveStatus(
+    address,
+    tokenId
+  )) as any;
+}
 export async function findBlockWithExtrinsicSigned(
   blocks = [0, 1],
   userAddress: string
