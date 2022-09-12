@@ -31,6 +31,8 @@ import { BrunLiquidityModal } from "../../utils/frontend/pages/BrunLiquidityModa
 import { Assets } from "../../utils/Assets";
 import { Polkadot } from "../../utils/frontend/pages/Polkadot";
 import { createPoolIfMissing } from "../../utils/tx";
+import { SudoUser } from "../../utils/Framework/User/SudoUser";
+import { Node } from "../../utils/Framework/Node/Node";
 
 const MGA_ASSET_ID = new BN(0);
 const ETH_ASSET_ID = new BN(1);
@@ -42,8 +44,7 @@ let driver: WebDriver;
 describe("UI tests - A user can see the new Modal", () => {
   let keyring: Keyring;
   let testUser1: User;
-  let sudo: User;
-  const { sudo: sudoUserName } = getEnvironmentRequiredVars();
+  let sudo: SudoUser;
   const visibleValueNumber = Math.pow(10, 19).toString();
 
   beforeEach(async () => {
@@ -61,7 +62,9 @@ describe("UI tests - A user can see the new Modal", () => {
 
     testUser1 = new User(keyring);
     testUser1.addFromMnemonic(keyring, mnemonic);
-    sudo = new User(keyring, sudoUserName);
+    const node = new Node(getEnvironmentRequiredVars().chainUri);
+    await node.connect();
+    sudo = new SudoUser(keyring, node);
     await sudo.mint(MGA_ASSET_ID, testUser1, new BN(visibleValueNumber));
     await sudo.mint(
       ETH_ASSET_ID,

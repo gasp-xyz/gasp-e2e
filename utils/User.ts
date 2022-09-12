@@ -7,13 +7,16 @@ import { testLog } from "./Logger";
 import {
   buyAsset,
   createPool,
+  delegate,
   FeeTxs,
   getAllAssets,
   getTokensAccountInfo,
   getUserAssets,
+  joinCandidate,
   mintAsset,
   mintLiquidity,
-  promotePool,
+  mintLiquidityUsingVestingNativeTokens,
+  reserveVestingLiquidityTokens,
   transferAll,
 } from "./tx";
 import { getEventResultFromMangataTx } from "./txHandler";
@@ -201,6 +204,54 @@ export class User {
     });
   }
 
+  async mintLiquidityWithVestedTokens(
+    vestingTokensAmount: BN,
+    secondAssetId: BN,
+    expectedSecondAssetAmount: BN = new BN(Number.MAX_SAFE_INTEGER)
+  ) {
+    await mintLiquidityUsingVestingNativeTokens(
+      this.keyRingPair,
+      vestingTokensAmount,
+      secondAssetId,
+      expectedSecondAssetAmount
+    ).then((result) => {
+      const eventResponse = getEventResultFromMangataTx(result, [
+        "xyk",
+        "LiquidityMinted",
+        this.keyRingPair.address,
+      ]);
+      assert.equal(eventResponse.state, ExtrinsicResult.ExtrinsicSuccess);
+    });
+  }
+  async joinAsCandidate(
+    liqTokenForCandidate: BN,
+    amount: BN,
+    from = "availablebalance"
+  ) {
+    await joinCandidate(this.keyRingPair, liqTokenForCandidate, amount, from);
+  }
+  async joinAsDelegator(liqTokenForCandidate: BN, amount: BN) {
+    await delegate(
+      this.keyRingPair,
+      liqTokenForCandidate,
+      amount,
+      "availablebalance"
+    );
+  }
+
+  async reserveVestingLiquidityTokens(
+    liqToken: BN,
+    amount: BN,
+    strictSuccess = true
+  ) {
+    return await reserveVestingLiquidityTokens(
+      this.keyRingPair,
+      liqToken,
+      amount,
+      strictSuccess
+    );
+  }
+
   async removeTokens() {
     //TODO: find a proper way to clean all the user tokens in one shot!
     const assets = await getAllAssets(this.keyRingPair.address);
@@ -212,9 +263,6 @@ export class User {
         process.env.E2E_XYK_PALLET_ADDRESS
       );
     }
-  }
-  async promotePool(liqAssetId: BN) {
-    await promotePool(this.keyRingPair, liqAssetId);
   }
   async createPoolToAsset(
     first_asset_amount: BN,
@@ -253,10 +301,10 @@ export class User {
     await sudo.mint(TUR_ASSET_ID, this, amountFree);
   }
 
-  async getUserTokensAccountInfo() {
+  async getUserTokensAccountInfo(tokenId = new BN(0)) {
     const accountInfo = await getTokensAccountInfo(
       this.keyRingPair.address,
-      new BN(0)
+      tokenId
     );
     return accountInfo;
   }
