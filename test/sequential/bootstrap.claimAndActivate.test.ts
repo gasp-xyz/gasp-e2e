@@ -71,7 +71,7 @@ async function bootstrapRunning(
   );
 
   if (vestedProvision === true) {
-    const bootstrapBlockNumber = (await getBlockNumber()) + 10;
+    const bootstrapBlockNumber = (await getBlockNumber()) + 5;
     const vestingUser = await vestingTransfer(
       sudo,
       MGA_ASSET_ID,
@@ -82,10 +82,6 @@ async function bootstrapRunning(
     eventResponse = getEventResultFromMangataTx(vestingUser);
     expect(eventResponse.state).toEqual(ExtrinsicResult.ExtrinsicSuccess);
   }
-  //await testUser1.addMGATokens(sudo);
-  //await sudo.mint(bootstrapCurrency, testUser1, toBN("1", 20));
-  //await testUser2.addMGATokens(sudo);
-  //await sudo.mint(bootstrapCurrency, testUser2, toBN("1", 20));
 
   const sudoBootstrap = await scheduleBootstrap(
     sudo,
@@ -96,9 +92,8 @@ async function bootstrapRunning(
   );
   eventResponse = getEventResultFromMangataTx(sudoBootstrap);
   expect(eventResponse.state).toEqual(ExtrinsicResult.ExtrinsicSuccess);
-  await waitForBootstrapStatus("Public", waitingPeriod);
 
-  //await waitForNBlocks(waitingPeriod);
+  await waitForBootstrapStatus("Public", waitingPeriod);
 
   bootstrapPhase = await api.query.bootstrap.phase();
   expect(bootstrapPhase.toString()).toEqual("Public");
@@ -144,8 +139,8 @@ async function bootstrapRunning(
   );
   eventResponse = getEventResultFromMangataTx(provisionMGAUser2);
   expect(eventResponse.state).toEqual(ExtrinsicResult.ExtrinsicSuccess);
+
   await waitForBootstrapStatus("Finished", bootstrapPeriod);
-  // FingersCrossed :) await waitForNBlocks(bootstrapPeriod);
 
   const bootstrapAmountPool = bootstrapAmount.muln(2);
   bootstrapPool = await api.query.xyk.pools([MGA_ASSET_ID, bootstrapCurrency]);
@@ -239,15 +234,8 @@ describe.each`
       );
       const bootstrapAssetId = bootstrapEventResult.data[0].split(",").join("");
       bootstrapCurrency = new BN(bootstrapAssetId);
-      // bootstrapCurrency = await getNextAssetId();
-      //testUser1.addAsset(bootstrapCurrency);
 
       [testUser1, testUser2] = setupUsers();
-      // testUser1 = new User(keyring);
-      // keyring.addPair(testUser1.keyRingPair);
-
-      // testUser2 = new User(keyring);
-      // keyring.addPair(testUser2.keyRingPair);
     });
 
     test(

@@ -444,6 +444,17 @@ export const createPool = async (
   return result;
 };
 
+export const promotePool = async (sudoAccount: KeyringPair, liqAssetId: BN) => {
+  testLog.getLog().info(`Promoting pool :${liqAssetId}`);
+  const mangata = await getMangataInstance();
+  const api = await mangata.getApi();
+  const result = await signSendAndWaitToFinishTx(
+    api!.tx.sudo.sudo(api!.tx.xyk.promotePool(liqAssetId)),
+    sudoAccount
+  );
+  return result;
+};
+
 export const sellAsset = async (
   account: KeyringPair,
   soldAssetId: BN,
