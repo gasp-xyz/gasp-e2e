@@ -14,7 +14,6 @@ import {
   claimAndActivateBootstrap,
   promotePool,
   vestingTransfer,
-  //getNextAssetId,
 } from "../../utils/tx";
 import { EventResult, ExtrinsicResult } from "../../utils/eventListeners";
 import { Keyring } from "@polkadot/api";
