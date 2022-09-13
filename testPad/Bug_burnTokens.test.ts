@@ -54,17 +54,6 @@ describe("staking - testpad", () => {
     //    if(!skipToBurn){
     keyring.addPair(sudo.keyRingPair);
     testLog.getLog().info("FinalizeTGE and create a test token");
-    // await signTx(
-    //   api!,
-    //   api!.tx.sudo.sudo(api!.tx.issuance.finalizeTge()),
-    //   sudo.keyRingPair
-    // );
-    // await signTx(
-    //   api!,
-    //   api!.tx.sudo.sudo(api!.tx.issuance.initIssuanceConfig()),
-    //   sudo.keyRingPair
-    // );
-
     const tokenId = await getNextAssetId();
     await api!.tx.utility
       .batch([
@@ -181,7 +170,9 @@ describe("staking - testpad", () => {
       testLog
         .getLog()
         .info(
-          " User: " + user.keyring.address + "Minting tokens to pool -2 users"
+          " User: " +
+            user.keyRingPair.address +
+            "Minting tokens to pool -2 users"
         );
       promises.push(
         mintLiquidity(
@@ -203,7 +194,9 @@ describe("staking - testpad", () => {
       testLog
         .getLog()
         .info(
-          " User: " + user.keyring.address + "Minting tokens to pool -2 users"
+          " User: " +
+            user.keyRingPair.address +
+            "Minting tokens to pool -2 users"
         );
       promises.push(
         mintLiquidity(
@@ -226,7 +219,7 @@ describe("staking - testpad", () => {
       const tokenstoMint = new BN(1000000000);
       testLog
         .getLog()
-        .info(" User: " + user.keyring.address + "burning tokens to pool");
+        .info(" User: " + user.keyRingPair.address + "burning tokens to pool");
       promises.push(
         burnLiquidity(user.keyRingPair, MGA_ASSET_ID, tokenId, tokenstoMint)
       );
@@ -237,7 +230,7 @@ describe("staking - testpad", () => {
       const tokenstoMint = new BN(1000000000);
       testLog
         .getLog()
-        .info(" User: " + user.keyring.address + "burning tokens to pool");
+        .info(" User: " + user.keyRingPair.address + "burning tokens to pool");
       promises.push(
         burnLiquidity(user.keyRingPair, MGA_ASSET_ID, tokenId, tokenstoMint)
       );
