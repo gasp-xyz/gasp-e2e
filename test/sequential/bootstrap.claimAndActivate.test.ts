@@ -156,7 +156,8 @@ async function bootstrapRunning(
 
   if (promotedPool === true) {
     const promotingPool = await promotePool(sudo.keyRingPair, liquidityID);
-    expect(promotingPool.state).toEqual(ExtrinsicResult.ExtrinsicSuccess);
+    eventResponse = getEventResultFromMangataTx(promotingPool);
+    expect(eventResponse.state).toEqual(ExtrinsicResult.ExtrinsicSuccess);
   }
 
   const claimAndActivate1 = await claimAndActivateBootstrap(testUser1);
