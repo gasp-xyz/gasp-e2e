@@ -61,7 +61,7 @@ describe("MPL: Delegator", () => {
     await sudo.mintTokens(
       tokens.concat([MGA_ASSET_ID]),
       [testUser1],
-      minAmountInCollators
+      minAmountInCollators.add(new BN(Math.pow(10, 20).toString()))
     );
     await testUser1.mintLiquidity(
       tokens[0],
@@ -69,6 +69,16 @@ describe("MPL: Delegator", () => {
       minAmountInCollators.divn(10),
       minAmountInCollators
     );
+    const tokensBeforeJoin = await testUser1.getUserTokensAccountInfo(
+      liqTokenForCandidate
+    );
+    if (hexToBn(tokensBeforeJoin.reserved).gtn(0)) {
+      await deactivateLiquidity(
+        testUser1.keyRingPair,
+        liqTokenForCandidate,
+        hexToBn(tokensBeforeJoin.reserved)
+      );
+    }
   });
 
   test("join as delegator > verify account balances are reserved +  mpl storage", async () => {
