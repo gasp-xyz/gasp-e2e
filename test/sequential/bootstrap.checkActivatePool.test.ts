@@ -104,6 +104,9 @@ test("bootstrap - Check that we can not create a pool for the bootstrap token af
     expect(eventResponse.state).toEqual(ExtrinsicResult.ExtrinsicSuccess);
   }
 
+  bootstrapPhase = await api.query.bootstrap.phase();
+  expect(bootstrapPhase.toString()).toEqual("BeforeStart");
+
   await Sudo.batchAsSudoFinalized(
     Assets.mintToken(bootstrapCurrency, testUser1), // transferAll test
     Assets.mintToken(bootstrapCurrency, sudo), // transferAll test
