@@ -15,7 +15,7 @@ import { Keyring } from "@polkadot/api";
 import { User } from "./User";
 import { testLog } from "./Logger";
 import { KeyringPair } from "@polkadot/keyring/types";
-import { MangataGenericEvent, signTx } from "@mangata-finance/sdk";
+import { MangataGenericEvent, signTx, toBN } from "@mangata-finance/sdk";
 import { AnyJson } from "@polkadot/types/types";
 import { SudoUser } from "./Framework/User/SudoUser";
 
@@ -440,6 +440,19 @@ export const createPool = async (
     secondAssetId.toString(),
     secondAssetAmount,
     { nonce: nonce }
+  );
+  return result;
+};
+
+export const promotePool = async (sudoAccount: KeyringPair, liqAssetId: BN) => {
+  testLog.getLog().info(`Promoting pool :${liqAssetId}`);
+  const mangata = await getMangataInstance();
+  const api = await mangata.getApi();
+  const result = await signTx(
+    api,
+    api.tx.sudo.sudo(api.tx.xyk.promotePool(liqAssetId)),
+    sudoAccount,
+    { nonce: await getCurrentNonce(sudoAccount.address) }
   );
   return result;
 };
@@ -890,6 +903,20 @@ export async function provisionBootstrap(
   return result;
 }
 
+export async function provisionVestedBootstrap(
+  user: User,
+  bootstrapCurrency: BN,
+  bootstrapAmount: BN
+) {
+  const api = getApi();
+  const result = await signTx(
+    api,
+    api.tx.bootstrap.provisionVested(bootstrapCurrency, bootstrapAmount),
+    user.keyRingPair
+  );
+  return result;
+}
+
 export async function claimRewardsBootstrap(user: User) {
   const api = getApi();
   const result = await signTx(
@@ -900,11 +927,53 @@ export async function claimRewardsBootstrap(user: User) {
   return result;
 }
 
+export async function claimAndActivateBootstrap(user: User) {
+  const api = getApi();
+  const result = await signTx(
+    api,
+    api.tx.bootstrap.claimAndActivateLiquidityTokens(),
+    user.keyRingPair
+  );
+  return result;
+}
+
 export async function finalizeBootstrap(sudoUser: User) {
   const api = getApi();
   const result = await signTx(
     api,
     api.tx.sudo.sudo(api.tx.bootstrap.finalize(null)),
+    sudoUser.keyRingPair,
+    {
+      nonce: await getCurrentNonce(sudoUser.keyRingPair.address),
+    }
+  );
+  return result;
+}
+
+export async function vestingTransfer(
+  sudoUser: User,
+  tokenID: BN,
+  source: User,
+  target: User,
+  startingBlock: number
+) {
+  const locked = toBN("1", 20);
+  const perBlock = new BN(100);
+  const api = getApi();
+  const result = await signTx(
+    api,
+    api.tx.sudo.sudo(
+      api.tx.vesting.forceVestedTransfer(
+        tokenID,
+        source.keyRingPair.address,
+        target.keyRingPair.address,
+        {
+          locked,
+          perBlock,
+          startingBlock,
+        }
+      )
+    ),
     sudoUser.keyRingPair,
     {
       nonce: await getCurrentNonce(sudoUser.keyRingPair.address),
