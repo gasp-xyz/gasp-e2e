@@ -41,6 +41,7 @@ let bootstrapPhase: any;
 let bootstrapCurrency: any;
 let bootstrapPool: any;
 let eventResponse: EventResult;
+let bootstrapPoolBalance: BN;
 
 const { sudo: sudoUserName } = getEnvironmentRequiredVars();
 const waitingPeriod = 15;
@@ -48,18 +49,19 @@ const bootstrapPeriod = 30;
 const whitelistPeriod = 10;
 const bootstrapAmount = new BN(10000000000);
 
-async function checkingPool() {
+async function checkPossibilityCreatingPool(tokenA: any, tokenB: any) {
   const creatingPool = await (
     await getMangataInstance()
   ).createPool(
     testUser1.keyRingPair,
-    MGA_ASSET_ID.toString(),
+    tokenA.toString(),
     bootstrapAmount,
-    bootstrapCurrency.toString(),
+    tokenB.toString(),
     bootstrapAmount
   );
   eventResponse = getEventResultFromMangataTx(creatingPool);
   expect(eventResponse.state).toEqual(ExtrinsicResult.ExtrinsicFailed);
+  expect(eventResponse.data).toContain("DisallowedPool");
 }
 
 beforeAll(async () => {
@@ -123,7 +125,6 @@ test("bootstrap - Check that we can not create a pool for the bootstrap token af
     Assets.mintNative(testUser1)
   );
 
-  await sudo.mint(bootstrapCurrency, testUser1, toBN("1", 20));
   const sudoBootstrap = await scheduleBootstrap(
     sudo,
     MGA_ASSET_ID,
@@ -135,15 +136,15 @@ test("bootstrap - Check that we can not create a pool for the bootstrap token af
   eventResponse = getEventResultFromMangataTx(sudoBootstrap);
   expect(eventResponse.state).toEqual(ExtrinsicResult.ExtrinsicSuccess);
 
-  await checkingPool();
+  await checkPossibilityCreatingPool(MGA_ASSET_ID, bootstrapCurrency);
 
   await waitForBootstrapStatus("Whitelist", waitingPeriod);
 
-  await checkingPool();
+  await checkPossibilityCreatingPool(MGA_ASSET_ID, bootstrapCurrency);
 
   await waitForBootstrapStatus("Public", waitingPeriod);
 
-  await checkingPool();
+  await checkPossibilityCreatingPool(MGA_ASSET_ID, bootstrapCurrency);
 
   // new token must participate in provision as first
   const provisionPublicBootstrapCurrency = await provisionBootstrap(
@@ -165,24 +166,17 @@ test("bootstrap - Check that we can not create a pool for the bootstrap token af
 
   await waitForBootstrapStatus("Finished", bootstrapPeriod);
 
-  await checkingPool();
-
-  const provisionFinished = await provisionBootstrap(
-    testUser1,
-    bootstrapCurrency,
-    bootstrapAmount
-  );
-  eventResponse = getEventResultFromMangataTx(provisionFinished);
-  expect(eventResponse.state).toEqual(ExtrinsicResult.ExtrinsicFailed);
-  expect(eventResponse.data).toContain("Unauthorized");
+  await checkPossibilityCreatingPool(MGA_ASSET_ID, bootstrapCurrency);
 
   // Check existing pool
   bootstrapPool = await api.query.xyk.pools([MGA_ASSET_ID, bootstrapCurrency]);
   expect(bootstrapPool[0]).bnEqual(bootstrapAmount);
   expect(bootstrapPool[1]).bnEqual(bootstrapAmount);
-  const bootstrapPoolBalance = new BN(
-    bootstrapPool[0].add(bootstrapPool[1]) / 2
-  );
+  bootstrapPoolBalance = new BN(bootstrapPool[0].add(bootstrapPool[1]) / 2);
+});
+
+afterEach(async () => {
+  const api = getApi();
 
   // need claim liquidity token before finalizing
   const claimAndActivate = await claimAndActivateBootstrap(testUser1);

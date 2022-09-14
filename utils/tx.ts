@@ -448,9 +448,11 @@ export const promotePool = async (sudoAccount: KeyringPair, liqAssetId: BN) => {
   testLog.getLog().info(`Promoting pool :${liqAssetId}`);
   const mangata = await getMangataInstance();
   const api = await mangata.getApi();
-  const result = await signSendAndWaitToFinishTx(
-    api!.tx.sudo.sudo(api!.tx.xyk.promotePool(liqAssetId)),
-    sudoAccount
+  const result = await signTx(
+    api,
+    api.tx.sudo.sudo(api.tx.xyk.promotePool(liqAssetId)),
+    sudoAccount,
+    { nonce: await getCurrentNonce(sudoAccount.address) }
   );
   return result;
 };
@@ -862,13 +864,10 @@ export async function scheduleBootstrap(
   bootstrapCurrency: BN,
   waitingPeriod: number,
   bootstrapPeriod: number,
-  whitelistPeriod?: number
+  whitelistPeriod = 1
 ) {
   const api = getApi();
   const bootstrapBlockNumber = (await getBlockNumber()) + waitingPeriod;
-  if (whitelistPeriod === undefined) {
-    whitelistPeriod = 1;
-  }
   const result = await signTx(
     api,
     api.tx.sudo.sudo(
@@ -878,7 +877,9 @@ export async function scheduleBootstrap(
         bootstrapBlockNumber,
         new BN(whitelistPeriod),
         new BN(bootstrapPeriod),
-        [100, 1]
+        [100, 1],
+        // @ts-ignore
+        false
       )
     ),
     sudoUser.keyRingPair,
