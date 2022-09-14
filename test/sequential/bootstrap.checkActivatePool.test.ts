@@ -73,9 +73,7 @@ beforeAll(async () => {
 
   keyring = new Keyring({ type: "sr25519" });
 
-  const api = getApi();
   // setup users
-
   sudo = new User(keyring, sudoUserName);
   testUser1 = new User(keyring);
 
@@ -92,6 +90,11 @@ beforeAll(async () => {
   );
   const bootstrapAssetId = bootstrapEventResult.data[0].split(",").join("");
   bootstrapCurrency = new BN(bootstrapAssetId);
+});
+
+test("bootstrap - Check that we can not create a pool for the bootstrap token after bootstrap was declared", async () => {
+  const api = getApi();
+  await setupApi();
 
   // check that system is ready to bootstrap
   bootstrapPhase = await api.query.bootstrap.phase();
@@ -100,24 +103,6 @@ beforeAll(async () => {
     eventResponse = getEventResultFromMangataTx(bootstrapFinalize);
     expect(eventResponse.state).toEqual(ExtrinsicResult.ExtrinsicSuccess);
   }
-
-  bootstrapPhase = await api.query.bootstrap.phase();
-  expect(bootstrapPhase.toString()).toEqual("BeforeStart");
-});
-
-test("bootstrap - Check that we can not create a pool for the bootstrap token after bootstrap was declared", async () => {
-  const api = getApi();
-  await setupApi();
-
-  bootstrapPhase = await api.query.bootstrap.phase();
-  if (bootstrapPhase.toString() === "Finished") {
-    const bootstrapFinalize = await finalizeBootstrap(sudo);
-    eventResponse = getEventResultFromMangataTx(bootstrapFinalize);
-    expect(eventResponse.state).toEqual(ExtrinsicResult.ExtrinsicSuccess);
-  }
-
-  bootstrapPhase = await api.query.bootstrap.phase();
-  expect(bootstrapPhase.toString()).toEqual("BeforeStart");
 
   await Sudo.batchAsSudoFinalized(
     Assets.mintToken(bootstrapCurrency, testUser1), // transferAll test
