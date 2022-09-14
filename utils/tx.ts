@@ -448,9 +448,11 @@ export const promotePool = async (sudoAccount: KeyringPair, liqAssetId: BN) => {
   testLog.getLog().info(`Promoting pool :${liqAssetId}`);
   const mangata = await getMangataInstance();
   const api = await mangata.getApi();
-  const result = await signSendAndWaitToFinishTx(
-    api!.tx.sudo.sudo(api!.tx.xyk.promotePool(liqAssetId)),
-    sudoAccount
+  const result = await signTx(
+    api,
+    api.tx.sudo.sudo(api.tx.xyk.promotePool(liqAssetId)),
+    sudoAccount,
+    { nonce: await getCurrentNonce(sudoAccount.address) }
   );
   return result;
 };
