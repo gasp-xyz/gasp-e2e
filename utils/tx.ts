@@ -863,7 +863,9 @@ export async function scheduleBootstrap(
         bootstrapBlockNumber,
         new BN(1),
         new BN(bootstrapPeriod),
-        [100, 1]
+        [100, 1],
+        // @ts-ignore
+        false
       )
     ),
     sudoUser.keyRingPair,
