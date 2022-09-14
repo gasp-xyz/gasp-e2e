@@ -11,9 +11,9 @@ async function main() {
     "5HGjWAeFDfFCWPsjFQdVV2Msvz2XtMktvgocEZcCj68kUMaw",
     "5CiPPseXPECbkjWCa6MnjNokrgYjMqmKndv2rSnekmSK2DjL",
   ];
-  const liq = process.env.liq ? process.env.liq : 8;
+  const liq = process.env.liq ? process.env.liq : 10;
   const liqId = new BN(liq);
-  const mangata = await getMangataInstance("ws://127.0.0.1:8844");
+  const mangata = await getMangataInstance("ws://127.0.0.1:9946");
   // const provider = new WsProvider("ws://127.0.0.1:8844");
   //const api = await new ApiPromise(options({ provider })).isReady;
   const api = await mangata.getApi();
@@ -23,7 +23,7 @@ async function main() {
   await api.rpc.chain.subscribeNewHeads((header) => {
     users.forEach((user) => {
       api.query.xyk.rewardsInfo(user, liqId).then((value) => {
-        console.log(`RW_info: ${JSON.stringify(value.toHuman())}}`);
+        console.log(`RW_info: ${user} -  ${JSON.stringify(value.toHuman())}}`);
       });
     });
     users.forEach((user) => {
@@ -48,6 +48,14 @@ async function main() {
             );
             console.log(str);
           }
+          api.query.xyk.rewardsInfo(user, liqId).then((value) => {
+            const alreadyclaimed = (value as any).rewardsAlreadyClaimed;
+            const nyClaimed = (value as any).rewardsNotYetClaimed;
+            const sum = new BN((result as any).toString())
+              .add(new BN(alreadyclaimed.toString()))
+              .add(new BN(nyClaimed.toString()));
+            console.log(`Total: ${user}:${header.number}:  ${sum.toString()}`);
+          });
         });
     });
   });

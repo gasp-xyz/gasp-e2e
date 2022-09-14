@@ -49,7 +49,14 @@
           if (csvLines[i].length > 0) {
             if (i > 0) {
               points = csvLines[i].split(",");
-              dataPoints.push({
+              console.log(points);
+              if(points.length < 3){
+                dataPoints.push({
+                x: parseFloat(points[0]),
+                y: parseFloat(points[1])
+                });
+              }else{
+                dataPoints.push({
                 x: parseFloat(points[0]),
                 y: parseFloat(
                   csvLines[i].split(",")[1] +
@@ -58,6 +65,8 @@
                     parseFloat(csvLines[i - 1].split(",")[2])
                 ),
               });
+              }
+              
             }
           }
         }

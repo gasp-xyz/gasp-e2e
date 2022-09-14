@@ -164,9 +164,9 @@ describe("staking - testpad", () => {
     }
     await Promise.all(promises);
     await waitForNBlocks(rewardsGenerationTime);
-    for (let index = 0; index < users.length - 2; index++) {
-      const user = users[index];
-      const tokenstoMint = new BN(1000000000);
+    for (let index = 0; index < 1000; index++) {
+      const user = users[0];
+      const tokenstoMint = new BN(100);
       testLog
         .getLog()
         .info(
@@ -174,67 +174,14 @@ describe("staking - testpad", () => {
             user.keyRingPair.address +
             "Minting tokens to pool -2 users"
         );
-      promises.push(
-        mintLiquidity(
-          user.keyRingPair,
-          MGA_ASSET_ID,
-          tokenId,
-          tokenstoMint,
-          MAX_BALANCE
-        )
+      await mintLiquidity(
+        user.keyRingPair,
+        MGA_ASSET_ID,
+        tokenId,
+        tokenstoMint,
+        MAX_BALANCE
       );
+      await waitForNBlocks(5);
     }
-    testLog
-      .getLog()
-      .info(" Waiting some blocks:  " + rewardsGenerationTime.toString());
-    await waitForNBlocks(rewardsGenerationTime);
-    for (let index = 0; index < users.length - 2; index++) {
-      const user = users[index];
-      const tokenstoMint = new BN(1000000000);
-      testLog
-        .getLog()
-        .info(
-          " User: " +
-            user.keyRingPair.address +
-            "Minting tokens to pool -2 users"
-        );
-      promises.push(
-        mintLiquidity(
-          user.keyRingPair,
-          MGA_ASSET_ID,
-          tokenId,
-          tokenstoMint,
-          MAX_BALANCE
-        )
-      );
-    }
-    testLog
-      .getLog()
-      .info(" Waiting some blocks:  " + rewardsGenerationTime.toString());
-    await waitForNBlocks(rewardsGenerationTime);
-    //    }
-
-    for (let index = 0; index < users.length - 2; index++) {
-      const user = users[index];
-      const tokenstoMint = new BN(1000000000);
-      testLog
-        .getLog()
-        .info(" User: " + user.keyRingPair.address + "burning tokens to pool");
-      promises.push(
-        burnLiquidity(user.keyRingPair, MGA_ASSET_ID, tokenId, tokenstoMint)
-      );
-    }
-    await Promise.all(promises);
-    for (let index = 0; index < users.length - 2; index++) {
-      const user = users[index];
-      const tokenstoMint = new BN(1000000000);
-      testLog
-        .getLog()
-        .info(" User: " + user.keyRingPair.address + "burning tokens to pool");
-      promises.push(
-        burnLiquidity(user.keyRingPair, MGA_ASSET_ID, tokenId, tokenstoMint)
-      );
-    }
-    await Promise.all(promises);
   });
 });
