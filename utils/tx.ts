@@ -877,6 +877,7 @@ export async function scheduleBootstrap(
         new BN(1),
         new BN(bootstrapPeriod),
         [100, 1],
+        // @ts-ignore
         false
       )
     ),
