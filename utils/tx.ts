@@ -863,7 +863,8 @@ export async function scheduleBootstrap(
   mainCurrency: BN,
   bootstrapCurrency: BN,
   waitingPeriod: number,
-  bootstrapPeriod: number
+  bootstrapPeriod: number,
+  whitelistPeriod = 1
 ) {
   const api = getApi();
   const bootstrapBlockNumber = (await getBlockNumber()) + waitingPeriod;
@@ -874,7 +875,7 @@ export async function scheduleBootstrap(
         mainCurrency,
         bootstrapCurrency,
         bootstrapBlockNumber,
-        new BN(1),
+        new BN(whitelistPeriod),
         new BN(bootstrapPeriod),
         [100, 1],
         // @ts-ignore
