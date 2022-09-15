@@ -1,5 +1,7 @@
 import { BN } from "@polkadot/util";
+import { env } from "process";
 import { lockSudoFile, unlockSudoFile } from "./lock";
+import { testLog } from "./Logger";
 import { getChainNonce } from "./tx";
 import { getCurrentNonce } from "./txHandler";
 const fs = require("fs");
@@ -54,7 +56,7 @@ export class SudoDB {
       //unlock always!
       unlockSudoFile();
     }
-
+    testLog.getLog().info(`W[${env.JEST_WORKER_ID}] - sudoNonce: ${dbNonce} `);
     return dbNonce;
   }
 }
