@@ -8,10 +8,11 @@ import { Node } from "../Node/Node";
 import { Token } from "../Supply/Token";
 import { getEnvironmentRequiredVars } from "../../utils";
 import { User } from "../../User";
-import { MangataGenericEvent, signTx } from "@mangata-finance/sdk";
+import { MangataGenericEvent } from "@mangata-finance/sdk";
 import { SudoDB } from "../../SudoDB";
 import { testLog } from "../../Logger";
 import { env } from "process";
+import signTx from "../../TxRetry";
 
 export class SudoUser extends BaseUser {
   node: Node;

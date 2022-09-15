@@ -1,6 +1,7 @@
 /* eslint-disable no-console */
 import "@mangata-finance/types";
-import { Mangata, signTx, MangataHelpers, BN } from "@mangata-finance/sdk";
+import { Mangata, MangataHelpers, BN } from "@mangata-finance/sdk";
+import signTx from "../utils/TxRetry";
 import * as fs from "fs";
 
 function difference(a1: any, a2: any) {

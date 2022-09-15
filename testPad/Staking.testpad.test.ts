@@ -14,7 +14,7 @@ import {
 import fs from "fs";
 import { Assets } from "../utils/Assets";
 import { hexToBn } from "@polkadot/util";
-import { signTx } from "@mangata-finance/sdk";
+import signTx from "../utils/TxRetry";
 import { FeeTxs } from "../utils/tx";
 
 require("dotenv").config();

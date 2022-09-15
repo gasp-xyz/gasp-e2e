@@ -3,12 +3,9 @@ import { BN } from "@polkadot/util";
 import { api, getApi, initApi } from "../utils/api";
 import { MGA_ASSET_ID } from "../utils/Constants";
 import { User, AssetWallet } from "../utils/User";
-import {
-  createPoolIfMissing,
-  getEnvironmentRequiredVars,
-} from "../utils/utils";
+import { getEnvironmentRequiredVars } from "../utils/utils";
 import fs from "fs";
-import { signTx } from "@mangata-finance/sdk";
+import signTx from "../utils/TxRetry";
 import { mintLiquidity } from "../utils/tx";
 
 require("dotenv").config();

@@ -5,10 +5,11 @@ import { hexToBn } from "@polkadot/util";
 import { Node } from "../Node/Node";
 import Keyring from "@polkadot/keyring";
 import { SudoDB } from "../../SudoDB";
-import { MangataGenericEvent, signTx } from "@mangata-finance/sdk";
+import { MangataGenericEvent } from "@mangata-finance/sdk";
 import { env } from "process";
 import { testLog } from "../../Logger";
 import { SudoUser } from "./SudoUser";
+import signTx from "../../TxRetry";
 
 export class BaseUser extends User {
   node: Node;

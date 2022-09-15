@@ -15,7 +15,8 @@ import { Keyring } from "@polkadot/api";
 import { User } from "./User";
 import { testLog } from "./Logger";
 import { KeyringPair } from "@polkadot/keyring/types";
-import { MangataGenericEvent, signTx, toBN } from "@mangata-finance/sdk";
+import { MangataGenericEvent, toBN } from "@mangata-finance/sdk";
+import signTx from "./TxRetry";
 import { AnyJson } from "@polkadot/types/types";
 import { SudoUser } from "./Framework/User/SudoUser";
 
