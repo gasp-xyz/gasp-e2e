@@ -1,5 +1,4 @@
 /* eslint-disable no-console */
-import { AddressOrPair, SubmittableExtrinsic } from "@polkadot/api/types";
 import { AccountData, AccountId32 } from "@polkadot/types/interfaces";
 import { AnyTuple, Codec } from "@polkadot/types/types";
 import { StorageKey } from "@polkadot/types";
@@ -19,17 +18,6 @@ import { MangataGenericEvent, toBN } from "@mangata-finance/sdk";
 import signTx from "./TxRetry";
 import { AnyJson } from "@polkadot/types/types";
 import { SudoUser } from "./Framework/User/SudoUser";
-
-export const signTxDeprecated = async (
-  tx: SubmittableExtrinsic<"promise">,
-  address: AddressOrPair,
-  nonce: BN
-) => {
-  await tx.signAndSend(address, { nonce }, () => {
-    // handleTx(result, unsub)
-  });
-  //   setNonce(nonce + 1)
-};
 
 export async function calcuate_mint_liquidity_price_local(
   firstAssetId: BN,
