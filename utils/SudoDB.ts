@@ -3,7 +3,7 @@ import { env } from "process";
 import { lockSudoFile, unlockSudoFile } from "./lock";
 import { testLog } from "./Logger";
 import { getChainNonce } from "./tx";
-import { getCurrentNonce } from "./txHandler";
+import { getUserNonceFromNode } from "./txHandler";
 const fs = require("fs");
 
 export class SudoDB {
@@ -26,11 +26,11 @@ export class SudoDB {
       process.env.VSCODE_INSPECTOR_OPTIONS.length > 0 &&
       process.env.PERF_TEST === undefined
     )
-      return await getCurrentNonce(sudoAddress);
+      return await getUserNonceFromNode(sudoAddress);
 
     let dbNonce;
     if (process.argv.includes("--runInBand")) {
-      return await getCurrentNonce(sudoAddress);
+      return await getUserNonceFromNode(sudoAddress);
     }
     try {
       // we need to prevent workers accessing and writing to the file concurrently

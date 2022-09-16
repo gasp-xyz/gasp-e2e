@@ -5,17 +5,15 @@ import { Codec } from "@polkadot/types/types";
 import { KeyringPair } from "@polkadot/keyring/types";
 import { BN } from "@polkadot/util";
 import { SudoDB } from "./SudoDB";
-import { env } from "process";
 import { EventResult, ExtrinsicResult } from "./eventListeners";
 import { testLog } from "./Logger";
 import { User } from "./User";
 import { MangataGenericEvent } from "@mangata-finance/sdk";
 import signTx from "./TxRetry";
 import { AccountId32 } from "@polkadot/types/interfaces";
+import { getCurrentNonce } from "./tx";
 
-//let wait 7 blocks - 6000 * 7 = 42000; depends on the number of workers.
-
-export async function getCurrentNonce(account?: string) {
+export async function getUserNonceFromNode(account?: string) {
   const api = getApi();
   if (account) {
     const { nonce } = (await api.query.system.account(account)) as any;
@@ -83,7 +81,6 @@ export const sudoIssueAsset = async (
   targetAddress: string
 ): Promise<MangataGenericEvent[]> => {
   const nonce = await SudoDB.getInstance().getSudoNonce(sudoAccount.address);
-  testLog.getLog().info(`W[${env.JEST_WORKER_ID}] - sudoNonce: ${nonce} `);
   const api = getApi();
   let results: MangataGenericEvent[] = [];
   try {
@@ -210,7 +207,6 @@ export async function setAssetInfo(
   const nonce = await SudoDB.getInstance().getSudoNonce(
     sudo.keyRingPair.address
   );
-  testLog.getLog().info(`W[${env.JEST_WORKER_ID}] - sudoNonce: ${nonce} `);
 
   const api = getApi();
   const result = await signTx(
