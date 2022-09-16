@@ -4,16 +4,18 @@
  * @group api
  * @group sequential
  */
-import { api, getApi, initApi } from "../../utils/api";
-import { getTokensAccountInfo } from "../../utils/tx";
+import { getApi, initApi } from "../../utils/api";
+import { getTokensAccountInfo, joinCandidate } from "../../utils/tx";
 import { hexToBn } from "@polkadot/util";
 
 import { BN } from "@polkadot/util";
 import { Keyring } from "@polkadot/api";
 import { User } from "../../utils/User";
 import { getEnvironmentRequiredVars } from "../../utils/utils";
-import { MGA_ASSET_ID, MGA_DEFAULT_LIQ_TOKEN } from "../../utils/Constants";
-import { signSendAndWaitToFinishTx } from "../../utils/txHandler";
+import { MGA_DEFAULT_LIQ_TOKEN } from "../../utils/Constants";
+import { setupApi, setupUsers } from "../../utils/setup";
+import { Sudo } from "../../utils/sudo";
+import { Assets } from "../../utils/Assets";
 
 jest.spyOn(console, "log").mockImplementation(jest.fn());
 jest.setTimeout(1500000);
@@ -21,11 +23,9 @@ process.env.NODE_ENV = "test";
 const { sudo: sudoUserName } = getEnvironmentRequiredVars();
 
 const ASSET_ID_MGA_ETH = MGA_DEFAULT_LIQ_TOKEN;
-const ASSET_ID_MGA = MGA_ASSET_ID;
 
 describe("xyk-pallet - Sell Asset: validate Errors:", () => {
   let testUser1: User;
-  let sudo: User;
 
   let keyring: Keyring;
 
@@ -39,38 +39,29 @@ describe("xyk-pallet - Sell Asset: validate Errors:", () => {
     keyring = new Keyring({ type: "sr25519" });
 
     // setup users
-    testUser1 = new User(keyring);
-    sudo = new User(keyring, sudoUserName);
+    await setupApi();
+    [testUser1] = setupUsers();
     keyring.addFromUri(sudoUserName);
-    testUser1.addMGATokens(sudo);
-    await sudo.mint(
-      ASSET_ID_MGA,
-      testUser1,
-      new BN(10000).add(new BN(Math.pow(10, 20).toString()))
+    await Sudo.batchAsSudoFinalized(
+      Assets.mintNative(
+        testUser1,
+        new BN(10000)
+          .add(new BN(Math.pow(10, 20).toString()))
+          .add(new BN(Math.pow(10, 20).toString()))
+      ),
+      Assets.mintToken(
+        ASSET_ID_MGA_ETH,
+        testUser1,
+        new BN("20000000000000000000")
+      )
     );
-    await sudo.mint(
-      ASSET_ID_MGA_ETH,
-      testUser1,
-      new BN("20000000000000000000")
-    );
-    await testUser1.addMGATokens(sudo);
   });
 
   test("joinCandidates operation reserves some tokens", async () => {
-    const candidates = JSON.parse(
-      JSON.stringify(await api?.query.parachainStaking.candidatePool())
-    );
-    await signSendAndWaitToFinishTx(
-      // @ts-ignore
-      api?.tx.parachainStaking.joinCandidates(
-        new BN("10000000000000000000"),
-        new BN(3),
-        // @ts-ignore - Mangata bond operation has 4 params, somehow is inheriting the bond operation from polkadot :S
-        new BN(candidates.length),
-        // @ts-ignore
-        new BN(3)
-      ),
-      testUser1.keyRingPair
+    await joinCandidate(
+      testUser1.keyRingPair,
+      new BN(3),
+      new BN("10000000000000000000")
     );
     const tokenStatuses = await getTokensAccountInfo(
       testUser1.keyRingPair.address,
