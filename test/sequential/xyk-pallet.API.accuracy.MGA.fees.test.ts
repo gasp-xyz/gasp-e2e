@@ -4,7 +4,7 @@
  * @group api
  * @group sequential
  */
-import { getApi, getMangataInstance, initApi } from "../../utils/api";
+import { getApi, initApi } from "../../utils/api";
 import {
   calculate_sell_price_id_rpc,
   calculate_sell_price_local_no_fee,
@@ -25,6 +25,9 @@ import {
 } from "../../utils/utils";
 import { MGA_ASSET_ID } from "../../utils/Constants";
 import { Fees } from "../../utils/Fees";
+import { setupApi, setupUsers } from "../../utils/setup";
+import { Sudo } from "../../utils/sudo";
+import { Xyk } from "../../utils/xyk";
 
 jest.spyOn(console, "log").mockImplementation(jest.fn());
 jest.spyOn(console, "error").mockImplementation(jest.fn());
@@ -58,28 +61,31 @@ beforeEach(async () => {
   // setup users
   testUser1 = new User(keyring);
   sudo = new User(keyring, sudoUserName);
+  await setupApi();
+  [testUser1] = setupUsers();
 
   //add two curerncies and balance to testUser:
   [secondCurrency] = await Assets.setupUserWithCurrencies(
     testUser1,
-    [defaultCurrecyValue, defaultCurrecyValue.add(new BN(1))],
+    [defaultCurrecyValue],
     sudo
   );
-  firstCurrency = MGA_ASSET_ID;
-
-  await testUser1.addMGATokens(sudo);
   keyring.addPair(testUser1.keyRingPair);
   keyring.addPair(sudo.keyRingPair);
+  firstCurrency = MGA_ASSET_ID;
   testUser1.addAsset(firstCurrency, defaultCurrecyValue);
 
-  await (
-    await getMangataInstance()
-  ).createPool(
-    testUser1.keyRingPair,
-    firstCurrency.toString(),
-    firstAssetAmount,
-    secondCurrency.toString(),
-    secondAssetAmount
+  await Sudo.batchAsSudoFinalized(
+    Assets.mintNative(testUser1),
+    Sudo.sudoAs(
+      testUser1,
+      Xyk.createPool(
+        firstCurrency,
+        firstAssetAmount,
+        secondCurrency,
+        secondAssetAmount
+      )
+    )
   );
 });
 
@@ -133,13 +139,13 @@ test("xyk-pallet - Assets substracted are incremented by 1 - MGA- SellAsset", as
   //0.05% = 5 tokens.
   const extraTokenForRounding = new BN(1);
   const expectedTreasury = new BN(5);
-  const treasury = await getTreasury(firstCurrency);
-  const treasuryBurn = await getTreasuryBurn(firstCurrency);
-  const incrementedTreasury = treasuryBefore.sub(treasury).sub(feesPaid).abs();
+  const treasuryAfter = await getTreasury(firstCurrency);
+  const treasuryBurnAfter = await getTreasuryBurn(firstCurrency);
+  const incrementedTreasury = treasuryAfter.sub(treasuryBefore);
   expect(incrementedTreasury).bnEqual(
     expectedTreasury.add(extraTokenForRounding)
   );
-  expect(treasuryBurnBefore.sub(treasuryBurn)).bnEqual(treasuryBurnBefore);
+  expect(treasuryBurnAfter.sub(treasuryBurnBefore)).bnEqual(treasuryBurnBefore);
 
   //the other pool_fee tokens must be in the pool.
   const poolBalance = await getBalanceOfPool(firstCurrency, secondCurrency);

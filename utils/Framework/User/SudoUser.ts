@@ -95,7 +95,6 @@ export class SudoUser extends BaseUser {
     const nonce = new BN(
       await SudoDB.getInstance().getSudoNonce(this.keyRingPair.address)
     );
-    testLog.getLog().info(`W[${env.JEST_WORKER_ID}] - sudoNonce: ${nonce} `);
     const txResult = await signTx(
       this.node.api!,
       this.node.api!.tx.sudo.sudo(

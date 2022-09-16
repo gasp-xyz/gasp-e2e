@@ -394,7 +394,6 @@ export const mintAsset = async (
     nonce = sudoNonce;
   }
 
-  testLog.getLog().info(`W[${env.JEST_WORKER_ID}] - sudoNonce: ${nonce} `);
   const txResult = await signTx(
     api,
     api.tx.sudo.sudo(api.tx.tokens.mint(asset_id, target, amount)),
