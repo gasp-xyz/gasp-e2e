@@ -68,6 +68,9 @@ describe("SDK test - Nonce tests - user", () => {
     );
   });
 
+  beforeEach(async () => {
+    await testUser.addMGATokens(sudo);
+  });
   test("SDK- Nonce management - user", async () => {
     const userNonce = [];
     userNonce.push(await mangata.getNonce(testUser.keyRingPair.address));
