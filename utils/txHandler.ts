@@ -222,6 +222,7 @@ export async function setAssetInfo(
           symbol: api.createType("Vec<u8>", symbol),
           existentialDeposit: 0,
         },
+        // @ts-ignore, todo remove after sdk update
         id
       )
     ),
