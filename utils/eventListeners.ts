@@ -6,9 +6,11 @@ import { User } from "./User";
 import { BN } from "@polkadot/util";
 import { MangataGenericEvent, signTx } from "@mangata-finance/sdk";
 import {
-  getEventResultFromMangataTx,
   getEventErrorfromSudo,
+  getEventResultFromMangataTx,
 } from "./txHandler";
+import _ from "lodash";
+import { ApiPromise } from "@polkadot/api";
 
 // lets create a enum for different status.
 export enum ExtrinsicResult {
@@ -159,3 +161,88 @@ export async function waitSudoOperataionFail(
 
   expect(BootstrapError.method).toContain(expectedError);
 }
+
+export const awaitEvent = async (
+  api: ApiPromise,
+  method: string,
+  blocks: number = 3
+): Promise<void> => {
+  return new Promise(async (resolve, reject) => {
+    let counter = 0;
+    const unsub = await api.rpc.chain.getFinalizedHead(async (head) => {
+      await api.query.system.events((events) => {
+        counter++;
+        testLog
+          .getLog()
+          .info(
+            `await event check for '${method}', attempt ${counter}, head ${head}`
+          );
+        events.forEach(({ phase, event: { data, method, section } }) => {
+          logEvent(phase, data, method, section);
+        });
+        const event = _.find(
+          events,
+          ({ event }) => `${event.section}.${event.method}` === method
+        );
+        if (event) {
+          resolve();
+          unsub();
+          // } else {
+          //   reject(new Error("event not found"));
+        }
+        if (counter === blocks) {
+          reject(`method ${method} not found within blocks limit`);
+        }
+      });
+    });
+  });
+};
+
+export const signSendSuccess = async (
+  api: ApiPromise,
+  tx: Extrinsic,
+  user: User
+): Promise<void> => {
+  return new Promise(async (resolve, reject) => {
+    try {
+      const unsub = await tx.signAndSend(
+        user.keyRingPair,
+        ({ events, status, dispatchError }) => {
+          testLog.getLog().info(status);
+          events.forEach(({ phase, event: { data, method, section } }) => {
+            logEvent(phase, data, method, section);
+          });
+
+          if (!_.isNil(dispatchError)) {
+            if (dispatchError.isModule) {
+              const metaError = api.registry.findMetaError(
+                dispatchError.asModule
+              );
+              const { name, section } = metaError;
+              reject(new Error(`${section}.${name}`));
+              return;
+            } else {
+              reject(new Error(dispatchError.toString()));
+              return;
+            }
+          }
+
+          const event = _.find(events, ({ event }) =>
+            api.events.system.ExtrinsicSuccess.is(event)
+          );
+          if (event) {
+            resolve();
+            unsub();
+          }
+
+          if (status.isFinalized) {
+            reject(new Error("The event.ExtrinsicSuccess is not found"));
+            unsub();
+          }
+        }
+      );
+    } catch (error) {
+      reject(error);
+    }
+  });
+};
