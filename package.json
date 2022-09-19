@@ -20,7 +20,7 @@
     "babel-plugin-transform-decorators-legacy": "^1.3.5",
     "bs58": "^4.0.1",
     "chromedriver": "96",
-    "dotenv": "^8.2.0",
+    "dotenv": "^16.0.1",
     "eslint": "7.26.0",
     "ethers": "^5.4.7",
     "ganache-cli": "^6.12.2",
@@ -45,6 +45,7 @@
     "start": "ts-node --project tsconfig.json index.ts",
     "start-prod": "node ./build/index.js",
     "build": "tsc --project tsconfig.json",
+    "init-test": "rm nonce.db; rm sudo.lock;",
     "test": "jest",
     "test-parallel": "export JEST_HTML_REPORTERS_PUBLIC_PATH=reports/html-report-parallel;rm nonce.db ; rm sudo.lock; jest --verbose --ci --group=parallel",
     "test-parallel-files": "export JEST_HTML_REPORTERS_PUBLIC_PATH=reports/html-report-parallel;rm nonce.db ; rm sudo.lock; jest --verbose --ci ",
@@ -52,7 +53,7 @@
     "test-cluster": "rm nonce.db; rm sudo.lock; jest --verbose --group=cluster",
     "test-cluster-healthcheck": "rm nonce.db; rm sudo.lock; jest --verbose --group=cluster-healthcheck",
     "test-sequential": "export JEST_HTML_REPORTERS_PUBLIC_PATH=reports/html-report-seq; rm nonce.db ; rm sudo.lock; jest --verbose --runInBand --group=sequential",
-    "test-sequential-e2e": "export JEST_HTML_REPORTERS_PUBLIC_PATH=reports/html-report-seq-e2e; rm nonce.db ; rm sudo.lock; jest --verbose --runInBand --ci --group=critical ",
+    "test-sequential-e2e": "export JEST_HTML_REPORTERS_PUBLIC_PATH=reports/html-report-seq-e2e; rm nonce.db; rm sudo.lock; jest --verbose --runInBand --ci --group=critical ",
     "test-sequential-accuracy": "rm nonce.db ; rm sudo.lock; jest --verbose --runInBand --ci --group=accuracy ",
     "test-sequential-files": "export JEST_HTML_REPORTERS_PUBLIC_PATH=reports/html-report-seq-e2e; rm nonce.db ; rm sudo.lock; jest --verbose --runInBand --ci ",
     "test-ci": "rm nonce.db ; rm sudo.lock; jest --runInBand --verbose --ci --group=ci ",
@@ -64,7 +65,8 @@
     "test-governance-candidacy": "rm nonce.db ; rm sudo.lock; jest --verbose --runInBand --ci --group=governance-candidacy",
     "test-governance-voting": "rm nonce.db ; rm sudo.lock; jest --verbose --runInBand --ci --group=governance-voting",
     "tsc-lint": "tsc  --project tsconfig.json --noEmit",
-    "eslint": "node_modules/.bin/eslint --max-warnings 0 . --ext .ts"
+    "eslint": "node_modules/.bin/eslint --max-warnings 0 . --ext .ts",
+    "reports": "allure generate reports"
   },
   "devDependencies": {
     "@babel/core": "^7.13.10",
@@ -72,6 +74,7 @@
     "@babel/preset-typescript": "^7.13.0",
     "@types/jest": "^26.0.23",
     "@types/lodash": "^4.14.173",
+    "allure-commandline": "^2.18.1",
     "babel-jest": "^27.5.1",
     "eslint-config-mangata": "https://github.com/mangata-finance/eslint-config-mangata",
     "husky": "^7.0.2",
@@ -102,6 +105,7 @@
       "jest-allure/dist/setup",
       "./utils/setupJest.ts"
     ],
+    "testTimeout": 1500000,
     "reporters": [
       "default",
       "jest-allure",

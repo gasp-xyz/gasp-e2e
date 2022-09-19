@@ -35,6 +35,7 @@ describe("Story tests > LP", () => {
 
   test("MGA can be runtime - upgraded", async () => {
     //lets create a pool with user1
+    //TODO: Get nonce!
     const mangata = await getMangataInstance(chainUri);
     const api = await mangata.getApi();
     const hash =

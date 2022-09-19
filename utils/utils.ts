@@ -219,6 +219,29 @@ export const waitForNBlocks = async (n: number) => {
   }
 };
 
+export async function waitForBootstrapStatus(
+  bootstrapStatus: string,
+  maxNumberBlocks: number
+) {
+  const lastBlock = (await getBlockNumber()) + maxNumberBlocks;
+  let currentBlock = await getBlockNumber();
+  const api = await getApi();
+  let bootstrapPhase = await api.query.bootstrap.phase();
+  testLog.getLog().info("Waiting for boostrap to be " + bootstrapStatus);
+  while (
+    lastBlock > currentBlock &&
+    bootstrapPhase.toString() !== bootstrapStatus
+  ) {
+    await waitNewBlock();
+    bootstrapPhase = await api.query.bootstrap.phase();
+    currentBlock = await getBlockNumber();
+  }
+  testLog.getLog().info("... Done waiting " + bootstrapStatus);
+  if (bootstrapPhase !== bootstrapStatus) {
+    testLog.getLog().warn("TIMEDOUT waiting for the new boostrap phase");
+  }
+}
+
 export async function waitIfSessionWillChangeInNblocks(numberOfBlocks: number) {
   const api = await getApi();
   const sessionDuration = BigInt(
@@ -262,6 +285,16 @@ export async function getTokensDiffForBlockAuthor(blockNumber: AnyNumber) {
 export async function getBlockNumber() {
   const api = await mangata?.getApi()!;
   return ((await api.query.system.number()) as any).toNumber();
+}
+export async function getMultiPurposeLiquidityStatus(
+  address: string,
+  tokenId: BN
+) {
+  const api = await mangata?.getApi()!;
+  return (await api.query.multiPurposeLiquidity.reserveStatus(
+    address,
+    tokenId
+  )) as any;
 }
 export async function findBlockWithExtrinsicSigned(
   blocks = [0, 1],
