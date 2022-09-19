@@ -1859,10 +1859,9 @@
     "@jridgewell/resolve-uri" "^3.0.3"
     "@jridgewell/sourcemap-codec" "^1.4.10"
 
-"@mangata-finance/sdk@^1.6.1":
+"@mangata-finance/sdk@https://github.com/mangata-finance/mangata-sdk#feature/storage_queue":
   version "1.6.1"
-  resolved "https://registry.yarnpkg.com/@mangata-finance/sdk/-/sdk-1.6.1.tgz#e7c694e1407ed55333730a065f052d67048a04e6"
-  integrity sha512-oDCs0dyDTeOuitJF1KCUUpGvlkAfyfk4eFQCRaoS13wOZXJ2joOqTojFoK23b1LMziP+SzBaJBDyW5FlvCed0Q==
+  resolved "https://github.com/mangata-finance/mangata-sdk#d7c22edabb10a18ba855cd3067ab4ea70942b238"
   dependencies:
     "@mangata-finance/types" "^0.8.0"
     "@polkadot/api" "^8.8.2"
