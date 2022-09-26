@@ -109,7 +109,7 @@ async function createPoolAndVestingToken(
 async function waitNecessaryBlock(FinishBlockNumberBN: BN) {
   const lastBlock = (await getBlockNumber()) + 10;
   let currentBlock = await getBlockNumber();
-  const FinishBlockNumber = FinishBlockNumberBN.toNumber();
+  const FinishBlockNumber = FinishBlockNumberBN.toNumber() + 1;
   while (lastBlock > currentBlock && FinishBlockNumber > currentBlock) {
     await waitNewBlock();
     currentBlock = await getBlockNumber();
@@ -249,13 +249,13 @@ describe("xyk-pallet - Vested token tests: which action you can do with vesting 
 
   test("xyk-pallet- check that all unlocking vesting tokens can be burned", async () => {
     const api = getApi();
-    const poolLockedValue = toBN("1", 20);
-    const poolBlockValue = toBN("2", 19);
+    const amountVestingToken = toBN("1", 20);
+    const amountUnlockedPerBlock = toBN("2", 19);
 
     const VestingTokenFunction = await createPoolAndVestingToken(
       true,
-      poolLockedValue,
-      poolBlockValue
+      amountVestingToken,
+      amountUnlockedPerBlock
     );
 
     const vestingStartBlockNumber = new BN(
@@ -264,7 +264,7 @@ describe("xyk-pallet - Vested token tests: which action you can do with vesting 
 
     const vestingFinishBlockNumber = new BN(
       vestingStartBlockNumber.add(
-        poolLockedValue.sub(poolBlockValue).div(poolBlockValue)
+        amountVestingToken.div(amountUnlockedPerBlock)
       )
     );
 
@@ -321,7 +321,7 @@ describe("xyk-pallet - Vested token tests: which action you can do with vesting 
       liquidityID
     );
 
-    const UserBalanceCrTAfterBurningAmount = await api.query.tokens.accounts(
+    const UserBalanceNewTokAfterBurning = await api.query.tokens.accounts(
       testUser1.keyRingPair.address,
       createdToken
     );
@@ -329,7 +329,7 @@ describe("xyk-pallet - Vested token tests: which action you can do with vesting 
     expect(UserBalanceAfterBurningAmount.free).bnEqual(new BN(0));
     expect(UserBalanceAfterBurningAmount.frozen).bnEqual(new BN(0));
 
-    expect(UserBalanceCrTAfterBurningAmount.free).bnEqual(
+    expect(UserBalanceNewTokAfterBurning.free).bnEqual(
       defaultCurrencyValue.sub(new BN(1))
     );
 
