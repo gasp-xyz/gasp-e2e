@@ -7,18 +7,27 @@ import { testLog } from "./Logger";
 import {
   buyAsset,
   createPool,
+  delegate,
   FeeTxs,
   getAllAssets,
   getTokensAccountInfo,
   getUserAssets,
+  joinCandidate,
   mintAsset,
   mintLiquidity,
+  mintLiquidityUsingVestingNativeTokens,
+  reserveVestingLiquidityTokens,
   transferAll,
 } from "./tx";
 import { getEventResultFromMangataTx } from "./txHandler";
-import { MAX_BALANCE, MGA_ASSET_ID } from "./Constants";
+import {
+  MAX_BALANCE,
+  MGA_ASSET_ID,
+  KSM_ASSET_ID,
+  TUR_ASSET_ID,
+} from "./Constants";
 import { strict as assert } from "assert";
-import { TokenBalance } from "@mangata-finance/sdk";
+import { TokenBalance, toBN } from "@mangata-finance/sdk";
 
 export enum AssetWallet {
   BEFORE,
@@ -195,6 +204,54 @@ export class User {
     });
   }
 
+  async mintLiquidityWithVestedTokens(
+    vestingTokensAmount: BN,
+    secondAssetId: BN,
+    expectedSecondAssetAmount: BN = new BN(Number.MAX_SAFE_INTEGER)
+  ) {
+    await mintLiquidityUsingVestingNativeTokens(
+      this.keyRingPair,
+      vestingTokensAmount,
+      secondAssetId,
+      expectedSecondAssetAmount
+    ).then((result) => {
+      const eventResponse = getEventResultFromMangataTx(result, [
+        "xyk",
+        "LiquidityMinted",
+        this.keyRingPair.address,
+      ]);
+      assert.equal(eventResponse.state, ExtrinsicResult.ExtrinsicSuccess);
+    });
+  }
+  async joinAsCandidate(
+    liqTokenForCandidate: BN,
+    amount: BN,
+    from = "availablebalance"
+  ) {
+    await joinCandidate(this.keyRingPair, liqTokenForCandidate, amount, from);
+  }
+  async joinAsDelegator(liqTokenForCandidate: BN, amount: BN) {
+    await delegate(
+      this.keyRingPair,
+      liqTokenForCandidate,
+      amount,
+      "availablebalance"
+    );
+  }
+
+  async reserveVestingLiquidityTokens(
+    liqToken: BN,
+    amount: BN,
+    strictSuccess = true
+  ) {
+    return await reserveVestingLiquidityTokens(
+      this.keyRingPair,
+      liqToken,
+      amount,
+      strictSuccess
+    );
+  }
+
   async removeTokens() {
     //TODO: find a proper way to clean all the user tokens in one shot!
     const assets = await getAllAssets(this.keyRingPair.address);
@@ -235,10 +292,19 @@ export class User {
   ) {
     await sudo.mint(MGA_ASSET_ID, this, amountFree);
   }
-  async getUserTokensAccountInfo() {
+
+  async addKSMTokens(sudo: User, amountFree: BN = toBN("1", 13)) {
+    await sudo.mint(KSM_ASSET_ID, this, amountFree);
+  }
+
+  async addTURTokens(sudo: User, amountFree: BN = toBN("1", 11)) {
+    await sudo.mint(TUR_ASSET_ID, this, amountFree);
+  }
+
+  async getUserTokensAccountInfo(tokenId = new BN(0)) {
     const accountInfo = await getTokensAccountInfo(
       this.keyRingPair.address,
-      new BN(0)
+      tokenId
     );
     return accountInfo;
   }

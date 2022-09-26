@@ -1,22 +1,15 @@
 /* eslint-disable jest/no-conditional-expect */
-/*
- *
- * @group xyk
- * @group api
- * @group sequential
- * @group critical
- */
+// todo remove test once v2 is passing on CI for some time
 import { getApi, getMangataInstance, initApi } from "../../utils/api";
 import {
-  sellAsset,
+  buyAsset,
+  calculate_buy_price_rpc,
+  calculate_sell_price_local_no_fee,
+  calculate_sell_price_rpc,
+  getBalanceOfPool,
   getTreasury,
   getTreasuryBurn,
-  getAssetId,
-  getBalanceOfPool,
-  calculate_sell_price_local_no_fee,
-  buyAsset,
-  calculate_sell_price_rpc,
-  calculate_buy_price_rpc,
+  sellAsset,
 } from "../../utils/tx";
 import { ExtrinsicResult, waitNewBlock } from "../../utils/eventListeners";
 import { BN } from "@polkadot/util";
@@ -24,7 +17,7 @@ import { Keyring } from "@polkadot/api";
 import { AssetWallet, User } from "../../utils/User";
 import { validateTreasuryAmountsEqual } from "../../utils/validators";
 import { Assets } from "../../utils/Assets";
-import { MAX_BALANCE, MGA_ASSET_NAME } from "../../utils/Constants";
+import { MAX_BALANCE, MGA_ASSET_ID } from "../../utils/Constants";
 import {
   calculateFees,
   findBlockWithExtrinsicSigned,
@@ -35,6 +28,7 @@ import {
 } from "../../utils/utils";
 import { getEventResultFromMangataTx } from "../../utils/txHandler";
 import { Fees } from "../../utils/Fees";
+
 jest.spyOn(console, "log").mockImplementation(jest.fn());
 jest.setTimeout(1500000);
 process.env.NODE_ENV = "test";
@@ -74,7 +68,7 @@ describe("xyk-pallet - treasury tests [Mangata]: on treasury we store", () => {
     keyring.addPair(testUser1.keyRingPair);
     keyring.addPair(sudo.keyRingPair);
 
-    mgaTokenId = await getAssetId(MGA_ASSET_NAME);
+    mgaTokenId = MGA_ASSET_ID;
     await sudo.mint(
       mgaTokenId,
       testUser1,
@@ -302,7 +296,7 @@ describe("xyk-pallet - treasury tests [Connected - Mangata]: on treasury we stor
     keyring.addPair(testUser1.keyRingPair);
     keyring.addPair(sudo.keyRingPair);
 
-    mgaTokenId = await getAssetId(MGA_ASSET_NAME);
+    mgaTokenId = MGA_ASSET_ID;
     await sudo.mint(
       mgaTokenId,
       testUser1,
@@ -590,7 +584,7 @@ describe("xyk-pallet - treasury tests [Connected - Mangata]: Error cases", () =>
     keyring.addPair(sudo.keyRingPair);
 
     await waitNewBlock();
-    mgaTokenId = await getAssetId(MGA_ASSET_NAME);
+    mgaTokenId = MGA_ASSET_ID;
     await sudo.mint(
       mgaTokenId,
       testUser1,

@@ -1,8 +1,12 @@
 import { BN } from "@polkadot/util";
 import { renameExtraLogs } from "./frontend/utils/Helper";
-module.exports = {
-  runner: "groups",
-};
+import { removeSudoDb } from "./lock";
+
+require("dotenv").config();
+
+beforeAll(async () => {
+  await removeSudoDb();
+});
 
 declare global {
   namespace jest {

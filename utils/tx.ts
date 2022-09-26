@@ -8,15 +8,16 @@ import { BN } from "@polkadot/util";
 import { env } from "process";
 import { SudoDB } from "./SudoDB";
 import { signSendAndWaitToFinishTx } from "./txHandler";
-import { getEnvironmentRequiredVars } from "./utils";
+import { getEnvironmentRequiredVars, getBlockNumber } from "./utils";
 import { Fees } from "./Fees";
 import { ETH_ASSET_ID, MGA_ASSET_ID, MGA_DEFAULT_LIQ_TOKEN } from "./Constants";
 import { Keyring } from "@polkadot/api";
 import { User } from "./User";
 import { testLog } from "./Logger";
 import { KeyringPair } from "@polkadot/keyring/types";
-import { MangataGenericEvent, signTx } from "@mangata-finance/sdk";
+import { MangataGenericEvent, signTx, toBN } from "@mangata-finance/sdk";
 import { AnyJson } from "@polkadot/types/types";
+import { SudoUser } from "./Framework/User/SudoUser";
 
 export const signTxDeprecated = async (
   tx: SubmittableExtrinsic<"promise">,
@@ -336,7 +337,7 @@ export async function getSudoKey(): Promise<AccountId32> {
 
   const sudoKey = await api.query.sudo.key();
 
-  return sudoKey.unwrap();
+  return (sudoKey as any).unwrap();
 }
 
 export const balanceTransfer = async (
@@ -443,6 +444,19 @@ export const createPool = async (
   return result;
 };
 
+export const promotePool = async (sudoAccount: KeyringPair, liqAssetId: BN) => {
+  testLog.getLog().info(`Promoting pool :${liqAssetId}`);
+  const mangata = await getMangataInstance();
+  const api = await mangata.getApi();
+  const result = await signTx(
+    api,
+    api.tx.sudo.sudo(api.tx.xyk.promotePool(liqAssetId)),
+    sudoAccount,
+    { nonce: await getCurrentNonce(sudoAccount.address) }
+  );
+  return result;
+};
+
 export const sellAsset = async (
   account: KeyringPair,
   soldAssetId: BN,
@@ -462,7 +476,114 @@ export const sellAsset = async (
   );
   return result;
 };
+export const delegate = async (
+  account: KeyringPair,
+  liqToken: BN,
+  amount: BN,
+  from: "availablebalance"
+) => {
+  const mangata = await getMangataInstance();
+  const api = await mangata.getApi();
+  const candidates = JSON.parse(
+    JSON.stringify(await api?.query.parachainStaking.candidatePool())
+  );
+  const collator = candidates.filter(
+    (candidate: { liquidityToken: string | null | undefined }) =>
+      Number(candidate.liquidityToken!.toString()) === liqToken.toNumber()
+  )[0].owner;
 
+  const delegatorIdx = JSON.parse(
+    JSON.stringify(await api?.query.parachainStaking.delegatorState(collator))
+  );
+  const delCount = delegatorIdx === null ? 0 : delegatorIdx.length;
+  const result = await signSendAndWaitToFinishTx(
+    api?.tx.parachainStaking.delegate(
+      collator,
+      new BN(amount),
+      from,
+      new BN(delCount),
+      new BN(delCount)
+    ),
+    account
+  );
+  return result;
+};
+export const joinCandidate = async (
+  account: KeyringPair,
+  liqToken: BN,
+  amount: BN,
+  from = "availablebalance"
+) => {
+  const mangata = await getMangataInstance();
+  const api = await mangata.getApi();
+  const candidates = JSON.parse(
+    JSON.stringify(await api?.query.parachainStaking.candidatePool())
+  );
+  const liqTokens = await api?.query.parachainStaking.stakingLiquidityTokens();
+  const liqTokenCount = Object.keys(JSON.parse(liqTokens as any)).length;
+
+  const result = await signSendAndWaitToFinishTx(
+    api?.tx.parachainStaking.joinCandidates(
+      new BN(amount),
+      new BN(liqToken),
+      from,
+      // @ts-ignore - Mangata bond operation has 4 params, somehow is inheriting the bond operation from polkadot :S
+      new BN(candidates.length),
+      new BN(liqTokenCount)
+    ),
+    account
+  );
+  return result;
+};
+export const activateLiquidity = async (
+  account: KeyringPair,
+  liqToken: BN,
+  amount: BN,
+  from = "availablebalance",
+  strictsuccess = false
+) => {
+  const mangata = await getMangataInstance();
+  const api = await mangata.getApi();
+  const result = await signSendAndWaitToFinishTx(
+    api?.tx.xyk.activateLiquidity(new BN(liqToken), new BN(amount), from),
+    account,
+    strictsuccess
+  );
+  return result;
+};
+export const deactivateLiquidity = async (
+  account: KeyringPair,
+  liqToken: BN,
+  amount: BN
+) => {
+  const mangata = await getMangataInstance();
+  const api = await mangata.getApi();
+
+  const result = await signSendAndWaitToFinishTx(
+    api?.tx.xyk.deactivateLiquidity(new BN(liqToken), new BN(amount)),
+    account
+  );
+  return result;
+};
+export const reserveVestingLiquidityTokens = async (
+  keyRingPair: KeyringPair,
+  liqToken: BN,
+  amount: BN,
+  strictSuccess = true
+) => {
+  const mangata = await getMangataInstance();
+  const api = await mangata.getApi();
+
+  const result = await signSendAndWaitToFinishTx(
+    api?.tx.multiPurposeLiquidity.reserveVestingLiquidityTokens(
+      new BN(liqToken),
+      new BN(amount)
+    ),
+    keyRingPair,
+    strictSuccess
+  );
+  return result;
+};
 export const buyAsset = async (
   account: any,
   soldAssetId: BN,
@@ -497,6 +618,25 @@ export const mintLiquidity = async (
     secondAssetId.toString(),
     firstAssetAmount,
     expectedSecondAssetAmount
+  );
+  return result;
+};
+export const mintLiquidityUsingVestingNativeTokens = async (
+  user: KeyringPair,
+  vestingTokensAmount: BN,
+  secondAssetId: BN,
+  expectedSecondAssetAmount: BN = new BN(Number.MAX_SAFE_INTEGER)
+) => {
+  const mangata = await getMangataInstance();
+  const api = await mangata.getApi();
+  const result = await signTx(
+    api,
+    api.tx.xyk.mintLiquidityUsingVestingNativeTokens(
+      vestingTokensAmount,
+      secondAssetId.toString(),
+      expectedSecondAssetAmount
+    ),
+    user
   );
   return result;
 };
@@ -639,7 +779,7 @@ function requireFees() {
     descriptor: TypedPropertyDescriptor<(...params: any[]) => Promise<any>>
   ) => {
     // eslint-disable-next-line no-console
-    console.log("first(): called");
+    // console.log("first(): called");
     const oldFunc = descriptor.value;
     descriptor.value = async function () {
       if (Fees.swapFeesEnabled) {
@@ -665,23 +805,182 @@ async function mintMgas(account: KeyringPair) {
   await user.addMGATokens(sudo);
 }
 export async function createPoolIfMissing(
-  sudo: User,
+  sudo: SudoUser,
   amountInPool: string,
   firstAssetId = MGA_ASSET_ID,
-  seccondAssetId = ETH_ASSET_ID
+  seccondAssetId = ETH_ASSET_ID,
+  promoted = false
 ) {
   const balance = await getBalanceOfPool(firstAssetId, seccondAssetId);
+  const poolValue = new BN(amountInPool).div(new BN(2));
   if (balance[0].isZero() || balance[1].isZero()) {
-    await sudo.mint(firstAssetId, sudo, new BN(amountInPool));
-    await sudo.mint(seccondAssetId, sudo, new BN(amountInPool));
-    const poolValue = new BN(amountInPool).div(new BN(2));
-    await sudo.createPoolToAsset(
-      poolValue,
-      poolValue,
-      firstAssetId,
-      seccondAssetId
-    );
+    await sudo
+      .withFn(
+        sudo.node.api!.tx.sudo.sudo(
+          sudo.node.api!.tx.tokens.mint(
+            firstAssetId,
+            sudo.keyRingPair.address,
+            new BN(amountInPool)
+          )
+        )
+      )
+      .withFn(
+        sudo.node.api!.tx.sudo.sudo(
+          sudo.node.api!.tx.tokens.mint(
+            seccondAssetId,
+            sudo.keyRingPair.address,
+            new BN(amountInPool)
+          )
+        )
+      )
+      .withFn(
+        sudo.node.api!.tx.sudo.sudo(
+          sudo.node.api!.tx.tokens.mint(
+            MGA_ASSET_ID,
+            sudo.keyRingPair.address,
+            new BN(Math.pow(10, 20).toString())
+          )
+        )
+      )
+      .withFn(
+        sudo.node.api!.tx.xyk.createPool(
+          firstAssetId,
+          poolValue,
+          seccondAssetId,
+          poolValue
+        )
+      )
+      .sudoBatch(sudo);
+    const liqToken = await getLiquidityAssetId(firstAssetId, seccondAssetId);
+    if (promoted) {
+      await sudo.promotePool(liqToken);
+    }
   }
+}
+
+export async function scheduleBootstrap(
+  sudoUser: User,
+  mainCurrency: BN,
+  bootstrapCurrency: BN,
+  waitingPeriod: number,
+  bootstrapPeriod: number,
+  whitelistPeriod = 1
+) {
+  const api = getApi();
+  const bootstrapBlockNumber = (await getBlockNumber()) + waitingPeriod;
+  const result = await signTx(
+    api,
+    api.tx.sudo.sudo(
+      api.tx.bootstrap.scheduleBootstrap(
+        mainCurrency,
+        bootstrapCurrency,
+        bootstrapBlockNumber,
+        new BN(whitelistPeriod),
+        new BN(bootstrapPeriod),
+        [100, 1],
+        // @ts-ignore
+        false
+      )
+    ),
+    sudoUser.keyRingPair,
+    {
+      nonce: await getCurrentNonce(sudoUser.keyRingPair.address),
+    }
+  );
+  return result;
+}
+
+export async function provisionBootstrap(
+  user: User,
+  bootstrapCurrency: BN,
+  bootstrapAmount: BN
+) {
+  const api = getApi();
+  const result = await signTx(
+    api,
+    api.tx.bootstrap.provision(bootstrapCurrency, bootstrapAmount),
+    user.keyRingPair
+  );
+  return result;
+}
+
+export async function provisionVestedBootstrap(
+  user: User,
+  bootstrapCurrency: BN,
+  bootstrapAmount: BN
+) {
+  const api = getApi();
+  const result = await signTx(
+    api,
+    api.tx.bootstrap.provisionVested(bootstrapCurrency, bootstrapAmount),
+    user.keyRingPair
+  );
+  return result;
+}
+
+export async function claimRewardsBootstrap(user: User) {
+  const api = getApi();
+  const result = await signTx(
+    api,
+    api.tx.bootstrap.claimLiquidityTokens(),
+    user.keyRingPair
+  );
+  return result;
+}
+
+export async function claimAndActivateBootstrap(user: User) {
+  const api = getApi();
+  const result = await signTx(
+    api,
+    api.tx.bootstrap.claimAndActivateLiquidityTokens(),
+    user.keyRingPair
+  );
+  return result;
+}
+
+export async function finalizeBootstrap(sudoUser: User) {
+  const api = getApi();
+  const result = await signTx(
+    api,
+    api.tx.sudo.sudo(api.tx.bootstrap.finalize(null)),
+    sudoUser.keyRingPair,
+    {
+      nonce: await getCurrentNonce(sudoUser.keyRingPair.address),
+    }
+  );
+  return result;
+}
+
+export async function vestingTransfer(
+  sudoUser: User,
+  tokenID: BN,
+  source: User,
+  target: User,
+  startingBlock: number
+) {
+  const locked = toBN("1", 20);
+  const perBlock = new BN(100);
+  const api = getApi();
+  const result = await signTx(
+    api,
+    api.tx.sudo.sudo(
+      api.tx.vesting.forceVestedTransfer(
+        tokenID,
+        source.keyRingPair.address,
+        target.keyRingPair.address,
+        {
+          locked,
+          perBlock,
+          startingBlock,
+        }
+      )
+    ),
+    sudoUser.keyRingPair,
+    {
+      nonce: await getCurrentNonce(sudoUser.keyRingPair.address),
+    }
+  );
+  return result;
 }
 
 export class FeeTxs {

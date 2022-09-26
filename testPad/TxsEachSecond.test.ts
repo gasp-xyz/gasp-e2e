@@ -57,7 +57,9 @@ describe("staking - testpad", () => {
     keyring.addPair(testUser1.keyRingPair);
     keyring.addPair(sudo.keyRingPair);
     await testUser1.refreshAmounts(AssetWallet.BEFORE);
-    const mangata = Mangata.getInstance([getEnvironmentRequiredVars().chainUri]);
+    const mangata = Mangata.getInstance([
+      getEnvironmentRequiredVars().chainUri,
+    ]);
     const api = await mangata.getApi();
     const [firstCurrency, secondCurrency] =
       await Assets.setupUserWithCurrencies(

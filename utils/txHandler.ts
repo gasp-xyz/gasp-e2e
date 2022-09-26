@@ -9,8 +9,7 @@ import { env } from "process";
 import { EventResult, ExtrinsicResult } from "./eventListeners";
 import { testLog } from "./Logger";
 import { User } from "./User";
-import { MangataGenericEvent } from "@mangata-finance/sdk";
-import { signTx } from "@mangata-finance/sdk";
+import { MangataGenericEvent, signTx } from "@mangata-finance/sdk";
 import { AccountId32 } from "@polkadot/types/interfaces";
 
 //let wait 7 blocks - 6000 * 7 = 42000; depends on the number of workers.
@@ -18,7 +17,7 @@ import { AccountId32 } from "@polkadot/types/interfaces";
 export async function getCurrentNonce(account?: string) {
   const api = getApi();
   if (account) {
-    const { nonce } = await api.query.system.account(account);
+    const { nonce } = (await api.query.system.account(account)) as any;
     return nonce.toNumber();
   }
   return -1;
@@ -68,7 +67,7 @@ export async function getSudoKey(): Promise<AccountId32> {
 
   const sudoKey = await api.query.sudo.key();
 
-  return sudoKey.unwrap();
+  return (sudoKey as any).unwrap();
 }
 
 export const getNextAssetId = async () => {
@@ -204,7 +203,7 @@ export async function setAssetInfo(
   id: BN,
   name: string,
   symbol: string,
-  address: string,
+  _address: string,
   decimals: BN
 ) {
   const nonce = await SudoDB.getInstance().getSudoNonce(
@@ -213,15 +212,18 @@ export async function setAssetInfo(
   testLog.getLog().info(`W[${env.JEST_WORKER_ID}] - sudoNonce: ${nonce} `);
 
   const api = getApi();
-  const result = await signTx(
+  return await signTx(
     api,
     api.tx.sudo.sudo(
-      api.tx.assetsInfo.setInfo(
-        id,
-        api.createType("Vec<u8>", name),
-        api.createType("Vec<u8>", symbol),
-        api.createType("Vec<u8>", address),
-        api.createType("u32", decimals)
+      api.tx.assetRegistry.registerAsset(
+        {
+          decimals: decimals,
+          name: api.createType("Vec<u8>", name),
+          symbol: api.createType("Vec<u8>", symbol),
+          existentialDeposit: 0,
+        },
+        // @ts-ignore, todo remove after sdk update
+        id
       )
     ),
     sudo.keyRingPair,
@@ -229,6 +231,4 @@ export async function setAssetInfo(
   ).then((result) => {
     return getEventResultFromMangataTx(result);
   });
-
-  return result;
 }

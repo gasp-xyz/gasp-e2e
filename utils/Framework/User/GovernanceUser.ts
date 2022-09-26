@@ -18,9 +18,7 @@ export class GovernanceUser extends BaseUser {
   async runForCouncil(): Promise<void> {
     await signSendAndWaitToFinishTx(
       this.api.tx.elections.submitCandidacy(
-        (
-          await this.api.query.elections.candidates()
-        ).length
+        ((await this.api.query.elections.candidates()) as any).length
       ),
       this.keyRingPair
     );
