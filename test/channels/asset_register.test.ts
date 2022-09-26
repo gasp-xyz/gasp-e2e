@@ -219,7 +219,7 @@ test("reproduceBug", async () => {
   expect(new BN(asset2.toString())).bnEqual(new BN(8));
 });
 
-test("fromLocation to NoLocation", async () => {
+test("BUG:fromLocation to NoLocation", async () => {
   const generatedAsset = false;
   const tokenId = (
     await Assets.setupUserWithCurrencies(alice, [new BN(250000)], alice, true)
