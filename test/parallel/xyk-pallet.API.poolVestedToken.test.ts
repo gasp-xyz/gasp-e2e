@@ -39,7 +39,7 @@ const { sudo: sudoUserName } = getEnvironmentRequiredVars();
 let testUser1: User;
 let sudo: User;
 let keyring: Keyring;
-let createdToken: any;
+let createdToken: BN;
 let liquidityID: BN;
 const defaultCurrencyValue = new BN(250000);
 const defaultVestingValue = new BN(200000);
@@ -49,6 +49,8 @@ async function createPoolAndVestingToken(
   lockedValue: BN,
   perBlockValue: BN
 ) {
+  const api = getApi();
+
   await Sudo.batchAsSudoFinalized(
     Assets.mintToken(createdToken, sudo, defaultCurrencyValue),
     Assets.mintToken(createdToken, testUser1, defaultCurrencyValue),
@@ -89,6 +91,13 @@ async function createPoolAndVestingToken(
     createdToken
   );
 
+  const UserBalanceAfterMinting = await api.query.tokens.accounts(
+    testUser1.keyRingPair.address,
+    liquidityID
+  );
+
+  expect(UserBalanceAfterMinting.frozen).bnEqual(defaultVestingValue);
+
   const mintingVestingTokenEvent = mintingVestingToken;
 
   return {
@@ -98,7 +107,7 @@ async function createPoolAndVestingToken(
 }
 
 async function waitNecessaryBlock(FinishBlockNumberBN: BN) {
-  const lastBlock = (await getBlockNumber()) + 50;
+  const lastBlock = (await getBlockNumber()) + 10;
   let currentBlock = await getBlockNumber();
   const FinishBlockNumber = FinishBlockNumberBN.toNumber();
   while (lastBlock > currentBlock && FinishBlockNumber > currentBlock) {
@@ -241,7 +250,7 @@ describe("xyk-pallet - Vested token tests: which action you can do with vesting 
   test("xyk-pallet- check that all unlocking vesting tokens can be burned", async () => {
     const api = getApi();
     const poolLockedValue = toBN("1", 20);
-    const poolBlockValue = toBN("5", 18);
+    const poolBlockValue = toBN("2", 19);
 
     const VestingTokenFunction = await createPoolAndVestingToken(
       true,
@@ -282,11 +291,14 @@ describe("xyk-pallet - Vested token tests: which action you can do with vesting 
       testUser1.keyRingPair.address,
       liquidityID
     );
+
     expect(
       UserBalanceAfterUnlockingAmount.free.sub(
         UserBalanceAfterUnlockingAmount.frozen
       )
     ).bnGt(new BN(0));
+
+    expect(UserBalanceAfterUnlockingAmount.frozen).bnEqual(new BN(0));
 
     //@ts-ignore
     const maxInstantBurnAmount = await api.rpc.xyk.get_max_instant_burn_amount(
@@ -309,7 +321,17 @@ describe("xyk-pallet - Vested token tests: which action you can do with vesting 
       liquidityID
     );
 
+    const UserBalanceCrTAfterBurningAmount = await api.query.tokens.accounts(
+      testUser1.keyRingPair.address,
+      createdToken
+    );
+
     expect(UserBalanceAfterBurningAmount.free).bnEqual(new BN(0));
+    expect(UserBalanceAfterBurningAmount.frozen).bnEqual(new BN(0));
+
+    expect(UserBalanceCrTAfterBurningAmount.free).bnEqual(
+      defaultCurrencyValue.sub(new BN(1))
+    );
 
     expect(
       UserBalanceBeforeAmount.frozen.sub(UserBalanceAfterBurningAmount.frozen)
