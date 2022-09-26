@@ -1,3 +1,4 @@
+/* eslint-disable no-console */
 import { initApi } from "../../utils/api";
 import { getEnvironmentRequiredVars } from "../../utils/utils";
 import { User } from "../../utils/User";

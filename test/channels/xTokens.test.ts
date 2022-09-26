@@ -27,6 +27,7 @@ beforeAll(async () => {
 
 test.only("- TR -transfer - transfer KAR to Mangata", async () => {
   const tx = acala.api!.tx.xTokens.transfer(
+    //@ts-ignore
     { Token: "KSM" },
     Utils.amount(10, 12),
     Utils.location(2110, bob.keyRingPair.publicKey),

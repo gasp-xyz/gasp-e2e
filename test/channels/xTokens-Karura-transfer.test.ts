@@ -39,6 +39,7 @@ test("transfer KAR to Mangata", async () => {
   await testUser.refreshAmounts(AssetWallet.BEFORE);
 
   let tx = acala.api!.tx.xTokens.transfer(
+    //@ts-ignore
     { Token: "KAR" },
     tokensAmount,
     Utils.location(2110, testUser.keyRingPair.publicKey),

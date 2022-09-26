@@ -34,6 +34,7 @@ beforeAll(async () => {
 
 test("1transfer KAR to Mangata", async () => {
   const tx = acala.api!.tx.xTokens.transfer(
+    //@ts-ignore
     { Token: "KAR" },
     Utils.amount(10, 12),
     Utils.location(2110, testUser.keyRingPair.publicKey),
@@ -44,6 +45,7 @@ test("1transfer KAR to Mangata", async () => {
 
 test("1transfer LKSM to Mangata", async () => {
   const tx = acala.api!.tx.xTokens.transfer(
+    //@ts-ignore
     { Token: "LKSM" },
     Utils.amount(10, 30),
     Utils.location(2110, testUser.keyRingPair.publicKey),
@@ -111,6 +113,7 @@ test("configure asset registry", async () => {
   const tx = mga.api!.tx.assetRegistry.updateAsset(
     6,
     12,
+    //@ts-ignore
     "Karura",
     "KAR",
     0,
@@ -138,10 +141,11 @@ test("configure asset registry", async () => {
 
   await Utils.signAndSend(alice, mga.api!.tx.sudo.sudo(tx));
 });
-test("remove fee/s", async () => {
+test("remove fee/s for KAR", async () => {
   const tx = mga.api!.tx.assetRegistry.updateAsset(
-    16,
+    6,
     12,
+    //@ts-ignore
     "Karura",
     "KAR",
     0,
@@ -154,7 +158,7 @@ test("remove fee/s", async () => {
               Parachain: 2000,
             },
             {
-              GeneralKey: "0x0083",
+              GeneralKey: "0x0080",
             },
           ],
         },
@@ -165,41 +169,29 @@ test("remove fee/s", async () => {
 
   await Utils.signAndSend(alice, mga.api!.tx.sudo.sudo(tx));
 });
-test("update - LKSM add 1 fee", async () => {
+test("remove location for KAR", async () => {
   const tx = mga.api!.tx.assetRegistry.updateAsset(
-    16,
+    6,
     12,
-    "KAR - 0x0083",
-    "LKSM",
+    //@ts-ignore
+    "Karura",
+    "KAR",
     0,
-    {
-      V1: {
-        parents: 1,
-        interior: {
-          X2: [
-            {
-              GeneralKey: "0x0080",
-            },
-            {
-              Parachain: 2000,
-            },
-          ],
-        },
-      },
-    },
+    null,
     {
       xcm: {
-        feePerSecond: "1000000000000000000000",
+        feePerSecond: 53760000000000,
       },
     }
   );
 
   await Utils.signAndSend(alice, mga.api!.tx.sudo.sudo(tx));
 });
-test("update - KAR", async () => {
+test("update KAR - setup correctly", async () => {
   const tx = mga.api!.tx.assetRegistry.updateAsset(
     6,
     10,
+    //@ts-ignore
     "KAR - 10 dec",
     "KAR101",
     0,
@@ -227,7 +219,38 @@ test("update - KAR", async () => {
 
   await Utils.signAndSend(alice, mga.api!.tx.sudo.sudo(tx));
 });
+test("update - LKSM add 1 super fee", async () => {
+  const tx = mga.api!.tx.assetRegistry.updateAsset(
+    6,
+    12,
+    //@ts-ignore
+    "KAR - 0x0083",
+    "LKSM",
+    0,
+    {
+      V1: {
+        parents: 1,
+        interior: {
+          X2: [
+            {
+              GeneralKey: "0x0080",
+            },
+            {
+              Parachain: 2000,
+            },
+          ],
+        },
+      },
+    },
+    {
+      xcm: {
+        feePerSecond: "1000000000000000000000",
+      },
+    }
+  );
 
+  await Utils.signAndSend(alice, mga.api!.tx.sudo.sudo(tx));
+});
 test("send cuatrillion txs", async () => {
   let currNonce = new BN(
     (
@@ -239,6 +262,7 @@ test("send cuatrillion txs", async () => {
   const promises = [];
   for (let i = 0; i < 1000; i++) {
     const tx = acala.api!.tx.xTokens.transfer(
+      //@ts-ignore
       { Token: "KAR" },
       Utils.amount(10, 12),
       Utils.location(2110, testUser.keyRingPair.publicKey),

@@ -76,6 +76,7 @@ test("register LKSM", async () => {
         },
       },
     },
+    //@ts-ignore
     8
   );
 
@@ -107,6 +108,7 @@ test("register incorrect", async () => {
         },
       },
     },
+    //@ts-ignore
     8
   );
 
@@ -176,6 +178,7 @@ test("reproduceBug", async () => {
           },
         },
       },
+      //@ts-ignore
       8
     );
     await Utils.signAndSend(alice, api!.tx.sudo.sudo(tx));
@@ -216,10 +219,10 @@ test("reproduceBug", async () => {
   expect(new BN(asset2.toString())).bnEqual(new BN(8));
 });
 
-test("fromX3 to X2 bug", async () => {
+test("fromLocation to NoLocation", async () => {
   const generatedAsset = false;
   const tokenId = (
-    await Assets.setupUserWithCurrencies(alice, undefined, alice)
+    await Assets.setupUserWithCurrencies(alice, [new BN(250000)], alice, true)
   )[0];
   if (!generatedAsset) {
     const tx = api!.tx.assetRegistry.registerAsset(
@@ -234,7 +237,7 @@ test("fromX3 to X2 bug", async () => {
             interior: {
               X3: [
                 {
-                  Parachain: 3210,
+                  Parachain: 3210 + tokenId.toNumber(),
                 },
                 {
                   GeneralKey: "0x00834",
@@ -247,6 +250,7 @@ test("fromX3 to X2 bug", async () => {
           },
         },
       },
+      //@ts-ignore
       tokenId
     );
     await Utils.signAndSend(alice, api!.tx.sudo.sudo(tx));
@@ -260,25 +264,16 @@ test("fromX3 to X2 bug", async () => {
   const tx = api!.tx.assetRegistry.updateAsset(
     tokenId,
     12,
+    //@ts-ignore
     "KAR- 0x00832",
     "LKSM2",
     0,
+    null,
     {
-      V1: {
-        parents: 1,
-        interior: {
-          X2: [
-            {
-              Parachain: 3210,
-            },
-            {
-              GeneralKey: "0x00834",
-            },
-          ],
-        },
+      xcm: {
+        feePerSecond: 53760000000000,
       },
-    },
-    null
+    }
   );
   await Utils.signAndSend(alice, api!.tx.sudo.sudo(tx));
 
@@ -290,4 +285,15 @@ test("fromX3 to X2 bug", async () => {
 
   testLog.getLog().warn(JSON.stringify(assetBef));
   testLog.getLog().warn(JSON.stringify(assetAfter));
+});
+
+test("Print assetRegistry_locations", async () => {
+  const tokenId = new BN(6);
+  const assetLocation = await (
+    await api!.query.assetRegistry.locationToAssetId.entries()
+  )
+    .map((element) => [element[0].toHuman(), element[1].toHuman()])
+    .filter((x) => x[1] === tokenId.toString());
+
+  testLog.getLog().warn(JSON.stringify(assetLocation));
 });

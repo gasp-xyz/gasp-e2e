@@ -30,6 +30,7 @@ beforeAll(async () => {
 
 test("OAK transfer TUR to Mangata", async () => {
   const tx = tur.api!.tx.xTokens.transfer(
+    //@ts-ignore
     { Native: 0 },
     Utils.amount(20, 10),
     Utils.location(2110, testUser.keyRingPair.publicKey),
