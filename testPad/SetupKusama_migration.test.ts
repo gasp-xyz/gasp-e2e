@@ -47,7 +47,7 @@ describe("Boostrap - testpad", () => {
     }
   });
 
-  test("Step1: register-2000", async () => {
+  test.skip("Step1: register-2000", async () => {
     const paraId = 2000;
     const keyring = new Keyring({ type: "sr25519" });
     const stakeAmount = new BN(Math.pow(10, 16).toString());
