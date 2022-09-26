@@ -25,7 +25,7 @@ beforeAll(async () => {
 
   keyring = new Keyring({ type: "sr25519" });
   alice = new User(keyring, "//Alice");
-  testUser = new User(keyring, "//Eve");
+  testUser = new User(keyring, "//Bob");
   //  testUser.addFromMnemonic(
   //    keyring,
   //    "dismiss addict reduce fitness install aisle creek they seek palace stereo trumpet"
@@ -45,7 +45,7 @@ test("1transfer KAR to Mangata", async () => {
 test("1transfer LKSM to Mangata", async () => {
   const tx = acala.api!.tx.xTokens.transfer(
     { Token: "LKSM" },
-    Utils.amount(10, 12),
+    Utils.amount(10, 30),
     Utils.location(2110, testUser.keyRingPair.publicKey),
     MG_WEIGHT
   );
@@ -140,37 +140,10 @@ test("configure asset registry", async () => {
 });
 test("remove fee/s", async () => {
   const tx = mga.api!.tx.assetRegistry.updateAsset(
-    6,
+    16,
     12,
     "Karura",
     "KAR",
-    0,
-    {
-      V1: {
-        parents: 1,
-        interior: {
-          X2: [
-            {
-              Parachain: 2000,
-            },
-            {
-              GeneralKey: "0x0080",
-            },
-          ],
-        },
-      },
-    },
-    null
-  );
-
-  await Utils.signAndSend(alice, mga.api!.tx.sudo.sudo(tx));
-});
-test("update - LKSM add 1 fee", async () => {
-  const tx = mga.api!.tx.assetRegistry.updateAsset(
-    8,
-    12,
-    "KAR - 0x0083",
-    "LKSM",
     0,
     {
       V1: {
@@ -187,9 +160,67 @@ test("update - LKSM add 1 fee", async () => {
         },
       },
     },
+    null
+  );
+
+  await Utils.signAndSend(alice, mga.api!.tx.sudo.sudo(tx));
+});
+test("update - LKSM add 1 fee", async () => {
+  const tx = mga.api!.tx.assetRegistry.updateAsset(
+    16,
+    12,
+    "KAR - 0x0083",
+    "LKSM",
+    0,
+    {
+      V1: {
+        parents: 1,
+        interior: {
+          X2: [
+            {
+              GeneralKey: "0x0080",
+            },
+            {
+              Parachain: 2000,
+            },
+          ],
+        },
+      },
+    },
     {
       xcm: {
-        feePerSecond: 10000,
+        feePerSecond: "1000000000000000000000",
+      },
+    }
+  );
+
+  await Utils.signAndSend(alice, mga.api!.tx.sudo.sudo(tx));
+});
+test("update - KAR", async () => {
+  const tx = mga.api!.tx.assetRegistry.updateAsset(
+    6,
+    10,
+    "KAR - 10 dec",
+    "KAR101",
+    0,
+    {
+      V1: {
+        parents: 1,
+        interior: {
+          X2: [
+            {
+              Parachain: "2000",
+            },
+            {
+              GeneralKey: "0x0080",
+            },
+          ],
+        },
+      },
+    },
+    {
+      xcm: {
+        feePerSecond: 53760000000000,
       },
     }
   );

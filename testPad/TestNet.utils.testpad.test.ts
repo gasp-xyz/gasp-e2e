@@ -30,7 +30,7 @@ describe("AssetInfo - testpad", () => {
   const sudoAddress = "5CthcoS3CYHoVHDMUacydayRLMzMWedKryjsrvzrmv3VHCKP";
 
   test("Add Assets info", async () => {
-    const pathToFiles = "/home/goncer/projects/";
+    const pathToFiles = "/home/goncer/accounts/";
     keyring = new Keyring({ type: "sr25519" });
     const json = fs.readFileSync(pathToFiles + sudoAddress + ".json", {
       encoding: "utf8",
@@ -39,11 +39,29 @@ describe("AssetInfo - testpad", () => {
     const sudo = new User(keyring, "sudo", JSON.parse(json));
     keyring.addPair(sudo.keyRingPair);
     keyring.pairs[0].decodePkcs8("mangata123");
-    await sudo.addMGATokens(sudo);
+    //await sudo.addMGATokens(sudo);
     const nextAssetId = await getNextAssetId();
     const numberOfMissingTokens = 7 - nextAssetId.toNumber();
 
-    if (numberOfMissingTokens > 0) {
+    await setAssetInfo(
+      sudo,
+      new BN(dot),
+      "mKSM",
+      "mKSM",
+      "Relay chain Kusama token",
+      new BN(12)
+    );
+
+    await setAssetInfo(
+      sudo,
+      new BN(5),
+      "Test_token",
+      "Test_token",
+      "im a test token",
+      new BN(12)
+    );
+
+    if (false) {
       const tokens = Array.from(Array(7).keys())
         .reverse()
         .slice(0, numberOfMissingTokens);
