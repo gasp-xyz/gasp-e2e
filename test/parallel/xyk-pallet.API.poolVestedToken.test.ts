@@ -91,12 +91,12 @@ async function createPoolAndVestingToken(
     createdToken
   );
 
-  const UserBalanceAfterMinting = await api.query.tokens.accounts(
+  const userBalanceAfterMinting = await api.query.tokens.accounts(
     testUser1.keyRingPair.address,
     liquidityID
   );
 
-  expect(UserBalanceAfterMinting.frozen).bnEqual(defaultVestingValue);
+  expect(userBalanceAfterMinting.frozen).bnEqual(defaultVestingValue);
 
   const mintingVestingTokenEvent = mintingVestingToken;
 
@@ -106,16 +106,16 @@ async function createPoolAndVestingToken(
   };
 }
 
-async function waitNecessaryBlock(FinishBlockNumberBN: BN) {
+async function waitNecessaryBlock(finishBlockNumberBN: BN) {
   const lastBlock = (await getBlockNumber()) + 10;
   let currentBlock = await getBlockNumber();
-  const FinishBlockNumber = FinishBlockNumberBN.toNumber() + 1;
-  while (lastBlock > currentBlock && FinishBlockNumber > currentBlock) {
+  const finishBlockNumber = finishBlockNumberBN.toNumber() + 1;
+  while (lastBlock > currentBlock && finishBlockNumber > currentBlock) {
     await waitNewBlock();
     currentBlock = await getBlockNumber();
   }
-  testLog.getLog().info("... Done waiting " + FinishBlockNumber);
-  if (FinishBlockNumber > lastBlock) {
+  testLog.getLog().info("... Done waiting " + finishBlockNumber);
+  if (finishBlockNumber > lastBlock) {
     testLog
       .getLog()
       .warn("TIMEOUT ERROR. Function finished with using watchdog limit");
@@ -189,13 +189,13 @@ describe("xyk-pallet - Vested token tests: which action you can do with vesting 
 
     await createPoolAndVestingToken(true, toBN("1", 20), new BN(100));
 
-    const UserBalanceBeforeAmount = await api.query.tokens.accounts(
+    const userBalanceBeforeAmount = await api.query.tokens.accounts(
       testUser1.keyRingPair.address,
       liquidityID
     );
 
     expect(
-      UserBalanceBeforeAmount.free.sub(UserBalanceBeforeAmount.frozen)
+      userBalanceBeforeAmount.free.sub(userBalanceBeforeAmount.frozen)
     ).bnEqual(new BN(0));
 
     const unlockSomeVestedToken = await unlockVestedToken(
@@ -206,13 +206,13 @@ describe("xyk-pallet - Vested token tests: which action you can do with vesting 
       ExtrinsicResult.ExtrinsicSuccess
     );
 
-    const UserBalanceAfterUnlockingAmount = await api.query.tokens.accounts(
+    const userBalanceAfterUnlockingAmount = await api.query.tokens.accounts(
       testUser1.keyRingPair.address,
       liquidityID
     );
     expect(
-      UserBalanceAfterUnlockingAmount.free.sub(
-        UserBalanceAfterUnlockingAmount.frozen
+      userBalanceAfterUnlockingAmount.free.sub(
+        userBalanceAfterUnlockingAmount.frozen
       )
     ).bnGt(new BN(0));
 
@@ -232,18 +232,18 @@ describe("xyk-pallet - Vested token tests: which action you can do with vesting 
       ExtrinsicResult.ExtrinsicSuccess
     );
 
-    const UserBalanceAfterBurningAmount = await api.query.tokens.accounts(
+    const userBalanceAfterBurningAmount = await api.query.tokens.accounts(
       testUser1.keyRingPair.address,
       liquidityID
     );
     expect(
-      UserBalanceAfterBurningAmount.free.sub(
-        UserBalanceAfterBurningAmount.frozen
+      userBalanceAfterBurningAmount.free.sub(
+        userBalanceAfterBurningAmount.frozen
       )
     ).bnEqual(new BN(0));
 
     expect(
-      UserBalanceBeforeAmount.frozen.sub(UserBalanceAfterBurningAmount.frozen)
+      userBalanceBeforeAmount.frozen.sub(userBalanceAfterBurningAmount.frozen)
     ).bnGt(new BN(0));
   });
 
@@ -252,14 +252,14 @@ describe("xyk-pallet - Vested token tests: which action you can do with vesting 
     const amountVestingToken = toBN("1", 20);
     const amountUnlockedPerBlock = toBN("2", 19);
 
-    const VestingTokenFunction = await createPoolAndVestingToken(
+    const vestingTokenFunction = await createPoolAndVestingToken(
       true,
       amountVestingToken,
       amountUnlockedPerBlock
     );
 
     const vestingStartBlockNumber = new BN(
-      VestingTokenFunction.vestingStartBlockNumber
+      vestingTokenFunction.vestingStartBlockNumber
     );
 
     const vestingFinishBlockNumber = new BN(
@@ -270,13 +270,13 @@ describe("xyk-pallet - Vested token tests: which action you can do with vesting 
 
     await waitNecessaryBlock(vestingFinishBlockNumber);
 
-    const UserBalanceBeforeAmount = await api.query.tokens.accounts(
+    const userBalanceBeforeAmount = await api.query.tokens.accounts(
       testUser1.keyRingPair.address,
       liquidityID
     );
 
     expect(
-      UserBalanceBeforeAmount.free.sub(UserBalanceBeforeAmount.frozen)
+      userBalanceBeforeAmount.free.sub(userBalanceBeforeAmount.frozen)
     ).bnEqual(new BN(0));
 
     const unlockSomeVestedToken = await unlockVestedToken(
@@ -287,18 +287,18 @@ describe("xyk-pallet - Vested token tests: which action you can do with vesting 
       ExtrinsicResult.ExtrinsicSuccess
     );
 
-    const UserBalanceAfterUnlockingAmount = await api.query.tokens.accounts(
+    const userBalanceAfterUnlockingAmount = await api.query.tokens.accounts(
       testUser1.keyRingPair.address,
       liquidityID
     );
 
     expect(
-      UserBalanceAfterUnlockingAmount.free.sub(
-        UserBalanceAfterUnlockingAmount.frozen
+      userBalanceAfterUnlockingAmount.free.sub(
+        userBalanceAfterUnlockingAmount.frozen
       )
     ).bnGt(new BN(0));
 
-    expect(UserBalanceAfterUnlockingAmount.frozen).bnEqual(new BN(0));
+    expect(userBalanceAfterUnlockingAmount.frozen).bnEqual(new BN(0));
 
     //@ts-ignore
     const maxInstantBurnAmount = await api.rpc.xyk.get_max_instant_burn_amount(
@@ -316,7 +316,7 @@ describe("xyk-pallet - Vested token tests: which action you can do with vesting 
       ExtrinsicResult.ExtrinsicSuccess
     );
 
-    const UserBalanceAfterBurningAmount = await api.query.tokens.accounts(
+    const userBalanceAfterBurningAmount = await api.query.tokens.accounts(
       testUser1.keyRingPair.address,
       liquidityID
     );
@@ -326,15 +326,15 @@ describe("xyk-pallet - Vested token tests: which action you can do with vesting 
       createdToken
     );
 
-    expect(UserBalanceAfterBurningAmount.free).bnEqual(new BN(0));
-    expect(UserBalanceAfterBurningAmount.frozen).bnEqual(new BN(0));
+    expect(userBalanceAfterBurningAmount.free).bnEqual(new BN(0));
+    expect(userBalanceAfterBurningAmount.frozen).bnEqual(new BN(0));
 
     expect(UserBalanceNewTokAfterBurning.free).bnEqual(
       defaultCurrencyValue.sub(new BN(1))
     );
 
     expect(
-      UserBalanceBeforeAmount.frozen.sub(UserBalanceAfterBurningAmount.frozen)
+      userBalanceBeforeAmount.frozen.sub(userBalanceAfterBurningAmount.frozen)
     ).bnGt(new BN(0));
   });
 
