@@ -44,7 +44,7 @@ export class SudoDB {
         flag: "r",
       });
 
-      if (dbNonce === undefined || chainNodeInt > parseInt(dbNonce)) {
+      if (dbNonce === undefined) {
         dbNonce = chainNodeInt;
       }
       const nextNonce = parseInt(dbNonce) + 1;
