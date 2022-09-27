@@ -1,5 +1,5 @@
 import { By, WebDriver } from "selenium-webdriver";
-import { areVisible, clickElement } from "../utils/Helper";
+import { areDisplayed, clickElement } from "../utils/Helper";
 
 //SELECTORS
 const MODAL_ROOT = "//*[@id='react-portal-modal-container']";
@@ -39,7 +39,7 @@ export class WalletConnectModal {
       this.modalStage[ModalType.NoExtension],
       this.getModalButtonXpath(ModalType.NoExtension, walletName),
     ];
-    const allVisible = await areVisible(this.driver, listDataTestIds);
+    const allVisible = await areDisplayed(this.driver, listDataTestIds);
     return allVisible;
   }
 

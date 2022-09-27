@@ -8,7 +8,7 @@ import {
 } from "../../Constants";
 import { getEnvironmentRequiredVars, sleep } from "../../utils";
 import {
-  areVisible,
+  areDisplayed,
   buildDataTestIdXpath,
   clickElement,
   isDisplayed,
@@ -86,7 +86,7 @@ export class Mangata {
       buildDataTestIdXpath(INPUT_SWAP_YOU_GET),
       buildDataTestIdXpath(DIV_SWITCH_TOKENS),
     ];
-    return areVisible(this.driver, swapElements);
+    return areDisplayed(this.driver, swapElements);
   }
 
   async isLogoDisplayed() {
