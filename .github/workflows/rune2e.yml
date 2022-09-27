@@ -114,7 +114,7 @@ jobs:
         run: sleep 120s
 
       - name: Generate test run flags
-        if: ${{ github.event.inputs.parallel == 'true' }}
+        if: ${{ github.event.inputs.parallel != 'false' }}
         run:
           echo "E2E_PARAMS=--max-workers=32" >> $GITHUB_ENV
 
