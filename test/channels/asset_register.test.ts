@@ -265,18 +265,17 @@ test("BUG:fromLocation to NoLocation", async () => {
     tokenId,
     12,
     //@ts-ignore
-    "KAR- 0x00832",
-    "LKSM2",
+    api!.createType("Vec<u8>", "foo" + tokenId.toString()),
+    api!.createType("Vec<u8>", "asd"),
     0,
-    null,
+    api!.createType("Vec<u8>", "0x0100"),
     {
       xcm: {
-        feePerSecond: 53760000000000,
+        feePerSecond: 53760000000001,
       },
     }
   );
   await Utils.signAndSend(alice, api!.tx.sudo.sudo(tx));
-
   const assetAfter = await (
     await api!.query.assetRegistry.locationToAssetId.entries()
   )

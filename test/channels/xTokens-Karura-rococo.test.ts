@@ -31,6 +31,14 @@ beforeAll(async () => {
   //    "dismiss addict reduce fitness install aisle creek they seek palace stereo trumpet"
   //  );
 });
+class UpdateAsset {
+  name?: string;
+  symbol?: string;
+  decimals?: number;
+  // location?: MultiLocation,
+  location?: object;
+  feePerSecond?: number;
+}
 
 test("1transfer KAR to Mangata", async () => {
   const tx = acala.api!.tx.xTokens.transfer(
@@ -170,19 +178,20 @@ test("remove fee/s for KAR", async () => {
   await Utils.signAndSend(alice, mga.api!.tx.sudo.sudo(tx));
 });
 test("remove location for KAR", async () => {
+  const update = new UpdateAsset();
   const tx = mga.api!.tx.assetRegistry.updateAsset(
     6,
     12,
     //@ts-ignore
-    "Karura",
-    "KAR",
+    mga.api!.createType("Vec<u8>", "foo"),
+    mga.api!.createType("Vec<u8>", "asd"),
     0,
-    null,
-    {
-      xcm: {
-        feePerSecond: 53760000000000,
-      },
-    }
+    update.location
+      ? { V1: update.location }
+      : mga.api!.createType("Vec<u8>", "0x0100"),
+    update.feePerSecond
+      ? { xcm: { feePerSecond: update.feePerSecond } }
+      : undefined
   );
 
   await Utils.signAndSend(alice, mga.api!.tx.sudo.sudo(tx));
