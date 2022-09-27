@@ -33,6 +33,7 @@ export class SudoDB {
     try {
       // we need to prevent workers accessing and writing to the file concurrently
       await lockSudoFile();
+      console.log(`Sudo::locked`)
       const chainNonce: BN = await getChainNonce(sudoAddress);
       const chainNodeInt = parseInt(chainNonce.toString());
 
@@ -53,8 +54,10 @@ export class SudoDB {
     } finally {
       //unlock always!
       await unlockSudoFile();
+      console.log(`Sudo::unlocked`)
     }
 
+    console.log(`Sudo::nonce ${dbNonce}`)
     return dbNonce;
   }
 }
