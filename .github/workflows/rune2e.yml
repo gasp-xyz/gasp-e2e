@@ -17,9 +17,10 @@ on:
         group:
           description: "group of the tests"
           type: choice
-          required: true
-          default: 'sdk'
+          required: false
+          default: 'none'
           options:
+            - none
             - sequential
             - bootstrap
             - parallel
@@ -47,11 +48,15 @@ jobs:
     runs-on: ubuntu-latest
     env:
       API_URL: 'ws://127.0.0.1:9946'
+      E2E_PARAMS :'--runInBand'
+      E2E_GROUPS :''
       TEST_PALLET_ADDRESS: ${{ secrets.TEST_PALLET_ADDRESS }}
       E2E_XYK_PALLET_ADDRESS: ${{ secrets.E2E_XYK_PALLET_ADDRESS }}
       E2E_TREASURY_PALLET_ADDRESS: ${{ secrets.E2E_TREASURY_PALLET_ADDRESS }}
       E2E_TREASURY_BURN_PALLET_ADDRESS : ${{ secrets.E2E_TREASURY_BURN_PALLET_ADDRESS }}
       TEST_SUDO_NAME: ${{ secrets.TEST_SUDO_NAME }}
+      
+
 
     steps:
 
@@ -62,7 +67,7 @@ jobs:
           ref: '${{ github.event.inputs.e2eBranch }}'
           path: 'e2eTests'
   
-      - name: Checkout tests
+      - name: Checkout mangata-node
         uses: actions/checkout@v2
         with:
           repository: mangata-finance/mangata-node
@@ -90,8 +95,7 @@ jobs:
         working-directory: mangata-node/launch
         run: yarn up
 
-
-      - name: Install dependencies
+      - name: Install dependencies for tests
         working-directory: e2eTests
         run: yarn
 
@@ -102,3 +106,23 @@ jobs:
       - name: ESLint code quality check
         working-directory: e2eTests
         run: yarn eslint
+
+      - name: Docker ps
+        run: docker ps
+
+      - name: Sleep for 2 minutes
+        run: sleep 120s
+
+      - name: Generate test run flags:
+        if: ${{ github.event.inputs.parallel === 'true' }}
+        run:
+          echo "E2E_PARAMS=--max-workers=32" >> $GITHUB_ENV
+
+      - name: Generate test run flags - groups:
+        if: ${{ github.event.inputs.groups || github.event.inputs.groups !== 'none' }}
+        run:
+          echo "E2E_GROUPS=--groups= ${{ github.event.inputs.groups}}" >> $GITHUB_ENV
+
+      - name: Run parallel e2e tests
+        working-directory: e2eTests
+        run: yarn ${{ github.event.inputs.scriptName }} ${{env.E2E_PARAMS}} ${{env.E2E_GROUPS}}
