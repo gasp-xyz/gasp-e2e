@@ -113,12 +113,12 @@ jobs:
       - name: Sleep for 2 minutes
         run: sleep 120s
 
-      - name: Generate test run flags:
+      - name: Generate test run flags
         if: ${{ github.event.inputs.parallel === 'true' }}
         run:
           echo "E2E_PARAMS=--max-workers=32" >> $GITHUB_ENV
 
-      - name: Generate test run flags - groups:
+      - name: Generate test run flags - groups
         if: ${{ github.event.inputs.groups || github.event.inputs.groups !== 'none' }}
         run:
           echo "E2E_GROUPS=--groups= ${{ github.event.inputs.groups}}" >> $GITHUB_ENV
