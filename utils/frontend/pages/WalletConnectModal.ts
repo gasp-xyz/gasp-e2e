@@ -1,18 +1,12 @@
 import { By, WebDriver } from "selenium-webdriver";
-import {
-  clickElement,
-  isDisplayed,
-} from "../utils/Helper";
+import { clickElement, isDisplayed } from "../utils/Helper";
 
 //SELECTORS
-const MODAL_ROOT =
-  "//*[@id='react-portal-modal-container']";
-const MODAL_CONNECT =
-  MODAL_ROOT + "//header[contains(.,'Connect wallet')]";
+const MODAL_ROOT = "//*[@id='react-portal-modal-container']";
+const MODAL_CONNECT = MODAL_ROOT + "//header[contains(.,'Connect wallet')]";
 const MODAL_ACC_LIST =
   MODAL_ROOT + "//header[starts-with(.,'Select') and contains(.,'account')]";
-const MODAL_NO_EXT =
-  MODAL_ROOT + "//header[contains(.,'got a wallet yet?')]";
+const MODAL_NO_EXT = MODAL_ROOT + "//header[contains(.,'got a wallet yet?')]";
 
 export enum ModalType {
   Connect,
@@ -34,27 +28,39 @@ export class WalletConnectModal {
   };
 
   async opens() {
-    const displayed = await this.driver.findElement(By.xpath(this.modalStage[ModalType.Connect])).isDisplayed();
+    const displayed = await this.driver
+      .findElement(By.xpath(this.modalStage[ModalType.Connect]))
+      .isDisplayed();
     return displayed;
   }
 
   async isReqExtensionInfoDisplayed(walletName: string) {
-    const listDataTestIds = [this.modalStage[ModalType.NoExtension], this.getModalButtonXpath(ModalType.NoExtension, walletName)]
-    let promises: Promise<boolean>[] = listDataTestIds.map(dataTestId => isDisplayed(this.driver, dataTestId))
+    const listDataTestIds = [
+      this.modalStage[ModalType.NoExtension],
+      this.getModalButtonXpath(ModalType.NoExtension, walletName),
+    ];
+    let promises: Promise<boolean>[] = listDataTestIds.map((dataTestId) =>
+      isDisplayed(this.driver, dataTestId)
+    );
     const allVisible = await Promise.all(promises);
     return allVisible.every((elem) => elem === true);
   }
 
   async pickWallet(walletName: string) {
-    await clickElement(this.driver, this.getModalButtonXpath(ModalType.Connect, walletName));
+    await clickElement(
+      this.driver,
+      this.getModalButtonXpath(ModalType.Connect, walletName)
+    );
   }
 
   async pickAccount(accountName: string) {
-    await clickElement(this.driver, this.getModalButtonXpath(ModalType.AccountList, accountName));
+    await clickElement(
+      this.driver,
+      this.getModalButtonXpath(ModalType.AccountList, accountName)
+    );
   }
 
   private getModalButtonXpath(type: ModalType, buttonString: string) {
     return this.modalStage[type] + `/..//button[contains(.,'${buttonString}')]`;
   }
-
 }

@@ -149,7 +149,9 @@ export async function isDisplayed(driver: WebDriver, elementXpath: string) {
 }
 
 export async function areVisible(driver: WebDriver, listDataTestIds: string[]) {
-  let promises: Promise<boolean>[] = listDataTestIds.map(dataTestId => isDisplayed(driver, dataTestId))
+  let promises: Promise<boolean>[] = listDataTestIds.map((dataTestId) =>
+    isDisplayed(driver, dataTestId)
+  );
   const allVisible = await Promise.all(promises);
   return allVisible.every((elem) => elem === true);
 }
@@ -217,7 +219,7 @@ export async function doActionInDifferentWindow(
     try {
       await fn(driver);
       break;
-    } catch (error) { }
+    } catch (error) {}
     value = iterator.next().value;
   }
   handle = await (await driver).getAllWindowHandles();

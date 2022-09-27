@@ -7,7 +7,13 @@ import {
   USDC_ASSET_NAME,
 } from "../../Constants";
 import { getEnvironmentRequiredVars, sleep } from "../../utils";
-import { areVisible, buildDataTestIdXpath, clickElement, isDisplayed, waitForElement } from "../utils/Helper";
+import {
+  areVisible,
+  buildDataTestIdXpath,
+  clickElement,
+  isDisplayed,
+  waitForElement,
+} from "../utils/Helper";
 import { Sidebar } from "./Sidebar";
 
 //xpaths
@@ -15,11 +21,11 @@ const MSG_RECEIVE_TOKENS = `//div[text()='You will receive test tokens']`;
 const LBL_YOUR_TOKENS = `//*[contains(text(),'Your tokens')]`;
 const BTN_GET_TOKENS = `//*[contains(text(), 'Get Tokens')] `;
 
-const BTN_TAB_SWAP = 'trading-swapTab';
-const BTN_TAB_POOL = 'trading-poolTab';
-const INPUT_SWAP_YOU_PAY = 'tradingSwapTab-firstTokenInput';
-const INPUT_SWAP_YOU_GET = 'tradingSwapTab-secondTokenInput';
-const DIV_SWITCH_TOKENS = 'tradingSwapTab-switchTokensButton';
+const BTN_TAB_SWAP = "trading-swapTab";
+const BTN_TAB_POOL = "trading-poolTab";
+const INPUT_SWAP_YOU_PAY = "tradingSwapTab-firstTokenInput";
+const INPUT_SWAP_YOU_GET = "tradingSwapTab-secondTokenInput";
+const DIV_SWITCH_TOKENS = "tradingSwapTab-switchTokensButton";
 
 const DIV_MGA_LOGO = `//*[contains(@alt,'Mangata App Logo')]`;
 const BTN_SELECT_TOKENS = `//*[text() = 'Select Token' ]`;
@@ -78,9 +84,9 @@ export class Mangata {
       buildDataTestIdXpath(BTN_TAB_POOL),
       buildDataTestIdXpath(INPUT_SWAP_YOU_PAY),
       buildDataTestIdXpath(INPUT_SWAP_YOU_GET),
-      buildDataTestIdXpath(DIV_SWITCH_TOKENS)
+      buildDataTestIdXpath(DIV_SWITCH_TOKENS),
     ];
-    return areVisible(this.driver, swapElements)
+    return areVisible(this.driver, swapElements);
   }
 
   async isLogoDisplayed() {

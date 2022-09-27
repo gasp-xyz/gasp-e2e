@@ -8,7 +8,9 @@ import { Mangata } from "../../utils/frontend/pages/Mangata";
 import { Sidebar } from "../../utils/frontend/pages/Sidebar";
 import { DriverBuilder } from "../../utils/frontend/utils/Driver";
 import {
-  acceptPermissionsPolkadotExtension, addExtraLogs, setupPolkadotExtension
+  acceptPermissionsPolkadotExtension,
+  addExtraLogs,
+  setupPolkadotExtension,
 } from "../../utils/frontend/utils/Helper";
 
 import { FIVE_MIN } from "../../utils/Constants";
@@ -35,15 +37,17 @@ describe("UI tests - Extension management", () => {
     const mga = new Mangata(driver);
     await mga.go();
     const sidebar = new Sidebar(driver);
-    const noWalletConnectedInfoDisplayed = await sidebar.isNoWalletConnectedInfoDisplayed();
+    const noWalletConnectedInfoDisplayed =
+      await sidebar.isNoWalletConnectedInfoDisplayed();
     expect(noWalletConnectedInfoDisplayed).toBeTruthy();
 
     await sidebar.clickOnWalletConnect();
     const walletConnectModal = new WalletConnectModal(driver);
     const isWalletConnectModalDisplayed = await walletConnectModal.opens();
     expect(isWalletConnectModalDisplayed).toBeTruthy();
-    await walletConnectModal.pickWallet('Polkadot');
-    const isReqExtensionInfoDisplayed = await walletConnectModal.isReqExtensionInfoDisplayed('Polkadot');
+    await walletConnectModal.pickWallet("Polkadot");
+    const isReqExtensionInfoDisplayed =
+      await walletConnectModal.isReqExtensionInfoDisplayed("Polkadot");
     expect(isReqExtensionInfoDisplayed).toBeTruthy();
   });
 
@@ -54,25 +58,25 @@ describe("UI tests - Extension management", () => {
     const mga = new Mangata(driver);
     await mga.go();
     const sidebar = new Sidebar(driver);
-    const noWalletConnectedInfoDisplayed = await sidebar.isNoWalletConnectedInfoDisplayed();
+    const noWalletConnectedInfoDisplayed =
+      await sidebar.isNoWalletConnectedInfoDisplayed();
     expect(noWalletConnectedInfoDisplayed).toBeTruthy();
 
     await sidebar.clickOnWalletConnect();
     const walletConnectModal = new WalletConnectModal(driver);
     const isWalletConnectModalDisplayed = await walletConnectModal.opens();
     expect(isWalletConnectModalDisplayed).toBeTruthy();
-    await walletConnectModal.pickWallet('Polkadot');
+    await walletConnectModal.pickWallet("Polkadot");
     await acceptPermissionsPolkadotExtension(driver);
     await mga.go();
     await sidebar.clickOnWalletConnect();
-    await walletConnectModal.pickWallet('Polkadot');
-    await walletConnectModal.pickAccount('acc_automation');
-    const isWalletConnected = sidebar.isWalletConnected('acc_automation');
+    await walletConnectModal.pickWallet("Polkadot");
+    await walletConnectModal.pickAccount("acc_automation");
+    const isWalletConnected = sidebar.isWalletConnected("acc_automation");
     expect(isWalletConnected).toBeTruthy();
     const areSidebarElementsVisible = sidebar.areSidebarElementsVisible();
     expect(areSidebarElementsVisible).toBeTruthy();
   });
-
 
   afterEach(async () => {
     const session = await driver.getSession();

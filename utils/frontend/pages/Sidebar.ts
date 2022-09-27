@@ -14,8 +14,8 @@ import { testLog } from "../../Logger";
 
 const DIV_WALLET_NOT_FOUND = "connect-noWalletConnected";
 const DIV_WALLET_CONNECTED = "connect-accountName";
-const DIV_PROVIDED_LIQUIDITY_TITLE = 'poolsOverview-title';
-const WALLET_TOKENS_AMOUNT = 'wallet-tokensAmount';
+const DIV_PROVIDED_LIQUIDITY_TITLE = "poolsOverview-title";
+const WALLET_TOKENS_AMOUNT = "wallet-tokensAmount";
 
 const DIV_META_NOT_FOUND = "extensionMetamask-extensionNotFound";
 const DIV_POLK_NOT_FOUND = "extensionPolkadot-extensionNotFound";
@@ -54,7 +54,9 @@ export class Sidebar {
 
   async isWalletConnected(accountName: string) {
     const walletConnectedXpath = buildDataTestIdXpath(DIV_WALLET_CONNECTED);
-    const actualAccount = await this.driver.findElement(By.xpath(walletConnectedXpath))?.getText()
+    const actualAccount = await this.driver
+      .findElement(By.xpath(walletConnectedXpath))
+      ?.getText();
     return accountName == actualAccount;
   }
 
