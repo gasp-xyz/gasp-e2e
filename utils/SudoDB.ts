@@ -46,7 +46,10 @@ export class SudoDB {
       });
 
       if (dbNonce === undefined) {
+        console.info(`nonce is undefined - using chain nonce ${chainNodeInt}`)
         dbNonce = chainNodeInt;
+      } else {
+        console.info(`nonce is known ${dbNonce}`)
       }
       const nextNonce = parseInt(dbNonce) + 1;
 
@@ -57,7 +60,6 @@ export class SudoDB {
       console.info(`Sudo::unlocked`)
     }
 
-    console.info(`Sudo::nonce ${dbNonce}`)
     return dbNonce;
   }
 }
