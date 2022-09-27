@@ -7,7 +7,7 @@ import {
   USDC_ASSET_NAME,
 } from "../../Constants";
 import { getEnvironmentRequiredVars, sleep } from "../../utils";
-import { clickElement, waitForElement } from "../utils/Helper";
+import { areVisible, buildDataTestIdXpath, clickElement, isDisplayed, waitForElement } from "../utils/Helper";
 import { Sidebar } from "./Sidebar";
 
 //xpaths
@@ -15,14 +15,18 @@ const MSG_RECEIVE_TOKENS = `//div[text()='You will receive test tokens']`;
 const LBL_YOUR_TOKENS = `//*[contains(text(),'Your tokens')]`;
 const BTN_GET_TOKENS = `//*[contains(text(), 'Get Tokens')] `;
 
-const DIV_MGA_SWAP = `//*[@class='Swap']`;
-const DIV_MGA_LOGO = `//*[contains(@class,'bg-mangata-logo')]`;
+const BTN_TAB_SWAP = 'trading-swapTab';
+const BTN_TAB_POOL = 'trading-poolTab';
+const INPUT_SWAP_YOU_PAY = 'tradingSwapTab-firstTokenInput';
+const INPUT_SWAP_YOU_GET = 'tradingSwapTab-secondTokenInput';
+const DIV_SWITCH_TOKENS = 'tradingSwapTab-switchTokensButton';
+
+const DIV_MGA_LOGO = `//*[contains(@alt,'Mangata App Logo')]`;
 const BTN_SELECT_TOKENS = `//*[text() = 'Select Token' ]`;
 const LI_TOKEN_ELEM = `//*[contains(@data-testId, 'TokensModal-asset' )]`;
 
 const DIV_MGA_LIQ_POOLS = `//div[@class='PoolsOverview__inner__list__item']`;
 const BTN_MGA_LIQ_POOLS_ADD = `//*[small[contains(text(),'Liquidity')] and contains(text(),'Add' ) ]`;
-//const BTN_MGA_LIQ_POOLS_REMOVE = `//*[small[contains(text(),'Liquidity')] and contains(text(),'Remove' ) ]`
 const INPUT_MGA_ADD_ASSET_VALUE = `//input[@placeholder='0.0']`;
 
 export class Mangata {
@@ -69,15 +73,19 @@ export class Mangata {
   }
 
   async isSwapFrameDisplayed() {
-    return await (
-      await this.driver.findElement(By.xpath(DIV_MGA_SWAP))
-    ).isDisplayed();
+    const swapElements = [
+      buildDataTestIdXpath(BTN_TAB_SWAP),
+      buildDataTestIdXpath(BTN_TAB_POOL),
+      buildDataTestIdXpath(INPUT_SWAP_YOU_PAY),
+      buildDataTestIdXpath(INPUT_SWAP_YOU_GET),
+      buildDataTestIdXpath(DIV_SWITCH_TOKENS)
+    ];
+    return areVisible(this.driver, swapElements)
   }
 
   async isLogoDisplayed() {
-    return await (
-      await this.driver.findElement(By.xpath(DIV_MGA_LOGO))
-    ).isDisplayed();
+    const displayed = await isDisplayed(this.driver, DIV_MGA_LOGO);
+    return displayed;
   }
   async clickOnSelectTokens() {
     await clickElement(this.driver, BTN_SELECT_TOKENS);

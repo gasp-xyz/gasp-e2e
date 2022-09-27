@@ -1,7 +1,6 @@
 import { logging, WebDriver } from "selenium-webdriver";
 import { sleep } from "../../utils";
 import { Mangata } from "../pages/Mangata";
-import { MetaMask } from "../pages/MetaMask";
 import { Polkadot } from "../pages/Polkadot";
 import fs from "fs";
 import { testLog } from "../../Logger";
@@ -73,6 +72,7 @@ export async function getText(driver: WebDriver, elementXpath: string) {
   ).getText();
   return text;
 }
+
 export async function getAttribute(
   driver: WebDriver,
   elementXpath: string,
@@ -85,15 +85,10 @@ export async function getAttribute(
   return attr;
 }
 
-///Setup both extensions
-//Setup Metamask from "MNEMONIC_META" global env.
+///Setup extensions
 //Polkadot extension creating an account.
 export async function setupAllExtensions(driver: WebDriver) {
   await leaveOnlyOneTab(driver);
-
-  const metaMaskExtension = new MetaMask(driver);
-  await metaMaskExtension.go();
-  const metaUserAddress = await metaMaskExtension.setupAccount();
 
   const polkadotExtension = new Polkadot(driver);
   await polkadotExtension.go();
@@ -104,12 +99,33 @@ export async function setupAllExtensions(driver: WebDriver) {
   await sleep(2000);
   await polkadotExtension.acceptPermissions();
 
-  await metaMaskExtension.connect();
   return {
     polkUserAddress: polkUserAddress,
     mnemonic: usrMnemonic,
-    metaUserAddres: metaUserAddress,
   };
+}
+
+export async function setupPolkadotExtension(driver: WebDriver) {
+  await leaveOnlyOneTab(driver);
+
+  const polkadotExtension = new Polkadot(driver);
+  await polkadotExtension.go();
+  const [polkUserAddress, usrMnemonic] =
+    await polkadotExtension.createAccount();
+
+  await new Mangata(driver).go();
+  await sleep(2000);
+
+  return {
+    polkUserAddress: polkUserAddress,
+    mnemonic: usrMnemonic,
+  };
+}
+
+export async function acceptPermissionsPolkadotExtension(driver: WebDriver) {
+  const polkadotExtension = new Polkadot(driver);
+  await polkadotExtension.go();
+  await polkadotExtension.acceptPermissions();
 }
 
 export async function leaveOnlyOneTab(driver: WebDriver) {
@@ -118,6 +134,24 @@ export async function leaveOnlyOneTab(driver: WebDriver) {
     await (await driver).close();
     await (await driver).switchTo().window(handles[0]);
   }
+}
+
+export async function isDisplayed(driver: WebDriver, elementXpath: string) {
+  try {
+    await waitForElement(driver, elementXpath, 2000);
+    const displayed = await (
+      await driver.findElement(By.xpath(elementXpath))
+    ).isDisplayed();
+    return displayed;
+  } catch (Error) {
+    return false;
+  }
+}
+
+export async function areVisible(driver: WebDriver, listDataTestIds: string[]) {
+  let promises: Promise<boolean>[] = listDataTestIds.map(dataTestId => isDisplayed(driver, dataTestId))
+  const allVisible = await Promise.all(promises);
+  return allVisible.every((elem) => elem === true);
 }
 
 export async function addExtraLogs(driver: WebDriver, testName = "") {
@@ -183,7 +217,7 @@ export async function doActionInDifferentWindow(
     try {
       await fn(driver);
       break;
-    } catch (error) {}
+    } catch (error) { }
     value = iterator.next().value;
   }
   handle = await (await driver).getAllWindowHandles();

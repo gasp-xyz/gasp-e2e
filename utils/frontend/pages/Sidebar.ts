@@ -12,6 +12,11 @@ import {
 import { DepositModal } from "./DepositModal";
 import { testLog } from "../../Logger";
 
+const DIV_WALLET_NOT_FOUND = "connect-noWalletConnected";
+const DIV_WALLET_CONNECTED = "connect-accountName";
+const DIV_PROVIDED_LIQUIDITY_TITLE = 'poolsOverview-title';
+const WALLET_TOKENS_AMOUNT = 'wallet-tokensAmount';
+
 const DIV_META_NOT_FOUND = "extensionMetamask-extensionNotFound";
 const DIV_POLK_NOT_FOUND = "extensionPolkadot-extensionNotFound";
 const BTN_INSTALL_META = "extensionMetamask-extensionNotFound-installBtn";
@@ -29,7 +34,6 @@ const SPINNER_LOADING = `//*[@class = 'Sidebar__loading']`;
 const BTN_POOL_OVERVIEW = `poolsOverview-item-tkn1-tkn2`;
 const BTN_REMOVE_LIQUIDITY = `poolDetail-removeBtn`;
 const LBL_TOKEN_NAME = "wallet-asset-tokenName";
-//const DIV_ASSETS_ITEM_VALUE = `//div[@class = 'AssetBox' and //*[text()='tokenName']]/*[@class='value']`;
 const DIV_ASSETS_ITEM_VALUE = `//div[@class = 'AssetBox' and contains(@data-testid,'tokenName')]/*[@class='value']`;
 const POLK_DIV_USER_NAME = `//div[@data-testid='connect-address']//div[@data-testid='undefined-trigger']/div`;
 const BTN_CHANGE_PLK = `connect-changePolkadotAccount`;
@@ -40,6 +44,30 @@ export class Sidebar {
 
   constructor(driver: WebDriver) {
     this.driver = driver;
+  }
+
+  async isNoWalletConnectedInfoDisplayed() {
+    const noWalletConnectedXpath = buildDataTestIdXpath(DIV_WALLET_NOT_FOUND);
+    const displayed = await this.isDisplayed(noWalletConnectedXpath);
+    return displayed;
+  }
+
+  async isWalletConnected(accountName: string) {
+    const walletConnectedXpath = buildDataTestIdXpath(DIV_WALLET_CONNECTED);
+    const actualAccount = await this.driver.findElement(By.xpath(walletConnectedXpath))?.getText()
+    return accountName == actualAccount;
+  }
+
+  async clickOnWalletConnect() {
+    const locator = buildDataTestIdXpath(DIV_WALLET_NOT_FOUND);
+    await clickElement(this.driver, locator);
+  }
+
+  async areSidebarElementsVisible() {
+    return await this.areVisible([
+      DIV_PROVIDED_LIQUIDITY_TITLE,
+      WALLET_TOKENS_AMOUNT,
+    ]);
   }
 
   async isConnectMetamaskVisible() {
