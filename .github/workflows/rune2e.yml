@@ -48,8 +48,8 @@ jobs:
     runs-on: ubuntu-latest
     env:
       API_URL: 'ws://127.0.0.1:9946'
-      E2E_PARAMS :'--runInBand'
-      E2E_GROUPS :''
+      E2E_PARAMS : '--runInBand'
+      E2E_GROUPS : ''
       TEST_PALLET_ADDRESS: ${{ secrets.TEST_PALLET_ADDRESS }}
       E2E_XYK_PALLET_ADDRESS: ${{ secrets.E2E_XYK_PALLET_ADDRESS }}
       E2E_TREASURY_PALLET_ADDRESS: ${{ secrets.E2E_TREASURY_PALLET_ADDRESS }}
