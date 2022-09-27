@@ -285,3 +285,18 @@ test("send cuatrillion txs", async () => {
   }
   await Promise.all(promises);
 });
+
+test("update - MGA name", async () => {
+  const tx = mga.api!.tx.assetRegistry.updateAsset(
+    0,
+    18,
+    //@ts-ignore
+    "MGR",
+    "MGR",
+    0,
+    null,
+    null
+  );
+
+  await Utils.signAndSend(alice, mga.api!.tx.sudo.sudo(tx));
+});
