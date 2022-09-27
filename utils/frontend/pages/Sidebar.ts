@@ -57,7 +57,7 @@ export class Sidebar {
     const actualAccount = await this.driver
       .findElement(By.xpath(walletConnectedXpath))
       ?.getText();
-    return accountName == actualAccount;
+    return accountName === actualAccount;
   }
 
   async clickOnWalletConnect() {

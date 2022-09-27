@@ -149,7 +149,7 @@ export async function isDisplayed(driver: WebDriver, elementXpath: string) {
 }
 
 export async function areVisible(driver: WebDriver, listDataTestIds: string[]) {
-  let promises: Promise<boolean>[] = listDataTestIds.map((dataTestId) =>
+  const promises: Promise<boolean>[] = listDataTestIds.map((dataTestId) =>
     isDisplayed(driver, dataTestId)
   );
   const allVisible = await Promise.all(promises);

@@ -1,5 +1,5 @@
 import { By, WebDriver } from "selenium-webdriver";
-import { clickElement, isDisplayed } from "../utils/Helper";
+import { areVisible, clickElement } from "../utils/Helper";
 
 //SELECTORS
 const MODAL_ROOT = "//*[@id='react-portal-modal-container']";
@@ -39,11 +39,8 @@ export class WalletConnectModal {
       this.modalStage[ModalType.NoExtension],
       this.getModalButtonXpath(ModalType.NoExtension, walletName),
     ];
-    let promises: Promise<boolean>[] = listDataTestIds.map((dataTestId) =>
-      isDisplayed(this.driver, dataTestId)
-    );
-    const allVisible = await Promise.all(promises);
-    return allVisible.every((elem) => elem === true);
+    const allVisible = await areVisible(this.driver, listDataTestIds);
+    return allVisible;
   }
 
   async pickWallet(walletName: string) {
