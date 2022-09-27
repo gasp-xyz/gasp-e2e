@@ -15,7 +15,10 @@ import {
 import { EventResult, ExtrinsicResult } from "../../utils/eventListeners";
 import { Keyring } from "@polkadot/api";
 import { User } from "../../utils/User";
-import { getEnvironmentRequiredVars, waitForNBlocks } from "../../utils/utils";
+import {
+  getEnvironmentRequiredVars,
+  waitForBootstrapStatus,
+} from "../../utils/utils";
 import { getEventResultFromMangataTx } from "../../utils/txHandler";
 import { MGA_ASSET_ID } from "../../utils/Constants";
 import { toBN } from "@mangata-finance/sdk";
@@ -36,8 +39,8 @@ let bootstrapPool: any;
 let eventResponse: EventResult;
 
 const { sudo: sudoUserName } = getEnvironmentRequiredVars();
-const waitingPeriod = 20;
-const bootstrapPeriod = 40;
+const waitingPeriod = 15;
+const bootstrapPeriod = 30;
 const bootstrapAmount = toBN("1", 10);
 
 beforeAll(async () => {
@@ -108,24 +111,20 @@ test("bootstrap - Check happy path bootstrap with one user", async () => {
     bootstrapAmount
   );
   eventResponse = getEventResultFromMangataTx(provisionBeforeStart);
-  // eslint-disable-next-line jest/no-conditional-expect
   expect(eventResponse.state).toEqual(ExtrinsicResult.ExtrinsicFailed);
-  // eslint-disable-next-line jest/no-conditional-expect
   expect(eventResponse.data).toContain("Unauthorized");
 
-  await waitForNBlocks(waitingPeriod);
+  await waitForBootstrapStatus("Public", waitingPeriod);
 
   // check that user can make provision while bootstrap running
   bootstrapPhase = await api.query.bootstrap.phase();
   expect(bootstrapPhase.toString()).toEqual("Public");
-  // new token must participate in provision as first
   const provisionPublicBootstrapCurrency = await provisionBootstrap(
     testUser1,
     bootstrapCurrency,
     bootstrapAmount
   );
   eventResponse = getEventResultFromMangataTx(provisionPublicBootstrapCurrency);
-  // eslint-disable-next-line jest/no-conditional-expect
   expect(eventResponse.state).toEqual(ExtrinsicResult.ExtrinsicSuccess);
 
   // we need to add MGA token in the provision for creating a pool
@@ -135,10 +134,9 @@ test("bootstrap - Check happy path bootstrap with one user", async () => {
     bootstrapAmount
   );
   eventResponse = getEventResultFromMangataTx(provisionPublicMGA);
-  // eslint-disable-next-line jest/no-conditional-expect
   expect(eventResponse.state).toEqual(ExtrinsicResult.ExtrinsicSuccess);
 
-  await waitForNBlocks(bootstrapPeriod);
+  await waitForBootstrapStatus("Finished", bootstrapPeriod);
 
   // check that user can not make provision after bootstrap
   bootstrapPhase = await api.query.bootstrap.phase();
@@ -149,9 +147,7 @@ test("bootstrap - Check happy path bootstrap with one user", async () => {
     bootstrapAmount
   );
   eventResponse = getEventResultFromMangataTx(provisionFinished);
-  // eslint-disable-next-line jest/no-conditional-expect
   expect(eventResponse.state).toEqual(ExtrinsicResult.ExtrinsicFailed);
-  // eslint-disable-next-line jest/no-conditional-expect
   expect(eventResponse.data).toContain("Unauthorized");
 
   // Check existing pool
@@ -163,7 +159,6 @@ test("bootstrap - Check happy path bootstrap with one user", async () => {
   // need claim liquidity token before finalizing
   const claimRewards = await claimRewardsBootstrap(testUser1);
   eventResponse = getEventResultFromMangataTx(claimRewards);
-  // eslint-disable-next-line jest/no-conditional-expect
   expect(eventResponse.state).toEqual(ExtrinsicResult.ExtrinsicSuccess);
   const liquidityID = await getLiquidityAssetId(
     MGA_ASSET_ID,
@@ -180,7 +175,6 @@ test("bootstrap - Check happy path bootstrap with one user", async () => {
   // finalaze bootstrap
   const bootstrapFinalize = await finalizeBootstrap(sudo);
   eventResponse = getEventResultFromMangataTx(bootstrapFinalize);
-  // eslint-disable-next-line jest/no-conditional-expect
   expect(eventResponse.state).toEqual(ExtrinsicResult.ExtrinsicSuccess);
   bootstrapPhase = await api.query.bootstrap.phase();
   expect(bootstrapPhase.toString()).toEqual("BeforeStart");
