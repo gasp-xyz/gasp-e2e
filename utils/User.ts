@@ -322,8 +322,8 @@ export class User {
   }
 
   async registerAsset(tokenId: BN) {
-    const assetRegisterInfo = await registerAsset(this, tokenId);
-    return assetRegisterInfo;
+    const registerAssetInfo = await registerAsset(this, tokenId);
+    return registerAssetInfo;
   }
 }
 export class Asset {
