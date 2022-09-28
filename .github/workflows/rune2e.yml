@@ -119,9 +119,9 @@ jobs:
           echo "E2E_PARAMS=--max-workers=32" >> $GITHUB_ENV
 
       - name: Generate test run flags - groups
-        if: ${{ github.event.inputs.groups || github.event.inputs.groups != 'none' }}
+        if: ${{ github.event.inputs.group || github.event.inputs.group != 'none' }}
         run:
-          echo "E2E_GROUPS=--groups= ${{ github.event.inputs.groups}}" >> $GITHUB_ENV
+          echo "E2E_GROUPS=--groups=${{ github.event.inputs.group}}" >> $GITHUB_ENV
 
       - name: Run parallel e2e tests
         working-directory: e2eTests
