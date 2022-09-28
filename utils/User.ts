@@ -18,6 +18,7 @@ import {
   mintLiquidityUsingVestingNativeTokens,
   reserveVestingLiquidityTokens,
   transferAll,
+  registerAsset,
 } from "./tx";
 import { getEventResultFromMangataTx } from "./txHandler";
 import {
@@ -318,6 +319,11 @@ export class User {
       const newBalance = await fn();
       amount = newBalance;
     } while (amount.eq(amountBefore));
+  }
+
+  async registerAsset(tokenId: BN) {
+    const accountInfo = await registerAsset(this, tokenId);
+    return accountInfo;
   }
 }
 export class Asset {

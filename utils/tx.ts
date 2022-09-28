@@ -1017,3 +1017,45 @@ export class FeeTxs {
     return buyAsset(account, soldAssetId, boughtAssetId, amount, maxAmountIn);
   }
 }
+
+export async function registerAsset(sudoUser: User, tokenId: BN) {
+  const api = getApi();
+  const result = await signTx(
+    api,
+    api.tx.sudo.sudo(
+      api.tx.assetRegistry.registerAsset(
+        {
+          decimals: 12,
+          name: "KAR-0x00" + tokenId.toString(),
+          symbol: "LKSM" + tokenId.toString(),
+          existentialDeposit: 0,
+          location: {
+            V1: {
+              parents: 1,
+              interior: {
+                X3: [
+                  {
+                    Parachain: 3210 + tokenId.toNumber(),
+                  },
+                  {
+                    GeneralKey: "0x00834",
+                  },
+                  {
+                    PalletInstance: 10,
+                  },
+                ],
+              },
+            },
+          },
+        },
+        //@ts-ignore
+        tokenId
+      )
+    ),
+    sudoUser.keyRingPair,
+    {
+      nonce: await getCurrentNonce(sudoUser.keyRingPair.address),
+    }
+  );
+  return result;
+}
