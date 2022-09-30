@@ -102,6 +102,8 @@
     "runner": "groups",
     "verbose": true,
     "bail": false,
+    "globalSetup":  "./utils/globalSetup.js",
+    "globalTeardown": "./utils/globalTeardown.js",
     "setupFilesAfterEnv": [
       "jest-allure/dist/setup",
       "./utils/setupJest.ts"
