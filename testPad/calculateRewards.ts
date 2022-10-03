@@ -11,9 +11,9 @@ async function main() {
     "5HGjWAeFDfFCWPsjFQdVV2Msvz2XtMktvgocEZcCj68kUMaw",
     "5CiPPseXPECbkjWCa6MnjNokrgYjMqmKndv2rSnekmSK2DjL",
   ];
-  const liq = process.env.liq ? process.env.liq : 10;
+  const liq = process.env.liq ? process.env.liq : 8;
   const liqId = new BN(liq);
-  const mangata = await getMangataInstance("ws://127.0.0.1:9946");
+  const mangata = await getMangataInstance("ws://127.0.0.1:9949");
   // const provider = new WsProvider("ws://127.0.0.1:8844");
   //const api = await new ApiPromise(options({ provider })).isReady;
   const api = await mangata.getApi();

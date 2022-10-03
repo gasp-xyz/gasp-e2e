@@ -44,8 +44,37 @@
       function getDataPointsFromCSV(csv) {
         var dataPoints = (csvLines = points = []);
         csvLines = csv.split(/[\r?\n|\r|\n]+/);
-
-        for (var i = 0; i < csvLines.length; i++) {
+        const deltas = true
+        if(deltas){
+          for (var i = 1; i < csvLines.length; i++) {
+          if (csvLines[i].length > 0) {
+            if (i > 0) {
+              points = csvLines[i].split(",");
+              pointsBef = csvLines[i-1].split(",");
+              points[1] = points[1] - pointsBef[1];
+              console.log(points);
+              if(points.length < 3){
+                dataPoints.push({
+                x: parseFloat(points[0]),
+                y: parseFloat(points[1])
+                });
+              }else{
+                dataPoints.push({
+                x: parseFloat(points[0]),
+                y: parseFloat(
+                  csvLines[i].split(",")[1] +
+                    parseFloat(csvLines[i].split(",")[2]) -
+                    csvLines[i - 1].split(",")[1] +
+                    parseFloat(csvLines[i - 1].split(",")[2])
+                ),
+              });
+              }
+              
+            }
+          }
+        }
+        }else {
+          for (var i = 0; i < csvLines.length; i++) {
           if (csvLines[i].length > 0) {
             if (i > 0) {
               points = csvLines[i].split(",");
@@ -70,6 +99,8 @@
             }
           }
         }
+        }
+
         return dataPoints;
       }
       function loadFile(files) {
