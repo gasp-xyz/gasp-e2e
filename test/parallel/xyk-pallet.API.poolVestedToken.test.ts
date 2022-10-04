@@ -91,18 +91,18 @@ async function createPoolAndVestingToken(
     createdToken
   );
 
-  const userBalanceAfterMinting = await api.query.tokens.accounts(
-    testUser1.keyRingPair.address,
-    liquidityID
-  );
+  if (needPromotePool === true) {
+    const userBalanceAfterMinting = await api.query.tokens.accounts(
+      testUser1.keyRingPair.address,
+      liquidityID
+    );
 
-  expect(userBalanceAfterMinting.frozen).bnEqual(defaultVestingValue);
-
-  const mintingVestingTokenEvent = mintingVestingToken;
+    expect(userBalanceAfterMinting.frozen).bnEqual(defaultVestingValue);
+  }
 
   return {
     vestingStartBlockNumber: vestingStartBlockNumber,
-    mintingVestingTokenEvent: mintingVestingTokenEvent,
+    mintingVestingTokenEvent: mintingVestingToken,
   };
 }
 
