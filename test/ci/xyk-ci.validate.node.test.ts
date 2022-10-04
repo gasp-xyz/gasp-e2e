@@ -1,6 +1,7 @@
 /*
  *
  * @group xyk
+ * @group temp-ci
  * @group ci
  */
 import { getApi, initApi } from "../../utils/api";
@@ -11,6 +12,26 @@ jest.spyOn(console, "log").mockImplementation(jest.fn());
 jest.setTimeout(1500000);
 process.env.NODE_ENV = "test";
 const DEFAULT_TIME_OUT_MS = 42000;
+
+async function waitNewHeaders(numHeads = 5): Promise<Header[]> {
+  return new Promise(async (resolve, reject) => {
+    setTimeout(() => {
+      reject();
+    }, DEFAULT_TIME_OUT_MS);
+
+    const api = getApi();
+    let count = 0;
+    const blocks: Header[] = [];
+    // Subscribe to the new headers
+    const unsubHeads = await api.rpc.chain.subscribeNewHeads((lastHeader) => {
+      blocks.push(lastHeader);
+      if (++count === numHeads) {
+        unsubHeads();
+        resolve(blocks);
+      }
+    });
+  });
+}
 
 beforeAll(async () => {
   try {
@@ -39,23 +60,3 @@ test("xyk-CI - Node is up and running", async () => {
   testLog.getLog().info(`Node numbers : #${headNo0} , #${headNo1}`);
   expect(headNo1).toBeGreaterThan(headNo0);
 });
-
-async function waitNewHeaders(numHeads = 5): Promise<Header[]> {
-  return new Promise(async (resolve, reject) => {
-    setTimeout(() => {
-      reject();
-    }, DEFAULT_TIME_OUT_MS);
-
-    const api = getApi();
-    let count = 0;
-    const blocks: Header[] = [];
-    // Subscribe to the new headers
-    const unsubHeads = await api.rpc.chain.subscribeNewHeads((lastHeader) => {
-      blocks.push(lastHeader);
-      if (++count === numHeads) {
-        unsubHeads();
-        resolve(blocks);
-      }
-    });
-  });
-}
