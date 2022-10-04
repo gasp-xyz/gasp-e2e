@@ -12,7 +12,6 @@ import { BN } from "bn.js";
 import { Assets } from "../../utils/Assets";
 import { ExtrinsicResult } from "../../utils/eventListeners";
 import { getEventResultFromMangataTx } from "../../utils/txHandler";
-import { Utils } from "../channels/utils";
 
 const { sudo: sudoUserName } = getEnvironmentRequiredVars();
 jest.setTimeout(1500000);
