@@ -4,7 +4,7 @@
  * @group asset
  * @group parallel
  */
-import { initApi } from "../../utils/api";
+import { getApi, initApi } from "../../utils/api";
 import { getEnvironmentRequiredVars } from "../../utils/utils";
 import { User } from "../../utils/User";
 import { Keyring } from "@polkadot/api";
@@ -12,6 +12,7 @@ import { BN } from "bn.js";
 import { Assets } from "../../utils/Assets";
 import { ExtrinsicResult } from "../../utils/eventListeners";
 import { getEventResultFromMangataTx } from "../../utils/txHandler";
+import { Utils } from "../channels/utils";
 
 const { sudo: sudoUserName } = getEnvironmentRequiredVars();
 jest.setTimeout(1500000);
@@ -62,5 +63,53 @@ test("try to register a new asset from non-sudo user, expect to fail", async () 
 
   expect(getEventResultFromMangataTx(userRegisterAsset).data).toContain(
     "RequireSudo"
+  );
+});
+
+test("register new asset from sudo user and change it", async () => {
+  const tokenId = (
+    await Assets.setupUserWithCurrencies(sudo, [new BN(250000)], sudo, true)
+  )[0];
+  const api = getApi();
+  const userRegisterAsset = await sudo.registerAsset(tokenId);
+
+  expect(getEventResultFromMangataTx(userRegisterAsset).state).toEqual(
+    ExtrinsicResult.ExtrinsicSuccess
+  );
+
+  const userUpdateAsset = await sudo.updateAsset(
+    tokenId,
+    12,
+    //@ts-ignore
+    api!.createType("Vec<u8>", "foo" + tokenId.toString()),
+    api!.createType("Vec<u8>", "asd"),
+    0,
+    {
+      V1: {
+        parents: 1,
+        interior: {
+          X3: [
+            {
+              Parachain: 3210 + tokenId.toNumber(),
+            },
+            {
+              GeneralKey: "0x00834",
+            },
+            {
+              PalletInstance: 10,
+            },
+          ],
+        },
+      },
+    },
+    {
+      xcm: {
+        feePerSecond: 53760000000001,
+      },
+    }
+  );
+
+  expect(getEventResultFromMangataTx(userUpdateAsset).state).toEqual(
+    ExtrinsicResult.ExtrinsicSuccess
   );
 });

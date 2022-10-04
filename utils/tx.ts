@@ -1059,3 +1059,36 @@ export async function registerAsset(sudoUser: User, tokenId: BN) {
   );
   return result;
 }
+
+export async function updateAsset(
+  sudoUser: User,
+  assetId: any,
+  decimals: any,
+  name: any,
+  symbol: any,
+  existentialDeposit: any,
+  location: any,
+  additional: any
+) {
+  const api = getApi();
+  const result = await signTx(
+    api,
+    api.tx.sudo.sudo(
+      api.tx.assetRegistry.updateAsset(
+        assetId,
+        decimals,
+        //@ts-ignore
+        name,
+        symbol,
+        existentialDeposit,
+        location,
+        additional
+      )
+    ),
+    sudoUser.keyRingPair,
+    {
+      nonce: await getCurrentNonce(sudoUser.keyRingPair.address),
+    }
+  );
+  return result;
+}

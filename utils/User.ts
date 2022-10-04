@@ -19,6 +19,7 @@ import {
   reserveVestingLiquidityTokens,
   transferAll,
   registerAsset,
+  updateAsset,
 } from "./tx";
 import { getEventResultFromMangataTx } from "./txHandler";
 import {
@@ -323,6 +324,28 @@ export class User {
 
   async registerAsset(tokenId: BN) {
     const registerAssetInfo = await registerAsset(this, tokenId);
+    return registerAssetInfo;
+  }
+
+  async updateAsset(
+    assetId: any,
+    decimals: any,
+    name: any,
+    symbol: any,
+    existentialDeposit: any,
+    location: any,
+    additional: any
+  ) {
+    const registerAssetInfo = await updateAsset(
+      this,
+      assetId,
+      decimals,
+      name,
+      symbol,
+      existentialDeposit,
+      location,
+      additional
+    );
     return registerAssetInfo;
   }
 }

@@ -44,14 +44,16 @@ export class Assets {
   static async setupUserWithCurrencies(
     user: User,
     currencyValues = [new BN(250000), new BN(250001)],
-    sudo: User
+    sudo: User,
+    skipInfo = false
   ): Promise<BN[]> {
     const currencies = [];
     for (let currency = 0; currency < currencyValues.length; currency++) {
       const currencyId = await this.issueAssetToUser(
         user,
         currencyValues[currency],
-        sudo
+        sudo,
+        skipInfo
       );
       currencies.push(currencyId);
       user.addAsset(currencyId, new BN(currencyValues[currency]));
@@ -65,7 +67,12 @@ export class Assets {
   }
 
   //this method add a certain amount of currencies to a user into a returned currecncyId
-  static async issueAssetToUser(user: User, num = new BN(1000), sudo: User) {
+  static async issueAssetToUser(
+    user: User,
+    num = new BN(1000),
+    sudo: User,
+    skipInfo = false
+  ) {
     const result = await sudoIssueAsset(
       sudo.keyRingPair,
       num,
@@ -79,14 +86,17 @@ export class Assets {
 
     assert(eventResult.state === ExtrinsicResult.ExtrinsicSuccess);
     const assetId = eventResult.data[0].split(",").join("");
-    await setAssetInfo(
-      sudo,
-      new BN(assetId),
-      `TEST_${assetId}`,
-      this.getAssetName(assetId),
-      `Test token ${assetId}`,
-      new BN(18)
-    );
+    if (!skipInfo) {
+      await setAssetInfo(
+        sudo,
+        new BN(assetId),
+        `TEST_${assetId}`,
+        this.getAssetName(assetId),
+        `Test token ${assetId}`,
+        new BN(18)
+      );
+    }
+
     return new BN(assetId);
   }
 
