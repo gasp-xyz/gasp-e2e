@@ -16,6 +16,7 @@ import {
 import { ApiPromise } from "@polkadot/api";
 import { WsProvider } from "@polkadot/rpc-provider/ws";
 import { options } from "@mangata-finance/types";
+import { testLog } from "../utils/Logger";
 
 require("dotenv").config();
 
@@ -346,6 +347,71 @@ describe("staking - testpad", () => {
           testUser1.keyRingPair
         )
       );
+    }
+    await Promise.all(promises);
+  });
+
+  test("xyk-pallet: claim rewards_v2", async () => {
+    const liqtokenId = new BN(8);
+    keyring = new Keyring({ type: "sr25519" });
+    const testUser1 = new User(keyring, "//Ferdie");
+    const testUser2 = new User(keyring, "//Eve");
+    const testUser3 = new User(keyring, "//Dave");
+    const testUser4 = new User(keyring, "//Charlie");
+    const users = [testUser1, testUser2, testUser3, testUser4];
+    const promises: Promise<MangataGenericEvent[]>[] = [];
+    for (let index = 0; index < users.length; index++) {
+      const testUser1 = users[index];
+      sudo = new User(keyring, sudoUserName);
+      // add users to pair.
+      keyring.addPair(testUser1.keyRingPair);
+      await testUser1.refreshAmounts(AssetWallet.BEFORE);
+      const provider = new WsProvider(chainUri);
+      const api2 = await new ApiPromise(options({ provider })).isReady;
+      const result = await (api2.rpc as any).xyk.calculate_rewards_amount_v2(
+        testUser1.keyRingPair.address,
+        liqtokenId
+      );
+      promises.push(
+        signTx(
+          api!,
+          api!.tx.xyk.claimRewardsAllV2(liqtokenId),
+          testUser1.keyRingPair
+        )
+      );
+      testLog.getLog().info(result.toString());
+    }
+    await Promise.all(promises);
+  });
+  test("xyk-pallet: Burn_v2", async () => {
+    const liqtokenId = new BN(7);
+    keyring = new Keyring({ type: "sr25519" });
+    const testUser1 = new User(keyring, "//Ferdie");
+    const testUser2 = new User(keyring, "//Eve");
+    const testUser3 = new User(keyring, "//Dave");
+    const testUser4 = new User(keyring, "//Charlie");
+    const users = [testUser1, testUser2, testUser3, testUser4];
+    const promises: Promise<MangataGenericEvent[]>[] = [];
+    for (let index = 0; index < users.length; index++) {
+      const testUser1 = users[index];
+      sudo = new User(keyring, sudoUserName);
+      // add users to pair.
+      keyring.addPair(testUser1.keyRingPair);
+      await testUser1.refreshAmounts(AssetWallet.BEFORE);
+      const provider = new WsProvider(chainUri);
+      const api2 = await new ApiPromise(options({ provider })).isReady;
+      const result = await (api2.rpc as any).xyk.calculate_rewards_amount_v2(
+        testUser1.keyRingPair.address,
+        liqtokenId.addn(1)
+      );
+      promises.push(
+        signTx(
+          api!,
+          api!.tx.xyk.burnLiquidity(0, liqtokenId, new BN(1000000)),
+          testUser1.keyRingPair
+        )
+      );
+      testLog.getLog().info(result.toHuman().toString());
     }
     await Promise.all(promises);
   });
