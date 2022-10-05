@@ -17,7 +17,7 @@ async function waitNewHeaders(numHeads = 5): Promise<Header[]> {
   return new Promise(async (resolve, reject) => {
     setTimeout(() => {
       reject();
-    }, 80000);
+    }, 180000);
 
     const api = getApi();
     let count = 0;
