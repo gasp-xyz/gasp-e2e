@@ -11,12 +11,12 @@ import { Header } from "@polkadot/types/interfaces/runtime";
 jest.spyOn(console, "log").mockImplementation(jest.fn());
 jest.setTimeout(1500000);
 process.env.NODE_ENV = "test";
-const DEFAULT_TIME_OUT_MS = 42000;
+const DEFAULT_TIME_OUT_MS = 62000;
 
 async function waitNewHeaders(numHeads = 5): Promise<Header[]> {
   return new Promise(async (resolve, reject) => {
     setTimeout(() => {
-      reject();
+      reject(`Timeoted while waiting new block`);
     }, DEFAULT_TIME_OUT_MS);
 
     const api = await initApi();
