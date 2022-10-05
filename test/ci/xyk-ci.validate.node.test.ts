@@ -8,6 +8,11 @@ import { getApi, initApi } from "../../utils/api";
 import { testLog } from "../../utils/Logger";
 import { Header } from "@polkadot/types/interfaces/runtime";
 
+jest.spyOn(console, "log").mockImplementation(jest.fn());
+jest.setTimeout(1500000);
+process.env.NODE_ENV = "test";
+const DEFAULT_TIME_OUT_MS = 42000;
+
 beforeAll(async () => {
   try {
     getApi();
@@ -35,11 +40,6 @@ test("xyk-CI - Node is up and running", async () => {
   testLog.getLog().info(`Node numbers : #${headNo0} , #${headNo1}`);
   expect(headNo1).toBeGreaterThan(headNo0);
 });
-
-jest.spyOn(console, "log").mockImplementation(jest.fn());
-jest.setTimeout(1500000);
-process.env.NODE_ENV = "test";
-const DEFAULT_TIME_OUT_MS = 42000;
 
 async function waitNewHeaders(numHeads = 5): Promise<Header[]> {
   return new Promise(async (resolve, reject) => {
