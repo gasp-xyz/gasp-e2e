@@ -1,3 +1,0 @@
-"Status","Start Time","Stop Time","Duration in ms","Parent Suite","Suite","Sub Suite","Test Class","Test Method","Name","Description"
-"failed","Tue Sep 06 15:43:59 GMT 2022","Tue Sep 06 15:43:59 GMT 2022","681","","test/ci/xyk-ci.validate.setPoolsAssetsInfo.test.ts","","test/ci/xyk-ci.validate.setPoolsAssetsInfo.test.ts","xyk-CI - Check if MGA, mKSM, mBTC and mUSD exist","xyk-CI - Check if MGA, mKSM, mBTC and mUSD exist",""
-"failed","Tue Sep 06 15:43:59 GMT 2022","Tue Sep 06 15:44:00 GMT 2022","567","","test/ci/xyk-ci.validate.setPoolsAssetsInfo.test.ts","","test/ci/xyk-ci.validate.setPoolsAssetsInfo.test.ts","xyk-CI - Check if pool MGA-mKSM, MGA-mBTC and MGA-mUSD exist","xyk-CI - Check if pool MGA-mKSM, MGA-mBTC and MGA-mUSD exist",""

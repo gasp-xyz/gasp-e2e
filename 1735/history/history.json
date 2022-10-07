@@ -1,1 +1,0 @@
-{"3cd1e9ba8c208d679717ed71612e25c9":{"statistic":{"failed":1,"broken":0,"skipped":0,"passed":0,"unknown":0,"total":1},"items":[{"uid":"a5ff7feac34816e5","reportUrl":"https://mangata-finance.github.io/mangata-e2e/1735//#testresult/a5ff7feac34816e5","status":"failed","statusDetails":"Error: Failed: undefined","time":{"start":1664898571872,"stop":1664898614063,"duration":42191}}]}}
