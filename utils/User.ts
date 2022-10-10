@@ -322,27 +322,66 @@ export class User {
     } while (amount.eq(amountBefore));
   }
 
-  async registerAsset(tokenId: BN) {
-    const registerAssetInfo = await registerAsset(this, tokenId);
+  async registerAsset(
+    assetId: BN,
+    locMarker = assetId,
+    location = {
+      V1: {
+        parents: 1,
+        interior: {
+          X3: [
+            {
+              Parachain: 3210 + assetId.toNumber(),
+            },
+            {
+              GeneralKey: "0x00834",
+            },
+            {
+              PalletInstance: 10,
+            },
+          ],
+        },
+      },
+    }
+  ) {
+    const registerAssetInfo = await registerAsset(
+      this,
+      assetId,
+      location,
+      locMarker
+    );
     return registerAssetInfo;
   }
 
   async updateAsset(
     assetId: any,
-    decimals: any,
-    name: any,
-    symbol: any,
-    existentialDeposit: any,
-    location: any,
-    additional: any
+    additional = {
+      xcm: {
+        feePerSecond: 53760000000001,
+      },
+    },
+    location = {
+      V1: {
+        parents: 1,
+        interior: {
+          X3: [
+            {
+              Parachain: 3210 + assetId.toNumber(),
+            },
+            {
+              GeneralKey: "0x00834",
+            },
+            {
+              PalletInstance: 10,
+            },
+          ],
+        },
+      },
+    }
   ) {
     const registerAssetInfo = await updateAsset(
       this,
       assetId,
-      decimals,
-      name,
-      symbol,
-      existentialDeposit,
       location,
       additional
     );

@@ -1018,7 +1018,12 @@ export class FeeTxs {
   }
 }
 
-export async function registerAsset(sudoUser: User, tokenId: BN) {
+export async function registerAsset(
+  sudoUser: User,
+  assetId: BN,
+  adressLocation: any,
+  locMarker: BN
+) {
   const api = getApi();
   const result = await signTx(
     api,
@@ -1026,30 +1031,13 @@ export async function registerAsset(sudoUser: User, tokenId: BN) {
       api.tx.assetRegistry.registerAsset(
         {
           decimals: 12,
-          name: "KAR-0x00" + tokenId.toString(),
-          symbol: "LKSM" + tokenId.toString(),
+          name: "KAR-0x00" + locMarker.toString(),
+          symbol: "LKSM" + locMarker.toString(),
           existentialDeposit: 0,
-          location: {
-            V1: {
-              parents: 1,
-              interior: {
-                X3: [
-                  {
-                    Parachain: 3210 + tokenId.toNumber(),
-                  },
-                  {
-                    GeneralKey: "0x00834",
-                  },
-                  {
-                    PalletInstance: 10,
-                  },
-                ],
-              },
-            },
-          },
+          location: adressLocation,
         },
         //@ts-ignore
-        tokenId
+        assetId
       )
     ),
     sudoUser.keyRingPair,
@@ -1063,10 +1051,6 @@ export async function registerAsset(sudoUser: User, tokenId: BN) {
 export async function updateAsset(
   sudoUser: User,
   assetId: any,
-  decimals: any,
-  name: any,
-  symbol: any,
-  existentialDeposit: any,
   location: any,
   additional: any
 ) {
@@ -1076,11 +1060,11 @@ export async function updateAsset(
     api.tx.sudo.sudo(
       api.tx.assetRegistry.updateAsset(
         assetId,
-        decimals,
+        12,
         //@ts-ignore
-        name,
-        symbol,
-        existentialDeposit,
+        api!.createType("Vec<u8>", "KAU-0x00" + assetId.toString()),
+        api!.createType("Vec<u8>", "UPDT" + assetId.toString()),
+        0,
         location,
         additional
       )

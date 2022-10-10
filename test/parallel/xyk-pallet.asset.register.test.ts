@@ -8,10 +8,11 @@ import { getApi, initApi } from "../../utils/api";
 import { getEnvironmentRequiredVars } from "../../utils/utils";
 import { User } from "../../utils/User";
 import { Keyring } from "@polkadot/api";
-import { BN } from "bn.js";
 import { Assets } from "../../utils/Assets";
 import { ExtrinsicResult } from "../../utils/eventListeners";
 import { getEventResultFromMangataTx } from "../../utils/txHandler";
+import { BN, hexToU8a } from "@polkadot/util";
+import { MangataGenericEvent } from "@mangata-finance/sdk";
 
 const { sudo: sudoUserName } = getEnvironmentRequiredVars();
 jest.setTimeout(1500000);
@@ -19,6 +20,55 @@ jest.spyOn(console, "log").mockImplementation(jest.fn());
 
 let sudo: User;
 let testUser1: User;
+
+async function setupUserAssetRegister(
+  user: User,
+  extrinsicSuccess: boolean,
+  eventErrorData?: string
+) {
+  const assetId = (
+    await Assets.setupUserWithCurrencies(user, [new BN(250000)], sudo, true)
+  )[0];
+
+  const userRegisterAsset = await user.registerAsset(assetId);
+  if (extrinsicSuccess === true) {
+    expect(getEventResultFromMangataTx(userRegisterAsset).state).toEqual(
+      ExtrinsicResult.ExtrinsicSuccess
+    );
+  } else {
+    expect(getEventResultFromMangataTx(userRegisterAsset).state).toEqual(
+      ExtrinsicResult.ExtrinsicFailed
+    );
+    expect(getEventResultFromMangataTx(userRegisterAsset).data).toContain(
+      eventErrorData
+    );
+  }
+  return assetId;
+}
+
+async function findAssetError(userRegisterNewAsset: MangataGenericEvent[]) {
+  const api = getApi();
+
+  const filterRegisterAsset = userRegisterNewAsset.filter(
+    (extrinsicResult) => extrinsicResult.method === "Sudid"
+  );
+
+  const userAssetErr = hexToU8a(
+    //@ts-ignore
+    filterRegisterAsset[0].event.data[0].asErr.value.error.toString()
+  );
+
+  const userAssetIndex =
+    //@ts-ignore
+    filterRegisterAsset[0].event.data[0].asErr.value.index.toString();
+
+  const userAssetMetaError = api?.registry.findMetaError({
+    error: userAssetErr,
+    index: new BN(userAssetIndex),
+  });
+
+  return userAssetMetaError;
+}
 
 beforeAll(async () => {
   await initApi();
@@ -33,63 +83,101 @@ beforeEach(async () => {
 });
 
 test("register new asset from sudo user", async () => {
-  const tokenId = (
-    await Assets.setupUserWithCurrencies(sudo, [new BN(250000)], sudo, true)
-  )[0];
+  await setupUserAssetRegister(sudo, true);
+});
 
-  const userRegisterAsset = await sudo.registerAsset(tokenId);
+test("try to register a new asset from non-sudo user, expect to fail", async () => {
+  await setupUserAssetRegister(testUser1, false, "RequireSudo");
+});
 
-  expect(getEventResultFromMangataTx(userRegisterAsset).state).toEqual(
+test("register new asset and then update it by sudo user", async () => {
+  const assetId = await setupUserAssetRegister(sudo, true);
+
+  const userUpdateAsset = await sudo.updateAsset(assetId);
+
+  expect(getEventResultFromMangataTx(userUpdateAsset).state).toEqual(
     ExtrinsicResult.ExtrinsicSuccess
   );
 });
 
-test("try to register a new asset from non-sudo user, expect to fail", async () => {
-  const tokenId = (
-    await Assets.setupUserWithCurrencies(
-      testUser1,
-      [new BN(250000)],
-      sudo,
-      true
-    )
-  )[0];
+test("register new asset and then update it by non sudo user, expect to fail", async () => {
+  const assetId = await setupUserAssetRegister(sudo, true);
 
-  const userRegisterAsset = await testUser1.registerAsset(tokenId);
+  const userUpdateAsset = await testUser1.updateAsset(assetId);
 
-  expect(getEventResultFromMangataTx(userRegisterAsset).state).toEqual(
+  expect(getEventResultFromMangataTx(userUpdateAsset).state).toEqual(
     ExtrinsicResult.ExtrinsicFailed
   );
 
-  expect(getEventResultFromMangataTx(userRegisterAsset).data).toContain(
+  expect(getEventResultFromMangataTx(userUpdateAsset).data).toContain(
     "RequireSudo"
   );
 });
 
-test("register new asset from sudo user and change it", async () => {
-  const tokenId = (
-    await Assets.setupUserWithCurrencies(sudo, [new BN(250000)], sudo, true)
-  )[0];
+test("register new asset and then update it without the location", async () => {
   const api = getApi();
-  const userRegisterAsset = await sudo.registerAsset(tokenId);
 
-  expect(getEventResultFromMangataTx(userRegisterAsset).state).toEqual(
-    ExtrinsicResult.ExtrinsicSuccess
-  );
+  const assetId = await setupUserAssetRegister(sudo, true);
 
   const userUpdateAsset = await sudo.updateAsset(
-    tokenId,
-    12,
+    assetId,
+    {
+      xcm: {
+        feePerSecond: 53760000000001,
+      },
+    },
     //@ts-ignore
-    api!.createType("Vec<u8>", "foo" + tokenId.toString()),
-    api!.createType("Vec<u8>", "asd"),
-    0,
+    api!.createType("Vec<u8>", "0x0100")
+  );
+
+  expect(getEventResultFromMangataTx(userUpdateAsset).state).toEqual(
+    ExtrinsicResult.ExtrinsicSuccess
+  );
+});
+
+test("register new asset and then update it without fee", async () => {
+  const api = getApi();
+
+  const assetId = await setupUserAssetRegister(sudo, true);
+
+  const userUpdateAsset = await sudo.updateAsset(
+    assetId,
+    //@ts-ignore
+    api!.createType("Vec<u8>", "0x0100")
+  );
+
+  expect(getEventResultFromMangataTx(userUpdateAsset).state).toEqual(
+    ExtrinsicResult.ExtrinsicSuccess
+  );
+});
+
+test("register asset and then try to register new one with the same assetId, expect to conflict", async () => {
+  const assetId = await setupUserAssetRegister(sudo, true);
+
+  const tempAssetId = assetId.add(new BN(1));
+
+  const userRegisterNewAsset = await sudo.registerAsset(assetId, tempAssetId);
+
+  const userAssetMetaError = await findAssetError(userRegisterNewAsset);
+
+  expect(userAssetMetaError.method).toEqual("ConflictingAssetId");
+});
+
+test("register asset and then try to register new one with the same location, expect to conflict", async () => {
+  const assetId = await setupUserAssetRegister(sudo, true);
+
+  const tempAssetId = assetId.add(new BN(1));
+
+  const userRegisterNewAsset = await sudo.registerAsset(
+    tempAssetId,
+    tempAssetId,
     {
       V1: {
         parents: 1,
         interior: {
           X3: [
             {
-              Parachain: 3210 + tokenId.toNumber(),
+              Parachain: 3210 + assetId.toNumber(),
             },
             {
               GeneralKey: "0x00834",
@@ -100,15 +188,10 @@ test("register new asset from sudo user and change it", async () => {
           ],
         },
       },
-    },
-    {
-      xcm: {
-        feePerSecond: 53760000000001,
-      },
     }
   );
 
-  expect(getEventResultFromMangataTx(userUpdateAsset).state).toEqual(
-    ExtrinsicResult.ExtrinsicSuccess
-  );
+  const userAssetMetaError = await findAssetError(userRegisterNewAsset);
+
+  expect(userAssetMetaError.method).toEqual("ConflictingLocation");
 });
