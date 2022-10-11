@@ -3,6 +3,7 @@ import BN from "bn.js";
 import fs from "fs";
 import { testLog } from "../utils/Logger";
 import { getMangataInstance } from "../utils/api";
+import { getEnvironmentRequiredVars } from "../utils/utils";
 
 async function main() {
   const users = [
@@ -14,7 +15,8 @@ async function main() {
   ];
   const liq = process.env.liq ? process.env.liq : 8;
   const liqId = new BN(liq);
-  const mangata = await getMangataInstance("ws://127.0.0.1:9949");
+  const { chainUri } = getEnvironmentRequiredVars();
+  const mangata = await getMangataInstance(chainUri);
   // const provider = new WsProvider("ws://127.0.0.1:8844");
   //const api = await new ApiPromise(options({ provider })).isReady;
   const api = await mangata.getApi();
@@ -41,13 +43,9 @@ async function main() {
 
             const plott = `${header.number},${(result as any).toString()} \n`;
 
-            fs.appendFile(
-              `/home/goncer/projects/mangata-e2e/${liqId}_${user}.txt`,
-              plott,
-              function (err) {
-                if (err) throw err;
-              }
-            );
+            fs.appendFile(`./${liqId}_${user}.txt`, plott, function (err) {
+              if (err) throw err;
+            });
             console.log(str);
           }
           //  api.query.xyk.rewardsInfo(user, liqId).then((value) => {
