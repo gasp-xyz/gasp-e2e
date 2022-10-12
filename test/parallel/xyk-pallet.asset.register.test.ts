@@ -26,15 +26,23 @@ async function setupUserAssetRegister(
   extrinsicSuccess: boolean,
   eventErrorData?: string
 ) {
+  const api = getApi();
+
   const assetId = (
     await Assets.setupUserWithCurrencies(user, [new BN(250000)], sudo, true)
   )[0];
 
   const userRegisterAsset = await user.registerAsset(assetId);
+
+  const assetTotalIssuance = await api.query.tokens.totalIssuance(assetId);
+  const assetMetadata = await api.query.assetRegistry.metadata(assetId);
   if (extrinsicSuccess === true) {
     expect(getEventResultFromMangataTx(userRegisterAsset).state).toEqual(
       ExtrinsicResult.ExtrinsicSuccess
     );
+    expect(assetTotalIssuance.toNumber()).toEqual(250000);
+    //@ts-ignore
+    expect(assetMetadata.value.name.toHuman()).toEqual("TESTTOKEN-" + assetId);
   } else {
     expect(getEventResultFromMangataTx(userRegisterAsset).state).toEqual(
       ExtrinsicResult.ExtrinsicFailed
@@ -91,6 +99,8 @@ test("try to register a new asset from non-sudo user, expect to fail", async () 
 });
 
 test("register new asset and then update it by sudo user", async () => {
+  const api = getApi();
+
   const assetId = await setupUserAssetRegister(sudo, true);
 
   const userUpdateAsset = await sudo.updateAsset(assetId);
@@ -98,6 +108,10 @@ test("register new asset and then update it by sudo user", async () => {
   expect(getEventResultFromMangataTx(userUpdateAsset).state).toEqual(
     ExtrinsicResult.ExtrinsicSuccess
   );
+
+  const assetMetadata = await api.query.assetRegistry.metadata(assetId);
+  //@ts-ignore
+  expect(assetMetadata.value.name.toHuman()).toEqual("TESTUPDT-" + assetId);
 });
 
 test("register new asset and then update it by non sudo user, expect to fail", async () => {
@@ -133,6 +147,9 @@ test("register new asset and then update it without the location", async () => {
   expect(getEventResultFromMangataTx(userUpdateAsset).state).toEqual(
     ExtrinsicResult.ExtrinsicSuccess
   );
+  const assetMetadata = await api.query.assetRegistry.metadata(assetId);
+  //@ts-ignore
+  expect(assetMetadata.value.location.toHuman()).toEqual(null);
 });
 
 test("register new asset and then update it without fee", async () => {
@@ -149,6 +166,10 @@ test("register new asset and then update it without fee", async () => {
   expect(getEventResultFromMangataTx(userUpdateAsset).state).toEqual(
     ExtrinsicResult.ExtrinsicSuccess
   );
+
+  const assetMetadata = await api.query.assetRegistry.metadata(assetId);
+  //@ts-ignore
+  expect(assetMetadata.value.additional.toHuman()).toEqual({ xcm: null });
 });
 
 test("register asset and then try to register new one with the same assetId, expect to conflict", async () => {

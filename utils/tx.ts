@@ -1031,8 +1031,8 @@ export async function registerAsset(
       api.tx.assetRegistry.registerAsset(
         {
           decimals: 12,
-          name: "KAR-0x00" + locMarker.toString(),
-          symbol: "LKSM" + locMarker.toString(),
+          name: "TESTTOKEN-" + locMarker.toString(),
+          symbol: "TSTT" + locMarker.toString(),
           existentialDeposit: 0,
           location: adressLocation,
         },
@@ -1062,8 +1062,8 @@ export async function updateAsset(
         assetId,
         12,
         //@ts-ignore
-        api!.createType("Vec<u8>", "KAU-0x00" + assetId.toString()),
-        api!.createType("Vec<u8>", "UPDT" + assetId.toString()),
+        api!.createType("Vec<u8>", "TESTUPDT-" + assetId.toString()),
+        api!.createType("Vec<u8>", "TSTUPD" + assetId.toString()),
         0,
         location,
         additional
