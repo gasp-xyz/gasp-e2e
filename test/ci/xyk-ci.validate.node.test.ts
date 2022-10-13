@@ -1,6 +1,7 @@
 /*
  *
  * @group xyk
+ * @group temp-ci
  * @group ci
  */
 import { getApi, initApi } from "../../utils/api";
@@ -21,7 +22,7 @@ beforeAll(async () => {
 });
 
 test("xyk-CI - Node is up and running", async () => {
-  const api = getApi();
+  const api = await initApi();
 
   const health = await (api.rpc as any).system.health();
   testLog.getLog().info("Node health : " + health.toString());
@@ -43,10 +44,10 @@ test("xyk-CI - Node is up and running", async () => {
 async function waitNewHeaders(numHeads = 5): Promise<Header[]> {
   return new Promise(async (resolve, reject) => {
     setTimeout(() => {
-      reject();
+      reject(`Timeoted while waiting new block`);
     }, DEFAULT_TIME_OUT_MS);
 
-    const api = getApi();
+    const api = await initApi();
     let count = 0;
     const blocks: Header[] = [];
     // Subscribe to the new headers
