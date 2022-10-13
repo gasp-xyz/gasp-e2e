@@ -11,6 +11,8 @@ import { ApiPromise } from "@polkadot/api";
 import { WsProvider } from "@polkadot/rpc-provider/ws";
 import { options } from "@mangata-finance/types";
 import { testLog } from "../utils/Logger";
+import { hexToBn } from "@polkadot/util";
+import { decryptJsonWallet } from "@ethersproject/json-wallets";
 
 require("dotenv").config();
 
@@ -43,148 +45,11 @@ describe("RewardsV2 - testpad", () => {
     }
   });
 
-  const rewardsGenerationTime = 21;
+  const rewardsGenerationTime = 5;
 
   test("Rewards: Setup a pool with rewards and 4 users", async () => {
-    keyring = new Keyring({ type: "sr25519" });
-    sudo = new User(keyring, sudoUserName);
-    const testUser1 = new User(keyring, "//Ferdie");
-    const testUser2 = new User(keyring, "//Eve");
-    const testUser3 = new User(keyring, "//Dave");
-    const testUser4 = new User(keyring, "//Charlie");
-    const users = [testUser1, testUser2, testUser3, testUser4];
-    const promises: Promise<MangataGenericEvent[]>[] = [];
-    //    if(!skipToBurn){
-    keyring.addPair(sudo.keyRingPair);
-    testLog.getLog().info("FinalizeTGE and create a test token");
-    const tokenId = await getNextAssetId();
-    await api!.tx.utility
-      .batch([
-        api!.tx.sudo.sudo(api!.tx.issuance.finalizeTge()),
-        api!.tx.sudo.sudo(api!.tx.issuance.initIssuanceConfig()),
-        api!.tx.sudo.sudo(
-          api!.tx.tokens.mint(MGA_ASSET_ID, sudo.keyRingPair.address, amount)
-        ),
-        api!.tx.sudo.sudo(
-          api!.tx.tokens.create(sudo.keyRingPair.address, amount)
-        ),
-        api!.tx.sudo.sudo(
-          api!.tx.tokens.mint(
-            MGA_ASSET_ID,
-            testUser1.keyRingPair.address,
-            new BN(amount)
-          )
-        ),
-        api!.tx.sudo.sudo(
-          api!.tx.tokens.mint(
-            tokenId,
-            testUser1.keyRingPair.address,
-            new BN(amount)
-          )
-        ),
-        api!.tx.sudo.sudo(
-          api!.tx.tokens.mint(
-            MGA_ASSET_ID,
-            testUser2.keyRingPair.address,
-            new BN(amount)
-          )
-        ),
-        api!.tx.sudo.sudo(
-          api!.tx.tokens.mint(
-            tokenId,
-            testUser2.keyRingPair.address,
-            new BN(amount)
-          )
-        ),
-        api!.tx.sudo.sudo(
-          api!.tx.tokens.mint(
-            MGA_ASSET_ID,
-            testUser3.keyRingPair.address,
-            new BN(amount)
-          )
-        ),
-        api!.tx.sudo.sudo(
-          api!.tx.tokens.mint(
-            tokenId,
-            testUser3.keyRingPair.address,
-            new BN(amount)
-          )
-        ),
-        api!.tx.sudo.sudo(
-          api!.tx.tokens.mint(
-            MGA_ASSET_ID,
-            testUser4.keyRingPair.address,
-            new BN(amount)
-          )
-        ),
-        api!.tx.sudo.sudo(
-          api!.tx.tokens.mint(
-            tokenId,
-            testUser4.keyRingPair.address,
-            new BN(amount)
-          )
-        ),
-      ])
-      .signAndSend(sudo.keyRingPair);
-
-    await waitForNBlocks(3);
-    testLog.getLog().info("new tokenID = " + tokenId.toString());
-    testLog
-      .getLog()
-      .info(
-        "Creating pool + promote + giving tokens to users: \n pool: [ 0 ," +
-          tokenId.toString() +
-          "]"
-      );
-
-    await api!.tx.utility
-      .batch([
-        api!.tx.xyk.createPool(
-          MGA_ASSET_ID,
-          amount.divn(2),
-          tokenId,
-          amount.divn(2)
-        ),
-        api!.tx.sudo.sudo(api!.tx.xyk.promotePool(tokenId.addn(1))),
-      ])
-      .signAndSend(sudo.keyRingPair);
-    await waitForNBlocks(3);
-    for (let index = 0; index < users.length; index++) {
-      const user = users[index];
-      const tokenstoMint = new BN(1000000);
-      testLog
-        .getLog()
-        .info(" User: " + user.keyRingPair.address + "Minting tokens to pool");
-      promises.push(
-        mintLiquidity(
-          user.keyRingPair,
-          MGA_ASSET_ID,
-          tokenId,
-          tokenstoMint,
-          MAX_BALANCE
-        )
-      );
-    }
-    await Promise.all(promises);
-    await waitForNBlocks(rewardsGenerationTime);
-    for (let index = 0; index < 0; index++) {
-      const user = users[0];
-      const tokenstoMint = new BN(100);
-      testLog
-        .getLog()
-        .info(
-          " User: " +
-            user.keyRingPair.address +
-            "Minting tokens to pool -2 users"
-        );
-      await mintLiquidity(
-        user.keyRingPair,
-        MGA_ASSET_ID,
-        tokenId,
-        tokenstoMint,
-        MAX_BALANCE
-      );
-      await waitForNBlocks(5);
+    for (let index = 0; index < 2; index++) {
+      await doSetup(rewardsGenerationTime);
     }
   });
 
@@ -195,7 +60,8 @@ describe("RewardsV2 - testpad", () => {
     const testUser2 = new User(keyring, "//Eve");
     const testUser3 = new User(keyring, "//Dave");
     const testUser4 = new User(keyring, "//Charlie");
-    const users = [testUser1, testUser2, testUser3, testUser4];
+    const testUser5 = new User(keyring, "//Alice");
+    const users = [testUser1, testUser2, testUser3, testUser4, testUser5];
     const promises: Promise<MangataGenericEvent[]>[] = [];
     for (let index = 0; index < users.length; index++) {
       const testUser1 = users[index];
@@ -212,11 +78,14 @@ describe("RewardsV2 - testpad", () => {
       promises.push(
         signTx(
           api!,
-          api!.tx.xyk.claimRewardsAllV2(liqtokenId),
+          api!.tx.xyk.claimRewardsV2(
+            liqtokenId,
+            new BN(result.price.toString())
+          ),
           testUser1.keyRingPair
         )
       );
-      testLog.getLog().info(result.toString());
+      testLog.getLog().info(result.price.toString());
     }
     await Promise.all(promises);
   });
@@ -227,9 +96,17 @@ describe("RewardsV2 - testpad", () => {
     const testUser2 = new User(keyring, "//Eve");
     const testUser3 = new User(keyring, "//Dave");
     const testUser4 = new User(keyring, "//Charlie");
+    sudo = new User(keyring, sudoUserName);
     const users = [testUser1, testUser2, testUser3, testUser4];
     const promises: Promise<MangataGenericEvent[]>[] = [];
-    for (let index = 0; index < users.length; index++) {
+    promises.push(
+      signTx(
+        api!,
+        api!.tx.xyk.burnLiquidity(0, liqtokenId, amount.divn(2)),
+        sudo.keyRingPair
+      )
+    );
+    for (let index = 0; index < 2; index++) {
       const testUser1 = users[index];
       sudo = new User(keyring, sudoUserName);
       // add users to pair.
@@ -244,7 +121,7 @@ describe("RewardsV2 - testpad", () => {
       promises.push(
         signTx(
           api!,
-          api!.tx.xyk.burnLiquidity(0, liqtokenId, new BN(1000)),
+          api!.tx.xyk.burnLiquidity(0, liqtokenId, new BN(100000)),
           testUser1.keyRingPair
         )
       );
@@ -252,7 +129,43 @@ describe("RewardsV2 - testpad", () => {
     }
     await Promise.all(promises);
   });
-
+  test("xyk-pallet: Mint_v2", async () => {
+    const liqtokenId = new BN(7);
+    keyring = new Keyring({ type: "sr25519" });
+    const testUser1 = new User(keyring, "//Ferdie");
+    const testUser2 = new User(keyring, "//Eve");
+    const testUser3 = new User(keyring, "//Dave");
+    const testUser4 = new User(keyring, "//Charlie");
+    const users = [testUser1, testUser2, testUser3, testUser4];
+    const promises: Promise<MangataGenericEvent[]>[] = [];
+    for (let index = 0; index < 2; index++) {
+      const testUser1 = users[index];
+      sudo = new User(keyring, sudoUserName);
+      // add users to pair.
+      keyring.addPair(testUser1.keyRingPair);
+      await testUser1.refreshAmounts(AssetWallet.BEFORE);
+      const provider = new WsProvider(chainUri);
+      const api2 = await new ApiPromise(options({ provider })).isReady;
+      const result = await (api2.rpc as any).xyk.calculate_rewards_amount_v2(
+        testUser1.keyRingPair.address,
+        liqtokenId.addn(1)
+      );
+      promises.push(
+        signTx(
+          api!,
+          api!.tx.xyk.mintLiquidity(
+            0,
+            liqtokenId,
+            new BN(100000),
+            new BN(1998000)
+          ),
+          testUser1.keyRingPair
+        )
+      );
+      testLog.getLog().info(result.toHuman().toString());
+    }
+    await Promise.all(promises);
+  });
   test("xyk-pallet: Burn&mint batched", async () => {
     const tokenId = new BN(7);
     keyring = new Keyring({ type: "sr25519" });
@@ -266,4 +179,168 @@ describe("RewardsV2 - testpad", () => {
       .signAndSend(testUser1.keyRingPair);
     await waitForNBlocks(3);
   });
+
+  test("xyk-pallet: one guy mint other burn", async () => {
+    const tokenId = new BN(7);
+    keyring = new Keyring({ type: "sr25519" });
+    const testUser1 = new User(keyring, "//Eve");
+    const testUser2 = new User(keyring, "//Dave");
+    sudo = new User(keyring, sudoUserName);
+    await api!.tx.utility
+      .batch([
+        api!.tx.xyk.mintLiquidity(0, tokenId, new BN(1000), new BN(2000)),
+      ])
+      .signAndSend(testUser1.keyRingPair);
+
+    await waitForNBlocks(1);
+    await api!.tx.utility
+      .batch([api!.tx.xyk.mintLiquidity(0, tokenId, new BN(500), new BN(2000))])
+      .signAndSend(testUser2.keyRingPair);
+    await waitForNBlocks(2);
+    await api!.tx.utility
+      .batch([api!.tx.xyk.mintLiquidity(0, tokenId, new BN(500), new BN(2000))])
+      .signAndSend(testUser2.keyRingPair);
+
+    await waitForNBlocks(2);
+  });
 });
+async function doSetup(rewardsGenerationTime: number) {
+  keyring = new Keyring({ type: "sr25519" });
+  sudo = new User(keyring, sudoUserName);
+  const testUser1 = new User(keyring, "//Ferdie");
+  const testUser2 = new User(keyring, "//Eve");
+  const testUser3 = new User(keyring, "//Dave");
+  const testUser4 = new User(keyring, "//Charlie");
+  const users = [testUser1, testUser2, testUser3, testUser4];
+  const promises: Promise<MangataGenericEvent[]>[] = [];
+  //    if(!skipToBurn){
+  keyring.addPair(sudo.keyRingPair);
+  testLog.getLog().info("FinalizeTGE and create a test token");
+  const tokenId = await getNextAssetId();
+  await api!.tx.utility
+    .batch([
+      api!.tx.sudo.sudo(api!.tx.issuance.finalizeTge()),
+      api!.tx.sudo.sudo(api!.tx.issuance.initIssuanceConfig()),
+      api!.tx.sudo.sudo(
+        api!.tx.tokens.mint(MGA_ASSET_ID, sudo.keyRingPair.address, amount)
+      ),
+      api!.tx.sudo.sudo(
+        api!.tx.tokens.create(sudo.keyRingPair.address, amount)
+      ),
+      api!.tx.sudo.sudo(
+        api!.tx.tokens.mint(
+          MGA_ASSET_ID,
+          testUser1.keyRingPair.address,
+          new BN(amount)
+        )
+      ),
+      api!.tx.sudo.sudo(
+        api!.tx.tokens.mint(
+          tokenId,
+          testUser1.keyRingPair.address,
+          new BN(amount)
+        )
+      ),
+      api!.tx.sudo.sudo(
+        api!.tx.tokens.mint(
+          MGA_ASSET_ID,
+          testUser2.keyRingPair.address,
+          new BN(amount)
+        )
+      ),
+      api!.tx.sudo.sudo(
+        api!.tx.tokens.mint(
+          tokenId,
+          testUser2.keyRingPair.address,
+          new BN(amount)
+        )
+      ),
+      api!.tx.sudo.sudo(
+        api!.tx.tokens.mint(
+          MGA_ASSET_ID,
+          testUser3.keyRingPair.address,
+          new BN(amount)
+        )
+      ),
+      api!.tx.sudo.sudo(
+        api!.tx.tokens.mint(
+          tokenId,
+          testUser3.keyRingPair.address,
+          new BN(amount)
+        )
+      ),
+      api!.tx.sudo.sudo(
+        api!.tx.tokens.mint(
+          MGA_ASSET_ID,
+          testUser4.keyRingPair.address,
+          new BN(amount)
+        )
+      ),
+      api!.tx.sudo.sudo(
+        api!.tx.tokens.mint(
+          tokenId,
+          testUser4.keyRingPair.address,
+          new BN(amount)
+        )
+      ),
+    ])
+    .signAndSend(sudo.keyRingPair);
+
+  await waitForNBlocks(3);
+  testLog.getLog().info("new tokenID = " + tokenId.toString());
+  testLog
+    .getLog()
+    .info(
+      "Creating pool + promote + giving tokens to users: \n pool: [ 0 ," +
+        tokenId.toString() +
+        "]"
+    );
+
+  await api!.tx.utility
+    .batch([
+      api!.tx.xyk.createPool(
+        MGA_ASSET_ID,
+        amount.divn(2),
+        tokenId,
+        amount.divn(2)
+      ),
+      api!.tx.sudo.sudo(api!.tx.xyk.promotePool(tokenId.addn(1))),
+    ])
+    .signAndSend(sudo.keyRingPair);
+  await waitForNBlocks(3);
+  for (let index = 0; index < users.length; index++) {
+    const user = users[index];
+    const tokenstoMint = new BN(1000000);
+    testLog
+      .getLog()
+      .info(" User: " + user.keyRingPair.address + "Minting tokens to pool");
+    promises.push(
+      mintLiquidity(
+        user.keyRingPair,
+        MGA_ASSET_ID,
+        tokenId,
+        tokenstoMint,
+        MAX_BALANCE
+      )
+    );
+  }
+  await Promise.all(promises);
+  await waitForNBlocks(rewardsGenerationTime);
+  for (let index = 0; index < 0; index++) {
+    const user = users[0];
+    const tokenstoMint = new BN(100);
+    testLog
+      .getLog()
+      .info(
+        " User: " + user.keyRingPair.address + "Minting tokens to pool -2 users"
+      );
+    await mintLiquidity(
+      user.keyRingPair,
+      MGA_ASSET_ID,
+      tokenId,
+      tokenstoMint,
+      MAX_BALANCE
+    );
+    await waitForNBlocks(5);
+  }
+}

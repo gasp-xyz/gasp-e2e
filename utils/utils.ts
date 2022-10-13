@@ -42,7 +42,7 @@ export function getEnvironmentRequiredVars() {
     : "";
   const sudoUserName = process.env.TEST_SUDO_NAME
     ? process.env.TEST_SUDO_NAME
-    : "";
+    : "//Alice";
   const testUserName = process.env.TEST_USER_NAME
     ? process.env.TEST_USER_NAME
     : "//Alice";
@@ -56,7 +56,7 @@ export function getEnvironmentRequiredVars() {
 
   const logLevel = process.env.LOG_LEVEL ? process.env.LOG_LEVEL : "info";
 
-  const uri = process.env.API_URL ? process.env.API_URL : "ws://127.0.0.1:9944";
+  const uri = process.env.API_URL ? process.env.API_URL : "ws://127.0.0.1:9946";
   const relyUri = process.env.RELY_API_URL
     ? process.env.RELY_API_URL
     : "ws://127.0.0.1:9944";
