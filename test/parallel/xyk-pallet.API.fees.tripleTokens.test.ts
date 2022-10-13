@@ -134,32 +134,27 @@ test("xyk-pallet - Check required fee - User with MGX only", async () => {
 
 test("xyk-pallet - Check required fee - User with KSM only", async () => {
   //add KSM tokens.
+  let exception = false;
   await testUser1.addKSMTokens(sudo);
 
   await testUser1.refreshAmounts(AssetWallet.BEFORE);
-
-  await (await getMangataInstance())
-    .buyAsset(
-      testUser1.keyRingPair,
-      firstCurrency.toString(),
-      secondCurrency.toString(),
-      new BN(100),
-      new BN(1000000)
-    )
-    .then((result) => {
-      const eventResponse = getEventResultFromMangataTx(result);
-      expect(eventResponse.state).toEqual(ExtrinsicResult.ExtrinsicSuccess);
-    });
-
-  await testUser1.refreshAmounts(AssetWallet.AFTER);
-
-  const deductedKSMTkns = testUser1
-    .getAsset(KSM_ASSET_ID)
-    ?.amountBefore.free.sub(
-      testUser1.getAsset(KSM_ASSET_ID)?.amountAfter.free!
-    );
-
-  expect(deductedKSMTkns).bnGt(new BN(0));
+  await expect(
+    (await getMangataInstance())
+      .buyAsset(
+        testUser1.keyRingPair,
+        firstCurrency.toString(),
+        secondCurrency.toString(),
+        new BN(100),
+        new BN(1000000)
+      )
+      .catch((reason) => {
+        exception = true;
+        throw new Error(reason.data);
+      })
+  ).rejects.toThrow(
+    "1010: Invalid Transaction: Inability to pay some fees , e.g. account balance too low"
+  );
+  expect(exception).toBeTruthy();
 });
 
 test("xyk-pallet - Check required fee - User with TUR only", async () => {
@@ -268,19 +263,24 @@ test("xyk-pallet - Check required fee - User with very few MGA, some KSM and ver
   await sudo.mint(TUR_ASSET_ID, testUser1, new BN(100000));
 
   await testUser1.refreshAmounts(AssetWallet.BEFORE);
-
-  await (await getMangataInstance())
-    .buyAsset(
-      testUser1.keyRingPair,
-      firstCurrency.toString(),
-      secondCurrency.toString(),
-      new BN(100),
-      new BN(1000000)
-    )
-    .then((result) => {
-      const eventResponse = getEventResultFromMangataTx(result);
-      expect(eventResponse.state).toEqual(ExtrinsicResult.ExtrinsicSuccess);
-    });
+  let exception = false;
+  await expect(
+    (await getMangataInstance())
+      .buyAsset(
+        testUser1.keyRingPair,
+        firstCurrency.toString(),
+        secondCurrency.toString(),
+        new BN(100),
+        new BN(1000000)
+      )
+      .catch((reason) => {
+        exception = true;
+        throw new Error(reason.data);
+      })
+  ).rejects.toThrow(
+    "1010: Invalid Transaction: Inability to pay some fees , e.g. account balance too low"
+  );
+  expect(exception).toBeTruthy();
 
   await testUser1.refreshAmounts(AssetWallet.AFTER);
 
@@ -301,7 +301,7 @@ test("xyk-pallet - Check required fee - User with very few MGA, some KSM and ver
     );
 
   expect(deductedMGATkns).bnEqual(new BN(0));
-  expect(deductedKSMTkns).bnGt(new BN(0));
+  expect(deductedKSMTkns).bnEqual(new BN(0));
   expect(deductedTURTkns).bnEqual(new BN(0));
 });
 

@@ -62,9 +62,13 @@ async function createAndSignTransfer(
     MGA_ASSET_ID,
     new BN(1)
   );
-  const signed = tx.sign(srcUser!.keyPair, {
-    nonce: mgaValue.users[userNo]!.nonce,
-  });
+  const signed = tx.sign(
+    srcUser!.keyPair,
+    //@ts-ignore
+    {
+      nonce: mgaValue.users[userNo]!.nonce.toNumber(),
+    }
+  );
   return { mgaValue, signed };
 }
 async function createAndSignTransferKA(
@@ -87,8 +91,12 @@ async function createAndSignTransferKA(
     MGA_ASSET_ID,
     new BN(1)
   );
-  const signed = tx.sign(srcUser!.keyPair, {
-    nonce: mgaValue.users[userNo]!.nonce,
-  });
+  const signed = tx.sign(
+    srcUser!.keyPair,
+    //@ts-ignore
+    {
+      nonce: mgaValue.users[userNo]!.nonce,
+    }
+  );
   return { mgaValue, signed };
 }
