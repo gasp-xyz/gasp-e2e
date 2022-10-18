@@ -1,4 +1,0 @@
-"Status","Start Time","Stop Time","Duration in ms","Parent Suite","Suite","Sub Suite","Test Class","Test Method","Name","Description"
-"passed","Mon Oct 03 10:49:03 GMT 2022","Mon Oct 03 10:49:13 GMT 2022","10083","","UI tests - Extension management","","UI tests - Extension management","User is informed about required extensions","User is informed about required extensions",""
-"passed","Mon Oct 03 10:49:13 GMT 2022","Mon Oct 03 10:49:43 GMT 2022","29998","","UI tests - Extension management","","UI tests - Extension management","User can connect polkadot.js extension with accounts","User can connect polkadot.js extension with accounts",""
-"failed","Mon Oct 03 10:49:44 GMT 2022","Mon Oct 03 10:49:48 GMT 2022","4073","","UI tests: Infra","","UI tests: Infra","Validate that Mangata Frontend up and running","Validate that Mangata Frontend up and running",""
