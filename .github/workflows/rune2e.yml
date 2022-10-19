@@ -99,6 +99,10 @@ jobs:
         working-directory: e2eTests
         run: yarn
 
+      - name: Install testmo
+        working-directory: e2eTests
+        run: npm i -g @testmo/testmo-cli
+
       - name: Tsc code quality check
         working-directory: e2eTests
         run: yarn tsc-lint --skipLibCheck
@@ -126,3 +130,13 @@ jobs:
       - name: Run parallel e2e tests
         working-directory: e2eTests
         run: yarn ${{ github.event.inputs.scriptName }} ${{env.E2E_PARAMS}} ${{env.E2E_GROUPS}}
+      
+      - name: Publish to testmo  reports/
+        working-directory: e2eTests
+        if: always()
+        run: TESTMO_TOKEN=${{ secrets.TESTMO_TOKEN }} testmo automation:run:submit  --instance https://goncer.testmo.net  --project-id 2 --name "New test run - run e2e"   --source "run-e2e-job"  --results reports/*.xml
+        
+     
+        
+        
+        
