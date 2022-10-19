@@ -1868,7 +1868,7 @@
 
 "@mangata-finance/sdk@https://github.com/mangata-finance/mangata-sdk#feature/storage_queue":
   version "1.7.5"
-  resolved "https://github.com/mangata-finance/mangata-sdk#5e64a91f72acf4a5870453816ab552aa46c0131f"
+  resolved "https://github.com/mangata-finance/mangata-sdk#5e9faaa9297c59b6d10b8a48bbc3fe8fb40042b8"
   dependencies:
     "@mangata-finance/types" "^0.9.0"
     "@polkadot/api" "^9.4.2"
