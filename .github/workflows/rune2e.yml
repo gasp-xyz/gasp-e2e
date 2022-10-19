@@ -1,0 +1,128 @@
+name: Run e2e
+
+on:
+  workflow_dispatch:
+      inputs:
+        scriptName:
+          description: 'Name of the script to run'
+          required: true
+          default: 'test-github'
+
+        parallel:
+          description: "run parallel"
+          type: boolean
+          required: true
+          default: false
+
+        group:
+          description: "group of the tests"
+          type: choice
+          required: false
+          default: 'none'
+          options:
+            - none
+            - sequential
+            - bootstrap
+            - parallel
+            - xyk
+            - api
+            - sdk
+            - ci
+            - ui
+            - story
+
+        dockerImage:
+          description: 'identifier of docker image on dockerhub'
+          required: true
+          default: 'mangatasolutions/mangata-node:rococo-v0.24.0'
+
+        e2eBranch:
+          description: 'Name of the e2e target branch'
+          required: false
+          default: 'main'
+      
+
+jobs:
+  test:
+    name: Test code quality and run tests
+    runs-on: ubuntu-latest
+    env:
+      API_URL: 'ws://127.0.0.1:9946'
+      E2E_PARAMS : '--runInBand'
+      E2E_GROUPS : ''
+      TEST_PALLET_ADDRESS: ${{ secrets.TEST_PALLET_ADDRESS }}
+      E2E_XYK_PALLET_ADDRESS: ${{ secrets.E2E_XYK_PALLET_ADDRESS }}
+      E2E_TREASURY_PALLET_ADDRESS: ${{ secrets.E2E_TREASURY_PALLET_ADDRESS }}
+      E2E_TREASURY_BURN_PALLET_ADDRESS : ${{ secrets.E2E_TREASURY_BURN_PALLET_ADDRESS }}
+      TEST_SUDO_NAME: ${{ secrets.TEST_SUDO_NAME }}
+      
+
+
+    steps:
+
+      - name: Checkout tests
+        uses: actions/checkout@v2
+        with:
+          repository: mangata-finance/mangata-e2e
+          ref: '${{ github.event.inputs.e2eBranch }}'
+          path: 'e2eTests'
+  
+      - name: Checkout mangata-node
+        uses: actions/checkout@v2
+        with:
+          repository: mangata-finance/mangata-node
+          ref: 'develop'
+          path: 'mangata-node'
+
+
+      - name: Replace parachain docker image reference in config
+        working-directory: mangata-node/launch
+        run: sed -i 's+mangatasolutions/mangata-node:dev+${{ github.event.inputs.dockerImage }}+g' config.yml
+
+      - name: Install parachain launch
+        working-directory: mangata-node/launch
+        run: yarn
+
+      - name: Generate parachain launch config
+        working-directory: mangata-node/launch
+        run: yarn gen
+
+      - name: Stop previous parachain if running
+        working-directory: mangata-node/launch
+        run: yarn down
+
+      - name: Start mangata-node parachain
+        working-directory: mangata-node/launch
+        run: yarn up
+
+      - name: Install dependencies for tests
+        working-directory: e2eTests
+        run: yarn
+
+      - name: Tsc code quality check
+        working-directory: e2eTests
+        run: yarn tsc-lint --skipLibCheck
+
+      - name: ESLint code quality check
+        working-directory: e2eTests
+        run: yarn eslint
+
+      - name: Docker ps
+        run: docker ps
+
+      - name: Sleep for 2 minutes
+        run: sleep 120s
+
+      - name: Generate test run flags
+        if: ${{ github.event.inputs.parallel != 'false' }}
+        run:
+          echo "E2E_PARAMS=--max-workers=32" >> $GITHUB_ENV
+
+      - name: Generate test run flags - groups
+        if: ${{ github.event.inputs.group || github.event.inputs.group != 'none' }}
+        run:
+          echo "E2E_GROUPS=--group=${{ github.event.inputs.group}}" >> $GITHUB_ENV
+
+      - name: Run parallel e2e tests
+        working-directory: e2eTests
+        run: yarn ${{ github.event.inputs.scriptName }} ${{env.E2E_PARAMS}} ${{env.E2E_GROUPS}}

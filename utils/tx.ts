@@ -864,7 +864,8 @@ export async function scheduleBootstrap(
   bootstrapCurrency: BN,
   waitingPeriod: number,
   bootstrapPeriod: number,
-  whitelistPeriod = 1
+  whitelistPeriod = 1,
+  provisionBootstrap = false
 ) {
   const api = getApi();
   const bootstrapBlockNumber = (await getBlockNumber()) + waitingPeriod;
@@ -879,7 +880,7 @@ export async function scheduleBootstrap(
         new BN(bootstrapPeriod),
         [100, 1],
         // @ts-ignore
-        false
+        provisionBootstrap
       )
     ),
     sudoUser.keyRingPair,
@@ -956,10 +957,10 @@ export async function vestingTransfer(
   tokenID: BN,
   source: User,
   target: User,
-  startingBlock: number
+  startingBlock: number,
+  locked = toBN("1", 20),
+  perBlock = new BN(100)
 ) {
-  const locked = toBN("1", 20);
-  const perBlock = new BN(100);
   const api = getApi();
   const result = await signTx(
     api,
@@ -979,6 +980,16 @@ export async function vestingTransfer(
     {
       nonce: await getCurrentNonce(sudoUser.keyRingPair.address),
     }
+  );
+  return result;
+}
+
+export async function unlockVestedToken(User: User, tokenID: BN) {
+  const api = getApi();
+  const result = await signTx(
+    api,
+    api.tx.vesting.vest(tokenID),
+    User.keyRingPair
   );
   return result;
 }
