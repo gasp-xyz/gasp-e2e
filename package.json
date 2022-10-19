@@ -70,7 +70,6 @@
     "eslint": "node_modules/.bin/eslint --max-warnings 0 . --ext .ts",
     "reports": "allure generate reports",
     "test-github": "rm nonce.db ; rm sudo.lock; jest --verbose  --ci "
-
   },
   "devDependencies": {
     "@babel/core": "^7.13.10",
