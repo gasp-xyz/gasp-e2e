@@ -133,6 +133,7 @@ jobs:
       
       - name: Publish to testmo  reports/
         working-directory: e2eTests
+        if: always()
         run: |
            TESTMO_TOKEN=${{ secrets.TESTMO_TOKEN }} testmo automation:run:submit \ 
            --instance https://goncer.testmo.net \
