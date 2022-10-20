@@ -83,7 +83,7 @@ describe("Boostrap - testpad", () => {
       )
     );
     const blockstostart = 5;
-    const bootstraplength = 10;
+    const bootstraplength = 1000;
     await scheduleBootstrap(
       sudo,
       MGA_ASSET_ID,
@@ -97,12 +97,12 @@ describe("Boostrap - testpad", () => {
     await provisionBootstrap(
       testUser1,
       MGA_ASSET_ID,
-      new BN("1000000000000000000000")
+      new BN("100000000000000000")
     );
     await setAssetInfo(sudo, new BN(4), "KSM", "KSM", "", new BN(12));
     await setAssetInfo(sudo, new BN(7), "TUR", "TUR", "", new BN(10));
 
-    await waitForBootstrapStatus("Finished", bootstraplength);
+    //await waitForBootstrapStatus("Finished", bootstraplength);
     //pool created Id 5.
   });
 });
