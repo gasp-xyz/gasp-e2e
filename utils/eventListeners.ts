@@ -97,6 +97,7 @@ export const logEvent = (phase, data, method, section) => {
     );
 };
 
+// wrap SDK signTx to allow verbose logs
 export const signSendFinalized = async (
   tx: Extrinsic,
   user: User,
@@ -162,7 +163,8 @@ export async function waitSudoOperataionFail(
   expect(BootstrapError.method).toContain(expectedError);
 }
 
-export const awaitEvent = async (
+// works most of the time, avoid using in the CI, used only in manual tests for now; or FIX please :)
+export const waitForEvent = async (
   api: ApiPromise,
   method: string,
   blocks: number = 3
@@ -198,6 +200,7 @@ export const awaitEvent = async (
   });
 };
 
+// used for APIs other than mangata
 export const signSendSuccess = async (
   api: ApiPromise,
   tx: Extrinsic,

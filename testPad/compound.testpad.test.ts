@@ -1,26 +1,19 @@
-import { getEnvironmentRequiredVars } from "../../utils/utils";
-import { User } from "../../utils/User";
+import { getEnvironmentRequiredVars } from "../utils/utils";
+import { User } from "../utils/User";
+import { alice, api, setupApi, setupUsers, sudo } from "../utils/setup";
+import { testLog } from "../utils/Logger";
 import {
-  alice,
-  api,
-  Extrinsic,
-  setupApi,
-  setupUsers,
-  sudo,
-} from "../../utils/setup";
-import { testLog } from "../../utils/Logger";
-import { ApiPromise, WsProvider } from "@polkadot/api";
-import {
-  awaitEvent,
+  waitForEvent,
   signSendFinalized,
   signSendSuccess,
-} from "../../utils/eventListeners";
-import { Assets } from "../../utils/Assets";
-import { Sudo } from "../../utils/sudo";
-import { Xyk } from "../../utils/xyk";
+} from "../utils/eventListeners";
+import { Assets } from "../utils/Assets";
+import { Sudo } from "../utils/sudo";
+import { Xyk } from "../utils/xyk";
 import { BN_MILLION, BN_ONE, BN_THOUSAND, BN_ZERO } from "@mangata-finance/sdk";
-import { getNextAssetId } from "../../utils/tx";
+import { getNextAssetId } from "../utils/tx";
 import { BN } from "@polkadot/util";
+import { OakApi } from "../utils/Framework/Node/OakNode";
 
 // const HOUR = 60 * 60;
 const weightInSeconds = new BN(1_000_000_000_000);
@@ -40,9 +33,12 @@ describe("auto-compound story: provide_liquidity_with_conversion XCM task", () =
 
     const { oakUri } = getEnvironmentRequiredVars();
     oakApi = await OakApi.create(oakUri!);
+
+    // needs to be call just once before the test, please comment afterwards
+    await setupAssets();
   });
 
-  it("auto-compound: register assets", async () => {
+  async function setupAssets() {
     testLog.getLog().info("running section: register token on OAK");
     await signSendSuccess(
       oakApi.api,
@@ -113,16 +109,7 @@ describe("auto-compound story: provide_liquidity_with_conversion XCM task", () =
       ),
       alice
     );
-  });
-
-  it("auto-compound: task id", async () => {
-    // @ts-ignore
-    const taskId = await oakApi.api.rpc.automationTime.generateTaskId(
-      alice.keyRingPair.address,
-      "compound"
-    );
-    testLog.getLog().info(`task id: ${taskId}`);
-  });
+  }
 
   it("auto-compound: schedule & execute task", async () => {
     testLog.getLog().info("running section: prepare compound extrinsic");
@@ -143,8 +130,8 @@ describe("auto-compound story: provide_liquidity_with_conversion XCM task", () =
       )
     );
 
-    // it is complex to set up the chain with predefined rewards, it is enough to test without it
-    // we provide 1_000 MGR into the poolId
+    // it is complex to set up the chain with predefined rewards, it is enough to test without it,
+    // we add 1_000 MGR into the poolId
     const tx = api.tx.proxy.proxy(
       user1.keyRingPair.address,
       undefined,
@@ -155,6 +142,13 @@ describe("auto-compound story: provide_liquidity_with_conversion XCM task", () =
 
     testLog.getLog().info(encodedTxHex);
     testLog.getLog().info("running section: schedule task: " + encodedTxHex);
+
+    // @ts-ignore
+    const taskIdLog = await oakApi.api.rpc.automationTime.generateTaskId(
+      alice.keyRingPair.address,
+      "compound"
+    );
+    testLog.getLog().info(`task id: ${taskIdLog}`);
     const taskId = "compound";
     // const seconds = Math.trunc(new Date().getTime() / 1000);
     // const nextHour = seconds - (seconds % HOUR) + HOUR;
@@ -164,7 +158,7 @@ describe("auto-compound story: provide_liquidity_with_conversion XCM task", () =
       // task id
       oakApi.api.createType("Vec<u8>", taskId),
       // intervals for task execution, 0 == immediate execution, only with 'features=dev_queue' oak build
-      executions,
+      { Fixed: { executionTimes: executions } },
       // destination para id
       2110,
       // currency id - the registered TUR in this case
@@ -198,6 +192,7 @@ describe("auto-compound story: provide_liquidity_with_conversion XCM task", () =
     const totalFees = new BN(info.partialFee)
       .add(taskExecutionFee.mul(new BN(executions.length)))
       .add(new BN(automationTimeFee))
+      //  existential deposit of 10 TUR
       .add(new BN(10_0000000000));
     // .add(xcmExecutionFee);
 
@@ -247,14 +242,16 @@ describe("auto-compound story: provide_liquidity_with_conversion XCM task", () =
 
     testLog.getLog().info("running section: await execute task");
     // check the xcm automation success on oak
-    await awaitEvent(oakApi.api, "automationTime.XcmpTaskSucceeded");
+    await waitForEvent(oakApi.api, "automationTime.XcmpTaskSucceeded");
     // check that we have minted some liquidity
-    await awaitEvent(api, "xyk.LiquidityMinted");
+    await waitForEvent(api, "xyk.LiquidityMinted");
   });
 });
 
 /**
  * @group oak-network
+ *
+ * not a test, just print various fees taking place
  */
 describe("auto-compound story: check all fees", () => {
   let user1: User;
@@ -330,121 +327,3 @@ describe("auto-compound story: check all fees", () => {
     // xcm transact fee in TUR on MG
   });
 });
-
-class OakApi {
-  api: ApiPromise;
-
-  addChainCurrencyData(paraId: number, currencyId: number): Extrinsic {
-    return this.api.tx.xcmpHandler.addChainCurrencyData(paraId, currencyId, {
-      native: false,
-      feePerSecond: 537_600_000_000,
-      instructionWeight: 150_000_000 * 6,
-    });
-  }
-
-  constructor(api: ApiPromise) {
-    this.api = api;
-  }
-
-  static async create(uri: string): Promise<OakApi> {
-    const provider = new WsProvider(uri);
-    const api = await ApiPromise.create({
-      provider: provider,
-      rpc: {
-        automationTime: {
-          generateTaskId: {
-            description: "Getting task ID given account ID and provided ID",
-            params: [
-              {
-                name: "accountId",
-                type: "AccountId",
-              },
-              {
-                name: "providedId",
-                type: "Text",
-              },
-            ],
-            type: "Hash",
-          },
-          getTimeAutomationFees: {
-            description: "Retrieve automation fees",
-            params: [
-              {
-                name: "action",
-                type: "AutomationAction",
-              },
-              {
-                name: "executions",
-                type: "u32",
-              },
-            ],
-            type: "Balance",
-          },
-          calculateOptimalAutostaking: {
-            description: "Calculate the optimal period to restake",
-            params: [
-              {
-                name: "principal",
-                type: "i128",
-              },
-              {
-                name: "collator",
-                type: "AccountId",
-              },
-            ],
-            type: "AutostakingResult",
-          },
-          getAutoCompoundDelegatedStakeTaskIds: {
-            description: "Return autocompounding tasks by account",
-            params: [
-              {
-                name: "account_id",
-                type: "AccountId",
-              },
-            ],
-            type: "Vec<Hash>",
-          },
-        },
-        xcmpHandler: {
-          fees: {
-            description:
-              "Return XCMP fee for a automationTime.scheduleXCMPTask",
-            params: [
-              {
-                name: "encoded_xt",
-                type: "Bytes",
-              },
-            ],
-            type: "u64",
-          },
-          crossChainAccount: {
-            description:
-              "Find OAK's cross chain access account from an account",
-            params: [
-              {
-                name: "account_id",
-                type: "AccountId32",
-              },
-            ],
-            type: "AccountId32",
-          },
-        },
-      },
-      types: {
-        AutomationAction: {
-          _enum: [
-            "Notify",
-            "NativeTransfer",
-            "XCMP",
-            "AutoCompoundDelgatedStake",
-          ],
-        },
-        AutostakingResult: {
-          period: "i32",
-          apy: "f64",
-        },
-      },
-    });
-    return new OakApi(api!);
-  }
-}
