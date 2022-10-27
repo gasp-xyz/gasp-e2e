@@ -82,8 +82,12 @@ async function createAndSignSwaps(
   } else {
     tx = api!.tx.xyk.sellAsset(assets[0], assets[1], new BN(100), new BN(0));
   }
-  const signed = tx.sign(srcUser!.keyPair, {
-    nonce: mgaValue.users[userNo]!.nonce,
-  });
+  const signed = tx.sign(
+    srcUser!.keyPair,
+    //@ts-ignore
+    {
+      nonce: mgaValue.users[userNo]!.nonce,
+    }
+  );
   return { mgaValue, signed };
 }

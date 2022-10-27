@@ -57,8 +57,12 @@ async function createAndSignBatchTransfer(
       api!.tx.tokens.transfer(destUser.keyPair.address, MGA_ASSET_ID, new BN(1))
     );
   });
-  const signed = api!.tx.utility.batch(txs).sign(srcUser!.keyPair, {
-    nonce: mgaValue.users[userNo]!.nonce,
-  });
+  const signed = api!.tx.utility.batch(txs).sign(
+    srcUser!.keyPair,
+    //@ts-ignore
+    {
+      nonce: mgaValue.users[userNo]!.nonce,
+    }
+  );
   return { mgaValue, signed };
 }

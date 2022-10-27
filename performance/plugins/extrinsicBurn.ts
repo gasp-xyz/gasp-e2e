@@ -80,8 +80,12 @@ async function createAndSignBurn(
   const srcUser = mgaNodeandUsers.get(nodeThread)?.users![userNo];
   const api = await mgaNodeandUsers.get(nodeThread)?.mgaSdk.getApi();
   const tx = api!.tx.xyk.burnLiquidity(tokens[0], tokens[1], new BN(2));
-  const signed = tx.sign(srcUser!.keyPair, {
-    nonce: mgaValue.users[userNo]!.nonce,
-  });
+  const signed = tx.sign(
+    srcUser!.keyPair,
+    //@ts-ignore
+    {
+      nonce: mgaValue.users[userNo]!.nonce,
+    }
+  );
   return { mgaValue, signed };
 }

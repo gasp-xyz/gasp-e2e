@@ -50,8 +50,12 @@ async function createAndSignMints(
     new BN(2),
     new BN(3)
   );
-  const signed = tx.sign(srcUser!.keyPair, {
-    nonce: mgaValue.users[userNo]!.nonce,
-  });
+  const signed = tx.sign(
+    srcUser!.keyPair,
+    //@ts-ignore
+    {
+      nonce: mgaValue.users[userNo]!.nonce,
+    }
+  );
   return { mgaValue, signed };
 }
