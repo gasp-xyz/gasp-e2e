@@ -943,7 +943,7 @@ export async function finalizeBootstrap(sudoUser: User) {
   const api = getApi();
   const result = await signTx(
     api,
-    api.tx.sudo.sudo(api.tx.bootstrap.finalize(null)),
+    api.tx.sudo.sudo(api.tx.bootstrap.finalize(new BN(100))),
     sudoUser.keyRingPair,
     {
       nonce: await getCurrentNonce(sudoUser.keyRingPair.address),
