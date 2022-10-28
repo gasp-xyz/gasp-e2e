@@ -52,7 +52,7 @@ export class SudoDB {
       fs.writeFileSync(this.sudoNonceFileName, String(nextNonce));
     } finally {
       //unlock always!
-      unlockSudoFile();
+      await unlockSudoFile();
     }
 
     return dbNonce;

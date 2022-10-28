@@ -1,15 +1,22 @@
 import { assert } from "console";
 import { BN } from "@polkadot/util";
-import { ExtrinsicResult } from "./eventListeners";
-import { getNextAssetId, getAssetSupply } from "./tx";
+import { ExtrinsicResult, findEventData } from "./eventListeners";
+import { getAssetSupply, getNextAssetId } from "./tx";
 import {
   getEventResultFromMangataTx,
   setAssetInfo,
   sudoIssueAsset,
 } from "./txHandler";
 import { User } from "./User";
+import { BN_TEN, BN_THOUSAND, MangataGenericEvent } from "@mangata-finance/sdk";
+import { api, Extrinsic } from "./setup";
+import { MGA_ASSET_ID } from "./Constants";
+import { Sudo } from "./sudo";
 
 export class Assets {
+  static MG_UNIT: BN = BN_TEN.pow(new BN(18));
+  static DEFAULT_AMOUNT = BN_THOUSAND.mul(this.MG_UNIT);
+
   ///This method create or return the specified number of available assets
   static async getCurrencies(numAssets: number = 2, sudoUser: User) {
     const currencies: string[] = [];
@@ -85,5 +92,40 @@ export class Assets {
 
   static getAssetName(assetID: string) {
     return `m${assetID}`;
+  }
+
+  static mintNative(user: User, amount: BN = this.DEFAULT_AMOUNT): Extrinsic {
+    user.addAsset(MGA_ASSET_ID);
+    return Sudo.sudo(
+      api.tx.tokens.mint(MGA_ASSET_ID, user.keyRingPair.address, amount)
+    );
+  }
+
+  static issueToken(user: User, amount: BN = this.DEFAULT_AMOUNT): Extrinsic {
+    return Sudo.sudo(api.tx.tokens.create(user.keyRingPair.address, amount));
+  }
+
+  static mintToken(
+    asset: BN,
+    user: User,
+    amount: BN = this.DEFAULT_AMOUNT
+  ): Extrinsic {
+    return Sudo.sudo(
+      api.tx.tokens.mint(asset, user.keyRingPair.address, amount)
+    );
+  }
+
+  static transfer(target: User, tokenId: BN, amount: BN): Extrinsic {
+    return api.tx.tokens.transfer(target.keyRingPair.address, tokenId, amount);
+  }
+
+  static transferAll(target: User, tokenId: BN): Extrinsic {
+    return api.tx.tokens.transferAll(target.keyRingPair.address, tokenId, true);
+  }
+
+  static findTokenId(result: MangataGenericEvent[]): BN[] {
+    return findEventData(result, "tokens.Issued").map(
+      (data) => new BN(data[0])
+    );
   }
 }
