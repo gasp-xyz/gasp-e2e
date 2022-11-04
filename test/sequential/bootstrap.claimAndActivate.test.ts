@@ -207,8 +207,8 @@ describe.each`
   promoting | vesting
   ${true}   | ${false}
   ${false}  | ${false}
-  ${false}  | ${true}
 `(
+  //deleted combination ${false}  | ${true}
   "bootstrap - checking bootstrapped pool in different situations",
   ({ promoting, vesting }) => {
     beforeEach(async () => {

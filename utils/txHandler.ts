@@ -155,6 +155,35 @@ export const getEventResultFromMangataTx = function (
   return createEventResultfromExtrinsic(extrinsicResult as MangataGenericEvent);
 };
 
+export const getSudoEventResultFromMangataTx = function (
+  relatedEvents: MangataGenericEvent[]
+): EventResult {
+  const searchTerm = ["Sudid"];
+  let extrinsicResult;
+  extrinsicResult = relatedEvents.find(
+    (e) =>
+      e.event.toHuman().method !== null &&
+      extrinsicResultMethods.includes(e.event.toHuman().method!.toString())
+  );
+  extrinsicResult = relatedEvents.find(
+    (e) =>
+      e.event.toHuman().method !== null &&
+      searchTerm.every((filterTerm) =>
+        (
+          JSON.stringify(e.event.toHuman()) +
+          JSON.stringify(e.eventData[0].data.toHuman())
+        ).includes(filterTerm)
+      )
+  );
+  if ((extrinsicResult?.event as GenericEvent) === undefined) {
+    testLog.getLog().warn("WARN: Event is undefined.");
+    testLog.getLog().warn(JSON.stringify(relatedEvents));
+    testLog.getLog().warn(searchTerm);
+    throw new Error("  --- TX Mapping issue --- ");
+  }
+  return createEventResultfromExtrinsic(extrinsicResult as MangataGenericEvent);
+};
+
 function createEventResultfromExtrinsic(extrinsicResult: MangataGenericEvent) {
   const eventResult = extrinsicResult.event.toHuman();
   switch (eventResult.method) {

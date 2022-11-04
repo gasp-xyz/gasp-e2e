@@ -952,6 +952,19 @@ export async function finalizeBootstrap(sudoUser: User) {
   return result;
 }
 
+export async function cancelRunningBootstrap(sudoUser: User) {
+  const api = getApi();
+  const result = await signTx(
+    api,
+    api.tx.sudo.sudo(api.tx.bootstrap.cancelBootstrap()),
+    sudoUser.keyRingPair,
+    {
+      nonce: await getCurrentNonce(sudoUser.keyRingPair.address),
+    }
+  );
+  return result;
+}
+
 export async function vestingTransfer(
   sudoUser: User,
   tokenID: BN,
