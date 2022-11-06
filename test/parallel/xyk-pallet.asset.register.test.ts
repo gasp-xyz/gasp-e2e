@@ -13,6 +13,7 @@ import { ExtrinsicResult } from "../../utils/eventListeners";
 import { getEventResultFromMangataTx } from "../../utils/txHandler";
 import { BN, hexToU8a } from "@polkadot/util";
 import { MangataGenericEvent } from "@mangata-finance/sdk";
+import { getNextAssetId } from "../../utils/tx";
 
 const { sudo: sudoUserName } = getEnvironmentRequiredVars();
 jest.setTimeout(1500000);
@@ -187,7 +188,7 @@ test("register asset and then try to register new one with the same assetId, exp
 test("register asset and then try to register new one with the same location, expect to conflict", async () => {
   const assetId = await setupUserAssetRegister(sudo, true);
 
-  const tempAssetId = assetId.add(new BN(1));
+  const tempAssetId = await getNextAssetId();
 
   const userRegisterNewAsset = await sudo.registerAsset(
     tempAssetId,

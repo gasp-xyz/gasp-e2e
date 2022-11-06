@@ -1060,11 +1060,11 @@ export async function updateAsset(
     api.tx.sudo.sudo(
       api.tx.assetRegistry.updateAsset(
         assetId,
-        12,
+        "12",
         //@ts-ignore
         api!.createType("Vec<u8>", "TESTUPDT-" + assetId.toString()),
         api!.createType("Vec<u8>", "TSTUPD" + assetId.toString()),
-        0,
+        "0",
         location,
         additional
       )
