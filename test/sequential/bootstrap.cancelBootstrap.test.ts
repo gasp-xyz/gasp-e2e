@@ -24,6 +24,7 @@ import {
 } from "../../utils/txHandler";
 import { MGA_ASSET_ID } from "../../utils/Constants";
 import { BN, toBN } from "@mangata-finance/sdk";
+import { hexToU8a } from "@polkadot/util";
 import { Assets } from "../../utils/Assets";
 import { Sudo } from "../../utils/sudo";
 import { setupApi, setupUsers } from "../../utils/setup";
@@ -46,12 +47,31 @@ const waitingPeriod2 = 15;
 const bootstrapPeriod = 30;
 const whitelistPeriod = 10;
 
-async function checkErrorCancellingBootstrap(sudoUser: User, error: string) {
+async function checkErrorCancellingBootstrap(
+  sudoUser: User,
+  expectedError: string
+) {
+  const api = getApi();
   const checkingCancelling = await cancelRunningBootstrap(sudoUser);
-  eventResponse = getSudoEventResultFromMangataTx(checkingCancelling);
-  expect(eventResponse.state).toEqual(ExtrinsicResult.ExtrinsicSuccess);
-  //@ts-ignore
-  expect(eventResponse.data.sudoResult.Err.Module.error).toContain(error);
+  const filterRegisterAsset = checkingCancelling.filter(
+    (extrinsicResult) => extrinsicResult.method === "Sudid"
+  );
+
+  const userAssetErr = hexToU8a(
+    //@ts-ignore
+    filterRegisterAsset[0].event.data[0].asErr.value.error.toString()
+  );
+
+  const userAssetIndex =
+    //@ts-ignore
+    filterRegisterAsset[0].event.data[0].asErr.value.index.toString();
+
+  const userAssetMetaError = api?.registry.findMetaError({
+    error: userAssetErr,
+    index: new BN(userAssetIndex),
+  });
+
+  expect(userAssetMetaError.method).toContain(expectedError);
 }
 
 beforeAll(async () => {
@@ -114,13 +134,11 @@ test("bootstrap - Check that we can cancel bootstrap before planned", async () =
     whitelistPeriod
   );
   eventResponse = getSudoEventResultFromMangataTx(sudoBootstrap);
-  expect(eventResponse.state).toEqual(ExtrinsicResult.ExtrinsicSuccess);
   //@ts-ignore
   expect(eventResponse.data.sudoResult).toContain("Ok");
 
   const checkingCancelling = await cancelRunningBootstrap(sudo);
   eventResponse = getSudoEventResultFromMangataTx(checkingCancelling);
-  expect(eventResponse.state).toEqual(ExtrinsicResult.ExtrinsicSuccess);
   //@ts-ignore
   expect(eventResponse.data.sudoResult).toContain("Ok");
 });
@@ -135,25 +153,24 @@ test("bootstrap - Check that we can not cancel bootstrap when bootstrap event al
     whitelistPeriod
   );
   eventResponse = getSudoEventResultFromMangataTx(sudoBootstrap);
-  expect(eventResponse.state).toEqual(ExtrinsicResult.ExtrinsicSuccess);
   //@ts-ignore
   expect(eventResponse.data.sudoResult).toContain("Ok");
 
   //check that bootstrap cannot be canceled less than 300 blocks before the start
-  await checkErrorCancellingBootstrap(sudo, "0x14000000");
+  await checkErrorCancellingBootstrap(sudo, "TooLateToUpdateBootstrap");
 
   await waitForBootstrapStatus("Whitelist", waitingPeriod2);
 
   //check that bootstrap cannot be canceled after the start
-  await checkErrorCancellingBootstrap(sudo, "0x07000000");
+  await checkErrorCancellingBootstrap(sudo, "AlreadyStarted");
 
   await waitForBootstrapStatus("Public", waitingPeriod2);
 
-  await checkErrorCancellingBootstrap(sudo, "0x07000000");
+  await checkErrorCancellingBootstrap(sudo, "AlreadyStarted");
 
   await waitForBootstrapStatus("Finished", bootstrapPeriod);
 
-  await checkErrorCancellingBootstrap(sudo, "0x07000000");
+  await checkErrorCancellingBootstrap(sudo, "AlreadyStarted");
 
   // finalaze bootstrap
   const bootstrapFinalize = await finalizeBootstrap(sudo);
