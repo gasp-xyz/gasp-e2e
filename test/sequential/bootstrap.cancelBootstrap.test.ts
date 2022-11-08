@@ -56,7 +56,7 @@ async function checkBootstrapEvent(checkingEvent: MangataGenericEvent[]) {
   expect(userAssetCall).toContain("Ok");
 }
 
-async function checkCancelBootstrapError(
+async function checkCancellingBootstrapError(
   sudoUser: User,
   expectedError: string
 ) {
@@ -160,20 +160,20 @@ test("bootstrap - Check that we can not cancel bootstrap when bootstrap event al
   await checkBootstrapEvent(sudoBootstrap);
 
   //check that bootstrap cannot be canceled less than 300 blocks before the start
-  await checkCancelBootstrapError(sudo, "TooLateToUpdateBootstrap");
+  await checkCancellingBootstrapError(sudo, "TooLateToUpdateBootstrap");
 
   await waitForBootstrapStatus("Whitelist", waitingPeriod2);
 
   //check that bootstrap cannot be canceled after the start
-  await checkCancelBootstrapError(sudo, "AlreadyStarted");
+  await checkCancellingBootstrapError(sudo, "AlreadyStarted");
 
   await waitForBootstrapStatus("Public", waitingPeriod2);
 
-  await checkCancelBootstrapError(sudo, "AlreadyStarted");
+  await checkCancellingBootstrapError(sudo, "AlreadyStarted");
 
   await waitForBootstrapStatus("Finished", bootstrapPeriod);
 
-  await checkCancelBootstrapError(sudo, "AlreadyStarted");
+  await checkCancellingBootstrapError(sudo, "AlreadyStarted");
 
   // finalaze bootstrap
   const bootstrapFinalize = await finalizeBootstrap(sudo);
