@@ -47,13 +47,13 @@ const bootstrapPeriod = 30;
 const whitelistPeriod = 10;
 
 async function checkBootstrapEvent(checkingEvent: MangataGenericEvent[]) {
-  const filterRegisterAsset = checkingEvent.filter(
+  const filterBootstrapEvent = checkingEvent.filter(
     (extrinsicResult) => extrinsicResult.method === "Sudid"
   );
 
-  const userAssetCall = filterRegisterAsset[0].event.data[0].toString();
+  const userBootstrapCall = filterBootstrapEvent[0].event.data[0].toString();
 
-  expect(userAssetCall).toContain("Ok");
+  expect(userBootstrapCall).toContain("Ok");
 }
 
 async function checkCancellingBootstrapError(
@@ -62,22 +62,22 @@ async function checkCancellingBootstrapError(
 ) {
   const api = getApi();
   const checkingCancelling = await cancelRunningBootstrap(sudoUser);
-  const filterRegisterAsset = checkingCancelling.filter(
+  const filterBootstrapEvent = checkingCancelling.filter(
     (extrinsicResult) => extrinsicResult.method === "Sudid"
   );
 
-  const userAssetErr = hexToU8a(
+  const userBootstrapErr = hexToU8a(
     //@ts-ignore
-    filterRegisterAsset[0].event.data[0].asErr.value.error.toString()
+    filterBootstrapEvent[0].event.data[0].asErr.value.error.toString()
   );
 
-  const userAssetIndex =
+  const userBootstrapIndex =
     //@ts-ignore
-    filterRegisterAsset[0].event.data[0].asErr.value.index.toString();
+    filterBootstrapEvent[0].event.data[0].asErr.value.index.toString();
 
   const userAssetMetaError = api?.registry.findMetaError({
-    error: userAssetErr,
-    index: new BN(userAssetIndex),
+    error: userBootstrapErr,
+    index: new BN(userBootstrapIndex),
   });
 
   expect(userAssetMetaError.method).toContain(expectedError);
