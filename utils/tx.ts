@@ -965,6 +965,24 @@ export async function cancelRunningBootstrap(sudoUser: User) {
   return result;
 }
 
+export async function updatePromoteBootstrapPool(
+  sudoUser: User,
+  promoteBootstrapPoolFlag: bool
+) {
+  const api = getApi();
+  const result = await signTx(
+    api,
+    api.tx.sudo.sudo(
+      api.tx.bootstrap.updatePromoteBootstrapPool(promoteBootstrapPoolFlag)
+    ),
+    sudoUser.keyRingPair,
+    {
+      nonce: await getCurrentNonce(sudoUser.keyRingPair.address),
+    }
+  );
+  return result;
+}
+
 export async function vestingTransfer(
   sudoUser: User,
   tokenID: BN,
