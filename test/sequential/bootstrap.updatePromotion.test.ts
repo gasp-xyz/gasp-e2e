@@ -8,7 +8,11 @@ import { getApi, initApi } from "../../utils/api";
 import {
   scheduleBootstrap,
   finalizeBootstrap,
-  cancelRunningBootstrap,
+  updatePromoteBootstrapPool,
+  provisionBootstrap,
+  claimRewardsBootstrap,
+  getLiquidityAssetId,
+  getBalanceOfAsset,
 } from "../../utils/tx";
 import { EventResult, ExtrinsicResult } from "../../utils/eventListeners";
 import { Keyring } from "@polkadot/api";
@@ -38,31 +42,49 @@ let sudo: User;
 let keyring: Keyring;
 let bootstrapPhase: any;
 let bootstrapCurrency: any;
+let bootstrapPool: any;
 let eventResponse: EventResult;
 
 const { sudo: sudoUserName } = getEnvironmentRequiredVars();
 const waitingPeriod1 = 400;
-const waitingPeriod2 = 15;
-const bootstrapPeriod = 30;
+const waitingPeriod2 = 10;
+const bootstrapPeriod = 20;
 const whitelistPeriod = 10;
+const bootstrapAmount = new BN(10000000000);
+
+async function changePromoteBootstrapPool(userName: User) {
+  const api = getApi();
+  let result: MangataGenericEvent[];
+
+  const currentPromotingState =
+    await api.query.bootstrap.promoteBootstrapPool();
+
+  if (currentPromotingState) {
+    result = await updatePromoteBootstrapPool(userName, false);
+  } else {
+    result = await updatePromoteBootstrapPool(userName, true);
+  }
+
+  return result;
+}
 
 async function checkBootstrapEvent(checkingEvent: MangataGenericEvent[]) {
   const filterBootstrapEvent = checkingEvent.filter(
     (extrinsicResult) => extrinsicResult.method === "Sudid"
   );
 
-  const userBootstrapCall = filterBootstrapEvent[0].event.data[0].toString();
+  const userAssetCall = filterBootstrapEvent[0].event.data[0].toString();
 
-  expect(userBootstrapCall).toContain("Ok");
+  expect(userAssetCall).toContain("Ok");
 }
 
-async function checkCancellingBootstrapError(
-  sudoUser: User,
+async function checkBootstrapError(
+  checkingEvent: MangataGenericEvent[],
   expectedError: string
 ) {
   const api = getApi();
-  const checkingCancelling = await cancelRunningBootstrap(sudoUser);
-  const filterBootstrapEvent = checkingCancelling.filter(
+
+  const filterBootstrapEvent = checkingEvent.filter(
     (extrinsicResult) => extrinsicResult.method === "Sudid"
   );
 
@@ -133,8 +155,12 @@ beforeEach(async () => {
   );
 });
 
-test("bootstrap - Check that we can cancel bootstrap before planned", async () => {
-  const scheduleBootstrapEvent = await scheduleBootstrap(
+test("bootstrap - Check that we can change promotion bootstrap on each stage before finish", async () => {
+  let checkingUpdatingPool: MangataGenericEvent[];
+
+  const api = getApi();
+
+  const scheduleBootstrapBefPlan = await scheduleBootstrap(
     sudo,
     MGA_ASSET_ID,
     bootstrapCurrency,
@@ -142,14 +168,12 @@ test("bootstrap - Check that we can cancel bootstrap before planned", async () =
     bootstrapPeriod,
     whitelistPeriod
   );
-  await checkBootstrapEvent(scheduleBootstrapEvent);
+  await checkBootstrapEvent(scheduleBootstrapBefPlan);
 
-  const checkingCancelling = await cancelRunningBootstrap(sudo);
-  await checkBootstrapEvent(checkingCancelling);
-});
+  checkingUpdatingPool = await changePromoteBootstrapPool(sudo);
+  await checkBootstrapEvent(checkingUpdatingPool);
 
-test("bootstrap - Check that we can not cancel bootstrap when bootstrap event already planned or started", async () => {
-  const scheduleBootstrapEvent = await scheduleBootstrap(
+  const scheduleBootstrapAftPlan = await scheduleBootstrap(
     sudo,
     MGA_ASSET_ID,
     bootstrapCurrency,
@@ -157,25 +181,74 @@ test("bootstrap - Check that we can not cancel bootstrap when bootstrap event al
     bootstrapPeriod,
     whitelistPeriod
   );
-  await checkBootstrapEvent(scheduleBootstrapEvent);
+  await checkBootstrapEvent(scheduleBootstrapAftPlan);
 
-  //check that bootstrap cannot be canceled less than 300 blocks before the start
-  await checkCancellingBootstrapError(sudo, "TooLateToUpdateBootstrap");
+  checkingUpdatingPool = await changePromoteBootstrapPool(sudo);
+  await checkBootstrapEvent(checkingUpdatingPool);
 
   await waitForBootstrapStatus("Whitelist", waitingPeriod2);
 
-  //check that bootstrap cannot be canceled after the start
-  await checkCancellingBootstrapError(sudo, "AlreadyStarted");
+  checkingUpdatingPool = await changePromoteBootstrapPool(sudo);
+  await checkBootstrapEvent(checkingUpdatingPool);
 
   await waitForBootstrapStatus("Public", waitingPeriod2);
 
-  await checkCancellingBootstrapError(sudo, "AlreadyStarted");
+  checkingUpdatingPool = await changePromoteBootstrapPool(sudo);
+  await checkBootstrapEvent(checkingUpdatingPool);
+
+  const provisionPublicBootstrapCurrency = await provisionBootstrap(
+    testUser1,
+    bootstrapCurrency,
+    bootstrapAmount
+  );
+  eventResponse = getEventResultFromMangataTx(provisionPublicBootstrapCurrency);
+  expect(eventResponse.state).toEqual(ExtrinsicResult.ExtrinsicSuccess);
+
+  const provisionPublicMGA = await provisionBootstrap(
+    testUser1,
+    MGA_ASSET_ID,
+    bootstrapAmount
+  );
+  eventResponse = getEventResultFromMangataTx(provisionPublicMGA);
+  expect(eventResponse.state).toEqual(ExtrinsicResult.ExtrinsicSuccess);
 
   await waitForBootstrapStatus("Finished", bootstrapPeriod);
 
-  await checkCancellingBootstrapError(sudo, "AlreadyStarted");
+  checkingUpdatingPool = await changePromoteBootstrapPool(sudo);
+  await checkBootstrapError(checkingUpdatingPool, "BootstrapFinished");
 
-  // finalaze bootstrap
+  bootstrapPool = await api.query.xyk.pools([MGA_ASSET_ID, bootstrapCurrency]);
+  expect(bootstrapPool[0]).bnEqual(bootstrapAmount);
+  expect(bootstrapPool[1]).bnEqual(bootstrapAmount);
+  const bootstrapExpectedUserLiquidity = new BN(
+    bootstrapPool[0].add(bootstrapPool[1]) / 2
+  );
+
+  const claimRewards = await claimRewardsBootstrap(testUser1);
+  eventResponse = getEventResultFromMangataTx(claimRewards);
+  expect(eventResponse.state).toEqual(ExtrinsicResult.ExtrinsicSuccess);
+
+  const liquidityID = await getLiquidityAssetId(
+    MGA_ASSET_ID,
+    bootstrapCurrency
+  );
+
+  const userBalance = await getBalanceOfAsset(
+    liquidityID,
+    testUser1.keyRingPair.address.toString()
+  );
+
+  const currentPromotingState =
+    await api.query.bootstrap.promoteBootstrapPool();
+
+  if (currentPromotingState) {
+    expect(userBalance.free).bnEqual(bootstrapExpectedUserLiquidity);
+    expect(userBalance.frozen).bnEqual(new BN(0));
+  } else {
+    expect(userBalance.free).bnEqual(new BN(0));
+    expect(userBalance.frozen).bnEqual(bootstrapExpectedUserLiquidity);
+  }
+
   const bootstrapFinalize = await finalizeBootstrap(sudo);
   await checkBootstrapEvent(bootstrapFinalize);
 });
