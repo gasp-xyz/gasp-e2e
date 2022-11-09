@@ -170,7 +170,10 @@ test("register new asset and then update it without fee", async () => {
 
   const assetMetadata = await api.query.assetRegistry.metadata(assetId);
   //@ts-ignore
-  expect(assetMetadata.value.additional.toHuman()).toEqual({ xcm: null });
+  expect(assetMetadata.value.additional.toHuman()).toEqual({
+    xcm: null,
+    xyk: null,
+  });
 });
 
 test("register asset and then try to register new one with the same assetId, expect to conflict", async () => {
