@@ -23,14 +23,15 @@ import {
 } from "../../utils/utils";
 import {
   getEventResultFromMangataTx,
-  sudoIssueAsset,
+  getEventErrorfromSudo,
 } from "../../utils/txHandler";
+import {
+  createNewBootstrapToken,
+  setupBootstrapTokensBalance,
+} from "../../utils/Bootstrap";
 import { MGA_ASSET_ID } from "../../utils/Constants";
-import { BN, MangataGenericEvent, toBN } from "@mangata-finance/sdk";
-import { hexToU8a } from "@polkadot/util";
-import { Assets } from "../../utils/Assets";
-import { Sudo } from "../../utils/sudo";
-import { setupApi, setupUsers } from "../../utils/setup";
+import { BN, MangataGenericEvent } from "@mangata-finance/sdk";
+import { setupUsers } from "../../utils/setup";
 
 jest.spyOn(console, "log").mockImplementation(jest.fn());
 jest.spyOn(console, "error").mockImplementation(jest.fn());
@@ -46,63 +47,51 @@ let bootstrapPool: any;
 let eventResponse: EventResult;
 
 const { sudo: sudoUserName } = getEnvironmentRequiredVars();
-const waitingPeriod1 = 400;
-const waitingPeriod2 = 10;
+//constant for bootstrap include a planning period
+const waitingPeriodWithPlan = 400;
+//constant for bootstrap less a planning period
+const waitingPeriodLessPlan = 10;
 const bootstrapPeriod = 20;
 const whitelistPeriod = 10;
 const bootstrapAmount = new BN(10000000000);
 
 async function changePromoteBootstrapPool(userName: User) {
   const api = getApi();
-  let result: MangataGenericEvent[];
 
   const currentPromotingState =
     await api.query.bootstrap.promoteBootstrapPool();
 
-  if (currentPromotingState) {
-    result = await updatePromoteBootstrapPool(userName, false);
-  } else {
-    result = await updatePromoteBootstrapPool(userName, true);
-  }
+  const result = await updatePromoteBootstrapPool(
+    userName,
+    !currentPromotingState
+  );
 
   return result;
 }
 
-async function checkBootstrapEvent(checkingEvent: MangataGenericEvent[]) {
+async function checkSudoOperataionSuccess(
+  checkingEvent: MangataGenericEvent[]
+) {
   const filterBootstrapEvent = checkingEvent.filter(
     (extrinsicResult) => extrinsicResult.method === "Sudid"
   );
 
-  const userAssetCall = filterBootstrapEvent[0].event.data[0].toString();
+  const userBootstrapCall = filterBootstrapEvent[0].event.data[0].toString();
 
-  expect(userAssetCall).toContain("Ok");
+  expect(userBootstrapCall).toContain("Ok");
 }
 
-async function checkBootstrapError(
+async function checkSudoOperataionFail(
   checkingEvent: MangataGenericEvent[],
   expectedError: string
 ) {
-  const api = getApi();
-
   const filterBootstrapEvent = checkingEvent.filter(
     (extrinsicResult) => extrinsicResult.method === "Sudid"
   );
 
-  const userBootstrapErr = hexToU8a(
-    //@ts-ignore
-    filterBootstrapEvent[0].event.data[0].asErr.value.error.toString()
-  );
+  const BootstrapError = await getEventErrorfromSudo(filterBootstrapEvent);
 
-  const userBootstrapIndex =
-    //@ts-ignore
-    filterBootstrapEvent[0].event.data[0].asErr.value.index.toString();
-
-  const userAssetMetaError = api?.registry.findMetaError({
-    error: userBootstrapErr,
-    index: new BN(userBootstrapIndex),
-  });
-
-  expect(userAssetMetaError.method).toContain(expectedError);
+  expect(BootstrapError.method).toContain(expectedError);
 }
 
 beforeAll(async () => {
@@ -118,41 +107,13 @@ beforeAll(async () => {
 });
 
 beforeEach(async () => {
-  const api = getApi();
-  await setupApi();
-
   testUser1 = new User(keyring);
 
   [testUser1] = setupUsers();
 
-  const bootstrapCurrencyIssue = await sudoIssueAsset(
-    sudo.keyRingPair,
-    toBN("1", 20),
-    sudo.keyRingPair.address
-  );
-  const bootstrapEventResult = await getEventResultFromMangataTx(
-    bootstrapCurrencyIssue,
-    ["tokens", "Issued", sudo.keyRingPair.address]
-  );
-  const bootstrapAssetId = bootstrapEventResult.data[0].split(",").join("");
-  bootstrapCurrency = new BN(bootstrapAssetId);
+  bootstrapCurrency = await createNewBootstrapToken(sudo);
 
-  // check that system is ready to bootstrap
-  bootstrapPhase = await api.query.bootstrap.phase();
-  if (bootstrapPhase.toString() === "Finished") {
-    const bootstrapFinalize = await finalizeBootstrap(sudo);
-    eventResponse = getEventResultFromMangataTx(bootstrapFinalize);
-    expect(eventResponse.state).toEqual(ExtrinsicResult.ExtrinsicSuccess);
-  }
-
-  bootstrapPhase = await api.query.bootstrap.phase();
-  expect(bootstrapPhase.toString()).toEqual("BeforeStart");
-
-  await Sudo.batchAsSudoFinalized(
-    Assets.mintToken(bootstrapCurrency, testUser1),
-    Assets.mintToken(bootstrapCurrency, sudo),
-    Assets.mintNative(testUser1)
-  );
+  await setupBootstrapTokensBalance(bootstrapCurrency, sudo, testUser1);
 });
 
 test("bootstrap - Check that we can change promotion bootstrap on each stage before finish", async () => {
@@ -164,37 +125,37 @@ test("bootstrap - Check that we can change promotion bootstrap on each stage bef
     sudo,
     MGA_ASSET_ID,
     bootstrapCurrency,
-    waitingPeriod1,
+    waitingPeriodWithPlan,
     bootstrapPeriod,
     whitelistPeriod
   );
-  await checkBootstrapEvent(scheduleBootstrapBefPlan);
+  await checkSudoOperataionSuccess(scheduleBootstrapBefPlan);
 
   checkingUpdatingPool = await changePromoteBootstrapPool(sudo);
-  await checkBootstrapEvent(checkingUpdatingPool);
+  await checkSudoOperataionSuccess(checkingUpdatingPool);
 
   const scheduleBootstrapAftPlan = await scheduleBootstrap(
     sudo,
     MGA_ASSET_ID,
     bootstrapCurrency,
-    waitingPeriod2,
+    waitingPeriodLessPlan,
     bootstrapPeriod,
     whitelistPeriod
   );
-  await checkBootstrapEvent(scheduleBootstrapAftPlan);
+  await checkSudoOperataionSuccess(scheduleBootstrapAftPlan);
 
   checkingUpdatingPool = await changePromoteBootstrapPool(sudo);
-  await checkBootstrapEvent(checkingUpdatingPool);
+  await checkSudoOperataionSuccess(checkingUpdatingPool);
 
-  await waitForBootstrapStatus("Whitelist", waitingPeriod2);
-
-  checkingUpdatingPool = await changePromoteBootstrapPool(sudo);
-  await checkBootstrapEvent(checkingUpdatingPool);
-
-  await waitForBootstrapStatus("Public", waitingPeriod2);
+  await waitForBootstrapStatus("Whitelist", waitingPeriodLessPlan);
 
   checkingUpdatingPool = await changePromoteBootstrapPool(sudo);
-  await checkBootstrapEvent(checkingUpdatingPool);
+  await checkSudoOperataionSuccess(checkingUpdatingPool);
+
+  await waitForBootstrapStatus("Public", waitingPeriodLessPlan);
+
+  checkingUpdatingPool = await changePromoteBootstrapPool(sudo);
+  await checkSudoOperataionSuccess(checkingUpdatingPool);
 
   const provisionPublicBootstrapCurrency = await provisionBootstrap(
     testUser1,
@@ -215,7 +176,7 @@ test("bootstrap - Check that we can change promotion bootstrap on each stage bef
   await waitForBootstrapStatus("Finished", bootstrapPeriod);
 
   checkingUpdatingPool = await changePromoteBootstrapPool(sudo);
-  await checkBootstrapError(checkingUpdatingPool, "BootstrapFinished");
+  await checkSudoOperataionFail(checkingUpdatingPool, "BootstrapFinished");
 
   bootstrapPool = await api.query.xyk.pools([MGA_ASSET_ID, bootstrapCurrency]);
   expect(bootstrapPool[0]).bnEqual(bootstrapAmount);
@@ -250,7 +211,7 @@ test("bootstrap - Check that we can change promotion bootstrap on each stage bef
   }
 
   const bootstrapFinalize = await finalizeBootstrap(sudo);
-  await checkBootstrapEvent(bootstrapFinalize);
+  await checkSudoOperataionSuccess(bootstrapFinalize);
 });
 
 afterEach(async () => {

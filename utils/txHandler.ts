@@ -3,7 +3,7 @@ import { getApi } from "./api";
 import { GenericEvent } from "@polkadot/types";
 import { Codec } from "@polkadot/types/types";
 import { KeyringPair } from "@polkadot/keyring/types";
-import { BN } from "@polkadot/util";
+import { BN, hexToU8a } from "@polkadot/util";
 import { SudoDB } from "./SudoDB";
 import { env } from "process";
 import { EventResult, ExtrinsicResult } from "./eventListeners";
@@ -154,6 +154,26 @@ export const getEventResultFromMangataTx = function (
   }
   return createEventResultfromExtrinsic(extrinsicResult as MangataGenericEvent);
 };
+
+export async function getEventErrorfromSudo(sudoEvent: MangataGenericEvent[]) {
+  const api = getApi();
+
+  const userBootstrapErr = hexToU8a(
+    //@ts-ignore
+    sudoEvent[0].event.data[0].asErr.value.error.toString()
+  );
+
+  const userBootstrapIndex =
+    //@ts-ignore
+    sudoEvent[0].event.data[0].asErr.value.index.toString();
+
+  const userAssetMetaError = api?.registry.findMetaError({
+    error: userBootstrapErr,
+    index: new BN(userBootstrapIndex),
+  });
+
+  return userAssetMetaError;
+}
 
 function createEventResultfromExtrinsic(extrinsicResult: MangataGenericEvent) {
   const eventResult = extrinsicResult.event.toHuman();
