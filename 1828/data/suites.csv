@@ -1,0 +1,2 @@
+"Status","Start Time","Stop Time","Duration in ms","Parent Suite","Suite","Sub Suite","Test Class","Test Method","Name","Description"
+"passed","Fri Nov 11 14:11:04 GMT 2022","Fri Nov 11 14:11:18 GMT 2022","13694","","test/ci/xyk-ci.validate.node.test.ts","","test/ci/xyk-ci.validate.node.test.ts","xyk-CI - Node is up and running","xyk-CI - Node is up and running",""
