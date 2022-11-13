@@ -18,6 +18,8 @@ import {
   mintLiquidityUsingVestingNativeTokens,
   reserveVestingLiquidityTokens,
   transferAll,
+  registerAsset,
+  updateAsset,
 } from "./tx";
 import { getEventResultFromMangataTx } from "./txHandler";
 import {
@@ -318,6 +320,72 @@ export class User {
       const newBalance = await fn();
       amount = newBalance;
     } while (amount.eq(amountBefore));
+  }
+
+  async registerAsset(
+    assetId: BN,
+    locMarker = assetId,
+    location = {
+      V1: {
+        parents: 1,
+        interior: {
+          X3: [
+            {
+              Parachain: 3210 + assetId.toNumber(),
+            },
+            {
+              GeneralKey: "0x00834",
+            },
+            {
+              PalletInstance: 10,
+            },
+          ],
+        },
+      },
+    }
+  ) {
+    const registerAssetInfo = await registerAsset(
+      this,
+      assetId,
+      location,
+      locMarker
+    );
+    return registerAssetInfo;
+  }
+
+  async updateAsset(
+    assetId: any,
+    additional = {
+      xcm: {
+        feePerSecond: 53760000000001,
+      },
+    },
+    location = {
+      V1: {
+        parents: 1,
+        interior: {
+          X3: [
+            {
+              Parachain: 3210 + assetId.toNumber(),
+            },
+            {
+              GeneralKey: "0x00834",
+            },
+            {
+              PalletInstance: 10,
+            },
+          ],
+        },
+      },
+    }
+  ) {
+    const registerAssetInfo = await updateAsset(
+      this,
+      assetId,
+      location,
+      additional
+    );
+    return registerAssetInfo;
   }
 }
 export class Asset {
