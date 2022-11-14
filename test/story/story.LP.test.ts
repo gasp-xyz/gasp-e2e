@@ -60,7 +60,7 @@ describe("Story tests > LP", () => {
       sudo
     );
     await testUser1.addMGATokens(sudo);
-    await sudo.mint(MGA_ASSET_ID, testUser2, defaultCurrecyValue);
+    await sudo.mint(MGA_ASSET_ID, testUser2, new BN("1000000000000000000000000"));
     await sudo.mint(token1, testUser2, defaultCurrecyValue);
     //TODO:swapFees
     if (Fees.swapFeesEnabled) {
