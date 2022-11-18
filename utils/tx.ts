@@ -1017,3 +1017,62 @@ export class FeeTxs {
     return buyAsset(account, soldAssetId, boughtAssetId, amount, maxAmountIn);
   }
 }
+
+export async function registerAsset(
+  sudoUser: User,
+  assetId: BN,
+  adressLocation: any,
+  locMarker: BN
+) {
+  const api = getApi();
+  const result = await signTx(
+    api,
+    api.tx.sudo.sudo(
+      api.tx.assetRegistry.registerAsset(
+        {
+          decimals: 12,
+          name: "TESTTOKEN-" + locMarker.toString(),
+          symbol: "TSTT" + locMarker.toString(),
+          existentialDeposit: 0,
+          location: adressLocation,
+        },
+        //@ts-ignore
+        assetId
+      )
+    ),
+    sudoUser.keyRingPair,
+    {
+      nonce: await getCurrentNonce(sudoUser.keyRingPair.address),
+    }
+  );
+  return result;
+}
+
+export async function updateAsset(
+  sudoUser: User,
+  assetId: any,
+  location: any,
+  additional: any
+) {
+  const api = getApi();
+  const result = await signTx(
+    api,
+    api.tx.sudo.sudo(
+      api.tx.assetRegistry.updateAsset(
+        assetId,
+        "12",
+        //@ts-ignore
+        api!.createType("Vec<u8>", "TESTUPDT-" + assetId.toString()),
+        api!.createType("Vec<u8>", "TSTUPD" + assetId.toString()),
+        "0",
+        location,
+        additional
+      )
+    ),
+    sudoUser.keyRingPair,
+    {
+      nonce: await getCurrentNonce(sudoUser.keyRingPair.address),
+    }
+  );
+  return result;
+}
