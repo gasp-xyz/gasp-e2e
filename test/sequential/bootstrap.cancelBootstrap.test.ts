@@ -13,7 +13,7 @@ import {
 import { Keyring } from "@polkadot/api";
 import { User } from "../../utils/User";
 import {
-  createNewBootstrapToken,
+  createNewBootstrapCurrency,
   setupBootstrapTokensBalance,
 } from "../../utils/Bootstrap";
 import {
@@ -87,7 +87,7 @@ beforeEach(async () => {
 
   [testUser1] = setupUsers();
 
-  bootstrapCurrency = await createNewBootstrapToken(sudo);
+  bootstrapCurrency = await createNewBootstrapCurrency(sudo);
 
   await setupBootstrapTokensBalance(bootstrapCurrency, sudo, testUser1);
 });

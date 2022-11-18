@@ -26,7 +26,7 @@ import {
   getEventErrorfromSudo,
 } from "../../utils/txHandler";
 import {
-  createNewBootstrapToken,
+  createNewBootstrapCurrency,
   setupBootstrapTokensBalance,
 } from "../../utils/Bootstrap";
 import { MGA_ASSET_ID } from "../../utils/Constants";
@@ -111,7 +111,7 @@ beforeEach(async () => {
 
   [testUser1] = setupUsers();
 
-  bootstrapCurrency = await createNewBootstrapToken(sudo);
+  bootstrapCurrency = await createNewBootstrapCurrency(sudo);
 
   await setupBootstrapTokensBalance(bootstrapCurrency, sudo, testUser1);
 });

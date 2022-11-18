@@ -14,7 +14,7 @@ import { Assets } from "./Assets";
 import { setupApi } from "./setup";
 import { Sudo } from "./sudo";
 
-export async function createNewBootstrapToken(sudoUser: User) {
+export async function createNewBootstrapCurrency(sudoUser: User) {
   const api = getApi();
   await setupApi();
 
@@ -32,21 +32,21 @@ export async function createNewBootstrapToken(sudoUser: User) {
   bootstrapPhase = await api.query.bootstrap.phase();
   expect(bootstrapPhase.toString()).toEqual("BeforeStart");
 
-  const issueNewBootstrapToken = await sudoIssueAsset(
+  const creatingBootstrapToken = await sudoIssueAsset(
     sudoUser.keyRingPair,
     toBN("1", 20),
     sudoUser.keyRingPair.address
   );
-  const issueBootstrapTokenResult = await getEventResultFromMangataTx(
-    issueNewBootstrapToken,
+  const creatingBootstrapTokenResult = await getEventResultFromMangataTx(
+    creatingBootstrapToken,
     ["tokens", "Issued", sudoUser.keyRingPair.address]
   );
-  const bootstrapAssetId = issueBootstrapTokenResult.data[0]
-    .split(",")
-    .join("");
-  const bootstrapTokenId = new BN(bootstrapAssetId);
 
-  return bootstrapTokenId;
+  const bootstrapCurrencyId = new BN(
+    creatingBootstrapTokenResult.data[0].split(",").join("")
+  );
+
+  return bootstrapCurrencyId;
 }
 
 export async function setupBootstrapTokensBalance(
