@@ -967,7 +967,7 @@ export async function cancelRunningBootstrap(sudoUser: User) {
 
 export async function updatePromoteBootstrapPool(
   sudoUser: User,
-  promoteBootstrapPoolFlag: bool
+  promoteBootstrapPoolFlag: boolean
 ) {
   const api = getApi();
   const result = await signTx(
