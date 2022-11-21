@@ -1,9 +1,3 @@
-/* eslint-disable jest/no-conditional-expect */
-/*
- *
- * @group bootstrap
- * @group sequential
- */
 import { getApi } from "./api";
 import { finalizeBootstrap } from "./tx";
 import { EventResult, ExtrinsicResult } from "./eventListeners";
@@ -55,7 +49,7 @@ export async function setupBootstrapTokensBalance(
   testUser1: User,
   testUser2 = testUser1
 ) {
-  if ((testUser1 = testUser2)) {
+  if (testUser1 === testUser2) {
     await Sudo.batchAsSudoFinalized(
       Assets.mintToken(bootstrapTokenId, testUser1),
       Assets.mintToken(bootstrapTokenId, sudoUser),

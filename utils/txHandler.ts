@@ -158,18 +158,18 @@ export const getEventResultFromMangataTx = function (
 export async function getEventErrorfromSudo(sudoEvent: MangataGenericEvent[]) {
   const api = getApi();
 
-  const userBootstrapErr = hexToU8a(
+  const eventErrorValue = hexToU8a(
     //@ts-ignore
     sudoEvent[0].event.data[0].asErr.value.error.toString()
   );
 
-  const userBootstrapIndex =
+  const eventErrorIndex =
     //@ts-ignore
     sudoEvent[0].event.data[0].asErr.value.index.toString();
 
   const userAssetMetaError = api?.registry.findMetaError({
-    error: userBootstrapErr,
-    index: new BN(userBootstrapIndex),
+    error: eventErrorValue,
+    index: new BN(eventErrorIndex),
   });
 
   return userAssetMetaError;
