@@ -47,20 +47,24 @@ export async function setupBootstrapTokensBalance(
   bootstrapTokenId: BN,
   sudoUser: User,
   testUser1: User,
-  testUser2 = testUser1
+  numberOfUsers = 1,
+  testUser2?: User
 ) {
-  if (testUser1 === testUser2) {
+  if (numberOfUsers === 1) {
     await Sudo.batchAsSudoFinalized(
       Assets.mintToken(bootstrapTokenId, testUser1),
       Assets.mintToken(bootstrapTokenId, sudoUser),
       Assets.mintNative(testUser1)
     );
-  } else {
+  }
+  if (numberOfUsers === 2) {
     await Sudo.batchAsSudoFinalized(
       Assets.mintToken(bootstrapTokenId, testUser1),
+      //@ts-ignore
       Assets.mintToken(bootstrapTokenId, testUser2),
       Assets.mintToken(bootstrapTokenId, sudoUser),
       Assets.mintNative(testUser1),
+      //@ts-ignore
       Assets.mintNative(testUser2)
     );
   }
