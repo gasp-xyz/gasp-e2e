@@ -4,16 +4,22 @@
  * @group asset
  * @group parallel
  */
-import { getApi, initApi } from "../../utils/api";
-import { getEnvironmentRequiredVars } from "../../utils/utils";
+import { getApi } from "../../utils/api";
+import { getEnvironmentRequiredVars, xykErrors } from "../../utils/utils";
 import { User } from "../../utils/User";
 import { Keyring } from "@polkadot/api";
 import { Assets } from "../../utils/Assets";
-import { ExtrinsicResult } from "../../utils/eventListeners";
+import {
+  ExtrinsicResult,
+  findEventData,
+  signSendFinalized,
+} from "../../utils/eventListeners";
 import { getEventResultFromMangataTx } from "../../utils/txHandler";
 import { BN, hexToU8a } from "@polkadot/util";
-import { MangataGenericEvent } from "@mangata-finance/sdk";
+import { BN_ONE, BN_ZERO, MangataGenericEvent } from "@mangata-finance/sdk";
 import { getNextAssetId } from "../../utils/tx";
+import { Xyk } from "../../utils/xyk";
+import { setupApi } from "../../utils/setup";
 
 const { sudo: sudoUserName } = getEnvironmentRequiredVars();
 jest.setTimeout(1500000);
@@ -80,7 +86,7 @@ async function findAssetError(userRegisterNewAsset: MangataGenericEvent[]) {
 }
 
 beforeAll(async () => {
-  await initApi();
+  await setupApi();
 });
 
 beforeEach(async () => {
@@ -220,4 +226,33 @@ test.skip("register asset and then try to register new one with the same locatio
   const userAssetMetaError = await findAssetError(userRegisterNewAsset);
 
   expect(userAssetMetaError.method).toEqual("ConflictingLocation");
+});
+
+test("register asset with xyk disabled and try to create a pool, expect to fail", async () => {
+  const register = Assets.registerAsset(
+    "Disabled Xyk",
+    "Disabled Xyk",
+    10,
+    undefined,
+    undefined,
+    { operationsDisabled: true }
+  );
+  const result = await signSendFinalized(register, sudo);
+  // assetRegistry.RegisteredAsset [8,{"decimals":10,"name":"0x44697361626c65642058796b","symbol":"0x44697361626c65642058796b","existentialDeposit":0,"location":null,"additional":{"xcm":null,"xyk":{"operationsDisabled":true}}}]
+  const assetId = findEventData(
+    result,
+    "assetRegistry.RegisteredAsset"
+  ).assetId;
+
+  await expect(
+    signSendFinalized(
+      Xyk.createPool(assetId, BN_ONE, BN_ZERO, BN_ONE),
+      testUser1
+    )
+  ).rejects.toEqual(
+    expect.objectContaining({
+      state: ExtrinsicResult.ExtrinsicFailed,
+      data: xykErrors.FunctionNotAvailableForThisToken,
+    })
+  );
 });

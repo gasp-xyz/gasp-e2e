@@ -340,4 +340,5 @@ export enum xykErrors {
   SecondAssetAmountExceededExpectations = "SecondAssetAmountExceededExpectations",
   MathOverflow = "MathOverflow",
   LiquidityTokenCreationFailed = "LiquidityTokenCreationFailed",
+  FunctionNotAvailableForThisToken = "FunctionNotAvailableForThisToken",
 }
