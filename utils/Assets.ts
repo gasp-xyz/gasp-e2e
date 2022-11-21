@@ -1,6 +1,6 @@
 import { assert } from "console";
 import { BN } from "@polkadot/util";
-import { ExtrinsicResult, findEventData } from "./eventListeners";
+import { ExtrinsicResult } from "./eventListeners";
 import { getAssetSupply, getNextAssetId } from "./tx";
 import {
   getEventResultFromMangataTx,
@@ -8,7 +8,7 @@ import {
   sudoIssueAsset,
 } from "./txHandler";
 import { User } from "./User";
-import { BN_TEN, BN_THOUSAND, MangataGenericEvent } from "@mangata-finance/sdk";
+import { BN_TEN, BN_THOUSAND } from "@mangata-finance/sdk";
 import { api, Extrinsic } from "./setup";
 import { MGA_ASSET_ID } from "./Constants";
 import { Sudo } from "./sudo";
@@ -133,9 +133,71 @@ export class Assets {
     return api.tx.tokens.transferAll(target.keyRingPair.address, tokenId, true);
   }
 
-  static findTokenId(result: MangataGenericEvent[]): BN[] {
-    return findEventData(result, "tokens.Issued").map(
-      (data) => new BN(data[0])
+  static registerAsset(
+    name: string,
+    symbol: string,
+    decimals: number | BN,
+    // location?: MultiLocation,
+    location?: object,
+    xcmMetadata?: XcmMetadata,
+    xykMetadata?: XykMetadata,
+    assetId?: number | BN
+  ): Extrinsic {
+    return Sudo.sudo(
+      api.tx.assetRegistry.registerAsset(
+        {
+          decimals: decimals,
+          name: api.createType("Vec<u8>", name),
+          symbol: api.createType("Vec<u8>", symbol),
+          existentialDeposit: 0,
+          location: location ? { V1: location } : undefined,
+          additional: {
+            xcm: xcmMetadata,
+            xyk: xykMetadata,
+          },
+        },
+        // @ts-ignore
+        assetId
+      )
     );
   }
+
+  static updateAsset(assetId: number, update: UpdateAsset): Extrinsic {
+    return Sudo.sudo(
+      api.tx.assetRegistry.updateAsset(
+        assetId,
+        // @ts-ignore
+        update.decimals,
+        api.createType("Vec<u8>", update.name),
+        api.createType("Vec<u8>", update.symbol),
+        0,
+        update.location
+          ? { V1: update.location }
+          : api.createType("Vec<u8>", "0x0100"),
+        update.metadata
+      )
+    );
+  }
+}
+
+interface Metadata {
+  xcm: XcmMetadata;
+  xyk: XykMetadata;
+}
+
+interface XcmMetadata {
+  feePerSecond: number;
+}
+
+interface XykMetadata {
+  operationsDisabled: boolean;
+}
+
+interface UpdateAsset {
+  name?: string;
+  symbol?: string;
+  decimals?: number;
+  // location?: MultiLocation,
+  location?: object;
+  metadata?: Metadata;
 }

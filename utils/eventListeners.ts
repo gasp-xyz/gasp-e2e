@@ -119,11 +119,15 @@ export const signSendFinalized = async (
     });
 };
 
-export function findEventData(
+export function filterEventData(
   result: MangataGenericEvent[],
   method: string
 ): any[] {
   return result
     .filter((event) => `${event.section}.${event.method}` === method)
     .map((event) => event.event.toHuman().data);
+}
+
+export function findEventData(result: MangataGenericEvent[], method: string) {
+  return filterEventData(result, method)[0];
 }
