@@ -11,7 +11,6 @@ import { testLog } from "./Logger";
 import { User } from "./User";
 import { MangataGenericEvent, signTx } from "@mangata-finance/sdk";
 import { AccountId32 } from "@polkadot/types/interfaces";
-import { Assets } from "./Assets";
 
 //let wait 7 blocks - 6000 * 7 = 42000; depends on the number of workers.
 
@@ -216,13 +215,14 @@ export async function setAssetInfo(
   return await signTx(
     api,
     api.tx.sudo.sudo(
-      Assets.registerAsset(
-        name,
-        symbol,
-        decimals,
-        undefined,
-        undefined,
-        undefined,
+      api.tx.assetRegistry.registerAsset(
+        {
+          decimals: decimals,
+          name: api.createType("Vec<u8>", name),
+          symbol: api.createType("Vec<u8>", symbol),
+          existentialDeposit: 0,
+        },
+        // @ts-ignore, todo remove after sdk update
         id
       )
     ),
