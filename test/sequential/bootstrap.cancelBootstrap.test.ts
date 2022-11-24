@@ -13,6 +13,7 @@ import {
 import { Keyring } from "@polkadot/api";
 import { User } from "../../utils/User";
 import {
+  checkBootstrapConditions,
   createNewBootstrapCurrency,
   setupBootstrapTokensBalance,
 } from "../../utils/Bootstrap";
@@ -33,7 +34,6 @@ process.env.NODE_ENV = "test";
 let testUser1: User;
 let sudo: User;
 let keyring: Keyring;
-let bootstrapPhase: any;
 let bootstrapCurrency: any;
 let cancelBootstrapEvent: MangataGenericEvent[];
 
@@ -61,11 +61,7 @@ async function checkSudoOperataionFail(
   checkingEvent: MangataGenericEvent[],
   expectedError: string
 ) {
-  const filterBootstrapEvent = checkingEvent.filter(
-    (extrinsicResult) => extrinsicResult.method === "Sudid"
-  );
-
-  const BootstrapError = await getEventErrorfromSudo(filterBootstrapEvent);
+  const BootstrapError = await getEventErrorfromSudo(checkingEvent);
 
   expect(BootstrapError.method).toContain(expectedError);
 }
@@ -83,10 +79,9 @@ beforeAll(async () => {
 });
 
 beforeEach(async () => {
-  testUser1 = new User(keyring);
-
   [testUser1] = setupUsers();
 
+  await checkBootstrapConditions(sudo);
   bootstrapCurrency = await createNewBootstrapCurrency(sudo);
 
   await setupBootstrapTokensBalance(bootstrapCurrency, sudo, testUser1);
@@ -144,11 +139,4 @@ test("bootstrap - Check that we can not cancel bootstrap when bootstrap event al
   // finalaze bootstrap
   const bootstrapFinalize = await finalizeBootstrap(sudo);
   await checkSudoOperataionSuccess(bootstrapFinalize);
-});
-
-afterEach(async () => {
-  const api = getApi();
-
-  bootstrapPhase = await api.query.bootstrap.phase();
-  expect(bootstrapPhase.toString()).toEqual("BeforeStart");
 });

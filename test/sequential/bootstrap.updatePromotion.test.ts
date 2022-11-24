@@ -26,6 +26,7 @@ import {
   getEventErrorfromSudo,
 } from "../../utils/txHandler";
 import {
+  checkBootstrapConditions,
   createNewBootstrapCurrency,
   setupBootstrapTokensBalance,
 } from "../../utils/Bootstrap";
@@ -111,6 +112,7 @@ beforeEach(async () => {
 
   [testUser1] = setupUsers();
 
+  await checkBootstrapConditions(sudo);
   bootstrapCurrency = await createNewBootstrapCurrency(sudo);
 
   await setupBootstrapTokensBalance(bootstrapCurrency, sudo, testUser1);
