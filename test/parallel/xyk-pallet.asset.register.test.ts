@@ -16,9 +16,9 @@ import {
 } from "../../utils/eventListeners";
 import { getEventResultFromMangataTx } from "../../utils/txHandler";
 import { BN, hexToU8a } from "@polkadot/util";
-import { BN_ONE, MangataGenericEvent } from "@mangata-finance/sdk";
+import { BN_ONE, BN_TEN, MangataGenericEvent } from "@mangata-finance/sdk";
 import { getNextAssetId } from "../../utils/tx";
-import { setupApi } from "../../utils/setup";
+import { setupApi, setupUsers } from "../../utils/setup";
 import { Xyk } from "../../utils/xyk";
 import { MGA_ASSET_ID } from "../../utils/Constants";
 
@@ -88,6 +88,7 @@ async function findAssetError(userRegisterNewAsset: MangataGenericEvent[]) {
 
 beforeAll(async () => {
   await setupApi();
+  setupUsers();
 });
 
 beforeEach(async () => {
@@ -268,21 +269,16 @@ test("register asset with xyk undefined and try to create a pool, expect success
     undefined
   );
   const result = await signSendFinalized(register, sudo);
-  // assetRegistry.RegisteredAsset [8,{"decimals":10,"name":"0x44697361626c65642058796b","symbol":"0x44697361626c65642058796b","existentialDeposit":0,"location":null,"additional":{"xcm":null,"xyk":{"operationsDisabled":true}}}]
   const assetId = findEventData(
     result,
     "assetRegistry.RegisteredAsset"
   ).assetId;
 
-  await expect(
-    signSendFinalized(
-      Xyk.createPool(assetId, BN_ONE, MGA_ASSET_ID, BN_ONE),
-      testUser1
-    )
-  ).resolves.toEqual(
-    expect.objectContaining({
-      state: ExtrinsicResult.ExtrinsicSuccess,
-    })
+  await signSendFinalized(Assets.mintToken(assetId, testUser1, BN_TEN), sudo);
+
+  await signSendFinalized(
+    Xyk.createPool(assetId, BN_ONE, MGA_ASSET_ID, BN_ONE),
+    testUser1
   );
 });
 
@@ -296,20 +292,15 @@ test("register asset with xyk enabled and try to create a pool, expect success",
     { operationsDisabled: false }
   );
   const result = await signSendFinalized(register, sudo);
-  // assetRegistry.RegisteredAsset [8,{"decimals":10,"name":"0x44697361626c65642058796b","symbol":"0x44697361626c65642058796b","existentialDeposit":0,"location":null,"additional":{"xcm":null,"xyk":{"operationsDisabled":true}}}]
   const assetId = findEventData(
     result,
     "assetRegistry.RegisteredAsset"
   ).assetId;
 
-  await expect(
-    signSendFinalized(
-      Xyk.createPool(assetId, BN_ONE, MGA_ASSET_ID, BN_ONE),
-      testUser1
-    )
-  ).resolves.toEqual(
-    expect.objectContaining({
-      state: ExtrinsicResult.ExtrinsicSuccess,
-    })
+  await signSendFinalized(Assets.mintToken(assetId, testUser1, BN_TEN), sudo);
+
+  await signSendFinalized(
+    Xyk.createPool(assetId, BN_ONE, MGA_ASSET_ID, BN_ONE),
+    testUser1
   );
 });
