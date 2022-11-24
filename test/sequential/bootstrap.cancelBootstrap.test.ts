@@ -102,7 +102,7 @@ test("bootstrap - Check that we can cancel bootstrap before planned", async () =
   await checkSudoOperataionSuccess(cancelBootstrapEvent);
 });
 
-test("bootstrap - Check that we can not cancel bootstrap when bootstrap event already planned or started", async () => {
+test("bootstrap - Check that we can not  cancel bootstrap when bootstrap event already planned or started", async () => {
   const scheduleBootstrapEvent = await scheduleBootstrap(
     sudo,
     MGA_ASSET_ID,
