@@ -17,7 +17,6 @@ import {
   EventResult,
   ExtrinsicResult,
   findEventData,
-  signSendFinalized,
 } from "../../utils/eventListeners";
 import {
   claimRewardsBootstrap,
@@ -31,6 +30,7 @@ import { BN } from "@polkadot/util";
 import { MangataGenericEvent, signTx, toBN } from "@mangata-finance/sdk";
 import { MGA_ASSET_ID } from "../../utils/Constants";
 import { setupApi } from "../../utils/setup";
+import { Sudo } from "../../utils/sudo";
 
 const { sudo: sudoUserName } = getEnvironmentRequiredVars();
 const waitingPeriod = 12;
@@ -124,8 +124,7 @@ test("register asset with xyk disabled and try to schedule bootstrap, expect to 
     undefined,
     { operationsDisabled: true }
   );
-  const result = await signSendFinalized(register, sudo);
-  // assetRegistry.RegisteredAsset [8,{"decimals":10,"name":"0x44697361626c65642058796b","symbol":"0x44697361626c65642058796b","existentialDeposit":0,"location":null,"additional":{"xcm":null,"xyk":{"operationsDisabled":true}}}]
+  const result = await Sudo.asSudoFinalized(register);
   const assetId = findEventData(
     result,
     "assetRegistry.RegisteredAsset"
@@ -143,7 +142,7 @@ test("register asset with xyk enabled and try to schedule bootstrap, expect to s
     undefined,
     { operationsDisabled: false }
   );
-  const result = await signSendFinalized(register, sudo);
+  const result = await Sudo.asSudoFinalized(register);
   // assetRegistry.RegisteredAsset [8,{"decimals":10,"name":"0x44697361626c65642058796b","symbol":"0x44697361626c65642058796b","existentialDeposit":0,"location":null,"additional":{"xcm":null,"xyk":{"operationsDisabled":true}}}]
   const assetId = findEventData(
     result,
@@ -175,7 +174,7 @@ test("try to schedule bootstrap for token when does not have AssetRegistry, expe
 
 test("register asset without asset metadata  and try to schedule bootstrap, expect to success", async () => {
   const register = Assets.registerAsset("Without Meta", "Without Meta", 10);
-  const result = await signSendFinalized(register, sudo);
+  const result = await Sudo.asSudoFinalized(register);
   // assetRegistry.RegisteredAsset [8,{"decimals":10,"name":"0x44697361626c65642058796b","symbol":"0x44697361626c65642058796b","existentialDeposit":0,"location":null,"additional":{"xcm":null,"xyk":{"operationsDisabled":true}}}]
   const assetId = findEventData(
     result,

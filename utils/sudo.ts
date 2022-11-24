@@ -25,4 +25,11 @@ export class Sudo {
     );
     return signSendFinalized(api.tx.utility.batchAll(txs), sudo, nonce);
   }
+
+  static async asSudoFinalized(tx: Extrinsic): Promise<MangataGenericEvent[]> {
+    const nonce = await SudoDB.getInstance().getSudoNonce(
+      sudo.keyRingPair.address
+    );
+    return signSendFinalized(tx, sudo, nonce);
+  }
 }

@@ -21,6 +21,7 @@ import { getNextAssetId } from "../../utils/tx";
 import { setupApi, setupUsers } from "../../utils/setup";
 import { Xyk } from "../../utils/xyk";
 import { MGA_ASSET_ID } from "../../utils/Constants";
+import { Sudo } from "../../utils/sudo";
 
 const { sudo: sudoUserName } = getEnvironmentRequiredVars();
 jest.setTimeout(1500000);
@@ -239,7 +240,7 @@ test("register asset with xyk disabled and try to create a pool, expect to fail"
     undefined,
     { operationsDisabled: true }
   );
-  const result = await signSendFinalized(register, sudo);
+  const result = await Sudo.asSudoFinalized(register);
   // assetRegistry.RegisteredAsset [8,{"decimals":10,"name":"0x44697361626c65642058796b","symbol":"0x44697361626c65642058796b","existentialDeposit":0,"location":null,"additional":{"xcm":null,"xyk":{"operationsDisabled":true}}}]
   const assetId = findEventData(
     result,
@@ -268,13 +269,13 @@ test("register asset with xyk undefined and try to create a pool, expect success
     undefined,
     undefined
   );
-  const result = await signSendFinalized(register, sudo);
+  const result = await Sudo.asSudoFinalized(register);
   const assetId = findEventData(
     result,
     "assetRegistry.RegisteredAsset"
   ).assetId;
 
-  await signSendFinalized(Assets.mintToken(assetId, testUser1, BN_TEN), sudo);
+  await Sudo.asSudoFinalized(Assets.mintToken(assetId, testUser1, BN_TEN));
 
   await signSendFinalized(
     Xyk.createPool(assetId, BN_ONE, MGA_ASSET_ID, BN_ONE),
@@ -291,13 +292,13 @@ test("register asset with xyk enabled and try to create a pool, expect success",
     undefined,
     { operationsDisabled: false }
   );
-  const result = await signSendFinalized(register, sudo);
+  const result = await Sudo.asSudoFinalized(register);
   const assetId = findEventData(
     result,
     "assetRegistry.RegisteredAsset"
   ).assetId;
 
-  await signSendFinalized(Assets.mintToken(assetId, testUser1, BN_TEN), sudo);
+  await Sudo.asSudoFinalized(Assets.mintToken(assetId, testUser1, BN_TEN));
 
   await signSendFinalized(
     Xyk.createPool(assetId, BN_ONE, MGA_ASSET_ID, BN_ONE),
