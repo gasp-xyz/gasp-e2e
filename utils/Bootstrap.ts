@@ -1,6 +1,6 @@
 import { getApi } from "./api";
 import { finalizeBootstrap } from "./tx";
-import { EventResult, ExtrinsicResult } from "./eventListeners";
+import { ExtrinsicResult } from "./eventListeners";
 import { User } from "./User";
 import { getEventResultFromMangataTx, sudoIssueAsset } from "./txHandler";
 import { BN, toBN } from "@mangata-finance/sdk";
@@ -8,24 +8,25 @@ import { Assets } from "./Assets";
 import { setupApi } from "./setup";
 import { Sudo } from "./sudo";
 
-export async function createNewBootstrapCurrency(sudoUser: User) {
+export async function checkBootstrapConditions(sudoUser: User) {
   const api = getApi();
   await setupApi();
 
   let bootstrapPhase: any;
-  let eventResponse: EventResult;
 
   // check that system is ready to bootstrap
   bootstrapPhase = await api.query.bootstrap.phase();
   if (bootstrapPhase.toString() === "Finished") {
     const bootstrapFinalize = await finalizeBootstrap(sudoUser);
-    eventResponse = getEventResultFromMangataTx(bootstrapFinalize);
+    const eventResponse = getEventResultFromMangataTx(bootstrapFinalize);
     expect(eventResponse.state).toEqual(ExtrinsicResult.ExtrinsicSuccess);
   }
 
   bootstrapPhase = await api.query.bootstrap.phase();
   expect(bootstrapPhase.toString()).toEqual("BeforeStart");
+}
 
+export async function createNewBootstrapCurrency(sudoUser: User) {
   const creatingBootstrapToken = await sudoIssueAsset(
     sudoUser.keyRingPair,
     toBN("1", 20),

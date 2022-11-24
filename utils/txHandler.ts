@@ -158,21 +158,29 @@ export const getEventResultFromMangataTx = function (
 export async function getEventErrorfromSudo(sudoEvent: MangataGenericEvent[]) {
   const api = getApi();
 
+  const filteredEvent = sudoEvent.filter(
+    (extrinsicResult) => extrinsicResult.method === "Sudid"
+  );
+
+  if (filteredEvent[1] !== undefined) {
+    testLog.getLog().warn("WARN: Recevied more than one errors");
+    //throw new Error("  --- TX Mapping issue --- ");
+  }
+
   const eventErrorValue = hexToU8a(
     //@ts-ignore
-    sudoEvent[0].event.data[0].asErr.value.error.toString()
+    filteredEvent[0].event.data[0].asErr.value.error.toString()
   );
 
   const eventErrorIndex =
     //@ts-ignore
-    sudoEvent[0].event.data[0].asErr.value.index.toString();
+    filteredEvent[0].event.data[0].asErr.value.index.toString();
 
-  const userAssetMetaError = api?.registry.findMetaError({
+  const sudoEventError = api?.registry.findMetaError({
     error: eventErrorValue,
     index: new BN(eventErrorIndex),
   });
-
-  return userAssetMetaError;
+  return sudoEventError;
 }
 
 function createEventResultfromExtrinsic(extrinsicResult: MangataGenericEvent) {
