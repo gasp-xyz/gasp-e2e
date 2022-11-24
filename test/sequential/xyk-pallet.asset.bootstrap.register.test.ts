@@ -8,7 +8,6 @@
 import { getApi } from "../../utils/api";
 import {
   getEnvironmentRequiredVars,
-  xykErrors,
   waitForBootstrapStatus,
 } from "../../utils/utils";
 import { User } from "../../utils/User";
@@ -21,17 +20,16 @@ import {
   signSendFinalized,
 } from "../../utils/eventListeners";
 import {
-  scheduleBootstrap,
-  finalizeBootstrap,
-  provisionBootstrap,
   claimRewardsBootstrap,
+  finalizeBootstrap,
   getCurrentNonce,
+  provisionBootstrap,
+  scheduleBootstrap,
 } from "../../utils/tx";
 import { getEventResultFromMangataTx } from "../../utils/txHandler";
 import { BN } from "@polkadot/util";
-import { toBN, MangataGenericEvent, signTx } from "@mangata-finance/sdk";
+import { MangataGenericEvent, signTx, toBN } from "@mangata-finance/sdk";
 import { MGA_ASSET_ID } from "../../utils/Constants";
-import { Xyk } from "../../utils/xyk";
 import { setupApi } from "../../utils/setup";
 
 const { sudo: sudoUserName } = getEnvironmentRequiredVars();
@@ -117,35 +115,6 @@ beforeEach(async () => {
   await testUser1.addMGATokens(sudo);
 });
 
-test("register asset with xyk disabled and try to create a pool, expect to fail", async () => {
-  const register = Assets.registerAsset(
-    "Disabled Xyk",
-    "Disabled Xyk",
-    10,
-    undefined,
-    undefined,
-    { operationsDisabled: true }
-  );
-  const result = await signSendFinalized(register, sudo);
-  // assetRegistry.RegisteredAsset [8,{"decimals":10,"name":"0x44697361626c65642058796b","symbol":"0x44697361626c65642058796b","existentialDeposit":0,"location":null,"additional":{"xcm":null,"xyk":{"operationsDisabled":true}}}]
-  const assetId = findEventData(
-    result,
-    "assetRegistry.RegisteredAsset"
-  ).assetId;
-
-  await expect(
-    signSendFinalized(
-      Xyk.createPool(assetId, poolAssetAmount, MGA_ASSET_ID, poolAssetAmount),
-      testUser1
-    )
-  ).rejects.toEqual(
-    expect.objectContaining({
-      state: ExtrinsicResult.ExtrinsicFailed,
-      data: xykErrors.FunctionNotAvailableForThisToken,
-    })
-  );
-});
-
 test("register asset with xyk disabled and try to schedule bootstrap, expect to success", async () => {
   const register = Assets.registerAsset(
     "Disabled Xyk",
@@ -163,33 +132,6 @@ test("register asset with xyk disabled and try to schedule bootstrap, expect to 
   ).assetId;
 
   await runBootstrap(assetId);
-});
-
-test("register asset with xyk enabled and try to create a pool, expect to success", async () => {
-  const register = Assets.registerAsset(
-    "Enabled Xyk",
-    "Enabled Xyk",
-    10,
-    undefined,
-    undefined,
-    { operationsDisabled: false }
-  );
-  const result = await signSendFinalized(register, sudo);
-  // assetRegistry.RegisteredAsset [8,{"decimals":10,"name":"0x44697361626c65642058796b","symbol":"0x44697361626c65642058796b","existentialDeposit":0,"location":null,"additional":{"xcm":null,"xyk":{"operationsDisabled":true}}}]
-  const assetId = findEventData(
-    result,
-    "assetRegistry.RegisteredAsset"
-  ).assetId;
-
-  await sudo.mint(assetId, testUser1, toBN("1", 13));
-
-  await signSendFinalized(
-    Xyk.createPool(assetId, poolAssetAmount, MGA_ASSET_ID, poolAssetAmount),
-    testUser1
-  ).then((result) => {
-    eventResponse = getEventResultFromMangataTx(result);
-    expect(eventResponse.state).toEqual(ExtrinsicResult.ExtrinsicSuccess);
-  });
 });
 
 test("register asset with xyk enabled and try to schedule bootstrap, expect to success", async () => {
@@ -211,32 +153,6 @@ test("register asset with xyk enabled and try to schedule bootstrap, expect to s
   await runBootstrap(assetId);
 });
 
-test("try to create a pool for token when does not have AssetRegistry, expect to success", async () => {
-  const api = getApi();
-
-  const result = await signTx(
-    api,
-    api.tx.sudo.sudo(
-      api.tx.tokens.create(testUser1.keyRingPair.address, toBN("1", 13))
-    ),
-    sudo.keyRingPair,
-    {
-      nonce: await getCurrentNonce(sudo.keyRingPair.address),
-    }
-  );
-
-  //@ts-ignore
-  const assetId = result[0].event.toHuman().data.currencyId;
-
-  await signSendFinalized(
-    Xyk.createPool(assetId, poolAssetAmount, MGA_ASSET_ID, poolAssetAmount),
-    testUser1
-  ).then((result) => {
-    eventResponse = getEventResultFromMangataTx(result);
-    expect(eventResponse.state).toEqual(ExtrinsicResult.ExtrinsicSuccess);
-  });
-});
-
 test("try to schedule bootstrap for token when does not have AssetRegistry, expect to success", async () => {
   const api = getApi();
 
@@ -255,26 +171,6 @@ test("try to schedule bootstrap for token when does not have AssetRegistry, expe
   const assetId = result[0].event.toHuman().data.currencyId;
 
   await runBootstrap(assetId);
-});
-
-test("register asset without asset metadata and try to create a pool, expect to success", async () => {
-  const register = Assets.registerAsset("Without Meta", "Without Meta", 10);
-  const result = await signSendFinalized(register, sudo);
-  // assetRegistry.RegisteredAsset [8,{"decimals":10,"name":"0x44697361626c65642058796b","symbol":"0x44697361626c65642058796b","existentialDeposit":0,"location":null,"additional":{"xcm":null,"xyk":{"operationsDisabled":true}}}]
-  const assetId = findEventData(
-    result,
-    "assetRegistry.RegisteredAsset"
-  ).assetId;
-
-  await sudo.mint(assetId, testUser1, toBN("1", 13));
-
-  await signSendFinalized(
-    Xyk.createPool(assetId, poolAssetAmount, MGA_ASSET_ID, poolAssetAmount),
-    testUser1
-  ).then((result) => {
-    eventResponse = getEventResultFromMangataTx(result);
-    expect(eventResponse.state).toEqual(ExtrinsicResult.ExtrinsicSuccess);
-  });
 });
 
 test("register asset without asset metadata  and try to schedule bootstrap, expect to success", async () => {
