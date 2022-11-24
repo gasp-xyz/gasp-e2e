@@ -49,7 +49,6 @@
     "init-test": "rm nonce.db; rm sudo.lock;",
     "test": "jest",
     "test-parallel": "export JEST_HTML_REPORTERS_PUBLIC_PATH=reports/html-report-parallel;rm nonce.db ; rm sudo.lock; jest --verbose --ci --group=parallel",
-    "test-mat": "export JEST_HTML_REPORTERS_PUBLIC_PATH=reports/html-report-parallel;rm nonce.db ; rm sudo.lock; jest --verbose --ci --group=parallel ./test/parallel/xyk-pallet.API.overflow.test.ts",
     "test-parallel-files": "export JEST_HTML_REPORTERS_PUBLIC_PATH=reports/html-report-parallel;rm nonce.db ; rm sudo.lock; jest --verbose --ci ",
     "test-playground-pararell": "rm nonce.db ; rm sudo.lock; jest test/exploratory/parallelTesting/transfer/* --verbose",
     "test-cluster": "rm nonce.db; rm sudo.lock; jest --verbose --group=cluster",
