@@ -21,13 +21,12 @@ import {
 import {
   claimRewardsBootstrap,
   finalizeBootstrap,
-  getCurrentNonce,
   provisionBootstrap,
   scheduleBootstrap,
 } from "../../utils/tx";
 import { getEventResultFromMangataTx } from "../../utils/txHandler";
 import { BN } from "@polkadot/util";
-import { MangataGenericEvent, signTx, toBN } from "@mangata-finance/sdk";
+import { BN_ONE, MangataGenericEvent, toBN } from "@mangata-finance/sdk";
 import { MGA_ASSET_ID } from "../../utils/Constants";
 import { setupApi } from "../../utils/setup";
 import { Sudo } from "../../utils/sudo";
@@ -153,23 +152,14 @@ test("register asset with xyk enabled and try to schedule bootstrap, expect to s
 });
 
 test("try to schedule bootstrap for token when does not have AssetRegistry, expect to success", async () => {
-  const api = getApi();
-
-  const result = await signTx(
-    api,
-    api.tx.sudo.sudo(
-      api.tx.tokens.create(testUser1.keyRingPair.address, toBN("1", 13))
-    ),
-    sudo.keyRingPair,
-    {
-      nonce: await getCurrentNonce(sudo.keyRingPair.address),
-    }
+  const assetId = await Assets.setupUserWithCurrencies(
+    testUser1,
+    [BN_ONE],
+    sudo,
+    true
   );
 
-  //@ts-ignore
-  const assetId = result[0].event.toHuman().data.currencyId;
-
-  await runBootstrap(assetId);
+  await runBootstrap(assetId[0]);
 });
 
 test("register asset without asset metadata  and try to schedule bootstrap, expect to success", async () => {
