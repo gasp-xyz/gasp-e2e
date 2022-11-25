@@ -47,26 +47,14 @@ export async function createNewBootstrapCurrency(sudoUser: User) {
 export async function setupBootstrapTokensBalance(
   bootstrapTokenId: BN,
   sudoUser: User,
-  testUser1: User,
-  numberOfUsers = 1,
-  testUser2?: User
+  testUser: User[]
 ) {
-  if (numberOfUsers === 1) {
-    await Sudo.batchAsSudoFinalized(
-      Assets.mintToken(bootstrapTokenId, testUser1),
-      Assets.mintToken(bootstrapTokenId, sudoUser),
-      Assets.mintNative(testUser1)
-    );
-  }
-  if (numberOfUsers === 2) {
-    await Sudo.batchAsSudoFinalized(
-      Assets.mintToken(bootstrapTokenId, testUser1),
-      //@ts-ignore
-      Assets.mintToken(bootstrapTokenId, testUser2),
-      Assets.mintToken(bootstrapTokenId, sudoUser),
-      Assets.mintNative(testUser1),
-      //@ts-ignore
-      Assets.mintNative(testUser2)
-    );
-  }
+  const extrinsicCall = [Assets.mintToken(bootstrapTokenId, sudoUser)];
+  testUser.forEach(async (userId) =>
+    extrinsicCall.push(Assets.mintToken(bootstrapTokenId, userId))
+  );
+  testUser.forEach(async (userId) =>
+    extrinsicCall.push(Assets.mintNative(userId))
+  );
+  await Sudo.batchAsSudoFinalized(...extrinsicCall);
 }

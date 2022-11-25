@@ -115,7 +115,7 @@ beforeEach(async () => {
   await checkBootstrapConditions(sudo);
   bootstrapCurrency = await createNewBootstrapCurrency(sudo);
 
-  await setupBootstrapTokensBalance(bootstrapCurrency, sudo, testUser1);
+  await setupBootstrapTokensBalance(bootstrapCurrency, sudo, [testUser1]);
 });
 
 test("bootstrap - Check that we can change promotion bootstrap on each stage before finish", async () => {

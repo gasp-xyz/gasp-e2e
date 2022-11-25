@@ -168,13 +168,12 @@ export async function getEventErrorfromSudo(sudoEvent: MangataGenericEvent[]) {
   }
 
   const eventErrorValue = hexToU8a(
-    //@ts-ignore
-    filteredEvent[0].event.data[0].asErr.value.error.toString()
+    JSON.parse(JSON.stringify(filteredEvent[0].event.data[0])).err.module.error
   );
 
-  const eventErrorIndex =
-    //@ts-ignore
-    filteredEvent[0].event.data[0].asErr.value.index.toString();
+  const eventErrorIndex = JSON.parse(
+    JSON.stringify(filteredEvent[0].event.data[0])
+  ).err.module.index;
 
   const sudoEventError = api?.registry.findMetaError({
     error: eventErrorValue,
