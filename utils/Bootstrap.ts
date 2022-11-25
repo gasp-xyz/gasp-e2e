@@ -8,7 +8,7 @@ import { Assets } from "./Assets";
 import { setupApi } from "./setup";
 import { Sudo } from "./sudo";
 
-export async function checkBootstrapConditions(sudoUser: User) {
+export async function checkLastBootstrapFinalized(sudoUser: User) {
   const api = getApi();
   await setupApi();
 
@@ -49,7 +49,10 @@ export async function setupBootstrapTokensBalance(
   sudoUser: User,
   testUser: User[]
 ) {
-  const extrinsicCall = [Assets.mintToken(bootstrapTokenId, sudoUser)];
+  const extrinsicCall = [
+    Assets.mintNative(sudoUser),
+    Assets.mintToken(bootstrapTokenId, sudoUser),
+  ];
   testUser.forEach(async (userId) =>
     extrinsicCall.push(Assets.mintToken(bootstrapTokenId, userId))
   );

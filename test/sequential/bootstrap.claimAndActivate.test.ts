@@ -9,7 +9,6 @@ import {
   scheduleBootstrap,
   provisionBootstrap,
   provisionVestedBootstrap,
-  finalizeBootstrap,
   getLiquidityAssetId,
   claimAndActivateBootstrap,
   promotePool,
@@ -23,15 +22,15 @@ import {
   getBlockNumber,
   waitForBootstrapStatus,
 } from "../../utils/utils";
-import {
-  getEventResultFromMangataTx,
-  sudoIssueAsset,
-} from "../../utils/txHandler";
+import { getEventResultFromMangataTx } from "../../utils/txHandler";
 import { MGA_ASSET_ID } from "../../utils/Constants";
-import { BN, toBN } from "@mangata-finance/sdk";
-import { Assets } from "../../utils/Assets";
-import { Sudo } from "../../utils/sudo";
+import { BN } from "@mangata-finance/sdk";
 import { setupApi, setupUsers } from "../../utils/setup";
+import {
+  checkLastBootstrapFinalized,
+  createNewBootstrapCurrency,
+  setupBootstrapTokensBalance,
+} from "../../utils/Bootstrap";
 
 jest.spyOn(console, "log").mockImplementation(jest.fn());
 jest.spyOn(console, "error").mockImplementation(jest.fn());
@@ -45,150 +44,12 @@ let keyring: Keyring;
 let bootstrapPhase: any;
 let bootstrapCurrency: any;
 let bootstrapPool: any;
-let bootstrapUser1Liquidity: any;
-let bootstrapUser2Liquidity: any;
-let bootstrapExpectedUserLiquidity: BN;
 let eventResponse: EventResult;
 
 const { sudo: sudoUserName } = getEnvironmentRequiredVars();
 const waitingPeriod = 15;
 const bootstrapPeriod = 30;
 const bootstrapAmount = new BN(10000000000);
-
-async function bootstrapRunning(
-  promotedPool: boolean,
-  vestedProvision: boolean
-) {
-  const api = getApi();
-  await setupApi();
-  await Sudo.batchAsSudoFinalized(
-    Assets.mintToken(bootstrapCurrency, testUser1), // transferAll test
-    Assets.mintToken(bootstrapCurrency, testUser2), // transferAll test
-    Assets.mintToken(bootstrapCurrency, sudo), // transferAll test
-    Assets.mintNative(testUser1),
-    Assets.mintNative(testUser2)
-  );
-
-  if (vestedProvision === true) {
-    const bootstrapBlockNumber = (await getBlockNumber()) + 5;
-    const vestingUser = await vestingTransfer(
-      sudo,
-      MGA_ASSET_ID,
-      sudo,
-      testUser1,
-      bootstrapBlockNumber
-    );
-    eventResponse = getEventResultFromMangataTx(vestingUser);
-    expect(eventResponse.state).toEqual(ExtrinsicResult.ExtrinsicSuccess);
-  }
-
-  const sudoBootstrap = await scheduleBootstrap(
-    sudo,
-    MGA_ASSET_ID,
-    bootstrapCurrency,
-    waitingPeriod,
-    bootstrapPeriod
-  );
-  eventResponse = getEventResultFromMangataTx(sudoBootstrap);
-  expect(eventResponse.state).toEqual(ExtrinsicResult.ExtrinsicSuccess);
-
-  await waitForBootstrapStatus("Public", waitingPeriod);
-
-  bootstrapPhase = await api.query.bootstrap.phase();
-  expect(bootstrapPhase.toString()).toEqual("Public");
-
-  // provision from User1
-  const provisionBTUser1 = await provisionBootstrap(
-    testUser1,
-    bootstrapCurrency,
-    bootstrapAmount
-  );
-  eventResponse = getEventResultFromMangataTx(provisionBTUser1);
-  expect(eventResponse.state).toEqual(ExtrinsicResult.ExtrinsicSuccess);
-  if (vestedProvision === true) {
-    const provisionMGAUser1 = await provisionVestedBootstrap(
-      testUser1,
-      MGA_ASSET_ID,
-      bootstrapAmount
-    );
-    eventResponse = getEventResultFromMangataTx(provisionMGAUser1);
-    expect(eventResponse.state).toEqual(ExtrinsicResult.ExtrinsicSuccess);
-  } else {
-    const provisionMGAUser1 = await provisionBootstrap(
-      testUser1,
-      MGA_ASSET_ID,
-      bootstrapAmount
-    );
-    eventResponse = getEventResultFromMangataTx(provisionMGAUser1);
-    expect(eventResponse.state).toEqual(ExtrinsicResult.ExtrinsicSuccess);
-  }
-
-  // provision from User2
-  const provisionBTUser2 = await provisionBootstrap(
-    testUser2,
-    bootstrapCurrency,
-    bootstrapAmount
-  );
-  eventResponse = getEventResultFromMangataTx(provisionBTUser2);
-  expect(eventResponse.state).toEqual(ExtrinsicResult.ExtrinsicSuccess);
-  const provisionMGAUser2 = await provisionBootstrap(
-    testUser2,
-    MGA_ASSET_ID,
-    bootstrapAmount
-  );
-  eventResponse = getEventResultFromMangataTx(provisionMGAUser2);
-  expect(eventResponse.state).toEqual(ExtrinsicResult.ExtrinsicSuccess);
-
-  await waitForBootstrapStatus("Finished", bootstrapPeriod);
-
-  const bootstrapAmountPool = bootstrapAmount.muln(2);
-  bootstrapPool = await api.query.xyk.pools([MGA_ASSET_ID, bootstrapCurrency]);
-  expect(bootstrapPool[0]).bnEqual(bootstrapAmountPool);
-  expect(bootstrapPool[1]).bnEqual(bootstrapAmountPool);
-  const bootstrapExpectedUserLiquidity = new BN(
-    bootstrapPool[0].add(bootstrapPool[1]) / 4
-  );
-
-  const liquidityID = await getLiquidityAssetId(
-    MGA_ASSET_ID,
-    bootstrapCurrency
-  );
-
-  if (promotedPool === true) {
-    const promotingPool = await promotePool(sudo.keyRingPair, liquidityID);
-    eventResponse = getEventResultFromMangataTx(promotingPool);
-    expect(eventResponse.state).toEqual(ExtrinsicResult.ExtrinsicSuccess);
-  }
-
-  const claimAndActivate1 = await claimAndActivateBootstrap(testUser1);
-  eventResponse = getEventResultFromMangataTx(claimAndActivate1);
-  expect(eventResponse.state).toEqual(ExtrinsicResult.ExtrinsicSuccess);
-
-  const claimAndActivate2 = await claimAndActivateBootstrap(testUser2);
-  eventResponse = getEventResultFromMangataTx(claimAndActivate2);
-  expect(eventResponse.state).toEqual(ExtrinsicResult.ExtrinsicSuccess);
-
-  // finalaze bootstrap
-  const bootstrapFinalize = await finalizeBootstrap(sudo);
-  eventResponse = getEventResultFromMangataTx(bootstrapFinalize);
-  expect(eventResponse.state).toEqual(ExtrinsicResult.ExtrinsicSuccess);
-
-  const bootstrapUser1Liquidity = await api.query.tokens.accounts(
-    testUser1.keyRingPair.address,
-    liquidityID
-  );
-
-  const bootstrapUser2Liquidity = await api.query.tokens.accounts(
-    testUser2.keyRingPair.address,
-    liquidityID
-  );
-
-  return {
-    bootstrapUser1Liquidity: bootstrapUser1Liquidity,
-    bootstrapUser2Liquidity: bootstrapUser2Liquidity,
-    bootstrapExpectedUserLiquidity: bootstrapExpectedUserLiquidity,
-  };
-}
 
 beforeAll(async () => {
   try {
@@ -212,30 +73,15 @@ describe.each`
   "bootstrap - checking bootstrapped pool in different situations",
   ({ promoting, vesting }) => {
     beforeEach(async () => {
-      const api = getApi();
-      bootstrapPhase = await api.query.bootstrap.phase();
-      if (bootstrapPhase.toString() === "Finished") {
-        const bootstrapFinalize = await finalizeBootstrap(sudo);
-        eventResponse = getEventResultFromMangataTx(bootstrapFinalize);
-        expect(eventResponse.state).toEqual(ExtrinsicResult.ExtrinsicSuccess);
-      }
-
-      bootstrapPhase = await api.query.bootstrap.phase();
-      expect(bootstrapPhase.toString()).toEqual("BeforeStart");
-
-      const bootstrapCurrencyIssue = await sudoIssueAsset(
-        sudo.keyRingPair,
-        toBN("1", 20),
-        sudo.keyRingPair.address
-      );
-      const bootstrapEventResult = await getEventResultFromMangataTx(
-        bootstrapCurrencyIssue,
-        ["tokens", "Issued", sudo.keyRingPair.address]
-      );
-      const bootstrapAssetId = bootstrapEventResult.data[0].split(",").join("");
-      bootstrapCurrency = new BN(bootstrapAssetId);
+      await checkLastBootstrapFinalized(sudo);
+      bootstrapCurrency = await createNewBootstrapCurrency(sudo);
 
       [testUser1, testUser2] = setupUsers();
+
+      await setupBootstrapTokensBalance(bootstrapCurrency, sudo, [
+        testUser1,
+        testUser2,
+      ]);
     });
 
     test(
@@ -244,11 +90,127 @@ describe.each`
         ", vesting MGA token for User1 is " +
         vesting.toString(),
       async () => {
-        const bootstrapFunction = await bootstrapRunning(promoting, vesting);
-        bootstrapUser1Liquidity = bootstrapFunction.bootstrapUser1Liquidity;
-        bootstrapUser2Liquidity = bootstrapFunction.bootstrapUser2Liquidity;
-        bootstrapExpectedUserLiquidity =
-          bootstrapFunction.bootstrapExpectedUserLiquidity;
+        const api = getApi();
+        await setupApi();
+
+        if (vesting === true) {
+          const bootstrapBlockNumber = (await getBlockNumber()) + 5;
+          const vestingUser = await vestingTransfer(
+            sudo,
+            MGA_ASSET_ID,
+            sudo,
+            testUser1,
+            bootstrapBlockNumber
+          );
+          eventResponse = getEventResultFromMangataTx(vestingUser);
+          expect(eventResponse.state).toEqual(ExtrinsicResult.ExtrinsicSuccess);
+        }
+
+        const sudoBootstrap = await scheduleBootstrap(
+          sudo,
+          MGA_ASSET_ID,
+          bootstrapCurrency,
+          waitingPeriod,
+          bootstrapPeriod
+        );
+        eventResponse = getEventResultFromMangataTx(sudoBootstrap);
+        expect(eventResponse.state).toEqual(ExtrinsicResult.ExtrinsicSuccess);
+
+        await waitForBootstrapStatus("Public", waitingPeriod);
+
+        bootstrapPhase = await api.query.bootstrap.phase();
+        expect(bootstrapPhase.toString()).toEqual("Public");
+
+        // provision from User1
+        const provisionBTUser1 = await provisionBootstrap(
+          testUser1,
+          bootstrapCurrency,
+          bootstrapAmount
+        );
+        eventResponse = getEventResultFromMangataTx(provisionBTUser1);
+        expect(eventResponse.state).toEqual(ExtrinsicResult.ExtrinsicSuccess);
+        if (vesting === true) {
+          const provisionMGAUser1 = await provisionVestedBootstrap(
+            testUser1,
+            MGA_ASSET_ID,
+            bootstrapAmount
+          );
+          eventResponse = getEventResultFromMangataTx(provisionMGAUser1);
+          expect(eventResponse.state).toEqual(ExtrinsicResult.ExtrinsicSuccess);
+        } else {
+          const provisionMGAUser1 = await provisionBootstrap(
+            testUser1,
+            MGA_ASSET_ID,
+            bootstrapAmount
+          );
+          eventResponse = getEventResultFromMangataTx(provisionMGAUser1);
+          expect(eventResponse.state).toEqual(ExtrinsicResult.ExtrinsicSuccess);
+        }
+
+        // provision from User2
+        const provisionBTUser2 = await provisionBootstrap(
+          testUser2,
+          bootstrapCurrency,
+          bootstrapAmount
+        );
+        eventResponse = getEventResultFromMangataTx(provisionBTUser2);
+        expect(eventResponse.state).toEqual(ExtrinsicResult.ExtrinsicSuccess);
+        const provisionMGAUser2 = await provisionBootstrap(
+          testUser2,
+          MGA_ASSET_ID,
+          bootstrapAmount
+        );
+        eventResponse = getEventResultFromMangataTx(provisionMGAUser2);
+        expect(eventResponse.state).toEqual(ExtrinsicResult.ExtrinsicSuccess);
+
+        await waitForBootstrapStatus("Finished", bootstrapPeriod);
+
+        const bootstrapAmountPool = bootstrapAmount.muln(2);
+        bootstrapPool = await api.query.xyk.pools([
+          MGA_ASSET_ID,
+          bootstrapCurrency,
+        ]);
+        expect(bootstrapPool[0]).bnEqual(bootstrapAmountPool);
+        expect(bootstrapPool[1]).bnEqual(bootstrapAmountPool);
+        const bootstrapExpectedUserLiquidity = new BN(
+          bootstrapPool[0].add(bootstrapPool[1]) / 4
+        );
+
+        const liquidityID = await getLiquidityAssetId(
+          MGA_ASSET_ID,
+          bootstrapCurrency
+        );
+
+        if (promoting === true) {
+          const promotingPool = await promotePool(
+            sudo.keyRingPair,
+            liquidityID
+          );
+          eventResponse = getEventResultFromMangataTx(promotingPool);
+          expect(eventResponse.state).toEqual(ExtrinsicResult.ExtrinsicSuccess);
+        }
+
+        const claimAndActivate1 = await claimAndActivateBootstrap(testUser1);
+        eventResponse = getEventResultFromMangataTx(claimAndActivate1);
+        expect(eventResponse.state).toEqual(ExtrinsicResult.ExtrinsicSuccess);
+
+        const claimAndActivate2 = await claimAndActivateBootstrap(testUser2);
+        eventResponse = getEventResultFromMangataTx(claimAndActivate2);
+        expect(eventResponse.state).toEqual(ExtrinsicResult.ExtrinsicSuccess);
+
+        // finalaze bootstrap
+        await checkLastBootstrapFinalized(sudo);
+
+        const bootstrapUser1Liquidity = await api.query.tokens.accounts(
+          testUser1.keyRingPair.address,
+          liquidityID
+        );
+
+        const bootstrapUser2Liquidity = await api.query.tokens.accounts(
+          testUser2.keyRingPair.address,
+          liquidityID
+        );
+
         if (promoting === true) {
           expect(bootstrapUser1Liquidity.free).bnEqual(new BN(0));
           expect(bootstrapUser1Liquidity.reserved).bnEqual(
@@ -277,11 +239,5 @@ describe.each`
         }
       }
     );
-
-    afterEach(async () => {
-      const api = getApi();
-      bootstrapPhase = await api.query.bootstrap.phase();
-      expect(bootstrapPhase.toString()).toEqual("BeforeStart");
-    });
   }
 );

@@ -26,7 +26,7 @@ import {
   getEventErrorfromSudo,
 } from "../../utils/txHandler";
 import {
-  checkBootstrapConditions,
+  checkLastBootstrapFinalized,
   createNewBootstrapCurrency,
   setupBootstrapTokensBalance,
 } from "../../utils/Bootstrap";
@@ -42,7 +42,6 @@ process.env.NODE_ENV = "test";
 let testUser1: User;
 let sudo: User;
 let keyring: Keyring;
-let bootstrapPhase: any;
 let bootstrapCurrency: any;
 let bootstrapPool: any;
 let eventResponse: EventResult;
@@ -105,14 +104,10 @@ beforeAll(async () => {
   keyring = new Keyring({ type: "sr25519" });
 
   sudo = new User(keyring, sudoUserName);
-});
-
-beforeEach(async () => {
-  testUser1 = new User(keyring);
 
   [testUser1] = setupUsers();
 
-  await checkBootstrapConditions(sudo);
+  await checkLastBootstrapFinalized(sudo);
   bootstrapCurrency = await createNewBootstrapCurrency(sudo);
 
   await setupBootstrapTokensBalance(bootstrapCurrency, sudo, [testUser1]);
@@ -214,11 +209,6 @@ test("bootstrap - Check that we can change promotion bootstrap on each stage bef
 
   const bootstrapFinalize = await finalizeBootstrap(sudo);
   await checkSudoOperataionSuccess(bootstrapFinalize);
-});
 
-afterEach(async () => {
-  const api = getApi();
-
-  bootstrapPhase = await api.query.bootstrap.phase();
-  expect(bootstrapPhase.toString()).toEqual("BeforeStart");
+  await checkLastBootstrapFinalized(sudo);
 });

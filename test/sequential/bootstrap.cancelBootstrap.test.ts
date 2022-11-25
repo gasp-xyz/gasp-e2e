@@ -5,15 +5,11 @@
  * @group sequential
  */
 import { getApi, initApi } from "../../utils/api";
-import {
-  scheduleBootstrap,
-  finalizeBootstrap,
-  cancelRunningBootstrap,
-} from "../../utils/tx";
+import { scheduleBootstrap, cancelRunningBootstrap } from "../../utils/tx";
 import { Keyring } from "@polkadot/api";
 import { User } from "../../utils/User";
 import {
-  checkBootstrapConditions,
+  checkLastBootstrapFinalized,
   createNewBootstrapCurrency,
   setupBootstrapTokensBalance,
 } from "../../utils/Bootstrap";
@@ -81,7 +77,7 @@ beforeAll(async () => {
 beforeEach(async () => {
   [testUser1] = setupUsers();
 
-  await checkBootstrapConditions(sudo);
+  await checkLastBootstrapFinalized(sudo);
   bootstrapCurrency = await createNewBootstrapCurrency(sudo);
 
   await setupBootstrapTokensBalance(bootstrapCurrency, sudo, [testUser1]);
@@ -137,6 +133,5 @@ test("bootstrap - Check that we can not cancel bootstrap when bootstrap event al
   await checkSudoOperataionFail(cancelBootstrapEvent, "AlreadyStarted");
 
   // finalaze bootstrap
-  const bootstrapFinalize = await finalizeBootstrap(sudo);
-  await checkSudoOperataionSuccess(bootstrapFinalize);
+  await checkLastBootstrapFinalized(sudo);
 });

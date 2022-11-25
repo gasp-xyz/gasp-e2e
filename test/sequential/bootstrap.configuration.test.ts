@@ -8,7 +8,6 @@ import {
   scheduleBootstrap,
   provisionBootstrap,
   claimRewardsBootstrap,
-  finalizeBootstrap,
   getBalanceOfAsset,
   getLiquidityAssetId,
 } from "../../utils/tx";
@@ -22,8 +21,13 @@ import {
 import { getEventResultFromMangataTx } from "../../utils/txHandler";
 import { MGA_ASSET_ID } from "../../utils/Constants";
 import { toBN } from "@mangata-finance/sdk";
-import { Assets } from "../../utils/Assets";
 import { toNumber } from "lodash";
+import {
+  checkLastBootstrapFinalized,
+  createNewBootstrapCurrency,
+  setupBootstrapTokensBalance,
+} from "../../utils/Bootstrap";
+import { setupUsers } from "../../utils/setup";
 
 jest.spyOn(console, "log").mockImplementation(jest.fn());
 jest.spyOn(console, "error").mockImplementation(jest.fn());
@@ -52,25 +56,15 @@ beforeAll(async () => {
 
   keyring = new Keyring({ type: "sr25519" });
 
-  // setup users
   sudo = new User(keyring, sudoUserName);
-  testUser1 = new User(keyring);
-
-  // add users to pair.
   keyring.addPair(sudo.keyRingPair);
-  keyring.addPair(testUser1.keyRingPair);
 
-  bootstrapCurrency = await Assets.issueAssetToUser(sudo, toBN("1", 20), sudo);
+  await checkLastBootstrapFinalized(sudo);
+  bootstrapCurrency = await createNewBootstrapCurrency(sudo);
 
-  //add MGA tokens for users.
-  await sudo.addMGATokens(sudo);
-  await testUser1.addMGATokens(sudo);
+  [testUser1] = setupUsers();
 
-  const api = getApi();
-
-  // check that system is ready to bootstrap
-  bootstrapPhase = await api.query.bootstrap.phase();
-  expect(bootstrapPhase.toString()).toEqual("BeforeStart");
+  await setupBootstrapTokensBalance(bootstrapCurrency, sudo, [testUser1]);
 });
 
 test("bootstrap - Check non-sudo user cannot start bootstrap", async () => {
@@ -173,9 +167,5 @@ test("bootstrap - Check happy path bootstrap with one user", async () => {
   expect(toNumber(userBalance.free)).toEqual(bootstrapPoolBalance);
 
   // finalaze bootstrap
-  const bootstrapFinalize = await finalizeBootstrap(sudo);
-  eventResponse = getEventResultFromMangataTx(bootstrapFinalize);
-  expect(eventResponse.state).toEqual(ExtrinsicResult.ExtrinsicSuccess);
-  bootstrapPhase = await api.query.bootstrap.phase();
-  expect(bootstrapPhase.toString()).toEqual("BeforeStart");
+  await checkLastBootstrapFinalized(sudo);
 });
