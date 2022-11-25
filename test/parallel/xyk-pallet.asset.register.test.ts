@@ -4,16 +4,24 @@
  * @group asset
  * @group parallel
  */
-import { getApi, initApi } from "../../utils/api";
-import { getEnvironmentRequiredVars } from "../../utils/utils";
+import { getApi } from "../../utils/api";
+import { getEnvironmentRequiredVars, xykErrors } from "../../utils/utils";
 import { User } from "../../utils/User";
 import { Keyring } from "@polkadot/api";
 import { Assets } from "../../utils/Assets";
-import { ExtrinsicResult } from "../../utils/eventListeners";
+import {
+  ExtrinsicResult,
+  findEventData,
+  signSendFinalized,
+} from "../../utils/eventListeners";
 import { getEventResultFromMangataTx } from "../../utils/txHandler";
 import { BN, hexToU8a } from "@polkadot/util";
-import { MangataGenericEvent } from "@mangata-finance/sdk";
+import { BN_ONE, BN_TEN, MangataGenericEvent } from "@mangata-finance/sdk";
 import { getNextAssetId } from "../../utils/tx";
+import { setupApi, setupUsers } from "../../utils/setup";
+import { Xyk } from "../../utils/xyk";
+import { MGA_ASSET_ID } from "../../utils/Constants";
+import { Sudo } from "../../utils/sudo";
 
 const { sudo: sudoUserName } = getEnvironmentRequiredVars();
 jest.setTimeout(1500000);
@@ -80,7 +88,8 @@ async function findAssetError(userRegisterNewAsset: MangataGenericEvent[]) {
 }
 
 beforeAll(async () => {
-  await initApi();
+  await setupApi();
+  setupUsers();
 });
 
 beforeEach(async () => {
@@ -149,7 +158,6 @@ test("register new asset and then update it without the location", async () => {
     ExtrinsicResult.ExtrinsicSuccess
   );
   const assetMetadata = await api.query.assetRegistry.metadata(assetId);
-  //@ts-ignore
   expect(assetMetadata.value.location.toHuman()).toEqual(null);
 });
 
@@ -158,10 +166,10 @@ test("register new asset and then update it without fee", async () => {
 
   const assetId = await setupUserAssetRegister(sudo, true);
 
-  const userUpdateAsset = await sudo.updateAsset(
-    assetId,
-    //@ts-ignore
-    api!.createType("Vec<u8>", "0x0100")
+  const userUpdateAsset = await Sudo.asSudoFinalized(
+    Assets.updateAsset(assetId, {
+      metadata: { xcm: undefined, xyk: undefined },
+    })
   );
 
   expect(getEventResultFromMangataTx(userUpdateAsset).state).toEqual(
@@ -169,8 +177,10 @@ test("register new asset and then update it without fee", async () => {
   );
 
   const assetMetadata = await api.query.assetRegistry.metadata(assetId);
-  //@ts-ignore
-  expect(assetMetadata.value.additional.toHuman()).toEqual({ xcm: null });
+  expect(assetMetadata.value.additional.toHuman()).toEqual({
+    xcm: null,
+    xyk: null,
+  });
 });
 
 test("register asset and then try to register new one with the same assetId, expect to conflict", async () => {
@@ -217,4 +227,79 @@ test.skip("register asset and then try to register new one with the same locatio
   const userAssetMetaError = await findAssetError(userRegisterNewAsset);
 
   expect(userAssetMetaError.method).toEqual("ConflictingLocation");
+});
+
+test("register asset with xyk disabled and try to create a pool, expect to fail", async () => {
+  const register = Assets.registerAsset(
+    "Disabled Xyk",
+    "Disabled Xyk",
+    10,
+    undefined,
+    undefined,
+    { operationsDisabled: true }
+  );
+  const result = await Sudo.asSudoFinalized(register);
+  // assetRegistry.RegisteredAsset [8,{"decimals":10,"name":"0x44697361626c65642058796b","symbol":"0x44697361626c65642058796b","existentialDeposit":0,"location":null,"additional":{"xcm":null,"xyk":{"operationsDisabled":true}}}]
+  const assetId = findEventData(
+    result,
+    "assetRegistry.RegisteredAsset"
+  ).assetId;
+
+  await expect(
+    signSendFinalized(
+      Xyk.createPool(assetId, BN_ONE, MGA_ASSET_ID, BN_ONE),
+      testUser1
+    )
+  ).rejects.toEqual(
+    expect.objectContaining({
+      state: ExtrinsicResult.ExtrinsicFailed,
+      data: xykErrors.FunctionNotAvailableForThisToken,
+    })
+  );
+});
+
+test("register asset with xyk undefined and try to create a pool, expect success", async () => {
+  const register = Assets.registerAsset(
+    "None Xyk",
+    "None Xyk",
+    10,
+    undefined,
+    undefined,
+    undefined
+  );
+  const result = await Sudo.asSudoFinalized(register);
+  const assetId = findEventData(
+    result,
+    "assetRegistry.RegisteredAsset"
+  ).assetId;
+
+  await Sudo.asSudoFinalized(Assets.mintToken(assetId, testUser1, BN_TEN));
+
+  await signSendFinalized(
+    Xyk.createPool(assetId, BN_ONE, MGA_ASSET_ID, BN_ONE),
+    testUser1
+  );
+});
+
+test("register asset with xyk enabled and try to create a pool, expect success", async () => {
+  const register = Assets.registerAsset(
+    "None Xyk",
+    "None Xyk",
+    10,
+    undefined,
+    undefined,
+    { operationsDisabled: false }
+  );
+  const result = await Sudo.asSudoFinalized(register);
+  const assetId = findEventData(
+    result,
+    "assetRegistry.RegisteredAsset"
+  ).assetId;
+
+  await Sudo.asSudoFinalized(Assets.mintToken(assetId, testUser1, BN_TEN));
+
+  await signSendFinalized(
+    Xyk.createPool(assetId, BN_ONE, MGA_ASSET_ID, BN_ONE),
+    testUser1
+  );
 });
