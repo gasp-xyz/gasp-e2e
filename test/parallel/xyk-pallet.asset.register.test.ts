@@ -158,7 +158,6 @@ test("register new asset and then update it without the location", async () => {
     ExtrinsicResult.ExtrinsicSuccess
   );
   const assetMetadata = await api.query.assetRegistry.metadata(assetId);
-  //@ts-ignore
   expect(assetMetadata.value.location.toHuman()).toEqual(null);
 });
 
@@ -167,10 +166,10 @@ test("register new asset and then update it without fee", async () => {
 
   const assetId = await setupUserAssetRegister(sudo, true);
 
-  const userUpdateAsset = await sudo.updateAsset(
-    assetId,
-    //@ts-ignore
-    api!.createType("Vec<u8>", "0x0100")
+  const userUpdateAsset = await Sudo.asSudoFinalized(
+    Assets.updateAsset(assetId, {
+      metadata: { xcm: undefined, xyk: undefined },
+    })
   );
 
   expect(getEventResultFromMangataTx(userUpdateAsset).state).toEqual(
@@ -178,7 +177,6 @@ test("register new asset and then update it without fee", async () => {
   );
 
   const assetMetadata = await api.query.assetRegistry.metadata(assetId);
-  //@ts-ignore
   expect(assetMetadata.value.additional.toHuman()).toEqual({
     xcm: null,
     xyk: null,

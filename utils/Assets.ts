@@ -150,39 +150,39 @@ export class Assets {
           name: api.createType("Vec<u8>", name),
           symbol: api.createType("Vec<u8>", symbol),
           existentialDeposit: 0,
-          location: location ? { V1: location } : undefined,
+          location: location ? { V1: location } : null,
           additional: {
             xcm: xcmMetadata,
             xyk: xykMetadata,
           },
         },
-        // @ts-ignore
-        assetId
+        api.createType("Option<u32>", assetId)
       )
     );
   }
 
-  static updateAsset(assetId: number, update: UpdateAsset): Extrinsic {
+  static updateAsset(assetId: number | BN, update: UpdateAsset): Extrinsic {
     return Sudo.sudo(
       api.tx.assetRegistry.updateAsset(
         assetId,
-        // @ts-ignore
-        update.decimals,
+        api.createType("Option<u32>", update.decimals),
         api.createType("Vec<u8>", update.name),
         api.createType("Vec<u8>", update.symbol),
-        0,
+        null,
         update.location
-          ? { V1: update.location }
-          : api.createType("Vec<u8>", "0x0100"),
-        update.metadata
+          ? update.location.location
+            ? { V1: update.location } // Some(location)
+            : api.createType("Vec<u8>", "0x0100") // Some(None)
+          : null, // None
+        { additional: update.metadata }
       )
     );
   }
 }
 
 interface Metadata {
-  xcm: XcmMetadata;
-  xyk: XykMetadata;
+  xcm?: XcmMetadata;
+  xyk?: XykMetadata;
 }
 
 interface XcmMetadata {
@@ -193,11 +193,20 @@ interface XykMetadata {
   operationsDisabled: boolean;
 }
 
+// API expects Option<Option<Location>>, we need to wrap it so we can pass
+// undefined in UpdateAsset - no update
+// { location: undefined } - update with no location
+// { location: { ... } } - update with some location
+interface UpdateLocation {
+  location?: object;
+}
+
+// if the value is undefined, it will not be updated
 interface UpdateAsset {
   name?: string;
   symbol?: string;
   decimals?: number;
   // location?: MultiLocation,
-  location?: object;
+  location?: UpdateLocation;
   metadata?: Metadata;
 }
