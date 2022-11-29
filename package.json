@@ -27,6 +27,7 @@
     "guid-typescript": "^1.0.9",
     "jsonpath": "^1.1.1",
     "loadsh": "^0.0.4",
+    "node-ipc": "^11.1.0",
     "package.json": "^2.0.1",
     "prettier": "2.3.0",
     "selenium-webdriver": "3.6.0",
@@ -104,6 +105,8 @@
     "runner": "groups",
     "verbose": true,
     "bail": false,
+    "globalSetup": "./utils/globalSetup.js",
+    "globalTeardown": "./utils/globalTeardown.js",
     "setupFilesAfterEnv": [
       "jest-allure/dist/setup",
       "./utils/setupJest.ts"
