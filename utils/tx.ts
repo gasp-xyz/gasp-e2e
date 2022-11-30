@@ -444,13 +444,19 @@ export const createPool = async (
   return result;
 };
 
-export const promotePool = async (sudoAccount: KeyringPair, liqAssetId: BN) => {
+// for alignment purposes lets keep it backward comaptible
+// so every pool will have same weight
+export const promotePool = async (
+  sudoAccount: KeyringPair,
+  liqAssetId: BN,
+  weight: number = 100
+) => {
   testLog.getLog().info(`Promoting pool :${liqAssetId}`);
   const mangata = await getMangataInstance();
   const api = await mangata.getApi();
   const result = await signTx(
     api,
-    api.tx.sudo.sudo(api.tx.xyk.promotePool(liqAssetId)),
+    api.tx.sudo.sudo(api.tx.xyk.updatePoolPromotion(liqAssetId, weight)),
     sudoAccount,
     { nonce: await getCurrentNonce(sudoAccount.address) }
   );
