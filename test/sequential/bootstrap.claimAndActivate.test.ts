@@ -22,7 +22,11 @@ import {
   getBlockNumber,
   waitForBootstrapStatus,
 } from "../../utils/utils";
-import { getEventResultFromMangataTx } from "../../utils/txHandler";
+import {
+  getEventResultFromMangataTx,
+  getBalanceOfPool,
+  getUserBalanceOfToken,
+} from "../../utils/txHandler";
 import { MGA_ASSET_ID } from "../../utils/Constants";
 import { BN } from "@mangata-finance/sdk";
 import { setupApi, setupUsers } from "../../utils/setup";
@@ -41,7 +45,6 @@ let testUser1: User;
 let testUser2: User;
 let sudo: User;
 let keyring: Keyring;
-let bootstrapPhase: any;
 let bootstrapCurrency: any;
 let bootstrapPool: any;
 let eventResponse: EventResult;
@@ -90,7 +93,6 @@ describe.each`
         ", vesting MGA token for User1 is " +
         vesting.toString(),
       async () => {
-        const api = getApi();
         await setupApi();
 
         if (vesting === true) {
@@ -117,9 +119,6 @@ describe.each`
         expect(eventResponse.state).toEqual(ExtrinsicResult.ExtrinsicSuccess);
 
         await waitForBootstrapStatus("Public", waitingPeriod);
-
-        bootstrapPhase = await api.query.bootstrap.phase();
-        expect(bootstrapPhase.toString()).toEqual("Public");
 
         // provision from User1
         const provisionBTUser1 = await provisionBootstrap(
@@ -166,14 +165,12 @@ describe.each`
         await waitForBootstrapStatus("Finished", bootstrapPeriod);
 
         const bootstrapAmountPool = bootstrapAmount.muln(2);
-        bootstrapPool = await api.query.xyk.pools([
-          MGA_ASSET_ID,
-          bootstrapCurrency,
-        ]);
-        expect(bootstrapPool[0]).bnEqual(bootstrapAmountPool);
-        expect(bootstrapPool[1]).bnEqual(bootstrapAmountPool);
+        bootstrapPool = await getBalanceOfPool(MGA_ASSET_ID, bootstrapCurrency);
+        const bootstrapPoolBalance = bootstrapPool[0];
+        expect(bootstrapPoolBalance[0]).bnEqual(bootstrapAmountPool);
+        expect(bootstrapPoolBalance[1]).bnEqual(bootstrapAmountPool);
         const bootstrapExpectedUserLiquidity = new BN(
-          bootstrapPool[0].add(bootstrapPool[1]) / 4
+          bootstrapPoolBalance[0].add(bootstrapPoolBalance[1]) / 4
         );
 
         const liquidityID = await getLiquidityAssetId(
@@ -201,14 +198,14 @@ describe.each`
         // finalaze bootstrap
         await checkLastBootstrapFinalized(sudo);
 
-        const bootstrapUser1Liquidity = await api.query.tokens.accounts(
-          testUser1.keyRingPair.address,
-          liquidityID
+        const bootstrapUser1Liquidity = await getUserBalanceOfToken(
+          liquidityID,
+          testUser1
         );
 
-        const bootstrapUser2Liquidity = await api.query.tokens.accounts(
-          testUser2.keyRingPair.address,
-          liquidityID
+        const bootstrapUser2Liquidity = await getUserBalanceOfToken(
+          liquidityID,
+          testUser2
         );
 
         if (promoting === true) {

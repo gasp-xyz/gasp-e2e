@@ -24,20 +24,17 @@ import {
 import {
   getEventResultFromMangataTx,
   getEventErrorfromSudo,
+  getBalanceOfPool,
 } from "../../utils/txHandler";
 import {
   checkLastBootstrapFinalized,
   createNewBootstrapCurrency,
   setupBootstrapTokensBalance,
+  getPromotionBootstrapPoolState,
 } from "../../utils/Bootstrap";
 import { MGA_ASSET_ID } from "../../utils/Constants";
 import { BN, MangataGenericEvent } from "@mangata-finance/sdk";
 import { setupUsers } from "../../utils/setup";
-
-jest.spyOn(console, "log").mockImplementation(jest.fn());
-jest.spyOn(console, "error").mockImplementation(jest.fn());
-jest.setTimeout(3500000);
-process.env.NODE_ENV = "test";
 
 let testUser1: User;
 let sudo: User;
@@ -55,11 +52,8 @@ const bootstrapPeriod = 20;
 const whitelistPeriod = 10;
 const bootstrapAmount = new BN(10000000000);
 
-async function changePromoteBootstrapPool(userName: User) {
-  const api = getApi();
-
-  const currentPromotingState =
-    await api.query.bootstrap.promoteBootstrapPool();
+async function changePromotionBootstrapPool(userName: User) {
+  const currentPromotingState = await getPromotionBootstrapPoolState();
 
   const result = await updatePromoteBootstrapPool(
     userName,
@@ -113,10 +107,8 @@ beforeAll(async () => {
   await setupBootstrapTokensBalance(bootstrapCurrency, sudo, [testUser1]);
 });
 
-test("bootstrap - Check that we can change promotion bootstrap on each stage before finish", async () => {
+test("bootstrap - bootstrap - Check if we can change promoteBootstrapPool in each phase", async () => {
   let checkingUpdatingPool: MangataGenericEvent[];
-
-  const api = getApi();
 
   const scheduleBootstrapBefPlan = await scheduleBootstrap(
     sudo,
@@ -128,7 +120,7 @@ test("bootstrap - Check that we can change promotion bootstrap on each stage bef
   );
   await checkSudoOperataionSuccess(scheduleBootstrapBefPlan);
 
-  checkingUpdatingPool = await changePromoteBootstrapPool(sudo);
+  checkingUpdatingPool = await changePromotionBootstrapPool(sudo);
   await checkSudoOperataionSuccess(checkingUpdatingPool);
 
   const scheduleBootstrapAftPlan = await scheduleBootstrap(
@@ -141,17 +133,17 @@ test("bootstrap - Check that we can change promotion bootstrap on each stage bef
   );
   await checkSudoOperataionSuccess(scheduleBootstrapAftPlan);
 
-  checkingUpdatingPool = await changePromoteBootstrapPool(sudo);
+  checkingUpdatingPool = await changePromotionBootstrapPool(sudo);
   await checkSudoOperataionSuccess(checkingUpdatingPool);
 
   await waitForBootstrapStatus("Whitelist", waitingPeriodLessPlan);
 
-  checkingUpdatingPool = await changePromoteBootstrapPool(sudo);
+  checkingUpdatingPool = await changePromotionBootstrapPool(sudo);
   await checkSudoOperataionSuccess(checkingUpdatingPool);
 
   await waitForBootstrapStatus("Public", waitingPeriodLessPlan);
 
-  checkingUpdatingPool = await changePromoteBootstrapPool(sudo);
+  checkingUpdatingPool = await changePromotionBootstrapPool(sudo);
   await checkSudoOperataionSuccess(checkingUpdatingPool);
 
   const provisionPublicBootstrapCurrency = await provisionBootstrap(
@@ -172,14 +164,15 @@ test("bootstrap - Check that we can change promotion bootstrap on each stage bef
 
   await waitForBootstrapStatus("Finished", bootstrapPeriod);
 
-  checkingUpdatingPool = await changePromoteBootstrapPool(sudo);
+  checkingUpdatingPool = await changePromotionBootstrapPool(sudo);
   await checkSudoOperataionFail(checkingUpdatingPool, "BootstrapFinished");
 
-  bootstrapPool = await api.query.xyk.pools([MGA_ASSET_ID, bootstrapCurrency]);
-  expect(bootstrapPool[0]).bnEqual(bootstrapAmount);
-  expect(bootstrapPool[1]).bnEqual(bootstrapAmount);
+  bootstrapPool = await getBalanceOfPool(MGA_ASSET_ID, bootstrapCurrency);
+  const bootstrapPoolBalance = bootstrapPool[0];
+  expect(bootstrapPoolBalance[0]).bnEqual(bootstrapAmount);
+  expect(bootstrapPoolBalance[1]).bnEqual(bootstrapAmount);
   const bootstrapExpectedUserLiquidity = new BN(
-    bootstrapPool[0].add(bootstrapPool[1]) / 2
+    bootstrapPoolBalance[0].add(bootstrapPoolBalance[1]) / 2
   );
 
   const claimRewards = await claimRewardsBootstrap(testUser1);
@@ -196,10 +189,9 @@ test("bootstrap - Check that we can change promotion bootstrap on each stage bef
     testUser1.keyRingPair.address.toString()
   );
 
-  const currentPromotingState =
-    await api.query.bootstrap.promoteBootstrapPool();
+  const currentPromotionState = await getPromotionBootstrapPoolState();
 
-  if (currentPromotingState) {
+  if (currentPromotionState) {
     expect(userBalance.free).bnEqual(bootstrapExpectedUserLiquidity);
     expect(userBalance.frozen).bnEqual(new BN(0));
   } else {

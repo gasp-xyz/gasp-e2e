@@ -76,6 +76,15 @@ export const getNextAssetId = async () => {
   return new BN(asset_id.toString());
 };
 
+export const getUserBalanceOfToken = async (tokenId: BN, account: User) => {
+  const api = getApi();
+  const tokenBalance = await api.query.tokens.accounts(
+    account.keyRingPair.address,
+    tokenId
+  );
+  return tokenBalance;
+};
+
 export const sudoIssueAsset = async (
   sudoAccount: KeyringPair,
   total_balance: BN,

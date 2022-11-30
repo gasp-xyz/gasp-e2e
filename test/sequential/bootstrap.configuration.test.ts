@@ -18,7 +18,10 @@ import {
   getEnvironmentRequiredVars,
   waitForBootstrapStatus,
 } from "../../utils/utils";
-import { getEventResultFromMangataTx } from "../../utils/txHandler";
+import {
+  getEventResultFromMangataTx,
+  getBalanceOfPool,
+} from "../../utils/txHandler";
 import { MGA_ASSET_ID } from "../../utils/Constants";
 import { toBN } from "@mangata-finance/sdk";
 import { toNumber } from "lodash";
@@ -37,7 +40,6 @@ process.env.NODE_ENV = "test";
 let testUser1: User;
 let sudo: User;
 let keyring: Keyring;
-let bootstrapPhase: any;
 let bootstrapCurrency: any;
 let bootstrapPool: any;
 let eventResponse: EventResult;
@@ -96,9 +98,6 @@ test("bootstrap - Check happy path bootstrap with one user", async () => {
   expect(eventResponse.state).toEqual(ExtrinsicResult.ExtrinsicSuccess);
 
   // check that user can not make provision before bootstrap
-  const api = getApi();
-  bootstrapPhase = await api.query.bootstrap.phase();
-  expect(bootstrapPhase.toString()).toEqual("BeforeStart");
   const provisionBeforeStart = await provisionBootstrap(
     testUser1,
     bootstrapCurrency,
@@ -111,8 +110,6 @@ test("bootstrap - Check happy path bootstrap with one user", async () => {
   await waitForBootstrapStatus("Public", waitingPeriod);
 
   // check that user can make provision while bootstrap running
-  bootstrapPhase = await api.query.bootstrap.phase();
-  expect(bootstrapPhase.toString()).toEqual("Public");
   const provisionPublicBootstrapCurrency = await provisionBootstrap(
     testUser1,
     bootstrapCurrency,
@@ -133,8 +130,6 @@ test("bootstrap - Check happy path bootstrap with one user", async () => {
   await waitForBootstrapStatus("Finished", bootstrapPeriod);
 
   // check that user can not make provision after bootstrap
-  bootstrapPhase = await api.query.bootstrap.phase();
-  expect(bootstrapPhase.toString()).toEqual("Finished");
   const provisionFinished = await provisionBootstrap(
     testUser1,
     bootstrapCurrency,
@@ -145,10 +140,12 @@ test("bootstrap - Check happy path bootstrap with one user", async () => {
   expect(eventResponse.data).toContain("Unauthorized");
 
   // Check existing pool
-  bootstrapPool = await api.query.xyk.pools([MGA_ASSET_ID, bootstrapCurrency]);
-  expect(bootstrapPool[0]).bnEqual(bootstrapAmount);
-  expect(bootstrapPool[1]).bnEqual(bootstrapAmount);
-  const bootstrapPoolBalance = bootstrapPool[0].add(bootstrapPool[1]) / 2;
+  bootstrapPool = await getBalanceOfPool(MGA_ASSET_ID, bootstrapCurrency);
+  const bootstrapPoolBalance = bootstrapPool[0];
+  expect(bootstrapPoolBalance[0]).bnEqual(bootstrapAmount);
+  expect(bootstrapPoolBalance[1]).bnEqual(bootstrapAmount);
+  const bootstrapExpectedUserLiquidity =
+    bootstrapPoolBalance[0].add(bootstrapPoolBalance[1]) / 2;
 
   // need claim liquidity token before finalizing
   const claimRewards = await claimRewardsBootstrap(testUser1);
@@ -164,7 +161,7 @@ test("bootstrap - Check happy path bootstrap with one user", async () => {
     liquidityID,
     testUser1.keyRingPair.address.toString()
   );
-  expect(toNumber(userBalance.free)).toEqual(bootstrapPoolBalance);
+  expect(toNumber(userBalance.free)).toEqual(bootstrapExpectedUserLiquidity);
 
   // finalaze bootstrap
   await checkLastBootstrapFinalized(sudo);

@@ -18,7 +18,11 @@ import {
   getEnvironmentRequiredVars,
   waitForBootstrapStatus,
 } from "../../utils/utils";
-import { getEventResultFromMangataTx } from "../../utils/txHandler";
+import {
+  getEventResultFromMangataTx,
+  getBalanceOfPool,
+  getUserBalanceOfToken,
+} from "../../utils/txHandler";
 import { MGA_ASSET_ID } from "../../utils/Constants";
 import { BN } from "@mangata-finance/sdk";
 import { setupApi, setupUsers } from "../../utils/setup";
@@ -39,7 +43,7 @@ let keyring: Keyring;
 let bootstrapCurrency: any;
 let bootstrapPool: any;
 let eventResponse: EventResult;
-let bootstrapPoolBalance: BN;
+let bootstrapExpectedUserLiquidity: BN;
 
 const { sudo: sudoUserName } = getEnvironmentRequiredVars();
 const waitingPeriod = 15;
@@ -81,7 +85,6 @@ beforeAll(async () => {
 });
 
 test("bootstrap - Check that we can not create a pool for the bootstrap token after bootstrap was declared", async () => {
-  const api = getApi();
   await setupApi();
 
   await checkLastBootstrapFinalized(sudo);
@@ -131,15 +134,16 @@ test("bootstrap - Check that we can not create a pool for the bootstrap token af
   await checkPossibilityCreatingPool(MGA_ASSET_ID, bootstrapCurrency);
 
   // Check existing pool
-  bootstrapPool = await api.query.xyk.pools([MGA_ASSET_ID, bootstrapCurrency]);
-  expect(bootstrapPool[0]).bnEqual(bootstrapAmount);
-  expect(bootstrapPool[1]).bnEqual(bootstrapAmount);
-  bootstrapPoolBalance = new BN(bootstrapPool[0].add(bootstrapPool[1]) / 2);
+  bootstrapPool = await getBalanceOfPool(MGA_ASSET_ID, bootstrapCurrency);
+  const bootstrapPoolBalance = bootstrapPool[0];
+  expect(bootstrapPoolBalance[0]).bnEqual(bootstrapAmount);
+  expect(bootstrapPoolBalance[1]).bnEqual(bootstrapAmount);
+  bootstrapExpectedUserLiquidity = new BN(
+    bootstrapPoolBalance[0].add(bootstrapPoolBalance[1]) / 2
+  );
 });
 
 afterEach(async () => {
-  const api = getApi();
-
   // need claim liquidity token before finalizing
   const claimAndActivate = await claimAndActivateBootstrap(testUser1);
   eventResponse = getEventResultFromMangataTx(claimAndActivate);
@@ -149,12 +153,12 @@ afterEach(async () => {
     bootstrapCurrency
   );
 
-  const bootstrapUserLiquidity = await api.query.tokens.accounts(
-    testUser1.keyRingPair.address,
-    liquidityID
+  const bootstrapUserLiquidity = await getUserBalanceOfToken(
+    liquidityID,
+    testUser1
   );
   // check that the user's balance of liquidity token is equal the pool's balance
-  expect(bootstrapUserLiquidity.free).bnEqual(bootstrapPoolBalance);
+  expect(bootstrapUserLiquidity.free).bnEqual(bootstrapExpectedUserLiquidity);
 
   // finalaze bootstrap
   await checkLastBootstrapFinalized(sudo);

@@ -61,3 +61,11 @@ export async function setupBootstrapTokensBalance(
   );
   await Sudo.batchAsSudoFinalized(...extrinsicCall);
 }
+
+export async function getPromotionBootstrapPoolState() {
+  const api = getApi();
+  const currentPromotingState = await (
+    await api.query.bootstrap.promoteBootstrapPool()
+  ).toHuman();
+  return currentPromotingState;
+}
