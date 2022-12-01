@@ -23,8 +23,9 @@ import {
 } from "../../utils/utils";
 import {
   getEventResultFromMangataTx,
-  getEventErrorfromSudo,
   getBalanceOfPool,
+  checkSudoOperataionSuccess,
+  checkSudoOperataionFail,
 } from "../../utils/txHandler";
 import {
   checkLastBootstrapFinalized,
@@ -35,6 +36,10 @@ import {
 import { MGA_ASSET_ID } from "../../utils/Constants";
 import { BN, MangataGenericEvent } from "@mangata-finance/sdk";
 import { setupUsers } from "../../utils/setup";
+
+jest.spyOn(console, "log").mockImplementation(jest.fn());
+jest.setTimeout(3500000);
+process.env.NODE_ENV = "test";
 
 let testUser1: User;
 let sudo: User;
@@ -61,31 +66,6 @@ async function changePromotionBootstrapPool(userName: User) {
   );
 
   return result;
-}
-
-async function checkSudoOperataionSuccess(
-  checkingEvent: MangataGenericEvent[]
-) {
-  const filterBootstrapEvent = checkingEvent.filter(
-    (extrinsicResult) => extrinsicResult.method === "Sudid"
-  );
-
-  const userBootstrapCall = filterBootstrapEvent[0].event.data[0].toString();
-
-  expect(userBootstrapCall).toContain("Ok");
-}
-
-async function checkSudoOperataionFail(
-  checkingEvent: MangataGenericEvent[],
-  expectedError: string
-) {
-  const filterBootstrapEvent = checkingEvent.filter(
-    (extrinsicResult) => extrinsicResult.method === "Sudid"
-  );
-
-  const BootstrapError = await getEventErrorfromSudo(filterBootstrapEvent);
-
-  expect(BootstrapError.method).toContain(expectedError);
 }
 
 beforeAll(async () => {

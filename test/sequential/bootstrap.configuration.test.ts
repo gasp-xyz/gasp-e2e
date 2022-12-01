@@ -33,8 +33,7 @@ import {
 import { setupUsers } from "../../utils/setup";
 
 jest.spyOn(console, "log").mockImplementation(jest.fn());
-jest.spyOn(console, "error").mockImplementation(jest.fn());
-jest.setTimeout(1500000);
+jest.setTimeout(3500000);
 process.env.NODE_ENV = "test";
 
 let testUser1: User;

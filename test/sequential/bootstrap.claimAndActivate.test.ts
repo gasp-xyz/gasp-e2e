@@ -21,11 +21,11 @@ import {
   getEnvironmentRequiredVars,
   getBlockNumber,
   waitForBootstrapStatus,
+  getUserBalanceOfToken,
 } from "../../utils/utils";
 import {
   getEventResultFromMangataTx,
   getBalanceOfPool,
-  getUserBalanceOfToken,
 } from "../../utils/txHandler";
 import { MGA_ASSET_ID } from "../../utils/Constants";
 import { BN } from "@mangata-finance/sdk";
@@ -37,7 +37,6 @@ import {
 } from "../../utils/Bootstrap";
 
 jest.spyOn(console, "log").mockImplementation(jest.fn());
-jest.spyOn(console, "error").mockImplementation(jest.fn());
 jest.setTimeout(3500000);
 process.env.NODE_ENV = "test";
 

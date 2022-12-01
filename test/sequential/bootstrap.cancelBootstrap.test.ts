@@ -17,13 +17,15 @@ import {
   getEnvironmentRequiredVars,
   waitForBootstrapStatus,
 } from "../../utils/utils";
-import { getEventErrorfromSudo } from "../../utils/txHandler";
+import {
+  checkSudoOperataionSuccess,
+  checkSudoOperataionFail,
+} from "../../utils/txHandler";
 import { MGA_ASSET_ID } from "../../utils/Constants";
 import { MangataGenericEvent } from "@mangata-finance/sdk";
 import { setupUsers } from "../../utils/setup";
 
 jest.spyOn(console, "log").mockImplementation(jest.fn());
-jest.spyOn(console, "error").mockImplementation(jest.fn());
 jest.setTimeout(3500000);
 process.env.NODE_ENV = "test";
 
@@ -40,27 +42,6 @@ const waitingPeriodWithPlan = 400;
 const waitingPeriodLessPlan = 15;
 const bootstrapPeriod = 30;
 const whitelistPeriod = 10;
-
-async function checkSudoOperataionSuccess(
-  checkingEvent: MangataGenericEvent[]
-) {
-  const filterBootstrapEvent = checkingEvent.filter(
-    (extrinsicResult) => extrinsicResult.method === "Sudid"
-  );
-
-  const userBootstrapCall = filterBootstrapEvent[0].event.data[0].toString();
-
-  expect(userBootstrapCall).toContain("Ok");
-}
-
-async function checkSudoOperataionFail(
-  checkingEvent: MangataGenericEvent[],
-  expectedError: string
-) {
-  const BootstrapError = await getEventErrorfromSudo(checkingEvent);
-
-  expect(BootstrapError.method).toContain(expectedError);
-}
 
 beforeAll(async () => {
   try {

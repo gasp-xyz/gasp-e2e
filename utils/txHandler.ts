@@ -76,15 +76,6 @@ export const getNextAssetId = async () => {
   return new BN(asset_id.toString());
 };
 
-export const getUserBalanceOfToken = async (tokenId: BN, account: User) => {
-  const api = getApi();
-  const tokenBalance = await api.query.tokens.accounts(
-    account.keyRingPair.address,
-    tokenId
-  );
-  return tokenBalance;
-};
-
 export const sudoIssueAsset = async (
   sudoAccount: KeyringPair,
   total_balance: BN,
@@ -189,6 +180,31 @@ export async function getEventErrorfromSudo(sudoEvent: MangataGenericEvent[]) {
     index: new BN(eventErrorIndex),
   });
   return sudoEventError;
+}
+
+export async function checkSudoOperataionSuccess(
+  checkingEvent: MangataGenericEvent[]
+) {
+  const filterBootstrapEvent = checkingEvent.filter(
+    (extrinsicResult) => extrinsicResult.method === "Sudid"
+  );
+
+  const userBootstrapCall = filterBootstrapEvent[0].event.data[0].toString();
+
+  expect(userBootstrapCall).toContain("Ok");
+}
+
+export async function checkSudoOperataionFail(
+  checkingEvent: MangataGenericEvent[],
+  expectedError: string
+) {
+  const filterBootstrapEvent = checkingEvent.filter(
+    (extrinsicResult) => extrinsicResult.method === "Sudid"
+  );
+
+  const BootstrapError = await getEventErrorfromSudo(filterBootstrapEvent);
+
+  expect(BootstrapError.method).toContain(expectedError);
 }
 
 function createEventResultfromExtrinsic(extrinsicResult: MangataGenericEvent) {

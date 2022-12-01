@@ -24,9 +24,12 @@ import {
   provisionBootstrap,
   scheduleBootstrap,
 } from "../../utils/tx";
-import { getEventResultFromMangataTx } from "../../utils/txHandler";
+import {
+  getEventResultFromMangataTx,
+  checkSudoOperataionSuccess,
+} from "../../utils/txHandler";
 import { BN } from "@polkadot/util";
-import { BN_ONE, MangataGenericEvent, toBN } from "@mangata-finance/sdk";
+import { BN_ONE, toBN } from "@mangata-finance/sdk";
 import { MGA_ASSET_ID } from "../../utils/Constants";
 import { setupApi } from "../../utils/setup";
 import { Sudo } from "../../utils/sudo";
@@ -43,18 +46,6 @@ let sudo: User;
 let testUser1: User;
 let eventResponse: EventResult;
 let bootstrapPool: any;
-
-async function checkSudoOperataionSuccess(
-  checkingEvent: MangataGenericEvent[]
-) {
-  const filterBootstrapEvent = checkingEvent.filter(
-    (extrinsicResult) => extrinsicResult.method === "Sudid"
-  );
-
-  const userBootstrapCall = filterBootstrapEvent[0].event.data[0].toString();
-
-  expect(userBootstrapCall).toContain("Ok");
-}
 
 async function runBootstrap(assetId: BN) {
   const api = getApi();

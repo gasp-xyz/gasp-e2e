@@ -282,6 +282,16 @@ export async function getTokensDiffForBlockAuthor(blockNumber: AnyNumber) {
   const freeBefore = hexToBn(JSON.parse(dataBefore.toString()).free);
   return freeAfter.sub(freeBefore);
 }
+
+export async function getUserBalanceOfToken(tokenId: BN, account: User) {
+  const api = getApi();
+  const tokenBalance = await api.query.tokens.accounts(
+    account.keyRingPair.address,
+    tokenId
+  );
+  return tokenBalance;
+}
+
 export async function getBlockNumber() {
   const api = await mangata?.getApi()!;
   return ((await api.query.system.number()) as any).toNumber();
