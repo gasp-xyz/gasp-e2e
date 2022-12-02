@@ -6,11 +6,7 @@
  */
 import { getApi, initApi } from "../../utils/api";
 import {
-  scheduleBootstrap,
-  provisionBootstrap,
-  provisionVestedBootstrap,
   getLiquidityAssetId,
-  claimAndActivateBootstrap,
   promotePool,
   vestingTransfer,
 } from "../../utils/tx";
@@ -20,7 +16,6 @@ import { User } from "../../utils/User";
 import {
   getEnvironmentRequiredVars,
   getBlockNumber,
-  waitForBootstrapStatus,
   getUserBalanceOfToken,
 } from "../../utils/utils";
 import {
@@ -34,6 +29,11 @@ import {
   checkLastBootstrapFinalized,
   createNewBootstrapCurrency,
   setupBootstrapTokensBalance,
+  scheduleBootstrap,
+  provisionBootstrap,
+  provisionVestedBootstrap,
+  claimAndActivateBootstrap,
+  waitForBootstrapStatus,
 } from "../../utils/Bootstrap";
 
 jest.spyOn(console, "log").mockImplementation(jest.fn());

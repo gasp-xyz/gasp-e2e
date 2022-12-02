@@ -5,33 +5,31 @@
  * @group sequential
  */
 import { getApi, initApi } from "../../utils/api";
+import { getLiquidityAssetId, getBalanceOfAsset } from "../../utils/tx";
 import {
-  scheduleBootstrap,
-  finalizeBootstrap,
-  updatePromoteBootstrapPool,
-  provisionBootstrap,
-  claimRewardsBootstrap,
-  getLiquidityAssetId,
-  getBalanceOfAsset,
-} from "../../utils/tx";
-import { EventResult, ExtrinsicResult } from "../../utils/eventListeners";
+  EventResult,
+  ExtrinsicResult,
+  waitSudoOperataionSuccess,
+  waitSudoOperataionFail,
+} from "../../utils/eventListeners";
 import { Keyring } from "@polkadot/api";
 import { User } from "../../utils/User";
-import {
-  getEnvironmentRequiredVars,
-  waitForBootstrapStatus,
-} from "../../utils/utils";
+import { getEnvironmentRequiredVars } from "../../utils/utils";
 import {
   getEventResultFromMangataTx,
   getBalanceOfPool,
-  checkSudoOperataionSuccess,
-  checkSudoOperataionFail,
 } from "../../utils/txHandler";
 import {
   checkLastBootstrapFinalized,
   createNewBootstrapCurrency,
   setupBootstrapTokensBalance,
   getPromotionBootstrapPoolState,
+  scheduleBootstrap,
+  finalizeBootstrap,
+  updatePromoteBootstrapPool,
+  provisionBootstrap,
+  claimRewardsBootstrap,
+  waitForBootstrapStatus,
 } from "../../utils/Bootstrap";
 import { MGA_ASSET_ID } from "../../utils/Constants";
 import { BN, MangataGenericEvent } from "@mangata-finance/sdk";
@@ -98,10 +96,10 @@ test("bootstrap - bootstrap - Check if we can change promoteBootstrapPool in eac
     bootstrapPeriod,
     whitelistPeriod
   );
-  await checkSudoOperataionSuccess(scheduleBootstrapBefPlan);
+  await waitSudoOperataionSuccess(scheduleBootstrapBefPlan);
 
   checkingUpdatingPool = await changePromotionBootstrapPool(sudo);
-  await checkSudoOperataionSuccess(checkingUpdatingPool);
+  await waitSudoOperataionSuccess(checkingUpdatingPool);
 
   const scheduleBootstrapAftPlan = await scheduleBootstrap(
     sudo,
@@ -111,20 +109,20 @@ test("bootstrap - bootstrap - Check if we can change promoteBootstrapPool in eac
     bootstrapPeriod,
     whitelistPeriod
   );
-  await checkSudoOperataionSuccess(scheduleBootstrapAftPlan);
+  await waitSudoOperataionSuccess(scheduleBootstrapAftPlan);
 
   checkingUpdatingPool = await changePromotionBootstrapPool(sudo);
-  await checkSudoOperataionSuccess(checkingUpdatingPool);
+  await waitSudoOperataionSuccess(checkingUpdatingPool);
 
   await waitForBootstrapStatus("Whitelist", waitingPeriodLessPlan);
 
   checkingUpdatingPool = await changePromotionBootstrapPool(sudo);
-  await checkSudoOperataionSuccess(checkingUpdatingPool);
+  await waitSudoOperataionSuccess(checkingUpdatingPool);
 
   await waitForBootstrapStatus("Public", waitingPeriodLessPlan);
 
   checkingUpdatingPool = await changePromotionBootstrapPool(sudo);
-  await checkSudoOperataionSuccess(checkingUpdatingPool);
+  await waitSudoOperataionSuccess(checkingUpdatingPool);
 
   const provisionPublicBootstrapCurrency = await provisionBootstrap(
     testUser1,
@@ -145,7 +143,7 @@ test("bootstrap - bootstrap - Check if we can change promoteBootstrapPool in eac
   await waitForBootstrapStatus("Finished", bootstrapPeriod);
 
   checkingUpdatingPool = await changePromotionBootstrapPool(sudo);
-  await checkSudoOperataionFail(checkingUpdatingPool, "BootstrapFinished");
+  await waitSudoOperataionFail(checkingUpdatingPool, "BootstrapFinished");
 
   bootstrapPool = await getBalanceOfPool(MGA_ASSET_ID, bootstrapCurrency);
   const bootstrapPoolBalance = bootstrapPool[0];
@@ -180,7 +178,7 @@ test("bootstrap - bootstrap - Check if we can change promoteBootstrapPool in eac
   }
 
   const bootstrapFinalize = await finalizeBootstrap(sudo);
-  await checkSudoOperataionSuccess(bootstrapFinalize);
+  await waitSudoOperataionSuccess(bootstrapFinalize);
 
   await checkLastBootstrapFinalized(sudo);
 });

@@ -5,22 +5,21 @@
  * @group sequential
  */
 import { getApi, initApi } from "../../utils/api";
-import { scheduleBootstrap, cancelRunningBootstrap } from "../../utils/tx";
 import { Keyring } from "@polkadot/api";
 import { User } from "../../utils/User";
 import {
   checkLastBootstrapFinalized,
   createNewBootstrapCurrency,
   setupBootstrapTokensBalance,
-} from "../../utils/Bootstrap";
-import {
-  getEnvironmentRequiredVars,
+  scheduleBootstrap,
+  cancelRunningBootstrap,
   waitForBootstrapStatus,
-} from "../../utils/utils";
+} from "../../utils/Bootstrap";
+import { getEnvironmentRequiredVars } from "../../utils/utils";
 import {
-  checkSudoOperataionSuccess,
-  checkSudoOperataionFail,
-} from "../../utils/txHandler";
+  waitSudoOperataionSuccess,
+  waitSudoOperataionFail,
+} from "../../utils/eventListeners";
 import { MGA_ASSET_ID } from "../../utils/Constants";
 import { MangataGenericEvent } from "@mangata-finance/sdk";
 import { setupUsers } from "../../utils/setup";
@@ -73,10 +72,10 @@ test("bootstrap - Check that we can cancel bootstrap before planned", async () =
     bootstrapPeriod,
     whitelistPeriod
   );
-  await checkSudoOperataionSuccess(scheduleBootstrapEvent);
+  await waitSudoOperataionSuccess(scheduleBootstrapEvent);
 
   cancelBootstrapEvent = await cancelRunningBootstrap(sudo);
-  await checkSudoOperataionSuccess(cancelBootstrapEvent);
+  await waitSudoOperataionSuccess(cancelBootstrapEvent);
 });
 
 test("bootstrap - Check that we can not cancel bootstrap when bootstrap event already planned or started", async () => {
@@ -88,11 +87,11 @@ test("bootstrap - Check that we can not cancel bootstrap when bootstrap event al
     bootstrapPeriod,
     whitelistPeriod
   );
-  await checkSudoOperataionSuccess(scheduleBootstrapEvent);
+  await waitSudoOperataionSuccess(scheduleBootstrapEvent);
 
   //check cthat bootstrap cannot be canceled less than 300 blocks before the start
   cancelBootstrapEvent = await cancelRunningBootstrap(sudo);
-  await checkSudoOperataionFail(
+  await waitSudoOperataionFail(
     cancelBootstrapEvent,
     "TooLateToUpdateBootstrap"
   );
@@ -101,17 +100,17 @@ test("bootstrap - Check that we can not cancel bootstrap when bootstrap event al
 
   //check that bootstrap cannot be canceled after the start
   cancelBootstrapEvent = await cancelRunningBootstrap(sudo);
-  await checkSudoOperataionFail(cancelBootstrapEvent, "AlreadyStarted");
+  await waitSudoOperataionFail(cancelBootstrapEvent, "AlreadyStarted");
 
   await waitForBootstrapStatus("Public", waitingPeriodLessPlan);
 
   cancelBootstrapEvent = await cancelRunningBootstrap(sudo);
-  await checkSudoOperataionFail(cancelBootstrapEvent, "AlreadyStarted");
+  await waitSudoOperataionFail(cancelBootstrapEvent, "AlreadyStarted");
 
   await waitForBootstrapStatus("Finished", bootstrapPeriod);
 
   cancelBootstrapEvent = await cancelRunningBootstrap(sudo);
-  await checkSudoOperataionFail(cancelBootstrapEvent, "AlreadyStarted");
+  await waitSudoOperataionFail(cancelBootstrapEvent, "AlreadyStarted");
 
   // finalaze bootstrap
   await checkLastBootstrapFinalized(sudo);

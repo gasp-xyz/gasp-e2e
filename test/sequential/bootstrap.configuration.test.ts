@@ -4,20 +4,11 @@
  * @group sequential
  */
 import { getApi, initApi } from "../../utils/api";
-import {
-  scheduleBootstrap,
-  provisionBootstrap,
-  claimRewardsBootstrap,
-  getBalanceOfAsset,
-  getLiquidityAssetId,
-} from "../../utils/tx";
+import { getBalanceOfAsset, getLiquidityAssetId } from "../../utils/tx";
 import { EventResult, ExtrinsicResult } from "../../utils/eventListeners";
 import { Keyring } from "@polkadot/api";
 import { User } from "../../utils/User";
-import {
-  getEnvironmentRequiredVars,
-  waitForBootstrapStatus,
-} from "../../utils/utils";
+import { getEnvironmentRequiredVars } from "../../utils/utils";
 import {
   getEventResultFromMangataTx,
   getBalanceOfPool,
@@ -29,6 +20,10 @@ import {
   checkLastBootstrapFinalized,
   createNewBootstrapCurrency,
   setupBootstrapTokensBalance,
+  scheduleBootstrap,
+  provisionBootstrap,
+  claimRewardsBootstrap,
+  waitForBootstrapStatus,
 } from "../../utils/Bootstrap";
 import { setupUsers } from "../../utils/setup";
 

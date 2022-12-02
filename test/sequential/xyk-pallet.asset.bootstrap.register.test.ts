@@ -6,10 +6,7 @@
  * @group sequential
  */
 import { getApi } from "../../utils/api";
-import {
-  getEnvironmentRequiredVars,
-  waitForBootstrapStatus,
-} from "../../utils/utils";
+import { getEnvironmentRequiredVars } from "../../utils/utils";
 import { User } from "../../utils/User";
 import { Keyring } from "@polkadot/api";
 import { Assets } from "../../utils/Assets";
@@ -17,17 +14,16 @@ import {
   EventResult,
   ExtrinsicResult,
   findEventData,
+  waitSudoOperataionSuccess,
 } from "../../utils/eventListeners";
 import {
   claimRewardsBootstrap,
   finalizeBootstrap,
   provisionBootstrap,
   scheduleBootstrap,
-} from "../../utils/tx";
-import {
-  getEventResultFromMangataTx,
-  checkSudoOperataionSuccess,
-} from "../../utils/txHandler";
+  waitForBootstrapStatus,
+} from "../../utils/Bootstrap";
+import { getEventResultFromMangataTx } from "../../utils/txHandler";
 import { BN } from "@polkadot/util";
 import { BN_ONE, toBN } from "@mangata-finance/sdk";
 import { MGA_ASSET_ID } from "../../utils/Constants";
@@ -57,7 +53,7 @@ async function runBootstrap(assetId: BN) {
     bootstrapPeriod,
     whitelistPeriod
   );
-  await checkSudoOperataionSuccess(scheduleBootstrapEvent);
+  await waitSudoOperataionSuccess(scheduleBootstrapEvent);
 
   await sudo.mint(assetId, testUser1, toBN("1", 13));
 
@@ -90,7 +86,7 @@ async function runBootstrap(assetId: BN) {
   expect(eventResponse.state).toEqual(ExtrinsicResult.ExtrinsicSuccess);
 
   const bootstrapFinalize = await finalizeBootstrap(sudo);
-  await checkSudoOperataionSuccess(bootstrapFinalize);
+  await waitSudoOperataionSuccess(bootstrapFinalize);
 }
 
 beforeAll(async () => {

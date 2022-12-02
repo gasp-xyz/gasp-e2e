@@ -5,7 +5,10 @@ import { api, Extrinsic } from "./setup";
 import { User } from "./User";
 import { BN } from "@polkadot/util";
 import { MangataGenericEvent, signTx } from "@mangata-finance/sdk";
-import { getEventResultFromMangataTx } from "./txHandler";
+import {
+  getEventResultFromMangataTx,
+  getEventErrorfromSudo,
+} from "./txHandler";
 
 // lets create a enum for different status.
 export enum ExtrinsicResult {
@@ -130,4 +133,29 @@ export function filterEventData(
 
 export function findEventData(result: MangataGenericEvent[], method: string) {
   return filterEventData(result, method)[0];
+}
+
+export async function waitSudoOperataionSuccess(
+  checkingEvent: MangataGenericEvent[]
+) {
+  const filterBootstrapEvent = checkingEvent.filter(
+    (extrinsicResult) => extrinsicResult.method === "Sudid"
+  );
+
+  const userBootstrapCall = filterBootstrapEvent[0].event.data[0].toString();
+
+  expect(userBootstrapCall).toContain("Ok");
+}
+
+export async function waitSudoOperataionFail(
+  checkingEvent: MangataGenericEvent[],
+  expectedError: string
+) {
+  const filterBootstrapEvent = checkingEvent.filter(
+    (extrinsicResult) => extrinsicResult.method === "Sudid"
+  );
+
+  const BootstrapError = await getEventErrorfromSudo(filterBootstrapEvent);
+
+  expect(BootstrapError.method).toContain(expectedError);
 }

@@ -182,31 +182,6 @@ export async function getEventErrorfromSudo(sudoEvent: MangataGenericEvent[]) {
   return sudoEventError;
 }
 
-export async function checkSudoOperataionSuccess(
-  checkingEvent: MangataGenericEvent[]
-) {
-  const filterBootstrapEvent = checkingEvent.filter(
-    (extrinsicResult) => extrinsicResult.method === "Sudid"
-  );
-
-  const userBootstrapCall = filterBootstrapEvent[0].event.data[0].toString();
-
-  expect(userBootstrapCall).toContain("Ok");
-}
-
-export async function checkSudoOperataionFail(
-  checkingEvent: MangataGenericEvent[],
-  expectedError: string
-) {
-  const filterBootstrapEvent = checkingEvent.filter(
-    (extrinsicResult) => extrinsicResult.method === "Sudid"
-  );
-
-  const BootstrapError = await getEventErrorfromSudo(filterBootstrapEvent);
-
-  expect(BootstrapError.method).toContain(expectedError);
-}
-
 function createEventResultfromExtrinsic(extrinsicResult: MangataGenericEvent) {
   const eventResult = extrinsicResult.event.toHuman();
   switch (eventResult.method) {

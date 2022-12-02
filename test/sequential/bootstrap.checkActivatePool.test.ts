@@ -5,18 +5,12 @@
  * @group sequential
  */
 import { getApi, initApi, getMangataInstance } from "../../utils/api";
-import {
-  scheduleBootstrap,
-  provisionBootstrap,
-  getLiquidityAssetId,
-  claimAndActivateBootstrap,
-} from "../../utils/tx";
+import { getLiquidityAssetId } from "../../utils/tx";
 import { EventResult, ExtrinsicResult } from "../../utils/eventListeners";
 import { Keyring } from "@polkadot/api";
 import { User } from "../../utils/User";
 import {
   getEnvironmentRequiredVars,
-  waitForBootstrapStatus,
   getUserBalanceOfToken,
 } from "../../utils/utils";
 import {
@@ -30,6 +24,10 @@ import {
   checkLastBootstrapFinalized,
   createNewBootstrapCurrency,
   setupBootstrapTokensBalance,
+  scheduleBootstrap,
+  provisionBootstrap,
+  claimAndActivateBootstrap,
+  waitForBootstrapStatus,
 } from "../../utils/Bootstrap";
 
 jest.spyOn(console, "log").mockImplementation(jest.fn());
