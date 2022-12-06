@@ -210,8 +210,8 @@ export class Assets {
     return Sudo.sudo(
       api.tx.assetRegistry.updateAsset(
         assetId,
-        update.decimals,
         // @ts-ignore
+        update.decimals,
         api.createType("Vec<u8>", update.name),
         api.createType("Vec<u8>", update.symbol),
         0,

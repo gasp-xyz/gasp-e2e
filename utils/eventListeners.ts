@@ -167,35 +167,34 @@ export async function waitSudoOperataionFail(
 export const waitForEvent = async (
   api: ApiPromise,
   method: string,
-  blocks: number = 3
+  blocks: number = 10
 ): Promise<void> => {
   return new Promise(async (resolve, reject) => {
     let counter = 0;
-    const unsub = await api.rpc.chain.getFinalizedHead(async (head) => {
-      await api.query.system.events((events) => {
-        counter++;
-        testLog
-          .getLog()
-          .info(
-            `await event check for '${method}', attempt ${counter}, head ${head}`
-          );
-        events.forEach(({ phase, event: { data, method, section } }) => {
-          logEvent(phase, data, method, section);
-        });
-        const event = _.find(
-          events,
-          ({ event }) => `${event.section}.${event.method}` === method
+    const unsub = await api.rpc.chain.subscribeFinalizedHeads(async (head) => {
+      const events = await api.query.system.events.at(head.hash);
+      counter++;
+      testLog
+        .getLog()
+        .info(
+          `await event check for '${method}', attempt ${counter}, head ${head}`
         );
-        if (event) {
-          resolve();
-          unsub();
-          // } else {
-          //   reject(new Error("event not found"));
-        }
-        if (counter === blocks) {
-          reject(`method ${method} not found within blocks limit`);
-        }
+      events.forEach(({ phase, event: { data, method, section } }) => {
+        logEvent(phase, data, method, section);
       });
+      const event = _.find(
+        events,
+        ({ event }) => `${event.section}.${event.method}` === method
+      );
+      if (event) {
+        resolve();
+        unsub();
+        // } else {
+        //   reject(new Error("event not found"));
+      }
+      if (counter === blocks) {
+        reject(`method ${method} not found within blocks limit`);
+      }
     });
   });
 };
@@ -249,3 +248,25 @@ export const signSendSuccess = async (
     }
   });
 };
+
+export const waitForRewards = async (user: User, liquidityAssetId: BN) =>
+  new Promise(async (resolve) => {
+    const unsub = await api.rpc.chain.subscribeNewHeads(async (header) => {
+      const address = user.keyRingPair.address;
+      // @ts-ignore
+      const { price } = await api.rpc.xyk.calculate_rewards_amount_v2(
+        user.keyRingPair.address,
+        liquidityAssetId
+      );
+      if (price.gtn(0)) {
+        unsub();
+        resolve({});
+      } else {
+        testLog
+          .getLog()
+          .info(
+            `#${header.number}  ${address} (LP${liquidityAssetId}) - no rewards yet`
+          );
+      }
+    });
+  });

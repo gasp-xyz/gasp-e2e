@@ -1,15 +1,63 @@
 import { ApiPromise, WsProvider } from "@polkadot/api";
-import { Extrinsic } from "../../setup";
+import {
+  AssetSpec,
+  ChainId,
+  ChainSpecs,
+  TRANSFER_INSTRUCTIONS,
+} from "../../ChainSpecs";
+import { BN } from "@polkadot/util";
+import { User } from "../../User";
 
 export class OakApi {
   api: ApiPromise;
 
-  addChainCurrencyData(paraId: number, currencyId: number): Extrinsic {
+  addChainCurrencyData(paraId: number, currencyId: number): any {
     return this.api.tx.xcmpHandler.addChainCurrencyData(paraId, currencyId, {
       native: false,
       feePerSecond: 537_600_000_000,
       instructionWeight: 150_000_000 * 6,
     });
+  }
+
+  xTokenTransfer(
+    toChain: ChainId,
+    assetId: AssetSpec,
+    amount: BN,
+    toUser: User
+  ): any {
+    expect(ChainSpecs.has(toChain));
+    const chain = ChainSpecs.get(toChain)!;
+    expect(chain.assets.has(assetId));
+
+    return this.api.tx.xTokens.transferMultiasset(
+      {
+        V1: {
+          id: {
+            Concrete: assetId.location,
+          },
+          fun: {
+            Fungible: amount,
+          },
+        },
+      },
+      {
+        V1: {
+          parents: 1,
+          interior: {
+            X2: [
+              { Parachain: chain.parachain },
+              {
+                AccountId32: {
+                  network: "Any",
+                  id: toUser.keyRingPair.publicKey,
+                },
+              },
+            ],
+          },
+        },
+      },
+      TRANSFER_INSTRUCTIONS * chain.unitCostWeight
+    );
   }
 
   constructor(api: ApiPromise) {

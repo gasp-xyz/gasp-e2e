@@ -1,11 +1,12 @@
 import { getEnvironmentRequiredVars } from "../utils/utils";
 import { User } from "../utils/User";
-import { alice, api, setupApi, setupUsers, sudo } from "../utils/setup";
+import { alice, api, keyring, setupApi, setupUsers } from "../utils/setup";
 import { testLog } from "../utils/Logger";
 import {
-  waitForEvent,
   signSendFinalized,
   signSendSuccess,
+  waitForEvent,
+  waitForRewards,
 } from "../utils/eventListeners";
 import { Assets } from "../utils/Assets";
 import { Sudo } from "../utils/sudo";
@@ -14,136 +15,124 @@ import { BN_MILLION, BN_ONE, BN_THOUSAND, BN_ZERO } from "@mangata-finance/sdk";
 import { getNextAssetId } from "../utils/tx";
 import { BN } from "@polkadot/util";
 import { OakApi } from "../utils/Framework/Node/OakNode";
+import { xToken } from "../utils/xtoken";
+import {
+  AssetId,
+  ChainId,
+  ChainSpecs,
+  WEIGHT_IN_SECONDS,
+} from "../utils/ChainSpecs";
 
-// const HOUR = 60 * 60;
-const weightInSeconds = new BN(1_000_000_000_000);
+const TUR_ID = new BN(7);
+const TUR_ED = ChainSpecs.get(ChainId.Tur)!.assets.get(AssetId.Tur)!.ed;
 
 /**
  * @group oak-network
  *
  * https://docs.google.com/document/d/1LSQyZKu5G_xHB-FXyDrYCqfmnq-R2euJw_jHpeHn4us/edit#heading=h.cr78w1wk9jwg
  */
-describe("auto-compound story: provide_liquidity_with_conversion XCM task", () => {
-  let user1: User;
+describe("auto-compound story: auto compound rewards XCM task", () => {
+  let userMangata: User;
   let oakApi: OakApi;
+  let lpId: BN;
 
   beforeAll(async () => {
     await setupApi();
-    [user1] = setupUsers();
+    setupUsers();
+    userMangata = new User(keyring, "//Pistachio");
 
     const { oakUri } = getEnvironmentRequiredVars();
     oakApi = await OakApi.create(oakUri!);
 
-    // needs to be call just once before the test, please comment afterwards
-    await setupAssets();
+    // init liquidity pool id to last id
+    lpId = (await getNextAssetId()).sub(BN_ONE);
+    // needs to be call just once before the test, please comment afterwards & uncomment LP init
+    try {
+      await setupAssets();
+    } catch (e) {
+      testLog.getLog().error(e);
+    }
   });
 
   async function setupAssets() {
-    testLog.getLog().info("running section: register token on OAK");
+    testLog
+      .getLog()
+      .info("running section: send TUR to mangata for pool creation");
+
     await signSendSuccess(
       oakApi.api,
-      oakApi.api.tx.sudo.sudo(
-        oakApi.api.tx.assetRegistry.registerAsset(
-          {
-            decimals: 10,
-            name: oakApi.api.createType("Vec<u8>", "Native"),
-            symbol: oakApi.api.createType("Vec<u8>", "TUR"),
-            existentialDeposit: 0,
-            location: { V1: { parents: 0, interior: "Here" } },
-            additional: { feePerSecond: 419000000000 },
-          },
-          // @ts-ignore
-          undefined
+      oakApi.api.tx.utility.batchAll([
+        oakApi.xTokenTransfer(
+          ChainId.Mg,
+          AssetId.Tur,
+          AssetId.Tur.unit.mul(new BN(10_000)),
+          userMangata
+        ),
+        // existential deposit into mangata account on OAK, when paying fees account cannot be reaped
+        oakApi.api.tx.balances.transfer(
+          userMangata.keyRingPair.address,
+          TUR_ED
+        ),
+      ]),
+      alice
+    );
+
+    testLog.getLog().info("running section: setup pools & rewards for MG-TUR");
+    const initIssuance = [
+      Sudo.sudo(api.tx.issuance.finalizeTge()),
+      Sudo.sudo(api.tx.issuance.initIssuanceConfig()),
+      Assets.mintNative(userMangata, AssetId.Mgx.unit.mul(BN_MILLION)),
+    ];
+
+    lpId = await getNextAssetId();
+    const initPool = [
+      Sudo.sudoAs(
+        userMangata,
+        Xyk.createPool(
+          BN_ZERO,
+          AssetId.Mgx.unit.mul(BN_THOUSAND),
+          TUR_ID,
+          AssetId.Tur.unit.mul(BN_THOUSAND)
         )
       ),
-      alice
-    );
-
-    testLog.getLog().info("running section: register token on MG");
-
-    await signSendFinalized(
-      Assets.registerAsset(
-        "Turing",
-        "TUR",
-        10,
-        {
-          parents: 1,
-          interior: { X1: { Parachain: 2114 } },
-        },
-        537600000000
+      Xyk.updatePoolPromotion(lpId, 1),
+      Sudo.sudoAs(
+        userMangata,
+        Xyk.activateLiquidity(lpId, new BN("500000005000000000000"))
       ),
-      sudo
+    ];
+
+    const proxy = await oakApi.api.rpc.xcmpHandler.crossChainAccount(
+      userMangata.keyRingPair.address
     );
-
-    testLog.getLog().info("running section: setup currency");
-
-    await signSendSuccess(
-      oakApi.api,
-      oakApi.api.tx.sudo.sudo(oakApi.addChainCurrencyData(2110, 1)),
-      alice
-    );
-
-    // send some TURs to our chain, so we can mint & send them back, otherwise XCM would fail
-    await signSendSuccess(
-      oakApi.api,
-      oakApi.api.tx.xTokens.transfer(
-        1,
-        1_000_000_000_000_000,
-        {
-          V1: {
-            parents: 1,
-            interior: {
-              X2: [
-                { Parachain: 2110 },
-                {
-                  AccountId32: {
-                    network: "Any",
-                    id: alice.keyRingPair.publicKey,
-                  },
-                },
-              ],
-            },
-          },
-        },
-        4_000_000_000
+    const proxyCall = [
+      Sudo.sudoAs(
+        userMangata,
+        api.tx.proxy.addProxy(proxy, { AutoCompound: 0 }, 0)
       ),
-      alice
+    ];
+
+    await Sudo.batchAsSudoFinalized(
+      ...[initIssuance, initPool, proxyCall].flat()
     );
+
+    await waitForRewards(userMangata, lpId);
   }
 
   it("auto-compound: schedule & execute task", async () => {
     testLog.getLog().info("running section: prepare compound extrinsic");
 
-    // @ts-ignore
-    const proxy = await oakApi.api.rpc.xcmpHandler.crossChainAccount(
-      user1.keyRingPair.address
-    );
-    const assetId = await getNextAssetId();
-    const poolId = assetId.add(BN_ONE);
-    await Sudo.batchAsSudoFinalized(
-      Assets.mintNative(user1),
-      Assets.issueToken(user1),
-      Sudo.sudoAs(user1, api.tx.proxy.addProxy(proxy, { AutoCompound: 0 }, 0)),
-      Sudo.sudoAs(
-        user1,
-        Xyk.createPool(BN_ZERO, BN_MILLION, assetId, BN_MILLION)
-      )
-    );
-
-    // it is complex to set up the chain with predefined rewards, it is enough to test without it,
-    // we add 1_000 MGR into the poolId
     const tx = api.tx.proxy.proxy(
-      user1.keyRingPair.address,
+      userMangata.keyRingPair.address,
       undefined,
-      api.tx.xyk.provideLiquidityWithConversion(poolId, 0, BN_THOUSAND)
+      api.tx.xyk.compoundRewards(lpId, BN_MILLION)
     );
     const encodedTxHex = tx.unwrap().toHex();
-    const encodedTxInfo = await tx.paymentInfo(user1.keyRingPair);
+    const encodedTxInfo = await tx.paymentInfo(userMangata.keyRingPair);
 
     testLog.getLog().info(encodedTxHex);
     testLog.getLog().info("running section: schedule task: " + encodedTxHex);
 
-    // @ts-ignore
     const taskIdLog = await oakApi.api.rpc.automationTime.generateTaskId(
       alice.keyRingPair.address,
       "compound"
@@ -162,89 +151,62 @@ describe("auto-compound story: provide_liquidity_with_conversion XCM task", () =
       // destination para id
       2110,
       // currency id - the registered TUR in this case
-      1,
+      0,
       // encoded call
       oakApi.api.createType("Vec<u8>", encodedTxHex),
       // extrinsic weight
       encodedTxInfo.weight
     );
 
-    const info = await txCreate.paymentInfo(user1.keyRingPair);
+    const info = await txCreate.paymentInfo(userMangata.keyRingPair);
     const currencyData =
-      await oakApi.api.query.xcmpHandler.xcmChainCurrencyData(2110, 1);
+      await oakApi.api.query.xcmpHandler.xcmChainCurrencyData(2110, 0);
     const totalWeight = new BN(encodedTxInfo.weight).add(
-      // @ts-ignore
       new BN(currencyData.unwrap().instructionWeight)
     );
     const taskExecutionFee = totalWeight
-      // @ts-ignore
       .mul(new BN(currencyData.unwrap().feePerSecond))
-      .div(weightInSeconds);
+      .div(WEIGHT_IN_SECONDS);
 
-    // const xcmExecutionFee = new BN(4_000_000_000) // TUR base unit cost weight * 4 instructions in transfer
-    //   .mul(new BN(419000000000)) // TUR fps
-    //   .div(weightInSeconds);
+    const xcmExecutionFee = xToken.xcmTransferFee(ChainId.Tur, AssetId.Tur);
 
     const automationTimeFee =
-      // @ts-ignore
       await oakApi.api.rpc.automationTime.getTimeAutomationFees("XCMP", 1);
 
     const totalFees = new BN(info.partialFee)
+      // compound tx fee
       .add(taskExecutionFee.mul(new BN(executions.length)))
+      // task execution fee
       .add(new BN(automationTimeFee))
-      //  existential deposit of 10 TUR
-      .add(new BN(10_0000000000));
-    // .add(xcmExecutionFee);
+      // xcm transfer to turing fee
+      .add(xcmExecutionFee);
 
     testLog.getLog().info("running section: fees to TUR network: " + totalFees);
 
-    // do the TUR swap, we just simulate by minting
+    // do the TUR swap
     // and send them over to TUR chain
-    /*
-    const turAssetId = new BN(7);
-    await Sudo.batchAsSudoFinalized(
-      Assets.mintToken(turAssetId, user1, totalFees),
-      Sudo.sudoAs(
-        user1,
-        api.tx.xTokens.transfer(
-          turAssetId,
-          totalFees,
-          {
-            V1: {
-              parents: 1,
-              interior: {
-                X2: [
-                  { Parachain: 2114 },
-                  {
-                    AccountId32: {
-                      network: "Any",
-                      id: user1.keyRingPair.publicKey,
-                    },
-                  },
-                ],
-              },
-            },
-          },
-          4_000_000_000
-        )
-      )
-    );
-*/
-
-    // use direct transfer instead, xcm is broken in this setup
-    await signSendSuccess(
-      oakApi.api,
-      oakApi.api.tx.balances.transfer(user1.keyRingPair.address, totalFees),
-      alice
+    // get paymentInfo for this extrinsic and show to user the cost on managata
+    await signSendFinalized(
+      api.tx.utility.batchAll([
+        Xyk.buyAsset(BN_ZERO, TUR_ID, totalFees),
+        xToken.transfer(ChainId.Tur, AssetId.Tur, totalFees, userMangata),
+      ]),
+      userMangata
     );
 
-    await signSendSuccess(oakApi.api, txCreate, user1);
+    await signSendSuccess(oakApi.api, txCreate, userMangata);
 
     testLog.getLog().info("running section: await execute task");
     // check the xcm automation success on oak
     await waitForEvent(oakApi.api, "automationTime.XcmpTaskSucceeded");
     // check that we have minted some liquidity
     await waitForEvent(api, "xyk.LiquidityMinted");
+
+    const balance = (
+      await oakApi.api.query.system.account(userMangata.keyRingPair.address)
+    ).data.free;
+
+    expect(TUR_ED).bnEqual(balance);
   });
 });
 
@@ -253,7 +215,7 @@ describe("auto-compound story: provide_liquidity_with_conversion XCM task", () =
  *
  * not a test, just print various fees taking place
  */
-describe("auto-compound story: check all fees", () => {
+describe.skip("auto-compound story: check all fees", () => {
   let user1: User;
   let oakApi: OakApi;
 
@@ -276,7 +238,7 @@ describe("auto-compound story: check all fees", () => {
     const tx = api.tx.proxy.proxy(
       user1.keyRingPair.address,
       undefined,
-      api.tx.xyk.provideLiquidityWithConversion(1, 0, BN_THOUSAND)
+      api.tx.xyk.compoundRewards(8, BN_MILLION)
     );
     const encodedCall = tx.unwrap().toHex();
     const weight = await tx
@@ -288,11 +250,11 @@ describe("auto-compound story: check all fees", () => {
         // task id
         oakApi.api.createType("Vec<u8>", "compound"),
         // intervals for task execution, 0 == immediate execution, only with 'features=dev_queue' oak build
-        [0],
+        { Fixed: { executionTimes: [0] } },
         // destination para id
         2110,
         // currency id - the registered TUR in this case
-        1,
+        0,
         // encoded call
         oakApi.api.createType("Vec<u8>", encodedCall),
         // extrinsic weight
@@ -306,7 +268,7 @@ describe("auto-compound story: check all fees", () => {
       );
 
     const currencyData =
-      await oakApi.api.query.xcmpHandler.xcmChainCurrencyData(2110, 1);
+      await oakApi.api.query.xcmpHandler.xcmChainCurrencyData(2110, 0);
     // @ts-ignore
     const totalWeight = weight + currencyData.unwrap().instructionWeight;
     const fee =
