@@ -178,61 +178,6 @@ export class Assets {
       )
     );
   }
-
-  static registerAsset(
-    name: string,
-    symbol: string,
-    decimals: number,
-    // location?: MultiLocation,
-    location?: object,
-    feePerSecond?: number,
-    assetId?: number
-  ): Extrinsic {
-    return Sudo.sudo(
-      api.tx.assetRegistry.registerAsset(
-        {
-          decimals: decimals,
-          name: api.createType("Vec<u8>", name),
-          symbol: api.createType("Vec<u8>", symbol),
-          existentialDeposit: 0,
-          location: location ? { V1: location } : undefined,
-          additional: feePerSecond
-            ? { xcm: { feePerSecond: feePerSecond } }
-            : undefined,
-        },
-        // @ts-ignore
-        assetId
-      )
-    );
-  }
-
-  static updateAsset(assetId: number, update: UpdateAsset): Extrinsic {
-    return Sudo.sudo(
-      api.tx.assetRegistry.updateAsset(
-        assetId,
-        // @ts-ignore
-        update.decimals,
-        api.createType("Vec<u8>", update.name),
-        api.createType("Vec<u8>", update.symbol),
-        0,
-        update.location
-          ? { V1: update.location }
-          : api.createType("Vec<u8>", "0x0100"),
-        update.feePerSecond
-          ? { xcm: { feePerSecond: update.feePerSecond } }
-          : undefined
-      )
-    );
-  }
-}
-
-interface UpdateAsset {
-  name?: string;
-  symbol?: string;
-  decimals?: number;
-  // location?: MultiLocation,
-  location?: object;
-  feePerSecond?: number;
 }
 
 interface Metadata {
