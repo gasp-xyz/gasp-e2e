@@ -23,7 +23,7 @@ import {
 import { BN_ONE, BN_ZERO } from "@mangata-finance/sdk";
 import { testLog } from "../../utils/Logger";
 import { Assets } from "../../utils/Assets";
-import { signSendFinalized } from "../../utils/eventListeners";
+import { signSendFinalized } from "../../utils/sign";
 
 const asset_amount1 = new BN(500000);
 const asset_amount2 = asset_amount1.div(new BN(2));

@@ -2,26 +2,22 @@ import { getEnvironmentRequiredVars } from "../utils/utils";
 import { User } from "../utils/User";
 import { alice, api, keyring, setupApi, setupUsers } from "../utils/setup";
 import { testLog } from "../utils/Logger";
-import {
-  signSendFinalized,
-  signSendSuccess,
-  waitForEvent,
-  waitForRewards,
-} from "../utils/eventListeners";
+import { waitForEvent, waitForRewards } from "../utils/eventListeners";
 import { Assets } from "../utils/Assets";
 import { Sudo } from "../utils/sudo";
 import { Xyk } from "../utils/xyk";
 import { BN_MILLION, BN_ONE, BN_THOUSAND, BN_ZERO } from "@mangata-finance/sdk";
 import { getNextAssetId } from "../utils/tx";
 import { BN } from "@polkadot/util";
-import { OakApi } from "../utils/Framework/Node/OakNode";
-import { xToken } from "../utils/xtoken";
+import { OakNode } from "../utils/Framework/Node/OakNode";
+import { XToken } from "../utils/xToken";
 import {
   AssetId,
   ChainId,
   ChainSpecs,
   WEIGHT_IN_SECONDS,
 } from "../utils/ChainSpecs";
+import { signSendFinalized, signSendSuccess } from "../utils/sign";
 
 const TUR_ID = new BN(7);
 const TUR_ED = ChainSpecs.get(ChainId.Tur)!.assets.get(AssetId.Tur)!.ed;
@@ -33,7 +29,7 @@ const TUR_ED = ChainSpecs.get(ChainId.Tur)!.assets.get(AssetId.Tur)!.ed;
  */
 describe("auto-compound story: auto compound rewards XCM task", () => {
   let userMangata: User;
-  let oakApi: OakApi;
+  let oakApi: OakNode;
   let lpId: BN;
 
   beforeAll(async () => {
@@ -42,7 +38,7 @@ describe("auto-compound story: auto compound rewards XCM task", () => {
     userMangata = new User(keyring, "//Pistachio");
 
     const { oakUri } = getEnvironmentRequiredVars();
-    oakApi = await OakApi.create(oakUri!);
+    oakApi = await OakNode.create(oakUri!);
 
     // init liquidity pool id to last id
     lpId = (await getNextAssetId()).sub(BN_ONE);
@@ -168,7 +164,7 @@ describe("auto-compound story: auto compound rewards XCM task", () => {
       .mul(new BN(currencyData.unwrap().feePerSecond))
       .div(WEIGHT_IN_SECONDS);
 
-    const xcmExecutionFee = xToken.xcmTransferFee(ChainId.Tur, AssetId.Tur);
+    const xcmExecutionFee = XToken.xcmTransferFee(ChainId.Tur, AssetId.Tur);
 
     const automationTimeFee =
       await oakApi.api.rpc.automationTime.getTimeAutomationFees("XCMP", 1);
@@ -189,7 +185,7 @@ describe("auto-compound story: auto compound rewards XCM task", () => {
     await signSendFinalized(
       api.tx.utility.batchAll([
         Xyk.buyAsset(BN_ZERO, TUR_ID, totalFees),
-        xToken.transfer(ChainId.Tur, AssetId.Tur, totalFees, userMangata),
+        XToken.transfer(ChainId.Tur, AssetId.Tur, totalFees, userMangata),
       ]),
       userMangata
     );
@@ -217,7 +213,7 @@ describe("auto-compound story: auto compound rewards XCM task", () => {
  */
 describe.skip("auto-compound story: check all fees", () => {
   let user1: User;
-  let oakApi: OakApi;
+  let oakApi: OakNode;
 
   beforeAll(async () => {
     await setupApi();
@@ -225,7 +221,7 @@ describe.skip("auto-compound story: check all fees", () => {
     user1 = alice;
 
     const { oakUri } = getEnvironmentRequiredVars();
-    oakApi = await OakApi.create(oakUri!);
+    oakApi = await OakNode.create(oakUri!);
   });
 
   it("auto-compound: proxy fee", async () => {

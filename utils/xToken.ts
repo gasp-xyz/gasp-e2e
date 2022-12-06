@@ -9,7 +9,7 @@ import {
 import { BN } from "@polkadot/util";
 import { User } from "./User";
 
-export class xToken {
+export class XToken {
   static xcmTransferFee(toChain: ChainId, assetId: AssetSpec): BN {
     expect(ChainSpecs.has(toChain));
     const chain = ChainSpecs.get(toChain)!;

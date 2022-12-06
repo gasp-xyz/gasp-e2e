@@ -8,7 +8,7 @@ import {
 import { BN } from "@polkadot/util";
 import { User } from "../../User";
 
-export class OakApi {
+export class OakNode {
   api: ApiPromise;
 
   addChainCurrencyData(paraId: number, currencyId: number): any {
@@ -64,7 +64,7 @@ export class OakApi {
     this.api = api;
   }
 
-  static async create(uri: string): Promise<OakApi> {
+  static async create(uri: string): Promise<OakNode> {
     const provider = new WsProvider(uri);
     const api = await ApiPromise.create({
       provider: provider,
@@ -163,6 +163,6 @@ export class OakApi {
         },
       },
     });
-    return new OakApi(api!);
+    return new OakNode(api!);
   }
 }
