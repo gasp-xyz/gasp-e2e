@@ -8,7 +8,7 @@ import { BN } from "@polkadot/util";
 import { env } from "process";
 import { SudoDB } from "./SudoDB";
 import { signSendAndWaitToFinishTx } from "./txHandler";
-import { getEnvironmentRequiredVars, getBlockNumber } from "./utils";
+import { getEnvironmentRequiredVars } from "./utils";
 import { Fees } from "./Fees";
 import { ETH_ASSET_ID, MGA_ASSET_ID, MGA_DEFAULT_LIQ_TOKEN } from "./Constants";
 import { Keyring } from "@polkadot/api";
@@ -444,13 +444,19 @@ export const createPool = async (
   return result;
 };
 
-export const promotePool = async (sudoAccount: KeyringPair, liqAssetId: BN) => {
+// for alignment purposes lets keep it backward comaptible
+// so every pool will have same weight
+export const promotePool = async (
+  sudoAccount: KeyringPair,
+  liqAssetId: BN,
+  weight: number = 100
+) => {
   testLog.getLog().info(`Promoting pool :${liqAssetId}`);
   const mangata = await getMangataInstance();
   const api = await mangata.getApi();
   const result = await signTx(
     api,
-    api.tx.sudo.sudo(api.tx.xyk.promotePool(liqAssetId)),
+    api.tx.sudo.sudo(api.tx.xyk.updatePoolPromotion(liqAssetId, weight)),
     sudoAccount,
     { nonce: await getCurrentNonce(sudoAccount.address) }
   );
@@ -856,100 +862,6 @@ export async function createPoolIfMissing(
       await sudo.promotePool(liqToken);
     }
   }
-}
-
-export async function scheduleBootstrap(
-  sudoUser: User,
-  mainCurrency: BN,
-  bootstrapCurrency: BN,
-  waitingPeriod: number,
-  bootstrapPeriod: number,
-  whitelistPeriod = 1,
-  provisionBootstrap = false
-) {
-  const api = getApi();
-  const bootstrapBlockNumber = (await getBlockNumber()) + waitingPeriod;
-  const result = await signTx(
-    api,
-    api.tx.sudo.sudo(
-      api.tx.bootstrap.scheduleBootstrap(
-        mainCurrency,
-        bootstrapCurrency,
-        bootstrapBlockNumber,
-        new BN(whitelistPeriod),
-        new BN(bootstrapPeriod),
-        [100, 1],
-        // @ts-ignore
-        provisionBootstrap
-      )
-    ),
-    sudoUser.keyRingPair,
-    {
-      nonce: await getCurrentNonce(sudoUser.keyRingPair.address),
-    }
-  );
-  return result;
-}
-
-export async function provisionBootstrap(
-  user: User,
-  bootstrapCurrency: BN,
-  bootstrapAmount: BN
-) {
-  const api = getApi();
-  const result = await signTx(
-    api,
-    api.tx.bootstrap.provision(bootstrapCurrency, bootstrapAmount),
-    user.keyRingPair
-  );
-  return result;
-}
-
-export async function provisionVestedBootstrap(
-  user: User,
-  bootstrapCurrency: BN,
-  bootstrapAmount: BN
-) {
-  const api = getApi();
-  const result = await signTx(
-    api,
-    api.tx.bootstrap.provisionVested(bootstrapCurrency, bootstrapAmount),
-    user.keyRingPair
-  );
-  return result;
-}
-
-export async function claimRewardsBootstrap(user: User) {
-  const api = getApi();
-  const result = await signTx(
-    api,
-    api.tx.bootstrap.claimLiquidityTokens(),
-    user.keyRingPair
-  );
-  return result;
-}
-
-export async function claimAndActivateBootstrap(user: User) {
-  const api = getApi();
-  const result = await signTx(
-    api,
-    api.tx.bootstrap.claimAndActivateLiquidityTokens(),
-    user.keyRingPair
-  );
-  return result;
-}
-
-export async function finalizeBootstrap(sudoUser: User) {
-  const api = getApi();
-  const result = await signTx(
-    api,
-    api.tx.sudo.sudo(api.tx.bootstrap.finalize(null)),
-    sudoUser.keyRingPair,
-    {
-      nonce: await getCurrentNonce(sudoUser.keyRingPair.address),
-    }
-  );
-  return result;
 }
 
 export async function vestingTransfer(

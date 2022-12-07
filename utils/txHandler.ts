@@ -3,7 +3,7 @@ import { getApi } from "./api";
 import { GenericEvent } from "@polkadot/types";
 import { Codec } from "@polkadot/types/types";
 import { KeyringPair } from "@polkadot/keyring/types";
-import { BN } from "@polkadot/util";
+import { BN, hexToU8a } from "@polkadot/util";
 import { SudoDB } from "./SudoDB";
 import { env } from "process";
 import { EventResult, ExtrinsicResult } from "./eventListeners";
@@ -154,6 +154,33 @@ export const getEventResultFromMangataTx = function (
   }
   return createEventResultfromExtrinsic(extrinsicResult as MangataGenericEvent);
 };
+
+export async function getEventErrorfromSudo(sudoEvent: MangataGenericEvent[]) {
+  const api = getApi();
+
+  const filteredEvent = sudoEvent.filter(
+    (extrinsicResult) => extrinsicResult.method === "Sudid"
+  );
+
+  if (filteredEvent[1] !== undefined) {
+    testLog.getLog().warn("WARN: Recevied more than one errors");
+    //throw new Error("  --- TX Mapping issue --- ");
+  }
+
+  const eventErrorValue = hexToU8a(
+    JSON.parse(JSON.stringify(filteredEvent[0].event.data[0])).err.module.error
+  );
+
+  const eventErrorIndex = JSON.parse(
+    JSON.stringify(filteredEvent[0].event.data[0])
+  ).err.module.index;
+
+  const sudoEventError = api?.registry.findMetaError({
+    error: eventErrorValue,
+    index: new BN(eventErrorIndex),
+  });
+  return sudoEventError;
+}
 
 function createEventResultfromExtrinsic(extrinsicResult: MangataGenericEvent) {
   const eventResult = extrinsicResult.event.toHuman();
