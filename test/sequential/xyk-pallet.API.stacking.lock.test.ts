@@ -65,6 +65,7 @@ describe("xyk-pallet - Sell Asset: validate Errors:", () => {
       api?.tx.parachainStaking.joinCandidates(
         new BN("10000000000000000000"),
         new BN(3),
+        undefined,
         // @ts-ignore - Mangata bond operation has 4 params, somehow is inheriting the bond operation from polkadot :S
         new BN(candidates.length),
         // @ts-ignore
