@@ -172,7 +172,7 @@ export const waitForRewards = async (user: User, liquidityAssetId: BN) =>
     const unsub = await api.rpc.chain.subscribeNewHeads(async (header) => {
       const address = user.keyRingPair.address;
       // @ts-ignore
-      const { price } = await api.rpc.xyk.calculate_rewards_amount_v2(
+      const { price } = await api.rpc.xyk.calculate_rewards_amount(
         user.keyRingPair.address,
         liquidityAssetId
       );

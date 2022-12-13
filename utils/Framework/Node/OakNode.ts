@@ -4,9 +4,12 @@ import {
   ChainId,
   ChainSpecs,
   TRANSFER_INSTRUCTIONS,
+  WEIGHT_IN_SECONDS,
 } from "../../ChainSpecs";
 import { BN } from "@polkadot/util";
 import { User } from "../../User";
+import { RuntimeDispatchInfo } from "@polkadot/types/interfaces";
+import { Option } from "@polkadot/types";
 
 export class OakNode {
   api: ApiPromise;
@@ -17,6 +20,31 @@ export class OakNode {
       feePerSecond: 537_600_000_000,
       instructionWeight: 150_000_000 * 6,
     });
+  }
+
+  async taskFees(
+    encodedTxInfo: RuntimeDispatchInfo,
+    executions: number
+  ): Promise<BN> {
+    // @ts-ignore
+    const currencyData: Option<CurrencyChainData> =
+      await this.api.query.xcmpHandler.xcmChainCurrencyData(2110, 0);
+    const totalWeight = new BN(encodedTxInfo.weight).add(
+      new BN(currencyData.unwrap().instructionWeight)
+    );
+    const taskExecutionFee = totalWeight
+      .mul(new BN(currencyData.unwrap().feePerSecond))
+      .div(WEIGHT_IN_SECONDS)
+      .mul(new BN(executions));
+
+    const automationTimeFee =
+      // @ts-ignore
+      await this.api.rpc.automationTime.getTimeAutomationFees(
+        "XCMP",
+        executions
+      );
+
+    return taskExecutionFee.add(automationTimeFee);
   }
 
   xTokenTransfer(
@@ -165,4 +193,9 @@ export class OakNode {
     });
     return new OakNode(api!);
   }
+}
+
+interface CurrencyChainData {
+  instructionWeight: BN;
+  feePerSecond: BN;
 }

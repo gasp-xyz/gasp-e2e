@@ -11,12 +11,7 @@ import { getNextAssetId } from "../utils/tx";
 import { BN } from "@polkadot/util";
 import { OakNode } from "../utils/Framework/Node/OakNode";
 import { XToken } from "../utils/xToken";
-import {
-  AssetId,
-  ChainId,
-  ChainSpecs,
-  WEIGHT_IN_SECONDS,
-} from "../utils/ChainSpecs";
+import { AssetId, ChainId, ChainSpecs } from "../utils/ChainSpecs";
 import { signSendFinalized, signSendSuccess } from "../utils/sign";
 
 const TUR_ID = new BN(7);
@@ -154,30 +149,21 @@ describe("auto-compound story: auto compound rewards XCM task", () => {
       encodedTxInfo.weight
     );
 
+    const task = await oakApi.taskFees(encodedTxInfo, 1);
     const info = await txCreate.paymentInfo(userMangata.keyRingPair);
-    const currencyData =
-      await oakApi.api.query.xcmpHandler.xcmChainCurrencyData(2110, 0);
-    const totalWeight = new BN(encodedTxInfo.weight).add(
-      new BN(currencyData.unwrap().instructionWeight)
-    );
-    const taskExecutionFee = totalWeight
-      .mul(new BN(currencyData.unwrap().feePerSecond))
-      .div(WEIGHT_IN_SECONDS);
+    const xcm = XToken.xcmTransferFee(ChainId.Tur, AssetId.Tur);
+    const totalFees = task
+      // scheduleXcmpTask extrinsic fee
+      .add(new BN(info.partialFee))
+      // xcm transfer fee on destination
+      .add(xcm);
 
-    const xcmExecutionFee = XToken.xcmTransferFee(ChainId.Tur, AssetId.Tur);
-
-    const automationTimeFee =
-      await oakApi.api.rpc.automationTime.getTimeAutomationFees("XCMP", 1);
-
-    const totalFees = new BN(info.partialFee)
-      // compound tx fee
-      .add(taskExecutionFee.mul(new BN(executions.length)))
-      // task execution fee
-      .add(new BN(automationTimeFee))
-      // xcm transfer to turing fee
-      .add(xcmExecutionFee);
-
-    testLog.getLog().info("running section: fees to TUR network: " + totalFees);
+    testLog.getLog().info(`running section: fees to TUR network:
+      task: ${task},
+      scheduleXcmpTask extrinsic fee: ${info.partialFee},
+      xcm fee: ${xcm},
+      total: ${totalFees}
+    `);
 
     // do the TUR swap
     // and send them over to TUR chain
@@ -202,6 +188,9 @@ describe("auto-compound story: auto compound rewards XCM task", () => {
       await oakApi.api.query.system.account(userMangata.keyRingPair.address)
     ).data.free;
 
+    // does not hold because of dynamic inclusion fee in turing for each block, there will be some extra coins left
+    // when 'oakApi.api.tx.automationTime.scheduleXcmpTask(' is executed
+    // the fee will be a bit less than '.add(new BN(info.partialFee))'
     expect(TUR_ED).bnEqual(balance);
   });
 });
