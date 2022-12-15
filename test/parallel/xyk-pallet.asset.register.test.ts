@@ -196,7 +196,7 @@ test("register asset and then try to register new one with the same assetId, exp
 });
 
 // needs to be moved to sequential, some other parallel test might use the same asset id resulting in "ConflictingAssetId" error instead
-test.skip("register asset and then try to register new one with the same location, expect to conflict", async () => {
+test("register asset and then try to register new one with the same location, expect to conflict", async () => {
   const assetId = await setupUserAssetRegister(sudo, true);
 
   const tempAssetId = await getNextAssetId();
