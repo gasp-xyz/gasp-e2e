@@ -113,6 +113,8 @@ export function getEnvironmentRequiredVars() {
     ? process.env.FEES_ENABLED === "true"
     : true;
 
+  const oakUri = process.env.OAK_URL;
+
   return {
     sudo: sudoUserName,
     chainUri: uri,
@@ -137,6 +139,7 @@ export function getEnvironmentRequiredVars() {
     clusterNodeE: clusterNodeE,
     clusterNodeF: clusterNodeF,
     fees: fees,
+    oakUri: oakUri,
   };
 }
 

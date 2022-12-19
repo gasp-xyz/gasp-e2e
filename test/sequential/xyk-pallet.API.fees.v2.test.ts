@@ -12,7 +12,7 @@ import { MGA_ASSET_ID } from "../../utils/Constants";
 import { Xyk } from "../../utils/xyk";
 import { getNextAssetId } from "../../utils/tx";
 import { Assets } from "../../utils/Assets";
-import { signSendFinalized } from "../../utils/eventListeners";
+import { signSendFinalized } from "../../utils/sign";
 
 /**
  * @group xyk

@@ -16,11 +16,7 @@ import {
   getNextAssetId,
 } from "../../utils/tx";
 import { BN_ONE, BN_ZERO } from "@mangata-finance/sdk";
-import {
-  EventResult,
-  ExtrinsicResult,
-  signSendFinalized,
-} from "../../utils/eventListeners";
+import { EventResult, ExtrinsicResult } from "../../utils/eventListeners";
 import { AssetWallet, User } from "../../utils/User";
 import { BN } from "@polkadot/util";
 import { keyring, setupApi, setupUsers } from "../../utils/setup";
@@ -28,6 +24,7 @@ import { Assets } from "../../utils/Assets";
 import { Sudo } from "../../utils/sudo";
 import { Xyk } from "../../utils/xyk";
 import { testLog } from "../../utils/Logger";
+import { signSendFinalized } from "../../utils/sign";
 
 function assetsAfterFree(user: User): BN[] {
   return user.assets.map((asset) => asset.amountAfter.free);
