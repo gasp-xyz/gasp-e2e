@@ -6,10 +6,7 @@
  * @group sequential
  */
 import { getApi } from "../../utils/api";
-import {
-  getEnvironmentRequiredVars,
-  waitForBootstrapStatus,
-} from "../../utils/utils";
+import { getEnvironmentRequiredVars } from "../../utils/utils";
 import { User } from "../../utils/User";
 import { Keyring } from "@polkadot/api";
 import { Assets } from "../../utils/Assets";
@@ -17,18 +14,20 @@ import {
   EventResult,
   ExtrinsicResult,
   findEventData,
+  waitSudoOperataionSuccess,
 } from "../../utils/eventListeners";
 import {
   claimRewardsBootstrap,
   finalizeBootstrap,
   provisionBootstrap,
   scheduleBootstrap,
-} from "../../utils/tx";
+  waitForBootstrapStatus,
+} from "../../utils/Bootstrap";
 import { getEventResultFromMangataTx } from "../../utils/txHandler";
 import { BN } from "@polkadot/util";
-import { BN_ONE, MangataGenericEvent, toBN } from "@mangata-finance/sdk";
+import { BN_ONE, toBN } from "@mangata-finance/sdk";
 import { MGA_ASSET_ID } from "../../utils/Constants";
-import { setupApi } from "../../utils/setup";
+import { setupApi, setupUsers } from "../../utils/setup";
 import { Sudo } from "../../utils/sudo";
 
 const { sudo: sudoUserName } = getEnvironmentRequiredVars();
@@ -44,18 +43,6 @@ let testUser1: User;
 let eventResponse: EventResult;
 let bootstrapPool: any;
 
-async function checkSudoOperataionSuccess(
-  checkingEvent: MangataGenericEvent[]
-) {
-  const filterBootstrapEvent = checkingEvent.filter(
-    (extrinsicResult) => extrinsicResult.method === "Sudid"
-  );
-
-  const userBootstrapCall = filterBootstrapEvent[0].event.data[0].toString();
-
-  expect(userBootstrapCall).toContain("Ok");
-}
-
 async function runBootstrap(assetId: BN) {
   const api = getApi();
   const scheduleBootstrapEvent = await scheduleBootstrap(
@@ -66,7 +53,7 @@ async function runBootstrap(assetId: BN) {
     bootstrapPeriod,
     whitelistPeriod
   );
-  await checkSudoOperataionSuccess(scheduleBootstrapEvent);
+  await waitSudoOperataionSuccess(scheduleBootstrapEvent);
 
   await sudo.mint(assetId, testUser1, toBN("1", 13));
 
@@ -99,17 +86,19 @@ async function runBootstrap(assetId: BN) {
   expect(eventResponse.state).toEqual(ExtrinsicResult.ExtrinsicSuccess);
 
   const bootstrapFinalize = await finalizeBootstrap(sudo);
-  await checkSudoOperataionSuccess(bootstrapFinalize);
+  await waitSudoOperataionSuccess(bootstrapFinalize);
 }
 
 beforeAll(async () => {
   await setupApi();
+  setupUsers();
 });
 
 beforeEach(async () => {
   const keyring = new Keyring({ type: "sr25519" });
   sudo = new User(keyring, sudoUserName);
   testUser1 = new User(keyring);
+  keyring.addPair(sudo.keyRingPair);
   keyring.addPair(testUser1.keyRingPair);
   await testUser1.addMGATokens(sudo);
 });

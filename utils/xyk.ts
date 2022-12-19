@@ -1,6 +1,7 @@
 import { BN_ZERO } from "@mangata-finance/sdk";
 import { BN } from "@polkadot/util";
 import { api, Extrinsic } from "./setup";
+import { Sudo } from "./sudo";
 
 export class Xyk {
   static createPool(
@@ -57,7 +58,7 @@ export class Xyk {
     soldAssetId: BN,
     boughtAssetId: BN,
     boughtAssetAmount: BN,
-    maxAmountIn: BN = new BN(Number.MAX_SAFE_INTEGER)
+    maxAmountIn: BN = new BN("340282366920938463463374607431768211455") //u128::MAX
   ): Extrinsic {
     return api.tx.xyk.buyAsset(
       soldAssetId,
@@ -65,5 +66,13 @@ export class Xyk {
       boughtAssetAmount,
       maxAmountIn
     );
+  }
+
+  static updatePoolPromotion(liquidityAssetId: BN, weight: number): Extrinsic {
+    return Sudo.sudo(api.tx.xyk.updatePoolPromotion(liquidityAssetId, weight));
+  }
+
+  static activateLiquidity(liquidityAssetId: BN, amount: BN): Extrinsic {
+    return api.tx.xyk.activateLiquidityV2(liquidityAssetId, amount, null);
   }
 }
