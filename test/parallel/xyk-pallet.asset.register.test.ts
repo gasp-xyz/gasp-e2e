@@ -9,11 +9,7 @@ import { getEnvironmentRequiredVars, xykErrors } from "../../utils/utils";
 import { User } from "../../utils/User";
 import { Keyring } from "@polkadot/api";
 import { Assets } from "../../utils/Assets";
-import {
-  ExtrinsicResult,
-  findEventData,
-  signSendFinalized,
-} from "../../utils/eventListeners";
+import { ExtrinsicResult, findEventData } from "../../utils/eventListeners";
 import { getEventResultFromMangataTx } from "../../utils/txHandler";
 import { BN, hexToU8a } from "@polkadot/util";
 import { BN_ONE, BN_TEN, MangataGenericEvent } from "@mangata-finance/sdk";
@@ -22,6 +18,7 @@ import { setupApi, setupUsers } from "../../utils/setup";
 import { Xyk } from "../../utils/xyk";
 import { MGA_ASSET_ID } from "../../utils/Constants";
 import { Sudo } from "../../utils/sudo";
+import { signSendFinalized } from "../../utils/sign";
 
 const { sudo: sudoUserName } = getEnvironmentRequiredVars();
 jest.setTimeout(1500000);
