@@ -253,9 +253,12 @@ describe("xyk-pallet - Sell assets tests: SellAsset Errors:", () => {
       remainingOfCurrency1.free,
       sellPriceLocal.add(new BN(1))
     ).then((result) => {
-      const eventResponse = getEventResultFromMangataTx(result);
-      expect(eventResponse.state).toEqual(ExtrinsicResult.ExtrinsicFailed);
-      expect(eventResponse.data).toEqual(xykErrors.InsufficientOutputAmount);
+      const eventResponse = getEventResultFromMangataTx(result, [
+        "xyk",
+        "SellAssetFailedDueToSlippage",
+        testUser1.keyRingPair.address,
+      ]);
+      expect(eventResponse.state).toEqual(ExtrinsicResult.ExtrinsicSuccess);
     });
     //fee: 603 ??  //TODO: validate with Stano.
     const feeToAvoidFrontRunning = new BN(603);
