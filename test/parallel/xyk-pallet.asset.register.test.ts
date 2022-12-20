@@ -17,7 +17,6 @@ import {
 import { getEventResultFromMangataTx } from "../../utils/txHandler";
 import { BN, hexToU8a } from "@polkadot/util";
 import { BN_ONE, BN_TEN, MangataGenericEvent } from "@mangata-finance/sdk";
-import { getNextAssetId } from "../../utils/tx";
 import { setupApi, setupUsers } from "../../utils/setup";
 import { Xyk } from "../../utils/xyk";
 import { MGA_ASSET_ID } from "../../utils/Constants";
@@ -193,40 +192,6 @@ test("register asset and then try to register new one with the same assetId, exp
   const userAssetMetaError = await findAssetError(userRegisterNewAsset);
 
   expect(userAssetMetaError.method).toEqual("ConflictingAssetId");
-});
-
-// needs to be moved to sequential, some other parallel test might use the same asset id resulting in "ConflictingAssetId" error instead
-test("register asset and then try to register new one with the same location, expect to conflict", async () => {
-  const assetId = await setupUserAssetRegister(sudo, true);
-
-  const tempAssetId = await getNextAssetId();
-
-  const userRegisterNewAsset = await sudo.registerAsset(
-    tempAssetId,
-    tempAssetId,
-    {
-      V1: {
-        parents: 1,
-        interior: {
-          X3: [
-            {
-              Parachain: 3210 + assetId.toNumber(),
-            },
-            {
-              GeneralKey: "0x00834",
-            },
-            {
-              PalletInstance: 10,
-            },
-          ],
-        },
-      },
-    }
-  );
-
-  const userAssetMetaError = await findAssetError(userRegisterNewAsset);
-
-  expect(userAssetMetaError.method).toEqual("ConflictingLocation");
 });
 
 test("register asset with xyk disabled and try to create a pool, expect to fail", async () => {
