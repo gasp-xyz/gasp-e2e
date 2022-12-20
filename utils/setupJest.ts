@@ -7,6 +7,19 @@ require("dotenv").config();
 jest.retryTimes(2);
 beforeAll(async () => {
   await removeSudoDb();
+
+  //   const child = await execFile(
+  //     `node`,
+  //     [`${__dirname}/NonceManager.js`],
+  //     (error: any, stdout: any) => {
+  //       if (error) {
+  //         testLog.getLog().error(error);
+  //         throw error;
+  //       }
+  //       // eslint-disable-next-line no-console
+  //       testLog.getLog().info(stdout);
+  //     }
+  //   );
 });
 
 declare global {
