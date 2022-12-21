@@ -3,7 +3,9 @@
  * @group xyk
  * @group api
  * @group parallel
+ * @group critical
  */
+//WAARNING! WE CAN'T MERGE THIS TEST TO MAIN BEFORE WE DON'T DELETE CRITICAL GROUP HERE
 import { getApi, getMangataInstance, initApi } from "../../utils/api";
 import {
   getBalanceOfPool,
