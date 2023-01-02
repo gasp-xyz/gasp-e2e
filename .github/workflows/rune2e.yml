@@ -97,7 +97,7 @@ jobs:
 
       - name: Install dependencies for tests
         working-directory: e2eTests
-        run: yarn
+        run: yarn --network-concurrency=1
 
       - name: Install testmo
         working-directory: e2eTests
