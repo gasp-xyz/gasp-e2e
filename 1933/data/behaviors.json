@@ -1,1 +1,1 @@
-{"uid":"b1a8273437954620fa374b796ffaacdd","children":[],"name":"behaviors"}
+{"uid":"b1a8273437954620fa374b796ffaacdd","children":[{"name":"xyk-CI - Node is up and running","uid":"954f21f0b05b3673","parentUid":"b1a8273437954620fa374b796ffaacdd","status":"passed","time":{"start":1672760677921,"stop":1672760688100,"duration":10179},"flaky":false,"newFailed":false,"newPassed":false,"newBroken":false,"retriesCount":0,"retriesStatusChange":false,"parameters":[]}],"name":"behaviors"}
