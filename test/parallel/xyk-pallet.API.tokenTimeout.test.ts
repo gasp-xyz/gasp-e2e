@@ -79,11 +79,5 @@ test("xyk-pallet- create pool and updete Token Timeout", async () => {
     )
   );
 
-  await updateTimeoutMetadata(sudo, new BN(20), new BN(200000), [
-    // {
-    // //@ts-ignore
-    //  0,
-    //  1000
-    //  }
-  ]);
+  await updateTimeoutMetadata(sudo, new BN(20), new BN(200000), [[0, 1000]]);
 });
