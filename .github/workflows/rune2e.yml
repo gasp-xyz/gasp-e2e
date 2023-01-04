@@ -30,6 +30,7 @@ on:
             - ci
             - ui
             - story
+            - test-sequential-e2e
 
         dockerImage:
           description: 'identifier of docker image on dockerhub'
