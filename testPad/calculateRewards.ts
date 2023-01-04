@@ -20,7 +20,7 @@ async function main() {
   // const provider = new WsProvider("ws://127.0.0.1:8844");
   //const api = await new ApiPromise(options({ provider })).isReady;
   const api = await mangata.getApi();
-  api.query.issuance.promotedPoolsRewardsV2(liqId).then((value) => {
+  api.query.issuance.promotedPoolsRewardsV2().then((value) => {
     console.log(`${JSON.stringify(value.toHuman())}`);
   });
   await api.rpc.chain.subscribeNewHeads((header) => {
@@ -32,7 +32,7 @@ async function main() {
     });
     users.forEach((user) => {
       mangata
-        .calculateRewardsAmountV2(user, liqId.toString())
+        .calculateRewardsAmount(user, liqId.toString())
         .then((result: any) => {
           if (result.toString() === "0")
             console.log("foo: " + liq + "-" + JSON.stringify(result));

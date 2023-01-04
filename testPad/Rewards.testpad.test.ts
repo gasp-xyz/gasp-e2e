@@ -50,9 +50,57 @@ describe("RewardsV2 - testpad", () => {
       await doSetup(rewardsGenerationTime);
     }
   });
+  test("xyk-pallet: autocompound", async () => {
+    const liqtokenId = new BN(18);
+    keyring = new Keyring({ type: "sr25519" });
+    const testUser1 = new User(keyring, "//Ferdie");
+    const testUser2 = new User(keyring, "//Eve");
+    const testUser3 = new User(keyring, "//Dave");
+    const testUser4 = new User(keyring, "//Charlie");
+    const users = [testUser1, testUser2, testUser3, testUser4];
+    const promises: Promise<MangataGenericEvent[]>[] = [];
+    const balancesBefore = [{}];
+    for (let index = 0; index < 4; index++) {
+      const testUser1 = users[index];
+      keyring.addPair(testUser1.keyRingPair);
+      await testUser1.addAsset(0);
+      await testUser1.refreshAmounts(AssetWallet.BEFORE);
+      promises.push(
+        signTx(
+          api!,
+          api!.tx.xyk.compoundRewards(liqtokenId, 1000000),
+          testUser1.keyRingPair
+        )
+      );
+      balancesBefore.push(
+        testUser1.keyRingPair.address,
+        testUser1.getFreeAssetAmount(0).amountBefore.free
+      );
+      testLog
+        .getLog()
+        .info(
+          `User: ${testUser1.keyRingPair.address} has: ${
+            testUser1.getFreeAssetAmount(0).amountBefore.free
+          }`
+        );
+    }
+    await Promise.all(promises).catch();
 
+    for (let index = 0; index < 4; index++) {
+      const testUser1 = users[index];
+      await testUser1.refreshAmounts(AssetWallet.AFTER);
+      testLog
+        .getLog()
+        .info(
+          `User: ${testUser1.keyRingPair.address}  NOW has: ${
+            testUser1.getFreeAssetAmount(0).amountAfter.free
+          }`
+        );
+    }
+    testLog.getLog().info(JSON.stringify(balancesBefore));
+  });
   test("xyk-pallet: claim rewards_v2", async () => {
-    const liqtokenId = new BN(8);
+    const liqtokenId = new BN(12);
     keyring = new Keyring({ type: "sr25519" });
     const testUser1 = new User(keyring, "//Ferdie");
     const testUser2 = new User(keyring, "//Eve");
@@ -69,7 +117,7 @@ describe("RewardsV2 - testpad", () => {
       await testUser1.refreshAmounts(AssetWallet.BEFORE);
       const provider = new WsProvider(chainUri);
       const api2 = await new ApiPromise(options({ provider })).isReady;
-      const result = await (api2.rpc as any).xyk.calculate_rewards_amount_v2(
+      const result = await (api2.rpc as any).xyk.calculate_rewards_amount(
         testUser1.keyRingPair.address,
         liqtokenId
       );
@@ -88,7 +136,7 @@ describe("RewardsV2 - testpad", () => {
     await Promise.all(promises);
   });
   test("xyk-pallet: Burn_v2", async () => {
-    const liqtokenId = new BN(7);
+    const liqtokenId = new BN(15);
     keyring = new Keyring({ type: "sr25519" });
     const testUser1 = new User(keyring, "//Ferdie");
     const testUser2 = new User(keyring, "//Eve");
@@ -104,7 +152,7 @@ describe("RewardsV2 - testpad", () => {
         sudo.keyRingPair
       )
     );
-    for (let index = 0; index < 2; index++) {
+    for (let index = 0; index < 4; index++) {
       const testUser1 = users[index];
       sudo = new User(keyring, sudoUserName);
       // add users to pair.
@@ -112,14 +160,14 @@ describe("RewardsV2 - testpad", () => {
       await testUser1.refreshAmounts(AssetWallet.BEFORE);
       const provider = new WsProvider(chainUri);
       const api2 = await new ApiPromise(options({ provider })).isReady;
-      const result = await (api2.rpc as any).xyk.calculate_rewards_amount_v2(
+      const result = await (api2.rpc as any).xyk.calculate_rewards_amount(
         testUser1.keyRingPair.address,
         liqtokenId.addn(1)
       );
       promises.push(
         signTx(
           api!,
-          api!.tx.xyk.burnLiquidity(0, liqtokenId, new BN(100000)),
+          api!.tx.xyk.burnLiquidity(0, liqtokenId, new BN(10000000000000)),
           testUser1.keyRingPair
         )
       );
@@ -300,9 +348,9 @@ async function doSetup(rewardsGenerationTime: number) {
         MGA_ASSET_ID,
         amount.divn(2),
         tokenId,
-        amount.divn(2)
+        amount.div(new BN("2000000000000"))
       ),
-      api!.tx.sudo.sudo(api!.tx.xyk.promotePool(tokenId.addn(1))),
+      api!.tx.sudo.sudo(api!.tx.xyk.updatePoolPromotion(tokenId.addn(1), 50)),
     ])
     .signAndSend(sudo.keyRingPair);
   await waitForNBlocks(3);
