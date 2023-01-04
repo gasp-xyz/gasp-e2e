@@ -742,7 +742,7 @@ export async function lockAsset(user: User, amount: BN) {
 
 export async function getAllAssetsInfo(): Promise<any[]> {
   const api = getApi();
-  const availableAssetsInfo = await api.query.assetsInfo.assetsInfo.entries();
+  const availableAssetsInfo = await api.query.assetRegistry.metadata.entries();
   /// returns something like this:
   ///[
   ///    [
@@ -979,6 +979,30 @@ export async function updateAsset(
         "0",
         location,
         additional
+      )
+    ),
+    sudoUser.keyRingPair,
+    {
+      nonce: await getCurrentNonce(sudoUser.keyRingPair.address),
+    }
+  );
+  return result;
+}
+
+export async function updateTimeoutMetadata(
+  sudoUser: User,
+  periodLength: BN,
+  timeoutAmount: BN,
+  swapValueThresholds: any
+) {
+  const api = getApi();
+  const result = await signTx(
+    api,
+    api.tx.sudo.sudo(
+      api.tx.tokenTimeout.updateTimeoutMetadata(
+        periodLength,
+        timeoutAmount,
+        swapValueThresholds
       )
     ),
     sudoUser.keyRingPair,
