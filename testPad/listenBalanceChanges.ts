@@ -5,7 +5,6 @@ import { getMangataInstance } from "../utils/api";
 import { getEnvironmentRequiredVars } from "../utils/utils";
 
 async function main() {
-
   const { chainUri } = getEnvironmentRequiredVars();
   const mangata = await getMangataInstance(chainUri);
   // const provider = new WsProvider("ws://127.0.0.1:8844");
