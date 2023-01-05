@@ -51,7 +51,7 @@ describe("RewardsV2 - testpad", () => {
     }
   });
   test("xyk-pallet: autocompound", async () => {
-    const liqtokenId = new BN(18);
+    const liqtokenId = new BN(11);
     keyring = new Keyring({ type: "sr25519" });
     const testUser1 = new User(keyring, "//Ferdie");
     const testUser2 = new User(keyring, "//Eve");
@@ -133,6 +133,36 @@ describe("RewardsV2 - testpad", () => {
       );
       testLog.getLog().info(result.price.toString());
     }
+    await Promise.all(promises);
+  });
+  test("xyk-pallet: disable token", async () => {
+    const token = new BN(13);
+    keyring = new Keyring({ type: "sr25519" });
+    sudo = new User(keyring, sudoUserName);
+
+    const promises: Promise<MangataGenericEvent[]>[] = [];
+    promises.push(
+      signTx(
+        api!,
+        api!.tx.sudo.sudo(
+          api!.tx.assetRegistry.updateAsset(
+            token,
+            "18",
+            //@ts-ignore
+            api!.createType("Vec<u8>", "TESTUPDT-" + token.toString()),
+            api!.createType("Vec<u8>", "TSTUPD" + token.toString()),
+            "0",
+            null,
+            {
+              xyk: {
+                operationsDisabled: true,
+              },
+            }
+          )
+        ),
+        sudo.keyRingPair
+      )
+    );
     await Promise.all(promises);
   });
   test("xyk-pallet: Burn_v2", async () => {
@@ -348,7 +378,7 @@ async function doSetup(rewardsGenerationTime: number) {
         MGA_ASSET_ID,
         amount.divn(2),
         tokenId,
-        amount.div(new BN("2000000000000"))
+        amount.divn(2)
       ),
       api!.tx.sudo.sudo(api!.tx.xyk.updatePoolPromotion(tokenId.addn(1), 50)),
     ])

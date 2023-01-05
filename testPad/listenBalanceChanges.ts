@@ -11,13 +11,13 @@ async function main() {
   //const api = await new ApiPromise(options({ provider })).isReady;
   const api = await mangata.getApi();
 
-  const ALICE = "5CiPPseXPECbkjWCa6MnjNokrgYjMqmKndv2rSnekmSK2DjL";
+  const ALICE = "5FLSigC9HGRKVhB9FiEo4Y3koPsNmBmLJbpXg2mp1hXcS59Y";
 
   // Retrieve the initial data
   let previous = await api.query.tokens.accounts(ALICE, 0);
 
   console.log("ALICE has a balance of " + previous.free);
-
+  console.log("Reserved Balance --    " + previous.reserved);
   // Subscribe and listen to balance changes
   await api.query.tokens.accounts(ALICE, 0, (result) => {
     // Calculate the delta
@@ -27,6 +27,7 @@ async function main() {
     if (changed) {
       console.log("New TX of - Cost -> " + previous.free.sub(result.free));
       console.log("Balance Now is         " + result.free);
+      console.log("Reserved Balance --    " + result.reserved);
       previous = result;
     }
   });
