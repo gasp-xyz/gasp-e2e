@@ -5,43 +5,42 @@
  * @group sequential
  */
 import { getApi, initApi, getMangataInstance } from "../../utils/api";
-import {
-  scheduleBootstrap,
-  provisionBootstrap,
-  finalizeBootstrap,
-  getLiquidityAssetId,
-  claimAndActivateBootstrap,
-} from "../../utils/tx";
+import { getLiquidityAssetId } from "../../utils/tx";
 import { EventResult, ExtrinsicResult } from "../../utils/eventListeners";
 import { Keyring } from "@polkadot/api";
 import { User } from "../../utils/User";
 import {
   getEnvironmentRequiredVars,
-  waitForBootstrapStatus,
+  getUserBalanceOfToken,
 } from "../../utils/utils";
 import {
   getEventResultFromMangataTx,
-  sudoIssueAsset,
+  getBalanceOfPool,
 } from "../../utils/txHandler";
 import { MGA_ASSET_ID } from "../../utils/Constants";
-import { BN, toBN } from "@mangata-finance/sdk";
-import { Assets } from "../../utils/Assets";
-import { Sudo } from "../../utils/sudo";
+import { BN } from "@mangata-finance/sdk";
 import { setupApi, setupUsers } from "../../utils/setup";
+import {
+  checkLastBootstrapFinalized,
+  createNewBootstrapCurrency,
+  setupBootstrapTokensBalance,
+  scheduleBootstrap,
+  provisionBootstrap,
+  claimAndActivateBootstrap,
+  waitForBootstrapStatus,
+} from "../../utils/Bootstrap";
 
 jest.spyOn(console, "log").mockImplementation(jest.fn());
-jest.spyOn(console, "error").mockImplementation(jest.fn());
 jest.setTimeout(3500000);
 process.env.NODE_ENV = "test";
 
 let testUser1: User;
 let sudo: User;
 let keyring: Keyring;
-let bootstrapPhase: any;
 let bootstrapCurrency: any;
 let bootstrapPool: any;
 let eventResponse: EventResult;
-let bootstrapPoolBalance: BN;
+let bootstrapExpectedUserLiquidity: BN;
 
 const { sudo: sudoUserName } = getEnvironmentRequiredVars();
 const waitingPeriod = 15;
@@ -79,39 +78,14 @@ beforeAll(async () => {
 
   [testUser1] = setupUsers();
 
-  const bootstrapCurrencyIssue = await sudoIssueAsset(
-    sudo.keyRingPair,
-    toBN("1", 20),
-    sudo.keyRingPair.address
-  );
-  const bootstrapEventResult = await getEventResultFromMangataTx(
-    bootstrapCurrencyIssue,
-    ["tokens", "Issued", sudo.keyRingPair.address]
-  );
-  const bootstrapAssetId = bootstrapEventResult.data[0].split(",").join("");
-  bootstrapCurrency = new BN(bootstrapAssetId);
+  bootstrapCurrency = await createNewBootstrapCurrency(sudo);
 });
 
 test("bootstrap - Check that we can not create a pool for the bootstrap token after bootstrap was declared", async () => {
-  const api = getApi();
   await setupApi();
 
-  // check that system is ready to bootstrap
-  bootstrapPhase = await api.query.bootstrap.phase();
-  if (bootstrapPhase.toString() === "Finished") {
-    const bootstrapFinalize = await finalizeBootstrap(sudo);
-    eventResponse = getEventResultFromMangataTx(bootstrapFinalize);
-    expect(eventResponse.state).toEqual(ExtrinsicResult.ExtrinsicSuccess);
-  }
-
-  bootstrapPhase = await api.query.bootstrap.phase();
-  expect(bootstrapPhase.toString()).toEqual("BeforeStart");
-
-  await Sudo.batchAsSudoFinalized(
-    Assets.mintToken(bootstrapCurrency, testUser1), // transferAll test
-    Assets.mintToken(bootstrapCurrency, sudo), // transferAll test
-    Assets.mintNative(testUser1)
-  );
+  await checkLastBootstrapFinalized(sudo);
+  await setupBootstrapTokensBalance(bootstrapCurrency, sudo, [testUser1]);
 
   const sudoBootstrap = await scheduleBootstrap(
     sudo,
@@ -157,15 +131,16 @@ test("bootstrap - Check that we can not create a pool for the bootstrap token af
   await checkPossibilityCreatingPool(MGA_ASSET_ID, bootstrapCurrency);
 
   // Check existing pool
-  bootstrapPool = await api.query.xyk.pools([MGA_ASSET_ID, bootstrapCurrency]);
-  expect(bootstrapPool[0]).bnEqual(bootstrapAmount);
-  expect(bootstrapPool[1]).bnEqual(bootstrapAmount);
-  bootstrapPoolBalance = new BN(bootstrapPool[0].add(bootstrapPool[1]) / 2);
+  bootstrapPool = await getBalanceOfPool(MGA_ASSET_ID, bootstrapCurrency);
+  const bootstrapPoolBalance = bootstrapPool[0];
+  expect(bootstrapPoolBalance[0]).bnEqual(bootstrapAmount);
+  expect(bootstrapPoolBalance[1]).bnEqual(bootstrapAmount);
+  bootstrapExpectedUserLiquidity = new BN(
+    bootstrapPoolBalance[0].add(bootstrapPoolBalance[1]) / 2
+  );
 });
 
 afterEach(async () => {
-  const api = getApi();
-
   // need claim liquidity token before finalizing
   const claimAndActivate = await claimAndActivateBootstrap(testUser1);
   eventResponse = getEventResultFromMangataTx(claimAndActivate);
@@ -175,17 +150,13 @@ afterEach(async () => {
     bootstrapCurrency
   );
 
-  const bootstrapUserLiquidity = await api.query.tokens.accounts(
-    testUser1.keyRingPair.address,
-    liquidityID
+  const bootstrapUserLiquidity = await getUserBalanceOfToken(
+    liquidityID,
+    testUser1
   );
   // check that the user's balance of liquidity token is equal the pool's balance
-  expect(bootstrapUserLiquidity.free).bnEqual(bootstrapPoolBalance);
+  expect(bootstrapUserLiquidity.free).bnEqual(bootstrapExpectedUserLiquidity);
 
   // finalaze bootstrap
-  const bootstrapFinalize = await finalizeBootstrap(sudo);
-  eventResponse = getEventResultFromMangataTx(bootstrapFinalize);
-  expect(eventResponse.state).toEqual(ExtrinsicResult.ExtrinsicSuccess);
-  bootstrapPhase = await api.query.bootstrap.phase();
-  expect(bootstrapPhase.toString()).toEqual("BeforeStart");
+  await checkLastBootstrapFinalized(sudo);
 });

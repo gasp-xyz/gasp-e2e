@@ -1,6 +1,6 @@
 import { assert } from "console";
 import { BN } from "@polkadot/util";
-import { ExtrinsicResult, findEventData } from "./eventListeners";
+import { ExtrinsicResult } from "./eventListeners";
 import { getAssetSupply, getNextAssetId } from "./tx";
 import {
   getEventResultFromMangataTx,
@@ -8,7 +8,7 @@ import {
   sudoIssueAsset,
 } from "./txHandler";
 import { User } from "./User";
-import { BN_TEN, BN_THOUSAND, MangataGenericEvent } from "@mangata-finance/sdk";
+import { BN_TEN, BN_THOUSAND } from "@mangata-finance/sdk";
 import { api, Extrinsic } from "./setup";
 import { MGA_ASSET_ID } from "./Constants";
 import { Sudo } from "./sudo";
@@ -44,14 +44,16 @@ export class Assets {
   static async setupUserWithCurrencies(
     user: User,
     currencyValues = [new BN(250000), new BN(250001)],
-    sudo: User
+    sudo: User,
+    skipInfo = false
   ): Promise<BN[]> {
     const currencies: BN[] = [];
     for (let currency = 0; currency < currencyValues.length; currency++) {
       const currencyId = await this.issueAssetToUser(
         user,
         currencyValues[currency],
-        sudo
+        sudo,
+        skipInfo
       );
       currencies.push(currencyId);
       user.addAsset(currencyId, new BN(currencyValues[currency]));
@@ -65,7 +67,12 @@ export class Assets {
   }
 
   //this method add a certain amount of currencies to a user into a returned currecncyId
-  static async issueAssetToUser(user: User, num = new BN(1000), sudo: User) {
+  static async issueAssetToUser(
+    user: User,
+    num = new BN(1000),
+    sudo: User,
+    skipInfo = false
+  ) {
     const result = await sudoIssueAsset(
       sudo.keyRingPair,
       num,
@@ -79,14 +86,17 @@ export class Assets {
 
     assert(eventResult.state === ExtrinsicResult.ExtrinsicSuccess);
     const assetId = eventResult.data[0].split(",").join("");
-    await setAssetInfo(
-      sudo,
-      new BN(assetId),
-      `TEST_${assetId}`,
-      this.getAssetName(assetId),
-      `Test token ${assetId}`,
-      new BN(18)
-    );
+    if (!skipInfo) {
+      await setAssetInfo(
+        sudo,
+        new BN(assetId),
+        `TEST_${assetId}`,
+        this.getAssetName(assetId),
+        `Test token ${assetId}`,
+        new BN(18)
+      );
+    }
+
     return new BN(assetId);
   }
 
@@ -123,9 +133,80 @@ export class Assets {
     return api.tx.tokens.transferAll(target.keyRingPair.address, tokenId, true);
   }
 
-  static findTokenId(result: MangataGenericEvent[]): BN[] {
-    return findEventData(result, "tokens.Issued").map(
-      (data) => new BN(data[0])
+  static registerAsset(
+    name: string,
+    symbol: string,
+    decimals: number | BN,
+    // location?: MultiLocation,
+    location?: object,
+    xcmMetadata?: XcmMetadata,
+    xykMetadata?: XykMetadata,
+    assetId?: number | BN
+  ): Extrinsic {
+    return Sudo.sudo(
+      api.tx.assetRegistry.registerAsset(
+        {
+          decimals: decimals,
+          name: api.createType("Vec<u8>", name),
+          symbol: api.createType("Vec<u8>", symbol),
+          existentialDeposit: 0,
+          location: location ? { V1: location } : null,
+          additional: {
+            xcm: xcmMetadata,
+            xyk: xykMetadata,
+          },
+        },
+        api.createType("Option<u32>", assetId)
+      )
     );
   }
+
+  static updateAsset(assetId: number | BN, update: UpdateAsset): Extrinsic {
+    return Sudo.sudo(
+      api.tx.assetRegistry.updateAsset(
+        assetId,
+        api.createType("Option<u32>", update.decimals),
+        api.createType("Vec<u8>", update.name),
+        api.createType("Vec<u8>", update.symbol),
+        null,
+        update.location
+          ? update.location.location
+            ? { V1: update.location } // Some(location)
+            : api.createType("Vec<u8>", "0x0100") // Some(None)
+          : null, // None
+        { additional: update.metadata }
+      )
+    );
+  }
+}
+
+interface Metadata {
+  xcm?: XcmMetadata;
+  xyk?: XykMetadata;
+}
+
+interface XcmMetadata {
+  feePerSecond: number;
+}
+
+interface XykMetadata {
+  operationsDisabled: boolean;
+}
+
+// API expects Option<Option<Location>>, we need to wrap it so we can pass
+// undefined in UpdateAsset - no update
+// { location: undefined } - update with no location
+// { location: { ... } } - update with some location
+interface UpdateLocation {
+  location?: object;
+}
+
+// if the value is undefined, it will not be updated
+interface UpdateAsset {
+  name?: string;
+  symbol?: string;
+  decimals?: number;
+  // location?: MultiLocation,
+  location?: UpdateLocation;
+  metadata?: Metadata;
 }

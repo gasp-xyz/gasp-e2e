@@ -75,7 +75,7 @@ export class SudoUser extends BaseUser {
     });
     return txResult as MangataGenericEvent[];
   }
-  async promotePool(liqAssetId: BN) {
+  async promotePool(liqAssetId: BN, weight: number = 1) {
     testLog.getLog().info(`Promoting pool :${liqAssetId}`);
     const nonce = new BN(
       await SudoDB.getInstance().getSudoNonce(this.keyRingPair.address)
@@ -83,7 +83,7 @@ export class SudoUser extends BaseUser {
     const result = await signTx(
       this.node.api!,
       this.node.api!.tx.sudo.sudo(
-        this.node.api!.tx.xyk.promotePool(liqAssetId)
+        this.node.api!.tx.xyk.updatePoolPromotion(liqAssetId, weight)
       ),
       this.keyRingPair,
       { nonce: nonce }

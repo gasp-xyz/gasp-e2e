@@ -113,6 +113,8 @@ export function getEnvironmentRequiredVars() {
     ? process.env.FEES_ENABLED === "true"
     : true;
 
+  const oakUri = process.env.OAK_URL;
+
   return {
     sudo: sudoUserName,
     chainUri: uri,
@@ -137,6 +139,7 @@ export function getEnvironmentRequiredVars() {
     clusterNodeE: clusterNodeE,
     clusterNodeF: clusterNodeF,
     fees: fees,
+    oakUri: oakUri,
   };
 }
 
@@ -219,29 +222,6 @@ export const waitForNBlocks = async (n: number) => {
   }
 };
 
-export async function waitForBootstrapStatus(
-  bootstrapStatus: string,
-  maxNumberBlocks: number
-) {
-  const lastBlock = (await getBlockNumber()) + maxNumberBlocks;
-  let currentBlock = await getBlockNumber();
-  const api = await getApi();
-  let bootstrapPhase = await api.query.bootstrap.phase();
-  testLog.getLog().info("Waiting for boostrap to be " + bootstrapStatus);
-  while (
-    lastBlock > currentBlock &&
-    bootstrapPhase.toString() !== bootstrapStatus
-  ) {
-    await waitNewBlock();
-    bootstrapPhase = await api.query.bootstrap.phase();
-    currentBlock = await getBlockNumber();
-  }
-  testLog.getLog().info("... Done waiting " + bootstrapStatus);
-  if (bootstrapPhase !== bootstrapStatus) {
-    testLog.getLog().warn("TIMEDOUT waiting for the new boostrap phase");
-  }
-}
-
 export async function waitIfSessionWillChangeInNblocks(numberOfBlocks: number) {
   const api = await getApi();
   const sessionDuration = BigInt(
@@ -282,6 +262,16 @@ export async function getTokensDiffForBlockAuthor(blockNumber: AnyNumber) {
   const freeBefore = hexToBn(JSON.parse(dataBefore.toString()).free);
   return freeAfter.sub(freeBefore);
 }
+
+export async function getUserBalanceOfToken(tokenId: BN, account: User) {
+  const api = getApi();
+  const tokenBalance = await api.query.tokens.accounts(
+    account.keyRingPair.address,
+    tokenId
+  );
+  return tokenBalance;
+}
+
 export async function getBlockNumber() {
   const api = await mangata?.getApi()!;
   return ((await api.query.system.number()) as any).toNumber();
@@ -340,4 +330,5 @@ export enum xykErrors {
   SecondAssetAmountExceededExpectations = "SecondAssetAmountExceededExpectations",
   MathOverflow = "MathOverflow",
   LiquidityTokenCreationFailed = "LiquidityTokenCreationFailed",
+  FunctionNotAvailableForThisToken = "FunctionNotAvailableForThisToken",
 }
