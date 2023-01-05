@@ -169,10 +169,7 @@ test("Сhanging timeout config parameter on the fly is works robustly", async ()
     sudo,
     lastPeriodLength.add(new BN(10)),
     timeoutAmount,
-    [
-      [MGA_ASSET_ID, thresholdValue],
-      [createdToken, thresholdValue],
-    ]
+    null
   );
   await waitSudoOperataionSuccess(setupTimeoutConfig);
 
