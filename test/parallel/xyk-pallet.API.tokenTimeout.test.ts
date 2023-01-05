@@ -158,6 +158,7 @@ test("Сhanging timeout config parameter on the fly is works robustly", async ()
       JSON.stringify(await api?.query.tokenTimeout.timeoutMetadata())
     ).periodLength.toString()
   );
+
   const timeoutAmount = new BN(
     JSON.parse(
       JSON.stringify(await api?.query.tokenTimeout.timeoutMetadata())
