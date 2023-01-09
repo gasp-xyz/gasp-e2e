@@ -56,9 +56,11 @@ beforeAll(async () => {
 
 describe.skip("SDK test - Nonce tests - user", () => {
   beforeAll(async () => {
-    const firstCurrency = await Assets.issueAssetToUser(
-      sudo,
-      toBN("1", 20),
+    await testUser.addMGATokens(sudo, toBN("1", 22));
+    //add two curerncies and balance to testUser:
+    [firstCurrency] = await Assets.setupUserWithCurrencies(
+      testUser,
+      [new BN(10000000000)],
       sudo
     );
     await Sudo.batchAsSudoFinalized(

@@ -113,7 +113,9 @@ export function getEnvironmentRequiredVars() {
     ? process.env.FEES_ENABLED === "true"
     : true;
 
-  const oakUri = process.env.OAK_URL;
+  const oakUri = process.env.OAK_URL
+    ? process.env.OAK_URL
+    : "ws://127.0.0.1:9949";
 
   return {
     sudo: sudoUserName,
