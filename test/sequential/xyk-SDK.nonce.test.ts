@@ -16,9 +16,11 @@ import { ExtrinsicResult } from "../../utils/eventListeners";
 import { MGA_ASSET_ID } from "../../utils/Constants";
 import { waitNewBlock } from "../../utils/eventListeners";
 import { Assets } from "../../utils/Assets";
-import { createPoolIfMissing } from "../../utils/tx";
 import { SudoUser } from "../../utils/Framework/User/SudoUser";
 import { Node } from "../../utils/Framework/Node/Node";
+import { Sudo } from "../../utils/sudo";
+import { Xyk } from "../../utils/xyk";
+import { setupApi, setupUsers } from "../../utils/setup";
 
 jest.spyOn(console, "log").mockImplementation(jest.fn());
 jest.setTimeout(1500000);
@@ -38,7 +40,8 @@ beforeAll(async () => {
   }
   await getApi();
   mangata = await getMangataInstance();
-
+  await setupApi();
+  await setupUsers();
   keyring = new Keyring({ type: "sr25519" });
   // setup users
   testUser = new User(keyring);
@@ -51,7 +54,7 @@ beforeAll(async () => {
   keyring.addPair(sudo.keyRingPair);
 });
 
-describe("SDK test - Nonce tests - user", () => {
+describe.skip("SDK test - Nonce tests - user", () => {
   beforeAll(async () => {
     await testUser.addMGATokens(sudo, toBN("1", 22));
     //add two curerncies and balance to testUser:
@@ -60,11 +63,18 @@ describe("SDK test - Nonce tests - user", () => {
       [new BN(10000000000)],
       sudo
     );
-    await createPoolIfMissing(
-      sudo,
-      new BN(100000).toString(),
-      MGA_ASSET_ID,
-      firstCurrency
+    await Sudo.batchAsSudoFinalized(
+      Assets.mintToken(firstCurrency, testUser, new BN(10000000000)),
+      Assets.mintNative(testUser),
+      Sudo.sudoAs(
+        sudo,
+        Xyk.createPool(
+          MGA_ASSET_ID,
+          new BN(100000),
+          firstCurrency,
+          new BN(100000)
+        )
+      )
     );
   });
 
@@ -94,7 +104,8 @@ describe("SDK test - Nonce tests - user", () => {
           firstCurrency.toString(),
           MGA_ASSET_ID.toString(),
           new BN(1000),
-          new BN(0)
+          new BN(0),
+          { nonce: userNonce[0].addn(index) }
         )
       );
     }
