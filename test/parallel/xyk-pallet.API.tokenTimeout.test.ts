@@ -158,7 +158,6 @@ test("Сhanging timeout config parameter on the fly is works robustly", async ()
       JSON.stringify(await api?.query.tokenTimeout.timeoutMetadata())
     ).periodLength.toString()
   );
-
   const timeoutAmount = new BN(
     JSON.parse(
       JSON.stringify(await api?.query.tokenTimeout.timeoutMetadata())
@@ -180,4 +179,26 @@ test("Сhanging timeout config parameter on the fly is works robustly", async ()
   );
 
   expect(newPeriodLength).bnEqual(lastPeriodLength.add(new BN(10)));
+});
+
+test("GIVEN a tokenTimeout configured WHEN a swap happens THEN fees are not charged but locked instead", async () => {
+  const checkEmptyTimeoutConfig = await updateTimeoutMetadata(
+    sudo,
+    new BN(0),
+    new BN(0),
+    null
+  );
+  await waitSudoOperataionSuccess(checkEmptyTimeoutConfig);
+
+  const sellAssetsValue = thresholdValue.add(new BN(10000));
+
+  await testUser1.refreshAmounts(AssetWallet.BEFORE);
+  await testUser1.sellAssets(MGA_ASSET_ID, createdToken, sellAssetsValue);
+  await testUser1.refreshAmounts(AssetWallet.AFTER);
+
+  const tokenFees = testUser1
+    .getAsset(MGA_ASSET_ID)
+    ?.amountBefore.free.sub(testUser1.getAsset(MGA_ASSET_ID)?.amountAfter.free!)
+    .div(defaultSwapValue);
+  expect(tokenFees).bnEqual(new BN(0));
 });
