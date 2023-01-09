@@ -48,12 +48,11 @@ export const setupGassLess = async () => {
   sudo = new User(keyring, sudoUserName);
   alice = new User(keyring, "//Alice");
   await setupApi();
-  const tokenTimeoutConfig = await api?.query.tokenTimeout.timeoutMetadata();
+  const tokenTimeoutConfig = JSON.parse(
+    JSON.stringify(await api?.query.tokenTimeout.timeoutMetadata())
+  );
   // only create if empty.
-  if (
-    tokenTimeoutConfig !== null &&
-    JSON.parse(JSON.stringify(tokenTimeoutConfig)).periodLength === null
-  ) {
+  if (tokenTimeoutConfig === null || tokenTimeoutConfig.periodLength === null) {
     await signTx(
       api!,
       api!.tx.sudo.sudo(
