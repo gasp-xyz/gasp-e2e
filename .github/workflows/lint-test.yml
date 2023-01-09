@@ -37,7 +37,7 @@ jobs:
       MANGATA_NODE_VERSION: 'latest'
     steps:
       - name: Set variables
-        run:  yarn install --force
+        run:  yarn
           echo "TEST_SCRIPT=${{ github.event.inputs.scriptName || env.TEST_SCRIPT }}" >> $GITHUB_ENV
           echo "MANGATA_NODE_VERSION=${{ github.event.inputs.dockerImage || env.MANGATA_NODE_VERSION }}" >> $GITHUB_ENV
       - uses: actions/checkout@v2
