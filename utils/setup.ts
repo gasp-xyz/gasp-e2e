@@ -4,6 +4,7 @@ import { User } from "./User";
 import "@mangata-finance/types";
 import { SubmittableExtrinsic } from "@polkadot/api/types";
 import { getApi, initApi } from "./api";
+import { signTx } from "@mangata-finance/sdk";
 
 // API
 export let api: ApiPromise;
@@ -40,4 +41,25 @@ export const setupUsers = () => {
   keyring.addPair(testUser4.keyRingPair);
 
   return [testUser1, testUser2, testUser3, testUser4];
+};
+export const setupGassLess = async () => {
+  keyring = new Keyring({ type: "sr25519" });
+  const { sudo: sudoUserName } = getEnvironmentRequiredVars();
+  sudo = new User(keyring, sudoUserName);
+  alice = new User(keyring, "//Alice");
+  await setupApi();
+  const tokenTimeoutConfig = await api?.query.tokenTimeout.timeoutMetadata();
+  // only create if empty.
+  if (
+    tokenTimeoutConfig !== null &&
+    JSON.parse(JSON.stringify(tokenTimeoutConfig)).periodLength === null
+  ) {
+    await signTx(
+      api!,
+      api!.tx.sudo.sudo(
+        api!.tx.tokenTimeout.updateTimeoutMetadata(10, 10, [[1, 666]])
+      ),
+      sudo.keyRingPair
+    );
+  }
 };

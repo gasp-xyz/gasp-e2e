@@ -83,7 +83,7 @@ beforeAll(async () => {
   );
 });
 
-test("xyk-pallet- GIVEN a token WHEN no token timeout is configured THEN fees are charged as normal", async () => {
+test("xyk-pallet-gassless GIVEN a token WHEN no token timeout is configured THEN fees are charged as normal", async () => {
   const api = getApi();
 
   const timeoutMetadata = await api.query.tokenTimeout.timeoutMetadata();
@@ -114,7 +114,7 @@ test("xyk-pallet- GIVEN a token WHEN no token timeout is configured THEN fees ar
   }
 });
 
-test("GIVEN a non sudo user WHEN tokenTimeout configuration extrinsic is submitted THEN it fails with RequireSudo", async () => {
+test("xyk-pallet-gassless GIVEN a non sudo user WHEN tokenTimeout configuration extrinsic is submitted THEN it fails with RequireSudo", async () => {
   await updateTimeoutMetadata(testUser1, new BN(20), new BN(200000), [
     [MGA_ASSET_ID, thresholdValue],
   ]).then((result) => {
@@ -124,7 +124,7 @@ test("GIVEN a non sudo user WHEN tokenTimeout configuration extrinsic is submitt
   });
 });
 
-test("GIVEN an empty tokenTimeout configuration (all options empty) WHEN sudo submit the extrinsic THEN Tx fails because insuficient params", async () => {
+test("xyk-pallet-gassless GIVEN an empty tokenTimeout configuration (all options empty) WHEN sudo submit the extrinsic THEN Tx fails because insuficient params", async () => {
   const checkEmptyTimeoutConfig = await updateTimeoutMetadata(
     sudo,
     new BN(0),
@@ -137,7 +137,7 @@ test("GIVEN an empty tokenTimeout configuration (all options empty) WHEN sudo su
   );
 });
 
-test("GIVEN a tokenTimeout WHEN periodLength and timeoutAmount are set THEN extrinsic succeed and tokensTimeout is correctly configured", async () => {
+test("xyk-pallet-gassless GIVEN a tokenTimeout WHEN periodLength and timeoutAmount are set THEN extrinsic succeed and tokensTimeout is correctly configured", async () => {
   const setupTimeoutConfig = await updateTimeoutMetadata(
     sudo,
     new BN(20),
@@ -150,7 +150,7 @@ test("GIVEN a tokenTimeout WHEN periodLength and timeoutAmount are set THEN extr
   await waitSudoOperataionSuccess(setupTimeoutConfig);
 });
 
-test("Сhanging timeout config parameter on the fly is works robustly", async () => {
+test("xyk-pallet-gassless Сhanging timeout config parameter on the fly is works robustly", async () => {
   const api = getApi();
 
   const lastPeriodLength = new BN(
@@ -181,7 +181,7 @@ test("Сhanging timeout config parameter on the fly is works robustly", async ()
   expect(newPeriodLength).bnEqual(lastPeriodLength.add(new BN(10)));
 });
 
-test("GIVEN a tokenTimeout configured WHEN a swap happens THEN fees are not charged but locked instead", async () => {
+test("xyk-pallet-gassless GIVEN a tokenTimeout configured WHEN a swap happens THEN fees are not charged but locked instead", async () => {
   const checkEmptyTimeoutConfig = await updateTimeoutMetadata(
     sudo,
     new BN(0),
