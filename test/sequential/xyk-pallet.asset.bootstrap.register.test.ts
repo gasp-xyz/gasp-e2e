@@ -15,6 +15,7 @@ import {
   ExtrinsicResult,
   findEventData,
   waitSudoOperataionSuccess,
+  waitSudoOperataionFail,
 } from "../../utils/eventListeners";
 import {
   claimRewardsBootstrap,
@@ -23,6 +24,7 @@ import {
   scheduleBootstrap,
   waitForBootstrapStatus,
 } from "../../utils/Bootstrap";
+import { getNextAssetId } from "../../utils/tx";
 import { getEventResultFromMangataTx } from "../../utils/txHandler";
 import { BN } from "@polkadot/util";
 import { BN_ONE, toBN } from "@mangata-finance/sdk";
@@ -101,6 +103,41 @@ beforeEach(async () => {
   keyring.addPair(sudo.keyRingPair);
   keyring.addPair(testUser1.keyRingPair);
   await testUser1.addMGATokens(sudo);
+});
+
+test("register asset and then try to register new one with the same location, expect to conflict", async () => {
+  const assetId = (
+    await Assets.setupUserWithCurrencies(sudo, [new BN(250000)], sudo, true)
+  )[0];
+
+  await sudo.registerAsset(assetId);
+
+  const tempAssetId = await getNextAssetId();
+
+  const userRegisterNewAsset = await sudo.registerAsset(
+    tempAssetId,
+    tempAssetId,
+    {
+      V1: {
+        parents: 1,
+        interior: {
+          X3: [
+            {
+              Parachain: 3210 + assetId.toNumber(),
+            },
+            {
+              GeneralKey: "0x00834",
+            },
+            {
+              PalletInstance: 10,
+            },
+          ],
+        },
+      },
+    }
+  );
+
+  await waitSudoOperataionFail(userRegisterNewAsset, "ConflictingLocation");
 });
 
 test("register asset with xyk disabled and try to schedule bootstrap, expect to success", async () => {
