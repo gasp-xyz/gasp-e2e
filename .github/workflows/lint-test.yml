@@ -42,7 +42,7 @@ jobs:
           echo "MANGATA_NODE_VERSION=${{ github.event.inputs.dockerImage || env.MANGATA_NODE_VERSION }}" >> $GITHUB_ENV
       - uses: actions/checkout@v2
       - name: Install dependencies
-        run: yarn
+        run: yarn install --force
       - name: Tsc code quality check
         run: yarn tsc-lint --skipLibCheck
       - name: ESLint code quality check
