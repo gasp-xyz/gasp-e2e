@@ -49,8 +49,8 @@ let bootstrapPool: any;
 let eventResponse: EventResult;
 
 const { sudo: sudoUserName } = getEnvironmentRequiredVars();
-const waitingPeriod = 15;
-const bootstrapPeriod = 30;
+const waitingPeriod = 6;
+const bootstrapPeriod = 13;
 const bootstrapAmount = new BN(10000000000);
 
 beforeAll(async () => {
