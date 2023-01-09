@@ -279,6 +279,22 @@ describe("RewardsV2 - testpad", () => {
 
     await waitForNBlocks(2);
   });
+  test("xyk-pallet: gassles swaps", async () => {
+    keyring = new Keyring({ type: "sr25519" });
+    sudo = new User(keyring, sudoUserName);
+
+    const promises: Promise<MangataGenericEvent[]>[] = [];
+    promises.push(
+      signTx(
+        api!,
+        api!.tx.sudo.sudo(
+          api!.tx.tokenTimeout.updateTimeoutMetadata(10, 10, [[1, 1000]])
+        ),
+        sudo.keyRingPair
+      )
+    );
+    await Promise.all(promises);
+  });
 });
 async function doSetup(rewardsGenerationTime: number) {
   keyring = new Keyring({ type: "sr25519" });
