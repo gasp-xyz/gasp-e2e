@@ -4,7 +4,6 @@
  * @group api
  * @group parallel
  */
-
 import { getApi, getMangataInstance, initApi } from "../../utils/api";
 import {
   getBalanceOfPool,
