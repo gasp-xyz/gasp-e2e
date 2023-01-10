@@ -42,7 +42,7 @@ export function getEnvironmentRequiredVars() {
     : "";
   const sudoUserName = process.env.TEST_SUDO_NAME
     ? process.env.TEST_SUDO_NAME
-    : "//Alice";
+    : "remain flame shell morning solar filter silver lawn clarify witness sign wall";
   const testUserName = process.env.TEST_USER_NAME
     ? process.env.TEST_USER_NAME
     : "//Alice";
@@ -56,7 +56,9 @@ export function getEnvironmentRequiredVars() {
 
   const logLevel = process.env.LOG_LEVEL ? process.env.LOG_LEVEL : "info";
 
-  const uri = process.env.API_URL ? process.env.API_URL : "ws://127.0.0.1:9946";
+  const uri = process.env.API_URL
+    ? process.env.API_URL
+    : "wss://v4-collator-01.mangatafinance.cloud";
   const relyUri = process.env.RELY_API_URL
     ? process.env.RELY_API_URL
     : "ws://127.0.0.1:9944";
@@ -70,7 +72,7 @@ export function getEnvironmentRequiredVars() {
 
   const uiUri = process.env.UI_URL
     ? process.env.UI_URL
-    : "https://staging.mangata.finance/";
+    : "http://develop.mangata.finance/";
 
   const mnemonicMetaMask = process.env.MNEMONIC_META
     ? process.env.MNEMONIC_META

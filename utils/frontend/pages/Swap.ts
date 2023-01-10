@@ -11,8 +11,8 @@ import {
 
 //SELECTORS
 const TAB_SWAP_TEST_ID = "trading-swapTab";
-const DIV_SWAP_PAY = "tradingSwapTab-leftAssetInput";
-const DIV_SWAP_GET = "tradingSwapTab-rightAssetInput";
+const DIV_SWAP_PAY = "tradingSwapTab-firstTokenInput";
+const DIV_SWAP_GET = "tradingSwapTab-secondTokenInput";
 const BTN_SWAP_TRADE = "tradingSwapTab-tradeBtn";
 
 export class Swap {
@@ -84,7 +84,7 @@ export class Swap {
   }
 
   private async selectAssetFromModalList(assetName: string) {
-    const assetTestId = `TokensModal-asset-${assetName}`;
+    const assetTestId = `TokensModal-token-${assetName}`;
     const assetLocator = buildDataTestIdXpath(assetTestId);
     await clickElement(this.driver, assetLocator);
   }
