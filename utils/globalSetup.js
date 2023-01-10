@@ -36,6 +36,7 @@ module.exports = async function (globalConfig, projectConfig) {
 
   // eslint-disable-next-line no-undef
   globalThis.server = ipc.server;
+  // eslint-disable-next-line no-undef
   globalThis.api = api;
   //Setup if  debugging a gassLess test OR running gassless group
   if (
