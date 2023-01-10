@@ -81,6 +81,7 @@ describe("MPL: Delegator", () => {
     }
   });
 
+  // result parsing from event does not work properly
   test("join as delegator > verify account balances are reserved +  mpl storage", async () => {
     const tokensBeforeJoin = await testUser1.getUserTokensAccountInfo(
       liqTokenForCandidate

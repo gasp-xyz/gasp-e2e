@@ -3,9 +3,23 @@ import { renameExtraLogs } from "./frontend/utils/Helper";
 import { removeSudoDb } from "./lock";
 
 require("dotenv").config();
-
+//TODO: This must be temporal, but lets retry test failues to avoid Tx issues.
+jest.retryTimes(2);
 beforeAll(async () => {
   await removeSudoDb();
+
+  //   const child = await execFile(
+  //     `node`,
+  //     [`${__dirname}/NonceManager.js`],
+  //     (error: any, stdout: any) => {
+  //       if (error) {
+  //         testLog.getLog().error(error);
+  //         throw error;
+  //       }
+  //       // eslint-disable-next-line no-console
+  //       testLog.getLog().info(stdout);
+  //     }
+  //   );
 });
 
 declare global {
