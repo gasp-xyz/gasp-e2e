@@ -38,8 +38,8 @@ const { sudo: sudoUserName } = getEnvironmentRequiredVars();
 //constant for bootstrap include a planning period
 const waitingPeriodWithPlan = 400;
 //constant for bootstrap less a planning period
-const waitingPeriodLessPlan = 10;
-const bootstrapPeriod = 14;
+const waitingPeriodLessPlan = 8;
+const bootstrapPeriod = 6;
 const whitelistPeriod = 3;
 
 beforeAll(async () => {
@@ -52,9 +52,7 @@ beforeAll(async () => {
   keyring = new Keyring({ type: "sr25519" });
 
   sudo = new User(keyring, sudoUserName);
-});
 
-beforeEach(async () => {
   [testUser1] = setupUsers();
 
   await checkLastBootstrapFinalized(sudo);

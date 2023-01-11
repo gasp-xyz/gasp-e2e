@@ -33,9 +33,8 @@ import { setupApi, setupUsers } from "../../utils/setup";
 import { Sudo } from "../../utils/sudo";
 
 const { sudo: sudoUserName } = getEnvironmentRequiredVars();
-const waitingPeriod = 12;
-const bootstrapPeriod = 15;
-const whitelistPeriod = 1;
+const waitingPeriod = 5;
+const bootstrapPeriod = 7;
 const poolAssetAmount = new BN(100000);
 jest.setTimeout(1500000);
 jest.spyOn(console, "log").mockImplementation(jest.fn());
@@ -52,8 +51,7 @@ async function runBootstrap(assetId: BN) {
     MGA_ASSET_ID,
     assetId,
     waitingPeriod,
-    bootstrapPeriod,
-    whitelistPeriod
+    bootstrapPeriod
   );
   await waitSudoOperataionSuccess(scheduleBootstrapEvent);
 
@@ -94,15 +92,12 @@ async function runBootstrap(assetId: BN) {
 beforeAll(async () => {
   await setupApi();
   setupUsers();
-});
-
-beforeEach(async () => {
   const keyring = new Keyring({ type: "sr25519" });
   sudo = new User(keyring, sudoUserName);
   testUser1 = new User(keyring);
   keyring.addPair(sudo.keyRingPair);
   keyring.addPair(testUser1.keyRingPair);
-  await testUser1.addMGATokens(sudo);
+  await testUser1.addMGATokens(sudo, toBN("1", 22));
 });
 
 test("register asset and then try to register new one with the same location, expect to conflict", async () => {
