@@ -23,6 +23,7 @@ on:
             - none
             - sequential
             - bootstrap
+            - bootstrap-rewards
             - parallel
             - xyk
             - api
