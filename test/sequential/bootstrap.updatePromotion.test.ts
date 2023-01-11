@@ -1,7 +1,7 @@
 /* eslint-disable jest/no-conditional-expect */
 /*
  *
- * @group bootstrap
+ * @group bootstrap-rewards
  * @group sequential
  */
 import { getApi, initApi } from "../../utils/api";
@@ -50,8 +50,8 @@ const { sudo: sudoUserName } = getEnvironmentRequiredVars();
 //constant for bootstrap include a planning period
 const waitingPeriodWithPlan = 400;
 //constant for bootstrap less a planning period
-const waitingPeriodLessPlan = 10;
-const bootstrapPeriod = 12;
+const waitingPeriodLessPlan = 8;
+const bootstrapPeriod = 10;
 const whitelistPeriod = 4;
 const bootstrapAmount = new BN(10000000000);
 
