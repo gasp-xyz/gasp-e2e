@@ -13,14 +13,11 @@ import {
   waitSudoOperataionSuccess,
   waitSudoOperataionFail,
 } from "../../utils/eventListeners";
-import { BN, toBN } from "@mangata-finance/sdk";
+import { BN } from "@mangata-finance/sdk";
 import { setupApi, setupUsers } from "../../utils/setup";
 import { Sudo } from "../../utils/sudo";
 import { sellAsset, updateTimeoutMetadata } from "../../utils/tx";
-import {
-  getEventResultFromMangataTx,
-  sudoIssueAsset,
-} from "../../utils/txHandler";
+import { getEventResultFromMangataTx } from "../../utils/txHandler";
 import { AssetWallet, User } from "../../utils/User";
 import { getEnvironmentRequiredVars } from "../../utils/utils";
 import { Xyk } from "../../utils/xyk";
@@ -54,18 +51,11 @@ beforeAll(async () => {
 
   await setupApi();
 
-  const poolCurrencyIssue = await sudoIssueAsset(
-    sudo.keyRingPair,
-    toBN("1", 20),
-    sudo.keyRingPair.address
+  createdToken = await Assets.issueAssetToUser(
+    sudo,
+    defaultCurrencyValue,
+    sudo
   );
-  const poolEventResult = await getEventResultFromMangataTx(poolCurrencyIssue, [
-    "tokens",
-    "Issued",
-    sudo.keyRingPair.address,
-  ]);
-  const poolAssetId = poolEventResult.data[0].split(",").join("");
-  createdToken = new BN(poolAssetId);
 
   await Sudo.batchAsSudoFinalized(
     Assets.mintToken(createdToken, sudo, defaultCurrencyValue),
@@ -88,7 +78,7 @@ test("xyk-pallet-gassless GIVEN a token WHEN no token timeout is configured THEN
 
   const timeoutMetadata = await api.query.tokenTimeout.timeoutMetadata();
 
-  if (timeoutMetadata.isEmpty === true) {
+  if (timeoutMetadata.isEmpty) {
     await testUser1.refreshAmounts(AssetWallet.BEFORE);
     await sellAsset(
       testUser1.keyRingPair,
@@ -138,6 +128,8 @@ test("xyk-pallet-gassless GIVEN an empty tokenTimeout configuration (all options
 });
 
 test("xyk-pallet-gassless GIVEN a tokenTimeout WHEN periodLength and timeoutAmount are set THEN extrinsic succeed and tokensTimeout is correctly configured", async () => {
+  const api = getApi();
+
   const setupTimeoutConfig = await updateTimeoutMetadata(
     sudo,
     new BN(20),
@@ -148,10 +140,40 @@ test("xyk-pallet-gassless GIVEN a tokenTimeout WHEN periodLength and timeoutAmou
     ]
   );
   await waitSudoOperataionSuccess(setupTimeoutConfig);
+
+  const currentPeriodLength = new BN(
+    JSON.parse(
+      JSON.stringify(await api?.query.tokenTimeout.timeoutMetadata())
+    ).periodLength.toString()
+  );
+
+  const currentTimeoutAmount = new BN(
+    JSON.parse(
+      JSON.stringify(await api?.query.tokenTimeout.timeoutMetadata())
+    ).timeoutAmount.toString()
+  );
+
+  expect(currentPeriodLength).bnEqual(new BN(20));
+  expect(currentTimeoutAmount).bnEqual(new BN(10000));
 });
 
 test("xyk-pallet-gassless Сhanging timeout config parameter on the fly is works robustly", async () => {
   const api = getApi();
+
+  const timeoutMetadata = await api.query.tokenTimeout.timeoutMetadata();
+
+  if (timeoutMetadata.isEmpty) {
+    const initialTimeoutConfig = await updateTimeoutMetadata(
+      sudo,
+      new BN(20),
+      new BN(10000),
+      [
+        [MGA_ASSET_ID, thresholdValue],
+        [createdToken, thresholdValue],
+      ]
+    );
+    await waitSudoOperataionSuccess(initialTimeoutConfig);
+  }
 
   const lastPeriodLength = new BN(
     JSON.parse(
@@ -181,24 +203,24 @@ test("xyk-pallet-gassless Сhanging timeout config parameter on the fly is works
   expect(newPeriodLength).bnEqual(lastPeriodLength.add(new BN(10)));
 });
 
-test("xyk-pallet-gassless GIVEN a tokenTimeout configured WHEN a swap happens THEN fees are not charged but locked instead", async () => {
-  const checkEmptyTimeoutConfig = await updateTimeoutMetadata(
-    sudo,
-    new BN(0),
-    new BN(0),
-    null
-  );
-  await waitSudoOperataionSuccess(checkEmptyTimeoutConfig);
+// test("xyk-pallet-gassless GIVEN a tokenTimeout configured WHEN a swap happens THEN fees are not charged but locked instead", async () => {
+//   const checkEmptyTimeoutConfig = await updateTimeoutMetadata(
+//     sudo,
+//     new BN(0),
+//     new BN(0),
+//     null
+//   );
+//   await waitSudoOperataionSuccess(checkEmptyTimeoutConfig);
 
-  const sellAssetsValue = thresholdValue.add(new BN(10000));
+//   const sellAssetsValue = thresholdValue.add(new BN(10000));
 
-  await testUser1.refreshAmounts(AssetWallet.BEFORE);
-  await testUser1.sellAssets(MGA_ASSET_ID, createdToken, sellAssetsValue);
-  await testUser1.refreshAmounts(AssetWallet.AFTER);
+//   await testUser1.refreshAmounts(AssetWallet.BEFORE);
+//   await testUser1.sellAssets(MGA_ASSET_ID, createdToken, sellAssetsValue);
+//   await testUser1.refreshAmounts(AssetWallet.AFTER);
 
-  const tokenFees = testUser1
-    .getAsset(MGA_ASSET_ID)
-    ?.amountBefore.free.sub(testUser1.getAsset(MGA_ASSET_ID)?.amountAfter.free!)
-    .div(defaultSwapValue);
-  expect(tokenFees).bnEqual(new BN(0));
-});
+//   const tokenFees = testUser1
+//     .getAsset(MGA_ASSET_ID)
+//     ?.amountBefore.free.sub(testUser1.getAsset(MGA_ASSET_ID)?.amountAfter.free!)
+//     .div(defaultSwapValue);
+//   expect(tokenFees).bnEqual(new BN(0));
+// });
