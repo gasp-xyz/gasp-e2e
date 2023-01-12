@@ -52,7 +52,9 @@ beforeAll(async () => {
   keyring = new Keyring({ type: "sr25519" });
 
   sudo = new User(keyring, sudoUserName);
+});
 
+beforeEach(async () => {
   [testUser1] = setupUsers();
 
   await checkLastBootstrapFinalized(sudo);
