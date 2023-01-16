@@ -1,4 +1,4 @@
-import { logging, WebDriver } from "selenium-webdriver";
+import { Key, logging, WebDriver } from "selenium-webdriver";
 import { sleep } from "../../utils";
 import { Mangata } from "../pages/Mangata";
 import { Polkadot } from "../pages/Polkadot";
@@ -30,6 +30,16 @@ export async function waitForElementEnabled(
   await driver.wait(until.elementIsEnabled(element), timeout);
 }
 
+export async function waitForElementVisible(
+  driver: WebDriver,
+  xpath: string,
+  timeout = timeOut
+) {
+  await waitForElement(driver, xpath, timeout);
+  const element = await driver.findElement(By.xpath(xpath));
+  await driver.wait(until.elementIsVisible(element), timeout);
+}
+
 export async function waitForElementToDissapear(
   driver: WebDriver,
   xpath: string
@@ -52,6 +62,18 @@ export async function clickElement(driver: WebDriver, xpath: string) {
   await driver.wait(until.elementIsVisible(element), timeOut);
   await sleep(1000);
   await element.click();
+}
+
+export async function clickElementForce(driver: WebDriver, xpath: string) {
+  await waitForElement(driver, xpath);
+  const element = await driver.findElement(By.xpath(xpath));
+  await driver.wait(until.elementIsVisible(element), timeOut);
+  await sleep(1000);
+  driver.executeScript("arguments[0].click();", element);
+}
+
+export async function pressEscape(driver: WebDriver) {
+  await driver.actions().sendKeys(Key.ESCAPE).perform();
 }
 
 export async function writeText(

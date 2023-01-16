@@ -3,8 +3,10 @@ import { By, WebDriver } from "selenium-webdriver";
 import {
   buildDataTestIdXpath,
   clickElement,
+  clickElementForce,
   getAttribute,
   getText,
+  pressEscape,
   waitForElementEnabled,
   writeText,
 } from "../utils/Helper";
@@ -14,6 +16,7 @@ const TAB_SWAP_TEST_ID = "trading-swapTab";
 const DIV_SWAP_PAY = "tradingSwapTab-firstTokenInput";
 const DIV_SWAP_GET = "tradingSwapTab-secondTokenInput";
 const BTN_SWAP_TRADE = "tradingSwapTab-tradeBtn";
+const BTN_MANAGE_TOKENS_LIST = "tokensModal-manageTokenListsBtn";
 
 export class Swap {
   driver: WebDriver;
@@ -30,6 +33,8 @@ export class Swap {
     buildDataTestIdXpath(DIV_SWAP_PAY) + "//*[contains(text(),'Max')]";
   private btnGetMaxLocator =
     buildDataTestIdXpath(DIV_SWAP_GET) + "//*[contains(text(),'Max')]";
+  private btnManageTokensList = buildDataTestIdXpath(BTN_MANAGE_TOKENS_LIST);
+  private btnToggleShowAllTokens = "//*[@for='tokenListsCheckbox-everything']";
 
   async toggleSwap() {
     const selector = buildDataTestIdXpath(TAB_SWAP_TEST_ID);
@@ -106,5 +111,12 @@ export class Swap {
       "//*[@class='TradingInput__right__label']";
     const text = await getText(this.driver, xpathGetLocator);
     return text.split(":")[1].trim().replace("MAX", "").trim();
+  }
+
+  async toggleShowAllTokens() {
+    await clickElement(this.driver, this.btnPayLocator);
+    await clickElement(this.driver, this.btnManageTokensList);
+    await clickElement(this.driver, this.btnToggleShowAllTokens);
+    await pressEscape(this.driver);
   }
 }

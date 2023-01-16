@@ -7,8 +7,7 @@ import { provisionBootstrap, scheduleBootstrap } from "../utils/tx";
 import { MGA_ASSET_ID } from "../utils/Constants";
 import { User } from "../utils/User";
 import {
-  getEnvironmentRequiredVars,
-  waitForBootstrapStatus,
+  getEnvironmentRequiredVars
 } from "../utils/utils";
 
 import { Sudo } from "../utils/sudo";
@@ -92,7 +91,7 @@ describe("Boostrap - testpad", () => {
       bootstraplength,
       1
     );
-    await waitForBootstrapStatus("Public", 6);
+    //await waitForBootstrapStatus("Public", 6);
     await provisionBootstrap(testUser1, new BN(4), new BN("10000000000000000"));
     await provisionBootstrap(
       testUser1,

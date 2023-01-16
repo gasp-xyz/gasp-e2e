@@ -4,8 +4,10 @@ import {
   buildDataTestIdXpath,
   clickElement,
   getText,
+  isDisplayed,
   waitForElement,
   waitForElementToDissapear,
+  waitForElementVisible,
 } from "../utils/Helper";
 
 //SELECTORS
@@ -70,6 +72,10 @@ export class NotificationModal {
   public async waitForModal(modalState: ModalType) {
     await waitForElement(this.driver, this.getModalXpath(modalState));
     await waitForNBlocks(2);
+  }
+
+  public async waitForModalState(modalState: ModalType) {
+    await waitForElementVisible(this.driver, this.getModalXpath(modalState));
   }
 
   async getModalErrorInfo(modalState: ModalType) {
