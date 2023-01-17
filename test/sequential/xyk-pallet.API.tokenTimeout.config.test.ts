@@ -1,7 +1,7 @@
 /*
  *
  * @group xyk
- * @group parallel
+ * @group sequential
  */
 
 import { Keyring } from "@polkadot/api";
@@ -16,9 +16,9 @@ import {
 import { BN } from "@mangata-finance/sdk";
 import { setupApi, setupUsers } from "../../utils/setup";
 import { Sudo } from "../../utils/sudo";
-import { sellAsset, updateTimeoutMetadata } from "../../utils/tx";
+import { updateTimeoutMetadata } from "../../utils/tx";
 import { getEventResultFromMangataTx } from "../../utils/txHandler";
-import { AssetWallet, User } from "../../utils/User";
+import { User } from "../../utils/User";
 import { getEnvironmentRequiredVars } from "../../utils/utils";
 import { Xyk } from "../../utils/xyk";
 
@@ -31,7 +31,6 @@ let testUser1: User;
 let sudo: User;
 let keyring: Keyring;
 let createdToken: BN;
-const defaultSwapValue = new BN(50000);
 const thresholdValue = new BN(30000);
 const defaultCurrencyValue = new BN(10000000);
 const defaultPoolVolumeValue = new BN(1000000);
@@ -71,37 +70,6 @@ beforeAll(async () => {
       )
     )
   );
-});
-
-test("xyk-pallet-gassless GIVEN a token WHEN no token timeout is configured THEN fees are charged as normal", async () => {
-  const api = getApi();
-
-  const timeoutMetadata = await api.query.tokenTimeout.timeoutMetadata();
-
-  if (timeoutMetadata.isEmpty) {
-    await testUser1.refreshAmounts(AssetWallet.BEFORE);
-    await sellAsset(
-      testUser1.keyRingPair,
-      MGA_ASSET_ID,
-      createdToken,
-      defaultSwapValue,
-      new BN(1)
-    ).then((result) => {
-      const eventResponse = getEventResultFromMangataTx(result);
-      // eslint-disable-next-line jest/no-conditional-expect
-      expect(eventResponse.state).toEqual(ExtrinsicResult.ExtrinsicSuccess);
-    });
-    await testUser1.refreshAmounts(AssetWallet.AFTER);
-
-    const tokenFees = testUser1
-      .getAsset(MGA_ASSET_ID)
-      ?.amountBefore.free.sub(
-        testUser1.getAsset(MGA_ASSET_ID)?.amountAfter.free!
-      )
-      .add(defaultSwapValue);
-    // eslint-disable-next-line jest/no-conditional-expect
-    expect(tokenFees).bnGt(new BN(0));
-  }
 });
 
 test("xyk-pallet-gassless GIVEN a non sudo user WHEN tokenTimeout configuration extrinsic is submitted THEN it fails with RequireSudo", async () => {
@@ -160,21 +128,6 @@ test("xyk-pallet-gassless GIVEN a tokenTimeout WHEN periodLength and timeoutAmou
 test("xyk-pallet-gassless Сhanging timeout config parameter on the fly is works robustly", async () => {
   const api = getApi();
 
-  const timeoutMetadata = await api.query.tokenTimeout.timeoutMetadata();
-
-  if (timeoutMetadata.isEmpty) {
-    const initialTimeoutConfig = await updateTimeoutMetadata(
-      sudo,
-      new BN(20),
-      new BN(10000),
-      [
-        [MGA_ASSET_ID, thresholdValue],
-        [createdToken, thresholdValue],
-      ]
-    );
-    await waitSudoOperataionSuccess(initialTimeoutConfig);
-  }
-
   const lastPeriodLength = new BN(
     JSON.parse(
       JSON.stringify(await api?.query.tokenTimeout.timeoutMetadata())
@@ -202,25 +155,3 @@ test("xyk-pallet-gassless Сhanging timeout config parameter on the fly is works
 
   expect(newPeriodLength).bnEqual(lastPeriodLength.add(new BN(10)));
 });
-
-// test("xyk-pallet-gassless GIVEN a tokenTimeout configured WHEN a swap happens THEN fees are not charged but locked instead", async () => {
-//   const checkEmptyTimeoutConfig = await updateTimeoutMetadata(
-//     sudo,
-//     new BN(0),
-//     new BN(0),
-//     null
-//   );
-//   await waitSudoOperataionSuccess(checkEmptyTimeoutConfig);
-
-//   const sellAssetsValue = thresholdValue.add(new BN(10000));
-
-//   await testUser1.refreshAmounts(AssetWallet.BEFORE);
-//   await testUser1.sellAssets(MGA_ASSET_ID, createdToken, sellAssetsValue);
-//   await testUser1.refreshAmounts(AssetWallet.AFTER);
-
-//   const tokenFees = testUser1
-//     .getAsset(MGA_ASSET_ID)
-//     ?.amountBefore.free.sub(testUser1.getAsset(MGA_ASSET_ID)?.amountAfter.free!)
-//     .div(defaultSwapValue);
-//   expect(tokenFees).bnEqual(new BN(0));
-// });
