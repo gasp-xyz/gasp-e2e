@@ -1020,3 +1020,16 @@ export async function updateTimeoutMetadata(
   );
   return result;
 }
+
+export async function releaseTimeout(sudoUser: User) {
+  const api = getApi();
+  const result = await signTx(
+    api,
+    api.tx.sudo.sudo(api.tx.tokenTimeout.releaseTimeout()),
+    sudoUser.keyRingPair,
+    {
+      nonce: await getCurrentNonce(sudoUser.keyRingPair.address),
+    }
+  );
+  return result;
+}

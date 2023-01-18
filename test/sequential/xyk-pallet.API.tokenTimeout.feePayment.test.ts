@@ -2,6 +2,7 @@
  *
  * @group xyk
  * @group sequential
+ * @group gassless
  */
 
 import { Keyring } from "@polkadot/api";
@@ -15,10 +16,10 @@ import {
 import { BN } from "@mangata-finance/sdk";
 import { setupApi, setupUsers } from "../../utils/setup";
 import { Sudo } from "../../utils/sudo";
-import { updateTimeoutMetadata } from "../../utils/tx";
+import { updateTimeoutMetadata, releaseTimeout } from "../../utils/tx";
 import { getEventResultFromMangataTx } from "../../utils/txHandler";
 import { AssetWallet, User } from "../../utils/User";
-import { getEnvironmentRequiredVars } from "../../utils/utils";
+import { getEnvironmentRequiredVars, waitForNBlocks } from "../../utils/utils";
 import { Xyk } from "../../utils/xyk";
 
 jest.spyOn(console, "log").mockImplementation(jest.fn());
@@ -175,6 +176,43 @@ test("gassless- GIVEN a tokenTimeout configured (only Time and Amount )  WHEN th
       const eventResponse = getEventResultFromMangataTx(result);
       expect(eventResponse.state).toEqual(ExtrinsicResult.ExtrinsicFailed);
     });
+});
+
+test("gassless- GIVEN a correct config for gass less swaps WHEN the user runs release-timeout THEN fees are charged", async () => {
+  await testUser1.addMGATokens(sudo);
+  testUser1.addAsset(MGA_ASSET_ID);
+
+  const updateMgaTimeoutMetadata = await updateTimeoutMetadata(
+    sudo,
+    new BN(periodLength),
+    new BN(timeoutAmount),
+    [
+      [MGA_ASSET_ID, thresholdValue],
+      [createdToken, thresholdValue],
+    ]
+  );
+  await waitSudoOperataionSuccess(updateMgaTimeoutMetadata);
+
+  const buyAssetsValue = thresholdValue.div(new BN(100));
+
+  await testUser1.refreshAmounts(AssetWallet.BEFORE);
+  await testUser1.sellAssets(MGA_ASSET_ID, createdToken, buyAssetsValue);
+  await waitForNBlocks(periodLength);
+  await releaseTimeout(sudo);
+  await testUser1.refreshAmounts(AssetWallet.AFTER);
+
+  const tokenBlocked = testUser1.getAsset(MGA_ASSET_ID)?.amountAfter.reserved!;
+
+  const userMgaFees = testUser1
+    .getAsset(MGA_ASSET_ID)
+    ?.amountAfter.free!.sub(
+      testUser1.getAsset(MGA_ASSET_ID)?.amountBefore.free!
+    )
+    .add(new BN(timeoutMetadata.timeoutAmount.toString()))
+    .add(new BN(buyAssetsValue));
+
+  expect(tokenBlocked).bnEqual(new BN(0));
+  expect(userMgaFees).bnEqual(new BN(0));
 });
 
 // test("xyk-pallet-gassless GIVEN a tokenTimeout configured WHEN the user swaps two tokens defined in the thresholds AND swapValue > threshold THEN the extrinsic is correctly submitted AND No locks AND no fees", async () => {

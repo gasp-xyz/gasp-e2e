@@ -72,7 +72,7 @@ beforeAll(async () => {
   );
 });
 
-test("xyk-pallet-gassless GIVEN a non sudo user WHEN tokenTimeout configuration extrinsic is submitted THEN it fails with RequireSudo", async () => {
+test("gassless- GIVEN a non sudo user WHEN tokenTimeout configuration extrinsic is submitted THEN it fails with RequireSudo", async () => {
   await updateTimeoutMetadata(testUser1, new BN(20), new BN(200000), [
     [MGA_ASSET_ID, thresholdValue],
   ]).then((result) => {
@@ -82,7 +82,7 @@ test("xyk-pallet-gassless GIVEN a non sudo user WHEN tokenTimeout configuration 
   });
 });
 
-test("xyk-pallet-gassless GIVEN an empty tokenTimeout configuration (all options empty) WHEN sudo submit the extrinsic THEN Tx fails because insuficient params", async () => {
+test("gassless- GIVEN an empty tokenTimeout configuration (all options empty) WHEN sudo submit the extrinsic THEN Tx fails because insuficient params", async () => {
   const checkEmptyTimeoutConfig = await updateTimeoutMetadata(
     sudo,
     new BN(0),
@@ -125,7 +125,7 @@ test("xyk-pallet-gassless GIVEN a tokenTimeout WHEN periodLength and timeoutAmou
   expect(currentTimeoutAmount).bnEqual(new BN(10000));
 });
 
-test("xyk-pallet-gassless Сhanging timeout config parameter on the fly is works robustly", async () => {
+test("gassless- Сhanging timeout config parameter on the fly is works robustly", async () => {
   const api = getApi();
 
   const lastPeriodLength = new BN(
