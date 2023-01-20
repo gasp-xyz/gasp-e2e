@@ -49,7 +49,7 @@ function difference(a1: any, a2: any) {
       user
     );
   }
-  provisioned.push("5EYCAe5ijiYfyeZ2JJCGq56LmPyNRAKzpG4QkoQkkQNB5e6Z");
+  provisioned.push("5EYCAe5fva7A4cKCNZH5hjHguP83vY8vygL9jepYHZqYEYe1");
   for (const account of provisioned) {
     const tokens = await api!.query.tokens.accounts(account, liqToken);
     console.log("\n tokens " + tokens.toString() + " account - " + account);
