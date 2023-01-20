@@ -44,12 +44,33 @@ describe("staking - testpad", () => {
       Assets.mintNative(eve),
       Assets.mintNative(ferdie),
       Assets.issueToken(charlie),
+      Assets.issueToken(charlie),
       Assets.mintToken(tokenId, eve),
       Assets.mintToken(tokenId, ferdie),
+      Assets.mintToken(tokenId.addn(1), eve),
+      Assets.mintToken(tokenId.addn(1), ferdie),
       Sudo.sudoAs(
         charlie,
         Xyk.createPool(
           MGA_ASSET_ID,
+          new BN("100000000000000000000"),
+          tokenId,
+          new BN("900000000000000000000")
+        )
+      ),
+      Sudo.sudoAs(
+        charlie,
+        Xyk.createPool(
+          MGA_ASSET_ID,
+          new BN("100000000000000000000"),
+          tokenId.addn(1),
+          new BN("100000000000000000000")
+        )
+      ),
+      Sudo.sudoAs(
+        charlie,
+        Xyk.createPool(
+          tokenId.addn(1),
           new BN("100000000000000000000"),
           tokenId,
           new BN("100000000000000000000")
@@ -60,8 +81,13 @@ describe("staking - testpad", () => {
   test("disable token", async () => {
     await setupApi();
     await setupUsers();
-    await Sudo.asSudoFinalized( Assets.updateAsset(new BN(8), {
-      metadata: { xcm: undefined, xyk: { operationsDisabled: false } },
+    const token = 8;
+//    await Sudo.asSudoFinalized( Assets.registerAsset("Token123", "gg", 18, undefined,undefined,
+//      undefined, token)
+//    );
+
+    await Sudo.asSudoFinalized( Assets.updateAsset(token, {
+      metadata: { xcm: undefined, xyk: { operationsDisabled: true } },
     })
     )
 
@@ -71,11 +97,12 @@ describe("staking - testpad", () => {
     await setupUsers();
     const keyring = new Keyring({ type: "sr25519" });
     const charlie = new User(keyring, "//Ferdie");
-    const tokenId = new BN(11);
-    const tokenId2 = new BN(8);
+    const tokenId = new BN(18);
+    const tokenId2 = new BN(17);
     const tokensBefore = await getUserAssets(charlie.keyRingPair.address, [
       tokenId2,
       tokenId,
+      new BN(0)
     ]);
     testLog.getLog().info(JSON.stringify(tokensBefore));
     const promises: any[] = [];
@@ -84,7 +111,7 @@ describe("staking - testpad", () => {
       charlie.keyRingPair,
       tokenId2,
       tokenId,
-      new BN("1000"),
+      new BN("10"),
       new BN("100000")
     ));
     await Promise.all(promises);
@@ -92,15 +119,21 @@ describe("staking - testpad", () => {
     const tokensAfter = await getUserAssets(charlie.keyRingPair.address, [
       tokenId2,
       tokenId,
+      new BN(0)
     ]);
     testLog.getLog().info(JSON.stringify(tokensBefore));
     testLog.getLog().info(JSON.stringify(tokensAfter));
-    testLog.getLog().info("MGA::::  Free:    " + tokensAfter[0].free.sub(tokensBefore[0].free).toString() );
-    testLog.getLog().info("MGA::::  Reserved:" + tokensAfter[0].reserved.sub(tokensBefore[0].reserved).toString() );
-    testLog.getLog().info("MGA::::  Frozen:  " + tokensAfter[0].frozen.sub(tokensBefore[0].frozen).toString() );
+    testLog.getLog().info("Token0::::  Free:    " + tokensAfter[0].free.sub(tokensBefore[0].free).toString() );
+    testLog.getLog().info("Token0::::  Reserved:" + tokensAfter[0].reserved.sub(tokensBefore[0].reserved).toString() );
+    testLog.getLog().info("Token0::::  Frozen:  " + tokensAfter[0].frozen.sub(tokensBefore[0].frozen).toString() );
 
     testLog.getLog().info("Token::::  Free:  " + tokensAfter[1].free.sub(tokensBefore[1].free).toString() );
     testLog.getLog().info("Token::  Reserved:" + tokensAfter[1].reserved.sub(tokensBefore[1].reserved).toString() );
     testLog.getLog().info("token:::  Frozen: " + tokensAfter[1].frozen.sub(tokensBefore[1].frozen).toString() );
+
+    testLog.getLog().info("MGX::::  Free:    " + tokensAfter[2].free.sub(tokensBefore[2].free).toString() );
+    testLog.getLog().info("MGX::::  Reserved:" + tokensAfter[2].reserved.sub(tokensBefore[2].reserved).toString() );
+    testLog.getLog().info("MGX::::  Frozen:  " + tokensAfter[2].frozen.sub(tokensBefore[2].frozen).toString() );
+
   });
 });
