@@ -21,6 +21,7 @@ export const initApi = async (uri = "") => {
 
   testLog.getLog().info(`TEST_INFO: Running test in ${uri}`);
   mangata = Mangata.getInstance([uri]);
+  //@ts-ignore
   api = await mangata.getApi();
   return api;
 };

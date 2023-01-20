@@ -13,6 +13,7 @@ import asyncPool from "tiny-async-pool";
 import { TestsCases } from "../testFactory";
 import { getMangata } from "./performanceTestItem";
 import { waitNewBlock } from "../../utils/eventListeners";
+import { sleep } from "../../utils/utils";
 
 export async function preGenerateTransactions(
   testParams: TestParams,
@@ -112,8 +113,8 @@ async function runTxsInConcurrentMode(
       const start = new Date().getTime();
       try {
         await transaction
-          .send(({ status }) => {
-            if (status.isInBlock) {
+          .send(async ({ status }) => {
+            if (status.isBroadcast) {
               const finalized = new Date().getTime();
               const diff = finalized - start;
               resolve([i, diff]);
@@ -124,6 +125,7 @@ async function runTxsInConcurrentMode(
                   "-" +
                   JSON.stringify(status.toHuman()!)
               );
+              await sleep(2000);
               return;
             }
           })
@@ -214,9 +216,13 @@ async function runTxsInBurstMode(
   let pendingTxs = await (await mga.getApi()).rpc.author.pendingExtrinsics();
   while (pendingTxs.length > 5000) {
     await waitNewBlock();
-    pendingTxs = await (
-      await await mga.getApi()
-    ).rpc.author.pendingExtrinsics();
+    try {
+      pendingTxs = await (
+        await await mga.getApi()
+      ).rpc.author.pendingExtrinsics();
+    } catch (error) {
+      console.warn("error - rpc " + error);
+    }
   }
 
   await asyncPool(

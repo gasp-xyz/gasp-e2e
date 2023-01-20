@@ -62,9 +62,8 @@ async function createAndSignTransfer(
     MGA_ASSET_ID,
     new BN(1)
   );
-  const signed = tx.sign(
+  const signed = tx.signAsync(
     srcUser!.keyPair,
-
     //@ts-ignore
     {
       nonce: mgaValue.users[userNo]!.nonce,
