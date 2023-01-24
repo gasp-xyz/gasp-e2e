@@ -16,7 +16,7 @@ import {
 import { BN } from "@mangata-finance/sdk";
 import { setupApi, setupUsers } from "../../utils/setup";
 import { Sudo } from "../../utils/sudo";
-import { updateTimeoutMetadata } from "../../utils/tx";
+import { updateFeeLockMetadata } from "../../utils/tx";
 import { getEventResultFromMangataTx } from "../../utils/txHandler";
 import { User } from "../../utils/User";
 import { getEnvironmentRequiredVars } from "../../utils/utils";
@@ -72,86 +72,95 @@ beforeAll(async () => {
   );
 });
 
-test("gassless- GIVEN a non sudo user WHEN tokenTimeout configuration extrinsic is submitted THEN it fails with RequireSudo", async () => {
-  await updateTimeoutMetadata(testUser1, new BN(20), new BN(200000), [
-    [MGA_ASSET_ID, thresholdValue],
-  ]).then((result) => {
+test("gassless- GIVEN a non sudo user WHEN feeLock configuration extrinsic is submitted THEN it fails with RequireSudo", async () => {
+  await updateFeeLockMetadata(
+    testUser1,
+    new BN(10),
+    new BN(10),
+    thresholdValue,
+    [[MGA_ASSET_ID, true]]
+  ).then((result) => {
     const eventResponse = getEventResultFromMangataTx(result);
     expect(eventResponse.state).toEqual(ExtrinsicResult.ExtrinsicFailed);
     expect(eventResponse.data).toContain("RequireSudo");
   });
 });
 
-test("gassless- GIVEN an empty tokenTimeout configuration (all options empty) WHEN sudo submit the extrinsic THEN Tx fails because insuficient params", async () => {
-  const checkEmptyTimeoutConfig = await updateTimeoutMetadata(
+test("gassless- GIVEN an empty feeLock configuration (all options empty) WHEN sudo submit the extrinsic THEN Tx fails because insuficient params", async () => {
+  const checkEmptyTimeoutConfig = await updateFeeLockMetadata(
     sudo,
+    new BN(0),
     new BN(0),
     new BN(0),
     null
   );
   await waitSudoOperataionFail(
     checkEmptyTimeoutConfig,
-    "InvalidTimeoutMetadata"
+    "InvalidFeeLockMetadata"
   );
 });
 
-test("xyk-pallet-gassless GIVEN a tokenTimeout WHEN periodLength and timeoutAmount are set THEN extrinsic succeed and tokensTimeout is correctly configured", async () => {
+test("xyk-pallet-gassless GIVEN a feeLock WHEN periodLength and timeoutAmount are set THEN extrinsic succeed and tokensTimeout is correctly configured", async () => {
   const api = getApi();
 
-  const setupTimeoutConfig = await updateTimeoutMetadata(
+  const setupTimeoutConfig = await updateFeeLockMetadata(
     sudo,
-    new BN(20),
-    new BN(10000),
-    [
-      [MGA_ASSET_ID, thresholdValue],
-      [createdToken, thresholdValue],
-    ]
+    new BN(10),
+    new BN(10),
+    thresholdValue,
+    [[MGA_ASSET_ID, true]]
   );
   await waitSudoOperataionSuccess(setupTimeoutConfig);
 
   const currentPeriodLength = new BN(
     JSON.parse(
-      JSON.stringify(await api?.query.tokenTimeout.timeoutMetadata())
+      JSON.stringify(await api?.query.feeLock.feeLockMetadata())
     ).periodLength.toString()
   );
 
-  const currentTimeoutAmount = new BN(
+  const currentFeeLockAmount = new BN(
     JSON.parse(
-      JSON.stringify(await api?.query.tokenTimeout.timeoutMetadata())
-    ).timeoutAmount.toString()
+      JSON.stringify(await api?.query.feeLock.feeLockMetadata())
+    ).feeLockAmount.toString()
   );
 
   expect(currentPeriodLength).bnEqual(new BN(20));
-  expect(currentTimeoutAmount).bnEqual(new BN(10000));
+  expect(currentFeeLockAmount).bnEqual(new BN(20));
 });
 
-test("gassless- Сhanging timeout config parameter on the fly is works robustly", async () => {
+test("gassless- Сhanging feeLock config parameter on the fly is works robustly", async () => {
   const api = getApi();
 
   const lastPeriodLength = new BN(
     JSON.parse(
-      JSON.stringify(await api?.query.tokenTimeout.timeoutMetadata())
+      JSON.stringify(await api?.query.feeLock.feeLockMetadata())
     ).periodLength.toString()
   );
-  const timeoutAmount = new BN(
+  const feeLockAmount = new BN(
     JSON.parse(
-      JSON.stringify(await api?.query.tokenTimeout.timeoutMetadata())
-    ).timeoutAmount.toString()
+      JSON.stringify(await api?.query.feeLock.feeLockMetadata())
+    ).feeLockAmount.toString()
+  );
+  const swapValueThreshold = new BN(
+    JSON.parse(
+      JSON.stringify(await api?.query.feeLock.feeLockMetadata())
+    ).swapValueThreshold.toString()
   );
 
-  const setupTimeoutConfig = await updateTimeoutMetadata(
+  const setupTimeoutConfig = await updateFeeLockMetadata(
     sudo,
-    lastPeriodLength.add(new BN(10)),
-    timeoutAmount,
+    lastPeriodLength.add(new BN(5)),
+    feeLockAmount,
+    swapValueThreshold,
     null
   );
   await waitSudoOperataionSuccess(setupTimeoutConfig);
 
   const newPeriodLength = new BN(
     JSON.parse(
-      JSON.stringify(await api?.query.tokenTimeout.timeoutMetadata())
+      JSON.stringify(await api?.query.feeLock.feeLockMetadata())
     ).periodLength.toString()
   );
 
-  expect(newPeriodLength).bnEqual(lastPeriodLength.add(new BN(10)));
+  expect(newPeriodLength).bnEqual(lastPeriodLength.add(new BN(5)));
 });

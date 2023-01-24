@@ -997,20 +997,22 @@ export async function updateAsset(
   return result;
 }
 
-export async function updateTimeoutMetadata(
+export async function updateFeeLockMetadata(
   sudoUser: User,
-  periodLength: BN,
-  timeoutAmount: BN,
-  swapValueThresholds: any
+  periodLength: any,
+  timeoutAmount: any,
+  swapValueThresholds: any,
+  shouldBeWhitelisted: any
 ) {
   const api = getApi();
   const result = await signTx(
     api,
     api.tx.sudo.sudo(
-      api.tx.tokenTimeout.updateTimeoutMetadata(
+      api.tx.feeLock.updateFeeLockMetadata(
         periodLength,
         timeoutAmount,
-        swapValueThresholds
+        swapValueThresholds,
+        shouldBeWhitelisted
       )
     ),
     sudoUser.keyRingPair,
@@ -1021,15 +1023,12 @@ export async function updateTimeoutMetadata(
   return result;
 }
 
-export async function releaseTimeout(sudoUser: User) {
+export async function unlockFee(User: User) {
   const api = getApi();
   const result = await signTx(
     api,
-    api.tx.sudo.sudo(api.tx.tokenTimeout.releaseTimeout()),
-    sudoUser.keyRingPair,
-    {
-      nonce: await getCurrentNonce(sudoUser.keyRingPair.address),
-    }
+    api.tx.feeLock.unlockFee(),
+    User.keyRingPair
   );
   return result;
 }
