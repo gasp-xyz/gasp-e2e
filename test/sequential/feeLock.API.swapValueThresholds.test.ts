@@ -6,16 +6,16 @@
  */
 
 import { Keyring } from "@polkadot/api";
-import { getApi, initApi, getMangataInstance } from "../../utils/api";
+import { getApi, initApi } from "../../utils/api";
 import { Assets } from "../../utils/Assets";
 import { MGA_ASSET_ID } from "../../utils/Constants";
 import { waitSudoOperataionSuccess } from "../../utils/eventListeners";
-import { BN, toBN } from "@mangata-finance/sdk";
+import { BN } from "@mangata-finance/sdk";
 import { setupApi, setupUsers } from "../../utils/setup";
 import { Sudo } from "../../utils/sudo";
-import { updateFeeLockMetadata, unlockFee } from "../../utils/tx";
+import { updateFeeLockMetadata } from "../../utils/tx";
 import { AssetWallet, User } from "../../utils/User";
-import { getEnvironmentRequiredVars, waitForNBlocks } from "../../utils/utils";
+import { getEnvironmentRequiredVars } from "../../utils/utils";
 import { Xyk } from "../../utils/xyk";
 
 jest.spyOn(console, "log").mockImplementation(jest.fn());
@@ -31,34 +31,34 @@ let secondCurrency: BN;
 let feeLockMetadata: any;
 let periodLength: any;
 let feeLockAmount: any;
-let whitelistedTokens: any[];
+//let whitelistedTokens: any[];
 const thresholdValue = new BN(30000);
 const defaultCurrencyValue = new BN(10000000);
 const defaultPoolVolumeValue = new BN(1000000);
 
-async function clearMgaFromWhitelisted() {
-  let checkMgaWhitelistedToken: boolean;
-  const swapValueThreshold = feeLockMetadata.swapValueThreshold;
-  whitelistedTokens = feeLockMetadata.whitelistedTokens;
-  checkMgaWhitelistedToken = false;
+// async function clearMgaFromWhitelisted() {
+//   let checkMgaWhitelistedToken: boolean;
+//   const swapValueThreshold = feeLockMetadata.swapValueThreshold;
+//   whitelistedTokens = feeLockMetadata.whitelistedTokens;
+//   checkMgaWhitelistedToken = false;
 
-  whitelistedTokens.forEach((element) => {
-    if (element.toString() === MGA_ASSET_ID.toString()) {
-      checkMgaWhitelistedToken = true;
-    }
-  });
+//   whitelistedTokens.forEach((element) => {
+//     if (element.toString() === MGA_ASSET_ID.toString()) {
+//       checkMgaWhitelistedToken = true;
+//     }
+//   });
 
-  if (checkMgaWhitelistedToken) {
-    const checkEmptyTimeoutConfig = await updateFeeLockMetadata(
-      sudo,
-      new BN(periodLength),
-      new BN(feeLockAmount),
-      swapValueThreshold,
-      [[MGA_ASSET_ID, false]]
-    );
-    await waitSudoOperataionSuccess(checkEmptyTimeoutConfig);
-  }
-}
+//   if (checkMgaWhitelistedToken) {
+//     const checkEmptyTimeoutConfig = await updateFeeLockMetadata(
+//       sudo,
+//       new BN(periodLength),
+//       new BN(feeLockAmount),
+//       swapValueThreshold,
+//       [[MGA_ASSET_ID, false]]
+//     );
+//     await waitSudoOperataionSuccess(checkEmptyTimeoutConfig);
+//   }
+// }
 
 async function addTokenToWhitelisted() {
   const updateMgaTimeoutMetadata = await updateFeeLockMetadata(
