@@ -30,7 +30,7 @@ const { sudo: sudoUserName } = getEnvironmentRequiredVars();
 let testUser1: User;
 let sudo: User;
 let keyring: Keyring;
-let createdToken: BN;
+let firstCurrency: BN;
 const thresholdValue = new BN(30000);
 const defaultCurrencyValue = new BN(10000000);
 const defaultPoolVolumeValue = new BN(1000000);
@@ -50,22 +50,22 @@ beforeAll(async () => {
 
   await setupApi();
 
-  createdToken = await Assets.issueAssetToUser(
+  firstCurrency = await Assets.issueAssetToUser(
     sudo,
     defaultCurrencyValue,
     sudo
   );
 
   await Sudo.batchAsSudoFinalized(
-    Assets.mintToken(createdToken, sudo, defaultCurrencyValue),
-    Assets.mintToken(createdToken, testUser1, defaultCurrencyValue),
+    Assets.mintToken(firstCurrency, sudo, defaultCurrencyValue),
+    Assets.mintToken(firstCurrency, testUser1, defaultCurrencyValue),
     Assets.mintNative(testUser1),
     Sudo.sudoAs(
       sudo,
       Xyk.createPool(
         MGA_ASSET_ID,
         defaultPoolVolumeValue,
-        createdToken,
+        firstCurrency,
         defaultPoolVolumeValue
       )
     )
