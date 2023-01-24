@@ -1,6 +1,6 @@
 /*
  *
- * @group bootstrap-rewards
+ * @group bootstrap/rewards
  * @group sequential
  */
 import { getApi, initApi } from "../../utils/api";
