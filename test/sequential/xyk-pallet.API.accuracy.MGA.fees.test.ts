@@ -4,7 +4,7 @@
  * @group api
  * @group sequential
  */
-import { getApi, getMangataInstance, initApi } from "../../utils/api";
+import { getApi, initApi } from "../../utils/api";
 import {
   calculate_sell_price_id_rpc,
   calculate_sell_price_local_no_fee,
@@ -12,7 +12,6 @@ import {
   getTreasury,
   getTreasuryBurn,
 } from "../../utils/tx";
-import { waitNewBlock } from "../../utils/eventListeners";
 import { BN } from "@polkadot/util";
 import { Keyring } from "@polkadot/api";
 import { AssetWallet, User } from "../../utils/User";
@@ -25,6 +24,9 @@ import {
 } from "../../utils/utils";
 import { MGA_ASSET_ID } from "../../utils/Constants";
 import { Fees } from "../../utils/Fees";
+import { setupApi, setupUsers } from "../../utils/setup";
+import { Sudo } from "../../utils/sudo";
+import { Xyk } from "../../utils/xyk";
 
 jest.spyOn(console, "log").mockImplementation(jest.fn());
 jest.spyOn(console, "error").mockImplementation(jest.fn());
@@ -52,35 +54,37 @@ beforeEach(async () => {
     await initApi();
   }
 
-  await waitNewBlock();
+  await setupApi();
+  await setupUsers();
   keyring = new Keyring({ type: "sr25519" });
 
   // setup users
   testUser1 = new User(keyring);
   sudo = new User(keyring, sudoUserName);
-
-  //add two curerncies and balance to testUser:
-  [secondCurrency] = await Assets.setupUserWithCurrencies(
-    testUser1,
-    [defaultCurrecyValue, defaultCurrecyValue.add(new BN(1))],
-    sudo
-  );
   firstCurrency = MGA_ASSET_ID;
-
-  await testUser1.addMGATokens(sudo);
+  secondCurrency = await Assets.issueAssetToUser(
+    sudo,
+    defaultCurrecyValue,
+    sudo,
+    true
+  );
+  await Sudo.batchAsSudoFinalized(
+    Assets.mintToken(secondCurrency, testUser1, defaultCurrecyValue),
+    Assets.mintNative(testUser1),
+    Sudo.sudoAs(
+      sudo,
+      Xyk.createPool(
+        MGA_ASSET_ID,
+        firstAssetAmount,
+        secondCurrency,
+        secondAssetAmount
+      )
+    )
+  );
   keyring.addPair(testUser1.keyRingPair);
   keyring.addPair(sudo.keyRingPair);
   testUser1.addAsset(firstCurrency, defaultCurrecyValue);
-
-  await (
-    await getMangataInstance()
-  ).createPool(
-    testUser1.keyRingPair,
-    firstCurrency.toString(),
-    firstAssetAmount,
-    secondCurrency.toString(),
-    secondAssetAmount
-  );
+  testUser1.addAsset(secondCurrency, defaultCurrecyValue);
 });
 
 test("xyk-pallet - Assets substracted are incremented by 1 - MGA- SellAsset", async () => {
@@ -135,7 +139,8 @@ test("xyk-pallet - Assets substracted are incremented by 1 - MGA- SellAsset", as
   const expectedTreasury = new BN(5);
   const treasury = await getTreasury(firstCurrency);
   const treasuryBurn = await getTreasuryBurn(firstCurrency);
-  const incrementedTreasury = treasuryBefore.sub(treasury).sub(feesPaid).abs();
+  // Removed the fees paid. they goes directly to the block author, so trasury has nothing to do with it.
+  const incrementedTreasury = treasuryBefore.sub(treasury).abs();
   expect(incrementedTreasury).bnEqual(
     expectedTreasury.add(extraTokenForRounding)
   );

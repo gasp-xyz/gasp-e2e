@@ -43,9 +43,9 @@ let eventResponse: EventResult;
 let bootstrapExpectedUserLiquidity: BN;
 
 const { sudo: sudoUserName } = getEnvironmentRequiredVars();
-const waitingPeriod = 15;
-const bootstrapPeriod = 30;
-const whitelistPeriod = 10;
+const waitingPeriod = 6;
+const bootstrapPeriod = 11;
+const whitelistPeriod = 2;
 const bootstrapAmount = new BN(10000000000);
 
 async function checkPossibilityCreatingPool(tokenA: any, tokenB: any) {

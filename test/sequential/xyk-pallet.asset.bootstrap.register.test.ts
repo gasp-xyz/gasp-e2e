@@ -2,7 +2,7 @@
  *
  * @group xyk
  * @group asset
- * @group bootstrap
+ * @group bootstrap-rewards
  * @group sequential
  */
 import { getApi } from "../../utils/api";
@@ -15,6 +15,7 @@ import {
   ExtrinsicResult,
   findEventData,
   waitSudoOperataionSuccess,
+  waitSudoOperataionFail,
 } from "../../utils/eventListeners";
 import {
   claimRewardsBootstrap,
@@ -23,6 +24,7 @@ import {
   scheduleBootstrap,
   waitForBootstrapStatus,
 } from "../../utils/Bootstrap";
+import { getNextAssetId } from "../../utils/tx";
 import { getEventResultFromMangataTx } from "../../utils/txHandler";
 import { BN } from "@polkadot/util";
 import { BN_ONE, toBN } from "@mangata-finance/sdk";
@@ -31,9 +33,8 @@ import { setupApi, setupUsers } from "../../utils/setup";
 import { Sudo } from "../../utils/sudo";
 
 const { sudo: sudoUserName } = getEnvironmentRequiredVars();
-const waitingPeriod = 12;
-const bootstrapPeriod = 15;
-const whitelistPeriod = 1;
+const waitingPeriod = 5;
+const bootstrapPeriod = 7;
 const poolAssetAmount = new BN(100000);
 jest.setTimeout(1500000);
 jest.spyOn(console, "log").mockImplementation(jest.fn());
@@ -50,8 +51,7 @@ async function runBootstrap(assetId: BN) {
     MGA_ASSET_ID,
     assetId,
     waitingPeriod,
-    bootstrapPeriod,
-    whitelistPeriod
+    bootstrapPeriod
   );
   await waitSudoOperataionSuccess(scheduleBootstrapEvent);
 
@@ -92,15 +92,47 @@ async function runBootstrap(assetId: BN) {
 beforeAll(async () => {
   await setupApi();
   setupUsers();
-});
-
-beforeEach(async () => {
   const keyring = new Keyring({ type: "sr25519" });
   sudo = new User(keyring, sudoUserName);
   testUser1 = new User(keyring);
   keyring.addPair(sudo.keyRingPair);
   keyring.addPair(testUser1.keyRingPair);
-  await testUser1.addMGATokens(sudo);
+  await testUser1.addMGATokens(sudo, toBN("1", 22));
+});
+
+test("register asset and then try to register new one with the same location, expect to conflict", async () => {
+  const assetId = (
+    await Assets.setupUserWithCurrencies(sudo, [new BN(250000)], sudo, true)
+  )[0];
+
+  await sudo.registerAsset(assetId);
+
+  const tempAssetId = await getNextAssetId();
+
+  const userRegisterNewAsset = await sudo.registerAsset(
+    tempAssetId,
+    tempAssetId,
+    {
+      V1: {
+        parents: 1,
+        interior: {
+          X3: [
+            {
+              Parachain: 3210 + assetId.toNumber(),
+            },
+            {
+              GeneralKey: "0x00834",
+            },
+            {
+              PalletInstance: 10,
+            },
+          ],
+        },
+      },
+    }
+  );
+
+  await waitSudoOperataionFail(userRegisterNewAsset, "ConflictingLocation");
 });
 
 test("register asset with xyk disabled and try to schedule bootstrap, expect to success", async () => {
