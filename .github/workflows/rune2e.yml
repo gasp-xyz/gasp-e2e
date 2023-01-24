@@ -23,6 +23,7 @@ on:
             - none
             - sequential
             - bootstrap
+            - bootstrap-rewards
             - parallel
             - xyk
             - api
@@ -31,6 +32,7 @@ on:
             - ui
             - story
             - test-sequential-e2e
+            - test-sequential-no-bootstrap
 
         dockerImage:
           description: 'identifier of docker image on dockerhub'
@@ -128,7 +130,7 @@ jobs:
         run:
           echo "E2E_GROUPS=--group=${{ github.event.inputs.group}}" >> $GITHUB_ENV
 
-      - name: Run parallel e2e tests
+      - name: Run e2e tests
         working-directory: e2eTests
         run: yarn ${{ github.event.inputs.scriptName }} ${{env.E2E_PARAMS}} ${{env.E2E_GROUPS}}
       

@@ -38,9 +38,9 @@ const { sudo: sudoUserName } = getEnvironmentRequiredVars();
 //constant for bootstrap include a planning period
 const waitingPeriodWithPlan = 400;
 //constant for bootstrap less a planning period
-const waitingPeriodLessPlan = 15;
-const bootstrapPeriod = 30;
-const whitelistPeriod = 10;
+const waitingPeriodLessPlan = 8;
+const bootstrapPeriod = 6;
+const whitelistPeriod = 3;
 
 beforeAll(async () => {
   try {

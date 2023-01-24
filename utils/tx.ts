@@ -16,10 +16,10 @@ import { User } from "./User";
 import { testLog } from "./Logger";
 import { KeyringPair } from "@polkadot/keyring/types";
 import {
-  MangataGenericEvent,
   signTx,
-  toBN,
   TokenBalance,
+  MangataGenericEvent,
+  toBN,
 } from "@mangata-finance/sdk";
 import { AnyJson } from "@polkadot/types/types";
 import { SudoUser } from "./Framework/User/SudoUser";
@@ -227,11 +227,9 @@ export async function getChainNonce(address: string) {
   return nonce;
 }
 
-export async function getUserAssets(
-  account: any,
-  assets: BN[]
-): Promise<TokenBalance[]> {
-  const user_asset_balances = [];
+export async function getUserAssets(account: any, assets: BN[]) {
+  const user_asset_balances: TokenBalance[] = [];
+
   for (const asset of assets) {
     const user_asset_balance = await getBalanceOfAsset(asset, account);
     user_asset_balances.push(user_asset_balance);
