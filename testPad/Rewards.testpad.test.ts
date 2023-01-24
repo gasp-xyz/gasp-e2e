@@ -11,6 +11,8 @@ import { ApiPromise } from "@polkadot/api";
 import { WsProvider } from "@polkadot/rpc-provider/ws";
 import { options } from "@mangata-finance/types";
 import { testLog } from "../utils/Logger";
+import { Sudo } from "../utils/sudo";
+import { setupApi, setupUsers } from "../utils/setup";
 
 require("dotenv").config();
 
@@ -288,12 +290,28 @@ describe("RewardsV2 - testpad", () => {
       signTx(
         api!,
         api!.tx.sudo.sudo(
-          api!.tx.tokenTimeout.updateTimeoutMetadata(10, 10, [[1, 1000]])
+          api!.tx.feeLock.updateFeeLockMetadata(10, 10, "100000000000", [[12, true],[14,true]])
         ),
         sudo.keyRingPair
       )
     );
     await Promise.all(promises);
+  });
+  test("xyk-pallet: create proxy", async () => {
+    const api = await initApi();
+    await setupApi();
+    await setupUsers();
+    keyring = new Keyring({ type: "sr25519" });
+    sudo = new User(keyring, sudoUserName);
+    const testUser1 = new User(keyring, "//Ferdie");
+    const bob = new User(keyring, "//Charlie");
+    const proxyCall = [
+      Sudo.sudoAs(
+        testUser1,
+        api!.tx.proxy.addProxy(bob.keyRingPair.address, "Autocompound", 0)
+      ),
+    ];
+    await Sudo.batchAsSudoFinalized(...[proxyCall].flat());
   });
 });
 async function doSetup(rewardsGenerationTime: number) {
