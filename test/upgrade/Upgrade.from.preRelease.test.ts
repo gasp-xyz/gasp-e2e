@@ -1,21 +1,25 @@
+/*
+ *
+ * @group upgradeRuntime
+ */
+
 import { Keyring } from "@polkadot/api";
 import { bufferToU8a } from "@polkadot/util";
-import { api, getApi, initApi } from "../utils/api";
-import { User } from "../utils/User";
-import { getEnvironmentRequiredVars, waitForNBlocks } from "../utils/utils";
+import { api, getApi, initApi } from "../../utils/api";
+import { User } from "../../utils/User";
+import { getEnvironmentRequiredVars, waitForNBlocks } from "../../utils/utils";
 import fs from "fs";
 import { BN, signTx } from "@mangata-finance/sdk";
-import { testLog } from "../utils/Logger";
+import { testLog } from "../../utils/Logger";
 import { downloadRelease } from "@terascope/fetch-github-release";
-import { transferAsset } from "../utils/tx";
-import { keyring } from "../utils/setup";
+import { transferAsset } from "../../utils/tx";
 
 require("dotenv").config();
 
 jest.spyOn(console, "log").mockImplementation(jest.fn());
 const { sudo: sudoUserName } = getEnvironmentRequiredVars();
 
-jest.setTimeout(1500000);
+jest.setTimeout(300000);
 process.env.NODE_ENV = "test";
 let sudo, keyring;
 
@@ -30,18 +34,18 @@ let sudo, keyring;
 // have fun!
 //*******END:HOW TO USE******** */
 
+let wasmPath = process.env.WASM_PATH ? process.env.WASM_PATH : "";
+const relayName = process.env.RELAY ? process.env.RELAY : "kusama";
+
 describe("upgrade - testpad", () => {
-  function filterRelease(release) {
+  function filterRelease(release: { prerelease: boolean }) {
     // Filter out prereleases.
     return release.prerelease === true;
   }
-  function filterAsset(asset) {
+  function filterAsset(asset: { name: string | string[] }) {
     // Select assets that contain the string 'windows'.
-    return asset.name.includes("kusama") && asset.name.includes(".wasm");
+    return asset.name.includes(relayName) && asset.name.includes(".wasm");
   }
-
-  let wasmPath = process.env.WASM_PATH ? process.env.WASM_PATH : "";
-
   beforeAll(async () => {
     try {
       getApi();
@@ -114,15 +118,17 @@ describe("upgrade - testpad", () => {
           );
         testLog.getLog().info(event.meta.docs.toString());
         // loop through each of the parameters, displaying the type and data
-        event.data.forEach((data, index) => {
-          testLog.getLog().info(types[index].type + ";" + data.toString());
-          if (
-            event.section.toString().includes("parachainSystem") &&
-            event.method.toString().includes("ValidationFunctionApplied")
-          ) {
-            found = true;
+        event.data.forEach(
+          (data: { toString: () => string }, index: string | number) => {
+            testLog.getLog().info(types[index].type + ";" + data.toString());
+            if (
+              event.section.toString().includes("parachainSystem") &&
+              event.method.toString().includes("ValidationFunctionApplied")
+            ) {
+              found = true;
+            }
           }
-        });
+        );
       });
     });
     while (!found) {
@@ -133,9 +139,9 @@ describe("upgrade - testpad", () => {
     //lets wait if chain still produces blocks :)
     await waitForNBlocks(3);
     await transferAsset(
-      sudo.keyring,
+      sudo.keyRingPair,
       new BN(0),
-      sudo.keyring.address,
+      sudo.keyRingPair.address,
       new BN("1231244")
     );
     await waitForNBlocks(5);

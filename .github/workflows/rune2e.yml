@@ -33,6 +33,7 @@ on:
             - story
             - test-sequential-e2e
             - test-sequential-no-bootstrap
+            - upgradeRuntime
 
         dockerImage:
           description: 'identifier of docker image on dockerhub'

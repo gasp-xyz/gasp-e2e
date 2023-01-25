@@ -1,7 +1,3 @@
-/*
- *
- * @group upgradeRuntime
- */
 import { getApi, getMangataInstance, initApi } from "../../utils/api";
 import { Keyring } from "@polkadot/api";
 import { User } from "../../utils/User";
