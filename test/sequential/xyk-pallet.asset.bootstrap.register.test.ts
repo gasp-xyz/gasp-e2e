@@ -2,7 +2,7 @@
  *
  * @group xyk
  * @group asset
- * @group bootstrap/rewards
+ * @group rewards-bootstrap
  * @group sequential
  */
 import { getApi } from "../../utils/api";

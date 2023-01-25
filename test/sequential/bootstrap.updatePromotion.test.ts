@@ -1,7 +1,7 @@
 /* eslint-disable jest/no-conditional-expect */
 /*
  *
- * @group bootstrap/rewards
+ * @group rewards-bootstrap
  * @group sequential
  */
 import { getApi, initApi } from "../../utils/api";
