@@ -35,7 +35,7 @@ let sudo, keyring;
 //*******END:HOW TO USE******** */
 
 let wasmPath = process.env.WASM_PATH ? process.env.WASM_PATH : "";
-const relayName = process.env.RELAY ? process.env.RELAY : "kusama";
+const relayName = process.env.RELAY ? process.env.RELAY : "rococo";
 
 describe("upgrade - testpad", () => {
   function filterRelease(release: { prerelease: boolean }) {
