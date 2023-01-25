@@ -167,8 +167,8 @@ test("gassless- Given a feeLock correctly configured WHEN the user swaps two tok
 
   const userMgaFees = testUser1
     .getAsset(MGA_ASSET_ID)
-    ?.amountAfter.free!.sub(
-      testUser1.getAsset(MGA_ASSET_ID)?.amountBefore.free!
+    ?.amountAfter.reserved!.sub(
+      testUser1.getAsset(MGA_ASSET_ID)?.amountBefore.reserved!
     );
 
   expect(firstCurrencyBlocked).bnEqual(new BN(0));
@@ -204,8 +204,8 @@ test("gassless- Given a feeLock correctly configured WHEN the user swaps two tok
 
   const userMgaBlocked = testUser1
     .getAsset(MGA_ASSET_ID)
-    ?.amountAfter.free!.sub(
-      testUser1.getAsset(MGA_ASSET_ID)?.amountBefore.free!
+    ?.amountAfter.reserved!.sub(
+      testUser1.getAsset(MGA_ASSET_ID)?.amountBefore.reserved!
     );
 
   expect(firstCurrencyBlocked).bnEqual(new BN(0));
