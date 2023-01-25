@@ -114,6 +114,15 @@ beforeEach(async () => {
     Sudo.sudoAs(
       sudo,
       Xyk.createPool(
+        MGA_ASSET_ID,
+        defaultPoolVolumeValue,
+        firstCurrency,
+        defaultPoolVolumeValue
+      )
+    ),
+    Sudo.sudoAs(
+      sudo,
+      Xyk.createPool(
         firstCurrency,
         defaultPoolVolumeValue,
         secondCurrency,
@@ -144,11 +153,17 @@ test("gassless- Given a feeLock correctly configured WHEN the user swaps two tok
   await testUser1.sellAssets(firstCurrency, secondCurrency, sellAssetsValue);
   await testUser1.refreshAmounts(AssetWallet.AFTER);
 
-  const firstCurrencyBlocked =
-    testUser1.getAsset(MGA_ASSET_ID)?.amountAfter.reserved!;
+  const firstCurrencyBlocked = testUser1
+    .getAsset(firstCurrency)
+    ?.amountAfter.reserved!.sub(
+      testUser1.getAsset(firstCurrency)?.amountBefore.reserved!
+    );
 
-  const secondCurrencyBlocked =
-    testUser1.getAsset(MGA_ASSET_ID)?.amountAfter.reserved!;
+  const secondCurrencyBlocked = testUser1
+    .getAsset(secondCurrency)
+    ?.amountAfter.reserved!.sub(
+      testUser1.getAsset(secondCurrency)?.amountBefore.reserved!
+    );
 
   const userMgaFees = testUser1
     .getAsset(MGA_ASSET_ID)
@@ -159,4 +174,41 @@ test("gassless- Given a feeLock correctly configured WHEN the user swaps two tok
   expect(firstCurrencyBlocked).bnEqual(new BN(0));
   expect(secondCurrencyBlocked).bnEqual(new BN(0));
   expect(userMgaFees).bnEqual(new BN(0));
+});
+
+test("gassless- Given a feeLock correctly configured WHEN the user swaps two tokens defined in the thresholds AND the user has enough MGAs AND swapValue < threshold THEN some MGAs will be locked", async () => {
+  await addTokenToWhitelisted();
+
+  await testUser1.addMGATokens(sudo);
+  testUser1.addAsset(MGA_ASSET_ID);
+  testUser1.addAsset(firstCurrency);
+  testUser1.addAsset(secondCurrency);
+
+  const sellAssetsValue = thresholdValue.sub(new BN(2));
+
+  await testUser1.refreshAmounts(AssetWallet.BEFORE);
+  await testUser1.sellAssets(firstCurrency, secondCurrency, sellAssetsValue);
+  await testUser1.refreshAmounts(AssetWallet.AFTER);
+
+  const firstCurrencyBlocked = testUser1
+    .getAsset(firstCurrency)
+    ?.amountAfter.reserved!.sub(
+      testUser1.getAsset(firstCurrency)?.amountBefore.reserved!
+    );
+
+  const secondCurrencyBlocked = testUser1
+    .getAsset(secondCurrency)
+    ?.amountAfter.reserved!.sub(
+      testUser1.getAsset(secondCurrency)?.amountBefore.reserved!
+    );
+
+  const userMgaBlocked = testUser1
+    .getAsset(MGA_ASSET_ID)
+    ?.amountAfter.free!.sub(
+      testUser1.getAsset(MGA_ASSET_ID)?.amountBefore.free!
+    );
+
+  expect(firstCurrencyBlocked).bnEqual(new BN(0));
+  expect(secondCurrencyBlocked).bnEqual(new BN(0));
+  expect(userMgaBlocked).bnEqual(new BN(feeLockAmount));
 });
