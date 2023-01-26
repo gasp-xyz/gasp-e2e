@@ -993,3 +993,16 @@ export async function updateAsset(
   );
   return result;
 }
+export async function compoundRewards(
+  User: User,
+  liquidityAssetId: BN,
+  amountPermille: number = 1000000
+) {
+  const api = getApi();
+  const result = await signTx(
+    api,
+    api.tx.xyk.compoundRewards(liquidityAssetId, amountPermille),
+    User.keyRingPair
+  );
+  return result;
+}
