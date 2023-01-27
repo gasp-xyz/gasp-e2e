@@ -174,8 +174,8 @@ beforeEach(async () => {
     JSON.stringify(await api.query.feeLock.feeLockMetadata())
   );
 
-  periodLength = feeLockMetadata.periodLength.toString();
-  feeLockAmount = feeLockMetadata.feeLockAmount.toString();
+  periodLength = feeLockMetadata.periodLength;
+  feeLockAmount = feeLockMetadata.feeLockAmount;
 });
 
 test("gassless- GIVEN a feeLock configured WHEN a swap happens THEN fees are not charged but locked instead", async () => {
@@ -201,10 +201,10 @@ test("gassless- GIVEN a feeLock configured WHEN a swap happens THEN fees are not
     ?.amountAfter.free!.sub(
       testUser1.getAsset(MGA_ASSET_ID)?.amountBefore.free!
     )
-    .add(new BN(feeLockMetadata.feeLockAmount.toString()))
+    .add(new BN(feeLockAmount))
     .add(new BN(sellAssetsValue));
 
-  expect(tokenFees).bnEqual(new BN(feeLockMetadata.feeLockAmount.toString()));
+  expect(tokenFees).bnEqual(new BN(feeLockAmount));
   expect(userMgaFees).bnEqual(new BN(0));
 });
 
