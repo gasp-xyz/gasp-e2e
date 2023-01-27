@@ -1,0 +1,37 @@
+endpoint: wss://bifrost-rpc.dwellir.com
+mock-signature-host: true
+db: ./bifrost.db.sqlite
+port: 9948
+
+import-storage:
+  System:
+    Account:
+      -
+        -
+          - 5GrwvaEF5zXb26Fz9rcQpDWS57CtERHpNehXCPcNoHGKutQY
+        - data:
+            free: 1000000000000000 # 1K BNC
+  Tokens:
+    Accounts:
+      -
+        -
+          - 5GrwvaEF5zXb26Fz9rcQpDWS57CtERHpNehXCPcNoHGKutQY
+          - vtoken: KSM
+        - free: 1000000000000000 # 1K vKSM
+      -
+        -
+          - 5GrwvaEF5zXb26Fz9rcQpDWS57CtERHpNehXCPcNoHGKutQY
+          - vtoken: BNC
+        - free: 1000000000000000 # 1K vBNC
+      -
+        -
+          - 5GrwvaEF5zXb26Fz9rcQpDWS57CtERHpNehXCPcNoHGKutQY
+          - vtoken: MOVR
+        - free: '1000000000000000000000' # 1K vMOVR
+      -
+        -
+          - 5GrwvaEF5zXb26Fz9rcQpDWS57CtERHpNehXCPcNoHGKutQY
+          - vstoken: KSM
+        - free: 1000000000000000 # 1K vsKSM
+  Council:
+    Members: [5GrwvaEF5zXb26Fz9rcQpDWS57CtERHpNehXCPcNoHGKutQY]

@@ -47,7 +47,7 @@ export const signSendSuccess = async (
       const unsub = await tx.signAndSend(
         user.keyRingPair,
         ({ events, status, dispatchError }) => {
-          testLog.getLog().info(status);
+          testLog.getLog().info(`→ events on ${api.runtimeChain} for ${status}`);
           events.forEach(({ phase, event: { data, method, section } }) => {
             logEvent(phase, data, method, section);
           });
