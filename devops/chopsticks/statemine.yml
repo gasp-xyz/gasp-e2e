@@ -1,0 +1,53 @@
+endpoint: wss://statemine-rpc.polkadot.io
+mock-signature-host: true
+db: ./statemine.db.sqlite
+port: 9948
+
+import-storage:
+  System:
+    Account:
+      -
+        -
+          - 5GrwvaEF5zXb26Fz9rcQpDWS57CtERHpNehXCPcNoHGKutQY
+        - data:
+            free: 1000000000000000 # 1K KSM
+  Assets:
+    Account:
+      -
+        -
+          - 1984
+          - 5GrwvaEF5zXb26Fz9rcQpDWS57CtERHpNehXCPcNoHGKutQY
+        - balance: 1000000000 # 1K USDt
+  PolkadotXcm:
+    SupportedVersion:
+      -
+        -
+          - 2
+          - V1:
+              parents: 1
+              interior:
+                X1:
+                  Parachain: 2110
+        - 2
+    VersionNotifiers:
+      -
+        -
+          - 2
+          - V1:
+              parents: 1
+              interior:
+                X1:
+                  Parachain: 2110
+        - 2
+    VersionNotifyTargets:
+      -
+        -
+          - 2
+          - V1:
+              parents: 1
+              interior:
+                X1:
+                  Parachain: 2110
+        - 2
+        - 0
+        - 2

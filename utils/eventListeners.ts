@@ -137,7 +137,15 @@ export const waitForEvent = async (
   api: ApiPromise,
   method: string,
   blocks: number = 10
-): Promise<void> => {
+): Promise<any[]> => {
+  return (await waitForEvents(api, method, blocks))[0]
+}
+
+export const waitForEvents = async (
+  api: ApiPromise,
+  method: string,
+  blocks: number = 10
+): Promise<any[][]> => {
   return new Promise(async (resolve, reject) => {
     let counter = 0;
     const unsub = await api.rpc.chain.subscribeFinalizedHeads(async (head) => {
@@ -146,17 +154,17 @@ export const waitForEvent = async (
       testLog
         .getLog()
         .info(
-          `await event check for '${method}', attempt ${counter}, head ${head}`
+          `→ on ${api.runtimeChain} for '${method}' event, attempt ${counter}, head ${head.hash}`
         );
       events.forEach(({ phase, event: { data, method, section } }) => {
         logEvent(phase, data, method, section);
       });
-      const event = _.find(
+      const filtered = _.filter(
         events,
         ({ event }) => `${event.section}.${event.method}` === method
       );
-      if (event) {
-        resolve();
+      if (filtered.length > 0) {
+        resolve(filtered.map(({ event: { data } }) => data));
         unsub();
         // } else {
         //   reject(new Error("event not found"));

@@ -58,7 +58,7 @@ export class XToken {
           },
         },
       },
-      TRANSFER_INSTRUCTIONS * chain.unitCostWeight
+      { Limited: TRANSFER_INSTRUCTIONS * chain.unitCostWeight }
     );
   }
 }
