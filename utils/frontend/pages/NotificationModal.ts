@@ -4,7 +4,6 @@ import {
   buildDataTestIdXpath,
   clickElement,
   getText,
-  isDisplayed,
   waitForElement,
   waitForElementToDissapear,
   waitForElementVisible,
