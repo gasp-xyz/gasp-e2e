@@ -151,16 +151,13 @@ jobs:
           TESTMO_URL: ${{ secrets.TESTMO_URL }}
           TESTMO_TOKEN: ${{ secrets.TESTMO_TOKEN }}
         id: run-tests
-
-      - name: Run e2e tests
-        working-directory: e2eTests
-        run: yarn ${{ github.event.inputs.scriptName }} ${{env.E2E_PARAMS}} ${{env.E2E_GROUPS}}
       
       - run: |
             npx testmo automation:run:submit-thread \
               --instance https://mangata-finance.testmo.net \
               --run-id ${{ needs.test-setup.outputs.testmo-run-id }} \
-              --results reports/*.xml 
+              --results reports/*.xml \
+              -- yarn ${{ github.event.inputs.scriptName }} ${{env.E2E_PARAMS}} ${{env.E2E_GROUPS}}
                       
   test-complete:
     needs: [test]
@@ -173,7 +170,9 @@ jobs:
         with:
           node-version: 16
           cache: npm
-      - run: npm ci
+      - name: Install testmo
+        run: npm i -g @testmo/testmo-cli
+        
       - run: |
             npx testmo automation:run:complete \
               --instance https://mangata-finance.testmo.net \
