@@ -38,7 +38,7 @@ let driver: WebDriver;
 process.env.NODE_ENV = "test";
 let sudo: SudoUser;
 let testUser1: User;
-let testAssetName = "TST4";
+const testAssetName = "TST4";
 let testAssetId: BN;
 
 describe("UI tests - swapping assets", () => {

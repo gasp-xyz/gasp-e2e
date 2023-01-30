@@ -873,18 +873,26 @@ export async function createPoolIfMissing(
   }
 }
 
-export async function createAssetIfMissing(
-  sudo: SudoUser,
-  assetName: string,
-) {
-  const assetId = await getAssetId(assetName)
+export async function createAssetIfMissing(sudo: SudoUser, assetName: string) {
+  const assetId = await getAssetId(assetName);
   if (assetId === undefined) {
     const nextAssetId = await getNextAssetId();
     const emptyAssetID = new BN(nextAssetId.toString());
-    await setAssetInfo(sudo, emptyAssetID, assetName, assetName, "", new BN(12));
+    await setAssetInfo(
+      sudo,
+      emptyAssetID,
+      assetName,
+      assetName,
+      "",
+      new BN(12)
+    );
     return nextAssetId;
   } else {
-    testLog.getLog().info(`createAssetIfMissing: Asset ${assetName} already exists, skipping...`)
+    testLog
+      .getLog()
+      .info(
+        `createAssetIfMissing: Asset ${assetName} already exists, skipping...`
+      );
     return assetId;
   }
 }
