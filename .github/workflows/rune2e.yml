@@ -31,6 +31,7 @@ on:
             - ci
             - ui
             - story
+            - gassless
             - test-sequential-e2e
             - test-sequential-no-bootstrap
 
