@@ -58,7 +58,8 @@ jobs:
       E2E_TREASURY_PALLET_ADDRESS: ${{ secrets.E2E_TREASURY_PALLET_ADDRESS }}
       E2E_TREASURY_BURN_PALLET_ADDRESS : ${{ secrets.E2E_TREASURY_BURN_PALLET_ADDRESS }}
       TEST_SUDO_NAME: ${{ secrets.TEST_SUDO_NAME }}
-      
+    outputs:
+      testmo-run-id: ${{ steps.run-tests.outputs.testmo-run-id }}
 
 
     steps:
@@ -146,7 +147,7 @@ jobs:
             --resources resources.json \
             --source "unit-tests" > testmo-run-id.txt
           ID=$(cat testmo-run-id.txt)
-          echo "::set-output name=testmo-run-id::$ID"
+          echo "testmo-run-id=$ID >> $GITHUB_OUTPUT"
         env:
           TESTMO_URL: ${{ secrets.TESTMO_URL }}
           TESTMO_TOKEN: ${{ secrets.TESTMO_TOKEN }}
