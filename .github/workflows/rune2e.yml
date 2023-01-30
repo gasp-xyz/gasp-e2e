@@ -138,16 +138,48 @@ jobs:
           npx testmo automation:resources:add-link --name build \
             --url $RUN_URL --resources resources.json
 
+      - run: |
+          npx testmo automation:run:create \
+            --instance https://mangata-finance.testmo.net  \
+            --project-id 2 \
+            --name "e2e test run" \
+            --resources resources.json \
+            --source "unit-tests" > testmo-run-id.txt
+          ID=$(cat testmo-run-id.txt)
+          echo "::set-output name=testmo-run-id::$ID"
+        env:
+          TESTMO_URL: ${{ secrets.TESTMO_URL }}
+          TESTMO_TOKEN: ${{ secrets.TESTMO_TOKEN }}
+        id: run-tests
+
       - name: Run e2e tests
         working-directory: e2eTests
         run: yarn ${{ github.event.inputs.scriptName }} ${{env.E2E_PARAMS}} ${{env.E2E_GROUPS}}
       
-      - name: Publish to testmo  reports/
-        working-directory: e2eTests
-        if: always()
-        run: TESTMO_TOKEN=${{ secrets.TESTMO_TOKEN }} testmo automation:run:submit  --instance https://mangata-finance.testmo.net  --project-id 2 --name "New test run - run e2e"   --source "run-e2e-job"  --results reports/*.xml
-        
-     
-        
+      - run: |
+            npx testmo automation:run:submit-thread \
+              --instance https://mangata-finance.testmo.net \
+              --run-id ${{ needs.test-setup.outputs.testmo-run-id }} \
+              --results reports/*.xml 
+                      
+  test-complete:
+    needs: [test]
+    if: always()
+    runs-on: ubuntu-latest
+
+    steps:
+      - uses: actions/checkout@v2
+      - uses: actions/setup-node@v2
+        with:
+          node-version: 16
+          cache: npm
+      - run: npm ci
+      - run: |
+            npx testmo automation:run:complete \
+              --instance https://mangata-finance.testmo.net \
+              --run-id ${{ needs.test.outputs.testmo-run-id }} \
+        env:
+          TESTMO_URL: ${{ secrets.TESTMO_URL }}
+          TESTMO_TOKEN: ${{ secrets.TESTMO_TOKEN }}
         
         
