@@ -60,7 +60,7 @@ jobs:
       E2E_TREASURY_BURN_PALLET_ADDRESS : ${{ secrets.E2E_TREASURY_BURN_PALLET_ADDRESS }}
       TEST_SUDO_NAME: ${{ secrets.TEST_SUDO_NAME }}
     outputs:
-      testmo-run-id: ${{ steps.run-tests.outputs.testmo-run-id }}
+      testmo-run-id: ${{env.ID}}
 
 
     steps:
@@ -159,7 +159,7 @@ jobs:
       - run: |
             npx testmo automation:run:submit-thread \
               --instance https://mangata-finance.testmo.net \
-              --run-id ${{env.ID}} \
+              --run-id $(cat testmo-run-id.txt) \
               --results reports/*.xml \
               -- yarn ${{ github.event.inputs.scriptName }} ${{env.E2E_PARAMS}} ${{env.E2E_GROUPS}}
                       
@@ -180,7 +180,7 @@ jobs:
       - run: |
             npx testmo automation:run:complete \
               --instance https://mangata-finance.testmo.net \
-              --run-id ${{ needs.test.outputs.testmo-run-id }} \
+              --run-id ${{needs.test.outputs.testmo-run-id}} \
         env:
           TESTMO_URL: ${{ secrets.TESTMO_URL }}
           TESTMO_TOKEN: ${{ secrets.TESTMO_TOKEN }}
