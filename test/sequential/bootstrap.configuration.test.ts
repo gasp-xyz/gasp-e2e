@@ -1,6 +1,6 @@
 /*
  *
- * @group bootstrap
+ * @group rewards-bootstrap
  * @group sequential
  */
 import { getApi, initApi } from "../../utils/api";
@@ -39,8 +39,8 @@ let bootstrapPool: any;
 let eventResponse: EventResult;
 
 const { sudo: sudoUserName } = getEnvironmentRequiredVars();
-const waitingPeriod = 15;
-const bootstrapPeriod = 30;
+const waitingPeriod = 10;
+const bootstrapPeriod = 8;
 const bootstrapAmount = toBN("1", 10);
 
 beforeAll(async () => {

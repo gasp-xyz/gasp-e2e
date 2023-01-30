@@ -1,7 +1,7 @@
 /* eslint-disable jest/no-conditional-expect */
 /*
  *
- * @group bootstrap
+ * @group rewards-bootstrap
  * @group sequential
  */
 import { getApi, initApi } from "../../utils/api";
@@ -50,9 +50,9 @@ const { sudo: sudoUserName } = getEnvironmentRequiredVars();
 //constant for bootstrap include a planning period
 const waitingPeriodWithPlan = 400;
 //constant for bootstrap less a planning period
-const waitingPeriodLessPlan = 10;
-const bootstrapPeriod = 20;
-const whitelistPeriod = 10;
+const waitingPeriodLessPlan = 8;
+const bootstrapPeriod = 10;
+const whitelistPeriod = 4;
 const bootstrapAmount = new BN(10000000000);
 
 async function changePromotionBootstrapPool(userName: User) {
