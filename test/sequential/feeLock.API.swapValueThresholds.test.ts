@@ -47,12 +47,18 @@ beforeAll(async () => {
   }
   keyring = new Keyring({ type: "sr25519" });
 
-  const api = getApi();
-
   // setup users
   sudo = new User(keyring, sudoUserName);
 
   await sudo.addMGATokens(sudo);
+});
+
+beforeEach(async () => {
+  const api = getApi();
+
+  [testUser1] = setupUsers();
+
+  await setupApi();
 
   [firstCurrency, secondCurrency] = await Assets.setupUserWithCurrencies(
     sudo,
@@ -75,16 +81,10 @@ beforeAll(async () => {
     [
       [MGA_ASSET_ID, true],
       [firstCurrency, true],
-      [secondCurrency, true],
+      //[secondCurrency, true],
     ]
   );
   await waitSudoOperataionSuccess(updateMgaTimeoutMetadata);
-});
-
-beforeEach(async () => {
-  [testUser1] = setupUsers();
-
-  await setupApi();
 
   await Sudo.batchAsSudoFinalized(
     Assets.mintToken(firstCurrency, testUser1, defaultCurrencyValue),
