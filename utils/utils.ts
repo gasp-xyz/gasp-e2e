@@ -70,7 +70,7 @@ export function getEnvironmentRequiredVars() {
 
   const uiUri = process.env.UI_URL
     ? process.env.UI_URL
-    : "http://develop.mangata.finance/";
+    : "https://develop.mangata.finance/";
 
   const mnemonicMetaMask = process.env.MNEMONIC_META
     ? process.env.MNEMONIC_META
