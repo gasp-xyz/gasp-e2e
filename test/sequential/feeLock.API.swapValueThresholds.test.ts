@@ -1,6 +1,5 @@
 /*
  *
- * @group xyk
  * @group sequential
  * @group gassless
  */
@@ -48,43 +47,17 @@ beforeAll(async () => {
   }
   keyring = new Keyring({ type: "sr25519" });
 
+  const api = getApi();
+
   // setup users
   sudo = new User(keyring, sudoUserName);
 
   await sudo.addMGATokens(sudo);
-});
 
-beforeEach(async () => {
-  const api = getApi();
-
-  [testUser1] = setupUsers();
-
-  await setupApi();
-
-  firstCurrency = await Assets.issueAssetToUser(
+  [firstCurrency, secondCurrency] = await Assets.setupUserWithCurrencies(
     sudo,
-    defaultCurrencyValue,
+    [defaultCurrencyValue, defaultCurrencyValue],
     sudo
-  );
-  secondCurrency = await Assets.issueAssetToUser(
-    sudo,
-    defaultCurrencyValue,
-    sudo
-  );
-
-  await Sudo.batchAsSudoFinalized(
-    Assets.mintToken(firstCurrency, testUser1, defaultCurrencyValue),
-    Assets.mintToken(secondCurrency, testUser1, defaultCurrencyValue),
-    Assets.mintNative(sudo),
-    Sudo.sudoAs(
-      sudo,
-      Xyk.createPool(
-        firstCurrency,
-        defaultPoolVolumeValue,
-        secondCurrency,
-        defaultPoolVolumeValue
-      )
-    )
   );
 
   feeLockMetadata = JSON.parse(
@@ -106,6 +79,27 @@ beforeEach(async () => {
     ]
   );
   await waitSudoOperataionSuccess(updateMgaTimeoutMetadata);
+});
+
+beforeEach(async () => {
+  [testUser1] = setupUsers();
+
+  await setupApi();
+
+  await Sudo.batchAsSudoFinalized(
+    Assets.mintToken(firstCurrency, testUser1, defaultCurrencyValue),
+    Assets.mintToken(secondCurrency, testUser1, defaultCurrencyValue),
+    Assets.mintNative(sudo),
+    Sudo.sudoAs(
+      sudo,
+      Xyk.createPool(
+        firstCurrency,
+        defaultPoolVolumeValue,
+        secondCurrency,
+        defaultPoolVolumeValue
+      )
+    )
+  );
 
   testUser1.addAsset(MGA_ASSET_ID);
   testUser1.addAsset(firstCurrency);

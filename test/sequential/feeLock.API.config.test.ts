@@ -1,7 +1,7 @@
 /*
  *
- * @group xyk
  * @group sequential
+ * @group gassless
  */
 
 import { Keyring } from "@polkadot/api";
@@ -124,8 +124,8 @@ test("xyk-pallet-gassless GIVEN a feeLock WHEN periodLength and timeoutAmount ar
     ).feeLockAmount.toString()
   );
 
-  expect(currentPeriodLength).bnEqual(new BN(20));
-  expect(currentFeeLockAmount).bnEqual(new BN(20));
+  expect(currentPeriodLength).bnEqual(new BN(10));
+  expect(currentFeeLockAmount).bnEqual(new BN(10));
 });
 
 test("gassless- Сhanging feeLock config parameter on the fly is works robustly", async () => {
@@ -163,4 +163,8 @@ test("gassless- Сhanging feeLock config parameter on the fly is works robustly"
   );
 
   expect(newPeriodLength).bnEqual(lastPeriodLength.add(new BN(5)));
+});
+
+afterAll(async () => {
+  await updateFeeLockMetadata(sudo, new BN(10), new BN(10), null, null);
 });

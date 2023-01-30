@@ -1,6 +1,5 @@
 /*
  *
- * @group xyk
  * @group sequential
  * @group gassless
  */
@@ -13,9 +12,14 @@ import { waitSudoOperataionSuccess } from "../../utils/eventListeners";
 import { BN } from "@mangata-finance/sdk";
 import { setupApi, setupUsers } from "../../utils/setup";
 import { Sudo } from "../../utils/sudo";
-import { updateFeeLockMetadata } from "../../utils/tx";
-import { User } from "../../utils/User";
-import { getEnvironmentRequiredVars, waitForNBlocks } from "../../utils/utils";
+import { updateFeeLockMetadata, unlockFee } from "../../utils/tx";
+import { AssetWallet, User } from "../../utils/User";
+import {
+  getEnvironmentRequiredVars,
+  waitForNBlocks,
+  getBlockNumber,
+  waitBlockNumber,
+} from "../../utils/utils";
 import { Xyk } from "../../utils/xyk";
 
 jest.spyOn(console, "log").mockImplementation(jest.fn());
@@ -46,6 +50,12 @@ beforeAll(async () => {
 
   // setup users
   sudo = new User(keyring, sudoUserName);
+
+  [firstCurrency, secondCurrency] = await Assets.setupUserWithCurrencies(
+    sudo,
+    [defaultCurrencyValue, defaultCurrencyValue],
+    sudo
+  );
 });
 
 beforeEach(async () => {
@@ -54,12 +64,6 @@ beforeEach(async () => {
   [testUser1] = setupUsers();
 
   await setupApi();
-
-  [firstCurrency, secondCurrency] = await Assets.setupUserWithCurrencies(
-    sudo,
-    [defaultCurrencyValue, defaultCurrencyValue],
-    sudo
-  );
 
   await Sudo.batchAsSudoFinalized(
     Assets.mintToken(firstCurrency, testUser1, defaultCurrencyValue),
@@ -142,7 +146,7 @@ test("gassless- GIVEN some locked tokens and no more free MGX WHEN another tx is
 });
 
 test("gassless- GIVEN some locked tokens and no more free MGX WHEN another tx is submitted AND lock period finished THEN the operation can be submitted ( unlock before locking )", async () => {
-  await testUser1.addMGATokens(sudo, new BN(feeLockAmount));
+  await testUser1.addMGATokens(sudo, new BN(feeLockAmount).add(new BN(1)));
 
   const sellAssetsValue = thresholdValue.sub(new BN(5));
 
@@ -151,4 +155,56 @@ test("gassless- GIVEN some locked tokens and no more free MGX WHEN another tx is
   await waitForNBlocks(periodLength);
 
   await testUser1.sellAssets(firstCurrency, secondCurrency, sellAssetsValue);
+});
+
+test("gassless- GIVEN some locked tokens WHEN querying a count feeLock Data THEN the amount matches with locked tokens AND lastTimeoutBlock matches with the block when tokens were locked", async () => {
+  const api = getApi();
+
+  await testUser1.addMGATokens(sudo, new BN(feeLockAmount).add(new BN(1)));
+
+  const sellAssetsValue = thresholdValue.sub(new BN(5));
+
+  await testUser1.sellAssets(firstCurrency, secondCurrency, sellAssetsValue);
+
+  const block = await getBlockNumber();
+
+  const accountFeeLockData = JSON.parse(
+    JSON.stringify(
+      await api.query.feeLock.accountFeeLockData(testUser1.keyRingPair.address)
+    )
+  );
+
+  expect(new BN(accountFeeLockData.lastFeeLockBlock)).bnEqual(new BN(block));
+  expect(new BN(accountFeeLockData.totalFeeLockAmount)).bnEqual(
+    new BN(feeLockAmount)
+  );
+});
+
+test("gassless- GIVEN some locked tokens and lastTimeoutblock is lower than current block WHEN release timeout is requested THEN the tokens are unlocked ( the storage remove those tokens AND tokens are now free )", async () => {
+  const api = getApi();
+
+  await testUser1.addMGATokens(sudo, new BN(feeLockAmount).add(new BN(1)));
+
+  const sellAssetsValue = thresholdValue.sub(new BN(5));
+  await testUser1.sellAssets(firstCurrency, secondCurrency, sellAssetsValue);
+
+  const accountFeeLockData = JSON.parse(
+    JSON.stringify(
+      await api.query.feeLock.accountFeeLockData(testUser1.keyRingPair.address)
+    )
+  );
+
+  const waitingBlock = accountFeeLockData.lastFeeLockBlock + periodLength;
+  await waitBlockNumber(waitingBlock, periodLength + 5);
+  await testUser1.refreshAmounts(AssetWallet.BEFORE);
+  await unlockFee(testUser1);
+  await testUser1.refreshAmounts(AssetWallet.AFTER);
+
+  const userMgaLockedBefore =
+    testUser1.getAsset(MGA_ASSET_ID)?.amountBefore.reserved!;
+  const userMgaLockedAfter =
+    testUser1.getAsset(MGA_ASSET_ID)?.amountAfter.reserved!;
+
+  expect(userMgaLockedBefore).bnEqual(new BN(feeLockAmount));
+  expect(userMgaLockedAfter).bnEqual(new BN(0));
 });
