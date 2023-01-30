@@ -7,7 +7,8 @@ import { provisionBootstrap, scheduleBootstrap } from "../utils/tx";
 import { MGA_ASSET_ID } from "../utils/Constants";
 import { User } from "../utils/User";
 import {
-  getEnvironmentRequiredVars
+  getEnvironmentRequiredVars,
+  waitForBootstrapStatus,
 } from "../utils/utils";
 
 import { Sudo } from "../utils/sudo";
@@ -82,7 +83,7 @@ describe("Boostrap - testpad", () => {
       )
     );
     const blockstostart = 5;
-    const bootstraplength = 1000;
+    const bootstraplength = 10;
     await scheduleBootstrap(
       sudo,
       MGA_ASSET_ID,
@@ -91,17 +92,17 @@ describe("Boostrap - testpad", () => {
       bootstraplength,
       1
     );
-    //await waitForBootstrapStatus("Public", 6);
+    await waitForBootstrapStatus("Public", 6);
     await provisionBootstrap(testUser1, new BN(4), new BN("10000000000000000"));
     await provisionBootstrap(
       testUser1,
       MGA_ASSET_ID,
-      new BN("100000000000000000")
+      new BN("1000000000000000000000")
     );
     await setAssetInfo(sudo, new BN(4), "KSM", "KSM", "", new BN(12));
     await setAssetInfo(sudo, new BN(7), "TUR", "TUR", "", new BN(10));
 
-    //await waitForBootstrapStatus("Finished", bootstraplength);
+    await waitForBootstrapStatus("Finished", bootstraplength);
     //pool created Id 5.
   });
 });

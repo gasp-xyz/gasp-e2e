@@ -3,9 +3,7 @@ import { By, WebDriver } from "selenium-webdriver";
 import {
   buildDataTestIdXpath,
   clickElement,
-  clickElementForce,
   getAttribute,
-  getText,
   pressEscape,
   waitForElementEnabled,
   writeText,
