@@ -155,7 +155,7 @@ jobs:
       - run: |
             npx testmo automation:run:submit-thread \
               --instance https://mangata-finance.testmo.net \
-              --run-id ${{ needs.test-setup.outputs.testmo-run-id }} \
+              --run-id ${{ needs.test.outputs.testmo-run-id }} \
               --results reports/*.xml \
               -- yarn ${{ github.event.inputs.scriptName }} ${{env.E2E_PARAMS}} ${{env.E2E_GROUPS}}
                       
