@@ -21,6 +21,8 @@ import {
   waitBlockNumber,
 } from "../../utils/utils";
 import { Xyk } from "../../utils/xyk";
+import { getEventResultFromMangataTx } from "../../utils/txHandler";
+import { ExtrinsicResult } from "../../utils/eventListeners";
 
 jest.spyOn(console, "log").mockImplementation(jest.fn());
 jest.setTimeout(2500000);
@@ -154,7 +156,12 @@ test("gassless- GIVEN some locked tokens and no more free MGX WHEN another tx is
 
   await waitForNBlocks(periodLength);
 
-  await testUser1.sellAssets(firstCurrency, secondCurrency, sellAssetsValue);
+  await testUser1
+    .sellAssets(firstCurrency, secondCurrency, sellAssetsValue)
+    .then((result) => {
+      const eventResponse = getEventResultFromMangataTx(result);
+      expect(eventResponse.state).toEqual(ExtrinsicResult.ExtrinsicSuccess);
+    });
 });
 
 test("gassless- GIVEN some locked tokens WHEN querying a count feeLock Data THEN the amount matches with locked tokens AND lastTimeoutBlock matches with the block when tokens were locked", async () => {
