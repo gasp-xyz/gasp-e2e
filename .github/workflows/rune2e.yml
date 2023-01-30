@@ -156,12 +156,15 @@ jobs:
           TESTMO_TOKEN: ${{ secrets.TESTMO_TOKEN }}
         id: run-tests
       
+      - name: Run e2e tests
+        working-directory: e2eTests
+        run: yarn ${{ github.event.inputs.scriptName }} ${{env.E2E_PARAMS}} ${{env.E2E_GROUPS}}
+        
       - run: |
             npx testmo automation:run:submit-thread \
               --instance https://mangata-finance.testmo.net \
               --run-id $(cat testmo-run-id.txt) \
-              --results reports/*.xml \
-              -- yarn ${{ github.event.inputs.scriptName }} ${{env.E2E_PARAMS}} ${{env.E2E_GROUPS}}
+              --results reports/*.xml 
                       
   test-complete:
     needs: [test]
