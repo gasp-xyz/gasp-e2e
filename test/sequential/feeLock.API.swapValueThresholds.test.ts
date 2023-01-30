@@ -106,7 +106,7 @@ beforeEach(async () => {
   testUser1.addAsset(secondCurrency);
 });
 
-test("gassless- Given a feeLock correctly configured WHEN the user swaps two tokens deGiven a tokenTimeout correctly configured (Time, Amount and Thresholds) WHEN the user swaps two tokens defined in the thresholds AND swapValue > threshold THEN the extrinsic is correctly submitted AND No locks AND no feesfined in the thresholds AND swapValue > threshold THEN the extrinsic is correctly submitted AND No locks AND no fees", async () => {
+test("gassless- Given a feeLock correctly configured WHEN the user swaps two tokens defined in the thresholds AND swapValue > threshold THEN the extrinsic is correctly submitted AND No locks AND no fees", async () => {
   await testUser1.addMGATokens(sudo);
 
   await createPool(

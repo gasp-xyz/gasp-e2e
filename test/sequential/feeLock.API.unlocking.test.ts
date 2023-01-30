@@ -164,7 +164,7 @@ test("gassless- GIVEN some locked tokens and no more free MGX WHEN another tx is
     });
 });
 
-test("gassless- GIVEN some locked tokens WHEN querying a count feeLock Data THEN the amount matches with locked tokens AND lastTimeoutBlock matches with the block when tokens were locked", async () => {
+test("gassless- GIVEN some locked tokens WHEN querying accountfeeLockData THEN the amount matches with locked tokens AND lastFeeLockBlock matches with the block when tokens were locked", async () => {
   const api = getApi();
 
   await testUser1.addMGATokens(sudo, new BN(feeLockAmount).add(new BN(1)));
@@ -187,7 +187,7 @@ test("gassless- GIVEN some locked tokens WHEN querying a count feeLock Data THEN
   );
 });
 
-test("gassless- GIVEN some locked tokens and lastTimeoutblock is lower than current block WHEN release timeout is requested THEN the tokens are unlocked ( the storage remove those tokens AND tokens are now free )", async () => {
+test("gassless- GIVEN some locked tokens and lastFeeLockblock is lower than current block WHEN release feeLock is requested THEN the tokens are unlocked", async () => {
   const api = getApi();
 
   await testUser1.addMGATokens(sudo, new BN(feeLockAmount).add(new BN(1)));

@@ -345,31 +345,6 @@ test("gassless- For low-value swaps, token reservation status and pallet storage
   await checkAccountFeeLockAmount(0);
 });
 
-test("gassless- Given a feeLock correctly configured WHEN the user swaps two tokens defined in the thresholds AND swapValue > threshold THEN the extrinsic is correctly submitted AND No locks AND no fees", async () => {
-  await addMgaToWhitelisted();
-
-  await testUser1.addMGATokens(sudo);
-  testUser1.addAsset(MGA_ASSET_ID);
-
-  const sellAssetsValue = thresholdValue.add(new BN(5));
-
-  await testUser1.refreshAmounts(AssetWallet.BEFORE);
-  await testUser1.sellAssets(MGA_ASSET_ID, firstCurrency, sellAssetsValue);
-  await testUser1.refreshAmounts(AssetWallet.AFTER);
-
-  const tokenBlocked = testUser1.getAsset(MGA_ASSET_ID)?.amountAfter.reserved!;
-
-  const userMgaFees = testUser1
-    .getAsset(MGA_ASSET_ID)
-    ?.amountAfter.free!.sub(
-      testUser1.getAsset(MGA_ASSET_ID)?.amountBefore.free!
-    )
-    .add(new BN(sellAssetsValue));
-
-  expect(tokenBlocked).bnEqual(new BN(0));
-  expect(userMgaFees).bnEqual(new BN(0));
-});
-
 test("gassless- High-value swaps when successful are not charged txn fee or token timedout, but the percentage fee is charged", async () => {
   const secondCurrency = await Assets.issueAssetToUser(
     sudo,
