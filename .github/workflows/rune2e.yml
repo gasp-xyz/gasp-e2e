@@ -28,7 +28,7 @@ on:
             - xyk
             - api
             - sdk
-            - ci 
+            - ci
             - ui
             - story
             - gassless
