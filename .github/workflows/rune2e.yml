@@ -129,6 +129,14 @@ jobs:
         if: ${{ github.event.inputs.group || github.event.inputs.group != 'none' }}
         run:
           echo "E2E_GROUPS=--group=${{ github.event.inputs.group}}" >> $GITHUB_ENV
+      
+      # Optionally add a couple of fields such as the git hash and link to the build
+      - run: |
+          npx testmo automation:resources:add-field --name git --type string \
+            --value ${GITHUB_SHA:0:7} --resources resources.json
+          RUN_URL="$GITHUB_SERVER_URL/$GITHUB_REPOSITORY/actions/runs/$GITHUB_RUN_ID"
+          npx testmo automation:resources:add-link --name build \
+            --url $RUN_URL --resources resources.json
 
       - name: Run e2e tests
         working-directory: e2eTests
