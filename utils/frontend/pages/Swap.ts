@@ -106,11 +106,9 @@ export class Swap {
   }
 
   async getBalanceFromAssetGet() {
-    const xpathGetLocator =
-      buildDataTestIdXpath(DIV_SWAP_GET) +
-      "//*[@class='TradingInput__right__label']";
-    const text = await getText(this.driver, xpathGetLocator);
-    return text.split(":")[1].trim().replace("MAX", "").trim();
+    const xpathGetLocator = buildDataTestIdXpath(DIV_SWAP_GET) + "//input";
+    const text = await getAttribute(this.driver, xpathGetLocator);
+    return text.trim();
   }
 
   async toggleShowAllTokens() {

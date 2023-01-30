@@ -264,20 +264,22 @@ export async function selectAssetFromModalList(
   await clickElement(driver, assetLocator);
 }
 
-export function uiStringToBN(stringValue: string) {
+export function uiStringToBN(stringValue: string, decimals = 18) {
   if (stringValue.includes(".")) {
     const partInt = stringValue.split(".")[0].trim();
     let partDec = stringValue.split(".")[1].trim();
     //multiply the part int*10¹⁸
-    const exp = new BN(10).pow(new BN(18));
+    const exp = new BN(10).pow(new BN(decimals));
     const part1 = new BN(partInt).mul(exp);
     //add zeroes to the decimal part.
-    while (partDec.length < 18) {
+    while (partDec.length < decimals) {
       partDec += "0";
     }
     return part1.add(new BN(partDec));
   } else {
-    return new BN((Math.pow(10, 18) * parseFloat(stringValue)).toString());
+    return new BN(
+      (Math.pow(10, decimals) * parseFloat(stringValue)).toString()
+    );
   }
 }
 
