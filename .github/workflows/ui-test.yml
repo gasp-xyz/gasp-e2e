@@ -109,9 +109,14 @@ jobs:
           echo 'ETH_20_APP_ADDRESS=0xb508A5Dfa2a16269a5cb47C67824cF823Db44ca7' >> $GITHUB_ENV
           echo 'MNEMONIC_META=${{ secrets.MNEMONIC_META_INT }}' >> $GITHUB_ENV
   
-      - uses: actions/checkout@v2
-      - name: Install dependencies
-        run: yarn --force
+      - uses: actions/checkout@v3
+      - uses: actions/setup-node@v3
+        with:
+          node-version: '16'
+          cache: 'yarn'
+      - name: Install dependencies with Yarn
+        run: yarn
+        
       - name: Tsc code quality check
         run: yarn tsc-lint
       - name: ESLint code quality check
