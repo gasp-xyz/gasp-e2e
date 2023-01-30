@@ -49,6 +49,7 @@ module.exports = async function (globalConfig, projectConfig) {
     process.env.JEST_GROUP_GASSLESS
   ) {
     console.info("GASS LESS test - Setting it up");
+    process.env.FEES_ENABLED = false;
     await setupGassLess();
   }
 };
