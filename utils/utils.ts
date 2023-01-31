@@ -9,6 +9,7 @@ import { waitNewBlock } from "./eventListeners";
 import { testLog } from "./Logger";
 import { AnyNumber } from "@polkadot/types/types";
 import { Keyring } from "@polkadot/api";
+import { KeyringPair } from "@polkadot/keyring/types";
 
 export function sleep(ms: number) {
   return new Promise((resolve) => {
@@ -208,6 +209,12 @@ export function calculateFees(soldAmount: BN) {
   const treasuryFee = treasury.add(new BN(1));
   return { treasury: treasuryFee, treasuryBurn: treasuryFee };
 }
+
+export async function calculateMGAFees(tx: any, account: KeyringPair) {
+  const result = await tx.paymentInfo(account);
+  return new BN(result.partialFee);
+}
+
 export function calculateCompleteFees(soldAmount: BN) {
   const { treasury, treasuryBurn } = calculateFees(soldAmount);
   let threePercent = treasury.add(treasuryBurn).mul(new BN(3));

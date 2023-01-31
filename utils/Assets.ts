@@ -132,7 +132,15 @@ export class Assets {
   static transferAll(target: User, tokenId: BN): Extrinsic {
     return api.tx.tokens.transferAll(target.keyRingPair.address, tokenId, true);
   }
-
+  static FinalizeTge(): Extrinsic {
+    return Sudo.sudo(api!.tx.issuance.finalizeTge());
+  }
+  static initIssuance(): Extrinsic {
+    return Sudo.sudo(api!.tx.issuance.initIssuanceConfig());
+  }
+  static promotePool(liquidityId: number, weight: number | null): Extrinsic {
+    return Sudo.sudo(api!.tx.xyk.updatePoolPromotion(liquidityId, weight));
+  }
   static registerAsset(
     name: string,
     symbol: string,
