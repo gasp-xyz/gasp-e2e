@@ -1,4 +1,7 @@
-/* eslint-disable no-console */
+/*
+ *
+ * @group ui
+ */
 import { Mangata } from "../../utils/frontend/pages/Mangata";
 import { Keyring } from "@polkadot/api";
 import { BN } from "@polkadot/util";
@@ -35,7 +38,6 @@ jest.spyOn(console, "log").mockImplementation(jest.fn());
 
 jest.setTimeout(1500000);
 let driver: WebDriver;
-process.env.NODE_ENV = "test";
 let sudo: SudoUser;
 let testUser1: User;
 const testAssetName = "TST4";
