@@ -14,7 +14,11 @@ import { setupApi, setupUsers } from "../../utils/setup";
 import { Sudo } from "../../utils/sudo";
 import { updateFeeLockMetadata, unlockFee } from "../../utils/tx";
 import { AssetWallet, User } from "../../utils/User";
-import { getEnvironmentRequiredVars, waitForNBlocks } from "../../utils/utils";
+import {
+  getEnvironmentRequiredVars,
+  waitForNBlocks,
+  feeLockErrors,
+} from "../../utils/utils";
 import { Xyk } from "../../utils/xyk";
 
 jest.spyOn(console, "log").mockImplementation(jest.fn());
@@ -35,44 +39,32 @@ const defaultCurrencyValue = new BN(10000000);
 const defaultPoolVolumeValue = new BN(1000000);
 
 async function checkErrorSellAsset(
+  soldAssetId: any,
+  boughtAssetId: any,
   reason: string,
-  amount = new BN(1000),
-  buyMgaToken = true
+  amount = new BN(1000)
 ) {
   let exception = false;
   const mangata = await getMangataInstance();
 
-  if (buyMgaToken) {
-    await expect(
-      mangata
-        .sellAsset(
-          testUser1.keyRingPair,
-          firstCurrency.toString(),
-          MGA_ASSET_ID.toString(),
-          amount,
-          new BN(0)
-        )
-        .catch((reason) => {
-          exception = true;
-          throw new Error(reason.data);
-        })
-    ).rejects.toThrow(reason);
-  } else {
-    await expect(
-      mangata
-        .sellAsset(
-          testUser1.keyRingPair,
-          MGA_ASSET_ID.toString(),
-          firstCurrency.toString(),
-          amount,
-          new BN(0)
-        )
-        .catch((reason) => {
-          exception = true;
-          throw new Error(reason.data);
-        })
-    ).rejects.toThrow(reason);
-  }
+  const soldAssetIdString = soldAssetId.toString();
+  const boughtAssetIdString = boughtAssetId.toString();
+
+  await expect(
+    mangata
+      .sellAsset(
+        testUser1.keyRingPair,
+        soldAssetIdString,
+        boughtAssetIdString,
+        amount,
+        new BN(0)
+      )
+      .catch((reason) => {
+        exception = true;
+        throw new Error(reason.data);
+      })
+  ).rejects.toThrow(reason);
+
   expect(exception).toBeTruthy();
 }
 
@@ -200,7 +192,9 @@ test("gassless- GIVEN a feeLock configured (only Time and Amount ) WHEN the user
   await testUser1.addMGATokens(sudo, new BN(2));
 
   await checkErrorSellAsset(
-    "1010: Invalid Transaction: Fee lock processing has failed either due to not enough funds to reserve or an unexpected error"
+    firstCurrency,
+    MGA_ASSET_ID,
+    feeLockErrors.FeeLockingFail
   );
 });
 
@@ -210,7 +204,9 @@ test("gassless- GIVEN a feeLock configured (only Time and Amount )  WHEN the use
   await testUser1.addMGATokens(sudo, new BN(2));
 
   await checkErrorSellAsset(
-    "1010: Invalid Transaction: Fee lock processing has failed either due to not enough funds to reserve or an unexpected error"
+    firstCurrency,
+    MGA_ASSET_ID,
+    feeLockErrors.FeeLockingFail
   );
 });
 
@@ -307,9 +303,10 @@ test("gassless- High-value swaps are rejected from the txn pool if they would fa
   testUser1.addAsset(MGA_ASSET_ID);
 
   await checkErrorSellAsset(
-    "1010: Invalid Transaction: The swap prevalidation has failed",
-    toBN("1", 26),
-    false
+    MGA_ASSET_ID,
+    firstCurrency,
+    feeLockErrors.SwapApprovalFail,
+    toBN("1", 26)
   );
 });
 

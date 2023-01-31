@@ -16,10 +16,10 @@ import {
 import { BN } from "@mangata-finance/sdk";
 import { setupApi, setupUsers } from "../../utils/setup";
 import { Sudo } from "../../utils/sudo";
-import { updateFeeLockMetadata } from "../../utils/tx";
+import { updateFeeLockMetadata, unlockFee } from "../../utils/tx";
 import { getEventResultFromMangataTx } from "../../utils/txHandler";
 import { User } from "../../utils/User";
-import { getEnvironmentRequiredVars } from "../../utils/utils";
+import { getEnvironmentRequiredVars, waitForNBlocks } from "../../utils/utils";
 import { Xyk } from "../../utils/xyk";
 
 jest.spyOn(console, "log").mockImplementation(jest.fn());
@@ -100,7 +100,7 @@ test("gassless- GIVEN an empty feeLock configuration (all options empty) WHEN su
   );
 });
 
-test("xyk-pallet-gassless GIVEN a feeLock WHEN periodLength and timeoutAmount are set THEN extrinsic succeed and tokensTimeout is correctly configured", async () => {
+test("gassless- GIVEN a feeLock WHEN periodLength and timeoutAmount are set THEN extrinsic succeed and tokensTimeout is correctly configured", async () => {
   const api = getApi();
 
   const setupTimeoutConfig = await updateFeeLockMetadata(
@@ -131,11 +131,6 @@ test("xyk-pallet-gassless GIVEN a feeLock WHEN periodLength and timeoutAmount ar
 test("gassless- Сhanging feeLock config parameter on the fly is works robustly", async () => {
   const api = getApi();
 
-  const lastPeriodLength = new BN(
-    JSON.parse(
-      JSON.stringify(await api?.query.feeLock.feeLockMetadata())
-    ).periodLength.toString()
-  );
   const feeLockAmount = new BN(
     JSON.parse(
       JSON.stringify(await api?.query.feeLock.feeLockMetadata())
@@ -147,14 +142,32 @@ test("gassless- Сhanging feeLock config parameter on the fly is works robustly"
     ).swapValueThreshold.toString()
   );
 
-  const setupTimeoutConfig = await updateFeeLockMetadata(
+  const setupFirstTimeoutConfig = await updateFeeLockMetadata(
     sudo,
-    lastPeriodLength.add(new BN(5)),
+    new BN(505),
+    feeLockAmount,
+    swapValueThreshold,
+    [[MGA_ASSET_ID, true]]
+  );
+  await waitSudoOperataionSuccess(setupFirstTimeoutConfig);
+
+  const sellAssetsValue = swapValueThreshold.sub(new BN(5));
+  await testUser1.sellAssets(firstCurrency, MGA_ASSET_ID, sellAssetsValue);
+
+  const setupSecondTimeoutConfig = await updateFeeLockMetadata(
+    sudo,
+    new BN(2),
     feeLockAmount,
     swapValueThreshold,
     null
   );
-  await waitSudoOperataionSuccess(setupTimeoutConfig);
+  await waitSudoOperataionSuccess(setupSecondTimeoutConfig);
+
+  await waitForNBlocks(2);
+  await unlockFee(testUser1).then((result) => {
+    const eventResponse = getEventResultFromMangataTx(result);
+    expect(eventResponse.state).toEqual(ExtrinsicResult.ExtrinsicSuccess);
+  });
 
   const newPeriodLength = new BN(
     JSON.parse(
@@ -162,7 +175,7 @@ test("gassless- Сhanging feeLock config parameter on the fly is works robustly"
     ).periodLength.toString()
   );
 
-  expect(newPeriodLength).bnEqual(lastPeriodLength.add(new BN(5)));
+  expect(newPeriodLength).bnEqual(new BN(2));
 });
 
 afterAll(async () => {
