@@ -190,8 +190,7 @@ jobs:
       - name: Install testmo
         run: npm i -g @testmo/testmo-cli
         
-      - name: Add extra params
-        working-directory: e2eTests 
+      - name: Complete test run
         run: |
             npx testmo automation:run:complete \
               --instance https://mangata-finance.testmo.net \
