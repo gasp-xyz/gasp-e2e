@@ -152,8 +152,8 @@ jobs:
             --resources resources.json \
             --source "unit-tests" > testmo-run-id.txt
           ID=$(cat testmo-run-id.txt)
-          echo "testmo-run-id=$ID >> $GITHUB_OUTPUT"
-          echo "ID=$ID >> $GITHUB_ENV"
+          echo "testmo-run-id=$ID" >> $GITHUB_OUTPUT
+          echo "ID=$ID" >> $GITHUB_ENV
           
         env:
           TESTMO_URL: ${{ secrets.TESTMO_URL }}
