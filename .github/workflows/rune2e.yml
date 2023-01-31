@@ -133,14 +133,18 @@ jobs:
           echo "E2E_GROUPS=--group=${{ github.event.inputs.group}}" >> $GITHUB_ENV
       
       # Optionally add a couple of fields such as the git hash and link to the build
-      - run: |
+      - name: Add extra params
+        working-directory: e2eTests
+        run: |
           npx testmo automation:resources:add-field --name git --type string \
             --value ${GITHUB_SHA:0:7} --resources resources.json
           RUN_URL="$GITHUB_SERVER_URL/$GITHUB_REPOSITORY/actions/runs/$GITHUB_RUN_ID"
           npx testmo automation:resources:add-link --name build \
             --url $RUN_URL --resources resources.json
 
-      - run: |
+      - name: Create test run
+        working-directory: e2eTests
+        run: |
           npx testmo automation:run:create \
             --instance https://mangata-finance.testmo.net  \
             --project-id 2 \
@@ -160,11 +164,17 @@ jobs:
         working-directory: e2eTests
         run: yarn ${{ github.event.inputs.scriptName }} ${{env.E2E_PARAMS}} ${{env.E2E_GROUPS}}
         
-      - run: |
+      - name: Submit results to the testmo-run
+        if: always()
+        working-directory: e2eTests 
+        run: |
             npx testmo automation:run:submit-thread \
               --instance https://mangata-finance.testmo.net \
               --run-id $(cat testmo-run-id.txt) \
               --results reports/*.xml 
+        env:
+          TESTMO_URL: ${{ secrets.TESTMO_URL }}
+          TESTMO_TOKEN: ${{ secrets.TESTMO_TOKEN }}
                       
   test-complete:
     needs: [test]
@@ -180,7 +190,9 @@ jobs:
       - name: Install testmo
         run: npm i -g @testmo/testmo-cli
         
-      - run: |
+      - name: Add extra params
+        working-directory: e2eTests 
+        run: |
             npx testmo automation:run:complete \
               --instance https://mangata-finance.testmo.net \
               --run-id ${{needs.test.outputs.testmo-run-id}} \
