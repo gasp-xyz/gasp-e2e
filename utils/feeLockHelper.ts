@@ -5,23 +5,29 @@ import { waitSudoOperataionSuccess } from "./eventListeners";
 import { updateFeeLockMetadata } from "./tx";
 import { User } from "./User";
 
-export async function clearMgaFromWhitelisted(api: ApiPromise, sudo: User) {
+export async function clearMgaFromWhitelisted(
+  api: ApiPromise,
+  thresholdValueExpected: BN,
+  sudo: User
+) {
   const feeLockMetadata = JSON.parse(
     JSON.stringify(await api.query.feeLock.feeLockMetadata())
   );
-  // [].includes( (element:any) => { element.toString() === MGA_ASSET_ID.toString() } )
-  feeLockMetadata.whitelistedTokens.forEach(async (element: any) => {
-    if (element.toString() === MGA_ASSET_ID.toString()) {
-      const checkEmptyTimeoutConfig = await updateFeeLockMetadata(
-        sudo,
-        new BN(feeLockMetadata.periodLength),
-        new BN(feeLockMetadata.feeLockAmount),
-        feeLockMetadata.swapValueThreshold,
-        [MGA_ASSET_ID, false]
-      );
-      await waitSudoOperataionSuccess(checkEmptyTimeoutConfig);
-    }
-  });
+  const swapValueThreshold = new BN(feeLockMetadata.swapValueThreshold);
+  const isMgaWhitelisted = feeLockMetadata.whitelistedTokens.includes(
+    MGA_ASSET_ID.toNumber()
+  );
+
+  if (isMgaWhitelisted || swapValueThreshold.lt(thresholdValueExpected)) {
+    const checkEmptyTimeoutConfig = await updateFeeLockMetadata(
+      sudo,
+      new BN(feeLockMetadata.periodLength),
+      new BN(feeLockMetadata.feeLockAmount),
+      thresholdValueExpected,
+      [[MGA_ASSET_ID, false]]
+    );
+    await waitSudoOperataionSuccess(checkEmptyTimeoutConfig);
+  }
 }
 
 export async function addMgaToWhitelisted(

@@ -17,7 +17,7 @@ import { setupApi, setupUsers } from "../../utils/setup";
 import { Sudo } from "../../utils/sudo";
 import { updateFeeLockMetadata, createPool } from "../../utils/tx";
 import { AssetWallet, User } from "../../utils/User";
-import { getEnvironmentRequiredVars } from "../../utils/utils";
+import { getEnvironmentRequiredVars, feeLockErrors } from "../../utils/utils";
 import { Xyk } from "../../utils/xyk";
 import { getEventResultFromMangataTx } from "../../utils/txHandler";
 
@@ -210,7 +210,5 @@ test("gassless- Given a feeLock correctly configured WHEN the user swaps two tok
       .catch((reason) => {
         throw new Error(reason.data);
       })
-  ).rejects.toThrow(
-    "1010: Invalid Transaction: Fee lock processing has failed either due to not enough funds to reserve or an unexpected error"
-  );
+  ).rejects.toThrow(feeLockErrors.FeeLockingFail);
 });
