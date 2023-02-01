@@ -94,9 +94,9 @@ beforeAll(async () => {
 beforeEach(async () => {
   api = getApi();
 
-  [testUser1] = setupUsers();
-
   await setupApi();
+
+  [testUser1] = setupUsers();
 
   await Sudo.batchAsSudoFinalized(
     Assets.mintToken(firstCurrency, testUser1, defaultCurrencyValue),
