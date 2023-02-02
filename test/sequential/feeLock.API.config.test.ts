@@ -18,7 +18,7 @@ import { setupApi, setupUsers } from "../../utils/setup";
 import { Sudo } from "../../utils/sudo";
 import { updateFeeLockMetadata, unlockFee } from "../../utils/tx";
 import { getEventResultFromMangataTx } from "../../utils/txHandler";
-import { User } from "../../utils/User";
+import { AssetWallet, User } from "../../utils/User";
 import { getEnvironmentRequiredVars, waitForNBlocks } from "../../utils/utils";
 import { Xyk } from "../../utils/xyk";
 
@@ -86,7 +86,7 @@ test("gasless- GIVEN a non sudo user WHEN feeLock configuration extrinsic is sub
   });
 });
 
-test("gasless- GIVEN an empty feeLock configuration (all options empty) WHEN sudo submit the extrinsic THEN Tx fails because insuficient params", async () => {
+test("gasless- GIVEN an empty feeLock configuration (all options empty) WHEN sudo submit the extrinsic THEN Tx fails because insufficient params", async () => {
   const updateMetadataEvent = await updateFeeLockMetadata(
     sudo,
     new BN(0),
@@ -97,7 +97,7 @@ test("gasless- GIVEN an empty feeLock configuration (all options empty) WHEN sud
   await waitSudoOperationFail(updateMetadataEvent, "InvalidFeeLockMetadata");
 });
 
-test("gasless- GIVEN a feeLock WHEN periodLength and timeoutAmount are set THEN extrinsic succeed and tokensTimeout is correctly configured", async () => {
+test("gasless- GIVEN a feeLock WHEN periodLength and feeLockAmount are set THEN extrinsic succeed and feeLock is correctly configured", async () => {
   const api = getApi();
 
   const updateMetadataEvent = await updateFeeLockMetadata(
@@ -128,6 +128,7 @@ test("gasless- GIVEN a feeLock WHEN periodLength and timeoutAmount are set THEN 
 test("gasless- Changing feeLock config parameter on the fly is works robustly", async () => {
   const api = getApi();
   let updateMetadataEvent: any;
+  testUser1.addAsset(MGA_ASSET_ID);
 
   const feeLockAmount = new BN(
     JSON.parse(
@@ -146,6 +147,7 @@ test("gasless- Changing feeLock config parameter on the fly is works robustly", 
 
   const saleAssetValue = thresholdValue.sub(new BN(5));
   await testUser1.sellAssets(firstCurrency, MGA_ASSET_ID, saleAssetValue);
+  await testUser1.refreshAmounts(AssetWallet.BEFORE);
 
   updateMetadataEvent = await updateFeeLockMetadata(
     sudo,
@@ -161,6 +163,13 @@ test("gasless- Changing feeLock config parameter on the fly is works robustly", 
     const eventResponse = getEventResultFromMangataTx(result);
     expect(eventResponse.state).toEqual(ExtrinsicResult.ExtrinsicSuccess);
   });
+  await testUser1.refreshAmounts(AssetWallet.AFTER);
+
+  const userMgaLockedValue = testUser1
+    .getAsset(MGA_ASSET_ID)
+    ?.amountBefore.reserved!.sub(
+      testUser1.getAsset(MGA_ASSET_ID)?.amountAfter.reserved!
+    );
 
   const newPeriodLength = new BN(
     JSON.parse(
@@ -169,6 +178,10 @@ test("gasless- Changing feeLock config parameter on the fly is works robustly", 
   );
 
   expect(newPeriodLength).bnEqual(new BN(2));
+  expect(userMgaLockedValue).bnEqual(new BN(feeLockAmount));
+  expect(testUser1.getAsset(MGA_ASSET_ID)?.amountAfter.reserved!).bnEqual(
+    new BN(0)
+  );
 });
 
 afterAll(async () => {

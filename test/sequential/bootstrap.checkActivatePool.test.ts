@@ -157,6 +157,6 @@ afterEach(async () => {
   // check that the user's balance of liquidity token is equal the pool's balance
   expect(bootstrapUserLiquidity.free).bnEqual(bootstrapExpectedUserLiquidity);
 
-  // finalaze bootstrap
+  // finalize bootstrap
   await checkLastBootstrapFinalized(sudo);
 });

@@ -157,6 +157,6 @@ test("bootstrap - Check happy path bootstrap with one user", async () => {
   );
   expect(toNumber(userBalance.free)).toEqual(bootstrapExpectedUserLiquidity);
 
-  // finalaze bootstrap
+  // finalize bootstrap
   await checkLastBootstrapFinalized(sudo);
 });

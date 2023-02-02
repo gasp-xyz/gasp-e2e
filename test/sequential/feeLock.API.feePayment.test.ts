@@ -301,7 +301,7 @@ test("gasless- For low-value swaps, token reservation status and pallet storage 
   await checkAccountFeeLockData(0, 0);
 });
 
-test("gasless- High-value swaps when successful are not charged txn fee or token timedout, but the percentage fee is charged", async () => {
+test("gasless- High-value swaps when successful are not charged txn fee or token locked, but the percentage fee is charged", async () => {
   const api = getApi();
 
   const secondCurrency = await Assets.issueAssetToUser(

@@ -150,7 +150,7 @@ test("gasless- GIVEN some locked tokens and no more free MGX WHEN another tx is 
     });
 });
 
-test("gasless- GIVEN some locked tokens WHEN querying accountfeeLockData THEN the amount matches with locked tokens AND lastFeeLockBlock matches with the block when tokens were locked", async () => {
+test("gasless- GIVEN some locked tokens WHEN querying accountFeeLockData THEN the amount matches with locked tokens AND lastFeeLockBlock matches with the block when tokens were locked", async () => {
   const api = getApi();
 
   const feeLockAmount = JSON.parse(
@@ -177,7 +177,7 @@ test("gasless- GIVEN some locked tokens WHEN querying accountfeeLockData THEN th
   );
 });
 
-test("gasless- GIVEN some locked tokens and lastFeeLockblock is lower than current block WHEN release feeLock is requested THEN the tokens are unlocked", async () => {
+test("gasless- GIVEN some locked tokens and lastFeeLockBlock is lower than current block WHEN release feeLock is requested THEN the tokens are unlocked", async () => {
   const api = getApi();
 
   const feeLockAmount = JSON.parse(
