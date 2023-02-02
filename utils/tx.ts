@@ -972,8 +972,9 @@ export class FeeTxs {
 export async function registerAsset(
   sudoUser: User,
   assetId: BN,
-  adressLocation: any,
-  locMarker: BN
+  addressLocation: any,
+  locMarker: BN,
+  additional: any
 ) {
   const api = getApi();
   const result = await signTx(
@@ -982,10 +983,11 @@ export async function registerAsset(
       api.tx.assetRegistry.registerAsset(
         {
           decimals: 12,
-          name: "TESTTOKEN-" + locMarker.toString(),
-          symbol: "TSTT" + locMarker.toString(),
+          name: "TEST_TOKEN-" + locMarker.toString(),
+          symbol: "TEST" + locMarker.toString(),
           existentialDeposit: 0,
-          location: adressLocation,
+          location: addressLocation,
+          additional,
         },
         //@ts-ignore
         assetId

@@ -12,6 +12,7 @@ import { BN_TEN, BN_THOUSAND } from "@mangata-finance/sdk";
 import { api, Extrinsic } from "./setup";
 import { MGA_ASSET_ID } from "./Constants";
 import { Sudo } from "./sudo";
+import _ from "lodash";
 
 export class Assets {
   static MG_UNIT: BN = BN_TEN.pow(new BN(18));
@@ -185,6 +186,45 @@ export class Assets {
         { additional: update.metadata }
       )
     );
+  }
+  static async disableToken(tokenId: BN) {
+    const isRegistered = (
+      await api!.query.assetRegistry.metadata(tokenId)
+    ).toHuman();
+    let extrinsicToDisable: Extrinsic;
+    if (!isRegistered) {
+      extrinsicToDisable = Assets.registerAsset(
+        "testAsset" + tokenId.toString(),
+        "testSymbol",
+        18,
+        undefined,
+        undefined,
+        {
+          operationsDisabled: true,
+        },
+        tokenId
+      );
+    } else {
+      extrinsicToDisable = Assets.updateAsset(tokenId, {
+        metadata: { xyk: { operationsDisabled: true } },
+      });
+    }
+    return await Sudo.asSudoFinalized(extrinsicToDisable);
+  }
+  static async enableToken(tokenId: BN) {
+    const isRegistered = (
+      await api!.query.assetRegistry.metadata(tokenId)
+    ).toHuman();
+    let extrinsicToTokenEnable: Extrinsic;
+    if (
+      isRegistered &&
+      _.get(isRegistered, "additional.xyk.operationsDisabled")
+    ) {
+      extrinsicToTokenEnable = await Assets.updateAsset(tokenId, {
+        metadata: { xyk: { operationsDisabled: false } },
+      });
+      await Sudo.asSudoFinalized(extrinsicToTokenEnable);
+    }
   }
 }
 
