@@ -1,7 +1,7 @@
 /*
  *
  * @group sequential
- * @group gassless
+ * @group gasless
  */
 
 import { Keyring } from "@polkadot/api";
@@ -95,7 +95,7 @@ beforeEach(async () => {
   testUser1.addAsset(secondCurrency);
 });
 
-test("gassless- GIVEN some locked tokens and no more free MGX WHEN another tx is submitted AND lock period did not finished THEN the operation can not be submitted", async () => {
+test("gasless- GIVEN some locked tokens and no more free MGX WHEN another tx is submitted AND lock period did not finished THEN the operation can not be submitted", async () => {
   const api = getApi();
 
   const feeLockAmount = JSON.parse(
@@ -124,7 +124,7 @@ test("gassless- GIVEN some locked tokens and no more free MGX WHEN another tx is
   ).rejects.toThrow(feeLockErrors.FeeLockingFail);
 });
 
-test("gassless- GIVEN some locked tokens and no more free MGX WHEN another tx is submitted AND lock period finished THEN the operation can be submitted ( unlock before locking )", async () => {
+test("gasless- GIVEN some locked tokens and no more free MGX WHEN another tx is submitted AND lock period finished THEN the operation can be submitted ( unlock before locking )", async () => {
   const api = getApi();
 
   const feeLockAmount = JSON.parse(
@@ -150,7 +150,7 @@ test("gassless- GIVEN some locked tokens and no more free MGX WHEN another tx is
     });
 });
 
-test("gassless- GIVEN some locked tokens WHEN querying accountfeeLockData THEN the amount matches with locked tokens AND lastFeeLockBlock matches with the block when tokens were locked", async () => {
+test("gasless- GIVEN some locked tokens WHEN querying accountfeeLockData THEN the amount matches with locked tokens AND lastFeeLockBlock matches with the block when tokens were locked", async () => {
   const api = getApi();
 
   const feeLockAmount = JSON.parse(
@@ -177,7 +177,7 @@ test("gassless- GIVEN some locked tokens WHEN querying accountfeeLockData THEN t
   );
 });
 
-test("gassless- GIVEN some locked tokens and lastFeeLockblock is lower than current block WHEN release feeLock is requested THEN the tokens are unlocked", async () => {
+test("gasless- GIVEN some locked tokens and lastFeeLockblock is lower than current block WHEN release feeLock is requested THEN the tokens are unlocked", async () => {
   const api = getApi();
 
   const feeLockAmount = JSON.parse(

@@ -1,7 +1,7 @@
 /*
  *
  * @group sequential
- * @group gassless
+ * @group gasless
  */
 
 import { Keyring } from "@polkadot/api";
@@ -107,7 +107,7 @@ beforeEach(async () => {
   );
 });
 
-test("gassless- GIVEN a feeLock configured (only Time and Amount ) WHEN the user swaps AND the user has not enough MGAs and has enough TURs THEN the extrinsic fails on submission", async () => {
+test("gasless- GIVEN a feeLock configured (only Time and Amount ) WHEN the user swaps AND the user has not enough MGAs and has enough TURs THEN the extrinsic fails on submission", async () => {
   await clearMgaFromWhitelisted(thresholdValue, sudo);
 
   await Sudo.batchAsSudoFinalized(
@@ -123,7 +123,7 @@ test("gassless- GIVEN a feeLock configured (only Time and Amount ) WHEN the user
   );
 });
 
-test("gassless- GIVEN a feeLock configured (only Time and Amount )  WHEN the user swaps AND the user does not have enough MGAs THEN the extrinsic fails on submission", async () => {
+test("gasless- GIVEN a feeLock configured (only Time and Amount )  WHEN the user swaps AND the user does not have enough MGAs THEN the extrinsic fails on submission", async () => {
   await clearMgaFromWhitelisted(thresholdValue, sudo);
 
   await testUser1.addMGATokens(sudo, new BN(2));
@@ -136,7 +136,7 @@ test("gassless- GIVEN a feeLock configured (only Time and Amount )  WHEN the use
   );
 });
 
-test("gassless- Given a feeLock correctly configured (only Time and Amount ) WHEN the user swaps AND the user has enough MGAs THEN the extrinsic is correctly submitted", async () => {
+test("gasless- Given a feeLock correctly configured (only Time and Amount ) WHEN the user swaps AND the user has enough MGAs THEN the extrinsic is correctly submitted", async () => {
   await clearMgaFromWhitelisted(thresholdValue, sudo);
 
   await testUser1.addMGATokens(sudo);
@@ -173,7 +173,7 @@ test("gassless- Given a feeLock correctly configured (only Time and Amount ) WHE
   expect(userMgaFees).bnEqual(new BN(0));
 });
 
-test("gassless- GIVEN a feeLock configured WHEN a swap happens THEN fees are not charged but locked instead", async () => {
+test("gasless- GIVEN a feeLock configured WHEN a swap happens THEN fees are not charged but locked instead", async () => {
   const api = getApi();
 
   await addMgaToWhitelisted(thresholdValue, sudo);
@@ -208,7 +208,7 @@ test("gassless- GIVEN a feeLock configured WHEN a swap happens THEN fees are not
   expect(userMgaFees).bnEqual(new BN(0));
 });
 
-test("gassless- GIVEN a correct config for gassless swaps WHEN the user runs unlock-fee THEN fees are not charged for token unlockFee", async () => {
+test("gasless- GIVEN a correct config for gasless swaps WHEN the user runs unlock-fee THEN fees are not charged for token unlockFee", async () => {
   const api = getApi();
 
   await addMgaToWhitelisted(thresholdValue, sudo);
@@ -240,7 +240,7 @@ test("gassless- GIVEN a correct config for gassless swaps WHEN the user runs unl
   expect(userMgaFees).bnEqual(new BN(0));
 });
 
-test("gassless- High-value swaps are rejected from the txn pool if they would fail before the percentage fee is charged", async () => {
+test("gasless- High-value swaps are rejected from the txn pool if they would fail before the percentage fee is charged", async () => {
   await addMgaToWhitelisted(thresholdValue, sudo);
 
   await testUser1.addMGATokens(sudo);
@@ -254,7 +254,7 @@ test("gassless- High-value swaps are rejected from the txn pool if they would fa
   );
 });
 
-test("gassless- For low-value swaps, token reservation status and pallet storage are altered in accordance with the timeout mechanism", async () => {
+test("gasless- For low-value swaps, token reservation status and pallet storage are altered in accordance with the timeout mechanism", async () => {
   async function checkAccountFeeLockData(
     totalAmountValue: any,
     lastBlockValue: any
@@ -301,7 +301,7 @@ test("gassless- For low-value swaps, token reservation status and pallet storage
   await checkAccountFeeLockData(0, 0);
 });
 
-test("gassless- High-value swaps when successful are not charged txn fee or token timedout, but the percentage fee is charged", async () => {
+test("gasless- High-value swaps when successful are not charged txn fee or token timedout, but the percentage fee is charged", async () => {
   const api = getApi();
 
   const secondCurrency = await Assets.issueAssetToUser(

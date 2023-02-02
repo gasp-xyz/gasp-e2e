@@ -1,5 +1,5 @@
 /* eslint-disable no-console */
-import { setupGassLess } from "./setup";
+import { setupGasLess } from "./setup";
 
 module.exports = async function (globalConfig, projectConfig) {
   const ipc = require("node-ipc").default;
@@ -38,18 +38,18 @@ module.exports = async function (globalConfig, projectConfig) {
   globalThis.server = ipc.server;
   // eslint-disable-next-line no-undef
   globalThis.api = api;
-  //Setup if  debugging a gassLess test OR running gassless group
+  //Setup if  debugging a gasless test OR running gasless group
   if (
     (process.env.VSCODE_INSPECTOR_OPTIONS !== undefined &&
       process.env.VSCODE_INSPECTOR_OPTIONS.length > 0 &&
       globalConfig.testNamePattern
         .toString()
         .toLowerCase()
-        .includes("gassless")) ||
-    process.env.JEST_GROUP_GASSLESS
+        .includes("gasless")) ||
+    process.env.JEST_GROUP_gasless
   ) {
-    console.info("GASS LESS test - Setting it up");
+    console.info("GAS LESS test - Setting it up");
     process.env.FEES_ENABLED = false;
-    await setupGassLess();
+    await setupGasLess();
   }
 };

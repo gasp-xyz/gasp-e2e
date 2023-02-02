@@ -31,7 +31,7 @@ describe("staking - testpad", () => {
     }
   });
 
-  test("gassless Create pool and mint tokens to users", async () => {
+  test("gasless Create pool and mint tokens to users", async () => {
     await setupApi();
     await setupUsers();
     const keyring = new Keyring({ type: "sr25519" });

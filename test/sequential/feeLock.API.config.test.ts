@@ -1,7 +1,7 @@
 /*
  *
  * @group sequential
- * @group gassless
+ * @group gasless
  */
 
 import { Keyring } from "@polkadot/api";
@@ -72,7 +72,7 @@ beforeAll(async () => {
   );
 });
 
-test("gassless- GIVEN a non sudo user WHEN feeLock configuration extrinsic is submitted THEN it fails with RequireSudo", async () => {
+test("gasless- GIVEN a non sudo user WHEN feeLock configuration extrinsic is submitted THEN it fails with RequireSudo", async () => {
   await updateFeeLockMetadata(
     testUser1,
     new BN(10),
@@ -86,7 +86,7 @@ test("gassless- GIVEN a non sudo user WHEN feeLock configuration extrinsic is su
   });
 });
 
-test("gassless- GIVEN an empty feeLock configuration (all options empty) WHEN sudo submit the extrinsic THEN Tx fails because insuficient params", async () => {
+test("gasless- GIVEN an empty feeLock configuration (all options empty) WHEN sudo submit the extrinsic THEN Tx fails because insuficient params", async () => {
   const updateMetadataEvent = await updateFeeLockMetadata(
     sudo,
     new BN(0),
@@ -97,7 +97,7 @@ test("gassless- GIVEN an empty feeLock configuration (all options empty) WHEN su
   await waitSudoOperataionFail(updateMetadataEvent, "InvalidFeeLockMetadata");
 });
 
-test("gassless- GIVEN a feeLock WHEN periodLength and timeoutAmount are set THEN extrinsic succeed and tokensTimeout is correctly configured", async () => {
+test("gasless- GIVEN a feeLock WHEN periodLength and timeoutAmount are set THEN extrinsic succeed and tokensTimeout is correctly configured", async () => {
   const api = getApi();
 
   const updateMetadataEvent = await updateFeeLockMetadata(
@@ -125,7 +125,7 @@ test("gassless- GIVEN a feeLock WHEN periodLength and timeoutAmount are set THEN
   expect(currentFeeLockAmount).bnEqual(new BN(10));
 });
 
-test("gassless- Сhanging feeLock config parameter on the fly is works robustly", async () => {
+test("gasless- Changing feeLock config parameter on the fly is works robustly", async () => {
   const api = getApi();
   let updateMetadataEvent: any;
 

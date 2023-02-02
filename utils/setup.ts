@@ -42,7 +42,7 @@ export const setupUsers = () => {
 
   return [testUser1, testUser2, testUser3, testUser4];
 };
-export const setupGassLess = async () => {
+export const setupGasLess = async () => {
   keyring = new Keyring({ type: "sr25519" });
   const { sudo: sudoUserName } = getEnvironmentRequiredVars();
   sudo = new User(keyring, sudoUserName);

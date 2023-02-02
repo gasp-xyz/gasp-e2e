@@ -1,7 +1,7 @@
 /*
  *
  * @group sequential
- * @group gassless
+ * @group gasless
  */
 
 import { Keyring } from "@polkadot/api";
@@ -93,7 +93,7 @@ beforeEach(async () => {
   testUser1.addAsset(secondCurrency);
 });
 
-test("gassless- Given a feeLock correctly configured WHEN the user swaps two tokens defined in the thresholds AND swapValue > threshold THEN the extrinsic is correctly submitted AND No locks AND no fees", async () => {
+test("gasless- Given a feeLock correctly configured WHEN the user swaps two tokens defined in the thresholds AND swapValue > threshold THEN the extrinsic is correctly submitted AND No locks AND no fees", async () => {
   await testUser1.addMGATokens(sudo);
 
   await createPool(
@@ -136,7 +136,7 @@ test("gassless- Given a feeLock correctly configured WHEN the user swaps two tok
   expect(userMgaFees).bnEqual(new BN(0));
 });
 
-test("gassless- Given a feeLock correctly configured WHEN the user swaps two tokens defined in the thresholds AND the user has enough MGAs AND swapValue < threshold THEN some MGAs will be locked", async () => {
+test("gasless- Given a feeLock correctly configured WHEN the user swaps two tokens defined in the thresholds AND the user has enough MGAs AND swapValue < threshold THEN some MGAs will be locked", async () => {
   const api = getApi();
 
   await testUser1.addMGATokens(sudo);
@@ -185,7 +185,7 @@ test("gassless- Given a feeLock correctly configured WHEN the user swaps two tok
   expect(userMgaLockedValue).bnEqual(new BN(feeLockAmount));
 });
 
-test("gassless- Given a feeLock correctly configured WHEN the user swaps two tokens that are not defined in the thresholds AND the user has not enough MGAs AND swapValue > threshold THEN the extrinsic can not be submited", async () => {
+test("gasless- Given a feeLock correctly configured WHEN the user swaps two tokens that are not defined in the thresholds AND the user has not enough MGAs AND swapValue > threshold THEN the extrinsic can not be submited", async () => {
   const mangata = await getMangataInstance();
 
   const saleAssetValue = thresholdValue.mul(new BN(2));
