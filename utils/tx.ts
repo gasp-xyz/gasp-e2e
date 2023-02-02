@@ -7,7 +7,7 @@ import { getApi, getMangataInstance } from "./api";
 import { BN } from "@polkadot/util";
 import { env } from "process";
 import { SudoDB } from "./SudoDB";
-import { signSendAndWaitToFinishTx } from "./txHandler";
+import { setAssetInfo, signSendAndWaitToFinishTx } from "./txHandler";
 import { getEnvironmentRequiredVars } from "./utils";
 import { Fees } from "./Fees";
 import { ETH_ASSET_ID, MGA_ASSET_ID, MGA_DEFAULT_LIQ_TOKEN } from "./Constants";
@@ -699,12 +699,16 @@ export async function getTreasuryBurn(tokenId: BN): Promise<BN> {
 
 export async function getAssetId(assetName: string): Promise<any> {
   const api = getApi();
-  const assetsInfo = await api.query.assetsInfo.assetsInfo.entries();
-  const assetFiltered = assetsInfo.filter((el) =>
+  const assetRegistryInfo = await api.query.assetRegistry.metadata.entries();
+  const assetFiltered = assetRegistryInfo.filter((el) =>
     JSON.stringify(el[1].toHuman()).includes(assetName)
   )[0];
-  const assetId = JSON.stringify(assetFiltered[0].toHuman());
-  return new BN(parseInt(JSON.parse(assetId)[0]));
+  if (!Array.isArray(assetFiltered) || !assetFiltered.length) {
+    return undefined;
+  } else {
+    const assetId = JSON.stringify(assetFiltered[0].toHuman());
+    return new BN(parseInt(JSON.parse(assetId)[0]));
+  }
 }
 
 export async function getLock(accountAddress: string, assetId: BN) {
@@ -870,6 +874,30 @@ export async function createPoolIfMissing(
   }
 }
 
+export async function createAssetIfMissing(sudo: SudoUser, assetName: string) {
+  const assetId = await getAssetId(assetName);
+  if (assetId === undefined) {
+    const nextAssetId = await getNextAssetId();
+    const emptyAssetID = new BN(nextAssetId.toString());
+    await setAssetInfo(
+      sudo,
+      emptyAssetID,
+      assetName,
+      assetName,
+      "",
+      new BN(12)
+    );
+    return nextAssetId;
+  } else {
+    testLog
+      .getLog()
+      .info(
+        `createAssetIfMissing: Asset ${assetName} already exists, skipping...`
+      );
+    return assetId;
+  }
+}
+
 export async function vestingTransfer(
   sudoUser: User,
   tokenID: BN,
@@ -991,6 +1019,20 @@ export async function updateAsset(
     {
       nonce: await getCurrentNonce(sudoUser.keyRingPair.address),
     }
+  );
+  return result;
+}
+
+export async function compoundRewards(
+  User: User,
+  liquidityAssetId: BN,
+  amountPermille: number = 1000000
+) {
+  const api = getApi();
+  const result = await signTx(
+    api,
+    api.tx.xyk.compoundRewards(liquidityAssetId, amountPermille),
+    User.keyRingPair
   );
   return result;
 }
