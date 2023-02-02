@@ -1,15 +1,16 @@
 import { BN } from "@mangata-finance/sdk";
-import { ApiPromise } from "@polkadot/api";
+import { getApi } from "./api";
 import { MGA_ASSET_ID } from "./Constants";
 import { waitSudoOperataionSuccess } from "./eventListeners";
 import { updateFeeLockMetadata } from "./tx";
 import { User } from "./User";
 
 export async function clearMgaFromWhitelisted(
-  api: ApiPromise,
   thresholdValueExpected: BN,
   sudo: User
 ) {
+  const api = getApi();
+
   const feeLockMetadata = JSON.parse(
     JSON.stringify(await api.query.feeLock.feeLockMetadata())
   );
@@ -19,22 +20,23 @@ export async function clearMgaFromWhitelisted(
   );
 
   if (isMgaWhitelisted || swapValueThreshold.lt(thresholdValueExpected)) {
-    const checkEmptyTimeoutConfig = await updateFeeLockMetadata(
+    const updateMetadataEvent = await updateFeeLockMetadata(
       sudo,
       new BN(feeLockMetadata.periodLength),
       new BN(feeLockMetadata.feeLockAmount),
       thresholdValueExpected,
       [[MGA_ASSET_ID, false]]
     );
-    await waitSudoOperataionSuccess(checkEmptyTimeoutConfig);
+    await waitSudoOperataionSuccess(updateMetadataEvent);
   }
 }
 
 export async function addMgaToWhitelisted(
-  api: ApiPromise,
   thresholdValueExpected: BN,
   sudo: User
 ) {
+  const api = getApi();
+
   let isWhitelistedAlreadySetup = false;
 
   const feeLockMetadata = JSON.parse(
@@ -52,13 +54,13 @@ export async function addMgaToWhitelisted(
     }
   });
   if (!isWhitelistedAlreadySetup) {
-    const updateMgaTimeoutMetadata = await updateFeeLockMetadata(
+    const updateMetadataEvent = await updateFeeLockMetadata(
       sudo,
       new BN(feeLockMetadata.periodLength),
       new BN(feeLockMetadata.feeLockAmount),
       thresholdValueExpected,
       [[MGA_ASSET_ID, true]]
     );
-    await waitSudoOperataionSuccess(updateMgaTimeoutMetadata);
+    await waitSudoOperataionSuccess(updateMetadataEvent);
   }
 }

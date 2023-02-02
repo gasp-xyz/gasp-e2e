@@ -19,6 +19,7 @@ import {
   waitForNBlocks,
   getBlockNumber,
   waitBlockNumber,
+  feeLockErrors,
 } from "../../utils/utils";
 import { Xyk } from "../../utils/xyk";
 import { getEventResultFromMangataTx } from "../../utils/txHandler";
@@ -34,9 +35,6 @@ let sudo: User;
 let keyring: Keyring;
 let firstCurrency: BN;
 let secondCurrency: BN;
-let feeLockMetadata: any;
-let periodLength: any;
-let feeLockAmount: any;
 //let whitelistedTokens: any[];
 const thresholdValue = new BN(30000);
 const defaultCurrencyValue = new BN(10000000);
@@ -61,8 +59,6 @@ beforeAll(async () => {
 });
 
 beforeEach(async () => {
-  const api = getApi();
-
   [testUser1] = setupUsers();
 
   await setupApi();
@@ -82,40 +78,17 @@ beforeEach(async () => {
     )
   );
 
-  feeLockMetadata = JSON.parse(
-    JSON.stringify(await api.query.feeLock.feeLockMetadata())
-  );
-
-  periodLength = feeLockMetadata.periodLength;
-  feeLockAmount = feeLockMetadata.feeLockAmount;
-
-  if (periodLength > 20) {
-    await updateFeeLockMetadata(
-      sudo,
-      new BN(10),
-      new BN(feeLockAmount),
-      null,
-      null
-    );
-
-    feeLockMetadata = JSON.parse(
-      JSON.stringify(await api.query.feeLock.feeLockMetadata())
-    );
-
-    periodLength = feeLockMetadata.periodLength;
-  }
-
-  const updateMgaTimeoutMetadata = await updateFeeLockMetadata(
+  const updateMetadataEvent = await updateFeeLockMetadata(
     sudo,
-    new BN(periodLength),
-    new BN(feeLockAmount),
+    null,
+    null,
     thresholdValue,
     [
       [MGA_ASSET_ID, true],
       [firstCurrency, true],
     ]
   );
-  await waitSudoOperataionSuccess(updateMgaTimeoutMetadata);
+  await waitSudoOperataionSuccess(updateMetadataEvent);
 
   testUser1.addAsset(MGA_ASSET_ID);
   testUser1.addAsset(firstCurrency);
@@ -123,12 +96,18 @@ beforeEach(async () => {
 });
 
 test("gassless- GIVEN some locked tokens and no more free MGX WHEN another tx is submitted AND lock period did not finished THEN the operation can not be submitted", async () => {
+  const api = getApi();
+
+  const feeLockAmount = JSON.parse(
+    JSON.stringify(await api.query.feeLock.feeLockMetadata())
+  ).feeLockAmount;
+
   await testUser1.addMGATokens(sudo, new BN(feeLockAmount));
 
   const mangata = await getMangataInstance();
-  const sellAssetsValue = thresholdValue.sub(new BN(5));
+  const saleAssetValue = thresholdValue.sub(new BN(5));
 
-  await testUser1.sellAssets(firstCurrency, secondCurrency, sellAssetsValue);
+  await testUser1.sellAssets(firstCurrency, secondCurrency, saleAssetValue);
 
   await expect(
     mangata
@@ -136,28 +115,35 @@ test("gassless- GIVEN some locked tokens and no more free MGX WHEN another tx is
         testUser1.keyRingPair,
         firstCurrency.toString(),
         secondCurrency.toString(),
-        sellAssetsValue,
+        saleAssetValue,
         new BN(0)
       )
       .catch((reason) => {
         throw new Error(reason.data);
       })
-  ).rejects.toThrow(
-    "1010: Invalid Transaction: Fee lock processing has failed either due to not enough funds to reserve or an unexpected error"
-  );
+  ).rejects.toThrow(feeLockErrors.FeeLockingFail);
 });
 
 test("gassless- GIVEN some locked tokens and no more free MGX WHEN another tx is submitted AND lock period finished THEN the operation can be submitted ( unlock before locking )", async () => {
+  const api = getApi();
+
+  const feeLockAmount = JSON.parse(
+    JSON.stringify(await api.query.feeLock.feeLockMetadata())
+  ).feeLockAmount;
+  const periodLength = JSON.parse(
+    JSON.stringify(await api.query.feeLock.feeLockMetadata())
+  ).periodLength;
+
   await testUser1.addMGATokens(sudo, new BN(feeLockAmount).add(new BN(1)));
 
-  const sellAssetsValue = thresholdValue.sub(new BN(5));
+  const saleAssetValue = thresholdValue.sub(new BN(5));
 
-  await testUser1.sellAssets(firstCurrency, secondCurrency, sellAssetsValue);
+  await testUser1.sellAssets(firstCurrency, secondCurrency, saleAssetValue);
 
   await waitForNBlocks(periodLength);
 
   await testUser1
-    .sellAssets(firstCurrency, secondCurrency, sellAssetsValue)
+    .sellAssets(firstCurrency, secondCurrency, saleAssetValue)
     .then((result) => {
       const eventResponse = getEventResultFromMangataTx(result);
       expect(eventResponse.state).toEqual(ExtrinsicResult.ExtrinsicSuccess);
@@ -167,11 +153,15 @@ test("gassless- GIVEN some locked tokens and no more free MGX WHEN another tx is
 test("gassless- GIVEN some locked tokens WHEN querying accountfeeLockData THEN the amount matches with locked tokens AND lastFeeLockBlock matches with the block when tokens were locked", async () => {
   const api = getApi();
 
+  const feeLockAmount = JSON.parse(
+    JSON.stringify(await api.query.feeLock.feeLockMetadata())
+  ).feeLockAmount;
+
   await testUser1.addMGATokens(sudo, new BN(feeLockAmount).add(new BN(1)));
 
-  const sellAssetsValue = thresholdValue.sub(new BN(5));
+  const saleAssetValue = thresholdValue.sub(new BN(5));
 
-  await testUser1.sellAssets(firstCurrency, secondCurrency, sellAssetsValue);
+  await testUser1.sellAssets(firstCurrency, secondCurrency, saleAssetValue);
 
   const block = await getBlockNumber();
 
@@ -190,10 +180,17 @@ test("gassless- GIVEN some locked tokens WHEN querying accountfeeLockData THEN t
 test("gassless- GIVEN some locked tokens and lastFeeLockblock is lower than current block WHEN release feeLock is requested THEN the tokens are unlocked", async () => {
   const api = getApi();
 
+  const feeLockAmount = JSON.parse(
+    JSON.stringify(await api.query.feeLock.feeLockMetadata())
+  ).feeLockAmount;
+  const periodLength = JSON.parse(
+    JSON.stringify(await api.query.feeLock.feeLockMetadata())
+  ).periodLength;
+
   await testUser1.addMGATokens(sudo, new BN(feeLockAmount).add(new BN(1)));
 
-  const sellAssetsValue = thresholdValue.sub(new BN(5));
-  await testUser1.sellAssets(firstCurrency, secondCurrency, sellAssetsValue);
+  const saleAssetValue = thresholdValue.sub(new BN(5));
+  await testUser1.sellAssets(firstCurrency, secondCurrency, saleAssetValue);
 
   const accountFeeLockData = JSON.parse(
     JSON.stringify(
@@ -207,11 +204,10 @@ test("gassless- GIVEN some locked tokens and lastFeeLockblock is lower than curr
   await unlockFee(testUser1);
   await testUser1.refreshAmounts(AssetWallet.AFTER);
 
-  const userMgaLockedBefore =
-    testUser1.getAsset(MGA_ASSET_ID)?.amountBefore.reserved!;
-  const userMgaLockedAfter =
-    testUser1.getAsset(MGA_ASSET_ID)?.amountAfter.reserved!;
-
-  expect(userMgaLockedBefore).bnEqual(new BN(feeLockAmount));
-  expect(userMgaLockedAfter).bnEqual(new BN(0));
+  expect(testUser1.getAsset(MGA_ASSET_ID)?.amountBefore.reserved!).bnEqual(
+    new BN(feeLockAmount)
+  );
+  expect(testUser1.getAsset(MGA_ASSET_ID)?.amountAfter.reserved!).bnEqual(
+    new BN(0)
+  );
 });

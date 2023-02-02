@@ -31,9 +31,6 @@ let sudo: User;
 let keyring: Keyring;
 let firstCurrency: BN;
 let secondCurrency: BN;
-let feeLockMetadata: any;
-let periodLength: any;
-let feeLockAmount: any;
 //let whitelistedTokens: any[];
 const thresholdValue = new BN(30000);
 const defaultCurrencyValue = new BN(10000000);
@@ -54,8 +51,6 @@ beforeAll(async () => {
 });
 
 beforeEach(async () => {
-  const api = getApi();
-
   [testUser1] = setupUsers();
 
   await setupApi();
@@ -66,25 +61,17 @@ beforeEach(async () => {
     sudo
   );
 
-  feeLockMetadata = JSON.parse(
-    JSON.stringify(await api.query.feeLock.feeLockMetadata())
-  );
-
-  periodLength = feeLockMetadata.periodLength;
-  feeLockAmount = feeLockMetadata.feeLockAmount;
-
-  const updateMgaTimeoutMetadata = await updateFeeLockMetadata(
+  const updateMetadataEvent = await updateFeeLockMetadata(
     sudo,
-    new BN(periodLength),
-    new BN(feeLockAmount),
+    null,
+    null,
     thresholdValue,
     [
       [MGA_ASSET_ID, true],
       [firstCurrency, true],
-      //[secondCurrency, true],
     ]
   );
-  await waitSudoOperataionSuccess(updateMgaTimeoutMetadata);
+  await waitSudoOperataionSuccess(updateMetadataEvent);
 
   await Sudo.batchAsSudoFinalized(
     Assets.mintToken(firstCurrency, testUser1, defaultCurrencyValue),
@@ -120,19 +107,19 @@ test("gassless- Given a feeLock correctly configured WHEN the user swaps two tok
     expect(eventResponse.state).toEqual(ExtrinsicResult.ExtrinsicSuccess);
   });
 
-  const sellAssetsValue = thresholdValue.mul(new BN(2));
+  const saleAssetValue = thresholdValue.mul(new BN(2));
 
   await testUser1.refreshAmounts(AssetWallet.BEFORE);
-  await testUser1.sellAssets(firstCurrency, secondCurrency, sellAssetsValue);
+  await testUser1.sellAssets(firstCurrency, secondCurrency, saleAssetValue);
   await testUser1.refreshAmounts(AssetWallet.AFTER);
 
-  const firstCurrencyBlocked = testUser1
+  const userFirstCurLockedValue = testUser1
     .getAsset(firstCurrency)
     ?.amountAfter.reserved!.sub(
       testUser1.getAsset(firstCurrency)?.amountBefore.reserved!
     );
 
-  const secondCurrencyBlocked = testUser1
+  const userSecondCurLockedValue = testUser1
     .getAsset(secondCurrency)
     ?.amountAfter.reserved!.sub(
       testUser1.getAsset(secondCurrency)?.amountBefore.reserved!
@@ -144,13 +131,19 @@ test("gassless- Given a feeLock correctly configured WHEN the user swaps two tok
       testUser1.getAsset(MGA_ASSET_ID)?.amountBefore.reserved!
     );
 
-  expect(firstCurrencyBlocked).bnEqual(new BN(0));
-  expect(secondCurrencyBlocked).bnEqual(new BN(0));
+  expect(userFirstCurLockedValue).bnEqual(new BN(0));
+  expect(userSecondCurLockedValue).bnEqual(new BN(0));
   expect(userMgaFees).bnEqual(new BN(0));
 });
 
 test("gassless- Given a feeLock correctly configured WHEN the user swaps two tokens defined in the thresholds AND the user has enough MGAs AND swapValue < threshold THEN some MGAs will be locked", async () => {
+  const api = getApi();
+
   await testUser1.addMGATokens(sudo);
+
+  const feeLockAmount = JSON.parse(
+    JSON.stringify(await api.query.feeLock.feeLockMetadata())
+  ).feeLockAmount;
 
   await createPool(
     testUser1.keyRingPair,
@@ -163,39 +156,39 @@ test("gassless- Given a feeLock correctly configured WHEN the user swaps two tok
     expect(eventResponse.state).toEqual(ExtrinsicResult.ExtrinsicSuccess);
   });
 
-  const sellAssetsValue = thresholdValue.sub(new BN(5));
+  const saleAssetValue = thresholdValue.sub(new BN(5));
 
   await testUser1.refreshAmounts(AssetWallet.BEFORE);
-  await testUser1.sellAssets(firstCurrency, secondCurrency, sellAssetsValue);
+  await testUser1.sellAssets(firstCurrency, secondCurrency, saleAssetValue);
   await testUser1.refreshAmounts(AssetWallet.AFTER);
 
-  const firstCurrencyBlocked = testUser1
+  const userFirstCurLockedValue = testUser1
     .getAsset(firstCurrency)
     ?.amountAfter.reserved!.sub(
       testUser1.getAsset(firstCurrency)?.amountBefore.reserved!
     );
 
-  const secondCurrencyBlocked = testUser1
+  const userSecondCurLockedValue = testUser1
     .getAsset(secondCurrency)
     ?.amountAfter.reserved!.sub(
       testUser1.getAsset(secondCurrency)?.amountBefore.reserved!
     );
 
-  const userMgaBlocked = testUser1
+  const userMgaLockedValue = testUser1
     .getAsset(MGA_ASSET_ID)
     ?.amountAfter.reserved!.sub(
       testUser1.getAsset(MGA_ASSET_ID)?.amountBefore.reserved!
     );
 
-  expect(firstCurrencyBlocked).bnEqual(new BN(0));
-  expect(secondCurrencyBlocked).bnEqual(new BN(0));
-  expect(userMgaBlocked).bnEqual(new BN(feeLockAmount));
+  expect(userFirstCurLockedValue).bnEqual(new BN(0));
+  expect(userSecondCurLockedValue).bnEqual(new BN(0));
+  expect(userMgaLockedValue).bnEqual(new BN(feeLockAmount));
 });
 
 test("gassless- Given a feeLock correctly configured WHEN the user swaps two tokens that are not defined in the thresholds AND the user has not enough MGAs AND swapValue > threshold THEN the extrinsic can not be submited", async () => {
   const mangata = await getMangataInstance();
 
-  const sellAssetsValue = thresholdValue.mul(new BN(2));
+  const saleAssetValue = thresholdValue.mul(new BN(2));
 
   await testUser1.refreshAmounts(AssetWallet.BEFORE);
   await expect(
@@ -204,7 +197,7 @@ test("gassless- Given a feeLock correctly configured WHEN the user swaps two tok
         testUser1.keyRingPair,
         firstCurrency.toString(),
         secondCurrency.toString(),
-        sellAssetsValue,
+        saleAssetValue,
         new BN(0)
       )
       .catch((reason) => {

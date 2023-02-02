@@ -87,30 +87,27 @@ test("gassless- GIVEN a non sudo user WHEN feeLock configuration extrinsic is su
 });
 
 test("gassless- GIVEN an empty feeLock configuration (all options empty) WHEN sudo submit the extrinsic THEN Tx fails because insuficient params", async () => {
-  const checkEmptyTimeoutConfig = await updateFeeLockMetadata(
+  const updateMetadataEvent = await updateFeeLockMetadata(
     sudo,
     new BN(0),
     new BN(0),
     new BN(0),
     null
   );
-  await waitSudoOperataionFail(
-    checkEmptyTimeoutConfig,
-    "InvalidFeeLockMetadata"
-  );
+  await waitSudoOperataionFail(updateMetadataEvent, "InvalidFeeLockMetadata");
 });
 
 test("gassless- GIVEN a feeLock WHEN periodLength and timeoutAmount are set THEN extrinsic succeed and tokensTimeout is correctly configured", async () => {
   const api = getApi();
 
-  const setupTimeoutConfig = await updateFeeLockMetadata(
+  const updateMetadataEvent = await updateFeeLockMetadata(
     sudo,
     new BN(10),
     new BN(10),
     thresholdValue,
     [[MGA_ASSET_ID, true]]
   );
-  await waitSudoOperataionSuccess(setupTimeoutConfig);
+  await waitSudoOperataionSuccess(updateMetadataEvent);
 
   const currentPeriodLength = new BN(
     JSON.parse(
@@ -130,38 +127,34 @@ test("gassless- GIVEN a feeLock WHEN periodLength and timeoutAmount are set THEN
 
 test("gassless- Сhanging feeLock config parameter on the fly is works robustly", async () => {
   const api = getApi();
+  let updateMetadataEvent: any;
 
   const feeLockAmount = new BN(
     JSON.parse(
       JSON.stringify(await api?.query.feeLock.feeLockMetadata())
     ).feeLockAmount.toString()
   );
-  const swapValueThreshold = new BN(
-    JSON.parse(
-      JSON.stringify(await api?.query.feeLock.feeLockMetadata())
-    ).swapValueThreshold.toString()
-  );
 
-  const setupFirstTimeoutConfig = await updateFeeLockMetadata(
+  updateMetadataEvent = await updateFeeLockMetadata(
     sudo,
     new BN(505),
     feeLockAmount,
-    swapValueThreshold,
+    thresholdValue,
     [[MGA_ASSET_ID, true]]
   );
-  await waitSudoOperataionSuccess(setupFirstTimeoutConfig);
+  await waitSudoOperataionSuccess(updateMetadataEvent);
 
-  const sellAssetsValue = swapValueThreshold.sub(new BN(5));
-  await testUser1.sellAssets(firstCurrency, MGA_ASSET_ID, sellAssetsValue);
+  const saleAssetValue = thresholdValue.sub(new BN(5));
+  await testUser1.sellAssets(firstCurrency, MGA_ASSET_ID, saleAssetValue);
 
-  const setupSecondTimeoutConfig = await updateFeeLockMetadata(
+  updateMetadataEvent = await updateFeeLockMetadata(
     sudo,
     new BN(2),
     feeLockAmount,
-    swapValueThreshold,
+    thresholdValue,
     null
   );
-  await waitSudoOperataionSuccess(setupSecondTimeoutConfig);
+  await waitSudoOperataionSuccess(updateMetadataEvent);
 
   await waitForNBlocks(2);
   await unlockFee(testUser1).then((result) => {
@@ -179,5 +172,12 @@ test("gassless- Сhanging feeLock config parameter on the fly is works robustly"
 });
 
 afterAll(async () => {
-  await updateFeeLockMetadata(sudo, new BN(10), new BN(10), null, null);
+  const updateMetadataEvent = await updateFeeLockMetadata(
+    sudo,
+    new BN(10),
+    new BN(10),
+    null,
+    null
+  );
+  await waitSudoOperataionSuccess(updateMetadataEvent);
 });

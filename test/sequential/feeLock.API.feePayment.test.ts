@@ -4,7 +4,7 @@
  * @group gassless
  */
 
-import { Keyring, ApiPromise } from "@polkadot/api";
+import { Keyring } from "@polkadot/api";
 import { getApi, initApi, getMangataInstance } from "../../utils/api";
 import { Assets } from "../../utils/Assets";
 import { MGA_ASSET_ID, TUR_ASSET_ID } from "../../utils/Constants";
@@ -32,13 +32,9 @@ process.env.NODE_ENV = "test";
 
 const { sudo: sudoUserName } = getEnvironmentRequiredVars();
 let testUser1: User;
-let api: ApiPromise;
 let sudo: User;
 let keyring: Keyring;
 let firstCurrency: BN;
-let feeLockMetadata: any;
-let periodLength: any;
-let feeLockAmount: any;
 const thresholdValue = new BN(30000);
 const defaultCurrencyValue = new BN(10000000);
 const defaultPoolVolumeValue = new BN(1000000);
@@ -92,8 +88,6 @@ beforeAll(async () => {
 });
 
 beforeEach(async () => {
-  api = getApi();
-
   await setupApi();
 
   [testUser1] = setupUsers();
@@ -111,33 +105,10 @@ beforeEach(async () => {
       )
     )
   );
-
-  feeLockMetadata = JSON.parse(
-    JSON.stringify(await api.query.feeLock.feeLockMetadata())
-  );
-
-  periodLength = feeLockMetadata.periodLength;
-  feeLockAmount = feeLockMetadata.feeLockAmount;
-
-  if (periodLength > 20) {
-    await updateFeeLockMetadata(
-      sudo,
-      new BN(10),
-      new BN(feeLockAmount),
-      null,
-      null
-    );
-
-    feeLockMetadata = JSON.parse(
-      JSON.stringify(await api.query.feeLock.feeLockMetadata())
-    );
-
-    periodLength = feeLockMetadata.periodLength;
-  }
 });
 
 test("gassless- GIVEN a feeLock configured (only Time and Amount ) WHEN the user swaps AND the user has not enough MGAs and has enough TURs THEN the extrinsic fails on submission", async () => {
-  await clearMgaFromWhitelisted(api, thresholdValue, sudo);
+  await clearMgaFromWhitelisted(thresholdValue, sudo);
 
   await Sudo.batchAsSudoFinalized(
     Assets.mintNative(testUser1, new BN(2)),
@@ -153,7 +124,7 @@ test("gassless- GIVEN a feeLock configured (only Time and Amount ) WHEN the user
 });
 
 test("gassless- GIVEN a feeLock configured (only Time and Amount )  WHEN the user swaps AND the user does not have enough MGAs THEN the extrinsic fails on submission", async () => {
-  await clearMgaFromWhitelisted(api, thresholdValue, sudo);
+  await clearMgaFromWhitelisted(thresholdValue, sudo);
 
   await testUser1.addMGATokens(sudo, new BN(2));
 
@@ -166,16 +137,16 @@ test("gassless- GIVEN a feeLock configured (only Time and Amount )  WHEN the use
 });
 
 test("gassless- Given a feeLock correctly configured (only Time and Amount ) WHEN the user swaps AND the user has enough MGAs THEN the extrinsic is correctly submitted", async () => {
-  await clearMgaFromWhitelisted(api, thresholdValue, sudo);
+  await clearMgaFromWhitelisted(thresholdValue, sudo);
 
   await testUser1.addMGATokens(sudo);
   testUser1.addAsset(MGA_ASSET_ID);
   testUser1.addAsset(firstCurrency);
 
-  const sellAssetsValue = thresholdValue.add(new BN(5));
+  const saleAssetValue = thresholdValue.add(new BN(5));
 
   await testUser1.refreshAmounts(AssetWallet.BEFORE);
-  await testUser1.sellAssets(MGA_ASSET_ID, firstCurrency, sellAssetsValue);
+  await testUser1.sellAssets(MGA_ASSET_ID, firstCurrency, saleAssetValue);
   await testUser1.refreshAmounts(AssetWallet.AFTER);
 
   const firstCurrencyDeposit = testUser1
@@ -195,7 +166,7 @@ test("gassless- Given a feeLock correctly configured (only Time and Amount ) WHE
     ?.amountAfter.free!.sub(
       testUser1.getAsset(MGA_ASSET_ID)?.amountBefore.free!
     )
-    .add(new BN(sellAssetsValue));
+    .add(new BN(saleAssetValue));
 
   expect(firstCurrencyDeposit).bnGt(new BN(0));
   expect(tokenFees).bnEqual(new BN(0));
@@ -203,15 +174,20 @@ test("gassless- Given a feeLock correctly configured (only Time and Amount ) WHE
 });
 
 test("gassless- GIVEN a feeLock configured WHEN a swap happens THEN fees are not charged but locked instead", async () => {
-  await addMgaToWhitelisted(api, thresholdValue, sudo);
+  const api = getApi();
+
+  await addMgaToWhitelisted(thresholdValue, sudo);
 
   await testUser1.addMGATokens(sudo);
   testUser1.addAsset(MGA_ASSET_ID);
 
-  const sellAssetsValue = thresholdValue.sub(new BN(5));
+  const feeLockAmount = JSON.parse(
+    JSON.stringify(await api.query.feeLock.feeLockMetadata())
+  ).feeLockAmount;
+  const saleAssetValue = thresholdValue.sub(new BN(5));
 
   await testUser1.refreshAmounts(AssetWallet.BEFORE);
-  await testUser1.sellAssets(MGA_ASSET_ID, firstCurrency, sellAssetsValue);
+  await testUser1.sellAssets(MGA_ASSET_ID, firstCurrency, saleAssetValue);
   await testUser1.refreshAmounts(AssetWallet.AFTER);
 
   const tokenFees = testUser1
@@ -226,41 +202,46 @@ test("gassless- GIVEN a feeLock configured WHEN a swap happens THEN fees are not
       testUser1.getAsset(MGA_ASSET_ID)?.amountBefore.free!
     )
     .add(new BN(feeLockAmount))
-    .add(new BN(sellAssetsValue));
+    .add(new BN(saleAssetValue));
 
   expect(tokenFees).bnEqual(new BN(feeLockAmount));
   expect(userMgaFees).bnEqual(new BN(0));
 });
 
 test("gassless- GIVEN a correct config for gassless swaps WHEN the user runs unlock-fee THEN fees are not charged for token unlockFee", async () => {
-  await addMgaToWhitelisted(api, thresholdValue, sudo);
+  const api = getApi();
+
+  await addMgaToWhitelisted(thresholdValue, sudo);
 
   await testUser1.addMGATokens(sudo);
   testUser1.addAsset(MGA_ASSET_ID);
 
-  const sellAssetsValue = thresholdValue.sub(new BN(5));
+  const saleAssetValue = thresholdValue.sub(new BN(5));
+  const periodLength = JSON.parse(
+    JSON.stringify(await api.query.feeLock.feeLockMetadata())
+  ).periodLength;
 
   await testUser1.refreshAmounts(AssetWallet.BEFORE);
-  await testUser1.sellAssets(MGA_ASSET_ID, firstCurrency, sellAssetsValue);
+  await testUser1.sellAssets(MGA_ASSET_ID, firstCurrency, saleAssetValue);
   await waitForNBlocks(periodLength);
   await unlockFee(testUser1);
   await testUser1.refreshAmounts(AssetWallet.AFTER);
-
-  const tokenBlocked = testUser1.getAsset(MGA_ASSET_ID)?.amountAfter.reserved!;
 
   const userMgaFees = testUser1
     .getAsset(MGA_ASSET_ID)
     ?.amountAfter.free!.sub(
       testUser1.getAsset(MGA_ASSET_ID)?.amountBefore.free!
     )
-    .add(new BN(sellAssetsValue));
+    .add(new BN(saleAssetValue));
 
-  expect(tokenBlocked).bnEqual(new BN(0));
+  expect(testUser1.getAsset(MGA_ASSET_ID)?.amountAfter.reserved!).bnEqual(
+    new BN(0)
+  );
   expect(userMgaFees).bnEqual(new BN(0));
 });
 
 test("gassless- High-value swaps are rejected from the txn pool if they would fail before the percentage fee is charged", async () => {
-  await addMgaToWhitelisted(api, thresholdValue, sudo);
+  await addMgaToWhitelisted(thresholdValue, sudo);
 
   await testUser1.addMGATokens(sudo);
 
@@ -274,12 +255,12 @@ test("gassless- High-value swaps are rejected from the txn pool if they would fa
 });
 
 test("gassless- For low-value swaps, token reservation status and pallet storage are altered in accordance with the timeout mechanism", async () => {
-  const api = getApi();
-
   async function checkAccountFeeLockData(
     totalAmountValue: any,
     lastBlockValue: any
   ) {
+    const api = getApi();
+
     const accountFeeLockData = JSON.parse(
       JSON.stringify(
         await api.query.feeLock.accountFeeLockData(
@@ -295,14 +276,23 @@ test("gassless- For low-value swaps, token reservation status and pallet storage
     );
   }
 
-  await addMgaToWhitelisted(api, thresholdValue, sudo);
+  const api = getApi();
+
+  await addMgaToWhitelisted(thresholdValue, sudo);
+
+  const feeLockAmount = JSON.parse(
+    JSON.stringify(await api.query.feeLock.feeLockMetadata())
+  ).feeLockAmount;
+  const periodLength = JSON.parse(
+    JSON.stringify(await api.query.feeLock.feeLockMetadata())
+  ).periodLength;
 
   await testUser1.addMGATokens(sudo);
   testUser1.addAsset(MGA_ASSET_ID);
   await checkAccountFeeLockData(0, 0);
 
-  const sellAssetsValue = thresholdValue.sub(new BN(5));
-  await testUser1.sellAssets(MGA_ASSET_ID, firstCurrency, sellAssetsValue);
+  const saleAssetValue = thresholdValue.sub(new BN(5));
+  await testUser1.sellAssets(MGA_ASSET_ID, firstCurrency, saleAssetValue);
   const lockDataBlockNumber = await getBlockNumber();
   await waitForNBlocks(periodLength);
   await checkAccountFeeLockData(feeLockAmount, lockDataBlockNumber);
@@ -312,11 +302,19 @@ test("gassless- For low-value swaps, token reservation status and pallet storage
 });
 
 test("gassless- High-value swaps when successful are not charged txn fee or token timedout, but the percentage fee is charged", async () => {
+  const api = getApi();
+
   const secondCurrency = await Assets.issueAssetToUser(
     sudo,
     defaultCurrencyValue,
     sudo
   );
+  const feeLockAmount = JSON.parse(
+    JSON.stringify(await api.query.feeLock.feeLockMetadata())
+  ).feeLockAmount;
+  const periodLength = JSON.parse(
+    JSON.stringify(await api.query.feeLock.feeLockMetadata())
+  ).periodLength;
 
   await Sudo.batchAsSudoFinalized(
     Assets.mintToken(secondCurrency, sudo, defaultCurrencyValue),
@@ -337,7 +335,7 @@ test("gassless- High-value swaps when successful are not charged txn fee or toke
   testUser1.addAsset(firstCurrency);
   testUser1.addAsset(secondCurrency);
 
-  const updateMgaTimeoutMetadata = await updateFeeLockMetadata(
+  const updateMetadataEvent = await updateFeeLockMetadata(
     sudo,
     new BN(periodLength),
     new BN(feeLockAmount),
@@ -347,12 +345,12 @@ test("gassless- High-value swaps when successful are not charged txn fee or toke
       [firstCurrency, true],
     ]
   );
-  await waitSudoOperataionSuccess(updateMgaTimeoutMetadata);
+  await waitSudoOperataionSuccess(updateMetadataEvent);
 
-  const sellAssetsValue = thresholdValue.add(new BN(5));
+  const saleAssetValue = thresholdValue.add(new BN(5));
 
   await testUser1.refreshAmounts(AssetWallet.BEFORE);
-  await testUser1.sellAssets(firstCurrency, secondCurrency, sellAssetsValue);
+  await testUser1.sellAssets(firstCurrency, secondCurrency, saleAssetValue);
   await testUser1.refreshAmounts(AssetWallet.AFTER);
 
   const userMgaFees = testUser1
