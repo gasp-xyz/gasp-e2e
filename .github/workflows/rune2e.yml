@@ -24,6 +24,7 @@ on:
             - sequential
             - bootstrap
             - bootstrap-rewards
+            - gassless
             - parallel
             - xyk
             - api
