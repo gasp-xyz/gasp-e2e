@@ -1,13 +1,14 @@
 /* eslint-disable no-loop-func */
-import { getApi } from "./api";
+import { getApi, getMangataInstance } from "./api";
 import { testLog } from "./Logger";
 import { api } from "./setup";
 import { User } from "./User";
 import { BN } from "@polkadot/util";
 import { MangataGenericEvent } from "@mangata-finance/sdk";
 import { getEventErrorfromSudo } from "./txHandler";
-import _ from "lodash";
+import _, { reject } from "lodash";
 import { ApiPromise } from "@polkadot/api";
+import { getEnvironmentRequiredVars } from "./utils";
 
 // lets create a enum for different status.
 export enum ExtrinsicResult {
@@ -167,15 +168,22 @@ export const waitForEvent = async (
   });
 };
 
-export const waitForRewards = async (user: User, liquidityAssetId: BN) =>
+export const waitForRewards = async (
+  user: User,
+  liquidityAssetId: BN,
+  max: number = 20
+) =>
   new Promise(async (resolve) => {
+    let numblocks = max;
     const unsub = await api.rpc.chain.subscribeNewHeads(async (header) => {
-      const address = user.keyRingPair.address;
-      // @ts-ignore
-      const { price } = await api.rpc.xyk.calculate_rewards_amount(
+      numblocks--;
+      const { chainUri } = getEnvironmentRequiredVars();
+      const mangata = await getMangataInstance(chainUri);
+      const price = await mangata.calculateRewardsAmount(
         user.keyRingPair.address,
-        liquidityAssetId
+        liquidityAssetId.toString()
       );
+
       if (price.gtn(0)) {
         unsub();
         resolve({});
@@ -183,8 +191,13 @@ export const waitForRewards = async (user: User, liquidityAssetId: BN) =>
         testLog
           .getLog()
           .info(
-            `#${header.number}  ${address} (LP${liquidityAssetId}) - no rewards yet`
+            `#${header.number}  ${user.keyRingPair.address} (LP${liquidityAssetId}) - no rewards yet`
           );
+      }
+      if (numblocks < 0) {
+        reject(
+          `Waited too long for rewards :( #${header.number}  ${user.keyRingPair.address} (LP${liquidityAssetId} `
+        );
       }
     });
   });
