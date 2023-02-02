@@ -46,7 +46,7 @@ module.exports = async function (globalConfig, projectConfig) {
         .toString()
         .toLowerCase()
         .includes("gasless")) ||
-    process.env.JEST_GROUP_gasless
+    process.env.GASLESS
   ) {
     console.info("GAS LESS test - Setting it up");
     process.env.FEES_ENABLED = false;
