@@ -10,8 +10,8 @@ import { Assets } from "../../utils/Assets";
 import { MGA_ASSET_ID } from "../../utils/Constants";
 import {
   ExtrinsicResult,
-  waitSudoOperataionSuccess,
-  waitSudoOperataionFail,
+  waitSudoOperationSuccess,
+  waitSudoOperationFail,
 } from "../../utils/eventListeners";
 import { BN } from "@mangata-finance/sdk";
 import { setupApi, setupUsers } from "../../utils/setup";
@@ -94,7 +94,7 @@ test("gasless- GIVEN an empty feeLock configuration (all options empty) WHEN sud
     new BN(0),
     null
   );
-  await waitSudoOperataionFail(updateMetadataEvent, "InvalidFeeLockMetadata");
+  await waitSudoOperationFail(updateMetadataEvent, "InvalidFeeLockMetadata");
 });
 
 test("gasless- GIVEN a feeLock WHEN periodLength and timeoutAmount are set THEN extrinsic succeed and tokensTimeout is correctly configured", async () => {
@@ -107,7 +107,7 @@ test("gasless- GIVEN a feeLock WHEN periodLength and timeoutAmount are set THEN 
     thresholdValue,
     [[MGA_ASSET_ID, true]]
   );
-  await waitSudoOperataionSuccess(updateMetadataEvent);
+  await waitSudoOperationSuccess(updateMetadataEvent);
 
   const currentPeriodLength = new BN(
     JSON.parse(
@@ -142,7 +142,7 @@ test("gasless- Changing feeLock config parameter on the fly is works robustly", 
     thresholdValue,
     [[MGA_ASSET_ID, true]]
   );
-  await waitSudoOperataionSuccess(updateMetadataEvent);
+  await waitSudoOperationSuccess(updateMetadataEvent);
 
   const saleAssetValue = thresholdValue.sub(new BN(5));
   await testUser1.sellAssets(firstCurrency, MGA_ASSET_ID, saleAssetValue);
@@ -154,7 +154,7 @@ test("gasless- Changing feeLock config parameter on the fly is works robustly", 
     thresholdValue,
     null
   );
-  await waitSudoOperataionSuccess(updateMetadataEvent);
+  await waitSudoOperationSuccess(updateMetadataEvent);
 
   await waitForNBlocks(2);
   await unlockFee(testUser1).then((result) => {
@@ -179,5 +179,5 @@ afterAll(async () => {
     null,
     null
   );
-  await waitSudoOperataionSuccess(updateMetadataEvent);
+  await waitSudoOperationSuccess(updateMetadataEvent);
 });

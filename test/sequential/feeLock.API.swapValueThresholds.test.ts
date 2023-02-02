@@ -9,7 +9,7 @@ import { getApi, initApi, getMangataInstance } from "../../utils/api";
 import { Assets } from "../../utils/Assets";
 import { MGA_ASSET_ID } from "../../utils/Constants";
 import {
-  waitSudoOperataionSuccess,
+  waitSudoOperationSuccess,
   ExtrinsicResult,
 } from "../../utils/eventListeners";
 import { BN } from "@mangata-finance/sdk";
@@ -71,7 +71,7 @@ beforeEach(async () => {
       [firstCurrency, true],
     ]
   );
-  await waitSudoOperataionSuccess(updateMetadataEvent);
+  await waitSudoOperationSuccess(updateMetadataEvent);
 
   await Sudo.batchAsSudoFinalized(
     Assets.mintToken(firstCurrency, testUser1, defaultCurrencyValue),

@@ -14,8 +14,8 @@ import {
   EventResult,
   ExtrinsicResult,
   findEventData,
-  waitSudoOperataionSuccess,
-  waitSudoOperataionFail,
+  waitSudoOperationSuccess,
+  waitSudoOperationFail,
 } from "../../utils/eventListeners";
 import {
   claimRewardsBootstrap,
@@ -53,7 +53,7 @@ async function runBootstrap(assetId: BN) {
     waitingPeriod,
     bootstrapPeriod
   );
-  await waitSudoOperataionSuccess(scheduleBootstrapEvent);
+  await waitSudoOperationSuccess(scheduleBootstrapEvent);
 
   await sudo.mint(assetId, testUser1, toBN("1", 13));
 
@@ -86,7 +86,7 @@ async function runBootstrap(assetId: BN) {
   expect(eventResponse.state).toEqual(ExtrinsicResult.ExtrinsicSuccess);
 
   const bootstrapFinalize = await finalizeBootstrap(sudo);
-  await waitSudoOperataionSuccess(bootstrapFinalize);
+  await waitSudoOperationSuccess(bootstrapFinalize);
 }
 
 beforeAll(async () => {
@@ -132,7 +132,7 @@ test("register asset and then try to register new one with the same location, ex
     }
   );
 
-  await waitSudoOperataionFail(userRegisterNewAsset, "ConflictingLocation");
+  await waitSudoOperationFail(userRegisterNewAsset, "ConflictingLocation");
 });
 
 test("register asset with xyk disabled and try to schedule bootstrap, expect to success", async () => {

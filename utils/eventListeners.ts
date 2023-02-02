@@ -107,7 +107,7 @@ export function findEventData(result: MangataGenericEvent[], method: string) {
   return filterEventData(result, method)[0];
 }
 
-export async function waitSudoOperataionSuccess(
+export async function waitSudoOperationSuccess(
   checkingEvent: MangataGenericEvent[]
 ) {
   const filterBootstrapEvent = checkingEvent.filter(
@@ -119,7 +119,7 @@ export async function waitSudoOperataionSuccess(
   expect(userBootstrapCall).toContain("Ok");
 }
 
-export async function waitSudoOperataionFail(
+export async function waitSudoOperationFail(
   checkingEvent: MangataGenericEvent[],
   expectedError: string
 ) {

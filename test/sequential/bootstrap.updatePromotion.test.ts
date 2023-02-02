@@ -9,8 +9,8 @@ import { getLiquidityAssetId, getBalanceOfAsset } from "../../utils/tx";
 import {
   EventResult,
   ExtrinsicResult,
-  waitSudoOperataionSuccess,
-  waitSudoOperataionFail,
+  waitSudoOperationSuccess,
+  waitSudoOperationFail,
 } from "../../utils/eventListeners";
 import { Keyring } from "@polkadot/api";
 import { User } from "../../utils/User";
@@ -96,10 +96,10 @@ test("bootstrap - bootstrap - Check if we can change promoteBootstrapPool in eac
     bootstrapPeriod,
     whitelistPeriod
   );
-  await waitSudoOperataionSuccess(scheduleBootstrapBefPlan);
+  await waitSudoOperationSuccess(scheduleBootstrapBefPlan);
 
   checkingUpdatingPool = await changePromotionBootstrapPool(sudo);
-  await waitSudoOperataionSuccess(checkingUpdatingPool);
+  await waitSudoOperationSuccess(checkingUpdatingPool);
 
   const scheduleBootstrapAftPlan = await scheduleBootstrap(
     sudo,
@@ -109,20 +109,20 @@ test("bootstrap - bootstrap - Check if we can change promoteBootstrapPool in eac
     bootstrapPeriod,
     whitelistPeriod
   );
-  await waitSudoOperataionSuccess(scheduleBootstrapAftPlan);
+  await waitSudoOperationSuccess(scheduleBootstrapAftPlan);
 
   checkingUpdatingPool = await changePromotionBootstrapPool(sudo);
-  await waitSudoOperataionSuccess(checkingUpdatingPool);
+  await waitSudoOperationSuccess(checkingUpdatingPool);
 
   await waitForBootstrapStatus("Whitelist", waitingPeriodLessPlan);
 
   checkingUpdatingPool = await changePromotionBootstrapPool(sudo);
-  await waitSudoOperataionSuccess(checkingUpdatingPool);
+  await waitSudoOperationSuccess(checkingUpdatingPool);
 
   await waitForBootstrapStatus("Public", waitingPeriodLessPlan);
 
   checkingUpdatingPool = await changePromotionBootstrapPool(sudo);
-  await waitSudoOperataionSuccess(checkingUpdatingPool);
+  await waitSudoOperationSuccess(checkingUpdatingPool);
 
   const provisionPublicBootstrapCurrency = await provisionBootstrap(
     testUser1,
@@ -143,7 +143,7 @@ test("bootstrap - bootstrap - Check if we can change promoteBootstrapPool in eac
   await waitForBootstrapStatus("Finished", bootstrapPeriod);
 
   checkingUpdatingPool = await changePromotionBootstrapPool(sudo);
-  await waitSudoOperataionFail(checkingUpdatingPool, "BootstrapFinished");
+  await waitSudoOperationFail(checkingUpdatingPool, "BootstrapFinished");
 
   bootstrapPool = await getBalanceOfPool(MGA_ASSET_ID, bootstrapCurrency);
   const bootstrapPoolBalance = bootstrapPool[0];
@@ -178,7 +178,7 @@ test("bootstrap - bootstrap - Check if we can change promoteBootstrapPool in eac
   }
 
   const bootstrapFinalize = await finalizeBootstrap(sudo);
-  await waitSudoOperataionSuccess(bootstrapFinalize);
+  await waitSudoOperationSuccess(bootstrapFinalize);
 
   await checkLastBootstrapFinalized(sudo);
 });

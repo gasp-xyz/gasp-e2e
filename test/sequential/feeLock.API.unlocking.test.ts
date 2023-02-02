@@ -8,7 +8,7 @@ import { Keyring } from "@polkadot/api";
 import { getApi, initApi, getMangataInstance } from "../../utils/api";
 import { Assets } from "../../utils/Assets";
 import { MGA_ASSET_ID } from "../../utils/Constants";
-import { waitSudoOperataionSuccess } from "../../utils/eventListeners";
+import { waitSudoOperationSuccess } from "../../utils/eventListeners";
 import { BN } from "@mangata-finance/sdk";
 import { setupApi, setupUsers } from "../../utils/setup";
 import { Sudo } from "../../utils/sudo";
@@ -88,7 +88,7 @@ beforeEach(async () => {
       [firstCurrency, true],
     ]
   );
-  await waitSudoOperataionSuccess(updateMetadataEvent);
+  await waitSudoOperationSuccess(updateMetadataEvent);
 
   testUser1.addAsset(MGA_ASSET_ID);
   testUser1.addAsset(firstCurrency);

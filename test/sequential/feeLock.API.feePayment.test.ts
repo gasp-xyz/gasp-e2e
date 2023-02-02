@@ -8,7 +8,7 @@ import { Keyring } from "@polkadot/api";
 import { getApi, initApi, getMangataInstance } from "../../utils/api";
 import { Assets } from "../../utils/Assets";
 import { MGA_ASSET_ID, TUR_ASSET_ID } from "../../utils/Constants";
-import { waitSudoOperataionSuccess } from "../../utils/eventListeners";
+import { waitSudoOperationSuccess } from "../../utils/eventListeners";
 import { BN, toBN } from "@mangata-finance/sdk";
 import { setupApi, setupUsers } from "../../utils/setup";
 import { Sudo } from "../../utils/sudo";
@@ -345,7 +345,7 @@ test("gasless- High-value swaps when successful are not charged txn fee or token
       [firstCurrency, true],
     ]
   );
-  await waitSudoOperataionSuccess(updateMetadataEvent);
+  await waitSudoOperationSuccess(updateMetadataEvent);
 
   const saleAssetValue = thresholdValue.add(new BN(5));
 

@@ -1,7 +1,7 @@
 import { BN } from "@mangata-finance/sdk";
 import { getApi } from "./api";
 import { MGA_ASSET_ID } from "./Constants";
-import { waitSudoOperataionSuccess } from "./eventListeners";
+import { waitSudoOperationSuccess } from "./eventListeners";
 import { updateFeeLockMetadata } from "./tx";
 import { User } from "./User";
 
@@ -27,7 +27,7 @@ export async function clearMgaFromWhitelisted(
       thresholdValueExpected,
       [[MGA_ASSET_ID, false]]
     );
-    await waitSudoOperataionSuccess(updateMetadataEvent);
+    await waitSudoOperationSuccess(updateMetadataEvent);
   }
 }
 
@@ -61,6 +61,6 @@ export async function addMgaToWhitelisted(
       thresholdValueExpected,
       [[MGA_ASSET_ID, true]]
     );
-    await waitSudoOperataionSuccess(updateMetadataEvent);
+    await waitSudoOperationSuccess(updateMetadataEvent);
   }
 }
