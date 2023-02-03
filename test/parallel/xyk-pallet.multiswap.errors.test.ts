@@ -62,3 +62,41 @@ describe("Multiswap - error cases: disabled tokens", () => {
     }
   );
 });
+describe("Multiswap - error cases: pool status & gasless integration", () => {
+  beforeAll(async () => {
+    try {
+      getApi();
+    } catch (e) {
+      await initApi();
+    }
+    await setupApi();
+    ({ users, tokenIds } = await setup5PoolsChained(users));
+    // precondition: gasless must be enabled. -> check metadata.
+    // check if pool exist between [1,0,7]
+    // mint tokenId-1?
+  });
+  test.skip("[gasless] High value swaps are disabled on multiswap", async () => {
+    //TODO: Test need to be completed.
+    expect(true).toBeFalsy();
+  });
+  test.skip("[gasless] High value swaps are disabled on multiswap tokens that exist whitelist", async () => {
+    //TODO: Test need to be completed.
+    expect(true).toBeFalsy();
+  });
+  test.skip("[gasless] Fail on client when not enough MGAs to lock", async () => {
+    //TODO: Test need to be completed.
+    expect(true).toBeFalsy();
+  });
+  test.skip("[gasless] Fail on client when buying will remove all MGAs", async () => {
+    //TODO: Test need to be completed.
+    expect(true).toBeFalsy();
+  });
+  test.skip("[gasless] Fail on client when selling all MGAs", async () => {
+    //TODO: Test need to be completed.
+    expect(true).toBeFalsy();
+  });
+  test.skip("[gasless] Fail on client when pool does not exist", async () => {
+    //TODO: Test need to be completed.
+    expect(true).toBeFalsy();
+  });
+});
