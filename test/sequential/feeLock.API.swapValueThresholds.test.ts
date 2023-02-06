@@ -46,8 +46,6 @@ beforeAll(async () => {
 
   // setup users
   sudo = new User(keyring, sudoUserName);
-
-  await sudo.addMGATokens(sudo);
 });
 
 beforeEach(async () => {
@@ -94,18 +92,18 @@ beforeEach(async () => {
 });
 
 test("gasless- Given a feeLock correctly configured WHEN the user swaps two tokens defined in the thresholds AND swapValue > threshold THEN the extrinsic is correctly submitted AND No locks AND no fees", async () => {
-  await testUser1.addMGATokens(sudo);
-
-  await createPool(
-    testUser1.keyRingPair,
-    firstCurrency,
-    defaultPoolVolumeValue,
-    MGA_ASSET_ID,
-    defaultPoolVolumeValue
-  ).then((result) => {
-    const eventResponse = getEventResultFromMangataTx(result);
-    expect(eventResponse.state).toEqual(ExtrinsicResult.ExtrinsicSuccess);
-  });
+  await Sudo.batchAsSudoFinalized(
+    Assets.mintNative(testUser1),
+    Sudo.sudoAs(
+      sudo,
+      Xyk.createPool(
+        firstCurrency,
+        defaultPoolVolumeValue,
+        MGA_ASSET_ID,
+        defaultPoolVolumeValue
+      )
+    )
+  );
 
   const saleAssetValue = thresholdValue.mul(new BN(2));
 
@@ -139,22 +137,22 @@ test("gasless- Given a feeLock correctly configured WHEN the user swaps two toke
 test("gasless- Given a feeLock correctly configured WHEN the user swaps two tokens defined in the thresholds AND the user has enough MGAs AND swapValue < threshold THEN some MGAs will be locked", async () => {
   const api = getApi();
 
-  await testUser1.addMGATokens(sudo);
-
   const feeLockAmount = JSON.parse(
     JSON.stringify(await api.query.feeLock.feeLockMetadata())
   ).feeLockAmount;
 
-  await createPool(
-    testUser1.keyRingPair,
-    firstCurrency,
-    defaultPoolVolumeValue,
-    MGA_ASSET_ID,
-    defaultPoolVolumeValue
-  ).then((result) => {
-    const eventResponse = getEventResultFromMangataTx(result);
-    expect(eventResponse.state).toEqual(ExtrinsicResult.ExtrinsicSuccess);
-  });
+  await Sudo.batchAsSudoFinalized(
+    Assets.mintNative(testUser1),
+    Sudo.sudoAs(
+      sudo,
+      Xyk.createPool(
+        firstCurrency,
+        defaultPoolVolumeValue,
+        MGA_ASSET_ID,
+        defaultPoolVolumeValue
+      )
+    )
+  );
 
   const saleAssetValue = thresholdValue.sub(new BN(5));
 

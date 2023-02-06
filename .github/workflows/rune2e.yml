@@ -23,7 +23,7 @@ on:
             - none
             - sequential
             - bootstrap
-            - bootstrap-rewards
+            - rewards-bootstrap
             - gasless
             - parallel
             - xyk

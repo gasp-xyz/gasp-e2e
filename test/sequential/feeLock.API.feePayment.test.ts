@@ -94,7 +94,6 @@ beforeEach(async () => {
 
   await Sudo.batchAsSudoFinalized(
     Assets.mintToken(firstCurrency, testUser1, defaultCurrencyValue),
-    Assets.mintNative(sudo),
     Sudo.sudoAs(
       sudo,
       Xyk.createPool(
@@ -360,4 +359,7 @@ test("gasless- High-value swaps when successful are not charged txn fee or token
     );
 
   expect(userMgaFees).bnEqual(new BN(0));
+  expect(testUser1.getAsset(MGA_ASSET_ID)?.amountAfter.reserved!).bnEqual(
+    new BN(0)
+  );
 });
