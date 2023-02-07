@@ -66,6 +66,8 @@ jobs:
       NODE_ENV: test
       SELENIUM_REMOTE_URL: http://localhost:4444/wd/hub
       ETH_20_APP_ADDRESS: https://kovan.infura.io/v3/3592e9c20d9b4169a394a608a310c85f
+    outputs:
+      testmo-run-id: ${{ steps.setTestRun.outputs.testmo-run-id }}
 
     steps:  
       - name: Set Script to run
@@ -117,6 +119,10 @@ jobs:
           cache: 'yarn'
       - name: Install dependencies with Yarn
         run: yarn
+
+      - name: Install testmo
+        working-directory: e2eTests
+        run: npm i -g @testmo/testmo-cli
         
       - name: Tsc code quality check
         run: yarn tsc-lint
@@ -128,19 +134,47 @@ jobs:
       - name: is selenoid started?
         run: curl http://localhost:4444/status
 
-      - name: Add test context to allure
+      - name: Add extra params
+        working-directory: e2eTests
         run: |
-          echo 'ENV=${{ github.event.client_payload.environment }} ${{ github.event.inputs.environment }}' >> ./environment.properties
-          echo 'TEST_SCRIPT=${{ env.TEST_SCRIPT }}' >> ./environment.properties
-          echo 'UI_URL=${{ env.UI_URL }}' >> ./environment.properties
-          echo 'API_URL=${{ env.API_URL }}' >> ./environment.properties
-          echo 'ETH_APP_ADDRESS=${{ env.ETH_APP_ADDRESS }}' >> ./environment.properties
-          echo 'ETH_20_APP_ADDRESS=${{ env.ETH_20_APP_ADDRESS }}' >> ./environment.properties
-          echo E2EBranch=${GITHUB_REF##*/} >> ./environment.properties
+          npx testmo automation:resources:add-field --name git --type string \
+            --value ${GITHUB_SHA:0:7} --resources resources.json
+          RUN_URL="$GITHUB_SERVER_URL/$GITHUB_REPOSITORY/actions/runs/$GITHUB_RUN_ID"
+          npx testmo automation:resources:add-link --name build \
+            --url $RUN_URL --resources resources.json
 
+      - name: Create test run
+        working-directory: e2eTests
+        run: |
+          npx testmo automation:run:create \
+            --instance https://mangata-finance.testmo.net  \
+            --project-id 2 \
+            --name "e2e test run" \
+            --resources resources.json \
+            --source "unit-tests" > testmo-run-id.txt
+          ID=$(cat testmo-run-id.txt)
+          echo "testmo-run-id=$ID" >> $GITHUB_OUTPUT
+          echo "ID=$ID" >> $GITHUB_ENV
+
+        env:
+          TESTMO_URL: ${{ secrets.TESTMO_URL }}
+          TESTMO_TOKEN: ${{ secrets.TESTMO_TOKEN }}
+        id: setTestRun
   
       - name: Run tests
         run: yarn ${{ env.TEST_SCRIPT }}
+
+      - name: Submit results to the testmo-run
+        if: always()
+        working-directory: e2eTests 
+        run: |
+            npx testmo automation:run:submit-thread \
+              --instance https://mangata-finance.testmo.net \
+              --run-id $(cat testmo-run-id.txt) \
+              --results reports/*.xml 
+        env:
+          TESTMO_URL: ${{ secrets.TESTMO_URL }}
+          TESTMO_TOKEN: ${{ secrets.TESTMO_TOKEN }}
       
       - name: Test Report
         uses: dorny/test-reporter@v1
@@ -178,34 +212,6 @@ jobs:
           name: TestReport
           path: reports/html-report/report.html
 
-      - name: Get Allure history
-        uses: actions/checkout@v2
-        if: always()
-        continue-on-error: true
-        with:
-          ref: gh-pages
-          path: gh-pages
-
-      - name: Allure Report action from marketplace
-        uses: simple-elf/allure-report-action@master
-        if: always()
-        #id: allure-report
-        with:
-          allure_results: allure-results
-          #gh_pages: gh-pages
-          #allure_report: allure-report
-          allure_history: allure-history
-          keep_reports: 100
-
-      - name: Deploy report to Github Pages
-        if: always()
-        uses: peaceiris/actions-gh-pages@v2
-        env:
-          PERSONAL_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-          PUBLISH_BRANCH: gh-pages
-          PUBLISH_DIR: allure-history
-
-
       - name: Post the link to the report
         if: always()
         uses: Sibz/github-status-action@v1
@@ -216,7 +222,6 @@ jobs:
             sha: ${{ github.event.pull_request.head.sha  || github.sha }}
             target_url: 'https://mangata-finance.github.io/mangata-e2e/${{ github.run_number }}'
 
-      
       - name: Slack Notification - OK
         if: success()
         uses: bryannice/gitactions-slack-notification@2.0.0
@@ -234,5 +239,30 @@ jobs:
           SLACK_INCOMING_WEBHOOK: ${{ env.WEBHOOK_URL }}
           SLACK_TITLE: 'Slack Notification - results - NOOK'
           SLACK_COLOR: "#ff0011"
-          SLACK_MESSAGE: 'Test failures [ ${{ env.TEST_SCRIPT }} ]- ${{ env.UI_URL }} - ${{ env.API_URL }} \n https://mangata-finance.github.io/mangata-e2e/${{ github.run_number }}'
+          SLACK_MESSAGE: 'Test failures [ ${{ env.TEST_SCRIPT }} ]- ${{ env.UI_URL }} - ${{ env.API_URL }} 
+           gh report: https://mangata-finance.github.io/mangata-e2e/${{ github.run_number }}
+           testmo report: https://mangata-finance.testmo.net/automation/runs/view/$(cat testmo-run-id.txt)'
           GITHUB_REF: 'https://mangata-finance.github.io/mangata-e2e/${{ github.run_number }}'
+
+  test-complete:
+    needs: [test]
+    if: always()
+    runs-on: ubuntu-latest
+
+    steps:
+      - uses: actions/checkout@v2
+      - uses: actions/setup-node@v2
+        with:
+          node-version: 16
+          cache: npm
+      - name: Install testmo
+        run: npm i -g @testmo/testmo-cli
+        
+      - name: Complete test run
+        run: |
+            npx testmo automation:run:complete \
+              --instance https://mangata-finance.testmo.net \
+              --run-id ${{needs.test.outputs.testmo-run-id}} \
+        env:
+          TESTMO_URL: ${{ secrets.TESTMO_URL }}
+          TESTMO_TOKEN: ${{ secrets.TESTMO_TOKEN }}
