@@ -108,6 +108,7 @@ jobs:
           echo 'ETH_APP_ADDRESS=0xeAA7Ddc7586CFfb417078E56Fd61DE37a6Be373E' >> $GITHUB_ENV
           echo 'ETH_20_APP_ADDRESS=0xb508A5Dfa2a16269a5cb47C67824cF823Db44ca7' >> $GITHUB_ENV
           echo 'MNEMONIC_META=${{ secrets.MNEMONIC_META_INT }}' >> $GITHUB_ENV
+          echo 'TEST_SUDO_NAME=${{ secrets.DEV_SUDO_NAME }}' >> $GITHUB_ENV
   
       - uses: actions/checkout@v3
       - uses: actions/setup-node@v3
