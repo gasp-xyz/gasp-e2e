@@ -1,7 +1,7 @@
 /*
  *
  * @group sequential
- * @group gasless
+ * @group seqgassless
  */
 
 import { Keyring } from "@polkadot/api";
@@ -31,7 +31,7 @@ let testUser1: User;
 let sudo: User;
 let keyring: Keyring;
 let firstCurrency: BN;
-const thresholdValue = new BN(30000);
+const thresholdValue = new BN(666);
 const defaultCurrencyValue = new BN(10000000);
 const defaultPoolVolumeValue = new BN(1000000);
 
@@ -100,10 +100,24 @@ test("gasless- GIVEN an empty feeLock configuration (all options empty) WHEN sud
 test("gasless- GIVEN a feeLock WHEN periodLength and feeLockAmount are set THEN extrinsic succeed and feeLock is correctly configured", async () => {
   const api = getApi();
 
+  const lastPeriodLength = new BN(
+    JSON.parse(
+      JSON.stringify(await api?.query.feeLock.feeLockMetadata())
+    ).periodLength.toString()
+  );
+  const lastFeeLockAmount = new BN(
+    JSON.parse(
+      JSON.stringify(await api?.query.feeLock.feeLockMetadata())
+    ).feeLockAmount.toString()
+  );
+
+  const pendingPeriodLength = lastPeriodLength.add(new BN(10));
+  const pendingFeeLockAmount = lastFeeLockAmount.add(new BN(10));
+
   const updateMetadataEvent = await updateFeeLockMetadata(
     sudo,
-    new BN(10),
-    new BN(10),
+    pendingPeriodLength,
+    pendingFeeLockAmount,
     thresholdValue,
     [[MGA_ASSET_ID, true]]
   );
@@ -114,15 +128,14 @@ test("gasless- GIVEN a feeLock WHEN periodLength and feeLockAmount are set THEN 
       JSON.stringify(await api?.query.feeLock.feeLockMetadata())
     ).periodLength.toString()
   );
-
   const currentFeeLockAmount = new BN(
     JSON.parse(
       JSON.stringify(await api?.query.feeLock.feeLockMetadata())
     ).feeLockAmount.toString()
   );
 
-  expect(currentPeriodLength).bnEqual(new BN(10));
-  expect(currentFeeLockAmount).bnEqual(new BN(10));
+  expect(currentPeriodLength).bnEqual(pendingPeriodLength);
+  expect(currentFeeLockAmount).bnEqual(pendingFeeLockAmount);
 });
 
 test("gasless- Changing feeLock config parameter on the fly is works robustly", async () => {

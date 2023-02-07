@@ -1,7 +1,7 @@
 /*
  *
- * @group sequential
- * @group gasless
+ * @group parallel
+ * @group paralgassless
  */
 
 import { Keyring } from "@polkadot/api";
@@ -36,7 +36,7 @@ let keyring: Keyring;
 let firstCurrency: BN;
 let secondCurrency: BN;
 //let whitelistedTokens: any[];
-const thresholdValue = new BN(30000);
+const thresholdValue = new BN(666);
 const defaultCurrencyValue = new BN(10000000);
 const defaultPoolVolumeValue = new BN(1000000);
 
