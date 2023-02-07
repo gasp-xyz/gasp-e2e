@@ -1,7 +1,7 @@
 /*
  *
  * @group sequential
- * @group seqgassless
+ * @group seqgasless
  */
 
 import { Keyring } from "@polkadot/api";
@@ -33,8 +33,8 @@ async function checkErrorSellAsset(
   user: User,
   soldAssetId: any,
   boughtAssetId: any,
-  reason: string,
-  amount = new BN(1000)
+  amount: BN,
+  reason: string
 ) {
   let exception = false;
   const mangata = await getMangataInstance();
@@ -108,6 +108,7 @@ test("gasless- GIVEN a feeLock configured (only Time and Amount ) WHEN the user 
     testUser1,
     firstCurrency,
     MGA_ASSET_ID,
+    thresholdValue.sub(new BN(100)),
     feeLockErrors.FeeLockingFail
   );
 });
@@ -121,6 +122,7 @@ test("gasless- GIVEN a feeLock configured (only Time and Amount )  WHEN the user
     testUser1,
     firstCurrency,
     MGA_ASSET_ID,
+    thresholdValue.sub(new BN(100)),
     feeLockErrors.FeeLockingFail
   );
 });
