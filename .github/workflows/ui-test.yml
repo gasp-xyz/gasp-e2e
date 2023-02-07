@@ -119,10 +119,6 @@ jobs:
           cache: 'yarn'
       - name: Install dependencies with Yarn
         run: yarn
-
-      - name: Install testmo
-        working-directory: e2eTests
-        run: npm i -g @testmo/testmo-cli
         
       - name: Tsc code quality check
         run: yarn tsc-lint
@@ -142,6 +138,10 @@ jobs:
           RUN_URL="$GITHUB_SERVER_URL/$GITHUB_REPOSITORY/actions/runs/$GITHUB_RUN_ID"
           npx testmo automation:resources:add-link --name build \
             --url $RUN_URL --resources resources.json
+
+      - name: Install testmo
+        working-directory: e2eTests
+        run: npm i -g @testmo/testmo-cli
 
       - name: Create test run
         working-directory: e2eTests
