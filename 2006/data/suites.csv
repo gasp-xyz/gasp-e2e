@@ -1,0 +1,6 @@
+"Status","Start Time","Stop Time","Duration in ms","Parent Suite","Suite","Sub Suite","Test Class","Test Method","Name","Description"
+"passed","Tue Feb 07 14:34:41 GMT 2023","Tue Feb 07 14:35:12 GMT 2023","31218","","UI tests - Extension management","","UI tests - Extension management","User can connect polkadot.js extension with accounts","User can connect polkadot.js extension with accounts",""
+"passed","Tue Feb 07 14:30:42 GMT 2023","Tue Feb 07 14:32:26 GMT 2023","104056","","UI tests - pools, providing, removing liquidity","","UI tests - pools, providing, removing liquidity","User can provide liquidity","User can provide liquidity",""
+"passed","Tue Feb 07 14:34:34 GMT 2023","Tue Feb 07 14:34:41 GMT 2023","7005","","UI tests - Extension management","","UI tests - Extension management","User is informed about required extensions","User is informed about required extensions",""
+"passed","Tue Feb 07 14:35:13 GMT 2023","Tue Feb 07 14:35:18 GMT 2023","4779","","UI tests: Infra","","UI tests: Infra","Validate that Mangata Frontend up and running","Validate that Mangata Frontend up and running",""
+"passed","Tue Feb 07 14:33:18 GMT 2023","Tue Feb 07 14:34:32 GMT 2023","74028","","UI tests - swapping assets","","UI tests - swapping assets","User can swap two assets","User can swap two assets",""
