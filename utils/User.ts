@@ -363,7 +363,8 @@ export class User {
       this,
       assetId,
       location,
-      locMarker
+      locMarker,
+      null
     );
     return registerAssetInfo;
   }
