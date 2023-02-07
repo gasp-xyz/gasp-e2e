@@ -130,6 +130,10 @@ jobs:
       - name: is selenoid started?
         run: curl http://localhost:4444/status
 
+      - name: Install testmo
+        working-directory: e2eTests
+        run: npm i -g @testmo/testmo-cli
+
       - name: Add extra params
         working-directory: e2eTests
         run: |
@@ -138,10 +142,6 @@ jobs:
           RUN_URL="$GITHUB_SERVER_URL/$GITHUB_REPOSITORY/actions/runs/$GITHUB_RUN_ID"
           npx testmo automation:resources:add-link --name build \
             --url $RUN_URL --resources resources.json
-
-      - name: Install testmo
-        working-directory: e2eTests
-        run: npm i -g @testmo/testmo-cli
 
       - name: Create test run
         working-directory: e2eTests
@@ -244,25 +244,25 @@ jobs:
       #      testmo report: https://mangata-finance.testmo.net/automation/runs/view/$(cat testmo-run-id.txt)'
       #     GITHUB_REF: 'https://mangata-finance.github.io/mangata-e2e/${{ github.run_number }}'
 
-  test-complete:
-    needs: [test]
-    if: always()
-    runs-on: ubuntu-latest
+  # test-complete:
+  #   needs: [test]
+  #   if: always()
+  #   runs-on: ubuntu-latest
 
-    steps:
-      - uses: actions/checkout@v2
-      - uses: actions/setup-node@v2
-        with:
-          node-version: 16
-          cache: npm
-      - name: Install testmo
-        run: npm i -g @testmo/testmo-cli
+  #   steps:
+  #     - uses: actions/checkout@v2
+  #     - uses: actions/setup-node@v2
+  #       with:
+  #         node-version: 16
+  #         cache: npm
+  #     - name: Install testmo
+  #       run: npm i -g @testmo/testmo-cli
         
-      - name: Complete test run
-        run: |
-            npx testmo automation:run:complete \
-              --instance https://mangata-finance.testmo.net \
-              --run-id ${{needs.test.outputs.testmo-run-id}} \
-        env:
-          TESTMO_URL: ${{ secrets.TESTMO_URL }}
-          TESTMO_TOKEN: ${{ secrets.TESTMO_TOKEN }}
+  #     - name: Complete test run
+  #       run: |
+  #           npx testmo automation:run:complete \
+  #             --instance https://mangata-finance.testmo.net \
+  #             --run-id ${{needs.test.outputs.testmo-run-id}} \
+  #       env:
+  #         TESTMO_URL: ${{ secrets.TESTMO_URL }}
+  #         TESTMO_TOKEN: ${{ secrets.TESTMO_TOKEN }}
