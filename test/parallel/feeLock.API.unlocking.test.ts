@@ -1,6 +1,5 @@
 /*
  *
- * @group parallel
  * @group paralgasless
  */
 

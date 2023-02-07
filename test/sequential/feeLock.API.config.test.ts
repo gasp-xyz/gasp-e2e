@@ -1,6 +1,5 @@
 /*
  *
- * @group sequential
  * @group seqgasless
  */
 
