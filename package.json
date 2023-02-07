@@ -56,7 +56,7 @@
     "test-cluster-healthcheck": "rm nonce.db; rm sudo.lock; jest --verbose --group=cluster-healthcheck",
     "test-sequential": "export JEST_HTML_REPORTERS_PUBLIC_PATH=reports/html-report-seq; rm nonce.db ; rm sudo.lock; jest --verbose --runInBand --group=sequential",
     "test-seqgasless": "export GASLESS=true; export JEST_HTML_REPORTERS_PUBLIC_PATH=reports/html-report-seq; rm nonce.db ; rm sudo.lock; jest --verbose --runInBand --group=seqgasless",
-    "test-paralgasless": "export GASLESS=true; export JEST_HTML_REPORTERS_PUBLIC_PATH=reports/html-report-seq; rm nonce.db ; rm sudo.lock; jest --verbose --ci --group=paralgasless",
+    "test-paralgasless": "export GASLESS=true; export JEST_HTML_REPORTERS_PUBLIC_PATH=reports/html-report-parallel; rm nonce.db; rm sudo.lock; jest --verbose --ci --group=paralgasless",
     "test-sequential-no-bootstrap": "export JEST_HTML_REPORTERS_PUBLIC_PATH=reports/html-report-seq; rm nonce.db ; rm sudo.lock; jest --verbose --runInBand --group=sequential --group=-bootstrap --group=-rewards-bootstrap",
     "test-sequential-autocompound": "export JEST_HTML_REPORTERS_PUBLIC_PATH=reports/html-report-seq; rm nonce.db ; rm sudo.lock; jest --verbose --runInBand --group=autocompound",
     "test-sequential-e2e": "export JEST_HTML_REPORTERS_PUBLIC_PATH=reports/html-report-seq-e2e; rm nonce.db; rm sudo.lock; jest --verbose --runInBand --ci --group=critical ",
