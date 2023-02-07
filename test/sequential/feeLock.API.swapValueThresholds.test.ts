@@ -8,18 +8,14 @@ import { Keyring } from "@polkadot/api";
 import { getApi, initApi, getMangataInstance } from "../../utils/api";
 import { Assets } from "../../utils/Assets";
 import { MGA_ASSET_ID } from "../../utils/Constants";
-import {
-  waitSudoOperationSuccess,
-  ExtrinsicResult,
-} from "../../utils/eventListeners";
+import { waitSudoOperationSuccess } from "../../utils/eventListeners";
 import { BN } from "@mangata-finance/sdk";
 import { setupApi, setupUsers } from "../../utils/setup";
 import { Sudo } from "../../utils/sudo";
-import { updateFeeLockMetadata, createPool } from "../../utils/tx";
+import { updateFeeLockMetadata } from "../../utils/tx";
 import { AssetWallet, User } from "../../utils/User";
 import { getEnvironmentRequiredVars, feeLockErrors } from "../../utils/utils";
 import { Xyk } from "../../utils/xyk";
-import { getEventResultFromMangataTx } from "../../utils/txHandler";
 
 jest.spyOn(console, "log").mockImplementation(jest.fn());
 jest.setTimeout(2500000);
