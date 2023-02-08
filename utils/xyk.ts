@@ -67,6 +67,20 @@ export class Xyk {
       maxAmountIn
     );
   }
+  static multiswapBuyAsset(
+    tokenIds: BN[],
+    buyAmount: BN,
+    maxAmountIn: BN
+  ): Extrinsic {
+    return api.tx.xyk.multiswapBuyAsset(tokenIds, buyAmount, maxAmountIn);
+  }
+  static multiswapSellAsset(
+    tokenIds: BN[],
+    buyAmount: BN,
+    minAmountOut: BN
+  ): Extrinsic {
+    return api.tx.xyk.multiswapSellAsset(tokenIds, buyAmount, minAmountOut);
+  }
 
   static updatePoolPromotion(liquidityAssetId: BN, weight: number): Extrinsic {
     return Sudo.sudo(api.tx.xyk.updatePoolPromotion(liquidityAssetId, weight));
