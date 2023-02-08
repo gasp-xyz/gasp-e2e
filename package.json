@@ -74,7 +74,7 @@
     "tsc-lint": "tsc  --project tsconfig.json --noEmit",
     "eslint": "node_modules/.bin/eslint --max-warnings 0 . --ext .ts",
     "reports": "allure generate reports",
-    "test-github": "rm nonce.db ; rm sudo.lock; jest --verbose  --ci "
+    "test-github": "export JEST_HTML_REPORTERS_PUBLIC_PATH=reports/html-report;  rm nonce.db ; rm sudo.lock; jest --verbose  --ci "
   },
   "devDependencies": {
     "@babel/core": "^7.13.10",
