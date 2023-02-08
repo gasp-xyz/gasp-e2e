@@ -5,6 +5,7 @@ import "@mangata-finance/types";
 import { SubmittableExtrinsic } from "@polkadot/api/types";
 import { getApi, initApi } from "./api";
 import { signTx } from "@mangata-finance/sdk";
+import { SudoDB } from "./SudoDB";
 
 // API
 export let api: ApiPromise;
@@ -58,7 +59,12 @@ export const setupGasLess = async () => {
       api!.tx.sudo.sudo(
         api!.tx.feeLock.updateFeeLockMetadata(10, 10, 666, [[1, true]])
       ),
-      sudo.keyRingPair
+      sudo.keyRingPair,
+      {
+        nonce: await SudoDB.getInstance().getSudoNonce(
+          sudo.keyRingPair.address
+        ),
+      }
     );
   }
 };
