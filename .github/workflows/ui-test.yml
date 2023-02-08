@@ -118,7 +118,6 @@ jobs:
           node-version: '16'
           cache: yarn
       - name: Install testmo
-        working-directory: e2eTests
         run: yarn global add @testmo/testmo-cli
 
       - name: Install dependencies with Yarn
@@ -134,7 +133,6 @@ jobs:
         run: curl http://localhost:4444/status
 
       - name: Add extra params
-        working-directory: e2eTests
         run: |
           yarn testmo automation:resources:add-field --name git --type string \
             --value ${GITHUB_SHA:0:7} --resources resources.json
