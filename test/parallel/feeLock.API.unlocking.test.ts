@@ -49,16 +49,16 @@ beforeAll(async () => {
 
   // setup users
   sudo = new User(keyring, sudoUserName);
+});
+
+beforeEach(async () => {
+  [testUser1] = setupUsers();
 
   [firstCurrency, secondCurrency] = await Assets.setupUserWithCurrencies(
     sudo,
     [defaultCurrencyValue, defaultCurrencyValue],
     sudo
   );
-});
-
-beforeEach(async () => {
-  [testUser1] = setupUsers();
 
   await setupApi();
 
