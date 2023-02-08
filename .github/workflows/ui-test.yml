@@ -239,7 +239,7 @@ jobs:
       #      testmo report: https://mangata-finance.testmo.net/automation/runs/view/$(cat testmo-run-id.txt)'
       #     GITHUB_REF: 'https://mangata-finance.github.io/mangata-e2e/${{ github.run_number }}'
 
-  # test-complete:
+  test-complete:
     needs: [test]
     if: always()
     runs-on: ubuntu-latest
