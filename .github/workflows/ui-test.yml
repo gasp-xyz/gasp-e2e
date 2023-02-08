@@ -119,7 +119,7 @@ jobs:
           cache: yarn
       - name: Install testmo
         working-directory: e2eTests
-        run: yarn add @testmo/testmo-cli
+        run: npm install --no-save @testmo/testmo-cli
 
       - name: Install dependencies with Yarn
         run: yarn
