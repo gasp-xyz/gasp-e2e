@@ -141,7 +141,6 @@ jobs:
             --url $RUN_URL --resources resources.json
 
       - name: Create test run
-        working-directory: e2eTests
         run: |
           testmo automation:run:create \
             --instance https://mangata-finance.testmo.net  \
@@ -163,12 +162,11 @@ jobs:
 
       - name: Submit results to the testmo-run
         if: always()
-        working-directory: e2eTests 
         run: |
             yarn testmo automation:run:submit-thread \
               --instance https://mangata-finance.testmo.net \
               --run-id $(cat testmo-run-id.txt) \
-              --results reports/*.xml 
+              --results /home/runner/work/mangata-e2e/mangata-e2e/e2eTests/reports/*.xml 
         env:
           TESTMO_URL: ${{ secrets.TESTMO_URL }}
           TESTMO_TOKEN: ${{ secrets.TESTMO_TOKEN }}
