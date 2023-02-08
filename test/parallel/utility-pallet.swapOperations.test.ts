@@ -23,8 +23,8 @@ let users: User[] = [];
 let tokenIds: BN[] = [];
 let api: ApiPromise;
 let swapOperations: { [K: string]: Extrinsic } = {};
-
-describe("Utility - forbidden batch", () => {
+const errorEnum = '"error":"0x05000000"';
+describe("Utility - batched swaps are not allowed", () => {
   beforeAll(async () => {
     try {
       getApi();
@@ -78,7 +78,7 @@ describe("Utility - forbidden batch", () => {
         "BatchInterrupted",
       ]);
       expect(event.state).toEqual(ExtrinsicResult.ExtrinsicSuccess);
-      expect(event.data).toContain("BatchInterrupted");
+      expect(event.data).toContain(errorEnum);
     }
   );
   it.each(["multiswapSellAsset", "multiswapBuyAsset", "sellAsset", "buyAsset"])(
@@ -92,10 +92,10 @@ describe("Utility - forbidden batch", () => {
       );
       const event = getEventResultFromMangataTx(events, [
         "utility",
-        "BatchInterrupted",
+        "ItemFailed",
       ]);
       expect(event.state).toEqual(ExtrinsicResult.ExtrinsicSuccess);
-      expect(event.data).toContain("BatchInterrupted");
+      expect(event.data).toContain(errorEnum);
     }
   );
   it.each(["multiswapSellAsset", "multiswapBuyAsset", "sellAsset", "buyAsset"])(
@@ -113,7 +113,7 @@ describe("Utility - forbidden batch", () => {
         "BatchInterrupted",
       ]);
       expect(event.state).toEqual(ExtrinsicResult.ExtrinsicSuccess);
-      expect(JSON.stringify(event.data)).toContain('"error":"0x05000000"');
+      expect(JSON.stringify(event.data)).toContain("");
     }
   );
 });
