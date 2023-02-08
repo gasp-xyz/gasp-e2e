@@ -118,7 +118,6 @@ jobs:
           node-version: '16'
           cache: yarn
       - name: Install testmo
-        working-directory: e2eTests
         run: yarn global add @testmo/testmo-cli
 
       - name: Install dependencies with Yarn
