@@ -116,10 +116,13 @@ jobs:
       - uses: actions/setup-node@v3
         with:
           node-version: '16'
-          cache: 'yarn'
+          cache: npm
+      - name: Install testmo
+        working-directory: e2eTests
+        run: npm i -g @testmo/testmo-cli
+
       - name: Install dependencies with Yarn
         run: yarn
-        
       - name: Tsc code quality check
         run: yarn tsc-lint
       - name: ESLint code quality check
@@ -129,10 +132,6 @@ jobs:
 
       - name: is selenoid started?
         run: curl http://localhost:4444/status
-
-      - name: Install testmo
-        working-directory: e2eTests
-        run: npm i -g @testmo/testmo-cli
 
       - name: Add extra params
         working-directory: e2eTests
