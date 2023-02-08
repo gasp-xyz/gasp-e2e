@@ -8,7 +8,7 @@ import { getAccountJSON } from "./frontend/utils/Helper";
 import { waitNewBlock } from "./eventListeners";
 import { testLog } from "./Logger";
 import { AnyNumber } from "@polkadot/types/types";
-import { Keyring } from "@polkadot/api";
+import { ApiPromise, Keyring } from "@polkadot/api";
 import { KeyringPair } from "@polkadot/keyring/types";
 
 export function sleep(ms: number) {
@@ -307,7 +307,7 @@ export async function getUserBalanceOfToken(tokenId: BN, account: User) {
   return tokenBalance;
 }
 
-export async function getBlockNumber() {
+export async function getBlockNumber(): Promise<number> {
   const api = await mangata?.getApi()!;
   return ((await api.query.system.number()) as any).toNumber();
 }
@@ -344,6 +344,19 @@ export async function findBlockWithExtrinsicSigned(
     }
   }
   return 0;
+}
+export async function getFeeLockMetadata(api: ApiPromise) {
+  const lockMetadata = JSON.parse(
+    JSON.stringify(await api?.query.feeLock.feeLockMetadata())
+  );
+  const periodLength = new BN(lockMetadata.periodLength.toString());
+  const feeLockAmount = new BN(lockMetadata.feeLockAmount.toString());
+  const threshold = lockMetadata.swapValueThreshold;
+  return {
+    periodLength: periodLength,
+    feeLockAmount: feeLockAmount,
+    swapValueThreshold: threshold,
+  };
 }
 
 export enum xykErrors {
