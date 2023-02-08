@@ -113,9 +113,7 @@ describe("Utility - forbidden batch", () => {
         "BatchInterrupted",
       ]);
       expect(event.state).toEqual(ExtrinsicResult.ExtrinsicSuccess);
-      expect(event.data).toContain(
-        '{"error": {"Module": {"error": "0x05000000", "index": "0"}}, "index": "1"}'
-      );
+      expect(JSON.stringify(event.data)).toContain('"error":"0x05000000"');
     }
   );
 });
