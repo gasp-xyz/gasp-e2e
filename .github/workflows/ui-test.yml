@@ -116,9 +116,10 @@ jobs:
       - uses: actions/setup-node@v3
         with:
           node-version: '16'
-          cache: npm
+          cache: yarn
       - name: Install testmo
-        run: npm i -g @testmo/testmo-cli
+        working-directory: e2eTests
+        run: yarn global add @testmo/testmo-cli
 
       - name: Install dependencies with Yarn
         run: yarn
@@ -135,16 +136,16 @@ jobs:
       - name: Add extra params
         working-directory: e2eTests
         run: |
-          npx testmo automation:resources:add-field --name git --type string \
+          yarn testmo automation:resources:add-field --name git --type string \
             --value ${GITHUB_SHA:0:7} --resources resources.json
           RUN_URL="$GITHUB_SERVER_URL/$GITHUB_REPOSITORY/actions/runs/$GITHUB_RUN_ID"
-          npx testmo automation:resources:add-link --name build \
+          yarn testmo automation:resources:add-link --name build \
             --url $RUN_URL --resources resources.json
 
       - name: Create test run
         working-directory: e2eTests
         run: |
-          npx testmo automation:run:create \
+          yarn testmo automation:run:create \
             --instance https://mangata-finance.testmo.net  \
             --project-id 2 \
             --name "e2e test run" \
@@ -166,7 +167,7 @@ jobs:
         if: always()
         working-directory: e2eTests 
         run: |
-            npx testmo automation:run:submit-thread \
+            yarn testmo automation:run:submit-thread \
               --instance https://mangata-finance.testmo.net \
               --run-id $(cat testmo-run-id.txt) \
               --results reports/*.xml 
@@ -252,13 +253,13 @@ jobs:
   #     - uses: actions/setup-node@v2
   #       with:
   #         node-version: 16
-  #         cache: npm
+  #         cache: yarn
   #     - name: Install testmo
-  #       run: npm i -g @testmo/testmo-cli
+  #       run: yarn global add @testmo/testmo-cli
         
   #     - name: Complete test run
   #       run: |
-  #           npx testmo automation:run:complete \
+  #           yarn testmo automation:run:complete \
   #             --instance https://mangata-finance.testmo.net \
   #             --run-id ${{needs.test.outputs.testmo-run-id}} \
   #       env:
