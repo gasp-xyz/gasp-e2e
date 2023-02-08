@@ -4,7 +4,7 @@
  */
 import { getApi, initApi } from "../../utils/api";
 import { ExtrinsicResult } from "../../utils/eventListeners";
-import { BN } from "@polkadot/util";
+import { BN, hexToU8a } from "@polkadot/util";
 import { User } from "../../utils/User";
 import { setupApi, setup5PoolsChained, Extrinsic } from "../../utils/setup";
 import { getEventResultFromMangataTx } from "../../utils/txHandler";
@@ -24,6 +24,18 @@ let tokenIds: BN[] = [];
 let api: ApiPromise;
 let swapOperations: { [K: string]: Extrinsic } = {};
 const errorEnum = '"error":"0x05000000"';
+const enumValue = "0x05000000";
+
+test("Validate that the error enum is about filtered call", async () => {
+  const error = hexToU8a(enumValue);
+  const index = "0";
+  const err = api?.registry.findMetaError({
+    error: error,
+    index: new BN(index),
+  });
+  expect(err).toContain("CallFiltered");
+});
+
 describe("Utility - batched swaps are not allowed", () => {
   beforeAll(async () => {
     try {
@@ -46,7 +58,6 @@ describe("Utility - batched swaps are not allowed", () => {
       buyAsset: Xyk.buyAsset(tokenIds[0], tokenIds[1], BN_HUNDRED, BN_MILLION),
     };
   });
-
   it.each(["multiswapSellAsset", "multiswapBuyAsset", "sellAsset", "buyAsset"])(
     "%s operation is not allowed in batchAll",
     async (operation) => {
