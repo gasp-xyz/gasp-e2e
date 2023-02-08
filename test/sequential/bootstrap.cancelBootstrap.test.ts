@@ -17,8 +17,8 @@ import {
 } from "../../utils/Bootstrap";
 import { getEnvironmentRequiredVars } from "../../utils/utils";
 import {
-  waitSudoOperataionSuccess,
-  waitSudoOperataionFail,
+  waitSudoOperationSuccess,
+  waitSudoOperationFail,
 } from "../../utils/eventListeners";
 import { MGA_ASSET_ID } from "../../utils/Constants";
 import { MangataGenericEvent } from "@mangata-finance/sdk";
@@ -72,10 +72,10 @@ test("bootstrap - Check that we can cancel bootstrap before planned", async () =
     bootstrapPeriod,
     whitelistPeriod
   );
-  await waitSudoOperataionSuccess(scheduleBootstrapEvent);
+  await waitSudoOperationSuccess(scheduleBootstrapEvent);
 
   cancelBootstrapEvent = await cancelRunningBootstrap(sudo);
-  await waitSudoOperataionSuccess(cancelBootstrapEvent);
+  await waitSudoOperationSuccess(cancelBootstrapEvent);
 });
 
 test("bootstrap - Check that we can not cancel bootstrap when bootstrap event already planned or started", async () => {
@@ -87,31 +87,28 @@ test("bootstrap - Check that we can not cancel bootstrap when bootstrap event al
     bootstrapPeriod,
     whitelistPeriod
   );
-  await waitSudoOperataionSuccess(scheduleBootstrapEvent);
+  await waitSudoOperationSuccess(scheduleBootstrapEvent);
 
-  //check cthat bootstrap cannot be canceled less than 300 blocks before the start
+  //check that bootstrap cannot be canceled less than 300 blocks before the start
   cancelBootstrapEvent = await cancelRunningBootstrap(sudo);
-  await waitSudoOperataionFail(
-    cancelBootstrapEvent,
-    "TooLateToUpdateBootstrap"
-  );
+  await waitSudoOperationFail(cancelBootstrapEvent, "TooLateToUpdateBootstrap");
 
   await waitForBootstrapStatus("Whitelist", waitingPeriodLessPlan);
 
   //check that bootstrap cannot be canceled after the start
   cancelBootstrapEvent = await cancelRunningBootstrap(sudo);
-  await waitSudoOperataionFail(cancelBootstrapEvent, "AlreadyStarted");
+  await waitSudoOperationFail(cancelBootstrapEvent, "AlreadyStarted");
 
   await waitForBootstrapStatus("Public", waitingPeriodLessPlan);
 
   cancelBootstrapEvent = await cancelRunningBootstrap(sudo);
-  await waitSudoOperataionFail(cancelBootstrapEvent, "AlreadyStarted");
+  await waitSudoOperationFail(cancelBootstrapEvent, "AlreadyStarted");
 
   await waitForBootstrapStatus("Finished", bootstrapPeriod);
 
   cancelBootstrapEvent = await cancelRunningBootstrap(sudo);
-  await waitSudoOperataionFail(cancelBootstrapEvent, "AlreadyStarted");
+  await waitSudoOperationFail(cancelBootstrapEvent, "AlreadyStarted");
 
-  // finalaze bootstrap
+  // finalize bootstrap
   await checkLastBootstrapFinalized(sudo);
 });

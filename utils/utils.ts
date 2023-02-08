@@ -231,6 +231,32 @@ export const waitForNBlocks = async (n: number) => {
   }
 };
 
+export async function waitBlockNumber(
+  blockNumber: string,
+  maxWaitingPeriod: number
+) {
+  let currentBlock = await getBlockNumber();
+  let waitingperiodCounter: number;
+
+  waitingperiodCounter = 0;
+  testLog.getLog().info("Waiting block number " + blockNumber);
+  while (
+    currentBlock < blockNumber &&
+    waitingperiodCounter < maxWaitingPeriod
+  ) {
+    await waitNewBlock();
+    currentBlock = await getBlockNumber();
+    waitingperiodCounter = waitingperiodCounter + 1;
+  }
+  testLog.getLog().info("... Done waiting block number" + blockNumber);
+  if (
+    waitingperiodCounter === maxWaitingPeriod ||
+    waitingperiodCounter > maxWaitingPeriod
+  ) {
+    testLog.getLog().warn("TIMEDOUT waiting for the specific block number");
+  }
+}
+
 export async function waitIfSessionWillChangeInNblocks(numberOfBlocks: number) {
   const api = await getApi();
   const sessionDuration = BigInt(
@@ -340,4 +366,9 @@ export enum xykErrors {
   MathOverflow = "MathOverflow",
   LiquidityTokenCreationFailed = "LiquidityTokenCreationFailed",
   FunctionNotAvailableForThisToken = "FunctionNotAvailableForThisToken",
+}
+
+export enum feeLockErrors {
+  FeeLockingFail = "1010: Invalid Transaction: Fee lock processing has failed either due to not enough funds to reserve or an unexpected error",
+  SwapApprovalFail = "1010: Invalid Transaction: The swap prevalidation has failed",
 }
