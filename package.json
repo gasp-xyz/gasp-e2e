@@ -77,7 +77,7 @@
     "eslint": "node_modules/.bin/eslint --max-warnings 0 . --ext .ts",
     "reports": "allure generate reports",
     "test-github": "export JEST_HTML_REPORTERS_PUBLIC_PATH=reports/html-report;  rm nonce.db ; rm sudo.lock; jest --verbose  --ci ",
-    "test-multiswap": "export GASLESS=true; export JEST_HTML_REPORTERS_PUBLIC_PATH=reports/html-report-parallel;rm nonce.db ; rm sudo.lock; jest --verbose --ci --group=multiswap",
+    "test-multiswap": "export GASLESS=true; export JEST_HTML_REPORTERS_PUBLIC_PATH=reports/html-report-parallel;rm nonce.db ; rm sudo.lock; jest --verbose --ci --group=multiswap"
   },
   "devDependencies": {
     "@babel/core": "^7.13.10",
