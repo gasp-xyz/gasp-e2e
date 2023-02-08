@@ -133,7 +133,6 @@ jobs:
         run: curl http://localhost:4444/status
 
       - name: Add extra params
-        working-directory: e2eTests
         run: |
           testmo automation:resources:add-field --name git --type string \
             --value ${GITHUB_SHA:0:7} --resources resources.json
