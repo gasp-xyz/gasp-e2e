@@ -75,18 +75,18 @@ beforeAll(async () => {
 
   // setup users
   sudo = new User(keyring, sudoUserName);
-
-  firstCurrency = await Assets.issueAssetToUser(
-    sudo,
-    defaultCurrencyValue,
-    sudo
-  );
 });
 
 beforeEach(async () => {
   await setupApi();
 
   [testUser1] = setupUsers();
+
+  firstCurrency = await Assets.issueAssetToUser(
+    sudo,
+    defaultCurrencyValue,
+    sudo
+  );
 
   await Sudo.batchAsSudoFinalized(
     Assets.mintToken(firstCurrency, testUser1, defaultCurrencyValue),
