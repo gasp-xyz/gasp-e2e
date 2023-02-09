@@ -11,7 +11,7 @@ on:
         environment:
           description: 'Environment to run the tests:[staging,develop,integration,v4]'
           required: false
-          default: ''
+          default: 'develop'
         publishDockerImage:
           description: 'Generate new Docker image'
           required: false
