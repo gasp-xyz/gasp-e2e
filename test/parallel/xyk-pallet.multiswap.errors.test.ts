@@ -109,7 +109,11 @@ describe("Multiswap - error cases: pool status & gasless integration", () => {
     testUser0.addAssets(tokenList);
     await testUser0.refreshAmounts(AssetWallet.BEFORE);
 
-    await multiSwapSell(testUser0, tokenList, threshold.addn(10));
+    await multiSwapSell(
+      testUser0,
+      [tokenList[0], tokenList[1]],
+      threshold.addn(10)
+    );
 
     await testUser0.refreshAmounts(AssetWallet.AFTER);
     const diff = testUser0.getWalletDifferences();
