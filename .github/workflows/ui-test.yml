@@ -11,7 +11,7 @@ on:
         environment:
           description: 'Environment to run the tests:[staging,develop,integration,v4]'
           required: false
-          default: 'develop'
+          default: ''
         publishDockerImage:
           description: 'Generate new Docker image'
           required: false
@@ -174,8 +174,7 @@ jobs:
             testmo automation:run:submit-thread \
               --instance https://mangata-finance.testmo.net \
               --run-id $(cat testmo-run-id.txt) \
-              --results reports/*.xml \
-              --tags github.event.client_payload.environment
+              --results reports/*.xml
         env:
           TESTMO_URL: ${{ secrets.TESTMO_URL }}
           TESTMO_TOKEN: ${{ secrets.TESTMO_TOKEN }}
@@ -259,6 +258,7 @@ jobs:
             testmo automation:run:complete \
               --instance https://mangata-finance.testmo.net \
               --run-id ${{needs.test.outputs.testmo-run-id}} \
+              --tags github.event.client_payload.environment
         env:
           TESTMO_URL: ${{ secrets.TESTMO_URL }}
           TESTMO_TOKEN: ${{ secrets.TESTMO_TOKEN }}
