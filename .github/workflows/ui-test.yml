@@ -159,6 +159,14 @@ jobs:
   
       - name: Run tests
         run: yarn ${{ env.TEST_SCRIPT }}
+      
+      - name: Test Report
+        uses: dorny/test-reporter@v1
+        if: success() || failure()    # run this step even if previous step failed
+        with:
+          name: JEST Tests            # Name of the check run which will be created
+          path: reports/junit-*.xml    # Path to test results
+          reporter: jest-junit        # Format of test results
 
       - name: Submit results to the testmo-run
         if: always()
@@ -170,14 +178,6 @@ jobs:
         env:
           TESTMO_URL: ${{ secrets.TESTMO_URL }}
           TESTMO_TOKEN: ${{ secrets.TESTMO_TOKEN }}
-      
-      - name: Test Report
-        uses: dorny/test-reporter@v1
-        if: success() || failure()    # run this step even if previous step failed
-        with:
-          name: JEST Tests            # Name of the check run which will be created
-          path: reports/junit-*.xml    # Path to test results
-          reporter: jest-junit        # Format of test results
 
       - name: Sleep for 5 seconds
         run: sleep 10s #close buffers of videos.
