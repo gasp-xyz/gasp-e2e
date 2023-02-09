@@ -180,18 +180,19 @@ export const registerScreenshotReporter = () => {
   beforeEach(() => screenshotPromise);
   afterAll(() => screenshotPromise);
 
-  (jasmine as any).getEnv().addReporter({
-    specDone: async (result: any) => {
-      if (result.status === "failed") {
-        try {
-          await renameExtraLogs(result.fullName, result.status);
-        } catch (e) {
-          // eslint-disable-next-line no-console
-          console.error(e);
-          // Lets only log the error, so tno want any side effect.
-        }
-      }
-    },
-  });
+  // bump jest to 29.
+  //  (jasmine as any).getEnv().addReporter({
+  //    specDone: async (result: any) => {
+  //      if (result.status === "failed") {
+  //        try {
+  //          await renameExtraLogs(result.fullName, result.status);
+  //        } catch (e) {
+  //          // eslint-disable-next-line no-console
+  //          console.error(e);
+  //          // Lets only log the error, so tno want any side effect.
+  //        }
+  //      }
+  //    },
+  //  });
 };
 registerScreenshotReporter();
