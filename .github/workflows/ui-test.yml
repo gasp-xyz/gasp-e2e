@@ -219,7 +219,6 @@ jobs:
           SLACK_TITLE: 'Slack Notification - results - OK'
           SLACK_COLOR: "#00ff11"
           SLACK_MESSAGE: 'Test succeed in [ ${{ env.TEST_SCRIPT }} ]- ${{ env.UI_URL }} - ${{ env.API_URL }} 
-           https://mangata-finance.github.io/mangata-e2e/${{ github.run_number }}
            testmo report: https://mangata-finance.testmo.net/automation/runs/view/${{ env.ID }}'
           GITHUB_REF: 'https://mangata-finance.github.io/mangata-e2e/${{ github.run_number }}'
     
@@ -231,7 +230,6 @@ jobs:
           SLACK_TITLE: 'Slack Notification - results - NOOK'
           SLACK_COLOR: "#ff0011"
           SLACK_MESSAGE: 'Test failures [ ${{ env.TEST_SCRIPT }} ]- ${{ env.UI_URL }} - ${{ env.API_URL }} 
-           gh report: https://mangata-finance.github.io/mangata-e2e/${{ github.run_number }}
            testmo report: https://mangata-finance.testmo.net/automation/runs/view/${{ env.ID }}'
           GITHUB_REF: 'https://mangata-finance.github.io/mangata-e2e/${{ github.run_number }}'
 
