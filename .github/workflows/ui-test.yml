@@ -147,7 +147,8 @@ jobs:
             --project-id 2 \
             --name "FE e2e test run" \
             --resources resources.json \
-            --source "fe-e2e-job" > testmo-run-id.txt
+            --source "fe-e2e-job" > testmo-run-id.txt \
+            --tags github.event.client_payload.environment
           ID=$(cat testmo-run-id.txt)
           echo "testmo-run-id=$ID" >> $GITHUB_OUTPUT
           echo "ID=$ID" >> $GITHUB_ENV
@@ -257,8 +258,7 @@ jobs:
         run: |
             testmo automation:run:complete \
               --instance https://mangata-finance.testmo.net \
-              --run-id ${{needs.test.outputs.testmo-run-id}} \
-              --tags github.event.client_payload.environment
+              --run-id ${{needs.test.outputs.testmo-run-id}}
         env:
           TESTMO_URL: ${{ secrets.TESTMO_URL }}
           TESTMO_TOKEN: ${{ secrets.TESTMO_TOKEN }}
