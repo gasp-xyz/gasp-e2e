@@ -82,8 +82,7 @@ beforeEach(async () => {
 
   await Sudo.batchAsSudoFinalized(
     Assets.mintToken(firstCurrency, testUser1, defaultCurrencyValue),
-    Assets.mintToken(secondCurrency, testUser1, defaultCurrencyValue),
-    Assets.mintNative(sudo)
+    Assets.mintToken(secondCurrency, testUser1, defaultCurrencyValue)
   );
 
   testUser1.addAsset(MGA_ASSET_ID);
