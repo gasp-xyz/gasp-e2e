@@ -174,7 +174,7 @@ jobs:
             testmo automation:run:submit-thread \
               --instance https://mangata-finance.testmo.net \
               --run-id $(cat testmo-run-id.txt) \
-              --results /home/runner/work/mangata-e2e/mangata-e2e/e2eTests/reports/*.xml 
+              --results reports/*.xml
         env:
           TESTMO_URL: ${{ secrets.TESTMO_URL }}
           TESTMO_TOKEN: ${{ secrets.TESTMO_TOKEN }}
