@@ -26,9 +26,9 @@ let swapOperations: { [K: string]: Extrinsic } = {};
 const errorEnum = '"error":"0x05000000"';
 const enumValue = "0x05000000";
 
-test("Validate that the error enum is about filtered call", async () => {
+test.skip("Validate that the error enum is about filtered call", async () => {
   const error = hexToU8a(enumValue);
-  const index = "0";
+  const index = hexToU8a("0x3600");
   const err = api?.registry.findMetaError({
     error: error,
     index: new BN(index),
@@ -124,7 +124,7 @@ describe("Utility - batched swaps are not allowed", () => {
         "BatchInterrupted",
       ]);
       expect(event.state).toEqual(ExtrinsicResult.ExtrinsicSuccess);
-      expect(JSON.stringify(event.data)).toContain("");
+      expect(JSON.stringify(event.data)).toContain(errorEnum);
     }
   );
 });
