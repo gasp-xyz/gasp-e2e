@@ -20,7 +20,6 @@ import {
   waitBlockNumber,
   feeLockErrors,
 } from "../../utils/utils";
-import { Xyk } from "../../utils/xyk";
 import { getEventResultFromMangataTx } from "../../utils/txHandler";
 import { ExtrinsicResult } from "../../utils/eventListeners";
 
@@ -49,10 +48,6 @@ beforeAll(async () => {
 
   // setup users
   sudo = new User(keyring, sudoUserName);
-});
-
-beforeEach(async () => {
-  [testUser1] = setupUsers();
 
   [firstCurrency, secondCurrency] = await Assets.setupUserWithCurrencies(
     sudo,
@@ -60,21 +55,11 @@ beforeEach(async () => {
     sudo
   );
 
-  await setupApi();
-
-  await Sudo.batchAsSudoFinalized(
-    Assets.mintToken(firstCurrency, testUser1, defaultCurrencyValue),
-    Assets.mintToken(secondCurrency, testUser1, defaultCurrencyValue),
-    Assets.mintNative(sudo),
-    Sudo.sudoAs(
-      sudo,
-      Xyk.createPool(
-        firstCurrency,
-        defaultPoolVolumeValue,
-        secondCurrency,
-        defaultPoolVolumeValue
-      )
-    )
+  await sudo.createPoolToAsset(
+    defaultPoolVolumeValue,
+    defaultPoolVolumeValue,
+    firstCurrency,
+    secondCurrency
   );
 
   const updateMetadataEvent = await updateFeeLockMetadata(
@@ -88,6 +73,18 @@ beforeEach(async () => {
     ]
   );
   await waitSudoOperationSuccess(updateMetadataEvent);
+});
+
+beforeEach(async () => {
+  [testUser1] = setupUsers();
+
+  await setupApi();
+
+  await Sudo.batchAsSudoFinalized(
+    Assets.mintToken(firstCurrency, testUser1, defaultCurrencyValue),
+    Assets.mintToken(secondCurrency, testUser1, defaultCurrencyValue),
+    Assets.mintNative(sudo)
+  );
 
   testUser1.addAsset(MGA_ASSET_ID);
   testUser1.addAsset(firstCurrency);
