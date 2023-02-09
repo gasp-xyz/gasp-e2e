@@ -4,7 +4,7 @@
  */
 import { getApi, initApi } from "../../utils/api";
 import { ExtrinsicResult } from "../../utils/eventListeners";
-import { BN, hexToU8a } from "@polkadot/util";
+import { BN, hexToU8a, hexToBn } from "@polkadot/util";
 import { User } from "../../utils/User";
 import { setupApi, setup5PoolsChained, Extrinsic } from "../../utils/setup";
 import { getEventResultFromMangataTx } from "../../utils/txHandler";
@@ -27,8 +27,8 @@ const errorEnum = '"error":"0x05000000"';
 const enumValue = "0x05000000";
 
 test.skip("Validate that the error enum is about filtered call", async () => {
-  const error = hexToU8a(enumValue);
-  const index = hexToU8a("0x3600");
+  const error = hexToBn(enumValue);
+  const index = hexToU8a("0");
   const err = api?.registry.findMetaError({
     error: error,
     index: new BN(index),
@@ -89,7 +89,7 @@ describe("Utility - batched swaps are not allowed", () => {
         "BatchInterrupted",
       ]);
       expect(event.state).toEqual(ExtrinsicResult.ExtrinsicSuccess);
-      expect(event.data).toContain(errorEnum);
+      expect(JSON.stringify(event.data)).toContain(errorEnum);
     }
   );
   it.each(["multiswapSellAsset", "multiswapBuyAsset", "sellAsset", "buyAsset"])(
@@ -106,7 +106,7 @@ describe("Utility - batched swaps are not allowed", () => {
         "ItemFailed",
       ]);
       expect(event.state).toEqual(ExtrinsicResult.ExtrinsicSuccess);
-      expect(event.data).toContain(errorEnum);
+      expect(JSON.stringify(event.data)).toContain(errorEnum);
     }
   );
   it.each(["multiswapSellAsset", "multiswapBuyAsset", "sellAsset", "buyAsset"])(
