@@ -4,6 +4,8 @@ import { User } from "./User";
 import "@mangata-finance/types";
 import { SubmittableExtrinsic } from "@polkadot/api/types";
 import { getApi, initApi } from "./api";
+import { signTx } from "@mangata-finance/sdk";
+import { SudoDB } from "./SudoDB";
 
 // API
 export let api: ApiPromise;
@@ -40,4 +42,29 @@ export const setupUsers = () => {
   keyring.addPair(testUser4.keyRingPair);
 
   return [testUser1, testUser2, testUser3, testUser4];
+};
+export const setupGasLess = async () => {
+  keyring = new Keyring({ type: "sr25519" });
+  const { sudo: sudoUserName } = getEnvironmentRequiredVars();
+  sudo = new User(keyring, sudoUserName);
+  alice = new User(keyring, "//Alice");
+  await setupApi();
+  const feeLockConfig = JSON.parse(
+    JSON.stringify(await api?.query.feeLock.feeLockMetadata())
+  );
+  // only create if empty.
+  if (feeLockConfig === null || feeLockConfig.periodLength === null) {
+    await signTx(
+      api!,
+      api!.tx.sudo.sudo(
+        api!.tx.feeLock.updateFeeLockMetadata(10, 10, 666, [[1, true]])
+      ),
+      sudo.keyRingPair,
+      {
+        nonce: await SudoDB.getInstance().getSudoNonce(
+          sudo.keyRingPair.address
+        ),
+      }
+    );
+  }
 };

@@ -229,6 +229,7 @@ export async function getChainNonce(address: string) {
 
 export async function getUserAssets(account: any, assets: BN[]) {
   const user_asset_balances: TokenBalance[] = [];
+
   for (const asset of assets) {
     const user_asset_balance = await getBalanceOfAsset(asset, account);
     user_asset_balances.push(user_asset_balance);
@@ -751,7 +752,7 @@ export async function lockAsset(user: User, amount: BN) {
 
 export async function getAllAssetsInfo(): Promise<any[]> {
   const api = getApi();
-  const availableAssetsInfo = await api.query.assetsInfo.assetsInfo.entries();
+  const availableAssetsInfo = await api.query.assetRegistry.metadata.entries();
   /// returns something like this:
   ///[
   ///    [
@@ -1021,6 +1022,7 @@ export async function updateAsset(
   );
   return result;
 }
+
 export async function compoundRewards(
   User: User,
   liquidityAssetId: BN,
@@ -1030,6 +1032,42 @@ export async function compoundRewards(
   const result = await signTx(
     api,
     api.tx.xyk.compoundRewards(liquidityAssetId, amountPermille),
+    User.keyRingPair
+  );
+  return result;
+}
+
+export async function updateFeeLockMetadata(
+  sudoUser: User,
+  periodLength: any,
+  timeoutAmount: any,
+  swapValueThresholds: any,
+  shouldBeWhitelisted: any
+) {
+  const api = getApi();
+  const result = await signTx(
+    api,
+    api.tx.sudo.sudo(
+      api.tx.feeLock.updateFeeLockMetadata(
+        periodLength,
+        timeoutAmount,
+        swapValueThresholds,
+        shouldBeWhitelisted
+      )
+    ),
+    sudoUser.keyRingPair,
+    {
+      nonce: await getCurrentNonce(sudoUser.keyRingPair.address),
+    }
+  );
+  return result;
+}
+
+export async function unlockFee(User: User) {
+  const api = getApi();
+  const result = await signTx(
+    api,
+    api.tx.feeLock.unlockFee(),
     User.keyRingPair
   );
   return result;
