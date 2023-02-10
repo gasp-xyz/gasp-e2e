@@ -1,9 +1,8 @@
 import { BN } from "@polkadot/util";
-import { renameExtraLogs } from "./frontend/utils/Helper";
 import { removeSudoDb } from "./lock";
 
 require("dotenv").config();
-//TODO: This must be temporal, but lets retry test failues to avoid Tx issues.
+//TODO: This must be temporal, but lets retry test failures to avoid Tx issues.
 jest.retryTimes(2);
 beforeAll(async () => {
   await removeSudoDb();
