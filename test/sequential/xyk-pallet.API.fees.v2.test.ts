@@ -6,6 +6,7 @@ import { AssetWallet, User } from "../../utils/User";
 import {
   findBlockWithExtrinsicSigned,
   getBlockNumber,
+  getFeeLockMetadata,
   getTokensDiffForBlockAuthor,
 } from "../../utils/utils";
 import { MGA_ASSET_ID } from "../../utils/Constants";
@@ -13,6 +14,7 @@ import { Xyk } from "../../utils/xyk";
 import { getNextAssetId } from "../../utils/tx";
 import { Assets } from "../../utils/Assets";
 import { signSendFinalized } from "../../utils/sign";
+import { getApi } from "../../utils/api";
 
 /**
  * @group xyk
@@ -73,6 +75,29 @@ describe("API fees test suite", () => {
     expect(BN_ZERO).bnLt(authorMGAtokens);
     expect(authorMGAtokens).bnEqual(diff);
   }
+  async function expectGasLessSwapFrozenTokens(
+    from: number,
+    to: number,
+    user: User
+  ) {
+    const blockNumber = await findBlockWithExtrinsicSigned(
+      [from, to],
+      user.keyRingPair.address
+    );
+    const authorMGAtokens = await getTokensDiffForBlockAuthor(blockNumber);
+    await user.refreshAmounts(AssetWallet.AFTER);
+    const mgaUserToken = user.getAsset(MGA_ASSET_ID)!;
+    const diff = mgaUserToken.amountBefore.free.sub(
+      mgaUserToken.amountAfter.free!
+    );
+    const diffReserved = mgaUserToken.amountBefore.reserved.sub(
+      mgaUserToken.amountAfter.reserved!
+    );
+    const swapFee = await getFeeLockMetadata(await getApi());
+    expect(BN_ZERO).bnEqual(diff);
+    expect(BN_ZERO).bnEqual(authorMGAtokens);
+    expect(diffReserved).bnEqual(swapFee.feeLockAmount);
+  }
 
   it("xyk-pallet - MGA tokens are subtracted as fee : CreatePool", async () => {
     const from = await getBlockNumber();
@@ -129,13 +154,14 @@ describe("API fees test suite", () => {
 
   it("xyk-pallet - MGA tokens are not subtracted as fee : SellAsset", async () => {
     const from = await getBlockNumber();
+    //those currencies are not in whitelist -> hence tokens are reserved.
     await signSendFinalized(
       Xyk.sellAsset(currency1, currency2, new BN(50)),
       user1
     );
     const to = await getBlockNumber();
 
-    await expectFeePaid(from, to, user1);
+    await expectGasLessSwapFrozenTokens(from, to, user1);
   });
 
   it("xyk-pallet - MGA tokens are / are not subtracted as fee : BuyAsset", async () => {
@@ -146,6 +172,6 @@ describe("API fees test suite", () => {
     );
     const to = await getBlockNumber();
 
-    await expectFeePaid(from, to, user1);
+    await expectGasLessSwapFrozenTokens(from, to, user1);
   });
 });
