@@ -1,5 +1,5 @@
 import { BN } from "@polkadot/util";
-import { removeSudoDb } from "./lock"  ;
+import { removeSudoDb } from "./lock";
 
 require("dotenv").config();
 //TODO: This must be temporal, but lets retry test failures to avoid Tx issues.
