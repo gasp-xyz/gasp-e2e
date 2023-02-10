@@ -1,4 +1,5 @@
 #!/bin/sh
 . "$(dirname "$0")/_/husky.sh"
 
-yarn format && npx lint-staged
+# yarn format && npx lint-staged
+yarn tsc-lint && yarn eslint
