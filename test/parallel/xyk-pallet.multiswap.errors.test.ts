@@ -3,12 +3,20 @@
  * @group multiswap
  */
 import { getApi, initApi } from "../../utils/api";
-import { multiSwapBuy, multiSwapSell } from "../../utils/tx";
+import {
+  multiSwapBuy,
+  multiSwapSell,
+  updateFeeLockMetadata,
+} from "../../utils/tx";
 import { ExtrinsicResult } from "../../utils/eventListeners";
 import { BN } from "@polkadot/util";
 import { User, AssetWallet } from "../../utils/User";
 import { Assets } from "../../utils/Assets";
-import { getUserBalanceOfToken } from "../../utils/utils";
+import {
+  feeLockErrors,
+  getEnvironmentRequiredVars,
+  getUserBalanceOfToken,
+} from "../../utils/utils";
 import { setupApi, setup5PoolsChained } from "../../utils/setup";
 import { getEventResultFromMangataTx } from "../../utils/txHandler";
 import { BN_BILLION, BN_TEN_THOUSAND, BN_ZERO } from "@mangata-finance/sdk";
@@ -120,11 +128,20 @@ describe("Multiswap - error cases: pool status & gasless integration", () => {
   test("[gasless] Fail on client when not enough MGAs to lock AND tokens that exist whitelist", async () => {
     const keyring = new Keyring({ type: "sr25519" });
     const testUser1 = new User(keyring);
+    const sudo = new User(keyring, getEnvironmentRequiredVars().sudo);
     await Sudo.batchAsSudoFinalized(Assets.mintToken(tokenIds[0], testUser1));
     const meta = await api.query.feeLock.feeLockMetadata();
     //TODO:Update whitelist!
     const threshold = new BN(
       JSON.parse(JSON.stringify(meta)).swapValueThreshold as any as BN
+    );
+
+    await updateFeeLockMetadata(
+      sudo,
+      undefined,
+      undefined,
+      undefined,
+      tokenIds.map((x) => [x, true])
     );
     let exception = false;
     await expect(
@@ -132,9 +149,7 @@ describe("Multiswap - error cases: pool status & gasless integration", () => {
         exception = true;
         throw new Error(reason.data);
       })
-    ).rejects.toThrow(
-      "1010: Invalid Transaction: Fee lock processing has failed either due to not enough funds to reserve or an unexpected error"
-    );
+    ).rejects.toThrow(feeLockErrors.FeeLockingFail);
     expect(exception).toBeTruthy();
   });
   test("[gasless] Fail on swap when selling remove all MGAs", async () => {
