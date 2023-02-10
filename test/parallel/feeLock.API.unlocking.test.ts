@@ -15,7 +15,6 @@ import { updateFeeLockMetadata, unlockFee } from "../../utils/tx";
 import { AssetWallet, User } from "../../utils/User";
 import {
   getEnvironmentRequiredVars,
-  waitForNBlocks,
   getBlockNumber,
   waitBlockNumber,
   feeLockErrors,
@@ -135,7 +134,13 @@ test("gasless- GIVEN some locked tokens and no more free MGX WHEN another tx is 
 
   await testUser1.sellAssets(firstCurrency, secondCurrency, saleAssetValue);
 
-  await waitForNBlocks(periodLength);
+  const accountFeeLockData = JSON.parse(
+    JSON.stringify(
+      await api.query.feeLock.accountFeeLockData(testUser1.keyRingPair.address)
+    )
+  );
+  const waitingBlock = accountFeeLockData.lastFeeLockBlock + periodLength;
+  await waitBlockNumber(waitingBlock, periodLength + 5);
 
   await testUser1
     .sellAssets(firstCurrency, secondCurrency, saleAssetValue)
@@ -205,4 +210,43 @@ test("gasless- GIVEN some locked tokens and lastFeeLockBlock is lower than curre
   expect(testUser1.getAsset(MGA_ASSET_ID)?.amountAfter.reserved!).bnEqual(
     new BN(0)
   );
+});
+
+test("gasless- GIVEN a lock WHEN the period is N THEN the tokens can not be unlocked before that period", async () => {
+  const api = getApi();
+  let exception = false;
+
+  const feeLockAmount = JSON.parse(
+    JSON.stringify(await api.query.feeLock.feeLockMetadata())
+  ).feeLockAmount;
+  const periodLength = JSON.parse(
+    JSON.stringify(await api.query.feeLock.feeLockMetadata())
+  ).periodLength;
+
+  await testUser1.addMGATokens(sudo, new BN(feeLockAmount));
+
+  const saleAssetValue = thresholdValue.sub(new BN(5));
+
+  await testUser1.sellAssets(firstCurrency, secondCurrency, saleAssetValue);
+  const accountFeeLockData = JSON.parse(
+    JSON.stringify(
+      await api.query.feeLock.accountFeeLockData(testUser1.keyRingPair.address)
+    )
+  );
+  const waitingBlock = accountFeeLockData.lastFeeLockBlock + periodLength;
+
+  await expect(
+    unlockFee(testUser1).catch((reason) => {
+      exception = true;
+      throw new Error(reason.data);
+    })
+  ).rejects.toThrow(feeLockErrors.FeeUnlockingFail);
+  expect(exception).toBeTruthy();
+
+  await waitBlockNumber(waitingBlock, periodLength + 5);
+
+  await unlockFee(testUser1).then((result) => {
+    const eventResponse = getEventResultFromMangataTx(result);
+    expect(eventResponse.state).toEqual(ExtrinsicResult.ExtrinsicSuccess);
+  });
 });
