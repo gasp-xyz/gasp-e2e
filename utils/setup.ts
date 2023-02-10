@@ -5,7 +5,7 @@ import "@mangata-finance/types";
 import { SubmittableExtrinsic } from "@polkadot/api/types";
 import { getApi, initApi } from "./api";
 import { signTx } from "@mangata-finance/sdk";
-import { SudoDB } from "./SudoDB" ;
+import { SudoDB } from "./SudoDB"  ;
 
 // API
 export let api: ApiPromise;
