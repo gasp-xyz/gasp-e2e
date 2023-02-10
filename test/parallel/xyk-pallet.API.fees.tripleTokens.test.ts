@@ -11,7 +11,11 @@ import { BN } from "@polkadot/util";
 import { Keyring } from "@polkadot/api";
 import { Assets } from "../../utils/Assets";
 import { AssetWallet, User } from "../../utils/User";
-import { getEnvironmentRequiredVars } from "../../utils/utils";
+import {
+  getEnvironmentRequiredVars,
+  feeLockErrors,
+  getFeeLockMetadata,
+} from "../../utils/utils";
 import { SignerOptions } from "@polkadot/api/types";
 import { getEventResultFromMangataTx } from "../../utils/txHandler";
 import { RuntimeDispatchInfo } from "@polkadot/types/interfaces";
@@ -138,19 +142,22 @@ test("xyk-pallet - Check required fee - User with KSM only", async () => {
 
   await testUser1.refreshAmounts(AssetWallet.BEFORE);
 
-  await (await getMangataInstance())
-    .buyAsset(
-      testUser1.keyRingPair,
-      firstCurrency.toString(),
-      secondCurrency.toString(),
-      new BN(100),
-      new BN(1000000)
-    )
-    .then((result) => {
-      const eventResponse = getEventResultFromMangataTx(result);
-      expect(eventResponse.state).toEqual(ExtrinsicResult.ExtrinsicSuccess);
-    });
-
+  let exception = false;
+  await expect(
+    (await getMangataInstance())
+      .buyAsset(
+        testUser1.keyRingPair,
+        firstCurrency.toString(),
+        secondCurrency.toString(),
+        new BN(100),
+        new BN(1000000)
+      )
+      .catch((reason) => {
+        exception = true;
+        throw new Error(reason.data);
+      })
+  ).rejects.toThrow(feeLockErrors.FeeLockingFail);
+  expect(exception).toBeTruthy();
   await testUser1.refreshAmounts(AssetWallet.AFTER);
 
   const deductedKSMTkns = testUser1
@@ -167,20 +174,23 @@ test("xyk-pallet - Check required fee - User with TUR only", async () => {
   await testUser1.addTURTokens(sudo);
 
   await testUser1.refreshAmounts(AssetWallet.BEFORE);
+  let exception = false;
+  await expect(
+    (await getMangataInstance())
+      .buyAsset(
+        testUser1.keyRingPair,
+        firstCurrency.toString(),
+        secondCurrency.toString(),
+        new BN(100),
+        new BN(1000000)
+      )
+      .catch((reason) => {
+        exception = true;
+        throw new Error(reason.data);
+      })
+  ).rejects.toThrow(feeLockErrors.FeeLockingFail);
 
-  await (await getMangataInstance())
-    .buyAsset(
-      testUser1.keyRingPair,
-      firstCurrency.toString(),
-      secondCurrency.toString(),
-      new BN(100),
-      new BN(1000000)
-    )
-    .then((result) => {
-      const eventResponse = getEventResultFromMangataTx(result);
-      expect(eventResponse.state).toEqual(ExtrinsicResult.ExtrinsicSuccess);
-    });
-
+  expect(exception).toBeTruthy();
   await testUser1.refreshAmounts(AssetWallet.AFTER);
 
   const deductedTURTkns = testUser1
@@ -259,7 +269,9 @@ test("xyk-pallet - Check required fee - User with some MGA, very few KSM and ver
 
 test("xyk-pallet - Check required fee - User with very few MGA, some KSM and very few TUR", async () => {
   //add few MGX tokens.
-  await sudo.mint(MGA_ASSET_ID, testUser1, new BN(100000));
+  const feeLockAmount = (await getFeeLockMetadata(await getApi()))
+    .feeLockAmount;
+  await sudo.mint(MGA_ASSET_ID, testUser1, feeLockAmount.subn(1));
 
   //add some KSM tokens.
   await testUser1.addKSMTokens(sudo);
@@ -268,67 +280,23 @@ test("xyk-pallet - Check required fee - User with very few MGA, some KSM and ver
   await sudo.mint(TUR_ASSET_ID, testUser1, new BN(100000));
 
   await testUser1.refreshAmounts(AssetWallet.BEFORE);
+  let exception = false;
+  await expect(
+    (await getMangataInstance())
+      .buyAsset(
+        testUser1.keyRingPair,
+        firstCurrency.toString(),
+        secondCurrency.toString(),
+        new BN(100),
+        new BN(1000000)
+      )
+      .catch((reason) => {
+        exception = true;
+        throw new Error(reason.data);
+      })
+  ).rejects.toThrow(feeLockErrors.FeeLockingFail);
 
-  await (await getMangataInstance())
-    .buyAsset(
-      testUser1.keyRingPair,
-      firstCurrency.toString(),
-      secondCurrency.toString(),
-      new BN(100),
-      new BN(1000000)
-    )
-    .then((result) => {
-      const eventResponse = getEventResultFromMangataTx(result);
-      expect(eventResponse.state).toEqual(ExtrinsicResult.ExtrinsicSuccess);
-    });
-
-  await testUser1.refreshAmounts(AssetWallet.AFTER);
-
-  const deductedMGATkns = testUser1
-    .getAsset(MGA_ASSET_ID)
-    ?.amountBefore.free.sub(
-      testUser1.getAsset(MGA_ASSET_ID)?.amountAfter.free!
-    );
-  const deductedKSMTkns = testUser1
-    .getAsset(KSM_ASSET_ID)
-    ?.amountBefore.free.sub(
-      testUser1.getAsset(KSM_ASSET_ID)?.amountAfter.free!
-    );
-  const deductedTURTkns = testUser1
-    .getAsset(TUR_ASSET_ID)
-    ?.amountBefore.free.sub(
-      testUser1.getAsset(TUR_ASSET_ID)?.amountAfter.free!
-    );
-
-  expect(deductedMGATkns).bnEqual(new BN(0));
-  expect(deductedKSMTkns).bnGt(new BN(0));
-  expect(deductedTURTkns).bnEqual(new BN(0));
-});
-
-test("xyk-pallet - Check required fee - User with very few MGA, very few KSM and some TUR", async () => {
-  //add few MGX tokens.
-  await sudo.mint(MGA_ASSET_ID, testUser1, new BN(100000));
-
-  //add some KSM tokens.
-  await sudo.mint(KSM_ASSET_ID, testUser1, new BN(100000));
-
-  //add some TUR tokens.
-  await testUser1.addTURTokens(sudo);
-
-  await testUser1.refreshAmounts(AssetWallet.BEFORE);
-
-  await (await getMangataInstance())
-    .buyAsset(
-      testUser1.keyRingPair,
-      firstCurrency.toString(),
-      secondCurrency.toString(),
-      new BN(100),
-      new BN(1000000)
-    )
-    .then((result) => {
-      const eventResponse = getEventResultFromMangataTx(result);
-      expect(eventResponse.state).toEqual(ExtrinsicResult.ExtrinsicSuccess);
-    });
+  expect(exception).toBeTruthy();
 
   await testUser1.refreshAmounts(AssetWallet.AFTER);
 
@@ -350,12 +318,68 @@ test("xyk-pallet - Check required fee - User with very few MGA, very few KSM and
 
   expect(deductedMGATkns).bnEqual(new BN(0));
   expect(deductedKSMTkns).bnEqual(new BN(0));
-  expect(deductedTURTkns).bnGt(new BN(0));
+  expect(deductedTURTkns).bnEqual(new BN(0));
+});
+
+test("xyk-pallet - Check required fee - User with very few MGA, very few KSM and some TUR", async () => {
+  //add few MGX tokens.
+  const feeLockAmount = (await getFeeLockMetadata(await getApi()))
+    .feeLockAmount;
+  await sudo.mint(MGA_ASSET_ID, testUser1, feeLockAmount.subn(1));
+
+  //add some KSM tokens.
+  await sudo.mint(KSM_ASSET_ID, testUser1, new BN(100000));
+
+  //add some TUR tokens.
+  await testUser1.addTURTokens(sudo);
+
+  await testUser1.refreshAmounts(AssetWallet.BEFORE);
+  let exception = false;
+  await expect(
+    (await getMangataInstance())
+      .buyAsset(
+        testUser1.keyRingPair,
+        firstCurrency.toString(),
+        secondCurrency.toString(),
+        new BN(100),
+        new BN(1000000)
+      )
+      .catch((reason) => {
+        exception = true;
+        throw new Error(reason.data);
+      })
+  ).rejects.toThrow(feeLockErrors.FeeLockingFail);
+
+  expect(exception).toBeTruthy();
+
+  await testUser1.refreshAmounts(AssetWallet.AFTER);
+
+  const deductedMGATkns = testUser1
+    .getAsset(MGA_ASSET_ID)
+    ?.amountBefore.free.sub(
+      testUser1.getAsset(MGA_ASSET_ID)?.amountAfter.free!
+    );
+  const deductedKSMTkns = testUser1
+    .getAsset(KSM_ASSET_ID)
+    ?.amountBefore.free.sub(
+      testUser1.getAsset(KSM_ASSET_ID)?.amountAfter.free!
+    );
+  const deductedTURTkns = testUser1
+    .getAsset(TUR_ASSET_ID)
+    ?.amountBefore.free.sub(
+      testUser1.getAsset(TUR_ASSET_ID)?.amountAfter.free!
+    );
+
+  expect(deductedMGATkns).bnEqual(new BN(0));
+  expect(deductedKSMTkns).bnEqual(new BN(0));
+  expect(deductedTURTkns).bnEqual(new BN(0));
 });
 
 test("xyk-pallet - Check required fee - User with very few  MGA, very few KSM and very few TUR, operation fails", async () => {
+  const feeLockAmount = (await getFeeLockMetadata(await getApi()))
+    .feeLockAmount;
   //add few MGX tokens.
-  await sudo.mint(MGA_ASSET_ID, testUser1, new BN(100000));
+  await sudo.mint(MGA_ASSET_ID, testUser1, feeLockAmount.subn(1));
 
   //add few KSM tokens.
   await sudo.mint(KSM_ASSET_ID, testUser1, new BN(100000));
@@ -378,8 +402,6 @@ test("xyk-pallet - Check required fee - User with very few  MGA, very few KSM an
         exception = true;
         throw new Error(reason.data);
       })
-  ).rejects.toThrow(
-    "1010: Invalid Transaction: Inability to pay some fees , e.g. account balance too low"
-  );
+  ).rejects.toThrow(feeLockErrors.FeeLockingFail);
   expect(exception).toBeTruthy();
 });

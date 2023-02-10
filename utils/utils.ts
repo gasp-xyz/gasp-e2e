@@ -8,7 +8,7 @@ import { getAccountJSON } from "./frontend/utils/Helper";
 import { waitNewBlock } from "./eventListeners";
 import { testLog } from "./Logger";
 import { AnyNumber } from "@polkadot/types/types";
-import { Keyring } from "@polkadot/api";
+import { Keyring, ApiPromise } from "@polkadot/api";
 import { KeyringPair } from "@polkadot/keyring/types";
 
 export function sleep(ms: number) {
@@ -371,4 +371,18 @@ export enum xykErrors {
 export enum feeLockErrors {
   FeeLockingFail = "1010: Invalid Transaction: Fee lock processing has failed either due to not enough funds to reserve or an unexpected error",
   SwapApprovalFail = "1010: Invalid Transaction: The swap prevalidation has failed",
+}
+
+export async function getFeeLockMetadata(api: ApiPromise) {
+  const lockMetadata = JSON.parse(
+    JSON.stringify(await api?.query.feeLock.feeLockMetadata())
+  );
+  const periodLength = new BN(lockMetadata.periodLength.toString());
+  const feeLockAmount = new BN(lockMetadata.feeLockAmount.toString());
+  const threshold = lockMetadata.swapValueThreshold;
+  return {
+    periodLength: periodLength,
+    feeLockAmount: feeLockAmount,
+    swapValueThreshold: threshold,
+  };
 }
