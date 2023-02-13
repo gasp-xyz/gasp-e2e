@@ -1,6 +1,7 @@
 /*
  *
  * @group paralgasless
+ * @group parallel
  */
 
 import { Keyring } from "@polkadot/api";
