@@ -10,7 +10,7 @@ jobs:
   
     strategy:
       matrix:
-        environment: ['Develop','Integration']
+        environment: ['develop']
     runs-on: ubuntu-latest
     steps:
       - name: Repository Dispatch
@@ -19,4 +19,4 @@ jobs:
           token: ${{ secrets.PAT_TRIGGER_JOB }}
           repository: "mangata-finance/mangata-e2e"
           event-type: run-ci
-          client-payload: '{"scriptName": "test-temp-ci", "environment": "${{ matrix.environment }}"}'
+          client-payload: '{"scriptName": "test-ui", "environment": "${{ matrix.environment }}"}'
