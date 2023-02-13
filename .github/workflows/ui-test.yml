@@ -109,7 +109,7 @@ jobs:
         if: contains(github.event.client_payload.environment, 'develop') || contains(github.event.inputs.environment, 'develop')
         run:  |
           echo 'UI_URL=https://develop.mangata.finance/' >> $GITHUB_ENV
-          echo 'API_URL=wss://v4-collator-01.mangatafinance.cloud' >> $GITHUB_ENV
+          echo 'API_URL=wss://node-01-ws-dev.mangata.online' >> $GITHUB_ENV
           echo 'ETH_APP_ADDRESS=0xeAA7Ddc7586CFfb417078E56Fd61DE37a6Be373E' >> $GITHUB_ENV
           echo 'ETH_20_APP_ADDRESS=0xb508A5Dfa2a16269a5cb47C67824cF823Db44ca7' >> $GITHUB_ENV
           echo 'MNEMONIC_META=${{ secrets.MNEMONIC_META_INT }}' >> $GITHUB_ENV
