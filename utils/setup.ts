@@ -102,7 +102,12 @@ export const setupGasLess = async () => {
     await signTx(
       api!,
       api!.tx.sudo.sudo(
-        api!.tx.feeLock.updateFeeLockMetadata(10, 10, 666, [[1, true]])
+        api!.tx.feeLock.updateFeeLockMetadata(
+          10,
+          "50000000000000000000",
+          "1000000000000000000000",
+          [[1, false]]
+        )
       ),
       sudo.keyRingPair,
       {
