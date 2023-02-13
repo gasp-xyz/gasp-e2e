@@ -94,9 +94,9 @@ describe("API fees test suite", () => {
       mgaUserToken.amountAfter.reserved!
     );
     const swapFee = await getFeeLockMetadata(await getApi());
-    expect(BN_ZERO).bnEqual(diff);
+    expect(swapFee.feeLockAmount).bnEqual(diff);
     expect(BN_ZERO).bnEqual(authorMGAtokens);
-    expect(diffReserved).bnEqual(swapFee.feeLockAmount);
+    expect(diffReserved).bnEqual(swapFee.feeLockAmount.neg());
   }
 
   it("xyk-pallet - MGA tokens are subtracted as fee : CreatePool", async () => {

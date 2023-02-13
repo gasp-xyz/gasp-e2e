@@ -166,7 +166,7 @@ test("xyk-pallet - Check required fee - User with KSM only", async () => {
       testUser1.getAsset(KSM_ASSET_ID)?.amountAfter.free!
     );
 
-  expect(deductedKSMTkns).bnGt(new BN(0));
+  expect(deductedKSMTkns).bnEqual(new BN(0));
 });
 
 test("xyk-pallet - Check required fee - User with TUR only", async () => {
@@ -199,7 +199,7 @@ test("xyk-pallet - Check required fee - User with TUR only", async () => {
       testUser1.getAsset(TUR_ASSET_ID)?.amountAfter.free!
     );
 
-  expect(deductedTURTkns).bnGt(new BN(0));
+  expect(deductedTURTkns).bnEqual(new BN(0));
 });
 
 test("xyk-pallet - Check required fee - User with some MGA, very few KSM and very few TUR", async () => {
