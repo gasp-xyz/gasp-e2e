@@ -7,7 +7,10 @@ import { Keyring } from "@polkadot/api";
 import { getApi, initApi, getMangataInstance } from "../../utils/api";
 import { Assets } from "../../utils/Assets";
 import { MGA_ASSET_ID } from "../../utils/Constants";
-import { waitSudoOperationSuccess } from "../../utils/eventListeners";
+import {
+  waitNewBlock,
+  waitSudoOperationSuccess,
+} from "../../utils/eventListeners";
 import { BN } from "@mangata-finance/sdk";
 import { setupApi, setupUsers } from "../../utils/setup";
 import { Sudo } from "../../utils/sudo";
@@ -214,7 +217,7 @@ test("gasless- GIVEN some locked tokens and lastFeeLockBlock is lower than curre
 
 test("gasless- GIVEN a lock WHEN the period is N THEN the tokens can not be unlocked before that period", async () => {
   const api = getApi();
-  let exception = false;
+  let currentBlockNumber: any;
 
   const feeLockAmount = JSON.parse(
     JSON.stringify(await api.query.feeLock.feeLockMetadata())
@@ -235,15 +238,18 @@ test("gasless- GIVEN a lock WHEN the period is N THEN the tokens can not be unlo
   );
   const waitingBlock = accountFeeLockData.lastFeeLockBlock + periodLength;
 
-  await expect(
-    unlockFee(testUser1).catch((reason) => {
-      exception = true;
-      throw new Error(reason.data);
-    })
-  ).rejects.toThrow(feeLockErrors.FeeUnlockingFail);
-  expect(exception).toBeTruthy();
+  currentBlockNumber = await getBlockNumber();
 
-  await waitBlockNumber(waitingBlock, periodLength + 5);
+  do {
+    await expect(
+      unlockFee(testUser1).catch((reason) => {
+        throw new Error(reason.data);
+      })
+    ).rejects.toThrow(feeLockErrors.FeeUnlockingFail);
+    currentBlockNumber = await getBlockNumber();
+  } while (currentBlockNumber < waitingBlock - 1);
+
+  await waitNewBlock();
 
   await unlockFee(testUser1).then((result) => {
     const eventResponse = getEventResultFromMangataTx(result);
