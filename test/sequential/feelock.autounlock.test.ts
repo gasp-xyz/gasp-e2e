@@ -30,7 +30,6 @@ let sudo: User;
 let keyring: Keyring;
 let firstToken: BN;
 let secondToken: BN;
-const lockAmount = new BN("1000000000000000000000");
 const millionNative = new BN("1000000000000000000000000");
 const nativeCurrencyId = MGA_ASSET_ID;
 const defaultCurrencyValue = new BN(10000000);

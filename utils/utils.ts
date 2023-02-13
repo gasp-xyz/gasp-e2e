@@ -241,7 +241,7 @@ export async function waitBlockNumber(
   waitingperiodCounter = 0;
   testLog.getLog().info("Waiting block number " + blockNumber);
   while (
-    currentBlock < blockNumber &&
+    currentBlock < parseInt(blockNumber) &&
     waitingperiodCounter < maxWaitingPeriod
   ) {
     await waitNewBlock();
@@ -253,7 +253,7 @@ export async function waitBlockNumber(
     waitingperiodCounter === maxWaitingPeriod ||
     waitingperiodCounter > maxWaitingPeriod
   ) {
-    testLog.getLog().warn("TIMEDOUT waiting for the specific block number");
+    testLog.getLog().warn("TIMEOUT waiting for the specific block number");
   }
 }
 
