@@ -57,7 +57,7 @@ export async function addMgaToWhitelisted(
     const updateMetadataEvent = await updateFeeLockMetadata(
       sudo,
       new BN(feeLockMetadata.periodLength),
-      new BN(feeLockMetadata.feeLockAmount),
+      stringToBN(feeLockMetadata.feeLockAmount),
       thresholdValueExpected,
       [[MGA_ASSET_ID, true]]
     );
