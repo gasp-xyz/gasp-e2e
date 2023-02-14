@@ -27,6 +27,7 @@ import {
 } from "../../utils/utils";
 import { getEventResultFromMangataTx } from "../../utils/txHandler";
 import { ExtrinsicResult } from "../../utils/eventListeners";
+import { testLog } from "../../utils/Logger";
 
 jest.spyOn(console, "log").mockImplementation(jest.fn());
 jest.setTimeout(2500000);
@@ -206,7 +207,7 @@ test("gasless- GIVEN some locked tokens and lastFeeLockBlock is lower than curre
 
 test("gasless- GIVEN a lock WHEN the period is N THEN the tokens can not be unlocked before that period", async () => {
   const api = getApi();
-  let currentBlockNumber: any;
+  let currentBlockNumber: number;
 
   const { feeLockAmount, periodLength } = await getFeeLockMetadata(api);
   await testUser1.addMGATokens(sudo, new BN(feeLockAmount));
@@ -214,12 +215,16 @@ test("gasless- GIVEN a lock WHEN the period is N THEN the tokens can not be unlo
   const saleAssetValue = thresholdValue.sub(new BN(5));
 
   await testUser1.sellAssets(firstCurrency, secondCurrency, saleAssetValue);
-  const accountFeeLockData = JSON.parse(
-    JSON.stringify(
-      await api.query.feeLock.accountFeeLockData(testUser1.keyRingPair.address)
-    )
+  const feeLockBlock = stringToBN(
+    JSON.parse(
+      JSON.stringify(
+        await api.query.feeLock.accountFeeLockData(
+          testUser1.keyRingPair.address
+        )
+      )
+    ).lastFeeLockBlock
   );
-  const waitingBlock = accountFeeLockData.lastFeeLockBlock + periodLength;
+  const waitingBlock = feeLockBlock.add(periodLength);
 
   currentBlockNumber = await getBlockNumber();
 
@@ -231,7 +236,15 @@ test("gasless- GIVEN a lock WHEN the period is N THEN the tokens can not be unlo
     ).rejects.toThrow(feeLockErrors.FeeUnlockingFail);
     await waitNewBlock();
     currentBlockNumber = await getBlockNumber();
-  } while (currentBlockNumber < waitingBlock - 1);
+    testLog
+      .getLog()
+      .info(
+        "now::" +
+          currentBlockNumber +
+          "Waiting for block " +
+          waitingBlock.toString()
+      );
+  } while (currentBlockNumber < waitingBlock.subn(1).toNumber());
 
   await unlockFee(testUser1).then((result) => {
     const eventResponse = getEventResultFromMangataTx(result);
