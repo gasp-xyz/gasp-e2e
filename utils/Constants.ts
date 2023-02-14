@@ -2,6 +2,7 @@ import { BN } from "@polkadot/util";
 
 export const MGA_ASSET_ID = new BN(0);
 export const MGA_ASSET_NAME = "MGA";
+export const MGR_ASSET_NAME = "MGR";
 export const ETH_ASSET_ID = new BN(1);
 export const ETH_ASSET_NAME = "ETH";
 export const mETH_ASSET_NAME = "mETH";

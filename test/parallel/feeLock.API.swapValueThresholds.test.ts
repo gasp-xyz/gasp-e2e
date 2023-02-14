@@ -46,6 +46,12 @@ beforeAll(async () => {
 
   // setup users
   sudo = new User(keyring, sudoUserName);
+
+  [secondCurrency] = await Assets.setupUserWithCurrencies(
+    sudo,
+    [defaultCurrencyValue, defaultCurrencyValue],
+    sudo
+  );
 });
 
 beforeEach(async () => {
@@ -53,7 +59,7 @@ beforeEach(async () => {
 
   await setupApi();
 
-  [firstCurrency, secondCurrency] = await Assets.setupUserWithCurrencies(
+  [firstCurrency] = await Assets.setupUserWithCurrencies(
     sudo,
     [defaultCurrencyValue, defaultCurrencyValue],
     sudo
@@ -74,7 +80,6 @@ beforeEach(async () => {
   await Sudo.batchAsSudoFinalized(
     Assets.mintToken(firstCurrency, testUser1, defaultCurrencyValue),
     Assets.mintToken(secondCurrency, testUser1, defaultCurrencyValue),
-    Assets.mintNative(sudo),
     Sudo.sudoAs(
       sudo,
       Xyk.createPool(

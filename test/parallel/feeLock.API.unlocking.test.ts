@@ -8,7 +8,10 @@ import { Keyring } from "@polkadot/api";
 import { getApi, initApi, getMangataInstance } from "../../utils/api";
 import { Assets } from "../../utils/Assets";
 import { MGA_ASSET_ID } from "../../utils/Constants";
-import { waitSudoOperationSuccess } from "../../utils/eventListeners";
+import {
+  waitNewBlock,
+  waitSudoOperationSuccess,
+} from "../../utils/eventListeners";
 import { BN } from "@mangata-finance/sdk";
 import { setupApi, setupUsers } from "../../utils/setup";
 import { Sudo } from "../../utils/sudo";
@@ -16,13 +19,11 @@ import { updateFeeLockMetadata, unlockFee } from "../../utils/tx";
 import { AssetWallet, User } from "../../utils/User";
 import {
   getEnvironmentRequiredVars,
-  waitForNBlocks,
   getBlockNumber,
   waitBlockNumber,
   feeLockErrors,
   getFeeLockMetadata,
 } from "../../utils/utils";
-import { Xyk } from "../../utils/xyk";
 import { getEventResultFromMangataTx } from "../../utils/txHandler";
 import { ExtrinsicResult } from "../../utils/eventListeners";
 
@@ -51,10 +52,6 @@ beforeAll(async () => {
 
   // setup users
   sudo = new User(keyring, sudoUserName);
-});
-
-beforeEach(async () => {
-  [testUser1] = setupUsers();
 
   [firstCurrency, secondCurrency] = await Assets.setupUserWithCurrencies(
     sudo,
@@ -62,21 +59,11 @@ beforeEach(async () => {
     sudo
   );
 
-  await setupApi();
-
-  await Sudo.batchAsSudoFinalized(
-    Assets.mintToken(firstCurrency, testUser1, defaultCurrencyValue),
-    Assets.mintToken(secondCurrency, testUser1, defaultCurrencyValue),
-    Assets.mintNative(sudo),
-    Sudo.sudoAs(
-      sudo,
-      Xyk.createPool(
-        firstCurrency,
-        defaultPoolVolumeValue,
-        secondCurrency,
-        defaultPoolVolumeValue
-      )
-    )
+  await sudo.createPoolToAsset(
+    defaultPoolVolumeValue,
+    defaultPoolVolumeValue,
+    firstCurrency,
+    secondCurrency
   );
 
   const updateMetadataEvent = await updateFeeLockMetadata(
@@ -90,6 +77,17 @@ beforeEach(async () => {
     ]
   );
   await waitSudoOperationSuccess(updateMetadataEvent);
+});
+
+beforeEach(async () => {
+  [testUser1] = setupUsers();
+
+  await setupApi();
+
+  await Sudo.batchAsSudoFinalized(
+    Assets.mintToken(firstCurrency, testUser1, defaultCurrencyValue),
+    Assets.mintToken(secondCurrency, testUser1, defaultCurrencyValue)
+  );
 
   testUser1.addAsset(MGA_ASSET_ID);
   testUser1.addAsset(firstCurrency);
@@ -132,7 +130,13 @@ test("gasless- GIVEN some locked tokens and no more free MGX WHEN another tx is 
 
   await testUser1.sellAssets(firstCurrency, secondCurrency, saleAssetValue);
 
-  await waitForNBlocks(periodLength.toNumber());
+  const accountFeeLockData = JSON.parse(
+    JSON.stringify(
+      await api.query.feeLock.accountFeeLockData(testUser1.keyRingPair.address)
+    )
+  );
+  const waitingBlock = accountFeeLockData.lastFeeLockBlock + periodLength;
+  await waitBlockNumber(waitingBlock, periodLength.toNumber() + 5);
 
   await testUser1
     .sellAssets(firstCurrency, secondCurrency, saleAssetValue)
@@ -195,4 +199,45 @@ test("gasless- GIVEN some locked tokens and lastFeeLockBlock is lower than curre
   expect(testUser1.getAsset(MGA_ASSET_ID)?.amountAfter.reserved!).bnEqual(
     new BN(0)
   );
+});
+
+test("gasless- GIVEN a lock WHEN the period is N THEN the tokens can not be unlocked before that period", async () => {
+  const api = getApi();
+  let currentBlockNumber: any;
+
+  const feeLockAmount = JSON.parse(
+    JSON.stringify(await api.query.feeLock.feeLockMetadata())
+  ).feeLockAmount;
+  const periodLength = JSON.parse(
+    JSON.stringify(await api.query.feeLock.feeLockMetadata())
+  ).periodLength;
+
+  await testUser1.addMGATokens(sudo, new BN(feeLockAmount));
+
+  const saleAssetValue = thresholdValue.sub(new BN(5));
+
+  await testUser1.sellAssets(firstCurrency, secondCurrency, saleAssetValue);
+  const accountFeeLockData = JSON.parse(
+    JSON.stringify(
+      await api.query.feeLock.accountFeeLockData(testUser1.keyRingPair.address)
+    )
+  );
+  const waitingBlock = accountFeeLockData.lastFeeLockBlock + periodLength;
+
+  currentBlockNumber = await getBlockNumber();
+
+  do {
+    await expect(
+      unlockFee(testUser1).catch((reason) => {
+        throw new Error(reason.data);
+      })
+    ).rejects.toThrow(feeLockErrors.FeeUnlockingFail);
+    await waitNewBlock();
+    currentBlockNumber = await getBlockNumber();
+  } while (currentBlockNumber < waitingBlock - 1);
+
+  await unlockFee(testUser1).then((result) => {
+    const eventResponse = getEventResultFromMangataTx(result);
+    expect(eventResponse.state).toEqual(ExtrinsicResult.ExtrinsicSuccess);
+  });
 });

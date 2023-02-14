@@ -13,13 +13,11 @@ import { DriverBuilder } from "../../utils/frontend/utils/Driver";
 import {
   addExtraLogs,
   setupPolkadotExtension,
-  uiStringToBN,
 } from "../../utils/frontend/utils/Helper";
 import { setupApi, setupUsers } from "../../utils/setup";
 import { Sudo } from "../../utils/sudo";
 import { AssetWallet, User } from "../../utils/User";
 import { getEnvironmentRequiredVars } from "../../utils/utils";
-import { Swap } from "../../utils/frontend/pages/Swap";
 import { MGA_ASSET_ID, MGR_ASSET_NAME } from "../../utils/Constants";
 import {
   ModalType,
@@ -31,6 +29,7 @@ import { createAssetIfMissing, createPoolIfMissing } from "../../utils/tx";
 import { SudoUser } from "../../utils/Framework/User/SudoUser";
 import { Node } from "../../utils/Framework/Node/Node";
 import { connectPolkadotWallet } from "../../utils/frontend/utils/Handlers";
+import { Pool } from "../../utils/frontend/pages/Pool";
 
 require("dotenv").config();
 
@@ -43,7 +42,7 @@ let testUser1: User;
 const testAssetName = "TST4";
 let testAssetId: BN;
 
-describe("UI tests - swapping assets", () => {
+describe("UI tests - pools, providing, removing liquidity", () => {
   beforeAll(async () => {
     try {
       getApi();
@@ -77,10 +76,11 @@ describe("UI tests - swapping assets", () => {
     );
 
     testUser1.addAsset(testAssetId);
+    testUser1.addAsset(MGA_ASSET_ID);
     await testUser1.refreshAmounts(AssetWallet.BEFORE);
   });
 
-  test("User can swap two assets", async () => {
+  test("User can provide liquidity", async () => {
     getApi();
 
     const mga = new Mangata(driver);
@@ -94,14 +94,13 @@ describe("UI tests - swapping assets", () => {
     const isWalletConnected = sidebar.isWalletConnected("acc_automation");
     expect(isWalletConnected).toBeTruthy();
 
-    const swapView = new Swap(driver);
-    await swapView.toggleSwap();
-    await swapView.toggleShowAllTokens();
-    await swapView.selectPayAsset(MGR_ASSET_NAME);
-    await swapView.selectGetAsset(testAssetName);
-    await swapView.addPayAssetAmount("0.001");
-    const testAssetValue = await swapView.getBalanceFromAssetGet();
-    await swapView.doSwap();
+    const poolView = new Pool(driver);
+    await poolView.togglePool();
+    await poolView.toggleShowAllTokens();
+    await poolView.selectToken1Asset(testAssetName);
+    await poolView.selectToken2Asset(MGR_ASSET_NAME);
+    await poolView.addToken1AssetAmount("1000");
+    await poolView.provideOrCreatePool();
     const modal = new NotificationModal(driver);
     const isModalWaitingForSignVisible = await modal.isModalVisible(
       ModalType.Confirm
@@ -127,11 +126,19 @@ describe("UI tests - swapping assets", () => {
       testUser1.getAsset(testAssetId)?.amountBefore.free!;
     const testAssetAmountAfter =
       testUser1.getAsset(testAssetId)?.amountAfter.free!;
-    const swapped = testAssetAmountBefore.lt(testAssetAmountAfter);
-    expect(testAssetAmountAfter.sub(testAssetAmountBefore)).bnEqual(
-      uiStringToBN(testAssetValue, 12)
+    const mgrAmountBefore = testUser1.getAsset(testAssetId)?.amountBefore.free!;
+    const mgrAmountAfter = testUser1.getAsset(testAssetId)?.amountAfter.free!;
+
+    const liquidityProvided =
+      testAssetAmountBefore.gt(testAssetAmountAfter) &&
+      mgrAmountBefore.gt(mgrAmountAfter);
+    expect(liquidityProvided).toBeTruthy();
+
+    const poolVisible = await new Sidebar(driver).isLiquidityPoolVisible(
+      MGR_ASSET_NAME,
+      testAssetName
     );
-    expect(swapped).toBeTruthy();
+    expect(poolVisible).toBeTruthy();
   });
 
   afterEach(async () => {
