@@ -1,7 +1,7 @@
 import { formatBalance } from "@polkadot/util/format";
 import { BN } from "@polkadot/util";
 import { getApi, getMangataInstance, mangata } from "./api";
-import { hexToBn } from "@polkadot/util";
+import { hexToBn, isHex } from "@polkadot/util";
 import { Assets } from "./Assets";
 import { User } from "./User";
 import { getAccountJSON } from "./frontend/utils/Helper";
@@ -377,12 +377,16 @@ export async function getFeeLockMetadata(api: ApiPromise) {
   const lockMetadata = JSON.parse(
     JSON.stringify(await api?.query.feeLock.feeLockMetadata())
   );
-  const periodLength = new BN(lockMetadata.periodLength.toString());
-  const feeLockAmount = new BN(lockMetadata.feeLockAmount.toString());
+  const periodLength = stringToBN(lockMetadata.periodLength.toString());
+  const feeLockAmount = stringToBN(lockMetadata.feeLockAmount.toString());
   const threshold = lockMetadata.swapValueThreshold;
   return {
     periodLength: periodLength,
     feeLockAmount: feeLockAmount,
     swapValueThreshold: threshold,
   };
+}
+
+export function stringToBN(value: string): BN {
+  return isHex(value) ? hexToBn(value) : new BN(value);
 }

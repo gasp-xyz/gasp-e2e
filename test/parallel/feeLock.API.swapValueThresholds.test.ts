@@ -14,7 +14,11 @@ import { setupApi, setupUsers } from "../../utils/setup";
 import { Sudo } from "../../utils/sudo";
 import { updateFeeLockMetadata } from "../../utils/tx";
 import { AssetWallet, User } from "../../utils/User";
-import { getEnvironmentRequiredVars, feeLockErrors } from "../../utils/utils";
+import {
+  getEnvironmentRequiredVars,
+  feeLockErrors,
+  getFeeLockMetadata,
+} from "../../utils/utils";
 import { Xyk } from "../../utils/xyk";
 
 jest.spyOn(console, "log").mockImplementation(jest.fn());
@@ -133,9 +137,7 @@ test("gasless- Given a feeLock correctly configured WHEN the user swaps two toke
 test("gasless- Given a feeLock correctly configured WHEN the user swaps two tokens defined in the thresholds AND the user has enough MGAs AND swapValue < threshold THEN some MGAs will be locked", async () => {
   const api = getApi();
 
-  const feeLockAmount = JSON.parse(
-    JSON.stringify(await api.query.feeLock.feeLockMetadata())
-  ).feeLockAmount;
+  const { feeLockAmount } = await getFeeLockMetadata(api);
 
   await Sudo.batchAsSudoFinalized(
     Assets.mintNative(testUser1),

@@ -9,7 +9,7 @@ import {
 } from "./txHandler";
 import { User } from "./User";
 import { BN_TEN, BN_THOUSAND } from "@mangata-finance/sdk";
-import { api, Extrinsic } from "./setup";
+import { api, Extrinsic, setupUsers, setupApi } from "./setup";
 import { MGA_ASSET_ID } from "./Constants";
 import { Sudo } from "./sudo";
 import _ from "lodash";
@@ -45,22 +45,36 @@ export class Assets {
   static async setupUserWithCurrencies(
     user: User,
     currencyValues = [new BN(250000), new BN(250001)],
-    sudo: User,
+    _sudo: User,
     skipInfo = false
   ): Promise<BN[]> {
-    const currencies: BN[] = [];
+    const txs: Extrinsic[] = [];
+    await setupApi();
+    await setupUsers();
     for (let currency = 0; currency < currencyValues.length; currency++) {
-      const currencyId = await this.issueAssetToUser(
-        user,
-        currencyValues[currency],
-        sudo,
-        skipInfo
-      );
-      currencies.push(currencyId);
-      user.addAsset(currencyId, new BN(currencyValues[currency]));
+      txs.push(Assets.issueToken(user, currencyValues[currency]));
     }
-
-    return currencies;
+    const result = await Sudo.batchAsSudoFinalized(...txs);
+    const assetIds: BN[] = result
+      .filter((X) => X.method === "Issued")
+      .map((t) => new BN(t.eventData[0].data.toString()));
+    const addInfos: Extrinsic[] = [];
+    if (!skipInfo) {
+      for (let index = 0; index < assetIds.length; index++) {
+        const assetId = assetIds[index];
+        addInfos.push(
+          Assets.registerAsset(
+            `TEST_${assetId}`,
+            this.getAssetName(assetId.toString()),
+            new BN(18)
+          )
+        );
+      }
+      await Sudo.batchAsSudoFinalized(...addInfos);
+    }
+    user.addAssets(assetIds);
+    await user.refreshAmounts();
+    return assetIds;
   }
 
   static async issueAssetToSudo(sudo: User) {

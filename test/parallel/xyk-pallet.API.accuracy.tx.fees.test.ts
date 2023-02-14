@@ -13,12 +13,16 @@ import { AssetWallet, User } from "../../utils/User";
 import { validateAssetsWithValues } from "../../utils/validators";
 import { Assets } from "../../utils/Assets";
 
-import { getEnvironmentRequiredVars } from "../../utils/utils";
+import {
+  getEnvironmentRequiredVars,
+  getFeeLockMetadata,
+} from "../../utils/utils";
 import { SignerOptions } from "@polkadot/api/types";
 import { getEventResultFromMangataTx } from "../../utils/txHandler";
 import { RuntimeDispatchInfo } from "@polkadot/types/interfaces";
 import { MGA_ASSET_ID } from "../../utils/Constants";
 import { Fees } from "../../utils/Fees";
+import { BN_ZERO } from "@mangata-finance/sdk";
 
 jest.spyOn(console, "log").mockImplementation(jest.fn());
 jest.spyOn(console, "error").mockImplementation(jest.fn());
@@ -107,6 +111,15 @@ test("xyk-pallet - Calculate required MGA fee - CreatePool", async () => {
       const eventResponse = getEventResultFromMangataTx(result);
       expect(eventResponse.state).toEqual(ExtrinsicResult.ExtrinsicSuccess);
     });
+
+  await testUser1.refreshAmounts(AssetWallet.AFTER);
+  const deductedMGATkns = testUser1
+    .getAsset(MGA_ASSET_ID)
+    ?.amountBefore.free.sub(
+      testUser1.getAsset(MGA_ASSET_ID)?.amountAfter.free!
+    );
+  const fee = cost.partialFee;
+  expect(deductedMGATkns).bnLte(fee);
 });
 
 test("xyk-pallet - Calculate required MGA fee - BuyAsset", async () => {
@@ -145,15 +158,12 @@ test("xyk-pallet - Calculate required MGA fee - BuyAsset", async () => {
     });
   const costExpected = Fees.getSwapFees(cost.partialFee);
   expect(cost.partialFee).bnLte(costExpected);
-});
-
-afterEach(async () => {
   await testUser1.refreshAmounts(AssetWallet.AFTER);
   const deductedMGATkns = testUser1
     .getAsset(MGA_ASSET_ID)
     ?.amountBefore.free.sub(
       testUser1.getAsset(MGA_ASSET_ID)?.amountAfter.free!
     );
-  const fee = cost.partialFee;
-  expect(deductedMGATkns).bnLte(fee);
+  const gaslessFee = (await getFeeLockMetadata(await getApi())).feeLockAmount;
+  expect(deductedMGATkns?.sub(gaslessFee)).bnLte(BN_ZERO);
 });
