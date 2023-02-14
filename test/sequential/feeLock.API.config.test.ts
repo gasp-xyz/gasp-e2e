@@ -19,7 +19,7 @@ import { Sudo } from "../../utils/sudo";
 import { updateFeeLockMetadata, unlockFee } from "../../utils/tx";
 import { getEventResultFromMangataTx } from "../../utils/txHandler";
 import { AssetWallet, User } from "../../utils/User";
-import { getEnvironmentRequiredVars, waitForNBlocks } from "../../utils/utils";
+import { getEnvironmentRequiredVars, stringToBN, waitForNBlocks } from "../../utils/utils";
 import { Xyk } from "../../utils/xyk";
 
 jest.spyOn(console, "log").mockImplementation(jest.fn());
@@ -105,7 +105,7 @@ test("gasless- GIVEN a feeLock WHEN periodLength and feeLockAmount are set THEN 
       JSON.stringify(await api?.query.feeLock.feeLockMetadata())
     ).periodLength.toString()
   );
-  const lastFeeLockAmount = new BN(
+  const lastFeeLockAmount = stringToBN(
     JSON.parse(
       JSON.stringify(await api?.query.feeLock.feeLockMetadata())
     ).feeLockAmount.toString()
@@ -128,7 +128,7 @@ test("gasless- GIVEN a feeLock WHEN periodLength and feeLockAmount are set THEN 
       JSON.stringify(await api?.query.feeLock.feeLockMetadata())
     ).periodLength.toString()
   );
-  const currentFeeLockAmount = new BN(
+  const currentFeeLockAmount = stringToBN(
     JSON.parse(
       JSON.stringify(await api?.query.feeLock.feeLockMetadata())
     ).feeLockAmount.toString()
@@ -143,7 +143,7 @@ test("gasless- Changing feeLock config parameter on the fly is works robustly", 
   let updateMetadataEvent: any;
   testUser1.addAsset(MGA_ASSET_ID);
 
-  const feeLockAmount = new BN(
+  const feeLockAmount = stringToBN(
     JSON.parse(
       JSON.stringify(await api?.query.feeLock.feeLockMetadata())
     ).feeLockAmount.toString()
@@ -191,7 +191,7 @@ test("gasless- Changing feeLock config parameter on the fly is works robustly", 
   );
 
   expect(newPeriodLength).bnEqual(new BN(2));
-  expect(userMgaLockedValue).bnEqual(new BN(feeLockAmount));
+  expect(userMgaLockedValue).bnEqual(feeLockAmount);
   expect(testUser1.getAsset(MGA_ASSET_ID)?.amountAfter.reserved!).bnEqual(
     new BN(0)
   );
