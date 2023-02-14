@@ -42,7 +42,7 @@ export async function addMgaToWhitelisted(
   const feeLockMetadata = JSON.parse(
     JSON.stringify(await api.query.feeLock.feeLockMetadata())
   );
-  const swapValueThreshold = new BN(feeLockMetadata.swapValueThreshold);
+  const swapValueThreshold = stringToBN(feeLockMetadata.swapValueThreshold);
   const whitelistedTokens = feeLockMetadata.whitelistedTokens;
 
   whitelistedTokens.forEach((element: any) => {

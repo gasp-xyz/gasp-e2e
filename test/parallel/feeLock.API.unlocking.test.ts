@@ -23,6 +23,7 @@ import {
   waitBlockNumber,
   feeLockErrors,
   getFeeLockMetadata,
+  stringToBN,
 } from "../../utils/utils";
 import { getEventResultFromMangataTx } from "../../utils/txHandler";
 import { ExtrinsicResult } from "../../utils/eventListeners";
@@ -165,8 +166,10 @@ test("gasless- GIVEN some locked tokens WHEN querying accountFeeLockData THEN th
     )
   );
 
-  expect(new BN(accountFeeLockData.lastFeeLockBlock)).bnEqual(new BN(block));
-  expect(new BN(accountFeeLockData.totalFeeLockAmount)).bnEqual(
+  expect(stringToBN(accountFeeLockData.lastFeeLockBlock)).bnEqual(
+    new BN(block)
+  );
+  expect(stringToBN(accountFeeLockData.totalFeeLockAmount)).bnEqual(
     new BN(feeLockAmount)
   );
 });
@@ -205,13 +208,7 @@ test("gasless- GIVEN a lock WHEN the period is N THEN the tokens can not be unlo
   const api = getApi();
   let currentBlockNumber: any;
 
-  const feeLockAmount = JSON.parse(
-    JSON.stringify(await api.query.feeLock.feeLockMetadata())
-  ).feeLockAmount;
-  const periodLength = JSON.parse(
-    JSON.stringify(await api.query.feeLock.feeLockMetadata())
-  ).periodLength;
-
+  const { feeLockAmount, periodLength } = await getFeeLockMetadata(api);
   await testUser1.addMGATokens(sudo, new BN(feeLockAmount));
 
   const saleAssetValue = thresholdValue.sub(new BN(5));
