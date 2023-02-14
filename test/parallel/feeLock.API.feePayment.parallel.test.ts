@@ -23,6 +23,7 @@ import {
 } from "../../utils/utils";
 import { Xyk } from "../../utils/xyk";
 import { addMgaToWhitelisted } from "../../utils/feeLockHelper";
+import { stringToBN } from '../../utils/utils';
 
 jest.spyOn(console, "log").mockImplementation(jest.fn());
 jest.setTimeout(2500000);
@@ -185,7 +186,6 @@ test("gasless- For low-value swaps, token reservation status and pallet storage 
     lastBlockValue: any
   ) {
     const api = getApi();
-
     const accountFeeLockData = JSON.parse(
       JSON.stringify(
         await api.query.feeLock.accountFeeLockData(
@@ -193,10 +193,10 @@ test("gasless- For low-value swaps, token reservation status and pallet storage 
         )
       )
     );
-    expect(new BN(accountFeeLockData.totalFeeLockAmount)).bnEqual(
+    expect(stringToBN(accountFeeLockData.totalFeeLockAmount)).bnEqual(
       new BN(totalAmountValue)
     );
-    expect(new BN(accountFeeLockData.lastFeeLockBlock)).bnEqual(
+    expect(stringToBN(accountFeeLockData.lastFeeLockBlock)).bnEqual(
       new BN(lastBlockValue)
     );
   }
