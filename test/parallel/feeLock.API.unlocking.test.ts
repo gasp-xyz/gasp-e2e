@@ -231,7 +231,7 @@ test("gasless- GIVEN a lock WHEN the period is N THEN the tokens can not be unlo
     ).rejects.toThrow(feeLockErrors.FeeUnlockingFail);
     await waitNewBlock();
     currentBlockNumber = await getBlockNumber();
-  } while (currentBlockNumber < waitingBlock - 3);
+  } while (currentBlockNumber < waitingBlock - 1);
 
   await unlockFee(testUser1).then((result) => {
     const eventResponse = getEventResultFromMangataTx(result);
