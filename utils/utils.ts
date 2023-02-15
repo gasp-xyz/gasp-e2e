@@ -307,7 +307,7 @@ export async function getUserBalanceOfToken(tokenId: BN, account: User) {
   return tokenBalance;
 }
 
-export async function getBlockNumber() {
+export async function getBlockNumber(): Promise<number> {
   const api = await mangata?.getApi()!;
   return ((await api.query.system.number()) as any).toNumber();
 }
