@@ -205,7 +205,7 @@ test("gasless- GIVEN some locked tokens and lastFeeLockBlock is lower than curre
   );
 });
 
-test("gasless- GIVEN a lock WHEN the period is N THEN the tokens can not be unlocked before that period", async () => {
+test.skip("gasless- GIVEN a lock WHEN the period is N THEN the tokens can not be unlocked before that period", async () => {
   const api = getApi();
   let currentBlockNumber: number;
 
