@@ -241,7 +241,7 @@ export async function waitBlockNumber(
   waitingperiodCounter = 0;
   testLog.getLog().info("Waiting block number " + blockNumber);
   while (
-    currentBlock < blockNumber &&
+    currentBlock < Number(blockNumber) &&
     waitingperiodCounter < maxWaitingPeriod
   ) {
     await waitNewBlock();

@@ -88,7 +88,7 @@ export async function setup5PoolsChained(users: User[]) {
   );
   return { users, tokenIds };
 }
-export const setupGasLess = async () => {
+export const setupGasLess = async (force = false) => {
   keyring = new Keyring({ type: "sr25519" });
   const { sudo: sudoUserName } = getEnvironmentRequiredVars();
   sudo = new User(keyring, sudoUserName);
@@ -98,7 +98,7 @@ export const setupGasLess = async () => {
     JSON.stringify(await api?.query.feeLock.feeLockMetadata())
   );
   // only create if empty.
-  if (feeLockConfig === null || feeLockConfig.periodLength === null) {
+  if (feeLockConfig === null || feeLockConfig.periodLength === null || force) {
     await signTx(
       api!,
       api!.tx.sudo.sudo(

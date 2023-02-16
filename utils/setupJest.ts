@@ -1,11 +1,29 @@
+/* eslint-disable no-console */
 import { BN } from "@polkadot/util";
 import { renameExtraLogs } from "./frontend/utils/Helper";
 import { removeSudoDb } from "./lock";
+import { setupGasLess } from "./setup";
 
 require("dotenv").config();
-//TODO: This must be temporal, but lets retry test failues to avoid Tx issues.
-jest.retryTimes(2);
+beforeEach(async () => {
+  if (
+    process.argv.includes("--runInBand") ||
+    process.env.JEST_GROUP_SEQUENTIAL
+  ) {
+    console.warn("BeforeEach::setting up gasless...");
+    await setupGasLess(true);
+    console.warn("BeforeEach...Done");
+  }
+});
 beforeAll(async () => {
+  if (
+    process.argv.includes("--runInBand") ||
+    process.env.JEST_GROUP_SEQUENTIAL
+  ) {
+    console.warn("BeforeAll::setting up gasless...");
+    await setupGasLess(true);
+    console.warn("BeforeAll...Done");
+  }
   await removeSudoDb();
 
   //   const child = await execFile(
@@ -21,7 +39,6 @@ beforeAll(async () => {
   //     }
   //   );
 });
-
 declare global {
   namespace jest {
     interface Matchers<R> {
