@@ -1,7 +1,6 @@
 import { SubmittableExtrinsic } from "@polkadot/api/types";
 import { getApi } from "./api";
 import { GenericEvent } from "@polkadot/types";
-import { Codec } from "@polkadot/types/types";
 import { KeyringPair } from "@polkadot/keyring/types";
 import { BN, hexToU8a } from "@polkadot/util";
 import { SudoDB } from "./SudoDB";
@@ -40,7 +39,7 @@ export async function getBalanceOfAsset(assetId: BN, account: any) {
 export async function getBalanceOfPool(
   assetId1: BN,
   assetId2: BN
-): Promise<Codec[]> {
+): Promise<BN[][]> {
   const api = getApi();
 
   const balance1 = await api.query.xyk.pools([assetId1, assetId2]);
@@ -59,7 +58,10 @@ export async function getBalanceOfPool(
         balance2
     );
 
-  return [balance1, balance2];
+  return [
+    [new BN(balance1[0]), new BN(balance1[1])],
+    [new BN(balance2[0]), new BN(balance2[1])],
+  ];
 }
 
 export async function getSudoKey(): Promise<AccountId32> {

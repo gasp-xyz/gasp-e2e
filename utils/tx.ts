@@ -10,7 +10,12 @@ import { SudoDB } from "./SudoDB";
 import { setAssetInfo, signSendAndWaitToFinishTx } from "./txHandler";
 import { getEnvironmentRequiredVars } from "./utils";
 import { Fees } from "./Fees";
-import { ETH_ASSET_ID, MGA_ASSET_ID, MGA_DEFAULT_LIQ_TOKEN } from "./Constants";
+import {
+  ETH_ASSET_ID,
+  MGA_ASSET_ID,
+  MGA_DEFAULT_LIQ_TOKEN,
+  MAX_BALANCE,
+} from "./Constants";
 import { Keyring } from "@polkadot/api";
 import { User } from "./User";
 import { testLog } from "./Logger";
@@ -20,6 +25,7 @@ import {
   TokenBalance,
   MangataGenericEvent,
   toBN,
+  BN_ONE,
 } from "@mangata-finance/sdk";
 import { AnyJson } from "@polkadot/types/types";
 import { SudoUser } from "./Framework/User/SudoUser";
@@ -967,8 +973,9 @@ export class FeeTxs {
 export async function registerAsset(
   sudoUser: User,
   assetId: BN,
-  adressLocation: any,
-  locMarker: BN
+  addressLocation: any,
+  locMarker: BN,
+  additional: any
 ) {
   const api = getApi();
   const result = await signTx(
@@ -977,10 +984,11 @@ export async function registerAsset(
       api.tx.assetRegistry.registerAsset(
         {
           decimals: 12,
-          name: "TESTTOKEN-" + locMarker.toString(),
-          symbol: "TSTT" + locMarker.toString(),
+          name: "TEST_TOKEN-" + locMarker.toString(),
+          symbol: "TEST" + locMarker.toString(),
           existentialDeposit: 0,
-          location: adressLocation,
+          location: addressLocation,
+          additional,
         },
         //@ts-ignore
         assetId
@@ -1033,6 +1041,35 @@ export async function compoundRewards(
     api,
     api.tx.xyk.compoundRewards(liquidityAssetId, amountPermille),
     User.keyRingPair
+  );
+  return result;
+}
+
+export async function multiSwapBuy(
+  testUser1: User,
+  tokenIds: BN[],
+  buyAmount: BN,
+  maxAmountIn: BN = MAX_BALANCE
+) {
+  const api = getApi();
+  const result = await signTx(
+    api,
+    api.tx.xyk.multiswapBuyAsset(tokenIds, buyAmount, maxAmountIn),
+    testUser1.keyRingPair
+  );
+  return result;
+}
+export async function multiSwapSell(
+  testUser1: User,
+  tokenIds: BN[],
+  soldAmount: BN,
+  minAmountOut: BN = BN_ONE
+) {
+  const api = getApi();
+  const result = await signTx(
+    api,
+    api.tx.xyk.multiswapSellAsset(tokenIds, soldAmount, minAmountOut),
+    testUser1.keyRingPair
   );
   return result;
 }
