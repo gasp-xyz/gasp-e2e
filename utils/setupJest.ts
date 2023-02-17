@@ -2,30 +2,18 @@
 import { BN } from "@polkadot/util";
 import { renameExtraLogs } from "./frontend/utils/Helper";
 import { removeSudoDb } from "./lock";
-import { setupGasLess } from "./setup";
 
 require("dotenv").config();
-beforeEach(async () => {
-  if (
-    process.argv.includes("--runInBand") ||
-    process.env.JEST_GROUP_SEQUENTIAL
-  ) {
-    console.warn("BeforeEach::setting up gasless...");
-    await setupGasLess(true);
-    console.warn("BeforeEach...Done");
-  }
-});
 beforeAll(async () => {
-  if (
-    process.argv.includes("--runInBand") ||
-    process.env.JEST_GROUP_SEQUENTIAL
-  ) {
-    console.warn("BeforeAll::setting up gasless...");
-    await setupGasLess(true);
-    console.warn("BeforeAll...Done");
-  }
+  //  if (
+  //    process.argv.includes("--runInBand") ||
+  //    process.env.JEST_GROUP_SEQUENTIAL
+  //  ) {
+  //    console.warn("BeforeAll::setting up gasless...");
+  //    await setupGasLess(true);
+  //    console.warn("BeforeAll...Done");
+  //  }
   await removeSudoDb();
-
   //   const child = await execFile(
   //     `node`,
   //     [`${__dirname}/NonceManager.js`],

@@ -1,7 +1,6 @@
 /*
  *
  * @group seqgasless
- * @group sequential
  */
 
 import { Keyring } from "@polkadot/api";
@@ -19,7 +18,11 @@ import { Sudo } from "../../utils/sudo";
 import { updateFeeLockMetadata, unlockFee } from "../../utils/tx";
 import { getEventResultFromMangataTx } from "../../utils/txHandler";
 import { AssetWallet, User } from "../../utils/User";
-import { getEnvironmentRequiredVars, stringToBN, waitForNBlocks } from "../../utils/utils";
+import {
+  getEnvironmentRequiredVars,
+  stringToBN,
+  waitForNBlocks,
+} from "../../utils/utils";
 import { Xyk } from "../../utils/xyk";
 
 jest.spyOn(console, "log").mockImplementation(jest.fn());
