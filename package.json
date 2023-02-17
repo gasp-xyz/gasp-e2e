@@ -25,6 +25,7 @@
     "ethers": "^5.4.7",
     "ganache-cli": "^6.12.2",
     "guid-typescript": "^1.0.9",
+    "jest-extended": "^3.2.3",
     "jsonpath": "^1.1.1",
     "loadsh": "^0.0.4",
     "node-ipc": "^11.1.0",
@@ -114,6 +115,9 @@
     "bail": false,
     "globalSetup": "./utils/globalSetup.js",
     "globalTeardown": "./utils/globalTeardown.js",
+    "setupFiles":[
+      "./utils/setupTests.ts"
+    ],
     "setupFilesAfterEnv": [
       "jest-allure/dist/setup",
       "./utils/setupJest.ts"

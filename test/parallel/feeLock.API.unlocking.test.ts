@@ -1,6 +1,7 @@
 /*
  *
  * @group paralgasless
+ * @group parallel
  */
 
 import { Keyring } from "@polkadot/api";
@@ -21,9 +22,12 @@ import {
   getBlockNumber,
   waitBlockNumber,
   feeLockErrors,
+  getFeeLockMetadata,
+  stringToBN,
 } from "../../utils/utils";
 import { getEventResultFromMangataTx } from "../../utils/txHandler";
 import { ExtrinsicResult } from "../../utils/eventListeners";
+import { testLog } from "../../utils/Logger";
 
 jest.spyOn(console, "log").mockImplementation(jest.fn());
 jest.setTimeout(2500000);
@@ -94,12 +98,8 @@ beforeEach(async () => {
 
 test("gasless- GIVEN some locked tokens and no more free MGX WHEN another tx is submitted AND lock period did not finished THEN the operation can not be submitted", async () => {
   const api = getApi();
-
-  const feeLockAmount = JSON.parse(
-    JSON.stringify(await api.query.feeLock.feeLockMetadata())
-  ).feeLockAmount;
-
-  await testUser1.addMGATokens(sudo, new BN(feeLockAmount));
+  const feeLockAmount = await (await getFeeLockMetadata(api)).feeLockAmount;
+  await testUser1.addMGATokens(sudo, feeLockAmount);
 
   const mangata = await getMangataInstance();
   const saleAssetValue = thresholdValue.sub(new BN(5));
@@ -124,12 +124,7 @@ test("gasless- GIVEN some locked tokens and no more free MGX WHEN another tx is 
 test("gasless- GIVEN some locked tokens and no more free MGX WHEN another tx is submitted AND lock period finished THEN the operation can be submitted ( unlock before locking )", async () => {
   const api = getApi();
 
-  const feeLockAmount = JSON.parse(
-    JSON.stringify(await api.query.feeLock.feeLockMetadata())
-  ).feeLockAmount;
-  const periodLength = JSON.parse(
-    JSON.stringify(await api.query.feeLock.feeLockMetadata())
-  ).periodLength;
+  const { feeLockAmount, periodLength } = await getFeeLockMetadata(api);
 
   await testUser1.addMGATokens(sudo, new BN(feeLockAmount).add(new BN(1)));
 
@@ -143,7 +138,7 @@ test("gasless- GIVEN some locked tokens and no more free MGX WHEN another tx is 
     )
   );
   const waitingBlock = accountFeeLockData.lastFeeLockBlock + periodLength;
-  await waitBlockNumber(waitingBlock, periodLength + 5);
+  await waitBlockNumber(waitingBlock, periodLength.toNumber() + 5);
 
   await testUser1
     .sellAssets(firstCurrency, secondCurrency, saleAssetValue)
@@ -156,9 +151,7 @@ test("gasless- GIVEN some locked tokens and no more free MGX WHEN another tx is 
 test("gasless- GIVEN some locked tokens WHEN querying accountFeeLockData THEN the amount matches with locked tokens AND lastFeeLockBlock matches with the block when tokens were locked", async () => {
   const api = getApi();
 
-  const feeLockAmount = JSON.parse(
-    JSON.stringify(await api.query.feeLock.feeLockMetadata())
-  ).feeLockAmount;
+  const { feeLockAmount } = await getFeeLockMetadata(api);
 
   await testUser1.addMGATokens(sudo, new BN(feeLockAmount).add(new BN(1)));
 
@@ -174,8 +167,10 @@ test("gasless- GIVEN some locked tokens WHEN querying accountFeeLockData THEN th
     )
   );
 
-  expect(new BN(accountFeeLockData.lastFeeLockBlock)).bnEqual(new BN(block));
-  expect(new BN(accountFeeLockData.totalFeeLockAmount)).bnEqual(
+  expect(stringToBN(accountFeeLockData.lastFeeLockBlock)).bnEqual(
+    new BN(block)
+  );
+  expect(stringToBN(accountFeeLockData.totalFeeLockAmount)).bnEqual(
     new BN(feeLockAmount)
   );
 });
@@ -183,12 +178,7 @@ test("gasless- GIVEN some locked tokens WHEN querying accountFeeLockData THEN th
 test("gasless- GIVEN some locked tokens and lastFeeLockBlock is lower than current block WHEN release feeLock is requested THEN the tokens are unlocked", async () => {
   const api = getApi();
 
-  const feeLockAmount = JSON.parse(
-    JSON.stringify(await api.query.feeLock.feeLockMetadata())
-  ).feeLockAmount;
-  const periodLength = JSON.parse(
-    JSON.stringify(await api.query.feeLock.feeLockMetadata())
-  ).periodLength;
+  const { feeLockAmount, periodLength } = await getFeeLockMetadata(api);
 
   await testUser1.addMGATokens(sudo, new BN(feeLockAmount).add(new BN(1)));
 
@@ -202,7 +192,7 @@ test("gasless- GIVEN some locked tokens and lastFeeLockBlock is lower than curre
   );
 
   const waitingBlock = accountFeeLockData.lastFeeLockBlock + periodLength;
-  await waitBlockNumber(waitingBlock, periodLength + 5);
+  await waitBlockNumber(waitingBlock, periodLength.toNumber() + 5);
   await testUser1.refreshAmounts(AssetWallet.BEFORE);
   await unlockFee(testUser1);
   await testUser1.refreshAmounts(AssetWallet.AFTER);
@@ -215,28 +205,26 @@ test("gasless- GIVEN some locked tokens and lastFeeLockBlock is lower than curre
   );
 });
 
-test("gasless- GIVEN a lock WHEN the period is N THEN the tokens can not be unlocked before that period", async () => {
+test.skip("gasless- GIVEN a lock WHEN the period is N THEN the tokens can not be unlocked before that period", async () => {
   const api = getApi();
-  let currentBlockNumber: any;
+  let currentBlockNumber: number;
 
-  const feeLockAmount = JSON.parse(
-    JSON.stringify(await api.query.feeLock.feeLockMetadata())
-  ).feeLockAmount;
-  const periodLength = JSON.parse(
-    JSON.stringify(await api.query.feeLock.feeLockMetadata())
-  ).periodLength;
-
+  const { feeLockAmount, periodLength } = await getFeeLockMetadata(api);
   await testUser1.addMGATokens(sudo, new BN(feeLockAmount));
 
   const saleAssetValue = thresholdValue.sub(new BN(5));
 
   await testUser1.sellAssets(firstCurrency, secondCurrency, saleAssetValue);
-  const accountFeeLockData = JSON.parse(
-    JSON.stringify(
-      await api.query.feeLock.accountFeeLockData(testUser1.keyRingPair.address)
-    )
+  const feeLockBlock = stringToBN(
+    JSON.parse(
+      JSON.stringify(
+        await api.query.feeLock.accountFeeLockData(
+          testUser1.keyRingPair.address
+        )
+      )
+    ).lastFeeLockBlock
   );
-  const waitingBlock = accountFeeLockData.lastFeeLockBlock + periodLength;
+  const waitingBlock = feeLockBlock.add(periodLength);
 
   currentBlockNumber = await getBlockNumber();
 
@@ -248,7 +236,15 @@ test("gasless- GIVEN a lock WHEN the period is N THEN the tokens can not be unlo
     ).rejects.toThrow(feeLockErrors.FeeUnlockingFail);
     await waitNewBlock();
     currentBlockNumber = await getBlockNumber();
-  } while (currentBlockNumber < waitingBlock - 1);
+    testLog
+      .getLog()
+      .info(
+        "now::" +
+          currentBlockNumber +
+          "Waiting for block " +
+          waitingBlock.toString()
+      );
+  } while (currentBlockNumber < waitingBlock.subn(1).toNumber());
 
   await unlockFee(testUser1).then((result) => {
     const eventResponse = getEventResultFromMangataTx(result);

@@ -56,14 +56,13 @@ beforeEach(async () => {
   // setup Pallet.
   pallet = new User(keyring);
   pallet.addFromAddress(keyring, pallet_address);
-
+  await testUser1.addMGATokens(sudo);
   //add two curerncies and balance to testUser:
   [firstCurrency, secondCurrency] = await Assets.setupUserWithCurrencies(
     testUser1,
     [defaultCurrecyValue, defaultCurrecyValue.add(new BN(1))],
     sudo
   );
-  await testUser1.addMGATokens(sudo);
 
   await testUser1.createPoolToAsset(
     new BN(50000),

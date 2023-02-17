@@ -1,6 +1,7 @@
 /*
  *
  * @group paralgasless
+ * @group parallel
  */
 
 import { Keyring } from "@polkadot/api";
@@ -17,10 +18,12 @@ import {
   getEnvironmentRequiredVars,
   feeLockErrors,
   getBlockNumber,
+  getFeeLockMetadata,
   waitBlockNumber,
 } from "../../utils/utils";
 import { Xyk } from "../../utils/xyk";
 import { addMgaToWhitelisted } from "../../utils/feeLockHelper";
+import { stringToBN } from "../../utils/utils";
 
 jest.spyOn(console, "log").mockImplementation(jest.fn());
 jest.setTimeout(2500000);
@@ -106,9 +109,7 @@ test("gasless- GIVEN a feeLock configured WHEN a swap happens THEN fees are not 
   await testUser1.addMGATokens(sudo);
   testUser1.addAsset(MGA_ASSET_ID);
 
-  const feeLockAmount = JSON.parse(
-    JSON.stringify(await api.query.feeLock.feeLockMetadata())
-  ).feeLockAmount;
+  const { feeLockAmount } = await getFeeLockMetadata(api);
   const saleAssetValue = thresholdValue.sub(new BN(5));
 
   await testUser1.refreshAmounts(AssetWallet.BEFORE);
@@ -140,9 +141,7 @@ test("gasless- GIVEN a correct config for gasless swaps WHEN the user runs unloc
   testUser1.addAsset(MGA_ASSET_ID);
 
   const saleAssetValue = thresholdValue.sub(new BN(5));
-  const periodLength = JSON.parse(
-    JSON.stringify(await api.query.feeLock.feeLockMetadata())
-  ).periodLength;
+  const { periodLength } = await getFeeLockMetadata(api);
 
   await testUser1.refreshAmounts(AssetWallet.BEFORE);
   await testUser1.sellAssets(MGA_ASSET_ID, firstCurrency, saleAssetValue);
@@ -152,7 +151,7 @@ test("gasless- GIVEN a correct config for gasless swaps WHEN the user runs unloc
     )
   );
   const waitingBlock = accountFeeLockData.lastFeeLockBlock + periodLength;
-  await waitBlockNumber(waitingBlock, periodLength + 5);
+  await waitBlockNumber(waitingBlock, periodLength.toNumber() + 5);
   await unlockFee(testUser1);
   await testUser1.refreshAmounts(AssetWallet.AFTER);
 
@@ -187,7 +186,6 @@ test("gasless- For low-value swaps, token reservation status and pallet storage 
     lastBlockValue: any
   ) {
     const api = getApi();
-
     const accountFeeLockData = JSON.parse(
       JSON.stringify(
         await api.query.feeLock.accountFeeLockData(
@@ -195,10 +193,10 @@ test("gasless- For low-value swaps, token reservation status and pallet storage 
         )
       )
     );
-    expect(new BN(accountFeeLockData.totalFeeLockAmount)).bnEqual(
+    expect(stringToBN(accountFeeLockData.totalFeeLockAmount)).bnEqual(
       new BN(totalAmountValue)
     );
-    expect(new BN(accountFeeLockData.lastFeeLockBlock)).bnEqual(
+    expect(stringToBN(accountFeeLockData.lastFeeLockBlock)).bnEqual(
       new BN(lastBlockValue)
     );
   }
@@ -207,12 +205,7 @@ test("gasless- For low-value swaps, token reservation status and pallet storage 
 
   await addMgaToWhitelisted(thresholdValue, sudo);
 
-  const feeLockAmount = JSON.parse(
-    JSON.stringify(await api.query.feeLock.feeLockMetadata())
-  ).feeLockAmount;
-  const periodLength = JSON.parse(
-    JSON.stringify(await api.query.feeLock.feeLockMetadata())
-  ).periodLength;
+  const { feeLockAmount, periodLength } = await getFeeLockMetadata(api);
 
   await testUser1.addMGATokens(sudo);
   testUser1.addAsset(MGA_ASSET_ID);
@@ -221,13 +214,14 @@ test("gasless- For low-value swaps, token reservation status and pallet storage 
   const saleAssetValue = thresholdValue.sub(new BN(5));
   await testUser1.sellAssets(MGA_ASSET_ID, firstCurrency, saleAssetValue);
   const lockDataBlockNumber = await getBlockNumber();
+
   const accountFeeLockData = JSON.parse(
     JSON.stringify(
       await api.query.feeLock.accountFeeLockData(testUser1.keyRingPair.address)
     )
   );
   const waitingBlock = accountFeeLockData.lastFeeLockBlock + periodLength;
-  await waitBlockNumber(waitingBlock, periodLength + 5);
+  await waitBlockNumber(waitingBlock, periodLength.toNumber() + 5);
   await checkAccountFeeLockData(feeLockAmount, lockDataBlockNumber);
 
   await unlockFee(testUser1);
