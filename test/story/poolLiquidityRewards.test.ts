@@ -8,12 +8,7 @@ import { getApi, getMangataInstance, initApi } from "../../utils/api";
 import { User } from "../../utils/User";
 import { Keyring } from "@polkadot/api";
 import { BN } from "@polkadot/util";
-import {
-  getEnvironmentRequiredVars,
-  waitBlockNumber,
-  waitForNBlocks,
-  xykErrors,
-} from "../../utils/utils";
+import { getEnvironmentRequiredVars } from "../../utils/utils";
 import { Assets } from "../../utils/Assets";
 import { Sudo } from "../../utils/sudo";
 import { Xyk } from "../../utils/xyk";
@@ -21,8 +16,6 @@ import {
   mintLiquidity,
   activateLiquidity,
   getLiquidityAssetId,
-  promotePool,
-  deactivateLiquidity,
   burnLiquidity,
 } from "../../utils/tx";
 import { setupApi, setupUsers } from "../../utils/setup";
