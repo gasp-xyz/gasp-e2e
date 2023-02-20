@@ -16,6 +16,12 @@ export class Sudo {
   static batch(...txs: Extrinsic[]): Extrinsic {
     return api.tx.utility.batchAll(txs);
   }
+  static singleBatch(...txs: Extrinsic[]): Extrinsic {
+    return api.tx.utility.batch(txs);
+  }
+  static forceBatch(...txs: Extrinsic[]): Extrinsic {
+    return api.tx.utility.forceBatch(txs);
+  }
 
   static async batchAsSudoFinalized(
     ...txs: Extrinsic[]

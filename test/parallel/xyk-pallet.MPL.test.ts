@@ -44,7 +44,15 @@ describe("MPL: Delegator", () => {
     const candidates = JSON.parse(
       JSON.stringify(await node.api?.query.parachainStaking.candidatePool())
     );
-    liqTokenForCandidate = new BN(candidates[0].liquidityToken);
+    //get the liq token that is smaller ( 3 )
+    liqTokenForCandidate = new BN(
+      Math.min.apply(
+        null,
+        candidates.map(
+          (t: { liquidityToken: { toNumber: () => any } }) => t.liquidityToken
+        )
+      )
+    );
     const tokens = await getLiquidityPool(liqTokenForCandidate);
     // calculate this amount is crucial to not drop the chain production if new candidates are elected.
     // ( we need existi ones with more points thatn the ones created by the tests)
@@ -59,15 +67,9 @@ describe("MPL: Delegator", () => {
       ).toString()
     ).subn(10);
     await sudo.mintTokens(
-      tokens.concat([MGA_ASSET_ID]),
+      tokens.concat([MGA_ASSET_ID, liqTokenForCandidate]),
       [testUser1],
       minAmountInCollators.add(new BN(Math.pow(10, 20).toString()))
-    );
-    await testUser1.mintLiquidity(
-      tokens[0],
-      tokens[1],
-      minAmountInCollators.divn(10),
-      minAmountInCollators
     );
     const tokensBeforeJoin = await testUser1.getUserTokensAccountInfo(
       liqTokenForCandidate

@@ -38,18 +38,6 @@ module.exports = async function (globalConfig, projectConfig) {
   globalThis.server = ipc.server;
   // eslint-disable-next-line no-undef
   globalThis.api = api;
-  //Setup if  debugging a gasless test OR running gasless group
-  if (
-    (process.env.VSCODE_INSPECTOR_OPTIONS !== undefined &&
-      process.env.VSCODE_INSPECTOR_OPTIONS.length > 0 &&
-      globalConfig.testNamePattern
-        .toString()
-        .toLowerCase()
-        .includes("gasless")) ||
-    process.env.GASLESS
-  ) {
-    console.info("GAS LESS test - Setting it up");
-    process.env.FEES_ENABLED = false;
-    await setupGasLess();
-  }
+  //enable gasless! :brum brum:
+  await setupGasLess();
 };

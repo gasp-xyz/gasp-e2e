@@ -75,7 +75,7 @@ describe("xyk-pallet - Poll creation: Errors:", () => {
       [defaultCurrecyValue, defaultCurrecyValue.add(new BN(1))],
       sudo
     );
-    await testUser1.addMGATokens(sudo, new BN("100000000000000000000000"));
+    await testUser1.addMGATokens(sudo);
     // add users to pair.
     keyring.addPair(testUser1.keyRingPair);
     keyring.addPair(sudo.keyRingPair);
@@ -110,13 +110,20 @@ describe("xyk-pallet - Poll creation: Errors:", () => {
     });
 
     //validate the content of the event about the pool creation.
-    validatePoolCreatedEvent(
+    await validatePoolCreatedEvent(
       eventResponse,
       testUser1.keyRingPair.address,
       firstCurrency,
       first_asset_amount,
       secondCurrency,
       second_asset_amount
+    );
+    await validateStatusWhenPoolCreated(
+      firstCurrency,
+      secondCurrency,
+      testUser1,
+      pool_balance_before,
+      total_liquidity_assets_before
     );
   });
   test("Create x-y and y-x pool", async () => {
@@ -181,16 +188,6 @@ describe("xyk-pallet - Poll creation: Errors:", () => {
 
     const balance = await getBalanceOfPool(firstCurrency, testAssetId[0]);
     expect(balance).collectionBnEqual([new BN(0), new BN(0)]);
-  });
-
-  afterEach(async () => {
-    await validateStatusWhenPoolCreated(
-      firstCurrency,
-      secondCurrency,
-      testUser1,
-      pool_balance_before,
-      total_liquidity_assets_before
-    );
   });
 });
 

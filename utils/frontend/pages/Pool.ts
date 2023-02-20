@@ -6,15 +6,17 @@ import {
   clickElement,
   getAttribute,
   getText,
+  pressEscape,
   waitForElement,
   writeText,
 } from "../utils/Helper";
 
 //SELECTORS
 const TAB_POOL_TEST_ID = "trading-poolTab";
-const DIV_POOL_TOKEN1 = "tradingPoolTab-leftAssetInput";
-const DIV_POOL_TOKEN2 = "tradingPoolTab-rightAssetInput";
+const DIV_POOL_TOKEN1 = "tradingPoolTab-firstTokenInput";
+const DIV_POOL_TOKEN2 = "tradingPoolTab-secondTokenInput";
 const BTN_POOL_PROVIDE = "tradingPoolTab-provideBtn";
+const BTN_MANAGE_TOKENS_LIST = "tokensModal-manageTokenListsBtn";
 
 export class Pool {
   driver: WebDriver;
@@ -23,6 +25,8 @@ export class Pool {
     this.driver = driver;
   }
 
+  private btnToggleShowAllTokens = "//*[@for='tokenListsCheckbox-everything']";
+  private btnManageTokensList = buildDataTestIdXpath(BTN_MANAGE_TOKENS_LIST);
   private btnToken1Locator = buildDataTestIdXpath(DIV_POOL_TOKEN1) + "//button";
   private btnToken2Locator = buildDataTestIdXpath(DIV_POOL_TOKEN2) + "//button";
   private inputToken1Locator =
@@ -77,7 +81,7 @@ export class Pool {
   }
 
   private async selectAssetFromModalList(assetName: string) {
-    const assetTestId = `TokensModal-asset-${assetName}`;
+    const assetTestId = `TokensModal-token-${assetName}`;
     const assetLocator = buildDataTestIdXpath(assetTestId);
     await clickElement(this.driver, assetLocator);
   }
@@ -99,5 +103,12 @@ export class Pool {
       "//*[@class='TradingInput__right__label']";
     const text = await getText(this.driver, xpathGetLocator);
     return text.split(":")[1].trim().replace("MAX", "").trim();
+  }
+
+  async toggleShowAllTokens() {
+    await clickElement(this.driver, this.btnToken1Locator);
+    await clickElement(this.driver, this.btnManageTokensList);
+    await clickElement(this.driver, this.btnToggleShowAllTokens);
+    await pressEscape(this.driver);
   }
 }

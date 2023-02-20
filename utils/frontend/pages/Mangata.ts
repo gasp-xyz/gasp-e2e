@@ -13,6 +13,7 @@ import {
   clickElement,
   isDisplayed,
   waitForElement,
+  waitForElementVisible,
 } from "../utils/Helper";
 import { Sidebar } from "./Sidebar";
 
@@ -90,6 +91,7 @@ export class Mangata {
   }
 
   async isLogoDisplayed() {
+    await waitForElementVisible(this.driver, DIV_MGA_LOGO);
     const displayed = await isDisplayed(this.driver, DIV_MGA_LOGO);
     return displayed;
   }

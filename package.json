@@ -27,6 +27,7 @@
     "ethers": "^5.4.7",
     "ganache-cli": "^6.12.2",
     "guid-typescript": "^1.0.9",
+    "jest-extended": "^3.2.3",
     "jsonpath": "^1.1.1",
     "loadsh": "^0.0.4",
     "node-ipc": "^11.1.0",
@@ -78,7 +79,8 @@
     "tsc-lint": "tsc  --project tsconfig.json --noEmit",
     "eslint": "node_modules/.bin/eslint --max-warnings 0 . --ext .ts",
     "reports": "allure generate reports",
-    "test-github": "export JEST_HTML_REPORTERS_PUBLIC_PATH=reports/html-report;  rm nonce.db ; rm sudo.lock; jest --verbose  --ci "
+    "test-github": "export JEST_HTML_REPORTERS_PUBLIC_PATH=reports/html-report;  rm nonce.db ; rm sudo.lock; jest --verbose  --ci ",
+    "test-multiswap": "export GASLESS=true; export JEST_HTML_REPORTERS_PUBLIC_PATH=reports/html-report-parallel;rm nonce.db ; rm sudo.lock; jest --verbose --ci --group=multiswap"
   },
   "devDependencies": {
     "@babel/core": "^7.13.10",
@@ -115,6 +117,9 @@
     "bail": false,
     "globalSetup": "./utils/globalSetup.js",
     "globalTeardown": "./utils/globalTeardown.js",
+    "setupFiles":[
+      "./utils/setupTests.ts"
+    ],
     "setupFilesAfterEnv": [
       "./utils/setupJest.ts"
     ],

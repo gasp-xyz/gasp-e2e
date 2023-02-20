@@ -1,6 +1,7 @@
 /*
  *
  * @group paralgasless
+ * @group parallel
  */
 
 import { Keyring } from "@polkadot/api";
@@ -13,7 +14,11 @@ import { setupApi, setupUsers } from "../../utils/setup";
 import { Sudo } from "../../utils/sudo";
 import { updateFeeLockMetadata } from "../../utils/tx";
 import { AssetWallet, User } from "../../utils/User";
-import { getEnvironmentRequiredVars, feeLockErrors } from "../../utils/utils";
+import {
+  getEnvironmentRequiredVars,
+  feeLockErrors,
+  getFeeLockMetadata,
+} from "../../utils/utils";
 import { Xyk } from "../../utils/xyk";
 
 jest.spyOn(console, "log").mockImplementation(jest.fn());
@@ -41,6 +46,12 @@ beforeAll(async () => {
 
   // setup users
   sudo = new User(keyring, sudoUserName);
+
+  [secondCurrency] = await Assets.setupUserWithCurrencies(
+    sudo,
+    [defaultCurrencyValue, defaultCurrencyValue],
+    sudo
+  );
 });
 
 beforeEach(async () => {
@@ -48,7 +59,7 @@ beforeEach(async () => {
 
   await setupApi();
 
-  [firstCurrency, secondCurrency] = await Assets.setupUserWithCurrencies(
+  [firstCurrency] = await Assets.setupUserWithCurrencies(
     sudo,
     [defaultCurrencyValue, defaultCurrencyValue],
     sudo
@@ -69,7 +80,6 @@ beforeEach(async () => {
   await Sudo.batchAsSudoFinalized(
     Assets.mintToken(firstCurrency, testUser1, defaultCurrencyValue),
     Assets.mintToken(secondCurrency, testUser1, defaultCurrencyValue),
-    Assets.mintNative(sudo),
     Sudo.sudoAs(
       sudo,
       Xyk.createPool(
@@ -132,9 +142,7 @@ test("gasless- Given a feeLock correctly configured WHEN the user swaps two toke
 test("gasless- Given a feeLock correctly configured WHEN the user swaps two tokens defined in the thresholds AND the user has enough MGAs AND swapValue < threshold THEN some MGAs will be locked", async () => {
   const api = getApi();
 
-  const feeLockAmount = JSON.parse(
-    JSON.stringify(await api.query.feeLock.feeLockMetadata())
-  ).feeLockAmount;
+  const { feeLockAmount } = await getFeeLockMetadata(api);
 
   await Sudo.batchAsSudoFinalized(
     Assets.mintNative(testUser1),

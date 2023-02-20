@@ -4,6 +4,10 @@ import { User } from "./User";
 import "@mangata-finance/types";
 import { SubmittableExtrinsic } from "@polkadot/api/types";
 import { getApi, initApi } from "./api";
+import { Sudo } from "./sudo";
+import { Assets } from "./Assets";
+import { BN } from "@mangata-finance/sdk";
+import { Xyk } from "./xyk";
 import { signTx } from "@mangata-finance/sdk";
 import { SudoDB } from "./SudoDB";
 
@@ -43,7 +47,48 @@ export const setupUsers = () => {
 
   return [testUser1, testUser2, testUser3, testUser4];
 };
-export const setupGasLess = async () => {
+
+export async function setup5PoolsChained(users: User[]) {
+  const [testUser1, testUser2, testUser3, testUser4] = await setupUsers();
+  users = [testUser1, testUser2, testUser3, testUser4];
+  const keyring = new Keyring({ type: "sr25519" });
+  const sudo = new User(keyring, getEnvironmentRequiredVars().sudo);
+  const events = await Sudo.batchAsSudoFinalized(
+    Assets.issueToken(sudo),
+    Assets.issueToken(sudo),
+    Assets.issueToken(sudo),
+    Assets.issueToken(sudo),
+    Assets.issueToken(sudo)
+  );
+  const tokenIds: BN[] = events
+    .filter((item) => item.method === "Issued" && item.section === "tokens")
+    .map((x) => new BN(x.eventData[0].data.toString()));
+
+  const poolCreationExtrinsics: Extrinsic[] = [];
+  tokenIds.forEach((_, index, tokens) => {
+    poolCreationExtrinsics.push(
+      Xyk.createPool(
+        tokenIds[index],
+        Assets.DEFAULT_AMOUNT.divn(2),
+        tokenIds[index + (1 % tokens.length)],
+        Assets.DEFAULT_AMOUNT.divn(2)
+      )
+    );
+  });
+  await Sudo.batchAsSudoFinalized(
+    Assets.mintNative(testUser1),
+    Assets.mintNative(testUser2),
+    Assets.mintNative(testUser3),
+    Assets.mintNative(testUser4),
+    Assets.mintToken(tokenIds[0], testUser1),
+    Assets.mintToken(tokenIds[0], testUser2),
+    Assets.mintToken(tokenIds[0], testUser3),
+    Assets.mintToken(tokenIds[0], testUser4),
+    ...poolCreationExtrinsics
+  );
+  return { users, tokenIds };
+}
+export const setupGasLess = async (force = false) => {
   keyring = new Keyring({ type: "sr25519" });
   const { sudo: sudoUserName } = getEnvironmentRequiredVars();
   sudo = new User(keyring, sudoUserName);
@@ -53,11 +98,16 @@ export const setupGasLess = async () => {
     JSON.stringify(await api?.query.feeLock.feeLockMetadata())
   );
   // only create if empty.
-  if (feeLockConfig === null || feeLockConfig.periodLength === null) {
+  if (feeLockConfig === null || feeLockConfig.periodLength === null || force) {
     await signTx(
       api!,
       api!.tx.sudo.sudo(
-        api!.tx.feeLock.updateFeeLockMetadata(10, 10, 666, [[1, true]])
+        api!.tx.feeLock.updateFeeLockMetadata(
+          10,
+          "50000000000000000000",
+          "1000000000000000000000",
+          [[1, false]]
+        )
       ),
       sudo.keyRingPair,
       {
