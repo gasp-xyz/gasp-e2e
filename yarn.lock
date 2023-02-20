@@ -5648,9 +5648,9 @@ escodegen@^1.8.1:
   optionalDependencies:
     source-map "~0.6.1"
 
-"eslint-config-mangata@https://github.com/mangata-finance/eslint-config-mangata":
+"eslint-config-mangata@https://github.com/mangata-finance/eslint-config-mangata.git":
   version "0.0.1"
-  resolved "https://github.com/mangata-finance/eslint-config-mangata#82abb654dc9c0820938ec794596004682cb370b1"
+  resolved "https://github.com/mangata-finance/eslint-config-mangata.git#82abb654dc9c0820938ec794596004682cb370b1"
   dependencies:
     "@typescript-eslint/eslint-plugin" "^4.0.0"
     "@typescript-eslint/parser" "^4.0.0"
@@ -8816,10 +8816,6 @@ makeerror@1.0.12:
   integrity sha512-JmqCvUhmt43madlpFzG4BQzG2Z3m6tvQDNKdClZnO3VbIudJYmxsT0FNJMeiB2+JTSlTQTSbU8QdesVmwJcmLg==
   dependencies:
     tmpl "1.0.5"
-
-"mangata-node@https://github.com/mangata-finance/mangata-node":
-  version "0.0.0"
-  resolved "https://github.com/mangata-finance/mangata-node#bf62d3e4370487c3d7cf9acb5509891ccb9fabee"
 
 map-age-cleaner@^0.1.1:
   version "0.1.3"
