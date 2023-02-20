@@ -205,7 +205,7 @@ test("gasless- GIVEN some locked tokens and lastFeeLockBlock is lower than curre
   );
 });
 
-test.skip("gasless- GIVEN a lock WHEN the period is N THEN the tokens can not be unlocked before that period", async () => {
+test("gasless- GIVEN a lock WHEN the period is N THEN the tokens can not be unlocked before that period", async () => {
   const api = getApi();
   let currentBlockNumber: number;
 
@@ -244,10 +244,18 @@ test.skip("gasless- GIVEN a lock WHEN the period is N THEN the tokens can not be
           "Waiting for block " +
           waitingBlock.toString()
       );
-  } while (currentBlockNumber < waitingBlock.subn(1).toNumber());
-
-  await unlockFee(testUser1).then((result) => {
-    const eventResponse = getEventResultFromMangataTx(result);
-    expect(eventResponse.state).toEqual(ExtrinsicResult.ExtrinsicSuccess);
-  });
+  } while (currentBlockNumber < waitingBlock.subn(2).toNumber());
+  // at this point, we should be able to unlock in the following 3-4 blocks
+  let succeeded = false;
+  for (let index = 0; index < 3 && !succeeded; index++) {
+    try {
+      const result = await unlockFee(testUser1);
+      const eventResponse = getEventResultFromMangataTx(result);
+      expect(eventResponse.state).toEqual(ExtrinsicResult.ExtrinsicSuccess);
+      succeeded = true;
+    } catch (e) {
+      await waitNewBlock();
+    }
+  }
+  expect(succeeded).toBeTruthy();
 });
