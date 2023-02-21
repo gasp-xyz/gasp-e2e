@@ -13,7 +13,7 @@ export class Maintenance {
     return api.tx.maintenance.switchUpgradabilityInMaintenanceModeOff();
   }
 
-  static witchUpgradabilityInMaintenanceModeOn(): Extrinsic {
-    return api.tx.maintenance.witchUpgradabilityInMaintenanceModeOn();
+  static switchUpgradabilityInMaintenanceModeOn(): Extrinsic {
+    return api.tx.maintenance.switchUpgradabilityInMaintenanceModeOn();
   }
 }

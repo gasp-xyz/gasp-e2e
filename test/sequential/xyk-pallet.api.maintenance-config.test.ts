@@ -1,6 +1,6 @@
 /*
  *
- * @group sequential
+ * @group maintenance
  */
 
 import { Keyring } from "@polkadot/api";
