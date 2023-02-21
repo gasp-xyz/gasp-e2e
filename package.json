@@ -67,6 +67,7 @@
     "test-ci": "rm nonce.db ; rm sudo.lock; jest --runInBand --verbose --ci --group=ci ",
     "test-temp-ci": "rm nonce.db ; rm sudo.lock; jest --runInBand --verbose --ci --group=temp-ci ",
     "test-ui": "rm nonce.db ; rm sudo.lock; jest --verbose --runInBand --ci --group=ui ",
+    "test-microapps-ui": "rm nonce.db ; rm sudo.lock; jest --verbose --runInBand --ci --group=microapps-ui ",
     "test-setup": "rm nonce.db ; rm sudo.lock; jest --verbose --runInBand --ci --group=setup ",
     "test-sdk": "rm nonce.db ; rm sudo.lock; jest --verbose --runInBand --ci --group=sdk ",
     "test-ui-smoke": "rm nonce.db ; rm sudo.lock; jest --verbose --runInBand --ci --group=ui-smoke ",
