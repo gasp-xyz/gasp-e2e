@@ -18,8 +18,6 @@ on:
           default: ''
       # For manual triggering
  
-  repository_dispatch:
-    types: [run-ci]
 jobs:
 
   test:
@@ -64,7 +62,7 @@ jobs:
         uses: Xotabu4/selenoid-github-action@v2
         with:
           selenoid-start-arguments: |
-            --args "-timeout 300s" --browsers 'chrome:95.0;chrome:96.0;chrome:94.0'
+            --args "-timeout 300s" --browsers 'chrome:108.0;chrome:109.0;chrome:110.0'
         
 
       - name: Set Configuration - Integration
