@@ -11,10 +11,11 @@ import { Node } from "../../utils/Framework/Node/Node";
 import { MGA_ASSET_ID } from "../../utils/Constants";
 import { createPoolIfMissing, mintAsset, transferAsset } from "../../utils/tx";
 import { initApi } from "../../utils/api";
-import { captureEvents, pendingExtrinsics } from "./testReporter";
+import { generateHtmlReport, writeToFile, trackPendingExtrinsics, trackExecutedExtrinsics, trackEnqueuedExtrinsics } from "./testReporter";
 import { Guid } from "guid-typescript";
 import { User } from "../../utils/User";
 import { SudoUser } from "../../utils/Framework/User/SudoUser";
+import { quantile } from "simple-statistics"
 
 function seedFromNum(seed: number): string {
   const guid = Guid.create().toString();
@@ -26,44 +27,75 @@ export class performanceTestItem implements TestItem {
     number,
     { mgaSdk: Mangata; users: { nonce: BN; keyPair: KeyringPair }[] }
   >();
-  listeners: Promise<{ p: Promise<unknown>; cancel: () => boolean }>[] = [];
-  async arrange(numberOfThreads: number, nodes: string[]): Promise<boolean> {
-    testLog.getLog().info("Arrange" + numberOfThreads + nodes);
-    const mga = await getMangata(nodes[0]!);
+
+  enqueued: Promise<[number, number][]> = new Promise<[number, number][]>((resolve) => { resolve([]) });
+  executed: Promise<[number, number][]> = new Promise<[number, number][]>((resolve) => { resolve([]) });
+  pending: Promise<[number, number][]> = new Promise<[number, number][]>((resolve) => { resolve([]) });
+
+  async arrange(testParams: TestParams): Promise<boolean> {
+    return true;
+  }
+
+  async act(testParams: TestParams): Promise<boolean> {
+    const mga = await getMangata(testParams.nodes[0]!);
     const api = await mga.getApi();
-    this.listeners.push(captureEvents(logFile, api!));
-    this.listeners.push(pendingExtrinsics(logFile, api!));
+    this.executed = trackExecutedExtrinsics(api, testParams.duration);
+    this.enqueued = trackEnqueuedExtrinsics(api, testParams.duration);
+    this.pending = trackPendingExtrinsics(api, testParams.duration);
+    return true;
+  }
+
+  async expect(testParams: TestParams): Promise<boolean> {
+    let [executed, enqueued, pending] = await Promise.all([this.executed, this.enqueued, this.pending])
+
+    writeToFile("executed.txt", executed);
+    writeToFile("enqueued.txt", enqueued);
+    writeToFile("pending.txt", pending);
+    generateHtmlReport("report.html", enqueued, executed, pending);
+
+    // ignore first few blocks
+    executed = executed.slice(5)
+    enqueued = enqueued.slice(5)
+    pending = pending.slice(5)
+
+    console.info(executed)
+    console.info(enqueued)
+    console.info(pending)
+
+    let execution_throughput = quantile(executed.map(([_, val]) => val), 0.1)
+    let enqueue_throughput = quantile(enqueued.map(([_, val]) => val), 0.1)
+    let pending_throughput = quantile(pending.map(([_, val]) => val), 0.1)
+
+    console.info(`execution_thruput : 90% of measurements was above ${execution_throughput}`)
+    console.info(`enqueue_thruput   : 90% of measurements was above ${enqueue_throughput}`)
+    console.info(`pending_thruput   : 90% of measurements was above ${pending_throughput}`)
+
+    if (execution_throughput < testParams.throughput) {
+      console.info(`execution throughput was to low: ${execution_throughput} <= ${testParams.throughput}`)
+      return false;
+    }
+
+    if (enqueue_throughput < testParams.throughput) {
+      console.info(`enqueued throughput was to low: ${execution_throughput} <= ${testParams.throughput}`)
+      return false;
+    }
+
+    if (pending_throughput < testParams.throughput * 0.75) {
+      console.info(`pending throughput was too small, consider adding more threads`)
+      return false;
+    }
+
 
     return true;
   }
-  async act(testParams: TestParams): Promise<boolean> {
-    testLog.getLog().info("Act" + testParams);
-    return true;
-  }
-  async expect(nodes: string[]): Promise<boolean> {
-    //wait for not Txs pending + 10 blocks.
-    const mga = await getMangata(nodes[0]!);
-    let pendingExtr: any[] = [];
-    do {
-      const api = await mga.getApi();
-      pendingExtr = await api.rpc.author.pendingExtrinsics();
-    } while (pendingExtr.length > 0);
-    console.info(`Done waiting Txs!`);
-    console.info(`Stopping listeners....`);
-    this.listeners.forEach(async (p) => (await p).cancel());
-    console.info(`...Stopped`);
-    return true;
-  }
-  async teardown(nodes: string[]): Promise<boolean> {
-    for (let nodeNumber = 0; nodeNumber < nodes.length; nodeNumber++) {
-      const node = nodes[nodeNumber];
-      const mga = await getMangata(node);
-      (await mga.getApi()).disconnect();
-    }
+
+  async teardown(): Promise<boolean> {
+    let apis = await Promise.all([...this.mgaNodeandUsers.values()].map(({ mgaSdk }) => mgaSdk.getApi()))
+    await Promise.all(apis.map(api => api.disconnect()))
     return true;
   }
   async run(testparams: TestParams): Promise<boolean> {
-    return this.arrange(testparams.threads, testparams.nodes).then(
+    return this.arrange(testparams).then(
       async (result) => {
         testLog.getLog().info("Done Arrange");
         return (
@@ -72,18 +104,10 @@ export class performanceTestItem implements TestItem {
             testLog.getLog().info("Done Act");
             return (
               resultAct &&
-              (await this.expect(testparams.nodes).then(
+              (await this.expect(testparams).then(
                 async (resultExpect) => {
                   testLog.getLog().info("Done Expect" + resultExpect);
-                  return (
-                    resultAct &&
-                    (await this.teardown(testparams.nodes).then(
-                      async (resultTearDown) => {
-                        testLog.getLog().info("Done TearDown");
-                        return resultTearDown;
-                      }
-                    ))
-                  );
+                  return await this.teardown().then(async (resultTearDown) => { testLog.getLog().info("Done TearDown"); return resultTearDown; }) && resultAct && resultExpect;
                 }
               ))
             );
@@ -143,8 +167,8 @@ export class performanceTestItem implements TestItem {
       this.mgaNodeandUsers.set(nodeNumber, { mgaSdk: mga, users: users });
     }
     testLog.getLog().info("Waiting for mining tokens");
-    const results = await Promise.all(mintPromises);
-    testLog.getLog().info("¡¡ Tokens minted !!" + JSON.stringify(results));
+    await Promise.all(mintPromises);
+    testLog.getLog().info("¡¡ Tokens minted !!");
 
     return true;
   }

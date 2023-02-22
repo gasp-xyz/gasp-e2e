@@ -15,7 +15,7 @@ export class ExtrinsicBatch extends ExtrinsicTransfer {
   }
   async act(testParams: TestParams): Promise<boolean> {
     let keepCalling = true;
-    setTimeout(function () {
+    setTimeout(function() {
       keepCalling = false;
       //duration in minutes, transform to millisecs.
     }, testParams.duration * 60 * 1000);
@@ -47,7 +47,7 @@ async function createAndSignBatchTransfer(
   const mgaValue = mgaNodeandUsers.get(nodeThread)!;
   const destUser =
     mgaNodeandUsers.get(nodeThread)?.users![
-      (userNo + 1) % mgaNodeandUsers.get(nodeThread)!.users!.length
+    (userNo + 1) % mgaNodeandUsers.get(nodeThread)!.users!.length
     ]!;
   const srcUser = mgaNodeandUsers.get(nodeThread)?.users![userNo];
   const api = await mgaNodeandUsers.get(nodeThread)?.mgaSdk.getApi();

@@ -49,7 +49,7 @@ export class ExtrinsicBurn extends performanceTestItem {
   }
   async act(testParams: TestParams): Promise<boolean> {
     let keepCalling = true;
-    setTimeout(function () {
+    setTimeout(function() {
       keepCalling = false;
       //duration in minutes, transform to millisecs.
     }, testParams.duration * 60 * 1000);
