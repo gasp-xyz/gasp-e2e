@@ -1,7 +1,6 @@
 /*
  *
  * @group rewardsv2
- * @group story
  */
 
 import { getApi, getMangataInstance, initApi } from "../../utils/api";
@@ -104,11 +103,14 @@ test("Given a user with Liquidity activated When tries to deactivate Then the us
 
   await waitForRewards(testUser1, liqId);
 
-  await activateLiquidity(testUser1.keyRingPair, liqId, assetAmount);
-
   const liqBalance = await mangata.getTokenBalance(
     liqId.toString(),
     testUser1.keyRingPair.address
+  );
+
+  const availableRewardsBefore = await mangata.calculateRewardsAmount(
+    testUser1.keyRingPair.address,
+    liqId.toString()
   );
 
   await burnLiquidity(
@@ -116,11 +118,6 @@ test("Given a user with Liquidity activated When tries to deactivate Then the us
     MGA_ASSET_ID,
     secondCurrency,
     new BN(liqBalance.free.toString())
-  );
-
-  const availableRewardsBefore = await mangata.calculateRewardsAmount(
-    testUser1.keyRingPair.address,
-    liqId.toString()
   );
 
   await mangata.claimRewards(
