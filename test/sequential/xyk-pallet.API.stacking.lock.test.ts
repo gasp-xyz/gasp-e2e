@@ -45,12 +45,9 @@ describe("xyk-pallet - Sell Asset: validate Errors:", () => {
 
     await setupApi();
     await setupUsers();
+    const minStake = api?.consts.parachainStaking.minCollatorStk.toString();
     await Sudo.batchAsSudoFinalized(
-      Assets.mintToken(
-        ASSET_ID_MGA_ETH,
-        testUser1,
-        new BN("20000000000000000000")
-      ),
+      Assets.mintToken(ASSET_ID_MGA_ETH, testUser1, new BN(minStake!).muln(2)),
       Assets.mintNative(
         testUser1,
         new BN(10000).add(new BN(Math.pow(10, 20).toString()))
@@ -63,16 +60,23 @@ describe("xyk-pallet - Sell Asset: validate Errors:", () => {
     const candidates = JSON.parse(
       JSON.stringify(await api?.query.parachainStaking.candidatePool())
     );
+    const liqAssets =
+      await api?.query.parachainStaking.stakingLiquidityTokens();
+    const liqAssetsCount = [...liqAssets!.keys()].length;
+    const amountToJoin = new BN(
+      api!.consts.parachainStaking.minCollatorStk!.toString()
+    ).addn(1234);
+
     await signSendAndWaitToFinishTx(
       // @ts-ignore
       api?.tx.parachainStaking.joinCandidates(
-        new BN("10000000000000000000"),
+        amountToJoin,
         new BN(3),
         "AvailableBalance",
         // @ts-ignore - Mangata bond operation has 4 params, somehow is inheriting the bond operation from polkadot :S
         new BN(candidates.length),
         // @ts-ignore
-        new BN(3)
+        new BN(liqAssetsCount)
       ),
       testUser1.keyRingPair
     );
@@ -80,12 +84,13 @@ describe("xyk-pallet - Sell Asset: validate Errors:", () => {
       testUser1.keyRingPair.address,
       new BN(3)
     );
+    const minStake = new BN(
+      api!.consts.parachainStaking.minCollatorStk.toString()
+    );
     expect(hexToBn(tokenStatuses.free.toString())).bnEqual(
-      new BN("10000000000000000000")
+      minStake.muln(2).sub(amountToJoin)
     );
-    expect(hexToBn(tokenStatuses.reserved.toString())).bnEqual(
-      new BN("10000000000000000000")
-    );
+    expect(hexToBn(tokenStatuses.reserved.toString())).bnEqual(amountToJoin);
     expect(tokenStatuses.frozen.toString()).toEqual("0");
   });
 });
