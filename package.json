@@ -9,7 +9,7 @@
   "dependencies": {
     "@babel/plugin-proposal-decorators": "^7.17.8",
     "@commitlint/config-conventional": "^17.4.2",
-    "@mangata-finance/sdk": "1.15.1",
+    "@mangata-finance/sdk": "1.16.1",
     "@types/bs58": "^4.0.1",
     "@types/jsonpath": "^0.2.0",
     "@types/node": "^14.14.10",
@@ -114,6 +114,7 @@
     "runner": "groups",
     "verbose": true,
     "bail": false,
+    "forceExit": true,
     "globalSetup": "./utils/globalSetup.js",
     "globalTeardown": "./utils/globalTeardown.js",
     "setupFiles": [
