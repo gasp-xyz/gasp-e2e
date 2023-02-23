@@ -31,3 +31,10 @@ export async function getMangataInstance(uri = ""): Promise<Mangata> {
   }
   return mangata!;
 }
+export const disconnect = async (uri = "") => {
+  if (mangata) {
+    await mangata.disconnect();
+  } else {
+    await Mangata.getInstance([uri]).disconnect();
+  }
+};
