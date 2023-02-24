@@ -20,6 +20,7 @@ import {
   findBlockWithExtrinsicSigned,
   getBlockNumber,
   getEnvironmentRequiredVars,
+  getFeeLockMetadata,
   getTokensDiffForBlockAuthor,
 } from "../../utils/utils";
 import { MGA_ASSET_ID } from "../../utils/Constants";
@@ -130,8 +131,11 @@ test("xyk-pallet - Assets substracted are incremented by 1 - MGA- SellAsset", as
     feesPaid = authorMGAtokens;
     tokensLost = tokensLost?.sub(feesPaid);
   }
+  const tokensLocked = await (
+    await getFeeLockMetadata(await getApi())
+  ).feeLockAmount;
   expect(tokensWon).bnEqual(tokensToReceive);
-  expect(tokensLost).bnEqual(sellingAmount);
+  expect(tokensLost?.sub(tokensLocked)).bnEqual(sellingAmount);
   expect(exangeValue).bnEqual(tokensWon);
 
   //0.05% = 5 tokens.
