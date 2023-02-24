@@ -18,7 +18,11 @@ import { Sudo } from "../../utils/sudo";
 import { updateFeeLockMetadata, unlockFee } from "../../utils/tx";
 import { getEventResultFromMangataTx } from "../../utils/txHandler";
 import { AssetWallet, User } from "../../utils/User";
-import { getEnvironmentRequiredVars, waitForNBlocks } from "../../utils/utils";
+import {
+  getEnvironmentRequiredVars,
+  getFeeLockMetadata,
+  waitForNBlocks,
+} from "../../utils/utils";
 import { Xyk } from "../../utils/xyk";
 
 jest.spyOn(console, "log").mockImplementation(jest.fn());
@@ -98,17 +102,9 @@ test("gasless- GIVEN an empty feeLock configuration (all options empty) WHEN sud
 
 test("gasless- GIVEN a feeLock WHEN periodLength and feeLockAmount are set THEN extrinsic succeed and feeLock is correctly configured", async () => {
   const api = getApi();
-
-  const lastPeriodLength = new BN(
-    JSON.parse(
-      JSON.stringify(await api?.query.feeLock.feeLockMetadata())
-    ).periodLength.toString()
-  );
-  const lastFeeLockAmount = new BN(
-    JSON.parse(
-      JSON.stringify(await api?.query.feeLock.feeLockMetadata())
-    ).feeLockAmount.toString()
-  );
+  const feeLockData = await getFeeLockMetadata(api);
+  const lastPeriodLength = feeLockData.periodLength;
+  const lastFeeLockAmount = feeLockData.feeLockAmount;
 
   const pendingPeriodLength = lastPeriodLength.add(new BN(10));
   const pendingFeeLockAmount = lastFeeLockAmount.add(new BN(10));
@@ -122,17 +118,9 @@ test("gasless- GIVEN a feeLock WHEN periodLength and feeLockAmount are set THEN 
   );
   await waitSudoOperationSuccess(updateMetadataEvent);
 
-  const currentPeriodLength = new BN(
-    JSON.parse(
-      JSON.stringify(await api?.query.feeLock.feeLockMetadata())
-    ).periodLength.toString()
-  );
-  const currentFeeLockAmount = new BN(
-    JSON.parse(
-      JSON.stringify(await api?.query.feeLock.feeLockMetadata())
-    ).feeLockAmount.toString()
-  );
-
+  const feeLockDataNow = await getFeeLockMetadata(api);
+  const currentPeriodLength = feeLockDataNow.periodLength;
+  const currentFeeLockAmount = feeLockDataNow.feeLockAmount;
   expect(currentPeriodLength).bnEqual(pendingPeriodLength);
   expect(currentFeeLockAmount).bnEqual(pendingFeeLockAmount);
 });
@@ -142,11 +130,7 @@ test("gasless- Changing feeLock config parameter on the fly is works robustly", 
   let updateMetadataEvent: any;
   testUser1.addAsset(MGA_ASSET_ID);
 
-  const feeLockAmount = new BN(
-    JSON.parse(
-      JSON.stringify(await api?.query.feeLock.feeLockMetadata())
-    ).feeLockAmount.toString()
-  );
+  const feeLockAmount = (await getFeeLockMetadata(api)).feeLockAmount;
 
   updateMetadataEvent = await updateFeeLockMetadata(
     sudo,
@@ -190,7 +174,7 @@ test("gasless- Changing feeLock config parameter on the fly is works robustly", 
   );
 
   expect(newPeriodLength).bnEqual(new BN(2));
-  expect(userMgaLockedValue).bnEqual(new BN(feeLockAmount));
+  expect(userMgaLockedValue).bnEqual(feeLockAmount);
   expect(testUser1.getAsset(MGA_ASSET_ID)?.amountAfter.reserved!).bnEqual(
     new BN(0)
   );

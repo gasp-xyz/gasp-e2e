@@ -11,12 +11,18 @@ import { Node } from "../../utils/Framework/Node/Node";
 import { MGA_ASSET_ID } from "../../utils/Constants";
 import { createPoolIfMissing, mintAsset, transferAsset } from "../../utils/tx";
 import { initApi } from "../../utils/api";
-import { generateHtmlReport, writeToFile, trackPendingExtrinsics, trackExecutedExtrinsics, trackEnqueuedExtrinsics } from "./testReporter";
+import {
+  generateHtmlReport,
+  writeToFile,
+  trackPendingExtrinsics,
+  trackExecutedExtrinsics,
+  trackEnqueuedExtrinsics,
+} from "./testReporter";
 import { Guid } from "guid-typescript";
 import { User } from "../../utils/User";
-import { getEnvironmentRequiredVars } from "../../utils/utils"
+import { getEnvironmentRequiredVars } from "../../utils/utils";
 import { SudoUser } from "../../utils/Framework/User/SudoUser";
-import { quantile } from "simple-statistics"
+import { quantile } from "simple-statistics";
 
 function seedFromNum(seed: number): string {
   const guid = Guid.create().toString();
@@ -29,30 +35,43 @@ export class performanceTestItem implements TestItem {
     { mgaSdk: Mangata; users: { nonce: BN; keyPair: KeyringPair }[] }
   >();
 
-  enqueued: Promise<[number, number][]> = new Promise<[number, number][]>((resolve) => { resolve([]) });
-  executed: Promise<[number, number][]> = new Promise<[number, number][]>((resolve) => { resolve([]) });
-  pending: Promise<[number, number][]> = new Promise<[number, number][]>((resolve) => { resolve([]) });
+  enqueued: Promise<[number, number][]> = new Promise<[number, number][]>(
+    (resolve) => {
+      resolve([]);
+    }
+  );
+  executed: Promise<[number, number][]> = new Promise<[number, number][]>(
+    (resolve) => {
+      resolve([]);
+    }
+  );
+  pending: Promise<[number, number][]> = new Promise<[number, number][]>(
+    (resolve) => {
+      resolve([]);
+    }
+  );
   ipc: any;
 
   async arrange(testParams: TestParams): Promise<boolean> {
-
     const mga = await getMangata(testParams.nodes[0]!);
     const api = await mga.getApi();
     const { sudo } = getEnvironmentRequiredVars();
-    const keyring = new Keyring({ type: "sr25519" })
+    const keyring = new Keyring({ type: "sr25519" });
     const sudoKeyringPair = keyring.createFromUri(sudo);
-    let nonce = await api.rpc.system.accountNextIndex(sudoKeyringPair.address);
+    const nonce = await api.rpc.system.accountNextIndex(
+      sudoKeyringPair.address
+    );
 
     const ipc = require("node-ipc").default;
     ipc.config.id = "nonceManager";
     ipc.config.retry = 1500;
     ipc.config.silent = false;
     ipc.config.sync = true;
-    ipc.serve(function() {
+    ipc.serve(function () {
       ipc.server.on("getNonce", (data: any, socket: any) => {
         console.info("serving nonce" + data.id + " " + nonce);
         ipc.server.emit(socket, "nonce-" + data.id, nonce.toNumber());
-        nonce.iaddn(1)
+        nonce.iaddn(1);
       });
     });
 
@@ -72,7 +91,11 @@ export class performanceTestItem implements TestItem {
   }
 
   async expect(testParams: TestParams): Promise<boolean> {
-    let [executed, enqueued, pending] = await Promise.all([this.executed, this.enqueued, this.pending])
+    let [executed, enqueued, pending] = await Promise.all([
+      this.executed,
+      this.enqueued,
+      this.pending,
+    ]);
 
     writeToFile("executed.txt", executed);
     writeToFile("enqueued.txt", enqueued);
@@ -80,68 +103,93 @@ export class performanceTestItem implements TestItem {
     generateHtmlReport("report.html", enqueued, executed, pending);
 
     // ignore first few blocks
-    executed = executed.slice(5)
-    enqueued = enqueued.slice(5)
-    pending = pending.slice(5)
+    executed = executed.slice(5);
+    enqueued = enqueued.slice(5);
+    pending = pending.slice(5);
 
-    console.info(executed)
-    console.info(enqueued)
-    console.info(pending)
+    console.info(executed);
+    console.info(enqueued);
+    console.info(pending);
 
-    let execution_throughput = quantile(executed.map(([_, val]) => val), 0.1)
-    let enqueue_throughput = quantile(enqueued.map(([_, val]) => val), 0.1)
-    let pending_throughput = quantile(pending.map(([_, val]) => val), 0.1)
+    const execution_throughput = quantile(
+      executed.map(([_, val]) => val),
+      0.1
+    );
+    const enqueue_throughput = quantile(
+      enqueued.map(([_, val]) => val),
+      0.1
+    );
+    const pending_throughput = quantile(
+      pending.map(([_, val]) => val),
+      0.1
+    );
 
-    console.info(`execution_thruput : 90% of measurements was above ${execution_throughput}`)
-    console.info(`enqueue_thruput   : 90% of measurements was above ${enqueue_throughput}`)
-    console.info(`pending_thruput   : 90% of measurements was above ${pending_throughput}`)
+    console.info(
+      `execution_thruput : 90% of measurements was above ${execution_throughput}`
+    );
+    console.info(
+      `enqueue_thruput   : 90% of measurements was above ${enqueue_throughput}`
+    );
+    console.info(
+      `pending_thruput   : 90% of measurements was above ${pending_throughput}`
+    );
 
     if (execution_throughput < testParams.throughput) {
-      console.info(`execution throughput was to low: ${execution_throughput} <= ${testParams.throughput}`)
+      console.info(
+        `execution throughput was to low: ${execution_throughput} <= ${testParams.throughput}`
+      );
       return false;
     }
 
     if (enqueue_throughput < testParams.throughput) {
-      console.info(`enqueued throughput was to low: ${execution_throughput} <= ${testParams.throughput}`)
+      console.info(
+        `enqueued throughput was to low: ${execution_throughput} <= ${testParams.throughput}`
+      );
       return false;
     }
 
     if (pending_throughput < testParams.throughput * 0.75) {
-      console.info(`pending throughput was too small, consider adding more threads`)
+      console.info(
+        `pending throughput was too small, consider adding more threads`
+      );
       return false;
     }
-
 
     return true;
   }
 
   async teardown(): Promise<boolean> {
-    let apis = await Promise.all([...this.mgaNodeandUsers.values()].map(({ mgaSdk }) => mgaSdk.getApi()))
-    await Promise.all(apis.map(api => api.disconnect()))
-    await this.ipc.server.stop()
+    const apis = await Promise.all(
+      [...this.mgaNodeandUsers.values()].map(({ mgaSdk }) => mgaSdk.getApi())
+    );
+    await Promise.all(apis.map((api) => api.disconnect()));
+    await this.ipc.server.stop();
     return true;
   }
   async run(testparams: TestParams): Promise<boolean> {
-    return this.arrange(testparams).then(
-      async (result) => {
-        testLog.getLog().info("Done Arrange");
-        return (
-          result &&
-          (await this.act(testparams).then(async (resultAct) => {
-            testLog.getLog().info("Done Act");
-            return (
-              resultAct &&
-              (await this.expect(testparams).then(
-                async (resultExpect) => {
-                  testLog.getLog().info("Done Expect" + resultExpect);
-                  return await this.teardown().then(async (resultTearDown) => { testLog.getLog().info("Done TearDown"); return resultTearDown; }) && resultAct && resultExpect;
-                }
-              ))
-            );
-          }))
-        );
-      }
-    );
+    return this.arrange(testparams).then(async (result) => {
+      testLog.getLog().info("Done Arrange");
+      return (
+        result &&
+        (await this.act(testparams).then(async (resultAct) => {
+          testLog.getLog().info("Done Act");
+          return (
+            resultAct &&
+            (await this.expect(testparams).then(async (resultExpect) => {
+              testLog.getLog().info("Done Expect" + resultExpect);
+              return (
+                (await this.teardown().then(async (resultTearDown) => {
+                  testLog.getLog().info("Done TearDown");
+                  return resultTearDown;
+                })) &&
+                resultAct &&
+                resultExpect
+              );
+            }))
+          );
+        }))
+      );
+    });
   }
   async createPoolIfMissing(tokenId: BN, tokenId2: BN, nodes: string[]) {
     const keyring = new Keyring({ type: "sr25519" });

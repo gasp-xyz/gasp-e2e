@@ -3,7 +3,7 @@ import { resolve } from "path";
 
 export async function logLine(logName: string, lineToLog: string) {
   const fs = require("fs");
-  await fs.appendFile(`${logName}.txt`, lineToLog, function(err: boolean) {
+  await fs.appendFile(`${logName}.txt`, lineToLog, function (err: boolean) {
     if (err) {
       // eslint-disable-next-line no-console
       console.error("oh oh fail to log!");
@@ -13,21 +13,24 @@ export async function logLine(logName: string, lineToLog: string) {
 
 export function writeToFile(fileName: string, data: [number, number][]) {
   const fs = require("fs");
-  let payload = ""
+  let payload = "";
 
   data.forEach(([blockNr, val]) => {
-    payload += `${blockNr} ${val}\n`
-  })
+    payload += `${blockNr} ${val}\n`;
+  });
 
-  fs.writeFileSync(fileName, payload)
+  fs.writeFileSync(fileName, payload);
 }
 
-
-export function generateHtmlReport(fileName: string, enqueued: [number, number][], executed: [number, number][], pending: [number, number][]) {
+export function generateHtmlReport(
+  fileName: string,
+  enqueued: [number, number][],
+  executed: [number, number][],
+  pending: [number, number][]
+) {
   const fs = require("fs");
 
-
-  let content = `<!doctype html>
+  const content = `<!doctype html>
 <html lang="en">
   <head>
     <meta charset="utf-8">
@@ -97,7 +100,7 @@ export function generateHtmlReport(fileName: string, enqueued: [number, number][
 
   </body>
 </html>`;
-  fs.writeFileSync(fileName, content)
+  fs.writeFileSync(fileName, content);
 }
 
 export async function captureEvents(logName: string, api: ApiPromise) {
@@ -118,7 +121,8 @@ export async function captureEvents(logName: string, api: ApiPromise) {
       const events = await api.query.system.events.at(lastHeader.hash);
       await logLine(
         eventsFileName,
-        `\n \n [ ${new Date().toUTCString()}] - Received ${(events as any).length
+        `\n \n [ ${new Date().toUTCString()}] - Received ${
+          (events as any).length
         } events: ------- Block: ${currentBlock}`
       );
 
@@ -129,13 +133,15 @@ export async function captureEvents(logName: string, api: ApiPromise) {
         const types = event.typeDef;
 
         // Show what we are busy with
-        let eventMessage = `[ ${new Date().toUTCString()}] - \t${event.section
-          }:${event.method}`;
+        let eventMessage = `[ ${new Date().toUTCString()}] - \t${
+          event.section
+        }:${event.method}`;
 
         // Loop through each of the parameters, displaying the type and data
         event.data.forEach((data: any, index: any) => {
-          eventMessage += `\n \t\t\t\t\t\t\t${types[index].type
-            }: ${data.toString()}`;
+          eventMessage += `\n \t\t\t\t\t\t\t${
+            types[index].type
+          }: ${data.toString()}`;
         });
         await logLine(eventsFileName, eventMessage);
       });
@@ -145,58 +151,64 @@ export async function captureEvents(logName: string, api: ApiPromise) {
 }
 
 export async function trackPendingExtrinsics(api: ApiPromise, count: number) {
-  let results: [number, number][] = [];
+  const results: [number, number][] = [];
   // let header = await api.rpc.chain.getHeader();
 
   return new Promise<[number, number][]>(async (resolve, _) => {
-    let unsub = await api.rpc.chain.subscribeNewHeads(async (header): Promise<void> => {
-      let pending = await api.rpc.author.pendingExtrinsics();
-      results.push([header.number.toNumber(), pending.length])
-      if (results.length > count) {
-        unsub()
-        resolve(results)
+    const unsub = await api.rpc.chain.subscribeNewHeads(
+      async (header): Promise<void> => {
+        const pending = await api.rpc.author.pendingExtrinsics();
+        results.push([header.number.toNumber(), pending.length]);
+        if (results.length > count) {
+          unsub();
+          resolve(results);
+        }
       }
-    });
+    );
   });
 }
 
 export async function trackEnqueuedExtrinsics(api: ApiPromise, count: number) {
-  let results: [number, number][] = [];
+  const results: [number, number][] = [];
 
   return new Promise<[number, number][]>(async (resolve, _) => {
-    let unsub = await api.rpc.chain.subscribeNewHeads(async (header): Promise<void> => {
-      let queue = await (await api.at(header.hash)).query.system.storageQueue();
+    const unsub = await api.rpc.chain.subscribeNewHeads(
+      async (header): Promise<void> => {
+        const queue = await (
+          await api.at(header.hash)
+        ).query.system.storageQueue();
 
-      let enqueuedTxsCount = 0;
+        let enqueuedTxsCount = 0;
 
-      for (let i = 0; i < queue.length; ++i) {
-        enqueuedTxsCount += queue[i][2].length
+        for (let i = 0; i < queue.length; ++i) {
+          enqueuedTxsCount += queue[i][2].length;
+        }
+
+        results.push([header.number.toNumber(), enqueuedTxsCount]);
+        if (results.length > count) {
+          unsub();
+          resolve(results);
+        }
       }
-
-      results.push([header.number.toNumber(), enqueuedTxsCount])
-      if (results.length > count) {
-        unsub()
-        resolve(results)
-      }
-
-    });
+    );
   });
 }
 
 export async function trackExecutedExtrinsics(api: ApiPromise, count: number) {
-  let results: [number, number][] = [];
+  const results: [number, number][] = [];
 
   return new Promise<[number, number][]>(async (resolve, _) => {
-    let unsub = await api.rpc.chain.subscribeNewHeads(async (header): Promise<void> => {
-      let block = await api.rpc.chain.getBlock(header.hash);
+    const unsub = await api.rpc.chain.subscribeNewHeads(
+      async (header): Promise<void> => {
+        const block = await api.rpc.chain.getBlock(header.hash);
 
-      results.push([header.number.toNumber(), block.block.extrinsics.length])
+        results.push([header.number.toNumber(), block.block.extrinsics.length]);
 
-      if (results.length > count) {
-        unsub()
-        resolve(results)
+        if (results.length > count) {
+          unsub();
+          resolve(results);
+        }
       }
-
-    });
+    );
   });
 }

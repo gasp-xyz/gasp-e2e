@@ -144,11 +144,13 @@ function verifyArgs(params: TestParams, test: string) {
 }
 
 main()
-  .catch((e) => { console.error(e); process.exit(-1) })
+  .catch((_) => {
+    process.exit(-1);
+  })
   .then((result) => {
     if (result) {
       process.exit(0);
     } else {
       process.exit(-1);
     }
-  })
+  });

@@ -4,17 +4,17 @@ import { MGA_ASSET_ID } from "./Constants";
 import { waitSudoOperationSuccess } from "./eventListeners";
 import { updateFeeLockMetadata } from "./tx";
 import { User } from "./User";
+import { stringToBN } from "./utils";
 
 export async function clearMgaFromWhitelisted(
   thresholdValueExpected: BN,
   sudo: User
 ) {
   const api = getApi();
-
   const feeLockMetadata = JSON.parse(
     JSON.stringify(await api.query.feeLock.feeLockMetadata())
   );
-  const swapValueThreshold = new BN(feeLockMetadata.swapValueThreshold);
+  const swapValueThreshold = stringToBN(feeLockMetadata.swapValueThreshold);
   const isMgaWhitelisted = feeLockMetadata.whitelistedTokens.includes(
     MGA_ASSET_ID.toNumber()
   );
@@ -42,7 +42,7 @@ export async function addMgaToWhitelisted(
   const feeLockMetadata = JSON.parse(
     JSON.stringify(await api.query.feeLock.feeLockMetadata())
   );
-  const swapValueThreshold = new BN(feeLockMetadata.swapValueThreshold);
+  const swapValueThreshold = stringToBN(feeLockMetadata.swapValueThreshold);
   const whitelistedTokens = feeLockMetadata.whitelistedTokens;
 
   whitelistedTokens.forEach((element: any) => {
@@ -57,7 +57,7 @@ export async function addMgaToWhitelisted(
     const updateMetadataEvent = await updateFeeLockMetadata(
       sudo,
       new BN(feeLockMetadata.periodLength),
-      new BN(feeLockMetadata.feeLockAmount),
+      stringToBN(feeLockMetadata.feeLockAmount),
       thresholdValueExpected,
       [[MGA_ASSET_ID, true]]
     );

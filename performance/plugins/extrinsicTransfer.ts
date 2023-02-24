@@ -10,13 +10,19 @@ import { performanceTestItem } from "./performanceTestItem";
 export class ExtrinsicTransfer extends performanceTestItem {
   async arrange(testParams: TestParams): Promise<boolean> {
     await super.arrange(testParams);
-    await this.mintTokensToUsers(testParams.threads, testParams.nodes, [MGA_ASSET_ID]);
+    await this.mintTokensToUsers(testParams.threads, testParams.nodes, [
+      MGA_ASSET_ID,
+    ]);
     return true;
   }
 
   async act(testParams: TestParams): Promise<boolean> {
     await super.act(testParams);
-    await runTransactions(this.mgaNodeandUsers, testParams, createAndSignTransfer);
+    await runTransactions(
+      this.mgaNodeandUsers,
+      testParams,
+      createAndSignTransfer
+    );
     console.info(`.... Done Sending Txs`);
     return true;
   }
@@ -26,12 +32,12 @@ async function createAndSignTransfer(
   mgaSdk: Mangata,
   users: { nonce: BN; keyPair: KeyringPair }[],
   threadId: number,
-  nonceOffset: BN = new BN(0),
+  nonceOffset: BN = new BN(0)
 ) {
   const destUser = users[(threadId + 1) % users.length];
-  const srcUser = users[threadId % users.length]
+  const srcUser = users[threadId % users.length];
   const api = await mgaSdk.getApi();
-  let nonce = srcUser.nonce.add(nonceOffset);
+  const nonce = srcUser.nonce.add(nonceOffset);
 
   const tx = api!.tx.tokens.transfer(
     destUser.keyPair.address,
@@ -39,13 +45,12 @@ async function createAndSignTransfer(
     new BN(1)
   );
 
-
   await tx.signAsync(
     srcUser!.keyPair,
     //@ts-ignore
     {
-      nonce
+      nonce,
     }
   );
-  return tx
+  return tx;
 }

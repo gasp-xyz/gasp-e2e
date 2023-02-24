@@ -29,7 +29,6 @@ export class ExtrinsicSwap extends performanceTestItem {
     const keyring = new Keyring({ type: "sr25519" });
     const sudo = UserFactory.createUser(Users.SudoUser, keyring, mgaNode);
 
-
     this.tokens = await Assets.setupUserWithCurrencies(
       sudo,
       [new BN(100000), new BN(100000)],
@@ -52,7 +51,14 @@ export class ExtrinsicSwap extends performanceTestItem {
   }
   async act(testParams: TestParams): Promise<boolean> {
     await super.act(testParams);
-    let generator = (sdk: Mangata, users: { nonce: BN; keyPair: KeyringPair }[], thread: number, offset: BN) => { return createAndSignSwaps(this.isBuy, sdk, users, thread, offset) };
+    const generator = (
+      sdk: Mangata,
+      users: { nonce: BN; keyPair: KeyringPair }[],
+      thread: number,
+      offset: BN
+    ) => {
+      return createAndSignSwaps(this.isBuy, sdk, users, thread, offset);
+    };
     await runTransactions(this.mgaNodeandUsers, testParams, generator);
     console.info(`.... Done Sending Txs`);
     return true;
@@ -64,11 +70,11 @@ async function createAndSignSwaps(
   mgaSdk: Mangata,
   users: { nonce: BN; keyPair: KeyringPair }[],
   threadId: number,
-  nonceOffset: BN = new BN(0),
+  nonceOffset: BN = new BN(0)
 ) {
-  const srcUser = users[threadId % users.length]
+  const srcUser = users[threadId % users.length];
   const api = await mgaSdk.getApi();
-  let nonce = srcUser.nonce.add(nonceOffset);
+  const nonce = srcUser.nonce.add(nonceOffset);
 
   let assets = [tokens[0], tokens[1]];
   if (srcUser!.nonce.toNumber() % 2 === 0) {

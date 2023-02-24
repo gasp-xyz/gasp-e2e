@@ -1,13 +1,18 @@
+/* eslint-disable no-console */
 import { BN } from "@polkadot/util";
-import { renameExtraLogs } from "./frontend/utils/Helper";
 import { removeSudoDb } from "./lock";
 
 require("dotenv").config();
-//TODO: This must be temporal, but lets retry test failues to avoid Tx issues.
-jest.retryTimes(2);
 beforeAll(async () => {
+  //  if (
+  //    process.argv.includes("--runInBand") ||
+  //    process.env.JEST_GROUP_SEQUENTIAL
+  //  ) {
+  //    console.warn("BeforeAll::setting up gasless...");
+  //    await setupGasLess(true);
+  //    console.warn("BeforeAll...Done");
+  //  }
   await removeSudoDb();
-
   //   const child = await execFile(
   //     `node`,
   //     [`${__dirname}/NonceManager.js`],
@@ -21,7 +26,6 @@ beforeAll(async () => {
   //     }
   //   );
 });
-
 declare global {
   namespace jest {
     interface Matchers<R> {
@@ -179,19 +183,5 @@ export const registerScreenshotReporter = () => {
   const screenshotPromise = Promise.resolve();
   beforeEach(() => screenshotPromise);
   afterAll(() => screenshotPromise);
-
-  (jasmine as any).getEnv().addReporter({
-    specDone: async (result: any) => {
-      if (result.status === "failed") {
-        try {
-          await renameExtraLogs(result.fullName, result.status);
-        } catch (e) {
-          // eslint-disable-next-line no-console
-          console.error(e);
-          // Lets only log the error, so tno want any side effect.
-        }
-      }
-    },
-  });
 };
 registerScreenshotReporter();

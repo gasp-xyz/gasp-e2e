@@ -803,7 +803,7 @@ function requireFees() {
     // eslint-disable-next-line no-console
     // console.log("first(): called");
     const oldFunc = descriptor.value;
-    descriptor.value = async function() {
+    descriptor.value = async function () {
       if (Fees.swapFeesEnabled) {
         const mgas = await getTokensAccountInfo(
           arguments[0].address,
