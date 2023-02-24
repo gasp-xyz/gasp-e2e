@@ -6,7 +6,6 @@ import { KeyringPair } from "@polkadot/keyring/types";
 import { MGA_ASSET_ID } from "../../utils/Constants";
 import { runTransactions } from "./testRunner";
 import { performanceTestItem } from "./performanceTestItem";
-import { Commands } from "../testFactory";
 
 export class ExtrinsicTransfer extends performanceTestItem {
   async arrange(testParams: TestParams): Promise<boolean> {

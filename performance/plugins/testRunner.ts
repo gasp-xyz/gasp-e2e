@@ -146,5 +146,6 @@ async function runTxsInBurstMode(
   generator: any
 ) {
   testParams.pending = Number.MAX_VALUE;
+  testParams.totalTx = Math.min(testParams.totalTx, 10000)
   return runTxsInConcurrentMode(mgaNodeandUsers, testParams, generator)
 }

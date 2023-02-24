@@ -3,7 +3,7 @@ import { Keyring } from "@polkadot/api";
 import { BN } from "@polkadot/util";
 import { Mangata, MangataGenericEvent } from "@mangata-finance/sdk";
 import { testLog } from "../../utils/Logger";
-import { logFile, TestParams } from "../testParams";
+import { TestParams } from "../testParams";
 import { TestItem } from "./testItem";
 import { KeyringPair } from "@polkadot/keyring/types";
 import { UserFactory, Users } from "../../utils/Framework/User/UserFactory";
@@ -14,6 +14,7 @@ import { initApi } from "../../utils/api";
 import { generateHtmlReport, writeToFile, trackPendingExtrinsics, trackExecutedExtrinsics, trackEnqueuedExtrinsics } from "./testReporter";
 import { Guid } from "guid-typescript";
 import { User } from "../../utils/User";
+import { getEnvironmentRequiredVars } from "../../utils/utils"
 import { SudoUser } from "../../utils/Framework/User/SudoUser";
 import { quantile } from "simple-statistics"
 
@@ -31,8 +32,33 @@ export class performanceTestItem implements TestItem {
   enqueued: Promise<[number, number][]> = new Promise<[number, number][]>((resolve) => { resolve([]) });
   executed: Promise<[number, number][]> = new Promise<[number, number][]>((resolve) => { resolve([]) });
   pending: Promise<[number, number][]> = new Promise<[number, number][]>((resolve) => { resolve([]) });
+  ipc: any;
 
   async arrange(testParams: TestParams): Promise<boolean> {
+
+    const mga = await getMangata(testParams.nodes[0]!);
+    const api = await mga.getApi();
+    const { sudo } = getEnvironmentRequiredVars();
+    const keyring = new Keyring({ type: "sr25519" })
+    const sudoKeyringPair = keyring.createFromUri(sudo);
+    let nonce = await api.rpc.system.accountNextIndex(sudoKeyringPair.address);
+
+    const ipc = require("node-ipc").default;
+    ipc.config.id = "nonceManager";
+    ipc.config.retry = 1500;
+    ipc.config.silent = false;
+    ipc.config.sync = true;
+    ipc.serve(function() {
+      ipc.server.on("getNonce", (data: any, socket: any) => {
+        console.info("serving nonce" + data.id + " " + nonce);
+        ipc.server.emit(socket, "nonce-" + data.id, nonce.toNumber());
+        nonce.iaddn(1)
+      });
+    });
+
+    ipc.server.start();
+    this.ipc = ipc;
+
     return true;
   }
 
@@ -92,6 +118,7 @@ export class performanceTestItem implements TestItem {
   async teardown(): Promise<boolean> {
     let apis = await Promise.all([...this.mgaNodeandUsers.values()].map(({ mgaSdk }) => mgaSdk.getApi()))
     await Promise.all(apis.map(api => api.disconnect()))
+    await this.ipc.server.stop()
     return true;
   }
   async run(testparams: TestParams): Promise<boolean> {
@@ -125,6 +152,7 @@ export class performanceTestItem implements TestItem {
       keyring,
       mgaNode
     ) as SudoUser;
+    await sudo.node.connect();
     await createPoolIfMissing(sudo, "100000", tokenId, tokenId2);
   }
   async mintTokensToUsers(

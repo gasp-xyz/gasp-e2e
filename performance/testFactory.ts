@@ -1,7 +1,7 @@
 // import { ExtrinsicBatch } from "./plugins/extrinsicBatch";
 // import { ExtrinsicBurn } from "./plugins/extrinsicBurn";
 // import { ExtrinsicMint } from "./plugins/extrinsicMint";
-// import { ExtrinsicSwap } from "./plugins/extrinsicSwap";
+import { ExtrinsicSwap } from "./plugins/extrinsicSwap";
 import { ExtrinsicTransfer } from "./plugins/extrinsicTransfer";
 // import { ExtrinsicTransferAll } from "./plugins/extrinsicTransferAll";
 // import { Ping } from "./plugins/ping";
@@ -31,9 +31,12 @@ export class TestFactory {
     ) {
       return new ExtrinsicTransfer();
     }
-    // if (type === Commands.SwapBuy || type === Commands.SwapSell) {
-    //   return new ExtrinsicSwap();
-    // }
+    if (type === Commands.SwapBuy) {
+      return new ExtrinsicSwap(true);
+    }
+    if (type === Commands.SwapSell) {
+      return new ExtrinsicSwap(false);
+    }
     // if (type === Commands.Ping) {
     //   return new Ping();
     // }
