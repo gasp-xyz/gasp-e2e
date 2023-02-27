@@ -150,7 +150,7 @@ export class performanceTestItem implements TestItem {
 
     if (pending_throughput < testParams.throughput * 0.75) {
       console.info(
-        `pending throughput was too small, consider adding more threads`
+        `pending throughput was too small, consider increasing pending/totalTx parameter`
       );
       return false;
     }
