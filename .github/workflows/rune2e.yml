@@ -88,6 +88,7 @@ jobs:
           node-version: '16'
           cache: yarn
           path: 'e2eTests'
+          cache-dependency-path: e2eTests/yarn.lock
 
       - name: Replace parachain docker image reference in config
         working-directory: mangata-node/launch
