@@ -82,7 +82,10 @@ jobs:
           repository: mangata-finance/mangata-node
           ref: 'develop'
           path: 'mangata-node'
-
+      - uses: actions/setup-node@v3
+        with:
+          node-version: '16'
+          cache: yarn
 
       - name: Replace parachain docker image reference in config
         working-directory: mangata-node/launch
