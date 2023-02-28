@@ -152,7 +152,12 @@ test("gasless- GIVEN a correct config for gasless swaps WHEN the user runs unloc
   );
   const waitingBlock = accountFeeLockData.lastFeeLockBlock + periodLength;
   await waitBlockNumber(waitingBlock, periodLength.toNumber() + 5);
-  await unlockFee(testUser1);
+  try {
+    await unlockFee(testUser1);
+  } catch (error) {
+    //this will be either unlock or automatically unlock will do it
+  }
+
   await testUser1.refreshAmounts(AssetWallet.AFTER);
 
   const userMgaFees = testUser1
@@ -221,10 +226,13 @@ test("gasless- For low-value swaps, token reservation status and pallet storage 
     )
   );
   const waitingBlock = accountFeeLockData.lastFeeLockBlock + periodLength;
-  await waitBlockNumber(waitingBlock, periodLength.toNumber() + 5);
   await checkAccountFeeLockData(feeLockAmount, lockDataBlockNumber);
-
-  await unlockFee(testUser1);
+  await waitBlockNumber(waitingBlock, periodLength.toNumber() + 5);
+  try {
+    await unlockFee(testUser1);
+  } catch (error) {
+    //this will be either unlock or automatically unlock will do it
+  }
   await checkAccountFeeLockData(0, 0);
 });
 

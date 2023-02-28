@@ -12,7 +12,7 @@ import {
   waitNewBlock,
   waitSudoOperationSuccess,
 } from "../../utils/eventListeners";
-import { BN } from "@mangata-finance/sdk";
+import { BN, BN_ZERO } from "@mangata-finance/sdk";
 import { setupApi, setupUsers } from "../../utils/setup";
 import { Sudo } from "../../utils/sudo";
 import { updateFeeLockMetadata, unlockFee } from "../../utils/tx";
@@ -184,7 +184,7 @@ test("gasless- GIVEN some locked tokens and lastFeeLockBlock is lower than curre
 
   const saleAssetValue = thresholdValue.sub(new BN(5));
   await testUser1.sellAssets(firstCurrency, secondCurrency, saleAssetValue);
-
+  await testUser1.refreshAmounts(AssetWallet.BEFORE);
   const accountFeeLockData = JSON.parse(
     JSON.stringify(
       await api.query.feeLock.accountFeeLockData(testUser1.keyRingPair.address)
@@ -193,10 +193,14 @@ test("gasless- GIVEN some locked tokens and lastFeeLockBlock is lower than curre
 
   const waitingBlock = accountFeeLockData.lastFeeLockBlock + periodLength;
   await waitBlockNumber(waitingBlock, periodLength.toNumber() + 5);
-  await testUser1.refreshAmounts(AssetWallet.BEFORE);
-  await unlockFee(testUser1);
-  await testUser1.refreshAmounts(AssetWallet.AFTER);
 
+  try {
+    await unlockFee(testUser1);
+  } catch (error) {
+    //this could fail because automatic unlock, but either this get unlocked or automatically unlocked.
+  }
+
+  await testUser1.refreshAmounts(AssetWallet.AFTER);
   expect(testUser1.getAsset(MGA_ASSET_ID)?.amountBefore.reserved!).bnEqual(
     new BN(feeLockAmount)
   );
@@ -257,5 +261,8 @@ test("gasless- GIVEN a lock WHEN the period is N THEN the tokens can not be unlo
       await waitNewBlock();
     }
   }
-  expect(succeeded).toBeTruthy();
+  await testUser1.refreshAmounts(AssetWallet.AFTER);
+  const reserved = testUser1.getAsset(MGA_ASSET_ID)?.amountAfter.reserved;
+  expect(reserved).bnEqual(BN_ZERO);
+  //expect(succeeded).toBeTruthy();
 });
