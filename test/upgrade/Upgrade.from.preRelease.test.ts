@@ -35,12 +35,12 @@ let sudo, keyring;
 //*******END:HOW TO USE******** */
 
 let wasmPath = process.env.WASM_PATH ? process.env.WASM_PATH : "";
-const relayName = process.env.RELAY ? process.env.RELAY : "rococo";
+const relayName = process.env.RELAY ? process.env.RELAY : "kusama";
 
 describe("upgrade - testpad", () => {
   function filterRelease(release: { prerelease: boolean }) {
     // Filter out prereleases.
-    return release.prerelease === true;
+    return release.prerelease === false;
   }
   function filterAsset(asset: { name: string | string[] }) {
     // Select assets that contain the string 'windows'.
