@@ -6,7 +6,6 @@ import fs from "fs";
 import { testLog } from "../../Logger";
 import { BN } from "@polkadot/util";
 
-import { Reporter } from "jest-allure/dist/Reporter";
 const { By, until } = require("selenium-webdriver");
 
 const timeOut = 60000;
@@ -199,8 +198,6 @@ export async function addExtraLogs(driver: WebDriver, testName = "") {
   });
   const img = await driver.takeScreenshot();
   fs.writeFileSync(`${outputPath}/screenshot_${testName}.png`, img, "base64");
-  const reporter = (globalThis as any).reporter as Reporter;
-  reporter.addAttachment("Screeenshot", new Buffer(img, "base64"), "image/png");
 }
 export async function renameExtraLogs(testName: string, result = "FAILED_") {
   fs.readdirSync(outputPath).forEach((file) => {
