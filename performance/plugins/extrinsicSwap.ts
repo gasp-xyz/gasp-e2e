@@ -6,6 +6,7 @@ import { KeyringPair } from "@polkadot/keyring/types";
 import { runTransactions } from "./testRunner";
 import { performanceTestItem } from "./performanceTestItem";
 import { Assets } from "../../utils/Assets";
+import { initApi } from "../../utils/api";
 import { Node } from "../../utils/Framework/Node/Node";
 import { UserFactory, Users } from "../../utils/Framework/User/UserFactory";
 import { Keyring } from "@polkadot/api";
@@ -29,15 +30,18 @@ export class ExtrinsicSwap extends performanceTestItem {
     const keyring = new Keyring({ type: "sr25519" });
     const sudo = UserFactory.createUser(Users.SudoUser, keyring, mgaNode);
 
+    await initApi(testParams.nodes[0]);
     this.tokens = await Assets.setupUserWithCurrencies(
       sudo,
-      [new BN(100000), new BN(100000)],
+      [
+        new BN("1000000000000000000000000000"),
+        new BN("1000000000000000000000000000"),
+      ],
       sudo
     ).then((values) => {
       return values.map((val) => val.toNumber());
     });
     //create the pool
-    //
     await this.createPoolIfMissing(
       new BN(this.tokens[0]),
       new BN(this.tokens[1]),

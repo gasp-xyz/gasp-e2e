@@ -144,7 +144,9 @@ function verifyArgs(params: TestParams, test: string) {
 }
 
 main()
-  .catch((_) => {
+  .catch((e) => {
+    /*eslint no-console: 0*/
+    console.error(e);
     process.exit(-1);
   })
   .then((result) => {

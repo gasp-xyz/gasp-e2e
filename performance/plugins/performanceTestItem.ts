@@ -53,6 +53,8 @@ export class performanceTestItem implements TestItem {
   ipc: any;
 
   async arrange(testParams: TestParams): Promise<boolean> {
+    console.info("helo world");
+    console.info(testParams.nodes);
     const mga = await getMangata(testParams.nodes[0]!);
     const api = await mga.getApi();
     const { sudo } = getEnvironmentRequiredVars();
@@ -77,11 +79,15 @@ export class performanceTestItem implements TestItem {
 
     ipc.server.start();
     this.ipc = ipc;
+    console.info("helo world 2");
+    console.info(testParams.nodes);
 
     return true;
   }
 
   async act(testParams: TestParams): Promise<boolean> {
+    console.info("helo world 2");
+    console.info(testParams.nodes);
     const mga = await getMangata(testParams.nodes[0]!);
     const api = await mga.getApi();
     this.executed = trackExecutedExtrinsics(api, testParams.duration);
@@ -201,7 +207,12 @@ export class performanceTestItem implements TestItem {
       mgaNode
     ) as SudoUser;
     await sudo.node.connect();
-    await createPoolIfMissing(sudo, "100000", tokenId, tokenId2);
+    await createPoolIfMissing(
+      sudo,
+      "1000000000000000000000000000",
+      tokenId,
+      tokenId2
+    );
   }
   async mintTokensToUsers(
     numberOfThreads: number,
@@ -345,6 +356,7 @@ export class performanceTestItem implements TestItem {
 
 export async function getMangata(node: string) {
   const mga = Mangata.getInstance([node]);
-  await initApi(node);
+  const api = await initApi(node);
+  await api.isReady;
   return mga;
 }
