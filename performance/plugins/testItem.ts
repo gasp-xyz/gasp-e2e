@@ -1,9 +1,9 @@
 import { TestParams } from "../testParams";
 
 export interface TestItem {
-  arrange: (numberOfThreads: number, nodes: string[]) => Promise<boolean>;
+  arrange: (testParams: TestParams) => Promise<boolean>;
   act: (testParams: TestParams) => Promise<boolean>;
-  expect: (nodes: string[]) => Promise<boolean>;
-  teardown: (nodes: string[]) => Promise<boolean>;
+  expect: (testParams: TestParams) => Promise<boolean>;
+  teardown: () => Promise<boolean>;
   run: (testParams: TestParams) => Promise<boolean>;
 }

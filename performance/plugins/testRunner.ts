@@ -4,231 +4,121 @@ import { BN } from "@polkadot/util";
 import { Mangata } from "@mangata-finance/sdk";
 import { testLog } from "../../utils/Logger";
 import { TestParams } from "../testParams";
-import { logLine } from "./testReporter";
 import { KeyringPair } from "@polkadot/keyring/types";
 import { SubmittableExtrinsic } from "@polkadot/api/types";
 import { SubmittableResult } from "@polkadot/api";
 
+import { blake2AsHex } from "@polkadot/util-crypto";
 import asyncPool from "tiny-async-pool";
 import { TestsCases } from "../testFactory";
-import { getMangata } from "./performanceTestItem";
-import { waitNewBlock } from "../../utils/eventListeners";
 
-export async function preGenerateTransactions(
-  testParams: TestParams,
+export async function runTransactions(
   mgaNodeandUsers: Map<
     number,
     { mgaSdk: Mangata; users: { nonce: BN; keyPair: KeyringPair }[] }
   >,
-  fn: any,
-  options?: {}
-): Promise<SubmittableExtrinsic<"promise", SubmittableResult>[][]> {
-  testLog
-    .getLog()
-    .info(
-      `Pregenerating ${testParams.totalTx} transactions across ${testParams.threads} threads...`
-    );
-  const totalBatches = testParams.totalTx / testParams.threads;
-  //const userPerThread = 1;
-
-  const thread_payloads: SubmittableExtrinsic<
-    "promise",
-    SubmittableResult
-  >[][] = [];
-  let sanityCounter = 0;
-  for (let nodeThread = 0; nodeThread < testParams.nodes.length; nodeThread++) {
-    const batches = [];
-    for (let batchNo = 0; batchNo < totalBatches; batchNo++) {
-      const batch = [];
-      for (
-        let userNo = 0;
-        userNo < mgaNodeandUsers.get(nodeThread)!.users.length;
-        userNo++
-      ) {
-        const { mgaValue, signed } = await fn(
-          mgaNodeandUsers,
-          nodeThread,
-          userNo,
-          options
-        );
-        mgaValue.users[userNo]!.nonce! = mgaValue.users[userNo]!.nonce.add(
-          new BN(1)
-        );
-        batch.push(signed);
-
-        sanityCounter++;
-      }
-      batches.push(batch);
-    }
-    const flatten = batches.reduce(
-      (accumulator, value) => accumulator.concat(value),
-      []
-    );
-    thread_payloads.push(flatten);
-  }
-  testLog.getLog().info(`Done pregenerating transactions (${sanityCounter}).`);
-  return thread_payloads;
-}
-
-export async function runTransactions(
   testParams: TestParams,
-  preSetupThreads: SubmittableExtrinsic<"promise", SubmittableResult>[][]
+  generator: any
 ) {
-  const nodePromises: any[] = [];
-
-  for (let nodeIdx = 0; nodeIdx < testParams.nodes.length; nodeIdx++) {
-    const nodeThreads = testParams.threads;
-    if (testParams.testCase === TestsCases.ConcurrentTest) {
-      nodePromises.push(
-        runTxsInConcurrentMode(
-          preSetupThreads,
-          nodeIdx,
-          testParams,
-          nodeThreads
-        )
-      );
-    } else if (testParams.testCase === TestsCases.Burst) {
-      nodePromises.push(
-        runTxsInBurstMode(preSetupThreads, nodeIdx, testParams)
-      );
-    }
+  if (testParams.testCase === TestsCases.ConcurrentTest) {
+    await runTxsInConcurrentMode(mgaNodeandUsers, testParams, generator);
+  } else if (testParams.testCase === TestsCases.Burst) {
+    await runTxsInBurstMode(mgaNodeandUsers, testParams, generator);
   }
-  const results = await Promise.all(nodePromises);
-  // eslint-disable-next-line no-console
   testLog.getLog().info(`Sent!`);
   testLog.getLog().info("All promises fulfilled");
-  return results;
+  return;
+}
+
+async function executionThread(
+  threadId: number,
+  testParams: TestParams,
+  sdk: Mangata,
+  generator: any
+) {
+  const limit = Math.ceil(testParams.totalTx / testParams.threads);
+  const load = Math.min(
+    limit,
+    Math.ceil(testParams.pending / testParams.threads)
+  );
+  console.info(
+    `Worker [${threadId}] starting execution thread load: ${load} limit: ${limit}`
+  );
+
+  const myTxs = new Set();
+  const api = await sdk.getApi()!;
+  let exec_counter = 0;
+  let nonce_offset = 0;
+  const promises = [];
+  const now = (await api.rpc.chain.getHeader()).number.toNumber();
+
+  return new Promise<void>(async (resolve, _reject) => {
+    const unsub = await api.rpc.chain.subscribeNewHeads(async (header: any) => {
+      const queue = await (
+        await api.at(header.hash)
+      ).query.system.storageQueue();
+
+      for (let i = 0; i < queue.length; i++) {
+        for (let j = 0; j < queue[i][2].length; ++j) {
+          const tx = queue[i][2][j][1];
+          const tx_hash = blake2AsHex(tx);
+          if (myTxs.has(tx_hash)) {
+            exec_counter++;
+            myTxs.delete(tx_hash);
+          }
+        }
+      }
+
+      if (
+        exec_counter >= limit ||
+        header.number.toNumber() - now >= testParams.duration
+      ) {
+        unsub();
+        resolve();
+        return;
+      }
+
+      const txs = await Promise.all(
+        [...Array(load - myTxs.size).keys()].map((id) => {
+          return generator(new BN(id + nonce_offset));
+        })
+      );
+      nonce_offset += txs.length;
+
+      txs.forEach((tx) => myTxs.add(tx.hash.toString()));
+      txs.forEach((tx) => promises.push(tx.send()));
+      console.info(
+        `Worker [${threadId}] #${header.number} submitted ${txs.length} txs`
+      );
+    });
+  });
 }
 
 async function runTxsInConcurrentMode(
-  preSetupThreads: SubmittableExtrinsic<"promise", SubmittableResult>[][],
-  nodeIdx: number,
+  mgaNodeandUsers: Map<
+    number,
+    { mgaSdk: Mangata; users: { nonce: BN; keyPair: KeyringPair }[] }
+  >,
   testParams: TestParams,
-  nodeThreads: number
+  generator: any
 ) {
-  const runNodeTxs = (i: number) =>
-    new Promise<[number, number]>(async (resolve) => {
-      const transaction = await preSetupThreads[nodeIdx][i];
-      const start = new Date().getTime();
-      try {
-        await transaction
-          .send(({ status }) => {
-            if (status.isInBlock) {
-              const finalized = new Date().getTime();
-              const diff = finalized - start;
-              resolve([i, diff]);
-              logLine(
-                testParams.logFile,
-                "\n" +
-                  new Date().toUTCString() +
-                  "-" +
-                  JSON.stringify(status.toHuman()!)
-              );
-              return;
-            }
-          })
-          .catch((err: any) => {
-            logLine(
-              testParams.logFile,
-              "\n" +
-                new Date().toUTCString() +
-                "- ERROR - " +
-                JSON.stringify(err)
-            );
-            testLog.getLog().warn(err);
-            resolve([i, 0]);
-            return -1;
-          });
-      } catch (error) {
-        logLine(
-          testParams.logFile,
-          "\n" + new Date().toUTCString() + "- ERROR - " + JSON.stringify(error)
-        );
-        testLog.getLog().warn(error);
-        resolve([i, 0]);
-      }
-    });
-  const nodeTxs = preSetupThreads[nodeIdx];
-  const indexArray = nodeTxs.map((_, index) => {
-    return index;
-  });
-  testLog
-    .getLog()
-    .info(
-      `Sending  in ${nodeThreads} Threads ${preSetupThreads[0].length} Txs...`
-    );
-  await asyncPool(nodeThreads, indexArray, runNodeTxs);
-}
-async function runTxsInBurstMode(
-  preSetupThreads: SubmittableExtrinsic<"promise", SubmittableResult>[][],
-  nodeIdx: number,
-  testParams: TestParams
-) {
-  const sorted = preSetupThreads[nodeIdx].sort(function (a, b) {
-    return (
-      parseFloat(JSON.parse(a.toString()).signature.nonce) -
-      parseFloat(JSON.parse(b.toString()).signature.nonce)
-    );
+  const txGenerators = [...Array(testParams.threads).keys()].map((threadId) => {
+    const { mgaSdk, users } = mgaNodeandUsers.get(
+      threadId % mgaNodeandUsers.size
+    )!;
+    return {
+      mgaSdk: mgaSdk,
+      threadId,
+      generator: (offset: BN) => {
+        return generator(mgaSdk, users, threadId, offset);
+      },
+    };
   });
 
-  const runNodeTxs = (i: number) =>
-    new Promise<[number, number]>(async (resolve) => {
-      const transaction = await sorted[i];
-      await transaction
-        .send(({ status }) => {
-          if (status.isBroadcast || status.isFuture || status.isReady) {
-            // eslint-disable-next-line no-console
-            console.info(
-              "Sending Tx with nonce -> " +
-                JSON.parse(sorted[i].toString()).signature.nonce
-            );
-            resolve([i, 1]);
-            return;
-          }
-        })
-        .catch((err: any) => {
-          logLine(
-            testParams.logFile,
-            "\n" +
-              new Date().toUTCString() +
-              "- ERROR - " +
-              JSON.stringify(err.toHuman()!)
-          );
-          testLog.getLog().warn(err);
-          return;
-        });
-    });
-
-  //is burst, so lets move the first tx to the end.
-  //so right after all the Txs with node > the first one are submitted.
-  const indexArray = sorted.map((_, index) => {
-    return index;
-  });
-  testLog
-    .getLog()
-    .info(
-      `Sending  in ${sorted.length} Threads ${preSetupThreads[0].length} Txs...`
-    );
-
-  const mga = await getMangata(testParams.nodes[nodeIdx]!);
-  let pendingTxs = await (await mga.getApi()).rpc.author.pendingExtrinsics();
-  while (pendingTxs.length > 5000) {
-    await waitNewBlock();
-    pendingTxs = await (
-      await await mga.getApi()
-    ).rpc.author.pendingExtrinsics();
-  }
-
-  await asyncPool(
-    testParams.threads,
-    indexArray, //.slice(testParams.threads),
-    runNodeTxs
+  const executors = txGenerators.map(({ mgaSdk, threadId, generator }) =>
+    executionThread(threadId, testParams, mgaSdk, generator)
   );
-  //  await asyncPool(
-  //    testParams.threads,
-  //    [...Array(testParams.threads).keys()],
-  //    runNodeTxs
-  //  );
+  await Promise.all(executors);
 }
 
 export async function runQuery(
@@ -262,4 +152,17 @@ export async function runQuery(
   );
   testLog.getLog().info("All promises fulfilled");
   return results;
+}
+
+async function runTxsInBurstMode(
+  mgaNodeandUsers: Map<
+    number,
+    { mgaSdk: Mangata; users: { nonce: BN; keyPair: KeyringPair }[] }
+  >,
+  testParams: TestParams,
+  generator: any
+) {
+  testParams.pending = Number.MAX_VALUE;
+  testParams.totalTx = Math.min(testParams.totalTx, 10000);
+  return runTxsInConcurrentMode(mgaNodeandUsers, testParams, generator);
 }
