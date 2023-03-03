@@ -15,7 +15,7 @@ async function main() {
   commandArguments.forEach((commandArgument: string) => {
     const [arg, value] = commandArgument.split("=");
     switch (arg) {
-      case "pending":
+      case "pending": //How many txs should be available all the time in mempool for node to collect throughput - expected number of processed txs in each block (on avarage)
         testParams.pending = parseInt(value);
         break;
       case "throughput":
