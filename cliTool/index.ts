@@ -1,6 +1,6 @@
 /* eslint-disable no-console */
 /**
- * Checkbox list examples
+ * npx ts-node cliTool/index.ts --runInBand
  */
 import inquirer from "inquirer";
 import {
