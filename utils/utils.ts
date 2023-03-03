@@ -1,6 +1,6 @@
 import { formatBalance } from "@polkadot/util/format";
-import { BN } from "@polkadot/util";
-import { getApi, getMangataInstance, mangata } from "./api";
+import { BN, hexToU8a } from "@polkadot/util";
+import { getApi, getMangataInstance, mangata, initApi } from "./api";
 import { hexToBn, isHex } from "@polkadot/util";
 import { Assets } from "./Assets";
 import { User } from "./User";
@@ -390,4 +390,21 @@ export async function getFeeLockMetadata(api: ApiPromise) {
 
 export function stringToBN(value: string): BN {
   return isHex(value) ? hexToBn(value) : new BN(value);
+}
+export async function findErrorMetadata(errorStr: string, index: string) {
+  try {
+    getApi();
+  } catch (e) {
+    await initApi();
+  }
+  const api = await getApi();
+  const errorHex = hexToU8a(errorStr);
+  // eslint-disable-next-line no-console
+  console.info(" ::" + errorStr + "::" + index + "::");
+  const err = api?.registry.findMetaError({
+    error: errorHex,
+    index: new BN(index),
+  });
+  // eslint-disable-next-line no-console
+  console.info(err);
 }
