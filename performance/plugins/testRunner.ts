@@ -57,9 +57,11 @@ async function executionThread(
       const queue = await (
         await api.at(header.hash)
       ).query.system.storageQueue();
-
+      //@ts-ignore
       for (let i = 0; i < queue.length; i++) {
+        //@ts-ignore
         for (let j = 0; j < queue[i][2].length; ++j) {
+          //@ts-ignore
           const tx = queue[i][2][j][1];
           const tx_hash = blake2AsHex(tx);
           if (myTxs.has(tx_hash)) {

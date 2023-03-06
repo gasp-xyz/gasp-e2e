@@ -179,8 +179,9 @@ export async function trackEnqueuedExtrinsics(api: ApiPromise, count: number) {
         ).query.system.storageQueue();
 
         let enqueuedTxsCount = 0;
-
+        //@ts-ignore
         for (let i = 0; i < queue.length; ++i) {
+          //@ts-ignore
           enqueuedTxsCount += queue[i][2].length;
         }
 
