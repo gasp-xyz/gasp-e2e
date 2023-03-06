@@ -63,6 +63,8 @@ beforeAll(async () => {
   );
 
   await Sudo.batchAsSudoFinalized(
+    Assets.FinalizeTge(),
+    Assets.initIssuance(),
     Assets.mintToken(firstCurrency, sudo, defaultCurrencyValue),
     Assets.mintToken(firstCurrency, testUser1, defaultCurrencyValue),
     Assets.mintNative(testUser1),
