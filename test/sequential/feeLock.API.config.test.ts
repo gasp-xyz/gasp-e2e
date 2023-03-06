@@ -21,9 +21,10 @@ import { AssetWallet, User } from "../../utils/User";
 import {
   getEnvironmentRequiredVars,
   getFeeLockMetadata,
-  waitForNBlocks,
+  sleep,
 } from "../../utils/utils";
 import { Xyk } from "../../utils/xyk";
+import { waitForEvent } from "../../utils/eventListeners";
 
 jest.spyOn(console, "log").mockImplementation(jest.fn());
 jest.setTimeout(2500000);
@@ -125,7 +126,7 @@ test("gasless- GIVEN a feeLock WHEN periodLength and feeLockAmount are set THEN 
   expect(currentFeeLockAmount).bnEqual(pendingFeeLockAmount);
 });
 
-test("gasless- Changing feeLock config parameter on the fly is works robustly", async () => {
+test("gasless- Changing feeLock config parameter on the fly is works robustly. Either automatic or manual unlocks the tokens", async () => {
   const api = getApi();
   let updateMetadataEvent: any;
   testUser1.addAsset(MGA_ASSET_ID);
@@ -144,21 +145,31 @@ test("gasless- Changing feeLock config parameter on the fly is works robustly", 
   const saleAssetValue = thresholdValue.sub(new BN(5));
   await testUser1.sellAssets(firstCurrency, MGA_ASSET_ID, saleAssetValue);
   await testUser1.refreshAmounts(AssetWallet.BEFORE);
-
+  const eventListener = waitForEvent(api, "feeLock.FeeLockUnlocked", 10);
   updateMetadataEvent = await updateFeeLockMetadata(
     sudo,
-    new BN(2),
+    new BN(5),
     feeLockAmount,
     thresholdValue,
     null
   );
   await waitSudoOperationSuccess(updateMetadataEvent);
-
-  await waitForNBlocks(2);
-  await unlockFee(testUser1).then((result) => {
-    const eventResponse = getEventResultFromMangataTx(result);
-    expect(eventResponse.state).toEqual(ExtrinsicResult.ExtrinsicSuccess);
-  });
+  const tries = 10;
+  let unlocked = false;
+  for (let index = 0; index < tries && !unlocked; index++) {
+    try {
+      // eslint-disable-next-line no-loop-func
+      await unlockFee(testUser1).then((result) => {
+        const eventResponse = getEventResultFromMangataTx(result);
+        expect(eventResponse.state).toEqual(ExtrinsicResult.ExtrinsicSuccess);
+        unlocked = true;
+      });
+    } catch (ex) {
+      await sleep(6000);
+    }
+  }
+  //either we manually unlocked, either automatically, but event should exist.
+  await eventListener;
   await testUser1.refreshAmounts(AssetWallet.AFTER);
 
   const userMgaLockedValue = testUser1
@@ -173,7 +184,7 @@ test("gasless- Changing feeLock config parameter on the fly is works robustly", 
     ).periodLength.toString()
   );
 
-  expect(newPeriodLength).bnEqual(new BN(2));
+  expect(newPeriodLength).bnEqual(new BN(5));
   expect(userMgaLockedValue).bnEqual(feeLockAmount);
   expect(testUser1.getAsset(MGA_ASSET_ID)?.amountAfter.reserved!).bnEqual(
     new BN(0)
