@@ -1,6 +1,5 @@
 /*
  *
- * @group autocompound
  * @group rewardsV2
  * @group story
  */
