@@ -1109,3 +1109,10 @@ export async function unlockFee(User: User) {
   );
   return result;
 }
+export async function getStakingLiquidityTokens(liquidityAssetId: BN) {
+  const api = await getApi();
+  const stakingLiq = JSON.parse(
+    JSON.stringify(await api.query.parachainStaking.stakingLiquidityTokens())
+  ) as any[];
+  return stakingLiq[liquidityAssetId.toNumber()];
+}

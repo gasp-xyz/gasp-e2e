@@ -10,6 +10,7 @@ import { testLog } from "./Logger";
 import { AnyNumber } from "@polkadot/types/types";
 import { Keyring, ApiPromise } from "@polkadot/api";
 import { KeyringPair } from "@polkadot/keyring/types";
+import { getStakingLiquidityTokens } from "./tx";
 
 export function sleep(ms: number) {
   return new Promise((resolve) => {
@@ -407,4 +408,44 @@ export async function findErrorMetadata(errorStr: string, index: string) {
   });
   // eslint-disable-next-line no-console
   console.info(err);
+}
+export async function printCandidatePowers() {
+  await initApi();
+  const api = getApi();
+  const info = (await api.query.parachainStaking.candidateState.entries())
+    .filter((candidateState) => candidateState !== null)
+    .map((state) => {
+      if (
+        state !== null &&
+        JSON.parse(JSON.stringify(state[1])).totalCounted !== null
+      ) {
+        return [
+          JSON.parse(JSON.stringify(state[1].toHuman())).id,
+          stringToBN(
+            JSON.parse(JSON.stringify(state[1].toHuman())).liquidityToken
+          ),
+          stringToBN(
+            JSON.parse(JSON.stringify(state[1])).totalCounted
+          ).toString(),
+        ];
+      } else return [];
+    });
+
+  for (let index = 0; index < info.length; index++) {
+    const stakingInfo = info[index];
+    const poolStatus = await getStakingLiquidityTokens(stakingInfo[1]);
+    const power = stringToBN(stakingInfo[2])
+      .mul(stringToBN(poolStatus[0]))
+      .div(stringToBN(poolStatus[1]));
+    info[index].push(power.toString());
+  }
+
+  const sorted = info.sort((a, b) =>
+    stringToBN(a[3]).sub(stringToBN(b[3])).isNeg() ? 1 : -1
+  );
+  sorted.forEach((x, index) =>
+    // eslint-disable-next-line no-console
+    console.log(x[0] + " - " + x[3] + " - " + index)
+  );
+  //console.log(JSON.stringify(sorted));
 }

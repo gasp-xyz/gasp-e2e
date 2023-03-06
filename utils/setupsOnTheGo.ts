@@ -1,3 +1,4 @@
+/* eslint-disable no-console */
 import Keyring from "@polkadot/keyring";
 import BN from "bn.js";
 import { Assets } from "./Assets";
@@ -5,7 +6,11 @@ import { MGA_ASSET_ID } from "./Constants";
 import { waitForRewards } from "./eventListeners";
 import { setupApi, setupUsers } from "./setup";
 import { Sudo } from "./sudo";
-import { getLiquidityAssetId, getLiquidityPool } from "./tx";
+import {
+  getLiquidityAssetId,
+  getLiquidityPool,
+  calculate_buy_price_id_rpc,
+} from "./tx";
 import { User } from "./User";
 import { getEnvironmentRequiredVars } from "./utils";
 import { Xyk } from "./xyk";
@@ -90,16 +95,22 @@ export async function joinAsCandidate(userName = "//Charlie", liqId = 9) {
   const tokenInPool = await (
     await getLiquidityPool(liq)
   ).filter((x) => x.gt(MGA_ASSET_ID))[0];
+  const tokensToMint = await calculate_buy_price_id_rpc(
+    tokenInPool,
+    MGA_ASSET_ID,
+    amountToJoin
+  );
+  console.info("Token to  mint: " + tokensToMint.toString());
   await Sudo.batchAsSudoFinalized(
-    Assets.mintToken(tokenInPool, user, amountToJoin),
+    Assets.mintToken(tokenInPool, user, tokensToMint.muln(100)),
     Assets.mintNative(user, amountToJoin.muln(100000)),
     Sudo.sudoAs(
       user,
       Xyk.mintLiquidity(
-        tokenInPool,
         MGA_ASSET_ID,
-        amountToJoin,
-        amountToJoin.muln(2)
+        tokenInPool,
+        amountToJoin.muln(2),
+        tokensToMint.muln(4)
       )
     )
   );
@@ -109,7 +120,7 @@ export async function joinAsCandidate(userName = "//Charlie", liqId = 9) {
     api?.tx.parachainStaking.joinCandidates(
       amountToJoin.subn(100),
       liqId,
-      "ActivatedUnstakedReserves",
+      "AvailableBalance",
       // @ts-ignore - Mangata bond operation has 4 params, somehow is inheriting the bond operation from polkadot :S
       new BN(numCollators),
       // @ts-ignore
@@ -124,33 +135,37 @@ export async function joinAFewCandidates(numCandidates = 50, liqId = 9) {
   const api = await getApi();
   const keyring = new Keyring({ type: "sr25519" });
   const liq = new BN(liqId);
-
+  const amountToJoin = new BN(
+    api!.consts.parachainStaking.minCollatorStk!.toString()
+  ).addn(1234);
   const liqAssets = await api?.query.parachainStaking.stakingLiquidityTokens();
   const liqAssetsCount = [...liqAssets!.keys()].length;
   const numCollators = (await api?.query.parachainStaking.candidatePool())!
     .length;
   //const amountToJoin = new BN("5000000000000000000000");
-  const amountToJoin = new BN(
-    api!.consts.parachainStaking.minCollatorStk!.toString()
-  ).addn(1234);
   const tokenInPool = await (
     await getLiquidityPool(liq)
   ).filter((x) => x.gt(MGA_ASSET_ID))[0];
+  const tokensToMint = await calculate_buy_price_id_rpc(
+    tokenInPool,
+    MGA_ASSET_ID,
+    amountToJoin
+  );
   const txs = [];
   const users = [];
   for (let index = 0; index < numCandidates; index++) {
     const user = new User(keyring);
     users.push(user);
-    txs.push(Assets.mintToken(tokenInPool, user, amountToJoin));
+    txs.push(Assets.mintToken(tokenInPool, user, tokensToMint.muln(100)));
     txs.push(Assets.mintNative(user, amountToJoin.muln(100000)));
     txs.push(
       Sudo.sudoAs(
         user,
         Xyk.mintLiquidity(
-          tokenInPool,
           MGA_ASSET_ID,
-          amountToJoin,
-          amountToJoin.muln(2)
+          tokenInPool,
+          amountToJoin.muln(2),
+          tokensToMint.muln(4)
         )
       )
     );
@@ -165,7 +180,7 @@ export async function joinAFewCandidates(numCandidates = 50, liqId = 9) {
         api?.tx.parachainStaking.joinCandidates(
           amountToJoin.subn(10),
           liqId,
-          "ActivatedUnstakedReserves",
+          "AvailableBalance",
           // @ts-ignore - Mangata bond operation has 4 params, somehow is inheriting the bond operation from polkadot :S
           new BN(numCollators).addn(index),
           // @ts-ignore
@@ -187,20 +202,25 @@ export async function giveTokensToUser(userName = "//Charlie", liqId = 9) {
   const amountToJoin = new BN(
     api!.consts.parachainStaking.minCollatorStk!.toString()
   ).addn(1234);
-  const mint = amountToJoin.muln(1000);
   const tokenInPool = await (
     await getLiquidityPool(liq)
   ).filter((x) => x.gt(MGA_ASSET_ID))[0];
+  const tokensToMint = await calculate_buy_price_id_rpc(
+    tokenInPool,
+    MGA_ASSET_ID,
+    amountToJoin
+  );
+  console.info("Token to  mint: " + tokensToMint.toString());
   await Sudo.batchAsSudoFinalized(
-    Assets.mintToken(tokenInPool, user, mint),
-    Assets.mintNative(user, mint.muln(100000)),
+    Assets.mintToken(tokenInPool, user, tokensToMint.muln(100)),
+    Assets.mintNative(user, amountToJoin.muln(100000)),
     Sudo.sudoAs(
       user,
       Xyk.mintLiquidity(
-        tokenInPool,
         MGA_ASSET_ID,
-        amountToJoin,
-        amountToJoin.muln(2)
+        tokenInPool,
+        amountToJoin.muln(2),
+        tokensToMint.muln(4)
       )
     )
   );

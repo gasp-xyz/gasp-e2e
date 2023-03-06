@@ -9,7 +9,11 @@ import {
   joinAsCandidate,
   setupPoolWithRewardsForDefaultUsers,
 } from "../utils/setupsOnTheGo";
-import { findErrorMetadata, getEnvironmentRequiredVars } from "../utils/utils";
+import {
+  findErrorMetadata,
+  getEnvironmentRequiredVars,
+  printCandidatePowers,
+} from "../utils/utils";
 import { Node } from "../utils/Framework/Node/Node";
 import { SudoUser } from "../utils/Framework/User/SudoUser";
 import { Keyring } from "@polkadot/api";
@@ -32,6 +36,7 @@ async function app(): Promise<any> {
         "Find Error",
         "Enable liq token",
         "Is collator chosen?",
+        "Get powers",
       ],
     })
     .then(async (answers) => {
@@ -165,6 +170,9 @@ async function app(): Promise<any> {
             await joinAFewCandidates(answers.numCandidates, answers.liqToken);
             return app();
           });
+      }
+      if (answers.option.includes("Get powers")) {
+        await printCandidatePowers();
       }
       return app();
     });
