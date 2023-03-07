@@ -8,6 +8,7 @@ import {
   joinAFewCandidates,
   joinAsCandidate,
   setupPoolWithRewardsForDefaultUsers,
+  fillWithDelegators,
 } from "../utils/setupsOnTheGo";
 import {
   findErrorMetadata,
@@ -37,6 +38,7 @@ async function app(): Promise<any> {
         "Enable liq token",
         "Is collator chosen?",
         "Get powers",
+        "Fill with delegators",
       ],
     })
     .then(async (answers) => {
@@ -168,6 +170,34 @@ async function app(): Promise<any> {
           ])
           .then(async (answers) => {
             await joinAFewCandidates(answers.numCandidates, answers.liqToken);
+            return app();
+          });
+      }
+      if (answers.option.includes("Fill with delegators")) {
+        return inquirer
+          .prompt([
+            {
+              type: "input",
+              name: "liqToken",
+              message: "",
+            },
+            {
+              type: "input",
+              name: "numDelegators",
+              message: "",
+            },
+            {
+              type: "input",
+              name: "targetAddress",
+              message: "",
+            },
+          ])
+          .then(async (answers) => {
+            await fillWithDelegators(
+              answers.numDelegators,
+              answers.liqToken,
+              answers.targetAddress
+            );
             return app();
           });
       }

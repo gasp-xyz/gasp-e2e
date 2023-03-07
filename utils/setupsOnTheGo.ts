@@ -17,6 +17,7 @@ import { Xyk } from "./xyk";
 import { getApi } from "./api";
 import { signTx } from "@mangata-finance/sdk";
 
+const tokenOrigin = "ActivatedUnstakedReserves"; // "AvailableBalance";
 export async function setupPoolWithRewardsForDefaultUsers() {
   await setupApi();
   await setupUsers();
@@ -120,7 +121,7 @@ export async function joinAsCandidate(userName = "//Charlie", liqId = 9) {
     api?.tx.parachainStaking.joinCandidates(
       amountToJoin.subn(100),
       liqId,
-      "AvailableBalance",
+      tokenOrigin,
       // @ts-ignore - Mangata bond operation has 4 params, somehow is inheriting the bond operation from polkadot :S
       new BN(numCollators),
       // @ts-ignore
@@ -180,7 +181,7 @@ export async function joinAFewCandidates(numCandidates = 50, liqId = 9) {
         api?.tx.parachainStaking.joinCandidates(
           amountToJoin.subn(10),
           liqId,
-          "AvailableBalance",
+          tokenOrigin,
           // @ts-ignore - Mangata bond operation has 4 params, somehow is inheriting the bond operation from polkadot :S
           new BN(numCollators).addn(index),
           // @ts-ignore
@@ -224,4 +225,77 @@ export async function giveTokensToUser(userName = "//Charlie", liqId = 9) {
       )
     )
   );
+}
+export async function fillWithDelegators(
+  numDelegators: number,
+  liqToken: number,
+  targetAddress: string
+) {
+  await setupUsers();
+  await setupApi();
+  const api = await getApi();
+  const keyring = new Keyring({ type: "sr25519" });
+  const liq = new BN(liqToken);
+  const amountToJoin = new BN(
+    api!.consts.parachainStaking.minDelegation!.toString()
+  ).addn(1234);
+  //const liqAssets = await api?.query.parachainStaking.stakingLiquidityTokens();
+  //const liqAssetsCount = [...liqAssets!.keys()].length;
+  const candidateDelegationCount = JSON.parse(
+    JSON.stringify(
+      (await api?.query.parachainStaking.candidateState(targetAddress))!
+    )
+  ).delegators.length;
+  const totalDelegators = JSON.parse(
+    JSON.stringify(await api?.query.parachainStaking.delegatorState.entries())
+  ).length;
+  //const amountToJoin = new BN("5000000000000000000000");
+  const tokenInPool = await (
+    await getLiquidityPool(liq)
+  ).filter((x) => x.gt(MGA_ASSET_ID))[0];
+  const tokensToMint = await calculate_buy_price_id_rpc(
+    tokenInPool,
+    MGA_ASSET_ID,
+    amountToJoin
+  );
+  const txs = [];
+  const users = [];
+  for (let index = 0; index < numDelegators; index++) {
+    const user = new User(keyring);
+    users.push(user);
+    txs.push(Assets.mintToken(tokenInPool, user, tokensToMint.muln(100)));
+    txs.push(Assets.mintNative(user, amountToJoin.muln(100000)));
+    txs.push(
+      Sudo.sudoAs(
+        user,
+        Xyk.mintLiquidity(
+          MGA_ASSET_ID,
+          tokenInPool,
+          amountToJoin.muln(2),
+          tokensToMint.muln(4)
+        )
+      )
+    );
+  }
+  await Sudo.batchAsSudoFinalized(...txs);
+  const joins = [];
+  for (let index = 0; index < numDelegators; index++) {
+    joins.push(
+      signTx(
+        api,
+        // @ts-ignore
+        api?.tx.parachainStaking.delegate(
+          targetAddress,
+          amountToJoin.subn(10),
+          tokenOrigin,
+          // @ts-ignore - Mangata bond operation has 4 params, somehow is inheriting the bond operation from polkadot :S
+          new BN(candidateDelegationCount).addn(index),
+          // @ts-ignore
+          new BN(totalDelegators).addn(index)
+        ),
+        users[index].keyRingPair
+      )
+    );
+  }
+  await Promise.all(joins);
 }
