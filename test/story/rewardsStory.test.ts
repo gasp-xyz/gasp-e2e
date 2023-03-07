@@ -1,6 +1,6 @@
 /*
  *
- * @group autocompound
+ * @group rewardsV2
  * @group story
  */
 import { getApi, getMangataInstance, initApi } from "../../utils/api";

@@ -8,7 +8,7 @@ import { BN } from "@polkadot/util";
 import { env } from "process";
 import { SudoDB } from "./SudoDB";
 import { setAssetInfo, signSendAndWaitToFinishTx } from "./txHandler";
-import { getEnvironmentRequiredVars } from "./utils";
+import { getEnvironmentRequiredVars, stringToBN } from "./utils";
 import { Fees } from "./Fees";
 import {
   ETH_ASSET_ID,
@@ -1109,10 +1109,38 @@ export async function unlockFee(User: User) {
   );
   return result;
 }
+
 export async function getStakingLiquidityTokens(liquidityAssetId: BN) {
   const api = await getApi();
   const stakingLiq = JSON.parse(
     JSON.stringify(await api.query.parachainStaking.stakingLiquidityTokens())
   ) as any[];
   return stakingLiq[liquidityAssetId.toNumber()];
+}
+export async function getRewardsInfo(
+  address: string,
+  liqId: BN
+): Promise<{
+  activatedAmount: BN;
+  rewardsNotYetClaimed: BN;
+  rewardsAlreadyClaimed: BN;
+  lastCheckpoint: BN;
+  poolRatioAtLastCheckpoint: BN;
+  missingAtLastCheckpoint: BN;
+}> {
+  const api = await getApi();
+  const value = await api.query.xyk.rewardsInfo(address, liqId);
+  const valueAsJson = JSON.parse(JSON.stringify(value));
+  const toReturn = {
+    activatedAmount: stringToBN(valueAsJson.activatedAmount),
+    rewardsNotYetClaimed: stringToBN(valueAsJson.rewardsNotYetClaimed),
+    rewardsAlreadyClaimed: stringToBN(valueAsJson.rewardsAlreadyClaimed),
+    lastCheckpoint: stringToBN(valueAsJson.lastCheckpoint),
+    poolRatioAtLastCheckpoint: stringToBN(
+      valueAsJson.poolRatioAtLastCheckpoint
+    ),
+    missingAtLastCheckpoint: stringToBN(valueAsJson.missingAtLastCheckpoint),
+  };
+  return toReturn;
+
 }
