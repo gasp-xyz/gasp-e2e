@@ -1142,5 +1142,4 @@ export async function getRewardsInfo(
     missingAtLastCheckpoint: stringToBN(valueAsJson.missingAtLastCheckpoint),
   };
   return toReturn;
-
 }
