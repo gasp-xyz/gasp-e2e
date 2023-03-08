@@ -1,6 +1,7 @@
 /* eslint-disable no-console */
 /**
  * npx ts-node cliTool/index.ts --runInBand
+ * API_URL="wss://mangata-x.api.onfinality.io/public-ws"  npx ts-node ./index.ts --runInBand
  */
 import inquirer from "inquirer";
 import {
@@ -9,6 +10,7 @@ import {
   joinAsCandidate,
   setupPoolWithRewardsForDefaultUsers,
   fillWithDelegators,
+  printCandidatesNotProducing,
 } from "../utils/setupsOnTheGo";
 import {
   findErrorMetadata,
@@ -39,9 +41,10 @@ async function app(): Promise<any> {
         "Is collator chosen?",
         "Get powers",
         "Fill with delegators",
+        "Who is offline",
       ],
     })
-    .then(async (answers) => {
+    .then(async (answers: { option: string | string[] }) => {
       console.log("Answers::: " + JSON.stringify(answers, null, "  "));
       if (answers.option.includes("Setup rewards with default users")) {
         const setupData = await setupPoolWithRewardsForDefaultUsers();
@@ -61,11 +64,16 @@ async function app(): Promise<any> {
               message: "liq id",
             },
           ])
-          .then(async (answers) => {
-            await joinAsCandidate(answers.user, answers.liq);
-            console.log("Done");
-            return app();
-          });
+          .then(
+            async (answers: {
+              user: string | undefined;
+              liq: number | undefined;
+            }) => {
+              await joinAsCandidate(answers.user, answers.liq);
+              console.log("Done");
+              return app();
+            }
+          );
       }
       if (answers.option.includes("Give tokens to user")) {
         return inquirer
@@ -81,11 +89,16 @@ async function app(): Promise<any> {
               message: "liq id",
             },
           ])
-          .then(async (answers) => {
-            await giveTokensToUser(answers.user, answers.liq);
-            console.log("Done");
-            return app();
-          });
+          .then(
+            async (answers: {
+              user: string | undefined;
+              liq: number | undefined;
+            }) => {
+              await giveTokensToUser(answers.user, answers.liq);
+              console.log("Done");
+              return app();
+            }
+          );
       }
       if (answers.option.includes("Find Error")) {
         return inquirer
@@ -101,7 +114,7 @@ async function app(): Promise<any> {
               message: "",
             },
           ])
-          .then(async (answers) => {
+          .then(async (answers: { hex: string; index: string }) => {
             await findErrorMetadata(answers.hex, answers.index);
             console.log("Done");
             return app();
@@ -116,7 +129,7 @@ async function app(): Promise<any> {
               message: "",
             },
           ])
-          .then(async (answers) => {
+          .then(async (answers: { liqToken: import("bn.js") }) => {
             const node = new Node(getEnvironmentRequiredVars().chainUri);
             await node.connect();
             const keyring = new Keyring({ type: "sr25519" });
@@ -135,7 +148,7 @@ async function app(): Promise<any> {
               message: "",
             },
           ])
-          .then(async (answers) => {
+          .then(async (answers: { user: string | undefined }) => {
             await initApi();
             const api = await getApi();
             const collators =
@@ -168,10 +181,15 @@ async function app(): Promise<any> {
               message: "",
             },
           ])
-          .then(async (answers) => {
-            await joinAFewCandidates(answers.numCandidates, answers.liqToken);
-            return app();
-          });
+          .then(
+            async (answers: {
+              numCandidates: number | undefined;
+              liqToken: number | undefined;
+            }) => {
+              await joinAFewCandidates(answers.numCandidates, answers.liqToken);
+              return app();
+            }
+          );
       }
       if (answers.option.includes("Fill with delegators")) {
         return inquirer
@@ -192,17 +210,26 @@ async function app(): Promise<any> {
               message: "",
             },
           ])
-          .then(async (answers) => {
-            await fillWithDelegators(
-              answers.numDelegators,
-              answers.liqToken,
-              answers.targetAddress
-            );
-            return app();
-          });
+          .then(
+            async (answers: {
+              numDelegators: number;
+              liqToken: number;
+              targetAddress: string;
+            }) => {
+              await fillWithDelegators(
+                answers.numDelegators,
+                answers.liqToken,
+                answers.targetAddress
+              );
+              return app();
+            }
+          );
       }
       if (answers.option.includes("Get powers")) {
         await printCandidatePowers();
+      }
+      if (answers.option.includes("Who is offline")) {
+        await printCandidatesNotProducing();
       }
       return app();
     });
