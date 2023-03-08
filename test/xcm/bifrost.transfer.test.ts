@@ -1,20 +1,29 @@
-import { ApiPromise } from "@polkadot/api";
-import { Balance } from "@polkadot/types/interfaces";
+import { connectParachains } from "@acala-network/chopsticks";
 import { BN, BN_FIVE, BN_TEN } from "@polkadot/util";
 import _ from "lodash";
 import { AssetId, ChainId } from "../../utils/ChainSpecs";
-import { getEvents, waitForEvent, waitForEvents } from "../../utils/eventListeners";
+import { waitForEvent, waitForEvents } from "../../utils/eventListeners";
 import { XcmNode } from "../../utils/Framework/Node/XcmNode";
+import { Context } from "../../utils/Framework/XcmHelper";
+import XcmNetworks from "../../utils/Framework/XcmNetworks";
 import { alice, api, setupApi, setupUsers } from "../../utils/setup";
-import { signSendFinalized, signSendSuccess } from "../../utils/sign";
+import { signSendSuccess } from "../../utils/sign";
 import { XToken } from "../../utils/xToken";
 
+/**
+ * @group xcm
+ */
 describe("XCM transfers", () => {
     let bifrost: XcmNode
+    let mangata: Context
 
     beforeAll(async () => {
+        const b = await XcmNetworks.biforst()
+        await XcmNetworks.mangata()
+        await connectParachains([bifrost.chain, mangata.chain])
+
         // devops/chopsticks/bifrost.yml port
-        bifrost = await XcmNode.create("ws://127.0.0.1:9948", ChainId.Bifrost)
+        bifrost = new XcmNode("ws://127.0.0.1:9948", ChainId.Bifrost)
         await setupApi()
         setupUsers()
     })

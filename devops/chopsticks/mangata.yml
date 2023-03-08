@@ -49,16 +49,26 @@ import-storage:
                   - GeneralKey: '0x010A'
       -
         -
-          - 1984
-        - decimals: 6
-          symbol: USDt
+          - 101
+        - decimals: 18
+          symbol: ZLK
           additional:
             xcm:
-              feePerSecond: '1'
+              feePerSecond: '80640000000000000000'
           location:
             V1:
               parents: 1
               interior:
                 X2:
                   - Parachain: 2001
-                  - GeneralKey: '0x010A'
+                  - GeneralKey: '0x0207'
+      
+    LocationToAssetId:
+      -
+        -
+          - parents: 1
+            interior:
+              X2:
+                - Parachain: 2001
+                - GeneralKey: '0x0207'
+        - 101

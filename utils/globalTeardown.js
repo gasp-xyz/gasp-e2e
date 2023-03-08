@@ -3,6 +3,7 @@
 const { disconnect } = require("./api");
 
 module.exports = async (globalConfig, projectConfig) => {
+  if (process.env.SKIP_API_INIT) return
   console.error("GLOBAL TEARDOWN - DISCONNECT...");
   // eslint-disable-next-line no-undef
   await globalThis.server.stop();
