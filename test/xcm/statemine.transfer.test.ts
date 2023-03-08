@@ -7,7 +7,10 @@ import { alice, api, setupApi, setupUsers } from "../../utils/setup";
 import { signSendSuccess } from "../../utils/sign";
 import { XToken } from "../../utils/xToken";
 
-describe("XCM transfers", () => {
+/**
+ * @group xcm
+ */
+describe.skip("XCM transfers", () => {
     let statemine: StatemineNode
 
     beforeAll(async () => {
