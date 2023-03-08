@@ -2,7 +2,7 @@
  *
  * @group maintenance
  */
-
+import { hexToU8a } from "@polkadot/util";
 import { Keyring } from "@polkadot/api";
 import { getApi, initApi } from "../../utils/api";
 import { Assets } from "../../utils/Assets";
@@ -25,6 +25,7 @@ import {
   ExtrinsicResult,
   waitForRewards,
 } from "../../utils/eventListeners";
+import { testLog } from "../../utils/Logger";
 
 jest.spyOn(console, "log").mockImplementation(jest.fn());
 jest.setTimeout(2500000);
@@ -82,6 +83,40 @@ beforeAll(async () => {
       Maintenance.switchMaintenanceModeOff()
     )
   );
+});
+
+test("maintenance- try to change Maintenance Mode with a non-foundation account THEN it failed", async () => {
+  const api = getApi();
+
+  const switchMaintenanceMode = await Sudo.batchAsSudoFinalized(
+    Sudo.sudoAsWithAddressString(
+      sudo.keyRingPair.address,
+      Maintenance.switchMaintenanceModeOn()
+    )
+  );
+
+  const filteredEvent = switchMaintenanceMode.filter(
+    (extrinsicResult) => extrinsicResult.method === "SudoAsDone"
+  );
+
+  if (filteredEvent[1] !== undefined) {
+    testLog.getLog().warn("WARN: Received more than one errors");
+    //throw new Error("  --- TX Mapping issue --- ");
+  }
+
+  const eventErrorValue = hexToU8a(
+    JSON.parse(JSON.stringify(filteredEvent[0].event.data[0])).err.module.error
+  );
+  const eventErrorIndex = JSON.parse(
+    JSON.stringify(filteredEvent[0].event.data[0])
+  ).err.module.index;
+
+  const sudoEventError = api?.registry.findMetaError({
+    error: eventErrorValue,
+    index: new BN(eventErrorIndex),
+  });
+
+  expect(sudoEventError.name).toEqual("NotFoundationAccount");
 });
 
 test("maintenance- check we can sell MGX tokens and compoundRewards THEN switch maintenanceMode to on, repeat the operation and receive error", async () => {
