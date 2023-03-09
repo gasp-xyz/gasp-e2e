@@ -7,7 +7,7 @@ import { Keyring } from "@polkadot/api";
 import { getApi, initApi } from "../../utils/api";
 import { Assets } from "../../utils/Assets";
 import { MGA_ASSET_ID } from "../../utils/Constants";
-import { BN } from "@mangata-finance/sdk";
+import { BN, MangataGenericEvent } from "@mangata-finance/sdk";
 import { setupApi, setupUsers } from "../../utils/setup";
 import { Sudo } from "../../utils/sudo";
 import { AssetWallet, User } from "../../utils/User";
@@ -86,37 +86,43 @@ beforeAll(async () => {
 });
 
 test("maintenance- try to change Maintenance Mode with a non-foundation account THEN it failed", async () => {
-  const api = getApi();
-
-  const switchMaintenanceMode = await Sudo.batchAsSudoFinalized(
+  await Sudo.batchAsSudoFinalized(
     Sudo.sudoAsWithAddressString(
-      sudo.keyRingPair.address,
+      foundationAccountAddress,
       Maintenance.switchMaintenanceModeOn()
     )
   );
 
-  const filteredEvent = switchMaintenanceMode.filter(
+  const switchMaintenanceModeByUser = await Sudo.batchAsSudoFinalized(
+    Sudo.sudoAsWithAddressString(
+      testUser1.keyRingPair.address,
+      Maintenance.switchMaintenanceModeOff()
+    )
+  );
+
+  await getSudoError(switchMaintenanceModeByUser, "NotFoundationAccount");
+
+  const switchMaintenanceModeBySudo = await Sudo.batchAsSudoFinalized(
+    Sudo.sudoAsWithAddressString(
+      sudo.keyRingPair.address,
+      Maintenance.switchMaintenanceModeOff()
+    )
+  );
+
+  await getSudoError(switchMaintenanceModeBySudo, "NotFoundationAccount");
+
+  const switchMaintenanceModeByFoundation = await Sudo.batchAsSudoFinalized(
+    Sudo.sudoAsWithAddressString(
+      foundationAccountAddress,
+      Maintenance.switchMaintenanceModeOff()
+    )
+  );
+
+  const filteredEvent = switchMaintenanceModeByFoundation.filter(
     (extrinsicResult) => extrinsicResult.method === "SudoAsDone"
   );
-
-  if (filteredEvent[1] !== undefined) {
-    testLog.getLog().warn("WARN: Received more than one errors");
-    //throw new Error("  --- TX Mapping issue --- ");
-  }
-
-  const eventErrorValue = hexToU8a(
-    JSON.parse(JSON.stringify(filteredEvent[0].event.data[0])).err.module.error
-  );
-  const eventErrorIndex = JSON.parse(
-    JSON.stringify(filteredEvent[0].event.data[0])
-  ).err.module.index;
-
-  const sudoEventError = api?.registry.findMetaError({
-    error: eventErrorValue,
-    index: new BN(eventErrorIndex),
-  });
-
-  expect(sudoEventError.name).toEqual("NotFoundationAccount");
+  const eventIndex = JSON.parse(JSON.stringify(filteredEvent[0].event.data[0]));
+  expect(eventIndex.ok).toBeDefined();
 });
 
 test("maintenance- check we can sell MGX tokens and compoundRewards THEN switch maintenanceMode to on, repeat the operation and receive error", async () => {
@@ -211,3 +217,33 @@ test("maintenance- check we can sell MGX tokens and compoundRewards THEN switch 
     testUser1.getAsset(liqId)?.amountAfter.reserved!
   );
 });
+
+async function getSudoError(
+  mangataEvent: MangataGenericEvent[],
+  expectedError: string
+) {
+  const api = getApi();
+
+  const filteredEvent = mangataEvent.filter(
+    (extrinsicResult) => extrinsicResult.method === "SudoAsDone"
+  );
+
+  if (filteredEvent[1] !== undefined) {
+    testLog.getLog().warn("WARN: Received more than one errors");
+    //throw new Error("  --- TX Mapping issue --- ");
+  }
+
+  const eventErrorValue = hexToU8a(
+    JSON.parse(JSON.stringify(filteredEvent[0].event.data[0])).err.module.error
+  );
+  const eventErrorIndex = JSON.parse(
+    JSON.stringify(filteredEvent[0].event.data[0])
+  ).err.module.index;
+
+  const sudoEventError = api?.registry.findMetaError({
+    error: eventErrorValue,
+    index: new BN(eventErrorIndex),
+  });
+
+  expect(sudoEventError.name).toEqual(expectedError);
+}
