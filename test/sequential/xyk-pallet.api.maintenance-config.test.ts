@@ -37,6 +37,7 @@ let sudo: User;
 let keyring: Keyring;
 let firstCurrency: BN;
 let eventResponse: EventResult;
+let liqId: BN;
 const defaultCurrencyValue = new BN(1000000000000000);
 const defaultPoolVolumeValue = new BN(100000000);
 const foundationAccountAddress =
@@ -83,6 +84,16 @@ beforeAll(async () => {
       Maintenance.switchMaintenanceModeOff()
     )
   );
+
+  liqId = await getLiquidityAssetId(MGA_ASSET_ID, firstCurrency);
+
+  await Sudo.batchAsSudoFinalized(
+    Assets.promotePool(liqId.toNumber(), 20),
+    Sudo.sudoAs(
+      testUser1,
+      Xyk.mintLiquidity(MGA_ASSET_ID, firstCurrency, defaultPoolVolumeValue)
+    )
+  );
 });
 
 test("maintenance- try to change Maintenance Mode with a non-foundation account THEN it failed", async () => {
@@ -126,19 +137,9 @@ test("maintenance- try to change Maintenance Mode with a non-foundation account 
 });
 
 test("maintenance- check we can sell MGX tokens and compoundRewards THEN switch maintenanceMode to on, repeat the operation and receive error", async () => {
-  const liqId = await getLiquidityAssetId(MGA_ASSET_ID, firstCurrency);
-
   testUser1.addAsset(MGA_ASSET_ID);
   testUser1.addAsset(firstCurrency);
   testUser1.addAsset(liqId);
-
-  await Sudo.batchAsSudoFinalized(
-    Assets.promotePool(liqId.toNumber(), 20),
-    Sudo.sudoAs(
-      testUser1,
-      Xyk.mintLiquidity(MGA_ASSET_ID, firstCurrency, defaultPoolVolumeValue)
-    )
-  );
 
   await waitForRewards(testUser1, liqId);
 
