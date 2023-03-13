@@ -7,10 +7,15 @@ import { getApi, getMangataInstance } from "./api";
 import { BN } from "@polkadot/util";
 import { env } from "process";
 import { SudoDB } from "./SudoDB";
-import { signSendAndWaitToFinishTx } from "./txHandler";
-import { getEnvironmentRequiredVars } from "./utils";
+import { setAssetInfo, signSendAndWaitToFinishTx } from "./txHandler";
+import { getEnvironmentRequiredVars, stringToBN } from "./utils";
 import { Fees } from "./Fees";
-import { ETH_ASSET_ID, MGA_ASSET_ID, MGA_DEFAULT_LIQ_TOKEN } from "./Constants";
+import {
+  ETH_ASSET_ID,
+  MGA_ASSET_ID,
+  MGA_DEFAULT_LIQ_TOKEN,
+  MAX_BALANCE,
+} from "./Constants";
 import { Keyring } from "@polkadot/api";
 import { User } from "./User";
 import { testLog } from "./Logger";
@@ -20,6 +25,7 @@ import {
   TokenBalance,
   MangataGenericEvent,
   toBN,
+  BN_ONE,
 } from "@mangata-finance/sdk";
 import { AnyJson } from "@polkadot/types/types";
 import { SudoUser } from "./Framework/User/SudoUser";
@@ -229,6 +235,7 @@ export async function getChainNonce(address: string) {
 
 export async function getUserAssets(account: any, assets: BN[]) {
   const user_asset_balances: TokenBalance[] = [];
+
   for (const asset of assets) {
     const user_asset_balance = await getBalanceOfAsset(asset, account);
     user_asset_balances.push(user_asset_balance);
@@ -698,12 +705,16 @@ export async function getTreasuryBurn(tokenId: BN): Promise<BN> {
 
 export async function getAssetId(assetName: string): Promise<any> {
   const api = getApi();
-  const assetsInfo = await api.query.assetsInfo.assetsInfo.entries();
-  const assetFiltered = assetsInfo.filter((el) =>
+  const assetRegistryInfo = await api.query.assetRegistry.metadata.entries();
+  const assetFiltered = assetRegistryInfo.filter((el) =>
     JSON.stringify(el[1].toHuman()).includes(assetName)
   )[0];
-  const assetId = JSON.stringify(assetFiltered[0].toHuman());
-  return new BN(parseInt(JSON.parse(assetId)[0]));
+  if (!Array.isArray(assetFiltered) || !assetFiltered.length) {
+    return undefined;
+  } else {
+    const assetId = JSON.stringify(assetFiltered[0].toHuman());
+    return new BN(parseInt(JSON.parse(assetId)[0]));
+  }
 }
 
 export async function getLock(accountAddress: string, assetId: BN) {
@@ -747,7 +758,7 @@ export async function lockAsset(user: User, amount: BN) {
 
 export async function getAllAssetsInfo(): Promise<any[]> {
   const api = getApi();
-  const availableAssetsInfo = await api.query.assetsInfo.assetsInfo.entries();
+  const availableAssetsInfo = await api.query.assetRegistry.metadata.entries();
   /// returns something like this:
   ///[
   ///    [
@@ -869,6 +880,30 @@ export async function createPoolIfMissing(
   }
 }
 
+export async function createAssetIfMissing(sudo: SudoUser, assetName: string) {
+  const assetId = await getAssetId(assetName);
+  if (assetId === undefined) {
+    const nextAssetId = await getNextAssetId();
+    const emptyAssetID = new BN(nextAssetId.toString());
+    await setAssetInfo(
+      sudo,
+      emptyAssetID,
+      assetName,
+      assetName,
+      "",
+      new BN(12)
+    );
+    return nextAssetId;
+  } else {
+    testLog
+      .getLog()
+      .info(
+        `createAssetIfMissing: Asset ${assetName} already exists, skipping...`
+      );
+    return assetId;
+  }
+}
+
 export async function vestingTransfer(
   sudoUser: User,
   tokenID: BN,
@@ -938,8 +973,9 @@ export class FeeTxs {
 export async function registerAsset(
   sudoUser: User,
   assetId: BN,
-  adressLocation: any,
-  locMarker: BN
+  addressLocation: any,
+  locMarker: BN,
+  additional: any
 ) {
   const api = getApi();
   const result = await signTx(
@@ -948,10 +984,11 @@ export async function registerAsset(
       api.tx.assetRegistry.registerAsset(
         {
           decimals: 12,
-          name: "TESTTOKEN-" + locMarker.toString(),
-          symbol: "TSTT" + locMarker.toString(),
+          name: "TEST_TOKEN-" + locMarker.toString(),
+          symbol: "TEST" + locMarker.toString(),
           existentialDeposit: 0,
-          location: adressLocation,
+          location: addressLocation,
+          additional,
         },
         //@ts-ignore
         assetId
@@ -993,6 +1030,7 @@ export async function updateAsset(
   );
   return result;
 }
+
 export async function compoundRewards(
   User: User,
   liquidityAssetId: BN,
@@ -1005,4 +1043,95 @@ export async function compoundRewards(
     User.keyRingPair
   );
   return result;
+}
+
+export async function multiSwapBuy(
+  testUser1: User,
+  tokenIds: BN[],
+  buyAmount: BN,
+  maxAmountIn: BN = MAX_BALANCE
+) {
+  const api = getApi();
+  const result = await signTx(
+    api,
+    api.tx.xyk.multiswapBuyAsset(tokenIds, buyAmount, maxAmountIn),
+    testUser1.keyRingPair
+  );
+  return result;
+}
+export async function multiSwapSell(
+  testUser1: User,
+  tokenIds: BN[],
+  soldAmount: BN,
+  minAmountOut: BN = BN_ONE
+) {
+  const api = getApi();
+  const result = await signTx(
+    api,
+    api.tx.xyk.multiswapSellAsset(tokenIds, soldAmount, minAmountOut),
+    testUser1.keyRingPair
+  );
+  return result;
+}
+
+export async function updateFeeLockMetadata(
+  sudoUser: User,
+  periodLength: any,
+  timeoutAmount: any,
+  swapValueThresholds: any,
+  shouldBeWhitelisted: any
+) {
+  const api = getApi();
+  const result = await signTx(
+    api,
+    api.tx.sudo.sudo(
+      api.tx.feeLock.updateFeeLockMetadata(
+        periodLength,
+        timeoutAmount,
+        swapValueThresholds,
+        shouldBeWhitelisted
+      )
+    ),
+    sudoUser.keyRingPair,
+    {
+      nonce: await getCurrentNonce(sudoUser.keyRingPair.address),
+    }
+  );
+  return result;
+}
+
+export async function unlockFee(User: User) {
+  const api = getApi();
+  const result = await signTx(
+    api,
+    api.tx.feeLock.unlockFee(),
+    User.keyRingPair
+  );
+  return result;
+}
+export async function getRewardsInfo(
+  address: string,
+  liqId: BN
+): Promise<{
+  activatedAmount: BN;
+  rewardsNotYetClaimed: BN;
+  rewardsAlreadyClaimed: BN;
+  lastCheckpoint: BN;
+  poolRatioAtLastCheckpoint: BN;
+  missingAtLastCheckpoint: BN;
+}> {
+  const api = await getApi();
+  const value = await api.query.xyk.rewardsInfo(address, liqId);
+  const valueAsJson = JSON.parse(JSON.stringify(value));
+  const toReturn = {
+    activatedAmount: stringToBN(valueAsJson.activatedAmount),
+    rewardsNotYetClaimed: stringToBN(valueAsJson.rewardsNotYetClaimed),
+    rewardsAlreadyClaimed: stringToBN(valueAsJson.rewardsAlreadyClaimed),
+    lastCheckpoint: stringToBN(valueAsJson.lastCheckpoint),
+    poolRatioAtLastCheckpoint: stringToBN(
+      valueAsJson.poolRatioAtLastCheckpoint
+    ),
+    missingAtLastCheckpoint: stringToBN(valueAsJson.missingAtLastCheckpoint),
+  };
+  return toReturn;
 }

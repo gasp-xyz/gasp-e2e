@@ -125,7 +125,22 @@ export class User {
       else this.assets[index].amountAfter = assetValues[index];
     }
   }
+  getWalletDifferences(): AssetsDiff[] {
+    const tokensThatChanged = this.getFreeAssetAmounts().filter(
+      (x) =>
+        !x.amountBefore.free.eq(x.amountAfter.free) ||
+        !x.amountBefore.reserved.eq(x.amountAfter.reserved) ||
+        !x.amountBefore.frozen.eq(x.amountAfter.frozen)
+    );
 
+    return tokensThatChanged.map((value) => {
+      return new AssetsDiff(value.currencyId, {
+        free: value.amountAfter.free.sub(value.amountBefore.free),
+        reserved: value.amountAfter.reserved.sub(value.amountBefore.reserved),
+        frozen: value.amountAfter.frozen.sub(value.amountBefore.frozen),
+      });
+    });
+  }
   async buyAssets(
     soldAssetId: BN,
     boughtAssetId: BN,
@@ -290,7 +305,7 @@ export class User {
 
   async addMGATokens(
     sudo: User,
-    amountFree: BN = new BN(Math.pow(10, 20).toString())
+    amountFree: BN = new BN(BigInt(1000 * 10 ** 20).toString())
   ) {
     await sudo.mint(MGA_ASSET_ID, this, amountFree);
   }
@@ -348,7 +363,8 @@ export class User {
       this,
       assetId,
       location,
-      locMarker
+      locMarker,
+      null
     );
     return registerAssetInfo;
   }
@@ -401,5 +417,18 @@ export class Asset {
     this.currencyId = currencyId;
     this.amountBefore = amountBefore;
     this.amountAfter = amountAfter;
+  }
+}
+
+export class AssetsDiff {
+  currencyId: BN;
+  diff: TokenBalance;
+
+  /**
+   *
+   */
+  constructor(currencyId: BN, diff: TokenBalance) {
+    this.currencyId = currencyId;
+    this.diff = diff;
   }
 }

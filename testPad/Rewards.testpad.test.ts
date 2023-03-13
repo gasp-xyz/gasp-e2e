@@ -290,7 +290,10 @@ describe("RewardsV2 - testpad", () => {
       signTx(
         api!,
         api!.tx.sudo.sudo(
-          api!.tx.feeLock.updateFeeLockMetadata(10, 10, "100000000000", [[12, true],[14,true]])
+          api!.tx.feeLock.updateFeeLockMetadata(10, 10, "100000000000", [
+            [12, true],
+            [14, true],
+          ])
         ),
         sudo.keyRingPair
       )

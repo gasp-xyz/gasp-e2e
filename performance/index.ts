@@ -15,6 +15,12 @@ async function main() {
   commandArguments.forEach((commandArgument: string) => {
     const [arg, value] = commandArgument.split("=");
     switch (arg) {
+      case "pending": //How many txs should be available all the time in mempool for node to collect throughput - expected number of processed txs in each block (on avarage)
+        testParams.pending = parseInt(value);
+        break;
+      case "throughput":
+        testParams.throughput = parseInt(value);
+        break;
       case "threadNumber":
         testParams.threads = parseInt(value);
         break;
@@ -22,12 +28,6 @@ async function main() {
         switch (value) {
           case "ConcurrentTest":
             testParams.testCase = TestsCases.ConcurrentTest;
-            break;
-          case "SustainedLoadTest":
-            testParams.testCase = TestsCases.SustainedLoad;
-            break;
-          case "Rampup":
-            testParams.testCase = TestsCases.Rampup;
             break;
           case "Burst":
             testParams.testCase = TestsCases.Burst;
@@ -91,7 +91,7 @@ async function main() {
       );
   }
   verifyArgs(testParams, "transfer"); // Will throw an error if invalid args
-  await TestFactory.BuildTestItem(testParams.command!).run(testParams);
+  return TestFactory.BuildTestItem(testParams.command!).run(testParams);
 }
 
 function verifyArgs(params: TestParams, test: string) {
@@ -123,7 +123,7 @@ function verifyArgs(params: TestParams, test: string) {
     throw new Error(`duration in minutes must be between 1 and 10000`);
   }
 
-  if (params.totalTx <= 0 || params.totalTx > 100000) {
+  if (params.totalTx <= 0) {
     throw new Error(`totalTransactions must be between 1 and 100000`);
   }
 
@@ -143,7 +143,16 @@ function verifyArgs(params: TestParams, test: string) {
   });
 }
 
-main().then(() => {
-  // eslint-disable-next-line no-console
-  console.log("DONE");
-});
+main()
+  .catch((e) => {
+    /*eslint no-console: 0*/
+    console.error(e);
+    process.exit(-1);
+  })
+  .then((result) => {
+    if (result) {
+      process.exit(0);
+    } else {
+      process.exit(-1);
+    }
+  });

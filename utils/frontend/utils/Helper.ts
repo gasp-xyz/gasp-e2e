@@ -1,4 +1,4 @@
-import { logging, WebDriver } from "selenium-webdriver";
+import { Key, logging, WebDriver } from "selenium-webdriver";
 import { sleep } from "../../utils";
 import { Mangata } from "../pages/Mangata";
 import { Polkadot } from "../pages/Polkadot";
@@ -6,7 +6,6 @@ import fs from "fs";
 import { testLog } from "../../Logger";
 import { BN } from "@polkadot/util";
 
-import { Reporter } from "jest-allure/dist/Reporter";
 const { By, until } = require("selenium-webdriver");
 
 const timeOut = 60000;
@@ -28,6 +27,16 @@ export async function waitForElementEnabled(
   await waitForElement(driver, xpath, timeout);
   const element = await driver.findElement(By.xpath(xpath));
   await driver.wait(until.elementIsEnabled(element), timeout);
+}
+
+export async function waitForElementVisible(
+  driver: WebDriver,
+  xpath: string,
+  timeout = timeOut
+) {
+  await waitForElement(driver, xpath, timeout);
+  const element = await driver.findElement(By.xpath(xpath));
+  await driver.wait(until.elementIsVisible(element), timeout);
 }
 
 export async function waitForElementToDissapear(
@@ -52,6 +61,18 @@ export async function clickElement(driver: WebDriver, xpath: string) {
   await driver.wait(until.elementIsVisible(element), timeOut);
   await sleep(1000);
   await element.click();
+}
+
+export async function clickElementForce(driver: WebDriver, xpath: string) {
+  await waitForElement(driver, xpath);
+  const element = await driver.findElement(By.xpath(xpath));
+  await driver.wait(until.elementIsVisible(element), timeOut);
+  await sleep(1000);
+  driver.executeScript("arguments[0].click();", element);
+}
+
+export async function pressEscape(driver: WebDriver) {
+  await driver.actions().sendKeys(Key.ESCAPE).perform();
 }
 
 export async function writeText(
@@ -177,8 +198,6 @@ export async function addExtraLogs(driver: WebDriver, testName = "") {
   });
   const img = await driver.takeScreenshot();
   fs.writeFileSync(`${outputPath}/screenshot_${testName}.png`, img, "base64");
-  const reporter = (globalThis as any).reporter as Reporter;
-  reporter.addAttachment("Screeenshot", new Buffer(img, "base64"), "image/png");
 }
 export async function renameExtraLogs(testName: string, result = "FAILED_") {
   fs.readdirSync(outputPath).forEach((file) => {
@@ -242,20 +261,22 @@ export async function selectAssetFromModalList(
   await clickElement(driver, assetLocator);
 }
 
-export function uiStringToBN(stringValue: string) {
+export function uiStringToBN(stringValue: string, decimals = 18) {
   if (stringValue.includes(".")) {
     const partInt = stringValue.split(".")[0].trim();
     let partDec = stringValue.split(".")[1].trim();
     //multiply the part int*10¹⁸
-    const exp = new BN(10).pow(new BN(18));
+    const exp = new BN(10).pow(new BN(decimals));
     const part1 = new BN(partInt).mul(exp);
     //add zeroes to the decimal part.
-    while (partDec.length < 18) {
+    while (partDec.length < decimals) {
       partDec += "0";
     }
     return part1.add(new BN(partDec));
   } else {
-    return new BN((Math.pow(10, 18) * parseFloat(stringValue)).toString());
+    return new BN(
+      (Math.pow(10, decimals) * parseFloat(stringValue)).toString()
+    );
   }
 }
 

@@ -194,7 +194,7 @@ describe.each`
         eventResponse = getEventResultFromMangataTx(claimAndActivate2);
         expect(eventResponse.state).toEqual(ExtrinsicResult.ExtrinsicSuccess);
 
-        // finalaze bootstrap
+        // finalize bootstrap
         await checkLastBootstrapFinalized(sudo);
 
         const bootstrapUser1Liquidity = await getUserBalanceOfToken(

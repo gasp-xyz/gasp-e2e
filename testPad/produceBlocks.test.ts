@@ -1,23 +1,14 @@
-import { Keyring, ApiPromise } from '@polkadot/api';
-import { BN } from "@polkadot/util";
-import { api, getApi, initApi } from "../utils/api";
-import { waitNewBlock } from "../utils/eventListeners";
-import { User, AssetWallet } from "../utils/User";
-import { getEnvironmentRequiredVars, sleep } from "../utils/utils";
-import fs from "fs";
-import { Mangata } from "@mangata-finance/sdk";
+import { ApiPromise } from "@polkadot/api";
+import { sleep } from "../utils/utils";
 import { testLog } from "../utils/Logger";
-import { Assets } from "../utils/Assets";
-import { WsProvider } from '@polkadot/rpc-provider/ws';
+import { WsProvider } from "@polkadot/rpc-provider/ws";
 
 require("dotenv").config();
 
 jest.spyOn(console, "log").mockImplementation(jest.fn());
-const { sudo: sudoUserName } = getEnvironmentRequiredVars();
 
 jest.setTimeout(1500000);
 process.env.NODE_ENV = "test";
-let testUser1: User, sudo, keyring;
 
 //*******HOW TO USE******** */
 //install JEST run it extension for vs code.
@@ -31,9 +22,7 @@ let testUser1: User, sudo, keyring;
 //*******END:HOW TO USE******** */
 
 describe("Chopistics - run blocks", () => {
-
-  test("brum brum", async (bondAmount) => {
-    let cont = 3000;
+  test("brum brum", async () => {
     const ws = new WsProvider(`ws://127.0.0.1:8000`);
     const apiPromise = await ApiPromise.create({
       provider: ws,

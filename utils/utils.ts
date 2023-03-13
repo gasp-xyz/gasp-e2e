@@ -1,14 +1,14 @@
 import { formatBalance } from "@polkadot/util/format";
 import { BN } from "@polkadot/util";
 import { getApi, getMangataInstance, mangata } from "./api";
-import { hexToBn } from "@polkadot/util";
+import { hexToBn, isHex } from "@polkadot/util";
 import { Assets } from "./Assets";
 import { User } from "./User";
 import { getAccountJSON } from "./frontend/utils/Helper";
 import { waitNewBlock } from "./eventListeners";
 import { testLog } from "./Logger";
 import { AnyNumber } from "@polkadot/types/types";
-import { Keyring } from "@polkadot/api";
+import { Keyring, ApiPromise } from "@polkadot/api";
 import { KeyringPair } from "@polkadot/keyring/types";
 
 export function sleep(ms: number) {
@@ -71,7 +71,7 @@ export function getEnvironmentRequiredVars() {
 
   const uiUri = process.env.UI_URL
     ? process.env.UI_URL
-    : "https://staging.mangata.finance/";
+    : "https://develop.mangata.finance/";
 
   const mnemonicMetaMask = process.env.MNEMONIC_META
     ? process.env.MNEMONIC_META
@@ -231,6 +231,32 @@ export const waitForNBlocks = async (n: number) => {
   }
 };
 
+export async function waitBlockNumber(
+  blockNumber: string,
+  maxWaitingPeriod: number
+) {
+  let currentBlock = await getBlockNumber();
+  let waitingperiodCounter: number;
+
+  waitingperiodCounter = 0;
+  testLog.getLog().info("Waiting block number " + blockNumber);
+  while (
+    currentBlock < Number(blockNumber) &&
+    waitingperiodCounter < maxWaitingPeriod
+  ) {
+    await waitNewBlock();
+    currentBlock = await getBlockNumber();
+    waitingperiodCounter = waitingperiodCounter + 1;
+  }
+  testLog.getLog().info("... Done waiting block number" + blockNumber);
+  if (
+    waitingperiodCounter === maxWaitingPeriod ||
+    waitingperiodCounter > maxWaitingPeriod
+  ) {
+    testLog.getLog().warn("TIMEDOUT waiting for the specific block number");
+  }
+}
+
 export async function waitIfSessionWillChangeInNblocks(numberOfBlocks: number) {
   const api = await getApi();
   const sessionDuration = BigInt(
@@ -281,7 +307,7 @@ export async function getUserBalanceOfToken(tokenId: BN, account: User) {
   return tokenBalance;
 }
 
-export async function getBlockNumber() {
+export async function getBlockNumber(): Promise<number> {
   const api = await mangata?.getApi()!;
   return ((await api.query.system.number()) as any).toNumber();
 }
@@ -340,4 +366,28 @@ export enum xykErrors {
   MathOverflow = "MathOverflow",
   LiquidityTokenCreationFailed = "LiquidityTokenCreationFailed",
   FunctionNotAvailableForThisToken = "FunctionNotAvailableForThisToken",
+}
+
+export enum feeLockErrors {
+  FeeLockingFail = "1010: Invalid Transaction: Fee lock processing has failed either due to not enough funds to reserve or an unexpected error",
+  FeeUnlockingFail = "1010: Invalid Transaction: Unlock fee has failed either due to no fee locks or fee lock cant be unlocked yet or an unexpected error",
+  SwapApprovalFail = "1010: Invalid Transaction: The swap prevalidation has failed",
+}
+
+export async function getFeeLockMetadata(api: ApiPromise) {
+  const lockMetadata = JSON.parse(
+    JSON.stringify(await api?.query.feeLock.feeLockMetadata())
+  );
+  const periodLength = stringToBN(lockMetadata.periodLength.toString());
+  const feeLockAmount = stringToBN(lockMetadata.feeLockAmount.toString());
+  const threshold = lockMetadata.swapValueThreshold;
+  return {
+    periodLength: periodLength,
+    feeLockAmount: feeLockAmount,
+    swapValueThreshold: threshold,
+  };
+}
+
+export function stringToBN(value: string): BN {
+  return isHex(value) ? hexToBn(value) : new BN(value);
 }

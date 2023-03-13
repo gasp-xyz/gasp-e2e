@@ -47,7 +47,7 @@ async function setupUserAssetRegister(
     );
     expect(assetTotalIssuance.toNumber()).toEqual(250000);
     //@ts-ignore
-    expect(assetMetadata.value.name.toHuman()).toEqual("TESTTOKEN-" + assetId);
+    expect(assetMetadata.value.name.toHuman()).toEqual("TEST_TOKEN-" + assetId);
   } else {
     expect(getEventResultFromMangataTx(userRegisterAsset).state).toEqual(
       ExtrinsicResult.ExtrinsicFailed

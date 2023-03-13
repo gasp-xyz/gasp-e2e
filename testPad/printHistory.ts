@@ -6,7 +6,7 @@
 import { Mangata } from "@mangata-finance/sdk";
 const { testLog } = require("./../utils/Logger");
 
-const uri = "ws://127.0.0.1:8844";
+const uri = "wss://v4-collator-01.mangatafinance.cloud";
 
 //this constant will skip some traces.
 // this will handle if printing in pretty-multilines.

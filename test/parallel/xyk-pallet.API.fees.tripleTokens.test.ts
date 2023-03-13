@@ -20,6 +20,8 @@ import {
   KSM_ASSET_ID,
   TUR_ASSET_ID,
 } from "../../utils/Constants";
+import { Sudo } from "../../utils/sudo";
+import { setupUsers, setupApi } from "../../utils/setup";
 
 jest.spyOn(console, "log").mockImplementation(jest.fn());
 jest.spyOn(console, "error").mockImplementation(jest.fn());
@@ -83,8 +85,12 @@ beforeEach(async () => {
   testUser1.addAsset(TUR_ASSET_ID);
 
   //add pool's tokens for user.
-
-  await sudo.mint(firstCurrency, testUser1, defaultCurrecyValue);
+  await setupApi();
+  await setupUsers();
+  await Sudo.batchAsSudoFinalized(
+    Assets.mintToken(firstCurrency, testUser1, defaultCurrecyValue),
+    Assets.mintToken(secondCurrency, testUser1, defaultCurrecyValue)
+  );
 });
 
 test("xyk-pallet - Check required fee - User with MGX only", async () => {
@@ -95,10 +101,10 @@ test("xyk-pallet - Check required fee - User with MGX only", async () => {
     tip: 0,
   };
   cost = await api?.tx.xyk
-    .buyAsset(
+    .mintLiquidity(
       firstCurrency.toString(),
-      secondCurrency.toString(),
       new BN(100),
+      secondCurrency.toString(),
       new BN(1000000)
     )
     .paymentInfo(testUser1.keyRingPair, opt);
@@ -109,7 +115,7 @@ test("xyk-pallet - Check required fee - User with MGX only", async () => {
   await testUser1.refreshAmounts(AssetWallet.BEFORE);
 
   await (await getMangataInstance())
-    .buyAsset(
+    .mintLiquidity(
       testUser1.keyRingPair,
       firstCurrency.toString(),
       secondCurrency.toString(),
@@ -131,7 +137,6 @@ test("xyk-pallet - Check required fee - User with MGX only", async () => {
   expect(deductedMGATkns).bnLte(fee);
   expect(deductedMGATkns).bnGt(new BN(0));
 });
-
 test("xyk-pallet - Check required fee - User with KSM only", async () => {
   //add KSM tokens.
   await testUser1.addKSMTokens(sudo);
@@ -139,7 +144,7 @@ test("xyk-pallet - Check required fee - User with KSM only", async () => {
   await testUser1.refreshAmounts(AssetWallet.BEFORE);
 
   await (await getMangataInstance())
-    .buyAsset(
+    .mintLiquidity(
       testUser1.keyRingPair,
       firstCurrency.toString(),
       secondCurrency.toString(),
@@ -169,7 +174,7 @@ test("xyk-pallet - Check required fee - User with TUR only", async () => {
   await testUser1.refreshAmounts(AssetWallet.BEFORE);
 
   await (await getMangataInstance())
-    .buyAsset(
+    .mintLiquidity(
       testUser1.keyRingPair,
       firstCurrency.toString(),
       secondCurrency.toString(),
@@ -193,15 +198,13 @@ test("xyk-pallet - Check required fee - User with TUR only", async () => {
 });
 
 test("xyk-pallet - Check required fee - User with some MGA, very few KSM and very few TUR", async () => {
-  //add some MGX tokens.
-  await testUser1.addMGATokens(sudo);
-
-  //add few KSM tokens.
-  await sudo.mint(KSM_ASSET_ID, testUser1, new BN(100000));
-
-  //add few TUR tokens.
-  await sudo.mint(TUR_ASSET_ID, testUser1, new BN(100000));
-
+  await setupApi();
+  await setupUsers();
+  await Sudo.batchAsSudoFinalized(
+    Assets.mintNative(testUser1),
+    Assets.mintToken(KSM_ASSET_ID, testUser1, new BN(100000)),
+    Assets.mintToken(TUR_ASSET_ID, testUser1, new BN(100000))
+  );
   await testUser1.refreshAmounts(AssetWallet.BEFORE);
 
   const api = getApi();
@@ -212,16 +215,16 @@ test("xyk-pallet - Check required fee - User with some MGA, very few KSM and ver
   };
 
   cost = await api?.tx.xyk
-    .buyAsset(
+    .mintLiquidity(
       firstCurrency.toString(),
-      secondCurrency.toString(),
       new BN(100),
+      secondCurrency.toString(),
       new BN(1000000)
     )
     .paymentInfo(testUser1.keyRingPair, opt);
 
   await (await getMangataInstance())
-    .buyAsset(
+    .mintLiquidity(
       testUser1.keyRingPair,
       firstCurrency.toString(),
       secondCurrency.toString(),
@@ -258,19 +261,17 @@ test("xyk-pallet - Check required fee - User with some MGA, very few KSM and ver
 });
 
 test("xyk-pallet - Check required fee - User with very few MGA, some KSM and very few TUR", async () => {
-  //add few MGX tokens.
-  await sudo.mint(MGA_ASSET_ID, testUser1, new BN(100000));
-
-  //add some KSM tokens.
-  await testUser1.addKSMTokens(sudo);
-
-  //add few TUR tokens.
-  await sudo.mint(TUR_ASSET_ID, testUser1, new BN(100000));
-
+  await setupApi();
+  await setupUsers();
+  await Sudo.batchAsSudoFinalized(
+    Assets.mintToken(TUR_ASSET_ID, testUser1, new BN(100000)),
+    Assets.mintToken(KSM_ASSET_ID, testUser1),
+    Assets.mintToken(MGA_ASSET_ID, testUser1, new BN(100000))
+  );
   await testUser1.refreshAmounts(AssetWallet.BEFORE);
 
   await (await getMangataInstance())
-    .buyAsset(
+    .mintLiquidity(
       testUser1.keyRingPair,
       firstCurrency.toString(),
       secondCurrency.toString(),
@@ -306,19 +307,17 @@ test("xyk-pallet - Check required fee - User with very few MGA, some KSM and ver
 });
 
 test("xyk-pallet - Check required fee - User with very few MGA, very few KSM and some TUR", async () => {
-  //add few MGX tokens.
-  await sudo.mint(MGA_ASSET_ID, testUser1, new BN(100000));
-
-  //add some KSM tokens.
-  await sudo.mint(KSM_ASSET_ID, testUser1, new BN(100000));
-
-  //add some TUR tokens.
-  await testUser1.addTURTokens(sudo);
-
+  await setupApi();
+  await setupUsers();
+  await Sudo.batchAsSudoFinalized(
+    Assets.mintToken(TUR_ASSET_ID, testUser1),
+    Assets.mintToken(KSM_ASSET_ID, testUser1, new BN(100000)),
+    Assets.mintToken(MGA_ASSET_ID, testUser1, new BN(100000))
+  );
   await testUser1.refreshAmounts(AssetWallet.BEFORE);
 
   await (await getMangataInstance())
-    .buyAsset(
+    .mintLiquidity(
       testUser1.keyRingPair,
       firstCurrency.toString(),
       secondCurrency.toString(),
@@ -354,20 +353,18 @@ test("xyk-pallet - Check required fee - User with very few MGA, very few KSM and
 });
 
 test("xyk-pallet - Check required fee - User with very few  MGA, very few KSM and very few TUR, operation fails", async () => {
-  //add few MGX tokens.
-  await sudo.mint(MGA_ASSET_ID, testUser1, new BN(100000));
-
-  //add few KSM tokens.
-  await sudo.mint(KSM_ASSET_ID, testUser1, new BN(100000));
-
-  //add few KSM tokens.
-  await sudo.mint(TUR_ASSET_ID, testUser1, new BN(100000));
-
+  await setupApi();
+  await setupUsers();
+  await Sudo.batchAsSudoFinalized(
+    Assets.mintToken(TUR_ASSET_ID, testUser1, new BN(100000)),
+    Assets.mintToken(KSM_ASSET_ID, testUser1, new BN(100000)),
+    Assets.mintToken(MGA_ASSET_ID, testUser1, new BN(100000))
+  );
   let exception = false;
   const mangata = await getMangataInstance();
   await expect(
     mangata
-      .buyAsset(
+      .mintLiquidity(
         testUser1.keyRingPair,
         firstCurrency.toString(),
         secondCurrency.toString(),

@@ -29,6 +29,7 @@ export class OakNode {
     // @ts-ignore
     const currencyData: Option<CurrencyChainData> =
       await this.api.query.xcmpHandler.xcmChainCurrencyData(2110, 0);
+    // @ts-ignore
     const totalWeight = new BN(encodedTxInfo.weight).add(
       new BN(currencyData.unwrap().instructionWeight)
     );
