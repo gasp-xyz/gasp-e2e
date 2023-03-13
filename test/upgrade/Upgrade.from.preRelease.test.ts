@@ -93,7 +93,7 @@ describe("upgrade - testpad", () => {
     await signTx(
       api!,
       api!.tx.sudo.sudo(
-        api!.tx.parachainSystem.enactAuthorizedUpgrade(wasmContent)
+        api!.tx.parachainSystem.enactAuthorizedUpgrade(wasmContent.toString())
       ),
       sudo.keyRingPair
     );

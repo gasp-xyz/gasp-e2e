@@ -11,8 +11,6 @@ jest.setTimeout(1500000);
 
 describe("Story tests > LP", () => {
   let sudo: User;
-  let testUser1: User;
-
   let keyring: Keyring;
 
   beforeAll(async () => {
@@ -26,7 +24,6 @@ describe("Story tests > LP", () => {
   beforeEach(async () => {
     keyring = new Keyring({ type: "sr25519" });
     sudo = new User(keyring, sudoUserName);
-    testUser1 = new User(keyring);
   });
 
   test("MGA can be runtime - upgraded", async () => {
@@ -37,14 +34,13 @@ describe("Story tests > LP", () => {
     const hash =
       "0xa4f385913ba0acb618402fe01aa20a87ed3d5b58cc7d28cb7a9165eb309c9300";
     const wasmFile = fs.readFileSync("./test/upgrade/RC_upgrade_0.wasm");
-    await testUser1.addMGATokens(sudo);
     await signSendAndWaitToFinishTx(
       api.tx.sudo.sudo(api!.tx.parachainSystem.authorizeUpgrade(hash)),
       sudo.keyRingPair
     );
     await signSendAndWaitToFinishTx(
       api.tx.sudo.sudo(
-        api!.tx.parachainSystem.enactAuthorizedUpgrade(wasmFile)
+        api!.tx.parachainSystem.enactAuthorizedUpgrade(wasmFile.toString())
       ),
       sudo.keyRingPair
     );
