@@ -3,7 +3,7 @@ import { Keyring } from "@polkadot/api";
 import { BN } from "@polkadot/util";
 import { Mangata, MangataGenericEvent } from "@mangata-finance/sdk";
 import { testLog } from "../../utils/Logger";
-import { logFile, TestParams } from "../testParams";
+import { TestParams } from "../testParams";
 import { TestItem } from "./testItem";
 import { KeyringPair } from "@polkadot/keyring/types";
 import { UserFactory, Users } from "../../utils/Framework/User/UserFactory";
@@ -11,10 +11,18 @@ import { Node } from "../../utils/Framework/Node/Node";
 import { MGA_ASSET_ID } from "../../utils/Constants";
 import { createPoolIfMissing, mintAsset, transferAsset } from "../../utils/tx";
 import { initApi } from "../../utils/api";
-import { captureEvents, pendingExtrinsics } from "./testReporter";
+import {
+  generateHtmlReport,
+  writeToFile,
+  trackPendingExtrinsics,
+  trackExecutedExtrinsics,
+  trackEnqueuedExtrinsics,
+} from "./testReporter";
 import { Guid } from "guid-typescript";
 import { User } from "../../utils/User";
+import { getEnvironmentRequiredVars } from "../../utils/utils";
 import { SudoUser } from "../../utils/Framework/User/SudoUser";
+import { quantile } from "simple-statistics";
 
 function seedFromNum(seed: number): string {
   const guid = Guid.create().toString();
@@ -26,71 +34,168 @@ export class performanceTestItem implements TestItem {
     number,
     { mgaSdk: Mangata; users: { nonce: BN; keyPair: KeyringPair }[] }
   >();
-  listeners: Promise<{ p: Promise<unknown>; cancel: () => boolean }>[] = [];
-  async arrange(numberOfThreads: number, nodes: string[]): Promise<boolean> {
-    testLog.getLog().info("Arrange" + numberOfThreads + nodes);
-    const mga = await getMangata(nodes[0]!);
+
+  enqueued: Promise<[number, number][]> = new Promise<[number, number][]>(
+    (resolve) => {
+      resolve([]);
+    }
+  );
+  executed: Promise<[number, number][]> = new Promise<[number, number][]>(
+    (resolve) => {
+      resolve([]);
+    }
+  );
+  pending: Promise<[number, number][]> = new Promise<[number, number][]>(
+    (resolve) => {
+      resolve([]);
+    }
+  );
+  ipc: any;
+
+  async arrange(testParams: TestParams): Promise<boolean> {
+    console.info("helo world");
+    console.info(testParams.nodes);
+    const mga = await getMangata(testParams.nodes[0]!);
     const api = await mga.getApi();
-    this.listeners.push(captureEvents(logFile, api!));
-    this.listeners.push(pendingExtrinsics(logFile, api!));
+    const { sudo } = getEnvironmentRequiredVars();
+    const keyring = new Keyring({ type: "sr25519" });
+    const sudoKeyringPair = keyring.createFromUri(sudo);
+    const nonce = await api.rpc.system.accountNextIndex(
+      sudoKeyringPair.address
+    );
+
+    const ipc = require("node-ipc").default;
+    ipc.config.id = "nonceManager";
+    ipc.config.retry = 1500;
+    ipc.config.silent = false;
+    ipc.config.sync = true;
+    ipc.serve(function () {
+      ipc.server.on("getNonce", (data: any, socket: any) => {
+        console.info("serving nonce" + data.id + " " + nonce);
+        ipc.server.emit(socket, "nonce-" + data.id, nonce.toNumber());
+        nonce.iaddn(1);
+      });
+    });
+
+    ipc.server.start();
+    this.ipc = ipc;
+    console.info("helo world 2");
+    console.info(testParams.nodes);
 
     return true;
   }
+
   async act(testParams: TestParams): Promise<boolean> {
-    testLog.getLog().info("Act" + testParams);
+    console.info("helo world 2");
+    console.info(testParams.nodes);
+    const mga = await getMangata(testParams.nodes[0]!);
+    const api = await mga.getApi();
+    this.executed = trackExecutedExtrinsics(api, testParams.duration);
+    this.enqueued = trackEnqueuedExtrinsics(api, testParams.duration);
+    this.pending = trackPendingExtrinsics(api, testParams.duration);
     return true;
   }
-  async expect(nodes: string[]): Promise<boolean> {
-    //wait for not Txs pending + 10 blocks.
-    const mga = await getMangata(nodes[0]!);
-    let pendingExtr: any[] = [];
-    do {
-      const api = await mga.getApi();
-      pendingExtr = await api.rpc.author.pendingExtrinsics();
-    } while (pendingExtr.length > 0);
-    console.info(`Done waiting Txs!`);
-    console.info(`Stopping listeners....`);
-    this.listeners.forEach(async (p) => (await p).cancel());
-    console.info(`...Stopped`);
-    return true;
-  }
-  async teardown(nodes: string[]): Promise<boolean> {
-    for (let nodeNumber = 0; nodeNumber < nodes.length; nodeNumber++) {
-      const node = nodes[nodeNumber];
-      const mga = await getMangata(node);
-      (await mga.getApi()).disconnect();
+
+  async expect(testParams: TestParams): Promise<boolean> {
+    let [executed, enqueued, pending] = await Promise.all([
+      this.executed,
+      this.enqueued,
+      this.pending,
+    ]);
+
+    writeToFile("executed.txt", executed);
+    writeToFile("enqueued.txt", enqueued);
+    writeToFile("pending.txt", pending);
+    generateHtmlReport("report.html", enqueued, executed, pending);
+
+    // ignore first few blocks
+    executed = executed.slice(5);
+    enqueued = enqueued.slice(5);
+    pending = pending.slice(5);
+
+    console.info(executed);
+    console.info(enqueued);
+    console.info(pending);
+
+    const execution_throughput = quantile(
+      executed.map(([_, val]) => val),
+      0.1
+    );
+    const enqueue_throughput = quantile(
+      enqueued.map(([_, val]) => val),
+      0.1
+    );
+    const pending_throughput = quantile(
+      pending.map(([_, val]) => val),
+      0.1
+    );
+
+    console.info(
+      `execution_thruput : 90% of measurements was above ${execution_throughput}`
+    );
+    console.info(
+      `enqueue_thruput   : 90% of measurements was above ${enqueue_throughput}`
+    );
+    console.info(
+      `pending_thruput   : 90% of measurements was above ${pending_throughput}`
+    );
+
+    if (execution_throughput < testParams.throughput) {
+      console.info(
+        `execution throughput was to low: ${execution_throughput} <= ${testParams.throughput}`
+      );
+      return false;
     }
+
+    if (enqueue_throughput < testParams.throughput) {
+      console.info(
+        `enqueued throughput was to low: ${execution_throughput} <= ${testParams.throughput}`
+      );
+      return false;
+    }
+
+    if (pending_throughput < testParams.throughput * 0.75) {
+      console.info(
+        `pending throughput was too small, consider increasing pending/totalTx parameter`
+      );
+      return false;
+    }
+
+    return true;
+  }
+
+  async teardown(): Promise<boolean> {
+    const apis = await Promise.all(
+      [...this.mgaNodeandUsers.values()].map(({ mgaSdk }) => mgaSdk.getApi())
+    );
+    await Promise.all(apis.map((api) => api.disconnect()));
+    await this.ipc.server.stop();
     return true;
   }
   async run(testparams: TestParams): Promise<boolean> {
-    return this.arrange(testparams.threads, testparams.nodes).then(
-      async (result) => {
-        testLog.getLog().info("Done Arrange");
-        return (
-          result &&
-          (await this.act(testparams).then(async (resultAct) => {
-            testLog.getLog().info("Done Act");
-            return (
-              resultAct &&
-              (await this.expect(testparams.nodes).then(
-                async (resultExpect) => {
-                  testLog.getLog().info("Done Expect" + resultExpect);
-                  return (
-                    resultAct &&
-                    (await this.teardown(testparams.nodes).then(
-                      async (resultTearDown) => {
-                        testLog.getLog().info("Done TearDown");
-                        return resultTearDown;
-                      }
-                    ))
-                  );
-                }
-              ))
-            );
-          }))
-        );
-      }
-    );
+    return this.arrange(testparams).then(async (result) => {
+      testLog.getLog().info("Done Arrange");
+      return (
+        result &&
+        (await this.act(testparams).then(async (resultAct) => {
+          testLog.getLog().info("Done Act");
+          return (
+            resultAct &&
+            (await this.expect(testparams).then(async (resultExpect) => {
+              testLog.getLog().info("Done Expect" + resultExpect);
+              return (
+                (await this.teardown().then(async (resultTearDown) => {
+                  testLog.getLog().info("Done TearDown");
+                  return resultTearDown;
+                })) &&
+                resultAct &&
+                resultExpect
+              );
+            }))
+          );
+        }))
+      );
+    });
   }
   async createPoolIfMissing(tokenId: BN, tokenId2: BN, nodes: string[]) {
     const keyring = new Keyring({ type: "sr25519" });
@@ -101,7 +206,13 @@ export class performanceTestItem implements TestItem {
       keyring,
       mgaNode
     ) as SudoUser;
-    await createPoolIfMissing(sudo, "100000", tokenId, tokenId2);
+    await sudo.node.connect();
+    await createPoolIfMissing(
+      sudo,
+      "1000000000000000000000000000",
+      tokenId,
+      tokenId2
+    );
   }
   async mintTokensToUsers(
     numberOfThreads: number,
@@ -143,8 +254,8 @@ export class performanceTestItem implements TestItem {
       this.mgaNodeandUsers.set(nodeNumber, { mgaSdk: mga, users: users });
     }
     testLog.getLog().info("Waiting for mining tokens");
-    const results = await Promise.all(mintPromises);
-    testLog.getLog().info("¡¡ Tokens minted !!" + JSON.stringify(results));
+    await Promise.all(mintPromises);
+    testLog.getLog().info("¡¡ Tokens minted !!");
 
     return true;
   }
@@ -245,6 +356,7 @@ export class performanceTestItem implements TestItem {
 
 export async function getMangata(node: string) {
   const mga = Mangata.getInstance([node]);
-  await initApi(node);
+  const api = await initApi(node);
+  await api.isReady;
   return mga;
 }
