@@ -34,6 +34,7 @@
     "package.json": "^2.0.1",
     "prettier": "2.3.0",
     "selenium-webdriver": "3.6.0",
+    "@terascope/fetch-github-release": "^0.8.7",
     "tiny-async-pool": "^1.2.0",
     "truffle": "^5.4.7",
     "truffle-hdwallet-provider": "^1.0.17",
