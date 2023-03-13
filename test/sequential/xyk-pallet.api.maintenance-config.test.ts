@@ -262,7 +262,7 @@ test("maintenance- check we can sell MGX tokens and compoundRewards THEN switch 
   );
 });
 
-test("Upgrade runtime: authorizeUpgrade + enactUpgrade", async () => {
+test("Validate that when UpgradabilityON, Sudo or council can only run upgradability extrinsics", async () => {
   const mangata = await getMangataInstance(chainUri);
   const api = await mangata.getApi();
   const hash =
