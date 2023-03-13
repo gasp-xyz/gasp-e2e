@@ -85,6 +85,9 @@ async function main() {
     case "ping":
       testParams.command = Commands.Ping;
       break;
+    case "sellTransfer":
+      testParams.command = Commands.SwapSellTransfer;
+      break;
     default:
       throw new Error(
         `Unknown command: ${command}, available: "transfer", "mint", "burn", "swap"`

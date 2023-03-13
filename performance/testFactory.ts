@@ -2,6 +2,7 @@
 // import { ExtrinsicBurn } from "./plugins/extrinsicBurn";
 // import { ExtrinsicMint } from "./plugins/extrinsicMint";
 import { ExtrinsicSwap } from "./plugins/extrinsicSwap";
+import { ExtrinsicSwapTransfer } from "./plugins/extrinsicSwapTransfer";
 import { ExtrinsicTransfer } from "./plugins/extrinsicTransfer";
 // import { ExtrinsicTransferAll } from "./plugins/extrinsicTransferAll";
 // import { Ping } from "./plugins/ping";
@@ -13,6 +14,7 @@ export enum Commands {
   ExtrinsicTransferAll,
   SwapSell,
   SwapBuy,
+  SwapSellTransfer,
   Ping,
   Mint,
   Burn,
@@ -36,6 +38,9 @@ export class TestFactory {
     }
     if (type === Commands.SwapSell) {
       return new ExtrinsicSwap(false);
+    }
+    if (type === Commands.SwapSellTransfer) {
+      return new ExtrinsicSwapTransfer(false);
     }
     // if (type === Commands.Ping) {
     //   return new Ping();
