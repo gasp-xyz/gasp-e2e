@@ -4,7 +4,7 @@
  */
 import { hexToU8a } from "@polkadot/util";
 import { Keyring } from "@polkadot/api";
-import { getApi, getMangataInstance, initApi } from "../../utils/api";
+import { getApi, initApi } from "../../utils/api";
 import { Assets } from "../../utils/Assets";
 import { MGA_ASSET_ID } from "../../utils/Constants";
 import { BN, MangataGenericEvent, signTx } from "@mangata-finance/sdk";
@@ -16,6 +16,7 @@ import { Xyk } from "../../utils/xyk";
 import { Maintenance } from "../../utils/Maintenance";
 import {
   compoundRewards,
+  getCurrentNonce,
   getLiquidityAssetId,
   sellAsset,
 } from "../../utils/tx";
@@ -33,7 +34,7 @@ jest.spyOn(console, "log").mockImplementation(jest.fn());
 jest.setTimeout(2500000);
 process.env.NODE_ENV = "test";
 
-const { sudo: sudoUserName, chainUri } = getEnvironmentRequiredVars();
+const { sudo: sudoUserName } = getEnvironmentRequiredVars();
 let testUser1: User;
 let sudo: User;
 let keyring: Keyring;
@@ -262,9 +263,9 @@ test("maintenance- check we can sell MGX tokens and compoundRewards THEN switch 
   );
 });
 
-test("Validate that when UpgradabilityON, Sudo or council can only run upgradability extrinsics", async () => {
-  const mangata = await getMangataInstance(chainUri);
-  const api = await mangata.getApi();
+test("maintenance- validate that when UpgradabilityON, Sudo or council can only run upgradability extrinsics", async () => {
+  //const mangata = await getMangataInstance(chainUri);
+  const api = getApi();
   const hash =
     "0xa4f385913ba0acb618402fe01aa20a87ed3d5b58cc7d28cb7a9165eb309c9300";
 
@@ -278,7 +279,10 @@ test("Validate that when UpgradabilityON, Sudo or council can only run upgradabi
   const authorizeUpgradeBefore = await signTx(
     api!,
     api!.tx.sudo.sudo(api!.tx.parachainSystem.authorizeUpgrade(hash)),
-    sudo.keyRingPair
+    sudo.keyRingPair,
+    {
+      nonce: await getCurrentNonce(sudo.keyRingPair.address),
+    }
   );
   await waitSudoOperationFail(
     authorizeUpgradeBefore,
@@ -295,7 +299,10 @@ test("Validate that when UpgradabilityON, Sudo or council can only run upgradabi
   const authorizeUpgradeAfter = await signTx(
     api!,
     api!.tx.sudo.sudo(api!.tx.parachainSystem.authorizeUpgrade(hash)),
-    sudo.keyRingPair
+    sudo.keyRingPair,
+    {
+      nonce: await getCurrentNonce(sudo.keyRingPair.address),
+    }
   );
   await waitSudoOperationSuccess(authorizeUpgradeAfter);
 });
