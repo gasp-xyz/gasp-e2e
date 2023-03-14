@@ -8,7 +8,7 @@ import { User } from "../../utils/User";
 import { setupApi, setupAPoolForUsers, Extrinsic } from "../../utils/setup";
 import { BN_ONE, BN_HUNDRED } from "@mangata-finance/sdk";
 import { BN_MILLION } from "@mangata-finance/sdk";
-import { Xyk } from "../../utils/xyk";
+import { Tokens, Xyk } from "../../utils/xyk";
 
 jest.spyOn(console, "log").mockImplementation(jest.fn());
 jest.setTimeout(1500000);
@@ -16,6 +16,8 @@ const ERROR_MSG = "Tipping is not allowed for swaps and multiswaps";
 let users: User[] = [];
 let tokenIds: BN[] = [];
 let swapOperations: { [K: string]: Extrinsic } = {};
+
+let usersIterator: IterableIterator<User>;
 
 describe("Tips - Tips are not allowed for swaps", () => {
   beforeAll(async () => {
@@ -35,7 +37,14 @@ describe("Tips - Tips are not allowed for swaps", () => {
       ),
       sellAsset: Xyk.sellAsset(tokenIds[0], tokenIds[1], BN_HUNDRED, BN_ONE),
       buyAsset: Xyk.buyAsset(tokenIds[0], tokenIds[1], BN_HUNDRED, BN_MILLION),
+      transfer: Tokens.transfer(
+        users[0].keyRingPair.address,
+        tokenIds[0],
+        BN_HUNDRED
+      ),
+      mint: Xyk.mintLiquidity(tokenIds[0], tokenIds[1], BN_HUNDRED, BN_MILLION),
     };
+    usersIterator = users[Symbol.iterator]();
   });
   it.each(["multiswapSellAsset", "multiswapBuyAsset", "sellAsset", "buyAsset"])(
     "%s tips operations are forbidden",
@@ -56,6 +65,17 @@ describe("Tips - Tips are not allowed for swaps", () => {
       ).rejects.toThrow(ERROR_MSG);
       expect(exceptionData).toEqual(ERROR_MSG);
       expect(exception).toBeTruthy();
+    }
+  );
+  it.each(["transfer", "mint"])(
+    "%s tips operations are allowed",
+    async (operation) => {
+      const user = usersIterator.next().value;
+      const extrinsic = swapOperations[operation];
+      const result = await extrinsic.signAndSend(user.keyRingPair, {
+        tip: new BN(100001000),
+      });
+      expect(result).not.toBeNull();
     }
   );
 });
