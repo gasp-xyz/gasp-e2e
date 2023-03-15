@@ -108,32 +108,32 @@ test("maintenance- try to change Maintenance Mode with a non-foundation account 
     )
   );
 
-  const switchMaintenanceModeByUser = await Sudo.batchAsSudoFinalized(
+  const userSwitchModeEvents = await Sudo.batchAsSudoFinalized(
     Sudo.sudoAsWithAddressString(
       testUser1.keyRingPair.address,
       Maintenance.switchMaintenanceModeOff()
     )
   );
 
-  await getSudoError(switchMaintenanceModeByUser, "NotFoundationAccount");
+  await getSudoError(userSwitchModeEvents, "NotFoundationAccount");
 
-  const switchMaintenanceModeBySudo = await Sudo.batchAsSudoFinalized(
+  const sudoSwitchModeEvents = await Sudo.batchAsSudoFinalized(
     Sudo.sudoAsWithAddressString(
       sudo.keyRingPair.address,
       Maintenance.switchMaintenanceModeOff()
     )
   );
 
-  await getSudoError(switchMaintenanceModeBySudo, "NotFoundationAccount");
+  await getSudoError(sudoSwitchModeEvents, "NotFoundationAccount");
 
-  const switchMaintenanceModeByFoundation = await Sudo.batchAsSudoFinalized(
+  const foundationSwitchModeEvents = await Sudo.batchAsSudoFinalized(
     Sudo.sudoAsWithAddressString(
       foundationAccountAddress,
       Maintenance.switchMaintenanceModeOff()
     )
   );
 
-  const filteredEvent = switchMaintenanceModeByFoundation.filter(
+  const filteredEvent = foundationSwitchModeEvents.filter(
     (extrinsicResult) => extrinsicResult.method === "SudoAsDone"
   );
   const eventIndex = JSON.parse(JSON.stringify(filteredEvent[0].event.data[0]));
