@@ -43,7 +43,7 @@ let eventResponse: EventResult;
 let liqId: BN;
 let maintenanceStatus: any;
 const defaultCurrencyValue = new BN(1000000000000000);
-const defaultPoolVolumeValue = new BN(1000000000);
+const defaultPoolVolumeValue = new BN(10000000000);
 const foundationAccountAddress =
   "5Gc1GyxLPr1A4jE1U7u9LFYuFftDjeSYZWQXHgejQhSdEN4s";
 
@@ -225,6 +225,8 @@ test("maintenance- check we can sell MGX tokens and compoundRewards THEN switch 
   ).rejects.toThrow(
     "1010: Invalid Transaction: The swap prevalidation has failed"
   );
+
+  await waitForRewards(testUser1, liqId);
 
   const compoundMaintenanceOn = await compoundRewards(testUser1, liqId);
   eventResponse = getEventResultFromMangataTx(compoundMaintenanceOn);
