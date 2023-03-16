@@ -48,6 +48,23 @@ export const setupUsers = () => {
   return [testUser1, testUser2, testUser3, testUser4];
 };
 
+export const devTestingPairs = (ss58Format?: number) => {
+  const keyring = new Keyring({ type: "sr25519", ss58Format });
+  const alice = keyring.addFromUri("//Alice");
+  const bob = keyring.addFromUri("//Bob");
+  const charlie = keyring.addFromUri("//Charlie");
+  const dave = keyring.addFromUri("//Dave");
+  const eve = keyring.addFromUri("//Eve");
+  return {
+    alice,
+    bob,
+    charlie,
+    dave,
+    eve,
+    keyring,
+  };
+};
+
 export async function setup5PoolsChained(users: User[]) {
   const [testUser1, testUser2, testUser3, testUser4] = await setupUsers();
   users = [testUser1, testUser2, testUser3, testUser4];

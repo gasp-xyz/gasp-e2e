@@ -5,18 +5,18 @@ __metadata:
   version: 6
   cacheKey: 8
 
-"@acala-network/chopsticks-executor@npm:0.4.2":
-  version: 0.4.2
-  resolution: "@acala-network/chopsticks-executor@npm:0.4.2"
-  checksum: 4eb4ae7f2e9c7005d407d80da6b3ebc8a8166a2110ad759a4f664a2aaeb27e4b5bbea8cb42b0c9a092487e0b18feb1d5d5e971da5551ebce3234771fbcdf31dc
+"@acala-network/chopsticks-executor@npm:0.5.10":
+  version: 0.5.10
+  resolution: "@acala-network/chopsticks-executor@npm:0.5.10"
+  checksum: dfa3723776b9c5595202393a0f6d9e81aaea6db092b394293a81fba5995cc0134d28b6c1951ec9c9be0c5a40ed7875836d5ea5ce0d00cdd28efd1ff056c3b919
   languageName: node
   linkType: hard
 
-"@acala-network/chopsticks@npm:^0.4.1":
-  version: 0.4.2
-  resolution: "@acala-network/chopsticks@npm:0.4.2"
+"@acala-network/chopsticks@npm:^0.5.10":
+  version: 0.5.10
+  resolution: "@acala-network/chopsticks@npm:0.5.10"
   dependencies:
-    "@acala-network/chopsticks-executor": 0.4.2
+    "@acala-network/chopsticks-executor": 0.5.10
     "@polkadot/api": ^9.14.2
     "@polkadot/rpc-provider": ^9.14.2
     "@polkadot/types": ^9.14.2
@@ -31,7 +31,6 @@ __metadata:
     pino: ^8.11.0
     pino-pretty: ^9.4.0
     reflect-metadata: ^0.1.13
-    rxjs: ^7.8.0
     sqlite3: ^5.1.4
     typeorm: ^0.3.12
     ws: ^8.12.1
@@ -39,7 +38,7 @@ __metadata:
     zod: ^3.20.6
   bin:
     chopsticks: ./chopsticks.js
-  checksum: 8a531f6f2c1c4ea0550079f8f7a94962a0cea89fa97fa3556327584a17f7e750e1bfe4783c69cac21d45f266f06c9d4668cb95555a903229b7b456567a5e4f7c
+  checksum: e7566cd49de153c8f4706b934e91197521fbd4eb5e8feb6c4ab3684c5c59c5889878ac6ca79aca792f366e8532fccb0786b149b23e68938a6eb39dc1959d6878
   languageName: node
   linkType: hard
 
@@ -3514,6 +3513,22 @@ __metadata:
   languageName: node
   linkType: hard
 
+"@terascope/fetch-github-release@npm:^0.8.7":
+  version: 0.8.7
+  resolution: "@terascope/fetch-github-release@npm:0.8.7"
+  dependencies:
+    extract-zip: ^2.0.1
+    gauge: ^3.0.0
+    got: ^11.4.0
+    multi-progress: ^4.0.0
+    progress: ^2.0.3
+    yargs: ^17.2.1
+  bin:
+    fetch-github-release: bin/fetch-github-release
+  checksum: 00e2f28f4ecadf5cbbdcb5db6bec19be7cf018bc34377757c2c646a6be1ca359aeb2c165c715df3b977fc07209a0764a8002b45581abaa273d86a5d87a46901e
+  languageName: node
+  linkType: hard
+
 "@testim/chrome-version@npm:^1.1.3":
   version: 1.1.3
   resolution: "@testim/chrome-version@npm:1.1.3"
@@ -4095,7 +4110,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@types/node@npm:*, @types/node@npm:^18.14.6":
+"@types/node@npm:*":
   version: 18.14.6
   resolution: "@types/node@npm:18.14.6"
   checksum: 2f88f482cabadc6dbddd627a1674239e68c3c9beab56eb4ae2309fb96fd17fc3a509d99b0309bafe13b58529574f49ecf3a583f2ebe2896dd32fe4be436dc96e
@@ -4113,6 +4128,13 @@ __metadata:
   version: 12.20.55
   resolution: "@types/node@npm:12.20.55"
   checksum: e4f86785f4092706e0d3b0edff8dca5a13b45627e4b36700acd8dfe6ad53db71928c8dee914d4276c7fd3b6ccd829aa919811c9eb708a2c8e4c6eb3701178c37
+  languageName: node
+  linkType: hard
+
+"@types/node@npm:^14.14.10":
+  version: 14.18.38
+  resolution: "@types/node@npm:14.18.38"
+  checksum: 4f580c5e0f124f44fa6f5d9923bf8fd98f644caabee6171c2dac48160062a91de99f2edd5db5ec59e93fe61f85dd4111df78c9d4f341f3aafca719929362303f
   languageName: node
   linkType: hard
 
@@ -8728,6 +8750,13 @@ __metadata:
   languageName: node
   linkType: hard
 
+"find-free-port@npm:^2.0.0":
+  version: 2.0.0
+  resolution: "find-free-port@npm:2.0.0"
+  checksum: feaedbef0a4dffe23b3cf9738edf43dbae5046561c7c1a53c05cf20d37f150f9db5e5a21975229561c1a03e12b2c34dbfadc6a16e3a4ca53902cdecd51eff783
+  languageName: node
+  linkType: hard
+
 "find-up@npm:5.0.0, find-up@npm:^5.0.0":
   version: 5.0.0
   resolution: "find-up@npm:5.0.0"
@@ -9425,7 +9454,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"got@npm:^11.8.5":
+"got@npm:^11.4.0, got@npm:^11.8.5":
   version: 11.8.6
   resolution: "got@npm:11.8.6"
   dependencies:
@@ -12132,18 +12161,19 @@ __metadata:
   version: 0.0.0-use.local
   resolution: "mangata-e2e-tests@workspace:."
   dependencies:
-    "@acala-network/chopsticks": ^0.4.1
+    "@acala-network/chopsticks": ^0.5.10
     "@babel/core": ^7.13.10
     "@babel/plugin-proposal-decorators": ^7.17.8
     "@babel/preset-env": ^7.13.10
     "@babel/preset-typescript": ^7.13.0
     "@commitlint/config-conventional": ^17.4.2
     "@mangata-finance/sdk": 1.16.1
+    "@terascope/fetch-github-release": ^0.8.7
     "@types/bs58": ^4.0.1
     "@types/jest": ^26.0.23
     "@types/jsonpath": ^0.2.0
     "@types/lodash": ^4.14.173
-    "@types/node": ^18.14.6
+    "@types/node": ^14.14.10
     "@types/selenium-webdriver": 3.0.19
     "@types/tiny-async-pool": ^1.0.0
     "@types/uuid": ^8.3.0
@@ -12159,6 +12189,7 @@ __metadata:
     eslint: 7.26.0
     eslint-config-mangata: "https://github.com/mangata-finance/eslint-config-mangata.git"
     ethers: ^5.4.7
+    find-free-port: ^2.0.0
     ganache-cli: ^6.12.2
     guid-typescript: ^1.0.9
     husky: ^7.0.2
@@ -12179,8 +12210,8 @@ __metadata:
     tiny-async-pool: ^1.2.0
     truffle: ^5.4.7
     truffle-hdwallet-provider: ^1.0.17
-    ts-node: ^10.9.1
-    typescript: 4.9.5
+    ts-node: ^10.4.0
+    typescript: 4.5.4
     web3: ^1.5.3
     webpack-babel-jest: ^1.0.4
     winston: ^3.3.3
@@ -12680,6 +12711,15 @@ __metadata:
   version: 2.1.3
   resolution: "ms@npm:2.1.3"
   checksum: aa92de608021b242401676e35cfa5aa42dd70cbdc082b916da7fb925c542173e36bce97ea3e804923fe92c0ad991434e4a38327e15a1b5b5f945d66df615ae6d
+  languageName: node
+  linkType: hard
+
+"multi-progress@npm:^4.0.0":
+  version: 4.0.0
+  resolution: "multi-progress@npm:4.0.0"
+  peerDependencies:
+    progress: ^2.0.0
+  checksum: 1e1290c3db9ff3e7b204a71466f708e7783a611e0f8afe7ee2d73b5a2923b2049aaaa5d63ac91b217398be93d1cf704408e89acd1907639f05a853d35c295a71
   languageName: node
   linkType: hard
 
@@ -14250,7 +14290,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"progress@npm:^2.0.0":
+"progress@npm:^2.0.0, progress@npm:^2.0.3":
   version: 2.0.3
   resolution: "progress@npm:2.0.3"
   checksum: f67403fe7b34912148d9252cb7481266a354bd99ce82c835f79070643bb3c6583d10dbcfda4d41e04bbc1d8437e9af0fb1e1f2135727878f5308682a579429b7
@@ -16450,7 +16490,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"ts-node@npm:^10.8.1, ts-node@npm:^10.9.1":
+"ts-node@npm:^10.4.0, ts-node@npm:^10.8.1":
   version: 10.9.1
   resolution: "ts-node@npm:10.9.1"
   dependencies:
@@ -16766,7 +16806,17 @@ __metadata:
   languageName: node
   linkType: hard
 
-"typescript@npm:4.9.5, typescript@npm:^4.6.4":
+"typescript@npm:4.5.4":
+  version: 4.5.4
+  resolution: "typescript@npm:4.5.4"
+  bin:
+    tsc: bin/tsc
+    tsserver: bin/tsserver
+  checksum: 59f3243f9cd6fe3161e6150ff6bf795fc843b4234a655dbd938a310515e0d61afd1ac942799e7415e4334255e41c2c49b7dd5d9fd38a17acd25a6779ca7e0961
+  languageName: node
+  linkType: hard
+
+"typescript@npm:^4.6.4":
   version: 4.9.5
   resolution: "typescript@npm:4.9.5"
   bin:
@@ -16776,7 +16826,17 @@ __metadata:
   languageName: node
   linkType: hard
 
-"typescript@patch:typescript@4.9.5#~builtin<compat/typescript>, typescript@patch:typescript@^4.6.4#~builtin<compat/typescript>":
+"typescript@patch:typescript@4.5.4#~builtin<compat/typescript>":
+  version: 4.5.4
+  resolution: "typescript@patch:typescript@npm%3A4.5.4#~builtin<compat/typescript>::version=4.5.4&hash=bcec9a"
+  bin:
+    tsc: bin/tsc
+    tsserver: bin/tsserver
+  checksum: eda87927f9cfb94aca9b5e47842daf37347ad3073133e17f556fbb6c18f3493c5b551eedab0f4b26774235ddb7acbe0087250d5285f72ce6819a0891dd5a74ed
+  languageName: node
+  linkType: hard
+
+"typescript@patch:typescript@^4.6.4#~builtin<compat/typescript>":
   version: 4.9.5
   resolution: "typescript@patch:typescript@npm%3A4.9.5#~builtin<compat/typescript>::version=4.9.5&hash=23ec76"
   bin:
@@ -18286,7 +18346,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"yargs@npm:^17.0.0, yargs@npm:^17.3.1, yargs@npm:^17.6.2, yargs@npm:^17.7.1":
+"yargs@npm:^17.0.0, yargs@npm:^17.2.1, yargs@npm:^17.3.1, yargs@npm:^17.6.2, yargs@npm:^17.7.1":
   version: 17.7.1
   resolution: "yargs@npm:17.7.1"
   dependencies:

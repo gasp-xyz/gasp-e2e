@@ -1,13 +1,14 @@
 /* eslint-disable no-loop-func */
+import { MangataGenericEvent } from "@mangata-finance/sdk";
+import { ApiPromise } from "@polkadot/api";
+import { BN } from "@polkadot/util";
+import _, { reject } from "lodash";
 import { getApi, getMangataInstance } from "./api";
 import { testLog } from "./Logger";
 import { api } from "./setup";
-import { User } from "./User";
-import { BN } from "@polkadot/util";
-import { MangataGenericEvent } from "@mangata-finance/sdk";
+import { CodecOrArray, logEvent } from "./setupJest";
 import { getEventErrorfromSudo } from "./txHandler";
-import _, { reject } from "lodash";
-import { ApiPromise } from "@polkadot/api";
+import { User } from "./User";
 import { getEnvironmentRequiredVars } from "./utils";
 
 // lets create a enum for different status.
@@ -86,15 +87,6 @@ export const waitNewBlock = () => {
   });
 };
 
-// @ts-ignore
-export const logEvent = (phase, data, method, section) => {
-  testLog
-    .getLog()
-    .info(
-      phase.toString() + " : " + section + "." + method + " " + data.toString()
-    );
-};
-
 export function filterEventData(
   result: MangataGenericEvent[],
   method: string
@@ -133,19 +125,11 @@ export async function waitSudoOperationFail(
   expect(BootstrapError.method).toContain(expectedError);
 }
 
-export const waitForEvent = async (
-  api: ApiPromise,
-  method: string,
-  blocks: number = 10
-): Promise<any[]> => {
-  return (await waitForEvents(api, method, blocks))[0]
-}
-
 export const waitForEvents = async (
   api: ApiPromise,
   method: string,
   blocks: number = 10
-): Promise<any[][]> => {
+): Promise<CodecOrArray> => {
   return new Promise(async (resolve, reject) => {
     let counter = 0;
     const unsub = await api.rpc.chain.subscribeFinalizedHeads(async (head) => {
@@ -154,20 +138,18 @@ export const waitForEvents = async (
       testLog
         .getLog()
         .info(
-          `→ on ${api.runtimeChain} for '${method}' event, attempt ${counter}, head ${head.hash}`
+          `→ find on ${api.runtimeChain} for '${method}' event, attempt ${counter}, head ${head.hash}`
         );
-      events.forEach(({ phase, event: { data, method, section } }) => {
-        logEvent(phase, data, method, section);
-      });
+
+      events.forEach((e) => logEvent(api.runtimeChain, e));
+
       const filtered = _.filter(
         events,
         ({ event }) => `${event.section}.${event.method}` === method
       );
       if (filtered.length > 0) {
-        resolve(filtered.map(({ event: { data } }) => data));
+        resolve(filtered);
         unsub();
-        // } else {
-        //   reject(new Error("event not found"));
       }
       if (counter === blocks) {
         reject(`method ${method} not found within blocks limit`);

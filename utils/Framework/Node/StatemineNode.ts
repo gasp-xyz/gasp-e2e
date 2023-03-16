@@ -1,11 +1,12 @@
 import { ApiPromise, WsProvider } from "@polkadot/api";
 import { BN } from "@polkadot/util";
+import assert from "assert";
 import {
   AssetSpec,
   ChainId,
   ChainSpec,
   ChainSpecs,
-  TRANSFER_INSTRUCTIONS
+  TRANSFER_INSTRUCTIONS,
 } from "../../ChainSpecs";
 import { User } from "../../User";
 
@@ -19,10 +20,10 @@ export class StatemineNode {
     amount: BN,
     toUser: User
   ): any {
-    expect(ChainSpecs.has(toChain));
+    assert(ChainSpecs.has(toChain));
     const target = ChainSpecs.get(toChain)!;
-    expect(target.foreign.has(assetId));
-    expect(this.chain.assets.has(assetId));
+    assert(target.foreign.has(assetId));
+    assert(this.chain.assets.has(assetId));
     const asset = this.chain.assets.get(assetId)!;
 
     return this.api.tx.polkadotXcm.limitedReserveTransferAssets(
@@ -30,11 +31,11 @@ export class StatemineNode {
         V1: {
           interior: {
             X1: {
-              Parachain: target.parachain
-            }
+              Parachain: target.parachain,
+            },
           },
-          parents: 1
-        }
+          parents: 1,
+        },
       },
       {
         V1: {
@@ -43,34 +44,34 @@ export class StatemineNode {
               AccountId32: {
                 id: toUser.keyRingPair.publicKey,
                 network: {
-                  Any: ""
-                }
-              }
-            }
+                  Any: "",
+                },
+              },
+            },
           },
-          parents: 0
-        }
+          parents: 0,
+        },
       },
       {
         V1: [
           {
             fun: {
-              Fungible: amount
+              Fungible: amount,
             },
             id: {
-              Concrete: asset.location
-            }
-          }
-        ]
+              Concrete: asset.location,
+            },
+          },
+        ],
       },
       0,
       { Limited: TRANSFER_INSTRUCTIONS * target.unitCostWeight }
-    )
+    );
   }
 
   constructor(api: ApiPromise, chainId: ChainId) {
     this.api = api;
-    expect(ChainSpecs.has(chainId));
+    assert(ChainSpecs.has(chainId));
     this.chain = ChainSpecs.get(chainId)!;
   }
 

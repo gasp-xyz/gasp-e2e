@@ -1,17 +1,19 @@
 import { connectVertical } from "@acala-network/chopsticks";
 import { KeyringPair } from "@polkadot/keyring/types";
+import { BN_THOUSAND } from "@polkadot/util";
+import { balance } from "../../utils/Assets";
+import { AssetId } from "../../utils/ChainSpecs";
+import { ApiContext } from "../../utils/Framework/XcmHelper";
+import XcmNetworks from "../../utils/Framework/XcmNetworks";
+import { devTestingPairs } from "../../utils/setup";
 import {
-  balance,
-  ApiContext,
   expectEvent,
   expectExtrinsicSuccess,
   expectJson,
   matchEvents,
   matchSystemEvents,
-  sendTransaction,
-  testingPairs,
-} from "../../utils/Framework/XcmHelper";
-import XcmNetworks from "../../utils/Framework/XcmNetworks";
+} from "../../utils/setupJest";
+import { sendTransaction } from "../../utils/sign";
 
 /**
  * @group xcm
@@ -26,7 +28,7 @@ describe("XCM tests for Mangata <-> Kusama", () => {
     kusama = await XcmNetworks.kusama();
     mangata = await XcmNetworks.mangata();
     await connectVertical(kusama.chain, mangata.chain);
-    alice = testingPairs().alice;
+    alice = devTestingPairs().alice;
   });
 
   afterAll(async () => {
@@ -41,7 +43,7 @@ describe("XCM tests for Mangata <-> Kusama", () => {
           [[alice.address, { token: 4 }], { free: 10 * 1e12 }],
           [
             [alice.address, { token: 0 }],
-            { free: (1000n * 10n ** 18n).toString() },
+            { free: AssetId.Mgx.unit.mul(BN_THOUSAND) },
           ],
         ],
       },
@@ -57,7 +59,7 @@ describe("XCM tests for Mangata <-> Kusama", () => {
   });
 
   it("mangata transfer assets to kusama", async () => {
-    let tx = await sendTransaction(
+    const tx = await sendTransaction(
       mangata.api.tx.xTokens
         .transfer(
           4,
@@ -81,7 +83,7 @@ describe("XCM tests for Mangata <-> Kusama", () => {
     );
 
     await mangata.chain.newBlock();
-    await kusama.chain.upcomingBlock();
+    await kusama.chain.upcomingBlocks();
 
     expectExtrinsicSuccess(await tx.events);
     expectEvent(await tx.events, {
@@ -174,7 +176,7 @@ describe("XCM tests for Mangata <-> Kusama", () => {
       }
     `);
 
-    await mangata.chain.upcomingBlock();
+    await mangata.chain.upcomingBlocks();
 
     expectJson(await mangata.api.query.tokens.accounts(alice.address, 4))
       .toMatchInlineSnapshot(`

@@ -32,9 +32,9 @@ export function fromStringToUnitString(value: string) {
 }
 
 export function getMangataApiUrlPort() {
-  const { chainUri } = getEnvironmentRequiredVars()
-  const port = chainUri.substring(chainUri.lastIndexOf(":") + 1)
-  return Number.parseInt(port)
+  const { chainUri } = getEnvironmentRequiredVars();
+  const port = chainUri.substring(chainUri.lastIndexOf(":") + 1);
+  return Number.parseInt(port);
 }
 
 export function getEnvironmentRequiredVars() {

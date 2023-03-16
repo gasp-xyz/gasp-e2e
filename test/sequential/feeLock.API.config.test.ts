@@ -24,7 +24,7 @@ import {
   sleep,
 } from "../../utils/utils";
 import { Xyk } from "../../utils/xyk";
-import { waitForEvent } from "../../utils/eventListeners";
+import { waitForEvents } from "../../utils/eventListeners";
 
 jest.spyOn(console, "log").mockImplementation(jest.fn());
 jest.setTimeout(2500000);
@@ -145,7 +145,7 @@ test("gasless- Changing feeLock config parameter on the fly is works robustly. E
   const saleAssetValue = thresholdValue.sub(new BN(5));
   await testUser1.sellAssets(firstCurrency, MGA_ASSET_ID, saleAssetValue);
   await testUser1.refreshAmounts(AssetWallet.BEFORE);
-  const eventListener = waitForEvent(api, "feeLock.FeeLockUnlocked", 10);
+  const eventListener = waitForEvents(api, "feeLock.FeeLockUnlocked", 10);
   updateMetadataEvent = await updateFeeLockMetadata(
     sudo,
     new BN(5),
