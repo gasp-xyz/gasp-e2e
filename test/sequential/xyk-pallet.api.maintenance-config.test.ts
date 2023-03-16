@@ -226,6 +226,8 @@ test("maintenance- check we can sell MGX tokens and compoundRewards THEN switch 
     "1010: Invalid Transaction: The swap prevalidation has failed"
   );
 
+  await waitForRewards(testUser1, liqId);
+
   const compoundMaintenanceOn = await compoundRewards(testUser1, liqId);
   eventResponse = getEventResultFromMangataTx(compoundMaintenanceOn);
   expect(eventResponse.state).toEqual(ExtrinsicResult.ExtrinsicFailed);
