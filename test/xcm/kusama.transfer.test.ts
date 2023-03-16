@@ -1,17 +1,17 @@
 import { connectVertical } from "@acala-network/chopsticks";
 import { KeyringPair } from "@polkadot/keyring/types";
+import { balance } from "../../utils/Assets";
 import {
-  balance,
-  ApiContext,
   expectEvent,
   expectExtrinsicSuccess,
   expectJson,
   matchEvents,
   matchSystemEvents,
-  sendTransaction,
-  testingPairs,
-} from "../../utils/Framework/XcmHelper";
+} from "../../utils/eventListeners";
+import { ApiContext } from "../../utils/Framework/XcmHelper";
 import XcmNetworks from "../../utils/Framework/XcmNetworks";
+import { devTestingPairs } from "../../utils/setup";
+import { sendTransaction } from "../../utils/sign";
 
 /**
  * @group xcm
@@ -26,7 +26,7 @@ describe("XCM tests for Mangata <-> Kusama", () => {
     kusama = await XcmNetworks.kusama();
     mangata = await XcmNetworks.mangata();
     await connectVertical(kusama.chain, mangata.chain);
-    alice = testingPairs().alice;
+    alice = devTestingPairs().alice;
   });
 
   afterAll(async () => {
@@ -57,7 +57,7 @@ describe("XCM tests for Mangata <-> Kusama", () => {
   });
 
   it("mangata transfer assets to kusama", async () => {
-    let tx = await sendTransaction(
+    const tx = await sendTransaction(
       mangata.api.tx.xTokens
         .transfer(
           4,

@@ -1,9 +1,8 @@
 import { BuildBlockMode, connectParachains } from "@acala-network/chopsticks";
 import { BN_HUNDRED, BN_THOUSAND } from "@mangata-finance/sdk";
-import { BN, BN_FIVE, BN_TEN } from "@polkadot/util";
-import _ from "lodash";
+import { BN_FIVE, BN_TEN } from "@polkadot/util";
 import { AssetId, ChainId } from "../../utils/ChainSpecs";
-import { waitForEvent, waitForEvents } from "../../utils/eventListeners";
+import { expectEvent, waitForEvents } from "../../utils/eventListeners";
 import { XcmNode } from "../../utils/Framework/Node/XcmNode";
 import { ApiContext } from "../../utils/Framework/XcmHelper";
 import XcmNetworks from "../../utils/Framework/XcmNetworks";
@@ -69,14 +68,16 @@ describe("XCM transfers", () => {
     );
     await signSendSuccess(bifrost.api, op, alice);
 
-    await waitForEvent(api, "xcmpQueue.Success");
-    let deposits = await waitForEvents(api, "tokens.Deposited");
-    let amount = _.find(
-      deposits,
-      ({ who }) =>
-        who.toString() === "5EYCAe5ijiYfyeZ2JJCGq56LmPyNRAKzpG4QkoQkkQNB5e6Z"
-    ).amount.toBn();
-    expect(amount).bnEqual(new BN(25_804_800_000));
+    await waitForEvents(api, "xcmpQueue.Success");
+
+    expectEvent(await waitForEvents(api, "tokens.Deposited"), {
+      event: expect.objectContaining({
+        data: expect.objectContaining({
+          who: "5EYCAe5ijiYfyeZ2JJCGq56LmPyNRAKzpG4QkoQkkQNB5e6Z",
+          amount: "25,804,800,000",
+        }),
+      }),
+    });
 
     await XToken.transfer(
       ChainId.Bifrost,
@@ -85,14 +86,16 @@ describe("XCM transfers", () => {
       alice
     ).signAndSend(alice.keyRingPair);
 
-    await waitForEvent(api, "system.ExtrinsicSuccess");
-    await waitForEvent(bifrost.api, "xcmpQueue.Success");
-    deposits = await waitForEvents(bifrost.api, "balances.Deposit");
-    amount = _.find(
-      deposits,
-      ({ who }) =>
-        who.toString() === "eCSrvbA5gGNYdM3UjBNxcBNBqGxtz3SEEfydKragtL4pJ4F"
-    ).amount.toBn();
-    expect(amount).bnEqual(new BN(6_465_920_000));
+    await waitForEvents(api, "system.ExtrinsicSuccess");
+    await waitForEvents(bifrost.api, "xcmpQueue.Success");
+
+    expectEvent(await waitForEvents(bifrost.api, "balances.Deposit"), {
+      event: expect.objectContaining({
+        data: expect.objectContaining({
+          who: "eCSrvbA5gGNYdM3UjBNxcBNBqGxtz3SEEfydKragtL4pJ4F",
+          amount: "6,465,920,000",
+        }),
+      }),
+    });
   });
 });

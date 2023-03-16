@@ -5,7 +5,7 @@ import {
   ChainId,
   ChainSpec,
   ChainSpecs,
-  TRANSFER_INSTRUCTIONS
+  TRANSFER_INSTRUCTIONS,
 } from "../../ChainSpecs";
 import { User } from "../../User";
 
@@ -53,7 +53,7 @@ export class XcmNode {
         },
       },
       {
-        Limited: TRANSFER_INSTRUCTIONS * target.unitCostWeight
+        Limited: TRANSFER_INSTRUCTIONS * target.unitCostWeight,
       }
     );
   }

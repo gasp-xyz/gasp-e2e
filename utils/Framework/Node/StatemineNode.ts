@@ -5,7 +5,7 @@ import {
   ChainId,
   ChainSpec,
   ChainSpecs,
-  TRANSFER_INSTRUCTIONS
+  TRANSFER_INSTRUCTIONS,
 } from "../../ChainSpecs";
 import { User } from "../../User";
 
@@ -30,11 +30,11 @@ export class StatemineNode {
         V1: {
           interior: {
             X1: {
-              Parachain: target.parachain
-            }
+              Parachain: target.parachain,
+            },
           },
-          parents: 1
-        }
+          parents: 1,
+        },
       },
       {
         V1: {
@@ -43,29 +43,29 @@ export class StatemineNode {
               AccountId32: {
                 id: toUser.keyRingPair.publicKey,
                 network: {
-                  Any: ""
-                }
-              }
-            }
+                  Any: "",
+                },
+              },
+            },
           },
-          parents: 0
-        }
+          parents: 0,
+        },
       },
       {
         V1: [
           {
             fun: {
-              Fungible: amount
+              Fungible: amount,
             },
             id: {
-              Concrete: asset.location
-            }
-          }
-        ]
+              Concrete: asset.location,
+            },
+          },
+        ],
       },
       0,
       { Limited: TRANSFER_INSTRUCTIONS * target.unitCostWeight }
-    )
+    );
   }
 
   constructor(api: ApiPromise, chainId: ChainId) {

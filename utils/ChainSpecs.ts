@@ -1,27 +1,27 @@
-import { BN, BN_HUNDRED, BN_THOUSAND } from "@polkadot/util"
-import { BN_TEN, BN_ZERO } from "@mangata-finance/sdk"
+import { BN_TEN, BN_ZERO } from "@mangata-finance/sdk";
+import { BN, BN_HUNDRED, BN_THOUSAND } from "@polkadot/util";
 
-export const TRANSFER_INSTRUCTIONS = 4
-export const WEIGHT_IN_SECONDS = new BN(1_000_000_000_000)
+export const TRANSFER_INSTRUCTIONS = 4;
+export const WEIGHT_IN_SECONDS = new BN(1_000_000_000_000);
 
 export interface ChainSpec {
-  unitCostWeight: number
-  parachain: number
-  assets: Map<AssetSpec, AssetMeta>
-  foreign: Map<AssetSpec, AssetMeta>
+  unitCostWeight: number;
+  parachain: number;
+  assets: Map<AssetSpec, AssetMeta>;
+  foreign: Map<AssetSpec, AssetMeta>;
 }
 
 export interface AssetSpec {
-  symbol: string
-  decimals: number
-  location: object
-  unit: BN
+  symbol: string;
+  decimals: number;
+  location: object;
+  unit: BN;
 }
 
 interface AssetMeta {
-  fps: BN
-  ed: BN
-  location: object,
+  fps: BN;
+  ed: BN;
+  location: object;
 }
 
 export enum ChainId {
@@ -37,7 +37,7 @@ export class AssetId {
     decimals: 10,
     location: { parents: 1, interior: { X1: { Parachain: 2114 } } },
     unit: BN_TEN.pow(new BN(10)),
-  }
+  };
 
   static Mgx: AssetSpec = {
     symbol: "MGX",
@@ -47,7 +47,7 @@ export class AssetId {
       interior: { X2: [{ Parachain: 2110 }, { GeneralKey: "0x00000000" }] },
     },
     unit: BN_TEN.pow(new BN(18)),
-  }
+  };
 
   static Bnc: AssetSpec = {
     symbol: "BNC",
@@ -57,17 +57,23 @@ export class AssetId {
       interior: { X2: [{ Parachain: 2001 }, { GeneralKey: "0x0001" }] },
     },
     unit: BN_TEN.pow(new BN(12)),
-  }
+  };
 
   static USDt: AssetSpec = {
     symbol: "USDt",
     decimals: 6,
     location: {
       parents: 1,
-      interior: { X3: [{ Parachain: 1000 }, { PalletInstance: 50 }, { GeneralIndex: 1984 }] }
+      interior: {
+        X3: [
+          { Parachain: 1000 },
+          { PalletInstance: 50 },
+          { GeneralIndex: 1984 },
+        ],
+      },
     },
-    unit: BN_TEN.pow(new BN(6))
-  }
+    unit: BN_TEN.pow(new BN(6)),
+  };
 }
 
 export const ChainSpecs = new Map<ChainId, ChainSpec>([
@@ -110,16 +116,16 @@ export const ChainSpecs = new Map<ChainId, ChainSpec>([
             fps: new BN(43008000000000),
             ed: BN_ZERO,
             location: AssetId.Bnc.location,
-          }
+          },
         ],
         [
           AssetId.USDt,
           {
             fps: new BN(13440000),
             ed: BN_ZERO,
-            location: AssetId.USDt.location
-          }
-        ]
+            location: AssetId.USDt.location,
+          },
+        ],
       ]),
     },
   ],
@@ -134,12 +140,15 @@ export const ChainSpecs = new Map<ChainId, ChainSpec>([
           {
             fps: new BN(9360000000000),
             ed: AssetId.Bnc.unit.div(BN_HUNDRED),
-            location: { parents: 0, interior: { X1: { GeneralKey: "0x0001" } } }
-          }
-        ]
+            location: {
+              parents: 0,
+              interior: { X1: { GeneralKey: "0x0001" } },
+            },
+          },
+        ],
       ]),
       foreign: new Map(),
-    }
+    },
   ],
   [
     ChainId.Statemine,
@@ -152,11 +161,16 @@ export const ChainSpecs = new Map<ChainId, ChainSpec>([
           {
             fps: new BN(1),
             ed: AssetId.USDt.unit.div(BN_THOUSAND),
-            location: { parents: 0, interior: { X2: [{ PalletInstance:50 }, { GeneralIndex: 1984 }]}}
-          }
-        ]
+            location: {
+              parents: 0,
+              interior: {
+                X2: [{ PalletInstance: 50 }, { GeneralIndex: 1984 }],
+              },
+            },
+          },
+        ],
       ]),
       foreign: new Map(),
-    }
-  ]
-])
+    },
+  ],
+]);
