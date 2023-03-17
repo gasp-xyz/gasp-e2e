@@ -14,20 +14,20 @@ import { AccountData, AccountId32 } from "@polkadot/types/interfaces";
 import { AnyJson, AnyTuple, Codec } from "@polkadot/types/types";
 import { BN } from "@polkadot/util";
 import { env } from "process";
-import { getApi, getMangataInstance } from "./api";
+import { getApi, getMangataInstance } from "./api.js";
 import {
   ETH_ASSET_ID,
   MAX_BALANCE,
   MGA_ASSET_ID,
   MGA_DEFAULT_LIQ_TOKEN,
-} from "./Constants";
-import { Fees } from "./Fees";
-import { SudoUser } from "./Framework/User/SudoUser";
-import { testLog } from "./Logger";
-import { SudoDB } from "./SudoDB";
-import { setAssetInfo, signSendAndWaitToFinishTx } from "./txHandler";
-import { User } from "./User";
-import { getEnvironmentRequiredVars, stringToBN } from "./utils";
+} from "./Constants.js";
+import { Fees } from "./Fees.js";
+import { SudoUser } from "./Framework/User/SudoUser.js";
+import { testLog } from "./Logger.js";
+import { SudoDB } from "./SudoDB.js";
+import { setAssetInfo, signSendAndWaitToFinishTx } from "./txHandler.js";
+import { User } from "./User.js";
+import { getEnvironmentRequiredVars, stringToBN } from "./utils.js";
 
 export const signTxDeprecated = async (
   tx: SubmittableExtrinsic<"promise">,

@@ -3,14 +3,15 @@ import { MangataGenericEvent } from "@mangata-finance/sdk";
 import { ApiPromise } from "@polkadot/api";
 import { Codec } from "@polkadot/types/types";
 import { BN } from "@polkadot/util";
-import _, { reject } from "lodash";
-import { getApi, getMangataInstance } from "./api";
-import { testLog } from "./Logger";
-import { api } from "./setup";
-import { getEventErrorfromSudo } from "./txHandler";
-import { User } from "./User";
-import { getEnvironmentRequiredVars } from "./utils";
-
+import _ from "lodash";
+import pkg from "lodash";
+import { getApi, getMangataInstance } from "./api.js";
+import { testLog } from "./Logger.js";
+import { api } from "./setup.js";
+import { getEventErrorfromSudo } from "./txHandler.js";
+import { User } from "./User.js";
+import { getEnvironmentRequiredVars } from "./utils.js";
+const { reject } = pkg;
 // lets create a enum for different status.
 export enum ExtrinsicResult {
   ExtrinsicSuccess,

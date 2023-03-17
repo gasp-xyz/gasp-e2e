@@ -8,7 +8,7 @@ import { signTx } from "@mangata-finance/sdk";
 import { testLog } from "../utils/Logger";
 import { ApiPromise, WsProvider } from "@polkadot/api";
 import { getApi, initApi } from "../utils/api";
-require("dotenv").config();
+import "dotenv";
 
 process.env.NODE_ENV = "test";
 const user = "//Alice";

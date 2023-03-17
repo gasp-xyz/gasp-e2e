@@ -9,7 +9,7 @@ import { Mangata } from "@mangata-finance/sdk";
 import { testLog } from "../utils/Logger";
 import { Assets } from "../utils/Assets";
 
-require("dotenv").config();
+import "dotenv";
 
 jest.spyOn(console, "log").mockImplementation(jest.fn());
 const { sudo: sudoUserName } = getEnvironmentRequiredVars();

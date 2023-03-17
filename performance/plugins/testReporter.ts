@@ -1,8 +1,9 @@
 import { ApiPromise } from "@polkadot/api";
 import { resolve } from "path";
-
+import fs from "fs";
 export async function logLine(logName: string, lineToLog: string) {
-  const fs = require("fs");
+  //const fs = require("fs");
+  //@ts-ignore
   await fs.appendFile(`${logName}.txt`, lineToLog, function (err: boolean) {
     if (err) {
       // eslint-disable-next-line no-console
@@ -12,7 +13,7 @@ export async function logLine(logName: string, lineToLog: string) {
 }
 
 export function writeToFile(fileName: string, data: [number, number][]) {
-  const fs = require("fs");
+  //const fs = require("fs");
   let payload = "";
 
   data.forEach(([blockNr, val]) => {
@@ -28,7 +29,7 @@ export function generateHtmlReport(
   executed: [number, number][],
   pending: [number, number][]
 ) {
-  const fs = require("fs");
+  //const fs = require("fs");
 
   const content = `<!doctype html>
 <html lang="en">

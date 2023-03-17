@@ -1,13 +1,13 @@
-import { api, Extrinsic } from "./setup";
+import { api, Extrinsic } from "./setup.js";
 import {
   AssetSpec,
   ChainId,
   ChainSpecs,
   TRANSFER_INSTRUCTIONS,
   WEIGHT_IN_SECONDS,
-} from "./ChainSpecs";
+} from "./ChainSpecs.js";
 import { BN } from "@polkadot/util";
-import { User } from "./User";
+import { User } from "./User.js";
 
 export class XToken {
   static xcmTransferFee(toChain: ChainId, assetId: AssetSpec): BN {

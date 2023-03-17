@@ -1,10 +1,10 @@
 /* eslint-disable no-loop-func */
 /* eslint-disable no-console */
 import { Guid } from "guid-typescript";
-import { testLog } from "./Logger";
-import { getCurrentNonce } from "./txHandler";
-import { sleep } from "./utils";
-
+import { testLog } from "./Logger.js";
+import { getCurrentNonce } from "./txHandler.js";
+import { sleep } from "./utils.js";
+import ipc from "node-ipc";
 export class SudoDB {
   private static instance: SudoDB;
 
@@ -38,7 +38,7 @@ export class SudoDB {
 }
 async function getNonceFromIPC(): Promise<number> {
   return new Promise(function (resolve) {
-    const ipc = require("node-ipc").default;
+    // const ipc = require("node-ipc").default;
     ipc.config.id = Guid.create().toString();
     ipc.config.retry = 1500;
     ipc.config.silent = false;

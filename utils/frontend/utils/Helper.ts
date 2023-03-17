@@ -1,15 +1,15 @@
 import { Key, logging, WebDriver } from "selenium-webdriver";
-import { sleep } from "../../utils";
-import { Mangata } from "../pages/Mangata";
-import { Polkadot } from "../pages/Polkadot";
+import { sleep } from "../../utils.js";
+import { Mangata } from "../pages/Mangata.js";
+import { Polkadot } from "../pages/Polkadot.js";
 import fs from "fs";
-import { testLog } from "../../Logger";
+import { testLog } from "../../Logger.js";
 import { BN } from "@polkadot/util";
 
-const { By, until } = require("selenium-webdriver");
-
+import { By, until } from "selenium-webdriver";
+import "chromedriver";
 const timeOut = 60000;
-require("chromedriver");
+
 const outputPath = `reports/artifacts`;
 export async function waitForElement(
   driver: WebDriver,

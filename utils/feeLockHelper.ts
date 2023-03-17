@@ -1,10 +1,10 @@
 import { BN } from "@mangata-finance/sdk";
-import { getApi } from "./api";
-import { MGA_ASSET_ID } from "./Constants";
-import { waitSudoOperationSuccess } from "./eventListeners";
-import { updateFeeLockMetadata } from "./tx";
-import { User } from "./User";
-import { stringToBN } from "./utils";
+import { getApi } from "./api.js";
+import { MGA_ASSET_ID } from "./Constants.js";
+import { waitSudoOperationSuccess } from "./eventListeners.js";
+import { updateFeeLockMetadata } from "./tx.js";
+import { User } from "./User.js";
+import { stringToBN } from "./utils.js";
 
 export async function clearMgaFromWhitelisted(
   thresholdValueExpected: BN,

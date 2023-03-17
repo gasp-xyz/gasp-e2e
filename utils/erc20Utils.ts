@@ -1,5 +1,5 @@
 import { BN } from "@polkadot/util";
-import { ERC20ABI } from "../utils/abi/ERC20ABI";
+import { ERC20ABI } from "../utils/abi/ERC20ABI.js";
 
 //CCC
 export const mUSDCAdrress = "0x7abd0fe503c9fcb6b1344f5284c42e6ae48b76b7";

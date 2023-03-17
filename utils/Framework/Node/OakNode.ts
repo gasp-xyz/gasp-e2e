@@ -5,9 +5,9 @@ import {
   ChainSpecs,
   TRANSFER_INSTRUCTIONS,
   WEIGHT_IN_SECONDS,
-} from "../../ChainSpecs";
+} from "../../ChainSpecs.js";
 import { BN } from "@polkadot/util";
-import { User } from "../../User";
+import { User } from "../../User.js";
 import { RuntimeDispatchInfo } from "@polkadot/types/interfaces";
 import { Option } from "@polkadot/types";
 

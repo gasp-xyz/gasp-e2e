@@ -1,4 +1,4 @@
-import { api, Extrinsic } from "./setup";
+import { api, Extrinsic } from "./setup.js";
 
 export class Maintenance {
   static switchMaintenanceModeOff(): Extrinsic {

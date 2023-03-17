@@ -1,12 +1,12 @@
 import { Keyring } from "@polkadot/api";
 
-import { Node } from "../Node/Node";
+import { Node } from "../Node/Node.js";
 
-import { GovernanceUser } from "./GovernanceUser";
-import { SudoUser } from "./SudoUser";
-import { MetamaskUser } from "./MetamaskUser";
-import { RegularUser } from "./RegularUser";
-import { BaseUser } from "./BaseUser";
+import { GovernanceUser } from "./GovernanceUser.js";
+import { SudoUser } from "./SudoUser.js";
+import { MetamaskUser } from "./MetamaskUser.js";
+import { RegularUser } from "./RegularUser.js";
+import { BaseUser } from "./BaseUser.js";
 
 export enum Users {
   GovernanceUser,

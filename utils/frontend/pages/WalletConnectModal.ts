@@ -1,5 +1,5 @@
 import { By, WebDriver } from "selenium-webdriver";
-import { areDisplayed, clickElement } from "../utils/Helper";
+import { areDisplayed, clickElement } from "../utils/Helper.js";
 
 //SELECTORS
 const MODAL_ROOT = "//*[@id='react-portal-modal-container']";

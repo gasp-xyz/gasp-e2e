@@ -5,8 +5,8 @@ import {
   FIVE_MIN,
   MGA_ASSET_NAME,
   USDC_ASSET_NAME,
-} from "../../Constants";
-import { getEnvironmentRequiredVars, sleep } from "../../utils";
+} from "../../Constants.js";
+import { getEnvironmentRequiredVars, sleep } from "../../utils.js";
 import {
   areDisplayed,
   buildDataTestIdXpath,
@@ -14,8 +14,8 @@ import {
   isDisplayed,
   waitForElement,
   waitForElementVisible,
-} from "../utils/Helper";
-import { Sidebar } from "./Sidebar";
+} from "../utils/Helper.js";
+import { Sidebar } from "./Sidebar.js";
 
 //xpaths
 const MSG_RECEIVE_TOKENS = `//div[text()='You will receive test tokens']`;

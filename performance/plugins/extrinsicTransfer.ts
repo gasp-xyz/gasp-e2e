@@ -1,11 +1,11 @@
 /* eslint-disable no-console */
 import { BN } from "@polkadot/util";
 import { Mangata } from "@mangata-finance/sdk";
-import { TestParams } from "../testParams";
+import { TestParams } from "../testParams.js";
 import { KeyringPair } from "@polkadot/keyring/types";
-import { MGA_ASSET_ID } from "../../utils/Constants";
-import { runTransactions } from "./testRunner";
-import { performanceTestItem } from "./performanceTestItem";
+import { MGA_ASSET_ID } from "../../utils/Constants.js";
+import { runTransactions } from "./testRunner.js";
+import { performanceTestItem } from "./performanceTestItem.js";
 
 export class ExtrinsicTransfer extends performanceTestItem {
   async arrange(testParams: TestParams): Promise<boolean> {

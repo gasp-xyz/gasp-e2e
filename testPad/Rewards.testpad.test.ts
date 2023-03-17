@@ -12,7 +12,7 @@ import { WsProvider } from "@polkadot/rpc-provider/ws";
 import { options } from "@mangata-finance/types";
 import { testLog } from "../utils/Logger";
 
-require("dotenv").config();
+import "dotenv";
 
 jest.spyOn(console, "log").mockImplementation(jest.fn());
 const { sudo: sudoUserName, chainUri } = getEnvironmentRequiredVars();

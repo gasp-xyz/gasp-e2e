@@ -1,5 +1,5 @@
 import { By, WebDriver } from "selenium-webdriver";
-import { waitForNBlocks } from "../../utils";
+import { waitForNBlocks } from "../../utils.js";
 
 import {
   buildDataTestIdXpath,
@@ -9,7 +9,7 @@ import {
   pressEscape,
   waitForElement,
   writeText,
-} from "../utils/Helper";
+} from "../utils/Helper.js";
 
 //SELECTORS
 const TAB_POOL_TEST_ID = "trading-poolTab";

@@ -1,7 +1,7 @@
 import { env } from "process";
 import "setimmediate";
 import winston, { Logger, format } from "winston";
-import { getEnvironmentRequiredVars } from "./utils";
+import { getEnvironmentRequiredVars } from "./utils.js";
 import "setimmediate";
 const { combine, timestamp, printf } = format;
 

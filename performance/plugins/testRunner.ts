@@ -2,15 +2,15 @@
 /* eslint-disable no-loop-func */
 import { BN } from "@polkadot/util";
 import { Mangata } from "@mangata-finance/sdk";
-import { testLog } from "../../utils/Logger";
-import { TestParams } from "../testParams";
+import { testLog } from "../../utils/Logger.js";
+import { TestParams } from "../testParams.js";
 import { KeyringPair } from "@polkadot/keyring/types";
 import { SubmittableExtrinsic } from "@polkadot/api/types";
 import { SubmittableResult } from "@polkadot/api";
 
 import { blake2AsHex } from "@polkadot/util-crypto";
 import asyncPool from "tiny-async-pool";
-import { TestsCases } from "../testFactory";
+import { TestsCases } from "../testFactory.js";
 
 export async function runTransactions(
   mgaNodeandUsers: Map<

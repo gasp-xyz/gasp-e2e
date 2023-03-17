@@ -1,12 +1,12 @@
 import { WebDriver } from "selenium-webdriver";
-import { getEnvironmentRequiredVars } from "../../utils";
+import { getEnvironmentRequiredVars } from "../../utils.js";
 import {
   clickElement,
   doActionInDifferentWindow,
   waitForElement,
   writeText,
-} from "../utils/Helper";
-const { By } = require("selenium-webdriver");
+} from "../utils/Helper.js";
+import { By } from "selenium-webdriver";
 
 //xpaths
 const XPATH_NEXT = "//*[text()='Next']";

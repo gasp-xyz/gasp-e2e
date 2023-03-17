@@ -16,7 +16,7 @@ import { setupApi, setupUsers } from "../utils/setup";
 import { Assets } from "../utils/Assets";
 import { setAssetInfo } from "../utils/txHandler";
 
-require("dotenv").config();
+import "dotenv";
 
 jest.spyOn(console, "log").mockImplementation(jest.fn());
 

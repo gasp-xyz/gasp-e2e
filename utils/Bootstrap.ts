@@ -1,15 +1,15 @@
-import { getApi } from "./api";
-import { ExtrinsicResult } from "./eventListeners";
-import { User } from "./User";
-import { getEventResultFromMangataTx, sudoIssueAsset } from "./txHandler";
-import { getCurrentNonce } from "./tx";
-import { getBlockNumber } from "./utils";
+import { getApi } from "./api.js";
+import { ExtrinsicResult } from "./eventListeners.js";
+import { User } from "./User.js";
+import { getEventResultFromMangataTx, sudoIssueAsset } from "./txHandler.js";
+import { getCurrentNonce } from "./tx.js";
+import { getBlockNumber } from "./utils.js";
 import { BN, toBN, signTx } from "@mangata-finance/sdk";
-import { Assets } from "./Assets";
-import { setupApi } from "./setup";
-import { Sudo } from "./sudo";
-import { testLog } from "./Logger";
-import { waitNewBlock } from "./eventListeners";
+import { Assets } from "./Assets.js";
+import { setupApi } from "./setup.js";
+import { Sudo } from "./sudo.js";
+import { testLog } from "./Logger.js";
+import { waitNewBlock } from "./eventListeners.js";
 
 export async function waitForBootstrapStatus(
   bootstrapStatus: string,

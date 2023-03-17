@@ -1,5 +1,5 @@
 import { By, WebDriver } from "selenium-webdriver";
-import { waitForNBlocks } from "../../utils";
+import { waitForNBlocks } from "../../utils.js";
 import {
   buildDataTestIdXpath,
   clickElement,
@@ -7,7 +7,7 @@ import {
   waitForElement,
   waitForElementToDissapear,
   waitForElementVisible,
-} from "../utils/Helper";
+} from "../utils/Helper.js";
 
 //SELECTORS
 const MODAL_CONFIRM_TRADE = "txProgressModal-step0-cardContent";

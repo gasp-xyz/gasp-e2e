@@ -1,13 +1,13 @@
 import { WebDriver } from "selenium-webdriver";
-import { getEnvironmentRequiredVars, sleep } from "../../utils";
+import { getEnvironmentRequiredVars, sleep } from "../../utils.js";
 import {
   buildDataTestIdXpath,
   clickElement,
   doActionInDifferentWindow,
   getAttribute,
   waitForElement,
-} from "../utils/Helper";
-const { By } = require("selenium-webdriver");
+} from "../utils/Helper.js";
+import { By } from "selenium-webdriver";
 
 //xpaths
 const XPATH_PASSWORD = "//input[@id='password']";

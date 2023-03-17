@@ -4,8 +4,8 @@ import {
   clickElement,
   selectAssetFromModalList,
   writeText,
-} from "../utils/Helper";
-import { MetaMask } from "./MetaMask";
+} from "../utils/Helper.js";
+import { MetaMask } from "./MetaMask.js";
 
 //SELECTORS
 const SELECT_TOKEN = "depositModal-step0-assetInput";

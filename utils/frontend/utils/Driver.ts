@@ -1,8 +1,8 @@
 import { WebDriver, Capabilities, logging } from "selenium-webdriver";
 
-require("chromedriver");
-const { Builder } = require("selenium-webdriver");
-const chrome = require("selenium-webdriver/chrome");
+import "chromedriver";
+import { Builder } from "selenium-webdriver";
+import chrome from "selenium-webdriver/chrome";
 const path = "utils/frontend/utils/extensions";
 const polkadotExtensionPath = `${path}/polkadot_v0.38.3.crx`;
 const metamaskExtensionPath = `${path}/metamask_9.8.2.0.crx`;

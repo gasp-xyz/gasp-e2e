@@ -1,13 +1,13 @@
 import { SubmittableExtrinsic } from "@polkadot/api/types";
-import { getApi } from "./api";
+import { getApi } from "./api.js";
 import { GenericEvent } from "@polkadot/types";
 import { KeyringPair } from "@polkadot/keyring/types";
 import { BN, hexToU8a } from "@polkadot/util";
-import { SudoDB } from "./SudoDB";
+import { SudoDB } from "./SudoDB.js";
 import { env } from "process";
-import { EventResult, ExtrinsicResult } from "./eventListeners";
-import { testLog } from "./Logger";
-import { User } from "./User";
+import { EventResult, ExtrinsicResult } from "./eventListeners.js";
+import { testLog } from "./Logger.js";
+import { User } from "./User.js";
 import { MangataGenericEvent, signTx } from "@mangata-finance/sdk";
 import { AccountId32 } from "@polkadot/types/interfaces";
 

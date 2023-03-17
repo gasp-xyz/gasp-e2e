@@ -1,6 +1,6 @@
 import dotenv from "dotenv";
 
-import { setupContext, SetupOption } from "./XcmHelper";
+import { setupContext, SetupOption } from "./XcmHelper.js";
 
 dotenv.config();
 

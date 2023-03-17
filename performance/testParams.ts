@@ -1,4 +1,4 @@
-import { Commands, TestsCases } from "./testFactory";
+import { Commands, TestsCases } from "./testFactory.js";
 
 export const logFile: string =
   new Date().toJSON().slice(0, 10) + "_" + new Date().toLocaleTimeString();

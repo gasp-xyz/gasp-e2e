@@ -1,5 +1,5 @@
 import { BN } from "@polkadot/util";
-import { EventResult, ExtrinsicResult } from "./eventListeners";
+import { EventResult, ExtrinsicResult } from "./eventListeners.js";
 import {
   getAssetSupply,
   getBalanceOfPool,
@@ -7,14 +7,14 @@ import {
   getTreasury,
   getTreasuryBurn,
 } from "./tx";
-import { AssetWallet, User } from "./User";
+import { AssetWallet, User } from "./User.js";
 import {
   calculateCompleteFees,
   calculateFees,
   calculateLiqAssetAmount,
   fromBNToUnitString,
   fromStringToUnitString,
-} from "./utils";
+} from "./utils.js";
 
 export function validateTransactionSucessful(
   eventResult: EventResult,

@@ -1,8 +1,8 @@
 import { ApiPromise } from "@polkadot/api";
 import Keyring from "@polkadot/keyring";
-import { signSendAndWaitToFinishTx } from "../../txHandler";
-import { BaseUser } from "./BaseUser";
-import { Node } from "../Node/Node";
+import { signSendAndWaitToFinishTx } from "../../txHandler.js";
+import { BaseUser } from "./BaseUser.js";
+import { Node } from "../Node/Node.js";
 import { BN } from "@polkadot/util";
 
 export class GovernanceUser extends BaseUser {

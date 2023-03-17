@@ -1,11 +1,11 @@
 // import { ExtrinsicBatch } from "./plugins/extrinsicBatch";
 // import { ExtrinsicBurn } from "./plugins/extrinsicBurn";
 // import { ExtrinsicMint } from "./plugins/extrinsicMint";
-import { ExtrinsicSwap } from "./plugins/extrinsicSwap";
-import { ExtrinsicTransfer } from "./plugins/extrinsicTransfer";
+import { ExtrinsicSwap } from "./plugins/extrinsicSwap.js";
+import { ExtrinsicTransfer } from "./plugins/extrinsicTransfer.js";
 // import { ExtrinsicTransferAll } from "./plugins/extrinsicTransferAll";
 // import { Ping } from "./plugins/ping";
-import { TestItem } from "./plugins/testItem";
+import { TestItem } from "./plugins/testItem.js";
 
 export enum Commands {
   ExtrinsicTransfer,

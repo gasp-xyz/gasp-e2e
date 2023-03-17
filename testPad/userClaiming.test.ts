@@ -4,13 +4,12 @@ import { api, getApi, initApi } from "../utils/api";
 import { User, AssetWallet } from "../utils/User";
 import { getEnvironmentRequiredVars } from "../utils/utils";
 import fs from "fs";
-import { signTx } from "@mangata-finance/sdk";
+import { Mangata, signTx } from "@mangata-finance/sdk";
 import { ApiPromise } from "@polkadot/api";
 import { WsProvider } from "@polkadot/rpc-provider/ws";
 import { options } from "@mangata-finance/types";
-import { setUserIdentity } from "../utils/tx";
 
-require("dotenv").config();
+import "dotenv";
 
 jest.spyOn(console, "log").mockImplementation(jest.fn());
 const { chainUri } = getEnvironmentRequiredVars();
@@ -95,6 +94,11 @@ describe("staking - testpad", () => {
   test.only("fooSususu", async () => {
     keyring = new Keyring({ type: "sr25519" });
     testUser1 = new User(keyring, "//Alice");
-    await setUserIdentity(testUser1, "Cookies");
+    //await setUserIdentity(testUser1, "Cookies");
+    const mga = Mangata.getInstance([
+      "wss://prod-kusama-collator-01.mangatafinance.cloud",
+    ]);
+    const pools = mga.getPools();
+    (await pools).forEach((pool) => JSON.stringify(pool));
   });
 });

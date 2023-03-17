@@ -6,8 +6,8 @@ import {
   ChainSpec,
   ChainSpecs,
   TRANSFER_INSTRUCTIONS,
-} from "../../ChainSpecs";
-import { User } from "../../User";
+} from "../../ChainSpecs.js";
+import { User } from "../../User.js";
 
 export class XcmNode {
   api: ApiPromise;

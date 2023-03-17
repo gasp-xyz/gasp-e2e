@@ -1,16 +1,16 @@
 /* eslint-disable no-console */
 import { BN } from "@polkadot/util";
 import { Mangata } from "@mangata-finance/sdk";
-import { TestParams } from "../testParams";
+import { TestParams } from "../testParams.js";
 import { KeyringPair } from "@polkadot/keyring/types";
-import { runTransactions } from "./testRunner";
-import { performanceTestItem } from "./performanceTestItem";
-import { Assets } from "../../utils/Assets";
-import { initApi } from "../../utils/api";
-import { Node } from "../../utils/Framework/Node/Node";
-import { UserFactory, Users } from "../../utils/Framework/User/UserFactory";
+import { runTransactions } from "./testRunner.js";
+import { performanceTestItem } from "./performanceTestItem.js";
+import { Assets } from "../../utils/Assets.js";
+import { initApi } from "../../utils/api.js";
+import { Node } from "../../utils/Framework/Node/Node.js";
+import { UserFactory, Users } from "../../utils/Framework/User/UserFactory.js";
 import { Keyring } from "@polkadot/api";
-import { MAX_BALANCE } from "../../utils/Constants";
+import { MAX_BALANCE } from "../../utils/Constants.js";
 
 let tokens: number[] = [];
 export class ExtrinsicSwap extends performanceTestItem {

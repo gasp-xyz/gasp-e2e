@@ -11,7 +11,7 @@ import { api, getApi, initApi } from "../utils/api";
 import { signSendAndWaitToFinishTx } from "../utils/txHandler";
 import { signTx } from "@mangata-finance/sdk";
 import { MGA_ASSET_ID } from "../utils/Constants";
-require("dotenv").config();
+import "dotenv";
 
 process.env.NODE_ENV = "test";
 const sudoUserName = "//Maciatko";

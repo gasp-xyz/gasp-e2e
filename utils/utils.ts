@@ -1,12 +1,12 @@
 import { formatBalance } from "@polkadot/util/format";
 import { BN } from "@polkadot/util";
-import { getApi, getMangataInstance, mangata } from "./api";
+import { getApi, getMangataInstance, mangata } from "./api.js";
 import { hexToBn, isHex } from "@polkadot/util";
-import { Assets } from "./Assets";
-import { User } from "./User";
-import { getAccountJSON } from "./frontend/utils/Helper";
-import { waitNewBlock } from "./eventListeners";
-import { testLog } from "./Logger";
+import { Assets } from "./Assets.js";
+import { User } from "./User.js";
+import { getAccountJSON } from "./frontend/utils/Helper.js";
+import { waitNewBlock } from "./eventListeners.js";
+import { testLog } from "./Logger.js";
 import { AnyNumber } from "@polkadot/types/types";
 import { Keyring, ApiPromise } from "@polkadot/api";
 import { KeyringPair } from "@polkadot/keyring/types";

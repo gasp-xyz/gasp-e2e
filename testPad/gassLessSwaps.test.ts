@@ -15,7 +15,7 @@ import { Xyk } from "../utils/xyk";
 import { testLog } from "../utils/Logger";
 import { buyAsset } from '../utils/tx';
 
-require("dotenv").config();
+import "dotenv";
 
 jest.spyOn(console, "log").mockImplementation(jest.fn());
 

@@ -1,8 +1,8 @@
-import { api, Extrinsic, sudo } from "./setup";
-import { User } from "./User";
+import { api, Extrinsic, sudo } from "./setup.js";
+import { User } from "./User.js";
 import { MangataGenericEvent } from "@mangata-finance/sdk";
-import { SudoDB } from "./SudoDB";
-import { signSendFinalized } from "./sign";
+import { SudoDB } from "./SudoDB.js";
+import { signSendFinalized } from "./sign.js";
 
 export class Sudo {
   static sudo(tx: Extrinsic): Extrinsic {

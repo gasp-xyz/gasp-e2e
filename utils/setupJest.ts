@@ -1,6 +1,6 @@
 /* eslint-disable no-console */
 import { BN } from "@polkadot/util";
-import { removeSudoDb } from "./lock";
+import { removeSudoDb } from "./lock.js";
 
 beforeAll(async () => {
   //  if (

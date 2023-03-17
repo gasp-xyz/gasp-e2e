@@ -1,8 +1,7 @@
 /* eslint-disable no-console */
-import { setupGasLess } from "./setup";
+import { setupGasLess } from "./setup.js";
 import dotenv from 'dotenv'
-
-dotenv.config()
+dotenv.config();
 
 module.exports = async function (globalConfig, projectConfig) {
   if (process.env.SKIP_API_INIT) return

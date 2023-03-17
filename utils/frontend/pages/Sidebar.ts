@@ -1,16 +1,16 @@
-import { WithdrawModal } from "./WithdrawModal";
+import { WithdrawModal } from "./WithdrawModal.js";
 import { By, until, WebDriver } from "selenium-webdriver";
-import { FIVE_MIN } from "../../Constants";
-import { sleep } from "../../utils";
+import { FIVE_MIN } from "../../Constants.js";
+import { sleep } from "../../utils.js";
 import {
   buildDataTestIdXpath,
   clickElement,
   getText,
   waitForElement,
   waitForElementToDissapear,
-} from "../utils/Helper";
-import { DepositModal } from "./DepositModal";
-import { testLog } from "../../Logger";
+} from "../utils/Helper.js";
+import { DepositModal } from "./DepositModal.js";
+import { testLog } from "../../Logger.js";
 
 const DIV_WALLET_NOT_FOUND = "connect-noWalletConnected";
 const DIV_WALLET_CONNECTED = "connect-accountName";

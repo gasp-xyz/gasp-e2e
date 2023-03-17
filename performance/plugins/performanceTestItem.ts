@@ -2,27 +2,32 @@
 import { Keyring } from "@polkadot/api";
 import { BN } from "@polkadot/util";
 import { Mangata, MangataGenericEvent } from "@mangata-finance/sdk";
-import { testLog } from "../../utils/Logger";
-import { TestParams } from "../testParams";
-import { TestItem } from "./testItem";
+import { testLog } from "../../utils/Logger.js";
+import { TestParams } from "../testParams.js";
+import { TestItem } from "./testItem.js";
 import { KeyringPair } from "@polkadot/keyring/types";
-import { UserFactory, Users } from "../../utils/Framework/User/UserFactory";
-import { Node } from "../../utils/Framework/Node/Node";
-import { MGA_ASSET_ID } from "../../utils/Constants";
-import { createPoolIfMissing, mintAsset, transferAsset } from "../../utils/tx";
-import { initApi } from "../../utils/api";
+import { UserFactory, Users } from "../../utils/Framework/User/UserFactory.js";
+import { Node } from "../../utils/Framework/Node/Node.js";
+import { MGA_ASSET_ID } from "../../utils/Constants.js";
+import {
+  createPoolIfMissing,
+  mintAsset,
+  transferAsset,
+} from "../../utils/tx.js";
+import { initApi } from "../../utils/api.js";
 import {
   generateHtmlReport,
   writeToFile,
   trackPendingExtrinsics,
   trackExecutedExtrinsics,
   trackEnqueuedExtrinsics,
-} from "./testReporter";
+} from "./testReporter.js";
 import { Guid } from "guid-typescript";
-import { User } from "../../utils/User";
-import { getEnvironmentRequiredVars } from "../../utils/utils";
-import { SudoUser } from "../../utils/Framework/User/SudoUser";
+import { User } from "../../utils/User.js";
+import { getEnvironmentRequiredVars } from "../../utils/utils.js";
+import { SudoUser } from "../../utils/Framework/User/SudoUser.js";
 import { quantile } from "simple-statistics";
+import ipc from "node-ipc";
 
 function seedFromNum(seed: number): string {
   const guid = Guid.create().toString();
@@ -63,8 +68,7 @@ export class performanceTestItem implements TestItem {
     const nonce = await api.rpc.system.accountNextIndex(
       sudoKeyringPair.address
     );
-
-    const ipc = require("node-ipc").default;
+    //const ipc = require("node-ipc").default;
     ipc.config.id = "nonceManager";
     ipc.config.retry = 1500;
     ipc.config.silent = false;

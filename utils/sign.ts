@@ -4,11 +4,11 @@ import { ApiPromise } from "@polkadot/api";
 import { Codec } from "@polkadot/types/types";
 import { BN } from "@polkadot/util";
 import _ from "lodash";
-import { ExtrinsicResult, logEvent } from "./eventListeners";
-import { testLog } from "./Logger";
-import { api, Extrinsic } from "./setup";
-import { getEventResultFromMangataTx } from "./txHandler";
-import { User } from "./User";
+import { ExtrinsicResult, logEvent } from "./eventListeners.js";
+import { testLog } from "./Logger.js";
+import { api, Extrinsic } from "./setup.js";
+import { getEventResultFromMangataTx } from "./txHandler.js";
+import { User } from "./User.js";
 
 export const signSendFinalized = async (
   tx: Extrinsic,

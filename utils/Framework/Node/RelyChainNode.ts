@@ -1,6 +1,6 @@
 import { ApiPromise, WsProvider } from "@polkadot/api";
-import { getEnvironmentRequiredVars } from "../../utils";
-import { Node } from "./Node";
+import { getEnvironmentRequiredVars } from "../../utils.js";
+import { Node } from "./Node.js";
 
 export class RelyChainNode extends Node {
   async connect(): Promise<void> {

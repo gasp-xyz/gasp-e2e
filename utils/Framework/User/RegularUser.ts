@@ -1,3 +1,3 @@
-import { BaseUser } from "./BaseUser";
+import { BaseUser } from "./BaseUser.js";
 
 export class RegularUser extends BaseUser {}

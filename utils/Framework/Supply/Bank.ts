@@ -1,9 +1,9 @@
 import { BN } from "@polkadot/util";
-import { ExtrinsicResult } from "../../eventListeners";
-import { SudoUser } from "../../Framework/User/SudoUser";
-import { mintAsset } from "../../tx";
-import { getEventResultFromMangataTx } from "../../txHandler";
-import { Token } from "./Token";
+import { ExtrinsicResult } from "../../eventListeners.js";
+import { SudoUser } from "../../Framework/User/SudoUser.js";
+import { mintAsset } from "../../tx.js";
+import { getEventResultFromMangataTx } from "../../txHandler.js";
+import { Token } from "./Token.js";
 
 export class Bank {
   sudoUser: SudoUser;

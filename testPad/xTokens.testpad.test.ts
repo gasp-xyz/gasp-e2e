@@ -10,7 +10,7 @@ import { ApiPromise, WsProvider } from "@polkadot/api";
 import { mnemonicToMiniSecret } from "@polkadot/util-crypto";
 import { u8aToHex } from "@polkadot/util";
 
-require("dotenv").config();
+import "dotenv";
 
 jest.spyOn(console, "log").mockImplementation(jest.fn());
 

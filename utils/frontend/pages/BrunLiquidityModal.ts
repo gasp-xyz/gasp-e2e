@@ -4,8 +4,8 @@ import {
   clickElement,
   getText,
   writeText,
-} from "../utils/Helper";
-import { Polkadot } from "./Polkadot";
+} from "../utils/Helper.js";
+import { Polkadot } from "./Polkadot.js";
 
 //SELECTORS
 const INPUT_PERCENTAGE = "removeLiquidityModal-amountCard-amountInput";

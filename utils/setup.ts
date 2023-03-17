@@ -1,15 +1,15 @@
 import { ApiPromise, Keyring } from "@polkadot/api";
-import { getEnvironmentRequiredVars } from "./utils";
-import { User } from "./User";
+import { getEnvironmentRequiredVars } from "./utils.js";
+import { User } from "./User.js";
 import "@mangata-finance/types";
 import { SubmittableExtrinsic } from "@polkadot/api/types";
-import { getApi, initApi } from "./api";
-import { Sudo } from "./sudo";
-import { Assets } from "./Assets";
+import { getApi, initApi } from "./api.js";
+import { Sudo } from "./sudo.js";
+import { Assets } from "./Assets.js";
 import { BN } from "@mangata-finance/sdk";
-import { Xyk } from "./xyk";
+import { Xyk } from "./xyk.js";
 import { signTx } from "@mangata-finance/sdk";
-import { SudoDB } from "./SudoDB";
+import { SudoDB } from "./SudoDB.js";
 
 // API
 export let api: ApiPromise;

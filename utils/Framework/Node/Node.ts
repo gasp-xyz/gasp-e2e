@@ -1,9 +1,9 @@
 import * as uuid from "uuid";
 import { ApiPromise } from "@polkadot/api";
-import { initApi } from "../../api";
-import { testLog } from "../../Logger";
+import { initApi } from "../../api.js";
+import { testLog } from "../../Logger.js";
 import { BN } from "@polkadot/util";
-import { GovernanceUser } from "../User/GovernanceUser";
+import { GovernanceUser } from "../User/GovernanceUser.js";
 
 export class Node {
   name: string;

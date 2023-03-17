@@ -1,16 +1,16 @@
 import { BN } from "@polkadot/util";
-import { BaseUser } from "./BaseUser";
-import { ExtrinsicResult } from "../../eventListeners";
-import { getEventResultFromMangataTx } from "../../txHandler";
+import { BaseUser } from "./BaseUser.js";
+import { ExtrinsicResult } from "../../eventListeners.js";
+import { getEventResultFromMangataTx } from "../../txHandler.js";
 import { Keyring } from "@polkadot/api";
-import { mintAsset } from "../../tx";
-import { Node } from "../Node/Node";
-import { Token } from "../Supply/Token";
-import { getEnvironmentRequiredVars } from "../../utils";
-import { User } from "../../User";
+import { mintAsset } from "../../tx.js";
+import { Node } from "../Node/Node.js";
+import { Token } from "../Supply/Token.js";
+import { getEnvironmentRequiredVars } from "../../utils.js";
+import { User } from "../../User.js";
 import { MangataGenericEvent, signTx } from "@mangata-finance/sdk";
-import { SudoDB } from "../../SudoDB";
-import { testLog } from "../../Logger";
+import { SudoDB } from "../../SudoDB.js";
+import { testLog } from "../../Logger.js";
 import { env } from "process";
 
 export class SudoUser extends BaseUser {

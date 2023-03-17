@@ -4,17 +4,17 @@ import { AccountInfo } from "@polkadot/types/interfaces";
 import { BN } from "@polkadot/util";
 import { assert } from "console";
 import _ from "lodash";
-import { MGA_ASSET_ID } from "./Constants";
-import { ExtrinsicResult } from "./eventListeners";
-import { api, Extrinsic, setupApi, setupUsers } from "./setup";
-import { Sudo } from "./sudo";
-import { getAssetSupply, getNextAssetId } from "./tx";
+import { MGA_ASSET_ID } from "./Constants.js";
+import { ExtrinsicResult } from "./eventListeners.js";
+import { api, Extrinsic, setupApi, setupUsers } from "./setup.js";
+import { Sudo } from "./sudo.js";
+import { getAssetSupply, getNextAssetId } from "./tx.js";
 import {
   getEventResultFromMangataTx,
   setAssetInfo,
   sudoIssueAsset,
-} from "./txHandler";
-import { User } from "./User";
+} from "./txHandler.js";
+import { User } from "./User.js";
 
 export class Assets {
   static MG_UNIT: BN = BN_TEN.pow(new BN(18));

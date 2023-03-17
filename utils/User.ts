@@ -2,8 +2,8 @@ import { Keyring } from "@polkadot/api";
 import { KeyringPair } from "@polkadot/keyring/types";
 import { BN } from "@polkadot/util";
 import { v4 as uuid } from "uuid";
-import { ExtrinsicResult, waitNewBlock } from "./eventListeners";
-import { testLog } from "./Logger";
+import { ExtrinsicResult, waitNewBlock } from "./eventListeners.js";
+import { testLog } from "./Logger.js";
 import {
   buyAsset,
   createPool,
@@ -20,14 +20,14 @@ import {
   transferAll,
   registerAsset,
   updateAsset,
-} from "./tx";
-import { getEventResultFromMangataTx } from "./txHandler";
+} from "./tx.js";
+import { getEventResultFromMangataTx } from "./txHandler.js";
 import {
   MAX_BALANCE,
   MGA_ASSET_ID,
   KSM_ASSET_ID,
   TUR_ASSET_ID,
-} from "./Constants";
+} from "./Constants.js";
 import { strict as assert } from "assert";
 import { TokenBalance, toBN } from "@mangata-finance/sdk";
 

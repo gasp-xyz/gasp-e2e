@@ -1,5 +1,5 @@
 import { ApiPromise, WsProvider } from "@polkadot/api";
-import { Node } from "./Node";
+import { Node } from "./Node.js";
 
 export class AcalaNode extends Node {
   async connect(): Promise<void> {

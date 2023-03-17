@@ -1,14 +1,14 @@
 import { BN } from "@polkadot/util";
-import { getAllAcountEntries } from "../../tx";
-import { User } from "../../User";
+import { getAllAcountEntries } from "../../tx.js";
+import { User } from "../../User.js";
 import { hexToBn } from "@polkadot/util";
-import { Node } from "../Node/Node";
+import { Node } from "../Node/Node.js";
 import Keyring from "@polkadot/keyring";
-import { SudoDB } from "../../SudoDB";
+import { SudoDB } from "../../SudoDB.js";
 import { MangataGenericEvent, signTx } from "@mangata-finance/sdk";
 import { env } from "process";
-import { testLog } from "../../Logger";
-import { SudoUser } from "./SudoUser";
+import { testLog } from "../../Logger.js";
+import { SudoUser } from "./SudoUser.js";
 
 export class BaseUser extends User {
   node: Node;

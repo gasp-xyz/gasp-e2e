@@ -7,7 +7,7 @@ import {
   pressEscape,
   waitForElementEnabled,
   writeText,
-} from "../utils/Helper";
+} from "../utils/Helper.js";
 
 //SELECTORS
 const TAB_SWAP_TEST_ID = "trading-swapTab";

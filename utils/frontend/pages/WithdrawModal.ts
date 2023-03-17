@@ -5,8 +5,8 @@ import {
   getText,
   selectAssetFromModalList,
   writeText,
-} from "../utils/Helper";
-import { Polkadot } from "./Polkadot";
+} from "../utils/Helper.js";
+import { Polkadot } from "./Polkadot.js";
 
 //SELECTORS
 const SELECT_TOKEN = "withdrawModal-step0-assetInput";

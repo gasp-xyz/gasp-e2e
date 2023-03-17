@@ -1,7 +1,7 @@
 import { BN_ZERO } from "@mangata-finance/sdk";
 import { BN } from "@polkadot/util";
-import { api, Extrinsic } from "./setup";
-import { Sudo } from "./sudo";
+import { api, Extrinsic } from "./setup.js";
+import { Sudo } from "./sudo.js";
 
 export class Xyk {
   static createPool(

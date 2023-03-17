@@ -6,7 +6,7 @@ import fs from "fs";
 import { getNextAssetId, setAssetInfo } from "../utils/txHandler";
 import { Assets } from "../utils/Assets";
 
-require("dotenv").config();
+import "dotenv";
 
 jest.spyOn(console, "log").mockImplementation(jest.fn());
 
