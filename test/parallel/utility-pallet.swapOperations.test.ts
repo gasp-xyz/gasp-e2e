@@ -56,60 +56,85 @@ describe("Utility - batched swaps are not allowed", () => {
       ),
       sellAsset: Xyk.sellAsset(tokenIds[0], tokenIds[1], BN_HUNDRED, BN_ONE),
       buyAsset: Xyk.buyAsset(tokenIds[0], tokenIds[1], BN_HUNDRED, BN_MILLION),
+      compoundRewards: Xyk.compoundRewards(tokenIds[0]),
+      provideLiquidity: Xyk.provideLiquidity(
+        tokenIds[0],
+        tokenIds[1],
+        BN_HUNDRED
+      ),
     };
   });
-  it.each(["multiswapSellAsset", "multiswapBuyAsset", "sellAsset", "buyAsset"])(
-    "%s operation is not allowed in batchAll",
-    async (operation) => {
-      const extrinsic = swapOperations[operation];
-      const events = await signTx(
-        api,
-        Sudo.batch(extrinsic),
-        users[0].keyRingPair
-      );
-      const event = getEventResultFromMangataTx(events, [
-        "system",
-        "ExtrinsicFailed",
-      ]);
-      expect(event.state).toEqual(ExtrinsicResult.ExtrinsicFailed);
-      expect(event.data).toContain("CallFiltered");
-    }
-  );
-  it.each(["multiswapSellAsset", "multiswapBuyAsset", "sellAsset", "buyAsset"])(
-    "%s operation is not allowed in batch",
-    async (operation) => {
-      const extrinsic = swapOperations[operation];
-      const events = await signTx(
-        api,
-        Sudo.singleBatch(extrinsic),
-        users[1].keyRingPair
-      );
-      const event = getEventResultFromMangataTx(events, [
-        "utility",
-        "BatchInterrupted",
-      ]);
-      expect(event.state).toEqual(ExtrinsicResult.ExtrinsicSuccess);
-      expect(JSON.stringify(event.data)).toContain(errorEnum);
-    }
-  );
-  it.each(["multiswapSellAsset", "multiswapBuyAsset", "sellAsset", "buyAsset"])(
-    "%s operation is not allowed in forceBatch",
-    async (operation) => {
-      const extrinsic = swapOperations[operation];
-      const events = await signTx(
-        api,
-        Sudo.forceBatch(extrinsic),
-        users[2].keyRingPair
-      );
-      const event = getEventResultFromMangataTx(events, [
-        "utility",
-        "ItemFailed",
-      ]);
-      expect(event.state).toEqual(ExtrinsicResult.ExtrinsicSuccess);
-      expect(JSON.stringify(event.data)).toContain(errorEnum);
-    }
-  );
-  it.each(["multiswapSellAsset", "multiswapBuyAsset", "sellAsset", "buyAsset"])(
+  it.each([
+    "multiswapSellAsset",
+    "multiswapBuyAsset",
+    "sellAsset",
+    "buyAsset",
+    "compoundRewards",
+    "provideLiquidity",
+  ])("%s operation is not allowed in batchAll", async (operation) => {
+    const extrinsic = swapOperations[operation];
+    const events = await signTx(
+      api,
+      Sudo.batch(extrinsic),
+      users[0].keyRingPair
+    );
+    const event = getEventResultFromMangataTx(events, [
+      "system",
+      "ExtrinsicFailed",
+    ]);
+    expect(event.state).toEqual(ExtrinsicResult.ExtrinsicFailed);
+    expect(event.data).toContain("CallFiltered");
+  });
+  it.each([
+    "multiswapSellAsset",
+    "multiswapBuyAsset",
+    "sellAsset",
+    "buyAsset",
+    "compoundRewards",
+    "provideLiquidity",
+  ])("%s operation is not allowed in batch", async (operation) => {
+    const extrinsic = swapOperations[operation];
+    const events = await signTx(
+      api,
+      Sudo.singleBatch(extrinsic),
+      users[1].keyRingPair
+    );
+    const event = getEventResultFromMangataTx(events, [
+      "utility",
+      "BatchInterrupted",
+    ]);
+    expect(event.state).toEqual(ExtrinsicResult.ExtrinsicSuccess);
+    expect(JSON.stringify(event.data)).toContain(errorEnum);
+  });
+  it.each([
+    "multiswapSellAsset",
+    "multiswapBuyAsset",
+    "sellAsset",
+    "buyAsset",
+    "compoundRewards",
+    "provideLiquidity",
+  ])("%s operation is not allowed in forceBatch", async (operation) => {
+    const extrinsic = swapOperations[operation];
+    const events = await signTx(
+      api,
+      Sudo.forceBatch(extrinsic),
+      users[2].keyRingPair
+    );
+    const event = getEventResultFromMangataTx(events, [
+      "utility",
+      "ItemFailed",
+    ]);
+    expect(event.state).toEqual(ExtrinsicResult.ExtrinsicSuccess);
+    expect(JSON.stringify(event.data)).toContain(errorEnum);
+  });
+  it.each([
+    "multiswapSellAsset",
+    "multiswapBuyAsset",
+    "sellAsset",
+    "buyAsset",
+    "compoundRewards",
+    "provideLiquidity",
+  ])(
     "%s operation is not allowed in singleBatch with some allowed",
     async (operation) => {
       const extrinsic = swapOperations[operation];
