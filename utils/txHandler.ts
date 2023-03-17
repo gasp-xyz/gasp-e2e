@@ -165,7 +165,7 @@ export async function getEventErrorfromSudo(sudoEvent: MangataGenericEvent[]) {
   );
 
   if (filteredEvent[1] !== undefined) {
-    testLog.getLog().warn("WARN: Recevied more than one errors");
+    testLog.getLog().warn("WARN: Received more than one errors");
     //throw new Error("  --- TX Mapping issue --- ");
   }
 

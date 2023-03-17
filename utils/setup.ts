@@ -105,6 +105,42 @@ export async function setup5PoolsChained(users: User[]) {
   );
   return { users, tokenIds };
 }
+export async function setupAPoolForUsers(users: User[]) {
+  const [testUser1, testUser2, testUser3, testUser4] = await setupUsers();
+  users = [testUser1, testUser2, testUser3, testUser4];
+  const keyring = new Keyring({ type: "sr25519" });
+  const sudo = new User(keyring, getEnvironmentRequiredVars().sudo);
+  const events = await Sudo.batchAsSudoFinalized(
+    Assets.issueToken(sudo),
+    Assets.issueToken(sudo)
+  );
+  const tokenIds: BN[] = events
+    .filter((item) => item.method === "Issued" && item.section === "tokens")
+    .map((x) => new BN(x.eventData[0].data.toString()));
+
+  const poolCreationExtrinsics: Extrinsic[] = [];
+  poolCreationExtrinsics.push(
+    Xyk.createPool(
+      tokenIds[0],
+      Assets.DEFAULT_AMOUNT.divn(2),
+      tokenIds[1],
+      Assets.DEFAULT_AMOUNT.divn(2)
+    )
+  );
+
+  await Sudo.batchAsSudoFinalized(
+    Assets.mintNative(testUser1),
+    Assets.mintNative(testUser2),
+    Assets.mintNative(testUser3),
+    Assets.mintNative(testUser4),
+    Assets.mintToken(tokenIds[0], testUser1),
+    Assets.mintToken(tokenIds[0], testUser2),
+    Assets.mintToken(tokenIds[0], testUser3),
+    Assets.mintToken(tokenIds[0], testUser4),
+    ...poolCreationExtrinsics
+  );
+  return { users, tokenIds };
+}
 export const setupGasLess = async (force = false) => {
   keyring = new Keyring({ type: "sr25519" });
   const { sudo: sudoUserName } = getEnvironmentRequiredVars();

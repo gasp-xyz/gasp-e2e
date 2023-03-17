@@ -1135,3 +1135,17 @@ export async function getRewardsInfo(
   };
   return toReturn;
 }
+
+export async function setUserIdentity(user: User, displayname: string) {
+  const api = await getApi();
+  await signTx(
+    api,
+    api.tx.identity.setIdentity({
+      additional: [],
+      display: {
+        Raw: displayname,
+      },
+    }),
+    user.keyRingPair
+  );
+}

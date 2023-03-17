@@ -90,3 +90,9 @@ export class Xyk {
     return api.tx.xyk.activateLiquidityV2(liquidityAssetId, amount, null);
   }
 }
+
+export class Tokens {
+  static transfer(dest: string, tokenId: BN, amount: BN): Extrinsic {
+    return api.tx.tokens.transfer(dest, tokenId, amount);
+  }
+}

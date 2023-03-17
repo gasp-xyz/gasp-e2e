@@ -13,6 +13,10 @@ export class Sudo {
     return api.tx.sudo.sudoAs(user.keyRingPair.address, tx);
   }
 
+  static sudoAsWithAddressString(address: string, tx: Extrinsic): Extrinsic {
+    return api.tx.sudo.sudoAs(address, tx);
+  }
+
   static batch(...txs: Extrinsic[]): Extrinsic {
     return api.tx.utility.batchAll(txs);
   }
