@@ -8,8 +8,8 @@ import { ApiContext } from "../../utils/Framework/XcmHelper";
 import XcmNetworks from "../../utils/Framework/XcmNetworks";
 import { alice, api, setupApi, setupUsers } from "../../utils/setup";
 import { signSendSuccess } from "../../utils/sign";
-import { getMangataApiUrlPort } from "../../utils/utils";
 import { XToken } from "../../utils/xToken";
+import { mangataChopstick } from "../../utils/api";
 
 /**
  * @group xcm
@@ -20,18 +20,14 @@ describe("XCM transfers", () => {
   let bifrostApi: XcmNode;
 
   beforeAll(async () => {
-    const port = getMangataApiUrlPort();
     bifrost = await XcmNetworks.biforst({
       buildBlockMode: BuildBlockMode.Instant,
     });
-    mangata = await XcmNetworks.mangata({
-      localPort: port,
-      buildBlockMode: BuildBlockMode.Instant,
-    });
+    await setupApi();
+    mangata = mangataChopstick!;
     await connectParachains([bifrost.chain, mangata.chain]);
 
     bifrostApi = new XcmNode(bifrost.api, ChainId.Bifrost);
-    await setupApi();
     setupUsers();
   });
 

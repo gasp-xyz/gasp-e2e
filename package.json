@@ -11,7 +11,9 @@
     "@babel/plugin-proposal-decorators": "^7.17.8",
     "@commitlint/config-conventional": "^17.4.2",
     "@mangata-finance/sdk": "1.16.1",
+    "@terascope/fetch-github-release": "^0.8.7",
     "@types/bs58": "^4.0.1",
+    "@types/get-port": "^4.2.0",
     "@types/jsonpath": "^0.2.0",
     "@types/node": "^18.14.6",
     "@types/selenium-webdriver": "3.0.19",
@@ -27,6 +29,7 @@
     "eslint": "7.26.0",
     "ethers": "^5.4.7",
     "ganache-cli": "^6.12.2",
+    "get-port-please": "^3.0.1",
     "guid-typescript": "^1.0.9",
     "jest-extended": "^3.2.3",
     "jsonpath": "^1.1.1",
@@ -36,7 +39,6 @@
     "prettier": "2.3.0",
     "selenium-webdriver": "3.6.0",
     "simple-statistics": "^7.8.3",
-    "@terascope/fetch-github-release": "^0.8.7",
     "tiny-async-pool": "^1.2.0",
     "truffle": "^5.4.7",
     "truffle-hdwallet-provider": "^1.0.17",
@@ -82,9 +84,9 @@
     "test-governance-voting": "rm nonce.db ; rm sudo.lock; jest --verbose --runInBand --ci --group=governance-voting --forceExit ",
     "tsc-lint": "tsc  --project tsconfig.json --noEmit",
     "eslint": "node_modules/.bin/eslint --max-warnings 0 . --ext .ts",
-    "reports": "allure generate reports",
     "test-github": "export JEST_HTML_REPORTERS_PUBLIC_PATH=reports/html-report;  rm nonce.db ; rm sudo.lock; jest --verbose  --ci --forceExit",
-    "test-multiswap": "export GASLESS=true; export JEST_HTML_REPORTERS_PUBLIC_PATH=reports/html-report-parallel;rm nonce.db ; rm sudo.lock; jest --verbose --ci --group=multiswap --forceExit"
+    "test-multiswap": "export GASLESS=true; export JEST_HTML_REPORTERS_PUBLIC_PATH=reports/html-report-parallel;rm nonce.db ; rm sudo.lock; jest --verbose --ci --group=multiswap --forceExit",
+    "test-xcm": " export CHOPSTICK_ENABLED=true ; export MANGATA_ENDPOINT=wss://mangata-x.api.onfinality.io/public-ws ; export JEST_HTML_REPORTERS_PUBLIC_PATH=reports/html-report-parallel;rm nonce.db ; rm sudo.lock; jest --verbose --ci --group=xcm --forceExit"
   },
   "devDependencies": {
     "@babel/core": "^7.13.10",
