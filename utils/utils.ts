@@ -10,7 +10,12 @@ import { testLog } from "./Logger";
 import { AnyNumber } from "@polkadot/types/types";
 import { Keyring, ApiPromise } from "@polkadot/api";
 import { KeyringPair } from "@polkadot/keyring/types";
-import { getStakingLiquidityTokens } from "./tx";
+import { getStakingLiquidityTokens, sellAsset } from "./tx";
+import { Sudo } from "./sudo";
+import { setupApi, setupUsers } from "./setup";
+import { Xyk } from "./xyk";
+import { MGA_ASSET_ID } from "./Constants";
+import { BN_HUNDRED, BN_ONE } from "@mangata-finance/sdk";
 
 export function sleep(ms: number) {
   return new Promise((resolve) => {
@@ -445,7 +450,59 @@ export async function printCandidatePowers() {
   );
   sorted.forEach((x, index) =>
     // eslint-disable-next-line no-console
-    console.log(x[0] + " - " + x[3] + " - " + index)
+    console.log(
+      x[0] +
+        " - " +
+        x[3] +
+        " - " +
+        index +
+        "< -- > liq" +
+        info[index][1].toString()
+    )
   );
   //console.log(JSON.stringify(sorted));
+}
+
+export async function swapEachNBlocks(period: number) {
+  await setupApi();
+  await setupUsers();
+  const keyring = new Keyring({ type: "sr25519" });
+  const testUser4 = new User(keyring, "//Eve");
+  const sudo = new User(keyring, getEnvironmentRequiredVars().sudo);
+  const token2 = await Assets.issueAssetToUser(
+    sudo,
+    Assets.DEFAULT_AMOUNT,
+    sudo,
+    true
+  );
+  await Sudo.batchAsSudoFinalized(
+    Assets.FinalizeTge(),
+    Assets.initIssuance(),
+    Assets.mintToken(token2, testUser4, Assets.DEFAULT_AMOUNT),
+    Assets.mintToken(token2, testUser4, Assets.DEFAULT_AMOUNT),
+    Assets.mintToken(token2, testUser4, Assets.DEFAULT_AMOUNT),
+    Assets.mintNative(testUser4),
+    Assets.mintNative(testUser4),
+    Assets.mintNative(testUser4),
+    Assets.mintNative(testUser4),
+    Sudo.sudoAs(
+      testUser4,
+      Xyk.createPool(
+        MGA_ASSET_ID,
+        Assets.DEFAULT_AMOUNT.divn(2),
+        token2,
+        Assets.DEFAULT_AMOUNT.divn(2)
+      )
+    )
+  );
+  while (true) {
+    await sellAsset(
+      testUser4.keyRingPair,
+      token2,
+      MGA_ASSET_ID,
+      BN_HUNDRED,
+      BN_ONE
+    );
+    await waitForNBlocks(period);
+  }
 }

@@ -14,12 +14,14 @@ import {
   findErrorMetadata,
   getEnvironmentRequiredVars,
   printCandidatePowers,
+  swapEachNBlocks,
 } from "../utils/utils";
 import { Node } from "../utils/Framework/Node/Node";
 import { SudoUser } from "../utils/Framework/User/SudoUser";
 import { Keyring } from "@polkadot/api";
 import { getApi, initApi } from "../utils/api";
 import { User } from "../utils/User";
+import { Mangata } from "@mangata-finance/sdk";
 //const inquirer = require("inquirer");
 
 async function app(): Promise<any> {
@@ -39,6 +41,9 @@ async function app(): Promise<any> {
         "Is collator chosen?",
         "Get powers",
         "Fill with delegators",
+        "Swap each 11 blocks",
+        "From string to Hex",
+        "get pools",
       ],
     })
     .then(async (answers) => {
@@ -203,6 +208,34 @@ async function app(): Promise<any> {
       }
       if (answers.option.includes("Get powers")) {
         await printCandidatePowers();
+      }
+      if (answers.option.includes("Swap each 11 blocks")) {
+        await swapEachNBlocks(11);
+      }
+      if (answers.option.includes("From string to Hex")) {
+        await inquirer
+          .prompt([
+            {
+              type: "input",
+              name: "str",
+              message: "",
+            },
+          ])
+          .then(async (answers) => {
+            await initApi();
+            const api = await getApi();
+            const str = api.createType("Vec<u8>", answers.str);
+            console.info(str.toString());
+            return app();
+          });
+      }
+      if (answers.option.includes("get pools")) {
+        const mga = Mangata.getInstance([
+          "wss://prod-kusama-collator-01.mangatafinance.cloud",
+        ]);
+        const pools = mga.getPools();
+        (await pools).forEach((pool) => console.info(JSON.stringify(pool)));
+        return app();
       }
       return app();
     });

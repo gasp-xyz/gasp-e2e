@@ -91,8 +91,10 @@ export async function joinAsCandidate(userName = "//Charlie", liqId = 9) {
     .length;
   //const amountToJoin = new BN("5000000000000000000000");
   const amountToJoin = new BN(
-    api!.consts.parachainStaking.minCollatorStk!.toString()
-  ).addn(1234);
+    await api!.consts.parachainStaking.minCandidateStk!.toString()
+  ).addn(1234567);
+
+  console.info("amount: " + amountToJoin.toString());
   const tokenInPool = await (
     await getLiquidityPool(liq)
   ).filter((x) => x.gt(MGA_ASSET_ID))[0];
@@ -103,7 +105,7 @@ export async function joinAsCandidate(userName = "//Charlie", liqId = 9) {
   );
   console.info("Token to  mint: " + tokensToMint.toString());
   await Sudo.batchAsSudoFinalized(
-    Assets.mintToken(tokenInPool, user, tokensToMint.muln(100)),
+    Assets.mintToken(tokenInPool, user, amountToJoin.muln(100000)),
     Assets.mintNative(user, amountToJoin.muln(100000)),
     Sudo.sudoAs(
       user,
@@ -111,7 +113,7 @@ export async function joinAsCandidate(userName = "//Charlie", liqId = 9) {
         MGA_ASSET_ID,
         tokenInPool,
         amountToJoin.muln(2),
-        tokensToMint.muln(4)
+        amountToJoin.muln(100000)
       )
     )
   );
@@ -137,8 +139,10 @@ export async function joinAFewCandidates(numCandidates = 50, liqId = 9) {
   const keyring = new Keyring({ type: "sr25519" });
   const liq = new BN(liqId);
   const amountToJoin = new BN(
-    api!.consts.parachainStaking.minCollatorStk!.toString()
+    await api!.consts.parachainStaking.minCandidateStk!.toString()
   ).addn(1234);
+
+  console.info("amount: " + amountToJoin.toString());
   const liqAssets = await api?.query.parachainStaking.stakingLiquidityTokens();
   const liqAssetsCount = [...liqAssets!.keys()].length;
   const numCollators = (await api?.query.parachainStaking.candidatePool())!
