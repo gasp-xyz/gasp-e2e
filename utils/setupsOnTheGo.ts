@@ -303,3 +303,33 @@ export async function fillWithDelegators(
   }
   await Promise.all(joins);
 }
+
+export async function printCandidatesNotProducing(): Promise<void> {
+  await setupUsers();
+  await setupApi();
+  const api = await getApi();
+
+  const session = await api.query.session.currentIndex();
+  const candidates = await api.query.parachainStaking.selectedCandidates();
+  const missingCandidates: string[] = [];
+  for (let index = 0; index < candidates.length; index++) {
+    const sessionBefore = Number(session.toString()) - 1;
+    const awardedPointsPreviousSession =
+      await api.query.parachainStaking.awardedPts(
+        sessionBefore,
+        candidates[index]
+      );
+    if (Number(awardedPointsPreviousSession) === 0) {
+      missingCandidates.push(candidates[index].toString());
+    }
+  }
+  console.info("*****************");
+  console.info(`Found ${candidates.length}  candidates`);
+  console.info(
+    `On session  ${Number(session.toString()) - 1}, ${
+      missingCandidates.length
+    } did not win any point`
+  );
+  console.info(missingCandidates);
+  console.info("*****************");
+}
