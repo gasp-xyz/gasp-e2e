@@ -1,34 +1,33 @@
 /* eslint-disable no-console */
+import {
+  BN_ONE,
+  MangataGenericEvent,
+  signTx,
+  toBN,
+  TokenBalance,
+} from "@mangata-finance/sdk";
+import { Keyring } from "@polkadot/api";
 import { AddressOrPair, SubmittableExtrinsic } from "@polkadot/api/types";
-import { AccountData, AccountId32 } from "@polkadot/types/interfaces";
-import { AnyTuple, Codec } from "@polkadot/types/types";
+import { KeyringPair } from "@polkadot/keyring/types";
 import { StorageKey } from "@polkadot/types";
-import { getApi, getMangataInstance } from "./api";
+import { AccountData, AccountId32 } from "@polkadot/types/interfaces";
+import { AnyJson, AnyTuple, Codec } from "@polkadot/types/types";
 import { BN } from "@polkadot/util";
 import { env } from "process";
-import { SudoDB } from "./SudoDB";
-import { setAssetInfo, signSendAndWaitToFinishTx } from "./txHandler";
-import { getEnvironmentRequiredVars, stringToBN } from "./utils";
-import { Fees } from "./Fees";
+import { getApi, getMangataInstance } from "./api";
 import {
   ETH_ASSET_ID,
+  MAX_BALANCE,
   MGA_ASSET_ID,
   MGA_DEFAULT_LIQ_TOKEN,
-  MAX_BALANCE,
 } from "./Constants";
-import { Keyring } from "@polkadot/api";
-import { User } from "./User";
-import { testLog } from "./Logger";
-import { KeyringPair } from "@polkadot/keyring/types";
-import {
-  signTx,
-  TokenBalance,
-  MangataGenericEvent,
-  toBN,
-  BN_ONE,
-} from "@mangata-finance/sdk";
-import { AnyJson } from "@polkadot/types/types";
+import { Fees } from "./Fees";
 import { SudoUser } from "./Framework/User/SudoUser";
+import { testLog } from "./Logger";
+import { SudoDB } from "./SudoDB";
+import { setAssetInfo, signSendAndWaitToFinishTx } from "./txHandler";
+import { User } from "./User";
+import { getEnvironmentRequiredVars, stringToBN } from "./utils";
 
 export const signTxDeprecated = async (
   tx: SubmittableExtrinsic<"promise">,
@@ -794,6 +793,7 @@ export async function getAllAcountEntries(): Promise<
   return await api.query.tokens.accounts.entries();
 }
 
+// eslint-disable-next-line @typescript-eslint/no-unused-vars
 function requireFees() {
   return (
     _target: any,

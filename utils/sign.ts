@@ -1,13 +1,14 @@
 // wrap SDK signTx to allow verbose logs
-import { api, Extrinsic } from "./setup";
-import { User } from "./User";
-import { BN } from "@polkadot/util";
 import { MangataGenericEvent, signTx } from "@mangata-finance/sdk";
-import { testLog } from "./Logger";
-import { getEventResultFromMangataTx } from "./txHandler";
-import { ExtrinsicResult, logEvent } from "./eventListeners";
 import { ApiPromise } from "@polkadot/api";
+import { Codec } from "@polkadot/types/types";
+import { BN } from "@polkadot/util";
 import _ from "lodash";
+import { ExtrinsicResult } from "./eventListeners";
+import { logEvent, testLog } from "./Logger";
+import { api, Extrinsic } from "./setup";
+import { getEventResultFromMangataTx } from "./txHandler";
+import { User } from "./User";
 
 export const signSendFinalized = async (
   tx: Extrinsic,
@@ -18,9 +19,7 @@ export const signSendFinalized = async (
     nonce: nonce,
     statusCallback: ({ events = [], status }) => {
       testLog.getLog().info(status);
-      events.forEach(({ phase, event: { data, method, section } }) => {
-        logEvent(phase, data, method, section);
-      });
+      events.forEach((e) => logEvent("mangata", e));
     },
   })
     .catch((reason) => {
@@ -47,10 +46,11 @@ export const signSendSuccess = async (
       const unsub = await tx.signAndSend(
         user.keyRingPair,
         ({ events, status, dispatchError }) => {
-          testLog.getLog().info(status);
-          events.forEach(({ phase, event: { data, method, section } }) => {
-            logEvent(phase, data, method, section);
-          });
+          testLog
+            .getLog()
+            .info(`→ events on ${api.runtimeChain} for ${status}`);
+
+          events.forEach((e) => logEvent(api.runtimeChain, e));
 
           if (!_.isNil(dispatchError)) {
             if (dispatchError.isModule) {
@@ -84,4 +84,34 @@ export const signSendSuccess = async (
       reject(error);
     }
   });
+};
+
+export function defer<T>() {
+  const deferred = {} as {
+    resolve: (value: any) => void;
+    reject: (reason: any) => void;
+    promise: Promise<T>;
+  };
+  deferred.promise = new Promise((resolve, reject) => {
+    deferred.resolve = resolve;
+    deferred.reject = reject;
+  });
+  return deferred;
+}
+
+export const sendTransaction = async (tx: Promise<Extrinsic>) => {
+  const signed = await tx;
+  const deferred = defer<Codec[]>();
+  await signed.send((status) => {
+    if (status.isCompleted) {
+      deferred.resolve(status.events);
+    }
+    if (status.isError) {
+      deferred.reject(status.status);
+    }
+  });
+
+  return {
+    events: deferred.promise,
+  };
 };

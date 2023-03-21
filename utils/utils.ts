@@ -31,6 +31,12 @@ export function fromStringToUnitString(value: string) {
   return unitString;
 }
 
+export function getMangataApiUrlPort() {
+  const { chainUri } = getEnvironmentRequiredVars();
+  const port = chainUri.substring(chainUri.lastIndexOf(":") + 1);
+  return Number.parseInt(port);
+}
+
 export function getEnvironmentRequiredVars() {
   const xykPalletAddress = process.env.E2E_XYK_PALLET_ADDRESS
     ? process.env.E2E_XYK_PALLET_ADDRESS

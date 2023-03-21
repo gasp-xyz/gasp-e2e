@@ -1,6 +1,13 @@
-import { assert } from "console";
+import { BN_TEN, BN_THOUSAND } from "@mangata-finance/sdk";
+import { ApiPromise } from "@polkadot/api";
+import { AccountInfo } from "@polkadot/types/interfaces";
 import { BN } from "@polkadot/util";
+import { assert } from "console";
+import _ from "lodash";
+import { MGA_ASSET_ID } from "./Constants";
 import { ExtrinsicResult } from "./eventListeners";
+import { api, Extrinsic, setupApi, setupUsers } from "./setup";
+import { Sudo } from "./sudo";
 import { getAssetSupply, getNextAssetId } from "./tx";
 import {
   getEventResultFromMangataTx,
@@ -8,11 +15,6 @@ import {
   sudoIssueAsset,
 } from "./txHandler";
 import { User } from "./User";
-import { BN_TEN, BN_THOUSAND } from "@mangata-finance/sdk";
-import { api, Extrinsic, setupUsers, setupApi } from "./setup";
-import { MGA_ASSET_ID } from "./Constants";
-import { Sudo } from "./sudo";
-import _ from "lodash";
 
 export class Assets {
   static MG_UNIT: BN = BN_TEN.pow(new BN(18));
@@ -241,6 +243,11 @@ export class Assets {
     }
   }
 }
+
+export const balance = async (api: ApiPromise, address: string) => {
+  const account = await api.query.system.account<AccountInfo>(address);
+  return account.data.toJSON();
+};
 
 interface Metadata {
   xcm?: XcmMetadata;

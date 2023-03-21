@@ -2,7 +2,6 @@
 import { BN } from "@polkadot/util";
 import { removeSudoDb } from "./lock";
 
-require("dotenv").config();
 beforeAll(async () => {
   //  if (
   //    process.argv.includes("--runInBand") ||
