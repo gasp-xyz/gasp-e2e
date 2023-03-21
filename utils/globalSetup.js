@@ -1,6 +1,6 @@
 /* eslint-disable no-console */
 import { setupGasLess } from "./setup";
-import dotenv from 'dotenv';
+import dotenv from "dotenv";
 
 dotenv.config();
 
