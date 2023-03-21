@@ -45,7 +45,7 @@ describe("xyk-pallet - Sell Asset: validate Errors:", () => {
 
     await setupApi();
     await setupUsers();
-    const minStake = api?.consts.parachainStaking.minCollatorStk.toString();
+    const minStake = api?.consts.parachainStaking.minCandidateStk.toString();
     await Sudo.batchAsSudoFinalized(
       Assets.mintToken(ASSET_ID_MGA_ETH, testUser1, new BN(minStake!).muln(2)),
       Assets.mintNative(
@@ -64,9 +64,8 @@ describe("xyk-pallet - Sell Asset: validate Errors:", () => {
       await api?.query.parachainStaking.stakingLiquidityTokens();
     const liqAssetsCount = [...liqAssets!.keys()].length;
     const amountToJoin = new BN(
-      api!.consts.parachainStaking.minCollatorStk!.toString()
+      api!.consts.parachainStaking.minCandidateStk!.toString()
     ).addn(1234);
-
     await signSendAndWaitToFinishTx(
       // @ts-ignore
       api?.tx.parachainStaking.joinCandidates(
@@ -85,7 +84,7 @@ describe("xyk-pallet - Sell Asset: validate Errors:", () => {
       new BN(3)
     );
     const minStake = new BN(
-      api!.consts.parachainStaking.minCollatorStk.toString()
+      api!.consts.parachainStaking.minCandidateStk.toString()
     );
     expect(hexToBn(tokenStatuses.free.toString())).bnEqual(
       minStake.muln(2).sub(amountToJoin)
