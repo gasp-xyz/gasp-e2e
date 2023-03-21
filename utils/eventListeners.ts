@@ -1,15 +1,15 @@
 /* eslint-disable no-loop-func */
 import { MangataGenericEvent } from "@mangata-finance/sdk";
 import { ApiPromise } from "@polkadot/api";
-import { Codec } from "@polkadot/types/types";
 import { BN } from "@polkadot/util";
 import _, { reject } from "lodash";
 import { getApi, getMangataInstance } from "./api";
-import { testLog } from "./Logger";
+import { logEvent, testLog } from "./Logger";
 import { api } from "./setup";
 import { getEventErrorfromSudo } from "./txHandler";
 import { User } from "./User";
 import { getEnvironmentRequiredVars } from "./utils";
+import { Codec } from "@polkadot/types/types";
 
 // lets create a enum for different status.
 export enum ExtrinsicResult {
@@ -85,16 +85,6 @@ export const waitNewBlock = () => {
       }
     });
   });
-};
-
-// @ts-ignore
-export const logEvent = (chain, event) => {
-  const obj = toHuman(event).event;
-  testLog
-    .getLog()
-    .info(
-      `${chain} -> ${obj.section}.${obj.method}: ${JSON.stringify(obj.data)}`
-    );
 };
 
 export function filterEventData(

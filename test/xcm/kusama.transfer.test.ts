@@ -1,17 +1,19 @@
 import { connectVertical } from "@acala-network/chopsticks";
 import { KeyringPair } from "@polkadot/keyring/types";
+import { BN_THOUSAND } from "@polkadot/util";
 import { balance } from "../../utils/Assets";
+import { AssetId } from "../../utils/ChainSpecs";
+import { ApiContext } from "../../utils/Framework/XcmHelper";
+import XcmNetworks from "../../utils/Framework/XcmNetworks";
+import { devTestingPairs } from "../../utils/setup";
+import { sendTransaction } from "../../utils/sign";
 import {
   expectEvent,
   expectExtrinsicSuccess,
   expectJson,
   matchEvents,
   matchSystemEvents,
-} from "../../utils/eventListeners";
-import { ApiContext } from "../../utils/Framework/XcmHelper";
-import XcmNetworks from "../../utils/Framework/XcmNetworks";
-import { devTestingPairs } from "../../utils/setup";
-import { sendTransaction } from "../../utils/sign";
+} from "../../utils/validators";
 
 /**
  * @group xcm
@@ -41,7 +43,7 @@ describe("XCM tests for Mangata <-> Kusama", () => {
           [[alice.address, { token: 4 }], { free: 10 * 1e12 }],
           [
             [alice.address, { token: 0 }],
-            { free: (1000n * 10n ** 18n).toString() },
+            { free: AssetId.Mgx.unit.mul(BN_THOUSAND).toString() },
           ],
         ],
       },
@@ -81,7 +83,6 @@ describe("XCM tests for Mangata <-> Kusama", () => {
     );
 
     await mangata.chain.newBlock();
-    await kusama.chain.upcomingBlock();
 
     expectExtrinsicSuccess(await tx.events);
     expectEvent(await tx.events, {
@@ -91,6 +92,7 @@ describe("XCM tests for Mangata <-> Kusama", () => {
       }),
     });
 
+    await kusama.chain.newBlock();
     expectJson(await mangata.api.query.tokens.accounts(alice.address, 4))
       .toMatchInlineSnapshot(`
           {
@@ -101,13 +103,13 @@ describe("XCM tests for Mangata <-> Kusama", () => {
         `);
 
     expect(await balance(kusama.api, alice.address)).toMatchInlineSnapshot(`
-          {
-            "feeFrozen": 0,
-            "free": 10999895428355,
-            "miscFrozen": 0,
-            "reserved": 0,
-          }
-        `);
+      {
+        "feeFrozen": 0,
+        "free": 10999895428355,
+        "miscFrozen": 0,
+        "reserved": 0,
+      }
+    `);
 
     expectEvent(await kusama.api.query.system.events(), {
       event: expect.objectContaining({
@@ -174,7 +176,7 @@ describe("XCM tests for Mangata <-> Kusama", () => {
       }
     `);
 
-    await mangata.chain.upcomingBlock();
+    await mangata.chain.newBlock();
 
     expectJson(await mangata.api.query.tokens.accounts(alice.address, 4))
       .toMatchInlineSnapshot(`

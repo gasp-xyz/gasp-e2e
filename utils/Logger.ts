@@ -1,8 +1,8 @@
 import { env } from "process";
 import "setimmediate";
-import winston, { Logger, format } from "winston";
+import winston, { format, Logger } from "winston";
+import { toHuman } from "./setup";
 import { getEnvironmentRequiredVars } from "./utils";
-import "setimmediate";
 const { combine, timestamp, printf } = format;
 
 export class testLog {
@@ -34,3 +34,13 @@ export class testLog {
     return testLog.instance;
   }
 }
+
+//@ts-ignore
+export const logEvent = (chain, event) => {
+  const obj = toHuman(event).event;
+  testLog
+    .getLog()
+    .info(
+      `${chain} -> ${obj.section}.${obj.method}: ${JSON.stringify(obj.data)}`
+    );
+};

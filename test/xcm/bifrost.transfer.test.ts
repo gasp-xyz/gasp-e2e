@@ -1,15 +1,16 @@
 import { BuildBlockMode, connectParachains } from "@acala-network/chopsticks";
 import { BN_HUNDRED, BN_THOUSAND } from "@mangata-finance/sdk";
 import { BN_FIVE, BN_TEN } from "@polkadot/util";
+import { mangataChopstick } from "../../utils/api";
 import { AssetId, ChainId } from "../../utils/ChainSpecs";
-import { expectEvent, waitForEvents } from "../../utils/eventListeners";
+import { waitForEvents } from "../../utils/eventListeners";
 import { XcmNode } from "../../utils/Framework/Node/XcmNode";
 import { ApiContext } from "../../utils/Framework/XcmHelper";
 import XcmNetworks from "../../utils/Framework/XcmNetworks";
 import { alice, api, setupApi, setupUsers } from "../../utils/setup";
 import { signSendSuccess } from "../../utils/sign";
+import { expectEvent } from "../../utils/validators";
 import { XToken } from "../../utils/xToken";
-import { mangataChopstick } from "../../utils/api";
 
 /**
  * @group xcm

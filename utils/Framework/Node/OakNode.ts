@@ -10,6 +10,7 @@ import { BN } from "@polkadot/util";
 import { User } from "../../User";
 import { RuntimeDispatchInfo } from "@polkadot/types/interfaces";
 import { Option } from "@polkadot/types";
+import assert from "assert";
 
 export class OakNode {
   api: ApiPromise;
@@ -54,9 +55,9 @@ export class OakNode {
     amount: BN,
     toUser: User
   ): any {
-    expect(ChainSpecs.has(toChain));
+    assert(ChainSpecs.has(toChain));
     const chain = ChainSpecs.get(toChain)!;
-    expect(chain.assets.has(assetId));
+    assert(chain.assets.has(assetId));
 
     return this.api.tx.xTokens.transferMultiasset(
       {
