@@ -46,7 +46,7 @@ export const setupContext = async ({
   buildBlockMode,
 }: SetupOption): Promise<ApiContext> => {
   // random port
-  const port = localPort ? localPort : await fp(10000);
+  const port = localPort ? localPort : (await fp(10000))[0];
   const config = {
     endpoint,
     port,

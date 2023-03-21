@@ -10,6 +10,7 @@ import { BN } from "@mangata-finance/sdk";
 import { Xyk } from "./xyk";
 import { signTx } from "@mangata-finance/sdk";
 import { SudoDB } from "./SudoDB";
+import { Codec } from "@polkadot/types-codec/types";
 
 // API
 export let api: ApiPromise;
@@ -20,6 +21,18 @@ export let sudo: User;
 export let alice: User;
 
 export type Extrinsic = SubmittableExtrinsic<"promise">;
+
+export type CodecOrArray = Codec | Codec[];
+
+const processCodecOrArray = (codec: CodecOrArray, fn: (c: Codec) => any) =>
+  Array.isArray(codec) ? codec.map(fn) : fn(codec);
+
+export const toHuman = (codec: CodecOrArray) =>
+  processCodecOrArray(codec, (c) => c?.toHuman?.() ?? c);
+export const toJson = (codec: CodecOrArray) =>
+  processCodecOrArray(codec, (c) => c?.toJSON?.() ?? c);
+export const toHex = (codec: CodecOrArray) =>
+  processCodecOrArray(codec, (c) => c?.toHex?.() ?? c);
 
 export const setupApi = async () => {
   if (!api || (api && !api.isConnected)) {

@@ -1,5 +1,4 @@
 import dotenv from "dotenv";
-
 import { setupContext, SetupOption } from "./XcmHelper";
 
 dotenv.config();

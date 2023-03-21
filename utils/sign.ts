@@ -5,9 +5,8 @@ import { Codec } from "@polkadot/types/types";
 import { BN } from "@polkadot/util";
 import _ from "lodash";
 import { ExtrinsicResult } from "./eventListeners";
-import { testLog } from "./Logger";
+import { logEvent, testLog } from "./Logger";
 import { api, Extrinsic } from "./setup";
-import { logEvent } from "./setupJest";
 import { getEventResultFromMangataTx } from "./txHandler";
 import { User } from "./User";
 

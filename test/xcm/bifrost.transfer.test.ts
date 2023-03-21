@@ -7,9 +7,9 @@ import { XcmNode } from "../../utils/Framework/Node/XcmNode";
 import { ApiContext } from "../../utils/Framework/XcmHelper";
 import XcmNetworks from "../../utils/Framework/XcmNetworks";
 import { alice, api, setupApi, setupUsers } from "../../utils/setup";
-import { expectEvent } from "../../utils/setupJest";
 import { signSendSuccess } from "../../utils/sign";
 import { getMangataApiUrlPort } from "../../utils/utils";
+import { expectEvent } from "../../utils/validators";
 import { XToken } from "../../utils/xToken";
 
 /**
