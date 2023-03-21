@@ -1,4 +1,10 @@
-import { Key, logging, WebDriver } from "selenium-webdriver";
+import {
+  Key,
+  Locator,
+  logging,
+  WebDriver,
+  WebElement,
+} from "selenium-webdriver";
 import { sleep } from "../../utils";
 import { Mangata } from "../pages/Mangata";
 import { Polkadot } from "../pages/Polkadot";
@@ -149,6 +155,13 @@ export async function acceptPermissionsPolkadotExtension(driver: WebDriver) {
   await polkadotExtension.acceptPermissions();
 }
 
+export async function acceptPermissionsPolkadotExtensionInNewWindow(
+  driver: WebDriver
+) {
+  const polkadotExtension = new Polkadot(driver);
+  await polkadotExtension.acceptPermissions();
+}
+
 export async function leaveOnlyOneTab(driver: WebDriver) {
   const handles = await (await driver).getAllWindowHandles();
   for (let index = 1; index < handles.length; index++) {
@@ -295,4 +308,39 @@ export async function swithToTheOtherTab(driver: WebDriver) {
   const currentTab = await driver.getWindowHandle();
   const otherTab = availableTabs.filter((tab) => tab !== currentTab)[0];
   await driver.switchTo().window(otherTab);
+}
+
+export async function findElementWithinParent(
+  parent: WebElement,
+  locator: Locator
+) {
+  const elements = await parent.findElements(locator);
+  if (elements.length > 0) {
+    return elements[0];
+  } else {
+    return null;
+  }
+}
+
+export async function isElementWithinParent(
+  driver: WebDriver,
+  parent: Locator,
+  locator: Locator
+) {
+  const parentElement = await driver.findElement(parent);
+  const element = await findElementWithinParent(parentElement, locator);
+  return element!;
+}
+
+export async function elementExistsNoError(
+  driver: WebDriver,
+  locator: Locator
+) {
+  const elements = await driver.findElements(locator);
+  return elements.length > 0;
+}
+
+export async function buildXpathByText(text: string) {
+  const xpath = `//*[contains(text(), "${text}")]`;
+  return xpath;
 }
