@@ -89,6 +89,25 @@ export class Xyk {
   static activateLiquidity(liquidityAssetId: BN, amount: BN): Extrinsic {
     return api.tx.xyk.activateLiquidityV2(liquidityAssetId, amount, null);
   }
+
+  static compoundRewards(
+    liquidityAssetId: BN,
+    amountPermille: number = 1000000
+  ): Extrinsic {
+    return api.tx.xyk.compoundRewards(liquidityAssetId, amountPermille);
+  }
+
+  static provideLiquidity(
+    liquidityAssetId: BN,
+    providedAssetId: BN,
+    providedAssetAmount: any
+  ): Extrinsic {
+    return api.tx.xyk.provideLiquidityWithConversion(
+      liquidityAssetId,
+      providedAssetId,
+      providedAssetAmount
+    );
+  }
 }
 
 export class Tokens {
