@@ -1,10 +1,4 @@
-import {
-  Key,
-  Locator,
-  logging,
-  WebDriver,
-  WebElement,
-} from "selenium-webdriver";
+import { Key, logging, WebDriver } from "selenium-webdriver";
 import { sleep } from "../../utils";
 import { Mangata } from "../pages/Mangata";
 import { Polkadot } from "../pages/Polkadot";
@@ -310,37 +304,12 @@ export async function swithToTheOtherTab(driver: WebDriver) {
   await driver.switchTo().window(otherTab);
 }
 
-export async function findElementWithinParent(
-  parent: WebElement,
-  locator: Locator
-) {
-  const elements = await parent.findElements(locator);
-  if (elements.length > 0) {
-    return elements[0];
-  } else {
-    return null;
-  }
-}
-
-export async function isElementWithinParent(
-  driver: WebDriver,
-  parent: Locator,
-  locator: Locator
-) {
-  const parentElement = await driver.findElement(parent);
-  const element = await findElementWithinParent(parentElement, locator);
-  return element!;
-}
-
-export async function elementExistsNoError(
-  driver: WebDriver,
-  locator: Locator
-) {
-  const elements = await driver.findElements(locator);
+export async function elementExists(driver: WebDriver, xpath: string) {
+  const elements = await driver.findElements(By.xpath(xpath));
   return elements.length > 0;
 }
 
-export async function buildXpathByText(text: string) {
-  const xpath = `//*[contains(text(), "${text}")]`;
+export function buildXpathByText(text: string) {
+  const xpath = `//*[contains(., "${text}")]`;
   return xpath;
 }

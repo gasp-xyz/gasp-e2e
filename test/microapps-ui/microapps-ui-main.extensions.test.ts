@@ -17,6 +17,7 @@ import { Main } from "../../utils/frontend/microapps-pages/Main";
 import { User } from "../../utils/User";
 import { setupUsers } from "../../utils/setup";
 import { WalletConnectModal } from "../../utils/frontend/microapps-pages/WalletConnectModal";
+import { WalletWrapper } from "../../utils/frontend/microapps-pages/WalletWrapper";
 
 jest.setTimeout(FIVE_MIN);
 jest.spyOn(console, "log").mockImplementation(jest.fn());
@@ -32,7 +33,7 @@ describe("Wallets management", () => {
     }
     driver = await DriverBuilder.getInstance();
     const keyring = new Keyring({ type: "sr25519" });
-    await setupUsers();
+    setupUsers();
     const { mnemonic } = await setupPolkadotExtension(driver);
     testUser1 = new User(keyring);
     testUser1.addFromMnemonic(keyring, mnemonic);
@@ -41,19 +42,20 @@ describe("Wallets management", () => {
   it("User can connect Polkadot wallet", async () => {
     const mga = new Mangata(driver);
     await mga.go();
+    const walletWrapper = new WalletWrapper(driver);
     const mainPage = new Main(driver);
     const appLoaded = await mainPage.isAppDisplayed();
     expect(appLoaded).toBeTruthy();
 
-    const isWalletButton = await mainPage.isWalletConnectButtonDisplayed();
+    const isWalletButton = await walletWrapper.isWalletConnectButtonDisplayed();
     expect(isWalletButton).toBeTruthy();
 
-    await mainPage.openWalletConnectionInfo();
-    const isWalletConnected = await mainPage.isWalletConnected();
+    await walletWrapper.openWalletConnectionInfo();
+    let isWalletConnected = await walletWrapper.isWalletConnected();
     expect(isWalletConnected).toBeFalsy();
 
-    await mainPage.clickWalletConnect();
-    await mainPage.pickWallet("Polkadot");
+    await walletWrapper.clickWalletConnect();
+    await walletWrapper.pickWallet("Polkadot");
 
     const walletConnectModal = new WalletConnectModal(driver);
     let isWalletConnectModalDisplayed = await walletConnectModal.displayed();
@@ -66,6 +68,14 @@ describe("Wallets management", () => {
     await walletConnectModal.pickAccount("acc_automation");
     isWalletConnectModalDisplayed = await walletConnectModal.displayed();
     expect(isWalletConnectModalDisplayed).toBeFalsy();
+
+    isWalletConnected = await walletWrapper.isWalletConnected();
+    expect(isWalletConnected).toBeTruthy();
+
+    const isAccInfoDisplayed = await walletWrapper.isAccInfoDisplayed(
+      "acc_automation"
+    );
+    expect(isAccInfoDisplayed).toBeTruthy();
   });
 
   afterEach(async () => {

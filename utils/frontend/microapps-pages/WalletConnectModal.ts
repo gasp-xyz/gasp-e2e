@@ -1,9 +1,5 @@
-import { By, until, WebDriver } from "selenium-webdriver";
-import {
-  areDisplayed,
-  clickElement,
-  elementExistsNoError,
-} from "../utils/Helper";
+import { By, WebDriver } from "selenium-webdriver";
+import { areDisplayed, clickElement, waitForElement } from "../utils/Helper";
 
 //SELECTORS
 const MODAL_ROOT = "//*[@data-testid='selectAccountModal-bg']";
@@ -30,36 +26,29 @@ export class WalletConnectModal {
     [ModalType.NoExtension]: MODAL_NO_EXT,
   };
 
-  async opens() {
-    const displayed = await this.driver
-      .findElement(By.xpath(this.modalStage[ModalType.Connect]))
-      .isDisplayed();
+  async displayed() {
+    const displayed = await this.isDisplayed(
+      this.modalStage[ModalType.Connect]
+    );
     return displayed;
   }
 
-  async displayed() {
-    const exists = await elementExistsNoError(
-      this.driver,
-      By.xpath(this.modalStage[ModalType.Connect])
-    );
-    if (exists) {
-      const displayed = await this.driver
-        .findElement(By.xpath(this.modalStage[ModalType.Connect]))
-        .isDisplayed();
+  private async isDisplayed(elementXpath: string) {
+    try {
+      await waitForElement(this.driver, elementXpath, 2000);
+      const displayed = await (
+        await this.driver.findElement(By.xpath(elementXpath))
+      ).isDisplayed();
       return displayed;
-    } else {
+    } catch (Error) {
       return false;
     }
   }
 
   async accountsDisplayed() {
-    await this.driver.wait(
-      until.elementLocated(By.xpath(this.modalStage[ModalType.AccountList])),
-      2000
+    const displayed = await this.isDisplayed(
+      this.modalStage[ModalType.AccountList]
     );
-    const displayed = await this.driver
-      .findElement(By.xpath(this.modalStage[ModalType.AccountList]))
-      .isDisplayed();
     return displayed;
   }
 
