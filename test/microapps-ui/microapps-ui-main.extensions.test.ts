@@ -23,6 +23,7 @@ jest.setTimeout(FIVE_MIN);
 jest.spyOn(console, "log").mockImplementation(jest.fn());
 let driver: WebDriver;
 let testUser1: User;
+const acc_name = "acc_automation";
 
 describe("Wallets management", () => {
   beforeEach(async () => {
@@ -65,16 +66,19 @@ describe("Wallets management", () => {
     const areAccountsDisplayed = await walletConnectModal.accountsDisplayed();
     expect(areAccountsDisplayed).toBeTruthy();
 
-    await walletConnectModal.pickAccount("acc_automation");
+    await walletConnectModal.pickAccount(acc_name);
     isWalletConnectModalDisplayed = await walletConnectModal.displayed();
     expect(isWalletConnectModalDisplayed).toBeFalsy();
 
     isWalletConnected = await walletWrapper.isWalletConnected();
     expect(isWalletConnected).toBeTruthy();
 
-    const isAccInfoDisplayed = await walletWrapper.isAccInfoDisplayed(
-      "acc_automation"
+    const isSuccessToastDisplayed = await mainPage.isToastDisplayed(
+      "Wallet Connected"
     );
+    expect(isSuccessToastDisplayed).toBeTruthy();
+
+    const isAccInfoDisplayed = await walletWrapper.isAccInfoDisplayed(acc_name);
     expect(isAccInfoDisplayed).toBeTruthy();
   });
 
