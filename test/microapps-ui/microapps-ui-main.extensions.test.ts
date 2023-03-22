@@ -45,7 +45,7 @@ describe("Wallets management", () => {
     await mga.go();
     const walletWrapper = new WalletWrapper(driver);
     const mainPage = new Main(driver);
-    const appLoaded = await mainPage.isAppDisplayed();
+    const appLoaded = await mainPage.isAppLoaded();
     expect(appLoaded).toBeTruthy();
 
     const isWalletButton = await walletWrapper.isWalletConnectButtonDisplayed();

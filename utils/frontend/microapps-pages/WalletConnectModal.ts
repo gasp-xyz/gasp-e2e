@@ -1,5 +1,5 @@
-import { By, WebDriver } from "selenium-webdriver";
-import { areDisplayed, clickElement, waitForElement } from "../utils/Helper";
+import { WebDriver } from "selenium-webdriver";
+import { areDisplayed, clickElement, isDisplayed } from "../utils/Helper";
 
 //SELECTORS
 const MODAL_ROOT = "//*[@data-testid='selectAccountModal-bg']";
@@ -27,26 +27,16 @@ export class WalletConnectModal {
   };
 
   async displayed() {
-    const displayed = await this.isDisplayed(
+    const displayed = await isDisplayed(
+      this.driver,
       this.modalStage[ModalType.Connect]
     );
     return displayed;
   }
 
-  private async isDisplayed(elementXpath: string) {
-    try {
-      await waitForElement(this.driver, elementXpath, 2000);
-      const displayed = await (
-        await this.driver.findElement(By.xpath(elementXpath))
-      ).isDisplayed();
-      return displayed;
-    } catch (Error) {
-      return false;
-    }
-  }
-
   async accountsDisplayed() {
-    const displayed = await this.isDisplayed(
+    const displayed = await isDisplayed(
+      this.driver,
       this.modalStage[ModalType.AccountList]
     );
     return displayed;

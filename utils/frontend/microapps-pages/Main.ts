@@ -1,8 +1,8 @@
-import { By, WebDriver } from "selenium-webdriver";
+import { WebDriver } from "selenium-webdriver";
 import {
   buildDataTestIdXpath,
   buildXpathByText,
-  waitForElement,
+  isDisplayed,
 } from "../utils/Helper";
 
 const DIV_MAIN_APP = "app-layout";
@@ -15,28 +15,16 @@ export class Main {
     this.driver = driver;
   }
 
-  async isAppDisplayed() {
+  async isAppLoaded() {
     const mainApp = buildDataTestIdXpath(DIV_MAIN_APP);
-    const displayed = await this.isDisplayed(mainApp);
+    const displayed = await isDisplayed(this.driver, mainApp);
     return displayed;
   }
 
   async isToastDisplayed(text: string) {
     const toast = buildDataTestIdXpath(GENERIC_TOAST);
     const message = buildXpathByText(text);
-    const displayed = await this.isDisplayed(toast + message);
+    const displayed = await isDisplayed(this.driver, toast + message);
     return displayed;
-  }
-
-  private async isDisplayed(elementXpath: string) {
-    try {
-      await waitForElement(this.driver, elementXpath, 2000);
-      const displayed = await (
-        await this.driver.findElement(By.xpath(elementXpath))
-      ).isDisplayed();
-      return displayed;
-    } catch (Error) {
-      return false;
-    }
   }
 }

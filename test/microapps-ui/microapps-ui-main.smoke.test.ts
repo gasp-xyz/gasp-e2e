@@ -30,7 +30,7 @@ describe("Miocroapps UI smoke tests", () => {
     const mga = new Mangata(driver);
     await mga.go();
     const mainPage = new Main(driver);
-    const appLoaded = await mainPage.isAppDisplayed();
+    const appLoaded = await mainPage.isAppLoaded();
     expect(appLoaded).toBeTruthy();
   });
 

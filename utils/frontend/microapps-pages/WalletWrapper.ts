@@ -1,10 +1,10 @@
-import { By, WebDriver } from "selenium-webdriver";
+import { WebDriver } from "selenium-webdriver";
 import {
   buildDataTestIdXpath,
   buildXpathByText,
   clickElement,
   elementExists,
-  waitForElement,
+  isDisplayed,
 } from "../utils/Helper";
 
 const DIV_WALLET_WRAPPER = "wallet-wrapper";
@@ -22,7 +22,7 @@ export class WalletWrapper {
 
   async isWalletConnectButtonDisplayed() {
     const walletWrapper = buildDataTestIdXpath(DIV_WALLET_WRAPPER);
-    const displayed = await this.isDisplayed(walletWrapper);
+    const displayed = await isDisplayed(this.driver, walletWrapper);
     return displayed;
   }
 
@@ -30,7 +30,7 @@ export class WalletWrapper {
     const walletWrapperHeaderAcc =
       buildDataTestIdXpath(DIV_WALLET_WRAPPER_HEADER_ACC) +
       buildXpathByText(accName);
-    const displayed = await this.isDisplayed(walletWrapperHeaderAcc);
+    const displayed = await isDisplayed(this.driver, walletWrapperHeaderAcc);
     return displayed;
   }
 
@@ -58,17 +58,5 @@ export class WalletWrapper {
     const walletButtonXpath = buildXpathByText(wallet);
     const walletItem = buildDataTestIdXpath(DIV_WALLET_ITEM);
     await clickElement(this.driver, walletItem + walletButtonXpath);
-  }
-
-  private async isDisplayed(elementXpath: string) {
-    try {
-      await waitForElement(this.driver, elementXpath, 2000);
-      const displayed = await (
-        await this.driver.findElement(By.xpath(elementXpath))
-      ).isDisplayed();
-      return displayed;
-    } catch (Error) {
-      return false;
-    }
   }
 }
