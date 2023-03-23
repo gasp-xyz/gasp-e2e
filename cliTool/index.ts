@@ -11,6 +11,7 @@ import {
   setupPoolWithRewardsForDefaultUsers,
   fillWithDelegators,
   printCandidatesNotProducing,
+  createCustomPool,
 } from "../utils/setupsOnTheGo";
 import {
   findErrorMetadata,
@@ -24,7 +25,6 @@ import { Keyring } from "@polkadot/api";
 import { getApi, initApi } from "../utils/api";
 import { User } from "../utils/User";
 import { Mangata } from "@mangata-finance/sdk";
-//const inquirer = require("inquirer");
 
 async function app(): Promise<any> {
   return inquirer
@@ -47,6 +47,7 @@ async function app(): Promise<any> {
         "From string to Hex",
         "get pools",
         "Who is offline",
+        "createPool",
       ],
     })
     .then(async (answers: { option: string | string[] }) => {
@@ -260,6 +261,34 @@ async function app(): Promise<any> {
         const pools = mga.getPools();
         (await pools).forEach((pool) => console.info(JSON.stringify(pool)));
         return app();
+      }
+      if (answers.option.includes("createPool")) {
+        await inquirer
+          .prompt([
+            {
+              type: "input",
+              name: "user",
+              message: "User",
+            },
+            {
+              type: "input",
+              name: "ratio",
+              message: "ratio",
+            },
+            {
+              type: "bool",
+              name: "mgaBig",
+              message: "MGX bigger?",
+            },
+          ])
+          .then(async (answers) => {
+            await initApi();
+            const mgaBig = answers.mgaBig === "true";
+            const ratio = parseInt(answers.ratio.toString());
+            const user = answers.user;
+            await createCustomPool(mgaBig, ratio, user);
+            return app();
+          });
       }
       if (answers.option.includes("Who is offline")) {
         await printCandidatesNotProducing();
