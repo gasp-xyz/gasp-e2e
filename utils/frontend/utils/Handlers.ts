@@ -21,3 +21,15 @@ export async function connectPolkadotWallet(
   await walletConnectModal.pickWallet("Polkadot");
   await walletConnectModal.pickAccount("acc_automation");
 }
+
+export async function allowPolkadotWalletConnection(
+  driver: WebDriver,
+  mga: Mangata
+) {
+  const walletConnectModal = new WalletConnectModal(driver);
+  const isWalletConnectModalDisplayed = await walletConnectModal.opens();
+  expect(isWalletConnectModalDisplayed).toBeTruthy();
+  await walletConnectModal.pickWallet("Polkadot");
+  await acceptPermissionsPolkadotExtension(driver);
+  await mga.go();
+}

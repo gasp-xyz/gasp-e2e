@@ -149,6 +149,13 @@ export async function acceptPermissionsPolkadotExtension(driver: WebDriver) {
   await polkadotExtension.acceptPermissions();
 }
 
+export async function acceptPermissionsPolkadotExtensionInNewWindow(
+  driver: WebDriver
+) {
+  const polkadotExtension = new Polkadot(driver);
+  await polkadotExtension.acceptPermissions();
+}
+
 export async function leaveOnlyOneTab(driver: WebDriver) {
   const handles = await (await driver).getAllWindowHandles();
   for (let index = 1; index < handles.length; index++) {
@@ -295,4 +302,14 @@ export async function swithToTheOtherTab(driver: WebDriver) {
   const currentTab = await driver.getWindowHandle();
   const otherTab = availableTabs.filter((tab) => tab !== currentTab)[0];
   await driver.switchTo().window(otherTab);
+}
+
+export async function elementExists(driver: WebDriver, xpath: string) {
+  const elements = await driver.findElements(By.xpath(xpath));
+  return elements.length > 0;
+}
+
+export function buildXpathByText(text: string) {
+  const xpath = `//*[contains(., "${text}")]`;
+  return xpath;
 }

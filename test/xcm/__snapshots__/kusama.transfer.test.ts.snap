@@ -1,0 +1,48 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`XCM tests for Mangata <-> Kusama Kusama transfer assets to mangata: events 1`] = `
+[
+  {
+    "data": [
+      {
+        "Complete": "(redacted)",
+      },
+    ],
+    "method": "Attempted",
+    "section": "xcmPallet",
+  },
+]
+`;
+
+exports[`XCM tests for Mangata <-> Kusama Kusama transfer assets to mangata: system events 1`] = `
+[
+  {
+    "data": {
+      "count": "(redacted)",
+    },
+    "method": "DownwardMessagesReceived",
+    "section": "parachainSystem",
+  },
+  {
+    "data": {
+      "messageId": "(redacted)",
+      "outcome": {
+        "Complete": "(redacted)",
+      },
+    },
+    "method": "ExecutedDownward",
+    "section": "dmpQueue",
+  },
+  {
+    "data": {
+      "dmqHead": "(redacted)",
+      "weightUsed": {
+        "proofSize": "(redacted)",
+        "refTime": "(redacted)",
+      },
+    },
+    "method": "DownwardMessagesProcessed",
+    "section": "parachainSystem",
+  },
+]
+`;
