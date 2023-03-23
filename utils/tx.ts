@@ -793,8 +793,7 @@ export async function getAllAcountEntries(): Promise<
   return await api.query.tokens.accounts.entries();
 }
 
-// eslint-disable-next-line @typescript-eslint/no-unused-vars
-function requireFees() {
+export function requireFees() {
   return (
     _target: any,
     _propertyKey: string,
@@ -1108,6 +1107,14 @@ export async function unlockFee(User: User) {
     User.keyRingPair
   );
   return result;
+}
+
+export async function getStakingLiquidityTokens(liquidityAssetId: BN) {
+  const api = await getApi();
+  const stakingLiq = JSON.parse(
+    JSON.stringify(await api.query.parachainStaking.stakingLiquidityTokens())
+  ) as any[];
+  return stakingLiq[liquidityAssetId.toNumber()];
 }
 export async function getRewardsInfo(
   address: string,
