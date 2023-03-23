@@ -36,11 +36,12 @@ let sudo, keyring;
 
 let wasmPath = process.env.WASM_PATH ? process.env.WASM_PATH : "";
 const relayName = process.env.RELAY ? process.env.RELAY : "kusama";
+const preRelease = process.env.PRE_RELEASE ? process.env.PRE_RELEASE : false;
 
 describe("upgrade - testpad", () => {
   function filterRelease(release: { prerelease: boolean }) {
     // Filter out prereleases.
-    return release.prerelease === false;
+    return release.prerelease === preRelease;
   }
   function filterAsset(asset: { name: string | string[] }) {
     // Select assets that contain the string 'windows'.
@@ -52,7 +53,6 @@ describe("upgrade - testpad", () => {
     } catch (e) {
       await initApi();
     }
-    //mangata-finance/mangata-node
     const user = "mangata-finance";
     const repo = "mangata-node";
     const outputdir = "./";
@@ -68,7 +68,7 @@ describe("upgrade - testpad", () => {
         return path;
       })
       .catch(function (err) {
-        testLog.getLog().error(err.message);
+        testLog.getLog().info(err.message);
       });
     const wasmspaths = (await Promise.all([result])) as unknown as string[];
     if (wasmspaths.length > 0) if (!wasmPath) wasmPath = wasmspaths[0][0];
