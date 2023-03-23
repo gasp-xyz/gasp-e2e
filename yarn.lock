@@ -1131,14 +1131,14 @@
   resolved "https://registry.yarnpkg.com/@colors/colors/-/colors-1.5.0.tgz#bb504579c1cae923e6576a4f5da43d25f97bdbd9"
   integrity sha512-ooWCrlZP11i8GImSjTHYHLkvFDP48nS4+204nGb1RiX/WXYHmJA2III9/e2DWVabCESdW7hBAEzHRqUn9OUVvQ==
 
-"@commitlint/cli@^17.4.4":
-  version "17.4.4"
-  resolved "https://registry.yarnpkg.com/@commitlint/cli/-/cli-17.4.4.tgz#36df08bfa31dbb9a2b6b1d7187a31e578f001a06"
-  integrity sha512-HwKlD7CPVMVGTAeFZylVNy14Vm5POVY0WxPkZr7EXLC/os0LH/obs6z4HRvJtH/nHCMYBvUBQhGwnufKfTjd5g==
+"@commitlint/cli@^17.5.0":
+  version "17.5.0"
+  resolved "https://registry.yarnpkg.com/@commitlint/cli/-/cli-17.5.0.tgz#045bf46fc38bb4246da30b462d8db66f48c28f9a"
+  integrity sha512-yNW3+M7UM1ioK28LKTrryIVB5qGpXlEv8+rJQiWPMZNayy9/1XR5+lL8qBTNlgopYtZWWnIm5RETcAN29ZTL/A==
   dependencies:
     "@commitlint/format" "^17.4.4"
     "@commitlint/lint" "^17.4.4"
-    "@commitlint/load" "^17.4.4"
+    "@commitlint/load" "^17.5.0"
     "@commitlint/read" "^17.4.4"
     "@commitlint/types" "^17.4.4"
     execa "^5.0.0"
@@ -1205,10 +1205,10 @@
     "@commitlint/rules" "^17.4.4"
     "@commitlint/types" "^17.4.4"
 
-"@commitlint/load@^17.4.4":
-  version "17.4.4"
-  resolved "https://registry.yarnpkg.com/@commitlint/load/-/load-17.4.4.tgz#13fcb553572f265339801cde6dd10ee5eea07f5e"
-  integrity sha512-z6uFIQ7wfKX5FGBe1AkOF4l/ShOQsaa1ml/nLMkbW7R/xF8galGS7Zh0yHvzVp/srtfS0brC+0bUfQfmpMPFVQ==
+"@commitlint/load@^17.5.0":
+  version "17.5.0"
+  resolved "https://registry.yarnpkg.com/@commitlint/load/-/load-17.5.0.tgz#be45dbbb50aaf5eb7e8e940e1e0d6171d1426bab"
+  integrity sha512-l+4W8Sx4CD5rYFsrhHH8HP01/8jEP7kKf33Xlx2Uk2out/UKoKPYMOIRcDH5ppT8UXLMV+x6Wm5osdRKKgaD1Q==
   dependencies:
     "@commitlint/config-validator" "^17.4.4"
     "@commitlint/execute-rule" "^17.4.0"
@@ -1223,7 +1223,7 @@
     lodash.uniq "^4.5.0"
     resolve-from "^5.0.0"
     ts-node "^10.8.1"
-    typescript "^4.6.4"
+    typescript "^4.6.4 || ^5.0.0"
 
 "@commitlint/message@^17.4.2":
   version "17.4.2"
@@ -4916,11 +4916,11 @@ commander@^2.20.3, commander@^2.8.1:
   integrity sha512-GpVkmM8vF2vQUkj2LvZmD35JxeJOLCwJ9cUkugyk2nuhbv3+mJvpLYYt+0+USMxE+oj+ey/lJEnhZw75x/OMcQ==
 
 commitlint@^17.4.2:
-  version "17.4.4"
-  resolved "https://registry.yarnpkg.com/commitlint/-/commitlint-17.4.4.tgz#884031ff5be10cc7a508f6f214e95543f9a2e020"
-  integrity sha512-trjD7/aJ3FyCMNRhP27QorPjvlE9m0AIlLKcusS6r8aDaDJQ8/MQMmANMv3LvjVx1SKy1MTSF0/oUw3T3If/EA==
+  version "17.5.0"
+  resolved "https://registry.yarnpkg.com/commitlint/-/commitlint-17.5.0.tgz#69a9e59026fd722edcd03e64d0c883d01f662264"
+  integrity sha512-uUDHN7WOUu3zBAGM/1rYGshT/f1HCwcnt3wFoKlVtzkGsb2OmAV5oCDkN1hlrbv6BUENM0wqrZjuwO1Q557Z2A==
   dependencies:
-    "@commitlint/cli" "^17.4.4"
+    "@commitlint/cli" "^17.5.0"
     "@commitlint/types" "^17.4.4"
 
 compare-func@^2.0.0:
@@ -5635,9 +5635,9 @@ ee-first@1.1.1:
   integrity sha512-WMwm9LhRUo+WUaRN+vRuETqG89IgZphVSNkdFgeb6sS/E4OrDIN7t48CAewSHXc6C8lefD8KKfr5vY61brQlow==
 
 electron-to-chromium@^1.4.284:
-  version "1.4.334"
-  resolved "https://registry.yarnpkg.com/electron-to-chromium/-/electron-to-chromium-1.4.334.tgz#eacdcb1145534202d569610c5915b63a3fec0eb9"
-  integrity sha512-laZ1odk+TRen6q0GeyQx/JEkpD3iSZT7ewopCpKqg9bTjP1l8XRfU3Bg20CFjNPZkp5+NDBl3iqd4o/kPO+Vew==
+  version "1.4.337"
+  resolved "https://registry.yarnpkg.com/electron-to-chromium/-/electron-to-chromium-1.4.337.tgz#710168240b2dc5fe5eb5f8e4ef9c16d70aedc0ba"
+  integrity sha512-W8gdzXG86mVPoc56eM8YA+QiLxaAxJ8cmDjxZgfhLLWVvZQxyA918w5tX2JEWApZta45T1/sYcmFHTsTOUE3nw==
 
 elliptic@6.3.3:
   version "6.3.3"
@@ -6677,11 +6677,6 @@ finalhandler@1.2.0:
     parseurl "~1.3.3"
     statuses "2.0.1"
     unpipe "~1.0.0"
-
-find-free-port@^2.0.0:
-  version "2.0.0"
-  resolved "https://registry.yarnpkg.com/find-free-port/-/find-free-port-2.0.0.tgz#4b22e5f6579eb1a38c41ac6bcb3efed1b6da9b1b"
-  integrity sha512-J1j8gfEVf5FN4PR5w5wrZZ7NYs2IvqsHcd03cAeQx3Ec/mo+lKceaVNhpsRKoZpZKbId88o8qh+dwUwzBV6WCg==
 
 find-up@5.0.0, find-up@^5.0.0:
   version "5.0.0"
@@ -9547,9 +9542,9 @@ mkdirp-promise@^5.0.1:
     mkdirp "*"
 
 mkdirp@*, mkdirp@^2.1.3:
-  version "2.1.5"
-  resolved "https://registry.yarnpkg.com/mkdirp/-/mkdirp-2.1.5.tgz#78d7eaf15e069ba7b6b47d76dd94cfadf7a4062f"
-  integrity sha512-jbjfql+shJtAPrFoKxHOXip4xS+kul9W3OzfzzrqueWK2QMGon2bFH2opl6W9EagBThjEz+iysyi/swOoVfB/w==
+  version "2.1.6"
+  resolved "https://registry.yarnpkg.com/mkdirp/-/mkdirp-2.1.6.tgz#964fbcb12b2d8c5d6fbc62a963ac95a273e2cc19"
+  integrity sha512-+hEnITedc8LAtIP9u3HJDFIdcLV2vXP33sqLLIzkv1Db1zO/1OxbvYf0Y1OC/S/Qo5dxHXepofhmxL02PsKe+A==
 
 mkdirp@^0.5.5:
   version "0.5.6"
@@ -12633,10 +12628,15 @@ typescript-tuple@^2.2.1:
   dependencies:
     typescript-compare "^0.0.2"
 
-typescript@4.9.5, typescript@^4.6.4:
+typescript@4.9.5:
   version "4.9.5"
   resolved "https://registry.yarnpkg.com/typescript/-/typescript-4.9.5.tgz#095979f9bcc0d09da324d58d03ce8f8374cbe65a"
   integrity sha512-1FXk9E2Hm+QzZQ7z+McJiHL4NW1F2EzMu9Nq9i3zAaGqibafqYwCVU6WyWAuyQRRzOlxou8xZSyXLEN8oKj24g==
+
+"typescript@^4.6.4 || ^5.0.0":
+  version "5.0.2"
+  resolved "https://registry.yarnpkg.com/typescript/-/typescript-5.0.2.tgz#891e1a90c5189d8506af64b9ef929fca99ba1ee5"
+  integrity sha512-wVORMBGO/FAs/++blGNeAVdbNKtIh1rbBL2EyQ1+J9lClJ93KiiKe8PmFIVdXhHcyv44SL9oglmfeSsndo0jRw==
 
 typpy@^2.0.0, typpy@^2.1.0, typpy@^2.2.0, typpy@^2.3.4:
   version "2.3.13"

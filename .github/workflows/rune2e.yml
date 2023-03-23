@@ -36,6 +36,7 @@ on:
             - gassless
             - test-sequential-e2e
             - test-sequential-no-bootstrap
+            - upgradeRuntime
             - story
             - autocompound
 
