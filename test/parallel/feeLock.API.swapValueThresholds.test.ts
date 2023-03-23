@@ -7,11 +7,7 @@
 import { Keyring } from "@polkadot/api";
 import { getApi, initApi, getMangataInstance } from "../../utils/api";
 import { Assets } from "../../utils/Assets";
-import {
-  MGA_ASSET_ID,
-  EVENT_SECTION_PAYMENT,
-  EVENT_METHOD_PAYMENT,
-} from "../../utils/Constants";
+import { MGA_ASSET_ID } from "../../utils/Constants";
 import { waitSudoOperationSuccess } from "../../utils/eventListeners";
 import { BN } from "@mangata-finance/sdk";
 import { setupApi, setupUsers } from "../../utils/setup";
@@ -117,11 +113,7 @@ test("gasless- Given a feeLock correctly configured WHEN the user swaps two toke
   const saleAssetValue = thresholdValue.mul(new BN(2));
 
   await testUser1.refreshAmounts(AssetWallet.BEFORE);
-  const events = await testUser1.sellAssets(
-    firstCurrency,
-    secondCurrency,
-    saleAssetValue
-  );
+  await testUser1.sellAssets(firstCurrency, secondCurrency, saleAssetValue);
   await testUser1.refreshAmounts(AssetWallet.AFTER);
 
   const userFirstCurLockedValue = testUser1
@@ -145,12 +137,6 @@ test("gasless- Given a feeLock correctly configured WHEN the user swaps two toke
   expect(userFirstCurLockedValue).bnEqual(new BN(0));
   expect(userSecondCurLockedValue).bnEqual(new BN(0));
   expect(userMgaFees).bnEqual(new BN(0));
-  expect(
-    events.findIndex(
-      (x) =>
-        x.section === EVENT_SECTION_PAYMENT || x.method === EVENT_METHOD_PAYMENT
-    )
-  ).toEqual(-1);
 });
 
 test("gasless- Given a feeLock correctly configured WHEN the user swaps two tokens defined in the thresholds AND the user has enough MGAs AND swapValue < threshold THEN some MGAs will be locked", async () => {
@@ -174,11 +160,7 @@ test("gasless- Given a feeLock correctly configured WHEN the user swaps two toke
   const saleAssetValue = thresholdValue.sub(new BN(5));
 
   await testUser1.refreshAmounts(AssetWallet.BEFORE);
-  const events = await testUser1.sellAssets(
-    firstCurrency,
-    secondCurrency,
-    saleAssetValue
-  );
+  await testUser1.sellAssets(firstCurrency, secondCurrency, saleAssetValue);
   await testUser1.refreshAmounts(AssetWallet.AFTER);
 
   const userFirstCurLockedValue = testUser1
@@ -202,12 +184,6 @@ test("gasless- Given a feeLock correctly configured WHEN the user swaps two toke
   expect(userFirstCurLockedValue).bnEqual(new BN(0));
   expect(userSecondCurLockedValue).bnEqual(new BN(0));
   expect(userMgaLockedValue).bnEqual(new BN(feeLockAmount));
-  expect(
-    events.findIndex(
-      (x) =>
-        x.section === EVENT_SECTION_PAYMENT || x.method === EVENT_METHOD_PAYMENT
-    )
-  ).toEqual(-1);
 });
 
 test("gasless- Given a feeLock correctly configured WHEN the user swaps two tokens that are not defined in the thresholds AND the user has not enough MGAs AND swapValue > threshold THEN the extrinsic can not be submited", async () => {

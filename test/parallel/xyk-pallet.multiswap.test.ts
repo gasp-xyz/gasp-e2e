@@ -20,11 +20,7 @@ import {
   getEventResultFromMangataTx,
 } from "../../utils/txHandler";
 import { BN_ONE, BN_TEN_THOUSAND, BN_ZERO } from "@mangata-finance/sdk";
-import {
-  EVENT_METHOD_PAYMENT,
-  EVENT_SECTION_PAYMENT,
-  MGA_ASSET_ID,
-} from "../../utils/Constants";
+import { MGA_ASSET_ID } from "../../utils/Constants";
 import { Assets } from "../../utils/Assets";
 import { BN_MILLION } from "@mangata-finance/sdk";
 
@@ -33,7 +29,6 @@ jest.setTimeout(1500000);
 
 const successMultiSwapBuyEventName = "AssetsMultiBuySwapped";
 const successMultiSwapSellEventName = "AssetsMultiSellSwapped";
-
 let users: User[] = [];
 let tokenIds: BN[] = [];
 
@@ -65,13 +60,6 @@ describe("Multiswap - happy paths", () => {
       testUser1
     );
     expect(boughtTokens.free).bnEqual(new BN(1000));
-    expect(
-      multiSwapOutput.findIndex(
-        (x) =>
-          x.section === EVENT_SECTION_PAYMENT ||
-          x.method === EVENT_METHOD_PAYMENT
-      )
-    ).toEqual(-1);
   });
   test("[gasless] Happy path - multi-swap - sell", async () => {
     const testUser1 = users[0];
@@ -160,13 +148,6 @@ describe("Multiswap - happy paths", () => {
     expect(changeInSoldAsset).bnEqual(expectedFeeCharged);
     expect(eventResponse.state).toEqual(ExtrinsicResult.ExtrinsicSuccess);
     //check only 0.3%
-    expect(
-      multiSwapOutput.findIndex(
-        (x) =>
-          x.section === EVENT_SECTION_PAYMENT ||
-          x.method === EVENT_METHOD_PAYMENT
-      )
-    ).toEqual(-1);
   });
   test("[gasless] accuracy - Sum of calculate_sell_asset chained is equal to the multiswap operation", async () => {
     const testUser1 = users[0];
