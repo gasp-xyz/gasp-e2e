@@ -1,14 +1,15 @@
 /* eslint-disable no-loop-func */
-import { getApi, getMangataInstance } from "./api";
-import { testLog } from "./Logger";
-import { api } from "./setup";
-import { User } from "./User";
-import { BN } from "@polkadot/util";
 import { MangataGenericEvent } from "@mangata-finance/sdk";
-import { getEventErrorfromSudo } from "./txHandler";
-import _, { reject } from "lodash";
 import { ApiPromise } from "@polkadot/api";
+import { BN } from "@polkadot/util";
+import _, { reject } from "lodash";
+import { getApi, getMangataInstance } from "./api";
+import { logEvent, testLog } from "./Logger";
+import { api } from "./setup";
+import { getEventErrorfromSudo } from "./txHandler";
+import { User } from "./User";
 import { getEnvironmentRequiredVars } from "./utils";
+import { Codec } from "@polkadot/types/types";
 
 // lets create a enum for different status.
 export enum ExtrinsicResult {
@@ -86,15 +87,6 @@ export const waitNewBlock = () => {
   });
 };
 
-// @ts-ignore
-export const logEvent = (phase, data, method, section) => {
-  testLog
-    .getLog()
-    .info(
-      phase.toString() + " : " + section + "." + method + " " + data.toString()
-    );
-};
-
 export function filterEventData(
   result: MangataGenericEvent[],
   method: string
@@ -133,11 +125,11 @@ export async function waitSudoOperationFail(
   expect(BootstrapError.method).toContain(expectedError);
 }
 
-export const waitForEvent = async (
+export const waitForEvents = async (
   api: ApiPromise,
   method: string,
   blocks: number = 10
-): Promise<void> => {
+): Promise<CodecOrArray> => {
   return new Promise(async (resolve, reject) => {
     let counter = 0;
     const unsub = await api.rpc.chain.subscribeFinalizedHeads(async (head) => {
@@ -146,20 +138,18 @@ export const waitForEvent = async (
       testLog
         .getLog()
         .info(
-          `await event check for '${method}', attempt ${counter}, head ${head}`
+          `→ find on ${api.runtimeChain} for '${method}' event, attempt ${counter}, head ${head.hash}`
         );
-      events.forEach(({ phase, event: { data, method, section } }) => {
-        logEvent(phase, data, method, section);
-      });
-      const event = _.find(
+
+      events.forEach((e) => logEvent(api.runtimeChain, e));
+
+      const filtered = _.filter(
         events,
         ({ event }) => `${event.section}.${event.method}` === method
       );
-      if (event) {
-        resolve();
+      if (filtered.length > 0) {
+        resolve(filtered);
         unsub();
-        // } else {
-        //   reject(new Error("event not found"));
       }
       if (counter === blocks) {
         reject(`method ${method} not found within blocks limit`);
@@ -201,3 +191,130 @@ export const waitForRewards = async (
       }
     });
   });
+
+type CodecOrArray = Codec | Codec[];
+
+const processCodecOrArray = (codec: CodecOrArray, fn: (c: Codec) => any) =>
+  Array.isArray(codec) ? codec.map(fn) : fn(codec);
+
+const toHuman = (codec: CodecOrArray) =>
+  processCodecOrArray(codec, (c) => c?.toHuman?.() ?? c);
+const toJson = (codec: CodecOrArray) =>
+  processCodecOrArray(codec, (c) => c?.toJSON?.() ?? c);
+const toHex = (codec: CodecOrArray) =>
+  processCodecOrArray(codec, (c) => c?.toHex?.() ?? c);
+
+export const matchSnapshot = (
+  codec: CodecOrArray | Promise<CodecOrArray>,
+  message?: string
+) => {
+  return expect(Promise.resolve(codec).then(toHuman)).resolves.toMatchSnapshot(
+    message
+  );
+};
+
+export const expectEvent = (codec: CodecOrArray, event: any) => {
+  return expect(toHuman(codec)).toEqual(
+    expect.arrayContaining([expect.objectContaining(event)])
+  );
+};
+
+export const expectHuman = (codec: CodecOrArray) => {
+  return expect(toHuman(codec));
+};
+
+export const expectJson = (codec: CodecOrArray) => {
+  return expect(toJson(codec));
+};
+
+export const expectHex = (codec: CodecOrArray) => {
+  return expect(toHex(codec));
+};
+
+type EventFilter = string | { method: string; section: string };
+
+const _matchEvents = async (
+  msg: string,
+  events: Promise<Codec[] | Codec>,
+  ...filters: EventFilter[]
+) => {
+  let data = toHuman(await events).map(
+    ({ event: { index: _, ...event } }: any) => event
+  );
+  if (filters) {
+    const filtersArr = Array.isArray(filters) ? filters : [filters];
+    data = data.filter((evt: any) => {
+      return filtersArr.some((filter) => {
+        if (typeof filter === "string") {
+          return evt.section === filter;
+        }
+        const { section, method } = filter;
+        return evt.section === section && evt.method === method;
+      });
+    });
+  }
+  return expect(data).toMatchSnapshot(msg);
+};
+
+export const matchEvents = async (
+  events: Promise<Codec[] | Codec>,
+  ...filters: EventFilter[]
+) => {
+  return _matchEvents("events", redact(events), ...filters);
+};
+
+export const matchSystemEvents = async (
+  { api }: { api: ApiPromise },
+  ...filters: EventFilter[]
+) => {
+  await _matchEvents(
+    "system events",
+    redact(api.query.system.events()),
+    ...filters
+  );
+};
+
+export const matchUmp = async ({ api }: { api: ApiPromise }) => {
+  expect(await api.query.parachainSystem.upwardMessages()).toMatchSnapshot(
+    "ump"
+  );
+};
+
+export const redact = async (data: any | Promise<any>) => {
+  const json = toHuman(await data);
+
+  const process = (obj: any): any => {
+    if (obj == null) {
+      return obj;
+    }
+    if (Array.isArray(obj)) {
+      return obj.map(process);
+    }
+    if (typeof obj === "number") {
+      return "(redacted)";
+    }
+    if (typeof obj === "string") {
+      if (obj.match(/^[\d,]+$/) || obj.match(/0x[0-9a-f]{64}/)) {
+        return "(redacted)";
+      }
+      return obj;
+    }
+    if (typeof obj === "object") {
+      return Object.fromEntries(
+        Object.entries(obj).map(([k, v]) => [k, process(v)])
+      );
+    }
+    return obj;
+  };
+
+  return process(json);
+};
+
+export const expectExtrinsicSuccess = (events: Codec[]) => {
+  expectEvent(events, {
+    event: expect.objectContaining({
+      method: "ExtrinsicSuccess",
+      section: "system",
+    }),
+  });
+};

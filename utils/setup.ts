@@ -10,6 +10,7 @@ import { BN } from "@mangata-finance/sdk";
 import { Xyk } from "./xyk";
 import { signTx } from "@mangata-finance/sdk";
 import { SudoDB } from "./SudoDB";
+import { Codec } from "@polkadot/types-codec/types";
 
 // API
 export let api: ApiPromise;
@@ -20,6 +21,18 @@ export let sudo: User;
 export let alice: User;
 
 export type Extrinsic = SubmittableExtrinsic<"promise">;
+
+export type CodecOrArray = Codec | Codec[];
+
+const processCodecOrArray = (codec: CodecOrArray, fn: (c: Codec) => any) =>
+  Array.isArray(codec) ? codec.map(fn) : fn(codec);
+
+export const toHuman = (codec: CodecOrArray) =>
+  processCodecOrArray(codec, (c) => c?.toHuman?.() ?? c);
+export const toJson = (codec: CodecOrArray) =>
+  processCodecOrArray(codec, (c) => c?.toJSON?.() ?? c);
+export const toHex = (codec: CodecOrArray) =>
+  processCodecOrArray(codec, (c) => c?.toHex?.() ?? c);
 
 export const setupApi = async () => {
   if (!api || (api && !api.isConnected)) {
@@ -46,6 +59,23 @@ export const setupUsers = () => {
   keyring.addPair(testUser4.keyRingPair);
 
   return [testUser1, testUser2, testUser3, testUser4];
+};
+
+export const devTestingPairs = (ss58Format?: number) => {
+  const keyring = new Keyring({ type: "sr25519", ss58Format });
+  const alice = keyring.addFromUri("//Alice");
+  const bob = keyring.addFromUri("//Bob");
+  const charlie = keyring.addFromUri("//Charlie");
+  const dave = keyring.addFromUri("//Dave");
+  const eve = keyring.addFromUri("//Eve");
+  return {
+    alice,
+    bob,
+    charlie,
+    dave,
+    eve,
+    keyring,
+  };
 };
 
 export async function setup5PoolsChained(users: User[]) {
@@ -75,6 +105,42 @@ export async function setup5PoolsChained(users: User[]) {
       )
     );
   });
+  await Sudo.batchAsSudoFinalized(
+    Assets.mintNative(testUser1),
+    Assets.mintNative(testUser2),
+    Assets.mintNative(testUser3),
+    Assets.mintNative(testUser4),
+    Assets.mintToken(tokenIds[0], testUser1),
+    Assets.mintToken(tokenIds[0], testUser2),
+    Assets.mintToken(tokenIds[0], testUser3),
+    Assets.mintToken(tokenIds[0], testUser4),
+    ...poolCreationExtrinsics
+  );
+  return { users, tokenIds };
+}
+export async function setupAPoolForUsers(users: User[]) {
+  const [testUser1, testUser2, testUser3, testUser4] = await setupUsers();
+  users = [testUser1, testUser2, testUser3, testUser4];
+  const keyring = new Keyring({ type: "sr25519" });
+  const sudo = new User(keyring, getEnvironmentRequiredVars().sudo);
+  const events = await Sudo.batchAsSudoFinalized(
+    Assets.issueToken(sudo),
+    Assets.issueToken(sudo)
+  );
+  const tokenIds: BN[] = events
+    .filter((item) => item.method === "Issued" && item.section === "tokens")
+    .map((x) => new BN(x.eventData[0].data.toString()));
+
+  const poolCreationExtrinsics: Extrinsic[] = [];
+  poolCreationExtrinsics.push(
+    Xyk.createPool(
+      tokenIds[0],
+      Assets.DEFAULT_AMOUNT.divn(2),
+      tokenIds[1],
+      Assets.DEFAULT_AMOUNT.divn(2)
+    )
+  );
+
   await Sudo.batchAsSudoFinalized(
     Assets.mintNative(testUser1),
     Assets.mintNative(testUser2),

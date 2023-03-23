@@ -1,0 +1,320 @@
+[2023-03-03T11:46:30.486Z] - W[undefined] - [info]: name: //testUser_7dd83016-a70f-4921-8fbc-e765a78a7075, address: 5Hh1aN7yizubSgmyPV6gw38M4frNizHxr7WuLmgxDSXM96S1
+[2023-03-03T11:46:30.493Z] - W[undefined] - [info]: name: //testUser_a30b9768-707e-4b4f-b68c-2d14cea3da1d, address: 5FxbTyMzguMUoiVPmrwdVh5MEvzFUdbriQQ2wi9Bpt5EdcDq
+[2023-03-03T11:46:30.498Z] - W[undefined] - [info]: name: //testUser_43d3a979-6353-468b-a560-3591871db1ee, address: 5EWYN4Z5qUTkAr76is6D23KdNaTutqQ9smLsWs5Lujne6K9P
+[2023-03-03T11:46:30.504Z] - W[undefined] - [info]: name: //testUser_ce8c43e3-ee26-4ef5-9636-bdbaa96fc0e9, address: 5GGdBpmhGzqU2wM3FtUYSTBtrr2TDSvh1h37peHcenaiHzLm
+[2023-03-03T12:09:43.336Z] - W[undefined] - [info]: TEST_INFO: Running test in ws://127.0.0.1:9946
+[2023-03-03T12:09:43.472Z] - W[undefined] - [info]: name: //testUser_aeb7b04c-683c-4a1a-ad00-5515f1efa6ce, address: 5CLxJBzhWcDyGkYsxszXCRzA1V5iueuHAbk7Pp5zP1RzK1es
+[2023-03-03T12:09:43.478Z] - W[undefined] - [info]: name: //testUser_47683d80-630d-4e32-8f7b-4a27a6ec703d, address: 5GyAJVytePtmtQ8uhcoRzuUBp5KpKGvD5vyy36pMtpjAb8Ne
+[2023-03-03T12:09:43.483Z] - W[undefined] - [info]: name: //testUser_4e5ccd16-9b15-4fb7-8946-7ef54cc7821f, address: 5DLRMfzhjB5hfEuVR44udquuKRhHwijvGSEKXHbhjMP1dS4X
+[2023-03-03T12:09:43.489Z] - W[undefined] - [info]: name: //testUser_8f150895-a6cb-4921-bf86-2e155286f26b, address: 5DnVe52DytzpbzEEmGT3TBt3PbasEF5sbrCZVoRJAcWXnsQ7
+[2023-03-03T12:11:47.808Z] - W[undefined] - [info]: TEST_INFO: Running test in ws://127.0.0.1:9946
+[2023-03-03T12:11:47.945Z] - W[undefined] - [info]: name: //testUser_d3d03843-df5b-411f-99f4-e85c60b07d42, address: 5C4v3e1eX3LNcdR7BzSvPhTAKFrcaTxVENjvjYxcTTTw7vjN
+[2023-03-03T12:11:47.950Z] - W[undefined] - [info]: name: //testUser_4792a65c-792f-4e53-b30a-b73a016a2c57, address: 5EqS4684kp7U79tQKt31ejHweHDQKnRkoBHCQVSnmUAGUbW5
+[2023-03-03T12:11:47.956Z] - W[undefined] - [info]: name: //testUser_61393d42-6e45-40f7-b948-4e8ead1f034f, address: 5GH8zF3WeiyaSKEg3Agb2Kiucrti8DkgwniP32PQso4nQtgR
+[2023-03-03T12:11:47.962Z] - W[undefined] - [info]: name: //testUser_69736164-d7ed-43d8-8372-e85d70670add, address: 5EHEjrquStVtXtAS68pZgnGKcxaPBWsa8N11zUgTRGnPWjPj
+[2023-03-03T12:11:47.995Z] - W[undefined] - [info]: W[undefined] - sudoNonce: 0 
+[2023-03-03T12:12:12.041Z] - W[undefined] - [info]: [{"event":{"index":"0x0a08","data":[0,"5GrwvaEF5zXb26Fz9rcQpDWS57CtERHpNehXCPcNoHGKutQY","0x00000000000000005c77af4b7cc07fe8"]},"phase":{"applyExtrinsic":2},"section":"tokens","method":"Withdrawn","metaDocumentation":"[Some balances were withdrawn (e.g. pay for transaction fee)]","eventData":[{"data":"0x00000000"},{"data":"5GrwvaEF5zXb26Fz9rcQpDWS57CtERHpNehXCPcNoHGKutQY"},{"data":"0x00000000000000005c77af4b7cc07fe8"}],"error":null},{"event":{"index":"0x0a00","data":[8,"5GrwvaEF5zXb26Fz9rcQpDWS57CtERHpNehXCPcNoHGKutQY","0x000000000000003635c9adc5dea00000"]},"phase":{"applyExtrinsic":2},"section":"tokens","method":"Endowed","metaDocumentation":"[An account was created with some free balance.]","eventData":[{"data":"0x00000008"},{"data":"5GrwvaEF5zXb26Fz9rcQpDWS57CtERHpNehXCPcNoHGKutQY"},{"data":"0x000000000000003635c9adc5dea00000"}],"error":null},{"event":{"index":"0x0a0a","data":[8,"5GrwvaEF5zXb26Fz9rcQpDWS57CtERHpNehXCPcNoHGKutQY","0x000000000000003635c9adc5dea00000"]},"phase":{"applyExtrinsic":2},"section":"tokens","method":"Deposited","metaDocumentation":"[Deposited some balance into an account]","eventData":[{"data":"0x00000008"},{"data":"5GrwvaEF5zXb26Fz9rcQpDWS57CtERHpNehXCPcNoHGKutQY"},{"data":"0x000000000000003635c9adc5dea00000"}],"error":null},{"event":{"index":"0x0a0d","data":[8,"5GrwvaEF5zXb26Fz9rcQpDWS57CtERHpNehXCPcNoHGKutQY","0x000000000000003635c9adc5dea00000"]},"phase":{"applyExtrinsic":2},"section":"tokens","method":"Issued","metaDocumentation":"[A token was issued.]","eventData":[{"data":"0x00000008"},{"data":"5GrwvaEF5zXb26Fz9rcQpDWS57CtERHpNehXCPcNoHGKutQY"},{"data":"0x000000000000003635c9adc5dea00000"}],"error":null},{"event":{"index":"0x3100","data":[{"ok":null}]},"phase":{"applyExtrinsic":2},"section":"sudo","method":"Sudid","metaDocumentation":"[A sudo just took place. \\[result\\]]","eventData":[{"data":{"ok":null}}],"error":null},{"event":{"index":"0x0a0a","data":[0,"5GrwvaEF5zXb26Fz9rcQpDWS57CtERHpNehXCPcNoHGKutQY","0x00000000000000005c77af4b7cc07fe8"]},"phase":{"applyExtrinsic":2},"section":"tokens","method":"Deposited","metaDocumentation":"[Deposited some balance into an account]","eventData":[{"data":"0x00000000"},{"data":"5GrwvaEF5zXb26Fz9rcQpDWS57CtERHpNehXCPcNoHGKutQY"},{"data":"0x00000000000000005c77af4b7cc07fe8"}],"error":null},{"event":{"index":"0x0b00","data":["5GrwvaEF5zXb26Fz9rcQpDWS57CtERHpNehXCPcNoHGKutQY",0,0]},"phase":{"applyExtrinsic":2},"section":"transactionPayment","method":"TransactionFeePaid","metaDocumentation":"[A transaction fee `actual_fee`, of which `tip` was added to the minimum inclusion fee,, has been paid by `who`.]","eventData":[{"data":"5GrwvaEF5zXb26Fz9rcQpDWS57CtERHpNehXCPcNoHGKutQY"},{"data":"0x00000000000000000000000000000000"},{"data":"0x00000000000000000000000000000000"}],"error":null},{"event":{"index":"0x0000","data":[{"weight":{"refTime":671146000,"proofSize":0},"class":"Normal","paysFee":"No"}]},"phase":{"applyExtrinsic":2},"section":"system","method":"ExtrinsicSuccess","metaDocumentation":"[An extrinsic completed successfully.]","eventData":[{"lookupName":"FrameSupportDispatchDispatchInfo","data":{"weight":{"refTime":671146000,"proofSize":0},"class":"Normal","paysFee":"No"}}],"error":null}]
+[2023-03-03T12:12:12.064Z] - W[undefined] - [info]: Ready
+[2023-03-03T12:12:12.066Z] - W[undefined] - [info]: {"broadcast":["12D3KooWGxifi2zUb9hsWCWTA6CnAuRDjsFgn92X9gBnK27BftNr","12D3KooWNUXbknzHSkVqHQd3u92GsKPzvQ1PVpMGwswHzXgvRtdz","12D3KooWQ3mXbqdhMVhfjs4QvEcZzJEsdMAy1wXK7cZCdNRxEoum","12D3KooWQ5WcehcHQq9ebYVShfzoLzGGhNG6qAaYJX9tbc9sY6RV","12D3KooWBUErvV9vPvEU8DDVEhoBfDbcPmGkq2i9KVVrhMYokfV1"]}
+[2023-03-03T12:12:36.041Z] - W[undefined] - [info]: {"inBlock":"0x3b233fb4ac0e4b48e1e1c55a3c2b66ef1feccec87ed34ee074017668ae1313fb"}
+[2023-03-03T12:12:48.052Z] - W[undefined] - [info]: {"inBlock":"0x791df46aa5d3e02a8c49db0b6aa10e4856279a5211511d03e7eaf7860fead8f2"}
+[2023-03-03T12:12:48.053Z] - W[undefined] - [info]: {"applyExtrinsic":2} : tokens.Withdrawn [0,"5GrwvaEF5zXb26Fz9rcQpDWS57CtERHpNehXCPcNoHGKutQY","0x00000000000000031110e756697183ba"]
+[2023-03-03T12:12:48.053Z] - W[undefined] - [info]: {"applyExtrinsic":2} : issuance.TGEFinalized []
+[2023-03-03T12:12:48.053Z] - W[undefined] - [info]: {"applyExtrinsic":2} : sudo.Sudid [{"ok":null}]
+[2023-03-03T12:12:48.053Z] - W[undefined] - [info]: {"applyExtrinsic":2} : utility.ItemCompleted []
+[2023-03-03T12:12:48.053Z] - W[undefined] - [info]: {"applyExtrinsic":2} : issuance.IssuanceConfigInitialized [{"cap":"0x000000000cecb8f27f4200f3a0000000","issuanceAtInit":"0x00000000033b320c67feb82da7400000","linearIssuanceBlocks":13140000,"liquidityMiningSplit":555555556,"stakingSplit":444444444,"totalCrowdloanAllocation":"0x000000000110f837d8942a518a000000"}]
+[2023-03-03T12:12:48.053Z] - W[undefined] - [info]: {"applyExtrinsic":2} : sudo.Sudid [{"ok":null}]
+[2023-03-03T12:12:48.053Z] - W[undefined] - [info]: {"applyExtrinsic":2} : utility.ItemCompleted []
+[2023-03-03T12:12:48.053Z] - W[undefined] - [info]: {"applyExtrinsic":2} : tokens.Endowed [8,"5FHneW46xGXgs5mUiveU4sbTyGBzmstUspZC92UhjJM694ty","0x000000000000003635c9adc5dea00000"]
+[2023-03-03T12:12:48.054Z] - W[undefined] - [info]: {"applyExtrinsic":2} : tokens.Deposited [8,"5FHneW46xGXgs5mUiveU4sbTyGBzmstUspZC92UhjJM694ty","0x000000000000003635c9adc5dea00000"]
+[2023-03-03T12:12:48.054Z] - W[undefined] - [info]: {"applyExtrinsic":2} : tokens.Minted [8,"5FHneW46xGXgs5mUiveU4sbTyGBzmstUspZC92UhjJM694ty","0x000000000000003635c9adc5dea00000"]
+[2023-03-03T12:12:48.054Z] - W[undefined] - [info]: {"applyExtrinsic":2} : sudo.Sudid [{"ok":null}]
+[2023-03-03T12:12:48.054Z] - W[undefined] - [info]: {"applyExtrinsic":2} : utility.ItemCompleted []
+[2023-03-03T12:12:48.054Z] - W[undefined] - [info]: {"applyExtrinsic":2} : tokens.Deposited [8,"5GrwvaEF5zXb26Fz9rcQpDWS57CtERHpNehXCPcNoHGKutQY","0x000000000000003635c9adc5dea00000"]
+[2023-03-03T12:12:48.054Z] - W[undefined] - [info]: {"applyExtrinsic":2} : tokens.Minted [8,"5GrwvaEF5zXb26Fz9rcQpDWS57CtERHpNehXCPcNoHGKutQY","0x000000000000003635c9adc5dea00000"]
+[2023-03-03T12:12:48.054Z] - W[undefined] - [info]: {"applyExtrinsic":2} : sudo.Sudid [{"ok":null}]
+[2023-03-03T12:12:48.054Z] - W[undefined] - [info]: {"applyExtrinsic":2} : utility.ItemCompleted []
+[2023-03-03T12:12:48.054Z] - W[undefined] - [info]: {"applyExtrinsic":2} : tokens.Endowed [8,"5FLSigC9HGRKVhB9FiEo4Y3koPsNmBmLJbpXg2mp1hXcS59Y","0x000000000000003635c9adc5dea00000"]
+[2023-03-03T12:12:48.054Z] - W[undefined] - [info]: {"applyExtrinsic":2} : tokens.Deposited [8,"5FLSigC9HGRKVhB9FiEo4Y3koPsNmBmLJbpXg2mp1hXcS59Y","0x000000000000003635c9adc5dea00000"]
+[2023-03-03T12:12:48.054Z] - W[undefined] - [info]: {"applyExtrinsic":2} : tokens.Minted [8,"5FLSigC9HGRKVhB9FiEo4Y3koPsNmBmLJbpXg2mp1hXcS59Y","0x000000000000003635c9adc5dea00000"]
+[2023-03-03T12:12:48.055Z] - W[undefined] - [info]: {"applyExtrinsic":2} : sudo.Sudid [{"ok":null}]
+[2023-03-03T12:12:48.055Z] - W[undefined] - [info]: {"applyExtrinsic":2} : utility.ItemCompleted []
+[2023-03-03T12:12:48.055Z] - W[undefined] - [info]: {"applyExtrinsic":2} : tokens.Endowed [8,"5HGjWAeFDfFCWPsjFQdVV2Msvz2XtMktvgocEZcCj68kUMaw","0x000000000000003635c9adc5dea00000"]
+[2023-03-03T12:12:48.055Z] - W[undefined] - [info]: {"applyExtrinsic":2} : tokens.Deposited [8,"5HGjWAeFDfFCWPsjFQdVV2Msvz2XtMktvgocEZcCj68kUMaw","0x000000000000003635c9adc5dea00000"]
+[2023-03-03T12:12:48.055Z] - W[undefined] - [info]: {"applyExtrinsic":2} : tokens.Minted [8,"5HGjWAeFDfFCWPsjFQdVV2Msvz2XtMktvgocEZcCj68kUMaw","0x000000000000003635c9adc5dea00000"]
+[2023-03-03T12:12:48.055Z] - W[undefined] - [info]: {"applyExtrinsic":2} : sudo.Sudid [{"ok":null}]
+[2023-03-03T12:12:48.055Z] - W[undefined] - [info]: {"applyExtrinsic":2} : utility.ItemCompleted []
+[2023-03-03T12:12:48.055Z] - W[undefined] - [info]: {"applyExtrinsic":2} : tokens.Deposited [0,"5FHneW46xGXgs5mUiveU4sbTyGBzmstUspZC92UhjJM694ty","0x000000000000003635c9adc5dea00000"]
+[2023-03-03T12:12:48.055Z] - W[undefined] - [info]: {"applyExtrinsic":2} : tokens.Minted [0,"5FHneW46xGXgs5mUiveU4sbTyGBzmstUspZC92UhjJM694ty","0x000000000000003635c9adc5dea00000"]
+[2023-03-03T12:12:48.055Z] - W[undefined] - [info]: {"applyExtrinsic":2} : sudo.Sudid [{"ok":null}]
+[2023-03-03T12:12:48.055Z] - W[undefined] - [info]: {"applyExtrinsic":2} : utility.ItemCompleted []
+[2023-03-03T12:12:48.055Z] - W[undefined] - [info]: {"applyExtrinsic":2} : tokens.Deposited [0,"5GrwvaEF5zXb26Fz9rcQpDWS57CtERHpNehXCPcNoHGKutQY","0x000000000000003635c9adc5dea00000"]
+[2023-03-03T12:12:48.055Z] - W[undefined] - [info]: {"applyExtrinsic":2} : tokens.Minted [0,"5GrwvaEF5zXb26Fz9rcQpDWS57CtERHpNehXCPcNoHGKutQY","0x000000000000003635c9adc5dea00000"]
+[2023-03-03T12:12:48.055Z] - W[undefined] - [info]: {"applyExtrinsic":2} : sudo.Sudid [{"ok":null}]
+[2023-03-03T12:12:48.055Z] - W[undefined] - [info]: {"applyExtrinsic":2} : utility.ItemCompleted []
+[2023-03-03T12:12:48.055Z] - W[undefined] - [info]: {"applyExtrinsic":2} : tokens.Deposited [0,"5FLSigC9HGRKVhB9FiEo4Y3koPsNmBmLJbpXg2mp1hXcS59Y","0x000000000000003635c9adc5dea00000"]
+[2023-03-03T12:12:48.055Z] - W[undefined] - [info]: {"applyExtrinsic":2} : tokens.Minted [0,"5FLSigC9HGRKVhB9FiEo4Y3koPsNmBmLJbpXg2mp1hXcS59Y","0x000000000000003635c9adc5dea00000"]
+[2023-03-03T12:12:48.056Z] - W[undefined] - [info]: {"applyExtrinsic":2} : sudo.Sudid [{"ok":null}]
+[2023-03-03T12:12:48.056Z] - W[undefined] - [info]: {"applyExtrinsic":2} : utility.ItemCompleted []
+[2023-03-03T12:12:48.056Z] - W[undefined] - [info]: {"applyExtrinsic":2} : tokens.Endowed [0,"5HGjWAeFDfFCWPsjFQdVV2Msvz2XtMktvgocEZcCj68kUMaw","0x000000000000003635c9adc5dea00000"]
+[2023-03-03T12:12:48.056Z] - W[undefined] - [info]: {"applyExtrinsic":2} : tokens.Deposited [0,"5HGjWAeFDfFCWPsjFQdVV2Msvz2XtMktvgocEZcCj68kUMaw","0x000000000000003635c9adc5dea00000"]
+[2023-03-03T12:12:48.056Z] - W[undefined] - [info]: {"applyExtrinsic":2} : tokens.Minted [0,"5HGjWAeFDfFCWPsjFQdVV2Msvz2XtMktvgocEZcCj68kUMaw","0x000000000000003635c9adc5dea00000"]
+[2023-03-03T12:12:48.056Z] - W[undefined] - [info]: {"applyExtrinsic":2} : sudo.Sudid [{"ok":null}]
+[2023-03-03T12:12:48.056Z] - W[undefined] - [info]: {"applyExtrinsic":2} : utility.ItemCompleted []
+[2023-03-03T12:12:48.056Z] - W[undefined] - [info]: {"applyExtrinsic":2} : tokens.Transfer [0,"5FHneW46xGXgs5mUiveU4sbTyGBzmstUspZC92UhjJM694ty","5EYCAe5XGPRojsCSi9p1ZZQ5qgeJGFcTxPxrsFRzkASu6bT2","0x000000000000001b1ae4d6e2ef500000"]
+[2023-03-03T12:12:48.056Z] - W[undefined] - [info]: {"applyExtrinsic":2} : tokens.Endowed [8,"5EYCAe5XGPRojsCSi9p1ZZQ5qgeJGFcTxPxrsFRzkASu6bT2","0x000000000000001b1ae4d6e2ef500000"]
+[2023-03-03T12:12:48.056Z] - W[undefined] - [info]: {"applyExtrinsic":2} : tokens.Transfer [8,"5FHneW46xGXgs5mUiveU4sbTyGBzmstUspZC92UhjJM694ty","5EYCAe5XGPRojsCSi9p1ZZQ5qgeJGFcTxPxrsFRzkASu6bT2","0x000000000000001b1ae4d6e2ef500000"]
+[2023-03-03T12:12:48.056Z] - W[undefined] - [info]: {"applyExtrinsic":2} : tokens.Endowed [9,"5FHneW46xGXgs5mUiveU4sbTyGBzmstUspZC92UhjJM694ty","0x000000000000001b1ae4d6e2ef500000"]
+[2023-03-03T12:12:48.056Z] - W[undefined] - [info]: {"applyExtrinsic":2} : tokens.Deposited [9,"5FHneW46xGXgs5mUiveU4sbTyGBzmstUspZC92UhjJM694ty","0x000000000000001b1ae4d6e2ef500000"]
+[2023-03-03T12:12:48.056Z] - W[undefined] - [info]: {"applyExtrinsic":2} : assetRegistry.RegisteredAsset [9,{"decimals":18,"name":"0x4c6971756964697479506f6f6c546f6b656e30783030303030303039","symbol":"0x544b4e307830303030303030302d544b4e30783030303030303038","existentialDeposit":0,"location":null,"additional":{"xcm":null,"xyk":null}}]
+[2023-03-03T12:12:48.056Z] - W[undefined] - [info]: {"applyExtrinsic":2} : xyk.PoolCreated ["5FHneW46xGXgs5mUiveU4sbTyGBzmstUspZC92UhjJM694ty",0,"0x000000000000001b1ae4d6e2ef500000",8,"0x000000000000001b1ae4d6e2ef500000"]
+[2023-03-03T12:12:48.057Z] - W[undefined] - [info]: {"applyExtrinsic":2} : sudo.SudoAsDone [{"ok":null}]
+[2023-03-03T12:12:48.057Z] - W[undefined] - [info]: {"applyExtrinsic":2} : utility.ItemCompleted []
+[2023-03-03T12:12:48.057Z] - W[undefined] - [info]: {"applyExtrinsic":2} : utility.BatchCompleted []
+[2023-03-03T12:12:48.057Z] - W[undefined] - [info]: {"applyExtrinsic":2} : tokens.Deposited [0,"5GrwvaEF5zXb26Fz9rcQpDWS57CtERHpNehXCPcNoHGKutQY","0x00000000000000031110e756697183ba"]
+[2023-03-03T12:12:48.057Z] - W[undefined] - [info]: {"applyExtrinsic":2} : transactionPayment.TransactionFeePaid ["5GrwvaEF5zXb26Fz9rcQpDWS57CtERHpNehXCPcNoHGKutQY","0x00000000000000031110e756697183ba",0]
+[2023-03-03T12:12:48.057Z] - W[undefined] - [info]: {"applyExtrinsic":2} : system.ExtrinsicSuccess [{"weight":{"refTime":6090122747,"proofSize":0},"class":"Normal","paysFee":"Yes"}]
+[2023-03-03T12:12:48.090Z] - W[undefined] - [info]: Ready
+[2023-03-03T12:12:48.090Z] - W[undefined] - [info]: {"broadcast":["12D3KooWGxifi2zUb9hsWCWTA6CnAuRDjsFgn92X9gBnK27BftNr","12D3KooWNUXbknzHSkVqHQd3u92GsKPzvQ1PVpMGwswHzXgvRtdz","12D3KooWQ3mXbqdhMVhfjs4QvEcZzJEsdMAy1wXK7cZCdNRxEoum","12D3KooWQ5WcehcHQq9ebYVShfzoLzGGhNG6qAaYJX9tbc9sY6RV","12D3KooWBUErvV9vPvEU8DDVEhoBfDbcPmGkq2i9KVVrhMYokfV1"]}
+[2023-03-03T12:13:12.040Z] - W[undefined] - [info]: {"inBlock":"0x7ee6992326a18e98b33a00277f9309af7023567bd0d56296def54414b0ed6046"}
+[2023-03-03T12:13:24.041Z] - W[undefined] - [info]: {"inBlock":"0x7887759699313fa7fbbe6709249b8fa11dc1f4b53edb0fb6758c39f514aa41dd"}
+[2023-03-03T12:13:24.042Z] - W[undefined] - [info]: {"applyExtrinsic":2} : tokens.Withdrawn [0,"5GrwvaEF5zXb26Fz9rcQpDWS57CtERHpNehXCPcNoHGKutQY","0x000000000000000381ac5af2d849dc8a"]
+[2023-03-03T12:13:24.042Z] - W[undefined] - [info]: {"applyExtrinsic":2} : xyk.PoolPromotionUpdated [9,20]
+[2023-03-03T12:13:24.042Z] - W[undefined] - [info]: {"applyExtrinsic":2} : sudo.Sudid [{"ok":null}]
+[2023-03-03T12:13:24.042Z] - W[undefined] - [info]: {"applyExtrinsic":2} : utility.ItemCompleted []
+[2023-03-03T12:13:24.042Z] - W[undefined] - [info]: {"applyExtrinsic":2} : tokens.Transfer [0,"5FHneW46xGXgs5mUiveU4sbTyGBzmstUspZC92UhjJM694ty","5EYCAe5XGPRojsCSi9p1ZZQ5qgeJGFcTxPxrsFRzkASu6bT2",1000000000000000]
+[2023-03-03T12:13:24.042Z] - W[undefined] - [info]: {"applyExtrinsic":2} : tokens.Transfer [8,"5FHneW46xGXgs5mUiveU4sbTyGBzmstUspZC92UhjJM694ty","5EYCAe5XGPRojsCSi9p1ZZQ5qgeJGFcTxPxrsFRzkASu6bT2",1000000000000001]
+[2023-03-03T12:13:24.042Z] - W[undefined] - [info]: {"applyExtrinsic":2} : tokens.Deposited [9,"5FHneW46xGXgs5mUiveU4sbTyGBzmstUspZC92UhjJM694ty",1000000000000000]
+[2023-03-03T12:13:24.042Z] - W[undefined] - [info]: {"applyExtrinsic":2} : tokens.Reserved [9,"5FHneW46xGXgs5mUiveU4sbTyGBzmstUspZC92UhjJM694ty",1000000000000000]
+[2023-03-03T12:13:24.042Z] - W[undefined] - [info]: {"applyExtrinsic":2} : xyk.LiquidityMinted ["5FHneW46xGXgs5mUiveU4sbTyGBzmstUspZC92UhjJM694ty",0,1000000000000000,8,1000000000000001,9,1000000000000000]
+[2023-03-03T12:13:24.042Z] - W[undefined] - [info]: {"applyExtrinsic":2} : sudo.SudoAsDone [{"ok":null}]
+[2023-03-03T12:13:24.042Z] - W[undefined] - [info]: {"applyExtrinsic":2} : utility.ItemCompleted []
+[2023-03-03T12:13:24.042Z] - W[undefined] - [info]: {"applyExtrinsic":2} : tokens.Transfer [0,"5GrwvaEF5zXb26Fz9rcQpDWS57CtERHpNehXCPcNoHGKutQY","5EYCAe5XGPRojsCSi9p1ZZQ5qgeJGFcTxPxrsFRzkASu6bT2",1000000000000000]
+[2023-03-03T12:13:24.042Z] - W[undefined] - [info]: {"applyExtrinsic":2} : tokens.Transfer [8,"5GrwvaEF5zXb26Fz9rcQpDWS57CtERHpNehXCPcNoHGKutQY","5EYCAe5XGPRojsCSi9p1ZZQ5qgeJGFcTxPxrsFRzkASu6bT2",1000000000000001]
+[2023-03-03T12:13:24.042Z] - W[undefined] - [info]: {"applyExtrinsic":2} : tokens.Endowed [9,"5GrwvaEF5zXb26Fz9rcQpDWS57CtERHpNehXCPcNoHGKutQY",1000000000000000]
+[2023-03-03T12:13:24.042Z] - W[undefined] - [info]: {"applyExtrinsic":2} : tokens.Deposited [9,"5GrwvaEF5zXb26Fz9rcQpDWS57CtERHpNehXCPcNoHGKutQY",1000000000000000]
+[2023-03-03T12:13:24.042Z] - W[undefined] - [info]: {"applyExtrinsic":2} : tokens.Reserved [9,"5GrwvaEF5zXb26Fz9rcQpDWS57CtERHpNehXCPcNoHGKutQY",1000000000000000]
+[2023-03-03T12:13:24.042Z] - W[undefined] - [info]: {"applyExtrinsic":2} : xyk.LiquidityMinted ["5GrwvaEF5zXb26Fz9rcQpDWS57CtERHpNehXCPcNoHGKutQY",0,1000000000000000,8,1000000000000001,9,1000000000000000]
+[2023-03-03T12:13:24.043Z] - W[undefined] - [info]: {"applyExtrinsic":2} : sudo.SudoAsDone [{"ok":null}]
+[2023-03-03T12:13:24.043Z] - W[undefined] - [info]: {"applyExtrinsic":2} : utility.ItemCompleted []
+[2023-03-03T12:13:24.043Z] - W[undefined] - [info]: {"applyExtrinsic":2} : tokens.Transfer [0,"5FLSigC9HGRKVhB9FiEo4Y3koPsNmBmLJbpXg2mp1hXcS59Y","5EYCAe5XGPRojsCSi9p1ZZQ5qgeJGFcTxPxrsFRzkASu6bT2",1000000000000000]
+[2023-03-03T12:13:24.043Z] - W[undefined] - [info]: {"applyExtrinsic":2} : tokens.Transfer [8,"5FLSigC9HGRKVhB9FiEo4Y3koPsNmBmLJbpXg2mp1hXcS59Y","5EYCAe5XGPRojsCSi9p1ZZQ5qgeJGFcTxPxrsFRzkASu6bT2",1000000000000001]
+[2023-03-03T12:13:24.043Z] - W[undefined] - [info]: {"applyExtrinsic":2} : tokens.Endowed [9,"5FLSigC9HGRKVhB9FiEo4Y3koPsNmBmLJbpXg2mp1hXcS59Y",1000000000000000]
+[2023-03-03T12:13:24.043Z] - W[undefined] - [info]: {"applyExtrinsic":2} : tokens.Deposited [9,"5FLSigC9HGRKVhB9FiEo4Y3koPsNmBmLJbpXg2mp1hXcS59Y",1000000000000000]
+[2023-03-03T12:13:24.043Z] - W[undefined] - [info]: {"applyExtrinsic":2} : tokens.Reserved [9,"5FLSigC9HGRKVhB9FiEo4Y3koPsNmBmLJbpXg2mp1hXcS59Y",1000000000000000]
+[2023-03-03T12:13:24.043Z] - W[undefined] - [info]: {"applyExtrinsic":2} : xyk.LiquidityMinted ["5FLSigC9HGRKVhB9FiEo4Y3koPsNmBmLJbpXg2mp1hXcS59Y",0,1000000000000000,8,1000000000000001,9,1000000000000000]
+[2023-03-03T12:13:24.043Z] - W[undefined] - [info]: {"applyExtrinsic":2} : sudo.SudoAsDone [{"ok":null}]
+[2023-03-03T12:13:24.043Z] - W[undefined] - [info]: {"applyExtrinsic":2} : utility.ItemCompleted []
+[2023-03-03T12:13:24.043Z] - W[undefined] - [info]: {"applyExtrinsic":2} : tokens.Transfer [0,"5HGjWAeFDfFCWPsjFQdVV2Msvz2XtMktvgocEZcCj68kUMaw","5EYCAe5XGPRojsCSi9p1ZZQ5qgeJGFcTxPxrsFRzkASu6bT2",1000000000000000]
+[2023-03-03T12:13:24.043Z] - W[undefined] - [info]: {"applyExtrinsic":2} : tokens.Transfer [8,"5HGjWAeFDfFCWPsjFQdVV2Msvz2XtMktvgocEZcCj68kUMaw","5EYCAe5XGPRojsCSi9p1ZZQ5qgeJGFcTxPxrsFRzkASu6bT2",1000000000000001]
+[2023-03-03T12:13:24.043Z] - W[undefined] - [info]: {"applyExtrinsic":2} : tokens.Endowed [9,"5HGjWAeFDfFCWPsjFQdVV2Msvz2XtMktvgocEZcCj68kUMaw",1000000000000000]
+[2023-03-03T12:13:24.043Z] - W[undefined] - [info]: {"applyExtrinsic":2} : tokens.Deposited [9,"5HGjWAeFDfFCWPsjFQdVV2Msvz2XtMktvgocEZcCj68kUMaw",1000000000000000]
+[2023-03-03T12:13:24.043Z] - W[undefined] - [info]: {"applyExtrinsic":2} : tokens.Reserved [9,"5HGjWAeFDfFCWPsjFQdVV2Msvz2XtMktvgocEZcCj68kUMaw",1000000000000000]
+[2023-03-03T12:13:24.044Z] - W[undefined] - [info]: {"applyExtrinsic":2} : xyk.LiquidityMinted ["5HGjWAeFDfFCWPsjFQdVV2Msvz2XtMktvgocEZcCj68kUMaw",0,1000000000000000,8,1000000000000001,9,1000000000000000]
+[2023-03-03T12:13:24.044Z] - W[undefined] - [info]: {"applyExtrinsic":2} : sudo.SudoAsDone [{"ok":null}]
+[2023-03-03T12:13:24.044Z] - W[undefined] - [info]: {"applyExtrinsic":2} : utility.ItemCompleted []
+[2023-03-03T12:13:24.044Z] - W[undefined] - [info]: {"applyExtrinsic":2} : utility.BatchCompleted []
+[2023-03-03T12:13:24.044Z] - W[undefined] - [info]: {"applyExtrinsic":2} : tokens.Deposited [0,"5FHneW46xGXgs5mUiveU4sbTyGBzmstUspZC92UhjJM694ty","0x000000000000000381ac5af2d849dc8a"]
+[2023-03-03T12:13:24.044Z] - W[undefined] - [info]: {"applyExtrinsic":2} : transactionPayment.TransactionFeePaid ["5GrwvaEF5zXb26Fz9rcQpDWS57CtERHpNehXCPcNoHGKutQY","0x000000000000000381ac5af2d849dc8a",0]
+[2023-03-03T12:13:24.044Z] - W[undefined] - [info]: {"applyExtrinsic":2} : system.ExtrinsicSuccess [{"weight":{"refTime":7112728023,"proofSize":0},"class":"Normal","paysFee":"Yes"}]
+[2023-03-03T12:13:24.046Z] - W[undefined] - [info]: #11  5HGjWAeFDfFCWPsjFQdVV2Msvz2XtMktvgocEZcCj68kUMaw (LP9) - no rewards yet
+[2023-03-03T12:13:36.018Z] - W[undefined] - [info]: #12  5HGjWAeFDfFCWPsjFQdVV2Msvz2XtMktvgocEZcCj68kUMaw (LP9) - no rewards yet
+[2023-03-03T12:13:48.017Z] - W[undefined] - [info]: #13  5HGjWAeFDfFCWPsjFQdVV2Msvz2XtMktvgocEZcCj68kUMaw (LP9) - no rewards yet
+[2023-03-03T12:14:00.017Z] - W[undefined] - [info]: #14  5HGjWAeFDfFCWPsjFQdVV2Msvz2XtMktvgocEZcCj68kUMaw (LP9) - no rewards yet
+[2023-03-03T13:04:00.387Z] - W[undefined] - [info]: TEST_INFO: Running test in ws://127.0.0.1:9946
+[2023-03-03T13:04:00.545Z] - W[undefined] - [info]: name: //testUser_d2385fc3-040f-4813-8270-6e21f0575f84, address: 5CqboTxceAKgJGD9FJMH7ARLSNiNBPHt27B2m5QavbZxYvy6
+[2023-03-03T13:04:00.551Z] - W[undefined] - [info]: name: //testUser_7ed58f2f-58fc-4aad-8ca4-9ba2e7537d64, address: 5Ge9uUpXWDNyPYnMbqyCVEXSrP3tcwJTMkVz2fV6oEr2sbyu
+[2023-03-03T13:04:00.557Z] - W[undefined] - [info]: name: //testUser_ced1fcf9-279e-4b75-8aa0-b9bfe5d97446, address: 5Cng9vQj2bXsnGnTmAsXehwSfjNcg2zNGbX4CgPLnAZYdcaq
+[2023-03-03T13:04:00.564Z] - W[undefined] - [info]: name: //testUser_259dfe6c-eda6-4702-b8ff-0bbb0b0071dc, address: 5HVTo6oxo4XvRwnhyo2k1XfXR3NNfCRyzNYBSZeALkCvh9ER
+[2023-03-03T13:04:00.602Z] - W[undefined] - [info]: W[undefined] - sudoNonce: 0 
+[2023-03-03T13:04:36.085Z] - W[undefined] - [info]: [{"event":{"index":"0x0a08","data":[0,"5GrwvaEF5zXb26Fz9rcQpDWS57CtERHpNehXCPcNoHGKutQY","0x00000000000000005c77af4b7cc07fe8"]},"phase":{"applyExtrinsic":2},"section":"tokens","method":"Withdrawn","metaDocumentation":"[Some balances were withdrawn (e.g. pay for transaction fee)]","eventData":[{"data":"0x00000000"},{"data":"5GrwvaEF5zXb26Fz9rcQpDWS57CtERHpNehXCPcNoHGKutQY"},{"data":"0x00000000000000005c77af4b7cc07fe8"}],"error":null},{"event":{"index":"0x0a00","data":[8,"5GrwvaEF5zXb26Fz9rcQpDWS57CtERHpNehXCPcNoHGKutQY","0x000000000000003635c9adc5dea00000"]},"phase":{"applyExtrinsic":2},"section":"tokens","method":"Endowed","metaDocumentation":"[An account was created with some free balance.]","eventData":[{"data":"0x00000008"},{"data":"5GrwvaEF5zXb26Fz9rcQpDWS57CtERHpNehXCPcNoHGKutQY"},{"data":"0x000000000000003635c9adc5dea00000"}],"error":null},{"event":{"index":"0x0a0a","data":[8,"5GrwvaEF5zXb26Fz9rcQpDWS57CtERHpNehXCPcNoHGKutQY","0x000000000000003635c9adc5dea00000"]},"phase":{"applyExtrinsic":2},"section":"tokens","method":"Deposited","metaDocumentation":"[Deposited some balance into an account]","eventData":[{"data":"0x00000008"},{"data":"5GrwvaEF5zXb26Fz9rcQpDWS57CtERHpNehXCPcNoHGKutQY"},{"data":"0x000000000000003635c9adc5dea00000"}],"error":null},{"event":{"index":"0x0a0d","data":[8,"5GrwvaEF5zXb26Fz9rcQpDWS57CtERHpNehXCPcNoHGKutQY","0x000000000000003635c9adc5dea00000"]},"phase":{"applyExtrinsic":2},"section":"tokens","method":"Issued","metaDocumentation":"[A token was issued.]","eventData":[{"data":"0x00000008"},{"data":"5GrwvaEF5zXb26Fz9rcQpDWS57CtERHpNehXCPcNoHGKutQY"},{"data":"0x000000000000003635c9adc5dea00000"}],"error":null},{"event":{"index":"0x3100","data":[{"ok":null}]},"phase":{"applyExtrinsic":2},"section":"sudo","method":"Sudid","metaDocumentation":"[A sudo just took place. \\[result\\]]","eventData":[{"data":{"ok":null}}],"error":null},{"event":{"index":"0x0a0a","data":[0,"5GrwvaEF5zXb26Fz9rcQpDWS57CtERHpNehXCPcNoHGKutQY","0x00000000000000005c77af4b7cc07fe8"]},"phase":{"applyExtrinsic":2},"section":"tokens","method":"Deposited","metaDocumentation":"[Deposited some balance into an account]","eventData":[{"data":"0x00000000"},{"data":"5GrwvaEF5zXb26Fz9rcQpDWS57CtERHpNehXCPcNoHGKutQY"},{"data":"0x00000000000000005c77af4b7cc07fe8"}],"error":null},{"event":{"index":"0x0b00","data":["5GrwvaEF5zXb26Fz9rcQpDWS57CtERHpNehXCPcNoHGKutQY",0,0]},"phase":{"applyExtrinsic":2},"section":"transactionPayment","method":"TransactionFeePaid","metaDocumentation":"[A transaction fee `actual_fee`, of which `tip` was added to the minimum inclusion fee,, has been paid by `who`.]","eventData":[{"data":"5GrwvaEF5zXb26Fz9rcQpDWS57CtERHpNehXCPcNoHGKutQY"},{"data":"0x00000000000000000000000000000000"},{"data":"0x00000000000000000000000000000000"}],"error":null},{"event":{"index":"0x0000","data":[{"weight":{"refTime":671146000,"proofSize":0},"class":"Normal","paysFee":"No"}]},"phase":{"applyExtrinsic":2},"section":"system","method":"ExtrinsicSuccess","metaDocumentation":"[An extrinsic completed successfully.]","eventData":[{"lookupName":"FrameSupportDispatchDispatchInfo","data":{"weight":{"refTime":671146000,"proofSize":0},"class":"Normal","paysFee":"No"}}],"error":null}]
+[2023-03-03T13:04:36.111Z] - W[undefined] - [info]: Ready
+[2023-03-03T13:04:36.111Z] - W[undefined] - [info]: {"broadcast":["12D3KooWDqHXH5NK8RbSNAWa4TWtFLojunyxymvsyLYKsNj2VLq5","12D3KooWBdvSGsGuohqbqrF1oTiKSUbCRUUb1ofYRmher9qoXp5u","12D3KooWCXAY5Tjgrvk7vXVWprJ2gAkyJgV9pkyxzRU7muQkHrf5","12D3KooWHR7K4wuWMEgVcGgYjwbBwQKKsNrf8cuvECZXynnb2inu","12D3KooWDgvs9YNry7ozF1F122EHLynfWFKEB6vKSAmna3WExVQf"]}
+[2023-03-03T13:05:00.071Z] - W[undefined] - [info]: {"inBlock":"0x7c763e313becc12004a28589a7d99f7454f6245cdfb0c191704299aaa726eb30"}
+[2023-03-03T13:05:12.059Z] - W[undefined] - [info]: {"inBlock":"0xf46c60aa70845458f417d644f02ac3c3e79c5bb5b4c7327654cbb7c25e440600"}
+[2023-03-03T13:05:12.060Z] - W[undefined] - [info]: {"applyExtrinsic":2} : tokens.Withdrawn [0,"5GrwvaEF5zXb26Fz9rcQpDWS57CtERHpNehXCPcNoHGKutQY","0x00000000000000031110e756697183ba"]
+[2023-03-03T13:05:12.060Z] - W[undefined] - [info]: {"applyExtrinsic":2} : issuance.TGEFinalized []
+[2023-03-03T13:05:12.060Z] - W[undefined] - [info]: {"applyExtrinsic":2} : sudo.Sudid [{"ok":null}]
+[2023-03-03T13:05:12.060Z] - W[undefined] - [info]: {"applyExtrinsic":2} : utility.ItemCompleted []
+[2023-03-03T13:05:12.060Z] - W[undefined] - [info]: {"applyExtrinsic":2} : issuance.IssuanceConfigInitialized [{"cap":"0x000000000cecb8f27f4200f3a0000000","issuanceAtInit":"0x00000000033b320c67feb82da7400000","linearIssuanceBlocks":13140000,"liquidityMiningSplit":555555556,"stakingSplit":444444444,"totalCrowdloanAllocation":"0x000000000110f837d8942a518a000000"}]
+[2023-03-03T13:05:12.060Z] - W[undefined] - [info]: {"applyExtrinsic":2} : sudo.Sudid [{"ok":null}]
+[2023-03-03T13:05:12.060Z] - W[undefined] - [info]: {"applyExtrinsic":2} : utility.ItemCompleted []
+[2023-03-03T13:05:12.060Z] - W[undefined] - [info]: {"applyExtrinsic":2} : tokens.Endowed [8,"5FHneW46xGXgs5mUiveU4sbTyGBzmstUspZC92UhjJM694ty","0x000000000000003635c9adc5dea00000"]
+[2023-03-03T13:05:12.060Z] - W[undefined] - [info]: {"applyExtrinsic":2} : tokens.Deposited [8,"5FHneW46xGXgs5mUiveU4sbTyGBzmstUspZC92UhjJM694ty","0x000000000000003635c9adc5dea00000"]
+[2023-03-03T13:05:12.060Z] - W[undefined] - [info]: {"applyExtrinsic":2} : tokens.Minted [8,"5FHneW46xGXgs5mUiveU4sbTyGBzmstUspZC92UhjJM694ty","0x000000000000003635c9adc5dea00000"]
+[2023-03-03T13:05:12.061Z] - W[undefined] - [info]: {"applyExtrinsic":2} : sudo.Sudid [{"ok":null}]
+[2023-03-03T13:05:12.061Z] - W[undefined] - [info]: {"applyExtrinsic":2} : utility.ItemCompleted []
+[2023-03-03T13:05:12.061Z] - W[undefined] - [info]: {"applyExtrinsic":2} : tokens.Deposited [8,"5GrwvaEF5zXb26Fz9rcQpDWS57CtERHpNehXCPcNoHGKutQY","0x000000000000003635c9adc5dea00000"]
+[2023-03-03T13:05:12.061Z] - W[undefined] - [info]: {"applyExtrinsic":2} : tokens.Minted [8,"5GrwvaEF5zXb26Fz9rcQpDWS57CtERHpNehXCPcNoHGKutQY","0x000000000000003635c9adc5dea00000"]
+[2023-03-03T13:05:12.061Z] - W[undefined] - [info]: {"applyExtrinsic":2} : sudo.Sudid [{"ok":null}]
+[2023-03-03T13:05:12.061Z] - W[undefined] - [info]: {"applyExtrinsic":2} : utility.ItemCompleted []
+[2023-03-03T13:05:12.061Z] - W[undefined] - [info]: {"applyExtrinsic":2} : tokens.Endowed [8,"5FLSigC9HGRKVhB9FiEo4Y3koPsNmBmLJbpXg2mp1hXcS59Y","0x000000000000003635c9adc5dea00000"]
+[2023-03-03T13:05:12.061Z] - W[undefined] - [info]: {"applyExtrinsic":2} : tokens.Deposited [8,"5FLSigC9HGRKVhB9FiEo4Y3koPsNmBmLJbpXg2mp1hXcS59Y","0x000000000000003635c9adc5dea00000"]
+[2023-03-03T13:05:12.061Z] - W[undefined] - [info]: {"applyExtrinsic":2} : tokens.Minted [8,"5FLSigC9HGRKVhB9FiEo4Y3koPsNmBmLJbpXg2mp1hXcS59Y","0x000000000000003635c9adc5dea00000"]
+[2023-03-03T13:05:12.061Z] - W[undefined] - [info]: {"applyExtrinsic":2} : sudo.Sudid [{"ok":null}]
+[2023-03-03T13:05:12.061Z] - W[undefined] - [info]: {"applyExtrinsic":2} : utility.ItemCompleted []
+[2023-03-03T13:05:12.061Z] - W[undefined] - [info]: {"applyExtrinsic":2} : tokens.Endowed [8,"5HGjWAeFDfFCWPsjFQdVV2Msvz2XtMktvgocEZcCj68kUMaw","0x000000000000003635c9adc5dea00000"]
+[2023-03-03T13:05:12.061Z] - W[undefined] - [info]: {"applyExtrinsic":2} : tokens.Deposited [8,"5HGjWAeFDfFCWPsjFQdVV2Msvz2XtMktvgocEZcCj68kUMaw","0x000000000000003635c9adc5dea00000"]
+[2023-03-03T13:05:12.061Z] - W[undefined] - [info]: {"applyExtrinsic":2} : tokens.Minted [8,"5HGjWAeFDfFCWPsjFQdVV2Msvz2XtMktvgocEZcCj68kUMaw","0x000000000000003635c9adc5dea00000"]
+[2023-03-03T13:05:12.061Z] - W[undefined] - [info]: {"applyExtrinsic":2} : sudo.Sudid [{"ok":null}]
+[2023-03-03T13:05:12.062Z] - W[undefined] - [info]: {"applyExtrinsic":2} : utility.ItemCompleted []
+[2023-03-03T13:05:12.062Z] - W[undefined] - [info]: {"applyExtrinsic":2} : tokens.Deposited [0,"5FHneW46xGXgs5mUiveU4sbTyGBzmstUspZC92UhjJM694ty","0x000000000000003635c9adc5dea00000"]
+[2023-03-03T13:05:12.062Z] - W[undefined] - [info]: {"applyExtrinsic":2} : tokens.Minted [0,"5FHneW46xGXgs5mUiveU4sbTyGBzmstUspZC92UhjJM694ty","0x000000000000003635c9adc5dea00000"]
+[2023-03-03T13:05:12.062Z] - W[undefined] - [info]: {"applyExtrinsic":2} : sudo.Sudid [{"ok":null}]
+[2023-03-03T13:05:12.062Z] - W[undefined] - [info]: {"applyExtrinsic":2} : utility.ItemCompleted []
+[2023-03-03T13:05:12.062Z] - W[undefined] - [info]: {"applyExtrinsic":2} : tokens.Deposited [0,"5GrwvaEF5zXb26Fz9rcQpDWS57CtERHpNehXCPcNoHGKutQY","0x000000000000003635c9adc5dea00000"]
+[2023-03-03T13:05:12.062Z] - W[undefined] - [info]: {"applyExtrinsic":2} : tokens.Minted [0,"5GrwvaEF5zXb26Fz9rcQpDWS57CtERHpNehXCPcNoHGKutQY","0x000000000000003635c9adc5dea00000"]
+[2023-03-03T13:05:12.062Z] - W[undefined] - [info]: {"applyExtrinsic":2} : sudo.Sudid [{"ok":null}]
+[2023-03-03T13:05:12.062Z] - W[undefined] - [info]: {"applyExtrinsic":2} : utility.ItemCompleted []
+[2023-03-03T13:05:12.062Z] - W[undefined] - [info]: {"applyExtrinsic":2} : tokens.Deposited [0,"5FLSigC9HGRKVhB9FiEo4Y3koPsNmBmLJbpXg2mp1hXcS59Y","0x000000000000003635c9adc5dea00000"]
+[2023-03-03T13:05:12.062Z] - W[undefined] - [info]: {"applyExtrinsic":2} : tokens.Minted [0,"5FLSigC9HGRKVhB9FiEo4Y3koPsNmBmLJbpXg2mp1hXcS59Y","0x000000000000003635c9adc5dea00000"]
+[2023-03-03T13:05:12.062Z] - W[undefined] - [info]: {"applyExtrinsic":2} : sudo.Sudid [{"ok":null}]
+[2023-03-03T13:05:12.062Z] - W[undefined] - [info]: {"applyExtrinsic":2} : utility.ItemCompleted []
+[2023-03-03T13:05:12.062Z] - W[undefined] - [info]: {"applyExtrinsic":2} : tokens.Endowed [0,"5HGjWAeFDfFCWPsjFQdVV2Msvz2XtMktvgocEZcCj68kUMaw","0x000000000000003635c9adc5dea00000"]
+[2023-03-03T13:05:12.062Z] - W[undefined] - [info]: {"applyExtrinsic":2} : tokens.Deposited [0,"5HGjWAeFDfFCWPsjFQdVV2Msvz2XtMktvgocEZcCj68kUMaw","0x000000000000003635c9adc5dea00000"]
+[2023-03-03T13:05:12.063Z] - W[undefined] - [info]: {"applyExtrinsic":2} : tokens.Minted [0,"5HGjWAeFDfFCWPsjFQdVV2Msvz2XtMktvgocEZcCj68kUMaw","0x000000000000003635c9adc5dea00000"]
+[2023-03-03T13:05:12.063Z] - W[undefined] - [info]: {"applyExtrinsic":2} : sudo.Sudid [{"ok":null}]
+[2023-03-03T13:05:12.063Z] - W[undefined] - [info]: {"applyExtrinsic":2} : utility.ItemCompleted []
+[2023-03-03T13:05:12.063Z] - W[undefined] - [info]: {"applyExtrinsic":2} : tokens.Transfer [0,"5FHneW46xGXgs5mUiveU4sbTyGBzmstUspZC92UhjJM694ty","5EYCAe5XGPRojsCSi9p1ZZQ5qgeJGFcTxPxrsFRzkASu6bT2","0x000000000000001b1ae4d6e2ef500000"]
+[2023-03-03T13:05:12.063Z] - W[undefined] - [info]: {"applyExtrinsic":2} : tokens.Endowed [8,"5EYCAe5XGPRojsCSi9p1ZZQ5qgeJGFcTxPxrsFRzkASu6bT2","0x000000000000001b1ae4d6e2ef500000"]
+[2023-03-03T13:05:12.063Z] - W[undefined] - [info]: {"applyExtrinsic":2} : tokens.Transfer [8,"5FHneW46xGXgs5mUiveU4sbTyGBzmstUspZC92UhjJM694ty","5EYCAe5XGPRojsCSi9p1ZZQ5qgeJGFcTxPxrsFRzkASu6bT2","0x000000000000001b1ae4d6e2ef500000"]
+[2023-03-03T13:05:12.063Z] - W[undefined] - [info]: {"applyExtrinsic":2} : tokens.Endowed [9,"5FHneW46xGXgs5mUiveU4sbTyGBzmstUspZC92UhjJM694ty","0x000000000000001b1ae4d6e2ef500000"]
+[2023-03-03T13:05:12.063Z] - W[undefined] - [info]: {"applyExtrinsic":2} : tokens.Deposited [9,"5FHneW46xGXgs5mUiveU4sbTyGBzmstUspZC92UhjJM694ty","0x000000000000001b1ae4d6e2ef500000"]
+[2023-03-03T13:05:12.063Z] - W[undefined] - [info]: {"applyExtrinsic":2} : assetRegistry.RegisteredAsset [9,{"decimals":18,"name":"0x4c6971756964697479506f6f6c546f6b656e30783030303030303039","symbol":"0x544b4e307830303030303030302d544b4e30783030303030303038","existentialDeposit":0,"location":null,"additional":{"xcm":null,"xyk":null}}]
+[2023-03-03T13:05:12.063Z] - W[undefined] - [info]: {"applyExtrinsic":2} : xyk.PoolCreated ["5FHneW46xGXgs5mUiveU4sbTyGBzmstUspZC92UhjJM694ty",0,"0x000000000000001b1ae4d6e2ef500000",8,"0x000000000000001b1ae4d6e2ef500000"]
+[2023-03-03T13:05:12.063Z] - W[undefined] - [info]: {"applyExtrinsic":2} : sudo.SudoAsDone [{"ok":null}]
+[2023-03-03T13:05:12.063Z] - W[undefined] - [info]: {"applyExtrinsic":2} : utility.ItemCompleted []
+[2023-03-03T13:05:12.063Z] - W[undefined] - [info]: {"applyExtrinsic":2} : utility.BatchCompleted []
+[2023-03-03T13:05:12.064Z] - W[undefined] - [info]: {"applyExtrinsic":2} : tokens.Deposited [0,"5GrwvaEF5zXb26Fz9rcQpDWS57CtERHpNehXCPcNoHGKutQY","0x00000000000000031110e756697183ba"]
+[2023-03-03T13:05:12.064Z] - W[undefined] - [info]: {"applyExtrinsic":2} : transactionPayment.TransactionFeePaid ["5GrwvaEF5zXb26Fz9rcQpDWS57CtERHpNehXCPcNoHGKutQY","0x00000000000000031110e756697183ba",0]
+[2023-03-03T13:05:12.064Z] - W[undefined] - [info]: {"applyExtrinsic":2} : system.ExtrinsicSuccess [{"weight":{"refTime":6090122747,"proofSize":0},"class":"Normal","paysFee":"Yes"}]
+[2023-03-03T13:05:12.081Z] - W[undefined] - [info]: Ready
+[2023-03-03T13:05:12.081Z] - W[undefined] - [info]: {"broadcast":["12D3KooWDqHXH5NK8RbSNAWa4TWtFLojunyxymvsyLYKsNj2VLq5","12D3KooWBdvSGsGuohqbqrF1oTiKSUbCRUUb1ofYRmher9qoXp5u","12D3KooWCXAY5Tjgrvk7vXVWprJ2gAkyJgV9pkyxzRU7muQkHrf5","12D3KooWHR7K4wuWMEgVcGgYjwbBwQKKsNrf8cuvECZXynnb2inu","12D3KooWDgvs9YNry7ozF1F122EHLynfWFKEB6vKSAmna3WExVQf"]}
+[2023-03-03T13:05:36.071Z] - W[undefined] - [info]: {"inBlock":"0xfb614da25293498d98ec274f9031c15f112d55f37aeda9a3d2c62c0d1f665c61"}
+[2023-03-03T13:05:48.084Z] - W[undefined] - [info]: {"inBlock":"0x52a366921577b9b8ca99a95b98cd59e8c1538a500d558090b56d20cfbd131791"}
+[2023-03-03T13:05:48.084Z] - W[undefined] - [info]: {"applyExtrinsic":2} : tokens.Withdrawn [0,"5GrwvaEF5zXb26Fz9rcQpDWS57CtERHpNehXCPcNoHGKutQY","0x000000000000000381ac5af2d849dc8a"]
+[2023-03-03T13:05:48.084Z] - W[undefined] - [info]: {"applyExtrinsic":2} : xyk.PoolPromotionUpdated [9,20]
+[2023-03-03T13:05:48.084Z] - W[undefined] - [info]: {"applyExtrinsic":2} : sudo.Sudid [{"ok":null}]
+[2023-03-03T13:05:48.084Z] - W[undefined] - [info]: {"applyExtrinsic":2} : utility.ItemCompleted []
+[2023-03-03T13:05:48.084Z] - W[undefined] - [info]: {"applyExtrinsic":2} : tokens.Transfer [0,"5FHneW46xGXgs5mUiveU4sbTyGBzmstUspZC92UhjJM694ty","5EYCAe5XGPRojsCSi9p1ZZQ5qgeJGFcTxPxrsFRzkASu6bT2",1000000000000000]
+[2023-03-03T13:05:48.084Z] - W[undefined] - [info]: {"applyExtrinsic":2} : tokens.Transfer [8,"5FHneW46xGXgs5mUiveU4sbTyGBzmstUspZC92UhjJM694ty","5EYCAe5XGPRojsCSi9p1ZZQ5qgeJGFcTxPxrsFRzkASu6bT2",1000000000000001]
+[2023-03-03T13:05:48.084Z] - W[undefined] - [info]: {"applyExtrinsic":2} : tokens.Deposited [9,"5FHneW46xGXgs5mUiveU4sbTyGBzmstUspZC92UhjJM694ty",1000000000000000]
+[2023-03-03T13:05:48.084Z] - W[undefined] - [info]: {"applyExtrinsic":2} : tokens.Reserved [9,"5FHneW46xGXgs5mUiveU4sbTyGBzmstUspZC92UhjJM694ty",1000000000000000]
+[2023-03-03T13:05:48.084Z] - W[undefined] - [info]: {"applyExtrinsic":2} : xyk.LiquidityMinted ["5FHneW46xGXgs5mUiveU4sbTyGBzmstUspZC92UhjJM694ty",0,1000000000000000,8,1000000000000001,9,1000000000000000]
+[2023-03-03T13:05:48.084Z] - W[undefined] - [info]: {"applyExtrinsic":2} : sudo.SudoAsDone [{"ok":null}]
+[2023-03-03T13:05:48.084Z] - W[undefined] - [info]: {"applyExtrinsic":2} : utility.ItemCompleted []
+[2023-03-03T13:05:48.085Z] - W[undefined] - [info]: {"applyExtrinsic":2} : tokens.Transfer [0,"5GrwvaEF5zXb26Fz9rcQpDWS57CtERHpNehXCPcNoHGKutQY","5EYCAe5XGPRojsCSi9p1ZZQ5qgeJGFcTxPxrsFRzkASu6bT2",1000000000000000]
+[2023-03-03T13:05:48.085Z] - W[undefined] - [info]: {"applyExtrinsic":2} : tokens.Transfer [8,"5GrwvaEF5zXb26Fz9rcQpDWS57CtERHpNehXCPcNoHGKutQY","5EYCAe5XGPRojsCSi9p1ZZQ5qgeJGFcTxPxrsFRzkASu6bT2",1000000000000001]
+[2023-03-03T13:05:48.085Z] - W[undefined] - [info]: {"applyExtrinsic":2} : tokens.Endowed [9,"5GrwvaEF5zXb26Fz9rcQpDWS57CtERHpNehXCPcNoHGKutQY",1000000000000000]
+[2023-03-03T13:05:48.085Z] - W[undefined] - [info]: {"applyExtrinsic":2} : tokens.Deposited [9,"5GrwvaEF5zXb26Fz9rcQpDWS57CtERHpNehXCPcNoHGKutQY",1000000000000000]
+[2023-03-03T13:05:48.085Z] - W[undefined] - [info]: {"applyExtrinsic":2} : tokens.Reserved [9,"5GrwvaEF5zXb26Fz9rcQpDWS57CtERHpNehXCPcNoHGKutQY",1000000000000000]
+[2023-03-03T13:05:48.085Z] - W[undefined] - [info]: {"applyExtrinsic":2} : xyk.LiquidityMinted ["5GrwvaEF5zXb26Fz9rcQpDWS57CtERHpNehXCPcNoHGKutQY",0,1000000000000000,8,1000000000000001,9,1000000000000000]
+[2023-03-03T13:05:48.085Z] - W[undefined] - [info]: {"applyExtrinsic":2} : sudo.SudoAsDone [{"ok":null}]
+[2023-03-03T13:05:48.085Z] - W[undefined] - [info]: {"applyExtrinsic":2} : utility.ItemCompleted []
+[2023-03-03T13:05:48.085Z] - W[undefined] - [info]: {"applyExtrinsic":2} : tokens.Transfer [0,"5FLSigC9HGRKVhB9FiEo4Y3koPsNmBmLJbpXg2mp1hXcS59Y","5EYCAe5XGPRojsCSi9p1ZZQ5qgeJGFcTxPxrsFRzkASu6bT2",1000000000000000]
+[2023-03-03T13:05:48.086Z] - W[undefined] - [info]: {"applyExtrinsic":2} : tokens.Transfer [8,"5FLSigC9HGRKVhB9FiEo4Y3koPsNmBmLJbpXg2mp1hXcS59Y","5EYCAe5XGPRojsCSi9p1ZZQ5qgeJGFcTxPxrsFRzkASu6bT2",1000000000000001]
+[2023-03-03T13:05:48.086Z] - W[undefined] - [info]: {"applyExtrinsic":2} : tokens.Endowed [9,"5FLSigC9HGRKVhB9FiEo4Y3koPsNmBmLJbpXg2mp1hXcS59Y",1000000000000000]
+[2023-03-03T13:05:48.086Z] - W[undefined] - [info]: {"applyExtrinsic":2} : tokens.Deposited [9,"5FLSigC9HGRKVhB9FiEo4Y3koPsNmBmLJbpXg2mp1hXcS59Y",1000000000000000]
+[2023-03-03T13:05:48.086Z] - W[undefined] - [info]: {"applyExtrinsic":2} : tokens.Reserved [9,"5FLSigC9HGRKVhB9FiEo4Y3koPsNmBmLJbpXg2mp1hXcS59Y",1000000000000000]
+[2023-03-03T13:05:48.086Z] - W[undefined] - [info]: {"applyExtrinsic":2} : xyk.LiquidityMinted ["5FLSigC9HGRKVhB9FiEo4Y3koPsNmBmLJbpXg2mp1hXcS59Y",0,1000000000000000,8,1000000000000001,9,1000000000000000]
+[2023-03-03T13:05:48.086Z] - W[undefined] - [info]: {"applyExtrinsic":2} : sudo.SudoAsDone [{"ok":null}]
+[2023-03-03T13:05:48.086Z] - W[undefined] - [info]: {"applyExtrinsic":2} : utility.ItemCompleted []
+[2023-03-03T13:05:48.086Z] - W[undefined] - [info]: {"applyExtrinsic":2} : tokens.Transfer [0,"5HGjWAeFDfFCWPsjFQdVV2Msvz2XtMktvgocEZcCj68kUMaw","5EYCAe5XGPRojsCSi9p1ZZQ5qgeJGFcTxPxrsFRzkASu6bT2",1000000000000000]
+[2023-03-03T13:05:48.086Z] - W[undefined] - [info]: {"applyExtrinsic":2} : tokens.Transfer [8,"5HGjWAeFDfFCWPsjFQdVV2Msvz2XtMktvgocEZcCj68kUMaw","5EYCAe5XGPRojsCSi9p1ZZQ5qgeJGFcTxPxrsFRzkASu6bT2",1000000000000001]
+[2023-03-03T13:05:48.086Z] - W[undefined] - [info]: {"applyExtrinsic":2} : tokens.Endowed [9,"5HGjWAeFDfFCWPsjFQdVV2Msvz2XtMktvgocEZcCj68kUMaw",1000000000000000]
+[2023-03-03T13:05:48.087Z] - W[undefined] - [info]: {"applyExtrinsic":2} : tokens.Deposited [9,"5HGjWAeFDfFCWPsjFQdVV2Msvz2XtMktvgocEZcCj68kUMaw",1000000000000000]
+[2023-03-03T13:05:48.087Z] - W[undefined] - [info]: {"applyExtrinsic":2} : tokens.Reserved [9,"5HGjWAeFDfFCWPsjFQdVV2Msvz2XtMktvgocEZcCj68kUMaw",1000000000000000]
+[2023-03-03T13:05:48.087Z] - W[undefined] - [info]: {"applyExtrinsic":2} : xyk.LiquidityMinted ["5HGjWAeFDfFCWPsjFQdVV2Msvz2XtMktvgocEZcCj68kUMaw",0,1000000000000000,8,1000000000000001,9,1000000000000000]
+[2023-03-03T13:05:48.087Z] - W[undefined] - [info]: {"applyExtrinsic":2} : sudo.SudoAsDone [{"ok":null}]
+[2023-03-03T13:05:48.087Z] - W[undefined] - [info]: {"applyExtrinsic":2} : utility.ItemCompleted []
+[2023-03-03T13:05:48.087Z] - W[undefined] - [info]: {"applyExtrinsic":2} : utility.BatchCompleted []
+[2023-03-03T13:05:48.087Z] - W[undefined] - [info]: {"applyExtrinsic":2} : tokens.Deposited [0,"5FHneW46xGXgs5mUiveU4sbTyGBzmstUspZC92UhjJM694ty","0x000000000000000381ac5af2d849dc8a"]
+[2023-03-03T13:05:48.087Z] - W[undefined] - [info]: {"applyExtrinsic":2} : transactionPayment.TransactionFeePaid ["5GrwvaEF5zXb26Fz9rcQpDWS57CtERHpNehXCPcNoHGKutQY","0x000000000000000381ac5af2d849dc8a",0]
+[2023-03-03T13:05:48.087Z] - W[undefined] - [info]: {"applyExtrinsic":2} : system.ExtrinsicSuccess [{"weight":{"refTime":7112728023,"proofSize":0},"class":"Normal","paysFee":"Yes"}]
+[2023-03-03T13:05:48.089Z] - W[undefined] - [info]: #10  5HGjWAeFDfFCWPsjFQdVV2Msvz2XtMktvgocEZcCj68kUMaw (LP9) - no rewards yet
+[2023-03-03T13:06:00.039Z] - W[undefined] - [info]: #11  5HGjWAeFDfFCWPsjFQdVV2Msvz2XtMktvgocEZcCj68kUMaw (LP9) - no rewards yet
+[2023-03-03T13:06:12.035Z] - W[undefined] - [info]: #12  5HGjWAeFDfFCWPsjFQdVV2Msvz2XtMktvgocEZcCj68kUMaw (LP9) - no rewards yet
+[2023-03-03T13:06:24.028Z] - W[undefined] - [info]: #13  5HGjWAeFDfFCWPsjFQdVV2Msvz2XtMktvgocEZcCj68kUMaw (LP9) - no rewards yet
+[2023-03-03T13:06:36.038Z] - W[undefined] - [info]: #14  5HGjWAeFDfFCWPsjFQdVV2Msvz2XtMktvgocEZcCj68kUMaw (LP9) - no rewards yet
+[2023-03-03T13:06:48.038Z] - W[undefined] - [info]: #15  5HGjWAeFDfFCWPsjFQdVV2Msvz2XtMktvgocEZcCj68kUMaw (LP9) - no rewards yet
+[2023-03-03T13:07:00.020Z] - W[undefined] - [info]: #16  5HGjWAeFDfFCWPsjFQdVV2Msvz2XtMktvgocEZcCj68kUMaw (LP9) - no rewards yet
+[2023-03-03T13:07:12.043Z] - W[undefined] - [info]: #17  5HGjWAeFDfFCWPsjFQdVV2Msvz2XtMktvgocEZcCj68kUMaw (LP9) - no rewards yet
+[2023-03-03T13:07:24.043Z] - W[undefined] - [info]: #18  5HGjWAeFDfFCWPsjFQdVV2Msvz2XtMktvgocEZcCj68kUMaw (LP9) - no rewards yet
+[2023-03-03T13:33:19.317Z] - W[undefined] - [info]: name: //testUser_b3f2f194-e136-4dee-b495-101570e014ed, address: 5Gs3cAropuwqcpVzyVRSLvuxLAYNe6BNBMLJJsKULJFie5HW
+[2023-03-03T13:33:19.324Z] - W[undefined] - [info]: name: //testUser_90459327-b353-4dff-b3b7-85f5b1800370, address: 5CUKvRB8mMmLtLh37Z29GW1oETPKhEVQ2cqULmZw2uyMCZbH
+[2023-03-03T13:33:19.330Z] - W[undefined] - [info]: name: //testUser_ddbda1e8-bf8c-480a-8408-e1f9e4e2b7ea, address: 5Cnn8TAy4BnHESpXoH3PaKjS8s4tKPNyiMeJn2eiVTe2D2ZK
+[2023-03-03T13:33:19.336Z] - W[undefined] - [info]: name: //testUser_2f2ba69c-64f9-4cd7-a48c-b60d21d6dba0, address: 5Ecf82n5UYkG4oKJQwHtvMFe19EtVxXoFg3tsyuh24vJpD62
+[2023-03-03T13:33:19.339Z] - W[undefined] - [info]: TEST_INFO: Running test in ws://127.0.0.1:9946
+[2023-03-03T13:48:38.574Z] - W[undefined] - [info]: name: //testUser_d59b68c8-f27b-475d-8d41-8e3f16d7eb45, address: 5DZTHeUNuaumZpYW1b93Dd66agEQJuiujLm3PVZbXxGrWLTS
+[2023-03-03T13:48:38.581Z] - W[undefined] - [info]: name: //testUser_f5e83bb4-39f1-475c-b4ad-90624534aee7, address: 5HC97WZrASFKAv95pf3nnRVXHR9W8WcvziTHQf13tbrBgdrF
+[2023-03-03T13:48:38.588Z] - W[undefined] - [info]: name: //testUser_aa982b5c-c3f6-4ab4-bf30-3f545074dfa6, address: 5H135VjcTtQohh4o8gV6nsazGFYEe9ib2aYCyWybMX8fLCzC
+[2023-03-03T13:48:38.594Z] - W[undefined] - [info]: name: //testUser_39003ac9-39ab-46de-ac37-5b85bb61d004, address: 5CqpTyt2VCmmVuaBGNGqbByjfBgUb17QTerfUVRBW1KrRKpK
+[2023-03-03T13:48:38.597Z] - W[undefined] - [info]: TEST_INFO: Running test in ws://127.0.0.1:9946
+[2023-03-03T14:35:13.236Z] - W[undefined] - [info]: name: //testUser_2046221b-f743-4972-9465-24a5d4bada3a, address: 5H16xSfcfkcCaudqfCnzi6pBok1y3PWnQjhtTjdf9ztddQrt
+[2023-03-03T14:35:13.243Z] - W[undefined] - [info]: name: //testUser_3396f8c3-2855-4b29-9f31-bd486bc805b1, address: 5E6kdhxyTX58Sq272AJbjjzHbgRyjadhYUo3W67qCkVkNtPS
+[2023-03-03T14:35:13.250Z] - W[undefined] - [info]: name: //testUser_629d9ebc-e352-4cbb-bf4d-896c63702b14, address: 5FpkAEcaZiKxNRRah3BUYctc2muQcpYzccdG4mrrqbvagVqm
+[2023-03-03T14:35:13.256Z] - W[undefined] - [info]: name: //testUser_b891f27e-414c-42b2-b511-cdbf6a117bdf, address: 5HWBybXSV8XqrdnrJUZ6i4FHZ2X2duiJUgQHoJ4vtVr6jYDF
+[2023-03-03T14:35:13.259Z] - W[undefined] - [info]: TEST_INFO: Running test in ws://127.0.0.1:9946
+[2023-03-03T14:44:07.443Z] - W[undefined] - [info]: name: //testUser_fab3e9c2-1637-4eda-9dd3-55da10c8ef48, address: 5EZMegbrbfw6G2Zw9xkM327nFUMux9G7dFnTzHtMPpcA4F7o
+[2023-03-03T14:44:07.450Z] - W[undefined] - [info]: name: //testUser_bce2f9ab-20f7-43ab-be7f-6265b2a8d236, address: 5DfmwNJi2sqcVxsTR17dRyWStMRVxDS8Lzu65AB3jJJ4xjyF
+[2023-03-03T14:44:07.456Z] - W[undefined] - [info]: name: //testUser_b35745cf-eda0-4c12-92ad-cf80466b6c78, address: 5FHh2Mk7oo74YgNCpdaThfmb96vEKmiY5UaXgPMz2wjUEiRh
+[2023-03-03T14:44:07.463Z] - W[undefined] - [info]: name: //testUser_aadbb99b-e5d1-4a00-9023-fb046d16e122, address: 5GxvWkUXkDy1Nu6h84Az2B76h3QpEczPyaaVVPjYi7qq9nky
+[2023-03-03T14:44:07.465Z] - W[undefined] - [info]: TEST_INFO: Running test in ws://127.0.0.1:9946
+[2023-03-03T14:45:27.587Z] - W[undefined] - [info]: name: //testUser_927f9aa3-df90-41fd-931d-47ed97c23850, address: 5EtPK8zDaEinPrgt7SA7QbBUjxz2kNMcbUhF4RuQQhJruB5T
+[2023-03-03T14:45:27.594Z] - W[undefined] - [info]: name: //testUser_231e154f-b1e9-46fd-b46e-1c20f8226e23, address: 5FWf3r9Wm3cRpsNqRvyPaiXzxFkgjriLBsEVaPVtDiFsJC7R
+[2023-03-03T14:45:27.600Z] - W[undefined] - [info]: name: //testUser_bf00d0b2-b573-4aee-9950-e764e42dc858, address: 5GNkHPRoootu2FXTxFx1K9dRhwFBnaoK8tRmFLqPr4HgGRXB
+[2023-03-03T14:45:27.606Z] - W[undefined] - [info]: name: //testUser_391c235e-c386-4226-a7cd-138b0f2cdbe4, address: 5CPiWfXCFUAZhxcibRWcLLvbgXtwhMLpUbKiitqpVTRkWcM4
+[2023-03-03T14:45:27.627Z] - W[undefined] - [info]: name: //testUser_211fea0c-c32c-4f03-b8e9-a2bc3cad854e, address: 5DvzM3Cj54KHPzKQan9LTA8UG6u9eVuGkkk3bucdsddqSjKf
+[2023-03-03T14:45:27.633Z] - W[undefined] - [info]: name: //testUser_385511c0-5873-4311-a863-36dfbb39f26e, address: 5CMYbnu5svT5UGYFeSkeEGAWkcBHoMW7QxVb8PzsPa6RqpTo
+[2023-03-03T14:45:27.640Z] - W[undefined] - [info]: name: //testUser_ba39b18d-0c79-46c3-9015-0144ff8d41d5, address: 5DaGq7Vgmixi1Do6ip6XbxSF5wcLioTn43gGFJXejbHg5VgQ
+[2023-03-03T14:45:27.646Z] - W[undefined] - [info]: name: //testUser_0d91a1fa-edf8-400c-8f56-951618235f34, address: 5DLroUqXCUcMEYN1JeVC7iRZgXAf7cuNthgKdBqoYJyHacDE
+[2023-03-03T14:45:27.688Z] - W[undefined] - [info]: W[undefined] - sudoNonce: 3 
+[2023-03-03T14:48:53.005Z] - W[undefined] - [info]: name: //testUser_193bba6c-781e-4b0f-94c4-0b84218ff45f, address: 5C5pTDKaCtUNausUnXRpWGPaF8XatP65J8gQZjGpyRdnddPR
+[2023-03-03T14:48:53.012Z] - W[undefined] - [info]: name: //testUser_3c197e6b-43ba-49c8-97c3-c5bf8204d122, address: 5EL3nq4cPbnk9jQDESfQzrHtPTBUXp5jiEFREAFdyDtuxJo8
+[2023-03-03T14:48:53.018Z] - W[undefined] - [info]: name: //testUser_7b512952-491a-4d7b-a9e8-e404b27452a8, address: 5Cexn9NMbq92AxKM82rMzfhVfQMUgC42jQ5TcCjNfDD3xNf1
+[2023-03-03T14:48:53.025Z] - W[undefined] - [info]: name: //testUser_f380b0f3-3370-4190-b89a-2ec738db8556, address: 5HTh7naHskt3GwZ1jTvoSgWZrTgzDVScMNByL53RYZi6wquS
+[2023-03-03T14:48:53.028Z] - W[undefined] - [info]: TEST_INFO: Running test in ws://127.0.0.1:9946
+[2023-03-03T14:55:17.555Z] - W[undefined] - [info]: name: //testUser_1da335d0-df22-4ff7-91c5-4472748ce277, address: 5HVj17BkTyiTB9PnoJtVhBcKfxDeReUwVgqGn3Ht1biNVCWd
+[2023-03-03T14:55:17.562Z] - W[undefined] - [info]: name: //testUser_b481e7d7-d47d-4298-aeb5-880e16add295, address: 5DqVQzdzkZrEmpm51uU8Jb63Ge98Rn9Kvb9cCcY6HaWDoBGQ
+[2023-03-03T14:55:17.568Z] - W[undefined] - [info]: name: //testUser_0897d94a-49c4-45c2-86bc-3a6a5a077a81, address: 5HGJfdC8RsUnU8bLFkinRRjUuomCHAhYV9DdTqCdgu85FFgC
+[2023-03-03T14:55:17.575Z] - W[undefined] - [info]: name: //testUser_52222342-96d1-43b1-aa49-95ac6fd9dfe8, address: 5GZFXcwyRTwGCUtTLkicMNouZuXg7FxcBxfy58oegFFkkyYj
+[2023-03-03T14:55:17.577Z] - W[undefined] - [info]: TEST_INFO: Running test in ws://127.0.0.1:9946
+[2023-03-03T14:55:17.748Z] - W[undefined] - [info]: Ready
+[2023-03-03T14:55:17.748Z] - W[undefined] - [info]: {"broadcast":["12D3KooWDqHXH5NK8RbSNAWa4TWtFLojunyxymvsyLYKsNj2VLq5","12D3KooWBdvSGsGuohqbqrF1oTiKSUbCRUUb1ofYRmher9qoXp5u","12D3KooWCXAY5Tjgrvk7vXVWprJ2gAkyJgV9pkyxzRU7muQkHrf5","12D3KooWHR7K4wuWMEgVcGgYjwbBwQKKsNrf8cuvECZXynnb2inu","12D3KooWDgvs9YNry7ozF1F122EHLynfWFKEB6vKSAmna3WExVQf"]}
+[2023-03-03T14:55:42.059Z] - W[undefined] - [info]: {"inBlock":"0x558ad495cee59475245810031e9fea649d2799e960c7936f3d96537bc8569ffa"}
+[2023-03-03T14:56:00.060Z] - W[undefined] - [info]: {"inBlock":"0xa8408105b9601ad482ddc25e458cf547f3635240d79b3c8a220885c3d7173aa8"}
+[2023-03-03T14:56:00.060Z] - W[undefined] - [info]: {"applyExtrinsic":2} : tokens.Withdrawn [0,"5GrwvaEF5zXb26Fz9rcQpDWS57CtERHpNehXCPcNoHGKutQY","0x00000000000000009125e1388a9cf27f"]
+[2023-03-03T14:56:00.061Z] - W[undefined] - [info]: {"applyExtrinsic":2} : tokens.Deposited [9,"5FLSigC9HGRKVhB9FiEo4Y3koPsNmBmLJbpXg2mp1hXcS59Y","0x00000000000000008ac7230489e804d2"]
+[2023-03-03T14:56:00.061Z] - W[undefined] - [info]: {"applyExtrinsic":2} : tokens.Minted [9,"5FLSigC9HGRKVhB9FiEo4Y3koPsNmBmLJbpXg2mp1hXcS59Y","0x00000000000000008ac7230489e804d2"]
+[2023-03-03T14:56:00.061Z] - W[undefined] - [info]: {"applyExtrinsic":2} : sudo.Sudid [{"ok":null}]
+[2023-03-03T14:56:00.061Z] - W[undefined] - [info]: {"applyExtrinsic":2} : utility.ItemCompleted []
+[2023-03-03T14:56:00.061Z] - W[undefined] - [info]: {"applyExtrinsic":2} : tokens.Deposited [0,"5FLSigC9HGRKVhB9FiEo4Y3koPsNmBmLJbpXg2mp1hXcS59Y","0x000000000000003635c9adc5dea00000"]
+[2023-03-03T14:56:00.061Z] - W[undefined] - [info]: {"applyExtrinsic":2} : tokens.Minted [0,"5FLSigC9HGRKVhB9FiEo4Y3koPsNmBmLJbpXg2mp1hXcS59Y","0x000000000000003635c9adc5dea00000"]
+[2023-03-03T14:56:00.061Z] - W[undefined] - [info]: {"applyExtrinsic":2} : sudo.Sudid [{"ok":null}]
+[2023-03-03T14:56:00.061Z] - W[undefined] - [info]: {"applyExtrinsic":2} : utility.ItemCompleted []
+[2023-03-03T14:56:00.061Z] - W[undefined] - [info]: {"applyExtrinsic":2} : utility.BatchCompleted []
+[2023-03-03T14:56:00.062Z] - W[undefined] - [info]: {"applyExtrinsic":2} : tokens.Deposited [0,"5GrwvaEF5zXb26Fz9rcQpDWS57CtERHpNehXCPcNoHGKutQY","0x00000000000000009125e1388a9cf27f"]
+[2023-03-03T14:56:00.062Z] - W[undefined] - [info]: {"applyExtrinsic":2} : transactionPayment.TransactionFeePaid ["5GrwvaEF5zXb26Fz9rcQpDWS57CtERHpNehXCPcNoHGKutQY","0x00000000000000009125e1388a9cf27f",0]
+[2023-03-03T14:56:00.062Z] - W[undefined] - [info]: {"applyExtrinsic":2} : system.ExtrinsicSuccess [{"weight":{"refTime":1070335661,"proofSize":0},"class":"Normal","paysFee":"Yes"}]
+[2023-03-03T14:58:08.305Z] - W[undefined] - [info]: name: //testUser_25924bbc-524f-465d-918e-3e9ccfc34294, address: 5H15ureF9G2pmRfEWbdp6NVurBZMbRRkBFjF7CL4p9TSw9WC
+[2023-03-03T14:58:08.312Z] - W[undefined] - [info]: name: //testUser_4b66c117-1f1f-4e28-8126-8ef84f85a2f5, address: 5HDoCoVixTXUZRtgCsoACUKwV38YPHd6ZHVRXzug7Gi1enKQ
+[2023-03-03T14:58:08.319Z] - W[undefined] - [info]: name: //testUser_19574476-0eb0-4947-b55b-0f614134ca31, address: 5DMQooQhnJZdEdygPHxYnHisMu1NmmaNAaz545gmhdKHr7qe
+[2023-03-03T14:58:08.325Z] - W[undefined] - [info]: name: //testUser_daa576d2-7545-464e-a59e-9f7c0812aec5, address: 5CfDLsV2yV9jHWMQnyN9Fm5hJMjfCyNWKsDgaLgLbofX1r7o
+[2023-03-03T14:58:08.328Z] - W[undefined] - [info]: TEST_INFO: Running test in ws://127.0.0.1:9946
+[2023-03-03T14:58:08.501Z] - W[undefined] - [info]: Ready
+[2023-03-03T14:58:08.501Z] - W[undefined] - [info]: {"broadcast":["12D3KooWDqHXH5NK8RbSNAWa4TWtFLojunyxymvsyLYKsNj2VLq5","12D3KooWBdvSGsGuohqbqrF1oTiKSUbCRUUb1ofYRmher9qoXp5u","12D3KooWCXAY5Tjgrvk7vXVWprJ2gAkyJgV9pkyxzRU7muQkHrf5","12D3KooWHR7K4wuWMEgVcGgYjwbBwQKKsNrf8cuvECZXynnb2inu","12D3KooWDgvs9YNry7ozF1F122EHLynfWFKEB6vKSAmna3WExVQf"]}
+[2023-03-03T14:58:24.093Z] - W[undefined] - [info]: {"inBlock":"0xf6e5561f9911f8f905b4d825787684b213accd6d13a150a4c95e1bf156336ca1"}
+[2023-03-03T14:58:36.099Z] - W[undefined] - [info]: {"inBlock":"0x66ea8d3acb4fa2e73311100e533c2529c1f15f7b83879989955389737fed6fb5"}
+[2023-03-03T14:58:36.099Z] - W[undefined] - [info]: {"applyExtrinsic":2} : tokens.Withdrawn [0,"5GrwvaEF5zXb26Fz9rcQpDWS57CtERHpNehXCPcNoHGKutQY","0x00000000000000009125e1388a9cf27f"]
+[2023-03-03T14:58:36.099Z] - W[undefined] - [info]: {"applyExtrinsic":2} : tokens.Deposited [9,"5FLSigC9HGRKVhB9FiEo4Y3koPsNmBmLJbpXg2mp1hXcS59Y","0x00000000000000008ac7230489e804d2"]
+[2023-03-03T14:58:36.100Z] - W[undefined] - [info]: {"applyExtrinsic":2} : tokens.Minted [9,"5FLSigC9HGRKVhB9FiEo4Y3koPsNmBmLJbpXg2mp1hXcS59Y","0x00000000000000008ac7230489e804d2"]
+[2023-03-03T14:58:36.100Z] - W[undefined] - [info]: {"applyExtrinsic":2} : sudo.Sudid [{"ok":null}]
+[2023-03-03T14:58:36.100Z] - W[undefined] - [info]: {"applyExtrinsic":2} : utility.ItemCompleted []
+[2023-03-03T14:58:36.100Z] - W[undefined] - [info]: {"applyExtrinsic":2} : tokens.Deposited [0,"5FLSigC9HGRKVhB9FiEo4Y3koPsNmBmLJbpXg2mp1hXcS59Y","0x000000000000003635c9adc5dea00000"]
+[2023-03-03T14:58:36.100Z] - W[undefined] - [info]: {"applyExtrinsic":2} : tokens.Minted [0,"5FLSigC9HGRKVhB9FiEo4Y3koPsNmBmLJbpXg2mp1hXcS59Y","0x000000000000003635c9adc5dea00000"]
+[2023-03-03T14:58:36.100Z] - W[undefined] - [info]: {"applyExtrinsic":2} : sudo.Sudid [{"ok":null}]
+[2023-03-03T14:58:36.100Z] - W[undefined] - [info]: {"applyExtrinsic":2} : utility.ItemCompleted []
+[2023-03-03T14:58:36.100Z] - W[undefined] - [info]: {"applyExtrinsic":2} : utility.BatchCompleted []
+[2023-03-03T14:58:36.100Z] - W[undefined] - [info]: {"applyExtrinsic":2} : tokens.Deposited [0,"5FHneW46xGXgs5mUiveU4sbTyGBzmstUspZC92UhjJM694ty","0x00000000000000009125e1388a9cf27f"]
+[2023-03-03T14:58:36.100Z] - W[undefined] - [info]: {"applyExtrinsic":2} : transactionPayment.TransactionFeePaid ["5GrwvaEF5zXb26Fz9rcQpDWS57CtERHpNehXCPcNoHGKutQY","0x00000000000000009125e1388a9cf27f",0]
+[2023-03-03T14:58:36.100Z] - W[undefined] - [info]: {"applyExtrinsic":2} : system.ExtrinsicSuccess [{"weight":{"refTime":1070335661,"proofSize":0},"class":"Normal","paysFee":"Yes"}]

@@ -16,7 +16,7 @@ import {
   getFeeLockMetadata,
 } from "../../utils/utils";
 import { Xyk } from "../../utils/xyk";
-import { ExtrinsicResult, waitForEvent } from "../../utils/eventListeners";
+import { ExtrinsicResult, waitForEvents } from "../../utils/eventListeners";
 import { getEventResultFromMangataTx } from "../../utils/txHandler";
 import { MGA_ASSET_ID } from "../../utils/Constants";
 
@@ -104,7 +104,7 @@ test("[gasless] Happy path: automatic-unlock", async () => {
   ).bnEqual(gaslessMetadata.feeLockAmount);
   await testUser1.refreshAmounts(AssetWallet.BEFORE);
   // wait until lock is automatically released
-  await waitForEvent(
+  await waitForEvents(
     await getApi(),
     "feeLock.FeeLockUnlocked",
     gaslessMetadata.periodLength.toNumber() + 5

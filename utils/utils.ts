@@ -1,6 +1,6 @@
 import { formatBalance } from "@polkadot/util/format";
-import { BN } from "@polkadot/util";
-import { getApi, getMangataInstance, mangata } from "./api";
+import { BN, hexToU8a } from "@polkadot/util";
+import { getApi, getMangataInstance, mangata, initApi } from "./api";
 import { hexToBn, isHex } from "@polkadot/util";
 import { Assets } from "./Assets";
 import { User } from "./User";
@@ -10,6 +10,12 @@ import { testLog } from "./Logger";
 import { AnyNumber } from "@polkadot/types/types";
 import { Keyring, ApiPromise } from "@polkadot/api";
 import { KeyringPair } from "@polkadot/keyring/types";
+import { getStakingLiquidityTokens, sellAsset } from "./tx";
+import { Sudo } from "./sudo";
+import { setupApi, setupUsers } from "./setup";
+import { Xyk } from "./xyk";
+import { MGA_ASSET_ID } from "./Constants";
+import { BN_HUNDRED, BN_ONE } from "@mangata-finance/sdk";
 
 export function sleep(ms: number) {
   return new Promise((resolve) => {
@@ -29,6 +35,12 @@ export function fromStringToUnitString(value: string) {
   const valueBN = new BN(stringWithoutCommas);
   const unitString = fromBNToUnitString(valueBN);
   return unitString;
+}
+
+export function getMangataApiUrlPort() {
+  const { chainUri } = getEnvironmentRequiredVars();
+  const port = chainUri.substring(chainUri.lastIndexOf(":") + 1);
+  return Number.parseInt(port);
 }
 
 export function getEnvironmentRequiredVars() {
@@ -390,4 +402,113 @@ export async function getFeeLockMetadata(api: ApiPromise) {
 
 export function stringToBN(value: string): BN {
   return isHex(value) ? hexToBn(value) : new BN(value);
+}
+export async function findErrorMetadata(errorStr: string, index: string) {
+  try {
+    getApi();
+  } catch (e) {
+    await initApi();
+  }
+  const api = await getApi();
+  const errorHex = hexToU8a(errorStr);
+  // eslint-disable-next-line no-console
+  console.info(" ::" + errorStr + "::" + index + "::");
+  const err = api?.registry.findMetaError({
+    error: errorHex,
+    index: new BN(index),
+  });
+  // eslint-disable-next-line no-console
+  console.info(err);
+}
+export async function printCandidatePowers() {
+  await initApi();
+  const api = getApi();
+  const info = (await api.query.parachainStaking.candidateState.entries())
+    .filter((candidateState) => candidateState !== null)
+    .map((state) => {
+      if (
+        state !== null &&
+        JSON.parse(JSON.stringify(state[1])).totalCounted !== null
+      ) {
+        return [
+          JSON.parse(JSON.stringify(state[1].toHuman())).id,
+          stringToBN(
+            JSON.parse(JSON.stringify(state[1].toHuman())).liquidityToken
+          ),
+          stringToBN(
+            JSON.parse(JSON.stringify(state[1])).totalCounted
+          ).toString(),
+        ];
+      } else return [];
+    });
+
+  for (let index = 0; index < info.length; index++) {
+    const stakingInfo = info[index];
+    const poolStatus = await getStakingLiquidityTokens(stakingInfo[1]);
+    const power = stringToBN(stakingInfo[2])
+      .mul(stringToBN(poolStatus[0]))
+      .div(stringToBN(poolStatus[1]));
+    info[index].push(power.toString());
+  }
+
+  const sorted = info.sort((a, b) =>
+    stringToBN(a[3]).sub(stringToBN(b[3])).isNeg() ? 1 : -1
+  );
+  sorted.forEach((x, index) =>
+    // eslint-disable-next-line no-console
+    console.log(
+      x[0] +
+        " - " +
+        x[3] +
+        " - " +
+        index +
+        "< -- > liq" +
+        info[index][1].toString()
+    )
+  );
+  //console.log(JSON.stringify(sorted));
+}
+
+export async function swapEachNBlocks(period: number) {
+  await setupApi();
+  await setupUsers();
+  const keyring = new Keyring({ type: "sr25519" });
+  const testUser4 = new User(keyring, "//Eve");
+  const sudo = new User(keyring, getEnvironmentRequiredVars().sudo);
+  const token2 = await Assets.issueAssetToUser(
+    sudo,
+    Assets.DEFAULT_AMOUNT,
+    sudo,
+    true
+  );
+  await Sudo.batchAsSudoFinalized(
+    Assets.FinalizeTge(),
+    Assets.initIssuance(),
+    Assets.mintToken(token2, testUser4, Assets.DEFAULT_AMOUNT),
+    Assets.mintToken(token2, testUser4, Assets.DEFAULT_AMOUNT),
+    Assets.mintToken(token2, testUser4, Assets.DEFAULT_AMOUNT),
+    Assets.mintNative(testUser4),
+    Assets.mintNative(testUser4),
+    Assets.mintNative(testUser4),
+    Assets.mintNative(testUser4),
+    Sudo.sudoAs(
+      testUser4,
+      Xyk.createPool(
+        MGA_ASSET_ID,
+        Assets.DEFAULT_AMOUNT.divn(2),
+        token2,
+        Assets.DEFAULT_AMOUNT.divn(2)
+      )
+    )
+  );
+  while (true) {
+    await sellAsset(
+      testUser4.keyRingPair,
+      token2,
+      MGA_ASSET_ID,
+      BN_HUNDRED,
+      BN_ONE
+    );
+    await waitForNBlocks(period);
+  }
 }
