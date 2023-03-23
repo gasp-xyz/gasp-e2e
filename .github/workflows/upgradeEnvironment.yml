@@ -32,7 +32,7 @@ on:
 jobs:
 
   test:
-    name: Run UI tests
+    name: Update environment
     runs-on: ubuntu-latest
 
     env:
