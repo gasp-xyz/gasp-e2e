@@ -793,7 +793,6 @@ export async function getAllAcountEntries(): Promise<
   return await api.query.tokens.accounts.entries();
 }
 
-
 export function requireFees() {
   return (
     _target: any,
