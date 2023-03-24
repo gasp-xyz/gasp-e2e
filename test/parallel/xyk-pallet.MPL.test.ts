@@ -22,6 +22,7 @@ import { Node } from "../../utils/Framework/Node/Node";
 import { BN } from "@mangata-finance/sdk";
 import { hexToBn } from "@polkadot/util";
 import { Assets } from "../../utils/Assets";
+import { getApi } from "../../utils/api";
 
 jest.spyOn(console, "log").mockImplementation(jest.fn());
 jest.setTimeout(1500000);
@@ -115,7 +116,10 @@ describe("MPL: Collators", () => {
     keyring = new Keyring({ type: "sr25519" });
     const node = new Node(getEnvironmentRequiredVars().chainUri);
     await node.connect();
-    const tokenAmount = new BN(Math.pow(10, 20).toString());
+    const api = await getApi();
+    const tokenAmount = new BN(
+      await api.consts.parachainStaking.minCandidateStk.toString()
+    ).muln(100);
     // setup users
     testUser1 = new User(keyring);
     sudo = new SudoUser(keyring, node);
@@ -125,11 +129,11 @@ describe("MPL: Collators", () => {
       [tokenAmount],
       sudo
     );
-    await testUser1.addMGATokens(sudo);
+    await testUser1.addMGATokens(sudo, tokenAmount.muln(1000));
     const tokenId = results[0];
     await testUser1.createPoolToAsset(
-      tokenAmount.divn(10),
-      tokenAmount.divn(10),
+      tokenAmount,
+      tokenAmount,
       MGA_ASSET_ID,
       tokenId
     );
@@ -205,7 +209,10 @@ describe("MPL: Collators - Activated liq", () => {
     keyring = new Keyring({ type: "sr25519" });
     const node = new Node(getEnvironmentRequiredVars().chainUri);
     await node.connect();
-    const tokenAmount = new BN(Math.pow(10, 20).toString());
+    const api = await getApi();
+    const tokenAmount = new BN(
+      await api.consts.parachainStaking.minCandidateStk.toString()
+    ).muln(100);
     // setup users
     testUser1 = new User(keyring);
     sudo = new SudoUser(keyring, node);
@@ -215,11 +222,11 @@ describe("MPL: Collators - Activated liq", () => {
       [tokenAmount],
       sudo
     );
-    await testUser1.addMGATokens(sudo);
+    await testUser1.addMGATokens(sudo, tokenAmount.muln(1000));
     const tokenId = results[0];
     await testUser1.createPoolToAsset(
-      tokenAmount.divn(10),
-      tokenAmount.divn(10),
+      tokenAmount,
+      tokenAmount,
       MGA_ASSET_ID,
       tokenId
     );
