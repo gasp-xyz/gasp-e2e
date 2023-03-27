@@ -109,3 +109,9 @@ export class Xyk {
     );
   }
 }
+
+export class Tokens {
+  static transfer(dest: string, tokenId: BN, amount: BN): Extrinsic {
+    return api.tx.tokens.transfer(dest, tokenId, amount);
+  }
+}
