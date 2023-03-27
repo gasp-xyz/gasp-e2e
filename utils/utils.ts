@@ -512,3 +512,15 @@ export async function swapEachNBlocks(period: number) {
     await waitForNBlocks(period);
   }
 }
+export async function getUserIdentity(user: User) {
+  const api = getApi();
+  const identity = await api.query.identity.identityOf(
+    user.keyRingPair.address
+  );
+  return JSON.parse(JSON.stringify(identity.toHuman()));
+}
+export async function getUserSubIdentity(user: User) {
+  const api = getApi();
+  const identity = await api.query.identity.superOf(user.keyRingPair.address);
+  return JSON.parse(JSON.stringify(identity.toHuman()));
+}
