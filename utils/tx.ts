@@ -1128,7 +1128,7 @@ export async function getRewardsInfo(
   missingAtLastCheckpoint: BN;
 }> {
   const api = await getApi();
-  const value = await api.query.xyk.rewardsInfo(address, liqId);
+  const value = await api.query.proofOfStake.rewardsInfo(address, liqId);
   const valueAsJson = JSON.parse(JSON.stringify(value));
   const toReturn = {
     activatedAmount: stringToBN(valueAsJson.activatedAmount),

@@ -26,7 +26,7 @@ async function main() {
   await api.rpc.chain.subscribeNewHeads((header) => {
     console.log(`************ Block: ${header.number} ************ \n `);
     users.forEach((user) => {
-      api.query.xyk.rewardsInfo(user, liqId).then((value) => {
+      api.query.proofOfStake.rewardsInfo(user, liqId).then((value) => {
         console.log(`RW_info: ${user} -  ${JSON.stringify(value.toHuman())}}`);
       });
     });
@@ -48,7 +48,7 @@ async function main() {
             });
             console.log(str);
           }
-          //  api.query.xyk.rewardsInfo(user, liqId).then((value) => {
+          //  api.query.proofOfStake.rewardsInfo(user, liqId).then((value) => {
           //    const alreadyclaimed = (value as any).rewardsAlreadyClaimed;
           //    const nyClaimed = (value as any).rewardsNotYetClaimed;
           //    const sum = new BN((result as any).toString())
