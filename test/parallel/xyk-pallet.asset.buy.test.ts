@@ -19,6 +19,10 @@ import { Assets } from "../../utils/Assets";
 import { calculateFees, getEnvironmentRequiredVars } from "../../utils/utils";
 import { testLog } from "../../utils/Logger";
 import { getEventResultFromMangataTx } from "../../utils/txHandler";
+import {
+  EVENT_SECTION_PAYMENT,
+  EVENT_METHOD_PAYMENT,
+} from "../../utils/Constants";
 
 jest.spyOn(console, "log").mockImplementation(jest.fn());
 jest.setTimeout(1500000);
@@ -127,6 +131,13 @@ test("xyk-pallet - AssetsOperation: buyAsset [maxAmountIn = 1M], buy asset", asy
       testUser1.keyRingPair.address,
     ]);
     expect(eventResponse.state).toEqual(ExtrinsicResult.ExtrinsicSuccess);
+    expect(
+      result.findIndex(
+        (x) =>
+          x.section === EVENT_SECTION_PAYMENT ||
+          x.method === EVENT_METHOD_PAYMENT
+      )
+    ).toEqual(-1);
   });
 
   await testUser1.refreshAmounts(AssetWallet.AFTER);

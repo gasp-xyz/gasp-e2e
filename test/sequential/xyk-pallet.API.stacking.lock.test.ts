@@ -25,7 +25,7 @@ const { sudo: sudoUserName } = getEnvironmentRequiredVars();
 
 const ASSET_ID_MGA_ETH = MGA_DEFAULT_LIQ_TOKEN;
 
-describe.skip("xyk-pallet - Sell Asset: validate Errors:", () => {
+describe("xyk-pallet - Sell Asset: validate Errors:", () => {
   let testUser1: User;
 
   let keyring: Keyring;
@@ -45,7 +45,7 @@ describe.skip("xyk-pallet - Sell Asset: validate Errors:", () => {
 
     await setupApi();
     await setupUsers();
-    const minStake = api?.consts.parachainStaking.minCandidateStk.toString();
+    const minStake = api?.consts.parachainStaking.minCollatorStk.toString();
     await Sudo.batchAsSudoFinalized(
       Assets.mintToken(ASSET_ID_MGA_ETH, testUser1, new BN(minStake!).muln(2)),
       Assets.mintNative(
@@ -64,8 +64,9 @@ describe.skip("xyk-pallet - Sell Asset: validate Errors:", () => {
       await api?.query.parachainStaking.stakingLiquidityTokens();
     const liqAssetsCount = [...liqAssets!.keys()].length;
     const amountToJoin = new BN(
-      api!.consts.parachainStaking.minCandidateStk!.toString()
+      api!.consts.parachainStaking.minCollatorStk!.toString()
     ).addn(1234);
+
     await signSendAndWaitToFinishTx(
       // @ts-ignore
       api?.tx.parachainStaking.joinCandidates(
@@ -84,7 +85,7 @@ describe.skip("xyk-pallet - Sell Asset: validate Errors:", () => {
       new BN(3)
     );
     const minStake = new BN(
-      api!.consts.parachainStaking.minCandidateStk.toString()
+      api!.consts.parachainStaking.minCollatorStk.toString()
     );
     expect(hexToBn(tokenStatuses.free.toString())).bnEqual(
       minStake.muln(2).sub(amountToJoin)
