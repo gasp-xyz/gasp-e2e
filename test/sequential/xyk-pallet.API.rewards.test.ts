@@ -90,26 +90,9 @@ beforeAll(async () => {
 
   await Sudo.batchAsSudoFinalized(
     Assets.promotePool(liqIdPromPool.toNumber(), 20),
-    Assets.mintNative(testUser1),
-    Sudo.sudoAs(
-      testUser2,
-      Xyk.mintLiquidity(
-        MGA_ASSET_ID,
-        token1,
-        defaultCurrencyValue,
-        defaultCurrencyValue.muln(2)
-      )
-    ),
-    Sudo.sudoAs(
-      testUser2,
-      Xyk.mintLiquidity(
-        MGA_ASSET_ID,
-        token2,
-        defaultCurrencyValue,
-        defaultCurrencyValue.muln(2)
-      )
-    )
+    Assets.mintNative(testUser1)
   );
+
   testUser1.addAsset(MGA_ASSET_ID);
   testUser1.addAsset(token1);
   testUser1.addAsset(token2);
@@ -260,8 +243,6 @@ test("Check that a user can burn some tokens on a non-promoted pool", async () =
 
 test("Check that a user can burn  tokens when they are activated and when burining the free are subtracted first", async () => {
   const api = getApi();
-  let userBalanceBeforeBurning: any;
-  let valueBurningTokens: any;
 
   await mintLiquidity(
     testUser1.keyRingPair,
@@ -271,14 +252,14 @@ test("Check that a user can burn  tokens when they are activated and when burini
   );
   await testUser1.refreshAmounts(AssetWallet.BEFORE);
 
-  await waitForRewards(testUser2, liqIdPromPool);
+  await waitForRewards(testUser1, liqIdPromPool);
 
-  userBalanceBeforeBurning = await api.query.tokens.accounts(
+  const userBalanceBeforeBurning = await api.query.tokens.accounts(
     testUser1.keyRingPair.address,
     liqIdPromPool
   );
 
-  valueBurningTokens = userBalanceBeforeBurning.free.add(
+  const valueBurningTokens = userBalanceBeforeBurning.free.add(
     userBalanceBeforeBurning.reserved.div(new BN(10))
   );
 
@@ -290,8 +271,6 @@ test("Check that a user can burn  tokens when they are activated and when burini
   );
 
   await testUser1.refreshAmounts(AssetWallet.AFTER);
-
-  await waitForRewards(testUser2, liqIdPromPool);
 
   const differenceLiqTokensReserved = testUser1
     .getAsset(liqIdPromPool)
@@ -305,30 +284,19 @@ test("Check that a user can burn  tokens when they are activated and when burini
     new BN(0)
   );
   expect(differenceLiqTokensReserved).bnGt(new BN(0));
-
-  userBalanceBeforeBurning = await api.query.tokens.accounts(
-    testUser1.keyRingPair.address,
-    liqIdPromPool
-  );
-
-  valueBurningTokens = userBalanceBeforeBurning.free.add(
-    userBalanceBeforeBurning.reserved
-  );
-
-  await burnLiquidity(
-    testUser1.keyRingPair,
-    MGA_ASSET_ID,
-    token1,
-    new BN(valueBurningTokens)
-  );
-
-  await waitForRewards(testUser2, liqIdPromPool);
 });
 
 test("Check that rewards are generated and can be claimed on each session, then burn all tokens and rewards wont be available", async () => {
   const api = getApi();
   const { chainUri } = getEnvironmentRequiredVars();
   const mangata = await getMangataInstance(chainUri);
+
+  await mintLiquidity(
+    testUser2.keyRingPair,
+    MGA_ASSET_ID,
+    token1,
+    defaultCurrencyValue
+  );
 
   for (let index = 1; index < 3; index++) {
     await waitForRewards(testUser2, liqIdPromPool);
