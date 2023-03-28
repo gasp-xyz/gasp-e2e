@@ -529,7 +529,8 @@ export const joinCandidate = async (
   account: KeyringPair,
   liqToken: BN,
   amount: BN,
-  from = "availablebalance"
+  from = "availablebalance",
+  stricSuccess = true
 ) => {
   const mangata = await getMangataInstance();
   const api = await mangata.getApi();
@@ -548,7 +549,8 @@ export const joinCandidate = async (
       new BN(candidates.length),
       new BN(liqTokenCount)
     ),
-    account
+    account,
+    stricSuccess
   );
   return result;
 };
