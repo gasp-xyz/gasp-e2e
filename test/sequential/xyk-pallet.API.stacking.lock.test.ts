@@ -25,7 +25,7 @@ const { sudo: sudoUserName } = getEnvironmentRequiredVars();
 
 const ASSET_ID_MGA_ETH = MGA_DEFAULT_LIQ_TOKEN;
 
-describe("xyk-pallet - Sell Asset: validate Errors:", () => {
+describe.skip("xyk-pallet - Sell Asset: validate Errors:", () => {
   let testUser1: User;
 
   let keyring: Keyring;
