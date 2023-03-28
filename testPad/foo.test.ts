@@ -22,7 +22,7 @@ describe("staking - testpad", () => {
       await initApi();
     }
   });
-  test.skip("docker thingy", async () => {
+  test.only("docker thingy", async () => {
     docker = new Docker();
     const as = await docker.listContainers();
     const bobImage = as.filter(
@@ -79,14 +79,6 @@ describe("staking - testpad", () => {
         console.info(data.StatusCode);
       }
     );
-    await sleep(5000);
-    const containers = (await docker.listContainers()).filter((x) =>
-      x.Image.includes(dockerImageName)
-    );
-    for (let index = 0; index < containers.length; index++) {
-      const containerInfo = containers[index];
-      await docker.getContainer(containerInfo.Id).remove({ force: true });
-    }
     await sleep(5000);
   });
   afterEach(async () => {
