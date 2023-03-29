@@ -30,7 +30,7 @@ export const DriverBuilder = (function () {
     caps.set("selenoid:options", {
       enableVNC: true,
       enableVideo: true,
-      chrome: "--headless",
+      enableLog: true,
     });
 
     driver = new Builder()
