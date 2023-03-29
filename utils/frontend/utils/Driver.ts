@@ -16,6 +16,7 @@ export const DriverBuilder = (function () {
       options.addExtensions(talismanExtensionPath);
     }
     options.addArguments("--disable-dev-shm-usage");
+    options.addArguments("--headless");
     const prefs = new logging.Preferences();
     prefs.setLevel(logging.Type.BROWSER, logging.Level.DEBUG);
     prefs.setLevel(logging.Type.CLIENT, logging.Level.DEBUG);
@@ -26,7 +27,11 @@ export const DriverBuilder = (function () {
     let caps: Capabilities = new Capabilities();
     caps = Capabilities.chrome();
     caps.set("version", "110.0");
-    caps.set("selenoid:options", { enableVNC: true, enableVideo: true });
+    caps.set("selenoid:options", {
+      enableVNC: true,
+      enableVideo: true,
+      chrome: "--headless",
+    });
 
     driver = new Builder()
       .forBrowser("chrome")
