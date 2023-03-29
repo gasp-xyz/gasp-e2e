@@ -108,6 +108,10 @@ export class Xyk {
       providedAssetAmount
     );
   }
+
+  static claimRewards(liquidityTokenId: BN, amount: BN): Extrinsic {
+    return api.tx.xyk.claimRewardsV2(liquidityTokenId, amount);
+  }
 }
 
 export class Tokens {

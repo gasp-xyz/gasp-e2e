@@ -2,7 +2,6 @@
  *
  * @group xyk
  * @group poolliquidity
- * @group parallel
  */
 
 import { Keyring } from "@polkadot/api";
@@ -14,12 +13,13 @@ import { setupApi, setupUsers } from "../../utils/setup";
 import { Sudo } from "../../utils/sudo";
 import {
   burnLiquidity,
+  claimRewardsAll,
   getLiquidityAssetId,
   getRewardsInfo,
   mintLiquidity,
 } from "../../utils/tx";
 import { User } from "../../utils/User";
-import { getEnvironmentRequiredVars } from "../../utils/utils";
+import { getEnvironmentRequiredVars, waitForNBlocks } from "../../utils/utils";
 import { Xyk } from "../../utils/xyk";
 import { waitForRewards } from "../../utils/eventListeners";
 
@@ -94,44 +94,11 @@ test("Check that rewards are generated and can be claimed on each session, then 
     defaultCurrencyValue
   );
 
-  for (let index = 1; index < 3; index++) {
-    await waitForRewards(testUser1, liqIdPromPool);
+  await waitForRewards(testUser1, liqIdPromPool);
 
-    rewardsInfoBefore = await getRewardsInfo(
-      testUser1.keyRingPair.address,
-      liqIdPromPool
-    );
-
-    await mangata.claimRewards(
-      testUser1.keyRingPair,
-      liqIdPromPool.toString(),
-      defaultCurrencyValue
-    );
-
-    rewardsInfoAfter = await getRewardsInfo(
-      testUser1.keyRingPair.address,
-      liqIdPromPool
-    );
-
-    expect(rewardsInfoAfter.rewardsAlreadyClaimed).bnGt(
-      rewardsInfoBefore.rewardsAlreadyClaimed
-    );
-  }
-
-  const userBalanceBeforeBurning = await api.query.tokens.accounts(
+  rewardsInfoBefore = await getRewardsInfo(
     testUser1.keyRingPair.address,
     liqIdPromPool
-  );
-
-  const valueBurningTokens = userBalanceBeforeBurning.free.add(
-    userBalanceBeforeBurning.reserved
-  );
-
-  await burnLiquidity(
-    testUser1.keyRingPair,
-    MGA_ASSET_ID,
-    token1,
-    new BN(valueBurningTokens)
   );
 
   await mangata.claimRewards(
@@ -145,5 +112,37 @@ test("Check that rewards are generated and can be claimed on each session, then 
     liqIdPromPool
   );
 
+  expect(rewardsInfoAfter.rewardsAlreadyClaimed).bnGt(
+    rewardsInfoBefore.rewardsAlreadyClaimed
+  );
+
+  const userBalanceBeforeBurning = await api.query.tokens.accounts(
+    testUser1.keyRingPair.address,
+    liqIdPromPool
+  );
+
+  const valueBurningTokens = userBalanceBeforeBurning.free.add(
+    userBalanceBeforeBurning.reserved
+  );
+
+  await waitForNBlocks(10);
+
+  await burnLiquidity(
+    testUser1.keyRingPair,
+    MGA_ASSET_ID,
+    token1,
+    new BN(valueBurningTokens)
+  );
+
+  await claimRewardsAll(testUser1, liqIdPromPool);
+
+  await waitForNBlocks(10);
+
+  rewardsInfoAfter = await getRewardsInfo(
+    testUser1.keyRingPair.address,
+    liqIdPromPool
+  );
+
+  expect(rewardsInfoAfter.rewardsNotYetClaimed).bnEqual(new BN(0));
   expect(rewardsInfoAfter.rewardsAlreadyClaimed).bnEqual(new BN(0));
 });

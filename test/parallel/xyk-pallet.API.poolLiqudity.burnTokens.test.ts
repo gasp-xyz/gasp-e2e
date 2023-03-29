@@ -2,7 +2,6 @@
  *
  * @group xyk
  * @group poolliquidity
- * @group parallel
  */
 
 import { Keyring } from "@polkadot/api";
@@ -98,7 +97,7 @@ beforeAll(async () => {
   testUser2.addAsset(liqIdNonPromPool);
 });
 
-test("Check that a user can burn  tokens when they are activated and when burning the free are subtracted first", async () => {
+test("Check that a user can burn tokens when they are activated, and when burning the free, those subtracted first", async () => {
   const api = getApi();
 
   await mintLiquidity(

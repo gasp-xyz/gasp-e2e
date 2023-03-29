@@ -2,7 +2,6 @@
  *
  * @group xyk
  * @group poolliquidity
- * @group parallel
  */
 
 import { Keyring } from "@polkadot/api";
