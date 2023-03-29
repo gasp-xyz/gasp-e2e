@@ -1158,3 +1158,21 @@ export async function setUserIdentity(user: User, displayname: string) {
     user.keyRingPair
   );
 }
+export async function addUserIdentitySub(
+  testUser: User,
+  userToSub: User,
+  newSubName: string
+) {
+  const api = await getApi();
+  const destAddress = userToSub.keyRingPair.publicKey;
+
+  await signTx(
+    api,
+    api.tx.identity.setSubs([[destAddress, { Raw: newSubName }]]),
+    testUser.keyRingPair
+  );
+}
+export async function clearUserIdentity(user: User) {
+  const api = await getApi();
+  await signTx(api, api.tx.identity.clearIdentity(), user.keyRingPair);
+}
