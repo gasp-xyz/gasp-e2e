@@ -19,7 +19,10 @@ import {
   mintLiquidity,
 } from "../../utils/tx";
 import { User } from "../../utils/User";
-import { getEnvironmentRequiredVars, waitForNBlocks } from "../../utils/utils";
+import {
+  getEnvironmentRequiredVars,
+  waitIfSessionWillChangeInNblocks,
+} from "../../utils/utils";
 import { Xyk } from "../../utils/xyk";
 import { waitForRewards } from "../../utils/eventListeners";
 
@@ -125,7 +128,7 @@ test("Check that rewards are generated and can be claimed on each session, then 
     userBalanceBeforeBurning.reserved
   );
 
-  await waitForNBlocks(10);
+  await waitIfSessionWillChangeInNblocks(10);
 
   await burnLiquidity(
     testUser1.keyRingPair,
@@ -136,7 +139,7 @@ test("Check that rewards are generated and can be claimed on each session, then 
 
   await claimRewardsAll(testUser1, liqIdPromPool);
 
-  await waitForNBlocks(10);
+  await waitIfSessionWillChangeInNblocks(10);
 
   rewardsInfoAfter = await getRewardsInfo(
     testUser1.keyRingPair.address,
