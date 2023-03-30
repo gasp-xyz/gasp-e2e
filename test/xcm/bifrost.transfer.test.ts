@@ -11,8 +11,8 @@ import { alice, api, setupApi, setupUsers } from "../../utils/setup";
 import { signSendSuccess } from "../../utils/sign";
 import { expectEvent } from "../../utils/validators";
 import { XToken } from "../../utils/xToken";
-import { Assets } from "../../utils/Assets";
-import { Sudo } from "../../utils/sudo";
+// import { Assets } from "../../utils/Assets";
+// import { Sudo } from "../../utils/sudo";
 
 /**
  * @group xcm
@@ -44,19 +44,19 @@ describe("XCM transfers", () => {
           ],
         ],
       },
-      Sudo: {
-        Key: alice.keyRingPair.address,
-      },
+      //  Sudo: {
+      //    Key: alice.keyRingPair.address,
+      //  },
     });
-    await Sudo.asSudoFinalized(
-      Assets.updateAsset(7, {
-        location: { location: {} },
-        metadata: {
-          xcm: { feePerSecond: 0 },
-          xyk: { operationsDisabled: false },
-        },
-      })
-    );
+    //    await Sudo.asSudoFinalized(
+    //      Assets.updateAsset(7, {
+    //        location: { location: {} },
+    //        metadata: {
+    //          xcm: { feePerSecond: 0 },
+    //          xyk: { operationsDisabled: false },
+    //        },
+    //      })
+    //    );
     await bifrost.dev.setStorage({
       System: {
         Account: [
@@ -70,7 +70,7 @@ describe("XCM transfers", () => {
   });
 
   // todo repeat for every other asset
-  it.only("send BNC to mangata and back", async () => {
+  it("send BNC to mangata and back", async () => {
     const op = bifrostApi.xTokenTransfer(
       ChainId.Mg,
       AssetId.Bnc,
