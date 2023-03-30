@@ -1,4 +1,5 @@
 import { SubmittableExtrinsic } from "@polkadot/api/types";
+import { isHex } from "@polkadot/util";
 import { getApi } from "./api";
 import { GenericEvent } from "@polkadot/types";
 import { KeyringPair } from "@polkadot/keyring/types";
@@ -6,10 +7,17 @@ import { BN, hexToU8a } from "@polkadot/util";
 import { SudoDB } from "./SudoDB";
 import { env } from "process";
 import { EventResult, ExtrinsicResult } from "./eventListeners";
-import { testLog } from "./Logger";
+import { logEvent, testLog } from "./Logger";
 import { User } from "./User";
-import { MangataGenericEvent, signTx } from "@mangata-finance/sdk";
+import {
+  MangataEventData,
+  MangataGenericEvent,
+  signTx,
+  TxOptions,
+} from "@mangata-finance/sdk";
 import { AccountId32 } from "@polkadot/types/interfaces";
+import _ from "lodash";
+import { ApiPromise } from "@polkadot/api";
 
 //let wait 7 blocks - 6000 * 7 = 42000; depends on the number of workers.
 
@@ -261,3 +269,127 @@ export async function setAssetInfo(
     return getEventResultFromMangataTx(result);
   });
 }
+
+export async function signTxAndGetEvents(
+  api: ApiPromise,
+  tx: SubmittableExtrinsic<"promise">,
+  account: string | KeyringPair,
+  txOptions?: TxOptions
+): Promise<MangataGenericEvent[]> {
+  return new Promise(async (resolve, reject) => {
+    try {
+      const unsub = await tx.signAndSend(
+        account,
+        { nonce: txOptions?.nonce },
+        ({ events, status, dispatchError }) => {
+          testLog
+            .getLog()
+            .info(`→ events on ${api.runtimeChain} for ${status}`);
+
+          events.forEach((e) => logEvent(api.runtimeChain, e));
+
+          if (!_.isNil(dispatchError)) {
+            if (dispatchError.isModule) {
+              const metaError = api.registry.findMetaError(
+                dispatchError.asModule
+              );
+              const { name, section } = metaError;
+              reject(new Error(`${section}.${name}`));
+              return;
+            } else {
+              reject(new Error(dispatchError.toString()));
+              return;
+            }
+          }
+
+          const event = _.find(events, ({ event }) =>
+            api.events.system.ExtrinsicSuccess.is(event)
+          );
+          if (event) {
+            const eventsAsMGAEventData = events.map((eventRecord) => {
+              const { event, phase } = eventRecord;
+              const types = event.typeDef;
+              const eventData: MangataEventData[] = event.data.map(
+                (d: any, i: any) => {
+                  return {
+                    lookupName: types[i].lookupName!,
+                    data: d,
+                  };
+                }
+              );
+
+              return {
+                event,
+                phase,
+                section: event.section,
+                method: event.method,
+                metaDocumentation: event.meta.docs.toString(),
+                eventData,
+                error: getError(api, event.method, eventData),
+              } as MangataGenericEvent;
+            });
+            resolve(eventsAsMGAEventData);
+            unsub();
+          }
+
+          if (status.isFinalized) {
+            reject(new Error("The event.ExtrinsicSuccess is not found"));
+            unsub();
+          }
+        }
+      );
+    } catch (error) {
+      reject(error);
+    }
+  });
+}
+const getError = (
+  api: ApiPromise,
+  method: string,
+  eventData: MangataEventData[]
+): {
+  documentation: string[];
+  name: string;
+} | null => {
+  const failedEvent = method === "ExtrinsicFailed";
+
+  if (failedEvent) {
+    const error = eventData.find((item) =>
+      item.lookupName.includes("DispatchError")
+    );
+    const errorData = error?.data?.toHuman?.() as TErrorData | undefined;
+    const errorIdx = errorData?.Module?.error;
+    const moduleIdx = errorData?.Module?.index;
+
+    if (errorIdx && moduleIdx) {
+      try {
+        const decode = api.registry.findMetaError({
+          error: isHex(errorIdx) ? hexToU8a(errorIdx) : new BN(errorIdx),
+          index: new BN(moduleIdx),
+        });
+        return {
+          documentation: decode.docs,
+          name: decode.name,
+        };
+      } catch (error) {
+        return {
+          documentation: ["Unknown error"],
+          name: "UnknownError",
+        };
+      }
+    } else {
+      return {
+        documentation: ["Unknown error"],
+        name: "UnknownError",
+      };
+    }
+  }
+
+  return null;
+};
+type TErrorData = {
+  Module?: {
+    index?: string;
+    error?: string;
+  };
+};
