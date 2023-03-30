@@ -15,8 +15,9 @@ export const DriverBuilder = (function () {
       options.addExtensions(polkadotExtensionPath);
       options.addExtensions(talismanExtensionPath);
     }
-    options.addArguments("--disable-dev-shm-usage");
-    options.addArguments("--headless");
+    options
+      .addArguments("--disable-dev-shm-usage")
+      .addArguments("--enable-clipboard-read");
     const prefs = new logging.Preferences();
     prefs.setLevel(logging.Type.BROWSER, logging.Level.DEBUG);
     prefs.setLevel(logging.Type.CLIENT, logging.Level.DEBUG);
@@ -38,7 +39,7 @@ export const DriverBuilder = (function () {
       .setChromeOptions(options)
       .withCapabilities(caps)
       .build();
-    await driver!.manage().timeouts().setScriptTimeout(5000);
+    await driver!.manage().setTimeouts({ script: 5000 });
     await driver!.manage().window().maximize();
 
     return driver;

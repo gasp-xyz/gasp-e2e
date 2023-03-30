@@ -5,6 +5,7 @@ import { Polkadot } from "../pages/Polkadot";
 import fs from "fs";
 import { testLog } from "../../Logger";
 import { BN } from "@polkadot/util";
+import { Talisman } from "../pages/Talisman";
 
 const { By, until } = require("selenium-webdriver");
 
@@ -143,16 +144,73 @@ export async function setupPolkadotExtension(driver: WebDriver) {
   };
 }
 
+//todo get rid of switch
+export async function setupWalletExtension(
+  driver: WebDriver,
+  walletType: string
+) {
+  switch (walletType) {
+    case "Polkadot":
+      await setupPolkadotExtension(driver);
+      break;
+    case "Talisman":
+      await setupTalismanExtension(driver);
+      break;
+    default:
+      await setupPolkadotExtension(driver);
+  }
+}
+
+export async function setupTalismanExtension(driver: WebDriver) {
+  await leaveOnlyOneTab(driver);
+
+  const talismanExtension = new Talisman(driver);
+  await talismanExtension.go();
+  const [talismanUserAddress, usrMnemonic] =
+    await talismanExtension.createAccount();
+
+  await new Mangata(driver).go();
+  await sleep(2000);
+
+  return {
+    polkUserAddress: talismanUserAddress,
+    mnemonic: usrMnemonic,
+  };
+}
+
 export async function acceptPermissionsPolkadotExtension(driver: WebDriver) {
   const polkadotExtension = new Polkadot(driver);
   await polkadotExtension.go();
   await polkadotExtension.acceptPermissions();
 }
 
+export async function acceptPermissionsWalletExtensionInNewWindow(
+  driver: WebDriver,
+  walletType: string
+) {
+  switch (walletType) {
+    case "Polkadot":
+      await acceptPermissionsPolkadotExtensionInNewWindow(driver);
+      break;
+    case "Talisman":
+      await acceptPermissionsTalismanExtensionInNewWindow(driver);
+      break;
+    default:
+      await acceptPermissionsPolkadotExtensionInNewWindow(driver);
+  }
+}
+
 export async function acceptPermissionsPolkadotExtensionInNewWindow(
   driver: WebDriver
 ) {
   const polkadotExtension = new Polkadot(driver);
+  await polkadotExtension.acceptPermissions();
+}
+
+export async function acceptPermissionsTalismanExtensionInNewWindow(
+  driver: WebDriver
+) {
+  const polkadotExtension = new Talisman(driver);
   await polkadotExtension.acceptPermissions();
 }
 

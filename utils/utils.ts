@@ -69,7 +69,9 @@ export function getEnvironmentRequiredVars() {
 
   const logLevel = process.env.LOG_LEVEL ? process.env.LOG_LEVEL : "info";
 
-  const uri = process.env.API_URL ? process.env.API_URL : "ws://127.0.0.1:9946";
+  const uri = process.env.API_URL
+    ? process.env.API_URL
+    : "wss://collator-01-ws-rococo.mangata.online";
   const relyUri = process.env.RELY_API_URL
     ? process.env.RELY_API_URL
     : "ws://127.0.0.1:9944";
@@ -83,7 +85,7 @@ export function getEnvironmentRequiredVars() {
 
   const uiUri = process.env.UI_URL
     ? process.env.UI_URL
-    : "https://develop.mangata.finance/";
+    : "https://microapps-dev-dot-direct-pixel-353917.oa.r.appspot.com/";
 
   const mnemonicMetaMask = process.env.MNEMONIC_META
     ? process.env.MNEMONIC_META
