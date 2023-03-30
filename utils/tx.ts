@@ -1121,7 +1121,7 @@ export async function getRewardsInfo(
   missingAtLastCheckpoint: BN;
 }> {
   const api = await getApi();
-  const value = await api.query.xyk.rewardsInfo(address, liqId);
+  const value = await api.query.proofOfStake.rewardsInfo(address, liqId);
   const valueAsJson = JSON.parse(JSON.stringify(value));
   const toReturn = {
     activatedAmount: stringToBN(valueAsJson.activatedAmount),
@@ -1134,6 +1134,16 @@ export async function getRewardsInfo(
     missingAtLastCheckpoint: stringToBN(valueAsJson.missingAtLastCheckpoint),
   };
   return toReturn;
+}
+
+export async function claimRewardsAll(user: User, liquidityTokenId: BN) {
+  const api = getApi();
+  const result = await signTx(
+    api,
+    api.tx.xyk.claimRewardsAllV2(liquidityTokenId),
+    user.keyRingPair
+  );
+  return result;
 }
 
 export async function setUserIdentity(user: User, displayname: string) {
