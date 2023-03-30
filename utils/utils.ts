@@ -283,16 +283,16 @@ export async function waitIfSessionWillChangeInNblocks(numberOfBlocks: number) {
 }
 
 export async function waitNewStakingRound(maxBlocks: number = 0) {
-  let currentSessionNumber: any;
-  let currentBlockNumber: any;
-  let awaitedSessionNumber: any;
+  let currentSessionNumber: number;
+  let currentBlockNumber: number;
   const api = getApi();
   const parachainStakingRoundInfo = await api?.query.parachainStaking.round();
   const sessionLength = parachainStakingRoundInfo.length.toNumber();
   currentBlockNumber = await getBlockNumber();
   const initialBlockNumber = currentBlockNumber;
-  currentSessionNumber = await api?.query.session.currentIndex();
+  currentSessionNumber = (await api?.query.session.currentIndex()).toNumber();
   const initialSessionNumber = currentSessionNumber;
+  const awaitedSessionNumber = initialSessionNumber + 1;
   if (maxBlocks <= 0) {
     maxBlocks = sessionLength + 2;
   }
@@ -301,9 +301,8 @@ export async function waitNewStakingRound(maxBlocks: number = 0) {
     awaitedBlockNumber > currentBlockNumber &&
     currentSessionNumber <= initialSessionNumber
   ) {
-    awaitedSessionNumber = initialSessionNumber.toNumber() + 1;
     currentBlockNumber = await getBlockNumber();
-    currentSessionNumber = await api?.query.session.currentIndex();
+    currentSessionNumber = (await api?.query.session.currentIndex()).toNumber();
     testLog
       .getLog()
       .info(
