@@ -21,7 +21,7 @@ import {
 import { User } from "../../utils/User";
 import {
   getEnvironmentRequiredVars,
-  waitIfSessionWillChangeInNblocks,
+  waitNewStakingRound,
 } from "../../utils/utils";
 import { Xyk } from "../../utils/xyk";
 import { waitForRewards } from "../../utils/eventListeners";
@@ -128,7 +128,7 @@ test("Check that rewards are generated and can be claimed on each session, then 
     userBalanceBeforeBurning.reserved
   );
 
-  await waitIfSessionWillChangeInNblocks(10);
+  await waitNewStakingRound();
 
   await burnLiquidity(
     testUser1.keyRingPair,
@@ -139,7 +139,7 @@ test("Check that rewards are generated and can be claimed on each session, then 
 
   await claimRewardsAll(testUser1, liqIdPromPool);
 
-  await waitIfSessionWillChangeInNblocks(10);
+  await waitNewStakingRound();
 
   rewardsInfoAfter = await getRewardsInfo(
     testUser1.keyRingPair.address,
