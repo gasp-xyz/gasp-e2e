@@ -1,6 +1,6 @@
 /*
  *
- * @group microappsUInooooot
+ * @group microappsUI
  */
 import { WebDriver } from "selenium-webdriver";
 import { getApi, initApi } from "../../utils/api";
