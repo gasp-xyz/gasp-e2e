@@ -30,6 +30,16 @@ const walletSetupFunction: Record<string, SetupFunction> = {
   default: setupPolkadotExtension,
 };
 
+type WalletPermissionFunction = Record<
+  string,
+  (driver: WebDriver) => Promise<void>
+>;
+
+const acceptWalletPermissionFunction: WalletPermissionFunction = {
+  Polkadot: acceptPermissionsPolkadotExtensionInNewWindow,
+  Talisman: acceptPermissionsTalismanExtensionInNewWindow,
+};
+
 export async function setupWalletExtension(
   driver: WebDriver,
   walletType: string
@@ -190,16 +200,10 @@ export async function acceptPermissionsWalletExtensionInNewWindow(
   driver: WebDriver,
   walletType: string
 ) {
-  switch (walletType) {
-    case "Polkadot":
-      await acceptPermissionsPolkadotExtensionInNewWindow(driver);
-      break;
-    case "Talisman":
-      await acceptPermissionsTalismanExtensionInNewWindow(driver);
-      break;
-    default:
-      await acceptPermissionsPolkadotExtensionInNewWindow(driver);
-  }
+  const acceptPermissions =
+    acceptWalletPermissionFunction[walletType] ||
+    acceptPermissionsPolkadotExtensionInNewWindow;
+  await acceptPermissions(driver);
 }
 
 export async function acceptPermissionsPolkadotExtensionInNewWindow(
