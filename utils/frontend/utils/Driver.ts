@@ -5,7 +5,6 @@ const { Builder } = require("selenium-webdriver");
 const chrome = require("selenium-webdriver/chrome");
 const path = "utils/frontend/utils/extensions";
 const polkadotExtensionPath = `${path}/polkadot_v0.38.3.crx`;
-const talismanExtensionPath = `${path}/talisman_v1.15.1.crx`;
 
 // Singleton constructor
 export const DriverBuilder = (function () {
@@ -13,10 +12,8 @@ export const DriverBuilder = (function () {
     const options = new chrome.Options();
     if (addExtensions) {
       options.addExtensions(polkadotExtensionPath);
-      options.addExtensions(talismanExtensionPath);
     }
     options.addArguments("--disable-dev-shm-usage");
-    options.addArguments("--headless");
     const prefs = new logging.Preferences();
     prefs.setLevel(logging.Type.BROWSER, logging.Level.DEBUG);
     prefs.setLevel(logging.Type.CLIENT, logging.Level.DEBUG);
