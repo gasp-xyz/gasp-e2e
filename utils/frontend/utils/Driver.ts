@@ -16,7 +16,6 @@ export const DriverBuilder = (function () {
       options.addExtensions(talismanExtensionPath);
     }
     options.addArguments("--disable-dev-shm-usage");
-    options.addArguments("--headless");
     const prefs = new logging.Preferences();
     prefs.setLevel(logging.Type.BROWSER, logging.Level.DEBUG);
     prefs.setLevel(logging.Type.CLIENT, logging.Level.DEBUG);
