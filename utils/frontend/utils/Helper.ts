@@ -20,6 +20,25 @@ export async function waitForElement(
   await driver.wait(until.elementLocated(By.xpath(xpath)), timeout);
 }
 
+type SetupFunction = (
+  driver: WebDriver
+) => Promise<{ polkUserAddress: string; mnemonic: string }>;
+
+const walletSetupFunction: Record<string, SetupFunction> = {
+  Polkadot: setupPolkadotExtension,
+  Talisman: setupTalismanExtension,
+  default: setupPolkadotExtension,
+};
+
+export async function setupWalletExtension(
+  driver: WebDriver,
+  walletType: string
+) {
+  const setupFunction =
+    walletSetupFunction[walletType] || walletSetupFunction.default;
+  await setupFunction(driver);
+}
+
 export async function waitForElementEnabled(
   driver: WebDriver,
   xpath: string,
@@ -142,23 +161,6 @@ export async function setupPolkadotExtension(driver: WebDriver) {
     polkUserAddress: polkUserAddress,
     mnemonic: usrMnemonic,
   };
-}
-
-//todo get rid of switch
-export async function setupWalletExtension(
-  driver: WebDriver,
-  walletType: string
-) {
-  switch (walletType) {
-    case "Polkadot":
-      await setupPolkadotExtension(driver);
-      break;
-    case "Talisman":
-      await setupTalismanExtension(driver);
-      break;
-    default:
-      await setupPolkadotExtension(driver);
-  }
 }
 
 export async function setupTalismanExtension(driver: WebDriver) {
