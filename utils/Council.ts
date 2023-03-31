@@ -12,4 +12,15 @@ export class Council {
   static veto(hash: string): Extrinsic {
     return api.tx.council.disapproveProposal(hash);
   }
+  static close(hash: string, index: number): Extrinsic {
+    return api.tx.council.close(
+      hash,
+      index,
+      { refTime: "38109747", proofSize: "0" },
+      500
+    );
+  }
+  static vote(hash: string, index: number, vote = "aye"): Extrinsic {
+    return api.tx.council.vote(hash, index, vote === "aye");
+  }
 }
