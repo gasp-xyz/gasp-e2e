@@ -1,4 +1,4 @@
-import { until, WebDriver } from "selenium-webdriver";
+import { WebDriver } from "selenium-webdriver";
 import { getEnvironmentRequiredVars } from "../../utils";
 import {
   clickElement,
@@ -94,8 +94,7 @@ export class Talisman {
     await waitForElement(this.driver, XPATH_ACCEPT_PERMISSIONS, 3000);
     await clickElement(this.driver, XPATH_ACCEPT_PERMISSIONS);
 
-    const urlToWaitFor = `${this.WEB_UI_ACCESS_URL}/dashboard.html#/portfolio`;
-    await this.driver.wait(until.urlIs(urlToWaitFor), 5000);
+    await waitForElement(this.driver, XPATH_ALERT_POPUP, 10000);
     await clickElement(this.driver, XPATH_ALERT_POPUP);
 
     const mnemonic = await this.getAccountMnemonic();
