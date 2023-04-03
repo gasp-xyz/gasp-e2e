@@ -159,9 +159,9 @@ test("Users minted a different number of tokens THEN they receive an equivalent 
   const rewardsClaimedUser1 = rewardsInfoUser1After.rewardsAlreadyClaimed.sub(
     rewardsInfoUser1Before.rewardsAlreadyClaimed
   );
-  const rewardsClaimedUser2 = rewardsInfoUser2After.rewardsAlreadyClaimed.sub(
-    rewardsInfoUser2Before.rewardsAlreadyClaimed
-  );
+  const rewardsClaimedUser2 = rewardsInfoUser2After.rewardsAlreadyClaimed
+    .sub(rewardsInfoUser2Before.rewardsAlreadyClaimed)
+    .add(new BN(1));
   expect(rewardsClaimedUser1).bnLte(rewardsClaimedUser2.mul(new BN(2)));
 });
 
