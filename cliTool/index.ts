@@ -12,6 +12,7 @@ import {
   fillWithDelegators,
   printCandidatesNotProducing,
   createCustomPool,
+  migrate,
 } from "../utils/setupsOnTheGo";
 import {
   findErrorMetadata,
@@ -48,6 +49,7 @@ async function app(): Promise<any> {
         "get pools",
         "Who is offline",
         "createPool",
+        "migrateData",
       ],
     })
     .then(async (answers: { option: string | string[] }) => {
@@ -292,6 +294,9 @@ async function app(): Promise<any> {
       }
       if (answers.option.includes("Who is offline")) {
         await printCandidatesNotProducing();
+      }
+      if (answers.option.includes("migrateData")) {
+        await migrate();
       }
       return app();
     });
