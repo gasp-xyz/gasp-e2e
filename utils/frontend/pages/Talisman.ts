@@ -77,7 +77,7 @@ export class Talisman {
       await this.driver.findElement(By.xpath(XPATH_PASSWORD))
     ).sendKeys(this.userPassword);
     await clickElement(this.driver, XPATH_BUTTON_SUBMIT);
-    await waitForElement(this.driver, XPATH_SECRET, 3000);
+    await waitForElement(this.driver, XPATH_SECRET, 13000);
     const element = await this.driver.findElement(By.xpath(XPATH_SECRET));
     const text = await element.getText();
     const phrases = text.split("\n").map((phrase: string) => phrase.trim());
