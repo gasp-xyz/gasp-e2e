@@ -21,6 +21,7 @@ import { signTx } from "@mangata-finance/sdk";
 import { getBalanceOfPool } from "./txHandler";
 import { StorageKey, Bytes } from "@polkadot/types";
 import { ITuple, Codec } from "@polkadot/types/types";
+import jsonpath from "jsonpath";
 
 const tokenOrigin = "ActivatedUnstakedReserves"; // "AvailableBalance";
 export async function setupPoolWithRewardsForDefaultUsers() {
@@ -397,18 +398,37 @@ export async function migrate() {
   await setupUsers();
   await initApi("wss://prod-kusama-collator-01.mangatafinance.cloud");
   const api = await getApi();
-  const data = [
-    ["Xyk", "RewardsInfo"],
-    ["Xyk", "LiquidityMiningUser"],
-    ["Xyk", "LiquidityMiningPool"],
-    ["Xyk", "LiquidityMiningUserToBeClaimed"],
-    ["Xyk", "LiquidityMiningActiveUser"],
-    ["Xyk", "LiquidityMiningActivePool"],
-    ["Xyk", "LiquidityMiningUserClaimed"],
-    ["Xyk", "LiquidityMiningActivePoolV2"],
-  ];
-  for (let dataId = 0; dataId < data.length; dataId++) {
-    const key = getStorageKey(data[dataId][0], data[dataId][1]);
+  const allPallets = await listStorages();
+  const storageToMigrate = allPallets
+    .filter(
+      (x: any) =>
+        x[0] === "Tokens" ||
+        x[0] === "Xyk" ||
+        x[0] === "Vesting" ||
+        x[0] === "MultiPurposeLiquidity" ||
+        x[0] === "AssetRegistry"
+    )
+    .flatMap((item: any) =>
+      item[1].map((element: any) => {
+        return [item[0], element];
+      })
+    );
+  console.info(JSON.stringify(storageToMigrate));
+  //  const data = [
+  //    ["Xyk", "RewardsInfo"],
+  //    ["Xyk", "LiquidityMiningUser"],
+  //    ["Xyk", "LiquidityMiningPool"],
+  //    ["Xyk", "LiquidityMiningUserToBeClaimed"],
+  //    ["Xyk", "LiquidityMiningActiveUser"],
+  //    ["Xyk", "LiquidityMiningActivePool"],
+  //    ["Xyk", "LiquidityMiningUserClaimed"],
+  //    ["Xyk", "LiquidityMiningActivePoolV2"],
+  //  ];
+  for (let dataId = 0; dataId < storageToMigrate.length; dataId++) {
+    const key = getStorageKey(
+      storageToMigrate[dataId][0],
+      storageToMigrate[dataId][1]
+    );
     let allKeys = [];
     let cont = true;
     let keys = await api.rpc.state.getKeysPaged(key, 100);
@@ -452,4 +472,23 @@ export async function migrate() {
 
     await Sudo.batchAsSudoFinalized(...txs);
   }
+}
+export async function listStorages() {
+  await setupApi();
+  await setupUsers();
+  await initApi("wss://prod-kusama-collator-01.mangatafinance.cloud");
+  const api = await getApi();
+  const meta = await api.rpc.state.getMetadata();
+  const metaJson = JSON.parse(JSON.stringify(meta));
+  const res = jsonpath.query(metaJson, "$..pallets[*].name");
+  const result: any = [];
+  res.forEach((pallet) => {
+    const storageItems = jsonpath.query(
+      metaJson,
+      `$..pallets[?(@.name =="${pallet}")].storage.items[*].name`
+    );
+    result.push([pallet, storageItems]);
+  });
+  console.info(result);
+  return result;
 }
