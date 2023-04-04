@@ -4,11 +4,12 @@ import { getApi, initApi } from "../utils/api";
 import { testLog } from "../utils/Logger";
 import { signSendAndWaitToFinishTx } from "../utils/txHandler";
 import { User } from "../utils/User";
-import { getEnvironmentRequiredVars } from "../utils/utils";
+import { getEnvironmentRequiredVars, sleep } from "../utils/utils";
 import { Mangata } from "@mangata-finance/sdk";
 import { ApiPromise, WsProvider } from "@polkadot/api";
 import { mnemonicToMiniSecret } from "@polkadot/util-crypto";
 import { u8aToHex } from "@polkadot/util";
+import * as fs from "fs";
 
 require("dotenv").config();
 
@@ -220,5 +221,26 @@ describe("staking - testpad", () => {
       .signAndSend(user.keyRingPair);
 
     testLog.getLog().warn("done");
+  });
+
+  test.skip("do transfer", async () => {
+    const mga = await Mangata.getInstance([
+      "wss://roccoco-testnet-collator-01.mangatafinance.cloud",
+    ]);
+    keyring = new Keyring({ type: "sr25519" });
+    const file = fs.readFileSync(
+      "/home/goncer/Downloads/backup/accounts/5FA3LcCrKMgr9WHqyvtDhDarAXRkJjoYrSy6XnZPKfwiB3sY.json"
+    );
+    const testUser1 = new User(keyring, "asd", JSON.parse(file as any));
+    keyring.addPair(testUser1.keyRingPair);
+    keyring.pairs[0].decodePkcs8("mangata123");
+    await mga.sendKusamaTokenFromRelayToParachainFee(
+      "wss://rococo-rpc.polkadot.io",
+      testUser1.keyRingPair,
+      testUser1.keyRingPair.address,
+      new BN(100000000000),
+      2110
+    );
+    await sleep(5000);
   });
 });

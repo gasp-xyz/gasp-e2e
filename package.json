@@ -9,9 +9,8 @@
   "dependencies": {
     "@acala-network/chopsticks": "^0.5.10",
     "@babel/plugin-proposal-decorators": "^7.17.8",
-    "@terascope/fetch-github-release": "^0.8.7",
     "@commitlint/config-conventional": "^17.4.2",
-    "@mangata-finance/sdk": "1.16.1",
+    "@mangata-finance/sdk": "1.18.1",
     "@terascope/fetch-github-release": "^0.8.7",
     "@types/bs58": "^4.0.1",
     "@types/get-port": "^4.2.0",
