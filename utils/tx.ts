@@ -1145,6 +1145,16 @@ export async function getRewardsInfo(
   return toReturn;
 }
 
+export async function claimRewardsAll(user: User, liquidityTokenId: BN) {
+  const api = getApi();
+  const result = await signTx(
+    api,
+    api.tx.xyk.claimRewardsAllV2(liquidityTokenId),
+    user.keyRingPair
+  );
+  return result;
+}
+
 export async function setUserIdentity(user: User, displayname: string) {
   const api = await getApi();
   await signTx(

@@ -287,6 +287,43 @@ export async function waitIfSessionWillChangeInNblocks(numberOfBlocks: number) {
     await waitForNBlocks(numberOfBlocks);
   }
 }
+
+export async function waitNewStakingRound(maxBlocks: number = 0) {
+  let currentSessionNumber: number;
+  let currentBlockNumber: number;
+  const api = getApi();
+  const parachainStakingRoundInfo = await api?.query.parachainStaking.round();
+  const sessionLength = parachainStakingRoundInfo.length.toNumber();
+  currentBlockNumber = await getBlockNumber();
+  const initialBlockNumber = currentBlockNumber;
+  currentSessionNumber = (await api?.query.session.currentIndex()).toNumber();
+  const initialSessionNumber = currentSessionNumber;
+  const awaitedSessionNumber = initialSessionNumber + 1;
+  if (maxBlocks <= 0) {
+    maxBlocks = sessionLength + 2;
+  }
+  const awaitedBlockNumber = initialBlockNumber + maxBlocks;
+  while (
+    awaitedBlockNumber > currentBlockNumber &&
+    currentSessionNumber <= initialSessionNumber
+  ) {
+    currentBlockNumber = await getBlockNumber();
+    currentSessionNumber = (await api?.query.session.currentIndex()).toNumber();
+    testLog
+      .getLog()
+      .info(
+        "Awaited session number: " +
+          awaitedSessionNumber +
+          ", current session number: " +
+          currentSessionNumber
+      );
+    await waitNewBlock();
+  }
+  if (currentSessionNumber < awaitedSessionNumber) {
+    testLog.getLog().warn("Expected session number was not received");
+  }
+}
+
 export async function getTokensDiffForBlockAuthor(blockNumber: AnyNumber) {
   const api = await mangata?.getApi()!;
   const blockHashSignedByUser = await api.rpc.chain.getBlockHash(blockNumber);
