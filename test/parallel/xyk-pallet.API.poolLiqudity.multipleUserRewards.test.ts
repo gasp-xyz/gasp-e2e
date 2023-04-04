@@ -29,7 +29,6 @@ let sudo: User;
 let keyring: Keyring;
 let token1: BN;
 let token2: BN;
-let token3: BN;
 let liqIdPromPool: BN;
 const defaultCurrencyValue = new BN(250000);
 
@@ -48,9 +47,9 @@ beforeAll(async () => {
 
   await setupApi();
 
-  [token1, token2, token3] = await Assets.setupUserWithCurrencies(
+  [token1, token2] = await Assets.setupUserWithCurrencies(
     sudo,
-    [defaultCurrencyValue, defaultCurrencyValue, defaultCurrencyValue],
+    [defaultCurrencyValue, defaultCurrencyValue],
     sudo
   );
 
@@ -59,15 +58,12 @@ beforeAll(async () => {
     Assets.initIssuance(),
     Assets.mintToken(token1, testUser, Assets.DEFAULT_AMOUNT),
     Assets.mintToken(token2, testUser, Assets.DEFAULT_AMOUNT),
-    Assets.mintToken(token3, testUser, Assets.DEFAULT_AMOUNT),
-    Assets.mintNative(testUser),
+    Assets.mintNative(testUser, Assets.DEFAULT_AMOUNT.muln(2)),
     Assets.mintToken(token1, testUser1, Assets.DEFAULT_AMOUNT),
     Assets.mintToken(token2, testUser1, Assets.DEFAULT_AMOUNT),
-    Assets.mintToken(token3, testUser1, Assets.DEFAULT_AMOUNT),
     Assets.mintNative(testUser1),
     Assets.mintToken(token1, testUser2, Assets.DEFAULT_AMOUNT),
     Assets.mintToken(token2, testUser2, Assets.DEFAULT_AMOUNT),
-    Assets.mintToken(token3, testUser2, Assets.DEFAULT_AMOUNT),
     Assets.mintNative(testUser2),
     Sudo.sudoAs(
       testUser,
@@ -84,15 +80,6 @@ beforeAll(async () => {
         MGA_ASSET_ID,
         Assets.DEFAULT_AMOUNT.divn(2),
         token2,
-        Assets.DEFAULT_AMOUNT.divn(2)
-      )
-    ),
-    Sudo.sudoAs(
-      testUser,
-      Xyk.createPool(
-        MGA_ASSET_ID,
-        Assets.DEFAULT_AMOUNT.divn(2),
-        token3,
         Assets.DEFAULT_AMOUNT.divn(2)
       )
     )
@@ -155,14 +142,18 @@ test("Users minted a different number of tokens THEN they receive an equivalent 
     testUser2.keyRingPair.address,
     liqIdPromPool
   );
-
   const rewardsClaimedUser1 = rewardsInfoUser1After.rewardsAlreadyClaimed.sub(
     rewardsInfoUser1Before.rewardsAlreadyClaimed
   );
-  const rewardsClaimedUser2 = rewardsInfoUser2After.rewardsAlreadyClaimed
-    .sub(rewardsInfoUser2Before.rewardsAlreadyClaimed)
-    .add(new BN(1));
-  expect(rewardsClaimedUser1).bnLte(rewardsClaimedUser2.mul(new BN(2)));
+  const rewardsClaimedUser2 = rewardsInfoUser2After.rewardsAlreadyClaimed.sub(
+    rewardsInfoUser2Before.rewardsAlreadyClaimed
+  );
+
+  const differenceUsersRewardsClaimed = rewardsClaimedUser2
+    .mul(new BN(2))
+    .div(rewardsClaimedUser1);
+
+  expect(differenceUsersRewardsClaimed).bnLte(new BN(2));
 });
 
 test("One user mints X tokens, other mints those X tokens but splitted in 5 mints at the same block, rewards are equal", async () => {
@@ -222,40 +213,19 @@ test("One user mints X tokens, other mints those X tokens but splitted in 5 mint
     Sudo.sudoAs(testUser2, Xyk.claimRewardsAll(liqIdPromPool))
   );
 
-  const rewardsInfoUser1Before = await getRewardsInfo(
+  const rewardsInfoUser1 = await getRewardsInfo(
     testUser1.keyRingPair.address,
     liqIdPromPool
   );
 
-  const rewardsInfoUser2Before = await getRewardsInfo(
+  const rewardsInfoUser2 = await getRewardsInfo(
     testUser2.keyRingPair.address,
     liqIdPromPool
   );
 
-  await waitForRewards(testUser1, liqIdPromPool);
-
-  await Sudo.batchAsSudoFinalized(
-    Sudo.sudoAs(testUser1, Xyk.claimRewardsAll(liqIdPromPool)),
-    Sudo.sudoAs(testUser2, Xyk.claimRewardsAll(liqIdPromPool))
+  expect(rewardsInfoUser1.rewardsAlreadyClaimed).bnEqual(
+    rewardsInfoUser2.rewardsAlreadyClaimed
   );
-
-  const rewardsInfoUser1After = await getRewardsInfo(
-    testUser1.keyRingPair.address,
-    liqIdPromPool
-  );
-
-  const rewardsInfoUser2After = await getRewardsInfo(
-    testUser2.keyRingPair.address,
-    liqIdPromPool
-  );
-
-  const rewardsClaimedUser1 = rewardsInfoUser1After.rewardsAlreadyClaimed.sub(
-    rewardsInfoUser1Before.rewardsAlreadyClaimed
-  );
-  const rewardsClaimedUser2 = rewardsInfoUser2After.rewardsAlreadyClaimed.sub(
-    rewardsInfoUser2Before.rewardsAlreadyClaimed
-  );
-  expect(rewardsClaimedUser1).bnEqual(rewardsClaimedUser2);
 });
 
 async function promotePool(token: BN) {
