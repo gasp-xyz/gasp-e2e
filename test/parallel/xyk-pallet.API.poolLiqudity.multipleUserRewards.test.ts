@@ -115,17 +115,17 @@ test("Users minted a different number of tokens THEN they receive an equivalent 
 
   await waitForRewards(testUser1, liqIdPromPool);
 
-  const rewardsUser1 = await mangata.calculateRewardsAmount(
+  const rewardsAmountUser1 = await mangata.calculateRewardsAmount(
     testUser1.keyRingPair.address,
     liqIdPromPool.toString()
   );
 
-  const rewardsUser2 = await mangata.calculateRewardsAmount(
+  const rewardsAmountUser2 = await mangata.calculateRewardsAmount(
     testUser2.keyRingPair.address,
     liqIdPromPool.toString()
   );
 
-  expect(rewardsUser2.mul(new BN(2))).bnLte(rewardsUser1);
+  expect(rewardsAmountUser1.mul(new BN(2))).bnLte(rewardsAmountUser2);
 });
 
 test("One user mints X tokens, other mints those X tokens but splitted in 5 mints at the same block, rewards are equal", async () => {
@@ -180,17 +180,17 @@ test("One user mints X tokens, other mints those X tokens but splitted in 5 mint
 
   await waitForRewards(testUser1, liqIdPromPool);
 
-  const rewardsUser1 = await mangata.calculateRewardsAmount(
+  const rewardsAmountUser1 = await mangata.calculateRewardsAmount(
     testUser1.keyRingPair.address,
     liqIdPromPool.toString()
   );
 
-  const rewardsUser2 = await mangata.calculateRewardsAmount(
+  const rewardsAmountUser2 = await mangata.calculateRewardsAmount(
     testUser2.keyRingPair.address,
     liqIdPromPool.toString()
   );
 
-  expect(rewardsUser1).bnEqual(rewardsUser2);
+  expect(rewardsAmountUser1).bnEqual(rewardsAmountUser2);
 });
 
 async function promotePool(token: BN) {
