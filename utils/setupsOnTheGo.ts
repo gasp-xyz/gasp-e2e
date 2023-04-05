@@ -14,11 +14,77 @@ import {
 import { User } from "./User";
 import { getEnvironmentRequiredVars } from "./utils";
 import { Xyk } from "./xyk";
-import { getApi, api } from "./api";
+import { getApi, api, initApi } from "./api";
 import { signTx } from "@mangata-finance/sdk";
 import { getBalanceOfPool } from "./txHandler";
 
 const tokenOrigin = "ActivatedUnstakedReserves"; // "AvailableBalance";
+
+export async function vetoMotion(motionId: number) {
+  //const fundAcc = "5Gc1GyxLPr1A4jE1U7u9LFYuFftDjeSYZWQXHgejQhSdEN4s";
+  const fundAcc = "5GrwvaEF5zXb26Fz9rcQpDWS57CtERHpNehXCPcNoHGKutQY";
+  await setupApi();
+  await setupUsers();
+  await initApi();
+  const api = await getApi();
+  const allProposals = await api.query.council.voting.entries();
+
+  const proposal = allProposals.find(
+    (x) =>
+      JSON.parse(JSON.stringify(x[1].toHuman())).index === motionId.toString()
+  );
+  console.info("proposal " + JSON.stringify(allProposals[0][0].toHuman()));
+  const hash = proposal?.[0].toHuman()!.toString();
+  console.info("hash " + hash);
+  await Sudo.batchAsSudoFinalized(
+    Sudo.sudoAsWithAddressString(
+      fundAcc,
+      api.tx.council.disapproveProposal(hash!)
+    )
+  );
+}
+
+export async function setupACouncilWithDefaultUsers() {
+  await setupApi();
+  await setupUsers();
+  await initApi();
+  const api = await getApi();
+  const amount = (await api?.consts.parachainStaking.minCandidateStk)?.muln(
+    1000
+  )!;
+  const keyring = new Keyring({ type: "sr25519" });
+  const testUser1 = new User(keyring, "//Bob");
+  const testUser2 = new User(keyring, "//Alice");
+  const testUser3 = new User(keyring, "//Charlie");
+  const testUser4 = new User(keyring, "//Eve");
+  const sudo = new User(keyring, getEnvironmentRequiredVars().sudo);
+  const token2 = await Assets.issueAssetToUser(sudo, amount, sudo, true);
+  await Sudo.batchAsSudoFinalized(
+    Assets.mintToken(token2, testUser1, amount),
+    Assets.mintToken(token2, testUser2, amount),
+    Assets.mintToken(token2, testUser3, amount),
+    Assets.mintToken(token2, testUser4, amount),
+    Assets.mintNative(testUser1, amount),
+    Assets.mintNative(testUser2, amount),
+    Assets.mintNative(testUser3, amount),
+    Assets.mintNative(testUser4, amount)
+  );
+  await Sudo.asSudoFinalized(
+    Sudo.sudo(
+      api.tx.council.setMembers(
+        [
+          testUser1.keyRingPair.address,
+          testUser2.keyRingPair.address,
+          testUser3.keyRingPair.address,
+          testUser4.keyRingPair.address,
+        ],
+        testUser1.keyRingPair.address,
+        0
+      )
+    )
+  );
+}
+
 export async function setupPoolWithRewardsForDefaultUsers() {
   await setupApi();
   await setupUsers();

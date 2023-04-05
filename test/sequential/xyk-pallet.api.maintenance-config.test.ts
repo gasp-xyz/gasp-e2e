@@ -6,7 +6,7 @@ import { hexToU8a } from "@polkadot/util";
 import { Keyring } from "@polkadot/api";
 import { getApi, initApi } from "../../utils/api";
 import { Assets } from "../../utils/Assets";
-import { MGA_ASSET_ID } from "../../utils/Constants";
+import { FOUNDATION_ADDRESS_1, MGA_ASSET_ID } from "../../utils/Constants";
 import { BN, MangataGenericEvent, signTx } from "@mangata-finance/sdk";
 import { setupApi, setupUsers } from "../../utils/setup";
 import { Sudo } from "../../utils/sudo";
@@ -44,8 +44,7 @@ let liqId: BN;
 let maintenanceStatus: any;
 const defaultCurrencyValue = new BN(1000000000000000);
 const defaultPoolVolumeValue = new BN(10000000000);
-const foundationAccountAddress =
-  "5Gc1GyxLPr1A4jE1U7u9LFYuFftDjeSYZWQXHgejQhSdEN4s";
+const foundationAccountAddress = FOUNDATION_ADDRESS_1;
 
 beforeAll(async () => {
   try {

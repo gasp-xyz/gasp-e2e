@@ -20,3 +20,9 @@ export const TUR_ASSET_NAME = "TUR";
 export const MAX_BALANCE = new BN("340282366920938463463374607431768211455"); //max balance
 export const EVENT_SECTION_PAYMENT = "transactionPayment";
 export const EVENT_METHOD_PAYMENT = "TransactionFeePaid";
+export const FOUNDATION_ADDRESS_1 =
+  "5Gc1GyxLPr1A4jE1U7u9LFYuFftDjeSYZWQXHgejQhSdEN4s";
+export const FOUNDATION_ADDRESS_2 =
+  "5GWESxf3u3taJ4h4nHpHwyZCyixnbywYrxt1Fpd98jNd1vTP";
+export const FOUNDATION_ADDRESS_3 =
+  "5HmiQLrRJC5mayvaeAXnbMbUCNMypTwhX5NnHhYTwSnAuAdf";
