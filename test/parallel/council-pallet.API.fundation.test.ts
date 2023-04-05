@@ -80,7 +80,26 @@ describe.each(["mmON", "mmOFF"])(
       );
       expectMGAExtrinsicSuDidSuccess(event);
     });
-
+    it.each([
+      ["Foundation", 6],
+      ["NoFoundation", 7],
+    ])(
+      "Test that %s address can/cannot close an already voted proposal",
+      async (test: string, index: number) => {
+        const { address, validate } = testCases[test];
+        const hash = proposalHashes[index];
+        const propBefore = await getProposal(hash);
+        await voteProposal(hash, councilUsers);
+        const propIndex = JSON.parse(
+          JSON.stringify(await getVotes(hash))
+        ).index;
+        const events = await Sudo.asSudoFinalized(
+          Sudo.sudoAsWithAddressString(address, Council.close(hash, propIndex))
+        );
+        const propAfter = await getProposal(hash);
+        validate(events, propAfter, propBefore);
+      }
+    );
     it.each([
       ["Foundation", 0],
       ["NoFoundation", 1],
@@ -132,27 +151,6 @@ describe.each(["mmON", "mmOFF"])(
       const propAfter = await getProposal(hash);
       validate(events, propAfter, propBefore);
     });
-
-    it.each([
-      ["Foundation", 6],
-      ["NoFoundation", 7],
-    ])(
-      "Test that %s address can/cannot close an already voted proposal",
-      async (test: string, index: number) => {
-        const { address, validate } = testCases[test];
-        const hash = proposalHashes[index];
-        const propBefore = await getProposal(hash);
-        await voteProposal(hash, councilUsers);
-        const propIndex = JSON.parse(
-          JSON.stringify(await getVotes(hash))
-        ).index;
-        const events = await Sudo.asSudoFinalized(
-          Sudo.sudoAsWithAddressString(address, Council.close(hash, propIndex))
-        );
-        const propAfter = await getProposal(hash);
-        validate(events, propAfter, propBefore);
-      }
-    );
     it("Test that sudo address cannot close an already voted proposal", async () => {
       const { validate } = testCases["NoFoundation"];
       const hash = proposalHashes[8];
