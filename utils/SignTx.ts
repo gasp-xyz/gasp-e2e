@@ -11,7 +11,7 @@ let signTxToExport: (
   txOptions?: TxOptions
 ) => Promise<MangataGenericEvent[]>;
 
-if (process.env.CHOPSTICK_ENABLED) {
+if (process.env.CHOPSTICK_ENABLED === "true") {
   signTxToExport = signTxAndGetEvents;
 } else {
   signTxToExport = signTx;

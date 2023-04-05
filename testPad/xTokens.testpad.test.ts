@@ -6,10 +6,14 @@ import { signSendAndWaitToFinishTx } from "../utils/txHandler";
 import { User } from "../utils/User";
 import { getEnvironmentRequiredVars, sleep } from "../utils/utils";
 import { Mangata } from "@mangata-finance/sdk";
-import { ApiPromise, WsProvider } from "@polkadot/api";
 import { mnemonicToMiniSecret } from "@polkadot/util-crypto";
 import { u8aToHex } from "@polkadot/util";
-import * as fs from "fs";
+import { setupApi, setupUsers } from "../utils/setup";
+import { Assets } from "../utils/Assets";
+import { Sudo } from "../utils/sudo";
+import { signSendSuccess } from "../utils/sign";
+import { ChainId, AssetId } from "../utils/ChainSpecs";
+import { OakNode } from "../utils/Framework/Node/OakNode";
 
 require("dotenv").config();
 
@@ -163,10 +167,6 @@ describe("staking - testpad", () => {
     } catch (e) {
       await initApi();
     }
-    const wsProvider = new WsProvider(getEnvironmentRequiredVars().relyUri);
-    const api = await ApiPromise.create({
-      provider: wsProvider,
-    });
     keyring = new Keyring({ type: "sr25519" });
     const user = new User(keyring, "//Alice");
     const user2 = new User(keyring);
@@ -175,71 +175,54 @@ describe("staking - testpad", () => {
       .info("sending tokens to user: " + user2.keyRingPair.address);
     keyring.addPair(user.keyRingPair);
     keyring.addPair(user2.keyRingPair);
-
-    await api?.tx.xcmPallet
-      .reserveTransferAssets(
-        {
-          V1: {
-            parents: 0,
-            interior: {
-              X1: {
-                Parachain: 2000,
-              },
-            },
-          },
-        },
-        {
-          V1: {
-            parents: 0,
-            interior: {
-              X1: {
-                AccountId32: {
-                  network: "Any",
-                  id: user2.keyRingPair.publicKey,
-                },
-              },
-            },
-          },
-        },
-        {
-          V1: [
-            {
-              id: {
-                Concrete: {
-                  parents: 0,
-                  interior: "Here",
-                },
-              },
-              fun: {
-                Fungible: 10000000,
-              },
-            },
-          ],
-        },
-        new BN("0")
-      )
-      .signAndSend(user.keyRingPair);
-
-    testLog.getLog().warn("done");
   });
-
-  test.skip("do transfer", async () => {
-    const mga = await Mangata.getInstance([
-      "wss://roccoco-testnet-collator-01.mangatafinance.cloud",
-    ]);
-    keyring = new Keyring({ type: "sr25519" });
-    const file = fs.readFileSync(
-      "/home/goncer/Downloads/backup/accounts/5FA3LcCrKMgr9WHqyvtDhDarAXRkJjoYrSy6XnZPKfwiB3sY.json"
+  test.skip("Test XCM fail when no location or no fee", async () => {
+    await setupApi();
+    await setupUsers();
+    await Sudo.asSudoFinalized(
+      Assets.updateAsset(7, {
+        metadata: {
+          xcm: { feePerSecond: 0 },
+          xyk: { operationsDisabled: false },
+        },
+      })
     );
-    const testUser1 = new User(keyring, "asd", JSON.parse(file as any));
+
+    const mga = await Mangata.getInstance(["ws://localhost:9946"]);
+    keyring = new Keyring({ type: "sr25519" });
+    const testUser1 = new User(keyring, "//Alice");
     keyring.addPair(testUser1.keyRingPair);
-    keyring.pairs[0].decodePkcs8("mangata123");
-    await mga.sendKusamaTokenFromRelayToParachainFee(
-      "wss://rococo-rpc.polkadot.io",
+    const oakApi = await OakNode.create("ws://localhost:9949");
+    await signSendSuccess(
+      oakApi.api,
+      oakApi.api.tx.utility.batchAll([
+        oakApi.xTokenTransfer(
+          ChainId.Mg,
+          AssetId.Tur,
+          AssetId.Tur.unit.mul(new BN(10_000)),
+          testUser1
+        ),
+      ]),
+      testUser1
+    );
+    testLog.getLog().warn("done");
+
+    //    keyring.pairs[0].decodePkcs8("mangata123");
+    await mga.sendTokenFromParachainToMangata(
+      "ws://localhost:9949",
+      "TUR",
+      "800000000",
       testUser1.keyRingPair,
       testUser1.keyRingPair.address,
-      new BN(100000000000),
-      2110
+      new BN("176652431432582")
+    );
+    await mga.sendTokenFromMangataToParachain(
+      "TUR",
+      "8000000000000",
+      2114,
+      testUser1.keyRingPair,
+      testUser1.keyRingPair.address,
+      new BN("17665243143258")
     );
     await sleep(5000);
   });

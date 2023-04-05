@@ -5,7 +5,11 @@ import dotenv from "dotenv";
 dotenv.config();
 
 module.exports = async function (globalConfig, projectConfig) {
-  if (process.env.SKIP_API_INIT || process.env.CHOPSTICK_ENABLED) return;
+  if (
+    process.env.SKIP_API_INIT === "true" ||
+    process.env.CHOPSTICK_ENABLED === "true"
+  )
+    return;
 
   const ipc = require("node-ipc").default;
   const api_module = require("./api");

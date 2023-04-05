@@ -23,7 +23,7 @@ export const initApi = async (uri = "") => {
     const { chainUri: envUri } = getEnvironmentRequiredVars();
     uri = envUri;
   }
-  if (process.env.CHOPSTICK_ENABLED) {
+  if (process.env.CHOPSTICK_ENABLED === "true") {
     const mgaPort = getMangataApiUrlPort();
     const chopstickPort = await getPort.getPort();
     mangataChopstick = await XcmNetworks.mangata({
