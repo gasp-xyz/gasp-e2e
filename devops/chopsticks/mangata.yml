@@ -1,4 +1,4 @@
-endpoint: wss://mangata-x.api.onfinality.io/public-ws
+endpoint: wss://kusama-archive.mangata.online
 # endpoint: ws://127.0.0.1:9946
 mock-signature-host: true
 db: ./mangata.db.sqlite
@@ -28,6 +28,12 @@ import-storage:
           - 5GrwvaEF5zXb26Fz9rcQpDWS57CtERHpNehXCPcNoHGKutQY
           - token: 0
         - free: '1000000000000000000000000' # 1M MG
+      -
+        -
+          - 5GrwvaEF5zXb26Fz9rcQpDWS57CtERHpNehXCPcNoHGKutQY
+          - token: 30
+        - free: 1000e6 # 1K USDT
+
   Council:
     Members: [5GrwvaEF5zXb26Fz9rcQpDWS57CtERHpNehXCPcNoHGKutQY]
   AssetRegistry:

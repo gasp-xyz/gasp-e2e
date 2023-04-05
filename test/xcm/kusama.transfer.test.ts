@@ -93,23 +93,11 @@ describe("XCM tests for Mangata <-> Kusama", () => {
     });
 
     await kusama.chain.newBlock();
-    expectJson(await mangata.api.query.tokens.accounts(alice.address, 4))
-      .toMatchInlineSnapshot(`
-          {
-            "free": 9000000000000,
-            "frozen": 0,
-            "reserved": 0,
-          }
-        `);
+    expectJson(
+      await mangata.api.query.tokens.accounts(alice.address, 4)
+    ).toMatchSnapshot();
 
-    expect(await balance(kusama.api, alice.address)).toMatchInlineSnapshot(`
-      {
-        "feeFrozen": 0,
-        "free": 10999895428355,
-        "miscFrozen": 0,
-        "reserved": 0,
-      }
-    `);
+    expect(await balance(kusama.api, alice.address)).toMatchSnapshot();
 
     expectEvent(await kusama.api.query.system.events(), {
       event: expect.objectContaining({
@@ -130,7 +118,7 @@ describe("XCM tests for Mangata <-> Kusama", () => {
       kusama.api.tx.xcmPallet
         .limitedReserveTransferAssets(
           {
-            V1: {
+            V3: {
               parents: 0,
               interior: {
                 X1: { Parachain: 2110 },
@@ -138,7 +126,7 @@ describe("XCM tests for Mangata <-> Kusama", () => {
             },
           },
           {
-            V1: {
+            V3: {
               parents: 0,
               interior: {
                 X1: {
@@ -150,7 +138,7 @@ describe("XCM tests for Mangata <-> Kusama", () => {
             },
           },
           {
-            V1: [
+            V3: [
               {
                 id: { Concrete: { parents: 0, interior: "Here" } },
                 fun: { Fungible: 1e12 },
@@ -167,25 +155,13 @@ describe("XCM tests for Mangata <-> Kusama", () => {
 
     await matchEvents(tx.events, "xcmPallet");
 
-    expect(await balance(kusama.api, alice.address)).toMatchInlineSnapshot(`
-      {
-        "feeFrozen": 0,
-        "free": 8999371447895,
-        "miscFrozen": 0,
-        "reserved": 0,
-      }
-    `);
+    expect(await balance(kusama.api, alice.address)).toMatchSnapshot();
 
     await mangata.chain.newBlock();
 
-    expectJson(await mangata.api.query.tokens.accounts(alice.address, 4))
-      .toMatchInlineSnapshot(`
-      {
-        "free": 10999472300000,
-        "frozen": 0,
-        "reserved": 0,
-      }
-    `);
+    expectJson(
+      await mangata.api.query.tokens.accounts(alice.address, 4)
+    ).toMatchSnapshot();
 
     await matchSystemEvents(mangata, "parachainSystem", "dmpQueue");
   });

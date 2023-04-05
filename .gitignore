@@ -11,3 +11,4 @@ allure-results/*
 allure-report
 reports/**/*
 .yarn
+*.sqlite
