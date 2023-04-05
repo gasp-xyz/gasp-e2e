@@ -5,13 +5,13 @@
  */
 
 import { Keyring } from "@polkadot/api";
-import { getApi, initApi } from "../../utils/api";
+import { getApi, getMangataInstance, initApi } from "../../utils/api";
 import { Assets } from "../../utils/Assets";
 import { MGA_ASSET_ID } from "../../utils/Constants";
-import { BN } from "@mangata-finance/sdk";
+import { BN, Mangata } from "@mangata-finance/sdk";
 import { setupApi, setupUsers } from "../../utils/setup";
 import { Sudo } from "../../utils/sudo";
-import { getLiquidityAssetId, getRewardsInfo } from "../../utils/tx";
+import { getLiquidityAssetId } from "../../utils/tx";
 import { User } from "../../utils/User";
 import { getEnvironmentRequiredVars } from "../../utils/utils";
 import { Xyk } from "../../utils/xyk";
@@ -30,6 +30,7 @@ let keyring: Keyring;
 let token1: BN;
 let token2: BN;
 let liqIdPromPool: BN;
+let mangata: Mangata;
 const defaultCurrencyValue = new BN(250000);
 
 beforeAll(async () => {
@@ -39,6 +40,9 @@ beforeAll(async () => {
     await initApi();
   }
   keyring = new Keyring({ type: "sr25519" });
+
+  const { chainUri } = getEnvironmentRequiredVars();
+  mangata = await getMangataInstance(chainUri);
 
   // setup users
   sudo = new User(keyring, sudoUserName);
@@ -111,49 +115,17 @@ test("Users minted a different number of tokens THEN they receive an equivalent 
 
   await waitForRewards(testUser1, liqIdPromPool);
 
-  await Sudo.batchAsSudoFinalized(
-    Sudo.sudoAs(testUser1, Xyk.claimRewardsAll(liqIdPromPool)),
-    Sudo.sudoAs(testUser2, Xyk.claimRewardsAll(liqIdPromPool))
-  );
-
-  const rewardsInfoUser1Before = await getRewardsInfo(
+  const rewardsUser1 = await mangata.calculateRewardsAmount(
     testUser1.keyRingPair.address,
-    liqIdPromPool
+    liqIdPromPool.toString()
   );
 
-  const rewardsInfoUser2Before = await getRewardsInfo(
+  const rewardsUser2 = await mangata.calculateRewardsAmount(
     testUser2.keyRingPair.address,
-    liqIdPromPool
+    liqIdPromPool.toString()
   );
 
-  await waitForRewards(testUser1, liqIdPromPool);
-
-  await Sudo.batchAsSudoFinalized(
-    Sudo.sudoAs(testUser1, Xyk.claimRewardsAll(liqIdPromPool)),
-    Sudo.sudoAs(testUser2, Xyk.claimRewardsAll(liqIdPromPool))
-  );
-
-  const rewardsInfoUser1After = await getRewardsInfo(
-    testUser1.keyRingPair.address,
-    liqIdPromPool
-  );
-
-  const rewardsInfoUser2After = await getRewardsInfo(
-    testUser2.keyRingPair.address,
-    liqIdPromPool
-  );
-  const rewardsClaimedUser1 = rewardsInfoUser1After.rewardsAlreadyClaimed.sub(
-    rewardsInfoUser1Before.rewardsAlreadyClaimed
-  );
-  const rewardsClaimedUser2 = rewardsInfoUser2After.rewardsAlreadyClaimed.sub(
-    rewardsInfoUser2Before.rewardsAlreadyClaimed
-  );
-
-  const differenceUsersRewardsClaimed = rewardsClaimedUser2
-    .mul(new BN(2))
-    .div(rewardsClaimedUser1);
-
-  expect(differenceUsersRewardsClaimed).bnLte(new BN(2));
+  expect(rewardsUser2.mul(new BN(2))).bnLte(rewardsUser1);
 });
 
 test("One user mints X tokens, other mints those X tokens but splitted in 5 mints at the same block, rewards are equal", async () => {
@@ -208,24 +180,17 @@ test("One user mints X tokens, other mints those X tokens but splitted in 5 mint
 
   await waitForRewards(testUser1, liqIdPromPool);
 
-  await Sudo.batchAsSudoFinalized(
-    Sudo.sudoAs(testUser1, Xyk.claimRewardsAll(liqIdPromPool)),
-    Sudo.sudoAs(testUser2, Xyk.claimRewardsAll(liqIdPromPool))
-  );
-
-  const rewardsInfoUser1 = await getRewardsInfo(
+  const rewardsUser1 = await mangata.calculateRewardsAmount(
     testUser1.keyRingPair.address,
-    liqIdPromPool
+    liqIdPromPool.toString()
   );
 
-  const rewardsInfoUser2 = await getRewardsInfo(
+  const rewardsUser2 = await mangata.calculateRewardsAmount(
     testUser2.keyRingPair.address,
-    liqIdPromPool
+    liqIdPromPool.toString()
   );
 
-  expect(rewardsInfoUser1.rewardsAlreadyClaimed).bnEqual(
-    rewardsInfoUser2.rewardsAlreadyClaimed
-  );
+  expect(rewardsUser1).bnEqual(rewardsUser2);
 });
 
 async function promotePool(token: BN) {
