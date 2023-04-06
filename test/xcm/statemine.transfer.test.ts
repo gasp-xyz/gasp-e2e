@@ -1,7 +1,6 @@
-import { connectVertical } from "@acala-network/chopsticks";
+import { connectParachains } from "@acala-network/chopsticks";
 import { KeyringPair } from "@polkadot/keyring/types";
 import { BN_THOUSAND } from "@polkadot/util";
-import { balance } from "../../utils/Assets";
 import { AssetId } from "../../utils/ChainSpecs";
 import { ApiContext } from "../../utils/Framework/XcmHelper";
 import XcmNetworks from "../../utils/Framework/XcmNetworks";
@@ -19,23 +18,20 @@ import {
  * @group xcm
  * @group proxied
  */
-describe("XCM tests for Mangata <-> Kusama", () => {
-  let kusama: ApiContext;
+describe("XCM tests for Mangata <-> Statemine", () => {
+  let statemine: ApiContext;
   let mangata: ApiContext;
   let alice: KeyringPair;
 
   beforeAll(async () => {
-    kusama = await XcmNetworks.kusama({
-      wasmOverride:
-        "./devops/chopsticks/wasm/kusama_runtime-v9380.compact.compressed.wasm",
-    });
+    statemine = await XcmNetworks.statemine();
     mangata = await XcmNetworks.mangata();
-    await connectVertical(kusama.chain, mangata.chain);
+    await connectParachains([statemine.chain, mangata.chain]);
     alice = devTestingPairs().alice;
   });
 
   afterAll(async () => {
-    await kusama.teardown();
+    await statemine.teardown();
     await mangata.teardown();
   });
 
@@ -43,7 +39,7 @@ describe("XCM tests for Mangata <-> Kusama", () => {
     await mangata.dev.setStorage({
       Tokens: {
         Accounts: [
-          [[alice.address, { token: 4 }], { free: 10 * 1e12 }],
+          [[alice.address, { token: 30 }], { free: 1000e6 }],
           [
             [alice.address, { token: 0 }],
             { free: AssetId.Mgx.unit.mul(BN_THOUSAND).toString() },
@@ -54,29 +50,35 @@ describe("XCM tests for Mangata <-> Kusama", () => {
         Key: alice.address,
       },
     });
-    await kusama.dev.setStorage({
+    await statemine.dev.setStorage({
       System: {
-        Account: [[[alice.address], { data: { free: 10 * 1e12 } }]],
+        Account: [[[alice.address], { data: { free: 10e12 } }]],
+      },
+      Assets: {
+        Account: [[[1984, alice.address], { balance: 1000e6 }]],
       },
     });
   });
 
-  it("mangata transfer assets to kusama", async () => {
+  it("mangata transfer assets to statemine", async () => {
     const tx = await sendTransaction(
       mangata.api.tx.xTokens
         .transfer(
-          4,
-          1e12,
+          30,
+          10e6,
           {
             V1: {
               parents: 1,
               interior: {
-                X1: {
-                  AccountId32: {
-                    network: "Any",
-                    id: alice.addressRaw,
+                X2: [
+                  { Parachain: 1000 },
+                  {
+                    AccountId32: {
+                      network: "Any",
+                      id: alice.addressRaw,
+                    },
                   },
-                },
+                ],
               },
             },
           },
@@ -95,34 +97,25 @@ describe("XCM tests for Mangata <-> Kusama", () => {
       }),
     });
 
-    await kusama.chain.newBlock();
+    await statemine.chain.newBlock();
     expectJson(
-      await mangata.api.query.tokens.accounts(alice.address, 4)
+      await mangata.api.query.tokens.accounts(alice.address, 30)
     ).toMatchSnapshot();
 
-    expect(await balance(kusama.api, alice.address)).toMatchSnapshot();
+    expect(
+      await statemine.api.query.assets.account(1984, alice.address)
+    ).toMatchSnapshot();
 
-    expectEvent(await kusama.api.query.system.events(), {
-      event: expect.objectContaining({
-        method: "ExecutedUpward",
-        section: "ump",
-        data: [
-          "0x42669dcaba8e3857f2c30c983ca7dd5de3d728cba346a307ca444e1fd1d9e473",
-          {
-            Complete: expect.anything(),
-          },
-        ],
-      }),
-    });
+    await matchSystemEvents(mangata, "xcmpQueue", "Success");
   });
 
-  it("Kusama transfer assets to mangata", async () => {
+  it("statemine transfer assets to mangata", async () => {
     const tx = await sendTransaction(
-      kusama.api.tx.xcmPallet
+      statemine.api.tx.polkadotXcm
         .limitedReserveTransferAssets(
           {
             V3: {
-              parents: 0,
+              parents: 1,
               interior: {
                 X1: { Parachain: 2110 },
               },
@@ -143,8 +136,15 @@ describe("XCM tests for Mangata <-> Kusama", () => {
           {
             V3: [
               {
-                id: { Concrete: { parents: 0, interior: "Here" } },
-                fun: { Fungible: 1e12 },
+                id: {
+                  Concrete: {
+                    parents: 0,
+                    interior: {
+                      X2: [{ PalletInstance: 50 }, { GeneralIndex: 1984 }],
+                    },
+                  },
+                },
+                fun: { Fungible: 10e6 },
               },
             ],
           },
@@ -154,18 +154,20 @@ describe("XCM tests for Mangata <-> Kusama", () => {
         .signAsync(alice, { nonce: 0 })
     );
 
-    await kusama.chain.newBlock();
+    await statemine.chain.newBlock();
 
-    await matchEvents(tx.events, "xcmPallet");
+    await matchEvents(tx.events, "polkadotXcm");
 
-    expect(await balance(kusama.api, alice.address)).toMatchSnapshot();
+    expect(
+      await statemine.api.query.assets.account(1984, alice.address)
+    ).toMatchSnapshot();
 
     await mangata.chain.newBlock();
 
     expectJson(
-      await mangata.api.query.tokens.accounts(alice.address, 4)
+      await mangata.api.query.tokens.accounts(alice.address, 30)
     ).toMatchSnapshot();
 
-    await matchSystemEvents(mangata, "parachainSystem", "dmpQueue");
+    await matchSystemEvents(mangata, "xcmpQueue", "Success");
   });
 });
