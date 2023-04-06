@@ -124,8 +124,11 @@ test("Users minted a different number of tokens THEN they receive an equivalent 
     testUser2.keyRingPair.address,
     liqIdPromPool.toString()
   );
+  const rewardsDifference = rewardsAmountUser1.sub(
+    rewardsAmountUser2.mul(new BN(2))
+  );
 
-  expect(rewardsAmountUser1.mul(new BN(2))).bnLte(rewardsAmountUser2);
+  expect(rewardsAmountUser1.div(rewardsDifference)).bnGt(new BN(10000));
 });
 
 test("One user mints X tokens, other mints those X tokens but splitted in 5 mints at the same block, rewards are equal", async () => {

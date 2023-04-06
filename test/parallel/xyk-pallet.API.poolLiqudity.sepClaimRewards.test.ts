@@ -141,4 +141,22 @@ test("One user claim all the rewards on every session and other user claim them 
   );
 
   expect(rewardsClaimedUser1).bnEqual(rewardsClaimedUser2);
+  expect(rewardsInfoUser1After.activatedAmount).bnEqual(
+    rewardsInfoUser2After.activatedAmount
+  );
+  expect(rewardsInfoUser1After.rewardsNotYetClaimed).bnEqual(
+    rewardsInfoUser2After.rewardsNotYetClaimed
+  );
+  expect(rewardsInfoUser1After.rewardsAlreadyClaimed).bnEqual(
+    rewardsInfoUser2After.rewardsAlreadyClaimed
+  );
+  expect(rewardsInfoUser1After.lastCheckpoint).bnEqual(
+    rewardsInfoUser2After.lastCheckpoint
+  );
+  expect(rewardsInfoUser1After.poolRatioAtLastCheckpoint).bnEqual(
+    rewardsInfoUser2After.poolRatioAtLastCheckpoint
+  );
+  expect(rewardsInfoUser1After.missingAtLastCheckpoint).bnEqual(
+    rewardsInfoUser2After.missingAtLastCheckpoint
+  );
 });
