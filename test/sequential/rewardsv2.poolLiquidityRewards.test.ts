@@ -28,6 +28,8 @@ const assetAmount = new BN("1000000000000000");
 
 let testUser1: User;
 let testUser2: User;
+let testUser3: User;
+let testUser4: User;
 let sudo: User;
 
 let keyring: Keyring;
@@ -44,7 +46,7 @@ describe("rewards v2 tests", () => {
 
     keyring = new Keyring({ type: "sr25519" });
     sudo = new User(keyring, getEnvironmentRequiredVars().sudo);
-    [testUser1, testUser2] = setupUsers();
+    [testUser1, testUser2, testUser3, testUser4] = setupUsers();
 
     secondCurrency = await Assets.issueAssetToUser(
       sudo,
@@ -60,8 +62,12 @@ describe("rewards v2 tests", () => {
       Assets.initIssuance(),
       Assets.mintToken(secondCurrency, testUser1, Assets.DEFAULT_AMOUNT),
       Assets.mintToken(secondCurrency, testUser2, Assets.DEFAULT_AMOUNT),
+      Assets.mintToken(secondCurrency, testUser3, Assets.DEFAULT_AMOUNT),
+      Assets.mintToken(secondCurrency, testUser4, Assets.DEFAULT_AMOUNT),
       Assets.mintNative(testUser1),
       Assets.mintNative(testUser2),
+      Assets.mintNative(testUser3),
+      Assets.mintNative(testUser4),
       Sudo.sudoAs(
         testUser1,
         Xyk.createPool(
@@ -115,7 +121,12 @@ describe("rewards v2 tests", () => {
           testUser2,
           Xyk.mintLiquidity(MGA_ASSET_ID, secondCurrency, assetAmount)
         ),
-        Sudo.sudoAs(testUser1, Xyk.activateLiquidity(liqId, liqBalance.free))
+        Sudo.sudoAs(
+          testUser3,
+          Xyk.mintLiquidity(MGA_ASSET_ID, secondCurrency, assetAmount)
+        ),
+        Sudo.sudoAs(testUser1, Xyk.activateLiquidity(liqId, liqBalance.free)),
+        Assets.mintToken(liqId, testUser4, assetAmount)
       );
 
       await waitForRewards(testUser1, liqId);
@@ -204,6 +215,46 @@ describe("rewards v2 tests", () => {
       expect(rewardsInfoAfterClaim.activatedAmount).bnEqual(
         assetAmount.divn(2)
       );
+    });
+    test("Given a user with Liquidity activated When tries to mint some more Then the user activated amount will grow on that value", async () => {
+      const rewardsInfoBefore = await getRewardsInfo(
+        testUser3.keyRingPair.address,
+        liqId
+      );
+
+      await mintLiquidity(
+        testUser3.keyRingPair,
+        MGA_ASSET_ID,
+        secondCurrency,
+        defaultCurrencyValue
+      );
+
+      const rewardsInfoAfter = await getRewardsInfo(
+        testUser3.keyRingPair.address,
+        liqId
+      );
+
+      const rewardsDifference = rewardsInfoAfter.activatedAmount.sub(
+        rewardsInfoBefore.activatedAmount
+      );
+
+      expect(rewardsDifference.div(new BN(100))).bnEqual(
+        defaultCurrencyValue.div(new BN(100))
+      );
+    });
+    test("Given a user with bonded but not activated liq tokens WHEN he tries to activate THEN the tokens are activated for rewards", async () => {
+      const rewardsInfoBefore = await getRewardsInfo(
+        testUser4.keyRingPair.address,
+        liqId
+      );
+      await activateLiquidity(testUser4.keyRingPair, liqId, assetAmount);
+      const rewardsInfoAfter = await getRewardsInfo(
+        testUser4.keyRingPair.address,
+        liqId
+      );
+
+      expect(rewardsInfoBefore.activatedAmount).bnEqual(new BN(0));
+      expect(rewardsInfoAfter.activatedAmount).bnEqual(assetAmount);
     });
   });
 });
