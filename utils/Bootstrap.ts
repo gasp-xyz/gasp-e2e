@@ -179,9 +179,23 @@ export async function claimAndActivateBootstrap(user: User) {
 
 export async function finalizeBootstrap(sudoUser: User) {
   const api = getApi();
+  await signTx(
+    api,
+    api.tx.sudo.sudoAs(
+      sudoUser.keyRingPair.address,
+      api.tx.bootstrap.preFinalize()
+    ),
+    sudoUser.keyRingPair,
+    {
+      nonce: await getCurrentNonce(sudoUser.keyRingPair.address),
+    }
+  );
   const result = await signTx(
     api,
-    api.tx.sudo.sudo(api.tx.bootstrap.finalize()),
+    api.tx.sudo.sudoAs(
+      sudoUser.keyRingPair.address,
+      api.tx.bootstrap.finalize()
+    ),
     sudoUser.keyRingPair,
     {
       nonce: await getCurrentNonce(sudoUser.keyRingPair.address),

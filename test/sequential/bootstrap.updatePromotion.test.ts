@@ -178,7 +178,8 @@ test("bootstrap - bootstrap - Check if we can change promoteBootstrapPool in eac
   }
 
   const bootstrapFinalize = await finalizeBootstrap(sudo);
-  await waitSudoOperationSuccess(bootstrapFinalize);
+  eventResponse = getEventResultFromMangataTx(bootstrapFinalize);
+  expect(eventResponse.state).toEqual(ExtrinsicResult.ExtrinsicSuccess);
 
   await checkLastBootstrapFinalized(sudo);
 });
