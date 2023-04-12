@@ -86,7 +86,8 @@ async function runBootstrap(assetId: BN) {
   expect(eventResponse.state).toEqual(ExtrinsicResult.ExtrinsicSuccess);
 
   const bootstrapFinalize = await finalizeBootstrap(sudo);
-  await waitSudoOperationSuccess(bootstrapFinalize);
+  eventResponse = getEventResultFromMangataTx(bootstrapFinalize);
+  expect(eventResponse.state).toEqual(ExtrinsicResult.ExtrinsicSuccess);
 }
 
 beforeAll(async () => {
