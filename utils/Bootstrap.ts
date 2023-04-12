@@ -1,3 +1,5 @@
+// @ts-nocheck
+
 import { getApi } from "./api";
 import { ExtrinsicResult } from "./eventListeners";
 import { User } from "./User";
