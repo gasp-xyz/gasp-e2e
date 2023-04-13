@@ -34,7 +34,7 @@ import { Sudo } from "../../utils/sudo";
 
 const { sudo: sudoUserName } = getEnvironmentRequiredVars();
 const waitingPeriod = 5;
-const bootstrapPeriod = 7;
+const bootstrapPeriod = 9;
 const poolAssetAmount = new BN(100000);
 jest.setTimeout(1500000);
 jest.spyOn(console, "log").mockImplementation(jest.fn());
@@ -86,7 +86,8 @@ async function runBootstrap(assetId: BN) {
   expect(eventResponse.state).toEqual(ExtrinsicResult.ExtrinsicSuccess);
 
   const bootstrapFinalize = await finalizeBootstrap(sudo);
-  await waitSudoOperationSuccess(bootstrapFinalize);
+  eventResponse = getEventResultFromMangataTx(bootstrapFinalize);
+  expect(eventResponse.state).toEqual(ExtrinsicResult.ExtrinsicSuccess);
 }
 
 beforeAll(async () => {
