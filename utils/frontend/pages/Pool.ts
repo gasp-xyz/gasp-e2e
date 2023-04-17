@@ -4,8 +4,8 @@ import { waitForNBlocks } from "../../utils";
 import {
   buildDataTestIdXpath,
   clickElement,
-  getAttribute,
   getText,
+  isDisplayed,
   pressEscape,
   waitForElement,
   writeText,
@@ -44,6 +44,11 @@ export class Pool {
   async togglePool() {
     const selector = buildDataTestIdXpath(TAB_POOL_TEST_ID);
     await clickElement(this.driver, selector);
+  }
+
+  async isPoolToggled() {
+    const tradeBtn = buildDataTestIdXpath(BTN_POOL_PROVIDE);
+    return isDisplayed(this.driver, tradeBtn);
   }
   /**
    * Select one asset to pay with.
@@ -86,10 +91,10 @@ export class Pool {
     await clickElement(this.driver, assetLocator);
   }
   async getToken2Text(): Promise<string> {
-    return await getAttribute(this.driver, this.inputToken2Locator);
+    return await getText(this.driver, this.btnToken2Locator);
   }
   async getToken1Text(): Promise<string> {
-    return await getAttribute(this.driver, this.inputToken1Locator);
+    return await getText(this.driver, this.btnToken1Locator);
   }
   async clickToToken2MaxBtn() {
     await clickElement(this.driver, this.btnToken2MaxLocator);
