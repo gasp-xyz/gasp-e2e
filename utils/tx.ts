@@ -566,7 +566,11 @@ export const activateLiquidity = async (
   const mangata = await getMangataInstance();
   const api = await mangata.getApi();
   const result = await signSendAndWaitToFinishTx(
-    api?.tx.xyk.activateLiquidityV2(new BN(liqToken), new BN(amount), from),
+    api?.tx.proofOfStake.activateLiquidity(
+      new BN(liqToken),
+      new BN(amount),
+      from
+    ),
     account,
     strictsuccess
   );
@@ -581,7 +585,7 @@ export const deactivateLiquidity = async (
   const api = await mangata.getApi();
 
   const result = await signSendAndWaitToFinishTx(
-    api?.tx.xyk.deactivateLiquidityV2(new BN(liqToken), new BN(amount)),
+    api?.tx.proofOfStake.deactivateLiquidity(new BN(liqToken), new BN(amount)),
     account
   );
   return result;
@@ -1151,7 +1155,7 @@ export async function claimRewardsAll(user: User, liquidityTokenId: BN) {
   const api = getApi();
   const result = await signTx(
     api,
-    api.tx.xyk.claimRewardsAllV2(liquidityTokenId),
+    api.tx.proofOfStake.claimRewardsAll(liquidityTokenId),
     user.keyRingPair
   );
   return result;
