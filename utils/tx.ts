@@ -467,7 +467,9 @@ export const promotePool = async (
   const api = await mangata.getApi();
   const result = await signTx(
     api,
-    api.tx.sudo.sudo(api.tx.xyk.updatePoolPromotion(liqAssetId, weight)),
+    api.tx.sudo.sudo(
+      api.tx.proofOfStake.updatePoolPromotion(liqAssetId, weight)
+    ),
     sudoAccount,
     { nonce: await getCurrentNonce(sudoAccount.address) }
   );
