@@ -19,7 +19,7 @@ import { validateUnmodified } from "../../utils/validators";
 import { Assets } from "../../utils/Assets";
 import {
   getEnvironmentRequiredVars,
-  UserCreatesAPoolAndMintliquidity,
+  UserCreatesAPoolAndMintLiquidity,
   xykErrors,
 } from "../../utils/utils";
 import { getEventResultFromMangataTx } from "../../utils/txHandler";
@@ -85,7 +85,7 @@ describe("xyk-pallet - Burn liquidity tests: BurnLiquidity Errors:", () => {
 
   test("Burn liquidity  for more assets than the liquidity pool has issued", async () => {
     const poolAmount = new BN(defaultCurrecyValue).div(new BN(2));
-    [firstCurrency, secondCurrency] = await UserCreatesAPoolAndMintliquidity(
+    [firstCurrency, secondCurrency] = await UserCreatesAPoolAndMintLiquidity(
       testUser1,
       sudo,
       new BN(defaultCurrecyValue),
@@ -125,7 +125,7 @@ describe("xyk-pallet - Burn liquidity tests: BurnLiquidity Errors:", () => {
     const testUser2 = new User(keyring);
     keyring.addPair(testUser2.keyRingPair);
     await testUser2.addMGATokens(sudo);
-    [firstCurrency, secondCurrency] = await UserCreatesAPoolAndMintliquidity(
+    [firstCurrency, secondCurrency] = await UserCreatesAPoolAndMintLiquidity(
       testUser1,
       sudo,
       new BN(defaultCurrecyValue)
