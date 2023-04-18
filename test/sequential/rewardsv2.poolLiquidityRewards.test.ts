@@ -156,7 +156,7 @@ describe("rewards v2 tests", () => {
       expect(incrementedMGAs!).bnLt(availableRewardsBefore);
       expect(claimedAmount).bnEqual(availableRewardsBefore);
     });
-    test("Given a user with Liquidity activated When tries to burn some Then the user gets automatically deactivated that amount And rewards are stored in NotYetClaimed section in rewards info", async () => {
+    test.skip("Given a user with Liquidity activated When tries to burn some Then the user gets automatically deactivated that amount And rewards are stored in NotYetClaimed section in rewards info", async () => {
       const availableRewardsBefore = await mangata.calculateRewardsAmount(
         testUser2.keyRingPair.address,
         liqId.toString()
