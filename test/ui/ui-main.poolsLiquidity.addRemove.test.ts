@@ -76,8 +76,7 @@ describe("UI tests - adding, removing liquidity", () => {
     );
 
     await Sudo.batchAsSudoFinalized(
-      Assets.mintToken(new BN(7), testUser1), // transferAll test
-      Assets.mintToken(testAssetId, testUser1), // transferAll test
+      Assets.mintToken(testAssetId, testUser1),
       Assets.mintNative(testUser1)
     );
 
