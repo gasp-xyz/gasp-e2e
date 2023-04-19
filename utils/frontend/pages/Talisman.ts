@@ -4,6 +4,7 @@ import {
   clickElement,
   doActionInDifferentWindow,
   waitForElement,
+  waitForElementToDissapear,
 } from "../utils/Helper";
 import { By } from "selenium-webdriver";
 
@@ -69,6 +70,7 @@ export class Talisman {
     ).sendKeys(acc_name);
 
     await clickElement(this.driver, XPATH_MODAL_RENAME);
+    await waitForElementToDissapear(this.driver, XPATH_MODAL_RENAME);
   }
 
   async getAccountMnemonic(): Promise<string> {
