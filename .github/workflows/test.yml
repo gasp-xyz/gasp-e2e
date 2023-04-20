@@ -5,13 +5,8 @@ on:
     inputs:
       logLevel:
         description: 'Log level'
-        required: true
-        default: 'warning'
-        type: choice
-        options:
-        - info
-        - warning
-        - debug
+        required: false
+        type: string
 
 jobs:
   print-inputs:
