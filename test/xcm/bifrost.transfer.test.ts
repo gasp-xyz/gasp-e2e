@@ -57,7 +57,7 @@ describe("XCM transfers", () => {
 
   // todo repeat for every other asset
   it("send BNC to mangata and back", async () => {
-    const op = bifrostApi.xTokenTransfer(
+    const op = bifrostApi.xTokenTransferV2(
       ChainId.Mg,
       AssetId.Bnc,
       AssetId.Bnc.unit.mul(BN_TEN),
@@ -90,7 +90,7 @@ describe("XCM transfers", () => {
       event: expect.objectContaining({
         data: expect.objectContaining({
           who: "eCSrvbA5gGNYdM3UjBNxcBNBqGxtz3SEEfydKragtL4pJ4F",
-          amount: "6,465,920,000",
+          amount: "6,410,240,000",
         }),
       }),
     });
