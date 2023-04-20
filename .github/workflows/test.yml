@@ -28,3 +28,12 @@ jobs:
     steps:
       - run: echo ${{ inputs.logLevel }}
       - run: echo ${{ github.event.inputs.logLevel }}
+  
+  runIfWarning:
+    needs: [print-inputs]
+    runs-on: ubuntu-latest
+    steps:
+      
+      - name: Set Configuration - Develop
+        if: "${{ github.event.inputs.logLevel == 'warning' }}"
+        - run: echo ${{ github.event.inputs.logLevel }}
