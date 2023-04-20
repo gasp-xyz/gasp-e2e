@@ -1,7 +1,7 @@
 name: workflow-dispatch-with-environment
 
 on:
-  workflow_dispatch:
+  workflow_call:
     inputs:
       logLevel:
         description: 'Log level'
