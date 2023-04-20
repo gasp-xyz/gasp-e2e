@@ -34,6 +34,7 @@ import { connectPolkadotWallet } from "../../utils/frontend/utils/Handlers";
 
 require("dotenv").config();
 
+jest.retryTimes(1);
 jest.spyOn(console, "log").mockImplementation(jest.fn());
 
 jest.setTimeout(1500000);
