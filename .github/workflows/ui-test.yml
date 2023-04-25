@@ -93,7 +93,7 @@ jobs:
         uses: Xotabu4/selenoid-github-action@v2
         with:
           selenoid-start-arguments: |
-            --args "-timeout 300s" --browsers 'chrome:108.0;chrome:109.0;chrome:110.0'
+            --args "-timeout 300s" --browsers 'chrome:109.0;chrome:110.0;chrome:112.0'
         
 
       - name: Set Configuration - Integration
