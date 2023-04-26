@@ -162,8 +162,9 @@ describe("rewards v2 tests", () => {
       expect(claimedAmount).bnEqual(availableRewardsBefore);
     });
     test("Given a user with Liquidity activated When tries to burn some Then the user gets automatically deactivated that amount And rewards are stored in NotYetClaimed section in rewards info", async () => {
+      let availableRewardsBefore;
       await waitIfSessionWillChangeInNblocks(4);
-      const availableRewardsBefore = await mangata.calculateRewardsAmount(
+      availableRewardsBefore = await mangata.calculateRewardsAmount(
         testUser2.keyRingPair.address,
         liqId.toString()
       );
@@ -173,7 +174,6 @@ describe("rewards v2 tests", () => {
           testUser2.keyRingPair.address
         )
       ).reserved;
-
       await burnLiquidity(
         testUser2.keyRingPair,
         MGA_ASSET_ID,
@@ -189,6 +189,11 @@ describe("rewards v2 tests", () => {
       );
       expect(rewardsInfo.activatedAmount).bnEqual(assetAmount.divn(2));
       expect(rewardsInfo.rewardsNotYetClaimed).bnEqual(availableRewardsBefore);
+      await waitIfSessionWillChangeInNblocks(4);
+      availableRewardsBefore = await mangata.calculateRewardsAmount(
+        testUser2.keyRingPair.address,
+        liqId.toString()
+      );
       const events = await claimRewardsAll(testUser2, liqId);
       const { claimedAmount } = getClaimedAmount(events);
       await testUser2.refreshAmounts(AssetWallet.AFTER);
