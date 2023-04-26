@@ -83,7 +83,7 @@ export class SudoUser extends BaseUser {
     const result = await signTx(
       this.node.api!,
       this.node.api!.tx.sudo.sudo(
-        this.node.api!.tx.xyk.updatePoolPromotion(liqAssetId, weight)
+        this.node.api!.tx.proofOfStake.updatePoolPromotion(liqAssetId, weight)
       ),
       this.keyRingPair,
       { nonce: nonce }

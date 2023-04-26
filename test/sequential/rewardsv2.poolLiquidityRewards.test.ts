@@ -7,7 +7,11 @@ import { getApi, getMangataInstance, initApi } from "../../utils/api";
 import { AssetWallet, User } from "../../utils/User";
 import { Keyring } from "@polkadot/api";
 import { BN } from "@polkadot/util";
-import { getEnvironmentRequiredVars, stringToBN } from "../../utils/utils";
+import {
+  getEnvironmentRequiredVars,
+  stringToBN,
+  waitIfSessionWillChangeInNblocks,
+} from "../../utils/utils";
 import { Assets } from "../../utils/Assets";
 import { Sudo } from "../../utils/sudo";
 import { Xyk } from "../../utils/xyk";
@@ -17,6 +21,7 @@ import {
   getLiquidityAssetId,
   burnLiquidity,
   getRewardsInfo,
+  claimRewardsAll,
 } from "../../utils/tx";
 import { setupApi, setupUsers } from "../../utils/setup";
 import { ExtrinsicResult, waitForRewards } from "../../utils/eventListeners";
@@ -157,7 +162,9 @@ describe("rewards v2 tests", () => {
       expect(claimedAmount).bnEqual(availableRewardsBefore);
     });
     test("Given a user with Liquidity activated When tries to burn some Then the user gets automatically deactivated that amount And rewards are stored in NotYetClaimed section in rewards info", async () => {
-      const availableRewardsBefore = await mangata.calculateRewardsAmount(
+      let availableRewardsBefore;
+      await waitIfSessionWillChangeInNblocks(4);
+      availableRewardsBefore = await mangata.calculateRewardsAmount(
         testUser2.keyRingPair.address,
         liqId.toString()
       );
@@ -167,7 +174,6 @@ describe("rewards v2 tests", () => {
           testUser2.keyRingPair.address
         )
       ).reserved;
-
       await burnLiquidity(
         testUser2.keyRingPair,
         MGA_ASSET_ID,
@@ -181,12 +187,14 @@ describe("rewards v2 tests", () => {
         testUser2.keyRingPair.address,
         liqId
       );
+      expect(rewardsInfo.activatedAmount).bnEqual(assetAmount.divn(2));
       expect(rewardsInfo.rewardsNotYetClaimed).bnEqual(availableRewardsBefore);
-      const events = await mangata.claimRewards(
-        testUser2.keyRingPair,
-        liqId.toString(),
-        availableRewardsBefore
+      await waitIfSessionWillChangeInNblocks(4);
+      availableRewardsBefore = await mangata.calculateRewardsAmount(
+        testUser2.keyRingPair.address,
+        liqId.toString()
       );
+      const events = await claimRewardsAll(testUser2, liqId);
       const { claimedAmount } = getClaimedAmount(events);
       await testUser2.refreshAmounts(AssetWallet.AFTER);
       const incrementedMGAs = testUser2
