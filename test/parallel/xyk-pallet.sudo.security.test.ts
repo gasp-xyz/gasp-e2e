@@ -75,7 +75,7 @@ test("xyk-pallet - SecurityTests - Only sudo can perform actions [tokens.create]
   });
 });
 
-test.skip("xyk-pallet - SecurityTests - Only sudo can perform actions [tokens.create to itself]", async () => {
+test("xyk-pallet - SecurityTests - Only sudo can perform actions [tokens.create to itself]", async () => {
   const api = getApi();
 
   await signTx(

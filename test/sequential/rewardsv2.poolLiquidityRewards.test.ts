@@ -17,6 +17,7 @@ import {
   getLiquidityAssetId,
   burnLiquidity,
   getRewardsInfo,
+  claimRewardsAll,
 } from "../../utils/tx";
 import { setupApi, setupUsers } from "../../utils/setup";
 import { ExtrinsicResult, waitForRewards } from "../../utils/eventListeners";
@@ -156,7 +157,7 @@ describe("rewards v2 tests", () => {
       expect(incrementedMGAs!).bnLt(availableRewardsBefore);
       expect(claimedAmount).bnEqual(availableRewardsBefore);
     });
-    test.skip("Given a user with Liquidity activated When tries to burn some Then the user gets automatically deactivated that amount And rewards are stored in NotYetClaimed section in rewards info", async () => {
+    test("Given a user with Liquidity activated When tries to burn some Then the user gets automatically deactivated that amount And rewards are stored in NotYetClaimed section in rewards info", async () => {
       const availableRewardsBefore = await mangata.calculateRewardsAmount(
         testUser2.keyRingPair.address,
         liqId.toString()
@@ -181,12 +182,9 @@ describe("rewards v2 tests", () => {
         testUser2.keyRingPair.address,
         liqId
       );
+      expect(rewardsInfo.activatedAmount).bnEqual(assetAmount.divn(2));
       expect(rewardsInfo.rewardsNotYetClaimed).bnEqual(availableRewardsBefore);
-      const events = await mangata.claimRewards(
-        testUser2.keyRingPair,
-        liqId.toString(),
-        availableRewardsBefore
-      );
+      const events = await claimRewardsAll(testUser2, liqId);
       const { claimedAmount } = getClaimedAmount(events);
       await testUser2.refreshAmounts(AssetWallet.AFTER);
       const incrementedMGAs = testUser2

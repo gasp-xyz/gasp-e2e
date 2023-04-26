@@ -88,7 +88,7 @@ beforeEach(async () => {
   testUser1.addAsset(secondCurrency, defaultCurrecyValue);
 });
 
-test.skip("xyk-pallet - Assets substracted are incremented by 1 - MGA- SellAsset", async () => {
+test("xyk-pallet - Assets substracted are incremented by 1 - MGA- SellAsset", async () => {
   await testUser1.refreshAmounts(AssetWallet.BEFORE);
   const sellingAmount = new BN(10000);
   const tokensToReceive = await calculate_sell_price_id_rpc(

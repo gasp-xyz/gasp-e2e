@@ -447,7 +447,7 @@ describe("xyk-pallet - treasury tests [Connected - Mangata]: Error cases", () =>
     await user.refreshAmounts(AssetWallet.BEFORE);
   });
 
-  it.skip("Not enough tokens to convert fee LINK[https://trello.com/c/p77t0atO]", async () => {
+  it("Not enough tokens to convert fee LINK[https://trello.com/c/p77t0atO]", async () => {
     const mgPoolAmount = await getBalanceOfPool(MGA_ASSET_ID, currency);
     const treasuryBefore = await getTreasury(MGA_ASSET_ID);
     const treasuryBurnBefore = await getTreasuryBurn(MGA_ASSET_ID);
