@@ -4,8 +4,10 @@ import BN from "bn.js";
 import { Assets } from "./Assets";
 import { MGA_ASSET_ID, MAX_BALANCE } from "./Constants";
 import { waitForRewards } from "./eventListeners";
-import { setupApi, setupUsers } from "./setup";
+import { Extrinsic, setupApi, setupUsers } from "./setup";
 import { Sudo } from "./sudo";
+import { xxhashAsHex } from "@polkadot/util-crypto";
+
 import {
   getLiquidityAssetId,
   getLiquidityPool,
@@ -17,6 +19,9 @@ import { Xyk } from "./xyk";
 import { getApi, api, initApi } from "./api";
 import { signTx } from "@mangata-finance/sdk";
 import { getBalanceOfPool } from "./txHandler";
+import { StorageKey, Bytes } from "@polkadot/types";
+import { ITuple, Codec } from "@polkadot/types/types";
+import jsonpath from "jsonpath";
 
 const tokenOrigin = "ActivatedUnstakedReserves"; // "AvailableBalance";
 
@@ -437,4 +442,119 @@ export async function createCustomPool(div = true, ratio = 1, user = "//Bob") {
     Assets.mintNative(testUser1, amount),
     tx
   );
+}
+export function getStorageKey(
+  moduleName: string,
+  storageItemName: string
+): string {
+  return (
+    xxhashAsHex(moduleName, 128) +
+    stripHexPrefix(xxhashAsHex(storageItemName, 128))
+  );
+}
+export function stripHexPrefix(str: string): string {
+  return isHexPrefixed(str) ? str.slice(2) : str;
+}
+function isHexPrefixed(str: string): boolean {
+  return str.slice(0, 2) === "0x";
+}
+
+export async function migrate() {
+  await setupApi();
+  await setupUsers();
+  await initApi("wss://prod-kusama-collator-01.mangatafinance.cloud");
+  const api = await getApi();
+  const allPallets = await listStorages();
+  const storageToMigrate = allPallets
+    .filter(
+      (x: any) =>
+        x[0] === "Tokens" ||
+        x[0] === "Xyk" ||
+        x[0] === "Vesting" ||
+        x[0] === "MultiPurposeLiquidity" ||
+        x[0] === "AssetRegistry"
+    )
+    .flatMap((item: any) =>
+      item[1].map((element: any) => {
+        return [item[0], element];
+      })
+    );
+  console.info(JSON.stringify(storageToMigrate));
+  //  const data = [
+  //    ["Xyk", "RewardsInfo"],
+  //    ["Xyk", "LiquidityMiningUser"],
+  //    ["Xyk", "LiquidityMiningPool"],
+  //    ["Xyk", "LiquidityMiningUserToBeClaimed"],
+  //    ["Xyk", "LiquidityMiningActiveUser"],
+  //    ["Xyk", "LiquidityMiningActivePool"],
+  //    ["Xyk", "LiquidityMiningUserClaimed"],
+  //    ["Xyk", "LiquidityMiningActivePoolV2"],
+  //  ];
+  for (let dataId = 0; dataId < storageToMigrate.length; dataId++) {
+    const key = getStorageKey(
+      storageToMigrate[dataId][0],
+      storageToMigrate[dataId][1]
+    );
+    let allKeys = [];
+    let cont = true;
+    let keys = await api.rpc.state.getKeysPaged(key, 100);
+    let loop: number = 0;
+    while (cont) {
+      for (let index = 0; index < keys.length; index++) {
+        const storage = await api.rpc.state.getStorage<Codec>(keys[index]);
+        allKeys.push([keys[index], storage]);
+      }
+      const nextkeys = await api.rpc.state.getKeysPaged(key, 100, keys[99]);
+      if (loop % 5 === 0) {
+        const txs: Extrinsic[] = [];
+        allKeys.forEach((x) => {
+          const storageKey = api.createType("StorageKey", x[0]);
+          const storageData = api.createType("StorageData", x[1].toHex());
+          const tx = api.tx.system.setStorage([
+            [storageKey, storageData] as ITuple<[StorageKey, Bytes]>,
+          ]);
+          txs.push(Sudo.sudo(tx));
+        });
+
+        await Sudo.batchAsSudoFinalized(...txs);
+        allKeys = [];
+      }
+      if (nextkeys.includes(keys[99]) || nextkeys.length === 0) {
+        cont = false;
+      } else {
+        keys = nextkeys;
+      }
+      loop++;
+    }
+    const txs: Extrinsic[] = [];
+    allKeys.forEach((x) => {
+      const storageKey = api.createType("StorageKey", x[0]);
+      const storageData = api.createType("StorageData", x[1].toHex());
+      const tx = api.tx.system.setStorage([
+        [storageKey, storageData] as ITuple<[StorageKey, Bytes]>,
+      ]);
+      txs.push(Sudo.sudo(tx));
+    });
+
+    await Sudo.batchAsSudoFinalized(...txs);
+  }
+}
+export async function listStorages() {
+  await setupApi();
+  await setupUsers();
+  await initApi("wss://prod-kusama-collator-01.mangatafinance.cloud");
+  const api = await getApi();
+  const meta = await api.rpc.state.getMetadata();
+  const metaJson = JSON.parse(JSON.stringify(meta));
+  const res = jsonpath.query(metaJson, "$..pallets[*].name");
+  const result: any = [];
+  res.forEach((pallet) => {
+    const storageItems = jsonpath.query(
+      metaJson,
+      `$..pallets[?(@.name =="${pallet}")].storage.items[*].name`
+    );
+    result.push([pallet, storageItems]);
+  });
+  console.info(result);
+  return result;
 }
