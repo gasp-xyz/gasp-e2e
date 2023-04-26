@@ -7,7 +7,11 @@ import { getApi, getMangataInstance, initApi } from "../../utils/api";
 import { AssetWallet, User } from "../../utils/User";
 import { Keyring } from "@polkadot/api";
 import { BN } from "@polkadot/util";
-import { getEnvironmentRequiredVars, stringToBN } from "../../utils/utils";
+import {
+  getEnvironmentRequiredVars,
+  stringToBN,
+  waitIfSessionWillChangeInNblocks,
+} from "../../utils/utils";
 import { Assets } from "../../utils/Assets";
 import { Sudo } from "../../utils/sudo";
 import { Xyk } from "../../utils/xyk";
@@ -158,6 +162,7 @@ describe("rewards v2 tests", () => {
       expect(claimedAmount).bnEqual(availableRewardsBefore);
     });
     test("Given a user with Liquidity activated When tries to burn some Then the user gets automatically deactivated that amount And rewards are stored in NotYetClaimed section in rewards info", async () => {
+      await waitIfSessionWillChangeInNblocks(4);
       const availableRewardsBefore = await mangata.calculateRewardsAmount(
         testUser2.keyRingPair.address,
         liqId.toString()
