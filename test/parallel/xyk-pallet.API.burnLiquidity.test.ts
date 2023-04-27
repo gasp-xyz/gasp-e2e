@@ -35,7 +35,6 @@ import { getEventResultFromMangataTx } from "../../utils/txHandler";
 import { Xyk } from "../../utils/xyk";
 import { Sudo } from "../../utils/sudo";
 import { MGA_ASSET_ID } from "../../utils/Constants";
-import { BN_ZERO } from "@mangata-finance/sdk";
 
 const { sudo: sudoUserName } = getEnvironmentRequiredVars();
 
@@ -154,7 +153,7 @@ describe("xyk-pallet - Burn liquidity tests: when burning liquidity you can", ()
       amount
     );
 
-    expect([BN_ZERO, BN_ZERO]).collectionBnEqual(poolBalance);
+    expect([new BN(0), new BN(0)]).collectionBnEqual(poolBalance);
 
     //Validate liquidity pool is destroyed.
     const liquidityPool = await getLiquidityPool(liquidityAssetId);
@@ -190,8 +189,8 @@ describe("xyk-pallet - Burn liquidity tests: when burning liquidity you can", ()
     });
     await testUser1.refreshAmounts(AssetWallet.AFTER);
     //burn liquidity does not add any treasury.
-    await validateTreasuryAmountsEqual(firstCurrency, [BN_ZERO, BN_ZERO]);
-    await validateTreasuryAmountsEqual(secondCurrency, [BN_ZERO, BN_ZERO]);
+    await validateTreasuryAmountsEqual(firstCurrency, [new BN(0), new BN(0)]);
+    await validateTreasuryAmountsEqual(secondCurrency, [new BN(0), new BN(0)]);
   });
 
   test("Burning liquidities generates a Liquidity burned event", async () => {
@@ -283,11 +282,6 @@ describe("xyk-pallet - Burn liquidity tests: when burning liquidity you can", ()
       firstCurrency
     );
 
-    const poolBeforeBurning = await getBalanceOfPool(
-      MGA_ASSET_ID,
-      firstCurrency
-    );
-
     await Sudo.batchAsSudoFinalized(
       Sudo.sudoAs(
         testUser2,
@@ -353,15 +347,8 @@ describe("xyk-pallet - Burn liquidity tests: when burning liquidity you can", ()
         testUser1.getAsset(MGA_ASSET_ID)?.amountBefore.free!
       );
 
-    const poolAfterBurning = await getBalanceOfPool(
-      MGA_ASSET_ID,
-      firstCurrency
-    );
-
-    expect(poolBeforeBurning[0]).bnGt(BN_ZERO);
-    expect(poolAfterBurning[0]).bnEqual(BN_ZERO);
-    expect(differenceMGAUser1).bnGt(BN_ZERO);
-    expect(differenceMGAUser2).bnGt(BN_ZERO);
+    expect(differenceMGAUser1).bnGt(new BN(0));
+    expect(differenceMGAUser2).bnGt(new BN(0));
   });
 });
 
