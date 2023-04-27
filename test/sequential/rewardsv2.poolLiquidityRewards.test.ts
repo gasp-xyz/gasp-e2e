@@ -17,11 +17,18 @@ import {
   getLiquidityAssetId,
   burnLiquidity,
   getRewardsInfo,
+  joinCandidate,
 } from "../../utils/tx";
 import { setupApi, setupUsers } from "../../utils/setup";
 import { ExtrinsicResult, waitForRewards } from "../../utils/eventListeners";
 import { MGA_ASSET_ID } from "../../utils/Constants";
-import { BN_ZERO, Mangata, MangataGenericEvent } from "@mangata-finance/sdk";
+import {
+  BN_BILLION,
+  BN_ZERO,
+  Mangata,
+  MangataGenericEvent,
+} from "@mangata-finance/sdk";
+import { Staking } from "../../utils/Staking";
 
 const defaultCurrencyValue = new BN(10000000);
 const assetAmount = new BN("1000000000000000");
@@ -35,6 +42,7 @@ let sudo: User;
 let keyring: Keyring;
 let secondCurrency: BN;
 let liqId: BN;
+let minCandidate: BN;
 
 describe("rewards v2 tests", () => {
   beforeAll(async () => {
@@ -43,6 +51,12 @@ describe("rewards v2 tests", () => {
     } catch (e) {
       await initApi();
     }
+
+    const api = await getApi();
+    minCandidate = new BN(
+      await api.consts.parachainStaking.minCandidateStk.toString()
+    );
+    const aBigEnoughAmount = minCandidate.mul(BN_BILLION);
 
     keyring = new Keyring({ type: "sr25519" });
     sudo = new User(keyring, getEnvironmentRequiredVars().sudo);
@@ -63,11 +77,11 @@ describe("rewards v2 tests", () => {
       Assets.mintToken(secondCurrency, testUser1, Assets.DEFAULT_AMOUNT),
       Assets.mintToken(secondCurrency, testUser2, Assets.DEFAULT_AMOUNT),
       Assets.mintToken(secondCurrency, testUser3, Assets.DEFAULT_AMOUNT),
-      Assets.mintToken(secondCurrency, testUser4, Assets.DEFAULT_AMOUNT),
+      Assets.mintToken(secondCurrency, testUser4, aBigEnoughAmount),
       Assets.mintNative(testUser1),
       Assets.mintNative(testUser2),
       Assets.mintNative(testUser3),
-      Assets.mintNative(testUser4),
+      Assets.mintNative(testUser4, aBigEnoughAmount),
       Sudo.sudoAs(
         testUser1,
         Xyk.createPool(
@@ -126,7 +140,7 @@ describe("rewards v2 tests", () => {
           Xyk.mintLiquidity(MGA_ASSET_ID, secondCurrency, assetAmount)
         ),
         Sudo.sudoAs(testUser1, Xyk.activateLiquidity(liqId, liqBalance.free)),
-        Assets.mintToken(liqId, testUser4, assetAmount)
+        Assets.mintToken(liqId, testUser4, minCandidate)
       );
 
       await waitForRewards(testUser1, liqId);
@@ -243,6 +257,17 @@ describe("rewards v2 tests", () => {
       );
     });
     test("Given a user with bonded but not activated liq tokens WHEN he tries to activate THEN the tokens are activated for rewards", async () => {
+      await Sudo.asSudoFinalized(
+        Sudo.sudo(Staking.addStakingLiquidityToken(liqId))
+      );
+
+      await joinCandidate(
+        testUser4.keyRingPair,
+        liqId,
+        minCandidate,
+        "AvailableBalance"
+      );
+
       const rewardsInfoBefore = await getRewardsInfo(
         testUser4.keyRingPair.address,
         liqId
