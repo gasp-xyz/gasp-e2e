@@ -3,21 +3,28 @@ import {
   buildDataTestIdXpath,
   clickElement,
   getText,
+  isDisplayed,
   writeText,
 } from "../utils/Helper";
 import { Polkadot } from "./Polkadot";
 
 //SELECTORS
+const DIV_TITLE = "removeLiquidityModal-title";
 const INPUT_PERCENTAGE = "removeLiquidityModal-amountCard-amountInput";
 const BTN_PERCENTAGE_MAX =
   "removeLiquidityModal-amountCard-hardcodedAmountBtn-100";
 const BTN_CONFIRM = "removeLiquidityModal-confirmBtn";
 
-export class BrunLiquidityModal {
+export class BurnLiquidityModal {
   driver: WebDriver;
 
   constructor(driver: WebDriver) {
     this.driver = driver;
+  }
+
+  async isModalVisible() {
+    const title = buildDataTestIdXpath(DIV_TITLE);
+    return isDisplayed(this.driver, title);
   }
 
   async getAssetAmount(assetName: string): Promise<string> {

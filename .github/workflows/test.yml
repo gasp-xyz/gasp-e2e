@@ -1,0 +1,33 @@
+name: workflow-dispatch-with-environment
+
+on:
+  workflow_call:
+    inputs:
+      logLevel:
+        description: 'Log level'
+        required: false
+        type: string
+
+jobs:
+  print-inputs:
+    runs-on: ubuntu-latest
+    steps:
+      - name: job summary
+        run: |
+          echo "### inputs" >> $GITHUB_STEP_SUMMARY
+          echo "- logLevel: ${{ inputs.logLevel }}" >> $GITHUB_STEP_SUMMARY
+          echo "- logLevel2: ${{ github.event.inputs.logLevel }}" >> $GITHUB_STEP_SUMMARY
+  run:
+    needs: [print-inputs]
+    runs-on: ubuntu-latest
+    steps:
+      - run: echo ${{ inputs.logLevel }}
+      - run: echo ${{ github.event.inputs.logLevel }}
+
+  runIfWarning:
+    needs: [print-inputs]
+    runs-on: ubuntu-latest
+    steps:
+      - name: Set Configuration - Develop
+        if: "${{ github.event.inputs.logLevel == 'warning' }}"
+        run: echo ${{ github.event.inputs.logLevel }}

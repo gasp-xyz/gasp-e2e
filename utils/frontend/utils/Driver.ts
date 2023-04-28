@@ -27,7 +27,7 @@ export const DriverBuilder = (function () {
 
     let caps: Capabilities = new Capabilities();
     caps = Capabilities.chrome();
-    caps.set("version", "110.0");
+    caps.set("version", "112.0");
     caps.set("selenoid:options", {
       enableVNC: true,
       enableVideo: true,
@@ -39,7 +39,7 @@ export const DriverBuilder = (function () {
       .setChromeOptions(options)
       .withCapabilities(caps)
       .build();
-    await driver!.manage().setTimeouts({ script: 5000 });
+    await driver!.manage().timeouts();
     await driver!.manage().window().maximize();
 
     return driver;

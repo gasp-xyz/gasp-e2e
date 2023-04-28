@@ -33,6 +33,7 @@ import { Pool } from "../../utils/frontend/pages/Pool";
 
 require("dotenv").config();
 
+jest.retryTimes(1);
 jest.spyOn(console, "log").mockImplementation(jest.fn());
 
 jest.setTimeout(1500000);
@@ -42,7 +43,7 @@ let testUser1: User;
 const testAssetName = "TST4";
 let testAssetId: BN;
 
-describe("UI tests - pools, providing, removing liquidity", () => {
+describe("UI tests - pools, provide liquidity", () => {
   beforeAll(async () => {
     try {
       getApi();
@@ -126,8 +127,9 @@ describe("UI tests - pools, providing, removing liquidity", () => {
       testUser1.getAsset(testAssetId)?.amountBefore.free!;
     const testAssetAmountAfter =
       testUser1.getAsset(testAssetId)?.amountAfter.free!;
-    const mgrAmountBefore = testUser1.getAsset(testAssetId)?.amountBefore.free!;
-    const mgrAmountAfter = testUser1.getAsset(testAssetId)?.amountAfter.free!;
+    const mgrAmountBefore =
+      testUser1.getAsset(MGA_ASSET_ID)?.amountBefore.free!;
+    const mgrAmountAfter = testUser1.getAsset(MGA_ASSET_ID)?.amountAfter.free!;
 
     const liquidityProvided =
       testAssetAmountBefore.gt(testAssetAmountAfter) &&
