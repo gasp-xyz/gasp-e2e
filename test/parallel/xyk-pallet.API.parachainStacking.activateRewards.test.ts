@@ -75,6 +75,7 @@ beforeAll(async () => {
 
 test("Given a user with bonded but not activated liq tokens WHEN he tries to activate THEN the tokens are activated for rewards", async () => {
   const api = await getApi();
+
   const minCandidate = new BN(
     await api.consts.parachainStaking.minCandidateStk.toString()
   ).add(BN_ONE);
