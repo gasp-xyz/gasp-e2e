@@ -74,7 +74,11 @@ export class NotificationModal {
   }
 
   public async waitForModalState(modalState: ModalType) {
-    await waitForElementVisible(this.driver, this.getModalXpath(modalState));
+    await waitForElementVisible(
+      this.driver,
+      this.getModalXpath(modalState),
+      120000
+    );
   }
 
   async getModalErrorInfo(modalState: ModalType) {

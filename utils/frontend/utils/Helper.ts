@@ -89,7 +89,7 @@ export async function clickElement(driver: WebDriver, xpath: string) {
   await waitForElement(driver, xpath);
   const element = await driver.findElement(By.xpath(xpath));
   await driver.wait(until.elementIsVisible(element), timeOut);
-  await sleep(1000);
+  await sleep(500);
   await element.click();
 }
 
@@ -97,7 +97,7 @@ export async function clickElementForce(driver: WebDriver, xpath: string) {
   await waitForElement(driver, xpath);
   const element = await driver.findElement(By.xpath(xpath));
   await driver.wait(until.elementIsVisible(element), timeOut);
-  await sleep(1000);
+  await sleep(500);
   driver.executeScript("arguments[0].click();", element);
 }
 
@@ -173,6 +173,14 @@ export async function setupPolkadotExtension(driver: WebDriver) {
   };
 }
 
+export async function importPolkadotExtension(driver: WebDriver) {
+  await leaveOnlyOneTab(driver);
+
+  const polkadotExtension = new Polkadot(driver);
+  await polkadotExtension.go();
+  await polkadotExtension.setupAccount();
+}
+
 export async function setupTalismanExtension(driver: WebDriver) {
   await leaveOnlyOneTab(driver);
 
@@ -230,7 +238,7 @@ export async function leaveOnlyOneTab(driver: WebDriver) {
 
 export async function isDisplayed(driver: WebDriver, elementXpath: string) {
   try {
-    await waitForElement(driver, elementXpath, 2000);
+    await waitForElement(driver, elementXpath, 4000);
     const displayed = await (
       await driver.findElement(By.xpath(elementXpath))
     ).isDisplayed();
@@ -301,7 +309,7 @@ export async function doActionInDifferentWindow(
   driver: WebDriver,
   fn: (driver: WebDriver) => void
 ) {
-  await sleep(4000);
+  await sleep(2000);
   let handle = await (await driver).getAllWindowHandles();
   let iterator = handle.reverse().entries();
 
@@ -327,7 +335,7 @@ export async function selectAssetFromModalList(
   assetName: string,
   driver: WebDriver
 ) {
-  const assetTestId = `TokensModal-asset-${assetName}`;
+  const assetTestId = `TokensModal-token-${assetName}`;
   const assetLocator = buildDataTestIdXpath(assetTestId);
   await clickElement(driver, assetLocator);
 }

@@ -1,0 +1,166 @@
+name: PR UI Tests
+
+on:
+  pull_request:
+  workflow_dispatch:
+    inputs:
+      e2eBranch:
+        description: 'Name of the e2e target branch'
+        type: string
+        required: false
+        default: 'main'
+  workflow_call:
+    inputs:
+      e2eBranch:
+        description: 'Name of the e2e target branch'
+        type: string
+        required: false
+        default: 'main'
+
+permissions:
+  contents: write
+  id-token: write
+  deployments: write
+  checks: write
+
+jobs:
+  e2e-test-matrix:
+    strategy:
+      matrix:
+        command: ['yarn test-microapps-pr']
+    runs-on: ubuntu-latest
+    timeout-minutes: 30
+    env:
+      API_URL: wss://node-01-ws-dev.mangata.online
+      TEST_PALLET_ADDRESS: ${{ secrets.TEST_PALLET_ADDRESS }}
+      E2E_XYK_PALLET_ADDRESS: ${{ secrets.E2E_XYK_PALLET_ADDRESS }}
+      TEST_SUDO_NAME: ${{ secrets.TEST_SUDO_NAME }}
+      TEST_SCRIPT: 'test-microapps-pr'
+      TEST_ENV_TAG: 'develop'
+      NODE_ENV: test
+      SELENIUM_REMOTE_URL: http://localhost:4444/wd/hub
+      UI_URL: http://localhost:5500
+      MANGATA_ASSETS_URL: https://storage.googleapis.com/mangata-assets
+      MANGATA_API_URL: wss://node-01-ws-dev.mangata.online
+      MANGATA_EXPLORER_URL: https://rococo.subscan.io
+    outputs:
+      testmo-run-id: ${{ steps.setTestRun.outputs.testmo-run-id }}
+    steps:
+      #### App
+      - uses: actions/checkout@v3
+
+      - uses: actions/setup-node@v3
+        with:
+          node-version: '16'
+          cache: 'yarn'
+          cache-dependency-path: '**/yarn.lock'
+
+      - name: Install app dependencies
+        run: yarn
+
+      - name: Create env file
+        run: |
+          echo MANGATA_ASSETS_URL="https://storage.googleapis.com/mangata-assets" >> .env
+          echo MANGATA_STASH_URL="https://mangata-stash-dev-dot-direct-pixel-353917.oa.r.appspot.com" >> .env
+          echo MANGATA_EXPLORER_URL="https://rococo.subscan.io" >> .env
+          echo MANGATA_API_URL="wss://node-01-ws-dev.mangata.online" >> .env
+          cat .env
+
+      - name: Install http-server
+        run: yarn global add http-server
+
+      - name: Build app
+        run: yarn nx run-many --target=build
+
+      - name: Start app
+        run: |
+          ifconfig
+          IP_ADDRESS=$(ifconfig eth0 | awk '/inet / {print $2}')
+          echo "UI_URL=http://$IP_ADDRESS:5500" >> $GITHUB_ENV
+          cd dist/packages/dex
+          http-server -p 5500 &
+
+      #### Tests
+      - name: Start Selenoid Server
+        uses: Xotabu4/selenoid-github-action@v2
+        with:
+          selenoid-start-arguments: |
+            --args "-timeout 300s" --browsers 'chrome:112.0'
+
+      - name: E2E- Get branch name
+        id: branch-name
+        uses: tj-actions/branch-names@v4.9
+
+      - name: E2E- Calculate if run e2e feature branch or main.
+        run: |
+          echo DEFAULT: E2E test will run with: $E2EBRANCHNAME
+          echo "Running on: ${{ steps.branch-name.outputs.current_branch }}"
+          if [ -n "$(git ls-remote --heads https://github.com/mangata-finance/mangata-e2e.git ${{ steps.branch-name.outputs.current_branch }} --force --quiet)" ]; then echo "E2EBRANCHNAME=${{ steps.branch-name.outputs.current_branch }}" >> $GITHUB_ENV; echo "MATCH - OK" ; elif [ -n "$(git ls-remote --heads https://github.com/mangata-finance/mangata-e2e.git ${{ github.base_ref }} --force --quiet)" ]; then echo "E2EBRANCHNAME=${{ github.base_ref }}" >> $GITHUB_ENV; echo "MATCH - OK" ;  fi
+
+      - name: Decide if main - branch or parameter
+        # if we have something in e2eBranch - override E2EBranchName, else -> E2EBRANCHNAME , that
+        # by default will be main.
+        run: |
+          echo "E2EBRANCHNAME=${{ inputs.e2eBranch || env.E2EBRANCHNAME }}" >> $GITHUB_ENV
+          echo "${{ env.E2EBRANCHNAME }}"
+
+      - name: Checkout tests
+        uses: actions/checkout@v3
+        with:
+          repository: mangata-finance/mangata-e2e
+          ref: '${{ env.E2EBRANCHNAME }}'
+          path: e2eTests
+
+      - name: Install e2e tests dependencies
+        working-directory: e2eTests
+        run: yarn
+
+      - name: is selenoid started?
+        run: |
+          curl http://localhost:4444/status
+          curl -I "$UI_URL"
+
+      #Use for debug
+      #- uses: mxschmitt/action-tmate@v3
+
+      - name: Run tests
+        working-directory: e2eTests
+        run: |
+          echo ${{ env.UI_URL }}
+          ${{ matrix.command }}
+
+      - name: Test Report
+        uses: dorny/test-reporter@v1.6.0
+        if: always()
+        with:
+          name: E2E report ${{ matrix.command }} # Name of the check run which will be created
+          path: e2eTests/reports/junit-*.xml # Path to test results
+          reporter: jest-junit # Format of test results
+
+      - name: Copy video files to reports folder
+        if: always()
+        run: |
+          # sleep is used to close buffers of videos
+          sleep 10s 
+          cp ~/.aerokube/selenoid/* -r  e2eTests/reports/artifacts/
+
+      - name: Create  reports zip
+        uses: vimtor/action-zip@v1
+        if: always()
+        with:
+          files: e2eTests/reports/
+          dest: reports.zip
+
+      - name: Archive report files
+        uses: actions/upload-artifact@v3.1.2
+        if: always()
+        with:
+          name: ReportData
+          path: reports.zip
+
+      - name: Archive report files
+        uses: actions/upload-artifact@v3.1.2
+        if: always()
+        with:
+          name: TestReport
+          path: e2eTests/reports/html-report/report.html
