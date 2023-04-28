@@ -23,7 +23,7 @@ jobs:
     steps:
       - run: echo ${{ inputs.logLevel }}
       - run: echo ${{ github.event.inputs.logLevel }}
- 
+  
   runIfWarning:
     needs: [print-inputs]
     runs-on: ubuntu-latest
