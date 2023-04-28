@@ -17,11 +17,18 @@ import {
   getLiquidityAssetId,
   burnLiquidity,
   getRewardsInfo,
+  joinCandidate,
 } from "../../utils/tx";
 import { setupApi, setupUsers } from "../../utils/setup";
 import { ExtrinsicResult, waitForRewards } from "../../utils/eventListeners";
 import { MGA_ASSET_ID } from "../../utils/Constants";
-import { BN_ZERO, Mangata, MangataGenericEvent } from "@mangata-finance/sdk";
+import {
+  BN_BILLION,
+  BN_ZERO,
+  Mangata,
+  MangataGenericEvent,
+} from "@mangata-finance/sdk";
+import { Staking } from "../../utils/Staking";
 
 const defaultCurrencyValue = new BN(10000000);
 const assetAmount = new BN("1000000000000000");
@@ -35,6 +42,7 @@ let sudo: User;
 let keyring: Keyring;
 let secondCurrency: BN;
 let liqId: BN;
+let minCandidate: BN;
 
 describe("rewards v2 tests", () => {
   beforeAll(async () => {
@@ -43,6 +51,12 @@ describe("rewards v2 tests", () => {
     } catch (e) {
       await initApi();
     }
+
+    const api = await getApi();
+    minCandidate = new BN(
+      await api.consts.parachainStaking.minCandidateStk.toString()
+    );
+    const aBigEnoughAmount = minCandidate.mul(BN_BILLION);
 
     keyring = new Keyring({ type: "sr25519" });
     sudo = new User(keyring, getEnvironmentRequiredVars().sudo);
