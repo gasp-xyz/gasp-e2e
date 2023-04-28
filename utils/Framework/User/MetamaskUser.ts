@@ -6,7 +6,7 @@ import { getEnvironmentRequiredVars } from "../../utils";
 import { erc20User, mMNGAdrress } from "../../../utils/erc20Utils";
 import { ethUser } from "../../../utils/ethUtils";
 const Web3 = require("web3");
-const HDWalletProvider = require("truffle-hdwallet-provider");
+const HDWalletProvider = require("@truffle/hdwallet-provider");
 
 export class MetamaskUser extends BaseUser {
   node: Node;

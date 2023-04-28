@@ -13,24 +13,29 @@ import { DriverBuilder } from "../../utils/frontend/utils/Driver";
 import {
   addExtraLogs,
   setupPolkadotExtension,
-  uiStringToBN,
 } from "../../utils/frontend/utils/Helper";
 import { setupApi, setupUsers } from "../../utils/setup";
 import { Sudo } from "../../utils/sudo";
 import { AssetWallet, User } from "../../utils/User";
 import { getEnvironmentRequiredVars } from "../../utils/utils";
-import { Swap } from "../../utils/frontend/pages/Swap";
 import { MGA_ASSET_ID, MGR_ASSET_NAME } from "../../utils/Constants";
+import { ExtrinsicResult, waitNewBlock } from "../../utils/eventListeners";
+import {
+  createAssetIfMissing,
+  createPoolIfMissing,
+  mintLiquidity,
+} from "../../utils/tx";
+import { SudoUser } from "../../utils/Framework/User/SudoUser";
+import { Node } from "../../utils/Framework/Node/Node";
+import { connectPolkadotWallet } from "../../utils/frontend/utils/Handlers";
+import { getEventResultFromMangataTx } from "../../utils/txHandler";
+import { Pool } from "../../utils/frontend/pages/Pool";
+import { BurnLiquidityModal } from "../../utils/frontend/pages/BurnLiquidityModal";
 import {
   ModalType,
   NotificationModal,
 } from "../../utils/frontend/pages/NotificationModal";
 import { Polkadot } from "../../utils/frontend/pages/Polkadot";
-import { waitNewBlock } from "../../utils/eventListeners";
-import { createAssetIfMissing, createPoolIfMissing } from "../../utils/tx";
-import { SudoUser } from "../../utils/Framework/User/SudoUser";
-import { Node } from "../../utils/Framework/Node/Node";
-import { connectPolkadotWallet } from "../../utils/frontend/utils/Handlers";
 
 require("dotenv").config();
 
@@ -44,7 +49,7 @@ let testUser1: User;
 const testAssetName = "TST4";
 let testAssetId: BN;
 
-describe("UI tests - swapping assets", () => {
+describe("UI tests - adding, removing liquidity", () => {
   beforeAll(async () => {
     try {
       getApi();
@@ -72,16 +77,32 @@ describe("UI tests - swapping assets", () => {
     );
 
     await Sudo.batchAsSudoFinalized(
-      Assets.mintToken(new BN(7), testUser1), // transferAll test
-      Assets.mintToken(testAssetId, testUser1), // transferAll test
+      Assets.mintToken(testAssetId, testUser1),
       Assets.mintNative(testUser1)
     );
 
+    const assetAmount = new BN("1000000000000000");
+
+    await mintLiquidity(
+      testUser1.keyRingPair,
+      testAssetId,
+      MGA_ASSET_ID,
+      assetAmount
+    ).then((result) => {
+      const eventResponse = getEventResultFromMangataTx(result, [
+        "xyk",
+        "LiquidityMinted",
+        testUser1.keyRingPair.address,
+      ]);
+      expect(eventResponse.state).toEqual(ExtrinsicResult.ExtrinsicSuccess);
+    });
+
     testUser1.addAsset(testAssetId);
+    testUser1.addAsset(MGA_ASSET_ID);
     await testUser1.refreshAmounts(AssetWallet.BEFORE);
   });
 
-  test("User can swap two assets", async () => {
+  test("User can add liquidity", async () => {
     getApi();
 
     const mga = new Mangata(driver);
@@ -95,21 +116,68 @@ describe("UI tests - swapping assets", () => {
     const isWalletConnected = sidebar.isWalletConnected("acc_automation");
     expect(isWalletConnected).toBeTruthy();
 
-    const swapView = new Swap(driver);
-    await swapView.toggleSwap();
-    await swapView.toggleShowAllTokens();
-    await swapView.selectPayAsset(MGR_ASSET_NAME);
-    await swapView.selectGetAsset(testAssetName);
-    await swapView.addPayAssetAmount("0.001");
-    const testAssetValue = await swapView.getBalanceFromAssetGet();
-    await swapView.doSwap();
+    const poolVisible = await sidebar.isLiquidityPoolVisible(
+      MGR_ASSET_NAME,
+      testAssetName
+    );
+    expect(poolVisible).toBeTruthy();
+
+    await sidebar.clickLiquidityPool(MGR_ASSET_NAME, testAssetName);
+    const isPoolDetailVisible = await sidebar.isPoolDetailVisible();
+    expect(isPoolDetailVisible).toBeTruthy();
+
+    await sidebar.clickOnAddLiquidity();
+
+    const poolView = new Pool(driver);
+    const poolToggled = await poolView.isPoolToggled();
+    expect(poolToggled).toBeTruthy();
+
+    const firstTokenText = await poolView.getToken1Text();
+    expect(firstTokenText).toEqual(MGR_ASSET_NAME);
+    const secondTokenText = await poolView.getToken2Text();
+    expect(secondTokenText).toEqual(testAssetName);
+  });
+
+  test("User can remove liquidity", async () => {
+    getApi();
+
+    const mga = new Mangata(driver);
+    await mga.go();
+    const sidebar = new Sidebar(driver);
+    const noWalletConnectedInfoDisplayed =
+      await sidebar.isNoWalletConnectedInfoDisplayed();
+    expect(noWalletConnectedInfoDisplayed).toBeTruthy();
+
+    await connectPolkadotWallet(driver, sidebar, mga);
+    const isWalletConnected = sidebar.isWalletConnected("acc_automation");
+    expect(isWalletConnected).toBeTruthy();
+
+    let poolVisible = await sidebar.isLiquidityPoolVisible(
+      MGR_ASSET_NAME,
+      testAssetName
+    );
+    expect(poolVisible).toBeTruthy();
+
+    await sidebar.clickLiquidityPool(MGR_ASSET_NAME, testAssetName);
+    const isPoolDetailVisible = await sidebar.isPoolDetailVisible();
+    expect(isPoolDetailVisible).toBeTruthy();
+
+    await sidebar.clickOnRemoveLiquidity();
+
+    const burnLiquidityModal = new BurnLiquidityModal(driver);
+    const isModalVisible = await burnLiquidityModal.isModalVisible();
+    expect(isModalVisible).toBeTruthy();
+
+    await burnLiquidityModal.clickOn100Amount();
+    await burnLiquidityModal.confirm();
+
     const modal = new NotificationModal(driver);
     const isModalWaitingForSignVisible = await modal.isModalVisible(
       ModalType.Confirm
     );
     expect(isModalWaitingForSignVisible).toBeTruthy();
     await Polkadot.signTransaction(driver);
-    //wait four blocks to complete the action.
+
     const visible: boolean[] = [];
     for (let index = 0; index < 4; index++) {
       visible.push(await modal.isModalVisible(ModalType.Progress));
@@ -128,11 +196,15 @@ describe("UI tests - swapping assets", () => {
       testUser1.getAsset(testAssetId)?.amountBefore.free!;
     const testAssetAmountAfter =
       testUser1.getAsset(testAssetId)?.amountAfter.free!;
-    const swapped = testAssetAmountBefore.lt(testAssetAmountAfter);
-    expect(testAssetAmountAfter.sub(testAssetAmountBefore)).bnEqual(
-      uiStringToBN(testAssetValue, 12)
+
+    const liquidityProvided = testAssetAmountBefore.lt(testAssetAmountAfter);
+    expect(liquidityProvided).toBeTruthy();
+
+    poolVisible = await new Sidebar(driver).isLiquidityPoolVisible(
+      MGR_ASSET_NAME,
+      testAssetName
     );
-    expect(swapped).toBeTruthy();
+    expect(poolVisible).toBeFalsy();
   });
 
   afterEach(async () => {
@@ -141,11 +213,13 @@ describe("UI tests - swapping assets", () => {
       driver,
       expect.getState().currentTestName + " - " + session.getId()
     );
-    await driver.quit();
-    DriverBuilder.destroy();
+    await driver.manage().deleteAllCookies();
+    await driver.executeScript("localStorage.clear(); sessionStorage.clear();");
   });
 
   afterAll(async () => {
+    await driver.quit();
+    DriverBuilder.destroy();
     const api = getApi();
     await api.disconnect();
   });

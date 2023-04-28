@@ -61,7 +61,7 @@ describe("Story tests > Rewards - autocompound", () => {
       testUser2.keyRingPair.address
     );
     const amount = await calculateMGAFees(
-      api.tx.xyk.claimRewardsV2(liqId, availableRewards),
+      api.tx.proofOfStake.claimRewardsAll(liqId),
       testUser2.keyRingPair
     );
     await mangata.claimRewards(

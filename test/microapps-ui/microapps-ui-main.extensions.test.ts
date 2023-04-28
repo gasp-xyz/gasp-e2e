@@ -34,7 +34,7 @@ describe("Wallets management", () => {
   });
 
   it.each(["Talisman", "Polkadot"])(
-    "User can connect wallet",
+    "User can connect wallet %s",
     async (walletType) => {
       await setupWalletExtension(driver, walletType);
       const mga = new Mangata(driver);
