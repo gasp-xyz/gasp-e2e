@@ -1,18 +1,17 @@
 /*
  *
  * @group staking
- * @group rewardsV2
- *
  */
 import {
   getLiquidityAssetId,
+  mintLiquidity,
   joinCandidate,
   getRewardsInfo,
   activateLiquidity,
 } from "../../utils/tx";
 import { Keyring } from "@polkadot/api";
 import { User } from "../../utils/User";
-import { MGA_ASSET_ID } from "../../utils/Constants";
+import { MGA_ASSET_ID, MAX_BALANCE } from "../../utils/Constants";
 import {
   getEnvironmentRequiredVars,
   getUserBalanceOfToken,
@@ -69,8 +68,6 @@ beforeAll(async () => {
   await Sudo.asSudoFinalized(
     Sudo.sudo(Staking.addStakingLiquidityToken(liqToken))
   );
-
-  await Sudo.batchAsSudoFinalized(Assets.promotePool(liqToken.toNumber(), 20));
 });
 
 test("Given a user with bonded but not activated liq tokens WHEN he tries to activate THEN the tokens are activated for rewards", async () => {
@@ -79,24 +76,30 @@ test("Given a user with bonded but not activated liq tokens WHEN he tries to act
   const minCandidate = new BN(
     await api.consts.parachainStaking.minCandidateStk.toString()
   ).add(BN_ONE);
-
+  await mintLiquidity(
+    testUser1.keyRingPair,
+    MGA_ASSET_ID,
+    newTokenId,
+    minCandidate,
+    MAX_BALANCE
+  );
   const liqTokens = await getUserBalanceOfToken(liqToken, testUser1);
   expect(liqTokens.free).bnGt(BN_ZERO);
   const events = await joinCandidate(
     testUser1.keyRingPair,
     liqToken,
-    minCandidate,
-    "AvailableBalance"
+    liqTokens.free,
+    "availablebalance"
   );
   expect(events.state).toEqual(0);
+
+  await Sudo.batchAsSudoFinalized(Assets.promotePool(liqToken.toNumber(), 20));
 
   const rewardsInfoBefore = await getRewardsInfo(
     testUser1.keyRingPair.address,
     liqToken
   );
-
-  await activateLiquidity(testUser1.keyRingPair, liqToken, minCandidate);
-
+  await activateLiquidity(testUser1.keyRingPair, liqToken, liqTokens);
   const rewardsInfoAfter = await getRewardsInfo(
     testUser1.keyRingPair.address,
     liqToken
