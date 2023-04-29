@@ -11,7 +11,7 @@ import { AssetWallet, User } from "../../utils/User";
 import { Assets } from "../../utils/Assets";
 import { getEnvironmentRequiredVars } from "../../utils/utils";
 import { MGA_ASSET_ID } from "../../utils/Constants";
-import { Mangata } from "@mangata-finance/sdk";
+import { BN_ZERO, Mangata } from "@mangata-finance/sdk";
 import { testLog } from "../../utils/Logger";
 import { Sudo } from "../../utils/sudo";
 import {
@@ -20,6 +20,7 @@ import {
   getRewardsInfo,
 } from "../../utils/tx";
 import { Xyk } from "../../utils/xyk";
+import { waitForRewards } from "../../utils/eventListeners";
 
 jest.spyOn(console, "log").mockImplementation(jest.fn());
 jest.spyOn(console, "error").mockImplementation(jest.fn());
@@ -27,6 +28,7 @@ jest.setTimeout(1500000);
 process.env.NODE_ENV = "test";
 
 let testUser1: User;
+let testUser11: User;
 let testUser2: User;
 let testUser3: User;
 
@@ -54,6 +56,7 @@ beforeEach(async () => {
 
   // setup users
   testUser1 = new User(keyring);
+  testUser11 = new User(keyring);
   testUser2 = new User(keyring);
   testUser3 = new User(keyring);
   sudo = new User(keyring, sudoUserName);
@@ -69,15 +72,18 @@ beforeEach(async () => {
     Assets.FinalizeTge(),
     Assets.initIssuance(),
     Assets.mintNative(testUser1),
+    Assets.mintNative(testUser11),
     Assets.mintNative(testUser2),
     Assets.mintNative(testUser3)
   );
 
   // add users to pair.
   keyring.addPair(testUser1.keyRingPair);
+  keyring.addPair(testUser11.keyRingPair);
   keyring.addPair(testUser2.keyRingPair);
   keyring.addPair(testUser3.keyRingPair);
   keyring.addPair(sudo.keyRingPair);
+  testUser11.addAsset(MGA_ASSET_ID);
   testUser1.addAsset(MGA_ASSET_ID);
   testUser2.addAsset(MGA_ASSET_ID);
   testUser3.addAsset(MGA_ASSET_ID);
@@ -292,10 +298,29 @@ test("Given 3 users that minted liquidity WHEN only one activated the rewards TH
     testUser3.keyRingPair.address,
     liqId
   );
-
-  expect(rewardsUser1.activatedAmount).bnEqual(new BN(0));
+  const mangata = await getMangataInstance(
+    getEnvironmentRequiredVars().chainUri
+  );
+  await waitForRewards(testUser2, liqId);
+  const user1AvailableRewards = await mangata.calculateRewardsAmount(
+    testUser1.keyRingPair.address,
+    liqId.toString()
+  );
+  const user2AvailableRewards = await mangata.calculateRewardsAmount(
+    testUser2.keyRingPair.address,
+    liqId.toString()
+  );
+  const user3AvailableRewards = await mangata.calculateRewardsAmount(
+    testUser3.keyRingPair.address,
+    liqId.toString()
+  );
+  expect(rewardsUser1.activatedAmount).bnEqual(BN_ZERO);
   expect(rewardsUser2.activatedAmount).bnEqual(default50k);
-  expect(rewardsUser3.activatedAmount).bnEqual(new BN(0));
+  expect(rewardsUser3.activatedAmount).bnEqual(BN_ZERO);
+
+  expect(user1AvailableRewards).bnEqual(BN_ZERO);
+  expect(user2AvailableRewards).bnGt(BN_ZERO);
+  expect(user3AvailableRewards).bnEqual(BN_ZERO);
 });
 
 ///Mint tokens for all the users, users[0] do a swap and then all the users burn them all.

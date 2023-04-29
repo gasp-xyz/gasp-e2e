@@ -97,6 +97,9 @@ export class Xyk {
   static activateLiquidity(liquidityAssetId: BN, amount: BN): Extrinsic {
     return api.tx.xyk.activateLiquidityV2(liquidityAssetId, amount, null);
   }
+  static deActivateLiquidity(liquidityAssetId: BN, amount: BN): Extrinsic {
+    return api.tx.xyk.deactivateLiquidityV2(liquidityAssetId, amount);
+  }
 
   static compoundRewards(
     liquidityAssetId: BN,

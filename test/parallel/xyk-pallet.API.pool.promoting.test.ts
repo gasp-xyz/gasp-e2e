@@ -2,20 +2,17 @@
  *
  * @group xyk
  * @group liquidity
+ * @group sequential
  */
 
 import { Keyring } from "@polkadot/api";
-import { getApi, initApi } from "../../utils/api";
+import { getApi, initApi, mangata } from "../../utils/api";
 import { Assets } from "../../utils/Assets";
 import { MGA_ASSET_ID } from "../../utils/Constants";
-import { BN } from "@mangata-finance/sdk";
+import { BN, BN_ZERO } from "@mangata-finance/sdk";
 import { setupApi, setupUsers } from "../../utils/setup";
 import { Sudo } from "../../utils/sudo";
-import {
-  activateLiquidity,
-  getLiquidityAssetId,
-  getRewardsInfo,
-} from "../../utils/tx";
+import { activateLiquidity, getLiquidityAssetId } from "../../utils/tx";
 import { User } from "../../utils/User";
 import { getEnvironmentRequiredVars } from "../../utils/utils";
 import { Xyk } from "../../utils/xyk";
@@ -27,6 +24,7 @@ process.env.NODE_ENV = "test";
 
 const { sudo: sudoUserName } = getEnvironmentRequiredVars();
 let testUser1: User;
+let testUser11: User;
 let testUser2: User;
 let testUser3: User;
 let sudo: User;
@@ -50,7 +48,7 @@ beforeAll(async () => {
   // setup users
   sudo = new User(keyring, sudoUserName);
 
-  [testUser1, testUser2, testUser3] = setupUsers();
+  [testUser1, testUser2, testUser3, testUser11] = setupUsers();
 
   await setupApi();
 
@@ -64,9 +62,11 @@ beforeAll(async () => {
     Assets.FinalizeTge(),
     Assets.initIssuance(),
     Assets.mintToken(token1, testUser1, Assets.DEFAULT_AMOUNT),
+    Assets.mintToken(token1, testUser11, Assets.DEFAULT_AMOUNT),
     Assets.mintToken(token2, testUser2, Assets.DEFAULT_AMOUNT),
     Assets.mintToken(token3, testUser3, Assets.DEFAULT_AMOUNT),
     Assets.mintNative(testUser1),
+    Assets.mintNative(testUser11),
     Assets.mintNative(testUser2),
     Assets.mintNative(testUser3),
     Sudo.sudoAs(
@@ -103,6 +103,15 @@ beforeAll(async () => {
   liqIdPool3 = await getLiquidityAssetId(MGA_ASSET_ID, token3);
 
   await Sudo.batchAsSudoFinalized(
+    Sudo.sudoAs(
+      testUser11,
+      Xyk.mintLiquidity(
+        MGA_ASSET_ID,
+        token1,
+        Assets.DEFAULT_AMOUNT.divn(2),
+        Assets.DEFAULT_AMOUNT.muln(2)
+      )
+    ),
     Assets.promotePool(liqIdPool1.toNumber(), 20),
     Assets.mintNative(testUser1)
   );
@@ -120,6 +129,10 @@ test("GIVEN a promoted pool WHEN more pools gets activated THEN shares are decre
     Assets.promotePool(liqIdPool2.toNumber(), 20),
     Assets.promotePool(liqIdPool3.toNumber(), 20),
     Sudo.sudoAs(
+      testUser1,
+      Xyk.deActivateLiquidity(liqIdPool1, Assets.DEFAULT_AMOUNT.divn(2))
+    ),
+    Sudo.sudoAs(
       testUser2,
       Xyk.activateLiquidity(liqIdPool2, Assets.DEFAULT_AMOUNT.divn(2))
     ),
@@ -127,72 +140,44 @@ test("GIVEN a promoted pool WHEN more pools gets activated THEN shares are decre
       testUser3,
       Xyk.activateLiquidity(liqIdPool3, Assets.DEFAULT_AMOUNT.divn(2))
     ),
+    Sudo.sudoAs(
+      testUser11,
+      Xyk.activateLiquidity(liqIdPool1, Assets.DEFAULT_AMOUNT.divn(2))
+    ),
     Sudo.sudoAs(testUser1, Xyk.claimRewardsAll(liqIdPool1))
   );
-  const rewardsInfoOnlyPool1 = await getRewardsInfo(
-    testUser1.keyRingPair.address,
-    liqIdPool1
-  );
 
+  await waitForRewards(testUser11, liqIdPool1);
   await waitForRewards(testUser2, liqIdPool2);
   await waitForRewards(testUser3, liqIdPool3);
 
   await Sudo.batchAsSudoFinalized(
+    Sudo.sudoAs(testUser11, Xyk.claimRewardsAll(liqIdPool1)),
     Sudo.sudoAs(testUser1, Xyk.claimRewardsAll(liqIdPool1)),
     Sudo.sudoAs(testUser2, Xyk.claimRewardsAll(liqIdPool2)),
     Sudo.sudoAs(testUser3, Xyk.claimRewardsAll(liqIdPool3))
   );
 
-  const rewardsInfoPool1Before = await getRewardsInfo(
+  await waitForRewards(testUser11, liqIdPool1);
+
+  const testUser1Rewards = await mangata?.calculateRewardsAmount(
     testUser1.keyRingPair.address,
-    liqIdPool1
-  );
-  const rewardsInfoPool2Before = await getRewardsInfo(
+    liqIdPool1.toString()
+  )!;
+  const testUser11Rewards = await mangata?.calculateRewardsAmount(
+    testUser11.keyRingPair.address,
+    liqIdPool1.toString()
+  )!;
+  const testUser2Rewards = await mangata?.calculateRewardsAmount(
     testUser2.keyRingPair.address,
-    liqIdPool2
-  );
-  const rewardsInfoPool3Before = await getRewardsInfo(
+    liqIdPool2.toString()
+  )!;
+  const testUser3Rewards = await mangata?.calculateRewardsAmount(
     testUser3.keyRingPair.address,
-    liqIdPool3
-  );
-
-  await waitForRewards(testUser1, liqIdPool1);
-
-  await Sudo.batchAsSudoFinalized(
-    Sudo.sudoAs(testUser1, Xyk.claimRewardsAll(liqIdPool1)),
-    Sudo.sudoAs(testUser2, Xyk.claimRewardsAll(liqIdPool2)),
-    Sudo.sudoAs(testUser3, Xyk.claimRewardsAll(liqIdPool3))
-  );
-
-  const rewardsInfoPool1After = await getRewardsInfo(
-    testUser1.keyRingPair.address,
-    liqIdPool1
-  );
-  const rewardsInfoPool2After = await getRewardsInfo(
-    testUser2.keyRingPair.address,
-    liqIdPool2
-  );
-  const rewardsInfoPool3After = await getRewardsInfo(
-    testUser3.keyRingPair.address,
-    liqIdPool3
-  );
-  const differenceRewardPool1 = rewardsInfoPool1After.rewardsAlreadyClaimed
-    .sub(rewardsInfoPool1Before.rewardsAlreadyClaimed)
-    .sub(rewardsInfoOnlyPool1.rewardsAlreadyClaimed);
-
-  const differenceRewardPool2 = rewardsInfoPool2After.rewardsAlreadyClaimed.sub(
-    rewardsInfoPool2Before.rewardsAlreadyClaimed
-  );
-
-  const differenceRewardPool3 = rewardsInfoPool3After.rewardsAlreadyClaimed.sub(
-    rewardsInfoPool3Before.rewardsAlreadyClaimed
-  );
-
-  const ratioRewardPools = differenceRewardPool3
-    .mul(new BN(100))
-    .div(differenceRewardPool1);
-
-  expect(differenceRewardPool2).bnEqual(differenceRewardPool3);
-  //difference between the supposed rewards Pool1 and rewards of the next pools in percent
-  expect(ratioRewardPools.sub(new BN(100))).bnLt(new BN(11));
+    liqIdPool3.toString()
+  )!;
+  expect(testUser1Rewards).bnEqual(BN_ZERO);
+  expect(testUser11Rewards).bnGt(BN_ZERO);
+  expect(testUser11Rewards).bnEqual(testUser2Rewards);
+  expect(testUser2Rewards).bnEqual(testUser3Rewards);
 });
