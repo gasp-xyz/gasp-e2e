@@ -15,6 +15,7 @@ import {
   setupACouncilWithDefaultUsers,
   vetoMotion,
   migrate,
+  userAggregatesOn,
 } from "../utils/setupsOnTheGo";
 import {
   findErrorMetadata,
@@ -27,7 +28,7 @@ import { SudoUser } from "../utils/Framework/User/SudoUser";
 import { Keyring } from "@polkadot/api";
 import { getApi, initApi } from "../utils/api";
 import { User } from "../utils/User";
-import { Mangata } from "@mangata-finance/sdk";
+import { BN, BN_ZERO, Mangata } from "@mangata-finance/sdk";
 
 async function app(): Promise<any> {
   return inquirer
@@ -37,6 +38,7 @@ async function app(): Promise<any> {
       name: "option",
       choices: [
         "Setup rewards with default users",
+        "Setup a collator with token",
         "Join as candidate",
         "Fill with candidates",
         "Give tokens to user",
@@ -54,6 +56,7 @@ async function app(): Promise<any> {
         "createACouncil",
         "veto",
         "migrateData",
+        "user aggregates with",
       ],
     })
     .then(async (answers: { option: string | string[] }) => {
@@ -61,6 +64,42 @@ async function app(): Promise<any> {
       if (answers.option.includes("Setup rewards with default users")) {
         const setupData = await setupPoolWithRewardsForDefaultUsers();
         console.log("liq Id = " + setupData.liqId);
+      }
+      if (answers.option.includes("Setup a collator with token")) {
+        return inquirer
+          .prompt([
+            {
+              type: "input",
+              name: "user",
+              message: "default //Charlie",
+            },
+            {
+              type: "input",
+              name: "liq",
+              message: "liq id",
+            },
+          ])
+          .then(
+            async (answers: {
+              user: string | undefined;
+              liq: number | undefined;
+            }) => {
+              let liq = new BN(answers.liq!.toString());
+              if (liq!.eq(BN_ZERO)) {
+                const setupData = await setupPoolWithRewardsForDefaultUsers();
+                console.log("liq Id = " + setupData.liqId);
+                liq = new BN(setupData.liqId);
+              }
+              const node = new Node(getEnvironmentRequiredVars().chainUri);
+              await node.connect();
+              const keyring = new Keyring({ type: "sr25519" });
+              const sudo = new SudoUser(keyring, node);
+              await sudo.addStakingLiquidityToken(liq);
+              await joinAsCandidate(answers.user, liq?.toNumber());
+              console.log("Done");
+              return app();
+            }
+          );
       }
       if (answers.option.includes("Join as candidate")) {
         return inquirer
@@ -321,6 +360,29 @@ async function app(): Promise<any> {
       }
       if (answers.option.includes("migrateData")) {
         await migrate();
+      }
+      if (answers.option.includes("user aggregates with")) {
+        return inquirer
+          .prompt([
+            {
+              type: "input",
+              name: "userAggregating",
+              message: "",
+            },
+            {
+              type: "input",
+              name: "userWhoDelegates",
+              message: "",
+            },
+          ])
+          .then(async (answers) => {
+            await userAggregatesOn(
+              answers.userAggregating,
+              answers.userWhoDelegates
+            );
+            console.log("Done");
+            return app();
+          });
       }
       return app();
     });

@@ -10,4 +10,18 @@ export class Staking {
       liqToken
     );
   }
+  static aggregatorUpdateMetadata(
+    collatorCandidates: string[],
+    action = "ExtendApprovedCollators"
+  ): Extrinsic {
+    return api.tx.parachainStaking.aggregatorUpdateMetadata(
+      collatorCandidates,
+      action
+    );
+  }
+  static updateCandidateAggregator(maybeAggregatorAddress: string): Extrinsic {
+    return api.tx.parachainStaking.updateCandidateAggregator(
+      maybeAggregatorAddress
+    );
+  }
 }
