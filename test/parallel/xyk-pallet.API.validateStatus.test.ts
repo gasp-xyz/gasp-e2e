@@ -7,7 +7,7 @@ import { Keyring } from "@polkadot/api";
 import { getApi, initApi } from "../../utils/api";
 import { Assets } from "../../utils/Assets";
 import { MGA_ASSET_ID } from "../../utils/Constants";
-import { BN, BN_ZERO } from "@mangata-finance/sdk";
+import { BN, BN_HUNDRED, BN_ZERO } from "@mangata-finance/sdk";
 import { setupApi, setupUsers } from "../../utils/setup";
 import { Sudo } from "../../utils/sudo";
 import {
@@ -31,6 +31,7 @@ let sudo: User;
 let keyring: Keyring;
 let token1: BN;
 let liqId: BN;
+let rewardsInfoBefore: any;
 const defaultCurrencyValue = new BN(250000);
 
 beforeAll(async () => {
@@ -84,10 +85,8 @@ beforeEach(async () => {
     Assets.mintToken(token1, testUser1, Assets.DEFAULT_AMOUNT),
     Assets.mintNative(testUser1)
   );
-});
 
-test("Validate initial status: User just minted on a promoted pool", async () => {
-  const rewardsUserBefore = await getRewardsInfo(
+  rewardsInfoBefore = await getRewardsInfo(
     testUser1.keyRingPair.address,
     liqId
   );
@@ -98,16 +97,119 @@ test("Validate initial status: User just minted on a promoted pool", async () =>
     token1,
     defaultCurrencyValue
   );
+});
 
-  await waitForRewards(testUser1, liqId);
-
-  const rewardsUserAfter = await getRewardsInfo(
+test("Validate initial status: User just minted on a promoted pool", async () => {
+  const rewardsInfoAfter = await getRewardsInfo(
     testUser1.keyRingPair.address,
     liqId
   );
 
-  expect(rewardsUserBefore.activatedAmount).bnEqual(BN_ZERO);
-  expect(rewardsUserAfter.activatedAmount).bnEqual(defaultCurrencyValue);
-  expect(rewardsUserBefore.lastCheckpoint).bnEqual(BN_ZERO);
-  expect(rewardsUserAfter.lastCheckpoint).bnGt(BN_ZERO);
+  await checkRewardsBefore();
+  expect(rewardsInfoAfter.activatedAmount).bnEqual(defaultCurrencyValue);
+  expect(rewardsInfoAfter.lastCheckpoint).bnGt(BN_ZERO);
+  expect(rewardsInfoAfter.missingAtLastCheckpoint).bnEqual(
+    defaultCurrencyValue
+  );
+  expect(rewardsInfoAfter.poolRatioAtLastCheckpoint).bnEqual(BN_ZERO);
+  expect(rewardsInfoAfter.rewardsAlreadyClaimed).bnEqual(BN_ZERO);
+  expect(rewardsInfoAfter.rewardsNotYetClaimed).bnEqual(BN_ZERO);
 });
+
+test("Validate initial status: User just minted and rewards generated", async () => {
+  await waitForRewards(testUser1, liqId);
+
+  const rewardsInfoAfter = await getRewardsInfo(
+    testUser1.keyRingPair.address,
+    liqId
+  );
+
+  await checkRewardsBefore();
+  expect(rewardsInfoAfter.activatedAmount).bnEqual(defaultCurrencyValue);
+  expect(rewardsInfoAfter.lastCheckpoint).bnGt(BN_ZERO);
+  expect(rewardsInfoAfter.missingAtLastCheckpoint).bnEqual(
+    defaultCurrencyValue
+  );
+  expect(rewardsInfoAfter.poolRatioAtLastCheckpoint).bnEqual(BN_ZERO);
+  expect(rewardsInfoAfter.rewardsAlreadyClaimed).bnEqual(BN_ZERO);
+  expect(rewardsInfoAfter.rewardsNotYetClaimed).bnEqual(BN_ZERO);
+});
+
+test("Validate initial status: User just minted on a promoted pool and after rewards being generated mint some more", async () => {
+  await waitForRewards(testUser1, liqId);
+
+  await mintLiquidity(
+    testUser1.keyRingPair,
+    MGA_ASSET_ID,
+    token1,
+    defaultCurrencyValue
+  );
+
+  const rewardsInfoAfter = await getRewardsInfo(
+    testUser1.keyRingPair.address,
+    liqId
+  );
+
+  await checkRewardsBefore();
+  expect(rewardsInfoAfter.activatedAmount).bnEqual(
+    defaultCurrencyValue.mul(new BN(2))
+  );
+  expect(rewardsInfoAfter.lastCheckpoint).bnGt(BN_ZERO);
+  expect(rewardsInfoAfter.missingAtLastCheckpoint).bnGt(
+    defaultCurrencyValue.mul(new BN(2)).mul(new BN(98)).div(BN_HUNDRED)
+  );
+  expect(rewardsInfoAfter.poolRatioAtLastCheckpoint).bnGt(BN_ZERO);
+  expect(rewardsInfoAfter.rewardsAlreadyClaimed).bnEqual(BN_ZERO);
+  expect(rewardsInfoAfter.rewardsNotYetClaimed).bnGt(BN_ZERO);
+  expect(rewardsInfoAfter.poolRatioAtLastCheckpoint).bnGt(
+    rewardsInfoAfter.rewardsNotYetClaimed
+  );
+});
+
+test("Validate initial status: User claims half of the tokens that are stored in rewardsToBeClaimed", async () => {
+  await waitForRewards(testUser1, liqId);
+
+  const rewardsInfoSubtotal = await getRewardsInfo(
+    testUser1.keyRingPair.address,
+    liqId
+  );
+
+  await Sudo.batchAsSudoFinalized(
+    Sudo.sudoAs(
+      testUser1,
+      Xyk.claimRewards(
+        liqId,
+        rewardsInfoSubtotal.rewardsNotYetClaimed.div(new BN(2))
+      )
+    )
+  );
+
+  const rewardsInfoAfter = await getRewardsInfo(
+    testUser1.keyRingPair.address,
+    liqId
+  );
+
+  await checkRewardsBefore();
+  expect(rewardsInfoAfter.activatedAmount).bnEqual(
+    defaultCurrencyValue.mul(new BN(2))
+  );
+  expect(rewardsInfoAfter.lastCheckpoint).bnGt(BN_ZERO);
+  expect(rewardsInfoAfter.missingAtLastCheckpoint).bnGt(
+    defaultCurrencyValue.mul(new BN(2)).mul(new BN(98)).div(BN_HUNDRED)
+  );
+  expect(rewardsInfoAfter.poolRatioAtLastCheckpoint).bnGt(BN_ZERO);
+  expect(rewardsInfoAfter.rewardsAlreadyClaimed).bnEqual(BN_ZERO);
+  expect(rewardsInfoAfter.rewardsNotYetClaimed).bnGt(BN_ZERO);
+  expect(rewardsInfoAfter.poolRatioAtLastCheckpoint).bnGt(
+    rewardsInfoAfter.rewardsNotYetClaimed
+  );
+});
+
+async function checkRewardsBefore() {
+  expect(rewardsInfoBefore.activatedAmount).bnEqual(BN_ZERO);
+  expect(rewardsInfoBefore.lastCheckpoint).bnEqual(BN_ZERO);
+  expect(rewardsInfoBefore.missingAtLastCheckpoint).bnEqual(BN_ZERO);
+  expect(rewardsInfoBefore.poolRatioAtLastCheckpoint).bnEqual(BN_ZERO);
+  expect(rewardsInfoBefore.rewardsAlreadyClaimed).bnEqual(BN_ZERO);
+  expect(rewardsInfoBefore.rewardsNotYetClaimed).bnEqual(BN_ZERO);
+}

@@ -8,10 +8,15 @@ import { Keyring } from "@polkadot/api";
 import { getApi, initApi } from "../../utils/api";
 import { Assets } from "../../utils/Assets";
 import { MGA_ASSET_ID } from "../../utils/Constants";
-import { BN } from "@mangata-finance/sdk";
+import { BN, BN_ZERO } from "@mangata-finance/sdk";
 import { setupApi, setupUsers } from "../../utils/setup";
 import { Sudo } from "../../utils/sudo";
-import { getLiquidityAssetId, mintLiquidity } from "../../utils/tx";
+import {
+  getLiquidityAssetId,
+  getRewardsInfo,
+  mintLiquidity,
+  promotePool,
+} from "../../utils/tx";
 import { AssetWallet, User } from "../../utils/User";
 import { getEnvironmentRequiredVars } from "../../utils/utils";
 import { Xyk } from "../../utils/xyk";
@@ -135,4 +140,47 @@ test("Check that a user that mints on a non-promoted pool liquidity tokens are f
 
   expect(differenceLiqTokensFree).bnEqual(defaultCurrencyValue);
   expect(differenceLiqTokensReserved).bnEqual(new BN(0));
+});
+
+test("Given 3 pool: token1-MGX, token2-MGX and token1-token2 WHEN token1-token2 is promoted THEN user can receive rewards from token1-token2 pool", async () => {
+  await Sudo.batchAsSudoFinalized(
+    Assets.mintToken(token1, testUser1, Assets.DEFAULT_AMOUNT),
+    Assets.mintToken(token2, testUser1, Assets.DEFAULT_AMOUNT),
+    Assets.mintNative(testUser1),
+    Sudo.sudoAs(
+      testUser1,
+      Xyk.createPool(
+        token1,
+        Assets.DEFAULT_AMOUNT.divn(2),
+        token2,
+        Assets.DEFAULT_AMOUNT.divn(2)
+      )
+    )
+  );
+
+  const liqIdThirdPool = await getLiquidityAssetId(token1, token2);
+
+  const rewardsThirdPoolBefore = await getRewardsInfo(
+    testUser1.keyRingPair.address,
+    liqIdThirdPool
+  );
+
+  await promotePool(sudo.keyRingPair, liqIdThirdPool);
+
+  await mintLiquidity(
+    testUser1.keyRingPair,
+    token1,
+    token2,
+    defaultCurrencyValue
+  );
+
+  const rewardsThirdPoolAfter = await getRewardsInfo(
+    testUser1.keyRingPair.address,
+    liqIdThirdPool
+  );
+
+  expect(rewardsThirdPoolBefore.activatedAmount).bnEqual(BN_ZERO);
+  expect(rewardsThirdPoolAfter.activatedAmount).bnEqual(defaultCurrencyValue);
+  expect(rewardsThirdPoolBefore.lastCheckpoint).bnEqual(BN_ZERO);
+  expect(rewardsThirdPoolAfter.lastCheckpoint).bnGt(BN_ZERO);
 });
