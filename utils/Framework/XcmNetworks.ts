@@ -6,6 +6,7 @@ dotenv.config();
 const endpoints = {
   kusama: "wss://kusama-rpc.polkadot.io",
   statemine: "wss://statemine-rpc.polkadot.io",
+  imbue: "wss://imbue-kusama.imbue.network",
   karura: "wss://karura-rpc-0.aca-api.network",
   mangata: "wss://kusama-archive.mangata.online",
   bifrost: "wss://bifrost-rpc.dwellir.com",
@@ -26,6 +27,14 @@ export default {
       wasmOverride: process.env.KUSAMA_WASM,
       blockNumber: toNumber(process.env.KUSAMA_BLOCK_NUMBER),
       endpoint: process.env.KUSAMA_ENDPOINT ?? endpoints.kusama,
+      db: process.env.DB_PATH,
+      ...options,
+    }),
+  imbue: (options?: Partial<SetupOption>) =>
+    setupContext({
+      wasmOverride: process.env.IMBUE_WASM,
+      blockNumber: toNumber(process.env.IMBUE_BLOCK_NUMBER),
+      endpoint: process.env.IMBUE_ENDPOINT ?? endpoints.imbue,
       db: process.env.DB_PATH,
       ...options,
     }),

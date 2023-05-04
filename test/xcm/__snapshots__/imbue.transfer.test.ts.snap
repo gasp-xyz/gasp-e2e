@@ -1,0 +1,65 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`XCM tests for Mangata <-> imbue imbue transfer assets to mangata 1`] = `
+{
+  "consumers": 0,
+  "data": {
+    "feeFrozen": 0,
+    "free": 4996912367379,
+    "miscFrozen": 0,
+    "reserved": 0,
+  },
+  "nonce": 1,
+  "providers": 0,
+  "sufficients": 0,
+}
+`;
+
+exports[`XCM tests for Mangata <-> imbue imbue transfer assets to mangata 2`] = `
+{
+  "free": 1004983872000000,
+  "frozen": 0,
+  "reserved": 0,
+}
+`;
+
+exports[`XCM tests for Mangata <-> imbue imbue transfer assets to mangata: Before 1`] = `
+{
+  "free": 1000000000000000,
+  "frozen": 0,
+  "reserved": 0,
+}
+`;
+
+exports[`XCM tests for Mangata <-> imbue imbue transfer assets to mangata: Before 2`] = `
+{
+  "consumers": 0,
+  "data": {
+    "feeFrozen": 0,
+    "free": 10000000000000,
+    "miscFrozen": 0,
+    "reserved": 0,
+  },
+  "nonce": 0,
+  "providers": 0,
+  "sufficients": 0,
+}
+`;
+
+exports[`XCM tests for Mangata <-> imbue imbue transfer assets to mangata: events 1`] = `[]`;
+
+exports[`XCM tests for Mangata <-> imbue imbue transfer assets to mangata: system events 1`] = `
+[
+  {
+    "data": {
+      "messageHash": "(redacted)",
+      "weight": {
+        "proofSize": "(redacted)",
+        "refTime": "(redacted)",
+      },
+    },
+    "method": "Success",
+    "section": "xcmpQueue",
+  },
+]
+`;
