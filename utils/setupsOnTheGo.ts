@@ -161,6 +161,7 @@ export async function joinAsCandidate(userName = "//Charlie", liqId = 9) {
   ).addn(1234567);
 
   console.info("amount: " + amountToJoin.toString());
+  let orig = tokenOrigin;
   if (liq.gt(BN_ZERO)) {
     const tokenInPool = await (
       await getLiquidityPool(liq)
@@ -189,15 +190,15 @@ export async function joinAsCandidate(userName = "//Charlie", liqId = 9) {
       Assets.mintToken(BN_ZERO, user, amountToJoin.muln(100000))
     );
     amountToJoin = amountToJoin.muln(2);
+    orig = "AvailableBalance";
   }
-
   await signTx(
     api,
     // @ts-ignore
     api?.tx.parachainStaking.joinCandidates(
       amountToJoin.subn(100),
       liqId,
-      tokenOrigin,
+      orig,
       // @ts-ignore - Mangata bond operation has 4 params, somehow is inheriting the bond operation from polkadot :S
       new BN(numCollators),
       // @ts-ignore
