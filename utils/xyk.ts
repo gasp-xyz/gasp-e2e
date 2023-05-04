@@ -40,10 +40,6 @@ export class Xyk {
     return api.tx.xyk.burnLiquidity(firstAsset, secondAsset, assetAmount);
   }
 
-  static claimRewards(liquidityToken: BN, tokenAmount: BN): Extrinsic {
-    return api.tx.xyk.claimRewardsV2(liquidityToken, tokenAmount);
-  }
-
   static claimRewardsAll(liquidityToken: BN): Extrinsic {
     return api.tx.xyk.claimRewardsAllV2(liquidityToken);
   }

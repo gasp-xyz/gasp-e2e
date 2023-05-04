@@ -19,6 +19,7 @@ import { User } from "../../utils/User";
 import { getEnvironmentRequiredVars } from "../../utils/utils";
 import { Xyk } from "../../utils/xyk";
 import { waitForRewards } from "../../utils/eventListeners";
+import { testLog } from "../../utils/Logger";
 
 jest.spyOn(console, "log").mockImplementation(jest.fn());
 jest.setTimeout(2500000);
@@ -173,13 +174,14 @@ test("Validate initial status: User claims half of the tokens that are stored in
     testUser1.keyRingPair.address,
     liqId
   );
-
+  //TODO: Alek
+  testLog.getLog().info(rewardsInfoSubtotal);
   await Sudo.batchAsSudoFinalized(
     Sudo.sudoAs(
       testUser1,
-      Xyk.claimRewards(
-        liqId,
-        rewardsInfoSubtotal.rewardsNotYetClaimed.div(new BN(2))
+      Xyk.claimRewardsAll(
+        liqId
+        //Todo: Alek  rewardsInfoSubtotal.rewardsNotYetClaimed.div(new BN(2))
       )
     )
   );
