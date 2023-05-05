@@ -43,6 +43,7 @@ jobs:
       MANGATA_ASSETS_URL: https://storage.googleapis.com/mangata-assets
       MANGATA_API_URL: wss://node-01-ws-dev.mangata.online
       MANGATA_EXPLORER_URL: https://rococo.subscan.io
+      MNEMONIC_POLK: ${{ secrets.MNEMONIC_CHOPS_FE_ACC }}
     outputs:
       testmo-run-id: ${{ steps.setTestRun.outputs.testmo-run-id }}
     steps:
