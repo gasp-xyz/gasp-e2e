@@ -15,10 +15,11 @@ jobs:
     steps:
       - uses: actions/checkout@v3
   run-e2e-workflow:
+    needs: [dispatch]
     name: Run xcm chops tests
     uses: ./.github/workflows/rune2e.yml
     with:
         scriptName: "${{ matrix.test }}"
-        parallel: "false"
+        parallel: false
         dockerImage: "mangatasolutions/mangata-node:develop"
         e2eBranch: "feature/chopstick-support"
