@@ -22,4 +22,4 @@ jobs:
         scriptName: "${{ matrix.test }}"
         parallel: false
         dockerImage: "mangatasolutions/mangata-node:develop"
-        e2eBranch: "feature/chopstick-support"
+        e2eBranch: "test/chopstick-support"
