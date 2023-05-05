@@ -13,10 +13,10 @@ jobs:
         test: ['test-xcm']
     runs-on: ubuntu-latest
     steps:
-      - name: Repository Dispatch
-        uses: peter-evans/repository-dispatch@v1
+      - name: Run e2e tests
+        uses: ./.github/workflows/rune2e.yml
         with:
-          token: ${{ secrets.PAT_TRIGGER_JOB }}
-          repository: "mangata-finance/mangata-e2e"
-          event-type: run-e2e
-          client-payload: '{"scriptName": "${{ matrix.test }}", "parallel": "false", "dockerImage" : "mangatasolutions/mangata-node:develop", "e2eBranch" : "feature/chopstick-support" }'
+          scriptName: "${{ matrix.test }}"
+          parallel: "false"
+          dockerImage: "mangatasolutions/mangata-node:develop"
+          e2eBranch: "feature/chopstick-support"
