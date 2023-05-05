@@ -91,10 +91,14 @@ export class Xyk {
   }
 
   static activateLiquidity(liquidityAssetId: BN, amount: BN): Extrinsic {
-    return api.tx.xyk.activateLiquidityV2(liquidityAssetId, amount, null);
+    return api.tx.proofOfStake.activateLiquidity(
+      liquidityAssetId,
+      amount,
+      null
+    );
   }
   static deActivateLiquidity(liquidityAssetId: BN, amount: BN): Extrinsic {
-    return api.tx.xyk.deactivateLiquidityV2(liquidityAssetId, amount);
+    return api.tx.proofOfStake.deactivateLiquidity(liquidityAssetId, amount);
   }
 
   static compoundRewards(
