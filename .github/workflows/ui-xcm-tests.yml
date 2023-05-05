@@ -125,9 +125,11 @@ jobs:
         run: yarn global add http-server
 
       - name: Build app
+        working-directory: mangata-fe
         run: yarn build
 
       - name: Start app
+        working-directory: mangata-fe
         run: |
           ifconfig
           IP_ADDRESS=$(ifconfig eth0 | awk '/inet / {print $2}')
