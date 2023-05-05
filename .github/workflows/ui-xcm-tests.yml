@@ -105,9 +105,10 @@ jobs:
 
       - name: Create env file
         run: |
+          IP_ADDRESS=$(ifconfig eth0 | awk '/inet / {print $2}')
           echo APP_ENV=kusama >> .env
-          echo API_URL=ws://127.0.0.1:9946 >> .env
-          echo KUSAMA_API_URL=ws://127.0.0.1:8001 >> .env
+          echo API_URL=ws://$IP_ADDRESS:9946 >> .env
+          echo KUSAMA_API_URL=ws://$IP_ADDRESS:8001 >> .env
           echo TURING_API_URL=ws://127.0.0.1:8002 >> .env
           echo IMBUE_API_URL=ws://127.0.0.1:8003 >> .env
           echo STATEMINE_API_URL=ws://127.0.0.1:8004 >> .env
