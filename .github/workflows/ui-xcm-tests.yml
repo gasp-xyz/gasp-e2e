@@ -91,6 +91,13 @@ jobs:
           ref: 'develop'
           path: mangata-fe
 
+      - name: Create npmrc file
+        run: |
+          echo registry=https://registry.yarnpkg.com/ >> .npmrc
+          echo @mangata-finance:registry=https://registry.npmjs.org >> .npmrc
+          echo //registry.npmjs.org/:_authToken=${{ secrets.FE_NPM_AUTH_TOKEN }} >> .npmrc
+          echo always-auth=true >> .npmrc
+
       - name: Install fe app dependencies
         working-directory: mangata-fe
         run: yarn
