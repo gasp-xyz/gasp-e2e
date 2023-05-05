@@ -1,0 +1,22 @@
+name: CI check
+
+on:
+  schedule:
+    - cron: "0 */2 * * *" #lets run this job every 2 hours.
+  workflow_dispatch:
+jobs:
+
+  dispatch:
+  
+    strategy:
+      matrix:
+        test: ['test-xcm']
+    runs-on: ubuntu-latest
+    steps:
+      - name: Repository Dispatch
+        uses: peter-evans/repository-dispatch@v1
+        with:
+          token: ${{ secrets.PAT_TRIGGER_JOB }}
+          repository: "mangata-finance/mangata-e2e"
+          event-type: run-e2e
+          client-payload: '{"scriptName": "${{ matrix.test }}", "parallel": "false", "dockerImage" : "mangatasolutions/mangata-node:develop", "e2eBranch" : "feature/chopstick-support" }'
