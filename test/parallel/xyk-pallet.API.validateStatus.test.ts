@@ -131,7 +131,7 @@ test("Validate initial status: User just minted and rewards generated", async ()
   expect(rewardsInfoAfter.missingAtLastCheckpoint).bnEqual(
     defaultCurrencyValue
   );
-  expect(rewardsInfoAfter.poolRatioAtLastCheckpoint).bnEqual(BN_ZERO);
+  expect(rewardsInfoAfter.poolRatioAtLastCheckpoint).bnGt(BN_ZERO);
   expect(rewardsInfoAfter.rewardsAlreadyClaimed).bnEqual(BN_ZERO);
   expect(rewardsInfoAfter.rewardsNotYetClaimed).bnEqual(BN_ZERO);
 });
@@ -146,6 +146,8 @@ test("Validate initial status: User just minted on a promoted pool and after rew
     defaultCurrencyValue
   );
 
+  await waitForRewards(testUser1, liqId);
+
   const rewardsInfoAfter = await getRewardsInfo(
     testUser1.keyRingPair.address,
     liqId
@@ -167,23 +169,17 @@ test("Validate initial status: User just minted on a promoted pool and after rew
   );
 });
 
-test("Validate initial status: User claims half of the tokens that are stored in rewardsToBeClaimed", async () => {
+test("Validate initial status:  User claims all available tokens that are stored in rewardsToBeClaimed", async () => {
   await waitForRewards(testUser1, liqId);
 
   const rewardsInfoSubtotal = await getRewardsInfo(
     testUser1.keyRingPair.address,
     liqId
   );
-  //TODO: Alek
+
   testLog.getLog().info(rewardsInfoSubtotal);
   await Sudo.batchAsSudoFinalized(
-    Sudo.sudoAs(
-      testUser1,
-      Xyk.claimRewardsAll(
-        liqId
-        //Todo: Alek  rewardsInfoSubtotal.rewardsNotYetClaimed.div(new BN(2))
-      )
-    )
+    Sudo.sudoAs(testUser1, Xyk.claimRewardsAll(liqId))
   );
 
   const rewardsInfoAfter = await getRewardsInfo(
@@ -192,18 +188,16 @@ test("Validate initial status: User claims half of the tokens that are stored in
   );
 
   await checkRewardsBefore();
-  expect(rewardsInfoAfter.activatedAmount).bnEqual(
-    defaultCurrencyValue.mul(new BN(2))
-  );
+  expect(rewardsInfoAfter.activatedAmount).bnEqual(defaultCurrencyValue);
   expect(rewardsInfoAfter.lastCheckpoint).bnGt(BN_ZERO);
-  expect(rewardsInfoAfter.missingAtLastCheckpoint).bnGt(
-    defaultCurrencyValue.mul(new BN(2)).mul(new BN(98)).div(BN_HUNDRED)
+  expect(rewardsInfoAfter.missingAtLastCheckpoint).bnEqual(
+    defaultCurrencyValue
   );
   expect(rewardsInfoAfter.poolRatioAtLastCheckpoint).bnGt(BN_ZERO);
-  expect(rewardsInfoAfter.rewardsAlreadyClaimed).bnEqual(BN_ZERO);
-  expect(rewardsInfoAfter.rewardsNotYetClaimed).bnGt(BN_ZERO);
-  expect(rewardsInfoAfter.poolRatioAtLastCheckpoint).bnGt(
-    rewardsInfoAfter.rewardsNotYetClaimed
+  expect(rewardsInfoAfter.rewardsAlreadyClaimed).bnGt(BN_ZERO);
+  expect(rewardsInfoAfter.rewardsNotYetClaimed).bnEqual(BN_ZERO);
+  expect(rewardsInfoAfter.rewardsAlreadyClaimed).bnGt(
+    rewardsInfoAfter.activatedAmount
   );
 });
 
