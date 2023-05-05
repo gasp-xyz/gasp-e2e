@@ -1,8 +1,31 @@
 name: Run e2e
 
 on:
-  repository_dispatch:
-    types: [run-e2e]
+  workflow_call:
+    inputs:
+        scriptName:
+          description: 'Name of the script to run'
+          required: true
+          default: 'test-github'
+          type: string
+
+        parallel:
+          description: "run parallel"
+          type: boolean
+          required: true
+          default: false
+                    
+        dockerImage:
+          description: 'identifier of docker image on dockerhub'
+          required: true
+          type: string
+          default: 'mangatasolutions/mangata-node:develop'
+
+        e2eBranch:
+          type: string
+          description: 'Name of the e2e target branch'
+          required: false
+          default: 'main'
 
   workflow_dispatch:
       inputs:
