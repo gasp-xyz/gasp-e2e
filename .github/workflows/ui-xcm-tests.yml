@@ -87,6 +87,7 @@ jobs:
         uses: actions/checkout@v3
         with:
           repository: mangata-finance/mangata-fe
+          token: ${{ secrets.PRIVATE_FE_REPO_ACCESS_TOKEN }}
           ref: 'develop'
           path: mangata-fe
 
