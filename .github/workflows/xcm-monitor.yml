@@ -18,6 +18,7 @@ jobs:
     needs: [dispatch]
     name: Run xcm chops tests
     uses: ./.github/workflows/rune2e.yml
+    secrets: inherit
     with:
         scriptName: "${{ matrix.test }}"
         parallel: false
