@@ -17,6 +17,7 @@ import {
   getLiquidityAssetId,
   burnLiquidity,
   getRewardsInfo,
+  claimRewardsAll,
 } from "../../utils/tx";
 import { setupApi, setupUsers } from "../../utils/setup";
 import { ExtrinsicResult, waitForRewards } from "../../utils/eventListeners";
@@ -147,11 +148,7 @@ describe("rewards v2 tests", () => {
       );
       testUser1.addAsset(MGA_ASSET_ID);
       await testUser1.refreshAmounts(AssetWallet.BEFORE);
-      const events = await mangata.claimRewards(
-        testUser1.keyRingPair,
-        liqId.toString(),
-        availableRewardsBefore
-      );
+      const events = await claimRewardsAll(testUser1, liqId);
       const { claimedAmount } = getClaimedAmount(events);
       await testUser1.refreshAmounts(AssetWallet.AFTER);
       const incrementedMGAs = testUser1
@@ -189,11 +186,7 @@ describe("rewards v2 tests", () => {
         liqId
       );
       expect(rewardsInfo.rewardsNotYetClaimed).bnEqual(availableRewardsBefore);
-      const events = await mangata.claimRewards(
-        testUser2.keyRingPair,
-        liqId.toString(),
-        availableRewardsBefore
-      );
+      const events = await claimRewardsAll(testUser1, liqId);
       const { claimedAmount } = getClaimedAmount(events);
       await testUser2.refreshAmounts(AssetWallet.AFTER);
       const incrementedMGAs = testUser2
