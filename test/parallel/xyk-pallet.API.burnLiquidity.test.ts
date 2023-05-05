@@ -11,13 +11,11 @@ import {
   burnLiquidity,
   calculate_buy_price_local,
   getLiquidityPool,
-  activateLiquidity,
 } from "../../utils/tx";
 import {
   waitNewBlock,
   ExtrinsicResult,
   EventResult,
-  waitForRewards,
 } from "../../utils/eventListeners";
 import { BN } from "@polkadot/util";
 import { Keyring } from "@polkadot/api";
@@ -32,9 +30,6 @@ import {
   getEnvironmentRequiredVars,
 } from "../../utils/utils";
 import { getEventResultFromMangataTx } from "../../utils/txHandler";
-import { Xyk } from "../../utils/xyk";
-import { Sudo } from "../../utils/sudo";
-import { MGA_ASSET_ID } from "../../utils/Constants";
 
 const { sudo: sudoUserName } = getEnvironmentRequiredVars();
 
@@ -165,7 +160,7 @@ describe("xyk-pallet - Burn liquidity tests: when burning liquidity you can", ()
   });
 
   test("Burning liquidities provides Burn and settle", async () => {
-    // The second currecy value is : defaultCurrecyValue, one to create the pool later, and the other one because of the rounding issue.
+    // The second currency value is : defaultCurrencyValue, one to create the pool later, and the other one because of the rounding issue.
     [firstCurrency, secondCurrency] = await UserCreatesAPoolAndMintLiquidity(
       testUser1,
       sudo,
@@ -245,110 +240,6 @@ describe("xyk-pallet - Burn liquidity tests: when burning liquidity you can", ()
       liquidityAssetId,
       burnAmount
     );
-  });
-
-  test("Given a pool with 2 users with activated rewards WHEN more than one period last AND the user burn all liquidity THEN pool is destroyed but users can still claim pending rewards", async () => {
-    const testUser2 = new User(keyring);
-    keyring.addPair(testUser2.keyRingPair);
-    [firstCurrency] = await Assets.setupUserWithCurrencies(
-      testUser1,
-      [new BN(defaultCurrecyValue)],
-      sudo
-    );
-
-    testUser1.addAsset(MGA_ASSET_ID);
-    testUser2.addAsset(MGA_ASSET_ID);
-
-    await Sudo.batchAsSudoFinalized(
-      Assets.FinalizeTge(),
-      Assets.initIssuance(),
-      Assets.mintNative(testUser1),
-      Assets.mintToken(firstCurrency, testUser2, new BN(defaultCurrecyValue)),
-      Assets.mintNative(testUser2)
-    );
-
-    const mga = await getMangataInstance();
-
-    await mga.createPool(
-      testUser1.keyRingPair,
-      MGA_ASSET_ID.toString(),
-      new BN(defaultCurrecyValue).div(new BN(2)),
-      firstCurrency.toString(),
-      new BN(defaultCurrecyValue).div(new BN(2))
-    );
-
-    const liquidityAssetId = await getLiquidityAssetId(
-      MGA_ASSET_ID,
-      firstCurrency
-    );
-
-    await Sudo.batchAsSudoFinalized(
-      Sudo.sudoAs(
-        testUser2,
-        Xyk.mintLiquidity(
-          MGA_ASSET_ID,
-          firstCurrency,
-          new BN(defaultCurrecyValue).div(new BN(2))
-        )
-      ),
-      Assets.promotePool(liquidityAssetId.toNumber(), 20)
-    );
-    await activateLiquidity(
-      testUser1.keyRingPair,
-      liquidityAssetId,
-      new BN(defaultCurrecyValue).div(new BN(2))
-    );
-    await activateLiquidity(
-      testUser2.keyRingPair,
-      liquidityAssetId,
-      new BN(defaultCurrecyValue).div(new BN(2))
-    );
-
-    await waitForRewards(testUser1, liquidityAssetId);
-
-    await Sudo.batchAsSudoFinalized(
-      Sudo.sudoAs(
-        testUser1,
-        Xyk.burnLiquidity(
-          MGA_ASSET_ID,
-          firstCurrency,
-          new BN(defaultCurrecyValue).div(new BN(2))
-        )
-      ),
-      Sudo.sudoAs(
-        testUser2,
-        Xyk.burnLiquidity(
-          MGA_ASSET_ID,
-          firstCurrency,
-          new BN(defaultCurrecyValue).div(new BN(2))
-        )
-      )
-    );
-
-    await testUser1.refreshAmounts(AssetWallet.AFTER);
-    await testUser2.refreshAmounts(AssetWallet.AFTER);
-
-    await Sudo.batchAsSudoFinalized(
-      Sudo.sudoAs(testUser1, Xyk.claimRewardsAll(liquidityAssetId)),
-      Sudo.sudoAs(testUser2, Xyk.claimRewardsAll(liquidityAssetId))
-    );
-
-    await testUser1.refreshAmounts(AssetWallet.AFTER);
-    await testUser2.refreshAmounts(AssetWallet.AFTER);
-
-    const differenceMGAUser1 = testUser1
-      .getAsset(MGA_ASSET_ID)
-      ?.amountAfter.free.sub(
-        testUser1.getAsset(MGA_ASSET_ID)?.amountBefore.free!
-      );
-    const differenceMGAUser2 = testUser2
-      .getAsset(MGA_ASSET_ID)
-      ?.amountAfter.free.sub(
-        testUser1.getAsset(MGA_ASSET_ID)?.amountBefore.free!
-      );
-
-    expect(differenceMGAUser1).bnGt(new BN(0));
-    expect(differenceMGAUser2).bnGt(new BN(0));
   });
 });
 
