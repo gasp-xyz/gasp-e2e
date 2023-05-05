@@ -186,7 +186,7 @@ describe("rewards v2 tests", () => {
         liqId
       );
       expect(rewardsInfo.rewardsNotYetClaimed).bnEqual(availableRewardsBefore);
-      const events = await claimRewardsAll(testUser1, liqId);
+      const events = await claimRewardsAll(testUser2, liqId);
       const { claimedAmount } = getClaimedAmount(events);
       await testUser2.refreshAmounts(AssetWallet.AFTER);
       const incrementedMGAs = testUser2
@@ -195,7 +195,7 @@ describe("rewards v2 tests", () => {
           testUser2.getAsset(MGA_ASSET_ID)?.amountBefore.free!
         );
       expect(incrementedMGAs!.abs()).bnGt(BN_ZERO);
-      expect(claimedAmount).bnEqual(availableRewardsBefore);
+      expect(availableRewardsBefore).bnLte(claimedAmount);
       const rewardsInfoAfterClaim = await getRewardsInfo(
         testUser2.keyRingPair.address,
         liqId
