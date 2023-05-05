@@ -157,7 +157,6 @@ jobs:
       #     echo "${{ env.E2EBRANCHNAME }}"
 
       - name: Install e2e tests dependencies
-        working-directory: e2eTests
         run: yarn
 
       - name: is selenoid started?
@@ -169,7 +168,6 @@ jobs:
       #- uses: mxschmitt/action-tmate@v3
 
       - name: Run tests
-        working-directory: e2eTests
         run: |
           echo ${{ env.UI_URL }}
           ${{ matrix.command }}
@@ -179,7 +177,7 @@ jobs:
         if: always()
         with:
           name: E2E report ${{ matrix.command }} # Name of the check run which will be created
-          path: e2eTests/reports/junit-*.xml # Path to test results
+          path: reports/junit-*.xml # Path to test results
           reporter: jest-junit # Format of test results
 
       - name: Copy video files to reports folder
@@ -187,13 +185,13 @@ jobs:
         run: |
           # sleep is used to close buffers of videos
           sleep 10s 
-          cp ~/.aerokube/selenoid/* -r  e2eTests/reports/artifacts/
+          cp ~/.aerokube/selenoid/* -r  reports/artifacts/
 
       - name: Create  reports zip
         uses: vimtor/action-zip@v1
         if: always()
         with:
-          files: e2eTests/reports/
+          files: reports/
           dest: reports.zip
 
       - name: Archive report files
@@ -208,4 +206,4 @@ jobs:
         if: always()
         with:
           name: TestReport
-          path: e2eTests/reports/html-report/report.html
+          path: reports/html-report/report.html
