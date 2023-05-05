@@ -130,7 +130,7 @@ test("GIVEN a promoted pool WHEN more pools gets activated THEN shares are decre
     Assets.promotePool(liqIdPool3.toNumber(), 20),
     Sudo.sudoAs(
       testUser1,
-      Xyk.deActivateLiquidity(liqIdPool1, Assets.DEFAULT_AMOUNT.divn(2))
+      Xyk.deactivateLiquidity(liqIdPool1, Assets.DEFAULT_AMOUNT.divn(2))
     ),
     Sudo.sudoAs(
       testUser2,
