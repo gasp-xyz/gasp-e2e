@@ -203,7 +203,7 @@ jobs:
       
       - name: Run e2e tests
         working-directory: e2eTests
-        run: yarn ${{ github.event.inputs.scriptName }} ${{env.E2E_PARAMS}} ${{env.E2E_GROUPS}}
+        run: yarn ${{ github.event.inputs.scriptName || inputs.scriptName }} ${{env.E2E_PARAMS}} ${{env.E2E_GROUPS}}
         
       - name: Submit results to the testmo-run
         if: always()
