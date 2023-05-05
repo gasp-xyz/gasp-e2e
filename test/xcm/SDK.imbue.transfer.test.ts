@@ -6,7 +6,7 @@ import { ApiContext } from "../../utils/Framework/XcmHelper";
 import XcmNetworks from "../../utils/Framework/XcmNetworks";
 import { devTestingPairs } from "../../utils/setup";
 import { expectJson, matchSystemEvents } from "../../utils/validators";
-import { BN, Mangata } from "@mangata-finance/sdk";
+import { BN, BN_HUNDRED, Mangata } from "@mangata-finance/sdk";
 import { BN_TEN } from "@mangata-finance/sdk";
 import { sleep } from "../../utils/utils";
 
@@ -18,7 +18,7 @@ describe("XCM tests for Mangata <-> imbue", () => {
   let imbue: ApiContext;
   let mangata: ApiContext;
   let alice: KeyringPair;
-  const imbueTokenId = 12;
+  const imbueTokenId = 14;
   beforeAll(async () => {
     const imbueRocco = await XcmNetworks.imbue({
       endpoint: "wss://rococo.imbue.network",
@@ -53,7 +53,7 @@ describe("XCM tests for Mangata <-> imbue", () => {
     });
     await imbue.dev.setStorage({
       System: {
-        Account: [[[alice.address], { data: { free: 10e12 } }]],
+        Account: [[[alice.address], { data: { free: 1000e12 } }]],
       },
     });
   });
@@ -84,17 +84,19 @@ describe("XCM tests for Mangata <-> imbue", () => {
     ]);
 
     await imbue.chain.newBlock();
-    await sleep(100000);
-    expectJson(
-      await mangata.api.query.tokens.accounts(alice.address, imbueTokenId)
-    ).toMatchSnapshot();
+    await imbue.chain.newBlock();
+    await mangata.chain.newBlock();
+    const balanceInMangata = await mangata.api.query.tokens.accounts(
+      alice.address,
+      imbueTokenId
+    );
+    expectJson(balanceInMangata).toMatchSnapshot();
 
-    expect(
-      await imbue.api.query.system.account(alice.address)
-    ).toMatchSnapshot();
+    const balanceInImbu = await imbue.api.query.system.account(alice.address);
+    expect(balanceInImbu).toMatchSnapshot();
 
     await matchSystemEvents(mangata, "xcmpQueue", "Success");
-    await sleep(1000000);
+    await sleep(60000);
   });
 
   it("SDK ROC - imbue transfer assets to mangata", async () => {
@@ -112,26 +114,27 @@ describe("XCM tests for Mangata <-> imbue", () => {
       "800000000",
       alice,
       alice.address,
-      BN_TEN.mul(BN_TEN.pow(new BN(12)))
+      BN_HUNDRED.mul(BN_TEN.pow(new BN(12)))
     );
     await Promise.race([
       p,
       new Promise(async () => {
         await sleep(5000);
+        await imbue.chain.newBlock();
+        await imbue.chain.newBlock();
         await mangata.chain.newBlock();
-        await imbue.chain.newBlock();
-        await imbue.chain.newBlock();
       }),
     ]);
-    expect(
-      await imbue.api.query.system.account(alice.address)
-    ).toMatchSnapshot();
-
+    await imbue.chain.newBlock();
+    const balanceAtImbu = await imbue.api.query.system.account(alice.address);
+    expect(balanceAtImbu).toMatchSnapshot();
     await mangata.chain.newBlock();
-
-    expectJson(
-      await mangata.api.query.tokens.accounts(alice.address, imbueTokenId)
-    ).toMatchSnapshot();
+    await mangata.chain.newBlock();
+    const balanceAtMangata = await mangata.api.query.tokens.accounts(
+      alice.address,
+      imbueTokenId
+    );
+    expectJson(balanceAtMangata).toMatchSnapshot();
     await matchSystemEvents(mangata, "xcmpQueue", "Success");
   });
 });
