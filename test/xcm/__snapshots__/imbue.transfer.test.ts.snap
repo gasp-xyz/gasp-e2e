@@ -63,3 +63,61 @@ exports[`XCM tests for Mangata <-> imbue imbue transfer assets to mangata: syste
   },
 ]
 `;
+
+exports[`XCM tests for Mangata <-> imbue mangata transfer assets to imbue 1`] = `
+{
+  "free": 990000000000000,
+  "frozen": 0,
+  "reserved": 0,
+}
+`;
+
+exports[`XCM tests for Mangata <-> imbue mangata transfer assets to imbue 2`] = `
+{
+  "consumers": 0,
+  "data": {
+    "feeFrozen": 0,
+    "free": 19990730400000,
+    "miscFrozen": 0,
+    "reserved": 0,
+  },
+  "nonce": 0,
+  "providers": 0,
+  "sufficients": 0,
+}
+`;
+
+exports[`XCM tests for Mangata <-> imbue mangata transfer assets to imbue: Before 1`] = `
+{
+  "free": 1000000000000000,
+  "frozen": 0,
+  "reserved": 0,
+}
+`;
+
+exports[`XCM tests for Mangata <-> imbue mangata transfer assets to imbue: Before 2`] = `
+{
+  "consumers": 0,
+  "data": {
+    "feeFrozen": 0,
+    "free": 10000000000000,
+    "miscFrozen": 0,
+    "reserved": 0,
+  },
+  "nonce": 0,
+  "providers": 0,
+  "sufficients": 0,
+}
+`;
+
+exports[`XCM tests for Mangata <-> imbue mangata transfer assets to imbue: system events 1`] = `
+[
+  {
+    "data": {
+      "messageHash": "(redacted)",
+    },
+    "method": "XcmpMessageSent",
+    "section": "xcmpQueue",
+  },
+]
+`;
