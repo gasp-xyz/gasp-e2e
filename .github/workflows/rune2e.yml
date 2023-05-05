@@ -100,7 +100,7 @@ jobs:
         uses: actions/checkout@v2
         with:
           repository: mangata-finance/mangata-e2e
-          ref: '${{ github.event.inputs.e2eBranch }}'
+          ref: '${{ github.event.inputs.e2eBranch || inputs.e2eBranch }}'
           path: 'e2eTests'
   
       - name: Checkout mangata-node
