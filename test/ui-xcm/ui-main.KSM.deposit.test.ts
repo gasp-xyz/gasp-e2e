@@ -1,6 +1,6 @@
 /*
  *
- * @group uiXcm
+ * @group uiXcmKSM
  */
 import { Mangata } from "../../utils/frontend/pages/Mangata";
 import { Keyring } from "@polkadot/api";

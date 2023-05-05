@@ -27,7 +27,7 @@ jobs:
   e2e-test-matrix:
     strategy:
       matrix:
-        command: ['yarn test-microapps-pr']
+        command: ['yarn test-xcm-ui --group=uiXcmKSM']
     runs-on: ubuntu-latest
     timeout-minutes: 30
     env:
@@ -46,7 +46,6 @@ jobs:
     outputs:
       testmo-run-id: ${{ steps.setTestRun.outputs.testmo-run-id }}
     steps:
-      #### App
       - uses: actions/checkout@v3
 
       - uses: actions/setup-node@v3
@@ -54,62 +53,97 @@ jobs:
           node-version: '16'
           cache: 'yarn'
           cache-dependency-path: '**/yarn.lock'
-
-      - name: Install app dependencies
-        run: yarn
-
-      - name: Create env file
-        run: |
-          echo MANGATA_ASSETS_URL="https://storage.googleapis.com/mangata-assets" >> .env
-          echo MANGATA_STASH_URL="https://mangata-stash-dev-dot-direct-pixel-353917.oa.r.appspot.com" >> .env
-          echo MANGATA_EXPLORER_URL="https://rococo.subscan.io" >> .env
-          echo MANGATA_API_URL="wss://node-01-ws-dev.mangata.online" >> .env
-          cat .env
-
-      - name: Install http-server
-        run: yarn global add http-server
-
-      - name: Build app
-        run: yarn nx run-many --target=build
-
-      - name: Start app
-        run: |
-          ifconfig
-          IP_ADDRESS=$(ifconfig eth0 | awk '/inet / {print $2}')
-          echo "UI_URL=http://$IP_ADDRESS:5500" >> $GITHUB_ENV
-          cd dist/packages/dex
-          http-server -p 5500 &
-
-      #### Tests
+      
+      #### Selenoid
       - name: Start Selenoid Server
         uses: Xotabu4/selenoid-github-action@v2
         with:
           selenoid-start-arguments: |
             --args "-timeout 300s" --browsers 'chrome:112.0'
 
-      - name: E2E- Get branch name
-        id: branch-name
-        uses: tj-actions/branch-names@v4.9
-
-      - name: E2E- Calculate if run e2e feature branch or main.
-        run: |
-          echo DEFAULT: E2E test will run with: $E2EBRANCHNAME
-          echo "Running on: ${{ steps.branch-name.outputs.current_branch }}"
-          if [ -n "$(git ls-remote --heads https://github.com/mangata-finance/mangata-e2e.git ${{ steps.branch-name.outputs.current_branch }} --force --quiet)" ]; then echo "E2EBRANCHNAME=${{ steps.branch-name.outputs.current_branch }}" >> $GITHUB_ENV; echo "MATCH - OK" ; elif [ -n "$(git ls-remote --heads https://github.com/mangata-finance/mangata-e2e.git ${{ github.base_ref }} --force --quiet)" ]; then echo "E2EBRANCHNAME=${{ github.base_ref }}" >> $GITHUB_ENV; echo "MATCH - OK" ;  fi
-
-      - name: Decide if main - branch or parameter
-        # if we have something in e2eBranch - override E2EBranchName, else -> E2EBRANCHNAME , that
-        # by default will be main.
-        run: |
-          echo "E2EBRANCHNAME=${{ inputs.e2eBranch || env.E2EBRANCHNAME }}" >> $GITHUB_ENV
-          echo "${{ env.E2EBRANCHNAME }}"
-
-      - name: Checkout tests
+      #### Chops
+      - name: Checkout chopsticks
         uses: actions/checkout@v3
         with:
-          repository: mangata-finance/mangata-e2e
-          ref: '${{ env.E2EBRANCHNAME }}'
-          path: e2eTests
+          repository: mangata-finance/chopsticks
+          ref: 'master'
+          path: chopsticks
+
+      - name: Install chopsticks dependencies
+        working-directory: chopsticks
+        run: yarn
+
+      - name: Chopsticks build wasm
+        working-directory: chopsticks
+        run: yarn build-wasm
+
+      - name: Chopsticks start chain
+        working-directory: chopsticks
+        run: yarn start xcm --parachain=configs/mangata.yml  --relaychain=configs/kusama.yml
+
+      #### App
+      - name: Checkout FE app
+        uses: actions/checkout@v3
+        with:
+          repository: mangata-finance/mangata-fe
+          ref: 'develop'
+          path: mangata-fe
+
+      - name: Install fe app dependencies
+        working-directory: mangata-fe
+        run: yarn
+
+      - name: Create env file
+        run: |
+          echo APP_ENV=kusama >> .env
+          echo API_URL=ws://127.0.0.1:9946 >> .env
+          echo KUSAMA_API_URL=ws://127.0.0.1:8001 >> .env
+          echo TURING_API_URL=ws://127.0.0.1:8002 >> .env
+          echo IMBUE_API_URL=ws://127.0.0.1:8003 >> .env
+          echo STATEMINE_API_URL=ws://127.0.0.1:8004 >> .env
+          echo BIFROST_API_URL=ws://127.0.0.1:8005 >> .env
+          echo PARACHAIN_ID=2110 >> .env
+          echo MANGATA_ENV=local >> .env
+          echo EXTEND_ESLINT=true >> .env
+          echo PRICE_DISCOVERY_URL=https://mangata-stash-prod-dot-direct-pixel-353917.oa.r.appspot.com/price-discovery >> .env
+          echo SENTRY_DSN=https://f0d2c93dcf3248d291729e077510045c@o495498.ingest.sentry.io/6074902 >> .env
+          echo SENTRY_AUTH_TOKEN=${{ secrets.SENTRY_AUTH_TOKEN }} >> .env
+          echo SENTRY_PROJECT=mangata-sentry >> .env
+          echo SENTRY_ORG=mangata-g7 >> .env
+          cat .env
+
+      - name: Install http-server
+        run: yarn global add http-server
+
+      - name: Build app
+        run: yarn build
+
+      - name: Start app
+        run: |
+          ifconfig
+          IP_ADDRESS=$(ifconfig eth0 | awk '/inet / {print $2}')
+          echo "UI_URL=http://$IP_ADDRESS:5500" >> $GITHUB_ENV
+          cd dist
+          http-server -p 5500 &
+
+      #### Tests
+
+      # - name: E2E- Get branch name
+      #   id: branch-name
+      #   uses: tj-actions/branch-names@v4.9
+
+      # - name: E2E- Calculate if run e2e feature branch or main.
+      #   run: |
+      #     echo DEFAULT: E2E test will run with: $E2EBRANCHNAME
+      #     echo "Running on: ${{ steps.branch-name.outputs.current_branch }}"
+      #     if [ -n "$(git ls-remote --heads https://github.com/mangata-finance/mangata-e2e.git ${{ steps.branch-name.outputs.current_branch }} --force --quiet)" ]; then echo "E2EBRANCHNAME=${{ steps.branch-name.outputs.current_branch }}" >> $GITHUB_ENV; echo "MATCH - OK" ; elif [ -n "$(git ls-remote --heads https://github.com/mangata-finance/mangata-e2e.git ${{ github.base_ref }} --force --quiet)" ]; then echo "E2EBRANCHNAME=${{ github.base_ref }}" >> $GITHUB_ENV; echo "MATCH - OK" ;  fi
+
+      # - name: Decide if main - branch or parameter
+      #   # if we have something in e2eBranch - override E2EBranchName, else -> E2EBRANCHNAME , that
+      #   # by default will be main.
+      #   run: |
+      #     echo "E2EBRANCHNAME=${{ inputs.e2eBranch || env.E2EBRANCHNAME }}" >> $GITHUB_ENV
+      #     echo "${{ env.E2EBRANCHNAME }}"
 
       - name: Install e2e tests dependencies
         working-directory: e2eTests

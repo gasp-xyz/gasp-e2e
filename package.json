@@ -89,6 +89,7 @@
     "test-github": "export JEST_HTML_REPORTERS_PUBLIC_PATH=reports/html-report;  rm nonce.db ; rm sudo.lock; jest --verbose  --ci --forceExit",
     "test-multiswap": "export GASLESS=true; export JEST_HTML_REPORTERS_PUBLIC_PATH=reports/html-report-parallel;rm nonce.db ; rm sudo.lock; jest --verbose --ci --group=multiswap --forceExit",
     "test-xcm": " export CHOPSTICK_ENABLED=true ; export MANGATA_ENDPOINT=wss://mangata-x.api.onfinality.io/public-ws ; export JEST_HTML_REPORTERS_PUBLIC_PATH=reports/html-report-parallel;rm nonce.db ; rm sudo.lock; jest --verbose --ci --group=xcm --forceExit",
+    "test-xcm-ui": "rm nonce.db ; rm sudo.lock; jest --verbose --runInBand --ci",
     "runtimeUpgrade": " jest --verbose --ci --group=upgradeRuntime --runInBand --forceExit"
   },
   "devDependencies": {
