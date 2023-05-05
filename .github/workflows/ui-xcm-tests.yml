@@ -80,7 +80,7 @@ jobs:
 
       - name: Chopsticks start chain
         working-directory: chopsticks
-        run: yarn start xcm --parachain=configs/mangata.yml  --relaychain=configs/kusama.yml
+        run: yarn start xcm --parachain=configs/mangata.yml  --relaychain=configs/kusama.yml &
 
       #### App
       - name: Checkout FE app
