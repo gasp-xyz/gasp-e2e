@@ -31,13 +31,11 @@ jobs:
     runs-on: ubuntu-latest
     timeout-minutes: 30
     env:
-      API_URL: wss://node-01-ws-dev.mangata.online
       TEST_PALLET_ADDRESS: ${{ secrets.TEST_PALLET_ADDRESS }}
       E2E_XYK_PALLET_ADDRESS: ${{ secrets.E2E_XYK_PALLET_ADDRESS }}
       TEST_SUDO_NAME: ${{ secrets.TEST_SUDO_NAME }}
       TEST_SCRIPT: 'test-xcm-ui'
       TEST_ENV_TAG: 'develop'
-      NODE_ENV: test
       SELENIUM_REMOTE_URL: http://localhost:4444/wd/hub
       UI_URL: http://localhost:5500
       MANGATA_ASSETS_URL: https://storage.googleapis.com/mangata-assets
@@ -109,6 +107,7 @@ jobs:
           IP_ADDRESS=$(ifconfig eth0 | awk '/inet / {print $2}')
           echo APP_ENV=kusama >> .env
           echo API_URL=ws://$IP_ADDRESS:9946 >> .env
+          echo "API_URL=ws://$IP_ADDRESS:9946" >> $GITHUB_ENV
           echo KUSAMA_API_URL=ws://$IP_ADDRESS:8000 >> .env
           echo TURING_API_URL=ws://127.0.0.1:8002 >> .env
           echo IMBUE_API_URL=ws://127.0.0.1:8003 >> .env
@@ -159,7 +158,7 @@ jobs:
       #     echo "E2EBRANCHNAME=${{ inputs.e2eBranch || env.E2EBRANCHNAME }}" >> $GITHUB_ENV
       #     echo "${{ env.E2EBRANCHNAME }}"
       #Use for debug
-      - uses: mxschmitt/action-tmate@v3
+      # - uses: mxschmitt/action-tmate@v3
 
       - name: Install e2e tests dependencies
         run: yarn
