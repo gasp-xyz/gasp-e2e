@@ -68,7 +68,7 @@ jobs:
         with:
           submodules: 'recursive'
           repository: mangata-finance/chopsticks
-          ref: 'master'
+          ref: 'e2e-fe-tests-setup'
           path: chopsticks
 
       - name: Install chopsticks dependencies
@@ -81,7 +81,9 @@ jobs:
 
       - name: Chopsticks start chain
         working-directory: chopsticks
-        run: yarn start xcm --parachain=configs/mangata.yml  --relaychain=configs/kusama.yml &
+        run: |
+          yarn start xcm --parachain=configs/mangata.yml  --relaychain=configs/kusama.yml &
+          sleep 10s
 
       #### App
       - name: Checkout FE app
