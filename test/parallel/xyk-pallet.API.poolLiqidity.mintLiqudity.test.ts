@@ -1,7 +1,6 @@
 /*
  *
  * @group xyk
- * @group poolliquidity
  * @group rewardsV2
  */
 
@@ -161,6 +160,10 @@ test("Given 3 pool: token1-MGX, token2-MGX and token1-token2 WHEN token1-token2 
   );
 
   const liqIdThirdPool = await getLiquidityAssetId(token1, token2);
+  const rewardsThirdPoolBefore = await getRewardsInfo(
+    testUser1.keyRingPair.address,
+    liqIdThirdPool
+  );
   await Sudo.batchAsSudoFinalized(
     Xyk.updatePoolPromotion(liqIdThirdPool, 20),
     Sudo.sudoAs(
@@ -172,10 +175,6 @@ test("Given 3 pool: token1-MGX, token2-MGX and token1-token2 WHEN token1-token2 
         new BN(Number.MAX_SAFE_INTEGER)
       )
     )
-  );
-  const rewardsThirdPoolBefore = await getRewardsInfo(
-    testUser1.keyRingPair.address,
-    liqIdThirdPool
   );
   await waitForRewards(testUser1, liqIdThirdPool, 21);
   const mangata = await getMangataInstance(

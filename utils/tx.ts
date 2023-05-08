@@ -585,10 +585,7 @@ export const deactivateLiquidity = async (
   const api = await mangata.getApi();
 
   const result = await signSendAndWaitToFinishTx(
-    api?.tx.proofOfStake.deactivateLiquidityV2(
-      new BN(liqToken),
-      new BN(amount)
-    ),
+    api?.tx.proofOfStake.deactivateLiquidity(new BN(liqToken), new BN(amount)),
     account
   );
   return result;
