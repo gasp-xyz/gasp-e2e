@@ -1,6 +1,7 @@
 /*
  *
  * @group xyk
+ * @group rewardsV2
  */
 
 import { Keyring } from "@polkadot/api";
@@ -32,7 +33,6 @@ let sudo: User;
 let keyring: Keyring;
 let token1: BN;
 let liqId: BN;
-let rewardsInfoBefore: any;
 const defaultCurrencyValue = new BN(250000);
 
 beforeAll(async () => {
@@ -87,11 +87,7 @@ beforeEach(async () => {
     Assets.mintNative(testUser1)
   );
 
-  rewardsInfoBefore = await getRewardsInfo(
-    testUser1.keyRingPair.address,
-    liqId
-  );
-
+  await checkRewardsBefore(testUser1, liqId);
   await mintLiquidity(
     testUser1.keyRingPair,
     MGA_ASSET_ID,
@@ -105,8 +101,6 @@ test("Validate initial status: User just minted on a promoted pool", async () =>
     testUser1.keyRingPair.address,
     liqId
   );
-
-  await checkRewardsBefore();
   expect(rewardsInfoAfter.activatedAmount).bnEqual(defaultCurrencyValue);
   expect(rewardsInfoAfter.lastCheckpoint).bnGt(BN_ZERO);
   expect(rewardsInfoAfter.missingAtLastCheckpoint).bnEqual(
@@ -124,8 +118,6 @@ test("Validate initial status: User just minted and rewards generated", async ()
     testUser1.keyRingPair.address,
     liqId
   );
-
-  await checkRewardsBefore();
   expect(rewardsInfoAfter.activatedAmount).bnEqual(defaultCurrencyValue);
   expect(rewardsInfoAfter.lastCheckpoint).bnGt(BN_ZERO);
   expect(rewardsInfoAfter.missingAtLastCheckpoint).bnEqual(
@@ -152,8 +144,6 @@ test("Validate initial status: User just minted on a promoted pool and after rew
     testUser1.keyRingPair.address,
     liqId
   );
-
-  await checkRewardsBefore();
   expect(rewardsInfoAfter.activatedAmount).bnEqual(
     defaultCurrencyValue.mul(new BN(2))
   );
@@ -186,8 +176,6 @@ test("Validate initial status:  User claims all available tokens that are stored
     testUser1.keyRingPair.address,
     liqId
   );
-
-  await checkRewardsBefore();
   expect(rewardsInfoAfter.activatedAmount).bnEqual(defaultCurrencyValue);
   expect(rewardsInfoAfter.lastCheckpoint).bnGt(BN_ZERO);
   expect(rewardsInfoAfter.missingAtLastCheckpoint).bnEqual(
@@ -201,7 +189,11 @@ test("Validate initial status:  User claims all available tokens that are stored
   );
 });
 
-async function checkRewardsBefore() {
+async function checkRewardsBefore(testUser: User, liq: BN) {
+  const rewardsInfoBefore = await getRewardsInfo(
+    testUser.keyRingPair.address,
+    liq
+  );
   expect(rewardsInfoBefore.activatedAmount).bnEqual(BN_ZERO);
   expect(rewardsInfoBefore.lastCheckpoint).bnEqual(BN_ZERO);
   expect(rewardsInfoBefore.missingAtLastCheckpoint).bnEqual(BN_ZERO);

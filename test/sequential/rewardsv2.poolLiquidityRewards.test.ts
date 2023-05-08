@@ -195,6 +195,8 @@ describe("rewards v2 tests", () => {
           testUser2.getAsset(MGA_ASSET_ID)?.amountBefore.free!
         );
       expect(incrementedMGAs!.abs()).bnGt(BN_ZERO);
+      expect(claimedAmount).bnGt(BN_ZERO);
+      expect(availableRewardsBefore).bnGt(BN_ZERO);
       expect(availableRewardsBefore).bnLte(claimedAmount);
       const rewardsInfoAfterClaim = await getRewardsInfo(
         testUser2.keyRingPair.address,
@@ -226,7 +228,8 @@ describe("rewards v2 tests", () => {
       const rewardsDifference = rewardsInfoAfter.activatedAmount.sub(
         rewardsInfoBefore.activatedAmount
       );
-
+      expect(rewardsDifference).bnGt(BN_ZERO);
+      expect(rewardsDifference.isNeg()).toEqual(false);
       expect(rewardsDifference.div(new BN(100))).bnEqual(
         defaultCurrencyValue.div(new BN(100))
       );

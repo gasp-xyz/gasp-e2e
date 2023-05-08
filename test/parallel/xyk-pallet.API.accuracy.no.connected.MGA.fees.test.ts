@@ -2,7 +2,7 @@
  *
  * @group xyk
  * @group accuracy
- * @group rewardsV2
+ * @group parallel
  */
 import { getApi, getMangataInstance, initApi } from "../../utils/api";
 import {

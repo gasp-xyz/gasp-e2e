@@ -28,7 +28,6 @@ jest.setTimeout(1500000);
 process.env.NODE_ENV = "test";
 
 let testUser1: User;
-let testUser11: User;
 let testUser2: User;
 let testUser3: User;
 
@@ -56,7 +55,6 @@ beforeEach(async () => {
 
   // setup users
   testUser1 = new User(keyring);
-  testUser11 = new User(keyring);
   testUser2 = new User(keyring);
   testUser3 = new User(keyring);
   sudo = new User(keyring, sudoUserName);
@@ -72,18 +70,15 @@ beforeEach(async () => {
     Assets.FinalizeTge(),
     Assets.initIssuance(),
     Assets.mintNative(testUser1),
-    Assets.mintNative(testUser11),
     Assets.mintNative(testUser2),
     Assets.mintNative(testUser3)
   );
 
   // add users to pair.
   keyring.addPair(testUser1.keyRingPair);
-  keyring.addPair(testUser11.keyRingPair);
   keyring.addPair(testUser2.keyRingPair);
   keyring.addPair(testUser3.keyRingPair);
   keyring.addPair(sudo.keyRingPair);
-  testUser11.addAsset(MGA_ASSET_ID);
   testUser1.addAsset(MGA_ASSET_ID);
   testUser2.addAsset(MGA_ASSET_ID);
   testUser3.addAsset(MGA_ASSET_ID);
@@ -96,9 +91,6 @@ describe("Accuracy > Shared pool", () => {
       Assets.mintToken(firstCurrency, testUser2, default50k),
       Assets.mintToken(firstCurrency, testUser3, default50k)
     );
-    //    await Promise.all([
-    //
-    //    ]);
     testUser1.addAsset(firstCurrency);
     testUser2.addAsset(firstCurrency);
     testUser3.addAsset(firstCurrency);

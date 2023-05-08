@@ -2,24 +2,26 @@
  *
  * @group xyk
  * @group poolliquidity
+ * @group rewardsV2
  */
 
 import { Keyring } from "@polkadot/api";
-import { getApi, initApi } from "../../utils/api";
+import { getApi, getMangataInstance, initApi } from "../../utils/api";
 import { Assets } from "../../utils/Assets";
 import { MGA_ASSET_ID } from "../../utils/Constants";
 import { BN, BN_ZERO } from "@mangata-finance/sdk";
 import { setupApi, setupUsers } from "../../utils/setup";
 import { Sudo } from "../../utils/sudo";
 import {
+  claimRewardsAll,
   getLiquidityAssetId,
   getRewardsInfo,
   mintLiquidity,
-  promotePool,
 } from "../../utils/tx";
 import { AssetWallet, User } from "../../utils/User";
 import { getEnvironmentRequiredVars } from "../../utils/utils";
 import { Xyk } from "../../utils/xyk";
+import { waitForRewards } from "../../utils/eventListeners";
 
 jest.spyOn(console, "log").mockImplementation(jest.fn());
 jest.setTimeout(2500000);
@@ -159,20 +161,31 @@ test("Given 3 pool: token1-MGX, token2-MGX and token1-token2 WHEN token1-token2 
   );
 
   const liqIdThirdPool = await getLiquidityAssetId(token1, token2);
-
+  await Sudo.batchAsSudoFinalized(
+    Xyk.updatePoolPromotion(liqIdThirdPool, 20),
+    Sudo.sudoAs(
+      testUser1,
+      Xyk.mintLiquidity(
+        token1,
+        token2,
+        defaultCurrencyValue,
+        new BN(Number.MAX_SAFE_INTEGER)
+      )
+    )
+  );
   const rewardsThirdPoolBefore = await getRewardsInfo(
     testUser1.keyRingPair.address,
     liqIdThirdPool
   );
-
-  await promotePool(sudo.keyRingPair, liqIdThirdPool);
-
-  await mintLiquidity(
-    testUser1.keyRingPair,
-    token1,
-    token2,
-    defaultCurrencyValue
+  await waitForRewards(testUser1, liqIdThirdPool, 21);
+  const mangata = await getMangataInstance(
+    getEnvironmentRequiredVars().chainUri
   );
+  const testUser1Rewards = await mangata.calculateRewardsAmount(
+    testUser1.keyRingPair.address,
+    liqIdThirdPool.toString()
+  );
+  await claimRewardsAll(testUser1, liqIdThirdPool);
 
   const rewardsThirdPoolAfter = await getRewardsInfo(
     testUser1.keyRingPair.address,
@@ -181,6 +194,6 @@ test("Given 3 pool: token1-MGX, token2-MGX and token1-token2 WHEN token1-token2 
 
   expect(rewardsThirdPoolBefore.activatedAmount).bnEqual(BN_ZERO);
   expect(rewardsThirdPoolAfter.activatedAmount).bnEqual(defaultCurrencyValue);
-  expect(rewardsThirdPoolBefore.lastCheckpoint).bnEqual(BN_ZERO);
-  expect(rewardsThirdPoolAfter.lastCheckpoint).bnGt(BN_ZERO);
+  expect(rewardsThirdPoolBefore.rewardsAlreadyClaimed).bnEqual(BN_ZERO);
+  expect(testUser1Rewards).bnLte(rewardsThirdPoolAfter.rewardsAlreadyClaimed);
 });
