@@ -99,10 +99,6 @@ jobs:
           echo //registry.npmjs.org/:_authToken=${{ secrets.FE_NPM_AUTH_TOKEN }} >> .npmrc
           echo always-auth=true >> .npmrc
 
-      - name: Install fe app dependencies
-        working-directory: mangata-fe
-        run: yarn
-
       - name: Create env file
         working-directory: mangata-fe
         run: |
@@ -123,6 +119,10 @@ jobs:
           echo SENTRY_PROJECT=mangata-sentry >> .env
           echo SENTRY_ORG=mangata-g7 >> .env
           cat .env
+      
+      - name: Install fe app dependencies
+        working-directory: mangata-fe
+        run: yarn
 
       - name: Install http-server
         run: yarn global add http-server
@@ -167,8 +167,8 @@ jobs:
           curl http://localhost:4444/status
           curl -I "$UI_URL"
 
-      #Use for debug
-      #- uses: mxschmitt/action-tmate@v3
+      Use for debug
+      - uses: mxschmitt/action-tmate@v3
 
       - name: Run tests
         run: |
