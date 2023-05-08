@@ -5,20 +5,18 @@ on:
     - cron: "0 */2 * * *" #lets run this job every 2 hours.
   workflow_dispatch:
 jobs:
-
-  dispatch:
-  
-    strategy:
-      matrix:
-        test: ['test-xcm']
+  checkout:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v3
   run-e2e-workflow:
-    needs: [dispatch]
+    needs: [checkout]
     name: Run xcm chops tests
     uses: ./.github/workflows/rune2e.yml
     secrets: inherit
+    strategy:
+      matrix:
+        test: ['test-xcm']
     with:
         scriptName: "${{ matrix.test }}"
         parallel: false
