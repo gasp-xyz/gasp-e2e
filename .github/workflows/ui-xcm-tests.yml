@@ -104,6 +104,7 @@ jobs:
         run: yarn
 
       - name: Create env file
+        working-directory: mangata-fe
         run: |
           IP_ADDRESS=$(ifconfig eth0 | awk '/inet / {print $2}')
           echo APP_ENV=kusama >> .env
