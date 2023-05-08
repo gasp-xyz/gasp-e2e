@@ -291,7 +291,7 @@ async function app(): Promise<any> {
               message: "",
             },
           ])
-          .then(async (answers) => {
+          .then(async (answers: { str: unknown }) => {
             await initApi();
             const api = await getApi();
             const str = api.createType("Vec<u8>", answers.str);
@@ -326,14 +326,20 @@ async function app(): Promise<any> {
               message: "MGX bigger?",
             },
           ])
-          .then(async (answers) => {
-            await initApi();
-            const mgaBig = answers.mgaBig === "true";
-            const ratio = parseInt(answers.ratio.toString());
-            const user = answers.user;
-            await createCustomPool(mgaBig, ratio, user);
-            return app();
-          });
+          .then(
+            async (answers: {
+              mgaBig: string;
+              ratio: { toString: () => string };
+              user: any;
+            }) => {
+              await initApi();
+              const mgaBig = answers.mgaBig === "true";
+              const ratio = parseInt(answers.ratio.toString());
+              const user = answers.user;
+              await createCustomPool(mgaBig, ratio, user);
+              return app();
+            }
+          );
       }
       if (answers.option.includes("createACouncil")) {
         await initApi();
@@ -349,7 +355,7 @@ async function app(): Promise<any> {
               message: "motion_no",
             },
           ])
-          .then(async (answers) => {
+          .then(async (answers: { motion: number }) => {
             await initApi();
             await vetoMotion(answers.motion);
             return app();
@@ -375,14 +381,19 @@ async function app(): Promise<any> {
               message: "",
             },
           ])
-          .then(async (answers) => {
-            await userAggregatesOn(
-              answers.userAggregating,
-              answers.userWhoDelegates
-            );
-            console.log("Done");
-            return app();
-          });
+          .then(
+            async (answers: {
+              userAggregating: string;
+              userWhoDelegates: string;
+            }) => {
+              await userAggregatesOn(
+                answers.userAggregating,
+                answers.userWhoDelegates
+              );
+              console.log("Done");
+              return app();
+            }
+          );
       }
       return app();
     });
