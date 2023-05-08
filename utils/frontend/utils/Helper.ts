@@ -309,7 +309,7 @@ export async function doActionInDifferentWindow(
   driver: WebDriver,
   fn: (driver: WebDriver) => void
 ) {
-  await sleep(4000);
+  await sleep(10000);
   let handle = await (await driver).getAllWindowHandles();
   let iterator = handle.reverse().entries();
 
