@@ -167,7 +167,7 @@ jobs:
           curl http://localhost:4444/status
           curl -I "$UI_URL"
 
-      Use for debug
+      #Use for debug
       - uses: mxschmitt/action-tmate@v3
 
       - name: Run tests
