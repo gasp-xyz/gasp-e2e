@@ -23,6 +23,7 @@ import { StorageKey, Bytes } from "@polkadot/types";
 import { ITuple, Codec } from "@polkadot/types/types";
 import jsonpath from "jsonpath";
 import { Staking } from "./Staking";
+import { hexToBn } from "@polkadot/util";
 const tokenOrigin = "ActivatedUnstakedReserves"; // "AvailableBalance";
 
 export async function vetoMotion(motionId: number) {
@@ -478,6 +479,9 @@ export async function getTokensAccountData(ws = "ws://127.0.0.1:9946") {
   await initApi(ws);
   const api = await getApi();
   type Tokens = { free: BN; reserved: BN; frozen: BN };
+  function getPrint(user: string, tokens: Tokens) {
+    return `${user} -- free: ${tokens.free}, reserved: ${tokens.reserved}, frozen: ${tokens.frozen}`;
+  }
   const currentState = new Map<string, Tokens>();
   await api!.rpc.chain.subscribeNewHeads(async (lastHeader) => {
     console.log("#" + lastHeader.number);
@@ -485,14 +489,12 @@ export async function getTokensAccountData(ws = "ws://127.0.0.1:9946") {
       storageKey.forEach((element: { toHuman: () => any }[]) => {
         const user = element[0].toHuman()[0] + "-" + element[0].toHuman()[1];
         const status = {
-          free: JSON.parse(JSON.stringify(element[1].toHuman())).free,
-          reserved: JSON.parse(JSON.stringify(element[1].toHuman())).reserved,
-          frozen: JSON.parse(JSON.stringify(element[1].toHuman())).frozen,
+          free: hexToBn(JSON.parse(element[1].toString()).free),
+          reserved: hexToBn(JSON.parse(element[1].toString()).reserved),
+          frozen: hexToBn(JSON.parse(element[1].toString()).frozen),
         } as Tokens;
         if (currentState.get(user) === undefined) {
-          console.log(
-            element[0].toHuman() + " -- " + JSON.stringify(element[1].toHuman())
-          );
+          console.log(getPrint(user, status));
           currentState.set(user, {
             free: status.free,
             reserved: status.reserved,
@@ -501,16 +503,22 @@ export async function getTokensAccountData(ws = "ws://127.0.0.1:9946") {
         } else {
           if (
             !(
-              status.free === currentState.get(user)!.free &&
-              status.frozen === currentState.get(user)!.frozen &&
-              status.reserved === currentState.get(user)!.reserved
+              status.free.eq(currentState.get(user)!.free) &&
+              status.frozen.eq(currentState.get(user)!.frozen) &&
+              status.reserved.eq(currentState.get(user)!.reserved)
             )
           ) {
-            console.log("New change! BEFORE:");
-            console.log(user + " -- " + JSON.stringify(currentState.get(user)));
-            console.log("New change! AFTER:");
+            console.log("BEFORE:" + getPrint(user, currentState.get(user)!));
+            const diffSentence = `Diff: free: ${new BN(status.free).sub(
+              new BN(currentState.get(user)!.free)
+            )} - , reserved: ${new BN(status.reserved).sub(
+              new BN(currentState.get(user)!.reserved)
+            )} - , frozen: ${new BN(status.frozen).sub(
+              new BN(currentState.get(user)!.frozen)
+            )} `;
             currentState.set(user, status);
-            console.log(user + " -- " + JSON.stringify(currentState.get(user)));
+            console.log(" AFTER:" + getPrint(user, currentState.get(user)!));
+            console.log(diffSentence);
           }
         }
       });
