@@ -50,9 +50,6 @@ jobs:
           node-version: '16'
           cache: 'yarn'
           cache-dependency-path: '**/yarn.lock'
-
-      - name: Print jq version
-        run: jq --version
       
       #### Selenoid
       - name: Start Selenoid Server
@@ -104,7 +101,7 @@ jobs:
         working-directory: mangata-fe
         run: |
           chops_sdk="https://github.com/mangata-finance/mangata-sdk#feature/chopstick-support"
-          jq ".dependencies[\"@mangata-finance/sdk\"] = \"${new_version}\"" package.json > tmp.json
+          jq ".dependencies[\"@mangata-finance/sdk\"] = \"${chops_sdk}\"" package.json > tmp.json
           mv tmp.json package.json
           jq '.dependencies["@mangata-finance/sdk"]' package.json
 
