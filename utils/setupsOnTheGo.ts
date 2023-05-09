@@ -24,6 +24,7 @@ import { ITuple, Codec } from "@polkadot/types/types";
 import jsonpath from "jsonpath";
 import { Staking } from "./Staking";
 import { hexToBn } from "@polkadot/util";
+import { Bootstrap } from "./Bootstrap";
 const tokenOrigin = "ActivatedUnstakedReserves"; // "AvailableBalance";
 
 export async function vetoMotion(motionId: number) {
@@ -671,7 +672,41 @@ export async function listStorages(
   console.info(result);
   return result;
 }
-
+export async function provisionWith100Users() {
+  const tokenId = new BN(4);
+  const secToken = new BN(9);
+  await setupUsers();
+  await setupApi();
+  for (let loop = 0; loop < 10; loop++) {
+    const users = [];
+    let txs = [];
+    const keyring = new Keyring({ type: "sr25519" });
+    for (let index = 0; index < 50; index++) {
+      const user = new User(keyring);
+      users.push(user);
+      txs.push(Assets.mintToken(tokenId, user, Assets.MG_UNIT.muln(100)));
+      txs.push(Assets.mintNative(user, Assets.MG_UNIT.muln(100000)));
+      txs.push(
+        Sudo.sudoAs(user, Bootstrap.provision(tokenId, Assets.MG_UNIT.muln(10)))
+      );
+    }
+    await Sudo.batchAsSudoFinalized(...txs);
+    txs = [];
+    for (let index = 0; index < 50; index++) {
+      const user = new User(keyring);
+      users.push(user);
+      txs.push(Assets.mintToken(secToken, user, Assets.MG_UNIT.muln(100)));
+      txs.push(Assets.mintNative(user, Assets.MG_UNIT.muln(100000)));
+      txs.push(
+        Sudo.sudoAs(
+          user,
+          Bootstrap.provision(secToken, Assets.MG_UNIT.muln(10))
+        )
+      );
+    }
+    await Sudo.batchAsSudoFinalized(...txs);
+  }
+}
 export async function userAggregatesOn(
   userAggregating: string,
   userWhoDelegates: string

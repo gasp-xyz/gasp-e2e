@@ -20,6 +20,7 @@ import {
   migrate,
   userAggregatesOn,
   subscribeAndPrintTokenChanges,
+  provisionWith100Users,
 } from "../utils/setupsOnTheGo";
 import {
   findErrorMetadata,
@@ -62,6 +63,7 @@ async function app(): Promise<any> {
         "migrateData",
         "user aggregates with",
         "listen token balance changes",
+        "provisionWith100Users",
       ],
     })
     .then(async (answers: { option: string | string[] }) => {
@@ -401,8 +403,10 @@ async function app(): Promise<any> {
           );
       }
       if (answers.option.includes("listen token balance changes")) {
-        console.log("foo");
         await subscribeAndPrintTokenChanges();
+      }
+      if (answers.option.includes("provisionWith100Users")) {
+        await provisionWith100Users();
       }
       return app();
     });

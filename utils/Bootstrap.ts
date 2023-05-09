@@ -12,6 +12,7 @@ import { setupApi } from "./setup";
 import { Sudo } from "./sudo";
 import { testLog } from "./Logger";
 import { waitNewBlock } from "./eventListeners";
+import { api, Extrinsic } from "./setup";
 
 export async function waitForBootstrapStatus(
   bootstrapStatus: string,
@@ -235,4 +236,9 @@ export async function updatePromoteBootstrapPool(
     }
   );
   return result;
+}
+export class Bootstrap {
+  static provision(tokenId: BN, amount: BN): Extrinsic {
+    return api.tx.bootstrap.provision(tokenId, amount);
+  }
 }
