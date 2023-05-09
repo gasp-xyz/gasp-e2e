@@ -78,7 +78,7 @@ jobs:
       - name: Chopsticks start chain
         working-directory: chopsticks
         run: |
-          yarn start xcm --parachain=configs/mangata.yml  --relaychain=configs/kusama.yml &
+          yarn start xcm --parachain=configs/mangata.yml  --relaychain=configs/kusama.yml > chopsticks-output.log &
           sleep 20s
 
       #### App
@@ -195,6 +195,7 @@ jobs:
           # sleep is used to close buffers of videos
           sleep 10s 
           cp ~/.aerokube/selenoid/* -r  reports/artifacts/
+          cp chopsticks/chopsticks-output.log -r  reports/artifacts/
 
       - name: Create  reports zip
         uses: vimtor/action-zip@v1
