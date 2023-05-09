@@ -100,7 +100,7 @@ jobs:
       - name: Inject chops sdk to FE app
         working-directory: mangata-fe
         run: |
-          chops_sdk="https://github.com/mangata-finance/mangata-sdk/tree/feature/chopsAndxykrefactor"
+          chops_sdk="https://github.com/mangata-finance/mangata-sdk#feature/xyk-refactor-mat"
           jq ".dependencies[\"@mangata-finance/sdk\"] = \"${chops_sdk}\"" package.json > tmp.json
           mv tmp.json package.json
           jq '.dependencies["@mangata-finance/sdk"]' package.json
