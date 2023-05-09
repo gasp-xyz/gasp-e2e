@@ -1,6 +1,9 @@
 /* eslint-disable no-console */
 /**
- * npx ts-node cliTool/index.ts --runInBand
+ * cd cliTool
+ * yarn
+ * npx ts-node index.ts --runInBand
+ * If you want to define the url ( default is localhost:9946 )
  * API_URL="wss://mangata-x.api.onfinality.io/public-ws"  npx ts-node ./index.ts --runInBand
  */
 import inquirer from "inquirer";
