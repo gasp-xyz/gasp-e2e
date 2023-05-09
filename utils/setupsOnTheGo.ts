@@ -23,7 +23,6 @@ import { StorageKey, Bytes } from "@polkadot/types";
 import { ITuple, Codec } from "@polkadot/types/types";
 import jsonpath from "jsonpath";
 import { Staking } from "./Staking";
-
 const tokenOrigin = "ActivatedUnstakedReserves"; // "AvailableBalance";
 
 export async function vetoMotion(motionId: number) {
@@ -473,7 +472,94 @@ export function stripHexPrefix(str: string): string {
 function isHexPrefixed(str: string): boolean {
   return str.slice(0, 2) === "0x";
 }
+export async function getTokensAccountData(ws = "ws://127.0.0.1:9946") {
+  await setupApi();
+  await setupUsers();
+  await initApi(ws);
+  const api = await getApi();
+  type Tokens = { free: BN; reserved: BN; frozen: BN };
+  const currentState = new Map<string, Tokens>();
+  await api!.rpc.chain.subscribeNewHeads(async (lastHeader) => {
+    console.log("#" + lastHeader.number);
+    await api.query.tokens.accounts.entries(async (storageKey: any) => {
+      storageKey.forEach((element: { toHuman: () => any }[]) => {
+        const user = element[0].toHuman()[0] + "-" + element[0].toHuman()[1];
+        const status = {
+          free: JSON.parse(JSON.stringify(element[1].toHuman())).free,
+          reserved: JSON.parse(JSON.stringify(element[1].toHuman())).reserved,
+          frozen: JSON.parse(JSON.stringify(element[1].toHuman())).frozen,
+        } as Tokens;
+        if (currentState.get(user) === undefined) {
+          console.log(
+            element[0].toHuman() + " -- " + JSON.stringify(element[1].toHuman())
+          );
+          currentState.set(user, {
+            free: status.free,
+            reserved: status.reserved,
+            frozen: status.frozen,
+          } as Tokens);
+        } else {
+          if (
+            !(
+              status.free === currentState.get(user)!.free &&
+              status.frozen === currentState.get(user)!.frozen &&
+              status.reserved === currentState.get(user)!.reserved
+            )
+          ) {
+            console.log("New change! BEFORE:");
+            console.log(user + " -- " + JSON.stringify(currentState.get(user)));
+            console.log("New change! AFTER:");
+            currentState.set(user, status);
+            console.log(user + " -- " + JSON.stringify(currentState.get(user)));
+          }
+        }
+      });
+    });
+  });
+}
+export async function getTokensAccountDataStorage(ws = "ws://127.0.0.1:9946") {
+  await setupApi();
+  await setupUsers();
+  await initApi(ws);
+  const api = await getApi();
+  const allPallets = await listStorages(ws);
+  const storageToListen = allPallets
+    .filter((x: any) => x[0] === "Tokens")
+    .flatMap((item: any) =>
+      item[1].map((element: any) => {
+        return [item[0], element];
+      })
+    );
+  console.info(JSON.stringify(storageToListen));
 
+  for (let dataId = 0; dataId < storageToListen.length; dataId++) {
+    const key = getStorageKey(
+      storageToListen[dataId][0],
+      storageToListen[dataId][1]
+    );
+    const allKeys = [];
+    let cont = true;
+    let keys = await api.rpc.state.getKeysPaged(key, 100);
+    while (cont) {
+      for (let index = 0; index < keys.length; index++) {
+        const storage = await api.rpc.state.getStorage<Codec>(keys[index]);
+        allKeys.push([keys[index], storage]);
+      }
+      const nextkeys = await api.rpc.state.getKeysPaged(key, 100, keys[99]);
+      if (nextkeys.includes(keys[99]) || nextkeys.length === 0) {
+        cont = false;
+      } else {
+        keys = nextkeys;
+      }
+      keys.forEach(async (value) => {
+        const storage = await api.rpc.state.getStorage<Codec>(value);
+        allKeys.push([value, storage]);
+        console.info(value.toString());
+        console.info(storage.toString());
+      });
+    }
+  }
+}
 export async function migrate() {
   await setupApi();
   await setupUsers();
@@ -554,10 +640,12 @@ export async function migrate() {
     await Sudo.batchAsSudoFinalized(...txs);
   }
 }
-export async function listStorages() {
+export async function listStorages(
+  ws = "wss://prod-kusama-collator-01.mangatafinance.cloud"
+) {
   await setupApi();
   await setupUsers();
-  await initApi("wss://prod-kusama-collator-01.mangatafinance.cloud");
+  await initApi(ws);
   const api = await getApi();
   const meta = await api.rpc.state.getMetadata();
   const metaJson = JSON.parse(JSON.stringify(meta));
