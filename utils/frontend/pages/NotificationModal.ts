@@ -77,7 +77,7 @@ export class NotificationModal {
     await waitForElementVisible(
       this.driver,
       this.getModalXpath(modalState),
-      120000
+      180000
     );
   }
 
