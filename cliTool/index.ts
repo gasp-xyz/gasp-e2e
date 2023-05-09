@@ -19,7 +19,7 @@ import {
   vetoMotion,
   migrate,
   userAggregatesOn,
-  getTokensAccountData,
+  subscribeAndPrintTokenChanges,
 } from "../utils/setupsOnTheGo";
 import {
   findErrorMetadata,
@@ -61,7 +61,7 @@ async function app(): Promise<any> {
         "veto",
         "migrateData",
         "user aggregates with",
-        "getTokensAccountData",
+        "listen token balance changes",
       ],
     })
     .then(async (answers: { option: string | string[] }) => {
@@ -400,9 +400,9 @@ async function app(): Promise<any> {
             }
           );
       }
-      if (answers.option.includes("getTokensAccountData")) {
+      if (answers.option.includes("listen token balance changes")) {
         console.log("foo");
-        await getTokensAccountData();
+        await subscribeAndPrintTokenChanges();
       }
       return app();
     });

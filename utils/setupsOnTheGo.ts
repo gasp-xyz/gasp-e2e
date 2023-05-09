@@ -473,7 +473,9 @@ export function stripHexPrefix(str: string): string {
 function isHexPrefixed(str: string): boolean {
   return str.slice(0, 2) === "0x";
 }
-export async function getTokensAccountData(ws = "ws://127.0.0.1:9946") {
+export async function subscribeAndPrintTokenChanges(
+  ws = "ws://127.0.0.1:9946"
+) {
   await setupApi();
   await setupUsers();
   await initApi(ws);
