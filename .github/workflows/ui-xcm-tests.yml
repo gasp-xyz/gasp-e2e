@@ -50,6 +50,9 @@ jobs:
           node-version: '16'
           cache: 'yarn'
           cache-dependency-path: '**/yarn.lock'
+
+      - name: Print jq version
+        run: jq --version
       
       #### Selenoid
       - name: Start Selenoid Server
@@ -96,6 +99,14 @@ jobs:
           echo @mangata-finance:registry=https://registry.npmjs.org >> .npmrc
           echo //registry.npmjs.org/:_authToken=${{ secrets.FE_NPM_AUTH_TOKEN }} >> .npmrc
           echo always-auth=true >> .npmrc
+
+      - name: Inject chops sdk to FE app
+        working-directory: mangata-fe
+        run: |
+          chops_sdk="https://github.com/mangata-finance/mangata-sdk#feature/chopstick-support"
+          jq ".dependencies[\"@mangata-finance/sdk\"] = \"${new_version}\"" package.json > tmp.json
+          mv tmp.json package.json
+          jq '.dependencies["@mangata-finance/sdk"]' package.json
 
       - name: Install fe app dependencies
         working-directory: mangata-fe
