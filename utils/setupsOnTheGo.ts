@@ -347,51 +347,84 @@ export async function fillWithDelegators(
   const tokenInPool = await (
     await getLiquidityPool(liq)
   ).filter((x) => x.gt(MGA_ASSET_ID))[0];
-  const tokensToMint = await calculate_buy_price_id_rpc(
-    tokenInPool,
-    MGA_ASSET_ID,
-    amountToJoin
-  );
-  const txs = [];
-  const users = [];
-  for (let index = 0; index < numDelegators; index++) {
-    const user = new User(keyring);
-    users.push(user);
-    txs.push(Assets.mintToken(tokenInPool, user, tokensToMint.muln(100)));
-    txs.push(Assets.mintNative(user, amountToJoin.muln(100000)));
-    txs.push(
-      Sudo.sudoAs(
-        user,
-        Xyk.mintLiquidity(
-          MGA_ASSET_ID,
-          tokenInPool,
-          amountToJoin.muln(2),
-          MAX_BALANCE
+  if (!liq.eqn(0)) {
+    let tokensToMint = await calculate_buy_price_id_rpc(
+      tokenInPool,
+      MGA_ASSET_ID,
+      amountToJoin
+    );
+    if (tokensToMint.eqn(0)) tokensToMint = amountToJoin.muln(10000);
+    const txs = [];
+    const users = [];
+    for (let index = 0; index < numDelegators; index++) {
+      const user = new User(keyring);
+      users.push(user);
+      txs.push(Assets.mintToken(tokenInPool, user, tokensToMint.muln(100)));
+      txs.push(Assets.mintNative(user, amountToJoin.muln(100000)));
+      txs.push(
+        Sudo.sudoAs(
+          user,
+          Xyk.mintLiquidity(
+            MGA_ASSET_ID,
+            tokenInPool,
+            amountToJoin.muln(2),
+            MAX_BALANCE
+          )
         )
-      )
-    );
-  }
-  await Sudo.batchAsSudoFinalized(...txs);
-  const joins = [];
-  for (let index = 0; index < numDelegators; index++) {
-    joins.push(
-      signTx(
-        api,
-        // @ts-ignore
-        api?.tx.parachainStaking.delegate(
-          targetAddress,
-          amountToJoin.subn(10),
-          tokenOrigin,
-          // @ts-ignore - Mangata bond operation has 4 params, somehow is inheriting the bond operation from polkadot :S
-          new BN(candidateDelegationCount).addn(index),
+      );
+    }
+    await Sudo.batchAsSudoFinalized(...txs);
+    const joins = [];
+    for (let index = 0; index < numDelegators; index++) {
+      joins.push(
+        signTx(
+          api,
           // @ts-ignore
-          new BN(totalDelegators).addn(index)
-        ),
-        users[index].keyRingPair
-      )
-    );
+          api?.tx.parachainStaking.delegate(
+            targetAddress,
+            amountToJoin.subn(10),
+            tokenOrigin,
+            // @ts-ignore - Mangata bond operation has 4 params, somehow is inheriting the bond operation from polkadot :S
+            new BN(candidateDelegationCount).addn(index),
+            // @ts-ignore
+            new BN(totalDelegators).addn(index)
+          ),
+          users[index].keyRingPair
+        )
+      );
+    }
+    await Promise.all(joins);
+  } else {
+    const tokensToMint = amountToJoin.muln(10000);
+    const txs = [];
+    const users = [];
+    for (let index = 0; index < numDelegators; index++) {
+      const user = new User(keyring);
+      users.push(user);
+      txs.push(Assets.mintNative(user, tokensToMint));
+    }
+    await Sudo.batchAsSudoFinalized(...txs);
+    const joins = [];
+    for (let index = 0; index < numDelegators; index++) {
+      joins.push(
+        signTx(
+          api,
+          // @ts-ignore
+          api?.tx.parachainStaking.delegate(
+            targetAddress,
+            amountToJoin.muln(3),
+            "AvailableBalance",
+            // @ts-ignore - Mangata bond operation has 4 params, somehow is inheriting the bond operation from polkadot :S
+            new BN(candidateDelegationCount).addn(index),
+            // @ts-ignore
+            new BN(totalDelegators).addn(index)
+          ),
+          users[index].keyRingPair
+        )
+      );
+    }
+    await Promise.all(joins);
   }
-  await Promise.all(joins);
 }
 
 export async function printCandidatesNotProducing(): Promise<void> {
