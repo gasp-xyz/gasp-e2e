@@ -22,7 +22,7 @@ describe("staking - testpad", () => {
       await initApi();
     }
   });
-  test.only("docker thingy", async () => {
+  test.skip("docker thingy", async () => {
     docker = new Docker();
     const as = await docker.listContainers();
     const bobImage = as.filter(
