@@ -103,7 +103,16 @@ export async function setupPoolWithRewardsForDefaultUsers() {
   const testUser2 = new User(keyring, "//Alice");
   const testUser3 = new User(keyring, "//Charlie");
   const testUser4 = new User(keyring, "//Eve");
-  const users = [testUser1, testUser2, testUser3, testUser4];
+  const testUser5 = new User(keyring, "//Dave");
+  const testUser6 = new User(keyring, "//Ferdie");
+  const users = [
+    testUser1,
+    testUser2,
+    testUser3,
+    testUser4,
+    testUser5,
+    testUser6,
+  ];
   const sudo = new User(keyring, getEnvironmentRequiredVars().sudo);
   const token2 = await Assets.issueAssetToUser(sudo, amount, sudo, true);
   await Sudo.batchAsSudoFinalized(
@@ -113,10 +122,14 @@ export async function setupPoolWithRewardsForDefaultUsers() {
     Assets.mintToken(token2, testUser2, amount),
     Assets.mintToken(token2, testUser3, amount),
     Assets.mintToken(token2, testUser4, amount),
+    Assets.mintToken(token2, testUser5, amount),
+    Assets.mintToken(token2, testUser6, amount),
     Assets.mintNative(testUser1, amount),
     Assets.mintNative(testUser2, amount),
     Assets.mintNative(testUser3, amount),
     Assets.mintNative(testUser4, amount),
+    Assets.mintNative(testUser5, amount),
+    Assets.mintNative(testUser6, amount),
     Sudo.sudoAs(
       testUser1,
       Xyk.createPool(MGA_ASSET_ID, amount.divn(10), token2, amount.divn(10))
@@ -140,12 +153,24 @@ export async function setupPoolWithRewardsForDefaultUsers() {
     Sudo.sudoAs(
       testUser4,
       Xyk.mintLiquidity(MGA_ASSET_ID, token2, amount.divn(10), amount)
+    ),
+    Sudo.sudoAs(
+      testUser5,
+      Xyk.mintLiquidity(MGA_ASSET_ID, token2, amount.divn(10), amount)
+    ),
+    Sudo.sudoAs(
+      testUser6,
+      Xyk.mintLiquidity(MGA_ASSET_ID, token2, amount.divn(10), amount)
     )
   );
   await waitForRewards(testUser4, liqId);
   return { users, liqId, sudo, token2 };
 }
-export async function joinAsCandidate(userName = "//Charlie", liqId = 9) {
+export async function joinAsCandidate(
+  userName = "//Charlie",
+  liqId = 9,
+  amount = new BN(0)
+) {
   await setupUsers();
   await setupApi();
   const api = await getApi();
@@ -160,7 +185,9 @@ export async function joinAsCandidate(userName = "//Charlie", liqId = 9) {
   let amountToJoin = new BN(
     await api!.consts.parachainStaking.minCandidateStk!.toString()
   ).addn(1234567);
-
+  if (amount.gt(BN_ZERO)) {
+    amountToJoin = amount;
+  }
   console.info("amount: " + amountToJoin.toString());
   let orig = tokenOrigin;
   if (liq.gt(BN_ZERO)) {
@@ -197,7 +224,7 @@ export async function joinAsCandidate(userName = "//Charlie", liqId = 9) {
     api,
     // @ts-ignore
     api?.tx.parachainStaking.joinCandidates(
-      amountToJoin.subn(100),
+      amountToJoin,
       liqId,
       orig,
       // @ts-ignore - Mangata bond operation has 4 params, somehow is inheriting the bond operation from polkadot :S

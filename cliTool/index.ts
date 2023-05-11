@@ -85,13 +85,20 @@ async function app(): Promise<any> {
               name: "liq",
               message: "liq id",
             },
+            {
+              type: "input",
+              name: "amount",
+              message: "amountToJoin",
+            },
           ])
           .then(
             async (answers: {
               user: string | undefined;
               liq: number | undefined;
+              amount: string | 0;
             }) => {
               let liq = new BN(answers.liq!.toString());
+              const amount = new BN(answers.amount!.toString());
               if (liq!.eq(BN_ZERO)) {
                 const setupData = await setupPoolWithRewardsForDefaultUsers();
                 console.log("liq Id = " + setupData.liqId);
@@ -102,7 +109,11 @@ async function app(): Promise<any> {
               const keyring = new Keyring({ type: "sr25519" });
               const sudo = new SudoUser(keyring, node);
               await sudo.addStakingLiquidityToken(liq);
-              await joinAsCandidate(answers.user, liq?.toNumber());
+              await joinAsCandidate(
+                answers.user,
+                liq?.toNumber(),
+                new BN(amount)
+              );
               console.log("Done");
               return app();
             }
