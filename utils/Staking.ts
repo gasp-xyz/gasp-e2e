@@ -10,4 +10,18 @@ export class Staking {
       liqToken
     );
   }
+  static setTotalSelected(totalNo: BN): Extrinsic {
+    return api.tx.parachainStaking.setTotalSelected(totalNo);
+  }
+  static setCollatorCommission(perBill: BN): Extrinsic {
+    return api.tx.parachainStaking.setCollatorCommission(perBill);
+  }
+  static removeStakingLiquidityToken(liqToken: BN): Extrinsic {
+    return api.tx.parachainStaking.removeStakingLiquidityToken(
+      {
+        Liquidity: liqToken,
+      },
+      liqToken
+    );
+  }
 }
