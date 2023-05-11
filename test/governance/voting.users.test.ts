@@ -1,5 +1,5 @@
 /*
- * @group governance governance-voting
+ * @group elections
  */
 
 import { BN } from "@polkadot/util";

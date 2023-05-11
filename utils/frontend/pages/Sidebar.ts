@@ -33,6 +33,8 @@ const LBL_TOKEN_AMOUNT = "wallet-tokensAmount";
 const SPINNER_LOADING = `//*[@class = 'Sidebar__loading']`;
 const BTN_POOL_OVERVIEW = `poolsOverview-item-tkn1-tkn2`;
 const BTN_REMOVE_LIQUIDITY = `poolDetail-removeBtn`;
+const BTN_ADD_LIQUIDITY = `poolDetail-addBtn`;
+const POOL_DETAIL_HEADER = `poolDetail-header`;
 const LBL_TOKEN_NAME = "wallet-asset-tokenName";
 const DIV_ASSETS_ITEM_VALUE = `//div[@class = 'AssetBox' and contains(@data-testid,'tokenName')]/*[@class='value']`;
 const POLK_DIV_USER_NAME = `//div[@data-testid='connect-address']//div[@data-testid='undefined-trigger']/div`;
@@ -213,6 +215,11 @@ export class Sidebar {
     await clickElement(this.driver, xpath);
   }
 
+  async clickOnAddLiquidity() {
+    const xpath = buildDataTestIdXpath(BTN_ADD_LIQUIDITY);
+    await clickElement(this.driver, xpath);
+  }
+
   async waitUntilTokenAvailable(assetName: string, timeout = FIVE_MIN) {
     const xpath = buildDataTestIdXpath(
       LBL_TOKEN_NAME.replace("tokenName", assetName)
@@ -232,6 +239,17 @@ export class Sidebar {
   }
   async isLiquidityPoolVisible(asset1Name: string, asset2Name: string) {
     return await this.isDisplayed(
+      buildDataTestIdXpath(this.buildPoolDataTestId(asset1Name, asset2Name))
+    );
+  }
+
+  async isPoolDetailVisible() {
+    return await this.isDisplayed(buildDataTestIdXpath(POOL_DETAIL_HEADER));
+  }
+
+  async clickLiquidityPool(asset1Name: string, asset2Name: string) {
+    await clickElement(
+      this.driver,
       buildDataTestIdXpath(this.buildPoolDataTestId(asset1Name, asset2Name))
     );
   }

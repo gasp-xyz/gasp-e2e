@@ -5,6 +5,7 @@ const { Builder } = require("selenium-webdriver");
 const chrome = require("selenium-webdriver/chrome");
 const path = "utils/frontend/utils/extensions";
 const polkadotExtensionPath = `${path}/polkadot_v0.38.3.crx`;
+const talismanExtensionPath = `${path}/talisman_v1.15.1.crx`;
 
 // Singleton constructor
 export const DriverBuilder = (function () {
@@ -12,7 +13,11 @@ export const DriverBuilder = (function () {
     const options = new chrome.Options();
     if (addExtensions) {
       options.addExtensions(polkadotExtensionPath);
+      options.addExtensions(talismanExtensionPath);
     }
+    options
+      .addArguments("--disable-dev-shm-usage")
+      .addArguments("--enable-clipboard-read");
     const prefs = new logging.Preferences();
     prefs.setLevel(logging.Type.BROWSER, logging.Level.DEBUG);
     prefs.setLevel(logging.Type.CLIENT, logging.Level.DEBUG);
@@ -22,15 +27,19 @@ export const DriverBuilder = (function () {
 
     let caps: Capabilities = new Capabilities();
     caps = Capabilities.chrome();
-    caps.set("version", "110.0");
-    caps.set("selenoid:options", { enableVNC: true, enableVideo: true });
+    caps.set("version", "112.0");
+    caps.set("selenoid:options", {
+      enableVNC: true,
+      enableVideo: true,
+      enableLog: true,
+    });
 
     driver = new Builder()
       .forBrowser("chrome")
       .setChromeOptions(options)
       .withCapabilities(caps)
       .build();
-    await driver!.manage().timeouts().setScriptTimeout(5000);
+    await driver!.manage().setTimeouts({ script: 5000 });
     await driver!.manage().window().maximize();
 
     return driver;

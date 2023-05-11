@@ -467,7 +467,9 @@ export const promotePool = async (
   const api = await mangata.getApi();
   const result = await signTx(
     api,
-    api.tx.sudo.sudo(api.tx.xyk.updatePoolPromotion(liqAssetId, weight)),
+    api.tx.sudo.sudo(
+      api.tx.proofOfStake.updatePoolPromotion(liqAssetId, weight)
+    ),
     sudoAccount,
     { nonce: await getCurrentNonce(sudoAccount.address) }
   );
@@ -529,7 +531,8 @@ export const joinCandidate = async (
   account: KeyringPair,
   liqToken: BN,
   amount: BN,
-  from = "availablebalance"
+  from = "availablebalance",
+  stricSuccess = true
 ) => {
   const mangata = await getMangataInstance();
   const api = await mangata.getApi();
@@ -548,7 +551,8 @@ export const joinCandidate = async (
       new BN(candidates.length),
       new BN(liqTokenCount)
     ),
-    account
+    account,
+    stricSuccess
   );
   return result;
 };
@@ -562,7 +566,11 @@ export const activateLiquidity = async (
   const mangata = await getMangataInstance();
   const api = await mangata.getApi();
   const result = await signSendAndWaitToFinishTx(
-    api?.tx.xyk.activateLiquidityV2(new BN(liqToken), new BN(amount), from),
+    api?.tx.proofOfStake.activateLiquidity(
+      new BN(liqToken),
+      new BN(amount),
+      from
+    ),
     account,
     strictsuccess
   );
@@ -577,7 +585,7 @@ export const deactivateLiquidity = async (
   const api = await mangata.getApi();
 
   const result = await signSendAndWaitToFinishTx(
-    api?.tx.xyk.deactivateLiquidityV2(new BN(liqToken), new BN(amount)),
+    api?.tx.proofOfStake.deactivateLiquidity(new BN(liqToken), new BN(amount)),
     account
   );
   return result;
@@ -1143,6 +1151,16 @@ export async function getRewardsInfo(
   return toReturn;
 }
 
+export async function claimRewardsAll(user: User, liquidityTokenId: BN) {
+  const api = getApi();
+  const result = await signTx(
+    api,
+    api.tx.proofOfStake.claimRewardsAll(liquidityTokenId),
+    user.keyRingPair
+  );
+  return result;
+}
+
 export async function setUserIdentity(user: User, displayname: string) {
   const api = await getApi();
   await signTx(
@@ -1155,4 +1173,22 @@ export async function setUserIdentity(user: User, displayname: string) {
     }),
     user.keyRingPair
   );
+}
+export async function addUserIdentitySub(
+  testUser: User,
+  userToSub: User,
+  newSubName: string
+) {
+  const api = await getApi();
+  const destAddress = userToSub.keyRingPair.publicKey;
+
+  await signTx(
+    api,
+    api.tx.identity.setSubs([[destAddress, { Raw: newSubName }]]),
+    testUser.keyRingPair
+  );
+}
+export async function clearUserIdentity(user: User) {
+  const api = await getApi();
+  await signTx(api, api.tx.identity.clearIdentity(), user.keyRingPair);
 }

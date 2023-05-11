@@ -1,0 +1,24 @@
+name: Xcm - monitor
+
+on:
+  schedule:
+    - cron: "0 */12 * * *" #lets run this job every 2 hours.
+  workflow_dispatch:
+jobs:
+  checkout:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v3
+  run-e2e-workflow:
+    needs: [checkout]
+    name: Run xcm chops tests
+    uses: ./.github/workflows/rune2e.yml
+    secrets: inherit
+    strategy:
+      matrix:
+        test: ['test-xcm', 'test-sdk-xcm' ]
+    with:
+        scriptName: "${{ matrix.test }}"
+        parallel: false
+        dockerImage: "mangatasolutions/mangata-node:develop"
+        e2eBranch: "test/chopstick-support"

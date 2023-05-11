@@ -7,7 +7,7 @@ const endpoints = {
   kusama: "wss://kusama-rpc.polkadot.io",
   statemine: "wss://statemine-rpc.polkadot.io",
   karura: "wss://karura-rpc-0.aca-api.network",
-  mangata: "wss://mangata-x.api.onfinality.io/public-ws",
+  mangata: "wss://kusama-archive.mangata.online",
   bifrost: "wss://bifrost-rpc.dwellir.com",
 };
 

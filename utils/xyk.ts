@@ -40,6 +40,14 @@ export class Xyk {
     return api.tx.xyk.burnLiquidity(firstAsset, secondAsset, assetAmount);
   }
 
+  static claimRewards(liquidityToken: BN, _tokenAmount: BN): Extrinsic {
+    return api.tx.proofOfStake.claimRewardsAll(liquidityToken);
+  }
+
+  static claimRewardsAll(liquidityToken: BN): Extrinsic {
+    return api.tx.proofOfStake.claimRewardsAll(liquidityToken);
+  }
+
   static sellAsset(
     soldAssetId: BN,
     boughtAssetId: BN,
@@ -83,11 +91,17 @@ export class Xyk {
   }
 
   static updatePoolPromotion(liquidityAssetId: BN, weight: number): Extrinsic {
-    return Sudo.sudo(api.tx.xyk.updatePoolPromotion(liquidityAssetId, weight));
+    return Sudo.sudo(
+      api.tx.proofOfStake.updatePoolPromotion(liquidityAssetId, weight)
+    );
   }
 
   static activateLiquidity(liquidityAssetId: BN, amount: BN): Extrinsic {
-    return api.tx.xyk.activateLiquidityV2(liquidityAssetId, amount, null);
+    return api.tx.proofOfStake.activateLiquidity(
+      liquidityAssetId,
+      amount,
+      null
+    );
   }
 
   static compoundRewards(

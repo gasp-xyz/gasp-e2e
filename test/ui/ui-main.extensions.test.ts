@@ -16,6 +16,7 @@ import {
 import { FIVE_MIN } from "../../utils/Constants";
 import { WalletConnectModal } from "../../utils/frontend/pages/WalletConnectModal";
 
+jest.retryTimes(1);
 jest.setTimeout(FIVE_MIN);
 jest.spyOn(console, "log").mockImplementation(jest.fn());
 let driver: WebDriver;

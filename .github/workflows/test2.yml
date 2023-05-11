@@ -1,0 +1,17 @@
+name: run remote test job
+
+on:
+  workflow_dispatch:
+    inputs:
+      logLevel:
+        description: 'Log level'
+        required: false
+        type: string
+
+jobs:
+  performance-tests-dev:
+    name: performance tests in dev
+    uses: ./.github/workflows/test.yml
+    secrets: inherit
+    with:
+      logLevel: "error"

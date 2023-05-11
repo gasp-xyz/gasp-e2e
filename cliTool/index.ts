@@ -12,6 +12,8 @@ import {
   fillWithDelegators,
   printCandidatesNotProducing,
   createCustomPool,
+  setupACouncilWithDefaultUsers,
+  vetoMotion,
 } from "../utils/setupsOnTheGo";
 import {
   findErrorMetadata,
@@ -48,6 +50,8 @@ async function app(): Promise<any> {
         "get pools",
         "Who is offline",
         "createPool",
+        "createACouncil",
+        "veto",
       ],
     })
     .then(async (answers: { option: string | string[] }) => {
@@ -287,6 +291,26 @@ async function app(): Promise<any> {
             const ratio = parseInt(answers.ratio.toString());
             const user = answers.user;
             await createCustomPool(mgaBig, ratio, user);
+            return app();
+          });
+      }
+      if (answers.option.includes("createACouncil")) {
+        await initApi();
+        await setupACouncilWithDefaultUsers();
+        return app();
+      }
+      if (answers.option.includes("veto")) {
+        await inquirer
+          .prompt([
+            {
+              type: "input",
+              name: "motion",
+              message: "motion_no",
+            },
+          ])
+          .then(async (answers) => {
+            await initApi();
+            await vetoMotion(answers.motion);
             return app();
           });
       }
