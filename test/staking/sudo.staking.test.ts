@@ -31,28 +31,30 @@ beforeAll(async () => {
     setCollatorCommission: Staking.setCollatorCommission(BN_ONE),
     setTotalSelected: Staking.setTotalSelected(BN_ONE),
   };
-  await Sudo.asSudoFinalized(Assets.mintNative(testUser1));
+  await Sudo.batchAsSudoFinalized(Assets.mintNative(testUser1));
 });
 
-beforeEach(async () => {});
-it.each([
-  ["addStakingLiquidityToken"],
-  ["removeStakingLiquidityToken"],
-  ["setCollatorCommission"],
-  ["setTotalSelected"],
-])(
-  "Test that noSudo users cannot do specific operations: %s",
-  async (extrinsicName: string) => {
-    const extrinsic = testCases[extrinsicName];
-    const ERROR_MSG = "badOrigin";
-    const events = await Sudo.asSudoFinalized(
-      Sudo.sudoAs(testUser1, extrinsic)
-    );
-    const event = expectMGAExtrinsicSuDidFailed(events);
-    //omg!
-    const error = Object.keys(
-      JSON.parse(event.event.data.toString())[0].err
-    )[0];
-    expect(error).toEqual(ERROR_MSG);
-  }
-);
+describe("Test sudo actions", () => {
+  beforeEach(async () => {});
+  it.each([
+    ["addStakingLiquidityToken"],
+    ["removeStakingLiquidityToken"],
+    ["setCollatorCommission"],
+    ["setTotalSelected"],
+  ])(
+    "Test that noSudo users cannot do specific operations: %s",
+    async (extrinsicName: string) => {
+      const extrinsic = testCases[extrinsicName];
+      const ERROR_MSG = "badOrigin";
+      const events = await Sudo.asSudoFinalized(
+        Sudo.sudoAs(testUser1, extrinsic)
+      );
+      const event = expectMGAExtrinsicSuDidFailed(events);
+      //omg!
+      const error = Object.keys(
+        JSON.parse(event.event.data.toString())[0].err
+      )[0];
+      expect(error).toEqual(ERROR_MSG);
+    }
+  );
+});
