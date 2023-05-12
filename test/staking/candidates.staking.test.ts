@@ -4,16 +4,24 @@
  */
 import { getApi, initApi } from "../../utils/api";
 import { User } from "../../utils/User";
-import { expectMGAExtrinsicSuDidSuccess } from "../../utils/eventListeners";
+import {
+  ExtrinsicResult,
+  expectMGAExtrinsicSuDidSuccess,
+} from "../../utils/eventListeners";
 import { BN, signTx } from "@mangata-finance/sdk";
 import { setupUsers, setupApi } from "../../utils/setup";
-import { Staking, tokenOriginEnum } from "../../utils/Staking";
+import {
+  AggregatorOptions,
+  Staking,
+  tokenOriginEnum,
+} from "../../utils/Staking";
 import { Sudo } from "../../utils/sudo";
 import { Assets } from "../../utils/Assets";
 import { MGA_ASSET_ID } from "../../utils/Constants";
 import { testLog } from "../../utils/Logger";
 import { getUserBalanceOfToken } from "../../utils/utils";
 import { hexToBn } from "@polkadot/util";
+import { getEventResultFromMangataTx } from "../../utils/txHandler";
 
 jest.spyOn(console, "log").mockImplementation(jest.fn());
 jest.setTimeout(3500000);
@@ -29,7 +37,7 @@ beforeAll(async () => {
   } catch (e) {
     await initApi();
   }
-  [testUser1] = setupUsers();
+  [testUser1, testUser2, testUser3] = setupUsers();
   await setupApi();
   minStk = new BN(
     (await getApi()).consts.parachainStaking.minCandidateStk.toString()
@@ -66,7 +74,7 @@ describe("Test candidates actions", () => {
     expect(total).bnEqual(minStk.muln(1000));
     expect(userBalance.reserved).bnEqual(minStk.muln(2));
   });
-  it("A candidate can choose an aggregator when the aggregator choose the candidate", async () => {
+  it("A candidate can choose an aggregator only when the aggregator choose the candidate", async () => {
     const aggregator = testUser3;
     const extrinsic = await Staking.joinAsCandidate(
       minStk.muln(2),
@@ -79,8 +87,35 @@ describe("Test candidates actions", () => {
     const event = expectMGAExtrinsicSuDidSuccess(events);
     testLog.getLog().info(event);
 
-    const aggregationExtrinsic = Staking.updateCandidateAggregator(aggregator);
-    await signTx(await getApi(), aggregationExtrinsic, testUser2.keyRingPair);
+    await signTx(
+      await getApi(),
+      Staking.updateCandidateAggregator(aggregator),
+      testUser2.keyRingPair
+    ).then((value) => {
+      const error = getEventResultFromMangataTx(value, [
+        "system",
+        "ExtrinsicFailed",
+      ]);
+      expect(error.data).toEqual("AggregatorDNE");
+      expect(error.state).toEqual(ExtrinsicResult.ExtrinsicFailed);
+    });
+
+    await signTx(
+      await getApi(),
+      //todo-fixme
+      Staking.aggregatorUpdateMetadata(
+        [],
+        AggregatorOptions.ExtendApprovedCollators
+      ),
+      testUser2.keyRingPair
+    ).then((value) => {
+      const error = getEventResultFromMangataTx(value, [
+        "parachainStaking",
+        "",
+      ]);
+      expect(error.data).toEqual("AggregatorDNE");
+      expect(error.state).toEqual(ExtrinsicResult.ExtrinsicFailed);
+    });
     //TODO:
     //validate that error
     //aggregators select candidate

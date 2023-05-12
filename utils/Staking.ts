@@ -6,6 +6,10 @@ export enum tokenOriginEnum {
   ActivatedUnstakedReserves = "activatedunstakedreserves",
   UnspentReserves = "unspentreserves",
 }
+export enum AggregatorOptions {
+  ExtendApprovedCollators = "extendapprovedcollators",
+  RemoveApprovedCollators = "removeapprovedcollators",
+}
 export class Staking {
   static async joinAsCandidate(
     amount: BN,
@@ -50,6 +54,15 @@ export class Staking {
   static updateCandidateAggregator(testUser: User): Extrinsic {
     return api.tx.parachainStaking.updateCandidateAggregator(
       testUser.keyRingPair.address
+    );
+  }
+  static aggregatorUpdateMetadata(
+    collators: User[],
+    action: AggregatorOptions
+  ): Extrinsic {
+    return api.tx.parachainStaking.aggregatorUpdateMetadata(
+      ...collators.flatMap((user) => user.keyRingPair.address),
+      action
     );
   }
 
