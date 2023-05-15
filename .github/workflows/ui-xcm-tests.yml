@@ -169,7 +169,9 @@ jobs:
       # - uses: mxschmitt/action-tmate@v3
 
       - name: Install e2e tests dependencies
-        run: yarn
+        run: |
+          export SKIP_HUSKY=true
+          yarn
 
       - name: is selenoid started?
         run: |
