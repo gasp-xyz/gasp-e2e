@@ -146,12 +146,12 @@ describe("UI XCM tests - KSM", () => {
     expect(tokensAtSourceAfter).toBeLessThan(tokensAtSourceBefore);
 
     await mangata.chain.newBlock();
+
+    await mga.go();
     await testUser1.refreshAmounts(AssetWallet.AFTER);
     expect(testUser1.getAsset(KSM_ASSET_ID)?.amountBefore.free!).bnLt(
       testUser1.getAsset(KSM_ASSET_ID)?.amountAfter.free!
     );
-
-    await mga.go();
     sidebar.waitForLoad();
     const tokenOnAppAfter = await sidebar.getTokenAmount("KSM");
     expect(parseFloat(tokenOnAppAfter.replace(",", ""))).toBeGreaterThan(
