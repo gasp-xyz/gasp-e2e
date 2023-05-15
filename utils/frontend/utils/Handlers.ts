@@ -1,4 +1,5 @@
 import { WebDriver } from "selenium-webdriver";
+import { ApiContext } from "../../Framework/XcmHelper";
 import { Mangata } from "../pages/Mangata";
 import { ModalType, NotificationModal } from "../pages/NotificationModal";
 import { Polkadot } from "../pages/Polkadot";
@@ -36,24 +37,17 @@ export async function allowPolkadotWalletConnection(
   await mga.go();
 }
 
-export async function waitForActionNotification(driver: WebDriver) {
+export async function waitForActionNotification(
+  driver: WebDriver,
+  chainOne: ApiContext
+) {
   const modal = new NotificationModal(driver);
   const isModalWaitingForSignVisible = await modal.isModalVisible(
     ModalType.Confirm
   );
   expect(isModalWaitingForSignVisible).toBeTruthy();
   await Polkadot.signTransaction(driver);
-  //wait four blocks to complete the action - temp skip due to SDK
-  // const visible: boolean[] = [];
-  // for (let index = 0; index < 4; index++) {
-  //   visible.push(await modal.isModalVisible(ModalType.Progress));
-  //   await waitNewBlock();
-  // }
-  // expect(
-  //   visible.some((visibleInBlock) => visibleInBlock === true)
-  // ).toBeTruthy();
-  // await modal.waitForModalState(ModalType.Success);
-  //temp solution for chopsticks witout new sdk
+  await chainOne.chain.newBlock();
   await modal.waitForModalState(ModalType.Success);
   const isModalSuccessVisible = await modal.isModalVisible(ModalType.Success);
   expect(isModalSuccessVisible).toBeTruthy();
