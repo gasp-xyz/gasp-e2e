@@ -107,7 +107,9 @@ jobs:
 
       - name: Install fe app dependencies
         working-directory: mangata-fe
-        run: yarn
+        run: |
+          export SKIP_HUSKY=true
+          yarn
 
       - name: Create env file
         working-directory: mangata-fe
