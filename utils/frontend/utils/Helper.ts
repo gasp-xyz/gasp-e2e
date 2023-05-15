@@ -305,11 +305,37 @@ export function buildDataTestIdXpath(dataTestId: string) {
   return xpathSelector;
 }
 
+export async function waitForNewWindow(
+  driver: WebDriver,
+  timeout: number,
+  retryInterval: number
+): Promise<void> {
+  const currentWindowHandle = await driver.getWindowHandle();
+
+  const startTime = Date.now();
+  let elapsedTime = 0;
+
+  while (elapsedTime < timeout) {
+    const windowHandles = await driver.getAllWindowHandles();
+    if (
+      windowHandles.length > 1 &&
+      windowHandles.includes(currentWindowHandle)
+    ) {
+      return;
+    }
+
+    await driver.sleep(retryInterval);
+    elapsedTime = Date.now() - startTime;
+  }
+
+  throw new Error(`Timed out waiting for new window to appear.`);
+}
+
 export async function doActionInDifferentWindow(
   driver: WebDriver,
   fn: (driver: WebDriver) => void
 ) {
-  await sleep(10000);
+  await waitForNewWindow(driver, 10000, 500);
   let handle = await (await driver).getAllWindowHandles();
   let iterator = handle.reverse().entries();
 
