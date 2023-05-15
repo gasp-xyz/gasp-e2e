@@ -58,29 +58,6 @@ jobs:
           selenoid-start-arguments: |
             --args "-timeout 300s" --browsers 'chrome:112.0'
 
-      #### Chops
-      # - name: Checkout chopsticks
-      #   uses: actions/checkout@v3
-      #   with:
-      #     submodules: 'recursive'
-      #     repository: mangata-finance/chopsticks
-      #     ref: 'e2e-fe-tests-setup'
-      #     path: chopsticks
-
-      # - name: Install chopsticks dependencies
-      #   working-directory: chopsticks
-      #   run: yarn
-
-      # - name: Chopsticks build wasm
-      #   working-directory: chopsticks
-      #   run: yarn build-wasm
-
-      # - name: Chopsticks start chain
-      #   working-directory: chopsticks
-      #   run: |
-      #     yarn start xcm --parachain=configs/mangata.yml  --relaychain=configs/kusama.yml > chopsticks-output.log &
-      #     sleep 20s
-
       #### App
       - name: Checkout FE app
         uses: actions/checkout@v3
@@ -199,7 +176,6 @@ jobs:
           # sleep is used to close buffers of videos
           sleep 10s 
           cp ~/.aerokube/selenoid/* -r  reports/artifacts/
-          cp chopsticks/chopsticks-output.log -r  reports/artifacts/
 
       - name: Create  reports zip
         uses: vimtor/action-zip@v1

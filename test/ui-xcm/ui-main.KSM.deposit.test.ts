@@ -39,6 +39,7 @@ let driver: WebDriver;
 let sudo: SudoUser;
 let testUser1: User;
 const userAddress = "5EekB3dsQ4yW6WukZRL5muXb4qKvJMpJdXW3w59SptYHBkvk";
+const KSM_ASSET_NAME = "KSM";
 
 describe("UI XCM tests - KSM", () => {
   let kusama: ApiContext;
@@ -117,7 +118,7 @@ describe("UI XCM tests - KSM", () => {
     await connectPolkadotWallet(driver, sidebar, mga);
     const isWalletConnected = sidebar.isWalletConnected("acc_automation");
     expect(isWalletConnected).toBeTruthy();
-    const tokenOnAppBefore = await sidebar.getTokenAmount("KSM");
+    const tokenOnAppBefore = await sidebar.getTokenAmount(KSM_ASSET_NAME);
 
     await sidebar.clickOnDepositToMangata();
 
@@ -127,10 +128,12 @@ describe("UI XCM tests - KSM", () => {
 
     await depositModal.openTokensList();
     const areTokenListElementsVisible =
-      await depositModal.areTokenListElementsVisible("KSM");
+      await depositModal.areTokenListElementsVisible(KSM_ASSET_NAME);
     expect(areTokenListElementsVisible).toBeTruthy();
-    const tokensAtSourceBefore = await depositModal.getTokenAmount("KSM");
-    await depositModal.selectToken("KSM");
+    const tokensAtSourceBefore = await depositModal.getTokenAmount(
+      KSM_ASSET_NAME
+    );
+    await depositModal.selectToken(KSM_ASSET_NAME);
     await depositModal.enterValue("1");
     await depositModal.clickContinue();
 
@@ -142,7 +145,9 @@ describe("UI XCM tests - KSM", () => {
     expect(isModalVisible).toBeTruthy();
 
     await depositModal.openTokensList();
-    const tokensAtSourceAfter = await depositModal.getTokenAmount("KSM");
+    const tokensAtSourceAfter = await depositModal.getTokenAmount(
+      KSM_ASSET_NAME
+    );
     expect(tokensAtSourceAfter).toBeLessThan(tokensAtSourceBefore);
 
     await mangata.chain.newBlock();
@@ -153,7 +158,7 @@ describe("UI XCM tests - KSM", () => {
       testUser1.getAsset(KSM_ASSET_ID)?.amountAfter.free!
     );
     sidebar.waitForLoad();
-    const tokenOnAppAfter = await sidebar.getTokenAmount("KSM");
+    const tokenOnAppAfter = await sidebar.getTokenAmount(KSM_ASSET_NAME);
     expect(parseFloat(tokenOnAppAfter.replace(",", ""))).toBeGreaterThan(
       parseFloat(tokenOnAppBefore.replace(",", ""))
     );
