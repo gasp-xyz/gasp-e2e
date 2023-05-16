@@ -92,15 +92,16 @@ jobs:
       - name: Create env file
         working-directory: mangata-fe
         run: |
+          netstat -tuln
           IP_ADDRESS=$(ifconfig eth0 | awk '/inet / {print $2}')
           echo APP_ENV=kusama >> .env
           echo API_URL=ws://$IP_ADDRESS:9946 >> .env
           echo "API_URL=ws://$IP_ADDRESS:9946" >> $GITHUB_ENV
           echo KUSAMA_API_URL=ws://$IP_ADDRESS:9944 >> .env
-          echo TURING_API_URL=ws://127.0.0.1:8002 >> .env
-          echo IMBUE_API_URL=ws://127.0.0.1:9947 >> .env
-          echo STATEMINE_API_URL=ws://127.0.0.1:8004 >> .env
-          echo BIFROST_API_URL=ws://127.0.0.1:9948 >> .env
+          echo TURING_API_URL=ws://$IP_ADDRESS:8002 >> .env
+          echo IMBUE_API_URL=ws://$IP_ADDRESS:9947 >> .env
+          echo STATEMINE_API_URL=ws://$IP_ADDRESS:8004 >> .env
+          echo BIFROST_API_URL=ws://$IP_ADDRESS:9948 >> .env
           echo PARACHAIN_ID=2110 >> .env
           echo MANGATA_ENV=local >> .env
           echo EXTEND_ESLINT=true >> .env
