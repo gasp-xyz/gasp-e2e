@@ -42,6 +42,7 @@ export async function waitForActionNotification(
   chainOne: ApiContext
 ) {
   const modal = new NotificationModal(driver);
+  await modal.waitForModalState(ModalType.Confirm, 3000);
   const isModalWaitingForSignVisible = await modal.isModalVisible(
     ModalType.Confirm
   );

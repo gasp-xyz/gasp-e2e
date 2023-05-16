@@ -85,6 +85,31 @@ export async function waitForElementToDissapear(
   } while (continueWaiting);
 }
 
+export async function waitForLoad(
+  retry = 2,
+  loaderXpath: string,
+  driver: WebDriver
+): Promise<void> {
+  return new Promise<void>(async (resolve, reject) => {
+    setTimeout(async () => {
+      const visible = await isDisplayed(driver, loaderXpath);
+      if (visible) {
+        if (retry > 0) {
+          testLog.getLog().warn("Retrying wait for load: attempt " + retry);
+          await driver.navigate().refresh();
+          retry = retry - 1;
+          return waitForLoad(retry, loaderXpath, driver);
+        }
+        reject("TIMEOUT: Waiting for " + loaderXpath + " to dissapear");
+      } else {
+        resolve();
+      }
+    }, 60000);
+    await waitForElementToDissapear(driver, loaderXpath);
+    resolve();
+  });
+}
+
 export async function clickElement(driver: WebDriver, xpath: string) {
   await waitForElement(driver, xpath);
   const element = await driver.findElement(By.xpath(xpath));

@@ -27,7 +27,7 @@ jobs:
   e2e-test-matrix:
     strategy:
       matrix:
-        command: ['yarn test-xcm-ui --group=uiXcmKSM']
+        command: ['uiXcmKSM', 'uiXcmIMBU', 'uiXcmBNC']
     runs-on: ubuntu-latest
     timeout-minutes: 30
     env:
@@ -97,9 +97,9 @@ jobs:
           echo "API_URL=ws://$IP_ADDRESS:9946" >> $GITHUB_ENV
           echo KUSAMA_API_URL=ws://$IP_ADDRESS:9944 >> .env
           echo TURING_API_URL=ws://127.0.0.1:8002 >> .env
-          echo IMBUE_API_URL=ws://127.0.0.1:8003 >> .env
+          echo IMBUE_API_URL=ws://127.0.0.1:9947 >> .env
           echo STATEMINE_API_URL=ws://127.0.0.1:8004 >> .env
-          echo BIFROST_API_URL=ws://127.0.0.1:8005 >> .env
+          echo BIFROST_API_URL=ws://127.0.0.1:9948 >> .env
           echo PARACHAIN_ID=2110 >> .env
           echo MANGATA_ENV=local >> .env
           echo EXTEND_ESLINT=true >> .env
@@ -160,7 +160,7 @@ jobs:
       - name: Run tests
         run: |
           echo ${{ env.UI_URL }}
-          ${{ matrix.command }}
+          yarn test-xcm-ui --group=${{ matrix.command }}
 
       - name: Test Report
         uses: dorny/test-reporter@v1.6.0
@@ -188,12 +188,12 @@ jobs:
         uses: actions/upload-artifact@v3.1.2
         if: always()
         with:
-          name: ReportData
+          name: ReportData ${{ matrix.command }}
           path: reports.zip
 
       - name: Archive report files
         uses: actions/upload-artifact@v3.1.2
         if: always()
         with:
-          name: TestReport
+          name: TestReport ${{ matrix.command }}
           path: reports/html-report/report.html

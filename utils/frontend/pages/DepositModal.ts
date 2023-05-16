@@ -7,6 +7,7 @@ import {
   getText,
   isDisplayed,
   waitForElementVisible,
+  waitForLoad,
   writeText,
 } from "../utils/Helper";
 import { MetaMask } from "./MetaMask";
@@ -68,6 +69,11 @@ export class DepositModal {
   async enterValue(amount: string) {
     await clickElement(this.driver, this.inputTokenLocator);
     await writeText(this.driver, this.inputTokenLocator, amount);
+  }
+  async waitForProgressBar() {
+    const continueBtn = buildDataTestIdXpath(STEP_O_CONT);
+    const progressBarXpath = "//*[@role='progressbar']";
+    await waitForLoad(5, continueBtn + progressBarXpath, this.driver);
   }
   async clickContinue() {
     const xpath = buildDataTestIdXpath(STEP_O_CONT);

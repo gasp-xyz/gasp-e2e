@@ -1,6 +1,6 @@
 /*
  *
- * @group uiXcmKSM
+ * @group uiXcmBNC
  */
 import { Mangata } from "../../utils/frontend/pages/Mangata";
 import { Keyring } from "@polkadot/api";
@@ -16,7 +16,11 @@ import {
 import { devTestingPairs, setupApi, setupUsers } from "../../utils/setup";
 import { AssetWallet, User } from "../../utils/User";
 import { getEnvironmentRequiredVars } from "../../utils/utils";
-import { KSM_ASSET_ID, MGA_ASSET_ID } from "../../utils/Constants";
+import {
+  BNC_ASSET_ID,
+  BNC_ASSET_NAME,
+  MGA_ASSET_ID,
+} from "../../utils/Constants";
 import { SudoUser } from "../../utils/Framework/User/SudoUser";
 import { Node } from "../../utils/Framework/Node/Node";
 import {
@@ -27,8 +31,8 @@ import { DepositModal } from "../../utils/frontend/pages/DepositModal";
 import { ApiContext } from "../../utils/Framework/XcmHelper";
 import XcmNetworks from "../../utils/Framework/XcmNetworks";
 import { AssetId } from "../../utils/ChainSpecs";
-import { BN_THOUSAND } from "@mangata-finance/sdk";
-import { connectVertical } from "@acala-network/chopsticks";
+import { BN_HUNDRED, BN_THOUSAND } from "@mangata-finance/sdk";
+import { connectParachains, connectVertical } from "@acala-network/chopsticks";
 
 require("dotenv").config();
 
@@ -39,17 +43,19 @@ let driver: WebDriver;
 let sudo: SudoUser;
 let testUser1: User;
 const userAddress = "5EekB3dsQ4yW6WukZRL5muXb4qKvJMpJdXW3w59SptYHBkvk";
-const KSM_ASSET_NAME = "KSM";
 
-describe("UI XCM tests - KSM", () => {
+describe("UI XCM tests - BNC", () => {
   let kusama: ApiContext;
   let mangata: ApiContext;
+  let bifrost: ApiContext;
   let alice: KeyringPair;
 
   beforeAll(async () => {
     kusama = await XcmNetworks.kusama({ localPort: 9944 });
     mangata = await XcmNetworks.mangata({ localPort: 9946 });
+    bifrost = await XcmNetworks.biforst({ localPort: 9948 });
     await connectVertical(kusama.chain, mangata.chain);
+    await connectParachains([bifrost.chain, mangata.chain]);
     alice = devTestingPairs().alice;
 
     try {
@@ -63,12 +69,12 @@ describe("UI XCM tests - KSM", () => {
     await mangata.dev.setStorage({
       Tokens: {
         Accounts: [
-          [[userAddress, { token: 4 }], { free: 10 * 1e12 }],
+          [[userAddress, { token: 14 }], { free: 1000e12 }],
           [
             [userAddress, { token: 0 }],
             { free: AssetId.Mgx.unit.mul(BN_THOUSAND).toString() },
           ],
-          [[alice.address, { token: 4 }], { free: 10 * 1e12 }],
+          [[alice.address, { token: 14 }], { free: 1000e12 }],
           [
             [alice.address, { token: 0 }],
             { free: AssetId.Mgx.unit.mul(BN_THOUSAND).toString() },
@@ -79,9 +85,14 @@ describe("UI XCM tests - KSM", () => {
         Key: userAddress,
       },
     });
-    await kusama.dev.setStorage({
+    await bifrost.dev.setStorage({
       System: {
-        Account: [[[userAddress], { data: { free: 10 * 1e12 } }]],
+        Account: [
+          [
+            [userAddress],
+            { data: { free: BN_HUNDRED.mul(AssetId.Bnc.unit).toString() } },
+          ],
+        ],
       },
     });
 
@@ -100,7 +111,7 @@ describe("UI XCM tests - KSM", () => {
       getEnvironmentRequiredVars().mnemonicPolkadot
     );
 
-    testUser1.addAsset(KSM_ASSET_ID);
+    testUser1.addAsset(BNC_ASSET_ID);
     testUser1.addAsset(MGA_ASSET_ID);
     await testUser1.refreshAmounts(AssetWallet.BEFORE);
   });
@@ -118,7 +129,8 @@ describe("UI XCM tests - KSM", () => {
     await connectPolkadotWallet(driver, sidebar, mga);
     const isWalletConnected = sidebar.isWalletConnected("acc_automation");
     expect(isWalletConnected).toBeTruthy();
-    const tokenOnAppBefore = await sidebar.getTokenAmount(KSM_ASSET_NAME);
+    sidebar.waitForLoad();
+    const tokenOnAppBefore = await sidebar.getTokenAmount(BNC_ASSET_NAME);
 
     await sidebar.clickOnDepositToMangata();
 
@@ -128,26 +140,26 @@ describe("UI XCM tests - KSM", () => {
 
     await depositModal.openTokensList();
     const areTokenListElementsVisible =
-      await depositModal.areTokenListElementsVisible(KSM_ASSET_NAME);
+      await depositModal.areTokenListElementsVisible(BNC_ASSET_NAME);
     expect(areTokenListElementsVisible).toBeTruthy();
     const tokensAtSourceBefore = await depositModal.getTokenAmount(
-      KSM_ASSET_NAME
+      BNC_ASSET_NAME
     );
-    await depositModal.selectToken(KSM_ASSET_NAME);
+    await depositModal.selectToken(BNC_ASSET_NAME);
     await depositModal.enterValue("1");
     await depositModal.waitForProgressBar();
     await depositModal.clickContinue();
 
     await waitForActionNotification(driver, mangata);
 
-    await kusama.chain.newBlock();
+    await bifrost.chain.newBlock();
     await sidebar.clickOnDepositToMangata();
     isModalVisible = await depositModal.isModalVisible();
     expect(isModalVisible).toBeTruthy();
 
     await depositModal.openTokensList();
     const tokensAtSourceAfter = await depositModal.getTokenAmount(
-      KSM_ASSET_NAME
+      BNC_ASSET_NAME
     );
     expect(tokensAtSourceAfter).toBeLessThan(tokensAtSourceBefore);
 
@@ -155,11 +167,11 @@ describe("UI XCM tests - KSM", () => {
 
     await mga.go();
     await testUser1.refreshAmounts(AssetWallet.AFTER);
-    expect(testUser1.getAsset(KSM_ASSET_ID)?.amountBefore.free!).bnLt(
-      testUser1.getAsset(KSM_ASSET_ID)?.amountAfter.free!
+    expect(testUser1.getAsset(BNC_ASSET_ID)?.amountBefore.free!).bnLt(
+      testUser1.getAsset(BNC_ASSET_ID)?.amountAfter.free!
     );
     sidebar.waitForLoad();
-    const tokenOnAppAfter = await sidebar.getTokenAmount(KSM_ASSET_NAME);
+    const tokenOnAppAfter = await sidebar.getTokenAmount(BNC_ASSET_NAME);
     expect(parseFloat(tokenOnAppAfter.replace(",", ""))).toBeGreaterThan(
       parseFloat(tokenOnAppBefore.replace(",", ""))
     );
