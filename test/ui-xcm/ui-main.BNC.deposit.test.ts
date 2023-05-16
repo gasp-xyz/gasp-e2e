@@ -53,7 +53,7 @@ describe("UI XCM tests - BNC", () => {
   beforeAll(async () => {
     kusama = await XcmNetworks.kusama({ localPort: 9944 });
     mangata = await XcmNetworks.mangata({ localPort: 9946 });
-    bifrost = await XcmNetworks.biforst({ localPort: 9948 });
+    bifrost = await XcmNetworks.biforst({ localPort: 9951 });
     await connectVertical(kusama.chain, mangata.chain);
     await connectParachains([bifrost.chain, mangata.chain]);
     alice = devTestingPairs().alice;
