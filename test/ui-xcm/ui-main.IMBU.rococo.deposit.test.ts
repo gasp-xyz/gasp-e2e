@@ -1,6 +1,6 @@
 /*
  *
- * @group uiXcmIMBU
+ * @group uiXcmIMBUrococo
  */
 import { Mangata } from "../../utils/frontend/pages/Mangata";
 import { Keyring } from "@polkadot/api";
@@ -16,11 +16,7 @@ import {
 import { devTestingPairs, setupApi, setupUsers } from "../../utils/setup";
 import { AssetWallet, User } from "../../utils/User";
 import { getEnvironmentRequiredVars } from "../../utils/utils";
-import {
-  IMBU_ASSET_ID,
-  IMBU_ASSET_NAME,
-  MGA_ASSET_ID,
-} from "../../utils/Constants";
+import { IMBU_ASSET_NAME, MGA_ASSET_ID } from "../../utils/Constants";
 import { SudoUser } from "../../utils/Framework/User/SudoUser";
 import { Node } from "../../utils/Framework/Node/Node";
 import {
@@ -48,10 +44,17 @@ describe("UI XCM tests - IMBU", () => {
   let mangata: ApiContext;
   let imbue: ApiContext;
   let alice: KeyringPair;
+  const imbueTokenId = 14;
 
   beforeAll(async () => {
-    mangata = await XcmNetworks.mangata({ localPort: 9946 });
-    imbue = await XcmNetworks.imbue({ localPort: 9947 });
+    mangata = await XcmNetworks.mangata({
+      endpoint: "wss://collator-01-ws-rococo.mangata.online",
+      localPort: 9946,
+    });
+    imbue = await XcmNetworks.imbue({
+      endpoint: "wss://rococo.imbue.network",
+      localPort: 9947,
+    });
     await connectParachains([imbue.chain, mangata.chain]);
     alice = devTestingPairs().alice;
 
@@ -66,12 +69,12 @@ describe("UI XCM tests - IMBU", () => {
     await mangata.dev.setStorage({
       Tokens: {
         Accounts: [
-          [[userAddress, { token: 11 }], { free: 1000e12 }],
+          [[userAddress, { token: imbueTokenId }], { free: 1000e12 }],
           [
             [userAddress, { token: 0 }],
             { free: AssetId.Mgx.unit.mul(BN_THOUSAND).toString() },
           ],
-          [[alice.address, { token: 11 }], { free: 1000e12 }],
+          [[alice.address, { token: imbueTokenId }], { free: 1000e12 }],
           [
             [alice.address, { token: 0 }],
             { free: AssetId.Mgx.unit.mul(BN_THOUSAND).toString() },
@@ -103,7 +106,7 @@ describe("UI XCM tests - IMBU", () => {
       getEnvironmentRequiredVars().mnemonicPolkadot
     );
 
-    testUser1.addAsset(IMBU_ASSET_ID);
+    testUser1.addAsset(imbueTokenId);
     testUser1.addAsset(MGA_ASSET_ID);
     await testUser1.refreshAmounts(AssetWallet.BEFORE);
   });
@@ -158,8 +161,8 @@ describe("UI XCM tests - IMBU", () => {
 
     await mga.go();
     await testUser1.refreshAmounts(AssetWallet.AFTER);
-    expect(testUser1.getAsset(IMBU_ASSET_ID)?.amountBefore.free!).bnLt(
-      testUser1.getAsset(IMBU_ASSET_ID)?.amountAfter.free!
+    expect(testUser1.getAsset(imbueTokenId)?.amountBefore.free!).bnLt(
+      testUser1.getAsset(imbueTokenId)?.amountAfter.free!
     );
     sidebar.waitForLoad();
     const tokenOnAppAfter = await sidebar.getTokenAmount(IMBU_ASSET_NAME);

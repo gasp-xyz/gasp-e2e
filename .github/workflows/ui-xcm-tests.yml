@@ -28,15 +28,13 @@ jobs:
     strategy:
       fail-fast: false
       matrix:
-        command: ['uiXcmKSM', 'uiXcmIMBU', 'uiXcmBNC']
+        command: ['uiXcmKSM', 'uiXcmIMBUrococo', 'uiXcmBNC']
     runs-on: ubuntu-latest
     timeout-minutes: 30
     env:
       TEST_PALLET_ADDRESS: ${{ secrets.TEST_PALLET_ADDRESS }}
       E2E_XYK_PALLET_ADDRESS: ${{ secrets.E2E_XYK_PALLET_ADDRESS }}
       TEST_SUDO_NAME: ${{ secrets.TEST_SUDO_NAME }}
-      TEST_SCRIPT: 'test-xcm-ui'
-      TEST_ENV_TAG: 'develop'
       SELENIUM_REMOTE_URL: http://localhost:4444/wd/hub
       UI_URL: http://localhost:5500
       MANGATA_ASSETS_URL: https://storage.googleapis.com/mangata-assets
@@ -94,7 +92,12 @@ jobs:
         run: |
           netstat -tuln
           IP_ADDRESS=$(ifconfig eth0 | awk '/inet / {print $2}')
-          echo APP_ENV=kusama >> .env
+          if [[ "${{ matrix.command }}" == *"rococo"* ]]; then
+            echo "Command contains 'rococo'"
+            echo APP_ENV=rococo >> .env
+          else
+            echo APP_ENV=kusama >> .env
+          fi
           echo API_URL=ws://$IP_ADDRESS:9946 >> .env
           echo "API_URL=ws://$IP_ADDRESS:9946" >> $GITHUB_ENV
           echo KUSAMA_API_URL=ws://$IP_ADDRESS:9944 >> .env
