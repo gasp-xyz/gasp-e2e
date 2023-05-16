@@ -33,7 +33,7 @@ import { ApiContext } from "../../utils/Framework/XcmHelper";
 import XcmNetworks from "../../utils/Framework/XcmNetworks";
 import { AssetId } from "../../utils/ChainSpecs";
 import { BN_THOUSAND } from "@mangata-finance/sdk";
-import { connectParachains, connectVertical } from "@acala-network/chopsticks";
+import { connectParachains } from "@acala-network/chopsticks";
 
 require("dotenv").config();
 
@@ -46,16 +46,13 @@ let testUser1: User;
 const userAddress = "5EekB3dsQ4yW6WukZRL5muXb4qKvJMpJdXW3w59SptYHBkvk";
 
 describe("UI XCM tests - IMBU", () => {
-  let kusama: ApiContext;
   let mangata: ApiContext;
   let imbue: ApiContext;
   let alice: KeyringPair;
 
   beforeAll(async () => {
-    kusama = await XcmNetworks.kusama({ localPort: 9944 });
     mangata = await XcmNetworks.mangata({ localPort: 9946 });
     imbue = await XcmNetworks.imbue({ localPort: 9947 });
-    await connectVertical(kusama.chain, mangata.chain);
     await connectParachains([imbue.chain, mangata.chain]);
     alice = devTestingPairs().alice;
 

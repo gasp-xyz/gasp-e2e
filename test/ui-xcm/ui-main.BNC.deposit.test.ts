@@ -32,7 +32,7 @@ import { ApiContext } from "../../utils/Framework/XcmHelper";
 import XcmNetworks from "../../utils/Framework/XcmNetworks";
 import { AssetId } from "../../utils/ChainSpecs";
 import { BN_HUNDRED, BN_THOUSAND } from "@mangata-finance/sdk";
-import { connectParachains, connectVertical } from "@acala-network/chopsticks";
+import { connectParachains } from "@acala-network/chopsticks";
 
 require("dotenv").config();
 
@@ -45,16 +45,13 @@ let testUser1: User;
 const userAddress = "5EekB3dsQ4yW6WukZRL5muXb4qKvJMpJdXW3w59SptYHBkvk";
 
 describe("UI XCM tests - BNC", () => {
-  let kusama: ApiContext;
   let mangata: ApiContext;
   let bifrost: ApiContext;
   let alice: KeyringPair;
 
   beforeAll(async () => {
-    kusama = await XcmNetworks.kusama({ localPort: 9944 });
     mangata = await XcmNetworks.mangata({ localPort: 9946 });
-    bifrost = await XcmNetworks.biforst({ localPort: 9951 });
-    await connectVertical(kusama.chain, mangata.chain);
+    bifrost = await XcmNetworks.biforst({ localPort: 9948 });
     await connectParachains([bifrost.chain, mangata.chain]);
     alice = devTestingPairs().alice;
 
