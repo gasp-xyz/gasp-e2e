@@ -61,7 +61,7 @@ export class Staking {
     action: AggregatorOptions
   ): Extrinsic {
     return api.tx.parachainStaking.aggregatorUpdateMetadata(
-      ...collators.flatMap((user) => user.keyRingPair.address),
+      collators.flatMap((user) => user.keyRingPair.address),
       action
     );
   }

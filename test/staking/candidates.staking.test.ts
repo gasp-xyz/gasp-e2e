@@ -86,7 +86,35 @@ describe("Test candidates actions", () => {
     );
     const event = expectMGAExtrinsicSuDidSuccess(events);
     testLog.getLog().info(event);
-
+    //A user can not aggregate under a non-aggregator.
+    await signTx(
+      await getApi(),
+      Staking.updateCandidateAggregator(aggregator),
+      testUser2.keyRingPair
+    ).then((value) => {
+      const error = getEventResultFromMangataTx(value, [
+        "system",
+        "ExtrinsicFailed",
+      ]);
+      expect(error.data).toEqual("AggregatorDNE");
+      expect(error.state).toEqual(ExtrinsicResult.ExtrinsicFailed);
+    });
+    //Now the aggregator is an aggregator with non-selected candidates.
+    await signTx(
+      await getApi(),
+      Staking.aggregatorUpdateMetadata(
+        [],
+        AggregatorOptions.ExtendApprovedCollators
+      ),
+      aggregator.keyRingPair
+    ).then((value) => {
+      const error = getEventResultFromMangataTx(value, [
+        "system",
+        "ExtrinsicSuccess",
+      ]);
+      expect(error.state).toEqual(ExtrinsicResult.ExtrinsicSuccess);
+    });
+    //The candidate can not be set if the aggregator have not chosen him before.
     await signTx(
       await getApi(),
       Staking.updateCandidateAggregator(aggregator),
@@ -102,23 +130,31 @@ describe("Test candidates actions", () => {
 
     await signTx(
       await getApi(),
-      //todo-fixme
       Staking.aggregatorUpdateMetadata(
-        [],
+        [testUser2],
         AggregatorOptions.ExtendApprovedCollators
       ),
-      testUser2.keyRingPair
+      aggregator.keyRingPair
     ).then((value) => {
       const error = getEventResultFromMangataTx(value, [
-        "parachainStaking",
-        "",
+        "system",
+        "ExtrinsicSuccess",
       ]);
-      expect(error.data).toEqual("AggregatorDNE");
-      expect(error.state).toEqual(ExtrinsicResult.ExtrinsicFailed);
+      expect(error.state).toEqual(ExtrinsicResult.ExtrinsicSuccess);
     });
-    //TODO:
-    //validate that error
-    //aggregators select candidate
-    //validate that updateCandidateAggregator now works.
+    //Now candidate selection must work.
+    await signTx(
+      await getApi(),
+      Staking.updateCandidateAggregator(aggregator),
+      testUser2.keyRingPair
+    ).then((value) => {
+      const event = getEventResultFromMangataTx(value, [
+        "parachainStaking",
+        "CandidateAggregatorUpdated",
+      ]);
+      expect(event.data.includes(testUser2.keyRingPair.address)).toBeTruthy();
+      expect(event.data.includes(aggregator.keyRingPair.address)).toBeTruthy();
+      expect(event.state).toEqual(ExtrinsicResult.ExtrinsicSuccess);
+    });
   });
 });
