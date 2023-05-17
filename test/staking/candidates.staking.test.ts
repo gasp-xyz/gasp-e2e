@@ -156,5 +156,18 @@ describe("Test candidates actions", () => {
       expect(event.data.includes(aggregator.keyRingPair.address)).toBeTruthy();
       expect(event.state).toEqual(ExtrinsicResult.ExtrinsicSuccess);
     });
+    const candAggData = await Staking.candidateAggregator();
+    expect(candAggData[testUser2.keyRingPair.address]).toEqual(
+      aggregator.keyRingPair.address
+    );
+    const aggData = await Staking.aggregatorMetadata(
+      aggregator.keyRingPair.address
+    );
+    expect(aggData["tokenCollatorMap"][0]).toEqual(
+      testUser2.keyRingPair.address
+    );
+    expect(aggData["approvedCandidates"][0]).toEqual(
+      testUser2.keyRingPair.address
+    );
   });
 });

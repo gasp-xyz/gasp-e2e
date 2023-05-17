@@ -11,6 +11,14 @@ export enum AggregatorOptions {
   RemoveApprovedCollators = "removeapprovedcollators",
 }
 export class Staking {
+  static async aggregatorMetadata(address: string) {
+    const agg = await api?.query.parachainStaking.aggregatorMetadata(address);
+    return JSON.parse(JSON.stringify(agg));
+  }
+  static async candidateAggregator() {
+    const agg = await api?.query.parachainStaking.candidateAggregator();
+    return JSON.parse(JSON.stringify(agg));
+  }
   static async joinAsCandidate(
     amount: BN,
     tokenId: BN,
