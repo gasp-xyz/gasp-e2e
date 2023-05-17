@@ -1,6 +1,6 @@
 /*
  *
- * @group uiXcmIMBUrococo
+ * @group uiXcmUSDT
  */
 import { Mangata } from "../../utils/frontend/pages/Mangata";
 import { Keyring } from "@polkadot/api";
@@ -16,7 +16,11 @@ import {
 import { devTestingPairs, setupApi, setupUsers } from "../../utils/setup";
 import { AssetWallet, User } from "../../utils/User";
 import { getEnvironmentRequiredVars } from "../../utils/utils";
-import { IMBU_ASSET_NAME, MGA_ASSET_ID } from "../../utils/Constants";
+import {
+  MGA_ASSET_ID,
+  USDT_ASSET_ID,
+  USDT_ASSET_NAME,
+} from "../../utils/Constants";
 import { SudoUser } from "../../utils/Framework/User/SudoUser";
 import { Node } from "../../utils/Framework/Node/Node";
 import {
@@ -28,7 +32,7 @@ import { ApiContext } from "../../utils/Framework/XcmHelper";
 import XcmNetworks from "../../utils/Framework/XcmNetworks";
 import { AssetId } from "../../utils/ChainSpecs";
 import { BN_THOUSAND } from "@mangata-finance/sdk";
-import { connectParachains } from "@acala-network/chopsticks";
+import { connectParachains, connectVertical } from "@acala-network/chopsticks";
 
 require("dotenv").config();
 
@@ -40,22 +44,18 @@ let sudo: SudoUser;
 let testUser1: User;
 const userAddress = "5EekB3dsQ4yW6WukZRL5muXb4qKvJMpJdXW3w59SptYHBkvk";
 
-describe("UI XCM tests - IMBU rococo", () => {
+describe("UI XCM tests - USDT", () => {
   let mangata: ApiContext;
-  let imbue: ApiContext;
+  let statemine: ApiContext;
+  let kusama: ApiContext;
   let alice: KeyringPair;
-  const imbueTokenId = 14;
 
   beforeAll(async () => {
-    mangata = await XcmNetworks.mangata({
-      endpoint: "wss://collator-01-ws-rococo.mangata.online",
-      localPort: 9946,
-    });
-    imbue = await XcmNetworks.imbue({
-      endpoint: "wss://rococo.imbue.network",
-      localPort: 9947,
-    });
-    await connectParachains([imbue.chain, mangata.chain]);
+    kusama = await XcmNetworks.kusama({ localPort: 9944 });
+    mangata = await XcmNetworks.mangata({ localPort: 9946 });
+    statemine = await XcmNetworks.statemine({ localPort: 9949 });
+    await connectVertical(kusama.chain, mangata.chain);
+    await connectParachains([statemine.chain, mangata.chain]);
     alice = devTestingPairs().alice;
 
     try {
@@ -69,12 +69,12 @@ describe("UI XCM tests - IMBU rococo", () => {
     await mangata.dev.setStorage({
       Tokens: {
         Accounts: [
-          [[userAddress, { token: imbueTokenId }], { free: 1000e12 }],
+          [[userAddress, { token: 30 }], { free: 1000e6 }],
           [
             [userAddress, { token: 0 }],
             { free: AssetId.Mgx.unit.mul(BN_THOUSAND).toString() },
           ],
-          [[alice.address, { token: imbueTokenId }], { free: 1000e12 }],
+          [[alice.address, { token: 30 }], { free: 1000e6 }],
           [
             [alice.address, { token: 0 }],
             { free: AssetId.Mgx.unit.mul(BN_THOUSAND).toString() },
@@ -85,9 +85,19 @@ describe("UI XCM tests - IMBU rococo", () => {
         Key: userAddress,
       },
     });
-    await imbue.dev.setStorage({
+
+    await statemine.dev.setStorage({
       System: {
         Account: [[[userAddress], { data: { free: 10e12 } }]],
+      },
+      Assets: {
+        Account: [[[1984, userAddress], { balance: 1000e6 }]],
+      },
+    });
+
+    await kusama.dev.setStorage({
+      System: {
+        Account: [[[userAddress], { data: { free: 10 * 1e12 } }]],
       },
     });
 
@@ -106,7 +116,7 @@ describe("UI XCM tests - IMBU rococo", () => {
       getEnvironmentRequiredVars().mnemonicPolkadot
     );
 
-    testUser1.addAsset(imbueTokenId);
+    testUser1.addAsset(USDT_ASSET_ID);
     testUser1.addAsset(MGA_ASSET_ID);
     await testUser1.refreshAmounts(AssetWallet.BEFORE);
   });
@@ -124,7 +134,8 @@ describe("UI XCM tests - IMBU rococo", () => {
     await connectPolkadotWallet(driver, sidebar, mga);
     const isWalletConnected = sidebar.isWalletConnected("acc_automation");
     expect(isWalletConnected).toBeTruthy();
-    const tokenOnAppBefore = await sidebar.getTokenAmount(IMBU_ASSET_NAME);
+    sidebar.waitForLoad();
+    const tokenOnAppBefore = await sidebar.getTokenAmount(USDT_ASSET_NAME);
 
     await sidebar.clickOnDepositToMangata();
 
@@ -134,26 +145,26 @@ describe("UI XCM tests - IMBU rococo", () => {
 
     await depositModal.openTokensList();
     const areTokenListElementsVisible =
-      await depositModal.areTokenListElementsVisible(IMBU_ASSET_NAME);
+      await depositModal.areTokenListElementsVisible(USDT_ASSET_NAME);
     expect(areTokenListElementsVisible).toBeTruthy();
     const tokensAtSourceBefore = await depositModal.getTokenAmount(
-      IMBU_ASSET_NAME
+      USDT_ASSET_NAME
     );
-    await depositModal.selectToken(IMBU_ASSET_NAME);
+    await depositModal.selectToken(USDT_ASSET_NAME);
     await depositModal.enterValue("1");
     await depositModal.waitForProgressBar();
     await depositModal.clickContinue();
 
     await waitForActionNotification(driver, mangata);
 
-    await imbue.chain.newBlock();
+    await statemine.chain.newBlock();
     await sidebar.clickOnDepositToMangata();
     isModalVisible = await depositModal.isModalVisible();
     expect(isModalVisible).toBeTruthy();
 
     await depositModal.openTokensList();
     const tokensAtSourceAfter = await depositModal.getTokenAmount(
-      IMBU_ASSET_NAME
+      USDT_ASSET_NAME
     );
     expect(tokensAtSourceAfter).toBeLessThan(tokensAtSourceBefore);
 
@@ -161,11 +172,11 @@ describe("UI XCM tests - IMBU rococo", () => {
 
     await mga.go();
     await testUser1.refreshAmounts(AssetWallet.AFTER);
-    expect(testUser1.getAsset(imbueTokenId)?.amountBefore.free!).bnLt(
-      testUser1.getAsset(imbueTokenId)?.amountAfter.free!
+    expect(testUser1.getAsset(USDT_ASSET_ID)?.amountBefore.free!).bnLt(
+      testUser1.getAsset(USDT_ASSET_ID)?.amountAfter.free!
     );
     sidebar.waitForLoad();
-    const tokenOnAppAfter = await sidebar.getTokenAmount(IMBU_ASSET_NAME);
+    const tokenOnAppAfter = await sidebar.getTokenAmount(USDT_ASSET_NAME);
     expect(parseFloat(tokenOnAppAfter.replace(",", ""))).toBeGreaterThan(
       parseFloat(tokenOnAppBefore.replace(",", ""))
     );
