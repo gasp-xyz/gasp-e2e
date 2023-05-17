@@ -13,6 +13,8 @@ import { BN, BN_HUNDRED, BN_ZERO } from "@mangata-finance/sdk";
 import { setupApi, setupUsers } from "../../utils/setup";
 import { Sudo } from "../../utils/sudo";
 import {
+  burnLiquidity,
+  claimRewardsAll,
   getLiquidityAssetId,
   getRewardsInfo,
   mintLiquidity,
@@ -21,7 +23,6 @@ import { User } from "../../utils/User";
 import { getEnvironmentRequiredVars } from "../../utils/utils";
 import { Xyk } from "../../utils/xyk";
 import { waitForRewards } from "../../utils/eventListeners";
-import { testLog } from "../../utils/Logger";
 
 jest.spyOn(console, "log").mockImplementation(jest.fn());
 jest.setTimeout(2500000);
@@ -88,7 +89,17 @@ beforeEach(async () => {
     Assets.mintNative(testUser1)
   );
 
-  await checkRewardsBefore(testUser1, liqId);
+  const rewardsInfoBefore = await getRewardsInfo(
+    testUser.keyRingPair.address,
+    liqId
+  );
+  expect(rewardsInfoBefore.activatedAmount).bnEqual(BN_ZERO);
+  expect(rewardsInfoBefore.lastCheckpoint).bnEqual(BN_ZERO);
+  expect(rewardsInfoBefore.missingAtLastCheckpoint).bnEqual(BN_ZERO);
+  expect(rewardsInfoBefore.poolRatioAtLastCheckpoint).bnEqual(BN_ZERO);
+  expect(rewardsInfoBefore.rewardsAlreadyClaimed).bnEqual(BN_ZERO);
+  expect(rewardsInfoBefore.rewardsNotYetClaimed).bnEqual(BN_ZERO);
+
   await mintLiquidity(
     testUser1.keyRingPair,
     MGA_ASSET_ID,
@@ -168,21 +179,28 @@ test("Validate initial status:  User claims all available tokens that are stored
     liqId
   );
 
-  testLog.getLog().info(rewardsInfoSubtotal);
-  await Sudo.batchAsSudoFinalized(
-    Sudo.sudoAs(testUser1, Xyk.claimRewardsAll(liqId))
-  );
+  await claimRewardsAll(testUser1, liqId);
 
   const rewardsInfoAfter = await getRewardsInfo(
     testUser1.keyRingPair.address,
     liqId
   );
+
+  expect(rewardsInfoSubtotal.activatedAmount).bnEqual(defaultCurrencyValue);
+  expect(rewardsInfoSubtotal.lastCheckpoint).bnGt(BN_ZERO);
+  expect(rewardsInfoSubtotal.missingAtLastCheckpoint).bnEqual(
+    defaultCurrencyValue
+  );
+  expect(rewardsInfoSubtotal.poolRatioAtLastCheckpoint).bnEqual(BN_ZERO);
+  expect(rewardsInfoSubtotal.rewardsAlreadyClaimed).bnEqual(BN_ZERO);
+  expect(rewardsInfoSubtotal.rewardsNotYetClaimed).bnEqual(BN_ZERO);
+
   expect(rewardsInfoAfter.activatedAmount).bnEqual(defaultCurrencyValue);
   expect(rewardsInfoAfter.lastCheckpoint).bnGt(BN_ZERO);
   expect(rewardsInfoAfter.missingAtLastCheckpoint).bnEqual(
     defaultCurrencyValue
   );
-  expect(rewardsInfoAfter.poolRatioAtLastCheckpoint).bnGt(BN_ZERO);
+  expect(rewardsInfoAfter.poolRatioAtLastCheckpoint).bnEqual(BN_ZERO);
   expect(rewardsInfoAfter.rewardsAlreadyClaimed).bnGt(BN_ZERO);
   expect(rewardsInfoAfter.rewardsNotYetClaimed).bnEqual(BN_ZERO);
   expect(rewardsInfoAfter.rewardsAlreadyClaimed).bnGt(
@@ -190,15 +208,44 @@ test("Validate initial status:  User claims all available tokens that are stored
   );
 });
 
-async function checkRewardsBefore(testUser: User, liq: BN) {
-  const rewardsInfoBefore = await getRewardsInfo(
-    testUser.keyRingPair.address,
-    liq
+test("Validate initial status:  User claims all available tokens that are stored in rewardsToBeClaimed and burn some", async () => {
+  const api = getApi();
+
+  await waitForRewards(testUser1, liqId);
+
+  await claimRewardsAll(testUser1, liqId);
+
+  const userBalanceBeforeBurning = await api.query.tokens.accounts(
+    testUser1.keyRingPair.address,
+    liqId
   );
-  expect(rewardsInfoBefore.activatedAmount).bnEqual(BN_ZERO);
-  expect(rewardsInfoBefore.lastCheckpoint).bnEqual(BN_ZERO);
-  expect(rewardsInfoBefore.missingAtLastCheckpoint).bnEqual(BN_ZERO);
-  expect(rewardsInfoBefore.poolRatioAtLastCheckpoint).bnEqual(BN_ZERO);
-  expect(rewardsInfoBefore.rewardsAlreadyClaimed).bnEqual(BN_ZERO);
-  expect(rewardsInfoBefore.rewardsNotYetClaimed).bnEqual(BN_ZERO);
-}
+
+  const rewardsInfoSubtotal = await getRewardsInfo(
+    testUser1.keyRingPair.address,
+    liqId
+  );
+
+  const valueBurningTokens = userBalanceBeforeBurning.reserved.div(new BN(2));
+
+  await burnLiquidity(
+    testUser1.keyRingPair,
+    MGA_ASSET_ID,
+    token1,
+    valueBurningTokens
+  );
+
+  const rewardsInfoAfter = await getRewardsInfo(
+    testUser1.keyRingPair.address,
+    liqId
+  );
+
+  expect(rewardsInfoAfter.activatedAmount).bnEqual(valueBurningTokens);
+  expect(rewardsInfoAfter.lastCheckpoint).bnGt(BN_ZERO);
+  expect(rewardsInfoAfter.missingAtLastCheckpoint).bnGt(BN_ZERO);
+  expect(rewardsInfoAfter.poolRatioAtLastCheckpoint).bnEqual(BN_ZERO);
+  expect(rewardsInfoAfter.rewardsAlreadyClaimed).bnEqual(BN_ZERO);
+  expect(rewardsInfoAfter.rewardsNotYetClaimed).bnEqual(BN_ZERO);
+  expect(rewardsInfoSubtotal.activatedAmount).bnGt(
+    rewardsInfoAfter.activatedAmount
+  );
+});
