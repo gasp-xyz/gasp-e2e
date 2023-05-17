@@ -2,7 +2,7 @@
  *
  * @group xyk
  * @group accuracy
- * @group rewardsV2
+ * @group rewardsV2Parallel
  */
 import { getApi, getMangataInstance, initApi } from "../../utils/api";
 import { BN } from "@polkadot/util";

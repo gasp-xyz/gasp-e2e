@@ -1,7 +1,7 @@
 /*
  *
  * @group xyk
- * @group rewardsV2
+ * @group rewardsV2Parallel
  */
 
 import { Keyring } from "@polkadot/api";

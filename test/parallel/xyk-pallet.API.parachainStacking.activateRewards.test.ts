@@ -1,7 +1,7 @@
 /*
  *
  * @group staking
- * @group rewardsV2
+ * @group rewardsV2Parallel
  *
  */
 import {
