@@ -135,7 +135,7 @@ test("Validate initial status: User just minted and rewards generated", async ()
   expect(rewardsInfoAfter.missingAtLastCheckpoint).bnEqual(
     defaultCurrencyValue
   );
-  //expect(rewardsInfoAfter.poolRatioAtLastCheckpoint).bnEqual(BN_ZERO);
+  expect(rewardsInfoAfter.poolRatioAtLastCheckpoint).bnGt(BN_ZERO);
   expect(rewardsInfoAfter.rewardsAlreadyClaimed).bnEqual(BN_ZERO);
   expect(rewardsInfoAfter.rewardsNotYetClaimed).bnEqual(BN_ZERO);
 });
@@ -191,7 +191,7 @@ test("Validate initial status:  User claims all available tokens that are stored
   expect(rewardsInfoSubtotal.missingAtLastCheckpoint).bnEqual(
     defaultCurrencyValue
   );
-  expect(rewardsInfoSubtotal.poolRatioAtLastCheckpoint).bnEqual(BN_ZERO);
+  expect(rewardsInfoSubtotal.poolRatioAtLastCheckpoint).bnGt(BN_ZERO);
   expect(rewardsInfoSubtotal.rewardsAlreadyClaimed).bnEqual(BN_ZERO);
   expect(rewardsInfoSubtotal.rewardsNotYetClaimed).bnEqual(BN_ZERO);
 
@@ -200,7 +200,7 @@ test("Validate initial status:  User claims all available tokens that are stored
   expect(rewardsInfoAfter.missingAtLastCheckpoint).bnEqual(
     defaultCurrencyValue
   );
-  expect(rewardsInfoAfter.poolRatioAtLastCheckpoint).bnEqual(BN_ZERO);
+  expect(rewardsInfoAfter.poolRatioAtLastCheckpoint).bnGt(BN_ZERO);
   expect(rewardsInfoAfter.rewardsAlreadyClaimed).bnGt(BN_ZERO);
   expect(rewardsInfoAfter.rewardsNotYetClaimed).bnEqual(BN_ZERO);
   expect(rewardsInfoAfter.rewardsAlreadyClaimed).bnGt(
@@ -242,7 +242,7 @@ test("Validate initial status:  User claims all available tokens that are stored
   expect(rewardsInfoAfter.activatedAmount).bnEqual(valueBurningTokens);
   expect(rewardsInfoAfter.lastCheckpoint).bnGt(BN_ZERO);
   expect(rewardsInfoAfter.missingAtLastCheckpoint).bnGt(BN_ZERO);
-  expect(rewardsInfoAfter.poolRatioAtLastCheckpoint).bnEqual(BN_ZERO);
+  expect(rewardsInfoAfter.poolRatioAtLastCheckpoint).bnGt(BN_ZERO);
   expect(rewardsInfoAfter.rewardsAlreadyClaimed).bnEqual(BN_ZERO);
   expect(rewardsInfoAfter.rewardsNotYetClaimed).bnEqual(BN_ZERO);
   expect(rewardsInfoSubtotal.activatedAmount).bnGt(
