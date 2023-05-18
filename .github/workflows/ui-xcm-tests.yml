@@ -1,0 +1,204 @@
+name: FE UI XCM tests
+
+on:
+
+  workflow_dispatch:
+    inputs:
+      feBranch:
+        description: 'Name of the FE target branch'
+        type: string
+        required: false
+        default: 'develop'
+  workflow_call:
+    inputs:
+      feBranch:
+        description: 'Name of the FE target branch'
+        type: string
+        required: false
+        default: 'develop'
+
+permissions:
+  contents: write
+  id-token: write
+  deployments: write
+  checks: write
+
+jobs:
+  e2e-test-matrix:
+    strategy:
+      fail-fast: false
+      matrix:
+        command: ['uiXcmKSM', 'uiXcmIMBUrococo', 'uiXcmBNC']
+    runs-on: ubuntu-latest
+    timeout-minutes: 30
+    env:
+      TEST_PALLET_ADDRESS: ${{ secrets.TEST_PALLET_ADDRESS }}
+      E2E_XYK_PALLET_ADDRESS: ${{ secrets.E2E_XYK_PALLET_ADDRESS }}
+      TEST_SUDO_NAME: ${{ secrets.TEST_SUDO_NAME }}
+      SELENIUM_REMOTE_URL: http://localhost:4444/wd/hub
+      UI_URL: http://localhost:5500
+      MANGATA_ASSETS_URL: https://storage.googleapis.com/mangata-assets
+      MNEMONIC_POLK: ${{ secrets.MNEMONIC_CHOPS_FE_ACC }}
+    outputs:
+      testmo-run-id: ${{ steps.setTestRun.outputs.testmo-run-id }}
+    steps:
+      - uses: actions/checkout@v3
+
+      - uses: actions/setup-node@v3
+        with:
+          node-version: '16'
+          cache: 'yarn'
+          cache-dependency-path: '**/yarn.lock'
+      
+      #### Selenoid
+      - name: Start Selenoid Server
+        uses: Xotabu4/selenoid-github-action@v2
+        with:
+          selenoid-start-arguments: |
+            --args "-timeout 300s" --browsers 'chrome:112.0'
+
+      #### App
+      - name: Checkout FE app
+        uses: actions/checkout@v3
+        with:
+          repository: mangata-finance/mangata-fe
+          token: ${{ secrets.PRIVATE_FE_REPO_ACCESS_TOKEN }}
+          ref: '${{ github.event.inputs.feBranch || inputs.feBranch }}'
+          path: mangata-fe
+
+      - name: Create npmrc file
+        run: |
+          echo registry=https://registry.yarnpkg.com/ >> .npmrc
+          echo @mangata-finance:registry=https://registry.npmjs.org >> .npmrc
+          echo //registry.npmjs.org/:_authToken=${{ secrets.FE_NPM_AUTH_TOKEN }} >> .npmrc
+          echo always-auth=true >> .npmrc
+
+      - name: Inject chops sdk to FE app
+        working-directory: mangata-fe
+        run: |
+          chops_sdk="https://github.com/mangata-finance/mangata-sdk#feature/chopsAndxykrefactor"
+          jq ".dependencies[\"@mangata-finance/sdk\"] = \"${chops_sdk}\"" package.json > tmp.json
+          mv tmp.json package.json
+          jq '.dependencies["@mangata-finance/sdk"]' package.json
+
+      - name: Install fe app dependencies
+        working-directory: mangata-fe
+        run: |
+          export SKIP_HUSKY=true
+          yarn
+
+      - name: Create env file
+        working-directory: mangata-fe
+        run: |
+          netstat -tuln
+          IP_ADDRESS=$(ifconfig eth0 | awk '/inet / {print $2}')
+          if [[ "${{ matrix.command }}" == *"rococo"* ]]; then
+            echo "Command contains 'rococo'"
+            echo APP_ENV=rococo >> .env
+          else
+            echo APP_ENV=kusama >> .env
+          fi
+          echo API_URL=ws://$IP_ADDRESS:9946 >> .env
+          echo "API_URL=ws://$IP_ADDRESS:9946" >> $GITHUB_ENV
+          echo KUSAMA_API_URL=ws://$IP_ADDRESS:9944 >> .env
+          echo TURING_API_URL=ws://$IP_ADDRESS:8002 >> .env
+          echo IMBUE_API_URL=ws://$IP_ADDRESS:9947 >> .env
+          echo STATEMINE_API_URL=ws://$IP_ADDRESS:9949 >> .env
+          echo BIFROST_API_URL=ws://$IP_ADDRESS:9948 >> .env
+          echo PARACHAIN_ID=2110 >> .env
+          echo MANGATA_ENV=local >> .env
+          echo EXTEND_ESLINT=true >> .env
+          echo PRICE_DISCOVERY_URL=https://mangata-stash-prod-dot-direct-pixel-353917.oa.r.appspot.com/price-discovery >> .env
+          echo SENTRY_DSN=https://f0d2c93dcf3248d291729e077510045c@o495498.ingest.sentry.io/6074902 >> .env
+          echo SENTRY_AUTH_TOKEN=${{ secrets.SENTRY_AUTH_TOKEN }} >> .env
+          echo SENTRY_PROJECT=mangata-sentry >> .env
+          echo SENTRY_ORG=mangata-g7 >> .env
+          cat .env
+
+      - name: Install http-server
+        run: yarn global add http-server
+
+      - name: Build app
+        working-directory: mangata-fe
+        run: yarn build
+
+      - name: Start app
+        working-directory: mangata-fe
+        run: |
+          ifconfig
+          IP_ADDRESS=$(ifconfig eth0 | awk '/inet / {print $2}')
+          echo "UI_URL=http://$IP_ADDRESS:5500" >> $GITHUB_ENV
+          cd dist
+          http-server -p 5500 &
+
+      #### Tests
+
+      # - name: E2E- Get branch name
+      #   id: branch-name
+      #   uses: tj-actions/branch-names@v4.9
+
+      # - name: E2E- Calculate if run e2e feature branch or main.
+      #   run: |
+      #     echo DEFAULT: E2E test will run with: $E2EBRANCHNAME
+      #     echo "Running on: ${{ steps.branch-name.outputs.current_branch }}"
+      #     if [ -n "$(git ls-remote --heads https://github.com/mangata-finance/mangata-e2e.git ${{ steps.branch-name.outputs.current_branch }} --force --quiet)" ]; then echo "E2EBRANCHNAME=${{ steps.branch-name.outputs.current_branch }}" >> $GITHUB_ENV; echo "MATCH - OK" ; elif [ -n "$(git ls-remote --heads https://github.com/mangata-finance/mangata-e2e.git ${{ github.base_ref }} --force --quiet)" ]; then echo "E2EBRANCHNAME=${{ github.base_ref }}" >> $GITHUB_ENV; echo "MATCH - OK" ;  fi
+
+      # - name: Decide if main - branch or parameter
+      #   # if we have something in e2eBranch - override E2EBranchName, else -> E2EBRANCHNAME , that
+      #   # by default will be main.
+      #   run: |
+      #     echo "E2EBRANCHNAME=${{ inputs.e2eBranch || env.E2EBRANCHNAME }}" >> $GITHUB_ENV
+      #     echo "${{ env.E2EBRANCHNAME }}"
+      #Use for debug
+      # - uses: mxschmitt/action-tmate@v3
+
+      - name: Install e2e tests dependencies
+        run: |
+          export SKIP_HUSKY=true
+          yarn
+
+      - name: is selenoid started?
+        run: |
+          curl http://localhost:4444/status
+          curl -I "$UI_URL"
+
+      - name: Run tests
+        run: |
+          echo ${{ env.UI_URL }}
+          yarn test-xcm-ui --group=${{ matrix.command }}
+
+      - name: Test Report
+        uses: dorny/test-reporter@v1.6.0
+        if: always()
+        with:
+          name: E2E report ${{ matrix.command }} # Name of the check run which will be created
+          path: reports/junit-*.xml # Path to test results
+          reporter: jest-junit # Format of test results
+
+      - name: Copy video files to reports folder
+        if: always()
+        run: |
+          # sleep is used to close buffers of videos
+          sleep 10s 
+          cp ~/.aerokube/selenoid/* -r  reports/artifacts/
+
+      - name: Create  reports zip
+        uses: vimtor/action-zip@v1
+        if: always()
+        with:
+          files: reports/
+          dest: reports.zip
+
+      - name: Archive report files
+        uses: actions/upload-artifact@v3.1.2
+        if: always()
+        with:
+          name: ReportData ${{ matrix.command }}
+          path: reports.zip
+
+      - name: Archive report files
+        uses: actions/upload-artifact@v3.1.2
+        if: always()
+        with:
+          name: TestReport ${{ matrix.command }}
+          path: reports/html-report/report.html

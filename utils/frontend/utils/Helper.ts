@@ -85,11 +85,36 @@ export async function waitForElementToDissapear(
   } while (continueWaiting);
 }
 
+export async function waitForLoad(
+  retry = 2,
+  loaderXpath: string,
+  driver: WebDriver
+): Promise<void> {
+  return new Promise<void>(async (resolve, reject) => {
+    setTimeout(async () => {
+      const visible = await isDisplayed(driver, loaderXpath);
+      if (visible) {
+        if (retry > 0) {
+          testLog.getLog().warn("Retrying wait for load: attempt " + retry);
+          await driver.navigate().refresh();
+          retry = retry - 1;
+          return waitForLoad(retry, loaderXpath, driver);
+        }
+        reject("TIMEOUT: Waiting for " + loaderXpath + " to dissapear");
+      } else {
+        resolve();
+      }
+    }, 60000);
+    await waitForElementToDissapear(driver, loaderXpath);
+    resolve();
+  });
+}
+
 export async function clickElement(driver: WebDriver, xpath: string) {
   await waitForElement(driver, xpath);
   const element = await driver.findElement(By.xpath(xpath));
   await driver.wait(until.elementIsVisible(element), timeOut);
-  await sleep(1000);
+  await sleep(500);
   await element.click();
 }
 
@@ -97,7 +122,7 @@ export async function clickElementForce(driver: WebDriver, xpath: string) {
   await waitForElement(driver, xpath);
   const element = await driver.findElement(By.xpath(xpath));
   await driver.wait(until.elementIsVisible(element), timeOut);
-  await sleep(1000);
+  await sleep(500);
   driver.executeScript("arguments[0].click();", element);
 }
 
@@ -173,6 +198,14 @@ export async function setupPolkadotExtension(driver: WebDriver) {
   };
 }
 
+export async function importPolkadotExtension(driver: WebDriver) {
+  await leaveOnlyOneTab(driver);
+
+  const polkadotExtension = new Polkadot(driver);
+  await polkadotExtension.go();
+  await polkadotExtension.setupAccount();
+}
+
 export async function setupTalismanExtension(driver: WebDriver) {
   await leaveOnlyOneTab(driver);
 
@@ -230,7 +263,7 @@ export async function leaveOnlyOneTab(driver: WebDriver) {
 
 export async function isDisplayed(driver: WebDriver, elementXpath: string) {
   try {
-    await waitForElement(driver, elementXpath, 2000);
+    await waitForElement(driver, elementXpath, 4000);
     const displayed = await (
       await driver.findElement(By.xpath(elementXpath))
     ).isDisplayed();
@@ -297,11 +330,37 @@ export function buildDataTestIdXpath(dataTestId: string) {
   return xpathSelector;
 }
 
+export async function waitForNewWindow(
+  driver: WebDriver,
+  timeout: number,
+  retryInterval: number
+): Promise<void> {
+  const currentWindowHandle = await driver.getWindowHandle();
+
+  const startTime = Date.now();
+  let elapsedTime = 0;
+
+  while (elapsedTime < timeout) {
+    const windowHandles = await driver.getAllWindowHandles();
+    if (
+      windowHandles.length > 1 &&
+      windowHandles.includes(currentWindowHandle)
+    ) {
+      return;
+    }
+
+    await driver.sleep(retryInterval);
+    elapsedTime = Date.now() - startTime;
+  }
+
+  throw new Error(`Timed out waiting for new window to appear.`);
+}
+
 export async function doActionInDifferentWindow(
   driver: WebDriver,
   fn: (driver: WebDriver) => void
 ) {
-  await sleep(4000);
+  await waitForNewWindow(driver, 10000, 500);
   let handle = await (await driver).getAllWindowHandles();
   let iterator = handle.reverse().entries();
 
@@ -327,7 +386,7 @@ export async function selectAssetFromModalList(
   assetName: string,
   driver: WebDriver
 ) {
-  const assetTestId = `TokensModal-asset-${assetName}`;
+  const assetTestId = `TokensModal-token-${assetName}`;
   const assetLocator = buildDataTestIdXpath(assetTestId);
   await clickElement(driver, assetLocator);
 }

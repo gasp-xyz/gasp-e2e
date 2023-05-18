@@ -10,7 +10,7 @@
     "@acala-network/chopsticks": "^0.5.10",
     "@babel/plugin-proposal-decorators": "^7.17.8",
     "@commitlint/config-conventional": "^17.4.2",
-    "@mangata-finance/sdk": "https://github.com/mangata-finance/mangata-sdk#feature/xyk-refactor-mat",
+    "@mangata-finance/sdk": "https://github.com/mangata-finance/mangata-sdk#feature/chopsAndxykrefactor",
     "@terascope/fetch-github-release": "^0.8.7",
     "@truffle/hdwallet-provider": "^2.1.9",
     "@types/bs58": "^4.0.1",
@@ -90,7 +90,9 @@
     "test-github": "export JEST_HTML_REPORTERS_PUBLIC_PATH=reports/html-report;  rm nonce.db ; rm sudo.lock; jest --verbose  --ci --forceExit",
     "test-multiswap": "export GASLESS=true; export JEST_HTML_REPORTERS_PUBLIC_PATH=reports/html-report-parallel;rm nonce.db ; rm sudo.lock; jest --verbose --ci --group=multiswap --forceExit",
     "test-validateStatus": "export JEST_HTML_REPORTERS_PUBLIC_PATH=reports/html-report-parallel;rm nonce.db ; rm sudo.lock; jest --verbose --ci --group=validateStatus --forceExit ",
-    "test-xcm": " export CHOPSTICK_ENABLED=true ; export MANGATA_ENDPOINT=wss://mangata-x.api.onfinality.io/public-ws ; export JEST_HTML_REPORTERS_PUBLIC_PATH=reports/html-report-parallel;rm nonce.db ; rm sudo.lock; jest --verbose --ci --group=xcm --forceExit",
+    "test-xcm": " export CHOPSTICK_ENABLED=true ; export MANGATA_ENDPOINT=wss://kusama-archive.mangata.online ; export JEST_HTML_REPORTERS_PUBLIC_PATH=reports/html-report-parallel;rm nonce.db ; rm sudo.lock; jest --verbose --ci --group=xcm --forceExit --runInBand #",
+    "test-sdk-xcm": " export CHOPSTICK_ENABLED=true ; export JEST_HTML_REPORTERS_PUBLIC_PATH=reports/html-report-parallel;rm nonce.db ; rm sudo.lock; jest --verbose --ci --group=sdkxcm --forceExit --runInBand #",
+    "test-xcm-ui": "export CHOPSTICK_UI=true ; rm nonce.db ; rm sudo.lock; jest --verbose --runInBand --ci",
     "runtimeUpgrade": " jest --verbose --ci --group=upgradeRuntime --runInBand --forceExit"
   },
   "devDependencies": {

@@ -1,4 +1,5 @@
 import { By, WebDriver } from "selenium-webdriver";
+import { FIVE_MIN } from "../../Constants";
 import { waitForNBlocks } from "../../utils";
 import {
   buildDataTestIdXpath,
@@ -73,8 +74,12 @@ export class NotificationModal {
     await waitForNBlocks(2);
   }
 
-  public async waitForModalState(modalState: ModalType) {
-    await waitForElementVisible(this.driver, this.getModalXpath(modalState));
+  public async waitForModalState(modalState: ModalType, timeout = FIVE_MIN) {
+    await waitForElementVisible(
+      this.driver,
+      this.getModalXpath(modalState),
+      timeout
+    );
   }
 
   async getModalErrorInfo(modalState: ModalType) {
