@@ -4,7 +4,11 @@
  * @group story
  */
 import { getApi, getMangataInstance, initApi } from "../../utils/api";
-import { compoundRewards, getLiquidityAssetId } from "../../utils/tx";
+import {
+  claimRewardsAll,
+  compoundRewards,
+  getLiquidityAssetId,
+} from "../../utils/tx";
 import { waitForRewards } from "../../utils/eventListeners";
 import { BN } from "@polkadot/util";
 import { Keyring, ApiPromise } from "@polkadot/api";
@@ -64,11 +68,9 @@ describe("Story tests > Rewards - autocompound", () => {
       api.tx.proofOfStake.claimRewardsAll(liqId),
       testUser2.keyRingPair
     );
-    await mangata.claimRewards(
-      testUser2.keyRingPair,
-      liqId.toString(),
-      availableRewards
-    );
+
+    await claimRewardsAll(testUser2, liqId);
+
     const availableRewardsAfter = await mangata.calculateRewardsAmount(
       testUser2.keyRingPair.address,
       liqId.toString()
