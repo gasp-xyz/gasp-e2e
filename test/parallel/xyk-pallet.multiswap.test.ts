@@ -73,6 +73,33 @@ describe("Multiswap - happy paths", () => {
       )
     ).toEqual(-1);
   });
+  test.only("[gasless] Happy path - multi-swap - buy - 2 hops - mat", async () => {
+    const testUser1 = users[0];
+    await multiSwapBuy(testUser1, tokenIds, new BN(1000), BN_TEN_THOUSAND);
+    const multiSwapOutput = await multiSwapBuy(
+      testUser1,
+      [tokenIds[0], tokenIds[1]],
+      new BN(1000),
+      BN_TEN_THOUSAND
+    );
+    const eventResponse = getEventResultFromMangataTx(multiSwapOutput, [
+      "xyk",
+      successMultiSwapBuyEventName,
+    ]);
+    expect(eventResponse.state).toEqual(ExtrinsicResult.ExtrinsicSuccess);
+    const boughtTokens = await getUserBalanceOfToken(
+      tokenIds[tokenIds.length - 1],
+      testUser1
+    );
+    expect(boughtTokens.free).bnEqual(new BN(1000));
+    expect(
+      multiSwapOutput.findIndex(
+        (x) =>
+          x.section === EVENT_SECTION_PAYMENT ||
+          x.method === EVENT_METHOD_PAYMENT
+      )
+    ).toEqual(-1);
+  });
   test("[gasless] Happy path - multi-swap - sell", async () => {
     const testUser1 = users[0];
     const boughtTokensBefore = await getUserBalanceOfToken(

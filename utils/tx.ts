@@ -1059,9 +1059,10 @@ export async function multiSwapBuy(
   maxAmountIn: BN = MAX_BALANCE
 ) {
   const api = getApi();
+  const numbers = tokenIds.flatMap((x) => x.toNumber());
   const result = await signTx(
     api,
-    api.tx.xyk.multiswapBuyAsset(tokenIds, buyAmount, maxAmountIn),
+    api.tx.xyk.multiswapBuyAsset(numbers, buyAmount, maxAmountIn),
     testUser1.keyRingPair
   );
   return result;
