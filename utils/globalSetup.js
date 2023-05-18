@@ -38,8 +38,6 @@ module.exports = async function (globalConfig, projectConfig) {
       ipc.server.emit(socket, "nonce-" + data.id, nonce.toNumber());
       nonce.iaddn(1);
     });
-  });
-  ipc.serve(function () {
     ipc.server.on("getCandidate", (data, socket) => {
       console.info("serving getCandidate" + data.id + numCollators);
       ipc.server.emit(socket, "candidate-" + data.id, numCollators);
