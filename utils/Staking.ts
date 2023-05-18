@@ -1,6 +1,7 @@
 import { BN } from "@mangata-finance/sdk";
 import { api, Extrinsic } from "./setup";
 import { User } from "./User";
+import { SudoDB } from "./SudoDB";
 export enum tokenOriginEnum {
   AvailableBalance = "availablebalance",
   ActivatedUnstakedReserves = "activatedunstakedreserves",
@@ -24,8 +25,7 @@ export class Staking {
     tokenId: BN,
     tokenOrigin: tokenOriginEnum
   ) {
-    const numCollators = (await api?.query.parachainStaking.candidatePool())!
-      .length;
+    const numCollators = await SudoDB.getInstance().getNextCandidateNum();
     const liqAssets =
       await api?.query.parachainStaking.stakingLiquidityTokens();
     const liqAssetsCount = [...liqAssets!.keys()].length;

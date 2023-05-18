@@ -19,9 +19,16 @@ import { Sudo } from "../../utils/sudo";
 import { Assets } from "../../utils/Assets";
 import { MGA_ASSET_ID } from "../../utils/Constants";
 import { testLog } from "../../utils/Logger";
-import { getUserBalanceOfToken } from "../../utils/utils";
+import {
+  findErrorMetadata,
+  getEnvironmentRequiredVars,
+  getUserBalanceOfToken,
+} from "../../utils/utils";
 import { hexToBn } from "@polkadot/util";
 import { getEventResultFromMangataTx } from "../../utils/txHandler";
+import { Keyring } from "@polkadot/api";
+import { Xyk } from "../../utils/xyk";
+import { getLiquidityAssetId } from "../../utils/tx";
 
 jest.spyOn(console, "log").mockImplementation(jest.fn());
 jest.setTimeout(3500000);
@@ -30,28 +37,52 @@ process.env.NODE_ENV = "test";
 let testUser1: User;
 let testUser2: User;
 let testUser3: User;
+let testUser4: User;
+let testUser5: User;
 let minStk: BN;
+let tokenId1: BN;
+let tokenId2: BN;
 beforeAll(async () => {
   try {
     getApi();
   } catch (e) {
     await initApi();
   }
-  [testUser1, testUser2, testUser3] = setupUsers();
+  [testUser1, testUser2, testUser3, testUser4, testUser5] = setupUsers();
   await setupApi();
   minStk = new BN(
     (await getApi()).consts.parachainStaking.minCandidateStk.toString()
   );
+  const keyring = new Keyring({ type: "sr25519" });
+  const sudo = new User(keyring, getEnvironmentRequiredVars().sudo);
+  const tokens = await Assets.setupUserWithCurrencies(
+    testUser4,
+    [minStk.muln(1000), minStk.muln(1000)],
+    sudo
+  );
+  tokenId1 = tokens[0];
+  tokenId2 = tokens[1];
   await Sudo.batchAsSudoFinalized(
     Assets.mintNative(testUser1, minStk.muln(1000)),
     Assets.mintNative(testUser2, minStk.muln(1000)),
-    Assets.mintNative(testUser3, minStk.muln(1000))
+    Assets.mintNative(testUser3, minStk.muln(1000)),
+    Assets.mintNative(testUser4, minStk.muln(1000)),
+    Assets.mintNative(testUser5, minStk.muln(1000)),
+    Assets.mintToken(tokenId2, testUser5, minStk.muln(1000)),
+    Sudo.sudoAs(
+      testUser4,
+      Xyk.createPool(MGA_ASSET_ID, minStk.muln(3), tokenId1, minStk.muln(3))
+    ),
+    Sudo.sudoAs(
+      testUser5,
+      Xyk.createPool(MGA_ASSET_ID, minStk.muln(3), tokenId2, minStk.muln(3))
+    )
   );
 });
 
 describe("Test candidates actions", () => {
   beforeEach(async () => {});
-  it("A user can become a candidate by joining As candidate with 2x MGX", async () => {
+  it("A user can become a candidate by joining as candidate", async () => {
     const extrinsic = await Staking.joinAsCandidate(
       minStk.muln(2),
       MGA_ASSET_ID,
@@ -74,7 +105,55 @@ describe("Test candidates actions", () => {
     expect(total).bnEqual(minStk.muln(1000));
     expect(userBalance.reserved).bnEqual(minStk.muln(2));
   });
-  it("A candidate can choose an aggregator only when the aggregator choose the candidate", async () => {
+  it("A user can only join as candidate with one staking token at the same time", async () => {
+    const extrinsic = await Staking.joinAsCandidate(
+      minStk.muln(2),
+      MGA_ASSET_ID,
+      tokenOriginEnum.AvailableBalance
+    );
+    const liqToken = await getLiquidityAssetId(MGA_ASSET_ID, tokenId1);
+    const extrinsicNewToken = await Staking.joinAsCandidate(
+      minStk.muln(2),
+      liqToken,
+      tokenOriginEnum.AvailableBalance
+    );
+    await Sudo.batchAsSudoFinalized(
+      Sudo.sudoAs(testUser4, extrinsic),
+      Sudo.sudo(Staking.addStakingLiquidityToken(liqToken))
+    ).then((events) => {
+      expectMGAExtrinsicSuDidSuccess(events);
+    });
+    const result = await signTx(
+      await getApi(),
+      extrinsicNewToken,
+      testUser4.keyRingPair
+    );
+    const error = getEventResultFromMangataTx(result, [
+      "system",
+      "ExtrinsicFailed",
+    ]);
+    expect(error.data).toEqual("CandidateExists");
+    expect(error.state).toEqual(ExtrinsicResult.ExtrinsicFailed);
+  });
+  it("A user can not join as candidate with a token that is not enabled ( or MGX )", async () => {
+    const liqToken = await getLiquidityAssetId(MGA_ASSET_ID, tokenId2);
+    const extrinsicNewToken = await Staking.joinAsCandidate(
+      minStk.muln(2),
+      liqToken,
+      tokenOriginEnum.AvailableBalance
+    );
+    await Sudo.batchAsSudoFinalized(
+      Sudo.sudoAs(testUser5, extrinsicNewToken)
+    ).then(async (events) => {
+      const error = getEventResultFromMangataTx(events, ["sudo", "SudoAsDone"]);
+      const err = await findErrorMetadata(
+        JSON.parse(JSON.stringify(error.data)).sudoResult.Err.Module.error,
+        JSON.parse(JSON.stringify(error.data)).sudoResult.Err.Module.index
+      );
+      expect(err.name).toEqual("StakingLiquidityTokenNotListed");
+    });
+  });
+  it("A candidate can select an aggregator by update_candidate_aggregator", async () => {
     const aggregator = testUser3;
     const extrinsic = await Staking.joinAsCandidate(
       minStk.muln(2),

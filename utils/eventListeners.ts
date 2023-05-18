@@ -321,14 +321,12 @@ export const expectExtrinsicSuccess = (events: Codec[]) => {
 export const expectMGAExtrinsicSuDidSuccess = (
   events: MangataGenericEvent[]
 ) => {
-  const sudoEvent = events.find(
-    (x) =>
-      x.method === "SudoAsDone" &&
-      x.section === "sudo" &&
-      JSON.parse(JSON.stringify(x.eventData[0].data)).err === undefined
-  );
-  expect(sudoEvent).not.toBeNull();
-  return sudoEvent!;
+  const anyError = events
+    .filter((x) => x.method === "SudoAsDone" && x.section === "sudo")
+    .some((x) => JSON.parse(JSON.stringify(x.eventData[0].data)).err);
+
+  expect(anyError).toBeFalsy();
+  return events!;
 };
 export const expectMGAExtrinsicSuDidFailed = (
   events: MangataGenericEvent[]

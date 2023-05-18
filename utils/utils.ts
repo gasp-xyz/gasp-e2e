@@ -456,6 +456,7 @@ export async function findErrorMetadata(errorStr: string, index: string) {
   });
   // eslint-disable-next-line no-console
   console.info(err);
+  return err;
 }
 export async function printCandidatePowers() {
   await initApi();

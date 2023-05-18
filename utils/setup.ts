@@ -50,6 +50,8 @@ export const setupUsers = () => {
   const testUser2 = new User(keyring);
   const testUser3 = new User(keyring);
   const testUser4 = new User(keyring);
+  const testUser5 = new User(keyring);
+  const testUser6 = new User(keyring);
 
   keyring.addPair(sudo.keyRingPair);
   keyring.addPair(alice.keyRingPair);
@@ -57,8 +59,10 @@ export const setupUsers = () => {
   keyring.addPair(testUser2.keyRingPair);
   keyring.addPair(testUser3.keyRingPair);
   keyring.addPair(testUser4.keyRingPair);
+  keyring.addPair(testUser5.keyRingPair);
+  keyring.addPair(testUser6.keyRingPair);
 
-  return [testUser1, testUser2, testUser3, testUser4];
+  return [testUser1, testUser2, testUser3, testUser4, testUser5, testUser6];
 };
 
 export const devTestingPairs = (ss58Format?: number) => {
