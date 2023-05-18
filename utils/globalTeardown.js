@@ -3,7 +3,7 @@
 const { disconnect } = require("./api");
 
 module.exports = async (globalConfig, projectConfig) => {
-  if (process.env.CHOPSTICK_ENABLED) return;
+  if (process.env.CHOPSTICK_ENABLED || process.env.CHOPSTICK_UI) return;
   console.error("GLOBAL TEARDOWN - DISCONNECT...");
   // eslint-disable-next-line no-undef
   await globalThis.server.stop();

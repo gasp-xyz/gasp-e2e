@@ -9,11 +9,6 @@ on:
         type: string
         required: false
         default: 'develop'
-      e2eBranch:
-        description: 'Name of the E2E target branch'
-        type: string
-        required: false
-        default: 'FE-chopsticks-tests-merged-with-be'
   workflow_call:
     inputs:
       feBranch:
@@ -21,11 +16,6 @@ on:
         type: string
         required: false
         default: 'develop'
-      e2eBranch:
-        description: 'Name of the E2E target branch'
-        type: string
-        required: false
-        default: 'FE-chopsticks-tests-merged-with-be'
 
 permissions:
   contents: write
@@ -53,9 +43,6 @@ jobs:
       testmo-run-id: ${{ steps.setTestRun.outputs.testmo-run-id }}
     steps:
       - uses: actions/checkout@v3
-        with:
-          repository: mangata-finance/mangata-fe
-          ref: '${{ github.event.inputs.e2eBranch || inputs.e2eBranch }}'
 
       - uses: actions/setup-node@v3
         with:
