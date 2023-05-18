@@ -27,6 +27,7 @@ export type DevApi = {
 };
 
 export type ApiContext = {
+  uri: string;
   chain: Blockchain;
   ws: WsProvider;
   api: ApiPromise;
@@ -57,8 +58,8 @@ export const setupContext = async ({
     "registered-types": { types: types },
   };
   const { chain, listenPort, close } = await setupWithServer(config);
-
-  const ws = new WsProvider(`ws://localhost:${listenPort}`);
+  const uri = `ws://localhost:${listenPort}`;
+  const ws = new WsProvider(uri);
   const api = await ApiPromise.create({
     provider: ws,
     types: types,
@@ -67,6 +68,7 @@ export const setupContext = async ({
   await api.isReady;
 
   return {
+    uri,
     chain,
     ws,
     api,
