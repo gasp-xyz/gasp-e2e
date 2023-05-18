@@ -160,14 +160,14 @@ export class Sidebar {
   }
   async getTokenAmount(tokenName: string) {
     await this.waitForTokenToAppear(tokenName);
-    const tokenValueXpath = `//*[@data-testid='wallet-asset-${tokenName}']//*[@class='value']`;
+    const tokenValueXpath = `//*[@data-testid='wallet-token-${tokenName}-balance']`;
     const value = await (
       await this.driver.findElement(By.xpath(tokenValueXpath))
     ).getText();
     return value;
   }
   private buildTokenAvailableTestId(asseName1: string) {
-    return `wallet-asset-${asseName1}`;
+    return `wallet-token-${asseName1}`;
   }
 
   private async isDisplayed(elementXpath: string) {

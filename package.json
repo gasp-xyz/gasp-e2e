@@ -90,6 +90,7 @@
     "test-multiswap": "export GASLESS=true; export JEST_HTML_REPORTERS_PUBLIC_PATH=reports/html-report-parallel;rm nonce.db ; rm sudo.lock; jest --verbose --ci --group=multiswap --forceExit",
     "test-xcm": " export CHOPSTICK_ENABLED=true ; export MANGATA_ENDPOINT=wss://kusama-archive.mangata.online ; export JEST_HTML_REPORTERS_PUBLIC_PATH=reports/html-report-parallel;rm nonce.db ; rm sudo.lock; jest --verbose --ci --group=xcm --forceExit --runInBand #",
     "test-sdk-xcm": " export CHOPSTICK_ENABLED=true ; export JEST_HTML_REPORTERS_PUBLIC_PATH=reports/html-report-parallel;rm nonce.db ; rm sudo.lock; jest --verbose --ci --group=sdkxcm --forceExit --runInBand #",
+    "test-xcm-ui": "export CHOPSTICK_UI=true ; rm nonce.db ; rm sudo.lock; jest --verbose --runInBand --ci",
     "runtimeUpgrade": " jest --verbose --ci --group=upgradeRuntime --runInBand --forceExit"
   },
   "devDependencies": {
