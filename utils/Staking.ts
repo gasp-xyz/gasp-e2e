@@ -28,7 +28,7 @@ export class Staking {
     const numCollators = await SudoDB.getInstance().getNextCandidateNum();
     const liqAssets =
       await api?.query.parachainStaking.stakingLiquidityTokens();
-    const liqAssetsCount = [...liqAssets!.keys()].length;
+    const liqAssetsCount = [...liqAssets!.keys()].length + 10;
     return api?.tx.parachainStaking.joinCandidates(
       amount,
       tokenId,
