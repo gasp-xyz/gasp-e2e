@@ -75,7 +75,7 @@
     "test-maintenance": "export JEST_HTML_REPORTERS_PUBLIC_PATH=reports/html-report-seq-e2e; rm nonce.db; rm sudo.lock; jest --verbose --runInBand --group=maintenance ",
     "test-ci": "rm nonce.db ; rm sudo.lock; jest --runInBand --verbose --ci --group=ci  --forceExit ",
     "test-temp-ci": "rm nonce.db ; rm sudo.lock; jest --runInBand --verbose --ci --group=temp-ci  --forceExit ",
-    "test-ui": "rm nonce.db ; rm sudo.lock; jest --verbose --runInBand --ci --group=ui  --forceExit ",
+    "test-ui": "rm nonce.db ; rm sudo.lock; jest --verbose --runInBand --ci --group=uiMain --forceExit ",
     "test-microapps-ui": "rm nonce.db ; rm sudo.lock; jest --verbose --runInBand --ci --group=microappsUI ",
     "test-microapps-pr": "rm nonce.db ; rm sudo.lock; jest --verbose --runInBand --ci --group=microappsUI --testNamePattern='^(?!.*Wallets\\smanagement.*User\\scan\\sconnect\\swallet\\sTalisman).*$'",
     "test-setup": "rm nonce.db ; rm sudo.lock; jest --verbose --runInBand --ci --group=setup  --forceExit ",
