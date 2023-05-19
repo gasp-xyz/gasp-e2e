@@ -2,6 +2,7 @@ import { WebDriver } from "selenium-webdriver";
 import {
   buildDataTestIdXpath,
   buildXpathByText,
+  elementExists,
   isDisplayed,
 } from "../utils/Helper";
 
@@ -24,7 +25,7 @@ export class Main {
   async isToastDisplayed(text: string) {
     const toast = buildDataTestIdXpath(GENERIC_TOAST);
     const message = buildXpathByText(text);
-    const displayed = await isDisplayed(this.driver, toast + message);
+    const displayed = await elementExists(this.driver, toast + message);
     return displayed;
   }
 }
