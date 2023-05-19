@@ -186,6 +186,7 @@ describe("rewards v2 tests", () => {
         testUser2.keyRingPair.address,
         liqId
       );
+      expect(rewardsInfo.activatedAmount).bnEqual(assetAmount.divn(2));
       expect(rewardsInfo.rewardsNotYetClaimed).bnEqual(availableRewardsBefore);
       const events = await claimRewardsAll(testUser2, liqId);
       const { claimedAmount } = getClaimedAmount(events);
@@ -208,32 +209,24 @@ describe("rewards v2 tests", () => {
         assetAmount.divn(2)
       );
     });
-    test("Given a user with Liquidity activated When tries to mint some more Then the user activated amount will grow on that value", async () => {
-      const rewardsInfoBefore = await getRewardsInfo(
-        testUser3.keyRingPair.address,
-        liqId
-      );
 
-      await mintLiquidity(
+    test("Given a user with Liquidity activated When tries to mint some more Then the user activated amount will grow on that value", async () => {
+      const mintingLiquidity = await mintLiquidity(
         testUser3.keyRingPair,
         MGA_ASSET_ID,
         secondCurrency,
         defaultCurrencyValue
       );
 
-      const rewardsInfoAfter = await getRewardsInfo(
-        testUser3.keyRingPair.address,
-        liqId
-      );
+      const tokensReservedValue: BN[] = mintingLiquidity
+        .filter(
+          (item) =>
+            item.method === "LiquidityActivated" &&
+            item.section === "proofOfStake"
+        )
+        .map((x) => new BN(x.eventData[2].data.toString()));
 
-      const rewardsDifference = rewardsInfoAfter.activatedAmount.sub(
-        rewardsInfoBefore.activatedAmount
-      );
-      expect(rewardsDifference).bnGt(BN_ZERO);
-      expect(rewardsDifference.isNeg()).toEqual(false);
-      expect(rewardsDifference.div(new BN(100))).bnEqual(
-        defaultCurrencyValue.div(new BN(100))
-      );
+      expect(tokensReservedValue[0]).bnEqual(defaultCurrencyValue);
     });
   });
 });

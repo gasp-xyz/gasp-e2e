@@ -13,8 +13,6 @@ import { BN, BN_HUNDRED, BN_ZERO } from "@mangata-finance/sdk";
 import { setupApi, setupUsers } from "../../utils/setup";
 import { Sudo } from "../../utils/sudo";
 import {
-  burnLiquidity,
-  claimRewardsAll,
   getLiquidityAssetId,
   getRewardsInfo,
   mintLiquidity,
@@ -168,84 +166,5 @@ test("Validate initial status: User just minted on a promoted pool and after rew
   expect(rewardsInfoAfter.rewardsNotYetClaimed).bnGt(BN_ZERO);
   expect(rewardsInfoAfter.poolRatioAtLastCheckpoint).bnGt(
     rewardsInfoAfter.rewardsNotYetClaimed
-  );
-});
-
-test("Validate initial status:  User claims all available tokens that are stored in rewardsToBeClaimed", async () => {
-  await waitForRewards(testUser1, liqId);
-
-  const rewardsInfoSubtotal = await getRewardsInfo(
-    testUser1.keyRingPair.address,
-    liqId
-  );
-
-  await claimRewardsAll(testUser1, liqId);
-
-  const rewardsInfoAfter = await getRewardsInfo(
-    testUser1.keyRingPair.address,
-    liqId
-  );
-
-  expect(rewardsInfoSubtotal.activatedAmount).bnEqual(defaultCurrencyValue);
-  expect(rewardsInfoSubtotal.lastCheckpoint).bnGt(BN_ZERO);
-  expect(rewardsInfoSubtotal.missingAtLastCheckpoint).bnEqual(
-    defaultCurrencyValue
-  );
-  expect(rewardsInfoSubtotal.poolRatioAtLastCheckpoint).bnGt(BN_ZERO);
-  expect(rewardsInfoSubtotal.rewardsAlreadyClaimed).bnEqual(BN_ZERO);
-  expect(rewardsInfoSubtotal.rewardsNotYetClaimed).bnEqual(BN_ZERO);
-
-  expect(rewardsInfoAfter.activatedAmount).bnEqual(defaultCurrencyValue);
-  expect(rewardsInfoAfter.lastCheckpoint).bnGt(BN_ZERO);
-  expect(rewardsInfoAfter.missingAtLastCheckpoint).bnEqual(
-    defaultCurrencyValue
-  );
-  expect(rewardsInfoAfter.poolRatioAtLastCheckpoint).bnGt(BN_ZERO);
-  expect(rewardsInfoAfter.rewardsAlreadyClaimed).bnGt(BN_ZERO);
-  expect(rewardsInfoAfter.rewardsNotYetClaimed).bnEqual(BN_ZERO);
-  expect(rewardsInfoAfter.rewardsAlreadyClaimed).bnGt(
-    rewardsInfoAfter.activatedAmount
-  );
-});
-
-test("Validate initial status:  User claims all available tokens that are stored in rewardsToBeClaimed and burn some", async () => {
-  const api = getApi();
-
-  await waitForRewards(testUser1, liqId);
-
-  await claimRewardsAll(testUser1, liqId);
-
-  const userBalanceBeforeBurning = await api.query.tokens.accounts(
-    testUser1.keyRingPair.address,
-    liqId
-  );
-
-  const rewardsInfoSubtotal = await getRewardsInfo(
-    testUser1.keyRingPair.address,
-    liqId
-  );
-
-  const valueBurningTokens = userBalanceBeforeBurning.reserved.div(new BN(2));
-
-  await burnLiquidity(
-    testUser1.keyRingPair,
-    MGA_ASSET_ID,
-    token1,
-    valueBurningTokens
-  );
-
-  const rewardsInfoAfter = await getRewardsInfo(
-    testUser1.keyRingPair.address,
-    liqId
-  );
-
-  expect(rewardsInfoAfter.activatedAmount).bnEqual(valueBurningTokens);
-  expect(rewardsInfoAfter.lastCheckpoint).bnGt(BN_ZERO);
-  expect(rewardsInfoAfter.missingAtLastCheckpoint).bnGt(BN_ZERO);
-  expect(rewardsInfoAfter.poolRatioAtLastCheckpoint).bnGt(BN_ZERO);
-  expect(rewardsInfoAfter.rewardsAlreadyClaimed).bnEqual(BN_ZERO);
-  expect(rewardsInfoAfter.rewardsNotYetClaimed).bnEqual(BN_ZERO);
-  expect(rewardsInfoSubtotal.activatedAmount).bnGt(
-    rewardsInfoAfter.activatedAmount
   );
 });

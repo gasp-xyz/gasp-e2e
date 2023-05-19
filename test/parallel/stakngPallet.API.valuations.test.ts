@@ -21,6 +21,7 @@ import { Sudo } from "../../utils/sudo";
 import { Xyk } from "../../utils/xyk";
 import { Staking } from "../../utils/Staking";
 import { setupApi, setupUsers } from "../../utils/setup";
+import { ExtrinsicResult } from "../../utils/eventListeners";
 
 jest.spyOn(console, "log").mockImplementation(jest.fn());
 jest.setTimeout(1500000);
@@ -146,7 +147,7 @@ describe("Collators: MinCandidateStk limit", () => {
       liqTokens.free,
       "availablebalance"
     );
-    expect(events.state).toEqual(0);
+    expect(events.state).toEqual(ExtrinsicResult.ExtrinsicSuccess);
   });
 });
 

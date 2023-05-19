@@ -1,6 +1,5 @@
 /*
  *
- * @group staking
  * @group rewardsV2Parallel
  *
  */
@@ -24,6 +23,7 @@ import { Sudo } from "../../utils/sudo";
 import { Xyk } from "../../utils/xyk";
 import { Staking } from "../../utils/Staking";
 import { setupApi, setupUsers } from "../../utils/setup";
+import { ExtrinsicResult } from "../../utils/eventListeners";
 
 jest.spyOn(console, "log").mockImplementation(jest.fn());
 jest.setTimeout(1500000);
@@ -71,10 +71,10 @@ beforeAll(async () => {
     )
   );
   liqToken = await getLiquidityAssetId(MGA_ASSET_ID, newTokenId);
-  await Sudo.asSudoFinalized(
-    Sudo.sudo(Staking.addStakingLiquidityToken(liqToken))
+  await Sudo.batchAsSudoFinalized(
+    Sudo.sudo(Staking.addStakingLiquidityToken(liqToken)),
+    Assets.promotePool(liqToken.toNumber(), 20)
   );
-  await Sudo.batchAsSudoFinalized(Assets.promotePool(liqToken.toNumber(), 20));
 });
 
 test("Given a user with bonded but not activated liq tokens WHEN he tries to activate THEN the tokens are activated for rewards", async () => {
@@ -91,7 +91,8 @@ test("Given a user with bonded but not activated liq tokens WHEN he tries to act
     minCandidate,
     "AvailableBalance"
   );
-  expect(events.state).toEqual(0);
+  expect(events.state).toEqual(ExtrinsicResult.ExtrinsicSuccess);
+
   const rewardsInfoBefore = await getRewardsInfo(
     testUser1.keyRingPair.address,
     liqToken

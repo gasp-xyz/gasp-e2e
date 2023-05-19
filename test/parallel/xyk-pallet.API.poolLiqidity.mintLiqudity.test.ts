@@ -195,4 +195,5 @@ test("Given 3 pool: token1-MGX, token2-MGX and token1-token2 WHEN token1-token2 
   expect(rewardsThirdPoolAfter.activatedAmount).bnEqual(defaultCurrencyValue);
   expect(rewardsThirdPoolBefore.rewardsAlreadyClaimed).bnEqual(BN_ZERO);
   expect(testUser1Rewards).bnLte(rewardsThirdPoolAfter.rewardsAlreadyClaimed);
+  expect(testUser1Rewards).bnGt(BN_ZERO);
 });
