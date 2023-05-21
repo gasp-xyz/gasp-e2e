@@ -31,8 +31,8 @@ import { BN_MILLION } from "@mangata-finance/sdk";
 jest.spyOn(console, "log").mockImplementation(jest.fn());
 jest.setTimeout(1500000);
 
-const successMultiSwapBuyEventName = "AssetsMultiBuySwapped";
-const successMultiSwapSellEventName = "AssetsMultiSellSwapped";
+const successMultiSwapBuyEventName = "AssetsSwapped";
+const successMultiSwapSellEventName = "AssetsSwapped";
 
 let users: User[] = [];
 let tokenIds: BN[] = [];
