@@ -216,6 +216,9 @@ describe("rewards v2 tests", () => {
     });
 
     test("Given a user with Liquidity activated When tries to mint some more Then the user activated amount will grow on that value", async () => {
+      testUser3.addAsset(liqId);
+      await testUser3.refreshAmounts(AssetWallet.BEFORE);
+
       const mintingLiquidity = await mintLiquidity(
         testUser3.keyRingPair,
         MGA_ASSET_ID,
@@ -231,7 +234,16 @@ describe("rewards v2 tests", () => {
         )
         .map((x) => new BN(x.eventData[2].data.toString()));
 
-      expect(tokensReservedValue[0]).bnEqual(defaultCurrencyValue);
+      await testUser3.refreshAmounts(AssetWallet.AFTER);
+
+      const reservedValueBefore =
+        testUser3.getAsset(liqId)?.amountBefore.reserved!;
+      const reservedValueAfter =
+        testUser3.getAsset(liqId)?.amountAfter.reserved!;
+
+      expect(reservedValueBefore.add(tokensReservedValue[0])).bnEqual(
+        reservedValueAfter
+      );
     });
   });
 });

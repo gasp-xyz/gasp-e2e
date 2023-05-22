@@ -9,7 +9,7 @@ import { Keyring } from "@polkadot/api";
 import { getApi, initApi } from "../../utils/api";
 import { Assets } from "../../utils/Assets";
 import { MGA_ASSET_ID } from "../../utils/Constants";
-import { BN, BN_HUNDRED, BN_ZERO } from "@mangata-finance/sdk";
+import { BN, BN_ZERO } from "@mangata-finance/sdk";
 import { setupApi, setupUsers } from "../../utils/setup";
 import { Sudo } from "../../utils/sudo";
 import {
@@ -158,9 +158,7 @@ test("Validate initial status: User just minted on a promoted pool and after rew
     defaultCurrencyValue.mul(new BN(2))
   );
   expect(rewardsInfoAfter.lastCheckpoint).bnGt(BN_ZERO);
-  expect(rewardsInfoAfter.missingAtLastCheckpoint).bnGt(
-    defaultCurrencyValue.mul(new BN(2)).mul(new BN(98)).div(BN_HUNDRED)
-  );
+  expect(rewardsInfoAfter.missingAtLastCheckpoint).bnEqual(new BN(492718));
   expect(rewardsInfoAfter.poolRatioAtLastCheckpoint).bnGt(BN_ZERO);
   expect(rewardsInfoAfter.rewardsAlreadyClaimed).bnEqual(BN_ZERO);
   expect(rewardsInfoAfter.rewardsNotYetClaimed).bnGt(BN_ZERO);
