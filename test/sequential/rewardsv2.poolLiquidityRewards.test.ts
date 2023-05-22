@@ -148,6 +148,10 @@ describe("rewards v2 tests", () => {
       );
       testUser1.addAsset(MGA_ASSET_ID);
       await testUser1.refreshAmounts(AssetWallet.BEFORE);
+      const rewardsAfterBurning = await getRewardsInfo(
+        testUser1.keyRingPair.address,
+        liqId
+      );
       const events = await Sudo.batchAsSudoFinalized(
         Sudo.sudoAs(testUser1, Xyk.claimRewardsAll(liqId))
       );
@@ -160,6 +164,7 @@ describe("rewards v2 tests", () => {
         );
       expect(incrementedMGAs!).bnGt(BN_ZERO);
       expect(claimedAmount).bnEqual(availableRewardsBefore);
+      expect(rewardsAfterBurning.rewardsNotYetClaimed).bnEqual(claimedAmount);
     });
     test("Given a user with Liquidity activated When tries to burn some Then the user gets automatically deactivated that amount And rewards are stored in NotYetClaimed section in rewards info", async () => {
       const availableRewardsBefore = await mangata.calculateRewardsAmount(
