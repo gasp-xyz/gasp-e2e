@@ -370,6 +370,20 @@ export async function getMultiPurposeLiquidityStatus(
     tokenId
   )) as any;
 }
+export async function getMultiPurposeLiquidityReLockStatus(
+  address: string,
+  tokenId: BN
+) {
+  const api = await mangata?.getApi()!;
+  return (await api.query.multiPurposeLiquidity.relockStatus(
+    address,
+    tokenId
+  )) as any;
+}
+export async function getVestingStatus(address: string, tokenId: BN) {
+  const api = await mangata?.getApi()!;
+  return (await api.query.vesting.vesting(address, tokenId)) as any;
+}
 export async function findBlockWithExtrinsicSigned(
   blocks = [0, 1],
   userAddress: string
