@@ -2879,6 +2879,7 @@
   version "2.0.24"
   resolved "https://registry.yarnpkg.com/@truffle/db/-/db-2.0.24.tgz#8c603c625b89b60ade0df405f684aba7b851b42c"
   integrity sha512-p4UsUKd47/Iv2SJ2m24+ObIalb4Ljt7ysv3mY/gKvEIw3fKxSErPgxDKaC0l3kPOVaz8gfXkbWDGeuLf/f66+Q==
+
   dependencies:
     "@graphql-tools/delegate" "^8.4.3"
     "@graphql-tools/schema" "^8.3.1"

@@ -1,20 +1,26 @@
 /*
  *
  * @group xyk
- * @group poolliquidity
+ * @group rewardsV2Parallel
  */
 
 import { Keyring } from "@polkadot/api";
-import { getApi, initApi } from "../../utils/api";
+import { getApi, getMangataInstance, initApi } from "../../utils/api";
 import { Assets } from "../../utils/Assets";
 import { MGA_ASSET_ID } from "../../utils/Constants";
-import { BN } from "@mangata-finance/sdk";
+import { BN, BN_ZERO } from "@mangata-finance/sdk";
 import { setupApi, setupUsers } from "../../utils/setup";
 import { Sudo } from "../../utils/sudo";
-import { getLiquidityAssetId, mintLiquidity } from "../../utils/tx";
+import {
+  claimRewardsAll,
+  getLiquidityAssetId,
+  getRewardsInfo,
+  mintLiquidity,
+} from "../../utils/tx";
 import { AssetWallet, User } from "../../utils/User";
 import { getEnvironmentRequiredVars } from "../../utils/utils";
 import { Xyk } from "../../utils/xyk";
+import { waitForRewards } from "../../utils/eventListeners";
 
 jest.spyOn(console, "log").mockImplementation(jest.fn());
 jest.setTimeout(2500000);
@@ -135,4 +141,59 @@ test("Check that a user that mints on a non-promoted pool liquidity tokens are f
 
   expect(differenceLiqTokensFree).bnEqual(defaultCurrencyValue);
   expect(differenceLiqTokensReserved).bnEqual(new BN(0));
+});
+
+test("Given 3 pool: token1-MGX, token2-MGX and token1-token2 WHEN token1-token2 is promoted THEN user can receive rewards from token1-token2 pool", async () => {
+  await Sudo.batchAsSudoFinalized(
+    Assets.mintToken(token1, testUser1, Assets.DEFAULT_AMOUNT),
+    Assets.mintToken(token2, testUser1, Assets.DEFAULT_AMOUNT),
+    Assets.mintNative(testUser1),
+    Sudo.sudoAs(
+      testUser1,
+      Xyk.createPool(
+        token1,
+        Assets.DEFAULT_AMOUNT.divn(2),
+        token2,
+        Assets.DEFAULT_AMOUNT.divn(2)
+      )
+    )
+  );
+
+  const liqIdThirdPool = await getLiquidityAssetId(token1, token2);
+  const rewardsThirdPoolBefore = await getRewardsInfo(
+    testUser1.keyRingPair.address,
+    liqIdThirdPool
+  );
+  await Sudo.batchAsSudoFinalized(
+    Xyk.updatePoolPromotion(liqIdThirdPool, 20),
+    Sudo.sudoAs(
+      testUser1,
+      Xyk.mintLiquidity(
+        token1,
+        token2,
+        defaultCurrencyValue,
+        new BN(Number.MAX_SAFE_INTEGER)
+      )
+    )
+  );
+  await waitForRewards(testUser1, liqIdThirdPool, 21);
+  const mangata = await getMangataInstance(
+    getEnvironmentRequiredVars().chainUri
+  );
+  const testUser1Rewards = await mangata.calculateRewardsAmount(
+    testUser1.keyRingPair.address,
+    liqIdThirdPool.toString()
+  );
+  await claimRewardsAll(testUser1, liqIdThirdPool);
+
+  const rewardsThirdPoolAfter = await getRewardsInfo(
+    testUser1.keyRingPair.address,
+    liqIdThirdPool
+  );
+
+  expect(rewardsThirdPoolBefore.activatedAmount).bnEqual(BN_ZERO);
+  expect(rewardsThirdPoolAfter.activatedAmount).bnEqual(defaultCurrencyValue);
+  expect(rewardsThirdPoolBefore.rewardsAlreadyClaimed).bnEqual(BN_ZERO);
+  expect(testUser1Rewards).bnLte(rewardsThirdPoolAfter.rewardsAlreadyClaimed);
+  expect(testUser1Rewards).bnGt(BN_ZERO);
 });

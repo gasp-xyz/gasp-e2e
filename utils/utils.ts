@@ -158,7 +158,7 @@ export function getEnvironmentRequiredVars() {
   };
 }
 
-export async function UserCreatesAPoolAndMintliquidity(
+export async function UserCreatesAPoolAndMintLiquidity(
   testUser1: User,
   sudo: User,
   userAmount: BN,
