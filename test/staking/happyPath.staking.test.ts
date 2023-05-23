@@ -1,7 +1,7 @@
 /* eslint-disable no-console */
 /*
  *
- * @group experimentatalStaking
+ * @group experimentalStaking
  */
 import { getApi, initApi } from "../../utils/api";
 import { User } from "../../utils/User";
