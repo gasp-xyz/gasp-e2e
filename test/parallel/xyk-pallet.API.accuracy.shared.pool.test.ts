@@ -2,7 +2,7 @@
  *
  * @group xyk
  * @group accuracy
- * @group parallel
+ * @group rewardsV2Parallel
  */
 import { getApi, getMangataInstance, initApi } from "../../utils/api";
 import { BN } from "@polkadot/util";
@@ -11,8 +11,16 @@ import { AssetWallet, User } from "../../utils/User";
 import { Assets } from "../../utils/Assets";
 import { getEnvironmentRequiredVars } from "../../utils/utils";
 import { MGA_ASSET_ID } from "../../utils/Constants";
-import { Mangata } from "@mangata-finance/sdk";
+import { BN_ZERO, Mangata } from "@mangata-finance/sdk";
 import { testLog } from "../../utils/Logger";
+import { Sudo } from "../../utils/sudo";
+import {
+  activateLiquidity,
+  getLiquidityAssetId,
+  getRewardsInfo,
+} from "../../utils/tx";
+import { Xyk } from "../../utils/xyk";
+import { waitForRewards } from "../../utils/eventListeners";
 
 jest.spyOn(console, "log").mockImplementation(jest.fn());
 jest.spyOn(console, "error").mockImplementation(jest.fn());
@@ -33,7 +41,7 @@ const default50k = new BN(50000);
 
 const { sudo: sudoUserName } = getEnvironmentRequiredVars();
 
-const defaultCurrecyValue = new BN(250000);
+const defaultCurrencyValue = new BN(250000);
 let mga: Mangata;
 
 beforeEach(async () => {
@@ -51,16 +59,21 @@ beforeEach(async () => {
   testUser3 = new User(keyring);
   sudo = new User(keyring, sudoUserName);
 
-  //add two curerncies and balance to testUser:
+  //add two currencies and balance to testUser:
   [firstCurrency] = await Assets.setupUserWithCurrencies(
     testUser1,
-    [defaultCurrecyValue, defaultCurrecyValue.add(new BN(1))],
+    [defaultCurrencyValue, defaultCurrencyValue.add(new BN(1))],
     sudo
   );
-  //add zero MGA tokens.
-  await testUser1.addMGATokens(sudo);
-  await testUser2.addMGATokens(sudo);
-  await testUser3.addMGATokens(sudo);
+
+  await Sudo.batchAsSudoFinalized(
+    Assets.FinalizeTge(),
+    Assets.initIssuance(),
+    Assets.mintNative(testUser1),
+    Assets.mintNative(testUser2),
+    Assets.mintNative(testUser3)
+  );
+
   // add users to pair.
   keyring.addPair(testUser1.keyRingPair);
   keyring.addPair(testUser2.keyRingPair);
@@ -74,11 +87,11 @@ beforeEach(async () => {
 
 describe("Accuracy > Shared pool", () => {
   beforeEach(async () => {
-    await sudo.mint(firstCurrency, testUser2, default50k);
-    await sudo.mint(firstCurrency, testUser3, default50k);
-    //    await Promise.all([
-    //
-    //    ]);
+    await Sudo.batchAsSudoFinalized(
+      Assets.mintToken(firstCurrency, testUser2, default50k),
+      Assets.mintToken(firstCurrency, testUser3, default50k)
+    );
+    testUser1.addAsset(firstCurrency);
     testUser2.addAsset(firstCurrency);
     testUser3.addAsset(firstCurrency);
     await testUser1.refreshAmounts(AssetWallet.BEFORE);
@@ -94,7 +107,7 @@ describe("Accuracy > Shared pool", () => {
       default50k
     );
   });
-  test("Each user who minted onws the same % of tokens - one user gets extra token", async () => {
+  test("Each user who minted owns the same % of tokens - one user gets extra token", async () => {
     const users = [testUser1, testUser2, testUser3];
     const sellAmount = new BN(1000);
     const balancesFirstCurrency = await mintAndBurnTokens(users, sellAmount, [
@@ -104,7 +117,7 @@ describe("Accuracy > Shared pool", () => {
     ]);
 
     balancesFirstCurrency[0] = balancesFirstCurrency[0]
-      .sub(defaultCurrecyValue.sub(default50k))
+      .sub(defaultCurrencyValue.sub(default50k))
       .add(sellAmount);
     const balancesWithCounts = getDuplicatedWithCounts(balancesFirstCurrency);
     const orderedKeys = Array.from(balancesWithCounts.keys()).sort((a, b) =>
@@ -132,7 +145,7 @@ describe("Accuracy > Shared pool", () => {
     ]);
 
     balancesFirstCurrency[0] = balancesFirstCurrency[0]
-      .sub(defaultCurrecyValue.sub(default50k))
+      .sub(defaultCurrencyValue.sub(default50k))
       .add(sellAmount);
     const balancesWithCounts = getDuplicatedWithCounts(balancesFirstCurrency);
     const orderedKeys = Array.from(balancesWithCounts.keys()).sort((a, b) =>
@@ -159,7 +172,7 @@ describe("Accuracy > Shared pool", () => {
     ]);
 
     balancesFirstCurrency[0] = balancesFirstCurrency[0]
-      .sub(defaultCurrecyValue.sub(default50k))
+      .sub(defaultCurrencyValue.sub(default50k))
       .add(sellAmount);
 
     const balancesWithCounts = getDuplicatedWithCounts(balancesFirstCurrency);
@@ -183,7 +196,7 @@ describe("Accuracy > Shared pool", () => {
       amountsToMint
     );
     balancesFirstCurrency[0] = balancesFirstCurrency[0]
-      .sub(defaultCurrecyValue.sub(default50k))
+      .sub(defaultCurrencyValue.sub(default50k))
       .add(sellAmount);
 
     //lets remove the amount added to the user, so we only compare the benefits.
@@ -218,6 +231,88 @@ describe("Accuracy > Shared pool", () => {
         .abs()
     ).bnLte(new BN(2));
   });
+});
+
+test("Given 3 users that minted liquidity WHEN only one activated the rewards THEN all rewards belongs to him on this pool", async () => {
+  await Sudo.batchAsSudoFinalized(
+    Assets.mintToken(firstCurrency, testUser2, default50k),
+    Assets.mintToken(firstCurrency, testUser3, default50k)
+  );
+  testUser1.addAsset(firstCurrency);
+  testUser2.addAsset(firstCurrency);
+  testUser3.addAsset(firstCurrency);
+  await testUser1.refreshAmounts(AssetWallet.BEFORE);
+  await testUser2.refreshAmounts(AssetWallet.BEFORE);
+  await testUser3.refreshAmounts(AssetWallet.BEFORE);
+  mga = await getMangataInstance();
+
+  await mga.createPool(
+    testUser1.keyRingPair,
+    firstCurrency.toString(),
+    default50k,
+    MGA_ASSET_ID.toString(),
+    default50k
+  );
+
+  const liqId = await getLiquidityAssetId(MGA_ASSET_ID, firstCurrency);
+
+  await Sudo.batchAsSudoFinalized(
+    Sudo.sudoAs(
+      testUser2,
+      Xyk.mintLiquidity(firstCurrency, MGA_ASSET_ID, default50k)
+    ),
+    Sudo.sudoAs(
+      testUser3,
+      Xyk.mintLiquidity(firstCurrency, MGA_ASSET_ID, default50k)
+    ),
+    Assets.promotePool(liqId.toNumber(), 20)
+  );
+
+  testUser1.addAsset(liqId);
+  testUser2.addAsset(liqId);
+  testUser3.addAsset(liqId);
+
+  await activateLiquidity(testUser2.keyRingPair, liqId, default50k);
+
+  await testUser1.refreshAmounts(AssetWallet.AFTER);
+  await testUser2.refreshAmounts(AssetWallet.AFTER);
+  await testUser3.refreshAmounts(AssetWallet.AFTER);
+
+  const rewardsUser1 = await getRewardsInfo(
+    testUser1.keyRingPair.address,
+    liqId
+  );
+  const rewardsUser2 = await getRewardsInfo(
+    testUser2.keyRingPair.address,
+    liqId
+  );
+  const rewardsUser3 = await getRewardsInfo(
+    testUser3.keyRingPair.address,
+    liqId
+  );
+  const mangata = await getMangataInstance(
+    getEnvironmentRequiredVars().chainUri
+  );
+  await waitForRewards(testUser2, liqId);
+  const user1AvailableRewards = await mangata.calculateRewardsAmount(
+    testUser1.keyRingPair.address,
+    liqId.toString()
+  );
+  const user2AvailableRewards = await mangata.calculateRewardsAmount(
+    testUser2.keyRingPair.address,
+    liqId.toString()
+  );
+  const user3AvailableRewards = await mangata.calculateRewardsAmount(
+    testUser3.keyRingPair.address,
+    liqId.toString()
+  );
+  expect(rewardsUser1.activatedAmount).bnEqual(BN_ZERO);
+  expect(rewardsUser2.activatedAmount).bnEqual(default50k);
+  expect(rewardsUser3.activatedAmount).bnEqual(BN_ZERO);
+
+  expect(user1AvailableRewards).bnEqual(BN_ZERO);
+  expect(user2AvailableRewards).bnGt(BN_ZERO);
+  expect(user3AvailableRewards).bnEqual(BN_ZERO);
 });
 
 ///Mint tokens for all the users, users[0] do a swap and then all the users burn them all.

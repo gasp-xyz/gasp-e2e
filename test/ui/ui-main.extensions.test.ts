@@ -1,6 +1,6 @@
 /*
  *
- * @group ui
+ * @group uiMain
  */
 import { WebDriver } from "selenium-webdriver";
 import { getApi, initApi } from "../../utils/api";
