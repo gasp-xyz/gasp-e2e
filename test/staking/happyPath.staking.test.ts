@@ -169,7 +169,7 @@ async function startDockerImage() {
   );
 }
 async function signNodeWithEve() {
-  await sleep(10000);
+  await sleep(30000);
   const cont = await docker.listContainers();
   const newRunnCont = cont.filter((x) => x.Image.includes(dockerImageName))[0];
   const port = newRunnCont.Ports.filter((p) => p.PrivatePort === 9944)[0]
