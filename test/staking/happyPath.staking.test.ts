@@ -31,7 +31,7 @@ process.env.NODE_ENV = "test";
 let docker: Docker;
 const dockerImageName = "test_image:automation";
 const mgaParachainImageName = "parachain-2110";
-const mgaDockerContainerImage = "output-parachain-2110-1";
+const mgaDockerContainerImage = "output_parachain-2110-1";
 
 let testUser1: User;
 let minStk: BN;
