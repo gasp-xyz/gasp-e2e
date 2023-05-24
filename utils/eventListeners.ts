@@ -6,7 +6,7 @@ import _, { reject } from "lodash";
 import { getApi, getMangataInstance } from "./api";
 import { logEvent, testLog } from "./Logger";
 import { api } from "./setup";
-import { getEventErrorfromSudo } from "./txHandler";
+import { getEventErrorFromSudo } from "./txHandler";
 import { User } from "./User";
 import { getEnvironmentRequiredVars } from "./utils";
 import { Codec } from "@polkadot/types/types";
@@ -120,7 +120,7 @@ export async function waitSudoOperationFail(
     (extrinsicResult) => extrinsicResult.method === "Sudid"
   );
 
-  const BootstrapError = await getEventErrorfromSudo(filterBootstrapEvent);
+  const BootstrapError = await getEventErrorFromSudo(filterBootstrapEvent);
 
   expect(BootstrapError.method).toContain(expectedError);
 }
