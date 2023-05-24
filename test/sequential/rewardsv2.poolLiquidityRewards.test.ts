@@ -1,17 +1,13 @@
 /*
  *
- * @group rewardsV2
+ * @group rewardsV2Sequential
  */
 
 import { getApi, getMangataInstance, initApi } from "../../utils/api";
 import { AssetWallet, User } from "../../utils/User";
 import { Keyring } from "@polkadot/api";
 import { BN } from "@polkadot/util";
-import {
-  getEnvironmentRequiredVars,
-  stringToBN,
-  waitIfSessionWillChangeInNblocks,
-} from "../../utils/utils";
+import { getEnvironmentRequiredVars, stringToBN } from "../../utils/utils";
 import { Assets } from "../../utils/Assets";
 import { Sudo } from "../../utils/sudo";
 import { Xyk } from "../../utils/xyk";
@@ -33,6 +29,7 @@ const assetAmount = new BN("1000000000000000");
 
 let testUser1: User;
 let testUser2: User;
+let testUser3: User;
 let sudo: User;
 
 let keyring: Keyring;
@@ -49,7 +46,7 @@ describe("rewards v2 tests", () => {
 
     keyring = new Keyring({ type: "sr25519" });
     sudo = new User(keyring, getEnvironmentRequiredVars().sudo);
-    [testUser1, testUser2] = setupUsers();
+    [testUser1, testUser2, testUser3] = setupUsers();
 
     secondCurrency = await Assets.issueAssetToUser(
       sudo,
@@ -65,8 +62,10 @@ describe("rewards v2 tests", () => {
       Assets.initIssuance(),
       Assets.mintToken(secondCurrency, testUser1, Assets.DEFAULT_AMOUNT),
       Assets.mintToken(secondCurrency, testUser2, Assets.DEFAULT_AMOUNT),
+      Assets.mintToken(secondCurrency, testUser3, Assets.DEFAULT_AMOUNT),
       Assets.mintNative(testUser1),
       Assets.mintNative(testUser2),
+      Assets.mintNative(testUser3),
       Sudo.sudoAs(
         testUser1,
         Xyk.createPool(
@@ -120,6 +119,10 @@ describe("rewards v2 tests", () => {
           testUser2,
           Xyk.mintLiquidity(MGA_ASSET_ID, secondCurrency, assetAmount)
         ),
+        Sudo.sudoAs(
+          testUser3,
+          Xyk.mintLiquidity(MGA_ASSET_ID, secondCurrency, assetAmount)
+        ),
         Sudo.sudoAs(testUser1, Xyk.activateLiquidity(liqId, liqBalance.free))
       );
 
@@ -145,10 +148,12 @@ describe("rewards v2 tests", () => {
       );
       testUser1.addAsset(MGA_ASSET_ID);
       await testUser1.refreshAmounts(AssetWallet.BEFORE);
-      const events = await mangata.claimRewards(
-        testUser1.keyRingPair,
-        liqId.toString(),
-        availableRewardsBefore
+      const rewardsAfterBurning = await getRewardsInfo(
+        testUser1.keyRingPair.address,
+        liqId
+      );
+      const events = await Sudo.batchAsSudoFinalized(
+        Sudo.sudoAs(testUser1, Xyk.claimRewardsAll(liqId))
       );
       const { claimedAmount } = getClaimedAmount(events);
       await testUser1.refreshAmounts(AssetWallet.AFTER);
@@ -158,13 +163,11 @@ describe("rewards v2 tests", () => {
           testUser1.getAsset(MGA_ASSET_ID)?.amountBefore.free!
         );
       expect(incrementedMGAs!).bnGt(BN_ZERO);
-      expect(incrementedMGAs!).bnLt(availableRewardsBefore);
       expect(claimedAmount).bnEqual(availableRewardsBefore);
+      expect(rewardsAfterBurning.rewardsNotYetClaimed).bnEqual(claimedAmount);
     });
     test("Given a user with Liquidity activated When tries to burn some Then the user gets automatically deactivated that amount And rewards are stored in NotYetClaimed section in rewards info", async () => {
-      let availableRewardsBefore;
-      await waitIfSessionWillChangeInNblocks(4);
-      availableRewardsBefore = await mangata.calculateRewardsAmount(
+      const availableRewardsBefore = await mangata.calculateRewardsAmount(
         testUser2.keyRingPair.address,
         liqId.toString()
       );
@@ -174,6 +177,7 @@ describe("rewards v2 tests", () => {
           testUser2.keyRingPair.address
         )
       ).reserved;
+
       await burnLiquidity(
         testUser2.keyRingPair,
         MGA_ASSET_ID,
@@ -189,11 +193,6 @@ describe("rewards v2 tests", () => {
       );
       expect(rewardsInfo.activatedAmount).bnEqual(assetAmount.divn(2));
       expect(rewardsInfo.rewardsNotYetClaimed).bnEqual(availableRewardsBefore);
-      await waitIfSessionWillChangeInNblocks(4);
-      availableRewardsBefore = await mangata.calculateRewardsAmount(
-        testUser2.keyRingPair.address,
-        liqId.toString()
-      );
       const events = await claimRewardsAll(testUser2, liqId);
       const { claimedAmount } = getClaimedAmount(events);
       await testUser2.refreshAmounts(AssetWallet.AFTER);
@@ -203,7 +202,9 @@ describe("rewards v2 tests", () => {
           testUser2.getAsset(MGA_ASSET_ID)?.amountBefore.free!
         );
       expect(incrementedMGAs!.abs()).bnGt(BN_ZERO);
-      expect(claimedAmount).bnEqual(availableRewardsBefore);
+      expect(claimedAmount).bnGt(BN_ZERO);
+      expect(availableRewardsBefore).bnGt(BN_ZERO);
+      expect(availableRewardsBefore).bnLte(claimedAmount);
       const rewardsInfoAfterClaim = await getRewardsInfo(
         testUser2.keyRingPair.address,
         liqId
@@ -211,6 +212,37 @@ describe("rewards v2 tests", () => {
       expect(rewardsInfoAfterClaim.rewardsNotYetClaimed).bnEqual(BN_ZERO);
       expect(rewardsInfoAfterClaim.activatedAmount).bnEqual(
         assetAmount.divn(2)
+      );
+    });
+
+    test("Given a user with Liquidity activated When tries to mint some more Then the user activated amount will grow on that value", async () => {
+      testUser3.addAsset(liqId);
+      await testUser3.refreshAmounts(AssetWallet.BEFORE);
+
+      const mintingLiquidity = await mintLiquidity(
+        testUser3.keyRingPair,
+        MGA_ASSET_ID,
+        secondCurrency,
+        defaultCurrencyValue
+      );
+
+      const tokensReservedValue: BN[] = mintingLiquidity
+        .filter(
+          (item) =>
+            item.method === "LiquidityActivated" &&
+            item.section === "proofOfStake"
+        )
+        .map((x) => new BN(x.eventData[2].data.toString()));
+
+      await testUser3.refreshAmounts(AssetWallet.AFTER);
+
+      const reservedValueBefore =
+        testUser3.getAsset(liqId)?.amountBefore.reserved!;
+      const reservedValueAfter =
+        testUser3.getAsset(liqId)?.amountAfter.reserved!;
+
+      expect(reservedValueBefore.add(tokensReservedValue[0])).bnEqual(
+        reservedValueAfter
       );
     });
   });

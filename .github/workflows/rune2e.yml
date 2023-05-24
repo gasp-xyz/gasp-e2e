@@ -119,7 +119,7 @@ jobs:
 
       - name: Replace parachain docker image reference in config
         working-directory: mangata-node/launch
-        run: sed -i 's+mangatasolutions/mangata-node:dev+${{ github.event.inputs.dockerImage }}+g' config.yml
+        run: sed -i 's+mangatasolutions/mangata-node:.*+${{ github.event.inputs.dockerImage || inputs.dockerImage }}+g' config.yml
       
       - name: Debug node version
         working-directory: mangata-node/launch

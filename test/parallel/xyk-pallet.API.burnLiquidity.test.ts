@@ -160,8 +160,8 @@ describe("xyk-pallet - Burn liquidity tests: when burning liquidity you can", ()
   });
 
   test("Burning liquidities provides Burn and settle", async () => {
-    // The second currecy value is : defaultCurrecyValue, one to create the pool later, and the other one because of the rounding issue.
-    [firstCurrency, secondCurrency] = await UserCreatesAPoolAndMintliquidity(
+    // The second currency value is : defaultCurrencyValue, one to create the pool later, and the other one because of the rounding issue.
+    [firstCurrency, secondCurrency] = await UserCreatesAPoolAndMintLiquidity(
       testUser1,
       sudo,
       new BN(defaultCurrecyValue),
@@ -190,7 +190,7 @@ describe("xyk-pallet - Burn liquidity tests: when burning liquidity you can", ()
 
   test("Burning liquidities generates a Liquidity burned event", async () => {
     // The second currecy value is : defaultCurrecyValue, one to create the pool later, and the other one because of the rounding issue.
-    [firstCurrency, secondCurrency] = await UserCreatesAPoolAndMintliquidity(
+    [firstCurrency, secondCurrency] = await UserCreatesAPoolAndMintLiquidity(
       testUser1,
       sudo,
       new BN(defaultCurrecyValue),
@@ -243,7 +243,7 @@ describe("xyk-pallet - Burn liquidity tests: when burning liquidity you can", ()
   });
 });
 
-async function UserCreatesAPoolAndMintliquidity(
+async function UserCreatesAPoolAndMintLiquidity(
   testUser1: User,
   sudo: User,
   userAmount: BN,
