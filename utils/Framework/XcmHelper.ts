@@ -17,6 +17,7 @@ export type SetupOption = {
   types?: Record<string, any>;
   localPort?: number;
   buildBlockMode?: BuildBlockMode;
+  rpc?: Record<string, any>;
 };
 
 export type DevApi = {
@@ -44,6 +45,7 @@ export const setupContext = async ({
   types,
   localPort,
   buildBlockMode,
+  rpc,
 }: SetupOption): Promise<ApiContext> => {
   // random port
   const port = localPort ? localPort : await getPort.getPort();
@@ -63,6 +65,7 @@ export const setupContext = async ({
   const api = await ApiPromise.create({
     provider: ws,
     types: types,
+    rpc: rpc,
   });
 
   await api.isReady;
