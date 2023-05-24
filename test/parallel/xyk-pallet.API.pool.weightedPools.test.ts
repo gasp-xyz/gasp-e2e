@@ -1,12 +1,14 @@
 /*
  *
+ * @group api
+ * @group parallel
  */
 
 import { Keyring } from "@polkadot/api";
 import { getApi, initApi } from "../../utils/api";
 import { Assets } from "../../utils/Assets";
 import { MGA_ASSET_ID } from "../../utils/Constants";
-import { BN, BN_HUNDRED, BN_ZERO, signTx } from "@mangata-finance/sdk";
+import { BN, BN_HUNDRED, signTx } from "@mangata-finance/sdk";
 import { setupApi, setupUsers } from "../../utils/setup";
 import { Sudo } from "../../utils/sudo";
 import {
@@ -17,7 +19,7 @@ import {
 import { User } from "../../utils/User";
 import { getEnvironmentRequiredVars, stringToBN } from "../../utils/utils";
 import { Xyk } from "../../utils/xyk";
-import { ExtrinsicResult, waitForRewards } from "../../utils/eventListeners";
+import { ExtrinsicResult } from "../../utils/eventListeners";
 import { getEventResultFromMangataTx } from "../../utils/txHandler";
 
 jest.spyOn(console, "log").mockImplementation(jest.fn());
@@ -82,7 +84,7 @@ beforeEach(async () => {
 test("Check that we can get the list of promoted pools with proofOfStake.promotedPoolRewards data storage", async () => {
   const poolWeight = await getPoolWeight(liqId);
 
-  expect(poolWeight).bnGt(BN_ZERO);
+  expect(poolWeight).bnEqual(new BN(20));
 });
 
 test("Validate that weight can be modified by using updatePoolPromotion AND only sudo can update weights", async () => {
@@ -149,8 +151,6 @@ test("Testing that the sum of the weights can be greater than 100", async () => 
     )
   );
 
-  //await waitForRewards(testUser1, liqId2);
-
   const poolWeightLiq1 = await getPoolWeight(liqId);
 
   const poolWeightLiq2 = await getPoolWeight(liqId2);
@@ -162,8 +162,6 @@ test("Testing that the sum of the weights can be greater than 100", async () => 
     Sudo.sudoAs(testUser1, Xyk.claimRewardsAll(liqId)),
     Sudo.sudoAs(testUser1, Xyk.claimRewardsAll(liqId2))
   );
-
-  await waitForRewards(testUser1, liqId2);
 
   const rewardsLiqId1 = await getRewardsInfo(
     testUser1.keyRingPair.address,
