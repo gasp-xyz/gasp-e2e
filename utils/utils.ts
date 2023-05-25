@@ -83,7 +83,7 @@ export function getEnvironmentRequiredVars() {
 
   const uiUri = process.env.UI_URL
     ? process.env.UI_URL
-    : "https://develop.mangata.finance/";
+    : "http://localhost:5500";
 
   const mnemonicMetaMask = process.env.MNEMONIC_META
     ? process.env.MNEMONIC_META
@@ -91,7 +91,7 @@ export function getEnvironmentRequiredVars() {
 
   const mnemonicPolkadot = process.env.MNEMONIC_POLK
     ? process.env.MNEMONIC_POLK
-    : " oh oh";
+    : "foil skull pact found inform surround gown they eagle enjoy spread announce";
 
   const ethereumHTTPUrl = process.env.ETH_HTTP_URL
     ? process.env.ETH_HTTP_URL

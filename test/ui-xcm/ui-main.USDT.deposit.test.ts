@@ -54,7 +54,9 @@ describe("UI XCM tests - USDT", () => {
     kusama = await XcmNetworks.kusama({ localPort: 9944 });
     mangata = await XcmNetworks.mangata({ localPort: 9946 });
     statemine = await XcmNetworks.statemine({ localPort: 9949 });
+
     await connectVertical(kusama.chain, mangata.chain);
+    await connectVertical(kusama.chain, statemine.chain);
     await connectParachains([statemine.chain, mangata.chain]);
     alice = devTestingPairs().alice;
 
