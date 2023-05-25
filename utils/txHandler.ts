@@ -157,7 +157,7 @@ export const getEventResultFromMangataTx = function (
   return createEventResultfromExtrinsic(extrinsicResult as MangataGenericEvent);
 };
 
-export async function getEventErrorfromSudo(sudoEvent: MangataGenericEvent[]) {
+export async function getEventErrorFromSudo(sudoEvent: MangataGenericEvent[]) {
   const api = getApi();
 
   const filteredEvent = sudoEvent.filter(
