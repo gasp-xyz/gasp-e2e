@@ -53,7 +53,9 @@ describe("XCM tests for Mangata <-> Kusama", () => {
     });
     await kusama.dev.setStorage({
       System: {
-        Account: [[[alice.address], { data: { free: 10 * 1e12 } }]],
+        Account: [
+          [[alice.address], { providers: 1, data: { free: 10 * 1e12 } }],
+        ],
       },
     });
   });
