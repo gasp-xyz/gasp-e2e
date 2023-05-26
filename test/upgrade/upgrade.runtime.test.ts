@@ -35,7 +35,10 @@ describe("Story tests > LP", () => {
       "0xa4f385913ba0acb618402fe01aa20a87ed3d5b58cc7d28cb7a9165eb309c9300";
     const wasmFile = fs.readFileSync("./test/upgrade/RC_upgrade_0.wasm");
     await signSendAndWaitToFinishTx(
-      api.tx.sudo.sudo(api!.tx.parachainSystem.authorizeUpgrade(hash)),
+      api.tx.sudo.sudo(
+        //@ts-ignore
+        api!.tx.parachainSystem.authorizeUpgrade(hash, false)
+      ),
       sudo.keyRingPair
     );
     await signSendAndWaitToFinishTx(

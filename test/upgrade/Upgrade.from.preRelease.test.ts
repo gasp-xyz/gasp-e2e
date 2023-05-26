@@ -89,7 +89,10 @@ describe("upgrade - testpad", () => {
     const hexHash = api!.registry.hash(bufferToU8a(wasmContent)).toHex();
     await signTx(
       api!,
-      api!.tx.sudo.sudo(api!.tx.parachainSystem.authorizeUpgrade(hexHash)),
+      api!.tx.sudo.sudo(
+        //@ts-ignore
+        api!.tx.parachainSystem.authorizeUpgrade(hexHash, false)
+      ),
       sudo.keyRingPair
     );
     await signTx(

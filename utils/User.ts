@@ -341,7 +341,7 @@ export class User {
     assetId: BN,
     locMarker = assetId,
     location = {
-      V1: {
+      V2: {
         parents: 1,
         interior: {
           X3: [
@@ -377,7 +377,7 @@ export class User {
       },
     },
     location = {
-      V1: {
+      V2: {
         parents: 1,
         interior: {
           X3: [

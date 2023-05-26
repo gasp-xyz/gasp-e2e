@@ -279,7 +279,10 @@ test("maintenance- validate that when UpgradabilityON, Sudo or council can only 
 
   const authorizeUpgradeBefore = await signTx(
     api!,
-    api!.tx.sudo.sudo(api!.tx.parachainSystem.authorizeUpgrade(hash)),
+    api!.tx.sudo.sudo(
+      //@ts-ignore
+      api!.tx.parachainSystem.authorizeUpgrade(hash, false)
+    ),
     sudo.keyRingPair,
     {
       nonce: await getCurrentNonce(sudo.keyRingPair.address),
@@ -299,7 +302,8 @@ test("maintenance- validate that when UpgradabilityON, Sudo or council can only 
 
   const authorizeUpgradeAfter = await signTx(
     api!,
-    api!.tx.sudo.sudo(api!.tx.parachainSystem.authorizeUpgrade(hash)),
+    //@ts-ignore
+    api!.tx.sudo.sudo(api!.tx.parachainSystem.authorizeUpgrade(hash, false)),
     sudo.keyRingPair,
     {
       nonce: await getCurrentNonce(sudo.keyRingPair.address),
