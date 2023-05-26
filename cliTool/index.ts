@@ -414,7 +414,9 @@ async function app(): Promise<any> {
           );
       }
       if (answers.option.includes("listen token balance changes")) {
-        await subscribeAndPrintTokenChanges();
+        await subscribeAndPrintTokenChanges(
+          getEnvironmentRequiredVars().chainUri
+        );
       }
       if (answers.option.includes("provisionWith100Users")) {
         await provisionWith100Users();
