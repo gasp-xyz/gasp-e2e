@@ -2,9 +2,9 @@
 
 exports[`XCM tests for Mangata <-> Kusama Kusama transfer assets to mangata 1`] = `
 {
-  "feeFrozen": 0,
-  "free": 8999379005607,
-  "miscFrozen": 0,
+  "flags": "0x80000000000000000000000000000000",
+  "free": 8999379282028,
+  "frozen": 0,
   "reserved": 0,
 }
 `;
@@ -77,9 +77,9 @@ exports[`XCM tests for Mangata <-> Kusama mangata transfer assets to kusama 1`] 
 
 exports[`XCM tests for Mangata <-> Kusama mangata transfer assets to kusama 2`] = `
 {
-  "feeFrozen": 0,
-  "free": 10999909712564,
-  "miscFrozen": 0,
+  "flags": "0x80000000000000000000000000000000",
+  "free": 10999909994200,
+  "frozen": 0,
   "reserved": 0,
 }
 `;
