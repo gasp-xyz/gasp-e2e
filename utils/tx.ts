@@ -27,7 +27,12 @@ import { testLog } from "./Logger";
 import { SudoDB } from "./SudoDB";
 import { setAssetInfo, signSendAndWaitToFinishTx } from "./txHandler";
 import { User } from "./User";
-import { getEnvironmentRequiredVars, stringToBN } from "./utils";
+import {
+  getEnvironmentRequiredVars,
+  isRunningInChops,
+  stringToBN,
+} from "./utils";
+import { replaceByStateCall } from "./chopsticksHelper";
 
 export const signTxDeprecated = async (
   tx: SubmittableExtrinsic<"promise">,
@@ -161,13 +166,23 @@ export async function calculate_sell_price_rpc(
   output_reserve: BN,
   sell_amount: BN
 ): Promise<BN> {
-  const mangata = await getMangataInstance();
-  const result = await mangata.calculateSellPrice(
-    input_reserve,
-    output_reserve,
-    sell_amount
-  );
-  return result;
+  if (isRunningInChops()) {
+    const params = [
+      { paramType: "Balance", paramValue: input_reserve },
+      { paramType: "Balance", paramValue: output_reserve },
+      { paramType: "Balance", paramValue: sell_amount },
+    ];
+    const result = await replaceByStateCall("calculate_sell_price", params);
+    return new BN(result.price);
+  } else {
+    const mangata = await getMangataInstance();
+    const result = await mangata.calculateSellPrice(
+      input_reserve,
+      output_reserve,
+      sell_amount
+    );
+    return result;
+  }
 }
 
 export async function calculate_buy_price_rpc(
@@ -175,13 +190,23 @@ export async function calculate_buy_price_rpc(
   outputReserve: BN,
   buyAmount: BN
 ) {
-  const mangata = await getMangataInstance();
-  const result = await mangata.calculateBuyPrice(
-    inputReserve,
-    outputReserve,
-    buyAmount
-  );
-  return result;
+  if (isRunningInChops()) {
+    const params = [
+      { paramType: "Balance", paramValue: inputReserve },
+      { paramType: "Balance", paramValue: outputReserve },
+      { paramType: "Balance", paramValue: buyAmount },
+    ];
+    const result = await replaceByStateCall("calculate_buy_price", params);
+    return new BN(result.price);
+  } else {
+    const mangata = await getMangataInstance();
+    const result = await mangata.calculateBuyPrice(
+      inputReserve,
+      outputReserve,
+      buyAmount
+    );
+    return result;
+  }
 }
 
 export async function calculate_buy_price_id_rpc(
@@ -189,13 +214,23 @@ export async function calculate_buy_price_id_rpc(
   boughtTokenId: BN,
   buyAmount: BN
 ) {
-  const mangata = await getMangataInstance();
-  const result = await mangata.calculateBuyPriceId(
-    soldTokenId.toString(),
-    boughtTokenId.toString(),
-    buyAmount
-  );
-  return result;
+  if (isRunningInChops()) {
+    const params = [
+      { paramType: "TokenId", paramValue: soldTokenId.toString() },
+      { paramType: "TokenId", paramValue: boughtTokenId.toString() },
+      { paramType: "Balance", paramValue: buyAmount },
+    ];
+    const result = await replaceByStateCall("calculate_buy_price_id", params);
+    return new BN(result.price);
+  } else {
+    const mangata = await getMangataInstance();
+    const result = await mangata.calculateBuyPriceId(
+      soldTokenId.toString(),
+      boughtTokenId.toString(),
+      buyAmount
+    );
+    return result;
+  }
 }
 
 export async function calculate_sell_price_id_rpc(
@@ -203,13 +238,23 @@ export async function calculate_sell_price_id_rpc(
   boughtTokenId: BN,
   sellAmount: BN
 ) {
-  const mangata = await getMangataInstance();
-  const result = await mangata.calculateSellPriceId(
-    soldTokenId.toString(),
-    boughtTokenId.toString(),
-    sellAmount
-  );
-  return result;
+  if (isRunningInChops()) {
+    const params = [
+      { paramType: "TokenId", paramValue: soldTokenId.toString() },
+      { paramType: "TokenId", paramValue: boughtTokenId.toString() },
+      { paramType: "Balance", paramValue: sellAmount },
+    ];
+    const result = await replaceByStateCall("calculate_sell_price_id", params);
+    return new BN(result.price);
+  } else {
+    const mangata = await getMangataInstance();
+    const result = await mangata.calculateSellPriceId(
+      soldTokenId.toString(),
+      boughtTokenId.toString(),
+      sellAmount
+    );
+    return result;
+  }
 }
 
 export async function getCurrentNonce(account?: string) {

@@ -26,7 +26,6 @@ import { Sudo } from "../../utils/sudo";
 import { Xyk } from "../../utils/xyk";
 import { testLog } from "../../utils/Logger";
 import { signSendFinalized } from "../../utils/sign";
-import { getApi } from "../../utils/api";
 
 function assetsAfterFree(user: User): BN[] {
   return user.assets.map((asset) => asset.amountAfter.free);
@@ -54,17 +53,6 @@ describe("xyk-pallet: Happy case scenario", () => {
   beforeAll(async () => {
     await setupApi();
     [user1, user2] = setupUsers();
-    const api = await getApi();
-    const meth = await api.rpc.rpc.methods();
-    //@ts-ignore
-    const asd = await api.rpc.xyk.calculate_buy_price(
-      new BN(100),
-      new BN(100),
-      new BN(100)
-    );
-    console.info(meth);
-    console.info(asd);
-
     const { xykPalletAddress } = getEnvironmentRequiredVars();
     xykPalletUser = new User(keyring);
     xykPalletUser.addFromAddress(keyring, xykPalletAddress);

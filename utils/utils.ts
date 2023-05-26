@@ -561,3 +561,9 @@ export async function getUserSubIdentity(user: User) {
   const identity = await api.query.identity.superOf(user.keyRingPair.address);
   return JSON.parse(JSON.stringify(identity.toHuman()));
 }
+export function isRunningInChops() {
+  return (
+    process.env.CHOPSTICK_ENABLED &&
+    Boolean(process.env.CHOPSTICK_ENABLED) === true
+  );
+}

@@ -8,7 +8,7 @@ import { logEvent, testLog } from "./Logger";
 import { api } from "./setup";
 import { getEventErrorFromSudo } from "./txHandler";
 import { User } from "./User";
-import { getEnvironmentRequiredVars } from "./utils";
+import { getEnvironmentRequiredVars, isRunningInChops } from "./utils";
 import { Codec } from "@polkadot/types/types";
 
 // lets create a enum for different status.
@@ -77,13 +77,18 @@ export const waitNewBlock = () => {
   const api = getApi();
   let count = 0;
   return new Promise(async (resolve) => {
-    const unsubscribe = await api.rpc.chain.subscribeNewHeads((header: any) => {
-      if (++count === 2) {
-        testLog.getLog().info(`Chain is at block: #${header.number}`);
-        unsubscribe();
-        resolve(true);
+    const unsubscribe = await api.rpc.chain.subscribeNewHeads(
+      async (header: any) => {
+        if (isRunningInChops()) {
+          await api.rpc("dev_newBlock", { count: 1 });
+        }
+        if (++count === 2) {
+          testLog.getLog().info(`Chain is at block: #${header.number}`);
+          unsubscribe();
+          resolve(true);
+        }
       }
-    });
+    );
   });
 };
 
