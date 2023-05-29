@@ -319,7 +319,7 @@ async function app(): Promise<any> {
       }
       if (answers.option.includes("get pools")) {
         const mga = Mangata.getInstance([
-          "wss://prod-kusama-collator-01.mangatafinance.cloud",
+          "wss://kusama-archive.mangata.online",
         ]);
         const pools = mga.getPools();
         (await pools).forEach((pool) => console.info(JSON.stringify(pool)));

@@ -634,17 +634,19 @@ export async function getTokensAccountDataStorage(ws = "ws://127.0.0.1:9946") {
 export async function migrate() {
   await setupApi();
   await setupUsers();
-  await initApi("wss://prod-kusama-collator-01.mangatafinance.cloud");
+  await initApi("wss://kusama-archive.mangata.online");
   const api = await getApi();
   const allPallets = await listStorages();
   const storageToMigrate = allPallets
     .filter(
       (x: any) =>
+        x[0] === "ProofOfStake" ||
         x[0] === "Tokens" ||
         x[0] === "Xyk" ||
         x[0] === "Vesting" ||
         x[0] === "MultiPurposeLiquidity" ||
-        x[0] === "AssetRegistry"
+        x[0] === "AssetRegistry" ||
+        x[0] === "RewardsInfo"
     )
     .flatMap((item: any) =>
       item[1].map((element: any) => {
@@ -711,9 +713,7 @@ export async function migrate() {
     await Sudo.batchAsSudoFinalized(...txs);
   }
 }
-export async function listStorages(
-  ws = "wss://prod-kusama-collator-01.mangatafinance.cloud"
-) {
+export async function listStorages(ws = "wss://kusama-archive.mangata.online") {
   await setupApi();
   await setupUsers();
   await initApi(ws);
