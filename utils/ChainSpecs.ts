@@ -1,5 +1,6 @@
 import { BN_TEN, BN_ZERO } from "@mangata-finance/sdk";
 import { BN, BN_HUNDRED, BN_THOUSAND } from "@polkadot/util";
+import { ApiPromise } from "@polkadot/api";
 
 export const TRANSFER_INSTRUCTIONS = 4;
 export const WEIGHT_IN_SECONDS = new BN(1_000_000_000_000);
@@ -48,13 +49,43 @@ export class AssetId {
     },
     unit: BN_TEN.pow(new BN(18)),
   };
-
+  static async getLocationFromChain(symbol: string, api: ApiPromise) {
+    const entries = await api.query.assetRegistry.metadata.entries();
+    const asset = entries.filter((entry) => {
+      const elem = entry[1];
+      const name = api.createType(
+        "Vec<u8>",
+        JSON.parse(JSON.stringify(elem)).symbol
+      );
+      return name.toHuman() === symbol;
+    })[0];
+    return JSON.parse(JSON.stringify(asset[1].toHuman())).location;
+  }
   static Bnc: AssetSpec = {
     symbol: "BNC",
     decimals: 12,
     location: {
       parents: 1,
       interior: { X2: [{ Parachain: 2001 }, { GeneralKey: "0x0001" }] },
+    },
+    unit: BN_TEN.pow(new BN(12)),
+  };
+  static BncV3: AssetSpec = {
+    symbol: "BNC",
+    decimals: 12,
+    location: {
+      parents: 1,
+      interior: {
+        X2: [
+          { Parachain: 2001 },
+          {
+            GeneralKey: {
+              length: 2,
+              data: "0x0001000000000000000000000000000000000000000000000000000000000000",
+            },
+          },
+        ],
+      },
     },
     unit: BN_TEN.pow(new BN(12)),
   };
