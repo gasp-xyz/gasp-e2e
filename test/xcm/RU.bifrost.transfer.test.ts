@@ -1,8 +1,4 @@
-import {
-  BuildBlockMode,
-  connectParachains,
-  connectVertical,
-} from "@acala-network/chopsticks";
+import { BuildBlockMode, connectParachains } from "@acala-network/chopsticks";
 import { BN_BILLION, BN_HUNDRED } from "@mangata-finance/sdk";
 import { BN_FIVE, BN_TEN, bufferToU8a, u8aToHex } from "@polkadot/util";
 import { mangataChopstick } from "../../utils/api";
@@ -17,25 +13,20 @@ import { XcmNode } from "../../utils/Framework/Node/XcmNode";
 import { ApiContext } from "../../utils/Framework/XcmHelper";
 import XcmNetworks from "../../utils/Framework/XcmNetworks";
 import { alice, api, setupApi, setupUsers } from "../../utils/setup";
-import { sendTransaction, signSendSuccess } from "../../utils/sign";
+import { signSendSuccess } from "../../utils/sign";
 import { expectEvent } from "../../utils/validators";
 import * as fs from "fs";
 import { Sudo } from "../../utils/sudo";
 import { Assets } from "../../utils/Assets";
-import { sleep } from "../../utils/utils";
-
 /**
  * @group xcm
  */
 describe("XCM transfers", () => {
   let bifrost: ApiContext;
   let mangata: ApiContext;
-  let kusama: ApiContext;
   let bifrostApi: XcmNode;
 
   afterAll(async () => {
-    // await sleep(100000);
-    await kusama.teardown();
     await mangata.teardown();
     await bifrost.teardown();
   });
@@ -45,9 +36,7 @@ describe("XCM transfers", () => {
     });
     await setupApi();
     mangata = mangataChopstick!;
-    kusama = await XcmNetworks.kusama();
     await connectParachains([bifrost.chain, mangata.chain]);
-    await connectVertical(kusama.chain, mangata.chain);
 
     bifrostApi = new XcmNode(bifrost.api, ChainId.Bifrost);
     setupUsers();
@@ -77,16 +66,6 @@ describe("XCM transfers", () => {
         ],
       },
     });
-    await kusama.dev.setStorage({
-      System: {
-        Account: [
-          [
-            [alice.keyRingPair.address],
-            { providers: 1, data: { free: 1000 * 1e12 } },
-          ],
-        ],
-      },
-    });
     const path = `test/xcm/_releasesUT/0.30.0/mangata_kusama_runtime-0.30.0.RC.compact.compressed.wasm`;
     const wasmContent = fs.readFileSync(path, {
       flag: "r",
@@ -106,12 +85,6 @@ describe("XCM transfers", () => {
       Sudo.sudo(
         mangata.api!.tx.parachainSystem.enactAuthorizedUpgrade(hex.toString())
       )
-    );
-    await kusama.dev.newBlock();
-    await sendTransaction(
-      kusama.api.tx.balances
-        .transferKeepAlive(alice.keyRingPair.address, 1)
-        .signAsync(alice.keyRingPair)
     );
     await Sudo.batchAsSudoFinalized(Assets.mintNative(alice));
     await mangata.dev.newBlock();
@@ -189,6 +162,5 @@ describe("XCM transfers", () => {
         }),
       }),
     });
-    await sleep(10000000);
   });
 });
