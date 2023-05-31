@@ -7,6 +7,11 @@ import { StorageValues } from "@acala-network/chopsticks/lib/utils/set-storage";
 import { ApiPromise, WsProvider } from "@polkadot/api";
 import { HexString } from "@polkadot/util/types";
 import getPort from "get-port-please";
+import * as fs from "fs";
+import { bufferToU8a, u8aToHex } from "@polkadot/util";
+import { Assets } from "../Assets";
+import { alice } from "../setup";
+import { Sudo } from "../sudo";
 
 export type SetupOption = {
   endpoint: string;
@@ -92,3 +97,29 @@ export const setupContext = async ({
     },
   };
 };
+export async function upgradeMangata(mangata: ApiContext) {
+  const path = `test/xcm/_releasesUT/0.30.0/mangata_kusama_runtime-0.30.0.RC.compact.compressed.wasm`;
+  const wasmContent = fs.readFileSync(path, {
+    flag: "r",
+  });
+  const hexHash = mangata.api!.registry.hash(bufferToU8a(wasmContent)).toHex();
+  await Sudo.batchAsSudoFinalized(Assets.mintNative(alice));
+  await Sudo.asSudoFinalized(
+    Sudo.sudo(
+      //@ts-ignore
+      mangata.api!.tx.parachainSystem.authorizeUpgrade(hexHash)
+    )
+  );
+  const wasmParam = Uint8Array.from(wasmContent);
+  const hex = u8aToHex(wasmParam);
+  await Sudo.asSudoFinalized(
+    Sudo.sudo(
+      mangata.api!.tx.parachainSystem.enactAuthorizedUpgrade(hex.toString())
+    )
+  );
+  await Sudo.batchAsSudoFinalized(Assets.mintNative(alice));
+  await mangata.dev.newBlock();
+  await mangata.dev.newBlock();
+  await Sudo.batchAsSudoFinalized(Assets.mintNative(alice));
+  await Sudo.asSudoFinalized(Assets.mintNative(alice));
+}

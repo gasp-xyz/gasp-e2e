@@ -1,11 +1,9 @@
 import { connectParachains } from "@acala-network/chopsticks";
-import { bufferToU8a, u8aToHex } from "@polkadot/util";
 import { AssetId } from "../../utils/ChainSpecs";
-import { ApiContext } from "../../utils/Framework/XcmHelper";
+import { ApiContext, upgradeMangata } from "../../utils/Framework/XcmHelper";
 import XcmNetworks from "../../utils/Framework/XcmNetworks";
 import { alice, setupApi, setupUsers } from "../../utils/setup";
 import { sendTransaction } from "../../utils/sign";
-import * as fs from "fs";
 import {
   expectEvent,
   expectExtrinsicSuccess,
@@ -13,8 +11,6 @@ import {
   matchEvents,
   matchSystemEvents,
 } from "../../utils/validators";
-import { Sudo } from "../../utils/sudo";
-import { Assets } from "../../utils/Assets";
 import { BN_BILLION } from "@mangata-finance/sdk";
 import { mangataChopstick } from "../../utils/api";
 
@@ -51,32 +47,7 @@ describe("[V3][V1] XCM tests for Mangata <-> imbue", () => {
         Account: [[[alice.keyRingPair.address], { data: { free: 10e12 } }]],
       },
     });
-    const path = `test/xcm/_releasesUT/0.30.0/mangata_kusama_runtime-0.30.0.RC.compact.compressed.wasm`;
-    const wasmContent = fs.readFileSync(path, {
-      flag: "r",
-    });
-    const hexHash = mangata
-      .api!.registry.hash(bufferToU8a(wasmContent))
-      .toHex();
-    await Sudo.batchAsSudoFinalized(Assets.mintNative(alice));
-    await Sudo.asSudoFinalized(
-      Sudo.sudo(
-        //@ts-ignore
-        mangata.api!.tx.parachainSystem.authorizeUpgrade(hexHash)
-      )
-    );
-    const wasmParam = Uint8Array.from(wasmContent);
-    const hex = u8aToHex(wasmParam);
-    await Sudo.asSudoFinalized(
-      Sudo.sudo(
-        mangata.api!.tx.parachainSystem.enactAuthorizedUpgrade(hex.toString())
-      )
-    );
-    await Sudo.batchAsSudoFinalized(Assets.mintNative(alice));
-    await mangata.dev.newBlock();
-    await mangata.dev.newBlock();
-    await Sudo.batchAsSudoFinalized(Assets.mintNative(alice));
-    await Sudo.asSudoFinalized(Assets.mintNative(alice));
+    await upgradeMangata(mangata);
   });
 
   beforeEach(async () => {
