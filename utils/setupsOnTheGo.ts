@@ -4,7 +4,7 @@ import BN from "bn.js";
 import { Assets } from "./Assets";
 import { MGA_ASSET_ID, MAX_BALANCE } from "./Constants";
 import { waitForRewards } from "./eventListeners";
-import { Extrinsic, setupApi, setupUsers } from "./setup";
+import { Extrinsic, keyring, setupApi, setupUsers } from "./setup";
 import { Sudo } from "./sudo";
 import { xxhashAsHex } from "@polkadot/util-crypto";
 
@@ -16,7 +16,7 @@ import {
 import { User } from "./User";
 import { getEnvironmentRequiredVars } from "./utils";
 import { Xyk } from "./xyk";
-import { getApi, api, initApi } from "./api";
+import { getApi, api, initApi, getMangataInstance } from "./api";
 import { BN_ZERO, signTx } from "@mangata-finance/sdk";
 import { getBalanceOfPool } from "./txHandler";
 import { StorageKey, Bytes } from "@polkadot/types";
@@ -590,12 +590,11 @@ export async function subscribeAndPrintTokenChanges(
 }
 
 export async function findAllRewardsAndClaim() {
-  await setupApi();
-  await setupUsers();
-  await initApi();
-  const api = await getApi();
-  const extrinsicCall: Extrinsic[] = [];
-  type Rewards = {
+  const api = getApi();
+  let liqTokenId: BN;
+  let rewardAmount: BN;
+
+  type RewardsInfo = {
     tokenId: BN;
     activatedAmount: BN;
     lastCheckpoint: BN;
@@ -604,39 +603,52 @@ export async function findAllRewardsAndClaim() {
     rewardsAlreadyClaimed: BN;
     rewardsNotYetClaimed: BN;
   };
-  // function getPrint(user: string, rewards: Rewards) {
-  //   return `${user} -- tokenID: ${rewards.tokenId}, activatedAmount: ${rewards.activatedAmount}, rewardsAlreadyClaimed: ${rewards.activatedAmount}, rewardsNotYetClaimed: ${rewards.rewardsNotYetClaimed} `;
-  // }
-  await api.query.proofOfStake.rewardsInfo.entries(async (storageKey: any) => {
-    storageKey.forEach((element: { toHuman: () => any }[]) => {
-      const user = element[0].toHuman()[0];
-      const status = {
-        tokenId: hexToBn(element[0].toHuman()[1]),
-        activatedAmount: hexToBn(
-          JSON.parse(element[1].toString()).activatedAmount
-        ),
-        lastCheckpoint: hexToBn(
-          JSON.parse(element[1].toString()).lastCheckpoint
-        ),
-        missingAtLastCheckpoint: hexToBn(
-          JSON.parse(element[1].toString()).missingAtLastCheckpoint
-        ),
-        poolRatioAtLastCheckpoint: hexToBn(
-          JSON.parse(element[1].toString()).poolRatioAtLastCheckpoint
-        ),
-        rewardsAlreadyClaimed: hexToBn(
-          JSON.parse(element[1].toString()).rewardsAlreadyClaimed
-        ),
-        rewardsNotYetClaimed: hexToBn(
-          JSON.parse(element[1].toString()).rewardsNotYetClaimed
-        ),
-      } as Rewards;
-      const tx = Sudo.sudoAs(user, Xyk.claimRewardsAll(status.tokenId));
-      extrinsicCall.push(tx);
-    });
+
+  const usersInfo: any = [];
+  const extrinsicCall = [];
+  const { chainUri } = getEnvironmentRequiredVars();
+  const mangata = await getMangataInstance(chainUri);
+
+  const accountsResponse = await api.query.proofOfStake.rewardsInfo.entries();
+
+  await accountsResponse.forEach((element: { toHuman: () => any }[]) => {
+    const user = element[0].toHuman()[0];
+    const status = {
+      tokenId: new BN(element[0].toHuman()[1]),
+      activatedAmount: hexToBn(
+        JSON.parse(element[1].toString()).activatedAmount
+      ),
+      lastCheckpoint: hexToBn(JSON.parse(element[1].toString()).lastCheckpoint),
+      missingAtLastCheckpoint: hexToBn(
+        JSON.parse(element[1].toString()).missingAtLastCheckpoint
+      ),
+      poolRatioAtLastCheckpoint: hexToBn(
+        JSON.parse(element[1].toString()).poolRatioAtLastCheckpoint
+      ),
+      rewardsAlreadyClaimed: hexToBn(
+        JSON.parse(element[1].toString()).rewardsAlreadyClaimed
+      ),
+      rewardsNotYetClaimed: hexToBn(
+        JSON.parse(element[1].toString()).rewardsNotYetClaimed
+      ),
+    } as RewardsInfo;
+    usersInfo.push([user, status]);
   });
-  const events = await Sudo.batchAsSudoFinalized(...extrinsicCall);
-  return events;
+  const promotedPairNumber = usersInfo.length;
+  const user = new User(keyring);
+
+  for (let index = 0; index < promotedPairNumber; index++) {
+    user.addFromAddress(keyring, usersInfo[index][0]);
+    liqTokenId = new BN(usersInfo[index][1].tokenId);
+    rewardAmount = await mangata.calculateRewardsAmount(
+      user.keyRingPair.address,
+      liqTokenId.toString()
+    );
+    if (rewardAmount > BN_ZERO) {
+      extrinsicCall.push(Sudo.sudoAs(user, Xyk.claimRewardsAll(liqTokenId)));
+    }
+  }
+  await Sudo.batchAsSudoFinalized(...extrinsicCall);
 }
 
 export async function getTokensAccountDataStorage(ws = "ws://127.0.0.1:9946") {
