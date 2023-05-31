@@ -589,10 +589,10 @@ export async function subscribeAndPrintTokenChanges(
   });
 }
 
-export async function findAllRewardsAndClaim(ws = "ws://127.0.0.1:9946") {
+export async function findAllRewardsAndClaim() {
   await setupApi();
   await setupUsers();
-  await initApi(ws);
+  await initApi();
   const api = await getApi();
   const extrinsicCall: Extrinsic[] = [];
   type Rewards = {
