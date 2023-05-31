@@ -26,10 +26,6 @@ describe("XCM transfers", () => {
   let mangata: ApiContext;
   let bifrostApi: XcmNode;
 
-  afterAll(async () => {
-    await mangata.teardown();
-    await bifrost.teardown();
-  });
   beforeAll(async () => {
     bifrost = await XcmNetworks.biforst({
       buildBlockMode: BuildBlockMode.Instant,
@@ -61,7 +57,7 @@ describe("XCM transfers", () => {
         Account: [
           [
             [alice.keyRingPair.address],
-            { data: { free: BN_HUNDRED.mul(AssetId.Bnc.unit).toString() } },
+            { data: { free: BN_HUNDRED.mul(AssetId.BncV3.unit).toString() } },
           ],
         ],
       },
@@ -90,14 +86,13 @@ describe("XCM transfers", () => {
     await mangata.dev.newBlock();
     await mangata.dev.newBlock();
     await Sudo.batchAsSudoFinalized(Assets.mintNative(alice));
-    await Sudo.asSudoFinalized(Assets.mintNative(alice));
   });
 
-  it("send BNC to mangata and back", async () => {
-    const op = bifrostApi.xTokenTransferV2(
+  it("[ BNC V3 -> MGA -> BNC V3 ] send BNC to mangata and back", async () => {
+    const op = bifrostApi.xTokenTransferV3(
       ChainId.Mg,
-      AssetId.Bnc,
-      AssetId.Bnc.unit.mul(BN_TEN),
+      AssetId.ImbueBncV3,
+      AssetId.ImbueBncV3.unit.mul(BN_TEN),
       alice
     );
     await signSendSuccess(bifrost.api, op, alice);

@@ -70,6 +70,24 @@ export class AssetId {
     },
     unit: BN_TEN.pow(new BN(12)),
   };
+  static ImbueBncV3: AssetSpec = {
+    symbol: "BNC",
+    decimals: 12,
+    location: {
+      parents: 0,
+      interior: {
+        X1: [
+          {
+            GeneralKey: {
+              length: 2,
+              data: "0x0001000000000000000000000000000000000000000000000000000000000000",
+            },
+          },
+        ],
+      },
+    },
+    unit: BN_TEN.pow(new BN(12)),
+  };
   static BncV3: AssetSpec = {
     symbol: "BNC",
     decimals: 12,
@@ -150,6 +168,22 @@ export const ChainSpecs = new Map<ChainId, ChainSpec>([
           },
         ],
         [
+          AssetId.ImbueBncV3,
+          {
+            fps: new BN(43008000000000),
+            ed: BN_ZERO,
+            location: AssetId.BncV3.location,
+          },
+        ],
+        [
+          AssetId.BncV3,
+          {
+            fps: new BN(43008000000000),
+            ed: BN_ZERO,
+            location: AssetId.BncV3.location,
+          },
+        ],
+        [
           AssetId.USDt,
           {
             fps: new BN(13440000),
@@ -174,6 +208,42 @@ export const ChainSpecs = new Map<ChainId, ChainSpec>([
             location: {
               parents: 0,
               interior: { X1: { GeneralKey: "0x0001" } },
+            },
+          },
+        ],
+        [
+          AssetId.BncV3,
+          {
+            fps: new BN(9360000000000),
+            ed: AssetId.BncV3.unit.div(BN_HUNDRED),
+            location: {
+              parents: 0,
+              interior: {
+                X1: {
+                  GeneralKey: {
+                    length: 2,
+                    data: "0x0001000000000000000000000000000000000000000000000000000000000000",
+                  },
+                },
+              },
+            },
+          },
+        ],
+        [
+          AssetId.ImbueBncV3,
+          {
+            fps: new BN(9360000000000),
+            ed: AssetId.ImbueBncV3.unit.div(BN_HUNDRED),
+            location: {
+              parents: 0,
+              interior: {
+                X1: {
+                  GeneralKey: {
+                    length: 2,
+                    data: "0x0001000000000000000000000000000000000000000000000000000000000000",
+                  },
+                },
+              },
             },
           },
         ],

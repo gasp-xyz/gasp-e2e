@@ -56,7 +56,7 @@ describe("XCM transfers", () => {
   });
 
   // todo repeat for every other asset
-  it("send BNC to mangata and back", async () => {
+  it("[ BNC V2 -> MGA -> BNC V2 ] send BNC to mangata and back", async () => {
     const op = bifrostApi.xTokenTransferV2(
       ChainId.Mg,
       AssetId.Bnc,
