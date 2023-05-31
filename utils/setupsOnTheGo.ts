@@ -594,6 +594,7 @@ export async function findAllRewardsAndClaim(ws = "ws://127.0.0.1:9946") {
   await setupUsers();
   await initApi(ws);
   const api = await getApi();
+  const extrinsicCall: Extrinsic[] = [];
   type Rewards = {
     tokenId: BN;
     activatedAmount: BN;
@@ -603,55 +604,39 @@ export async function findAllRewardsAndClaim(ws = "ws://127.0.0.1:9946") {
     rewardsAlreadyClaimed: BN;
     rewardsNotYetClaimed: BN;
   };
-  function getPrint(user: string, rewards: Rewards) {
-    return `${user} -- tokenID: ${rewards.tokenId}, activatedAmount: ${rewards.activatedAmount}, rewardsAlreadyClaimed: ${rewards.activatedAmount}, rewardsNotYetClaimed: ${rewards.rewardsNotYetClaimed} `;
-  }
-  const currentState = new Map<string, Rewards>();
-  await api!.rpc.chain.subscribeNewHeads(async (lastHeader) => {
-    console.log("#" + lastHeader.number);
-    await api.query.proofOfStake.rewardsInfo.entries(
-      async (storageKey: any) => {
-        storageKey.forEach((element: { toHuman: () => any }[]) => {
-          const user = element[0].toHuman()[0];
-          const status = {
-            tokenId: hexToBn(element[0].toHuman()[1]),
-            activatedAmount: hexToBn(
-              JSON.parse(element[1].toString()).activatedAmount
-            ),
-            lastCheckpoint: hexToBn(
-              JSON.parse(element[1].toString()).lastCheckpoint
-            ),
-            missingAtLastCheckpoint: hexToBn(
-              JSON.parse(element[1].toString()).missingAtLastCheckpoint
-            ),
-            poolRatioAtLastCheckpoint: hexToBn(
-              JSON.parse(element[1].toString()).poolRatioAtLastCheckpoint
-            ),
-            rewardsAlreadyClaimed: hexToBn(
-              JSON.parse(element[1].toString()).rewardsAlreadyClaimed
-            ),
-            rewardsNotYetClaimed: hexToBn(
-              JSON.parse(element[1].toString()).rewardsNotYetClaimed
-            ),
-          } as Rewards;
-          if (currentState.get(user) === undefined) {
-            currentState.set(user, {
-              tokenId: status.tokenId,
-              activatedAmount: status.activatedAmount,
-              lastCheckpoint: status.lastCheckpoint,
-              missingAtLastCheckpoint: status.missingAtLastCheckpoint,
-              poolRatioAtLastCheckpoint: status.poolRatioAtLastCheckpoint,
-              rewardsAlreadyClaimed: status.rewardsAlreadyClaimed,
-              rewardsNotYetClaimed: status.rewardsNotYetClaimed,
-            } as Rewards);
-          } else {
-            console.log(getPrint(user, currentState.get(user)!));
-            Sudo.sudoAs(user, Xyk.claimRewardsAll(status.tokenId));
-          }
-        });
-      }
-    );
+  // function getPrint(user: string, rewards: Rewards) {
+  //   return `${user} -- tokenID: ${rewards.tokenId}, activatedAmount: ${rewards.activatedAmount}, rewardsAlreadyClaimed: ${rewards.activatedAmount}, rewardsNotYetClaimed: ${rewards.rewardsNotYetClaimed} `;
+  // }
+  await api.query.proofOfStake.rewardsInfo.entries(async (storageKey: any) => {
+    storageKey.forEach((element: { toHuman: () => any }[]) => {
+      const user = element[0].toHuman()[0];
+      const status = {
+        tokenId: hexToBn(element[0].toHuman()[1]),
+        activatedAmount: hexToBn(
+          JSON.parse(element[1].toString()).activatedAmount
+        ),
+        lastCheckpoint: hexToBn(
+          JSON.parse(element[1].toString()).lastCheckpoint
+        ),
+        missingAtLastCheckpoint: hexToBn(
+          JSON.parse(element[1].toString()).missingAtLastCheckpoint
+        ),
+        poolRatioAtLastCheckpoint: hexToBn(
+          JSON.parse(element[1].toString()).poolRatioAtLastCheckpoint
+        ),
+        rewardsAlreadyClaimed: hexToBn(
+          JSON.parse(element[1].toString()).rewardsAlreadyClaimed
+        ),
+        rewardsNotYetClaimed: hexToBn(
+          JSON.parse(element[1].toString()).rewardsNotYetClaimed
+        ),
+      } as Rewards;
+      const tx = Sudo.sudoAs(user, Xyk.claimRewardsAll(status.tokenId));
+      extrinsicCall.push(tx);
+    });
   });
+  const events = await Sudo.batchAsSudoFinalized(...extrinsicCall);
+  return events;
 }
 
 export async function getTokensAccountDataStorage(ws = "ws://127.0.0.1:9946") {
