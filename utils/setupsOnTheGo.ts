@@ -638,6 +638,18 @@ export async function findAllRewardsAndClaim() {
   const user = new User(keyring);
 
   for (let index = 0; index < promotedPairNumber; index++) {
+    function getPrint(user: string, tokens: RewardsInfo) {
+      const text =
+        user +
+        "-- tokenID: " +
+        tokens.tokenId.toString() +
+        ", missingAtLastCheckpoint: " +
+        tokens.missingAtLastCheckpoint.toString() +
+        ", alreadyClaimed: " +
+        tokens.rewardsAlreadyClaimed +
+        ", notYetClaimed: tokens.rewardsNotYetClaimed";
+      return text;
+    }
     user.addFromAddress(keyring, usersInfo[index][0]);
     liqTokenId = new BN(usersInfo[index][1].tokenId);
     rewardAmount = await mangata.calculateRewardsAmount(
@@ -645,6 +657,7 @@ export async function findAllRewardsAndClaim() {
       liqTokenId.toString()
     );
     if (rewardAmount > BN_ZERO) {
+      console.info(getPrint(usersInfo[index][0], usersInfo[index][1]));
       extrinsicCall.push(Sudo.sudoAs(user, Xyk.claimRewardsAll(liqTokenId)));
     }
   }
