@@ -330,6 +330,14 @@ export function buildDataTestIdXpath(dataTestId: string) {
   return xpathSelector;
 }
 
+export function buildDataTestIdXpathFunction(
+  dataTestId: string,
+  xpathFunction: string
+) {
+  const xpathSelector = `//*[@data-testid[${xpathFunction}(., '${dataTestId}')]]`;
+  return xpathSelector;
+}
+
 export async function waitForNewWindow(
   driver: WebDriver,
   timeout: number,

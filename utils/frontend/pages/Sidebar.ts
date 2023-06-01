@@ -25,6 +25,7 @@ const BTN_INSTALL_POLK = "extensionPolkadot-extensionNotFound-installBtn";
 const DOT_META_OK = "connect-metamaskGreenDot";
 const BTN_META_DEPOSIT = "bridge-showDepositModalBtn";
 const BTN_META_WITHDRAW = "bridge-showWithdrawModalBtn";
+const BTN_WITHDRAW = "bridge-showWithdrawModalBtn";
 
 const DOT_POLK_OK = "connect-polkadotGreenDot";
 const DIV_FAUCET_READY = "faucet-isReady-header";
@@ -151,6 +152,10 @@ export class Sidebar {
   }
   async clickOnDepositToMangata() {
     const locator = buildDataTestIdXpath(BTN_META_DEPOSIT);
+    await clickElement(this.driver, locator);
+  }
+  async clickOnWithdraw() {
+    const locator = buildDataTestIdXpath(BTN_WITHDRAW);
     await clickElement(this.driver, locator);
   }
   async clickOnWithdrawToEth() {

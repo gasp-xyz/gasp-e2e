@@ -5,7 +5,9 @@ import { ModalType, NotificationModal } from "../pages/NotificationModal";
 import { Polkadot } from "../pages/Polkadot";
 
 import { Sidebar } from "../pages/Sidebar";
+import { TokensModal } from "../pages/TokensModal";
 import { WalletConnectModal } from "../pages/WalletConnectModal";
+import { WithdrawModal } from "../pages/WithdrawModal";
 import { acceptPermissionsPolkadotExtension } from "./Helper";
 
 export async function connectPolkadotWallet(
@@ -53,4 +55,23 @@ export async function waitForActionNotification(
   const isModalSuccessVisible = await modal.isModalVisible(ModalType.Success);
   expect(isModalSuccessVisible).toBeTruthy();
   await modal.clickInDone();
+}
+
+export async function initWithdraw(driver: WebDriver, assetName: string) {
+  const withdrawModal = new WithdrawModal(driver);
+  const isWithdrawModalVisible = await withdrawModal.isModalVisible();
+  expect(isWithdrawModalVisible).toBeTruthy();
+
+  await withdrawModal.openTokensList();
+
+  const tokenModal = new TokensModal(driver);
+  const isTokenModalVisible = await tokenModal.isModalVisible();
+  expect(isTokenModalVisible).toBeTruthy();
+  const areTokenListElementsVisible =
+    await tokenModal.areTokenListElementsVisible(assetName);
+  expect(areTokenListElementsVisible).toBeTruthy();
+
+  await tokenModal.selectToken(assetName);
+  await withdrawModal.enterValue("1");
+  await withdrawModal.clickContinue();
 }
