@@ -648,7 +648,13 @@ export async function findAllRewardsAndClaim() {
       extrinsicCall.push(Sudo.sudoAs(user, Xyk.claimRewardsAll(liqTokenId)));
     }
   }
-  await Sudo.batchAsSudoFinalized(...extrinsicCall);
+  const methodSudoAsDone = (
+    await Sudo.batchAsSudoFinalized(...extrinsicCall)
+  ).filter((extrinsicResult) => extrinsicResult.method === "SudoAsDone");
+
+  methodSudoAsDone.forEach((element: any) => {
+    expect(element.event.data[0].isErr).toBeFalsy();
+  });
 }
 
 export async function getTokensAccountDataStorage(ws = "ws://127.0.0.1:9946") {
