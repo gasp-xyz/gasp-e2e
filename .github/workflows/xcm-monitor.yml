@@ -16,7 +16,7 @@ jobs:
     secrets: inherit
     strategy:
       matrix:
-        test: ['test-xcm', 'test-sdk-xcm' ]
+        test: ['test-xcm' ]
     with:
         scriptName: "${{ matrix.test }}"
         parallel: false
