@@ -61,6 +61,8 @@ export const setupContext = async ({
     db,
     "wasm-override": wasmOverride,
     "registered-types": { types: types },
+    "runtime-log-level": 5,
+    runtimeLogLevel: 5,
   };
   const { chain, listenPort, close } = await setupWithServer(config);
   const uri = `ws://localhost:${listenPort}`;
@@ -99,9 +101,7 @@ export const setupContext = async ({
 };
 export async function upgradeMangata(mangata: ApiContext) {
   const path = `test/xcm/_releasesUT/0.30.0/mangata_kusama_runtime-0.30.0.RC.compact.compressed.wasm`;
-  const wasmContent = fs.readFileSync(path, {
-    flag: "r",
-  });
+  const wasmContent = fs.readFileSync(path);
   const hexHash = mangata.api!.registry.hash(bufferToU8a(wasmContent)).toHex();
   await Sudo.batchAsSudoFinalized(Assets.mintNative(alice));
   await Sudo.asSudoFinalized(
@@ -112,14 +112,11 @@ export async function upgradeMangata(mangata: ApiContext) {
   );
   const wasmParam = Uint8Array.from(wasmContent);
   const hex = u8aToHex(wasmParam);
-  await Sudo.asSudoFinalized(
-    Sudo.sudo(
-      mangata.api!.tx.parachainSystem.enactAuthorizedUpgrade(hex.toString())
-    )
-  );
-  await Sudo.batchAsSudoFinalized(Assets.mintNative(alice));
+  const param = hex.toString();
+  await mangata.api.tx.sudo
+    .sudo(mangata.api.tx.parachainSystem.enactAuthorizedUpgrade(param))
+    .signAndSend(alice.keyRingPair);
+
   await mangata.dev.newBlock();
   await mangata.dev.newBlock();
-  await Sudo.batchAsSudoFinalized(Assets.mintNative(alice));
-  await Sudo.asSudoFinalized(Assets.mintNative(alice));
 }

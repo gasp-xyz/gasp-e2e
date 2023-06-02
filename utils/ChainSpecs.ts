@@ -39,6 +39,12 @@ export class AssetId {
     location: { parents: 1, interior: { X1: { Parachain: 2114 } } },
     unit: BN_TEN.pow(new BN(10)),
   };
+  static TurV3: AssetSpec = {
+    symbol: "TUR",
+    decimals: 10,
+    location: { parents: 1, interior: { X1: { Parachain: 2114 } } },
+    unit: BN_TEN.pow(new BN(10)),
+  };
 
   static Mgx: AssetSpec = {
     symbol: "MGX",
@@ -157,6 +163,14 @@ export const ChainSpecs = new Map<ChainId, ChainSpec>([
             fps: new BN(537_600_000_000),
             ed: BN_ZERO,
             location: AssetId.Tur.location,
+          },
+        ],
+        [
+          AssetId.TurV3,
+          {
+            fps: new BN(537_600_000_000),
+            ed: BN_ZERO,
+            location: AssetId.TurV3.location,
           },
         ],
         [

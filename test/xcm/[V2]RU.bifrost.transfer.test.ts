@@ -1,6 +1,6 @@
 import { BuildBlockMode, connectParachains } from "@acala-network/chopsticks";
 import { BN_BILLION, BN_HUNDRED } from "@mangata-finance/sdk";
-import { BN_FIVE, BN_TEN, bufferToU8a, u8aToHex } from "@polkadot/util";
+import { BN_FIVE, BN_TEN } from "@polkadot/util";
 import { mangataChopstick } from "../../utils/api";
 import {
   AssetId,
@@ -10,14 +10,11 @@ import {
 } from "../../utils/ChainSpecs";
 import { waitForEvents } from "../../utils/eventListeners";
 import { XcmNode } from "../../utils/Framework/Node/XcmNode";
-import { ApiContext } from "../../utils/Framework/XcmHelper";
+import { ApiContext, upgradeMangata } from "../../utils/Framework/XcmHelper";
 import XcmNetworks from "../../utils/Framework/XcmNetworks";
 import { alice, api, setupApi, setupUsers } from "../../utils/setup";
 import { signSendSuccess } from "../../utils/sign";
 import { expectEvent } from "../../utils/validators";
-import * as fs from "fs";
-import { Sudo } from "../../utils/sudo";
-import { Assets } from "../../utils/Assets";
 /**
  * @group xcm
  */
@@ -62,31 +59,7 @@ describe("XCM transfers", () => {
         ],
       },
     });
-    const path = `test/xcm/_releasesUT/0.30.0/mangata_kusama_runtime-0.30.0.RC.compact.compressed.wasm`;
-    const wasmContent = fs.readFileSync(path, {
-      flag: "r",
-    });
-    const hexHash = mangata
-      .api!.registry.hash(bufferToU8a(wasmContent))
-      .toHex();
-    await Sudo.asSudoFinalized(
-      Sudo.sudo(
-        //@ts-ignore
-        mangata.api!.tx.parachainSystem.authorizeUpgrade(hexHash)
-      )
-    );
-    const wasmParam = Uint8Array.from(wasmContent);
-    const hex = u8aToHex(wasmParam);
-    await Sudo.asSudoFinalized(
-      Sudo.sudo(
-        mangata.api!.tx.parachainSystem.enactAuthorizedUpgrade(hex.toString())
-      )
-    );
-    await Sudo.batchAsSudoFinalized(Assets.mintNative(alice));
-    await mangata.dev.newBlock();
-    await mangata.dev.newBlock();
-    await Sudo.batchAsSudoFinalized(Assets.mintNative(alice));
-    await Sudo.asSudoFinalized(Assets.mintNative(alice));
+    await upgradeMangata(mangata);
   });
 
   it("[ BNC V2 -> MGA -> BNC V3 ] send BNC to mangata and back", async () => {

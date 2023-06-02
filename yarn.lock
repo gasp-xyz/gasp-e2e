@@ -7,7 +7,7 @@
   resolved "https://registry.yarnpkg.com/@acala-network/chopsticks-executor/-/chopsticks-executor-0.5.10.tgz#4d056ab6f584d95c945907bba4ef38404793971d"
   integrity sha512-+B/tbuiI/BSJmxGiJy/jGJthKU8CC99RK43cBEtyKgIjz2T75UkpogMlaJs3ARJGylAXNj9naT7FzBPX3Ra/mA==
 
-"@acala-network/chopsticks@^0.5.10":
+"@acala-network/chopsticks@0.5.10":
   version "0.5.10"
   resolved "https://registry.yarnpkg.com/@acala-network/chopsticks/-/chopsticks-0.5.10.tgz#f029ee70e2da7f25181d754e94f28a5dc7e3665e"
   integrity sha512-rGkh6ujsVabldIT6HV83DyM4LUYyya5SwwbeCQ3g/vdhqUXm2JJDlgehtmoZEnR0ZUvXR0eYoc5TypBceRSJ0g==
@@ -2879,7 +2879,6 @@
   version "2.0.24"
   resolved "https://registry.yarnpkg.com/@truffle/db/-/db-2.0.24.tgz#8c603c625b89b60ade0df405f684aba7b851b42c"
   integrity sha512-p4UsUKd47/Iv2SJ2m24+ObIalb4Ljt7ysv3mY/gKvEIw3fKxSErPgxDKaC0l3kPOVaz8gfXkbWDGeuLf/f66+Q==
-
   dependencies:
     "@graphql-tools/delegate" "^8.4.3"
     "@graphql-tools/schema" "^8.3.1"
