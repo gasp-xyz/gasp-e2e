@@ -9,6 +9,7 @@
   "dependencies": {
     "@acala-network/chopsticks": "^0.5.10",
     "@babel/plugin-proposal-decorators": "^7.17.8",
+    "@babel/plugin-proposal-object-rest-spread": "^7.20.7",
     "@commitlint/config-conventional": "^17.4.2",
     "@mangata-finance/sdk": "https://github.com/mangata-finance/mangata-sdk#develop-rococo",
     "@terascope/fetch-github-release": "^0.8.7",
