@@ -155,7 +155,7 @@ export class Assets {
   static initIssuance(): Extrinsic {
     return Sudo.sudo(api!.tx.issuance.initIssuanceConfig());
   }
-  static promotePool(liquidityId: number, weight: number | null): Extrinsic {
+  static promotePool(liquidityId: number, weight: number = 20): Extrinsic {
     return Sudo.sudo(
       api!.tx.proofOfStake.updatePoolPromotion(liquidityId, weight)
     );
