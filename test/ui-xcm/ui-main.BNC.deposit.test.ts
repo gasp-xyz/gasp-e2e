@@ -25,6 +25,7 @@ import { SudoUser } from "../../utils/Framework/User/SudoUser";
 import { Node } from "../../utils/Framework/Node/Node";
 import {
   connectPolkadotWallet,
+  initDeposit,
   waitForActionNotification,
 } from "../../utils/frontend/utils/Handlers";
 import { DepositModal } from "../../utils/frontend/pages/DepositModal";
@@ -43,6 +44,7 @@ let driver: WebDriver;
 let sudo: SudoUser;
 let testUser1: User;
 const userAddress = "5EekB3dsQ4yW6WukZRL5muXb4qKvJMpJdXW3w59SptYHBkvk";
+const INIT_BNC_SOURCE = 100;
 
 describe("UI XCM tests - BNC", () => {
   let mangata: ApiContext;
@@ -131,34 +133,21 @@ describe("UI XCM tests - BNC", () => {
 
     await sidebar.clickOnDepositToMangata();
 
-    const depositModal = new DepositModal(driver);
-    let isModalVisible = await depositModal.isModalVisible();
-    expect(isModalVisible).toBeTruthy();
-
-    await depositModal.openTokensList();
-    const areTokenListElementsVisible =
-      await depositModal.areTokenListElementsVisible(BNC_ASSET_NAME);
-    expect(areTokenListElementsVisible).toBeTruthy();
-    const tokensAtSourceBefore = await depositModal.getTokenAmount(
-      BNC_ASSET_NAME
-    );
-    await depositModal.selectToken(BNC_ASSET_NAME);
-    await depositModal.enterValue("1");
-    await depositModal.waitForProgressBar();
-    await depositModal.clickContinue();
+    await initDeposit(driver, BNC_ASSET_NAME);
 
     await waitForActionNotification(driver, mangata);
 
     await bifrost.chain.newBlock();
     await sidebar.clickOnDepositToMangata();
-    isModalVisible = await depositModal.isModalVisible();
+    const depositModal = new DepositModal(driver);
+    const isModalVisible = await depositModal.isModalVisible();
     expect(isModalVisible).toBeTruthy();
 
     await depositModal.openTokensList();
     const tokensAtSourceAfter = await depositModal.getTokenAmount(
       BNC_ASSET_NAME
     );
-    expect(tokensAtSourceAfter).toBeLessThan(tokensAtSourceBefore);
+    expect(tokensAtSourceAfter).toBeLessThan(INIT_BNC_SOURCE);
 
     await mangata.chain.newBlock();
 

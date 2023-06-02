@@ -25,6 +25,7 @@ import { SudoUser } from "../../utils/Framework/User/SudoUser";
 import { Node } from "../../utils/Framework/Node/Node";
 import {
   connectPolkadotWallet,
+  initDeposit,
   waitForActionNotification,
 } from "../../utils/frontend/utils/Handlers";
 import { DepositModal } from "../../utils/frontend/pages/DepositModal";
@@ -48,6 +49,7 @@ describe("UI XCM tests - IMBU", () => {
   let mangata: ApiContext;
   let imbue: ApiContext;
   let alice: KeyringPair;
+  const INIT_IMBU_SOURCE = 100;
 
   beforeAll(async () => {
     mangata = await XcmNetworks.mangata({ localPort: 9946 });
@@ -84,7 +86,7 @@ describe("UI XCM tests - IMBU", () => {
     });
     await imbue.dev.setStorage({
       System: {
-        Account: [[[userAddress], { data: { free: 10e12 } }]],
+        Account: [[[userAddress], { data: { free: INIT_IMBU_SOURCE * 1e12 } }]],
       },
     });
 
@@ -125,34 +127,20 @@ describe("UI XCM tests - IMBU", () => {
 
     await sidebar.clickOnDepositToMangata();
 
-    const depositModal = new DepositModal(driver);
-    let isModalVisible = await depositModal.isModalVisible();
-    expect(isModalVisible).toBeTruthy();
-
-    await depositModal.openTokensList();
-    const areTokenListElementsVisible =
-      await depositModal.areTokenListElementsVisible(IMBU_ASSET_NAME);
-    expect(areTokenListElementsVisible).toBeTruthy();
-    const tokensAtSourceBefore = await depositModal.getTokenAmount(
-      IMBU_ASSET_NAME
-    );
-    await depositModal.selectToken(IMBU_ASSET_NAME);
-    await depositModal.enterValue("1");
-    await depositModal.waitForProgressBar();
-    await depositModal.clickContinue();
-
+    await initDeposit(driver, IMBU_ASSET_NAME);
     await waitForActionNotification(driver, mangata);
 
     await imbue.chain.newBlock();
     await sidebar.clickOnDepositToMangata();
-    isModalVisible = await depositModal.isModalVisible();
+    const depositModal = new DepositModal(driver);
+    const isModalVisible = await depositModal.isModalVisible();
     expect(isModalVisible).toBeTruthy();
 
     await depositModal.openTokensList();
     const tokensAtSourceAfter = await depositModal.getTokenAmount(
       IMBU_ASSET_NAME
     );
-    expect(tokensAtSourceAfter).toBeLessThan(tokensAtSourceBefore);
+    expect(tokensAtSourceAfter).toBeLessThan(INIT_IMBU_SOURCE);
 
     await mangata.chain.newBlock();
 
