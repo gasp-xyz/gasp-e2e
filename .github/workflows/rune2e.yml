@@ -112,7 +112,7 @@ jobs:
 
       - uses: actions/setup-node@v3
         with:
-          node-version: '18'
+          node-version: '16'
           cache: yarn
           path: 'e2eTests'
           cache-dependency-path: e2eTests/yarn.lock
@@ -140,6 +140,12 @@ jobs:
       - name: Start mangata-node parachain
         working-directory: mangata-node/launch
         run: yarn up
+      - uses: actions/setup-node@v3
+        with:
+          node-version: '18'
+          cache: yarn
+          path: 'e2eTests'
+          cache-dependency-path: e2eTests/yarn.lock
 
       - name: Install dependencies for tests
         working-directory: e2eTests
