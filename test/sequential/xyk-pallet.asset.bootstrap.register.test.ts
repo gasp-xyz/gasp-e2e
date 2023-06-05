@@ -114,7 +114,7 @@ test("register asset and then try to register new one with the same location, ex
     tempAssetId,
     tempAssetId,
     {
-      V1: {
+      V2: {
         parents: 1,
         interior: {
           X3: [

@@ -81,7 +81,7 @@ describe("UI XCM tests - KSM", () => {
     });
     await kusama.dev.setStorage({
       System: {
-        Account: [[[userAddress], { data: { free: 10 * 1e12 } }]],
+        Account: [[[userAddress], { providers: 1, data: { free: 10 * 1e12 } }]],
       },
     });
 

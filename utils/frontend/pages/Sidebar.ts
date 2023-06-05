@@ -62,6 +62,11 @@ export class Sidebar {
     return accountName === actualAccount;
   }
 
+  async waitForWalletConnected() {
+    const walletConnectedXpath = buildDataTestIdXpath(DIV_WALLET_CONNECTED);
+    await waitForElement(this.driver, walletConnectedXpath);
+  }
+
   async clickOnWalletConnect() {
     const locator = buildDataTestIdXpath(DIV_WALLET_NOT_FOUND);
     await clickElement(this.driver, locator);
@@ -238,9 +243,17 @@ export class Sidebar {
     return `poolsOverview-item-${asseName1}-${assetName2}`;
   }
   async isLiquidityPoolVisible(asset1Name: string, asset2Name: string) {
-    return await this.isDisplayed(
-      buildDataTestIdXpath(this.buildPoolDataTestId(asset1Name, asset2Name))
+    const poolXpath = buildDataTestIdXpath(
+      this.buildPoolDataTestId(asset1Name, asset2Name)
     );
+    return await this.isDisplayed(poolXpath);
+  }
+
+  async waitForLiquidityPoolToLoad(asset1Name: string, asset2Name: string) {
+    const poolXpath = buildDataTestIdXpath(
+      this.buildPoolDataTestId(asset1Name, asset2Name)
+    );
+    await waitForElement(this.driver, poolXpath);
   }
 
   async isPoolDetailVisible() {
