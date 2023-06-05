@@ -59,6 +59,7 @@ describe("UI tests - Extension management", () => {
     const mga = new Mangata(driver);
     await mga.go();
     const sidebar = new Sidebar(driver);
+    await sidebar.waitForLoad();
     const noWalletConnectedInfoDisplayed =
       await sidebar.isNoWalletConnectedInfoDisplayed();
     expect(noWalletConnectedInfoDisplayed).toBeTruthy();
@@ -73,6 +74,7 @@ describe("UI tests - Extension management", () => {
     await sidebar.clickOnWalletConnect();
     await walletConnectModal.pickWallet("Polkadot");
     await walletConnectModal.pickAccount("acc_automation");
+    await sidebar.waitForWalletConnected();
     const isWalletConnected = sidebar.isWalletConnected("acc_automation");
     expect(isWalletConnected).toBeTruthy();
     const areSidebarElementsVisible = sidebar.areSidebarElementsVisible();
