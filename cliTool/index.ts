@@ -21,6 +21,7 @@ import {
   userAggregatesOn,
   subscribeAndPrintTokenChanges,
   provisionWith100Users,
+  findAllRewardsAndClaim,
 } from "../utils/setupsOnTheGo";
 import {
   findErrorMetadata,
@@ -64,6 +65,7 @@ async function app(): Promise<any> {
         "user aggregates with",
         "listen token balance changes",
         "provisionWith100Users",
+        "find and claim all rewards",
       ],
     })
     .then(async (answers: { option: string | string[] }) => {
@@ -420,6 +422,9 @@ async function app(): Promise<any> {
       }
       if (answers.option.includes("provisionWith100Users")) {
         await provisionWith100Users();
+      }
+      if (answers.option.includes("find and claim all rewards")) {
+        await findAllRewardsAndClaim();
       }
       return app();
     });
