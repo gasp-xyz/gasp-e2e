@@ -646,6 +646,9 @@ export async function migrate() {
         x[0] === "Vesting" ||
         x[0] === "MultiPurposeLiquidity" ||
         x[0] === "AssetRegistry" ||
+        x[0] === "Crowdloan" ||
+        x[0] === "Bootstrap" ||
+        x[0] === "OrmlXcm" ||
         x[0] === "RewardsInfo"
     )
     .flatMap((item: any) =>
@@ -679,7 +682,7 @@ export async function migrate() {
         allKeys.push([keys[index], storage]);
       }
       const nextkeys = await api.rpc.state.getKeysPaged(key, 100, keys[99]);
-      if (loop % 5 === 0) {
+      if (loop % 10 === 0) {
         const txs: Extrinsic[] = [];
         allKeys.forEach((x) => {
           const storageKey = api.createType("StorageKey", x[0]);
