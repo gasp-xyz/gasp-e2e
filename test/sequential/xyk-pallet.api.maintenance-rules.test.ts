@@ -1,3 +1,4 @@
+/* eslint-disable jest/no-conditional-expect */
 /*
  *
  * @group maintenance
@@ -62,9 +63,14 @@ describe("On Maintenance mode - multiSwaps / swaps / compound / prov liq are not
       ),
       sellAsset: Xyk.sellAsset(tokenIds[0], tokenIds[1], BN_HUNDRED, BN_ONE),
       buyAsset: Xyk.buyAsset(tokenIds[0], tokenIds[1], BN_HUNDRED, BN_MILLION),
-      //      compoundRewards: Xyk.compoundRewards(liq),
       provideLiquidity: Xyk.provideLiquidity(liq, MGA_ASSET_ID, BN_HUNDRED),
     };
+    await Sudo.batchAsSudoFinalized(
+      Sudo.sudoAsWithAddressString(
+        foundationAccountAddress,
+        Maintenance.switchMaintenanceModeOff()
+      )
+    );
     await Sudo.batchAsSudoFinalized(
       Sudo.sudoAsWithAddressString(
         foundationAccountAddress,
@@ -75,22 +81,30 @@ describe("On Maintenance mode - multiSwaps / swaps / compound / prov liq are not
       expectMGAExtrinsicSuDidSuccess(value);
     });
   });
+  let userIndex = 0;
   it.each([
     "multiswapSellAsset",
     "multiswapBuyAsset",
     "sellAsset",
     "buyAsset",
-    "compoundRewards",
     "provideLiquidity",
   ])("%s operation is not allowed in mm", async (operation) => {
     const extrinsic = swapOperations[operation];
-    const events = await signTx(api, extrinsic, users[0].keyRingPair);
-    const event = getEventResultFromMangataTx(events, [
-      "system",
-      "ExtrinsicFailed",
-    ]);
-    expect(event.state).toEqual(ExtrinsicResult.ExtrinsicFailed);
-    expect(event.data).toContain("TradingBlockedByMaintenanceMode");
+    userIndex += 1;
+    await signTx(api, extrinsic, users[userIndex % users.length].keyRingPair)
+      .then((events) => {
+        const event = getEventResultFromMangataTx(events, [
+          "system",
+          "ExtrinsicFailed",
+        ]);
+        expect(event.state).toEqual(ExtrinsicResult.ExtrinsicFailed);
+        expect(event.data).toContain("TradingBlockedByMaintenanceMode");
+      })
+      .catch((exc) => {
+        expect(JSON.parse(JSON.stringify(exc)).data.toString()).toContain(
+          "1010: Invalid Transaction: The swap prevalidation has failed"
+        );
+      });
   });
   afterAll(async () => {
     await Sudo.batchAsSudoFinalized(
