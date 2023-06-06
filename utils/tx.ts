@@ -590,6 +590,27 @@ export const deactivateLiquidity = async (
   );
   return result;
 };
+
+export const provideLiquidity = async (
+  user: KeyringPair,
+  liquidityAssetId: BN,
+  providedAssetId: BN,
+  amount: BN
+) => {
+  const mangata = await getMangataInstance();
+  const api = await mangata.getApi();
+  const result = await signTx(
+    api,
+    api.tx.xyk.provideLiquidityWithConversion(
+      liquidityAssetId,
+      providedAssetId,
+      amount
+    ),
+    user
+  );
+  return result;
+};
+
 export const reserveVestingLiquidityTokens = async (
   keyRingPair: KeyringPair,
   liqToken: BN,
