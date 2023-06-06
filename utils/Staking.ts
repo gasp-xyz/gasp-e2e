@@ -39,7 +39,7 @@ export class Staking {
       amount,
       tokenId,
       tokenOrigin,
-      new BN(numCollators),
+      new BN(numCollators).addn(10),
       new BN(liqAssetsCount)
     );
   }
