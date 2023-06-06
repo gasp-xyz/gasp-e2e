@@ -133,15 +133,15 @@ describe("UI XCM tests - USDT", () => {
     const mga = new Mangata(driver);
     await mga.go();
     const sidebar = new Sidebar(driver);
-    sidebar.waitForLoad();
+    await sidebar.waitForLoad();
     const noWalletConnectedInfoDisplayed =
       await sidebar.isNoWalletConnectedInfoDisplayed();
     expect(noWalletConnectedInfoDisplayed).toBeTruthy();
 
     await connectPolkadotWallet(driver, sidebar, mga);
-    const isWalletConnected = sidebar.isWalletConnected("acc_automation");
+    const isWalletConnected = await sidebar.isWalletConnected("acc_automation");
     expect(isWalletConnected).toBeTruthy();
-    sidebar.waitForLoad();
+    await sidebar.waitForLoad();
     const tokenOnAppBefore = await sidebar.getTokenAmount(USDT_ASSET_NAME);
 
     await sidebar.clickOnDepositToMangata();
@@ -168,7 +168,7 @@ describe("UI XCM tests - USDT", () => {
     expect(testUser1.getAsset(USDT_ASSET_ID)?.amountBefore.free!).bnLt(
       testUser1.getAsset(USDT_ASSET_ID)?.amountAfter.free!
     );
-    sidebar.waitForLoad();
+    await sidebar.waitForLoad();
     const tokenOnAppAfter = await sidebar.getTokenAmount(USDT_ASSET_NAME);
     expect(parseFloat(tokenOnAppAfter.replace(",", ""))).toBeGreaterThan(
       parseFloat(tokenOnAppBefore.replace(",", ""))

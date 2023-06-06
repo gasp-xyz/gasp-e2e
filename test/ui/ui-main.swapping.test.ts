@@ -95,7 +95,7 @@ describe("UI tests - swapping assets", () => {
     await connectPolkadotWallet(driver, sidebar, mga);
     await sidebar.waitForLoad();
     await sidebar.waitForWalletConnected();
-    const isWalletConnected = sidebar.isWalletConnected("acc_automation");
+    const isWalletConnected = await sidebar.isWalletConnected("acc_automation");
     expect(isWalletConnected).toBeTruthy();
 
     const swapView = new Swap(driver);

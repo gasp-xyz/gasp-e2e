@@ -117,13 +117,13 @@ describe("UI XCM tests - KSM", () => {
     const mga = new Mangata(driver);
     await mga.go();
     const sidebar = new Sidebar(driver);
-    sidebar.waitForLoad();
+    await sidebar.waitForLoad();
     const noWalletConnectedInfoDisplayed =
       await sidebar.isNoWalletConnectedInfoDisplayed();
     expect(noWalletConnectedInfoDisplayed).toBeTruthy();
 
     await connectPolkadotWallet(driver, sidebar, mga);
-    const isWalletConnected = sidebar.isWalletConnected("acc_automation");
+    const isWalletConnected = await sidebar.isWalletConnected("acc_automation");
     expect(isWalletConnected).toBeTruthy();
     const tokenOnAppBefore = await sidebar.getTokenAmount(KSM_ASSET_NAME);
 
@@ -151,7 +151,7 @@ describe("UI XCM tests - KSM", () => {
     expect(testUser1.getAsset(KSM_ASSET_ID)?.amountBefore.free!).bnLt(
       testUser1.getAsset(KSM_ASSET_ID)?.amountAfter.free!
     );
-    sidebar.waitForLoad();
+    await sidebar.waitForLoad();
     const tokenOnAppAfter = await sidebar.getTokenAmount(KSM_ASSET_NAME);
     expect(parseFloat(tokenOnAppAfter.replace(",", ""))).toBeGreaterThan(
       parseFloat(tokenOnAppBefore.replace(",", ""))

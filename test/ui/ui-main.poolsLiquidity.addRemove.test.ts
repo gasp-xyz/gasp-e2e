@@ -115,7 +115,7 @@ describe("UI tests - adding, removing liquidity", () => {
     await connectPolkadotWallet(driver, sidebar, mga);
     await sidebar.waitForLoad();
     await sidebar.waitForWalletConnected();
-    const isWalletConnected = sidebar.isWalletConnected("acc_automation");
+    const isWalletConnected = await sidebar.isWalletConnected("acc_automation");
     expect(isWalletConnected).toBeTruthy();
     await sidebar.waitForLiquidityPoolToLoad(MGR_ASSET_NAME, testAssetName);
 
@@ -147,9 +147,9 @@ describe("UI tests - adding, removing liquidity", () => {
     const mga = new Mangata(driver);
     await mga.go();
     const sidebar = new Sidebar(driver);
-    sidebar.waitForLoad();
+    await sidebar.waitForLoad();
     await sidebar.waitForWalletConnected();
-    const isWalletConnected = sidebar.isWalletConnected("acc_automation");
+    const isWalletConnected = await sidebar.isWalletConnected("acc_automation");
     expect(isWalletConnected).toBeTruthy();
 
     await sidebar.waitForLiquidityPoolToLoad(MGR_ASSET_NAME, testAssetName);
