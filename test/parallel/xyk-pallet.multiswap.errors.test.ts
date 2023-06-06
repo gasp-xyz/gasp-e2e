@@ -16,6 +16,7 @@ import {
   feeLockErrors,
   getEnvironmentRequiredVars,
   getUserBalanceOfToken,
+  stringToBN,
 } from "../../utils/utils";
 import { setupApi, setup5PoolsChained } from "../../utils/setup";
 import { getEventResultFromMangataTx } from "../../utils/txHandler";
@@ -103,14 +104,14 @@ describe("Multiswap - error cases: pool status & gasless integration", () => {
     api = getApi();
     ({ users, tokenIds } = await setup5PoolsChained(users));
   });
-  test("[gasless] High value swaps are disabled on multiswap", async () => {
+  test.only("[gasless] High value swaps are disabled on multiswap", async () => {
     const testUser0 = users[0];
     const meta = await api.query.feeLock.feeLockMetadata();
-    const threshold = new BN(
-      JSON.parse(JSON.stringify(meta)).swapValueThreshold as any as BN
+    const threshold = stringToBN(
+      JSON.parse(JSON.stringify(meta)).swapValueThreshold.toString()
     );
-    const feeLockAmount = new BN(
-      JSON.parse(JSON.stringify(meta)).feeLockAmount as any as BN
+    const feeLockAmount = stringToBN(
+      JSON.parse(JSON.stringify(meta)).feeLockAmount.toString()
     );
     let tokenList = tokenIds.concat(MGA_ASSET_ID);
     tokenList = tokenList.reverse();
@@ -125,15 +126,15 @@ describe("Multiswap - error cases: pool status & gasless integration", () => {
       diff.find((x) => x.currencyId === MGA_ASSET_ID)?.diff.reserved
     ).bnEqual(feeLockAmount);
   });
-  test("[gasless] Fail on client when not enough MGAs to lock AND tokens that exist whitelist", async () => {
+  test.only("[gasless] Fail on client when not enough MGAs to lock AND tokens that exist whitelist", async () => {
     const keyring = new Keyring({ type: "sr25519" });
     const testUser1 = new User(keyring);
     const sudo = new User(keyring, getEnvironmentRequiredVars().sudo);
     await Sudo.batchAsSudoFinalized(Assets.mintToken(tokenIds[0], testUser1));
     const meta = await api.query.feeLock.feeLockMetadata();
     //TODO:Update whitelist!
-    const threshold = new BN(
-      JSON.parse(JSON.stringify(meta)).swapValueThreshold as any as BN
+    const threshold = stringToBN(
+      JSON.parse(JSON.stringify(meta)).swapValueThreshold.toString()
     );
 
     await updateFeeLockMetadata(

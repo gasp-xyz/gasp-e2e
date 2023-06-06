@@ -2204,19 +2204,19 @@
     "@jridgewell/resolve-uri" "3.1.0"
     "@jridgewell/sourcemap-codec" "1.4.14"
 
-"@mangata-finance/sdk@https://github.com/mangata-finance/mangata-sdk#develop-rococo":
+"@mangata-finance/sdk@https://github.com/mangata-finance/mangata-sdk#develop-rococo-test":
   version "1.19.8"
-  resolved "https://github.com/mangata-finance/mangata-sdk#283e605d8ac65432ee83be07233e0b7b62b8126b"
+  resolved "https://github.com/mangata-finance/mangata-sdk#2b0a63e64f02812693619eef435ff83ff758dfd7"
   dependencies:
-    "@mangata-finance/types" "^0.24.0"
+    "@mangata-finance/types" "^0.23.0"
     "@polkadot/api" "^9.14.2"
     big.js "^6.2.1"
     uuid "^9.0.0"
 
-"@mangata-finance/types@^0.24.0":
-  version "0.24.0"
-  resolved "https://registry.yarnpkg.com/@mangata-finance/types/-/types-0.24.0.tgz#f721108dd2aa21627a4e182f2b4b7e3c6fbf350c"
-  integrity sha512-RlP+i3aL/fGHZruXi+c7W8Zb3tlf+xShI32SiiiTBLjhySvoRyCaOO/rRE37VVwrKYu82ixaN9texnJxshi7NQ==
+"@mangata-finance/types@^0.23.0":
+  version "0.23.0"
+  resolved "https://registry.yarnpkg.com/@mangata-finance/types/-/types-0.23.0.tgz#f2cc1598dfae070fb8102078d7a31dc9759bf825"
+  integrity sha512-7eNdZ837fqZi82/rZz0LsI6cYi5xfxSaSoH3jz/qf1fIF8pB1ryvQWitIe5TT4Xt3QA6U25pEicN0IOgvHgOgg==
   dependencies:
     "@polkadot/api-base" "^9.14.2"
 
