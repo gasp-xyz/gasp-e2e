@@ -87,12 +87,15 @@ describe("UI tests - swapping assets", () => {
     const mga = new Mangata(driver);
     await mga.go();
     const sidebar = new Sidebar(driver);
+    await sidebar.waitForLoad();
     const noWalletConnectedInfoDisplayed =
       await sidebar.isNoWalletConnectedInfoDisplayed();
     expect(noWalletConnectedInfoDisplayed).toBeTruthy();
 
     await connectPolkadotWallet(driver, sidebar, mga);
-    const isWalletConnected = sidebar.isWalletConnected("acc_automation");
+    await sidebar.waitForLoad();
+    await sidebar.waitForWalletConnected();
+    const isWalletConnected = await sidebar.isWalletConnected("acc_automation");
     expect(isWalletConnected).toBeTruthy();
 
     const swapView = new Swap(driver);

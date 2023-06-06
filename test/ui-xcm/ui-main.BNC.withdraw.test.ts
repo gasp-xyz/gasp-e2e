@@ -1,6 +1,6 @@
 /*
  *
- * @group uiXcmBNC
+ * @group uiXcmWithdrawBNC
  */
 import { Mangata } from "../../utils/frontend/pages/Mangata";
 import { Keyring } from "@polkadot/api";
@@ -25,7 +25,7 @@ import { SudoUser } from "../../utils/Framework/User/SudoUser";
 import { Node } from "../../utils/Framework/Node/Node";
 import {
   connectPolkadotWallet,
-  initDeposit,
+  initWithdraw,
   waitForActionNotification,
 } from "../../utils/frontend/utils/Handlers";
 import { DepositModal } from "../../utils/frontend/pages/DepositModal";
@@ -44,7 +44,7 @@ let driver: WebDriver;
 let sudo: SudoUser;
 let testUser1: User;
 const userAddress = "5EekB3dsQ4yW6WukZRL5muXb4qKvJMpJdXW3w59SptYHBkvk";
-const INIT_BNC_SOURCE = 100;
+const INIT_BNC_RELAY = 100;
 
 describe("UI XCM tests - BNC", () => {
   let mangata: ApiContext;
@@ -115,7 +115,7 @@ describe("UI XCM tests - BNC", () => {
     await testUser1.refreshAmounts(AssetWallet.BEFORE);
   });
 
-  test("Deposit", async () => {
+  test("Withdraw", async () => {
     getApi();
     const mga = new Mangata(driver);
     await mga.go();
@@ -128,37 +128,35 @@ describe("UI XCM tests - BNC", () => {
     await connectPolkadotWallet(driver, sidebar, mga);
     const isWalletConnected = await sidebar.isWalletConnected("acc_automation");
     expect(isWalletConnected).toBeTruthy();
-    await sidebar.waitForLoad();
     const tokenOnAppBefore = await sidebar.getTokenAmount(BNC_ASSET_NAME);
 
-    await sidebar.clickOnDepositToMangata();
+    await sidebar.clickOnWithdraw();
+    await initWithdraw(driver, BNC_ASSET_NAME);
+    await waitForActionNotification(driver, mangata, 3);
 
-    await initDeposit(driver, BNC_ASSET_NAME);
-
-    await waitForActionNotification(driver, mangata);
-
+    await mangata.chain.newBlock();
     await bifrost.chain.newBlock();
     await sidebar.clickOnDepositToMangata();
-    const depositModal = new DepositModal(driver);
-    const isModalVisible = await depositModal.isModalVisible();
-    expect(isModalVisible).toBeTruthy();
 
+    const depositModal = new DepositModal(driver);
+    const isDepositModalVisible = await depositModal.isModalVisible();
+    expect(isDepositModalVisible).toBeTruthy();
     await depositModal.openTokensList();
-    const tokensAtSourceAfter = await depositModal.getTokenAmount(
+    const tokensAtDestinationAfter = await depositModal.getTokenAmount(
       BNC_ASSET_NAME
     );
-    expect(tokensAtSourceAfter).toBeLessThan(INIT_BNC_SOURCE);
+    expect(tokensAtDestinationAfter).toBeGreaterThan(INIT_BNC_RELAY);
 
     await mangata.chain.newBlock();
 
     await mga.go();
     await testUser1.refreshAmounts(AssetWallet.AFTER);
-    expect(testUser1.getAsset(BNC_ASSET_ID)?.amountBefore.free!).bnLt(
+    expect(testUser1.getAsset(BNC_ASSET_ID)?.amountBefore.free!).bnGt(
       testUser1.getAsset(BNC_ASSET_ID)?.amountAfter.free!
     );
-    sidebar.waitForLoad();
+    await sidebar.waitForLoad();
     const tokenOnAppAfter = await sidebar.getTokenAmount(BNC_ASSET_NAME);
-    expect(parseFloat(tokenOnAppAfter.replace(",", ""))).toBeGreaterThan(
+    expect(parseFloat(tokenOnAppAfter.replace(",", ""))).toBeLessThan(
       parseFloat(tokenOnAppBefore.replace(",", ""))
     );
   });

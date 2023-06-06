@@ -25,6 +25,7 @@ import { SudoUser } from "../../utils/Framework/User/SudoUser";
 import { Node } from "../../utils/Framework/Node/Node";
 import {
   connectPolkadotWallet,
+  initDeposit,
   waitForActionNotification,
 } from "../../utils/frontend/utils/Handlers";
 import { DepositModal } from "../../utils/frontend/pages/DepositModal";
@@ -49,6 +50,7 @@ describe("UI XCM tests - USDT", () => {
   let statemine: ApiContext;
   let kusama: ApiContext;
   let alice: KeyringPair;
+  const INIT_USDT_SOURCE = 100;
 
   beforeAll(async () => {
     kusama = await XcmNetworks.kusama({ localPort: 9944 });
@@ -88,10 +90,15 @@ describe("UI XCM tests - USDT", () => {
 
     await statemine.dev.setStorage({
       System: {
-        Account: [[[userAddress], { data: { free: 10e12 } }]],
+        Account: [
+          [
+            [userAddress],
+            { providers: 1, data: { free: INIT_USDT_SOURCE * 1e12 } },
+          ],
+        ],
       },
       Assets: {
-        Account: [[[1984, userAddress], { balance: 1000e6 }]],
+        Account: [[[1984, userAddress], { balance: INIT_USDT_SOURCE * 1e6 }]],
       },
     });
 
@@ -126,47 +133,33 @@ describe("UI XCM tests - USDT", () => {
     const mga = new Mangata(driver);
     await mga.go();
     const sidebar = new Sidebar(driver);
-    sidebar.waitForLoad();
+    await sidebar.waitForLoad();
     const noWalletConnectedInfoDisplayed =
       await sidebar.isNoWalletConnectedInfoDisplayed();
     expect(noWalletConnectedInfoDisplayed).toBeTruthy();
 
     await connectPolkadotWallet(driver, sidebar, mga);
-    const isWalletConnected = sidebar.isWalletConnected("acc_automation");
+    const isWalletConnected = await sidebar.isWalletConnected("acc_automation");
     expect(isWalletConnected).toBeTruthy();
-    sidebar.waitForLoad();
+    await sidebar.waitForLoad();
     const tokenOnAppBefore = await sidebar.getTokenAmount(USDT_ASSET_NAME);
 
     await sidebar.clickOnDepositToMangata();
 
-    const depositModal = new DepositModal(driver);
-    let isModalVisible = await depositModal.isModalVisible();
-    expect(isModalVisible).toBeTruthy();
-
-    await depositModal.openTokensList();
-    const areTokenListElementsVisible =
-      await depositModal.areTokenListElementsVisible(USDT_ASSET_NAME);
-    expect(areTokenListElementsVisible).toBeTruthy();
-    const tokensAtSourceBefore = await depositModal.getTokenAmount(
-      USDT_ASSET_NAME
-    );
-    await depositModal.selectToken(USDT_ASSET_NAME);
-    await depositModal.enterValue("1");
-    await depositModal.waitForProgressBar();
-    await depositModal.clickContinue();
-
+    await initDeposit(driver, USDT_ASSET_NAME);
     await waitForActionNotification(driver, mangata);
 
     await statemine.chain.newBlock();
     await sidebar.clickOnDepositToMangata();
-    isModalVisible = await depositModal.isModalVisible();
+    const depositModal = new DepositModal(driver);
+    const isModalVisible = await depositModal.isModalVisible();
     expect(isModalVisible).toBeTruthy();
 
     await depositModal.openTokensList();
     const tokensAtSourceAfter = await depositModal.getTokenAmount(
       USDT_ASSET_NAME
     );
-    expect(tokensAtSourceAfter).toBeLessThan(tokensAtSourceBefore);
+    expect(tokensAtSourceAfter).toBeLessThan(INIT_USDT_SOURCE);
 
     await mangata.chain.newBlock();
 
@@ -175,7 +168,7 @@ describe("UI XCM tests - USDT", () => {
     expect(testUser1.getAsset(USDT_ASSET_ID)?.amountBefore.free!).bnLt(
       testUser1.getAsset(USDT_ASSET_ID)?.amountAfter.free!
     );
-    sidebar.waitForLoad();
+    await sidebar.waitForLoad();
     const tokenOnAppAfter = await sidebar.getTokenAmount(USDT_ASSET_NAME);
     expect(parseFloat(tokenOnAppAfter.replace(",", ""))).toBeGreaterThan(
       parseFloat(tokenOnAppBefore.replace(",", ""))

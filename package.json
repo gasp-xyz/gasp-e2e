@@ -39,7 +39,7 @@
     "node-ipc": "^11.1.0",
     "package.json": "^2.0.1",
     "prettier": "2.3.0",
-    "selenium-webdriver": "4.1.0",
+    "selenium-webdriver": "^4.9.2",
     "simple-statistics": "^7.8.3",
     "tiny-async-pool": "^1.2.0",
     "truffle": "^5.4.7",
