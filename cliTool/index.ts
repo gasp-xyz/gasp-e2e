@@ -226,8 +226,9 @@ async function app(): Promise<any> {
               await api.query.parachainStaking.selectedCandidates();
             const keyring = new Keyring({ type: "sr25519" });
             const user = new User(keyring, answers.user);
-            const result = collators.find(
-              (x) => x.toString() === user.keyRingPair.address
+            const result = JSON.parse(JSON.stringify(collators)).find(
+              (x: { toString: () => string }) =>
+                x.toString() === user.keyRingPair.address
             );
             console.info(result?.toString());
             console.info(

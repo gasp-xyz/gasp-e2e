@@ -4,7 +4,7 @@ import BN from "bn.js";
 import { Assets } from "./Assets";
 import { MGA_ASSET_ID, MAX_BALANCE } from "./Constants";
 import { waitForRewards } from "./eventListeners";
-import { Extrinsic, keyring, setupApi, setupUsers } from "./setup";
+import { Extrinsic, setupApi, setupUsers } from "./setup";
 import { Sudo } from "./sudo";
 import { xxhashAsHex } from "@polkadot/util-crypto";
 
@@ -25,6 +25,7 @@ import jsonpath from "jsonpath";
 import { Staking } from "./Staking";
 import { hexToBn } from "@polkadot/util";
 import { Bootstrap } from "./Bootstrap";
+import assert from "assert";
 const tokenOrigin = "ActivatedUnstakedReserves"; // "AvailableBalance";
 
 export async function vetoMotion(motionId: number) {
@@ -590,7 +591,9 @@ export async function subscribeAndPrintTokenChanges(
 }
 
 export async function findAllRewardsAndClaim() {
-  const api = getApi();
+  await setupUsers();
+  await setupApi();
+  const keyring = new Keyring({ type: "sr25519" });
   let liqTokenId: BN;
   let rewardAmount: BN;
 
@@ -609,7 +612,7 @@ export async function findAllRewardsAndClaim() {
   const { chainUri } = getEnvironmentRequiredVars();
   const mangata = await getMangataInstance(chainUri);
 
-  const accountsResponse = await api.query.proofOfStake.rewardsInfo.entries();
+  const accountsResponse = await api!.query.proofOfStake.rewardsInfo.entries();
 
   await accountsResponse.forEach((element: { toHuman: () => any }[]) => {
     const user = element[0].toHuman()[0];
@@ -636,7 +639,6 @@ export async function findAllRewardsAndClaim() {
   });
   const promotedPairNumber = usersInfo.length;
   const user = new User(keyring);
-
   for (let index = 0; index < promotedPairNumber; index++) {
     function getPrint(user: string, tokens: RewardsInfo) {
       const text =
@@ -647,7 +649,8 @@ export async function findAllRewardsAndClaim() {
         tokens.missingAtLastCheckpoint.toString() +
         ", alreadyClaimed: " +
         tokens.rewardsAlreadyClaimed +
-        ", notYetClaimed: tokens.rewardsNotYetClaimed";
+        ", notYetClaimed:" +
+        tokens.rewardsNotYetClaimed;
       return text;
     }
     user.addFromAddress(keyring, usersInfo[index][0]);
@@ -656,17 +659,36 @@ export async function findAllRewardsAndClaim() {
       user.keyRingPair.address,
       liqTokenId.toString()
     );
-    if (rewardAmount > BN_ZERO) {
+    if (rewardAmount) {
       console.info(getPrint(usersInfo[index][0], usersInfo[index][1]));
       extrinsicCall.push(Sudo.sudoAs(user, Xyk.claimRewardsAll(liqTokenId)));
     }
   }
-  const methodSudoAsDone = (
-    await Sudo.batchAsSudoFinalized(...extrinsicCall)
-  ).filter((extrinsicResult) => extrinsicResult.method === "SudoAsDone");
-
+  let txs: Extrinsic[] = [];
+  for (let index = 0; index < extrinsicCall.length; index++) {
+    const tx = extrinsicCall[index];
+    txs.push(tx);
+    if (txs.length > 100) {
+      const methodSudoAsDone = (await Sudo.batchAsSudoFinalized(...txs)).filter(
+        (extrinsicResult) => extrinsicResult.method === "SudoAsDone"
+      );
+      txs = [];
+      methodSudoAsDone.forEach((element: any) => {
+        if (element.event.data[0].isErr !== false) {
+          console.log("ERROR:" + JSON.stringify(element.event.data[0]));
+        }
+        assert(element.event.data[0].isErr === false);
+      });
+    }
+  }
+  const methodSudoAsDone = (await Sudo.batchAsSudoFinalized(...txs)).filter(
+    (extrinsicResult) => extrinsicResult.method === "SudoAsDone"
+  );
   methodSudoAsDone.forEach((element: any) => {
-    expect(element.event.data[0].isErr).toBeFalsy();
+    if (element.event.data[0].isErr !== false) {
+      console.log("ERROR:" + JSON.stringify(element.event.data[0]));
+    }
+    assert(element.event.data[0].isErr === false);
   });
 }
 
@@ -731,7 +753,8 @@ export async function migrate() {
         x[0] === "Crowdloan" ||
         x[0] === "Bootstrap" ||
         x[0] === "OrmlXcm" ||
-        x[0] === "RewardsInfo"
+        x[0] === "RewardsInfo" ||
+        x[0] === "Issuance"
     )
     .flatMap((item: any) =>
       item[1].map((element: any) => {
@@ -764,7 +787,7 @@ export async function migrate() {
         allKeys.push([keys[index], storage]);
       }
       const nextkeys = await api.rpc.state.getKeysPaged(key, 100, keys[99]);
-      if (loop % 10 === 0) {
+      if (loop % 100 === 0) {
         const txs: Extrinsic[] = [];
         allKeys.forEach((x) => {
           const storageKey = api.createType("StorageKey", x[0]);
