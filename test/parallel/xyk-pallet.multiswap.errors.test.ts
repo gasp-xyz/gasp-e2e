@@ -104,7 +104,7 @@ describe("Multiswap - error cases: pool status & gasless integration", () => {
     api = getApi();
     ({ users, tokenIds } = await setup5PoolsChained(users));
   });
-  test.only("[gasless] High value swaps are disabled on multiswap", async () => {
+  test("[gasless] High value swaps are disabled on multiswap", async () => {
     const testUser0 = users[0];
     const meta = await api.query.feeLock.feeLockMetadata();
     const threshold = stringToBN(
@@ -126,7 +126,7 @@ describe("Multiswap - error cases: pool status & gasless integration", () => {
       diff.find((x) => x.currencyId === MGA_ASSET_ID)?.diff.reserved
     ).bnEqual(feeLockAmount);
   });
-  test.only("[gasless] Fail on client when not enough MGAs to lock AND tokens that exist whitelist", async () => {
+  test("[gasless] Fail on client when not enough MGAs to lock AND tokens that exist whitelist", async () => {
     const keyring = new Keyring({ type: "sr25519" });
     const testUser1 = new User(keyring);
     const sudo = new User(keyring, getEnvironmentRequiredVars().sudo);
