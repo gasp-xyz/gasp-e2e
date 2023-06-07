@@ -27,8 +27,7 @@ import {
 jest.spyOn(console, "log").mockImplementation(jest.fn());
 jest.setTimeout(1500000);
 
-const successMultiSwapBuyEventName = "AssetsSwapped";
-const successMultiSwapSellEventName = "AssetsSwapped";
+const successSwapEventName = "AssetsSwapped";
 
 let users: User[] = [];
 let tokenIds: BN[] = [];
@@ -54,7 +53,7 @@ describe("Multiswap [2 hops] - happy paths", () => {
     );
     const eventResponse = getEventResultFromMangataTx(multiSwapOutput, [
       "xyk",
-      successMultiSwapBuyEventName,
+      successSwapEventName,
     ]);
     expect(eventResponse.state).toEqual(ExtrinsicResult.ExtrinsicSuccess);
     const boughtTokens = await getUserBalanceOfToken(
@@ -84,7 +83,7 @@ describe("Multiswap [2 hops] - happy paths", () => {
     );
     const eventResponse = getEventResultFromMangataTx(multiSwapOutput, [
       "xyk",
-      successMultiSwapSellEventName,
+      successSwapEventName,
     ]);
     expect(eventResponse.state).toEqual(ExtrinsicResult.ExtrinsicSuccess);
     const boughtTokens = await getUserBalanceOfToken(
@@ -112,7 +111,7 @@ describe("Multiswap [2 hops] - happy paths", () => {
     expect(mgaDiff?.reserved).bnGt(BN_ZERO);
     const eventResponse = getEventResultFromMangataTx(multiSwapOutput, [
       "xyk",
-      successMultiSwapBuyEventName,
+      successSwapEventName,
     ]);
     expect(eventResponse.state).toEqual(ExtrinsicResult.ExtrinsicSuccess);
   });
@@ -183,7 +182,7 @@ describe("Multiswap [2 hops] - happy paths", () => {
     );
     const eventResponse = getEventResultFromMangataTx(multiSwapOutput, [
       "xyk",
-      successMultiSwapSellEventName,
+      successSwapEventName,
     ]);
     expect(eventResponse.state).toEqual(ExtrinsicResult.ExtrinsicSuccess);
 
