@@ -29,6 +29,7 @@ process.env.NODE_ENV = "test";
 const { sudo: sudoUserName } = getEnvironmentRequiredVars();
 let testUser: User;
 let testUser1: User;
+let testUser2: User;
 let sudo: User;
 let keyring: Keyring;
 let token1: BN;
@@ -50,7 +51,7 @@ beforeAll(async () => {
   // setup users
   sudo = new User(keyring, sudoUserName);
 
-  [testUser] = setupUsers();
+  [testUser, testUser2] = setupUsers();
 
   await setupApi();
 
@@ -169,4 +170,57 @@ test("A user without any liq token, can use provideLiquidityWithConversion to mi
   expect(testUser1.getAsset(liqIdPromPool)?.amountAfter.free).bnEqual(BN_ZERO);
   expect(testUser1.getAsset(liqIdPromPool)?.amountAfter.reserved).bnGt(BN_ZERO);
   expect(testUserRewards.activatedAmount).bnGt(BN_ZERO);
+});
+
+test("A user who uses provideLiquidityWithConversion and other who do manually a swap + mint, gets the similar ratio of liquidity tokens.", async () => {
+  await Sudo.batchAsSudoFinalized(Assets.mintNative(testUser2));
+
+  testUser2.addAsset(MGA_ASSET_ID);
+  testUser2.addAsset(token1);
+  testUser2.addAsset(token2);
+
+  const provideLiquidityWithConversion = await provideLiquidity(
+    testUser1.keyRingPair,
+    liqIdPromPool,
+    MGA_ASSET_ID,
+    defaultCurrencyValue
+  );
+  const eventResponse = getEventResultFromMangataTx(
+    provideLiquidityWithConversion
+  );
+  expect(eventResponse.state).toEqual(ExtrinsicResult.ExtrinsicSuccess);
+
+  const filteredEvent = provideLiquidityWithConversion.filter(
+    (event) => event.method === "AssetsSwapped"
+  );
+
+  const soldAssetAmount = await filteredEvent[0].event.data[2].toString();
+
+  await testUser2.sellAssets(MGA_ASSET_ID, token1, new BN(soldAssetAmount));
+
+  await testUser2.refreshAmounts(AssetWallet.BEFORE);
+
+  const secondTokenAmount = testUser2.getAsset(token1)!.amountBefore.free;
+
+  await testUser2.mintLiquidity(token1, MGA_ASSET_ID, secondTokenAmount);
+
+  const testUser1Rewards = await getRewardsInfo(
+    testUser1.keyRingPair.address,
+    liqIdPromPool
+  );
+
+  const testUser2Rewards = await getRewardsInfo(
+    testUser2.keyRingPair.address,
+    liqIdPromPool
+  );
+
+  await testUser1.refreshAmounts(AssetWallet.AFTER);
+
+  expect(testUser1.getAsset(token1)?.amountAfter.free).bnEqual(BN_ZERO);
+  expect(testUser1.getAsset(liqIdPromPool)?.amountAfter.free).bnEqual(BN_ZERO);
+  expect(testUser1.getAsset(liqIdPromPool)?.amountAfter.reserved).bnGt(BN_ZERO);
+  expect(testUser1Rewards.activatedAmount).bnGt(BN_ZERO);
+  expect(testUser1Rewards.activatedAmount).bnEqual(
+    testUser2Rewards.activatedAmount
+  );
 });
