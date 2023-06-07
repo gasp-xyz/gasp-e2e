@@ -86,7 +86,6 @@ describe("Vesting", () => {
   });
 
   test("As a user, I can use vested tokens to mint", async () => {
-    //TODO: Continue here
     await testUser1.mintLiquidityWithVestedTokens(
       BN_HUNDRED_THOUSAND,
       createdToken

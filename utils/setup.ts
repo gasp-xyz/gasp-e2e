@@ -19,6 +19,7 @@ export let api: ApiPromise;
 export let keyring: Keyring;
 export let sudo: User;
 export let alice: User;
+export let eve: User;
 
 export type Extrinsic = SubmittableExtrinsic<"promise">;
 
@@ -46,19 +47,25 @@ export const setupUsers = () => {
   const { sudo: sudoUserName } = getEnvironmentRequiredVars();
   sudo = new User(keyring, sudoUserName);
   alice = new User(keyring, "//Alice");
+  eve = new User(keyring, "//Eve");
   const testUser1 = new User(keyring);
   const testUser2 = new User(keyring);
   const testUser3 = new User(keyring);
   const testUser4 = new User(keyring);
+  const testUser5 = new User(keyring);
+  const testUser6 = new User(keyring);
 
   keyring.addPair(sudo.keyRingPair);
   keyring.addPair(alice.keyRingPair);
+  keyring.addPair(eve.keyRingPair);
   keyring.addPair(testUser1.keyRingPair);
   keyring.addPair(testUser2.keyRingPair);
   keyring.addPair(testUser3.keyRingPair);
   keyring.addPair(testUser4.keyRingPair);
+  keyring.addPair(testUser5.keyRingPair);
+  keyring.addPair(testUser6.keyRingPair);
 
-  return [testUser1, testUser2, testUser3, testUser4];
+  return [testUser1, testUser2, testUser3, testUser4, testUser5, testUser6];
 };
 
 export const devTestingPairs = (ss58Format?: number) => {

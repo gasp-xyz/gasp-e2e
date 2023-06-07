@@ -6,7 +6,7 @@ import { Assets } from "./Assets";
 import { User } from "./User";
 import { getAccountJSON } from "./frontend/utils/Helper";
 import { waitNewBlock } from "./eventListeners";
-import { testLog } from "./Logger";
+import { logEvent, testLog } from "./Logger";
 import { AnyNumber } from "@polkadot/types/types";
 import { Keyring, ApiPromise } from "@polkadot/api";
 import { KeyringPair } from "@polkadot/keyring/types";
@@ -16,6 +16,7 @@ import { setupApi, setupUsers } from "./setup";
 import { Xyk } from "./xyk";
 import { MGA_ASSET_ID } from "./Constants";
 import { BN_HUNDRED, BN_ONE } from "@mangata-finance/sdk";
+import _ from "lodash";
 
 export function sleep(ms: number) {
   return new Promise((resolve) => {
@@ -324,6 +325,71 @@ export async function waitNewStakingRound(maxBlocks: number = 0) {
   }
 }
 
+export async function waitUntilCollatorProducesBlocks(
+  maxBlocks: number = 0,
+  userAddress: string
+) {
+  let currentBlockNumber = await getBlockNumber();
+  const initialBlockNumber = currentBlockNumber;
+  const awaitedBlockNumber = initialBlockNumber + maxBlocks;
+  let found = false;
+  while (awaitedBlockNumber > currentBlockNumber && !found) {
+    currentBlockNumber = await getBlockNumber();
+    const api = await mangata?.getApi()!;
+    const blockHashSignedByUser = await api.rpc.chain.getBlockHash(
+      currentBlockNumber
+    );
+    const header = await api.derive.chain.getHeader(blockHashSignedByUser);
+    const author = header!.author!.toHuman();
+
+    testLog
+      .getLog()
+      .info("Waiting for : " + userAddress + ", to produce a block: " + author);
+    await waitNewBlock();
+    found = author === userAddress;
+  }
+}
+export async function waitUntilUserCollatorRewarded(
+  user: User,
+  maxBlocks = 100,
+  distributeRewardsEvent = "parachainStaking.Rewarded"
+) {
+  return new Promise(async (resolve, reject) => {
+    const method = distributeRewardsEvent;
+    const api = await getApi();
+    const unsub = await api.rpc.chain.subscribeFinalizedHeads(async (head) => {
+      const events = await api.query.system.events.at(head.hash);
+      maxBlocks--;
+      testLog
+        .getLog()
+        .info(
+          `→ find on ${api.runtimeChain} for '${method}' event, attempt ${maxBlocks}, head ${head.hash}`
+        );
+
+      events.forEach((e) => logEvent(api.runtimeChain, e));
+
+      const filtered = _.filter(
+        events,
+        ({ event }) => `${event.section}.${event.method}` === method
+      );
+      if (filtered.length > 0) {
+        const destUser = filtered.filter((e) =>
+          JSON.parse(JSON.stringify(e.toHuman())).event.data.includes(
+            user.keyRingPair.address
+          )
+        );
+        if (destUser.length > 0) {
+          resolve(destUser);
+          unsub();
+        }
+      }
+      if (maxBlocks < 0) {
+        reject(`method ${method} not found within blocks limit`);
+      }
+    });
+  });
+}
+
 export async function getTokensDiffForBlockAuthor(blockNumber: AnyNumber) {
   const api = await mangata?.getApi()!;
   const blockHashSignedByUser = await api.rpc.chain.getBlockHash(blockNumber);
@@ -369,6 +435,20 @@ export async function getMultiPurposeLiquidityStatus(
     address,
     tokenId
   )) as any;
+}
+export async function getMultiPurposeLiquidityReLockStatus(
+  address: string,
+  tokenId: BN
+) {
+  const api = await mangata?.getApi()!;
+  return (await api.query.multiPurposeLiquidity.relockStatus(
+    address,
+    tokenId
+  )) as any;
+}
+export async function getVestingStatus(address: string, tokenId: BN) {
+  const api = await mangata?.getApi()!;
+  return (await api.query.vesting.vesting(address, tokenId)) as any;
 }
 export async function findBlockWithExtrinsicSigned(
   blocks = [0, 1],
@@ -456,6 +536,7 @@ export async function findErrorMetadata(errorStr: string, index: string) {
   });
   // eslint-disable-next-line no-console
   console.info(err);
+  return err;
 }
 export async function printCandidatePowers() {
   await initApi();
