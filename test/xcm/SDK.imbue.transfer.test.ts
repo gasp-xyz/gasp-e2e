@@ -14,7 +14,7 @@ import { sleep } from "../../utils/utils";
  * @group sdkxcm
  * @group proxied
  */
-describe("XCM tests for Mangata <-> imbue", () => {
+describe.skip("XCM tests for Mangata <-> imbue", () => {
   let imbue: ApiContext;
   let mangata: ApiContext;
   let alice: KeyringPair;

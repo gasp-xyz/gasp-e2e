@@ -21,6 +21,7 @@ import { SudoUser } from "../../utils/Framework/User/SudoUser";
 import { Node } from "../../utils/Framework/Node/Node";
 import {
   connectPolkadotWallet,
+  initDeposit,
   waitForActionNotification,
 } from "../../utils/frontend/utils/Handlers";
 import { DepositModal } from "../../utils/frontend/pages/DepositModal";
@@ -40,6 +41,7 @@ let sudo: SudoUser;
 let testUser1: User;
 const userAddress = "5EekB3dsQ4yW6WukZRL5muXb4qKvJMpJdXW3w59SptYHBkvk";
 const KSM_ASSET_NAME = "KSM";
+const INIT_KSM_RELAY = 15;
 
 describe("UI XCM tests - KSM", () => {
   let kusama: ApiContext;
@@ -81,7 +83,12 @@ describe("UI XCM tests - KSM", () => {
     });
     await kusama.dev.setStorage({
       System: {
-        Account: [[[userAddress], { providers: 1, data: { free: 10 * 1e12 } }]],
+        Account: [
+          [
+            [userAddress],
+            { providers: 1, data: { free: INIT_KSM_RELAY * 1e12 } },
+          ],
+        ],
       },
     });
 
@@ -110,46 +117,32 @@ describe("UI XCM tests - KSM", () => {
     const mga = new Mangata(driver);
     await mga.go();
     const sidebar = new Sidebar(driver);
-    sidebar.waitForLoad();
+    await sidebar.waitForLoad();
     const noWalletConnectedInfoDisplayed =
       await sidebar.isNoWalletConnectedInfoDisplayed();
     expect(noWalletConnectedInfoDisplayed).toBeTruthy();
 
     await connectPolkadotWallet(driver, sidebar, mga);
-    const isWalletConnected = sidebar.isWalletConnected("acc_automation");
+    const isWalletConnected = await sidebar.isWalletConnected("acc_automation");
     expect(isWalletConnected).toBeTruthy();
     const tokenOnAppBefore = await sidebar.getTokenAmount(KSM_ASSET_NAME);
 
     await sidebar.clickOnDepositToMangata();
 
-    const depositModal = new DepositModal(driver);
-    let isModalVisible = await depositModal.isModalVisible();
-    expect(isModalVisible).toBeTruthy();
-
-    await depositModal.openTokensList();
-    const areTokenListElementsVisible =
-      await depositModal.areTokenListElementsVisible(KSM_ASSET_NAME);
-    expect(areTokenListElementsVisible).toBeTruthy();
-    const tokensAtSourceBefore = await depositModal.getTokenAmount(
-      KSM_ASSET_NAME
-    );
-    await depositModal.selectToken(KSM_ASSET_NAME);
-    await depositModal.enterValue("1");
-    await depositModal.waitForProgressBar();
-    await depositModal.clickContinue();
-
+    await initDeposit(driver, KSM_ASSET_NAME);
     await waitForActionNotification(driver, mangata);
 
     await kusama.chain.newBlock();
     await sidebar.clickOnDepositToMangata();
-    isModalVisible = await depositModal.isModalVisible();
+    const depositModal = new DepositModal(driver);
+    const isModalVisible = await depositModal.isModalVisible();
     expect(isModalVisible).toBeTruthy();
 
     await depositModal.openTokensList();
     const tokensAtSourceAfter = await depositModal.getTokenAmount(
       KSM_ASSET_NAME
     );
-    expect(tokensAtSourceAfter).toBeLessThan(tokensAtSourceBefore);
+    expect(tokensAtSourceAfter).toBeLessThan(INIT_KSM_RELAY);
 
     await mangata.chain.newBlock();
 
@@ -158,7 +151,7 @@ describe("UI XCM tests - KSM", () => {
     expect(testUser1.getAsset(KSM_ASSET_ID)?.amountBefore.free!).bnLt(
       testUser1.getAsset(KSM_ASSET_ID)?.amountAfter.free!
     );
-    sidebar.waitForLoad();
+    await sidebar.waitForLoad();
     const tokenOnAppAfter = await sidebar.getTokenAmount(KSM_ASSET_NAME);
     expect(parseFloat(tokenOnAppAfter.replace(",", ""))).toBeGreaterThan(
       parseFloat(tokenOnAppBefore.replace(",", ""))

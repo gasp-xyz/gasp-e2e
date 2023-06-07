@@ -104,7 +104,7 @@ describe("Collators: MinCandidateStk limit", () => {
     const liqTokens = await getUserBalanceOfToken(liqToken, testUser2);
     expect(new BN(liqTokens.free)).bnEqual(minLiquidityToJoin);
   });
-  test("Min Mangatas -100 will make joinCollator fail", async () => {
+  test("Min Mangatas -1 will make joinCollator fail", async () => {
     const api = await getApi();
     const minCandidate = new BN(
       await api.consts.parachainStaking.minCandidateStk.toString()
@@ -127,7 +127,7 @@ describe("Collators: MinCandidateStk limit", () => {
     );
     expect(events.data).toEqual("CandidateBondBelowMin");
   });
-  test("Min Mangatas +100 will make joinCollator work", async () => {
+  test("Min Mangatas +1 will make joinCollator work", async () => {
     const api = await getApi();
     const minCandidate = new BN(
       await api.consts.parachainStaking.minCandidateStk.toString()

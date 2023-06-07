@@ -16,7 +16,6 @@ import {
 import { FIVE_MIN } from "../../utils/Constants";
 import { WalletConnectModal } from "../../utils/frontend/pages/WalletConnectModal";
 
-jest.retryTimes(1);
 jest.setTimeout(FIVE_MIN);
 jest.spyOn(console, "log").mockImplementation(jest.fn());
 let driver: WebDriver;
@@ -59,6 +58,7 @@ describe("UI tests - Extension management", () => {
     const mga = new Mangata(driver);
     await mga.go();
     const sidebar = new Sidebar(driver);
+    await sidebar.waitForLoad();
     const noWalletConnectedInfoDisplayed =
       await sidebar.isNoWalletConnectedInfoDisplayed();
     expect(noWalletConnectedInfoDisplayed).toBeTruthy();
@@ -73,9 +73,11 @@ describe("UI tests - Extension management", () => {
     await sidebar.clickOnWalletConnect();
     await walletConnectModal.pickWallet("Polkadot");
     await walletConnectModal.pickAccount("acc_automation");
-    const isWalletConnected = sidebar.isWalletConnected("acc_automation");
+    await sidebar.waitForLoad();
+    await sidebar.waitForWalletConnected();
+    const isWalletConnected = await sidebar.isWalletConnected("acc_automation");
     expect(isWalletConnected).toBeTruthy();
-    const areSidebarElementsVisible = sidebar.areSidebarElementsVisible();
+    const areSidebarElementsVisible = await sidebar.areSidebarElementsVisible();
     expect(areSidebarElementsVisible).toBeTruthy();
   });
 
