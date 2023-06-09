@@ -2,7 +2,7 @@
 import { MangataGenericEvent } from "@mangata-finance/sdk";
 import { ApiPromise } from "@polkadot/api";
 import { BN } from "@polkadot/util";
-import _, { reject } from "lodash";
+import _, { reject } from "lodash-es";
 import { getApi, getMangataInstance } from "./api";
 import { logEvent, testLog } from "./Logger";
 import { api } from "./setup";

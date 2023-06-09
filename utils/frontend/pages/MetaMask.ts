@@ -7,7 +7,7 @@ import {
   getAttribute,
   waitForElement,
 } from "../utils/Helper";
-const { By } = require("selenium-webdriver");
+import { By } from "selenium-webdriver";
 
 //xpaths
 const XPATH_PASSWORD = "//input[@id='password']";
