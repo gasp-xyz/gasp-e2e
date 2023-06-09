@@ -1,6 +1,9 @@
 /* eslint-disable no-console */
+import { jest } from "@jest/globals";
 import { testLog } from "../utils/Logger";
-require("dotenv").config();
+import dotenv from "dotenv";
+
+dotenv.config();
 
 jest.spyOn(console, "log").mockImplementation(jest.fn());
 

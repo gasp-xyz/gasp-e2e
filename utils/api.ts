@@ -1,4 +1,3 @@
-import "@mangata-finance/sdk";
 import { ApiPromise } from "@polkadot/api";
 import { testLog } from "./Logger";
 import { getEnvironmentRequiredVars, getMangataApiUrlPort } from "./utils";
@@ -29,7 +28,7 @@ export const initApi = async (uri = "") => {
     const chopstickPort = await getPort();
     mangataChopstick = await XcmNetworks.mangata({
       localPort: chopstickPort,
-      buildBlockMode: BuildBlockMode.Instant,
+      buildBlockMode: BuildBlockMode.Instant
     });
     uri = uri.replace(mgaPort.toString(), chopstickPort.toString());
     chopstickUri = uri;
