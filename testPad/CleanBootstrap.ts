@@ -12,9 +12,9 @@ function difference(a1: any, a2: any) {
 
 (async () => {
   const liqToken = new BN(9);
-  const api = await Mangata.getInstance([
+  const api = await Mangata.instance([
     "wss://roccoco-testnet-collator-01.mangatafinance.cloud",
-  ]).getApi();
+  ]).api();
 
   const file = fs.readFileSync(
     "/home/goncer/accounts/5CthcoS3CYHoVHDMUacydayRLMzMWedKryjsrvzrmv3VHCKP" +

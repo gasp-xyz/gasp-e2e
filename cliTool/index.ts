@@ -259,7 +259,7 @@ async function app(): Promise<any> {
           });
       }
       if (answers.option.includes("get pools")) {
-        const mga = Mangata.getInstance([
+        const mga = Mangata.instance([
           "wss://prod-kusama-collator-01.mangatafinance.cloud",
         ]);
         const pools = mga.getPools();

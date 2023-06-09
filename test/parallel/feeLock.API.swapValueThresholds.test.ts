@@ -13,7 +13,7 @@ import {
   EVENT_METHOD_PAYMENT,
 } from "../../utils/Constants";
 import { waitSudoOperationSuccess } from "../../utils/eventListeners";
-import { BN } from "@mangata-finance/sdk";
+import { BN } from "@polkadot/util";
 import { setupApi, setupUsers } from "../../utils/setup";
 import { Sudo } from "../../utils/sudo";
 import { updateFeeLockMetadata } from "../../utils/tx";

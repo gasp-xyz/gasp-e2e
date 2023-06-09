@@ -6,7 +6,9 @@ import { ApiContext } from "../../utils/Framework/XcmHelper";
 import XcmNetworks from "../../utils/Framework/XcmNetworks";
 import { devTestingPairs } from "../../utils/setup";
 import { expectJson, matchSystemEvents } from "../../utils/validators";
-import { BN, BN_HUNDRED, Mangata } from "@mangata-finance/sdk";
+import { Mangata } from "@mangata-finance/sdk";
+import { BN } from "@polkadot/util";
+
 import { BN_TEN } from "@mangata-finance/sdk";
 import { sleep } from "../../utils/utils";
 
@@ -58,7 +60,7 @@ describe.skip("XCM tests for Mangata <-> imbue", () => {
     });
   });
 
-  it("SDK ROC - mangata transfer assets to imbue", async () => {
+  it.skip("SDK ROC - mangata transfer assets to imbue", async () => {
     expectJson(
       await mangata.api.query.tokens.accounts(alice.address, imbueTokenId)
     ).toMatchSnapshot("Before");
@@ -66,15 +68,15 @@ describe.skip("XCM tests for Mangata <-> imbue", () => {
     expect(await imbue.api.query.system.account(alice.address)).toMatchSnapshot(
       "Before"
     );
-    const mgaSdk = Mangata.getInstance([mangata.uri]);
-    const p = mgaSdk.sendTokenFromMangataToParachain(
-      "IMBU",
-      "800000000",
-      2121,
-      alice,
-      alice.address,
-      BN_TEN.mul(BN_TEN.pow(new BN(12)))
-    );
+    const mgaSdk = Mangata.instance([mangata.uri]);
+    const p = mgaSdk.xTokens.withdraw({
+      account: alice,
+      amount: BN_TEN.mul(BN_TEN.pow(new BN(12))),
+      parachainId: 2121,
+      destinationAddress: alice.address,
+      tokenSymbol: "IMBU",
+      withWeight: "800000000",
+    });
     await Promise.race([
       p,
       new Promise(async () => {
@@ -107,15 +109,14 @@ describe.skip("XCM tests for Mangata <-> imbue", () => {
     expect(await imbue.api.query.system.account(alice.address)).toMatchSnapshot(
       "Before"
     );
-    const mgaSdk = Mangata.getInstance([mangata.uri]);
-    const p = mgaSdk.sendTokenFromParachainToMangata(
-      imbue.uri,
-      "IMBU",
-      "800000000",
-      alice,
-      alice.address,
-      BN_HUNDRED.mul(BN_TEN.pow(new BN(12)))
-    );
+    const mgaSdk = Mangata.instance([mangata.uri]);
+    const p = mgaSdk.xTokens.depositFromParachain({
+      account: alice,
+      destination: alice.address,
+      asset: "IMBU",
+      url: imbue.uri,
+      weightLimit: "800000000",
+    });
     await Promise.race([
       p,
       new Promise(async () => {

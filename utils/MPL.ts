@@ -1,4 +1,6 @@
-import { BN, BN_ZERO } from "@mangata-finance/sdk";
+import { BN_ZERO } from "@mangata-finance/sdk";
+import { BN } from "@polkadot/util";
+
 import { api } from "./setup";
 
 export class MPL {

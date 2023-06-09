@@ -12,7 +12,7 @@ import {
   waitSudoOperationSuccess,
   waitSudoOperationFail,
 } from "../../utils/eventListeners";
-import { BN } from "@mangata-finance/sdk";
+import { BN } from "@polkadot/util";
 import { setupApi, setupUsers } from "../../utils/setup";
 import { Sudo } from "../../utils/sudo";
 import { updateFeeLockMetadata, unlockFee } from "../../utils/tx";

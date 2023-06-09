@@ -1,4 +1,4 @@
-import { BN } from "@mangata-finance/sdk";
+import { BN } from "@polkadot/util";
 import { api, Extrinsic } from "./setup";
 import { User } from "./User";
 import { SudoDB } from "./SudoDB";

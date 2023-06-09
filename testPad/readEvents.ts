@@ -21,8 +21,8 @@ async function main() {
   const promises = [];
   for (let index = 0; index < uris.length; index++) {
     const uri = uris[index];
-    const mangata = Mangata.getInstance([uri]);
-    const api = await mangata.getApi();
+    const mangata = Mangata.instance([uri]);
+    const api = await mangata.api();
     const p = new Promise((): void => {
       // Subscribe to system events via storage
       api.query.system.events((events: any): void => {

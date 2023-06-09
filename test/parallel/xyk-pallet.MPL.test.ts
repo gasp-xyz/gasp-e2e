@@ -19,7 +19,7 @@ import {
   getMultiPurposeLiquidityStatus,
 } from "../../utils/utils";
 import { Node } from "../../utils/Framework/Node/Node";
-import { BN } from "@mangata-finance/sdk";
+import { BN } from "@polkadot/util";
 import { hexToBn } from "@polkadot/util";
 import { Assets } from "../../utils/Assets";
 import { getApi } from "../../utils/api";

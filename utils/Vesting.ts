@@ -1,4 +1,4 @@
-import { BN } from "@mangata-finance/sdk";
+import { BN } from "@polkadot/util";
 import { api } from "./setup";
 import { User } from "./User";
 import { BN_THOUSAND } from "@polkadot/util";

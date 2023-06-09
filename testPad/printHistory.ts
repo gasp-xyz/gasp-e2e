@@ -12,9 +12,9 @@ const uri = "wss://v4-collator-01.mangatafinance.cloud";
 // this will handle if printing in pretty-multilines.
 
 async function main() {
-  const mangata = Mangata.getInstance([uri]);
+  const mangata = Mangata.instance([uri]);
   const currBlock = Number.parseInt(await mangata.getBlockNumber());
-  const api = await mangata.getApi();
+  const api = await mangata.api();
   let index = currBlock > 200 ? currBlock - 200 : 0;
   for (index; index < currBlock; index++) {
     const executionBlockHash = await api.rpc.chain.getBlockHash(index);

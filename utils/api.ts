@@ -51,6 +51,6 @@ export const disconnect = async () => {
   //  if (mangata) {
   //    await mangata.disconnect();
   //  } else {
-  //    await Mangata.getInstance([uri]).disconnect();
+  //    await Mangata.instance([uri]).disconnect();
   //  }
 };
