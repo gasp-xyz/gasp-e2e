@@ -10,7 +10,6 @@ import { SudoDB } from "./SudoDB";
 import { Codec } from "@polkadot/types-codec/types";
 import { signTx } from "@mangata-finance/sdk";
 import { BN } from "@polkadot/util";
-import type { ISubmittableResult } from "@polkadot/types/types";
 import { SubmittableExtrinsic } from "@polkadot/api/types";
 // API
 export let api: ApiPromise;
@@ -21,7 +20,7 @@ export let sudo: User;
 export let alice: User;
 export let eve: User;
 
-export type Extrinsic = SubmittableExtrinsic<"promise", ISubmittableResult>;
+export type Extrinsic = SubmittableExtrinsic<"promise">;
 
 export type CodecOrArray = Codec | Codec[];
 

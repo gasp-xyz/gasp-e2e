@@ -1,3 +1,4 @@
+import "@mangata-finance/sdk";
 import { ApiPromise } from "@polkadot/api";
 import { testLog } from "./Logger";
 import { getEnvironmentRequiredVars, getMangataApiUrlPort } from "./utils";
