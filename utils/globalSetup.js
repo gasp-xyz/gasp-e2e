@@ -1,31 +1,30 @@
 /* eslint-disable no-console */
 import { setupGasLess } from "./setup";
 import dotenv from "dotenv";
+import ipc from "node-ipc";
+import { getApi, initApi } from "./api";
+import { getEnvironmentRequiredVars } from "./utils";
+import { Keyring } from "@polkadot/api";
 
 dotenv.config();
 
-module.exports = async function (globalConfig, projectConfig) {
+const globalConfig = async (globalConfig, projectConfig) => {
   if (process.env.CHOPSTICK_ENABLED || process.env.CHOPSTICK_UI) return;
 
-  const ipc = require("node-ipc").default;
-  const api_module = require("./api");
-  const utils = require("./utils");
-  const polkadot_api = require("@polkadot/api");
-
   try {
-    api_module.getApi();
+    getApi();
   } catch (e) {
-    await api_module.initApi();
+    await initApi();
   }
 
-  const api = api_module.getApi();
+  const api = getApi();
 
   ipc.config.id = "nonceManager";
   ipc.config.retry = 1500;
   ipc.config.silent = false;
   ipc.config.sync = true;
-  const { sudo } = utils.getEnvironmentRequiredVars();
-  const keyring = new polkadot_api.Keyring({ type: "sr25519" });
+  const { sudo } = getEnvironmentRequiredVars();
+  const keyring = new Keyring({ type: "sr25519" });
   const sudoKeyringPair = keyring.createFromUri(sudo);
   const nonce = await api.rpc.system.accountNextIndex(sudoKeyringPair.address);
   console.info(`${nonce}`);
@@ -46,3 +45,5 @@ module.exports = async function (globalConfig, projectConfig) {
   //enable gasless! :brum brum:
   await setupGasLess();
 };
+
+export default globalConfig;

@@ -2,7 +2,7 @@ import { ApiPromise } from "@polkadot/api";
 import { testLog } from "./Logger";
 import { getEnvironmentRequiredVars, getMangataApiUrlPort } from "./utils";
 import { Mangata } from "@mangata-finance/sdk";
-import getPort from "get-port-please";
+import { getPort } from "get-port-please";
 import XcmNetworks from "./Framework/XcmNetworks";
 import { BuildBlockMode } from "@acala-network/chopsticks";
 import { ApiContext } from "./Framework/XcmHelper";
@@ -25,7 +25,7 @@ export const initApi = async (uri = "") => {
   }
   if (process.env.CHOPSTICK_ENABLED) {
     const mgaPort = getMangataApiUrlPort();
-    const chopstickPort = await getPort.getPort();
+    const chopstickPort = await getPort();
     mangataChopstick = await XcmNetworks.mangata({
       localPort: chopstickPort,
       buildBlockMode: BuildBlockMode.Instant,
