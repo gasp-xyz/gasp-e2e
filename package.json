@@ -43,7 +43,7 @@
     "jest-extended": "^3.2.3",
     "jsonpath": "^1.1.1",
     "loadsh": "^0.0.4",
-    "node-ipc": "^11.1.0",
+    "node-ipc": "9.2.1",
     "package.json": "^2.0.1",
     "prettier": "2.3.0",
     "selenium-webdriver": "^4.9.2",
@@ -129,6 +129,10 @@
     "suiteNameTemplate": "{filepath}",
     "classNameTemplate": "{classname}",
     "titleTemplate": "{title}"
+  },
+  "overrides": {
+    "node-ipc@>9.2.1 <10": "9.2.1",
+    "node-ipc@>10.1.0": "10.1.0"
   },
   "jest": {
     "transform": {
