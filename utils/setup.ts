@@ -2,7 +2,6 @@ import { ApiPromise, Keyring } from "@polkadot/api";
 import { getEnvironmentRequiredVars } from "./utils";
 import { User } from "./User";
 import "@mangata-finance/types";
-import { SubmittableExtrinsic } from "@polkadot/api/types";
 import { getApi, initApi } from "./api";
 import { Sudo } from "./sudo";
 import { Assets } from "./Assets";
@@ -10,7 +9,9 @@ import { Xyk } from "./xyk";
 import { SudoDB } from "./SudoDB";
 import { Codec } from "@polkadot/types-codec/types";
 import { signTx } from "@mangata-finance/sdk";
-import { BN } from '@polkadot/util';
+import { BN } from "@polkadot/util";
+import type { ISubmittableResult } from "@polkadot/types/types";
+import { SubmittableExtrinsic } from "@polkadot/api/types";
 // API
 export let api: ApiPromise;
 
@@ -20,7 +21,7 @@ export let sudo: User;
 export let alice: User;
 export let eve: User;
 
-export type Extrinsic = SubmittableExtrinsic<"promise">;
+export type Extrinsic = SubmittableExtrinsic<"promise", ISubmittableResult>;
 
 export type CodecOrArray = Codec | Codec[];
 
@@ -80,7 +81,7 @@ export const devTestingPairs = (ss58Format?: number) => {
     charlie,
     dave,
     eve,
-    keyring,
+    keyring
   };
 };
 
@@ -171,23 +172,16 @@ export const setupGasLess = async (force = false) => {
   );
   // only create if empty.
   if (feeLockConfig === null || feeLockConfig.periodLength === null || force) {
-    const extrinsic = api!.tx.feeLock.updateFeeLockMetadata(
-      10,
-      "50000000000000000000",
-      "1000000000000000000000",
-      [[1, false]]
-    ).toString();
-    await signTx(
-      api!,
-      api!.tx.sudo.sudo(
-        extrinsic
-      ),
-      sudo.keyRingPair,
-      {
-        nonce: await SudoDB.getInstance().getSudoNonce(
-          sudo.keyRingPair.address
-        ),
-      }
-    );
+    const extrinsic = api!.tx.feeLock
+      .updateFeeLockMetadata(
+        10,
+        "50000000000000000000",
+        "1000000000000000000000",
+        [[1, false]]
+      )
+      .toString();
+    await signTx(api!, api!.tx.sudo.sudo(extrinsic), sudo.keyRingPair, {
+      nonce: await SudoDB.getInstance().getSudoNonce(sudo.keyRingPair.address)
+    });
   }
 };
