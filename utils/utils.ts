@@ -8,7 +8,7 @@ import { getAccountJSON } from "./frontend/utils/Helper";
 import { waitNewBlock } from "./eventListeners";
 import { logEvent, testLog } from "./Logger";
 import { AnyNumber } from "@polkadot/types/types";
-import { Keyring, ApiPromise } from "@polkadot/api";
+import { ApiPromise } from "@polkadot/api";
 import { KeyringPair } from "@polkadot/keyring/types";
 import { getStakingLiquidityTokens, sellAsset } from "./tx";
 import { Sudo } from "./sudo";
@@ -17,6 +17,7 @@ import { Xyk } from "./xyk";
 import { MGA_ASSET_ID } from "./Constants";
 import { BN_HUNDRED, BN_ONE } from "@mangata-finance/sdk";
 import _ from "lodash";
+import Keyring from "@polkadot/keyring";
 
 export function sleep(ms: number) {
   return new Promise((resolve) => {

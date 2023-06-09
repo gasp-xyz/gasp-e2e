@@ -183,16 +183,21 @@ export class Assets {
             xyk: xykMetadata,
           },
         },
+        //@ts-ignore
         api.createType("Option<u32>", assetId)
       )
     );
   }
 
   static updateAsset(assetId: number | BN, update: UpdateAsset): Extrinsic {
+    const optional = update.decimals
+      ? api.createType("Option<u32>", update.decimals)
+      : null;
     return Sudo.sudo(
       api.tx.assetRegistry.updateAsset(
         assetId,
-        api.createType("Option<u32>", update.decimals),
+        //@ts-ignore
+        optional,
         api.createType("Vec<u8>", update.name),
         api.createType("Vec<u8>", update.symbol),
         null,
