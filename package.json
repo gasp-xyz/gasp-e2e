@@ -119,7 +119,8 @@
     "jest-html-reporters": "^2.1.6",
     "jest-junit": "^12.2.0",
     "jest-runner-groups": "^2.1.0",
-    "lodash-es": "^4.17.21"
+    "lodash-es": "^4.17.21",
+    "ts-jest": "^29.1.0"
   },
   "jest-junit": {
     "outputDirectory": "reports",
@@ -130,7 +131,9 @@
     "titleTemplate": "{title}"
   },
   "jest": {
-    "transform": {},
+    "transform": {
+      "^.+\\.ts?$": "ts-jest"
+    },
     "transformIgnorePatterns": [
       "<rootDir>/node_modules/(?!@babel/runtime/helpers/esm/)"
     ],
