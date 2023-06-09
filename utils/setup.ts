@@ -6,12 +6,11 @@ import { SubmittableExtrinsic } from "@polkadot/api/types";
 import { getApi, initApi } from "./api";
 import { Sudo } from "./sudo";
 import { Assets } from "./Assets";
-import { BN } from "@mangata-finance/sdk";
 import { Xyk } from "./xyk";
-import { signTx } from "@mangata-finance/sdk";
 import { SudoDB } from "./SudoDB";
 import { Codec } from "@polkadot/types-codec/types";
-
+import { signTx } from "@mangata-finance/sdk";
+import { BN } from '@polkadot/util';
 // API
 export let api: ApiPromise;
 
@@ -172,15 +171,16 @@ export const setupGasLess = async (force = false) => {
   );
   // only create if empty.
   if (feeLockConfig === null || feeLockConfig.periodLength === null || force) {
+    const extrinsic = api!.tx.feeLock.updateFeeLockMetadata(
+      10,
+      "50000000000000000000",
+      "1000000000000000000000",
+      [[1, false]]
+    ).toString();
     await signTx(
       api!,
       api!.tx.sudo.sudo(
-        api!.tx.feeLock.updateFeeLockMetadata(
-          10,
-          "50000000000000000000",
-          "1000000000000000000000",
-          [[1, false]]
-        )
+        extrinsic
       ),
       sudo.keyRingPair,
       {

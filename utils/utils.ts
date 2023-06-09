@@ -174,13 +174,13 @@ export async function UserCreatesAPoolAndMintLiquidity(
   await testUser1.addMGATokens(sudo);
   await (
     await getMangataInstance()
-  ).createPool(
-    testUser1.keyRingPair,
-    firstCurrency.toString(),
-    poolAmount,
-    secondCurrency.toString(),
-    poolAmount
-  );
+  ).xyk.createPool({
+    account: testUser1.keyRingPair,
+    firstTokenAmount: poolAmount,
+    firstTokenId: firstCurrency.toString(),
+    secondTokenId: secondCurrency.toString(),
+    secondTokenAmount: poolAmount,
+  });
 
   await testUser1.mintLiquidity(firstCurrency, secondCurrency, mintAmount);
   return [firstCurrency, secondCurrency];
@@ -335,7 +335,7 @@ export async function waitUntilCollatorProducesBlocks(
   let found = false;
   while (awaitedBlockNumber > currentBlockNumber && !found) {
     currentBlockNumber = await getBlockNumber();
-    const api = await mangata?.getApi()!;
+    const api = await mangata?.api()!;
     const blockHashSignedByUser = await api.rpc.chain.getBlockHash(
       currentBlockNumber
     );
@@ -358,14 +358,13 @@ export async function waitUntilUserCollatorRewarded(
     const method = distributeRewardsEvent;
     const api = await getApi();
     const unsub = await api.rpc.chain.subscribeFinalizedHeads(async (head) => {
-      const events = await api.query.system.events.at(head.hash);
+      const events = await (await api.at(head.hash)).query.system.events();
       maxBlocks--;
       testLog
         .getLog()
         .info(
           `→ find on ${api.runtimeChain} for '${method}' event, attempt ${maxBlocks}, head ${head.hash}`
         );
-
       events.forEach((e) => logEvent(api.runtimeChain, e));
 
       const filtered = _.filter(
@@ -391,7 +390,7 @@ export async function waitUntilUserCollatorRewarded(
 }
 
 export async function getTokensDiffForBlockAuthor(blockNumber: AnyNumber) {
-  const api = await mangata?.getApi()!;
+  const api = await mangata?.api()!;
   const blockHashSignedByUser = await api.rpc.chain.getBlockHash(blockNumber);
   const header = await api.derive.chain.getHeader(blockHashSignedByUser);
   const author = header!.author!.toHuman();
@@ -423,14 +422,14 @@ export async function getUserBalanceOfToken(tokenId: BN, account: User) {
 }
 
 export async function getBlockNumber(): Promise<number> {
-  const api = await mangata?.getApi()!;
+  const api = await mangata?.api()!;
   return ((await api.query.system.number()) as any).toNumber();
 }
 export async function getMultiPurposeLiquidityStatus(
   address: string,
   tokenId: BN
 ) {
-  const api = await mangata?.getApi()!;
+  const api = await mangata?.api()!;
   return (await api.query.multiPurposeLiquidity.reserveStatus(
     address,
     tokenId
@@ -440,21 +439,21 @@ export async function getMultiPurposeLiquidityReLockStatus(
   address: string,
   tokenId: BN
 ) {
-  const api = await mangata?.getApi()!;
+  const api = await mangata?.api()!;
   return (await api.query.multiPurposeLiquidity.relockStatus(
     address,
     tokenId
   )) as any;
 }
 export async function getVestingStatus(address: string, tokenId: BN) {
-  const api = await mangata?.getApi()!;
+  const api = await mangata?.api()!;
   return (await api.query.vesting.vesting(address, tokenId)) as any;
 }
 export async function findBlockWithExtrinsicSigned(
   blocks = [0, 1],
   userAddress: string
 ) {
-  const api = await mangata?.getApi()!;
+  const api = await mangata?.api()!;
   if (blocks.length < 2) {
     throw new Error("two blocks are required.");
   }

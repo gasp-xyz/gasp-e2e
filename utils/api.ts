@@ -1,14 +1,14 @@
 import { ApiPromise } from "@polkadot/api";
 import { testLog } from "./Logger";
 import { getEnvironmentRequiredVars, getMangataApiUrlPort } from "./utils";
-import { Mangata } from "@mangata-finance/sdk";
+import { MangataInstance, Mangata } from "@mangata-finance/sdk";
 import getPort from "get-port-please";
 import XcmNetworks from "./Framework/XcmNetworks";
 import { BuildBlockMode } from "@acala-network/chopsticks";
 import { ApiContext } from "./Framework/XcmHelper";
 
 export let api: ApiPromise | null = null;
-export let mangata: Mangata | null = null;
+export let mangata: MangataInstance | null = null;
 export let mangataChopstick: ApiContext | null = null;
 export let chopstickUri: String;
 export const getApi = () => {
@@ -34,21 +34,22 @@ export const initApi = async (uri = "") => {
     chopstickUri = uri;
   }
   testLog.getLog().info(`TEST_INFO: Running test in ${uri}`);
-  mangata = Mangata.getInstance([uri]);
-  api = await mangata.getApi();
+  mangata = Mangata.instance([uri]);
+  api = await mangata.api();
   return api;
 };
 
-export async function getMangataInstance(uri = ""): Promise<Mangata> {
+export async function getMangataInstance(uri = ""): Promise<MangataInstance> {
   if (!api) {
     await initApi(uri);
   }
   return mangata!;
 }
-export const disconnect = async (uri = "") => {
-  if (mangata) {
-    await mangata.disconnect();
-  } else {
-    await Mangata.getInstance([uri]).disconnect();
-  }
+export const disconnect = async () => {
+  //TODO:sdkV2
+  //  if (mangata) {
+  //    await mangata.disconnect();
+  //  } else {
+  //    await Mangata.getInstance([uri]).disconnect();
+  //  }
 };
