@@ -8,18 +8,20 @@ import { Keyring } from "@polkadot/api";
 import { getApi, initApi } from "../../utils/api";
 import { Assets } from "../../utils/Assets";
 import { MGA_ASSET_ID } from "../../utils/Constants";
-import { BN, BN_HUNDRED, signTx } from "@mangata-finance/sdk";
+import { BN, BN_HUNDRED, BN_ZERO, signTx } from "@mangata-finance/sdk";
 import { setupApi, setupUsers } from "../../utils/setup";
 import { Sudo } from "../../utils/sudo";
 import {
+  claimRewardsAll,
   getLiquidityAssetId,
   getRewardsInfo,
+  mintLiquidity,
   promotePool,
 } from "../../utils/tx";
-import { User } from "../../utils/User";
+import { AssetWallet, User } from "../../utils/User";
 import { getEnvironmentRequiredVars, stringToBN } from "../../utils/utils";
 import { Xyk } from "../../utils/xyk";
-import { ExtrinsicResult } from "../../utils/eventListeners";
+import { ExtrinsicResult, waitForRewards } from "../../utils/eventListeners";
 import { getEventResultFromMangataTx } from "../../utils/txHandler";
 
 jest.spyOn(console, "log").mockImplementation(jest.fn());
@@ -177,6 +179,92 @@ test("Testing that the sum of the weights can be greater than 100", async () => 
   expect(rewardsLiqId1.rewardsAlreadyClaimed.mul(ratioPoolsWeights)).bnLte(
     rewardsLiqId2.rewardsAlreadyClaimed
   );
+});
+
+test("GIVEN a pool WHEN it has configured with 0 THEN no new issuance will be reserved AND user can't claim rewards", async () => {
+  const [testUser2] = setupUsers();
+
+  await Sudo.batchAsSudoFinalized(
+    Assets.mintToken(token1, testUser2, Assets.DEFAULT_AMOUNT),
+    Assets.mintNative(testUser2),
+    Sudo.sudoAs(
+      testUser1,
+      Xyk.mintLiquidity(MGA_ASSET_ID, token1, defaultCurrencyValue)
+    )
+  );
+
+  testUser2.addAsset(MGA_ASSET_ID);
+  testUser2.addAsset(token1);
+
+  await waitForRewards(testUser1, liqId);
+
+  await claimRewardsAll(testUser1, liqId).then((result) => {
+    const eventResponse = getEventResultFromMangataTx(result);
+    expect(eventResponse.state).toEqual(ExtrinsicResult.ExtrinsicSuccess);
+  });
+
+  await waitForRewards(testUser1, liqId);
+
+  await promotePool(sudo.keyRingPair, liqId, 0);
+
+  await claimRewardsAll(testUser1, liqId).then((result) => {
+    const eventResponse = getEventResultFromMangataTx(result);
+    expect(eventResponse.state).toEqual(ExtrinsicResult.ExtrinsicFailed);
+    expect(eventResponse.data).toEqual("NotAPromotedPool");
+  });
+
+  await mintLiquidity(
+    testUser2.keyRingPair,
+    MGA_ASSET_ID,
+    token1,
+    defaultCurrencyValue
+  );
+
+  await testUser2.refreshAmounts(AssetWallet.AFTER);
+
+  expect(testUser2.getAsset(MGA_ASSET_ID)!.amountAfter.free!).bnGt(BN_ZERO);
+  expect(testUser2.getAsset(MGA_ASSET_ID)!.amountAfter.reserved!).bnEqual(
+    BN_ZERO
+  );
+});
+
+test("GIVEN a deactivated pool WHEN its configured with more weight, THEN rewards are now active, new users can get portion of those rewards AND issuance grows", async () => {
+  const api = getApi();
+
+  await promotePool(sudo.keyRingPair, liqId, 0);
+
+  const [testUser2] = setupUsers();
+
+  await Sudo.batchAsSudoFinalized(
+    Assets.mintToken(token1, testUser2, Assets.DEFAULT_AMOUNT),
+    Assets.mintNative(testUser2)
+  );
+
+  const totalIssuanceBefore = new BN(
+    await api.query.tokens.totalIssuance(liqId)
+  );
+
+  await promotePool(sudo.keyRingPair, liqId, 20);
+
+  await mintLiquidity(
+    testUser2.keyRingPair,
+    MGA_ASSET_ID,
+    token1,
+    defaultCurrencyValue
+  );
+
+  await waitForRewards(testUser2, liqId);
+
+  await claimRewardsAll(testUser2, liqId).then((result) => {
+    const eventResponse = getEventResultFromMangataTx(result);
+    expect(eventResponse.state).toEqual(ExtrinsicResult.ExtrinsicSuccess);
+  });
+
+  const totalIssuanceAfter = new BN(
+    await api.query.tokens.totalIssuance(liqId)
+  );
+
+  expect(totalIssuanceAfter).bnGt(totalIssuanceBefore);
 });
 
 async function getPoolWeight(tokenId: BN) {
