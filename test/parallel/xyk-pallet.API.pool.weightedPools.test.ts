@@ -267,6 +267,21 @@ test("GIVEN a deactivated pool WHEN its configured with more weight, THEN reward
   expect(totalIssuanceAfter).bnGt(totalIssuanceBefore);
 });
 
+test("GIVEN an activated pool WHEN pool was deactivated THEN check that pool was deleted from list of promotedPoolRewards", async () => {
+  const api = getApi();
+
+  const poolWeightBefore = await getPoolWeight(liqId);
+
+  await promotePool(sudo.keyRingPair, liqId, 0);
+
+  const poolRewards = JSON.parse(
+    JSON.stringify(await api.query.proofOfStake.promotedPoolRewards())
+  );
+
+  expect(poolWeightBefore).bnGt(BN_ZERO);
+  expect(poolRewards[liqId.toString()]).toEqual(undefined);
+});
+
 async function getPoolWeight(tokenId: BN) {
   const api = getApi();
 
