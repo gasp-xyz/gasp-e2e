@@ -5,14 +5,14 @@
  */
 
 import { Keyring } from "@polkadot/api";
-import { getApi, initApi, getMangataInstance } from "../../utils/api";
+import { getApi, initApi } from "../../utils/api";
 import { Assets } from "../../utils/Assets";
 import { MGA_ASSET_ID } from "../../utils/Constants";
 import { waitSudoOperationSuccess } from "../../utils/eventListeners";
-import { BN, toBN } from "@mangata-finance/sdk";
+import { toBN } from "@mangata-finance/sdk";
 import { setupApi, setupUsers } from "../../utils/setup";
 import { Sudo } from "../../utils/sudo";
-import { updateFeeLockMetadata, unlockFee } from "../../utils/tx";
+import { updateFeeLockMetadata, unlockFee, sellAsset } from "../../utils/tx";
 import { AssetWallet, User } from "../../utils/User";
 import {
   getEnvironmentRequiredVars,
@@ -24,6 +24,7 @@ import {
 import { Xyk } from "../../utils/xyk";
 import { addMgaToWhitelisted } from "../../utils/feeLockHelper";
 import { stringToBN } from "../../utils/utils";
+import { BN } from "@polkadot/util";
 
 jest.spyOn(console, "log").mockImplementation(jest.fn());
 jest.setTimeout(2500000);
@@ -46,23 +47,20 @@ async function checkErrorSellAsset(
   amount = new BN(1000)
 ) {
   let exception = false;
-  const mangata = await getMangataInstance();
   const soldAssetIdString = soldAssetId.toString();
   const boughtAssetIdString = boughtAssetId.toString();
 
   await expect(
-    mangata
-      .sellAsset(
-        user.keyRingPair,
-        soldAssetIdString,
-        boughtAssetIdString,
-        amount,
-        new BN(0)
-      )
-      .catch((reason) => {
-        exception = true;
-        throw new Error(reason.data);
-      })
+    sellAsset(
+      user.keyRingPair,
+      soldAssetIdString,
+      boughtAssetIdString,
+      amount,
+      new BN(0)
+    ).catch((reason) => {
+      exception = true;
+      throw new Error(reason.data);
+    })
   ).rejects.toThrow(reason);
 
   expect(exception).toBeTruthy();

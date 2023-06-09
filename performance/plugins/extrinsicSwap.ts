@@ -1,6 +1,6 @@
 /* eslint-disable no-console */
 import { BN } from "@polkadot/util";
-import { Mangata } from "@mangata-finance/sdk";
+import { MangataInstance } from "@mangata-finance/sdk";
 import { TestParams } from "../testParams";
 import { KeyringPair } from "@polkadot/keyring/types";
 import { runTransactions } from "./testRunner";
@@ -56,7 +56,7 @@ export class ExtrinsicSwap extends performanceTestItem {
   async act(testParams: TestParams): Promise<boolean> {
     await super.act(testParams);
     const generator = (
-      sdk: Mangata,
+      sdk: MangataInstance,
       users: { nonce: BN; keyPair: KeyringPair }[],
       thread: number,
       offset: BN
@@ -71,13 +71,13 @@ export class ExtrinsicSwap extends performanceTestItem {
 
 async function createAndSignSwaps(
   isBuy: boolean,
-  mgaSdk: Mangata,
+  mgaSdk: MangataInstance,
   users: { nonce: BN; keyPair: KeyringPair }[],
   threadId: number,
   nonceOffset: BN = new BN(0)
 ) {
   const srcUser = users[threadId % users.length];
-  const api = await mgaSdk.getApi();
+  const api = await mgaSdk.api();
   const nonce = srcUser.nonce.add(nonceOffset);
 
   let assets = [tokens[0], tokens[1]];

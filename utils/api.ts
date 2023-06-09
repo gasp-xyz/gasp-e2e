@@ -29,7 +29,7 @@ export const initApi = async (uri = "") => {
     const chopstickPort = await getPort();
     mangataChopstick = await XcmNetworks.mangata({
       localPort: chopstickPort,
-      buildBlockMode: BuildBlockMode.Instant
+      buildBlockMode: BuildBlockMode.Instant,
     });
     uri = uri.replace(mgaPort.toString(), chopstickPort.toString());
     chopstickUri = uri;

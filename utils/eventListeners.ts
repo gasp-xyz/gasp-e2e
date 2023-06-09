@@ -169,12 +169,10 @@ export const waitForRewards = async (
       numblocks--;
       const { chainUri } = getEnvironmentRequiredVars();
       const mangata = await getMangataInstance(chainUri);
-      const price = await mangata.rpc.calculateRewardsAmount(
-        {
-          address: user.keyRingPair.address,
-          liquidityTokenId: liquidityAssetId.toString()
-        }
-      );
+      const price = await mangata.rpc.calculateRewardsAmount({
+        address: user.keyRingPair.address,
+        liquidityTokenId: liquidityAssetId.toString(),
+      });
 
       if (price.gtn(0)) {
         unsub();

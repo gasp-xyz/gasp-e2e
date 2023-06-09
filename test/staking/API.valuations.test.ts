@@ -14,7 +14,8 @@ import {
   getEnvironmentRequiredVars,
   getUserBalanceOfToken,
 } from "../../utils/utils";
-import { BN, BN_BILLION, BN_ONE, BN_ZERO } from "@mangata-finance/sdk";
+import { BN_BILLION, BN_ONE, BN_ZERO } from "@mangata-finance/sdk";
+import { BN } from "@polkadot/util";
 import { Assets } from "../../utils/Assets";
 import { getApi, initApi } from "../../utils/api";
 import { Sudo } from "../../utils/sudo";

@@ -4,8 +4,8 @@
  * @group bootstrap
  * @group sequential
  */
-import { getApi, initApi, getMangataInstance } from "../../utils/api";
-import { getLiquidityAssetId } from "../../utils/tx";
+import { getApi, initApi } from "../../utils/api";
+import { getLiquidityAssetId, createPool } from "../../utils/tx";
 import { EventResult, ExtrinsicResult } from "../../utils/eventListeners";
 import { Keyring } from "@polkadot/api";
 import { User } from "../../utils/User";
@@ -49,13 +49,11 @@ const whitelistPeriod = 2;
 const bootstrapAmount = new BN(10000000000);
 
 async function checkPossibilityCreatingPool(tokenA: any, tokenB: any) {
-  const creatingPool = await (
-    await getMangataInstance()
-  ).createPool(
+  const creatingPool = await createPool(
     testUser1.keyRingPair,
-    tokenA.toString(),
+    tokenA,
     bootstrapAmount,
-    tokenB.toString(),
+    tokenB,
     bootstrapAmount
   );
   eventResponse = getEventResultFromMangataTx(creatingPool);

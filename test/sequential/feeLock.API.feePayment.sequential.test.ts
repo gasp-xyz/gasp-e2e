@@ -4,7 +4,7 @@
  */
 
 import { Keyring } from "@polkadot/api";
-import { getApi, initApi, getMangataInstance } from "../../utils/api";
+import { getApi, initApi } from "../../utils/api";
 import { Assets } from "../../utils/Assets";
 import { MGA_ASSET_ID, TUR_ASSET_ID } from "../../utils/Constants";
 import { BN } from "@polkadot/util";
@@ -14,6 +14,7 @@ import { AssetWallet, User } from "../../utils/User";
 import { getEnvironmentRequiredVars, feeLockErrors } from "../../utils/utils";
 import { Xyk } from "../../utils/xyk";
 import { clearMgaFromWhitelisted } from "../../utils/feeLockHelper";
+import { sellAsset } from "../../utils/tx";
 
 jest.spyOn(console, "log").mockImplementation(jest.fn());
 jest.setTimeout(2500000);
@@ -36,23 +37,18 @@ async function checkErrorSellAsset(
   reason: string
 ) {
   let exception = false;
-  const mangata = await getMangataInstance();
-  const soldAssetIdString = soldAssetId.toString();
-  const boughtAssetIdString = boughtAssetId.toString();
 
   await expect(
-    mangata
-      .sellAsset(
-        user.keyRingPair,
-        soldAssetIdString,
-        boughtAssetIdString,
-        amount,
-        new BN(0)
-      )
-      .catch((reason) => {
-        exception = true;
-        throw new Error(reason.data);
-      })
+    sellAsset(
+      user.keyRingPair,
+      soldAssetId,
+      boughtAssetId,
+      amount,
+      new BN(0)
+    ).catch((reason) => {
+      exception = true;
+      throw new Error(reason.data);
+    })
   ).rejects.toThrow(reason);
 
   expect(exception).toBeTruthy();

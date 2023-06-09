@@ -4,7 +4,7 @@
  * @group accuracy
  * @group parallel
  */
-import { getApi, getMangataInstance, initApi } from "../../utils/api";
+import { getApi, initApi } from "../../utils/api";
 import {
   calculate_sell_price_id_rpc,
   calculate_sell_price_local_no_fee,
@@ -20,6 +20,7 @@ import { validateAssetsWithValues } from "../../utils/validators";
 import { Assets } from "../../utils/Assets";
 import { getEnvironmentRequiredVars } from "../../utils/utils";
 import { MGA_ASSET_ID } from "../../utils/Constants";
+import { createPool } from "../../utils/tx";
 
 jest.spyOn(console, "log").mockImplementation(jest.fn());
 jest.spyOn(console, "error").mockImplementation(jest.fn());
@@ -78,13 +79,11 @@ beforeEach(async () => {
       defaultCurrecyValue.add(new BN(1)).toNumber(),
     ]
   );
-  await (
-    await getMangataInstance()
-  ).createPool(
+  await createPool(
     testUser1.keyRingPair,
-    firstCurrency.toString(),
+    firstCurrency,
     firstAssetAmount,
-    secondCurrency.toString(),
+    secondCurrency,
     secondAssetAmount
   );
 });

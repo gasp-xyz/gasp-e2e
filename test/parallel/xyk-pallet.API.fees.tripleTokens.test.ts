@@ -4,8 +4,8 @@
  * @group accuracy
  * @group parallel
  */
-import { getApi, getMangataInstance, initApi } from "../../utils/api";
-import { getCurrentNonce } from "../../utils/tx";
+import { getApi, initApi } from "../../utils/api";
+import { getCurrentNonce, mintLiquidity } from "../../utils/tx";
 import { ExtrinsicResult } from "../../utils/eventListeners";
 import { BN } from "@polkadot/util";
 import { Keyring } from "@polkadot/api";
@@ -114,18 +114,16 @@ test("xyk-pallet - Check required fee - User with MGX only", async () => {
 
   await testUser1.refreshAmounts(AssetWallet.BEFORE);
 
-  await (await getMangataInstance())
-    .mintLiquidity(
-      testUser1.keyRingPair,
-      firstCurrency.toString(),
-      secondCurrency.toString(),
-      new BN(100),
-      new BN(1000000)
-    )
-    .then((result) => {
-      const eventResponse = getEventResultFromMangataTx(result);
-      expect(eventResponse.state).toEqual(ExtrinsicResult.ExtrinsicSuccess);
-    });
+  await mintLiquidity(
+    testUser1.keyRingPair,
+    firstCurrency,
+    secondCurrency,
+    new BN(100),
+    new BN(1000000)
+  ).then((result) => {
+    const eventResponse = getEventResultFromMangataTx(result);
+    expect(eventResponse.state).toEqual(ExtrinsicResult.ExtrinsicSuccess);
+  });
 
   await testUser1.refreshAmounts(AssetWallet.AFTER);
   const deductedMGATkns = testUser1
@@ -143,18 +141,16 @@ test("xyk-pallet - Check required fee - User with KSM only", async () => {
 
   await testUser1.refreshAmounts(AssetWallet.BEFORE);
 
-  await (await getMangataInstance())
-    .mintLiquidity(
-      testUser1.keyRingPair,
-      firstCurrency.toString(),
-      secondCurrency.toString(),
-      new BN(100),
-      new BN(1000000)
-    )
-    .then((result) => {
-      const eventResponse = getEventResultFromMangataTx(result);
-      expect(eventResponse.state).toEqual(ExtrinsicResult.ExtrinsicSuccess);
-    });
+  await mintLiquidity(
+    testUser1.keyRingPair,
+    firstCurrency,
+    secondCurrency,
+    new BN(100),
+    new BN(1000000)
+  ).then((result) => {
+    const eventResponse = getEventResultFromMangataTx(result);
+    expect(eventResponse.state).toEqual(ExtrinsicResult.ExtrinsicSuccess);
+  });
 
   await testUser1.refreshAmounts(AssetWallet.AFTER);
 
@@ -173,18 +169,16 @@ test("xyk-pallet - Check required fee - User with TUR only", async () => {
 
   await testUser1.refreshAmounts(AssetWallet.BEFORE);
 
-  await (await getMangataInstance())
-    .mintLiquidity(
-      testUser1.keyRingPair,
-      firstCurrency.toString(),
-      secondCurrency.toString(),
-      new BN(100),
-      new BN(1000000)
-    )
-    .then((result) => {
-      const eventResponse = getEventResultFromMangataTx(result);
-      expect(eventResponse.state).toEqual(ExtrinsicResult.ExtrinsicSuccess);
-    });
+  await mintLiquidity(
+    testUser1.keyRingPair,
+    firstCurrency,
+    secondCurrency,
+    new BN(100),
+    new BN(1000000)
+  ).then((result) => {
+    const eventResponse = getEventResultFromMangataTx(result);
+    expect(eventResponse.state).toEqual(ExtrinsicResult.ExtrinsicSuccess);
+  });
 
   await testUser1.refreshAmounts(AssetWallet.AFTER);
 
@@ -223,18 +217,16 @@ test("xyk-pallet - Check required fee - User with some MGA, very few KSM and ver
     )
     .paymentInfo(testUser1.keyRingPair, opt);
 
-  await (await getMangataInstance())
-    .mintLiquidity(
-      testUser1.keyRingPair,
-      firstCurrency.toString(),
-      secondCurrency.toString(),
-      new BN(100),
-      new BN(1000000)
-    )
-    .then((result) => {
-      const eventResponse = getEventResultFromMangataTx(result);
-      expect(eventResponse.state).toEqual(ExtrinsicResult.ExtrinsicSuccess);
-    });
+  await mintLiquidity(
+    testUser1.keyRingPair,
+    firstCurrency,
+    secondCurrency,
+    new BN(100),
+    new BN(1000000)
+  ).then((result) => {
+    const eventResponse = getEventResultFromMangataTx(result);
+    expect(eventResponse.state).toEqual(ExtrinsicResult.ExtrinsicSuccess);
+  });
 
   await testUser1.refreshAmounts(AssetWallet.AFTER);
   const deductedMGATkns = testUser1
@@ -270,18 +262,16 @@ test("xyk-pallet - Check required fee - User with very few MGA, some KSM and ver
   );
   await testUser1.refreshAmounts(AssetWallet.BEFORE);
 
-  await (await getMangataInstance())
-    .mintLiquidity(
-      testUser1.keyRingPair,
-      firstCurrency.toString(),
-      secondCurrency.toString(),
-      new BN(100),
-      new BN(1000000)
-    )
-    .then((result) => {
-      const eventResponse = getEventResultFromMangataTx(result);
-      expect(eventResponse.state).toEqual(ExtrinsicResult.ExtrinsicSuccess);
-    });
+  await mintLiquidity(
+    testUser1.keyRingPair,
+    firstCurrency,
+    secondCurrency,
+    new BN(100),
+    new BN(1000000)
+  ).then((result) => {
+    const eventResponse = getEventResultFromMangataTx(result);
+    expect(eventResponse.state).toEqual(ExtrinsicResult.ExtrinsicSuccess);
+  });
 
   await testUser1.refreshAmounts(AssetWallet.AFTER);
 
@@ -316,18 +306,16 @@ test("xyk-pallet - Check required fee - User with very few MGA, very few KSM and
   );
   await testUser1.refreshAmounts(AssetWallet.BEFORE);
 
-  await (await getMangataInstance())
-    .mintLiquidity(
-      testUser1.keyRingPair,
-      firstCurrency.toString(),
-      secondCurrency.toString(),
-      new BN(100),
-      new BN(1000000)
-    )
-    .then((result) => {
-      const eventResponse = getEventResultFromMangataTx(result);
-      expect(eventResponse.state).toEqual(ExtrinsicResult.ExtrinsicSuccess);
-    });
+  await mintLiquidity(
+    testUser1.keyRingPair,
+    firstCurrency,
+    secondCurrency,
+    new BN(100),
+    new BN(1000000)
+  ).then((result) => {
+    const eventResponse = getEventResultFromMangataTx(result);
+    expect(eventResponse.state).toEqual(ExtrinsicResult.ExtrinsicSuccess);
+  });
 
   await testUser1.refreshAmounts(AssetWallet.AFTER);
 
@@ -361,20 +349,17 @@ test("xyk-pallet - Check required fee - User with very few  MGA, very few KSM an
     Assets.mintToken(MGA_ASSET_ID, testUser1, new BN(100000))
   );
   let exception = false;
-  const mangata = await getMangataInstance();
   await expect(
-    mangata
-      .mintLiquidity(
-        testUser1.keyRingPair,
-        firstCurrency.toString(),
-        secondCurrency.toString(),
-        new BN(100),
-        new BN(1000000)
-      )
-      .catch((reason) => {
-        exception = true;
-        throw new Error(reason.data);
-      })
+    mintLiquidity(
+      testUser1.keyRingPair,
+      firstCurrency,
+      secondCurrency,
+      new BN(100),
+      new BN(1000000)
+    ).catch((reason) => {
+      exception = true;
+      throw new Error(reason.data);
+    })
   ).rejects.toThrow(
     "1010: Invalid Transaction: Inability to pay some fees , e.g. account balance too low"
   );

@@ -4,12 +4,12 @@
  */
 
 import { Keyring } from "@polkadot/api";
-import { bufferToU8a } from "@polkadot/util";
+import { bufferToU8a, BN } from "@polkadot/util";
 import { api, getApi, initApi } from "../../utils/api";
 import { User } from "../../utils/User";
 import { getEnvironmentRequiredVars, waitForNBlocks } from "../../utils/utils";
 import fs from "fs";
-import { BN, signTx } from "@mangata-finance/sdk";
+import { signTx } from "@mangata-finance/sdk";
 import { testLog } from "../../utils/Logger";
 import { downloadRelease } from "@terascope/fetch-github-release";
 import { transferAsset } from "../../utils/tx";

@@ -8,7 +8,7 @@ import { Keyring } from "@polkadot/api";
 import { getApi, getMangataInstance, initApi } from "../../utils/api";
 import { Assets } from "../../utils/Assets";
 import { MGA_ASSET_ID } from "../../utils/Constants";
-import { BN, Mangata } from "@mangata-finance/sdk";
+import { MangataInstance } from "@mangata-finance/sdk";
 import { setupApi, setupUsers } from "../../utils/setup";
 import { Sudo } from "../../utils/sudo";
 import { getLiquidityAssetId } from "../../utils/tx";
@@ -16,6 +16,7 @@ import { User } from "../../utils/User";
 import { getEnvironmentRequiredVars } from "../../utils/utils";
 import { Xyk } from "../../utils/xyk";
 import { waitForRewards } from "../../utils/eventListeners";
+import { BN } from "@polkadot/util";
 
 jest.spyOn(console, "log").mockImplementation(jest.fn());
 jest.setTimeout(2500000);
@@ -30,7 +31,7 @@ let keyring: Keyring;
 let token1: BN;
 let token2: BN;
 let liqIdPromPool: BN;
-let mangata: Mangata;
+let mangata: MangataInstance;
 const defaultCurrencyValue = new BN(250000);
 
 beforeAll(async () => {
@@ -115,15 +116,15 @@ test("Users minted a different number of tokens THEN they receive an equivalent 
 
   await waitForRewards(testUser1, liqIdPromPool);
 
-  const rewardsAmountUser1 = await mangata.calculateRewardsAmount(
-    testUser1.keyRingPair.address,
-    liqIdPromPool.toString()
-  );
+  const rewardsAmountUser1 = await mangata.rpc.calculateRewardsAmount({
+    address: testUser1.keyRingPair.address,
+    liquidityTokenId: liqIdPromPool.toString(),
+  });
 
-  const rewardsAmountUser2 = await mangata.calculateRewardsAmount(
-    testUser2.keyRingPair.address,
-    liqIdPromPool.toString()
-  );
+  const rewardsAmountUser2 = await mangata.rpc.calculateRewardsAmount({
+    address: testUser2.keyRingPair.address,
+    liquidityTokenId: liqIdPromPool.toString(),
+  });
   const rewardsDifference = rewardsAmountUser1.sub(
     rewardsAmountUser2.mul(new BN(2))
   );
@@ -183,15 +184,15 @@ test("One user mints X tokens, other mints those X tokens but splitted in 5 mint
 
   await waitForRewards(testUser1, liqIdPromPool);
 
-  const rewardsAmountUser1 = await mangata.calculateRewardsAmount(
-    testUser1.keyRingPair.address,
-    liqIdPromPool.toString()
-  );
+  const rewardsAmountUser1 = await mangata.rpc.calculateRewardsAmount({
+    address: testUser1.keyRingPair.address,
+    liquidityTokenId: liqIdPromPool.toString(),
+  });
 
-  const rewardsAmountUser2 = await mangata.calculateRewardsAmount(
-    testUser2.keyRingPair.address,
-    liqIdPromPool.toString()
-  );
+  const rewardsAmountUser2 = await mangata.rpc.calculateRewardsAmount({
+    address: testUser2.keyRingPair.address,
+    liquidityTokenId: liqIdPromPool.toString(),
+  });
 
   expect(rewardsAmountUser1).bnEqual(rewardsAmountUser2);
 });

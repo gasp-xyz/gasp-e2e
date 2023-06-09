@@ -5,17 +5,17 @@
  */
 
 import { Keyring } from "@polkadot/api";
-import { getApi, initApi, getMangataInstance } from "../../utils/api";
+import { getApi, initApi } from "../../utils/api";
 import { Assets } from "../../utils/Assets";
 import { MGA_ASSET_ID } from "../../utils/Constants";
 import {
   waitNewBlock,
   waitSudoOperationSuccess,
 } from "../../utils/eventListeners";
-import { BN, BN_ZERO } from "@mangata-finance/sdk";
+import { BN_ZERO } from "@mangata-finance/sdk";
 import { setupApi, setupUsers } from "../../utils/setup";
 import { Sudo } from "../../utils/sudo";
-import { updateFeeLockMetadata, unlockFee } from "../../utils/tx";
+import { updateFeeLockMetadata, unlockFee, sellAsset } from "../../utils/tx";
 import { AssetWallet, User } from "../../utils/User";
 import {
   getEnvironmentRequiredVars,
@@ -28,6 +28,7 @@ import {
 import { getEventResultFromMangataTx } from "../../utils/txHandler";
 import { ExtrinsicResult } from "../../utils/eventListeners";
 import { testLog } from "../../utils/Logger";
+import { BN } from "@polkadot/util";
 
 jest.spyOn(console, "log").mockImplementation(jest.fn());
 jest.setTimeout(2500000);
@@ -101,23 +102,20 @@ test("gasless- GIVEN some locked tokens and no more free MGX WHEN another tx is 
   const feeLockAmount = await (await getFeeLockMetadata(api)).feeLockAmount;
   await testUser1.addMGATokens(sudo, feeLockAmount);
 
-  const mangata = await getMangataInstance();
   const saleAssetValue = thresholdValue.sub(new BN(5));
 
   await testUser1.sellAssets(firstCurrency, secondCurrency, saleAssetValue);
 
   await expect(
-    mangata
-      .sellAsset(
-        testUser1.keyRingPair,
-        firstCurrency.toString(),
-        secondCurrency.toString(),
-        saleAssetValue,
-        new BN(0)
-      )
-      .catch((reason) => {
-        throw new Error(reason.data);
-      })
+    sellAsset(
+      testUser1.keyRingPair,
+      firstCurrency,
+      secondCurrency,
+      saleAssetValue,
+      new BN(0)
+    ).catch((reason) => {
+      throw new Error(reason.data);
+    })
   ).rejects.toThrow(feeLockErrors.FeeLockingFail);
 });
 

@@ -1,6 +1,6 @@
 /* eslint-disable no-console */
 import { BN } from "@polkadot/util";
-import { Mangata } from "@mangata-finance/sdk";
+import { MangataInstance } from "@mangata-finance/sdk";
 import { TestParams } from "../testParams";
 import { KeyringPair } from "@polkadot/keyring/types";
 import { MGA_ASSET_ID } from "../../utils/Constants";
@@ -29,14 +29,14 @@ export class ExtrinsicTransfer extends performanceTestItem {
 }
 
 async function createAndSignTransfer(
-  mgaSdk: Mangata,
+  mgaSdk: MangataInstance,
   users: { nonce: BN; keyPair: KeyringPair }[],
   threadId: number,
   nonceOffset: BN = new BN(0)
 ) {
   const destUser = users[(threadId + 1) % users.length];
   const srcUser = users[threadId % users.length];
-  const api = await mgaSdk.getApi();
+  const api = await mgaSdk.api();
   const nonce = srcUser.nonce.add(nonceOffset);
 
   const tx = api!.tx.tokens.transfer(

@@ -6,7 +6,7 @@
  */
 import { joinCandidate } from "../../utils/tx";
 import { MGA_ASSET_ID } from "../../utils/Constants";
-import { hexToBn } from "@polkadot/util";
+import { hexToBn, BN } from "@polkadot/util";
 import {
   getBlockNumber,
   getMultiPurposeLiquidityReLockStatus,
@@ -14,7 +14,7 @@ import {
   getVestingStatus,
   stringToBN,
 } from "../../utils/utils";
-import { BN, BN_ZERO, signTx } from "@mangata-finance/sdk";
+import { BN_ZERO, signTx } from "@mangata-finance/sdk";
 import {
   ExtrinsicResult,
   expectMGAExtrinsicSuDidSuccess,

@@ -8,7 +8,7 @@ import { Keyring } from "@polkadot/api";
 import { getApi, getMangataInstance, initApi } from "../../utils/api";
 import { Assets } from "../../utils/Assets";
 import { MGA_ASSET_ID } from "../../utils/Constants";
-import { BN, BN_ZERO } from "@mangata-finance/sdk";
+import { BN_ZERO } from "@mangata-finance/sdk";
 import { setupApi, setupUsers } from "../../utils/setup";
 import { Sudo } from "../../utils/sudo";
 import {
@@ -21,6 +21,7 @@ import { AssetWallet, User } from "../../utils/User";
 import { getEnvironmentRequiredVars } from "../../utils/utils";
 import { Xyk } from "../../utils/xyk";
 import { waitForRewards } from "../../utils/eventListeners";
+import { BN } from "@polkadot/util";
 
 jest.spyOn(console, "log").mockImplementation(jest.fn());
 jest.setTimeout(2500000);
@@ -180,10 +181,10 @@ test("Given 3 pool: token1-MGX, token2-MGX and token1-token2 WHEN token1-token2 
   const mangata = await getMangataInstance(
     getEnvironmentRequiredVars().chainUri
   );
-  const testUser1Rewards = await mangata.calculateRewardsAmount(
-    testUser1.keyRingPair.address,
-    liqIdThirdPool.toString()
-  );
+  const testUser1Rewards = await mangata.rpc.calculateRewardsAmount({
+    address: testUser1.keyRingPair.address,
+    liquidityTokenId: liqIdThirdPool.toString(),
+  });
   await claimRewardsAll(testUser1, liqIdThirdPool);
 
   const rewardsThirdPoolAfter = await getRewardsInfo(

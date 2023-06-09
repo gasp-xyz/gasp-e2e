@@ -13,14 +13,14 @@ import {
 import { Keyring } from "@polkadot/api";
 import { SudoUser } from "../../utils/Framework/User/SudoUser";
 import { MGA_ASSET_ID } from "../../utils/Constants";
-import { hexToBn } from "@polkadot/util";
+import { hexToBn, BN } from "@polkadot/util";
 import {
   getBlockNumber,
   getEnvironmentRequiredVars,
   getMultiPurposeLiquidityStatus,
 } from "../../utils/utils";
 import { Node } from "../../utils/Framework/Node/Node";
-import { BN, BN_HUNDRED_THOUSAND, BN_ZERO } from "@mangata-finance/sdk";
+import { BN_HUNDRED_THOUSAND, BN_ZERO } from "@mangata-finance/sdk";
 import { UserFactory, Users } from "../../utils/Framework/User/UserFactory";
 import { RegularUser } from "../../utils/Framework/User/RegularUser";
 import { ExtrinsicResult } from "../../utils/eventListeners";

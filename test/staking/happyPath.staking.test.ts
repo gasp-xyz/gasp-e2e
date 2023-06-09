@@ -5,7 +5,7 @@
  */
 import { getApi, initApi } from "../../utils/api";
 import { User } from "../../utils/User";
-import { BN, Mangata } from "@mangata-finance/sdk";
+import { Mangata } from "@mangata-finance/sdk";
 import { setupUsers, setupApi, eve, alice } from "../../utils/setup";
 import { Staking, tokenOriginEnum } from "../../utils/Staking";
 import { Sudo } from "../../utils/sudo";
@@ -24,6 +24,7 @@ import { MPL } from "../../utils/MPL";
 import Docker from "dockerode";
 import execSh from "exec-sh";
 import { testLog } from "../../utils/Logger";
+import { BN } from "@polkadot/util";
 
 jest.spyOn(console, "log").mockImplementation(jest.fn());
 jest.setTimeout(3500000);

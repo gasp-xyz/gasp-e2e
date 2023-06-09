@@ -80,7 +80,7 @@ export const devTestingPairs = (ss58Format?: number) => {
     charlie,
     dave,
     eve,
-    keyring
+    keyring,
   };
 };
 
@@ -180,7 +180,7 @@ export const setupGasLess = async (force = false) => {
       )
       .toString();
     await signTx(api!, api!.tx.sudo.sudo(extrinsic), sudo.keyRingPair, {
-      nonce: await SudoDB.getInstance().getSudoNonce(sudo.keyRingPair.address)
+      nonce: await SudoDB.getInstance().getSudoNonce(sudo.keyRingPair.address),
     });
   }
 };

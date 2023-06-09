@@ -4,7 +4,7 @@
  * @group api
  * @group parallel
  */
-import { getApi, getMangataInstance, initApi } from "../../utils/api";
+import { getApi, initApi } from "../../utils/api";
 import {
   getBalanceOfPool,
   getLiquidityAssetId,
@@ -30,6 +30,7 @@ import {
   getEnvironmentRequiredVars,
 } from "../../utils/utils";
 import { getEventResultFromMangataTx } from "../../utils/txHandler";
+import { createPool } from "../../utils/tx";
 
 const { sudo: sudoUserName } = getEnvironmentRequiredVars();
 
@@ -83,13 +84,11 @@ describe("xyk-pallet - Burn liquidity tests: when burning liquidity you can", ()
     );
     await testUser1.addMGATokens(sudo);
     //lets create a pool
-    await (
-      await getMangataInstance()
-    ).createPool(
+    await createPool(
       testUser1.keyRingPair,
-      firstCurrency.toString(),
+      firstCurrency,
       assetXamount,
-      secondCurrency.toString(),
+      secondCurrency,
       assetYamount
     );
     const liquidityAssetId = await getLiquidityAssetId(
@@ -256,13 +255,11 @@ async function UserCreatesAPoolAndMintLiquidity(
     sudo
   );
   await testUser1.addMGATokens(sudo);
-  await (
-    await getMangataInstance()
-  ).createPool(
+  await createPool(
     testUser1.keyRingPair,
-    firstCurrency.toString(),
+    firstCurrency,
     poolAmount,
-    secondCurrency.toString(),
+    secondCurrency,
     poolAmount
   );
 

@@ -5,7 +5,7 @@
  */
 
 import { Keyring } from "@polkadot/api";
-import { getApi, initApi, getMangataInstance } from "../../utils/api";
+import { getApi, initApi } from "../../utils/api";
 import { Assets } from "../../utils/Assets";
 import {
   MGA_ASSET_ID,
@@ -16,7 +16,7 @@ import { waitSudoOperationSuccess } from "../../utils/eventListeners";
 import { BN } from "@polkadot/util";
 import { setupApi, setupUsers } from "../../utils/setup";
 import { Sudo } from "../../utils/sudo";
-import { updateFeeLockMetadata } from "../../utils/tx";
+import { updateFeeLockMetadata, sellAsset } from "../../utils/tx";
 import { AssetWallet, User } from "../../utils/User";
 import {
   getEnvironmentRequiredVars,
@@ -211,22 +211,18 @@ test("gasless- Given a feeLock correctly configured WHEN the user swaps two toke
 });
 
 test("gasless- Given a feeLock correctly configured WHEN the user swaps two tokens that are not defined in the thresholds AND the user has not enough MGAs AND swapValue > threshold THEN the extrinsic can not be submited", async () => {
-  const mangata = await getMangataInstance();
-
   const saleAssetValue = thresholdValue.mul(new BN(2));
 
   await testUser1.refreshAmounts(AssetWallet.BEFORE);
   await expect(
-    mangata
-      .sellAsset(
-        testUser1.keyRingPair,
-        firstCurrency.toString(),
-        secondCurrency.toString(),
-        saleAssetValue,
-        new BN(0)
-      )
-      .catch((reason) => {
-        throw new Error(reason.data);
-      })
+    sellAsset(
+      testUser1.keyRingPair,
+      firstCurrency,
+      secondCurrency,
+      saleAssetValue,
+      new BN(0)
+    ).catch((reason) => {
+      throw new Error(reason.data);
+    })
   ).rejects.toThrow(feeLockErrors.FeeLockingFail);
 });

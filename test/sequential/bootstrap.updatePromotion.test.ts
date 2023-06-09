@@ -32,8 +32,9 @@ import {
   waitForBootstrapStatus,
 } from "../../utils/Bootstrap";
 import { MGA_ASSET_ID } from "../../utils/Constants";
-import { BN, MangataGenericEvent } from "@mangata-finance/sdk";
+import { MangataGenericEvent } from "@mangata-finance/sdk";
 import { setupUsers } from "../../utils/setup";
+import { BN } from "@polkadot/util";
 
 jest.spyOn(console, "log").mockImplementation(jest.fn());
 jest.setTimeout(3500000);

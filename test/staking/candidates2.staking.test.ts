@@ -8,7 +8,8 @@ import {
   ExtrinsicResult,
   expectMGAExtrinsicSuDidSuccess,
 } from "../../utils/eventListeners";
-import { BN, signTx } from "@mangata-finance/sdk";
+import { signTx } from "@mangata-finance/sdk";
+
 import { setupUsers, setupApi } from "../../utils/setup";
 import {
   AggregatorOptions,
@@ -24,6 +25,7 @@ import { Keyring } from "@polkadot/api";
 import { Xyk } from "../../utils/xyk";
 import { getLiquidityAssetId } from "../../utils/tx";
 import "jest-extended";
+import { BN } from "@polkadot/util";
 
 jest.spyOn(console, "log").mockImplementation(jest.fn());
 jest.setTimeout(3500000);

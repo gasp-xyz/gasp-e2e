@@ -8,7 +8,7 @@ import {
   ExtrinsicResult,
   expectMGAExtrinsicSuDidSuccess,
 } from "../../utils/eventListeners";
-import { BN, signTx } from "@mangata-finance/sdk";
+import { signTx } from "@mangata-finance/sdk";
 import { setupUsers, setupApi } from "../../utils/setup";
 import {
   AggregatorOptions,
@@ -19,6 +19,7 @@ import { Sudo } from "../../utils/sudo";
 import { Assets } from "../../utils/Assets";
 import { MGA_ASSET_ID } from "../../utils/Constants";
 import { testLog } from "../../utils/Logger";
+import { BN } from "@polkadot/util";
 import {
   findErrorMetadata,
   getEnvironmentRequiredVars,

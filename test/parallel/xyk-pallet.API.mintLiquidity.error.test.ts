@@ -4,8 +4,8 @@
  * @group api
  * @group parallel
  */
-import { api, getApi, getMangataInstance, initApi } from "../../utils/api";
-import { getBalanceOfPool, mintLiquidity } from "../../utils/tx";
+import { api, getApi, initApi } from "../../utils/api";
+import { getBalanceOfPool, mintLiquidity, createPool } from "../../utils/tx";
 import { ExtrinsicResult } from "../../utils/eventListeners";
 import { BN } from "@polkadot/util";
 import { Keyring } from "@polkadot/api";
@@ -72,13 +72,11 @@ describe("xyk-pallet - Mint liquidity tests: MintLiquidity Errors:", () => {
     );
     await testUser1.addMGATokens(sudo);
     //lets create a pool with equal balances
-    await (
-      await getMangataInstance()
-    ).createPool(
+    await createPool(
       testUser1.keyRingPair,
-      firstCurrency.toString(),
+      firstCurrency,
       defaultCurrecyValue,
-      secondCurrency.toString(),
+      secondCurrency,
       defaultCurrecyValue
     );
     // now we have quite a lot of X and only a few Y, but the pool is 1:1,
@@ -113,13 +111,11 @@ describe("xyk-pallet - Mint liquidity tests: MintLiquidity Errors:", () => {
     );
     await testUser1.addMGATokens(sudo);
     //lets create a pool with equal balances
-    await (
-      await getMangataInstance()
-    ).createPool(
+    await createPool(
       testUser1.keyRingPair,
-      firstCurrency.toString(),
+      firstCurrency,
       defaultCurrecyValue,
-      secondCurrency.toString(),
+      secondCurrency,
       defaultCurrecyValue
     );
     await testUser1.refreshAmounts(AssetWallet.BEFORE);
@@ -157,13 +153,11 @@ describe("xyk-pallet - Mint liquidity tests: MintLiquidity Errors:", () => {
       sudo
     );
     //lets create a pool between asset 1 and 3.
-    await (
-      await getMangataInstance()
-    ).createPool(
+    await createPool(
       testUser1.keyRingPair,
-      firstCurrency.toString(),
+      firstCurrency,
       firstAssetAmount,
-      thirdCurrency.toString(),
+      thirdCurrency,
       secondAssetAmount
     );
 
@@ -210,13 +204,11 @@ describe("xyk-pallet - Mint liquidity tests: MintLiquidity Errors:", () => {
     await testUser1.addMGATokens(sudo);
     await testUser1.refreshAmounts(AssetWallet.BEFORE);
     const poolAmountSecondCurrency = secondAssetAmount.div(new BN(2));
-    await (
-      await getMangataInstance()
-    ).createPool(
+    await createPool(
       testUser1.keyRingPair,
-      firstCurrency.toString(),
+      firstCurrency,
       firstAssetAmount,
-      secondCurrency.toString(),
+      secondCurrency,
       poolAmountSecondCurrency
     );
 
@@ -282,13 +274,11 @@ describe("xyk-pallet - Mint liquidity tests: MintLiquidity Errors:", () => {
     await testUser1.addMGATokens(sudo);
     await testUser1.refreshAmounts(AssetWallet.BEFORE);
     const poolAmountSecondCurrency = secondAssetAmount.div(new BN(2));
-    await (
-      await getMangataInstance()
-    ).createPool(
+    await createPool(
       testUser1.keyRingPair,
-      firstCurrency.toString(),
+      firstCurrency,
       firstAssetAmount,
-      secondCurrency.toString(),
+      secondCurrency,
       poolAmountSecondCurrency
     );
 
