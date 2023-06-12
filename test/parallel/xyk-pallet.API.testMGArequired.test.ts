@@ -19,6 +19,7 @@ import { Assets } from "../../utils/Assets";
 import { getEnvironmentRequiredVars } from "../../utils/utils";
 import { Fees } from "../../utils/Fees";
 import { mintLiquidity, sellAsset, buyAsset } from "../../utils/tx";
+import { testLog } from "../../utils/Logger";
 
 jest.spyOn(console, "log").mockImplementation(jest.fn());
 jest.spyOn(console, "error").mockImplementation(jest.fn());
@@ -52,18 +53,13 @@ beforeEach(async () => {
   // setup users
   testUser1 = new User(keyring);
   sudo = new User(keyring, sudoUserName);
-
+  testLog.getLog().info(testUser1.keyRingPair.address);
   //add two curerncies and balance to testUser:
   [firstCurrency, secondCurrency] = await Assets.setupUserWithCurrencies(
     testUser1,
     [defaultCurrecyValue, defaultCurrecyValue.add(new BN(1))],
     sudo
   );
-  //add zero MGA tokens.
-  await testUser1.addMGATokens(sudo, new BN(0));
-  // add users to pair.
-  keyring.addPair(testUser1.keyRingPair);
-  keyring.addPair(sudo.keyRingPair);
 
   // check users accounts.
   await testUser1.refreshAmounts(AssetWallet.BEFORE);

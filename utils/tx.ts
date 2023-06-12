@@ -236,17 +236,25 @@ export async function getUserAssets(account: any, assets: BN[]) {
   const user_asset_balances: TokenBalance[] = [];
 
   for (const asset of assets) {
-    const user_asset_balance = await getBalanceOfAsset(asset, account);
+    const user_asset_balance = await getBalanceOfAssetStr(asset, account);
     user_asset_balances.push(user_asset_balance);
   }
   return user_asset_balances;
 }
 
-export async function getBalanceOfAsset(assetId: BN, account: any) {
+export async function getBalanceOfAssetStr(assetId: BN, account: string) {
   const mangata = await getMangataInstance();
   const balance = await mangata.query.getTokenBalance(
-    assetId.toString(),
-    account
+    account,
+    assetId.toString()
+  );
+  return balance;
+}
+export async function getBalanceOfAsset(assetId: BN, account: User) {
+  const mangata = await getMangataInstance();
+  const balance = await mangata.query.getTokenBalance(
+    account.keyRingPair.address,
+    assetId.toString()
   );
   return balance;
 }
@@ -716,7 +724,7 @@ export async function getTokensAccountInfo(account: string, assetId: BN) {
 
 export async function getTreasury(tokenId: BN): Promise<BN> {
   const { treasuryPalletAddress } = getEnvironmentRequiredVars();
-  const treasuryBalance = await getBalanceOfAsset(
+  const treasuryBalance = await getBalanceOfAssetStr(
     tokenId,
     treasuryPalletAddress
   );
@@ -726,7 +734,7 @@ export async function getTreasury(tokenId: BN): Promise<BN> {
 
 export async function getTreasuryBurn(tokenId: BN): Promise<BN> {
   const { treasuryBurnPalletAddress } = getEnvironmentRequiredVars();
-  const treasuryBalance = await getBalanceOfAsset(
+  const treasuryBalance = await getBalanceOfAssetStr(
     tokenId,
     treasuryBurnPalletAddress
   );

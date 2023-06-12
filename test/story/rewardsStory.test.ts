@@ -62,8 +62,8 @@ describe("Story tests > Rewards - autocompound", () => {
       liquidityTokenId: liqId.toString(),
     });
     const mgasBalancesBefore = await mangata.query.getTokenBalance(
-      MGA_ASSET_ID.toString(),
-      testUser2.keyRingPair.address
+      testUser2.keyRingPair.address,
+      MGA_ASSET_ID.toString()
     );
     const amount = await calculateMGAFees(
       api.tx.proofOfStake.claimRewardsAll(liqId),
@@ -77,8 +77,8 @@ describe("Story tests > Rewards - autocompound", () => {
       liquidityTokenId: liqId.toString(),
     });
     const mgasBalancesAfter = await mangata.query.getTokenBalance(
-      MGA_ASSET_ID.toString(),
-      testUser2.keyRingPair.address
+      testUser2.keyRingPair.address,
+      MGA_ASSET_ID.toString()
     );
     const expectedMGAAmount = mgasBalancesBefore.free
       .add(availableRewards)
@@ -92,8 +92,8 @@ describe("Story tests > Rewards - autocompound", () => {
     const { chainUri } = getEnvironmentRequiredVars();
     const mangata = await getMangataInstance(chainUri);
     const liqBefore = await mangata.query.getTokenBalance(
-      liqId.toString(),
-      testUser3.keyRingPair.address
+      testUser3.keyRingPair.address,
+      liqId.toString()
     );
     await compoundRewards(testUser3, liqId);
     const availableRewardsAfter = await mangata.rpc.calculateRewardsAmount({
@@ -101,8 +101,8 @@ describe("Story tests > Rewards - autocompound", () => {
       liquidityTokenId: liqId.toString(),
     });
     const liqAfter = await mangata.query.getTokenBalance(
-      liqId.toString(),
-      testUser3.keyRingPair.address
+      testUser3.keyRingPair.address,
+      liqId.toString()
     );
     expect(liqBefore.reserved).bnLt(liqAfter.reserved);
     expect(availableRewardsAfter).bnLte(new BN(0));

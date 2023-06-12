@@ -164,10 +164,7 @@ test("bootstrap - bootstrap - Check if we can change promoteBootstrapPool in eac
     bootstrapCurrency
   );
 
-  const userBalance = await getBalanceOfAsset(
-    liquidityID,
-    testUser1.keyRingPair.address.toString()
-  );
+  const userBalance = await getBalanceOfAsset(liquidityID, testUser1);
 
   const currentPromotionState = await getPromotionBootstrapPoolState();
 

@@ -152,10 +152,7 @@ test("bootstrap - Check happy path bootstrap with one user", async () => {
   );
 
   // check that the user's balance of liquidity token is equal the pool's balance
-  const userBalance = await getBalanceOfAsset(
-    liquidityID,
-    testUser1.keyRingPair.address.toString()
-  );
+  const userBalance = await getBalanceOfAsset(liquidityID, testUser1);
   expect(toNumber(userBalance.free)).toEqual(bootstrapExpectedUserLiquidity);
 
   // finalize bootstrap
