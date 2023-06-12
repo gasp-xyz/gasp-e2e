@@ -5,6 +5,7 @@
  * @group parallel
  * @group story
  */
+import { jest } from "@jest/globals";
 import { getApi, getMangataInstance, initApi } from "../../utils/api";
 import { createPool, getBalanceOfPool, sellAsset } from "../../utils/tx";
 import { waitNewBlock, ExtrinsicResult } from "../../utils/eventListeners";

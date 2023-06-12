@@ -2,6 +2,7 @@
  *
  * @group staking
  */
+import { jest } from "@jest/globals";
 import {
   getLiquidityAssetId,
   mintLiquidity,

@@ -2,7 +2,7 @@
  *
  * @group upgradeRuntime
  */
-
+import { jest } from "@jest/globals";
 import { Keyring } from "@polkadot/api";
 import { bufferToU8a, BN } from "@polkadot/util";
 import { api, getApi, initApi } from "../../utils/api";

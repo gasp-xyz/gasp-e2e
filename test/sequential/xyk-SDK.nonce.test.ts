@@ -5,6 +5,7 @@
  * @group sequential
  * @group sdk
  */
+import { jest } from "@jest/globals";
 import { getApi, getMangataInstance, initApi } from "../../utils/api";
 import { BN } from "@polkadot/util";
 import { getEnvironmentRequiredVars } from "../../utils/utils";

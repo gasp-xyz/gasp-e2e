@@ -2,6 +2,7 @@
  *
  * @group maintenance
  */
+import { jest } from "@jest/globals";
 import { hexToU8a } from "@polkadot/util";
 import { Keyring } from "@polkadot/api";
 import { getApi, initApi } from "../../utils/api";

@@ -3,6 +3,7 @@
  * @group rewards-bootstrap
  * @group sequential
  */
+import { jest } from "@jest/globals";
 import { getApi, initApi } from "../../utils/api";
 import { getBalanceOfAsset, getLiquidityAssetId } from "../../utils/tx";
 import { EventResult, ExtrinsicResult } from "../../utils/eventListeners";

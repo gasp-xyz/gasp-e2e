@@ -2,6 +2,7 @@
  *
  * @group ci
  */
+import { jest } from "@jest/globals";
 import { getApi, initApi } from "../../utils/api";
 import { getAllAssetsInfo, getBalanceOfPool } from "../../utils/tx";
 import { BN } from "@polkadot/util";

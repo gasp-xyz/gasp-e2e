@@ -4,6 +4,7 @@
  * @group api
  * @group sequential
  */
+import { jest } from "@jest/globals";
 import { api, getApi, initApi } from "../../utils/api";
 import { getTokensAccountInfo } from "../../utils/tx";
 import { hexToBn } from "@polkadot/util";

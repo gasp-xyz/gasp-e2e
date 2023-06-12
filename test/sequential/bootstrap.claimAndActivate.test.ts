@@ -4,6 +4,7 @@
  * @group bootstrap
  * @group sequential
  */
+import { jest } from "@jest/globals";
 import { getApi, initApi } from "../../utils/api";
 import {
   getLiquidityAssetId,

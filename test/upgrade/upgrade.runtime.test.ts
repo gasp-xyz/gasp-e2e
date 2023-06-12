@@ -4,7 +4,7 @@ import { User } from "../../utils/User";
 import { getEnvironmentRequiredVars } from "../../utils/utils";
 import fs from "fs";
 import { signSendAndWaitToFinishTx } from "../../utils/txHandler";
-
+import { jest } from "@jest/globals";
 const { sudo: sudoUserName, chainUri } = getEnvironmentRequiredVars();
 jest.spyOn(console, "log").mockImplementation(jest.fn());
 jest.setTimeout(1500000);

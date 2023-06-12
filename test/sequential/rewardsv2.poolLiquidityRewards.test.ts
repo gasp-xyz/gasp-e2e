@@ -2,7 +2,6 @@
  *
  * @group rewardsV2Sequential
  */
-
 import { getApi, getMangataInstance, initApi } from "../../utils/api";
 import { AssetWallet, User } from "../../utils/User";
 import { Keyring } from "@polkadot/api";

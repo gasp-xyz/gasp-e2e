@@ -4,6 +4,7 @@
  * @group bootstrap
  * @group sequential
  */
+import { jest } from "@jest/globals";
 import { getApi, initApi } from "../../utils/api";
 import { Keyring } from "@polkadot/api";
 import { User } from "../../utils/User";

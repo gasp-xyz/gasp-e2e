@@ -3,7 +3,7 @@
  * @group xyk
  * @group rewardsV2Parallel
  */
-
+import { jest } from "@jest/globals";
 import { Keyring } from "@polkadot/api";
 import { getApi, getMangataInstance, initApi } from "../../utils/api";
 import { Assets } from "../../utils/Assets";

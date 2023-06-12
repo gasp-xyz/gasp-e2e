@@ -2,6 +2,7 @@
  *
  * @group multiswap
  */
+import { jest } from "@jest/globals";
 import { getApi, initApi } from "../../utils/api";
 import { ExtrinsicResult } from "../../utils/eventListeners";
 import { BN, hexToU8a, hexToBn } from "@polkadot/util";

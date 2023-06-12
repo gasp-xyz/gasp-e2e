@@ -4,6 +4,7 @@
  * @group liquidity
  * @group parallel
  */
+import { jest } from "@jest/globals";
 import {
   activateLiquidity,
   deactivateLiquidity,

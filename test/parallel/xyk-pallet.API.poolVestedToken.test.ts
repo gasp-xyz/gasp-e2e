@@ -5,6 +5,7 @@
  * @group liquidity
  * @group parallel
  */
+import { jest } from "@jest/globals";
 import { Keyring } from "@polkadot/api";
 import { getApi, initApi } from "../../utils/api";
 import { Assets } from "../../utils/Assets";

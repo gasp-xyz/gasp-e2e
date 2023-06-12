@@ -3,6 +3,7 @@
  * @group rewardsV2Sequential
  * @group story
  */
+import { jest } from "@jest/globals";
 import { getApi, getMangataInstance, initApi } from "../../utils/api";
 import {
   claimRewardsAll,

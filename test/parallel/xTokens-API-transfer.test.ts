@@ -1,7 +1,7 @@
 /*
  * @group rely-mga-acala
  */
-
+import { jest } from "@jest/globals";
 import { BN } from "@polkadot/util";
 import { GovernanceUser } from "../../utils/Framework/User/GovernanceUser";
 import { Keyring } from "@polkadot/api";

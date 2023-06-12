@@ -3,6 +3,7 @@
  *
  * @group experimentalStaking
  */
+import { jest } from "@jest/globals";
 import { getApi, initApi } from "../../utils/api";
 import { User } from "../../utils/User";
 import { Mangata } from "@mangata-finance/sdk";

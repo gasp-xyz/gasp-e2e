@@ -1,6 +1,7 @@
 /* eslint-disable jest/no-conditional-expect */
 // todo remove test once v2 is passing on CI for some time
 import { getApi, initApi } from "../../utils/api";
+import { jest } from "@jest/globals";
 import {
   buyAsset,
   calculate_buy_price_rpc,

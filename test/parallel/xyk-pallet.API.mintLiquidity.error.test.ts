@@ -4,6 +4,7 @@
  * @group api
  * @group parallel
  */
+import { jest } from "@jest/globals";
 import { api, getApi, initApi } from "../../utils/api";
 import { getBalanceOfPool, mintLiquidity, createPool } from "../../utils/tx";
 import { ExtrinsicResult } from "../../utils/eventListeners";

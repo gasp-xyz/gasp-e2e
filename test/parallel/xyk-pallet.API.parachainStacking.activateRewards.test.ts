@@ -3,6 +3,7 @@
  * @group rewardsV2Parallel
  *
  */
+import { jest } from "@jest/globals";
 import {
   getLiquidityAssetId,
   joinCandidate,
