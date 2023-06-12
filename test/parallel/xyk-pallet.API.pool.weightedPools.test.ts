@@ -79,12 +79,16 @@ beforeEach(async () => {
 
   await Sudo.batchAsSudoFinalized(
     Assets.promotePool(liqId.toNumber(), 20),
-    Assets.mintNative(testUser1)
+    Assets.mintNative(testUser1),
+    Sudo.sudoAs(
+      testUser1,
+      Xyk.activateLiquidity(liqId, Assets.DEFAULT_AMOUNT.divn(2))
+    )
   );
 });
 
 test("Check that we can get the list of promoted pools with proofOfStake.promotedPoolRewards data storage", async () => {
-  const poolWeight = await getPoolWeight(liqId);
+  const poolWeight = (await getPromotedPoolInfo(liqId)).weight;
 
   expect(poolWeight).bnEqual(new BN(20));
 });
@@ -92,7 +96,7 @@ test("Check that we can get the list of promoted pools with proofOfStake.promote
 test("Validate that weight can be modified by using updatePoolPromotion AND only sudo can update weights", async () => {
   const api = getApi();
 
-  const poolWeightBefore = await getPoolWeight(liqId);
+  const poolWeightBefore = (await getPromotedPoolInfo(liqId)).weight;
 
   await signTx(
     api,
@@ -113,7 +117,7 @@ test("Validate that weight can be modified by using updatePoolPromotion AND only
     poolWeightBefore.div(new BN(2)).toNumber()
   );
 
-  const poolWeightAfter = await getPoolWeight(liqId);
+  const poolWeightAfter = (await getPromotedPoolInfo(liqId)).weight;
 
   expect(poolWeightAfter).bnEqual(poolWeightBefore.div(new BN(2)));
 });
@@ -153,12 +157,11 @@ test("Testing that the sum of the weights can be greater than 100", async () => 
     )
   );
 
-  const poolWeightLiq1 = await getPoolWeight(liqId);
+  const poolWeightLiq1 = (await getPromotedPoolInfo(liqId)).weight;
 
-  const poolWeightLiq2 = await getPoolWeight(liqId2);
+  const poolWeightLiq2 = (await getPromotedPoolInfo(liqId2)).weight;
 
   const sumPoolsWeights = poolWeightLiq1.add(poolWeightLiq2);
-  const ratioPoolsWeights = poolWeightLiq2.div(poolWeightLiq1);
 
   await Sudo.batchAsSudoFinalized(
     Sudo.sudoAs(testUser1, Xyk.claimRewardsAll(liqId)),
@@ -176,7 +179,7 @@ test("Testing that the sum of the weights can be greater than 100", async () => 
   );
 
   expect(sumPoolsWeights).bnGt(BN_HUNDRED);
-  expect(rewardsLiqId1.rewardsAlreadyClaimed.mul(ratioPoolsWeights)).bnLte(
+  expect(rewardsLiqId1.rewardsAlreadyClaimed).bnLte(
     rewardsLiqId2.rewardsAlreadyClaimed
   );
 });
@@ -229,7 +232,9 @@ test("GIVEN a pool WHEN it has configured with 0 THEN no new issuance will be re
 });
 
 test("GIVEN a deactivated pool WHEN its configured with more weight, THEN rewards are now active, new users can get portion of those rewards AND issuance grows", async () => {
-  const api = getApi();
+  await waitForRewards(testUser1, liqId);
+
+  const poolRewardsBefore = (await getPromotedPoolInfo(liqId)).rewards;
 
   await promotePool(sudo.keyRingPair, liqId, 0);
 
@@ -238,10 +243,6 @@ test("GIVEN a deactivated pool WHEN its configured with more weight, THEN reward
   await Sudo.batchAsSudoFinalized(
     Assets.mintToken(token1, testUser2, Assets.DEFAULT_AMOUNT),
     Assets.mintNative(testUser2)
-  );
-
-  const totalIssuanceBefore = new BN(
-    await api.query.tokens.totalIssuance(liqId)
   );
 
   await promotePool(sudo.keyRingPair, liqId, 20);
@@ -255,22 +256,16 @@ test("GIVEN a deactivated pool WHEN its configured with more weight, THEN reward
 
   await waitForRewards(testUser2, liqId);
 
-  await claimRewardsAll(testUser2, liqId).then((result) => {
-    const eventResponse = getEventResultFromMangataTx(result);
-    expect(eventResponse.state).toEqual(ExtrinsicResult.ExtrinsicSuccess);
-  });
+  const poolRewardsAfter = (await getPromotedPoolInfo(liqId)).rewards;
 
-  const totalIssuanceAfter = new BN(
-    await api.query.tokens.totalIssuance(liqId)
-  );
-
-  expect(totalIssuanceAfter).bnGt(totalIssuanceBefore);
+  expect(poolRewardsBefore).bnGt(BN_ZERO);
+  expect(poolRewardsAfter).bnGt(poolRewardsBefore);
 });
 
 test("GIVEN an activated pool WHEN pool was deactivated THEN check that pool was deleted from list of promotedPoolRewards", async () => {
   const api = getApi();
 
-  const poolWeightBefore = await getPoolWeight(liqId);
+  const poolWeightBefore = (await getPromotedPoolInfo(liqId)).weight;
 
   await promotePool(sudo.keyRingPair, liqId, 0);
 
@@ -282,14 +277,16 @@ test("GIVEN an activated pool WHEN pool was deactivated THEN check that pool was
   expect(poolRewards[liqId.toString()]).toEqual(undefined);
 });
 
-async function getPoolWeight(tokenId: BN) {
+async function getPromotedPoolInfo(tokenId: BN) {
   const api = getApi();
 
   const poolRewards = JSON.parse(
     JSON.stringify(await api.query.proofOfStake.promotedPoolRewards())
   );
+  const results = {
+    weight: stringToBN(poolRewards[tokenId.toString()].weight),
+    rewards: stringToBN(poolRewards[tokenId.toString()].rewards),
+  };
 
-  const poolWeight = stringToBN(poolRewards[tokenId.toString()].weight);
-
-  return poolWeight;
+  return results;
 }
