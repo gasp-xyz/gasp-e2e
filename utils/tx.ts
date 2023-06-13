@@ -558,9 +558,8 @@ export const joinCandidate = async (
       new BN(amount),
       new BN(liqToken),
       from,
-      // @ts-ignore - Mangata bond operation has 4 params, somehow is inheriting the bond operation from polkadot :S
-      new BN(candidates.length),
-      new BN(liqTokenCount)
+      new BN(candidates.length).addn(10),
+      new BN(liqTokenCount).addn(10)
     ),
     account,
     stricSuccess

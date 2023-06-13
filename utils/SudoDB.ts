@@ -2,7 +2,7 @@
 /* eslint-disable no-console */
 import { Guid } from "guid-typescript";
 import { testLog } from "./Logger";
-import { getCurrentNonce } from "./txHandler";
+import { getCandidates, getCurrentNonce } from "./txHandler";
 import { sleep } from "./utils";
 import ipc from "node-ipc";
 export class SudoDB {
@@ -36,6 +36,9 @@ export class SudoDB {
     return dbNonce;
   }
   public async getNextCandidateNum() {
+    if (process.argv.includes("--runInBand")) {
+      return await getCandidates();
+    }
     const nextCandidateId = await getCandidateCountFromIPC();
     await sleep(1000);
     testLog

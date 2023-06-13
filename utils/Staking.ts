@@ -39,8 +39,8 @@ export class Staking {
       amount,
       tokenId,
       tokenOrigin,
-      numCollators + 10,
-      liqAssetsCount
+      (numCollators + 10).toString(),
+      liqAssetsCount.toString()
     );
   }
   static addStakingLiquidityToken(liqToken: BN): Extrinsic {
