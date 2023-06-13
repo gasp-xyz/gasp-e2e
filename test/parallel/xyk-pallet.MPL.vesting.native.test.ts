@@ -5,6 +5,7 @@
  * @group parallel
  */
 import { jest } from "@jest/globals";
+import "jest-extended";
 import { joinCandidate } from "../../utils/tx";
 import { MGA_ASSET_ID } from "../../utils/Constants";
 import { hexToBn, BN } from "@polkadot/util";

@@ -5,6 +5,7 @@
  * @group parallel
  */
 import { jest } from "@jest/globals";
+import "jest-extended";
 import {
   activateLiquidity,
   createPoolIfMissing,

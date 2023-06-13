@@ -46,9 +46,9 @@ describe("MPL: Delegator", () => {
     const candidates = JSON.parse(
       JSON.stringify(await node.api?.query.parachainStaking.candidatePool())
     );
-    //get the liq token that is smaller ( 3 )
+
     liqTokenForCandidate = new BN(
-      Math.min.apply(
+      Math.max.apply(
         null,
         candidates.map(
           (t: { liquidityToken: { toNumber: () => any } }) => t.liquidityToken
