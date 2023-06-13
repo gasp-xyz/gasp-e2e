@@ -29,6 +29,7 @@ const globalConfig = async (globalConfig, projectConfig) => {
   const nonce = await api.rpc.system.accountNextIndex(sudoKeyringPair.address);
   let numCollators = (await api?.query.parachainStaking.candidatePool()).length;
   console.info(`${nonce}`);
+  console.info(`${numCollators}`);
 
   ipc.serve(function () {
     ipc.server.on("getNonce", (data, socket) => {
@@ -37,8 +38,9 @@ const globalConfig = async (globalConfig, projectConfig) => {
       nonce.iaddn(1);
     });
     ipc.server.on("getCandidate", (data, socket) => {
-      console.info("serving getCandidate" + data.id);
-      ipc.server.emit(socket, "candidate-" + data.id);
+      console.info("serving getCandidate" + data.id + numCollators);
+      ipc.server.emit(socket, "candidate-" + data.id, numCollators);
+      numCollators = numCollators + 1;
     });
   });
   ipc.server.start();
