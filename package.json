@@ -71,7 +71,7 @@
     "test-playground-parallel": "rm nonce.db ; rm sudo.lock; jest test/exploratory/parallelTesting/transfer/* --verbose --forceExit ",
     "test-cluster": "rm nonce.db; rm sudo.lock; jest --verbose --group=cluster --forceExit ",
     "test-cluster-healthcheck": "rm nonce.db; rm sudo.lock; jest --verbose --group=cluster-healthcheck --forceExit ",
-    "test-sequential": "export JEST_HTML_REPORTERS_PUBLIC_PATH=reports/html-report-seq; rm nonce.db ; rm sudo.lock; jest --verbose --runInBand --group=sequential --forceExit ",
+    "test-sequential": "export JEST_HTML_REPORTERS_PUBLIC_PATH=reports/html-report-seq; rm nonce.db ; rm sudo.lock; node --experimental-specifier-resolution=node --loader ts-node/esm --experimental-vm-modules node_modules/jest/bin/jest.js --verbose --runInBand --group=sequential --forceExit ",
     "test-seqgasless": "export GASLESS=true; export JEST_HTML_REPORTERS_PUBLIC_PATH=reports/html-report-seq; rm nonce.db ; rm sudo.lock; jest --verbose --runInBand --group=seqgasless --forceExit ",
     "test-paralgasless": "export GASLESS=true; export JEST_HTML_REPORTERS_PUBLIC_PATH=reports/html-report-parallel; rm nonce.db; rm sudo.lock; jest --verbose --ci --group=paralgasless --forceExit ",
     "test-poolliquidity": "export JEST_HTML_REPORTERS_PUBLIC_PATH=reports/html-report-parallel;rm nonce.db ; rm sudo.lock; jest --verbose --ci --group=poolliquidity --forceExit ",
