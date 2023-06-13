@@ -108,8 +108,8 @@ describe("rewards v2 tests", () => {
       mangata = await getMangataInstance(chainUri);
 
       const liqBalance = await mangata.query.getTokenBalance(
-        testUser1.keyRingPair.address,
-        liqId.toString()
+        liqId.toString(),
+        testUser1.keyRingPair.address
       );
 
       await Sudo.batchAsSudoFinalized(
@@ -138,8 +138,8 @@ describe("rewards v2 tests", () => {
       });
       const reservedTokens = (
         await mangata.query.getTokenBalance(
-          testUser1.keyRingPair.address,
-          liqId.toString()
+          liqId.toString(),
+          testUser1.keyRingPair.address
         )
       ).reserved;
 
@@ -176,8 +176,8 @@ describe("rewards v2 tests", () => {
       });
       const reservedTokens = (
         await mangata.query.getTokenBalance(
-          testUser2.keyRingPair.address,
-          liqId.toString()
+          liqId.toString(),
+          testUser2.keyRingPair.address
         )
       ).reserved;
 
