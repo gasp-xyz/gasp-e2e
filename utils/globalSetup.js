@@ -27,6 +27,7 @@ const globalConfig = async (globalConfig, projectConfig) => {
   const keyring = new Keyring({ type: "sr25519" });
   const sudoKeyringPair = keyring.createFromUri(sudo);
   const nonce = await api.rpc.system.accountNextIndex(sudoKeyringPair.address);
+  let numCollators = (await api?.query.parachainStaking.candidatePool()).length;
   console.info(`${nonce}`);
 
   ipc.serve(function () {
