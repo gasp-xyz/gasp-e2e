@@ -1,7 +1,9 @@
 /* eslint-disable no-console */
 import "@mangata-finance/types";
-import { Mangata, signTx, MangataHelpers, BN } from "@mangata-finance/sdk";
+import { Mangata, signTx } from "@mangata-finance/sdk";
 import * as fs from "fs";
+import { BN } from "@polkadot/util";
+import { Keyring } from "@polkadot/api";
 
 function difference(a1: any, a2: any) {
   const a2Set = new Set(a2);
@@ -20,7 +22,7 @@ function difference(a1: any, a2: any) {
     "/home/goncer/accounts/5CthcoS3CYHoVHDMUacydayRLMzMWedKryjsrvzrmv3VHCKP" +
       ".json"
   );
-  const keyring = MangataHelpers.createKeyring("sr25519");
+  const keyring = new Keyring({ type: "sr25519" });
   const user = keyring.createFromJson(JSON.parse(file as any));
   keyring.addPair(user);
   keyring.pairs[0].decodePkcs8("");
