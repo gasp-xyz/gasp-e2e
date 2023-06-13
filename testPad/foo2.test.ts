@@ -8,7 +8,7 @@ import { BN } from "@polkadot/util";
 import { Keyring } from "@polkadot/api";
 import { initApi } from "../utils/api";
 import { getEnvironmentRequiredVars } from "../utils/utils";
-import { User } from '../utils/User';
+import { User } from "../utils/User";
 import { getBalanceOfAsset } from "../utils/tx";
 
 dotenv.config();
