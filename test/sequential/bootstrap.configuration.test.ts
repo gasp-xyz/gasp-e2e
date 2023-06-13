@@ -16,7 +16,6 @@ import {
 } from "../../utils/txHandler";
 import { MGA_ASSET_ID } from "../../utils/Constants";
 import { toBN } from "@mangata-finance/sdk";
-import { toNumber } from "lodash";
 import {
   checkLastBootstrapFinalized,
   createNewBootstrapCurrency,
@@ -153,7 +152,7 @@ test("bootstrap - Check happy path bootstrap with one user", async () => {
 
   // check that the user's balance of liquidity token is equal the pool's balance
   const userBalance = await getBalanceOfAsset(liquidityID, testUser1);
-  expect(toNumber(userBalance.free)).toEqual(bootstrapExpectedUserLiquidity);
+  expect(userBalance.free.toNumber()).toEqual(bootstrapExpectedUserLiquidity);
 
   // finalize bootstrap
   await checkLastBootstrapFinalized(sudo);
