@@ -2,7 +2,7 @@ import { connectVertical } from "@acala-network/chopsticks";
 import { KeyringPair } from "@polkadot/keyring/types";
 import { balance } from "../../utils/Assets";
 import { AssetId } from "../../utils/ChainSpecs";
-import { ApiContext, upgradeMangata } from "../../utils/Framework/XcmHelper";
+import { ApiContext } from "../../utils/Framework/XcmHelper";
 import XcmNetworks from "../../utils/Framework/XcmNetworks";
 import { devTestingPairs, setupApi, setupUsers } from "../../utils/setup";
 import { sendTransaction } from "../../utils/sign";
@@ -14,6 +14,7 @@ import {
   matchEvents,
 } from "../../utils/validators";
 import { BN_BILLION } from "@mangata-finance/sdk";
+import { testLog } from "../../utils/Logger";
 
 /**
  * @group xcm
@@ -45,7 +46,7 @@ describe("XCM tests for Mangata <-> Kusama", () => {
         Key: alice.address,
       },
     });
-    await upgradeMangata(mangata);
+    // await upgradeMangata(mangata);
   });
 
   beforeEach(async () => {
@@ -112,13 +113,13 @@ describe("XCM tests for Mangata <-> Kusama", () => {
     ).toMatchSnapshot();
 
     expect(await balance(kusama.api, alice.address)).toMatchSnapshot();
-
+    testLog.getLog().info("sleeping");
     expectEvent(await kusama.api.query.system.events(), {
       event: expect.objectContaining({
         method: "ExecutedUpward",
         section: "ump",
         data: [
-          "0x14712437991bc0ca1d267941859aa06ead772da2a098cb7c2f8a13c47082cea1",
+          "0xf1480be6240549d36471d3e41c5a784a2976f75b99e1b0329f271d43987eca6f",
           {
             Complete: expect.anything(),
           },

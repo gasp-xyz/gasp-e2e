@@ -34,7 +34,7 @@ describe("[V3][V3] XCM tests for Mangata <-> imbue", () => {
       },
       Tokens: {
         Accounts: [
-          [[alice.keyRingPair.address, { token: 14 }], { free: 1000e12 }],
+          [[alice.keyRingPair.address, { token: 11 }], { free: 1000e12 }],
           [
             [alice.keyRingPair.address, { token: 0 }],
             { free: AssetId.Mgx.unit.mul(BN_BILLION).toString() },
@@ -57,7 +57,7 @@ describe("[V3][V3] XCM tests for Mangata <-> imbue", () => {
       },
       Tokens: {
         Accounts: [
-          [[alice.keyRingPair.address, { token: 14 }], { free: 1000e12 }],
+          [[alice.keyRingPair.address, { token: 11 }], { free: 1000e12 }],
           [
             [alice.keyRingPair.address, { token: 0 }],
             { free: AssetId.Mgx.unit.mul(BN_BILLION).toString() },
@@ -73,7 +73,7 @@ describe("[V3][V3] XCM tests for Mangata <-> imbue", () => {
   });
   it("[V3] mangata transfer assets to [V1] imbue", async () => {
     expectJson(
-      await mangata.api.query.tokens.accounts(alice.keyRingPair.address, 14)
+      await mangata.api.query.tokens.accounts(alice.keyRingPair.address, 11)
     ).toMatchSnapshot("Before");
 
     expect(
@@ -82,7 +82,7 @@ describe("[V3][V3] XCM tests for Mangata <-> imbue", () => {
     const tx = await sendTransaction(
       mangata.api.tx.xTokens
         .transfer(
-          14,
+          11,
           10e12,
           {
             V3: {
@@ -114,10 +114,9 @@ describe("[V3][V3] XCM tests for Mangata <-> imbue", () => {
         method: "TransferredMultiAssets",
       }),
     });
-
     await imbue.chain.newBlock();
     expectJson(
-      await mangata.api.query.tokens.accounts(alice.keyRingPair.address, 14)
+      await mangata.api.query.tokens.accounts(alice.keyRingPair.address, 11)
     ).toMatchSnapshot("After");
 
     expect(
@@ -129,7 +128,7 @@ describe("[V3][V3] XCM tests for Mangata <-> imbue", () => {
 
   it("[V3] imbue transfer assets to [V3] mangata", async () => {
     expectJson(
-      await mangata.api.query.tokens.accounts(alice.keyRingPair.address, 14)
+      await mangata.api.query.tokens.accounts(alice.keyRingPair.address, 11)
     ).toMatchSnapshot("Before");
     expect(
       await imbue.api.query.system.account(alice.keyRingPair.address)
@@ -197,7 +196,7 @@ describe("[V3][V3] XCM tests for Mangata <-> imbue", () => {
     await mangata.chain.newBlock();
 
     expectJson(
-      await mangata.api.query.tokens.accounts(alice.keyRingPair.address, 14)
+      await mangata.api.query.tokens.accounts(alice.keyRingPair.address, 11)
     ).toMatchSnapshot("After");
     await matchSystemEvents(mangata, "xcmpQueue", "Success");
   });

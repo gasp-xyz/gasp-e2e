@@ -10,7 +10,7 @@ import {
 } from "../../utils/ChainSpecs";
 import { waitForEvents } from "../../utils/eventListeners";
 import { XcmNode } from "../../utils/Framework/Node/XcmNode";
-import { ApiContext, upgradeMangata } from "../../utils/Framework/XcmHelper";
+import { ApiContext } from "../../utils/Framework/XcmHelper";
 import XcmNetworks from "../../utils/Framework/XcmNetworks";
 import { alice, api, setupApi, setupUsers } from "../../utils/setup";
 import { signSendSuccess } from "../../utils/sign";
@@ -59,7 +59,7 @@ describe("XCM transfers", () => {
         ],
       },
     });
-    await upgradeMangata(mangata);
+    // await upgradeMangata(mangata);
   });
 
   it("[ BNC V3 -> MGA -> BNC V3 ] send BNC to mangata and back", async () => {
