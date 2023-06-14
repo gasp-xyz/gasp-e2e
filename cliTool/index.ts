@@ -2,6 +2,8 @@
 /**
  * npx ts-node cliTool/index.ts --runInBand
  * API_URL="wss://mangata-x.api.onfinality.io/public-ws"  npx ts-node ./index.ts --runInBand
+ * or:
+ * node --experimental-specifier-resolution=node --loader ts-node/esm --experimental-vm-modules  ./index.ts --runInBand
  */
 import inquirer from "inquirer";
 import {
