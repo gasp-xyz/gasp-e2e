@@ -5,7 +5,7 @@
 
 import { Mangata } from "@mangata-finance/sdk";
 
-const { testLog } = require("./../utils/Logger");
+import { testLog } from "./../utils/Logger";
 
 const uris = [
   "wss://staging.mangatafinance.cloud:9944",

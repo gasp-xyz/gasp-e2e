@@ -1,5 +1,5 @@
 /* eslint-disable no-console */
-const ipc = require("node-ipc").default;
+import ipc from "node-ipc";
 
 ipc.config.id = "nonceManager";
 ipc.config.retry = 1500;

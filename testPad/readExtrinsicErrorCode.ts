@@ -5,7 +5,7 @@
 import { BN } from "@polkadot/util";
 import { Mangata } from "@mangata-finance/sdk";
 
-const { testLog } = require("./../utils/Logger");
+import { testLog } from "./../utils/Logger";
 
 const uri = "wss://staging.mangatafinance.cloud:9944";
 

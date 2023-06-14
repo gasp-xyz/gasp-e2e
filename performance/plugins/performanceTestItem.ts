@@ -27,6 +27,7 @@ import { User } from "../../utils/User";
 import { getEnvironmentRequiredVars } from "../../utils/utils";
 import { SudoUser } from "../../utils/Framework/User/SudoUser";
 import { quantile } from "simple-statistics";
+import ipc from "node-ipc";
 
 function seedFromNum(seed: number): string {
   const guid = Guid.create().toString();
@@ -67,8 +68,6 @@ export class performanceTestItem implements TestItem {
     const nonce = await api.rpc.system.accountNextIndex(
       sudoKeyringPair.address
     );
-
-    const ipc = require("node-ipc").default;
     ipc.config.id = "nonceManager";
     ipc.config.retry = 1500;
     ipc.config.silent = false;
