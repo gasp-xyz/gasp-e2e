@@ -17,7 +17,7 @@ import { hexToBn } from "@polkadot/util";
 import { Mangata, signTx } from "@mangata-finance/sdk";
 import { FeeTxs } from "../utils/tx";
 
-require("dotenv").config();
+import "dotenv/config";
 
 jest.spyOn(console, "log").mockImplementation(jest.fn());
 const { sudo: sudoUserName } = getEnvironmentRequiredVars();

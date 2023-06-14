@@ -3,7 +3,7 @@ import { sleep } from "../utils/utils";
 import { testLog } from "../utils/Logger";
 import { WsProvider } from "@polkadot/rpc-provider/ws";
 
-require("dotenv").config();
+import "dotenv/config";
 
 jest.spyOn(console, "log").mockImplementation(jest.fn());
 

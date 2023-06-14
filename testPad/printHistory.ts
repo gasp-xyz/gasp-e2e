@@ -4,7 +4,7 @@
 // npx ts-node test/exploratory/eventListener.ts
 
 import { Mangata } from "@mangata-finance/sdk";
-const { testLog } = require("./../utils/Logger");
+import { testLog } from "./../utils/Logger";
 
 const uri = "wss://v4-collator-01.mangatafinance.cloud";
 

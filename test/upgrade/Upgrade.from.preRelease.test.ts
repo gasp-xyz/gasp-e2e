@@ -14,7 +14,7 @@ import { testLog } from "../../utils/Logger";
 import { downloadRelease } from "@terascope/fetch-github-release";
 import { transferAsset } from "../../utils/tx";
 
-require("dotenv").config();
+import "dotenv/config";
 
 jest.spyOn(console, "log").mockImplementation(jest.fn());
 const { sudo: sudoUserName } = getEnvironmentRequiredVars();

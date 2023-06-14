@@ -14,7 +14,7 @@ import { testLog } from "../utils/Logger";
 import { Sudo } from "../utils/sudo";
 import { setupApi, setupUsers } from "../utils/setup";
 
-require("dotenv").config();
+import "dotenv/config";
 
 jest.spyOn(console, "log").mockImplementation(jest.fn());
 const { sudo: sudoUserName, chainUri } = getEnvironmentRequiredVars();

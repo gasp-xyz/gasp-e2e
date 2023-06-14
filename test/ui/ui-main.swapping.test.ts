@@ -33,7 +33,7 @@ import { SudoUser } from "../../utils/Framework/User/SudoUser";
 import { Node } from "../../utils/Framework/Node/Node";
 import { connectPolkadotWallet } from "../../utils/frontend/utils/Handlers";
 
-require("dotenv").config();
+import "dotenv/config";
 
 jest.retryTimes(1);
 jest.spyOn(console, "log").mockImplementation(jest.fn());

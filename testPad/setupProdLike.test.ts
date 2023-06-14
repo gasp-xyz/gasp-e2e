@@ -15,8 +15,7 @@ import { Sudo } from "../utils/sudo";
 import { setupApi, setupUsers } from "../utils/setup";
 import { Assets } from "../utils/Assets";
 import { setAssetInfo } from "../utils/txHandler";
-
-require("dotenv").config();
+import "dotenv/config";
 
 jest.spyOn(console, "log").mockImplementation(jest.fn());
 

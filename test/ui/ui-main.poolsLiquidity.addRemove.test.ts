@@ -38,7 +38,7 @@ import {
 } from "../../utils/frontend/pages/NotificationModal";
 import { Polkadot } from "../../utils/frontend/pages/Polkadot";
 
-require("dotenv").config();
+import "dotenv/config";
 
 jest.spyOn(console, "log").mockImplementation(jest.fn());
 
