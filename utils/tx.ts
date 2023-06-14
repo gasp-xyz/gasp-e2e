@@ -190,11 +190,11 @@ export async function calculate_buy_price_id_rpc(
   buyAmount: BN
 ) {
   const mangata = await getMangataInstance();
-  const result = await mangata.rpc.calculateBuyPriceId({
-    amount: buyAmount,
-    firstTokenId: soldTokenId.toString(),
-    secondTokenId: boughtTokenId.toString(),
-  });
+  const result = await mangata.rpc.calculateBuyPriceId(
+    soldTokenId.toString(),
+    boughtTokenId.toString(),
+    buyAmount
+  );
   return result;
 }
 
@@ -204,11 +204,11 @@ export async function calculate_sell_price_id_rpc(
   sellAmount: BN
 ) {
   const mangata = await getMangataInstance();
-  const result = await mangata.rpc.calculateSellPriceId({
-    amount: sellAmount,
-    firstTokenId: soldTokenId.toString(),
-    secondTokenId: boughtTokenId.toString(),
-  });
+  const result = await mangata.rpc.calculateSellPriceId(
+    soldTokenId.toString(),
+    boughtTokenId.toString(),
+    sellAmount
+  );
   return result;
 }
 

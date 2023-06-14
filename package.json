@@ -12,7 +12,7 @@
     "@babel/plugin-proposal-decorators": "^7.17.8",
     "@babel/plugin-proposal-object-rest-spread": "^7.20.7",
     "@commitlint/config-conventional": "^17.4.2",
-    "@mangata-finance/sdk": "https://github.com/mangata-finance/mangata-sdk#923ade48f5401d0ec57385b0681a59781607af88",
+    "@mangata-finance/sdk": "https://github.com/mangata-finance/mangata-sdk#8fddab3eec8d55ab0deb73f97e7dabb204306f4d",
     "@polkadot/api": "^10.7.3",
     "@terascope/fetch-github-release": "^0.8.7",
     "@truffle/hdwallet-provider": "^2.1.9",
@@ -75,7 +75,6 @@
     "test-parallel-autocompound": "export JEST_HTML_REPORTERS_PUBLIC_PATH=reports/html-report-parallel; rm nonce.db ; rm sudo.lock;  node --experimental-specifier-resolution=node --loader ts-node/esm --experimental-vm-modules node_modules/jest/bin/jest.js --verbose --group=rewardsV2Parallel --forceExit ",
     "test-poolliquidity": "export JEST_HTML_REPORTERS_PUBLIC_PATH=reports/html-report-parallel;rm nonce.db ; rm sudo.lock;  node --experimental-specifier-resolution=node --loader ts-node/esm --experimental-vm-modules node_modules/jest/bin/jest.js --verbose --ci --group=poolliquidity --forceExit ",
     "test-governance": "rm nonce.db ; rm sudo.lock;  node --experimental-specifier-resolution=node --loader ts-node/esm --experimental-vm-modules node_modules/jest/bin/jest.js --verbose --runInBand --ci --group=governance --forceExit ",
-    
     "test-parallel-files": "export JEST_HTML_REPORTERS_PUBLIC_PATH=reports/html-report-parallel;rm nonce.db ; rm sudo.lock;  node --experimental-specifier-resolution=node --loader ts-node/esm --experimental-vm-modules node_modules/jest/bin/jest.js --verbose --ci  --forceExit ",
     "test-playground-parallel": "rm nonce.db ; rm sudo.lock;  node --experimental-specifier-resolution=node --loader ts-node/esm --experimental-vm-modules node_modules/jest/bin/jest.js test/exploratory/parallelTesting/transfer/* --verbose --forceExit ",
     "test-cluster": "rm nonce.db; rm sudo.lock;  node --experimental-specifier-resolution=node --loader ts-node/esm --experimental-vm-modules node_modules/jest/bin/jest.js --verbose --group=cluster --forceExit ",

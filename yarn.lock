@@ -2208,9 +2208,9 @@
     "@jridgewell/resolve-uri" "3.1.0"
     "@jridgewell/sourcemap-codec" "1.4.14"
 
-"@mangata-finance/sdk@https://github.com/mangata-finance/mangata-sdk#923ade48f5401d0ec57385b0681a59781607af88":
+"@mangata-finance/sdk@https://github.com/mangata-finance/mangata-sdk#8fddab3eec8d55ab0deb73f97e7dabb204306f4d":
   version "1.0.0"
-  resolved "https://github.com/mangata-finance/mangata-sdk#923ade48f5401d0ec57385b0681a59781607af88"
+  resolved "https://github.com/mangata-finance/mangata-sdk#8fddab3eec8d55ab0deb73f97e7dabb204306f4d"
   dependencies:
     "@mangata-finance/types" "https://github.com/mangata-finance/types#feat/gen-types"
     big.js "^6.2.1"
@@ -3839,9 +3839,9 @@ ajv@^8.0.0, ajv@^8.0.1, ajv@^8.11.0, ajv@^8.6.3:
     uri-js "^4.2.2"
 
 allure-commandline@^2.18.1:
-  version "2.22.1"
-  resolved "https://registry.npmjs.org/allure-commandline/-/allure-commandline-2.22.1.tgz#f9214f4b75ead058bb6d083f6a09bde2985f993a"
-  integrity sha512-67j/yyHJTplGWIzMJAlyRboI8H/pxCuvwWRLK5tfSpin2JSJ2itwMxTqlv4/0xp/AhuXSA3yf5/GNslgnuTEJQ==
+  version "2.22.2"
+  resolved "https://registry.npmjs.org/allure-commandline/-/allure-commandline-2.22.2.tgz#c5ed6869c3fa9bda1b6cd83eb50639485ad92780"
+  integrity sha512-IpanHZLaqnQakZ8aJ+WdAgDnFSN1M+IY/pJUdNiap9KFlzEDm2ItnRvuZiggK3PRL2XUNvvOuDT7wlnbTsEfNA==
 
 allure-js-commons@^1.3.2:
   version "1.3.2"
@@ -4874,9 +4874,9 @@ camelcase@^6.0.0, camelcase@^6.2.0:
   integrity sha512-Gmy6FhYlCY7uOElZUSbxo2UCDH8owEk996gkbrpsgGtrJLM3J7jGxl9Ic7Qwwj4ivOE5AWZWRMecDdF7hqGjFA==
 
 caniuse-lite@^1.0.30001502:
-  version "1.0.30001502"
-  resolved "https://registry.npmjs.org/caniuse-lite/-/caniuse-lite-1.0.30001502.tgz#f7e4a76eb1d2d585340f773767be1fefc118dca8"
-  integrity sha512-AZ+9tFXw1sS0o0jcpJQIXvFTOB/xGiQ4OQ2t98QX3NDn2EZTSRBC801gxrsGgViuq2ak/NLkNgSNEPtCr5lfKg==
+  version "1.0.30001503"
+  resolved "https://registry.npmjs.org/caniuse-lite/-/caniuse-lite-1.0.30001503.tgz#88b6ff1b2cf735f1f3361dc1a15b59f0561aa398"
+  integrity sha512-Sf9NiF+wZxPfzv8Z3iS0rXM1Do+iOy2Lxvib38glFX+08TCYYYGR5fRJXk4d77C4AYwhUjgYgMsMudbh2TqCKw==
 
 capture-stack-trace@^1.0.0:
   version "1.0.2"
@@ -5846,9 +5846,9 @@ ee-first@1.1.1:
   integrity sha512-WMwm9LhRUo+WUaRN+vRuETqG89IgZphVSNkdFgeb6sS/E4OrDIN7t48CAewSHXc6C8lefD8KKfr5vY61brQlow==
 
 electron-to-chromium@^1.4.428:
-  version "1.4.428"
-  resolved "https://registry.npmjs.org/electron-to-chromium/-/electron-to-chromium-1.4.428.tgz#c31fc88e854f49d8305cdabf6ec934ff1588a902"
-  integrity sha512-L7uUknyY286of0AYC8CKfgWstD0Smk2DvHDi9F0GWQhSH90Bzi7iDrmCbZKz75tYJxeGSAc7TYeKpmbjMDoh1w==
+  version "1.4.430"
+  resolved "https://registry.npmjs.org/electron-to-chromium/-/electron-to-chromium-1.4.430.tgz#52693c812a81800fafb5b312c1a850142e2fc9eb"
+  integrity sha512-FytjTbGwz///F+ToZ5XSeXbbSaXalsVRXsz2mHityI5gfxft7ieW3HqFLkU5V1aIrY42aflICqbmFoDxW10etg==
 
 elliptic@6.5.4, elliptic@^6.4.0, elliptic@^6.5.2, elliptic@^6.5.4:
   version "6.5.4"
