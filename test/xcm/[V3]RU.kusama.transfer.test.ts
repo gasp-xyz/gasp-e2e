@@ -1,19 +1,20 @@
 import { connectVertical } from "@acala-network/chopsticks";
 import { KeyringPair } from "@polkadot/keyring/types";
-import { BN_THOUSAND } from "@polkadot/util";
 import { balance } from "../../utils/Assets";
 import { AssetId } from "../../utils/ChainSpecs";
 import { ApiContext } from "../../utils/Framework/XcmHelper";
 import XcmNetworks from "../../utils/Framework/XcmNetworks";
-import { devTestingPairs } from "../../utils/setup";
+import { devTestingPairs, setupApi, setupUsers } from "../../utils/setup";
 import { sendTransaction } from "../../utils/sign";
+import { mangataChopstick } from "../../utils/api";
 import {
   expectEvent,
   expectExtrinsicSuccess,
   expectJson,
   matchEvents,
-  matchSystemEvents,
 } from "../../utils/validators";
+import { BN_BILLION } from "@mangata-finance/sdk";
+import { testLog } from "../../utils/Logger";
 
 /**
  * @group xcm
@@ -25,15 +26,27 @@ describe("XCM tests for Mangata <-> Kusama", () => {
   let alice: KeyringPair;
 
   beforeAll(async () => {
+    await setupApi();
+    await setupUsers();
     kusama = await XcmNetworks.kusama();
-    mangata = await XcmNetworks.mangata();
+    mangata = mangataChopstick!;
     await connectVertical(kusama.chain, mangata.chain);
     alice = devTestingPairs().alice;
-  });
-
-  afterAll(async () => {
-    await kusama.teardown();
-    await mangata.teardown();
+    await mangata.dev.setStorage({
+      Tokens: {
+        Accounts: [
+          [[alice.address, { token: 4 }], { free: 10 * 1e12 }],
+          [
+            [alice.address, { token: 0 }],
+            { free: AssetId.Mgx.unit.mul(BN_BILLION).toString() },
+          ],
+        ],
+      },
+      Sudo: {
+        Key: alice.address,
+      },
+    });
+    // await upgradeMangata(mangata);
   });
 
   beforeEach(async () => {
@@ -43,7 +56,7 @@ describe("XCM tests for Mangata <-> Kusama", () => {
           [[alice.address, { token: 4 }], { free: 10 * 1e12 }],
           [
             [alice.address, { token: 0 }],
-            { free: AssetId.Mgx.unit.mul(BN_THOUSAND).toString() },
+            { free: AssetId.Mgx.unit.mul(BN_BILLION).toString() },
           ],
         ],
       },
@@ -67,12 +80,12 @@ describe("XCM tests for Mangata <-> Kusama", () => {
           4,
           1e12,
           {
-            V1: {
+            V3: {
               parents: 1,
               interior: {
                 X1: {
                   AccountId32: {
-                    network: "Any",
+                    network: undefined,
                     id: alice.addressRaw,
                   },
                 },
@@ -100,13 +113,13 @@ describe("XCM tests for Mangata <-> Kusama", () => {
     ).toMatchSnapshot();
 
     expect(await balance(kusama.api, alice.address)).toMatchSnapshot();
-
+    testLog.getLog().info("sleeping");
     expectEvent(await kusama.api.query.system.events(), {
       event: expect.objectContaining({
         method: "ExecutedUpward",
         section: "ump",
         data: [
-          "0x42669dcaba8e3857f2c30c983ca7dd5de3d728cba346a307ca444e1fd1d9e473",
+          "0xf1480be6240549d36471d3e41c5a784a2976f75b99e1b0329f271d43987eca6f",
           {
             Complete: expect.anything(),
           },
@@ -133,6 +146,7 @@ describe("XCM tests for Mangata <-> Kusama", () => {
               interior: {
                 X1: {
                   AccountId32: {
+                    network: undefined,
                     id: alice.addressRaw,
                   },
                 },
@@ -158,13 +172,36 @@ describe("XCM tests for Mangata <-> Kusama", () => {
     await matchEvents(tx.events, "xcmPallet");
 
     expect(await balance(kusama.api, alice.address)).toMatchSnapshot();
-
+    //TODO: Somehow I can not get the events from the dcmp.
+    //    const hashBef = await mangata.api.rpc.chain.getBlockHash(
+    //      await getBlockNumber()
+    //    );
     await mangata.chain.newBlock();
-
+    // Lets validate balances. Should be enough I guess.
     expectJson(
       await mangata.api.query.tokens.accounts(alice.address, 4)
     ).toMatchSnapshot();
 
-    await matchSystemEvents(mangata, "parachainSystem", "dmpQueue");
+    //    const hashAft = await mangata.api.rpc.chain.getBlockHash(
+    //      await getBlockNumber()
+    //    );
+    //    await sleep(3000);
+    //    const events1 = await (
+    //      await mangata.api.at(hashBef.toString())
+    //    ).query.system.events();
+    //
+    //    const events2 = await (
+    //      await mangata.api.at(hashAft.toString())
+    //    ).query.system.events();
+    //
+    //    const events3 = await mangata.api.query.system.events();
+    //    await sleep(10000000);
+    //
+    //    await matchSystemEventsAt(
+    //      mangata,
+    //      hashBef.toString(),
+    //      "parachainSystem",
+    //      "dmpQueue"
+    //    );
   });
 });

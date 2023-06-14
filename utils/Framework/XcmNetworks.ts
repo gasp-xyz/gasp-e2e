@@ -10,6 +10,7 @@ const endpoints = {
   karura: "wss://karura-rpc-0.aca-api.network",
   mangata: "wss://kusama-archive.mangata.online",
   bifrost: "wss://bifrost-rpc.dwellir.com",
+  turing: "wss://rpc.turing.oak.tech",
 };
 
 const toNumber = (value: string | undefined): number | undefined => {
@@ -35,6 +36,14 @@ export default {
       wasmOverride: process.env.IMBUE_WASM,
       blockNumber: toNumber(process.env.IMBUE_BLOCK_NUMBER),
       endpoint: process.env.IMBUE_ENDPOINT ?? endpoints.imbue,
+      db: process.env.DB_PATH,
+      ...options,
+    }),
+  turing: (options?: Partial<SetupOption>) =>
+    setupContext({
+      wasmOverride: process.env.TURING_WASM,
+      blockNumber: toNumber(process.env.TURING_BLOCK_NUMBER),
+      endpoint: process.env.TURING_ENDPOINT ?? endpoints.turing,
       db: process.env.DB_PATH,
       ...options,
     }),
