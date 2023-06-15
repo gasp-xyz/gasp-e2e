@@ -10,7 +10,8 @@ import { AddressOrPair, SubmittableExtrinsic } from "@polkadot/api/types";
 import { KeyringPair } from "@polkadot/keyring/types";
 import { StorageKey } from "@polkadot/types";
 import { AccountData, AccountId32 } from "@polkadot/types/interfaces";
-import { AnyJson, AnyTuple, Codec } from "@polkadot/types/types";
+import { AnyJson, Codec } from "@polkadot/types/types";
+import { u32 } from "@polkadot/types-codec";
 import { BN } from "@polkadot/util";
 import { env } from "process";
 import { getApi, getMangataInstance } from "./api";
@@ -176,11 +177,11 @@ export async function calculate_sell_price_rpc(
     return new BN(result.price);
   } else {
     const mangata = await getMangataInstance();
-    const result = await mangata.calculateSellPrice(
-      input_reserve,
-      output_reserve,
-      sell_amount
-    );
+    const result = await mangata.rpc.calculateSellPrice({
+      amount: sell_amount,
+      inputReserve: input_reserve,
+      outputReserve: output_reserve,
+    });
     return result;
   }
 }
@@ -870,7 +871,9 @@ export async function calculateTxCost(
   const queryInfoResult = await api.rpc.payment.queryInfo(transactionExtrinsic);
   return queryInfoResult.toHuman();
 }
-export async function getAllAcountEntries(): Promise<any> {
+export async function getAllAcountEntries(): Promise<
+  [StorageKey<[AccountId32, u32]>, Codec][]
+> {
   const api = getApi();
   return await api.query.tokens.accounts.entries();
 }
