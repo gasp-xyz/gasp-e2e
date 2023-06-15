@@ -25,6 +25,7 @@ const BTN_INSTALL_POLK = "extensionPolkadot-extensionNotFound-installBtn";
 const DOT_META_OK = "connect-metamaskGreenDot";
 const BTN_META_DEPOSIT = "bridge-showDepositModalBtn";
 const BTN_META_WITHDRAW = "bridge-showWithdrawModalBtn";
+const BTN_WITHDRAW = "bridge-showWithdrawModalBtn";
 
 const DOT_POLK_OK = "connect-polkadotGreenDot";
 const DIV_FAUCET_READY = "faucet-isReady-header";
@@ -60,6 +61,11 @@ export class Sidebar {
       .findElement(By.xpath(walletConnectedXpath))
       ?.getText();
     return accountName === actualAccount;
+  }
+
+  async waitForWalletConnected() {
+    const walletConnectedXpath = buildDataTestIdXpath(DIV_WALLET_CONNECTED);
+    await waitForElement(this.driver, walletConnectedXpath);
   }
 
   async clickOnWalletConnect() {
@@ -146,6 +152,10 @@ export class Sidebar {
   }
   async clickOnDepositToMangata() {
     const locator = buildDataTestIdXpath(BTN_META_DEPOSIT);
+    await clickElement(this.driver, locator);
+  }
+  async clickOnWithdraw() {
+    const locator = buildDataTestIdXpath(BTN_WITHDRAW);
     await clickElement(this.driver, locator);
   }
   async clickOnWithdrawToEth() {
@@ -238,9 +248,17 @@ export class Sidebar {
     return `poolsOverview-item-${asseName1}-${assetName2}`;
   }
   async isLiquidityPoolVisible(asset1Name: string, asset2Name: string) {
-    return await this.isDisplayed(
-      buildDataTestIdXpath(this.buildPoolDataTestId(asset1Name, asset2Name))
+    const poolXpath = buildDataTestIdXpath(
+      this.buildPoolDataTestId(asset1Name, asset2Name)
     );
+    return await this.isDisplayed(poolXpath);
+  }
+
+  async waitForLiquidityPoolToLoad(asset1Name: string, asset2Name: string) {
+    const poolXpath = buildDataTestIdXpath(
+      this.buildPoolDataTestId(asset1Name, asset2Name)
+    );
+    await waitForElement(this.driver, poolXpath);
   }
 
   async isPoolDetailVisible() {

@@ -2,16 +2,15 @@ import { ApiPromise, Keyring } from "@polkadot/api";
 import { getEnvironmentRequiredVars } from "./utils";
 import { User } from "./User";
 import "@mangata-finance/types";
-import { SubmittableExtrinsic } from "@polkadot/api/types";
 import { getApi, initApi } from "./api";
 import { Sudo } from "./sudo";
 import { Assets } from "./Assets";
-import { BN } from "@mangata-finance/sdk";
 import { Xyk } from "./xyk";
-import { signTx } from "@mangata-finance/sdk";
 import { SudoDB } from "./SudoDB";
 import { Codec } from "@polkadot/types-codec/types";
-
+import { signTx } from "@mangata-finance/sdk";
+import { BN } from "@polkadot/util";
+import { SubmittableExtrinsic } from "@polkadot/api/types";
 // API
 export let api: ApiPromise;
 
@@ -19,6 +18,7 @@ export let api: ApiPromise;
 export let keyring: Keyring;
 export let sudo: User;
 export let alice: User;
+export let eve: User;
 
 export type Extrinsic = SubmittableExtrinsic<"promise">;
 
@@ -46,19 +46,25 @@ export const setupUsers = () => {
   const { sudo: sudoUserName } = getEnvironmentRequiredVars();
   sudo = new User(keyring, sudoUserName);
   alice = new User(keyring, "//Alice");
+  eve = new User(keyring, "//Eve");
   const testUser1 = new User(keyring);
   const testUser2 = new User(keyring);
   const testUser3 = new User(keyring);
   const testUser4 = new User(keyring);
+  const testUser5 = new User(keyring);
+  const testUser6 = new User(keyring);
 
   keyring.addPair(sudo.keyRingPair);
   keyring.addPair(alice.keyRingPair);
+  keyring.addPair(eve.keyRingPair);
   keyring.addPair(testUser1.keyRingPair);
   keyring.addPair(testUser2.keyRingPair);
   keyring.addPair(testUser3.keyRingPair);
   keyring.addPair(testUser4.keyRingPair);
+  keyring.addPair(testUser5.keyRingPair);
+  keyring.addPair(testUser6.keyRingPair);
 
-  return [testUser1, testUser2, testUser3, testUser4];
+  return [testUser1, testUser2, testUser3, testUser4, testUser5, testUser6];
 };
 
 export const devTestingPairs = (ss58Format?: number) => {
@@ -165,22 +171,16 @@ export const setupGasLess = async (force = false) => {
   );
   // only create if empty.
   if (feeLockConfig === null || feeLockConfig.periodLength === null || force) {
-    await signTx(
-      api!,
-      api!.tx.sudo.sudo(
-        api!.tx.feeLock.updateFeeLockMetadata(
-          10,
-          "50000000000000000000",
-          "1000000000000000000000",
-          [[1, false]]
-        )
-      ),
-      sudo.keyRingPair,
-      {
-        nonce: await SudoDB.getInstance().getSudoNonce(
-          sudo.keyRingPair.address
-        ),
-      }
-    );
+    const extrinsic = api!.tx.feeLock
+      .updateFeeLockMetadata(
+        10,
+        "50000000000000000000",
+        "1000000000000000000000",
+        [[1, false]]
+      )
+      .toString();
+    await signTx(api!, api!.tx.sudo.sudo(extrinsic), sudo.keyRingPair, {
+      nonce: await SudoDB.getInstance().getSudoNonce(sudo.keyRingPair.address),
+    });
   }
 };

@@ -10,7 +10,7 @@ import { ApiPromise, WsProvider } from "@polkadot/api";
 import { mnemonicToMiniSecret } from "@polkadot/util-crypto";
 import { u8aToHex } from "@polkadot/util";
 
-require("dotenv").config();
+import "dotenv/config";
 
 jest.spyOn(console, "log").mockImplementation(jest.fn());
 
@@ -49,8 +49,8 @@ describe("staking - testpad", () => {
     } catch (e) {
       await initApi();
     }
-    const mga = Mangata.getInstance([getEnvironmentRequiredVars().chainUri]);
-    const api = await mga.getApi();
+    const mga = Mangata.instance([getEnvironmentRequiredVars().chainUri]);
+    const api = await mga.api();
     keyring = new Keyring({ type: "sr25519" });
     const user = new User(keyring, "//Alice");
     keyring.addPair(user.keyRingPair);
@@ -65,7 +65,7 @@ describe("staking - testpad", () => {
     } catch (e) {
       await initApi();
     }
-    const mga = Mangata.getInstance([getEnvironmentRequiredVars().chainUri]);
+    const mga = Mangata.instance([getEnvironmentRequiredVars().chainUri]);
     const api = await mga.getApi();
     keyring = new Keyring({ type: "sr25519" });
     const user = new User(keyring, "//Alice");
@@ -107,7 +107,7 @@ describe("staking - testpad", () => {
     } catch (e) {
       await initApi();
     }
-    const mga = Mangata.getInstance([getEnvironmentRequiredVars().chainUri]);
+    const mga = Mangata.instance([getEnvironmentRequiredVars().chainUri]);
     const api = await mga.getApi();
     keyring = new Keyring({ type: "sr25519" });
     const user = new User(keyring, "//Alice");

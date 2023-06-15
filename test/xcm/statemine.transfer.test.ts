@@ -52,7 +52,7 @@ describe("XCM tests for Mangata <-> Statemine", () => {
     });
     await statemine.dev.setStorage({
       System: {
-        Account: [[[alice.address], { data: { free: 10e12 } }]],
+        Account: [[[alice.address], { providers: 1, data: { free: 10e12 } }]],
       },
       Assets: {
         Account: [[[1984, alice.address], { balance: 1000e6 }]],

@@ -1,3 +1,4 @@
+import "chromedriver";
 import { Key, logging, WebDriver } from "selenium-webdriver";
 import { sleep } from "../../utils";
 import { Mangata } from "../pages/Mangata";
@@ -7,10 +8,9 @@ import { testLog } from "../../Logger";
 import { BN } from "@polkadot/util";
 import { Talisman } from "../pages/Talisman";
 
-const { By, until } = require("selenium-webdriver");
+import { By, until } from "selenium-webdriver";
 
 const timeOut = 60000;
-require("chromedriver");
 const outputPath = `reports/artifacts`;
 export async function waitForElement(
   driver: WebDriver,
@@ -254,16 +254,21 @@ export async function acceptPermissionsTalismanExtensionInNewWindow(
 }
 
 export async function leaveOnlyOneTab(driver: WebDriver) {
-  const handles = await (await driver).getAllWindowHandles();
-  for (let index = 1; index < handles.length; index++) {
-    await (await driver).close();
-    await (await driver).switchTo().window(handles[0]);
+  const handles = await driver.getAllWindowHandles();
+  if (handles.length <= 1) {
+    return;
   }
+  for (let index = 1; index < handles.length; index++) {
+    const handle = handles[index];
+    await driver.switchTo().window(handle);
+    await driver.close();
+  }
+  await driver.switchTo().window(handles[0]);
 }
 
 export async function isDisplayed(driver: WebDriver, elementXpath: string) {
   try {
-    await waitForElement(driver, elementXpath, 2000);
+    await waitForElement(driver, elementXpath, 4000);
     const displayed = await (
       await driver.findElement(By.xpath(elementXpath))
     ).isDisplayed();
@@ -327,6 +332,14 @@ export function buildDataTestIdSelector(dataTestId: string) {
 
 export function buildDataTestIdXpath(dataTestId: string) {
   const xpathSelector = `//*[@data-testid='${dataTestId}']`;
+  return xpathSelector;
+}
+
+export function buildDataTestIdXpathFunction(
+  dataTestId: string,
+  xpathFunction: string
+) {
+  const xpathSelector = `//*[@data-testid[${xpathFunction}(., '${dataTestId}')]]`;
   return xpathSelector;
 }
 

@@ -21,6 +21,12 @@ export async function getCurrentNonce(account?: string) {
   }
   return -1;
 }
+export async function getCandidates() {
+  const api = getApi();
+  const candidates = (await api.query.parachainStaking.selectedCandidates())
+    .length;
+  return candidates;
+}
 
 export async function getBalanceOfAsset(assetId: BN, account: any) {
   const api = getApi();

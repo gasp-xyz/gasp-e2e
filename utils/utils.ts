@@ -6,9 +6,9 @@ import { Assets } from "./Assets";
 import { User } from "./User";
 import { getAccountJSON } from "./frontend/utils/Helper";
 import { waitNewBlock } from "./eventListeners";
-import { testLog } from "./Logger";
+import { logEvent, testLog } from "./Logger";
 import { AnyNumber } from "@polkadot/types/types";
-import { Keyring, ApiPromise } from "@polkadot/api";
+import { ApiPromise } from "@polkadot/api";
 import { KeyringPair } from "@polkadot/keyring/types";
 import { getStakingLiquidityTokens, sellAsset } from "./tx";
 import { Sudo } from "./sudo";
@@ -16,6 +16,8 @@ import { setupApi, setupUsers } from "./setup";
 import { Xyk } from "./xyk";
 import { MGA_ASSET_ID } from "./Constants";
 import { BN_HUNDRED, BN_ONE } from "@mangata-finance/sdk";
+import _ from "lodash";
+import Keyring from "@polkadot/keyring";
 
 export function sleep(ms: number) {
   return new Promise((resolve) => {
@@ -173,13 +175,13 @@ export async function UserCreatesAPoolAndMintLiquidity(
   await testUser1.addMGATokens(sudo);
   await (
     await getMangataInstance()
-  ).createPool(
-    testUser1.keyRingPair,
-    firstCurrency.toString(),
-    poolAmount,
-    secondCurrency.toString(),
-    poolAmount
-  );
+  ).xyk.createPool({
+    account: testUser1.keyRingPair,
+    firstTokenAmount: poolAmount,
+    firstTokenId: firstCurrency.toString(),
+    secondTokenId: secondCurrency.toString(),
+    secondTokenAmount: poolAmount,
+  });
 
   await testUser1.mintLiquidity(firstCurrency, secondCurrency, mintAmount);
   return [firstCurrency, secondCurrency];
@@ -324,8 +326,72 @@ export async function waitNewStakingRound(maxBlocks: number = 0) {
   }
 }
 
+export async function waitUntilCollatorProducesBlocks(
+  maxBlocks: number = 0,
+  userAddress: string
+) {
+  let currentBlockNumber = await getBlockNumber();
+  const initialBlockNumber = currentBlockNumber;
+  const awaitedBlockNumber = initialBlockNumber + maxBlocks;
+  let found = false;
+  while (awaitedBlockNumber > currentBlockNumber && !found) {
+    currentBlockNumber = await getBlockNumber();
+    const api = await mangata?.api()!;
+    const blockHashSignedByUser = await api.rpc.chain.getBlockHash(
+      currentBlockNumber
+    );
+    const header = await api.derive.chain.getHeader(blockHashSignedByUser);
+    const author = header!.author!.toHuman();
+
+    testLog
+      .getLog()
+      .info("Waiting for : " + userAddress + ", to produce a block: " + author);
+    await waitNewBlock();
+    found = author === userAddress;
+  }
+}
+export async function waitUntilUserCollatorRewarded(
+  user: User,
+  maxBlocks = 100,
+  distributeRewardsEvent = "parachainStaking.Rewarded"
+) {
+  return new Promise(async (resolve, reject) => {
+    const method = distributeRewardsEvent;
+    const api = await getApi();
+    const unsub = await api.rpc.chain.subscribeFinalizedHeads(async (head) => {
+      const events = await (await api.at(head.hash)).query.system.events();
+      maxBlocks--;
+      testLog
+        .getLog()
+        .info(
+          `→ find on ${api.runtimeChain} for '${method}' event, attempt ${maxBlocks}, head ${head.hash}`
+        );
+      events.forEach((e) => logEvent(api.runtimeChain, e));
+
+      const filtered = _.filter(
+        events,
+        ({ event }) => `${event.section}.${event.method}` === method
+      );
+      if (filtered.length > 0) {
+        const destUser = filtered.filter((e) =>
+          JSON.parse(JSON.stringify(e.toHuman())).event.data.includes(
+            user.keyRingPair.address
+          )
+        );
+        if (destUser.length > 0) {
+          resolve(destUser);
+          unsub();
+        }
+      }
+      if (maxBlocks < 0) {
+        reject(`method ${method} not found within blocks limit`);
+      }
+    });
+  });
+}
+
 export async function getTokensDiffForBlockAuthor(blockNumber: AnyNumber) {
-  const api = await mangata?.getApi()!;
+  const api = await mangata?.api()!;
   const blockHashSignedByUser = await api.rpc.chain.getBlockHash(blockNumber);
   const header = await api.derive.chain.getHeader(blockHashSignedByUser);
   const author = header!.author!.toHuman();
@@ -357,24 +423,38 @@ export async function getUserBalanceOfToken(tokenId: BN, account: User) {
 }
 
 export async function getBlockNumber(): Promise<number> {
-  const api = await mangata?.getApi()!;
+  const api = await mangata?.api()!;
   return ((await api.query.system.number()) as any).toNumber();
 }
 export async function getMultiPurposeLiquidityStatus(
   address: string,
   tokenId: BN
 ) {
-  const api = await mangata?.getApi()!;
+  const api = await mangata?.api()!;
   return (await api.query.multiPurposeLiquidity.reserveStatus(
     address,
     tokenId
   )) as any;
 }
+export async function getMultiPurposeLiquidityReLockStatus(
+  address: string,
+  tokenId: BN
+) {
+  const api = await mangata?.api()!;
+  return (await api.query.multiPurposeLiquidity.relockStatus(
+    address,
+    tokenId
+  )) as any;
+}
+export async function getVestingStatus(address: string, tokenId: BN) {
+  const api = await mangata?.api()!;
+  return (await api.query.vesting.vesting(address, tokenId)) as any;
+}
 export async function findBlockWithExtrinsicSigned(
   blocks = [0, 1],
   userAddress: string
 ) {
-  const api = await mangata?.getApi()!;
+  const api = await mangata?.api()!;
   if (blocks.length < 2) {
     throw new Error("two blocks are required.");
   }
@@ -456,6 +536,7 @@ export async function findErrorMetadata(errorStr: string, index: string) {
   });
   // eslint-disable-next-line no-console
   console.info(err);
+  return err;
 }
 export async function printCandidatePowers() {
   await initApi();

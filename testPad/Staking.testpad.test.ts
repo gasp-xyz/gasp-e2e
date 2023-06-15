@@ -14,10 +14,10 @@ import {
 import fs from "fs";
 import { Assets } from "../utils/Assets";
 import { hexToBn } from "@polkadot/util";
-import { signTx } from "@mangata-finance/sdk";
+import { Mangata, signTx } from "@mangata-finance/sdk";
 import { FeeTxs } from "../utils/tx";
 
-require("dotenv").config();
+import "dotenv/config";
 
 jest.spyOn(console, "log").mockImplementation(jest.fn());
 const { sudo: sudoUserName } = getEnvironmentRequiredVars();
@@ -153,8 +153,8 @@ describe("staking - testpad", () => {
     } catch (e) {
       await initApi();
     }
-    const mga = Mangata.getInstance([getEnvironmentRequiredVars().chainUri]);
-    const api = await mga.getApi();
+    const mga = Mangata.instance([getEnvironmentRequiredVars().chainUri]);
+    const api = await mga.api();
     keyring = new Keyring({ type: "sr25519" });
     const user = new User(keyring, "//Bob");
     keyring.addPair(user.keyRingPair);
@@ -171,7 +171,7 @@ describe("staking - testpad", () => {
     } catch (e) {
       await initApi();
     }
-    const mga = Mangata.getInstance([getEnvironmentRequiredVars().chainUri]);
+    const mga = Mangata.instance([getEnvironmentRequiredVars().chainUri]);
     const api = await mga.getApi();
     keyring = new Keyring({ type: "sr25519" });
     const user = new User(keyring, "//Bob");
@@ -189,7 +189,7 @@ describe("staking - testpad", () => {
     } catch (e) {
       await initApi();
     }
-    const mga = Mangata.getInstance([getEnvironmentRequiredVars().chainUri]);
+    const mga = Mangata.instance([getEnvironmentRequiredVars().chainUri]);
     const api = await mga.getApi();
     keyring = new Keyring({ type: "sr25519" });
     const user = new User(keyring, "//Bob");
@@ -207,7 +207,7 @@ describe("staking - testpad", () => {
     } catch (e) {
       await initApi();
     }
-    const mga = Mangata.getInstance([getEnvironmentRequiredVars().chainUri]);
+    const mga = Mangata.instance([getEnvironmentRequiredVars().chainUri]);
     const api = await mga.getApi();
     keyring = new Keyring({ type: "sr25519" });
     const user = new User(keyring, "//Bob");
@@ -232,7 +232,7 @@ describe("staking - testpad", () => {
     } catch (e) {
       await initApi();
     }
-    const mga = Mangata.getInstance([getEnvironmentRequiredVars().chainUri]);
+    const mga = Mangata.instance([getEnvironmentRequiredVars().chainUri]);
     const api = await mga.getApi();
     keyring = new Keyring({ type: "sr25519" });
     const user = new User(keyring, "//Bob");
@@ -251,7 +251,7 @@ describe("staking - testpad", () => {
     } catch (e) {
       await initApi();
     }
-    const mga = Mangata.getInstance([getEnvironmentRequiredVars().chainUri]);
+    const mga = Mangata.instance([getEnvironmentRequiredVars().chainUri]);
     const api = await mga.getApi();
     keyring = new Keyring({ type: "sr25519" });
     const user = new User(keyring, "//Bob");

@@ -4,7 +4,8 @@
  * @group api
  * @group parallel
  */
-import { getApi, getMangataInstance, initApi } from "../../utils/api";
+import { jest } from "@jest/globals";
+import { getApi, initApi } from "../../utils/api";
 import {
   getBalanceOfPool,
   mintLiquidity,
@@ -24,6 +25,7 @@ import {
   getEnvironmentRequiredVars,
 } from "../../utils/utils";
 import { getEventResultFromMangataTx } from "../../utils/txHandler";
+import { createPool } from "../../utils/tx";
 
 jest.spyOn(console, "log").mockImplementation(jest.fn());
 jest.setTimeout(1500000);
@@ -79,13 +81,11 @@ describe("xyk-pallet - Mint liquidity tests: with minting you can", () => {
     );
     await testUser1.addMGATokens(sudo);
     const amounttoThePool = new BN(1);
-    await (
-      await getMangataInstance()
-    ).createPool(
+    await createPool(
       testUser1.keyRingPair,
-      firstCurrency.toString(),
+      firstCurrency,
       amounttoThePool,
-      secondCurrency.toString(),
+      secondCurrency,
       amounttoThePool
     );
     const liquidityAssetId = await getLiquidityAssetId(
@@ -157,13 +157,11 @@ describe("xyk-pallet - Mint liquidity tests: with minting you can", () => {
     );
     await testUser1.addMGATokens(sudo);
     const amounttoThePool = new BN(defaultCurrencyValue).div(new BN(2));
-    await (
-      await getMangataInstance()
-    ).createPool(
+    await createPool(
       testUser1.keyRingPair,
-      firstCurrency.toString(),
+      firstCurrency,
       amounttoThePool,
-      secondCurrency.toString(),
+      secondCurrency,
       amounttoThePool
     );
 

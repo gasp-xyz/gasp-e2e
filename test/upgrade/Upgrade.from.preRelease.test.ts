@@ -2,19 +2,19 @@
  *
  * @group upgradeRuntime
  */
-
+import { jest } from "@jest/globals";
 import { Keyring } from "@polkadot/api";
-import { bufferToU8a } from "@polkadot/util";
+import { bufferToU8a, BN } from "@polkadot/util";
 import { api, getApi, initApi } from "../../utils/api";
 import { User } from "../../utils/User";
 import { getEnvironmentRequiredVars, waitForNBlocks } from "../../utils/utils";
 import fs from "fs";
-import { BN, signTx } from "@mangata-finance/sdk";
+import { signTx } from "@mangata-finance/sdk";
 import { testLog } from "../../utils/Logger";
 import { downloadRelease } from "@terascope/fetch-github-release";
 import { transferAsset } from "../../utils/tx";
 
-require("dotenv").config();
+import "dotenv/config";
 
 jest.spyOn(console, "log").mockImplementation(jest.fn());
 const { sudo: sudoUserName } = getEnvironmentRequiredVars();
@@ -89,7 +89,10 @@ describe("upgrade - testpad", () => {
     const hexHash = api!.registry.hash(bufferToU8a(wasmContent)).toHex();
     await signTx(
       api!,
-      api!.tx.sudo.sudo(api!.tx.parachainSystem.authorizeUpgrade(hexHash)),
+      api!.tx.sudo.sudo(
+        //@ts-ignore
+        api!.tx.parachainSystem.authorizeUpgrade(hexHash, false)
+      ),
       sudo.keyRingPair
     );
     await signTx(

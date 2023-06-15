@@ -6,7 +6,7 @@ import {
 import { StorageValues } from "@acala-network/chopsticks/lib/utils/set-storage";
 import { ApiPromise, WsProvider } from "@polkadot/api";
 import { HexString } from "@polkadot/util/types";
-import getPort from "get-port-please";
+import { getPort } from "get-port-please";
 
 export type SetupOption = {
   endpoint: string;
@@ -48,7 +48,7 @@ export const setupContext = async ({
   rpc,
 }: SetupOption): Promise<ApiContext> => {
   // random port
-  const port = localPort ? localPort : await getPort.getPort();
+  const port = localPort ? localPort : await getPort();
   const config = {
     endpoint,
     port,

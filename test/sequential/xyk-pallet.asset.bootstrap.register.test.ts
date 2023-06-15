@@ -5,6 +5,7 @@
  * @group rewards-bootstrap
  * @group sequential
  */
+import { jest } from "@jest/globals";
 import { getApi } from "../../utils/api";
 import { getEnvironmentRequiredVars } from "../../utils/utils";
 import { User } from "../../utils/User";
@@ -114,7 +115,7 @@ test("register asset and then try to register new one with the same location, ex
     tempAssetId,
     tempAssetId,
     {
-      V1: {
+      V2: {
         parents: 1,
         interior: {
           X3: [

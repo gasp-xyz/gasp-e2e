@@ -6,7 +6,7 @@ import {
   waitForElement,
   writeText,
 } from "../utils/Helper";
-const { By } = require("selenium-webdriver");
+import { By } from "selenium-webdriver";
 
 //xpaths
 const XPATH_NEXT = "//*[text()='Next']";

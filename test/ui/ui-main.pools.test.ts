@@ -2,6 +2,7 @@
  *
  * @group uiMain
  */
+import { jest } from "@jest/globals";
 import { Mangata } from "../../utils/frontend/pages/Mangata";
 import { Keyring } from "@polkadot/api";
 import { BN } from "@polkadot/util";
@@ -31,7 +32,7 @@ import { Node } from "../../utils/Framework/Node/Node";
 import { connectPolkadotWallet } from "../../utils/frontend/utils/Handlers";
 import { Pool } from "../../utils/frontend/pages/Pool";
 
-require("dotenv").config();
+import "dotenv/config";
 
 jest.retryTimes(1);
 jest.spyOn(console, "log").mockImplementation(jest.fn());
@@ -87,12 +88,13 @@ describe("UI tests - pools, provide liquidity", () => {
     const mga = new Mangata(driver);
     await mga.go();
     const sidebar = new Sidebar(driver);
+    await sidebar.waitForLoad();
     const noWalletConnectedInfoDisplayed =
       await sidebar.isNoWalletConnectedInfoDisplayed();
     expect(noWalletConnectedInfoDisplayed).toBeTruthy();
 
     await connectPolkadotWallet(driver, sidebar, mga);
-    const isWalletConnected = sidebar.isWalletConnected("acc_automation");
+    const isWalletConnected = await sidebar.isWalletConnected("acc_automation");
     expect(isWalletConnected).toBeTruthy();
 
     const poolView = new Pool(driver);

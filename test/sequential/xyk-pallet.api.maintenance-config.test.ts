@@ -2,12 +2,14 @@
  *
  * @group maintenance
  */
+import { jest } from "@jest/globals";
 import { hexToU8a } from "@polkadot/util";
 import { Keyring } from "@polkadot/api";
 import { getApi, initApi } from "../../utils/api";
 import { Assets } from "../../utils/Assets";
 import { FOUNDATION_ADDRESS_1, MGA_ASSET_ID } from "../../utils/Constants";
-import { BN, MangataGenericEvent, signTx } from "@mangata-finance/sdk";
+import { MangataGenericEvent, signTx } from "@mangata-finance/sdk";
+import { BN } from "@polkadot/util";
 import { setupApi, setupUsers } from "../../utils/setup";
 import { Sudo } from "../../utils/sudo";
 import { AssetWallet, User } from "../../utils/User";
@@ -279,7 +281,10 @@ test("maintenance- validate that when UpgradabilityON, Sudo or council can only 
 
   const authorizeUpgradeBefore = await signTx(
     api!,
-    api!.tx.sudo.sudo(api!.tx.parachainSystem.authorizeUpgrade(hash)),
+    api!.tx.sudo.sudo(
+      //@ts-ignore
+      api!.tx.parachainSystem.authorizeUpgrade(hash, false)
+    ),
     sudo.keyRingPair,
     {
       nonce: await getCurrentNonce(sudo.keyRingPair.address),
@@ -299,7 +304,8 @@ test("maintenance- validate that when UpgradabilityON, Sudo or council can only 
 
   const authorizeUpgradeAfter = await signTx(
     api!,
-    api!.tx.sudo.sudo(api!.tx.parachainSystem.authorizeUpgrade(hash)),
+    //@ts-ignore
+    api!.tx.sudo.sudo(api!.tx.parachainSystem.authorizeUpgrade(hash, false)),
     sudo.keyRingPair,
     {
       nonce: await getCurrentNonce(sudo.keyRingPair.address),

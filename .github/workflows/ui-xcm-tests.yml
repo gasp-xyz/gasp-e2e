@@ -28,7 +28,7 @@ jobs:
     strategy:
       fail-fast: false
       matrix:
-        command: ['uiXcmKSM', 'uiXcmIMBUrococo', 'uiXcmBNC']
+        command: ['uiXcmKSM', 'uiXcmIMBUrococo', 'uiXcmBNC', 'uiXcmWithdrawBNC', 'uiXcmWithdrawKSM']
     runs-on: ubuntu-latest
     timeout-minutes: 30
     env:
@@ -46,7 +46,7 @@ jobs:
 
       - uses: actions/setup-node@v3
         with:
-          node-version: '16'
+          node-version: '18'
           cache: 'yarn'
           cache-dependency-path: '**/yarn.lock'
       

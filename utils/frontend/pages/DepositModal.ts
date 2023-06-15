@@ -48,7 +48,7 @@ export class DepositModal {
   async getTokenAmount(assetName: string) {
     const assetTestId = `token-list-token-${assetName}-balance`;
     const assetLocator = buildDataTestIdXpath(assetTestId);
-    return parseInt(await getText(this.driver, assetLocator));
+    return parseFloat(await getText(this.driver, assetLocator));
   }
 
   async areTokenListElementsVisible(assetName: string) {

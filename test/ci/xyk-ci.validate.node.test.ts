@@ -4,6 +4,7 @@
  * @group temp-ci
  * @group ci
  */
+import { jest } from "@jest/globals";
 import { getApi, initApi } from "../../utils/api";
 import { testLog } from "../../utils/Logger";
 import { Header } from "@polkadot/types/interfaces/runtime";

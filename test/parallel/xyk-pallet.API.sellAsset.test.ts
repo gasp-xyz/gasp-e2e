@@ -4,7 +4,8 @@
  * @group api
  * @group parallel
  */
-import { getApi, getMangataInstance, initApi } from "../../utils/api";
+import { jest } from "@jest/globals";
+import { getApi, initApi } from "../../utils/api";
 import {
   getBalanceOfPool,
   sellAsset,
@@ -24,6 +25,7 @@ import {
 import { Assets } from "../../utils/Assets";
 import { getEnvironmentRequiredVars, xykErrors } from "../../utils/utils";
 import { getEventResultFromMangataTx } from "../../utils/txHandler";
+import { createPool } from "../../utils/tx";
 
 jest.spyOn(console, "log").mockImplementation(jest.fn());
 jest.setTimeout(1500000);
@@ -124,13 +126,11 @@ describe("xyk-pallet - Sell assets tests: SellAsset Errors:", () => {
     );
     await testUser1.addMGATokens(sudo);
     await testUser1.refreshAmounts(AssetWallet.BEFORE);
-    await (
-      await getMangataInstance()
-    ).createPool(
+    await createPool(
       testUser1.keyRingPair,
-      firstCurrency.toString(),
+      firstCurrency,
       first_asset_amount,
-      secondCurrency.toString(),
+      secondCurrency,
       second_asset_amount.div(new BN(2))
     );
 
@@ -228,13 +228,11 @@ describe("xyk-pallet - Sell assets tests: SellAsset Errors:", () => {
     );
     await testUser1.addMGATokens(sudo);
     const secondAssetAmount = second_asset_amount.div(new BN(2));
-    await (
-      await getMangataInstance()
-    ).createPool(
+    await createPool(
       testUser1.keyRingPair,
-      firstCurrency.toString(),
+      firstCurrency,
       first_asset_amount,
-      secondCurrency.toString(),
+      secondCurrency,
       secondAssetAmount
     );
     await testUser1.refreshAmounts(AssetWallet.BEFORE);
@@ -327,13 +325,11 @@ describe("xyk-pallet - Sell assets tests: Selling Assets you can", () => {
       sudo
     );
     await testUser1.addMGATokens(sudo);
-    await (
-      await getMangataInstance()
-    ).createPool(
+    await createPool(
       testUser1.keyRingPair,
-      firstCurrency.toString(),
+      firstCurrency,
       first_asset_amount,
-      secondCurrency.toString(),
+      secondCurrency,
       second_asset_amount.div(new BN(2))
     );
 
@@ -404,23 +400,19 @@ describe("xyk-pallet - Sell assets tests: Selling Assets you can", () => {
 
     await sudo.mint(thirdCurrency, testUser1, new BN(10000));
     await testUser1.addMGATokens(sudo);
-    await (
-      await getMangataInstance()
-    ).createPool(
+    await createPool(
       testUser1.keyRingPair,
-      firstCurrency.toString(),
+      firstCurrency,
       first_asset_amount,
-      secondCurrency.toString(),
+      secondCurrency,
       second_asset_amount.div(new BN(2))
     );
 
-    await (
-      await getMangataInstance()
-    ).createPool(
+    await createPool(
       testUser1.keyRingPair,
-      firstCurrency.toString(),
+      firstCurrency,
       new BN(10000),
-      thirdCurrency.toString(),
+      thirdCurrency,
       new BN(10000).div(new BN(2))
     );
 

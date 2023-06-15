@@ -1,15 +1,20 @@
 import { WebDriver } from "selenium-webdriver";
+import { sleep } from "../../utils";
 import {
+  areDisplayed,
   buildDataTestIdXpath,
   clickElement,
   getText,
+  isDisplayed,
   selectAssetFromModalList,
+  waitForElementVisible,
   writeText,
 } from "../utils/Helper";
 import { Polkadot } from "./Polkadot";
 
 //SELECTORS
-const SELECT_TOKEN = "withdrawModal-step0-assetInput";
+const DIV_WRAPPER = "withdrawModal-step0";
+const SELECT_TOKEN = "withdrawModal-step0-tokenInput";
 const STEP_O_CONT = "withdrawModal-step0-continueBtn";
 const STEP_1_CONF = "withdrawModal-step1-confirmBtn";
 const BACK_BTN =
@@ -25,6 +30,36 @@ export class WithdrawModal {
   private btnSelectTokenLocator =
     buildDataTestIdXpath(SELECT_TOKEN) + "//button";
   private inputTokenLocator = buildDataTestIdXpath(SELECT_TOKEN) + "//input";
+
+  async isModalVisible() {
+    const wrapper = buildDataTestIdXpath(DIV_WRAPPER);
+    return isDisplayed(this.driver, wrapper);
+  }
+
+  async openTokensList() {
+    await clickElement(this.driver, this.btnSelectTokenLocator);
+  }
+
+  async getTokenAmount(assetName: string) {
+    const assetTestId = `token-list-token-${assetName}-balance`;
+    const assetLocator = buildDataTestIdXpath(assetTestId);
+    return parseInt(await getText(this.driver, assetLocator));
+  }
+
+  async areTokenListElementsVisible(assetName: string) {
+    await sleep(2000);
+    const assetTestId = `TokensModal-token-${assetName}`;
+    const assetLocator = buildDataTestIdXpath(assetTestId);
+    await waitForElementVisible(this.driver, assetLocator);
+    const assetAmountTestId = `token-list-token-${assetName}-balance`;
+    const assetAmountLocator = buildDataTestIdXpath(assetAmountTestId);
+    await waitForElementVisible(this.driver, assetAmountLocator, 60000);
+    const elementsDisplayed = await areDisplayed(this.driver, [
+      assetLocator,
+      assetAmountLocator,
+    ]);
+    return elementsDisplayed;
+  }
 
   async selectToken(assetName: string) {
     await clickElement(this.driver, this.btnSelectTokenLocator);
