@@ -57,6 +57,24 @@ export class Staking {
   static setCollatorCommission(perBill: BN): Extrinsic {
     return api.tx.parachainStaking.setCollatorCommission(perBill);
   }
+  static scheduleCandidateBondMore(
+    more: BN,
+    ExtendApprovedCollators = "AvailableBalance"
+  ) {
+    return api.tx.parachainStaking.scheduleCandidateBondMore(
+      more,
+      ExtendApprovedCollators
+    );
+  }
+  static executeBondRequest(
+    candidate: User,
+    ExtendApprovedCollators = "AvailableBalance"
+  ): Extrinsic {
+    return api.tx.parachainStaking.executeCandidateBondRequest(
+      candidate.keyRingPair.address,
+      ExtendApprovedCollators
+    );
+  }
   static removeStakingLiquidityToken(liqToken: BN): Extrinsic {
     return api.tx.parachainStaking.removeStakingLiquidityToken(
       {
