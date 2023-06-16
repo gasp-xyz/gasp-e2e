@@ -61,17 +61,35 @@ describe("Miocroapps UI smoke tests", () => {
     await connectWallet(driver, "Polkadot", acc_name);
   });
 
-  it("Swap details", async () => {
+  it("Swap is enabled with enough tokens", async () => {
     await setupPageWithState(driver, acc_name);
     const swap = new Swap(driver);
     const isSwapFrameDisplayed = await swap.isDisplayed();
     expect(isSwapFrameDisplayed).toBeTruthy();
     await swap.pickPayToken(MGR_ASSET_NAME);
     await swap.pickGetToken("ROC");
+    await swap.setPayTokenAmount("1000");
+    const getTokenAmount = await swap.fetchGetAssetAmount();
+    expect(parseFloat(getTokenAmount)).toBeGreaterThan(0);
+
+    await swap.waitForSwapButtonEnabled();
+    const isSwapEnabled = await swap.isSwapButtonEnabled();
+    expect(isSwapEnabled).toBeTruthy();
   });
 
-  it("Swap not enough", async () => {
+  it("Swap is disabled with not enough tokens", async () => {
     await setupPageWithState(driver, acc_name);
+    const swap = new Swap(driver);
+    const isSwapFrameDisplayed = await swap.isDisplayed();
+    expect(isSwapFrameDisplayed).toBeTruthy();
+    await swap.pickPayToken("ROC");
+    await swap.pickGetToken(MGR_ASSET_NAME);
+    await swap.setPayTokenAmount("1000");
+    const getTokenAmount = await swap.fetchGetAssetAmount();
+    expect(parseFloat(getTokenAmount)).toBeGreaterThan(0);
+
+    const isSwapEnabled = await swap.isSwapButtonEnabled();
+    expect(isSwapEnabled).toBeFalsy();
   });
 
   afterEach(async () => {
