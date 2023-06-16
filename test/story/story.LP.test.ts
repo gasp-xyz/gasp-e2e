@@ -2,7 +2,7 @@
  *
  * @group xyk
  * @group api
- * @group parallel
+ * @group parallel_1
  * @group story
  */
 import { jest } from "@jest/globals";

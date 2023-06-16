@@ -1,6 +1,6 @@
 /*
  *
- * @group parallel
+ * @group parallel_2
  */
 import { jest } from "@jest/globals";
 import { getApi, initApi } from "../../utils/api";

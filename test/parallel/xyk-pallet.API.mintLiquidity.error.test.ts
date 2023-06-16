@@ -2,7 +2,7 @@
  *
  * @group xyk
  * @group api
- * @group parallel
+ * @group parallel_3
  */
 import { jest } from "@jest/globals";
 import { api, getApi, initApi } from "../../utils/api";

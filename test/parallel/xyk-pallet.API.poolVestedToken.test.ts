@@ -3,7 +3,7 @@
  *
  * @group xyk
  * @group liquidity
- * @group parallel
+ * @group parallel_2
  */
 import { jest } from "@jest/globals";
 import { Keyring } from "@polkadot/api";
