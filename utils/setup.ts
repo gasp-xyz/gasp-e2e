@@ -39,6 +39,7 @@ export const setupApi = async () => {
     await initApi();
     api = getApi();
   }
+  return api;
 };
 
 export const setupUsers = () => {

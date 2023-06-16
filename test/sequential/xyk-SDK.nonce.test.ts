@@ -47,7 +47,10 @@ beforeAll(async () => {
   keyring = new Keyring({ type: "sr25519" });
   // setup users
   testUser = new User(keyring);
-  const node = new Node(getEnvironmentRequiredVars().chainUri);
+  const node = new Node(
+    getEnvironmentRequiredVars().chainUri,
+    await setupApi()
+  );
   await node.connect();
   sudo = new SudoUser(keyring, node);
 

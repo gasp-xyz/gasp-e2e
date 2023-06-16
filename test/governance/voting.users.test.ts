@@ -11,6 +11,7 @@ import { SudoUser } from "../../utils/Framework/User/SudoUser";
 import { UserFactory, Users } from "../../utils/Framework/User/UserFactory";
 import { cryptoWaitReady } from "@polkadot/util-crypto";
 import { getEnvironmentRequiredVars, waitForNBlocks } from "../../utils/utils";
+import { setupApi } from "../../utils/setup";
 
 const { chainUri: environmentUri } = getEnvironmentRequiredVars();
 
@@ -28,7 +29,7 @@ jest.setTimeout(1500000);
 beforeAll(async () => {
   await cryptoWaitReady(); // Wait for Polkadots WASM backend
 
-  bootnode = new Node(environmentUri);
+  bootnode = new Node(environmentUri, await setupApi());
   await bootnode.connect();
   await bootnode.subscribeToHead();
 

@@ -645,6 +645,6 @@ export async function getUserSubIdentity(user: User) {
 export function isRunningInChops() {
   return (
     process.env.CHOPSTICK_ENABLED &&
-    Boolean(process.env.CHOPSTICK_ENABLED) === true
+    process.env.CHOPSTICK_ENABLED.toLocaleLowerCase() === "true"
   );
 }

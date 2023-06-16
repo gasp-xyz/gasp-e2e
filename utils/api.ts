@@ -1,12 +1,17 @@
 import { ApiPromise } from "@polkadot/api";
 import { testLog } from "./Logger";
-import { getEnvironmentRequiredVars, getMangataApiUrlPort } from "./utils";
+import {
+  getEnvironmentRequiredVars,
+  getMangataApiUrlPort,
+  isRunningInChops,
+} from "./utils";
 import { Mangata, MangataInstance } from "@mangata-finance/sdk";
-import { getPort } from "get-port-please";
 import XcmNetworks from "./Framework/XcmNetworks";
 import { BuildBlockMode } from "@acala-network/chopsticks";
 import { ApiContext } from "./Framework/XcmHelper";
+import { SudoDB } from "./SudoDB";
 
+export let nodeUri: string;
 export let api: ApiPromise | null = null;
 export let mangata: MangataInstance | null = null;
 export let mangataChopstick: ApiContext | null = null;
@@ -23,9 +28,9 @@ export const initApi = async (uri = "") => {
     const { chainUri: envUri } = getEnvironmentRequiredVars();
     uri = envUri;
   }
-  if (process.env.CHOPSTICK_ENABLED) {
+  if (isRunningInChops()) {
     const mgaPort = getMangataApiUrlPort();
-    const chopstickPort = await getPort();
+    const chopstickPort = await SudoDB.getInstance().getPortFromIPC();
     mangataChopstick = await XcmNetworks.mangata({
       localPort: chopstickPort,
       buildBlockMode: BuildBlockMode.Instant,
@@ -36,6 +41,7 @@ export const initApi = async (uri = "") => {
   testLog.getLog().info(`TEST_INFO: Running test in ${uri}`);
   mangata = Mangata.instance([uri]);
   api = await mangata.api();
+  nodeUri = uri;
   return api;
 };
 

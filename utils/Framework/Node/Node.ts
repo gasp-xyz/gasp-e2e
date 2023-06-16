@@ -23,13 +23,14 @@ export class Node {
     Map<number, { free: BN; reserved: BN; miscFrozen: BN; feeFrozen: BN }>
   > = new Map();
   systemExtrinics: any[] = [];
-  constructor(wsPath: string) {
+  constructor(wsPath: string, api: ApiPromise | undefined = undefined) {
     this.name = uuid.v4();
     this.wsPath = wsPath;
+    this.api = api;
   }
 
   async connect(): Promise<void> {
-    this.api = await initApi(this.wsPath);
+    if (!this.api) this.api = await initApi(this.wsPath);
   }
 
   async subscribeToHead(): Promise<void> {

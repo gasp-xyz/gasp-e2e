@@ -1,3 +1,4 @@
+/* eslint-disable no-console */
 /*
  *
  * @group xyk
@@ -24,6 +25,7 @@ import { BN } from "@polkadot/util";
 import { hexToBn } from "@polkadot/util";
 import { Assets } from "../../utils/Assets";
 import { getApi } from "../../utils/api";
+import { setupApi } from "../../utils/setup";
 
 jest.spyOn(console, "log").mockImplementation(jest.fn());
 jest.setTimeout(1500000);
@@ -38,7 +40,10 @@ let liqTokensAmount: BN;
 describe("MPL: Delegator", () => {
   beforeEach(async () => {
     keyring = new Keyring({ type: "sr25519" });
-    const node = new Node(getEnvironmentRequiredVars().chainUri);
+    const node = new Node(
+      getEnvironmentRequiredVars().chainUri,
+      await setupApi()
+    );
     await node.connect();
     // setup users
     testUser1 = new User(keyring);
@@ -115,7 +120,10 @@ describe("MPL: Delegator", () => {
 describe("MPL: Collators", () => {
   beforeAll(async () => {
     keyring = new Keyring({ type: "sr25519" });
-    const node = new Node(getEnvironmentRequiredVars().chainUri);
+    const node = new Node(
+      getEnvironmentRequiredVars().chainUri,
+      await setupApi()
+    );
     await node.connect();
     const api = await getApi();
     const tokenAmount = new BN(
@@ -208,7 +216,10 @@ describe("MPL: Collators", () => {
 describe("MPL: Collators - Activated liq", () => {
   beforeAll(async () => {
     keyring = new Keyring({ type: "sr25519" });
-    const node = new Node(getEnvironmentRequiredVars().chainUri);
+    const node = new Node(
+      getEnvironmentRequiredVars().chainUri,
+      await setupApi()
+    );
     await node.connect();
     const api = await getApi();
     // setup users

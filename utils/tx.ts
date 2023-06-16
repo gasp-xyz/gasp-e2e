@@ -571,7 +571,7 @@ export const delegate = async (
   const delegatorIdx = JSON.parse(
     JSON.stringify(await api?.query.parachainStaking.delegatorState(collator))
   );
-  const delCount = delegatorIdx === null ? 0 : delegatorIdx.length;
+  const delCount = delegatorIdx === null ? 1 : delegatorIdx.length;
   const result = await signSendAndWaitToFinishTx(
     api?.tx.parachainStaking.delegate(
       collator,

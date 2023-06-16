@@ -77,6 +77,9 @@ export const waitNewBlock = () => {
   const api = getApi();
   let count = 0;
   return new Promise(async (resolve) => {
+    if (isRunningInChops()) {
+      await api.rpc("dev_newBlock", { count: 1 });
+    }
     const unsubscribe = await api.rpc.chain.subscribeNewHeads(
       async (header: any) => {
         if (isRunningInChops()) {
@@ -171,6 +174,9 @@ export const waitForRewards = async (
   new Promise(async (resolve) => {
     let numblocks = max;
     const unsub = await api.rpc.chain.subscribeNewHeads(async (header) => {
+      if (isRunningInChops()) {
+        await api.rpc("dev_newBlock", { count: 1 });
+      }
       numblocks--;
       const { chainUri } = getEnvironmentRequiredVars();
       const mangata = await getMangataInstance(chainUri);

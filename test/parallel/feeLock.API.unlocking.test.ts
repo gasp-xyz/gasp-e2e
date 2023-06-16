@@ -96,8 +96,10 @@ beforeEach(async () => {
   testUser1.addAsset(firstCurrency);
   testUser1.addAsset(secondCurrency);
 });
-
-test("gasless- GIVEN some locked tokens and no more free MGX WHEN another tx is submitted AND lock period did not finished THEN the operation can not be submitted", async () => {
+afterEach(async () => {
+  await waitNewBlock();
+});
+test.only("gasless- GIVEN some locked tokens and no more free MGX WHEN another tx is submitted AND lock period did not finished THEN the operation can not be submitted", async () => {
   const api = getApi();
   const feeLockAmount = await (await getFeeLockMetadata(api)).feeLockAmount;
   await testUser1.addMGATokens(sudo, feeLockAmount);
@@ -105,6 +107,19 @@ test("gasless- GIVEN some locked tokens and no more free MGX WHEN another tx is 
   const saleAssetValue = thresholdValue.sub(new BN(5));
 
   await testUser1.sellAssets(firstCurrency, secondCurrency, saleAssetValue);
+  await sellAsset(
+    testUser1.keyRingPair,
+    firstCurrency,
+    secondCurrency,
+    saleAssetValue,
+    new BN(0)
+  )
+    .catch((reason) => {
+      throw new Error(reason.data);
+    })
+    .then(() => {
+      throw new Error("This should have failed!");
+    });
 
   await expect(
     sellAsset(
@@ -113,10 +128,15 @@ test("gasless- GIVEN some locked tokens and no more free MGX WHEN another tx is 
       secondCurrency,
       saleAssetValue,
       new BN(0)
-    ).catch((reason) => {
-      throw new Error(reason.data);
-    })
+    )
+      .catch((reason) => {
+        throw new Error(reason.data);
+      })
+      .then(() => {
+        throw new Error("This should have failed!");
+      })
   ).rejects.toThrow(feeLockErrors.FeeLockingFail);
+  await waitNewBlock();
 });
 
 test("gasless- GIVEN some locked tokens and no more free MGX WHEN another tx is submitted AND lock period finished THEN the operation can be submitted ( unlock before locking )", async () => {

@@ -14,6 +14,7 @@ import { User } from "../../utils/User";
 import { signSendAndWaitToFinishTx } from "../../utils/txHandler";
 import { AcalaNode } from "../../utils/Framework/Node/AcalaNode";
 import { hexToBn } from "@polkadot/util";
+import { setupApi } from "../../utils/setup";
 
 const { chainUri, relyUri, acalaUri } = getEnvironmentRequiredVars();
 let mgaParachainNode: Node;
@@ -31,7 +32,7 @@ describe.skip("xToken -> Transfer -> rely to Parachain", () => {
   beforeAll(async () => {
     await cryptoWaitReady(); // Wait for Polkadots WASM backend
 
-    mgaParachainNode = new Node(chainUri);
+    mgaParachainNode = new Node(chainUri, await setupApi());
     relayNode = new RelyChainNode(relyUri);
     acalaParachainNode = new AcalaNode(acalaUri);
     await mgaParachainNode.connect();
@@ -116,7 +117,7 @@ describe.skip("xToken -> Transfer -> rely to Parachain", () => {
 describe.skip("xToken -> Transfer -> MGA <-> Acala", () => {
   beforeAll(async () => {
     await cryptoWaitReady(); // Wait for Polkadots WASM backend
-    mgaParachainNode = new Node(chainUri);
+    mgaParachainNode = new Node(chainUri, await setupApi());
     acalaParachainNode = new AcalaNode(acalaUri);
     relayNode = new RelyChainNode(relyUri);
     await acalaParachainNode.connect();
