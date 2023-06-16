@@ -58,6 +58,7 @@ export const setupContext = async ({
     db,
     "wasm-override": wasmOverride,
     "registered-types": { types: types },
+    "runtime-log-level": 5,
   };
   const { chain, listenPort, close } = await setupWithServer(config);
   const uri = `ws://localhost:${listenPort}`;
