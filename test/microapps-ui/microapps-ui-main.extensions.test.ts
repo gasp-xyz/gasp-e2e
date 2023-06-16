@@ -4,7 +4,6 @@
  */
 import { WebDriver } from "selenium-webdriver";
 import { getApi, initApi } from "../../utils/api";
-import { Mangata } from "../../utils/frontend/pages/Mangata";
 import { DriverBuilder } from "../../utils/frontend/utils/Driver";
 import {
   acceptPermissionsWalletExtensionInNewWindow,
@@ -37,12 +36,12 @@ describe("Wallets management", () => {
     "User can connect wallet %s",
     async (walletType) => {
       await setupWalletExtension(driver, walletType);
-      const mga = new Mangata(driver);
-      await mga.go();
-      const walletWrapper = new WalletWrapper(driver);
       const mainPage = new Main(driver);
+      await mainPage.go();
+      const walletWrapper = new WalletWrapper(driver);
       const appLoaded = await mainPage.isAppLoaded();
       expect(appLoaded).toBeTruthy();
+      await mainPage.skipBetaInfo();
 
       const isWalletButton =
         await walletWrapper.isWalletConnectButtonDisplayed();
