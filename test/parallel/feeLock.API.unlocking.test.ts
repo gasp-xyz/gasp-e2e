@@ -107,20 +107,6 @@ test.only("gasless- GIVEN some locked tokens and no more free MGX WHEN another t
   const saleAssetValue = thresholdValue.sub(new BN(5));
 
   await testUser1.sellAssets(firstCurrency, secondCurrency, saleAssetValue);
-  await sellAsset(
-    testUser1.keyRingPair,
-    firstCurrency,
-    secondCurrency,
-    saleAssetValue,
-    new BN(0)
-  )
-    .catch((reason) => {
-      throw new Error(reason.data);
-    })
-    .then(() => {
-      throw new Error("This should have failed!");
-    });
-
   await expect(
     sellAsset(
       testUser1.keyRingPair,
