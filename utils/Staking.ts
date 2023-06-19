@@ -66,11 +66,42 @@ export class Staking {
       ExtendApprovedCollators
     );
   }
+  static scheduleCandidateBondLess(less: BN) {
+    return api.tx.parachainStaking.scheduleCandidateBondLess(less);
+  }
+  static scheduleDelegatorBondMore(
+    candidate: User,
+    more: BN,
+    ExtendApprovedCollators = "AvailableBalance"
+  ) {
+    return api.tx.parachainStaking.scheduleDelegatorBondMore(
+      candidate.keyRingPair.address,
+      more,
+      ExtendApprovedCollators
+    );
+  }
+  static scheduleDelegatorBondLess(candidate: User, less: BN) {
+    return api.tx.parachainStaking.scheduleDelegatorBondLess(
+      candidate.keyRingPair.address,
+      less
+    );
+  }
   static executeBondRequest(
     candidate: User,
     ExtendApprovedCollators = "AvailableBalance"
   ): Extrinsic {
     return api.tx.parachainStaking.executeCandidateBondRequest(
+      candidate.keyRingPair.address,
+      ExtendApprovedCollators
+    );
+  }
+  static executeDelegationRequest(
+    delegator: User,
+    candidate: User,
+    ExtendApprovedCollators = "AvailableBalance"
+  ): Extrinsic {
+    return api.tx.parachainStaking.executeDelegationRequest(
+      delegator.keyRingPair.address,
       candidate.keyRingPair.address,
       ExtendApprovedCollators
     );
