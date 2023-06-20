@@ -21,6 +21,7 @@ import { Staking } from "../../utils/Staking";
 import { delegate, getLiquidityAssetId, joinCandidate } from "../../utils/tx";
 import { AssetWallet, User } from "../../utils/User";
 import { Xyk } from "../../utils/xyk";
+import { getEventResultFromMangataTx } from "../../utils/txHandler";
 
 jest.spyOn(console, "log").mockImplementation(jest.fn());
 jest.spyOn(console, "error").mockImplementation(jest.fn());
@@ -117,7 +118,7 @@ test("A user can schedule and execute bond more", async () => {
 
   await testUser1.refreshAmounts(AssetWallet.BEFORE);
 
-  const userAmountBeforeJoining =
+  const candidateStateBeforeJoining =
     testUser1.getAsset(liqToken)?.amountBefore.reserved!;
 
   await joinCandidate(testUser1.keyRingPair, liqToken, minStk.muln(2)).then(
@@ -126,16 +127,16 @@ test("A user can schedule and execute bond more", async () => {
     }
   );
 
-  await testUser1.refreshAmounts(AssetWallet.BEFORE);
-
-  const userAmountBeforeExecuting =
-    testUser1.getAsset(liqToken)?.amountBefore.reserved!;
+  const candidateStateBeforeExecuting = await getCandidateState(testUser1);
 
   await signTx(
     api,
     Staking.scheduleCandidateBondMore(minStk),
     testUser1.keyRingPair
-  );
+  ).then((value) => {
+    const event = getEventResultFromMangataTx(value);
+    expect(event.state).toEqual(ExtrinsicResult.ExtrinsicSuccess);
+  });
 
   await waitNewStakingRound();
   await waitNewStakingRound();
@@ -144,16 +145,26 @@ test("A user can schedule and execute bond more", async () => {
     api,
     Staking.executeBondRequest(testUser1),
     testUser1.keyRingPair
+  ).then((value) => {
+    const event = getEventResultFromMangataTx(value);
+    expect(event.state).toEqual(ExtrinsicResult.ExtrinsicSuccess);
+  });
+
+  const candidateStateAfterExecuting = await getCandidateState(testUser1);
+
+  expect(candidateStateBeforeJoining).bnEqual(BN_ZERO);
+  await checkCandidateInfo(
+    candidateStateBeforeExecuting,
+    minStk.muln(2),
+    minStk.muln(2),
+    minStk.muln(2)
   );
-
-  await testUser1.refreshAmounts(AssetWallet.AFTER);
-
-  const userAmountAfterExecuting =
-    testUser1.getAsset(liqToken)?.amountAfter.reserved!;
-
-  expect(userAmountBeforeJoining).bnEqual(BN_ZERO);
-  expect(userAmountBeforeExecuting).bnEqual(minStk.muln(2));
-  expect(userAmountAfterExecuting).bnEqual(minStk.muln(3));
+  await checkCandidateInfo(
+    candidateStateAfterExecuting,
+    minStk.muln(3),
+    minStk.muln(3),
+    minStk.muln(3)
+  );
 });
 
 test("A user can delegate more using liq token", async () => {
@@ -176,25 +187,27 @@ test("A user can delegate more using liq token", async () => {
     }
   );
 
-  const collatorAmountAfterJoining = await getUserAmount(testUser1, liqToken);
+  const candidateStateAfterJoining = await getCandidateState(testUser1);
 
   await delegate(
     testUser2.keyRingPair,
     liqToken,
     minStk.divn(2),
     "availablebalance"
-  );
+  ).then((result) => {
+    expect(result.state).toEqual(ExtrinsicResult.ExtrinsicSuccess);
+  });
 
   await signTx(
     api,
     Staking.scheduleDelegatorBondMore(testUser1, minStk.divn(2)),
     testUser2.keyRingPair
-  );
+  ).then((value) => {
+    const event = getEventResultFromMangataTx(value);
+    expect(event.state).toEqual(ExtrinsicResult.ExtrinsicSuccess);
+  });
 
-  const collatorAmountBeforeExecuting = await getUserAmount(
-    testUser1,
-    liqToken
-  );
+  const candidateStateBeforeExecuting = await getCandidateState(testUser1);
 
   await waitNewStakingRound();
   await waitNewStakingRound();
@@ -203,34 +216,56 @@ test("A user can delegate more using liq token", async () => {
     api,
     Staking.executeDelegationRequest(testUser2, testUser1),
     testUser2.keyRingPair
+  ).then((value) => {
+    const event = getEventResultFromMangataTx(value);
+    expect(event.state).toEqual(ExtrinsicResult.ExtrinsicSuccess);
+  });
+
+  const candidateStateAfterExecuting = await getCandidateState(testUser1);
+
+  await checkCandidateInfo(
+    candidateStateAfterJoining,
+    minStk.muln(2),
+    minStk.muln(2),
+    minStk.muln(2)
   );
-
-  const collatorAmountAfterExecuting = await getUserAmount(testUser1, liqToken);
-
-  expect(collatorAmountAfterJoining).bnEqual(minStk.muln(2));
-  expect(collatorAmountBeforeExecuting).bnEqual(
+  await checkCandidateInfo(
+    candidateStateBeforeExecuting,
+    minStk.muln(2),
+    minStk.muln(2).add(minStk.divn(2)),
     minStk.muln(2).add(minStk.divn(2))
   );
-  expect(collatorAmountAfterExecuting).bnEqual(minStk.muln(3));
+  await checkCandidateInfo(
+    candidateStateAfterExecuting,
+    minStk.muln(2),
+    minStk.muln(3),
+    minStk.muln(3)
+  );
 });
 
-async function getUserAmount(user: User, tokenId: BN) {
+async function getCandidateState(user: User) {
   const api = getApi();
-  let results: any;
 
-  const poolInfo = JSON.parse(
-    JSON.stringify(await api.query.parachainStaking.candidatePool())
+  const candidateState = await api.query.parachainStaking.candidateState(
+    user.keyRingPair.address
   );
 
-  for (let index = 0; index < poolInfo.length; index++) {
-    if (
-      poolInfo[index].owner === user.keyRingPair.address &&
-      poolInfo[index].liquidityToken === tokenId.toNumber()
-    ) {
-      results = {
-        amount: stringToBN(poolInfo[index].amount),
-      };
-    }
-  }
-  return results.amount;
+  const results = {
+    bond: stringToBN(candidateState.value.bond.toString()),
+    totalCounted: stringToBN(candidateState.value.totalCounted.toString()),
+    totalBacking: stringToBN(candidateState.value.totalBacking.toString()),
+  };
+
+  return results;
+}
+
+async function checkCandidateInfo(
+  candidateState: { bond: BN; totalCounted: BN; totalBacking: BN },
+  bondAmount: BN,
+  totalCountedAmount: BN,
+  totalBackingAmount: BN
+) {
+  expect(candidateState.bond).bnEqual(bondAmount);
+  expect(candidateState.totalCounted).bnEqual(totalCountedAmount);
+  expect(candidateState.totalBacking).bnEqual(totalBackingAmount);
 }
