@@ -449,3 +449,8 @@ export function buildXpathByText(text: string) {
   const xpath = `//*[contains(., "${text}")]`;
   return xpath;
 }
+
+export function buildXpathByElementText(element: string, text: string) {
+  const xpath = `//${element}[contains(., "${text}")]`;
+  return xpath;
+}

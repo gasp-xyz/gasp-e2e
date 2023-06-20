@@ -320,6 +320,17 @@ export const matchSystemEvents = async (
     ...filters
   );
 };
+export const matchSystemEventsAt = async (
+  { api }: { api: ApiPromise },
+  blockHashAt: string,
+  ...filters: EventFilter[]
+) => {
+  await _matchEvents(
+    "system events",
+    redact((await api.at(blockHashAt)).query.system.events()),
+    ...filters
+  );
+};
 
 export const matchUmp = async ({ api }: { api: ApiPromise }) => {
   expect(await api.query.parachainSystem.upwardMessages()).toMatchSnapshot(

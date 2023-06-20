@@ -33,11 +33,6 @@ describe.skip("XCM tests for Mangata <-> imbue", () => {
     alice = devTestingPairs().alice;
   });
 
-  afterAll(async () => {
-    await imbue.teardown();
-    await mangata.teardown();
-  });
-
   beforeEach(async () => {
     await mangata.dev.setStorage({
       Tokens: {

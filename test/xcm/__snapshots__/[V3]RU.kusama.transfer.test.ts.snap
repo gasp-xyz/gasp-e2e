@@ -11,7 +11,7 @@ exports[`XCM tests for Mangata <-> Kusama Kusama transfer assets to mangata 1`] 
 
 exports[`XCM tests for Mangata <-> Kusama Kusama transfer assets to mangata 2`] = `
 {
-  "free": 10999472300000,
+  "free": 10999477160000,
   "frozen": 0,
   "reserved": 0,
 }
@@ -30,39 +30,6 @@ exports[`XCM tests for Mangata <-> Kusama Kusama transfer assets to mangata: eve
     ],
     "method": "Attempted",
     "section": "xcmPallet",
-  },
-]
-`;
-
-exports[`XCM tests for Mangata <-> Kusama Kusama transfer assets to mangata: system events 1`] = `
-[
-  {
-    "data": {
-      "count": "(redacted)",
-    },
-    "method": "DownwardMessagesReceived",
-    "section": "parachainSystem",
-  },
-  {
-    "data": {
-      "messageId": "(redacted)",
-      "outcome": {
-        "Complete": "(redacted)",
-      },
-    },
-    "method": "ExecutedDownward",
-    "section": "dmpQueue",
-  },
-  {
-    "data": {
-      "dmqHead": "(redacted)",
-      "weightUsed": {
-        "proofSize": "(redacted)",
-        "refTime": "(redacted)",
-      },
-    },
-    "method": "DownwardMessagesProcessed",
-    "section": "parachainSystem",
   },
 ]
 `;

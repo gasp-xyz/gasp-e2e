@@ -5,7 +5,6 @@
 import { jest } from "@jest/globals";
 import { WebDriver } from "selenium-webdriver";
 import { getApi, initApi } from "../../utils/api";
-import { Mangata } from "../../utils/frontend/pages/Mangata";
 import { DriverBuilder } from "../../utils/frontend/utils/Driver";
 import { addExtraLogs } from "../../utils/frontend/utils/Helper";
 
@@ -27,10 +26,8 @@ describe("Miocroapps UI smoke tests", () => {
 
   it("App is starting", async () => {
     driver = await DriverBuilder.getInstance(false);
-
-    const mga = new Mangata(driver);
-    await mga.go();
     const mainPage = new Main(driver);
+    await mainPage.go();
     const appLoaded = await mainPage.isAppLoaded();
     expect(appLoaded).toBeTruthy();
   });
