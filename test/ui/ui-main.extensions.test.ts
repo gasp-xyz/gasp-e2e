@@ -2,6 +2,7 @@
  *
  * @group uiMain
  */
+import { jest } from "@jest/globals";
 import { WebDriver } from "selenium-webdriver";
 import { getApi, initApi } from "../../utils/api";
 import { Mangata } from "../../utils/frontend/pages/Mangata";

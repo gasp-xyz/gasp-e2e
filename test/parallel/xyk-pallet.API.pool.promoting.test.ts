@@ -4,12 +4,12 @@
  * @group liquidity
  * @group rewardsV2Parallel
  */
-
+import { jest } from "@jest/globals";
 import { Keyring } from "@polkadot/api";
 import { getApi, initApi, mangata } from "../../utils/api";
 import { Assets } from "../../utils/Assets";
 import { MGA_ASSET_ID } from "../../utils/Constants";
-import { BN, BN_ZERO } from "@mangata-finance/sdk";
+import { BN_ZERO } from "@mangata-finance/sdk";
 import { setupApi, setupUsers } from "../../utils/setup";
 import { Sudo } from "../../utils/sudo";
 import { activateLiquidity, getLiquidityAssetId } from "../../utils/tx";
@@ -17,6 +17,7 @@ import { User } from "../../utils/User";
 import { getEnvironmentRequiredVars } from "../../utils/utils";
 import { Xyk } from "../../utils/xyk";
 import { waitForRewards } from "../../utils/eventListeners";
+import { BN } from "@polkadot/util";
 
 jest.spyOn(console, "log").mockImplementation(jest.fn());
 jest.setTimeout(2500000);
@@ -160,22 +161,22 @@ test("GIVEN a promoted pool WHEN more pools gets activated THEN shares are decre
 
   await waitForRewards(testUser11, liqIdPool1);
 
-  const testUser1Rewards = await mangata?.calculateRewardsAmount(
-    testUser1.keyRingPair.address,
-    liqIdPool1.toString()
-  )!;
-  const testUser11Rewards = await mangata?.calculateRewardsAmount(
-    testUser11.keyRingPair.address,
-    liqIdPool1.toString()
-  )!;
-  const testUser2Rewards = await mangata?.calculateRewardsAmount(
-    testUser2.keyRingPair.address,
-    liqIdPool2.toString()
-  )!;
-  const testUser3Rewards = await mangata?.calculateRewardsAmount(
-    testUser3.keyRingPair.address,
-    liqIdPool3.toString()
-  )!;
+  const testUser1Rewards = await mangata?.rpc.calculateRewardsAmount({
+    address: testUser1.keyRingPair.address,
+    liquidityTokenId: liqIdPool1.toString(),
+  })!;
+  const testUser11Rewards = await mangata?.rpc.calculateRewardsAmount({
+    address: testUser11.keyRingPair.address,
+    liquidityTokenId: liqIdPool1.toString(),
+  })!;
+  const testUser2Rewards = await mangata?.rpc.calculateRewardsAmount({
+    address: testUser2.keyRingPair.address,
+    liquidityTokenId: liqIdPool2.toString(),
+  })!;
+  const testUser3Rewards = await mangata?.rpc.calculateRewardsAmount({
+    address: testUser3.keyRingPair.address,
+    liquidityTokenId: liqIdPool3.toString(),
+  })!;
   expect(testUser1Rewards).bnEqual(BN_ZERO);
   expect(testUser11Rewards).bnGt(BN_ZERO);
   expect(testUser11Rewards).bnEqual(testUser2Rewards);

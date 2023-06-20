@@ -4,8 +4,9 @@
  * @group accuracy
  * @group parallel
  */
-import { getApi, getMangataInstance, initApi } from "../../utils/api";
-import { getCurrentNonce } from "../../utils/tx";
+import { jest } from "@jest/globals";
+import { getApi, initApi } from "../../utils/api";
+import { getCurrentNonce, createPool, buyAsset } from "../../utils/tx";
 import { ExtrinsicResult } from "../../utils/eventListeners";
 import { BN } from "@polkadot/util";
 import { Keyring } from "@polkadot/api";
@@ -99,18 +100,16 @@ test("xyk-pallet - Calculate required MGA fee - CreatePool", async () => {
       second_asset_amount
     )
     .paymentInfo(testUser1.keyRingPair, opt);
-  await (await getMangataInstance())
-    .createPool(
-      testUser1.keyRingPair,
-      firstCurrency.toString(),
-      first_asset_amount,
-      secondCurrency.toString(),
-      second_asset_amount
-    )
-    .then((result) => {
-      const eventResponse = getEventResultFromMangataTx(result);
-      expect(eventResponse.state).toEqual(ExtrinsicResult.ExtrinsicSuccess);
-    });
+  await createPool(
+    testUser1.keyRingPair,
+    firstCurrency,
+    first_asset_amount,
+    secondCurrency,
+    second_asset_amount
+  ).then((result) => {
+    const eventResponse = getEventResultFromMangataTx(result);
+    expect(eventResponse.state).toEqual(ExtrinsicResult.ExtrinsicSuccess);
+  });
 
   await testUser1.refreshAmounts(AssetWallet.AFTER);
   const deductedMGATkns = testUser1
@@ -143,19 +142,16 @@ test("xyk-pallet - Calculate required MGA fee - BuyAsset", async () => {
   cost = await api.tx.xyk
     .buyAsset(firstCurrency, secondCurrency, new BN(100), new BN(1000000))
     .paymentInfo(testUser1.keyRingPair, opt);
-  const mangata = await getMangataInstance();
-  await mangata
-    .buyAsset(
-      testUser1.keyRingPair,
-      firstCurrency.toString(),
-      secondCurrency.toString(),
-      new BN(100),
-      new BN(1000000)
-    )
-    .then((result) => {
-      const eventResponse = getEventResultFromMangataTx(result);
-      expect(eventResponse.state).toEqual(ExtrinsicResult.ExtrinsicSuccess);
-    });
+  await buyAsset(
+    testUser1.keyRingPair,
+    firstCurrency,
+    secondCurrency,
+    new BN(100),
+    new BN(1000000)
+  ).then((result) => {
+    const eventResponse = getEventResultFromMangataTx(result);
+    expect(eventResponse.state).toEqual(ExtrinsicResult.ExtrinsicSuccess);
+  });
   const costExpected = Fees.getSwapFees(cost.partialFee);
   expect(cost.partialFee).bnLte(costExpected);
   await testUser1.refreshAmounts(AssetWallet.AFTER);

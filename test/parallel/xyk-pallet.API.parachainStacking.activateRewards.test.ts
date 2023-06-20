@@ -3,6 +3,7 @@
  * @group rewardsV2Parallel
  *
  */
+import { jest } from "@jest/globals";
 import {
   getLiquidityAssetId,
   joinCandidate,
@@ -16,7 +17,7 @@ import {
   getEnvironmentRequiredVars,
   getUserBalanceOfToken,
 } from "../../utils/utils";
-import { BN, BN_BILLION, BN_ONE, BN_ZERO } from "@mangata-finance/sdk";
+import { BN_BILLION, BN_ONE, BN_ZERO } from "@mangata-finance/sdk";
 import { Assets } from "../../utils/Assets";
 import { getApi, initApi } from "../../utils/api";
 import { Sudo } from "../../utils/sudo";
@@ -24,6 +25,7 @@ import { Xyk } from "../../utils/xyk";
 import { Staking } from "../../utils/Staking";
 import { setupApi, setupUsers } from "../../utils/setup";
 import { ExtrinsicResult } from "../../utils/eventListeners";
+import { BN } from "@polkadot/util";
 
 jest.spyOn(console, "log").mockImplementation(jest.fn());
 jest.setTimeout(1500000);

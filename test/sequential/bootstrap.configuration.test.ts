@@ -3,6 +3,7 @@
  * @group rewards-bootstrap
  * @group sequential
  */
+import { jest } from "@jest/globals";
 import { getApi, initApi } from "../../utils/api";
 import { getBalanceOfAsset, getLiquidityAssetId } from "../../utils/tx";
 import { EventResult, ExtrinsicResult } from "../../utils/eventListeners";
@@ -15,7 +16,6 @@ import {
 } from "../../utils/txHandler";
 import { MGA_ASSET_ID } from "../../utils/Constants";
 import { toBN } from "@mangata-finance/sdk";
-import { toNumber } from "lodash";
 import {
   checkLastBootstrapFinalized,
   createNewBootstrapCurrency,
@@ -151,11 +151,8 @@ test("bootstrap - Check happy path bootstrap with one user", async () => {
   );
 
   // check that the user's balance of liquidity token is equal the pool's balance
-  const userBalance = await getBalanceOfAsset(
-    liquidityID,
-    testUser1.keyRingPair.address.toString()
-  );
-  expect(toNumber(userBalance.free)).toEqual(bootstrapExpectedUserLiquidity);
+  const userBalance = await getBalanceOfAsset(liquidityID, testUser1);
+  expect(userBalance.free.toNumber()).toEqual(bootstrapExpectedUserLiquidity);
 
   // finalize bootstrap
   await checkLastBootstrapFinalized(sudo);

@@ -3,9 +3,10 @@
  *
  * @group experimentalStaking
  */
+import { jest } from "@jest/globals";
 import { getApi, initApi } from "../../utils/api";
 import { User } from "../../utils/User";
-import { BN, Mangata } from "@mangata-finance/sdk";
+import { Mangata } from "@mangata-finance/sdk";
 import { setupUsers, setupApi, eve, alice } from "../../utils/setup";
 import { Staking, tokenOriginEnum } from "../../utils/Staking";
 import { Sudo } from "../../utils/sudo";
@@ -24,6 +25,7 @@ import { MPL } from "../../utils/MPL";
 import Docker from "dockerode";
 import execSh from "exec-sh";
 import { testLog } from "../../utils/Logger";
+import { BN } from "@polkadot/util";
 
 jest.spyOn(console, "log").mockImplementation(jest.fn());
 jest.setTimeout(3500000);
@@ -174,9 +176,7 @@ async function signNodeWithEve() {
   const newRunnCont = cont.filter((x) => x.Image.includes(dockerImageName))[0];
   const port = newRunnCont.Ports.filter((p) => p.PrivatePort === 9944)[0]
     .PublicPort;
-  const eveNode = await Mangata.getInstance([
-    `ws://127.0.0.1:${port}`,
-  ]).getApi();
+  const eveNode = await Mangata.instance([`ws://127.0.0.1:${port}`]).api();
   const keys = await eveNode.rpc.author.rotateKeys();
   await signSendAndWaitToFinishTx(
     eveNode?.tx.session.setKeys(keys.toString(), "0x00"),

@@ -2,6 +2,8 @@
 /**
  * npx ts-node cliTool/index.ts --runInBand
  * API_URL="wss://mangata-x.api.onfinality.io/public-ws"  npx ts-node ./index.ts --runInBand
+ * or:
+ * node --experimental-specifier-resolution=node --loader ts-node/esm --experimental-vm-modules  ./index.ts --runInBand
  */
 import inquirer from "inquirer";
 import {
@@ -259,10 +261,10 @@ async function app(): Promise<any> {
           });
       }
       if (answers.option.includes("get pools")) {
-        const mga = Mangata.getInstance([
+        const mga = Mangata.instance([
           "wss://prod-kusama-collator-01.mangatafinance.cloud",
         ]);
-        const pools = mga.getPools();
+        const pools = mga.query.getPools();
         (await pools).forEach((pool) => console.info(JSON.stringify(pool)));
         return app();
       }

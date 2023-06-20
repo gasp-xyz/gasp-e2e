@@ -7,7 +7,7 @@ import { getEnvironmentRequiredVars } from "../utils/utils";
 import fs from "fs";
 import { signTx } from "@mangata-finance/sdk";
 
-require("dotenv").config();
+import "dotenv/config";
 
 jest.spyOn(console, "log").mockImplementation(jest.fn());
 const { sudo: sudoUserName } = getEnvironmentRequiredVars();

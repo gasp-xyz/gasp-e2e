@@ -2,6 +2,7 @@
  *
  * @group microappsUI
  */
+import { jest } from "@jest/globals";
 import { WebDriver } from "selenium-webdriver";
 import { getApi, initApi } from "../../utils/api";
 import { DriverBuilder } from "../../utils/frontend/utils/Driver";

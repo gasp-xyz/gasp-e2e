@@ -4,6 +4,7 @@
  * @group api
  * @group sequential
  */
+import { jest } from "@jest/globals";
 import { getApi, initApi } from "../../utils/api";
 import {
   calculate_sell_price_id_rpc,

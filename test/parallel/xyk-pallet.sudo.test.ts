@@ -4,6 +4,7 @@
  * @group sudo
  * @group parallel
  */
+import { jest } from "@jest/globals";
 import { getApi, initApi } from "../../utils/api";
 import { getUserAssets, getSudoKey } from "../../utils/tx";
 import { BN } from "@polkadot/util";

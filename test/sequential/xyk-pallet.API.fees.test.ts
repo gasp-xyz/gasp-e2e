@@ -1,5 +1,6 @@
 /* eslint-disable jest/no-conditional-expect */
 // todo remove test once v2 is passing on CI for some time
+import { jest } from "@jest/globals";
 import { getApi, initApi } from "../../utils/api";
 import {
   burnLiquidity,

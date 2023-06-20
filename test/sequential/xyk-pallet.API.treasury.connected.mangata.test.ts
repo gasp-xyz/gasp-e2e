@@ -1,11 +1,13 @@
 /* eslint-disable jest/no-conditional-expect */
 // todo remove test once v2 is passing on CI for some time
-import { getApi, getMangataInstance, initApi } from "../../utils/api";
+import { getApi, initApi } from "../../utils/api";
+import { jest } from "@jest/globals";
 import {
   buyAsset,
   calculate_buy_price_rpc,
   calculate_sell_price_local_no_fee,
   calculate_sell_price_rpc,
+  createPool,
   getBalanceOfPool,
   getTreasury,
   getTreasuryBurn,
@@ -83,13 +85,11 @@ describe("xyk-pallet - treasury tests [Mangata]: on treasury we store", () => {
       )
     )[0];
     await testUser1.addMGATokens(sudo);
-    await (
-      await getMangataInstance()
-    ).createPool(
+    await createPool(
       testUser1.keyRingPair,
-      mgaTokenId.toString(),
+      mgaTokenId,
       first_asset_amount,
-      secondCurrency.toString(),
+      secondCurrency,
       seccond_asset_amount
     );
     await testUser1.refreshAmounts(AssetWallet.BEFORE);
@@ -318,22 +318,18 @@ describe("xyk-pallet - treasury tests [Connected - Mangata]: on treasury we stor
       )
     )[0];
     await testUser1.addMGATokens(sudo);
-    await (
-      await getMangataInstance()
-    ).createPool(
+    await createPool(
       testUser1.keyRingPair,
-      mgaTokenId.toString(),
+      mgaTokenId,
       first_asset_amount,
-      connectedToMGA.toString(),
+      connectedToMGA,
       first_asset_amount.div(new BN(2))
     );
-    await (
-      await getMangataInstance()
-    ).createPool(
+    await createPool(
       testUser1.keyRingPair,
-      connectedToMGA.toString(),
+      connectedToMGA,
       first_asset_amount,
-      indirectlyConnected.toString(),
+      indirectlyConnected,
       first_asset_amount.div(new BN(2))
     );
     await testUser1.refreshAmounts(AssetWallet.BEFORE);
@@ -599,13 +595,11 @@ describe("xyk-pallet - treasury tests [Connected - Mangata]: Error cases", () =>
   });
 
   test("Not enough tokens to convert fee LINK[https://trello.com/c/p77t0atO]", async () => {
-    await (
-      await getMangataInstance()
-    ).createPool(
+    await createPool(
       testUser1.keyRingPair,
-      mgaTokenId.toString(),
+      mgaTokenId,
       new BN(100),
-      connectedToMGA.toString(),
+      connectedToMGA,
       first_asset_amount
     );
 

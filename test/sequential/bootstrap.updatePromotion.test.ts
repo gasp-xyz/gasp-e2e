@@ -4,6 +4,7 @@
  * @group rewards-bootstrap
  * @group sequential
  */
+import { jest } from "@jest/globals";
 import { getApi, initApi } from "../../utils/api";
 import { getLiquidityAssetId, getBalanceOfAsset } from "../../utils/tx";
 import {
@@ -32,8 +33,9 @@ import {
   waitForBootstrapStatus,
 } from "../../utils/Bootstrap";
 import { MGA_ASSET_ID } from "../../utils/Constants";
-import { BN, MangataGenericEvent } from "@mangata-finance/sdk";
+import { MangataGenericEvent } from "@mangata-finance/sdk";
 import { setupUsers } from "../../utils/setup";
+import { BN } from "@polkadot/util";
 
 jest.spyOn(console, "log").mockImplementation(jest.fn());
 jest.setTimeout(3500000);
@@ -162,10 +164,7 @@ test("bootstrap - bootstrap - Check if we can change promoteBootstrapPool in eac
     bootstrapCurrency
   );
 
-  const userBalance = await getBalanceOfAsset(
-    liquidityID,
-    testUser1.keyRingPair.address.toString()
-  );
+  const userBalance = await getBalanceOfAsset(liquidityID, testUser1);
 
   const currentPromotionState = await getPromotionBootstrapPoolState();
 

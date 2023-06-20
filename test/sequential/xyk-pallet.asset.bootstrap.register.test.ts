@@ -5,6 +5,7 @@
  * @group rewards-bootstrap
  * @group sequential
  */
+import { jest } from "@jest/globals";
 import { getApi } from "../../utils/api";
 import { getEnvironmentRequiredVars } from "../../utils/utils";
 import { User } from "../../utils/User";
