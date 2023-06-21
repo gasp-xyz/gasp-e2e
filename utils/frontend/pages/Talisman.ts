@@ -96,7 +96,7 @@ export class Talisman {
     await waitForElement(this.driver, XPATH_ACCEPT_PERMISSIONS, 3000);
     await clickElement(this.driver, XPATH_ACCEPT_PERMISSIONS);
 
-    await waitForElement(this.driver, XPATH_ALERT_POPUP, 15000);
+    await waitForElement(this.driver, XPATH_ALERT_POPUP, 20000);
     await clickElement(this.driver, XPATH_ALERT_POPUP);
 
     const mnemonic = await this.getAccountMnemonic();

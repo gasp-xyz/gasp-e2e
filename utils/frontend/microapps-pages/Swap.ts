@@ -8,6 +8,7 @@ import {
   isDisplayed,
   waitForElement,
   waitForElementEnabled,
+  waitForElementVisible,
   writeText,
 } from "../utils/Helper";
 
@@ -16,10 +17,20 @@ const DIV_SECOND_TOKEN_CONTAINER = "secondToken-container";
 const DIV_FIRST_TOKEN_SELECTOR_CONTENT = "firstToken-selector-content";
 const DIV_SECOND_TOKEN_SELECTOR_CONTENT = "secondToken-selector-content";
 const DIV_TOKEN_SELECTOR_ITEM = "tokenList-item";
+const DIV_TRADE_RATE = "trade-rate";
+const DIV_TRADE_DETAILS = "trade-details";
+const DIV_MIN_RECEIVED = "minimumRecieved";
+const DIV_PRICE_IMPACT = "priceImpact";
+const DIV_COMMISION = "commission";
+const DIV_FEE = "fee";
+const DIV_TRADE_ROUTE_DETAILS = "routingDetails";
+const DIV_MIDDLE_POOL = "middle-pool";
 const BTN_SUBMIT_SWAP = "submitSwap";
 const BTN_SWITCH_TOKENS = "switchTokens";
+const BTN_TOGGLE_TRADE_DETAILS = "toggle-trade-details";
 const BTN_SELECT_FIRST_TOKEN = "firstToken-selector-btn";
 const BTN_SELECT_SECOND_TOKEN = "secondToken-selector-btn";
+const BTN_TRADE_ROUTE_DETAILS_CLOSE = "routingDetails-close";
 const INPUT_FIRST_TOKEN = "firstToken-input";
 const INPUT_SECOND_TOKEN = "secondToken-input";
 
@@ -112,5 +123,66 @@ export class Swap {
       buildDataTestIdXpath(DIV_TOKEN_SELECTOR_ITEM) +
       buildXpathByText(tokenName);
     await clickElement(this.driver, secondTokenSelectorButton);
+  }
+
+  async toggleTradeDetails() {
+    const tradeDetailsToggleButton = buildDataTestIdXpath(
+      BTN_TOGGLE_TRADE_DETAILS
+    );
+    await clickElement(this.driver, tradeDetailsToggleButton);
+  }
+
+  async toggleRouteDetails() {
+    const tradeRouteDetails = buildDataTestIdXpath(DIV_TRADE_ROUTE_DETAILS);
+    await clickElement(this.driver, tradeRouteDetails);
+  }
+
+  async isTradeRateDisplayed() {
+    const tradeRate = buildDataTestIdXpath(DIV_TRADE_RATE);
+    const displayed = await isDisplayed(this.driver, tradeRate);
+    return displayed;
+  }
+
+  async areTradeDetailsDisplayed() {
+    const tradeDetailsContainer = buildDataTestIdXpath(DIV_TRADE_DETAILS);
+    await waitForElement(this.driver, tradeDetailsContainer);
+
+    const minReceived = buildDataTestIdXpath(DIV_MIN_RECEIVED);
+    const priceImpact = buildDataTestIdXpath(DIV_PRICE_IMPACT);
+    const commission = buildDataTestIdXpath(DIV_COMMISION);
+    const fee = buildDataTestIdXpath(DIV_FEE);
+
+    const displayed = await areDisplayed(this.driver, [
+      minReceived,
+      priceImpact,
+      commission,
+      fee,
+    ]);
+    return displayed;
+  }
+
+  async areRouteDetailsDisplayed(
+    firstTokenName: string,
+    secondTokenName: string
+  ) {
+    const tradeRouteDetailsClose = buildDataTestIdXpath(
+      BTN_TRADE_ROUTE_DETAILS_CLOSE
+    );
+    const routeDetailsXpath = buildDataTestIdXpath(DIV_TRADE_ROUTE_DETAILS);
+    const firstTokenIcon =
+      routeDetailsXpath + buildDataTestIdXpath("token-icon-" + firstTokenName);
+    const secondTokenIcon =
+      routeDetailsXpath + buildDataTestIdXpath("token-icon-" + secondTokenName);
+    const middlePool =
+      routeDetailsXpath + buildDataTestIdXpath(DIV_MIDDLE_POOL);
+    await waitForElementVisible(this.driver, middlePool);
+
+    const displayed = await areDisplayed(this.driver, [
+      firstTokenIcon,
+      secondTokenIcon,
+      middlePool,
+      tradeRouteDetailsClose,
+    ]);
+    return displayed;
   }
 }
