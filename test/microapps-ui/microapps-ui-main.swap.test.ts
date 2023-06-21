@@ -2,6 +2,7 @@
  *
  * @group microappsUI
  */
+import { jest } from "@jest/globals";
 import { WebDriver } from "selenium-webdriver";
 import { getApi, initApi } from "../../utils/api";
 import { DriverBuilder } from "../../utils/frontend/utils/Driver";
@@ -32,7 +33,7 @@ let driver: WebDriver;
 let testUser1: User;
 const acc_name = "acc_automation";
 
-describe("Miocroapps UI smoke tests", () => {
+describe("Miocroapps UI swap tests", () => {
   beforeAll(async () => {
     try {
       getApi();
@@ -90,6 +91,32 @@ describe("Miocroapps UI smoke tests", () => {
 
     const isSwapEnabled = await swap.isSwapButtonEnabled();
     expect(isSwapEnabled).toBeFalsy();
+  });
+
+  it("Swap details are visible & dynamic", async () => {
+    await setupPageWithState(driver, acc_name);
+    const swap = new Swap(driver);
+    const isSwapFrameDisplayed = await swap.isDisplayed();
+    expect(isSwapFrameDisplayed).toBeTruthy();
+    await swap.pickPayToken(MGR_ASSET_NAME);
+    await swap.pickGetToken("ROC");
+    await swap.setPayTokenAmount("100");
+    const getTokenAmount = await swap.fetchGetAssetAmount();
+    expect(parseFloat(getTokenAmount)).toBeGreaterThan(0);
+
+    const isTradeRateDisplayed = await swap.isTradeRateDisplayed();
+    expect(isTradeRateDisplayed).toBeTruthy();
+
+    await swap.toggleTradeDetails();
+    const areTradeDetailsDisplayed = await swap.areTradeDetailsDisplayed();
+    expect(areTradeDetailsDisplayed).toBeTruthy();
+
+    await swap.toggleRouteDetails();
+    const areRouteDetailsDisplayed = await swap.areRouteDetailsDisplayed(
+      MGR_ASSET_NAME,
+      "ROC"
+    );
+    expect(areRouteDetailsDisplayed).toBeTruthy();
   });
 
   afterEach(async () => {

@@ -110,6 +110,17 @@ export async function waitForLoad(
   });
 }
 
+export async function getNumberOfElements(
+  driver: WebDriver,
+  xpath: string,
+  timeout = timeOut
+) {
+  await waitForElement(driver, xpath, timeout);
+  const elements = await driver.findElements(By.xpath(xpath));
+  const count = elements.length;
+  return count;
+}
+
 export async function clickElement(driver: WebDriver, xpath: string) {
   await waitForElement(driver, xpath);
   const element = await driver.findElement(By.xpath(xpath));
