@@ -1,13 +1,17 @@
 import { BuildBlockMode, connectParachains } from "@acala-network/chopsticks";
-import { BN_BILLION, BN_HUNDRED, BN_THOUSAND } from "@mangata-finance/sdk";
-import { BN_FIVE } from "@polkadot/util";
+import {
+  BN_BILLION,
+  BN_HUNDRED,
+  BN_THOUSAND,
+  Mangata,
+} from "@mangata-finance/sdk";
+import { BN } from "@polkadot/util";
 import { mangataChopstick } from "../../utils/api";
 import { AssetId } from "../../utils/ChainSpecs";
 import { waitForEvents } from "../../utils/eventListeners";
 import { ApiContext } from "../../utils/Framework/XcmHelper";
 import XcmNetworks from "../../utils/Framework/XcmNetworks";
 import { alice, api, setupApi, setupUsers } from "../../utils/setup";
-import { signSendSuccess } from "../../utils/sign";
 import { expectEvent } from "../../utils/validators";
 import { jest } from "@jest/globals";
 jest.setTimeout(300000);
@@ -71,8 +75,10 @@ describe("XCM transfers", () => {
 
   // todo repeat for every other asset
   it("send TUR from turing to mangata", async () => {
-    const op = turing.api.tx.xTokens.transferMultiasset(
-      {
+    const mgaSdk = Mangata.instance([mangata.uri]);
+    await mgaSdk.xTokens.depositFromParachain({
+      account: alice.keyRingPair,
+      asset: {
         V3: {
           id: {
             Concrete: {
@@ -89,7 +95,7 @@ describe("XCM transfers", () => {
           },
         },
       },
-      {
+      destination: {
         V3: {
           parents: 1,
           interior: {
@@ -105,15 +111,14 @@ describe("XCM transfers", () => {
           },
         },
       },
-      {
+      url: turing.uri,
+      weightLimit: {
         Limited: {
-          refTime: 4000000000,
-          proofSize: 0,
+          ref_time: "4000000000",
+          proof_size: 0,
         },
-      }
-    );
-    await signSendSuccess(turing.api, op, alice);
-
+      },
+    });
     await waitForEvents(api, "xcmpQueue.Success");
 
     expectEvent(await waitForEvents(api, "tokens.Deposited"), {
@@ -127,31 +132,15 @@ describe("XCM transfers", () => {
   });
 
   it("send TUR from mangata to turing", async () => {
-    await mangata.api.tx.xTokens
-      .transfer(
-        7,
-        AssetId.Tur.unit.mul(BN_FIVE),
-        {
-          V3: {
-            parents: 1,
-            interior: {
-              X2: [
-                {
-                  Parachain: 2114,
-                },
-                {
-                  AccountId32: {
-                    network: undefined,
-                    id: alice.keyRingPair.publicKey,
-                  },
-                },
-              ],
-            },
-          },
-        },
-        "Unlimited"
-      )
-      .signAndSend(alice.keyRingPair);
+    const mgaSdk = Mangata.instance([mangata.uri]);
+    await mgaSdk.xTokens.withdraw({
+      account: alice.keyRingPair,
+      amount: new BN(5e10),
+      destinationAddress: alice.keyRingPair.address,
+      parachainId: 2114,
+      tokenSymbol: "TUR",
+      withWeight: "4000000000",
+    });
 
     await waitForEvents(api, "system.ExtrinsicSuccess");
     await waitForEvents(turing.api, "xcmpQueue.Success");

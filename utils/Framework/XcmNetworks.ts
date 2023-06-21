@@ -5,7 +5,7 @@ dotenv.config();
 
 const endpoints = {
   kusama: "wss://kusama-rpc.polkadot.io",
-  statemine: "wss://statemine-rpc.polkadot.io",
+  statemine: "wss://statemine.api.onfinality.io/public-ws",
   imbue: "wss://imbue-kusama.imbue.network",
   karura: "wss://karura-rpc-0.aca-api.network",
   mangata: "wss://kusama-archive.mangata.online",
