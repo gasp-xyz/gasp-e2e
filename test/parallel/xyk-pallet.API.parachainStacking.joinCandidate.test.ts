@@ -98,6 +98,82 @@ beforeEach(async () => {
   );
 });
 
+test("A user can delegate more using liq token", async () => {
+  const api = getApi();
+
+  const testUser2 = new User(keyring);
+
+  await Sudo.batchAsSudoFinalized(
+    Assets.mintNative(testUser2, minStk.muln(1000)),
+    Assets.mintToken(liqToken, testUser2, minStk.muln(2))
+  );
+
+  testUser1.addAsset(liqToken);
+
+  await testUser1.refreshAmounts(AssetWallet.BEFORE);
+
+  await joinCandidate(testUser1.keyRingPair, liqToken, minStk.muln(2)).then(
+    (result) => {
+      expect(result.state).toEqual(ExtrinsicResult.ExtrinsicSuccess);
+    }
+  );
+
+  const candidateStateAfterJoining = await getCandidateState(testUser1);
+
+  await delegate(
+    testUser2.keyRingPair,
+    liqToken,
+    minStk.divn(4),
+    "availablebalance"
+  ).then((result) => {
+    expect(result.state).toEqual(ExtrinsicResult.ExtrinsicSuccess);
+  });
+
+  await signTx(
+    api,
+    Staking.scheduleDelegatorBondMore(testUser1, minStk.divn(4)),
+    testUser2.keyRingPair
+  ).then((value) => {
+    const event = getEventResultFromMangataTx(value);
+    expect(event.state).toEqual(ExtrinsicResult.ExtrinsicSuccess);
+  });
+
+  const candidateStateBeforeExecuting = await getCandidateState(testUser1);
+
+  await waitNewStakingRound();
+  await waitNewStakingRound();
+
+  await signTx(
+    api,
+    Staking.executeDelegationRequest(testUser2, testUser1),
+    testUser2.keyRingPair
+  ).then((value) => {
+    const event = getEventResultFromMangataTx(value);
+    expect(event.state).toEqual(ExtrinsicResult.ExtrinsicSuccess);
+  });
+
+  const candidateStateAfterExecuting = await getCandidateState(testUser1);
+
+  await checkCandidateInfo(
+    candidateStateAfterJoining,
+    minStk.muln(2),
+    minStk.muln(2),
+    minStk.muln(2)
+  );
+  await checkCandidateInfo(
+    candidateStateBeforeExecuting,
+    minStk.muln(2),
+    minStk.muln(2).add(minStk.divn(4)),
+    minStk.muln(2).add(minStk.divn(4))
+  );
+  await checkCandidateInfo(
+    candidateStateAfterExecuting,
+    minStk.muln(2),
+    minStk.muln(2).add(minStk.divn(2)),
+    minStk.muln(2).add(minStk.divn(2))
+  );
+});
+
 test("A User with free tokens can join as collator", async () => {
   const result = await joinCandidate(
     testUser1.keyRingPair,
@@ -162,82 +238,6 @@ test("A user can schedule and execute bond more", async () => {
   await checkCandidateInfo(
     candidateStateAfterExecuting,
     minStk.muln(3),
-    minStk.muln(3),
-    minStk.muln(3)
-  );
-});
-
-test("A user can delegate more using liq token", async () => {
-  const api = getApi();
-
-  const testUser2 = new User(keyring);
-
-  await Sudo.batchAsSudoFinalized(
-    Assets.mintNative(testUser2, minStk.muln(1000)),
-    Assets.mintToken(liqToken, testUser2, minStk.muln(2))
-  );
-
-  testUser1.addAsset(liqToken);
-
-  await testUser1.refreshAmounts(AssetWallet.BEFORE);
-
-  await joinCandidate(testUser1.keyRingPair, liqToken, minStk.muln(2)).then(
-    (result) => {
-      expect(result.state).toEqual(ExtrinsicResult.ExtrinsicSuccess);
-    }
-  );
-
-  const candidateStateAfterJoining = await getCandidateState(testUser1);
-
-  await delegate(
-    testUser2.keyRingPair,
-    liqToken,
-    minStk.divn(2),
-    "availablebalance"
-  ).then((result) => {
-    expect(result.state).toEqual(ExtrinsicResult.ExtrinsicSuccess);
-  });
-
-  await signTx(
-    api,
-    Staking.scheduleDelegatorBondMore(testUser1, minStk.divn(2)),
-    testUser2.keyRingPair
-  ).then((value) => {
-    const event = getEventResultFromMangataTx(value);
-    expect(event.state).toEqual(ExtrinsicResult.ExtrinsicSuccess);
-  });
-
-  const candidateStateBeforeExecuting = await getCandidateState(testUser1);
-
-  await waitNewStakingRound();
-  await waitNewStakingRound();
-
-  await signTx(
-    api,
-    Staking.executeDelegationRequest(testUser2, testUser1),
-    testUser2.keyRingPair
-  ).then((value) => {
-    const event = getEventResultFromMangataTx(value);
-    expect(event.state).toEqual(ExtrinsicResult.ExtrinsicSuccess);
-  });
-
-  const candidateStateAfterExecuting = await getCandidateState(testUser1);
-
-  await checkCandidateInfo(
-    candidateStateAfterJoining,
-    minStk.muln(2),
-    minStk.muln(2),
-    minStk.muln(2)
-  );
-  await checkCandidateInfo(
-    candidateStateBeforeExecuting,
-    minStk.muln(2),
-    minStk.muln(2).add(minStk.divn(2)),
-    minStk.muln(2).add(minStk.divn(2))
-  );
-  await checkCandidateInfo(
-    candidateStateAfterExecuting,
-    minStk.muln(2),
     minStk.muln(3),
     minStk.muln(3)
   );
