@@ -5,7 +5,6 @@ import { AssetId } from "../../utils/ChainSpecs";
 import { ApiContext } from "../../utils/Framework/XcmHelper";
 import XcmNetworks from "../../utils/Framework/XcmNetworks";
 import { devTestingPairs, setupApi, setupUsers } from "../../utils/setup";
-import { sendTransaction } from "../../utils/sign";
 import { mangataChopstick } from "../../utils/api";
 import {
   expectEvent,
@@ -13,8 +12,9 @@ import {
   expectJson,
   matchEvents,
 } from "../../utils/validators";
-import { BN_BILLION } from "@mangata-finance/sdk";
-import { testLog } from "../../utils/Logger";
+import { BN_BILLION, Mangata } from "@mangata-finance/sdk";
+import { BN } from "@polkadot/util";
+import { Codec } from "@polkadot/types/types";
 
 /**
  * @group xcm
@@ -74,38 +74,25 @@ describe("XCM tests for Mangata <-> Kusama", () => {
   });
 
   it("mangata transfer assets to kusama", async () => {
-    const tx = await sendTransaction(
-      mangata.api.tx.xTokens
-        .transfer(
-          4,
-          1e12,
-          {
-            V3: {
-              parents: 1,
-              interior: {
-                X1: {
-                  AccountId32: {
-                    network: undefined,
-                    id: alice.addressRaw,
-                  },
-                },
-              },
-            },
-          },
-          "Unlimited"
-        )
-        .signAsync(alice)
-    );
+    const mgaSdk = Mangata.instance([mangata.uri]);
+    await mgaSdk.xTokens.withdrawKsm({
+      account: alice,
+      amount: new BN(1e12),
+      kusamaAddress: alice.address,
+      txOptions: {
+        async extrinsicStatus(events) {
+          expectExtrinsicSuccess(events as any[] as Codec[]);
+          expectEvent(events as any[] as Codec[], {
+            event: expect.objectContaining({
+              section: "xTokens",
+              method: "TransferredMultiAssets",
+            }),
+          });
+        },
+      },
+    });
 
     await mangata.chain.newBlock();
-
-    expectExtrinsicSuccess(await tx.events);
-    expectEvent(await tx.events, {
-      event: expect.objectContaining({
-        section: "xTokens",
-        method: "TransferredMultiAssets",
-      }),
-    });
 
     await kusama.chain.newBlock();
     expectJson(
@@ -113,13 +100,12 @@ describe("XCM tests for Mangata <-> Kusama", () => {
     ).toMatchSnapshot();
 
     expect(await balance(kusama.api, alice.address)).toMatchSnapshot();
-    testLog.getLog().info("sleeping");
     expectEvent(await kusama.api.query.system.events(), {
       event: expect.objectContaining({
         method: "ExecutedUpward",
         section: "ump",
         data: [
-          "0xf1480be6240549d36471d3e41c5a784a2976f75b99e1b0329f271d43987eca6f",
+          "0xf629ff5e0d65863b5520ca2fdf8e6051acc5be1d34abc8960bc389829aad38b3",
           {
             Complete: expect.anything(),
           },
@@ -129,47 +115,49 @@ describe("XCM tests for Mangata <-> Kusama", () => {
   });
 
   it("Kusama transfer assets to mangata", async () => {
-    const tx = await sendTransaction(
-      kusama.api.tx.xcmPallet
-        .limitedReserveTransferAssets(
+    const mgaSdk = Mangata.instance([mangata.uri]);
+    await mgaSdk.xTokens.depositFromKusama({
+      account: alice,
+      url: kusama.uri,
+      assets: {
+        V3: [
           {
-            V3: {
-              parents: 0,
-              interior: {
-                X1: { Parachain: 2110 },
+            id: { Concrete: { parents: 0, interior: "Here" } },
+            fun: { Fungible: 1e12 },
+          },
+        ],
+      },
+      beneficiary: {
+        V3: {
+          parents: 0,
+          interior: {
+            X1: {
+              AccountId32: {
+                network: undefined,
+                id: alice.addressRaw,
               },
             },
           },
-          {
-            V3: {
-              parents: 0,
-              interior: {
-                X1: {
-                  AccountId32: {
-                    network: undefined,
-                    id: alice.addressRaw,
-                  },
-                },
-              },
-            },
+        },
+      },
+      destination: {
+        V3: {
+          parents: 0,
+          interior: {
+            X1: { Parachain: 2110 },
           },
-          {
-            V3: [
-              {
-                id: { Concrete: { parents: 0, interior: "Here" } },
-                fun: { Fungible: 1e12 },
-              },
-            ],
-          },
-          0,
-          "Unlimited"
-        )
-        .signAsync(alice, { nonce: 0 })
-    );
+        },
+      },
+      feeAssetItem: 0,
+      weightLimit: "Unlimited",
+      txOptions: {
+        async extrinsicStatus(events) {
+          await matchEvents(events as any as Codec[], "xcmPallet");
+        },
+      },
+    });
 
     await kusama.chain.newBlock();
-
-    await matchEvents(tx.events, "xcmPallet");
 
     expect(await balance(kusama.api, alice.address)).toMatchSnapshot();
     //TODO: Somehow I can not get the events from the dcmp.
