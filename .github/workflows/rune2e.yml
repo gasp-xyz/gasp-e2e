@@ -118,28 +118,21 @@ jobs:
           cache-dependency-path: e2eTests/yarn.lock
 
       - name: Replace parachain docker image reference in config
-        working-directory: mangata-node/launch
+        working-directory: mangata-node/devops/parachain-launch
         run: sed -i 's+mangatasolutions/mangata-node:.*+${{ github.event.inputs.dockerImage || inputs.dockerImage }}+g' config.yml
       
-      - name: Debug node version
-        working-directory: mangata-node/launch
-        run: node --version
-      
-      - name: Install parachain launch
-        working-directory: mangata-node/launch
-        run: yarn
-
-      - name: Generate parachain launch config
-        working-directory: mangata-node/launch
-        run: yarn gen
+      - name: Generate the config
+        working-directory: mangata-node/devops/parachain-launch
+        run: npx @open-web3/parachain-launch generate config.yml
 
       - name: Stop previous parachain if running
-        working-directory: mangata-node/launch
-        run: yarn down
+        working-directory: mangata-node/devops/parachain-launch/output
+        run: docker-compose down -v
 
       - name: Start mangata-node parachain
-        working-directory: mangata-node/launch
-        run: yarn up
+        working-directory: mangata-node/devops/parachain-launch/output
+        run: docker-compose up -d --build
+
       - uses: actions/setup-node@v3
         with:
           node-version: '18'
