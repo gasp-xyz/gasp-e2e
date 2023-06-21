@@ -1,4 +1,4 @@
-import { BN } from "@mangata-finance/sdk";
+import { BN } from "@polkadot/util";
 import { api, Extrinsic } from "./setup";
 import { User } from "./User";
 import { SudoDB } from "./SudoDB";
@@ -39,8 +39,8 @@ export class Staking {
       amount,
       tokenId,
       tokenOrigin,
-      new BN(numCollators).addn(10),
-      new BN(liqAssetsCount)
+      (numCollators + 10).toString(),
+      liqAssetsCount.toString()
     );
   }
   static addStakingLiquidityToken(liqToken: BN): Extrinsic {

@@ -1,3 +1,4 @@
+import "chromedriver";
 import { Key, logging, WebDriver } from "selenium-webdriver";
 import { sleep } from "../../utils";
 import { Mangata } from "../pages/Mangata";
@@ -7,10 +8,9 @@ import { testLog } from "../../Logger";
 import { BN } from "@polkadot/util";
 import { Talisman } from "../pages/Talisman";
 
-const { By, until } = require("selenium-webdriver");
+import { By, until } from "selenium-webdriver";
 
 const timeOut = 60000;
-require("chromedriver");
 const outputPath = `reports/artifacts`;
 export async function waitForElement(
   driver: WebDriver,

@@ -1,5 +1,6 @@
 // todo remove test once v2 is passing on CI for some time
 import { getApi, initApi } from "../../utils/api";
+import { jest } from "@jest/globals";
 import {
   calcuate_mint_liquidity_price_local,
   calcuate_burn_liquidity_price_local,

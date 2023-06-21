@@ -1,17 +1,16 @@
-// @ts-nocheck
-
 import { getApi } from "./api";
 import { ExtrinsicResult } from "./eventListeners";
 import { User } from "./User";
 import { getEventResultFromMangataTx, sudoIssueAsset } from "./txHandler";
 import { getCurrentNonce } from "./tx";
 import { getBlockNumber } from "./utils";
-import { BN, toBN, signTx } from "@mangata-finance/sdk";
+import { toBN, signTx } from "@mangata-finance/sdk";
 import { Assets } from "./Assets";
 import { setupApi } from "./setup";
 import { Sudo } from "./sudo";
 import { testLog } from "./Logger";
 import { waitNewBlock } from "./eventListeners";
+import { BN } from "@polkadot/util";
 
 export async function waitForBootstrapStatus(
   bootstrapStatus: string,

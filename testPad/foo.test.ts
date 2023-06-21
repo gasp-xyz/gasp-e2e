@@ -3,7 +3,7 @@ import { getApi, initApi } from "../utils/api";
 import Docker from "dockerode";
 import execSh from "exec-sh";
 import { sleep } from "../utils/utils";
-require("dotenv").config();
+import "dotenv/config";
 
 jest.spyOn(console, "log").mockImplementation(jest.fn());
 

@@ -2,6 +2,7 @@
  *
  * @group uiMain
  */
+import { jest } from "@jest/globals";
 import { Mangata } from "../../utils/frontend/pages/Mangata";
 import { Keyring } from "@polkadot/api";
 import { BN } from "@polkadot/util";
@@ -37,7 +38,7 @@ import {
 } from "../../utils/frontend/pages/NotificationModal";
 import { Polkadot } from "../../utils/frontend/pages/Polkadot";
 
-require("dotenv").config();
+import "dotenv/config";
 
 jest.spyOn(console, "log").mockImplementation(jest.fn());
 

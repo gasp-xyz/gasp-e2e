@@ -15,7 +15,7 @@ import fs from "fs";
 import { mintLiquidity } from "../utils/tx";
 import { signSendAndWaitToFinishTx } from "../utils/txHandler";
 
-require("dotenv").config();
+import "dotenv/config";
 
 jest.spyOn(console, "log").mockImplementation(jest.fn());
 const { sudo: sudoUserName } = getEnvironmentRequiredVars();

@@ -3,6 +3,7 @@
  * @group xyk
  * @group ci
  */
+import { jest } from "@jest/globals";
 import { getApi, initApi } from "../../utils/api";
 import { BN } from "@polkadot/util";
 import { Keyring } from "@polkadot/api";

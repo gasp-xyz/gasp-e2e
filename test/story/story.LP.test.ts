@@ -5,8 +5,9 @@
  * @group parallel
  * @group story
  */
+import { jest } from "@jest/globals";
 import { getApi, getMangataInstance, initApi } from "../../utils/api";
-import { getBalanceOfPool } from "../../utils/tx";
+import { createPool, getBalanceOfPool, sellAsset } from "../../utils/tx";
 import { waitNewBlock, ExtrinsicResult } from "../../utils/eventListeners";
 import { BN } from "@polkadot/util";
 import { Keyring } from "@polkadot/api";
@@ -15,9 +16,9 @@ import { Assets } from "../../utils/Assets";
 import { getEnvironmentRequiredVars } from "../../utils/utils";
 import { getEventResultFromMangataTx } from "../../utils/txHandler";
 import { MGA_ASSET_ID } from "../../utils/Constants";
-import { Mangata } from "@mangata-finance/sdk";
 import { testLog } from "../../utils/Logger";
 import { Fees } from "../../utils/Fees";
+import { MangataInstance } from "@mangata-finance/sdk";
 
 const { sudo: sudoUserName } = getEnvironmentRequiredVars();
 
@@ -80,14 +81,13 @@ describe("Story tests > LP", () => {
   test("Pool wins over 0.3% tokens when 10 swaps are done in the pool [Token - MGA]", async () => {
     //lets create a pool with user1
     const mangata = await getMangataInstance();
-    await mangata.createPool(
+    await createPool(
       testUser1.keyRingPair,
-      token1.toString(),
+      token1,
       defaultCurrecyValue,
-      MGA_ASSET_ID.toString(),
+      MGA_ASSET_ID,
       defaultCurrecyValue
     );
-
     const poolBalanceBeforeSwaps = await getBalanceOfPool(token1, MGA_ASSET_ID);
     //lets swap tokens
     await do10Swaps(mangata, testUser2, token1);
@@ -124,18 +124,22 @@ describe("Story tests > LP", () => {
   });
 });
 
-async function do10Swaps(mangata: Mangata, testUser2: User, token1: BN) {
+async function do10Swaps(
+  mangata: MangataInstance,
+  testUser2: User,
+  token1: BN
+) {
   const userNonce = [];
-  userNonce.push(await mangata.getNonce(testUser2.keyRingPair.address));
+  userNonce.push(await mangata.query.getNonce(testUser2.keyRingPair.address));
   const promises = [];
   const maxFutureNonce = userNonce[0].toNumber() + 9;
   for (let index = maxFutureNonce; index >= userNonce[0].toNumber(); index--) {
     if (index % 2 === 0) {
       promises.push(
-        mangata.sellAsset(
+        sellAsset(
           testUser2.keyRingPair,
-          MGA_ASSET_ID.toString(),
-          token1.toString(),
+          MGA_ASSET_ID,
+          token1,
           new BN(10000),
           new BN(0),
           {
@@ -145,10 +149,10 @@ async function do10Swaps(mangata: Mangata, testUser2: User, token1: BN) {
       );
     } else {
       promises.push(
-        mangata.sellAsset(
+        sellAsset(
           testUser2.keyRingPair,
-          token1.toString(),
-          MGA_ASSET_ID.toString(),
+          token1,
+          MGA_ASSET_ID,
           new BN(10000),
           new BN(0),
           {

@@ -9,7 +9,7 @@ import { MangataGenericEvent } from "@mangata-finance/sdk";
 import { burnLiquidity, getNextAssetId, mintLiquidity } from "../utils/tx";
 import { testLog } from "../utils/Logger";
 
-require("dotenv").config();
+import "dotenv/config";
 
 jest.spyOn(console, "log").mockImplementation(jest.fn());
 const { sudo: sudoUserName } = getEnvironmentRequiredVars();
