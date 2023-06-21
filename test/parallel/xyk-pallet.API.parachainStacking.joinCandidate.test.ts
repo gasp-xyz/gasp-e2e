@@ -3,7 +3,7 @@
  * @group xyk
  * @group parallel
  */
-
+import { jest } from "@jest/globals";
 import { BN } from "@polkadot/util";
 import { Keyring } from "@polkadot/api";
 import { BN_ZERO, signTx } from "@mangata-finance/sdk";
