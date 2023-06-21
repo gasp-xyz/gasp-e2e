@@ -4,7 +4,7 @@ import { User } from "../../utils/User";
 import { getEnvironmentRequiredVars } from "../../utils/utils";
 import fs from "fs";
 import { signSendAndWaitToFinishTx } from "../../utils/txHandler";
-
+import { jest } from "@jest/globals";
 const { sudo: sudoUserName, chainUri } = getEnvironmentRequiredVars();
 jest.spyOn(console, "log").mockImplementation(jest.fn());
 jest.setTimeout(1500000);
@@ -30,7 +30,7 @@ describe("Story tests > LP", () => {
     //lets create a pool with user1
     //TODO: Get nonce!
     const mangata = await getMangataInstance(chainUri);
-    const api = await mangata.getApi();
+    const api = await mangata.api();
     const hash =
       "0xa4f385913ba0acb618402fe01aa20a87ed3d5b58cc7d28cb7a9165eb309c9300";
     const wasmFile = fs.readFileSync("./test/upgrade/RC_upgrade_0.wasm");

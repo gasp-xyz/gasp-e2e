@@ -5,6 +5,7 @@
  * @group liquidity
  * @group parallel
  */
+import { jest } from "@jest/globals";
 import { Keyring } from "@polkadot/api";
 import { getApi, initApi } from "../../utils/api";
 import { Assets } from "../../utils/Assets";
@@ -25,11 +26,12 @@ import {
   transferAsset,
   unlockVestedToken,
 } from "../../utils/tx";
-import { BN, toBN } from "@mangata-finance/sdk";
+import { toBN } from "@mangata-finance/sdk";
 import { getEnvironmentRequiredVars, getBlockNumber } from "../../utils/utils";
 import { User } from "../../utils/User";
 import { Xyk } from "../../utils/xyk";
 import { testLog } from "../../utils/Logger";
+import { BN } from "@polkadot/util";
 
 jest.spyOn(console, "log").mockImplementation(jest.fn());
 jest.setTimeout(2500000);

@@ -4,6 +4,7 @@
  * @group liquidity
  * @group parallel
  */
+import { jest } from "@jest/globals";
 import {
   activateLiquidity,
   deactivateLiquidity,
@@ -19,7 +20,7 @@ import {
   getMultiPurposeLiquidityStatus,
 } from "../../utils/utils";
 import { Node } from "../../utils/Framework/Node/Node";
-import { BN } from "@mangata-finance/sdk";
+import { BN } from "@polkadot/util";
 import { hexToBn } from "@polkadot/util";
 import { Assets } from "../../utils/Assets";
 import { getApi } from "../../utils/api";
@@ -45,9 +46,9 @@ describe("MPL: Delegator", () => {
     const candidates = JSON.parse(
       JSON.stringify(await node.api?.query.parachainStaking.candidatePool())
     );
-    //get the liq token that is smaller ( 3 )
+
     liqTokenForCandidate = new BN(
-      Math.min.apply(
+      Math.max.apply(
         null,
         candidates.map(
           (t: { liquidityToken: { toNumber: () => any } }) => t.liquidityToken

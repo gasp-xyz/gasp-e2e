@@ -9,6 +9,7 @@ import XcmNetworks from "../../utils/Framework/XcmNetworks";
 import { alice, api, setupApi, setupUsers } from "../../utils/setup";
 import { signSendSuccess } from "../../utils/sign";
 import { expectEvent } from "../../utils/validators";
+import { jest } from "@jest/globals";
 jest.setTimeout(300000);
 
 /**

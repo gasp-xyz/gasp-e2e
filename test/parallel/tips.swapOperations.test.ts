@@ -2,6 +2,7 @@
  *
  * @group parallel
  */
+import { jest } from "@jest/globals";
 import { getApi, initApi } from "../../utils/api";
 import { BN } from "@polkadot/util";
 import { User } from "../../utils/User";

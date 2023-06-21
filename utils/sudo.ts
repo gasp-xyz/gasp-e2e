@@ -3,28 +3,33 @@ import { User } from "./User";
 import { MangataGenericEvent } from "@mangata-finance/sdk";
 import { SudoDB } from "./SudoDB";
 import { signSendFinalized } from "./sign";
+import { SubmittableExtrinsic } from "@polkadot/api/types";
+import type { ISubmittableResult } from "@polkadot/types/types";
+import { Call } from "@polkadot/types/interfaces";
 
 export class Sudo {
-  static sudo(tx: Extrinsic): Extrinsic {
-    return api.tx.sudo.sudo(tx);
+  static sudo(
+    tx: SubmittableExtrinsic<"promise", ISubmittableResult>
+  ): Extrinsic {
+    return api.tx.sudo.sudo(tx as any as Call);
   }
 
   static sudoAs(user: User, tx: Extrinsic): Extrinsic {
-    return api.tx.sudo.sudoAs(user.keyRingPair.address, tx);
+    return api.tx.sudo.sudoAs(user.keyRingPair.address, tx as any as Call);
   }
 
   static sudoAsWithAddressString(address: string, tx: Extrinsic): Extrinsic {
-    return api.tx.sudo.sudoAs(address, tx);
+    return api.tx.sudo.sudoAs(address, tx as any as Call);
   }
 
   static batch(...txs: Extrinsic[]): Extrinsic {
-    return api.tx.utility.batchAll(txs);
+    return api.tx.utility.batchAll(txs as any as Call[]);
   }
   static singleBatch(...txs: Extrinsic[]): Extrinsic {
-    return api.tx.utility.batch(txs);
+    return api.tx.utility.batch(txs as any as Call[]);
   }
   static forceBatch(...txs: Extrinsic[]): Extrinsic {
-    return api.tx.utility.forceBatch(txs);
+    return api.tx.utility.forceBatch(txs as any as Call[]);
   }
 
   static async batchAsSudoFinalized(
@@ -33,7 +38,11 @@ export class Sudo {
     const nonce = await SudoDB.getInstance().getSudoNonce(
       sudo.keyRingPair.address
     );
-    return signSendFinalized(api.tx.utility.batchAll(txs), sudo, nonce);
+    return signSendFinalized(
+      api.tx.utility.batchAll(txs as any as Call[]),
+      sudo,
+      nonce
+    );
   }
 
   static async asSudoFinalized(tx: Extrinsic): Promise<MangataGenericEvent[]> {

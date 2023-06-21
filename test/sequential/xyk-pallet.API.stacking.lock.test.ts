@@ -4,6 +4,7 @@
  * @group api
  * @group sequential
  */
+import { jest } from "@jest/globals";
 import { api, getApi, initApi } from "../../utils/api";
 import { getTokensAccountInfo } from "../../utils/tx";
 import { hexToBn } from "@polkadot/util";
@@ -73,10 +74,8 @@ describe.skip("xyk-pallet - Sell Asset: validate Errors:", () => {
         amountToJoin,
         new BN(3),
         "AvailableBalance",
-        // @ts-ignore - Mangata bond operation has 4 params, somehow is inheriting the bond operation from polkadot :S
-        new BN(candidates.length),
-        // @ts-ignore
-        new BN(liqAssetsCount)
+        candidates.length + 10,
+        liqAssetsCount + 10
       ),
       testUser1.keyRingPair
     );

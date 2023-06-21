@@ -6,7 +6,6 @@ import {
   toBN,
   TokenBalance,
 } from "@mangata-finance/sdk";
-import { Keyring } from "@polkadot/api";
 import { AddressOrPair, SubmittableExtrinsic } from "@polkadot/api/types";
 import { KeyringPair } from "@polkadot/keyring/types";
 import { StorageKey } from "@polkadot/types";
@@ -28,6 +27,7 @@ import { SudoDB } from "./SudoDB";
 import { setAssetInfo, signSendAndWaitToFinishTx } from "./txHandler";
 import { User } from "./User";
 import { getEnvironmentRequiredVars, stringToBN } from "./utils";
+import Keyring from "@polkadot/keyring";
 
 export const signTxDeprecated = async (
   tx: SubmittableExtrinsic<"promise">,
@@ -147,11 +147,11 @@ export async function getBurnAmount(
   liquidityAssetAmount: BN
 ) {
   const mangata = await getMangataInstance();
-  const result = await mangata.getBurnAmount(
-    firstAssetId.toString(),
-    secondAssetId.toString(),
-    liquidityAssetAmount
-  );
+  const result = await mangata.rpc.getBurnAmount({
+    firstTokenId: firstAssetId.toString(),
+    secondTokenId: secondAssetId.toString(),
+    amount: liquidityAssetAmount,
+  });
   testLog.getLog().info(result.firstAssetAmount);
   return result;
 }
@@ -162,11 +162,11 @@ export async function calculate_sell_price_rpc(
   sell_amount: BN
 ): Promise<BN> {
   const mangata = await getMangataInstance();
-  const result = await mangata.calculateSellPrice(
-    input_reserve,
-    output_reserve,
-    sell_amount
-  );
+  const result = await mangata.rpc.calculateSellPrice({
+    amount: sell_amount,
+    inputReserve: input_reserve,
+    outputReserve: output_reserve,
+  });
   return result;
 }
 
@@ -176,11 +176,11 @@ export async function calculate_buy_price_rpc(
   buyAmount: BN
 ) {
   const mangata = await getMangataInstance();
-  const result = await mangata.calculateBuyPrice(
-    inputReserve,
-    outputReserve,
-    buyAmount
-  );
+  const result = await mangata.rpc.calculateBuyPrice({
+    inputReserve: inputReserve,
+    outputReserve: outputReserve,
+    amount: buyAmount,
+  });
   return result;
 }
 
@@ -190,7 +190,7 @@ export async function calculate_buy_price_id_rpc(
   buyAmount: BN
 ) {
   const mangata = await getMangataInstance();
-  const result = await mangata.calculateBuyPriceId(
+  const result = await mangata.rpc.calculateBuyPriceId(
     soldTokenId.toString(),
     boughtTokenId.toString(),
     buyAmount
@@ -204,7 +204,7 @@ export async function calculate_sell_price_id_rpc(
   sellAmount: BN
 ) {
   const mangata = await getMangataInstance();
-  const result = await mangata.calculateSellPriceId(
+  const result = await mangata.rpc.calculateSellPriceId(
     soldTokenId.toString(),
     boughtTokenId.toString(),
     sellAmount
@@ -228,7 +228,7 @@ export async function getCurrentNonce(account?: string) {
 
 export async function getChainNonce(address: string) {
   const mangata = await getMangataInstance();
-  const nonce = await mangata.getNonce(address);
+  const nonce = await mangata.query.getNonce(address);
   return nonce;
 }
 
@@ -236,15 +236,26 @@ export async function getUserAssets(account: any, assets: BN[]) {
   const user_asset_balances: TokenBalance[] = [];
 
   for (const asset of assets) {
-    const user_asset_balance = await getBalanceOfAsset(asset, account);
+    const user_asset_balance = await getBalanceOfAssetStr(asset, account);
     user_asset_balances.push(user_asset_balance);
   }
   return user_asset_balances;
 }
 
-export async function getBalanceOfAsset(assetId: BN, account: any) {
+export async function getBalanceOfAssetStr(assetId: BN, account: string) {
   const mangata = await getMangataInstance();
-  const balance = await mangata.getTokenBalance(assetId.toString(), account);
+  const balance = await mangata.query.getTokenBalance(
+    assetId.toString(),
+    account
+  );
+  return balance;
+}
+export async function getBalanceOfAsset(assetId: BN, account: User) {
+  const mangata = await getMangataInstance();
+  const balance = await mangata.query.getTokenBalance(
+    assetId.toString(),
+    account.keyRingPair.address
+  );
   return balance;
 }
 
@@ -255,11 +266,11 @@ export async function getBalanceOfPool(
   let reversed = false;
   const emptyPool = "0,0";
   const mangata = await getMangataInstance();
-  const balance1 = await mangata.getAmountOfTokenIdInPool(
+  const balance1 = await mangata.query.getAmountOfTokensInPool(
     assetId1.toString(),
     assetId2.toString()
   );
-  const balance2 = await mangata.getAmountOfTokenIdInPool(
+  const balance2 = await mangata.query.getAmountOfTokensInPool(
     assetId2.toString(),
     assetId1.toString()
   );
@@ -375,13 +386,13 @@ export const transferAsset = async (
 ) => {
   const mangata = await getMangataInstance();
   const nonce = await getCurrentNonce(account.address);
-  const result = await mangata.transferToken(
-    account,
-    tokenId.toString(),
-    targetAddress,
-    amount,
-    { nonce: nonce }
-  );
+  const result = await mangata.tokens.transferTokens({
+    account: account,
+    tokenId: tokenId.toString(),
+    address: targetAddress,
+    amount: amount,
+    txOptions: { nonce: nonce },
+  });
   return result;
 };
 
@@ -392,12 +403,12 @@ export const transferAll = async (
 ) => {
   const mangata = await getMangataInstance();
   const nonce = await getCurrentNonce(account.address);
-  const result = await mangata.transferTokenAll(
-    account,
-    tokenId.toString(),
-    target,
-    { nonce: nonce }
-  );
+  const result = await mangata.tokens.transferAllTokens({
+    account: account,
+    tokenId: tokenId.toString(),
+    address: target,
+    txOptions: { nonce: nonce },
+  });
   return result;
 };
 
@@ -444,14 +455,14 @@ export const createPool = async (
       `Creating pool:${firstAssetId},${firstAssetAmount},${secondAssetId},${secondAssetAmount}`
     );
   const mangata = await getMangataInstance();
-  const result = await mangata.createPool(
-    account,
-    firstAssetId.toString(),
-    firstAssetAmount,
-    secondAssetId.toString(),
-    secondAssetAmount,
-    { nonce: nonce }
-  );
+  const result = await mangata.xyk.createPool({
+    account: account,
+    firstTokenId: firstAssetId.toString(),
+    secondTokenId: secondAssetId.toString(),
+    secondTokenAmount: secondAssetAmount,
+    firstTokenAmount: firstAssetAmount,
+    txOptions: { nonce: nonce },
+  });
   return result;
 };
 
@@ -464,7 +475,7 @@ export const promotePool = async (
 ) => {
   testLog.getLog().info(`Promoting pool :${liqAssetId}`);
   const mangata = await getMangataInstance();
-  const api = await mangata.getApi();
+  const api = await mangata.api();
   const result = await signTx(
     api,
     api.tx.sudo.sudo(
@@ -485,14 +496,14 @@ export const sellAsset = async (
   options = {}
 ) => {
   const mangata = await getMangataInstance();
-  const result = await mangata.sellAsset(
-    account,
-    soldAssetId.toString(),
-    boughtAssetId.toString(),
-    amount,
-    minAmountOut,
-    options
-  );
+  const result = await mangata.xyk.sellAsset({
+    account: account,
+    soldTokenId: soldAssetId.toString(),
+    boughtTokenId: boughtAssetId.toString(),
+    amount: amount,
+    minAmountOut: minAmountOut,
+    txOptions: options,
+  });
   return result;
 };
 export const delegate = async (
@@ -502,7 +513,7 @@ export const delegate = async (
   from: "availablebalance"
 ) => {
   const mangata = await getMangataInstance();
-  const api = await mangata.getApi();
+  const api = await mangata.api();
   const candidates = JSON.parse(
     JSON.stringify(await api?.query.parachainStaking.candidatePool())
   );
@@ -535,7 +546,7 @@ export const joinCandidate = async (
   stricSuccess = true
 ) => {
   const mangata = await getMangataInstance();
-  const api = await mangata.getApi();
+  const api = await mangata.api();
   const candidates = JSON.parse(
     JSON.stringify(await api?.query.parachainStaking.candidatePool())
   );
@@ -547,9 +558,8 @@ export const joinCandidate = async (
       new BN(amount),
       new BN(liqToken),
       from,
-      // @ts-ignore - Mangata bond operation has 4 params, somehow is inheriting the bond operation from polkadot :S
-      new BN(candidates.length),
-      new BN(liqTokenCount)
+      new BN(candidates.length).addn(10),
+      new BN(liqTokenCount).addn(10)
     ),
     account,
     stricSuccess
@@ -564,7 +574,7 @@ export const activateLiquidity = async (
   strictsuccess = false
 ) => {
   const mangata = await getMangataInstance();
-  const api = await mangata.getApi();
+  const api = await mangata.api();
   const result = await signSendAndWaitToFinishTx(
     api?.tx.proofOfStake.activateLiquidity(
       new BN(liqToken),
@@ -582,7 +592,7 @@ export const deactivateLiquidity = async (
   amount: BN
 ) => {
   const mangata = await getMangataInstance();
-  const api = await mangata.getApi();
+  const api = await mangata.api();
 
   const result = await signSendAndWaitToFinishTx(
     api?.tx.proofOfStake.deactivateLiquidity(new BN(liqToken), new BN(amount)),
@@ -598,7 +608,7 @@ export const provideLiquidity = async (
   amount: BN
 ) => {
   const mangata = await getMangataInstance();
-  const api = await mangata.getApi();
+  const api = await mangata.api();
   const result = await signTx(
     api,
     api.tx.xyk.provideLiquidityWithConversion(
@@ -618,7 +628,7 @@ export const reserveVestingLiquidityTokens = async (
   strictSuccess = true
 ) => {
   const mangata = await getMangataInstance();
-  const api = await mangata.getApi();
+  const api = await mangata.api();
 
   const result = await signSendAndWaitToFinishTx(
     api?.tx.multiPurposeLiquidity.reserveVestingLiquidityTokens(
@@ -639,14 +649,14 @@ export const buyAsset = async (
   options = {}
 ) => {
   const mangata = await getMangataInstance();
-  const result = await mangata.buyAsset(
-    account,
-    soldAssetId.toString(),
-    boughtAssetId.toString(),
-    amount,
-    maxAmountIn,
-    options
-  );
+  const result = await mangata.xyk.buyAsset({
+    account: account,
+    soldTokenId: soldAssetId.toString(),
+    boughtTokenId: boughtAssetId.toString(),
+    amount: amount,
+    maxAmountIn: maxAmountIn,
+    txOptions: options,
+  });
   return result;
 };
 
@@ -658,13 +668,13 @@ export const mintLiquidity = async (
   expectedSecondAssetAmount: BN = new BN(Number.MAX_SAFE_INTEGER)
 ) => {
   const mangata = await getMangataInstance();
-  const result = await mangata.mintLiquidity(
-    account,
-    firstAssetId.toString(),
-    secondAssetId.toString(),
-    firstAssetAmount,
-    expectedSecondAssetAmount
-  );
+  const result = await mangata.xyk.mintLiquidity({
+    account: account,
+    expectedSecondTokenAmount: expectedSecondAssetAmount,
+    firstTokenAmount: firstAssetAmount,
+    firstTokenId: firstAssetId.toString(),
+    secondTokenId: secondAssetId.toString(),
+  });
   return result;
 };
 export const mintLiquidityUsingVestingNativeTokens = async (
@@ -674,7 +684,7 @@ export const mintLiquidityUsingVestingNativeTokens = async (
   expectedSecondAssetAmount: BN = new BN(Number.MAX_SAFE_INTEGER)
 ) => {
   const mangata = await getMangataInstance();
-  const api = await mangata.getApi();
+  const api = await mangata.api();
   const result = await signTx(
     api,
     api.tx.xyk.mintLiquidityUsingVestingNativeTokens(
@@ -695,13 +705,13 @@ export const burnLiquidity = async (
 ) => {
   const mangata = await getMangataInstance();
   const nonce = await getCurrentNonce(account.address);
-  const result = await mangata.burnLiquidity(
-    account,
-    firstAssetId.toString(),
-    secondAssetId.toString(),
-    liquidityAssetAmount,
-    { nonce: nonce }
-  );
+  const result = await mangata.xyk.burnLiquidity({
+    account: account,
+    firstTokenId: firstAssetId.toString(),
+    secondTokenId: secondAssetId.toString(),
+    amount: liquidityAssetAmount,
+    txOptions: { nonce: nonce },
+  });
   return result;
 };
 
@@ -713,7 +723,7 @@ export async function getTokensAccountInfo(account: string, assetId: BN) {
 
 export async function getTreasury(tokenId: BN): Promise<BN> {
   const { treasuryPalletAddress } = getEnvironmentRequiredVars();
-  const treasuryBalance = await getBalanceOfAsset(
+  const treasuryBalance = await getBalanceOfAssetStr(
     tokenId,
     treasuryPalletAddress
   );
@@ -723,7 +733,7 @@ export async function getTreasury(tokenId: BN): Promise<BN> {
 
 export async function getTreasuryBurn(tokenId: BN): Promise<BN> {
   const { treasuryBurnPalletAddress } = getEnvironmentRequiredVars();
-  const treasuryBalance = await getBalanceOfAsset(
+  const treasuryBalance = await getBalanceOfAssetStr(
     tokenId,
     treasuryBurnPalletAddress
   );

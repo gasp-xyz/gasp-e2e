@@ -2,6 +2,7 @@
  *
  * @group multiswap
  */
+import { jest } from "@jest/globals";
 import { getApi, initApi } from "../../utils/api";
 import {
   multiSwapBuy,
