@@ -1,6 +1,6 @@
 import { BuildBlockMode, connectParachains } from "@acala-network/chopsticks";
 import { BN_BILLION, BN_HUNDRED, Mangata } from "@mangata-finance/sdk";
-import { BN_FIVE, BN_TEN } from "@polkadot/util";
+import { BN_FIVE, BN_TEN, BN } from "@polkadot/util";
 import { mangataChopstick } from "../../utils/api";
 import {
   AssetId,
@@ -13,7 +13,8 @@ import { XcmNode } from "../../utils/Framework/Node/XcmNode";
 import { ApiContext } from "../../utils/Framework/XcmHelper";
 import XcmNetworks from "../../utils/Framework/XcmNetworks";
 import { alice, api, setupApi, setupUsers } from "../../utils/setup";
-import { expectEvent } from "../../utils/validators";
+import { expectEvent, expectJson } from "../../utils/validators";
+import { Assets } from "../../utils/Assets";
 /**
  * @group xcm
  */
@@ -54,6 +55,22 @@ describe("XCM transfers", () => {
           [
             [alice.keyRingPair.address],
             { data: { free: BN_HUNDRED.mul(AssetId.BncV3.unit).toString() } },
+          ],
+        ],
+      },
+      Tokens: {
+        Accounts: [
+          [
+            [alice.keyRingPair.address, { token: "ZLK" }],
+            { free: BN_BILLION.mul(AssetId.Mgx.unit).toString() },
+          ],
+          [
+            [alice.keyRingPair.address, { VToken: "ksm" }],
+            { free: BN_BILLION.mul(BN_TEN.pow(new BN(12))).toString() },
+          ],
+          [
+            [alice.keyRingPair.address, { VSToken: "ksm" }],
+            { free: BN_BILLION.mul(BN_TEN.pow(new BN(12))).toString() },
           ],
         ],
       },
@@ -180,5 +197,260 @@ describe("XCM transfers", () => {
         }),
       }),
     });
+    expectJson(
+      await mangata.api.query.tokens.accounts(alice.keyRingPair.address, 14)
+    ).toMatchSnapshot();
+  });
+  it("[ BNC V3 -> MGA -> BNC V3 ] send ZLK to mangata and back", async () => {
+    const mgaSdk = Mangata.instance([mangata.uri]);
+    const target = ChainSpecs.get(ChainId.Mg)!;
+    await mgaSdk.xTokens.depositFromParachain({
+      account: alice.keyRingPair,
+      asset: {
+        V3: {
+          id: {
+            Concrete: {
+              parents: 0,
+              interior: {
+                X1: {
+                  GeneralKey: {
+                    length: 2,
+                    data: "0x0207000000000000000000000000000000000000000000000000000000000000",
+                  },
+                },
+              },
+            },
+          },
+          fun: {
+            Fungible: BN_TEN.mul(Assets.MG_UNIT),
+          },
+        },
+      },
+      destination: {
+        V3: {
+          parents: 1,
+          interior: {
+            X2: [
+              { Parachain: target.parachain },
+              {
+                AccountId32: {
+                  network: undefined,
+                  id: alice.keyRingPair.addressRaw,
+                },
+              },
+            ],
+          },
+        },
+      },
+      url: bifrost.uri,
+      weightLimit: {
+        Limited: {
+          refTime: TRANSFER_INSTRUCTIONS * target.unitCostWeight,
+          proofSize: 0,
+        },
+      },
+    });
+    await waitForEvents(api, "xcmpQueue.Success");
+    expectEvent(await waitForEvents(api, "tokens.Deposited"), {
+      event: expect.objectContaining({
+        data: expect.objectContaining({
+          who: "5GrwvaEF5zXb26Fz9rcQpDWS57CtERHpNehXCPcNoHGKutQY",
+          amount: "9,951,616,000,000,000,000",
+        }),
+      }),
+    });
+    await mgaSdk.xTokens.withdraw({
+      account: alice.keyRingPair,
+      amount: Assets.MG_UNIT.mul(BN_FIVE),
+      destinationAddress: alice.keyRingPair.address,
+      parachainId: 2001,
+      tokenSymbol: "ZLK",
+      withWeight:
+        TRANSFER_INSTRUCTIONS * ChainSpecs.get(ChainId.Bifrost)!.unitCostWeight,
+    });
+    await waitForEvents(api, "system.ExtrinsicSuccess");
+    await waitForEvents(bifrost.api, "xcmpQueue.Success");
+    expectEvent(await waitForEvents(bifrost.api, "tokens.Deposited"), {
+      event: expect.objectContaining({
+        data: expect.objectContaining({
+          who: "gXCcrjjFX3RPyhHYgwZDmw8oe4JFpd5anko3nTY8VrmnJpe",
+          amount: "4,987,980,800,000,000,000",
+          currencyId: expect.objectContaining({
+            Token: "ZLK",
+          }),
+        }),
+      }),
+    });
+    expectJson(
+      await mangata.api.query.tokens.accounts(alice.keyRingPair.address, 26)
+    ).toMatchSnapshot();
+  });
+  it("[ BNC V3 -> MGA -> BNC V3 ] send vKSM to mangata and back", async () => {
+    const mgaSdk = Mangata.instance([mangata.uri]);
+    const target = ChainSpecs.get(ChainId.Mg)!;
+    await mgaSdk.xTokens.depositFromParachain({
+      account: alice.keyRingPair,
+      asset: {
+        V3: {
+          id: {
+            Concrete: {
+              parents: 0,
+              interior: {
+                X1: {
+                  GeneralKey: {
+                    length: 2,
+                    data: "0x0104000000000000000000000000000000000000000000000000000000000000",
+                  },
+                },
+              },
+            },
+          },
+          fun: {
+            Fungible: BN_TEN.mul(BN_TEN.pow(new BN(12))),
+          },
+        },
+      },
+      destination: {
+        V3: {
+          parents: 1,
+          interior: {
+            X2: [
+              { Parachain: target.parachain },
+              {
+                AccountId32: {
+                  network: undefined,
+                  id: alice.keyRingPair.addressRaw,
+                },
+              },
+            ],
+          },
+        },
+      },
+      url: bifrost.uri,
+      weightLimit: {
+        Limited: {
+          refTime: 800000000,
+          proofSize: 0,
+        },
+      },
+    });
+    await waitForEvents(api, "xcmpQueue.Success");
+    expectEvent(await waitForEvents(api, "tokens.Deposited"), {
+      event: expect.objectContaining({
+        data: expect.objectContaining({
+          who: "5GrwvaEF5zXb26Fz9rcQpDWS57CtERHpNehXCPcNoHGKutQY",
+          amount: "9,999,677,440,000",
+        }),
+      }),
+    });
+    await mgaSdk.xTokens.withdraw({
+      account: alice.keyRingPair,
+      amount: BN_FIVE.mul(BN_TEN.pow(new BN(12))),
+      destinationAddress: alice.keyRingPair.address,
+      parachainId: 2001,
+      tokenSymbol: "vKSM",
+      withWeight:
+        TRANSFER_INSTRUCTIONS * ChainSpecs.get(ChainId.Bifrost)!.unitCostWeight,
+    });
+    await waitForEvents(api, "system.ExtrinsicSuccess");
+    await waitForEvents(bifrost.api, "xcmpQueue.Success");
+    expectEvent(await waitForEvents(bifrost.api, "tokens.Deposited"), {
+      event: expect.objectContaining({
+        data: expect.objectContaining({
+          who: "gXCcrjjFX3RPyhHYgwZDmw8oe4JFpd5anko3nTY8VrmnJpe",
+          amount: "4,999,919,872,000",
+          currencyId: expect.objectContaining({
+            VToken: "KSM",
+          }),
+        }),
+      }),
+    });
+    expectJson(
+      await mangata.api.query.tokens.accounts(alice.keyRingPair.address, 15)
+    ).toMatchSnapshot();
+  });
+  it("[ BNC V3 -> MGA -> BNC V3 ] send vsKSM to mangata and back", async () => {
+    const mgaSdk = Mangata.instance([mangata.uri]);
+    const target = ChainSpecs.get(ChainId.Mg)!;
+    await mgaSdk.xTokens.depositFromParachain({
+      account: alice.keyRingPair,
+      asset: {
+        V3: {
+          id: {
+            Concrete: {
+              parents: 0,
+              interior: {
+                X1: {
+                  GeneralKey: {
+                    length: 2,
+                    data: "0x0404000000000000000000000000000000000000000000000000000000000000",
+                  },
+                },
+              },
+            },
+          },
+          fun: {
+            Fungible: BN_TEN.mul(BN_TEN.pow(new BN(12))),
+          },
+        },
+      },
+      destination: {
+        V3: {
+          parents: 1,
+          interior: {
+            X2: [
+              { Parachain: target.parachain },
+              {
+                AccountId32: {
+                  network: undefined,
+                  id: alice.keyRingPair.addressRaw,
+                },
+              },
+            ],
+          },
+        },
+      },
+      url: bifrost.uri,
+      weightLimit: {
+        Limited: {
+          refTime: 800000000,
+          proofSize: 0,
+        },
+      },
+    });
+    await waitForEvents(api, "xcmpQueue.Success");
+    expectEvent(await waitForEvents(api, "tokens.Deposited"), {
+      event: expect.objectContaining({
+        data: expect.objectContaining({
+          who: "5GrwvaEF5zXb26Fz9rcQpDWS57CtERHpNehXCPcNoHGKutQY",
+          amount: "9,999,677,440,000",
+        }),
+      }),
+    });
+    await mgaSdk.xTokens.withdraw({
+      account: alice.keyRingPair,
+      amount: BN_FIVE.mul(BN_TEN.pow(new BN(12))),
+      destinationAddress: alice.keyRingPair.address,
+      parachainId: 2001,
+      tokenSymbol: "vsKSM",
+      withWeight:
+        TRANSFER_INSTRUCTIONS * ChainSpecs.get(ChainId.Bifrost)!.unitCostWeight,
+    });
+    await waitForEvents(api, "system.ExtrinsicSuccess");
+    await waitForEvents(bifrost.api, "xcmpQueue.Success");
+    expectEvent(await waitForEvents(bifrost.api, "tokens.Deposited"), {
+      event: expect.objectContaining({
+        data: expect.objectContaining({
+          who: "gXCcrjjFX3RPyhHYgwZDmw8oe4JFpd5anko3nTY8VrmnJpe",
+          amount: "4,999,919,872,000",
+          currencyId: expect.objectContaining({
+            VSToken: "KSM",
+          }),
+        }),
+      }),
+    });
+    expectJson(
+      await mangata.api.query.tokens.accounts(alice.keyRingPair.address, 16)
+    ).toMatchSnapshot();
   });
 });
