@@ -5,6 +5,7 @@ import {
   buildXpathByText,
   clickElement,
   getAttribute,
+  getText,
   isDisplayed,
   waitForElement,
   waitForElementEnabled,
@@ -25,6 +26,7 @@ const DIV_COMMISION = "commission";
 const DIV_FEE = "fee";
 const DIV_TRADE_ROUTE_DETAILS = "routingDetails";
 const DIV_MIDDLE_POOL = "middle-pool";
+const DIV_SWAP_FEE_XPATH = "//*[@data-tooltip-id='swapFee']";
 const BTN_SUBMIT_SWAP = "submitSwap";
 const BTN_SWITCH_TOKENS = "switchTokens";
 const BTN_TOGGLE_TRADE_DETAILS = "toggle-trade-details";
@@ -55,6 +57,11 @@ export class Swap {
     return displayed;
   }
 
+  async switchTokens() {
+    const switchButton = buildDataTestIdXpath(BTN_SWITCH_TOKENS);
+    await clickElement(this.driver, switchButton);
+  }
+
   async isFirsttokenSelectorDisplayed() {
     const firstTokenSelector = buildDataTestIdXpath(
       DIV_FIRST_TOKEN_SELECTOR_CONTENT
@@ -76,6 +83,12 @@ export class Swap {
     await clickElement(this.driver, firstTokenSelectorButton);
   }
 
+  async fetchPayTokenName() {
+    const tokenSelector = buildDataTestIdXpath(BTN_SELECT_FIRST_TOKEN);
+    const tokenName = await getText(this.driver, tokenSelector);
+    return tokenName;
+  }
+
   async setPayTokenAmount(amount: string) {
     const inputPayLocator = buildDataTestIdXpath(INPUT_FIRST_TOKEN);
     await clickElement(this.driver, inputPayLocator);
@@ -93,10 +106,37 @@ export class Swap {
     const text = await getAttribute(this.driver, inputGetLocator, "value");
     return text;
   }
+
+  async fetchGetTokenName() {
+    const tokenSelector = buildDataTestIdXpath(BTN_SELECT_SECOND_TOKEN);
+    const tokenName = await getText(this.driver, tokenSelector);
+    return tokenName;
+  }
+
   async fetchPayAssetAmount() {
     const inputPayLocator = buildDataTestIdXpath(INPUT_FIRST_TOKEN);
     const text = await getAttribute(this.driver, inputPayLocator, "value");
     return text;
+  }
+
+  async fetchMinimumReceivedAmount() {
+    const inputGetLocator = buildDataTestIdXpath(DIV_MIN_RECEIVED + "-value");
+    const text = await getText(this.driver, inputGetLocator);
+    const floatValue = parseFloat(text.split(" ")[0]);
+    return floatValue;
+  }
+
+  async fetchSwapFee() {
+    const text = await getText(this.driver, DIV_SWAP_FEE_XPATH);
+    const floatValue = parseInt(text.split(" ")[0]);
+    return floatValue;
+  }
+
+  async isSwapFeeAlert() {
+    const swapAlertState =
+      buildDataTestIdXpath(DIV_FEE) + "//*[contains(@class, 'text-alert')]";
+    const isAlert = await isDisplayed(this.driver, swapAlertState);
+    return isAlert;
   }
 
   async waitForSwapButtonEnabled() {
@@ -151,6 +191,7 @@ export class Swap {
     const priceImpact = buildDataTestIdXpath(DIV_PRICE_IMPACT);
     const commission = buildDataTestIdXpath(DIV_COMMISION);
     const fee = buildDataTestIdXpath(DIV_FEE);
+    await waitForElementVisible(this.driver, fee);
 
     const displayed = await areDisplayed(this.driver, [
       minReceived,
