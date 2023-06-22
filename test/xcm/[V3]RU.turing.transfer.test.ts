@@ -139,7 +139,7 @@ describe("XCM transfers", () => {
       destinationAddress: alice.keyRingPair.address,
       parachainId: 2114,
       tokenSymbol: "TUR",
-      withWeight: "4000000000",
+      withWeight: 4000000000,
     });
 
     await waitForEvents(api, "system.ExtrinsicSuccess");
