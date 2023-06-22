@@ -1,5 +1,5 @@
 import { BuildBlockMode, connectParachains } from "@acala-network/chopsticks";
-import { BN_BILLION, BN_HUNDRED } from "@mangata-finance/sdk";
+import { BN_BILLION, BN_HUNDRED, Mangata } from "@mangata-finance/sdk";
 import { BN_FIVE, BN_TEN } from "@polkadot/util";
 import { mangataChopstick } from "../../utils/api";
 import {
@@ -13,7 +13,6 @@ import { XcmNode } from "../../utils/Framework/Node/XcmNode";
 import { ApiContext } from "../../utils/Framework/XcmHelper";
 import XcmNetworks from "../../utils/Framework/XcmNetworks";
 import { alice, api, setupApi, setupUsers } from "../../utils/setup";
-import { signSendSuccess } from "../../utils/sign";
 import { expectEvent } from "../../utils/validators";
 /**
  * @group xcm
@@ -63,13 +62,53 @@ describe("XCM transfers", () => {
   });
 
   it("[ BNC V3 -> MGA -> BNC V3 ] send BNC to mangata and back", async () => {
-    const op = bifrostApi.xTokenTransferV3(
-      ChainId.Mg,
-      AssetId.ImbueBncV3,
-      AssetId.ImbueBncV3.unit.mul(BN_TEN),
-      alice
-    );
-    await signSendSuccess(bifrost.api, op, alice);
+    const mgaSdk = Mangata.instance([mangata.uri]);
+    const target = ChainSpecs.get(ChainId.Mg)!;
+    const asset = bifrostApi.chain.assets.get(AssetId.ImbueBncV3)!;
+    await mgaSdk.xTokens.depositFromParachain({
+      account: alice.keyRingPair,
+      asset: {
+        V3: {
+          id: {
+            Concrete: asset.location,
+          },
+          fun: {
+            Fungible: AssetId.ImbueBncV3.unit.mul(BN_TEN),
+          },
+        },
+      },
+      destination: {
+        V3: {
+          parents: 1,
+          interior: {
+            X2: [
+              { Parachain: target.parachain },
+              {
+                AccountId32: {
+                  network: undefined,
+                  id: alice.keyRingPair.addressRaw,
+                },
+              },
+            ],
+          },
+        },
+      },
+      url: bifrost.uri,
+      weightLimit: {
+        Limited: {
+          refTime: TRANSFER_INSTRUCTIONS * target.unitCostWeight,
+          proofSize: 0,
+        },
+      },
+    });
+
+    //     const op = bifrostApi.xTokenTransferV3(
+    //       ChainId.Mg,
+    //       AssetId.ImbueBncV3,
+    //       AssetId.ImbueBncV3.unit.mul(BN_TEN),
+    //       alice
+    //     );
+    //     await signSendSuccess(bifrost.api, op, alice);
 
     await waitForEvents(api, "xcmpQueue.Success");
 
@@ -81,6 +120,16 @@ describe("XCM transfers", () => {
         }),
       }),
     });
+    await mgaSdk.xTokens.withdraw({
+      account: alice.keyRingPair,
+      amount: AssetId.Bnc.unit.mul(BN_FIVE),
+      destinationAddress: alice.keyRingPair.address,
+      parachainId: 2001,
+      tokenSymbol: "BNC",
+      withWeight:
+        TRANSFER_INSTRUCTIONS * ChainSpecs.get(ChainId.Bifrost)!.unitCostWeight,
+    });
+    /**
     await api.tx.xTokens
       .transferMultiasset(
         {
@@ -119,7 +168,7 @@ describe("XCM transfers", () => {
         }
       )
       .signAndSend(alice.keyRingPair);
-
+  */
     await waitForEvents(api, "system.ExtrinsicSuccess");
     await waitForEvents(bifrost.api, "xcmpQueue.Success");
 
