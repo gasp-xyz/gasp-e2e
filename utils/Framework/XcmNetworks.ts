@@ -11,6 +11,7 @@ const endpoints = {
   mangata: "wss://kusama-archive.mangata.online",
   bifrost: "wss://bifrost-rpc.dwellir.com",
   turing: "wss://rpc.turing.oak.tech",
+  moonriver: "wss://wss.moonriver.moonbeam.network",
 };
 
 const toNumber = (value: string | undefined): number | undefined => {
@@ -68,6 +69,14 @@ export default {
       wasmOverride: process.env.BIFROST_WASM,
       blockNumber: toNumber(process.env.BIFROST_BLOCK_NUMBER),
       endpoint: process.env.BIFROST_ENDPOINT ?? endpoints.bifrost,
+      db: process.env.DB_PATH,
+      ...options,
+    }),
+  moonriver: (options?: Partial<SetupOption>) =>
+    setupContext({
+      wasmOverride: process.env.MOONRIVER_WASM,
+      blockNumber: toNumber(process.env.MOONRIVER_BLOCK_NUMBER),
+      endpoint: process.env.MOONRIVER_ENDPOINT ?? endpoints.moonriver,
       db: process.env.DB_PATH,
       ...options,
     }),
