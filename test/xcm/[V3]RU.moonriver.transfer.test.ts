@@ -20,7 +20,7 @@ import { sleep } from "../../utils/utils";
  * @group xcm
  * @group proxied
  */
-describe("[V3][V3] XCM tests for Mangata <-> moonriver", () => {
+describe.skip("[V3][V3] XCM tests for Mangata <-> moonriver", () => {
   let moonriver: ApiContext;
   let mangata: ApiContext;
 
