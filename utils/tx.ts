@@ -569,21 +569,14 @@ export const joinCandidate = async (
 export const activateLiquidity = async (
   account: KeyringPair,
   liqToken: BN,
-  amount: BN,
-  from = "availablebalance",
-  strictsuccess = false
+  amount: BN
 ) => {
   const mangata = await getMangataInstance();
-  const api = await mangata.api();
-  const result = await signSendAndWaitToFinishTx(
-    api?.tx.proofOfStake.activateLiquidity(
-      new BN(liqToken),
-      new BN(amount),
-      from
-    ),
-    account,
-    strictsuccess
-  );
+  const result = await mangata.xyk.activateLiquidity({
+    account: account,
+    amount: amount,
+    liquidityTokenId: liqToken.toString(),
+  });
   return result;
 };
 export const deactivateLiquidity = async (
@@ -592,12 +585,12 @@ export const deactivateLiquidity = async (
   amount: BN
 ) => {
   const mangata = await getMangataInstance();
-  const api = await mangata.api();
 
-  const result = await signSendAndWaitToFinishTx(
-    api?.tx.proofOfStake.deactivateLiquidity(new BN(liqToken), new BN(amount)),
-    account
-  );
+  const result = await mangata.xyk.deactivateLiquidity({
+    account: account,
+    amount: amount,
+    liquidityTokenId: liqToken.toString(),
+  });
   return result;
 };
 
