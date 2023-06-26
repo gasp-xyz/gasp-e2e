@@ -1,4 +1,4 @@
-import { WebDriver } from "selenium-webdriver";
+import { By, until, WebDriver } from "selenium-webdriver";
 import { sleep } from "../../utils";
 import {
   areDisplayed,
@@ -6,6 +6,7 @@ import {
   clickElement,
   getText,
   isDisplayed,
+  waitForElementState,
   waitForElementVisible,
   waitForLoad,
   writeText,
@@ -39,10 +40,15 @@ export class DepositModal {
   }
 
   async selectToken(assetName: string) {
-    await sleep(3000);
     const assetTestId = `TokensModal-token-${assetName}`;
     const assetLocator = buildDataTestIdXpath(assetTestId);
-    await clickElement(this.driver, assetLocator);
+
+    const element = await this.driver.wait(
+      until.elementLocated(By.xpath(assetLocator))
+    );
+    await this.driver.wait(until.elementIsVisible(element));
+    await this.driver.wait(until.elementIsEnabled(element));
+    await element.click();
   }
 
   async getTokenAmount(assetName: string) {
@@ -79,6 +85,20 @@ export class DepositModal {
     const xpath = buildDataTestIdXpath(STEP_O_CONT);
     await clickElement(this.driver, xpath);
   }
+
+  async waitForContinueState(isEnabled: boolean) {
+    const xpath = buildDataTestIdXpath(STEP_O_CONT);
+    await waitForElementState(this.driver, xpath, isEnabled);
+  }
+
+  async isContinueButtonEnabled() {
+    const xpath = buildDataTestIdXpath(STEP_O_CONT);
+    const enabled = await (
+      await this.driver.findElement(By.xpath(xpath))
+    ).isEnabled();
+    return enabled;
+  }
+
   async confirmAndSign() {
     const xpath = buildDataTestIdXpath(STEP_1_CONF);
     await clickElement(this.driver, xpath);

@@ -1,6 +1,6 @@
 /*
  *
- * @group uiMain
+ * @group uiPools
  */
 import { jest } from "@jest/globals";
 import { Mangata } from "../../utils/frontend/pages/Mangata";
