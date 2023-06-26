@@ -81,7 +81,7 @@ jobs:
         
 
       - name: Set Configuration - Rococo
-        if: contains(github.event.client_payload.environment, 'rococo') || contains(github.event.inputs.environment, 'rococo' || contains(matrix.command, 'rococo')
+        if: contains(github.event.client_payload.environment, 'rococo') || contains(github.event.inputs.environment, 'rococo') || contains(matrix.command, 'rococo')
         run:  |
           echo 'UI_URL=https://mangata-app-rococo.netlify.app/' >> $GITHUB_ENV
           echo 'API_URL=wss://node-01-ws-dev.mangata.online' >> $GITHUB_ENV
