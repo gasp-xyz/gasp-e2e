@@ -56,7 +56,7 @@ jobs:
       fail-fast: false
       matrix:
         command: ['rococoUiDeposit', 'uiMain', 'uiPools', 'uiSwap']
-
+    runs-on: ubuntu-latest
     env:
       API_URL: 'wss://node-01-ws-dev.mangata.online'
       TEST_PALLET_ADDRESS: ${{ secrets.TEST_PALLET_ADDRESS }}
