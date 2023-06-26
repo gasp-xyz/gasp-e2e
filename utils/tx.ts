@@ -24,10 +24,15 @@ import { Fees } from "./Fees";
 import { SudoUser } from "./Framework/User/SudoUser";
 import { testLog } from "./Logger";
 import { SudoDB } from "./SudoDB";
-import { setAssetInfo, signSendAndWaitToFinishTx } from "./txHandler";
+import {
+  getEventResultFromMangataTx,
+  setAssetInfo,
+  signSendAndWaitToFinishTx,
+} from "./txHandler";
 import { User } from "./User";
 import { getEnvironmentRequiredVars, stringToBN } from "./utils";
 import Keyring from "@polkadot/keyring";
+import { ExtrinsicResult } from "./eventListeners";
 
 export const signTxDeprecated = async (
   tx: SubmittableExtrinsic<"promise">,
@@ -569,7 +574,9 @@ export const joinCandidate = async (
 export const activateLiquidity = async (
   account: KeyringPair,
   liqToken: BN,
-  amount: BN
+  amount: BN,
+  from = "availablebalance",
+  strictsuccess = false
 ) => {
   const mangata = await getMangataInstance();
   const result = await mangata.xyk.activateLiquidity({
@@ -577,6 +584,12 @@ export const activateLiquidity = async (
     amount: amount,
     liquidityTokenId: liqToken.toString(),
   });
+  //THIS LINE NEED TO CHANGE WHEN MICHAL ADD FROM FUNCTION
+  expect(from).toBe("availablebalance");
+  if (strictsuccess) {
+    const eventResponse = getEventResultFromMangataTx(result);
+    expect(eventResponse.state).toBe(ExtrinsicResult.ExtrinsicSuccess);
+  }
   return result;
 };
 export const deactivateLiquidity = async (

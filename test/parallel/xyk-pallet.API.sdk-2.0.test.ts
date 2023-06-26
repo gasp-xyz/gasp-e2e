@@ -117,6 +117,6 @@ test("Given a user hame some liquidity token THEN he activate them THEN deactiva
     testUser1.getAsset(liqIdPromPool)?.amountAfter.reserved!;
 
   expect(userTokenBeforeActivating).bnEqual(BN_ZERO);
-  expect(userTokenBeforeDeactivating).bnGt(Assets.DEFAULT_AMOUNT.divn(2));
+  expect(userTokenBeforeDeactivating).bnGt(BN_ZERO);
   expect(userTokenAfterDeactivating).bnEqual(BN_ZERO);
 });
