@@ -39,7 +39,6 @@ jobs:
             --name "FE e2e test run" \
             --resources resources.json \
             --source "fe-e2e-job" > testmo-run-id.txt \
-            --tags ${{ env.TEST_ENV_TAG }}
           ID=$(cat testmo-run-id.txt)
           echo "testmo-run-id=$ID" >> $GITHUB_OUTPUT
           echo "ID=$ID" >> $GITHUB_ENV
@@ -67,7 +66,6 @@ jobs:
       MNEMONIC_META: ${{ secrets.MNEMONIC_META }}
       MNEMONIC_POLK: ${{ secrets.MNEMONIC_POLK }}
       TEST_SCRIPT: 'test-ui'
-      TEST_ENV_TAG: 'develop'
       NODE_ENV: test
       SELENIUM_REMOTE_URL: http://localhost:4444/wd/hub
       ETH_20_APP_ADDRESS: https://kovan.infura.io/v3/3592e9c20d9b4169a394a608a310c85f
