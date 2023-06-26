@@ -51,7 +51,7 @@ jobs:
 
   e2e-test-matrix:
     name: Run UI tests
-    eeds: [setup-report]
+    needs: [setup-report]
     strategy:
       fail-fast: false
       matrix:
