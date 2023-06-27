@@ -575,17 +575,18 @@ export const activateLiquidity = async (
   account: KeyringPair,
   liqToken: BN,
   amount: BN,
-  from = "availablebalance",
+  from: any = "AvailableBalance",
   strictsuccess = false
 ) => {
   const mangata = await getMangataInstance();
-  const result = await mangata.xyk.activateLiquidity({
-    account: account,
-    amount: amount,
-    liquidityTokenId: liqToken.toString(),
-  });
-  //THIS LINE NEED TO CHANGE WHEN MICHAL ADD FROM FUNCTION
-  expect(from).toBe("availablebalance");
+  const result = await mangata.xyk.activateLiquidity(
+    {
+      account: account,
+      amount: amount,
+      liquidityTokenId: liqToken.toString(),
+    },
+    from
+  );
   if (strictsuccess) {
     const eventResponse = getEventResultFromMangataTx(result);
     expect(eventResponse.state).toBe(ExtrinsicResult.ExtrinsicSuccess);
