@@ -54,7 +54,7 @@ jobs:
     strategy:
       fail-fast: false
       matrix:
-        command: ['rococoUiDeposit', 'uiMain', 'uiPools', 'uiSwap']
+        command: ['rococoUiDeposit', 'uiMain', 'uiSequential']
     runs-on: ubuntu-latest
     env:
       API_URL: 'wss://node-01-ws-dev.mangata.online'
