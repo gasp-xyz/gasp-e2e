@@ -59,11 +59,11 @@ export class Staking {
   }
   static scheduleCandidateBondMore(
     more: BN,
-    ExtendApprovedCollators = "AvailableBalance"
+    useBalanceFrom = "AvailableBalance"
   ) {
     return api.tx.parachainStaking.scheduleCandidateBondMore(
       more,
-      ExtendApprovedCollators
+      useBalanceFrom
     );
   }
   static scheduleCandidateBondLess(less: BN) {
@@ -72,12 +72,12 @@ export class Staking {
   static scheduleDelegatorBondMore(
     candidate: User,
     more: BN,
-    ExtendApprovedCollators = "AvailableBalance"
+    useBalanceFrom = "AvailableBalance"
   ) {
     return api.tx.parachainStaking.scheduleDelegatorBondMore(
       candidate.keyRingPair.address,
       more,
-      ExtendApprovedCollators
+      useBalanceFrom
     );
   }
   static scheduleDelegatorBondLess(candidate: User, less: BN) {
@@ -88,22 +88,22 @@ export class Staking {
   }
   static executeBondRequest(
     candidate: User,
-    ExtendApprovedCollators = "AvailableBalance"
+    useBalanceFrom = "AvailableBalance"
   ): Extrinsic {
     return api.tx.parachainStaking.executeCandidateBondRequest(
       candidate.keyRingPair.address,
-      ExtendApprovedCollators
+      useBalanceFrom
     );
   }
   static executeDelegationRequest(
     delegator: User,
     candidate: User,
-    ExtendApprovedCollators = "AvailableBalance"
+    useBalanceFrom = "AvailableBalance"
   ): Extrinsic {
     return api.tx.parachainStaking.executeDelegationRequest(
       delegator.keyRingPair.address,
       candidate.keyRingPair.address,
-      ExtendApprovedCollators
+      useBalanceFrom
     );
   }
   static removeStakingLiquidityToken(liqToken: BN): Extrinsic {
