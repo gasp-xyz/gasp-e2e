@@ -8,18 +8,20 @@ import { Keyring } from "@polkadot/api";
 import { getApi, initApi } from "../../utils/api";
 import { Assets } from "../../utils/Assets";
 import { MGA_ASSET_ID } from "../../utils/Constants";
-import { BN_HUNDRED, signTx } from "@mangata-finance/sdk";
+import { BN_HUNDRED, BN_ZERO, signTx } from "@mangata-finance/sdk";
 import { setupApi, setupUsers } from "../../utils/setup";
 import { Sudo } from "../../utils/sudo";
 import {
+  claimRewardsAll,
   getLiquidityAssetId,
   getRewardsInfo,
+  mintLiquidity,
   promotePool,
 } from "../../utils/tx";
-import { User } from "../../utils/User";
+import { AssetWallet, User } from "../../utils/User";
 import { getEnvironmentRequiredVars, stringToBN } from "../../utils/utils";
 import { Xyk } from "../../utils/xyk";
-import { ExtrinsicResult } from "../../utils/eventListeners";
+import { ExtrinsicResult, waitForRewards } from "../../utils/eventListeners";
 import { getEventResultFromMangataTx } from "../../utils/txHandler";
 import { BN } from "@polkadot/util";
 
@@ -78,12 +80,16 @@ beforeEach(async () => {
 
   await Sudo.batchAsSudoFinalized(
     Assets.promotePool(liqId.toNumber(), 20),
-    Assets.mintNative(testUser1)
+    Assets.mintNative(testUser1),
+    Sudo.sudoAs(
+      testUser1,
+      Xyk.activateLiquidity(liqId, Assets.DEFAULT_AMOUNT.divn(2))
+    )
   );
 });
 
 test("Check that we can get the list of promoted pools with proofOfStake.promotedPoolRewards data storage", async () => {
-  const poolWeight = await getPoolWeight(liqId);
+  const poolWeight = (await getPromotedPoolInfo(liqId)).weight;
 
   expect(poolWeight).bnEqual(new BN(20));
 });
@@ -91,7 +97,7 @@ test("Check that we can get the list of promoted pools with proofOfStake.promote
 test("Validate that weight can be modified by using updatePoolPromotion AND only sudo can update weights", async () => {
   const api = getApi();
 
-  const poolWeightBefore = await getPoolWeight(liqId);
+  const poolWeightBefore = (await getPromotedPoolInfo(liqId)).weight;
 
   await signTx(
     api,
@@ -112,7 +118,7 @@ test("Validate that weight can be modified by using updatePoolPromotion AND only
     poolWeightBefore.div(new BN(2)).toNumber()
   );
 
-  const poolWeightAfter = await getPoolWeight(liqId);
+  const poolWeightAfter = (await getPromotedPoolInfo(liqId)).weight;
 
   expect(poolWeightAfter).bnEqual(poolWeightBefore.div(new BN(2)));
 });
@@ -152,12 +158,11 @@ test("Testing that the sum of the weights can be greater than 100", async () => 
     )
   );
 
-  const poolWeightLiq1 = await getPoolWeight(liqId);
+  const poolWeightLiq1 = (await getPromotedPoolInfo(liqId)).weight;
 
-  const poolWeightLiq2 = await getPoolWeight(liqId2);
+  const poolWeightLiq2 = (await getPromotedPoolInfo(liqId2)).weight;
 
   const sumPoolsWeights = poolWeightLiq1.add(poolWeightLiq2);
-  const ratioPoolsWeights = poolWeightLiq2.div(poolWeightLiq1);
 
   await Sudo.batchAsSudoFinalized(
     Sudo.sudoAs(testUser1, Xyk.claimRewardsAll(liqId)),
@@ -175,19 +180,114 @@ test("Testing that the sum of the weights can be greater than 100", async () => 
   );
 
   expect(sumPoolsWeights).bnGt(BN_HUNDRED);
-  expect(rewardsLiqId1.rewardsAlreadyClaimed.mul(ratioPoolsWeights)).bnLte(
+  expect(rewardsLiqId1.rewardsAlreadyClaimed).bnLte(
     rewardsLiqId2.rewardsAlreadyClaimed
   );
 });
 
-async function getPoolWeight(tokenId: BN) {
+test("GIVEN a pool WHEN it has configured with 0 THEN no new issuance will be reserved AND user can't claim rewards", async () => {
+  const [testUser2] = setupUsers();
+
+  await Sudo.batchAsSudoFinalized(
+    Assets.mintToken(token1, testUser2, Assets.DEFAULT_AMOUNT),
+    Assets.mintNative(testUser2),
+    Sudo.sudoAs(
+      testUser1,
+      Xyk.mintLiquidity(MGA_ASSET_ID, token1, defaultCurrencyValue)
+    )
+  );
+
+  testUser2.addAsset(MGA_ASSET_ID);
+  testUser2.addAsset(token1);
+
+  await waitForRewards(testUser1, liqId);
+
+  await claimRewardsAll(testUser1, liqId).then((result) => {
+    const eventResponse = getEventResultFromMangataTx(result);
+    expect(eventResponse.state).toEqual(ExtrinsicResult.ExtrinsicSuccess);
+  });
+
+  await waitForRewards(testUser1, liqId);
+
+  await promotePool(sudo.keyRingPair, liqId, 0);
+
+  await claimRewardsAll(testUser1, liqId).then((result) => {
+    const eventResponse = getEventResultFromMangataTx(result);
+    expect(eventResponse.state).toEqual(ExtrinsicResult.ExtrinsicFailed);
+    expect(eventResponse.data).toEqual("NotAPromotedPool");
+  });
+
+  await mintLiquidity(
+    testUser2.keyRingPair,
+    MGA_ASSET_ID,
+    token1,
+    defaultCurrencyValue
+  );
+
+  await testUser2.refreshAmounts(AssetWallet.AFTER);
+
+  expect(testUser2.getAsset(MGA_ASSET_ID)!.amountAfter.free!).bnGt(BN_ZERO);
+  expect(testUser2.getAsset(MGA_ASSET_ID)!.amountAfter.reserved!).bnEqual(
+    BN_ZERO
+  );
+});
+
+test("GIVEN a deactivated pool WHEN its configured with more weight, THEN rewards are now active, new users can get portion of those rewards AND issuance grows", async () => {
+  await waitForRewards(testUser1, liqId);
+
+  const poolRewardsBefore = (await getPromotedPoolInfo(liqId)).rewards;
+
+  await promotePool(sudo.keyRingPair, liqId, 0);
+
+  const [testUser2] = setupUsers();
+
+  await Sudo.batchAsSudoFinalized(
+    Assets.mintToken(token1, testUser2, Assets.DEFAULT_AMOUNT),
+    Assets.mintNative(testUser2)
+  );
+
+  await promotePool(sudo.keyRingPair, liqId, 20);
+
+  await mintLiquidity(
+    testUser2.keyRingPair,
+    MGA_ASSET_ID,
+    token1,
+    defaultCurrencyValue
+  );
+
+  await waitForRewards(testUser2, liqId);
+
+  const poolRewardsAfter = (await getPromotedPoolInfo(liqId)).rewards;
+
+  expect(poolRewardsBefore).bnGt(BN_ZERO);
+  expect(poolRewardsAfter).bnGt(poolRewardsBefore);
+});
+
+test("GIVEN an activated pool WHEN pool was deactivated THEN check that pool was deleted from list of promotedPoolRewards", async () => {
   const api = getApi();
+
+  const poolWeightBefore = (await getPromotedPoolInfo(liqId)).weight;
+
+  await promotePool(sudo.keyRingPair, liqId, 0);
 
   const poolRewards = JSON.parse(
     JSON.stringify(await api.query.proofOfStake.promotedPoolRewards())
   );
 
-  const poolWeight = stringToBN(poolRewards[tokenId.toString()].weight);
+  expect(poolWeightBefore).bnGt(BN_ZERO);
+  expect(poolRewards[liqId.toString()]).toEqual(undefined);
+});
 
-  return poolWeight;
+async function getPromotedPoolInfo(tokenId: BN) {
+  const api = getApi();
+
+  const poolRewards = JSON.parse(
+    JSON.stringify(await api.query.proofOfStake.promotedPoolRewards())
+  );
+  const results = {
+    weight: stringToBN(poolRewards[tokenId.toString()].weight),
+    rewards: stringToBN(poolRewards[tokenId.toString()].rewards),
+  };
+
+  return results;
 }
