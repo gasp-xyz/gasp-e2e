@@ -61,7 +61,12 @@ export class DepositModal {
     await sleep(2000);
     const assetTestId = `TokensModal-token-${assetName}`;
     const assetLocator = buildDataTestIdXpath(assetTestId);
-    await waitForElementVisible(this.driver, assetLocator);
+    const element = await this.driver.wait(
+      until.elementLocated(By.xpath(assetLocator)),
+      10000
+    );
+    await this.driver.wait(until.elementIsVisible(element));
+    await this.driver.wait(until.elementIsEnabled(element));
     const assetAmountTestId = `token-list-token-${assetName}-balance`;
     const assetAmountLocator = buildDataTestIdXpath(assetAmountTestId);
     await waitForElementVisible(this.driver, assetAmountLocator, 60000);
