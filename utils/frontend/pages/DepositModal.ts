@@ -42,7 +42,7 @@ export class DepositModal {
   async selectToken(assetName: string) {
     const assetTestId = `TokensModal-token-${assetName}`;
     const assetLocator = buildDataTestIdXpath(assetTestId);
-
+    await sleep(2000);
     const element = await this.driver.wait(
       until.elementLocated(By.xpath(assetLocator))
     );
