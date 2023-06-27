@@ -1095,13 +1095,21 @@ export async function multiSwapBuy(
   buyAmount: BN,
   maxAmountIn: BN = MAX_BALANCE
 ) {
-  const api = getApi();
-  const result = await signTx(
-    api,
-    api.tx.xyk.multiswapBuyAsset(tokenIds, buyAmount, maxAmountIn),
-    testUser1.keyRingPair
-  );
-  return result;
+  const keyring = testUser1.keyRingPair;
+  const mangata = await getMangataInstance();
+  const tokenIdsArray: string[] = [];
+  let tokenIdsString: string;
+  tokenIds.forEach((_, index) => {
+    tokenIdsString = tokenIds[index].toString();
+    tokenIdsArray.push(tokenIdsString);
+  });
+  const result1 = await mangata.xyk.multiswapBuyAsset({
+    account: keyring,
+    amount: buyAmount,
+    maxAmountIn: maxAmountIn,
+    tokenIds: tokenIdsArray!,
+  });
+  return result1;
 }
 export async function multiSwapSell(
   testUser1: User,
@@ -1189,12 +1197,19 @@ export async function getRewardsInfo(
 }
 
 export async function claimRewardsAll(user: User, liquidityTokenId: BN) {
-  const api = getApi();
-  const result = await signTx(
-    api,
-    api.tx.proofOfStake.claimRewardsAll(liquidityTokenId),
-    user.keyRingPair
-  );
+  const account = user.keyRingPair;
+  const liquidityTokenIdString = liquidityTokenId.toString();
+  //const api = getApi();
+  // const result = await signTx(
+  //   api,
+  //   api.tx.proofOfStake.claimRewardsAll(liquidityTokenId),
+  //   user.keyRingPair
+  // );
+  const mangata = await getMangataInstance();
+  const result = await mangata.xyk.claimRewards({
+    account: account,
+    liquidityTokenId: liquidityTokenIdString,
+  });
   return result;
 }
 

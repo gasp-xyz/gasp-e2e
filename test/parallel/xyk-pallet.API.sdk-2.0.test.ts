@@ -1,7 +1,7 @@
 /*
  *
  * @group xyk
- * @group poolliquidity
+ * @group parallel
  */
 import { jest } from "@jest/globals";
 import { Keyring } from "@polkadot/api";
@@ -14,12 +14,15 @@ import { setupApi, setupUsers } from "../../utils/setup";
 import { Sudo } from "../../utils/sudo";
 import {
   activateLiquidity,
+  claimRewardsAll,
   deactivateLiquidity,
   getLiquidityAssetId,
+  getRewardsInfo,
 } from "../../utils/tx";
 import { AssetWallet, User } from "../../utils/User";
 import { getEnvironmentRequiredVars } from "../../utils/utils";
 import { Xyk } from "../../utils/xyk";
+import { waitForRewards } from "../../utils/eventListeners";
 jest.spyOn(console, "log").mockImplementation(jest.fn());
 jest.setTimeout(2500000);
 process.env.NODE_ENV = "test";
@@ -30,7 +33,7 @@ let testUser1: User;
 let sudo: User;
 let keyring: Keyring;
 let token1: BN;
-let liqIdPromPool: BN;
+let liqId: BN;
 const defaultCurrencyValue = new BN(250000);
 
 beforeAll(async () => {
@@ -70,11 +73,9 @@ beforeAll(async () => {
     )
   );
 
-  liqIdPromPool = await getLiquidityAssetId(MGA_ASSET_ID, token1);
+  liqId = await getLiquidityAssetId(MGA_ASSET_ID, token1);
 
-  await Sudo.batchAsSudoFinalized(
-    Assets.promotePool(liqIdPromPool.toNumber(), 20)
-  );
+  await Sudo.batchAsSudoFinalized(Assets.promotePool(liqId.toNumber(), 20));
 });
 
 beforeEach(async () => {
@@ -84,39 +85,71 @@ beforeEach(async () => {
 
 test("Given a user hame some liquidity token THEN he activate them THEN deactivate", async () => {
   await Sudo.batchAsSudoFinalized(
-    Assets.mintToken(liqIdPromPool, testUser1, Assets.DEFAULT_AMOUNT.divn(2))
+    Assets.mintToken(liqId, testUser1, Assets.DEFAULT_AMOUNT.divn(2))
   );
 
-  testUser1.addAssets([MGA_ASSET_ID, liqIdPromPool]);
+  testUser1.addAssets([MGA_ASSET_ID, liqId]);
 
   await testUser1.refreshAmounts(AssetWallet.BEFORE);
 
   const userTokenBeforeActivating =
-    testUser1.getAsset(liqIdPromPool)?.amountBefore.reserved!;
+    testUser1.getAsset(liqId)?.amountBefore.reserved!;
 
   await activateLiquidity(
     testUser1.keyRingPair,
-    liqIdPromPool,
+    liqId,
     Assets.DEFAULT_AMOUNT.divn(2)
   );
 
   await testUser1.refreshAmounts(AssetWallet.AFTER);
 
   const userTokenBeforeDeactivating =
-    testUser1.getAsset(liqIdPromPool)?.amountAfter.reserved!;
+    testUser1.getAsset(liqId)?.amountAfter.reserved!;
 
   await deactivateLiquidity(
     testUser1.keyRingPair,
-    liqIdPromPool,
+    liqId,
     Assets.DEFAULT_AMOUNT.divn(2)
   );
 
   await testUser1.refreshAmounts(AssetWallet.AFTER);
 
   const userTokenAfterDeactivating =
-    testUser1.getAsset(liqIdPromPool)?.amountAfter.reserved!;
+    testUser1.getAsset(liqId)?.amountAfter.reserved!;
 
   expect(userTokenBeforeActivating).bnEqual(BN_ZERO);
   expect(userTokenBeforeDeactivating).bnGt(BN_ZERO);
   expect(userTokenAfterDeactivating).bnEqual(BN_ZERO);
+});
+
+test("Activate liquidity and claim rewards", async () => {
+  await Sudo.batchAsSudoFinalized(
+    Assets.mintToken(liqId, testUser1, Assets.DEFAULT_AMOUNT.divn(2))
+  );
+
+  testUser1.addAssets([MGA_ASSET_ID, liqId]);
+
+  await activateLiquidity(
+    testUser1.keyRingPair,
+    liqId,
+    Assets.DEFAULT_AMOUNT.divn(2)
+  );
+
+  await waitForRewards(testUser1, liqId);
+
+  const userTokenBeforeClaiming = await getRewardsInfo(
+    testUser1.keyRingPair.address,
+    liqId
+  );
+
+  await claimRewardsAll(testUser1, liqId);
+
+  const userTokenAfterClaiming = await getRewardsInfo(
+    testUser1.keyRingPair.address,
+    liqId
+  );
+
+  expect(userTokenBeforeClaiming.activatedAmount).bnGt(BN_ZERO);
+  expect(userTokenBeforeClaiming.rewardsAlreadyClaimed).bnEqual(BN_ZERO);
+  expect(userTokenAfterClaiming.rewardsAlreadyClaimed).bnGt(BN_ZERO);
 });
