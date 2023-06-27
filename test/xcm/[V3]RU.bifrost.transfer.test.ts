@@ -1,8 +1,13 @@
 import { BuildBlockMode, connectParachains } from "@acala-network/chopsticks";
-import { BN_HUNDRED, BN_THOUSAND } from "@mangata-finance/sdk";
+import { BN_BILLION, BN_HUNDRED } from "@mangata-finance/sdk";
 import { BN_FIVE, BN_TEN } from "@polkadot/util";
 import { mangataChopstick } from "../../utils/api";
-import { AssetId, ChainId } from "../../utils/ChainSpecs";
+import {
+  AssetId,
+  ChainId,
+  ChainSpecs,
+  TRANSFER_INSTRUCTIONS,
+} from "../../utils/ChainSpecs";
 import { waitForEvents } from "../../utils/eventListeners";
 import { XcmNode } from "../../utils/Framework/Node/XcmNode";
 import { ApiContext } from "../../utils/Framework/XcmHelper";
@@ -10,8 +15,6 @@ import XcmNetworks from "../../utils/Framework/XcmNetworks";
 import { alice, api, setupApi, setupUsers } from "../../utils/setup";
 import { signSendSuccess } from "../../utils/sign";
 import { expectEvent } from "../../utils/validators";
-import { XToken } from "../../utils/xToken";
-
 /**
  * @group xcm
  */
@@ -34,11 +37,14 @@ describe("XCM transfers", () => {
 
   beforeEach(async () => {
     await mangata.dev.setStorage({
+      Sudo: {
+        Key: "5GrwvaEF5zXb26Fz9rcQpDWS57CtERHpNehXCPcNoHGKutQY",
+      },
       Tokens: {
         Accounts: [
           [
             [alice.keyRingPair.address, { token: 0 }],
-            { free: BN_THOUSAND.mul(AssetId.Mgx.unit).toString() },
+            { free: BN_BILLION.mul(AssetId.Mgx.unit).toString() },
           ],
         ],
       },
@@ -48,19 +54,19 @@ describe("XCM transfers", () => {
         Account: [
           [
             [alice.keyRingPair.address],
-            { data: { free: BN_HUNDRED.mul(AssetId.Bnc.unit).toString() } },
+            { data: { free: BN_HUNDRED.mul(AssetId.BncV3.unit).toString() } },
           ],
         ],
       },
     });
+    // await upgradeMangata(mangata);
   });
 
-  // todo repeat for every other asset
-  it("send BNC to mangata and back", async () => {
-    const op = bifrostApi.xTokenTransferV2(
+  it("[ BNC V3 -> MGA -> BNC V3 ] send BNC to mangata and back", async () => {
+    const op = bifrostApi.xTokenTransferV3(
       ChainId.Mg,
-      AssetId.Bnc,
-      AssetId.Bnc.unit.mul(BN_TEN),
+      AssetId.ImbueBncV3,
+      AssetId.ImbueBncV3.unit.mul(BN_TEN),
       alice
     );
     await signSendSuccess(bifrost.api, op, alice);
@@ -75,13 +81,44 @@ describe("XCM transfers", () => {
         }),
       }),
     });
-
-    await XToken.transfer(
-      ChainId.Bifrost,
-      AssetId.Bnc,
-      AssetId.Bnc.unit.mul(BN_FIVE),
-      alice
-    ).signAndSend(alice.keyRingPair);
+    await api.tx.xTokens
+      .transferMultiasset(
+        {
+          V3: {
+            id: {
+              Concrete: AssetId.BncV3.location,
+            },
+            fun: {
+              Fungible: AssetId.Bnc.unit.mul(BN_FIVE),
+            },
+          },
+        },
+        {
+          V3: {
+            parents: 1,
+            interior: {
+              X2: [
+                { Parachain: ChainSpecs.get(ChainId.Bifrost)!.parachain },
+                {
+                  AccountId32: {
+                    network: undefined,
+                    id: alice.keyRingPair.publicKey,
+                  },
+                },
+              ],
+            },
+          },
+        },
+        {
+          Limited: {
+            refTime:
+              TRANSFER_INSTRUCTIONS *
+              ChainSpecs.get(ChainId.Bifrost)!.unitCostWeight,
+            proofSize: 0,
+          },
+        }
+      )
+      .signAndSend(alice.keyRingPair);
 
     await waitForEvents(api, "system.ExtrinsicSuccess");
     await waitForEvents(bifrost.api, "xcmpQueue.Success");

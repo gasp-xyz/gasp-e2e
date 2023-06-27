@@ -1,3 +1,4 @@
+import "chromedriver";
 import { Key, logging, WebDriver } from "selenium-webdriver";
 import { sleep } from "../../utils";
 import { Mangata } from "../pages/Mangata";
@@ -7,10 +8,9 @@ import { testLog } from "../../Logger";
 import { BN } from "@polkadot/util";
 import { Talisman } from "../pages/Talisman";
 
-const { By, until } = require("selenium-webdriver");
+import { By, until } from "selenium-webdriver";
 
 const timeOut = 60000;
-require("chromedriver");
 const outputPath = `reports/artifacts`;
 export async function waitForElement(
   driver: WebDriver,
@@ -108,6 +108,17 @@ export async function waitForLoad(
     await waitForElementToDissapear(driver, loaderXpath);
     resolve();
   });
+}
+
+export async function getNumberOfElements(
+  driver: WebDriver,
+  xpath: string,
+  timeout = timeOut
+) {
+  await waitForElement(driver, xpath, timeout);
+  const elements = await driver.findElements(By.xpath(xpath));
+  const count = elements.length;
+  return count;
 }
 
 export async function clickElement(driver: WebDriver, xpath: string) {
@@ -447,5 +458,10 @@ export async function elementExists(driver: WebDriver, xpath: string) {
 
 export function buildXpathByText(text: string) {
   const xpath = `//*[contains(., "${text}")]`;
+  return xpath;
+}
+
+export function buildXpathByElementText(element: string, text: string) {
+  const xpath = `//${element}[contains(., "${text}")]`;
   return xpath;
 }

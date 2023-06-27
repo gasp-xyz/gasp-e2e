@@ -4,6 +4,7 @@
  * @group api
  * @group parallel
  */
+import { jest } from "@jest/globals";
 import { getApi, initApi } from "../../utils/api";
 import {
   getBalanceOfPool,
@@ -97,7 +98,7 @@ describe("xyk-pallet - Burn liquidity tests: BurnLiquidity Errors:", () => {
       secondCurrency
     );
     const liquidityBalance = (
-      await getBalanceOfAsset(liquidityAssetId, testUser1.keyRingPair.address)
+      await getBalanceOfAsset(liquidityAssetId, testUser1)
     ).free;
     await testUser1.refreshAmounts(AssetWallet.BEFORE);
 

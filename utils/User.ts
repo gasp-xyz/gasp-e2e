@@ -1,5 +1,3 @@
-import { Keyring } from "@polkadot/api";
-import { KeyringPair } from "@polkadot/keyring/types";
 import { BN } from "@polkadot/util";
 import { v4 as uuid } from "uuid";
 import { ExtrinsicResult, waitNewBlock } from "./eventListeners";
@@ -30,6 +28,8 @@ import {
 } from "./Constants";
 import { strict as assert } from "assert";
 import { TokenBalance, toBN } from "@mangata-finance/sdk";
+import { KeyringPair } from "@polkadot/keyring/types";
+import Keyring from "@polkadot/keyring";
 
 export enum AssetWallet {
   BEFORE,

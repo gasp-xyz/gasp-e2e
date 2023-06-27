@@ -4,7 +4,7 @@ import { BN_THOUSAND } from "@polkadot/util";
 import { AssetId } from "../../utils/ChainSpecs";
 import { ApiContext } from "../../utils/Framework/XcmHelper";
 import XcmNetworks from "../../utils/Framework/XcmNetworks";
-import { devTestingPairs } from "../../utils/setup";
+import { devTestingPairs, setupApi, setupUsers } from "../../utils/setup";
 import { sendTransaction } from "../../utils/sign";
 import {
   expectEvent,
@@ -13,6 +13,8 @@ import {
   matchEvents,
   matchSystemEvents,
 } from "../../utils/validators";
+import { mangataChopstick } from "../../utils/api";
+import { BN_BILLION } from "@mangata-finance/sdk";
 
 /**
  * @group xcm
@@ -24,15 +26,27 @@ describe("XCM tests for Mangata <-> Statemine", () => {
   let alice: KeyringPair;
 
   beforeAll(async () => {
+    await setupApi();
+    await setupUsers();
     statemine = await XcmNetworks.statemine();
-    mangata = await XcmNetworks.mangata();
+    mangata = mangataChopstick!;
     await connectParachains([statemine.chain, mangata.chain]);
     alice = devTestingPairs().alice;
-  });
-
-  afterAll(async () => {
-    await statemine.teardown();
-    await mangata.teardown();
+    await mangata.dev.setStorage({
+      Tokens: {
+        Accounts: [
+          [[alice.address, { token: 30 }], { free: 1000e6 }],
+          [
+            [alice.address, { token: 0 }],
+            { free: AssetId.Mgx.unit.mul(BN_BILLION).toString() },
+          ],
+        ],
+      },
+      Sudo: {
+        Key: alice.address,
+      },
+    });
+    // await upgradeMangata(mangata);
   });
 
   beforeEach(async () => {
@@ -67,14 +81,14 @@ describe("XCM tests for Mangata <-> Statemine", () => {
           30,
           10e6,
           {
-            V1: {
+            V3: {
               parents: 1,
               interior: {
                 X2: [
                   { Parachain: 1000 },
                   {
                     AccountId32: {
-                      network: "Any",
+                      network: undefined,
                       id: alice.addressRaw,
                     },
                   },
@@ -127,6 +141,7 @@ describe("XCM tests for Mangata <-> Statemine", () => {
               interior: {
                 X1: {
                   AccountId32: {
+                    network: undefined,
                     id: alice.addressRaw,
                   },
                 },

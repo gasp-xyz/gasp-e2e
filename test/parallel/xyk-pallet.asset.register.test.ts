@@ -4,6 +4,7 @@
  * @group asset
  * @group parallel
  */
+import { jest } from "@jest/globals";
 import { getApi } from "../../utils/api";
 import { getEnvironmentRequiredVars, xykErrors } from "../../utils/utils";
 import { User } from "../../utils/User";

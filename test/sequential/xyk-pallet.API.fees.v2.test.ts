@@ -15,7 +15,6 @@ import { getNextAssetId } from "../../utils/tx";
 import { Assets } from "../../utils/Assets";
 import { signSendFinalized } from "../../utils/sign";
 import { getApi } from "../../utils/api";
-
 /**
  * @group xyk
  * @group api

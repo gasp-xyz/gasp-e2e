@@ -3,7 +3,7 @@
  * @group api
  * @group parallel
  */
-
+import { jest } from "@jest/globals";
 import { Keyring } from "@polkadot/api";
 import { getApi, initApi } from "../../utils/api";
 import { Assets } from "../../utils/Assets";
@@ -23,6 +23,7 @@ import { getEnvironmentRequiredVars, stringToBN } from "../../utils/utils";
 import { Xyk } from "../../utils/xyk";
 import { ExtrinsicResult, waitForRewards } from "../../utils/eventListeners";
 import { getEventResultFromMangataTx } from "../../utils/txHandler";
+import { BN } from "@polkadot/util";
 
 jest.spyOn(console, "log").mockImplementation(jest.fn());
 jest.setTimeout(2500000);

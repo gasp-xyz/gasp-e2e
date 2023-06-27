@@ -4,6 +4,7 @@
  * @group liquidity
  * @group parallel
  */
+import { jest } from "@jest/globals";
 import { getApi, initApi } from "../../utils/api";
 import {
   calcuate_mint_liquidity_price_local,

@@ -5,7 +5,7 @@ import { ExtrinsicSwap } from "./plugins/extrinsicSwap";
 import { ExtrinsicTransfer } from "./plugins/extrinsicTransfer";
 // import { ExtrinsicTransferAll } from "./plugins/extrinsicTransferAll";
 // import { Ping } from "./plugins/ping";
-import { TestItem } from "./plugins/testItem";
+import { TestItem } from "./plugins/testItem.js";
 
 export enum Commands {
   ExtrinsicTransfer,

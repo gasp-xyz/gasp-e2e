@@ -2,7 +2,7 @@
 import { MangataGenericEvent } from "@mangata-finance/sdk";
 import { ApiPromise } from "@polkadot/api";
 import { BN } from "@polkadot/util";
-import _, { reject } from "lodash";
+import _, { reject } from "lodash-es";
 import { getApi, getMangataInstance } from "./api";
 import { logEvent, testLog } from "./Logger";
 import { api } from "./setup";
@@ -133,7 +133,7 @@ export const waitForEvents = async (
   return new Promise(async (resolve, reject) => {
     let counter = 0;
     const unsub = await api.rpc.chain.subscribeFinalizedHeads(async (head) => {
-      const events = await api.query.system.events.at(head.hash);
+      const events = await (await api.at(head.hash)).query.system.events();
       counter++;
       testLog
         .getLog()
@@ -169,10 +169,10 @@ export const waitForRewards = async (
       numblocks--;
       const { chainUri } = getEnvironmentRequiredVars();
       const mangata = await getMangataInstance(chainUri);
-      const price = await mangata.calculateRewardsAmount(
-        user.keyRingPair.address,
-        liquidityAssetId.toString()
-      );
+      const price = await mangata.rpc.calculateRewardsAmount({
+        address: user.keyRingPair.address,
+        liquidityTokenId: liquidityAssetId.toString(),
+      });
 
       if (price.gtn(0)) {
         unsub();

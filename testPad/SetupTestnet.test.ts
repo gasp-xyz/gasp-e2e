@@ -5,7 +5,7 @@ import fs from "fs";
 import { BN } from "@polkadot/util";
 import { createPoolIfMissing } from "../utils/tx";
 
-require("dotenv").config();
+import "dotenv/config";
 
 jest.spyOn(console, "log").mockImplementation(jest.fn());
 

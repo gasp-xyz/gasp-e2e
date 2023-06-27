@@ -1,8 +1,8 @@
 /* eslint-disable no-undef */
 /* eslint-disable no-console */
-const { disconnect } = require("./api");
+import { disconnect } from "./api";
 
-module.exports = async (globalConfig, projectConfig) => {
+const globalTearDown = async (globalConfig, projectConfig) => {
   if (process.env.CHOPSTICK_ENABLED || process.env.CHOPSTICK_UI) return;
   console.error("GLOBAL TEARDOWN - DISCONNECT...");
   // eslint-disable-next-line no-undef
@@ -11,3 +11,5 @@ module.exports = async (globalConfig, projectConfig) => {
   await disconnect();
   console.error("...DISCONNECT DONE!");
 };
+
+export default globalTearDown;

@@ -1,7 +1,7 @@
 /* eslint-disable no-console */
 /* eslint-disable no-loop-func */
 import { BN } from "@polkadot/util";
-import { Mangata } from "@mangata-finance/sdk";
+import { MangataInstance } from "@mangata-finance/sdk";
 import { testLog } from "../../utils/Logger";
 import { TestParams } from "../testParams";
 import { KeyringPair } from "@polkadot/keyring/types";
@@ -15,7 +15,7 @@ import { TestsCases } from "../testFactory";
 export async function runTransactions(
   mgaNodeandUsers: Map<
     number,
-    { mgaSdk: Mangata; users: { nonce: BN; keyPair: KeyringPair }[] }
+    { mgaSdk: MangataInstance; users: { nonce: BN; keyPair: KeyringPair }[] }
   >,
   testParams: TestParams,
   generator: any
@@ -33,7 +33,7 @@ export async function runTransactions(
 async function executionThread(
   threadId: number,
   testParams: TestParams,
-  sdk: Mangata,
+  sdk: MangataInstance,
   generator: any
 ) {
   const limit = Math.ceil(testParams.totalTx / testParams.threads);
@@ -46,7 +46,7 @@ async function executionThread(
   );
 
   const myTxs = new Set();
-  const api = await sdk.getApi()!;
+  const api = await sdk.api()!;
   let exec_counter = 0;
   let nonce_offset = 0;
   const promises = [];
@@ -99,7 +99,7 @@ async function executionThread(
 async function runTxsInConcurrentMode(
   mgaNodeandUsers: Map<
     number,
-    { mgaSdk: Mangata; users: { nonce: BN; keyPair: KeyringPair }[] }
+    { mgaSdk: MangataInstance; users: { nonce: BN; keyPair: KeyringPair }[] }
   >,
   testParams: TestParams,
   generator: any
@@ -159,7 +159,7 @@ export async function runQuery(
 async function runTxsInBurstMode(
   mgaNodeandUsers: Map<
     number,
-    { mgaSdk: Mangata; users: { nonce: BN; keyPair: KeyringPair }[] }
+    { mgaSdk: MangataInstance; users: { nonce: BN; keyPair: KeyringPair }[] }
   >,
   testParams: TestParams,
   generator: any
