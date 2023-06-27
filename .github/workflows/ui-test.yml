@@ -86,7 +86,7 @@ jobs:
           echo 'MNEMONIC_POLK=${{ secrets.MNEMONIC_POLK_ROCOCO }}' >> $GITHUB_ENV
   
       - name: Set Configuration - Develop
-        if: ${{ !contains(matrix.command, 'rococo') }} && (contains(github.event.client_payload.environment, 'develop') || contains(github.event.inputs.environment, 'develop'))
+        if: '!(contains(matrix.command, "rococo"))' && (contains(github.event.client_payload.environment, 'develop') || contains(github.event.inputs.environment, 'develop'))
         run:  |
           echo 'UI_URL=https://develop.mangata.finance/' >> $GITHUB_ENV
           echo 'API_URL=wss://node-01-ws-dev.mangata.online' >> $GITHUB_ENV
