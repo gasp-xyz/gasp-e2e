@@ -107,6 +107,30 @@ export const sudoIssueAsset = async (
   return results;
 };
 
+export const sudoMintAsset = async (
+  sudoAccount: KeyringPair,
+  total_balance: BN,
+  targetAddress: string,
+  asset: BN
+): Promise<MangataGenericEvent[]> => {
+  const nonce = await SudoDB.getInstance().getSudoNonce(sudoAccount.address);
+  testLog.getLog().info(`W[${env.JEST_WORKER_ID}] - sudoNonce: ${nonce} `);
+  const api = getApi();
+  let results: MangataGenericEvent[] = [];
+  try {
+    results = await signTx(
+      api,
+      api.tx.sudo.sudo(api.tx.tokens.mint(asset, targetAddress, total_balance)),
+      sudoAccount,
+      { nonce: new BN(nonce) }
+    );
+  } catch (e) {
+    testLog.getLog().error(JSON.stringify(e));
+  }
+  testLog.getLog().info(JSON.stringify(results));
+  return results;
+};
+
 export const transferAssets = async (
   from: any,
   to: any,
