@@ -1,7 +1,7 @@
 /*
  *
  * @group api
- * @group parallel
+ * @group rewardsV2Parallel
  */
 import { jest } from "@jest/globals";
 import { Keyring } from "@polkadot/api";
