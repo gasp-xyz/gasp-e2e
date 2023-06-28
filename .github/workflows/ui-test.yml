@@ -38,7 +38,7 @@ jobs:
             --project-id 2 \
             --name "FE e2e test run" \
             --resources resources.json \
-            --source "fe-e2e-job" > testmo-run-id.txt \
+            --source "fe-e2e-job" > testmo-run-id.txt
           ID=$(cat testmo-run-id.txt)
           echo "testmo-run-id=$ID" >> $GITHUB_OUTPUT
           echo "ID=$ID" >> $GITHUB_ENV
