@@ -1,7 +1,7 @@
 /*
  *
  * @group xyk
- * @group parallel
+ * @group governance
  */
 import { jest } from "@jest/globals";
 import { BN } from "@polkadot/util";

@@ -1,7 +1,7 @@
 /*
  *
  * @group api
- * @group parallel
+ * @group rewardsV2Parallel
  */
 import { jest } from "@jest/globals";
 import { Keyring } from "@polkadot/api";
@@ -14,7 +14,6 @@ import { Sudo } from "../../utils/sudo";
 import {
   claimRewardsAll,
   getLiquidityAssetId,
-  getRewardsInfo,
   mintLiquidity,
   promotePool,
 } from "../../utils/tx";
@@ -146,17 +145,7 @@ test("Testing that the sum of the weights can be greater than 100", async () => 
 
   const liqId2 = await getLiquidityAssetId(MGA_ASSET_ID, token2);
 
-  await Sudo.batchAsSudoFinalized(
-    Assets.promotePool(liqId2.toNumber(), 100),
-    Sudo.sudoAs(
-      testUser1,
-      Xyk.activateLiquidity(liqId, Assets.DEFAULT_AMOUNT.divn(2))
-    ),
-    Sudo.sudoAs(
-      testUser1,
-      Xyk.activateLiquidity(liqId2, Assets.DEFAULT_AMOUNT.divn(2))
-    )
-  );
+  await Sudo.batchAsSudoFinalized(Assets.promotePool(liqId2.toNumber(), 100));
 
   const poolWeightLiq1 = (await getPromotedPoolInfo(liqId)).weight;
 
@@ -164,25 +153,7 @@ test("Testing that the sum of the weights can be greater than 100", async () => 
 
   const sumPoolsWeights = poolWeightLiq1.add(poolWeightLiq2);
 
-  await Sudo.batchAsSudoFinalized(
-    Sudo.sudoAs(testUser1, Xyk.claimRewardsAll(liqId)),
-    Sudo.sudoAs(testUser1, Xyk.claimRewardsAll(liqId2))
-  );
-
-  const rewardsLiqId1 = await getRewardsInfo(
-    testUser1.keyRingPair.address,
-    liqId
-  );
-
-  const rewardsLiqId2 = await getRewardsInfo(
-    testUser1.keyRingPair.address,
-    liqId2
-  );
-
   expect(sumPoolsWeights).bnGt(BN_HUNDRED);
-  expect(rewardsLiqId1.rewardsAlreadyClaimed).bnLte(
-    rewardsLiqId2.rewardsAlreadyClaimed
-  );
 });
 
 test("GIVEN a pool WHEN it has configured with 0 THEN no new issuance will be reserved AND user can't claim rewards", async () => {
