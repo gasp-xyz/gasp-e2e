@@ -58,7 +58,7 @@ export class DepositModal {
   }
 
   async areTokenListElementsVisible(assetName: string) {
-    await sleep(2000);
+    await sleep(3000);
     const assetTestId = `TokensModal-token-${assetName}`;
     const assetLocator = buildDataTestIdXpath(assetTestId);
     const element = await this.driver.wait(
