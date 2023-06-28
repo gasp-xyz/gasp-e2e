@@ -2165,19 +2165,19 @@
     "@jridgewell/resolve-uri" "3.1.0"
     "@jridgewell/sourcemap-codec" "1.4.14"
 
-"@mangata-finance/sdk@2.0.0-rc.3":
-  version "2.0.0-rc.3"
-  resolved "https://registry.yarnpkg.com/@mangata-finance/sdk/-/sdk-2.0.0-rc.3.tgz#b5b481d806e579a369f35d596e153365063d3cbb"
-  integrity sha512-l2JCZCrYJIt69tSGRrldlMVluVM8DKiQHFu4+PPn/0cUeNUvHJgwszFtqHqlKlvi72BWGJ+fJcTspWThNygLIg==
+"@mangata-finance/sdk@2.0.0-rc.5":
+  version "2.0.0-rc.5"
+  resolved "https://registry.yarnpkg.com/@mangata-finance/sdk/-/sdk-2.0.0-rc.5.tgz#3008e565d3937b16cbf4becbbb9c17270d363401"
+  integrity sha512-3L7i7yfVb2RUIbepKcQBsyQJJO0HKdyMwxzQ5u9HdJsQylSNu/jaRQSumeINaMIju5WRlEW9jd3ohcinnkvE1A==
   dependencies:
-    "@mangata-finance/types" "1.0.0-rc.2"
+    "@mangata-finance/types" "1.0.0-rc.5"
     big.js "^6.2.1"
     rambda "^7.5.0"
 
-"@mangata-finance/types@1.0.0-rc.2":
-  version "1.0.0-rc.2"
-  resolved "https://registry.yarnpkg.com/@mangata-finance/types/-/types-1.0.0-rc.2.tgz#2fca043395ff58b23ab7d0a9274ef6cb27b5796a"
-  integrity sha512-U+MN/uQcP+Q+/Bf9YUVk5erTK/BsOe4E66wrPVvrevJB59QGTSs5mUPUrMMsMB0TWCIpLWpBuWMlgl3twWgjAg==
+"@mangata-finance/types@1.0.0-rc.5":
+  version "1.0.0-rc.5"
+  resolved "https://registry.yarnpkg.com/@mangata-finance/types/-/types-1.0.0-rc.5.tgz#2a82d17dbfc81524669d21d3e7979e1ccb92606a"
+  integrity sha512-AVCfoCqEOHAmzrgXD/KZJ9Sy1DL+hqNnU1vBDjiCkF9Jgtk78fA4m7WU7UwJSHcVDxNpQV2MaJ4n0Z0gDL894Q==
 
 "@mapbox/node-pre-gyp@^1.0.0":
   version "1.0.10"
