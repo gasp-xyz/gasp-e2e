@@ -1,0 +1,120 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`[V3][V3] XCM tests for Mangata <-> moonriver [V3] mangata transfer MGX assets to [V3] moonriver: After 1`] = `
+{
+  "free": "0x00000000033b2e361d06e6e33e73be53",
+  "frozen": 0,
+  "reserved": 0,
+}
+`;
+
+exports[`[V3][V3] XCM tests for Mangata <-> moonriver [V3] mangata transfer MGX assets to [V3] moonriver: Before 1`] = `
+{
+  "free": "0x00000000033b2e3c9fd0803ce8000000",
+  "frozen": 0,
+  "reserved": 0,
+}
+`;
+
+exports[`[V3][V3] XCM tests for Mangata <-> moonriver [V3] mangata transfer MGX assets to [V3] moonriver: system events 1`] = `
+[
+  {
+    "data": {
+      "messageHash": "(redacted)",
+      "weight": {
+        "proofSize": "(redacted)",
+        "refTime": "(redacted)",
+      },
+    },
+    "method": "Success",
+    "section": "xcmpQueue",
+  },
+]
+`;
+
+exports[`[V3][V3] XCM tests for Mangata <-> moonriver [V3] mangata transfer MOVR assets to [V3] moonriver: After 1`] = `
+{
+  "free": "0x00000000033b2e373409220f84f00000",
+  "frozen": 0,
+  "reserved": 0,
+}
+`;
+
+exports[`[V3][V3] XCM tests for Mangata <-> moonriver [V3] mangata transfer MOVR assets to [V3] moonriver: Before 1`] = `
+{
+  "free": "0x00000000033b2e3c9fd0803ce8000000",
+  "frozen": 0,
+  "reserved": 0,
+}
+`;
+
+exports[`[V3][V3] XCM tests for Mangata <-> moonriver [V3] mangata transfer MOVR assets to [V3] moonriver: system events 1`] = `
+[
+  {
+    "data": {
+      "messageHash": "(redacted)",
+      "weight": {
+        "proofSize": "(redacted)",
+        "refTime": "(redacted)",
+      },
+    },
+    "method": "Success",
+    "section": "xcmpQueue",
+  },
+  {
+    "data": {
+      "error": "FailedToTransactAsset",
+      "messageHash": "(redacted)",
+      "weight": {
+        "proofSize": "(redacted)",
+        "refTime": "(redacted)",
+      },
+    },
+    "method": "Fail",
+    "section": "xcmpQueue",
+  },
+  {
+    "data": {
+      "messageHash": "(redacted)",
+    },
+    "method": "XcmpMessageSent",
+    "section": "xcmpQueue",
+  },
+]
+`;
+
+exports[`[V3][V3] XCM tests for Mangata <-> moonriver [V3] moonriver transfer MGX assets to [V3] mangata: After 1`] = `
+{
+  "free": "0x00000000033b2e3c9fd0803ce8000000",
+  "frozen": 0,
+  "reserved": 0,
+}
+`;
+
+exports[`[V3][V3] XCM tests for Mangata <-> moonriver [V3] moonriver transfer MGX assets to [V3] mangata: Before 1`] = `
+{
+  "free": "0x00000000033b2e3c9fd0803ce8000000",
+  "frozen": 0,
+  "reserved": 0,
+}
+`;
+
+exports[`[V3][V3] XCM tests for Mangata <-> moonriver [V3] moonriver transfer MGX assets to [V3] mangata: system events 1`] = `[]`;
+
+exports[`[V3][V3] XCM tests for Mangata <-> moonriver [V3] moonriver transfer MOVR assets to [V3] mangata: After 1`] = `
+{
+  "free": "0x00000000033b2e3c9fd0803ce8000000",
+  "frozen": 0,
+  "reserved": 0,
+}
+`;
+
+exports[`[V3][V3] XCM tests for Mangata <-> moonriver [V3] moonriver transfer MOVR assets to [V3] mangata: Before 1`] = `
+{
+  "free": "0x00000000033b2e3c9fd0803ce8000000",
+  "frozen": 0,
+  "reserved": 0,
+}
+`;
+
+exports[`[V3][V3] XCM tests for Mangata <-> moonriver [V3] moonriver transfer MOVR assets to [V3] mangata: system events 1`] = `[]`;
