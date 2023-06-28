@@ -1091,12 +1091,12 @@ export async function compoundRewards(
 }
 
 export async function multiSwapBuy(
-  testUser1: User,
+  user: User,
   tokenIds: BN[],
   buyAmount: BN,
   maxAmountIn: BN = MAX_BALANCE
 ) {
-  const keyring = testUser1.keyRingPair;
+  const account = user.keyRingPair;
   const mangata = await getMangataInstance();
   const tokenIdsArray: string[] = [];
   let tokenIdsString: string;
@@ -1104,27 +1104,35 @@ export async function multiSwapBuy(
     tokenIdsString = tokenIds[index].toString();
     tokenIdsArray.push(tokenIdsString);
   });
-  const result1 = await mangata.xyk.multiswapBuyAsset({
-    account: keyring,
+  const result = await mangata.xyk.multiswapBuyAsset({
+    account: account,
     amount: buyAmount,
     maxAmountIn: maxAmountIn,
     tokenIds: tokenIdsArray!,
   });
-  return result1;
+  return result;
 }
 export async function multiSwapSell(
-  testUser1: User,
+  user: User,
   tokenIds: BN[],
   soldAmount: BN,
   minAmountOut: BN = BN_ONE
 ) {
-  const api = getApi();
-  const result = await signTx(
-    api,
-    api.tx.xyk.multiswapSellAsset(tokenIds, soldAmount, minAmountOut),
-    testUser1.keyRingPair
-  );
-  return result;
+  const account = user.keyRingPair;
+  const mangata = await getMangataInstance();
+  const tokenIdsArray: string[] = [];
+  let tokenIdsString: string;
+  tokenIds.forEach((_, index) => {
+    tokenIdsString = tokenIds[index].toString();
+    tokenIdsArray.push(tokenIdsString);
+  });
+  const result1 = await mangata.xyk.multiswapSellAsset({
+    account: account,
+    amount: soldAmount,
+    minAmountOut: minAmountOut,
+    tokenIds: tokenIdsArray,
+  });
+  return result1;
 }
 
 export async function updateFeeLockMetadata(
@@ -1200,12 +1208,6 @@ export async function getRewardsInfo(
 export async function claimRewardsAll(user: User, liquidityTokenId: BN) {
   const account = user.keyRingPair;
   const liquidityTokenIdString = liquidityTokenId.toString();
-  //const api = getApi();
-  // const result = await signTx(
-  //   api,
-  //   api.tx.proofOfStake.claimRewardsAll(liquidityTokenId),
-  //   user.keyRingPair
-  // );
   const mangata = await getMangataInstance();
   const result = await mangata.xyk.claimRewards({
     account: account,

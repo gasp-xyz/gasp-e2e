@@ -148,7 +148,7 @@ describe("xyk-pallet - Mint liquidity tests: with minting you can", () => {
     await validateTreasuryAmountsEqual(secondCurrency, [new BN(0), new BN(0)]);
   });
 
-  test("Expect an event when liquidirty is minted", async () => {
+  test("Expect an event when liquidity is minted", async () => {
     // The second currecy value is : defaultCurrecyValue, one to create the pool later, and the other one because of the rounding issue.
     [firstCurrency, secondCurrency] = await Assets.setupUserWithCurrencies(
       testUser1,
