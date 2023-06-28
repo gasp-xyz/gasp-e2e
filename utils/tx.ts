@@ -1126,13 +1126,13 @@ export async function multiSwapSell(
     tokenIdsString = tokenIds[index].toString();
     tokenIdsArray.push(tokenIdsString);
   });
-  const result1 = await mangata.xyk.multiswapSellAsset({
+  const result = await mangata.xyk.multiswapSellAsset({
     account: account,
     amount: soldAmount,
     minAmountOut: minAmountOut,
     tokenIds: tokenIdsArray,
   });
-  return result1;
+  return result;
 }
 
 export async function updateFeeLockMetadata(
