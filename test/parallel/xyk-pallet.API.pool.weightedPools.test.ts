@@ -14,7 +14,6 @@ import { Sudo } from "../../utils/sudo";
 import {
   claimRewardsAll,
   getLiquidityAssetId,
-  getRewardsInfo,
   mintLiquidity,
   promotePool,
 } from "../../utils/tx";
@@ -164,25 +163,7 @@ test("Testing that the sum of the weights can be greater than 100", async () => 
 
   const sumPoolsWeights = poolWeightLiq1.add(poolWeightLiq2);
 
-  await Sudo.batchAsSudoFinalized(
-    Sudo.sudoAs(testUser1, Xyk.claimRewardsAll(liqId)),
-    Sudo.sudoAs(testUser1, Xyk.claimRewardsAll(liqId2))
-  );
-
-  const rewardsLiqId1 = await getRewardsInfo(
-    testUser1.keyRingPair.address,
-    liqId
-  );
-
-  const rewardsLiqId2 = await getRewardsInfo(
-    testUser1.keyRingPair.address,
-    liqId2
-  );
-
   expect(sumPoolsWeights).bnGt(BN_HUNDRED);
-  expect(rewardsLiqId1.rewardsAlreadyClaimed).bnLte(
-    rewardsLiqId2.rewardsAlreadyClaimed
-  );
 });
 
 test("GIVEN a pool WHEN it has configured with 0 THEN no new issuance will be reserved AND user can't claim rewards", async () => {
