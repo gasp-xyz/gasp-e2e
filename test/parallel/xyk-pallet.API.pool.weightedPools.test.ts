@@ -145,17 +145,7 @@ test("Testing that the sum of the weights can be greater than 100", async () => 
 
   const liqId2 = await getLiquidityAssetId(MGA_ASSET_ID, token2);
 
-  await Sudo.batchAsSudoFinalized(
-    Assets.promotePool(liqId2.toNumber(), 100),
-    Sudo.sudoAs(
-      testUser1,
-      Xyk.activateLiquidity(liqId, Assets.DEFAULT_AMOUNT.divn(2))
-    ),
-    Sudo.sudoAs(
-      testUser1,
-      Xyk.activateLiquidity(liqId2, Assets.DEFAULT_AMOUNT.divn(2))
-    )
-  );
+  await Sudo.batchAsSudoFinalized(Assets.promotePool(liqId2.toNumber(), 100));
 
   const poolWeightLiq1 = (await getPromotedPoolInfo(liqId)).weight;
 
