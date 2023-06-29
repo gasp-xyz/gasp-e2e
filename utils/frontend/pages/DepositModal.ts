@@ -57,24 +57,35 @@ export class DepositModal {
     return parseFloat(await getText(this.driver, assetLocator));
   }
 
-  async areTokenListElementsVisible(assetName: string) {
-    await sleep(3000);
-    const assetTestId = `TokensModal-token-${assetName}`;
-    const assetLocator = buildDataTestIdXpath(assetTestId);
-    const element = await this.driver.wait(
-      until.elementLocated(By.xpath(assetLocator)),
-      10000
-    );
-    await this.driver.wait(until.elementIsVisible(element));
-    await this.driver.wait(until.elementIsEnabled(element));
-    const assetAmountTestId = `token-list-token-${assetName}-balance`;
-    const assetAmountLocator = buildDataTestIdXpath(assetAmountTestId);
-    await waitForElementVisible(this.driver, assetAmountLocator, 60000);
-    const elementsDisplayed = await areDisplayed(this.driver, [
-      assetLocator,
-      assetAmountLocator,
-    ]);
-    return elementsDisplayed;
+  async areTokenListElementsVisible(
+    assetName: string,
+    retries = 3
+  ): Promise<boolean> {
+    try {
+      await sleep(2000);
+      const assetTestId = `TokensModal-token-${assetName}`;
+      const assetLocator = buildDataTestIdXpath(assetTestId);
+      const element = await this.driver.wait(
+        until.elementLocated(By.xpath(assetLocator)),
+        10000
+      );
+      await this.driver.wait(until.elementIsVisible(element));
+      await this.driver.wait(until.elementIsEnabled(element));
+      const assetAmountTestId = `token-list-token-${assetName}-balance`;
+      const assetAmountLocator = buildDataTestIdXpath(assetAmountTestId);
+      await waitForElementVisible(this.driver, assetAmountLocator, 60000);
+      const elementsDisplayed = await areDisplayed(this.driver, [
+        assetLocator,
+        assetAmountLocator,
+      ]);
+      return elementsDisplayed;
+    } catch (error) {
+      if (retries > 0) {
+        return await this.areTokenListElementsVisible(assetName, retries - 1);
+      } else {
+        return false;
+      }
+    }
   }
 
   async enterValue(amount: string) {
