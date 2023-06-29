@@ -151,11 +151,11 @@ describe("UI tests - pools, provide liquidity", () => {
       driver,
       expect.getState().currentTestName + " - " + session.getId()
     );
-    await driver.quit();
-    DriverBuilder.destroy();
   });
 
   afterAll(async () => {
+    await driver.quit();
+    DriverBuilder.destroy();
     const api = getApi();
     await api.disconnect();
   });
