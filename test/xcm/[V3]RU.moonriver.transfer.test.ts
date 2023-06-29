@@ -14,6 +14,8 @@ import { mangataChopstick } from "../../utils/api";
 import { Codec } from "@polkadot/types/types";
 import { BN, BN_THOUSAND } from "@polkadot/util";
 import { Keyring } from "@polkadot/api";
+import { waitForEvents } from "../../utils/eventListeners";
+import { testLog } from "../../utils/Logger";
 
 /**
  * @group xcm
@@ -224,6 +226,7 @@ describe("[V3][V3] XCM tests for Mangata <-> moonriver", () => {
       .transferMultiasset(asset, destination, "Unlimited")
       .signAndSend(alith);
 
+    await moonriver.chain.newBlock();
     await mangata.chain.newBlock();
 
     expectJson(
@@ -233,14 +236,63 @@ describe("[V3][V3] XCM tests for Mangata <-> moonriver", () => {
   });
 
   it("[V3] mangata transfer MOVR assets to [V3] moonriver", async () => {
+    //setup_add tokens from moonriver to mga.
+    const asset = {
+      V3: {
+        id: {
+          Concrete: {
+            parents: 0,
+            interior: {
+              X1: {
+                PalletInstance: 10,
+              },
+            },
+          },
+        },
+        fun: {
+          Fungible: BN_HUNDRED.mul(BN_TEN.pow(new BN(18))),
+        },
+      },
+    };
+
+    const destination = {
+      V3: {
+        parents: 1,
+        interior: {
+          X2: [
+            {
+              Parachain: 2110,
+            },
+            {
+              AccountId32: {
+                id: moonriver.api
+                  .createType(
+                    "AccountId32",
+                    "5GrwvaEF5zXb26Fz9rcQpDWS57CtERHpNehXCPcNoHGKutQY" // Alice address on Mangata
+                  )
+                  .toHex(),
+              },
+            },
+          ],
+        },
+      },
+    };
+
+    await moonriver.api.tx.xTokens
+      .transferMultiasset(asset, destination, "Unlimited")
+      .signAndSend(alith);
+    await moonriver.chain.newBlock();
+    await mangata.chain.newBlock();
+
+    //act
     expectJson(
       await mangata.api.query.tokens.accounts(alice.keyRingPair.address, 39)
     ).toMatchSnapshot("Before");
-
+    await moonriver.chain.newBlock();
     const mgaSdk = Mangata.instance([mangata.uri]);
     await mgaSdk.xTokens.withdrawFromMoonriver({
       account: alice.keyRingPair,
-      amount: BN_HUNDRED.mul(BN_TEN.pow(new BN(18))),
+      amount: BN_TEN.mul(BN_TEN.pow(new BN(18))),
       moonriverAddress: alith.address,
       tokenSymbol: "MOVR",
       txOptions: {
@@ -257,8 +309,8 @@ describe("[V3][V3] XCM tests for Mangata <-> moonriver", () => {
     });
 
     await mangata.chain.newBlock();
-
     await moonriver.chain.newBlock();
+
     expectJson(
       await mangata.api.query.tokens.accounts(alice.keyRingPair.address, 39)
     ).toMatchSnapshot("After");
@@ -315,14 +367,22 @@ describe("[V3][V3] XCM tests for Mangata <-> moonriver", () => {
     await moonriver.api.tx.xTokens
       .transferMultiasset(asset, destination, "Unlimited")
       .signAndSend(alith);
-
     await moonriver.chain.newBlock();
-
+    testLog.getLog().info("Waiting for event2 - setup");
+    await waitForEvents(mangata.api, "xcmpQueue.Success");
+    testLog.getLog().info("done waiting ");
+    expectEvent(await waitForEvents(mangata.api, "tokens.Deposited"), {
+      event: expect.objectContaining({
+        data: expect.objectContaining({
+          who: "5GrwvaEF5zXb26Fz9rcQpDWS57CtERHpNehXCPcNoHGKutQY",
+          amount: "99,998,387,200,000,000,000",
+        }),
+      }),
+    });
+    testLog.getLog().info("end expect");
     await mangata.chain.newBlock();
-
     expectJson(
       await mangata.api.query.tokens.accounts(alice.keyRingPair.address, 39)
     ).toMatchSnapshot("After");
-    await matchSystemEvents(mangata, "xcmpQueue", "Success");
   });
 });
