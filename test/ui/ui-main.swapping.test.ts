@@ -25,18 +25,15 @@ import {
   NotificationModal,
 } from "../../utils/frontend/pages/NotificationModal";
 import { Polkadot } from "../../utils/frontend/pages/Polkadot";
-import { ExtrinsicResult, waitNewBlock } from "../../utils/eventListeners";
+import { waitNewBlock } from "../../utils/eventListeners";
 import { createAssetIfMissing, createPoolIfMissing } from "../../utils/tx";
 import { SudoUser } from "../../utils/Framework/User/SudoUser";
 import { Node } from "../../utils/Framework/Node/Node";
 import { connectPolkadotWallet } from "../../utils/frontend/utils/Handlers";
 
 import "dotenv/config";
-import {
-  getEventResultFromMangataTx,
-  sudoMintAsset,
-} from "../../utils/txHandler";
-import { BN_TEN } from "@mangata-finance/sdk";
+import { Sudo } from "../../utils/sudo";
+import { Assets } from "../../utils/Assets";
 
 jest.retryTimes(1);
 jest.spyOn(console, "log").mockImplementation(jest.fn());
@@ -75,26 +72,7 @@ describe("UI tests - swapping assets", () => {
       testAssetId
     );
 
-    const MGR_TO_MINT_BN = new BN(1010).mul(BN_TEN.pow(new BN(18)));
-    await sudoMintAsset(
-      sudo.keyRingPair,
-      MGR_TO_MINT_BN,
-      testUser1.keyRingPair.address,
-      MGA_ASSET_ID
-    ).then((result) => {
-      const eventResponse = getEventResultFromMangataTx(result, [
-        "tokens",
-        "Minted",
-        testUser1.keyRingPair.address,
-      ]);
-      expect(eventResponse.state).toEqual(ExtrinsicResult.ExtrinsicSuccess);
-    });
-
-    // await Sudo.batchAsSudoFinalized(
-    //   Assets.mintToken(new BN(7), testUser1), // transferAll test
-    //   Assets.mintToken(testAssetId, testUser1), // transferAll test
-    //   Assets.mintNative(testUser1)
-    // );
+    await Sudo.batchAsSudoFinalized(Assets.mintNative(testUser1));
 
     testUser1.addAsset(testAssetId);
     await testUser1.refreshAmounts(AssetWallet.BEFORE);
