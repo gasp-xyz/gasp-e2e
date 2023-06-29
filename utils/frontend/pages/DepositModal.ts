@@ -59,10 +59,10 @@ export class DepositModal {
 
   async areTokenListElementsVisible(
     assetName: string,
-    retries = 3
+    retries = 5
   ): Promise<boolean> {
     try {
-      await sleep(2000);
+      await sleep(3000);
       const assetTestId = `TokensModal-token-${assetName}`;
       const assetLocator = buildDataTestIdXpath(assetTestId);
       const element = await this.driver.wait(
@@ -81,6 +81,7 @@ export class DepositModal {
       return elementsDisplayed;
     } catch (error) {
       if (retries > 0) {
+        await sleep(3000);
         return await this.areTokenListElementsVisible(assetName, retries - 1);
       } else {
         return false;
