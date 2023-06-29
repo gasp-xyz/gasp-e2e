@@ -1,6 +1,7 @@
 /*
  *
  * @group xyk
+ * @group sdk
  * @group parallel
  */
 import { jest } from "@jest/globals";
