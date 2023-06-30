@@ -13,7 +13,7 @@ import { BN } from "@polkadot/util";
 import { setupApi, setupUsers } from "../../utils/setup";
 import { Sudo } from "../../utils/sudo";
 import { updateFeeLockMetadata } from "../../utils/tx";
-import { AssetWallet, User } from "../../utils/User";
+import { User } from "../../utils/User";
 import { getEnvironmentRequiredVars } from "../../utils/utils";
 import { Xyk } from "../../utils/xyk";
 
@@ -27,6 +27,7 @@ let sudo: User;
 let keyring: Keyring;
 let firstCurrency: BN;
 let secondCurrency: BN;
+let thirdCurrency: BN;
 
 const thresholdValue = new BN(666).mul(Assets.MG_UNIT);
 const defaultCurrencyValue = new BN(10000000).mul(Assets.MG_UNIT);
@@ -45,7 +46,7 @@ beforeAll(async () => {
 
   [secondCurrency] = await Assets.setupUserWithCurrencies(
     sudo,
-    [defaultCurrencyValue, defaultCurrencyValue],
+    [defaultCurrencyValue],
     sudo
   );
 });
@@ -55,7 +56,7 @@ beforeEach(async () => {
 
   await setupApi();
 
-  [firstCurrency] = await Assets.setupUserWithCurrencies(
+  [firstCurrency, thirdCurrency] = await Assets.setupUserWithCurrencies(
     sudo,
     [defaultCurrencyValue, defaultCurrencyValue],
     sudo
@@ -84,12 +85,22 @@ beforeEach(async () => {
         secondCurrency,
         defaultPoolVolumeValue
       )
+    ),
+    Sudo.sudoAs(
+      sudo,
+      Xyk.createPool(
+        thirdCurrency,
+        defaultPoolVolumeValue,
+        secondCurrency,
+        defaultPoolVolumeValue
+      )
     )
   );
 
   testUser1.addAsset(MGA_ASSET_ID);
   testUser1.addAsset(firstCurrency);
   testUser1.addAsset(secondCurrency);
+  testUser1.addAsset(thirdCurrency);
 });
 
 test("gasless- isFree depends on the token and the sell valuation", async () => {
@@ -107,14 +118,53 @@ test("gasless- isFree depends on the token and the sell valuation", async () => 
   );
 
   const saleAssetValue = thresholdValue.add(new BN(2));
+  //non existing pool
+  expect(
+    await mangata?.rpc.isBuyAssetLockFree(
+      [secondCurrency.toNumber(), firstCurrency.toNumber() + 10],
+      thresholdValue!.addn(1)
+    )
+  ).toBeFalsy();
+  // non mga paired token. -> always false.
+  expect(
+    await mangata?.rpc.isBuyAssetLockFree(
+      [secondCurrency.toNumber(), thirdCurrency.toNumber()],
+      thresholdValue!.addn(1000)
+    )
+  ).toBeFalsy();
 
-  await testUser1.refreshAmounts(AssetWallet.BEFORE);
   const isFree = await mangata?.rpc.isSellAssetLockFree(
     [firstCurrency.toNumber(), secondCurrency.toNumber()],
     saleAssetValue
   );
   expect(isFree).toBeTruthy();
+  //MGA pool
+  expect(
+    await mangata?.rpc.isSellAssetLockFree(
+      [firstCurrency.toNumber(), MGA_ASSET_ID.toNumber()],
+      thresholdValue.subn(2)
+    )
+  ).toBeFalsy();
+  expect(
+    await mangata?.rpc.isSellAssetLockFree(
+      [MGA_ASSET_ID.toNumber(), firstCurrency.toNumber()],
+      thresholdValue.subn(2)
+    )
+  ).toBeFalsy();
+  expect(
+    await mangata?.rpc.isSellAssetLockFree(
+      [MGA_ASSET_ID.toNumber(), firstCurrency.toNumber()],
+      thresholdValue
+    )
+  ).toBeTruthy();
+  expect(
+    await mangata?.rpc.isSellAssetLockFree(
+      [firstCurrency.toNumber(), MGA_ASSET_ID.toNumber()],
+      thresholdValue
+    )
+  ).toBeTruthy();
 
+  //MGA paired token
   expect(
     await mangata?.rpc.isSellAssetLockFree(
       [firstCurrency.toNumber(), secondCurrency.toNumber()],
@@ -156,6 +206,7 @@ test("gasless- isFree depends on the token and the sell valuation", async () => 
     )
   ).toBeTruthy();
 
+  //Indirect paired token
   const amountReqToGetThreshold = await mangata?.rpc.calculateSellPriceId(
     firstCurrency.toString(),
     secondCurrency.toString(),
