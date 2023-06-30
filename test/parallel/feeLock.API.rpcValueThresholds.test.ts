@@ -16,7 +16,6 @@ import { updateFeeLockMetadata } from "../../utils/tx";
 import { AssetWallet, User } from "../../utils/User";
 import { getEnvironmentRequiredVars } from "../../utils/utils";
 import { Xyk } from "../../utils/xyk";
-import { BN_ZERO } from "@mangata-finance/sdk";
 
 jest.spyOn(console, "log").mockImplementation(jest.fn());
 jest.setTimeout(2500000);
@@ -93,7 +92,7 @@ beforeEach(async () => {
   testUser1.addAsset(secondCurrency);
 });
 
-test.only("gasless- isFree depends on the token and the sell valuation", async () => {
+test("gasless- isFree depends on the token and the sell valuation", async () => {
   await Sudo.batchAsSudoFinalized(
     Assets.mintNative(testUser1),
     Sudo.sudoAs(
@@ -122,32 +121,58 @@ test.only("gasless- isFree depends on the token and the sell valuation", async (
       thresholdValue.subn(2)
     )
   ).toBeFalsy();
-  const amount = await mangata?.rpc.calculateSellPriceId(
+  const amount = (await mangata?.rpc.calculateBuyPriceId(
     secondCurrency.toString(),
     firstCurrency.toString(),
-    thresholdValue.subn(2)
-  );
-  const th = thresholdValue.sub(amount!).lte(BN_ZERO)
-    ? thresholdValue
-    : amount?.add(thresholdValue.sub(amount!))!;
+    thresholdValue
+  ))!;
   //this is false because the token is not whitelisted & there is no direct conversion to mgx.
+  //and the valuation of the result is less than threshold. ( you need 670secCurr to get 666firstCurr)
+  //th is 670,
   expect(
     await mangata?.rpc.isSellAssetLockFree(
       [secondCurrency.toNumber(), firstCurrency.toNumber()],
-      th.addn(2)
+      thresholdValue.addn(2)
     )
   ).toBeFalsy();
 
   expect(
+    await mangata?.rpc.isSellAssetLockFree(
+      [secondCurrency.toNumber(), firstCurrency.toNumber()],
+      amount.addn(1)
+    )
+  ).toBeTruthy();
+
+  expect(
     await mangata?.rpc.isBuyAssetLockFree(
       [firstCurrency.toNumber(), secondCurrency.toNumber()],
-      th.subn(2)
+      thresholdValue.subn(1)
     )
   ).toBeFalsy();
   expect(
     await mangata?.rpc.isBuyAssetLockFree(
       [firstCurrency.toNumber(), secondCurrency.toNumber()],
-      th.addn(2)
+      amount.addn(1)
+    )
+  ).toBeTruthy();
+
+  const amountReqToGetThreshold = await mangata?.rpc.calculateSellPriceId(
+    firstCurrency.toString(),
+    secondCurrency.toString(),
+    thresholdValue.subn(1)
+  );
+  //Same as before, we first calcualte from wich value, the buy results on the threshold.
+  //Then we check that the value (-1) result in false, and +1 in true.
+  expect(
+    await mangata?.rpc.isBuyAssetLockFree(
+      [secondCurrency.toNumber(), firstCurrency.toNumber()],
+      amountReqToGetThreshold!
+    )
+  ).toBeFalsy();
+  expect(
+    await mangata?.rpc.isBuyAssetLockFree(
+      [secondCurrency.toNumber(), firstCurrency.toNumber()],
+      amountReqToGetThreshold!.addn(1)
     )
   ).toBeTruthy();
 });
