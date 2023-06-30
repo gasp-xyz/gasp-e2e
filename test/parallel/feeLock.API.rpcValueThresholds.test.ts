@@ -8,14 +8,18 @@ import { Keyring } from "@polkadot/api";
 import { getApi, initApi, mangata } from "../../utils/api";
 import { Assets } from "../../utils/Assets";
 import { MGA_ASSET_ID } from "../../utils/Constants";
-import { waitSudoOperationSuccess } from "../../utils/eventListeners";
-import { BN } from "@polkadot/util";
+import {
+  ExtrinsicResult,
+  waitSudoOperationSuccess,
+} from "../../utils/eventListeners";
+import { BN, BN_ONE, BN_ZERO } from "@polkadot/util";
 import { setupApi, setupUsers } from "../../utils/setup";
 import { Sudo } from "../../utils/sudo";
 import { updateFeeLockMetadata } from "../../utils/tx";
 import { User } from "../../utils/User";
 import { getEnvironmentRequiredVars } from "../../utils/utils";
 import { Xyk } from "../../utils/xyk";
+import { getEventResultFromMangataTx } from "../../utils/txHandler";
 
 jest.spyOn(console, "log").mockImplementation(jest.fn());
 jest.setTimeout(2500000);
@@ -49,9 +53,6 @@ beforeAll(async () => {
     [defaultCurrencyValue],
     sudo
   );
-});
-
-beforeEach(async () => {
   [testUser1] = setupUsers();
 
   await setupApi();
@@ -77,6 +78,7 @@ beforeEach(async () => {
   await Sudo.batchAsSudoFinalized(
     Assets.mintToken(firstCurrency, testUser1, defaultCurrencyValue),
     Assets.mintToken(secondCurrency, testUser1, defaultCurrencyValue),
+    Assets.mintToken(thirdCurrency, testUser1, defaultCurrencyValue),
     Sudo.sudoAs(
       sudo,
       Xyk.createPool(
@@ -94,17 +96,7 @@ beforeEach(async () => {
         secondCurrency,
         defaultPoolVolumeValue
       )
-    )
-  );
-
-  testUser1.addAsset(MGA_ASSET_ID);
-  testUser1.addAsset(firstCurrency);
-  testUser1.addAsset(secondCurrency);
-  testUser1.addAsset(thirdCurrency);
-});
-
-test("gasless- isFree depends on the token and the sell valuation", async () => {
-  await Sudo.batchAsSudoFinalized(
+    ),
     Assets.mintNative(testUser1),
     Sudo.sudoAs(
       sudo,
@@ -117,6 +109,13 @@ test("gasless- isFree depends on the token and the sell valuation", async () => 
     )
   );
 
+  testUser1.addAsset(MGA_ASSET_ID);
+  testUser1.addAsset(firstCurrency);
+  testUser1.addAsset(secondCurrency);
+  testUser1.addAsset(thirdCurrency);
+});
+
+test("gasless- isFree depends on the token and the sell valuation", async () => {
   const saleAssetValue = thresholdValue.add(new BN(2));
   //non existing pool
   expect(
@@ -226,4 +225,37 @@ test("gasless- isFree depends on the token and the sell valuation", async () => 
       amountReqToGetThreshold!.addn(1)
     )
   ).toBeTruthy();
+});
+
+test("gasless- isFree works same as multiswap of two", async () => {
+  const saleAssetValue = thresholdValue.add(new BN(2));
+
+  const isFree = await mangata?.rpc.isSellAssetLockFree(
+    [firstCurrency.toNumber(), secondCurrency.toNumber()],
+    saleAssetValue
+  );
+  expect(isFree).toBeTruthy();
+  const mgasBef = await mangata?.query.getTokenBalance(
+    MGA_ASSET_ID.toString(),
+    testUser1.keyRingPair.address
+  );
+  const events = await mangata?.xyk.multiswapSellAsset({
+    account: testUser1.keyRingPair,
+    amount: saleAssetValue,
+    minAmountOut: BN_ONE,
+    tokenIds: [firstCurrency.toString(), secondCurrency.toString()],
+  });
+  const eventResponse = getEventResultFromMangataTx(events!, [
+    "xyk",
+    "AssetsSwapped",
+  ]);
+  expect(eventResponse.state).toEqual(ExtrinsicResult.ExtrinsicSuccess);
+
+  const mgasAfter = await mangata?.query.getTokenBalance(
+    MGA_ASSET_ID.toString(),
+    testUser1.keyRingPair.address
+  );
+  expect(mgasBef?.reserved).bnEqual(BN_ZERO);
+  expect(mgasAfter?.reserved).bnEqual(BN_ZERO);
+  expect(mgasBef!.free).bnEqual(mgasAfter!.free);
 });
