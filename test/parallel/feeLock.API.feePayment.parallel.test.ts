@@ -5,7 +5,7 @@
  */
 import { jest } from "@jest/globals";
 import { Keyring } from "@polkadot/api";
-import { getApi, initApi } from "../../utils/api";
+import { getApi, initApi, mangata } from "../../utils/api";
 import { Assets } from "../../utils/Assets";
 import { MGA_ASSET_ID } from "../../utils/Constants";
 import { waitSudoOperationSuccess } from "../../utils/eventListeners";
@@ -111,6 +111,11 @@ test("gasless- GIVEN a feeLock configured WHEN a swap happens THEN fees are not 
   const saleAssetValue = thresholdValue.sub(new BN(5));
 
   await testUser1.refreshAmounts(AssetWallet.BEFORE);
+  const isFree = await mangata?.rpc.isSellAssetLockFree(
+    [MGA_ASSET_ID.toNumber(), firstCurrency.toNumber()],
+    saleAssetValue
+  );
+  expect(isFree).toBeFalsy();
   await testUser1.sellAssets(MGA_ASSET_ID, firstCurrency, saleAssetValue);
   await testUser1.refreshAmounts(AssetWallet.AFTER);
 
@@ -215,6 +220,13 @@ test("gasless- For low-value swaps, token reservation status and pallet storage 
   await checkAccountFeeLockData(0, 0);
 
   const saleAssetValue = thresholdValue.sub(new BN(5));
+
+  const isFree = await mangata?.rpc.isSellAssetLockFree(
+    [MGA_ASSET_ID.toNumber(), firstCurrency.toNumber()],
+    saleAssetValue
+  );
+  expect(isFree).toBeFalsy();
+
   await testUser1.sellAssets(MGA_ASSET_ID, firstCurrency, saleAssetValue);
   const lockDataBlockNumber = await getBlockNumber();
 
@@ -272,6 +284,11 @@ test("gasless- High-value swaps when successful are not charged txn fee or token
   const saleAssetValue = thresholdValue.add(new BN(5));
 
   await testUser1.refreshAmounts(AssetWallet.BEFORE);
+  const isFree = await mangata?.rpc.isSellAssetLockFree(
+    [firstCurrency.toNumber(), secondCurrency.toNumber()],
+    saleAssetValue
+  );
+  expect(isFree).toBeTruthy();
   await testUser1.sellAssets(firstCurrency, secondCurrency, saleAssetValue);
   await testUser1.refreshAmounts(AssetWallet.AFTER);
 

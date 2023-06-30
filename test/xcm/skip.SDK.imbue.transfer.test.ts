@@ -70,7 +70,7 @@ describe.skip("XCM tests for Mangata <-> imbue", () => {
       parachainId: 2121,
       destinationAddress: alice.address,
       tokenSymbol: "IMBU",
-      withWeight: "800000000",
+      withWeight: 800000000,
     });
     await Promise.race([
       p,
