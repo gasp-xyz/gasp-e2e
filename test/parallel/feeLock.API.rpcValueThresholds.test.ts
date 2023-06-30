@@ -27,10 +27,10 @@ let sudo: User;
 let keyring: Keyring;
 let firstCurrency: BN;
 let secondCurrency: BN;
-//let whitelistedTokens: any[];
-const thresholdValue = new BN(666);
-const defaultCurrencyValue = new BN(10000000);
-const defaultPoolVolumeValue = new BN(1000000);
+
+const thresholdValue = new BN(666).mul(Assets.MG_UNIT);
+const defaultCurrencyValue = new BN(10000000).mul(Assets.MG_UNIT);
+const defaultPoolVolumeValue = new BN(1000000).mul(Assets.MG_UNIT);
 
 beforeAll(async () => {
   try {
