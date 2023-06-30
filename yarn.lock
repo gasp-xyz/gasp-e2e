@@ -2165,10 +2165,10 @@
     "@jridgewell/resolve-uri" "3.1.0"
     "@jridgewell/sourcemap-codec" "1.4.14"
 
-"@mangata-finance/sdk@2.0.0-rc.6":
-  version "2.0.0-rc.6"
-  resolved "https://registry.yarnpkg.com/@mangata-finance/sdk/-/sdk-2.0.0-rc.6.tgz#4256ab10892cce3d0a54c05a8f3ac83f60e19d2e"
-  integrity sha512-uwaxE2FYx/bSEqwi2+5I3fDidLuildo+r5lyicqoKP/bKaN7uR190nD9IWvbv1a3QeM4PK+5PV5GQMtLDzC1qg==
+"@mangata-finance/sdk@2.0.0-rc.8":
+  version "2.0.0-rc.8"
+  resolved "https://registry.yarnpkg.com/@mangata-finance/sdk/-/sdk-2.0.0-rc.8.tgz#ace1c17e0a659727763c4009e6ce6f77193f92c0"
+  integrity sha512-P0ot8Op8Ea8CwZO7FJJBqCDWUS9b/KpmdJKBR3RmjyqNFBWCkSEDhY2/mfn6+IRCgwtjUCQMMV09Kc3QIWgfdA==
   dependencies:
     "@mangata-finance/types" "1.0.0-rc.5"
     big.js "^6.2.1"

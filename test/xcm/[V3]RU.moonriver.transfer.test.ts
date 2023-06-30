@@ -121,7 +121,7 @@ describe("[V3][V3] XCM tests for Mangata <-> moonriver", () => {
     ).toMatchSnapshot("Before");
 
     const mgaSdk = Mangata.instance([mangata.uri]);
-    await mgaSdk.xTokens.withdrawFromMoonriver({
+    await mgaSdk.xTokens.withdrawToMoonriver({
       account: alice.keyRingPair,
       amount: BN_HUNDRED.mul(BN_TEN.pow(new BN(18))),
       moonriverAddress: alith.address,
@@ -151,7 +151,7 @@ describe("[V3][V3] XCM tests for Mangata <-> moonriver", () => {
 
   it("[V3] moonriver transfer MGX assets to [V3] mangata", async () => {
     const mgaSdk = Mangata.instance([mangata.uri]);
-    await mgaSdk.xTokens.withdrawFromMoonriver({
+    await mgaSdk.xTokens.withdrawToMoonriver({
       account: alice.keyRingPair,
       amount: BN_THOUSAND.mul(BN_TEN.pow(new BN(18))),
       moonriverAddress: alith.address,
@@ -221,10 +221,18 @@ describe("[V3][V3] XCM tests for Mangata <-> moonriver", () => {
         },
       },
     };
+    const depositMgxArgs = {
+      account: alith,
+      url: moonriver.uri,
+      asset,
+      destination,
+      weightLimit: "Unlimited",
+    };
+    await mgaSdk.xTokens.depositFromParachain(depositMgxArgs);
 
-    await moonriver.api.tx.xTokens
-      .transferMultiasset(asset, destination, "Unlimited")
-      .signAndSend(alith);
+    //    await moonriver.api.tx.xTokens
+    //      .transferMultiasset(asset, destination, "Unlimited")
+    //      .signAndSend(alith);
 
     await moonriver.chain.newBlock();
     await mangata.chain.newBlock();
@@ -236,6 +244,7 @@ describe("[V3][V3] XCM tests for Mangata <-> moonriver", () => {
   });
 
   it("[V3] mangata transfer MOVR assets to [V3] moonriver", async () => {
+    const mgaSdk = Mangata.instance([mangata.uri]);
     //setup_add tokens from moonriver to mga.
     const asset = {
       V3: {
@@ -278,9 +287,18 @@ describe("[V3][V3] XCM tests for Mangata <-> moonriver", () => {
       },
     };
 
-    await moonriver.api.tx.xTokens
-      .transferMultiasset(asset, destination, "Unlimited")
-      .signAndSend(alith);
+    const depositMovrArgs = {
+      account: alith,
+      url: moonriver.uri,
+      asset,
+      destination,
+      weightLimit: "Unlimited",
+    };
+    await mgaSdk.xTokens.depositFromParachain(depositMovrArgs);
+
+    //    await moonriver.api.tx.xTokens
+    //      .transferMultiasset(asset, destination, "Unlimited")
+    //      .signAndSend(alith);
     await moonriver.chain.newBlock();
     await mangata.chain.newBlock();
 
@@ -289,8 +307,7 @@ describe("[V3][V3] XCM tests for Mangata <-> moonriver", () => {
       await mangata.api.query.tokens.accounts(alice.keyRingPair.address, 39)
     ).toMatchSnapshot("Before");
     await moonriver.chain.newBlock();
-    const mgaSdk = Mangata.instance([mangata.uri]);
-    await mgaSdk.xTokens.withdrawFromMoonriver({
+    await mgaSdk.xTokens.withdrawToMoonriver({
       account: alice.keyRingPair,
       amount: BN_TEN.mul(BN_TEN.pow(new BN(18))),
       moonriverAddress: alith.address,
@@ -319,6 +336,7 @@ describe("[V3][V3] XCM tests for Mangata <-> moonriver", () => {
   });
 
   it("[V3] moonriver transfer MOVR assets to [V3] mangata", async () => {
+    const mgaSdk = Mangata.instance([mangata.uri]);
     expectJson(
       await mangata.api.query.tokens.accounts(alice.keyRingPair.address, 39)
     ).toMatchSnapshot("Before");
@@ -363,10 +381,18 @@ describe("[V3][V3] XCM tests for Mangata <-> moonriver", () => {
         },
       },
     };
+    const depositMovrArgs = {
+      account: alith,
+      url: moonriver.uri,
+      asset,
+      destination,
+      weightLimit: "Unlimited",
+    };
+    await mgaSdk.xTokens.depositFromParachain(depositMovrArgs);
 
-    await moonriver.api.tx.xTokens
-      .transferMultiasset(asset, destination, "Unlimited")
-      .signAndSend(alith);
+    //    await moonriver.api.tx.xTokens
+    //      .transferMultiasset(asset, destination, "Unlimited")
+    //      .signAndSend(alith);
     await moonriver.chain.newBlock();
     testLog.getLog().info("Waiting for event2 - setup");
     await waitForEvents(mangata.api, "xcmpQueue.Success");
