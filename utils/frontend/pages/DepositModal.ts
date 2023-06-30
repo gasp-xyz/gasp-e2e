@@ -6,8 +6,8 @@ import {
   clickElement,
   getText,
   isDisplayed,
+  waitForElement,
   waitForElementState,
-  waitForElementVisible,
   waitForLoad,
   writeText,
 } from "../utils/Helper";
@@ -62,7 +62,6 @@ export class DepositModal {
     retries = 5
   ): Promise<boolean> {
     try {
-      await sleep(3000);
       const assetTestId = `TokensModal-token-${assetName}`;
       const assetLocator = buildDataTestIdXpath(assetTestId);
       const element = await this.driver.wait(
@@ -72,8 +71,9 @@ export class DepositModal {
       await this.driver.wait(until.elementIsVisible(element));
       await this.driver.wait(until.elementIsEnabled(element));
       const assetAmountTestId = `token-list-token-${assetName}-balance`;
-      const assetAmountLocator = buildDataTestIdXpath(assetAmountTestId);
-      await waitForElementVisible(this.driver, assetAmountLocator, 60000);
+      const assetAmountLocator =
+        assetLocator + buildDataTestIdXpath(assetAmountTestId);
+      await waitForElement(this.driver, assetAmountLocator, 60000);
       const elementsDisplayed = await areDisplayed(this.driver, [
         assetLocator,
         assetAmountLocator,
