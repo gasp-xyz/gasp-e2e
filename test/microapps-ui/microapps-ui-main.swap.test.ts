@@ -19,7 +19,7 @@ import {
   MGR_ASSET_NAME,
 } from "../../utils/Constants";
 import { AssetWallet, User } from "../../utils/User";
-import { getEnvironmentRequiredVars } from "../../utils/utils";
+import { getEnvironmentRequiredVars, sleep } from "../../utils/utils";
 import {
   connectWallet,
   setupPage,
@@ -107,7 +107,6 @@ describe("Miocroapps UI swap tests", () => {
     const isTradeRateDisplayed = await swap.isTradeRateDisplayed();
     expect(isTradeRateDisplayed).toBeTruthy();
 
-    await swap.toggleTradeDetails();
     const areTradeDetailsDisplayed = await swap.areTradeDetailsDisplayed();
     expect(areTradeDetailsDisplayed).toBeTruthy();
 
@@ -117,6 +116,109 @@ describe("Miocroapps UI swap tests", () => {
       "ROC"
     );
     expect(areRouteDetailsDisplayed).toBeTruthy();
+
+    const minimumRecieved = await swap.fetchMinimumReceivedAmount();
+    await swap.setPayTokenAmount("200");
+    const minimumRecievedAfterChange = await swap.fetchMinimumReceivedAmount();
+    expect(minimumRecieved).toBeLessThan(minimumRecievedAfterChange);
+  });
+
+  it("Swap fee lock - less than 10k MGX", async () => {
+    await setupPageWithState(driver, acc_name);
+    const swap = new Swap(driver);
+    const isSwapFrameDisplayed = await swap.isDisplayed();
+    expect(isSwapFrameDisplayed).toBeTruthy();
+    await swap.pickPayToken(MGR_ASSET_NAME);
+    await swap.pickGetToken("ROC");
+    await swap.setPayTokenAmount("100");
+
+    const areTradeDetailsDisplayed = await swap.areTradeDetailsDisplayed();
+    expect(areTradeDetailsDisplayed).toBeTruthy();
+
+    const swapFee = await swap.fetchSwapFee();
+    expect(swapFee).toEqual(50);
+
+    const isSwapFeeAlert = await swap.isSwapFeeAlert();
+    expect(isSwapFeeAlert).toBeFalsy();
+  });
+
+  it("Swap free - more than 10k MGX", async () => {
+    await setupPageWithState(driver, acc_name);
+    const swap = new Swap(driver);
+    const isSwapFrameDisplayed = await swap.isDisplayed();
+    expect(isSwapFrameDisplayed).toBeTruthy();
+    await swap.pickPayToken(MGR_ASSET_NAME);
+    await swap.pickGetToken("ROC");
+    await swap.setPayTokenAmount("10001");
+
+    const areTradeDetailsDisplayed = await swap.areTradeDetailsDisplayed();
+    expect(areTradeDetailsDisplayed).toBeTruthy();
+
+    const swapFee = await swap.fetchSwapFee();
+    expect(swapFee).toEqual(0);
+
+    const isSwapFeeAlert = await swap.isSwapFeeAlert();
+    expect(isSwapFeeAlert).toBeFalsy();
+  });
+
+  it("Swap alert - not enough MGX to do transaction", async () => {
+    await setupPageWithState(driver, acc_name);
+    const swap = new Swap(driver);
+    const isSwapFrameDisplayed = await swap.isDisplayed();
+    expect(isSwapFrameDisplayed).toBeTruthy();
+    await swap.pickPayToken(MGR_ASSET_NAME);
+    await swap.pickGetToken("ROC");
+    await swap.setPayTokenAmount("100000");
+
+    const areTradeDetailsDisplayed = await swap.areTradeDetailsDisplayed();
+    expect(areTradeDetailsDisplayed).toBeTruthy();
+
+    const swapFee = await swap.fetchSwapFee();
+    expect(swapFee).toEqual(0);
+
+    const isSwapFeeAlert = await swap.isSwapFeeAlert();
+    expect(isSwapFeeAlert).toBeFalsy();
+  });
+
+  it("Swap alert - not enough MGX to lock", async () => {
+    await setupPageWithState(driver, acc_name);
+    const swap = new Swap(driver);
+    const isSwapFrameDisplayed = await swap.isDisplayed();
+    expect(isSwapFrameDisplayed).toBeTruthy();
+    await swap.pickPayToken(MGR_ASSET_NAME);
+    await swap.pickGetToken("ROC");
+    await swap.setPayTokenAmount("9995");
+
+    const areTradeDetailsDisplayed = await swap.areTradeDetailsDisplayed();
+    expect(areTradeDetailsDisplayed).toBeTruthy();
+
+    const swapFee = await swap.fetchSwapFee();
+    expect(swapFee).toEqual(50);
+
+    const isSwapFeeAlert = await swap.isSwapFeeAlert();
+    expect(isSwapFeeAlert).toBeTruthy();
+  });
+
+  it("Switch transaction tokens and values", async () => {
+    await setupPageWithState(driver, acc_name);
+    const swap = new Swap(driver);
+    const isSwapFrameDisplayed = await swap.isDisplayed();
+    expect(isSwapFrameDisplayed).toBeTruthy();
+    await swap.pickPayToken(MGR_ASSET_NAME);
+    await swap.pickGetToken("ROC");
+    await swap.setPayTokenAmount("1000");
+    const getTokenAmount = await swap.fetchGetAssetAmount();
+    expect(parseFloat(getTokenAmount)).toBeGreaterThan(0);
+
+    await swap.switchTokens();
+    await sleep(1000);
+
+    const payTokenNameAfterSwitch = await swap.fetchPayTokenName();
+    expect(payTokenNameAfterSwitch).toEqual("ROC");
+    const getTokenNameAfterSwitch = await swap.fetchGetTokenName();
+    expect(getTokenNameAfterSwitch).toEqual(MGR_ASSET_NAME);
+    const payTokeAmountAfterSwitch = await swap.fetchPayAssetAmount();
+    expect(payTokeAmountAfterSwitch).toEqual(getTokenAmount);
   });
 
   afterEach(async () => {

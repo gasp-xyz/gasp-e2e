@@ -38,12 +38,12 @@ describe("Miocroapps UI smoke tests", () => {
       driver,
       expect.getState().currentTestName + " - " + session.getId()
     );
-    await driver.quit();
-    DriverBuilder.destroy();
   });
 
   afterAll(async () => {
     const api = getApi();
     await api.disconnect();
+    await driver.quit();
+    await DriverBuilder.destroy();
   });
 });
