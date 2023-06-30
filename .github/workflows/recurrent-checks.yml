@@ -10,7 +10,7 @@ jobs:
   
     strategy:
       matrix:
-        environment: ['develop']
+        environment: ['default']
     runs-on: ubuntu-latest
     steps:
       - name: Repository Dispatch
