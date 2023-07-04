@@ -304,7 +304,7 @@ const _matchEvents = async (
 };
 
 export const matchEvents = async (
-  events: Promise<Codec[] | Codec>,
+  events: Promise<Codec[] | Codec> | Codec[],
   ...filters: EventFilter[]
 ) => {
   return _matchEvents("events", redact(events), ...filters);

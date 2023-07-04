@@ -1,20 +1,19 @@
 import { connectParachains } from "@acala-network/chopsticks";
 import { KeyringPair } from "@polkadot/keyring/types";
-import { BN_THOUSAND } from "@polkadot/util";
+import { BN_THOUSAND, BN } from "@polkadot/util";
 import { AssetId } from "../../utils/ChainSpecs";
 import { ApiContext } from "../../utils/Framework/XcmHelper";
 import XcmNetworks from "../../utils/Framework/XcmNetworks";
 import { devTestingPairs, setupApi, setupUsers } from "../../utils/setup";
-import { sendTransaction } from "../../utils/sign";
 import {
-  expectEvent,
   expectExtrinsicSuccess,
   expectJson,
-  matchEvents,
   matchSystemEvents,
 } from "../../utils/validators";
 import { mangataChopstick } from "../../utils/api";
-import { BN_BILLION } from "@mangata-finance/sdk";
+import { BN_BILLION, Mangata } from "@mangata-finance/sdk";
+import { Codec } from "@polkadot/types/types";
+import { expectEvent, matchEvents } from "../../utils/eventListeners";
 
 /**
  * @group xcm
@@ -36,6 +35,7 @@ describe("XCM tests for Mangata <-> Statemine", () => {
       Tokens: {
         Accounts: [
           [[alice.address, { token: 30 }], { free: 1000e6 }],
+          [[alice.address, { token: 31 }], { free: 1000e10 }],
           [
             [alice.address, { token: 0 }],
             { free: AssetId.Mgx.unit.mul(BN_BILLION).toString() },
@@ -54,6 +54,7 @@ describe("XCM tests for Mangata <-> Statemine", () => {
       Tokens: {
         Accounts: [
           [[alice.address, { token: 30 }], { free: 1000e6 }],
+          [[alice.address, { token: 31 }], { free: 1000e10 }],
           [
             [alice.address, { token: 0 }],
             { free: AssetId.Mgx.unit.mul(BN_THOUSAND).toString() },
@@ -69,47 +70,36 @@ describe("XCM tests for Mangata <-> Statemine", () => {
         Account: [[[alice.address], { providers: 1, data: { free: 10e12 } }]],
       },
       Assets: {
-        Account: [[[1984, alice.address], { balance: 1000e6 }]],
+        Account: [
+          [[1984, alice.address], { balance: 1000e6 }],
+          [[8, alice.address], { balance: 1000e10 }],
+        ],
       },
     });
   });
 
   it("mangata transfer assets to statemine", async () => {
-    const tx = await sendTransaction(
-      mangata.api.tx.xTokens
-        .transfer(
-          30,
-          10e6,
-          {
-            V3: {
-              parents: 1,
-              interior: {
-                X2: [
-                  { Parachain: 1000 },
-                  {
-                    AccountId32: {
-                      network: undefined,
-                      id: alice.addressRaw,
-                    },
-                  },
-                ],
-              },
-            },
-          },
-          "Unlimited"
-        )
-        .signAsync(alice)
-    );
-
-    await mangata.chain.newBlock();
-
-    expectExtrinsicSuccess(await tx.events);
-    expectEvent(await tx.events, {
-      event: expect.objectContaining({
-        section: "xTokens",
-        method: "TransferredMultiAssets",
-      }),
+    const mgaSdk = Mangata.instance([mangata.uri]);
+    await mgaSdk.xTokens.withdraw({
+      account: alice,
+      amount: new BN(10e6),
+      destinationAddress: alice.address,
+      parachainId: 1000,
+      tokenSymbol: "USDT",
+      withWeight: "Unlimited",
+      txOptions: {
+        async extrinsicStatus(events) {
+          expectExtrinsicSuccess(events as any[] as Codec[]);
+          expectEvent(events as any[] as Codec[], {
+            event: expect.objectContaining({
+              section: "xTokens",
+              method: "TransferredMultiAssets",
+            }),
+          });
+        },
+      },
     });
+    await mangata.chain.newBlock();
 
     await statemine.chain.newBlock();
     expectJson(
@@ -124,6 +114,56 @@ describe("XCM tests for Mangata <-> Statemine", () => {
   });
 
   it("statemine transfer assets to mangata", async () => {
+    const mgaSdk = Mangata.instance([mangata.uri]);
+    await mgaSdk.xTokens.depositFromStatemine({
+      account: alice,
+      assets: {
+        V3: [
+          {
+            id: {
+              Concrete: {
+                parents: 0,
+                interior: {
+                  X2: [{ PalletInstance: 50 }, { GeneralIndex: 1984 }],
+                },
+              },
+            },
+            fun: { Fungible: 10e6 },
+          },
+        ],
+      },
+      beneficiary: {
+        V3: {
+          parents: 0,
+          interior: {
+            X1: {
+              AccountId32: {
+                network: undefined,
+                id: alice.addressRaw,
+              },
+            },
+          },
+        },
+      },
+      destination: {
+        V3: {
+          parents: 1,
+          interior: {
+            X1: { Parachain: 2110 },
+          },
+        },
+      },
+      feeAssetItem: 0,
+      url: statemine.uri,
+      weightLimit: "Unlimited",
+      txOptions: {
+        async extrinsicStatus(events) {
+          await matchEvents(events as any as Codec[], "polkadotXcm");
+        },
+      },
+    });
+
+    /**
     const tx = await sendTransaction(
       statemine.api.tx.polkadotXcm
         .limitedReserveTransferAssets(
@@ -168,10 +208,10 @@ describe("XCM tests for Mangata <-> Statemine", () => {
         )
         .signAsync(alice, { nonce: 0 })
     );
-
+     */
     await statemine.chain.newBlock();
 
-    await matchEvents(tx.events, "polkadotXcm");
+    //  await matchEvents(tx.events, "polkadotXcm");
 
     expect(
       await statemine.api.query.assets.account(1984, alice.address)
@@ -181,6 +221,104 @@ describe("XCM tests for Mangata <-> Statemine", () => {
 
     expectJson(
       await mangata.api.query.tokens.accounts(alice.address, 30)
+    ).toMatchSnapshot();
+
+    await matchSystemEvents(mangata, "xcmpQueue", "Success");
+  });
+  it("[RMRK] mangata transfer assets to statemine", async () => {
+    const mgaSdk = Mangata.instance([mangata.uri]);
+    await mgaSdk.xTokens.withdraw({
+      account: alice,
+      amount: new BN(10e10),
+      destinationAddress: alice.address,
+      parachainId: 1000,
+      tokenSymbol: "RMRK",
+      withWeight: "Unlimited",
+      txOptions: {
+        async extrinsicStatus(events) {
+          expectExtrinsicSuccess(events as any[] as Codec[]);
+          expectEvent(events as any[] as Codec[], {
+            event: expect.objectContaining({
+              section: "xTokens",
+              method: "TransferredMultiAssets",
+            }),
+          });
+        },
+      },
+    });
+    await mangata.chain.newBlock();
+
+    await statemine.chain.newBlock();
+    expectJson(
+      await mangata.api.query.tokens.accounts(alice.address, 31)
+    ).toMatchSnapshot();
+
+    expect(
+      await statemine.api.query.assets.account(8, alice.address)
+    ).toMatchSnapshot();
+
+    await matchSystemEvents(mangata, "xcmpQueue", "Success");
+  });
+
+  it("[RMRK] statemine transfer assets to mangata", async () => {
+    const mgaSdk = Mangata.instance([mangata.uri]);
+    await mgaSdk.xTokens.depositFromStatemine({
+      account: alice,
+      assets: {
+        V3: [
+          {
+            id: {
+              Concrete: {
+                parents: 0,
+                interior: {
+                  X2: [{ PalletInstance: 50 }, { GeneralIndex: 8 }],
+                },
+              },
+            },
+            fun: { Fungible: 10e10 },
+          },
+        ],
+      },
+      beneficiary: {
+        V3: {
+          parents: 0,
+          interior: {
+            X1: {
+              AccountId32: {
+                network: undefined,
+                id: alice.addressRaw,
+              },
+            },
+          },
+        },
+      },
+      destination: {
+        V3: {
+          parents: 1,
+          interior: {
+            X1: { Parachain: 2110 },
+          },
+        },
+      },
+      feeAssetItem: 0,
+      url: statemine.uri,
+      weightLimit: "Unlimited",
+      txOptions: {
+        async extrinsicStatus(events) {
+          await matchEvents(events as any as Codec[], "polkadotXcm");
+        },
+      },
+    });
+    await statemine.chain.newBlock();
+
+    expect(
+      await statemine.api.query.assets.account(8, alice.address)
+    ).toMatchSnapshot();
+
+    await mangata.chain.newBlock();
+
+    expectJson(
+      await mangata.api.query.tokens.accounts(alice.address, 31)
     ).toMatchSnapshot();
 
     await matchSystemEvents(mangata, "xcmpQueue", "Success");

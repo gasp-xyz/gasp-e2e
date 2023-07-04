@@ -3,7 +3,6 @@ import { AssetId } from "../../utils/ChainSpecs";
 import { ApiContext } from "../../utils/Framework/XcmHelper";
 import XcmNetworks from "../../utils/Framework/XcmNetworks";
 import { alice, setupApi, setupUsers } from "../../utils/setup";
-import { sendTransaction } from "../../utils/sign";
 import {
   expectEvent,
   expectExtrinsicSuccess,
@@ -11,8 +10,10 @@ import {
   matchEvents,
   matchSystemEvents,
 } from "../../utils/validators";
-import { BN_BILLION } from "@mangata-finance/sdk";
+import { BN_BILLION, Mangata, BN_TEN } from "@mangata-finance/sdk";
 import { mangataChopstick } from "../../utils/api";
+import { Codec } from "@polkadot/types/types";
+import { BN } from "@polkadot/util";
 
 /**
  * @group xcm
@@ -71,7 +72,7 @@ describe("[V3][V3] XCM tests for Mangata <-> imbue", () => {
       },
     });
   });
-  it("[V3] mangata transfer assets to [V1] imbue", async () => {
+  it("[V3] mangata transfer assets to [V3] imbue", async () => {
     expectJson(
       await mangata.api.query.tokens.accounts(alice.keyRingPair.address, 11)
     ).toMatchSnapshot("Before");
@@ -79,41 +80,29 @@ describe("[V3][V3] XCM tests for Mangata <-> imbue", () => {
     expect(
       await imbue.api.query.system.account(alice.keyRingPair.address)
     ).toMatchSnapshot("Before");
-    const tx = await sendTransaction(
-      mangata.api.tx.xTokens
-        .transfer(
-          11,
-          10e12,
-          {
-            V3: {
-              parents: 1,
-              interior: {
-                X2: [
-                  { Parachain: 2121 },
-                  {
-                    AccountId32: {
-                      network: undefined,
-                      id: alice.keyRingPair.addressRaw,
-                    },
-                  },
-                ],
-              },
-            },
-          },
-          "Unlimited"
-        )
-        .signAsync(alice.keyRingPair)
-    );
+    const mgaSdk = Mangata.instance([mangata.uri]);
+    await mgaSdk.xTokens.withdraw({
+      account: alice.keyRingPair,
+      amount: BN_TEN.mul(BN_TEN.pow(new BN(12))),
+      destinationAddress: alice.keyRingPair.address,
+      parachainId: 2121,
+      tokenSymbol: "IMBU",
+      withWeight: "Unlimited",
+      txOptions: {
+        async extrinsicStatus(events) {
+          expectExtrinsicSuccess(events as any[] as Codec[]);
+          expectEvent(events as any as Codec[], {
+            event: expect.objectContaining({
+              section: "xTokens",
+              method: "TransferredMultiAssets",
+            }),
+          });
+        },
+      },
+    });
 
     await mangata.chain.newBlock();
 
-    expectExtrinsicSuccess(await tx.events);
-    expectEvent(await tx.events, {
-      event: expect.objectContaining({
-        section: "xTokens",
-        method: "TransferredMultiAssets",
-      }),
-    });
     await imbue.chain.newBlock();
     expectJson(
       await mangata.api.query.tokens.accounts(alice.keyRingPair.address, 11)
@@ -133,62 +122,63 @@ describe("[V3][V3] XCM tests for Mangata <-> imbue", () => {
     expect(
       await imbue.api.query.system.account(alice.keyRingPair.address)
     ).toMatchSnapshot("Before");
-    const tx = await sendTransaction(
-      imbue.api.tx.xTokens
-        .transferMultiasset(
-          {
-            V3: {
-              id: {
-                Concrete: {
-                  parents: 1,
-                  interior: {
-                    X2: [
-                      { Parachain: 2121 },
-                      {
-                        GeneralKey: {
-                          length: 2,
-                          data: "0x0096000000000000000000000000000000000000000000000000000000000000",
-                        },
-                      },
-                    ],
-                  },
-                },
-              },
-              fun: {
-                Fungible: 5e12,
-              },
-            },
-          },
-          {
-            V3: {
+    const mgaSdk = Mangata.instance([mangata.uri]);
+    await mgaSdk.xTokens.depositFromParachain({
+      account: alice.keyRingPair,
+      asset: {
+        V3: {
+          id: {
+            Concrete: {
               parents: 1,
               interior: {
                 X2: [
-                  { Parachain: 2110 },
+                  { Parachain: 2121 },
                   {
-                    AccountId32: {
-                      network: undefined,
-                      id: alice.keyRingPair.addressRaw,
+                    GeneralKey: {
+                      length: 2,
+                      data: "0x0096000000000000000000000000000000000000000000000000000000000000",
                     },
                   },
                 ],
               },
             },
           },
-          {
-            Limited: {
-              refTime: 800000000,
-              proofSize: 0,
-            },
-          }
-        )
-        .signAsync(alice.keyRingPair, { nonce: 0 })
-    );
+          fun: {
+            Fungible: 5e12,
+          },
+        },
+      },
+      destination: {
+        V3: {
+          parents: 1,
+          interior: {
+            X2: [
+              { Parachain: 2110 },
+              {
+                AccountId32: {
+                  network: undefined,
+                  id: alice.keyRingPair.addressRaw,
+                },
+              },
+            ],
+          },
+        },
+      },
+      url: imbue.uri,
+      weightLimit: {
+        Limited: {
+          refTime: 800000000,
+          proofSize: 0,
+        },
+      },
+      txOptions: {
+        async extrinsicStatus(events) {
+          await matchEvents(events as any[] as Codec[], "polkadotXcm");
+        },
+      },
+    });
 
     await imbue.chain.newBlock();
-
-    await matchEvents(tx.events, "polkadotXcm");
-
     expect(
       await imbue.api.query.system.account(alice.keyRingPair.address)
     ).toMatchSnapshot("After");

@@ -50,7 +50,7 @@ exports[`[V3][V3] XCM tests for Mangata <-> imbue [V3] imbue transfer assets to 
 
 exports[`[V3][V3] XCM tests for Mangata <-> imbue [V3] imbue transfer assets to [V3] mangata: system events 1`] = `[]`;
 
-exports[`[V3][V3] XCM tests for Mangata <-> imbue [V3] mangata transfer assets to [V1] imbue: After 1`] = `
+exports[`[V3][V3] XCM tests for Mangata <-> imbue [V3] mangata transfer assets to [V3] imbue: After 1`] = `
 {
   "free": 990000000000000,
   "frozen": 0,
@@ -58,7 +58,7 @@ exports[`[V3][V3] XCM tests for Mangata <-> imbue [V3] mangata transfer assets t
 }
 `;
 
-exports[`[V3][V3] XCM tests for Mangata <-> imbue [V3] mangata transfer assets to [V1] imbue: After 2`] = `
+exports[`[V3][V3] XCM tests for Mangata <-> imbue [V3] mangata transfer assets to [V3] imbue: After 2`] = `
 {
   "consumers": 0,
   "data": {
@@ -73,7 +73,7 @@ exports[`[V3][V3] XCM tests for Mangata <-> imbue [V3] mangata transfer assets t
 }
 `;
 
-exports[`[V3][V3] XCM tests for Mangata <-> imbue [V3] mangata transfer assets to [V1] imbue: Before 1`] = `
+exports[`[V3][V3] XCM tests for Mangata <-> imbue [V3] mangata transfer assets to [V3] imbue: Before 1`] = `
 {
   "free": 1000000000000000,
   "frozen": 0,
@@ -81,7 +81,7 @@ exports[`[V3][V3] XCM tests for Mangata <-> imbue [V3] mangata transfer assets t
 }
 `;
 
-exports[`[V3][V3] XCM tests for Mangata <-> imbue [V3] mangata transfer assets to [V1] imbue: Before 2`] = `
+exports[`[V3][V3] XCM tests for Mangata <-> imbue [V3] mangata transfer assets to [V3] imbue: Before 2`] = `
 {
   "consumers": 0,
   "data": {
@@ -96,4 +96,4 @@ exports[`[V3][V3] XCM tests for Mangata <-> imbue [V3] mangata transfer assets t
 }
 `;
 
-exports[`[V3][V3] XCM tests for Mangata <-> imbue [V3] mangata transfer assets to [V1] imbue: system events 1`] = `[]`;
+exports[`[V3][V3] XCM tests for Mangata <-> imbue [V3] mangata transfer assets to [V3] imbue: system events 1`] = `[]`;

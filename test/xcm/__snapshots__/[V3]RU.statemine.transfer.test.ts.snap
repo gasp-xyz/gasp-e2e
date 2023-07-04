@@ -1,5 +1,47 @@
 // Jest Snapshot v1, https://goo.gl/fbAQLP
 
+exports[`XCM tests for Mangata <-> Statemine [RMRK] mangata transfer assets to statemine 1`] = `
+{
+  "free": 9900000000000,
+  "frozen": 0,
+  "reserved": 0,
+}
+`;
+
+exports[`XCM tests for Mangata <-> Statemine [RMRK] mangata transfer assets to statemine 2`] = `
+{
+  "balance": 10099999640700,
+  "extra": null,
+  "isFrozen": false,
+  "reason": {
+    "consumer": null,
+  },
+}
+`;
+
+exports[`XCM tests for Mangata <-> Statemine [RMRK] mangata transfer assets to statemine: system events 1`] = `[]`;
+
+exports[`XCM tests for Mangata <-> Statemine [RMRK] statemine transfer assets to mangata 1`] = `
+{
+  "balance": 9900000000000,
+  "extra": null,
+  "isFrozen": false,
+  "reason": {
+    "consumer": null,
+  },
+}
+`;
+
+exports[`XCM tests for Mangata <-> Statemine [RMRK] statemine transfer assets to mangata 2`] = `
+{
+  "free": 10099948390400,
+  "frozen": 0,
+  "reserved": 0,
+}
+`;
+
+exports[`XCM tests for Mangata <-> Statemine [RMRK] statemine transfer assets to mangata: system events 1`] = `[]`;
+
 exports[`XCM tests for Mangata <-> Statemine mangata transfer assets to statemine 1`] = `
 {
   "free": 990000000,
