@@ -131,7 +131,7 @@ describe.each(["mmON", "mmOFF"])(
       "Test that %s address can/cannot veto a proposal",
       async (test: string, index: number) => {
         const address = testCases[test].address;
-        const validate = test === "Fundation" ? validateOK : validateNoOK;
+        const validate = test === "Foundation" ? validateOK : validateNoOK;
         const hash = proposalHashes[index];
         const propBefore = await getProposal(hash);
         const events = await Sudo.asSudoFinalized(
@@ -157,7 +157,7 @@ describe.each(["mmON", "mmOFF"])(
       "Test that %s address can/cannot veto an already voted proposal",
       async (test: string, index: number) => {
         const address = testCases[test].address;
-        const validate = test === "Fundation" ? validateOK : validateNoOK;
+        const validate = test === "Foundation" ? validateOK : validateNoOK;
         const hash = proposalHashes[index];
         const propBefore = await getProposal(hash);
         await voteProposal(hash, councilUsers);
