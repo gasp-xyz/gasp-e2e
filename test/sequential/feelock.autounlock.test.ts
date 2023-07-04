@@ -93,7 +93,7 @@ test("[gasless] Happy path: automatic-unlock", async () => {
     expect(eventResponse.state).toEqual(ExtrinsicResult.ExtrinsicSuccess);
   });
   const blockNo = await getBlockNumber();
-  const gaslessMetadata = await getFeeLockMetadata(await getApi());
+  const gaslessMetadata = await getFeeLockMetadata();
   await testUser1.refreshAmounts(AssetWallet.AFTER);
   expect(
     testUser1.getAsset(nativeCurrencyId, FREE_AND_RESERVED)?.amountBefore!

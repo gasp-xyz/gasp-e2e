@@ -102,12 +102,10 @@ beforeEach(async () => {
 });
 
 test("gasless- GIVEN a feeLock configured WHEN a swap happens THEN fees are not charged but locked instead", async () => {
-  const api = getApi();
-
   await testUser1.addMGATokens(sudo);
   testUser1.addAsset(MGA_ASSET_ID);
 
-  const { feeLockAmount } = await getFeeLockMetadata(api);
+  const { feeLockAmount } = await getFeeLockMetadata();
   const saleAssetValue = thresholdValue.sub(new BN(5));
 
   await testUser1.refreshAmounts(AssetWallet.BEFORE);
@@ -139,7 +137,7 @@ test("gasless- GIVEN a correct config for gasless swaps WHEN the user runs unloc
   testUser1.addAsset(MGA_ASSET_ID);
 
   const saleAssetValue = thresholdValue.sub(new BN(5));
-  const { periodLength } = await getFeeLockMetadata(api);
+  const { periodLength } = await getFeeLockMetadata();
 
   await testUser1.refreshAmounts(AssetWallet.BEFORE);
   await testUser1.sellAssets(MGA_ASSET_ID, firstCurrency, saleAssetValue);
@@ -208,7 +206,7 @@ test("gasless- For low-value swaps, token reservation status and pallet storage 
 
   await addMgaToWhitelisted(thresholdValue, sudo);
 
-  const { feeLockAmount, periodLength } = await getFeeLockMetadata(api);
+  const { feeLockAmount, periodLength } = await getFeeLockMetadata();
 
   await testUser1.addMGATokens(sudo);
   testUser1.addAsset(MGA_ASSET_ID);

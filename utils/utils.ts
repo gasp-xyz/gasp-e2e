@@ -8,7 +8,6 @@ import { getAccountJSON } from "./frontend/utils/Helper";
 import { waitNewBlock } from "./eventListeners";
 import { logEvent, testLog } from "./Logger";
 import { AnyNumber } from "@polkadot/types/types";
-import { ApiPromise } from "@polkadot/api";
 import { KeyringPair } from "@polkadot/keyring/types";
 import { getStakingLiquidityTokens, sellAsset } from "./tx";
 import { Sudo } from "./sudo";
@@ -503,12 +502,10 @@ export enum feeLockErrors {
   SwapApprovalFail = "1010: Invalid Transaction: The swap prevalidation has failed",
 }
 
-export async function getFeeLockMetadata(api: ApiPromise) {
-  const lockMetadata = JSON.parse(
-    JSON.stringify(await api?.query.feeLock.feeLockMetadata())
-  );
-  const periodLength = stringToBN(lockMetadata.periodLength.toString());
-  const feeLockAmount = stringToBN(lockMetadata.feeLockAmount.toString());
+export async function getFeeLockMetadata() {
+  const lockMetadata = await mangata!.query.getFeeLockMetadata();
+  const periodLength = stringToBN(lockMetadata.periodLength);
+  const feeLockAmount = stringToBN(lockMetadata.feeLockAmount);
   const threshold = lockMetadata.swapValueThreshold;
   return {
     periodLength: periodLength,

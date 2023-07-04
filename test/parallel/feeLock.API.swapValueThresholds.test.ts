@@ -154,9 +154,7 @@ test("gasless- Given a feeLock correctly configured WHEN the user swaps two toke
 });
 
 test("gasless- Given a feeLock correctly configured WHEN the user swaps two tokens defined in the thresholds AND the user has enough MGAs AND swapValue < threshold THEN some MGAs will be locked", async () => {
-  const api = getApi();
-
-  const { feeLockAmount } = await getFeeLockMetadata(api);
+  const { feeLockAmount } = await getFeeLockMetadata();
 
   await Sudo.batchAsSudoFinalized(
     Assets.mintNative(testUser1),

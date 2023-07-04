@@ -98,8 +98,7 @@ beforeEach(async () => {
 });
 
 test("gasless- GIVEN some locked tokens and no more free MGX WHEN another tx is submitted AND lock period did not finished THEN the operation can not be submitted", async () => {
-  const api = getApi();
-  const feeLockAmount = await (await getFeeLockMetadata(api)).feeLockAmount;
+  const feeLockAmount = await (await getFeeLockMetadata()).feeLockAmount;
   await testUser1.addMGATokens(sudo, feeLockAmount);
 
   const saleAssetValue = thresholdValue.sub(new BN(5));
@@ -122,7 +121,7 @@ test("gasless- GIVEN some locked tokens and no more free MGX WHEN another tx is 
 test("gasless- GIVEN some locked tokens and no more free MGX WHEN another tx is submitted AND lock period finished THEN the operation can be submitted ( unlock before locking )", async () => {
   const api = getApi();
 
-  const { feeLockAmount, periodLength } = await getFeeLockMetadata(api);
+  const { feeLockAmount, periodLength } = await getFeeLockMetadata();
 
   await testUser1.addMGATokens(sudo, new BN(feeLockAmount).add(new BN(1)));
 
@@ -149,7 +148,7 @@ test("gasless- GIVEN some locked tokens and no more free MGX WHEN another tx is 
 test("gasless- GIVEN some locked tokens WHEN querying accountFeeLockData THEN the amount matches with locked tokens AND lastFeeLockBlock matches with the block when tokens were locked", async () => {
   const api = getApi();
 
-  const { feeLockAmount } = await getFeeLockMetadata(api);
+  const { feeLockAmount } = await getFeeLockMetadata();
 
   await testUser1.addMGATokens(sudo, new BN(feeLockAmount).add(new BN(1)));
 
@@ -176,7 +175,7 @@ test("gasless- GIVEN some locked tokens WHEN querying accountFeeLockData THEN th
 test("gasless- GIVEN some locked tokens and lastFeeLockBlock is lower than current block WHEN release feeLock is requested THEN the tokens are unlocked", async () => {
   const api = getApi();
 
-  const { feeLockAmount, periodLength } = await getFeeLockMetadata(api);
+  const { feeLockAmount, periodLength } = await getFeeLockMetadata();
 
   await testUser1.addMGATokens(sudo, new BN(feeLockAmount).add(new BN(1)));
 
@@ -211,7 +210,7 @@ test("gasless- GIVEN a lock WHEN the period is N THEN the tokens can not be unlo
   const api = getApi();
   let currentBlockNumber: number;
 
-  const { feeLockAmount, periodLength } = await getFeeLockMetadata(api);
+  const { feeLockAmount, periodLength } = await getFeeLockMetadata();
   await testUser1.addMGATokens(sudo, new BN(feeLockAmount));
 
   const saleAssetValue = thresholdValue.sub(new BN(5));

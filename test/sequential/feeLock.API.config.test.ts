@@ -102,8 +102,7 @@ test("gasless- GIVEN an empty feeLock configuration (all options empty) WHEN sud
 });
 
 test("gasless- GIVEN a feeLock WHEN periodLength and feeLockAmount are set THEN extrinsic succeed and feeLock is correctly configured", async () => {
-  const api = getApi();
-  const feeLockData = await getFeeLockMetadata(api);
+  const feeLockData = await getFeeLockMetadata();
   const lastPeriodLength = feeLockData.periodLength;
   const lastFeeLockAmount = feeLockData.feeLockAmount;
 
@@ -119,7 +118,7 @@ test("gasless- GIVEN a feeLock WHEN periodLength and feeLockAmount are set THEN 
   );
   await waitSudoOperationSuccess(updateMetadataEvent);
 
-  const feeLockDataNow = await getFeeLockMetadata(api);
+  const feeLockDataNow = await getFeeLockMetadata();
   const currentPeriodLength = feeLockDataNow.periodLength;
   const currentFeeLockAmount = feeLockDataNow.feeLockAmount;
   expect(currentPeriodLength).bnEqual(pendingPeriodLength);
@@ -131,7 +130,7 @@ test("gasless- Changing feeLock config parameter on the fly is works robustly. E
   let updateMetadataEvent: any;
   testUser1.addAsset(MGA_ASSET_ID);
 
-  const feeLockAmount = (await getFeeLockMetadata(api)).feeLockAmount;
+  const feeLockAmount = (await getFeeLockMetadata()).feeLockAmount;
 
   updateMetadataEvent = await updateFeeLockMetadata(
     sudo,

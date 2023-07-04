@@ -132,9 +132,7 @@ test("xyk-pallet - Assets substracted are incremented by 1 - MGA- SellAsset", as
     feesPaid = authorMGAtokens;
     tokensLost = tokensLost?.sub(feesPaid);
   }
-  const tokensLocked = await (
-    await getFeeLockMetadata(await getApi())
-  ).feeLockAmount;
+  const tokensLocked = await (await getFeeLockMetadata()).feeLockAmount;
   expect(tokensWon).bnEqual(tokensToReceive);
   expect(tokensLost?.sub(tokensLocked)).bnEqual(sellingAmount);
   expect(exangeValue).bnEqual(tokensWon);

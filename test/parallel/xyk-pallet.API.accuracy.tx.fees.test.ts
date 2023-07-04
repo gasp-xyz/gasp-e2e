@@ -160,6 +160,6 @@ test("xyk-pallet - Calculate required MGA fee - BuyAsset", async () => {
     ?.amountBefore.free.sub(
       testUser1.getAsset(MGA_ASSET_ID)?.amountAfter.free!
     );
-  const gaslessFee = (await getFeeLockMetadata(await getApi())).feeLockAmount;
+  const gaslessFee = (await getFeeLockMetadata()).feeLockAmount;
   expect(deductedMGATkns?.sub(gaslessFee)).bnLte(BN_ZERO);
 });
