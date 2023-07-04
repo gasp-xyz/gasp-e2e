@@ -12,10 +12,10 @@ exports[`XCM tests for Mangata <-> Statemine [RMRK] mangata transfer assets to s
 {
   "balance": 10099999640700,
   "extra": null,
-  "isFrozen": false,
   "reason": {
     "consumer": null,
   },
+  "status": "Liquid",
 }
 `;
 
@@ -25,10 +25,10 @@ exports[`XCM tests for Mangata <-> Statemine [RMRK] statemine transfer assets to
 {
   "balance": 9900000000000,
   "extra": null,
-  "isFrozen": false,
   "reason": {
     "consumer": null,
   },
+  "status": "Liquid",
 }
 `;
 
@@ -80,23 +80,6 @@ exports[`XCM tests for Mangata <-> Statemine statemine transfer assets to mangat
   "frozen": 0,
   "reserved": 0,
 }
-`;
-
-exports[`XCM tests for Mangata <-> Statemine statemine transfer assets to mangata: events 1`] = `
-[
-  {
-    "data": [
-      {
-        "Complete": {
-          "proofSize": "(redacted)",
-          "refTime": "(redacted)",
-        },
-      },
-    ],
-    "method": "Attempted",
-    "section": "polkadotXcm",
-  },
-]
 `;
 
 exports[`XCM tests for Mangata <-> Statemine statemine transfer assets to mangata: system events 1`] = `[]`;

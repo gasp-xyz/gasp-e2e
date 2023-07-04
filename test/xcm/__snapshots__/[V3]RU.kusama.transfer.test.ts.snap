@@ -17,23 +17,6 @@ exports[`XCM tests for Mangata <-> Kusama Kusama transfer assets to mangata 2`] 
 }
 `;
 
-exports[`XCM tests for Mangata <-> Kusama Kusama transfer assets to mangata: events 1`] = `
-[
-  {
-    "data": [
-      {
-        "Complete": {
-          "proofSize": "(redacted)",
-          "refTime": "(redacted)",
-        },
-      },
-    ],
-    "method": "Attempted",
-    "section": "xcmPallet",
-  },
-]
-`;
-
 exports[`XCM tests for Mangata <-> Kusama mangata transfer assets to kusama 1`] = `
 {
   "free": 9000000000000,
