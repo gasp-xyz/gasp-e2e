@@ -54,10 +54,10 @@ exports[`XCM tests for Mangata <-> Statemine mangata transfer assets to statemin
 {
   "balance": 1009996407,
   "extra": null,
-  "isFrozen": false,
   "reason": {
     "consumer": null,
   },
+  "status": "Liquid",
 }
 `;
 
@@ -67,10 +67,10 @@ exports[`XCM tests for Mangata <-> Statemine statemine transfer assets to mangat
 {
   "balance": 990000000,
   "extra": null,
-  "isFrozen": false,
   "reason": {
     "consumer": null,
   },
+  "status": "Liquid",
 }
 `;
 

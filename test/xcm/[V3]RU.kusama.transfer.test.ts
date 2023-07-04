@@ -102,14 +102,18 @@ describe("XCM tests for Mangata <-> Kusama", () => {
     expect(await balance(kusama.api, alice.address)).toMatchSnapshot();
     expectEvent(await kusama.api.query.system.events(), {
       event: expect.objectContaining({
-        method: "ExecutedUpward",
-        section: "ump",
-        data: [
-          "0xf629ff5e0d65863b5520ca2fdf8e6051acc5be1d34abc8960bc389829aad38b3",
-          {
-            Complete: expect.anything(),
+        method: "Processed",
+        section: "messageQueue",
+        data: {
+          id: "0xf1480be6240549d36471d3e41c5a784a2976f75b99e1b0329f271d43987eca6f",
+          origin: {
+            Ump: {
+              Para: "2,110",
+            },
           },
-        ],
+          success: true,
+          weightUsed: expect.anything(),
+        },
       }),
     });
   });
