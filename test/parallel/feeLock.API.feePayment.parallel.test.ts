@@ -146,8 +146,10 @@ test("gasless- GIVEN a correct config for gasless swaps WHEN the user runs unloc
       await api.query.feeLock.accountFeeLockData(testUser1.keyRingPair.address)
     )
   );
-  const waitingBlock = accountFeeLockData.lastFeeLockBlock + periodLength;
-  await waitBlockNumber(waitingBlock, periodLength.toNumber() + 5);
+  const waitingBlock = await stringToBN(
+    accountFeeLockData.lastFeeLockBlock
+  ).add(periodLength);
+  await waitBlockNumber(waitingBlock.toString(), periodLength.toNumber() + 5);
   try {
     await unlockFee(testUser1);
   } catch (error) {
@@ -221,9 +223,11 @@ test("gasless- For low-value swaps, token reservation status and pallet storage 
       await api.query.feeLock.accountFeeLockData(testUser1.keyRingPair.address)
     )
   );
-  const waitingBlock = accountFeeLockData.lastFeeLockBlock + periodLength;
+  const waitingBlock = await stringToBN(
+    accountFeeLockData.lastFeeLockBlock
+  ).add(periodLength);
   await checkAccountFeeLockData(feeLockAmount, lockDataBlockNumber);
-  await waitBlockNumber(waitingBlock, periodLength.toNumber() + 5);
+  await waitBlockNumber(waitingBlock.toString(), periodLength.toNumber() + 5);
   try {
     await unlockFee(testUser1);
   } catch (error) {
