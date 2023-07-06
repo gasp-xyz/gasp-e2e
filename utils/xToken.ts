@@ -33,7 +33,7 @@ export class XToken {
 
     return api.tx.xTokens.transferMultiasset(
       {
-        V1: {
+        V3: {
           id: {
             Concrete: assetId.location,
           },
@@ -43,7 +43,7 @@ export class XToken {
         },
       },
       {
-        V1: {
+        V3: {
           parents: 1,
           interior: {
             X2: [

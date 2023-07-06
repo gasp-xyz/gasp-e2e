@@ -2165,26 +2165,23 @@
     "@jridgewell/resolve-uri" "3.1.0"
     "@jridgewell/sourcemap-codec" "1.4.14"
 
-<<<<<<< HEAD
-"@mangata-finance/sdk@2.0.0-rc.5":
-  version "2.0.0-rc.5"
-  resolved "https://registry.yarnpkg.com/@mangata-finance/sdk/-/sdk-2.0.0-rc.5.tgz#3008e565d3937b16cbf4becbbb9c17270d363401"
-  integrity sha512-3L7i7yfVb2RUIbepKcQBsyQJJO0HKdyMwxzQ5u9HdJsQylSNu/jaRQSumeINaMIju5WRlEW9jd3ohcinnkvE1A==
-=======
-"@mangata-finance/sdk@2.0.0-rc.8":
-  version "2.0.0-rc.8"
-  resolved "https://registry.yarnpkg.com/@mangata-finance/sdk/-/sdk-2.0.0-rc.8.tgz#ace1c17e0a659727763c4009e6ce6f77193f92c0"
-  integrity sha512-P0ot8Op8Ea8CwZO7FJJBqCDWUS9b/KpmdJKBR3RmjyqNFBWCkSEDhY2/mfn6+IRCgwtjUCQMMV09Kc3QIWgfdA==
->>>>>>> main
+"@mangata-finance/sdk@2.0.0-rc.12":
+  version "2.0.0-rc.12"
+  resolved "https://registry.yarnpkg.com/@mangata-finance/sdk/-/sdk-2.0.0-rc.12.tgz#dcef9bec9961ecc2ccb50116370c45e9a311f0d3"
+  integrity sha512-Uh9BhveDb/uQG40EJRbfSFe9/vDHt0n3rOPlO6I1ZOpZujFqbBrU1IcRU6mktMjN8WQ8rNN0wLQVbHydavkEtw==
   dependencies:
-    "@mangata-finance/types" "1.0.0-rc.5"
+    "@mangata-finance/type-definitions" "^1.0.0"
     big.js "^6.2.1"
-    rambda "^7.5.0"
 
-"@mangata-finance/types@1.0.0-rc.5":
-  version "1.0.0-rc.5"
-  resolved "https://registry.yarnpkg.com/@mangata-finance/types/-/types-1.0.0-rc.5.tgz#2a82d17dbfc81524669d21d3e7979e1ccb92606a"
-  integrity sha512-AVCfoCqEOHAmzrgXD/KZJ9Sy1DL+hqNnU1vBDjiCkF9Jgtk78fA4m7WU7UwJSHcVDxNpQV2MaJ4n0Z0gDL894Q==
+"@mangata-finance/type-definitions@^1.0.0":
+  version "1.0.0"
+  resolved "https://registry.yarnpkg.com/@mangata-finance/type-definitions/-/type-definitions-1.0.0.tgz#f6acdf660c742980c1334a63878310cc3c1e21ea"
+  integrity sha512-WfEEtddpPEXrYhsA77aPWdgbjh660lAEv7bRa9U6AUk4fmN57YaQhnwp3o2X9/NgG1+UChsbttCxoa1QkFfV+w==
+
+"@mangata-finance/types@1.0.0-rc.12":
+  version "1.0.0-rc.12"
+  resolved "https://registry.yarnpkg.com/@mangata-finance/types/-/types-1.0.0-rc.12.tgz#d9aaee1e1b9405ed964dbceff9ff18c7ebbfece4"
+  integrity sha512-x/NJMxyPE0v2ExpLJZRi6YWG7m+B7qj55ANBTS0uKJwDhnplKov2vLnpE73TU24oZNv3DI/zjlZyRMzeHjOhng==
 
 "@mapbox/node-pre-gyp@^1.0.0":
   version "1.0.10"
@@ -11288,11 +11285,6 @@ r-package-json@^1.0.0:
   dependencies:
     package-json-path "^1.0.0"
     r-json "^1.2.1"
-
-rambda@^7.5.0:
-  version "7.5.0"
-  resolved "https://registry.yarnpkg.com/rambda/-/rambda-7.5.0.tgz#1865044c59bc0b16f63026c6e5a97e4b1bbe98fe"
-  integrity sha512-y/M9weqWAH4iopRd7EHDEQQvpFPHj1AA3oHozE9tfITHUtTR7Z9PSlIRRG2l1GuW7sefC1cXFfIcF+cgnShdBA==
 
 randombytes@^2.1.0:
   version "2.1.0"
