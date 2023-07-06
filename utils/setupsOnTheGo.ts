@@ -65,6 +65,8 @@ export async function setupACouncilWithDefaultUsers() {
   const testUser2 = new User(keyring, "//Alice");
   const testUser3 = new User(keyring, "//Charlie");
   const testUser4 = new User(keyring, "//Eve");
+  const testUser5 = new User(keyring, "//Ferdie");
+  const testUser6 = new User(keyring, "//Dave");
   const sudo = new User(keyring, getEnvironmentRequiredVars().sudo);
   const token2 = await Assets.issueAssetToUser(sudo, amount, sudo, true);
   await Sudo.batchAsSudoFinalized(
@@ -72,10 +74,14 @@ export async function setupACouncilWithDefaultUsers() {
     Assets.mintToken(token2, testUser2, amount),
     Assets.mintToken(token2, testUser3, amount),
     Assets.mintToken(token2, testUser4, amount),
+    Assets.mintToken(token2, testUser5, amount),
+    Assets.mintToken(token2, testUser6, amount),
     Assets.mintNative(testUser1, amount),
     Assets.mintNative(testUser2, amount),
     Assets.mintNative(testUser3, amount),
-    Assets.mintNative(testUser4, amount)
+    Assets.mintNative(testUser4, amount),
+    Assets.mintNative(testUser5, amount),
+    Assets.mintNative(testUser6, amount)
   );
   await Sudo.asSudoFinalized(
     Sudo.sudo(
@@ -85,6 +91,8 @@ export async function setupACouncilWithDefaultUsers() {
           testUser2.keyRingPair.address,
           testUser3.keyRingPair.address,
           testUser4.keyRingPair.address,
+          testUser5.keyRingPair.address,
+          testUser6.keyRingPair.address,
         ],
         testUser1.keyRingPair.address,
         0
@@ -163,6 +171,58 @@ export async function setupPoolWithRewardsForDefaultUsers() {
       testUser6,
       Xyk.mintLiquidity(MGA_ASSET_ID, token2, amount.divn(10), amount)
     )
+  );
+  await waitForRewards(testUser4, liqId);
+  return { users, liqId, sudo, token2 };
+}
+export async function setupTokenWithRewardsForDefaultUsers() {
+  await setupApi();
+  await setupUsers();
+  const amount = (await api?.consts.parachainStaking.minCandidateStk)?.muln(
+    1000
+  )!;
+  const keyring = new Keyring({ type: "sr25519" });
+  const testUser1 = new User(keyring, "//Bob");
+  const testUser2 = new User(keyring, "//Alice");
+  const testUser3 = new User(keyring, "//Charlie");
+  const testUser4 = new User(keyring, "//Eve");
+  const testUser5 = new User(keyring, "//Dave");
+  const testUser6 = new User(keyring, "//Ferdie");
+  const users = [
+    testUser1,
+    testUser2,
+    testUser3,
+    testUser4,
+    testUser5,
+    testUser6,
+  ];
+  const sudo = new User(keyring, getEnvironmentRequiredVars().sudo);
+  const token2 = await Assets.issueAssetToUser(sudo, amount, sudo, true);
+  await Sudo.batchAsSudoFinalized(
+    Assets.FinalizeTge(),
+    Assets.initIssuance(),
+    Assets.mintToken(token2, testUser1, amount),
+    Assets.mintToken(token2, testUser2, amount),
+    Assets.mintToken(token2, testUser3, amount),
+    Assets.mintToken(token2, testUser4, amount),
+    Assets.mintToken(token2, testUser5, amount),
+    Assets.mintToken(token2, testUser6, amount),
+    Assets.mintNative(testUser1, amount),
+    Assets.mintNative(testUser2, amount),
+    Assets.mintNative(testUser3, amount),
+    Assets.mintNative(testUser4, amount),
+    Assets.mintNative(testUser5, amount),
+    Assets.mintNative(testUser6, amount)
+  );
+  const liqId = token2;
+  await Sudo.batchAsSudoFinalized(
+    Assets.promotePool(liqId.toNumber(), 20),
+    Sudo.sudoAs(testUser1, Xyk.activateLiquidity(token2, amount.divn(10))),
+    Sudo.sudoAs(testUser2, Xyk.activateLiquidity(token2, amount.divn(10))),
+    Sudo.sudoAs(testUser3, Xyk.activateLiquidity(token2, amount.divn(10))),
+    Sudo.sudoAs(testUser4, Xyk.activateLiquidity(token2, amount.divn(10))),
+    Sudo.sudoAs(testUser5, Xyk.activateLiquidity(token2, amount.divn(10))),
+    Sudo.sudoAs(testUser6, Xyk.activateLiquidity(token2, amount.divn(10)))
   );
   await waitForRewards(testUser4, liqId);
   return { users, liqId, sudo, token2 };
@@ -743,18 +803,15 @@ export async function migrate() {
   const allPallets = await listStorages();
   const storageToMigrate = allPallets
     .filter(
-      (x: any) =>
-        x[0] === "ProofOfStake" ||
-        x[0] === "Tokens" ||
-        x[0] === "Xyk" ||
-        x[0] === "Vesting" ||
-        x[0] === "MultiPurposeLiquidity" ||
-        x[0] === "AssetRegistry" ||
-        x[0] === "Crowdloan" ||
-        x[0] === "Bootstrap" ||
-        x[0] === "OrmlXcm" ||
-        x[0] === "RewardsInfo" ||
-        x[0] === "Issuance"
+      (x: any) => x[0] === "Xyk" // || x[0] === "ProofOfStake" || x[0] === "Tokens"
+      //        x[0] === "Vesting" ||
+      //        x[0] === "MultiPurposeLiquidity" ||
+      //        x[0] === "AssetRegistry" ||
+      //        x[0] === "Crowdloan" ||
+      //        x[0] === "Bootstrap" ||
+      //        x[0] === "OrmlXcm" ||
+      //        x[0] === "RewardsInfo" ||
+      //        x[0] === "Issuance"
     )
     .flatMap((item: any) =>
       item[1].map((element: any) => {
@@ -787,7 +844,7 @@ export async function migrate() {
         allKeys.push([keys[index], storage]);
       }
       const nextkeys = await api.rpc.state.getKeysPaged(key, 100, keys[99]);
-      if (loop % 100 === 0) {
+      if (loop % 50 === 0) {
         const txs: Extrinsic[] = [];
         allKeys.forEach((x) => {
           const storageKey = api.createType("StorageKey", x[0]);

@@ -22,6 +22,7 @@ import {
   subscribeAndPrintTokenChanges,
   provisionWith100Users,
   findAllRewardsAndClaim,
+  setupTokenWithRewardsForDefaultUsers,
 } from "../utils/setupsOnTheGo";
 import {
   findErrorMetadata,
@@ -66,6 +67,7 @@ async function app(): Promise<any> {
         "listen token balance changes",
         "provisionWith100Users",
         "find and claim all rewards",
+        "Setup token rewards with default users",
       ],
     })
     .then(async (answers: { option: string | string[] }) => {
@@ -73,6 +75,9 @@ async function app(): Promise<any> {
       if (answers.option.includes("Setup rewards with default users")) {
         const setupData = await setupPoolWithRewardsForDefaultUsers();
         console.log("liq Id = " + setupData.liqId);
+      }
+      if (answers.option.includes("Setup token rewards with default users")) {
+        await setupTokenWithRewardsForDefaultUsers();
       }
       if (answers.option.includes("Setup a collator with token")) {
         return inquirer
@@ -321,9 +326,8 @@ async function app(): Promise<any> {
           });
       }
       if (answers.option.includes("get pools")) {
-        const mga = Mangata.getInstance([
-          "wss://kusama-archive.mangata.online",
-        ]);
+        const uri = getEnvironmentRequiredVars().chainUri;
+        const mga = Mangata.getInstance([uri]);
         const pools = mga.getPools();
         (await pools).forEach((pool) => console.info(JSON.stringify(pool)));
         return app();
