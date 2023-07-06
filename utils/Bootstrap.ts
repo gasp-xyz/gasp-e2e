@@ -27,7 +27,7 @@ export async function waitForBootstrapStatus(
     currentBlock = await getBlockNumber();
   }
   testLog.getLog().info("... Done waiting " + bootstrapStatus);
-  if (bootstrapPhase.type !== bootstrapStatus) {
+  if (bootstrapPhase.type.toLowerCase() !== bootstrapStatus.toLowerCase()) {
     testLog.getLog().warn("TIMEDOUT waiting for the new boostrap phase");
   }
 }

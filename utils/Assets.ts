@@ -15,6 +15,7 @@ import {
   sudoIssueAsset,
 } from "./txHandler";
 import { User } from "./User";
+import { MangataTypesAssetsCustomMetadata } from "@polkadot/types/lookup";
 
 export class Assets {
   static MG_UNIT: BN = BN_TEN.pow(new BN(18));
@@ -203,10 +204,10 @@ export class Assets {
         null,
         update.location
           ? update.location.location
-            ? { V1: update.location } // Some(location)
+            ? { V2: update.location } // Some(location)
             : api.createType("Vec<u8>", "0x0100") // Some(None)
           : null, // None
-        { additional: update.metadata }
+        update.metadata!
       )
     );
   }
@@ -228,8 +229,16 @@ export class Assets {
         tokenId
       );
     } else {
+      const metadata: MangataTypesAssetsCustomMetadata = api.createType(
+        "MangataTypesAssetsCustomMetadata",
+        {
+          xyk: {
+            operationsDisabled: true,
+          },
+        }
+      );
       extrinsicToDisable = Assets.updateAsset(tokenId, {
-        metadata: { xyk: { operationsDisabled: true } },
+        metadata: metadata,
       });
     }
     return await Sudo.asSudoFinalized(extrinsicToDisable);
@@ -243,8 +252,16 @@ export class Assets {
       isRegistered &&
       _.get(isRegistered, "additional.xyk.operationsDisabled")
     ) {
+      const metadata: MangataTypesAssetsCustomMetadata = api.createType(
+        "MangataTypesAssetsCustomMetadata",
+        {
+          xyk: {
+            operationsDisabled: false,
+          },
+        }
+      );
       extrinsicToTokenEnable = await Assets.updateAsset(tokenId, {
-        metadata: { xyk: { operationsDisabled: false } },
+        metadata: metadata,
       });
       await Sudo.asSudoFinalized(extrinsicToTokenEnable);
     }
@@ -255,11 +272,6 @@ export const balance = async (api: ApiPromise, address: string) => {
   const account = await api.query.system.account<AccountInfo>(address);
   return account.data.toJSON();
 };
-
-interface Metadata {
-  xcm?: XcmMetadata;
-  xyk?: XykMetadata;
-}
 
 interface XcmMetadata {
   feePerSecond: number;
@@ -284,5 +296,5 @@ interface UpdateAsset {
   decimals?: number;
   // location?: MultiLocation,
   location?: UpdateLocation;
-  metadata?: Metadata;
+  metadata?: MangataTypesAssetsCustomMetadata;
 }

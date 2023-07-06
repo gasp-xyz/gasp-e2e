@@ -165,7 +165,7 @@ test("register new asset and then update it without fee", async () => {
 
   const userUpdateAsset = await Sudo.asSudoFinalized(
     Assets.updateAsset(assetId, {
-      metadata: { xcm: undefined, xyk: undefined },
+      metadata: undefined,
     })
   );
 

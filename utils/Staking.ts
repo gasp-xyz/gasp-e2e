@@ -8,8 +8,8 @@ export enum tokenOriginEnum {
   UnspentReserves = "UnspentReserves",
 }
 export enum AggregatorOptions {
-  ExtendApprovedCollators = "extendapprovedcollators",
-  RemoveApprovedCollators = "removeapprovedcollators",
+  ExtendApprovedCollators = "ExtendApprovedCollators",
+  RemoveApprovedCollators = "RemoveApprovedCollators",
 }
 export class Staking {
   static async isUserElected(address: string) {
