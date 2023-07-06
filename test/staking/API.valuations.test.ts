@@ -124,7 +124,7 @@ describe("Collators: MinCandidateStk limit", () => {
       testUser4.keyRingPair,
       liqToken,
       liqTokens.free,
-      "availablebalance",
+      "AvailableBalance",
       false
     );
     expect(events.data).toEqual("CandidateBondBelowMin");
@@ -147,7 +147,7 @@ describe("Collators: MinCandidateStk limit", () => {
       testUser3.keyRingPair,
       liqToken,
       liqTokens.free,
-      "availablebalance"
+      "AvailableBalance"
     );
     expect(events.state).toEqual(ExtrinsicResult.ExtrinsicSuccess);
   });

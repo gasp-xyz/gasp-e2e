@@ -3,9 +3,9 @@ import { api, Extrinsic } from "./setup";
 import { User } from "./User";
 import { SudoDB } from "./SudoDB";
 export enum tokenOriginEnum {
-  AvailableBalance = "availablebalance",
-  ActivatedUnstakedReserves = "activatedunstakedreserves",
-  UnspentReserves = "unspentreserves",
+  AvailableBalance = "AvailableBalance",
+  ActivatedUnstakedReserves = "ActivatedUnstakedReserves",
+  UnspentReserves = "UnspentReserves",
 }
 export enum AggregatorOptions {
   ExtendApprovedCollators = "extendapprovedcollators",
