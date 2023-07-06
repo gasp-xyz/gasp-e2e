@@ -118,7 +118,7 @@ test("gasless- Given a feeLock correctly configured WHEN the user swaps two toke
 
   await testUser1.refreshAmounts(AssetWallet.BEFORE);
   const isFree = await mangata?.rpc.isSellAssetLockFree(
-    [firstCurrency.toNumber(), secondCurrency.toNumber()],
+    [firstCurrency.toNumber().toString(), secondCurrency.toNumber().toString()],
     saleAssetValue
   );
   expect(isFree).toBeTruthy();
@@ -159,7 +159,9 @@ test("gasless- Given a feeLock correctly configured WHEN the user swaps two toke
 });
 
 test("gasless- Given a feeLock correctly configured WHEN the user swaps two tokens defined in the thresholds AND the user has enough MGAs AND swapValue < threshold THEN some MGAs will be locked", async () => {
-  const { feeLockAmount } = await getFeeLockMetadata();
+  const api = getApi();
+
+  const { feeLockAmount } = await getFeeLockMetadata(api);
 
   await Sudo.batchAsSudoFinalized(
     Assets.mintNative(testUser1),
@@ -178,7 +180,7 @@ test("gasless- Given a feeLock correctly configured WHEN the user swaps two toke
 
   await testUser1.refreshAmounts(AssetWallet.BEFORE);
   const isFree = await mangata?.rpc.isSellAssetLockFree(
-    [firstCurrency.toNumber(), secondCurrency.toNumber()],
+    [firstCurrency.toNumber().toString(), secondCurrency.toNumber().toString()],
     saleAssetValue
   );
   expect(isFree).toBeFalsy();
@@ -223,7 +225,7 @@ test("gasless- Given a feeLock correctly configured WHEN the user swaps two toke
 
   await testUser1.refreshAmounts(AssetWallet.BEFORE);
   const isFree = await mangata?.rpc.isSellAssetLockFree(
-    [firstCurrency.toNumber(), secondCurrency.toNumber()],
+    [firstCurrency.toNumber().toString(), secondCurrency.toNumber().toString()],
     saleAssetValue
   );
   expect(isFree).toBeFalsy();

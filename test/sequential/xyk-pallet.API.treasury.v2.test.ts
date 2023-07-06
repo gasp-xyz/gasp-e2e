@@ -25,6 +25,7 @@ import { BN_ONE, BN_ZERO } from "@mangata-finance/sdk";
 import { testLog } from "../../utils/Logger";
 import { Assets } from "../../utils/Assets";
 import { signSendFinalized } from "../../utils/sign";
+import { getApi } from "../../utils/api";
 
 const asset_amount1 = new BN(500000);
 const asset_amount2 = asset_amount1.div(new BN(2));
@@ -479,7 +480,7 @@ describe("xyk-pallet - treasury tests [Connected - Mangata]: Error cases", () =>
     const expectedValue = user
       .getAsset(MGA_ASSET_ID)!
       .amountAfter.free.sub(mgPoolAmount[0].sub(new BN(1)));
-    const feeLock = (await getFeeLockMetadata()).feeLockAmount;
+    const feeLock = (await getFeeLockMetadata(await getApi())).feeLockAmount;
     expect(user.getAsset(MGA_ASSET_ID)!.amountBefore.free).bnEqual(
       expectedValue.add(fees).add(feeLock)
     );

@@ -102,15 +102,17 @@ beforeEach(async () => {
 });
 
 test("gasless- GIVEN a feeLock configured WHEN a swap happens THEN fees are not charged but locked instead", async () => {
+  const api = getApi();
+
   await testUser1.addMGATokens(sudo);
   testUser1.addAsset(MGA_ASSET_ID);
 
-  const { feeLockAmount } = await getFeeLockMetadata();
+  const { feeLockAmount } = await getFeeLockMetadata(api);
   const saleAssetValue = thresholdValue.sub(new BN(5));
 
   await testUser1.refreshAmounts(AssetWallet.BEFORE);
   const isFree = await mangata?.rpc.isSellAssetLockFree(
-    [MGA_ASSET_ID.toNumber(), firstCurrency.toNumber()],
+    [MGA_ASSET_ID.toNumber().toString(), firstCurrency.toNumber().toString()],
     saleAssetValue
   );
   expect(isFree).toBeFalsy();
@@ -142,7 +144,7 @@ test("gasless- GIVEN a correct config for gasless swaps WHEN the user runs unloc
   testUser1.addAsset(MGA_ASSET_ID);
 
   const saleAssetValue = thresholdValue.sub(new BN(5));
-  const { periodLength } = await getFeeLockMetadata();
+  const { periodLength } = await getFeeLockMetadata(api);
 
   await testUser1.refreshAmounts(AssetWallet.BEFORE);
   await testUser1.sellAssets(MGA_ASSET_ID, firstCurrency, saleAssetValue);
@@ -213,7 +215,7 @@ test("gasless- For low-value swaps, token reservation status and pallet storage 
 
   await addMgaToWhitelisted(thresholdValue, sudo);
 
-  const { feeLockAmount, periodLength } = await getFeeLockMetadata();
+  const { feeLockAmount, periodLength } = await getFeeLockMetadata(api);
 
   await testUser1.addMGATokens(sudo);
   testUser1.addAsset(MGA_ASSET_ID);
@@ -222,7 +224,7 @@ test("gasless- For low-value swaps, token reservation status and pallet storage 
   const saleAssetValue = thresholdValue.sub(new BN(5));
 
   const isFree = await mangata?.rpc.isSellAssetLockFree(
-    [MGA_ASSET_ID.toNumber(), firstCurrency.toNumber()],
+    [MGA_ASSET_ID.toNumber().toString(), firstCurrency.toNumber().toString()],
     saleAssetValue
   );
   expect(isFree).toBeFalsy();
@@ -287,7 +289,7 @@ test("gasless- High-value swaps when successful are not charged txn fee or token
 
   await testUser1.refreshAmounts(AssetWallet.BEFORE);
   const isFree = await mangata?.rpc.isSellAssetLockFree(
-    [firstCurrency.toNumber(), secondCurrency.toNumber()],
+    [firstCurrency.toNumber().toString(), secondCurrency.toNumber().toString()],
     saleAssetValue
   );
   expect(isFree).toBeTruthy();

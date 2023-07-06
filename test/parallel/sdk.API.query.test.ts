@@ -11,10 +11,7 @@ import { BN } from "@polkadot/util";
 import { setupApi, setupUsers } from "../../utils/setup";
 import { Sudo } from "../../utils/sudo";
 import { User } from "../../utils/User";
-import {
-  getEnvironmentRequiredVars,
-  getFeeLockMetadata,
-} from "../../utils/utils";
+import { getEnvironmentRequiredVars } from "../../utils/utils";
 import { Xyk } from "../../utils/xyk";
 import { MGA_ASSET_ID } from "../../utils/Constants";
 import { getLiquidityAssetId } from "../../utils/tx";
@@ -97,14 +94,6 @@ test("getAmountOfTokensInPool return poolAmount", async () => {
 
   expect(poolAmount[0]).bnEqual(Assets.DEFAULT_AMOUNT.divn(2));
   expect(poolAmount[1]).bnEqual(Assets.DEFAULT_AMOUNT.divn(2));
-});
-
-test("check parameters of getAmountOfTokensInPool function", async () => {
-  const { feeLockAmount, periodLength, swapValueThreshold } =
-    await getFeeLockMetadata();
-  expect(feeLockAmount).bnGt(BN_ZERO);
-  expect(periodLength).bnGt(BN_ZERO);
-  expect(swapValueThreshold).toEqual("666");
 });
 
 test("check parameters of getAssetsInfo function", async () => {

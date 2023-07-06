@@ -14,6 +14,7 @@ import { Xyk } from "../../utils/xyk";
 import { getNextAssetId } from "../../utils/tx";
 import { Assets } from "../../utils/Assets";
 import { signSendFinalized } from "../../utils/sign";
+import { getApi } from "../../utils/api";
 /**
  * @group xyk
  * @group api
@@ -91,7 +92,7 @@ describe("API fees test suite", () => {
     const diffReserved = mgaUserToken.amountBefore.reserved.sub(
       mgaUserToken.amountAfter.reserved!
     );
-    const swapFee = await getFeeLockMetadata();
+    const swapFee = await getFeeLockMetadata(await getApi());
     expect(swapFee.feeLockAmount).bnEqual(diff);
     expect(BN_ZERO).bnEqual(authorMGAtokens);
     expect(diffReserved).bnEqual(swapFee.feeLockAmount.neg());
