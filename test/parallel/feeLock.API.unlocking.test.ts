@@ -5,7 +5,7 @@
  */
 import { jest } from "@jest/globals";
 import { Keyring } from "@polkadot/api";
-import { getApi, initApi } from "../../utils/api";
+import { getApi, initApi, mangata } from "../../utils/api";
 import { Assets } from "../../utils/Assets";
 import { MGA_ASSET_ID } from "../../utils/Constants";
 import {
@@ -102,7 +102,11 @@ test("gasless- GIVEN some locked tokens and no more free MGX WHEN another tx is 
   await testUser1.addMGATokens(sudo, feeLockAmount);
 
   const saleAssetValue = thresholdValue.sub(new BN(5));
-
+  const isFree = await mangata?.rpc.isSellAssetLockFree(
+    [firstCurrency.toNumber(), secondCurrency.toNumber()],
+    saleAssetValue
+  );
+  expect(isFree).toBeFalsy();
   await testUser1.sellAssets(firstCurrency, secondCurrency, saleAssetValue);
 
   await expect(
@@ -126,7 +130,11 @@ test("gasless- GIVEN some locked tokens and no more free MGX WHEN another tx is 
   await testUser1.addMGATokens(sudo, new BN(feeLockAmount).add(new BN(1)));
 
   const saleAssetValue = thresholdValue.sub(new BN(5));
-
+  const isFree = await mangata?.rpc.isSellAssetLockFree(
+    [firstCurrency.toNumber(), secondCurrency.toNumber()],
+    saleAssetValue
+  );
+  expect(isFree).toBeFalsy();
   await testUser1.sellAssets(firstCurrency, secondCurrency, saleAssetValue);
 
   const accountFeeLockData = JSON.parse(
@@ -155,7 +163,11 @@ test("gasless- GIVEN some locked tokens WHEN querying accountFeeLockData THEN th
   await testUser1.addMGATokens(sudo, new BN(feeLockAmount).add(new BN(1)));
 
   const saleAssetValue = thresholdValue.sub(new BN(5));
-
+  const isFree = await mangata?.rpc.isSellAssetLockFree(
+    [firstCurrency.toNumber(), secondCurrency.toNumber()],
+    saleAssetValue
+  );
+  expect(isFree).toBeFalsy();
   await testUser1.sellAssets(firstCurrency, secondCurrency, saleAssetValue);
 
   const block = await getBlockNumber();
@@ -182,6 +194,11 @@ test("gasless- GIVEN some locked tokens and lastFeeLockBlock is lower than curre
   await testUser1.addMGATokens(sudo, new BN(feeLockAmount).add(new BN(1)));
 
   const saleAssetValue = thresholdValue.sub(new BN(5));
+  const isFree = await mangata?.rpc.isSellAssetLockFree(
+    [firstCurrency.toNumber(), secondCurrency.toNumber()],
+    saleAssetValue
+  );
+  expect(isFree).toBeFalsy();
   await testUser1.sellAssets(firstCurrency, secondCurrency, saleAssetValue);
   await testUser1.refreshAmounts(AssetWallet.BEFORE);
   const accountFeeLockData = JSON.parse(
@@ -218,7 +235,11 @@ test("gasless- GIVEN a lock WHEN the period is N THEN the tokens can not be unlo
   await testUser1.addMGATokens(sudo, new BN(feeLockAmount));
 
   const saleAssetValue = thresholdValue.sub(new BN(5));
-
+  const isFree = await mangata?.rpc.isSellAssetLockFree(
+    [firstCurrency.toNumber(), secondCurrency.toNumber()],
+    saleAssetValue
+  );
+  expect(isFree).toBeFalsy();
   await testUser1.sellAssets(firstCurrency, secondCurrency, saleAssetValue);
   const feeLockBlock = stringToBN(
     JSON.parse(

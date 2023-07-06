@@ -5,7 +5,7 @@
  */
 import { jest } from "@jest/globals";
 import { Keyring } from "@polkadot/api";
-import { getApi, initApi } from "../../utils/api";
+import { getApi, initApi, mangata } from "../../utils/api";
 import { Assets } from "../../utils/Assets";
 import {
   MGA_ASSET_ID,
@@ -117,6 +117,11 @@ test("gasless- Given a feeLock correctly configured WHEN the user swaps two toke
   const saleAssetValue = thresholdValue.mul(new BN(2));
 
   await testUser1.refreshAmounts(AssetWallet.BEFORE);
+  const isFree = await mangata?.rpc.isSellAssetLockFree(
+    [firstCurrency.toNumber(), secondCurrency.toNumber()],
+    saleAssetValue
+  );
+  expect(isFree).toBeTruthy();
   const events = await testUser1.sellAssets(
     firstCurrency,
     secondCurrency,
@@ -172,6 +177,11 @@ test("gasless- Given a feeLock correctly configured WHEN the user swaps two toke
   const saleAssetValue = thresholdValue.sub(new BN(5));
 
   await testUser1.refreshAmounts(AssetWallet.BEFORE);
+  const isFree = await mangata?.rpc.isSellAssetLockFree(
+    [firstCurrency.toNumber(), secondCurrency.toNumber()],
+    saleAssetValue
+  );
+  expect(isFree).toBeFalsy();
   const events = await testUser1.sellAssets(
     firstCurrency,
     secondCurrency,
@@ -212,6 +222,11 @@ test("gasless- Given a feeLock correctly configured WHEN the user swaps two toke
   const saleAssetValue = thresholdValue.mul(new BN(2));
 
   await testUser1.refreshAmounts(AssetWallet.BEFORE);
+  const isFree = await mangata?.rpc.isSellAssetLockFree(
+    [firstCurrency.toNumber(), secondCurrency.toNumber()],
+    saleAssetValue
+  );
+  expect(isFree).toBeFalsy();
   await expect(
     sellAsset(
       testUser1.keyRingPair,

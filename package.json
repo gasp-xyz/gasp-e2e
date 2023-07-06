@@ -12,7 +12,11 @@
     "@babel/plugin-proposal-decorators": "^7.17.8",
     "@babel/plugin-proposal-object-rest-spread": "^7.20.7",
     "@commitlint/config-conventional": "^17.4.2",
+<<<<<<< HEAD
     "@mangata-finance/sdk": "2.0.0-rc.5",
+=======
+    "@mangata-finance/sdk": "2.0.0-rc.8",
+>>>>>>> main
     "@polkadot/api": "^10.7.3",
     "@polkadot/types": "^10.9.1",
     "@terascope/fetch-github-release": "^0.8.7",
@@ -31,7 +35,7 @@
     "babel-plugin-syntax-dynamic-import": "^6.18.0",
     "babel-plugin-transform-decorators-legacy": "^1.3.5",
     "bs58": "^4.0.1",
-    "chromedriver": "^112.0.0",
+    "chromedriver": "^114.0.2",
     "commitlint": "^17.4.2",
     "dockerode": "^3.3.5",
     "dotenv": "^16.0.1",
@@ -87,7 +91,7 @@
     "test-sequential-files": "export JEST_HTML_REPORTERS_PUBLIC_PATH=reports/html-report-seq-e2e; rm nonce.db ; rm sudo.lock;  node --experimental-specifier-resolution=node --loader ts-node/esm --experimental-vm-modules node_modules/jest/bin/jest.js --verbose --runInBand --ci  --forceExit ",
     "test-ci": "rm nonce.db ; rm sudo.lock;  node --experimental-specifier-resolution=node --loader ts-node/esm --experimental-vm-modules node_modules/jest/bin/jest.js --runInBand --verbose --ci --group=ci  --forceExit ",
     "test-temp-ci": "rm nonce.db ; rm sudo.lock;  node --experimental-specifier-resolution=node --loader ts-node/esm --experimental-vm-modules node_modules/jest/bin/jest.js --runInBand --verbose --ci --group=temp-ci  --forceExit ",
-    "test-ui": "rm nonce.db ; rm sudo.lock;  node --experimental-specifier-resolution=node --loader ts-node/esm --experimental-vm-modules node_modules/jest/bin/jest.js --verbose --runInBand --ci --group=uiMain --forceExit ",
+    "test-ui": "rm nonce.db ; rm sudo.lock;  node --experimental-specifier-resolution=node --loader ts-node/esm --experimental-vm-modules node_modules/jest/bin/jest.js --verbose --runInBand --ci --forceExit ",
     "test-microapps-ui": "rm nonce.db ; rm sudo.lock;  node --experimental-specifier-resolution=node --loader ts-node/esm --experimental-vm-modules node_modules/jest/bin/jest.js --verbose --runInBand --ci --group=microappsUI ",
     "test-microapps-pr": "rm nonce.db ; rm sudo.lock;  node --experimental-specifier-resolution=node --loader ts-node/esm --experimental-vm-modules node_modules/jest/bin/jest.js --verbose --runInBand --ci --group=microappsUI --testNamePattern='^(?!.*Wallets\\smanagement.*User\\scan\\sconnect\\swallet\\sTalisman).*$'",
     "test-setup": "rm nonce.db ; rm sudo.lock;  node --experimental-specifier-resolution=node --loader ts-node/esm --experimental-vm-modules node_modules/jest/bin/jest.js --verbose --runInBand --ci --group=setup  --forceExit ",

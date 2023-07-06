@@ -57,6 +57,55 @@ export class Staking {
   static setCollatorCommission(perBill: BN): Extrinsic {
     return api.tx.parachainStaking.setCollatorCommission(perBill);
   }
+  static scheduleCandidateBondMore(
+    more: BN,
+    useBalanceFrom = "AvailableBalance"
+  ) {
+    return api.tx.parachainStaking.scheduleCandidateBondMore(
+      more,
+      useBalanceFrom
+    );
+  }
+  static scheduleCandidateBondLess(less: BN) {
+    return api.tx.parachainStaking.scheduleCandidateBondLess(less);
+  }
+  static scheduleDelegatorBondMore(
+    candidate: User,
+    more: BN,
+    useBalanceFrom = "AvailableBalance"
+  ) {
+    return api.tx.parachainStaking.scheduleDelegatorBondMore(
+      candidate.keyRingPair.address,
+      more,
+      useBalanceFrom
+    );
+  }
+  static scheduleDelegatorBondLess(candidate: User, less: BN) {
+    return api.tx.parachainStaking.scheduleDelegatorBondLess(
+      candidate.keyRingPair.address,
+      less
+    );
+  }
+  static executeBondRequest(
+    candidate: User,
+    useBalanceFrom = "AvailableBalance"
+  ): Extrinsic {
+    return api.tx.parachainStaking.executeCandidateBondRequest(
+      candidate.keyRingPair.address,
+      useBalanceFrom
+    );
+  }
+  static executeDelegationRequest(
+    delegator: User,
+    candidate: User,
+    useBalanceFrom = "AvailableBalance"
+  ): Extrinsic {
+    return api.tx.parachainStaking.executeDelegationRequest(
+      delegator.keyRingPair.address,
+      candidate.keyRingPair.address,
+      useBalanceFrom
+    );
+  }
   static removeStakingLiquidityToken(liqToken: BN): Extrinsic {
     return api.tx.parachainStaking.removeStakingLiquidityToken(
       {

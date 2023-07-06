@@ -1,4 +1,4 @@
-import { WebDriver } from "selenium-webdriver";
+import { By, until, WebDriver } from "selenium-webdriver";
 import { sleep } from "../../utils";
 import {
   areDisplayed,
@@ -6,7 +6,8 @@ import {
   clickElement,
   getText,
   isDisplayed,
-  waitForElementVisible,
+  waitForElement,
+  waitForElementState,
   waitForLoad,
   writeText,
 } from "../utils/Helper";
@@ -39,10 +40,15 @@ export class DepositModal {
   }
 
   async selectToken(assetName: string) {
-    await sleep(3000);
     const assetTestId = `TokensModal-token-${assetName}`;
     const assetLocator = buildDataTestIdXpath(assetTestId);
-    await clickElement(this.driver, assetLocator);
+    await sleep(2000);
+    const element = await this.driver.wait(
+      until.elementLocated(By.xpath(assetLocator))
+    );
+    await this.driver.wait(until.elementIsVisible(element));
+    await this.driver.wait(until.elementIsEnabled(element));
+    await element.click();
   }
 
   async getTokenAmount(assetName: string) {
@@ -51,19 +57,36 @@ export class DepositModal {
     return parseFloat(await getText(this.driver, assetLocator));
   }
 
-  async areTokenListElementsVisible(assetName: string) {
-    await sleep(2000);
-    const assetTestId = `TokensModal-token-${assetName}`;
-    const assetLocator = buildDataTestIdXpath(assetTestId);
-    await waitForElementVisible(this.driver, assetLocator);
-    const assetAmountTestId = `token-list-token-${assetName}-balance`;
-    const assetAmountLocator = buildDataTestIdXpath(assetAmountTestId);
-    await waitForElementVisible(this.driver, assetAmountLocator, 60000);
-    const elementsDisplayed = await areDisplayed(this.driver, [
-      assetLocator,
-      assetAmountLocator,
-    ]);
-    return elementsDisplayed;
+  async areTokenListElementsVisible(
+    assetName: string,
+    retries = 5
+  ): Promise<boolean> {
+    try {
+      const assetTestId = `TokensModal-token-${assetName}`;
+      const assetLocator = buildDataTestIdXpath(assetTestId);
+      const element = await this.driver.wait(
+        until.elementLocated(By.xpath(assetLocator)),
+        10000
+      );
+      await this.driver.wait(until.elementIsVisible(element));
+      await this.driver.wait(until.elementIsEnabled(element));
+      const assetAmountTestId = `token-list-token-${assetName}-balance`;
+      const assetAmountLocator =
+        assetLocator + buildDataTestIdXpath(assetAmountTestId);
+      await waitForElement(this.driver, assetAmountLocator, 60000);
+      const elementsDisplayed = await areDisplayed(this.driver, [
+        assetLocator,
+        assetAmountLocator,
+      ]);
+      return elementsDisplayed;
+    } catch (error) {
+      if (retries > 0) {
+        await sleep(3000);
+        return await this.areTokenListElementsVisible(assetName, retries - 1);
+      } else {
+        return false;
+      }
+    }
   }
 
   async enterValue(amount: string) {
@@ -79,6 +102,20 @@ export class DepositModal {
     const xpath = buildDataTestIdXpath(STEP_O_CONT);
     await clickElement(this.driver, xpath);
   }
+
+  async waitForContinueState(isEnabled: boolean) {
+    const xpath = buildDataTestIdXpath(STEP_O_CONT);
+    await waitForElementState(this.driver, xpath, isEnabled);
+  }
+
+  async isContinueButtonEnabled() {
+    const xpath = buildDataTestIdXpath(STEP_O_CONT);
+    const enabled = await (
+      await this.driver.findElement(By.xpath(xpath))
+    ).isEnabled();
+    return enabled;
+  }
+
   async confirmAndSign() {
     const xpath = buildDataTestIdXpath(STEP_1_CONF);
     await clickElement(this.driver, xpath);

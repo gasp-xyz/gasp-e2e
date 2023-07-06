@@ -177,7 +177,7 @@ describe("Miocroapps UI swap tests", () => {
     expect(swapFee).toEqual(0);
 
     const isSwapFeeAlert = await swap.isSwapFeeAlert();
-    expect(isSwapFeeAlert).toBeTruthy();
+    expect(isSwapFeeAlert).toBeFalsy();
   });
 
   it("Swap alert - not enough MGX to lock", async () => {

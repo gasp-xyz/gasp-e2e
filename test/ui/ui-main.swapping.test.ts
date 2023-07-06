@@ -1,6 +1,6 @@
 /*
  *
- * @group uiMain
+ * @group uiSequential
  */
 import { jest } from "@jest/globals";
 import { Mangata } from "../../utils/frontend/pages/Mangata";
@@ -8,7 +8,6 @@ import { Keyring } from "@polkadot/api";
 import { BN } from "@polkadot/util";
 import { WebDriver } from "selenium-webdriver";
 import { getApi, initApi } from "../../utils/api";
-import { Assets } from "../../utils/Assets";
 import { Sidebar } from "../../utils/frontend/pages/Sidebar";
 import { DriverBuilder } from "../../utils/frontend/utils/Driver";
 import {
@@ -17,7 +16,6 @@ import {
   uiStringToBN,
 } from "../../utils/frontend/utils/Helper";
 import { setupApi, setupUsers } from "../../utils/setup";
-import { Sudo } from "../../utils/sudo";
 import { AssetWallet, User } from "../../utils/User";
 import { getEnvironmentRequiredVars } from "../../utils/utils";
 import { Swap } from "../../utils/frontend/pages/Swap";
@@ -34,6 +32,8 @@ import { Node } from "../../utils/Framework/Node/Node";
 import { connectPolkadotWallet } from "../../utils/frontend/utils/Handlers";
 
 import "dotenv/config";
+import { Sudo } from "../../utils/sudo";
+import { Assets } from "../../utils/Assets";
 
 jest.retryTimes(1);
 jest.spyOn(console, "log").mockImplementation(jest.fn());
@@ -72,11 +72,7 @@ describe("UI tests - swapping assets", () => {
       testAssetId
     );
 
-    await Sudo.batchAsSudoFinalized(
-      Assets.mintToken(new BN(7), testUser1), // transferAll test
-      Assets.mintToken(testAssetId, testUser1), // transferAll test
-      Assets.mintNative(testUser1)
-    );
+    await Sudo.batchAsSudoFinalized(Assets.mintNative(testUser1));
 
     testUser1.addAsset(testAssetId);
     await testUser1.refreshAmounts(AssetWallet.BEFORE);
@@ -145,11 +141,11 @@ describe("UI tests - swapping assets", () => {
       driver,
       expect.getState().currentTestName + " - " + session.getId()
     );
-    await driver.quit();
-    DriverBuilder.destroy();
   });
 
   afterAll(async () => {
+    await driver.quit();
+    DriverBuilder.destroy();
     const api = getApi();
     await api.disconnect();
   });
