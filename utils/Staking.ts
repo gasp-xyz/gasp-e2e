@@ -59,7 +59,7 @@ export class Staking {
   }
   static scheduleCandidateBondMore(
     more: BN,
-    useBalanceFrom = "AvailableBalance"
+    useBalanceFrom: any = "AvailableBalance"
   ) {
     return api.tx.parachainStaking.scheduleCandidateBondMore(
       more,
@@ -72,7 +72,7 @@ export class Staking {
   static scheduleDelegatorBondMore(
     candidate: User,
     more: BN,
-    useBalanceFrom = "AvailableBalance"
+    useBalanceFrom: any = "AvailableBalance"
   ) {
     return api.tx.parachainStaking.scheduleDelegatorBondMore(
       candidate.keyRingPair.address,
@@ -88,7 +88,7 @@ export class Staking {
   }
   static executeBondRequest(
     candidate: User,
-    useBalanceFrom = "AvailableBalance"
+    useBalanceFrom: any = "AvailableBalance"
   ): Extrinsic {
     return api.tx.parachainStaking.executeCandidateBondRequest(
       candidate.keyRingPair.address,
@@ -98,7 +98,7 @@ export class Staking {
   static executeDelegationRequest(
     delegator: User,
     candidate: User,
-    useBalanceFrom = "AvailableBalance"
+    useBalanceFrom: any = "AvailableBalance"
   ): Extrinsic {
     return api.tx.parachainStaking.executeDelegationRequest(
       delegator.keyRingPair.address,
