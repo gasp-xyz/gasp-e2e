@@ -496,19 +496,21 @@ export const sellAsset = async (
   account: KeyringPair,
   soldAssetId: BN,
   boughtAssetId: BN,
-  amount: BN,
-  minAmountOut: BN,
-  options = {}
+  soldAssetAmount: BN,
+  minAmountOut: BN
 ) => {
   const mangata = await getMangataInstance();
-  const result = await mangata.xyk.sellAsset({
-    account: account,
-    soldTokenId: soldAssetId.toString(),
-    boughtTokenId: boughtAssetId.toString(),
-    amount: amount,
-    minAmountOut: minAmountOut,
-    txOptions: options,
-  });
+  const api = await mangata.api();
+  const result = await signTx(
+    api,
+    api.tx.xyk.sellAsset(
+      soldAssetId,
+      boughtAssetId,
+      soldAssetAmount,
+      minAmountOut
+    ),
+    account
+  );
   return result;
 };
 export const delegate = async (
@@ -609,7 +611,7 @@ export const deactivateLiquidity = async (
 };
 
 export const provideLiquidity = async (
-  user: KeyringPair,
+  account: KeyringPair,
   liquidityAssetId: BN,
   providedAssetId: BN,
   amount: BN
@@ -623,7 +625,7 @@ export const provideLiquidity = async (
       providedAssetId,
       amount
     ),
-    user
+    account
   );
   return result;
 };
@@ -648,22 +650,24 @@ export const reserveVestingLiquidityTokens = async (
   return result;
 };
 export const buyAsset = async (
-  account: any,
+  account: KeyringPair,
   soldAssetId: BN,
   boughtAssetId: BN,
-  amount: BN,
-  maxAmountIn: BN,
-  options = {}
+  boughtAssetAmount: BN,
+  maxAmountIn: BN
 ) => {
   const mangata = await getMangataInstance();
-  const result = await mangata.xyk.buyAsset({
-    account: account,
-    soldTokenId: soldAssetId.toString(),
-    boughtTokenId: boughtAssetId.toString(),
-    amount: amount,
-    maxAmountIn: maxAmountIn,
-    txOptions: options,
-  });
+  const api = await mangata.api();
+  const result = await signTx(
+    api,
+    api.tx.xyk.buyAsset(
+      soldAssetId,
+      boughtAssetId,
+      boughtAssetAmount,
+      maxAmountIn
+    ),
+    account
+  );
   return result;
 };
 
