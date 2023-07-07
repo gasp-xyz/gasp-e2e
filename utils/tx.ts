@@ -496,21 +496,19 @@ export const sellAsset = async (
   account: KeyringPair,
   soldAssetId: BN,
   boughtAssetId: BN,
-  soldAssetAmount: BN,
-  minAmountOut: BN
+  amount: BN,
+  minAmountOut: BN,
+  options = {}
 ) => {
   const mangata = await getMangataInstance();
-  const api = await mangata.api();
-  const result = await signTx(
-    api,
-    api.tx.xyk.sellAsset(
-      soldAssetId,
-      boughtAssetId,
-      soldAssetAmount,
-      minAmountOut
-    ),
-    account
-  );
+  const tokenIds = [soldAssetId.toString(), boughtAssetId.toString()];
+  const result = await mangata.xyk.multiswapSellAsset({
+    account: account,
+    amount: amount,
+    minAmountOut: minAmountOut,
+    tokenIds: tokenIds,
+    txOptions: options,
+  });
   return result;
 };
 export const delegate = async (
@@ -611,7 +609,7 @@ export const deactivateLiquidity = async (
 };
 
 export const provideLiquidity = async (
-  account: KeyringPair,
+  user: KeyringPair,
   liquidityAssetId: BN,
   providedAssetId: BN,
   amount: BN
@@ -625,7 +623,7 @@ export const provideLiquidity = async (
       providedAssetId,
       amount
     ),
-    account
+    user
   );
   return result;
 };
@@ -650,24 +648,22 @@ export const reserveVestingLiquidityTokens = async (
   return result;
 };
 export const buyAsset = async (
-  account: KeyringPair,
+  account: any,
   soldAssetId: BN,
   boughtAssetId: BN,
-  boughtAssetAmount: BN,
-  maxAmountIn: BN
+  amount: BN,
+  maxAmountIn: BN,
+  options = {}
 ) => {
   const mangata = await getMangataInstance();
-  const api = await mangata.api();
-  const result = await signTx(
-    api,
-    api.tx.xyk.buyAsset(
-      soldAssetId,
-      boughtAssetId,
-      boughtAssetAmount,
-      maxAmountIn
-    ),
-    account
-  );
+  const tokenIds = [soldAssetId.toString(), boughtAssetId.toString()];
+  const result = await mangata.xyk.multiswapBuyAsset({
+    account: account,
+    amount: amount,
+    maxAmountIn: maxAmountIn,
+    tokenIds: tokenIds,
+    txOptions: options,
+  });
   return result;
 };
 
