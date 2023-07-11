@@ -62,15 +62,16 @@ export async function waitForElementEnabled(
 export async function waitForElementState(
   driver: WebDriver,
   xpath: string,
-  isEnabled: boolean
+  isEnabled: boolean,
+  timeout = 5000
 ) {
   const element = await driver.wait(until.elementLocated(By.xpath(xpath)));
-  await driver.wait(until.elementIsVisible(element));
+  await driver.wait(until.elementIsVisible(element), timeout);
 
   if (isEnabled) {
-    await driver.wait(async () => await element.isEnabled());
+    await driver.wait(until.elementIsEnabled(element), timeout);
   } else {
-    await driver.wait(async () => !(await element.isEnabled()));
+    await driver.wait(until.elementIsDisabled(element), timeout);
   }
 }
 
