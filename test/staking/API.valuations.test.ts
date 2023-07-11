@@ -1,6 +1,6 @@
 /*
  *
- * @group staking
+ * @group experimentalStaking
  */
 import { jest } from "@jest/globals";
 import {

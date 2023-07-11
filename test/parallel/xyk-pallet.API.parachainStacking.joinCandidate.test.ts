@@ -1,7 +1,7 @@
 /*
  *
  * @group xyk
- * @group governance
+ * @group experimentalStaking
  */
 import { jest } from "@jest/globals";
 import { BN } from "@polkadot/util";
@@ -37,8 +37,6 @@ let keyring: Keyring;
 let tokenId: BN;
 let liqToken: BN;
 let minStk: BN;
-
-//creating pool
 
 const { sudo: sudoUserName } = getEnvironmentRequiredVars();
 
