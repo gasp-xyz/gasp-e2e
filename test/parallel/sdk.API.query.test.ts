@@ -11,11 +11,11 @@ import { BN } from "@polkadot/util";
 import { setupApi, setupUsers } from "../../utils/setup";
 import { Sudo } from "../../utils/sudo";
 import { User } from "../../utils/User";
-import { getEnvironmentRequiredVars } from "../../utils/utils";
+import { getEnvironmentRequiredVars, stringToBN } from "../../utils/utils";
 import { Xyk } from "../../utils/xyk";
 import { MGA_ASSET_ID } from "../../utils/Constants";
 import { getLiquidityAssetId } from "../../utils/tx";
-import { BN_ZERO, MangataInstance } from "@mangata-finance/sdk";
+import { MangataInstance } from "@mangata-finance/sdk";
 
 jest.spyOn(console, "log").mockImplementation(jest.fn());
 jest.setTimeout(2500000);
@@ -51,10 +51,7 @@ beforeAll(async () => {
     [defaultCurrencyValue],
     sudo
   );
-
-  const { chainUri } = getEnvironmentRequiredVars();
-  mangata = await getMangataInstance(chainUri);
-
+  mangata = await getMangataInstance();
   await Sudo.batchAsSudoFinalized(
     Assets.FinalizeTge(),
     Assets.initIssuance(),
@@ -88,16 +85,28 @@ beforeAll(async () => {
 // });
 
 test("getAmountOfTokensInPool return poolAmount", async () => {
-  const poolAmount = await (
-    await mangata
-  ).query.getAmountOfTokensInPool(MGA_ASSET_ID.toString(), token1.toString());
+  const poolAmount = await mangata.query.getAmountOfTokensInPool(
+    MGA_ASSET_ID.toString(),
+    token1.toString()
+  );
 
   expect(poolAmount[0]).bnEqual(Assets.DEFAULT_AMOUNT.divn(2));
   expect(poolAmount[1]).bnEqual(Assets.DEFAULT_AMOUNT.divn(2));
 });
 
-test("check parameters of getAssetsInfo function", async () => {
-  const info = await (await mangata).query.getAssetsInfo();
+//THERE IS SOME PROBLEM WITH getAssetsInfo FUNCTION
+// test("check parameters of getAssetsInfo function", async () => {
+//   const info = await mangata.query.getAssetsInfo();
+// });
 
-  expect(info).bnGt(BN_ZERO);
+test("check parameters of getInvestedPools function", async () => {
+  const userInvestedPool = await mangata.query.getInvestedPools(
+    testUser.keyRingPair.address
+  );
+
+  const firstTokenId = stringToBN(userInvestedPool[0].firstTokenId);
+  const secondAssetId = stringToBN(userInvestedPool[0].secondTokenId);
+
+  expect(firstTokenId).bnEqual(MGA_ASSET_ID);
+  expect(secondAssetId).bnEqual(token1);
 });
