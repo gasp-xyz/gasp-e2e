@@ -326,14 +326,15 @@ export async function getLiquiditybalance(liquidityAssetId: BN) {
 }
 
 export async function getLiquidityPool(liquidityAssetId: BN) {
-  const api = getApi();
+  const mangata = await getMangataInstance();
 
-  const liqPool = await api.query.xyk.liquidityPools(liquidityAssetId);
-  const poolAssetIds = liqPool.toHuman() as Number[];
+  const liqPool = await mangata.query.getLiquidityPool(
+    liquidityAssetId.toString()
+  );
+  const poolAssetIds = await liqPool.map((string) => stringToBN(string));
   if (!poolAssetIds) return [new BN(-1), new BN(-1)];
 
-  const result = poolAssetIds.map((num) => new BN(num.toString()));
-  return result;
+  return poolAssetIds;
 }
 
 export async function getAssetSupply(assetId1: BN) {

@@ -110,3 +110,17 @@ test("check parameters of getInvestedPools function", async () => {
   expect(firstTokenId).bnEqual(MGA_ASSET_ID);
   expect(secondAssetId).bnEqual(token1);
 });
+
+test("check parameters of getLiquidityTokenId function", async () => {
+  const liqId2 = await mangata.query.getLiquidityTokenId(
+    MGA_ASSET_ID.toString(),
+    token1.toString()
+  );
+  const liqId3 = await mangata.query.getLiquidityTokenId(
+    token1.toString(),
+    MGA_ASSET_ID.toString()
+  );
+
+  expect(liqId2).bnEqual(liqId);
+  expect(liqId3).bnEqual(liqId);
+});
