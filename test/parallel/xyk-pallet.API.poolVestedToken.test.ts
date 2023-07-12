@@ -218,11 +218,14 @@ describe("xyk-pallet - Vested token tests: which action you can do with vesting 
       )
     ).bnGt(new BN(0));
 
-    //@ts-ignore
-    const maxInstantBurnAmount = await api.rpc.xyk.get_max_instant_burn_amount(
-      testUser1.keyRingPair.address,
-      liquidityID
-    );
+    // eslint-disable-next-line prettier/prettier
+    const maxInstantBurnAmount = (
+      //@ts-ignore
+      await api.rpc.xyk.get_max_instant_burn_amount(
+        testUser1.keyRingPair.address,
+        liquidityID
+      )
+    ).price;
 
     const burnUnlockedToken = await burnLiquidity(
       testUser1.keyRingPair,
@@ -302,11 +305,14 @@ describe("xyk-pallet - Vested token tests: which action you can do with vesting 
 
     expect(userBalanceAfterUnlockingAmount.frozen).bnEqual(new BN(0));
 
-    //@ts-ignore
-    const maxInstantBurnAmount = await api.rpc.xyk.get_max_instant_burn_amount(
-      testUser1.keyRingPair.address,
-      liquidityID
-    );
+    // eslint-disable-next-line prettier/prettier
+    const maxInstantBurnAmount = (
+      //@ts-ignore
+      await api.rpc.xyk.get_max_instant_burn_amount(
+        testUser1.keyRingPair.address,
+        liquidityID
+      )
+    ).price;
 
     const burnUnlockedToken = await burnLiquidity(
       testUser1.keyRingPair,

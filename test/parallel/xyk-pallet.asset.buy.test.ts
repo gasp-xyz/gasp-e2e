@@ -269,5 +269,5 @@ test("xyk-pallet - AssetsOperation: buyAsset [maxAmountIn = 1M], sell a bought a
   expect([
     poolBalanceBefore[0].add(buyPriceLocal).sub(bothFees),
     poolBalanceBefore[1].sub(amount),
-  ]).toEqual(pool_balance);
+  ]).collectionBnEqual(pool_balance);
 });

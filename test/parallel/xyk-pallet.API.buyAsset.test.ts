@@ -456,6 +456,6 @@ describe("xyk-pallet - Buy assets tests: Buying assets you can", () => {
     expect([
       poolBalanceBefore[0].sub(amountToBuy),
       poolBalanceBefore[1].add(buyPriceLocal).sub(fee),
-    ]).toEqual(poolBalanceAfter);
+    ]).collectionBnEqual(poolBalanceAfter);
   });
 });
