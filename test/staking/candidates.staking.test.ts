@@ -101,8 +101,8 @@ describe("Test candidates actions", () => {
     expect(isUserInCandidateList).toBeTruthy();
 
     const userBalance = await getUserBalanceOfToken(MGA_ASSET_ID, testUser1);
-    const total = hexToBn(userBalance.free.toString()).add(
-      hexToBn(userBalance.reserved.toString())
+    const total = hexToBn(JSON.parse(userBalance.toString()).free).add(
+      hexToBn(JSON.parse(userBalance.toString()).reserved)
     );
     expect(total).bnEqual(minStk.muln(1000));
     expect(userBalance.reserved).bnEqual(minStk.muln(2));

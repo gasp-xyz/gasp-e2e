@@ -28,7 +28,7 @@ export class XcmNode {
 
     return this.api.tx.xTokens.transferMultiasset(
       {
-        V3: {
+        V2: {
           id: {
             Concrete: asset.location,
           },
@@ -38,7 +38,7 @@ export class XcmNode {
         },
       },
       {
-        V3: {
+        V2: {
           parents: 1,
           interior: {
             X2: [

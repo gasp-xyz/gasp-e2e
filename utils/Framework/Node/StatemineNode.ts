@@ -28,7 +28,7 @@ export class StatemineNode {
 
     return this.api.tx.polkadotXcm.limitedReserveTransferAssets(
       {
-        V3: {
+        V2: {
           interior: {
             X1: {
               Parachain: target.parachain,
@@ -38,7 +38,7 @@ export class StatemineNode {
         },
       },
       {
-        V3: {
+        V2: {
           interior: {
             X1: {
               AccountId32: {
@@ -53,7 +53,7 @@ export class StatemineNode {
         },
       },
       {
-        V3: [
+        V2: [
           {
             fun: {
               Fungible: amount,

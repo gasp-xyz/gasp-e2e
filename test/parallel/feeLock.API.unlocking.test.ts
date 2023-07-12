@@ -105,7 +105,7 @@ test("gasless- GIVEN some locked tokens and no more free MGX WHEN another tx is 
 
   const saleAssetValue = thresholdValue.sub(new BN(5));
   const isFree = await mangata?.rpc.isSellAssetLockFree(
-    [firstCurrency.toNumber().toString(), secondCurrency.toNumber().toString()],
+    [firstCurrency.toString(), secondCurrency.toString()],
     saleAssetValue
   );
   expect(isFree).toBeFalsy();
@@ -133,7 +133,7 @@ test("gasless- GIVEN some locked tokens and no more free MGX WHEN another tx is 
 
   const saleAssetValue = thresholdValue.sub(new BN(5));
   const isFree = await mangata?.rpc.isSellAssetLockFree(
-    [firstCurrency.toNumber().toString(), secondCurrency.toNumber().toString()],
+    [firstCurrency.toString(), secondCurrency.toString()],
     saleAssetValue
   );
   expect(isFree).toBeFalsy();
@@ -166,7 +166,7 @@ test("gasless- GIVEN some locked tokens WHEN querying accountFeeLockData THEN th
 
   const saleAssetValue = thresholdValue.sub(new BN(5));
   const isFree = await mangata?.rpc.isSellAssetLockFree(
-    [firstCurrency.toNumber().toString(), secondCurrency.toNumber().toString()],
+    [firstCurrency.toString(), secondCurrency.toString()],
     saleAssetValue
   );
   expect(isFree).toBeFalsy();
@@ -197,7 +197,7 @@ test("gasless- GIVEN some locked tokens and lastFeeLockBlock is lower than curre
 
   const saleAssetValue = thresholdValue.sub(new BN(5));
   const isFree = await mangata?.rpc.isSellAssetLockFree(
-    [firstCurrency.toNumber().toString(), secondCurrency.toNumber().toString()],
+    [firstCurrency.toString(), secondCurrency.toString()],
     saleAssetValue
   );
   expect(isFree).toBeFalsy();
@@ -238,7 +238,7 @@ test("gasless- GIVEN a lock WHEN the period is N THEN the tokens can not be unlo
 
   const saleAssetValue = thresholdValue.sub(new BN(5));
   const isFree = await mangata?.rpc.isSellAssetLockFree(
-    [firstCurrency.toNumber().toString(), secondCurrency.toNumber().toString()],
+    [firstCurrency.toString(), secondCurrency.toString()],
     saleAssetValue
   );
   expect(isFree).toBeFalsy();
