@@ -507,7 +507,6 @@ export const sellAsset = async (
     tokenIds: [soldAssetId.toString(), boughtAssetId.toString()],
     amount: amount,
     minAmountOut: minAmountOut,
-    tokenIds: tokenIds,
     txOptions: options,
   });
   return result;
@@ -662,7 +661,6 @@ export const buyAsset = async (
     tokenIds: [soldAssetId.toString(), boughtAssetId.toString()],
     amount: amount,
     maxAmountIn: maxAmountIn,
-    tokenIds: tokenIds,
     txOptions: options,
   });
   return result;
