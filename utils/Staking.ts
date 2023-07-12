@@ -2,14 +2,15 @@ import { BN } from "@polkadot/util";
 import { api, Extrinsic } from "./setup";
 import { User } from "./User";
 import { SudoDB } from "./SudoDB";
+
 export enum tokenOriginEnum {
-  AvailableBalance = "availablebalance",
-  ActivatedUnstakedReserves = "activatedunstakedreserves",
-  UnspentReserves = "unspentreserves",
+  AvailableBalance = "AvailableBalance",
+  ActivatedUnstakedReserves = "ActivatedUnstakedReserves",
+  UnspentReserves = "UnspentReserves",
 }
 export enum AggregatorOptions {
-  ExtendApprovedCollators = "extendapprovedcollators",
-  RemoveApprovedCollators = "removeapprovedcollators",
+  ExtendApprovedCollators = "ExtendApprovedCollators",
+  RemoveApprovedCollators = "RemoveApprovedCollators",
 }
 export class Staking {
   static async isUserElected(address: string) {
@@ -59,7 +60,7 @@ export class Staking {
   }
   static scheduleCandidateBondMore(
     more: BN,
-    useBalanceFrom = "AvailableBalance"
+    useBalanceFrom: any = "AvailableBalance"
   ) {
     return api.tx.parachainStaking.scheduleCandidateBondMore(
       more,
@@ -72,7 +73,7 @@ export class Staking {
   static scheduleDelegatorBondMore(
     candidate: User,
     more: BN,
-    useBalanceFrom = "AvailableBalance"
+    useBalanceFrom: any = "AvailableBalance"
   ) {
     return api.tx.parachainStaking.scheduleDelegatorBondMore(
       candidate.keyRingPair.address,
@@ -88,7 +89,7 @@ export class Staking {
   }
   static executeBondRequest(
     candidate: User,
-    useBalanceFrom = "AvailableBalance"
+    useBalanceFrom: any = "AvailableBalance"
   ): Extrinsic {
     return api.tx.parachainStaking.executeCandidateBondRequest(
       candidate.keyRingPair.address,
@@ -98,7 +99,7 @@ export class Staking {
   static executeDelegationRequest(
     delegator: User,
     candidate: User,
-    useBalanceFrom = "AvailableBalance"
+    useBalanceFrom: any = "AvailableBalance"
   ): Extrinsic {
     return api.tx.parachainStaking.executeDelegationRequest(
       delegator.keyRingPair.address,

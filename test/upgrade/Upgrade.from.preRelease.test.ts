@@ -124,7 +124,7 @@ describe("upgrade - testpad", () => {
         testLog.getLog().info(event.meta.docs.toString());
         // loop through each of the parameters, displaying the type and data
         event.data.forEach(
-          (data: { toString: () => string }, index: string | number) => {
+          (data: { toString: () => string }, index: number) => {
             testLog.getLog().info(types[index].type + ";" + data.toString());
             if (
               event.section.toString().includes("parachainSystem") &&

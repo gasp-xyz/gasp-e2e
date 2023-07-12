@@ -61,7 +61,7 @@ export class OakNode {
 
     return this.api.tx.xTokens.transferMultiasset(
       {
-        V1: {
+        V2: {
           id: {
             Concrete: assetId.location,
           },
@@ -71,7 +71,7 @@ export class OakNode {
         },
       },
       {
-        V1: {
+        V2: {
           parents: 1,
           interior: {
             X2: [
@@ -86,7 +86,7 @@ export class OakNode {
           },
         },
       },
-      TRANSFER_INSTRUCTIONS * chain.unitCostWeight
+      { Limited: TRANSFER_INSTRUCTIONS * chain.unitCostWeight }
     );
   }
 

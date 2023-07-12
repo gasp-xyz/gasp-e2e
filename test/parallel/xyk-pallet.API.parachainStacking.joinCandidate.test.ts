@@ -122,7 +122,7 @@ test("A user can delegate more using liq token", async () => {
     testUser2.keyRingPair,
     liqToken,
     minStk.divn(4),
-    "availablebalance"
+    "AvailableBalance"
   ).then((result) => {
     expect(result.state).toEqual(ExtrinsicResult.ExtrinsicSuccess);
   });
