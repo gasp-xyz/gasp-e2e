@@ -15,7 +15,7 @@ import { getEnvironmentRequiredVars, stringToBN } from "../../utils/utils";
 import { Xyk } from "../../utils/xyk";
 import { MGA_ASSET_ID } from "../../utils/Constants";
 import { getLiquidityAssetId } from "../../utils/tx";
-import { MangataInstance } from "@mangata-finance/sdk";
+import { MangataInstance, PoolWithRatio } from "@mangata-finance/sdk";
 
 jest.spyOn(console, "log").mockImplementation(jest.fn());
 jest.setTimeout(2500000);
@@ -73,17 +73,6 @@ beforeAll(async () => {
   await Sudo.batchAsSudoFinalized(Assets.promotePool(liqId.toNumber(), 20));
 });
 
-// beforeEach(async () => {
-//   testUser1 = new User(keyring);
-//   await Sudo.batchAsSudoFinalized(
-//     Assets.mintNative(testUser1),
-//     Assets.mintToken(token1, testUser1, Assets.DEFAULT_AMOUNT)
-//   );
-//   testUser1.addAsset(MGA_ASSET_ID);
-//   testUser1.addAsset(token1);
-//   testUser1.addAsset(liqId);
-// });
-
 test("getAmountOfTokensInPool return poolAmount", async () => {
   const poolAmount = await mangata.query.getAmountOfTokensInPool(
     MGA_ASSET_ID.toString(),
@@ -93,11 +82,6 @@ test("getAmountOfTokensInPool return poolAmount", async () => {
   expect(poolAmount[0]).bnEqual(Assets.DEFAULT_AMOUNT.divn(2));
   expect(poolAmount[1]).bnEqual(Assets.DEFAULT_AMOUNT.divn(2));
 });
-
-//THERE IS SOME PROBLEM WITH getAssetsInfo FUNCTION
-// test("check parameters of getAssetsInfo function", async () => {
-//   const info = await mangata.query.getAssetsInfo();
-// });
 
 test("check parameters of getInvestedPools function", async () => {
   const userInvestedPool = await mangata.query.getInvestedPools(
@@ -111,16 +95,50 @@ test("check parameters of getInvestedPools function", async () => {
   expect(secondAssetId).bnEqual(token1);
 });
 
-test("check parameters of getLiquidityTokenId function", async () => {
-  const liqId2 = await mangata.query.getLiquidityTokenId(
-    MGA_ASSET_ID.toString(),
-    token1.toString()
-  );
-  const liqId3 = await mangata.query.getLiquidityTokenId(
-    token1.toString(),
-    MGA_ASSET_ID.toString()
-  );
+test("check parameters of getLiquidityTokenIds function", async () => {
+  const tokenIds: BN[] = [];
 
-  expect(liqId2).bnEqual(liqId);
-  expect(liqId3).bnEqual(liqId);
+  const tokenIdsString = await mangata.query.getLiquidityTokenIds();
+  const liqIdString = liqId.toString();
+
+  for (let index = 0; index < tokenIdsString.length; index++) {
+    if (tokenIdsString[index] === liqIdString) {
+      tokenIds.push(stringToBN(tokenIdsString[index]));
+    }
+  }
+
+  expect(tokenIds[0]).bnEqual(liqId);
+});
+
+test("check parameters of getPool function", async () => {
+  const liqPool = await mangata.query.getPool(liqId.toString());
+
+  expect(liqPool.firstTokenId).toEqual(MGA_ASSET_ID.toString());
+  expect(liqPool.secondTokenId).toEqual(token1.toString());
+  expect(liqPool.liquidityTokenId).toEqual(liqId.toString());
+});
+
+test("check parameters of getPools function", async () => {
+  const liqPools = await mangata.query.getPools();
+  const liqPoolsFiltered: PoolWithRatio[] = [];
+
+  for (let index = 0; index < liqPools.length; index++) {
+    if (liqPools[index].liquidityTokenId === liqId.toString()) {
+      liqPoolsFiltered.push(liqPools[index]);
+    }
+  }
+
+  expect(liqPoolsFiltered[0].firstTokenId).toEqual(MGA_ASSET_ID.toString());
+  expect(liqPoolsFiltered[0].secondTokenId).toEqual(token1.toString());
+  expect(liqPoolsFiltered[0].liquidityTokenId).toEqual(liqId.toString());
+});
+
+test("check parameters of getTotalIssuance functions", async () => {
+  const valueIssuance = await mangata.query.getTotalIssuance(liqId.toString());
+  const valueIssuanceAll = await mangata.query.getTotalIssuanceOfTokens();
+
+  expect(valueIssuance).bnEqual(Assets.DEFAULT_AMOUNT.divn(2));
+  expect(valueIssuanceAll[liqId.toString()]).bnEqual(
+    Assets.DEFAULT_AMOUNT.divn(2)
+  );
 });
