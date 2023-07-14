@@ -142,3 +142,35 @@ test("check parameters of getTotalIssuance functions", async () => {
     Assets.DEFAULT_AMOUNT.divn(2)
   );
 });
+
+test("check parameters of getChain function", async () => {
+  const infoChain = await mangata.rpc.getChain();
+
+  expect(infoChain).toContain("Mangata Rococo");
+});
+
+test("check parameters of getNodeName function", async () => {
+  const infoNodeName = await mangata.rpc.getNodeName();
+
+  expect(infoNodeName).toContain("Mangata Parachain Collator");
+});
+
+test("check parameters of getNodeVersion function", async () => {
+  const infoNodeVersion = await mangata.rpc.getNodeVersion();
+
+  expect(infoNodeVersion).toContain("0.1.0");
+});
+
+test("check waitForNewBlock", async () => {
+  const blockNumberBefore = await stringToBN(
+    await mangata.query.getBlockNumber()
+  );
+
+  await mangata.rpc.waitForNewBlock(4);
+
+  const blockNumberAfter = await stringToBN(
+    await mangata.query.getBlockNumber()
+  );
+
+  expect(blockNumberAfter).bnEqual(blockNumberBefore.add(new BN(3)));
+});
