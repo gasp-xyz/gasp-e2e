@@ -2,6 +2,7 @@ import { By, WebDriver } from "selenium-webdriver";
 import { sleep } from "../../utils";
 import {
   buildDataTestIdXpath,
+  buildXpathByText,
   clickElement,
   getText,
   isDisplayed,
@@ -16,6 +17,7 @@ const BTN_CHAIN_SELECT = "chain-select-btn";
 const CHAIN_SELECT_LIST = "chain-select-list";
 const BTN_SELECT_TOKEN = "tokenInput-selector-btn";
 const TOKEN_LIST = "tokenList";
+const TOKEN_LIST_ITEM = "tokenList-item";
 const TOKEN_TEXT_INPUT = "tokenInput-input";
 const BTN_SUBMIT = "submit-deposit-button";
 
@@ -53,8 +55,9 @@ export class DepositModal {
   }
 
   async selectToken(assetName: string) {
-    const tokenTestId = `token-icon-${assetName}`;
-    const tokenLocator = buildDataTestIdXpath(tokenTestId);
+    //const tokenTestId = `tokenList-item`;
+    const tokenLocator =
+      buildDataTestIdXpath(TOKEN_LIST_ITEM) + buildXpathByText(assetName);
     await sleep(1000);
     await waitForElementVisible(this.driver, tokenLocator, 5000);
     await clickElement(this.driver, tokenLocator);
