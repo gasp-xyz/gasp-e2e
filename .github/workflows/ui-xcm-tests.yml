@@ -73,13 +73,13 @@ jobs:
           echo //registry.npmjs.org/:_authToken=${{ secrets.FE_NPM_AUTH_TOKEN }} >> .npmrc
           echo always-auth=true >> .npmrc
 
-      - name: Inject chops sdk to FE app
-        working-directory: mangata-fe
-        run: |
-          chops_sdk="1.20.2"
-          jq ".dependencies[\"@mangata-finance/sdk\"] = \"${chops_sdk}\"" package.json > tmp.json
-          mv tmp.json package.json
-          jq '.dependencies["@mangata-finance/sdk"]' package.json
+      # - name: Inject chops sdk to FE app
+      #   working-directory: mangata-fe
+      #   run: |
+      #     chops_sdk="1.20.2"
+      #     jq ".dependencies[\"@mangata-finance/sdk\"] = \"${chops_sdk}\"" package.json > tmp.json
+      #     mv tmp.json package.json
+      #     jq '.dependencies["@mangata-finance/sdk"]' package.json
 
       - name: Install fe app dependencies
         working-directory: mangata-fe
