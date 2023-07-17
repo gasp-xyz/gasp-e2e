@@ -192,7 +192,7 @@ test("xyk-pallet - Pool tests: createPool and validate liq token", async () => {
   expect([
     pool_balance_before[0].add(firstAssetAmount),
     pool_balance_before[1].add(secondAssetAmount),
-  ]).toEqual(pool_balance);
+  ]).collectionBnEqual(pool_balance);
 
   const total_liquidity_assets = await getAssetSupply(liquidity_asset_id);
   expect(total_liquidity_assets_before.add(liquidity_assets_minted)).bnEqual(
@@ -291,7 +291,7 @@ test("xyk-pallet - Pool tests: createPool", async () => {
   expect([
     pool_balance_before[0].add(firstAssetAmount),
     pool_balance_before[1].add(secondAssetAmount),
-  ]).toEqual(pool_balance);
+  ]).collectionBnEqual(pool_balance);
 
   const total_liquidity_assets = await getAssetSupply(liquidity_asset_id);
   expect(total_liquidity_assets_before.add(liquidity_assets_minted)).bnEqual(

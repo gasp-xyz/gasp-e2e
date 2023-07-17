@@ -20,17 +20,14 @@ export async function waitForBootstrapStatus(
   let currentBlock = await getBlockNumber();
   const api = await getApi();
   let bootstrapPhase = await api.query.bootstrap.phase();
-  testLog.getLog().info("Waiting for boostrap to be " + bootstrapStatus);
-  while (
-    lastBlock > currentBlock &&
-    bootstrapPhase.toString() !== bootstrapStatus
-  ) {
+  testLog.getLog().info("Waiting for bootstrap to be " + bootstrapStatus);
+  while (lastBlock > currentBlock && bootstrapPhase.type !== bootstrapStatus) {
     await waitNewBlock();
     bootstrapPhase = await api.query.bootstrap.phase();
     currentBlock = await getBlockNumber();
   }
   testLog.getLog().info("... Done waiting " + bootstrapStatus);
-  if (bootstrapPhase !== bootstrapStatus) {
+  if (bootstrapPhase.type.toLowerCase() !== bootstrapStatus.toLowerCase()) {
     testLog.getLog().warn("TIMEDOUT waiting for the new boostrap phase");
   }
 }

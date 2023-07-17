@@ -252,7 +252,7 @@ export class User {
       this.keyRingPair,
       liqTokenForCandidate,
       amount,
-      "availablebalance"
+      "AvailableBalance"
     );
   }
 

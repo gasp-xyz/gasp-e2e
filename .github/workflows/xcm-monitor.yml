@@ -21,4 +21,4 @@ jobs:
         scriptName: "${{ matrix.test }}"
         parallel: false
         dockerImage: "mangatasolutions/mangata-node:develop"
-        e2eBranch: "main"
+        e2eBranch: "feature/upgrade-sdk-for-xcm"

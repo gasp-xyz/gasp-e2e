@@ -496,10 +496,9 @@ export const sellAsset = async (
   options = {}
 ) => {
   const mangata = await getMangataInstance();
-  const result = await mangata.xyk.sellAsset({
+  const result = await mangata.xyk.multiswapSellAsset({
     account: account,
-    soldTokenId: soldAssetId.toString(),
-    boughtTokenId: boughtAssetId.toString(),
+    tokenIds: [soldAssetId.toString(), boughtAssetId.toString()],
     amount: amount,
     minAmountOut: minAmountOut,
     txOptions: options,
@@ -510,7 +509,7 @@ export const delegate = async (
   account: KeyringPair,
   liqToken: BN,
   amount: BN,
-  from: "availablebalance"
+  from: "AvailableBalance"
 ) => {
   const mangata = await getMangataInstance();
   const api = await mangata.api();
@@ -542,7 +541,7 @@ export const joinCandidate = async (
   account: KeyringPair,
   liqToken: BN,
   amount: BN,
-  from = "availablebalance",
+  from: any = "AvailableBalance",
   stricSuccess = true
 ) => {
   const mangata = await getMangataInstance();
@@ -570,7 +569,7 @@ export const activateLiquidity = async (
   account: KeyringPair,
   liqToken: BN,
   amount: BN,
-  from = "availablebalance",
+  from: any = "AvailableBalance",
   strictsuccess = false
 ) => {
   const mangata = await getMangataInstance();
@@ -649,10 +648,9 @@ export const buyAsset = async (
   options = {}
 ) => {
   const mangata = await getMangataInstance();
-  const result = await mangata.xyk.buyAsset({
+  const result = await mangata.xyk.multiswapBuyAsset({
     account: account,
-    soldTokenId: soldAssetId.toString(),
-    boughtTokenId: boughtAssetId.toString(),
+    tokenIds: [soldAssetId.toString(), boughtAssetId.toString()],
     amount: amount,
     maxAmountIn: maxAmountIn,
     txOptions: options,

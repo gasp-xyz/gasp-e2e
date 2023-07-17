@@ -118,7 +118,7 @@ test("gasless- Given a feeLock correctly configured WHEN the user swaps two toke
 
   await testUser1.refreshAmounts(AssetWallet.BEFORE);
   const isFree = await mangata?.rpc.isSellAssetLockFree(
-    [firstCurrency.toNumber(), secondCurrency.toNumber()],
+    [firstCurrency.toString(), secondCurrency.toString()],
     saleAssetValue
   );
   expect(isFree).toBeTruthy();
@@ -180,7 +180,7 @@ test("gasless- Given a feeLock correctly configured WHEN the user swaps two toke
 
   await testUser1.refreshAmounts(AssetWallet.BEFORE);
   const isFree = await mangata?.rpc.isSellAssetLockFree(
-    [firstCurrency.toNumber(), secondCurrency.toNumber()],
+    [firstCurrency.toString(), secondCurrency.toString()],
     saleAssetValue
   );
   expect(isFree).toBeFalsy();
@@ -225,7 +225,7 @@ test("gasless- Given a feeLock correctly configured WHEN the user swaps two toke
 
   await testUser1.refreshAmounts(AssetWallet.BEFORE);
   const isFree = await mangata?.rpc.isSellAssetLockFree(
-    [firstCurrency.toNumber(), secondCurrency.toNumber()],
+    [firstCurrency.toString(), secondCurrency.toString()],
     saleAssetValue
   );
   expect(isFree).toBeFalsy();
