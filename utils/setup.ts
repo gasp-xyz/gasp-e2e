@@ -120,6 +120,10 @@ export async function setup5PoolsChained(users: User[]) {
     Assets.mintToken(tokenIds[0], testUser2),
     Assets.mintToken(tokenIds[0], testUser3),
     Assets.mintToken(tokenIds[0], testUser4),
+    Assets.mintToken(tokenIds[tokenIds.length - 1], testUser1),
+    Assets.mintToken(tokenIds[tokenIds.length - 1], testUser2),
+    Assets.mintToken(tokenIds[tokenIds.length - 1], testUser3),
+    Assets.mintToken(tokenIds[tokenIds.length - 1], testUser4),
     ...poolCreationExtrinsics
   );
   return { users, tokenIds };
