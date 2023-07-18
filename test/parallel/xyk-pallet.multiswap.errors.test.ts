@@ -73,6 +73,10 @@ describe("Multiswap - error cases: disabled tokens", () => {
     async (position: number) => {
       await Assets.disableToken(tokenIds[position]);
       const testUser1 = users[0];
+      const tokenBefore = await getUserBalanceOfToken(
+        tokenIds[tokenIds.length - 1],
+        testUser1
+      );
       const multiSwapOutput = await multiSwapBuy(
         testUser1,
         tokenIds,
@@ -90,7 +94,7 @@ describe("Multiswap - error cases: disabled tokens", () => {
         tokenIds[tokenIds.length - 1],
         testUser1
       );
-      expect(boughtTokens.free).bnEqual(BN_ZERO);
+      expect(tokenBefore.free.sub(boughtTokens.free)).bnEqual(BN_ZERO);
     }
   );
 });
