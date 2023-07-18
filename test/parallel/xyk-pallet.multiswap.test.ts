@@ -68,7 +68,7 @@ describe("Multiswap - happy paths", () => {
       tokenIds[tokenIds.length - 1],
       testUser1
     );
-    expect(boughtTokensBefore.free.sub(boughtTokens.free)).bnEqual(
+    expect(boughtTokens.free.sub(boughtTokensBefore.free)).bnEqual(
       new BN(1000)
     );
     expect(
