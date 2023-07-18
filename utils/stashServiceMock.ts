@@ -1,8 +1,10 @@
 import express, { Express } from "express";
 import { testLog } from "./Logger";
+import { getEnvironmentRequiredVars } from "./utils";
 
 const stashServiceMock: Express = express();
 const port = 3000;
+const localAddress = getEnvironmentRequiredVars().localAddress;
 
 stashServiceMock.get("/xcm/channels", (_req, res) => {
   // Replace this with your desired data
@@ -13,7 +15,7 @@ stashServiceMock.get("/xcm/channels", (_req, res) => {
       status: "open",
       unitWeightCost: "",
       xcmTransferWeight: "298368000",
-      url: "ws://127.0.0.1:9944",
+      url: "ws://" + localAddress + ":9944",
       xcmVersion: "V3",
       chainType: "relaychain",
     },
