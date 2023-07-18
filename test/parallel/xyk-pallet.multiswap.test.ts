@@ -49,6 +49,10 @@ describe("Multiswap - happy paths", () => {
   });
   test("[gasless] Happy path - multi-swap - buy", async () => {
     const testUser1 = users[0];
+    const boughtTokensBefore = await getUserBalanceOfToken(
+      tokenIds[tokenIds.length - 1],
+      testUser1
+    );
     const multiSwapOutput = await multiSwapBuy(
       testUser1,
       tokenIds,
@@ -64,7 +68,9 @@ describe("Multiswap - happy paths", () => {
       tokenIds[tokenIds.length - 1],
       testUser1
     );
-    expect(boughtTokens.free).bnEqual(new BN(1000));
+    expect(boughtTokens.free.sub(boughtTokensBefore.free)).bnEqual(
+      new BN(1000)
+    );
     expect(
       multiSwapOutput.findIndex(
         (x) =>

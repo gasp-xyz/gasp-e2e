@@ -16,6 +16,9 @@ import { Sudo } from "../../utils/sudo";
 import { Xyk } from "../../utils/xyk";
 import { ApiPromise } from "@polkadot/api";
 import { Tokens } from "../../utils/tokens";
+import { getLiquidityAssetId } from "../../utils/tx";
+import { Staking } from "../../utils/Staking";
+import { Assets } from "../../utils/Assets";
 
 jest.spyOn(console, "log").mockImplementation(jest.fn());
 jest.setTimeout(1500000);
@@ -47,6 +50,15 @@ describe("Utility - batched swaps are not allowed", () => {
     await setupApi();
     ({ users, tokenIds } = await setup5PoolsChained(users));
     api = await getApi();
+    //last asset is mangata paired
+    const liq = await getLiquidityAssetId(
+      tokenIds[tokenIds.length - 1],
+      MGA_ASSET_ID
+    );
+    await Sudo.batchAsSudoFinalized(
+      Sudo.sudo(Staking.addStakingLiquidityToken(liq)),
+      Assets.promotePool(liq.toNumber(), 20)
+    );
 
     swapOperations = {
       multiswapSellAsset: Xyk.multiswapSellAsset(tokenIds, BN_HUNDRED, BN_ONE),
@@ -57,12 +69,8 @@ describe("Utility - batched swaps are not allowed", () => {
       ),
       sellAsset: Xyk.sellAsset(tokenIds[0], tokenIds[1], BN_HUNDRED, BN_ONE),
       buyAsset: Xyk.buyAsset(tokenIds[0], tokenIds[1], BN_HUNDRED, BN_MILLION),
-      compoundRewards: Xyk.compoundRewards(tokenIds[0]),
-      provideLiquidity: Xyk.provideLiquidity(
-        tokenIds[0],
-        tokenIds[1],
-        BN_HUNDRED
-      ),
+      compoundRewards: Xyk.compoundRewards(liq),
+      provideLiquidity: Xyk.provideLiquidity(liq, tokenIds[0], BN_HUNDRED),
     };
   });
   it.each([
