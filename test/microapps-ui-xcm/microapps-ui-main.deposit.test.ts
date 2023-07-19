@@ -13,7 +13,7 @@ import {
   importPolkadotExtension,
 } from "../../utils/frontend/utils/Helper";
 import { AssetWallet, User } from "../../utils/User";
-import { getEnvironmentRequiredVars, sleep } from "../../utils/utils";
+import { getEnvironmentRequiredVars } from "../../utils/utils";
 import { KSM_ASSET_ID, MGA_ASSET_ID } from "../../utils/Constants";
 import { Node } from "../../utils/Framework/Node/Node";
 import stashServiceMock from "../../utils/stashServiceMock";
@@ -133,8 +133,7 @@ describe("Microapps UI deposit modal tests - no action", () => {
     await depositModal.waitForTokenListElementsVisible(KSM_ASSET_NAME);
     await depositModal.selectToken(KSM_ASSET_NAME);
     await depositModal.enterValue("1");
-    await sleep(20000);
-    await depositModal.waitForContinueState(true, 60000);
+    await depositModal.waitForContinueState(true, 180000);
 
     const isContinueButtonEnabled =
       await depositModal.isContinueButtonEnabled();
