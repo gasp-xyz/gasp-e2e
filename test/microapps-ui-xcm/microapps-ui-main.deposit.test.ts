@@ -134,6 +134,8 @@ describe("Microapps UI deposit modal tests - no action", () => {
     await depositModal.selectToken(KSM_ASSET_NAME);
     await depositModal.enterValue("1");
     await depositModal.enterValue("2");
+    await kusama.chain.newBlock();
+    await mangata.chain.newBlock();
     await depositModal.waitForContinueState(true, 180000);
 
     const isContinueButtonEnabled =
