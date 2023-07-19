@@ -33,6 +33,7 @@
     "bs58": "^4.0.1",
     "chromedriver": "^114.0.2",
     "commitlint": "^17.4.2",
+    "cors": "^2.8.5",
     "dockerode": "^3.3.5",
     "dotenv": "^16.0.1",
     "eslint": "7.26.0",

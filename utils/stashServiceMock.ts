@@ -1,10 +1,17 @@
 import express, { Express } from "express";
+import cors from "cors";
 import { testLog } from "./Logger";
 import { getEnvironmentRequiredVars } from "./utils";
 
 const stashServiceMock: Express = express();
 const port = 3000;
 const localAddress = getEnvironmentRequiredVars().localAddress;
+
+stashServiceMock.use(
+  cors({
+    origin: "*",
+  })
+);
 
 stashServiceMock.get("/xcm/channels", (_req, res) => {
   // Replace this with your desired data
