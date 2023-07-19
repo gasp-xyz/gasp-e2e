@@ -75,6 +75,43 @@ export async function waitForElementState(
   }
 }
 
+export async function waitForElementStateInterval(
+  driver: WebDriver,
+  xpath: string,
+  isEnabled: boolean,
+  timeout = 5000
+) {
+  const startTime = Date.now();
+  const endTime = startTime + timeout;
+
+  while (Date.now() < endTime) {
+    try {
+      const element = await driver.findElement(By.xpath(xpath));
+      const isElementVisible = await element.isDisplayed();
+
+      if (isEnabled) {
+        const isElementEnabled = await element.isEnabled();
+        if (isElementVisible && isElementEnabled) {
+          return;
+        }
+      } else {
+        const isElementDisabled = !(await element.isEnabled());
+        if (isElementVisible && isElementDisabled) {
+          return;
+        }
+      }
+    } catch (error) {
+      // Element not found or other error occurred, continue waiting
+    }
+
+    await new Promise((resolve) => setTimeout(resolve, 1000));
+  }
+
+  throw new Error(
+    `Timeout: Element state not as desired after ${timeout} milliseconds`
+  );
+}
+
 export async function waitForElementVisible(
   driver: WebDriver,
   xpath: string,

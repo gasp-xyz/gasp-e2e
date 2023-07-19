@@ -6,7 +6,7 @@ import {
   clickElement,
   getText,
   isDisplayed,
-  waitForElementState,
+  waitForElementStateInterval,
   waitForElementVisible,
   writeText,
 } from "../utils/Helper";
@@ -88,7 +88,12 @@ export class DepositModal {
 
   async waitForContinueState(isEnabled: boolean, timeout: number) {
     const continueBtn = buildDataTestIdXpath(BTN_SUBMIT);
-    await waitForElementState(this.driver, continueBtn, isEnabled, timeout);
+    await waitForElementStateInterval(
+      this.driver,
+      continueBtn,
+      isEnabled,
+      timeout
+    );
   }
 
   async clickContinue() {
