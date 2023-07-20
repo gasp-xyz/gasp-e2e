@@ -4,7 +4,7 @@ import "chromedriver";
 import { Builder } from "selenium-webdriver";
 import chrome from "selenium-webdriver/chrome";
 const path = "utils/frontend/utils/extensions";
-const polkadotExtensionPath = `${path}/polkadot_v0.38.3.crx`;
+const polkadotExtensionPath = `${path}/polkadot_v0.44.1.0.crx`;
 const talismanExtensionPath = `${path}/talisman_v1.15.1.crx`;
 
 // Singleton constructor
@@ -18,6 +18,7 @@ export const DriverBuilder = (function () {
     options
       .addArguments("--disable-dev-shm-usage")
       .addArguments("--enable-clipboard-read");
+    //.addArguments("--disable-web-security");
     const prefs = new logging.Preferences();
     prefs.setLevel(logging.Type.BROWSER, logging.Level.DEBUG);
     prefs.setLevel(logging.Type.CLIENT, logging.Level.DEBUG);
@@ -27,7 +28,7 @@ export const DriverBuilder = (function () {
 
     let caps: Capabilities = new Capabilities();
     caps = Capabilities.chrome();
-    caps.set("version", "112.0");
+    caps.set("version", "114.0");
     caps.set("selenoid:options", {
       enableVNC: true,
       enableVideo: true,
