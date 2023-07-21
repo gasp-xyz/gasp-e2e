@@ -2,7 +2,7 @@
 
 exports[`XCM transfers [ BNC V3 -> MGA -> BNC V3 ] send BNC to mangata and back 1`] = `
 {
-  "free": 4974195200000,
+  "free": "0x000000000000003635c9a01b66de1000",
   "frozen": 0,
   "reserved": 0,
 }
