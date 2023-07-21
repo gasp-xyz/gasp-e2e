@@ -298,8 +298,8 @@ export async function waitNewStakingRound(maxBlocks: number = 0) {
   const sessionLength = parachainStakingRoundInfo.encodedLength;
   currentBlockNumber = await getBlockNumber();
   const initialBlockNumber = currentBlockNumber;
-  currentSessionNumber = (
-    await stringToBN(await api.query.session.currentIndex.toString())
+  currentSessionNumber = await (
+    await api.query.session.currentIndex()
   ).toNumber();
   const initialSessionNumber = currentSessionNumber;
   const awaitedSessionNumber = initialSessionNumber + 1;
@@ -312,8 +312,8 @@ export async function waitNewStakingRound(maxBlocks: number = 0) {
     currentSessionNumber <= initialSessionNumber
   ) {
     currentBlockNumber = await getBlockNumber();
-    currentSessionNumber = (
-      await stringToBN(await api.query.session.currentIndex.toString())
+    currentSessionNumber = await (
+      await api.query.session.currentIndex()
     ).toNumber();
     testLog
       .getLog()
