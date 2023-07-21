@@ -23,7 +23,6 @@ process.env.NODE_ENV = "test";
 
 const { sudo: sudoUserName } = getEnvironmentRequiredVars();
 let testUser: User;
-//let testUser1: User;
 let sudo: User;
 let keyring: Keyring;
 let token1: BN;
