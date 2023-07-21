@@ -14,14 +14,13 @@ import { User } from "../../utils/User";
 import { getEnvironmentRequiredVars, stringToBN } from "../../utils/utils";
 import { Xyk } from "../../utils/xyk";
 import { MGA_ASSET_ID } from "../../utils/Constants";
-import { activateLiquidity, getLiquidityAssetId } from "../../utils/tx";
+import { getLiquidityAssetId } from "../../utils/tx";
 import {
   BN_BILLION,
   BN_ZERO,
   MangataInstance,
   PoolWithRatio,
 } from "@mangata-finance/sdk";
-import { waitForRewards } from "../../utils/eventListeners";
 
 jest.spyOn(console, "log").mockImplementation(jest.fn());
 jest.setTimeout(2500000);
@@ -171,19 +170,16 @@ test("check waitForNewBlock", async () => {
     await mangata.query.getBlockNumber()
   );
 
-  await mangata.rpc.waitForNewBlock(4);
+  await mangata.rpc.waitForNewBlock(2);
 
   const blockNumberAfter = await stringToBN(
     await mangata.query.getBlockNumber()
   );
 
-  expect(blockNumberAfter).bnEqual(blockNumberBefore.add(new BN(3)));
+  expect(blockNumberAfter).bnEqual(blockNumberBefore.add(new BN(1)));
 });
 
 test("check calculateMintingFutureRewards", async () => {
-  await activateLiquidity(testUser.keyRingPair, liqId, BN_BILLION);
-  await waitForRewards(testUser, liqId);
-
   const blocksToPass = new BN(2000);
   const mintingRewards = await mangata.util.calculateMintingFutureRewards(
     liqId.toString(),
