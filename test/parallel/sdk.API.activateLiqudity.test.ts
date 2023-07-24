@@ -6,8 +6,14 @@
  */
 import { jest } from "@jest/globals";
 import { Keyring } from "@polkadot/api";
-import { BN_ZERO } from "@mangata-finance/sdk";
-import { getApi, initApi } from "../../utils/api";
+import {
+  BN_TRILLION,
+  BN_ZERO,
+  MangataInstance,
+  MangataSubmittableExtrinsic,
+  signTx,
+} from "@mangata-finance/sdk";
+import { getApi, getMangataInstance, initApi } from "../../utils/api";
 import { Assets } from "../../utils/Assets";
 import { MGA_ASSET_ID } from "../../utils/Constants";
 import { BN } from "@polkadot/util";
@@ -31,11 +37,12 @@ process.env.NODE_ENV = "test";
 const { sudo: sudoUserName } = getEnvironmentRequiredVars();
 let testUser: User;
 let testUser1: User;
+let mangata: MangataInstance;
 let sudo: User;
 let keyring: Keyring;
 let token1: BN;
 let liqId: BN;
-const defaultCurrencyValue = new BN(250000);
+const defaultCurrencyValue = new BN(2500000);
 
 beforeAll(async () => {
   try {
@@ -57,6 +64,8 @@ beforeAll(async () => {
     [defaultCurrencyValue],
     sudo
   );
+
+  mangata = await getMangataInstance();
 
   await Sudo.batchAsSudoFinalized(
     Assets.FinalizeTge(),
@@ -82,6 +91,9 @@ beforeAll(async () => {
 beforeEach(async () => {
   testUser1 = new User(keyring);
   await Sudo.batchAsSudoFinalized(Assets.mintNative(testUser1));
+
+  testUser.addAsset(liqId);
+  testUser.addAsset(MGA_ASSET_ID);
 });
 
 test("Given a user hame some liquidity token THEN he activate them THEN deactivate", async () => {
@@ -123,6 +135,71 @@ test("Given a user hame some liquidity token THEN he activate them THEN deactiva
   expect(userTokenAfterDeactivating).bnEqual(BN_ZERO);
 });
 
+test("Using submitableExtrinsic activate some Liquidity using SDK THEN claim rewards THEN deactivate Liquidity", async () => {
+  await Sudo.batchAsSudoFinalized(
+    Assets.mintToken(liqId, testUser1, Assets.DEFAULT_AMOUNT.divn(2))
+  );
+
+  testUser1.addAssets([MGA_ASSET_ID, liqId]);
+
+  await testUser1.refreshAmounts(AssetWallet.BEFORE);
+
+  const tx1 = await mangata.submitableExtrinsic.activateLiquidity(
+    {
+      account: testUser1.keyRingPair.address,
+      amount: BN_TRILLION,
+      liquidityTokenId: liqId.toString(),
+    },
+    "AvailableBalance"
+  );
+
+  await signSubmittableExtrinsic(tx1, testUser1);
+
+  await testUser1.refreshAmounts(AssetWallet.AFTER);
+
+  const reservedTokens = testUser1.getAsset(liqId)?.amountAfter.reserved!;
+
+  expect(reservedTokens).bnEqual(BN_TRILLION);
+
+  await waitForRewards(testUser1, liqId);
+
+  const tx2 = await mangata.submitableExtrinsic.claimRewards({
+    account: testUser1.keyRingPair.address,
+    liquidityTokenId: liqId.toString(),
+  });
+
+  await testUser1.refreshAmounts(AssetWallet.BEFORE);
+
+  await signSubmittableExtrinsic(tx2, testUser1);
+
+  await testUser1.refreshAmounts(AssetWallet.AFTER);
+
+  const amountDifference = testUser1
+    .getAsset(MGA_ASSET_ID)
+    ?.amountAfter.free!.sub(
+      testUser1.getAsset(MGA_ASSET_ID)?.amountBefore.free!
+    );
+
+  expect(amountDifference).bnGt(BN_ZERO);
+
+  const tx3 = await mangata.submitableExtrinsic.deactivateLiquidity({
+    account: testUser1.keyRingPair.address,
+    amount: BN_TRILLION,
+    liquidityTokenId: liqId.toString(),
+  });
+
+  await testUser1.refreshAmounts(AssetWallet.BEFORE);
+  const userLiqTokenBefore = testUser1.getAsset(liqId)!.amountBefore.reserved;
+
+  await signSubmittableExtrinsic(tx3, testUser1);
+
+  await testUser1.refreshAmounts(AssetWallet.AFTER);
+  const userLiqTokenAfter = testUser1.getAsset(liqId)!.amountAfter.reserved;
+
+  expect(userLiqTokenBefore).bnEqual(BN_TRILLION);
+  expect(userLiqTokenAfter).bnEqual(BN_ZERO);
+});
+
 test("Activate liquidity and claim rewards", async () => {
   await Sudo.batchAsSudoFinalized(
     Assets.mintToken(liqId, testUser1, Assets.DEFAULT_AMOUNT.divn(2))
@@ -154,3 +231,12 @@ test("Activate liquidity and claim rewards", async () => {
   expect(userTokenBeforeClaiming.rewardsAlreadyClaimed).bnEqual(BN_ZERO);
   expect(userTokenAfterClaiming.rewardsAlreadyClaimed).bnGt(BN_ZERO);
 });
+
+async function signSubmittableExtrinsic(
+  tx: MangataSubmittableExtrinsic,
+  user: User
+) {
+  const api = getApi();
+  const result = await signTx(api, tx, user.keyRingPair);
+  return result;
+}
