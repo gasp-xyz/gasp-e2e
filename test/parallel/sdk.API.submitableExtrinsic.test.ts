@@ -17,7 +17,12 @@ import {
 } from "../../utils/utils";
 import { Xyk } from "../../utils/xyk";
 import { MGA_ASSET_ID } from "../../utils/Constants";
-import { getBalanceOfPool, getLiquidityAssetId } from "../../utils/tx";
+import {
+  activateLiquidity,
+  getBalanceOfPool,
+  getLiquidityAssetId,
+  getRewardsInfo,
+} from "../../utils/tx";
 import {
   BN_BILLION,
   BN_HUNDRED,
@@ -27,6 +32,7 @@ import {
   MangataSubmittableExtrinsic,
   signTx,
 } from "@mangata-finance/sdk";
+import { waitForRewards } from "../../utils/eventListeners";
 
 jest.spyOn(console, "log").mockImplementation(jest.fn());
 jest.setTimeout(2500000);
@@ -87,6 +93,71 @@ beforeAll(async () => {
   testUser.addAsset(liqId);
   testUser.addAsset(MGA_ASSET_ID);
   testUser.addAsset(token1);
+});
+
+test("activate some Liquidity using SDK THEN claim rewards THEN deactivate Liquidity", async () => {
+  await testUser.refreshAmounts(AssetWallet.BEFORE);
+
+  const tx1 = await mangata.submitableExtrinsic.activateLiquidity(
+    {
+      account: testUser.keyRingPair.address,
+      amount: BN_BILLION,
+      liquidityTokenId: liqId.toString(),
+    },
+    "AvailableBalance"
+  );
+
+  await signSubmittableExtrinsic(tx1, testUser);
+
+  await testUser.refreshAmounts(AssetWallet.AFTER);
+
+  const reservedTokens = testUser.getAsset(liqId)?.amountAfter.reserved!;
+
+  expect(reservedTokens).bnEqual(BN_BILLION);
+
+  const tx2 = await mangata.submitableExtrinsic.deactivateLiquidity({
+    account: testUser.keyRingPair.address,
+    amount: BN_BILLION,
+    liquidityTokenId: liqId.toString(),
+  });
+
+  await testUser.refreshAmounts(AssetWallet.BEFORE);
+
+  await signSubmittableExtrinsic(tx2, testUser);
+
+  await testUser.refreshAmounts(AssetWallet.AFTER);
+
+  const amountDifference = testUser
+    .getAsset(liqId)!
+    .amountBefore.reserved.sub(testUser.getAsset(liqId)!.amountAfter.reserved);
+
+  expect(amountDifference).bnEqual(BN_BILLION);
+});
+
+test("check claimRewards", async () => {
+  await activateLiquidity(testUser.keyRingPair, liqId, BN_BILLION);
+
+  await waitForRewards(testUser, liqId);
+
+  const tx2 = await mangata.submitableExtrinsic.claimRewards({
+    account: testUser.keyRingPair.address,
+    liquidityTokenId: liqId.toString(),
+  });
+
+  const userTokenBeforeClaiming = await getRewardsInfo(
+    testUser.keyRingPair.address,
+    liqId
+  );
+
+  await signSubmittableExtrinsic(tx2, testUser);
+
+  const userTokenAfterClaiming = await getRewardsInfo(
+    testUser.keyRingPair.address,
+    liqId
+  );
+
+  expect(userTokenBeforeClaiming.rewardsAlreadyClaimed).bnEqual(BN_ZERO);
+  expect(userTokenAfterClaiming.rewardsAlreadyClaimed).bnGt(BN_ZERO);
 });
 
 test("check mintLiquidity", async () => {
