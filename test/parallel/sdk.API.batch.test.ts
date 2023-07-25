@@ -88,7 +88,7 @@ beforeEach(async () => {
   testUser1.addAsset(liqId);
 });
 
-test("WHEN call batch where first item is failed THEN successful item before fail is processes", async () => {
+test("Check that when we are using SDK batch function and the first call finishes with error next call doesn't finish", async () => {
   await testUser1.refreshAmounts(AssetWallet.BEFORE);
   const userLiqTokenBefore = testUser1.getAsset(liqId)?.amountBefore.reserved;
 
@@ -119,7 +119,7 @@ test("WHEN call batch where first item is failed THEN successful item before fai
   expect(userLiqTokenAfter).bnEqual(BN_ZERO);
 });
 
-test("WHEN call batch where one item is failed THEN successful item before fail is processes", async () => {
+test("Check that when we are using SDK batch function and the second call finishes with error first call finishes successful", async () => {
   await testUser1.refreshAmounts(AssetWallet.BEFORE);
   const userLiqTokenBefore = testUser1.getAsset(liqId)?.amountBefore.reserved;
 
