@@ -1,6 +1,7 @@
 import { WebDriver } from "selenium-webdriver";
 import {
   buildDataTestIdXpath,
+  buildXpathByElementText,
   buildXpathByText,
   clickElement,
   elementExists,
@@ -37,6 +38,11 @@ export class WalletWrapper {
   async openWalletConnectionInfo() {
     const walletWrapper = buildDataTestIdXpath(DIV_WALLET_WRAPPER);
     await clickElement(this.driver, walletWrapper);
+  }
+
+  async openDeposit() {
+    const betaButton = buildXpathByElementText("button", "Deposit");
+    await clickElement(this.driver, betaButton);
   }
 
   async isWalletConnected() {

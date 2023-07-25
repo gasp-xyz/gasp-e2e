@@ -87,6 +87,10 @@ export function getEnvironmentRequiredVars() {
     ? process.env.UI_URL
     : "https://develop.mangata.finance/";
 
+  const localAddress = process.env.LOCAL_ADDRESS
+    ? process.env.LOCAL_ADDRESS
+    : "localhost";
+
   const mnemonicMetaMask = process.env.MNEMONIC_META
     ? process.env.MNEMONIC_META
     : " oh oh";
@@ -140,6 +144,7 @@ export function getEnvironmentRequiredVars() {
     alice: testUserName,
     uiUserPassword: userPassword,
     uiUri: uiUri,
+    localAddress: localAddress,
     mnemonicMetaMask: mnemonicMetaMask,
     mnemonicPolkadot: mnemonicPolkadot,
     logLevel: logLevel,

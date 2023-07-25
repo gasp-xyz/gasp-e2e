@@ -62,16 +62,54 @@ export async function waitForElementEnabled(
 export async function waitForElementState(
   driver: WebDriver,
   xpath: string,
-  isEnabled: boolean
+  isEnabled: boolean,
+  timeout = 5000
 ) {
   const element = await driver.wait(until.elementLocated(By.xpath(xpath)));
-  await driver.wait(until.elementIsVisible(element));
+  await driver.wait(until.elementIsVisible(element), timeout);
 
   if (isEnabled) {
-    await driver.wait(async () => await element.isEnabled());
+    await driver.wait(until.elementIsEnabled(element), timeout);
   } else {
-    await driver.wait(async () => !(await element.isEnabled()));
+    await driver.wait(until.elementIsDisabled(element), timeout);
   }
+}
+
+export async function waitForElementStateInterval(
+  driver: WebDriver,
+  xpath: string,
+  isEnabled: boolean,
+  timeout = 5000
+) {
+  const startTime = Date.now();
+  const endTime = startTime + timeout;
+
+  while (Date.now() < endTime) {
+    try {
+      const element = await driver.findElement(By.xpath(xpath));
+      const isElementVisible = await element.isDisplayed();
+
+      if (isEnabled) {
+        const isElementEnabled = await element.isEnabled();
+        if (isElementVisible && isElementEnabled) {
+          return;
+        }
+      } else {
+        const isElementDisabled = !(await element.isEnabled());
+        if (isElementVisible && isElementDisabled) {
+          return;
+        }
+      }
+    } catch (error) {
+      // Element not found or other error occurred, continue waiting
+    }
+
+    await new Promise((resolve) => setTimeout(resolve, 1000));
+  }
+
+  throw new Error(
+    `Timeout: Element state not as desired after ${timeout} milliseconds`
+  );
 }
 
 export async function waitForElementVisible(
