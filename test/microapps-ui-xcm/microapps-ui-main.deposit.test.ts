@@ -136,9 +136,9 @@ describe("Microapps UI deposit modal tests - no action", () => {
 
     await depositModal.waitForContinueState(true, 180000);
 
-    // const isContinueButtonEnabled =
-    //   await depositModal.isContinueButtonEnabled();
-    // expect(isContinueButtonEnabled).toBeTruthy();
+    const isContinueButtonEnabled =
+      await depositModal.isContinueButtonEnabled();
+    expect(isContinueButtonEnabled).toBeTruthy();
   });
 
   afterEach(async () => {

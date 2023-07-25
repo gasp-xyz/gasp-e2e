@@ -1,6 +1,6 @@
 /*
  *
- * @group skipped
+ * @group microappsXCM
  */
 import { jest } from "@jest/globals";
 import { WebDriver } from "selenium-webdriver";
@@ -12,12 +12,8 @@ import {
   importPolkadotExtension,
 } from "../../utils/frontend/utils/Helper";
 import { Keyring } from "@polkadot/api";
-import {
-  FIVE_MIN,
-  KSM_ASSET_ID,
-  MGA_ASSET_ID,
-  MGR_ASSET_NAME,
-} from "../../utils/Constants";
+import { KeyringPair } from "@polkadot/keyring/types";
+import { FIVE_MIN, KSM_ASSET_ID, MGA_ASSET_ID } from "../../utils/Constants";
 import { AssetWallet, User } from "../../utils/User";
 import { getEnvironmentRequiredVars, sleep } from "../../utils/utils";
 import {
@@ -26,20 +22,65 @@ import {
   setupPageWithState,
 } from "../../utils/frontend/microapps-utils/Handlers";
 import { Swap } from "../../utils/frontend/microapps-pages/Swap";
+import { ApiContext } from "../../utils/Framework/XcmHelper";
+import { connectVertical } from "@acala-network/chopsticks";
+import { BN_TEN_THOUSAND, BN_THOUSAND } from "@mangata-finance/sdk";
+import { AssetId } from "../../utils/ChainSpecs";
+import XcmNetworks from "../../utils/Framework/XcmNetworks";
+import { testLog } from "../../utils/Logger";
+import { devTestingPairs } from "../../utils/setup";
+import stashServiceMock from "../../utils/stashServiceMock";
 
 jest.setTimeout(FIVE_MIN);
 jest.spyOn(console, "log").mockImplementation(jest.fn());
 let driver: WebDriver;
 let testUser1: User;
+const port = 3456;
 const acc_name = "acc_automation";
+const userAddress = "5CfLmpjCJu41g3cpZVoiH7MSrSppgVVVC3xq23iy9dZrW2HR";
+const KSM_ASSET_NAME = "KSM";
+const MGX_ASSET_NAME = "MGX";
 
 describe("Miocroapps UI swap tests", () => {
+  let kusama: ApiContext;
+  let mangata: ApiContext;
+  let alice: KeyringPair;
+
   beforeAll(async () => {
+    kusama = await XcmNetworks.kusama({ localPort: 9944 });
+    mangata = await XcmNetworks.mangata({ localPort: 9946 });
+    await connectVertical(kusama.chain, mangata.chain);
+    alice = devTestingPairs().alice;
+
     try {
       getApi();
     } catch (e) {
       await initApi();
     }
+
+    stashServiceMock.listen(port, () => {
+      testLog.getLog().info(`Server is running on port ${port}`);
+    });
+
+    await mangata.dev.setStorage({
+      Tokens: {
+        Accounts: [
+          [[userAddress, { token: 4 }], { free: 10 * 1e12 }],
+          [
+            [userAddress, { token: 0 }],
+            { free: AssetId.Mgx.unit.mul(BN_TEN_THOUSAND).toString() },
+          ],
+          [[alice.address, { token: 4 }], { free: 10 * 1e12 }],
+          [
+            [alice.address, { token: 0 }],
+            { free: AssetId.Mgx.unit.mul(BN_THOUSAND).toString() },
+          ],
+        ],
+      },
+      Sudo: {
+        Key: userAddress,
+      },
+    });
 
     driver = await DriverBuilder.getInstance();
     await importPolkadotExtension(driver);
@@ -67,8 +108,8 @@ describe("Miocroapps UI swap tests", () => {
     const swap = new Swap(driver);
     const isSwapFrameDisplayed = await swap.isDisplayed();
     expect(isSwapFrameDisplayed).toBeTruthy();
-    await swap.pickPayToken(MGR_ASSET_NAME);
-    await swap.pickGetToken("ROC");
+    await swap.pickPayToken(MGX_ASSET_NAME);
+    await swap.pickGetToken(KSM_ASSET_NAME);
     await swap.setPayTokenAmount("1000");
     const getTokenAmount = await swap.fetchGetAssetAmount();
     expect(parseFloat(getTokenAmount)).toBeGreaterThan(0);
@@ -83,8 +124,8 @@ describe("Miocroapps UI swap tests", () => {
     const swap = new Swap(driver);
     const isSwapFrameDisplayed = await swap.isDisplayed();
     expect(isSwapFrameDisplayed).toBeTruthy();
-    await swap.pickPayToken("ROC");
-    await swap.pickGetToken(MGR_ASSET_NAME);
+    await swap.pickPayToken(KSM_ASSET_NAME);
+    await swap.pickGetToken(MGX_ASSET_NAME);
     await swap.setPayTokenAmount("1000");
     const getTokenAmount = await swap.fetchGetAssetAmount();
     expect(parseFloat(getTokenAmount)).toBeGreaterThan(0);
@@ -98,8 +139,8 @@ describe("Miocroapps UI swap tests", () => {
     const swap = new Swap(driver);
     const isSwapFrameDisplayed = await swap.isDisplayed();
     expect(isSwapFrameDisplayed).toBeTruthy();
-    await swap.pickPayToken(MGR_ASSET_NAME);
-    await swap.pickGetToken("ROC");
+    await swap.pickPayToken(MGX_ASSET_NAME);
+    await swap.pickGetToken(KSM_ASSET_NAME);
     await swap.setPayTokenAmount("100");
     const getTokenAmount = await swap.fetchGetAssetAmount();
     expect(parseFloat(getTokenAmount)).toBeGreaterThan(0);
@@ -112,8 +153,8 @@ describe("Miocroapps UI swap tests", () => {
 
     await swap.toggleRouteDetails();
     const areRouteDetailsDisplayed = await swap.areRouteDetailsDisplayed(
-      MGR_ASSET_NAME,
-      "ROC"
+      MGX_ASSET_NAME,
+      KSM_ASSET_NAME
     );
     expect(areRouteDetailsDisplayed).toBeTruthy();
 
@@ -128,8 +169,8 @@ describe("Miocroapps UI swap tests", () => {
     const swap = new Swap(driver);
     const isSwapFrameDisplayed = await swap.isDisplayed();
     expect(isSwapFrameDisplayed).toBeTruthy();
-    await swap.pickPayToken(MGR_ASSET_NAME);
-    await swap.pickGetToken("ROC");
+    await swap.pickPayToken(MGX_ASSET_NAME);
+    await swap.pickGetToken(KSM_ASSET_NAME);
     await swap.setPayTokenAmount("100");
 
     const areTradeDetailsDisplayed = await swap.areTradeDetailsDisplayed();
@@ -147,8 +188,8 @@ describe("Miocroapps UI swap tests", () => {
     const swap = new Swap(driver);
     const isSwapFrameDisplayed = await swap.isDisplayed();
     expect(isSwapFrameDisplayed).toBeTruthy();
-    await swap.pickPayToken(MGR_ASSET_NAME);
-    await swap.pickGetToken("ROC");
+    await swap.pickPayToken(MGX_ASSET_NAME);
+    await swap.pickGetToken(KSM_ASSET_NAME);
     await swap.setPayTokenAmount("10001");
 
     const areTradeDetailsDisplayed = await swap.areTradeDetailsDisplayed();
@@ -166,8 +207,8 @@ describe("Miocroapps UI swap tests", () => {
     const swap = new Swap(driver);
     const isSwapFrameDisplayed = await swap.isDisplayed();
     expect(isSwapFrameDisplayed).toBeTruthy();
-    await swap.pickPayToken(MGR_ASSET_NAME);
-    await swap.pickGetToken("ROC");
+    await swap.pickPayToken(MGX_ASSET_NAME);
+    await swap.pickGetToken(KSM_ASSET_NAME);
     await swap.setPayTokenAmount("100000");
 
     const areTradeDetailsDisplayed = await swap.areTradeDetailsDisplayed();
@@ -185,9 +226,10 @@ describe("Miocroapps UI swap tests", () => {
     const swap = new Swap(driver);
     const isSwapFrameDisplayed = await swap.isDisplayed();
     expect(isSwapFrameDisplayed).toBeTruthy();
-    await swap.pickPayToken(MGR_ASSET_NAME);
-    await swap.pickGetToken("ROC");
+    await swap.pickPayToken(MGX_ASSET_NAME);
+    await swap.pickGetToken(KSM_ASSET_NAME);
     await swap.setPayTokenAmount("9995");
+    await sleep(10000000);
 
     const areTradeDetailsDisplayed = await swap.areTradeDetailsDisplayed();
     expect(areTradeDetailsDisplayed).toBeTruthy();
@@ -204,8 +246,8 @@ describe("Miocroapps UI swap tests", () => {
     const swap = new Swap(driver);
     const isSwapFrameDisplayed = await swap.isDisplayed();
     expect(isSwapFrameDisplayed).toBeTruthy();
-    await swap.pickPayToken(MGR_ASSET_NAME);
-    await swap.pickGetToken("ROC");
+    await swap.pickPayToken(MGX_ASSET_NAME);
+    await swap.pickGetToken(KSM_ASSET_NAME);
     await swap.setPayTokenAmount("1000");
     const getTokenAmount = await swap.fetchGetAssetAmount();
     expect(parseFloat(getTokenAmount)).toBeGreaterThan(0);
@@ -214,9 +256,9 @@ describe("Miocroapps UI swap tests", () => {
     await sleep(1000);
 
     const payTokenNameAfterSwitch = await swap.fetchPayTokenName();
-    expect(payTokenNameAfterSwitch).toEqual("ROC");
+    expect(payTokenNameAfterSwitch).toEqual(KSM_ASSET_NAME);
     const getTokenNameAfterSwitch = await swap.fetchGetTokenName();
-    expect(getTokenNameAfterSwitch).toEqual(MGR_ASSET_NAME);
+    expect(getTokenNameAfterSwitch).toEqual(MGX_ASSET_NAME);
     const payTokeAmountAfterSwitch = await swap.fetchPayAssetAmount();
     expect(payTokeAmountAfterSwitch).toEqual(getTokenAmount);
   });
