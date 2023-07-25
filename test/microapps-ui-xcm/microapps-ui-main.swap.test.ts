@@ -55,10 +55,6 @@ describe("Miocroapps UI swap tests", () => {
       await initApi();
     }
 
-    // stashServiceMock.listen(port, () => {
-    //   testLog.getLog().info(`Server is running on port ${port}`);
-    // });
-
     await mangata.dev.setStorage({
       Tokens: {
         Accounts: [
