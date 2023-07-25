@@ -46,6 +46,14 @@ describe("XCM transfers", () => {
             [alice.keyRingPair.address, { token: 0 }],
             { free: BN_BILLION.mul(AssetId.Mgx.unit).toString() },
           ],
+          [
+            [alice.keyRingPair.address, { token: 14 }],
+            { free: BN_BILLION.mul(AssetId.BncV3.unit).toString() },
+          ],
+          [
+            [alice.keyRingPair.address, { token: 4 }],
+            { free: BN_BILLION.mul(AssetId.Mgx.unit).toString() },
+          ],
         ],
       },
     });
@@ -69,6 +77,10 @@ describe("XCM transfers", () => {
             { free: BN_BILLION.mul(BN_TEN.pow(new BN(12))).toString() },
           ],
           [
+            [alice.keyRingPair.address, { VToken: "BNC" }],
+            { free: BN_BILLION.mul(AssetId.BncV3.unit).toString() },
+          ],
+          [
             [alice.keyRingPair.address, { VSToken: "ksm" }],
             { free: BN_BILLION.mul(BN_TEN.pow(new BN(12))).toString() },
           ],
@@ -76,8 +88,21 @@ describe("XCM transfers", () => {
       },
     });
     // await upgradeMangata(mangata);
-  });
 
+    //TODO: Remove when clarified how to setup tokens on Bifrost.
+    const mgaSdk = Mangata.instance([mangata.uri]);
+    await mgaSdk.xTokens.withdraw({
+      account: alice.keyRingPair,
+      amount: AssetId.Bnc.unit.mul(BN_TEN.add(BN_TEN)),
+      destinationAddress: alice.keyRingPair.address,
+      parachainId: 2001,
+      tokenSymbol: "BNC",
+      withWeight:
+        TRANSFER_INSTRUCTIONS * ChainSpecs.get(ChainId.Bifrost)!.unitCostWeight,
+    });
+    await bifrost.chain.newBlock();
+    //END-TODO
+  });
   it("[ BNC V3 -> MGA -> BNC V3 ] send BNC to mangata and back", async () => {
     const mgaSdk = Mangata.instance([mangata.uri]);
     const target = ChainSpecs.get(ChainId.Mg)!;
@@ -193,7 +218,7 @@ describe("XCM transfers", () => {
       event: expect.objectContaining({
         data: expect.objectContaining({
           who: "eCSrvbA5gGNYdM3UjBNxcBNBqGxtz3SEEfydKragtL4pJ4F",
-          amount: "6,410,240,000",
+          amount: "5,631,360,000",
         }),
       }),
     });
@@ -274,7 +299,7 @@ describe("XCM transfers", () => {
       event: expect.objectContaining({
         data: expect.objectContaining({
           who: "gXCcrjjFX3RPyhHYgwZDmw8oe4JFpd5anko3nTY8VrmnJpe",
-          amount: "4,987,980,800,000,000,000",
+          amount: "4,989,441,200,000,000,000",
           currencyId: expect.objectContaining({
             Token: "ZLK",
           }),
@@ -358,7 +383,7 @@ describe("XCM transfers", () => {
       event: expect.objectContaining({
         data: expect.objectContaining({
           who: "gXCcrjjFX3RPyhHYgwZDmw8oe4JFpd5anko3nTY8VrmnJpe",
-          amount: "4,999,919,872,000",
+          amount: "4,999,929,608,000",
           currencyId: expect.objectContaining({
             VToken: "KSM",
           }),
@@ -442,7 +467,7 @@ describe("XCM transfers", () => {
       event: expect.objectContaining({
         data: expect.objectContaining({
           who: "gXCcrjjFX3RPyhHYgwZDmw8oe4JFpd5anko3nTY8VrmnJpe",
-          amount: "4,999,919,872,000",
+          amount: "4,999,929,608,000",
           currencyId: expect.objectContaining({
             VSToken: "KSM",
           }),
