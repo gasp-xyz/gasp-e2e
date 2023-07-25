@@ -6,7 +6,6 @@ import { testLog } from "./Logger";
 import { getEnvironmentRequiredVars } from "./utils";
 
 const stashServiceMock: Express = express();
-const port = 3000;
 const localAddress = getEnvironmentRequiredVars().localAddress;
 const stashServiceAddress = getEnvironmentRequiredVars().stashServiceAddress;
 
@@ -102,10 +101,6 @@ stashServiceMock.use("/xcm", async (req, res) => {
       .status(500)
       .json({ error: "Failed to forward request to the true service" });
   }
-});
-
-stashServiceMock.listen(port, () => {
-  testLog.getLog().info(`Server is running on port ${port}`);
 });
 
 export default stashServiceMock;
