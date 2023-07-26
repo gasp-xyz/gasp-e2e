@@ -1,6 +1,6 @@
 /*
  *
- * @group rococoUiDeposit
+ * @group skipped
  */
 import { jest } from "@jest/globals";
 import { Keyring } from "@polkadot/api";
