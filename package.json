@@ -45,6 +45,7 @@
     "ganache-cli": "^6.12.2",
     "get-port-please": "^3.0.1",
     "guid-typescript": "^1.0.9",
+    "http": "^0.0.1-security",
     "https": "^1.0.0",
     "jest-extended": "^3.2.3",
     "jsonpath": "^1.1.1",

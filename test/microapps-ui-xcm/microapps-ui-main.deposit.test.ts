@@ -32,6 +32,7 @@ import { devTestingPairs } from "../../utils/setup";
 import { AssetId } from "../../utils/ChainSpecs";
 import { BN_THOUSAND } from "@mangata-finance/sdk";
 import { testLog } from "../../utils/Logger";
+import http from "http";
 
 jest.spyOn(console, "log").mockImplementation(jest.fn());
 
@@ -44,6 +45,9 @@ const acc_name = "acc_automation";
 const KSM_ASSET_NAME = "KSM";
 const userAddress = "5CfLmpjCJu41g3cpZVoiH7MSrSppgVVVC3xq23iy9dZrW2HR";
 const INIT_KSM_RELAY = 15;
+const server: http.Server = stashServiceMock.listen(port, () => {
+  testLog.getLog().info(`Server is running on port ${port}`);
+});
 
 describe("Microapps UI deposit modal tests - no action", () => {
   let kusama: ApiContext;
@@ -61,10 +65,6 @@ describe("Microapps UI deposit modal tests - no action", () => {
     } catch (e) {
       await initApi();
     }
-
-    stashServiceMock.listen(port, () => {
-      testLog.getLog().info(`Server is running on port ${port}`);
-    });
 
     await mangata.dev.setStorage({
       Tokens: {
@@ -150,6 +150,7 @@ describe("Microapps UI deposit modal tests - no action", () => {
   });
 
   afterAll(async () => {
+    server.close();
     const api = getApi();
     await api.disconnect();
     await driver.quit();

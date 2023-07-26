@@ -30,17 +30,21 @@ import XcmNetworks from "../../utils/Framework/XcmNetworks";
 import { devTestingPairs } from "../../utils/setup";
 import { testLog } from "../../utils/Logger";
 import stashServiceMock from "../../utils/stashServiceMock";
+import http from "http";
 
 jest.setTimeout(FIVE_MIN);
 jest.spyOn(console, "log").mockImplementation(jest.fn());
 let driver: WebDriver;
 let testUser1: User;
 
-const port = 3457;
+const port = 3456;
 const acc_name = "acc_automation";
 const userAddress = "5CfLmpjCJu41g3cpZVoiH7MSrSppgVVVC3xq23iy9dZrW2HR";
 const KSM_ASSET_NAME = "KSM";
 const MGX_ASSET_NAME = "MGX";
+const server: http.Server = stashServiceMock.listen(port, () => {
+  testLog.getLog().info(`Server is running on port ${port}`);
+});
 
 describe("Miocroapps UI swap tests", () => {
   let kusama: ApiContext;
@@ -58,10 +62,6 @@ describe("Miocroapps UI swap tests", () => {
     } catch (e) {
       await initApi();
     }
-
-    stashServiceMock.listen(port, () => {
-      testLog.getLog().info(`Server is running on port ${port}`);
-    });
 
     await mangata.dev.setStorage({
       Tokens: {
@@ -272,6 +272,7 @@ describe("Miocroapps UI swap tests", () => {
   });
 
   afterAll(async () => {
+    server.close();
     const api = getApi();
     await api.disconnect();
     await driver.quit();
