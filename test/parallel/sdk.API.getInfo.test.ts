@@ -8,7 +8,7 @@ import { Keyring } from "@polkadot/api";
 import { getApi, getMangataInstance, initApi } from "../../utils/api";
 import { Assets } from "../../utils/Assets";
 import { BN } from "@polkadot/util";
-import { setupApi, setupUsers } from "../../utils/setup";
+import { api, setupApi, setupUsers } from "../../utils/setup";
 import { Sudo } from "../../utils/sudo";
 import { User } from "../../utils/User";
 import { getEnvironmentRequiredVars, stringToBN } from "../../utils/utils";
@@ -77,14 +77,21 @@ beforeAll(async () => {
   await Sudo.batchAsSudoFinalized(Assets.promotePool(liqId.toNumber(), 20));
 });
 
-test("getAmountOfTokensInPool return poolAmount", async () => {
+test("getAmountOfTokensInPool return poolAmount AND in reverse list of token we recived equal result", async () => {
   const poolAmount = await mangata.query.getAmountOfTokensInPool(
     MGA_ASSET_ID.toString(),
     token1.toString()
   );
 
+  const poolAmountReverse = await mangata.query.getAmountOfTokensInPool(
+    token1.toString(),
+    MGA_ASSET_ID.toString()
+  );
+
   expect(poolAmount[0]).bnEqual(Assets.DEFAULT_AMOUNT.divn(2));
   expect(poolAmount[1]).bnEqual(Assets.DEFAULT_AMOUNT.divn(2));
+  expect(poolAmountReverse[0]).bnEqual(poolAmount[0]);
+  expect(poolAmountReverse[1]).bnEqual(poolAmount[1]);
 });
 
 test("check parameters of getInvestedPools function", async () => {
@@ -148,21 +155,24 @@ test("check parameters of getTotalIssuance functions", async () => {
 });
 
 test("check parameters of getChain function", async () => {
-  const infoChain = await mangata.rpc.getChain();
+  const chainNameSdk = await mangata.rpc.getChain();
+  const chainNameRpc = await api.rpc.system.chain();
 
-  expect(infoChain).toContain("Mangata Rococo");
+  expect(chainNameSdk).toContain(chainNameRpc.toString());
 });
 
 test("check parameters of getNodeName function", async () => {
-  const infoNodeName = await mangata.rpc.getNodeName();
+  const nodeNameSdk = await mangata.rpc.getNodeName();
+  const nodeNameRpc = await api.rpc.system.name();
 
-  expect(infoNodeName).toContain("Mangata Parachain Collator");
+  expect(nodeNameSdk).toContain(nodeNameRpc.toString());
 });
 
 test("check parameters of getNodeVersion function", async () => {
-  const infoNodeVersion = await mangata.rpc.getNodeVersion();
+  const nodeVersionSdk = await mangata.rpc.getNodeVersion();
+  const nodeVersionRpc = await api.rpc.system.version();
 
-  expect(infoNodeVersion).toContain("0.1.0");
+  expect(nodeVersionSdk).toContain(nodeVersionRpc.toString());
 });
 
 test("check waitForNewBlock", async () => {

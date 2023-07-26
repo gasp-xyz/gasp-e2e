@@ -305,7 +305,7 @@ export async function waitNewStakingRound(maxBlocks: number = 0) {
   let currentBlockNumber: number;
   const api = getApi();
   const parachainStakingRoundInfo = await api?.query.parachainStaking.round();
-  const sessionLength = parachainStakingRoundInfo.encodedLength;
+  const sessionLength = parachainStakingRoundInfo.length.toNumber();
   currentBlockNumber = await getBlockNumber();
   const initialBlockNumber = currentBlockNumber;
   currentSessionNumber = await (

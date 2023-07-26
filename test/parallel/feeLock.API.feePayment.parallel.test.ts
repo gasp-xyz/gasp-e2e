@@ -153,9 +153,9 @@ test("gasless- GIVEN a correct config for gasless swaps WHEN the user runs unloc
       await api.query.feeLock.accountFeeLockData(testUser1.keyRingPair.address)
     )
   );
-  const waitingBlock = await stringToBN(
-    accountFeeLockData.lastFeeLockBlock
-  ).add(periodLength);
+  const waitingBlock = stringToBN(accountFeeLockData.lastFeeLockBlock).add(
+    periodLength
+  );
   await waitBlockNumber(waitingBlock.toString(), periodLength.toNumber() + 5);
   try {
     await unlockFee(testUser1);
