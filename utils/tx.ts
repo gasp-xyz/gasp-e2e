@@ -278,7 +278,7 @@ export async function getBalanceOfPool(
   //  const balance1 = await api.query.xyk.pools([assetId1, assetId2]);
   //  const balance2 = await api.query.xyk.pools([assetId2, assetId1]);
   let balanceWithData = balance1;
-  if (balance2.toString() !== emptyPool) {
+  if (balance1 === emptyPool && balance2.toString() !== emptyPool) {
     balanceWithData = balance2;
     reversed = true;
   }
