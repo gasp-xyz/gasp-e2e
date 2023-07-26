@@ -2165,10 +2165,10 @@
     "@jridgewell/resolve-uri" "3.1.0"
     "@jridgewell/sourcemap-codec" "1.4.14"
 
-"@mangata-finance/sdk@2.0.0-rc.17":
-  version "2.0.0-rc.17"
-  resolved "https://registry.yarnpkg.com/@mangata-finance/sdk/-/sdk-2.0.0-rc.17.tgz#df9fd0f2e7c6e788c34b795f2bfa672eece031da"
-  integrity sha512-zkdtG8Zo37IQxGGp4JoAWM4pvqoG8vusQxOOmSdCjO0mKc7mxPtjUfZVBwHaEfN3t6YzVUSbOpe6MKasx2cPug==
+"@mangata-finance/sdk@2.0.0-rc.19":
+  version "2.0.0-rc.19"
+  resolved "https://registry.yarnpkg.com/@mangata-finance/sdk/-/sdk-2.0.0-rc.19.tgz#0f96faf5e58cbde111b05eddefa84b9374804ec0"
+  integrity sha512-pKs7gAXWCDcnIb5BM42mTv1q8+51tO9TYmiwIaZw8GVxWmCcEuM8h9Eq7QO4lVLlaimXznlvXCeX1novWTaoJA==
   dependencies:
     "@mangata-finance/type-definitions" "^1.0.0"
     big.js "^6.2.1"
@@ -6764,7 +6764,7 @@ expect@^29.0.0, expect@^29.5.0:
     jest-message-util "^29.5.0"
     jest-util "^29.5.0"
 
-express@^4.14.0, express@^4.17.1:
+express@^4.14.0, express@^4.17.1, express@^4.18.2:
   version "4.18.2"
   resolved "https://registry.yarnpkg.com/express/-/express-4.18.2.tgz#3fabe08296e930c796c19e3c516979386ba9fd59"
   integrity sha512-5/PsL6iGPdfQ/lKM1UuielYgv3BUoJfz1aUwU9vHZ+J7gyvwdQXFEBIEIaxeGf0GIcreATNyBExtalisDbuMqQ==
@@ -11831,7 +11831,7 @@ secure-json-parse@^2.4.0:
   resolved "https://registry.yarnpkg.com/secure-json-parse/-/secure-json-parse-2.7.0.tgz#5a5f9cd6ae47df23dba3151edd06855d47e09862"
   integrity sha512-6aU+Rwsezw7VR8/nyvKTx8QpWH9FrcYiXXlqC4z5d5XQBDRqtbfsRjnwGyqbi3gddNtWHuEk9OANUotL26qKUw==
 
-selenium-webdriver@^4.9.2:
+selenium-webdriver@^4.10.0:
   version "4.10.0"
   resolved "https://registry.yarnpkg.com/selenium-webdriver/-/selenium-webdriver-4.10.0.tgz#0508cdfbb5ad8470d8fd19db1a69d3e87f474b79"
   integrity sha512-hSQPw6jgc+ej/UEcdQPG/iBwwMeCEgZr9HByY/J8ToyXztEqXzU9aLsIyrlj1BywBcStO4JQK/zMUWWrV8+riA==

@@ -268,36 +268,12 @@ export async function getBalanceOfPool(
   assetId1: BN,
   assetId2: BN
 ): Promise<BN[]> {
-  let reversed = false;
-  const emptyPool = "0,0";
   const mangata = await getMangataInstance();
-  const balance1 = await mangata.query.getAmountOfTokensInPool(
+  const balance = await mangata.query.getAmountOfTokensInPool(
     assetId1.toString(),
     assetId2.toString()
   );
-  const balance2 = await mangata.query.getAmountOfTokensInPool(
-    assetId2.toString(),
-    assetId1.toString()
-  );
-
-  //  const balance1 = await api.query.xyk.pools([assetId1, assetId2]);
-  //  const balance2 = await api.query.xyk.pools([assetId2, assetId1]);
-  let balanceWithData = balance1;
-  if (balance2.toString() !== emptyPool) {
-    balanceWithData = balance2;
-    reversed = true;
-  }
-  //  const assetValue1 = JSON.parse(balanceWithData.toString())[0];
-  //  const assetValue2 = JSON.parse(balanceWithData.toString())[1];
-  //  const a = hexToBn(assetValue1);
-  const a = balanceWithData[0];
-  //  const b = hexToBn(assetValue2);
-  const b = balanceWithData[1];
-  if (reversed) {
-    return [b, a];
-  } else {
-    return [a, b];
-  }
+  return balance;
 }
 
 export async function getLiquidityAssetId(assetId1: BN, assetId2: BN) {
