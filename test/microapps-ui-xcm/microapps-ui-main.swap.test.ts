@@ -28,11 +28,13 @@ import { BN_TEN_THOUSAND, BN_THOUSAND } from "@mangata-finance/sdk";
 import { AssetId } from "../../utils/ChainSpecs";
 import XcmNetworks from "../../utils/Framework/XcmNetworks";
 import { devTestingPairs } from "../../utils/setup";
+import StashServiceMockSingleton from "../../utils/stashServiceMockSingleton";
 
 jest.setTimeout(FIVE_MIN);
 jest.spyOn(console, "log").mockImplementation(jest.fn());
 let driver: WebDriver;
 let testUser1: User;
+
 const acc_name = "acc_automation";
 const userAddress = "5CfLmpjCJu41g3cpZVoiH7MSrSppgVVVC3xq23iy9dZrW2HR";
 const KSM_ASSET_NAME = "KSM";
@@ -48,6 +50,7 @@ describe("Miocroapps UI swap tests", () => {
     mangata = await XcmNetworks.mangata({ localPort: 9946 });
     await connectVertical(kusama.chain, mangata.chain);
     alice = devTestingPairs().alice;
+    StashServiceMockSingleton.getInstance().startMock();
 
     try {
       getApi();
@@ -222,7 +225,6 @@ describe("Miocroapps UI swap tests", () => {
     await swap.pickPayToken(MGX_ASSET_NAME);
     await swap.pickGetToken(KSM_ASSET_NAME);
     await swap.setPayTokenAmount("9995");
-    await sleep(10000000);
 
     const areTradeDetailsDisplayed = await swap.areTradeDetailsDisplayed();
     expect(areTradeDetailsDisplayed).toBeTruthy();
@@ -265,6 +267,9 @@ describe("Miocroapps UI swap tests", () => {
   });
 
   afterAll(async () => {
+    StashServiceMockSingleton.getInstance().stopServer();
+    await kusama.teardown();
+    await mangata.teardown();
     const api = getApi();
     await api.disconnect();
     await driver.quit();

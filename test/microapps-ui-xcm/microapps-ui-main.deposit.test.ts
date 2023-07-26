@@ -16,7 +16,6 @@ import { AssetWallet, User } from "../../utils/User";
 import { getEnvironmentRequiredVars } from "../../utils/utils";
 import { KSM_ASSET_ID, MGA_ASSET_ID } from "../../utils/Constants";
 import { Node } from "../../utils/Framework/Node/Node";
-import stashServiceMock from "../../utils/stashServiceMock";
 import "dotenv/config";
 import {
   connectWallet,
@@ -31,7 +30,7 @@ import { connectVertical } from "@acala-network/chopsticks";
 import { devTestingPairs } from "../../utils/setup";
 import { AssetId } from "../../utils/ChainSpecs";
 import { BN_THOUSAND } from "@mangata-finance/sdk";
-import { testLog } from "../../utils/Logger";
+import StashServiceMockSingleton from "../../utils/stashServiceMockSingleton";
 
 jest.spyOn(console, "log").mockImplementation(jest.fn());
 
@@ -39,7 +38,6 @@ jest.setTimeout(1500000);
 let driver: WebDriver;
 let testUser1: User;
 
-const port = 3456;
 const acc_name = "acc_automation";
 const KSM_ASSET_NAME = "KSM";
 const userAddress = "5CfLmpjCJu41g3cpZVoiH7MSrSppgVVVC3xq23iy9dZrW2HR";
@@ -55,16 +53,13 @@ describe("Microapps UI deposit modal tests - no action", () => {
     mangata = await XcmNetworks.mangata({ localPort: 9946 });
     await connectVertical(kusama.chain, mangata.chain);
     alice = devTestingPairs().alice;
+    StashServiceMockSingleton.getInstance().startMock();
 
     try {
       getApi();
     } catch (e) {
       await initApi();
     }
-
-    stashServiceMock.listen(port, () => {
-      testLog.getLog().info(`Server is running on port ${port}`);
-    });
 
     await mangata.dev.setStorage({
       Tokens: {
@@ -150,6 +145,9 @@ describe("Microapps UI deposit modal tests - no action", () => {
   });
 
   afterAll(async () => {
+    StashServiceMockSingleton.getInstance().stopServer();
+    await kusama.teardown();
+    await mangata.teardown();
     const api = getApi();
     await api.disconnect();
     await driver.quit();
