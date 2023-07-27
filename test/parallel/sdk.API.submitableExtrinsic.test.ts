@@ -98,7 +98,7 @@ beforeAll(async () => {
 test("activate some Liquidity using SDK THEN claim rewards THEN deactivate Liquidity", async () => {
   await testUser.refreshAmounts(AssetWallet.BEFORE);
 
-  const tx1 = mangata.submitableExtrinsic.activateLiquidity(
+  const tx1 = await mangata.submitableExtrinsic.activateLiquidity(
     {
       account: testUser.keyRingPair.address,
       amount: BN_BILLION,
@@ -313,11 +313,11 @@ test("check transferAllTokens", async () => {
 });
 
 async function signSubmittableExtrinsic(
-  tx: Promise<MangataSubmittableExtrinsic>,
+  tx: MangataSubmittableExtrinsic,
   user: User
 ) {
   const api = getApi();
-  const result = await signTx(api, await tx, user.keyRingPair);
+  const result = await signTx(api, tx, user.keyRingPair);
   const eventResponse = getEventResultFromMangataTx(result);
   expect(eventResponse.state).toEqual(ExtrinsicResult.ExtrinsicSuccess);
   return result;
