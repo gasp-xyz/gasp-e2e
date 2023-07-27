@@ -28,12 +28,11 @@ import {
   BN_ONE,
   BN_ZERO,
   MangataInstance,
+  MangataSubmittableExtrinsic,
   signTx,
 } from "@mangata-finance/sdk";
 import { ExtrinsicResult, waitForRewards } from "../../utils/eventListeners";
 import { getEventResultFromMangataTx } from "../../utils/txHandler";
-import { SubmittableExtrinsic } from "@polkadot/api/types/submittable";
-import { ISubmittableResult } from "@polkadot/types/types/extrinsic";
 
 jest.spyOn(console, "log").mockImplementation(jest.fn());
 jest.setTimeout(2500000);
@@ -314,11 +313,11 @@ test("check transferAllTokens", async () => {
 });
 
 async function signSubmittableExtrinsic(
-  tx: SubmittableExtrinsic<"promise", ISubmittableResult>,
+  tx: Promise<MangataSubmittableExtrinsic>,
   user: User
 ) {
   const api = getApi();
-  const result = await signTx(api, tx, user.keyRingPair);
+  const result = await signTx(api, await tx, user.keyRingPair);
   const eventResponse = getEventResultFromMangataTx(result);
   expect(eventResponse.state).toEqual(ExtrinsicResult.ExtrinsicSuccess);
   return result;
