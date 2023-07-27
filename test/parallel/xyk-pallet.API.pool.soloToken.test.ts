@@ -9,8 +9,12 @@ import { Assets } from "../../utils/Assets";
 import { setupApi, setupUsers } from "../../utils/setup";
 import { Sudo } from "../../utils/sudo";
 import { getLiquidityAssetId, getRewardsInfo } from "../../utils/tx";
-import { User } from "../../utils/User";
-import { getEnvironmentRequiredVars } from "../../utils/utils";
+import { AssetWallet, User } from "../../utils/User";
+import {
+  getEnvironmentRequiredVars,
+  getMultiPurposeLiquidityStatus,
+  waitNewStakingRound,
+} from "../../utils/utils";
 import { Xyk } from "../../utils/xyk";
 import { BN } from "@polkadot/util";
 import { BN_BILLION, BN_MILLION } from "@mangata-finance/sdk";
@@ -86,6 +90,8 @@ beforeEach(async () => {
     Assets.mintToken(liqId, testUser1, Assets.DEFAULT_AMOUNT),
     Assets.mintNative(testUser1)
   );
+
+  testUser1.addAsset(token1);
 });
 
 test("GIVEN pool and solo token AND both were created at the same time AND the activated amounts are similar THEN the available rewards are the same AND when the user claims, it gets the same amounts", async () => {
@@ -152,4 +158,70 @@ test("GIVEN pool and solo token AND both were created at the same time AND the a
   expect(rewardsSolo.rewardsNotYetClaimed).bnEqual(
     rewardsPool.rewardsNotYetClaimed
   );
+});
+
+test("GIVEN a solo token rewards setup, WHEN weight goes from 20 to 0 THEN no more rewards will be granted for new users or new activations", async () => {
+  await Sudo.batchAsSudoFinalized(
+    Sudo.sudoAs(testUser1, Xyk.activateLiquidity(token1, BN_BILLION))
+  );
+
+  await waitForRewards(testUser1, token1);
+
+  const rewardsBefore = await getRewardsInfo(
+    testUser1.keyRingPair.address,
+    token1
+  );
+
+  await Sudo.batchAsSudoFinalized(
+    Assets.promotePool(token1.toNumber(), 0),
+    Sudo.sudoAs(testUser1, Xyk.activateLiquidity(token1, BN_BILLION))
+  );
+
+  await waitNewStakingRound();
+
+  const rewardsAfter = await getRewardsInfo(
+    testUser1.keyRingPair.address,
+    token1
+  );
+
+  expect(rewardsAfter.missingAtLastCheckpoint).bnEqual(
+    rewardsBefore.missingAtLastCheckpoint
+  );
+});
+
+test("GIVEN a solo token rewards setup WHEN the user activates or deactivates THEN MPL is also modified", async () => {
+  await Sudo.batchAsSudoFinalized(
+    Sudo.sudoAs(testUser1, Xyk.activateLiquidity(token1, BN_BILLION))
+  );
+
+  await waitForRewards(testUser1, token1);
+
+  const rewardsBefore = await getMultiPurposeLiquidityStatus(
+    testUser1.keyRingPair.address,
+    token1
+  );
+
+  await Sudo.batchAsSudoFinalized(
+    Sudo.sudoAs(testUser1, Xyk.activateLiquidity(token1, BN_BILLION))
+  );
+
+  await waitNewStakingRound();
+
+  const rewardsAfter = await getMultiPurposeLiquidityStatus(
+    testUser1.keyRingPair.address,
+    token1
+  );
+
+  expect(rewardsBefore.activatedUnstakedReserves).bnEqual(BN_BILLION);
+  expect(rewardsAfter.activatedUnstakedReserves).bnEqual(BN_BILLION.muln(2));
+});
+
+test("GIVEN a solo token rewards setup WHEN a user activates the token, then it gets reserved", async () => {
+  await Sudo.batchAsSudoFinalized(
+    Sudo.sudoAs(testUser1, Xyk.activateLiquidity(token1, BN_BILLION))
+  );
+
+  await testUser1.refreshAmounts(AssetWallet.AFTER);
+
+  expect(testUser1.getAsset(token1)!.amountAfter.reserved!).bnEqual(BN_BILLION);
 });
