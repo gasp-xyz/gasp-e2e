@@ -20,10 +20,10 @@ import {
   getBlockNumber,
   getFeeLockMetadata,
   waitBlockNumber,
+  stringToBN,
 } from "../../utils/utils";
 import { Xyk } from "../../utils/xyk";
 import { addMgaToWhitelisted } from "../../utils/feeLockHelper";
-import { stringToBN } from "../../utils/utils";
 import { BN } from "@polkadot/util";
 
 jest.spyOn(console, "log").mockImplementation(jest.fn());
@@ -237,9 +237,9 @@ test("gasless- For low-value swaps, token reservation status and pallet storage 
       await api.query.feeLock.accountFeeLockData(testUser1.keyRingPair.address)
     )
   );
-  const waitingBlock = await stringToBN(
-    accountFeeLockData.lastFeeLockBlock
-  ).add(periodLength);
+  const waitingBlock = stringToBN(accountFeeLockData.lastFeeLockBlock).add(
+    periodLength
+  );
   await checkAccountFeeLockData(feeLockAmount, lockDataBlockNumber);
   await waitBlockNumber(waitingBlock.toString(), periodLength.toNumber() + 5);
   try {

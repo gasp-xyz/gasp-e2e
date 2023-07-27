@@ -144,9 +144,9 @@ test("gasless- GIVEN some locked tokens and no more free MGX WHEN another tx is 
       await api.query.feeLock.accountFeeLockData(testUser1.keyRingPair.address)
     )
   );
-  const waitingBlock = await stringToBN(
-    accountFeeLockData.lastFeeLockBlock
-  ).add(periodLength);
+  const waitingBlock = stringToBN(accountFeeLockData.lastFeeLockBlock).add(
+    periodLength
+  );
   await waitBlockNumber(waitingBlock.toString(), periodLength.toNumber() + 5);
 
   await testUser1
@@ -209,9 +209,9 @@ test("gasless- GIVEN some locked tokens and lastFeeLockBlock is lower than curre
     )
   );
 
-  const waitingBlock = await stringToBN(
-    accountFeeLockData.lastFeeLockBlock
-  ).add(periodLength);
+  const waitingBlock = stringToBN(accountFeeLockData.lastFeeLockBlock).add(
+    periodLength
+  );
   await waitBlockNumber(waitingBlock.toString(), periodLength.toNumber() + 5);
 
   try {

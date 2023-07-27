@@ -176,15 +176,11 @@ test("check parameters of getNodeVersion function", async () => {
 });
 
 test("check waitForNewBlock", async () => {
-  const blockNumberBefore = await stringToBN(
-    await mangata.query.getBlockNumber()
-  );
+  const blockNumberBefore = stringToBN(await mangata.query.getBlockNumber());
 
   await mangata.rpc.waitForNewBlock(2);
 
-  const blockNumberAfter = await stringToBN(
-    await mangata.query.getBlockNumber()
-  );
+  const blockNumberAfter = stringToBN(await mangata.query.getBlockNumber());
 
   expect(blockNumberAfter).bnEqual(blockNumberBefore.add(new BN(1)));
 });

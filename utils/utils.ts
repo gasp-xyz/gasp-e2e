@@ -437,7 +437,7 @@ export async function getUserBalanceOfToken(tokenId: BN, account: User) {
 }
 
 export async function getBlockNumber(): Promise<number> {
-  const blockNumber = await stringToBN(await mangata!.query.getBlockNumber());
+  const blockNumber = stringToBN(await mangata!.query.getBlockNumber());
   return blockNumber.toNumber();
 }
 export async function getMultiPurposeLiquidityStatus(
