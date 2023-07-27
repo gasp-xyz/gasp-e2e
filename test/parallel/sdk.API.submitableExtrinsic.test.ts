@@ -31,7 +31,8 @@ import {
   MangataSubmittableExtrinsic,
   signTx,
 } from "@mangata-finance/sdk";
-import { waitForRewards } from "../../utils/eventListeners";
+import { ExtrinsicResult, waitForRewards } from "../../utils/eventListeners";
+import { getEventResultFromMangataTx } from "../../utils/txHandler";
 
 jest.spyOn(console, "log").mockImplementation(jest.fn());
 jest.setTimeout(2500000);
@@ -317,5 +318,7 @@ async function signSubmittableExtrinsic(
 ) {
   const api = getApi();
   const result = await signTx(api, tx, user.keyRingPair);
+  const eventResponse = getEventResultFromMangataTx(result);
+  expect(eventResponse.state).toEqual(ExtrinsicResult.ExtrinsicSuccess);
   return result;
 }
