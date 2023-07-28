@@ -8,7 +8,11 @@ import { getApi, initApi } from "../../utils/api";
 import { Assets } from "../../utils/Assets";
 import { setupApi, setupUsers } from "../../utils/setup";
 import { Sudo } from "../../utils/sudo";
-import { getLiquidityAssetId, getRewardsInfo } from "../../utils/tx";
+import {
+  claimRewardsAll,
+  getLiquidityAssetId,
+  getRewardsInfo,
+} from "../../utils/tx";
 import { AssetWallet, User } from "../../utils/User";
 import {
   getEnvironmentRequiredVars,
@@ -17,8 +21,9 @@ import {
 } from "../../utils/utils";
 import { Xyk } from "../../utils/xyk";
 import { BN } from "@polkadot/util";
-import { BN_BILLION, BN_MILLION } from "@mangata-finance/sdk";
+import { BN_BILLION, BN_MILLION, BN_ZERO } from "@mangata-finance/sdk";
 import { waitForRewards } from "../../utils/eventListeners";
+import { MGA_ASSET_ID } from "../../utils/Constants";
 
 jest.spyOn(console, "log").mockImplementation(jest.fn());
 jest.setTimeout(2500000);
@@ -92,6 +97,7 @@ beforeEach(async () => {
   );
 
   testUser1.addAsset(token1);
+  testUser1.addAsset(MGA_ASSET_ID);
 });
 
 test("GIVEN pool and solo token AND both were created at the same time AND the activated amounts are similar THEN the available rewards are the same AND when the user claims, it gets the same amounts", async () => {
@@ -224,4 +230,44 @@ test("GIVEN a solo token rewards setup WHEN a user activates the token, then it 
   await testUser1.refreshAmounts(AssetWallet.AFTER);
 
   expect(testUser1.getAsset(token1)!.amountAfter.reserved!).bnEqual(BN_BILLION);
+});
+
+test("GIVEN a solo token rewards setup WHEN a user deactivates all the tokens, then they are free again", async () => {
+  await Sudo.batchAsSudoFinalized(
+    Sudo.sudoAs(testUser1, Xyk.activateLiquidity(token1, BN_BILLION))
+  );
+
+  await testUser1.refreshAmounts(AssetWallet.BEFORE);
+
+  await Sudo.batchAsSudoFinalized(
+    Sudo.sudoAs(testUser1, Xyk.deactivateLiquidity(token1, BN_BILLION))
+  );
+
+  await testUser1.refreshAmounts(AssetWallet.AFTER);
+
+  expect(testUser1.getAsset(token1)!.amountBefore.reserved!).bnEqual(
+    BN_BILLION
+  );
+  expect(testUser1.getAsset(token1)!.amountAfter.reserved!).bnEqual(BN_ZERO);
+});
+
+test("GIVEN a solo token rewards setup WHEN a user deactivates all the tokens THEN he can claim some available rewards", async () => {
+  await Sudo.batchAsSudoFinalized(
+    Sudo.sudoAs(testUser1, Xyk.activateLiquidity(token1, BN_BILLION))
+  );
+
+  await waitForRewards(testUser1, token1);
+
+  await Sudo.batchAsSudoFinalized(
+    Sudo.sudoAs(testUser1, Xyk.deactivateLiquidity(token1, BN_BILLION))
+  );
+  await testUser1.refreshAmounts(AssetWallet.BEFORE);
+
+  await claimRewardsAll(testUser1, token1);
+
+  await testUser1.refreshAmounts(AssetWallet.AFTER);
+
+  expect(testUser1.getAsset(MGA_ASSET_ID)!.amountAfter.free!).bnGt(
+    testUser1.getAsset(MGA_ASSET_ID)!.amountBefore.free
+  );
 });
