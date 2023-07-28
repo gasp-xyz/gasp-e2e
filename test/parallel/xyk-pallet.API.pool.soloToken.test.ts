@@ -4,7 +4,7 @@
  */
 import { jest } from "@jest/globals";
 import { Keyring } from "@polkadot/api";
-import { getApi, initApi } from "../../utils/api";
+import { getApi, initApi, mangata } from "../../utils/api";
 import { Assets } from "../../utils/Assets";
 import { setupApi, setupUsers } from "../../utils/setup";
 import { Sudo } from "../../utils/sudo";
@@ -193,6 +193,8 @@ test("GIVEN a solo token rewards setup, WHEN weight goes from 20 to 0 THEN no mo
   expect(rewardsAfter.missingAtLastCheckpoint).bnEqual(
     rewardsBefore.missingAtLastCheckpoint
   );
+
+  await Sudo.batchAsSudoFinalized(Assets.promotePool(token1.toNumber(), 20));
 });
 
 test("GIVEN a solo token rewards setup WHEN the user activates or deactivates THEN MPL is also modified", async () => {
@@ -261,13 +263,18 @@ test("GIVEN a solo token rewards setup WHEN a user deactivates all the tokens TH
   await Sudo.batchAsSudoFinalized(
     Sudo.sudoAs(testUser1, Xyk.deactivateLiquidity(token1, BN_BILLION))
   );
-  await testUser1.refreshAmounts(AssetWallet.BEFORE);
+  const rewardsBefore = await mangata!.rpc.calculateRewardsAmount({
+    address: testUser1.keyRingPair.address,
+    liquidityTokenId: token1.toString(),
+  })!;
 
   await claimRewardsAll(testUser1, token1);
 
-  await testUser1.refreshAmounts(AssetWallet.AFTER);
+  const rewardsAfter = await mangata!.rpc.calculateRewardsAmount({
+    address: testUser1.keyRingPair.address,
+    liquidityTokenId: token1.toString(),
+  })!;
 
-  expect(testUser1.getAsset(MGA_ASSET_ID)!.amountAfter.free!).bnGt(
-    testUser1.getAsset(MGA_ASSET_ID)!.amountBefore.free
-  );
+  expect(rewardsBefore).bnGt(BN_ZERO);
+  expect(rewardsAfter).bnEqual(BN_ZERO);
 });
