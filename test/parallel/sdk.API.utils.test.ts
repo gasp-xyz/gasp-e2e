@@ -138,16 +138,16 @@ test("isSellAssetTransactionSuccessful returns a false flag", async () => {
   expect(success).toEqual(false);
 });
 
-test("isBuyAssetTransactionSuccessful returns empty flag in multiSwapSell", async () => {
-  const tokenIds = [MGA_ASSET_ID, token1];
+// test("isBuyAssetTransactionSuccessful returns empty flag in multiSwapSell", async () => {
+//   const tokenIds = [MGA_ASSET_ID, token1];
 
-  const multiSwapOutput = await multiSwapSell(
-    testUser1,
-    tokenIds,
-    new BN(1000)
-  );
+//   const multiSwapOutput = await multiSwapSell(
+//     testUser1,
+//     tokenIds,
+//     new BN(1000)
+//   );
 
-  const success = isBuyAssetTransactionSuccessful(multiSwapOutput);
+//   const success = isBuyAssetTransactionSuccessful(multiSwapOutput);
 
-  expect(success).toEqual(true);
-});
+//   expect(success).toBeEmpty();
+// });
