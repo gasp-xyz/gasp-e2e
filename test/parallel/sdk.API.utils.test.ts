@@ -7,7 +7,7 @@ import { Keyring } from "@polkadot/api";
 import { getApi, initApi } from "../../utils/api";
 import { Assets } from "../../utils/Assets";
 import { BN } from "@polkadot/util";
-import { setupApi, setupUsers } from "../../utils/setup";
+import { api, setupApi, setupUsers } from "../../utils/setup";
 import { Sudo } from "../../utils/sudo";
 import { User } from "../../utils/User";
 import { getEnvironmentRequiredVars } from "../../utils/utils";
@@ -17,9 +17,12 @@ import { multiSwapBuy, multiSwapSell } from "../../utils/tx";
 import {
   BN_TEN,
   BN_TEN_THOUSAND,
+  MangataGenericEvent,
   isBuyAssetTransactionSuccessful,
   isSellAssetTransactionSuccessful,
+  signTx,
 } from "@mangata-finance/sdk";
+import { signSendFinalized } from "../../utils/sign";
 
 jest.spyOn(console, "log").mockImplementation(jest.fn());
 jest.setTimeout(2500000);
@@ -79,7 +82,75 @@ beforeEach(async () => {
   );
 });
 
-test("isBuyAssetTransactionSuccessful returns a true flag", async () => {
+test("GIVEN buyAsset WHEN operation is confirmed AND isBuyAssetTransactionSuccessful THEN it returns true", async () => {
+  const multiSwapOutput = await signSendFinalized(
+    Xyk.buyAsset(MGA_ASSET_ID, token1, new BN(1000)),
+    testUser1
+  );
+
+  const success = isBuyAssetTransactionSuccessful(multiSwapOutput);
+
+  expect(success).toEqual(true);
+});
+
+test("GIVEN buyAsset WHEN operation is failed AND isBuyAssetTransactionSuccessful THEN it returns false", async () => {
+  let multiSwapOutput: MangataGenericEvent[] = [];
+
+  try {
+    await signTx(
+      api,
+      api!.tx.xyk.buyAsset(
+        token1,
+        MGA_ASSET_ID,
+        Assets.DEFAULT_AMOUNT,
+        Assets.DEFAULT_AMOUNT
+      ),
+      testUser1.keyRingPair
+    );
+  } catch (result: any) {
+    multiSwapOutput = result;
+  }
+
+  const success = isBuyAssetTransactionSuccessful(multiSwapOutput);
+
+  expect(success).toEqual(false);
+});
+
+test("GIVEN sellAsset WHEN operation is confirmed AND isSellAssetTransactionSuccessful THEN it returns true", async () => {
+  const multiSwapOutput = await signSendFinalized(
+    Xyk.sellAsset(MGA_ASSET_ID, token1, new BN(1000)),
+    testUser1
+  );
+
+  const success = isSellAssetTransactionSuccessful(multiSwapOutput);
+
+  expect(success).toEqual(true);
+});
+
+test("GIVEN sellAsset WHEN operation is failed AND isSellAssetTransactionSuccessful THEN it returns false", async () => {
+  let multiSwapOutput: MangataGenericEvent[] = [];
+
+  try {
+    await signTx(
+      api,
+      api!.tx.xyk.sellAsset(
+        token1,
+        MGA_ASSET_ID,
+        Assets.DEFAULT_AMOUNT,
+        Assets.DEFAULT_AMOUNT
+      ),
+      testUser1.keyRingPair
+    );
+  } catch (result: any) {
+    multiSwapOutput = result;
+  }
+
+  const success = isSellAssetTransactionSuccessful(multiSwapOutput);
+
+  expect(success).toEqual(false);
+});
+
+test("GIVEN multiSwapBuy WHEN operation is confirmed AND isBuyAssetTransactionSuccessful THEN it returns true", async () => {
   const tokenIds = [MGA_ASSET_ID, token1];
 
   const multiSwapOutput = await multiSwapBuy(
@@ -94,7 +165,7 @@ test("isBuyAssetTransactionSuccessful returns a true flag", async () => {
   expect(success).toEqual(true);
 });
 
-test("isBuyAssetTransactionSuccessful returns a false flag", async () => {
+test("GIVEN multiSwapBuy WHEN operation is failed AND isBuyAssetTransactionSuccessful THEN it returns false", async () => {
   const tokenIds = [MGA_ASSET_ID, token1];
 
   const multiSwapOutput = await multiSwapBuy(
@@ -109,7 +180,7 @@ test("isBuyAssetTransactionSuccessful returns a false flag", async () => {
   expect(success).toEqual(false);
 });
 
-test("isSellAssetTransactionSuccessful returns a true flag", async () => {
+test("GIVEN multiSwapSell WHEN operation is confirmed AND isSellAssetTransactionSuccessful THEN it returns true", async () => {
   const tokenIds = [MGA_ASSET_ID, token1];
 
   const multiSwapOutput = await multiSwapSell(
@@ -123,7 +194,7 @@ test("isSellAssetTransactionSuccessful returns a true flag", async () => {
   expect(success).toEqual(true);
 });
 
-test("isSellAssetTransactionSuccessful returns a false flag", async () => {
+test("GIVEN multiSwapSell WHEN operation is failed AND isSellAssetTransactionSuccessful THEN it returns false", async () => {
   const tokenIds = [MGA_ASSET_ID, token1];
 
   const multiSwapOutput = await multiSwapSell(
