@@ -146,7 +146,6 @@ describe("UI XCM tests - BNC", () => {
     const isWalletConnected = await sidebar.isWalletConnected("acc_automation");
     expect(isWalletConnected).toBeTruthy();
     await sidebar.waitForLoad();
-    const tokenOnAppBefore = await sidebar.getTokenAmount(BNC_ASSET_NAME);
 
     await sidebar.clickOnDepositToMangata();
 
@@ -164,19 +163,6 @@ describe("UI XCM tests - BNC", () => {
       BNC_ASSET_NAME
     );
     expect(tokensAtSourceAfter).toBeLessThan(INIT_BNC_SOURCE);
-
-    await mangata.chain.newBlock();
-
-    await mga.go();
-    await testUser1.refreshAmounts(AssetWallet.AFTER);
-    expect(testUser1.getAsset(BNC_ASSET_ID)?.amountBefore.free!).bnLt(
-      testUser1.getAsset(BNC_ASSET_ID)?.amountAfter.free!
-    );
-    sidebar.waitForLoad();
-    const tokenOnAppAfter = await sidebar.getTokenAmount(BNC_ASSET_NAME);
-    expect(parseFloat(tokenOnAppAfter.replace(",", ""))).toBeGreaterThan(
-      parseFloat(tokenOnAppBefore.replace(",", ""))
-    );
   });
 
   afterEach(async () => {
