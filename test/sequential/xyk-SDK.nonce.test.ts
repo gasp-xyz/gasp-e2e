@@ -141,7 +141,7 @@ describe.skip("SDK test - Nonce tests - user", () => {
       );
       await waitNewBlock();
     }
-    const promisesEvents = await await Promise.all(promises);
+    const promisesEvents = await Promise.all(promises);
     promisesEvents.forEach((events) => {
       const result = getEventResultFromMangataTx(events);
       expect(result.state).toEqual(ExtrinsicResult.ExtrinsicSuccess);

@@ -99,6 +99,7 @@ beforeEach(async () => {
 
 test("gasless- GIVEN some locked tokens and no more free MGX WHEN another tx is submitted AND lock period did not finished THEN the operation can not be submitted", async () => {
   const api = getApi();
+
   const feeLockAmount = await (await getFeeLockMetadata(api)).feeLockAmount;
   await testUser1.addMGATokens(sudo, feeLockAmount);
 
@@ -143,8 +144,10 @@ test("gasless- GIVEN some locked tokens and no more free MGX WHEN another tx is 
       await api.query.feeLock.accountFeeLockData(testUser1.keyRingPair.address)
     )
   );
-  const waitingBlock = accountFeeLockData.lastFeeLockBlock + periodLength;
-  await waitBlockNumber(waitingBlock, periodLength.toNumber() + 5);
+  const waitingBlock = stringToBN(accountFeeLockData.lastFeeLockBlock).add(
+    periodLength
+  );
+  await waitBlockNumber(waitingBlock.toString(), periodLength.toNumber() + 5);
 
   await testUser1
     .sellAssets(firstCurrency, secondCurrency, saleAssetValue)
@@ -206,8 +209,10 @@ test("gasless- GIVEN some locked tokens and lastFeeLockBlock is lower than curre
     )
   );
 
-  const waitingBlock = accountFeeLockData.lastFeeLockBlock + periodLength;
-  await waitBlockNumber(waitingBlock, periodLength.toNumber() + 5);
+  const waitingBlock = stringToBN(accountFeeLockData.lastFeeLockBlock).add(
+    periodLength
+  );
+  await waitBlockNumber(waitingBlock.toString(), periodLength.toNumber() + 5);
 
   try {
     await unlockFee(testUser1);

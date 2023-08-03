@@ -26,6 +26,7 @@ import { BN_HUNDRED_THOUSAND, BN_ZERO } from "@mangata-finance/sdk";
 import { UserFactory, Users } from "../../utils/Framework/User/UserFactory";
 import { RegularUser } from "../../utils/Framework/User/RegularUser";
 import { ExtrinsicResult } from "../../utils/eventListeners";
+import { getEventResultFromMangataTx } from "../../utils/txHandler";
 
 jest.spyOn(console, "log").mockImplementation(jest.fn());
 jest.setTimeout(1500000);
@@ -120,23 +121,25 @@ describe("Vesting", () => {
       liqToken,
       MGA_ASSET_ID,
     ]);
+
     const result = await activateLiquidity(
       testUser1.keyRingPair,
       liqToken,
-      balances[0].free,
-      "availablebalance",
-      false
+      balances[0].free
     );
-    expect(result.state).toBe(ExtrinsicResult.ExtrinsicFailed);
+    const eventResponse = getEventResultFromMangataTx(result);
+    expect(eventResponse.state).toBe(ExtrinsicResult.ExtrinsicFailed);
+
     await testUser1.reserveVestingLiquidityTokens(liqToken, balances[0].frozen);
 
     await activateLiquidity(
       testUser1.keyRingPair,
       liqToken,
       balances[0].free,
-      "unspentreserves",
+      "UnspentReserves",
       true
     );
+
     const mplStatus = await getMultiPurposeLiquidityStatus(
       testUser1.keyRingPair.address,
       liqToken

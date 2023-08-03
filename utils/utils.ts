@@ -308,7 +308,7 @@ export async function waitNewStakingRound(maxBlocks: number = 0) {
   const sessionLength = parachainStakingRoundInfo.length.toNumber();
   currentBlockNumber = await getBlockNumber();
   const initialBlockNumber = currentBlockNumber;
-  currentSessionNumber = (await api?.query.session.currentIndex()).toNumber();
+  currentSessionNumber = (await api.query.session.currentIndex()).toNumber();
   const initialSessionNumber = currentSessionNumber;
   const awaitedSessionNumber = initialSessionNumber + 1;
   if (maxBlocks <= 0) {
@@ -320,7 +320,7 @@ export async function waitNewStakingRound(maxBlocks: number = 0) {
     currentSessionNumber <= initialSessionNumber
   ) {
     currentBlockNumber = await getBlockNumber();
-    currentSessionNumber = (await api?.query.session.currentIndex()).toNumber();
+    currentSessionNumber = (await api.query.session.currentIndex()).toNumber();
     testLog
       .getLog()
       .info(
@@ -433,8 +433,8 @@ export async function getUserBalanceOfToken(tokenId: BN, account: User) {
 }
 
 export async function getBlockNumber(): Promise<number> {
-  const api = await mangata?.api()!;
-  return ((await api.query.system.number()) as any).toNumber();
+  const blockNumber = stringToBN(await mangata!.query.getBlockNumber());
+  return blockNumber.toNumber();
 }
 export async function getMultiPurposeLiquidityStatus(
   address: string,

@@ -144,7 +144,7 @@ test("xyk-pallet - Assets substracted are incremented by 1 - MGA- SellAsset", as
   const expectedTreasury = new BN(5);
   const treasury = await getTreasury(firstCurrency);
   const treasuryBurn = await getTreasuryBurn(firstCurrency);
-  // Removed the fees paid. they goes directly to the block author, so trasury has nothing to do with it.
+  // Removed the fees paid. they goes directly to the block author, so treasury has nothing to do with it.
   const incrementedTreasury = treasuryBefore.sub(treasury).abs();
   expect(incrementedTreasury).bnEqual(
     expectedTreasury.add(extraTokenForRounding)

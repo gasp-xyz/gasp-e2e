@@ -24,10 +24,15 @@ import { Fees } from "./Fees";
 import { SudoUser } from "./Framework/User/SudoUser";
 import { testLog } from "./Logger";
 import { SudoDB } from "./SudoDB";
-import { setAssetInfo, signSendAndWaitToFinishTx } from "./txHandler";
+import {
+  getEventResultFromMangataTx,
+  setAssetInfo,
+  signSendAndWaitToFinishTx,
+} from "./txHandler";
 import { User } from "./User";
 import { getEnvironmentRequiredVars, stringToBN } from "./utils";
 import Keyring from "@polkadot/keyring";
+import { ExtrinsicResult } from "./eventListeners";
 
 export const signTxDeprecated = async (
   tx: SubmittableExtrinsic<"promise">,
@@ -297,14 +302,15 @@ export async function getLiquiditybalance(liquidityAssetId: BN) {
 }
 
 export async function getLiquidityPool(liquidityAssetId: BN) {
-  const api = getApi();
+  const mangata = await getMangataInstance();
 
-  const liqPool = await api.query.xyk.liquidityPools(liquidityAssetId);
-  const poolAssetIds = liqPool.toHuman() as Number[];
+  const liqPool = await mangata.query.getLiquidityPool(
+    liquidityAssetId.toString()
+  );
+  const poolAssetIds = await liqPool.map((string) => stringToBN(string));
   if (!poolAssetIds) return [new BN(-1), new BN(-1)];
 
-  const result = poolAssetIds.map((num) => new BN(num.toString()));
-  return result;
+  return poolAssetIds;
 }
 
 export async function getAssetSupply(assetId1: BN) {
@@ -549,16 +555,18 @@ export const activateLiquidity = async (
   strictsuccess = false
 ) => {
   const mangata = await getMangataInstance();
-  const api = await mangata.api();
-  const result = await signSendAndWaitToFinishTx(
-    api?.tx.proofOfStake.activateLiquidity(
-      new BN(liqToken),
-      new BN(amount),
-      from
-    ),
-    account,
-    strictsuccess
+  const result = await mangata.xyk.activateLiquidity(
+    {
+      account: account,
+      amount: amount,
+      liquidityTokenId: liqToken.toString(),
+    },
+    from
   );
+  if (strictsuccess) {
+    const eventResponse = getEventResultFromMangataTx(result);
+    expect(eventResponse.state).toBe(ExtrinsicResult.ExtrinsicSuccess);
+  }
   return result;
 };
 export const deactivateLiquidity = async (
@@ -567,12 +575,12 @@ export const deactivateLiquidity = async (
   amount: BN
 ) => {
   const mangata = await getMangataInstance();
-  const api = await mangata.api();
 
-  const result = await signSendAndWaitToFinishTx(
-    api?.tx.proofOfStake.deactivateLiquidity(new BN(liqToken), new BN(amount)),
-    account
-  );
+  const result = await mangata.xyk.deactivateLiquidity({
+    account: account,
+    amount: amount,
+    liquidityTokenId: liqToken.toString(),
+  });
   return result;
 };
 
@@ -1058,31 +1066,47 @@ export async function compoundRewards(
 }
 
 export async function multiSwapBuy(
-  testUser1: User,
+  user: User,
   tokenIds: BN[],
   buyAmount: BN,
   maxAmountIn: BN = MAX_BALANCE
 ) {
-  const api = getApi();
-  const result = await signTx(
-    api,
-    api.tx.xyk.multiswapBuyAsset(tokenIds, buyAmount, maxAmountIn),
-    testUser1.keyRingPair
-  );
+  const account = user.keyRingPair;
+  const mangata = await getMangataInstance();
+  const tokenIdsArray: string[] = [];
+  let tokenIdsString: string;
+  tokenIds.forEach((_, index) => {
+    tokenIdsString = tokenIds[index].toString();
+    tokenIdsArray.push(tokenIdsString);
+  });
+  const result = await mangata.xyk.multiswapBuyAsset({
+    account: account,
+    amount: buyAmount,
+    maxAmountIn: maxAmountIn,
+    tokenIds: tokenIdsArray!,
+  });
   return result;
 }
 export async function multiSwapSell(
-  testUser1: User,
+  user: User,
   tokenIds: BN[],
   soldAmount: BN,
   minAmountOut: BN = BN_ONE
 ) {
-  const api = getApi();
-  const result = await signTx(
-    api,
-    api.tx.xyk.multiswapSellAsset(tokenIds, soldAmount, minAmountOut),
-    testUser1.keyRingPair
-  );
+  const account = user.keyRingPair;
+  const mangata = await getMangataInstance();
+  const tokenIdsArray: string[] = [];
+  let tokenIdsString: string;
+  tokenIds.forEach((_, index) => {
+    tokenIdsString = tokenIds[index].toString();
+    tokenIdsArray.push(tokenIdsString);
+  });
+  const result = await mangata.xyk.multiswapSellAsset({
+    account: account,
+    amount: soldAmount,
+    minAmountOut: minAmountOut,
+    tokenIds: tokenIdsArray,
+  });
   return result;
 }
 
@@ -1157,12 +1181,13 @@ export async function getRewardsInfo(
 }
 
 export async function claimRewardsAll(user: User, liquidityTokenId: BN) {
-  const api = getApi();
-  const result = await signTx(
-    api,
-    api.tx.proofOfStake.claimRewardsAll(liquidityTokenId),
-    user.keyRingPair
-  );
+  const account = user.keyRingPair;
+  const liquidityTokenIdString = liquidityTokenId.toString();
+  const mangata = await getMangataInstance();
+  const result = await mangata.xyk.claimRewards({
+    account: account,
+    liquidityTokenId: liquidityTokenIdString,
+  });
   return result;
 }
 

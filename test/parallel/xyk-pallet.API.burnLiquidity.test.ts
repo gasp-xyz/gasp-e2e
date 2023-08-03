@@ -12,6 +12,7 @@ import {
   burnLiquidity,
   calculate_buy_price_local,
   getLiquidityPool,
+  createPool,
 } from "../../utils/tx";
 import {
   waitNewBlock,
@@ -31,7 +32,6 @@ import {
   getEnvironmentRequiredVars,
 } from "../../utils/utils";
 import { getEventResultFromMangataTx } from "../../utils/txHandler";
-import { createPool } from "../../utils/tx";
 
 const { sudo: sudoUserName } = getEnvironmentRequiredVars();
 

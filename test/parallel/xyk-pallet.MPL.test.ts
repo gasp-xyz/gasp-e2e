@@ -168,12 +168,14 @@ describe("MPL: Collators", () => {
   });
   test("join as collator + activate  > acount balances are reserved + mpl checks", async () => {
     await sudo.promotePool(liqTokenForCandidate);
+
     await activateLiquidity(
       testUser1.keyRingPair,
       liqTokenForCandidate,
       liqTokensAmount,
-      "stakedunactivatedreserves"
+      "StakedUnactivatedReserves"
     );
+
     const mplStatus = await getMultiPurposeLiquidityStatus(
       testUser1.keyRingPair.address,
       liqTokenForCandidate

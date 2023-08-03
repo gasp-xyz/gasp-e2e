@@ -99,12 +99,14 @@ test("Given a user with bonded but not activated liq tokens WHEN he tries to act
     testUser1.keyRingPair.address,
     liqToken
   );
+
   await activateLiquidity(
     testUser1.keyRingPair,
     liqToken,
     minCandidate,
-    "stakedunactivatedreserves"
+    "StakedUnactivatedReserves"
   );
+
   const rewardsInfoAfter = await getRewardsInfo(
     testUser1.keyRingPair.address,
     liqToken

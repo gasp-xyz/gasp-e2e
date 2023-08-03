@@ -26,6 +26,7 @@ import {
   MangataGenericEvent,
   MangataInstance,
 } from "@mangata-finance/sdk";
+import { getEventResultFromMangataTx } from "../../utils/txHandler";
 
 const defaultCurrencyValue = new BN(10000000);
 const assetAmount = new BN("1000000000000000");
@@ -94,8 +95,9 @@ describe("rewards v2 tests", () => {
 
       await activateLiquidity(testUser1.keyRingPair, liqId, assetAmount).then(
         (result) => {
-          expect(result.state).toEqual(ExtrinsicResult.ExtrinsicFailed);
-          expect(result.data).toEqual("NotAPromotedPool");
+          const eventResponse = getEventResultFromMangataTx(result);
+          expect(eventResponse.state).toEqual(ExtrinsicResult.ExtrinsicFailed);
+          expect(eventResponse.data).toEqual("NotAPromotedPool");
         }
       );
     });
