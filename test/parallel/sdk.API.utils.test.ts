@@ -94,22 +94,10 @@ test("GIVEN buyAsset WHEN operation is confirmed AND isBuyAssetTransactionSucces
 });
 
 test("GIVEN buyAsset WHEN operation is failed AND isBuyAssetTransactionSuccessful THEN it returns false", async () => {
-  let multiSwapOutput: MangataGenericEvent[] = [];
-
-  try {
-    await signTx(
-      api,
-      api!.tx.xyk.buyAsset(
-        token1,
-        MGA_ASSET_ID,
-        Assets.DEFAULT_AMOUNT,
-        Assets.DEFAULT_AMOUNT
-      ),
-      testUser1.keyRingPair
-    );
-  } catch (result: any) {
-    multiSwapOutput = result;
-  }
+  const multiSwapOutput = await signSendFinalized(
+    Xyk.buyAsset(token1, MGA_ASSET_ID, new BN(10000)),
+    testUser1
+  );
 
   const success = isBuyAssetTransactionSuccessful(multiSwapOutput);
 
