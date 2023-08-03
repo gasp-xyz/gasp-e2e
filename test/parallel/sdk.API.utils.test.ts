@@ -7,7 +7,7 @@ import { Keyring } from "@polkadot/api";
 import { getApi, initApi } from "../../utils/api";
 import { Assets } from "../../utils/Assets";
 import { BN } from "@polkadot/util";
-import { api, setupApi, setupUsers } from "../../utils/setup";
+import { setupApi, setupUsers } from "../../utils/setup";
 import { Sudo } from "../../utils/sudo";
 import { User } from "../../utils/User";
 import { getEnvironmentRequiredVars } from "../../utils/utils";
@@ -17,10 +17,8 @@ import { multiSwapBuy, multiSwapSell } from "../../utils/tx";
 import {
   BN_TEN,
   BN_TEN_THOUSAND,
-  MangataGenericEvent,
   isBuyAssetTransactionSuccessful,
   isSellAssetTransactionSuccessful,
-  signTx,
 } from "@mangata-finance/sdk";
 import { signSendFinalized } from "../../utils/sign";
 
@@ -95,7 +93,7 @@ test("GIVEN buyAsset WHEN operation is confirmed AND isBuyAssetTransactionSucces
 
 test("GIVEN buyAsset WHEN operation is failed AND isBuyAssetTransactionSuccessful THEN it returns false", async () => {
   const multiSwapOutput = await signSendFinalized(
-    Xyk.buyAsset(token1, MGA_ASSET_ID, new BN(10000)),
+    Xyk.buyAsset(MGA_ASSET_ID, token1, new BN(1000), BN_TEN),
     testUser1
   );
 
@@ -116,22 +114,10 @@ test("GIVEN sellAsset WHEN operation is confirmed AND isSellAssetTransactionSucc
 });
 
 test("GIVEN sellAsset WHEN operation is failed AND isSellAssetTransactionSuccessful THEN it returns false", async () => {
-  let multiSwapOutput: MangataGenericEvent[] = [];
-
-  try {
-    await signTx(
-      api,
-      api!.tx.xyk.sellAsset(
-        token1,
-        MGA_ASSET_ID,
-        Assets.DEFAULT_AMOUNT,
-        Assets.DEFAULT_AMOUNT
-      ),
-      testUser1.keyRingPair
-    );
-  } catch (result: any) {
-    multiSwapOutput = result;
-  }
+  const multiSwapOutput = await signSendFinalized(
+    Xyk.sellAsset(MGA_ASSET_ID, token1, new BN(1000), BN_TEN_THOUSAND),
+    testUser1
+  );
 
   const success = isSellAssetTransactionSuccessful(multiSwapOutput);
 
@@ -197,7 +183,7 @@ test("GIVEN multiSwapSell WHEN operation is failed AND isSellAssetTransactionSuc
   expect(success).toEqual(false);
 });
 
-// test("isBuyAssetTransactionSuccessful returns empty flag in multiSwapSell", async () => {
+// test("GIVEN multiSwapSell WHEN operation is failed AND isBuyAssetTransactionSuccessful THEN it returns false", async () => {
 //   const tokenIds = [MGA_ASSET_ID, token1];
 
 //   const multiSwapOutput = await multiSwapSell(
@@ -208,5 +194,5 @@ test("GIVEN multiSwapSell WHEN operation is failed AND isSellAssetTransactionSuc
 
 //   const success = isBuyAssetTransactionSuccessful(multiSwapOutput);
 
-//   expect(success).toBeEmpty();
+//   expect(success).toEqual(false);
 // });
