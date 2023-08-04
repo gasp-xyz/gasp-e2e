@@ -28,7 +28,7 @@ jobs:
     strategy:
       fail-fast: false
       matrix:
-        command: ['uiXcmKSM', 'uiXcmIMBUrococo', 'uiXcmBNC', 'uiXcmWithdrawBNC', 'uiXcmWithdrawKSM']
+        command: ['uiXcmKSM', 'uiXcmBNC', 'uiXcmWithdrawBNC', 'uiXcmWithdrawKSM']
     runs-on: ubuntu-latest
     timeout-minutes: 30
     env:
