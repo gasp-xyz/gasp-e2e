@@ -163,7 +163,18 @@ test("GIVEN pool and solo token AND both were created at the same time AND the a
   );
 
   expect(rewardsSolo.activatedAmount).bnGt(BN_BILLION);
+  expect(rewardsSolo.missingAtLastCheckpoint).bnGt(BN_ZERO);
+  expect(rewardsSolo.poolRatioAtLastCheckpoint).bnGt(BN_ZERO);
+  expect(rewardsSolo.rewardsAlreadyClaimed).bnEqual(BN_ZERO);
+  expect(rewardsSolo.rewardsNotYetClaimed).bnGt(BN_ZERO);
+
   expect(rewardsPool.activatedAmount).bnGt(BN_BILLION);
+  expect(rewardsPool.missingAtLastCheckpoint).bnGt(BN_ZERO);
+  expect(rewardsPool.poolRatioAtLastCheckpoint).bnGt(BN_ZERO);
+  expect(rewardsPool.rewardsAlreadyClaimed).bnEqual(BN_ZERO);
+  expect(rewardsPool.rewardsNotYetClaimed).bnGt(BN_ZERO);
+
+  expect(rewardsSolo.lastCheckpoint).bnEqual(rewardsPool.lastCheckpoint);
 });
 
 test("GIVEN a solo token rewards setup, WHEN weight goes from 20 to 0 THEN no more rewards will be granted for new users or new activations", async () => {
