@@ -156,7 +156,7 @@ test("Testing that the sum of the weights can be greater than 100", async () => 
   expect(sumPoolsWeights).bnGt(BN_HUNDRED);
 });
 
-test("GIVEN a pool WHEN it has configured with 0 THEN no new issuance will be reserved AND user can't claim rewards", async () => {
+test("GIVEN a pool WHEN it has configured with 0 THEN no new issuance will be reserved AND user CAN claim remaining rewards", async () => {
   const [testUser2] = setupUsers();
 
   await Sudo.batchAsSudoFinalized(
@@ -184,16 +184,20 @@ test("GIVEN a pool WHEN it has configured with 0 THEN no new issuance will be re
 
   await claimRewardsAll(testUser1, liqId).then((result) => {
     const eventResponse = getEventResultFromMangataTx(result);
-    expect(eventResponse.state).toEqual(ExtrinsicResult.ExtrinsicFailed);
-    expect(eventResponse.data).toEqual("NotAPromotedPool");
+    expect(eventResponse.state).toEqual(ExtrinsicResult.ExtrinsicSuccess);
   });
 
+  //Validate that another user tries minting into the disabled pool.
   await mintLiquidity(
     testUser2.keyRingPair,
     MGA_ASSET_ID,
     token1,
     defaultCurrencyValue
-  );
+  ).then((result) => {
+    const eventResponse = getEventResultFromMangataTx(result);
+    expect(eventResponse.state).toEqual(ExtrinsicResult.ExtrinsicFailed);
+    expect(eventResponse.data).toEqual("NotAPromotedPool");
+  });
 
   await testUser2.refreshAmounts(AssetWallet.AFTER);
 
@@ -237,16 +241,24 @@ test("GIVEN a deactivated pool WHEN its configured with more weight, THEN reward
 test("GIVEN an activated pool WHEN pool was deactivated THEN check that pool was deleted from list of promotedPoolRewards", async () => {
   const api = getApi();
 
-  const poolWeightBefore = (await getPromotedPoolInfo(liqId)).weight;
-
+  await claimRewardsAll(testUser1, liqId).then((result) => {
+    const eventResponse = getEventResultFromMangataTx(result);
+    expect(eventResponse.state).toEqual(ExtrinsicResult.ExtrinsicSuccess);
+  });
+  const poolInfoBefore = await getPromotedPoolInfo(liqId);
   await promotePool(sudo.keyRingPair, liqId, 0);
-
+  //Test user1 should still have some rewards in the curve.
+  await waitForRewards(testUser1, liqId);
   const poolRewards = JSON.parse(
     JSON.stringify(await api.query.proofOfStake.promotedPoolRewards())
   );
+  const poolInfoAfter = await getPromotedPoolInfo(liqId);
 
-  expect(poolWeightBefore).bnGt(BN_ZERO);
-  expect(poolRewards[liqId.toString()]).toEqual(undefined);
+  expect(poolInfoBefore.weight).bnGt(BN_ZERO);
+  expect(poolInfoAfter.weight).bnEqual(BN_ZERO);
+  //rewards should not grow.
+  expect(poolInfoAfter.rewards).bnEqual(poolInfoBefore.rewards);
+  expect(poolRewards[liqId.toString()]).not.toEqual(undefined);
 });
 
 async function getPromotedPoolInfo(tokenId: BN) {
