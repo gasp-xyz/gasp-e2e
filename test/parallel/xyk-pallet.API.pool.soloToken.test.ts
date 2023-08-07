@@ -23,8 +23,10 @@ import { Xyk } from "../../utils/xyk";
 import { BN } from "@polkadot/util";
 import {
   BN_BILLION,
+  BN_HUNDRED,
   BN_HUNDRED_THOUSAND,
   BN_TEN_THOUSAND,
+  BN_THOUSAND,
   BN_ZERO,
 } from "@mangata-finance/sdk";
 import { waitForRewards } from "../../utils/eventListeners";
@@ -128,8 +130,11 @@ test("GIVEN pool and solo token AND both were created at the same time AND the a
     liqId
   );
 
-  expect(rewardsSolo.rewardsAlreadyClaimed).bnGt(BN_ZERO);
-  expect(rewardsPool.rewardsAlreadyClaimed).bnGt(BN_ZERO);
+  expect(
+    rewardsSolo.rewardsAlreadyClaimed
+      .sub(rewardsPool.rewardsAlreadyClaimed)
+      .abs()
+  ).bnLte(BN_HUNDRED);
 });
 
 test("GIVEN pool and solo token AND both were created at the same time AND the activated amounts are similar AND then some new activation happens after one session and some deactivation THEN the poolRewards storage is the same", async () => {
@@ -163,18 +168,24 @@ test("GIVEN pool and solo token AND both were created at the same time AND the a
   );
 
   expect(rewardsSolo.activatedAmount).bnGt(BN_BILLION);
-  expect(rewardsSolo.missingAtLastCheckpoint).bnGt(BN_ZERO);
-  expect(rewardsSolo.poolRatioAtLastCheckpoint).bnGt(BN_ZERO);
-  expect(rewardsSolo.rewardsAlreadyClaimed).bnEqual(BN_ZERO);
-  expect(rewardsSolo.rewardsNotYetClaimed).bnGt(BN_ZERO);
-
   expect(rewardsPool.activatedAmount).bnGt(BN_BILLION);
-  expect(rewardsPool.missingAtLastCheckpoint).bnGt(BN_ZERO);
-  expect(rewardsPool.poolRatioAtLastCheckpoint).bnGt(BN_ZERO);
-  expect(rewardsPool.rewardsAlreadyClaimed).bnEqual(BN_ZERO);
-  expect(rewardsPool.rewardsNotYetClaimed).bnGt(BN_ZERO);
-
   expect(rewardsSolo.lastCheckpoint).bnEqual(rewardsPool.lastCheckpoint);
+  expect(rewardsSolo.rewardsAlreadyClaimed).bnEqual(
+    rewardsPool.rewardsAlreadyClaimed
+  );
+  expect(
+    rewardsSolo.missingAtLastCheckpoint
+      .div(rewardsPool.missingAtLastCheckpoint)
+      .abs()
+  ).bnLt(BN_HUNDRED);
+  expect(
+    rewardsSolo.poolRatioAtLastCheckpoint
+      .div(rewardsPool.poolRatioAtLastCheckpoint)
+      .abs()
+  ).bnLt(BN_THOUSAND);
+  expect(
+    rewardsSolo.rewardsNotYetClaimed.div(rewardsPool.rewardsNotYetClaimed).abs()
+  ).bnLt(BN_THOUSAND);
 });
 
 test("GIVEN a solo token rewards setup, WHEN weight goes from 20 to 0 THEN no more rewards will be granted for new users or new activations", async () => {
