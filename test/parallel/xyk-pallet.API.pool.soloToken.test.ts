@@ -166,7 +166,7 @@ test("GIVEN pool and solo token AND both were created at the same time AND the a
   expect(rewardsPool.activatedAmount).bnGt(BN_BILLION);
 });
 
-test.skip("GIVEN a solo token rewards setup, WHEN weight goes from 20 to 0 THEN no more rewards will be granted for new users or new activations", async () => {
+test("GIVEN a solo token rewards setup, WHEN weight goes from 20 to 0 THEN no more rewards will be granted for new users or new activations", async () => {
   await Sudo.batchAsSudoFinalized(
     Sudo.sudoAs(testUser1, Xyk.activateLiquidity(token1, BN_BILLION))
   );
@@ -190,7 +190,8 @@ test.skip("GIVEN a solo token rewards setup, WHEN weight goes from 20 to 0 THEN 
     liquidityTokenId: token1.toString(),
   });
 
-  expect(rewardsAfter).bnEqual(rewardsBefore);
+  expect(rewardsBefore).bnGt(BN_ZERO);
+  expect(rewardsAfter).bnEqual(BN_ZERO);
 
   await Sudo.batchAsSudoFinalized(Assets.promotePool(token1.toNumber(), 20));
 });
