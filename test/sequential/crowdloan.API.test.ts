@@ -87,7 +87,7 @@ test("Only sudo can crowdloan.setCrowdloanAllocation(crowdloanAllocationAmount)"
   expect(eventResponse.data).toEqual("UnknownError");
 
   const sudoSetCrowdloanAllocation = await Sudo.batchAsSudoFinalized(
-    Sudo.sudoAs(sudo, api.tx.crowdloan.setCrowdloanAllocation(millionNative))
+    Sudo.sudo(api.tx.crowdloan.setCrowdloanAllocation(millionNative))
   );
 
   await waitSudoOperationSuccess(sudoSetCrowdloanAllocation);
