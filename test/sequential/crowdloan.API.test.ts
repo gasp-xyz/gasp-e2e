@@ -10,8 +10,7 @@ import { BN } from "@polkadot/util";
 import { setupApi, setupUsers } from "../../utils/setup";
 import { Sudo } from "../../utils/sudo";
 import { User } from "../../utils/User";
-import { getEnvironmentRequiredVars } from "../../utils/utils";
-import { Xyk } from "../../utils/xyk";
+import { getBlockNumber, getEnvironmentRequiredVars } from "../../utils/utils";
 import { MGA_ASSET_ID } from "../../utils/Constants";
 import { signTx } from "@mangata-finance/sdk";
 import { getEventResultFromMangataTx } from "../../utils/txHandler";
@@ -26,15 +25,12 @@ process.env.NODE_ENV = "test";
 
 const { sudo: sudoUserName } = getEnvironmentRequiredVars();
 let testUser1: User;
+let testUser2: User;
 let api: ApiPromise;
 let sudo: User;
 let keyring: Keyring;
-let firstToken: BN;
-let secondToken: BN;
 const millionNative = new BN("1000000000000000000000000");
 const nativeCurrencyId = MGA_ASSET_ID;
-const defaultCurrencyValue = new BN(10000000);
-const defaultPoolVolumeValue = new BN(1000000);
 
 beforeAll(async () => {
   try {
@@ -46,31 +42,15 @@ beforeAll(async () => {
 
   api = getApi();
   sudo = new User(keyring, sudoUserName);
-});
 
-beforeEach(async () => {
   await setupApi();
 
   [testUser1] = setupUsers();
 
-  [firstToken, secondToken] = await Assets.setupUserWithCurrencies(
-    testUser1,
-    [defaultCurrencyValue, defaultCurrencyValue],
-    sudo
-  );
   testUser1.addAsset(nativeCurrencyId);
   await Sudo.batchAsSudoFinalized(
     Assets.mintNative(sudo),
-    Assets.mintNative(testUser1),
-    Sudo.sudoAs(
-      testUser1,
-      Xyk.createPool(
-        firstToken,
-        defaultPoolVolumeValue,
-        secondToken,
-        defaultPoolVolumeValue
-      )
-    )
+    Assets.mintNative(testUser1)
   );
 });
 
@@ -91,4 +71,98 @@ test("Only sudo can crowdloan.setCrowdloanAllocation(crowdloanAllocationAmount)"
   );
 
   await waitSudoOperationSuccess(sudoSetCrowdloanAllocation);
+});
+
+test("Only sudo can crowdloan initializeRewardVec(rewards)", async () => {
+  [testUser2] = setupUsers();
+
+  await Sudo.batchAsSudoFinalized(
+    Assets.mintNative(testUser2),
+    Sudo.sudo(api.tx.crowdloan.setCrowdloanAllocation(millionNative))
+  );
+
+  const userInitializeRewardVec = await signTx(
+    api,
+    api.tx.crowdloan.initializeRewardVec([
+      [
+        testUser1.keyRingPair.address,
+        testUser1.keyRingPair.address,
+        millionNative.divn(2),
+      ],
+      [
+        testUser2.keyRingPair.address,
+        testUser2.keyRingPair.address,
+        millionNative.divn(2),
+      ],
+    ]),
+    testUser1.keyRingPair
+  );
+
+  const eventResponse = getEventResultFromMangataTx(userInitializeRewardVec);
+
+  expect(eventResponse.state).toEqual(ExtrinsicResult.ExtrinsicFailed);
+  expect(eventResponse.data).toEqual("UnknownError");
+
+  const sudoInitializeRewardVec = await Sudo.batchAsSudoFinalized(
+    Sudo.sudo(
+      api.tx.crowdloan.initializeRewardVec([
+        [
+          testUser1.keyRingPair.address,
+          testUser1.keyRingPair.address,
+          millionNative.divn(2),
+        ],
+        [
+          testUser2.keyRingPair.address,
+          testUser2.keyRingPair.address,
+          millionNative.divn(2),
+        ],
+      ])
+    )
+  );
+
+  await waitSudoOperationSuccess(sudoInitializeRewardVec);
+});
+
+test("Only sudo can crowdloan.completeInitialization(leaseEndingBlock)", async () => {
+  [testUser2] = setupUsers();
+
+  await Sudo.batchAsSudoFinalized(
+    Assets.mintNative(testUser2),
+    Sudo.sudo(api.tx.crowdloan.setCrowdloanAllocation(millionNative))
+  );
+  await Sudo.batchAsSudoFinalized(
+    Sudo.sudo(
+      api.tx.crowdloan.initializeRewardVec([
+        [
+          testUser1.keyRingPair.address,
+          testUser2.keyRingPair.address,
+          millionNative.divn(2),
+        ],
+        [
+          testUser2.keyRingPair.address,
+          testUser2.keyRingPair.address,
+          millionNative.divn(2),
+        ],
+      ])
+    )
+  );
+
+  const leaseEndingBlock = (await getBlockNumber()) + 10;
+
+  const userInitializeRewardVec = await signTx(
+    api,
+    api.tx.crowdloan.completeInitialization(leaseEndingBlock),
+    testUser1.keyRingPair
+  );
+
+  const eventResponse = getEventResultFromMangataTx(userInitializeRewardVec);
+
+  expect(eventResponse.state).toEqual(ExtrinsicResult.ExtrinsicFailed);
+  expect(eventResponse.data).toEqual("UnknownError");
+
+  const sudoInitializeRewardVec = await Sudo.batchAsSudoFinalized(
+    Sudo.sudo(api.tx.crowdloan.completeInitialization(leaseEndingBlock))
+  );
+
+  await waitSudoOperationSuccess(sudoInitializeRewardVec);
 });
