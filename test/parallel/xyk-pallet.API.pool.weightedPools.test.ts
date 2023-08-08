@@ -18,7 +18,11 @@ import {
   promotePool,
 } from "../../utils/tx";
 import { AssetWallet, User } from "../../utils/User";
-import { getEnvironmentRequiredVars, stringToBN } from "../../utils/utils";
+import {
+  getEnvironmentRequiredVars,
+  stringToBN,
+  waitForNBlocks,
+} from "../../utils/utils";
 import { Xyk } from "../../utils/xyk";
 import { ExtrinsicResult, waitForRewards } from "../../utils/eventListeners";
 import { getEventResultFromMangataTx } from "../../utils/txHandler";
@@ -240,11 +244,12 @@ test("GIVEN a deactivated pool WHEN its configured with more weight, THEN reward
 
 test("GIVEN an activated pool WHEN pool was deactivated THEN check that the user will still get some rewards from the curve, and storage is updated", async () => {
   const api = getApi();
-
+  await waitForRewards(testUser1, liqId);
   await claimRewardsAll(testUser1, liqId).then((result) => {
     const eventResponse = getEventResultFromMangataTx(result);
     expect(eventResponse.state).toEqual(ExtrinsicResult.ExtrinsicSuccess);
   });
+  await waitForNBlocks(1);
   const poolInfoBefore = await getPromotedPoolInfo(liqId);
   await promotePool(sudo.keyRingPair, liqId, 0);
   //Test user1 should still have some rewards in the curve.
