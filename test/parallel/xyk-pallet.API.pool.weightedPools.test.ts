@@ -5,7 +5,7 @@
  */
 import { jest } from "@jest/globals";
 import { Keyring } from "@polkadot/api";
-import { getApi, initApi } from "../../utils/api";
+import { getApi, getMangataInstance, initApi } from "../../utils/api";
 import { Assets } from "../../utils/Assets";
 import { MGA_ASSET_ID } from "../../utils/Constants";
 import { BN_HUNDRED, BN_ZERO, signTx } from "@mangata-finance/sdk";
@@ -237,7 +237,7 @@ test("GIVEN a deactivated pool WHEN its configured with more weight, THEN reward
   expect(poolRewardsAfter).bnGt(poolRewardsBefore);
 });
 
-test("GIVEN an activated pool WHEN pool was deactivated THEN check that pool was deleted from list of promotedPoolRewards", async () => {
+test("GIVEN an activated pool WHEN pool was deactivated THEN check that the user will still get some rewards from the curve, and storage is updated", async () => {
   const api = getApi();
 
   await claimRewardsAll(testUser1, liqId).then((result) => {
@@ -252,12 +252,19 @@ test("GIVEN an activated pool WHEN pool was deactivated THEN check that pool was
     JSON.stringify(await api.query.proofOfStake.promotedPoolRewards())
   );
   const poolInfoAfter = await getPromotedPoolInfo(liqId);
-
+  const mangata = await getMangataInstance(
+    getEnvironmentRequiredVars().chainUri
+  );
+  const rewardsAfterDisablePool = await mangata.rpc.calculateRewardsAmount({
+    address: testUser1.keyRingPair.address,
+    liquidityTokenId: liqId.toString(),
+  });
   expect(poolInfoBefore.weight).bnGt(BN_ZERO);
   expect(poolInfoAfter.weight).bnEqual(BN_ZERO);
   //rewards should not grow.
   expect(poolInfoAfter.rewards).bnEqual(poolInfoBefore.rewards);
   expect(poolRewards[liqId.toString()]).not.toEqual(undefined);
+  expect(rewardsAfterDisablePool).bnGt(BN_ZERO);
 });
 
 async function getPromotedPoolInfo(tokenId: BN) {
