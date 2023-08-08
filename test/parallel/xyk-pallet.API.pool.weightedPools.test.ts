@@ -47,12 +47,11 @@ beforeAll(async () => {
   // setup users
   sudo = new User(keyring, sudoUserName);
 
-  [testUser1] = setupUsers();
-
   await setupApi();
 });
 
 beforeEach(async () => {
+  [testUser1] = setupUsers();
   [token1] = await Assets.setupUserWithCurrencies(
     sudo,
     [defaultCurrencyValue, defaultCurrencyValue],
@@ -86,7 +85,9 @@ beforeEach(async () => {
     )
   );
 });
-
+afterEach(async () => {
+  await Sudo.batchAsSudoFinalized(Assets.promotePool(liqId.toNumber(), 0));
+});
 test("Check that we can get the list of promoted pools with proofOfStake.promotedPoolRewards data storage", async () => {
   const poolWeight = (await getPromotedPoolInfo(liqId)).weight;
 
