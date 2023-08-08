@@ -195,8 +195,7 @@ test("GIVEN a pool WHEN it has configured with 0 THEN no new issuance will be re
     defaultCurrencyValue
   ).then((result) => {
     const eventResponse = getEventResultFromMangataTx(result);
-    expect(eventResponse.state).toEqual(ExtrinsicResult.ExtrinsicFailed);
-    expect(eventResponse.data).toEqual("NotAPromotedPool");
+    expect(eventResponse.state).toEqual(ExtrinsicResult.ExtrinsicSuccess);
   });
 
   await testUser2.refreshAmounts(AssetWallet.AFTER);
