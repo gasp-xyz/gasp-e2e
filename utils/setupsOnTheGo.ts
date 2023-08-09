@@ -4,7 +4,7 @@ import BN from "bn.js";
 import { Assets } from "./Assets";
 import { MGA_ASSET_ID, MAX_BALANCE } from "./Constants";
 import { waitForRewards } from "./eventListeners";
-import { Extrinsic, setupApi, setupUsers } from "./setup";
+import { Extrinsic, eve, setupApi, setupUsers } from "./setup";
 import { Sudo } from "./sudo";
 import { xxhashAsHex } from "@polkadot/util-crypto";
 
@@ -795,29 +795,61 @@ export async function getTokensAccountDataStorage(ws = "ws://127.0.0.1:9946") {
     }
   }
 }
+export async function testTokensForUsers() {
+  await setupApi();
+  await setupUsers();
+  const api = await getApi();
+  const availableAssetsInfo = await api.query.assetRegistry.metadata.entries();
+  const tokens: any[] = [];
+  availableAssetsInfo.forEach((tokenEntry) => {
+    tokens.push([(tokenEntry[0].toHuman() as [1])[0], tokenEntry[1].toHuman()]);
+  });
+  const txs: Extrinsic[] = [];
+  await Sudo.batchAsSudoFinalized(Assets.mintNative(eve));
+  tokens.forEach((token: any) => {
+    if (
+      !(JSON.parse(JSON.stringify(token[1])).name as string).includes(
+        "Liquidity"
+      )
+    ) {
+      txs.push(Assets.mintToken(new BN(token[0]), eve));
+    }
+  });
+  await Sudo.batchAsSudoFinalized(...txs);
+}
 export async function migrate() {
   await setupApi();
   await setupUsers();
   await initApi("wss://kusama-archive.mangata.online");
   const api = await getApi();
   const allPallets = await listStorages();
-  const storageToMigrate = allPallets
+  const storageToMigrate1 = allPallets
+    .filter((x: any) => x[0] === "AssetRegistry" || x[0] === "Xyk")
+    .flatMap((item: any) =>
+      item[1].map((element: any) => {
+        return [item[0], element];
+      })
+    );
+  const storageToMigrate2 = allPallets
     .filter(
-      (x: any) => x[0] === "Xyk" // || x[0] === "ProofOfStake" || x[0] === "Tokens"
-      //        x[0] === "Vesting" ||
-      //        x[0] === "MultiPurposeLiquidity" ||
-      //        x[0] === "AssetRegistry" ||
-      //        x[0] === "Crowdloan" ||
-      //        x[0] === "Bootstrap" ||
-      //        x[0] === "OrmlXcm" ||
-      //        x[0] === "RewardsInfo" ||
-      //        x[0] === "Issuance"
+      (x: any) =>
+        x[0] === "ProofOfStake" ||
+        x[0] === "Tokens" ||
+        x[0] === "RewardsInfo" ||
+        x[0] === "Issuance" ||
+        x[0] === "MultiPurposeLiquidity" ||
+        x[0] === "Vesting" ||
+        x[0] === "Crowdloan" ||
+        x[0] === "Bootstrap" ||
+        x[0] === "OrmlXcm"
+      //        x[0] === "System"
     )
     .flatMap((item: any) =>
       item[1].map((element: any) => {
         return [item[0], element];
       })
     );
+  const storageToMigrate = (storageToMigrate1 as []).concat(storageToMigrate2);
   console.info(JSON.stringify(storageToMigrate));
   //  const data = [
   //    ["Xyk", "RewardsInfo"],
@@ -829,11 +861,13 @@ export async function migrate() {
   //    ["Xyk", "LiquidityMiningUserClaimed"],
   //    ["Xyk", "LiquidityMiningActivePoolV2"],
   //  ];
+
   for (let dataId = 0; dataId < storageToMigrate.length; dataId++) {
     const key = getStorageKey(
       storageToMigrate[dataId][0],
       storageToMigrate[dataId][1]
     );
+    console.info("starting with.." + JSON.stringify(storageToMigrate[dataId]));
     let allKeys = [];
     let cont = true;
     let keys = await api.rpc.state.getKeysPaged(key, 100);
@@ -843,8 +877,13 @@ export async function migrate() {
         const storage = await api.rpc.state.getStorage<Codec>(keys[index]);
         allKeys.push([keys[index], storage]);
       }
-      const nextkeys = await api.rpc.state.getKeysPaged(key, 100, keys[99]);
-      if (loop % 50 === 0) {
+      console.info("Found:" + JSON.stringify(allKeys.length));
+      const nextkeys = await api.rpc.state.getKeysPaged(
+        key,
+        100,
+        keys[keys.length - 1]
+      );
+      if (loop % 8 === 0) {
         const txs: Extrinsic[] = [];
         allKeys.forEach((x) => {
           const storageKey = api.createType("StorageKey", x[0]);
@@ -858,7 +897,7 @@ export async function migrate() {
         await Sudo.batchAsSudoFinalized(...txs);
         allKeys = [];
       }
-      if (nextkeys.includes(keys[99]) || nextkeys.length === 0) {
+      if (nextkeys.includes(keys[keys.length - 1]) || nextkeys.length === 0) {
         cont = false;
       } else {
         keys = nextkeys;

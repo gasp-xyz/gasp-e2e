@@ -23,6 +23,7 @@ import {
   provisionWith100Users,
   findAllRewardsAndClaim,
   setupTokenWithRewardsForDefaultUsers,
+  testTokensForUsers,
 } from "../utils/setupsOnTheGo";
 import {
   findErrorMetadata,
@@ -36,6 +37,10 @@ import { Keyring } from "@polkadot/api";
 import { getApi, initApi } from "../utils/api";
 import { User } from "../utils/User";
 import { BN, BN_ZERO, Mangata } from "@mangata-finance/sdk";
+import { encodeAddress } from "@polkadot/keyring";
+import { stringToU8a, bnToU8a, u8aConcat } from "@polkadot/util";
+import { Sudo } from "../utils/sudo";
+import { setupApi, setupUsers } from "../utils/setup";
 
 async function app(): Promise<any> {
   return inquirer
@@ -68,6 +73,9 @@ async function app(): Promise<any> {
         "provisionWith100Users",
         "find and claim all rewards",
         "Setup token rewards with default users",
+        "slibing",
+        "proof crowdloan",
+        "testTokensForUsers",
       ],
     })
     .then(async (answers: { option: string | string[] }) => {
@@ -392,6 +400,9 @@ async function app(): Promise<any> {
       if (answers.option.includes("migrateData")) {
         await migrate();
       }
+      if (answers.option.includes("testTokensForUsers")) {
+        await testTokensForUsers();
+      }
       if (answers.option.includes("user aggregates with")) {
         return inquirer
           .prompt([
@@ -430,6 +441,44 @@ async function app(): Promise<any> {
       }
       if (answers.option.includes("find and claim all rewards")) {
         await findAllRewardsAndClaim();
+      }
+      if (answers.option.includes("slibing")) {
+        const EMPTY_U8A_32 = new Uint8Array(32);
+        const ass = encodeAddress(
+          u8aConcat(stringToU8a("para"), bnToU8a(2110), EMPTY_U8A_32).subarray(
+            0,
+            32
+          )
+        );
+        console.log(ass);
+      }
+      if (answers.option.includes("proof crowdloan")) {
+        const keyring = new Keyring({ type: "ed25519" });
+        const relayAcc = keyring.addFromMnemonic("//Bob");
+        const keyringMga = new Keyring({ type: "sr25519" });
+        const accMga = keyringMga.addFromMnemonic("//Bob");
+        const message = new Uint8Array([
+          ...stringToU8a("<Bytes>"),
+          ...stringToU8a("mangata-"),
+          ...accMga.addressRaw,
+          ...stringToU8a("</Bytes>"),
+        ]);
+        await initApi();
+        await setupUsers();
+        await setupApi();
+        const api = await getApi();
+        const signature = {
+          Ed25519: relayAcc.sign(message),
+        };
+        const tx = Sudo.sudo(
+          api.tx.crowdloan.associateNativeIdentity(
+            accMga.address,
+            relayAcc.address,
+            signature
+          )
+        );
+        await Sudo.batchAsSudoFinalized(tx);
+        console.log(message.toString());
       }
       return app();
     });
