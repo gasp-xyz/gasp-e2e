@@ -43,12 +43,16 @@ describe("Validate initial status", () => {
     } catch (e) {
       await initApi();
     }
+  });
+
+  beforeEach(async () => {
+    await setupApi();
     keyring = new Keyring({ type: "sr25519" });
 
     // setup users
     sudo = new User(keyring, sudoUserName);
 
-    [testUser] = setupUsers();
+    [testUser, testUser1] = setupUsers();
 
     await setupApi();
 
@@ -73,16 +77,8 @@ describe("Validate initial status", () => {
         )
       )
     );
-
     liqId = await getLiquidityAssetId(MGA_ASSET_ID, token1);
-
     await Sudo.batchAsSudoFinalized(Assets.promotePool(liqId.toNumber(), 20));
-  });
-
-  beforeEach(async () => {
-    await setupApi();
-
-    [testUser1] = setupUsers();
 
     await Sudo.batchAsSudoFinalized(
       Assets.mintToken(token1, testUser1, Assets.DEFAULT_AMOUNT),
