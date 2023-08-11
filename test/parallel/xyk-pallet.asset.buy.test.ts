@@ -4,6 +4,7 @@
  * @group asset
  * @group parallel
  */
+import { jest } from "@jest/globals";
 import { getApi, initApi } from "../../utils/api";
 import {
   calculate_buy_price_local,
@@ -268,5 +269,5 @@ test("xyk-pallet - AssetsOperation: buyAsset [maxAmountIn = 1M], sell a bought a
   expect([
     poolBalanceBefore[0].add(buyPriceLocal).sub(bothFees),
     poolBalanceBefore[1].sub(amount),
-  ]).toEqual(pool_balance);
+  ]).collectionBnEqual(pool_balance);
 });

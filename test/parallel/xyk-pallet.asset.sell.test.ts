@@ -4,6 +4,7 @@
  * @group asset
  * @group parallel
  */
+import { jest } from "@jest/globals";
 import { getApi, initApi } from "../../utils/api";
 import {
   calculate_sell_price_local,

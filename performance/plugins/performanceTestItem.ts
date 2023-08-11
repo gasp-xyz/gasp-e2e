@@ -1,7 +1,11 @@
 /* eslint-disable no-console */
 import { Keyring } from "@polkadot/api";
 import { BN } from "@polkadot/util";
-import { Mangata, MangataGenericEvent } from "@mangata-finance/sdk";
+import {
+  Mangata,
+  MangataGenericEvent,
+  MangataInstance,
+} from "@mangata-finance/sdk";
 import { testLog } from "../../utils/Logger";
 import { TestParams } from "../testParams";
 import { TestItem } from "./testItem";
@@ -23,6 +27,7 @@ import { User } from "../../utils/User";
 import { getEnvironmentRequiredVars } from "../../utils/utils";
 import { SudoUser } from "../../utils/Framework/User/SudoUser";
 import { quantile } from "simple-statistics";
+import ipc from "node-ipc";
 
 function seedFromNum(seed: number): string {
   const guid = Guid.create().toString();
@@ -32,7 +37,7 @@ function seedFromNum(seed: number): string {
 export class performanceTestItem implements TestItem {
   mgaNodeandUsers = new Map<
     number,
-    { mgaSdk: Mangata; users: { nonce: BN; keyPair: KeyringPair }[] }
+    { mgaSdk: MangataInstance; users: { nonce: BN; keyPair: KeyringPair }[] }
   >();
 
   enqueued: Promise<[number, number][]> = new Promise<[number, number][]>(
@@ -56,15 +61,13 @@ export class performanceTestItem implements TestItem {
     console.info("helo world");
     console.info(testParams.nodes);
     const mga = await getMangata(testParams.nodes[0]!);
-    const api = await mga.getApi();
+    const api = await mga.api();
     const { sudo } = getEnvironmentRequiredVars();
     const keyring = new Keyring({ type: "sr25519" });
     const sudoKeyringPair = keyring.createFromUri(sudo);
     const nonce = await api.rpc.system.accountNextIndex(
       sudoKeyringPair.address
     );
-
-    const ipc = require("node-ipc").default;
     ipc.config.id = "nonceManager";
     ipc.config.retry = 1500;
     ipc.config.silent = false;
@@ -89,7 +92,7 @@ export class performanceTestItem implements TestItem {
     console.info("helo world 2");
     console.info(testParams.nodes);
     const mga = await getMangata(testParams.nodes[0]!);
-    const api = await mga.getApi();
+    const api = await mga.api();
     this.executed = trackExecutedExtrinsics(api, testParams.duration);
     this.enqueued = trackEnqueuedExtrinsics(api, testParams.duration);
     this.pending = trackPendingExtrinsics(api, testParams.duration);
@@ -166,7 +169,7 @@ export class performanceTestItem implements TestItem {
 
   async teardown(): Promise<boolean> {
     const apis = await Promise.all(
-      [...this.mgaNodeandUsers.values()].map(({ mgaSdk }) => mgaSdk.getApi())
+      [...this.mgaNodeandUsers.values()].map(({ mgaSdk }) => mgaSdk.api())
     );
     await Promise.all(apis.map((api) => api.disconnect()));
     await this.ipc.server.stop();
@@ -229,12 +232,12 @@ export class performanceTestItem implements TestItem {
 
       const users: { nonce: BN; keyPair: KeyringPair }[] = [];
       testLog.getLog().info("Fetching nonces for node " + nodeNumber);
-      let sudoNonce = await mga.getNonce(sudo.keyRingPair.address);
+      let sudoNonce = await mga.query.getNonce(sudo.keyRingPair.address);
       //lets create as many of users as threads.
       for (let i = 0; i < numberOfThreads; i++) {
         const stringSeed = seedFromNum(i);
         const keyPair = keyring.addFromUri(stringSeed);
-        const nonce = await mga.getNonce(keyPair.address);
+        const nonce = await mga.query.getNonce(keyPair.address);
         //lets mint some MGA assets to pay fees
         // eslint-disable-next-line no-loop-func
         assets.forEach((assetId) => {
@@ -263,7 +266,7 @@ export class performanceTestItem implements TestItem {
     tokenIds: number[],
     mgaNodeandUsers: Map<
       number,
-      { mgaSdk: Mangata; users: { nonce: BN; keyPair: KeyringPair }[] }
+      { mgaSdk: MangataInstance; users: { nonce: BN; keyPair: KeyringPair }[] }
     >
   ) {
     const keyring = new Keyring({ type: "sr25519" });
@@ -272,11 +275,11 @@ export class performanceTestItem implements TestItem {
     for (let nodeNumber = 0; nodeNumber < mgaNodeandUsers.size; nodeNumber++) {
       const mga = mgaNodeandUsers.get(nodeNumber)?.mgaSdk!;
       const users = mgaNodeandUsers.get(nodeNumber)?.users!;
-      const mgaNode = new Node(mga.getUrls()[0]);
+      const mgaNode = new Node(mga.util.getUrls()[0]);
       const sudo = UserFactory.createUser(Users.SudoUser, keyring, mgaNode);
 
       testLog.getLog().info("Fetching nonces for node " + nodeNumber);
-      let sudoNonce = await mga.getNonce(sudo.keyRingPair.address);
+      let sudoNonce = await mga.query.getNonce(sudo.keyRingPair.address);
       //lets create as many of users as threads.
       for (let i = 0; i < users.length; i++) {
         for (let tokenId = 0; tokenId < tokenIds.length; tokenId++) {
@@ -310,7 +313,7 @@ export class performanceTestItem implements TestItem {
       for (let i = 0; i < numberOfThreads; i++) {
         const stringSeed = seedFromNum(i);
         const keyPair = keyring.addFromUri(stringSeed);
-        const nonce = await mga.getNonce(keyPair.address);
+        const nonce = await mga.query.getNonce(keyPair.address);
         users.push({ nonce: nonce, keyPair: keyPair });
       }
       this.mgaNodeandUsers.set(nodeNumber, { mgaSdk: mga, users: users });
@@ -322,7 +325,7 @@ export class performanceTestItem implements TestItem {
     liqAssetId: number,
     mgaNodeandUsers: Map<
       number,
-      { mgaSdk: Mangata; users: { nonce: BN; keyPair: KeyringPair }[] }
+      { mgaSdk: MangataInstance; users: { nonce: BN; keyPair: KeyringPair }[] }
     >
   ) {
     const transferPromises = [];
@@ -332,7 +335,7 @@ export class performanceTestItem implements TestItem {
       const users = mgaNodeandUsers.get(nodeNumber)?.users!;
 
       testLog.getLog().info("Fetching nonces for node " + nodeNumber);
-      let userNonce = await mga.getNonce(user.keyRingPair.address);
+      let userNonce = await mga.query.getNonce(user.keyRingPair.address);
       //lets create as many of users as threads.
       for (let i = 0; i < users.length; i++) {
         transferPromises.push(
@@ -355,7 +358,7 @@ export class performanceTestItem implements TestItem {
 }
 
 export async function getMangata(node: string) {
-  const mga = Mangata.getInstance([node]);
+  const mga = Mangata.instance([node]);
   const api = await initApi(node);
   await api.isReady;
   return mga;

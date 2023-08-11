@@ -5,6 +5,8 @@
  * npx ts-node index.ts --runInBand
  * If you want to define the url ( default is localhost:9946 )
  * API_URL="wss://mangata-x.api.onfinality.io/public-ws"  npx ts-node ./index.ts --runInBand
+ * or:
+ * node --experimental-specifier-resolution=node --loader ts-node/esm --experimental-vm-modules  ./index.ts --runInBand
  */
 import inquirer from "inquirer";
 import {
@@ -334,9 +336,10 @@ async function app(): Promise<any> {
           });
       }
       if (answers.option.includes("get pools")) {
-        const uri = getEnvironmentRequiredVars().chainUri;
-        const mga = Mangata.getInstance([uri]);
-        const pools = mga.getPools();
+        const mga = Mangata.instance([
+          "wss://prod-kusama-collator-01.mangatafinance.cloud",
+        ]);
+        const pools = mga.query.getPools();
         (await pools).forEach((pool) => console.info(JSON.stringify(pool)));
         return app();
       }

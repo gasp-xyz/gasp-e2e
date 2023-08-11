@@ -2,6 +2,7 @@
  *
  * @group multiswap
  */
+import { jest } from "@jest/globals";
 import { getApi, initApi } from "../../utils/api";
 import {
   multiSwapBuy,
@@ -16,6 +17,7 @@ import {
   feeLockErrors,
   getEnvironmentRequiredVars,
   getUserBalanceOfToken,
+  stringToBN,
 } from "../../utils/utils";
 import { setupApi, setup5PoolsChained } from "../../utils/setup";
 import { getEventResultFromMangataTx } from "../../utils/txHandler";
@@ -71,6 +73,10 @@ describe("Multiswap - error cases: disabled tokens", () => {
     async (position: number) => {
       await Assets.disableToken(tokenIds[position]);
       const testUser1 = users[0];
+      const tokenBefore = await getUserBalanceOfToken(
+        tokenIds[tokenIds.length - 1],
+        testUser1
+      );
       const multiSwapOutput = await multiSwapBuy(
         testUser1,
         tokenIds,
@@ -80,7 +86,7 @@ describe("Multiswap - error cases: disabled tokens", () => {
 
       const eventResponse = getEventResultFromMangataTx(multiSwapOutput, [
         "xyk",
-        "MultiBuyAssetFailedOnAtomicSwap",
+        "MultiSwapAssetFailedOnAtomicSwap",
       ]);
       expect(eventResponse.state).toEqual(ExtrinsicResult.ExtrinsicSuccess);
 
@@ -88,7 +94,7 @@ describe("Multiswap - error cases: disabled tokens", () => {
         tokenIds[tokenIds.length - 1],
         testUser1
       );
-      expect(boughtTokens.free).bnEqual(BN_ZERO);
+      expect(tokenBefore.free.sub(boughtTokens.free)).bnEqual(BN_ZERO);
     }
   );
 });
@@ -106,11 +112,11 @@ describe("Multiswap - error cases: pool status & gasless integration", () => {
   test("[gasless] High value swaps are disabled on multiswap", async () => {
     const testUser0 = users[0];
     const meta = await api.query.feeLock.feeLockMetadata();
-    const threshold = new BN(
-      JSON.parse(JSON.stringify(meta)).swapValueThreshold as any as BN
+    const threshold = stringToBN(
+      JSON.parse(JSON.stringify(meta)).swapValueThreshold.toString()
     );
-    const feeLockAmount = new BN(
-      JSON.parse(JSON.stringify(meta)).feeLockAmount as any as BN
+    const feeLockAmount = stringToBN(
+      JSON.parse(JSON.stringify(meta)).feeLockAmount.toString()
     );
     let tokenList = tokenIds.concat(MGA_ASSET_ID);
     tokenList = tokenList.reverse();
@@ -132,8 +138,8 @@ describe("Multiswap - error cases: pool status & gasless integration", () => {
     await Sudo.batchAsSudoFinalized(Assets.mintToken(tokenIds[0], testUser1));
     const meta = await api.query.feeLock.feeLockMetadata();
     //TODO:Update whitelist!
-    const threshold = new BN(
-      JSON.parse(JSON.stringify(meta)).swapValueThreshold as any as BN
+    const threshold = stringToBN(
+      JSON.parse(JSON.stringify(meta)).swapValueThreshold.toString()
     );
 
     await updateFeeLockMetadata(
@@ -165,7 +171,7 @@ describe("Multiswap - error cases: pool status & gasless integration", () => {
     );
     await testUser.refreshAmounts(AssetWallet.AFTER);
     const swapErrorEvent = await getEventResultFromMangataTx(events, [
-      "MultiSwapFailedDueToNotEnoughAssets",
+      "MultiSwapAssetFailedOnAtomicSwap",
     ]);
     expect(swapErrorEvent.state).toEqual(ExtrinsicResult.ExtrinsicSuccess);
     const diff = testUser.getWalletDifferences();
@@ -184,7 +190,7 @@ describe("Multiswap - error cases: pool status & gasless integration", () => {
     );
     await testUser.refreshAmounts(AssetWallet.AFTER);
     const swapErrorEvent = await getEventResultFromMangataTx(events, [
-      "MultiSellAssetFailedOnAtomicSwap",
+      "MultiSwapAssetFailedOnAtomicSwap",
     ]);
     expect(swapErrorEvent.state).toEqual(ExtrinsicResult.ExtrinsicSuccess);
     const diff = testUser.getWalletDifferences();

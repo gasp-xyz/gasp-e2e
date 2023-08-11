@@ -4,6 +4,7 @@
  * @group bootstrap
  * @group sequential
  */
+import { jest } from "@jest/globals";
 import { getApi, initApi } from "../../utils/api";
 import {
   getLiquidityAssetId,
@@ -23,7 +24,7 @@ import {
   getBalanceOfPool,
 } from "../../utils/txHandler";
 import { MGA_ASSET_ID } from "../../utils/Constants";
-import { BN } from "@mangata-finance/sdk";
+import { BN } from "@polkadot/util";
 import { setupApi, setupUsers } from "../../utils/setup";
 import {
   checkLastBootstrapFinalized,

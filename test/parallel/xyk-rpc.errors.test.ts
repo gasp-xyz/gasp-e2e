@@ -4,6 +4,7 @@
  * @group errors
  * @group parallel
  */
+import { jest } from "@jest/globals";
 import { getApi, initApi } from "../../utils/api";
 import {
   calculate_buy_price_id_rpc,

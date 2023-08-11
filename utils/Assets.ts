@@ -15,6 +15,7 @@ import {
   sudoIssueAsset,
 } from "./txHandler";
 import { User } from "./User";
+import { MangataTypesAssetsCustomMetadata } from "@polkadot/types/lookup";
 
 export class Assets {
   static MG_UNIT: BN = BN_TEN.pow(new BN(18));
@@ -155,7 +156,7 @@ export class Assets {
   static initIssuance(): Extrinsic {
     return Sudo.sudo(api!.tx.issuance.initIssuanceConfig());
   }
-  static promotePool(liquidityId: number, weight: number | null): Extrinsic {
+  static promotePool(liquidityId: number, weight: number = 20): Extrinsic {
     return Sudo.sudo(
       api!.tx.proofOfStake.updatePoolPromotion(liquidityId, weight)
     );
@@ -183,25 +184,30 @@ export class Assets {
             xyk: xykMetadata,
           },
         },
+        //@ts-ignore
         api.createType("Option<u32>", assetId)
       )
     );
   }
 
   static updateAsset(assetId: number | BN, update: UpdateAsset): Extrinsic {
+    const optional = update.decimals
+      ? api.createType("Option<u32>", update.decimals)
+      : null;
     return Sudo.sudo(
       api.tx.assetRegistry.updateAsset(
         assetId,
-        api.createType("Option<u32>", update.decimals),
+        //@ts-ignore
+        optional,
         api.createType("Vec<u8>", update.name),
         api.createType("Vec<u8>", update.symbol),
         null,
         update.location
           ? update.location.location
-            ? { V1: update.location } // Some(location)
+            ? { V2: update.location } // Some(location)
             : api.createType("Vec<u8>", "0x0100") // Some(None)
           : null, // None
-        { additional: update.metadata }
+        update.metadata!
       )
     );
   }
@@ -223,8 +229,16 @@ export class Assets {
         tokenId
       );
     } else {
+      const metadata: MangataTypesAssetsCustomMetadata = api.createType(
+        "MangataTypesAssetsCustomMetadata",
+        {
+          xyk: {
+            operationsDisabled: true,
+          },
+        }
+      );
       extrinsicToDisable = Assets.updateAsset(tokenId, {
-        metadata: { xyk: { operationsDisabled: true } },
+        metadata: metadata,
       });
     }
     return await Sudo.asSudoFinalized(extrinsicToDisable);
@@ -238,8 +252,16 @@ export class Assets {
       isRegistered &&
       _.get(isRegistered, "additional.xyk.operationsDisabled")
     ) {
+      const metadata: MangataTypesAssetsCustomMetadata = api.createType(
+        "MangataTypesAssetsCustomMetadata",
+        {
+          xyk: {
+            operationsDisabled: false,
+          },
+        }
+      );
       extrinsicToTokenEnable = await Assets.updateAsset(tokenId, {
-        metadata: { xyk: { operationsDisabled: false } },
+        metadata: metadata,
       });
       await Sudo.asSudoFinalized(extrinsicToTokenEnable);
     }
@@ -250,11 +272,6 @@ export const balance = async (api: ApiPromise, address: string) => {
   const account = await api.query.system.account<AccountInfo>(address);
   return account.data.toJSON();
 };
-
-interface Metadata {
-  xcm?: XcmMetadata;
-  xyk?: XykMetadata;
-}
 
 interface XcmMetadata {
   feePerSecond: number;
@@ -279,5 +296,5 @@ interface UpdateAsset {
   decimals?: number;
   // location?: MultiLocation,
   location?: UpdateLocation;
-  metadata?: Metadata;
+  metadata?: MangataTypesAssetsCustomMetadata;
 }

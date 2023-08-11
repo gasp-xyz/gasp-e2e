@@ -4,6 +4,7 @@
  * @group sudo
  * @group parallel
  */
+import { jest } from "@jest/globals";
 import { getApi, initApi } from "../../utils/api";
 import { getCurrentNonce } from "../../utils/tx";
 import { ExtrinsicResult } from "../../utils/eventListeners";

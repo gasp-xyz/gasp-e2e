@@ -4,6 +4,7 @@
  * @group calculate
  * @group parallel
  */
+import { jest } from "@jest/globals";
 import { getApi, initApi } from "../../utils/api";
 import { burnLiquidity, getBalanceOfPool, getBurnAmount } from "../../utils/tx";
 import { BN } from "@polkadot/util";

@@ -1,7 +1,8 @@
 /*
  *
- * @group staking
+ * @group experimentalStaking
  */
+import { jest } from "@jest/globals";
 import {
   getLiquidityAssetId,
   mintLiquidity,
@@ -14,13 +15,15 @@ import {
   getEnvironmentRequiredVars,
   getUserBalanceOfToken,
 } from "../../utils/utils";
-import { BN, BN_BILLION, BN_ONE, BN_ZERO } from "@mangata-finance/sdk";
+import { BN_BILLION, BN_ONE, BN_ZERO } from "@mangata-finance/sdk";
+import { BN } from "@polkadot/util";
 import { Assets } from "../../utils/Assets";
 import { getApi, initApi } from "../../utils/api";
 import { Sudo } from "../../utils/sudo";
 import { Xyk } from "../../utils/xyk";
 import { Staking } from "../../utils/Staking";
 import { setupApi, setupUsers } from "../../utils/setup";
+import { ExtrinsicResult } from "../../utils/eventListeners";
 
 jest.spyOn(console, "log").mockImplementation(jest.fn());
 jest.setTimeout(1500000);
@@ -103,7 +106,7 @@ describe("Collators: MinCandidateStk limit", () => {
     const liqTokens = await getUserBalanceOfToken(liqToken, testUser2);
     expect(new BN(liqTokens.free)).bnEqual(minLiquidityToJoin);
   });
-  test("Min Mangatas -100 will make joinCollator fail", async () => {
+  test("Min Mangatas -1 will make joinCollator fail", async () => {
     const api = await getApi();
     const minCandidate = new BN(
       await api.consts.parachainStaking.minCandidateStk.toString()
@@ -121,12 +124,12 @@ describe("Collators: MinCandidateStk limit", () => {
       testUser4.keyRingPair,
       liqToken,
       liqTokens.free,
-      "availablebalance",
+      "AvailableBalance",
       false
     );
     expect(events.data).toEqual("CandidateBondBelowMin");
   });
-  test("Min Mangatas +100 will make joinCollator work", async () => {
+  test("Min Mangatas +1 will make joinCollator work", async () => {
     const api = await getApi();
     const minCandidate = new BN(
       await api.consts.parachainStaking.minCandidateStk.toString()
@@ -144,9 +147,9 @@ describe("Collators: MinCandidateStk limit", () => {
       testUser3.keyRingPair,
       liqToken,
       liqTokens.free,
-      "availablebalance"
+      "AvailableBalance"
     );
-    expect(events.state).toEqual(0);
+    expect(events.state).toEqual(ExtrinsicResult.ExtrinsicSuccess);
   });
 });
 

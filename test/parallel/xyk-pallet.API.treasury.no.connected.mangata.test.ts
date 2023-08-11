@@ -4,8 +4,14 @@
  * @group api
  * @group parallel
  */
-import { getApi, getMangataInstance, initApi } from "../../utils/api";
-import { sellAsset, buyAsset, calculate_buy_price_rpc } from "../../utils/tx";
+import { jest } from "@jest/globals";
+import { getApi, initApi } from "../../utils/api";
+import {
+  sellAsset,
+  buyAsset,
+  calculate_buy_price_rpc,
+  createPool,
+} from "../../utils/tx";
 import { ExtrinsicResult } from "../../utils/eventListeners";
 import { BN } from "@polkadot/util";
 import { Keyring } from "@polkadot/api";
@@ -59,13 +65,11 @@ describe("xyk-pallet - treasury tests [No Mangata]: on treasury we store", () =>
       sudo
     );
     await testUser1.addMGATokens(sudo);
-    await (
-      await getMangataInstance()
-    ).createPool(
+    await createPool(
       testUser1.keyRingPair,
-      firstCurrency.toString(),
+      firstCurrency,
       first_asset_amount,
-      secondCurrency.toString(),
+      secondCurrency,
       first_asset_amount.div(new BN(2))
     );
 

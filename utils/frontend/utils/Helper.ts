@@ -1,3 +1,4 @@
+import "chromedriver";
 import { Key, logging, WebDriver } from "selenium-webdriver";
 import { sleep } from "../../utils";
 import { Mangata } from "../pages/Mangata";
@@ -7,10 +8,9 @@ import { testLog } from "../../Logger";
 import { BN } from "@polkadot/util";
 import { Talisman } from "../pages/Talisman";
 
-const { By, until } = require("selenium-webdriver");
+import { By, until } from "selenium-webdriver";
 
 const timeOut = 60000;
-require("chromedriver");
 const outputPath = `reports/artifacts`;
 export async function waitForElement(
   driver: WebDriver,
@@ -59,6 +59,59 @@ export async function waitForElementEnabled(
   await driver.wait(until.elementIsEnabled(element), timeout);
 }
 
+export async function waitForElementState(
+  driver: WebDriver,
+  xpath: string,
+  isEnabled: boolean,
+  timeout = 5000
+) {
+  const element = await driver.wait(until.elementLocated(By.xpath(xpath)));
+  await driver.wait(until.elementIsVisible(element), timeout);
+
+  if (isEnabled) {
+    await driver.wait(until.elementIsEnabled(element), timeout);
+  } else {
+    await driver.wait(until.elementIsDisabled(element), timeout);
+  }
+}
+
+export async function waitForElementStateInterval(
+  driver: WebDriver,
+  xpath: string,
+  isEnabled: boolean,
+  timeout = 5000
+) {
+  const startTime = Date.now();
+  const endTime = startTime + timeout;
+
+  while (Date.now() < endTime) {
+    try {
+      const element = await driver.findElement(By.xpath(xpath));
+      const isElementVisible = await element.isDisplayed();
+
+      if (isEnabled) {
+        const isElementEnabled = await element.isEnabled();
+        if (isElementVisible && isElementEnabled) {
+          return;
+        }
+      } else {
+        const isElementDisabled = !(await element.isEnabled());
+        if (isElementVisible && isElementDisabled) {
+          return;
+        }
+      }
+    } catch (error) {
+      // Element not found or other error occurred, continue waiting
+    }
+
+    await new Promise((resolve) => setTimeout(resolve, 1000));
+  }
+
+  throw new Error(
+    `Timeout: Element state not as desired after ${timeout} milliseconds`
+  );
+}
+
 export async function waitForElementVisible(
   driver: WebDriver,
   xpath: string,
@@ -85,11 +138,47 @@ export async function waitForElementToDissapear(
   } while (continueWaiting);
 }
 
+export async function waitForLoad(
+  retry = 2,
+  loaderXpath: string,
+  driver: WebDriver
+): Promise<void> {
+  return new Promise<void>(async (resolve, reject) => {
+    setTimeout(async () => {
+      const visible = await isDisplayed(driver, loaderXpath);
+      if (visible) {
+        if (retry > 0) {
+          testLog.getLog().warn("Retrying wait for load: attempt " + retry);
+          await driver.navigate().refresh();
+          retry = retry - 1;
+          return waitForLoad(retry, loaderXpath, driver);
+        }
+        reject("TIMEOUT: Waiting for " + loaderXpath + " to dissapear");
+      } else {
+        resolve();
+      }
+    }, 60000);
+    await waitForElementToDissapear(driver, loaderXpath);
+    resolve();
+  });
+}
+
+export async function getNumberOfElements(
+  driver: WebDriver,
+  xpath: string,
+  timeout = timeOut
+) {
+  await waitForElement(driver, xpath, timeout);
+  const elements = await driver.findElements(By.xpath(xpath));
+  const count = elements.length;
+  return count;
+}
+
 export async function clickElement(driver: WebDriver, xpath: string) {
   await waitForElement(driver, xpath);
   const element = await driver.findElement(By.xpath(xpath));
   await driver.wait(until.elementIsVisible(element), timeOut);
-  await sleep(1000);
+  await sleep(500);
   await element.click();
 }
 
@@ -97,7 +186,7 @@ export async function clickElementForce(driver: WebDriver, xpath: string) {
   await waitForElement(driver, xpath);
   const element = await driver.findElement(By.xpath(xpath));
   await driver.wait(until.elementIsVisible(element), timeOut);
-  await sleep(1000);
+  await sleep(500);
   driver.executeScript("arguments[0].click();", element);
 }
 
@@ -173,6 +262,14 @@ export async function setupPolkadotExtension(driver: WebDriver) {
   };
 }
 
+export async function importPolkadotExtension(driver: WebDriver) {
+  await leaveOnlyOneTab(driver);
+
+  const polkadotExtension = new Polkadot(driver);
+  await polkadotExtension.go();
+  await polkadotExtension.setupAccount();
+}
+
 export async function setupTalismanExtension(driver: WebDriver) {
   await leaveOnlyOneTab(driver);
 
@@ -221,16 +318,21 @@ export async function acceptPermissionsTalismanExtensionInNewWindow(
 }
 
 export async function leaveOnlyOneTab(driver: WebDriver) {
-  const handles = await (await driver).getAllWindowHandles();
-  for (let index = 1; index < handles.length; index++) {
-    await (await driver).close();
-    await (await driver).switchTo().window(handles[0]);
+  const handles = await driver.getAllWindowHandles();
+  if (handles.length <= 1) {
+    return;
   }
+  for (let index = 1; index < handles.length; index++) {
+    const handle = handles[index];
+    await driver.switchTo().window(handle);
+    await driver.close();
+  }
+  await driver.switchTo().window(handles[0]);
 }
 
 export async function isDisplayed(driver: WebDriver, elementXpath: string) {
   try {
-    await waitForElement(driver, elementXpath, 2000);
+    await waitForElement(driver, elementXpath, 4000);
     const displayed = await (
       await driver.findElement(By.xpath(elementXpath))
     ).isDisplayed();
@@ -297,11 +399,45 @@ export function buildDataTestIdXpath(dataTestId: string) {
   return xpathSelector;
 }
 
+export function buildDataTestIdXpathFunction(
+  dataTestId: string,
+  xpathFunction: string
+) {
+  const xpathSelector = `//*[@data-testid[${xpathFunction}(., '${dataTestId}')]]`;
+  return xpathSelector;
+}
+
+export async function waitForNewWindow(
+  driver: WebDriver,
+  timeout: number,
+  retryInterval: number
+): Promise<void> {
+  const currentWindowHandle = await driver.getWindowHandle();
+
+  const startTime = Date.now();
+  let elapsedTime = 0;
+
+  while (elapsedTime < timeout) {
+    const windowHandles = await driver.getAllWindowHandles();
+    if (
+      windowHandles.length > 1 &&
+      windowHandles.includes(currentWindowHandle)
+    ) {
+      return;
+    }
+
+    await driver.sleep(retryInterval);
+    elapsedTime = Date.now() - startTime;
+  }
+
+  throw new Error(`Timed out waiting for new window to appear.`);
+}
+
 export async function doActionInDifferentWindow(
   driver: WebDriver,
   fn: (driver: WebDriver) => void
 ) {
-  await sleep(4000);
+  await waitForNewWindow(driver, 10000, 500);
   let handle = await (await driver).getAllWindowHandles();
   let iterator = handle.reverse().entries();
 
@@ -327,7 +463,7 @@ export async function selectAssetFromModalList(
   assetName: string,
   driver: WebDriver
 ) {
-  const assetTestId = `TokensModal-asset-${assetName}`;
+  const assetTestId = `TokensModal-token-${assetName}`;
   const assetLocator = buildDataTestIdXpath(assetTestId);
   await clickElement(driver, assetLocator);
 }
@@ -375,5 +511,10 @@ export async function elementExists(driver: WebDriver, xpath: string) {
 
 export function buildXpathByText(text: string) {
   const xpath = `//*[contains(., "${text}")]`;
+  return xpath;
+}
+
+export function buildXpathByElementText(element: string, text: string) {
+  const xpath = `//${element}[contains(., "${text}")]`;
   return xpath;
 }

@@ -4,7 +4,8 @@
  * @group api
  * @group parallel
  */
-import { getApi, getMangataInstance, initApi } from "../../utils/api";
+import { jest } from "@jest/globals";
+import { getApi, initApi } from "../../utils/api";
 import {
   getBalanceOfPool,
   getTreasury,
@@ -25,6 +26,7 @@ import {
 } from "../../utils/validators";
 import { Assets } from "../../utils/Assets";
 import { getEventResultFromMangataTx } from "../../utils/txHandler";
+import { createPool } from "../../utils/tx";
 import {
   calculateFees,
   getEnvironmentRequiredVars,
@@ -131,13 +133,11 @@ describe("xyk-pallet - Buy assets tests: BuyAssets Errors:", () => {
     await testUser1.addMGATokens(sudo);
     await testUser1.refreshAmounts(AssetWallet.BEFORE);
     const poolAmountSecondCurrency = secondAssetAmount.div(new BN(2));
-    await (
-      await getMangataInstance()
-    ).createPool(
+    await createPool(
       testUser1.keyRingPair,
-      firstCurrency.toString(),
+      firstCurrency,
       firstAssetAmount,
-      secondCurrency.toString(),
+      secondCurrency,
       poolAmountSecondCurrency
     );
 
@@ -170,13 +170,11 @@ describe("xyk-pallet - Buy assets tests: BuyAssets Errors:", () => {
     await testUser1.addMGATokens(sudo);
     await testUser1.refreshAmounts(AssetWallet.BEFORE);
     const poolAmountSecondCurrency = secondAssetAmount.div(new BN(2));
-    await (
-      await getMangataInstance()
-    ).createPool(
+    await createPool(
       testUser1.keyRingPair,
-      firstCurrency.toString(),
+      firstCurrency,
       firstAssetAmount,
-      secondCurrency.toString(),
+      secondCurrency,
       poolAmountSecondCurrency
     );
 
@@ -209,13 +207,11 @@ describe("xyk-pallet - Buy assets tests: BuyAssets Errors:", () => {
     await testUser1.addMGATokens(sudo);
     await testUser1.refreshAmounts(AssetWallet.BEFORE);
     const poolAmountSecondCurrency = secondAssetAmount.div(new BN(2));
-    await (
-      await getMangataInstance()
-    ).createPool(
+    await createPool(
       testUser1.keyRingPair,
-      firstCurrency.toString(),
+      firstCurrency,
       firstAssetAmount,
-      secondCurrency.toString(),
+      secondCurrency,
       poolAmountSecondCurrency
     );
 
@@ -293,13 +289,11 @@ describe("xyk-pallet - Buy assets tests: Buying assets you can", () => {
     await testUser1.addMGATokens(sudo);
     await testUser1.refreshAmounts(AssetWallet.BEFORE);
     const poolAmountSecondCurrency = secondAssetAmount.div(new BN(2));
-    await (
-      await getMangataInstance()
-    ).createPool(
+    await createPool(
       testUser1.keyRingPair,
-      firstCurrency.toString(),
+      firstCurrency,
       firstAssetAmount,
-      secondCurrency.toString(),
+      secondCurrency,
       poolAmountSecondCurrency
     );
 
@@ -385,23 +379,19 @@ describe("xyk-pallet - Buy assets tests: Buying assets you can", () => {
 
     await sudo.mint(thirdCurrency, testUser1, thirdAssetAmount);
     await testUser1.addMGATokens(sudo);
-    await (
-      await getMangataInstance()
-    ).createPool(
+    await createPool(
       testUser1.keyRingPair,
-      firstCurrency.toString(),
+      firstCurrency,
       firstAssetAmount,
-      secondCurrency.toString(),
+      secondCurrency,
       secondAssetAmount.div(new BN(2))
     );
     // create a pool between First and Third, P(thirdAssetAmount, thirdAssetAmount/2)
-    await (
-      await getMangataInstance()
-    ).createPool(
+    await createPool(
       testUser1.keyRingPair,
-      firstCurrency.toString(),
+      firstCurrency,
       thirdAssetAmount,
-      thirdCurrency.toString(),
+      thirdCurrency,
       thirdAssetAmount.div(new BN(2))
     );
     const poolBalanceBefore = await getBalanceOfPool(
@@ -466,6 +456,6 @@ describe("xyk-pallet - Buy assets tests: Buying assets you can", () => {
     expect([
       poolBalanceBefore[0].sub(amountToBuy),
       poolBalanceBefore[1].add(buyPriceLocal).sub(fee),
-    ]).toEqual(poolBalanceAfter);
+    ]).collectionBnEqual(poolBalanceAfter);
   });
 });

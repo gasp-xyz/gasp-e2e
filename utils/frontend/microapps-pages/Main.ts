@@ -1,7 +1,11 @@
 import { WebDriver } from "selenium-webdriver";
+import { getEnvironmentRequiredVars } from "../../utils";
 import {
   buildDataTestIdXpath,
+  buildXpathByElementText,
   buildXpathByText,
+  clickElement,
+  elementExists,
   isDisplayed,
 } from "../utils/Helper";
 
@@ -10,9 +14,16 @@ const GENERIC_TOAST = "toast";
 
 export class Main {
   driver: WebDriver;
+  uiUri: string;
 
   constructor(driver: WebDriver) {
     this.driver = driver;
+    const { uiUri } = getEnvironmentRequiredVars();
+    this.uiUri = uiUri;
+  }
+
+  async go() {
+    await this.driver.get(this.uiUri);
   }
 
   async isAppLoaded() {
@@ -24,7 +35,16 @@ export class Main {
   async isToastDisplayed(text: string) {
     const toast = buildDataTestIdXpath(GENERIC_TOAST);
     const message = buildXpathByText(text);
-    const displayed = await isDisplayed(this.driver, toast + message);
+    const displayed = await elementExists(this.driver, toast + message);
     return displayed;
+  }
+
+  async skipBetaInfo() {
+    const betaButton = buildXpathByElementText("button", "Try mangata x beta");
+    try {
+      await clickElement(this.driver, betaButton);
+    } catch (error) {
+      //Button not found - no action performed.
+    }
   }
 }

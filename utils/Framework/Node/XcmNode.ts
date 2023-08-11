@@ -28,7 +28,7 @@ export class XcmNode {
 
     return this.api.tx.xTokens.transferMultiasset(
       {
-        V1: {
+        V2: {
           id: {
             Concrete: asset.location,
           },
@@ -38,7 +38,7 @@ export class XcmNode {
         },
       },
       {
-        V1: {
+        V2: {
           parents: 1,
           interior: {
             X2: [
@@ -90,6 +90,54 @@ export class XcmNode {
               {
                 AccountId32: {
                   network: "Any",
+                  id: toUser.keyRingPair.publicKey,
+                },
+              },
+            ],
+          },
+        },
+      },
+      {
+        Limited: {
+          refTime: TRANSFER_INSTRUCTIONS * target.unitCostWeight,
+          proofSize: 0,
+        },
+      }
+    );
+  }
+
+  xTokenTransferV3(
+    toChain: ChainId,
+    assetId: AssetSpec,
+    amount: BN,
+    toUser: User
+  ): any {
+    assert(ChainSpecs.has(toChain));
+    const target = ChainSpecs.get(toChain)!;
+    assert(target.foreign.has(assetId));
+    assert(this.chain.assets.has(assetId));
+    const asset = this.chain.assets.get(assetId)!;
+
+    return this.api.tx.xTokens.transferMultiasset(
+      {
+        V3: {
+          id: {
+            Concrete: asset.location,
+          },
+          fun: {
+            Fungible: amount,
+          },
+        },
+      },
+      {
+        V3: {
+          parents: 1,
+          interior: {
+            X2: [
+              { Parachain: target.parachain },
+              {
+                AccountId32: {
+                  network: undefined,
                   id: toUser.keyRingPair.publicKey,
                 },
               },

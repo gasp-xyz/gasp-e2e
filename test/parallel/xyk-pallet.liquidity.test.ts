@@ -4,6 +4,7 @@
  * @group liquidity
  * @group parallel
  */
+import { jest } from "@jest/globals";
 import { getApi, initApi } from "../../utils/api";
 import {
   calcuate_mint_liquidity_price_local,
@@ -179,7 +180,7 @@ test("xyk-pallet - Liqudity : Burn part of the liquidity", async () => {
   expect([
     poolBalanceBefore[0].sub(firstAssetAmount),
     poolBalanceBefore[1].sub(second_asset_amount),
-  ]).toEqual(pool_balance);
+  ]).collectionBnEqual(pool_balance);
 
   const total_liquidity_assets = await getAssetSupply(liquidityAssetId);
   expect(totalLiquidityAssetsBefore.sub(liquidityAssetsBurned)).bnEqual(
@@ -275,7 +276,7 @@ test("xyk-pallet - Liqudity : Burn all the liquidity", async () => {
   expect([
     poolBalanceBefore[0].sub(firstAssetAmount),
     poolBalanceBefore[1].sub(secondAssetAmount),
-  ]).toEqual(pool_balance);
+  ]).collectionBnEqual(pool_balance);
 
   const totalLiquidityAssets = await getAssetSupply(liquidityAssetId);
   expect(totalLiquidityAssetsBefore.sub(liquidityAssetsBurned)).bnEqual(
@@ -362,7 +363,7 @@ test("xyk-pallet - LiquidityOperation: mintLiquidity", async () => {
   expect([
     poolBalanceBefore[0].add(firstCurrencyAssetAmount),
     poolBalanceBefore[1].add(secondAssetAmount),
-  ]).toEqual(pool_balance);
+  ]).collectionBnEqual(pool_balance);
 
   const total_liquidity_assets = await getAssetSupply(liquidityAssetId);
   expect(totalLiquidityAssetsBefore.add(liquidityAssetsMinted)).bnEqual(

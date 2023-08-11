@@ -2,9 +2,9 @@
 /* eslint-disable no-console */
 import { Guid } from "guid-typescript";
 import { testLog } from "./Logger";
-import { getCurrentNonce } from "./txHandler";
+import { getCandidates, getCurrentNonce } from "./txHandler";
 import { sleep } from "./utils";
-
+import ipc from "node-ipc";
 export class SudoDB {
   private static instance: SudoDB;
 
@@ -35,10 +35,22 @@ export class SudoDB {
       .info(`[${process.env.JEST_WORKER_ID}] Returned nonce: ${dbNonce}`);
     return dbNonce;
   }
+  public async getNextCandidateNum() {
+    if (process.argv.includes("--runInBand")) {
+      return await getCandidates();
+    }
+    const nextCandidateId = await getCandidateCountFromIPC();
+    await sleep(1000);
+    testLog
+      .getLog()
+      .info(
+        `[${process.env.JEST_WORKER_ID}] Returned nextCandidateId : ${nextCandidateId}`
+      );
+    return nextCandidateId;
+  }
 }
 async function getNonceFromIPC(): Promise<number> {
   return new Promise(function (resolve) {
-    const ipc = require("node-ipc").default;
     ipc.config.id = Guid.create().toString();
     ipc.config.retry = 1500;
     ipc.config.silent = false;
@@ -54,6 +66,32 @@ async function getNonceFromIPC(): Promise<number> {
           .info(`[${process.env.JEST_WORKER_ID}] Waiting for nonce`);
       });
       ipc.of.nonceManager.on("nonce-" + ipc.config.id, (data: number) => {
+        testLog
+          .getLog()
+          .info(`[${process.env.JEST_WORKER_ID}] I got this ${data}`);
+        ipc.disconnect("nonceManager");
+        resolve(data);
+      });
+    });
+  });
+}
+async function getCandidateCountFromIPC(): Promise<number> {
+  return new Promise(function (resolve) {
+    ipc.config.id = Guid.create().toString();
+    ipc.config.retry = 1500;
+    ipc.config.silent = false;
+
+    ipc.connectTo("nonceManager", () => {
+      ipc.of.nonceManager.on("connect", () => {
+        ipc.of.nonceManager.emit("getCandidate", {
+          id: ipc.config.id,
+          message: `[${process.env.JEST_WORKER_ID}] I need a getCandidate`,
+        });
+        testLog
+          .getLog()
+          .info(`[${process.env.JEST_WORKER_ID}] Waiting for getCandidate`);
+      });
+      ipc.of.nonceManager.on("candidate-" + ipc.config.id, (data: number) => {
         testLog
           .getLog()
           .info(`[${process.env.JEST_WORKER_ID}] I got this ${data}`);

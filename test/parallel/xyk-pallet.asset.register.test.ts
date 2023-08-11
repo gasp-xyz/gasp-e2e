@@ -4,6 +4,7 @@
  * @group asset
  * @group parallel
  */
+import { jest } from "@jest/globals";
 import { getApi } from "../../utils/api";
 import { getEnvironmentRequiredVars, xykErrors } from "../../utils/utils";
 import { User } from "../../utils/User";
@@ -164,7 +165,7 @@ test("register new asset and then update it without fee", async () => {
 
   const userUpdateAsset = await Sudo.asSudoFinalized(
     Assets.updateAsset(assetId, {
-      metadata: { xcm: undefined, xyk: undefined },
+      metadata: undefined,
     })
   );
 

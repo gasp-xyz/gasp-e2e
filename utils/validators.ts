@@ -73,13 +73,16 @@ export function validateAssetsSwappedEvent(
   second_asset_amount: BN
 ) {
   //validate the asset swapped created event contract.
-  validatePoolCreatedEvent(
-    result,
-    userAddress,
-    firstCurrency,
-    first_asset_amount,
-    secondCurrency,
-    second_asset_amount
+  const rawData = result.data;
+  expect(rawData).not.toBeNull();
+  expect(rawData[0]).toEqual(userAddress);
+  expect(parseInt(rawData[1][0])).toEqual(parseInt(firstCurrency.toString()));
+  expect(fromStringToUnitString(rawData[2])).toEqual(
+    fromBNToUnitString(first_asset_amount)
+  );
+  expect(parseInt(rawData[1][1])).toEqual(parseInt(secondCurrency.toString()));
+  expect(fromStringToUnitString(rawData[3])).toEqual(
+    fromBNToUnitString(second_asset_amount)
   );
 }
 
@@ -301,7 +304,7 @@ const _matchEvents = async (
 };
 
 export const matchEvents = async (
-  events: Promise<Codec[] | Codec>,
+  events: Promise<Codec[] | Codec> | Codec[],
   ...filters: EventFilter[]
 ) => {
   return _matchEvents("events", redact(events), ...filters);
@@ -314,6 +317,17 @@ export const matchSystemEvents = async (
   await _matchEvents(
     "system events",
     redact(api.query.system.events()),
+    ...filters
+  );
+};
+export const matchSystemEventsAt = async (
+  { api }: { api: ApiPromise },
+  blockHashAt: string,
+  ...filters: EventFilter[]
+) => {
+  await _matchEvents(
+    "system events",
+    redact((await api.at(blockHashAt)).query.system.events()),
     ...filters
   );
 };

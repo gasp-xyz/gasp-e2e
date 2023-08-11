@@ -2,6 +2,7 @@
  *
  * @group multiswap
  */
+import { jest } from "@jest/globals";
 import { getApi, initApi } from "../../utils/api";
 import {
   multiSwapBuy,
@@ -31,8 +32,7 @@ import { BN_MILLION } from "@mangata-finance/sdk";
 jest.spyOn(console, "log").mockImplementation(jest.fn());
 jest.setTimeout(1500000);
 
-const successMultiSwapBuyEventName = "AssetsMultiBuySwapped";
-const successMultiSwapSellEventName = "AssetsMultiSellSwapped";
+const successSwapEventName = "AssetsSwapped";
 
 let users: User[] = [];
 let tokenIds: BN[] = [];
@@ -49,6 +49,10 @@ describe("Multiswap - happy paths", () => {
   });
   test("[gasless] Happy path - multi-swap - buy", async () => {
     const testUser1 = users[0];
+    const boughtTokensBefore = await getUserBalanceOfToken(
+      tokenIds[tokenIds.length - 1],
+      testUser1
+    );
     const multiSwapOutput = await multiSwapBuy(
       testUser1,
       tokenIds,
@@ -57,14 +61,16 @@ describe("Multiswap - happy paths", () => {
     );
     const eventResponse = getEventResultFromMangataTx(multiSwapOutput, [
       "xyk",
-      successMultiSwapBuyEventName,
+      successSwapEventName,
     ]);
     expect(eventResponse.state).toEqual(ExtrinsicResult.ExtrinsicSuccess);
     const boughtTokens = await getUserBalanceOfToken(
       tokenIds[tokenIds.length - 1],
       testUser1
     );
-    expect(boughtTokens.free).bnEqual(new BN(1000));
+    expect(boughtTokens.free.sub(boughtTokensBefore.free)).bnEqual(
+      new BN(1000)
+    );
     expect(
       multiSwapOutput.findIndex(
         (x) =>
@@ -87,7 +93,7 @@ describe("Multiswap - happy paths", () => {
     );
     const eventResponse = getEventResultFromMangataTx(multiSwapOutput, [
       "xyk",
-      successMultiSwapSellEventName,
+      successSwapEventName,
     ]);
     expect(eventResponse.state).toEqual(ExtrinsicResult.ExtrinsicSuccess);
     const boughtTokens = await getUserBalanceOfToken(
@@ -115,7 +121,7 @@ describe("Multiswap - happy paths", () => {
     expect(mgaDiff?.reserved).bnGt(BN_ZERO);
     const eventResponse = getEventResultFromMangataTx(multiSwapOutput, [
       "xyk",
-      successMultiSwapBuyEventName,
+      successSwapEventName,
     ]);
     expect(eventResponse.state).toEqual(ExtrinsicResult.ExtrinsicSuccess);
   });
@@ -135,7 +141,7 @@ describe("Multiswap - happy paths", () => {
     );
     const eventResponse = getEventResultFromMangataTx(multiSwapOutput, [
       "xyk",
-      "MultiSellAssetFailedOnAtomicSwap",
+      "MultiSwapAssetFailedOnAtomicSwap",
     ]);
     await testUser1.refreshAmounts(AssetWallet.AFTER);
     const walletsModifiedInSwap = testUser1.getWalletDifferences();
@@ -207,7 +213,7 @@ describe("Multiswap - happy paths", () => {
     );
     const eventResponse = getEventResultFromMangataTx(multiSwapOutput, [
       "xyk",
-      successMultiSwapSellEventName,
+      successSwapEventName,
     ]);
     expect(eventResponse.state).toEqual(ExtrinsicResult.ExtrinsicSuccess);
 
@@ -277,7 +283,7 @@ describe("Multiswap - happy paths", () => {
     );
     const eventResponse = getEventResultFromMangataTx(multiSwapOutput, [
       "xyk",
-      successMultiSwapBuyEventName,
+      successSwapEventName,
     ]);
     expect(eventResponse.state).toEqual(ExtrinsicResult.ExtrinsicSuccess);
 
@@ -328,7 +334,7 @@ describe("Multiswap - happy paths", () => {
     );
     const eventResponse = getEventResultFromMangataTx(multiSwapOutput, [
       "xyk",
-      successMultiSwapSellEventName,
+      successSwapEventName,
     ]);
     expect(eventResponse.state).toEqual(ExtrinsicResult.ExtrinsicSuccess);
     testUser4.addAssets(tokenIds.concat(MGA_ASSET_ID));
@@ -342,7 +348,7 @@ describe("Multiswap - happy paths", () => {
     );
     const eventResponse2 = getEventResultFromMangataTx(multiSwapOutput2, [
       "xyk",
-      "MultiSellAssetFailedOnAtomicSwap",
+      "MultiSwapAssetFailedOnAtomicSwap",
     ]);
     expect(eventResponse2.state).toEqual(ExtrinsicResult.ExtrinsicSuccess);
     await testUser4.refreshAmounts(AssetWallet.AFTER);

@@ -1,18 +1,17 @@
-// @ts-nocheck
-
 import { getApi } from "./api";
 import { ExtrinsicResult } from "./eventListeners";
 import { User } from "./User";
 import { getEventResultFromMangataTx, sudoIssueAsset } from "./txHandler";
 import { getCurrentNonce } from "./tx";
 import { getBlockNumber } from "./utils";
-import { BN, toBN, signTx } from "@mangata-finance/sdk";
+import { toBN, signTx } from "@mangata-finance/sdk";
 import { Assets } from "./Assets";
 import { setupApi } from "./setup";
 import { Sudo } from "./sudo";
 import { testLog } from "./Logger";
 import { waitNewBlock } from "./eventListeners";
 import { api, Extrinsic } from "./setup";
+import { BN } from "@polkadot/util";
 
 export async function waitForBootstrapStatus(
   bootstrapStatus: string,
@@ -22,17 +21,14 @@ export async function waitForBootstrapStatus(
   let currentBlock = await getBlockNumber();
   const api = await getApi();
   let bootstrapPhase = await api.query.bootstrap.phase();
-  testLog.getLog().info("Waiting for boostrap to be " + bootstrapStatus);
-  while (
-    lastBlock > currentBlock &&
-    bootstrapPhase.toString() !== bootstrapStatus
-  ) {
+  testLog.getLog().info("Waiting for bootstrap to be " + bootstrapStatus);
+  while (lastBlock > currentBlock && bootstrapPhase.type !== bootstrapStatus) {
     await waitNewBlock();
     bootstrapPhase = await api.query.bootstrap.phase();
     currentBlock = await getBlockNumber();
   }
   testLog.getLog().info("... Done waiting " + bootstrapStatus);
-  if (bootstrapPhase !== bootstrapStatus) {
+  if (bootstrapPhase.type.toLowerCase() !== bootstrapStatus.toLowerCase()) {
     testLog.getLog().warn("TIMEDOUT waiting for the new boostrap phase");
   }
 }

@@ -1,10 +1,10 @@
-import { BN } from "@mangata-finance/sdk";
 import { getApi } from "./api";
 import { MGA_ASSET_ID } from "./Constants";
 import { waitSudoOperationSuccess } from "./eventListeners";
 import { updateFeeLockMetadata } from "./tx";
 import { User } from "./User";
 import { stringToBN } from "./utils";
+import { BN } from "@polkadot/util";
 
 export async function clearMgaFromWhitelisted(
   thresholdValueExpected: BN,

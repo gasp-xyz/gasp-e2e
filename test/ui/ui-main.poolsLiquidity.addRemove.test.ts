@@ -1,7 +1,8 @@
 /*
  *
- * @group ui
+ * @group uiSequential
  */
+import { jest } from "@jest/globals";
 import { Mangata } from "../../utils/frontend/pages/Mangata";
 import { Keyring } from "@polkadot/api";
 import { BN } from "@polkadot/util";
@@ -37,9 +38,8 @@ import {
 } from "../../utils/frontend/pages/NotificationModal";
 import { Polkadot } from "../../utils/frontend/pages/Polkadot";
 
-require("dotenv").config();
+import "dotenv/config";
 
-jest.retryTimes(1);
 jest.spyOn(console, "log").mockImplementation(jest.fn());
 
 jest.setTimeout(1500000);
@@ -108,13 +108,17 @@ describe("UI tests - adding, removing liquidity", () => {
     const mga = new Mangata(driver);
     await mga.go();
     const sidebar = new Sidebar(driver);
+    await sidebar.waitForLoad();
     const noWalletConnectedInfoDisplayed =
       await sidebar.isNoWalletConnectedInfoDisplayed();
     expect(noWalletConnectedInfoDisplayed).toBeTruthy();
 
     await connectPolkadotWallet(driver, sidebar, mga);
-    const isWalletConnected = sidebar.isWalletConnected("acc_automation");
+    await sidebar.waitForLoad();
+    await sidebar.waitForWalletConnected();
+    const isWalletConnected = await sidebar.isWalletConnected("acc_automation");
     expect(isWalletConnected).toBeTruthy();
+    await sidebar.waitForLiquidityPoolToLoad(MGR_ASSET_NAME, testAssetName);
 
     const poolVisible = await sidebar.isLiquidityPoolVisible(
       MGR_ASSET_NAME,
@@ -144,14 +148,12 @@ describe("UI tests - adding, removing liquidity", () => {
     const mga = new Mangata(driver);
     await mga.go();
     const sidebar = new Sidebar(driver);
-    const noWalletConnectedInfoDisplayed =
-      await sidebar.isNoWalletConnectedInfoDisplayed();
-    expect(noWalletConnectedInfoDisplayed).toBeTruthy();
-
-    await connectPolkadotWallet(driver, sidebar, mga);
-    const isWalletConnected = sidebar.isWalletConnected("acc_automation");
+    await sidebar.waitForLoad();
+    await sidebar.waitForWalletConnected();
+    const isWalletConnected = await sidebar.isWalletConnected("acc_automation");
     expect(isWalletConnected).toBeTruthy();
 
+    await sidebar.waitForLiquidityPoolToLoad(MGR_ASSET_NAME, testAssetName);
     let poolVisible = await sidebar.isLiquidityPoolVisible(
       MGR_ASSET_NAME,
       testAssetName
@@ -200,7 +202,7 @@ describe("UI tests - adding, removing liquidity", () => {
     const liquidityProvided = testAssetAmountBefore.lt(testAssetAmountAfter);
     expect(liquidityProvided).toBeTruthy();
 
-    poolVisible = await new Sidebar(driver).isLiquidityPoolVisible(
+    poolVisible = await sidebar.isLiquidityPoolVisible(
       MGR_ASSET_NAME,
       testAssetName
     );
@@ -213,8 +215,6 @@ describe("UI tests - adding, removing liquidity", () => {
       driver,
       expect.getState().currentTestName + " - " + session.getId()
     );
-    await driver.manage().deleteAllCookies();
-    await driver.executeScript("localStorage.clear(); sessionStorage.clear();");
   });
 
   afterAll(async () => {

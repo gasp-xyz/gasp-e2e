@@ -1,6 +1,32 @@
 name: Run e2e
 
 on:
+  workflow_call:
+    inputs:
+        scriptName:
+          description: 'Name of the script to run'
+          required: true
+          default: 'test-github'
+          type: string
+
+        parallel:
+          description: "run parallel"
+          type: boolean
+          required: true
+          default: false
+                    
+        dockerImage:
+          description: 'identifier of docker image on dockerhub'
+          required: true
+          type: string
+          default: 'mangatasolutions/mangata-node:develop'
+
+        e2eBranch:
+          type: string
+          description: 'Name of the e2e target branch'
+          required: false
+          default: 'main'
+
   workflow_dispatch:
       inputs:
         scriptName:
@@ -74,7 +100,7 @@ jobs:
         uses: actions/checkout@v2
         with:
           repository: mangata-finance/mangata-e2e
-          ref: '${{ github.event.inputs.e2eBranch }}'
+          ref: '${{ github.event.inputs.e2eBranch || inputs.e2eBranch }}'
           path: 'e2eTests'
   
       - name: Checkout mangata-node
@@ -92,28 +118,27 @@ jobs:
           cache-dependency-path: e2eTests/yarn.lock
 
       - name: Replace parachain docker image reference in config
-        working-directory: mangata-node/launch
-        run: sed -i 's+mangatasolutions/mangata-node:dev+${{ github.event.inputs.dockerImage }}+g' config.yml
+        working-directory: mangata-node/devops/parachain-launch
+        run: sed -i 's+mangatasolutions/mangata-node:.*+${{ github.event.inputs.dockerImage || inputs.dockerImage }}+g' config.yml
       
-      - name: Debug node version
-        working-directory: mangata-node/launch
-        run: node --version
-      
-      - name: Install parachain launch
-        working-directory: mangata-node/launch
-        run: yarn
-
-      - name: Generate parachain launch config
-        working-directory: mangata-node/launch
-        run: yarn gen
+      - name: Generate the config
+        working-directory: mangata-node/devops/parachain-launch
+        run: npx @open-web3/parachain-launch generate config.yml
 
       - name: Stop previous parachain if running
-        working-directory: mangata-node/launch
-        run: yarn down
+        working-directory: mangata-node/devops/parachain-launch/output
+        run: docker-compose down -v
 
       - name: Start mangata-node parachain
-        working-directory: mangata-node/launch
-        run: yarn up
+        working-directory: mangata-node/devops/parachain-launch/output
+        run: docker-compose up -d --build
+
+      - uses: actions/setup-node@v3
+        with:
+          node-version: '18'
+          cache: yarn
+          path: 'e2eTests'
+          cache-dependency-path: e2eTests/yarn.lock
 
       - name: Install dependencies for tests
         working-directory: e2eTests
@@ -143,7 +168,7 @@ jobs:
           echo "E2E_PARAMS=--max-workers=32" >> $GITHUB_ENV
 
       - name: Generate test run flags - groups
-        if: ${{ github.event.inputs.group || github.event.inputs.group != 'none' }}
+        if: ${{ github.event.inputs.group != '' && github.event.inputs.group != 'none' }}
         run:
           echo "E2E_GROUPS=--group=${{ github.event.inputs.group}}" >> $GITHUB_ENV
       
@@ -177,7 +202,7 @@ jobs:
       
       - name: Run e2e tests
         working-directory: e2eTests
-        run: yarn ${{ github.event.inputs.scriptName }} ${{env.E2E_PARAMS}} ${{env.E2E_GROUPS}}
+        run: yarn ${{ github.event.inputs.scriptName || inputs.scriptName }} ${{env.E2E_PARAMS}} ${{env.E2E_GROUPS}}
         
       - name: Submit results to the testmo-run
         if: always()

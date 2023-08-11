@@ -3,16 +3,16 @@
  * @group paralgasless
  * @group parallel
  */
-
+import { jest } from "@jest/globals";
 import { Keyring } from "@polkadot/api";
-import { getApi, initApi, getMangataInstance } from "../../utils/api";
+import { getApi, initApi, mangata } from "../../utils/api";
 import { Assets } from "../../utils/Assets";
 import { MGA_ASSET_ID } from "../../utils/Constants";
 import { waitSudoOperationSuccess } from "../../utils/eventListeners";
-import { BN, toBN } from "@mangata-finance/sdk";
+import { toBN } from "@mangata-finance/sdk";
 import { setupApi, setupUsers } from "../../utils/setup";
 import { Sudo } from "../../utils/sudo";
-import { updateFeeLockMetadata, unlockFee } from "../../utils/tx";
+import { updateFeeLockMetadata, unlockFee, sellAsset } from "../../utils/tx";
 import { AssetWallet, User } from "../../utils/User";
 import {
   getEnvironmentRequiredVars,
@@ -20,10 +20,11 @@ import {
   getBlockNumber,
   getFeeLockMetadata,
   waitBlockNumber,
+  stringToBN,
 } from "../../utils/utils";
 import { Xyk } from "../../utils/xyk";
 import { addMgaToWhitelisted } from "../../utils/feeLockHelper";
-import { stringToBN } from "../../utils/utils";
+import { BN } from "@polkadot/util";
 
 jest.spyOn(console, "log").mockImplementation(jest.fn());
 jest.setTimeout(2500000);
@@ -46,23 +47,20 @@ async function checkErrorSellAsset(
   amount = new BN(1000)
 ) {
   let exception = false;
-  const mangata = await getMangataInstance();
   const soldAssetIdString = soldAssetId.toString();
   const boughtAssetIdString = boughtAssetId.toString();
 
   await expect(
-    mangata
-      .sellAsset(
-        user.keyRingPair,
-        soldAssetIdString,
-        boughtAssetIdString,
-        amount,
-        new BN(0)
-      )
-      .catch((reason) => {
-        exception = true;
-        throw new Error(reason.data);
-      })
+    sellAsset(
+      user.keyRingPair,
+      soldAssetIdString,
+      boughtAssetIdString,
+      amount,
+      new BN(0)
+    ).catch((reason) => {
+      exception = true;
+      throw new Error(reason.data);
+    })
   ).rejects.toThrow(reason);
 
   expect(exception).toBeTruthy();
@@ -113,6 +111,11 @@ test("gasless- GIVEN a feeLock configured WHEN a swap happens THEN fees are not 
   const saleAssetValue = thresholdValue.sub(new BN(5));
 
   await testUser1.refreshAmounts(AssetWallet.BEFORE);
+  const isFree = await mangata?.rpc.isSellAssetLockFree(
+    [MGA_ASSET_ID.toString(), firstCurrency.toString()],
+    saleAssetValue
+  );
+  expect(isFree).toBeFalsy();
   await testUser1.sellAssets(MGA_ASSET_ID, firstCurrency, saleAssetValue);
   await testUser1.refreshAmounts(AssetWallet.AFTER);
 
@@ -150,8 +153,10 @@ test("gasless- GIVEN a correct config for gasless swaps WHEN the user runs unloc
       await api.query.feeLock.accountFeeLockData(testUser1.keyRingPair.address)
     )
   );
-  const waitingBlock = accountFeeLockData.lastFeeLockBlock + periodLength;
-  await waitBlockNumber(waitingBlock, periodLength.toNumber() + 5);
+  const waitingBlock = stringToBN(accountFeeLockData.lastFeeLockBlock).add(
+    periodLength
+  );
+  await waitBlockNumber(waitingBlock.toString(), periodLength.toNumber() + 5);
   try {
     await unlockFee(testUser1);
   } catch (error) {
@@ -217,6 +222,13 @@ test("gasless- For low-value swaps, token reservation status and pallet storage 
   await checkAccountFeeLockData(0, 0);
 
   const saleAssetValue = thresholdValue.sub(new BN(5));
+
+  const isFree = await mangata?.rpc.isSellAssetLockFree(
+    [MGA_ASSET_ID.toString(), firstCurrency.toString()],
+    saleAssetValue
+  );
+  expect(isFree).toBeFalsy();
+
   await testUser1.sellAssets(MGA_ASSET_ID, firstCurrency, saleAssetValue);
   const lockDataBlockNumber = await getBlockNumber();
 
@@ -225,9 +237,11 @@ test("gasless- For low-value swaps, token reservation status and pallet storage 
       await api.query.feeLock.accountFeeLockData(testUser1.keyRingPair.address)
     )
   );
-  const waitingBlock = accountFeeLockData.lastFeeLockBlock + periodLength;
+  const waitingBlock = stringToBN(accountFeeLockData.lastFeeLockBlock).add(
+    periodLength
+  );
   await checkAccountFeeLockData(feeLockAmount, lockDataBlockNumber);
-  await waitBlockNumber(waitingBlock, periodLength.toNumber() + 5);
+  await waitBlockNumber(waitingBlock.toString(), periodLength.toNumber() + 5);
   try {
     await unlockFee(testUser1);
   } catch (error) {
@@ -274,6 +288,11 @@ test("gasless- High-value swaps when successful are not charged txn fee or token
   const saleAssetValue = thresholdValue.add(new BN(5));
 
   await testUser1.refreshAmounts(AssetWallet.BEFORE);
+  const isFree = await mangata?.rpc.isSellAssetLockFree(
+    [firstCurrency.toString(), secondCurrency.toString()],
+    saleAssetValue
+  );
+  expect(isFree).toBeTruthy();
   await testUser1.sellAssets(firstCurrency, secondCurrency, saleAssetValue);
   await testUser1.refreshAmounts(AssetWallet.AFTER);
 

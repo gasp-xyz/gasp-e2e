@@ -1,7 +1,7 @@
 /*
  * @group rely-mga-acala
  */
-
+import { jest } from "@jest/globals";
 import { BN } from "@polkadot/util";
 import { GovernanceUser } from "../../utils/Framework/User/GovernanceUser";
 import { Keyring } from "@polkadot/api";
@@ -277,13 +277,13 @@ async function sendTokensFromParachainToRely(
   await signSendAndWaitToFinishTx(
     parachainNode.api?.tx.polkadotXcm.reserveTransferAssets(
       {
-        V1: {
+        V2: {
           parents: 1,
           interior: "Here",
         },
       },
       {
-        V1: {
+        V2: {
           parents: 1,
           interior: {
             X1: {
@@ -296,7 +296,7 @@ async function sendTokensFromParachainToRely(
         },
       },
       {
-        V1: [
+        V2: [
           {
             id: {
               Concrete: {
@@ -327,7 +327,7 @@ async function sendTokensFromParachainToMGA(
       4,
       amount,
       {
-        V1: {
+        V2: {
           parents: 1,
           interior: {
             X2: [
@@ -344,7 +344,7 @@ async function sendTokensFromParachainToMGA(
           },
         },
       },
-      new BN("6000000000")
+      { Limited: new BN("6000000000") }
     )
     .signAndSend(srcUser.keyRingPair);
 }
@@ -361,7 +361,7 @@ async function sendTokensFromMGAtoParachain(
       new BN(4),
       amount,
       {
-        V1: {
+        V2: {
           parents: 1,
           interior: {
             X2: [
@@ -378,7 +378,7 @@ async function sendTokensFromMGAtoParachain(
           },
         },
       },
-      new BN("6000000000")
+      { Limited: new BN("6000000000") }
     ),
     srcUser.keyRingPair
   ).then();

@@ -22,11 +22,11 @@ import { getBalanceOfPool } from "./txHandler";
 import { StorageKey, Bytes } from "@polkadot/types";
 import { ITuple, Codec } from "@polkadot/types/types";
 import jsonpath from "jsonpath";
-import { Staking } from "./Staking";
+import { Staking, AggregatorOptions, tokenOriginEnum } from "./Staking";
 import { hexToBn } from "@polkadot/util";
 import { Bootstrap } from "./Bootstrap";
 import assert from "assert";
-const tokenOrigin = "ActivatedUnstakedReserves"; // "AvailableBalance";
+const tokenOrigin = tokenOriginEnum.ActivatedUnstakedReserves;
 
 export async function vetoMotion(motionId: number) {
   //const fundAcc = "5Gc1GyxLPr1A4jE1U7u9LFYuFftDjeSYZWQXHgejQhSdEN4s";
@@ -279,7 +279,7 @@ export async function joinAsCandidate(
       Assets.mintToken(BN_ZERO, user, amountToJoin.muln(100000))
     );
     amountToJoin = amountToJoin.muln(2);
-    orig = "AvailableBalance";
+    orig = tokenOriginEnum.AvailableBalance;
   }
   await signTx(
     api,
@@ -715,10 +715,10 @@ export async function findAllRewardsAndClaim() {
     }
     user.addFromAddress(keyring, usersInfo[index][0]);
     liqTokenId = new BN(usersInfo[index][1].tokenId);
-    rewardAmount = await mangata.calculateRewardsAmount(
-      user.keyRingPair.address,
-      liqTokenId.toString()
-    );
+    rewardAmount = await mangata.rpc.calculateRewardsAmount({
+      address: user.keyRingPair.address,
+      liquidityTokenId: liqTokenId.toString(),
+    });
     if (rewardAmount) {
       console.info(getPrint(usersInfo[index][0], usersInfo[index][1]));
       extrinsicCall.push(Sudo.sudoAs(user, Xyk.claimRewardsAll(liqTokenId)));
@@ -986,7 +986,10 @@ export async function userAggregatesOn(
   await setupUsers();
   const tx1 = Sudo.sudoAsWithAddressString(
     userAggregating,
-    Staking.aggregatorUpdateMetadata([userWhoDelegates])
+    Staking.aggregatorUpdateMetadata(
+      [userWhoDelegates],
+      AggregatorOptions.ExtendApprovedCollators
+    )
   );
   const tx2 = Sudo.sudoAsWithAddressString(
     userWhoDelegates,

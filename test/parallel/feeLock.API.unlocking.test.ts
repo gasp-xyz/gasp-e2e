@@ -3,19 +3,19 @@
  * @group paralgasless
  * @group parallel
  */
-
+import { jest } from "@jest/globals";
 import { Keyring } from "@polkadot/api";
-import { getApi, initApi, getMangataInstance } from "../../utils/api";
+import { getApi, initApi, mangata } from "../../utils/api";
 import { Assets } from "../../utils/Assets";
 import { MGA_ASSET_ID } from "../../utils/Constants";
 import {
   waitNewBlock,
   waitSudoOperationSuccess,
 } from "../../utils/eventListeners";
-import { BN, BN_ZERO } from "@mangata-finance/sdk";
+import { BN_ZERO } from "@mangata-finance/sdk";
 import { setupApi, setupUsers } from "../../utils/setup";
 import { Sudo } from "../../utils/sudo";
-import { updateFeeLockMetadata, unlockFee } from "../../utils/tx";
+import { updateFeeLockMetadata, unlockFee, sellAsset } from "../../utils/tx";
 import { AssetWallet, User } from "../../utils/User";
 import {
   getEnvironmentRequiredVars,
@@ -28,6 +28,7 @@ import {
 import { getEventResultFromMangataTx } from "../../utils/txHandler";
 import { ExtrinsicResult } from "../../utils/eventListeners";
 import { testLog } from "../../utils/Logger";
+import { BN } from "@polkadot/util";
 
 jest.spyOn(console, "log").mockImplementation(jest.fn());
 jest.setTimeout(2500000);
@@ -98,26 +99,28 @@ beforeEach(async () => {
 
 test("gasless- GIVEN some locked tokens and no more free MGX WHEN another tx is submitted AND lock period did not finished THEN the operation can not be submitted", async () => {
   const api = getApi();
+
   const feeLockAmount = await (await getFeeLockMetadata(api)).feeLockAmount;
   await testUser1.addMGATokens(sudo, feeLockAmount);
 
-  const mangata = await getMangataInstance();
   const saleAssetValue = thresholdValue.sub(new BN(5));
-
+  const isFree = await mangata?.rpc.isSellAssetLockFree(
+    [firstCurrency.toString(), secondCurrency.toString()],
+    saleAssetValue
+  );
+  expect(isFree).toBeFalsy();
   await testUser1.sellAssets(firstCurrency, secondCurrency, saleAssetValue);
 
   await expect(
-    mangata
-      .sellAsset(
-        testUser1.keyRingPair,
-        firstCurrency.toString(),
-        secondCurrency.toString(),
-        saleAssetValue,
-        new BN(0)
-      )
-      .catch((reason) => {
-        throw new Error(reason.data);
-      })
+    sellAsset(
+      testUser1.keyRingPair,
+      firstCurrency,
+      secondCurrency,
+      saleAssetValue,
+      new BN(0)
+    ).catch((reason) => {
+      throw new Error(reason.data);
+    })
   ).rejects.toThrow(feeLockErrors.FeeLockingFail);
 });
 
@@ -129,7 +132,11 @@ test("gasless- GIVEN some locked tokens and no more free MGX WHEN another tx is 
   await testUser1.addMGATokens(sudo, new BN(feeLockAmount).add(new BN(1)));
 
   const saleAssetValue = thresholdValue.sub(new BN(5));
-
+  const isFree = await mangata?.rpc.isSellAssetLockFree(
+    [firstCurrency.toString(), secondCurrency.toString()],
+    saleAssetValue
+  );
+  expect(isFree).toBeFalsy();
   await testUser1.sellAssets(firstCurrency, secondCurrency, saleAssetValue);
 
   const accountFeeLockData = JSON.parse(
@@ -137,8 +144,10 @@ test("gasless- GIVEN some locked tokens and no more free MGX WHEN another tx is 
       await api.query.feeLock.accountFeeLockData(testUser1.keyRingPair.address)
     )
   );
-  const waitingBlock = accountFeeLockData.lastFeeLockBlock + periodLength;
-  await waitBlockNumber(waitingBlock, periodLength.toNumber() + 5);
+  const waitingBlock = stringToBN(accountFeeLockData.lastFeeLockBlock).add(
+    periodLength
+  );
+  await waitBlockNumber(waitingBlock.toString(), periodLength.toNumber() + 5);
 
   await testUser1
     .sellAssets(firstCurrency, secondCurrency, saleAssetValue)
@@ -156,7 +165,11 @@ test("gasless- GIVEN some locked tokens WHEN querying accountFeeLockData THEN th
   await testUser1.addMGATokens(sudo, new BN(feeLockAmount).add(new BN(1)));
 
   const saleAssetValue = thresholdValue.sub(new BN(5));
-
+  const isFree = await mangata?.rpc.isSellAssetLockFree(
+    [firstCurrency.toString(), secondCurrency.toString()],
+    saleAssetValue
+  );
+  expect(isFree).toBeFalsy();
   await testUser1.sellAssets(firstCurrency, secondCurrency, saleAssetValue);
 
   const block = await getBlockNumber();
@@ -183,6 +196,11 @@ test("gasless- GIVEN some locked tokens and lastFeeLockBlock is lower than curre
   await testUser1.addMGATokens(sudo, new BN(feeLockAmount).add(new BN(1)));
 
   const saleAssetValue = thresholdValue.sub(new BN(5));
+  const isFree = await mangata?.rpc.isSellAssetLockFree(
+    [firstCurrency.toString(), secondCurrency.toString()],
+    saleAssetValue
+  );
+  expect(isFree).toBeFalsy();
   await testUser1.sellAssets(firstCurrency, secondCurrency, saleAssetValue);
   await testUser1.refreshAmounts(AssetWallet.BEFORE);
   const accountFeeLockData = JSON.parse(
@@ -191,8 +209,10 @@ test("gasless- GIVEN some locked tokens and lastFeeLockBlock is lower than curre
     )
   );
 
-  const waitingBlock = accountFeeLockData.lastFeeLockBlock + periodLength;
-  await waitBlockNumber(waitingBlock, periodLength.toNumber() + 5);
+  const waitingBlock = stringToBN(accountFeeLockData.lastFeeLockBlock).add(
+    periodLength
+  );
+  await waitBlockNumber(waitingBlock.toString(), periodLength.toNumber() + 5);
 
   try {
     await unlockFee(testUser1);
@@ -217,7 +237,11 @@ test("gasless- GIVEN a lock WHEN the period is N THEN the tokens can not be unlo
   await testUser1.addMGATokens(sudo, new BN(feeLockAmount));
 
   const saleAssetValue = thresholdValue.sub(new BN(5));
-
+  const isFree = await mangata?.rpc.isSellAssetLockFree(
+    [firstCurrency.toString(), secondCurrency.toString()],
+    saleAssetValue
+  );
+  expect(isFree).toBeFalsy();
   await testUser1.sellAssets(firstCurrency, secondCurrency, saleAssetValue);
   const feeLockBlock = stringToBN(
     JSON.parse(

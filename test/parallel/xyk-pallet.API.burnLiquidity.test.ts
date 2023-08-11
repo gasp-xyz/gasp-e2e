@@ -4,13 +4,15 @@
  * @group api
  * @group parallel
  */
-import { getApi, getMangataInstance, initApi } from "../../utils/api";
+import { jest } from "@jest/globals";
+import { getApi, initApi } from "../../utils/api";
 import {
   getBalanceOfPool,
   getLiquidityAssetId,
   burnLiquidity,
   calculate_buy_price_local,
   getLiquidityPool,
+  createPool,
 } from "../../utils/tx";
 import {
   waitNewBlock,
@@ -83,13 +85,11 @@ describe("xyk-pallet - Burn liquidity tests: when burning liquidity you can", ()
     );
     await testUser1.addMGATokens(sudo);
     //lets create a pool
-    await (
-      await getMangataInstance()
-    ).createPool(
+    await createPool(
       testUser1.keyRingPair,
-      firstCurrency.toString(),
+      firstCurrency,
       assetXamount,
-      secondCurrency.toString(),
+      secondCurrency,
       assetYamount
     );
     const liquidityAssetId = await getLiquidityAssetId(
@@ -160,8 +160,8 @@ describe("xyk-pallet - Burn liquidity tests: when burning liquidity you can", ()
   });
 
   test("Burning liquidities provides Burn and settle", async () => {
-    // The second currecy value is : defaultCurrecyValue, one to create the pool later, and the other one because of the rounding issue.
-    [firstCurrency, secondCurrency] = await UserCreatesAPoolAndMintliquidity(
+    // The second currency value is : defaultCurrencyValue, one to create the pool later, and the other one because of the rounding issue.
+    [firstCurrency, secondCurrency] = await UserCreatesAPoolAndMintLiquidity(
       testUser1,
       sudo,
       new BN(defaultCurrecyValue),
@@ -190,7 +190,7 @@ describe("xyk-pallet - Burn liquidity tests: when burning liquidity you can", ()
 
   test("Burning liquidities generates a Liquidity burned event", async () => {
     // The second currecy value is : defaultCurrecyValue, one to create the pool later, and the other one because of the rounding issue.
-    [firstCurrency, secondCurrency] = await UserCreatesAPoolAndMintliquidity(
+    [firstCurrency, secondCurrency] = await UserCreatesAPoolAndMintLiquidity(
       testUser1,
       sudo,
       new BN(defaultCurrecyValue),
@@ -243,7 +243,7 @@ describe("xyk-pallet - Burn liquidity tests: when burning liquidity you can", ()
   });
 });
 
-async function UserCreatesAPoolAndMintliquidity(
+async function UserCreatesAPoolAndMintLiquidity(
   testUser1: User,
   sudo: User,
   userAmount: BN,
@@ -256,13 +256,11 @@ async function UserCreatesAPoolAndMintliquidity(
     sudo
   );
   await testUser1.addMGATokens(sudo);
-  await (
-    await getMangataInstance()
-  ).createPool(
+  await createPool(
     testUser1.keyRingPair,
-    firstCurrency.toString(),
+    firstCurrency,
     poolAmount,
-    secondCurrency.toString(),
+    secondCurrency,
     poolAmount
   );
 
