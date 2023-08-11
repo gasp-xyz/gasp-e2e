@@ -401,7 +401,17 @@ async function app(): Promise<any> {
         await migrate();
       }
       if (answers.option.includes("testTokensForUsers")) {
-        await testTokensForUsers();
+        await inquirer
+          .prompt([
+            {
+              type: "input",
+              name: "userPath",
+              message: "//Eve",
+            },
+          ])
+          .then(async (answers: { userPath: string }) => {
+            await testTokensForUsers(answers.userPath);
+          });
       }
       if (answers.option.includes("user aggregates with")) {
         return inquirer
