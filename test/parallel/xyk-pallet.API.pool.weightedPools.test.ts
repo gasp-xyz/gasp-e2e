@@ -5,7 +5,7 @@
  */
 import { jest } from "@jest/globals";
 import { Keyring } from "@polkadot/api";
-import { getApi, initApi } from "../../utils/api";
+import { getApi, getMangataInstance, initApi } from "../../utils/api";
 import { Assets } from "../../utils/Assets";
 import { MGA_ASSET_ID } from "../../utils/Constants";
 import { BN_HUNDRED, BN_ZERO, signTx } from "@mangata-finance/sdk";
@@ -18,7 +18,11 @@ import {
   promotePool,
 } from "../../utils/tx";
 import { AssetWallet, User } from "../../utils/User";
-import { getEnvironmentRequiredVars, stringToBN } from "../../utils/utils";
+import {
+  getEnvironmentRequiredVars,
+  stringToBN,
+  waitForNBlocks,
+} from "../../utils/utils";
 import { Xyk } from "../../utils/xyk";
 import { ExtrinsicResult, waitForRewards } from "../../utils/eventListeners";
 import { getEventResultFromMangataTx } from "../../utils/txHandler";
@@ -47,12 +51,11 @@ beforeAll(async () => {
   // setup users
   sudo = new User(keyring, sudoUserName);
 
-  [testUser1] = setupUsers();
-
   await setupApi();
 });
 
 beforeEach(async () => {
+  [testUser1] = setupUsers();
   [token1] = await Assets.setupUserWithCurrencies(
     sudo,
     [defaultCurrencyValue, defaultCurrencyValue],
@@ -86,7 +89,9 @@ beforeEach(async () => {
     )
   );
 });
-
+afterEach(async () => {
+  await Sudo.batchAsSudoFinalized(Assets.promotePool(liqId.toNumber(), 0));
+});
 test("Check that we can get the list of promoted pools with proofOfStake.promotedPoolRewards data storage", async () => {
   const poolWeight = (await getPromotedPoolInfo(liqId)).weight;
 
@@ -156,7 +161,7 @@ test("Testing that the sum of the weights can be greater than 100", async () => 
   expect(sumPoolsWeights).bnGt(BN_HUNDRED);
 });
 
-test("GIVEN a pool WHEN it has configured with 0 THEN no new issuance will be reserved AND user can't claim rewards", async () => {
+test("GIVEN a pool WHEN it has configured with 0 THEN no new issuance will be reserved AND user CAN claim remaining rewards", async () => {
   const [testUser2] = setupUsers();
 
   await Sudo.batchAsSudoFinalized(
@@ -184,16 +189,19 @@ test("GIVEN a pool WHEN it has configured with 0 THEN no new issuance will be re
 
   await claimRewardsAll(testUser1, liqId).then((result) => {
     const eventResponse = getEventResultFromMangataTx(result);
-    expect(eventResponse.state).toEqual(ExtrinsicResult.ExtrinsicFailed);
-    expect(eventResponse.data).toEqual("NotAPromotedPool");
+    expect(eventResponse.state).toEqual(ExtrinsicResult.ExtrinsicSuccess);
   });
 
+  //Validate that another user tries minting into the disabled pool.
   await mintLiquidity(
     testUser2.keyRingPair,
     MGA_ASSET_ID,
     token1,
     defaultCurrencyValue
-  );
+  ).then((result) => {
+    const eventResponse = getEventResultFromMangataTx(result);
+    expect(eventResponse.state).toEqual(ExtrinsicResult.ExtrinsicSuccess);
+  });
 
   await testUser2.refreshAmounts(AssetWallet.AFTER);
 
@@ -234,19 +242,35 @@ test("GIVEN a deactivated pool WHEN its configured with more weight, THEN reward
   expect(poolRewardsAfter).bnGt(poolRewardsBefore);
 });
 
-test("GIVEN an activated pool WHEN pool was deactivated THEN check that pool was deleted from list of promotedPoolRewards", async () => {
+test("GIVEN an activated pool WHEN pool was deactivated THEN check that the user will still get some rewards from the curve, and storage is updated", async () => {
   const api = getApi();
-
-  const poolWeightBefore = (await getPromotedPoolInfo(liqId)).weight;
-
+  await waitForRewards(testUser1, liqId);
+  await claimRewardsAll(testUser1, liqId).then((result) => {
+    const eventResponse = getEventResultFromMangataTx(result);
+    expect(eventResponse.state).toEqual(ExtrinsicResult.ExtrinsicSuccess);
+  });
+  await waitForNBlocks(1);
+  const poolInfoBefore = await getPromotedPoolInfo(liqId);
   await promotePool(sudo.keyRingPair, liqId, 0);
-
+  //Test user1 should still have some rewards in the curve.
+  await waitForRewards(testUser1, liqId);
   const poolRewards = JSON.parse(
     JSON.stringify(await api.query.proofOfStake.promotedPoolRewards())
   );
-
-  expect(poolWeightBefore).bnGt(BN_ZERO);
-  expect(poolRewards[liqId.toString()]).toEqual(undefined);
+  const poolInfoAfter = await getPromotedPoolInfo(liqId);
+  const mangata = await getMangataInstance(
+    getEnvironmentRequiredVars().chainUri
+  );
+  const rewardsAfterDisablePool = await mangata.rpc.calculateRewardsAmount({
+    address: testUser1.keyRingPair.address,
+    liquidityTokenId: liqId.toString(),
+  });
+  expect(poolInfoBefore.weight).bnGt(BN_ZERO);
+  expect(poolInfoAfter.weight).bnEqual(BN_ZERO);
+  //rewards should not grow.
+  expect(poolInfoAfter.rewards).bnEqual(poolInfoBefore.rewards);
+  expect(poolRewards[liqId.toString()]).not.toEqual(undefined);
+  expect(rewardsAfterDisablePool).bnGt(BN_ZERO);
 });
 
 async function getPromotedPoolInfo(tokenId: BN) {
