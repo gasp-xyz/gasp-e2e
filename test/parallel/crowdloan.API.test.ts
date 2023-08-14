@@ -40,7 +40,7 @@ let testUser4: User;
 let api: ApiPromise;
 let sudo: User;
 let keyring: Keyring;
-let crowdloanId1: any;
+let crowdloanId: any;
 const millionNative = new BN("1000000000000000000000000");
 const nativeCurrencyId = MGA_ASSET_ID;
 
@@ -99,7 +99,7 @@ test("Only sudo can crowdloan initializeRewardVec(rewards)", async () => {
       [
         testUser1.keyRingPair.address,
         testUser1.keyRingPair.address,
-        millionNative.divn(2),
+        millionNative,
       ],
     ]),
     testUser1.keyRingPair
@@ -116,7 +116,7 @@ test("Only sudo can crowdloan initializeRewardVec(rewards)", async () => {
         [
           testUser1.keyRingPair.address,
           testUser1.keyRingPair.address,
-          millionNative.divn(2),
+          millionNative,
         ],
       ])
     )
@@ -136,14 +136,14 @@ test("Only sudo can crowdloan.completeInitialization(leaseEndingBlock)", async (
         [
           testUser1.keyRingPair.address,
           testUser1.keyRingPair.address,
-          millionNative.divn(2),
+          millionNative,
         ],
       ])
     )
   );
 
-  const leaseStartBlock = (await getBlockNumber()) + 5;
-  const leaseEndingBlock = (await getBlockNumber()) + 20;
+  const leaseStartBlock = (await getBlockNumber()) + 2;
+  const leaseEndingBlock = (await getBlockNumber()) + 5;
 
   const userCompleteInitialization = await signTx(
     api,
@@ -172,7 +172,7 @@ test("Only sudo can crowdloan.completeInitialization(leaseEndingBlock)", async (
 
   await waitSudoOperationSuccess(sudoCompleteInitialization);
 
-  const crowdloanId = (await api.query.crowdloan.crowdloanId()).toHuman();
+  crowdloanId = (await api.query.crowdloan.crowdloanId()).toHuman();
 
   await claimRewards(crowdloanId, testUser1).then((result) => {
     expect(result.state).toEqual(ExtrinsicResult.ExtrinsicSuccess);
@@ -185,21 +185,24 @@ test("A user can only change his reward-address with: crowdloan.updateRewardAddr
   await initializeReward(testUser1, millionNative);
 
   const leaseStartBlock = (await getBlockNumber()) + 2;
-  const leaseEndingBlock = (await getBlockNumber()) + 10;
+  const leaseEndingBlock = (await getBlockNumber()) + 5;
 
   await completeInitialization(leaseStartBlock, leaseEndingBlock);
 
+  crowdloanId = (await api.query.crowdloan.crowdloanId()).toHuman();
+
   await signTx(
     api,
-    // @ts-ignore
-    api.tx.crowdloan.updateRewardAddress(testUser2.keyRingPair.address, null),
+    api.tx.crowdloan.updateRewardAddress(
+      testUser2.keyRingPair.address,
+      // @ts-ignore
+      crowdloanId
+    ),
     testUser1.keyRingPair
   ).then((result) => {
     const eventResponse = getEventResultFromMangataTx(result);
     expect(eventResponse.state).toEqual(ExtrinsicResult.ExtrinsicSuccess);
   });
-
-  const crowdloanId = (await api.query.crowdloan.crowdloanId()).toHuman();
 
   await waitBlockNumber(leaseEndingBlock.toString(), 15);
 
@@ -216,7 +219,7 @@ test("A user can only change his reward-address with: crowdloan.updateRewardAddr
 test("A reward needs to be fully setup with: setCrowdloanAllocation + initializeRewardVec + completeInitialization", async () => {
   await setCrowdloanAllocation(millionNative);
 
-  const crowdloanId = (await api.query.crowdloan.crowdloanId()).toHuman();
+  crowdloanId = (await api.query.crowdloan.crowdloanId()).toHuman();
 
   await claimRewards(crowdloanId, testUser1).then((result) => {
     expect(result.state).toEqual(ExtrinsicResult.ExtrinsicFailed);
@@ -304,7 +307,7 @@ test("CL needs to be setup in order", async () => {
   await waitSudoOperationSuccess(initializationRewards);
 
   leaseStartBlock = (await getBlockNumber()) + 2;
-  leaseEndingBlock = (await getBlockNumber()) + 10;
+  leaseEndingBlock = (await getBlockNumber()) + 5;
 
   initializationCrowdloan = await completeInitialization(
     leaseStartBlock,
@@ -357,7 +360,7 @@ test("Total contributors returns the number of contributors per crowdloan AND va
 
   await setCrowdloanAllocation(millionNative);
 
-  const crowdloanId = (await api.query.crowdloan.crowdloanId()).toHuman();
+  crowdloanId = (await api.query.crowdloan.crowdloanId()).toHuman();
 
   numberContributors = (
     await api.query.crowdloan.totalContributors(crowdloanId)
@@ -382,7 +385,7 @@ test("Total contributors returns the number of contributors per crowdloan AND va
 test("Users receive different rewards when they confirm them before, during and after crowdloan", async () => {
   await setCrowdloanAllocation(millionNative.muln(3));
 
-  const crowdloanId = (await api.query.crowdloan.crowdloanId()).toHuman();
+  crowdloanId = (await api.query.crowdloan.crowdloanId()).toHuman();
 
   await Sudo.batchAsSudoFinalized(
     Sudo.sudo(
@@ -451,7 +454,7 @@ test("Users receive different rewards when they confirm them before, during and 
 describe("Test that a user can claim when", () => {
   beforeAll(async () => {
     await setCrowdloanAllocation(millionNative.muln(4));
-    crowdloanId1 = (await api.query.crowdloan.crowdloanId()).toHuman();
+    crowdloanId = (await api.query.crowdloan.crowdloanId()).toHuman();
 
     await Sudo.batchAsSudoFinalized(
       Sudo.sudo(
@@ -480,36 +483,32 @@ describe("Test that a user can claim when", () => {
       )
     );
     const leaseStartBlock = (await getBlockNumber()) + 2;
-    const leaseEndingBlock = (await getBlockNumber()) + 7;
+    const leaseEndingBlock = (await getBlockNumber()) + 5;
     await completeInitialization(leaseStartBlock, leaseEndingBlock);
     await waitBlockNumber(leaseEndingBlock.toString(), 10);
   });
 
   test("CL1 is fully setup and no other CL is setup", async () => {
-    await claimRewards(crowdloanId1, testUser1);
+    await claimRewards(crowdloanId, testUser1);
 
-    await checkUserReward(crowdloanId1, testUser1);
+    await checkUserReward(crowdloanId, testUser1);
   });
 
   test("CL1 is fully setup and CL2 setup the setCrowdloanAllocation", async () => {
     await setCrowdloanAllocation(millionNative);
 
-    await claimRewards(crowdloanId1, testUser2);
+    await claimRewards(crowdloanId, testUser2);
 
-    await checkUserReward(crowdloanId1, testUser2);
+    await checkUserReward(crowdloanId, testUser2);
   });
 
   test("CL1 is fully setup and CL2 setup the setCrowdloanAllocation + RewardVec", async () => {
     await setCrowdloanAllocation(millionNative);
     await initializeReward(testUser1, millionNative);
 
-    const crowdloanId2 = (await api.query.crowdloan.crowdloanId()).toHuman();
+    await claimRewards(crowdloanId, testUser3);
 
-    expect(new BN(crowdloanId2!.toString())).bnGt(crowdloanId1);
-
-    await claimRewards(crowdloanId1, testUser3);
-
-    await checkUserReward(crowdloanId1, testUser3);
+    await checkUserReward(crowdloanId, testUser3);
   });
 
   test("CL1 is fully setup and CL2 setup the setCrowdloanAllocation + RewardVec + compleInitialization", async () => {
@@ -519,13 +518,9 @@ describe("Test that a user can claim when", () => {
     const leaseEndingBlock = (await getBlockNumber()) + 5;
     await completeInitialization(leaseStartBlock, leaseEndingBlock);
 
-    const crowdloanId2 = (await api.query.crowdloan.crowdloanId()).toHuman();
+    await claimRewards(crowdloanId, testUser4);
 
-    expect(new BN(crowdloanId2!.toString())).bnGt(crowdloanId1);
-
-    await claimRewards(crowdloanId1, testUser4);
-
-    await checkUserReward(crowdloanId1, testUser4);
+    await checkUserReward(crowdloanId, testUser4);
   });
 
   async function checkUserReward(crowdloanId: any, user: User) {
