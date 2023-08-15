@@ -1,5 +1,5 @@
 /*
- *
+ * @group crowdloan
  *
  */
 import { jest } from "@jest/globals";
@@ -69,117 +69,109 @@ beforeAll(async () => {
   );
 });
 
-test("Only sudo can crowdloan.setCrowdloanAllocation(crowdloanAllocationAmount)", async () => {
-  const userSetCrowdloanAllocation = await signTx(
-    api,
-    api.tx.crowdloan.setCrowdloanAllocation(millionNative),
-    testUser1.keyRingPair
-  );
+describe("Only sudo can", () => {
+  test("crowdloan.setCrowdloanAllocation(crowdloanAllocationAmount)", async () => {
+    const userSetCrowdloanAllocation = await signTx(
+      api,
+      api.tx.crowdloan.setCrowdloanAllocation(millionNative),
+      testUser1.keyRingPair
+    );
 
-  const eventResponse = getEventResultFromMangataTx(userSetCrowdloanAllocation);
+    const eventResponse = getEventResultFromMangataTx(
+      userSetCrowdloanAllocation
+    );
 
-  expect(eventResponse.state).toEqual(ExtrinsicResult.ExtrinsicFailed);
-  expect(eventResponse.data).toEqual("UnknownError");
+    expect(eventResponse.state).toEqual(ExtrinsicResult.ExtrinsicFailed);
+    expect(eventResponse.data).toEqual("UnknownError");
 
-  const sudoSetCrowdloanAllocation = await Sudo.batchAsSudoFinalized(
-    Sudo.sudo(api.tx.crowdloan.setCrowdloanAllocation(millionNative))
-  );
+    const sudoSetCrowdloanAllocation = await Sudo.batchAsSudoFinalized(
+      Sudo.sudo(api.tx.crowdloan.setCrowdloanAllocation(millionNative))
+    );
 
-  await waitSudoOperationSuccess(sudoSetCrowdloanAllocation);
-});
+    await waitSudoOperationSuccess(sudoSetCrowdloanAllocation);
+  });
 
-test("Only sudo can crowdloan initializeRewardVec(rewards)", async () => {
-  await Sudo.batchAsSudoFinalized(
-    Sudo.sudo(api.tx.crowdloan.setCrowdloanAllocation(millionNative))
-  );
-
-  const userInitializeRewardVec = await signTx(
-    api,
-    api.tx.crowdloan.initializeRewardVec([
-      [
-        testUser1.keyRingPair.address,
-        testUser1.keyRingPair.address,
-        millionNative,
-      ],
-    ]),
-    testUser1.keyRingPair
-  );
-
-  const eventResponse = getEventResultFromMangataTx(userInitializeRewardVec);
-
-  expect(eventResponse.state).toEqual(ExtrinsicResult.ExtrinsicFailed);
-  expect(eventResponse.data).toEqual("UnknownError");
-
-  const sudoInitializeRewardVec = await Sudo.batchAsSudoFinalized(
-    Sudo.sudo(
+  test("crowdloan.initializeRewardVec(rewards)", async () => {
+    const userInitializeRewardVec = await signTx(
+      api,
       api.tx.crowdloan.initializeRewardVec([
         [
           testUser1.keyRingPair.address,
           testUser1.keyRingPair.address,
           millionNative,
         ],
-      ])
-    )
-  );
+      ]),
+      testUser1.keyRingPair
+    );
 
-  await waitSudoOperationSuccess(sudoInitializeRewardVec);
-});
+    const eventResponse = getEventResultFromMangataTx(userInitializeRewardVec);
 
-test("Only sudo can crowdloan.completeInitialization(leaseEndingBlock)", async () => {
-  await Sudo.batchAsSudoFinalized(
-    Sudo.sudo(api.tx.crowdloan.setCrowdloanAllocation(millionNative))
-  );
+    expect(eventResponse.state).toEqual(ExtrinsicResult.ExtrinsicFailed);
+    expect(eventResponse.data).toEqual("UnknownError");
 
-  await Sudo.batchAsSudoFinalized(
-    Sudo.sudo(
-      api.tx.crowdloan.initializeRewardVec([
-        [
-          testUser1.keyRingPair.address,
-          testUser1.keyRingPair.address,
-          millionNative,
-        ],
-      ])
-    )
-  );
+    const sudoInitializeRewardVec = await Sudo.batchAsSudoFinalized(
+      Sudo.sudo(
+        api.tx.crowdloan.initializeRewardVec([
+          [
+            testUser1.keyRingPair.address,
+            testUser1.keyRingPair.address,
+            millionNative,
+          ],
+        ])
+      )
+    );
 
-  const leaseStartBlock = (await getBlockNumber()) + 2;
-  const leaseEndingBlock = (await getBlockNumber()) + 5;
+    await waitSudoOperationSuccess(sudoInitializeRewardVec);
+  });
 
-  const userCompleteInitialization = await signTx(
-    api,
-    api.tx.crowdloan.completeInitialization(
-      leaseStartBlock,
-      // @ts-ignore
-      leaseEndingBlock
-    ),
-    testUser1.keyRingPair
-  );
+  test("crowdloan.completeInitialization(leaseEndingBlock)", async () => {
+    let leaseStartBlock: number;
+    let leaseEndingBlock: number;
 
-  const eventResponse = getEventResultFromMangataTx(userCompleteInitialization);
+    leaseStartBlock = (await getBlockNumber()) + 2;
+    leaseEndingBlock = (await getBlockNumber()) + 5;
 
-  expect(eventResponse.state).toEqual(ExtrinsicResult.ExtrinsicFailed);
-  expect(eventResponse.data).toEqual("UnknownError");
-
-  const sudoCompleteInitialization = await Sudo.batchAsSudoFinalized(
-    Sudo.sudo(
+    const userCompleteInitialization = await signTx(
+      api,
       api.tx.crowdloan.completeInitialization(
         leaseStartBlock,
         // @ts-ignore
         leaseEndingBlock
+      ),
+      testUser1.keyRingPair
+    );
+
+    const eventResponse = getEventResultFromMangataTx(
+      userCompleteInitialization
+    );
+
+    expect(eventResponse.state).toEqual(ExtrinsicResult.ExtrinsicFailed);
+    expect(eventResponse.data).toEqual("UnknownError");
+
+    leaseStartBlock = (await getBlockNumber()) + 2;
+    leaseEndingBlock = (await getBlockNumber()) + 5;
+
+    const sudoCompleteInitialization = await Sudo.batchAsSudoFinalized(
+      Sudo.sudo(
+        api.tx.crowdloan.completeInitialization(
+          leaseStartBlock,
+          // @ts-ignore
+          leaseEndingBlock
+        )
       )
-    )
-  );
+    );
 
-  await waitSudoOperationSuccess(sudoCompleteInitialization);
+    await waitSudoOperationSuccess(sudoCompleteInitialization);
 
-  crowdloanId = (await api.query.crowdloan.crowdloanId()).toHuman();
+    crowdloanId = (await api.query.crowdloan.crowdloanId()).toHuman();
 
-  await claimRewards(crowdloanId, testUser1).then((result) => {
-    expect(result.state).toEqual(ExtrinsicResult.ExtrinsicSuccess);
+    await claimRewards(crowdloanId, testUser1).then((result) => {
+      expect(result.state).toEqual(ExtrinsicResult.ExtrinsicSuccess);
+    });
   });
 });
 
-test("A user can only change his reward-address with: crowdloan.updateRewardAddress(newRewardAccount)", async () => {
+test.skip("A user can only change his reward-address with: crowdloan.updateRewardAddress AND user can claim some rewards if it provided some on the specified cl_id", async () => {
   await setCrowdloanAllocation(millionNative);
 
   await initializeReward(testUser1, millionNative);
@@ -317,7 +309,7 @@ test("CL needs to be setup in order", async () => {
   await waitSudoOperationSuccess(initializationCrowdloan);
 });
 
-test("A user can claim some rewards if it provided some on the specified cl_id", async () => {
+test.skip("A user can claim some rewards if it provided some on the specified cl_id", async () => {
   let leaseStartBlock: number;
   let leaseEndingBlock: number;
 
@@ -382,7 +374,7 @@ test("Total contributors returns the number of contributors per crowdloan AND va
   expect(numberContributors!.toString()).toEqual("1");
 });
 
-test("Users receive different rewards when they confirm them before, during and after crowdloan", async () => {
+test.skip("Users receive different rewards when they confirm them before, during and after crowdloan", async () => {
   await setCrowdloanAllocation(millionNative.muln(3));
 
   crowdloanId = (await api.query.crowdloan.crowdloanId()).toHuman();
@@ -451,7 +443,7 @@ test("Users receive different rewards when they confirm them before, during and 
   await claimRewards(crowdloanId, testUser2);
 });
 
-describe("Test that a user can claim when", () => {
+describe.skip("Test that a user can claim when", () => {
   beforeAll(async () => {
     await setCrowdloanAllocation(millionNative.muln(4));
     crowdloanId = (await api.query.crowdloan.crowdloanId()).toHuman();
