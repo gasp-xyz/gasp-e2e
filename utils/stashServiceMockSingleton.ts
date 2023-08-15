@@ -43,7 +43,7 @@ class StashServiceMockSingleton {
           status: "open",
           unitWeightCost: "",
           xcmTransferWeight: "1171466000",
-          url: "wss://statemine.api.onfinality.io/public-ws",
+          url: "ws://" + localAddress + ":9949",
           xcmVersion: "V3",
           chainType: "parachain",
         },
@@ -53,7 +53,7 @@ class StashServiceMockSingleton {
           status: "open",
           unitWeightCost: "200000000",
           xcmTransferWeight: "800000000",
-          url: "wss://bifrost-rpc.liebi.com/ws",
+          url: "ws://" + localAddress + ":9947",
           xcmVersion: "V2",
           chainType: "parachain",
         },
@@ -73,7 +73,7 @@ class StashServiceMockSingleton {
           status: "open",
           unitWeightCost: "1000000000",
           xcmTransferWeight: "4000000000",
-          url: "wss://rpc.turing.oak.tech",
+          url: "ws://" + localAddress + ":9948",
           xcmVersion: "V3",
           chainType: "parachain",
         },
@@ -92,12 +92,15 @@ class StashServiceMockSingleton {
       res.json(data);
     });
 
-    this.stashServiceMock.use("/xcm", async (req, res) => {
+    // Match catch-all routes
+    this.stashServiceMock.use("/:path", async (req, res) => {
       try {
-        // Forward all xcm requests to the true service
+        const fullPath = "/" + req.params.path + req.url;
+
+        // Forward the request to the true service
         const response = await axios({
           method: req.method,
-          url: stashServiceAddress + "/xcm" + req.url,
+          url: stashServiceAddress + fullPath,
           data: req.body,
           httpsAgent: new https.Agent({ rejectUnauthorized: false }),
         });
