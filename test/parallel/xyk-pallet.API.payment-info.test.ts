@@ -56,8 +56,8 @@ beforeAll(async () => {
   await Sudo.batchAsSudoFinalized(
     Assets.FinalizeTge(),
     Assets.initIssuance(),
-    Assets.mintToken(token1, testUser, Assets.DEFAULT_AMOUNT),
-    Assets.mintToken(token2, testUser, Assets.DEFAULT_AMOUNT),
+    Assets.mintToken(token1, testUser, Assets.DEFAULT_AMOUNT.muln(2)),
+    Assets.mintToken(token2, testUser, Assets.DEFAULT_AMOUNT.muln(2)),
     Assets.mintNative(testUser),
     Sudo.sudoAs(
       testUser,
@@ -102,7 +102,7 @@ test("GIVEN a paymentInfo request, WHEN extrinsic is sellAsset  THEN zero is ret
   expect(sellAssetPaymentInfo.partialFee).bnEqual(BN_ZERO);
 });
 
-test("GIVEN a payentInfo request, WHEN extrinsic is multiswapBuyAsset THEN  zero is returned", async () => {
+test("GIVEN a paymentInfo request, WHEN extrinsic is multiswapBuyAsset THEN  zero is returned", async () => {
   const multiswapBuyEvent = api.tx.xyk.multiswapBuyAsset(
     [MGA_ASSET_ID, token2],
     BN_HUNDRED,
@@ -116,7 +116,7 @@ test("GIVEN a payentInfo request, WHEN extrinsic is multiswapBuyAsset THEN  zero
   expect(multiswapBuyPaymentInfo.partialFee).bnEqual(BN_ZERO);
 });
 
-test("GIVEN a payentInfo request, WHEN extrinsic is mint/burn/claimRewards THEN non-zero is returned", async () => {
+test("GIVEN a paymentInfo request, WHEN extrinsic is mintLiquidityEvent THEN non-zero is returned", async () => {
   const mintLiquidityEvent = api.tx.xyk.mintLiquidity(
     MGA_ASSET_ID,
     token1,
@@ -124,9 +124,19 @@ test("GIVEN a payentInfo request, WHEN extrinsic is mint/burn/claimRewards THEN 
     new BN(Number.MAX_SAFE_INTEGER)
   );
 
-  const mintLiquidityEventPaymentInfo = await mintLiquidityEvent.paymentInfo(
+  const mintLiquidityPaymentInfo = await mintLiquidityEvent.paymentInfo(
     testUser.keyRingPair
   );
 
-  expect(mintLiquidityEventPaymentInfo.partialFee).bnGt(BN_ZERO);
+  expect(mintLiquidityPaymentInfo.partialFee).bnGt(BN_ZERO);
+});
+
+test("GIVEN a paymentInfo request, WHEN extrinsic is compoundRewards THEN non-zero is returned", async () => {
+  const compoundRewardsEvent = api.tx.xyk.compoundRewards(liqId1, 1000000);
+
+  const compoundRewardsPaymentInfo = await compoundRewardsEvent.paymentInfo(
+    testUser.keyRingPair
+  );
+
+  expect(compoundRewardsPaymentInfo.partialFee).bnGt(BN_ZERO);
 });
