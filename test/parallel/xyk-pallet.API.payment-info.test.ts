@@ -1,6 +1,6 @@
 /*
  *
- * @group rewardsV2Parallel
+ * @group parallel
  */
 import { jest } from "@jest/globals";
 import { ApiPromise, Keyring } from "@polkadot/api";
