@@ -3,7 +3,7 @@
  * @group parallel
  */
 import { jest } from "@jest/globals";
-import { ApiPromise, Keyring } from "@polkadot/api";
+import { ApiPromise } from "@polkadot/api";
 import { getApi, initApi } from "../../utils/api";
 import { setupApi, setupUsers } from "../../utils/setup";
 import { User } from "../../utils/User";
@@ -16,20 +16,18 @@ import {
 } from "../../utils/Constants";
 import { BN_HUNDRED, BN_MILLION, BN_ZERO, signTx } from "@mangata-finance/sdk";
 import { Xyk } from "../../utils/xyk";
-import { getEnvironmentRequiredVars } from "../../utils/utils";
 import { getEventResultFromMangataTx } from "../../utils/txHandler";
 import { ExtrinsicResult } from "../../utils/eventListeners";
+import { Sudo } from "../../utils/sudo";
+import { Assets } from "../../utils/Assets";
 
 jest.spyOn(console, "log").mockImplementation(jest.fn());
 jest.setTimeout(2500000);
 process.env.NODE_ENV = "test";
 
-const { sudo: sudoUserName } = getEnvironmentRequiredVars();
 let api: ApiPromise;
 let testUser: User;
 let liqId: BN;
-let sudo: User;
-let keyring: Keyring;
 
 beforeAll(async () => {
   try {
@@ -38,15 +36,13 @@ beforeAll(async () => {
     await initApi();
   }
 
-  keyring = new Keyring({ type: "sr25519" });
-
-  // setup users
-  sudo = new User(keyring, sudoUserName);
-
-  [testUser] = setupUsers();
-
   await setupApi();
   api = getApi();
+
+  // setup users
+  [testUser] = setupUsers();
+
+  await Sudo.batchAsSudoFinalized(Assets.mintNative(testUser));
 });
 
 test("GIVEN a paymentInfo request, WHEN extrinsic is sellAsset  THEN zero is returned.", async () => {
@@ -122,7 +118,7 @@ test("GIVEN a paymentInfo request, WHEN extrinsic is a batch with a sell/buy ope
     Xyk.buyAsset(MGA_ASSET_ID, TUR_ASSET_ID, BN_HUNDRED),
   ]);
 
-  await signTx(api, batchAllEvent, sudo.keyRingPair).then((result) => {
+  await signTx(api, batchAllEvent, testUser.keyRingPair).then((result) => {
     const event = getEventResultFromMangataTx(result);
     expect(event.state).toEqual(ExtrinsicResult.ExtrinsicFailed);
     expect(event.data).toContain("CallFiltered");
