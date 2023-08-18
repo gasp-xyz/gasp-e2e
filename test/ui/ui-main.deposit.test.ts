@@ -139,7 +139,7 @@ describe("UI deposit modal tests - no action", () => {
       await depositModal.areTokenListElementsVisible(KSM_ASSET_NAME);
     expect(areTokenListElementsVisible).toBeTruthy();
     await depositModal.selectToken(KSM_ASSET_NAME);
-    await depositModal.enterValue("0.001");
+    await depositModal.enterValue("0.000001");
     await depositModal.waitForProgressBar();
 
     await depositModal.waitForContinueState(false);
