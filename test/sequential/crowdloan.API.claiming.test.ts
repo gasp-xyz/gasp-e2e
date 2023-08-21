@@ -132,7 +132,7 @@ beforeAll(async () => {
 });
 
 test("Users receive different rewards when they confirm them before, during and after crowdloan", async () => {
-  await claimRewards(crowdloanId, testUser1);
+  await sudoClaimRewards(crowdloanId, testUser1);
 
   const user1BalanceAfterClaiming = await api.query.tokens.accounts(
     testUser1.keyRingPair.address,
@@ -141,7 +141,7 @@ test("Users receive different rewards when they confirm them before, during and 
 
   await waitBlockNumber((leaseStartBlock + 5).toString(), 10);
 
-  await claimRewards(crowdloanId, testUser2);
+  await sudoClaimRewards(crowdloanId, testUser2);
 
   const user2BalanceAfterClaiming = await api.query.tokens.accounts(
     testUser2.keyRingPair.address,
@@ -149,7 +149,7 @@ test("Users receive different rewards when they confirm them before, during and 
   );
 
   await waitBlockNumber(leaseEndingBlock.toString(), 10);
-  await claimRewards(crowdloanId, testUser3);
+  await sudoClaimRewards(crowdloanId, testUser3);
   const user3BalanceAfterClaiming = await api.query.tokens.accounts(
     testUser3.keyRingPair.address,
     MGA_ASSET_ID
@@ -165,6 +165,31 @@ test("Users receive different rewards when they confirm them before, during and 
   );
   //if user claimed rewards before crowdloan all tokens would be free
   expect(new BN(user3BalanceAfterClaiming.frozen)).bnEqual(BN_ZERO);
+
+  await Sudo.batchAsSudoFinalized(
+    Sudo.sudoAs(testUser1, api.tx.vesting.vest(MGA_ASSET_ID)),
+    Sudo.sudoAs(testUser2, api.tx.vesting.vest(MGA_ASSET_ID))
+  );
+
+  const user1FinalBalance = await api.query.tokens.accounts(
+    testUser1.keyRingPair.address,
+    MGA_ASSET_ID
+  );
+  const user2FinalBalance = await api.query.tokens.accounts(
+    testUser2.keyRingPair.address,
+    MGA_ASSET_ID
+  );
+  const user3FinalBalance = await api.query.tokens.accounts(
+    testUser3.keyRingPair.address,
+    MGA_ASSET_ID
+  );
+
+  expect(new BN(user1FinalBalance.free)).bnEqual(
+    new BN(user2FinalBalance.free)
+  );
+  expect(new BN(user3FinalBalance.free)).bnEqual(
+    new BN(user1FinalBalance.free)
+  );
 });
 
 test("A user can only change his reward-address with: crowdloan.updateRewardAddress AND user can claim some rewards if it provided some on the specified cl_id", async () => {
@@ -292,6 +317,15 @@ async function claimRewards(crowdloanId: any, userId: User) {
     // @ts-ignore
     api.tx.crowdloan.claim(crowdloanId),
     userId.keyRingPair
+  );
+  const eventResponse = getEventResultFromMangataTx(claimRewards);
+  return eventResponse;
+}
+
+async function sudoClaimRewards(crowdloanId: any, userId: User) {
+  const claimRewards = await Sudo.batchAsSudoFinalized(
+    // @ts-ignore
+    Sudo.sudoAs(userId, api.tx.crowdloan.claim(crowdloanId))
   );
   const eventResponse = getEventResultFromMangataTx(claimRewards);
   return eventResponse;
