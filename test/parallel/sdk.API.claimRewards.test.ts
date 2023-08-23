@@ -14,7 +14,6 @@ import { getEnvironmentRequiredVars } from "../../utils/utils";
 import { Xyk } from "../../utils/xyk";
 import { MGA_ASSET_ID } from "../../utils/Constants";
 import {
-  activateLiquidity,
   claimRewardsAll,
   getLiquidityAssetId,
   getRewardsInfo,
@@ -33,11 +32,11 @@ process.env.NODE_ENV = "test";
 
 const { sudo: sudoUserName } = getEnvironmentRequiredVars();
 let testUser: User;
+let testUser1: User;
 let sudo: User;
 let keyring: Keyring;
-let token1: BN;
-let token2: BN;
-let tokenIds: BN[];
+let soloTokenId: BN;
+let polTokenIds: BN[];
 let liqIds: BN[];
 let tokenValues: BN[];
 const defaultCurrencyValue = new BN(250000);
@@ -65,367 +64,16 @@ beforeAll(async () => {
   [testUser] = setupUsers();
 
   await Sudo.batchAsSudoFinalized(Assets.mintNative(testUser));
-});
 
-beforeEach(async () => {
-  [testUser] = setupUsers();
-
-  [token1, token2] = await Assets.setupUserWithCurrencies(
+  [soloTokenId] = await Assets.setupUserWithCurrencies(
     sudo,
-    [defaultCurrencyValue, defaultCurrencyValue],
+    [defaultCurrencyValue],
     sudo
   );
 
-  await Sudo.batchAsSudoFinalized(Assets.mintNative(testUser));
-});
-
-test("GIVEN an user has available some rewards in one pool WHEN claims all rewards THEN the user gets the rewards for that pool", async () => {
-  await Sudo.batchAsSudoFinalized(
-    Assets.mintToken(token1, testUser, defaultCurrencyValue),
-    Sudo.sudoAs(
-      testUser,
-      Xyk.createPool(
-        MGA_ASSET_ID,
-        defaultCurrencyValue.divn(2),
-        token1,
-        defaultCurrencyValue.divn(2)
-      )
-    )
-  );
-
-  const liqId = await getLiquidityAssetId(MGA_ASSET_ID, token1);
-
-  await promotePool(sudo.keyRingPair, liqId, 20);
-
-  await activateLiquidity(
-    testUser.keyRingPair,
-    liqId,
-    defaultCurrencyValue.divn(2)
-  );
-  await waitForRewards(testUser, liqId);
-
-  const rewardsUserBefore = await getRewardsInfo(
-    testUser.keyRingPair.address,
-    liqId
-  );
-
-  await claimRewardsAll(testUser).then((result) => {
-    const eventResponse = getEventResultFromMangataTx(result);
-    expect(eventResponse.state).toEqual(ExtrinsicResult.ExtrinsicSuccess);
-  });
-
-  const rewardsUserAfter = await getRewardsInfo(
-    testUser.keyRingPair.address,
-    liqId
-  );
-
-  expect(rewardsUserBefore.rewardsAlreadyClaimed).bnEqual(BN_ZERO);
-  expect(rewardsUserAfter.rewardsAlreadyClaimed).bnGt(BN_ZERO);
-});
-
-test("GIVEN an user has available some rewards in two pools WHEN claims all rewards THEN the user gets the rewards for that's pools", async () => {
-  await Sudo.batchAsSudoFinalized(
-    Assets.mintToken(token1, testUser, defaultCurrencyValue),
-    Assets.mintToken(token2, testUser, defaultCurrencyValue),
-    Sudo.sudoAs(
-      testUser,
-      Xyk.createPool(
-        MGA_ASSET_ID,
-        defaultCurrencyValue.divn(2),
-        token1,
-        defaultCurrencyValue.divn(2)
-      )
-    ),
-    Sudo.sudoAs(
-      testUser,
-      Xyk.createPool(
-        MGA_ASSET_ID,
-        defaultCurrencyValue.divn(2),
-        token2,
-        defaultCurrencyValue.divn(2)
-      )
-    )
-  );
-
-  const liqId1 = await getLiquidityAssetId(MGA_ASSET_ID, token1);
-  const liqId2 = await getLiquidityAssetId(MGA_ASSET_ID, token2);
-
-  await Sudo.batchAsSudoFinalized(
-    Assets.promotePool(liqId1.toNumber(), 20),
-    Assets.promotePool(liqId2.toNumber(), 20),
-    Sudo.sudoAs(
-      testUser,
-      Xyk.activateLiquidity(liqId1, defaultCurrencyValue.divn(2))
-    ),
-    Sudo.sudoAs(
-      testUser,
-      Xyk.activateLiquidity(liqId2, defaultCurrencyValue.divn(2))
-    )
-  );
-
-  await waitForRewards(testUser, liqId1);
-
-  const rewardsLiqId1Before = await getRewardsInfo(
-    testUser.keyRingPair.address,
-    liqId1
-  );
-
-  const rewardsLiqId2Before = await getRewardsInfo(
-    testUser.keyRingPair.address,
-    liqId2
-  );
-
-  await claimRewardsAll(testUser).then((result) => {
-    const eventResponse = getEventResultFromMangataTx(result);
-    expect(eventResponse.state).toEqual(ExtrinsicResult.ExtrinsicSuccess);
-  });
-
-  const rewardsLiqId1After = await getRewardsInfo(
-    testUser.keyRingPair.address,
-    liqId1
-  );
-
-  const rewardsLiqId2After = await getRewardsInfo(
-    testUser.keyRingPair.address,
-    liqId2
-  );
-
-  expect(rewardsLiqId1Before.rewardsAlreadyClaimed).bnEqual(BN_ZERO);
-  expect(rewardsLiqId1After.rewardsAlreadyClaimed).bnGt(BN_ZERO);
-  expect(rewardsLiqId2Before.rewardsAlreadyClaimed).bnEqual(BN_ZERO);
-  expect(rewardsLiqId2After.rewardsAlreadyClaimed).bnGt(BN_ZERO);
-});
-
-test("GIVEN an user has available some rewards in two pools ( one deactivated ) WHEN claims all rewards THEN the user gets the rewards for that's pools", async () => {
-  await Sudo.batchAsSudoFinalized(
-    Assets.mintToken(token1, testUser, defaultCurrencyValue),
-    Assets.mintToken(token2, testUser, defaultCurrencyValue),
-    Sudo.sudoAs(
-      testUser,
-      Xyk.createPool(
-        MGA_ASSET_ID,
-        defaultCurrencyValue.divn(2),
-        token1,
-        defaultCurrencyValue.divn(2)
-      )
-    ),
-    Sudo.sudoAs(
-      testUser,
-      Xyk.createPool(
-        MGA_ASSET_ID,
-        defaultCurrencyValue.divn(2),
-        token2,
-        defaultCurrencyValue.divn(2)
-      )
-    )
-  );
-
-  const liqId1 = await getLiquidityAssetId(MGA_ASSET_ID, token1);
-  const liqId2 = await getLiquidityAssetId(MGA_ASSET_ID, token2);
-
-  await Sudo.batchAsSudoFinalized(
-    Assets.promotePool(liqId1.toNumber(), 20),
-    Assets.promotePool(liqId2.toNumber(), 20),
-    Sudo.sudoAs(
-      testUser,
-      Xyk.activateLiquidity(liqId1, defaultCurrencyValue.divn(2))
-    ),
-    Sudo.sudoAs(
-      testUser,
-      Xyk.activateLiquidity(liqId2, defaultCurrencyValue.divn(2))
-    )
-  );
-
-  await waitForRewards(testUser, liqId1);
-
-  await promotePool(sudo.keyRingPair, liqId1, 0);
-
-  await waitForRewards(testUser, liqId1);
-
-  const rewardsLiqId1Before = await getRewardsInfo(
-    testUser.keyRingPair.address,
-    liqId1
-  );
-
-  const rewardsLiqId2Before = await getRewardsInfo(
-    testUser.keyRingPair.address,
-    liqId2
-  );
-
-  await claimRewardsAll(testUser).then((result) => {
-    const eventResponse = getEventResultFromMangataTx(result);
-    expect(eventResponse.state).toEqual(ExtrinsicResult.ExtrinsicSuccess);
-  });
-
-  const rewardsLiqId1After = await getRewardsInfo(
-    testUser.keyRingPair.address,
-    liqId1
-  );
-
-  const rewardsLiqId2After = await getRewardsInfo(
-    testUser.keyRingPair.address,
-    liqId2
-  );
-
-  expect(rewardsLiqId1Before.rewardsAlreadyClaimed).bnEqual(BN_ZERO);
-  expect(rewardsLiqId1After.rewardsAlreadyClaimed).bnGt(BN_ZERO);
-  expect(rewardsLiqId2Before.rewardsAlreadyClaimed).bnEqual(BN_ZERO);
-  expect(rewardsLiqId2After.rewardsAlreadyClaimed).bnGt(BN_ZERO);
-});
-
-test("GIVEN an user has available some rewards in two “pools” ( one solo token, one pool ) WHEN claims all rewards THEN the user gets the rewards for that's pools", async () => {
-  await Sudo.batchAsSudoFinalized(
-    Assets.mintToken(token1, testUser, defaultCurrencyValue),
-    Assets.mintToken(token2, testUser, defaultCurrencyValue),
-    Sudo.sudoAs(
-      testUser,
-      Xyk.createPool(
-        MGA_ASSET_ID,
-        defaultCurrencyValue.divn(2),
-        token1,
-        defaultCurrencyValue.divn(2)
-      )
-    )
-  );
-
-  const liqId = await getLiquidityAssetId(MGA_ASSET_ID, token1);
-
-  await Sudo.batchAsSudoFinalized(
-    Assets.promotePool(liqId.toNumber(), 20),
-    Assets.promotePool(token2.toNumber(), 20),
-    Sudo.sudoAs(
-      testUser,
-      Xyk.activateLiquidity(liqId, defaultCurrencyValue.divn(2))
-    ),
-    Sudo.sudoAs(
-      testUser,
-      Xyk.activateLiquidity(token2, defaultCurrencyValue.divn(2))
-    )
-  );
-
-  await waitForRewards(testUser, token2);
-
-  const rewardsLiqId1Before = await getRewardsInfo(
-    testUser.keyRingPair.address,
-    liqId
-  );
-
-  const rewardsLiqId2Before = await getRewardsInfo(
-    testUser.keyRingPair.address,
-    token2
-  );
-
-  await claimRewardsAll(testUser).then((result) => {
-    const eventResponse = getEventResultFromMangataTx(result);
-    expect(eventResponse.state).toEqual(ExtrinsicResult.ExtrinsicSuccess);
-  });
-
-  const rewardsLiqId1After = await getRewardsInfo(
-    testUser.keyRingPair.address,
-    liqId
-  );
-
-  const rewardsLiqId2After = await getRewardsInfo(
-    testUser.keyRingPair.address,
-    token2
-  );
-
-  expect(rewardsLiqId1Before.rewardsAlreadyClaimed).bnEqual(BN_ZERO);
-  expect(rewardsLiqId1After.rewardsAlreadyClaimed).bnGt(BN_ZERO);
-  expect(rewardsLiqId2Before.rewardsAlreadyClaimed).bnEqual(BN_ZERO);
-  expect(rewardsLiqId2After.rewardsAlreadyClaimed).bnGt(BN_ZERO);
-});
-
-test("GIVEN a user that has available some rewards in ten pools (max for automatically claiming) WHEN claims all rewards THEN the user gets the rewards for that's pools", async () => {
-  liqIds = await createSeveralPoolsForUser(testUser, 10);
-
-  const liqIdLast = liqIds.length - 1;
-
-  await waitForRewards(testUser, liqIds[liqIdLast]);
-
-  const rewardsLiqIdBefore = await getRewardsInfo(
-    testUser.keyRingPair.address,
-    liqIds[liqIdLast]
-  );
-
-  await claimRewardsAll(testUser).then((result) => {
-    const eventResponse = getEventResultFromMangataTx(result);
-    expect(eventResponse.state).toEqual(ExtrinsicResult.ExtrinsicSuccess);
-  });
-
-  const rewardsLiqIdAfter = await getRewardsInfo(
-    testUser.keyRingPair.address,
-    liqIds[liqIdLast]
-  );
-
-  expect(rewardsLiqIdBefore.rewardsAlreadyClaimed).bnEqual(BN_ZERO);
-  expect(rewardsLiqIdAfter.rewardsAlreadyClaimed).bnGt(BN_ZERO);
-});
-
-test("GIVEN a user has available some rewards in over ten pools WHEN claims all rewards THEN the error is received", async () => {
-  liqIds = await createSeveralPoolsForUser(testUser, 12);
-
-  const liqIdLast = liqIds.length - 1;
-
-  await waitForRewards(testUser, liqIds[liqIdLast]);
-
-  let errorReason: any;
-
-  await claimRewardsAll(testUser).catch((error) => {
-    errorReason = error.toString();
-  });
-
-  expect(errorReason).toContain(
-    "Error: Only up to 10 can be claimed automatically, consider claiming rewards separately for each liquidity pool"
-  );
-});
-
-test("GIVEN a user has available some rewards in over ten pools AND this user claims some pool manually WHEN claims all rewards THEN the user gets the rewards for all remaining pools", async () => {
-  liqIds = await createSeveralPoolsForUser(testUser, 12);
-
-  const liqIdLast = liqIds.length - 1;
-
-  await waitForRewards(testUser, liqIds[liqIdLast]);
-
-  let errorReason: any;
-
-  await claimRewardsAll(testUser).catch((error) => {
-    errorReason = error.toString();
-  });
-
-  expect(errorReason).toContain(
-    "Error: Only up to 10 can be claimed automatically, consider claiming rewards separately for each liquidity pool"
-  );
-
-  await Sudo.batchAsSudoFinalized(
-    Sudo.sudoAs(testUser, Xyk.claimRewardsAll(liqIds[0])),
-    Sudo.sudoAs(testUser, Xyk.claimRewardsAll(liqIds[1])),
-    Sudo.sudoAs(testUser, Xyk.claimRewardsAll(liqIds[2]))
-  );
-
-  const rewardsLiqIdBefore = await getRewardsInfo(
-    testUser.keyRingPair.address,
-    liqIds[liqIdLast]
-  );
-
-  await claimRewardsAll(testUser).then((result) => {
-    const eventResponse = getEventResultFromMangataTx(result);
-    expect(eventResponse.state).toEqual(ExtrinsicResult.ExtrinsicSuccess);
-  });
-
-  const rewardsLiqIdAfter = await getRewardsInfo(
-    testUser.keyRingPair.address,
-    liqIds[liqIdLast]
-  );
-
-  expect(rewardsLiqIdBefore.rewardsAlreadyClaimed).bnEqual(BN_ZERO);
-  expect(rewardsLiqIdAfter.rewardsAlreadyClaimed).bnGt(BN_ZERO);
-});
-
-async function createSeveralPoolsForUser(user: User, numberPools: number) {
   const batchPromisesMinting = [];
   const batchPromisesPromoting = [];
-  tokenIds = [];
+  polTokenIds = [];
   tokenValues = [];
   liqIds = [];
 
@@ -433,20 +81,20 @@ async function createSeveralPoolsForUser(user: User, numberPools: number) {
 
   for (
     let newTokenId = nextTokenId;
-    newTokenId < nextTokenId + numberPools;
+    newTokenId < nextTokenId + 13;
     newTokenId++
   ) {
-    tokenIds.push(new BN(newTokenId));
+    polTokenIds.push(new BN(newTokenId));
 
     tokenValues.push(defaultCurrencyValue);
 
     batchPromisesMinting.push(
-      Assets.mintToken(new BN(newTokenId), user, defaultCurrencyValue)
+      Assets.mintToken(new BN(newTokenId), testUser, defaultCurrencyValue)
     );
 
     batchPromisesMinting.push(
       Sudo.sudoAs(
-        user,
+        testUser,
         Xyk.createPool(
           MGA_ASSET_ID,
           defaultCurrencyValue.divn(2),
@@ -457,35 +105,346 @@ async function createSeveralPoolsForUser(user: User, numberPools: number) {
     );
   }
 
-  [...tokenIds] = await Assets.setupUserWithCurrencies(
-    user,
+  [...polTokenIds] = await Assets.setupUserWithCurrencies(
+    testUser,
     [...tokenValues],
     sudo
   );
 
   await Sudo.batchAsSudoFinalized(...batchPromisesMinting);
 
-  for (let tokenNumber = 0; tokenNumber < tokenIds.length; tokenNumber++) {
+  for (let tokenNumber = 0; tokenNumber < polTokenIds.length; tokenNumber++) {
     const liqId = await getLiquidityAssetId(
       MGA_ASSET_ID,
-      tokenIds[tokenNumber]
+      polTokenIds[tokenNumber]
     );
     liqIds.push(liqId);
   }
 
-  for (let tokenNumber = 0; tokenNumber < tokenIds.length; tokenNumber++) {
+  for (let tokenNumber = 0; tokenNumber < polTokenIds.length; tokenNumber++) {
     batchPromisesPromoting.push(
       Assets.promotePool(liqIds[tokenNumber].toNumber(), 20)
     );
     batchPromisesPromoting.push(
       Sudo.sudoAs(
-        user,
+        testUser,
         Xyk.activateLiquidity(liqIds[tokenNumber], defaultCurrencyValue.divn(2))
       )
     );
   }
 
   await Sudo.batchAsSudoFinalized(...batchPromisesPromoting);
+});
 
+beforeEach(async () => {
+  [testUser1] = setupUsers();
+
+  await Sudo.batchAsSudoFinalized(Assets.mintNative(testUser1));
+});
+
+test("GIVEN an user has available some rewards in one pool WHEN claims all rewards THEN the user gets the rewards for that pool", async () => {
+  await Sudo.batchAsSudoFinalized(
+    Assets.mintToken(polTokenIds[0], testUser1, defaultCurrencyValue),
+    Sudo.sudoAs(
+      testUser1,
+      Xyk.mintLiquidity(
+        MGA_ASSET_ID,
+        polTokenIds[0],
+        defaultCurrencyValue.divn(2)
+      )
+    )
+  );
+
+  await waitForRewards(testUser1, liqIds[0]);
+
+  const rewardsUserBefore = await getRewardsInfo(
+    testUser1.keyRingPair.address,
+    liqIds[0]
+  );
+
+  await claimRewardsAll(testUser1).then((result) => {
+    const eventResponse = getEventResultFromMangataTx(result);
+    expect(eventResponse.state).toEqual(ExtrinsicResult.ExtrinsicSuccess);
+  });
+
+  const rewardsUserAfter = await getRewardsInfo(
+    testUser1.keyRingPair.address,
+    liqIds[0]
+  );
+
+  expect(rewardsUserBefore.rewardsAlreadyClaimed).bnEqual(BN_ZERO);
+  expect(rewardsUserAfter.rewardsAlreadyClaimed).bnGt(BN_ZERO);
+});
+
+test("GIVEN an user has available some rewards in two pools WHEN claims all rewards THEN the user gets the rewards for that's pools", async () => {
+  await Sudo.batchAsSudoFinalized(
+    Assets.mintToken(polTokenIds[0], testUser1, defaultCurrencyValue),
+    Assets.mintToken(polTokenIds[1], testUser1, defaultCurrencyValue),
+    Sudo.sudoAs(
+      testUser1,
+      Xyk.mintLiquidity(
+        MGA_ASSET_ID,
+        polTokenIds[0],
+        defaultCurrencyValue.divn(2)
+      )
+    ),
+    Sudo.sudoAs(
+      testUser1,
+      Xyk.mintLiquidity(
+        MGA_ASSET_ID,
+        polTokenIds[1],
+        defaultCurrencyValue.divn(2)
+      )
+    )
+  );
+
+  await waitForRewards(testUser1, liqIds[1]);
+
+  const rewardsLiqId1Before = await getRewardsInfo(
+    testUser1.keyRingPair.address,
+    liqIds[0]
+  );
+
+  const rewardsLiqId2Before = await getRewardsInfo(
+    testUser1.keyRingPair.address,
+    liqIds[1]
+  );
+
+  await claimRewardsAll(testUser1).then((result) => {
+    const eventResponse = getEventResultFromMangataTx(result);
+    expect(eventResponse.state).toEqual(ExtrinsicResult.ExtrinsicSuccess);
+  });
+
+  const rewardsLiqId1After = await getRewardsInfo(
+    testUser1.keyRingPair.address,
+    liqIds[0]
+  );
+
+  const rewardsLiqId2After = await getRewardsInfo(
+    testUser1.keyRingPair.address,
+    liqIds[1]
+  );
+
+  expect(rewardsLiqId1Before.rewardsAlreadyClaimed).bnEqual(BN_ZERO);
+  expect(rewardsLiqId1After.rewardsAlreadyClaimed).bnGt(BN_ZERO);
+  expect(rewardsLiqId2Before.rewardsAlreadyClaimed).bnEqual(BN_ZERO);
+  expect(rewardsLiqId2After.rewardsAlreadyClaimed).bnGt(BN_ZERO);
+});
+
+test("GIVEN an user has available some rewards in two pools ( one deactivated ) WHEN claims all rewards THEN the user gets the rewards for that's pools", async () => {
+  await Sudo.batchAsSudoFinalized(
+    Assets.mintToken(polTokenIds[0], testUser1, defaultCurrencyValue),
+    Assets.mintToken(polTokenIds[12], testUser1, defaultCurrencyValue),
+    Sudo.sudoAs(
+      testUser1,
+      Xyk.mintLiquidity(
+        MGA_ASSET_ID,
+        polTokenIds[0],
+        defaultCurrencyValue.divn(2)
+      )
+    ),
+    Sudo.sudoAs(
+      testUser1,
+      Xyk.mintLiquidity(
+        MGA_ASSET_ID,
+        polTokenIds[12],
+        defaultCurrencyValue.divn(2)
+      )
+    )
+  );
+
+  await waitForRewards(testUser1, liqIds[12]);
+
+  await promotePool(sudo.keyRingPair, liqIds[12], 0);
+
+  const rewardsLiqId1Before = await getRewardsInfo(
+    testUser1.keyRingPair.address,
+    liqIds[0]
+  );
+
+  const rewardsLiqId2Before = await getRewardsInfo(
+    testUser1.keyRingPair.address,
+    liqIds[12]
+  );
+
+  await claimRewardsAll(testUser1).then((result) => {
+    const eventResponse = getEventResultFromMangataTx(result);
+    expect(eventResponse.state).toEqual(ExtrinsicResult.ExtrinsicSuccess);
+  });
+
+  const rewardsLiqId1After = await getRewardsInfo(
+    testUser1.keyRingPair.address,
+    liqIds[0]
+  );
+
+  const rewardsLiqId2After = await getRewardsInfo(
+    testUser1.keyRingPair.address,
+    liqIds[12]
+  );
+
+  expect(rewardsLiqId1Before.rewardsAlreadyClaimed).bnEqual(BN_ZERO);
+  expect(rewardsLiqId1After.rewardsAlreadyClaimed).bnGt(BN_ZERO);
+  expect(rewardsLiqId2Before.rewardsAlreadyClaimed).bnEqual(BN_ZERO);
+  expect(rewardsLiqId2After.rewardsAlreadyClaimed).bnGt(BN_ZERO);
+
+  await promotePool(sudo.keyRingPair, liqIds[12], 20);
+});
+
+test("GIVEN an user has available some rewards in two “pools” ( one solo token, one pool ) WHEN claims all rewards THEN the user gets the rewards for that's pools", async () => {
+  await Sudo.batchAsSudoFinalized(
+    Assets.mintToken(polTokenIds[0], testUser1, defaultCurrencyValue),
+    Assets.mintToken(soloTokenId, testUser1, defaultCurrencyValue),
+    Sudo.sudoAs(
+      testUser1,
+      Xyk.mintLiquidity(
+        MGA_ASSET_ID,
+        polTokenIds[0],
+        defaultCurrencyValue.divn(2)
+      )
+    )
+  );
+
+  await Sudo.batchAsSudoFinalized(
+    Assets.promotePool(soloTokenId.toNumber(), 20),
+    Sudo.sudoAs(
+      testUser1,
+      Xyk.activateLiquidity(soloTokenId, defaultCurrencyValue.divn(2))
+    )
+  );
+
+  await waitForRewards(testUser1, soloTokenId);
+
+  const rewardsLiqId1Before = await getRewardsInfo(
+    testUser1.keyRingPair.address,
+    liqIds[0]
+  );
+
+  const rewardsLiqId2Before = await getRewardsInfo(
+    testUser1.keyRingPair.address,
+    soloTokenId
+  );
+
+  await claimRewardsAll(testUser1).then((result) => {
+    const eventResponse = getEventResultFromMangataTx(result);
+    expect(eventResponse.state).toEqual(ExtrinsicResult.ExtrinsicSuccess);
+  });
+
+  const rewardsLiqId1After = await getRewardsInfo(
+    testUser1.keyRingPair.address,
+    liqIds[0]
+  );
+
+  const rewardsLiqId2After = await getRewardsInfo(
+    testUser1.keyRingPair.address,
+    soloTokenId
+  );
+
+  expect(rewardsLiqId1Before.rewardsAlreadyClaimed).bnEqual(BN_ZERO);
+  expect(rewardsLiqId1After.rewardsAlreadyClaimed).bnGt(BN_ZERO);
+  expect(rewardsLiqId2Before.rewardsAlreadyClaimed).bnEqual(BN_ZERO);
+  expect(rewardsLiqId2After.rewardsAlreadyClaimed).bnGt(BN_ZERO);
+});
+
+test("GIVEN a user that has available some rewards in ten pools (max for automatically claiming) WHEN claims all rewards THEN the user gets the rewards for that's pools", async () => {
+  await createSeveralPoolsForUser(testUser1, 10);
+
+  await waitForRewards(testUser1, liqIds[9]);
+
+  const rewardsLiqIdBefore = await getRewardsInfo(
+    testUser1.keyRingPair.address,
+    liqIds[9]
+  );
+
+  await claimRewardsAll(testUser1).then((result) => {
+    const eventResponse = getEventResultFromMangataTx(result);
+    expect(eventResponse.state).toEqual(ExtrinsicResult.ExtrinsicSuccess);
+  });
+
+  const rewardsLiqIdAfter = await getRewardsInfo(
+    testUser1.keyRingPair.address,
+    liqIds[9]
+  );
+
+  expect(rewardsLiqIdBefore.rewardsAlreadyClaimed).bnEqual(BN_ZERO);
+  expect(rewardsLiqIdAfter.rewardsAlreadyClaimed).bnGt(BN_ZERO);
+});
+
+test("GIVEN a user has available some rewards in over ten pools WHEN claims all rewards THEN the error is received", async () => {
+  liqIds = await createSeveralPoolsForUser(testUser1, 12);
+
+  await waitForRewards(testUser1, liqIds[11]);
+
+  let errorReason: any;
+
+  await claimRewardsAll(testUser1).catch((error) => {
+    errorReason = error.toString();
+  });
+
+  expect(errorReason).toContain(
+    "Error: Only up to 10 can be claimed automatically, consider claiming rewards separately for each liquidity pool"
+  );
+});
+
+test("GIVEN a user has available some rewards in over ten pools AND this user claims some pool manually WHEN claims all rewards THEN the user gets the rewards for all remaining pools", async () => {
+  liqIds = await createSeveralPoolsForUser(testUser1, 12);
+
+  await waitForRewards(testUser1, liqIds[11]);
+
+  let errorReason: any;
+
+  await claimRewardsAll(testUser1).catch((error) => {
+    errorReason = error.toString();
+  });
+
+  expect(errorReason).toContain(
+    "Error: Only up to 10 can be claimed automatically, consider claiming rewards separately for each liquidity pool"
+  );
+
+  await Sudo.batchAsSudoFinalized(
+    Sudo.sudoAs(testUser1, Xyk.claimRewardsAll(liqIds[0])),
+    Sudo.sudoAs(testUser1, Xyk.claimRewardsAll(liqIds[1])),
+    Sudo.sudoAs(testUser1, Xyk.claimRewardsAll(liqIds[2]))
+  );
+
+  const rewardsLiqIdBefore = await getRewardsInfo(
+    testUser1.keyRingPair.address,
+    liqIds[9]
+  );
+
+  await claimRewardsAll(testUser1).then((result) => {
+    const eventResponse = getEventResultFromMangataTx(result);
+    expect(eventResponse.state).toEqual(ExtrinsicResult.ExtrinsicSuccess);
+  });
+
+  const rewardsLiqIdAfter = await getRewardsInfo(
+    testUser1.keyRingPair.address,
+    liqIds[9]
+  );
+
+  expect(rewardsLiqIdBefore.rewardsAlreadyClaimed).bnEqual(BN_ZERO);
+  expect(rewardsLiqIdAfter.rewardsAlreadyClaimed).bnGt(BN_ZERO);
+});
+
+async function createSeveralPoolsForUser(user: User, numberPools: number) {
+  let i: number;
+  const batchPromisesMinting = [];
+
+  for (i = 0; i < numberPools; i++) {
+    batchPromisesMinting.push(
+      Assets.mintToken(polTokenIds[i], user, defaultCurrencyValue)
+    );
+    batchPromisesMinting.push(
+      Sudo.sudoAs(
+        user,
+        Xyk.mintLiquidity(
+          MGA_ASSET_ID,
+          polTokenIds[i],
+          defaultCurrencyValue.divn(2)
+        )
+      )
+    );
+  }
+
+  await Sudo.batchAsSudoFinalized(...batchPromisesMinting);
   return liqIds;
 }
