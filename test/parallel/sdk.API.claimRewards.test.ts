@@ -79,7 +79,7 @@ beforeEach(async () => {
   await Sudo.batchAsSudoFinalized(Assets.mintNative(testUser));
 });
 
-test("GIVEN a user that has available some rewards in ONE pool WHEN claim_all THEN the user gets the rewards for that pool", async () => {
+test("GIVEN an user has available some rewards in one pool WHEN claims all rewards THEN the user gets the rewards for that pool", async () => {
   await Sudo.batchAsSudoFinalized(
     Assets.mintToken(token1, testUser, defaultCurrencyValue),
     Sudo.sudoAs(
@@ -109,7 +109,10 @@ test("GIVEN a user that has available some rewards in ONE pool WHEN claim_all TH
     liqId
   );
 
-  await claimRewardsAll(testUser);
+  await claimRewardsAll(testUser).then((result) => {
+    const eventResponse = getEventResultFromMangataTx(result);
+    expect(eventResponse.state).toEqual(ExtrinsicResult.ExtrinsicSuccess);
+  });
 
   const rewardsUserAfter = await getRewardsInfo(
     testUser.keyRingPair.address,
@@ -120,7 +123,7 @@ test("GIVEN a user that has available some rewards in ONE pool WHEN claim_all TH
   expect(rewardsUserAfter.rewardsAlreadyClaimed).bnGt(BN_ZERO);
 });
 
-test("Given a user that has available some rewards in TWO pools WHEN claim_all THEN the user gets the rewards for those pools", async () => {
+test("GIVEN an user has available some rewards in two pools WHEN claims all rewards THEN the user gets the rewards for that's pools", async () => {
   await Sudo.batchAsSudoFinalized(
     Assets.mintToken(token1, testUser, defaultCurrencyValue),
     Assets.mintToken(token2, testUser, defaultCurrencyValue),
@@ -172,7 +175,10 @@ test("Given a user that has available some rewards in TWO pools WHEN claim_all T
     liqId2
   );
 
-  await claimRewardsAll(testUser);
+  await claimRewardsAll(testUser).then((result) => {
+    const eventResponse = getEventResultFromMangataTx(result);
+    expect(eventResponse.state).toEqual(ExtrinsicResult.ExtrinsicSuccess);
+  });
 
   const rewardsLiqId1After = await getRewardsInfo(
     testUser.keyRingPair.address,
@@ -190,7 +196,7 @@ test("Given a user that has available some rewards in TWO pools WHEN claim_all T
   expect(rewardsLiqId2After.rewardsAlreadyClaimed).bnGt(BN_ZERO);
 });
 
-test("Given a user that has available some rewards in TWO pools ( one deactivated )  WHEN claim_all THEN the user gets the rewards for those pools", async () => {
+test("GIVEN an user has available some rewards in TWO pools ( one deactivated ) WHEN claims all rewards THEN the user gets the rewards for that's pools", async () => {
   await Sudo.batchAsSudoFinalized(
     Assets.mintToken(token1, testUser, defaultCurrencyValue),
     Assets.mintToken(token2, testUser, defaultCurrencyValue),
@@ -246,7 +252,10 @@ test("Given a user that has available some rewards in TWO pools ( one deactivate
     liqId2
   );
 
-  await claimRewardsAll(testUser);
+  await claimRewardsAll(testUser).then((result) => {
+    const eventResponse = getEventResultFromMangataTx(result);
+    expect(eventResponse.state).toEqual(ExtrinsicResult.ExtrinsicSuccess);
+  });
 
   const rewardsLiqId1After = await getRewardsInfo(
     testUser.keyRingPair.address,
@@ -264,7 +273,7 @@ test("Given a user that has available some rewards in TWO pools ( one deactivate
   expect(rewardsLiqId2After.rewardsAlreadyClaimed).bnGt(BN_ZERO);
 });
 
-test("Given a user that has available some rewards in TWO “pools” ( one solo token, one pool )  WHEN claim_all THEN the user gets the rewards for both.", async () => {
+test("GIVEN an user has available some rewards in TWO “pools” ( one solo token, one pool ) WHEN claims all rewards THEN the user gets the rewards for that's pools", async () => {
   await Sudo.batchAsSudoFinalized(
     Assets.mintToken(token1, testUser, defaultCurrencyValue),
     Assets.mintToken(token2, testUser, defaultCurrencyValue),
@@ -306,7 +315,10 @@ test("Given a user that has available some rewards in TWO “pools” ( one solo
     token2
   );
 
-  await claimRewardsAll(testUser);
+  await claimRewardsAll(testUser).then((result) => {
+    const eventResponse = getEventResultFromMangataTx(result);
+    expect(eventResponse.state).toEqual(ExtrinsicResult.ExtrinsicSuccess);
+  });
 
   const rewardsLiqId1After = await getRewardsInfo(
     testUser.keyRingPair.address,
@@ -324,7 +336,7 @@ test("Given a user that has available some rewards in TWO “pools” ( one solo
   expect(rewardsLiqId2After.rewardsAlreadyClaimed).bnGt(BN_ZERO);
 });
 
-test("Given a user that has available some rewards in ten pools WHEN claim_all THEN the user gets the rewards for all", async () => {
+test("GIVEN a user that has available some rewards in ten pools (max for automatically claiming) WHEN claims all rewards THEN the user gets the rewards for that's pools", async () => {
   liqIds = await createSeveralPoolsForUser(testUser, 10);
 
   const liqIdLast = liqIds.length - 1;
@@ -350,7 +362,7 @@ test("Given a user that has available some rewards in ten pools WHEN claim_all T
   expect(rewardsLiqIdAfter.rewardsAlreadyClaimed).bnGt(BN_ZERO);
 });
 
-test("Given a user that has available some rewards in over ten pools WHEN claim_all THEN receive error", async () => {
+test("GIVEN a user has available some rewards in over ten pools WHEN claims all rewards THEN the error is received", async () => {
   liqIds = await createSeveralPoolsForUser(testUser, 12);
 
   const liqIdLast = liqIds.length - 1;
@@ -368,7 +380,7 @@ test("Given a user that has available some rewards in over ten pools WHEN claim_
   );
 });
 
-test("Given a user that has available some rewards in over ten pools WHEN claim several pools and non-claiming pools are less 10 THEN the user can get rewards", async () => {
+test("GIVEN a user has available some rewards in over ten pools AND this user claims some pool manually WHEN claims all rewards THEN the user gets the rewards for all remaining pools", async () => {
   liqIds = await createSeveralPoolsForUser(testUser, 12);
 
   const liqIdLast = liqIds.length - 1;
