@@ -196,7 +196,7 @@ test("GIVEN an user has available some rewards in two pools WHEN claims all rewa
   expect(rewardsLiqId2After.rewardsAlreadyClaimed).bnGt(BN_ZERO);
 });
 
-test("GIVEN an user has available some rewards in TWO pools ( one deactivated ) WHEN claims all rewards THEN the user gets the rewards for that's pools", async () => {
+test("GIVEN an user has available some rewards in two pools ( one deactivated ) WHEN claims all rewards THEN the user gets the rewards for that's pools", async () => {
   await Sudo.batchAsSudoFinalized(
     Assets.mintToken(token1, testUser, defaultCurrencyValue),
     Assets.mintToken(token2, testUser, defaultCurrencyValue),
@@ -273,7 +273,7 @@ test("GIVEN an user has available some rewards in TWO pools ( one deactivated ) 
   expect(rewardsLiqId2After.rewardsAlreadyClaimed).bnGt(BN_ZERO);
 });
 
-test("GIVEN an user has available some rewards in TWO “pools” ( one solo token, one pool ) WHEN claims all rewards THEN the user gets the rewards for that's pools", async () => {
+test("GIVEN an user has available some rewards in two “pools” ( one solo token, one pool ) WHEN claims all rewards THEN the user gets the rewards for that's pools", async () => {
   await Sudo.batchAsSudoFinalized(
     Assets.mintToken(token1, testUser, defaultCurrencyValue),
     Assets.mintToken(token2, testUser, defaultCurrencyValue),
