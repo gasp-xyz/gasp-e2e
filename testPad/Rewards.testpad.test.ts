@@ -126,10 +126,7 @@ describe("RewardsV2 - testpad", () => {
       promises.push(
         signTx(
           api!,
-          api!.tx.xyk.claimRewardsV2(
-            liqtokenId,
-            new BN(result.toString())
-          ),
+          api!.tx.xyk.claimRewardsV2(liqtokenId, new BN(result.toString())),
           testUser1.keyRingPair
         )
       );
