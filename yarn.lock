@@ -2165,24 +2165,23 @@
     "@jridgewell/resolve-uri" "3.1.0"
     "@jridgewell/sourcemap-codec" "1.4.14"
 
-"@mangata-finance/sdk@2.0.0-rc.19":
-  version "2.0.0-rc.19"
-  resolved "https://registry.yarnpkg.com/@mangata-finance/sdk/-/sdk-2.0.0-rc.19.tgz#0f96faf5e58cbde111b05eddefa84b9374804ec0"
-  integrity sha512-pKs7gAXWCDcnIb5BM42mTv1q8+51tO9TYmiwIaZw8GVxWmCcEuM8h9Eq7QO4lVLlaimXznlvXCeX1novWTaoJA==
+"@mangata-finance/sdk@https://github.com/mangata-finance/mangata-sdk#feature/new-rpc":
+  version "2.0.0-rc.22"
+  resolved "https://github.com/mangata-finance/mangata-sdk#877578fa53d1cddba12f8be55bb2ff789e22237a"
   dependencies:
-    "@mangata-finance/type-definitions" "^1.0.0"
+    "@mangata-finance/type-definitions" "2.0.0-rc.6"
     big.js "^6.2.1"
     tslog "^4.8.2"
 
-"@mangata-finance/type-definitions@^1.0.0":
-  version "1.0.0"
-  resolved "https://registry.yarnpkg.com/@mangata-finance/type-definitions/-/type-definitions-1.0.0.tgz#f6acdf660c742980c1334a63878310cc3c1e21ea"
-  integrity sha512-WfEEtddpPEXrYhsA77aPWdgbjh660lAEv7bRa9U6AUk4fmN57YaQhnwp3o2X9/NgG1+UChsbttCxoa1QkFfV+w==
+"@mangata-finance/type-definitions@2.0.0-rc.6":
+  version "2.0.0-rc.6"
+  resolved "https://registry.yarnpkg.com/@mangata-finance/type-definitions/-/type-definitions-2.0.0-rc.6.tgz#01e3d33d017a7cd65adb1251897c4b5b6d4208e8"
+  integrity sha512-B91nG3IWdp2+95WI1ulzkbBU/ciwpeq2iyFFwy4zEfNV4rmZt8gwVVMXtKyOww2oehvCfa5HUZTFymaOt4MEBg==
 
-"@mangata-finance/types@1.0.0-rc.12":
-  version "1.0.0-rc.12"
-  resolved "https://registry.yarnpkg.com/@mangata-finance/types/-/types-1.0.0-rc.12.tgz#d9aaee1e1b9405ed964dbceff9ff18c7ebbfece4"
-  integrity sha512-x/NJMxyPE0v2ExpLJZRi6YWG7m+B7qj55ANBTS0uKJwDhnplKov2vLnpE73TU24oZNv3DI/zjlZyRMzeHjOhng==
+"@mangata-finance/types@1.1.0-rc.5":
+  version "1.1.0-rc.5"
+  resolved "https://registry.yarnpkg.com/@mangata-finance/types/-/types-1.1.0-rc.5.tgz#fe38f26973119cd912b1f14f5baa9e62bb882270"
+  integrity sha512-coUv7oh7R5g33yQqr1YP/hhS1zTRSZbqmnH+vUcKxGmvYPtpzxrVvtvwEYJmI1lmG+HyhGOru1QUVPYsXNSwPA==
 
 "@mapbox/node-pre-gyp@^1.0.0":
   version "1.0.10"
@@ -7791,6 +7790,11 @@ http2-wrapper@^2.1.10:
     quick-lru "^5.1.1"
     resolve-alpn "^1.2.0"
 
+http@^0.0.1-security:
+  version "0.0.1-security"
+  resolved "https://registry.yarnpkg.com/http/-/http-0.0.1-security.tgz#3aac09129d12dc2747bbce4157afde20ad1f7995"
+  integrity sha512-RnDvP10Ty9FxqOtPZuxtebw1j4L/WiqNMDtuc1YMH1XQm5TgDRaR1G9u8upL6KD1bXHSp9eSXo/ED+8Q7FAr+g==
+
 https-proxy-agent@^5.0.0, https-proxy-agent@^5.0.1:
   version "5.0.1"
   resolved "https://registry.yarnpkg.com/https-proxy-agent/-/https-proxy-agent-5.0.1.tgz#c59ef224a04fe8b754f3db0063a25ea30d0005d6"
@@ -7798,6 +7802,11 @@ https-proxy-agent@^5.0.0, https-proxy-agent@^5.0.1:
   dependencies:
     agent-base "6"
     debug "4"
+
+https@^1.0.0:
+  version "1.0.0"
+  resolved "https://registry.yarnpkg.com/https/-/https-1.0.0.tgz#3c37c7ae1a8eeb966904a2ad1e975a194b7ed3a4"
+  integrity sha512-4EC57ddXrkaF0x83Oj8sM6SLQHAWXw90Skqu2M4AEWENZ3F02dFJE/GARA8igO79tcgYqGrD7ae4f5L3um2lgg==
 
 human-signals@^2.1.0:
   version "2.1.0"
