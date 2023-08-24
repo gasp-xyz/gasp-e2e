@@ -72,8 +72,8 @@ describe("xyk-rpc - calculate get_burn amount: OK", () => {
         dictAssets.get(secondIdx)!,
         amount
       );
-      expect(burnAmount.firstAssetAmount).toEqual(expected);
-      expect(burnAmount.secondAssetAmount).toEqual(expected);
+      expect(burnAmount[0]).toEqual(expected);
+      expect(burnAmount[1]).toEqual(expected);
     }
   );
 });
@@ -108,8 +108,8 @@ describe("xyk-rpc - calculate get_burn amount: Missing requirements", () => {
         dictAssets.get(secondIdx)!,
         amount
       );
-      expect(burnAmount.firstAssetAmount).toEqual(expected);
-      expect(burnAmount.secondAssetAmount).toEqual(expected);
+      expect(burnAmount[0]).toEqual(expected);
+      expect(burnAmount[1]).toEqual(expected);
     }
   );
 
@@ -119,8 +119,8 @@ describe("xyk-rpc - calculate get_burn amount: Missing requirements", () => {
       new BN(12346),
       new BN(10000000)
     );
-    expect(burnAmount.firstAssetAmount).toEqual(0);
-    expect(burnAmount.secondAssetAmount).toEqual(0);
+    expect(burnAmount[0]).toEqual(0);
+    expect(burnAmount[1]).toEqual(0);
   });
 });
 
@@ -174,15 +174,15 @@ describe("xyk-rpc - calculate get_burn amount: RPC result matches with burn amou
     await sudo.refreshAmounts(AssetWallet.AFTER);
     const poolAfter = await getBalanceOfPool(firstAssetId, secondAssetId);
 
-    expect(new BN(burnAmount.firstAssetAmount)).bnEqual(
+    expect(new BN(burnAmount[0])).bnEqual(
       poolBefore[0].sub(poolAfter[0])
     );
-    expect(new BN(burnAmount.secondAssetAmount)).bnEqual(
+    expect(new BN(burnAmount[1])).bnEqual(
       poolBefore[1].sub(poolAfter[1])
     );
 
     expect(sudo.getAsset(firstAssetId)?.amountAfter.free!).bnEqual(
-      new BN(burnAmount.firstAssetAmount)
+      new BN(burnAmount[0])
     );
     expect(
       sudo
@@ -190,6 +190,6 @@ describe("xyk-rpc - calculate get_burn amount: RPC result matches with burn amou
         ?.amountAfter.free.sub(
           sudo.getAsset(secondAssetId)?.amountBefore.free!
         )!
-    ).bnEqual(new BN(burnAmount.secondAssetAmount));
+    ).bnEqual(new BN(burnAmount[1]));
   });
 });
