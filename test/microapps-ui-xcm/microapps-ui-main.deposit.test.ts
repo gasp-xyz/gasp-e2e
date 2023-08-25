@@ -21,6 +21,7 @@ import {
   connectWallet,
   setupPage,
   setupPageWithState,
+  waitForMicroappsActionNotification,
 } from "../../utils/frontend/microapps-utils/Handlers";
 import { DepositModal } from "../../utils/frontend/microapps-pages/DepositModal";
 import { WalletWrapper } from "../../utils/frontend/microapps-pages/WalletWrapper";
@@ -31,6 +32,7 @@ import { devTestingPairs } from "../../utils/setup";
 import { AssetId } from "../../utils/ChainSpecs";
 import { BN_THOUSAND } from "@mangata-finance/sdk";
 import StashServiceMockSingleton from "../../utils/stashServiceMockSingleton";
+import { TransactionType } from "../../utils/frontend/microapps-pages/NotificationModal";
 
 jest.spyOn(console, "log").mockImplementation(jest.fn());
 
@@ -130,10 +132,17 @@ describe("Microapps UI deposit modal tests - no action", () => {
     await depositModal.enterValue("1");
 
     await depositModal.waitForContinueState(true, 60000);
+    const isOriginFeeDisplayed = await depositModal.isOriginFeeDisplayed();
+    expect(isOriginFeeDisplayed).toBeTruthy();
+    const isDestinationFeeDisplayed = await depositModal.isDestinationFeeDisplayed();
+    expect(isDestinationFeeDisplayed).toBeTruthy();
 
     const isContinueButtonEnabled =
       await depositModal.isContinueButtonEnabled();
     expect(isContinueButtonEnabled).toBeTruthy();
+
+    await depositModal.clickContinue();
+    await waitForMicroappsActionNotification(driver, mangata, kusama, TransactionType.Deposit, 2);
   });
 
   afterEach(async () => {

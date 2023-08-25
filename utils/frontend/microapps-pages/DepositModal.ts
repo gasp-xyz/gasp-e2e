@@ -20,6 +20,9 @@ const TOKEN_LIST = "tokenList";
 const TOKEN_LIST_ITEM = "tokenList-item";
 const TOKEN_TEXT_INPUT = "tokenInput-input";
 const BTN_SUBMIT = "submit-deposit-button";
+const ORIGIN_FEE = "origin-fee";
+const DESTINATION_FEE = "destination-fee";
+const FEE_VALUE = "fee-value";
 
 export class DepositModal {
   driver: WebDriver;
@@ -31,6 +34,16 @@ export class DepositModal {
   async isModalVisible() {
     const title = buildDataTestIdXpath(DEPOSIT_MODAL_CONTENT);
     return isDisplayed(this.driver, title);
+  }
+
+  async isOriginFeeDisplayed() {
+    const xpath = buildDataTestIdXpath(ORIGIN_FEE) + buildDataTestIdXpath(FEE_VALUE);
+    return isDisplayed(this.driver, xpath);
+  }
+
+  async isDestinationFeeDisplayed() {
+    const xpath = buildDataTestIdXpath(DESTINATION_FEE) + buildDataTestIdXpath(FEE_VALUE);
+    return isDisplayed(this.driver, xpath);
   }
 
   async openChainList() {
