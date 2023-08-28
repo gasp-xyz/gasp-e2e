@@ -119,7 +119,10 @@ describe("xyk-pallet - Burn liquidity tests: when burning liquidity you can", ()
     );
     //user1 can still burn all the assets, eventhough pool got modified.
 
-    const liqAsseIdBeforeBurningIt = await getLiquidityAssetId(firstCurrency, secondCurrency);
+    const liqAsseIdBeforeBurningIt = await getLiquidityAssetId(
+      firstCurrency,
+      secondCurrency
+    );
     await burnLiquidity(
       testUser1.keyRingPair,
       firstCurrency,
@@ -134,7 +137,10 @@ describe("xyk-pallet - Burn liquidity tests: when burning liquidity you can", ()
       expect(eventResponse.state).toEqual(ExtrinsicResult.ExtrinsicSuccess);
     });
     await waitNewBlock(); //lets wait one block until liquidity asset Id gets destroyed. Avoid flakiness ;)
-    const liqAssetAfterBurning = await getLiquidityAssetId(firstCurrency, secondCurrency);
+    const liqAssetAfterBurning = await getLiquidityAssetId(
+      firstCurrency,
+      secondCurrency
+    );
     expect(liqAssetAfterBurning).bnEqual(liqAsseIdBeforeBurningIt);
     const poolBalance = await getBalanceOfPool(firstCurrency, secondCurrency);
     await testUser1.refreshAmounts(AssetWallet.AFTER);
