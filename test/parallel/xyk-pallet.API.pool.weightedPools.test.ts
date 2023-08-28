@@ -183,14 +183,24 @@ test("GIVEN a pool WHEN it has configured with 0 THEN no new issuance will be re
     expect(eventResponse.state).toEqual(ExtrinsicResult.ExtrinsicSuccess);
   });
 
+  await promotePool(sudo.keyRingPair, liqId, 0);
+
   await waitForRewards(testUser1, liqId);
 
-  await promotePool(sudo.keyRingPair, liqId, 0);
+  await testUser1.refreshAmounts(AssetWallet.BEFORE);
 
   await claimRewardsAll(testUser1, liqId).then((result) => {
     const eventResponse = getEventResultFromMangataTx(result);
     expect(eventResponse.state).toEqual(ExtrinsicResult.ExtrinsicSuccess);
   });
+
+  await testUser1.refreshAmounts(AssetWallet.AFTER);
+
+  const userClaimedRewardsValue = testUser1
+    .getAsset(MGA_ASSET_ID)!
+    .amountAfter.free!.sub(
+      testUser1.getAsset(MGA_ASSET_ID)!.amountBefore.free!
+    );
 
   //Validate that another user tries minting into the disabled pool.
   await mintLiquidity(
@@ -205,6 +215,7 @@ test("GIVEN a pool WHEN it has configured with 0 THEN no new issuance will be re
 
   await testUser2.refreshAmounts(AssetWallet.AFTER);
 
+  expect(userClaimedRewardsValue).bnGt(BN_ZERO);
   expect(testUser2.getAsset(MGA_ASSET_ID)!.amountAfter.free!).bnGt(BN_ZERO);
   expect(testUser2.getAsset(MGA_ASSET_ID)!.amountAfter.reserved!).bnEqual(
     BN_ZERO
