@@ -1,7 +1,11 @@
 import { WebDriver } from "selenium-webdriver";
 import { ApiContext } from "../../Framework/XcmHelper";
 import { Main } from "../microapps-pages/Main";
-import { ModalType, NotificationModal, TransactionType } from "../microapps-pages/NotificationModal";
+import {
+  ModalType,
+  NotificationModal,
+  TransactionType,
+} from "../microapps-pages/NotificationModal";
 import { WalletConnectModal } from "../microapps-pages/WalletConnectModal";
 import { WalletWrapper } from "../microapps-pages/WalletWrapper";
 import { Polkadot } from "../pages/Polkadot";
@@ -70,7 +74,8 @@ export async function waitForMicroappsActionNotification(
   const modal = new NotificationModal(driver);
   await modal.waitForModalState(ModalType.Confirm, transaction, 3000);
   const isModalWaitingForSignVisible = await modal.isModalVisible(
-    ModalType.Confirm, transaction
+    ModalType.Confirm,
+    transaction
   );
   expect(isModalWaitingForSignVisible).toBeTruthy();
   await Polkadot.signTransaction(driver);
@@ -79,7 +84,10 @@ export async function waitForMicroappsActionNotification(
     await chainTwo.chain.newBlock();
   }
   await modal.waitForModalState(ModalType.Success, transaction);
-  const isModalSuccessVisible = await modal.isModalVisible(ModalType.Success, transaction);
+  const isModalSuccessVisible = await modal.isModalVisible(
+    ModalType.Success,
+    transaction
+  );
   expect(isModalSuccessVisible).toBeTruthy();
   await modal.clickInDone();
 }
