@@ -183,9 +183,9 @@ test("GIVEN a pool WHEN it has configured with 0 THEN no new issuance will be re
     expect(eventResponse.state).toEqual(ExtrinsicResult.ExtrinsicSuccess);
   });
 
-  await promotePool(sudo.keyRingPair, liqId, 0);
-
   await waitForRewards(testUser1, liqId);
+
+  await promotePool(sudo.keyRingPair, liqId, 0);
 
   await testUser1.refreshAmounts(AssetWallet.BEFORE);
 
