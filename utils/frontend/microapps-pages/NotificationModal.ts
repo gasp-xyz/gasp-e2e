@@ -12,7 +12,7 @@ import {
 } from "../utils/Helper";
 
 //SELECTORS
-const MODAL_BASE = "transaction-modal"
+const MODAL_BASE = "transaction-modal";
 const MODAL_CONFIRM_TRADE = "-confirming";
 const MODAL_PROGRESS_TRADE = "-pending";
 //transaction-modal-swap-pending
@@ -35,7 +35,7 @@ export enum TransactionType {
   Withdraw,
   AddLiquidity,
   RemoveLiquidity,
-  Claim
+  Claim,
 }
 
 export class NotificationModal {
@@ -50,19 +50,21 @@ export class NotificationModal {
   };
 
   modalTransaction: Record<TransactionType, string> = {
-    [TransactionType.Deposit]: '-deposit',
-    [TransactionType.Withdraw]: '-withdraw',
-    [TransactionType.AddLiquidity]: '-addLiquidity',
-    [TransactionType.Swap]: '-swap',
-    [TransactionType.RemoveLiquidity]: '-removeLiquidity',
-    [TransactionType.Claim]: '-claim',
+    [TransactionType.Deposit]: "-deposit",
+    [TransactionType.Withdraw]: "-withdraw",
+    [TransactionType.AddLiquidity]: "-addLiquidity",
+    [TransactionType.Swap]: "-swap",
+    [TransactionType.RemoveLiquidity]: "-removeLiquidity",
+    [TransactionType.Claim]: "-claim",
   };
 
   constructor(driver: WebDriver) {
     this.driver = driver;
   }
   private getModalXpath(type: ModalType, transaction: TransactionType) {
-    return buildDataTestIdXpath(MODAL_BASE + this.modalTransaction[transaction] + this.modalStage[type]);
+    return buildDataTestIdXpath(
+      MODAL_BASE + this.modalTransaction[transaction] + this.modalStage[type]
+    );
   }
   private getModalTextXpath(type: ModalType) {
     return buildDataTestIdXpath(this.modalStage[type] + MODAL_TEXT);
@@ -78,27 +80,52 @@ export class NotificationModal {
       return false;
     }
   }
+
+  public async getModalText(type: ModalType, transaction: TransactionType) {
+    const modalXpath = this.getModalXpath(type, transaction);
+    return await getText(this.driver, modalXpath);
+  }
+
   public async clickInDone() {
-    await clickElement(this.driver, buildXpathByElementText(MODAL_DONE_BTN, 'Confirm'));
+    await clickElement(
+      this.driver,
+      buildXpathByElementText(MODAL_DONE_BTN, "Confirm")
+    );
   }
 
   public async dismiss() {
-    await clickElement(this.driver, buildXpathByElementText(MODAL_DONE_BTN, 'close'));
+    await clickElement(
+      this.driver,
+      buildXpathByElementText(MODAL_DONE_BTN, "close")
+    );
   }
 
-  public async waitForModalDisappear(modalState: ModalType, transaction: TransactionType) {
+  public async waitForModalDisappear(
+    modalState: ModalType,
+    transaction: TransactionType
+  ) {
     await waitForElementToDissapear(
       this.driver,
       this.getModalXpath(modalState, transaction)
     );
   }
 
-  public async waitForModal(modalState: ModalType, transaction: TransactionType) {
-    await waitForElement(this.driver, this.getModalXpath(modalState, transaction));
+  public async waitForModal(
+    modalState: ModalType,
+    transaction: TransactionType
+  ) {
+    await waitForElement(
+      this.driver,
+      this.getModalXpath(modalState, transaction)
+    );
     await waitForNBlocks(2);
   }
 
-  public async waitForModalState(modalState: ModalType, transaction: TransactionType, timeout = FIVE_MIN) {
+  public async waitForModalState(
+    modalState: ModalType,
+    transaction: TransactionType,
+    timeout = FIVE_MIN
+  ) {
     await waitForElementVisible(
       this.driver,
       this.getModalXpath(modalState, transaction),

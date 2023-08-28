@@ -134,7 +134,8 @@ describe("Microapps UI deposit modal tests - no action", () => {
     await depositModal.waitForContinueState(true, 60000);
     const isOriginFeeDisplayed = await depositModal.isOriginFeeDisplayed();
     expect(isOriginFeeDisplayed).toBeTruthy();
-    const isDestinationFeeDisplayed = await depositModal.isDestinationFeeDisplayed();
+    const isDestinationFeeDisplayed =
+      await depositModal.isDestinationFeeDisplayed();
     expect(isDestinationFeeDisplayed).toBeTruthy();
 
     const isContinueButtonEnabled =
@@ -142,7 +143,86 @@ describe("Microapps UI deposit modal tests - no action", () => {
     expect(isContinueButtonEnabled).toBeTruthy();
 
     await depositModal.clickContinue();
-    await waitForMicroappsActionNotification(driver, mangata, kusama, TransactionType.Deposit, 2);
+    await waitForMicroappsActionNotification(
+      driver,
+      mangata,
+      kusama,
+      TransactionType.Deposit,
+      2
+    );
+  });
+
+  test("Deposit - input null values", async () => {
+    await setupPageWithState(driver, acc_name);
+
+    const walletWrapper = new WalletWrapper(driver);
+    await walletWrapper.openWalletConnectionInfo();
+    await walletWrapper.openDeposit();
+    const depositModal = new DepositModal(driver);
+    const isModalVisible = await depositModal.isModalVisible();
+    expect(isModalVisible).toBeTruthy();
+
+    await depositModal.openChainList();
+    await depositModal.selectChain("Kusama");
+    await depositModal.openTokensList();
+    await depositModal.waitForTokenListElementsVisible(KSM_ASSET_NAME);
+    await depositModal.selectToken(KSM_ASSET_NAME);
+    await depositModal.enterValue("0");
+    let isContinueButtonEnabled = await depositModal.isContinueButtonEnabled();
+    expect(isContinueButtonEnabled).toBeFalsy();
+
+    await depositModal.enterValue("0.00");
+    isContinueButtonEnabled = await depositModal.isContinueButtonEnabled();
+    expect(isContinueButtonEnabled).toBeFalsy();
+
+    await depositModal.enterValue("000.00");
+    isContinueButtonEnabled = await depositModal.isContinueButtonEnabled();
+    expect(isContinueButtonEnabled).toBeFalsy();
+
+    const isErrorMessage = await depositModal.isErrorMessage();
+    expect(isErrorMessage).toBeFalsy();
+
+    await depositModal.enterValue("0.01");
+
+    await depositModal.waitForContinueState(true, 60000);
+    const isOriginFeeDisplayed = await depositModal.isOriginFeeDisplayed();
+    expect(isOriginFeeDisplayed).toBeTruthy();
+    const isDestinationFeeDisplayed =
+      await depositModal.isDestinationFeeDisplayed();
+    expect(isDestinationFeeDisplayed).toBeTruthy();
+
+    isContinueButtonEnabled = await depositModal.isContinueButtonEnabled();
+    expect(isContinueButtonEnabled).toBeTruthy();
+  });
+
+  test("Deposit - input errors", async () => {
+    await setupPageWithState(driver, acc_name);
+
+    const walletWrapper = new WalletWrapper(driver);
+    await walletWrapper.openWalletConnectionInfo();
+    await walletWrapper.openDeposit();
+    const depositModal = new DepositModal(driver);
+    const isModalVisible = await depositModal.isModalVisible();
+    expect(isModalVisible).toBeTruthy();
+
+    await depositModal.openChainList();
+    await depositModal.selectChain("Kusama");
+    await depositModal.openTokensList();
+    await depositModal.waitForTokenListElementsVisible(KSM_ASSET_NAME);
+    await depositModal.selectToken(KSM_ASSET_NAME);
+    await depositModal.enterValue("1000");
+    let isContinueButtonEnabled = await depositModal.isContinueButtonEnabled();
+    expect(isContinueButtonEnabled).toBeFalsy();
+
+    let isErrorMessage = await depositModal.isErrorMessage();
+    expect(isErrorMessage).toBeTruthy();
+
+    await depositModal.enterValue("0.0000001");
+    isContinueButtonEnabled = await depositModal.isContinueButtonEnabled();
+    expect(isContinueButtonEnabled).toBeFalsy();
+
+    isErrorMessage = await depositModal.isErrorMessage();
+    expect(isErrorMessage).toBeTruthy();
   });
 
   afterEach(async () => {

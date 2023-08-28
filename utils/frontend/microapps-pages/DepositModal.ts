@@ -23,6 +23,7 @@ const BTN_SUBMIT = "submit-deposit-button";
 const ORIGIN_FEE = "origin-fee";
 const DESTINATION_FEE = "destination-fee";
 const FEE_VALUE = "fee-value";
+const ERR_MESSAGE = "deposit-error-message";
 
 export class DepositModal {
   driver: WebDriver;
@@ -37,17 +38,25 @@ export class DepositModal {
   }
 
   async isOriginFeeDisplayed() {
-    const xpath = buildDataTestIdXpath(ORIGIN_FEE) + buildDataTestIdXpath(FEE_VALUE);
+    const xpath =
+      buildDataTestIdXpath(ORIGIN_FEE) + buildDataTestIdXpath(FEE_VALUE);
     return isDisplayed(this.driver, xpath);
   }
 
   async isDestinationFeeDisplayed() {
-    const xpath = buildDataTestIdXpath(DESTINATION_FEE) + buildDataTestIdXpath(FEE_VALUE);
+    const xpath =
+      buildDataTestIdXpath(DESTINATION_FEE) + buildDataTestIdXpath(FEE_VALUE);
     return isDisplayed(this.driver, xpath);
   }
 
   async openChainList() {
     await clickElement(this.driver, buildDataTestIdXpath(BTN_CHAIN_SELECT));
+  }
+
+  async isErrorMessage() {
+    const errMessageXpath = buildDataTestIdXpath(ERR_MESSAGE);
+    const isAlert = await isDisplayed(this.driver, errMessageXpath);
+    return isAlert;
   }
 
   async selectChain(chainName: string) {
