@@ -179,7 +179,6 @@ describe("[V3][V3] XCM tests for Mangata <-> imbue", () => {
     });
 
     await imbue.chain.newBlock();
-//    await sleep(1000000);
     expect(
       await imbue.api.query.system.account(alice.keyRingPair.address)
     ).toMatchSnapshot("After");
