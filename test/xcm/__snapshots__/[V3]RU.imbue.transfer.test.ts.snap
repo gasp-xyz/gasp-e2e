@@ -4,13 +4,13 @@ exports[`[V3][V3] XCM tests for Mangata <-> imbue [V3] imbue transfer assets to 
 {
   "consumers": 0,
   "data": {
-    "feeFrozen": 0,
-    "free": 4996679519231,
-    "miscFrozen": 0,
+    "flags": "0x80000000000000000000000000000000",
+    "free": 4996099132685,
+    "frozen": 0,
     "reserved": 0,
   },
   "nonce": 1,
-  "providers": 0,
+  "providers": 1,
   "sufficients": 0,
 }
 `;
@@ -35,13 +35,13 @@ exports[`[V3][V3] XCM tests for Mangata <-> imbue [V3] imbue transfer assets to 
 {
   "consumers": 0,
   "data": {
-    "feeFrozen": 0,
+    "flags": 0,
     "free": 10000000000000,
-    "miscFrozen": 0,
+    "frozen": 0,
     "reserved": 0,
   },
   "nonce": 0,
-  "providers": 0,
+  "providers": 1,
   "sufficients": 0,
 }
 `;
@@ -60,13 +60,13 @@ exports[`[V3][V3] XCM tests for Mangata <-> imbue [V3] mangata transfer assets t
 {
   "consumers": 0,
   "data": {
-    "feeFrozen": 0,
-    "free": 19991987200000,
-    "miscFrozen": 0,
+    "flags": "0x80000000000000000000000000000000",
+    "free": 19965593710250,
+    "frozen": 0,
     "reserved": 0,
   },
   "nonce": 0,
-  "providers": 0,
+  "providers": 1,
   "sufficients": 0,
 }
 `;
@@ -83,13 +83,13 @@ exports[`[V3][V3] XCM tests for Mangata <-> imbue [V3] mangata transfer assets t
 {
   "consumers": 0,
   "data": {
-    "feeFrozen": 0,
+    "flags": 0,
     "free": 10000000000000,
-    "miscFrozen": 0,
+    "frozen": 0,
     "reserved": 0,
   },
   "nonce": 0,
-  "providers": 0,
+  "providers": 1,
   "sufficients": 0,
 }
 `;

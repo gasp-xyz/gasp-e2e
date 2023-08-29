@@ -43,11 +43,6 @@ describe("[V3][V3] XCM tests for Mangata <-> imbue", () => {
         ],
       },
     });
-    await imbue.dev.setStorage({
-      System: {
-        Account: [[[alice.keyRingPair.address], { data: { free: 1000e12 } }]],
-      },
-    });
     // await upgradeMangata(mangata);
   });
 
@@ -68,7 +63,12 @@ describe("[V3][V3] XCM tests for Mangata <-> imbue", () => {
     });
     await imbue.dev.setStorage({
       System: {
-        Account: [[[alice.keyRingPair.address], { data: { free: 10e12 } }]],
+        Account: [
+          [
+            [alice.keyRingPair.address],
+            { data: { free: 10e12 }, providers: 1 },
+          ],
+        ],
       },
     });
   });
@@ -179,6 +179,7 @@ describe("[V3][V3] XCM tests for Mangata <-> imbue", () => {
     });
 
     await imbue.chain.newBlock();
+//    await sleep(1000000);
     expect(
       await imbue.api.query.system.account(alice.keyRingPair.address)
     ).toMatchSnapshot("After");
