@@ -346,27 +346,34 @@ test("GIVEN an user has available some rewards in two “pools” ( one solo tok
 });
 
 test("GIVEN a user that has available some rewards in ten pools (max for automatically claiming) WHEN claims all rewards THEN the user gets the rewards for that's pools", async () => {
+  const rewardsLiqIdBefore = [];
+  const rewardsLiqIdAfter = [];
+
   await createMultiplePoolsForUser(testUser1, 10);
 
   await waitForRewards(testUser1, liqIds[9]);
 
-  const rewardsLiqIdBefore = await getRewardsInfo(
-    testUser1.keyRingPair.address,
-    liqIds[9]
-  );
+  for (let i = 0; i < 10; i++) {
+    rewardsLiqIdBefore[i] = await getRewardsInfo(
+      testUser1.keyRingPair.address,
+      liqIds[i]
+    );
+  }
 
   await claimRewardsAll(testUser1).then((result) => {
     const eventResponse = getEventResultFromMangataTx(result);
     expect(eventResponse.state).toEqual(ExtrinsicResult.ExtrinsicSuccess);
   });
 
-  const rewardsLiqIdAfter = await getRewardsInfo(
-    testUser1.keyRingPair.address,
-    liqIds[9]
-  );
+  for (let i = 0; i < 10; i++) {
+    rewardsLiqIdAfter[i] = await getRewardsInfo(
+      testUser1.keyRingPair.address,
+      liqIds[i]
+    );
 
-  expect(rewardsLiqIdBefore.rewardsAlreadyClaimed).bnEqual(BN_ZERO);
-  expect(rewardsLiqIdAfter.rewardsAlreadyClaimed).bnGt(BN_ZERO);
+    expect(rewardsLiqIdBefore[i].rewardsAlreadyClaimed).bnEqual(BN_ZERO);
+    expect(rewardsLiqIdAfter[i].rewardsAlreadyClaimed).bnGt(BN_ZERO);
+  }
 });
 
 test("GIVEN a user has available some rewards in over ten pools WHEN claims all rewards THEN the error is received", async () => {
