@@ -730,8 +730,8 @@ describe("xyk-pallet: Liquidity sufficiency scenario", () => {
     await signSendFinalized(
       Xyk.burnLiquidity(assetId1, assetId2, amount),
       user2
-    ).catch(checkError(xykErrors.NoSuchPool));
-
+    ).catch(checkError(xykErrors.NotEnoughAssets));
+    testLog.getLog().info("ExpectNoChange On:burnLiquidityFromEmptyPoolTest");
     await expectNoChange();
   }
 
@@ -843,7 +843,7 @@ describe("xyk-pallet: Liquidity sufficiency scenario", () => {
       Xyk.burnLiquidity(assetId1, assetId2, excess),
       user
     ).catch(checkError(xykErrors.NotEnoughAssets));
-
+    testLog.getLog().info("ExpectNoChange On:burnLiquidityFail");
     await expectNoChange();
   }
 
@@ -851,9 +851,9 @@ describe("xyk-pallet: Liquidity sufficiency scenario", () => {
     const amount = new BN(20000);
 
     await signSendFinalized(Xyk.sellAsset(sell, buy, amount), user2).catch(
-      checkError(xykErrors.NoSuchPool)
+      checkError(xykErrors.NotEnoughAssets)
     );
-
+    testLog.getLog().info("ExpectNoChange On:sellAssetFail");
     await expectNoChange();
   }
 
@@ -861,9 +861,9 @@ describe("xyk-pallet: Liquidity sufficiency scenario", () => {
     const amount = new BN(20000);
 
     await signSendFinalized(Xyk.buyAsset(sell, buy, amount), user2).catch(
-      checkError(xykErrors.NoSuchPool)
+      checkError(xykErrors.NotEnoughAssets)
     );
-
+    testLog.getLog().info("ExpectNoChange On:buyAssetFail");
     await expectNoChange();
   }
 
