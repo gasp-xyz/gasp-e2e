@@ -41,7 +41,7 @@ let api: ApiPromise;
 let sudo: User;
 let keyring: Keyring;
 let crowdloanId: any;
-const millionNative = new BN("1000000000000000000000000");
+const crowdloanRewardsAmount = new BN("1000000000000000000000000");
 const nativeCurrencyId = MGA_ASSET_ID;
 
 beforeAll(async () => {
@@ -74,7 +74,7 @@ beforeAll(async () => {
     Assets.mintNative(testUser9)
   );
 
-  await setCrowdloanAllocation(millionNative.muln(8));
+  await setCrowdloanAllocation(crowdloanRewardsAmount.muln(8));
 
   await Sudo.batchAsSudoFinalized(
     Sudo.sudo(
@@ -82,42 +82,42 @@ beforeAll(async () => {
         [
           testUser1.keyRingPair.address,
           testUser1.keyRingPair.address,
-          millionNative,
+          crowdloanRewardsAmount,
         ],
         [
           testUser2.keyRingPair.address,
           testUser2.keyRingPair.address,
-          millionNative,
+          crowdloanRewardsAmount,
         ],
         [
           testUser3.keyRingPair.address,
           testUser3.keyRingPair.address,
-          millionNative,
+          crowdloanRewardsAmount,
         ],
         [
           testUser4.keyRingPair.address,
           testUser4.keyRingPair.address,
-          millionNative,
+          crowdloanRewardsAmount,
         ],
         [
           testUser5.keyRingPair.address,
           testUser5.keyRingPair.address,
-          millionNative,
+          crowdloanRewardsAmount,
         ],
         [
           testUser6.keyRingPair.address,
           testUser6.keyRingPair.address,
-          millionNative,
+          crowdloanRewardsAmount,
         ],
         [
           testUser7.keyRingPair.address,
           testUser7.keyRingPair.address,
-          millionNative,
+          crowdloanRewardsAmount,
         ],
         [
           testUser8.keyRingPair.address,
           testUser8.keyRingPair.address,
-          millionNative,
+          crowdloanRewardsAmount,
         ],
       ])
     )
@@ -157,7 +157,7 @@ test("Users receive different rewards when they confirm them before, during and 
 
   //if user claimed rewards before crowdloan all tokens would be frozen
   expect(new BN(user1BalanceAfterClaiming.frozen)).bnGt(
-    millionNative.muln(0.78)
+    crowdloanRewardsAmount.muln(0.78)
   );
   //if user claimed rewards in the second half of the crowdloan less than half tokens would be frozen
   expect(new BN(user2BalanceAfterClaiming.frozen)).bnLt(
@@ -226,7 +226,7 @@ describe("Test that a user can claim when", () => {
   });
 
   test("CL1 is fully setup and CL2 setup the setCrowdloanAllocation", async () => {
-    await setCrowdloanAllocation(millionNative);
+    await setCrowdloanAllocation(crowdloanRewardsAmount);
 
     await claimRewards(crowdloanId, testUser6);
 
@@ -234,8 +234,8 @@ describe("Test that a user can claim when", () => {
   });
 
   test("CL1 is fully setup and CL2 setup the setCrowdloanAllocation + RewardVec", async () => {
-    await setCrowdloanAllocation(millionNative);
-    await initializeReward(testUser4, millionNative);
+    await setCrowdloanAllocation(crowdloanRewardsAmount);
+    await initializeReward(testUser4, crowdloanRewardsAmount);
 
     await claimRewards(crowdloanId, testUser7);
 
@@ -243,8 +243,8 @@ describe("Test that a user can claim when", () => {
   });
 
   test("CL1 is fully setup and CL2 setup the setCrowdloanAllocation + RewardVec + compleInitialization", async () => {
-    await setCrowdloanAllocation(millionNative);
-    await initializeReward(testUser4, millionNative);
+    await setCrowdloanAllocation(crowdloanRewardsAmount);
+    await initializeReward(testUser4, crowdloanRewardsAmount);
     const leaseStartBlock = await getBlockNumber();
     const leaseEndingBlock = (await getBlockNumber()) + 5;
     await completeInitialization(leaseStartBlock, leaseEndingBlock);
@@ -255,7 +255,7 @@ describe("Test that a user can claim when", () => {
   });
 
   async function checkUserReward(crowdloanId: any, user: User) {
-    const userAccountPayable = JSON.parse(
+    const userAccountsPayable = JSON.parse(
       JSON.stringify(
         await api.query.crowdloan.accountsPayable(
           crowdloanId,
@@ -265,10 +265,10 @@ describe("Test that a user can claim when", () => {
     );
 
     const userClaimedReward = hexToBn(
-      await userAccountPayable.claimedReward.toString()
+      await userAccountsPayable.claimedReward.toString()
     );
 
-    expect(userClaimedReward).bnEqual(millionNative);
+    expect(userClaimedReward).bnEqual(crowdloanRewardsAmount);
   }
 });
 
@@ -282,11 +282,15 @@ async function setCrowdloanAllocation(crowdloanAllocationAmount: BN) {
   return setCrowdloanAllocation;
 }
 
-async function initializeReward(user1: User, Balance1: BN) {
+async function initializeReward(user: User, crowdloanRewardsAmount: BN) {
   const initializeReward = await Sudo.batchAsSudoFinalized(
     Sudo.sudo(
       api.tx.crowdloan.initializeRewardVec([
-        [user1.keyRingPair.address, user1.keyRingPair.address, Balance1],
+        [
+          user.keyRingPair.address,
+          user.keyRingPair.address,
+          crowdloanRewardsAmount,
+        ],
       ])
     )
   );
