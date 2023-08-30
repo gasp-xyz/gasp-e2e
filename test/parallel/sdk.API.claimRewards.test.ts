@@ -36,7 +36,7 @@ let testUser1: User;
 let sudo: User;
 let keyring: Keyring;
 let soloTokenId: BN;
-let polTokenIds: BN[];
+let poolTokenIds: BN[];
 let liqIds: BN[];
 let tokenValues: BN[];
 const defaultCurrencyValue = new BN(250000);
@@ -73,7 +73,7 @@ beforeAll(async () => {
 
   const batchPromisesMinting = [];
   const batchPromisesPromoting = [];
-  polTokenIds = [];
+  poolTokenIds = [];
   tokenValues = [];
   liqIds = [];
 
@@ -84,7 +84,7 @@ beforeAll(async () => {
     newTokenId < nextTokenId + 13;
     newTokenId++
   ) {
-    polTokenIds.push(new BN(newTokenId));
+    poolTokenIds.push(new BN(newTokenId));
 
     tokenValues.push(defaultCurrencyValue);
 
@@ -105,7 +105,7 @@ beforeAll(async () => {
     );
   }
 
-  [...polTokenIds] = await Assets.setupUserWithCurrencies(
+  [...poolTokenIds] = await Assets.setupUserWithCurrencies(
     testUser,
     [...tokenValues],
     sudo
@@ -113,15 +113,15 @@ beforeAll(async () => {
 
   await Sudo.batchAsSudoFinalized(...batchPromisesMinting);
 
-  for (let tokenNumber = 0; tokenNumber < polTokenIds.length; tokenNumber++) {
+  for (let tokenNumber = 0; tokenNumber < poolTokenIds.length; tokenNumber++) {
     const liqId = await getLiquidityAssetId(
       MGA_ASSET_ID,
-      polTokenIds[tokenNumber]
+      poolTokenIds[tokenNumber]
     );
     liqIds.push(liqId);
   }
 
-  for (let tokenNumber = 0; tokenNumber < polTokenIds.length; tokenNumber++) {
+  for (let tokenNumber = 0; tokenNumber < poolTokenIds.length; tokenNumber++) {
     batchPromisesPromoting.push(
       Assets.promotePool(liqIds[tokenNumber].toNumber(), 20)
     );
@@ -144,12 +144,12 @@ beforeEach(async () => {
 
 test("GIVEN an user has available some rewards in one pool WHEN claims all rewards THEN the user gets the rewards for that pool", async () => {
   await Sudo.batchAsSudoFinalized(
-    Assets.mintToken(polTokenIds[0], testUser1, defaultCurrencyValue),
+    Assets.mintToken(poolTokenIds[0], testUser1, defaultCurrencyValue),
     Sudo.sudoAs(
       testUser1,
       Xyk.mintLiquidity(
         MGA_ASSET_ID,
-        polTokenIds[0],
+        poolTokenIds[0],
         defaultCurrencyValue.divn(2)
       )
     )
@@ -178,13 +178,13 @@ test("GIVEN an user has available some rewards in one pool WHEN claims all rewar
 
 test("GIVEN an user has available some rewards in two pools WHEN claims all rewards THEN the user gets the rewards for that's pools", async () => {
   await Sudo.batchAsSudoFinalized(
-    Assets.mintToken(polTokenIds[0], testUser1, defaultCurrencyValue),
-    Assets.mintToken(polTokenIds[1], testUser1, defaultCurrencyValue),
+    Assets.mintToken(poolTokenIds[0], testUser1, defaultCurrencyValue),
+    Assets.mintToken(poolTokenIds[1], testUser1, defaultCurrencyValue),
     Sudo.sudoAs(
       testUser1,
       Xyk.mintLiquidity(
         MGA_ASSET_ID,
-        polTokenIds[0],
+        poolTokenIds[0],
         defaultCurrencyValue.divn(2)
       )
     ),
@@ -192,7 +192,7 @@ test("GIVEN an user has available some rewards in two pools WHEN claims all rewa
       testUser1,
       Xyk.mintLiquidity(
         MGA_ASSET_ID,
-        polTokenIds[1],
+        poolTokenIds[1],
         defaultCurrencyValue.divn(2)
       )
     )
@@ -233,13 +233,13 @@ test("GIVEN an user has available some rewards in two pools WHEN claims all rewa
 
 test("GIVEN an user has available some rewards in two pools ( one deactivated ) WHEN claims all rewards THEN the user gets the rewards for that's pools", async () => {
   await Sudo.batchAsSudoFinalized(
-    Assets.mintToken(polTokenIds[0], testUser1, defaultCurrencyValue),
-    Assets.mintToken(polTokenIds[12], testUser1, defaultCurrencyValue),
+    Assets.mintToken(poolTokenIds[0], testUser1, defaultCurrencyValue),
+    Assets.mintToken(poolTokenIds[12], testUser1, defaultCurrencyValue),
     Sudo.sudoAs(
       testUser1,
       Xyk.mintLiquidity(
         MGA_ASSET_ID,
-        polTokenIds[0],
+        poolTokenIds[0],
         defaultCurrencyValue.divn(2)
       )
     ),
@@ -247,7 +247,7 @@ test("GIVEN an user has available some rewards in two pools ( one deactivated ) 
       testUser1,
       Xyk.mintLiquidity(
         MGA_ASSET_ID,
-        polTokenIds[12],
+        poolTokenIds[12],
         defaultCurrencyValue.divn(2)
       )
     )
@@ -292,13 +292,13 @@ test("GIVEN an user has available some rewards in two pools ( one deactivated ) 
 
 test("GIVEN an user has available some rewards in two “pools” ( one solo token, one pool ) WHEN claims all rewards THEN the user gets the rewards for that's pools", async () => {
   await Sudo.batchAsSudoFinalized(
-    Assets.mintToken(polTokenIds[0], testUser1, defaultCurrencyValue),
+    Assets.mintToken(poolTokenIds[0], testUser1, defaultCurrencyValue),
     Assets.mintToken(soloTokenId, testUser1, defaultCurrencyValue),
     Sudo.sudoAs(
       testUser1,
       Xyk.mintLiquidity(
         MGA_ASSET_ID,
-        polTokenIds[0],
+        poolTokenIds[0],
         defaultCurrencyValue.divn(2)
       )
     )
@@ -431,14 +431,14 @@ async function createSeveralPoolsForUser(user: User, numberPools: number) {
 
   for (i = 0; i < numberPools; i++) {
     batchPromisesMinting.push(
-      Assets.mintToken(polTokenIds[i], user, defaultCurrencyValue)
+      Assets.mintToken(poolTokenIds[i], user, defaultCurrencyValue)
     );
     batchPromisesMinting.push(
       Sudo.sudoAs(
         user,
         Xyk.mintLiquidity(
           MGA_ASSET_ID,
-          polTokenIds[i],
+          poolTokenIds[i],
           defaultCurrencyValue.divn(2)
         )
       )
