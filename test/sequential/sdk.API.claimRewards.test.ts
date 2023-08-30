@@ -1,6 +1,6 @@
 /*
  *
- * @group sdk
+ * @group sdksequential
  */
 import { jest } from "@jest/globals";
 import { Keyring } from "@polkadot/api";
@@ -85,12 +85,7 @@ beforeAll(async () => {
     newTokenId++
   ) {
     poolTokenIds.push(new BN(newTokenId));
-
     tokenAmounts.push(defaultCurrencyValue);
-
-    batchPromisesMinting.push(
-      Assets.mintToken(new BN(newTokenId), testUser, defaultCurrencyValue)
-    );
 
     batchPromisesMinting.push(
       Sudo.sudoAs(
@@ -176,7 +171,7 @@ test("GIVEN an user has available some rewards in one pool WHEN claims all rewar
   expect(rewardsUserAfter.rewardsAlreadyClaimed).bnGt(BN_ZERO);
 });
 
-test("GIVEN an user has available some rewards in two pools WHEN claims all rewards THEN the user gets the rewards for that's pools", async () => {
+test("GIVEN an user has available some rewards in two pools WHEN claims all rewards THEN the user gets the rewards for thats pools", async () => {
   await Sudo.batchAsSudoFinalized(
     Assets.mintToken(poolTokenIds[0], testUser1, defaultCurrencyValue),
     Assets.mintToken(poolTokenIds[1], testUser1, defaultCurrencyValue),
@@ -231,7 +226,7 @@ test("GIVEN an user has available some rewards in two pools WHEN claims all rewa
   expect(rewardsLiqId2After.rewardsAlreadyClaimed).bnGt(BN_ZERO);
 });
 
-test("GIVEN an user has available some rewards in two pools ( one deactivated ) WHEN claims all rewards THEN the user gets the rewards for that's pools", async () => {
+test("GIVEN an user has available some rewards in two pools one deactivated WHEN claims all rewards THEN the user gets the rewards for thats pools", async () => {
   await Sudo.batchAsSudoFinalized(
     Assets.mintToken(poolTokenIds[0], testUser1, defaultCurrencyValue),
     Assets.mintToken(poolTokenIds[12], testUser1, defaultCurrencyValue),
@@ -286,11 +281,9 @@ test("GIVEN an user has available some rewards in two pools ( one deactivated ) 
   expect(rewardsLiqId1After.rewardsAlreadyClaimed).bnGt(BN_ZERO);
   expect(rewardsLiqId2Before.rewardsAlreadyClaimed).bnEqual(BN_ZERO);
   expect(rewardsLiqId2After.rewardsAlreadyClaimed).bnGt(BN_ZERO);
-
-  await promotePool(sudo.keyRingPair, liqIds[12], 20);
 });
 
-test("GIVEN an user has available some rewards in two “pools” ( one solo token, one pool ) WHEN claims all rewards THEN the user gets the rewards for that's pools", async () => {
+test("GIVEN an user has available some rewards in two “pools” one solo token, one pool WHEN claims all rewards THEN the user gets the rewards for thats pools", async () => {
   await Sudo.batchAsSudoFinalized(
     Assets.mintToken(poolTokenIds[0], testUser1, defaultCurrencyValue),
     Assets.mintToken(soloTokenId, testUser1, defaultCurrencyValue),
@@ -345,7 +338,7 @@ test("GIVEN an user has available some rewards in two “pools” ( one solo tok
   expect(rewardsLiqId2After.rewardsAlreadyClaimed).bnGt(BN_ZERO);
 });
 
-test("GIVEN a user that has available some rewards in ten pools (max for automatically claiming) WHEN claims all rewards THEN the user gets the rewards for that's pools", async () => {
+test("GIVEN a user that has available some rewards in ten pools max for automatically claiming WHEN claims all rewards THEN the user gets the rewards for thats pools", async () => {
   const rewardsLiqIdBefore = [];
   const rewardsLiqIdAfter = [];
 
