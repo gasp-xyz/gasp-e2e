@@ -38,7 +38,7 @@ let keyring: Keyring;
 let soloTokenId: BN;
 let poolTokenIds: BN[];
 let liqIds: BN[];
-let tokenValues: BN[];
+let tokenAmounts: BN[];
 const defaultCurrencyValue = new BN(250000);
 
 beforeAll(async () => {
@@ -74,7 +74,7 @@ beforeAll(async () => {
   const batchPromisesMinting = [];
   const batchPromisesPromoting = [];
   poolTokenIds = [];
-  tokenValues = [];
+  tokenAmounts = [];
   liqIds = [];
 
   const nextTokenId = (await getNextAssetId()).toNumber();
@@ -86,7 +86,7 @@ beforeAll(async () => {
   ) {
     poolTokenIds.push(new BN(newTokenId));
 
-    tokenValues.push(defaultCurrencyValue);
+    tokenAmounts.push(defaultCurrencyValue);
 
     batchPromisesMinting.push(
       Assets.mintToken(new BN(newTokenId), testUser, defaultCurrencyValue)
@@ -107,7 +107,7 @@ beforeAll(async () => {
 
   [...poolTokenIds] = await Assets.setupUserWithCurrencies(
     testUser,
-    [...tokenValues],
+    [...tokenAmounts],
     sudo
   );
 
