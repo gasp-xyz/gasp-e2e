@@ -30,7 +30,11 @@ import { devTestingPairs } from "../../utils/setup";
 import { AssetId } from "../../utils/ChainSpecs";
 import { BN_THOUSAND } from "@mangata-finance/sdk";
 import StashServiceMockSingleton from "../../utils/stashServiceMockSingleton";
-import { ModalType, NotificationModal, TransactionType } from "../../utils/frontend/microapps-pages/NotificationModal";
+import {
+  ModalType,
+  NotificationModal,
+  TransactionType,
+} from "../../utils/frontend/microapps-pages/NotificationModal";
 import { WithdrawModal } from "../../utils/frontend/microapps-pages/WithdrawModal";
 
 jest.spyOn(console, "log").mockImplementation(jest.fn());
@@ -144,7 +148,11 @@ describe("Microapps UI withdraw modal tests", () => {
     await withdrawModal.clickContinue();
 
     const modal = new NotificationModal(driver);
-    await modal.waitForModalState(ModalType.Confirm, TransactionType.Withdraw, 3000);
+    await modal.waitForModalState(
+      ModalType.Confirm,
+      TransactionType.Withdraw,
+      3000
+    );
     const isModalWaitingForSignVisible = await modal.isModalVisible(
       ModalType.Confirm,
       TransactionType.Withdraw
