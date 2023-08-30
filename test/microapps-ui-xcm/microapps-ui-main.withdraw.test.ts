@@ -21,9 +21,7 @@ import {
   connectWallet,
   setupPage,
   setupPageWithState,
-  waitForMicroappsActionNotification,
 } from "../../utils/frontend/microapps-utils/Handlers";
-import { DepositModal } from "../../utils/frontend/microapps-pages/DepositModal";
 import { WalletWrapper } from "../../utils/frontend/microapps-pages/WalletWrapper";
 import { ApiContext } from "../../utils/Framework/XcmHelper";
 import XcmNetworks from "../../utils/Framework/XcmNetworks";
@@ -32,7 +30,8 @@ import { devTestingPairs } from "../../utils/setup";
 import { AssetId } from "../../utils/ChainSpecs";
 import { BN_THOUSAND } from "@mangata-finance/sdk";
 import StashServiceMockSingleton from "../../utils/stashServiceMockSingleton";
-import { TransactionType } from "../../utils/frontend/microapps-pages/NotificationModal";
+import { ModalType, NotificationModal, TransactionType } from "../../utils/frontend/microapps-pages/NotificationModal";
+import { WithdrawModal } from "../../utils/frontend/microapps-pages/WithdrawModal";
 
 jest.spyOn(console, "log").mockImplementation(jest.fn());
 
@@ -45,7 +44,7 @@ const KSM_ASSET_NAME = "KSM";
 const userAddress = "5CfLmpjCJu41g3cpZVoiH7MSrSppgVVVC3xq23iy9dZrW2HR";
 const INIT_KSM_RELAY = 15;
 
-describe("Microapps UI deposit modal tests", () => {
+describe("Microapps UI withdraw modal tests", () => {
   let kusama: ApiContext;
   let mangata: ApiContext;
   let alice: KeyringPair;
@@ -114,114 +113,115 @@ describe("Microapps UI deposit modal tests", () => {
     await connectWallet(driver, "Polkadot", acc_name);
   });
 
-  test("Deposit - enough assets", async () => {
+  test("Withdraw - enough assets", async () => {
     await setupPageWithState(driver, acc_name);
 
     const walletWrapper = new WalletWrapper(driver);
     await walletWrapper.openWalletConnectionInfo();
-    await walletWrapper.openDeposit();
-    const depositModal = new DepositModal(driver);
-    const isModalVisible = await depositModal.isModalVisible();
+    await walletWrapper.openWithdraw();
+    const withdrawModal = new WithdrawModal(driver);
+    const isModalVisible = await withdrawModal.isModalVisible();
     expect(isModalVisible).toBeTruthy();
 
-    await depositModal.openChainList();
-    await depositModal.selectChain("Kusama");
-    await depositModal.openTokensList();
-    await depositModal.waitForTokenListElementsVisible(KSM_ASSET_NAME);
-    await depositModal.selectToken(KSM_ASSET_NAME);
-    await depositModal.enterValue("1");
+    await withdrawModal.openChainList();
+    await withdrawModal.selectChain("Kusama");
+    await withdrawModal.openTokensList();
+    await withdrawModal.waitForTokenListElementsVisible(KSM_ASSET_NAME);
+    await withdrawModal.selectToken(KSM_ASSET_NAME);
+    await withdrawModal.enterValue("1");
 
-    await depositModal.waitForContinueState(true, 60000);
-    const isOriginFeeDisplayed = await depositModal.isOriginFeeDisplayed();
+    await withdrawModal.waitForContinueState(true, 60000);
+    const isOriginFeeDisplayed = await withdrawModal.isOriginFeeDisplayed();
     expect(isOriginFeeDisplayed).toBeTruthy();
     const isDestinationFeeDisplayed =
-      await depositModal.isDestinationFeeDisplayed();
+      await withdrawModal.isDestinationFeeDisplayed();
     expect(isDestinationFeeDisplayed).toBeTruthy();
 
     const isContinueButtonEnabled =
-      await depositModal.isContinueButtonEnabled();
+      await withdrawModal.isContinueButtonEnabled();
     expect(isContinueButtonEnabled).toBeTruthy();
 
-    await depositModal.clickContinue();
-    await waitForMicroappsActionNotification(
-      driver,
-      mangata,
-      kusama,
-      TransactionType.Deposit,
-      2
+    await withdrawModal.clickContinue();
+
+    const modal = new NotificationModal(driver);
+    await modal.waitForModalState(ModalType.Confirm, TransactionType.Withdraw, 3000);
+    const isModalWaitingForSignVisible = await modal.isModalVisible(
+      ModalType.Confirm,
+      TransactionType.Withdraw
     );
+    expect(isModalWaitingForSignVisible).toBeTruthy();
   });
 
-  test("Deposit - input null values", async () => {
+  test("Withdraw - input null values", async () => {
     await setupPageWithState(driver, acc_name);
 
     const walletWrapper = new WalletWrapper(driver);
     await walletWrapper.openWalletConnectionInfo();
-    await walletWrapper.openDeposit();
-    const depositModal = new DepositModal(driver);
-    const isModalVisible = await depositModal.isModalVisible();
+    await walletWrapper.openWithdraw();
+    const withdrawModal = new WithdrawModal(driver);
+    const isModalVisible = await withdrawModal.isModalVisible();
     expect(isModalVisible).toBeTruthy();
 
-    await depositModal.openChainList();
-    await depositModal.selectChain("Kusama");
-    await depositModal.openTokensList();
-    await depositModal.waitForTokenListElementsVisible(KSM_ASSET_NAME);
-    await depositModal.selectToken(KSM_ASSET_NAME);
-    await depositModal.enterValue("0");
-    let isContinueButtonEnabled = await depositModal.isContinueButtonEnabled();
+    await withdrawModal.openChainList();
+    await withdrawModal.selectChain("Kusama");
+    await withdrawModal.openTokensList();
+    await withdrawModal.waitForTokenListElementsVisible(KSM_ASSET_NAME);
+    await withdrawModal.selectToken(KSM_ASSET_NAME);
+    await withdrawModal.enterValue("0");
+    let isContinueButtonEnabled = await withdrawModal.isContinueButtonEnabled();
     expect(isContinueButtonEnabled).toBeFalsy();
 
-    await depositModal.enterValue("0.00");
-    isContinueButtonEnabled = await depositModal.isContinueButtonEnabled();
+    await withdrawModal.enterValue("0.00");
+    isContinueButtonEnabled = await withdrawModal.isContinueButtonEnabled();
     expect(isContinueButtonEnabled).toBeFalsy();
 
-    await depositModal.enterValue("000.00");
-    isContinueButtonEnabled = await depositModal.isContinueButtonEnabled();
+    await withdrawModal.enterValue("000.00");
+    isContinueButtonEnabled = await withdrawModal.isContinueButtonEnabled();
     expect(isContinueButtonEnabled).toBeFalsy();
 
-    const isErrorMessage = await depositModal.isErrorMessage();
+    const isErrorMessage = await withdrawModal.isErrorMessage();
     expect(isErrorMessage).toBeFalsy();
 
-    await depositModal.enterValue("0.01");
+    await withdrawModal.enterValue("0.01");
 
-    await depositModal.waitForContinueState(true, 60000);
-    const isOriginFeeDisplayed = await depositModal.isOriginFeeDisplayed();
+    await withdrawModal.waitForContinueState(true, 60000);
+    const isOriginFeeDisplayed = await withdrawModal.isOriginFeeDisplayed();
     expect(isOriginFeeDisplayed).toBeTruthy();
     const isDestinationFeeDisplayed =
-      await depositModal.isDestinationFeeDisplayed();
+      await withdrawModal.isDestinationFeeDisplayed();
     expect(isDestinationFeeDisplayed).toBeTruthy();
 
-    isContinueButtonEnabled = await depositModal.isContinueButtonEnabled();
+    isContinueButtonEnabled = await withdrawModal.isContinueButtonEnabled();
     expect(isContinueButtonEnabled).toBeTruthy();
   });
 
-  test("Deposit - input errors", async () => {
+  test("Withdraw - input errors", async () => {
     await setupPageWithState(driver, acc_name);
 
     const walletWrapper = new WalletWrapper(driver);
     await walletWrapper.openWalletConnectionInfo();
-    await walletWrapper.openDeposit();
-    const depositModal = new DepositModal(driver);
-    const isModalVisible = await depositModal.isModalVisible();
+    await walletWrapper.openWithdraw();
+    const withdrawModal = new WithdrawModal(driver);
+    const isModalVisible = await withdrawModal.isModalVisible();
     expect(isModalVisible).toBeTruthy();
 
-    await depositModal.openChainList();
-    await depositModal.selectChain("Kusama");
-    await depositModal.openTokensList();
-    await depositModal.waitForTokenListElementsVisible(KSM_ASSET_NAME);
-    await depositModal.selectToken(KSM_ASSET_NAME);
-    await depositModal.enterValue("1000");
-    let isContinueButtonEnabled = await depositModal.isContinueButtonEnabled();
+    await withdrawModal.openChainList();
+    await withdrawModal.selectChain("Kusama");
+    await withdrawModal.openTokensList();
+    await withdrawModal.waitForTokenListElementsVisible(KSM_ASSET_NAME);
+    await withdrawModal.selectToken(KSM_ASSET_NAME);
+    await withdrawModal.enterValue("1000");
+    let isContinueButtonEnabled = await withdrawModal.isContinueButtonEnabled();
     expect(isContinueButtonEnabled).toBeFalsy();
 
-    let isErrorMessage = await depositModal.isErrorMessage();
+    let isErrorMessage = await withdrawModal.isErrorMessage();
     expect(isErrorMessage).toBeTruthy();
 
-    await depositModal.enterValue("0.0000001");
-    isContinueButtonEnabled = await depositModal.isContinueButtonEnabled();
+    await withdrawModal.enterValue("0.0000001");
+    isContinueButtonEnabled = await withdrawModal.isContinueButtonEnabled();
     expect(isContinueButtonEnabled).toBeFalsy();
 
-    isErrorMessage = await depositModal.isErrorMessage();
+    isErrorMessage = await withdrawModal.isErrorMessage();
     expect(isErrorMessage).toBeTruthy();
   });
 
