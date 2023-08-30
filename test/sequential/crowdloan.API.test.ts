@@ -6,17 +6,13 @@ import { jest } from "@jest/globals";
 import { ApiPromise, Keyring } from "@polkadot/api";
 import { getApi, initApi } from "../../utils/api";
 import { Assets } from "../../utils/Assets";
-import { BN, hexToBn } from "@polkadot/util";
+import { BN } from "@polkadot/util";
 import { setupApi, setupUsers } from "../../utils/setup";
 import { Sudo } from "../../utils/sudo";
 import { User } from "../../utils/User";
-import {
-  getBlockNumber,
-  getEnvironmentRequiredVars,
-  waitBlockNumber,
-} from "../../utils/utils";
+import { getBlockNumber, getEnvironmentRequiredVars } from "../../utils/utils";
 import { MGA_ASSET_ID } from "../../utils/Constants";
-import { BN_ZERO, MangataGenericEvent, signTx } from "@mangata-finance/sdk";
+import { MangataGenericEvent, signTx } from "@mangata-finance/sdk";
 import {
   getEventErrorFromSudo,
   getEventResultFromMangataTx,
@@ -41,7 +37,7 @@ let api: ApiPromise;
 let sudo: User;
 let keyring: Keyring;
 let crowdloanId: any;
-const millionNative = new BN("1000000000000000000000000");
+const crowdloanRewardsAmount = new BN("1000000000000000000000000");
 const nativeCurrencyId = MGA_ASSET_ID;
 
 beforeAll(async () => {
@@ -73,7 +69,7 @@ describe("Only sudo can", () => {
   test("crowdloan.setCrowdloanAllocation(crowdloanAllocationAmount)", async () => {
     const userSetCrowdloanAllocation = await signTx(
       api,
-      api.tx.crowdloan.setCrowdloanAllocation(millionNative),
+      api.tx.crowdloan.setCrowdloanAllocation(crowdloanRewardsAmount),
       testUser1.keyRingPair
     );
 
@@ -85,7 +81,7 @@ describe("Only sudo can", () => {
     expect(eventResponse.data).toEqual("UnknownError");
 
     const sudoSetCrowdloanAllocation = await Sudo.batchAsSudoFinalized(
-      Sudo.sudo(api.tx.crowdloan.setCrowdloanAllocation(millionNative))
+      Sudo.sudo(api.tx.crowdloan.setCrowdloanAllocation(crowdloanRewardsAmount))
     );
 
     await waitSudoOperationSuccess(sudoSetCrowdloanAllocation);
@@ -98,7 +94,7 @@ describe("Only sudo can", () => {
         [
           testUser1.keyRingPair.address,
           testUser1.keyRingPair.address,
-          millionNative,
+          crowdloanRewardsAmount,
         ],
       ]),
       testUser1.keyRingPair
@@ -115,7 +111,7 @@ describe("Only sudo can", () => {
           [
             testUser1.keyRingPair.address,
             testUser1.keyRingPair.address,
-            millionNative,
+            crowdloanRewardsAmount,
           ],
         ])
       )
@@ -171,45 +167,8 @@ describe("Only sudo can", () => {
   });
 });
 
-test.skip("A user can only change his reward-address with: crowdloan.updateRewardAddress AND user can claim some rewards if it provided some on the specified cl_id", async () => {
-  await setCrowdloanAllocation(millionNative);
-
-  await initializeReward(testUser1, millionNative);
-
-  const leaseStartBlock = (await getBlockNumber()) + 2;
-  const leaseEndingBlock = (await getBlockNumber()) + 5;
-
-  await completeInitialization(leaseStartBlock, leaseEndingBlock);
-
-  crowdloanId = (await api.query.crowdloan.crowdloanId()).toHuman();
-
-  await signTx(
-    api,
-    api.tx.crowdloan.updateRewardAddress(
-      testUser2.keyRingPair.address,
-      // @ts-ignore
-      crowdloanId
-    ),
-    testUser1.keyRingPair
-  ).then((result) => {
-    const eventResponse = getEventResultFromMangataTx(result);
-    expect(eventResponse.state).toEqual(ExtrinsicResult.ExtrinsicSuccess);
-  });
-
-  await waitBlockNumber(leaseEndingBlock.toString(), 15);
-
-  await claimRewards(crowdloanId, testUser1).then((result) => {
-    expect(result.state).toEqual(ExtrinsicResult.ExtrinsicFailed);
-    expect(result.data).toEqual("NoAssociatedClaim");
-  });
-
-  await claimRewards(crowdloanId, testUser2).then((result) => {
-    expect(result.state).toEqual(ExtrinsicResult.ExtrinsicSuccess);
-  });
-});
-
 test("A reward needs to be fully setup with: setCrowdloanAllocation + initializeRewardVec + completeInitialization", async () => {
-  await setCrowdloanAllocation(millionNative);
+  await setCrowdloanAllocation(crowdloanRewardsAmount);
 
   crowdloanId = (await api.query.crowdloan.crowdloanId()).toHuman();
 
@@ -218,7 +177,7 @@ test("A reward needs to be fully setup with: setCrowdloanAllocation + initialize
     expect(result.data).toEqual("RewardVecNotFullyInitializedYet");
   });
 
-  await initializeReward(testUser1, millionNative);
+  await initializeReward(testUser1, crowdloanRewardsAmount);
 
   await claimRewards(crowdloanId, testUser1).then((result) => {
     expect(result.state).toEqual(ExtrinsicResult.ExtrinsicFailed);
@@ -242,7 +201,10 @@ test("CL needs to be setup in order", async () => {
   let initializationCrowdloan: MangataGenericEvent[];
   let BootstrapError: RegistryError;
 
-  initializationRewards = await initializeReward(testUser1, millionNative);
+  initializationRewards = await initializeReward(
+    testUser1,
+    crowdloanRewardsAmount
+  );
 
   BootstrapError = await getEventErrorFromSudo(
     initializationRewards.filter(
@@ -285,7 +247,7 @@ test("CL needs to be setup in order", async () => {
     );
   }
 
-  await setCrowdloanAllocation(millionNative);
+  await setCrowdloanAllocation(crowdloanRewardsAmount);
 
   initializationCrowdloan = await completeInitialization(
     leaseStartBlock,
@@ -294,7 +256,10 @@ test("CL needs to be setup in order", async () => {
 
   await waitSudoOperationFail(initializationCrowdloan, "RewardsDoNotMatchFund");
 
-  initializationRewards = await initializeReward(testUser1, millionNative);
+  initializationRewards = await initializeReward(
+    testUser1,
+    crowdloanRewardsAmount
+  );
 
   await waitSudoOperationSuccess(initializationRewards);
 
@@ -309,48 +274,10 @@ test("CL needs to be setup in order", async () => {
   await waitSudoOperationSuccess(initializationCrowdloan);
 });
 
-test.skip("A user can claim some rewards if it provided some on the specified cl_id", async () => {
-  let leaseStartBlock: number;
-  let leaseEndingBlock: number;
-
-  await setCrowdloanAllocation(millionNative);
-
-  const firstCrowdloanId = (await api.query.crowdloan.crowdloanId()).toHuman();
-
-  await initializeReward(testUser1, millionNative);
-
-  leaseStartBlock = (await getBlockNumber()) + 2;
-  leaseEndingBlock = (await getBlockNumber()) + 5;
-
-  await completeInitialization(leaseStartBlock, leaseEndingBlock);
-
-  await waitBlockNumber(leaseEndingBlock.toString(), 10);
-
-  await setCrowdloanAllocation(millionNative);
-
-  const secondCrowdloanId = (await api.query.crowdloan.crowdloanId()).toHuman();
-
-  await initializeReward(testUser2, millionNative);
-
-  leaseStartBlock = (await getBlockNumber()) + 2;
-  leaseEndingBlock = (await getBlockNumber()) + 5;
-
-  await completeInitialization(leaseStartBlock, leaseEndingBlock);
-
-  await claimRewards(secondCrowdloanId, testUser1).then((result) => {
-    expect(result.state).toEqual(ExtrinsicResult.ExtrinsicFailed);
-    expect(result.data).toEqual("NoAssociatedClaim");
-  });
-
-  await claimRewards(firstCrowdloanId, testUser1).then((result) => {
-    expect(result.state).toEqual(ExtrinsicResult.ExtrinsicSuccess);
-  });
-});
-
 test("Total contributors returns the number of contributors per crowdloan AND validation of contributions is done when Initializing the cl rewards", async () => {
   let numberContributors: any;
 
-  await setCrowdloanAllocation(millionNative);
+  await setCrowdloanAllocation(crowdloanRewardsAmount);
 
   crowdloanId = (await api.query.crowdloan.crowdloanId()).toHuman();
 
@@ -360,7 +287,7 @@ test("Total contributors returns the number of contributors per crowdloan AND va
 
   expect(numberContributors!.toString()).toEqual("0");
 
-  await initializeReward(testUser1, millionNative);
+  await initializeReward(testUser1, crowdloanRewardsAmount);
 
   const leaseStartBlock = (await getBlockNumber()) + 2;
   const leaseEndingBlock = (await getBlockNumber()) + 5;
@@ -374,165 +301,6 @@ test("Total contributors returns the number of contributors per crowdloan AND va
   expect(numberContributors!.toString()).toEqual("1");
 });
 
-test.skip("Users receive different rewards when they confirm them before, during and after crowdloan", async () => {
-  await setCrowdloanAllocation(millionNative.muln(3));
-
-  crowdloanId = (await api.query.crowdloan.crowdloanId()).toHuman();
-
-  await Sudo.batchAsSudoFinalized(
-    Sudo.sudo(
-      api.tx.crowdloan.initializeRewardVec([
-        [
-          testUser1.keyRingPair.address,
-          testUser1.keyRingPair.address,
-          millionNative,
-        ],
-        [
-          testUser2.keyRingPair.address,
-          testUser2.keyRingPair.address,
-          millionNative,
-        ],
-        [
-          testUser3.keyRingPair.address,
-          testUser3.keyRingPair.address,
-          millionNative,
-        ],
-      ])
-    )
-  );
-  const leaseStartBlock = (await getBlockNumber()) + 10;
-  const leaseEndingBlock = (await getBlockNumber()) + 20;
-
-  await completeInitialization(leaseStartBlock, leaseEndingBlock);
-
-  await claimRewards(crowdloanId, testUser1);
-
-  const user1BalanceAfterClaiming = await api.query.tokens.accounts(
-    testUser1.keyRingPair.address,
-    MGA_ASSET_ID
-  );
-
-  await waitBlockNumber((leaseStartBlock + 5).toString(), 10);
-
-  await claimRewards(crowdloanId, testUser2);
-
-  const user2BalanceAfterClaiming = await api.query.tokens.accounts(
-    testUser2.keyRingPair.address,
-    MGA_ASSET_ID
-  );
-
-  await waitBlockNumber(leaseEndingBlock.toString(), 10);
-  await claimRewards(crowdloanId, testUser3);
-  const user3BalanceAfterClaiming = await api.query.tokens.accounts(
-    testUser3.keyRingPair.address,
-    MGA_ASSET_ID
-  );
-
-  //if user claimed rewards before crowdloan all tokens would be frozen
-  expect(new BN(user1BalanceAfterClaiming.frozen)).bnGt(
-    millionNative.muln(0.78)
-  );
-  //if user claimed rewards in the second half of the crowdloan less than half tokens would be frozen
-  expect(new BN(user2BalanceAfterClaiming.frozen)).bnLt(
-    new BN(user1BalanceAfterClaiming.frozen).divn(2)
-  );
-  //if user claimed rewards before crowdloan all tokens would be free
-  expect(new BN(user3BalanceAfterClaiming.frozen)).bnEqual(BN_ZERO);
-
-  await claimRewards(crowdloanId, testUser1);
-  await claimRewards(crowdloanId, testUser2);
-});
-
-describe.skip("Test that a user can claim when", () => {
-  beforeAll(async () => {
-    await setCrowdloanAllocation(millionNative.muln(4));
-    crowdloanId = (await api.query.crowdloan.crowdloanId()).toHuman();
-
-    await Sudo.batchAsSudoFinalized(
-      Sudo.sudo(
-        api.tx.crowdloan.initializeRewardVec([
-          [
-            testUser1.keyRingPair.address,
-            testUser1.keyRingPair.address,
-            millionNative,
-          ],
-          [
-            testUser2.keyRingPair.address,
-            testUser2.keyRingPair.address,
-            millionNative,
-          ],
-          [
-            testUser3.keyRingPair.address,
-            testUser3.keyRingPair.address,
-            millionNative,
-          ],
-          [
-            testUser4.keyRingPair.address,
-            testUser4.keyRingPair.address,
-            millionNative,
-          ],
-        ])
-      )
-    );
-    const leaseStartBlock = (await getBlockNumber()) + 2;
-    const leaseEndingBlock = (await getBlockNumber()) + 5;
-    await completeInitialization(leaseStartBlock, leaseEndingBlock);
-    await waitBlockNumber(leaseEndingBlock.toString(), 10);
-  });
-
-  test("CL1 is fully setup and no other CL is setup", async () => {
-    await claimRewards(crowdloanId, testUser1);
-
-    await checkUserReward(crowdloanId, testUser1);
-  });
-
-  test("CL1 is fully setup and CL2 setup the setCrowdloanAllocation", async () => {
-    await setCrowdloanAllocation(millionNative);
-
-    await claimRewards(crowdloanId, testUser2);
-
-    await checkUserReward(crowdloanId, testUser2);
-  });
-
-  test("CL1 is fully setup and CL2 setup the setCrowdloanAllocation + RewardVec", async () => {
-    await setCrowdloanAllocation(millionNative);
-    await initializeReward(testUser1, millionNative);
-
-    await claimRewards(crowdloanId, testUser3);
-
-    await checkUserReward(crowdloanId, testUser3);
-  });
-
-  test("CL1 is fully setup and CL2 setup the setCrowdloanAllocation + RewardVec + compleInitialization", async () => {
-    await setCrowdloanAllocation(millionNative);
-    await initializeReward(testUser1, millionNative);
-    const leaseStartBlock = await getBlockNumber();
-    const leaseEndingBlock = (await getBlockNumber()) + 5;
-    await completeInitialization(leaseStartBlock, leaseEndingBlock);
-
-    await claimRewards(crowdloanId, testUser4);
-
-    await checkUserReward(crowdloanId, testUser4);
-  });
-
-  async function checkUserReward(crowdloanId: any, user: User) {
-    const userAccountPayable = JSON.parse(
-      JSON.stringify(
-        await api.query.crowdloan.accountsPayable(
-          crowdloanId,
-          user.keyRingPair.address
-        )
-      )
-    );
-
-    const userClaimedReward = hexToBn(
-      await userAccountPayable.claimedReward.toString()
-    );
-
-    expect(userClaimedReward).bnEqual(millionNative);
-  }
-});
-
 async function setCrowdloanAllocation(crowdloanAllocationAmount: BN) {
   const setCrowdloanAllocation = await Sudo.batchAsSudoFinalized(
     Sudo.sudo(
@@ -543,11 +311,15 @@ async function setCrowdloanAllocation(crowdloanAllocationAmount: BN) {
   return setCrowdloanAllocation;
 }
 
-async function initializeReward(user1: User, Balance1: BN) {
+async function initializeReward(user: User, crowdloanRewardsAmount: BN) {
   const initializeReward = await Sudo.batchAsSudoFinalized(
     Sudo.sudo(
       api.tx.crowdloan.initializeRewardVec([
-        [user1.keyRingPair.address, user1.keyRingPair.address, Balance1],
+        [
+          user.keyRingPair.address,
+          user.keyRingPair.address,
+          crowdloanRewardsAmount,
+        ],
       ])
     )
   );
