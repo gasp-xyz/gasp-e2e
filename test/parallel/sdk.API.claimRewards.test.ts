@@ -346,7 +346,7 @@ test("GIVEN an user has available some rewards in two “pools” ( one solo tok
 });
 
 test("GIVEN a user that has available some rewards in ten pools (max for automatically claiming) WHEN claims all rewards THEN the user gets the rewards for that's pools", async () => {
-  await createSeveralPoolsForUser(testUser1, 10);
+  await createMultiplePoolsForUser(testUser1, 10);
 
   await waitForRewards(testUser1, liqIds[9]);
 
@@ -370,7 +370,7 @@ test("GIVEN a user that has available some rewards in ten pools (max for automat
 });
 
 test("GIVEN a user has available some rewards in over ten pools WHEN claims all rewards THEN the error is received", async () => {
-  liqIds = await createSeveralPoolsForUser(testUser1, 12);
+  liqIds = await createMultiplePoolsForUser(testUser1, 12);
 
   await waitForRewards(testUser1, liqIds[11]);
 
@@ -386,7 +386,7 @@ test("GIVEN a user has available some rewards in over ten pools WHEN claims all 
 });
 
 test("GIVEN a user has available some rewards in over ten pools AND this user claims some pool manually WHEN claims all rewards THEN the user gets the rewards for all remaining pools", async () => {
-  liqIds = await createSeveralPoolsForUser(testUser1, 12);
+  liqIds = await createMultiplePoolsForUser(testUser1, 12);
 
   await waitForRewards(testUser1, liqIds[11]);
 
@@ -425,7 +425,7 @@ test("GIVEN a user has available some rewards in over ten pools AND this user cl
   expect(rewardsLiqIdAfter.rewardsAlreadyClaimed).bnGt(BN_ZERO);
 });
 
-async function createSeveralPoolsForUser(user: User, numberPools: number) {
+async function createMultiplePoolsForUser(user: User, numberPools: number) {
   let i: number;
   const batchPromisesMinting = [];
 
