@@ -17,7 +17,7 @@
 
 ---
 ###  How to setup
-1. Install node ( v14.16.1 )
+1. Install node ( v18.12.1 ) (we try to support nvm stable version )  
 2. Clone the code
 3. Run `yarn` in the root folder.
 4. Install Jest test framework globally. `yarn global add  jest -g `
@@ -80,6 +80,10 @@ After that env. variables have been exported, you can run all tests with the com
  `jest` or `./node_modules/.bin/jest`
 
 You can specify the command `--runInBand` if you don't want to run the tests in parallel
+
+UPDATE:
+since ESM module upgrades, you need to specify certain flags for jest. for example:
+`node --experimental-specifier-resolution=node --loader ts-node/esm --experimental-vm-modules node_modules/jest/bin/jest.js --verbose --ci test/story/story.LP.test.ts`
 
 There are also some configurations to run tests, 
 - `npm run test-parallel` : Run the tests (from `test/parallel/` folder) that can be parallelized.
