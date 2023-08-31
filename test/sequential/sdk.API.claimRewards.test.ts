@@ -53,18 +53,14 @@ beforeAll(async () => {
   sudo = new User(keyring, sudoUserName);
 
   await setupApi();
-  await setupUsers();
+  [testUser] = setupUsers();
 
   await Sudo.batchAsSudoFinalized(
     Assets.FinalizeTge(),
     Assets.initIssuance(),
-    Assets.mintNative(sudo)
+    Assets.mintNative(sudo),
+    Assets.mintNative(testUser)
   );
-
-  [testUser] = setupUsers();
-
-  await Sudo.batchAsSudoFinalized(Assets.mintNative(testUser));
-
   [soloTokenId] = await Assets.setupUserWithCurrencies(
     sudo,
     [defaultCurrencyValue],
