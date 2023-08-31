@@ -12,6 +12,13 @@ import { setupApi, setupUsers } from "../../utils/setup";
 import { Sudo } from "../../utils/sudo";
 import { User } from "../../utils/User";
 import {
+  claimCrowdloanRewards,
+  completeCrowdloanInitialization,
+  initializeCrowdloanReward,
+  setCrowdloanAllocation,
+  sudoClaimCrowdloanRewards,
+} from "../../utils/tx";
+import {
   getBlockNumber,
   getEnvironmentRequiredVars,
   waitBlockNumber,
@@ -19,7 +26,7 @@ import {
 import { MGA_ASSET_ID } from "../../utils/Constants";
 import { BN_ZERO, signTx } from "@mangata-finance/sdk";
 import { getEventResultFromMangataTx } from "../../utils/txHandler";
-import { ExtrinsicResult } from "../../utils/eventListeners";
+import { ExtrinsicResult, waitNewBlock } from "../../utils/eventListeners";
 
 jest.spyOn(console, "log").mockImplementation(jest.fn());
 jest.setTimeout(2500000);
@@ -126,7 +133,7 @@ beforeAll(async () => {
   leaseStartBlock = (await getBlockNumber()) + 10;
   leaseEndingBlock = (await getBlockNumber()) + 20;
 
-  await completeInitialization(leaseStartBlock, leaseEndingBlock);
+  await completeCrowdloanInitialization(leaseStartBlock, leaseEndingBlock);
 
   crowdloanId = (await api.query.crowdloan.crowdloanId()).toHuman();
 });
@@ -147,7 +154,7 @@ test("Users receive different rewards when they confirm them before, during and 
     MGA_ASSET_ID
   );
 
-  await sudoClaimRewards(crowdloanId, testUser1);
+  await sudoClaimCrowdloanRewards(crowdloanId, testUser1);
 
   const user1BalanceAfterClaiming = await api.query.tokens.accounts(
     testUser1.keyRingPair.address,
@@ -156,7 +163,7 @@ test("Users receive different rewards when they confirm them before, during and 
 
   await waitBlockNumber((leaseStartBlock + 5).toString(), 10);
 
-  await sudoClaimRewards(crowdloanId, testUser2);
+  await sudoClaimCrowdloanRewards(crowdloanId, testUser2);
 
   const user2BalanceAfterClaiming = await api.query.tokens.accounts(
     testUser2.keyRingPair.address,
@@ -164,7 +171,7 @@ test("Users receive different rewards when they confirm them before, during and 
   );
 
   await waitBlockNumber(leaseEndingBlock.toString(), 10);
-  await sudoClaimRewards(crowdloanId, testUser3);
+  await sudoClaimCrowdloanRewards(crowdloanId, testUser3);
   const user3BalanceAfterClaiming = await api.query.tokens.accounts(
     testUser3.keyRingPair.address,
     MGA_ASSET_ID
@@ -232,7 +239,7 @@ test("A user can only change his reward-address with: crowdloan.updateRewardAddr
 
   await waitBlockNumber(leaseEndingBlock.toString(), 15);
 
-  await claimRewards(crowdloanId, testUser4).then((result) => {
+  await claimCrowdloanRewards(crowdloanId, testUser4).then((result) => {
     expect(result.state).toEqual(ExtrinsicResult.ExtrinsicFailed);
     expect(result.data).toEqual("NoAssociatedClaim");
   });
@@ -242,7 +249,7 @@ test("A user can only change his reward-address with: crowdloan.updateRewardAddr
     MGA_ASSET_ID
   );
 
-  await claimRewards(crowdloanId, testUser9).then((result) => {
+  await claimCrowdloanRewards(crowdloanId, testUser9).then((result) => {
     expect(result.state).toEqual(ExtrinsicResult.ExtrinsicSuccess);
   });
 
@@ -258,41 +265,51 @@ test("A user can only change his reward-address with: crowdloan.updateRewardAddr
 
 describe("Test that a user can claim when", () => {
   test("CL1 is fully setup and no other CL is setup", async () => {
-    await claimRewards(crowdloanId, testUser5);
-
-    await checkUserReward(crowdloanId, testUser5);
+    await claimAndCheckUserReward(crowdloanId, testUser5);
   });
 
   test("CL1 is fully setup and CL2 setup the setCrowdloanAllocation", async () => {
     await setCrowdloanAllocation(crowdloanRewardsAmount);
 
-    await claimRewards(crowdloanId, testUser6);
-
-    await checkUserReward(crowdloanId, testUser6);
+    await claimAndCheckUserReward(crowdloanId, testUser6);
   });
 
-  test("CL1 is fully setup and CL2 setup the setCrowdloanAllocation + RewardVec", async () => {
+  test("CL1 is fully setup and CL2 setup the setCrowdloanAllocation and RewardVec", async () => {
     await setCrowdloanAllocation(crowdloanRewardsAmount);
-    await initializeReward(testUser4, crowdloanRewardsAmount);
+    await initializeCrowdloanReward(testUser4, crowdloanRewardsAmount);
 
-    await claimRewards(crowdloanId, testUser7);
-
-    await checkUserReward(crowdloanId, testUser7);
+    await claimAndCheckUserReward(crowdloanId, testUser7);
   });
 
-  test("CL1 is fully setup and CL2 setup the setCrowdloanAllocation + RewardVec + compleInitialization", async () => {
+  test("CL1 is fully setup and CL2 setup the setCrowdloanAllocation and RewardVec and compleInitialization", async () => {
     await setCrowdloanAllocation(crowdloanRewardsAmount);
-    await initializeReward(testUser4, crowdloanRewardsAmount);
+    await initializeCrowdloanReward(testUser4, crowdloanRewardsAmount);
     const leaseStartBlock = await getBlockNumber();
     const leaseEndingBlock = (await getBlockNumber()) + 5;
-    await completeInitialization(leaseStartBlock, leaseEndingBlock);
+    await completeCrowdloanInitialization(leaseStartBlock, leaseEndingBlock);
 
-    await claimRewards(crowdloanId, testUser8);
-
-    await checkUserReward(crowdloanId, testUser8);
+    await claimAndCheckUserReward(crowdloanId, testUser8);
   });
 
-  async function checkUserReward(crowdloanId: any, user: User) {
+  async function claimAndCheckUserReward(crowdloanId: any, user: User) {
+    const userTokenAmountBefore = await api.query.tokens.accounts(
+      user.keyRingPair.address,
+      MGA_ASSET_ID
+    );
+
+    await claimCrowdloanRewards(crowdloanId, testUser8);
+
+    await waitNewBlock();
+
+    const userTokenAmountAfter = await api.query.tokens.accounts(
+      user.keyRingPair.address,
+      MGA_ASSET_ID
+    );
+
+    const userTokenAmountDiff = userTokenAmountAfter!.free.sub(
+      userTokenAmountBefore!.free
+    );
+
     const userAccountsPayable = JSON.parse(
       JSON.stringify(
         await api.query.crowdloan.accountsPayable(
@@ -306,69 +323,7 @@ describe("Test that a user can claim when", () => {
       await userAccountsPayable.claimedReward.toString()
     );
 
+    expect(userTokenAmountDiff).bnGt(BN_ZERO);
     expect(userClaimedReward).bnEqual(crowdloanRewardsAmount);
   }
 });
-
-async function setCrowdloanAllocation(crowdloanAllocationAmount: BN) {
-  const setCrowdloanAllocation = await Sudo.batchAsSudoFinalized(
-    Sudo.sudo(
-      api.tx.crowdloan.setCrowdloanAllocation(crowdloanAllocationAmount)
-    )
-  );
-
-  return setCrowdloanAllocation;
-}
-
-async function initializeReward(user: User, crowdloanRewardsAmount: BN) {
-  const initializeReward = await Sudo.batchAsSudoFinalized(
-    Sudo.sudo(
-      api.tx.crowdloan.initializeRewardVec([
-        [
-          user.keyRingPair.address,
-          user.keyRingPair.address,
-          crowdloanRewardsAmount,
-        ],
-      ])
-    )
-  );
-
-  return initializeReward;
-}
-
-async function completeInitialization(
-  leaseStartBlock: number,
-  leaseEndingBlock: number
-) {
-  const completeInitialization = await Sudo.batchAsSudoFinalized(
-    Sudo.sudo(
-      api.tx.crowdloan.completeInitialization(
-        leaseStartBlock,
-        // @ts-ignore
-        leaseEndingBlock
-      )
-    )
-  );
-
-  return completeInitialization;
-}
-
-async function claimRewards(crowdloanId: any, userId: User) {
-  const claimRewards = await signTx(
-    api,
-    // @ts-ignore
-    api.tx.crowdloan.claim(crowdloanId),
-    userId.keyRingPair
-  );
-  const eventResponse = getEventResultFromMangataTx(claimRewards);
-  return eventResponse;
-}
-
-async function sudoClaimRewards(crowdloanId: any, userId: User) {
-  const claimRewards = await Sudo.batchAsSudoFinalized(
-    // @ts-ignore
-    Sudo.sudoAs(userId, api.tx.crowdloan.claim(crowdloanId))
-  );
-  const eventResponse = getEventResultFromMangataTx(claimRewards);
-  return eventResponse;
-}
