@@ -132,6 +132,21 @@ beforeAll(async () => {
 });
 
 test("Users receive different rewards when they confirm them before, during and after crowdloan", async () => {
+  const user1BalanceBeforeClaiming = await api.query.tokens.accounts(
+    testUser1.keyRingPair.address,
+    MGA_ASSET_ID
+  );
+
+  const user2BalanceBeforeClaiming = await api.query.tokens.accounts(
+    testUser2.keyRingPair.address,
+    MGA_ASSET_ID
+  );
+
+  const user3BalanceBeforeClaiming = await api.query.tokens.accounts(
+    testUser3.keyRingPair.address,
+    MGA_ASSET_ID
+  );
+
   await sudoClaimRewards(crowdloanId, testUser1);
 
   const user1BalanceAfterClaiming = await api.query.tokens.accounts(
@@ -159,13 +174,22 @@ test("Users receive different rewards when they confirm them before, during and 
   expect(new BN(user1BalanceAfterClaiming.frozen)).bnGt(
     crowdloanRewardsAmount.muln(0.78)
   );
+  expect(
+    new BN(user1BalanceAfterClaiming.free).sub(user1BalanceBeforeClaiming.free)
+  ).bnEqual(crowdloanRewardsAmount);
   //if user claimed rewards in the second half of the crowdloan less than half tokens would be frozen
   expect(new BN(user2BalanceAfterClaiming.frozen)).bnLt(
     new BN(user1BalanceAfterClaiming.frozen).divn(2)
   );
+  expect(new BN(user2BalanceAfterClaiming.frozen)).bnGt(BN_ZERO);
+  expect(
+    new BN(user2BalanceAfterClaiming.free).sub(user2BalanceBeforeClaiming.free)
+  ).bnEqual(crowdloanRewardsAmount);
   //if user claimed rewards before crowdloan all tokens would be free
   expect(new BN(user3BalanceAfterClaiming.frozen)).bnEqual(BN_ZERO);
-
+  expect(
+    new BN(user3BalanceAfterClaiming.free).sub(user3BalanceBeforeClaiming.free)
+  ).bnEqual(crowdloanRewardsAmount);
   await Sudo.batchAsSudoFinalized(
     Sudo.sudoAs(testUser1, api.tx.vesting.vest(MGA_ASSET_ID)),
     Sudo.sudoAs(testUser2, api.tx.vesting.vest(MGA_ASSET_ID))
@@ -213,9 +237,23 @@ test("A user can only change his reward-address with: crowdloan.updateRewardAddr
     expect(result.data).toEqual("NoAssociatedClaim");
   });
 
+  const userBalanceBeforeClaiming = await api.query.tokens.accounts(
+    testUser9.keyRingPair.address,
+    MGA_ASSET_ID
+  );
+
   await claimRewards(crowdloanId, testUser9).then((result) => {
     expect(result.state).toEqual(ExtrinsicResult.ExtrinsicSuccess);
   });
+
+  const userBalanceAfterClaiming = await api.query.tokens.accounts(
+    testUser9.keyRingPair.address,
+    MGA_ASSET_ID
+  );
+
+  expect(
+    new BN(userBalanceAfterClaiming.free).sub(userBalanceBeforeClaiming.free)
+  ).bnGt(BN_ZERO);
 });
 
 describe("Test that a user can claim when", () => {
