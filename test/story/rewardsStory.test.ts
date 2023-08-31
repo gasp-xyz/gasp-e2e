@@ -6,7 +6,7 @@
 import { jest } from "@jest/globals";
 import { getApi, getMangataInstance, initApi } from "../../utils/api";
 import {
-  claimRewardsAll,
+  claimRewards,
   compoundRewards,
   getLiquidityAssetId,
 } from "../../utils/tx";
@@ -66,11 +66,11 @@ describe("Story tests > Rewards - autocompound", () => {
       testUser2.keyRingPair.address
     );
     const amount = await calculateMGAFees(
-      api.tx.proofOfStake.claimRewardsAll(liqId),
+      api.tx.proofOfStake.claimRewards(liqId),
       testUser2.keyRingPair
     );
 
-    await claimRewardsAll(testUser2, liqId);
+    await claimRewards(testUser2, liqId);
 
     const availableRewardsAfter = await mangata.rpc.calculateRewardsAmount({
       address: testUser2.keyRingPair.address,
