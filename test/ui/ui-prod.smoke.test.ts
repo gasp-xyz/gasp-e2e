@@ -35,7 +35,7 @@ let testUser1: User;
 const KSM_ASSET_NAME = "KSM";
 const MGX_ASSET_NAME = "MGX";
 
-describe("UI deposit modal tests - no action", () => {
+describe("UI prod smoke tests - no action", () => {
   beforeAll(async () => {
     try {
       getApi();
