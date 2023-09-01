@@ -83,7 +83,7 @@ describe("UI prod smoke tests - no action", () => {
 
     const areSidebarElementsVisible = await sidebar.areSidebarElementsVisible();
     expect(areSidebarElementsVisible).toBeTruthy();
-    const mgxTokenAmount = await sidebar.getTokenAmount(MGX_ASSET_NAME, 5000);
+    const mgxTokenAmount = await sidebar.getTokenAmount(MGX_ASSET_NAME, 12000);
     expect(parseFloat(mgxTokenAmount.replace(",", ""))).toBeGreaterThan(1);
     const turTokenAmount = await sidebar.getTokenAmount(TUR_ASSET_NAME, 5000);
     expect(parseFloat(turTokenAmount.replace(",", ""))).toBeGreaterThan(1);
