@@ -23,6 +23,12 @@ import {
   waitSudoOperationSuccess,
 } from "../../utils/eventListeners";
 import { RegistryError } from "@polkadot/types/types";
+import {
+  claimCrowdloanRewards,
+  completeCrowdloanInitialization,
+  initializeCrowdloanReward,
+  setCrowdloanAllocation,
+} from "../../utils/tx";
 
 jest.spyOn(console, "log").mockImplementation(jest.fn());
 jest.setTimeout(2500000);
@@ -87,10 +93,10 @@ describe("Only sudo can", () => {
     await waitSudoOperationSuccess(sudoSetCrowdloanAllocation);
   });
 
-  test("crowdloan.initializeRewardVec(rewards)", async () => {
+  test("crowdloan.initializeCrowdloanRewardVec(rewards)", async () => {
     const userInitializeRewardVec = await signTx(
       api,
-      api.tx.crowdloan.initializeRewardVec([
+      api.tx.crowdloan.initializeCrowdloanRewardVec([
         [
           testUser1.keyRingPair.address,
           testUser1.keyRingPair.address,
@@ -107,7 +113,7 @@ describe("Only sudo can", () => {
 
     const sudoInitializeRewardVec = await Sudo.batchAsSudoFinalized(
       Sudo.sudo(
-        api.tx.crowdloan.initializeRewardVec([
+        api.tx.crowdloan.initializeCrowdloanRewardVec([
           [
             testUser1.keyRingPair.address,
             testUser1.keyRingPair.address,
@@ -120,7 +126,7 @@ describe("Only sudo can", () => {
     await waitSudoOperationSuccess(sudoInitializeRewardVec);
   });
 
-  test("crowdloan.completeInitialization(leaseEndingBlock)", async () => {
+  test("crowdloan.completeCrowdloanInitialization(leaseEndingBlock)", async () => {
     let leaseStartBlock: number;
     let leaseEndingBlock: number;
 
@@ -129,7 +135,7 @@ describe("Only sudo can", () => {
 
     const userCompleteInitialization = await signTx(
       api,
-      api.tx.crowdloan.completeInitialization(
+      api.tx.crowdloan.completeCrowdloanInitialization(
         leaseStartBlock,
         // @ts-ignore
         leaseEndingBlock
@@ -149,7 +155,7 @@ describe("Only sudo can", () => {
 
     const sudoCompleteInitialization = await Sudo.batchAsSudoFinalized(
       Sudo.sudo(
-        api.tx.crowdloan.completeInitialization(
+        api.tx.crowdloan.completeCrowdloanInitialization(
           leaseStartBlock,
           // @ts-ignore
           leaseEndingBlock
@@ -161,25 +167,25 @@ describe("Only sudo can", () => {
 
     crowdloanId = (await api.query.crowdloan.crowdloanId()).toHuman();
 
-    await claimRewards(crowdloanId, testUser1).then((result) => {
+    await claimCrowdloanRewards(crowdloanId, testUser1).then((result) => {
       expect(result.state).toEqual(ExtrinsicResult.ExtrinsicSuccess);
     });
   });
 });
 
-test("A reward needs to be fully setup with: setCrowdloanAllocation + initializeRewardVec + completeInitialization", async () => {
+test("A reward needs to be fully setup with: setCrowdloanAllocation + initializeCrowdloanRewardVec + completeCrowdloanInitialization", async () => {
   await setCrowdloanAllocation(crowdloanRewardsAmount);
 
   crowdloanId = (await api.query.crowdloan.crowdloanId()).toHuman();
 
-  await claimRewards(crowdloanId, testUser1).then((result) => {
+  await claimCrowdloanRewards(crowdloanId, testUser1).then((result) => {
     expect(result.state).toEqual(ExtrinsicResult.ExtrinsicFailed);
     expect(result.data).toEqual("RewardVecNotFullyInitializedYet");
   });
 
-  await initializeReward(testUser1, crowdloanRewardsAmount);
+  await initializeCrowdloanReward(testUser1, crowdloanRewardsAmount);
 
-  await claimRewards(crowdloanId, testUser1).then((result) => {
+  await claimCrowdloanRewards(crowdloanId, testUser1).then((result) => {
     expect(result.state).toEqual(ExtrinsicResult.ExtrinsicFailed);
     expect(result.data).toEqual("RewardVecNotFullyInitializedYet");
   });
@@ -187,9 +193,9 @@ test("A reward needs to be fully setup with: setCrowdloanAllocation + initialize
   const leaseStartBlock = (await getBlockNumber()) + 2;
   const leaseEndingBlock = (await getBlockNumber()) + 10;
 
-  await completeInitialization(leaseStartBlock, leaseEndingBlock);
+  await completeCrowdloanInitialization(leaseStartBlock, leaseEndingBlock);
 
-  await claimRewards(crowdloanId, testUser1).then((result) => {
+  await claimCrowdloanRewards(crowdloanId, testUser1).then((result) => {
     expect(result.state).toEqual(ExtrinsicResult.ExtrinsicSuccess);
   });
 });
@@ -201,7 +207,7 @@ test("CL needs to be setup in order", async () => {
   let initializationCrowdloan: MangataGenericEvent[];
   let BootstrapError: RegistryError;
 
-  initializationRewards = await initializeReward(
+  initializationRewards = await initializeCrowdloanReward(
     testUser1,
     crowdloanRewardsAmount
   );
@@ -224,7 +230,7 @@ test("CL needs to be setup in order", async () => {
   leaseStartBlock = (await getBlockNumber()) + 2;
   leaseEndingBlock = (await getBlockNumber()) + 10;
 
-  initializationCrowdloan = await completeInitialization(
+  initializationCrowdloan = await completeCrowdloanInitialization(
     leaseStartBlock,
     leaseEndingBlock
   );
@@ -249,14 +255,14 @@ test("CL needs to be setup in order", async () => {
 
   await setCrowdloanAllocation(crowdloanRewardsAmount);
 
-  initializationCrowdloan = await completeInitialization(
+  initializationCrowdloan = await completeCrowdloanInitialization(
     leaseStartBlock,
     leaseEndingBlock
   );
 
   await waitSudoOperationFail(initializationCrowdloan, "RewardsDoNotMatchFund");
 
-  initializationRewards = await initializeReward(
+  initializationRewards = await initializeCrowdloanReward(
     testUser1,
     crowdloanRewardsAmount
   );
@@ -266,7 +272,7 @@ test("CL needs to be setup in order", async () => {
   leaseStartBlock = (await getBlockNumber()) + 2;
   leaseEndingBlock = (await getBlockNumber()) + 5;
 
-  initializationCrowdloan = await completeInitialization(
+  initializationCrowdloan = await completeCrowdloanInitialization(
     leaseStartBlock,
     leaseEndingBlock
   );
@@ -287,12 +293,12 @@ test("Total contributors returns the number of contributors per crowdloan AND va
 
   expect(numberContributors!.toString()).toEqual("0");
 
-  await initializeReward(testUser1, crowdloanRewardsAmount);
+  await initializeCrowdloanReward(testUser1, crowdloanRewardsAmount);
 
   const leaseStartBlock = (await getBlockNumber()) + 2;
   const leaseEndingBlock = (await getBlockNumber()) + 5;
 
-  await completeInitialization(leaseStartBlock, leaseEndingBlock);
+  await completeCrowdloanInitialization(leaseStartBlock, leaseEndingBlock);
 
   numberContributors = (
     await api.query.crowdloan.totalContributors(crowdloanId)
@@ -300,57 +306,3 @@ test("Total contributors returns the number of contributors per crowdloan AND va
 
   expect(numberContributors!.toString()).toEqual("1");
 });
-
-async function setCrowdloanAllocation(crowdloanAllocationAmount: BN) {
-  const setCrowdloanAllocation = await Sudo.batchAsSudoFinalized(
-    Sudo.sudo(
-      api.tx.crowdloan.setCrowdloanAllocation(crowdloanAllocationAmount)
-    )
-  );
-
-  return setCrowdloanAllocation;
-}
-
-async function initializeReward(user: User, crowdloanRewardsAmount: BN) {
-  const initializeReward = await Sudo.batchAsSudoFinalized(
-    Sudo.sudo(
-      api.tx.crowdloan.initializeRewardVec([
-        [
-          user.keyRingPair.address,
-          user.keyRingPair.address,
-          crowdloanRewardsAmount,
-        ],
-      ])
-    )
-  );
-
-  return initializeReward;
-}
-
-async function completeInitialization(
-  leaseStartBlock: number,
-  leaseEndingBlock: number
-) {
-  const completeInitialization = await Sudo.batchAsSudoFinalized(
-    Sudo.sudo(
-      api.tx.crowdloan.completeInitialization(
-        leaseStartBlock,
-        // @ts-ignore
-        leaseEndingBlock
-      )
-    )
-  );
-
-  return completeInitialization;
-}
-
-async function claimRewards(crowdloanId: any, userId: User) {
-  const claimRewards = await signTx(
-    api,
-    // @ts-ignore
-    api.tx.crowdloan.claim(crowdloanId),
-    userId.keyRingPair
-  );
-  const eventResponse = getEventResultFromMangataTx(claimRewards);
-  return eventResponse;
-}

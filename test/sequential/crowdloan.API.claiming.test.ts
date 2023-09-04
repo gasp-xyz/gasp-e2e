@@ -281,7 +281,7 @@ describe("Test that a user can claim when", () => {
     await claimAndCheckUserReward(crowdloanId, testUser7);
   });
 
-  test("CL1 is fully setup and CL2 setup the setCrowdloanAllocation and RewardVec and compleInitialization", async () => {
+  test("CL1 is fully setup and CL2 setup the setCrowdloanAllocation and RewardVec and completeInitialization", async () => {
     await setCrowdloanAllocation(crowdloanRewardsAmount);
     await initializeCrowdloanReward(testUser4, crowdloanRewardsAmount);
     const leaseStartBlock = await getBlockNumber();
