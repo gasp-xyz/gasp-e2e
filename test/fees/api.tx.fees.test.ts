@@ -9,7 +9,11 @@ import { getApi, initApi } from "../../utils/api";
 import { Keyring } from "@polkadot/api";
 import { Assets } from "../../utils/Assets";
 import { AssetWallet, User } from "../../utils/User";
-import { KSM_ASSET_ID, MGA_ASSET_ID, TUR_ASSET_ID } from "../../utils/Constants";
+import {
+  KSM_ASSET_ID,
+  MGA_ASSET_ID,
+  TUR_ASSET_ID,
+} from "../../utils/Constants";
 import { Sudo } from "../../utils/sudo";
 import { setupApi, alice as Alice, setupUsers } from "../../utils/setup";
 import { BN_TEN, BN_THOUSAND, signTx } from "@mangata-finance/sdk";
@@ -55,7 +59,8 @@ test("Fees : Transfers are about 5~ MGX", async () => {
   await signTx(
     api,
     Assets.transfer(alice, MGA_ASSET_ID, BN_THOUSAND),
-    testUserMGX.keyRingPair);
+    testUserMGX.keyRingPair
+  );
   await testUserMGX.refreshAmounts(AssetWallet.AFTER);
   const diff = testUserMGX.getWalletDifferences();
 
@@ -72,7 +77,8 @@ test("Fees : Transfers are about 0.005~ KSM", async () => {
   await signTx(
     api,
     Assets.transfer(alice, KSM_ASSET_ID, BN_THOUSAND),
-    testUserKSM.keyRingPair);
+    testUserKSM.keyRingPair
+  );
   await testUserKSM.refreshAmounts(AssetWallet.AFTER);
   const diff = testUserKSM.getWalletDifferences();
 
@@ -89,7 +95,8 @@ test("Fees : Transfers are about 0.5~ TUR", async () => {
   await signTx(
     api,
     Assets.transfer(alice, TUR_ASSET_ID, BN_THOUSAND),
-    testUserTUR.keyRingPair);
+    testUserTUR.keyRingPair
+  );
   await testUserTUR.refreshAmounts(AssetWallet.AFTER);
   const diff = testUserTUR.getWalletDifferences();
 
