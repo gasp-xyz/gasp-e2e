@@ -207,11 +207,10 @@ test("CL needs to be setup in order", async () => {
     crowdloanRewardsAmount
   );
 
-  await waitSudoOperationFail(
-    initializationRewards,
+  await waitSudoOperationFail(initializationRewards, [
     "BatchBeyondFundPot",
-    "RewardVecAlreadyInitialized"
-  );
+    "RewardVecAlreadyInitialized",
+  ]);
 
   leaseStartBlock = (await getBlockNumber()) + 2;
   leaseEndingBlock = (await getBlockNumber()) + 10;
@@ -221,11 +220,10 @@ test("CL needs to be setup in order", async () => {
     leaseEndingBlock
   );
 
-  await waitSudoOperationFail(
-    completionCrowdloan,
+  await waitSudoOperationFail(completionCrowdloan, [
     "RewardsDoNotMatchFund",
-    "RewardVecAlreadyInitialized"
-  );
+    "RewardVecAlreadyInitialized",
+  ]);
 
   const settingAllocation = await setCrowdloanAllocation(
     crowdloanRewardsAmount
@@ -238,7 +236,7 @@ test("CL needs to be setup in order", async () => {
     leaseEndingBlock
   );
 
-  await waitSudoOperationFail(completionCrowdloan, "RewardsDoNotMatchFund");
+  await waitSudoOperationFail(completionCrowdloan, ["RewardsDoNotMatchFund"]);
 
   initializationRewards = await initializeCrowdloanReward(
     testUser1,

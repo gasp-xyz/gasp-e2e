@@ -290,10 +290,9 @@ test("maintenance- validate that when UpgradabilityON, Sudo or council can only 
       nonce: await getCurrentNonce(sudo.keyRingPair.address),
     }
   );
-  await waitSudoOperationFail(
-    authorizeUpgradeBefore,
-    "UpgradeBlockedByMaintenanceMode"
-  );
+  await waitSudoOperationFail(authorizeUpgradeBefore, [
+    "UpgradeBlockedByMaintenanceMode",
+  ]);
 
   await Sudo.batchAsSudoFinalized(
     Sudo.sudoAsWithAddressString(
