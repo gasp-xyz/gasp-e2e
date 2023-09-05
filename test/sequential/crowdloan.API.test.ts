@@ -13,16 +13,12 @@ import { User } from "../../utils/User";
 import { getBlockNumber, getEnvironmentRequiredVars } from "../../utils/utils";
 import { MGA_ASSET_ID } from "../../utils/Constants";
 import { MangataGenericEvent, signTx } from "@mangata-finance/sdk";
-import {
-  getEventErrorFromSudo,
-  getEventResultFromMangataTx,
-} from "../../utils/txHandler";
+import { getEventResultFromMangataTx } from "../../utils/txHandler";
 import {
   ExtrinsicResult,
   waitSudoOperationFail,
   waitSudoOperationSuccess,
 } from "../../utils/eventListeners";
-import { RegistryError } from "@polkadot/types/types";
 import {
   claimCrowdloanRewards,
   completeCrowdloanInitialization,
@@ -205,27 +201,17 @@ test("CL needs to be setup in order", async () => {
   let leaseEndingBlock: number;
   let initializationRewards: MangataGenericEvent[];
   let completionCrowdloan: MangataGenericEvent[];
-  let BootstrapError: RegistryError;
 
   initializationRewards = await initializeCrowdloanReward(
     testUser1,
     crowdloanRewardsAmount
   );
 
-  BootstrapError = await getEventErrorFromSudo(
-    initializationRewards.filter(
-      (extrinsicResult) => extrinsicResult.method === "Sudid"
-    )
+  await waitSudoOperationFail(
+    initializationRewards,
+    "BatchBeyondFundPot",
+    "RewardVecAlreadyInitialized"
   );
-
-  if ((BootstrapError.method = "BatchBeyondFundPot")) {
-    await waitSudoOperationFail(initializationRewards, "BatchBeyondFundPot");
-  } else {
-    await waitSudoOperationFail(
-      initializationRewards,
-      "RewardVecAlreadyInitialized"
-    );
-  }
 
   leaseStartBlock = (await getBlockNumber()) + 2;
   leaseEndingBlock = (await getBlockNumber()) + 10;
@@ -235,20 +221,11 @@ test("CL needs to be setup in order", async () => {
     leaseEndingBlock
   );
 
-  BootstrapError = await getEventErrorFromSudo(
-    completionCrowdloan.filter(
-      (extrinsicResult) => extrinsicResult.method === "Sudid"
-    )
+  await waitSudoOperationFail(
+    completionCrowdloan,
+    "RewardsDoNotMatchFund",
+    "RewardVecAlreadyInitialized"
   );
-
-  if ((BootstrapError.method = "RewardsDoNotMatchFund")) {
-    await waitSudoOperationFail(completionCrowdloan, "RewardsDoNotMatchFund");
-  } else {
-    await waitSudoOperationFail(
-      completionCrowdloan,
-      "RewardVecAlreadyInitialized"
-    );
-  }
 
   const settingAllocation = await setCrowdloanAllocation(
     crowdloanRewardsAmount
