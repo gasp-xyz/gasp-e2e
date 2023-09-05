@@ -59,7 +59,7 @@ export class DepositModal {
 
   async areTokenListElementsVisible(
     assetName: string,
-    retries = 5
+    retries = 10
   ): Promise<boolean> {
     try {
       const assetTestId = `TokensModal-token-${assetName}`;

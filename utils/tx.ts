@@ -1181,13 +1181,22 @@ export async function getRewardsInfo(
   return toReturn;
 }
 
-export async function claimRewardsAll(user: User, liquidityTokenId: BN) {
+export async function claimRewards(user: User, liquidityTokenId: BN) {
   const account = user.keyRingPair;
   const liquidityTokenIdString = liquidityTokenId.toString();
   const mangata = await getMangataInstance();
   const result = await mangata.xyk.claimRewards({
     account: account,
     liquidityTokenId: liquidityTokenIdString,
+  });
+  return result;
+}
+
+export async function claimRewardsAll(user: User) {
+  const account = user.keyRingPair;
+  const mangata = await getMangataInstance();
+  const result = await mangata.xyk.claimRewardsAll({
+    account: account,
   });
   return result;
 }

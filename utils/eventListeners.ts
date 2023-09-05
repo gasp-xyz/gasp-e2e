@@ -185,6 +185,7 @@ export const waitForRewards = async (
           );
       }
       if (numblocks < 0) {
+        unsub();
         reject(
           `Waited too long for rewards :( #${header.number}  ${user.keyRingPair.address} (LP${liquidityAssetId} `
         );

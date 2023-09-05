@@ -104,6 +104,7 @@ export class Sidebar {
     const displayed = await this.isDisplayed(notInstalledXpath);
     return displayed;
   }
+
   async isPolkExtensionNotFoundDisplayed() {
     const notInstalledXpath = buildDataTestIdXpath(DIV_POLK_NOT_FOUND);
     const displayed = await this.isDisplayed(notInstalledXpath);
@@ -162,14 +163,14 @@ export class Sidebar {
     const locator = buildDataTestIdXpath(BTN_META_WITHDRAW);
     await clickElement(this.driver, locator);
   }
-  async waitForTokenToAppear(tokenName: string) {
+  async waitForTokenToAppear(tokenName: string, timeout: number) {
     const xpath = buildDataTestIdXpath(
       this.buildTokenAvailableTestId(tokenName)
     );
-    await waitForElement(this.driver, xpath, FIVE_MIN);
+    await waitForElement(this.driver, xpath, timeout);
   }
-  async getTokenAmount(tokenName: string) {
-    await this.waitForTokenToAppear(tokenName);
+  async getTokenAmount(tokenName: string, timeout = FIVE_MIN) {
+    await this.waitForTokenToAppear(tokenName, timeout);
     const tokenValueXpath = `//*[@data-testid='wallet-token-${tokenName}-balance']`;
     const value = await (
       await this.driver.findElement(By.xpath(tokenValueXpath))
