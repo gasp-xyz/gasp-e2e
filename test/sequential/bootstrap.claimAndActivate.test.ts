@@ -51,7 +51,7 @@ let eventResponse: EventResult;
 
 const { sudo: sudoUserName } = getEnvironmentRequiredVars();
 const waitingPeriod = 6;
-const bootstrapPeriod = 14;
+const bootstrapPeriod = 20;
 const bootstrapAmount = new BN(10000000000);
 
 beforeAll(async () => {
