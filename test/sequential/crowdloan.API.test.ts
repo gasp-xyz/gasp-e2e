@@ -204,7 +204,7 @@ test("CL needs to be setup in order", async () => {
   let leaseStartBlock: number;
   let leaseEndingBlock: number;
   let initializationRewards: MangataGenericEvent[];
-  let initializationCrowdloan: MangataGenericEvent[];
+  let completionCrowdloan: MangataGenericEvent[];
   let BootstrapError: RegistryError;
 
   initializationRewards = await initializeCrowdloanReward(
@@ -230,37 +230,38 @@ test("CL needs to be setup in order", async () => {
   leaseStartBlock = (await getBlockNumber()) + 2;
   leaseEndingBlock = (await getBlockNumber()) + 10;
 
-  initializationCrowdloan = await completeCrowdloanInitialization(
+  completionCrowdloan = await completeCrowdloanInitialization(
     leaseStartBlock,
     leaseEndingBlock
   );
 
   BootstrapError = await getEventErrorFromSudo(
-    initializationCrowdloan.filter(
+    completionCrowdloan.filter(
       (extrinsicResult) => extrinsicResult.method === "Sudid"
     )
   );
 
   if ((BootstrapError.method = "RewardsDoNotMatchFund")) {
-    await waitSudoOperationFail(
-      initializationCrowdloan,
-      "RewardsDoNotMatchFund"
-    );
+    await waitSudoOperationFail(completionCrowdloan, "RewardsDoNotMatchFund");
   } else {
     await waitSudoOperationFail(
-      initializationCrowdloan,
+      completionCrowdloan,
       "RewardVecAlreadyInitialized"
     );
   }
 
-  await setCrowdloanAllocation(crowdloanRewardsAmount);
+  const settingAllocation = await setCrowdloanAllocation(
+    crowdloanRewardsAmount
+  );
 
-  initializationCrowdloan = await completeCrowdloanInitialization(
+  await waitSudoOperationSuccess(settingAllocation);
+
+  completionCrowdloan = await completeCrowdloanInitialization(
     leaseStartBlock,
     leaseEndingBlock
   );
 
-  await waitSudoOperationFail(initializationCrowdloan, "RewardsDoNotMatchFund");
+  await waitSudoOperationFail(completionCrowdloan, "RewardsDoNotMatchFund");
 
   initializationRewards = await initializeCrowdloanReward(
     testUser1,
@@ -272,12 +273,12 @@ test("CL needs to be setup in order", async () => {
   leaseStartBlock = (await getBlockNumber()) + 2;
   leaseEndingBlock = (await getBlockNumber()) + 5;
 
-  initializationCrowdloan = await completeCrowdloanInitialization(
+  completionCrowdloan = await completeCrowdloanInitialization(
     leaseStartBlock,
     leaseEndingBlock
   );
 
-  await waitSudoOperationSuccess(initializationCrowdloan);
+  await waitSudoOperationSuccess(completionCrowdloan);
 });
 
 test("Total contributors returns the number of contributors per crowdloan AND validation of contributions is done when Initializing the cl rewards", async () => {
