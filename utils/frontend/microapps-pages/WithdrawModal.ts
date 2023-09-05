@@ -12,20 +12,20 @@ import {
 } from "../utils/Helper";
 
 //SELECTORS
-const DEPOSIT_MODAL_CONTENT = "deposit-modal-content";
+const WITHDRAW_MODAL_CONTENT = "withdrawal-modal-content";
 const BTN_CHAIN_SELECT = "chain-select-btn";
 const CHAIN_SELECT_LIST = "chain-select-list";
 const BTN_SELECT_TOKEN = "tokenInput-selector-btn";
 const TOKEN_LIST = "tokenList";
 const TOKEN_LIST_ITEM = "tokenList-item";
 const TOKEN_TEXT_INPUT = "tokenInput-input";
-const BTN_SUBMIT = "submit-deposit-button";
+const BTN_SUBMIT = "submit-withdrawal-button";
 const ORIGIN_FEE = "origin-fee";
 const DESTINATION_FEE = "destination-fee";
 const FEE_VALUE = "fee-value";
 const ERR_MESSAGE = "deposit-error-message";
 
-export class DepositModal {
+export class WithdrawModal {
   driver: WebDriver;
 
   constructor(driver: WebDriver) {
@@ -33,7 +33,7 @@ export class DepositModal {
   }
 
   async isModalVisible() {
-    const title = buildDataTestIdXpath(DEPOSIT_MODAL_CONTENT);
+    const title = buildDataTestIdXpath(WITHDRAW_MODAL_CONTENT);
     return isDisplayed(this.driver, title);
   }
 

@@ -14,7 +14,7 @@ import { setupApi, setupUsers } from "../../utils/setup";
 import { Sudo } from "../../utils/sudo";
 import {
   activateLiquidity,
-  claimRewardsAll,
+  claimRewards,
   deactivateLiquidity,
   getLiquidityAssetId,
   getRewardsInfo,
@@ -145,7 +145,7 @@ test("Activate liquidity and claim rewards", async () => {
     liqId
   );
 
-  await claimRewardsAll(testUser1, liqId);
+  await claimRewards(testUser1, liqId);
 
   const userTokenAfterClaiming = await getRewardsInfo(
     testUser1.keyRingPair.address,

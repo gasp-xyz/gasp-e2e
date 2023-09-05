@@ -6,6 +6,7 @@ import {
   getAttribute,
   pressEscape,
   waitForElementEnabled,
+  waitForLoad,
   writeText,
 } from "../utils/Helper";
 
@@ -69,6 +70,15 @@ export class Swap {
     await clickElement(this.driver, tradeBtn);
   }
 
+  async isSwapEnabled() {
+    const tradeBtn = buildDataTestIdXpath(BTN_SWAP_TRADE);
+    await waitForElementEnabled(this.driver, tradeBtn);
+    const enabled = await (
+      await this.driver.findElement(By.xpath(tradeBtn))
+    ).isEnabled();
+    return enabled;
+  }
+
   async fetchGetAssetAmount() {
     const text = await getAttribute(this.driver, this.inputGetLocator, "value");
     return text;
@@ -91,6 +101,13 @@ export class Swap {
     const assetLocator = buildDataTestIdXpath(assetTestId);
     await clickElement(this.driver, assetLocator);
   }
+
+  async waitForProgressBar() {
+    const continueBtn = buildDataTestIdXpath(BTN_SWAP_TRADE);
+    const progressBarXpath = "//*[@role='progressbar']";
+    await waitForLoad(5, continueBtn + progressBarXpath, this.driver);
+  }
+
   async swapAssets(
     fromAsset: string,
     toAsset: string,
