@@ -92,7 +92,7 @@ describe("Only sudo can", () => {
   test("crowdloan.initializeCrowdloanRewardVec(rewards)", async () => {
     const userInitializeRewardVec = await signTx(
       api,
-      api.tx.crowdloan.initializeCrowdloanRewardVec([
+      api.tx.crowdloan.initializeRewardVec([
         [
           testUser1.keyRingPair.address,
           testUser1.keyRingPair.address,
@@ -109,7 +109,7 @@ describe("Only sudo can", () => {
 
     const sudoInitializeRewardVec = await Sudo.batchAsSudoFinalized(
       Sudo.sudo(
-        api.tx.crowdloan.initializeCrowdloanRewardVec([
+        api.tx.crowdloan.initializeRewardVec([
           [
             testUser1.keyRingPair.address,
             testUser1.keyRingPair.address,
@@ -131,7 +131,7 @@ describe("Only sudo can", () => {
 
     const userCompleteInitialization = await signTx(
       api,
-      api.tx.crowdloan.completeCrowdloanInitialization(
+      api.tx.crowdloan.completeInitialization(
         leaseStartBlock,
         // @ts-ignore
         leaseEndingBlock
@@ -151,7 +151,7 @@ describe("Only sudo can", () => {
 
     const sudoCompleteInitialization = await Sudo.batchAsSudoFinalized(
       Sudo.sudo(
-        api.tx.crowdloan.completeCrowdloanInitialization(
+        api.tx.crowdloan.completeInitialization(
           leaseStartBlock,
           // @ts-ignore
           leaseEndingBlock
@@ -179,7 +179,7 @@ test("A reward needs to be fully setup with: setCrowdloanAllocation + initialize
     expect(result.data).toEqual("RewardVecNotFullyInitializedYet");
   });
 
-  await initializeCrowdloanReward(testUser1, crowdloanRewardsAmount);
+  await initializeCrowdloanReward([testUser1], crowdloanRewardsAmount);
 
   await claimCrowdloanRewards(crowdloanId, testUser1).then((result) => {
     expect(result.state).toEqual(ExtrinsicResult.ExtrinsicFailed);
@@ -203,7 +203,7 @@ test("CL needs to be setup in order", async () => {
   let completionCrowdloan: MangataGenericEvent[];
 
   initializationRewards = await initializeCrowdloanReward(
-    testUser1,
+    [testUser1],
     crowdloanRewardsAmount
   );
 
@@ -239,7 +239,7 @@ test("CL needs to be setup in order", async () => {
   await waitSudoOperationFail(completionCrowdloan, ["RewardsDoNotMatchFund"]);
 
   initializationRewards = await initializeCrowdloanReward(
-    testUser1,
+    [testUser1],
     crowdloanRewardsAmount
   );
 
@@ -269,7 +269,7 @@ test("Total contributors returns the number of contributors per crowdloan AND va
 
   expect(numberContributors!.toString()).toEqual("0");
 
-  await initializeCrowdloanReward(testUser1, crowdloanRewardsAmount);
+  await initializeCrowdloanReward([testUser1], crowdloanRewardsAmount);
 
   const leaseStartBlock = (await getBlockNumber()) + 2;
   const leaseEndingBlock = (await getBlockNumber()) + 5;

@@ -1213,20 +1213,20 @@ export async function setCrowdloanAllocation(crowdloanAllocationAmount: BN) {
 }
 
 export async function initializeCrowdloanReward(
-  user: User,
+  user: User[],
   crowdloanRewardsAmount: BN
 ) {
   const api = getApi();
+  const rewards: any[] = [];
+  user.forEach((account) => {
+    rewards.push([
+      account.keyRingPair.address,
+      account.keyRingPair.address,
+      crowdloanRewardsAmount,
+    ]);
+  });
   const initializeReward = await Sudo.batchAsSudoFinalized(
-    Sudo.sudo(
-      api.tx.crowdloan.initializeRewardVec([
-        [
-          user.keyRingPair.address,
-          user.keyRingPair.address,
-          crowdloanRewardsAmount,
-        ],
-      ])
-    )
+    Sudo.sudo(api.tx.crowdloan.initializeRewardVec([...rewards]))
   );
 
   return initializeReward;
@@ -1266,6 +1266,7 @@ export async function sudoClaimCrowdloanRewards(
   crowdloanId: any,
   userId: User
 ) {
+  const api = getApi();
   const claimRewards = await Sudo.batchAsSudoFinalized(
     // @ts-ignore
     Sudo.sudoAs(userId, api.tx.crowdloan.claim(crowdloanId))

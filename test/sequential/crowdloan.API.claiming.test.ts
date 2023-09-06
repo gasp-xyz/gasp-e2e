@@ -83,51 +83,18 @@ beforeAll(async () => {
 
   await setCrowdloanAllocation(crowdloanRewardsAmount.muln(8));
 
-  await Sudo.batchAsSudoFinalized(
-    Sudo.sudo(
-      api.tx.crowdloan.initializeRewardVec([
-        [
-          testUser1.keyRingPair.address,
-          testUser1.keyRingPair.address,
-          crowdloanRewardsAmount,
-        ],
-        [
-          testUser2.keyRingPair.address,
-          testUser2.keyRingPair.address,
-          crowdloanRewardsAmount,
-        ],
-        [
-          testUser3.keyRingPair.address,
-          testUser3.keyRingPair.address,
-          crowdloanRewardsAmount,
-        ],
-        [
-          testUser4.keyRingPair.address,
-          testUser4.keyRingPair.address,
-          crowdloanRewardsAmount,
-        ],
-        [
-          testUser5.keyRingPair.address,
-          testUser5.keyRingPair.address,
-          crowdloanRewardsAmount,
-        ],
-        [
-          testUser6.keyRingPair.address,
-          testUser6.keyRingPair.address,
-          crowdloanRewardsAmount,
-        ],
-        [
-          testUser7.keyRingPair.address,
-          testUser7.keyRingPair.address,
-          crowdloanRewardsAmount,
-        ],
-        [
-          testUser8.keyRingPair.address,
-          testUser8.keyRingPair.address,
-          crowdloanRewardsAmount,
-        ],
-      ])
-    )
+  await initializeCrowdloanReward(
+    [
+      testUser1,
+      testUser2,
+      testUser3,
+      testUser4,
+      testUser5,
+      testUser6,
+      testUser7,
+      testUser8,
+    ],
+    crowdloanRewardsAmount
   );
 
   leaseStartBlock = (await getBlockNumber()) + 10;
@@ -276,14 +243,14 @@ describe("Test that a user can claim when", () => {
 
   test("CL1 is fully setup and CL2 setup the setCrowdloanAllocation and RewardVec", async () => {
     await setCrowdloanAllocation(crowdloanRewardsAmount);
-    await initializeCrowdloanReward(testUser4, crowdloanRewardsAmount);
+    await initializeCrowdloanReward([testUser4], crowdloanRewardsAmount);
 
     await claimAndCheckUserReward(crowdloanId, testUser7);
   });
 
   test("CL1 is fully setup and CL2 setup the setCrowdloanAllocation and RewardVec and completeInitialization", async () => {
     await setCrowdloanAllocation(crowdloanRewardsAmount);
-    await initializeCrowdloanReward(testUser4, crowdloanRewardsAmount);
+    await initializeCrowdloanReward([testUser4], crowdloanRewardsAmount);
     const leaseStartBlock = await getBlockNumber();
     const leaseEndingBlock = (await getBlockNumber()) + 5;
     await completeCrowdloanInitialization(leaseStartBlock, leaseEndingBlock);
@@ -297,7 +264,7 @@ describe("Test that a user can claim when", () => {
       MGA_ASSET_ID
     );
 
-    await claimCrowdloanRewards(crowdloanId, testUser8);
+    await claimCrowdloanRewards(crowdloanId, user);
 
     await waitNewBlock();
 
