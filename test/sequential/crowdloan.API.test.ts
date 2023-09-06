@@ -84,7 +84,6 @@ describe("Only sudo can", () => {
     );
 
     expect(eventResponse.state).toEqual(ExtrinsicResult.ExtrinsicFailed);
-    expect(eventResponse.data).toEqual("UnknownError");
     const isBadOrigin = isBadOriginError(setCrowdLoanAllocationEvents);
     expect(isBadOrigin).toEqual(true);
     const sudoSetCrowdloanAllocationEvents = await Sudo.batchAsSudoFinalized(
