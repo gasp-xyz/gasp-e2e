@@ -104,7 +104,7 @@ beforeAll(async () => {
   //Now we have 2 pools that generated soem rewards and are now de-promoted.
 });
 
-test("GIVEN a disabled pool the user can still interact with it: Burn, deactivate Liq [%s]", async () => {
+test("GIVEN a disabled pool the user can still interact with it: Burn, deactivate Liq", async () => {
   const testTokenId = liqId;
   await testUser1.refreshAmounts(AssetWallet.BEFORE);
   const mplBef = await getMultiPurposeLiquidityStatus(
