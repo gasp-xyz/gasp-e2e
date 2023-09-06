@@ -10,7 +10,11 @@ import { BN } from "@polkadot/util";
 import { setupApi, setupUsers } from "../../utils/setup";
 import { Sudo } from "../../utils/sudo";
 import { User } from "../../utils/User";
-import { getBlockNumber, getEnvironmentRequiredVars } from "../../utils/utils";
+import {
+  getBlockNumber,
+  getEnvironmentRequiredVars,
+  isBadOriginError,
+} from "../../utils/utils";
 import { MGA_ASSET_ID } from "../../utils/Constants";
 import { MangataGenericEvent, signTx } from "@mangata-finance/sdk";
 import { getEventResultFromMangataTx } from "../../utils/txHandler";
@@ -69,24 +73,25 @@ beforeAll(async () => {
 
 describe("Only sudo can", () => {
   test("crowdloan.setCrowdloanAllocation(crowdloanAllocationAmount)", async () => {
-    const userSetCrowdloanAllocation = await signTx(
+    const setCrowdLoanAllocationEvents = await signTx(
       api,
       api.tx.crowdloan.setCrowdloanAllocation(crowdloanRewardsAmount),
       testUser1.keyRingPair
     );
 
     const eventResponse = getEventResultFromMangataTx(
-      userSetCrowdloanAllocation
+      setCrowdLoanAllocationEvents
     );
 
     expect(eventResponse.state).toEqual(ExtrinsicResult.ExtrinsicFailed);
     expect(eventResponse.data).toEqual("UnknownError");
-
-    const sudoSetCrowdloanAllocation = await Sudo.batchAsSudoFinalized(
+    const isBadOrigin = isBadOriginError(setCrowdLoanAllocationEvents);
+    expect(isBadOrigin).toEqual(true);
+    const sudoSetCrowdloanAllocationEvents = await Sudo.batchAsSudoFinalized(
       Sudo.sudo(api.tx.crowdloan.setCrowdloanAllocation(crowdloanRewardsAmount))
     );
 
-    await waitSudoOperationSuccess(sudoSetCrowdloanAllocation);
+    await waitSudoOperationSuccess(sudoSetCrowdloanAllocationEvents);
   });
 
   test("crowdloan.initializeCrowdloanRewardVec(rewards)", async () => {
