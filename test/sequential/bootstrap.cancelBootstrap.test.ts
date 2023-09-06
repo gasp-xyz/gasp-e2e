@@ -92,23 +92,25 @@ test("bootstrap - Check that we can not cancel bootstrap when bootstrap event al
 
   //check that bootstrap cannot be canceled less than 300 blocks before the start
   cancelBootstrapEvent = await cancelRunningBootstrap(sudo);
-  await waitSudoOperationFail(cancelBootstrapEvent, "TooLateToUpdateBootstrap");
+  await waitSudoOperationFail(cancelBootstrapEvent, [
+    "TooLateToUpdateBootstrap",
+  ]);
 
   await waitForBootstrapStatus("Whitelist", waitingPeriodLessPlan);
 
   //check that bootstrap cannot be canceled after the start
   cancelBootstrapEvent = await cancelRunningBootstrap(sudo);
-  await waitSudoOperationFail(cancelBootstrapEvent, "AlreadyStarted");
+  await waitSudoOperationFail(cancelBootstrapEvent, ["AlreadyStarted"]);
 
   await waitForBootstrapStatus("Public", waitingPeriodLessPlan);
 
   cancelBootstrapEvent = await cancelRunningBootstrap(sudo);
-  await waitSudoOperationFail(cancelBootstrapEvent, "AlreadyStarted");
+  await waitSudoOperationFail(cancelBootstrapEvent, ["AlreadyStarted"]);
 
   await waitForBootstrapStatus("Finished", bootstrapPeriod);
 
   cancelBootstrapEvent = await cancelRunningBootstrap(sudo);
-  await waitSudoOperationFail(cancelBootstrapEvent, "AlreadyStarted");
+  await waitSudoOperationFail(cancelBootstrapEvent, ["AlreadyStarted"]);
 
   // finalize bootstrap
   await checkLastBootstrapFinalized(sudo);
