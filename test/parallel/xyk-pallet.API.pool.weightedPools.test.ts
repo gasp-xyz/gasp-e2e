@@ -189,7 +189,7 @@ test("GIVEN a pool WHEN it has configured with 0 THEN no new issuance will be re
 
   await testUser1.refreshAmounts(AssetWallet.BEFORE);
 
-  await claimRewardsAll(testUser1, liqId).then((result) => {
+  await claimRewards(testUser1, liqId).then((result) => {
     const eventResponse = getEventResultFromMangataTx(result);
     expect(eventResponse.state).toEqual(ExtrinsicResult.ExtrinsicSuccess);
   });

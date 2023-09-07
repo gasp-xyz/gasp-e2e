@@ -138,7 +138,7 @@ test("Check that rewards are generated and can be claimed on each session, then 
     liqIdPromPool1
   );
 
-  await claimRewards(testUser1, liqIdPromPool);
+  await claimRewards(testUser1, liqIdPromPool1);
 
   rewardsInfoAfter = await getRewardsInfo(
     testUser1.keyRingPair.address,
@@ -167,7 +167,7 @@ test("Check that rewards are generated and can be claimed on each session, then 
     new BN(valueBurningTokens)
   );
 
-  await claimRewards(testUser1, liqIdPromPool);
+  await claimRewards(testUser1, liqIdPromPool1);
 
   await waitNewStakingRound();
 
@@ -265,7 +265,7 @@ test("Given a pool with user with activated rewards  WHEN it was deactivated AND
 
   await testUser1.refreshAmounts(AssetWallet.BEFORE);
 
-  await claimRewardsAll(testUser1, liqIdPromPool2).then((result) => {
+  await claimRewards(testUser1, liqIdPromPool2).then((result) => {
     const eventResponse = getEventResultFromMangataTx(result);
     expect(eventResponse.state).toEqual(ExtrinsicResult.ExtrinsicSuccess);
   });
@@ -284,7 +284,7 @@ test("Given a pool with user with activated rewards  WHEN it was deactivated AND
 
   await testUser1.refreshAmounts(AssetWallet.BEFORE);
 
-  await claimRewardsAll(testUser1, liqIdPromPool2).then((result) => {
+  await claimRewards(testUser1, liqIdPromPool2).then((result) => {
     const eventResponse = getEventResultFromMangataTx(result);
     expect(eventResponse.state).toEqual(ExtrinsicResult.ExtrinsicSuccess);
   });
