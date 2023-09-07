@@ -12,7 +12,7 @@ import { BN_HUNDRED, BN_ZERO, signTx } from "@mangata-finance/sdk";
 import { setupApi, setupUsers } from "../../utils/setup";
 import { Sudo } from "../../utils/sudo";
 import {
-  claimRewardsAll,
+  claimRewards,
   getLiquidityAssetId,
   mintLiquidity,
   promotePool,
@@ -178,7 +178,7 @@ test("GIVEN a pool WHEN it has configured with 0 THEN no new issuance will be re
 
   await waitForRewards(testUser1, liqId);
 
-  await claimRewardsAll(testUser1, liqId).then((result) => {
+  await claimRewards(testUser1, liqId).then((result) => {
     const eventResponse = getEventResultFromMangataTx(result);
     expect(eventResponse.state).toEqual(ExtrinsicResult.ExtrinsicSuccess);
   });
@@ -256,7 +256,7 @@ test("GIVEN a deactivated pool WHEN its configured with more weight, THEN reward
 test("GIVEN an activated pool WHEN pool was deactivated THEN check that the user will still get some rewards from the curve, and storage is updated", async () => {
   const api = getApi();
   await waitForRewards(testUser1, liqId);
-  await claimRewardsAll(testUser1, liqId).then((result) => {
+  await claimRewards(testUser1, liqId).then((result) => {
     const eventResponse = getEventResultFromMangataTx(result);
     expect(eventResponse.state).toEqual(ExtrinsicResult.ExtrinsicSuccess);
   });

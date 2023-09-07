@@ -33,6 +33,7 @@ import { User } from "./User";
 import { getEnvironmentRequiredVars, stringToBN } from "./utils";
 import Keyring from "@polkadot/keyring";
 import { ExtrinsicResult } from "./eventListeners";
+import { Sudo } from "./sudo";
 
 export const signTxDeprecated = async (
   tx: SubmittableExtrinsic<"promise">,
@@ -1180,7 +1181,7 @@ export async function getRewardsInfo(
   return toReturn;
 }
 
-export async function claimRewardsAll(user: User, liquidityTokenId: BN) {
+export async function claimRewards(user: User, liquidityTokenId: BN) {
   const account = user.keyRingPair;
   const liquidityTokenIdString = liquidityTokenId.toString();
   const mangata = await getMangataInstance();
@@ -1189,6 +1190,89 @@ export async function claimRewardsAll(user: User, liquidityTokenId: BN) {
     liquidityTokenId: liquidityTokenIdString,
   });
   return result;
+}
+
+export async function claimRewardsAll(user: User) {
+  const account = user.keyRingPair;
+  const mangata = await getMangataInstance();
+  const result = await mangata.xyk.claimRewardsAll({
+    account: account,
+  });
+  return result;
+}
+
+export async function setCrowdloanAllocation(crowdloanAllocationAmount: BN) {
+  const api = getApi();
+  const setCrowdloanAllocation = await Sudo.batchAsSudoFinalized(
+    Sudo.sudo(
+      api.tx.crowdloan.setCrowdloanAllocation(crowdloanAllocationAmount)
+    )
+  );
+
+  return setCrowdloanAllocation;
+}
+
+export async function initializeCrowdloanReward(
+  user: User[],
+  crowdloanRewardsAmount: BN
+) {
+  const api = getApi();
+  const rewards: any[] = [];
+  user.forEach((account) => {
+    rewards.push([
+      account.keyRingPair.address,
+      account.keyRingPair.address,
+      crowdloanRewardsAmount,
+    ]);
+  });
+  const initializeReward = await Sudo.batchAsSudoFinalized(
+    Sudo.sudo(api.tx.crowdloan.initializeRewardVec([...rewards]))
+  );
+
+  return initializeReward;
+}
+
+export async function completeCrowdloanInitialization(
+  leaseStartBlock: number,
+  leaseEndingBlock: number
+) {
+  const api = getApi();
+  const completeInitialization = await Sudo.batchAsSudoFinalized(
+    Sudo.sudo(
+      api.tx.crowdloan.completeInitialization(
+        leaseStartBlock,
+        // @ts-ignore
+        leaseEndingBlock
+      )
+    )
+  );
+
+  return completeInitialization;
+}
+
+export async function claimCrowdloanRewards(crowdloanId: any, userId: User) {
+  const api = getApi();
+  const claimRewards = await signTx(
+    api,
+    // @ts-ignore
+    api.tx.crowdloan.claim(crowdloanId),
+    userId.keyRingPair
+  );
+  const eventResponse = getEventResultFromMangataTx(claimRewards);
+  return eventResponse;
+}
+
+export async function sudoClaimCrowdloanRewards(
+  crowdloanId: any,
+  userId: User
+) {
+  const api = getApi();
+  const claimRewards = await Sudo.batchAsSudoFinalized(
+    // @ts-ignore
+    Sudo.sudoAs(userId, api.tx.crowdloan.claim(crowdloanId))
+  );
+  const eventResponse = getEventResultFromMangataTx(claimRewards);
+  return eventResponse;
 }
 
 export async function setUserIdentity(user: User, displayname: string) {

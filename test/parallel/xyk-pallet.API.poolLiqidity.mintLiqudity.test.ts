@@ -12,7 +12,7 @@ import { BN_ZERO } from "@mangata-finance/sdk";
 import { setupApi, setupUsers } from "../../utils/setup";
 import { Sudo } from "../../utils/sudo";
 import {
-  claimRewardsAll,
+  claimRewards,
   getLiquidityAssetId,
   getRewardsInfo,
   mintLiquidity,
@@ -185,7 +185,7 @@ test("Given 3 pool: token1-MGX, token2-MGX and token1-token2 WHEN token1-token2 
     address: testUser1.keyRingPair.address,
     liquidityTokenId: liqIdThirdPool.toString(),
   });
-  await claimRewardsAll(testUser1, liqIdThirdPool);
+  await claimRewards(testUser1, liqIdThirdPool);
 
   const rewardsThirdPoolAfter = await getRewardsInfo(
     testUser1.keyRingPair.address,

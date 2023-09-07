@@ -9,7 +9,7 @@ import { Assets } from "../../utils/Assets";
 import { setupApi, setupUsers } from "../../utils/setup";
 import { Sudo } from "../../utils/sudo";
 import {
-  claimRewardsAll,
+  claimRewards,
   getLiquidityAssetId,
   getRewardsInfo,
 } from "../../utils/tx";
@@ -290,7 +290,7 @@ test("GIVEN a solo token rewards setup WHEN a user deactivates all the tokens TH
     liquidityTokenId: token1.toString(),
   })!;
 
-  await claimRewardsAll(testUser1, token1);
+  await claimRewards(testUser1, token1);
 
   const rewardsAfter = await mangata!.rpc.calculateRewardsAmount({
     address: testUser1.keyRingPair.address,

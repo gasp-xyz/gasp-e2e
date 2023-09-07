@@ -145,7 +145,7 @@ test("bootstrap - bootstrap - Check if we can change promoteBootstrapPool in eac
   await waitForBootstrapStatus("Finished", bootstrapPeriod);
 
   checkingUpdatingPool = await changePromotionBootstrapPool(sudo);
-  await waitSudoOperationFail(checkingUpdatingPool, "BootstrapFinished");
+  await waitSudoOperationFail(checkingUpdatingPool, ["BootstrapFinished"]);
 
   bootstrapPool = await getBalanceOfPool(MGA_ASSET_ID, bootstrapCurrency);
   const bootstrapPoolBalance = bootstrapPool[0];

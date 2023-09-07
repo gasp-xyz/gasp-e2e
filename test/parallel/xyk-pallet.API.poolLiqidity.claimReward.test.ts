@@ -15,7 +15,7 @@ import { Sudo } from "../../utils/sudo";
 import {
   activateLiquidity,
   burnLiquidity,
-  claimRewardsAll,
+  claimRewards,
   getLiquidityAssetId,
   getRewardsInfo,
   mintLiquidity,
@@ -138,7 +138,7 @@ test("Check that rewards are generated and can be claimed on each session, then 
     liqIdPromPool1
   );
 
-  await claimRewardsAll(testUser1, liqIdPromPool1);
+  await claimRewards(testUser1, liqIdPromPool);
 
   rewardsInfoAfter = await getRewardsInfo(
     testUser1.keyRingPair.address,
@@ -167,7 +167,7 @@ test("Check that rewards are generated and can be claimed on each session, then 
     new BN(valueBurningTokens)
   );
 
-  await claimRewardsAll(testUser1, liqIdPromPool1);
+  await claimRewards(testUser1, liqIdPromPool);
 
   await waitNewStakingRound();
 

@@ -1,7 +1,14 @@
 import { WebDriver } from "selenium-webdriver";
+import { ApiContext } from "../../Framework/XcmHelper";
 import { Main } from "../microapps-pages/Main";
+import {
+  ModalType,
+  NotificationModal,
+  TransactionType,
+} from "../microapps-pages/NotificationModal";
 import { WalletConnectModal } from "../microapps-pages/WalletConnectModal";
 import { WalletWrapper } from "../microapps-pages/WalletWrapper";
+import { Polkadot } from "../pages/Polkadot";
 import { acceptPermissionsWalletExtensionInNewWindow } from "../utils/Helper";
 
 export async function connectWallet(
@@ -55,4 +62,32 @@ export async function setupPageWithState(driver: WebDriver, acc_name: string) {
   const walletWrapper = new WalletWrapper(driver);
   const isAccInfoDisplayed = await walletWrapper.isAccInfoDisplayed(acc_name);
   expect(isAccInfoDisplayed).toBeTruthy();
+}
+
+export async function waitForMicroappsActionNotification(
+  driver: WebDriver,
+  chainOne: ApiContext,
+  chainTwo: ApiContext,
+  transaction: TransactionType,
+  numOfBLocks = 1
+) {
+  const modal = new NotificationModal(driver);
+  await modal.waitForModalState(ModalType.Confirm, transaction, 3000);
+  const isModalWaitingForSignVisible = await modal.isModalVisible(
+    ModalType.Confirm,
+    transaction
+  );
+  expect(isModalWaitingForSignVisible).toBeTruthy();
+  await Polkadot.signTransaction(driver);
+  for (let i = 0; i < numOfBLocks; i++) {
+    await chainOne.chain.newBlock();
+    await chainTwo.chain.newBlock();
+  }
+  await modal.waitForModalState(ModalType.Success, transaction);
+  const isModalSuccessVisible = await modal.isModalVisible(
+    ModalType.Success,
+    transaction
+  );
+  expect(isModalSuccessVisible).toBeTruthy();
+  await modal.clickInDone();
 }
