@@ -23,7 +23,7 @@ const BTN_SUBMIT = "submit-withdrawal-button";
 const ORIGIN_FEE = "origin-fee";
 const DESTINATION_FEE = "destination-fee";
 const FEE_VALUE = "fee-value";
-const ERR_MESSAGE = "deposit-error-message";
+const ERR_MESSAGE = "withdrawal-error-message";
 
 export class WithdrawModal {
   driver: WebDriver;
