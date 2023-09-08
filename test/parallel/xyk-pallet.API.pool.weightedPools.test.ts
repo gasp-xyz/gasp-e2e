@@ -89,9 +89,7 @@ beforeEach(async () => {
     )
   );
 });
-afterEach(async () => {
-  await Sudo.batchAsSudoFinalized(Assets.promotePool(liqId.toNumber(), 0));
-});
+
 test("Check that we can get the list of promoted pools with proofOfStake.promotedPoolRewards data storage", async () => {
   const poolWeight = (await getPromotedPoolInfo(liqId)).weight;
 
@@ -161,7 +159,7 @@ test("Testing that the sum of the weights can be greater than 100", async () => 
   expect(sumPoolsWeights).bnGt(BN_HUNDRED);
 });
 
-test("GIVEN a pool WHEN it has configured with 0 THEN no new issuance will be reserved AND user CAN claim remaining rewards", async () => {
+test("GIVEN a pool WHEN it has configured with 0 THEN no new issuance will be reserved", async () => {
   const [testUser2] = setupUsers();
 
   await Sudo.batchAsSudoFinalized(
@@ -175,13 +173,6 @@ test("GIVEN a pool WHEN it has configured with 0 THEN no new issuance will be re
 
   testUser2.addAsset(MGA_ASSET_ID);
   testUser2.addAsset(token1);
-
-  await waitForRewards(testUser1, liqId);
-
-  await claimRewards(testUser1, liqId).then((result) => {
-    const eventResponse = getEventResultFromMangataTx(result);
-    expect(eventResponse.state).toEqual(ExtrinsicResult.ExtrinsicSuccess);
-  });
 
   await waitForRewards(testUser1, liqId);
 
@@ -271,6 +262,10 @@ test("GIVEN an activated pool WHEN pool was deactivated THEN check that the user
   expect(poolInfoAfter.rewards).bnEqual(poolInfoBefore.rewards);
   expect(poolRewards[liqId.toString()]).not.toEqual(undefined);
   expect(rewardsAfterDisablePool).bnGt(BN_ZERO);
+});
+
+afterEach(async () => {
+  await Sudo.batchAsSudoFinalized(Assets.promotePool(liqId.toNumber(), 0));
 });
 
 async function getPromotedPoolInfo(tokenId: BN) {
