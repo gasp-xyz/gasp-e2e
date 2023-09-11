@@ -5,7 +5,7 @@
  */
 import { jest } from "@jest/globals";
 import { Keyring } from "@polkadot/api";
-import { getApi, getMangataInstance, initApi } from "../../utils/api";
+import { getApi, getMangataInstance, initApi, mangata } from "../../utils/api";
 import { Assets } from "../../utils/Assets";
 import { MGA_ASSET_ID } from "../../utils/Constants";
 import { BN_HUNDRED, BN_ZERO, signTx } from "@mangata-finance/sdk";
@@ -27,9 +27,11 @@ import { Xyk } from "../../utils/xyk";
 import { ExtrinsicResult, waitForRewards } from "../../utils/eventListeners";
 import { getEventResultFromMangataTx } from "../../utils/txHandler";
 import { BN } from "@polkadot/util";
+import "jest-extended";
 
 jest.spyOn(console, "log").mockImplementation(jest.fn());
 jest.setTimeout(2500000);
+
 process.env.NODE_ENV = "test";
 
 const { sudo: sudoUserName } = getEnvironmentRequiredVars();
@@ -92,8 +94,13 @@ beforeEach(async () => {
 
 test("Check that we can get the list of promoted pools with proofOfStake.promotedPoolRewards data storage", async () => {
   const poolWeight = (await getPromotedPoolInfo(liqId)).weight;
-
   expect(poolWeight).bnEqual(new BN(20));
+  const sdkPools = await mangata?.query.getPools();
+  expect(
+    sdkPools!.filter(
+      (x) => x.liquidityTokenId === liqId.toString() && x.isPromoted
+    )
+  ).toHaveLength(1);
 });
 
 test("Validate that weight can be modified by using updatePoolPromotion AND only sudo can update weights", async () => {
@@ -274,10 +281,8 @@ async function getPromotedPoolInfo(tokenId: BN) {
   const poolRewards = JSON.parse(
     JSON.stringify(await api.query.proofOfStake.promotedPoolRewards())
   );
-  const results = {
+  return {
     weight: stringToBN(poolRewards[tokenId.toString()].weight),
     rewards: stringToBN(poolRewards[tokenId.toString()].rewards),
   };
-
-  return results;
 }
