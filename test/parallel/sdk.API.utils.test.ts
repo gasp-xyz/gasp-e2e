@@ -16,8 +16,7 @@ import { MGA_ASSET_ID } from "../../utils/Constants";
 import { multiSwapBuy, multiSwapSell } from "../../utils/tx";
 import {
   BN_TEN_THOUSAND,
-  isBuyAssetTransactionSuccessful,
-  isSellAssetTransactionSuccessful,
+  isMultiSwapAssetTransactionSuccessful,
   signTx,
 } from "@mangata-finance/sdk";
 import { getEventResultFromMangataTx } from "../../utils/txHandler";
@@ -81,14 +80,14 @@ beforeEach(async () => {
   );
 });
 
-test("GIVEN buyAsset WHEN operation is confirmed AND isBuyAssetTransactionSuccessful THEN it returns true", async () => {
+test("GIVEN buyAsset WHEN operation is confirmed AND isMultiSwapAssetTransactionSuccessful THEN it returns true", async () => {
   const buyAssetEvent = await signTx(
     api,
     Xyk.buyAsset(MGA_ASSET_ID, token1, new BN(1000)),
     testUser1.keyRingPair
   );
 
-  const eventResult = isBuyAssetTransactionSuccessful(buyAssetEvent);
+  const eventResult = isMultiSwapAssetTransactionSuccessful(buyAssetEvent);
 
   expect(getEventResultFromMangataTx(buyAssetEvent).state).toEqual(
     ExtrinsicResult.ExtrinsicSuccess
@@ -96,7 +95,7 @@ test("GIVEN buyAsset WHEN operation is confirmed AND isBuyAssetTransactionSucces
   expect(eventResult).toEqual(true);
 });
 
-test("GIVEN buyAsset WHEN operation is failed AND isBuyAssetTransactionSuccessful THEN it returns false", async () => {
+test("GIVEN buyAsset WHEN operation is failed AND isMultiSwapAssetTransactionSuccessful THEN it returns false", async () => {
   const [token2] = await Assets.setupUserWithCurrencies(
     sudo,
     [defaultCurrencyValue],
@@ -109,7 +108,7 @@ test("GIVEN buyAsset WHEN operation is failed AND isBuyAssetTransactionSuccessfu
     testUser1.keyRingPair
   );
 
-  const eventResult = isBuyAssetTransactionSuccessful(buyAssetEvent);
+  const eventResult = isMultiSwapAssetTransactionSuccessful(buyAssetEvent);
 
   expect(getEventResultFromMangataTx(buyAssetEvent).state).toEqual(
     ExtrinsicResult.ExtrinsicFailed
@@ -118,14 +117,14 @@ test("GIVEN buyAsset WHEN operation is failed AND isBuyAssetTransactionSuccessfu
   expect(eventResult).toEqual(false);
 });
 
-test("GIVEN sellAsset WHEN operation is confirmed AND isSellAssetTransactionSuccessful THEN it returns true", async () => {
+test("GIVEN sellAsset WHEN operation is confirmed AND isMultiSwapAssetTransactionSuccessful THEN it returns true", async () => {
   const sellAssetEvent = await signTx(
     api,
     Xyk.sellAsset(MGA_ASSET_ID, token1, new BN(1000)),
     testUser1.keyRingPair
   );
 
-  const eventResult = isSellAssetTransactionSuccessful(sellAssetEvent);
+  const eventResult = isMultiSwapAssetTransactionSuccessful(sellAssetEvent);
 
   expect(getEventResultFromMangataTx(sellAssetEvent).state).toEqual(
     ExtrinsicResult.ExtrinsicSuccess
@@ -133,7 +132,7 @@ test("GIVEN sellAsset WHEN operation is confirmed AND isSellAssetTransactionSucc
   expect(eventResult).toEqual(true);
 });
 
-test("GIVEN sellAsset WHEN operation is failed AND isSellAssetTransactionSuccessful THEN it returns false", async () => {
+test("GIVEN sellAsset WHEN operation is failed AND isMultiSwapAssetTransactionSuccessful THEN it returns false", async () => {
   const [token2] = await Assets.setupUserWithCurrencies(
     sudo,
     [defaultCurrencyValue],
@@ -146,7 +145,7 @@ test("GIVEN sellAsset WHEN operation is failed AND isSellAssetTransactionSuccess
     testUser1.keyRingPair
   );
 
-  const eventResult = isSellAssetTransactionSuccessful(sellAssetEvent);
+  const eventResult = isMultiSwapAssetTransactionSuccessful(sellAssetEvent);
 
   expect(getEventResultFromMangataTx(sellAssetEvent).state).toEqual(
     ExtrinsicResult.ExtrinsicFailed
@@ -157,7 +156,7 @@ test("GIVEN sellAsset WHEN operation is failed AND isSellAssetTransactionSuccess
   expect(eventResult).toEqual(false);
 });
 
-test("GIVEN multiSwapBuy WHEN operation is confirmed AND isBuyAssetTransactionSuccessful THEN it returns true", async () => {
+test("GIVEN multiSwapBuy WHEN operation is confirmed AND isMultiSwapAssetTransactionSuccessful THEN it returns true", async () => {
   const tokenIds = [MGA_ASSET_ID, token1];
 
   const multiSwapBuyEvent = await multiSwapBuy(
@@ -167,7 +166,7 @@ test("GIVEN multiSwapBuy WHEN operation is confirmed AND isBuyAssetTransactionSu
     BN_TEN_THOUSAND
   );
 
-  const eventResult = isBuyAssetTransactionSuccessful(multiSwapBuyEvent);
+  const eventResult = isMultiSwapAssetTransactionSuccessful(multiSwapBuyEvent);
 
   expect(getEventResultFromMangataTx(multiSwapBuyEvent).state).toEqual(
     ExtrinsicResult.ExtrinsicSuccess
@@ -175,7 +174,7 @@ test("GIVEN multiSwapBuy WHEN operation is confirmed AND isBuyAssetTransactionSu
   expect(eventResult).toEqual(true);
 });
 
-test("GIVEN multiSwapBuy WHEN operation is failed AND isBuyAssetTransactionSuccessful THEN it returns false", async () => {
+test("GIVEN multiSwapBuy WHEN operation is failed AND isMultiSwapAssetTransactionSuccessful THEN it returns false", async () => {
   const [token2] = await Assets.setupUserWithCurrencies(
     sudo,
     [defaultCurrencyValue],
@@ -190,7 +189,7 @@ test("GIVEN multiSwapBuy WHEN operation is failed AND isBuyAssetTransactionSucce
     new BN(1000)
   );
 
-  const eventResult = isBuyAssetTransactionSuccessful(multiSwapBuyEvent);
+  const eventResult = isMultiSwapAssetTransactionSuccessful(multiSwapBuyEvent);
 
   expect(getEventResultFromMangataTx(multiSwapBuyEvent).state).toEqual(
     ExtrinsicResult.ExtrinsicFailed
@@ -201,7 +200,7 @@ test("GIVEN multiSwapBuy WHEN operation is failed AND isBuyAssetTransactionSucce
   expect(eventResult).toEqual(false);
 });
 
-test("GIVEN multiSwapSell WHEN operation is confirmed AND isSellAssetTransactionSuccessful THEN it returns true", async () => {
+test("GIVEN multiSwapSell WHEN operation is confirmed AND isMultiSwapAssetTransactionSuccessful THEN it returns true", async () => {
   const tokenIds = [MGA_ASSET_ID, token1];
 
   const multiSwapSellEvent = await multiSwapSell(
@@ -210,7 +209,7 @@ test("GIVEN multiSwapSell WHEN operation is confirmed AND isSellAssetTransaction
     new BN(1000)
   );
 
-  const eventResult = isSellAssetTransactionSuccessful(multiSwapSellEvent);
+  const eventResult = isMultiSwapAssetTransactionSuccessful(multiSwapSellEvent);
 
   expect(getEventResultFromMangataTx(multiSwapSellEvent).state).toEqual(
     ExtrinsicResult.ExtrinsicSuccess
@@ -218,7 +217,7 @@ test("GIVEN multiSwapSell WHEN operation is confirmed AND isSellAssetTransaction
   expect(eventResult).toEqual(true);
 });
 
-test("GIVEN multiSwapSell WHEN operation is failed AND isSellAssetTransactionSuccessful THEN it returns false", async () => {
+test("GIVEN multiSwapSell WHEN operation is failed AND isMultiSwapAssetTransactionSuccessful THEN it returns false", async () => {
   const [token2] = await Assets.setupUserWithCurrencies(
     sudo,
     [defaultCurrencyValue],
@@ -233,30 +232,13 @@ test("GIVEN multiSwapSell WHEN operation is failed AND isSellAssetTransactionSuc
     new BN(1000)
   );
 
-  const eventResult = isSellAssetTransactionSuccessful(multiSwapSellEvent);
+  const eventResult = isMultiSwapAssetTransactionSuccessful(multiSwapSellEvent);
 
   expect(getEventResultFromMangataTx(multiSwapSellEvent).state).toEqual(
     ExtrinsicResult.ExtrinsicFailed
   );
   expect(getEventResultFromMangataTx(multiSwapSellEvent).data).toEqual(
     "NoSuchPool"
-  );
-  expect(eventResult).toEqual(false);
-});
-
-test.skip("[BUG] SDK- Returned true answer by using wrong function (for example isBuyAssetTransactionSuccessful for multiSwapSell function)", async () => {
-  const tokenIds = [MGA_ASSET_ID, token1];
-
-  const multiSwapSellEvent = await multiSwapSell(
-    testUser1,
-    tokenIds,
-    new BN(1000)
-  );
-
-  const eventResult = isBuyAssetTransactionSuccessful(multiSwapSellEvent);
-
-  expect(getEventResultFromMangataTx(multiSwapSellEvent).state).toEqual(
-    ExtrinsicResult.ExtrinsicSuccess
   );
   expect(eventResult).toEqual(false);
 });

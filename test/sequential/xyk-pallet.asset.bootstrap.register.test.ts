@@ -134,7 +134,7 @@ test("register asset and then try to register new one with the same location, ex
     }
   );
 
-  await waitSudoOperationFail(userRegisterNewAsset, "ConflictingLocation");
+  await waitSudoOperationFail(userRegisterNewAsset, ["ConflictingLocation"]);
 });
 
 test("register asset with xyk disabled and try to schedule bootstrap, expect to success", async () => {

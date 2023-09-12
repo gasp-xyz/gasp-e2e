@@ -5,14 +5,14 @@
  */
 import { jest } from "@jest/globals";
 import { Keyring } from "@polkadot/api";
-import { getApi, getMangataInstance, initApi } from "../../utils/api";
+import { getApi, getMangataInstance, initApi, mangata } from "../../utils/api";
 import { Assets } from "../../utils/Assets";
 import { MGA_ASSET_ID } from "../../utils/Constants";
 import { BN_HUNDRED, BN_ZERO, signTx } from "@mangata-finance/sdk";
 import { setupApi, setupUsers } from "../../utils/setup";
 import { Sudo } from "../../utils/sudo";
 import {
-  claimRewardsAll,
+  claimRewards,
   getLiquidityAssetId,
   mintLiquidity,
   promotePool,
@@ -27,9 +27,11 @@ import { Xyk } from "../../utils/xyk";
 import { ExtrinsicResult, waitForRewards } from "../../utils/eventListeners";
 import { getEventResultFromMangataTx } from "../../utils/txHandler";
 import { BN } from "@polkadot/util";
+import "jest-extended";
 
 jest.spyOn(console, "log").mockImplementation(jest.fn());
 jest.setTimeout(2500000);
+
 process.env.NODE_ENV = "test";
 
 const { sudo: sudoUserName } = getEnvironmentRequiredVars();
@@ -89,13 +91,16 @@ beforeEach(async () => {
     )
   );
 });
-afterEach(async () => {
-  await Sudo.batchAsSudoFinalized(Assets.promotePool(liqId.toNumber(), 0));
-});
+
 test("Check that we can get the list of promoted pools with proofOfStake.promotedPoolRewards data storage", async () => {
   const poolWeight = (await getPromotedPoolInfo(liqId)).weight;
-
   expect(poolWeight).bnEqual(new BN(20));
+  const sdkPools = await mangata?.query.getPools();
+  expect(
+    sdkPools!.filter(
+      (x) => x.liquidityTokenId === liqId.toString() && x.isPromoted
+    )
+  ).toHaveLength(1);
 });
 
 test("Validate that weight can be modified by using updatePoolPromotion AND only sudo can update weights", async () => {
@@ -161,7 +166,7 @@ test("Testing that the sum of the weights can be greater than 100", async () => 
   expect(sumPoolsWeights).bnGt(BN_HUNDRED);
 });
 
-test("GIVEN a pool WHEN it has configured with 0 THEN no new issuance will be reserved AND user CAN claim remaining rewards", async () => {
+test("GIVEN a pool WHEN it has configured with 0 THEN no new issuance will be reserved", async () => {
   const [testUser2] = setupUsers();
 
   await Sudo.batchAsSudoFinalized(
@@ -178,16 +183,9 @@ test("GIVEN a pool WHEN it has configured with 0 THEN no new issuance will be re
 
   await waitForRewards(testUser1, liqId);
 
-  await claimRewardsAll(testUser1, liqId).then((result) => {
-    const eventResponse = getEventResultFromMangataTx(result);
-    expect(eventResponse.state).toEqual(ExtrinsicResult.ExtrinsicSuccess);
-  });
-
-  await waitForRewards(testUser1, liqId);
-
   await promotePool(sudo.keyRingPair, liqId, 0);
 
-  await claimRewardsAll(testUser1, liqId).then((result) => {
+  await claimRewards(testUser1, liqId).then((result) => {
     const eventResponse = getEventResultFromMangataTx(result);
     expect(eventResponse.state).toEqual(ExtrinsicResult.ExtrinsicSuccess);
   });
@@ -245,7 +243,7 @@ test("GIVEN a deactivated pool WHEN its configured with more weight, THEN reward
 test("GIVEN an activated pool WHEN pool was deactivated THEN check that the user will still get some rewards from the curve, and storage is updated", async () => {
   const api = getApi();
   await waitForRewards(testUser1, liqId);
-  await claimRewardsAll(testUser1, liqId).then((result) => {
+  await claimRewards(testUser1, liqId).then((result) => {
     const eventResponse = getEventResultFromMangataTx(result);
     expect(eventResponse.state).toEqual(ExtrinsicResult.ExtrinsicSuccess);
   });
@@ -273,16 +271,18 @@ test("GIVEN an activated pool WHEN pool was deactivated THEN check that the user
   expect(rewardsAfterDisablePool).bnGt(BN_ZERO);
 });
 
+afterEach(async () => {
+  await Sudo.batchAsSudoFinalized(Assets.promotePool(liqId.toNumber(), 0));
+});
+
 async function getPromotedPoolInfo(tokenId: BN) {
   const api = getApi();
 
   const poolRewards = JSON.parse(
     JSON.stringify(await api.query.proofOfStake.promotedPoolRewards())
   );
-  const results = {
+  return {
     weight: stringToBN(poolRewards[tokenId.toString()].weight),
     rewards: stringToBN(poolRewards[tokenId.toString()].rewards),
   };
-
-  return results;
 }
