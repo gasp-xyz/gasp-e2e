@@ -500,6 +500,7 @@ export enum xykErrors {
   MathOverflow = "MathOverflow",
   LiquidityTokenCreationFailed = "LiquidityTokenCreationFailed",
   FunctionNotAvailableForThisToken = "FunctionNotAvailableForThisToken",
+  PoolIsEmpty = "PoolIsEmpty",
 }
 
 export enum feeLockErrors {
