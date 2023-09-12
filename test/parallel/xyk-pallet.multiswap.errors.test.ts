@@ -179,27 +179,23 @@ describe("Multiswap - error cases: pool status & gasless integration", () => {
     expect(diff[0].diff.reserved).bnGt(new BN(0));
     expect(diff[0].diff.free).bnLt(diff[0].diff.reserved.neg());
   });
-  test("[gasless] Fails on execution when pool does not exist", async () => {
+  test("[gasless] Fails on client when pool does not exist", async () => {
     const testUser = users[1];
     testUser.addAssets(tokenIds);
     await testUser.refreshAmounts(AssetWallet.BEFORE);
-    const events = await multiSwapSell(
-      testUser,
-      tokenIds.concat(BN_BILLION),
-      new BN(12345)
-    );
+    let exception = false;
+    await expect(
+      multiSwapSell(testUser, tokenIds.concat(BN_BILLION), new BN(12345)).catch(
+        (reason) => {
+          exception = true;
+          throw new Error(reason.data);
+        }
+      )
+    ).rejects.toThrow(feeLockErrors.SwapApprovalFail);
+    expect(exception).toBeTruthy();
+
     await testUser.refreshAmounts(AssetWallet.AFTER);
-    const swapErrorEvent = await getEventResultFromMangataTx(events, [
-      "MultiSwapAssetFailedOnAtomicSwap",
-    ]);
-    expect(swapErrorEvent.state).toEqual(ExtrinsicResult.ExtrinsicSuccess);
     const diff = testUser.getWalletDifferences();
-    expect(diff).toHaveLength(2);
-    expect(
-      diff.filter((x) => x.currencyId === MGA_ASSET_ID)[0].diff.reserved
-    ).bnGt(new BN(0));
-    expect(diff.filter((x) => x.currencyId === tokenIds[0])[0].diff.free).bnLt(
-      BN_ZERO
-    );
+    expect(diff).toHaveLength(0);
   });
 });
