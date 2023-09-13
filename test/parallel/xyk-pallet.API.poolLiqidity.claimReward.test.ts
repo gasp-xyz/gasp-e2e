@@ -27,11 +27,8 @@ import {
   waitNewStakingRound,
 } from "../../utils/utils";
 import { Xyk } from "../../utils/xyk";
-import { ExtrinsicResult, waitForRewards } from "../../utils/eventListeners";
-import {
-  getBalanceOfPool,
-  getEventResultFromMangataTx,
-} from "../../utils/txHandler";
+import { waitForRewards } from "../../utils/eventListeners";
+import { getBalanceOfPool } from "../../utils/txHandler";
 import { BN } from "@polkadot/util";
 
 jest.spyOn(console, "log").mockImplementation(jest.fn());
@@ -265,10 +262,9 @@ test("Given a pool with user with activated rewards  WHEN it was deactivated AND
 
   await testUser1.refreshAmounts(AssetWallet.BEFORE);
 
-  await claimRewards(testUser1, liqIdPromPool2).then((result) => {
-    const eventResponse = getEventResultFromMangataTx(result);
-    expect(eventResponse.state).toEqual(ExtrinsicResult.ExtrinsicSuccess);
-  });
+  await Sudo.batchAsSudoFinalized(
+    Sudo.sudoAs(testUser1, Xyk.claimRewardsAll(liqIdPromPool2))
+  );
 
   await testUser1.refreshAmounts(AssetWallet.AFTER);
 
@@ -284,10 +280,9 @@ test("Given a pool with user with activated rewards  WHEN it was deactivated AND
 
   await testUser1.refreshAmounts(AssetWallet.BEFORE);
 
-  await claimRewards(testUser1, liqIdPromPool2).then((result) => {
-    const eventResponse = getEventResultFromMangataTx(result);
-    expect(eventResponse.state).toEqual(ExtrinsicResult.ExtrinsicSuccess);
-  });
+  await Sudo.batchAsSudoFinalized(
+    Sudo.sudoAs(testUser1, Xyk.claimRewardsAll(liqIdPromPool2))
+  );
 
   await testUser1.refreshAmounts(AssetWallet.AFTER);
 
