@@ -61,11 +61,12 @@ beforeAll(async () => {
   [testUser1] = setupUsers();
 
   await setupBootstrapTokensBalance(bootstrapCurrency, sudo, [testUser1]);
+
+  await sudo.mint(bootstrapCurrency, testUser1, toBN("1", 20));
 });
 
 test("bootstrap - Check non-sudo user cannot start bootstrap", async () => {
   // check that non-sudo user can not start bootstrap
-  await sudo.mint(bootstrapCurrency, testUser1, toBN("1", 20));
   const nonSudoBootstrap = await scheduleBootstrap(
     testUser1,
     MGA_ASSET_ID,
@@ -80,7 +81,6 @@ test("bootstrap - Check non-sudo user cannot start bootstrap", async () => {
 
 test("bootstrap - Check happy path bootstrap with one user", async () => {
   // check that sudo user can start bootstrap
-  await sudo.mint(bootstrapCurrency, testUser1, toBN("1", 20));
   const sudoBootstrap = await scheduleBootstrap(
     sudo,
     MGA_ASSET_ID,
