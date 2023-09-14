@@ -87,9 +87,6 @@ async function findAssetError(userRegisterNewAsset: MangataGenericEvent[]) {
 beforeAll(async () => {
   await setupApi();
   setupUsers();
-});
-
-beforeEach(async () => {
   const keyring = new Keyring({ type: "sr25519" });
   sudo = new User(keyring, sudoUserName);
   testUser1 = new User(keyring);

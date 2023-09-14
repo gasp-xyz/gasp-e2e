@@ -42,37 +42,36 @@ const firstAssetAmount = new BN(50000);
 const secondAssetAmount = new BN(50000);
 const defaultCurrecyValue = new BN(250000);
 
+let testUser1: User;
+let sudo: User;
+
+let keyring: Keyring;
+let firstCurrency: BN;
+let secondCurrency: BN;
+
+const pool_balance_before = [new BN(0), new BN(0)];
+
+beforeAll(async () => {
+  try {
+    getApi();
+  } catch (e) {
+    await initApi();
+  }
+  keyring = new Keyring({ type: "sr25519" });
+
+  // setup users
+  testUser1 = new User(keyring);
+
+  sudo = new User(keyring, sudoUserName);
+
+  // add users to pair.
+  keyring.addPair(testUser1.keyRingPair);
+  keyring.addPair(sudo.keyRingPair);
+
+  await testUser1.addMGATokens(sudo);
+});
+
 describe("xyk-pallet - Buy assets tests: BuyAssets Errors:", () => {
-  let testUser1: User;
-  let sudo: User;
-
-  let keyring: Keyring;
-  let firstCurrency: BN;
-  let secondCurrency: BN;
-
-  const pool_balance_before = [new BN(0), new BN(0)];
-
-  beforeAll(async () => {
-    try {
-      getApi();
-    } catch (e) {
-      await initApi();
-    }
-  });
-
-  beforeEach(async () => {
-    keyring = new Keyring({ type: "sr25519" });
-
-    // setup users
-    testUser1 = new User(keyring);
-
-    sudo = new User(keyring, sudoUserName);
-
-    // add users to pair.
-    keyring.addPair(testUser1.keyRingPair);
-    keyring.addPair(sudo.keyRingPair);
-  });
-
   test("Buy assets that does not belong to any pool", async () => {
     //add two curerncies and balance to testUser:
     [firstCurrency, secondCurrency] = await Assets.setupUserWithCurrencies(
@@ -130,7 +129,6 @@ describe("xyk-pallet - Buy assets tests: BuyAssets Errors:", () => {
       [defaultCurrecyValue, defaultCurrecyValue.add(new BN(1))],
       sudo
     );
-    await testUser1.addMGATokens(sudo);
     await testUser1.refreshAmounts(AssetWallet.BEFORE);
     const poolAmountSecondCurrency = secondAssetAmount.div(new BN(2));
     await createPool(
@@ -167,7 +165,6 @@ describe("xyk-pallet - Buy assets tests: BuyAssets Errors:", () => {
       [defaultCurrecyValue, defaultCurrecyValue.add(new BN(1))],
       sudo
     );
-    await testUser1.addMGATokens(sudo);
     await testUser1.refreshAmounts(AssetWallet.BEFORE);
     const poolAmountSecondCurrency = secondAssetAmount.div(new BN(2));
     await createPool(
@@ -204,7 +201,6 @@ describe("xyk-pallet - Buy assets tests: BuyAssets Errors:", () => {
       [defaultCurrecyValue, defaultCurrecyValue.add(new BN(1))],
       sudo
     );
-    await testUser1.addMGATokens(sudo);
     await testUser1.refreshAmounts(AssetWallet.BEFORE);
     const poolAmountSecondCurrency = secondAssetAmount.div(new BN(2));
     await createPool(
@@ -250,43 +246,12 @@ describe("xyk-pallet - Buy assets tests: BuyAssets Errors:", () => {
 });
 
 describe("xyk-pallet - Buy assets tests: Buying assets you can", () => {
-  let testUser1: User;
-  let sudo: User;
-
-  let keyring: Keyring;
-  let firstCurrency: BN;
-  let secondCurrency: BN;
-
-  //creating pool
-
-  beforeAll(async () => {
-    try {
-      getApi();
-    } catch (e) {
-      await initApi();
-    }
-  });
-
-  beforeEach(async () => {
-    keyring = new Keyring({ type: "sr25519" });
-
-    // setup users
-    testUser1 = new User(keyring);
-
-    sudo = new User(keyring, sudoUserName);
-
-    // add users to pair.
-    keyring.addPair(testUser1.keyRingPair);
-    keyring.addPair(sudo.keyRingPair);
-  });
-
   test("Leave only one asset in the pool", async () => {
     [firstCurrency, secondCurrency] = await Assets.setupUserWithCurrencies(
       testUser1,
       [defaultCurrecyValue, defaultCurrecyValue.add(new BN(1))],
       sudo
     );
-    await testUser1.addMGATokens(sudo);
     await testUser1.refreshAmounts(AssetWallet.BEFORE);
     const poolAmountSecondCurrency = secondAssetAmount.div(new BN(2));
     await createPool(
@@ -378,7 +343,6 @@ describe("xyk-pallet - Buy assets tests: Buying assets you can", () => {
     );
 
     await sudo.mint(thirdCurrency, testUser1, thirdAssetAmount);
-    await testUser1.addMGATokens(sudo);
     await createPool(
       testUser1.keyRingPair,
       firstCurrency,
