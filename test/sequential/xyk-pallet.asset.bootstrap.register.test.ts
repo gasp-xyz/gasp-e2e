@@ -21,7 +21,6 @@ import {
 import {
   claimRewardsBootstrap,
   finalizeBootstrap,
-  provisionBootstrap,
   scheduleBootstrap,
   waitForBootstrapStatus,
 } from "../../utils/Bootstrap";
@@ -35,7 +34,7 @@ import { Sudo } from "../../utils/sudo";
 
 const { sudo: sudoUserName } = getEnvironmentRequiredVars();
 const waitingPeriod = 5;
-const bootstrapPeriod = 9;
+const bootstrapPeriod = 5;
 const poolAssetAmount = new BN(100000);
 jest.setTimeout(1500000);
 jest.spyOn(console, "log").mockImplementation(jest.fn());
@@ -60,21 +59,16 @@ async function runBootstrap(assetId: BN) {
 
   await waitForBootstrapStatus("Public", waitingPeriod);
 
-  const provisionPublicBootstrapCurrency = await provisionBootstrap(
-    testUser1,
-    assetId,
-    poolAssetAmount
+  await Sudo.batchAsSudoFinalized(
+    Sudo.sudoAs(
+      testUser1,
+      api.tx.bootstrap.provision(assetId, poolAssetAmount)
+    ),
+    Sudo.sudoAs(
+      testUser1,
+      api.tx.bootstrap.provision(MGA_ASSET_ID, poolAssetAmount)
+    )
   );
-  eventResponse = getEventResultFromMangataTx(provisionPublicBootstrapCurrency);
-  expect(eventResponse.state).toEqual(ExtrinsicResult.ExtrinsicSuccess);
-
-  const provisionPublicMGA = await provisionBootstrap(
-    testUser1,
-    MGA_ASSET_ID,
-    poolAssetAmount
-  );
-  eventResponse = getEventResultFromMangataTx(provisionPublicMGA);
-  expect(eventResponse.state).toEqual(ExtrinsicResult.ExtrinsicSuccess);
 
   await waitForBootstrapStatus("Finished", bootstrapPeriod);
 
