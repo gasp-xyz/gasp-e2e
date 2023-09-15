@@ -207,7 +207,7 @@ export class Assets {
         null,
         update.location
           ? update.location.location
-            ? { V2: update.location } // Some(location)
+            ? { V3: update.location.location } // Some(location)
             : api.createType("Vec<u8>", "0x0100") // Some(None)
           : null, // None
         update.metadata!

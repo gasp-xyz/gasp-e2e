@@ -22,6 +22,7 @@ import { Assets } from "../../utils/Assets";
 import { sleep } from "../../utils/utils";
 import { User } from "../../utils/User";
 import { KSM_ASSET_ID } from "../../utils/Constants";
+import { Sudo } from "../../utils/sudo";
 /**
  * @group xcm
  */
@@ -506,6 +507,18 @@ describe("XCM transfers", () => {
     ).toMatchSnapshot();
   });
   it.only("[ BNC V3 -> MGA -> BNC V3 ] send KSM to mangata and back", async () => {
+    await setupApi();
+    await setupUsers();
+    await Sudo.asSudoFinalized(
+      Assets.updateAsset(4, {
+        location: {
+          location: {
+            parents: "1",
+            interior: "Here",
+          },
+        },
+      })
+    );
     const mgaSdk = Mangata.instance([mangata.uri]);
     const target = ChainSpecs.get(ChainId.Mg)!;
     await mgaSdk.xTokens.depositFromParachain({
@@ -558,7 +571,7 @@ describe("XCM transfers", () => {
       event: expect.objectContaining({
         data: expect.objectContaining({
           who: "5GrwvaEF5zXb26Fz9rcQpDWS57CtERHpNehXCPcNoHGKutQY",
-          amount: "9,999,241,034,656",
+          amount: "9,999,441,314,656",
         }),
       }),
     });
