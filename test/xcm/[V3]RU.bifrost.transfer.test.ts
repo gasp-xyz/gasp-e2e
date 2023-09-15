@@ -1,5 +1,9 @@
-import { BuildBlockMode, connectParachains } from "@acala-network/chopsticks";
-import { BN_BILLION, BN_HUNDRED, Mangata } from "@mangata-finance/sdk";
+import {
+  BuildBlockMode,
+  connectParachains,
+  connectVertical,
+} from "@acala-network/chopsticks";
+import { BN_BILLION, BN_HUNDRED, Mangata, signTx } from "@mangata-finance/sdk";
 import { BN_FIVE, BN_TEN, BN } from "@polkadot/util";
 import { mangataChopstick } from "../../utils/api";
 import {
@@ -12,15 +16,19 @@ import { waitForEvents } from "../../utils/eventListeners";
 import { XcmNode } from "../../utils/Framework/Node/XcmNode";
 import { ApiContext } from "../../utils/Framework/XcmHelper";
 import XcmNetworks from "../../utils/Framework/XcmNetworks";
-import { alice, api, setupApi, setupUsers } from "../../utils/setup";
+import { alice, api, eve, setupApi, setupUsers } from "../../utils/setup";
 import { expectEvent, expectJson } from "../../utils/validators";
 import { Assets } from "../../utils/Assets";
+import { sleep } from "../../utils/utils";
+import { User } from "../../utils/User";
+import { KSM_ASSET_ID } from "../../utils/Constants";
 /**
  * @group xcm
  */
 describe("XCM transfers", () => {
   let bifrost: ApiContext;
   let mangata: ApiContext;
+  let kusama: ApiContext;
   let bifrostApi: XcmNode;
 
   beforeAll(async () => {
@@ -29,6 +37,9 @@ describe("XCM transfers", () => {
     });
     await setupApi();
     mangata = mangataChopstick!;
+    kusama = await XcmNetworks.kusama();
+    await connectVertical(kusama.chain, bifrost.chain);
+    await connectVertical(kusama.chain, mangata.chain);
     await connectParachains([bifrost.chain, mangata.chain]);
 
     bifrostApi = new XcmNode(bifrost.api, ChainId.Bifrost);
@@ -84,6 +95,20 @@ describe("XCM transfers", () => {
             [alice.keyRingPair.address, { VSToken: "ksm" }],
             { free: BN_BILLION.mul(BN_TEN.pow(new BN(12))).toString() },
           ],
+          [
+            [alice.keyRingPair.address, { Token: "KSM" }],
+            { free: BN_BILLION.mul(BN_TEN.pow(new BN(12))).toString() },
+          ],
+        ],
+      },
+    });
+    await kusama.dev.setStorage({
+      System: {
+        Account: [
+          [
+            [eve.keyRingPair.address],
+            { providers: 1, data: { free: 1000 * 1e12 } },
+          ],
         ],
       },
     });
@@ -102,6 +127,7 @@ describe("XCM transfers", () => {
     });
     await bifrost.chain.newBlock();
     //END-TODO
+    await giveKSMTokensToBifrost(eve);
   });
   it("[ BNC V3 -> MGA -> BNC V3 ] send BNC to mangata and back", async () => {
     const mgaSdk = Mangata.instance([mangata.uri]);
@@ -225,6 +251,7 @@ describe("XCM transfers", () => {
     expectJson(
       await mangata.api.query.tokens.accounts(alice.keyRingPair.address, 14)
     ).toMatchSnapshot();
+    await sleep(10000000);
   });
   it("[ BNC V3 -> MGA -> BNC V3 ] send ZLK to mangata and back", async () => {
     const mgaSdk = Mangata.instance([mangata.uri]);
@@ -478,4 +505,147 @@ describe("XCM transfers", () => {
       await mangata.api.query.tokens.accounts(alice.keyRingPair.address, 16)
     ).toMatchSnapshot();
   });
+  it.only("[ BNC V3 -> MGA -> BNC V3 ] send KSM to mangata and back", async () => {
+    const mgaSdk = Mangata.instance([mangata.uri]);
+    const target = ChainSpecs.get(ChainId.Mg)!;
+    await mgaSdk.xTokens.depositFromParachain({
+      account: eve.keyRingPair,
+      asset: {
+        V3: {
+          id: {
+            Concrete: {
+              parents: 1,
+              interior: "Here",
+            },
+          },
+          fun: {
+            Fungible: BN_TEN.mul(BN_TEN.pow(new BN(12))),
+          },
+        },
+      },
+      destination: {
+        V3: {
+          parents: 1,
+          interior: {
+            X2: [
+              { Parachain: target.parachain },
+              {
+                AccountId32: {
+                  network: undefined,
+                  id: alice.keyRingPair.addressRaw,
+                },
+              },
+            ],
+          },
+        },
+      },
+      url: bifrost.uri,
+      weightLimit: {
+        Limited: {
+          refTime: 800000000,
+          proofSize: 0,
+        },
+      },
+    });
+    await kusama.chain.newBlock();
+    await kusama.chain.newBlock();
+    await mangata.chain.newBlock();
+    await mangata.chain.newBlock();
+    await kusama.chain.newBlock();
+    await kusama.chain.newBlock();
+    await waitForEvents(api, "dmpQueue.ExecutedDownward");
+    expectEvent(await waitForEvents(api, "tokens.Deposited"), {
+      event: expect.objectContaining({
+        data: expect.objectContaining({
+          who: "5GrwvaEF5zXb26Fz9rcQpDWS57CtERHpNehXCPcNoHGKutQY",
+          amount: "9,999,241,034,656",
+        }),
+      }),
+    });
+    await signTx(
+      api,
+      api.tx.xTokens.transfer(
+        KSM_ASSET_ID.toNumber(),
+        BN_FIVE.mul(BN_TEN.pow(new BN(12))),
+        {
+          V3: {
+            parents: 1,
+            interior: {
+              X2: [
+                { Parachain: 2001 },
+                {
+                  AccountId32: {
+                    network: undefined,
+                    id: eve.keyRingPair.addressRaw,
+                  },
+                },
+              ],
+            },
+          },
+        },
+        "Unlimited"
+      ),
+      alice.keyRingPair
+    );
+    await kusama.chain.newBlock();
+    await kusama.chain.newBlock();
+    await mangata.chain.newBlock();
+    await mangata.chain.newBlock();
+    await kusama.chain.newBlock();
+    await kusama.chain.newBlock();
+    await waitForEvents(api, "system.ExtrinsicSuccess");
+    await waitForEvents(bifrost.api, "dmpQueue.ExecutedDownward");
+    expectEvent(await waitForEvents(bifrost.api, "tokens.Deposited"), {
+      event: expect.objectContaining({
+        data: expect.objectContaining({
+          who: "gvzCT9jPBm2tHK2eExdtanafWswum6A8prt5xTN4JjCLnzq",
+          amount: "4,999,693,482,656",
+          currencyId: expect.objectContaining({
+            Token: "KSM",
+          }),
+        }),
+      }),
+    });
+  });
+  async function giveKSMTokensToBifrost(eve: User) {
+    const mgaSdk = Mangata.instance([mangata.uri]);
+    await mgaSdk.xTokens.depositFromKusama({
+      account: eve.keyRingPair,
+      url: kusama.uri,
+      assets: {
+        V3: [
+          {
+            id: { Concrete: { parents: 0, interior: "Here" } },
+            fun: { Fungible: 100e12 },
+          },
+        ],
+      },
+      beneficiary: {
+        V3: {
+          parents: 0,
+          interior: {
+            X1: {
+              AccountId32: {
+                network: undefined,
+                id: eve.keyRingPair.addressRaw,
+              },
+            },
+          },
+        },
+      },
+      destination: {
+        V3: {
+          parents: 0,
+          interior: {
+            X1: { Parachain: 2001 },
+          },
+        },
+      },
+      feeAssetItem: 0,
+      weightLimit: "Unlimited",
+    });
+
+    await kusama.chain.newBlock();
+    await bifrost.chain.newBlock();
+  }
 });
