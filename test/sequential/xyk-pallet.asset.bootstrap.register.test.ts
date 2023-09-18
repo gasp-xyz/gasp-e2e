@@ -33,7 +33,7 @@ import { setupApi, setupUsers } from "../../utils/setup";
 import { Sudo } from "../../utils/sudo";
 
 const { sudo: sudoUserName } = getEnvironmentRequiredVars();
-const waitingPeriod = 5;
+const waitingPeriod = 4;
 const bootstrapPeriod = 5;
 const poolAssetAmount = new BN(100000);
 jest.setTimeout(1500000);
@@ -55,11 +55,10 @@ async function runBootstrap(assetId: BN) {
   );
   await waitSudoOperationSuccess(scheduleBootstrapEvent);
 
-  await sudo.mint(assetId, testUser1, toBN("1", 13));
-
   await waitForBootstrapStatus("Public", waitingPeriod);
 
   await Sudo.batchAsSudoFinalized(
+    Assets.mintToken(assetId, testUser1, toBN("1", 13)),
     Sudo.sudoAs(
       testUser1,
       api.tx.bootstrap.provision(assetId, poolAssetAmount)
