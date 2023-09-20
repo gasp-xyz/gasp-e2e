@@ -86,10 +86,10 @@ describe("xyk-pallet - Buy assets tests: BuyAssets Errors:", () => {
       secondCurrency,
       secondAssetAmount
     );
-
-    await testUser1.refreshAmounts(AssetWallet.BEFORE);
   });
   test("Buy assets that does not belong to any pool", async () => {
+    await testUser1.refreshAmounts(AssetWallet.BEFORE);
+
     const [thirdCurrency] = await Assets.setupUserWithCurrencies(
       testUser1,
       [defaultCurrencyValue],
@@ -133,6 +133,8 @@ describe("xyk-pallet - Buy assets tests: BuyAssets Errors:", () => {
   });
 
   test("Buy more assets than exists in the pool", async () => {
+    await testUser1.refreshAmounts(AssetWallet.BEFORE);
+
     await buyAsset(
       testUser1.keyRingPair,
       firstCurrency,
@@ -152,6 +154,8 @@ describe("xyk-pallet - Buy assets tests: BuyAssets Errors:", () => {
   });
 
   test("Buy all assets from the the pool", async () => {
+    await testUser1.refreshAmounts(AssetWallet.BEFORE);
+
     await buyAsset(
       testUser1.keyRingPair,
       firstCurrency,
@@ -171,6 +175,8 @@ describe("xyk-pallet - Buy assets tests: BuyAssets Errors:", () => {
   });
 
   test("Buy assets with a high expectation: maxInput -1", async () => {
+    await testUser1.refreshAmounts(AssetWallet.BEFORE);
+
     const buyPriceLocal = await calculate_buy_price_rpc(
       firstAssetAmount,
       secondAssetAmount,
@@ -213,19 +219,18 @@ describe("xyk-pallet - Buy assets tests: Buying assets you can", () => {
       sudo
     );
     await testUser1.refreshAmounts(AssetWallet.BEFORE);
-    const poolAmountSecondCurrency = secondAssetAmount.div(new BN(2));
     await createPool(
       testUser1.keyRingPair,
       firstCurrency,
       firstAssetAmount,
       secondCurrency,
-      poolAmountSecondCurrency
+      secondAssetAmount
     );
 
     const buyPriceLocal = await calculate_buy_price_rpc(
       firstAssetAmount,
-      poolAmountSecondCurrency,
-      poolAmountSecondCurrency.sub(new BN(1))
+      secondAssetAmount,
+      secondAssetAmount.sub(new BN(1))
     );
 
     await testUser1.refreshAmounts(AssetWallet.BEFORE);
@@ -236,7 +241,7 @@ describe("xyk-pallet - Buy assets tests: Buying assets you can", () => {
       testUser1.keyRingPair,
       firstCurrency,
       secondCurrency,
-      poolAmountSecondCurrency.sub(new BN(1)),
+      secondAssetAmount.sub(new BN(1)),
       buyPriceLocal.add(new BN(1))
     ).then((result) => {
       const eventResponse = getEventResultFromMangataTx(result, [
@@ -256,7 +261,7 @@ describe("xyk-pallet - Buy assets tests: Buying assets you can", () => {
       new BN(1),
     ]).collectionBnEqual(pool_balance);
 
-    let amount = poolAmountSecondCurrency.sub(new BN(1));
+    let amount = secondAssetAmount.sub(new BN(1));
     const addFromWallet = testUser1
       .getAsset(secondCurrency)
       ?.amountBefore.free!.add(amount);
