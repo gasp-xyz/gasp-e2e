@@ -72,7 +72,7 @@ describe("xyk-pallet - Burn liquidity tests: when burning liquidity you can", ()
     keyring.addPair(sudo.keyRingPair);
   });
 
-  test("Get affected after a transaction that devaluates X wallet & destroy the pool", async () => {
+  test("Get affected after a transaction that devaluates X wallet & pool states with [0,0]", async () => {
     const assetXamount = new BN(1000);
     const assetYamount = new BN(10);
     //create a new user
@@ -158,7 +158,7 @@ describe("xyk-pallet - Burn liquidity tests: when burning liquidity you can", ()
 
     expect([new BN(0), new BN(0)]).collectionBnEqual(poolBalance);
 
-    //Validate liquidity pool is destroyed.
+    //Validate liquidity pool is NOT destroyed.
     const liquidityPool = await getLiquidityPool(liquidityAssetId);
     expect(liquidityPool[0]).bnEqual(firstCurrency);
     expect(liquidityPool[1]).bnEqual(secondCurrency);
