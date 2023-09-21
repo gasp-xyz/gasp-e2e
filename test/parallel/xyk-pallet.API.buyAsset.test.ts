@@ -313,7 +313,7 @@ describe("xyk-pallet - Buy assets tests: Buying assets you can", () => {
       firstCurrency,
       firstAssetAmount,
       secondCurrency,
-      secondAssetAmount.div(new BN(2))
+      secondAssetAmount
     );
     // create a pool between First and Third, P(thirdAssetAmount, thirdAssetAmount/2)
     await createPool(

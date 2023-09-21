@@ -226,8 +226,6 @@ describe("xyk-pallet - Pool tests: a pool can:", () => {
     );
 
     await Sudo.batchAsSudoFinalized(
-      Assets.FinalizeTge(),
-      Assets.initIssuance(),
       Assets.mintNative(testUser1),
       Assets.mintNative(testUser2),
       Sudo.sudoAs(
