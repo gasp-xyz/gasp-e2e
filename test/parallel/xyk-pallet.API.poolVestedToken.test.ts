@@ -219,19 +219,18 @@ describe("xyk-pallet - Vested token tests: which action you can do with vesting 
     ).bnGt(new BN(0));
 
     // eslint-disable-next-line prettier/prettier
-    const maxInstantBurnAmount = (
+    const maxInstantBurnAmount =
       //@ts-ignore
       await api.rpc.xyk.get_max_instant_burn_amount(
         testUser1.keyRingPair.address,
         liquidityID
-      )
-    ).price;
+      );
 
     const burnUnlockedToken = await burnLiquidity(
       testUser1.keyRingPair,
       MGA_ASSET_ID,
       createdToken,
-      maxInstantBurnAmount
+      new BN(maxInstantBurnAmount)
     );
     expect(getEventResultFromMangataTx(burnUnlockedToken).state).toEqual(
       ExtrinsicResult.ExtrinsicSuccess
@@ -306,19 +305,18 @@ describe("xyk-pallet - Vested token tests: which action you can do with vesting 
     expect(userBalanceAfterUnlockingAmount.frozen).bnEqual(new BN(0));
 
     // eslint-disable-next-line prettier/prettier
-    const maxInstantBurnAmount = (
+    const maxInstantBurnAmount =
       //@ts-ignore
       await api.rpc.xyk.get_max_instant_burn_amount(
         testUser1.keyRingPair.address,
         liquidityID
-      )
-    ).price;
+      );
 
     const burnUnlockedToken = await burnLiquidity(
       testUser1.keyRingPair,
       MGA_ASSET_ID,
       createdToken,
-      maxInstantBurnAmount
+      new BN(maxInstantBurnAmount)
     );
     expect(getEventResultFromMangataTx(burnUnlockedToken).state).toEqual(
       ExtrinsicResult.ExtrinsicSuccess
