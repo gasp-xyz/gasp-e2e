@@ -350,7 +350,7 @@ describe("xyk-pallet - Sell assets tests: Selling Assets you can", () => {
       firstCurrency,
       firstAssetAmount,
       secondCurrency,
-      secondAssetAmount.div(new BN(2))
+      secondAssetAmount
     );
 
     await testUser1.refreshAmounts(AssetWallet.BEFORE);
@@ -359,7 +359,7 @@ describe("xyk-pallet - Sell assets tests: Selling Assets you can", () => {
 
     const sellPriceLocal = calculate_sell_price_local(
       firstAssetAmount,
-      secondAssetAmount.div(new BN(2)),
+      secondAssetAmount,
       remainingOfCurrency1.free
     );
     await sellAsset(
@@ -395,7 +395,7 @@ describe("xyk-pallet - Sell assets tests: Selling Assets you can", () => {
     //amounAsset2 = issued  - spent in the pool + bought selling all firstCurerncy.
     const amountAsset2 = defaultCurrencyValue
       .add(new BN(1))
-      .sub(secondAssetAmount.div(new BN(2)))
+      .sub(secondAssetAmount)
       .add(sellPriceLocal);
 
     expect(testUser1.getAsset(secondCurrency)?.amountAfter.free!).bnEqual(
@@ -425,7 +425,7 @@ describe("xyk-pallet - Sell assets tests: Selling Assets you can", () => {
       firstCurrency,
       firstAssetAmount,
       secondCurrency,
-      secondAssetAmount.div(new BN(2))
+      secondAssetAmount
     );
 
     await createPool(
