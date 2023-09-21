@@ -212,6 +212,36 @@ describe("xyk-pallet - Buy assets tests: BuyAssets Errors:", () => {
 });
 
 describe("xyk-pallet - Buy assets tests: Buying assets you can", () => {
+  let testUser1: User;
+  let sudo: User;
+
+  let keyring: Keyring;
+  let firstCurrency: BN;
+  let secondCurrency: BN;
+
+  //creating pool
+
+  beforeAll(async () => {
+    try {
+      getApi();
+    } catch (e) {
+      await initApi();
+    }
+  });
+
+  beforeEach(async () => {
+    keyring = new Keyring({ type: "sr25519" });
+
+    // setup users
+    testUser1 = new User(keyring);
+
+    sudo = new User(keyring, sudoUserName);
+
+    // add users to pair.
+    keyring.addPair(testUser1.keyRingPair);
+    keyring.addPair(sudo.keyRingPair);
+  });
+
   test("Leave only one asset in the pool", async () => {
     [firstCurrency, secondCurrency] = await Assets.setupUserWithCurrencies(
       testUser1,
