@@ -10,7 +10,7 @@ on:
           default: ''
  
   repository_dispatch:
-    types: [run-ci]
+# GonCer: Decommission old app    types: [run-ci]
 jobs:
 
   setup-report:
