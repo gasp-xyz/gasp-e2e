@@ -2151,24 +2151,24 @@
     "@jridgewell/resolve-uri" "^3.1.0"
     "@jridgewell/sourcemap-codec" "^1.4.14"
 
-"@mangata-finance/sdk@^2.0.0":
-  version "2.0.0"
-  resolved "https://registry.yarnpkg.com/@mangata-finance/sdk/-/sdk-2.0.0.tgz#4d81df2812bf065b691561283a32ae23a4d428ba"
-  integrity sha512-YmXzkWc/tvZfWkAkO+MJthFNBbtHPD2Qt/1RCgdCFG3pKR+geZgRVRgHwy2yZP8qmbchlWjY7hAvC9/CmUUXEg==
+
+"@mangata-finance/sdk@https://github.com/mangata-finance/mangata-sdk#feature/new-rpc":
+  version "2.0.0-rc.22"
+  resolved "https://github.com/mangata-finance/mangata-sdk#877578fa53d1cddba12f8be55bb2ff789e22237a"
   dependencies:
-    "@mangata-finance/type-definitions" "1.0.0"
-    big.js "6.2.1"
-    tslog "4.8.2"
+    "@mangata-finance/type-definitions" "2.0.0-rc.6"
+    big.js "^6.2.1"
+    tslog "^4.8.2"
 
-"@mangata-finance/type-definitions@1.0.0":
-  version "1.0.0"
-  resolved "https://registry.yarnpkg.com/@mangata-finance/type-definitions/-/type-definitions-1.0.0.tgz#f6acdf660c742980c1334a63878310cc3c1e21ea"
-  integrity sha512-WfEEtddpPEXrYhsA77aPWdgbjh660lAEv7bRa9U6AUk4fmN57YaQhnwp3o2X9/NgG1+UChsbttCxoa1QkFfV+w==
+"@mangata-finance/type-definitions@2.0.0-rc.6":
+  version "2.0.0-rc.6"
+  resolved "https://registry.yarnpkg.com/@mangata-finance/type-definitions/-/type-definitions-2.0.0-rc.6.tgz#01e3d33d017a7cd65adb1251897c4b5b6d4208e8"
+  integrity sha512-B91nG3IWdp2+95WI1ulzkbBU/ciwpeq2iyFFwy4zEfNV4rmZt8gwVVMXtKyOww2oehvCfa5HUZTFymaOt4MEBg==
 
-"@mangata-finance/types@1.0.0-rc.13":
-  version "1.0.0-rc.13"
-  resolved "https://registry.yarnpkg.com/@mangata-finance/types/-/types-1.0.0-rc.13.tgz#0667e72cc1e7fbca52b3370455f458c7672f7618"
-  integrity sha512-tlOMWIXg64inhQMF5O6itwgpKDSO+0Pse3O0niE9KXTXJqJ0XExxAjD9LjXMjwZtU3hPLupYvUjKqLvc9lPl+Q==
+"@mangata-finance/types@1.1.0-rc.5":
+  version "1.1.0-rc.5"
+  resolved "https://registry.yarnpkg.com/@mangata-finance/types/-/types-1.1.0-rc.5.tgz#fe38f26973119cd912b1f14f5baa9e62bb882270"
+  integrity sha512-coUv7oh7R5g33yQqr1YP/hhS1zTRSZbqmnH+vUcKxGmvYPtpzxrVvtvwEYJmI1lmG+HyhGOru1QUVPYsXNSwPA==
 
 "@mapbox/node-pre-gyp@^1.0.0":
   version "1.0.11"
