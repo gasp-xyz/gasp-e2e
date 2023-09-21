@@ -730,25 +730,25 @@ describe("xyk-pallet: Liquidity sufficiency scenario", () => {
     await signSendFinalized(
       Xyk.burnLiquidity(assetId1, assetId2, amount),
       user2
-    ).catch(checkError(xykErrors.NoSuchPool));
-
+    ).catch(checkError(xykErrors.NotEnoughAssets));
+    testLog.getLog().info("ExpectNoChange On:burnLiquidityFromEmptyPoolTest");
     await expectNoChange();
   }
 
   async function sellAsset1FromEmptyPoolTest() {
-    await sellAssetFail(assetId1, assetId2);
+    await sellAssetFail(assetId1, assetId2, xykErrors.PoolIsEmpty);
   }
 
   async function sellAsset2FromEmptyPoolTest() {
-    await sellAssetFail(assetId2, assetId1);
+    await sellAssetFail(assetId2, assetId1, xykErrors.PoolIsEmpty);
   }
 
   async function buyAsset1FromEmptyPoolTest() {
-    await buyAssetFail(assetId1, assetId2);
+    await buyAssetFail(assetId1, assetId2, xykErrors.PoolIsEmpty);
   }
 
   async function buyAsset2FromEmptyPoolTest() {
-    await buyAssetFail(assetId2, assetId1);
+    await buyAssetFail(assetId2, assetId1, xykErrors.PoolIsEmpty);
   }
 
   async function mint(user: User, other: User) {
@@ -843,27 +843,35 @@ describe("xyk-pallet: Liquidity sufficiency scenario", () => {
       Xyk.burnLiquidity(assetId1, assetId2, excess),
       user
     ).catch(checkError(xykErrors.NotEnoughAssets));
-
+    testLog.getLog().info("ExpectNoChange On:burnLiquidityFail");
     await expectNoChange();
   }
 
-  async function sellAssetFail(sell: BN, buy: BN) {
+  async function sellAssetFail(
+    sell: BN,
+    buy: BN,
+    error = xykErrors.NotEnoughAssets
+  ) {
     const amount = new BN(20000);
 
     await signSendFinalized(Xyk.sellAsset(sell, buy, amount), user2).catch(
-      checkError(xykErrors.NoSuchPool)
+      checkError(error)
     );
-
+    testLog.getLog().info("ExpectNoChange On:sellAssetFail");
     await expectNoChange();
   }
 
-  async function buyAssetFail(sell: BN, buy: BN) {
+  async function buyAssetFail(
+    sell: BN,
+    buy: BN,
+    error = xykErrors.NotEnoughAssets
+  ) {
     const amount = new BN(20000);
 
     await signSendFinalized(Xyk.buyAsset(sell, buy, amount), user2).catch(
-      checkError(xykErrors.NoSuchPool)
+      checkError(error)
     );
-
+    testLog.getLog().info("ExpectNoChange On:buyAssetFail");
     await expectNoChange();
   }
 

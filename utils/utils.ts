@@ -1,7 +1,6 @@
 import { formatBalance } from "@polkadot/util/format";
-import { BN, hexToU8a } from "@polkadot/util";
-import { getApi, getMangataInstance, mangata, initApi } from "./api";
-import { hexToBn, isHex } from "@polkadot/util";
+import { BN, hexToBn, hexToU8a, isHex } from "@polkadot/util";
+import { getApi, getMangataInstance, initApi, mangata } from "./api";
 import { Assets } from "./Assets";
 import { User } from "./User";
 import { getAccountJSON } from "./frontend/utils/Helper";
@@ -15,9 +14,10 @@ import { Sudo } from "./sudo";
 import { setupApi, setupUsers } from "./setup";
 import { Xyk } from "./xyk";
 import { MGA_ASSET_ID } from "./Constants";
-import { BN_HUNDRED, BN_ONE } from "@mangata-finance/sdk";
+import { BN_HUNDRED, BN_ONE, MangataGenericEvent } from "@mangata-finance/sdk";
 import _ from "lodash";
 import Keyring from "@polkadot/keyring";
+import jsonpath from "jsonpath";
 
 export function sleep(ms: number) {
   return new Promise((resolve) => {
@@ -35,8 +35,7 @@ export function fromBNToUnitString(value: BN) {
 export function fromStringToUnitString(value: string) {
   const stringWithoutCommas = value.split(",").join("");
   const valueBN = new BN(stringWithoutCommas);
-  const unitString = fromBNToUnitString(valueBN);
-  return unitString;
+  return fromBNToUnitString(valueBN);
 }
 
 export function getMangataApiUrlPort() {
@@ -425,11 +424,7 @@ export async function getTokensDiffForBlockAuthor(blockNumber: AnyNumber) {
 
 export async function getUserBalanceOfToken(tokenId: BN, account: User) {
   const api = getApi();
-  const tokenBalance = await api.query.tokens.accounts(
-    account.keyRingPair.address,
-    tokenId
-  );
-  return tokenBalance;
+  return await api.query.tokens.accounts(account.keyRingPair.address, tokenId);
 }
 
 export async function getBlockNumber(): Promise<number> {
@@ -505,6 +500,7 @@ export enum xykErrors {
   MathOverflow = "MathOverflow",
   LiquidityTokenCreationFailed = "LiquidityTokenCreationFailed",
   FunctionNotAvailableForThisToken = "FunctionNotAvailableForThisToken",
+  PoolIsEmpty = "PoolIsEmpty",
 }
 
 export enum feeLockErrors {
@@ -629,6 +625,7 @@ export async function swapEachNBlocks(period: number) {
       )
     )
   );
+  // noinspection InfiniteLoopJS
   while (true) {
     await sellAsset(
       testUser4.keyRingPair,
@@ -651,4 +648,17 @@ export async function getUserSubIdentity(user: User) {
   const api = getApi();
   const identity = await api.query.identity.superOf(user.keyRingPair.address);
   return JSON.parse(JSON.stringify(identity.toHuman()));
+}
+
+export function isBadOriginError(events: MangataGenericEvent[]) {
+  // Define the JSONPath expression to search for the key
+  const key = "badOrigin";
+  testLog
+    .getLog()
+    .info(`Looking for badOrigin here: ${JSON.stringify(events)}`);
+  const matches = jsonpath.query(
+    JSON.parse(JSON.stringify(events)),
+    `$..${key}`
+  );
+  return matches.length > 0;
 }

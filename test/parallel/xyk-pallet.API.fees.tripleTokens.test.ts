@@ -23,6 +23,7 @@ import {
 } from "../../utils/Constants";
 import { Sudo } from "../../utils/sudo";
 import { setupUsers, setupApi } from "../../utils/setup";
+import { Xyk } from "../../utils/xyk";
 
 jest.spyOn(console, "log").mockImplementation(jest.fn());
 jest.spyOn(console, "error").mockImplementation(jest.fn());
@@ -42,7 +43,7 @@ const { sudo: sudoUserName } = getEnvironmentRequiredVars();
 
 let cost: RuntimeDispatchInfo;
 
-const defaultCurrecyValue = new BN(250000);
+const defaultCurrencyValue = new BN(250000);
 
 beforeAll(async () => {
   try {
@@ -58,20 +59,29 @@ beforeAll(async () => {
   //add MGA tokens for creating pool.
   await sudo.addMGATokens(sudo);
 
-  //add two curerncies and balance to sudo:
+  //add two currencies and balance to sudo:
   [firstCurrency, secondCurrency] = await Assets.setupUserWithCurrencies(
     sudo,
-    [defaultCurrecyValue, defaultCurrecyValue],
+    [defaultCurrencyValue, defaultCurrencyValue],
     sudo
   );
 
   keyring.addPair(sudo.keyRingPair);
 
-  await sudo.createPoolToAsset(
-    first_asset_amount,
-    second_asset_amount,
-    firstCurrency,
-    secondCurrency
+  await Sudo.batchAsSudoFinalized(
+    Assets.mintNative(sudo),
+    Xyk.createPool(
+      MGA_ASSET_ID,
+      first_asset_amount,
+      secondCurrency,
+      second_asset_amount
+    ),
+    Xyk.createPool(
+      firstCurrency,
+      first_asset_amount,
+      secondCurrency,
+      second_asset_amount
+    )
   );
 });
 
@@ -89,8 +99,8 @@ beforeEach(async () => {
   await setupApi();
   await setupUsers();
   await Sudo.batchAsSudoFinalized(
-    Assets.mintToken(firstCurrency, testUser1, defaultCurrecyValue),
-    Assets.mintToken(secondCurrency, testUser1, defaultCurrecyValue)
+    Assets.mintToken(firstCurrency, testUser1, defaultCurrencyValue),
+    Assets.mintToken(secondCurrency, testUser1, defaultCurrencyValue)
   );
 });
 
@@ -365,4 +375,48 @@ test("xyk-pallet - Check required fee - User with very few  MGA, very few KSM an
     "1010: Invalid Transaction: Inability to pay some fees , e.g. account balance too low"
   );
   expect(exception).toBeTruthy();
+});
+test.skip("BUG under discussion:xyk-pallet - when minting all MGX should pay fees with ksm ?- Check required fee - User with very few MGA, some KSM and very few TUR", async () => {
+  await setupApi();
+  await setupUsers();
+  await Sudo.batchAsSudoFinalized(
+    Assets.mintToken(TUR_ASSET_ID, testUser1, new BN(100000)),
+    Assets.mintToken(KSM_ASSET_ID, testUser1),
+    Assets.mintToken(MGA_ASSET_ID, testUser1, Assets.DEFAULT_AMOUNT),
+    Assets.mintToken(secondCurrency, testUser1, Assets.DEFAULT_AMOUNT)
+  );
+  await testUser1.refreshAmounts(AssetWallet.BEFORE);
+
+  await mintLiquidity(
+    testUser1.keyRingPair,
+    MGA_ASSET_ID,
+    secondCurrency,
+    Assets.DEFAULT_AMOUNT.subn(100000),
+    Assets.DEFAULT_AMOUNT
+  ).then((result) => {
+    const eventResponse = getEventResultFromMangataTx(result);
+    expect(eventResponse.state).toEqual(ExtrinsicResult.ExtrinsicSuccess);
+  });
+
+  await testUser1.refreshAmounts(AssetWallet.AFTER);
+
+  const deductedMGATkns = testUser1
+    .getAsset(MGA_ASSET_ID)
+    ?.amountBefore.free.sub(
+      testUser1.getAsset(MGA_ASSET_ID)?.amountAfter.free!
+    );
+  const deductedKSMTkns = testUser1
+    .getAsset(KSM_ASSET_ID)
+    ?.amountBefore.free.sub(
+      testUser1.getAsset(KSM_ASSET_ID)?.amountAfter.free!
+    );
+  const deductedTURTkns = testUser1
+    .getAsset(TUR_ASSET_ID)
+    ?.amountBefore.free.sub(
+      testUser1.getAsset(TUR_ASSET_ID)?.amountAfter.free!
+    );
+
+  expect(deductedMGATkns).bnEqual(new BN(0));
+  expect(deductedKSMTkns).bnGt(new BN(0));
+  expect(deductedTURTkns).bnEqual(new BN(0));
 });

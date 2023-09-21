@@ -16,7 +16,7 @@ import {
   getLiquidityAssetId,
   burnLiquidity,
   getRewardsInfo,
-  claimRewardsAll,
+  claimRewards,
 } from "../../utils/tx";
 import { setupApi, setupUsers } from "../../utils/setup";
 import { ExtrinsicResult, waitForRewards } from "../../utils/eventListeners";
@@ -198,7 +198,7 @@ describe("rewards v2 tests", () => {
       );
       expect(rewardsInfo.activatedAmount).bnEqual(assetAmount.divn(2));
       expect(rewardsInfo.rewardsNotYetClaimed).bnEqual(availableRewardsBefore);
-      const events = await claimRewardsAll(testUser2, liqId);
+      const events = await claimRewards(testUser2, liqId);
       const { claimedAmount } = getClaimedAmount(events);
       await testUser2.refreshAmounts(AssetWallet.AFTER);
       const incrementedMGAs = testUser2
