@@ -5,7 +5,7 @@ on:
   workflow_dispatch:
  
   repository_dispatch:
-    types: [run-ci]
+# Goncer: Old app is decomissioned    types: [run-ci]
 jobs:
 
   setup-report:
