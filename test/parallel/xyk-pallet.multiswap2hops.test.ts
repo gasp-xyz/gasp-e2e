@@ -13,7 +13,7 @@ import { ExtrinsicResult } from "../../utils/eventListeners";
 import { BN } from "@polkadot/util";
 import { User, AssetWallet } from "../../utils/User";
 import { getUserBalanceOfToken } from "../../utils/utils";
-import { setupApi, setup5PoolsChained } from "../../utils/setup";
+import { setupApi, setup5PoolsChained, sudo } from "../../utils/setup";
 import {
   getBalanceOfPool,
   getEventResultFromMangataTx,
@@ -24,6 +24,9 @@ import {
   EVENT_SECTION_PAYMENT,
   MGA_ASSET_ID,
 } from "../../utils/Constants";
+import { Xyk } from "../../utils/xyk";
+import { Assets } from "../../utils/Assets";
+import { Sudo } from "../../utils/sudo";
 
 jest.spyOn(console, "log").mockImplementation(jest.fn());
 jest.setTimeout(1500000);
@@ -117,16 +120,25 @@ describe("Multiswap [2 hops] - happy paths", () => {
     expect(eventResponse.state).toEqual(ExtrinsicResult.ExtrinsicSuccess);
   });
   test("[gasless] Fees - multi-swap roll backs all the swaps when one fail but 0.3% is charged", async () => {
-    const assetIdNotPairedInSetup = new BN(7);
+    const assetIdWithSmallPool = new BN(7);
+    await Sudo.batchAsSudoFinalized(
+      Assets.mintToken(assetIdWithSmallPool, sudo, new BN(1)),
+      Assets.mintToken(tokenIds[tokenIds.length - 1], sudo, new BN(1)),
+      Xyk.createPool(
+        tokenIds[tokenIds.length - 1],
+        new BN(1),
+        assetIdWithSmallPool,
+        new BN(1)
+      )
+    );
     const swapAmount = new BN(100000);
     const testUser1 = users[2];
-    const listWithUnpairedToken = [...tokenIds];
-    testUser1.addAssets(listWithUnpairedToken);
+    const listIncludingSmallPool = tokenIds.concat([assetIdWithSmallPool]);
+    testUser1.addAssets(listIncludingSmallPool);
     await testUser1.refreshAmounts(AssetWallet.BEFORE);
-    listWithUnpairedToken.push(new BN(assetIdNotPairedInSetup));
     const multiSwapOutput = await multiSwapSell(
       testUser1,
-      listWithUnpairedToken,
+      listIncludingSmallPool,
       swapAmount,
       BN_TEN_THOUSAND
     );
@@ -143,11 +155,11 @@ describe("Multiswap [2 hops] - happy paths", () => {
     ).toBeTruthy();
     expect(
       walletsModifiedInSwap.some((token) =>
-        token.currencyId.eq(listWithUnpairedToken[0])
+        token.currencyId.eq(listIncludingSmallPool[0])
       )
     ).toBeTruthy();
     const changeInSoldAsset = walletsModifiedInSwap.find((token) =>
-      token.currencyId.eq(listWithUnpairedToken[0])
+      token.currencyId.eq(listIncludingSmallPool[0])
     )?.diff.free;
     const expectedFeeCharged = swapAmount
       .muln(3)
