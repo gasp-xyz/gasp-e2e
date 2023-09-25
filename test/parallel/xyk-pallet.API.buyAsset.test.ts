@@ -240,6 +240,7 @@ describe("xyk-pallet - Buy assets tests: Buying assets you can", () => {
     // add users to pair.
     keyring.addPair(testUser1.keyRingPair);
     keyring.addPair(sudo.keyRingPair);
+    await testUser1.addMGATokens(sudo);
   });
 
   test("Leave only one asset in the pool", async () => {
