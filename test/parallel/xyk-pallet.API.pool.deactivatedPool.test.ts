@@ -60,6 +60,8 @@ beforeEach(async () => {
   );
 
   await Sudo.batchAsSudoFinalized(
+    Assets.FinalizeTge(),
+    Assets.initIssuance(),
     Assets.mintToken(token1, testUser1, Assets.DEFAULT_AMOUNT),
     Assets.mintNative(testUser1),
     Assets.mintToken(token1, testUser2, Assets.DEFAULT_AMOUNT),
