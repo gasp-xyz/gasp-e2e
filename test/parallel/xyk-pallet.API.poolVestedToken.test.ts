@@ -26,7 +26,7 @@ import {
   transferAsset,
   unlockVestedToken,
 } from "../../utils/tx";
-import { toBN } from "@mangata-finance/sdk";
+import { BN_ZERO, toBN } from "@mangata-finance/sdk";
 import { getEnvironmentRequiredVars, getBlockNumber } from "../../utils/utils";
 import { User } from "../../utils/User";
 import { Xyk } from "../../utils/xyk";
@@ -70,7 +70,7 @@ async function createPoolAndVestingToken(
 
   liquidityID = await getLiquidityAssetId(MGA_ASSET_ID, createdToken);
 
-  if (needPromotePool === true) {
+  if (needPromotePool) {
     const promotingPool = await promotePool(sudo.keyRingPair, liquidityID);
     expect(getEventResultFromMangataTx(promotingPool).state).toEqual(
       ExtrinsicResult.ExtrinsicSuccess
@@ -93,7 +93,7 @@ async function createPoolAndVestingToken(
     createdToken
   );
 
-  if (needPromotePool === true) {
+  if (needPromotePool) {
     const userBalanceAfterMinting = await api.query.tokens.accounts(
       testUser1.keyRingPair.address,
       liquidityID
@@ -195,7 +195,6 @@ describe("xyk-pallet - Vested token tests: which action you can do with vesting 
       testUser1.keyRingPair.address,
       liquidityID
     );
-
     expect(
       userBalanceBeforeAmount.free.sub(userBalanceBeforeAmount.frozen)
     ).bnEqual(new BN(0));
@@ -218,7 +217,14 @@ describe("xyk-pallet - Vested token tests: which action you can do with vesting 
       )
     ).bnGt(new BN(0));
 
-    // eslint-disable-next-line prettier/prettier
+    const howManyCanBeUnReserved =
+      // @ts-ignore
+      await api.rpc.xyk.get_max_instant_unreserve_amount(
+        testUser1.keyRingPair.address,
+        liquidityID.toString()
+      );
+    expect(howManyCanBeUnReserved).bnEqual(BN_ZERO);
+
     const maxInstantBurnAmount =
       //@ts-ignore
       await api.rpc.xyk.get_max_instant_burn_amount(
