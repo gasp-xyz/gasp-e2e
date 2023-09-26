@@ -158,7 +158,7 @@ export async function getBurnAmount(
     secondTokenId: secondAssetId.toString(),
     amount: liquidityAssetAmount,
   });
-  testLog.getLog().info(result[0]);
+  testLog.getLog().info(result.firstAssetAmount.toString());
   return result;
 }
 

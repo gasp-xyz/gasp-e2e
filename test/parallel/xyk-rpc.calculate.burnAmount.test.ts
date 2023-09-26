@@ -73,8 +73,8 @@ describe("xyk-rpc - calculate get_burn amount: OK", () => {
         dictAssets.get(secondIdx)!,
         amount
       );
-      expect(burnAmount[0]).bnEqual(expected);
-      expect(burnAmount[1]).bnEqual(expected);
+      expect(burnAmount.firstAssetAmount).bnEqual(expected);
+      expect(burnAmount.secondAssetAmount).bnEqual(expected);
     }
   );
 });
@@ -109,8 +109,8 @@ describe("xyk-rpc - calculate get_burn amount: Missing requirements", () => {
         dictAssets.get(secondIdx)!,
         amount
       );
-      expect(burnAmount[0]).bnEqual(expected);
-      expect(burnAmount[1]).bnEqual(expected);
+      expect(burnAmount.firstAssetAmount).bnEqual(expected);
+      expect(burnAmount.secondAssetAmount).bnEqual(expected);
     }
   );
 
@@ -120,8 +120,8 @@ describe("xyk-rpc - calculate get_burn amount: Missing requirements", () => {
       new BN(12346),
       new BN(10000000)
     );
-    expect(burnAmount[0]).bnEqual(BN_ZERO);
-    expect(burnAmount[1]).bnEqual(BN_ZERO);
+    expect(burnAmount.firstAssetAmount).bnEqual(BN_ZERO);
+    expect(burnAmount.secondAssetAmount).bnEqual(BN_ZERO);
   });
 });
 
@@ -175,11 +175,15 @@ describe("xyk-rpc - calculate get_burn amount: RPC result matches with burn amou
     await sudo.refreshAmounts(AssetWallet.AFTER);
     const poolAfter = await getBalanceOfPool(firstAssetId, secondAssetId);
 
-    expect(new BN(burnAmount[0])).bnEqual(poolBefore[0].sub(poolAfter[0]));
-    expect(new BN(burnAmount[1])).bnEqual(poolBefore[1].sub(poolAfter[1]));
+    expect(new BN(burnAmount.firstAssetAmount)).bnEqual(
+      poolBefore[0].sub(poolAfter[0])
+    );
+    expect(new BN(burnAmount.secondAssetAmount)).bnEqual(
+      poolBefore[1].sub(poolAfter[1])
+    );
 
     expect(sudo.getAsset(firstAssetId)?.amountAfter.free!).bnEqual(
-      new BN(burnAmount[0])
+      new BN(burnAmount.firstAssetAmount)
     );
     expect(
       sudo
@@ -187,6 +191,6 @@ describe("xyk-rpc - calculate get_burn amount: RPC result matches with burn amou
         ?.amountAfter.free.sub(
           sudo.getAsset(secondAssetId)?.amountBefore.free!
         )!
-    ).bnEqual(new BN(burnAmount[1]));
+    ).bnEqual(new BN(burnAmount.secondAssetAmount));
   });
 });
