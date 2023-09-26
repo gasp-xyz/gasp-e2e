@@ -175,8 +175,12 @@ describe("xyk-rpc - calculate get_burn amount: RPC result matches with burn amou
     await sudo.refreshAmounts(AssetWallet.AFTER);
     const poolAfter = await getBalanceOfPool(firstAssetId, secondAssetId);
 
-    expect(new BN(burnAmount.firstAssetAmount)).bnEqual(poolBefore[0].sub(poolAfter[0]));
-    expect(new BN(burnAmount.secondAssetAmount)).bnEqual(poolBefore[1].sub(poolAfter[1]));
+    expect(new BN(burnAmount.firstAssetAmount)).bnEqual(
+      poolBefore[0].sub(poolAfter[0])
+    );
+    expect(new BN(burnAmount.secondAssetAmount)).bnEqual(
+      poolBefore[1].sub(poolAfter[1])
+    );
 
     expect(sudo.getAsset(firstAssetId)?.amountAfter.free!).bnEqual(
       new BN(burnAmount.firstAssetAmount)
