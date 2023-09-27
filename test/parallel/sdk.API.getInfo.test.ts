@@ -228,12 +228,11 @@ test("check RPC", async () => {
   const poolAssetsInfo = (await mangata.rpc.getTradeableTokens()).filter((id) =>
     id.name.includes("LiquidityPoolToken")
   );
-  const namesToDeleteSet = new Set(liqudityAssetsInfo);
+  const tokenIdToDeleteSet = new Set(liqudityAssetsInfo);
   const deactivatedPoolAssetsInfo = poolAssetsInfo.filter((id) => {
-    return !namesToDeleteSet.has(id.name);
+    return !tokenIdToDeleteSet.has(id.tokenId);
   });
 
   expect(liqudityAssetsInfo).toContain(deactivatedPoolId);
-  expect(poolAssetsInfo).bnGt(BN_ZERO);
-  expect(deactivatedPoolAssetsInfo).bnGt(BN_ZERO);
+  expect(deactivatedPoolAssetsInfo).not.toContain(deactivatedPoolId);
 });
