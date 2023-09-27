@@ -40,6 +40,7 @@ beforeAll(async () => {
   } catch (e) {
     await initApi();
   }
+
   keyring = new Keyring({ type: "sr25519" });
 
   // setup users
@@ -192,4 +193,47 @@ test("check calculateMintingFutureRewards", async () => {
     blocksToPass
   );
   expect(mintingRewards).bnGt(BN_ZERO);
+});
+
+test("check getAssetsInfo", async () => {
+  const assetsInfo = await mangata.query.getAssetsInfo();
+  expect(assetsInfo).bnGt(BN_ZERO);
+});
+
+test("check RPC", async () => {
+  const [token2] = await Assets.setupUserWithCurrencies(
+    sudo,
+    [defaultCurrencyValue],
+    sudo
+  );
+  await Sudo.batchAsSudoFinalized(
+    Assets.mintToken(token2, testUser, Assets.DEFAULT_AMOUNT),
+    Sudo.sudoAs(
+      testUser,
+      Xyk.createPool(
+        MGA_ASSET_ID,
+        Assets.DEFAULT_AMOUNT.divn(2),
+        token2,
+        Assets.DEFAULT_AMOUNT.divn(2)
+      )
+    ),
+    Sudo.sudoAs(
+      testUser,
+      Xyk.burnLiquidity(MGA_ASSET_ID, token2, Assets.DEFAULT_AMOUNT.divn(2))
+    )
+  );
+  const deactivatedPoolId = getLiquidityAssetId(MGA_ASSET_ID, token2);
+
+  const liqudityAssetsInfo = await mangata.rpc.getLiquidityTokensForTrading();
+  const poolAssetsInfo = (await mangata.rpc.getTradeableTokens()).filter((id) =>
+    id.name.includes("LiquidityPoolToken")
+  );
+  const namesToDeleteSet = new Set(liqudityAssetsInfo);
+  const deactivatedPoolAssetsInfo = poolAssetsInfo.filter((id) => {
+    return !namesToDeleteSet.has(id.name);
+  });
+
+  expect(liqudityAssetsInfo).toContain(deactivatedPoolId);
+  expect(poolAssetsInfo).bnGt(BN_ZERO);
+  expect(deactivatedPoolAssetsInfo).bnGt(BN_ZERO);
 });
