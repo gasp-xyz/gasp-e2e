@@ -72,7 +72,11 @@ export class Assets {
           Assets.registerAsset(
             `TEST_${assetId}`,
             this.getAssetName(assetId.toString()),
-            new BN(18)
+            new BN(18),
+            undefined,
+            undefined,
+            undefined,
+            assetId
           )
         );
       }
