@@ -23,6 +23,8 @@ import { Assets } from "../../utils/Assets";
 import { getEnvironmentRequiredVars } from "../../utils/utils";
 import { testLog } from "../../utils/Logger";
 import { getEventResultFromMangataTx } from "../../utils/txHandler";
+import { Sudo } from "../../utils/sudo";
+import { Xyk } from "../../utils/xyk";
 
 jest.spyOn(console, "log").mockImplementation(jest.fn());
 jest.setTimeout(1500000);
@@ -67,13 +69,20 @@ beforeEach(async () => {
     [defaultCurrecyValue, defaultCurrecyValue.add(new BN(1))],
     sudo
   );
-  await testUser1.addMGATokens(sudo);
-  await testUser1.createPoolToAsset(
-    new BN(40000),
-    new BN(30000),
-    firstCurrency,
-    secondCurrency
+
+  await Sudo.batchAsSudoFinalized(
+    Assets.mintNative(testUser1),
+    Sudo.sudoAs(
+      testUser1,
+      Xyk.createPool(
+        firstCurrency,
+        new BN(40000),
+        secondCurrency,
+        new BN(30000)
+      )
+    )
   );
+
   liquidityAssetId = await getLiquidityAssetId(firstCurrency, secondCurrency);
   testUser1.addAsset(liquidityAssetId);
   testUser2.addAsset(liquidityAssetId);

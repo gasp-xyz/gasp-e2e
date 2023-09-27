@@ -98,13 +98,15 @@ beforeEach(async () => {
 
   [testUser1] = setupUsers();
 
-  await sudo.mint(firstCurrency, testUser1, new BN(100000));
+  await Sudo.batchAsSudoFinalized(
+    Assets.mintNative(testUser1),
+    Assets.mintToken(firstCurrency, testUser1, new BN(100000))
+  );
 });
 
 test("gasless- GIVEN a feeLock configured WHEN a swap happens THEN fees are not charged but locked instead", async () => {
   const api = getApi();
 
-  await testUser1.addMGATokens(sudo);
   testUser1.addAsset(MGA_ASSET_ID);
 
   const { feeLockAmount } = await getFeeLockMetadata(api);
@@ -140,7 +142,6 @@ test("gasless- GIVEN a feeLock configured WHEN a swap happens THEN fees are not 
 test("gasless- GIVEN a correct config for gasless swaps WHEN the user runs unlock-fee THEN fees are not charged for token unlockFee", async () => {
   const api = getApi();
 
-  await testUser1.addMGATokens(sudo);
   testUser1.addAsset(MGA_ASSET_ID);
 
   const saleAssetValue = thresholdValue.sub(new BN(5));
@@ -179,8 +180,6 @@ test("gasless- GIVEN a correct config for gasless swaps WHEN the user runs unloc
 });
 
 test("gasless- High-value swaps are rejected from the txn pool if they would fail before the percentage fee is charged", async () => {
-  await testUser1.addMGATokens(sudo);
-
   await checkErrorSellAsset(
     testUser1,
     MGA_ASSET_ID,
@@ -217,7 +216,6 @@ test("gasless- For low-value swaps, token reservation status and pallet storage 
 
   const { feeLockAmount, periodLength } = await getFeeLockMetadata(api);
 
-  await testUser1.addMGATokens(sudo);
   testUser1.addAsset(MGA_ASSET_ID);
   await checkAccountFeeLockData(0, 0);
 
