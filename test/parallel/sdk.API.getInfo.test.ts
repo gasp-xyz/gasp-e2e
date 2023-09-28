@@ -195,11 +195,6 @@ test("check calculateMintingFutureRewards", async () => {
   expect(mintingRewards).bnGt(BN_ZERO);
 });
 
-test.skip("TODO: we need to add functions https://mangatafinance.atlassian.net/browse/MGX-86", async () => {
-  const assetsInfo = await mangata.query.getAssetsInfo();
-  expect(assetsInfo).bnGt(BN_ZERO);
-});
-
 test("check RPC", async () => {
   const [token2] = await Assets.setupUserWithCurrencies(
     sudo,
