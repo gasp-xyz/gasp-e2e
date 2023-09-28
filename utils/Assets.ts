@@ -56,7 +56,7 @@ export class Assets {
     skipInfo = false
   ): Promise<BN[]> {
     const legacy = false;
-    if (legacy) {
+    if (legacy || skipInfo) {
       const txs: Extrinsic[] = [];
       await setupApi();
       await setupUsers();
@@ -95,6 +95,8 @@ export class Assets {
         tokenIds.push(tokenId);
       }
       await Sudo.batchAsSudoFinalized(...txs);
+      user.addAssets(tokenIds);
+      await user.refreshAmounts();
       return tokenIds;
     }
   }
