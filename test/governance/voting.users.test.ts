@@ -1,3 +1,4 @@
+//Elections are disabled. Hence, skipping the test
 /*
  * @group elections
  */

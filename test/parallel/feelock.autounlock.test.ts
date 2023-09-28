@@ -1,5 +1,6 @@
 /*
  *
+ * @group parallel
  * @group paralgasless
  */
 import { jest } from "@jest/globals";
