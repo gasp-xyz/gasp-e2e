@@ -1,7 +1,6 @@
 /*
  *
  * @group xyk
- * @group poolliquidity
  * @group rewardsV2Parallel
  */
 import { jest } from "@jest/globals";
