@@ -1,3 +1,10 @@
+/*
+ * @group xyk
+ * @group api
+ * @group sequential
+ * @group critical
+ */
+
 import { BN } from "@polkadot/util";
 import { setupApi, setupUsers } from "../../utils/setup";
 import { Sudo } from "../../utils/sudo";
@@ -42,12 +49,6 @@ async function validateTreasuryAmountsEqual(
   expect(treasuryBurn).bnEqual(expectedTreasuryBurn);
 }
 
-/**
- * @group xyk
- * @group api
- * @group sequential
- * @group critical
- */
 describe("xyk-pallet - treasury tests [Mangata]: on treasury we store", () => {
   let currency: BN;
   let user: User;

@@ -1,6 +1,7 @@
 /*
  *
  * @group paralgasless
+ * @group parallel
  */
 import { jest } from "@jest/globals";
 import { Keyring } from "@polkadot/api";

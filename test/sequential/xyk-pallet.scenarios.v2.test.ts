@@ -1,3 +1,9 @@
+/*
+ * @group xyk
+ * @group sequential
+ * @group critical
+ */
+
 import {
   calculateFees,
   calculateLiqAssetAmount,
@@ -34,11 +40,6 @@ function assetsBeforeFree(user: User): BN[] {
   return user.assets.map((asset) => asset.amountBefore.free);
 }
 
-/**
- * @group xyk
- * @group sequential
- * @group critical
- */
 describe("xyk-pallet: Happy case scenario", () => {
   let xykPalletUser: User;
   let assetId1: BN;
