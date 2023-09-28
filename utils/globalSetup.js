@@ -1,10 +1,12 @@
 /* eslint-disable no-console */
-import { setupGasLess } from "./setup";
+import { setupApi, setupGasLess, setupUsers } from "./setup";
 import dotenv from "dotenv";
 import ipc from "node-ipc";
 import { getApi, initApi } from "./api";
 import { getEnvironmentRequiredVars } from "./utils";
 import { Keyring } from "@polkadot/api";
+import { Assets } from "./Assets";
+import { Sudo } from "./sudo";
 
 dotenv.config();
 
@@ -28,6 +30,8 @@ const globalConfig = async (globalConfig, projectConfig) => {
   const sudoKeyringPair = keyring.createFromUri(sudo);
   const nonce = await api.rpc.system.accountNextIndex(sudoKeyringPair.address);
   let numCollators = (await api?.query.parachainStaking.candidatePool()).length;
+  let assetIds = await registerAssets();
+  assetIds = assetIds.reverse();
   console.info(`${nonce}`);
   console.info(`${numCollators}`);
 
@@ -42,6 +46,11 @@ const globalConfig = async (globalConfig, projectConfig) => {
       ipc.server.emit(socket, "candidate-" + data.id, numCollators);
       numCollators = numCollators + 1;
     });
+    ipc.server.on("getTokenId", (data, socket) => {
+      const assetId = assetIds.pop();
+      console.info("serving getTokenId" + data.id + assetId);
+      ipc.server.emit(socket, "TokenId-" + data.id, assetId);
+    });
   });
   ipc.server.start();
 
@@ -54,3 +63,19 @@ const globalConfig = async (globalConfig, projectConfig) => {
 };
 
 export default globalConfig;
+
+async function registerAssets(num = 300) {
+  await setupApi();
+  setupUsers();
+  const txs = [
+    ...Array(num)
+      .fill(0)
+      .map((_, i) => {
+        return Assets.registerAsset(`TEST_${i}`, `TKN_${i}`, 18);
+      }),
+  ];
+  const result = await Sudo.batchAsSudoFinalized(...txs);
+  return result
+    .filter((X) => X.method === "RegisteredAsset")
+    .map((t) => t.eventData[0].data.toString());
+}

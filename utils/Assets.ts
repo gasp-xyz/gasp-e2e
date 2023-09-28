@@ -16,6 +16,7 @@ import {
 } from "./txHandler";
 import { User } from "./User";
 import { MangataTypesAssetsCustomMetadata } from "@polkadot/types/lookup";
+import { SudoDB } from "./SudoDB";
 
 export class Assets {
   static MG_UNIT: BN = BN_TEN.pow(new BN(18));
@@ -54,33 +55,48 @@ export class Assets {
     _sudo: User,
     skipInfo = false
   ): Promise<BN[]> {
-    const txs: Extrinsic[] = [];
-    await setupApi();
-    await setupUsers();
-    for (let currency = 0; currency < currencyValues.length; currency++) {
-      txs.push(Assets.issueToken(user, currencyValues[currency]));
-    }
-    const result = await Sudo.batchAsSudoFinalized(...txs);
-    const assetIds: BN[] = result
-      .filter((X) => X.method === "Issued")
-      .map((t) => new BN(t.eventData[0].data.toString()));
-    const addInfos: Extrinsic[] = [];
-    if (!skipInfo) {
-      for (let index = 0; index < assetIds.length; index++) {
-        const assetId = assetIds[index];
-        addInfos.push(
-          Assets.registerAsset(
-            `TEST_${assetId}`,
-            this.getAssetName(assetId.toString()),
-            new BN(18)
-          )
-        );
+    const legacy = false;
+    if (legacy) {
+      const txs: Extrinsic[] = [];
+      await setupApi();
+      await setupUsers();
+      for (let currency = 0; currency < currencyValues.length; currency++) {
+        txs.push(Assets.issueToken(user, currencyValues[currency]));
       }
-      await Sudo.batchAsSudoFinalized(...addInfos);
+      const result = await Sudo.batchAsSudoFinalized(...txs);
+      const assetIds: BN[] = result
+        .filter((X) => X.method === "Issued")
+        .map((t) => new BN(t.eventData[0].data.toString()));
+      const addInfos: Extrinsic[] = [];
+      if (!skipInfo) {
+        for (let index = 0; index < assetIds.length; index++) {
+          const assetId = assetIds[index];
+          addInfos.push(
+            Assets.registerAsset(
+              `TEST_${assetId}`,
+              this.getAssetName(assetId.toString()),
+              new BN(18)
+            )
+          );
+        }
+        await Sudo.batchAsSudoFinalized(...addInfos);
+      }
+      user.addAssets(assetIds);
+      await user.refreshAmounts();
+      return assetIds;
+    } else {
+      const txs: Extrinsic[] = [];
+      await setupApi();
+      setupUsers();
+      const tokenIds = [];
+      for (let currency = 0; currency < currencyValues.length; currency++) {
+        const tokenId = await SudoDB.getInstance().getTokenId();
+        txs.push(Assets.mintToken(tokenId, user, currencyValues[currency]));
+        tokenIds.push(tokenId);
+      }
+      await Sudo.batchAsSudoFinalized(...txs);
+      return tokenIds;
     }
-    user.addAssets(assetIds);
-    await user.refreshAmounts();
-    return assetIds;
   }
 
   static async issueAssetToSudo(sudo: User) {
