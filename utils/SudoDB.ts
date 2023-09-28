@@ -60,6 +60,14 @@ export class SudoDB {
       );
     return new BN(tokenIdfromRpc);
   }
+
+  public async getTokenIds(number: number) {
+    const tokenIds: BN[] = [];
+    for (let i = 0; i < number; i++) {
+      tokenIds.push(await this.getTokenId());
+    }
+    return tokenIds;
+  }
 }
 async function getNonceFromIPC(): Promise<number> {
   return new Promise(function (resolve) {

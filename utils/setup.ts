@@ -9,7 +9,6 @@ import { Xyk } from "./xyk";
 import { SudoDB } from "./SudoDB";
 import { Codec } from "@polkadot/types-codec/types";
 import { signTx } from "@mangata-finance/sdk";
-import { BN } from "@polkadot/util";
 import { SubmittableExtrinsic } from "@polkadot/api/types";
 // API
 export let api: ApiPromise;
@@ -89,16 +88,14 @@ export async function setup5PoolsChained(users: User[]) {
   users = [testUser1, testUser2, testUser3, testUser4];
   const keyring = new Keyring({ type: "sr25519" });
   const sudo = new User(keyring, getEnvironmentRequiredVars().sudo);
-  const events = await Sudo.batchAsSudoFinalized(
-    Assets.issueToken(sudo),
-    Assets.issueToken(sudo),
-    Assets.issueToken(sudo),
-    Assets.issueToken(sudo),
-    Assets.issueToken(sudo)
-  );
-  const tokenIds: BN[] = events
-    .filter((item) => item.method === "Issued" && item.section === "tokens")
-    .map((x) => new BN(x.eventData[0].data.toString()));
+  const tokenIds = await SudoDB.getInstance().getTokenIds(5);
+  const mints = [
+    Assets.mintToken(tokenIds[0], sudo),
+    Assets.mintToken(tokenIds[1], sudo),
+    Assets.mintToken(tokenIds[2], sudo),
+    Assets.mintToken(tokenIds[3], sudo),
+    Assets.mintToken(tokenIds[4], sudo),
+  ];
 
   const poolCreationExtrinsics: Extrinsic[] = [];
   tokenIds.forEach((_, index, tokens) => {
@@ -112,6 +109,7 @@ export async function setup5PoolsChained(users: User[]) {
     );
   });
   await Sudo.batchAsSudoFinalized(
+    ...mints,
     Assets.mintNative(testUser1),
     Assets.mintNative(testUser2),
     Assets.mintNative(testUser3),
@@ -133,13 +131,8 @@ export async function setupAPoolForUsers(users: User[]) {
   users = [testUser1, testUser2, testUser3, testUser4];
   const keyring = new Keyring({ type: "sr25519" });
   const sudo = new User(keyring, getEnvironmentRequiredVars().sudo);
-  const events = await Sudo.batchAsSudoFinalized(
-    Assets.issueToken(sudo),
-    Assets.issueToken(sudo)
-  );
-  const tokenIds: BN[] = events
-    .filter((item) => item.method === "Issued" && item.section === "tokens")
-    .map((x) => new BN(x.eventData[0].data.toString()));
+
+  const tokenIds = await SudoDB.getInstance().getTokenIds(2);
 
   const poolCreationExtrinsics: Extrinsic[] = [];
   poolCreationExtrinsics.push(
@@ -152,6 +145,8 @@ export async function setupAPoolForUsers(users: User[]) {
   );
 
   await Sudo.batchAsSudoFinalized(
+    Assets.mintToken(tokenIds[0], sudo),
+    Assets.mintToken(tokenIds[1], sudo),
     Assets.mintNative(testUser1),
     Assets.mintNative(testUser2),
     Assets.mintNative(testUser3),

@@ -19,6 +19,7 @@ import { MangataTypesAssetsCustomMetadata } from "@polkadot/types/lookup";
 import { SudoDB } from "./SudoDB";
 
 export class Assets {
+  static legacy = false;
   static MG_UNIT: BN = BN_TEN.pow(new BN(18));
   static DEFAULT_AMOUNT = BN_THOUSAND.mul(this.MG_UNIT);
 
@@ -55,8 +56,7 @@ export class Assets {
     _sudo: User,
     skipInfo = false
   ): Promise<BN[]> {
-    const legacy = false;
-    if (legacy || skipInfo) {
+    if (this.legacy || skipInfo) {
       const txs: Extrinsic[] = [];
       await setupApi();
       await setupUsers();
@@ -112,31 +112,40 @@ export class Assets {
     sudo: User,
     skipInfo = false
   ) {
-    const result = await sudoIssueAsset(
-      sudo.keyRingPair,
-      num,
-      user.keyRingPair.address
-    );
-    const eventResult = await getEventResultFromMangataTx(result, [
-      "tokens",
-      "Issued",
-      user.keyRingPair.address,
-    ]);
-
-    assert(eventResult.state === ExtrinsicResult.ExtrinsicSuccess);
-    const assetId = eventResult.data[0].split(",").join("");
-    if (!skipInfo) {
-      await setAssetInfo(
-        sudo,
-        new BN(assetId),
-        `TEST_${assetId}`,
-        this.getAssetName(assetId),
-        `Test token ${assetId}`,
-        new BN(18)
+    if (this.legacy) {
+      const result = await sudoIssueAsset(
+        sudo.keyRingPair,
+        num,
+        user.keyRingPair.address
       );
-    }
+      const eventResult = await getEventResultFromMangataTx(result, [
+        "tokens",
+        "Issued",
+        user.keyRingPair.address,
+      ]);
 
-    return new BN(assetId);
+      assert(eventResult.state === ExtrinsicResult.ExtrinsicSuccess);
+      const assetId = eventResult.data[0].split(",").join("");
+      if (!skipInfo) {
+        await setAssetInfo(
+          sudo,
+          new BN(assetId),
+          `TEST_${assetId}`,
+          this.getAssetName(assetId),
+          `Test token ${assetId}`,
+          new BN(18)
+        );
+      }
+      return new BN(assetId);
+    } else {
+      const assetId = await this.setupUserWithCurrencies(
+        user,
+        [num],
+        sudo,
+        skipInfo
+      );
+      return assetId[0];
+    }
   }
 
   static getAssetName(assetID: string) {
@@ -150,7 +159,10 @@ export class Assets {
     );
   }
 
-  static issueToken(user: User, amount: BN = this.DEFAULT_AMOUNT): Extrinsic {
+  private static issueToken(
+    user: User,
+    amount: BN = this.DEFAULT_AMOUNT
+  ): Extrinsic {
     return Sudo.sudo(api.tx.tokens.create(user.keyRingPair.address, amount));
   }
 
@@ -281,7 +293,7 @@ export class Assets {
           },
         }
       );
-      extrinsicToTokenEnable = await Assets.updateAsset(tokenId, {
+      extrinsicToTokenEnable = Assets.updateAsset(tokenId, {
         metadata: metadata,
       });
       await Sudo.asSudoFinalized(extrinsicToTokenEnable);
