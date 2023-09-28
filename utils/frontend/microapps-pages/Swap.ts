@@ -7,6 +7,7 @@ import {
   getAttribute,
   getText,
   isDisplayed,
+  scrollIntoView,
   waitForElement,
   waitForElementEnabled,
   waitForElementVisible,
@@ -80,6 +81,7 @@ export class Swap {
     const firstTokenSelectorButton =
       buildDataTestIdXpath(DIV_TOKEN_SELECTOR_ITEM) +
       buildXpathByText(tokenName);
+    await scrollIntoView(this.driver, firstTokenSelectorButton);
     await clickElement(this.driver, firstTokenSelectorButton);
   }
 
@@ -162,6 +164,7 @@ export class Swap {
     const secondTokenSelectorButton =
       buildDataTestIdXpath(DIV_TOKEN_SELECTOR_ITEM) +
       buildXpathByText(tokenName);
+    await scrollIntoView(this.driver, secondTokenSelectorButton);
     await clickElement(this.driver, secondTokenSelectorButton);
   }
 
