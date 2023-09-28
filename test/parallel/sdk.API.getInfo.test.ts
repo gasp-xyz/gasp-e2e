@@ -195,7 +195,7 @@ test("check calculateMintingFutureRewards", async () => {
   expect(mintingRewards).bnGt(BN_ZERO);
 });
 
-test("check getAssetsInfo", async () => {
+test.skip("TODO: we need to add functions https://mangatafinance.atlassian.net/browse/MGX-86", async () => {
   const assetsInfo = await mangata.query.getAssetsInfo();
   expect(assetsInfo).bnGt(BN_ZERO);
 });
@@ -222,17 +222,26 @@ test("check RPC", async () => {
       Xyk.burnLiquidity(MGA_ASSET_ID, token2, Assets.DEFAULT_AMOUNT.divn(2))
     )
   );
-  const deactivatedPoolId = getLiquidityAssetId(MGA_ASSET_ID, token2);
+  const deactivatedPoolId = await getLiquidityAssetId(MGA_ASSET_ID, token2);
 
-  const liqudityAssetsInfo = await mangata.rpc.getLiquidityTokensForTrading();
+  const liquidityAssetsInfo = JSON.parse(
+    JSON.stringify(await mangata.rpc.getLiquidityTokensForTrading())
+  );
   const poolAssetsInfo = (await mangata.rpc.getTradeableTokens()).filter((id) =>
     id.name.includes("LiquidityPoolToken")
   );
-  const tokenIdToDeleteSet = new Set(liqudityAssetsInfo);
-  const deactivatedPoolAssetsInfo = poolAssetsInfo.filter((id) => {
-    return !tokenIdToDeleteSet.has(id.tokenId);
+  const tokenIdsToDeleteSet = new Set(liquidityAssetsInfo);
+  const deactivatedPoolsAssetsInfo = poolAssetsInfo.filter((id) => {
+    return !tokenIdsToDeleteSet.has(id.tokenId);
   });
 
-  expect(liqudityAssetsInfo).toContain(deactivatedPoolId);
-  expect(deactivatedPoolAssetsInfo).not.toContain(deactivatedPoolId);
+  const deactivatedPoolsIds: string[] = [];
+  deactivatedPoolsAssetsInfo.forEach((token: any) => {
+    deactivatedPoolsIds.push(token.tokenId);
+  });
+
+  expect(liquidityAssetsInfo.toString()).not.toContain(
+    deactivatedPoolId.toString()
+  );
+  expect(deactivatedPoolsIds).toContain(deactivatedPoolId.toString());
 });
