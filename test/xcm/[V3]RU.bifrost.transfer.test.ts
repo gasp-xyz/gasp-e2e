@@ -19,12 +19,13 @@ import XcmNetworks from "../../utils/Framework/XcmNetworks";
 import { alice, api, eve, setupApi, setupUsers } from "../../utils/setup";
 import { expectEvent, expectJson } from "../../utils/validators";
 import { Assets } from "../../utils/Assets";
-import { sleep } from "../../utils/utils";
 import { User } from "../../utils/User";
 import { KSM_ASSET_ID } from "../../utils/Constants";
 import { Sudo } from "../../utils/sudo";
+import { testLog } from "../../utils/Logger";
 /**
  * @group xcm
+ * @group bifrost
  */
 describe("XCM transfers", () => {
   let bifrost: ApiContext;
@@ -252,7 +253,6 @@ describe("XCM transfers", () => {
     expectJson(
       await mangata.api.query.tokens.accounts(alice.keyRingPair.address, 14)
     ).toMatchSnapshot();
-    await sleep(10000000);
   });
   it("[ BNC V3 -> MGA -> BNC V3 ] send ZLK to mangata and back", async () => {
     const mgaSdk = Mangata.instance([mangata.uri]);
@@ -506,9 +506,9 @@ describe("XCM transfers", () => {
       await mangata.api.query.tokens.accounts(alice.keyRingPair.address, 16)
     ).toMatchSnapshot();
   });
-  it.only("[ BNC V3 -> MGA -> BNC V3 ] send KSM to mangata and back", async () => {
+  it("[ BNC V3 -> MGA -> BNC V3 ] send KSM to mangata and back", async () => {
     await setupApi();
-    await setupUsers();
+    setupUsers();
     await Sudo.asSudoFinalized(
       Assets.updateAsset(4, {
         location: {
@@ -521,6 +521,7 @@ describe("XCM transfers", () => {
     );
     const mgaSdk = Mangata.instance([mangata.uri]);
     const target = ChainSpecs.get(ChainId.Mg)!;
+    testLog.getLog().info("Sending from bifrost to mangata");
     await mgaSdk.xTokens.depositFromParachain({
       account: eve.keyRingPair,
       asset: {
