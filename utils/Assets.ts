@@ -100,6 +100,24 @@ export class Assets {
       return tokenIds;
     }
   }
+  static async getSetupUserWithCurrenciesTxs(
+    user: User,
+    currencyValues = [new BN(250000), new BN(250001)],
+    _sudo: User
+  ): Promise<{ tokens: BN[]; txs: Extrinsic[] }> {
+    const txList: Extrinsic[] = [];
+    await setupApi();
+    setupUsers();
+    const tokenIds = [];
+    for (let currency = 0; currency < currencyValues.length; currency++) {
+      const tokenId = await SudoDB.getInstance().getTokenId();
+      txList.push(Assets.mintToken(tokenId, user, currencyValues[currency]));
+      tokenIds.push(tokenId);
+    }
+    user.addAssets(tokenIds);
+    await user.refreshAmounts();
+    return { tokens: tokenIds, txs: txList };
+  }
 
   static async issueAssetToSudo(sudo: User) {
     await this.issueAssetToUser(sudo, new BN(1000), sudo);
