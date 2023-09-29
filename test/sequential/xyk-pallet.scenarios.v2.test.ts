@@ -123,13 +123,14 @@ describe("xyk-pallet: Happy case scenario", () => {
     poolBalanceBefore = await getBalanceOfPool(assetId1, assetId2);
     if (liquidityAssetId !== undefined) {
       totalLiquidityAssetsBefore = await getAssetSupply(liquidityAssetId);
+    } else {
+      totalLiquidityAssetsBefore = BN_ZERO;
     }
   }
 
   async function createPoolTest() {
     const assetAmount1 = new BN(50000);
     const assetAmount2 = new BN(50000);
-
     await signSendFinalized(
       Xyk.createPool(assetId1, assetAmount1, assetId2, assetAmount2),
       user1
@@ -612,7 +613,11 @@ describe("xyk-pallet: Liquidity sufficiency scenario", () => {
     await user2.refreshAmounts(AssetWallet.BEFORE);
     await xykPalletUser.refreshAmounts(AssetWallet.BEFORE);
     poolBalanceBefore = await getBalanceOfPool(assetId1, assetId2);
-    totalLiquidityAssetsBefore = await getAssetSupply(liquidityAssetId);
+    if (liquidityAssetId !== undefined) {
+      totalLiquidityAssetsBefore = await getAssetSupply(liquidityAssetId);
+    } else {
+      totalLiquidityAssetsBefore = BN_ZERO;
+    }
   }
 
   async function transferAasset1Test() {
@@ -626,13 +631,11 @@ describe("xyk-pallet: Liquidity sufficiency scenario", () => {
     expect([
       user1.getAsset(assetId1)!.amountBefore.free.sub(amount),
       user1.getAsset(assetId2)!.amountBefore.free,
-      BN_ZERO,
     ]).collectionBnEqual(assetsAfterFree(user1));
 
     expect([
       user2.getAsset(assetId1)!.amountBefore.free.add(amount),
       user2.getAsset(assetId2)!.amountBefore.free,
-      BN_ZERO,
     ]).collectionBnEqual(assetsAfterFree(user2));
   }
 
@@ -647,13 +650,11 @@ describe("xyk-pallet: Liquidity sufficiency scenario", () => {
     expect([
       user1.getAsset(assetId1)!.amountBefore.free,
       user1.getAsset(assetId2)!.amountBefore.free.sub(amount),
-      BN_ZERO,
     ]).collectionBnEqual(assetsAfterFree(user1));
 
     expect([
       user2.getAsset(assetId1)!.amountBefore.free,
       user2.getAsset(assetId2)!.amountBefore.free.add(amount),
-      BN_ZERO,
     ]).collectionBnEqual(assetsAfterFree(user2));
   }
 
