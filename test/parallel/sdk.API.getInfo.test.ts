@@ -195,6 +195,33 @@ test("check calculateMintingFutureRewards", async () => {
   expect(mintingRewards).bnGt(BN_ZERO);
 });
 
+test("check getAssetsInfo", async () => {
+  const assetsInfo = await mangata.query.getAssetsInfo();
+  const tokenName = "TEST_" + token1.toString();
+  expect(assetsInfo[token1.toNumber()].name).toEqual(tokenName);
+});
+
+test("check getLiquidityTokens", async () => {
+  const liquidityTokensInfo = await mangata.query.getLiquidityTokens();
+  expect(liquidityTokensInfo[liqId.toNumber()].id).toEqual(liqId.toString());
+  expect(liquidityTokensInfo[token1.toNumber()]).toEqual(undefined);
+});
+
+test("check getOwnedTokens", async () => {
+  const userTokensInfo = await mangata.query.getOwnedTokens(
+    testUser.keyRingPair.address
+  );
+  expect(userTokensInfo[MGA_ASSET_ID.toNumber()].balance.free).bnGt(BN_ZERO);
+  expect(userTokensInfo[token1.toNumber()].balance.free).bnGt(BN_ZERO);
+  expect(userTokensInfo[liqId.toNumber()].balance.free).bnGt(BN_ZERO);
+});
+
+test("check getTokenInfo", async () => {
+  const tokenInfo = await mangata.query.getTokenInfo(token1.toString());
+  const tokenName = "TEST_" + token1.toString();
+  expect(tokenInfo.name).toEqual(tokenName);
+});
+
 test("check RPC", async () => {
   const [token2] = await Assets.setupUserWithCurrencies(
     sudo,
