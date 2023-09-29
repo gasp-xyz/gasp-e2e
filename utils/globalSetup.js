@@ -47,6 +47,9 @@ const globalConfig = async (globalConfig, projectConfig) => {
     });
     ipc.server.on("getTokenId", (data, socket) => {
       const assetId = assetIds.pop();
+      if (assetIds.length === 0) {
+        registerAssets().then((value) => (assetIds = value.reverse()));
+      }
       console.info("serving getTokenId" + data.id + assetId);
       ipc.server.emit(socket, "TokenId-" + data.id, assetId);
     });
