@@ -17,7 +17,7 @@
 
 ---
 ###  How to setup
-1. Install node ( v18.12.1 ) (we try to support nvm stable version )  
+1. Install node (v18.16.1 ) (we try to support nvm stable version )  
 2. Clone the code
 3. Run `yarn` in the root folder.
 4. Install Jest test framework globally. `yarn global add  jest -g `
