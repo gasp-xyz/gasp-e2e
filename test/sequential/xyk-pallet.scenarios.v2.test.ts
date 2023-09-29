@@ -121,7 +121,9 @@ describe("xyk-pallet: Happy case scenario", () => {
     await user2.refreshAmounts(AssetWallet.BEFORE);
     await xykPalletUser.refreshAmounts(AssetWallet.BEFORE);
     poolBalanceBefore = await getBalanceOfPool(assetId1, assetId2);
-    totalLiquidityAssetsBefore = await getAssetSupply(liquidityAssetId);
+    if (liquidityAssetId !== undefined) {
+      totalLiquidityAssetsBefore = await getAssetSupply(liquidityAssetId);
+    }
   }
 
   async function createPoolTest() {
