@@ -222,7 +222,7 @@ test("check getTokenInfo", async () => {
   expect(tokenInfo.name).toEqual(tokenName);
 });
 
-test("check RPC", async () => {
+test("sdk - filter deactivated pools on node", async () => {
   const [token2] = await Assets.setupUserWithCurrencies(
     sudo,
     [defaultCurrencyValue],
