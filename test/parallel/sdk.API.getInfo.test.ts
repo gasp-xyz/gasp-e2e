@@ -245,25 +245,23 @@ test("sdk - filter deactivated pools on node", async () => {
     )
   );
   const deactivatedPoolId = await getLiquidityAssetId(MGA_ASSET_ID, token2);
-
+  //this list contain only tokens that are active.
   const liquidityAssetsInfo = JSON.parse(
     JSON.stringify(await mangata.rpc.getLiquidityTokensForTrading())
   );
+  expect(liquidityAssetsInfo).not.toContain(deactivatedPoolId.toString());
+
+  //this list contain all liq tokens that are active and inactive from asset registry.
   const poolAssetsInfo = (await mangata.rpc.getTradeableTokens()).filter((id) =>
     id.name.includes("LiquidityPoolToken")
   );
   const tokenIdsToDeleteSet = new Set(liquidityAssetsInfo);
+  //let's remove the active ones from the list => only deactivated ones will remain.
   const deactivatedPoolsAssetsInfo = poolAssetsInfo.filter((id) => {
     return !tokenIdsToDeleteSet.has(id.tokenId);
   });
-
-  const deactivatedPoolsIds: string[] = [];
-  deactivatedPoolsAssetsInfo.forEach((token: any) => {
-    deactivatedPoolsIds.push(token.tokenId);
-  });
-
-  expect(liquidityAssetsInfo.toString()).not.toContain(
-    deactivatedPoolId.toString()
+  const deactivatedPoolsIds: string[] = deactivatedPoolsAssetsInfo.map(
+    (token: any) => token.tokenId.toString()
   );
   expect(deactivatedPoolsIds).toContain(deactivatedPoolId.toString());
 });
