@@ -51,7 +51,7 @@ beforeAll(async () => {
 
 describe("SDK tests for rpc functions", () => {
   test("Calculate Sell / buy / id", async () => {
-    const sellAmount = await mgaInstance.rpc.calculateBuyPrice({
+    const sellAmount = await mgaInstance.rpc.calculateSellPrice({
       inputReserve: poolBalance,
       outputReserve: poolBalance,
       amount: amount,
@@ -76,7 +76,7 @@ describe("SDK tests for rpc functions", () => {
     expect(liquidityToken).bnGt(BN_ZERO);
     //TODO: GonCer validate.
     expect(buyAmount).bnEqual(buyAmountId);
-    expect(sellAmount).bnGt(sellAmountId);
+    expect(sellAmount).bnEqual(sellAmountId);
   });
   test("Get Burn amount , maxInstant burn amount", async () => {
     const burnAmount = await mgaInstance.rpc.getBurnAmount({
