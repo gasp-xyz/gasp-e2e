@@ -114,7 +114,7 @@ export async function waitSudoOperationSuccess(
 
 export async function waitSudoOperationFail(
   checkingEvent: MangataGenericEvent[],
-  expectedError: string
+  expectedErrors: string[]
 ) {
   const filterBootstrapEvent = checkingEvent.filter(
     (extrinsicResult) => extrinsicResult.method === "Sudid"
@@ -122,13 +122,14 @@ export async function waitSudoOperationFail(
 
   const BootstrapError = await getEventErrorFromSudo(filterBootstrapEvent);
 
-  expect(BootstrapError.method).toContain(expectedError);
+  expect(expectedErrors).toContain(BootstrapError.method);
 }
 
 export const waitForEvents = async (
   api: ApiPromise,
   method: string,
-  blocks: number = 10
+  blocks: number = 10,
+  withData: string = ""
 ): Promise<CodecOrArray> => {
   return new Promise(async (resolve, reject) => {
     let counter = 0;
@@ -145,7 +146,11 @@ export const waitForEvents = async (
 
       const filtered = _.filter(
         events,
-        ({ event }) => `${event.section}.${event.method}` === method
+        ({ event }) =>
+          `${event.section}.${event.method}` === method &&
+          (withData.length > 0
+            ? JSON.stringify(event.data.toHuman()).includes(withData)
+            : true)
       );
       if (filtered.length > 0) {
         resolve(filtered);
@@ -185,6 +190,7 @@ export const waitForRewards = async (
           );
       }
       if (numblocks < 0) {
+        unsub();
         reject(
           `Waited too long for rewards :( #${header.number}  ${user.keyRingPair.address} (LP${liquidityAssetId} `
         );

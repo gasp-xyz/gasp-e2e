@@ -1,8 +1,5 @@
 /*
  *
- * @group xyk
- * @group errors
- * @group sequential
  * @group sdk
  */
 import { jest } from "@jest/globals";

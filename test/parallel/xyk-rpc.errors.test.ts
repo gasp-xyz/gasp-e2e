@@ -188,5 +188,5 @@ test.each([
   );
   const respJson = JSON.parse(JSON.stringify(resp.toHuman()));
   testLog.getLog().info(respJson);
-  expect(parseInt(respJson.price)).toBeGreaterThanOrEqual(0);
+  expect(parseInt(respJson)).toBeGreaterThanOrEqual(0);
 });

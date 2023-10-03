@@ -1,6 +1,6 @@
 /*
  *
- * @group rococoUiDeposit
+ * @group prodUiSmoke
  */
 import { jest } from "@jest/globals";
 import { Mangata } from "../../utils/frontend/pages/Mangata";
@@ -15,21 +15,27 @@ import {
 } from "../../utils/frontend/utils/Helper";
 import { AssetWallet, User } from "../../utils/User";
 import { getEnvironmentRequiredVars } from "../../utils/utils";
-import { KSM_ASSET_ID, MGA_ASSET_ID } from "../../utils/Constants";
+import {
+  MGA_ASSET_ID,
+  TUR_ASSET_ID,
+  TUR_ASSET_NAME,
+} from "../../utils/Constants";
 import { Node } from "../../utils/Framework/Node/Node";
 import { connectPolkadotWallet } from "../../utils/frontend/utils/Handlers";
 import { DepositModal } from "../../utils/frontend/pages/DepositModal";
 
 import "dotenv/config";
+import { Swap } from "../../utils/frontend/pages/Swap";
 
 jest.spyOn(console, "log").mockImplementation(jest.fn());
 
 jest.setTimeout(1500000);
 let driver: WebDriver;
 let testUser1: User;
-const KSM_ASSET_NAME = "ROC";
+const KSM_ASSET_NAME = "KSM";
+const MGX_ASSET_NAME = "MGX";
 
-describe("UI deposit modal tests - no action", () => {
+describe("UI prod smoke tests - no action", () => {
   beforeAll(async () => {
     try {
       getApi();
@@ -50,7 +56,7 @@ describe("UI deposit modal tests - no action", () => {
       getEnvironmentRequiredVars().mnemonicPolkadot
     );
 
-    testUser1.addAsset(KSM_ASSET_ID);
+    testUser1.addAsset(TUR_ASSET_ID);
     testUser1.addAsset(MGA_ASSET_ID);
     await testUser1.refreshAmounts(AssetWallet.BEFORE);
 
@@ -67,7 +73,48 @@ describe("UI deposit modal tests - no action", () => {
     expect(isWalletConnected).toBeTruthy();
   });
 
-  test("Deposit - enough assets", async () => {
+  test("Sidebar elements", async () => {
+    const mga = new Mangata(driver);
+    await mga.go();
+    const sidebar = new Sidebar(driver);
+    await sidebar.waitForLoad();
+    const isWalletConnected = await sidebar.isWalletConnected("acc_automation");
+    expect(isWalletConnected).toBeTruthy();
+
+    const areSidebarElementsVisible = await sidebar.areSidebarElementsVisible();
+    expect(areSidebarElementsVisible).toBeTruthy();
+    const mgxTokenAmount = await sidebar.getTokenAmount(MGX_ASSET_NAME, 12000);
+    expect(parseFloat(mgxTokenAmount.replace(",", ""))).toBeGreaterThan(1);
+    const turTokenAmount = await sidebar.getTokenAmount(TUR_ASSET_NAME, 5000);
+    expect(parseFloat(turTokenAmount.replace(",", ""))).toBeGreaterThan(1);
+
+    const isPoolsOverviewItemVisible = await sidebar.isLiquidityPoolVisible(
+      MGX_ASSET_NAME,
+      TUR_ASSET_NAME
+    );
+    expect(isPoolsOverviewItemVisible).toBeTruthy();
+  });
+
+  test("User can swap two assets", async () => {
+    const mga = new Mangata(driver);
+    await mga.go();
+    const sidebar = new Sidebar(driver);
+    await sidebar.waitForLoad();
+    const isWalletConnected = await sidebar.isWalletConnected("acc_automation");
+    expect(isWalletConnected).toBeTruthy();
+
+    const swapView = new Swap(driver);
+    await swapView.toggleSwap();
+    await swapView.toggleShowAllTokens();
+    await swapView.selectPayAsset(MGX_ASSET_NAME);
+    await swapView.selectGetAsset(TUR_ASSET_NAME);
+    await swapView.addPayAssetAmount("0.001");
+    await swapView.waitForProgressBar();
+    const isSwapEnabled = await swapView.isSwapEnabled();
+    expect(isSwapEnabled).toBeTruthy();
+  });
+
+  test("Deposit modal - not enough assets", async () => {
     const mga = new Mangata(driver);
     await mga.go();
     const sidebar = new Sidebar(driver);
@@ -86,60 +133,6 @@ describe("UI deposit modal tests - no action", () => {
     expect(areTokenListElementsVisible).toBeTruthy();
     await depositModal.selectToken(KSM_ASSET_NAME);
     await depositModal.enterValue("1");
-    await depositModal.waitForProgressBar();
-
-    await depositModal.waitForContinueState(true);
-    const isContinueButtonEnabled =
-      await depositModal.isContinueButtonEnabled();
-    expect(isContinueButtonEnabled).toBeTruthy();
-  });
-
-  test("Deposit - not enough assets", async () => {
-    const mga = new Mangata(driver);
-    await mga.go();
-    const sidebar = new Sidebar(driver);
-    await sidebar.waitForLoad();
-    const isWalletConnected = await sidebar.isWalletConnected("acc_automation");
-    expect(isWalletConnected).toBeTruthy();
-
-    await sidebar.clickOnDepositToMangata();
-    const depositModal = new DepositModal(driver);
-    const isModalVisible = await depositModal.isModalVisible();
-    expect(isModalVisible).toBeTruthy();
-
-    await depositModal.openTokensList();
-    const areTokenListElementsVisible =
-      await depositModal.areTokenListElementsVisible(KSM_ASSET_NAME);
-    expect(areTokenListElementsVisible).toBeTruthy();
-    await depositModal.selectToken(KSM_ASSET_NAME);
-    await depositModal.enterValue("10000");
-    await depositModal.waitForProgressBar();
-
-    await depositModal.waitForContinueState(false);
-    const isContinueButtonEnabled =
-      await depositModal.isContinueButtonEnabled();
-    expect(isContinueButtonEnabled).toBeFalsy();
-  });
-
-  test("Deposit - below min amount", async () => {
-    const mga = new Mangata(driver);
-    await mga.go();
-    const sidebar = new Sidebar(driver);
-    await sidebar.waitForLoad();
-    const isWalletConnected = await sidebar.isWalletConnected("acc_automation");
-    expect(isWalletConnected).toBeTruthy();
-
-    await sidebar.clickOnDepositToMangata();
-    const depositModal = new DepositModal(driver);
-    const isModalVisible = await depositModal.isModalVisible();
-    expect(isModalVisible).toBeTruthy();
-
-    await depositModal.openTokensList();
-    const areTokenListElementsVisible =
-      await depositModal.areTokenListElementsVisible(KSM_ASSET_NAME);
-    expect(areTokenListElementsVisible).toBeTruthy();
-    await depositModal.selectToken(KSM_ASSET_NAME);
-    await depositModal.enterValue("0.000001");
     await depositModal.waitForProgressBar();
 
     await depositModal.waitForContinueState(false);

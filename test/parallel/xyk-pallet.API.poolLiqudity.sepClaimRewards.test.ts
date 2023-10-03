@@ -12,7 +12,7 @@ import { BN } from "@polkadot/util";
 import { setupApi, setupUsers } from "../../utils/setup";
 import { Sudo } from "../../utils/sudo";
 import {
-  claimRewardsAll,
+  claimRewards,
   getLiquidityAssetId,
   getRewardsInfo,
 } from "../../utils/tx";
@@ -114,7 +114,7 @@ test("One user claim all the rewards on every session and other user claim them 
   for (let index = 0; index < 2; index++) {
     await waitForRewards(testUser1, liqIdPromPool);
 
-    await claimRewardsAll(testUser1, liqIdPromPool);
+    await claimRewards(testUser1, liqIdPromPool);
   }
 
   await waitForRewards(testUser1, liqIdPromPool);

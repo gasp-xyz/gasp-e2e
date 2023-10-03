@@ -98,7 +98,7 @@ test("gasless- GIVEN an empty feeLock configuration (all options empty) WHEN sud
     new BN(0),
     null
   );
-  await waitSudoOperationFail(updateMetadataEvent, "InvalidFeeLockMetadata");
+  await waitSudoOperationFail(updateMetadataEvent, ["InvalidFeeLockMetadata"]);
 });
 
 test("gasless- GIVEN a feeLock WHEN periodLength and feeLockAmount are set THEN extrinsic succeed and feeLock is correctly configured", async () => {

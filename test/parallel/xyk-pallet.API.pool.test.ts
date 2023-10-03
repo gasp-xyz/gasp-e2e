@@ -34,6 +34,8 @@ import {
 import { testLog } from "../../utils/Logger";
 import { hexToBn } from "@polkadot/util";
 import { getEventResultFromMangataTx } from "../../utils/txHandler";
+import { Sudo } from "../../utils/sudo";
+import { Xyk } from "../../utils/xyk";
 
 jest.spyOn(console, "log").mockImplementation(jest.fn());
 jest.setTimeout(1500000);
@@ -222,16 +224,22 @@ describe("xyk-pallet - Pool tests: a pool can:", () => {
       [defaultCurrecyValue, defaultCurrecyValue.add(new BN(1))],
       sudo
     );
-    await testUser1.addMGATokens(sudo);
-    await testUser1.createPoolToAsset(
-      first_asset_amount,
-      second_asset_amount,
-      firstCurrency,
-      secondCurrency
+
+    await Sudo.batchAsSudoFinalized(
+      Assets.mintNative(testUser1),
+      Assets.mintNative(testUser2),
+      Sudo.sudoAs(
+        testUser1,
+        Xyk.createPool(
+          firstCurrency,
+          first_asset_amount,
+          secondCurrency,
+          second_asset_amount
+        )
+      ),
+      Assets.mintToken(firstCurrency, testUser2, new BN(10000)),
+      Assets.mintToken(secondCurrency, testUser2, new BN(10000))
     );
-    await testUser2.addMGATokens(sudo);
-    await sudo.mint(firstCurrency, testUser2, new BN(10000));
-    await sudo.mint(secondCurrency, testUser2, new BN(10000));
 
     await testUser2.addAssets([firstCurrency, secondCurrency]);
     await testUser2.refreshAmounts(AssetWallet.BEFORE);
@@ -524,13 +532,19 @@ describe("xyk-pallet - Pool opeations: Simmetry", () => {
       firstCurrency,
       secondCurrency,
       new BN(100)
-    );
+    ).then((result) => {
+      const eventResponse = getEventResultFromMangataTx(result);
+      expect(eventResponse.state).toEqual(ExtrinsicResult.ExtrinsicSuccess);
+    });
     await burnLiquidity(
       testUser1.keyRingPair,
       secondCurrency,
       firstCurrency,
       new BN(100)
-    );
+    ).then((result) => {
+      const eventResponse = getEventResultFromMangataTx(result);
+      expect(eventResponse.state).toEqual(ExtrinsicResult.ExtrinsicSuccess);
+    });
   });
   test("GetLiquidityAssetID x-y and y-x pool", async () => {
     const api = getApi();

@@ -14,6 +14,7 @@ import { Assets } from "../../utils/Assets";
 import { getEnvironmentRequiredVars } from "../../utils/utils";
 import { ExtrinsicResult } from "../../utils/eventListeners";
 import { getEventResultFromMangataTx } from "../../utils/txHandler";
+import { BN_ZERO } from "@mangata-finance/sdk";
 
 jest.spyOn(console, "log").mockImplementation(jest.fn());
 jest.setTimeout(1500000);
@@ -60,10 +61,10 @@ describe("xyk-rpc - calculate get_burn amount: OK", () => {
   //now with the dict indexes we do the testing.
   //ie, pool1, assets(0 and 1) in the dictionary, requesting amount of 0 , we expect 1. Weird.
   test.each([
-    [0, 1, new BN(1000), 1000],
-    [1, 0, new BN(1000), 1000],
-    [0, 1, new BN(10000), 10000],
-    [0, 1, new BN(100000), 100000],
+    [0, 1, new BN(1000), new BN(1000)],
+    [1, 0, new BN(1000), new BN(1000)],
+    [0, 1, new BN(10000), new BN(10000)],
+    [0, 1, new BN(100000), new BN(100000)],
   ])(
     "validate parameters - burn from pool [firstIdx->%s,secondIdx->%s,amount->%s,expected->%s]",
     async (firstIdx, secondIdx, amount, expected) => {
@@ -72,8 +73,8 @@ describe("xyk-rpc - calculate get_burn amount: OK", () => {
         dictAssets.get(secondIdx)!,
         amount
       );
-      expect(burnAmount.firstAssetAmount).toEqual(expected);
-      expect(burnAmount.secondAssetAmount).toEqual(expected);
+      expect(burnAmount.firstAssetAmount).bnEqual(expected);
+      expect(burnAmount.secondAssetAmount).bnEqual(expected);
     }
   );
 });
@@ -100,7 +101,7 @@ describe("xyk-rpc - calculate get_burn amount: Missing requirements", () => {
   });
   //now with the dict indexes we do the testing.
   //ie, pool1, assets(0 and 1) in the dictionary, requesting amount of 0 , we expect 1. Weird.
-  test.each([[0, 1, new BN(1000), 0]])(
+  test.each([[0, 1, new BN(1000), new BN(0)]])(
     "validate parameters - get_burn from not generated pool [soldTokenId->%s,boughtTokenId->%s,amount->%s,expected->%s]",
     async (firstIdx, secondIdx, amount, expected) => {
       const burnAmount = await getBurnAmount(
@@ -108,8 +109,8 @@ describe("xyk-rpc - calculate get_burn amount: Missing requirements", () => {
         dictAssets.get(secondIdx)!,
         amount
       );
-      expect(burnAmount.firstAssetAmount).toEqual(expected);
-      expect(burnAmount.secondAssetAmount).toEqual(expected);
+      expect(burnAmount.firstAssetAmount).bnEqual(expected);
+      expect(burnAmount.secondAssetAmount).bnEqual(expected);
     }
   );
 
@@ -119,8 +120,8 @@ describe("xyk-rpc - calculate get_burn amount: Missing requirements", () => {
       new BN(12346),
       new BN(10000000)
     );
-    expect(burnAmount.firstAssetAmount).toEqual(0);
-    expect(burnAmount.secondAssetAmount).toEqual(0);
+    expect(burnAmount.firstAssetAmount).bnEqual(BN_ZERO);
+    expect(burnAmount.secondAssetAmount).bnEqual(BN_ZERO);
   });
 });
 

@@ -21,6 +21,9 @@ export class Assets {
   static MG_UNIT: BN = BN_TEN.pow(new BN(18));
   static DEFAULT_AMOUNT = BN_THOUSAND.mul(this.MG_UNIT);
 
+  static KSM_UNIT: BN = BN_TEN.pow(new BN(12));
+  static TUR_UNIT: BN = BN_TEN.pow(new BN(10));
+
   ///This method create or return the specified number of available assets
   static async getCurrencies(numAssets: number = 2, sudoUser: User) {
     const currencies: string[] = [];
@@ -69,7 +72,11 @@ export class Assets {
           Assets.registerAsset(
             `TEST_${assetId}`,
             this.getAssetName(assetId.toString()),
-            new BN(18)
+            new BN(18),
+            undefined,
+            undefined,
+            undefined,
+            assetId
           )
         );
       }

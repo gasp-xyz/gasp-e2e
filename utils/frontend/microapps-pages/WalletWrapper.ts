@@ -10,7 +10,7 @@ import {
 
 const DIV_WALLET_WRAPPER = "wallet-wrapper";
 const DIV_WALLET_CONNECTED = "wallet-connected";
-const DIV_WALLET_ITEM = "wallet-selectWallet-wallet-item";
+const DIV_WALLET_ITEM = "installedWallets-walletCard";
 const DIV_WALLET_WRAPPER_HEADER_ACC = "wallet-wrapper-header-account";
 const BUTTON_WALLET_CONNECT = "wallet-notConnected-cta";
 
@@ -42,6 +42,11 @@ export class WalletWrapper {
 
   async openDeposit() {
     const betaButton = buildXpathByElementText("button", "Deposit");
+    await clickElement(this.driver, betaButton);
+  }
+
+  async openWithdraw() {
+    const betaButton = buildXpathByElementText("button", "Withdraw");
     await clickElement(this.driver, betaButton);
   }
 

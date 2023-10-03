@@ -182,6 +182,16 @@ export async function clickElement(driver: WebDriver, xpath: string) {
   await element.click();
 }
 
+export async function scrollIntoView(driver: WebDriver, xpath: string) {
+  await waitForElement(driver, xpath);
+  const element = await driver.findElement(By.xpath(xpath));
+  await driver.executeScript(
+    'arguments[0].scrollIntoView({ behavior: "smooth" });',
+    element
+  );
+  await driver.wait(until.elementIsVisible(element), timeOut);
+}
+
 export async function clickElementForce(driver: WebDriver, xpath: string) {
   await waitForElement(driver, xpath);
   const element = await driver.findElement(By.xpath(xpath));
@@ -205,6 +215,7 @@ export async function writeText(
   await driver.executeScript("arguments[0].value = '';", input);
   await (await driver.findElement(By.xpath(elementXpath))).sendKeys(text);
 }
+
 export async function getText(driver: WebDriver, elementXpath: string) {
   await waitForElement(driver, elementXpath);
   const text = await (

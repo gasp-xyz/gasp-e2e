@@ -9,7 +9,7 @@ import { Assets } from "../../utils/Assets";
 import { setupApi, setupUsers } from "../../utils/setup";
 import { Sudo } from "../../utils/sudo";
 import {
-  claimRewardsAll,
+  claimRewards,
   getLiquidityAssetId,
   getRewardsInfo,
 } from "../../utils/tx";
@@ -100,7 +100,8 @@ beforeEach(async () => {
   await Sudo.batchAsSudoFinalized(
     Assets.mintToken(token1, testUser1, Assets.DEFAULT_AMOUNT),
     Assets.mintToken(liqId, testUser1, Assets.DEFAULT_AMOUNT),
-    Assets.mintNative(testUser1)
+    Assets.mintNative(testUser1),
+    Assets.promotePool(token1.toNumber(), 20)
   );
 
   testUser1.addAsset(token1);
@@ -201,6 +202,7 @@ test("GIVEN a solo token rewards setup, WHEN weight goes from 20 to 0 THEN no mo
   });
 
   await Sudo.batchAsSudoFinalized(
+    Sudo.sudoAs(testUser1, Xyk.claimRewardsAll(token1)), //lets claim all rewards, so after pool deativation it does not grow
     Assets.promotePool(token1.toNumber(), 0),
     Sudo.sudoAs(testUser1, Xyk.activateLiquidity(token1, BN_BILLION))
   );
@@ -214,8 +216,6 @@ test("GIVEN a solo token rewards setup, WHEN weight goes from 20 to 0 THEN no mo
 
   expect(rewardsBefore).bnGt(BN_ZERO);
   expect(rewardsAfter).bnEqual(BN_ZERO);
-
-  await Sudo.batchAsSudoFinalized(Assets.promotePool(token1.toNumber(), 20));
 });
 
 test("GIVEN a solo token rewards setup WHEN the user activates or deactivates THEN MPL is also modified", async () => {
@@ -290,7 +290,7 @@ test("GIVEN a solo token rewards setup WHEN a user deactivates all the tokens TH
     liquidityTokenId: token1.toString(),
   })!;
 
-  await claimRewardsAll(testUser1, token1);
+  await claimRewards(testUser1, token1);
 
   const rewardsAfter = await mangata!.rpc.calculateRewardsAmount({
     address: testUser1.keyRingPair.address,
