@@ -26,6 +26,8 @@ import {
   findAllRewardsAndClaim,
   setupTokenWithRewardsForDefaultUsers,
   testTokensForUsers,
+  replaceByStateCall,
+  burnAllTokensFromPool,
 } from "../utils/setupsOnTheGo";
 import {
   findErrorMetadata,
@@ -78,6 +80,8 @@ async function app(): Promise<any> {
         "slibing",
         "proof crowdloan",
         "testTokensForUsers",
+        "rpc_chops",
+        "Empty pool created by default users",
       ],
     })
     .then(async (answers: { option: string | string[] }) => {
@@ -88,6 +92,20 @@ async function app(): Promise<any> {
       }
       if (answers.option.includes("Setup token rewards with default users")) {
         await setupTokenWithRewardsForDefaultUsers();
+      }
+      if (answers.option.includes("Empty pool created by default users")) {
+        return inquirer
+          .prompt([
+            {
+              type: "input",
+              name: "liqToken",
+              message: "default 9",
+              default: "9",
+            },
+          ])
+          .then(async (answers: { liqToken: string }) => {
+            await burnAllTokensFromPool(new BN(answers.liqToken));
+          });
       }
       if (answers.option.includes("Setup a collator with token")) {
         return inquirer
@@ -464,6 +482,9 @@ async function app(): Promise<any> {
           )
         );
         console.log(ass);
+      }
+      if (answers.option.includes("rpc_chops")) {
+        await replaceByStateCall();
       }
       if (answers.option.includes("proof crowdloan")) {
         const keyring = new Keyring({ type: "ed25519" });

@@ -14,7 +14,7 @@ import {
   calculate_buy_price_id_rpc,
 } from "./tx";
 import { User } from "./User";
-import { getEnvironmentRequiredVars } from "./utils";
+import { getEnvironmentRequiredVars, getUserBalanceOfToken } from "./utils";
 import { Xyk } from "./xyk";
 import { getApi, api, initApi, getMangataInstance } from "./api";
 import { BN_ZERO, signTx } from "@mangata-finance/sdk";
@@ -226,6 +226,39 @@ export async function setupTokenWithRewardsForDefaultUsers() {
   );
   await waitForRewards(testUser4, liqId);
   return { users, liqId, sudo, token2 };
+}
+
+export async function burnAllTokensFromPool(liqToken: BN) {
+  await setupApi();
+  await setupUsers();
+  const keyring = new Keyring({ type: "sr25519" });
+  const testUser1 = new User(keyring, "//Bob");
+  const testUser2 = new User(keyring, "//Alice");
+  const testUser3 = new User(keyring, "//Charlie");
+  const testUser4 = new User(keyring, "//Eve");
+  const testUser5 = new User(keyring, "//Dave");
+  const testUser6 = new User(keyring, "//Ferdie");
+  const users = [
+    testUser1,
+    testUser2,
+    testUser3,
+    testUser4,
+    testUser5,
+    testUser6,
+  ];
+  const txs = [];
+  for (let index = 0; index < users.length; index++) {
+    const user = users[index];
+    const amounts = await getUserBalanceOfToken(liqToken, user);
+    const pool = await getLiquidityPool(liqToken);
+    const burnTx = Xyk.burnLiquidity(
+      pool[0],
+      pool[1],
+      amounts.free.add(amounts.reserved)
+    );
+    txs.push(Sudo.sudoAs(user, burnTx));
+  }
+  await Sudo.batchAsSudoFinalized(...txs);
 }
 export async function joinAsCandidate(
   userName = "//Charlie",
@@ -825,14 +858,7 @@ export async function migrate() {
   const api = await getApi();
   const allPallets = await listStorages();
   const storageToMigrate1 = allPallets
-    .filter(
-      (x: any) =>
-        x[0] === "AssetRegistry" ||
-        x[0] === "Xyk" ||
-        x[0] === "RewardsInfo" ||
-        x[0] === "Tokens" ||
-        x[0] === "ProofOfStake"
-    )
+    .filter((x: any) => x[0] === "AssetRegistry" || x[0] === "Tokens")
     .flatMap((item: any) =>
       item[1].map((element: any) => {
         return [item[0], element];
@@ -842,6 +868,9 @@ export async function migrate() {
     .filter(
       (x: any) =>
         x[0] === "Issuance" ||
+        x[0] === "Xyk" ||
+        x[0] === "ProofOfStake" ||
+        x[0] === "RewardsInfo" ||
         x[0] === "MultiPurposeLiquidity" ||
         x[0] === "Vesting" ||
         x[0] === "Crowdloan" ||
@@ -996,4 +1025,41 @@ export async function userAggregatesOn(
     Staking.updateCandidateAggregator(userAggregating)
   );
   await Sudo.batchAsSudoFinalized(tx1, tx2);
+}
+
+export interface RPCParam {
+  paramType: string;
+  paramValue: any;
+}
+
+export async function replaceByStateCall(
+  method: string = "calculate_rewards_amount",
+  params: RPCParam[] = [
+    {
+      paramType: "AccountId",
+      paramValue: "5DLP5KLo3oPF8angc8VtxuMZ1CRt5ViM9AMiQokr5XPUXnJR",
+    },
+    { paramType: "TokenId", paramValue: "8" },
+  ],
+  module = "xyk",
+  returnType = "XYKRpcResult"
+) {
+  await setupApi();
+  await setupUsers();
+  const api = await getApi();
+  let encodedStr = "0x";
+  params.forEach((item) => {
+    encodedStr += api
+      .createType(item.paramType, item.paramValue)
+      .toHex(true)
+      .replace("0x", "");
+  });
+  let res: any;
+  if (module === "xyk") {
+    console.log(method);
+    console.log(encodedStr);
+    res = await api.rpc.state.call(`XykApi_${method}`, encodedStr);
+  }
+  const parsed = api.createType(returnType, res);
+  console.log(JSON.parse(JSON.stringify(parsed)));
 }
