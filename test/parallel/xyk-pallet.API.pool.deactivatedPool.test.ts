@@ -29,8 +29,17 @@ import {
   getBalanceOfPool,
   getEventResultFromMangataTx,
 } from "../../utils/txHandler";
-import { ExtrinsicResult, waitForRewards } from "../../utils/eventListeners";
+import {
+  ExtrinsicResult,
+  waitForRewards,
+  waitSudoOperationFail,
+} from "../../utils/eventListeners";
 import { BN_ZERO } from "@mangata-finance/sdk";
+import {
+  checkLastBootstrapFinalized,
+  scheduleBootstrap,
+  setupBootstrapTokensBalance,
+} from "../../utils/Bootstrap";
 
 jest.spyOn(console, "log").mockImplementation(jest.fn());
 jest.setTimeout(2500000);
@@ -171,14 +180,36 @@ describe("GIVEN deactivated pool", () => {
   });
 
   test("WHEN sudo try to promote a pool THEN poolPromotion is updated", async () => {
+    const api = getApi();
+
     await promotePool(sudo.keyRingPair, liquidityId, 35).then((result) => {
       const eventResponse = getEventResultFromMangataTx(result);
       expect(eventResponse.state).toEqual(ExtrinsicResult.ExtrinsicSuccess);
     });
 
-    const poolWeight = (await getPromotedPoolInfo(liquidityId)).weight;
+    const poolRewards = JSON.parse(
+      JSON.stringify(await api.query.proofOfStake.promotedPoolRewards())
+    );
+    const poolWeight = stringToBN(poolRewards[liquidityId.toString()].weight);
 
     expect(poolWeight).bnEqual(new BN(35));
+  });
+
+  test("WHEN a bootstrap is scheduled for the existing pair THEN the operation fail with pool already exist.", async () => {
+    await setupApi();
+
+    await checkLastBootstrapFinalized(sudo);
+    await setupBootstrapTokensBalance(token1, sudo, [testUser1]);
+
+    const sudoBootstrap = await scheduleBootstrap(
+      sudo,
+      MGA_ASSET_ID,
+      token1,
+      5,
+      5,
+      5
+    );
+    await waitSudoOperationFail(sudoBootstrap, ["PoolAlreadyExists"]);
   });
 });
 
@@ -283,15 +314,3 @@ describe("GIVEN user create a pool, wait for rewards and then deactivate the poo
     });
   });
 });
-
-async function getPromotedPoolInfo(tokenId: BN) {
-  const api = getApi();
-
-  const poolRewards = JSON.parse(
-    JSON.stringify(await api.query.proofOfStake.promotedPoolRewards())
-  );
-  return {
-    weight: stringToBN(poolRewards[tokenId.toString()].weight),
-    rewards: stringToBN(poolRewards[tokenId.toString()].rewards),
-  };
-}
