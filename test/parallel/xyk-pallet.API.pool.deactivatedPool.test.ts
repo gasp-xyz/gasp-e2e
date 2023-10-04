@@ -9,7 +9,7 @@ import { Assets } from "../../utils/Assets";
 import { MGA_ASSET_ID } from "../../utils/Constants";
 import { setupApi, setupUsers } from "../../utils/setup";
 import { Sudo } from "../../utils/sudo";
-import { User } from "../../utils/User";
+import { AssetWallet, User } from "../../utils/User";
 import { getEnvironmentRequiredVars, stringToBN } from "../../utils/utils";
 import { Xyk } from "../../utils/xyk";
 import { BN } from "@polkadot/util";
@@ -67,25 +67,25 @@ beforeAll(async () => {
   sudo = new User(keyring, sudoUserName);
 
   await setupApi();
+});
 
-  [testUser1, testUser2] = setupUsers();
+beforeEach(async () => {
+  [testUser1] = setupUsers();
+
+  [token1] = await Assets.setupUserWithCurrencies(
+    sudo,
+    [defaultCurrencyValue],
+    sudo
+  );
 });
 
 describe("GIVEN deactivated pool", () => {
   beforeEach(async () => {
-    [token1] = await Assets.setupUserWithCurrencies(
-      sudo,
-      [defaultCurrencyValue],
-      sudo
-    );
-
     await Sudo.batchAsSudoFinalized(
       Assets.FinalizeTge(),
       Assets.initIssuance(),
       Assets.mintToken(token1, testUser1, Assets.DEFAULT_AMOUNT),
       Assets.mintNative(testUser1),
-      Assets.mintToken(token1, testUser2, Assets.DEFAULT_AMOUNT),
-      Assets.mintNative(testUser2),
       Sudo.sudoAs(
         testUser1,
         Xyk.createPool(
@@ -108,6 +108,13 @@ describe("GIVEN deactivated pool", () => {
   });
 
   test("WHEN another user tries to create an equal pool THEN error returns", async () => {
+    [testUser2] = setupUsers();
+
+    await Sudo.batchAsSudoFinalized(
+      Assets.mintToken(token1, testUser2, Assets.DEFAULT_AMOUNT),
+      Assets.mintNative(testUser2)
+    );
+
     await createPool(
       testUser2.keyRingPair,
       MGA_ASSET_ID,
@@ -122,6 +129,13 @@ describe("GIVEN deactivated pool", () => {
   });
 
   test("WHEN another user tries to mint liquidity in the pool THEN user can do this", async () => {
+    [testUser2] = setupUsers();
+
+    await Sudo.batchAsSudoFinalized(
+      Assets.mintToken(token1, testUser2, Assets.DEFAULT_AMOUNT),
+      Assets.mintNative(testUser2)
+    );
+
     await mintLiquidity(
       testUser2.keyRingPair,
       MGA_ASSET_ID,
@@ -138,6 +152,13 @@ describe("GIVEN deactivated pool", () => {
   });
 
   test("WHEN the user mints liquidity in the pool again THEN liquidity IDs are equal", async () => {
+    [testUser2] = setupUsers();
+
+    await Sudo.batchAsSudoFinalized(
+      Assets.mintToken(token1, testUser2, Assets.DEFAULT_AMOUNT),
+      Assets.mintNative(testUser2)
+    );
+
     await mintLiquidity(
       testUser2.keyRingPair,
       MGA_ASSET_ID,
@@ -172,10 +193,12 @@ describe("GIVEN deactivated pool", () => {
   });
 
   test("WHEN the user tries to compound reward on a deactivated pool THEN error returns", async () => {
+    await promotePool(sudo.keyRingPair, liquidityId, 20);
+
     await compoundRewards(testUser1, liquidityId).then((result) => {
       const eventResponse = getEventResultFromMangataTx(result);
       expect(eventResponse.state).toEqual(ExtrinsicResult.ExtrinsicFailed);
-      expect(eventResponse.data).toEqual("NotAPromotedPool");
+      expect(eventResponse.data).toEqual("MissingRewardsInfoError");
     });
   });
 
@@ -211,23 +234,39 @@ describe("GIVEN deactivated pool", () => {
     );
     await waitSudoOperationFail(sudoBootstrap, ["PoolAlreadyExists"]);
   });
+
+  test("WHEN call RPCs that work with the pools (e.g., calculate_buy_price_id) THEN zero returns", async () => {
+    const priceAmount = await mangata?.rpc.calculateBuyPriceId(
+      MGA_ASSET_ID.toString(),
+      token1.toString(),
+      defaultCurrencyValue
+    );
+
+    expect(priceAmount).bnEqual(BN_ZERO);
+  });
+
+  test("WHEN user tries to activate the pool THEN error returns", async () => {
+    await promotePool(sudo.keyRingPair, liquidityId, 20);
+
+    await activateLiquidity(
+      testUser1.keyRingPair,
+      liquidityId,
+      defaultCurrencyValue
+    ).then((result) => {
+      const eventResponse = getEventResultFromMangataTx(result);
+      expect(eventResponse.state).toEqual(ExtrinsicResult.ExtrinsicFailed);
+      expect(eventResponse.data).toEqual("NotEnoughAssets");
+    });
+  });
 });
 
 describe("GIVEN user create a pool, wait for rewards and then deactivate the pool", () => {
   beforeEach(async () => {
-    [token1] = await Assets.setupUserWithCurrencies(
-      sudo,
-      [defaultCurrencyValue],
-      sudo
-    );
-
     await Sudo.batchAsSudoFinalized(
       Assets.FinalizeTge(),
       Assets.initIssuance(),
       Assets.mintToken(token1, testUser1, Assets.DEFAULT_AMOUNT),
       Assets.mintNative(testUser1),
-      Assets.mintToken(token1, testUser2, Assets.DEFAULT_AMOUNT),
-      Assets.mintNative(testUser2),
       Sudo.sudoAs(
         testUser1,
         Xyk.createPool(
@@ -263,16 +302,6 @@ describe("GIVEN user create a pool, wait for rewards and then deactivate the poo
     expect(deactivatedPoolBalance[0][0]).bnEqual(BN_ZERO);
   });
 
-  test("WHEN call RPCs that work with the pools (e.g., calculate_buy_price_id) THEN zero returns", async () => {
-    const priceAmount = await mangata?.rpc.calculateBuyPriceId(
-      MGA_ASSET_ID.toString(),
-      token1.toString(),
-      defaultCurrencyValue
-    );
-
-    expect(priceAmount).bnEqual(BN_ZERO);
-  });
-
   test("WHEN call RPC calculate_rewards_amount for this user THEN amount returns", async () => {
     const rewardsAmount = await mangata?.rpc.calculateRewardsAmount({
       address: testUser1.keyRingPair.address,
@@ -283,6 +312,9 @@ describe("GIVEN user create a pool, wait for rewards and then deactivate the poo
   });
 
   test("WHEN user tries to claim rewards THEN rewards are claimed", async () => {
+    testUser1.addAsset(MGA_ASSET_ID);
+    await testUser1.refreshAmounts(AssetWallet.BEFORE);
+
     const rewardsInfoBefore = await getRewardsInfo(
       testUser1.keyRingPair.address,
       liquidityId
@@ -293,24 +325,17 @@ describe("GIVEN user create a pool, wait for rewards and then deactivate the poo
       expect(eventResponse.state).toEqual(ExtrinsicResult.ExtrinsicSuccess);
     });
 
+    await testUser1.refreshAmounts(AssetWallet.AFTER);
+
     const rewardsInfoAfter = await getRewardsInfo(
       testUser1.keyRingPair.address,
       liquidityId
     );
 
+    expect(testUser1.getAsset(MGA_ASSET_ID)?.amountAfter.free!).bnGt(
+      testUser1.getAsset(MGA_ASSET_ID)?.amountBefore.free!
+    );
     expect(rewardsInfoBefore.rewardsNotYetClaimed).bnGt(BN_ZERO);
     expect(rewardsInfoAfter.rewardsNotYetClaimed).bnEqual(BN_ZERO);
-  });
-
-  test("WHEN user tries to activate the pool THEN error returns", async () => {
-    await activateLiquidity(
-      testUser1.keyRingPair,
-      liquidityId,
-      defaultCurrencyValue
-    ).then((result) => {
-      const eventResponse = getEventResultFromMangataTx(result);
-      expect(eventResponse.state).toEqual(ExtrinsicResult.ExtrinsicFailed);
-      expect(eventResponse.data).toEqual("NotEnoughAssets");
-    });
   });
 });
