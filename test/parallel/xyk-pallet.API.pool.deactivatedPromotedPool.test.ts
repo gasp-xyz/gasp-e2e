@@ -16,6 +16,7 @@ import { BN } from "@polkadot/util";
 import "jest-extended";
 import {
   claimRewards,
+  compoundRewards,
   getLiquidityAssetId,
   getRewardsInfo,
 } from "../../utils/tx";
@@ -134,4 +135,12 @@ test("GIVEN user create a pool, wait for rewards and then deactivate the pool WH
   );
   expect(rewardsInfoBefore.rewardsNotYetClaimed).bnGt(BN_ZERO);
   expect(rewardsInfoAfter.rewardsNotYetClaimed).bnEqual(BN_ZERO);
+});
+
+test("GIVEN  user create a pool, wait for rewards and then deactivate the pool WHEN the user tries to compound reward on a deactivated pool THEN error returns", async () => {
+  await compoundRewards(testUser1, liquidityId).then((result) => {
+    const eventResponse = getEventResultFromMangataTx(result);
+    expect(eventResponse.state).toEqual(ExtrinsicResult.ExtrinsicFailed);
+    expect(eventResponse.data).toEqual("PoolIsEmpty");
+  });
 });

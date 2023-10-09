@@ -16,7 +16,6 @@ import { BN } from "@polkadot/util";
 import "jest-extended";
 import {
   activateLiquidity,
-  compoundRewards,
   createPool,
   getLiquidityAssetId,
   mintLiquidity,
@@ -184,16 +183,6 @@ test("GIVEN deactivated pool WHEN the user tries to swap/multiswap tokens on the
   expect(swapError.data).toEqual(
     "1010: Invalid Transaction: The swap prevalidation has failed"
   );
-});
-
-test("GIVEN deactivated pool WHEN the user tries to compound reward on a deactivated pool THEN error returns", async () => {
-  await promotePool(sudo.keyRingPair, liquidityId, 20);
-
-  await compoundRewards(testUser1, liquidityId).then((result) => {
-    const eventResponse = getEventResultFromMangataTx(result);
-    expect(eventResponse.state).toEqual(ExtrinsicResult.ExtrinsicFailed);
-    expect(eventResponse.data).toEqual("MissingRewardsInfoError");
-  });
 });
 
 test("GIVEN deactivated pool WHEN sudo try to promote a pool THEN poolPromotion is updated", async () => {
