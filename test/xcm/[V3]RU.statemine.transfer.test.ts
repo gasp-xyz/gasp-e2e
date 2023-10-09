@@ -18,6 +18,7 @@ import { expectEvent, matchEvents } from "../../utils/eventListeners";
 /**
  * @group xcm
  * @group proxied
+ * @group statemine
  */
 describe("XCM tests for Mangata <-> Statemine", () => {
   let statemine: ApiContext;
