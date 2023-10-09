@@ -8,7 +8,7 @@
   "license": "GPLv3",
   "private": true,
   "dependencies": {
-    "@acala-network/chopsticks": "^0.6.5",
+    "@acala-network/chopsticks": "0.8.1",
     "@babel/plugin-proposal-decorators": "^7.17.8",
     "@babel/plugin-proposal-object-rest-spread": "^7.20.7",
     "@commitlint/config-conventional": "^17.4.2",
@@ -108,7 +108,8 @@
     "test-multiswap": "export GASLESS=true; export JEST_HTML_REPORTERS_PUBLIC_PATH=reports/html-report-parallel;rm nonce.db ; rm sudo.lock;  node --experimental-specifier-resolution=node --loader ts-node/esm --experimental-vm-modules node_modules/jest/bin/jest.js --verbose --ci --group=multiswap --forceExit",
     "test-validateStatus": "export JEST_HTML_REPORTERS_PUBLIC_PATH=reports/html-report-parallel;rm nonce.db ; rm sudo.lock;  node --experimental-specifier-resolution=node --loader ts-node/esm --experimental-vm-modules node_modules/jest/bin/jest.js --verbose --ci --group=validateStatus --forceExit ",
     "test-experimentalStaking": "export GASLESS=true; export JEST_HTML_REPORTERS_PUBLIC_PATH=reports/html-report-parallel;rm nonce.db ; rm sudo.lock;  node --experimental-specifier-resolution=node --loader ts-node/esm --experimental-vm-modules node_modules/jest/bin/jest.js --verbose --ci --group=experimentalStaking --forceExit --runInBand",
-    "test-xcm": " export CHOPSTICK_ENABLED=true ; export MANGATA_ENDPOINT=wss://kusama-archive.mangata.online ; export JEST_HTML_REPORTERS_PUBLIC_PATH=reports/html-report-parallel;rm nonce.db ; rm sudo.lock;  node --experimental-specifier-resolution=node --loader ts-node/esm --experimental-vm-modules node_modules/jest/bin/jest.js --verbose --ci --group=xcm --forceExit --runInBand #",
+    "test-xcm": "export SKIP_UPGRADE=true ; export CHOPSTICK_ENABLED=true ; export MANGATA_ENDPOINT=wss://kusama-archive.mangata.online ; export JEST_HTML_REPORTERS_PUBLIC_PATH=reports/html-report-parallel;rm nonce.db ; rm sudo.lock;  node --experimental-specifier-resolution=node --loader ts-node/esm --experimental-vm-modules node_modules/jest/bin/jest.js --verbose --ci --group=xcm --forceExit --runInBand #",
+    "test-xcm-ru": "export SKIP_UPGRADE=false ; export CHOPSTICK_ENABLED=true ; export MANGATA_ENDPOINT=wss://kusama-archive.mangata.online ; export JEST_HTML_REPORTERS_PUBLIC_PATH=reports/html-report-parallel;rm nonce.db ; rm sudo.lock;  node --experimental-specifier-resolution=node --loader ts-node/esm --experimental-vm-modules node_modules/jest/bin/jest.js --verbose --ci --group=xcm --forceExit --runInBand #",
     "test-sdk-xcm": " export CHOPSTICK_ENABLED=true ; export JEST_HTML_REPORTERS_PUBLIC_PATH=reports/html-report-parallel;rm nonce.db ; rm sudo.lock;  node --experimental-specifier-resolution=node --loader ts-node/esm --experimental-vm-modules node_modules/jest/bin/jest.js --verbose --ci --group=sdkxcm --forceExit --runInBand #",
     "test-xcm-ui": "export CHOPSTICK_UI=true ; rm nonce.db ; rm sudo.lock;  node --experimental-specifier-resolution=node --loader ts-node/esm --experimental-vm-modules node_modules/jest/bin/jest.js --verbose --runInBand --ci",
     "test-microapps-xcm-ui": "export CHOPSTICK_UI=true ; rm nonce.db ; rm sudo.lock;  node --experimental-specifier-resolution=node --loader ts-node/esm --experimental-vm-modules node_modules/jest/bin/jest.js --verbose --runInBand --ci",

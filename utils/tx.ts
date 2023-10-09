@@ -765,12 +765,15 @@ export async function getAllAssets(accountAddress: string) {
 export async function lockAsset(user: User, amount: BN) {
   const api = getApi();
 
+  // @ts-ignore
   await signSendAndWaitToFinishTx(
+    // @ts-ignore
     api?.tx.staking.bond(
       user.keyRingPair.address,
       amount,
+      // @ts-ignore:
       "Staked",
-      //@ts-ignore: Mangata bond operation has 4 params, somehow is inheriting the bond operation from polkadot :S
+      // @ts-ignore: Mangata bond operation has 4 params, somehow is inheriting the bond operation from polkadot :S
       MGA_DEFAULT_LIQ_TOKEN
     ),
     user.keyRingPair
@@ -942,6 +945,7 @@ export async function vestingTransfer(
         tokenID,
         source.keyRingPair.address,
         target.keyRingPair.address,
+        // @ts-ignore
         {
           locked,
           perBlock,
@@ -961,6 +965,7 @@ export async function unlockVestedToken(User: User, tokenID: BN) {
   const api = getApi();
   const result = await signTx(
     api,
+    // @ts-ignore
     api.tx.vesting.vest(tokenID),
     User.keyRingPair
   );

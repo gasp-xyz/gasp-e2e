@@ -3,7 +3,7 @@ import {
   BuildBlockMode,
   setupWithServer,
 } from "@acala-network/chopsticks";
-import { StorageValues } from "@acala-network/chopsticks/lib/utils/set-storage";
+import { StorageValues } from "@acala-network/chopsticks-core/lib/utils/set-storage";
 import { ApiPromise, WsProvider } from "@polkadot/api";
 import { HexString } from "@polkadot/util/types";
 import { getPort } from "get-port-please";
@@ -100,14 +100,18 @@ export const setupContext = async ({
   };
 };
 export async function upgradeMangata(mangata: ApiContext) {
-  const path = `test/xcm/_releasesUT/0.30.0/mangata_kusama_runtime-0.30.0.RC.compact.compressed.wasm`;
+  if (process.env.SKIP_UPGRADE === "true") {
+    return;
+  }
+  const path = `test/xcm/_releasesUT/0.30.1/rc_0.31.0.wasm`;
   const wasmContent = fs.readFileSync(path);
   const hexHash = mangata.api!.registry.hash(bufferToU8a(wasmContent)).toHex();
+  await mangata.dev.newBlock();
   await Sudo.batchAsSudoFinalized(Assets.mintNative(alice));
   await Sudo.asSudoFinalized(
     Sudo.sudo(
       //@ts-ignore
-      mangata.api!.tx.parachainSystem.authorizeUpgrade(hexHash)
+      mangata.api!.tx.parachainSystem.authorizeUpgrade(hexHash, false)
     )
   );
   const wasmParam = Uint8Array.from(wasmContent);
@@ -116,7 +120,15 @@ export async function upgradeMangata(mangata: ApiContext) {
   await mangata.api.tx.sudo
     .sudo(mangata.api.tx.parachainSystem.enactAuthorizedUpgrade(param))
     .signAndSend(alice.keyRingPair);
-
-  await mangata.dev.newBlock();
-  await mangata.dev.newBlock();
+  let succeeded = false;
+  while (!succeeded) {
+    try {
+      await mangata.dev.newBlock();
+      await mangata.dev.newBlock();
+      succeeded = true;
+    } catch (e) {
+      // eslint-disable-next-line no-console
+      console.log(e);
+    }
+  }
 }
