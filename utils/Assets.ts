@@ -6,7 +6,7 @@ import { assert } from "console";
 import _ from "lodash";
 import { MGA_ASSET_ID } from "./Constants";
 import { ExtrinsicResult } from "./eventListeners";
-import { api, Extrinsic, setupApi, setupUsers } from "./setup";
+import { api, Extrinsic, isBackendTest, setupApi, setupUsers } from "./setup";
 import { Sudo } from "./sudo";
 import { getAssetSupply, getNextAssetId } from "./tx";
 import {
@@ -19,7 +19,7 @@ import { MangataTypesAssetsCustomMetadata } from "@polkadot/types/lookup";
 import { SudoDB } from "./SudoDB";
 
 export class Assets {
-  static legacy = false;
+  static legacy = !isBackendTest();
   static MG_UNIT: BN = BN_TEN.pow(new BN(18));
   static DEFAULT_AMOUNT = BN_THOUSAND.mul(this.MG_UNIT);
 
@@ -59,7 +59,7 @@ export class Assets {
     if (this.legacy || skipInfo) {
       const txs: Extrinsic[] = [];
       await setupApi();
-      await setupUsers();
+      setupUsers();
       for (let currency = 0; currency < currencyValues.length; currency++) {
         txs.push(Assets.issueToken(user, currencyValues[currency]));
       }
@@ -136,7 +136,7 @@ export class Assets {
         num,
         user.keyRingPair.address
       );
-      const eventResult = await getEventResultFromMangataTx(result, [
+      const eventResult = getEventResultFromMangataTx(result, [
         "tokens",
         "Issued",
         user.keyRingPair.address,

@@ -39,7 +39,16 @@ export const setupApi = async () => {
     api = getApi();
   }
 };
-
+export function isBackendTest() {
+  const groupPrefix = "--group=";
+  const isThereAPath = process.argv.find((arg) => arg.includes("test/"));
+  const isAGroupRun = process.argv.find((arg) => arg.includes(groupPrefix));
+  if (isThereAPath && isThereAPath.length > 0 && isThereAPath.toLowerCase().includes("ui"))
+    return false;
+  if (isAGroupRun && isAGroupRun.length > 0 && isAGroupRun.toLowerCase().includes("ui"))
+    return false;
+  return true;
+}
 export const setupUsers = () => {
   keyring = new Keyring({ type: "sr25519" });
   const { sudo: sudoUserName } = getEnvironmentRequiredVars();

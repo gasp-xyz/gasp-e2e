@@ -1,5 +1,5 @@
 /* eslint-disable no-console */
-import { setupApi, setupGasLess, setupUsers } from "./setup";
+import { isBackendTest, setupApi, setupGasLess, setupUsers } from "./setup";
 import dotenv from "dotenv";
 import ipc from "node-ipc";
 import { getApi, initApi } from "./api";
@@ -31,6 +31,7 @@ const globalConfig = async (globalConfig, projectConfig) => {
   const sudoKeyringPair = keyring.createFromUri(sudo);
   const nonce = await api.rpc.system.accountNextIndex(sudoKeyringPair.address);
   let numCollators = (await api?.query.parachainStaking.candidatePool()).length;
+  let assetIds = [];
   console.info(`${nonce}`);
   console.info(`${numCollators}`);
 
@@ -61,9 +62,12 @@ const globalConfig = async (globalConfig, projectConfig) => {
   globalThis.api = api;
   //enable gasless! :brum brum:
   await setupGasLess();
-  testLog.getLog().info("Registering assets....");
-  let assetIds = await registerAssets();
-  assetIds = assetIds.reverse();
+
+  if (isBackendTest()) {
+    testLog.getLog().info("Registering assets....");
+    const registeredIds = await registerAssets();
+    assetIds = registeredIds.reverse();
+  }
 };
 
 export default globalConfig;
