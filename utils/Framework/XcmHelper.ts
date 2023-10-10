@@ -99,7 +99,11 @@ export const setupContext = async ({
     },
   };
 };
-export async function reconnect(uri: string, currInstance: ApiContext, types: any){
+export async function reconnect(
+  uri: string,
+  currInstance: ApiContext,
+  types: any
+) {
   const ws = new WsProvider(uri);
   const api = await ApiPromise.create({
     provider: ws,
