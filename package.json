@@ -12,7 +12,7 @@
     "@babel/plugin-proposal-decorators": "^7.17.8",
     "@babel/plugin-proposal-object-rest-spread": "^7.20.7",
     "@commitlint/config-conventional": "^17.4.2",
-    "@mangata-finance/sdk": "2.1.0-rc.1",
+    "@mangata-finance/sdk": "2.1.0-rc.3",
     "@polkadot/api": "^10.7.3",
     "@polkadot/types": "^10.9.1",
     "@terascope/fetch-github-release": "^0.8.7",
