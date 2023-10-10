@@ -1,5 +1,5 @@
 import dotenv from "dotenv";
-import { setupContext, SetupOption } from "./XcmHelper";
+import { ApiContext, reconnect, setupContext, SetupOption } from "./XcmHelper";
 
 dotenv.config();
 
@@ -102,5 +102,21 @@ export default {
         },
       },
       ...options,
+    }),
+  reconnect: (uri: string, currInstance: ApiContext) =>
+    reconnect(uri, currInstance, {
+      ShufflingSeed: {
+        seed: "H256",
+        proof: "H512",
+      },
+      Header: {
+        parentHash: "Hash",
+        number: "Compact<BlockNumber>",
+        stateRoot: "Hash",
+        extrinsicsRoot: "Hash",
+        digest: "Digest",
+        seed: "ShufflingSeed",
+        count: "BlockNumber",
+      },
     }),
 };

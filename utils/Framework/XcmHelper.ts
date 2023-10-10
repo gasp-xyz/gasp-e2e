@@ -99,6 +99,37 @@ export const setupContext = async ({
     },
   };
 };
+export async function reconnect(uri: string, currInstance: ApiContext, types: any){
+  const ws = new WsProvider(uri);
+  const api = await ApiPromise.create({
+    provider: ws,
+    types: types,
+  });
+  await api.isReady;
+  return {
+    uri,
+    chain: currInstance.chain,
+    ws,
+    api,
+    dev: {
+      newBlock: (param?: { count?: number; to?: number }): Promise<string> => {
+        return ws.send("dev_newBlock", [param]);
+      },
+      setStorage: (values: StorageValues, blockHash?: string) => {
+        return ws.send("dev_setStorage", [values, blockHash]);
+      },
+      timeTravel: (date: string | number) => {
+        return ws.send<number>("dev_timeTravel", [date]);
+      },
+      setHead: (hashOrNumber: string | number) => {
+        return ws.send("dev_setHead", [hashOrNumber]);
+      },
+    },
+    async teardown() {
+      await api.disconnect();
+    },
+  };
+}
 export async function upgradeMangata(mangata: ApiContext) {
   if (process.env.SKIP_UPGRADE === "true") {
     return;

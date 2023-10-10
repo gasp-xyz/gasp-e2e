@@ -17,7 +17,10 @@ export const getApi = () => {
   }
   return api;
 };
-
+export const reconnectChops = async (uri = "", currInstannce: any) => {
+  mangataChopstick = await XcmNetworks.reconnect(uri, currInstannce);
+  return mangataChopstick;
+};
 export const initApi = async (uri = "") => {
   if (!uri) {
     const { chainUri: envUri } = getEnvironmentRequiredVars();

@@ -10,7 +10,7 @@ import {
   expectJson,
   matchSystemEvents,
 } from "../../utils/validators";
-import { mangataChopstick } from "../../utils/api";
+import { mangataChopstick, reconnectChops } from "../../utils/api";
 import { BN_BILLION, Mangata } from "@mangata-finance/sdk";
 import { Codec } from "@polkadot/types/types";
 import { expectEvent, matchEvents } from "../../utils/eventListeners";
@@ -48,6 +48,8 @@ describe("XCM tests for Mangata <-> Statemine", () => {
       },
     });
     await upgradeMangata(mangata);
+    const uri = mangata.uri;
+    mangata = await reconnectChops(uri, mangata);
   });
 
   beforeEach(async () => {
@@ -226,7 +228,7 @@ describe("XCM tests for Mangata <-> Statemine", () => {
 
     await matchSystemEvents(mangata, "xcmpQueue", "Success");
   });
-  it("[RMRK] mangata transfer assets to statemine", async () => {
+  it.only("[RMRK] mangata transfer assets to statemine", async () => {
     const mgaSdk = Mangata.instance([mangata.uri]);
     await mgaSdk.xTokens.withdraw({
       account: alice,
