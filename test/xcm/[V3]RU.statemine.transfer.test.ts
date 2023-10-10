@@ -15,6 +15,7 @@ import { mangataChopstick, reconnectChops } from "../../utils/api";
 import { BN_BILLION, Mangata } from "@mangata-finance/sdk";
 import { Codec } from "@polkadot/types/types";
 import { expectEvent, matchEvents } from "../../utils/eventListeners";
+import { sleep } from "../../utils/utils";
 
 setLoggerOptions({
   type: "pretty",
@@ -236,6 +237,23 @@ describe("XCM tests for Mangata <-> Statemine", () => {
   });
   it.only("[RMRK] mangata transfer assets to statemine", async () => {
     const mgaSdk = Mangata.instance([mangata.uri]);
+    await (await mgaSdk.api()).query.assetRegistry.metadata
+      .entries()
+      .then((res) => {
+        res.forEach((r) => {
+          // eslint-disable-next-line no-console
+          console.log(JSON.stringify(r[0].toHuman()));
+          // eslint-disable-next-line no-console
+          console.log(JSON.stringify(r[1].toHuman()));
+        });
+      });
+    // eslint-disable-next-line no-console
+    console.log("getAssetInfo");
+    await sleep(600000000);
+    await mgaSdk.query.getAssetsInfo().then((res) => {
+      // eslint-disable-next-line no-console
+      console.log(JSON.stringify(res));
+    });
     await mgaSdk.xTokens.withdraw({
       account: alice,
       amount: new BN(10e10),
