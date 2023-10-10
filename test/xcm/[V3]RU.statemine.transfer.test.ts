@@ -1,4 +1,5 @@
 import { connectParachains } from "@acala-network/chopsticks";
+import { setLoggerOptions } from "@mangata-finance/sdk";
 import { KeyringPair } from "@polkadot/keyring/types";
 import { BN_THOUSAND, BN } from "@polkadot/util";
 import { AssetId } from "../../utils/ChainSpecs";
@@ -14,6 +15,11 @@ import { mangataChopstick } from "../../utils/api";
 import { BN_BILLION, Mangata } from "@mangata-finance/sdk";
 import { Codec } from "@polkadot/types/types";
 import { expectEvent, matchEvents } from "../../utils/eventListeners";
+
+setLoggerOptions({
+  type: "pretty",
+  hideLogPositionForProduction: false,
+});
 
 /**
  * @group xcm
