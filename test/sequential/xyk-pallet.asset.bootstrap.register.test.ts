@@ -3,7 +3,6 @@
  * @group xyk
  * @group asset
  * @group rewards-bootstrap
- * @group sequential
  */
 import { jest } from "@jest/globals";
 import { getApi } from "../../utils/api";

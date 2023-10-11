@@ -1,5 +1,6 @@
 /*
  *
+ * @group parallel
  * @group paralgasless
  */
 import { jest } from "@jest/globals";
@@ -108,7 +109,8 @@ test("[gasless] Happy path: automatic-unlock", async () => {
   await waitForEvents(
     await getApi(),
     "feeLock.FeeLockUnlocked",
-    gaslessMetadata.periodLength.toNumber() + 5
+    gaslessMetadata.periodLength.toNumber() + 5,
+    testUser1.keyRingPair.address
   );
   const blockNoAfterEvent = await getBlockNumber();
 

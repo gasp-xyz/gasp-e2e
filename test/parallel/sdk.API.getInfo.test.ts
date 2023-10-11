@@ -40,6 +40,7 @@ beforeAll(async () => {
   } catch (e) {
     await initApi();
   }
+
   keyring = new Keyring({ type: "sr25519" });
 
   // setup users
@@ -192,4 +193,75 @@ test("check calculateMintingFutureRewards", async () => {
     blocksToPass
   );
   expect(mintingRewards).bnGt(BN_ZERO);
+});
+
+test("check getAssetsInfo", async () => {
+  const assetsInfo = await mangata.query.getAssetsInfo();
+  const tokenName = "TEST_" + token1.toString();
+  expect(assetsInfo[token1.toNumber()].name).toEqual(tokenName);
+});
+
+test("check getLiquidityTokens", async () => {
+  const liquidityTokensInfo = await mangata.query.getLiquidityTokens();
+  expect(liquidityTokensInfo[liqId.toNumber()].id).toEqual(liqId.toString());
+  expect(liquidityTokensInfo[token1.toNumber()]).toEqual(undefined);
+});
+
+test("check getOwnedTokens", async () => {
+  const userTokensInfo = await mangata.query.getOwnedTokens(
+    testUser.keyRingPair.address
+  );
+  expect(userTokensInfo[MGA_ASSET_ID.toNumber()].balance.free).bnGt(BN_ZERO);
+  expect(userTokensInfo[token1.toNumber()].balance.free).bnGt(BN_ZERO);
+  expect(userTokensInfo[liqId.toNumber()].balance.free).bnGt(BN_ZERO);
+});
+
+test("check getTokenInfo", async () => {
+  const tokenInfo = await mangata.query.getTokenInfo(token1.toString());
+  const tokenName = "TEST_" + token1.toString();
+  expect(tokenInfo.name).toEqual(tokenName);
+});
+
+test("sdk - filter deactivated pools on node", async () => {
+  const [token2] = await Assets.setupUserWithCurrencies(
+    sudo,
+    [defaultCurrencyValue],
+    sudo
+  );
+  await Sudo.batchAsSudoFinalized(
+    Assets.mintToken(token2, testUser, Assets.DEFAULT_AMOUNT),
+    Sudo.sudoAs(
+      testUser,
+      Xyk.createPool(
+        MGA_ASSET_ID,
+        Assets.DEFAULT_AMOUNT.divn(2),
+        token2,
+        Assets.DEFAULT_AMOUNT.divn(2)
+      )
+    ),
+    Sudo.sudoAs(
+      testUser,
+      Xyk.burnLiquidity(MGA_ASSET_ID, token2, Assets.DEFAULT_AMOUNT.divn(2))
+    )
+  );
+  const deactivatedPoolId = await getLiquidityAssetId(MGA_ASSET_ID, token2);
+  //this list contain only tokens that are active.
+  const liquidityAssetsInfo = JSON.parse(
+    JSON.stringify(await mangata.rpc.getLiquidityTokensForTrading())
+  );
+  expect(liquidityAssetsInfo).not.toContain(deactivatedPoolId.toString());
+
+  //this list contain all liq tokens that are active and inactive from asset registry.
+  const poolAssetsInfo = (await mangata.rpc.getTradeableTokens()).filter((id) =>
+    id.name.includes("LiquidityPoolToken")
+  );
+  const tokenIdsToDeleteSet = new Set(liquidityAssetsInfo);
+  //let's remove the active ones from the list => only deactivated ones will remain.
+  const deactivatedPoolsAssetsInfo = poolAssetsInfo.filter((id) => {
+    return !tokenIdsToDeleteSet.has(id.tokenId);
+  });
+  const deactivatedPoolsIds: string[] = deactivatedPoolsAssetsInfo.map(
+    (token: any) => token.tokenId.toString()
+  );
+  expect(deactivatedPoolsIds).toContain(deactivatedPoolId.toString());
 });

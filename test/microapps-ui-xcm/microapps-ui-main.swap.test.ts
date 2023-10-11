@@ -138,7 +138,7 @@ describe("Miocroapps UI swap tests", () => {
     expect(isSwapFrameDisplayed).toBeTruthy();
     await swap.pickPayToken(MGX_ASSET_NAME);
     await swap.pickGetToken(KSM_FULL_NAME);
-    await swap.setPayTokenAmount("100");
+    await swap.setPayTokenAmount("1000");
     const getTokenAmount = await swap.fetchGetAssetAmount();
     expect(parseFloat(getTokenAmount)).toBeGreaterThan(0);
 
@@ -156,7 +156,7 @@ describe("Miocroapps UI swap tests", () => {
     expect(areRouteDetailsDisplayed).toBeTruthy();
 
     const minimumRecieved = await swap.fetchMinimumReceivedAmount();
-    await swap.setPayTokenAmount("200");
+    await swap.setPayTokenAmount("2000");
     const minimumRecievedAfterChange = await swap.fetchMinimumReceivedAmount();
     expect(minimumRecieved).toBeLessThan(minimumRecievedAfterChange);
   });

@@ -128,7 +128,8 @@ export async function waitSudoOperationFail(
 export const waitForEvents = async (
   api: ApiPromise,
   method: string,
-  blocks: number = 10
+  blocks: number = 10,
+  withData: string = ""
 ): Promise<CodecOrArray> => {
   return new Promise(async (resolve, reject) => {
     let counter = 0;
@@ -145,7 +146,11 @@ export const waitForEvents = async (
 
       const filtered = _.filter(
         events,
-        ({ event }) => `${event.section}.${event.method}` === method
+        ({ event }) =>
+          `${event.section}.${event.method}` === method &&
+          (withData.length > 0
+            ? JSON.stringify(event.data.toHuman()).includes(withData)
+            : true)
       );
       if (filtered.length > 0) {
         resolve(filtered);
