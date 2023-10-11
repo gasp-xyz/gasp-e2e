@@ -43,11 +43,17 @@ export function isBackendTest() {
   const groupPrefix = "--group=";
   const isThereAPath = process.argv.find((arg) => arg.includes("test/"));
   const isAGroupRun = process.argv.find((arg) => arg.includes(groupPrefix));
-  if (isThereAPath && isThereAPath.length > 0 && isThereAPath.toLowerCase().includes("ui"))
+  if (
+    isThereAPath &&
+    isThereAPath.length > 0 &&
+    isThereAPath.toLowerCase().includes("ui")
+  )
     return false;
-  if (isAGroupRun && isAGroupRun.length > 0 && isAGroupRun.toLowerCase().includes("ui"))
-    return false;
-  return true;
+  return !(
+    isAGroupRun &&
+    isAGroupRun.length > 0 &&
+    isAGroupRun.toLowerCase().includes("ui")
+  );
 }
 export const setupUsers = () => {
   keyring = new Keyring({ type: "sr25519" });
