@@ -57,7 +57,6 @@ export async function setupPageWithState(driver: WebDriver, acc_name: string) {
   await mainPage.go();
   const appLoaded = await mainPage.isAppLoaded();
   expect(appLoaded).toBeTruthy();
-  await mainPage.skipBetaInfo();
 
   const walletWrapper = new WalletWrapper(driver);
   const isAccInfoDisplayed = await walletWrapper.isAccInfoDisplayed(acc_name);

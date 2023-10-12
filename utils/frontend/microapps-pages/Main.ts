@@ -11,11 +11,6 @@ import {
 
 const DIV_MAIN_APP = "app-layout";
 const GENERIC_TOAST = "toast";
-const NAV_LIQ_POOLS = "nav-pools";
-const NAV_SWAP = "nav-swap";
-const NAV_TOKENS = "nav-tokens";
-const NAV_STAKING = "nav-staking";
-const NAV_POSITIONS = "nav-positions";
 
 export class Main {
   driver: WebDriver;
@@ -51,30 +46,5 @@ export class Main {
     } catch (error) {
       //Button not found - no action performed.
     }
-  }
-
-  async clickNavItem(itemName: string) {
-    const itemXpath = buildDataTestIdXpath(itemName);
-    await clickElement(this.driver, itemXpath);
-  }
-
-  async clickNavLiqPools() {
-    await this.clickNavItem(NAV_LIQ_POOLS);
-  }
-
-  async clickNavSwap() {
-    await this.clickNavItem(NAV_SWAP);
-  }
-
-  async clickNavTokens() {
-    await this.clickNavItem(NAV_TOKENS);
-  }
-
-  async clickNavStaking() {
-    await this.clickNavItem(NAV_STAKING);
-  }
-
-  async clickNavPositions() {
-    await this.clickNavItem(NAV_POSITIONS);
   }
 }
