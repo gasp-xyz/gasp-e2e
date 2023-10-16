@@ -4,7 +4,7 @@
 // npx ts-node test/exploratory/eventListener.ts
 
 import { Mangata } from "@mangata-finance/sdk";
-import { testLog } from "./../utils/Logger";
+import { testLog } from "../utils/Logger";
 
 const uri = "wss://v4-collator-01.mangatafinance.cloud";
 
@@ -66,13 +66,15 @@ function printEvent(event: any, phase: any, types: any, index: Number) {
   }: ${phase} - ${JSON.stringify(event.data)}`;
 
   // Loop through each of the parameters, displaying the type and data
-  if ((event.data as any[]).length > 0)
+  if ((event.data as any[]).length > 0) {
     event.data.forEach((data: any, index: any) => {
-      if (types)
+      if (types) {
         eventMessage += `\n \t\t\t\t\t\t\t${
           types[index].type
         }: ${data.toString()}`;
+      }
     });
+  }
   testLog.getLog().info(eventMessage);
 }
 

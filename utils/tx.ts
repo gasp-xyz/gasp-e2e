@@ -168,12 +168,11 @@ export async function calculate_sell_price_rpc(
   sell_amount: BN
 ): Promise<BN> {
   const mangata = await getMangataInstance();
-  const result = await mangata.rpc.calculateSellPrice({
+  return await mangata.rpc.calculateSellPrice({
     amount: sell_amount,
     inputReserve: input_reserve,
     outputReserve: output_reserve,
   });
-  return result;
 }
 
 export async function calculate_buy_price_rpc(
@@ -182,12 +181,11 @@ export async function calculate_buy_price_rpc(
   buyAmount: BN
 ) {
   const mangata = await getMangataInstance();
-  const result = await mangata.rpc.calculateBuyPrice({
+  return await mangata.rpc.calculateBuyPrice({
     inputReserve: inputReserve,
     outputReserve: outputReserve,
     amount: buyAmount,
   });
-  return result;
 }
 
 export async function calculate_buy_price_id_rpc(
@@ -196,12 +194,11 @@ export async function calculate_buy_price_id_rpc(
   buyAmount: BN
 ) {
   const mangata = await getMangataInstance();
-  const result = await mangata.rpc.calculateBuyPriceId(
+  return await mangata.rpc.calculateBuyPriceId(
     soldTokenId.toString(),
     boughtTokenId.toString(),
     buyAmount
   );
-  return result;
 }
 
 export async function calculate_sell_price_id_rpc(
@@ -210,12 +207,11 @@ export async function calculate_sell_price_id_rpc(
   sellAmount: BN
 ) {
   const mangata = await getMangataInstance();
-  const result = await mangata.rpc.calculateSellPriceId(
+  return await mangata.rpc.calculateSellPriceId(
     soldTokenId.toString(),
     boughtTokenId.toString(),
     sellAmount
   );
-  return result;
 }
 
 export async function getCurrentNonce(account?: string) {
@@ -223,9 +219,7 @@ export async function getCurrentNonce(account?: string) {
   const sudo = new User(new Keyring({ type: "sr25519" }), sudoUserName);
   // lets check if sudo -> calculate manually nonce.
   if (account === sudo.keyRingPair.address) {
-    const nonce = new BN(await SudoDB.getInstance().getSudoNonce(account));
-
-    return nonce;
+    return new BN(await SudoDB.getInstance().getSudoNonce(account));
   } else if (account) {
     return getChainNonce(account);
   }
@@ -234,8 +228,7 @@ export async function getCurrentNonce(account?: string) {
 
 export async function getChainNonce(address: string) {
   const mangata = await getMangataInstance();
-  const nonce = await mangata.query.getNonce(address);
-  return nonce;
+  return await mangata.query.getNonce(address);
 }
 
 export async function getUserAssets(account: any, assets: BN[]) {
@@ -250,19 +243,14 @@ export async function getUserAssets(account: any, assets: BN[]) {
 
 export async function getBalanceOfAssetStr(assetId: BN, account: string) {
   const mangata = await getMangataInstance();
-  const balance = await mangata.query.getTokenBalance(
-    assetId.toString(),
-    account
-  );
-  return balance;
+  return await mangata.query.getTokenBalance(assetId.toString(), account);
 }
 export async function getBalanceOfAsset(assetId: BN, account: User) {
   const mangata = await getMangataInstance();
-  const balance = await mangata.query.getTokenBalance(
+  return await mangata.query.getTokenBalance(
     assetId.toString(),
     account.keyRingPair.address
   );
-  return balance;
 }
 
 export async function getBalanceOfPool(
@@ -270,11 +258,10 @@ export async function getBalanceOfPool(
   assetId2: BN
 ): Promise<BN[]> {
   const mangata = await getMangataInstance();
-  const balance = await mangata.query.getAmountOfTokensInPool(
+  return await mangata.query.getAmountOfTokensInPool(
     assetId1.toString(),
     assetId2.toString()
   );
-  return balance;
 }
 
 export async function getLiquidityAssetId(assetId1: BN, assetId2: BN) {
@@ -298,8 +285,7 @@ export async function getLiquidityAssetId(assetId1: BN, assetId2: BN) {
 
 export async function getLiquiditybalance(liquidityAssetId: BN) {
   const pool = await getLiquidityPool(liquidityAssetId);
-  const poolBalance = await getBalanceOfPool(pool[0], pool[1]);
-  return poolBalance;
+  return await getBalanceOfPool(pool[0], pool[1]);
 }
 
 export async function getLiquidityPool(liquidityAssetId: BN) {
@@ -309,7 +295,9 @@ export async function getLiquidityPool(liquidityAssetId: BN) {
     liquidityAssetId.toString()
   );
   const poolAssetIds = await liqPool.map((string) => stringToBN(string));
-  if (!poolAssetIds) return [new BN(-1), new BN(-1)];
+  if (!poolAssetIds) {
+    return [new BN(-1), new BN(-1)];
+  }
 
   return poolAssetIds;
 }
@@ -352,13 +340,9 @@ export const balanceTransfer = async (
 ) => {
   const api = getApi();
 
-  const txResult = await signTx(
-    api,
-    api.tx.balances.transfer(target, amount),
-    account,
-    { nonce: await getCurrentNonce(account.address) }
-  );
-  return txResult;
+  return await signTx(api, api.tx.balances.transfer(target, amount), account, {
+    nonce: await getCurrentNonce(account.address),
+  });
 };
 
 export const transferAsset = async (
@@ -369,14 +353,13 @@ export const transferAsset = async (
 ) => {
   const mangata = await getMangataInstance();
   const nonce = await getCurrentNonce(account.address);
-  const result = await mangata.tokens.transferTokens({
+  return await mangata.tokens.transferTokens({
     account: account,
     tokenId: tokenId.toString(),
     address: targetAddress,
     amount: amount,
     txOptions: { nonce: nonce },
   });
-  return result;
 };
 
 export const transferAll = async (
@@ -386,13 +369,12 @@ export const transferAll = async (
 ) => {
   const mangata = await getMangataInstance();
   const nonce = await getCurrentNonce(account.address);
-  const result = await mangata.tokens.transferAllTokens({
+  return await mangata.tokens.transferAllTokens({
     account: account,
     tokenId: tokenId.toString(),
     address: target,
     txOptions: { nonce: nonce },
   });
-  return result;
 };
 
 export const mintAsset = async (
@@ -438,7 +420,7 @@ export const createPool = async (
       `Creating pool:${firstAssetId},${firstAssetAmount},${secondAssetId},${secondAssetAmount}`
     );
   const mangata = await getMangataInstance();
-  const result = await mangata.xyk.createPool({
+  return await mangata.xyk.createPool({
     account: account,
     firstTokenId: firstAssetId.toString(),
     secondTokenId: secondAssetId.toString(),
@@ -446,7 +428,6 @@ export const createPool = async (
     firstTokenAmount: firstAssetAmount,
     txOptions: { nonce: nonce },
   });
-  return result;
 };
 
 // for alignment purposes lets keep it backward comaptible
@@ -459,7 +440,7 @@ export const promotePool = async (
   testLog.getLog().info(`Promoting pool :${liqAssetId}`);
   const mangata = await getMangataInstance();
   const api = await mangata.api();
-  const result = await signTx(
+  return await signTx(
     api,
     api.tx.sudo.sudo(
       api.tx.proofOfStake.updatePoolPromotion(liqAssetId, weight)
@@ -467,7 +448,6 @@ export const promotePool = async (
     sudoAccount,
     { nonce: await getCurrentNonce(sudoAccount.address) }
   );
-  return result;
 };
 
 export const sellAsset = async (
@@ -479,14 +459,13 @@ export const sellAsset = async (
   options = {}
 ) => {
   const mangata = await getMangataInstance();
-  const result = await mangata.xyk.multiswapSellAsset({
+  return await mangata.xyk.multiswapSellAsset({
     account: account,
     tokenIds: [soldAssetId.toString(), boughtAssetId.toString()],
     amount: amount,
     minAmountOut: minAmountOut,
     txOptions: options,
   });
-  return result;
 };
 export const delegate = async (
   account: KeyringPair,
@@ -508,7 +487,7 @@ export const delegate = async (
     JSON.stringify(await api?.query.parachainStaking.delegatorState(collator))
   );
   const delCount = delegatorIdx === null ? 0 : delegatorIdx.length;
-  const result = await signSendAndWaitToFinishTx(
+  return await signSendAndWaitToFinishTx(
     api?.tx.parachainStaking.delegate(
       collator,
       new BN(amount),
@@ -518,7 +497,6 @@ export const delegate = async (
     ),
     account
   );
-  return result;
 };
 export const joinCandidate = async (
   account: KeyringPair,
@@ -535,7 +513,7 @@ export const joinCandidate = async (
   const liqTokens = await api?.query.parachainStaking.stakingLiquidityTokens();
   const liqTokenCount = Object.keys(JSON.parse(liqTokens as any)).length;
 
-  const result = await signSendAndWaitToFinishTx(
+  return await signSendAndWaitToFinishTx(
     api?.tx.parachainStaking.joinCandidates(
       new BN(amount),
       new BN(liqToken),
@@ -546,7 +524,6 @@ export const joinCandidate = async (
     account,
     stricSuccess
   );
-  return result;
 };
 export const activateLiquidity = async (
   account: KeyringPair,
@@ -577,12 +554,11 @@ export const deactivateLiquidity = async (
 ) => {
   const mangata = await getMangataInstance();
 
-  const result = await mangata.xyk.deactivateLiquidity({
+  return await mangata.xyk.deactivateLiquidity({
     account: account,
     amount: amount,
     liquidityTokenId: liqToken.toString(),
   });
-  return result;
 };
 
 export const provideLiquidity = async (
@@ -593,7 +569,7 @@ export const provideLiquidity = async (
 ) => {
   const mangata = await getMangataInstance();
   const api = await mangata.api();
-  const result = await signTx(
+  return await signTx(
     api,
     api.tx.xyk.provideLiquidityWithConversion(
       liquidityAssetId,
@@ -602,7 +578,6 @@ export const provideLiquidity = async (
     ),
     user
   );
-  return result;
 };
 
 export const reserveVestingLiquidityTokens = async (
@@ -614,7 +589,7 @@ export const reserveVestingLiquidityTokens = async (
   const mangata = await getMangataInstance();
   const api = await mangata.api();
 
-  const result = await signSendAndWaitToFinishTx(
+  return await signSendAndWaitToFinishTx(
     api?.tx.multiPurposeLiquidity.reserveVestingLiquidityTokens(
       new BN(liqToken),
       new BN(amount)
@@ -622,7 +597,6 @@ export const reserveVestingLiquidityTokens = async (
     keyRingPair,
     strictSuccess
   );
-  return result;
 };
 export const buyAsset = async (
   account: any,
@@ -633,14 +607,13 @@ export const buyAsset = async (
   options = {}
 ) => {
   const mangata = await getMangataInstance();
-  const result = await mangata.xyk.multiswapBuyAsset({
+  return await mangata.xyk.multiswapBuyAsset({
     account: account,
     tokenIds: [soldAssetId.toString(), boughtAssetId.toString()],
     amount: amount,
     maxAmountIn: maxAmountIn,
     txOptions: options,
   });
-  return result;
 };
 
 export const mintLiquidity = async (
@@ -651,14 +624,13 @@ export const mintLiquidity = async (
   expectedSecondAssetAmount: BN = new BN(Number.MAX_SAFE_INTEGER)
 ) => {
   const mangata = await getMangataInstance();
-  const result = await mangata.xyk.mintLiquidity({
+  return await mangata.xyk.mintLiquidity({
     account: account,
     expectedSecondTokenAmount: expectedSecondAssetAmount,
     firstTokenAmount: firstAssetAmount,
     firstTokenId: firstAssetId.toString(),
     secondTokenId: secondAssetId.toString(),
   });
-  return result;
 };
 export const mintLiquidityUsingVestingNativeTokens = async (
   user: KeyringPair,
@@ -668,7 +640,7 @@ export const mintLiquidityUsingVestingNativeTokens = async (
 ) => {
   const mangata = await getMangataInstance();
   const api = await mangata.api();
-  const result = await signTx(
+  return await signTx(
     api,
     api.tx.xyk.mintLiquidityUsingVestingNativeTokens(
       vestingTokensAmount,
@@ -677,7 +649,6 @@ export const mintLiquidityUsingVestingNativeTokens = async (
     ),
     user
   );
-  return result;
 };
 
 export const burnLiquidity = async (
@@ -688,14 +659,13 @@ export const burnLiquidity = async (
 ) => {
   const mangata = await getMangataInstance();
   const nonce = await getCurrentNonce(account.address);
-  const result = await mangata.xyk.burnLiquidity({
+  return await mangata.xyk.burnLiquidity({
     account: account,
     firstTokenId: firstAssetId.toString(),
     secondTokenId: secondAssetId.toString(),
     amount: liquidityAssetAmount,
     txOptions: { nonce: nonce },
   });
-  return result;
 };
 
 export async function getTokensAccountInfo(account: string, assetId: BN) {
@@ -710,8 +680,7 @@ export async function getTreasury(tokenId: BN): Promise<BN> {
     tokenId,
     treasuryPalletAddress
   );
-  const treasuryBalanceBN = new BN(treasuryBalance.free.toString());
-  return treasuryBalanceBN;
+  return new BN(treasuryBalance.free.toString());
 }
 
 export async function getTreasuryBurn(tokenId: BN): Promise<BN> {
@@ -720,8 +689,7 @@ export async function getTreasuryBurn(tokenId: BN): Promise<BN> {
     tokenId,
     treasuryBurnPalletAddress
   );
-  const treasuryBalanceBN = new BN(treasuryBalance.free.toString());
-  return treasuryBalanceBN;
+  return new BN(treasuryBalance.free.toString());
 }
 
 export async function getAssetId(assetName: string): Promise<any> {
@@ -741,8 +709,7 @@ export async function getAssetId(assetName: string): Promise<any> {
 export async function getLock(accountAddress: string, assetId: BN) {
   const api = getApi();
   const locksResponse = await api.query.tokens.locks(accountAddress, assetId)!;
-  const decodedlocks = JSON.parse(JSON.stringify(locksResponse.toHuman()));
-  return decodedlocks;
+  return JSON.parse(JSON.stringify(locksResponse.toHuman()));
 }
 
 export async function getAllAssets(accountAddress: string) {
@@ -751,15 +718,13 @@ export async function getAllAssets(accountAddress: string) {
   // Example of the returned object:
   // availableAssets[0][0].toHuman() -> ['5ERGFUfA5mhYGvgNQ1bkkeoW5gwEeggdVrrnKUsHuBGNLxL4', '5']
   // first entry is a StorageKey with contains the addres and the assetId, so we filter by it and get the id
-  const userOnes = availableAssets
+  return availableAssets
     .filter(
       (asset) =>
         (((asset as any[])[0] as StorageKey).toHuman() as any[])[0] ===
         accountAddress
     )
     .map((tuple) => new BN((tuple[0].toHuman() as any[])[1]));
-
-  return userOnes;
 }
 
 export async function lockAsset(user: User, amount: BN) {
@@ -794,11 +759,9 @@ export async function getAllAssetsInfo(): Promise<any[]> {
   ///  ],
   /// Humanize the [1]  ( zero is the ID ), stringify and converting to json.
 
-  const assetsInfo = availableAssetsInfo.map((asset) =>
+  return availableAssetsInfo.map((asset) =>
     JSON.parse(JSON.stringify(((asset as any[])[1] as StorageKey).toHuman()))
   );
-
-  return assetsInfo;
 }
 
 export async function calculateTxCost(
@@ -935,7 +898,7 @@ export async function vestingTransfer(
   perBlock = new BN(100)
 ) {
   const api = getApi();
-  const result = await signTx(
+  return await signTx(
     api,
     api.tx.sudo.sudo(
       api.tx.vesting.forceVestedTransfer(
@@ -954,17 +917,11 @@ export async function vestingTransfer(
       nonce: await getCurrentNonce(sudoUser.keyRingPair.address),
     }
   );
-  return result;
 }
 
 export async function unlockVestedToken(User: User, tokenID: BN) {
   const api = getApi();
-  const result = await signTx(
-    api,
-    api.tx.vesting.vest(tokenID),
-    User.keyRingPair
-  );
-  return result;
+  return await signTx(api, api.tx.vesting.vest(tokenID), User.keyRingPair);
 }
 
 export class FeeTxs {
@@ -999,7 +956,7 @@ export async function registerAsset(
   additional: any
 ) {
   const api = getApi();
-  const result = await signTx(
+  return await signTx(
     api,
     api.tx.sudo.sudo(
       api.tx.assetRegistry.registerAsset(
@@ -1020,7 +977,6 @@ export async function registerAsset(
       nonce: await getCurrentNonce(sudoUser.keyRingPair.address),
     }
   );
-  return result;
 }
 
 export async function updateAsset(
@@ -1030,7 +986,7 @@ export async function updateAsset(
   additional: any
 ) {
   const api = getApi();
-  const result = await signTx(
+  return await signTx(
     api,
     api.tx.sudo.sudo(
       api.tx.assetRegistry.updateAsset(
@@ -1049,7 +1005,6 @@ export async function updateAsset(
       nonce: await getCurrentNonce(sudoUser.keyRingPair.address),
     }
   );
-  return result;
 }
 
 export async function compoundRewards(
@@ -1058,12 +1013,11 @@ export async function compoundRewards(
   amountPermille: number = 1000000
 ) {
   const api = getApi();
-  const result = await signTx(
+  return await signTx(
     api,
     api.tx.xyk.compoundRewards(liquidityAssetId, amountPermille),
     User.keyRingPair
   );
-  return result;
 }
 
 export async function multiSwapBuy(
@@ -1080,13 +1034,12 @@ export async function multiSwapBuy(
     tokenIdsString = tokenIds[index].toString();
     tokenIdsArray.push(tokenIdsString);
   });
-  const result = await mangata.xyk.multiswapBuyAsset({
+  return await mangata.xyk.multiswapBuyAsset({
     account: account,
     amount: buyAmount,
     maxAmountIn: maxAmountIn,
     tokenIds: tokenIdsArray!,
   });
-  return result;
 }
 export async function multiSwapSell(
   user: User,
@@ -1102,13 +1055,12 @@ export async function multiSwapSell(
     tokenIdsString = tokenIds[index].toString();
     tokenIdsArray.push(tokenIdsString);
   });
-  const result = await mangata.xyk.multiswapSellAsset({
+  return await mangata.xyk.multiswapSellAsset({
     account: account,
     amount: soldAmount,
     minAmountOut: minAmountOut,
     tokenIds: tokenIdsArray,
   });
-  return result;
 }
 
 export async function updateFeeLockMetadata(
@@ -1119,7 +1071,7 @@ export async function updateFeeLockMetadata(
   shouldBeWhitelisted: any
 ) {
   const api = getApi();
-  const result = await signTx(
+  return await signTx(
     api,
     api.tx.sudo.sudo(
       api.tx.feeLock.updateFeeLockMetadata(
@@ -1134,17 +1086,11 @@ export async function updateFeeLockMetadata(
       nonce: await getCurrentNonce(sudoUser.keyRingPair.address),
     }
   );
-  return result;
 }
 
 export async function unlockFee(User: User) {
   const api = getApi();
-  const result = await signTx(
-    api,
-    api.tx.feeLock.unlockFee(),
-    User.keyRingPair
-  );
-  return result;
+  return await signTx(api, api.tx.feeLock.unlockFee(), User.keyRingPair);
 }
 
 export async function getStakingLiquidityTokens(liquidityAssetId: BN) {
@@ -1168,7 +1114,7 @@ export async function getRewardsInfo(
   const api = await getApi();
   const value = await api.query.proofOfStake.rewardsInfo(address, liqId);
   const valueAsJson = JSON.parse(JSON.stringify(value));
-  const toReturn = {
+  return {
     activatedAmount: stringToBN(valueAsJson.activatedAmount),
     rewardsNotYetClaimed: stringToBN(valueAsJson.rewardsNotYetClaimed),
     rewardsAlreadyClaimed: stringToBN(valueAsJson.rewardsAlreadyClaimed),
@@ -1178,38 +1124,33 @@ export async function getRewardsInfo(
     ),
     missingAtLastCheckpoint: stringToBN(valueAsJson.missingAtLastCheckpoint),
   };
-  return toReturn;
 }
 
 export async function claimRewards(user: User, liquidityTokenId: BN) {
   const account = user.keyRingPair;
   const liquidityTokenIdString = liquidityTokenId.toString();
   const mangata = await getMangataInstance();
-  const result = await mangata.xyk.claimRewards({
+  return await mangata.xyk.claimRewards({
     account: account,
     liquidityTokenId: liquidityTokenIdString,
   });
-  return result;
 }
 
 export async function claimRewardsAll(user: User) {
   const account = user.keyRingPair;
   const mangata = await getMangataInstance();
-  const result = await mangata.xyk.claimRewardsAll({
+  return await mangata.xyk.claimRewardsAll({
     account: account,
   });
-  return result;
 }
 
 export async function setCrowdloanAllocation(crowdloanAllocationAmount: BN) {
   const api = getApi();
-  const setCrowdloanAllocation = await Sudo.batchAsSudoFinalized(
+  return await Sudo.batchAsSudoFinalized(
     Sudo.sudo(
       api.tx.crowdloan.setCrowdloanAllocation(crowdloanAllocationAmount)
     )
   );
-
-  return setCrowdloanAllocation;
 }
 
 export async function initializeCrowdloanReward(
@@ -1225,11 +1166,9 @@ export async function initializeCrowdloanReward(
       crowdloanRewardsAmount,
     ]);
   });
-  const initializeReward = await Sudo.batchAsSudoFinalized(
+  return await Sudo.batchAsSudoFinalized(
     Sudo.sudo(api.tx.crowdloan.initializeRewardVec([...rewards]))
   );
-
-  return initializeReward;
 }
 
 export async function completeCrowdloanInitialization(
@@ -1237,7 +1176,7 @@ export async function completeCrowdloanInitialization(
   leaseEndingBlock: number
 ) {
   const api = getApi();
-  const completeInitialization = await Sudo.batchAsSudoFinalized(
+  return await Sudo.batchAsSudoFinalized(
     Sudo.sudo(
       api.tx.crowdloan.completeInitialization(
         leaseStartBlock,
@@ -1246,8 +1185,6 @@ export async function completeCrowdloanInitialization(
       )
     )
   );
-
-  return completeInitialization;
 }
 
 export async function claimCrowdloanRewards(crowdloanId: any, userId: User) {
@@ -1258,8 +1195,7 @@ export async function claimCrowdloanRewards(crowdloanId: any, userId: User) {
     api.tx.crowdloan.claim(crowdloanId),
     userId.keyRingPair
   );
-  const eventResponse = getEventResultFromMangataTx(claimRewards);
-  return eventResponse;
+  return getEventResultFromMangataTx(claimRewards);
 }
 
 export async function sudoClaimCrowdloanRewards(
@@ -1271,8 +1207,7 @@ export async function sudoClaimCrowdloanRewards(
     // @ts-ignore
     Sudo.sudoAs(userId, api.tx.crowdloan.claim(crowdloanId))
   );
-  const eventResponse = getEventResultFromMangataTx(claimRewards);
-  return eventResponse;
+  return getEventResultFromMangataTx(claimRewards);
 }
 
 export async function setUserIdentity(user: User, displayname: string) {

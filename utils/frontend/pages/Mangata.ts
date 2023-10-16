@@ -75,8 +75,7 @@ export class Mangata {
   }
   async getAssetValue(assetName: string) {
     const sidebar = new Sidebar(this.driver);
-    const value = await sidebar.getAssetValue(assetName);
-    return value;
+    return await sidebar.getAssetValue(assetName);
   }
 
   async isSwapFrameDisplayed() {
@@ -92,8 +91,7 @@ export class Mangata {
 
   async isLogoDisplayed() {
     await waitForElementVisible(this.driver, DIV_MGA_LOGO);
-    const displayed = await isDisplayed(this.driver, DIV_MGA_LOGO);
-    return displayed;
+    return await isDisplayed(this.driver, DIV_MGA_LOGO);
   }
   async clickOnSelectTokens() {
     await clickElement(this.driver, BTN_SELECT_TOKENS);
@@ -101,8 +99,7 @@ export class Mangata {
   async getAvailableTokenList() {
     const elements = await this.driver.findElements(By.xpath(LI_TOKEN_ELEM));
     const promises = elements.map((listItem) => listItem.getText());
-    const tokenListTexts = await Promise.all(promises);
-    return tokenListTexts;
+    return await Promise.all(promises);
   }
 
   async clickOnFirstOwnedLiquidityPool() {
@@ -124,8 +121,11 @@ export class Mangata {
     const inputs = await this.driver.findElements(
       By.xpath(INPUT_MGA_ADD_ASSET_VALUE)
     );
-    if (input === 1) await inputs[0]!.sendKeys(inputValue);
-    else await inputs[1]!.sendKeys(inputValue);
+    if (input === 1) {
+      await inputs[0]!.sendKeys(inputValue);
+    } else {
+      await inputs[1]!.sendKeys(inputValue);
+    }
   }
   async getAmount(input = 1): Promise<string> {
     await waitForElement(this.driver, INPUT_MGA_ADD_ASSET_VALUE);
@@ -133,9 +133,12 @@ export class Mangata {
     const inputs = await this.driver.findElements(
       By.xpath(INPUT_MGA_ADD_ASSET_VALUE)
     );
-    let value = "";
-    if (input === 1) value = await inputs[0]!.getAttribute("value");
-    else value = await inputs[1]!.getAttribute("value");
+    let value: string;
+    if (input === 1) {
+      value = await inputs[0]!.getAttribute("value");
+    } else {
+      value = await inputs[1]!.getAttribute("value");
+    }
     return value;
   }
 }

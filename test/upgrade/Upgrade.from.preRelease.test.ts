@@ -73,7 +73,11 @@ describe("upgrade - testpad", () => {
         testLog.getLog().info(err.message);
       });
     const wasmspaths = (await Promise.all([result])) as unknown as string[];
-    if (wasmspaths.length > 0) if (!wasmPath) wasmPath = wasmspaths[0][0];
+    if (wasmspaths.length > 0) {
+      if (!wasmPath) {
+        wasmPath = wasmspaths[0][0];
+      }
+    }
     testLog.getLog().info("Downloaded in: " + wasmPath);
   });
 

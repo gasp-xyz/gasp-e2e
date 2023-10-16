@@ -224,7 +224,9 @@ export async function joinAFewCandidates(numCandidates = 50, liqId = 9) {
     MGA_ASSET_ID,
     amountToJoin
   );
-  if (tokensToMint.eqn(0)) tokensToMint = amountToJoin.muln(10000);
+  if (tokensToMint.eqn(0)) {
+    tokensToMint = amountToJoin.muln(10000);
+  }
   const txs = [];
   const users = [];
   for (let index = 0; index < numCandidates; index++) {

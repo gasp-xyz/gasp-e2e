@@ -563,7 +563,9 @@ export async function printCandidatePowers() {
             JSON.parse(JSON.stringify(state[1])).totalCounted
           ).toString(),
         ];
-      } else return [];
+      } else {
+        return [];
+      }
     });
 
   for (let index = 0; index < info.length; index++) {

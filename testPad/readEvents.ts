@@ -5,7 +5,7 @@
 
 import { Mangata } from "@mangata-finance/sdk";
 
-import { testLog } from "./../utils/Logger";
+import { testLog } from "../utils/Logger";
 
 const uris = [
   "wss://staging.mangatafinance.cloud:9944",
@@ -52,11 +52,13 @@ async function main() {
 
           // Loop through each of the parameters, displaying the type and data
           event.data.forEach((data: any, index: any) => {
-            if (pretty)
+            if (pretty) {
               eventMessage += `\n \t\t\t\t\t\t\t${
                 types[index].type
               }: ${data.toString()}`;
-            else eventMessage += ` [${types[index].type}: ${data.toString()}] `;
+            } else {
+              eventMessage += ` [${types[index].type}: ${data.toString()}] `;
+            }
           });
           testLog.getLog().info(eventMessage);
         });
