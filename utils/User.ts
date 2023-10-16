@@ -14,8 +14,10 @@ import {
   mintAsset,
   mintLiquidity,
   mintLiquidityUsingVestingNativeTokens,
+  registerAsset,
   reserveVestingLiquidityTokens,
   transferAll,
+  updateAsset,
 } from "./tx";
 import { getEventResultFromMangataTx } from "./txHandler";
 import {
@@ -354,7 +356,7 @@ export class User {
       },
     }
   ) {
-    return await registerAsset1(this, assetId, location, locMarker, null);
+    return await registerAsset(this, assetId, location, locMarker, null);
   }
 
   async updateAsset(
@@ -383,7 +385,7 @@ export class User {
       },
     }
   ) {
-    return await updateAsset1(this, assetId, location, additional);
+    return await updateAsset(this, assetId, location, additional);
   }
 }
 export class Asset {
