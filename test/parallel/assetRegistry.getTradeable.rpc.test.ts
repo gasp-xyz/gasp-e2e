@@ -15,6 +15,7 @@ import { BN } from "@polkadot/util";
 import { BN_THOUSAND } from "@mangata-finance/sdk";
 import { Xyk } from "../../utils/xyk";
 import { getLiquidityAssetId } from "../../utils/tx";
+import { SudoDB } from "../../utils/SudoDB";
 
 jest.spyOn(console, "log").mockImplementation(jest.fn());
 jest.setTimeout(1500000);
@@ -35,9 +36,9 @@ describe("AssetRegistry RPC -", () => {
     }
     await setupApi();
     setupUsers();
-
+    const tokenId = await SudoDB.getInstance().getTokenId();
     const events = await Sudo.batchAsSudoFinalized(
-      Assets.issueToken(alice, Assets.DEFAULT_AMOUNT),
+      Assets.mintToken(tokenId, alice, Assets.DEFAULT_AMOUNT),
       Assets.registerAsset("", "", 2),
       Assets.registerAsset("onlyName", "", 3),
       Assets.registerAsset("Name&Symbol", "symbol", 5),
