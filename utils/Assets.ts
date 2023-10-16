@@ -180,7 +180,12 @@ export class Assets {
       api.tx.tokens.mint(MGA_ASSET_ID, user.keyRingPair.address, amount)
     );
   }
-
+  public static createTokenWithNoAssetRegistry(
+    user: User,
+    amount: BN = this.DEFAULT_AMOUNT
+  ) {
+    return this.issueToken(user, amount);
+  }
   private static issueToken(
     user: User,
     amount: BN = this.DEFAULT_AMOUNT
