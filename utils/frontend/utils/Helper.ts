@@ -96,7 +96,7 @@ export async function waitInputValueSetInterval(
         }
       } else {
         const value = await element.getAttribute("value");
-        if (isElementVisible && value == "") {
+        if (isElementVisible && value === "") {
           return;
         }
       }
