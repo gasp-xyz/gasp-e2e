@@ -7,6 +7,7 @@ import {
   calculate_sell_price_local_no_fee,
   calculate_sell_price_rpc,
   getBalanceOfPool,
+  getNextAssetId,
   getTreasury,
   getTreasuryBurn,
 } from "../../utils/tx";
@@ -25,7 +26,6 @@ import { testLog } from "../../utils/Logger";
 import { Assets } from "../../utils/Assets";
 import { signSendFinalized } from "../../utils/sign";
 import { getApi } from "../../utils/api";
-import { SudoDB } from "../../utils/SudoDB";
 
 const asset_amount1 = new BN(500000);
 const asset_amount2 = asset_amount1.div(new BN(2));
@@ -56,12 +56,12 @@ describe("xyk-pallet - treasury tests [Mangata]: on treasury we store", () => {
     await setupApi();
     [user] = setupUsers();
 
-    currency = await SudoDB.getInstance().getTokenId();
+    currency = await getNextAssetId();
     user.addAsset(currency);
 
     await Sudo.batchAsSudoFinalized(
       Assets.mintNative(user),
-      Assets.mintToken(currency, user),
+      Assets.issueToken(user),
       Sudo.sudoAs(
         user,
         Xyk.createPool(MGA_ASSET_ID, asset_amount1, currency, asset_amount2)
@@ -206,15 +206,15 @@ describe("xyk-pallet - treasury tests [Connected - Mangata]: on treasury we stor
     await setupApi();
     [user] = setupUsers();
 
-    connectedToMGA = await SudoDB.getInstance().getTokenId();
-    indirectlyConnected = await SudoDB.getInstance().getTokenId();
+    connectedToMGA = await getNextAssetId();
+    indirectlyConnected = connectedToMGA.add(BN_ONE);
     user.addAsset(connectedToMGA);
     user.addAsset(indirectlyConnected);
 
     await Sudo.batchAsSudoFinalized(
       Assets.mintNative(user),
-      Assets.mintToken(connectedToMGA, user),
-      Assets.mintToken(indirectlyConnected, user),
+      Assets.issueToken(user),
+      Assets.issueToken(user),
       Sudo.sudoAs(
         user,
         Xyk.createPool(
@@ -432,12 +432,12 @@ describe("xyk-pallet - treasury tests [Connected - Mangata]: Error cases", () =>
     await setupApi();
     [user] = setupUsers();
 
-    currency = await SudoDB.getInstance().getTokenId();
+    currency = await getNextAssetId();
     user.addAsset(currency);
 
     await Sudo.batchAsSudoFinalized(
       Assets.mintNative(user),
-      Assets.mintToken(currency, user),
+      Assets.issueToken(user),
       Sudo.sudoAs(
         user,
         Xyk.createPool(MGA_ASSET_ID, asset_amount1, currency, asset_amount2)

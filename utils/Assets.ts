@@ -6,7 +6,7 @@ import { assert } from "console";
 import _ from "lodash";
 import { MGA_ASSET_ID } from "./Constants";
 import { ExtrinsicResult } from "./eventListeners";
-import { api, Extrinsic, isBackendTest, setupApi, setupUsers } from "./setup";
+import { api, Extrinsic, setupApi, setupUsers } from "./setup";
 import { Sudo } from "./sudo";
 import { getAssetSupply, getNextAssetId } from "./tx";
 import {
@@ -16,10 +16,8 @@ import {
 } from "./txHandler";
 import { User } from "./User";
 import { MangataTypesAssetsCustomMetadata } from "@polkadot/types/lookup";
-import { SudoDB } from "./SudoDB";
 
 export class Assets {
-  static legacy = !isBackendTest();
   static MG_UNIT: BN = BN_TEN.pow(new BN(18));
   static DEFAULT_AMOUNT = BN_THOUSAND.mul(this.MG_UNIT);
 
@@ -56,71 +54,37 @@ export class Assets {
     _sudo: User,
     skipInfo = false
   ): Promise<BN[]> {
-    if (this.legacy || skipInfo) {
-      const txs: Extrinsic[] = [];
-      await setupApi();
-      setupUsers();
-      for (let currency = 0; currency < currencyValues.length; currency++) {
-        txs.push(Assets.issueToken(user, currencyValues[currency]));
-      }
-      const result = await Sudo.batchAsSudoFinalized(...txs);
-      const assetIds: BN[] = result
-        .filter((X) => X.method === "Issued")
-        .map((t) => new BN(t.eventData[0].data.toString()));
-      const addInfos: Extrinsic[] = [];
-      if (!skipInfo) {
-        for (let index = 0; index < assetIds.length; index++) {
-          const assetId = assetIds[index];
-          addInfos.push(
-            Assets.registerAsset(
-              `TEST_${assetId}`,
-              this.getAssetName(assetId.toString()),
-              new BN(18),
-              undefined,
-              undefined,
-              undefined,
-              assetId
-            )
-          );
-        }
-        await Sudo.batchAsSudoFinalized(...addInfos);
-      }
-      user.addAssets(assetIds);
-      await user.refreshAmounts();
-      return assetIds;
-    } else {
-      const txs: Extrinsic[] = [];
-      await setupApi();
-      setupUsers();
-      const tokenIds = [];
-      for (let currency = 0; currency < currencyValues.length; currency++) {
-        const tokenId = await SudoDB.getInstance().getTokenId();
-        txs.push(Assets.mintToken(tokenId, user, currencyValues[currency]));
-        tokenIds.push(tokenId);
-      }
-      await Sudo.batchAsSudoFinalized(...txs);
-      user.addAssets(tokenIds);
-      await user.refreshAmounts();
-      return tokenIds;
-    }
-  }
-  static async getSetupUserWithCurrenciesTxs(
-    user: User,
-    currencyValues = [new BN(250000), new BN(250001)],
-    _sudo: User
-  ): Promise<{ tokens: BN[]; txs: Extrinsic[] }> {
-    const txList: Extrinsic[] = [];
+    const txs: Extrinsic[] = [];
     await setupApi();
-    setupUsers();
-    const tokenIds = [];
+    await setupUsers();
     for (let currency = 0; currency < currencyValues.length; currency++) {
-      const tokenId = await SudoDB.getInstance().getTokenId();
-      txList.push(Assets.mintToken(tokenId, user, currencyValues[currency]));
-      tokenIds.push(tokenId);
+      txs.push(Assets.issueToken(user, currencyValues[currency]));
     }
-    user.addAssets(tokenIds);
+    const result = await Sudo.batchAsSudoFinalized(...txs);
+    const assetIds: BN[] = result
+      .filter((X) => X.method === "Issued")
+      .map((t) => new BN(t.eventData[0].data.toString()));
+    const addInfos: Extrinsic[] = [];
+    if (!skipInfo) {
+      for (let index = 0; index < assetIds.length; index++) {
+        const assetId = assetIds[index];
+        addInfos.push(
+          Assets.registerAsset(
+            `TEST_${assetId}`,
+            this.getAssetName(assetId.toString()),
+            new BN(18),
+            undefined,
+            undefined,
+            undefined,
+            assetId
+          )
+        );
+      }
+      await Sudo.batchAsSudoFinalized(...addInfos);
+    }
+    user.addAssets(assetIds);
     await user.refreshAmounts();
-    return { tokens: tokenIds, txs: txList };
+    return assetIds;
   }
 
   static async issueAssetToSudo(sudo: User) {
@@ -134,40 +98,31 @@ export class Assets {
     sudo: User,
     skipInfo = false
   ) {
-    if (this.legacy) {
-      const result = await sudoIssueAsset(
-        sudo.keyRingPair,
-        num,
-        user.keyRingPair.address
-      );
-      const eventResult = getEventResultFromMangataTx(result, [
-        "tokens",
-        "Issued",
-        user.keyRingPair.address,
-      ]);
+    const result = await sudoIssueAsset(
+      sudo.keyRingPair,
+      num,
+      user.keyRingPair.address
+    );
+    const eventResult = await getEventResultFromMangataTx(result, [
+      "tokens",
+      "Issued",
+      user.keyRingPair.address,
+    ]);
 
-      assert(eventResult.state === ExtrinsicResult.ExtrinsicSuccess);
-      const assetId = eventResult.data[0].split(",").join("");
-      if (!skipInfo) {
-        await setAssetInfo(
-          sudo,
-          new BN(assetId),
-          `TEST_${assetId}`,
-          this.getAssetName(assetId),
-          `Test token ${assetId}`,
-          new BN(18)
-        );
-      }
-      return new BN(assetId);
-    } else {
-      const assetId = await this.setupUserWithCurrencies(
-        user,
-        [num],
+    assert(eventResult.state === ExtrinsicResult.ExtrinsicSuccess);
+    const assetId = eventResult.data[0].split(",").join("");
+    if (!skipInfo) {
+      await setAssetInfo(
         sudo,
-        skipInfo
+        new BN(assetId),
+        `TEST_${assetId}`,
+        this.getAssetName(assetId),
+        `Test token ${assetId}`,
+        new BN(18)
       );
-      return assetId[0];
     }
+
+    return new BN(assetId);
   }
 
   static getAssetName(assetID: string) {
@@ -180,16 +135,8 @@ export class Assets {
       api.tx.tokens.mint(MGA_ASSET_ID, user.keyRingPair.address, amount)
     );
   }
-  public static createTokenWithNoAssetRegistry(
-    user: User,
-    amount: BN = this.DEFAULT_AMOUNT
-  ) {
-    return this.issueToken(user, amount);
-  }
-  private static issueToken(
-    user: User,
-    amount: BN = this.DEFAULT_AMOUNT
-  ): Extrinsic {
+
+  static issueToken(user: User, amount: BN = this.DEFAULT_AMOUNT): Extrinsic {
     return Sudo.sudo(api.tx.tokens.create(user.keyRingPair.address, amount));
   }
 
@@ -320,7 +267,7 @@ export class Assets {
           },
         }
       );
-      extrinsicToTokenEnable = Assets.updateAsset(tokenId, {
+      extrinsicToTokenEnable = await Assets.updateAsset(tokenId, {
         metadata: metadata,
       });
       await Sudo.asSudoFinalized(extrinsicToTokenEnable);
