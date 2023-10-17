@@ -53,14 +53,14 @@ beforeAll(async () => {
   [testUser1, testUser2, testUser3, testUser4, testUser5] = setupUsers();
   await setupApi();
   minStk = new BN(
-    (await getApi()).consts.parachainStaking.minCandidateStk.toString()
+    (await getApi()).consts.parachainStaking.minCandidateStk.toString(),
   );
   const keyring = new Keyring({ type: "sr25519" });
   const sudo = new User(keyring, getEnvironmentRequiredVars().sudo);
   const tokens = await Assets.setupUserWithCurrencies(
     testUser4,
     [minStk.muln(1000), minStk.muln(1000)],
-    sudo
+    sudo,
   );
   tokenId1 = tokens[0];
   tokenId2 = tokens[1];
@@ -73,12 +73,12 @@ beforeAll(async () => {
     Assets.mintToken(tokenId2, testUser5, minStk.muln(1000)),
     Sudo.sudoAs(
       testUser4,
-      Xyk.createPool(MGA_ASSET_ID, minStk.muln(3), tokenId1, minStk.muln(3))
+      Xyk.createPool(MGA_ASSET_ID, minStk.muln(3), tokenId1, minStk.muln(3)),
     ),
     Sudo.sudoAs(
       testUser5,
-      Xyk.createPool(MGA_ASSET_ID, minStk.muln(3), tokenId2, minStk.muln(3))
-    )
+      Xyk.createPool(MGA_ASSET_ID, minStk.muln(3), tokenId2, minStk.muln(3)),
+    ),
   );
 });
 
@@ -88,21 +88,21 @@ describe("Test candidates actions", () => {
     const extrinsic = await Staking.joinAsCandidate(
       minStk.muln(2),
       MGA_ASSET_ID,
-      tokenOriginEnum.AvailableBalance
+      tokenOriginEnum.AvailableBalance,
     );
     const events = await Sudo.asSudoFinalized(
-      Sudo.sudoAs(testUser1, extrinsic)
+      Sudo.sudoAs(testUser1, extrinsic),
     );
     const event = expectMGAExtrinsicSuDidSuccess(events);
     testLog.getLog().info(event);
     const isUserInCandidateList = await Staking.isUserInCandidateList(
-      testUser1.keyRingPair.address
+      testUser1.keyRingPair.address,
     );
     expect(isUserInCandidateList).toBeTruthy();
 
     const userBalance = await getUserBalanceOfToken(MGA_ASSET_ID, testUser1);
     const total = hexToBn(JSON.parse(userBalance.toString()).free).add(
-      hexToBn(JSON.parse(userBalance.toString()).reserved)
+      hexToBn(JSON.parse(userBalance.toString()).reserved),
     );
     expect(total).bnEqual(minStk.muln(1000));
     expect(userBalance.reserved).bnEqual(minStk.muln(2));
@@ -111,24 +111,24 @@ describe("Test candidates actions", () => {
     const extrinsic = await Staking.joinAsCandidate(
       minStk.muln(2),
       MGA_ASSET_ID,
-      tokenOriginEnum.AvailableBalance
+      tokenOriginEnum.AvailableBalance,
     );
     const liqToken = await getLiquidityAssetId(MGA_ASSET_ID, tokenId1);
     const extrinsicNewToken = await Staking.joinAsCandidate(
       minStk.muln(2),
       liqToken,
-      tokenOriginEnum.AvailableBalance
+      tokenOriginEnum.AvailableBalance,
     );
     await Sudo.batchAsSudoFinalized(
       Sudo.sudoAs(testUser4, extrinsic),
-      Sudo.sudo(Staking.addStakingLiquidityToken(liqToken))
+      Sudo.sudo(Staking.addStakingLiquidityToken(liqToken)),
     ).then((events) => {
       expectMGAExtrinsicSuDidSuccess(events);
     });
     const result = await signTx(
       await getApi(),
       extrinsicNewToken,
-      testUser4.keyRingPair
+      testUser4.keyRingPair,
     );
     const error = getEventResultFromMangataTx(result, [
       "system",
@@ -142,15 +142,15 @@ describe("Test candidates actions", () => {
     const extrinsicNewToken = await Staking.joinAsCandidate(
       minStk.muln(2),
       liqToken,
-      tokenOriginEnum.AvailableBalance
+      tokenOriginEnum.AvailableBalance,
     );
     await Sudo.batchAsSudoFinalized(
-      Sudo.sudoAs(testUser5, extrinsicNewToken)
+      Sudo.sudoAs(testUser5, extrinsicNewToken),
     ).then(async (events) => {
       const error = getEventResultFromMangataTx(events, ["sudo", "SudoAsDone"]);
       const err = await findErrorMetadata(
         JSON.parse(JSON.stringify(error.data)).sudoResult.Err.Module.error,
-        JSON.parse(JSON.stringify(error.data)).sudoResult.Err.Module.index
+        JSON.parse(JSON.stringify(error.data)).sudoResult.Err.Module.index,
       );
       expect(err.name).toEqual("StakingLiquidityTokenNotListed");
     });
@@ -160,10 +160,10 @@ describe("Test candidates actions", () => {
     const extrinsic = await Staking.joinAsCandidate(
       minStk.muln(2),
       MGA_ASSET_ID,
-      tokenOriginEnum.AvailableBalance
+      tokenOriginEnum.AvailableBalance,
     );
     const events = await Sudo.asSudoFinalized(
-      Sudo.sudoAs(testUser2, extrinsic)
+      Sudo.sudoAs(testUser2, extrinsic),
     );
     const event = expectMGAExtrinsicSuDidSuccess(events);
     testLog.getLog().info(event);
@@ -171,7 +171,7 @@ describe("Test candidates actions", () => {
     await signTx(
       await getApi(),
       Staking.updateCandidateAggregator(aggregator),
-      testUser2.keyRingPair
+      testUser2.keyRingPair,
     ).then((value) => {
       const error = getEventResultFromMangataTx(value, [
         "system",
@@ -185,9 +185,9 @@ describe("Test candidates actions", () => {
       await getApi(),
       Staking.aggregatorUpdateMetadata(
         [],
-        AggregatorOptions.ExtendApprovedCollators
+        AggregatorOptions.ExtendApprovedCollators,
       ),
-      aggregator.keyRingPair
+      aggregator.keyRingPair,
     ).then((value) => {
       const error = getEventResultFromMangataTx(value, [
         "system",
@@ -199,7 +199,7 @@ describe("Test candidates actions", () => {
     await signTx(
       await getApi(),
       Staking.updateCandidateAggregator(aggregator),
-      testUser2.keyRingPair
+      testUser2.keyRingPair,
     ).then((value) => {
       const error = getEventResultFromMangataTx(value, [
         "system",
@@ -213,9 +213,9 @@ describe("Test candidates actions", () => {
       await getApi(),
       Staking.aggregatorUpdateMetadata(
         [testUser2],
-        AggregatorOptions.ExtendApprovedCollators
+        AggregatorOptions.ExtendApprovedCollators,
       ),
-      aggregator.keyRingPair
+      aggregator.keyRingPair,
     ).then((value) => {
       const error = getEventResultFromMangataTx(value, [
         "system",
@@ -227,7 +227,7 @@ describe("Test candidates actions", () => {
     await signTx(
       await getApi(),
       Staking.updateCandidateAggregator(aggregator),
-      testUser2.keyRingPair
+      testUser2.keyRingPair,
     ).then((value) => {
       const event = getEventResultFromMangataTx(value, [
         "parachainStaking",
@@ -239,16 +239,16 @@ describe("Test candidates actions", () => {
     });
     const candAggData = await Staking.candidateAggregator();
     expect(candAggData[testUser2.keyRingPair.address]).toEqual(
-      aggregator.keyRingPair.address
+      aggregator.keyRingPair.address,
     );
     const aggData = await Staking.aggregatorMetadata(
-      aggregator.keyRingPair.address
+      aggregator.keyRingPair.address,
     );
     expect(aggData["tokenCollatorMap"][0]).toEqual(
-      testUser2.keyRingPair.address
+      testUser2.keyRingPair.address,
     );
     expect(aggData["approvedCandidates"][0]).toEqual(
-      testUser2.keyRingPair.address
+      testUser2.keyRingPair.address,
     );
   });
 });

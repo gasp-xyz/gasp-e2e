@@ -9,6 +9,7 @@ module.exports = {
     'arrow-body-style': 'off',
     'prefer-arrow-callback': 'off',
     'curly': 'warn',
+    "testing-library/no-debugging-utils" : 'off',
   },
   plugins: ["prettier"],
   overrides: [

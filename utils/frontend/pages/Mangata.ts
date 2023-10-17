@@ -69,7 +69,7 @@ export class Mangata {
     [MGA_ASSET_NAME, DOT_ASSET_NAME, BTC_ASSET_NAME, USDC_ASSET_NAME].forEach(
       async function (value) {
         promises.push(sidebar.waitUntilTokenAvailable(value, timeOut));
-      }
+      },
     );
     await Promise.all(promises);
   }
@@ -119,7 +119,7 @@ export class Mangata {
   async addAmount(inputValue: string, input = 1) {
     await waitForElement(this.driver, INPUT_MGA_ADD_ASSET_VALUE);
     const inputs = await this.driver.findElements(
-      By.xpath(INPUT_MGA_ADD_ASSET_VALUE)
+      By.xpath(INPUT_MGA_ADD_ASSET_VALUE),
     );
     if (input === 1) {
       await inputs[0]!.sendKeys(inputValue);
@@ -131,7 +131,7 @@ export class Mangata {
     await waitForElement(this.driver, INPUT_MGA_ADD_ASSET_VALUE);
     await sleep(3000);
     const inputs = await this.driver.findElements(
-      By.xpath(INPUT_MGA_ADD_ASSET_VALUE)
+      By.xpath(INPUT_MGA_ADD_ASSET_VALUE),
     );
     let value: string;
     if (input === 1) {

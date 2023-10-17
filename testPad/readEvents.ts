@@ -31,7 +31,7 @@ async function main() {
           .info(
             `[ ${new Date().toUTCString()}] - W[${uri}] - Received ${
               events.length
-            } events: -------`
+            } events: -------`,
           );
 
         // Loop through the Vec<EventRecord>

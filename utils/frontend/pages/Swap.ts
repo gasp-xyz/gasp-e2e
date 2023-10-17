@@ -73,19 +73,16 @@ export class Swap {
   async isSwapEnabled() {
     const tradeBtn = buildDataTestIdXpath(BTN_SWAP_TRADE);
     await waitForElementEnabled(this.driver, tradeBtn);
-    const enabled = await (
+    return await (
       await this.driver.findElement(By.xpath(tradeBtn))
     ).isEnabled();
-    return enabled;
   }
 
   async fetchGetAssetAmount() {
-    const text = await getAttribute(this.driver, this.inputGetLocator, "value");
-    return text;
+    return await getAttribute(this.driver, this.inputGetLocator, "value");
   }
   async fetchPayAssetAmount() {
-    const text = await getAttribute(this.driver, this.inputPayLocator, "value");
-    return text;
+    return await getAttribute(this.driver, this.inputPayLocator, "value");
   }
   async addPayAssetAmount(amount: string) {
     await clickElement(this.driver, this.inputPayLocator);
@@ -111,7 +108,7 @@ export class Swap {
   async swapAssets(
     fromAsset: string,
     toAsset: string,
-    amount: string = "0.001"
+    amount: string = "0.001",
   ) {
     await this.toggleSwap();
     await this.selectPayAsset(fromAsset);

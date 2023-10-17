@@ -51,7 +51,7 @@ beforeAll(async () => {
   [secondCurrency] = await Assets.setupUserWithCurrencies(
     sudo,
     [defaultCurrencyValue],
-    sudo
+    sudo,
   );
   [testUser1] = setupUsers();
 
@@ -60,7 +60,7 @@ beforeAll(async () => {
   [firstCurrency, thirdCurrency] = await Assets.setupUserWithCurrencies(
     sudo,
     [defaultCurrencyValue, defaultCurrencyValue],
-    sudo
+    sudo,
   );
 
   const updateMetadataEvent = await updateFeeLockMetadata(
@@ -71,7 +71,7 @@ beforeAll(async () => {
     [
       [MGA_ASSET_ID, true],
       [firstCurrency, true],
-    ]
+    ],
   );
   await waitSudoOperationSuccess(updateMetadataEvent);
 
@@ -85,8 +85,8 @@ beforeAll(async () => {
         firstCurrency,
         defaultPoolVolumeValue,
         secondCurrency,
-        defaultPoolVolumeValue
-      )
+        defaultPoolVolumeValue,
+      ),
     ),
     Sudo.sudoAs(
       sudo,
@@ -94,8 +94,8 @@ beforeAll(async () => {
         thirdCurrency,
         defaultPoolVolumeValue,
         secondCurrency,
-        defaultPoolVolumeValue
-      )
+        defaultPoolVolumeValue,
+      ),
     ),
     Assets.mintNative(testUser1),
     Sudo.sudoAs(
@@ -104,9 +104,9 @@ beforeAll(async () => {
         firstCurrency,
         defaultPoolVolumeValue,
         MGA_ASSET_ID,
-        defaultPoolVolumeValue
-      )
-    )
+        defaultPoolVolumeValue,
+      ),
+    ),
   );
 
   testUser1.addAsset(MGA_ASSET_ID);
@@ -121,59 +121,59 @@ test("gasless- isFree depends on the token and the sell valuation", async () => 
   expect(
     await mangata?.rpc.isBuyAssetLockFree(
       [secondCurrency.toString(), firstCurrency.addn(10).toString()],
-      thresholdValue!.addn(1)
-    )
+      thresholdValue!.addn(1),
+    ),
   ).toBeFalsy();
   // non mga paired token. -> always false.
   expect(
     await mangata?.rpc.isBuyAssetLockFree(
       [secondCurrency.toString(), thirdCurrency.toString()],
-      thresholdValue!.addn(1000)
-    )
+      thresholdValue!.addn(1000),
+    ),
   ).toBeFalsy();
 
   const isFree = await mangata?.rpc.isSellAssetLockFree(
     [firstCurrency.toString(), secondCurrency.toString()],
-    saleAssetValue
+    saleAssetValue,
   );
   expect(isFree).toBeTruthy();
   //MGA pool
   expect(
     await mangata?.rpc.isSellAssetLockFree(
       [firstCurrency.toString(), MGA_ASSET_ID.toString()],
-      thresholdValue.subn(2)
-    )
+      thresholdValue.subn(2),
+    ),
   ).toBeFalsy();
   expect(
     await mangata?.rpc.isSellAssetLockFree(
       [MGA_ASSET_ID.toString(), firstCurrency.toString()],
-      thresholdValue.subn(2)
-    )
+      thresholdValue.subn(2),
+    ),
   ).toBeFalsy();
   expect(
     await mangata?.rpc.isSellAssetLockFree(
       [MGA_ASSET_ID.toString(), firstCurrency.toString()],
-      thresholdValue
-    )
+      thresholdValue,
+    ),
   ).toBeTruthy();
   expect(
     await mangata?.rpc.isSellAssetLockFree(
       [firstCurrency.toString(), MGA_ASSET_ID.toString()],
-      thresholdValue
-    )
+      thresholdValue,
+    ),
   ).toBeTruthy();
 
   //MGA paired token
   expect(
     await mangata?.rpc.isSellAssetLockFree(
       [firstCurrency.toString(), secondCurrency.toString()],
-      thresholdValue.subn(2)
-    )
+      thresholdValue.subn(2),
+    ),
   ).toBeFalsy();
   const amount = (await mangata?.rpc.calculateBuyPriceId(
     secondCurrency.toString(),
     firstCurrency.toString(),
-    thresholdValue
+    thresholdValue,
   ))!;
   //this is false because the token is not whitelisted & there is no direct conversion to mgx.
   //and the valuation of the result is less than threshold. ( you need 670secCurr to get 666firstCurr)
@@ -181,49 +181,49 @@ test("gasless- isFree depends on the token and the sell valuation", async () => 
   expect(
     await mangata?.rpc.isSellAssetLockFree(
       [secondCurrency.toString(), firstCurrency.toString()],
-      thresholdValue.addn(2)
-    )
+      thresholdValue.addn(2),
+    ),
   ).toBeFalsy();
 
   expect(
     await mangata?.rpc.isSellAssetLockFree(
       [secondCurrency.toString(), firstCurrency.toString()],
-      amount.addn(1)
-    )
+      amount.addn(1),
+    ),
   ).toBeTruthy();
 
   expect(
     await mangata?.rpc.isBuyAssetLockFree(
       [firstCurrency.toString(), secondCurrency.toString()],
-      thresholdValue.subn(1)
-    )
+      thresholdValue.subn(1),
+    ),
   ).toBeFalsy();
   expect(
     await mangata?.rpc.isBuyAssetLockFree(
       [firstCurrency.toString(), secondCurrency.toString()],
-      amount.addn(1)
-    )
+      amount.addn(1),
+    ),
   ).toBeTruthy();
 
   //Indirect paired token
   const amountReqToGetThreshold = await mangata?.rpc.calculateSellPriceId(
     firstCurrency.toString(),
     secondCurrency.toString(),
-    thresholdValue.subn(1)
+    thresholdValue.subn(1),
   );
   //Same as before, we first calcualte from wich value, the buy results on the threshold.
   //Then we check that the value (-1) result in false, and +1 in true.
   expect(
     await mangata?.rpc.isBuyAssetLockFree(
       [secondCurrency.toString(), firstCurrency.toString()],
-      amountReqToGetThreshold!
-    )
+      amountReqToGetThreshold!,
+    ),
   ).toBeFalsy();
   expect(
     await mangata?.rpc.isBuyAssetLockFree(
       [secondCurrency.toString(), firstCurrency.toString()],
-      amountReqToGetThreshold!.addn(1)
-    )
+      amountReqToGetThreshold!.addn(1),
+    ),
   ).toBeTruthy();
 });
 
@@ -232,12 +232,12 @@ test("gasless- isFree works same as multiswap of two", async () => {
 
   const isFree = await mangata?.rpc.isSellAssetLockFree(
     [firstCurrency.toString(), secondCurrency.toString()],
-    saleAssetValue
+    saleAssetValue,
   );
   expect(isFree).toBeTruthy();
   const mgasBef = await mangata?.query.getTokenBalance(
     MGA_ASSET_ID.toString(),
-    testUser1.keyRingPair.address
+    testUser1.keyRingPair.address,
   );
   const events = await mangata?.xyk.multiswapSellAsset({
     account: testUser1.keyRingPair,
@@ -253,7 +253,7 @@ test("gasless- isFree works same as multiswap of two", async () => {
 
   const mgasAfter = await mangata?.query.getTokenBalance(
     MGA_ASSET_ID.toString(),
-    testUser1.keyRingPair.address
+    testUser1.keyRingPair.address,
   );
   expect(mgasBef?.reserved).bnEqual(BN_ZERO);
   expect(mgasAfter?.reserved).bnEqual(BN_ZERO);

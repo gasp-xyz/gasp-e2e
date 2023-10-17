@@ -22,7 +22,7 @@ class StashServiceMockSingleton {
     this.stashServiceMock.use(
       cors({
         origin: "*",
-      })
+      }),
     );
 
     this.stashServiceMock.get("/xcm/channels", (_req, res) => {

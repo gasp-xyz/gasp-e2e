@@ -8,13 +8,13 @@ export class Xyk {
     firstAsset: BN,
     firstAssetAmount: BN,
     secondAsset: BN,
-    secondAssetAmount: BN
+    secondAssetAmount: BN,
   ): Extrinsic {
     return api.tx.xyk.createPool(
       firstAsset,
       firstAssetAmount,
       secondAsset,
-      secondAssetAmount
+      secondAssetAmount,
     );
   }
 
@@ -22,20 +22,20 @@ export class Xyk {
     firstAsset: BN,
     secondAsset: BN,
     firstAssetAmount: BN,
-    expectedSecondAssetAmount: BN = new BN(Number.MAX_SAFE_INTEGER)
+    expectedSecondAssetAmount: BN = new BN(Number.MAX_SAFE_INTEGER),
   ): Extrinsic {
     return api.tx.xyk.mintLiquidity(
       firstAsset,
       secondAsset,
       firstAssetAmount,
-      expectedSecondAssetAmount
+      expectedSecondAssetAmount,
     );
   }
 
   static burnLiquidity(
     firstAsset: BN,
     secondAsset: BN,
-    assetAmount: BN
+    assetAmount: BN,
   ): Extrinsic {
     return api.tx.xyk.burnLiquidity(firstAsset, secondAsset, assetAmount);
   }
@@ -48,13 +48,13 @@ export class Xyk {
     soldAssetId: BN,
     boughtAssetId: BN,
     soldAssetAmount: BN,
-    minBoughtOut: BN = BN_ZERO
+    minBoughtOut: BN = BN_ZERO,
   ): Extrinsic {
     return api.tx.xyk.sellAsset(
       soldAssetId,
       boughtAssetId,
       soldAssetAmount,
-      minBoughtOut
+      minBoughtOut,
     );
   }
 
@@ -62,33 +62,33 @@ export class Xyk {
     soldAssetId: BN,
     boughtAssetId: BN,
     boughtAssetAmount: BN,
-    maxAmountIn: BN = new BN("340282366920938463463374607431768211455") //u128::MAX
+    maxAmountIn: BN = new BN("340282366920938463463374607431768211455"), //u128::MAX
   ): Extrinsic {
     return api.tx.xyk.buyAsset(
       soldAssetId,
       boughtAssetId,
       boughtAssetAmount,
-      maxAmountIn
+      maxAmountIn,
     );
   }
   static multiswapBuyAsset(
     tokenIds: BN[],
     buyAmount: BN,
-    maxAmountIn: BN
+    maxAmountIn: BN,
   ): Extrinsic {
     return api.tx.xyk.multiswapBuyAsset(tokenIds, buyAmount, maxAmountIn);
   }
   static multiswapSellAsset(
     tokenIds: BN[],
     buyAmount: BN,
-    minAmountOut: BN
+    minAmountOut: BN,
   ): Extrinsic {
     return api.tx.xyk.multiswapSellAsset(tokenIds, buyAmount, minAmountOut);
   }
 
   static updatePoolPromotion(liquidityAssetId: BN, weight: number): Extrinsic {
     return Sudo.sudo(
-      api.tx.proofOfStake.updatePoolPromotion(liquidityAssetId, weight)
+      api.tx.proofOfStake.updatePoolPromotion(liquidityAssetId, weight),
     );
   }
 
@@ -96,7 +96,7 @@ export class Xyk {
     return api.tx.proofOfStake.activateLiquidity(
       liquidityAssetId,
       amount,
-      null
+      null,
     );
   }
 
@@ -106,7 +106,7 @@ export class Xyk {
 
   static compoundRewards(
     liquidityAssetId: BN,
-    amountPermille: number = 1000000
+    amountPermille: number = 1000000,
   ): Extrinsic {
     return api.tx.xyk.compoundRewards(liquidityAssetId, amountPermille);
   }
@@ -114,12 +114,12 @@ export class Xyk {
   static provideLiquidity(
     liquidityAssetId: BN,
     providedAssetId: BN,
-    providedAssetAmount: any
+    providedAssetAmount: any,
   ): Extrinsic {
     return api.tx.xyk.provideLiquidityWithConversion(
       liquidityAssetId,
       providedAssetId,
-      providedAssetAmount
+      providedAssetAmount,
     );
   }
 }

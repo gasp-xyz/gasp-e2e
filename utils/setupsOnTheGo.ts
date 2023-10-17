@@ -31,7 +31,7 @@ export async function vetoMotion(motionId: number) {
 
   const proposal = allProposals.find(
     (x) =>
-      JSON.parse(JSON.stringify(x[1].toHuman())).index === motionId.toString()
+      JSON.parse(JSON.stringify(x[1].toHuman())).index === motionId.toString(),
   );
   console.info("proposal " + JSON.stringify(allProposals[0][0].toHuman()));
   const hash = proposal?.[0].toHuman()!.toString();
@@ -39,8 +39,8 @@ export async function vetoMotion(motionId: number) {
   await Sudo.batchAsSudoFinalized(
     Sudo.sudoAsWithAddressString(
       fundAcc,
-      api.tx.council.disapproveProposal(hash!)
-    )
+      api.tx.council.disapproveProposal(hash!),
+    ),
   );
 }
 
@@ -50,7 +50,7 @@ export async function setupACouncilWithDefaultUsers() {
   await initApi();
   const api = await getApi();
   const amount = (await api?.consts.parachainStaking.minCandidateStk)?.muln(
-    1000
+    1000,
   )!;
   const keyring = new Keyring({ type: "sr25519" });
   const testUser1 = new User(keyring, "//Bob");
@@ -67,7 +67,7 @@ export async function setupACouncilWithDefaultUsers() {
     Assets.mintNative(testUser1, amount),
     Assets.mintNative(testUser2, amount),
     Assets.mintNative(testUser3, amount),
-    Assets.mintNative(testUser4, amount)
+    Assets.mintNative(testUser4, amount),
   );
   await Sudo.asSudoFinalized(
     Sudo.sudo(
@@ -79,9 +79,9 @@ export async function setupACouncilWithDefaultUsers() {
           testUser4.keyRingPair.address,
         ],
         testUser1.keyRingPair.address,
-        0
-      )
-    )
+        0,
+      ),
+    ),
   );
 }
 
@@ -89,7 +89,7 @@ export async function setupPoolWithRewardsForDefaultUsers() {
   await setupApi();
   await setupUsers();
   const amount = (await api?.consts.parachainStaking.minCandidateStk)?.muln(
-    1000
+    1000,
   )!;
   const keyring = new Keyring({ type: "sr25519" });
   const testUser1 = new User(keyring, "//Bob");
@@ -112,28 +112,28 @@ export async function setupPoolWithRewardsForDefaultUsers() {
     Assets.mintNative(testUser4, amount),
     Sudo.sudoAs(
       testUser1,
-      Xyk.createPool(MGA_ASSET_ID, amount.divn(10), token2, amount.divn(10))
-    )
+      Xyk.createPool(MGA_ASSET_ID, amount.divn(10), token2, amount.divn(10)),
+    ),
   );
   const liqId = await getLiquidityAssetId(MGA_ASSET_ID, token2);
   await Sudo.batchAsSudoFinalized(
     Assets.promotePool(liqId.toNumber(), 20),
     Sudo.sudoAs(
       testUser1,
-      Xyk.mintLiquidity(MGA_ASSET_ID, token2, amount.divn(10), amount)
+      Xyk.mintLiquidity(MGA_ASSET_ID, token2, amount.divn(10), amount),
     ),
     Sudo.sudoAs(
       testUser2,
-      Xyk.mintLiquidity(MGA_ASSET_ID, token2, amount.divn(10), amount)
+      Xyk.mintLiquidity(MGA_ASSET_ID, token2, amount.divn(10), amount),
     ),
     Sudo.sudoAs(
       testUser3,
-      Xyk.mintLiquidity(MGA_ASSET_ID, token2, amount.divn(10), amount)
+      Xyk.mintLiquidity(MGA_ASSET_ID, token2, amount.divn(10), amount),
     ),
     Sudo.sudoAs(
       testUser4,
-      Xyk.mintLiquidity(MGA_ASSET_ID, token2, amount.divn(10), amount)
-    )
+      Xyk.mintLiquidity(MGA_ASSET_ID, token2, amount.divn(10), amount),
+    ),
   );
   await waitForRewards(testUser4, liqId);
   return { users, liqId, sudo, token2 };
@@ -151,7 +151,7 @@ export async function joinAsCandidate(userName = "//Charlie", liqId = 9) {
     .length;
   //const amountToJoin = new BN("5000000000000000000000");
   const amountToJoin = new BN(
-    await api!.consts.parachainStaking.minCandidateStk!.toString()
+    await api!.consts.parachainStaking.minCandidateStk!.toString(),
   ).addn(1234567);
 
   console.info("amount: " + amountToJoin.toString());
@@ -161,7 +161,7 @@ export async function joinAsCandidate(userName = "//Charlie", liqId = 9) {
   const tokensToMint = await calculate_buy_price_id_rpc(
     tokenInPool,
     MGA_ASSET_ID,
-    amountToJoin
+    amountToJoin,
   );
   console.info("Token to  mint: " + tokensToMint.toString());
   await Sudo.batchAsSudoFinalized(
@@ -173,9 +173,9 @@ export async function joinAsCandidate(userName = "//Charlie", liqId = 9) {
         MGA_ASSET_ID,
         tokenInPool,
         amountToJoin.muln(2),
-        amountToJoin.muln(100000)
-      )
-    )
+        amountToJoin.muln(100000),
+      ),
+    ),
   );
   await signTx(
     api,
@@ -187,9 +187,9 @@ export async function joinAsCandidate(userName = "//Charlie", liqId = 9) {
       // @ts-ignore - Mangata bond operation has 4 params, somehow is inheriting the bond operation from polkadot :S
       new BN(numCollators),
       // @ts-ignore
-      new BN(liqAssetsCount)
+      new BN(liqAssetsCount),
     ),
-    user.keyRingPair
+    user.keyRingPair,
   );
 }
 export async function joinAFewCandidates(numCandidates = 50, liqId = 9) {
@@ -199,7 +199,7 @@ export async function joinAFewCandidates(numCandidates = 50, liqId = 9) {
   const keyring = new Keyring({ type: "sr25519" });
   const liq = new BN(liqId);
   const amountToJoin = new BN(
-    await api!.consts.parachainStaking.minCandidateStk!.toString()
+    await api!.consts.parachainStaking.minCandidateStk!.toString(),
   ).addn(1234);
 
   console.info("amount: " + amountToJoin.toString());
@@ -222,7 +222,7 @@ export async function joinAFewCandidates(numCandidates = 50, liqId = 9) {
   let tokensToMint = await calculate_buy_price_id_rpc(
     tokenInPool,
     MGA_ASSET_ID,
-    amountToJoin
+    amountToJoin,
   );
   if (tokensToMint.eqn(0)) {
     tokensToMint = amountToJoin.muln(10000);
@@ -241,9 +241,9 @@ export async function joinAFewCandidates(numCandidates = 50, liqId = 9) {
           MGA_ASSET_ID,
           tokenInPool,
           amountToJoin.muln(2),
-          MAX_BALANCE
-        )
-      )
+          MAX_BALANCE,
+        ),
+      ),
     );
   }
   await Sudo.batchAsSudoFinalized(...txs);
@@ -260,10 +260,10 @@ export async function joinAFewCandidates(numCandidates = 50, liqId = 9) {
           // @ts-ignore - Mangata bond operation has 4 params, somehow is inheriting the bond operation from polkadot :S
           new BN(numCollators).addn(index),
           // @ts-ignore
-          new BN(liqAssetsCount)
+          new BN(liqAssetsCount),
         ),
-        users[index].keyRingPair
-      )
+        users[index].keyRingPair,
+      ),
     );
   }
   await Promise.all(joins);
@@ -276,7 +276,7 @@ export async function giveTokensToUser(userName = "//Charlie", liqId = 9) {
   const liq = new BN(liqId);
   const user = new User(keyring, userName);
   const amountToJoin = new BN(
-    api!.consts.parachainStaking.minCollatorStk!.toString()
+    api!.consts.parachainStaking.minCollatorStk!.toString(),
   ).addn(1234);
   const tokenInPool = await (
     await getLiquidityPool(liq)
@@ -284,7 +284,7 @@ export async function giveTokensToUser(userName = "//Charlie", liqId = 9) {
   const tokensToMint = await calculate_buy_price_id_rpc(
     tokenInPool,
     MGA_ASSET_ID,
-    amountToJoin
+    amountToJoin,
   );
   console.info("Token to  mint: " + tokensToMint.toString());
   await Sudo.batchAsSudoFinalized(
@@ -296,15 +296,15 @@ export async function giveTokensToUser(userName = "//Charlie", liqId = 9) {
         MGA_ASSET_ID,
         tokenInPool,
         amountToJoin.muln(2),
-        tokensToMint.muln(4)
-      )
-    )
+        tokensToMint.muln(4),
+      ),
+    ),
   );
 }
 export async function fillWithDelegators(
   numDelegators: number,
   liqToken: number,
-  targetAddress: string
+  targetAddress: string,
 ) {
   await setupUsers();
   await setupApi();
@@ -312,17 +312,17 @@ export async function fillWithDelegators(
   const keyring = new Keyring({ type: "sr25519" });
   const liq = new BN(liqToken);
   const amountToJoin = new BN(
-    api!.consts.parachainStaking.minDelegation!.toString()
+    api!.consts.parachainStaking.minDelegation!.toString(),
   ).addn(1234);
   //const liqAssets = await api?.query.parachainStaking.stakingLiquidityTokens();
   //const liqAssetsCount = [...liqAssets!.keys()].length;
   const candidateDelegationCount = JSON.parse(
     JSON.stringify(
-      (await api?.query.parachainStaking.candidateState(targetAddress))!
-    )
+      (await api?.query.parachainStaking.candidateState(targetAddress))!,
+    ),
   ).delegators.length;
   const totalDelegators = JSON.parse(
-    JSON.stringify(await api?.query.parachainStaking.delegatorState.entries())
+    JSON.stringify(await api?.query.parachainStaking.delegatorState.entries()),
   ).length;
   //const amountToJoin = new BN("5000000000000000000000");
   const tokenInPool = await (
@@ -331,7 +331,7 @@ export async function fillWithDelegators(
   const tokensToMint = await calculate_buy_price_id_rpc(
     tokenInPool,
     MGA_ASSET_ID,
-    amountToJoin
+    amountToJoin,
   );
   const txs = [];
   const users = [];
@@ -347,9 +347,9 @@ export async function fillWithDelegators(
           MGA_ASSET_ID,
           tokenInPool,
           amountToJoin.muln(2),
-          MAX_BALANCE
-        )
-      )
+          MAX_BALANCE,
+        ),
+      ),
     );
   }
   await Sudo.batchAsSudoFinalized(...txs);
@@ -366,10 +366,10 @@ export async function fillWithDelegators(
           // @ts-ignore - Mangata bond operation has 4 params, somehow is inheriting the bond operation from polkadot :S
           new BN(candidateDelegationCount).addn(index),
           // @ts-ignore
-          new BN(totalDelegators).addn(index)
+          new BN(totalDelegators).addn(index),
         ),
-        users[index].keyRingPair
-      )
+        users[index].keyRingPair,
+      ),
     );
   }
   await Promise.all(joins);
@@ -388,7 +388,7 @@ export async function printCandidatesNotProducing(): Promise<void> {
     const awardedPointsPreviousSession =
       await api.query.parachainStaking.awardedPts(
         sessionBefore,
-        candidates[index]
+        candidates[index],
       );
     if (Number(awardedPointsPreviousSession) === 0) {
       missingCandidates.push(candidates[index].toString());
@@ -399,7 +399,7 @@ export async function printCandidatesNotProducing(): Promise<void> {
   console.info(
     `On session  ${Number(session.toString()) - 1}, ${
       missingCandidates.length
-    } did not win any point`
+    } did not win any point`,
   );
   console.info(missingCandidates);
   console.info("*****************");
@@ -409,7 +409,7 @@ export async function createCustomPool(div = true, ratio = 1, user = "//Bob") {
   await setupApi();
   await setupUsers();
   const amount = (await api?.consts.parachainStaking.minCandidateStk)?.muln(
-    1000
+    1000,
   )!;
   const keyring = new Keyring({ type: "sr25519" });
   const testUser1 = new User(keyring, user);
@@ -418,18 +418,18 @@ export async function createCustomPool(div = true, ratio = 1, user = "//Bob") {
     sudo,
     amount.muln(ratio),
     sudo,
-    true
+    true,
   );
   let tx;
   if (div) {
     tx = Sudo.sudoAs(
       testUser1,
-      Xyk.createPool(MGA_ASSET_ID, amount, token2, amount.divn(ratio))
+      Xyk.createPool(MGA_ASSET_ID, amount, token2, amount.divn(ratio)),
     );
   } else {
     tx = Sudo.sudoAs(
       testUser1,
-      Xyk.createPool(MGA_ASSET_ID, amount, token2, amount.muln(ratio))
+      Xyk.createPool(MGA_ASSET_ID, amount, token2, amount.muln(ratio)),
     );
   }
   await Sudo.batchAsSudoFinalized(
@@ -437,6 +437,6 @@ export async function createCustomPool(div = true, ratio = 1, user = "//Bob") {
     Assets.initIssuance(),
     Assets.mintToken(token2, testUser1, amount),
     Assets.mintNative(testUser1, amount),
-    tx
+    tx,
   );
 }

@@ -53,7 +53,7 @@ beforeAll(async () => {
   [token1] = await Assets.setupUserWithCurrencies(
     sudo,
     [defaultCurrencyValue],
-    sudo
+    sudo,
   );
   mangata = await getMangataInstance();
   await Sudo.batchAsSudoFinalized(
@@ -67,9 +67,9 @@ beforeAll(async () => {
         MGA_ASSET_ID,
         Assets.DEFAULT_AMOUNT.divn(2),
         token1,
-        Assets.DEFAULT_AMOUNT.divn(2)
-      )
-    )
+        Assets.DEFAULT_AMOUNT.divn(2),
+      ),
+    ),
   );
 
   liqId = await getLiquidityAssetId(MGA_ASSET_ID, token1);
@@ -80,12 +80,12 @@ beforeAll(async () => {
 test("getAmountOfTokensInPool return poolAmount AND in reverse list of token we recived equal result", async () => {
   const poolAmount = await mangata.query.getAmountOfTokensInPool(
     MGA_ASSET_ID.toString(),
-    token1.toString()
+    token1.toString(),
   );
 
   const poolAmountReverse = await mangata.query.getAmountOfTokensInPool(
     token1.toString(),
-    MGA_ASSET_ID.toString()
+    MGA_ASSET_ID.toString(),
   );
 
   expect(poolAmount[0]).bnEqual(Assets.DEFAULT_AMOUNT.divn(2));
@@ -96,7 +96,7 @@ test("getAmountOfTokensInPool return poolAmount AND in reverse list of token we 
 
 test("check parameters of getInvestedPools function", async () => {
   const userInvestedPool = await mangata.query.getInvestedPools(
-    testUser.keyRingPair.address
+    testUser.keyRingPair.address,
   );
 
   const firstTokenId = stringToBN(userInvestedPool[0].firstTokenId);
@@ -150,7 +150,7 @@ test("check parameters of getTotalIssuance functions", async () => {
 
   expect(valueIssuance).bnEqual(Assets.DEFAULT_AMOUNT.divn(2));
   expect(valueIssuanceAll[liqId.toString()]).bnEqual(
-    Assets.DEFAULT_AMOUNT.divn(2)
+    Assets.DEFAULT_AMOUNT.divn(2),
   );
 });
 
@@ -190,7 +190,7 @@ test("check calculateMintingFutureRewards", async () => {
   const mintingRewards = await mangata.util.calculateMintingFutureRewards(
     liqId.toString(),
     BN_BILLION,
-    blocksToPass
+    blocksToPass,
   );
   expect(mintingRewards).bnGt(BN_ZERO);
 });
@@ -209,7 +209,7 @@ test("check getLiquidityTokens", async () => {
 
 test("check getOwnedTokens", async () => {
   const userTokensInfo = await mangata.query.getOwnedTokens(
-    testUser.keyRingPair.address
+    testUser.keyRingPair.address,
   );
   expect(userTokensInfo[MGA_ASSET_ID.toNumber()].balance.free).bnGt(BN_ZERO);
   expect(userTokensInfo[token1.toNumber()].balance.free).bnGt(BN_ZERO);
@@ -226,7 +226,7 @@ test("sdk - filter deactivated pools on node", async () => {
   const [token2] = await Assets.setupUserWithCurrencies(
     sudo,
     [defaultCurrencyValue],
-    sudo
+    sudo,
   );
   await Sudo.batchAsSudoFinalized(
     Assets.mintToken(token2, testUser, Assets.DEFAULT_AMOUNT),
@@ -236,24 +236,24 @@ test("sdk - filter deactivated pools on node", async () => {
         MGA_ASSET_ID,
         Assets.DEFAULT_AMOUNT.divn(2),
         token2,
-        Assets.DEFAULT_AMOUNT.divn(2)
-      )
+        Assets.DEFAULT_AMOUNT.divn(2),
+      ),
     ),
     Sudo.sudoAs(
       testUser,
-      Xyk.burnLiquidity(MGA_ASSET_ID, token2, Assets.DEFAULT_AMOUNT.divn(2))
-    )
+      Xyk.burnLiquidity(MGA_ASSET_ID, token2, Assets.DEFAULT_AMOUNT.divn(2)),
+    ),
   );
   const deactivatedPoolId = await getLiquidityAssetId(MGA_ASSET_ID, token2);
   //this list contain only tokens that are active.
   const liquidityAssetsInfo = JSON.parse(
-    JSON.stringify(await mangata.rpc.getLiquidityTokensForTrading())
+    JSON.stringify(await mangata.rpc.getLiquidityTokensForTrading()),
   );
   expect(liquidityAssetsInfo).not.toContain(deactivatedPoolId.toString());
 
   //this list contain all liq tokens that are active and inactive from asset registry.
   const poolAssetsInfo = (await mangata.rpc.getTradeableTokens()).filter((id) =>
-    id.name.includes("LiquidityPoolToken")
+    id.name.includes("LiquidityPoolToken"),
   );
   const tokenIdsToDeleteSet = new Set(liquidityAssetsInfo);
   //let's remove the active ones from the list => only deactivated ones will remain.
@@ -261,7 +261,7 @@ test("sdk - filter deactivated pools on node", async () => {
     return !tokenIdsToDeleteSet.has(id.tokenId);
   });
   const deactivatedPoolsIds: string[] = deactivatedPoolsAssetsInfo.map(
-    (token: any) => token.tokenId.toString()
+    (token: any) => token.tokenId.toString(),
   );
   expect(deactivatedPoolsIds).toContain(deactivatedPoolId.toString());
 });

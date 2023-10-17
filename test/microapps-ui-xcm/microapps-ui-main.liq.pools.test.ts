@@ -90,7 +90,7 @@ describe("Miocroapps UI liq pools tests", () => {
     testUser1 = new User(keyring);
     testUser1.addFromMnemonic(
       keyring,
-      getEnvironmentRequiredVars().mnemonicPolkadot
+      getEnvironmentRequiredVars().mnemonicPolkadot,
     );
 
     testUser1.addAsset(KSM_ASSET_ID);
@@ -111,14 +111,14 @@ describe("Miocroapps UI liq pools tests", () => {
     expect(isPoolsListDisplayed).toBeTruthy();
 
     const isMgxKsmPoolVisible = await poolsList.isPoolItemDisplayed(
-      "-" + MGX_ASSET_NAME + "-" + KSM_ASSET_NAME
+      "-" + MGX_ASSET_NAME + "-" + KSM_ASSET_NAME,
     );
     expect(isMgxKsmPoolVisible).toBeTruthy();
     await poolsList.clickPoolItem("-" + MGX_ASSET_NAME + "-" + KSM_ASSET_NAME);
 
     const poolDetails = new LiqPoolDetils(driver);
     const isPoolDetailsVisible = await poolDetails.isDisplayed(
-      MGX_ASSET_NAME + " / " + KSM_ASSET_NAME
+      MGX_ASSET_NAME + " / " + KSM_ASSET_NAME,
     );
     expect(isPoolDetailsVisible).toBeTruthy();
 
@@ -135,7 +135,7 @@ describe("Miocroapps UI liq pools tests", () => {
     const session = await driver.getSession();
     await addExtraLogs(
       driver,
-      expect.getState().currentTestName + " - " + session.getId()
+      expect.getState().currentTestName + " - " + session.getId(),
     );
   });
 

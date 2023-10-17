@@ -29,17 +29,16 @@ async function addUserAsCandidate(address: string) {
   });
 
   const testUser1 = new User(keyring, "aasd", JSON.parse(json));
-  const user = testUser1;
   //    const pk = u8aToHex(user.keyRingPair.publicKey);
   //    const stringPk = pk.toString();
-  keyring.addPair(user.keyRingPair);
+  keyring.addPair(testUser1.keyRingPair);
   keyring.pairs[0].decodePkcs8("mangata123");
   sudo = new User(keyring, sudoUserName);
   keyring.addPair(sudo.keyRingPair);
   await testUser1.refreshAmounts(AssetWallet.BEFORE);
 
   const { nonce } = JSON.parse(
-    JSON.stringify(await api!.query.system.account(sudo.keyRingPair.address))
+    JSON.stringify(await api!.query.system.account(sudo.keyRingPair.address)),
   );
   await signTx(
     api!,
@@ -47,16 +46,16 @@ async function addUserAsCandidate(address: string) {
       api!.tx.tokens.mint(
         MGA_ASSET_ID,
         testUser1.keyRingPair.address,
-        new BN("100000000000000000")
-      )
+        new BN("100000000000000000"),
+      ),
     )!,
     sudo.keyRingPair,
-    { nonce: new BN(nonce) }
+    { nonce: new BN(nonce) },
   );
   const nonce2 = JSON.parse(
     JSON.stringify(
-      await await api!.query.system.account(sudo.keyRingPair.address)
-    )
+      await await api!.query.system.account(sudo.keyRingPair.address),
+    ),
   ).nonce;
   await signTx(
     api!,
@@ -64,11 +63,11 @@ async function addUserAsCandidate(address: string) {
       api!.tx.tokens.mint(
         new BN(3),
         testUser1.keyRingPair.address,
-        new BN("1000000000000000000000000")
-      )
+        new BN("1000000000000000000000000"),
+      ),
     ),
     sudo.keyRingPair,
-    { nonce: new BN(nonce2) }
+    { nonce: new BN(nonce2) },
   );
 
   await waitNewBlock();
@@ -79,9 +78,9 @@ async function addUserAsCandidate(address: string) {
       // @ts-ignore - Mangata bond operation has 4 params, somehow is inheriting the bond operation from polkadot :S
       new BN(3),
       // @ts-ignore
-      new BN(3)
+      new BN(3),
     ),
-    testUser1.keyRingPair
+    testUser1.keyRingPair,
   );
   await waitNewBlock();
   testLog.getLog().warn("done");
@@ -102,7 +101,7 @@ async function setKeys(address: string, keyString: string) {
   await signSendAndWaitToFinishTx(
     api?.tx.session.setKeys(keyString, "0x00"),
     user.keyRingPair,
-    false
+    false,
   );
   await waitNewBlock();
   testLog.getLog().warn("done");

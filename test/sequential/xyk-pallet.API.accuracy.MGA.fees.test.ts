@@ -68,7 +68,7 @@ beforeEach(async () => {
     sudo,
     defaultCurrecyValue,
     sudo,
-    true
+    true,
   );
   await Sudo.batchAsSudoFinalized(
     Assets.mintToken(secondCurrency, testUser1, defaultCurrecyValue),
@@ -79,9 +79,9 @@ beforeEach(async () => {
         MGA_ASSET_ID,
         firstAssetAmount,
         secondCurrency,
-        secondAssetAmount
-      )
-    )
+        secondAssetAmount,
+      ),
+    ),
   );
   keyring.addPair(testUser1.keyRingPair);
   keyring.addPair(sudo.keyRingPair);
@@ -95,7 +95,7 @@ test("xyk-pallet - Assets substracted are incremented by 1 - MGA- SellAsset", as
   const tokensToReceive = await calculate_sell_price_id_rpc(
     firstCurrency,
     secondCurrency,
-    sellingAmount
+    sellingAmount,
   );
 
   //10000 - 0.3% = 9970.
@@ -103,7 +103,7 @@ test("xyk-pallet - Assets substracted are incremented by 1 - MGA- SellAsset", as
   const exangeValue = await calculate_sell_price_local_no_fee(
     secondAssetAmount,
     firstAssetAmount,
-    new BN(9970)
+    new BN(9970),
   );
   const treasuryBefore = await getTreasury(firstCurrency);
   const treasuryBurnBefore = await getTreasuryBurn(firstCurrency);
@@ -113,23 +113,22 @@ test("xyk-pallet - Assets substracted are incremented by 1 - MGA- SellAsset", as
   let tokensLost = testUser1
     .getAsset(firstCurrency)
     ?.amountBefore.free.sub(
-      testUser1.getAsset(firstCurrency)?.amountAfter.free!
+      testUser1.getAsset(firstCurrency)?.amountAfter.free!,
     );
 
   const tokensWon = testUser1
     .getAsset(secondCurrency)
     ?.amountAfter.free.sub(
-      testUser1.getAsset(secondCurrency)?.amountBefore.free!
+      testUser1.getAsset(secondCurrency)?.amountBefore.free!,
     )!;
   let feesPaid = new BN(0);
   if (Fees.swapFeesEnabled) {
     const to = await getBlockNumber();
     const blockNumber = await findBlockWithExtrinsicSigned(
       [from, to],
-      testUser1.keyRingPair.address
+      testUser1.keyRingPair.address,
     );
-    const authorMGAtokens = await getTokensDiffForBlockAuthor(blockNumber);
-    feesPaid = authorMGAtokens;
+    feesPaid = await getTokensDiffForBlockAuthor(blockNumber);
     tokensLost = tokensLost?.sub(feesPaid);
   }
   const tokensLocked = await (
@@ -147,7 +146,7 @@ test("xyk-pallet - Assets substracted are incremented by 1 - MGA- SellAsset", as
   // Removed the fees paid. they goes directly to the block author, so treasury has nothing to do with it.
   const incrementedTreasury = treasuryBefore.sub(treasury).abs();
   expect(incrementedTreasury).bnEqual(
-    expectedTreasury.add(extraTokenForRounding)
+    expectedTreasury.add(extraTokenForRounding),
   );
   expect(treasuryBurnBefore.sub(treasuryBurn)).bnEqual(treasuryBurnBefore);
 
@@ -155,7 +154,7 @@ test("xyk-pallet - Assets substracted are incremented by 1 - MGA- SellAsset", as
   const poolBalance = await getBalanceOfPool(firstCurrency, secondCurrency);
   //adding treasury twice beacuse is burned.
   expect(
-    poolBalance[0].add(incrementedTreasury).add(incrementedTreasury)
+    poolBalance[0].add(incrementedTreasury).add(incrementedTreasury),
   ).bnEqual(firstAssetAmount.add(sellingAmount));
 });
 

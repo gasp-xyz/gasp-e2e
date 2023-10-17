@@ -103,20 +103,20 @@ export class User {
   }
   getFreeAssetAmount(currecncyId: any) {
     const wallet = this.assets.find(
-      (asset) => asset.currencyId === currecncyId
+      (asset) => asset.currencyId === currecncyId,
     );
     return new Asset(currecncyId, wallet!.amountBefore, wallet!.amountAfter);
   }
   getFreeAssetAmounts() {
     return this.assets.map((asset) =>
-      this.getFreeAssetAmount(asset.currencyId)
+      this.getFreeAssetAmount(asset.currencyId),
     );
   }
   async refreshAmounts(beforeOrAfter: AssetWallet = AssetWallet.BEFORE) {
     const currencies = this.assets.map((asset) => new BN(asset.currencyId));
     const assetValues = await getUserAssets(
       this.keyRingPair.address,
-      currencies
+      currencies,
     );
 
     for (let index = 0; index < this.assets.length; index++) {
@@ -132,7 +132,7 @@ export class User {
       (x) =>
         !x.amountBefore.free.eq(x.amountAfter.free) ||
         !x.amountBefore.reserved.eq(x.amountAfter.reserved) ||
-        !x.amountBefore.frozen.eq(x.amountAfter.frozen)
+        !x.amountBefore.frozen.eq(x.amountAfter.frozen),
     );
 
     return tokensThatChanged.map((value) => {
@@ -147,14 +147,14 @@ export class User {
     soldAssetId: BN,
     boughtAssetId: BN,
     amount: BN,
-    maxExpected = new BN(1000000)
+    maxExpected = new BN(1000000),
   ) {
     return await buyAsset(
       this.keyRingPair,
       soldAssetId,
       boughtAssetId,
       amount,
-      maxExpected
+      maxExpected,
     ).then((result) => {
       const eventResponse = getEventResultFromMangataTx(result, [
         "xyk",
@@ -171,7 +171,7 @@ export class User {
       this.keyRingPair,
       assetId,
       user.keyRingPair.address,
-      amount
+      amount,
     ).then((result) => {
       const eventResponse = getEventResultFromMangataTx(result, [
         "tokens",
@@ -189,7 +189,7 @@ export class User {
         soldAssetId,
         boughtAssetId,
         amount,
-        new BN(0)
+        new BN(0),
       )
       .then((result) => {
         const eventResponse = getEventResultFromMangataTx(result, [
@@ -205,14 +205,14 @@ export class User {
     firstCurrency: BN,
     secondCurrency: BN,
     firstCurrencyAmount: BN,
-    secondCurrencyAmount: BN = new BN(MAX_BALANCE)
+    secondCurrencyAmount: BN = new BN(MAX_BALANCE),
   ) {
     await mintLiquidity(
       this.keyRingPair,
       firstCurrency,
       secondCurrency,
       firstCurrencyAmount,
-      secondCurrencyAmount
+      secondCurrencyAmount,
     ).then((result) => {
       const eventResponse = getEventResultFromMangataTx(result, [
         "xyk",
@@ -226,13 +226,13 @@ export class User {
   async mintLiquidityWithVestedTokens(
     vestingTokensAmount: BN,
     secondAssetId: BN,
-    expectedSecondAssetAmount: BN = new BN(Number.MAX_SAFE_INTEGER)
+    expectedSecondAssetAmount: BN = new BN(Number.MAX_SAFE_INTEGER),
   ) {
     await mintLiquidityUsingVestingNativeTokens(
       this.keyRingPair,
       vestingTokensAmount,
       secondAssetId,
-      expectedSecondAssetAmount
+      expectedSecondAssetAmount,
     ).then((result) => {
       const eventResponse = getEventResultFromMangataTx(result, [
         "xyk",
@@ -245,7 +245,7 @@ export class User {
   async joinAsCandidate(
     liqTokenForCandidate: BN,
     amount: BN,
-    from = "availablebalance"
+    from = "availablebalance",
   ) {
     await joinCandidate(this.keyRingPair, liqTokenForCandidate, amount, from);
   }
@@ -254,20 +254,20 @@ export class User {
       this.keyRingPair,
       liqTokenForCandidate,
       amount,
-      "AvailableBalance"
+      "AvailableBalance",
     );
   }
 
   async reserveVestingLiquidityTokens(
     liqToken: BN,
     amount: BN,
-    strictSuccess = true
+    strictSuccess = true,
   ) {
     return await reserveVestingLiquidityTokens(
       this.keyRingPair,
       liqToken,
       amount,
-      strictSuccess
+      strictSuccess,
     );
   }
 
@@ -279,7 +279,7 @@ export class User {
       await transferAll(
         this.keyRingPair,
         assetId,
-        process.env.E2E_XYK_PALLET_ADDRESS
+        process.env.E2E_XYK_PALLET_ADDRESS,
       );
     }
   }
@@ -287,14 +287,14 @@ export class User {
     first_asset_amount: BN,
     second_asset_amount: BN,
     firstCurrency: BN,
-    secondCurrency: BN
+    secondCurrency: BN,
   ) {
     await createPool(
       this.keyRingPair,
       firstCurrency,
       first_asset_amount,
       secondCurrency,
-      second_asset_amount
+      second_asset_amount,
     ).then((result) => {
       const eventResponse = getEventResultFromMangataTx(result, [
         "xyk",
@@ -307,7 +307,7 @@ export class User {
 
   async addMGATokens(
     sudo: User,
-    amountFree: BN = new BN(BigInt(1000 * 10 ** 20).toString())
+    amountFree: BN = new BN(BigInt(1000 * 10 ** 20).toString()),
   ) {
     await sudo.mint(MGA_ASSET_ID, this, amountFree);
   }
@@ -325,7 +325,7 @@ export class User {
   }
   static async waitUntilBNChanged(
     amountBefore: BN,
-    fn: () => Promise<BN>
+    fn: () => Promise<BN>,
   ): Promise<void> {
     let amount: BN;
     do {
@@ -354,7 +354,7 @@ export class User {
           ],
         },
       },
-    }
+    },
   ) {
     return await registerAsset(this, assetId, location, locMarker, null);
   }
@@ -383,7 +383,7 @@ export class User {
           ],
         },
       },
-    }
+    },
   ) {
     return await updateAsset(this, assetId, location, additional);
   }
@@ -396,7 +396,7 @@ export class Asset {
   constructor(
     currencyId: BN,
     amountBefore = { free: new BN(0) } as TokenBalance,
-    amountAfter = { free: new BN(0) } as TokenBalance
+    amountAfter = { free: new BN(0) } as TokenBalance,
   ) {
     this.currencyId = currencyId;
     this.amountBefore = amountBefore;

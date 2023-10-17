@@ -41,6 +41,6 @@ export const logEvent = (chain, event) => {
   testLog
     .getLog()
     .info(
-      `${chain} -> ${obj.section}.${obj.method}: ${JSON.stringify(obj.data)}`
+      `${chain} -> ${obj.section}.${obj.method}: ${JSON.stringify(obj.data)}`,
     );
 };

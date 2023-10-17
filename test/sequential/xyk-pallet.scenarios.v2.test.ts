@@ -74,7 +74,7 @@ describe("xyk-pallet: Happy case scenario", () => {
       Assets.mintNative(user1),
       Assets.mintNative(user2),
       Assets.mintToken(assetId1, user1),
-      Assets.mintToken(assetId2, user1)
+      Assets.mintToken(assetId2, user1),
     );
 
     // remove native token, convenience for comparisons
@@ -133,7 +133,7 @@ describe("xyk-pallet: Happy case scenario", () => {
     const assetAmount2 = new BN(50000);
     await signSendFinalized(
       Xyk.createPool(assetId1, assetAmount1, assetId2, assetAmount2),
-      user1
+      user1,
     );
     liquidityAssetId = await getLiquidityAssetId(assetId1, assetId2);
     user2.addAsset(liquidityAssetId);
@@ -143,7 +143,7 @@ describe("xyk-pallet: Happy case scenario", () => {
     await xykPalletUser.refreshAmounts(AssetWallet.AFTER);
     const liquidityAssetsMinted = calculateLiqAssetAmount(
       assetAmount1,
-      assetAmount2
+      assetAmount2,
     );
 
     expect([
@@ -169,7 +169,7 @@ describe("xyk-pallet: Happy case scenario", () => {
 
     const totalLiquidityAssets = await getAssetSupply(liquidityAssetId);
     expect(totalLiquidityAssetsBefore.add(liquidityAssetsMinted)).bnEqual(
-      totalLiquidityAssets
+      totalLiquidityAssets,
     );
   }
 
@@ -179,12 +179,12 @@ describe("xyk-pallet: Happy case scenario", () => {
       await calcuate_mint_liquidity_price_local(
         assetId1,
         assetId2,
-        assetAmount1
+        assetAmount1,
       );
 
     await signSendFinalized(
       Xyk.mintLiquidity(assetId1, assetId2, assetAmount1, assetAmount2),
-      user1
+      user1,
     );
 
     await user1.refreshAmounts(AssetWallet.AFTER);
@@ -214,7 +214,7 @@ describe("xyk-pallet: Happy case scenario", () => {
 
     const totalLiquidityAssets = await getAssetSupply(liquidityAssetId);
     expect(totalLiquidityAssetsBefore.add(liquidityAssetsMinted)).bnEqual(
-      totalLiquidityAssets
+      totalLiquidityAssets,
     );
   }
 
@@ -239,7 +239,7 @@ describe("xyk-pallet: Happy case scenario", () => {
     ]).collectionBnEqual(assetsAfterFree(user2));
 
     expect(assetsBeforeFree(xykPalletUser)).collectionBnEqual(
-      assetsAfterFree(xykPalletUser)
+      assetsAfterFree(xykPalletUser),
     );
 
     const poolBalance = await getBalanceOfPool(assetId1, assetId2);
@@ -254,12 +254,12 @@ describe("xyk-pallet: Happy case scenario", () => {
     const sellPriceLocal = calculate_sell_price_local(
       poolBalanceBefore[0],
       poolBalanceBefore[1],
-      amount
+      amount,
     );
     const sellPriceRpc = await calculate_sell_price_rpc(
       poolBalanceBefore[0],
       poolBalanceBefore[1],
-      amount
+      amount,
     );
 
     expect(sellPriceLocal).bnEqual(sellPriceRpc);
@@ -300,12 +300,12 @@ describe("xyk-pallet: Happy case scenario", () => {
     const sellPriceLocal = calculate_sell_price_local(
       poolBalanceBefore[1],
       poolBalanceBefore[0],
-      amount
+      amount,
     );
     const sellPriceRpc = await calculate_sell_price_rpc(
       poolBalanceBefore[1],
       poolBalanceBefore[0],
-      amount
+      amount,
     );
 
     expect(sellPriceLocal).bnEqual(sellPriceRpc);
@@ -346,12 +346,12 @@ describe("xyk-pallet: Happy case scenario", () => {
     const buyPriceLocal = calculate_buy_price_local(
       poolBalanceBefore[0],
       poolBalanceBefore[1],
-      amount
+      amount,
     );
     const buyPriceRpc = await calculate_buy_price_rpc(
       poolBalanceBefore[0],
       poolBalanceBefore[1],
-      amount
+      amount,
     );
 
     expect(buyPriceLocal).bnEqual(buyPriceRpc);
@@ -395,12 +395,12 @@ describe("xyk-pallet: Happy case scenario", () => {
     const buyPriceLocal = calculate_buy_price_local(
       poolBalanceBefore[1],
       poolBalanceBefore[0],
-      amount
+      amount,
     );
     const buyPriceRpc = await calculate_buy_price_rpc(
       poolBalanceBefore[1],
       poolBalanceBefore[0],
-      amount
+      amount,
     );
 
     expect(buyPriceLocal).bnEqual(buyPriceRpc);
@@ -446,7 +446,7 @@ describe("xyk-pallet: Happy case scenario", () => {
 
     await signSendFinalized(
       Xyk.burnLiquidity(assetId1, assetId2, amount),
-      user1
+      user1,
     );
 
     await user1.refreshAmounts(AssetWallet.AFTER);
@@ -474,7 +474,7 @@ describe("xyk-pallet: Happy case scenario", () => {
 
     const totalLiquidityAssets = await getAssetSupply(liquidityAssetId);
     expect(totalLiquidityAssetsBefore.sub(amount)).bnEqual(
-      totalLiquidityAssets
+      totalLiquidityAssets,
     );
   }
 });
@@ -498,7 +498,7 @@ describe("xyk-pallet: Liquidity sufficiency scenario", () => {
     expect(assetsBeforeFree(user2)).collectionBnEqual(assetsAfterFree(user2));
 
     expect(assetsBeforeFree(xykPalletUser)).collectionBnEqual(
-      assetsAfterFree(xykPalletUser)
+      assetsAfterFree(xykPalletUser),
     );
 
     const poolBalance = await getBalanceOfPool(assetId1, assetId2);
@@ -532,7 +532,7 @@ describe("xyk-pallet: Liquidity sufficiency scenario", () => {
       Assets.mintNative(user1),
       Assets.mintNative(user2),
       Assets.mintToken(assetId1, user1),
-      Assets.mintToken(assetId2, user1)
+      Assets.mintToken(assetId2, user1),
     );
 
     // remove native token, convenience for comparisons
@@ -578,7 +578,7 @@ describe("xyk-pallet: Liquidity sufficiency scenario", () => {
     testLog
       .getLog()
       .info(
-        "running section: burnMoreLiquidityThanTheyHaveUser2Has100OfThePoolTest"
+        "running section: burnMoreLiquidityThanTheyHaveUser2Has100OfThePoolTest",
       );
     await refreshAmounts();
     await burnMoreLiquidityThanTheyHaveUser2Has100OfThePoolTest();
@@ -664,7 +664,7 @@ describe("xyk-pallet: Liquidity sufficiency scenario", () => {
 
     await signSendFinalized(
       Xyk.createPool(assetId1, assetAmount1, assetId2, assetAmount2),
-      user1
+      user1,
     );
     liquidityAssetId = await getLiquidityAssetId(assetId1, assetId2);
     user2.addAsset(liquidityAssetId);
@@ -674,7 +674,7 @@ describe("xyk-pallet: Liquidity sufficiency scenario", () => {
     await xykPalletUser.refreshAmounts(AssetWallet.AFTER);
     const liquidityAssetsMinted = calculateLiqAssetAmount(
       assetAmount1,
-      assetAmount2
+      assetAmount2,
     );
 
     expect([
@@ -700,7 +700,7 @@ describe("xyk-pallet: Liquidity sufficiency scenario", () => {
 
     const totalLiquidityAssets = await getAssetSupply(liquidityAssetId);
     expect(totalLiquidityAssetsBefore.add(liquidityAssetsMinted)).bnEqual(
-      totalLiquidityAssets
+      totalLiquidityAssets,
     );
   }
 
@@ -737,7 +737,7 @@ describe("xyk-pallet: Liquidity sufficiency scenario", () => {
 
     await signSendFinalized(
       Xyk.burnLiquidity(assetId1, assetId2, amount),
-      user2
+      user2,
     ).catch(checkError(xykErrors.NotEnoughAssets));
     testLog.getLog().info("ExpectNoChange On:burnLiquidityFromEmptyPoolTest");
     await expectNoChange();
@@ -765,12 +765,12 @@ describe("xyk-pallet: Liquidity sufficiency scenario", () => {
       await calcuate_mint_liquidity_price_local(
         assetId1,
         assetId2,
-        assetAmount1
+        assetAmount1,
       );
 
     await signSendFinalized(
       Xyk.mintLiquidity(assetId1, assetId2, assetAmount1, assetAmount2),
-      user
+      user,
     );
 
     await user.refreshAmounts(AssetWallet.AFTER);
@@ -800,7 +800,7 @@ describe("xyk-pallet: Liquidity sufficiency scenario", () => {
 
     const totalLiquidityAssets = await getAssetSupply(liquidityAssetId);
     expect(totalLiquidityAssetsBefore.add(liquidityAssetsMinted)).bnEqual(
-      totalLiquidityAssets
+      totalLiquidityAssets,
     );
   }
 
@@ -811,7 +811,7 @@ describe("xyk-pallet: Liquidity sufficiency scenario", () => {
 
     await signSendFinalized(
       Xyk.burnLiquidity(assetId1, assetId2, amount),
-      user
+      user,
     );
 
     await user.refreshAmounts(AssetWallet.AFTER);
@@ -839,7 +839,7 @@ describe("xyk-pallet: Liquidity sufficiency scenario", () => {
 
     const totalLiquidityAssets = await getAssetSupply(liquidityAssetId);
     expect(totalLiquidityAssetsBefore.sub(amount)).bnEqual(
-      totalLiquidityAssets
+      totalLiquidityAssets,
     );
   }
 
@@ -849,7 +849,7 @@ describe("xyk-pallet: Liquidity sufficiency scenario", () => {
 
     await signSendFinalized(
       Xyk.burnLiquidity(assetId1, assetId2, excess),
-      user
+      user,
     ).catch(checkError(xykErrors.NotEnoughAssets));
     testLog.getLog().info("ExpectNoChange On:burnLiquidityFail");
     await expectNoChange();
@@ -858,12 +858,12 @@ describe("xyk-pallet: Liquidity sufficiency scenario", () => {
   async function sellAssetFail(
     sell: BN,
     buy: BN,
-    error = xykErrors.NotEnoughAssets
+    error = xykErrors.NotEnoughAssets,
   ) {
     const amount = new BN(20000);
 
     await signSendFinalized(Xyk.sellAsset(sell, buy, amount), user2).catch(
-      checkError(error)
+      checkError(error),
     );
     testLog.getLog().info("ExpectNoChange On:sellAssetFail");
     await expectNoChange();
@@ -872,12 +872,12 @@ describe("xyk-pallet: Liquidity sufficiency scenario", () => {
   async function buyAssetFail(
     sell: BN,
     buy: BN,
-    error = xykErrors.NotEnoughAssets
+    error = xykErrors.NotEnoughAssets,
   ) {
     const amount = new BN(20000);
 
     await signSendFinalized(Xyk.buyAsset(sell, buy, amount), user2).catch(
-      checkError(error)
+      checkError(error),
     );
     testLog.getLog().info("ExpectNoChange On:buyAssetFail");
     await expectNoChange();

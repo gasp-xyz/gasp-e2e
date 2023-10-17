@@ -36,13 +36,16 @@ beforeAll(async () => {
   [token1, token2] = await Assets.setupUserWithCurrencies(
     sudo,
     [Assets.DEFAULT_AMOUNT, Assets.DEFAULT_AMOUNT],
-    sudo
+    sudo,
   );
   await Sudo.batchAsSudoFinalized(
     Assets.mintToken(token1, user1, Assets.DEFAULT_AMOUNT),
     Assets.mintToken(token2, user1, Assets.DEFAULT_AMOUNT),
     Assets.mintNative(user1),
-    Sudo.sudoAs(user1, Xyk.createPool(token1, poolBalance, token2, poolBalance))
+    Sudo.sudoAs(
+      user1,
+      Xyk.createPool(token1, poolBalance, token2, poolBalance),
+    ),
   );
   liquidityToken = await getLiquidityAssetId(token1, token2);
 
@@ -64,12 +67,12 @@ describe("SDK tests for rpc functions", () => {
     const sellAmountId = await mgaInstance.rpc.calculateSellPriceId(
       token1.toString(),
       token2.toString(),
-      amount
+      amount,
     );
     const buyAmountId = await mgaInstance.rpc.calculateBuyPriceId(
       token1.toString(),
       token2.toString(),
-      amount
+      amount,
     );
 
     expect(sellAmount).bnGt(BN_ZERO);
@@ -88,7 +91,7 @@ describe("SDK tests for rpc functions", () => {
     // @ts-ignore
     const maxInstantBurnAmount = await api.rpc.xyk.get_max_instant_burn_amount(
       user1.keyRingPair.address,
-      liquidityToken.toString()
+      liquidityToken.toString(),
     );
     expect(burnAmount.firstAssetAmount).bnLte(maxInstantBurnAmount);
     expect(burnAmount.secondAssetAmount).bnLte(maxInstantBurnAmount);
@@ -101,7 +104,7 @@ describe("SDK tests for rpc functions", () => {
     // @ts-ignore
     const balancedSell = await api.rpc.xyk.calculate_balanced_sell_amount(
       amount,
-      poolBalance
+      poolBalance,
     );
     expect(balancedSell).bnGt(BN_ZERO);
   });

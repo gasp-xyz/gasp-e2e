@@ -60,7 +60,7 @@ beforeEach(async () => {
   [firstCurrency, secondCurrency] = await Assets.setupUserWithCurrencies(
     testUser1,
     [defaultCurrecyValue, defaultCurrecyValue.add(new BN(1))],
-    sudo
+    sudo,
   );
   //add zero MGA tokens.
   await testUser1.addMGATokens(sudo);
@@ -78,14 +78,14 @@ beforeEach(async () => {
     [
       defaultCurrecyValue.toNumber(),
       defaultCurrecyValue.add(new BN(1)).toNumber(),
-    ]
+    ],
   );
   await createPool(
     testUser1.keyRingPair,
     firstCurrency,
     firstAssetAmount,
     secondCurrency,
-    secondAssetAmount
+    secondAssetAmount,
   );
 });
 
@@ -95,7 +95,7 @@ test("xyk-pallet - Assets substracted are incremented by 1 - SellAsset", async (
   const tokensToReceive = await calculate_sell_price_id_rpc(
     firstCurrency,
     secondCurrency,
-    sellingAmount
+    sellingAmount,
   );
 
   //10000 - 0.3% = 9970.
@@ -103,20 +103,20 @@ test("xyk-pallet - Assets substracted are incremented by 1 - SellAsset", async (
   const exangeValue = await calculate_sell_price_local_no_fee(
     secondAssetAmount,
     firstAssetAmount,
-    new BN(9970)
+    new BN(9970),
   );
   await testUser1.sellAssets(firstCurrency, secondCurrency, sellingAmount);
   await testUser1.refreshAmounts(AssetWallet.AFTER);
   const tokensLost = testUser1
     .getAsset(firstCurrency)
     ?.amountBefore.free.sub(
-      testUser1.getAsset(firstCurrency)?.amountAfter.free!
+      testUser1.getAsset(firstCurrency)?.amountAfter.free!,
     );
 
   const tokensWon = testUser1
     .getAsset(secondCurrency)
     ?.amountAfter.free.sub(
-      testUser1.getAsset(secondCurrency)?.amountBefore.free!
+      testUser1.getAsset(secondCurrency)?.amountBefore.free!,
     )!;
 
   expect(tokensWon).bnEqual(tokensToReceive);
@@ -134,7 +134,7 @@ test("xyk-pallet - Assets substracted are incremented by 1 - SellAsset", async (
   //the other pool_fee tokens must be in the pool.
   const poolBalance = await getBalanceOfPool(firstCurrency, secondCurrency);
   expect(poolBalance[0].add(treasury).add(treasuryBurn)).bnEqual(
-    firstAssetAmount.add(sellingAmount)
+    firstAssetAmount.add(sellingAmount),
   );
 });
 

@@ -66,7 +66,7 @@ export class NotificationModal {
     await clickElement(this.driver, buildDataTestIdXpath(MODAL_DONE_BTN));
     await waitForElementToDissapear(
       this.driver,
-      this.getModalXpath(ModalType.Success)
+      this.getModalXpath(ModalType.Success),
     );
   }
   public async waitForModal(modalState: ModalType) {
@@ -78,7 +78,7 @@ export class NotificationModal {
     await waitForElementVisible(
       this.driver,
       this.getModalXpath(modalState),
-      timeout
+      timeout,
     );
   }
 

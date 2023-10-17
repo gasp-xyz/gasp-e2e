@@ -46,7 +46,7 @@ export class SudoDB {
     testLog
       .getLog()
       .info(
-        `[${process.env.JEST_WORKER_ID}] Returned nextCandidateId : ${nextCandidateId}`
+        `[${process.env.JEST_WORKER_ID}] Returned nextCandidateId : ${nextCandidateId}`,
       );
     return nextCandidateId;
   }
@@ -57,7 +57,7 @@ export class SudoDB {
     testLog
       .getLog()
       .info(
-        `[${process.env.JEST_WORKER_ID}] Returned tokenIdfromRpc : ${tokenIdfromRpc}`
+        `[${process.env.JEST_WORKER_ID}] Returned tokenIdfromRpc : ${tokenIdfromRpc}`,
       );
     return new BN(tokenIdfromRpc);
   }

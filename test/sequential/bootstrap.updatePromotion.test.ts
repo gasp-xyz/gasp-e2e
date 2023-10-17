@@ -6,30 +6,30 @@
  */
 import { jest } from "@jest/globals";
 import { getApi, initApi } from "../../utils/api";
-import { getLiquidityAssetId, getBalanceOfAsset } from "../../utils/tx";
+import { getBalanceOfAsset, getLiquidityAssetId } from "../../utils/tx";
 import {
   EventResult,
   ExtrinsicResult,
-  waitSudoOperationSuccess,
   waitSudoOperationFail,
+  waitSudoOperationSuccess,
 } from "../../utils/eventListeners";
 import { Keyring } from "@polkadot/api";
 import { User } from "../../utils/User";
 import { getEnvironmentRequiredVars } from "../../utils/utils";
 import {
-  getEventResultFromMangataTx,
   getBalanceOfPool,
+  getEventResultFromMangataTx,
 } from "../../utils/txHandler";
 import {
   checkLastBootstrapFinalized,
-  createNewBootstrapCurrency,
-  setupBootstrapTokensBalance,
-  getPromotionBootstrapPoolState,
-  scheduleBootstrap,
-  finalizeBootstrap,
-  updatePromoteBootstrapPool,
-  provisionBootstrap,
   claimRewardsBootstrap,
+  createNewBootstrapCurrency,
+  finalizeBootstrap,
+  getPromotionBootstrapPoolState,
+  provisionBootstrap,
+  scheduleBootstrap,
+  setupBootstrapTokensBalance,
+  updatePromoteBootstrapPool,
   waitForBootstrapStatus,
 } from "../../utils/Bootstrap";
 import { MGA_ASSET_ID } from "../../utils/Constants";
@@ -60,12 +60,7 @@ const bootstrapAmount = new BN(10000000000);
 async function changePromotionBootstrapPool(userName: User) {
   const currentPromotingState = await getPromotionBootstrapPoolState();
 
-  const result = await updatePromoteBootstrapPool(
-    userName,
-    !currentPromotingState
-  );
-
-  return result;
+  return await updatePromoteBootstrapPool(userName, !currentPromotingState);
 }
 
 beforeAll(async () => {
@@ -96,7 +91,7 @@ test("bootstrap - bootstrap - Check if we can change promoteBootstrapPool in eac
     bootstrapCurrency,
     waitingPeriodWithPlan,
     bootstrapPeriod,
-    whitelistPeriod
+    whitelistPeriod,
   );
   await waitSudoOperationSuccess(scheduleBootstrapBefPlan);
 
@@ -109,7 +104,7 @@ test("bootstrap - bootstrap - Check if we can change promoteBootstrapPool in eac
     bootstrapCurrency,
     waitingPeriodLessPlan,
     bootstrapPeriod,
-    whitelistPeriod
+    whitelistPeriod,
   );
   await waitSudoOperationSuccess(scheduleBootstrapAftPlan);
 
@@ -129,7 +124,7 @@ test("bootstrap - bootstrap - Check if we can change promoteBootstrapPool in eac
   const provisionPublicBootstrapCurrency = await provisionBootstrap(
     testUser1,
     bootstrapCurrency,
-    bootstrapAmount
+    bootstrapAmount,
   );
   eventResponse = getEventResultFromMangataTx(provisionPublicBootstrapCurrency);
   expect(eventResponse.state).toEqual(ExtrinsicResult.ExtrinsicSuccess);
@@ -137,7 +132,7 @@ test("bootstrap - bootstrap - Check if we can change promoteBootstrapPool in eac
   const provisionPublicMGA = await provisionBootstrap(
     testUser1,
     MGA_ASSET_ID,
-    bootstrapAmount
+    bootstrapAmount,
   );
   eventResponse = getEventResultFromMangataTx(provisionPublicMGA);
   expect(eventResponse.state).toEqual(ExtrinsicResult.ExtrinsicSuccess);
@@ -152,7 +147,7 @@ test("bootstrap - bootstrap - Check if we can change promoteBootstrapPool in eac
   expect(bootstrapPoolBalance[0]).bnEqual(bootstrapAmount);
   expect(bootstrapPoolBalance[1]).bnEqual(bootstrapAmount);
   const bootstrapExpectedUserLiquidity = new BN(
-    bootstrapPoolBalance[0].add(bootstrapPoolBalance[1]) / 2
+    bootstrapPoolBalance[0].add(bootstrapPoolBalance[1]) / 2,
   );
 
   const claimRewards = await claimRewardsBootstrap(testUser1);
@@ -161,7 +156,7 @@ test("bootstrap - bootstrap - Check if we can change promoteBootstrapPool in eac
 
   const liquidityID = await getLiquidityAssetId(
     MGA_ASSET_ID,
-    bootstrapCurrency
+    bootstrapCurrency,
   );
 
   const userBalance = await getBalanceOfAsset(liquidityID, testUser1);

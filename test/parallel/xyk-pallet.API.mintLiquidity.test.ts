@@ -77,7 +77,7 @@ describe("xyk-pallet - Mint liquidity tests: with minting you can", () => {
         defaultCurrencyValue.add(new BN(1)),
         defaultCurrencyValue.add(new BN(1)).add(new BN(1)),
       ],
-      sudo
+      sudo,
     );
     await testUser1.addMGATokens(sudo);
     const amounttoThePool = new BN(1);
@@ -86,30 +86,30 @@ describe("xyk-pallet - Mint liquidity tests: with minting you can", () => {
       firstCurrency,
       amounttoThePool,
       secondCurrency,
-      amounttoThePool
+      amounttoThePool,
     );
     const liquidityAssetId = await getLiquidityAssetId(
       firstCurrency,
-      secondCurrency
+      secondCurrency,
     );
     testUser1.addAsset(liquidityAssetId);
 
     const poolBalanceWhenCreated = await getBalanceOfPool(
       firstCurrency,
-      secondCurrency
+      secondCurrency,
     );
 
     await testUser1.refreshAmounts(AssetWallet.BEFORE);
     await testUser1.mintLiquidity(
       firstCurrency,
       secondCurrency,
-      new BN(defaultCurrencyValue)
+      new BN(defaultCurrencyValue),
     );
     await testUser1.refreshAmounts(AssetWallet.AFTER);
 
     const poolBalanceAfterMinting = await getBalanceOfPool(
       firstCurrency,
-      secondCurrency
+      secondCurrency,
     );
     expect([
       poolBalanceWhenCreated[0].add(new BN(defaultCurrencyValue)),
@@ -122,26 +122,26 @@ describe("xyk-pallet - Mint liquidity tests: with minting you can", () => {
       .getAsset(firstCurrency)
       ?.amountBefore.free!.sub(defaultCurrencyValue);
     expect(testUser1.getAsset(firstCurrency)?.amountAfter.free!).bnEqual(
-      diffFromWallet!
+      diffFromWallet!,
     );
 
     diffFromWallet = testUser1
       .getAsset(secondCurrency)
       ?.amountBefore.free!.sub(defaultCurrencyValue.add(roundingIssue));
     expect(testUser1.getAsset(firstCurrency)?.amountAfter.free!).bnEqual(
-      diffFromWallet!
+      diffFromWallet!,
     );
 
     //minting must not add any treasury
     const amount = calculateLiqAssetAmount(
       defaultCurrencyValue,
-      defaultCurrencyValue
+      defaultCurrencyValue,
     );
     const addFromWallet = testUser1
       .getAsset(liquidityAssetId)
       ?.amountBefore.free!.add(amount);
     expect(testUser1.getAsset(liquidityAssetId)?.amountAfter.free!).bnEqual(
-      addFromWallet!
+      addFromWallet!,
     );
 
     await validateTreasuryAmountsEqual(firstCurrency, [new BN(0), new BN(0)]);
@@ -153,7 +153,7 @@ describe("xyk-pallet - Mint liquidity tests: with minting you can", () => {
     [firstCurrency, secondCurrency] = await Assets.setupUserWithCurrencies(
       testUser1,
       [defaultCurrencyValue, defaultCurrencyValue],
-      sudo
+      sudo,
     );
     await testUser1.addMGATokens(sudo);
     const amounttoThePool = new BN(defaultCurrencyValue).div(new BN(2));
@@ -162,18 +162,18 @@ describe("xyk-pallet - Mint liquidity tests: with minting you can", () => {
       firstCurrency,
       amounttoThePool,
       secondCurrency,
-      amounttoThePool
+      amounttoThePool,
     );
 
     const liquidityAssetId = await getLiquidityAssetId(
       firstCurrency,
-      secondCurrency
+      secondCurrency,
     );
     testUser1.addAsset(liquidityAssetId);
 
     const poolBalanceWhenCreated = await getBalanceOfPool(
       firstCurrency,
-      secondCurrency
+      secondCurrency,
     );
 
     await testUser1.refreshAmounts(AssetWallet.BEFORE);
@@ -183,7 +183,7 @@ describe("xyk-pallet - Mint liquidity tests: with minting you can", () => {
       testUser1.keyRingPair,
       firstCurrency,
       secondCurrency,
-      injectedValue
+      injectedValue,
     ).then((result) => {
       eventResponse = getEventResultFromMangataTx(result, [
         "xyk",
@@ -196,12 +196,12 @@ describe("xyk-pallet - Mint liquidity tests: with minting you can", () => {
     await testUser1.refreshAmounts(AssetWallet.AFTER);
     const poolBalanceAfterMinting = await getBalanceOfPool(
       firstCurrency,
-      secondCurrency
+      secondCurrency,
     );
     const secondCurrencyAmountLost = testUser1
       .getAsset(secondCurrency)
       ?.amountBefore.free.sub(
-        testUser1.getAsset(secondCurrency)?.amountAfter.free!
+        testUser1.getAsset(secondCurrency)?.amountAfter.free!,
       )!;
     // liquidity value matches with 2*minted_amount, since the pool is balanced.
     validateMintedLiquidityEvent(
@@ -212,7 +212,7 @@ describe("xyk-pallet - Mint liquidity tests: with minting you can", () => {
       secondCurrency,
       secondCurrencyAmountLost,
       liquidityAssetId,
-      calculateLiqAssetAmount(injectedValue, injectedValue)
+      calculateLiqAssetAmount(injectedValue, injectedValue),
     );
 
     expect([
@@ -224,14 +224,14 @@ describe("xyk-pallet - Mint liquidity tests: with minting you can", () => {
       .getAsset(secondCurrency)
       ?.amountBefore.free!.sub(injectedValue);
     expect(testUser1.getAsset(firstCurrency)?.amountAfter.free!).bnEqual(
-      diffFromWallet!
+      diffFromWallet!,
     );
 
     diffFromWallet = testUser1
       .getAsset(secondCurrency)
       ?.amountBefore.free!.sub(secondCurrencyAmountLost);
     expect(testUser1.getAsset(secondCurrency)?.amountAfter.free!).bnEqual(
-      diffFromWallet!
+      diffFromWallet!,
     );
 
     //No trading - no Treasure added.
@@ -240,7 +240,7 @@ describe("xyk-pallet - Mint liquidity tests: with minting you can", () => {
       .getAsset(liquidityAssetId)
       ?.amountBefore.free!.add(amount);
     expect(testUser1.getAsset(liquidityAssetId)?.amountAfter.free!).bnEqual(
-      addFromWallet!
+      addFromWallet!,
     );
 
     await validateTreasuryAmountsEqual(firstCurrency, [new BN(0), new BN(0)]);

@@ -54,7 +54,7 @@ beforeAll(async () => {
   [secondCurrency] = await Assets.setupUserWithCurrencies(
     sudo,
     [defaultCurrencyValue, defaultCurrencyValue],
-    sudo
+    sudo,
   );
 });
 
@@ -66,7 +66,7 @@ beforeEach(async () => {
   [firstCurrency] = await Assets.setupUserWithCurrencies(
     sudo,
     [defaultCurrencyValue, defaultCurrencyValue],
-    sudo
+    sudo,
   );
 
   const updateMetadataEvent = await updateFeeLockMetadata(
@@ -77,7 +77,7 @@ beforeEach(async () => {
     [
       [MGA_ASSET_ID, true],
       [firstCurrency, true],
-    ]
+    ],
   );
   await waitSudoOperationSuccess(updateMetadataEvent);
 
@@ -90,9 +90,9 @@ beforeEach(async () => {
         firstCurrency,
         defaultPoolVolumeValue,
         secondCurrency,
-        defaultPoolVolumeValue
-      )
-    )
+        defaultPoolVolumeValue,
+      ),
+    ),
   );
 
   testUser1.addAsset(MGA_ASSET_ID);
@@ -109,9 +109,9 @@ test("gasless- Given a feeLock correctly configured WHEN the user swaps two toke
         firstCurrency,
         defaultPoolVolumeValue,
         MGA_ASSET_ID,
-        defaultPoolVolumeValue
-      )
-    )
+        defaultPoolVolumeValue,
+      ),
+    ),
   );
 
   const saleAssetValue = thresholdValue.mul(new BN(2));
@@ -119,32 +119,32 @@ test("gasless- Given a feeLock correctly configured WHEN the user swaps two toke
   await testUser1.refreshAmounts(AssetWallet.BEFORE);
   const isFree = await mangata?.rpc.isSellAssetLockFree(
     [firstCurrency.toString(), secondCurrency.toString()],
-    saleAssetValue
+    saleAssetValue,
   );
   expect(isFree).toBeTruthy();
   const events = await testUser1.sellAssets(
     firstCurrency,
     secondCurrency,
-    saleAssetValue
+    saleAssetValue,
   );
   await testUser1.refreshAmounts(AssetWallet.AFTER);
 
   const userFirstCurLockedValue = testUser1
     .getAsset(firstCurrency)
     ?.amountAfter.reserved!.sub(
-      testUser1.getAsset(firstCurrency)?.amountBefore.reserved!
+      testUser1.getAsset(firstCurrency)?.amountBefore.reserved!,
     );
 
   const userSecondCurLockedValue = testUser1
     .getAsset(secondCurrency)
     ?.amountAfter.reserved!.sub(
-      testUser1.getAsset(secondCurrency)?.amountBefore.reserved!
+      testUser1.getAsset(secondCurrency)?.amountBefore.reserved!,
     );
 
   const userMgaFees = testUser1
     .getAsset(MGA_ASSET_ID)
     ?.amountAfter.reserved!.sub(
-      testUser1.getAsset(MGA_ASSET_ID)?.amountBefore.reserved!
+      testUser1.getAsset(MGA_ASSET_ID)?.amountBefore.reserved!,
     );
 
   expect(userFirstCurLockedValue).bnEqual(new BN(0));
@@ -153,8 +153,9 @@ test("gasless- Given a feeLock correctly configured WHEN the user swaps two toke
   expect(
     events.findIndex(
       (x) =>
-        x.section === EVENT_SECTION_PAYMENT || x.method === EVENT_METHOD_PAYMENT
-    )
+        x.section === EVENT_SECTION_PAYMENT ||
+        x.method === EVENT_METHOD_PAYMENT,
+    ),
   ).toEqual(-1);
 });
 
@@ -171,9 +172,9 @@ test("gasless- Given a feeLock correctly configured WHEN the user swaps two toke
         firstCurrency,
         defaultPoolVolumeValue,
         MGA_ASSET_ID,
-        defaultPoolVolumeValue
-      )
-    )
+        defaultPoolVolumeValue,
+      ),
+    ),
   );
 
   const saleAssetValue = thresholdValue.sub(new BN(5));
@@ -181,32 +182,32 @@ test("gasless- Given a feeLock correctly configured WHEN the user swaps two toke
   await testUser1.refreshAmounts(AssetWallet.BEFORE);
   const isFree = await mangata?.rpc.isSellAssetLockFree(
     [firstCurrency.toString(), secondCurrency.toString()],
-    saleAssetValue
+    saleAssetValue,
   );
   expect(isFree).toBeFalsy();
   const events = await testUser1.sellAssets(
     firstCurrency,
     secondCurrency,
-    saleAssetValue
+    saleAssetValue,
   );
   await testUser1.refreshAmounts(AssetWallet.AFTER);
 
   const userFirstCurLockedValue = testUser1
     .getAsset(firstCurrency)
     ?.amountAfter.reserved!.sub(
-      testUser1.getAsset(firstCurrency)?.amountBefore.reserved!
+      testUser1.getAsset(firstCurrency)?.amountBefore.reserved!,
     );
 
   const userSecondCurLockedValue = testUser1
     .getAsset(secondCurrency)
     ?.amountAfter.reserved!.sub(
-      testUser1.getAsset(secondCurrency)?.amountBefore.reserved!
+      testUser1.getAsset(secondCurrency)?.amountBefore.reserved!,
     );
 
   const userMgaLockedValue = testUser1
     .getAsset(MGA_ASSET_ID)
     ?.amountAfter.reserved!.sub(
-      testUser1.getAsset(MGA_ASSET_ID)?.amountBefore.reserved!
+      testUser1.getAsset(MGA_ASSET_ID)?.amountBefore.reserved!,
     );
 
   expect(userFirstCurLockedValue).bnEqual(new BN(0));
@@ -215,8 +216,9 @@ test("gasless- Given a feeLock correctly configured WHEN the user swaps two toke
   expect(
     events.findIndex(
       (x) =>
-        x.section === EVENT_SECTION_PAYMENT || x.method === EVENT_METHOD_PAYMENT
-    )
+        x.section === EVENT_SECTION_PAYMENT ||
+        x.method === EVENT_METHOD_PAYMENT,
+    ),
   ).toEqual(-1);
 });
 
@@ -226,7 +228,7 @@ test("gasless- Given a feeLock correctly configured WHEN the user swaps two toke
   await testUser1.refreshAmounts(AssetWallet.BEFORE);
   const isFree = await mangata?.rpc.isSellAssetLockFree(
     [firstCurrency.toString(), secondCurrency.toString()],
-    saleAssetValue
+    saleAssetValue,
   );
   expect(isFree).toBeFalsy();
   await expect(
@@ -235,9 +237,9 @@ test("gasless- Given a feeLock correctly configured WHEN the user swaps two toke
       firstCurrency,
       secondCurrency,
       saleAssetValue,
-      new BN(0)
+      new BN(0),
     ).catch((reason) => {
       throw new Error(reason.data);
-    })
+    }),
   ).rejects.toThrow(feeLockErrors.FeeLockingFail);
 });

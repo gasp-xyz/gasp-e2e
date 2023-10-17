@@ -2,9 +2,9 @@
 import { Keyring } from "@polkadot/api";
 import { BN, hexToU8a } from "@polkadot/util";
 import { api, getApi, initApi } from "../utils/api";
-import { getCurrentNonce, getNextAssetId } from "../utils/tx";
+import { getCurrentNonce, getNextAssetId, mintLiquidity } from "../utils/tx";
 import { MGA_ASSET_ID } from "../utils/Constants";
-import { User, AssetWallet } from "../utils/User";
+import { AssetWallet, User } from "../utils/User";
 import {
   getBlockNumber,
   getEnvironmentRequiredVars,
@@ -12,7 +12,6 @@ import {
 } from "../utils/utils";
 
 import fs from "fs";
-import { mintLiquidity } from "../utils/tx";
 import { signSendAndWaitToFinishTx } from "../utils/txHandler";
 
 import "dotenv/config";
@@ -85,11 +84,11 @@ describe("Boostrap - testpad", () => {
       testUser1 = new User(keyring, "asd", JSON.parse(file as any));
       await fs.writeFileSync(
         testUser1.keyRingPair.address + ".json",
-        JSON.stringify(testUser1.keyRingPair.toJson("mangata123"))
+        JSON.stringify(testUser1.keyRingPair.toJson("mangata123")),
       );
       await fs.writeFileSync(
         sudo.keyRingPair.address + ".json",
-        JSON.stringify(sudo.keyRingPair.toJson("mangata123"))
+        JSON.stringify(sudo.keyRingPair.toJson("mangata123")),
       );
       // add users to pair.
       keyring.addPair(testUser1.keyRingPair);
@@ -102,67 +101,67 @@ describe("Boostrap - testpad", () => {
             api!.tx.tokens.mint(
               MGA_ASSET_ID,
               testUser1.keyRingPair.address,
-              new BN(amount).muln(3)
-            )
+              new BN(amount).muln(3),
+            ),
           ),
           api!.tx.sudo.sudo(
             api!.tx.tokens.mint(
               MGA_ASSET_ID,
               testUser1.keyRingPair.address,
-              new BN(amount)
-            )
+              new BN(amount),
+            ),
           ),
           api!.tx.sudo.sudo(
             api!.tx.tokens.create(
               testUser1.keyRingPair.address,
-              new BN(10000000)
-            )
+              new BN(10000000),
+            ),
           ),
           api!.tx.sudo.sudo(
             api!.tx.tokens.create(
               testUser1.keyRingPair.address,
-              new BN(10000000)
-            )
+              new BN(10000000),
+            ),
           ),
           api!.tx.sudo.sudo(
             api!.tx.tokens.create(
               testUser1.keyRingPair.address,
-              new BN(10000000)
-            )
+              new BN(10000000),
+            ),
           ),
           api!.tx.sudo.sudo(
             api!.tx.tokens.create(
               testUser1.keyRingPair.address,
-              new BN(10000000)
-            )
+              new BN(10000000),
+            ),
           ),
           api!.tx.sudo.sudo(
             api!.tx.tokens.mint(
               new BN(4),
               testUser1.keyRingPair.address,
-              new BN(amount)
-            )
+              new BN(amount),
+            ),
           ),
           api!.tx.sudo.sudo(
             api!.tx.tokens.mint(
               new BN(5),
               testUser1.keyRingPair.address,
-              new BN(amount)
-            )
+              new BN(amount),
+            ),
           ),
           api!.tx.sudo.sudo(
             api!.tx.tokens.mint(
               new BN(tokenId),
               testUser1.keyRingPair.address,
-              new BN(amount)
-            )
+              new BN(amount),
+            ),
           ),
           api!.tx.sudo.sudo(
             api!.tx.tokens.mint(
               new BN(7),
               testUser1.keyRingPair.address,
-              new BN(amount)
-            )
+              new BN(amount),
+            ),
           ),
         ])
         .signAndSend(sudo.keyRingPair);
@@ -176,7 +175,7 @@ describe("Boostrap - testpad", () => {
       //        new BN(amount).divn(2),
       //        new BN(amount).divn(2).addn(1)
       //      );
-    }
+    },
   );
   test("schedule boostrap", async () => {
     keyring = new Keyring({ type: "sr25519" });
@@ -192,8 +191,8 @@ describe("Boostrap - testpad", () => {
           block + 5,
           1,
           35,
-          [1, 1000000]
-        )
+          [1, 1000000],
+        ),
       )
       .signAndSend(sudo.keyRingPair);
   });
@@ -210,11 +209,11 @@ describe("Boostrap - testpad", () => {
     await testUser1.refreshAmounts(AssetWallet.BEFORE);
     await signSendAndWaitToFinishTx(
       api!.tx.bootstrap.provision(tokenId, 1000000000000),
-      testUser1.keyRingPair
+      testUser1.keyRingPair,
     );
     await signSendAndWaitToFinishTx(
       api!.tx.bootstrap.provision(MGA_ASSET_ID, 1000),
-      testUser1.keyRingPair
+      testUser1.keyRingPair,
     );
   });
   test.each([address_1, address_2])("force vested", async (address) => {
@@ -224,11 +223,11 @@ describe("Boostrap - testpad", () => {
     testUser1 = new User(keyring, "asd", JSON.parse(file as any));
     await fs.writeFileSync(
       testUser1.keyRingPair.address + ".json",
-      JSON.stringify(testUser1.keyRingPair.toJson("mangata123"))
+      JSON.stringify(testUser1.keyRingPair.toJson("mangata123")),
     );
     await fs.writeFileSync(
       sudo.keyRingPair.address + ".json",
-      JSON.stringify(sudo.keyRingPair.toJson("mangata123"))
+      JSON.stringify(sudo.keyRingPair.toJson("mangata123")),
     );
     // add users to pair.
     keyring.addPair(testUser1.keyRingPair);
@@ -246,8 +245,8 @@ describe("Boostrap - testpad", () => {
             locked: amount,
             perBlock: new BN(amount).divn(1000),
             startingBlock: block + 100,
-          }
-        )
+          },
+        ),
       )
       .signAndSend(sudo.keyRingPair);
     await waitForNBlocks(4);
@@ -265,7 +264,7 @@ describe("Boostrap - testpad", () => {
     await testUser1.refreshAmounts(AssetWallet.BEFORE);
     await signSendAndWaitToFinishTx(
       api!.tx.bootstrap.provisionVested(MGA_ASSET_ID, 1000),
-      testUser1.keyRingPair
+      testUser1.keyRingPair,
     );
   });
   test.skip("fillcandidates", async () => {
@@ -287,67 +286,67 @@ describe("Boostrap - testpad", () => {
             api!.tx.tokens.mint(
               MGA_ASSET_ID,
               testUser1.keyRingPair.address,
-              new BN(amount).muln(3)
-            )
+              new BN(amount).muln(3),
+            ),
           ),
           api!.tx.sudo.sudo(
             api!.tx.tokens.mint(
               MGA_ASSET_ID,
               testUser1.keyRingPair.address,
-              new BN(amount)
-            )
+              new BN(amount),
+            ),
           ),
           api!.tx.sudo.sudo(
             api!.tx.tokens.create(
               testUser1.keyRingPair.address,
-              new BN(10000000)
-            )
+              new BN(10000000),
+            ),
           ),
           api!.tx.sudo.sudo(
             api!.tx.tokens.create(
               testUser1.keyRingPair.address,
-              new BN(10000000)
-            )
+              new BN(10000000),
+            ),
           ),
           api!.tx.sudo.sudo(
             api!.tx.tokens.create(
               testUser1.keyRingPair.address,
-              new BN(10000000)
-            )
+              new BN(10000000),
+            ),
           ),
           api!.tx.sudo.sudo(
             api!.tx.tokens.create(
               testUser1.keyRingPair.address,
-              new BN(10000000)
-            )
+              new BN(10000000),
+            ),
           ),
           api!.tx.sudo.sudo(
             api!.tx.tokens.mint(
               new BN(4),
               testUser1.keyRingPair.address,
-              new BN(amount)
-            )
+              new BN(amount),
+            ),
           ),
           api!.tx.sudo.sudo(
             api!.tx.tokens.mint(
               new BN(5),
               testUser1.keyRingPair.address,
-              new BN(amount)
-            )
+              new BN(amount),
+            ),
           ),
           api!.tx.sudo.sudo(
             api!.tx.tokens.mint(
               new BN(tokenId),
               testUser1.keyRingPair.address,
-              new BN(amount)
-            )
+              new BN(amount),
+            ),
           ),
           api!.tx.sudo.sudo(
             api!.tx.tokens.mint(
               new BN(7),
               testUser1.keyRingPair.address,
-              new BN(amount)
-            )
+              new BN(amount),
+            ),
           ),
         ])
         .signAndSend(sudo.keyRingPair, { nonce: nonce.addn(index) });
@@ -355,7 +354,7 @@ describe("Boostrap - testpad", () => {
     }
     await waitForNBlocks(10);
     const candidates = JSON.parse(
-      JSON.stringify(await api?.query.parachainStaking.candidatePool())
+      JSON.stringify(await api?.query.parachainStaking.candidatePool()),
     );
 
     for (let index = 0; index < n; index++) {
@@ -365,8 +364,8 @@ describe("Boostrap - testpad", () => {
         new BN(0),
         new BN(tokenId),
         new BN(amount).divn(2),
-        new BN(amount).divn(2).addn(100)
-      ).then(async (res) => {
+        new BN(amount).divn(2).addn(100),
+      ).then(async () => {
         await waitForNBlocks(index * 2);
         await signSendAndWaitToFinishTx(
           api?.tx.parachainStaking.joinCandidates(
@@ -375,9 +374,9 @@ describe("Boostrap - testpad", () => {
             "ActivatedUnstakedLiquidity",
             // @ts-ignore - Mangata bond operation has 4 params, somehow is inheriting the bond operation from polkadot :S
             new BN(candidates.length + index),
-            new BN(15)
+            new BN(15),
           ),
-          testUser.keyRingPair
+          testUser.keyRingPair,
         );
       });
     }
@@ -2387,23 +2386,17 @@ describe("Boostrap - testpad", () => {
     "5CSmYgwbJzHVdY984u3ZwBNtFgREr4bWRMJGxj3Jf6iCNHSf",
   ];
   test.skip("xyk-pallet: whitelist", async () => {
-    const address = address_2;
-    const file = await fs.readFileSync(address + ".json");
+    const file = await fs.readFileSync(address_2 + ".json");
     keyring = new Keyring({ type: "sr25519" });
     sudo = new User(keyring, sudoUserName);
-    const addresses: string[] = [];
-    for (let index = 2000; index < 2000; index++) {
-      const user = new User(keyring);
-      addresses.push(user.keyRingPair.address);
-    }
     testUser1 = new User(keyring, "asd", JSON.parse(file as any));
     await fs.writeFileSync(
       testUser1.keyRingPair.address + ".json",
-      JSON.stringify(testUser1.keyRingPair.toJson("mangata123"))
+      JSON.stringify(testUser1.keyRingPair.toJson("mangata123")),
     );
     await fs.writeFileSync(
       sudo.keyRingPair.address + ".json",
-      JSON.stringify(sudo.keyRingPair.toJson("mangata123"))
+      JSON.stringify(sudo.keyRingPair.toJson("mangata123")),
     );
     // add users to pair.
     keyring.addPair(testUser1.keyRingPair);

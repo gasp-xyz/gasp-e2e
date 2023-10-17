@@ -1,15 +1,12 @@
 import { connectParachains } from "@acala-network/chopsticks";
 import { KeyringPair } from "@polkadot/keyring/types";
-import { BN_THOUSAND } from "@polkadot/util";
+import { BN, BN_THOUSAND } from "@polkadot/util";
 import { AssetId } from "../../utils/ChainSpecs";
 import { ApiContext } from "../../utils/Framework/XcmHelper";
 import XcmNetworks from "../../utils/Framework/XcmNetworks";
 import { devTestingPairs } from "../../utils/setup";
 import { expectJson, matchSystemEvents } from "../../utils/validators";
-import { Mangata } from "@mangata-finance/sdk";
-import { BN } from "@polkadot/util";
-
-import { BN_TEN } from "@mangata-finance/sdk";
+import { BN_TEN, Mangata } from "@mangata-finance/sdk";
 import { sleep } from "../../utils/utils";
 
 /**
@@ -22,10 +19,9 @@ describe.skip("XCM tests for Mangata <-> imbue", () => {
   let alice: KeyringPair;
   const imbueTokenId = 14;
   beforeAll(async () => {
-    const imbueRocco = await XcmNetworks.imbue({
+    imbue = await XcmNetworks.imbue({
       endpoint: "wss://rococo.imbue.network",
     });
-    imbue = imbueRocco;
     mangata = await XcmNetworks.mangata({
       endpoint: "wss://collator-01-ws-rococo.mangata.online",
     });
@@ -57,11 +53,11 @@ describe.skip("XCM tests for Mangata <-> imbue", () => {
 
   it.skip("SDK ROC - mangata transfer assets to imbue", async () => {
     expectJson(
-      await mangata.api.query.tokens.accounts(alice.address, imbueTokenId)
+      await mangata.api.query.tokens.accounts(alice.address, imbueTokenId),
     ).toMatchSnapshot("Before");
 
     expect(await imbue.api.query.system.account(alice.address)).toMatchSnapshot(
-      "Before"
+      "Before",
     );
     const mgaSdk = Mangata.instance([mangata.uri]);
     const p = mgaSdk.xTokens.withdraw({
@@ -85,7 +81,7 @@ describe.skip("XCM tests for Mangata <-> imbue", () => {
     await mangata.chain.newBlock();
     const balanceInMangata = await mangata.api.query.tokens.accounts(
       alice.address,
-      imbueTokenId
+      imbueTokenId,
     );
     expectJson(balanceInMangata).toMatchSnapshot();
 
@@ -98,11 +94,11 @@ describe.skip("XCM tests for Mangata <-> imbue", () => {
 
   it("SDK ROC - imbue transfer assets to mangata", async () => {
     expectJson(
-      await mangata.api.query.tokens.accounts(alice.address, imbueTokenId)
+      await mangata.api.query.tokens.accounts(alice.address, imbueTokenId),
     ).toMatchSnapshot("Before");
 
     expect(await imbue.api.query.system.account(alice.address)).toMatchSnapshot(
-      "Before"
+      "Before",
     );
     const mgaSdk = Mangata.instance([mangata.uri]);
     const p = mgaSdk.xTokens.depositFromParachain({
@@ -128,7 +124,7 @@ describe.skip("XCM tests for Mangata <-> imbue", () => {
     await mangata.chain.newBlock();
     const balanceAtMangata = await mangata.api.query.tokens.accounts(
       alice.address,
-      imbueTokenId
+      imbueTokenId,
     );
     expectJson(balanceAtMangata).toMatchSnapshot();
     await matchSystemEvents(mangata, "xcmpQueue", "Success");

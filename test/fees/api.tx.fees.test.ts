@@ -49,7 +49,7 @@ beforeAll(async () => {
   await Sudo.batchAsSudoFinalized(
     Assets.mintToken(MGA_ASSET_ID, testUserMGX),
     Assets.mintToken(KSM_ASSET_ID, testUserKSM),
-    Assets.mintToken(TUR_ASSET_ID, testUserTUR)
+    Assets.mintToken(TUR_ASSET_ID, testUserTUR),
   );
 });
 test("Fees : Transfers are about 5~ MGX", async () => {
@@ -59,7 +59,7 @@ test("Fees : Transfers are about 5~ MGX", async () => {
   await signTx(
     api,
     Assets.transfer(alice, MGA_ASSET_ID, BN_THOUSAND),
-    testUserMGX.keyRingPair
+    testUserMGX.keyRingPair,
   );
   await testUserMGX.refreshAmounts(AssetWallet.AFTER);
   const diff = testUserMGX.getWalletDifferences();
@@ -77,7 +77,7 @@ test("Fees : Transfers are about 0.005~ KSM", async () => {
   await signTx(
     api,
     Assets.transfer(alice, KSM_ASSET_ID, BN_THOUSAND),
-    testUserKSM.keyRingPair
+    testUserKSM.keyRingPair,
   );
   await testUserKSM.refreshAmounts(AssetWallet.AFTER);
   const diff = testUserKSM.getWalletDifferences();
@@ -95,7 +95,7 @@ test("Fees : Transfers are about 0.5~ TUR", async () => {
   await signTx(
     api,
     Assets.transfer(alice, TUR_ASSET_ID, BN_THOUSAND),
-    testUserTUR.keyRingPair
+    testUserTUR.keyRingPair,
   );
   await testUserTUR.refreshAmounts(AssetWallet.AFTER);
   const diff = testUserTUR.getWalletDifferences();

@@ -59,14 +59,14 @@ describe("staking - testpad", () => {
         .info(
           " User: " +
             user.keyRingPair.address +
-            "Minting tokens to pool -2 users"
+            "Minting tokens to pool -2 users",
         );
       await mintLiquidity(
         user.keyRingPair,
         MGA_ASSET_ID,
         tokenId,
         tokenstoMint,
-        MAX_BALANCE
+        MAX_BALANCE,
       );
       await waitForNBlocks(5);
     }

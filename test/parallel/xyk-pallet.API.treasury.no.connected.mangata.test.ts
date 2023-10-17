@@ -62,7 +62,7 @@ describe("xyk-pallet - treasury tests [No Mangata]: on treasury we store", () =>
     [firstCurrency, secondCurrency] = await Assets.setupUserWithCurrencies(
       testUser1,
       [defaultCurrecyValue, defaultCurrecyValue],
-      sudo
+      sudo,
     );
     await testUser1.addMGATokens(sudo);
     await createPool(
@@ -70,7 +70,7 @@ describe("xyk-pallet - treasury tests [No Mangata]: on treasury we store", () =>
       firstCurrency,
       first_asset_amount,
       secondCurrency,
-      first_asset_amount.div(new BN(2))
+      first_asset_amount.div(new BN(2)),
     );
 
     await testUser1.refreshAmounts(AssetWallet.BEFORE);
@@ -84,7 +84,7 @@ describe("xyk-pallet - treasury tests [No Mangata]: on treasury we store", () =>
       secondCurrency,
       firstCurrency,
       sellAssetAmount,
-      new BN(1)
+      new BN(1),
     ).then((result) => {
       const eventResponse = getEventResultFromMangataTx(result, [
         "xyk",
@@ -112,7 +112,7 @@ describe("xyk-pallet - treasury tests [No Mangata]: on treasury we store", () =>
       firstCurrency,
       secondCurrency,
       sellAssetAmount,
-      new BN(1)
+      new BN(1),
     ).then((result) => {
       const eventResponse = getEventResultFromMangataTx(result, [
         "xyk",
@@ -133,14 +133,14 @@ describe("xyk-pallet - treasury tests [No Mangata]: on treasury we store", () =>
     const sellPriceRpc = await calculate_buy_price_rpc(
       first_asset_amount,
       first_asset_amount.div(new BN(2)),
-      buyAssetAmount
+      buyAssetAmount,
     );
     await buyAsset(
       testUser1.keyRingPair,
       firstCurrency,
       secondCurrency,
       buyAssetAmount,
-      new BN(100000000)
+      new BN(100000000),
     ).then((result) => {
       const eventResponse = getEventResultFromMangataTx(result, [
         "xyk",
@@ -162,14 +162,14 @@ describe("xyk-pallet - treasury tests [No Mangata]: on treasury we store", () =>
     const sellPriceRpc = await calculate_buy_price_rpc(
       first_asset_amount,
       first_asset_amount.div(new BN(2)),
-      buyAssetAmount
+      buyAssetAmount,
     );
     await buyAsset(
       testUser1.keyRingPair,
       firstCurrency,
       secondCurrency,
       buyAssetAmount,
-      new BN(100000000)
+      new BN(100000000),
     ).then((result) => {
       const eventResponse = getEventResultFromMangataTx(result, [
         "xyk",

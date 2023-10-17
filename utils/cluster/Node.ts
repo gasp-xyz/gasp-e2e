@@ -1,8 +1,6 @@
 import { ApiPromise } from "@polkadot/api";
-import { initApi } from "../../utils/api";
+import { initApi } from "../api";
 import { testLog } from "../Logger";
-
-export { Node };
 
 class Node {
   name: string;
@@ -49,7 +47,7 @@ class Node {
         testLog
           .getLog()
           .info(`${this.name} - #${this.lastBlock} - ${this.lastHash}`);
-      }
+      },
     );
   }
 
@@ -73,3 +71,4 @@ class Node {
     |_______________________________________`;
   }
 }
+export { Node };
