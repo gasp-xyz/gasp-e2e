@@ -35,9 +35,8 @@ describe("AssetRegistry RPC -", () => {
     }
     await setupApi();
     setupUsers();
-
     const events = await Sudo.batchAsSudoFinalized(
-      Assets.issueToken(alice, Assets.DEFAULT_AMOUNT),
+      Assets.createTokenWithNoAssetRegistry(alice, Assets.DEFAULT_AMOUNT),
       Assets.registerAsset("", "", 2),
       Assets.registerAsset("onlyName", "", 3),
       Assets.registerAsset("Name&Symbol", "symbol", 5),
