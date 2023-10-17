@@ -11,7 +11,7 @@ import { testLog } from "./Logger.js";
 
 dotenv.config();
 
-const globalConfig = async (globalConfig, projectConfig) => {
+const globalConfig = async () => {
   if (process.env.CHOPSTICK_ENABLED || process.env.CHOPSTICK_UI) return;
 
   try {
@@ -67,6 +67,8 @@ const globalConfig = async (globalConfig, projectConfig) => {
     testLog.getLog().info("Registering assets....");
     const registeredIds = await registerAssets();
     assetIds = registeredIds.reverse();
+  } else {
+    testLog.getLog().info("Not a BE test, skipping asset registration!");
   }
 };
 
