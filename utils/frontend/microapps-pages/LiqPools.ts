@@ -4,9 +4,11 @@ import {
   clickElement,
   isDisplayed,
   scrollIntoView,
+  writeText,
 } from "../utils/Helper";
 
 const SEARCH_CONTAINER = "pool-list-search-container";
+const SEARCH_INPUT = "pool-list-search-input";
 const TAB_PROMOTED_POOLS = "Promoted-Pools-item";
 const TAB_ALL_POOLS = "All-Pools-item";
 
@@ -43,5 +45,16 @@ export class LiqPools {
   async clickAllPoolsTab() {
     const itemXpath = buildDataTestIdXpath(TAB_ALL_POOLS);
     await clickElement(this.driver, itemXpath);
+  }
+
+  async openSearch() {
+    const itemXpath = buildDataTestIdXpath(SEARCH_CONTAINER);
+    await clickElement(this.driver, itemXpath);
+  }
+
+  async inputSearch(text: string) {
+    const inputSearch = buildDataTestIdXpath(SEARCH_INPUT);
+    await clickElement(this.driver, inputSearch);
+    await writeText(this.driver, inputSearch, text);
   }
 }

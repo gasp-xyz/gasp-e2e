@@ -13,13 +13,19 @@ import {
 } from "../../utils/frontend/utils/Helper";
 import { Keyring } from "@polkadot/api";
 import { KeyringPair } from "@polkadot/keyring/types";
-import { FIVE_MIN, KSM_ASSET_ID, MGA_ASSET_ID } from "../../utils/Constants";
+import {
+  FIVE_MIN,
+  KSM_ASSET_ID,
+  MGA_ASSET_ID,
+  TUR_ASSET_NAME,
+} from "../../utils/Constants";
 import { AssetWallet, User } from "../../utils/User";
 import { getEnvironmentRequiredVars } from "../../utils/utils";
 import {
   connectWallet,
   setupPage,
   setupPageWithState,
+  waitForMicroappsActionNotification,
 } from "../../utils/frontend/microapps-utils/Handlers";
 import { ApiContext } from "../../utils/Framework/XcmHelper";
 import { connectVertical } from "@acala-network/chopsticks";
@@ -31,6 +37,7 @@ import StashServiceMockSingleton from "../../utils/stashServiceMockSingleton";
 import { LiqPools } from "../../utils/frontend/microapps-pages/LiqPools";
 import { Sidebar } from "../../utils/frontend/microapps-pages/Sidebar";
 import { LiqPoolDetils } from "../../utils/frontend/microapps-pages/LiqPoolDetails";
+import { TransactionType } from "../../utils/frontend/microapps-pages/NotificationModal";
 
 jest.setTimeout(FIVE_MIN);
 jest.spyOn(console, "log").mockImplementation(jest.fn());
@@ -129,6 +136,187 @@ describe("Miocroapps UI liq pools tests", () => {
     expect(isPoolHistoryDisplayed).toBeTruthy();
     const arePoolStatsDisplayed = await poolDetails.arePoolStatsDisplayed();
     expect(arePoolStatsDisplayed).toBeTruthy();
+  });
+
+  it("User can search pools list", async () => {
+    await setupPageWithState(driver, acc_name);
+    const sidebar = new Sidebar(driver);
+    await sidebar.clickNavLiqPools();
+
+    const poolsList = new LiqPools(driver);
+    const isPoolsListDisplayed = await poolsList.isDisplayed();
+    expect(isPoolsListDisplayed).toBeTruthy();
+
+    let isMgxKsmPoolVisible = await poolsList.isPoolItemDisplayed(
+      "-" + MGX_ASSET_NAME + "-" + KSM_ASSET_NAME
+    );
+    expect(isMgxKsmPoolVisible).toBeTruthy();
+
+    await poolsList.openSearch();
+    await poolsList.inputSearch("TUR");
+
+    isMgxKsmPoolVisible = await poolsList.isPoolItemDisplayed(
+      "-" + MGX_ASSET_NAME + "-" + KSM_ASSET_NAME
+    );
+    expect(isMgxKsmPoolVisible).toBeFalsy();
+
+    const isTurMgxPoolVisible = await poolsList.isPoolItemDisplayed(
+      "-" + TUR_ASSET_NAME + "-" + MGX_ASSET_NAME
+    );
+    expect(isTurMgxPoolVisible).toBeTruthy();
+  });
+
+  it("User can switch filtering between promoted or all pools", async () => {
+    await setupPageWithState(driver, acc_name);
+    const sidebar = new Sidebar(driver);
+    await sidebar.clickNavLiqPools();
+
+    const poolsList = new LiqPools(driver);
+    const isPoolsListDisplayed = await poolsList.isDisplayed();
+    expect(isPoolsListDisplayed).toBeTruthy();
+    await poolsList.clickAllPoolsTab();
+
+    let isTurKsmPoolVisible = await poolsList.isPoolItemDisplayed(
+      "-" + TUR_ASSET_NAME + "-" + KSM_ASSET_NAME
+    );
+    expect(isTurKsmPoolVisible).toBeTruthy();
+
+    await poolsList.clickPromotedPoolsTab();
+    isTurKsmPoolVisible = await poolsList.isPoolItemDisplayed(
+      "-" + TUR_ASSET_NAME + "-" + KSM_ASSET_NAME
+    );
+    expect(isTurKsmPoolVisible).toBeFalsy();
+  });
+
+  it("Add pool liquidity input values", async () => {
+    await setupPageWithState(driver, acc_name);
+    const sidebar = new Sidebar(driver);
+    await sidebar.clickNavLiqPools();
+
+    const poolsList = new LiqPools(driver);
+    const isPoolsListDisplayed = await poolsList.isDisplayed();
+    expect(isPoolsListDisplayed).toBeTruthy();
+
+    const isMgxKsmPoolVisible = await poolsList.isPoolItemDisplayed(
+      "-" + MGX_ASSET_NAME + "-" + KSM_ASSET_NAME
+    );
+    expect(isMgxKsmPoolVisible).toBeTruthy();
+    await poolsList.clickPoolItem("-" + MGX_ASSET_NAME + "-" + KSM_ASSET_NAME);
+
+    const poolDetails = new LiqPoolDetils(driver);
+    const isPoolDetailsVisible = await poolDetails.isDisplayed(
+      MGX_ASSET_NAME + " / " + KSM_ASSET_NAME
+    );
+    expect(isPoolDetailsVisible).toBeTruthy();
+
+    await poolDetails.clickAddLiquidity();
+    const isFirstTokenNameSet = await poolDetails.isFirstTokenNameSet(
+      MGX_ASSET_NAME
+    );
+    expect(isFirstTokenNameSet).toBeTruthy();
+    const isSecondTokenNameSet = await poolDetails.isSecondTokenNameSet(
+      KSM_ASSET_NAME
+    );
+    expect(isSecondTokenNameSet).toBeTruthy();
+
+    // 0 in both inputs
+    await poolDetails.setFirstTokenAmount("0");
+    await poolDetails.setSecondTokenAmount("0");
+    await poolDetails.waitForContinueState(false);
+
+    // only first token value set by user
+    await poolDetails.setFirstTokenAmount("10");
+    await poolDetails.waitSecondTokenAmountSet(true);
+    const secondTokenAmount = await poolDetails.getSecondTokenAmount();
+    expect(secondTokenAmount).toBeGreaterThan(0);
+
+    // clear token amount
+    await poolDetails.clearFirstTokenAmount();
+    await poolDetails.waitForContinueState(false);
+
+    // only second token value set by user
+    await poolDetails.clearSecondTokenAmount();
+    await poolDetails.setSecondTokenAmount("0.01");
+    await poolDetails.waitFirstTokenAmountSet(true);
+    let firstTokenAmount = await poolDetails.getFirstTokenAmount();
+    expect(firstTokenAmount).toBeGreaterThan(0);
+
+    // not enough one token
+    await poolDetails.setSecondTokenAmount("9");
+    await poolDetails.waitFirstTokenAmountSet(true);
+    firstTokenAmount = await poolDetails.getFirstTokenAmount();
+    expect(firstTokenAmount).toBeGreaterThan(0);
+    let firstTokenAlert = await poolDetails.isFirstTokenAlert();
+    expect(firstTokenAlert).toBeTruthy();
+
+    // not enough both tokens
+    await poolDetails.setSecondTokenAmount("20");
+    await poolDetails.waitFirstTokenAmountSet(true);
+    firstTokenAmount = await poolDetails.getFirstTokenAmount();
+    expect(firstTokenAmount).toBeGreaterThan(0);
+    firstTokenAlert = await poolDetails.isFirstTokenAlert();
+    expect(firstTokenAlert).toBeTruthy();
+    const secondTokenAlert = await poolDetails.isSecondTokenAlert();
+    expect(secondTokenAlert).toBeTruthy();
+    await poolDetails.waitForContinueState(false);
+  });
+
+  it("Add MGX-KSM pool liquidity", async () => {
+    await setupPageWithState(driver, acc_name);
+    const sidebar = new Sidebar(driver);
+    await sidebar.clickNavLiqPools();
+
+    const poolsList = new LiqPools(driver);
+    const isPoolsListDisplayed = await poolsList.isDisplayed();
+    expect(isPoolsListDisplayed).toBeTruthy();
+
+    const isMgxKsmPoolVisible = await poolsList.isPoolItemDisplayed(
+      "-" + MGX_ASSET_NAME + "-" + KSM_ASSET_NAME
+    );
+    expect(isMgxKsmPoolVisible).toBeTruthy();
+    await poolsList.clickPoolItem("-" + MGX_ASSET_NAME + "-" + KSM_ASSET_NAME);
+
+    const poolDetails = new LiqPoolDetils(driver);
+    const isPoolDetailsVisible = await poolDetails.isDisplayed(
+      MGX_ASSET_NAME + " / " + KSM_ASSET_NAME
+    );
+    expect(isPoolDetailsVisible).toBeTruthy();
+    const my_pool_share = await poolDetails.getMyPositionAmount();
+
+    await poolDetails.clickAddLiquidity();
+    const isFirstTokenNameSet = await poolDetails.isFirstTokenNameSet(
+      MGX_ASSET_NAME
+    );
+    expect(isFirstTokenNameSet).toBeTruthy();
+    const isSecondTokenNameSet = await poolDetails.isSecondTokenNameSet(
+      KSM_ASSET_NAME
+    );
+    expect(isSecondTokenNameSet).toBeTruthy();
+
+    await poolDetails.setFirstTokenAmount("1");
+    await poolDetails.waitForContinueState(true, 5000);
+    const secondTokenAmount = await poolDetails.getSecondTokenAmount();
+    expect(secondTokenAmount).toBeGreaterThan(0);
+
+    const isExpectedShareDisplayed =
+      await poolDetails.isExpectedShareDisplayed();
+    expect(isExpectedShareDisplayed).toBeTruthy();
+    const isFeeDisplayed = await poolDetails.isFeeDisplayed();
+    expect(isFeeDisplayed).toBeTruthy();
+    const isEstRewardDisplayed = await poolDetails.isEstRewardDisplayed();
+    expect(isEstRewardDisplayed).toBeTruthy();
+
+    await poolDetails.submit();
+    await waitForMicroappsActionNotification(
+      driver,
+      mangata,
+      kusama,
+      TransactionType.AddLiquidity,
+      2
+    );
+
+    const my_new_pool_share = await poolDetails.getMyPositionAmount();
+    expect(my_new_pool_share).toBeGreaterThan(my_pool_share);
   });
 
   afterEach(async () => {
