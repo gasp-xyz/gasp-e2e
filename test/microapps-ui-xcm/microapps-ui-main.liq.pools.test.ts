@@ -242,6 +242,7 @@ describe("Miocroapps UI liq pools tests", () => {
     expect(firstTokenAmount).toBeGreaterThan(0);
 
     // not enough one token
+    await poolDetails.clearSecondTokenAmount();
     await poolDetails.setSecondTokenAmount("9");
     await poolDetails.waitFirstTokenAmountSet(true);
     firstTokenAmount = await poolDetails.getFirstTokenAmount();
@@ -250,6 +251,7 @@ describe("Miocroapps UI liq pools tests", () => {
     expect(firstTokenAlert).toBeTruthy();
 
     // not enough both tokens
+    await poolDetails.clearSecondTokenAmount();
     await poolDetails.setSecondTokenAmount("20");
     await poolDetails.waitFirstTokenAmountSet(true);
     firstTokenAmount = await poolDetails.getFirstTokenAmount();
