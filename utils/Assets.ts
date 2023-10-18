@@ -52,7 +52,7 @@ export class Assets {
     user: User,
     currencyValues = [new BN(250000), new BN(250001)],
     _sudo: User,
-    skipInfo = false
+    skipInfo = false,
   ): Promise<BN[]> {
     const txs: Extrinsic[] = [];
     await setupApi();
@@ -76,8 +76,8 @@ export class Assets {
             undefined,
             undefined,
             undefined,
-            assetId
-          )
+            assetId,
+          ),
         );
       }
       await Sudo.batchAsSudoFinalized(...addInfos);
@@ -96,12 +96,12 @@ export class Assets {
     user: User,
     num = new BN(1000),
     sudo: User,
-    skipInfo = false
+    skipInfo = false,
   ) {
     const result = await sudoIssueAsset(
       sudo.keyRingPair,
       num,
-      user.keyRingPair.address
+      user.keyRingPair.address,
     );
     const eventResult = await getEventResultFromMangataTx(result, [
       "tokens",
@@ -118,7 +118,7 @@ export class Assets {
         `TEST_${assetId}`,
         this.getAssetName(assetId),
         `Test token ${assetId}`,
-        new BN(18)
+        new BN(18),
       );
     }
 
@@ -132,7 +132,7 @@ export class Assets {
   static mintNative(user: User, amount: BN = this.DEFAULT_AMOUNT): Extrinsic {
     user.addAsset(MGA_ASSET_ID);
     return Sudo.sudo(
-      api.tx.tokens.mint(MGA_ASSET_ID, user.keyRingPair.address, amount)
+      api.tx.tokens.mint(MGA_ASSET_ID, user.keyRingPair.address, amount),
     );
   }
 
@@ -143,10 +143,10 @@ export class Assets {
   static mintToken(
     asset: BN,
     user: User,
-    amount: BN = this.DEFAULT_AMOUNT
+    amount: BN = this.DEFAULT_AMOUNT,
   ): Extrinsic {
     return Sudo.sudo(
-      api.tx.tokens.mint(asset, user.keyRingPair.address, amount)
+      api.tx.tokens.mint(asset, user.keyRingPair.address, amount),
     );
   }
 
@@ -165,7 +165,7 @@ export class Assets {
   }
   static promotePool(liquidityId: number, weight: number = 20): Extrinsic {
     return Sudo.sudo(
-      api!.tx.proofOfStake.updatePoolPromotion(liquidityId, weight)
+      api!.tx.proofOfStake.updatePoolPromotion(liquidityId, weight),
     );
   }
   static registerAsset(
@@ -176,7 +176,7 @@ export class Assets {
     location?: object,
     xcmMetadata?: XcmMetadata,
     xykMetadata?: XykMetadata,
-    assetId?: number | BN
+    assetId?: number | BN,
   ): Extrinsic {
     return Sudo.sudo(
       api.tx.assetRegistry.registerAsset(
@@ -192,8 +192,8 @@ export class Assets {
           },
         },
         //@ts-ignore
-        api.createType("Option<u32>", assetId)
-      )
+        api.createType("Option<u32>", assetId),
+      ),
     );
   }
 
@@ -214,8 +214,8 @@ export class Assets {
             ? { V2: update.location } // Some(location)
             : api.createType("Vec<u8>", "0x0100") // Some(None)
           : null, // None
-        update.metadata!
-      )
+        update.metadata!,
+      ),
     );
   }
   static async disableToken(tokenId: BN) {
@@ -233,7 +233,7 @@ export class Assets {
         {
           operationsDisabled: true,
         },
-        tokenId
+        tokenId,
       );
     } else {
       const metadata: MangataTypesAssetsCustomMetadata = api.createType(
@@ -242,7 +242,7 @@ export class Assets {
           xyk: {
             operationsDisabled: true,
           },
-        }
+        },
       );
       extrinsicToDisable = Assets.updateAsset(tokenId, {
         metadata: metadata,
@@ -265,7 +265,7 @@ export class Assets {
           xyk: {
             operationsDisabled: false,
           },
-        }
+        },
       );
       extrinsicToTokenEnable = await Assets.updateAsset(tokenId, {
         metadata: metadata,

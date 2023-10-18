@@ -21,8 +21,9 @@ export class SudoDB {
       process.env.VSCODE_INSPECTOR_OPTIONS !== undefined &&
       process.env.VSCODE_INSPECTOR_OPTIONS!.length > 0 &&
       process.env.PERF_TEST === undefined
-    )
+    ) {
       return await getCurrentNonce(sudoAddress);
+    }
 
     let dbNonce = -1;
     if (process.argv.includes("--runInBand")) {
@@ -44,7 +45,7 @@ export class SudoDB {
     testLog
       .getLog()
       .info(
-        `[${process.env.JEST_WORKER_ID}] Returned nextCandidateId : ${nextCandidateId}`
+        `[${process.env.JEST_WORKER_ID}] Returned nextCandidateId : ${nextCandidateId}`,
       );
     return nextCandidateId;
   }

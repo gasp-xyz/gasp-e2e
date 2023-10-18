@@ -94,7 +94,7 @@ export async function setup5PoolsChained(users: User[]) {
     Assets.issueToken(sudo),
     Assets.issueToken(sudo),
     Assets.issueToken(sudo),
-    Assets.issueToken(sudo)
+    Assets.issueToken(sudo),
   );
   const tokenIds: BN[] = events
     .filter((item) => item.method === "Issued" && item.section === "tokens")
@@ -107,8 +107,8 @@ export async function setup5PoolsChained(users: User[]) {
         tokenIds[index],
         Assets.DEFAULT_AMOUNT.divn(2),
         tokenIds[index + (1 % tokens.length)],
-        Assets.DEFAULT_AMOUNT.divn(2)
-      )
+        Assets.DEFAULT_AMOUNT.divn(2),
+      ),
     );
   });
   await Sudo.batchAsSudoFinalized(
@@ -124,7 +124,7 @@ export async function setup5PoolsChained(users: User[]) {
     Assets.mintToken(tokenIds[tokenIds.length - 1], testUser2),
     Assets.mintToken(tokenIds[tokenIds.length - 1], testUser3),
     Assets.mintToken(tokenIds[tokenIds.length - 1], testUser4),
-    ...poolCreationExtrinsics
+    ...poolCreationExtrinsics,
   );
   return { users, tokenIds };
 }
@@ -135,7 +135,7 @@ export async function setupAPoolForUsers(users: User[]) {
   const sudo = new User(keyring, getEnvironmentRequiredVars().sudo);
   const events = await Sudo.batchAsSudoFinalized(
     Assets.issueToken(sudo),
-    Assets.issueToken(sudo)
+    Assets.issueToken(sudo),
   );
   const tokenIds: BN[] = events
     .filter((item) => item.method === "Issued" && item.section === "tokens")
@@ -147,8 +147,8 @@ export async function setupAPoolForUsers(users: User[]) {
       tokenIds[0],
       Assets.DEFAULT_AMOUNT.divn(2),
       tokenIds[1],
-      Assets.DEFAULT_AMOUNT.divn(2)
-    )
+      Assets.DEFAULT_AMOUNT.divn(2),
+    ),
   );
 
   await Sudo.batchAsSudoFinalized(
@@ -160,7 +160,7 @@ export async function setupAPoolForUsers(users: User[]) {
     Assets.mintToken(tokenIds[0], testUser2),
     Assets.mintToken(tokenIds[0], testUser3),
     Assets.mintToken(tokenIds[0], testUser4),
-    ...poolCreationExtrinsics
+    ...poolCreationExtrinsics,
   );
   return { users, tokenIds };
 }
@@ -171,7 +171,7 @@ export const setupGasLess = async (force = false) => {
   alice = new User(keyring, "//Alice");
   await setupApi();
   const feeLockConfig = JSON.parse(
-    JSON.stringify(await api?.query.feeLock.feeLockMetadata())
+    JSON.stringify(await api?.query.feeLock.feeLockMetadata()),
   );
   // only create if empty.
   if (feeLockConfig === null || feeLockConfig.periodLength === null || force) {
@@ -180,7 +180,7 @@ export const setupGasLess = async (force = false) => {
         10,
         "50000000000000000000",
         "1000000000000000000000",
-        [[1, false]]
+        [[1, false]],
       )
       .toString();
     await signTx(api!, api!.tx.sudo.sudo(extrinsic), sudo.keyRingPair, {
