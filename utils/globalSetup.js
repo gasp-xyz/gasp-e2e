@@ -81,7 +81,7 @@ async function registerAssets(num = 300) {
     ...Array(num)
       .fill(0)
       .map((_, i) => {
-        return Assets.registerAsset(`TEST_${i}`, `TKN_${i}`, 18);
+        return Assets.registerAsset(`TEST_${i}`, `SYM_${i}`, 18);
       }),
   ];
   const result = await Sudo.batchAsSudoFinalized(...txs);

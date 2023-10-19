@@ -30,6 +30,7 @@ let testUser: User;
 let sudo: User;
 let keyring: Keyring;
 let token1: BN;
+let token1Name: string;
 let liqId: BN;
 let mangata: MangataInstance;
 const defaultCurrencyValue = new BN(250000);
@@ -56,6 +57,11 @@ beforeAll(async () => {
     sudo
   );
   mangata = await getMangataInstance();
+  token1Name = await (await mangata.api()).query.assetRegistry
+    .metadata(token1)
+    .then((metadata) => {
+      return metadata.value.name.toHuman()!.toString();
+    });
   await Sudo.batchAsSudoFinalized(
     Assets.FinalizeTge(),
     Assets.initIssuance(),
@@ -197,8 +203,7 @@ test("check calculateMintingFutureRewards", async () => {
 
 test("check getAssetsInfo", async () => {
   const assetsInfo = await mangata.query.getAssetsInfo();
-  const tokenName = "TEST_" + token1.toString();
-  expect(assetsInfo[token1.toNumber()].name).toEqual(tokenName);
+  expect(assetsInfo[token1.toNumber()].name).toEqual(token1Name);
 });
 
 test("check getLiquidityTokens", async () => {
@@ -218,8 +223,7 @@ test("check getOwnedTokens", async () => {
 
 test("check getTokenInfo", async () => {
   const tokenInfo = await mangata.query.getTokenInfo(token1.toString());
-  const tokenName = "TEST_" + token1.toString();
-  expect(tokenInfo.name).toEqual(tokenName);
+  expect(tokenInfo.name).toEqual(token1Name);
 });
 
 test("sdk - filter deactivated pools on node", async () => {
