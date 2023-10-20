@@ -97,7 +97,7 @@ export async function setup5PoolsChained(users: User[]) {
     Assets.issueToken(sudo)
   );
   const tokenIds: BN[] = events
-    .filter((item) => item.method === "Issued" && item.section === "tokens")
+    .filter((item) => item.method === "Created" && item.section === "tokens")
     .map((x) => new BN(x.eventData[0].data.toString()));
 
   const poolCreationExtrinsics: Extrinsic[] = [];
@@ -138,7 +138,7 @@ export async function setupAPoolForUsers(users: User[]) {
     Assets.issueToken(sudo)
   );
   const tokenIds: BN[] = events
-    .filter((item) => item.method === "Issued" && item.section === "tokens")
+    .filter((item) => item.method === "Created" && item.section === "tokens")
     .map((x) => new BN(x.eventData[0].data.toString()));
 
   const poolCreationExtrinsics: Extrinsic[] = [];

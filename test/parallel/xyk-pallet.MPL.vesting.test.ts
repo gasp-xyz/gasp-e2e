@@ -76,7 +76,7 @@ describe("Vesting", () => {
       )
       .sudoBatch(sudo);
     createdToken = new BN(
-      result.filter((x) => x.event.method === "Issued")[0].eventData[0]
+      result.filter((x) => x.event.method === "Created")[0].eventData[0]
         .data as any
     );
     await createPoolIfMissing(
