@@ -75,6 +75,43 @@ export async function waitForElementState(
   }
 }
 
+export async function waitInputValueSetInterval(
+  driver: WebDriver,
+  xpath: string,
+  isSet: boolean,
+  timeout = 5000
+) {
+  const startTime = Date.now();
+  const endTime = startTime + timeout;
+
+  while (Date.now() < endTime) {
+    try {
+      const element = await driver.findElement(By.xpath(xpath));
+      const isElementVisible = await element.isDisplayed();
+
+      if (isSet) {
+        const value = await element.getAttribute("value");
+        if (isElementVisible && value !== "") {
+          return;
+        }
+      } else {
+        const value = await element.getAttribute("value");
+        if (isElementVisible && value === "") {
+          return;
+        }
+      }
+    } catch (error) {
+      // Element not found or other error occurred, continue waiting
+    }
+
+    await new Promise((resolve) => setTimeout(resolve, 1000));
+  }
+
+  throw new Error(
+    `Timeout: Element value not as desired after ${timeout} milliseconds`
+  );
+}
+
 export async function waitForElementStateInterval(
   driver: WebDriver,
   xpath: string,
@@ -214,6 +251,11 @@ export async function writeText(
   const input = await driver.findElement(By.xpath(elementXpath));
   await driver.executeScript("arguments[0].value = '';", input);
   await (await driver.findElement(By.xpath(elementXpath))).sendKeys(text);
+}
+
+export async function clearText(driver: WebDriver, elementXpath: string) {
+  await waitForElement(driver, elementXpath);
+  await (await driver.findElement(By.xpath(elementXpath))).clear();
 }
 
 export async function getText(driver: WebDriver, elementXpath: string) {
