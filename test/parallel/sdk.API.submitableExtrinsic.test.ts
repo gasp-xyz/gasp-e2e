@@ -43,7 +43,9 @@ let testUser: User;
 let sudo: User;
 let keyring: Keyring;
 let token1: BN;
+let token2: BN;
 let liqId: BN;
+let liqId2: BN;
 let mangata: MangataInstance;
 const defaultCurrencyValue = new BN(250000);
 
@@ -63,9 +65,9 @@ beforeAll(async () => {
 
   await setupApi();
 
-  [token1] = await Assets.setupUserWithCurrencies(
+  [token1, token2] = await Assets.setupUserWithCurrencies(
     sudo,
-    [defaultCurrencyValue],
+    [defaultCurrencyValue, defaultCurrencyValue],
     sudo
   );
 
@@ -76,6 +78,7 @@ beforeAll(async () => {
     Assets.initIssuance(),
     Assets.mintNative(testUser),
     Assets.mintToken(token1, testUser, Assets.DEFAULT_AMOUNT),
+    Assets.mintToken(token2, testUser, Assets.DEFAULT_AMOUNT),
     Sudo.sudoAs(
       testUser,
       Xyk.createPool(
@@ -84,14 +87,28 @@ beforeAll(async () => {
         token1,
         Assets.DEFAULT_AMOUNT.divn(2)
       )
+    ),
+    Sudo.sudoAs(
+      testUser,
+      Xyk.createPool(
+        MGA_ASSET_ID,
+        Assets.DEFAULT_AMOUNT.divn(2),
+        token2,
+        Assets.DEFAULT_AMOUNT.divn(2)
+      )
     )
   );
 
   liqId = await getLiquidityAssetId(MGA_ASSET_ID, token1);
+  liqId2 = await getLiquidityAssetId(MGA_ASSET_ID, token2);
 
-  await Sudo.batchAsSudoFinalized(Assets.promotePool(liqId.toNumber(), 20));
+  await Sudo.batchAsSudoFinalized(
+    Assets.promotePool(liqId.toNumber(), 20),
+    Assets.promotePool(liqId.toNumber(), 20)
+  );
 
   testUser.addAsset(liqId);
+  testUser.addAsset(liqId2);
   testUser.addAsset(MGA_ASSET_ID);
   testUser.addAsset(token1);
 });
@@ -136,25 +153,25 @@ test("activate some Liquidity using SDK THEN claim rewards THEN deactivate Liqui
 });
 
 test("check claimRewards", async () => {
-  await activateLiquidity(testUser.keyRingPair, liqId, BN_BILLION);
+  await activateLiquidity(testUser.keyRingPair, liqId2, BN_BILLION);
 
-  await waitForRewards(testUser, liqId);
+  await waitForRewards(testUser, liqId2);
 
   const tx2 = await mangata.submitableExtrinsic.claimRewards({
     account: testUser.keyRingPair.address,
-    liquidityTokenId: liqId.toString(),
+    liquidityTokenId: liqId2.toString(),
   });
 
   const userTokenBeforeClaiming = await getRewardsInfo(
     testUser.keyRingPair.address,
-    liqId
+    liqId2
   );
 
   await signSubmittableExtrinsic(tx2, testUser);
 
   const userTokenAfterClaiming = await getRewardsInfo(
     testUser.keyRingPair.address,
-    liqId
+    liqId2
   );
 
   expect(userTokenBeforeClaiming.rewardsAlreadyClaimed).bnEqual(BN_ZERO);
