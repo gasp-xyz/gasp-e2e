@@ -76,7 +76,7 @@ beforeAll(async () => {
   await Sudo.batchAsSudoFinalized(
     Assets.FinalizeTge(),
     Assets.initIssuance(),
-    Assets.mintNative(testUser),
+    Assets.mintNative(testUser, Assets.DEFAULT_AMOUNT.muln(10)),
     Assets.mintToken(token1, testUser, Assets.DEFAULT_AMOUNT),
     Assets.mintToken(token2, testUser, Assets.DEFAULT_AMOUNT),
     Sudo.sudoAs(
@@ -104,7 +104,7 @@ beforeAll(async () => {
 
   await Sudo.batchAsSudoFinalized(
     Assets.promotePool(liqId.toNumber(), 20),
-    Assets.promotePool(liqId.toNumber(), 20)
+    Assets.promotePool(liqId2.toNumber(), 20)
   );
 
   testUser.addAsset(liqId);
