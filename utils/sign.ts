@@ -17,9 +17,11 @@ export const signSendFinalized = async (
 ): Promise<MangataGenericEvent[]> => {
   return signTx(api, tx, user.keyRingPair, {
     nonce: nonce,
-    statusCallback: ({ events = [], status }) => {
+    statusCallback: ({ status }) => {
       testLog.getLog().info(status);
-      events.forEach((e) => logEvent("mangata", e));
+    },
+    extrinsicStatus: (event) => {
+      event.forEach((e) => logEvent("mangata", e));
     },
   })
     .catch((reason) => {

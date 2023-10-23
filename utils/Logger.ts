@@ -37,7 +37,7 @@ export class testLog {
 
 //@ts-ignore
 export const logEvent = (chain, event) => {
-  const obj = toHuman(event).event;
+  const obj = toHuman(event.event);
   testLog
     .getLog()
     .info(
