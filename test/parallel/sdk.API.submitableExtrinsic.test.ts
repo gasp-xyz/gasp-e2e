@@ -58,7 +58,8 @@ beforeAll(async () => {
   // setup users
   sudo = new User(keyring, sudoUserName);
 
-  [testUser] = setupUsers();
+  const users = setupUsers();
+  testUser = users[5];
 
   await setupApi();
 
