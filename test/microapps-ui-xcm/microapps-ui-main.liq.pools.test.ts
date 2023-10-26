@@ -13,12 +13,7 @@ import {
 } from "../../utils/frontend/utils/Helper";
 import { Keyring } from "@polkadot/api";
 import { KeyringPair } from "@polkadot/keyring/types";
-import {
-  FIVE_MIN,
-  KSM_ASSET_ID,
-  MGA_ASSET_ID,
-  TUR_ASSET_NAME,
-} from "../../utils/Constants";
+import { FIVE_MIN, KSM_ASSET_ID, MGA_ASSET_ID } from "../../utils/Constants";
 import { AssetWallet, User } from "../../utils/User";
 import { getEnvironmentRequiredVars } from "../../utils/utils";
 import {
@@ -48,6 +43,8 @@ const acc_name = "acc_automation";
 const userAddress = "5CfLmpjCJu41g3cpZVoiH7MSrSppgVVVC3xq23iy9dZrW2HR";
 const KSM_ASSET_NAME = "KSM";
 const MGX_ASSET_NAME = "MGX";
+const TUR_ASSET_NAME = "TUR";
+const ZLK_ASSET_NAME = "ZLK";
 
 describe("Miocroapps UI liq pools tests", () => {
   let kusama: ApiContext;
@@ -71,6 +68,11 @@ describe("Miocroapps UI liq pools tests", () => {
       Tokens: {
         Accounts: [
           [[userAddress, { token: 4 }], { free: 10 * 1e12 }],
+          [[userAddress, { token: 7 }], { free: 10 * 1e10 }],
+          [
+            [userAddress, { token: 26 }],
+            { free: AssetId.Mgx.unit.mul(BN_THOUSAND).toString() },
+          ],
           [
             [userAddress, { token: 0 }],
             { free: AssetId.Mgx.unit.mul(BN_TEN_THOUSAND).toString() },
@@ -242,6 +244,7 @@ describe("Miocroapps UI liq pools tests", () => {
     expect(firstTokenAmount).toBeGreaterThan(0);
 
     // not enough one token
+    await poolDetails.clearFirstTokenAmount();
     await poolDetails.clearSecondTokenAmount();
     await poolDetails.setSecondTokenAmount("9");
     await poolDetails.waitFirstTokenAmountSet(true);
@@ -251,6 +254,7 @@ describe("Miocroapps UI liq pools tests", () => {
     expect(firstTokenAlert).toBeTruthy();
 
     // not enough both tokens
+    await poolDetails.clearFirstTokenAmount();
     await poolDetails.clearSecondTokenAmount();
     await poolDetails.setSecondTokenAmount("20");
     await poolDetails.waitFirstTokenAmountSet(true);
@@ -319,6 +323,71 @@ describe("Miocroapps UI liq pools tests", () => {
 
     const my_new_pool_share = await poolDetails.getMyPositionAmount();
     expect(my_new_pool_share).toBeGreaterThan(my_pool_share);
+  });
+
+  it("User can create new liquidity pool", async () => {
+    await setupPageWithState(driver, acc_name);
+    const sidebar = new Sidebar(driver);
+    await sidebar.clickNavLiqPools();
+
+    const poolsList = new LiqPools(driver);
+    const isPoolsListDisplayed = await poolsList.isDisplayed();
+    expect(isPoolsListDisplayed).toBeTruthy();
+    await poolsList.clickAllPoolsTab();
+    await poolsList.clickCreateLiquidity();
+    await poolsList.pickFirstToken(TUR_ASSET_NAME);
+    await poolsList.pickSecondToken(ZLK_ASSET_NAME);
+    await poolsList.setFirstTokenAmount("2");
+    await poolsList.setSecondTokenAmount("1");
+
+    await poolsList.waitForContinueState(true);
+    const isExpectedShareDisplayed = await poolsList.isExpectedShareDisplayed();
+    expect(isExpectedShareDisplayed).toBeTruthy();
+    const isFeeDisplayed = await poolsList.isFeeDisplayed();
+    expect(isFeeDisplayed).toBeTruthy();
+
+    await poolsList.createLiqPoolsubmit();
+    await waitForMicroappsActionNotification(
+      driver,
+      mangata,
+      kusama,
+      TransactionType.CreatePool,
+      2
+    );
+
+    const poolDetails = new LiqPoolDetils(driver);
+    const isPoolDetailsVisible = await poolDetails.isDisplayed(
+      TUR_ASSET_NAME + " / " + ZLK_ASSET_NAME
+    );
+    expect(isPoolDetailsVisible).toBeTruthy();
+    const my_pool_share = await poolDetails.getMyPositionAmount();
+    expect(my_pool_share).toBeGreaterThan(0);
+  });
+
+  it("User can add liquidity from create liquidity widget", async () => {
+    await setupPageWithState(driver, acc_name);
+    const sidebar = new Sidebar(driver);
+    await sidebar.clickNavLiqPools();
+
+    const poolsList = new LiqPools(driver);
+    const isPoolsListDisplayed = await poolsList.isDisplayed();
+    expect(isPoolsListDisplayed).toBeTruthy();
+    await poolsList.clickAllPoolsTab();
+    await poolsList.clickCreateLiquidity();
+    await poolsList.pickFirstToken(MGX_ASSET_NAME);
+    await poolsList.pickSecondToken(TUR_ASSET_NAME);
+    const isPoolExistsInfoDisplayed =
+      await poolsList.isPoolExistsInfoDisplayed();
+    expect(isPoolExistsInfoDisplayed).toBeTruthy();
+
+    await poolsList.setFirstTokenAmount("10");
+    await poolsList.waitForContinueState(true);
+    const isExpectedShareDisplayed = await poolsList.isExpectedShareDisplayed();
+    expect(isExpectedShareDisplayed).toBeTruthy();
+    const isFeeDisplayed = await poolsList.isFeeDisplayed();
+    expect(isFeeDisplayed).toBeTruthy();
+    const isEstRewardDisplayed = await poolsList.isEstRewardDisplayed();
+    expect(isEstRewardDisplayed).toBeTruthy();
   });
 
   afterEach(async () => {

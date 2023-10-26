@@ -35,6 +35,7 @@ export enum TransactionType {
   Withdraw,
   AddLiquidity,
   RemoveLiquidity,
+  CreatePool,
   Claim,
 }
 
@@ -56,6 +57,7 @@ export class NotificationModal {
     [TransactionType.Swap]: "-swap",
     [TransactionType.RemoveLiquidity]: "-removeLiquidity",
     [TransactionType.Claim]: "-claim",
+    [TransactionType.CreatePool]: "-createPool",
   };
 
   constructor(driver: WebDriver) {
