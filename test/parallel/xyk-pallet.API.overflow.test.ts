@@ -16,7 +16,10 @@ import {
   mintLiquidity,
   mintAsset,
 } from "../../utils/tx";
-import { ExtrinsicResult } from "../../utils/eventListeners";
+import {
+  expectMGAExtrinsicSuDidSuccess,
+  ExtrinsicResult,
+} from "../../utils/eventListeners";
 import { BN } from "@polkadot/util";
 import { Keyring } from "@polkadot/api";
 import { AssetWallet, User } from "../../utils/User";
@@ -27,6 +30,9 @@ import {
   xykErrors,
 } from "../../utils/utils";
 import { getEventResultFromMangataTx } from "../../utils/txHandler";
+import { Sudo } from "../../utils/sudo";
+import { Xyk } from "../../utils/xyk";
+import { BN_ONE } from "@mangata-finance/sdk";
 
 jest.spyOn(console, "log").mockImplementation(jest.fn());
 jest.setTimeout(1500000);
@@ -59,30 +65,27 @@ describe("xyk-pallet - Check operations are not executed because of overflow in 
     keyring.addPair(testUser1.keyRingPair);
     keyring.addPair(sudo.keyRingPair);
 
-    //add two curerncies and balance to testUser:
-    [firstCurrency, secondCurrency] = await Assets.setupUserWithCurrencies(
+    //add two currencies and balance to testUser:
+    const { tokens, txs } = await Assets.getSetupUserWithCurrenciesTxs(
       testUser1,
       [MAX_BALANCE, MAX_BALANCE.sub(new BN(1))],
       sudo,
     );
-    await testUser1.addMGATokens(sudo);
-
-    // check users accounts.
+    txs.push(Assets.mintNative(testUser1));
+    [firstCurrency, secondCurrency] = tokens;
+    await Sudo.batchAsSudoFinalized(...txs);
     await testUser1.refreshAmounts(AssetWallet.BEFORE);
   });
+
   test("Create pool of [MAX,MAX]: OverFlow [a+b] - liquidityAsset calculation", async () => {
-    await sudo.mint(secondCurrency, testUser1, new BN(1));
-    //UPDATE: Liq assets  = asset1 /2 + asset2/2.
-    await createPool(
-      testUser1.keyRingPair,
-      secondCurrency,
-      MAX_BALANCE,
-      firstCurrency,
-      MAX_BALANCE,
-    ).then((result) => {
-      const eventResponse = getEventResultFromMangataTx(result);
-      expect(eventResponse.state).toEqual(ExtrinsicResult.ExtrinsicSuccess);
-    });
+    await Sudo.batchAsSudoFinalized(
+      Assets.mintToken(secondCurrency, testUser1, BN_ONE),
+      Sudo.sudoAs(
+        testUser1,
+        Xyk.createPool(secondCurrency, MAX_BALANCE, firstCurrency, MAX_BALANCE)
+      )
+    );
+
     const poolBalances = await getBalanceOfPool(firstCurrency, secondCurrency);
     expect(poolBalances[0]).bnEqual(MAX_BALANCE);
     expect(poolBalances[1]).bnEqual(MAX_BALANCE);
@@ -156,34 +159,40 @@ describe("xyk-pallet - Operate with a pool close to overflow", () => {
     keyring.addPair(testUser1.keyRingPair);
     keyring.addPair(sudo.keyRingPair);
 
-    //add two curerncies and balance to testUser:
-    [firstCurrency, secondCurrency] = await Assets.setupUserWithCurrencies(
+    const { tokens, txs } = await Assets.getSetupUserWithCurrenciesTxs(
       testUser1,
       [MAX_BALANCE.sub(new BN(10)), MAX_BALANCE.sub(new BN(10))],
       sudo,
     );
-    await testUser1.addMGATokens(sudo);
-
+    txs.push(Assets.mintNative(testUser1));
+    [firstCurrency, secondCurrency] = tokens;
     // check users accounts.
     await testUser1.refreshAmounts(AssetWallet.BEFORE);
 
     testUser2 = new User(keyring);
     keyring.addPair(testUser2.keyRingPair);
-    await sudo.mint(firstCurrency, testUser2, new BN(10));
-    await sudo.mint(secondCurrency, testUser2, new BN(10));
-    testUser2.addAssets([firstCurrency, secondCurrency]);
-    await testUser2.addMGATokens(sudo);
-    await createPool(
-      testUser1.keyRingPair,
-      secondCurrency,
-      MAX_BALANCE.sub(new BN(10)),
-      firstCurrency,
-      MAX_BALANCE.sub(new BN(10)),
-    ).then((result) => {
+    txs.push(Assets.mintNative(testUser2));
+    txs.push(Assets.mintToken(firstCurrency, testUser2, new BN(10)));
+    txs.push(Assets.mintToken(secondCurrency, testUser2, new BN(10)));
+    txs.push(Assets.mintNative(testUser2));
+
+    txs.push(
+      Sudo.sudoAs(
+        testUser1,
+        Xyk.createPool(
+          secondCurrency,
+          MAX_BALANCE.sub(new BN(10)),
+          firstCurrency,
+          MAX_BALANCE.sub(new BN(10))
+        )
+      )
+    );
+    await Sudo.batchAsSudoFinalized(...txs).then((result) => {
       const eventResponse = getEventResultFromMangataTx(result);
+      expectMGAExtrinsicSuDidSuccess(result);
       expect(eventResponse.state).toEqual(ExtrinsicResult.ExtrinsicSuccess);
     });
-
+    testUser2.addAssets([firstCurrency, secondCurrency]);
     await testUser2.refreshAmounts(AssetWallet.BEFORE);
   });
 
@@ -302,34 +311,38 @@ describe("xyk-pallet - Operate with a user account close to overflow", () => {
     keyring.addPair(sudo.keyRingPair);
 
     //add two curerncies and balance to testUser:
-    [firstCurrency, secondCurrency] = await Assets.setupUserWithCurrencies(
+    const { tokens, txs } = await Assets.getSetupUserWithCurrenciesTxs(
       testUser1,
       [MAX_BALANCE, MAX_BALANCE.sub(new BN(1))],
       sudo,
     );
-    await testUser1.addMGATokens(sudo);
-
-    // check users accounts.
-    await testUser1.refreshAmounts(AssetWallet.BEFORE);
+    [firstCurrency, secondCurrency] = tokens;
+    txs.push(Assets.mintNative(testUser1));
 
     testUser2 = new User(keyring);
     keyring.addPair(testUser2.keyRingPair);
-    await sudo.mint(firstCurrency, testUser2, MAX_BALANCE);
-    await sudo.mint(secondCurrency, testUser2, MAX_BALANCE);
+    txs.push(Assets.mintNative(testUser2));
+    txs.push(Assets.mintToken(firstCurrency, testUser2, MAX_BALANCE));
+    txs.push(Assets.mintToken(secondCurrency, testUser2, MAX_BALANCE));
     testUser2.addAssets([firstCurrency, secondCurrency]);
-    await testUser2.addMGATokens(sudo);
-    //Lets create a pool with 1M-5M
-    await createPool(
-      testUser2.keyRingPair,
-      secondCurrency,
-      new BN(1000000),
-      firstCurrency,
-      new BN(5000000),
-    ).then((result) => {
+    txs.push(
+      Sudo.sudoAs(
+        testUser2,
+        Xyk.createPool(
+          secondCurrency,
+          new BN(1000000),
+          firstCurrency,
+          new BN(5000000)
+        )
+      )
+    );
+
+    await Sudo.batchAsSudoFinalized(...txs).then((result) => {
       const eventResponse = getEventResultFromMangataTx(result);
+      expectMGAExtrinsicSuDidSuccess(result);
       expect(eventResponse.state).toEqual(ExtrinsicResult.ExtrinsicSuccess);
     });
-
+    await testUser1.refreshAmounts(AssetWallet.BEFORE);
     await testUser2.refreshAmounts(AssetWallet.BEFORE);
   });
 

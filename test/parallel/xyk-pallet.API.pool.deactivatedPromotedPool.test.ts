@@ -1,6 +1,6 @@
 /*
  *
- * @group poolliquidity
+ * @group poolLiq
  */
 import { jest } from "@jest/globals";
 import { Keyring } from "@polkadot/api";

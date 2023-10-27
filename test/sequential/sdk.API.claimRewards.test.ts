@@ -19,10 +19,7 @@ import {
   getRewardsInfo,
   promotePool,
 } from "../../utils/tx";
-import {
-  getEventResultFromMangataTx,
-  getNextAssetId,
-} from "../../utils/txHandler";
+import { getEventResultFromMangataTx } from "../../utils/txHandler";
 import { ExtrinsicResult, waitForRewards } from "../../utils/eventListeners";
 import { BN_ZERO } from "@mangata-finance/sdk";
 
@@ -70,19 +67,17 @@ beforeAll(async () => {
   const batchPromisesMinting = [];
   const batchPromisesPromoting = [];
   poolTokenIds = [];
-  tokenAmounts = [];
   liqIds = [];
 
-  const nextTokenId = (await getNextAssetId()).toNumber();
+  tokenAmounts = Array(13).fill(defaultCurrencyValue);
+  [...poolTokenIds] = await Assets.setupUserWithCurrencies(
+    testUser,
+    [...tokenAmounts],
+    sudo
+  );
 
-  for (
-    let newTokenId = nextTokenId;
-    newTokenId < nextTokenId + 13;
-    newTokenId++
-  ) {
-    poolTokenIds.push(new BN(newTokenId));
-    tokenAmounts.push(defaultCurrencyValue);
-
+  for (let i = 0; i < poolTokenIds.length; i++) {
+    const newTokenId = poolTokenIds[i].toNumber();
     batchPromisesMinting.push(
       Sudo.sudoAs(
         testUser,
@@ -95,12 +90,6 @@ beforeAll(async () => {
       ),
     );
   }
-
-  [...poolTokenIds] = await Assets.setupUserWithCurrencies(
-    testUser,
-    [...tokenAmounts],
-    sudo,
-  );
 
   await Sudo.batchAsSudoFinalized(...batchPromisesMinting);
 
