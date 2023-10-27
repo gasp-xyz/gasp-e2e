@@ -77,7 +77,7 @@ export async function waitInputValueSetInterval(
   driver: WebDriver,
   xpath: string,
   isSet: boolean,
-  timeout = 5000
+  timeout = 5000,
 ) {
   const startTime = Date.now();
   const endTime = startTime + timeout;
@@ -106,7 +106,7 @@ export async function waitInputValueSetInterval(
   }
 
   throw new Error(
-    `Timeout: Element value not as desired after ${timeout} milliseconds`
+    `Timeout: Element value not as desired after ${timeout} milliseconds`,
   );
 }
 

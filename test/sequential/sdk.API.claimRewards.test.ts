@@ -73,7 +73,7 @@ beforeAll(async () => {
   [...poolTokenIds] = await Assets.setupUserWithCurrencies(
     testUser,
     [...tokenAmounts],
-    sudo
+    sudo,
   );
 
   for (let i = 0; i < poolTokenIds.length; i++) {

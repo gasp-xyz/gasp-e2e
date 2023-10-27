@@ -82,8 +82,8 @@ describe("xyk-pallet - Check operations are not executed because of overflow in 
       Assets.mintToken(secondCurrency, testUser1, BN_ONE),
       Sudo.sudoAs(
         testUser1,
-        Xyk.createPool(secondCurrency, MAX_BALANCE, firstCurrency, MAX_BALANCE)
-      )
+        Xyk.createPool(secondCurrency, MAX_BALANCE, firstCurrency, MAX_BALANCE),
+      ),
     );
 
     const poolBalances = await getBalanceOfPool(firstCurrency, secondCurrency);
@@ -183,9 +183,9 @@ describe("xyk-pallet - Operate with a pool close to overflow", () => {
           secondCurrency,
           MAX_BALANCE.sub(new BN(10)),
           firstCurrency,
-          MAX_BALANCE.sub(new BN(10))
-        )
-      )
+          MAX_BALANCE.sub(new BN(10)),
+        ),
+      ),
     );
     await Sudo.batchAsSudoFinalized(...txs).then((result) => {
       const eventResponse = getEventResultFromMangataTx(result);
@@ -332,9 +332,9 @@ describe("xyk-pallet - Operate with a user account close to overflow", () => {
           secondCurrency,
           new BN(1000000),
           firstCurrency,
-          new BN(5000000)
-        )
-      )
+          new BN(5000000),
+        ),
+      ),
     );
 
     await Sudo.batchAsSudoFinalized(...txs).then((result) => {

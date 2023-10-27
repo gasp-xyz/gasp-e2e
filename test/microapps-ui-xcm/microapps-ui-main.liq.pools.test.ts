@@ -150,7 +150,7 @@ describe("Miocroapps UI liq pools tests", () => {
     expect(isPoolsListDisplayed).toBeTruthy();
 
     let isMgxKsmPoolVisible = await poolsList.isPoolItemDisplayed(
-      "-" + MGX_ASSET_NAME + "-" + KSM_ASSET_NAME
+      "-" + MGX_ASSET_NAME + "-" + KSM_ASSET_NAME,
     );
     expect(isMgxKsmPoolVisible).toBeTruthy();
 
@@ -158,12 +158,12 @@ describe("Miocroapps UI liq pools tests", () => {
     await poolsList.inputSearch("TUR");
 
     isMgxKsmPoolVisible = await poolsList.isPoolItemDisplayed(
-      "-" + MGX_ASSET_NAME + "-" + KSM_ASSET_NAME
+      "-" + MGX_ASSET_NAME + "-" + KSM_ASSET_NAME,
     );
     expect(isMgxKsmPoolVisible).toBeFalsy();
 
     const isTurMgxPoolVisible = await poolsList.isPoolItemDisplayed(
-      "-" + TUR_ASSET_NAME + "-" + MGX_ASSET_NAME
+      "-" + TUR_ASSET_NAME + "-" + MGX_ASSET_NAME,
     );
     expect(isTurMgxPoolVisible).toBeTruthy();
   });
@@ -179,13 +179,13 @@ describe("Miocroapps UI liq pools tests", () => {
     await poolsList.clickAllPoolsTab();
 
     let isTurKsmPoolVisible = await poolsList.isPoolItemDisplayed(
-      "-" + TUR_ASSET_NAME + "-" + KSM_ASSET_NAME
+      "-" + TUR_ASSET_NAME + "-" + KSM_ASSET_NAME,
     );
     expect(isTurKsmPoolVisible).toBeTruthy();
 
     await poolsList.clickPromotedPoolsTab();
     isTurKsmPoolVisible = await poolsList.isPoolItemDisplayed(
-      "-" + TUR_ASSET_NAME + "-" + KSM_ASSET_NAME
+      "-" + TUR_ASSET_NAME + "-" + KSM_ASSET_NAME,
     );
     expect(isTurKsmPoolVisible).toBeFalsy();
   });
@@ -200,25 +200,23 @@ describe("Miocroapps UI liq pools tests", () => {
     expect(isPoolsListDisplayed).toBeTruthy();
 
     const isMgxKsmPoolVisible = await poolsList.isPoolItemDisplayed(
-      "-" + MGX_ASSET_NAME + "-" + KSM_ASSET_NAME
+      "-" + MGX_ASSET_NAME + "-" + KSM_ASSET_NAME,
     );
     expect(isMgxKsmPoolVisible).toBeTruthy();
     await poolsList.clickPoolItem("-" + MGX_ASSET_NAME + "-" + KSM_ASSET_NAME);
 
     const poolDetails = new LiqPoolDetils(driver);
     const isPoolDetailsVisible = await poolDetails.isDisplayed(
-      MGX_ASSET_NAME + " / " + KSM_ASSET_NAME
+      MGX_ASSET_NAME + " / " + KSM_ASSET_NAME,
     );
     expect(isPoolDetailsVisible).toBeTruthy();
 
     await poolDetails.clickAddLiquidity();
-    const isFirstTokenNameSet = await poolDetails.isFirstTokenNameSet(
-      MGX_ASSET_NAME
-    );
+    const isFirstTokenNameSet =
+      await poolDetails.isFirstTokenNameSet(MGX_ASSET_NAME);
     expect(isFirstTokenNameSet).toBeTruthy();
-    const isSecondTokenNameSet = await poolDetails.isSecondTokenNameSet(
-      KSM_ASSET_NAME
-    );
+    const isSecondTokenNameSet =
+      await poolDetails.isSecondTokenNameSet(KSM_ASSET_NAME);
     expect(isSecondTokenNameSet).toBeTruthy();
 
     // 0 in both inputs
@@ -277,26 +275,24 @@ describe("Miocroapps UI liq pools tests", () => {
     expect(isPoolsListDisplayed).toBeTruthy();
 
     const isMgxKsmPoolVisible = await poolsList.isPoolItemDisplayed(
-      "-" + MGX_ASSET_NAME + "-" + KSM_ASSET_NAME
+      "-" + MGX_ASSET_NAME + "-" + KSM_ASSET_NAME,
     );
     expect(isMgxKsmPoolVisible).toBeTruthy();
     await poolsList.clickPoolItem("-" + MGX_ASSET_NAME + "-" + KSM_ASSET_NAME);
 
     const poolDetails = new LiqPoolDetils(driver);
     const isPoolDetailsVisible = await poolDetails.isDisplayed(
-      MGX_ASSET_NAME + " / " + KSM_ASSET_NAME
+      MGX_ASSET_NAME + " / " + KSM_ASSET_NAME,
     );
     expect(isPoolDetailsVisible).toBeTruthy();
     const my_pool_share = await poolDetails.getMyPositionAmount();
 
     await poolDetails.clickAddLiquidity();
-    const isFirstTokenNameSet = await poolDetails.isFirstTokenNameSet(
-      MGX_ASSET_NAME
-    );
+    const isFirstTokenNameSet =
+      await poolDetails.isFirstTokenNameSet(MGX_ASSET_NAME);
     expect(isFirstTokenNameSet).toBeTruthy();
-    const isSecondTokenNameSet = await poolDetails.isSecondTokenNameSet(
-      KSM_ASSET_NAME
-    );
+    const isSecondTokenNameSet =
+      await poolDetails.isSecondTokenNameSet(KSM_ASSET_NAME);
     expect(isSecondTokenNameSet).toBeTruthy();
 
     await poolDetails.setFirstTokenAmount("1");
@@ -318,7 +314,7 @@ describe("Miocroapps UI liq pools tests", () => {
       mangata,
       kusama,
       TransactionType.AddLiquidity,
-      2
+      2,
     );
 
     const my_new_pool_share = await poolDetails.getMyPositionAmount();
@@ -352,12 +348,12 @@ describe("Miocroapps UI liq pools tests", () => {
       mangata,
       kusama,
       TransactionType.CreatePool,
-      2
+      2,
     );
 
     const poolDetails = new LiqPoolDetils(driver);
     const isPoolDetailsVisible = await poolDetails.isDisplayed(
-      TUR_ASSET_NAME + " / " + ZLK_ASSET_NAME
+      TUR_ASSET_NAME + " / " + ZLK_ASSET_NAME,
     );
     expect(isPoolDetailsVisible).toBeTruthy();
     const my_pool_share = await poolDetails.getMyPositionAmount();

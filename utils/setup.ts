@@ -47,8 +47,9 @@ export function isBackendTest() {
     isThereAPath &&
     isThereAPath.length > 0 &&
     isThereAPath.toLowerCase().includes("ui")
-  )
+  ) {
     return false;
+  }
   return !(
     isAGroupRun &&
     isAGroupRun.length > 0 &&
