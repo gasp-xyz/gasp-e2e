@@ -113,7 +113,7 @@ describe("Miocroapps UI liq pools tests", () => {
   it("User can enter MGX-KSM pool details", async () => {
     await setupPageWithState(driver, acc_name);
     const sidebar = new Sidebar(driver);
-    await sidebar.clickNavLiqPools;
+    await sidebar.clickNavLiqPools();
 
     const poolsList = new LiqPools(driver);
     const isPoolsListDisplayed = await poolsList.isDisplayed();
@@ -410,7 +410,7 @@ describe("Miocroapps UI liq pools tests", () => {
     const poolsInfoLength = poolsInfo.length;
 
     const sidebar = new Sidebar(driver);
-    await sidebar.clickNavLiqPools;
+    await sidebar.clickNavLiqPools();
     const poolsList = new LiqPools(driver);
 
     for (let i = 0; i < poolsInfoLength; i++) {
