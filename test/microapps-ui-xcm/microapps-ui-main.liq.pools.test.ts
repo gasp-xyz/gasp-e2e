@@ -4,7 +4,7 @@
  */
 import { jest } from "@jest/globals";
 import { WebDriver } from "selenium-webdriver";
-import { getApi, initApi } from "../../utils/api";
+import { getApi, getMangataInstance, initApi } from "../../utils/api";
 import { DriverBuilder } from "../../utils/frontend/utils/Driver";
 import { Node } from "../../utils/Framework/Node/Node";
 import {
@@ -113,7 +113,7 @@ describe("Miocroapps UI liq pools tests", () => {
   it("User can enter MGX-KSM pool details", async () => {
     await setupPageWithState(driver, acc_name);
     const sidebar = new Sidebar(driver);
-    await sidebar.clickNavLiqPools();
+    await sidebar.clickNavLiqPools;
 
     const poolsList = new LiqPools(driver);
     const isPoolsListDisplayed = await poolsList.isDisplayed();
@@ -384,6 +384,45 @@ describe("Miocroapps UI liq pools tests", () => {
     expect(isFeeDisplayed).toBeTruthy();
     const isEstRewardDisplayed = await poolsList.isEstRewardDisplayed();
     expect(isEstRewardDisplayed).toBeTruthy();
+  });
+
+  it("All promoted pools exist in app", async () => {
+    const sdk = await getMangataInstance();
+    const api = await getApi();
+    const promotedPoolsRewards =
+      await api.query.proofOfStake.promotedPoolRewards();
+    const promotedPools = JSON.parse(
+      JSON.stringify(Object.keys(promotedPoolsRewards.toHuman())),
+    );
+    const promotedPoolsLength = promotedPools.length;
+    const poolsInfo = [];
+    for (let i = 0; i < promotedPoolsLength; i++) {
+      const poolName = await sdk.query.getLiquidityPool(promotedPools[i]);
+      const firstTokenId = await sdk.query.getTokenInfo(poolName[0]);
+      const secondTokenId = await sdk.query.getTokenInfo(poolName[1]);
+      const a = {
+        poolID: promotedPools[i],
+        firstToken: firstTokenId.symbol,
+        secondToken: secondTokenId.symbol,
+      };
+      poolsInfo.push(a);
+    }
+    const poolsInfoLength = poolsInfo.length;
+
+    const sidebar = new Sidebar(driver);
+    await sidebar.clickNavLiqPools();
+    const poolsList = new LiqPools(driver);
+
+    for (let i = 0; i < poolsInfoLength; i++) {
+      const isPoolVisible =
+        (await poolsList.isPoolItemDisplayed(
+          "-" + poolsInfo[i].secondToken + "-" + poolsInfo[i].firstToken,
+        )) ||
+        (await poolsList.isPoolItemDisplayed(
+          "-" + poolsInfo[i].firstToken + "-" + poolsInfo[i].secondToken,
+        ));
+      expect(isPoolVisible).toBeTruthy();
+    }
   });
 
   afterEach(async () => {
