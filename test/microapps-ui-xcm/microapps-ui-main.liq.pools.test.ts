@@ -410,7 +410,7 @@ describe("Miocroapps UI liq pools tests", () => {
     const poolsInfoLength = poolsInfo.length;
 
     const sidebar = new Sidebar(driver);
-    await sidebar.clickNavLiqPools();
+    await sidebar.clickNavLiqPools;
     const poolsList = new LiqPools(driver);
 
     for (let i = 0; i < poolsInfoLength; i++) {
