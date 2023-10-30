@@ -71,7 +71,7 @@ beforeEach(async () => {
   [token1] = await Assets.setupUserWithCurrencies(
     sudo,
     [defaultCurrencyValue],
-    sudo
+    sudo,
   );
 
   await Sudo.batchAsSudoFinalized(
@@ -85,13 +85,13 @@ beforeEach(async () => {
         MGA_ASSET_ID,
         defaultCurrencyValue,
         token1,
-        defaultCurrencyValue
-      )
+        defaultCurrencyValue,
+      ),
     ),
     Sudo.sudoAs(
       testUser1,
-      Xyk.burnLiquidity(MGA_ASSET_ID, token1, defaultCurrencyValue)
-    )
+      Xyk.burnLiquidity(MGA_ASSET_ID, token1, defaultCurrencyValue),
+    ),
   );
 
   liquidityId = await getLiquidityAssetId(MGA_ASSET_ID, token1);
@@ -105,7 +105,7 @@ test("GIVEN deactivated pool WHEN another user tries to create an equal pool THE
 
   await Sudo.batchAsSudoFinalized(
     Assets.mintToken(token1, testUser2, Assets.DEFAULT_AMOUNT),
-    Assets.mintNative(testUser2)
+    Assets.mintNative(testUser2),
   );
 
   await createPool(
@@ -113,7 +113,7 @@ test("GIVEN deactivated pool WHEN another user tries to create an equal pool THE
     MGA_ASSET_ID,
     defaultCurrencyValue,
     token1,
-    defaultCurrencyValue
+    defaultCurrencyValue,
   ).then((result) => {
     const eventResponse = getEventResultFromMangataTx(result);
     expect(eventResponse.state).toEqual(ExtrinsicResult.ExtrinsicFailed);
@@ -126,14 +126,14 @@ test("GIVEN deactivated pool WHEN another user tries to mint liquidity in the po
 
   await Sudo.batchAsSudoFinalized(
     Assets.mintToken(token1, testUser2, Assets.DEFAULT_AMOUNT),
-    Assets.mintNative(testUser2)
+    Assets.mintNative(testUser2),
   );
 
   await mintLiquidity(
     testUser2.keyRingPair,
     MGA_ASSET_ID,
     token1,
-    defaultCurrencyValue
+    defaultCurrencyValue,
   ).then((result) => {
     const eventResponse = getEventResultFromMangataTx(result);
     expect(eventResponse.state).toEqual(ExtrinsicResult.ExtrinsicSuccess);
@@ -149,14 +149,14 @@ test("GIVEN deactivated pool WHEN the user mints liquidity in the pool again THE
 
   await Sudo.batchAsSudoFinalized(
     Assets.mintToken(token1, testUser2, Assets.DEFAULT_AMOUNT),
-    Assets.mintNative(testUser2)
+    Assets.mintNative(testUser2),
   );
 
   await mintLiquidity(
     testUser2.keyRingPair,
     MGA_ASSET_ID,
     token1,
-    defaultCurrencyValue
+    defaultCurrencyValue,
   ).then((result) => {
     const eventResponse = getEventResultFromMangataTx(result);
     expect(eventResponse.state).toEqual(ExtrinsicResult.ExtrinsicSuccess);
@@ -175,13 +175,13 @@ test("GIVEN deactivated pool WHEN the user tries to swap/multiswap tokens on the
       MGA_ASSET_ID,
       token1,
       defaultCurrencyValue,
-      new BN(1)
+      new BN(1),
     );
   } catch (error) {
     swapError = error;
   }
   expect(swapError.data).toEqual(
-    "1010: Invalid Transaction: The swap prevalidation has failed"
+    "1010: Invalid Transaction: The swap prevalidation has failed",
   );
 });
 
@@ -194,7 +194,7 @@ test("GIVEN deactivated pool WHEN sudo try to promote a pool THEN poolPromotion 
   });
 
   const poolRewards = JSON.parse(
-    JSON.stringify(await api.query.proofOfStake.promotedPoolRewards())
+    JSON.stringify(await api.query.proofOfStake.promotedPoolRewards()),
   );
   const poolWeight = stringToBN(poolRewards[liquidityId.toString()].weight);
 
@@ -213,7 +213,7 @@ test("GIVEN deactivated pool WHEN a bootstrap is scheduled for the existing pair
     token1,
     5,
     5,
-    5
+    5,
   );
   await waitSudoOperationFail(sudoBootstrap, ["PoolAlreadyExists"]);
 });
@@ -222,7 +222,7 @@ test("GIVEN deactivated pool WHEN call RPCs that work with the pools (e.g., calc
   const priceAmount = await mangata?.rpc.calculateBuyPriceId(
     MGA_ASSET_ID.toString(),
     token1.toString(),
-    defaultCurrencyValue
+    defaultCurrencyValue,
   );
 
   expect(priceAmount).bnEqual(BN_ZERO);
@@ -234,7 +234,7 @@ test("GIVEN deactivated pool WHEN user tries to activate the pool THEN error ret
   await activateLiquidity(
     testUser1.keyRingPair,
     liquidityId,
-    defaultCurrencyValue
+    defaultCurrencyValue,
   ).then((result) => {
     const eventResponse = getEventResultFromMangataTx(result);
     expect(eventResponse.state).toEqual(ExtrinsicResult.ExtrinsicFailed);

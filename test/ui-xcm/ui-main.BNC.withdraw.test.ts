@@ -110,7 +110,7 @@ describe("UI XCM tests - BNC", () => {
     testUser1 = new User(keyring);
     testUser1.addFromMnemonic(
       keyring,
-      getEnvironmentRequiredVars().mnemonicPolkadot
+      getEnvironmentRequiredVars().mnemonicPolkadot,
     );
 
     //TODO: Remove when clarified how to setup tokens on Bifrost.
@@ -159,9 +159,8 @@ describe("UI XCM tests - BNC", () => {
     const isDepositModalVisible = await depositModal.isModalVisible();
     expect(isDepositModalVisible).toBeTruthy();
     await depositModal.openTokensList();
-    const tokensAtDestinationAfter = await depositModal.getTokenAmount(
-      BNC_ASSET_NAME
-    );
+    const tokensAtDestinationAfter =
+      await depositModal.getTokenAmount(BNC_ASSET_NAME);
     expect(tokensAtDestinationAfter).toBeGreaterThan(INIT_BNC_RELAY);
 
     await mangata.chain.newBlock();
@@ -169,12 +168,12 @@ describe("UI XCM tests - BNC", () => {
     await mga.go();
     await testUser1.refreshAmounts(AssetWallet.AFTER);
     expect(testUser1.getAsset(BNC_ASSET_ID)?.amountBefore.free!).bnGt(
-      testUser1.getAsset(BNC_ASSET_ID)?.amountAfter.free!
+      testUser1.getAsset(BNC_ASSET_ID)?.amountAfter.free!,
     );
     await sidebar.waitForLoad();
     const tokenOnAppAfter = await sidebar.getTokenAmount(BNC_ASSET_NAME);
     expect(parseFloat(tokenOnAppAfter.replace(",", ""))).toBeLessThan(
-      parseFloat(tokenOnAppBefore.replace(",", ""))
+      parseFloat(tokenOnAppBefore.replace(",", "")),
     );
   });
 
@@ -182,7 +181,7 @@ describe("UI XCM tests - BNC", () => {
     const session = await driver.getSession();
     await addExtraLogs(
       driver,
-      expect.getState().currentTestName + " - " + session.getId()
+      expect.getState().currentTestName + " - " + session.getId(),
     );
     await driver.manage().deleteAllCookies();
     await driver.executeScript("localStorage.clear(); sessionStorage.clear();");

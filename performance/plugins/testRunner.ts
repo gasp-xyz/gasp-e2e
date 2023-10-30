@@ -18,7 +18,7 @@ export async function runTransactions(
     { mgaSdk: MangataInstance; users: { nonce: BN; keyPair: KeyringPair }[] }
   >,
   testParams: TestParams,
-  generator: any
+  generator: any,
 ) {
   if (testParams.testCase === TestsCases.ConcurrentTest) {
     await runTxsInConcurrentMode(mgaNodeandUsers, testParams, generator);
@@ -34,15 +34,15 @@ async function executionThread(
   threadId: number,
   testParams: TestParams,
   sdk: MangataInstance,
-  generator: any
+  generator: any,
 ) {
   const limit = Math.ceil(testParams.totalTx / testParams.threads);
   const load = Math.min(
     limit,
-    Math.ceil(testParams.pending / testParams.threads)
+    Math.ceil(testParams.pending / testParams.threads),
   );
   console.info(
-    `Worker [${threadId}] starting execution thread load: ${load} limit: ${limit}`
+    `Worker [${threadId}] starting execution thread load: ${load} limit: ${limit}`,
   );
 
   const myTxs = new Set();
@@ -83,14 +83,14 @@ async function executionThread(
       const txs = await Promise.all(
         [...Array(load - myTxs.size).keys()].map((id) => {
           return generator(new BN(id + nonce_offset));
-        })
+        }),
       );
       nonce_offset += txs.length;
 
       txs.forEach((tx) => myTxs.add(tx.hash.toString()));
       txs.forEach((tx) => promises.push(tx.send()));
       console.info(
-        `Worker [${threadId}] #${header.number} submitted ${txs.length} txs`
+        `Worker [${threadId}] #${header.number} submitted ${txs.length} txs`,
       );
     });
   });
@@ -102,11 +102,11 @@ async function runTxsInConcurrentMode(
     { mgaSdk: MangataInstance; users: { nonce: BN; keyPair: KeyringPair }[] }
   >,
   testParams: TestParams,
-  generator: any
+  generator: any,
 ) {
   const txGenerators = [...Array(testParams.threads).keys()].map((threadId) => {
     const { mgaSdk, users } = mgaNodeandUsers.get(
-      threadId % mgaNodeandUsers.size
+      threadId % mgaNodeandUsers.size,
     )!;
     return {
       mgaSdk: mgaSdk,
@@ -118,14 +118,14 @@ async function runTxsInConcurrentMode(
   });
 
   const executors = txGenerators.map(({ mgaSdk, threadId, generator }) =>
-    executionThread(threadId, testParams, mgaSdk, generator)
+    executionThread(threadId, testParams, mgaSdk, generator),
   );
   await Promise.all(executors);
 }
 
 export async function runQuery(
   testParams: TestParams,
-  preSetupThreads: SubmittableExtrinsic<"promise", SubmittableResult>[][]
+  preSetupThreads: SubmittableExtrinsic<"promise", SubmittableResult>[][],
 ) {
   const nodePromises = [];
   for (let nodeIdx = 0; nodeIdx < testParams.nodes.length; nodeIdx++) {
@@ -150,7 +150,7 @@ export async function runQuery(
   console.info(
     "Test results \n --------- \n" +
       JSON.stringify(results) +
-      "\n  ----------- Test results"
+      "\n  ----------- Test results",
   );
   testLog.getLog().info("All promises fulfilled");
   return results;
@@ -162,7 +162,7 @@ async function runTxsInBurstMode(
     { mgaSdk: MangataInstance; users: { nonce: BN; keyPair: KeyringPair }[] }
   >,
   testParams: TestParams,
-  generator: any
+  generator: any,
 ) {
   testParams.pending = Number.MAX_VALUE;
   testParams.totalTx = Math.min(testParams.totalTx, 10000);

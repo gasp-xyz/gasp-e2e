@@ -48,7 +48,7 @@ describe("AssetRegistry RPC -", () => {
         undefined,
         {
           operationsDisabled: true,
-        }
+        },
       ),
       Assets.registerAsset(
         "Name&Symbol&Enabled",
@@ -58,12 +58,12 @@ describe("AssetRegistry RPC -", () => {
         undefined,
         {
           operationsDisabled: false,
-        }
-      )
+        },
+      ),
     );
     expectMGAExtrinsicSuDidSuccess(events);
     noRegistered = filterEventData(events, "tokens.Issued").map(
-      (event) => event[0]
+      (event) => event[0],
     )[0];
     [
       empty,
@@ -72,7 +72,7 @@ describe("AssetRegistry RPC -", () => {
       nameSymbolDisableTrue,
       nameSymbolDisableFalse,
     ] = filterEventData(events, "assetRegistry.RegisteredAsset").map(
-      (event) => event.assetId
+      (event) => event.assetId,
     );
 
     const eventsNewPool = await Sudo.batchAsSudoFinalized(
@@ -83,8 +83,8 @@ describe("AssetRegistry RPC -", () => {
         nameSymbol,
         BN_THOUSAND,
         nameSymbolDisableFalse,
-        BN_THOUSAND
-      )
+        BN_THOUSAND,
+      ),
     );
     expectMGAExtrinsicSuDidSuccess(eventsNewPool);
     liq = await getLiquidityAssetId(nameSymbol, nameSymbolDisableFalse);
@@ -93,7 +93,7 @@ describe("AssetRegistry RPC -", () => {
   test("GIVEN a token that does not exist on the asset registry THEN it won't be returned in RPC", async () => {
     await mangata?.rpc.getTradeableTokens().then((tokens) => {
       expect(tokens.map((x) => x.tokenId)).not.toContain(
-        noRegistered.toString()
+        noRegistered.toString(),
       );
     });
   });
@@ -115,14 +115,14 @@ describe("AssetRegistry RPC -", () => {
   test("GIVEN a token that does exist on the asset registry AND name is not empty and symbol is not empty and operation disabled is false THEN its returned in RPC", async () => {
     await mangata?.rpc.getTradeableTokens().then((tokens) => {
       expect(tokens.map((x) => x.tokenId)).toContain(
-        nameSymbolDisableFalse.toString()
+        nameSymbolDisableFalse.toString(),
       );
     });
   });
   test("GIVEN a token that does exist on the asset registry AND name is not empty and symbol is not empty and operation disabled is true THEN its not returned in RPC", async () => {
     await mangata?.rpc.getTradeableTokens().then((tokens) => {
       expect(tokens.map((x) => x.tokenId)).not.toContain(
-        nameSymbolDisableTrue.toString()
+        nameSymbolDisableTrue.toString(),
       );
     });
   });

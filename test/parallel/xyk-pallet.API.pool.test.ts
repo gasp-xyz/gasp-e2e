@@ -76,7 +76,7 @@ describe("xyk-pallet - Poll creation: Errors:", () => {
     [firstCurrency, secondCurrency] = await Assets.setupUserWithCurrencies(
       testUser1,
       [defaultCurrecyValue, defaultCurrecyValue.add(new BN(1))],
-      sudo
+      sudo,
     );
     await testUser1.addMGATokens(sudo);
     // add users to pair.
@@ -93,7 +93,7 @@ describe("xyk-pallet - Poll creation: Errors:", () => {
       [
         defaultCurrecyValue.toNumber(),
         defaultCurrecyValue.add(new BN(1)).toNumber(),
-      ]
+      ],
     );
 
     let eventResponse: EventResult = new EventResult(0, "");
@@ -102,7 +102,7 @@ describe("xyk-pallet - Poll creation: Errors:", () => {
       firstCurrency,
       first_asset_amount,
       secondCurrency,
-      second_asset_amount
+      second_asset_amount,
     ).then((result) => {
       eventResponse = getEventResultFromMangataTx(result, [
         "xyk",
@@ -119,14 +119,14 @@ describe("xyk-pallet - Poll creation: Errors:", () => {
       firstCurrency,
       first_asset_amount,
       secondCurrency,
-      second_asset_amount
+      second_asset_amount,
     );
     await validateStatusWhenPoolCreated(
       firstCurrency,
       secondCurrency,
       testUser1,
       pool_balance_before,
-      total_liquidity_assets_before
+      total_liquidity_assets_before,
     );
   });
   test("Create x-y and y-x pool", async () => {
@@ -136,14 +136,14 @@ describe("xyk-pallet - Poll creation: Errors:", () => {
         "testUser1: creating pool already created " +
           firstCurrency +
           " - " +
-          secondCurrency
+          secondCurrency,
       );
     await createPool(
       testUser1.keyRingPair,
       secondCurrency,
       new BN(666),
       firstCurrency,
-      new BN(666)
+      new BN(666),
     ).then((result) => {
       const eventResponse = getEventResultFromMangataTx(result);
       expect(eventResponse.state).toEqual(ExtrinsicResult.ExtrinsicFailed);
@@ -159,7 +159,7 @@ describe("xyk-pallet - Poll creation: Errors:", () => {
       firstCurrency,
       new BN(0),
       emptyAssetID,
-      new BN(0)
+      new BN(0),
     ).then((result) => {
       const eventResponse = getEventResultFromMangataTx(result);
       expect(eventResponse.state).toEqual(ExtrinsicResult.ExtrinsicFailed);
@@ -174,7 +174,7 @@ describe("xyk-pallet - Poll creation: Errors:", () => {
     const testAssetId = await Assets.setupUserWithCurrencies(
       testUser1,
       [txAmount],
-      sudo
+      sudo,
     );
 
     await createPool(
@@ -182,7 +182,7 @@ describe("xyk-pallet - Poll creation: Errors:", () => {
       firstCurrency,
       new BN(txAmount).add(new BN(1)),
       testAssetId[0],
-      new BN(txAmount).add(new BN(1))
+      new BN(txAmount).add(new BN(1)),
     ).then((result) => {
       const eventResponse = getEventResultFromMangataTx(result);
       expect(eventResponse.state).toEqual(ExtrinsicResult.ExtrinsicFailed);
@@ -222,7 +222,7 @@ describe("xyk-pallet - Pool tests: a pool can:", () => {
     [firstCurrency, secondCurrency] = await Assets.setupUserWithCurrencies(
       testUser1,
       [defaultCurrecyValue, defaultCurrecyValue.add(new BN(1))],
-      sudo
+      sudo,
     );
 
     await Sudo.batchAsSudoFinalized(
@@ -234,11 +234,11 @@ describe("xyk-pallet - Pool tests: a pool can:", () => {
           firstCurrency,
           first_asset_amount,
           secondCurrency,
-          second_asset_amount
-        )
+          second_asset_amount,
+        ),
       ),
       Assets.mintToken(firstCurrency, testUser2, new BN(10000)),
-      Assets.mintToken(secondCurrency, testUser2, new BN(10000))
+      Assets.mintToken(secondCurrency, testUser2, new BN(10000)),
     );
 
     await testUser2.addAssets([firstCurrency, secondCurrency]);
@@ -248,7 +248,7 @@ describe("xyk-pallet - Pool tests: a pool can:", () => {
         testUser2.getAsset(firstCurrency)?.amountBefore.free!,
         testUser2.getAsset(secondCurrency)?.amountBefore.free!,
       ],
-      [10000, 10000]
+      [10000, 10000],
     );
   });
 
@@ -257,7 +257,7 @@ describe("xyk-pallet - Pool tests: a pool can:", () => {
       testUser2.keyRingPair,
       firstCurrency,
       secondCurrency,
-      new BN(5000)
+      new BN(5000),
     ).then((result) => {
       const eventResponse = getEventResultFromMangataTx(result, [
         "xyk",
@@ -269,11 +269,11 @@ describe("xyk-pallet - Pool tests: a pool can:", () => {
 
     const liquidity_asset_id = await getLiquidityAssetId(
       firstCurrency,
-      secondCurrency
+      secondCurrency,
     );
     const liquidity_assets_minted = calculateLiqAssetAmount(
       first_asset_amount,
-      second_asset_amount
+      second_asset_amount,
     );
     testUser2.addAsset(liquidity_asset_id, new BN(0));
     await testUser2.refreshAmounts(AssetWallet.AFTER);
@@ -282,21 +282,21 @@ describe("xyk-pallet - Pool tests: a pool can:", () => {
       .getAsset(liquidity_asset_id)
       ?.amountBefore.free!.add(new BN(5000));
     expect(testUser2.getAsset(liquidity_asset_id)?.amountAfter.free!).bnEqual(
-      addFromWallet!
+      addFromWallet!,
     );
 
     let diffFromWallet = testUser2
       .getAsset(firstCurrency)
       ?.amountBefore.free!.sub(new BN(5000));
     expect(testUser2.getAsset(firstCurrency)?.amountAfter.free!).bnEqual(
-      diffFromWallet!
+      diffFromWallet!,
     );
 
     diffFromWallet = testUser2
       .getAsset(secondCurrency)
       ?.amountBefore.free!.sub(new BN(5000).add(new BN(1)));
     expect(testUser2.getAsset(secondCurrency)?.amountAfter.free!).bnEqual(
-      diffFromWallet!
+      diffFromWallet!,
     );
 
     //TODO: pending to validate.
@@ -308,7 +308,7 @@ describe("xyk-pallet - Pool tests: a pool can:", () => {
 
     const total_liquidity_assets = await getAssetSupply(liquidity_asset_id);
     expect(liquidity_assets_minted.add(new BN(5000))).bnEqual(
-      total_liquidity_assets
+      total_liquidity_assets,
     );
   });
 
@@ -316,13 +316,13 @@ describe("xyk-pallet - Pool tests: a pool can:", () => {
     testLog
       .getLog()
       .info(
-        "User: minting liquidity " + firstCurrency + " - " + secondCurrency
+        "User: minting liquidity " + firstCurrency + " - " + secondCurrency,
       );
     await mintLiquidity(
       testUser2.keyRingPair,
       firstCurrency,
       secondCurrency,
-      new BN(5000)
+      new BN(5000),
     ).then((result) => {
       const eventResponse = getEventResultFromMangataTx(result, [
         "xyk",
@@ -335,11 +335,11 @@ describe("xyk-pallet - Pool tests: a pool can:", () => {
 
     const liquidity_asset_id = await getLiquidityAssetId(
       firstCurrency,
-      secondCurrency
+      secondCurrency,
     );
     const liquidity_assets_minted = calculateLiqAssetAmount(
       first_asset_amount,
-      second_asset_amount
+      second_asset_amount,
     );
 
     testUser2.addAsset(liquidity_asset_id, new BN(0));
@@ -352,7 +352,7 @@ describe("xyk-pallet - Pool tests: a pool can:", () => {
       testUser2.keyRingPair,
       firstCurrency,
       secondCurrency,
-      new BN(2500)
+      new BN(2500),
     ).then((result) => {
       const eventResponse = getEventResultFromMangataTx(result, [
         "xyk",
@@ -368,21 +368,21 @@ describe("xyk-pallet - Pool tests: a pool can:", () => {
       .getAsset(liquidity_asset_id)
       ?.amountBefore.free!.sub(new BN(2500));
     expect(testUser2.getAsset(liquidity_asset_id)?.amountAfter.free!).bnEqual(
-      diffFromWallet!
+      diffFromWallet!,
     );
 
     let addFromWallet = testUser2
       .getAsset(firstCurrency)
       ?.amountBefore.free!.add(new BN(2500));
     expect(testUser2.getAsset(firstCurrency)?.amountAfter.free!).bnEqual(
-      addFromWallet!
+      addFromWallet!,
     );
 
     addFromWallet = testUser2
       .getAsset(secondCurrency)
       ?.amountBefore.free!.add(new BN(2500));
     expect(testUser2.getAsset(secondCurrency)?.amountAfter.free!).bnEqual(
-      addFromWallet!
+      addFromWallet!,
     );
 
     //TODO: pending to validate.
@@ -394,7 +394,7 @@ describe("xyk-pallet - Pool tests: a pool can:", () => {
 
     const total_liquidity_assets = await getAssetSupply(liquidity_asset_id);
     expect(liquidity_assets_minted.add(new BN(2500))).bnEqual(
-      total_liquidity_assets
+      total_liquidity_assets,
     );
   });
 
@@ -402,11 +402,11 @@ describe("xyk-pallet - Pool tests: a pool can:", () => {
     // those values must not change.
     const liquidity_asset_id = await getLiquidityAssetId(
       firstCurrency,
-      secondCurrency
+      secondCurrency,
     );
     const liquidity_assets_minted = calculateLiqAssetAmount(
       first_asset_amount,
-      second_asset_amount
+      second_asset_amount,
     );
 
     testUser1.addAsset(liquidity_asset_id, new BN(0));
@@ -417,21 +417,21 @@ describe("xyk-pallet - Pool tests: a pool can:", () => {
       .getAsset(firstCurrency)
       ?.amountBefore.free!.sub(first_asset_amount);
     expect(testUser1.getAsset(firstCurrency)?.amountAfter.free!).bnEqual(
-      diffFromWallet!
+      diffFromWallet!,
     );
 
     diffFromWallet = testUser1
       .getAsset(secondCurrency)
       ?.amountBefore.free!.sub(second_asset_amount);
     expect(testUser1.getAsset(secondCurrency)?.amountAfter.free!).bnEqual(
-      diffFromWallet!
+      diffFromWallet!,
     );
 
     const addFromWallet = testUser1
       .getAsset(liquidity_asset_id)
       ?.amountBefore.free!.add(liquidity_assets_minted);
     expect(testUser1.getAsset(liquidity_asset_id)?.amountAfter.free!).bnEqual(
-      addFromWallet!
+      addFromWallet!,
     );
   });
 });
@@ -462,7 +462,7 @@ describe("xyk-pallet - Pool opeations: Simmetry", () => {
     [firstCurrency, secondCurrency] = await Assets.setupUserWithCurrencies(
       testUser1,
       [defaultCurrecyValue, defaultCurrecyValue.add(new BN(1))],
-      sudo
+      sudo,
     );
     await testUser1.addMGATokens(sudo, new BN("100000000000000000000000"));
     // add users to pair.
@@ -479,7 +479,7 @@ describe("xyk-pallet - Pool opeations: Simmetry", () => {
       [
         defaultCurrecyValue.toNumber(),
         defaultCurrecyValue.add(new BN(1)).toNumber(),
-      ]
+      ],
     );
 
     let eventResponse: EventResult = new EventResult(0, "");
@@ -488,7 +488,7 @@ describe("xyk-pallet - Pool opeations: Simmetry", () => {
       secondCurrency,
       first_asset_amount,
       firstCurrency,
-      second_asset_amount
+      second_asset_amount,
     ).then((result) => {
       eventResponse = getEventResultFromMangataTx(result, [
         "xyk",
@@ -531,7 +531,7 @@ describe("xyk-pallet - Pool opeations: Simmetry", () => {
       testUser1.keyRingPair,
       firstCurrency,
       secondCurrency,
-      new BN(100)
+      new BN(100),
     ).then((result) => {
       const eventResponse = getEventResultFromMangataTx(result);
       expect(eventResponse.state).toEqual(ExtrinsicResult.ExtrinsicSuccess);
@@ -540,7 +540,7 @@ describe("xyk-pallet - Pool opeations: Simmetry", () => {
       testUser1.keyRingPair,
       secondCurrency,
       firstCurrency,
-      new BN(100)
+      new BN(100),
     ).then((result) => {
       const eventResponse = getEventResultFromMangataTx(result);
       expect(eventResponse.state).toEqual(ExtrinsicResult.ExtrinsicSuccess);
@@ -562,10 +562,10 @@ describe("xyk-pallet - Pool opeations: Simmetry", () => {
     const liqYX = await getLiquidityAssetId(secondCurrency, firstCurrency);
     const pool = await getLiquidityPool(liqYX);
     expect(
-      pool.some((x) => x.toString() === firstCurrency.toString())
+      pool.some((x) => x.toString() === firstCurrency.toString()),
     ).toBeTruthy();
     expect(
-      pool.some((x) => x.toString() === secondCurrency.toString())
+      pool.some((x) => x.toString() === secondCurrency.toString()),
     ).toBeTruthy();
     expect(liqXY).bnEqual(liqYX);
   });

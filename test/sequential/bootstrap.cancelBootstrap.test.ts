@@ -71,7 +71,7 @@ test("bootstrap - Check that we can cancel bootstrap before planned", async () =
     bootstrapCurrency,
     waitingPeriodWithPlan,
     bootstrapPeriod,
-    whitelistPeriod
+    whitelistPeriod,
   );
   await waitSudoOperationSuccess(scheduleBootstrapEvent);
 
@@ -86,7 +86,7 @@ test("bootstrap - Check that we can not cancel bootstrap when bootstrap event al
     bootstrapCurrency,
     waitingPeriodLessPlan,
     bootstrapPeriod,
-    whitelistPeriod
+    whitelistPeriod,
   );
   await waitSudoOperationSuccess(scheduleBootstrapEvent);
 

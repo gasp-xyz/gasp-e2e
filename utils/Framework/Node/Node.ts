@@ -58,27 +58,26 @@ export class Node {
 
             testLog.getLog().debug(
               `Saved Election Information 
-               Candidates: ${
-                 this.electionEvents.get(this.lastBlock!)?.candidates
-               }
-               Members: ${this.electionEvents.get(this.lastBlock!)?.members}`
+               Candidates: ${this.electionEvents.get(this.lastBlock!)
+                 ?.candidates}
+               Members: ${this.electionEvents.get(this.lastBlock!)?.members}`,
             );
-          }
+          },
         );
-      }
+      },
     );
   }
   async subscribeToUserBalanceChanges(
-    candidate: GovernanceUser
+    candidate: GovernanceUser,
   ): Promise<void> {
     this.subscription = await this.api!.rpc.chain.subscribeNewHeads(
       async (lastHeader) => {
         const balancesAtblock = await candidate.getAllUserTokens();
         this.userBalancesHistory.set(
           lastHeader.number.toNumber(),
-          balancesAtblock
+          balancesAtblock,
         );
-      }
+      },
     );
   }
   async subscribeToExtrinsics(): Promise<void> {
@@ -95,7 +94,7 @@ export class Node {
           testLog.getLog().info(index + JSON.stringify(ex.toHuman()));
           this.systemExtrinics.push(ex);
         });
-      }
+      },
     );
   }
   async stop(): Promise<void> {

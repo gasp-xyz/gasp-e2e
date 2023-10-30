@@ -102,7 +102,7 @@ describe.each`
             MGA_ASSET_ID,
             sudo,
             testUser1,
-            bootstrapBlockNumber
+            bootstrapBlockNumber,
           );
           eventResponse = getEventResultFromMangataTx(vestingUser);
           expect(eventResponse.state).toEqual(ExtrinsicResult.ExtrinsicSuccess);
@@ -113,7 +113,7 @@ describe.each`
           MGA_ASSET_ID,
           bootstrapCurrency,
           waitingPeriod,
-          bootstrapPeriod
+          bootstrapPeriod,
         );
         eventResponse = getEventResultFromMangataTx(sudoBootstrap);
         expect(eventResponse.state).toEqual(ExtrinsicResult.ExtrinsicSuccess);
@@ -124,7 +124,7 @@ describe.each`
         const provisionBTUser1 = await provisionBootstrap(
           testUser1,
           bootstrapCurrency,
-          bootstrapAmount
+          bootstrapAmount,
         );
         eventResponse = getEventResultFromMangataTx(provisionBTUser1);
         expect(eventResponse.state).toEqual(ExtrinsicResult.ExtrinsicSuccess);
@@ -132,7 +132,7 @@ describe.each`
           const provisionMGAUser1 = await provisionVestedBootstrap(
             testUser1,
             MGA_ASSET_ID,
-            bootstrapAmount
+            bootstrapAmount,
           );
           eventResponse = getEventResultFromMangataTx(provisionMGAUser1);
           expect(eventResponse.state).toEqual(ExtrinsicResult.ExtrinsicSuccess);
@@ -140,7 +140,7 @@ describe.each`
           const provisionMGAUser1 = await provisionBootstrap(
             testUser1,
             MGA_ASSET_ID,
-            bootstrapAmount
+            bootstrapAmount,
           );
           eventResponse = getEventResultFromMangataTx(provisionMGAUser1);
           expect(eventResponse.state).toEqual(ExtrinsicResult.ExtrinsicSuccess);
@@ -150,14 +150,14 @@ describe.each`
         const provisionBTUser2 = await provisionBootstrap(
           testUser2,
           bootstrapCurrency,
-          bootstrapAmount
+          bootstrapAmount,
         );
         eventResponse = getEventResultFromMangataTx(provisionBTUser2);
         expect(eventResponse.state).toEqual(ExtrinsicResult.ExtrinsicSuccess);
         const provisionMGAUser2 = await provisionBootstrap(
           testUser2,
           MGA_ASSET_ID,
-          bootstrapAmount
+          bootstrapAmount,
         );
         eventResponse = getEventResultFromMangataTx(provisionMGAUser2);
         expect(eventResponse.state).toEqual(ExtrinsicResult.ExtrinsicSuccess);
@@ -170,18 +170,18 @@ describe.each`
         expect(bootstrapPoolBalance[0]).bnEqual(bootstrapAmountPool);
         expect(bootstrapPoolBalance[1]).bnEqual(bootstrapAmountPool);
         const bootstrapExpectedUserLiquidity = new BN(
-          bootstrapPoolBalance[0].add(bootstrapPoolBalance[1]) / 4
+          bootstrapPoolBalance[0].add(bootstrapPoolBalance[1]) / 4,
         );
 
         const liquidityID = await getLiquidityAssetId(
           MGA_ASSET_ID,
-          bootstrapCurrency
+          bootstrapCurrency,
         );
 
         if (promoting === true) {
           const promotingPool = await promotePool(
             sudo.keyRingPair,
-            liquidityID
+            liquidityID,
           );
           eventResponse = getEventResultFromMangataTx(promotingPool);
           expect(eventResponse.state).toEqual(ExtrinsicResult.ExtrinsicSuccess);
@@ -200,31 +200,31 @@ describe.each`
 
         const bootstrapUser1Liquidity = await getUserBalanceOfToken(
           liquidityID,
-          testUser1
+          testUser1,
         );
 
         const bootstrapUser2Liquidity = await getUserBalanceOfToken(
           liquidityID,
-          testUser2
+          testUser2,
         );
 
         if (promoting === true) {
           expect(bootstrapUser1Liquidity.free).bnEqual(new BN(0));
           expect(bootstrapUser1Liquidity.reserved).bnEqual(
-            bootstrapExpectedUserLiquidity
+            bootstrapExpectedUserLiquidity,
           );
           expect(bootstrapUser2Liquidity.free).bnEqual(new BN(0));
           expect(bootstrapUser2Liquidity.reserved).bnEqual(
-            bootstrapExpectedUserLiquidity
+            bootstrapExpectedUserLiquidity,
           );
         } else {
           expect(bootstrapUser1Liquidity.reserved).bnEqual(new BN(0));
           expect(bootstrapUser1Liquidity.free).bnEqual(
-            bootstrapExpectedUserLiquidity
+            bootstrapExpectedUserLiquidity,
           );
           expect(bootstrapUser2Liquidity.reserved).bnEqual(new BN(0));
           expect(bootstrapUser2Liquidity.free).bnEqual(
-            bootstrapExpectedUserLiquidity
+            bootstrapExpectedUserLiquidity,
           );
         }
         if (vesting === true) {
@@ -234,7 +234,7 @@ describe.each`
           expect(bootstrapUser1Liquidity.frozen).bnEqual(new BN(0));
           expect(bootstrapUser2Liquidity.frozen).bnEqual(new BN(0));
         }
-      }
+      },
     );
-  }
+  },
 );

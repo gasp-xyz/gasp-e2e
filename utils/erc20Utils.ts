@@ -1,5 +1,5 @@
 import { BN } from "@polkadot/util";
-import { ERC20ABI } from "../utils/abi/ERC20ABI";
+import { ERC20ABI } from "./abi/ERC20ABI";
 
 //CCC
 export const mUSDCAdrress = "0x7abd0fe503c9fcb6b1344f5284c42e6ae48b76b7";
@@ -17,7 +17,7 @@ export class erc20User {
   constructor(
     userAddress: string,
     uri = "",
-    web3: any | undefined = undefined
+    web3: any | undefined = undefined,
   ) {
     if (web3) {
       this.web3 = web3;
@@ -32,14 +32,14 @@ export class erc20User {
     return await erc20User.getBalance(
       this.web3,
       this.userAddress,
-      tokenAddress
+      tokenAddress,
     );
   }
 
   static async getBalance(
     web3: any,
     userAddress: string,
-    tokenAddress: string
+    tokenAddress: string,
   ) {
     const contract = new web3.eth.Contract(ERC20ABI as any, tokenAddress);
     const balance = await contract.methods.balanceOf(userAddress).call();

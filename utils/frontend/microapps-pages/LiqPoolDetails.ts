@@ -144,7 +144,7 @@ export class LiqPoolDetils {
       this.driver,
       continueBtn,
       isEnabled,
-      timeout
+      timeout,
     );
   }
 

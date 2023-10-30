@@ -26,7 +26,7 @@ const keyring = new Keyring({ type: "ethereum" });
 const alith = keyring.addFromUri(
   "0x5fb92d6e98884f76de468fa3f6278f8807c48bebc13595d45af5bdc4da702133",
   undefined,
-  "ethereum"
+  "ethereum",
 );
 
 describe("[V3][V3] XCM tests for Mangata <-> moonriver", () => {
@@ -117,7 +117,7 @@ describe("[V3][V3] XCM tests for Mangata <-> moonriver", () => {
 
   it("[V3] mangata transfer MGX assets to [V3] moonriver", async () => {
     expectJson(
-      await mangata.api.query.tokens.accounts(alice.keyRingPair.address, 0)
+      await mangata.api.query.tokens.accounts(alice.keyRingPair.address, 0),
     ).toMatchSnapshot("Before");
 
     const mgaSdk = Mangata.instance([mangata.uri]);
@@ -144,7 +144,7 @@ describe("[V3][V3] XCM tests for Mangata <-> moonriver", () => {
     await moonriver.chain.newBlock();
 
     expectJson(
-      await mangata.api.query.tokens.accounts(alice.keyRingPair.address, 0)
+      await mangata.api.query.tokens.accounts(alice.keyRingPair.address, 0),
     ).toMatchSnapshot("After");
     await matchSystemEvents(moonriver, "xcmpQueue", "Success");
   });
@@ -170,7 +170,7 @@ describe("[V3][V3] XCM tests for Mangata <-> moonriver", () => {
     });
 
     expectJson(
-      await mangata.api.query.tokens.accounts(alice.keyRingPair.address, 0)
+      await mangata.api.query.tokens.accounts(alice.keyRingPair.address, 0),
     ).toMatchSnapshot("Before");
 
     const asset = {
@@ -212,7 +212,7 @@ describe("[V3][V3] XCM tests for Mangata <-> moonriver", () => {
                 id: moonriver.api
                   .createType(
                     "AccountId32",
-                    "5GrwvaEF5zXb26Fz9rcQpDWS57CtERHpNehXCPcNoHGKutQY" // Alice address on Mangata
+                    "5GrwvaEF5zXb26Fz9rcQpDWS57CtERHpNehXCPcNoHGKutQY", // Alice address on Mangata
                   )
                   .toHex(),
               },
@@ -238,7 +238,7 @@ describe("[V3][V3] XCM tests for Mangata <-> moonriver", () => {
     await mangata.chain.newBlock();
 
     expectJson(
-      await mangata.api.query.tokens.accounts(alice.keyRingPair.address, 0)
+      await mangata.api.query.tokens.accounts(alice.keyRingPair.address, 0),
     ).toMatchSnapshot("After");
     await matchSystemEvents(mangata, "xcmpQueue", "Success");
   });
@@ -277,7 +277,7 @@ describe("[V3][V3] XCM tests for Mangata <-> moonriver", () => {
                 id: moonriver.api
                   .createType(
                     "AccountId32",
-                    "5GrwvaEF5zXb26Fz9rcQpDWS57CtERHpNehXCPcNoHGKutQY" // Alice address on Mangata
+                    "5GrwvaEF5zXb26Fz9rcQpDWS57CtERHpNehXCPcNoHGKutQY", // Alice address on Mangata
                   )
                   .toHex(),
               },
@@ -304,7 +304,7 @@ describe("[V3][V3] XCM tests for Mangata <-> moonriver", () => {
 
     //act
     expectJson(
-      await mangata.api.query.tokens.accounts(alice.keyRingPair.address, 39)
+      await mangata.api.query.tokens.accounts(alice.keyRingPair.address, 39),
     ).toMatchSnapshot("Before");
     await moonriver.chain.newBlock();
     await mgaSdk.xTokens.withdrawToMoonriver({
@@ -329,7 +329,7 @@ describe("[V3][V3] XCM tests for Mangata <-> moonriver", () => {
     await moonriver.chain.newBlock();
 
     expectJson(
-      await mangata.api.query.tokens.accounts(alice.keyRingPair.address, 39)
+      await mangata.api.query.tokens.accounts(alice.keyRingPair.address, 39),
     ).toMatchSnapshot("After");
 
     await matchSystemEvents(moonriver, "xcmpQueue", "Success");
@@ -338,7 +338,7 @@ describe("[V3][V3] XCM tests for Mangata <-> moonriver", () => {
   it("[V3] moonriver transfer MOVR assets to [V3] mangata", async () => {
     const mgaSdk = Mangata.instance([mangata.uri]);
     expectJson(
-      await mangata.api.query.tokens.accounts(alice.keyRingPair.address, 39)
+      await mangata.api.query.tokens.accounts(alice.keyRingPair.address, 39),
     ).toMatchSnapshot("Before");
 
     const asset = {
@@ -372,7 +372,7 @@ describe("[V3][V3] XCM tests for Mangata <-> moonriver", () => {
                 id: moonriver.api
                   .createType(
                     "AccountId32",
-                    "5GrwvaEF5zXb26Fz9rcQpDWS57CtERHpNehXCPcNoHGKutQY" // Alice address on Mangata
+                    "5GrwvaEF5zXb26Fz9rcQpDWS57CtERHpNehXCPcNoHGKutQY", // Alice address on Mangata
                   )
                   .toHex(),
               },
@@ -408,7 +408,7 @@ describe("[V3][V3] XCM tests for Mangata <-> moonriver", () => {
     testLog.getLog().info("end expect");
     await mangata.chain.newBlock();
     expectJson(
-      await mangata.api.query.tokens.accounts(alice.keyRingPair.address, 39)
+      await mangata.api.query.tokens.accounts(alice.keyRingPair.address, 39),
     ).toMatchSnapshot("After");
   });
 });

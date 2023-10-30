@@ -62,12 +62,12 @@ beforeEach(async () => {
   candidate = UserFactory.createUser(
     Users.GovernanceUser,
     keyring,
-    bootnode
+    bootnode,
   ) as GovernanceUser;
   voter = UserFactory.createUser(
     Users.GovernanceUser,
     keyring,
-    bootnode
+    bootnode,
   ) as GovernanceUser;
   bank = new Bank(sudo);
 
@@ -102,7 +102,7 @@ describe("Governance -> Candidacy -> Users", () => {
     const termZero = getLastBlocksElectionData();
 
     expect(flattenArray(termZero.Candidates)).toEqual(
-      expect.arrayContaining([candidatesAddress])
+      expect.arrayContaining([candidatesAddress]),
     );
   });
 
@@ -119,7 +119,7 @@ describe("Governance -> Candidacy -> Users", () => {
     const termZero = getLastBlocksElectionData();
 
     expect(flattenArray(termZero.Candidates)).not.toEqual(
-      expect.arrayContaining([candidatesAddress])
+      expect.arrayContaining([candidatesAddress]),
     );
   });
 
@@ -135,7 +135,7 @@ describe("Governance -> Candidacy -> Users", () => {
     const termZero = getLastBlocksElectionData();
 
     expect(flattenArray(termZero.Candidates)).toEqual(
-      expect.arrayContaining([candidatesAddress])
+      expect.arrayContaining([candidatesAddress]),
     );
 
     // Gonzalo wins the election and is council member!
@@ -144,7 +144,7 @@ describe("Governance -> Candidacy -> Users", () => {
 
     const termOne = getLastBlocksElectionData();
     expect(flattenArray(termOne.Members)).toEqual(
-      expect.arrayContaining([candidatesAddress])
+      expect.arrayContaining([candidatesAddress]),
     );
 
     const candidateStatus = { Member: candidate.keyRingPair.address };
@@ -156,7 +156,7 @@ describe("Governance -> Candidacy -> Users", () => {
     const termTwo = getLastBlocksElectionData();
 
     expect(flattenArray(termTwo.Candidates)).not.toEqual(
-      expect.arrayContaining([candidatesAddress])
+      expect.arrayContaining([candidatesAddress]),
     );
   });
 
@@ -172,7 +172,7 @@ describe("Governance -> Candidacy -> Users", () => {
 
     const termZero = getLastBlocksElectionData();
     expect(flattenArray(termZero.Candidates)).toEqual(
-      expect.arrayContaining([candidatesAddress])
+      expect.arrayContaining([candidatesAddress]),
     );
 
     // Gonzalo wins the election and is a council member!
@@ -181,7 +181,7 @@ describe("Governance -> Candidacy -> Users", () => {
     const termOne = getLastBlocksElectionData();
 
     expect(flattenArray(termOne.Members)).toEqual(
-      expect.arrayContaining([candidatesAddress])
+      expect.arrayContaining([candidatesAddress]),
     );
 
     // Gonzalo is automatically running for candidacy in Term 2
@@ -190,7 +190,7 @@ describe("Governance -> Candidacy -> Users", () => {
     const termTwo = getLastBlocksElectionData();
 
     expect(flattenArray(termTwo.Candidates)).not.toEqual(
-      expect.arrayContaining([candidatesAddress])
+      expect.arrayContaining([candidatesAddress]),
     );
   });
 });

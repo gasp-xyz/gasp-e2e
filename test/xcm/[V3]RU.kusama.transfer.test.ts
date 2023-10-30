@@ -96,7 +96,7 @@ describe("XCM tests for Mangata <-> Kusama", () => {
 
     await kusama.chain.newBlock();
     expectJson(
-      await mangata.api.query.tokens.accounts(alice.address, 4)
+      await mangata.api.query.tokens.accounts(alice.address, 4),
     ).toMatchSnapshot();
 
     expect(await balance(kusama.api, alice.address)).toMatchSnapshot();
@@ -171,7 +171,7 @@ describe("XCM tests for Mangata <-> Kusama", () => {
     await mangata.chain.newBlock();
     // Lets validate balances. Should be enough I guess.
     expectJson(
-      await mangata.api.query.tokens.accounts(alice.address, 4)
+      await mangata.api.query.tokens.accounts(alice.address, 4),
     ).toMatchSnapshot();
 
     //    const hashAft = await mangata.api.rpc.chain.getBlockHash(

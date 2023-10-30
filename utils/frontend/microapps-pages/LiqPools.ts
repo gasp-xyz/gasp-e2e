@@ -69,7 +69,7 @@ export class LiqPools {
   async clickCreateLiquidity() {
     const itemXpath = buildXpathByElementText(
       "a",
-      "Create a new liquidity pool"
+      "Create a new liquidity pool",
     );
     await clickElement(this.driver, itemXpath);
   }
@@ -77,7 +77,7 @@ export class LiqPools {
   async isPoolExistsInfoDisplayed() {
     const itemXpath = buildXpathByElementText(
       "span",
-      "selected pool already exists"
+      "selected pool already exists",
     );
     const displayed = await isDisplayed(this.driver, itemXpath);
     return displayed;
@@ -104,7 +104,7 @@ export class LiqPools {
     const selectFirstToken = buildDataTestIdXpath(BTN_SELECT_FIRST_TOKEN);
     await clickElement(this.driver, selectFirstToken);
     const firstTokenSelector = buildDataTestIdXpath(
-      DIV_FIRST_TOKEN_SELECTOR_CONTENT
+      DIV_FIRST_TOKEN_SELECTOR_CONTENT,
     );
     await waitForElement(this.driver, firstTokenSelector);
     const firstTokenSelectorButton =
@@ -118,7 +118,7 @@ export class LiqPools {
     const selectSecondToken = buildDataTestIdXpath(BTN_SELECT_SECOND_TOKEN);
     await clickElement(this.driver, selectSecondToken);
     const secondTokenSelector = buildDataTestIdXpath(
-      DIV_SECOND_TOKEN_SELECTOR_CONTENT
+      DIV_SECOND_TOKEN_SELECTOR_CONTENT,
     );
     await waitForElement(this.driver, secondTokenSelector);
     const secondTokenSelectorButton =
@@ -198,7 +198,7 @@ export class LiqPools {
       this.driver,
       continueBtn,
       isEnabled,
-      timeout
+      timeout,
     );
   }
 }

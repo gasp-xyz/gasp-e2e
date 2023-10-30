@@ -59,7 +59,7 @@ describe("Validate initial status", () => {
     [token1] = await Assets.setupUserWithCurrencies(
       sudo,
       [defaultCurrencyValue],
-      sudo
+      sudo,
     );
 
     await Sudo.batchAsSudoFinalized(
@@ -73,21 +73,21 @@ describe("Validate initial status", () => {
           MGA_ASSET_ID,
           Assets.DEFAULT_AMOUNT.divn(2),
           token1,
-          Assets.DEFAULT_AMOUNT.divn(2)
-        )
-      )
+          Assets.DEFAULT_AMOUNT.divn(2),
+        ),
+      ),
     );
     liqId = await getLiquidityAssetId(MGA_ASSET_ID, token1);
     await Sudo.batchAsSudoFinalized(Assets.promotePool(liqId.toNumber(), 20));
 
     await Sudo.batchAsSudoFinalized(
       Assets.mintToken(token1, testUser1, Assets.DEFAULT_AMOUNT),
-      Assets.mintNative(testUser1)
+      Assets.mintNative(testUser1),
     );
 
     const rewardsInfoBefore = await getRewardsInfo(
       testUser.keyRingPair.address,
-      liqId
+      liqId,
     );
     expect(rewardsInfoBefore.activatedAmount).bnEqual(BN_ZERO);
     expect(rewardsInfoBefore.lastCheckpoint).bnEqual(BN_ZERO);
@@ -100,19 +100,19 @@ describe("Validate initial status", () => {
       testUser1.keyRingPair,
       MGA_ASSET_ID,
       token1,
-      defaultCurrencyValue
+      defaultCurrencyValue,
     );
   });
 
   test("User just minted on a promoted pool", async () => {
     const rewardsInfoAfter = await getRewardsInfo(
       testUser1.keyRingPair.address,
-      liqId
+      liqId,
     );
     expect(rewardsInfoAfter.activatedAmount).bnEqual(defaultCurrencyValue);
     expect(rewardsInfoAfter.lastCheckpoint).bnGt(BN_ZERO);
     expect(rewardsInfoAfter.missingAtLastCheckpoint).bnEqual(
-      defaultCurrencyValue
+      defaultCurrencyValue,
     );
     expect(rewardsInfoAfter.poolRatioAtLastCheckpoint).bnEqual(BN_ZERO);
     expect(rewardsInfoAfter.rewardsAlreadyClaimed).bnEqual(BN_ZERO);
@@ -124,12 +124,12 @@ describe("Validate initial status", () => {
 
     const rewardsInfoAfter = await getRewardsInfo(
       testUser1.keyRingPair.address,
-      liqId
+      liqId,
     );
     expect(rewardsInfoAfter.activatedAmount).bnEqual(defaultCurrencyValue);
     expect(rewardsInfoAfter.lastCheckpoint).bnGt(BN_ZERO);
     expect(rewardsInfoAfter.missingAtLastCheckpoint).bnEqual(
-      defaultCurrencyValue
+      defaultCurrencyValue,
     );
     //UPDATE: @mateuszaaa investigated , and it seems to be correct that zero is a valid value on this case.¯\_(ツ)_/¯
     expect(rewardsInfoAfter.poolRatioAtLastCheckpoint).bnEqual(BN_ZERO);
@@ -144,17 +144,17 @@ describe("Validate initial status", () => {
       testUser1.keyRingPair,
       MGA_ASSET_ID,
       token1,
-      defaultCurrencyValue
+      defaultCurrencyValue,
     );
 
     await waitForRewards(testUser1, liqId);
 
     const rewardsInfoAfter = await getRewardsInfo(
       testUser1.keyRingPair.address,
-      liqId
+      liqId,
     );
     expect(rewardsInfoAfter.activatedAmount).bnEqual(
-      defaultCurrencyValue.mul(new BN(2))
+      defaultCurrencyValue.mul(new BN(2)),
     );
     expect(rewardsInfoAfter.lastCheckpoint).bnGt(BN_ZERO);
     expect(rewardsInfoAfter.missingAtLastCheckpoint).bnEqual(new BN(492718));
@@ -162,7 +162,7 @@ describe("Validate initial status", () => {
     expect(rewardsInfoAfter.rewardsAlreadyClaimed).bnEqual(BN_ZERO);
     expect(rewardsInfoAfter.rewardsNotYetClaimed).bnGt(BN_ZERO);
     expect(rewardsInfoAfter.poolRatioAtLastCheckpoint).bnGt(
-      rewardsInfoAfter.rewardsNotYetClaimed
+      rewardsInfoAfter.rewardsNotYetClaimed,
     );
   });
 });

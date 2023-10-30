@@ -34,7 +34,7 @@ async function main() {
             break;
           default:
             throw new Error(
-              `Unknown testCaseName: ${value}: Expected: any of[ConcurrentTest,SustainedLoadTest,Rampup,Burst]`
+              `Unknown testCaseName: ${value}: Expected: any of[ConcurrentTest,SustainedLoadTest,Rampup,Burst]`,
             );
         }
         break;
@@ -87,7 +87,7 @@ async function main() {
       break;
     default:
       throw new Error(
-        `Unknown command: ${command}, available: "transfer", "mint", "burn", "swap"`
+        `Unknown command: ${command}, available: "transfer", "mint", "burn", "swap"`,
       );
   }
   verifyArgs(testParams, "transfer"); // Will throw an error if invalid args
@@ -128,10 +128,10 @@ function verifyArgs(params: TestParams, test: string) {
   }
 
   const reWs = new RegExp(
-    "/^(ws?://)([0-9]{1,3}(?:.[0-9]{1,3}){3}|[a-zA-Z]+):([0-9]{1,5})$/"
+    "/^(ws?://)([0-9]{1,3}(?:.[0-9]{1,3}){3}|[a-zA-Z]+):([0-9]{1,5})$/",
   );
   const reWss = new RegExp(
-    "/^(wss?://)([0-9]{1,3}(?:.[0-9]{1,3}){3}|[a-zA-Z]+):([0-9]{1,5})$/"
+    "/^(wss?://)([0-9]{1,3}(?:.[0-9]{1,3}){3}|[a-zA-Z]+):([0-9]{1,5})$/",
   );
 
   params.nodes.forEach((node) => {

@@ -52,7 +52,7 @@ beforeAll(async () => {
   [token1] = await Assets.setupUserWithCurrencies(
     sudo,
     [defaultCurrencyValue],
-    sudo
+    sudo,
   );
 
   await Sudo.batchAsSudoFinalized(
@@ -66,9 +66,9 @@ beforeAll(async () => {
         MGA_ASSET_ID,
         Assets.DEFAULT_AMOUNT.divn(2),
         token1,
-        Assets.DEFAULT_AMOUNT.divn(2)
-      )
-    )
+        Assets.DEFAULT_AMOUNT.divn(2),
+      ),
+    ),
   );
 
   liqId = await getLiquidityAssetId(MGA_ASSET_ID, token1);
@@ -80,7 +80,7 @@ beforeEach(async () => {
   testUser1 = new User(keyring);
   await Sudo.batchAsSudoFinalized(
     Assets.mintNative(testUser1),
-    Assets.mintToken(token1, testUser1, Assets.DEFAULT_AMOUNT)
+    Assets.mintToken(token1, testUser1, Assets.DEFAULT_AMOUNT),
   );
   testUser1.addAsset(MGA_ASSET_ID);
   testUser1.addAsset(token1);
@@ -107,7 +107,7 @@ test("Check that when we are using SDK batch function and the first call finishe
 
   const err = await findErrorMetadata(
     JSON.parse(JSON.stringify(interruption.data)).error.Module.error,
-    JSON.parse(JSON.stringify(interruption.data)).error.Module.index
+    JSON.parse(JSON.stringify(interruption.data)).error.Module.index,
   );
 
   await testUser1.refreshAmounts(AssetWallet.AFTER);
@@ -138,7 +138,7 @@ test("Check that when we are using SDK batch function and the second call finish
 
   const err = await findErrorMetadata(
     JSON.parse(JSON.stringify(interruption.data)).error.Module.error,
-    JSON.parse(JSON.stringify(interruption.data)).error.Module.index
+    JSON.parse(JSON.stringify(interruption.data)).error.Module.index,
   );
 
   await testUser1.refreshAmounts(AssetWallet.AFTER);
@@ -250,7 +250,7 @@ test("WHEN call forceBatch where one item is failed THEN check completed and fai
   const itemFailed = getEventResultFromMangataTx(extrinsic, ["ItemFailed"]);
   const err = await findErrorMetadata(
     JSON.parse(JSON.stringify(itemFailed.data)).error.Module.error,
-    JSON.parse(JSON.stringify(itemFailed.data)).error.Module.index
+    JSON.parse(JSON.stringify(itemFailed.data)).error.Module.index,
   );
 
   await testUser1.refreshAmounts(AssetWallet.AFTER);

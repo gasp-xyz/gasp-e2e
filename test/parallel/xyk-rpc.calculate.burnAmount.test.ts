@@ -43,7 +43,7 @@ describe("xyk-rpc - calculate get_burn amount: OK", () => {
     const assetIds = await Assets.setupUserWithCurrencies(
       sudo,
       [defaultCurrencyAmount, defaultCurrencyAmount],
-      sudo
+      sudo,
     );
     const assetValues = [defaultCurrencyAmount, defaultCurrencyAmount];
     for (let index = 0; index < assetIds.length; index++) {
@@ -53,7 +53,7 @@ describe("xyk-rpc - calculate get_burn amount: OK", () => {
           new BN(assetValues[index]),
           new BN(assetValues[index + 1]),
           assetIds[index],
-          assetIds[index + 1]
+          assetIds[index + 1],
         );
       }
     }
@@ -71,11 +71,11 @@ describe("xyk-rpc - calculate get_burn amount: OK", () => {
       const burnAmount = await getBurnAmount(
         dictAssets.get(firstIdx)!,
         dictAssets.get(secondIdx)!,
-        amount
+        amount,
       );
       expect(burnAmount.firstAssetAmount).bnEqual(expected);
       expect(burnAmount.secondAssetAmount).bnEqual(expected);
-    }
+    },
   );
 });
 
@@ -93,7 +93,7 @@ describe("xyk-rpc - calculate get_burn amount: Missing requirements", () => {
     const assetIds = await Assets.setupUserWithCurrencies(
       sudo,
       [defaultCurrencyAmount, defaultCurrencyAmount],
-      sudo
+      sudo,
     );
     for (let index = 0; index < assetIds.length; index++) {
       dictAssets.set(index, assetIds[index]);
@@ -107,18 +107,18 @@ describe("xyk-rpc - calculate get_burn amount: Missing requirements", () => {
       const burnAmount = await getBurnAmount(
         dictAssets.get(firstIdx)!,
         dictAssets.get(secondIdx)!,
-        amount
+        amount,
       );
       expect(burnAmount.firstAssetAmount).bnEqual(expected);
       expect(burnAmount.secondAssetAmount).bnEqual(expected);
-    }
+    },
   );
 
   test("validate parameters - get_burn from not created assets", async () => {
     const burnAmount = await getBurnAmount(
       new BN(12345),
       new BN(12346),
-      new BN(10000000)
+      new BN(10000000),
     );
     expect(burnAmount.firstAssetAmount).bnEqual(BN_ZERO);
     expect(burnAmount.secondAssetAmount).bnEqual(BN_ZERO);
@@ -139,7 +139,7 @@ describe("xyk-rpc - calculate get_burn amount: RPC result matches with burn amou
     const assetIds = await Assets.setupUserWithCurrencies(
       sudo,
       [defaultCurrencyAmount, defaultCurrencyAmount],
-      sudo
+      sudo,
     );
     firstAssetId = assetIds[0];
     secondAssetId = assetIds[1];
@@ -148,7 +148,7 @@ describe("xyk-rpc - calculate get_burn amount: RPC result matches with burn amou
       new BN(defaultCurrencyAmount),
       new BN(defaultCurrencyAmount.sub(new BN(12345))),
       firstAssetId,
-      secondAssetId
+      secondAssetId,
     );
   });
 
@@ -162,7 +162,7 @@ describe("xyk-rpc - calculate get_burn amount: RPC result matches with burn amou
       sudo.keyRingPair,
       firstAssetId,
       secondAssetId,
-      toBurn
+      toBurn,
     ).then((result) => {
       const eventResponse = getEventResultFromMangataTx(result, [
         "xyk",
@@ -176,21 +176,21 @@ describe("xyk-rpc - calculate get_burn amount: RPC result matches with burn amou
     const poolAfter = await getBalanceOfPool(firstAssetId, secondAssetId);
 
     expect(new BN(burnAmount.firstAssetAmount)).bnEqual(
-      poolBefore[0].sub(poolAfter[0])
+      poolBefore[0].sub(poolAfter[0]),
     );
     expect(new BN(burnAmount.secondAssetAmount)).bnEqual(
-      poolBefore[1].sub(poolAfter[1])
+      poolBefore[1].sub(poolAfter[1]),
     );
 
     expect(sudo.getAsset(firstAssetId)?.amountAfter.free!).bnEqual(
-      new BN(burnAmount.firstAssetAmount)
+      new BN(burnAmount.firstAssetAmount),
     );
     expect(
       sudo
         .getAsset(secondAssetId)
         ?.amountAfter.free.sub(
-          sudo.getAsset(secondAssetId)?.amountBefore.free!
-        )!
+          sudo.getAsset(secondAssetId)?.amountBefore.free!,
+        )!,
     ).bnEqual(new BN(burnAmount.secondAssetAmount));
   });
 });

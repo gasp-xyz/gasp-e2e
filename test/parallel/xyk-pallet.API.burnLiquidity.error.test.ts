@@ -69,14 +69,14 @@ describe("xyk-pallet - Burn liquidity tests: BurnLiquidity Errors:", () => {
       await Assets.setupUserWithCurrencies(
         testUser1,
         [defaultCurrecyValue, defaultCurrecyValue],
-        sudo
+        sudo,
       );
 
     await burnLiquidity(
       testUser1.keyRingPair,
       firstCurrency,
       secondCurrency,
-      new BN(1)
+      new BN(1),
     ).then((result) => {
       const eventResponse = getEventResultFromMangataTx(result);
       expect(eventResponse.state).toEqual(ExtrinsicResult.ExtrinsicFailed);
@@ -90,12 +90,12 @@ describe("xyk-pallet - Burn liquidity tests: BurnLiquidity Errors:", () => {
       testUser1,
       sudo,
       new BN(defaultCurrecyValue),
-      poolAmount
+      poolAmount,
     );
     const poolBalance = await getBalanceOfPool(firstCurrency, secondCurrency);
     const liquidityAssetId = await getLiquidityAssetId(
       firstCurrency,
-      secondCurrency
+      secondCurrency,
     );
     const liquidityBalance = (
       await getBalanceOfAsset(liquidityAssetId, testUser1)
@@ -106,7 +106,7 @@ describe("xyk-pallet - Burn liquidity tests: BurnLiquidity Errors:", () => {
       testUser1.keyRingPair,
       firstCurrency,
       secondCurrency,
-      liquidityBalance.add(new BN(1))
+      liquidityBalance.add(new BN(1)),
     ).then((result) => {
       const eventResponse = getEventResultFromMangataTx(result);
       expect(eventResponse.state).toEqual(ExtrinsicResult.ExtrinsicFailed);
@@ -117,7 +117,7 @@ describe("xyk-pallet - Burn liquidity tests: BurnLiquidity Errors:", () => {
       firstCurrency,
       secondCurrency,
       testUser1,
-      poolBalance
+      poolBalance,
     );
   });
 
@@ -129,12 +129,12 @@ describe("xyk-pallet - Burn liquidity tests: BurnLiquidity Errors:", () => {
     [firstCurrency, secondCurrency] = await UserCreatesAPoolAndMintLiquidity(
       testUser1,
       sudo,
-      new BN(defaultCurrecyValue)
+      new BN(defaultCurrecyValue),
     );
 
     const liquidityAssetId = await getLiquidityAssetId(
       firstCurrency,
-      secondCurrency
+      secondCurrency,
     );
     testUser1.addAsset(liquidityAssetId);
     const aFewAssetsToBurn = new BN(1000);
@@ -143,7 +143,7 @@ describe("xyk-pallet - Burn liquidity tests: BurnLiquidity Errors:", () => {
       testUser2.keyRingPair,
       firstCurrency,
       secondCurrency,
-      aFewAssetsToBurn
+      aFewAssetsToBurn,
     ).then((result) => {
       const eventResponse = getEventResultFromMangataTx(result);
       expect(eventResponse.state).toEqual(ExtrinsicResult.ExtrinsicFailed);
