@@ -60,24 +60,28 @@ describe("Multiswap - error cases: disabled tokens", () => {
           (reason) => {
             exception = true;
             throw new Error(reason.data);
-          }
-        )
+          },
+        ),
       ).rejects.toThrow(
-        "1010: Invalid Transaction: The swap prevalidation has failed"
+        "1010: Invalid Transaction: The swap prevalidation has failed",
       );
       expect(exception).toBeTruthy();
-    }
+    },
   );
   it.each([2, 4])(
     "[gasless] disabled on token of the chained polls - Fail on tx execution-%s",
     async (position: number) => {
       await Assets.disableToken(tokenIds[position]);
       const testUser1 = users[0];
+      const tokenBefore = await getUserBalanceOfToken(
+        tokenIds[tokenIds.length - 1],
+        testUser1,
+      );
       const multiSwapOutput = await multiSwapBuy(
         testUser1,
         tokenIds,
         new BN(1000),
-        BN_TEN_THOUSAND
+        BN_TEN_THOUSAND,
       );
 
       const eventResponse = getEventResultFromMangataTx(multiSwapOutput, [
@@ -88,10 +92,10 @@ describe("Multiswap - error cases: disabled tokens", () => {
 
       const boughtTokens = await getUserBalanceOfToken(
         tokenIds[tokenIds.length - 1],
-        testUser1
+        testUser1,
       );
-      expect(boughtTokens.free).bnEqual(BN_ZERO);
-    }
+      expect(tokenBefore.free.sub(boughtTokens.free)).bnEqual(BN_ZERO);
+    },
   );
 });
 describe("Multiswap - error cases: pool status & gasless integration", () => {
@@ -109,10 +113,10 @@ describe("Multiswap - error cases: pool status & gasless integration", () => {
     const testUser0 = users[0];
     const meta = await api.query.feeLock.feeLockMetadata();
     const threshold = stringToBN(
-      JSON.parse(JSON.stringify(meta)).swapValueThreshold.toString()
+      JSON.parse(JSON.stringify(meta)).swapValueThreshold.toString(),
     );
     const feeLockAmount = stringToBN(
-      JSON.parse(JSON.stringify(meta)).feeLockAmount.toString()
+      JSON.parse(JSON.stringify(meta)).feeLockAmount.toString(),
     );
     let tokenList = tokenIds.concat(MGA_ASSET_ID);
     tokenList = tokenList.reverse();
@@ -124,7 +128,7 @@ describe("Multiswap - error cases: pool status & gasless integration", () => {
     await testUser0.refreshAmounts(AssetWallet.AFTER);
     const diff = testUser0.getWalletDifferences();
     expect(
-      diff.find((x) => x.currencyId === MGA_ASSET_ID)?.diff.reserved
+      diff.find((x) => x.currencyId === MGA_ASSET_ID)?.diff.reserved,
     ).bnEqual(feeLockAmount);
   });
   test("[gasless] Fail on client when not enough MGAs to lock AND tokens that exist whitelist", async () => {
@@ -135,7 +139,7 @@ describe("Multiswap - error cases: pool status & gasless integration", () => {
     const meta = await api.query.feeLock.feeLockMetadata();
     //TODO:Update whitelist!
     const threshold = stringToBN(
-      JSON.parse(JSON.stringify(meta)).swapValueThreshold.toString()
+      JSON.parse(JSON.stringify(meta)).swapValueThreshold.toString(),
     );
 
     await updateFeeLockMetadata(
@@ -143,14 +147,14 @@ describe("Multiswap - error cases: pool status & gasless integration", () => {
       undefined,
       undefined,
       undefined,
-      tokenIds.map((x) => [x, true])
+      tokenIds.map((x) => [x, true]),
     );
     let exception = false;
     await expect(
       multiSwapSell(testUser1, tokenIds, threshold.addn(10)).catch((reason) => {
         exception = true;
         throw new Error(reason.data);
-      })
+      }),
     ).rejects.toThrow(feeLockErrors.FeeLockingFail);
     expect(exception).toBeTruthy();
   });
@@ -163,7 +167,7 @@ describe("Multiswap - error cases: pool status & gasless integration", () => {
     const events = await multiSwapSell(
       testUser,
       tokenList,
-      testUser.getAsset(MGA_ASSET_ID)?.amountBefore.free!
+      testUser.getAsset(MGA_ASSET_ID)?.amountBefore.free!,
     );
     await testUser.refreshAmounts(AssetWallet.AFTER);
     const swapErrorEvent = await getEventResultFromMangataTx(events, [
@@ -175,27 +179,23 @@ describe("Multiswap - error cases: pool status & gasless integration", () => {
     expect(diff[0].diff.reserved).bnGt(new BN(0));
     expect(diff[0].diff.free).bnLt(diff[0].diff.reserved.neg());
   });
-  test("[gasless] Fails on execution when pool does not exist", async () => {
+  test("[gasless] Fails on client when pool does not exist", async () => {
     const testUser = users[1];
     testUser.addAssets(tokenIds);
     await testUser.refreshAmounts(AssetWallet.BEFORE);
-    const events = await multiSwapSell(
-      testUser,
-      tokenIds.concat(BN_BILLION),
-      new BN(12345)
-    );
+    let exception = false;
+    await expect(
+      multiSwapSell(testUser, tokenIds.concat(BN_BILLION), new BN(12345)).catch(
+        (reason) => {
+          exception = true;
+          throw new Error(reason.data);
+        },
+      ),
+    ).rejects.toThrow(feeLockErrors.SwapApprovalFail);
+    expect(exception).toBeTruthy();
+
     await testUser.refreshAmounts(AssetWallet.AFTER);
-    const swapErrorEvent = await getEventResultFromMangataTx(events, [
-      "MultiSwapAssetFailedOnAtomicSwap",
-    ]);
-    expect(swapErrorEvent.state).toEqual(ExtrinsicResult.ExtrinsicSuccess);
     const diff = testUser.getWalletDifferences();
-    expect(diff).toHaveLength(2);
-    expect(
-      diff.filter((x) => x.currencyId === MGA_ASSET_ID)[0].diff.reserved
-    ).bnGt(new BN(0));
-    expect(diff.filter((x) => x.currencyId === tokenIds[0])[0].diff.free).bnLt(
-      BN_ZERO
-    );
+    expect(diff).toHaveLength(0);
   });
 });

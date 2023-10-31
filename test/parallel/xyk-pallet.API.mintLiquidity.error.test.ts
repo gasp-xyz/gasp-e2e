@@ -27,7 +27,7 @@ const { sudo: sudoUserName } = getEnvironmentRequiredVars();
 
 const firstAssetAmount = new BN(50000);
 const secondAssetAmount = new BN(50000);
-const defaultCurrecyValue = new BN(250000);
+const defaultCurrencyValue = new BN(250000);
 
 describe("xyk-pallet - Mint liquidity tests: MintLiquidity Errors:", () => {
   let testUser1: User;
@@ -36,6 +36,7 @@ describe("xyk-pallet - Mint liquidity tests: MintLiquidity Errors:", () => {
   let keyring: Keyring;
   let firstCurrency: BN;
   let secondCurrency: BN;
+  let thirdCurrency: BN;
 
   const pool_balance_before = [new BN(0), new BN(0)];
 
@@ -45,9 +46,7 @@ describe("xyk-pallet - Mint liquidity tests: MintLiquidity Errors:", () => {
     } catch (e) {
       await initApi();
     }
-  });
 
-  beforeEach(async () => {
     keyring = new Keyring({ type: "sr25519" });
 
     // setup users
@@ -66,19 +65,18 @@ describe("xyk-pallet - Mint liquidity tests: MintLiquidity Errors:", () => {
     [firstCurrency, secondCurrency] = await Assets.setupUserWithCurrencies(
       testUser1,
       [
-        defaultCurrecyValue.add(new BN(1000)),
-        defaultCurrecyValue.add(new BN(1)),
+        defaultCurrencyValue.add(new BN(1000)),
+        defaultCurrencyValue.add(new BN(1)),
       ],
-      sudo
+      sudo,
     );
-    await testUser1.addMGATokens(sudo);
     //lets create a pool with equal balances
     await createPool(
       testUser1.keyRingPair,
       firstCurrency,
-      defaultCurrecyValue,
+      defaultCurrencyValue,
       secondCurrency,
-      defaultCurrecyValue
+      defaultCurrencyValue,
     );
     // now we have quite a lot of X and only a few Y, but the pool is 1:1,
     // force the error minting almost all of X
@@ -87,7 +85,7 @@ describe("xyk-pallet - Mint liquidity tests: MintLiquidity Errors:", () => {
       testUser1.keyRingPair,
       firstCurrency,
       secondCurrency,
-      testUser1.getAsset(firstCurrency)?.amountBefore.free.sub(new BN(1))!
+      testUser1.getAsset(firstCurrency)?.amountBefore.free.sub(new BN(1))!,
     ).then((result) => {
       const eventResponse = getEventResultFromMangataTx(result);
       expect(eventResponse.state).toEqual(ExtrinsicResult.ExtrinsicFailed);
@@ -96,8 +94,8 @@ describe("xyk-pallet - Mint liquidity tests: MintLiquidity Errors:", () => {
 
     await testUser1.refreshAmounts(AssetWallet.AFTER);
     await validateUnmodified(firstCurrency, secondCurrency, testUser1, [
-      new BN(defaultCurrecyValue),
-      new BN(defaultCurrecyValue),
+      new BN(defaultCurrencyValue),
+      new BN(defaultCurrencyValue),
     ]);
   });
   test("Mint liquidity when not enough assetX for minting Yamount", async () => {
@@ -105,19 +103,18 @@ describe("xyk-pallet - Mint liquidity tests: MintLiquidity Errors:", () => {
     [firstCurrency, secondCurrency] = await Assets.setupUserWithCurrencies(
       testUser1,
       [
-        defaultCurrecyValue.add(new BN(1)),
-        defaultCurrecyValue.add(new BN(1000)),
+        defaultCurrencyValue.add(new BN(1)),
+        defaultCurrencyValue.add(new BN(1000)),
       ],
-      sudo
+      sudo,
     );
-    await testUser1.addMGATokens(sudo);
     //lets create a pool with equal balances
     await createPool(
       testUser1.keyRingPair,
       firstCurrency,
-      defaultCurrecyValue,
+      defaultCurrencyValue,
       secondCurrency,
-      defaultCurrecyValue
+      defaultCurrencyValue,
     );
     await testUser1.refreshAmounts(AssetWallet.BEFORE);
     // now we have quite a lot of X and only a few Y, but the pool is 1:1,
@@ -128,7 +125,7 @@ describe("xyk-pallet - Mint liquidity tests: MintLiquidity Errors:", () => {
       testUser1.keyRingPair,
       firstCurrency,
       secondCurrency,
-      testUser1.getAsset(secondCurrency)?.amountBefore.free.sub(new BN(1))!
+      testUser1.getAsset(secondCurrency)?.amountBefore.free.sub(new BN(1))!,
     ).then((result) => {
       const eventResponse = getEventResultFromMangataTx(result);
       expect(eventResponse.state).toEqual(ExtrinsicResult.ExtrinsicFailed);
@@ -136,30 +133,30 @@ describe("xyk-pallet - Mint liquidity tests: MintLiquidity Errors:", () => {
     });
 
     await validateUnmodified(firstCurrency, secondCurrency, testUser1, [
-      new BN(defaultCurrecyValue),
-      new BN(defaultCurrecyValue),
+      new BN(defaultCurrencyValue),
+      new BN(defaultCurrencyValue),
     ]);
   });
 
   test("Mint liquidity assets that does not belong to any pool", async () => {
-    //add two curerncies and balance to testUser:
-    [firstCurrency, secondCurrency] = await Assets.setupUserWithCurrencies(
-      testUser1,
-      [defaultCurrecyValue, defaultCurrecyValue.add(new BN(1))],
-      sudo
-    );
-    const [thirdCurrency] = await Assets.setupUserWithCurrencies(
-      testUser1,
-      [defaultCurrecyValue],
-      sudo
-    );
+    //add two currencies and balance to testUser:
+    [firstCurrency, secondCurrency, thirdCurrency] =
+      await Assets.setupUserWithCurrencies(
+        testUser1,
+        [
+          defaultCurrencyValue,
+          defaultCurrencyValue.add(new BN(1)),
+          defaultCurrencyValue,
+        ],
+        sudo,
+      );
     //lets create a pool between asset 1 and 3.
     await createPool(
       testUser1.keyRingPair,
       firstCurrency,
       firstAssetAmount,
       thirdCurrency,
-      secondAssetAmount
+      secondAssetAmount,
     );
 
     await testUser1.refreshAmounts(AssetWallet.BEFORE);
@@ -169,7 +166,7 @@ describe("xyk-pallet - Mint liquidity tests: MintLiquidity Errors:", () => {
       testUser1.keyRingPair,
       firstCurrency,
       secondCurrency,
-      firstAssetAmount
+      firstAssetAmount,
     ).then((result) => {
       const eventResponse = getEventResultFromMangataTx(result);
       expect(eventResponse.state).toEqual(ExtrinsicResult.ExtrinsicFailed);
@@ -181,7 +178,7 @@ describe("xyk-pallet - Mint liquidity tests: MintLiquidity Errors:", () => {
       testUser1.keyRingPair,
       firstCurrency,
       secondCurrency,
-      firstAssetAmount
+      firstAssetAmount,
     ).then((result) => {
       const eventResponse = getEventResultFromMangataTx(result);
       expect(eventResponse.state).toEqual(ExtrinsicResult.ExtrinsicFailed);
@@ -192,17 +189,16 @@ describe("xyk-pallet - Mint liquidity tests: MintLiquidity Errors:", () => {
       firstCurrency,
       secondCurrency,
       testUser1,
-      pool_balance_before
+      pool_balance_before,
     );
   });
 
   test("Mint liquidity more assets than I own", async () => {
     [firstCurrency, secondCurrency] = await Assets.setupUserWithCurrencies(
       testUser1,
-      [defaultCurrecyValue, defaultCurrecyValue],
-      sudo
+      [defaultCurrencyValue, defaultCurrencyValue],
+      sudo,
     );
-    await testUser1.addMGATokens(sudo);
     await testUser1.refreshAmounts(AssetWallet.BEFORE);
     const poolAmountSecondCurrency = secondAssetAmount.div(new BN(2));
     await createPool(
@@ -210,7 +206,7 @@ describe("xyk-pallet - Mint liquidity tests: MintLiquidity Errors:", () => {
       firstCurrency,
       firstAssetAmount,
       secondCurrency,
-      poolAmountSecondCurrency
+      poolAmountSecondCurrency,
     );
 
     await testUser1.refreshAmounts(AssetWallet.BEFORE);
@@ -219,7 +215,7 @@ describe("xyk-pallet - Mint liquidity tests: MintLiquidity Errors:", () => {
       testUser1.keyRingPair,
       firstCurrency,
       secondCurrency,
-      testUser1.getAsset(firstCurrency)?.amountBefore.free.add(new BN(1))!
+      testUser1.getAsset(firstCurrency)?.amountBefore.free.add(new BN(1))!,
     ).then((result) => {
       const eventResponse = getEventResultFromMangataTx(result);
       expect(eventResponse.state).toEqual(ExtrinsicResult.ExtrinsicFailed);
@@ -237,14 +233,14 @@ describe("xyk-pallet - Mint liquidity tests: MintLiquidity Errors:", () => {
         secondCurrency,
         firstCurrency,
         testUser1.getAsset(secondCurrency)?.amountBefore.free!,
-        new BN(0)
+        new BN(0),
       ),
-      testUser1.keyRingPair
+      testUser1.keyRingPair,
     );
 
     const poolBalanceAfterSelling = await getBalanceOfPool(
       firstCurrency,
-      secondCurrency
+      secondCurrency,
     );
 
     await testUser1.refreshAmounts(AssetWallet.BEFORE);
@@ -252,7 +248,7 @@ describe("xyk-pallet - Mint liquidity tests: MintLiquidity Errors:", () => {
       testUser1.keyRingPair,
       firstCurrency,
       secondCurrency,
-      testUser1.getAsset(firstCurrency)?.amountBefore.free.sub(new BN(1))!
+      testUser1.getAsset(firstCurrency)?.amountBefore.free.sub(new BN(1))!,
     ).then((result) => {
       const eventResponse = getEventResultFromMangataTx(result);
       expect(eventResponse.state).toEqual(ExtrinsicResult.ExtrinsicFailed);
@@ -262,17 +258,16 @@ describe("xyk-pallet - Mint liquidity tests: MintLiquidity Errors:", () => {
       firstCurrency,
       secondCurrency,
       testUser1,
-      poolBalanceAfterSelling
+      poolBalanceAfterSelling,
     );
   });
 
   test("Min liquidity, SecondAssetAmount parameter expectation not met", async () => {
     [firstCurrency, secondCurrency] = await Assets.setupUserWithCurrencies(
       testUser1,
-      [defaultCurrecyValue, defaultCurrecyValue],
-      sudo
+      [defaultCurrencyValue, defaultCurrencyValue],
+      sudo,
     );
-    await testUser1.addMGATokens(sudo);
     await testUser1.refreshAmounts(AssetWallet.BEFORE);
     const poolAmountSecondCurrency = secondAssetAmount.div(new BN(2));
     await createPool(
@@ -280,7 +275,7 @@ describe("xyk-pallet - Mint liquidity tests: MintLiquidity Errors:", () => {
       firstCurrency,
       firstAssetAmount,
       secondCurrency,
-      poolAmountSecondCurrency
+      poolAmountSecondCurrency,
     );
 
     await testUser1.refreshAmounts(AssetWallet.BEFORE);
@@ -291,12 +286,12 @@ describe("xyk-pallet - Mint liquidity tests: MintLiquidity Errors:", () => {
       firstCurrency,
       secondCurrency,
       testUser1.getAsset(firstCurrency)?.amountBefore.free.sub(new BN(1))!,
-      new BN(1)
+      new BN(1),
     );
     let eventResponse = getEventResultFromMangataTx(result);
     expect(eventResponse.state).toEqual(ExtrinsicResult.ExtrinsicFailed);
     expect(eventResponse.data).toEqual(
-      xykErrors.SecondAssetAmountExceededExpectations
+      xykErrors.SecondAssetAmountExceededExpectations,
     );
     await validateUnmodified(firstCurrency, secondCurrency, testUser1, [
       firstAssetAmount,
@@ -309,12 +304,12 @@ describe("xyk-pallet - Mint liquidity tests: MintLiquidity Errors:", () => {
       firstCurrency,
       secondCurrency,
       testUser1.getAsset(firstCurrency)?.amountBefore.free.sub(new BN(1))!,
-      new BN(0)
+      new BN(0),
     );
     eventResponse = getEventResultFromMangataTx(resultZero);
     expect(eventResponse.state).toEqual(ExtrinsicResult.ExtrinsicFailed);
     expect(eventResponse.data).toEqual(
-      xykErrors.SecondAssetAmountExceededExpectations
+      xykErrors.SecondAssetAmountExceededExpectations,
     );
     await validateUnmodified(firstCurrency, secondCurrency, testUser1, [
       firstAssetAmount,
@@ -329,12 +324,12 @@ describe("xyk-pallet - Mint liquidity tests: MintLiquidity Errors:", () => {
       firstCurrency,
       secondCurrency,
       new BN(10000),
-      new BN(5000)
+      new BN(5000),
     );
     eventResponse = getEventResultFromMangataTx(resultExpectation);
     expect(eventResponse.state).toEqual(ExtrinsicResult.ExtrinsicFailed);
     expect(eventResponse.data).toEqual(
-      xykErrors.SecondAssetAmountExceededExpectations
+      xykErrors.SecondAssetAmountExceededExpectations,
     );
     await validateUnmodified(firstCurrency, secondCurrency, testUser1, [
       firstAssetAmount,
@@ -348,7 +343,7 @@ describe("xyk-pallet - Mint liquidity tests: MintLiquidity Errors:", () => {
       firstCurrency,
       secondCurrency,
       new BN(10000),
-      new BN(5001)
+      new BN(5001),
     );
     eventResponse = getEventResultFromMangataTx(resultExpectation);
     expect(eventResponse.state).toEqual(ExtrinsicResult.ExtrinsicSuccess);

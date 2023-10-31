@@ -40,18 +40,18 @@ describe("staking - testpad", () => {
 
   const user = "//Charlie";
 
-  test.each([user])("SendTxEachSecond", async (bondAmount) => {
+  test.each([user])("SendTxEachSecond", async () => {
     let cont = 3000;
     keyring = new Keyring({ type: "sr25519" });
     sudo = new User(keyring, sudoUserName);
     testUser1 = new User(keyring, user);
     await fs.writeFileSync(
       testUser1.keyRingPair.address + ".json",
-      JSON.stringify(testUser1.keyRingPair.toJson("mangata123"))
+      JSON.stringify(testUser1.keyRingPair.toJson("mangata123")),
     );
     await fs.writeFileSync(
       sudo.keyRingPair.address + ".json",
-      JSON.stringify(sudo.keyRingPair.toJson("mangata123"))
+      JSON.stringify(sudo.keyRingPair.toJson("mangata123")),
     );
     // add users to pair.
     keyring.addPair(testUser1.keyRingPair);
@@ -63,14 +63,14 @@ describe("staking - testpad", () => {
       await Assets.setupUserWithCurrencies(
         testUser1,
         [new BN("100000000000000000"), new BN("100000000000000000")],
-        sudo
+        sudo,
       );
     await testUser1.addMGATokens(sudo);
     await testUser1.createPoolToAsset(
       new BN("30000000000000000"),
       new BN("30000000000000000"),
       firstCurrency,
-      secondCurrency
+      secondCurrency,
     );
 
     const account = await (
@@ -83,14 +83,13 @@ describe("staking - testpad", () => {
       cont--;
       testLog.getLog().info("sending TXs-" + userNonce);
       p.push(
-        mangata.sellAsset(
-          testUser1.keyRingPair,
-          firstCurrency.toString(),
-          secondCurrency.toString(),
-          new BN(10),
-          new BN(0),
-          { nonce: new BN(userNonce) }
-        )
+        mangata.xyk.multiswapSellAsset({
+          amount: new BN(10),
+          account: testUser1.keyRingPair,
+          tokenIds: [firstCurrency.toString(), secondCurrency.toString()],
+          txOptions: { nonce: new BN(userNonce) },
+          minAmountOut: new BN(0),
+        }),
       );
       userNonce++;
       testLog.getLog().info("Sent -" + userNonce);

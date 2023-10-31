@@ -18,7 +18,7 @@ export class StatemineNode {
     toChain: ChainId,
     assetId: AssetSpec,
     amount: BN,
-    toUser: User
+    toUser: User,
   ): any {
     assert(ChainSpecs.has(toChain));
     const target = ChainSpecs.get(toChain)!;
@@ -28,7 +28,7 @@ export class StatemineNode {
 
     return this.api.tx.polkadotXcm.limitedReserveTransferAssets(
       {
-        V1: {
+        V2: {
           interior: {
             X1: {
               Parachain: target.parachain,
@@ -38,7 +38,7 @@ export class StatemineNode {
         },
       },
       {
-        V1: {
+        V2: {
           interior: {
             X1: {
               AccountId32: {
@@ -53,7 +53,7 @@ export class StatemineNode {
         },
       },
       {
-        V1: [
+        V2: [
           {
             fun: {
               Fungible: amount,
@@ -65,7 +65,7 @@ export class StatemineNode {
         ],
       },
       0,
-      { Limited: TRANSFER_INSTRUCTIONS * target.unitCostWeight }
+      { Limited: TRANSFER_INSTRUCTIONS * target.unitCostWeight },
     );
   }
 

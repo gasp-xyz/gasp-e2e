@@ -18,22 +18,21 @@ import { ExtrinsicResult } from "../../utils/eventListeners";
 import { BN } from "@polkadot/util";
 import { Keyring } from "@polkadot/api";
 import { AssetWallet, User } from "../../utils/User";
-import {
-  validateAssetsSwappedEvent,
-  validateUnmodified,
-} from "../../utils/validators";
+import { validateAssetsSwappedEvent } from "../../utils/validators";
 import { Assets } from "../../utils/Assets";
 import { getEnvironmentRequiredVars, xykErrors } from "../../utils/utils";
 import { getEventResultFromMangataTx } from "../../utils/txHandler";
 import { createPool } from "../../utils/tx";
+import { Sudo } from "../../utils/sudo";
+import { Xyk } from "../../utils/xyk";
 
 jest.spyOn(console, "log").mockImplementation(jest.fn());
 jest.setTimeout(1500000);
 process.env.NODE_ENV = "test";
 
-const first_asset_amount = new BN(50000);
-const second_asset_amount = new BN(50000);
-const defaultCurrecyValue = new BN(250000);
+const firstAssetAmount = new BN(50000);
+const secondAssetAmount = new BN(25000);
+const defaultCurrencyValue = new BN(250000);
 const { sudo: sudoUserName } = getEnvironmentRequiredVars();
 
 describe("xyk-pallet - Sell assets tests: SellAsset Errors:", () => {
@@ -43,6 +42,8 @@ describe("xyk-pallet - Sell assets tests: SellAsset Errors:", () => {
   let keyring: Keyring;
   let firstCurrency: BN;
   let secondCurrency: BN;
+  let thirdCurrency: BN;
+  let fourthCurrency: BN;
 
   const pool_balance_before = [new BN(0), new BN(0)];
 
@@ -52,9 +53,7 @@ describe("xyk-pallet - Sell assets tests: SellAsset Errors:", () => {
     } catch (e) {
       await initApi();
     }
-  });
 
-  beforeEach(async () => {
     keyring = new Keyring({ type: "sr25519" });
 
     // setup users
@@ -65,30 +64,62 @@ describe("xyk-pallet - Sell assets tests: SellAsset Errors:", () => {
     // add users to pair.
     keyring.addPair(testUser1.keyRingPair);
     keyring.addPair(sudo.keyRingPair);
+
+    [firstCurrency, secondCurrency, thirdCurrency, fourthCurrency] =
+      await Assets.setupUserWithCurrencies(
+        testUser1,
+        [
+          defaultCurrencyValue,
+          defaultCurrencyValue.add(new BN(1)),
+          defaultCurrencyValue,
+          defaultCurrencyValue.add(new BN(1)),
+        ],
+        sudo,
+      );
+
+    await testUser1.addMGATokens(sudo);
+
+    await testUser1.refreshAmounts(AssetWallet.BEFORE);
+
+    await Sudo.batchAsSudoFinalized(
+      Assets.FinalizeTge(),
+      Assets.initIssuance(),
+      Sudo.sudoAs(
+        testUser1,
+        Xyk.createPool(
+          firstCurrency,
+          firstAssetAmount,
+          secondCurrency,
+          secondAssetAmount,
+        ),
+      ),
+      Sudo.sudoAs(
+        testUser1,
+        Xyk.createPool(
+          thirdCurrency,
+          firstAssetAmount,
+          fourthCurrency,
+          secondAssetAmount,
+        ),
+      ),
+    );
   });
 
   test("Sell assets that does not belong to any pool", async () => {
-    //add two curerncies and balance to testUser:
-    [firstCurrency, secondCurrency] = await Assets.setupUserWithCurrencies(
-      testUser1,
-      [defaultCurrecyValue, defaultCurrecyValue.add(new BN(1))],
-      sudo
-    );
-    await testUser1.refreshAmounts(AssetWallet.BEFORE);
+    await testUser1.refreshAmounts(AssetWallet.AFTER);
 
-    const [thirdCurrency] = await Assets.setupUserWithCurrencies(
-      testUser1,
-      [defaultCurrecyValue],
-      sudo
-    );
+    const secondCurrencyValueBeforeSelling =
+      testUser1.getAsset(secondCurrency)?.amountAfter.free!;
+    const thirdCurrencyValueBeforeSelling =
+      testUser1.getAsset(thirdCurrency)?.amountAfter.free!;
 
     await new FeeTxs()
       .sellAsset(
         testUser1.keyRingPair,
         thirdCurrency,
         secondCurrency,
-        first_asset_amount.div(new BN(2)),
-        new BN(0)
+        firstAssetAmount.div(new BN(2)),
+        new BN(0),
       )
       .then((result) => {
         const eventResponse = getEventResultFromMangataTx(result);
@@ -101,8 +132,8 @@ describe("xyk-pallet - Sell assets tests: SellAsset Errors:", () => {
         testUser1.keyRingPair,
         secondCurrency,
         thirdCurrency,
-        first_asset_amount.div(new BN(2)),
-        new BN(0)
+        firstAssetAmount.div(new BN(2)),
+        new BN(0),
       )
       .then((result) => {
         const eventResponse = getEventResultFromMangataTx(result);
@@ -110,37 +141,40 @@ describe("xyk-pallet - Sell assets tests: SellAsset Errors:", () => {
         expect(eventResponse.data).toEqual(xykErrors.NoSuchPool);
       });
 
-    await validateUnmodified(
-      firstCurrency,
-      secondCurrency,
-      testUser1,
-      pool_balance_before
+    await testUser1.refreshAmounts(AssetWallet.AFTER);
+
+    const secondCurrencyValueAfterSelling =
+      testUser1.getAsset(secondCurrency)?.amountAfter.free!;
+    const thirdCurrencyValueAfterSelling =
+      testUser1.getAsset(thirdCurrency)?.amountAfter.free!;
+
+    expect(secondCurrencyValueBeforeSelling).bnEqual(
+      secondCurrencyValueAfterSelling,
     );
+    expect(thirdCurrencyValueBeforeSelling).bnEqual(
+      thirdCurrencyValueAfterSelling,
+    );
+
+    const pool_balance = await getBalanceOfPool(secondCurrency, thirdCurrency);
+    expect([pool_balance_before[0], pool_balance_before[1]]).collectionBnEqual(
+      pool_balance,
+    );
+
+    const balance = await getBalanceOfPool(thirdCurrency, secondCurrency);
+    expect([pool_balance_before[0], pool_balance_before[1]]).collectionBnEqual([
+      balance[1],
+      balance[0],
+    ]);
   });
 
   test("Try sell more assets than owned", async () => {
-    [firstCurrency, secondCurrency] = await Assets.setupUserWithCurrencies(
-      testUser1,
-      [defaultCurrecyValue, defaultCurrecyValue.add(new BN(1))],
-      sudo
-    );
-    await testUser1.addMGATokens(sudo);
-    await testUser1.refreshAmounts(AssetWallet.BEFORE);
-    await createPool(
-      testUser1.keyRingPair,
-      firstCurrency,
-      first_asset_amount,
-      secondCurrency,
-      second_asset_amount.div(new BN(2))
-    );
-
     let remainingOfCurrency1 = testUser1
       .getAsset(firstCurrency)
-      ?.amountBefore.free!.sub(first_asset_amount)!;
+      ?.amountBefore.free!.sub(firstAssetAmount)!;
     const sellPriceLocal = calculate_sell_price_local(
-      first_asset_amount,
-      second_asset_amount.div(new BN(2)),
-      remainingOfCurrency1.sub(new BN(1))
+      firstAssetAmount,
+      secondAssetAmount,
+      remainingOfCurrency1.sub(new BN(1)),
     );
 
     await sellAsset(
@@ -148,7 +182,7 @@ describe("xyk-pallet - Sell assets tests: SellAsset Errors:", () => {
       firstCurrency,
       secondCurrency,
       remainingOfCurrency1.sub(new BN(1)),
-      new BN(0)
+      new BN(0),
     ).then((result) => {
       const eventResponse = getEventResultFromMangataTx(result, [
         "xyk",
@@ -162,9 +196,9 @@ describe("xyk-pallet - Sell assets tests: SellAsset Errors:", () => {
     remainingOfCurrency1 = testUser1.getAsset(firstCurrency)?.amountAfter.free!;
     expect(remainingOfCurrency1).bnEqual(new BN(1));
 
-    const secondWalletAmount = defaultCurrecyValue
+    const secondWalletAmount = defaultCurrencyValue
       .add(new BN(1))
-      .sub(second_asset_amount.div(new BN(2)))
+      .sub(secondAssetAmount)
       .add(sellPriceLocal);
 
     await sellAsset(
@@ -172,7 +206,7 @@ describe("xyk-pallet - Sell assets tests: SellAsset Errors:", () => {
       firstCurrency,
       secondCurrency,
       remainingOfCurrency1.add(new BN(1)),
-      new BN(0)
+      new BN(0),
     ).then((result) => {
       const eventResponse = getEventResultFromMangataTx(result);
       expect(eventResponse.state).toEqual(ExtrinsicResult.ExtrinsicFailed);
@@ -183,13 +217,13 @@ describe("xyk-pallet - Sell assets tests: SellAsset Errors:", () => {
 
     const diffFromWallet = testUser1
       .getAsset(firstCurrency)
-      ?.amountBefore.free!.sub(new BN(defaultCurrecyValue).sub(new BN(1)));
+      ?.amountBefore.free!.sub(new BN(defaultCurrencyValue).sub(new BN(1)));
     expect(testUser1.getAsset(firstCurrency)?.amountAfter.free!).bnEqual(
-      diffFromWallet!
+      diffFromWallet!,
     );
 
     expect(testUser1.getAsset(secondCurrency)?.amountAfter.free!).bnEqual(
-      secondWalletAmount
+      secondWalletAmount,
     );
 
     const pool_balance = await getBalanceOfPool(firstCurrency, secondCurrency);
@@ -199,7 +233,7 @@ describe("xyk-pallet - Sell assets tests: SellAsset Errors:", () => {
     // Using Stano formulas, doing a Tx of 199999 - 0.05% = 199899.0005 ~ 199899 - 100 buy. Same for burn.
     // so fee is 100 + 100.
     const fee = new BN(200);
-    const secondWalletInThePool = defaultCurrecyValue
+    const secondWalletInThePool = defaultCurrencyValue
       .add(new BN(1))
       .sub(secondWalletAmount);
     const expectedPoolValueFirstAsset = new BN(249999).sub(fee);
@@ -221,35 +255,21 @@ describe("xyk-pallet - Sell assets tests: SellAsset Errors:", () => {
   });
 
   test("Sell assets with a high expectation: limit +1", async () => {
-    [firstCurrency, secondCurrency] = await Assets.setupUserWithCurrencies(
-      testUser1,
-      [defaultCurrecyValue, defaultCurrecyValue.add(new BN(1))],
-      sudo
-    );
-    await testUser1.addMGATokens(sudo);
-    const secondAssetAmount = second_asset_amount.div(new BN(2));
-    await createPool(
-      testUser1.keyRingPair,
-      firstCurrency,
-      first_asset_amount,
-      secondCurrency,
-      secondAssetAmount
-    );
     await testUser1.refreshAmounts(AssetWallet.BEFORE);
     const remainingOfCurrency1 =
-      testUser1.getAsset(firstCurrency)?.amountBefore!;
+      testUser1.getAsset(thirdCurrency)?.amountBefore!;
 
     const sellPriceLocal = calculate_sell_price_local(
-      first_asset_amount,
+      firstAssetAmount,
       secondAssetAmount,
-      remainingOfCurrency1.free
+      remainingOfCurrency1.free,
     );
     await sellAsset(
       testUser1.keyRingPair,
-      firstCurrency,
-      secondCurrency,
+      thirdCurrency,
+      fourthCurrency,
       remainingOfCurrency1.free,
-      sellPriceLocal.add(new BN(1))
+      sellPriceLocal.add(new BN(1)),
     ).then((result) => {
       const eventResponse = getEventResultFromMangataTx(result, [
         "xyk",
@@ -263,26 +283,26 @@ describe("xyk-pallet - Sell assets tests: SellAsset Errors:", () => {
     await testUser1.refreshAmounts(AssetWallet.AFTER);
 
     const diffFromWallet = testUser1
-      .getAsset(firstCurrency)
+      .getAsset(thirdCurrency)
       ?.amountBefore.free!.sub(feeToAvoidFrontRunning);
-    expect(testUser1.getAsset(firstCurrency)?.amountAfter.free!).bnEqual(
-      diffFromWallet!
+    expect(testUser1.getAsset(thirdCurrency)?.amountAfter.free!).bnEqual(
+      diffFromWallet!,
     );
 
     //second wallet should not be modified.
-    const amount = testUser1.getAsset(secondCurrency)?.amountBefore!;
-    expect(testUser1.getAsset(secondCurrency)?.amountAfter.free!).bnEqual(
-      amount.free
+    const amount = testUser1.getAsset(fourthCurrency)?.amountBefore!;
+    expect(testUser1.getAsset(fourthCurrency)?.amountAfter.free!).bnEqual(
+      amount.free,
     );
 
-    const treasury = await getTreasury(firstCurrency);
-    const treasuryBurn = await getTreasuryBurn(firstCurrency);
+    const treasury = await getTreasury(thirdCurrency);
+    const treasuryBurn = await getTreasuryBurn(thirdCurrency);
     expect(treasury).bnEqual(new BN(101));
     expect(treasuryBurn).bnEqual(new BN(101));
     //TODO: validate with Stano.
     const increasedInPool = new BN(401);
-    const poolBalances = await getBalanceOfPool(firstCurrency, secondCurrency);
-    expect(poolBalances[0]).bnEqual(first_asset_amount.add(increasedInPool));
+    const poolBalances = await getBalanceOfPool(thirdCurrency, fourthCurrency);
+    expect(poolBalances[0]).bnEqual(firstAssetAmount.add(increasedInPool));
     expect(poolBalances[1]).bnEqual(secondAssetAmount);
   });
 });
@@ -321,16 +341,16 @@ describe("xyk-pallet - Sell assets tests: Selling Assets you can", () => {
   test("Sell assets with a high expectation: limit - OK", async () => {
     [firstCurrency, secondCurrency] = await Assets.setupUserWithCurrencies(
       testUser1,
-      [defaultCurrecyValue, defaultCurrecyValue.add(new BN(1))],
-      sudo
+      [defaultCurrencyValue, defaultCurrencyValue.add(new BN(1))],
+      sudo,
     );
     await testUser1.addMGATokens(sudo);
     await createPool(
       testUser1.keyRingPair,
       firstCurrency,
-      first_asset_amount,
+      firstAssetAmount,
       secondCurrency,
-      second_asset_amount.div(new BN(2))
+      secondAssetAmount,
     );
 
     await testUser1.refreshAmounts(AssetWallet.BEFORE);
@@ -338,16 +358,16 @@ describe("xyk-pallet - Sell assets tests: Selling Assets you can", () => {
       testUser1.getAsset(firstCurrency)?.amountBefore!;
 
     const sellPriceLocal = calculate_sell_price_local(
-      first_asset_amount,
-      second_asset_amount.div(new BN(2)),
-      remainingOfCurrency1.free
+      firstAssetAmount,
+      secondAssetAmount,
+      remainingOfCurrency1.free,
     );
     await sellAsset(
       testUser1.keyRingPair,
       firstCurrency,
       secondCurrency,
       remainingOfCurrency1.free,
-      sellPriceLocal
+      sellPriceLocal,
     ).then((result) => {
       const eventResponse = getEventResultFromMangataTx(result, [
         "xyk",
@@ -361,7 +381,7 @@ describe("xyk-pallet - Sell assets tests: Selling Assets you can", () => {
         firstCurrency,
         remainingOfCurrency1.free,
         secondCurrency,
-        sellPriceLocal
+        sellPriceLocal,
       );
     });
 
@@ -370,16 +390,16 @@ describe("xyk-pallet - Sell assets tests: Selling Assets you can", () => {
 
     const amount = new BN(0);
     expect(testUser1.getAsset(firstCurrency)?.amountAfter.free!).bnEqual(
-      amount
+      amount,
     );
     //amounAsset2 = issued  - spent in the pool + bought selling all firstCurerncy.
-    const amountAsset2 = defaultCurrecyValue
+    const amountAsset2 = defaultCurrencyValue
       .add(new BN(1))
-      .sub(second_asset_amount.div(new BN(2)))
+      .sub(secondAssetAmount)
       .add(sellPriceLocal);
 
     expect(testUser1.getAsset(secondCurrency)?.amountAfter.free!).bnEqual(
-      amountAsset2
+      amountAsset2,
     );
   });
 
@@ -389,13 +409,13 @@ describe("xyk-pallet - Sell assets tests: Selling Assets you can", () => {
     keyring.addPair(testUser2.keyRingPair);
     [firstCurrency, secondCurrency] = await Assets.setupUserWithCurrencies(
       testUser1,
-      [defaultCurrecyValue, defaultCurrecyValue.add(new BN(1))],
-      sudo
+      [defaultCurrencyValue, defaultCurrencyValue.add(new BN(1))],
+      sudo,
     );
     const [thirdCurrency] = await Assets.setupUserWithCurrencies(
       testUser2,
-      [defaultCurrecyValue],
-      sudo
+      [defaultCurrencyValue],
+      sudo,
     );
 
     await sudo.mint(thirdCurrency, testUser1, new BN(10000));
@@ -403,9 +423,9 @@ describe("xyk-pallet - Sell assets tests: Selling Assets you can", () => {
     await createPool(
       testUser1.keyRingPair,
       firstCurrency,
-      first_asset_amount,
+      firstAssetAmount,
       secondCurrency,
-      second_asset_amount.div(new BN(2))
+      secondAssetAmount,
     );
 
     await createPool(
@@ -413,7 +433,7 @@ describe("xyk-pallet - Sell assets tests: Selling Assets you can", () => {
       firstCurrency,
       new BN(10000),
       thirdCurrency,
-      new BN(10000).div(new BN(2))
+      new BN(10000).div(new BN(2)),
     );
 
     await testUser2.refreshAmounts(AssetWallet.BEFORE);
@@ -423,7 +443,7 @@ describe("xyk-pallet - Sell assets tests: Selling Assets you can", () => {
     const sellPriceLocal = calculate_sell_price_local(
       new BN(10000).div(new BN(2)),
       new BN(10000),
-      remainingOfCurrency3.free
+      remainingOfCurrency3.free,
     );
 
     await new FeeTxs()
@@ -432,7 +452,7 @@ describe("xyk-pallet - Sell assets tests: Selling Assets you can", () => {
         thirdCurrency,
         firstCurrency,
         remainingOfCurrency3.free,
-        sellPriceLocal
+        sellPriceLocal,
       )
       .then((result) => {
         const eventResponse = getEventResultFromMangataTx(result, [
@@ -447,7 +467,7 @@ describe("xyk-pallet - Sell assets tests: Selling Assets you can", () => {
           thirdCurrency,
           remainingOfCurrency3.free,
           firstCurrency,
-          sellPriceLocal
+          sellPriceLocal,
         );
       });
     testUser2.addAsset(firstCurrency);
@@ -455,12 +475,12 @@ describe("xyk-pallet - Sell assets tests: Selling Assets you can", () => {
 
     let amount = new BN(0);
     expect(testUser2.getAsset(thirdCurrency)?.amountAfter.free!).bnEqual(
-      amount
+      amount,
     );
 
     amount = sellPriceLocal;
     expect(testUser2.getAsset(firstCurrency)?.amountAfter.free!).bnEqual(
-      amount
+      amount,
     );
   });
 });

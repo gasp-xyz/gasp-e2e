@@ -49,16 +49,16 @@ describe("MPL: Delegator", () => {
     testUser1 = new User(keyring);
     sudo = new SudoUser(keyring, node);
     const candidates = JSON.parse(
-      JSON.stringify(await node.api?.query.parachainStaking.candidatePool())
+      JSON.stringify(await node.api?.query.parachainStaking.candidatePool()),
     );
 
     liqTokenForCandidate = new BN(
       Math.max.apply(
         null,
         candidates.map(
-          (t: { liquidityToken: { toNumber: () => any } }) => t.liquidityToken
-        )
-      )
+          (t: { liquidityToken: { toNumber: () => any } }) => t.liquidityToken,
+        ),
+      ),
     );
     const tokens = await getLiquidityPool(liqTokenForCandidate);
     // calculate this amount is crucial to not drop the chain production if new candidates are elected.
@@ -68,43 +68,40 @@ describe("MPL: Delegator", () => {
         Math.min.apply(
           Math,
           candidates.map((x: { amount: string | null | undefined }) =>
-            hexToBn(x.amount)
-          )
-        )
-      ).toString()
+            hexToBn(x.amount),
+          ),
+        ),
+      ).toString(),
     ).subn(10);
     await sudo.mintTokens(
       tokens.concat([MGA_ASSET_ID, liqTokenForCandidate]),
       [testUser1],
-      minAmountInCollators.add(new BN(Math.pow(10, 20).toString()))
+      minAmountInCollators.add(new BN(Math.pow(10, 20).toString())),
     );
-    const tokensBeforeJoin = await testUser1.getUserTokensAccountInfo(
-      liqTokenForCandidate
-    );
+    const tokensBeforeJoin =
+      await testUser1.getUserTokensAccountInfo(liqTokenForCandidate);
     if (hexToBn(tokensBeforeJoin.reserved).gtn(0)) {
       await deactivateLiquidity(
         testUser1.keyRingPair,
         liqTokenForCandidate,
-        hexToBn(tokensBeforeJoin.reserved)
+        hexToBn(tokensBeforeJoin.reserved),
       );
     }
   });
 
   // result parsing from event does not work properly
   test("join as delegator > verify account balances are reserved +  mpl storage", async () => {
-    const tokensBeforeJoin = await testUser1.getUserTokensAccountInfo(
-      liqTokenForCandidate
-    );
+    const tokensBeforeJoin =
+      await testUser1.getUserTokensAccountInfo(liqTokenForCandidate);
     const liqtokens = hexToBn(tokensBeforeJoin.free);
     await testUser1.joinAsDelegator(liqTokenForCandidate, liqtokens);
 
     const mplStatus = await getMultiPurposeLiquidityStatus(
       testUser1.keyRingPair.address,
-      liqTokenForCandidate
+      liqTokenForCandidate,
     );
-    const tokensAfterJoin = await testUser1.getUserTokensAccountInfo(
-      liqTokenForCandidate
-    );
+    const tokensAfterJoin =
+      await testUser1.getUserTokensAccountInfo(liqTokenForCandidate);
     expect(hexToBn(mplStatus.stakedUnactivatedReserves)).bnEqual(liqtokens);
     expect(hexToBn(tokensAfterJoin.reserved)).bnEqual(new BN(liqtokens));
 
@@ -127,7 +124,7 @@ describe("MPL: Collators", () => {
     await node.connect();
     const api = await getApi();
     const tokenAmount = new BN(
-      await api.consts.parachainStaking.minCandidateStk.toString()
+      await api.consts.parachainStaking.minCandidateStk.toString(),
     ).muln(100);
     // setup users
     testUser1 = new User(keyring);
@@ -136,7 +133,7 @@ describe("MPL: Collators", () => {
     const results = await Assets.setupUserWithCurrencies(
       testUser1,
       [tokenAmount],
-      sudo
+      sudo,
     );
     await testUser1.addMGATokens(sudo, tokenAmount.muln(1000));
     const tokenId = results[0];
@@ -144,12 +141,12 @@ describe("MPL: Collators", () => {
       tokenAmount,
       tokenAmount,
       MGA_ASSET_ID,
-      tokenId
+      tokenId,
     );
     liqTokenForCandidate = await getLiquidityAssetId(MGA_ASSET_ID, tokenId);
     await sudo.addStakingLiquidityToken(liqTokenForCandidate);
     liqTokensAmount = hexToBn(
-      (await testUser1.getUserTokensAccountInfo(liqTokenForCandidate)).free
+      (await testUser1.getUserTokensAccountInfo(liqTokenForCandidate)).free,
     );
     await testUser1.joinAsCandidate(liqTokenForCandidate, liqTokensAmount);
   });
@@ -157,13 +154,12 @@ describe("MPL: Collators", () => {
   test("join as collator > verify account balances are reserved + mpl checks", async () => {
     const mplStatus = await getMultiPurposeLiquidityStatus(
       testUser1.keyRingPair.address,
-      liqTokenForCandidate
+      liqTokenForCandidate,
     );
-    const tokensAfterJoin = await testUser1.getUserTokensAccountInfo(
-      liqTokenForCandidate
-    );
+    const tokensAfterJoin =
+      await testUser1.getUserTokensAccountInfo(liqTokenForCandidate);
     expect(hexToBn(mplStatus.stakedUnactivatedReserves)).bnEqual(
-      liqTokensAmount
+      liqTokensAmount,
     );
     expect(hexToBn(tokensAfterJoin.reserved)).bnEqual(liqTokensAmount);
 
@@ -176,21 +172,22 @@ describe("MPL: Collators", () => {
   });
   test("join as collator + activate  > acount balances are reserved + mpl checks", async () => {
     await sudo.promotePool(liqTokenForCandidate);
+
     await activateLiquidity(
       testUser1.keyRingPair,
       liqTokenForCandidate,
       liqTokensAmount,
-      "stakedunactivatedreserves"
+      "StakedUnactivatedReserves",
     );
+
     const mplStatus = await getMultiPurposeLiquidityStatus(
       testUser1.keyRingPair.address,
-      liqTokenForCandidate
+      liqTokenForCandidate,
     );
-    const tokensAfterJoin = await testUser1.getUserTokensAccountInfo(
-      liqTokenForCandidate
-    );
+    const tokensAfterJoin =
+      await testUser1.getUserTokensAccountInfo(liqTokenForCandidate);
     expect(hexToBn(mplStatus.stakedAndActivatedReserves)).bnEqual(
-      liqTokensAmount
+      liqTokensAmount,
     );
     expect(hexToBn(tokensAfterJoin.reserved)).bnEqual(liqTokensAmount);
 
@@ -207,7 +204,7 @@ describe("MPL: Collators", () => {
       await deactivateLiquidity(
         testUser1.keyRingPair,
         liqTokenForCandidate,
-        liqTokensAmount
+        liqTokensAmount,
       );
     } catch (error) {}
   });
@@ -224,7 +221,7 @@ describe("MPL: Collators - Activated liq", () => {
     const api = await getApi();
     // setup users
     const tokenAmount = new BN(
-      await api.consts.parachainStaking.minCandidateStk.toString()
+      await api.consts.parachainStaking.minCandidateStk.toString(),
     ).muln(100);
     testUser1 = new User(keyring);
     sudo = new SudoUser(keyring, node);
@@ -232,7 +229,7 @@ describe("MPL: Collators - Activated liq", () => {
     const results = await Assets.setupUserWithCurrencies(
       testUser1,
       [tokenAmount],
-      sudo
+      sudo,
     );
     await testUser1.addMGATokens(sudo, tokenAmount.muln(1000));
     const tokenId = results[0];
@@ -240,7 +237,7 @@ describe("MPL: Collators - Activated liq", () => {
       tokenAmount,
       tokenAmount,
       MGA_ASSET_ID,
-      tokenId
+      tokenId,
     );
     liqTokenForCandidate = await getLiquidityAssetId(MGA_ASSET_ID, tokenId);
     await sudo.promotePool(liqTokenForCandidate);
@@ -248,12 +245,12 @@ describe("MPL: Collators - Activated liq", () => {
 
     liqTokenForCandidate = await getLiquidityAssetId(MGA_ASSET_ID, tokenId);
     liqTokensAmount = hexToBn(
-      (await testUser1.getUserTokensAccountInfo(liqTokenForCandidate)).free
+      (await testUser1.getUserTokensAccountInfo(liqTokenForCandidate)).free,
     );
     await activateLiquidity(
       testUser1.keyRingPair,
       liqTokenForCandidate,
-      liqTokensAmount
+      liqTokensAmount,
     );
   });
 
@@ -261,18 +258,17 @@ describe("MPL: Collators - Activated liq", () => {
     await testUser1.joinAsCandidate(
       liqTokenForCandidate,
       liqTokensAmount,
-      "activatedunstakedreserves"
+      "activatedunstakedreserves",
     );
 
     const mplStatus = await getMultiPurposeLiquidityStatus(
       testUser1.keyRingPair.address,
-      liqTokenForCandidate
+      liqTokenForCandidate,
     );
-    const tokensAfterJoin = await testUser1.getUserTokensAccountInfo(
-      liqTokenForCandidate
-    );
+    const tokensAfterJoin =
+      await testUser1.getUserTokensAccountInfo(liqTokenForCandidate);
     expect(hexToBn(mplStatus.stakedAndActivatedReserves)).bnEqual(
-      liqTokensAmount
+      liqTokensAmount,
     );
     expect(hexToBn(tokensAfterJoin.reserved)).bnEqual(liqTokensAmount);
 

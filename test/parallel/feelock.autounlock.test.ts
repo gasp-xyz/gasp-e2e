@@ -1,5 +1,6 @@
 /*
  *
+ * @group parallel
  * @group paralgasless
  */
 import { jest } from "@jest/globals";
@@ -57,7 +58,7 @@ beforeEach(async () => {
   [firstToken, secondToken] = await Assets.setupUserWithCurrencies(
     testUser1,
     [defaultCurrencyValue, defaultCurrencyValue],
-    sudo
+    sudo,
   );
   testUser1.addAsset(nativeCurrencyId);
   await Sudo.batchAsSudoFinalized(
@@ -68,9 +69,9 @@ beforeEach(async () => {
         firstToken,
         defaultPoolVolumeValue,
         secondToken,
-        defaultPoolVolumeValue
-      )
-    )
+        defaultPoolVolumeValue,
+      ),
+    ),
   );
 });
 
@@ -83,7 +84,7 @@ test("[gasless] Happy path: automatic-unlock", async () => {
     firstToken,
     secondToken,
     new BN(10000),
-    new BN(0)
+    new BN(0),
   ).then((result) => {
     const eventResponse = getEventResultFromMangataTx(result, [
       "xyk",
@@ -97,18 +98,19 @@ test("[gasless] Happy path: automatic-unlock", async () => {
   await testUser1.refreshAmounts(AssetWallet.AFTER);
   expect(
     testUser1.getAsset(nativeCurrencyId, FREE_AND_RESERVED)?.amountBefore!
-      .reserved
+      .reserved,
   ).bnEqual(new BN(0));
   expect(
     testUser1.getAsset(nativeCurrencyId, FREE_AND_RESERVED)?.amountAfter!
-      .reserved
+      .reserved,
   ).bnEqual(gaslessMetadata.feeLockAmount);
   await testUser1.refreshAmounts(AssetWallet.BEFORE);
   // wait until lock is automatically released
   await waitForEvents(
     await getApi(),
     "feeLock.FeeLockUnlocked",
-    gaslessMetadata.periodLength.toNumber() + 5
+    gaslessMetadata.periodLength.toNumber() + 5,
+    testUser1.keyRingPair.address,
   );
   const blockNoAfterEvent = await getBlockNumber();
 
@@ -117,18 +119,18 @@ test("[gasless] Happy path: automatic-unlock", async () => {
   // assert
   expect(
     testUser1.getAsset(nativeCurrencyId, FREE_AND_RESERVED)!.amountBefore
-      .reserved
+      .reserved,
   ).bnEqual(gaslessMetadata.feeLockAmount);
   expect(
     testUser1.getAsset(nativeCurrencyId, FREE_AND_RESERVED)!.amountAfter
-      .reserved
+      .reserved,
   ).bnEqual(new BN(0));
   //check that  did not stop waiting because of the limit of waits
   expect(blockNoAfterEvent - blockNo).toBeLessThan(
-    gaslessMetadata.periodLength.toNumber() + 5
+    gaslessMetadata.periodLength.toNumber() + 5,
   );
   //check that  did not happened before it should!
   expect(blockNoAfterEvent - blockNo).toBeGreaterThanOrEqual(
-    gaslessMetadata.periodLength.toNumber()
+    gaslessMetadata.periodLength.toNumber(),
   );
 });

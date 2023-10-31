@@ -1,7 +1,6 @@
 import { formatBalance } from "@polkadot/util/format";
-import { BN, hexToU8a } from "@polkadot/util";
-import { getApi, getMangataInstance, mangata, initApi } from "./api";
-import { hexToBn, isHex } from "@polkadot/util";
+import { BN, hexToBn, hexToU8a, isHex } from "@polkadot/util";
+import { getApi, getMangataInstance, initApi, mangata } from "./api";
 import { Assets } from "./Assets";
 import { User } from "./User";
 import { getAccountJSON } from "./frontend/utils/Helper";
@@ -15,9 +14,10 @@ import { Sudo } from "./sudo";
 import { setupApi, setupUsers } from "./setup";
 import { Xyk } from "./xyk";
 import { MGA_ASSET_ID } from "./Constants";
-import { BN_HUNDRED, BN_ONE } from "@mangata-finance/sdk";
+import { BN_HUNDRED, BN_ONE, MangataGenericEvent } from "@mangata-finance/sdk";
 import _ from "lodash";
 import Keyring from "@polkadot/keyring";
+import jsonpath from "jsonpath";
 
 export function sleep(ms: number) {
   return new Promise((resolve) => {
@@ -35,8 +35,7 @@ export function fromBNToUnitString(value: BN) {
 export function fromStringToUnitString(value: string) {
   const stringWithoutCommas = value.split(",").join("");
   const valueBN = new BN(stringWithoutCommas);
-  const unitString = fromBNToUnitString(valueBN);
-  return unitString;
+  return fromBNToUnitString(valueBN);
 }
 
 export function getMangataApiUrlPort() {
@@ -86,6 +85,14 @@ export function getEnvironmentRequiredVars() {
   const uiUri = process.env.UI_URL
     ? process.env.UI_URL
     : "https://develop.mangata.finance/";
+
+  const localAddress = process.env.LOCAL_ADDRESS
+    ? process.env.LOCAL_ADDRESS
+    : "localhost";
+
+  const stashServiceAddress = process.env.STASH_URL
+    ? process.env.STASH_URL
+    : "https://mangata-stash-prod-dot-direct-pixel-353917.oa.r.appspot.com";
 
   const mnemonicMetaMask = process.env.MNEMONIC_META
     ? process.env.MNEMONIC_META
@@ -140,6 +147,8 @@ export function getEnvironmentRequiredVars() {
     alice: testUserName,
     uiUserPassword: userPassword,
     uiUri: uiUri,
+    localAddress: localAddress,
+    stashServiceAddress: stashServiceAddress,
     mnemonicMetaMask: mnemonicMetaMask,
     mnemonicPolkadot: mnemonicPolkadot,
     logLevel: logLevel,
@@ -165,12 +174,12 @@ export async function UserCreatesAPoolAndMintLiquidity(
   sudo: User,
   userAmount: BN,
   poolAmount: BN = new BN(userAmount).div(new BN(2)),
-  mintAmount: BN = new BN(userAmount).div(new BN(4))
+  mintAmount: BN = new BN(userAmount).div(new BN(4)),
 ) {
   const [firstCurrency, secondCurrency] = await Assets.setupUserWithCurrencies(
     testUser1,
     [userAmount, userAmount],
-    sudo
+    sudo,
   );
   await testUser1.addMGATokens(sudo);
   await (
@@ -213,7 +222,7 @@ export async function createUserFromJson(keyring: Keyring) {
 
 export function calculateLiqAssetAmount(
   firstAssetAmount: BN,
-  secondAssetAmount: BN
+  secondAssetAmount: BN,
 ) {
   return firstAssetAmount.add(secondAssetAmount).div(new BN(2));
 }
@@ -247,7 +256,7 @@ export const waitForNBlocks = async (n: number) => {
 
 export async function waitBlockNumber(
   blockNumber: string,
-  maxWaitingPeriod: number
+  maxWaitingPeriod: number,
 ) {
   let currentBlock = await getBlockNumber();
   let waitingperiodCounter: number;
@@ -274,10 +283,10 @@ export async function waitBlockNumber(
 export async function waitIfSessionWillChangeInNblocks(numberOfBlocks: number) {
   const api = await getApi();
   const sessionDuration = BigInt(
-    (await api!.consts.parachainStaking.blocksPerRound!).toString()
+    (await api!.consts.parachainStaking.blocksPerRound!).toString(),
   );
   const blockNumber = BigInt(
-    await (await api!.query.system.number()).toString()
+    await (await api!.query.system.number()).toString(),
   );
   if (
     (blockNumber % sessionDuration) + BigInt(numberOfBlocks) >
@@ -298,7 +307,7 @@ export async function waitNewStakingRound(maxBlocks: number = 0) {
   const sessionLength = parachainStakingRoundInfo.length.toNumber();
   currentBlockNumber = await getBlockNumber();
   const initialBlockNumber = currentBlockNumber;
-  currentSessionNumber = (await api?.query.session.currentIndex()).toNumber();
+  currentSessionNumber = (await api.query.session.currentIndex()).toNumber();
   const initialSessionNumber = currentSessionNumber;
   const awaitedSessionNumber = initialSessionNumber + 1;
   if (maxBlocks <= 0) {
@@ -310,14 +319,14 @@ export async function waitNewStakingRound(maxBlocks: number = 0) {
     currentSessionNumber <= initialSessionNumber
   ) {
     currentBlockNumber = await getBlockNumber();
-    currentSessionNumber = (await api?.query.session.currentIndex()).toNumber();
+    currentSessionNumber = (await api.query.session.currentIndex()).toNumber();
     testLog
       .getLog()
       .info(
         "Awaited session number: " +
           awaitedSessionNumber +
           ", current session number: " +
-          currentSessionNumber
+          currentSessionNumber,
       );
     await waitNewBlock();
   }
@@ -328,7 +337,7 @@ export async function waitNewStakingRound(maxBlocks: number = 0) {
 
 export async function waitUntilCollatorProducesBlocks(
   maxBlocks: number = 0,
-  userAddress: string
+  userAddress: string,
 ) {
   let currentBlockNumber = await getBlockNumber();
   const initialBlockNumber = currentBlockNumber;
@@ -337,9 +346,8 @@ export async function waitUntilCollatorProducesBlocks(
   while (awaitedBlockNumber > currentBlockNumber && !found) {
     currentBlockNumber = await getBlockNumber();
     const api = await mangata?.api()!;
-    const blockHashSignedByUser = await api.rpc.chain.getBlockHash(
-      currentBlockNumber
-    );
+    const blockHashSignedByUser =
+      await api.rpc.chain.getBlockHash(currentBlockNumber);
     const header = await api.derive.chain.getHeader(blockHashSignedByUser);
     const author = header!.author!.toHuman();
 
@@ -353,7 +361,7 @@ export async function waitUntilCollatorProducesBlocks(
 export async function waitUntilUserCollatorRewarded(
   user: User,
   maxBlocks = 100,
-  distributeRewardsEvent = "parachainStaking.Rewarded"
+  distributeRewardsEvent = "parachainStaking.Rewarded",
 ) {
   return new Promise(async (resolve, reject) => {
     const method = distributeRewardsEvent;
@@ -364,19 +372,19 @@ export async function waitUntilUserCollatorRewarded(
       testLog
         .getLog()
         .info(
-          `→ find on ${api.runtimeChain} for '${method}' event, attempt ${maxBlocks}, head ${head.hash}`
+          `→ find on ${api.runtimeChain} for '${method}' event, attempt ${maxBlocks}, head ${head.hash}`,
         );
       events.forEach((e) => logEvent(api.runtimeChain, e));
 
       const filtered = _.filter(
         events,
-        ({ event }) => `${event.section}.${event.method}` === method
+        ({ event }) => `${event.section}.${event.method}` === method,
       );
       if (filtered.length > 0) {
         const destUser = filtered.filter((e) =>
           JSON.parse(JSON.stringify(e.toHuman())).event.data.includes(
-            user.keyRingPair.address
-          )
+            user.keyRingPair.address,
+          ),
         );
         if (destUser.length > 0) {
           resolve(destUser);
@@ -398,16 +406,16 @@ export async function getTokensDiffForBlockAuthor(blockNumber: AnyNumber) {
   const data = await api.query.tokens.accounts.at(
     blockHashSignedByUser,
     author,
-    0
+    0,
   );
   const freeAfter = hexToBn(JSON.parse(data.toString()).free);
   const blockHashBefore = await api.rpc.chain.getBlockHash(
-    Number(blockNumber) - 1
+    Number(blockNumber) - 1,
   );
   const dataBefore = await api.query.tokens.accounts.at(
     blockHashBefore,
     author,
-    0
+    0,
   );
   const freeBefore = hexToBn(JSON.parse(dataBefore.toString()).free);
   return freeAfter.sub(freeBefore);
@@ -415,35 +423,31 @@ export async function getTokensDiffForBlockAuthor(blockNumber: AnyNumber) {
 
 export async function getUserBalanceOfToken(tokenId: BN, account: User) {
   const api = getApi();
-  const tokenBalance = await api.query.tokens.accounts(
-    account.keyRingPair.address,
-    tokenId
-  );
-  return tokenBalance;
+  return await api.query.tokens.accounts(account.keyRingPair.address, tokenId);
 }
 
 export async function getBlockNumber(): Promise<number> {
-  const api = await mangata?.api()!;
-  return ((await api.query.system.number()) as any).toNumber();
+  const blockNumber = stringToBN(await mangata!.query.getBlockNumber());
+  return blockNumber.toNumber();
 }
 export async function getMultiPurposeLiquidityStatus(
   address: string,
-  tokenId: BN
+  tokenId: BN,
 ) {
   const api = await mangata?.api()!;
   return (await api.query.multiPurposeLiquidity.reserveStatus(
     address,
-    tokenId
+    tokenId,
   )) as any;
 }
 export async function getMultiPurposeLiquidityReLockStatus(
   address: string,
-  tokenId: BN
+  tokenId: BN,
 ) {
   const api = await mangata?.api()!;
   return (await api.query.multiPurposeLiquidity.relockStatus(
     address,
-    tokenId
+    tokenId,
   )) as any;
 }
 export async function getVestingStatus(address: string, tokenId: BN) {
@@ -452,7 +456,7 @@ export async function getVestingStatus(address: string, tokenId: BN) {
 }
 export async function findBlockWithExtrinsicSigned(
   blocks = [0, 1],
-  userAddress: string
+  userAddress: string,
 ) {
   const api = await mangata?.api()!;
   if (blocks.length < 2) {
@@ -466,7 +470,7 @@ export async function findBlockWithExtrinsicSigned(
     const blockHashSignedByUser = await api.rpc.chain.getBlockHash(blockNumber);
     const block = await api.rpc.chain.getBlock(blockHashSignedByUser);
     const signedByUser = (block.block.extrinsics.toHuman() as any[]).some(
-      (ext) => ext.isSigned && ext.signer.Id === userAddress
+      (ext) => ext.isSigned && ext.signer.Id === userAddress,
     );
     if (signedByUser) {
       return blockNumber;
@@ -495,6 +499,7 @@ export enum xykErrors {
   MathOverflow = "MathOverflow",
   LiquidityTokenCreationFailed = "LiquidityTokenCreationFailed",
   FunctionNotAvailableForThisToken = "FunctionNotAvailableForThisToken",
+  PoolIsEmpty = "PoolIsEmpty",
 }
 
 export enum feeLockErrors {
@@ -505,7 +510,7 @@ export enum feeLockErrors {
 
 export async function getFeeLockMetadata(api: ApiPromise) {
   const lockMetadata = JSON.parse(
-    JSON.stringify(await api?.query.feeLock.feeLockMetadata())
+    JSON.stringify(await api?.query.feeLock.feeLockMetadata()),
   );
   const periodLength = stringToBN(lockMetadata.periodLength.toString());
   const feeLockAmount = stringToBN(lockMetadata.feeLockAmount.toString());
@@ -551,13 +556,15 @@ export async function printCandidatePowers() {
         return [
           JSON.parse(JSON.stringify(state[1].toHuman())).id,
           stringToBN(
-            JSON.parse(JSON.stringify(state[1].toHuman())).liquidityToken
+            JSON.parse(JSON.stringify(state[1].toHuman())).liquidityToken,
           ),
           stringToBN(
-            JSON.parse(JSON.stringify(state[1])).totalCounted
+            JSON.parse(JSON.stringify(state[1])).totalCounted,
           ).toString(),
         ];
-      } else return [];
+      } else {
+        return [];
+      }
     });
 
   for (let index = 0; index < info.length; index++) {
@@ -570,7 +577,7 @@ export async function printCandidatePowers() {
   }
 
   const sorted = info.sort((a, b) =>
-    stringToBN(a[3]).sub(stringToBN(b[3])).isNeg() ? 1 : -1
+    stringToBN(a[3]).sub(stringToBN(b[3])).isNeg() ? 1 : -1,
   );
   sorted.forEach((x, index) =>
     // eslint-disable-next-line no-console
@@ -581,8 +588,8 @@ export async function printCandidatePowers() {
         " - " +
         index +
         "< -- > liq" +
-        info[index][1].toString()
-    )
+        info[index][1].toString(),
+    ),
   );
   //console.log(JSON.stringify(sorted));
 }
@@ -597,7 +604,7 @@ export async function swapEachNBlocks(period: number) {
     sudo,
     Assets.DEFAULT_AMOUNT,
     sudo,
-    true
+    true,
   );
   await Sudo.batchAsSudoFinalized(
     Assets.FinalizeTge(),
@@ -615,17 +622,18 @@ export async function swapEachNBlocks(period: number) {
         MGA_ASSET_ID,
         Assets.DEFAULT_AMOUNT.divn(2),
         token2,
-        Assets.DEFAULT_AMOUNT.divn(2)
-      )
-    )
+        Assets.DEFAULT_AMOUNT.divn(2),
+      ),
+    ),
   );
+  // noinspection InfiniteLoopJS
   while (true) {
     await sellAsset(
       testUser4.keyRingPair,
       token2,
       MGA_ASSET_ID,
       BN_HUNDRED,
-      BN_ONE
+      BN_ONE,
     );
     await waitForNBlocks(period);
   }
@@ -633,7 +641,7 @@ export async function swapEachNBlocks(period: number) {
 export async function getUserIdentity(user: User) {
   const api = getApi();
   const identity = await api.query.identity.identityOf(
-    user.keyRingPair.address
+    user.keyRingPair.address,
   );
   return JSON.parse(JSON.stringify(identity.toHuman()));
 }
@@ -647,4 +655,17 @@ export function isRunningInChops() {
     process.env.CHOPSTICK_ENABLED &&
     process.env.CHOPSTICK_ENABLED.toLocaleLowerCase() === "true"
   );
+}
+
+export function isBadOriginError(events: MangataGenericEvent[]) {
+  // Define the JSONPath expression to search for the key
+  const key = "badOrigin";
+  testLog
+    .getLog()
+    .info(`Looking for badOrigin here: ${JSON.stringify(events)}`);
+  const matches = jsonpath.query(
+    JSON.parse(JSON.stringify(events)),
+    `$..${key}`,
+  );
+  return matches.length > 0;
 }

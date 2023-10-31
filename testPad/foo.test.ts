@@ -28,7 +28,7 @@ describe("staking - testpad", () => {
     const bobImage = as.filter(
       (x) =>
         x.Command.toLowerCase().includes("bob") &&
-        x.Image.includes(mgaParachainImageName)
+        x.Image.includes(mgaParachainImageName),
     )[0];
     await execSh(`docker tag ${mgaDockerContainerImage} ${dockerImageName}`);
     await sleep(2000);
@@ -72,18 +72,18 @@ describe("staking - testpad", () => {
           },
         },
       },
-      function (err, data, container) {
+      function (err, data) {
         if (err) {
           return console.error(err);
         }
         console.info(data.StatusCode);
-      }
+      },
     );
     await sleep(5000);
   });
   afterEach(async () => {
     const containers = (await docker.listContainers()).filter((x) =>
-      x.Image.includes(dockerImageName)
+      x.Image.includes(dockerImageName),
     );
     for (let index = 0; index < containers.length; index++) {
       const containerInfo = containers[index];

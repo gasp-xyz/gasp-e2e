@@ -27,7 +27,7 @@ export class SudoUser extends BaseUser {
       this.keyRingPair,
       assetId,
       this.keyRingPair.address,
-      amount
+      amount,
     ).then((result) => {
       const eventResponse = getEventResultFromMangataTx(result, [
         "tokens",
@@ -42,7 +42,7 @@ export class SudoUser extends BaseUser {
   async mintTokens(
     tokens: BN[],
     users: User[],
-    amount: BN = new BN(Math.pow(10, 20).toString())
+    amount: BN = new BN(Math.pow(10, 20).toString()),
   ): Promise<MangataGenericEvent[]> {
     const mintFunctions: any[] = [];
 
@@ -53,21 +53,21 @@ export class SudoUser extends BaseUser {
             this.node?.api!.tx.tokens.mint(
               token,
               user.keyRingPair.address,
-              amount
-            )
-          )
+              amount,
+            ),
+          ),
         );
       });
     });
 
     const nonce = new BN(
-      await SudoDB.getInstance().getSudoNonce(this.keyRingPair.address)
+      await SudoDB.getInstance().getSudoNonce(this.keyRingPair.address),
     );
     const txResult = await signTx(
       this.node?.api!,
       this.node?.api!.tx.utility.batch(mintFunctions)!,
       this.keyRingPair,
-      { nonce: new BN(nonce) }
+      { nonce: new BN(nonce) },
     ).catch((reason) => {
       // eslint-disable-next-line no-console
       console.error("OhOh sth went wrong. " + reason.toString());
@@ -78,41 +78,38 @@ export class SudoUser extends BaseUser {
   async promotePool(liqAssetId: BN, weight: number = 1) {
     testLog.getLog().info(`Promoting pool :${liqAssetId}`);
     const nonce = new BN(
-      await SudoDB.getInstance().getSudoNonce(this.keyRingPair.address)
+      await SudoDB.getInstance().getSudoNonce(this.keyRingPair.address),
     );
-    const result = await signTx(
+    return await signTx(
       this.node.api!,
       this.node.api!.tx.sudo.sudo(
-        this.node.api!.tx.proofOfStake.updatePoolPromotion(liqAssetId, weight)
+        this.node.api!.tx.proofOfStake.updatePoolPromotion(liqAssetId, weight),
       ),
       this.keyRingPair,
-      { nonce: nonce }
+      { nonce: nonce },
     );
-    return result;
   }
   async addStakingLiquidityToken(liqTokenForCandidate: BN) {
     const nonce = new BN(
-      await SudoDB.getInstance().getSudoNonce(this.keyRingPair.address)
+      await SudoDB.getInstance().getSudoNonce(this.keyRingPair.address),
     );
     testLog.getLog().info(`W[${env.JEST_WORKER_ID}] - sudoNonce: ${nonce} `);
-    const txResult = await signTx(
+    return await signTx(
       this.node.api!,
       this.node.api!.tx.sudo.sudo(
         this.node?.api!.tx.parachainStaking.addStakingLiquidityToken(
           {
             Liquidity: liqTokenForCandidate,
           },
-          liqTokenForCandidate
-        )
+          liqTokenForCandidate,
+        ),
       ),
       this.keyRingPair,
-      { nonce: new BN(nonce) }
+      { nonce: new BN(nonce) },
     ).catch((reason) => {
       // eslint-disable-next-line no-console
       console.error("OhOh sth went wrong. " + reason.toString());
       testLog.getLog().error(`W[${env.JEST_WORKER_ID}] - ${reason.toString()}`);
     });
-
-    return txResult;
   }
 }

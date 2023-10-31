@@ -25,7 +25,7 @@ export class XToken {
     toChain: ChainId,
     assetId: AssetSpec,
     amount: BN,
-    toUser: User
+    toUser: User,
   ): Extrinsic {
     expect(ChainSpecs.has(toChain));
     const chain = ChainSpecs.get(toChain)!;
@@ -33,7 +33,7 @@ export class XToken {
 
     return api.tx.xTokens.transferMultiasset(
       {
-        V1: {
+        V2: {
           id: {
             Concrete: assetId.location,
           },
@@ -43,7 +43,7 @@ export class XToken {
         },
       },
       {
-        V1: {
+        V2: {
           parents: 1,
           interior: {
             X2: [
@@ -58,7 +58,7 @@ export class XToken {
           },
         },
       },
-      { Limited: TRANSFER_INSTRUCTIONS * chain.unitCostWeight }
+      { Limited: TRANSFER_INSTRUCTIONS * chain.unitCostWeight },
     );
   }
 }

@@ -5,11 +5,13 @@ dotenv.config();
 
 const endpoints = {
   kusama: "wss://kusama-rpc.polkadot.io",
-  statemine: "wss://statemine-rpc.polkadot.io",
-  imbue: "wss://imbue-kusama.imbue.network",
+  statemine: "wss://kusama-asset-hub-rpc.polkadot.io",
+  imbue: "wss://kusama.imbuenetwork.com",
   karura: "wss://karura-rpc-0.aca-api.network",
   mangata: "wss://kusama-archive.mangata.online",
   bifrost: "wss://bifrost-rpc.dwellir.com",
+  turing: "wss://rpc.turing.oak.tech",
+  moonriver: "wss://wss.moonriver.moonbeam.network",
 };
 
 const toNumber = (value: string | undefined): number | undefined => {
@@ -38,6 +40,14 @@ export default {
       db: process.env.DB_PATH,
       ...options,
     }),
+  turing: (options?: Partial<SetupOption>) =>
+    setupContext({
+      wasmOverride: process.env.TURING_WASM,
+      blockNumber: toNumber(process.env.TURING_BLOCK_NUMBER),
+      endpoint: process.env.TURING_ENDPOINT ?? endpoints.turing,
+      db: process.env.DB_PATH,
+      ...options,
+    }),
   statemine: (options?: Partial<SetupOption>) =>
     setupContext({
       wasmOverride: process.env.STATEMINE_WASM,
@@ -59,6 +69,14 @@ export default {
       wasmOverride: process.env.BIFROST_WASM,
       blockNumber: toNumber(process.env.BIFROST_BLOCK_NUMBER),
       endpoint: process.env.BIFROST_ENDPOINT ?? endpoints.bifrost,
+      db: process.env.DB_PATH,
+      ...options,
+    }),
+  moonriver: (options?: Partial<SetupOption>) =>
+    setupContext({
+      wasmOverride: process.env.MOONRIVER_WASM,
+      blockNumber: toNumber(process.env.MOONRIVER_BLOCK_NUMBER),
+      endpoint: process.env.MOONRIVER_ENDPOINT ?? endpoints.moonriver,
       db: process.env.DB_PATH,
       ...options,
     }),

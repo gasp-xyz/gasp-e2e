@@ -5,7 +5,6 @@
 import { jest } from "@jest/globals";
 import { WebDriver } from "selenium-webdriver";
 import { getApi, initApi } from "../../utils/api";
-import { Mangata } from "../../utils/frontend/pages/Mangata";
 import { DriverBuilder } from "../../utils/frontend/utils/Driver";
 import {
   acceptPermissionsWalletExtensionInNewWindow,
@@ -38,12 +37,12 @@ describe("Wallets management", () => {
     "User can connect wallet %s",
     async (walletType) => {
       await setupWalletExtension(driver, walletType);
-      const mga = new Mangata(driver);
-      await mga.go();
-      const walletWrapper = new WalletWrapper(driver);
       const mainPage = new Main(driver);
+      await mainPage.go();
+      const walletWrapper = new WalletWrapper(driver);
       const appLoaded = await mainPage.isAppLoaded();
       expect(appLoaded).toBeTruthy();
+      await mainPage.skipBetaInfo();
 
       const isWalletButton =
         await walletWrapper.isWalletConnectButtonDisplayed();
@@ -72,23 +71,21 @@ describe("Wallets management", () => {
       isWalletConnected = await walletWrapper.isWalletConnected();
       expect(isWalletConnected).toBeTruthy();
 
-      const isSuccessToastDisplayed = await mainPage.isToastDisplayed(
-        "Wallet Connected"
-      );
+      const isSuccessToastDisplayed =
+        await mainPage.isToastDisplayed("Wallet Connected");
       expect(isSuccessToastDisplayed).toBeTruthy();
 
-      const isAccInfoDisplayed = await walletWrapper.isAccInfoDisplayed(
-        acc_name
-      );
+      const isAccInfoDisplayed =
+        await walletWrapper.isAccInfoDisplayed(acc_name);
       expect(isAccInfoDisplayed).toBeTruthy();
-    }
+    },
   );
 
   afterEach(async () => {
     const session = await driver.getSession();
     await addExtraLogs(
       driver,
-      expect.getState().currentTestName + " - " + session.getId()
+      expect.getState().currentTestName + " - " + session.getId(),
     );
     await driver.manage().deleteAllCookies();
     await driver.executeScript("localStorage.clear(); sessionStorage.clear();");

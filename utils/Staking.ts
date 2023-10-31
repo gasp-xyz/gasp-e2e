@@ -2,20 +2,21 @@ import { BN } from "@polkadot/util";
 import { api, Extrinsic } from "./setup";
 import { User } from "./User";
 import { SudoDB } from "./SudoDB";
+
 export enum tokenOriginEnum {
-  AvailableBalance = "availablebalance",
-  ActivatedUnstakedReserves = "activatedunstakedreserves",
-  UnspentReserves = "unspentreserves",
+  AvailableBalance = "AvailableBalance",
+  ActivatedUnstakedReserves = "ActivatedUnstakedReserves",
+  UnspentReserves = "UnspentReserves",
 }
 export enum AggregatorOptions {
-  ExtendApprovedCollators = "extendapprovedcollators",
-  RemoveApprovedCollators = "removeapprovedcollators",
+  ExtendApprovedCollators = "ExtendApprovedCollators",
+  RemoveApprovedCollators = "RemoveApprovedCollators",
 }
 export class Staking {
   static async isUserElected(address: string) {
     const candidates = await api?.query.parachainStaking.selectedCandidates();
     return (JSON.parse(JSON.stringify(candidates)) as string[]).includes(
-      address
+      address,
     );
   }
   static async aggregatorMetadata(address: string) {
@@ -29,7 +30,7 @@ export class Staking {
   static async joinAsCandidate(
     amount: BN,
     tokenId: BN,
-    tokenOrigin: tokenOriginEnum
+    tokenOrigin: tokenOriginEnum,
   ) {
     const numCollators = await SudoDB.getInstance().getNextCandidateNum();
     const liqAssets =
@@ -40,7 +41,7 @@ export class Staking {
       tokenId,
       tokenOrigin,
       (numCollators + 10).toString(),
-      liqAssetsCount.toString()
+      liqAssetsCount.toString(),
     );
   }
   static addStakingLiquidityToken(liqToken: BN): Extrinsic {
@@ -48,7 +49,7 @@ export class Staking {
       {
         Liquidity: liqToken,
       },
-      liqToken
+      liqToken,
     );
   }
   static setTotalSelected(totalNo: BN): Extrinsic {
@@ -57,35 +58,84 @@ export class Staking {
   static setCollatorCommission(perBill: BN): Extrinsic {
     return api.tx.parachainStaking.setCollatorCommission(perBill);
   }
+  static scheduleCandidateBondMore(
+    more: BN,
+    useBalanceFrom: any = "AvailableBalance",
+  ) {
+    return api.tx.parachainStaking.scheduleCandidateBondMore(
+      more,
+      useBalanceFrom,
+    );
+  }
+  static scheduleCandidateBondLess(less: BN) {
+    return api.tx.parachainStaking.scheduleCandidateBondLess(less);
+  }
+  static scheduleDelegatorBondMore(
+    candidate: User,
+    more: BN,
+    useBalanceFrom: any = "AvailableBalance",
+  ) {
+    return api.tx.parachainStaking.scheduleDelegatorBondMore(
+      candidate.keyRingPair.address,
+      more,
+      useBalanceFrom,
+    );
+  }
+  static scheduleDelegatorBondLess(candidate: User, less: BN) {
+    return api.tx.parachainStaking.scheduleDelegatorBondLess(
+      candidate.keyRingPair.address,
+      less,
+    );
+  }
+  static executeBondRequest(
+    candidate: User,
+    useBalanceFrom: any = "AvailableBalance",
+  ): Extrinsic {
+    return api.tx.parachainStaking.executeCandidateBondRequest(
+      candidate.keyRingPair.address,
+      useBalanceFrom,
+    );
+  }
+  static executeDelegationRequest(
+    delegator: User,
+    candidate: User,
+    useBalanceFrom: any = "AvailableBalance",
+  ): Extrinsic {
+    return api.tx.parachainStaking.executeDelegationRequest(
+      delegator.keyRingPair.address,
+      candidate.keyRingPair.address,
+      useBalanceFrom,
+    );
+  }
   static removeStakingLiquidityToken(liqToken: BN): Extrinsic {
     return api.tx.parachainStaking.removeStakingLiquidityToken(
       {
         Liquidity: liqToken,
       },
-      liqToken
+      liqToken,
     );
   }
   static updateCandidateAggregator(testUser: User): Extrinsic {
     return api.tx.parachainStaking.updateCandidateAggregator(
-      testUser.keyRingPair.address
+      testUser.keyRingPair.address,
     );
   }
   static aggregatorUpdateMetadata(
     collators: User[],
-    action: AggregatorOptions
+    action: AggregatorOptions,
   ): Extrinsic {
     return api.tx.parachainStaking.aggregatorUpdateMetadata(
       collators.flatMap((user) => user.keyRingPair.address),
-      action
+      action,
     );
   }
 
   static async isUserInCandidateList(address: string) {
     const candidates = JSON.parse(
-      JSON.stringify(await api.query.parachainStaking.candidatePool())
+      JSON.stringify(await api.query.parachainStaking.candidatePool()),
     );
     const result = (candidates as unknown as any[]).find(
-      (candidate) => candidate.owner === address
+      (candidate) => candidate.owner === address,
     );
     return result !== undefined;
   }

@@ -1,7 +1,7 @@
 /*
  *
  * @group xyk
- * @group poolliquidity
+ * @group poolLiq
  */
 import { jest } from "@jest/globals";
 import { Keyring } from "@polkadot/api";
@@ -51,7 +51,7 @@ beforeAll(async () => {
   [token1] = await Assets.setupUserWithCurrencies(
     sudo,
     [defaultCurrencyValue, defaultCurrencyValue],
-    sudo
+    sudo,
   );
 
   await Sudo.batchAsSudoFinalized(
@@ -65,16 +65,16 @@ beforeAll(async () => {
         MGA_ASSET_ID,
         Assets.DEFAULT_AMOUNT.divn(2),
         token1,
-        Assets.DEFAULT_AMOUNT.divn(2)
-      )
-    )
+        Assets.DEFAULT_AMOUNT.divn(2),
+      ),
+    ),
   );
 
   liqIdPromPool = await getLiquidityAssetId(MGA_ASSET_ID, token1);
 
   await Sudo.batchAsSudoFinalized(
     Assets.promotePool(liqIdPromPool.toNumber(), 20),
-    Assets.mintNative(testUser1)
+    Assets.mintNative(testUser1),
   );
 
   testUser1.addAsset(liqIdPromPool);
@@ -85,7 +85,7 @@ test("Check that a user that deactivate some tokens, put liquidity tokens from f
     testUser1.keyRingPair,
     MGA_ASSET_ID,
     token1,
-    defaultCurrencyValue
+    defaultCurrencyValue,
   );
 
   await testUser1.refreshAmounts(AssetWallet.BEFORE);
@@ -93,7 +93,7 @@ test("Check that a user that deactivate some tokens, put liquidity tokens from f
   await deactivateLiquidity(
     testUser1.keyRingPair,
     liqIdPromPool,
-    defaultCurrencyValue
+    defaultCurrencyValue,
   );
 
   await testUser1.refreshAmounts(AssetWallet.AFTER);
@@ -101,12 +101,12 @@ test("Check that a user that deactivate some tokens, put liquidity tokens from f
   const differenceDeactivLiqTokensReserved = testUser1
     .getAsset(liqIdPromPool)
     ?.amountBefore.reserved!.sub(
-      testUser1.getAsset(liqIdPromPool)?.amountAfter.reserved!
+      testUser1.getAsset(liqIdPromPool)?.amountAfter.reserved!,
     );
   const differenceDeactivLiqTokensFree = testUser1
     .getAsset(liqIdPromPool)
     ?.amountAfter.free!.sub(
-      testUser1.getAsset(liqIdPromPool)?.amountBefore.free!
+      testUser1.getAsset(liqIdPromPool)?.amountBefore.free!,
     );
 
   expect(differenceDeactivLiqTokensFree).bnEqual(defaultCurrencyValue);
@@ -117,7 +117,7 @@ test("Check that a user that deactivate some tokens, put liquidity tokens from f
   await activateLiquidity(
     testUser1.keyRingPair,
     liqIdPromPool,
-    defaultCurrencyValue
+    defaultCurrencyValue,
   );
 
   await testUser1.refreshAmounts(AssetWallet.AFTER);
@@ -125,12 +125,12 @@ test("Check that a user that deactivate some tokens, put liquidity tokens from f
   const differenceActivLiqTokensReserved = testUser1
     .getAsset(liqIdPromPool)
     ?.amountAfter.reserved!.sub(
-      testUser1.getAsset(liqIdPromPool)?.amountBefore.reserved!
+      testUser1.getAsset(liqIdPromPool)?.amountBefore.reserved!,
     );
   const differenceActivLiqTokensFree = testUser1
     .getAsset(liqIdPromPool)
     ?.amountBefore.free!.sub(
-      testUser1.getAsset(liqIdPromPool)?.amountAfter.free!
+      testUser1.getAsset(liqIdPromPool)?.amountAfter.free!,
     );
 
   expect(differenceActivLiqTokensFree).bnEqual(defaultCurrencyValue);

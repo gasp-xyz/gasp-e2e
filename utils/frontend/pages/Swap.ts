@@ -6,6 +6,7 @@ import {
   getAttribute,
   pressEscape,
   waitForElementEnabled,
+  waitForLoad,
   writeText,
 } from "../utils/Helper";
 
@@ -69,13 +70,19 @@ export class Swap {
     await clickElement(this.driver, tradeBtn);
   }
 
+  async isSwapEnabled() {
+    const tradeBtn = buildDataTestIdXpath(BTN_SWAP_TRADE);
+    await waitForElementEnabled(this.driver, tradeBtn);
+    return await (
+      await this.driver.findElement(By.xpath(tradeBtn))
+    ).isEnabled();
+  }
+
   async fetchGetAssetAmount() {
-    const text = await getAttribute(this.driver, this.inputGetLocator, "value");
-    return text;
+    return await getAttribute(this.driver, this.inputGetLocator, "value");
   }
   async fetchPayAssetAmount() {
-    const text = await getAttribute(this.driver, this.inputPayLocator, "value");
-    return text;
+    return await getAttribute(this.driver, this.inputPayLocator, "value");
   }
   async addPayAssetAmount(amount: string) {
     await clickElement(this.driver, this.inputPayLocator);
@@ -91,10 +98,17 @@ export class Swap {
     const assetLocator = buildDataTestIdXpath(assetTestId);
     await clickElement(this.driver, assetLocator);
   }
+
+  async waitForProgressBar() {
+    const continueBtn = buildDataTestIdXpath(BTN_SWAP_TRADE);
+    const progressBarXpath = "//*[@role='progressbar']";
+    await waitForLoad(5, continueBtn + progressBarXpath, this.driver);
+  }
+
   async swapAssets(
     fromAsset: string,
     toAsset: string,
-    amount: string = "0.001"
+    amount: string = "0.001",
   ) {
     await this.toggleSwap();
     await this.selectPayAsset(fromAsset);

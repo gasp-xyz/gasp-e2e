@@ -16,7 +16,7 @@ import {
   getLiquidityAssetId,
   burnLiquidity,
   getRewardsInfo,
-  claimRewardsAll,
+  claimRewards,
 } from "../../utils/tx";
 import { setupApi, setupUsers } from "../../utils/setup";
 import { ExtrinsicResult, waitForRewards } from "../../utils/eventListeners";
@@ -26,6 +26,7 @@ import {
   MangataGenericEvent,
   MangataInstance,
 } from "@mangata-finance/sdk";
+import { getEventResultFromMangataTx } from "../../utils/txHandler";
 
 const defaultCurrencyValue = new BN(10000000);
 const assetAmount = new BN("1000000000000000");
@@ -55,7 +56,7 @@ describe("rewards v2 tests", () => {
       sudo,
       defaultCurrencyValue,
       sudo,
-      true
+      true,
     );
 
     await setupApi();
@@ -75,9 +76,9 @@ describe("rewards v2 tests", () => {
           MGA_ASSET_ID,
           Assets.DEFAULT_AMOUNT.divn(2),
           secondCurrency,
-          Assets.DEFAULT_AMOUNT.divn(2)
-        )
-      )
+          Assets.DEFAULT_AMOUNT.divn(2),
+        ),
+      ),
     );
 
     liqId = await getLiquidityAssetId(MGA_ASSET_ID, secondCurrency);
@@ -89,14 +90,15 @@ describe("rewards v2 tests", () => {
         testUser1.keyRingPair,
         MGA_ASSET_ID,
         secondCurrency,
-        assetAmount
+        assetAmount,
       );
 
       await activateLiquidity(testUser1.keyRingPair, liqId, assetAmount).then(
         (result) => {
-          expect(result.state).toEqual(ExtrinsicResult.ExtrinsicFailed);
-          expect(result.data).toEqual("NotAPromotedPool");
-        }
+          const eventResponse = getEventResultFromMangataTx(result);
+          expect(eventResponse.state).toEqual(ExtrinsicResult.ExtrinsicFailed);
+          expect(eventResponse.data).toEqual("NotAPromotedPool");
+        },
       );
     });
   });
@@ -109,24 +111,24 @@ describe("rewards v2 tests", () => {
 
       const liqBalance = await mangata.query.getTokenBalance(
         liqId.toString(),
-        testUser1.keyRingPair.address
+        testUser1.keyRingPair.address,
       );
 
       await Sudo.batchAsSudoFinalized(
         Assets.promotePool(liqId.toNumber(), 20),
         Sudo.sudoAs(
           testUser1,
-          Xyk.mintLiquidity(MGA_ASSET_ID, secondCurrency, assetAmount)
+          Xyk.mintLiquidity(MGA_ASSET_ID, secondCurrency, assetAmount),
         ),
         Sudo.sudoAs(
           testUser2,
-          Xyk.mintLiquidity(MGA_ASSET_ID, secondCurrency, assetAmount)
+          Xyk.mintLiquidity(MGA_ASSET_ID, secondCurrency, assetAmount),
         ),
         Sudo.sudoAs(
           testUser3,
-          Xyk.mintLiquidity(MGA_ASSET_ID, secondCurrency, assetAmount)
+          Xyk.mintLiquidity(MGA_ASSET_ID, secondCurrency, assetAmount),
         ),
-        Sudo.sudoAs(testUser1, Xyk.activateLiquidity(liqId, liqBalance.free))
+        Sudo.sudoAs(testUser1, Xyk.activateLiquidity(liqId, liqBalance.free)),
       );
 
       await waitForRewards(testUser1, liqId);
@@ -139,7 +141,7 @@ describe("rewards v2 tests", () => {
       const reservedTokens = (
         await mangata.query.getTokenBalance(
           liqId.toString(),
-          testUser1.keyRingPair.address
+          testUser1.keyRingPair.address,
         )
       ).reserved;
 
@@ -147,23 +149,23 @@ describe("rewards v2 tests", () => {
         testUser1.keyRingPair,
         MGA_ASSET_ID,
         secondCurrency,
-        reservedTokens
+        reservedTokens,
       );
       testUser1.addAsset(MGA_ASSET_ID);
       await testUser1.refreshAmounts(AssetWallet.BEFORE);
       const rewardsAfterBurning = await getRewardsInfo(
         testUser1.keyRingPair.address,
-        liqId
+        liqId,
       );
       const events = await Sudo.batchAsSudoFinalized(
-        Sudo.sudoAs(testUser1, Xyk.claimRewardsAll(liqId))
+        Sudo.sudoAs(testUser1, Xyk.claimRewardsAll(liqId)),
       );
       const { claimedAmount } = getClaimedAmount(events);
       await testUser1.refreshAmounts(AssetWallet.AFTER);
       const incrementedMGAs = testUser1
         .getAsset(MGA_ASSET_ID)
         ?.amountAfter.free.sub(
-          testUser1.getAsset(MGA_ASSET_ID)?.amountBefore.free!
+          testUser1.getAsset(MGA_ASSET_ID)?.amountBefore.free!,
         );
       expect(incrementedMGAs!).bnGt(BN_ZERO);
       expect(claimedAmount).bnEqual(availableRewardsBefore);
@@ -177,7 +179,7 @@ describe("rewards v2 tests", () => {
       const reservedTokens = (
         await mangata.query.getTokenBalance(
           liqId.toString(),
-          testUser2.keyRingPair.address
+          testUser2.keyRingPair.address,
         )
       ).reserved;
 
@@ -185,24 +187,24 @@ describe("rewards v2 tests", () => {
         testUser2.keyRingPair,
         MGA_ASSET_ID,
         secondCurrency,
-        reservedTokens.divn(2)
+        reservedTokens.divn(2),
       );
       testUser2.addAsset(MGA_ASSET_ID);
       await testUser2.refreshAmounts(AssetWallet.BEFORE);
 
       const rewardsInfo = await getRewardsInfo(
         testUser2.keyRingPair.address,
-        liqId
+        liqId,
       );
       expect(rewardsInfo.activatedAmount).bnEqual(assetAmount.divn(2));
       expect(rewardsInfo.rewardsNotYetClaimed).bnEqual(availableRewardsBefore);
-      const events = await claimRewardsAll(testUser2, liqId);
+      const events = await claimRewards(testUser2, liqId);
       const { claimedAmount } = getClaimedAmount(events);
       await testUser2.refreshAmounts(AssetWallet.AFTER);
       const incrementedMGAs = testUser2
         .getAsset(MGA_ASSET_ID)
         ?.amountAfter.free.sub(
-          testUser2.getAsset(MGA_ASSET_ID)?.amountBefore.free!
+          testUser2.getAsset(MGA_ASSET_ID)?.amountBefore.free!,
         );
       expect(incrementedMGAs!.abs()).bnGt(BN_ZERO);
       expect(claimedAmount).bnGt(BN_ZERO);
@@ -210,11 +212,11 @@ describe("rewards v2 tests", () => {
       expect(availableRewardsBefore).bnLte(claimedAmount);
       const rewardsInfoAfterClaim = await getRewardsInfo(
         testUser2.keyRingPair.address,
-        liqId
+        liqId,
       );
       expect(rewardsInfoAfterClaim.rewardsNotYetClaimed).bnEqual(BN_ZERO);
       expect(rewardsInfoAfterClaim.activatedAmount).bnEqual(
-        assetAmount.divn(2)
+        assetAmount.divn(2),
       );
     });
 
@@ -226,14 +228,14 @@ describe("rewards v2 tests", () => {
         testUser3.keyRingPair,
         MGA_ASSET_ID,
         secondCurrency,
-        defaultCurrencyValue
+        defaultCurrencyValue,
       );
 
       const tokensReservedValue: BN[] = mintingLiquidity
         .filter(
           (item) =>
             item.method === "LiquidityActivated" &&
-            item.section === "proofOfStake"
+            item.section === "proofOfStake",
         )
         .map((x) => new BN(x.eventData[2].data.toString()));
 
@@ -245,7 +247,7 @@ describe("rewards v2 tests", () => {
         testUser3.getAsset(liqId)?.amountAfter.reserved!;
 
       expect(reservedValueBefore.add(tokensReservedValue[0])).bnEqual(
-        reservedValueAfter
+        reservedValueAfter,
       );
     });
   });

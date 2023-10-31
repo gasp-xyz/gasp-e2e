@@ -1,8 +1,5 @@
 /*
  *
- * @group xyk
- * @group errors
- * @group sequential
  * @group sdk
  */
 import { jest } from "@jest/globals";
@@ -66,7 +63,7 @@ describe.skip("SDK test - Nonce tests - user", () => {
     [firstCurrency] = await Assets.setupUserWithCurrencies(
       testUser,
       [new BN(10000000000)],
-      sudo
+      sudo,
     );
     await Sudo.batchAsSudoFinalized(
       Assets.mintToken(firstCurrency, testUser, new BN(10000000000)),
@@ -77,9 +74,9 @@ describe.skip("SDK test - Nonce tests - user", () => {
           MGA_ASSET_ID,
           new BN(100000),
           firstCurrency,
-          new BN(100000)
-        )
-      )
+          new BN(100000),
+        ),
+      ),
     );
   });
 
@@ -91,7 +88,7 @@ describe.skip("SDK test - Nonce tests - user", () => {
       firstCurrency,
       MGA_ASSET_ID,
       new BN(1000),
-      new BN(0)
+      new BN(0),
     );
     const eventResult = getEventResultFromMangataTx(event);
     expect(eventResult.state).toEqual(ExtrinsicResult.ExtrinsicSuccess);
@@ -110,14 +107,14 @@ describe.skip("SDK test - Nonce tests - user", () => {
           MGA_ASSET_ID,
           new BN(1000),
           new BN(0),
-          { nonce: userNonce[0].addn(index) }
-        )
+          { nonce: userNonce[0].addn(index) },
+        ),
       );
     }
     await Promise.all(promises);
     userNonce.push(await mangata.query.getNonce(testUser.keyRingPair.address));
     expect(parseFloat(userNonce[1].toString())).toBeGreaterThan(
-      parseFloat(userNonce[0].toString()) + 9
+      parseFloat(userNonce[0].toString()) + 9,
     );
   });
   test("SDK- Nonce management - user - future Tx-", async () => {
@@ -139,19 +136,19 @@ describe.skip("SDK test - Nonce tests - user", () => {
           new BN(0),
           {
             nonce: new BN(index),
-          }
-        )
+          },
+        ),
       );
       await waitNewBlock();
     }
-    const promisesEvents = await await Promise.all(promises);
+    const promisesEvents = await Promise.all(promises);
     promisesEvents.forEach((events) => {
       const result = getEventResultFromMangataTx(events);
       expect(result.state).toEqual(ExtrinsicResult.ExtrinsicSuccess);
     });
     userNonce.push(await mangata.query.getNonce(testUser.keyRingPair.address));
     expect(parseFloat(userNonce[1].toString())).toBeGreaterThanOrEqual(
-      parseFloat(userNonce[0].toString()) + 2
+      parseFloat(userNonce[0].toString()) + 2,
     );
   });
   test("SDK- Nonce management - Extrinsic failed", async () => {
@@ -165,13 +162,13 @@ describe.skip("SDK test - Nonce tests - user", () => {
       new BN(MAX_INT - 1),
       new BN(MAX_INT - 2),
       new BN(1000),
-      new BN(1)
+      new BN(1),
     );
     const eventResult = getEventResultFromMangataTx(event);
     expect(eventResult.state).toEqual(ExtrinsicResult.ExtrinsicFailed);
     userNonce.push(await mangata.query.getNonce(testUser.keyRingPair.address));
     expect(parseFloat(userNonce[1].toString())).toBeGreaterThan(
-      parseFloat(userNonce[0].toString())
+      parseFloat(userNonce[0].toString()),
     );
   });
   test("SDK- Nonce management - Using custom nonce", async () => {
@@ -185,7 +182,7 @@ describe.skip("SDK test - Nonce tests - user", () => {
       new BN(0),
       {
         nonce: userNonce[0],
-      }
+      },
     );
     let eventResult = getEventResultFromMangataTx(events);
     expect(eventResult.state).toEqual(ExtrinsicResult.ExtrinsicSuccess);
@@ -195,14 +192,14 @@ describe.skip("SDK test - Nonce tests - user", () => {
       firstCurrency,
       MGA_ASSET_ID,
       new BN(1000),
-      new BN(0)
+      new BN(0),
     );
     eventResult = getEventResultFromMangataTx(events2);
     expect(eventResult.state).toEqual(ExtrinsicResult.ExtrinsicSuccess);
 
     userNonce.push(await mangata.query.getNonce(testUser.keyRingPair.address));
     expect(parseFloat(userNonce[1].toString())).toBeGreaterThan(
-      parseFloat(userNonce[0].toString())
+      parseFloat(userNonce[0].toString()),
     );
   });
   test.skip("[BUG?] SDK- Nonce management - Transaction outdated", async () => {
@@ -213,7 +210,7 @@ describe.skip("SDK test - Nonce tests - user", () => {
       firstCurrency,
       MGA_ASSET_ID,
       new BN(1000),
-      new BN(0)
+      new BN(0),
     );
 
     userNonce.push(await mangata.query.getNonce(testUser.keyRingPair.address));
@@ -227,11 +224,11 @@ describe.skip("SDK test - Nonce tests - user", () => {
         new BN(0),
         {
           nonce: new BN(0),
-        }
+        },
       ).catch((reason) => {
         exception = true;
         throw new Error(reason);
-      })
+      }),
     ).rejects.toThrow("1010: Invalid Transaction: Transaction is outdated");
     expect(exception).toBeTruthy();
   });
@@ -255,13 +252,13 @@ describe("SDK test - Nonce tests - Errors", () => {
         new BN(MAX_INT - 1),
         new BN(MAX_INT - 2),
         new BN(1000),
-        new BN(MAX_INT)
+        new BN(MAX_INT),
       ).catch((reason) => {
         exception = true;
         throw new Error(reason);
-      })
+      }),
     ).rejects.toThrow(
-      "1010: Invalid Transaction: Inability to pay some fees , e.g. account balance too low"
+      "1010: Invalid Transaction: Inability to pay some fees , e.g. account balance too low",
     );
     expect(exception).toBeTruthy();
 

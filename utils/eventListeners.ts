@@ -25,7 +25,7 @@ export class EventResult {
    */
   constructor(
     state: ExtrinsicResult = ExtrinsicResult.ExtrinsicUndefined,
-    data: any
+    data: any,
   ) {
     this.state = state;
     this.data = data;
@@ -39,7 +39,7 @@ export class EventResult {
 export const getEventResult = (
   section: any,
   method: any,
-  module_index: any
+  module_index: any,
 ) => {
   const api = getApi();
 
@@ -52,8 +52,8 @@ export const getEventResult = (
           resolve(
             new EventResult(
               ExtrinsicResult.ExtrinsicSuccess,
-              JSON.parse(event.data.toString())
-            )
+              JSON.parse(event.data.toString()),
+            ),
           );
         } else if (
           event.section === "system" &&
@@ -64,8 +64,8 @@ export const getEventResult = (
           resolve(
             new EventResult(
               ExtrinsicResult.ExtrinsicFailed,
-              JSON.parse(event.data.toString())[0].Module.error
-            )
+              JSON.parse(event.data.toString())[0].Module.error,
+            ),
           );
         }
       });
@@ -97,7 +97,7 @@ export const waitNewBlock = () => {
 
 export function filterEventData(
   result: MangataGenericEvent[],
-  method: string
+  method: string,
 ): any[] {
   return result
     .filter((event) => `${event.section}.${event.method}` === method)
@@ -109,10 +109,10 @@ export function findEventData(result: MangataGenericEvent[], method: string) {
 }
 
 export async function waitSudoOperationSuccess(
-  checkingEvent: MangataGenericEvent[]
+  checkingEvent: MangataGenericEvent[],
 ) {
   const filterBootstrapEvent = checkingEvent.filter(
-    (extrinsicResult) => extrinsicResult.method === "Sudid"
+    (extrinsicResult) => extrinsicResult.method === "Sudid",
   );
 
   const userBootstrapCall = filterBootstrapEvent[0].event.data[0].toString();
@@ -122,21 +122,22 @@ export async function waitSudoOperationSuccess(
 
 export async function waitSudoOperationFail(
   checkingEvent: MangataGenericEvent[],
-  expectedError: string
+  expectedErrors: string[],
 ) {
   const filterBootstrapEvent = checkingEvent.filter(
-    (extrinsicResult) => extrinsicResult.method === "Sudid"
+    (extrinsicResult) => extrinsicResult.method === "Sudid",
   );
 
   const BootstrapError = await getEventErrorFromSudo(filterBootstrapEvent);
 
-  expect(BootstrapError.method).toContain(expectedError);
+  expect(expectedErrors).toContain(BootstrapError.method);
 }
 
 export const waitForEvents = async (
   api: ApiPromise,
   method: string,
-  blocks: number = 10
+  blocks: number = 10,
+  withData: string = "",
 ): Promise<CodecOrArray> => {
   return new Promise(async (resolve, reject) => {
     let counter = 0;
@@ -146,14 +147,18 @@ export const waitForEvents = async (
       testLog
         .getLog()
         .info(
-          `→ find on ${api.runtimeChain} for '${method}' event, attempt ${counter}, head ${head.hash}`
+          `→ find on ${api.runtimeChain} for '${method}' event, attempt ${counter}, head ${head.hash}`,
         );
 
       events.forEach((e) => logEvent(api.runtimeChain, e));
 
       const filtered = _.filter(
         events,
-        ({ event }) => `${event.section}.${event.method}` === method
+        ({ event }) =>
+          `${event.section}.${event.method}` === method &&
+          (withData.length > 0
+            ? JSON.stringify(event.data.toHuman()).includes(withData)
+            : true),
       );
       if (filtered.length > 0) {
         resolve(filtered);
@@ -169,7 +174,7 @@ export const waitForEvents = async (
 export const waitForRewards = async (
   user: User,
   liquidityAssetId: BN,
-  max: number = 20
+  max: number = 20,
 ) =>
   new Promise(async (resolve) => {
     let numblocks = max;
@@ -192,12 +197,13 @@ export const waitForRewards = async (
         testLog
           .getLog()
           .info(
-            `#${header.number}  ${user.keyRingPair.address} (LP${liquidityAssetId}) - no rewards yet`
+            `#${header.number}  ${user.keyRingPair.address} (LP${liquidityAssetId}) - no rewards yet`,
           );
       }
       if (numblocks < 0) {
+        unsub();
         reject(
-          `Waited too long for rewards :( #${header.number}  ${user.keyRingPair.address} (LP${liquidityAssetId} `
+          `Waited too long for rewards :( #${header.number}  ${user.keyRingPair.address} (LP${liquidityAssetId} `,
         );
       }
     });
@@ -217,16 +223,16 @@ const toHex = (codec: CodecOrArray) =>
 
 export const matchSnapshot = (
   codec: CodecOrArray | Promise<CodecOrArray>,
-  message?: string
+  message?: string,
 ) => {
   return expect(Promise.resolve(codec).then(toHuman)).resolves.toMatchSnapshot(
-    message
+    message,
   );
 };
 
 export const expectEvent = (codec: CodecOrArray, event: any) => {
   return expect(toHuman(codec)).toEqual(
-    expect.arrayContaining([expect.objectContaining(event)])
+    expect.arrayContaining([expect.objectContaining(event)]),
   );
 };
 
@@ -250,7 +256,7 @@ const _matchEvents = async (
   ...filters: EventFilter[]
 ) => {
   let data = toHuman(await events).map(
-    ({ event: { index: _, ...event } }: any) => event
+    ({ event: { index: _, ...event } }: any) => event,
   );
   if (filters) {
     const filtersArr = Array.isArray(filters) ? filters : [filters];
@@ -268,7 +274,7 @@ const _matchEvents = async (
 };
 
 export const matchEvents = async (
-  events: Promise<Codec[] | Codec>,
+  events: Promise<Codec[] | Codec> | Codec[],
   ...filters: EventFilter[]
 ) => {
   return _matchEvents("events", redact(events), ...filters);
@@ -281,13 +287,13 @@ export const matchSystemEvents = async (
   await _matchEvents(
     "system events",
     redact(api.query.system.events()),
-    ...filters
+    ...filters,
   );
 };
 
 export const matchUmp = async ({ api }: { api: ApiPromise }) => {
   expect(await api.query.parachainSystem.upwardMessages()).toMatchSnapshot(
-    "ump"
+    "ump",
   );
 };
 
@@ -312,7 +318,7 @@ export const redact = async (data: any | Promise<any>) => {
     }
     if (typeof obj === "object") {
       return Object.fromEntries(
-        Object.entries(obj).map(([k, v]) => [k, process(v)])
+        Object.entries(obj).map(([k, v]) => [k, process(v)]),
       );
     }
     return obj;
@@ -330,7 +336,7 @@ export const expectExtrinsicSuccess = (events: Codec[]) => {
   });
 };
 export const expectMGAExtrinsicSuDidSuccess = (
-  events: MangataGenericEvent[]
+  events: MangataGenericEvent[],
 ) => {
   const anyError = events
     .filter((x) => x.method === "SudoAsDone" && x.section === "sudo")
@@ -342,13 +348,13 @@ export const expectMGAExtrinsicSuDidSuccess = (
   return events!;
 };
 export const expectMGAExtrinsicSuDidFailed = (
-  events: MangataGenericEvent[]
+  events: MangataGenericEvent[],
 ) => {
   const sudoErrorEvent = events.find(
     (x) =>
       x.method === "SudoAsDone" &&
       x.section === "sudo" &&
-      JSON.parse(JSON.stringify(x.eventData[0].data)).err !== undefined
+      JSON.parse(JSON.stringify(x.eventData[0].data)).err !== undefined,
   );
   expect(sudoErrorEvent).not.toBeNull();
   return sudoErrorEvent!;

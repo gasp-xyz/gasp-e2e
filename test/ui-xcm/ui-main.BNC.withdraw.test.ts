@@ -4,6 +4,7 @@
  */
 import { jest } from "@jest/globals";
 import { Mangata } from "../../utils/frontend/pages/Mangata";
+import { Mangata as MangataSDK } from "@mangata-finance/sdk";
 import { Keyring } from "@polkadot/api";
 import { KeyringPair } from "@polkadot/keyring/types";
 import { WebDriver } from "selenium-webdriver";
@@ -32,9 +33,14 @@ import {
 import { DepositModal } from "../../utils/frontend/pages/DepositModal";
 import { ApiContext } from "../../utils/Framework/XcmHelper";
 import XcmNetworks from "../../utils/Framework/XcmNetworks";
-import { AssetId } from "../../utils/ChainSpecs";
+import {
+  AssetId,
+  ChainId,
+  ChainSpecs,
+  TRANSFER_INSTRUCTIONS,
+} from "../../utils/ChainSpecs";
 import { BN_HUNDRED, BN_THOUSAND } from "@mangata-finance/sdk";
-import { connectParachains } from "@acala-network/chopsticks";
+import { BuildBlockMode, connectParachains } from "@acala-network/chopsticks";
 
 import "dotenv/config";
 
@@ -53,8 +59,14 @@ describe("UI XCM tests - BNC", () => {
   let alice: KeyringPair;
 
   beforeAll(async () => {
-    mangata = await XcmNetworks.mangata({ localPort: 9946 });
-    bifrost = await XcmNetworks.biforst({ localPort: 9948 });
+    bifrost = await XcmNetworks.biforst({
+      buildBlockMode: BuildBlockMode.Instant,
+      localPort: 9948,
+    });
+    mangata = await XcmNetworks.mangata({
+      buildBlockMode: BuildBlockMode.Instant,
+      localPort: 9946,
+    });
     await connectParachains([bifrost.chain, mangata.chain]);
     alice = devTestingPairs().alice;
 
@@ -85,16 +97,6 @@ describe("UI XCM tests - BNC", () => {
         Key: userAddress,
       },
     });
-    await bifrost.dev.setStorage({
-      System: {
-        Account: [
-          [
-            [userAddress],
-            { data: { free: BN_HUNDRED.mul(AssetId.Bnc.unit).toString() } },
-          ],
-        ],
-      },
-    });
 
     const keyring = new Keyring({ type: "sr25519" });
     const node = new Node(getEnvironmentRequiredVars().chainUri);
@@ -108,8 +110,22 @@ describe("UI XCM tests - BNC", () => {
     testUser1 = new User(keyring);
     testUser1.addFromMnemonic(
       keyring,
-      getEnvironmentRequiredVars().mnemonicPolkadot
+      getEnvironmentRequiredVars().mnemonicPolkadot,
     );
+
+    //TODO: Remove when clarified how to setup tokens on Bifrost.
+    const mgaSdk = MangataSDK.instance([mangata.uri]);
+    await mgaSdk.xTokens.withdraw({
+      account: testUser1.keyRingPair,
+      amount: AssetId.Bnc.unit.mul(BN_HUNDRED),
+      destinationAddress: testUser1.keyRingPair.address,
+      parachainId: 2001,
+      tokenSymbol: "BNC",
+      withWeight:
+        TRANSFER_INSTRUCTIONS * ChainSpecs.get(ChainId.Bifrost)!.unitCostWeight,
+    });
+    await bifrost.chain.newBlock();
+    //END-TODO
 
     testUser1.addAsset(BNC_ASSET_ID);
     testUser1.addAsset(MGA_ASSET_ID);
@@ -143,9 +159,8 @@ describe("UI XCM tests - BNC", () => {
     const isDepositModalVisible = await depositModal.isModalVisible();
     expect(isDepositModalVisible).toBeTruthy();
     await depositModal.openTokensList();
-    const tokensAtDestinationAfter = await depositModal.getTokenAmount(
-      BNC_ASSET_NAME
-    );
+    const tokensAtDestinationAfter =
+      await depositModal.getTokenAmount(BNC_ASSET_NAME);
     expect(tokensAtDestinationAfter).toBeGreaterThan(INIT_BNC_RELAY);
 
     await mangata.chain.newBlock();
@@ -153,12 +168,12 @@ describe("UI XCM tests - BNC", () => {
     await mga.go();
     await testUser1.refreshAmounts(AssetWallet.AFTER);
     expect(testUser1.getAsset(BNC_ASSET_ID)?.amountBefore.free!).bnGt(
-      testUser1.getAsset(BNC_ASSET_ID)?.amountAfter.free!
+      testUser1.getAsset(BNC_ASSET_ID)?.amountAfter.free!,
     );
     await sidebar.waitForLoad();
     const tokenOnAppAfter = await sidebar.getTokenAmount(BNC_ASSET_NAME);
     expect(parseFloat(tokenOnAppAfter.replace(",", ""))).toBeLessThan(
-      parseFloat(tokenOnAppBefore.replace(",", ""))
+      parseFloat(tokenOnAppBefore.replace(",", "")),
     );
   });
 
@@ -166,7 +181,7 @@ describe("UI XCM tests - BNC", () => {
     const session = await driver.getSession();
     await addExtraLogs(
       driver,
-      expect.getState().currentTestName + " - " + session.getId()
+      expect.getState().currentTestName + " - " + session.getId(),
     );
     await driver.manage().deleteAllCookies();
     await driver.executeScript("localStorage.clear(); sessionStorage.clear();");

@@ -74,14 +74,14 @@ describe("xyk-pallet - treasury tests [Mangata]: on treasury we store", () => {
     await sudo.mint(
       mgaTokenId,
       testUser1,
-      new BN(defaultCurrecyValue).add(new BN(Math.pow(10, 20).toString()))
+      new BN(defaultCurrecyValue).add(new BN(Math.pow(10, 20).toString())),
     );
     testUser1.addAsset(mgaTokenId);
     secondCurrency = (
       await Assets.setupUserWithCurrencies(
         testUser1,
         [defaultCurrecyValue],
-        sudo
+        sudo,
       )
     )[0];
     await testUser1.addMGATokens(sudo);
@@ -90,7 +90,7 @@ describe("xyk-pallet - treasury tests [Mangata]: on treasury we store", () => {
       mgaTokenId,
       first_asset_amount,
       secondCurrency,
-      seccond_asset_amount
+      seccond_asset_amount,
     );
     await testUser1.refreshAmounts(AssetWallet.BEFORE);
     await waitIfSessionWillChangeInNblocks(3);
@@ -106,7 +106,7 @@ describe("xyk-pallet - treasury tests [Mangata]: on treasury we store", () => {
       mgaTokenId,
       secondCurrency,
       sellAssetAmount,
-      new BN(1)
+      new BN(1),
     ).then((result) => {
       const eventResponse = getEventResultFromMangataTx(result, [
         "xyk",
@@ -137,16 +137,15 @@ describe("xyk-pallet - treasury tests [Mangata]: on treasury we store", () => {
     const sellPrice = await calculate_buy_price_rpc(
       seccond_asset_amount,
       first_asset_amount,
-      buyAssetAmount
+      buyAssetAmount,
     );
     const { treasury } = calculateFees(sellPrice);
-    const from = await getBlockNumber();
     await buyAsset(
       testUser1.keyRingPair,
       secondCurrency,
       mgaTokenId,
       buyAssetAmount,
-      new BN(100000000)
+      new BN(100000000),
     ).then((result) => {
       const eventResponse = getEventResultFromMangataTx(result, [
         "xyk",
@@ -156,21 +155,12 @@ describe("xyk-pallet - treasury tests [Mangata]: on treasury we store", () => {
       expect(eventResponse.state).toEqual(ExtrinsicResult.ExtrinsicSuccess);
       return result;
     });
-    if (false) {
-      const to = await getBlockNumber();
-      const blockNumber = await findBlockWithExtrinsicSigned(
-        [from, to],
-        testUser1.keyRingPair.address
-      );
-      const authorMGAtokens = await getTokensDiffForBlockAuthor(blockNumber);
-      treasuryBefore.add(authorMGAtokens);
-    }
     //fees are now calculated after the swap
     const poolBalance = await getBalanceOfPool(mgaTokenId, secondCurrency);
     const feeInMGAPrice = await calculate_sell_price_rpc(
       poolBalance[1],
       poolBalance[0],
-      treasury
+      treasury,
     );
 
     await testUser1.refreshAmounts(AssetWallet.AFTER);
@@ -195,7 +185,7 @@ describe("xyk-pallet - treasury tests [Mangata]: on treasury we store", () => {
       secondCurrency,
       mgaTokenId,
       sellAssetAmount,
-      new BN(1)
+      new BN(1),
     ).then((result) => {
       const eventResponse = getEventResultFromMangataTx(result, [
         "xyk",
@@ -209,7 +199,7 @@ describe("xyk-pallet - treasury tests [Mangata]: on treasury we store", () => {
     const feeInMGAPrice = await calculate_sell_price_rpc(
       poolBalance[1],
       poolBalance[0],
-      treasury
+      treasury,
     );
     await testUser1.refreshAmounts(AssetWallet.AFTER);
 
@@ -230,7 +220,7 @@ describe("xyk-pallet - treasury tests [Mangata]: on treasury we store", () => {
     const sellPrice = await calculate_buy_price_rpc(
       first_asset_amount,
       seccond_asset_amount,
-      buyAssetAmount
+      buyAssetAmount,
     );
     const { treasury } = calculateFees(sellPrice);
 
@@ -239,7 +229,7 @@ describe("xyk-pallet - treasury tests [Mangata]: on treasury we store", () => {
       mgaTokenId,
       secondCurrency,
       buyAssetAmount,
-      new BN(100000000)
+      new BN(100000000),
     ).then((result) => {
       const eventResponse = getEventResultFromMangataTx(result, [
         "xyk",
@@ -300,21 +290,21 @@ describe("xyk-pallet - treasury tests [Connected - Mangata]: on treasury we stor
     await sudo.mint(
       mgaTokenId,
       testUser1,
-      new BN(defaultCurrecyValue).add(new BN(Math.pow(10, 20).toString()))
+      new BN(defaultCurrecyValue).add(new BN(Math.pow(10, 20).toString())),
     );
     testUser1.addAsset(mgaTokenId);
     connectedToMGA = (
       await Assets.setupUserWithCurrencies(
         testUser1,
         [defaultCurrecyValue],
-        sudo
+        sudo,
       )
     )[0];
     indirectlyConnected = (
       await Assets.setupUserWithCurrencies(
         testUser1,
         [defaultCurrecyValue],
-        sudo
+        sudo,
       )
     )[0];
     await testUser1.addMGATokens(sudo);
@@ -323,14 +313,14 @@ describe("xyk-pallet - treasury tests [Connected - Mangata]: on treasury we stor
       mgaTokenId,
       first_asset_amount,
       connectedToMGA,
-      first_asset_amount.div(new BN(2))
+      first_asset_amount.div(new BN(2)),
     );
     await createPool(
       testUser1.keyRingPair,
       connectedToMGA,
       first_asset_amount,
       indirectlyConnected,
-      first_asset_amount.div(new BN(2))
+      first_asset_amount.div(new BN(2)),
     );
     await testUser1.refreshAmounts(AssetWallet.BEFORE);
     await waitIfSessionWillChangeInNblocks(3);
@@ -344,12 +334,12 @@ describe("xyk-pallet - treasury tests [Connected - Mangata]: on treasury we stor
     const swapTreasuryInMG = calculate_sell_price_local_no_fee(
       mgPoolAmount[1],
       mgPoolAmount[0],
-      treasury
+      treasury,
     );
     const twotreasuries = calculate_sell_price_local_no_fee(
       mgPoolAmount[1],
       mgPoolAmount[0],
-      treasury.mul(new BN(2))
+      treasury.mul(new BN(2)),
     );
 
     const treasuryBefore = await getTreasury(mgaTokenId);
@@ -360,7 +350,7 @@ describe("xyk-pallet - treasury tests [Connected - Mangata]: on treasury we stor
       connectedToMGA,
       indirectlyConnected,
       sellAssetAmount,
-      new BN(1)
+      new BN(1),
     ).then((result) => {
       const eventResponse = getEventResultFromMangataTx(result, [
         "xyk",
@@ -377,10 +367,10 @@ describe("xyk-pallet - treasury tests [Connected - Mangata]: on treasury we stor
 
     const mgPoolAmountAfter = await getBalanceOfPool(
       mgaTokenId,
-      connectedToMGA
+      connectedToMGA,
     );
     expect(mgPoolAmountAfter[1].sub(mgPoolAmount[1])).bnEqual(
-      treasury.add(treasury)
+      treasury.add(treasury),
     );
     expect(treasuryAfter).bnEqual(treasuryBefore.add(swapTreasuryInMG));
     //validated with Stano that the rounding issue is no longer required.
@@ -398,13 +388,13 @@ describe("xyk-pallet - treasury tests [Connected - Mangata]: on treasury we stor
 
     const PoolAmount = await getBalanceOfPool(
       indirectlyConnected,
-      connectedToMGA
+      connectedToMGA,
     );
 
     const sellPrice = await calculate_buy_price_rpc(
       PoolAmount[1],
       PoolAmount[0],
-      buyAssetAmount
+      buyAssetAmount,
     );
     const { treasury } = calculateFees(sellPrice);
 
@@ -412,7 +402,7 @@ describe("xyk-pallet - treasury tests [Connected - Mangata]: on treasury we stor
     const swapTreasuryInMG = calculate_sell_price_local_no_fee(
       mgPoolAmount[1],
       mgPoolAmount[0],
-      treasury
+      treasury,
     );
 
     const treasuryBefore = await getTreasury(mgaTokenId);
@@ -422,7 +412,7 @@ describe("xyk-pallet - treasury tests [Connected - Mangata]: on treasury we stor
       connectedToMGA,
       indirectlyConnected,
       buyAssetAmount,
-      new BN(10000000)
+      new BN(10000000),
     ).then((result) => {
       const eventResponse = getEventResultFromMangataTx(result, [
         "xyk",
@@ -464,7 +454,7 @@ describe("xyk-pallet - treasury tests [Connected - Mangata]: on treasury we stor
       indirectlyConnected,
       connectedToMGA,
       sellAssetAmount,
-      new BN(1)
+      new BN(1),
     ).then((result) => {
       const eventResponse = getEventResultFromMangataTx(result, [
         "xyk",
@@ -487,7 +477,7 @@ describe("xyk-pallet - treasury tests [Connected - Mangata]: on treasury we stor
 
     expect(treasuryAfterInd).bnEqual(treasuryBeforeInd.add(treasury));
     expect(treasuryBurnAfterInd).bnEqual(
-      treasuryBurnBeforeInd.add(treasuryBurn)
+      treasuryBurnBeforeInd.add(treasuryBurn),
     );
   });
 
@@ -499,12 +489,12 @@ describe("xyk-pallet - treasury tests [Connected - Mangata]: on treasury we stor
 
     const PoolAmount = await getBalanceOfPool(
       indirectlyConnected,
-      connectedToMGA
+      connectedToMGA,
     );
     const sellPrice = await calculate_buy_price_rpc(
       PoolAmount[1],
       PoolAmount[0],
-      buyAssetAmount
+      buyAssetAmount,
     );
     const { treasury } = calculateFees(sellPrice);
 
@@ -512,14 +502,14 @@ describe("xyk-pallet - treasury tests [Connected - Mangata]: on treasury we stor
     const swapTreasuryInMG = calculate_sell_price_local_no_fee(
       mgPoolAmount[1],
       mgPoolAmount[0],
-      treasury
+      treasury,
     );
     await buyAsset(
       testUser1.keyRingPair,
       connectedToMGA,
       indirectlyConnected,
       buyAssetAmount,
-      new BN(1000000)
+      new BN(1000000),
     ).then((result) => {
       const eventResponse = getEventResultFromMangataTx(result, [
         "xyk",
@@ -584,7 +574,7 @@ describe("xyk-pallet - treasury tests [Connected - Mangata]: Error cases", () =>
     await sudo.mint(
       mgaTokenId,
       testUser1,
-      new BN(defaultCurrecyValue).add(new BN(Math.pow(10, 20).toString()))
+      new BN(defaultCurrecyValue).add(new BN(Math.pow(10, 20).toString())),
     );
     testUser1.addAsset(mgaTokenId);
     connectedToMGA = (
@@ -600,7 +590,7 @@ describe("xyk-pallet - treasury tests [Connected - Mangata]: Error cases", () =>
       mgaTokenId,
       new BN(100),
       connectedToMGA,
-      first_asset_amount
+      first_asset_amount,
     );
 
     await testUser1.refreshAmounts(AssetWallet.BEFORE);
@@ -611,16 +601,15 @@ describe("xyk-pallet - treasury tests [Connected - Mangata]: Error cases", () =>
     const treasuryBurnBefore = await getTreasuryBurn(mgaTokenId);
 
     const treasuryBeforeConnectedAsset = await getTreasury(connectedToMGA);
-    const treasuryBurnBeforeConnectedAsset = await getTreasuryBurn(
-      connectedToMGA
-    );
+    const treasuryBurnBeforeConnectedAsset =
+      await getTreasuryBurn(connectedToMGA);
     const from = await getBlockNumber();
     await buyAsset(
       testUser1.keyRingPair,
       connectedToMGA,
       mgaTokenId,
       mgPoolAmount[0].sub(new BN(1)),
-      new BN(MAX_BALANCE)
+      new BN(MAX_BALANCE),
     ).then((result) => {
       const eventResponse = getEventResultFromMangataTx(result, [
         "xyk",
@@ -635,10 +624,9 @@ describe("xyk-pallet - treasury tests [Connected - Mangata]: Error cases", () =>
       const to = await getBlockNumber();
       const blockNumber = await findBlockWithExtrinsicSigned(
         [from, to],
-        testUser1.keyRingPair.address
+        testUser1.keyRingPair.address,
       );
-      const authorMGAtokens = await getTokensDiffForBlockAuthor(blockNumber);
-      fees = authorMGAtokens;
+      fees = await getTokensDiffForBlockAuthor(blockNumber);
     }
 
     await testUser1.refreshAmounts(AssetWallet.AFTER);
@@ -647,9 +635,8 @@ describe("xyk-pallet - treasury tests [Connected - Mangata]: Error cases", () =>
     const treasuryBurnAfter = await getTreasuryBurn(mgaTokenId);
 
     const treasuryAfterConnectedAsset = await getTreasury(connectedToMGA);
-    const treasuryBurnAfterConnectedAsset = await getTreasuryBurn(
-      connectedToMGA
-    );
+    const treasuryBurnAfterConnectedAsset =
+      await getTreasuryBurn(connectedToMGA);
 
     const poolAfter = await getBalanceOfPool(mgaTokenId, connectedToMGA);
 
@@ -662,7 +649,7 @@ describe("xyk-pallet - treasury tests [Connected - Mangata]: Error cases", () =>
       .amountAfter.free.sub(mgPoolAmount[0].sub(new BN(1)));
 
     expect(testUser1.getAsset(mgaTokenId)!.amountBefore.free).bnEqual(
-      expectedValue.add(fees)
+      expectedValue.add(fees),
     );
 
     //burned destroyed! because is translated toMGA
@@ -671,10 +658,10 @@ describe("xyk-pallet - treasury tests [Connected - Mangata]: Error cases", () =>
     //not enough tokens to get the fee.
     expect(treasuryAfter).bnEqual(treasuryBefore);
     expect(
-      treasuryAfterConnectedAsset.sub(treasuryBeforeConnectedAsset)
+      treasuryAfterConnectedAsset.sub(treasuryBeforeConnectedAsset),
     ).bnEqual(new BN(0));
     expect(
-      treasuryBurnAfterConnectedAsset.sub(treasuryBurnBeforeConnectedAsset)
+      treasuryBurnAfterConnectedAsset.sub(treasuryBurnBeforeConnectedAsset),
     ).bnEqual(new BN(0));
   });
 });

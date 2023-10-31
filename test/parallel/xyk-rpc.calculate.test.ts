@@ -49,14 +49,14 @@ beforeAll(async () => {
   [firstCurrency, secondCurrency] = await Assets.setupUserWithCurrencies(
     testUser1,
     [new BN(firstAssetAmount * 2), new BN(seccondAssetAmount * 2)],
-    sudo
+    sudo,
   );
   await testUser1.addMGATokens(sudo);
   await testUser1.createPoolToAsset(
     new BN(firstAssetAmount),
     new BN(seccondAssetAmount),
     firstCurrency,
-    secondCurrency
+    secondCurrency,
   );
 
   // add users to pair.
@@ -73,30 +73,30 @@ beforeEach(async () => {
 test("xyk-rpc - calculate_sell_price and calculate_buy_price matches, 1000,1000", async () => {
   const poolBalanceBefore = await getBalanceOfPool(
     firstCurrency,
-    secondCurrency
+    secondCurrency,
   );
 
   const numberOfAssets = new BN(100);
   const sellPriceRpc = await calculate_sell_price_rpc(
     poolBalanceBefore[0],
     poolBalanceBefore[1],
-    numberOfAssets
+    numberOfAssets,
   );
   const sellPriceRpcInverse = await calculate_sell_price_rpc(
     poolBalanceBefore[1],
     poolBalanceBefore[0],
-    numberOfAssets
+    numberOfAssets,
   );
 
   const buyPriceRpc = await calculate_buy_price_rpc(
     poolBalanceBefore[0],
     poolBalanceBefore[1],
-    sellPriceRpc
+    sellPriceRpc,
   );
   const buyPriceRpcInverse = await calculate_buy_price_rpc(
     poolBalanceBefore[1],
     poolBalanceBefore[0],
-    sellPriceRpc
+    sellPriceRpc,
   );
 
   //in a perfect balanced pool, those number match
@@ -110,7 +110,7 @@ test("xyk-rpc - calculate_sell_price and calculate_buy_price matches, 1000,1000"
 test("xyk-rpc - calculate_sell_price and calculate_buy_price matches, 2000,1000", async () => {
   const poolBalanceBefore = await getBalanceOfPool(
     firstCurrency,
-    secondCurrency
+    secondCurrency,
   );
   //lets unbalance it artificailly, now the relation is 2000X=1000Y
   poolBalanceBefore[0] = poolBalanceBefore[0].add(new BN(1000));
@@ -119,23 +119,23 @@ test("xyk-rpc - calculate_sell_price and calculate_buy_price matches, 2000,1000"
   const sellPriceRpc = await calculate_sell_price_rpc(
     poolBalanceBefore[0],
     poolBalanceBefore[1],
-    numberOfAssets
+    numberOfAssets,
   );
   const sellPriceRpcInverse = await calculate_sell_price_rpc(
     poolBalanceBefore[1],
     poolBalanceBefore[0],
-    numberOfAssets
+    numberOfAssets,
   );
 
   const buyPriceRpc = await calculate_buy_price_rpc(
     poolBalanceBefore[0],
     poolBalanceBefore[1],
-    sellPriceRpc
+    sellPriceRpc,
   );
   const buyPriceRpcInverse = await calculate_buy_price_rpc(
     poolBalanceBefore[1],
     poolBalanceBefore[0],
-    sellPriceRpc
+    sellPriceRpc,
   );
 
   //in a not perfect balanced pool, those number can not match
@@ -150,14 +150,14 @@ test("xyk-rpc - calculate_sell_price and calculate_buy_price matches, 2000,1000"
 test("xyk-rpc - calculate_sell_price matches with the real sell", async () => {
   const poolBalanceBefore = await getBalanceOfPool(
     firstCurrency,
-    secondCurrency
+    secondCurrency,
   );
 
   const numberOfAssets = new BN(100);
   const sellPriceRpc = await calculate_sell_price_rpc(
     poolBalanceBefore[0],
     poolBalanceBefore[1],
-    numberOfAssets
+    numberOfAssets,
   );
   await testUser1.sellAssets(firstCurrency, secondCurrency, numberOfAssets);
   await testUser1.refreshAmounts(AssetWallet.AFTER);
@@ -165,24 +165,24 @@ test("xyk-rpc - calculate_sell_price matches with the real sell", async () => {
   const assetsBought = testUser1.getAsset(secondCurrency)?.amountAfter;
 
   expect(assetsSold?.free).bnEqual(
-    testUser1.getAsset(firstCurrency)?.amountBefore.free.sub(numberOfAssets)!
+    testUser1.getAsset(firstCurrency)?.amountBefore.free.sub(numberOfAssets)!,
   );
   expect(assetsBought?.free).bnEqual(
-    testUser1.getAsset(secondCurrency)?.amountBefore.free.add(sellPriceRpc)!
+    testUser1.getAsset(secondCurrency)?.amountBefore.free.add(sellPriceRpc)!,
   );
 });
 
 test("xyk-rpc - calculate_buy_price matches with the real buy", async () => {
   const poolBalanceBefore = await getBalanceOfPool(
     firstCurrency,
-    secondCurrency
+    secondCurrency,
   );
 
   const numberOfAssets = new BN(100);
   const sellPriceRpc = await calculate_buy_price_rpc(
     poolBalanceBefore[0],
     poolBalanceBefore[1],
-    numberOfAssets
+    numberOfAssets,
   );
   await testUser1.buyAssets(firstCurrency, secondCurrency, numberOfAssets);
   await testUser1.refreshAmounts(AssetWallet.AFTER);
@@ -190,9 +190,9 @@ test("xyk-rpc - calculate_buy_price matches with the real buy", async () => {
   const assetsBought = testUser1.getAsset(secondCurrency)?.amountAfter;
 
   expect(assetsSold?.free).bnEqual(
-    testUser1.getAsset(firstCurrency)?.amountBefore.free.sub(sellPriceRpc)!
+    testUser1.getAsset(firstCurrency)?.amountBefore.free.sub(sellPriceRpc)!,
   );
   expect(assetsBought?.free).bnEqual(
-    testUser1.getAsset(secondCurrency)?.amountBefore.free.add(numberOfAssets)!
+    testUser1.getAsset(secondCurrency)?.amountBefore.free.add(numberOfAssets)!,
   );
 });

@@ -28,7 +28,7 @@ jobs:
     strategy:
       fail-fast: false
       matrix:
-        command: ['uiXcmKSM', 'uiXcmIMBUrococo', 'uiXcmBNC', 'uiXcmWithdrawBNC', 'uiXcmWithdrawKSM']
+        command: ['uiXcmKSM', 'uiXcmBNC', 'uiXcmWithdrawBNC', 'uiXcmWithdrawKSM']
     runs-on: ubuntu-latest
     timeout-minutes: 30
     env:
@@ -55,7 +55,7 @@ jobs:
         uses: Xotabu4/selenoid-github-action@v2
         with:
           selenoid-start-arguments: |
-            --args "-timeout 300s" --browsers 'chrome:112.0'
+            --args "-timeout 300s" --browsers 'chrome:114.0'
 
       #### App
       - name: Checkout FE app
@@ -73,13 +73,13 @@ jobs:
           echo //registry.npmjs.org/:_authToken=${{ secrets.FE_NPM_AUTH_TOKEN }} >> .npmrc
           echo always-auth=true >> .npmrc
 
-      - name: Inject chops sdk to FE app
-        working-directory: mangata-fe
-        run: |
-          chops_sdk="https://github.com/mangata-finance/mangata-sdk#feature/chopsAndxykrefactor"
-          jq ".dependencies[\"@mangata-finance/sdk\"] = \"${chops_sdk}\"" package.json > tmp.json
-          mv tmp.json package.json
-          jq '.dependencies["@mangata-finance/sdk"]' package.json
+      # - name: Inject chops sdk to FE app
+      #   working-directory: mangata-fe
+      #   run: |
+      #     chops_sdk="1.20.2"
+      #     jq ".dependencies[\"@mangata-finance/sdk\"] = \"${chops_sdk}\"" package.json > tmp.json
+      #     mv tmp.json package.json
+      #     jq '.dependencies["@mangata-finance/sdk"]' package.json
 
       - name: Install fe app dependencies
         working-directory: mangata-fe
@@ -105,6 +105,7 @@ jobs:
           echo IMBUE_API_URL=ws://$IP_ADDRESS:9947 >> .env
           echo STATEMINE_API_URL=ws://$IP_ADDRESS:9949 >> .env
           echo BIFROST_API_URL=ws://$IP_ADDRESS:9948 >> .env
+          echo MOONRIVER_API_URL=ws://$IP_ADDRESS:9951 >> .env
           echo PARACHAIN_ID=2110 >> .env
           echo MANGATA_ENV=local >> .env
           echo EXTEND_ESLINT=true >> .env
@@ -172,7 +173,7 @@ jobs:
         if: always()
         with:
           name: E2E report ${{ matrix.command }} # Name of the check run which will be created
-          path: reports/junit-*.xml # Path to test results
+          path: reports/*.xml # Path to test results
           reporter: jest-junit # Format of test results
 
       - name: Copy video files to reports folder

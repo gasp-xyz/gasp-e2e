@@ -9,7 +9,7 @@ export class ethUser {
   constructor(
     ethUserAddress: string,
     uri = "",
-    provider: JsonRpcProvider | undefined = undefined
+    provider: JsonRpcProvider | undefined = undefined,
   ) {
     if (provider) {
       this.provider = provider;
@@ -26,11 +26,10 @@ export class ethUser {
 
   static async getBalance(provider: JsonRpcProvider, ethUserAddress: string) {
     const value = await provider.getBalance(ethUserAddress);
-    const ethBalance = new BN(
+    return new BN(
       (
         parseFloat(ethers.utils.formatEther(value)) * Math.pow(10, 18)
-      ).toString()
+      ).toString(),
     );
-    return ethBalance;
   }
 }

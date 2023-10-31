@@ -47,11 +47,11 @@ describe("AssetInfo - testpad", () => {
       const tokens = Array.from(Array(7).keys())
         .reverse()
         .slice(0, numberOfMissingTokens);
-      const assets = tokens.flatMap((x) => new BN(Math.pow(10, 20).toString()));
+      const assets = tokens.flatMap(() => new BN(Math.pow(10, 20).toString()));
       await Assets.setupUserWithCurrencies(sudo, assets, sudo).then(
         (values) => {
           return values.map((val) => val.toNumber());
-        }
+        },
       );
     }
     if (ksm) {
@@ -61,7 +61,7 @@ describe("AssetInfo - testpad", () => {
         "mKSM",
         "mKSM",
         "Relay chain Kusama token",
-        new BN(12)
+        new BN(12),
       );
     } else {
       await setAssetInfo(
@@ -70,7 +70,7 @@ describe("AssetInfo - testpad", () => {
         "mDOT",
         "mDOT",
         "Relay chain Polkadot token",
-        new BN(10)
+        new BN(10),
       );
     }
 
@@ -80,7 +80,7 @@ describe("AssetInfo - testpad", () => {
       "mBTC",
       "mBTC",
       "0xb171e7c2316ecd042d1ea148cdd930ea484c37ac",
-      new BN(18)
+      new BN(18),
     );
     await setAssetInfo(
       sudo,
@@ -88,7 +88,7 @@ describe("AssetInfo - testpad", () => {
       "mUSD",
       "mUSD",
       "0xc6f4f60fa2d578b2b83cde49b8be624bd439eb98",
-      new BN(18)
+      new BN(18),
     );
   });
 
@@ -119,7 +119,7 @@ describe("AssetInfo - testpad", () => {
     const target = new User(keyring);
     target.addFromAddress(
       keyring,
-      "5CP5sgWw94GoQCGvm4qeNgKTw41Scnk2F41uPe4SSAPVPoCU"
+      "5CP5sgWw94GoQCGvm4qeNgKTw41Scnk2F41uPe4SSAPVPoCU",
     );
     await sudo.mint(new BN(4), target, new BN(Math.pow(10, 20).toString()));
     await sudo.mint(new BN(5), target, new BN(Math.pow(10, 20).toString()));
@@ -149,19 +149,19 @@ describe("AssetInfo - testpad", () => {
       poolSizeMGA,
       poolSizeAsset,
       new BN(0),
-      new BN(dot)
+      new BN(dot),
     );
     await sudo.createPoolToAsset(
       poolSizeMGA,
       poolSizeAsset,
       new BN(0),
-      new BN(btc)
+      new BN(btc),
     );
     await sudo.createPoolToAsset(
       poolSizeMGA,
       poolSizeAsset,
       new BN(0),
-      new BN(usd)
+      new BN(usd),
     );
   });
 });

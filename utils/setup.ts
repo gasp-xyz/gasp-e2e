@@ -9,7 +9,6 @@ import { Xyk } from "./xyk";
 import { SudoDB } from "./SudoDB";
 import { Codec } from "@polkadot/types-codec/types";
 import { signTx } from "@mangata-finance/sdk";
-import { BN } from "@polkadot/util";
 import { SubmittableExtrinsic } from "@polkadot/api/types";
 // API
 export let api: ApiPromise;
@@ -41,7 +40,23 @@ export const setupApi = async () => {
   }
   return api;
 };
-
+export function isBackendTest() {
+  const groupPrefix = "--group=";
+  const isThereAPath = process.argv.find((arg) => arg.includes("test/"));
+  const isAGroupRun = process.argv.find((arg) => arg.includes(groupPrefix));
+  if (
+    isThereAPath &&
+    isThereAPath.length > 0 &&
+    isThereAPath.toLowerCase().includes("ui")
+  ) {
+    return false;
+  }
+  return !(
+    isAGroupRun &&
+    isAGroupRun.length > 0 &&
+    isAGroupRun.toLowerCase().includes("ui")
+  );
+}
 export const setupUsers = () => {
   keyring = new Keyring({ type: "sr25519" });
   const { sudo: sudoUserName } = getEnvironmentRequiredVars();
@@ -90,16 +105,14 @@ export async function setup5PoolsChained(users: User[]) {
   users = [testUser1, testUser2, testUser3, testUser4];
   const keyring = new Keyring({ type: "sr25519" });
   const sudo = new User(keyring, getEnvironmentRequiredVars().sudo);
-  const events = await Sudo.batchAsSudoFinalized(
-    Assets.issueToken(sudo),
-    Assets.issueToken(sudo),
-    Assets.issueToken(sudo),
-    Assets.issueToken(sudo),
-    Assets.issueToken(sudo)
-  );
-  const tokenIds: BN[] = events
-    .filter((item) => item.method === "Issued" && item.section === "tokens")
-    .map((x) => new BN(x.eventData[0].data.toString()));
+  const tokenIds = await SudoDB.getInstance().getTokenIds(5);
+  const mints = [
+    Assets.mintToken(tokenIds[0], sudo),
+    Assets.mintToken(tokenIds[1], sudo),
+    Assets.mintToken(tokenIds[2], sudo),
+    Assets.mintToken(tokenIds[3], sudo),
+    Assets.mintToken(tokenIds[4], sudo),
+  ];
 
   const poolCreationExtrinsics: Extrinsic[] = [];
   tokenIds.forEach((_, index, tokens) => {
@@ -108,11 +121,12 @@ export async function setup5PoolsChained(users: User[]) {
         tokenIds[index],
         Assets.DEFAULT_AMOUNT.divn(2),
         tokenIds[index + (1 % tokens.length)],
-        Assets.DEFAULT_AMOUNT.divn(2)
-      )
+        Assets.DEFAULT_AMOUNT.divn(2),
+      ),
     );
   });
   await Sudo.batchAsSudoFinalized(
+    ...mints,
     Assets.mintNative(testUser1),
     Assets.mintNative(testUser2),
     Assets.mintNative(testUser3),
@@ -121,7 +135,11 @@ export async function setup5PoolsChained(users: User[]) {
     Assets.mintToken(tokenIds[0], testUser2),
     Assets.mintToken(tokenIds[0], testUser3),
     Assets.mintToken(tokenIds[0], testUser4),
-    ...poolCreationExtrinsics
+    Assets.mintToken(tokenIds[tokenIds.length - 1], testUser1),
+    Assets.mintToken(tokenIds[tokenIds.length - 1], testUser2),
+    Assets.mintToken(tokenIds[tokenIds.length - 1], testUser3),
+    Assets.mintToken(tokenIds[tokenIds.length - 1], testUser4),
+    ...poolCreationExtrinsics,
   );
   return { users, tokenIds };
 }
@@ -130,13 +148,8 @@ export async function setupAPoolForUsers(users: User[]) {
   users = [testUser1, testUser2, testUser3, testUser4];
   const keyring = new Keyring({ type: "sr25519" });
   const sudo = new User(keyring, getEnvironmentRequiredVars().sudo);
-  const events = await Sudo.batchAsSudoFinalized(
-    Assets.issueToken(sudo),
-    Assets.issueToken(sudo)
-  );
-  const tokenIds: BN[] = events
-    .filter((item) => item.method === "Issued" && item.section === "tokens")
-    .map((x) => new BN(x.eventData[0].data.toString()));
+
+  const tokenIds = await SudoDB.getInstance().getTokenIds(2);
 
   const poolCreationExtrinsics: Extrinsic[] = [];
   poolCreationExtrinsics.push(
@@ -144,11 +157,13 @@ export async function setupAPoolForUsers(users: User[]) {
       tokenIds[0],
       Assets.DEFAULT_AMOUNT.divn(2),
       tokenIds[1],
-      Assets.DEFAULT_AMOUNT.divn(2)
-    )
+      Assets.DEFAULT_AMOUNT.divn(2),
+    ),
   );
 
   await Sudo.batchAsSudoFinalized(
+    Assets.mintToken(tokenIds[0], sudo),
+    Assets.mintToken(tokenIds[1], sudo),
     Assets.mintNative(testUser1),
     Assets.mintNative(testUser2),
     Assets.mintNative(testUser3),
@@ -157,7 +172,7 @@ export async function setupAPoolForUsers(users: User[]) {
     Assets.mintToken(tokenIds[0], testUser2),
     Assets.mintToken(tokenIds[0], testUser3),
     Assets.mintToken(tokenIds[0], testUser4),
-    ...poolCreationExtrinsics
+    ...poolCreationExtrinsics,
   );
   return { users, tokenIds };
 }
@@ -168,7 +183,7 @@ export const setupGasLess = async (force = false) => {
   alice = new User(keyring, "//Alice");
   await setupApi();
   const feeLockConfig = JSON.parse(
-    JSON.stringify(await api?.query.feeLock.feeLockMetadata())
+    JSON.stringify(await api?.query.feeLock.feeLockMetadata()),
   );
   // only create if empty.
   if (feeLockConfig === null || feeLockConfig.periodLength === null || force) {
@@ -177,7 +192,7 @@ export const setupGasLess = async (force = false) => {
         10,
         "50000000000000000000",
         "1000000000000000000000",
-        [[1, false]]
+        [[1, false]],
       )
       .toString();
     await signTx(api!, api!.tx.sudo.sudo(extrinsic), sudo.keyRingPair, {

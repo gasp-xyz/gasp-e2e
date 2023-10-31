@@ -23,6 +23,8 @@ import { Assets } from "../../utils/Assets";
 import { getEnvironmentRequiredVars } from "../../utils/utils";
 import { testLog } from "../../utils/Logger";
 import { getEventResultFromMangataTx } from "../../utils/txHandler";
+import { Sudo } from "../../utils/sudo";
+import { Xyk } from "../../utils/xyk";
 
 jest.spyOn(console, "log").mockImplementation(jest.fn());
 jest.setTimeout(1500000);
@@ -65,15 +67,22 @@ beforeEach(async () => {
   [firstCurrency, secondCurrency] = await Assets.setupUserWithCurrencies(
     testUser1,
     [defaultCurrecyValue, defaultCurrecyValue.add(new BN(1))],
-    sudo
+    sudo,
   );
-  await testUser1.addMGATokens(sudo);
-  await testUser1.createPoolToAsset(
-    new BN(40000),
-    new BN(30000),
-    firstCurrency,
-    secondCurrency
+
+  await Sudo.batchAsSudoFinalized(
+    Assets.mintNative(testUser1),
+    Sudo.sudoAs(
+      testUser1,
+      Xyk.createPool(
+        firstCurrency,
+        new BN(40000),
+        secondCurrency,
+        new BN(30000),
+      ),
+    ),
   );
+
   liquidityAssetId = await getLiquidityAssetId(firstCurrency, secondCurrency);
   testUser1.addAsset(liquidityAssetId);
   testUser2.addAsset(liquidityAssetId);
@@ -97,7 +106,7 @@ beforeEach(async () => {
 test("xyk-pallet - Liqudity : Burn part of the liquidity", async () => {
   const poolBalanceBefore = await getBalanceOfPool(
     firstCurrency,
-    secondCurrency
+    secondCurrency,
   );
   const totalLiquidityAssetsBefore = await getAssetSupply(liquidityAssetId);
   const liquidityAssetsBurned = new BN(20000);
@@ -105,7 +114,7 @@ test("xyk-pallet - Liqudity : Burn part of the liquidity", async () => {
     await calcuate_burn_liquidity_price_local(
       firstCurrency,
       secondCurrency,
-      liquidityAssetsBurned
+      liquidityAssetsBurned,
     );
 
   testLog
@@ -116,14 +125,14 @@ test("xyk-pallet - Liqudity : Burn part of the liquidity", async () => {
         "of pool " +
         firstCurrency +
         " - " +
-        secondCurrency
+        secondCurrency,
     );
 
   await burnLiquidity(
     testUser1.keyRingPair,
     firstCurrency,
     secondCurrency,
-    liquidityAssetsBurned
+    liquidityAssetsBurned,
   ).then((result) => {
     const eventResponse = getEventResultFromMangataTx(result, [
       "xyk",
@@ -141,21 +150,21 @@ test("xyk-pallet - Liqudity : Burn part of the liquidity", async () => {
     .getAsset(firstCurrency)
     ?.amountBefore.free!.add(firstAssetAmount);
   expect(testUser1.getAsset(firstCurrency)?.amountAfter.free!).bnEqual(
-    addFromWallet!
+    addFromWallet!,
   );
 
   addFromWallet = testUser1
     .getAsset(secondCurrency)
     ?.amountBefore.free!.add(second_asset_amount);
   expect(testUser1.getAsset(secondCurrency)?.amountAfter.free!).bnEqual(
-    addFromWallet!
+    addFromWallet!,
   );
 
   let diffFromWallet = testUser1
     .getAsset(liquidityAssetId)
     ?.amountBefore.free!.sub(liquidityAssetsBurned);
   expect(testUser1.getAsset(liquidityAssetId)?.amountAfter.free!).bnEqual(
-    diffFromWallet!
+    diffFromWallet!,
   );
 
   testUser2.getFreeAssetAmounts().forEach((asset) => {
@@ -166,32 +175,32 @@ test("xyk-pallet - Liqudity : Burn part of the liquidity", async () => {
     .getAsset(firstCurrency)
     ?.amountBefore.free!.sub(firstAssetAmount);
   expect(pallet.getAsset(firstCurrency)?.amountAfter.free!).bnEqual(
-    diffFromWallet!
+    diffFromWallet!,
   );
 
   diffFromWallet = pallet
     .getAsset(secondCurrency)
     ?.amountBefore.free!.sub(second_asset_amount);
   expect(pallet.getAsset(secondCurrency)?.amountAfter.free!).bnEqual(
-    diffFromWallet!
+    diffFromWallet!,
   );
 
   const pool_balance = await getBalanceOfPool(firstCurrency, secondCurrency);
   expect([
     poolBalanceBefore[0].sub(firstAssetAmount),
     poolBalanceBefore[1].sub(second_asset_amount),
-  ]).toEqual(pool_balance);
+  ]).collectionBnEqual(pool_balance);
 
   const total_liquidity_assets = await getAssetSupply(liquidityAssetId);
   expect(totalLiquidityAssetsBefore.sub(liquidityAssetsBurned)).bnEqual(
-    total_liquidity_assets
+    total_liquidity_assets,
   );
 });
 
 test("xyk-pallet - Liqudity : Burn all the liquidity", async () => {
   const poolBalanceBefore = await getBalanceOfPool(
     firstCurrency,
-    secondCurrency
+    secondCurrency,
   );
   const totalLiquidityAssetsBefore = await getAssetSupply(liquidityAssetId);
   const liquidityAssetsBurned: BN =
@@ -201,7 +210,7 @@ test("xyk-pallet - Liqudity : Burn all the liquidity", async () => {
     await calcuate_burn_liquidity_price_local(
       firstCurrency,
       secondCurrency,
-      liquidityAssetsBurned
+      liquidityAssetsBurned,
     );
 
   testLog
@@ -212,14 +221,14 @@ test("xyk-pallet - Liqudity : Burn all the liquidity", async () => {
         "of pool " +
         firstCurrency +
         " - " +
-        secondCurrency
+        secondCurrency,
     );
 
   await burnLiquidity(
     testUser1.keyRingPair,
     firstCurrency,
     secondCurrency,
-    liquidityAssetsBurned
+    liquidityAssetsBurned,
   ).then((result) => {
     const eventResponse = getEventResultFromMangataTx(result, [
       "xyk",
@@ -237,21 +246,21 @@ test("xyk-pallet - Liqudity : Burn all the liquidity", async () => {
     .getAsset(firstCurrency)
     ?.amountBefore.free!.add(firstAssetAmount);
   expect(testUser1.getAsset(firstCurrency)?.amountAfter.free!).bnEqual(
-    addFromWallet!
+    addFromWallet!,
   );
 
   addFromWallet = testUser1
     .getAsset(secondCurrency)
     ?.amountBefore.free!.add(secondAssetAmount);
   expect(testUser1.getAsset(secondCurrency)?.amountAfter.free!).bnEqual(
-    addFromWallet!
+    addFromWallet!,
   );
 
   let diffFromWallet = testUser1
     .getAsset(liquidityAssetId)
     ?.amountBefore.free!.sub(liquidityAssetsBurned);
   expect(testUser1.getAsset(liquidityAssetId)?.amountAfter.free!).bnEqual(
-    diffFromWallet!
+    diffFromWallet!,
   );
 
   testUser2.getFreeAssetAmounts().forEach((asset) => {
@@ -262,25 +271,25 @@ test("xyk-pallet - Liqudity : Burn all the liquidity", async () => {
     .getAsset(firstCurrency)
     ?.amountBefore.free!.sub(firstAssetAmount);
   expect(pallet.getAsset(firstCurrency)?.amountAfter.free!).bnEqual(
-    diffFromWallet!
+    diffFromWallet!,
   );
 
   diffFromWallet = pallet
     .getAsset(secondCurrency)
     ?.amountBefore.free!.sub(secondAssetAmount);
   expect(pallet.getAsset(secondCurrency)?.amountAfter.free!).bnEqual(
-    diffFromWallet!
+    diffFromWallet!,
   );
 
   const pool_balance = await getBalanceOfPool(firstCurrency, secondCurrency);
   expect([
     poolBalanceBefore[0].sub(firstAssetAmount),
     poolBalanceBefore[1].sub(secondAssetAmount),
-  ]).toEqual(pool_balance);
+  ]).collectionBnEqual(pool_balance);
 
   const totalLiquidityAssets = await getAssetSupply(liquidityAssetId);
   expect(totalLiquidityAssetsBefore.sub(liquidityAssetsBurned)).bnEqual(
-    totalLiquidityAssets
+    totalLiquidityAssets,
   );
 });
 
@@ -288,14 +297,14 @@ test("xyk-pallet - LiquidityOperation: mintLiquidity", async () => {
   const firstCurrencyAssetAmount = new BN(30000);
   const poolBalanceBefore = await getBalanceOfPool(
     firstCurrency,
-    secondCurrency
+    secondCurrency,
   );
   const totalLiquidityAssetsBefore = await getAssetSupply(liquidityAssetId);
   const [secondAssetAmount, liquidityAssetsMinted] =
     await calcuate_mint_liquidity_price_local(
       firstCurrency,
       secondCurrency,
-      firstCurrencyAssetAmount
+      firstCurrencyAssetAmount,
     );
 
   testLog
@@ -306,7 +315,7 @@ test("xyk-pallet - LiquidityOperation: mintLiquidity", async () => {
     testUser1.keyRingPair,
     firstCurrency,
     secondCurrency,
-    firstCurrencyAssetAmount
+    firstCurrencyAssetAmount,
   ).then((result) => {
     const eventResponse = getEventResultFromMangataTx(result, [
       "xyk",
@@ -324,21 +333,21 @@ test("xyk-pallet - LiquidityOperation: mintLiquidity", async () => {
     .getAsset(firstCurrency)
     ?.amountBefore.free!.sub(firstCurrencyAssetAmount);
   expect(testUser1.getAsset(firstCurrency)?.amountAfter.free!).bnEqual(
-    diffFromWallet!
+    diffFromWallet!,
   );
 
   diffFromWallet = testUser1
     .getAsset(secondCurrency)
     ?.amountBefore.free!.sub(secondAssetAmount);
   expect(testUser1.getAsset(secondCurrency)?.amountAfter.free!).bnEqual(
-    diffFromWallet!
+    diffFromWallet!,
   );
 
   let addFromWallet = testUser1
     .getAsset(liquidityAssetId)
     ?.amountBefore.free!.add(liquidityAssetsMinted);
   expect(testUser1.getAsset(liquidityAssetId)?.amountAfter.free!).bnEqual(
-    addFromWallet!
+    addFromWallet!,
   );
 
   testUser2.getFreeAssetAmounts().forEach((asset) => {
@@ -349,24 +358,24 @@ test("xyk-pallet - LiquidityOperation: mintLiquidity", async () => {
     .getAsset(firstCurrency)
     ?.amountBefore.free!.add(firstCurrencyAssetAmount);
   expect(pallet.getAsset(firstCurrency)?.amountAfter.free!).bnEqual(
-    addFromWallet!
+    addFromWallet!,
   );
 
   addFromWallet = pallet
     .getAsset(secondCurrency)
     ?.amountBefore.free!.add(secondAssetAmount);
   expect(pallet.getAsset(secondCurrency)?.amountAfter.free!).bnEqual(
-    addFromWallet!
+    addFromWallet!,
   );
 
   const pool_balance = await getBalanceOfPool(firstCurrency, secondCurrency);
   expect([
     poolBalanceBefore[0].add(firstCurrencyAssetAmount),
     poolBalanceBefore[1].add(secondAssetAmount),
-  ]).toEqual(pool_balance);
+  ]).collectionBnEqual(pool_balance);
 
   const total_liquidity_assets = await getAssetSupply(liquidityAssetId);
   expect(totalLiquidityAssetsBefore.add(liquidityAssetsMinted)).bnEqual(
-    total_liquidity_assets
+    total_liquidity_assets,
   );
 });

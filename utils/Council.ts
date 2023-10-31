@@ -16,8 +16,8 @@ export class Council {
     return api.tx.council.close(
       hash,
       index,
-      { refTime: "38109747", proofSize: "0" },
-      500
+      { refTime: "100000000000", proofSize: "0" },
+      10000,
     );
   }
   static vote(hash: string, index: number, vote = "aye"): Extrinsic {

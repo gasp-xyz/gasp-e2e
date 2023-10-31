@@ -1,0 +1,35 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`XCM tests for Mangata <-> Kusama Kusama transfer assets to mangata 1`] = `
+{
+  "flags": "0x80000000000000000000000000000000",
+  "free": 8999347895660,
+  "frozen": 0,
+  "reserved": 0,
+}
+`;
+
+exports[`XCM tests for Mangata <-> Kusama Kusama transfer assets to mangata 2`] = `
+{
+  "free": 10999477160000,
+  "frozen": 0,
+  "reserved": 0,
+}
+`;
+
+exports[`XCM tests for Mangata <-> Kusama mangata transfer assets to kusama 1`] = `
+{
+  "free": 9000000000000,
+  "frozen": 0,
+  "reserved": 0,
+}
+`;
+
+exports[`XCM tests for Mangata <-> Kusama mangata transfer assets to kusama 2`] = `
+{
+  "flags": "0x80000000000000000000000000000000",
+  "free": 10999907996044,
+  "frozen": 0,
+  "reserved": 0,
+}
+`;

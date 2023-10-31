@@ -61,17 +61,18 @@ beforeAll(async () => {
   [testUser1] = setupUsers();
 
   await setupBootstrapTokensBalance(bootstrapCurrency, sudo, [testUser1]);
+
+  await sudo.mint(bootstrapCurrency, testUser1, toBN("1", 20));
 });
 
 test("bootstrap - Check non-sudo user cannot start bootstrap", async () => {
   // check that non-sudo user can not start bootstrap
-  await sudo.mint(bootstrapCurrency, testUser1, toBN("1", 20));
   const nonSudoBootstrap = await scheduleBootstrap(
     testUser1,
     MGA_ASSET_ID,
     bootstrapCurrency,
     waitingPeriod,
-    bootstrapPeriod
+    bootstrapPeriod,
   );
   eventResponse = getEventResultFromMangataTx(nonSudoBootstrap);
   expect(eventResponse.state).toEqual(ExtrinsicResult.ExtrinsicFailed);
@@ -80,13 +81,12 @@ test("bootstrap - Check non-sudo user cannot start bootstrap", async () => {
 
 test("bootstrap - Check happy path bootstrap with one user", async () => {
   // check that sudo user can start bootstrap
-  await sudo.mint(bootstrapCurrency, testUser1, toBN("1", 20));
   const sudoBootstrap = await scheduleBootstrap(
     sudo,
     MGA_ASSET_ID,
     bootstrapCurrency,
     waitingPeriod,
-    bootstrapPeriod
+    bootstrapPeriod,
   );
   eventResponse = getEventResultFromMangataTx(sudoBootstrap);
   expect(eventResponse.state).toEqual(ExtrinsicResult.ExtrinsicSuccess);
@@ -95,7 +95,7 @@ test("bootstrap - Check happy path bootstrap with one user", async () => {
   const provisionBeforeStart = await provisionBootstrap(
     testUser1,
     bootstrapCurrency,
-    bootstrapAmount
+    bootstrapAmount,
   );
   eventResponse = getEventResultFromMangataTx(provisionBeforeStart);
   expect(eventResponse.state).toEqual(ExtrinsicResult.ExtrinsicFailed);
@@ -107,7 +107,7 @@ test("bootstrap - Check happy path bootstrap with one user", async () => {
   const provisionPublicBootstrapCurrency = await provisionBootstrap(
     testUser1,
     bootstrapCurrency,
-    bootstrapAmount
+    bootstrapAmount,
   );
   eventResponse = getEventResultFromMangataTx(provisionPublicBootstrapCurrency);
   expect(eventResponse.state).toEqual(ExtrinsicResult.ExtrinsicSuccess);
@@ -116,7 +116,7 @@ test("bootstrap - Check happy path bootstrap with one user", async () => {
   const provisionPublicMGA = await provisionBootstrap(
     testUser1,
     MGA_ASSET_ID,
-    bootstrapAmount
+    bootstrapAmount,
   );
   eventResponse = getEventResultFromMangataTx(provisionPublicMGA);
   expect(eventResponse.state).toEqual(ExtrinsicResult.ExtrinsicSuccess);
@@ -127,7 +127,7 @@ test("bootstrap - Check happy path bootstrap with one user", async () => {
   const provisionFinished = await provisionBootstrap(
     testUser1,
     bootstrapCurrency,
-    bootstrapAmount
+    bootstrapAmount,
   );
   eventResponse = getEventResultFromMangataTx(provisionFinished);
   expect(eventResponse.state).toEqual(ExtrinsicResult.ExtrinsicFailed);
@@ -147,7 +147,7 @@ test("bootstrap - Check happy path bootstrap with one user", async () => {
   expect(eventResponse.state).toEqual(ExtrinsicResult.ExtrinsicSuccess);
   const liquidityID = await getLiquidityAssetId(
     MGA_ASSET_ID,
-    bootstrapCurrency
+    bootstrapCurrency,
   );
 
   // check that the user's balance of liquidity token is equal the pool's balance
