@@ -90,7 +90,7 @@ export const waitNewBlock = () => {
           unsubscribe();
           resolve(true);
         }
-      }
+      },
     );
   });
 };

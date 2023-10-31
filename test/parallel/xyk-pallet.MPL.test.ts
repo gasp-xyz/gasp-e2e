@@ -42,7 +42,7 @@ describe("MPL: Delegator", () => {
     keyring = new Keyring({ type: "sr25519" });
     const node = new Node(
       getEnvironmentRequiredVars().chainUri,
-      await setupApi()
+      await setupApi(),
     );
     await node.connect();
     // setup users
@@ -119,7 +119,7 @@ describe("MPL: Collators", () => {
     keyring = new Keyring({ type: "sr25519" });
     const node = new Node(
       getEnvironmentRequiredVars().chainUri,
-      await setupApi()
+      await setupApi(),
     );
     await node.connect();
     const api = await getApi();
@@ -215,7 +215,7 @@ describe("MPL: Collators - Activated liq", () => {
     keyring = new Keyring({ type: "sr25519" });
     const node = new Node(
       getEnvironmentRequiredVars().chainUri,
-      await setupApi()
+      await setupApi(),
     );
     await node.connect();
     const api = await getApi();

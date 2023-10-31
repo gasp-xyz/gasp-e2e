@@ -30,7 +30,9 @@ export class Node {
   }
 
   async connect(): Promise<void> {
-    if (!this.api) this.api = await initApi(this.wsPath);
+    if (!this.api) {
+      this.api = await initApi(this.wsPath);
+    }
   }
 
   async subscribeToHead(): Promise<void> {

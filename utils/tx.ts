@@ -183,12 +183,11 @@ export async function calculate_sell_price_rpc(
     return new BN(result.price);
   } else {
     const mangata = await getMangataInstance();
-    const result = await mangata.rpc.calculateSellPrice({
+    return await mangata.rpc.calculateSellPrice({
       amount: sell_amount,
       inputReserve: input_reserve,
       outputReserve: output_reserve,
     });
-    return result;
   }
 }
 
@@ -207,12 +206,11 @@ export async function calculate_buy_price_rpc(
     return new BN(result.price);
   } else {
     const mangata = await getMangataInstance();
-    const result = await mangata.rpc.calculateBuyPrice({
+    return await mangata.rpc.calculateBuyPrice({
       inputReserve: inputReserve,
       outputReserve: outputReserve,
       amount: buyAmount,
     });
-    return result;
   }
 }
 
@@ -231,12 +229,11 @@ export async function calculate_buy_price_id_rpc(
     return new BN(result.price);
   } else {
     const mangata = await getMangataInstance();
-    const result = await mangata.rpc.calculateBuyPriceId(
+    return await mangata.rpc.calculateBuyPriceId(
       soldTokenId.toString(),
       boughtTokenId.toString(),
-      buyAmount
+      buyAmount,
     );
-    return result;
   }
 }
 
@@ -255,12 +252,11 @@ export async function calculate_sell_price_id_rpc(
     return new BN(result.price);
   } else {
     const mangata = await getMangataInstance();
-    const result = await mangata.rpc.calculateSellPriceId(
+    return await mangata.rpc.calculateSellPriceId(
       soldTokenId.toString(),
       boughtTokenId.toString(),
-      sellAmount
+      sellAmount,
     );
-    return result;
   }
 }
 

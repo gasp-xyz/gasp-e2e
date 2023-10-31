@@ -46,7 +46,7 @@ beforeAll(async () => {
   testUser = new User(keyring);
   const node = new Node(
     getEnvironmentRequiredVars().chainUri,
-    await setupApi()
+    await setupApi(),
   );
   await node.connect();
   sudo = new SudoUser(keyring, node);

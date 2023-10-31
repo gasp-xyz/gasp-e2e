@@ -120,7 +120,7 @@ test.only("gasless- GIVEN some locked tokens and no more free MGX WHEN another t
     saleAssetValue,
   );
   expect(isFree).toBeFalsy();
-  await testUser1.sellAssets(firstCurrency, secondCurrency, saleAssetValue);
+  await testUsers[0].sellAssets(firstCurrency, secondCurrency, saleAssetValue);
   await expect(
     sellAsset(
       testUsers[0].keyRingPair,
@@ -128,12 +128,13 @@ test.only("gasless- GIVEN some locked tokens and no more free MGX WHEN another t
       secondCurrency,
       saleAssetValue,
       new BN(0),
-    ).catch((reason) => {
+    )
+      .catch((reason) => {
         throw new Error(reason.data);
       })
       .then(() => {
         throw new Error("This should have failed!");
-      })
+      }),
   ).rejects.toThrow(feeLockErrors.FeeLockingFail);
   await waitNewBlock();
 });
