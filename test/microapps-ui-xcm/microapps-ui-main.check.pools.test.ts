@@ -33,6 +33,7 @@ import {
   connectWallet,
   setupPage,
 } from "../../utils/frontend/microapps-utils/Handlers";
+import "jest-extended";
 
 jest.setTimeout(FIVE_MIN);
 jest.spyOn(console, "log").mockImplementation(jest.fn());
@@ -134,7 +135,7 @@ describe("Microapps UI liq pools tests", () => {
 
     const sidebar = new Sidebar(driver);
     await sidebar.clickNavLiqPools();
-    const poolsList = new LiqPools(driver);
+    const poolsList = await new LiqPools(driver);
     const promotedPoolsElements = await poolsList.driver.findElements(
       By.xpath("//*[@class='focus:outline-0 group']"),
     );
@@ -146,16 +147,30 @@ describe("Microapps UI liq pools tests", () => {
       appPromotedPools.push(dataTestId);
     }
 
+    const poolsInfoRightOrder = [];
     for (let i = 0; i < poolsInfoLength; i++) {
-      const isPoolVisible =
-        (await poolsList.isPoolItemDisplayed(
-          "-" + poolsInfo[i].secondToken + "-" + poolsInfo[i].firstToken,
-        )) ||
-        (await poolsList.isPoolItemDisplayed(
-          "-" + poolsInfo[i].firstToken + "-" + poolsInfo[i].secondToken,
-        ));
-      expect(isPoolVisible).toBeTruthy();
+      const isPoolVisible = await poolsList.isPoolItemDisplayed(
+        "-" + poolsInfo[i].firstToken + "-" + poolsInfo[i].secondToken,
+      );
+      if (isPoolVisible) {
+        poolsInfoRightOrder.push(
+          "pool-item" +
+            "-" +
+            poolsInfo[i].firstToken +
+            "-" +
+            poolsInfo[i].secondToken,
+        );
+      } else {
+        poolsInfoRightOrder.push(
+          "pool-item" +
+            "-" +
+            poolsInfo[i].secondToken +
+            "-" +
+            poolsInfo[i].firstToken,
+        );
+      }
     }
+    expect(poolsInfoRightOrder).toIncludeSameMembers(appPromotedPools);
     expect(appPromotedPoolsNumber).toEqual(poolsInfoLength);
   });
 
