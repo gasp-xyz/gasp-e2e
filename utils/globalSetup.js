@@ -30,8 +30,6 @@ const globalConfig = async (globalConfig, projectConfig) => {
 
     // eslint-disable-next-line no-undef
     globalThis.server = ipc.server;
-
-    return;
   }
 
   try {
@@ -79,7 +77,7 @@ const globalConfig = async (globalConfig, projectConfig) => {
   //enable gasless! :brum brum:
   await setupGasLess();
 
-  if (isBackendTest()) {
+  if (isBackendTest() && !isRunningInChops()) {
     testLog.getLog().info("Registering assets....");
     const registeredIds = await registerAssets();
     assetIds = registeredIds.reverse();

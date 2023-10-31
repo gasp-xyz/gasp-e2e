@@ -33,7 +33,11 @@ export const toJson = (codec: CodecOrArray) =>
 export const toHex = (codec: CodecOrArray) =>
   processCodecOrArray(codec, (c) => c?.toHex?.() ?? c);
 
-export const setupApi = async () => {
+export const setupApi = async (apiParam?: ApiPromise) => {
+  if (apiParam) {
+    api = apiParam;
+    return api;
+  }
   if (!api || (api && !api.isConnected)) {
     await initApi();
     api = getApi();

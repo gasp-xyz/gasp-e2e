@@ -168,6 +168,32 @@ export async function getBurnAmount(
   return result;
 }
 
+export async function isSellAssetLockFree(
+  tokens: string[],
+  saleAssetValue: BN,
+) {
+  const [firstCurrency, secondCurrency] = tokens;
+  if (isRunningInChops()) {
+    const params = [
+      { paramType: "Vec<TokenId>", paramValue: tokens },
+      { paramType: "Balance", paramValue: saleAssetValue },
+    ];
+    const result = await replaceByStateCall(
+      "is_sell_asset_lock_free",
+      params,
+      "xyk",
+      "Option<bool>",
+    );
+    return result as any as Boolean;
+  } else {
+    const mangata = await getMangataInstance();
+    return mangata?.rpc.isSellAssetLockFree(
+      [firstCurrency, secondCurrency],
+      saleAssetValue,
+    );
+  }
+}
+
 export async function calculate_sell_price_rpc(
   input_reserve: BN,
   output_reserve: BN,

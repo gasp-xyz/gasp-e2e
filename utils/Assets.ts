@@ -17,9 +17,10 @@ import {
 import { User } from "./User";
 import { MangataTypesAssetsCustomMetadata } from "@polkadot/types/lookup";
 import { SudoDB } from "./SudoDB";
+import { isRunningInChops } from "./utils";
 
 export class Assets {
-  static legacy = !isBackendTest();
+  static legacy = !isBackendTest() || isRunningInChops();
   static MG_UNIT: BN = BN_TEN.pow(new BN(18));
   static DEFAULT_AMOUNT = BN_THOUSAND.mul(this.MG_UNIT);
 
