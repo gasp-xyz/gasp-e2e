@@ -1,6 +1,7 @@
 /* eslint-disable no-console */
 import {
   BN_ONE,
+  BurnAmount,
   MangataGenericEvent,
   signTx,
   toBN,
@@ -158,6 +159,20 @@ export async function getBurnAmount(
   secondAssetId: BN,
   liquidityAssetAmount: BN,
 ) {
+  if (isRunningInChops()) {
+    const params = [
+      { paramType: "TokenId", paramValue: firstAssetId.toString() },
+      { paramType: "TokenId", paramValue: secondAssetId.toString() },
+      { paramType: "Balance", paramValue: liquidityAssetAmount },
+    ];
+    const result = await replaceByStateCall(
+      "get_burn_amount",
+      params,
+      "xyk",
+      "(Balance,Balance)",
+    );
+    return result as any as BurnAmount;
+  }
   const mangata = await getMangataInstance();
   const result = await mangata.rpc.getBurnAmount({
     firstTokenId: firstAssetId.toString(),
@@ -206,7 +221,7 @@ export async function calculate_sell_price_rpc(
       { paramType: "Balance", paramValue: sell_amount },
     ];
     const result = await replaceByStateCall("calculate_sell_price", params);
-    return new BN(result.price);
+    return new BN(result);
   } else {
     const mangata = await getMangataInstance();
     return await mangata.rpc.calculateSellPrice({
@@ -217,6 +232,30 @@ export async function calculate_sell_price_rpc(
   }
 }
 
+export async function getMaxInstantBurnAmount(
+  userAddress: string,
+  liqId: string,
+) {
+  const api = await getApi();
+  if (isRunningInChops()) {
+    const params = [
+      { paramType: "AccountId", paramValue: userAddress },
+      { paramType: "TokenId", paramValue: liqId },
+    ];
+    const result = await replaceByStateCall(
+      "get_max_instant_burn_amount",
+      params,
+      "xyk",
+      "Balance",
+    );
+    return new BN(result);
+  }
+  //@ts-ignore
+  return (await api.rpc.xyk.get_max_instant_burn_amount(
+    userAddress,
+    liqId,
+  )) as any as BN;
+}
 export async function calculate_buy_price_rpc(
   inputReserve: BN,
   outputReserve: BN,
@@ -229,7 +268,7 @@ export async function calculate_buy_price_rpc(
       { paramType: "Balance", paramValue: buyAmount },
     ];
     const result = await replaceByStateCall("calculate_buy_price", params);
-    return new BN(result.price);
+    return new BN(result);
   } else {
     const mangata = await getMangataInstance();
     return await mangata.rpc.calculateBuyPrice({
@@ -252,7 +291,7 @@ export async function calculate_buy_price_id_rpc(
       { paramType: "Balance", paramValue: buyAmount },
     ];
     const result = await replaceByStateCall("calculate_buy_price_id", params);
-    return new BN(result.price);
+    return new BN(result);
   } else {
     const mangata = await getMangataInstance();
     return await mangata.rpc.calculateBuyPriceId(
@@ -275,7 +314,7 @@ export async function calculate_sell_price_id_rpc(
       { paramType: "Balance", paramValue: sellAmount },
     ];
     const result = await replaceByStateCall("calculate_sell_price_id", params);
-    return new BN(result.price);
+    return new BN(result);
   } else {
     const mangata = await getMangataInstance();
     return await mangata.rpc.calculateSellPriceId(

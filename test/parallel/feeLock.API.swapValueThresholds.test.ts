@@ -2,10 +2,11 @@
  *
  * @group paralgasless
  * @group parallel
+ * @group skipChops
  */
 import { jest } from "@jest/globals";
 import { Keyring } from "@polkadot/api";
-import { getApi, initApi, mangata } from "../../utils/api";
+import { getApi, initApi } from "../../utils/api";
 import { Assets } from "../../utils/Assets";
 import {
   MGA_ASSET_ID,
@@ -16,7 +17,11 @@ import { waitSudoOperationSuccess } from "../../utils/eventListeners";
 import { BN } from "@polkadot/util";
 import { setupApi, setupUsers } from "../../utils/setup";
 import { Sudo } from "../../utils/sudo";
-import { updateFeeLockMetadata, sellAsset } from "../../utils/tx";
+import {
+  updateFeeLockMetadata,
+  sellAsset,
+  isSellAssetLockFree,
+} from "../../utils/tx";
 import { AssetWallet, User } from "../../utils/User";
 import {
   getEnvironmentRequiredVars,
@@ -117,7 +122,7 @@ test("gasless- Given a feeLock correctly configured WHEN the user swaps two toke
   const saleAssetValue = thresholdValue.mul(new BN(2));
 
   await testUser1.refreshAmounts(AssetWallet.BEFORE);
-  const isFree = await mangata?.rpc.isSellAssetLockFree(
+  const isFree = await isSellAssetLockFree(
     [firstCurrency.toString(), secondCurrency.toString()],
     saleAssetValue,
   );
@@ -180,7 +185,7 @@ test("gasless- Given a feeLock correctly configured WHEN the user swaps two toke
   const saleAssetValue = thresholdValue.sub(new BN(5));
 
   await testUser1.refreshAmounts(AssetWallet.BEFORE);
-  const isFree = await mangata?.rpc.isSellAssetLockFree(
+  const isFree = await isSellAssetLockFree(
     [firstCurrency.toString(), secondCurrency.toString()],
     saleAssetValue,
   );
@@ -226,7 +231,7 @@ test("gasless- Given a feeLock correctly configured WHEN the user swaps two toke
   const saleAssetValue = thresholdValue.mul(new BN(2));
 
   await testUser1.refreshAmounts(AssetWallet.BEFORE);
-  const isFree = await mangata?.rpc.isSellAssetLockFree(
+  const isFree = await isSellAssetLockFree(
     [firstCurrency.toString(), secondCurrency.toString()],
     saleAssetValue,
   );

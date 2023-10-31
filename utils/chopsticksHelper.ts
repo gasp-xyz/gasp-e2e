@@ -9,7 +9,7 @@ export async function replaceByStateCall(
   method: string,
   params: RPCParam[],
   module = "xyk",
-  returnType = "XYKRpcResult",
+  returnType = "Balance",
 ) {
   const api = await getApi();
   let encodedStr = "0x";

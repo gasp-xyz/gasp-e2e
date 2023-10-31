@@ -25,6 +25,7 @@ import {
   burnLiquidity,
   transferAsset,
   unlockVestedToken,
+  getMaxInstantBurnAmount,
 } from "../../utils/tx";
 import { BN_ZERO, toBN } from "@mangata-finance/sdk";
 import { getEnvironmentRequiredVars, getBlockNumber } from "../../utils/utils";
@@ -219,7 +220,7 @@ describe("xyk-pallet - Vested token tests: which action you can do with vesting 
 
     const howManyCanBeUnReserved =
       // @ts-ignore
-      await api.rpc.xyk.get_max_instant_unreserve_amount(
+      await getMaxInstantBurnAmount(
         testUser1.keyRingPair.address,
         liquidityID.toString(),
       );
@@ -227,9 +228,9 @@ describe("xyk-pallet - Vested token tests: which action you can do with vesting 
 
     const maxInstantBurnAmount =
       //@ts-ignore
-      await api.rpc.xyk.get_max_instant_burn_amount(
+      await getMaxInstantBurnAmount(
         testUser1.keyRingPair.address,
-        liquidityID,
+        liquidityID.toString(),
       );
 
     const burnUnlockedToken = await burnLiquidity(
@@ -312,11 +313,11 @@ describe("xyk-pallet - Vested token tests: which action you can do with vesting 
 
     // eslint-disable-next-line prettier/prettier
     const maxInstantBurnAmount =
-      //@ts-ignore
-      await api.rpc.xyk.get_max_instant_burn_amount(
-        testUser1.keyRingPair.address,
-        liquidityID,
-      );
+
+      await getMaxInstantBurnAmount(
+      testUser1.keyRingPair.address,
+      liquidityID.toString(),
+    );
 
     const burnUnlockedToken = await burnLiquidity(
       testUser1.keyRingPair,

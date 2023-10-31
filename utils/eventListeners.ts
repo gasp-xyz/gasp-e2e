@@ -140,6 +140,9 @@ export const waitForEvents = async (
   withData: string = "",
 ): Promise<CodecOrArray> => {
   return new Promise(async (resolve, reject) => {
+    if (isRunningInChops()) {
+      await api.rpc("dev_newBlock", { count: 1 });
+    }
     let counter = 0;
     const unsub = await api.rpc.chain.subscribeFinalizedHeads(async (head) => {
       const events = await (await api.at(head.hash)).query.system.events();
@@ -166,6 +169,9 @@ export const waitForEvents = async (
       }
       if (counter === blocks) {
         reject(`method ${method} not found within blocks limit`);
+      }
+      if (isRunningInChops()) {
+        await api.rpc("dev_newBlock", { count: 1 });
       }
     });
   });
