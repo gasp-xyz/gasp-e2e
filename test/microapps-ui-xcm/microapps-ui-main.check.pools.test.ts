@@ -19,6 +19,7 @@ import { LiqPools } from "../../utils/frontend/microapps-pages/LiqPools";
 import {
   addExtraLogs,
   importPolkadotExtension,
+  waitForElementVisible,
 } from "../../utils/frontend/utils/Helper";
 import { FIVE_MIN, KSM_ASSET_ID, MGA_ASSET_ID } from "../../utils/Constants";
 import { ApiContext } from "../../utils/Framework/XcmHelper";
@@ -136,6 +137,11 @@ describe("Microapps UI liq pools tests", () => {
     const sidebar = new Sidebar(driver);
     await sidebar.clickNavLiqPools();
     const poolsList = await new LiqPools(driver);
+    await waitForElementVisible(
+      poolsList.driver,
+      "//*[@class='focus:outline-0 group']",
+      5000,
+    );
     const promotedPoolsElements = await poolsList.driver.findElements(
       By.xpath("//*[@class='focus:outline-0 group']"),
     );
