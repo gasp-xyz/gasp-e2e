@@ -12,7 +12,7 @@ import {
   MangataInstance,
 } from "@mangata-finance/sdk";
 import { Node } from "../../utils/Framework/Node/Node";
-import { WebDriver } from "selenium-webdriver";
+import { By, WebDriver } from "selenium-webdriver";
 import { DriverBuilder } from "../../utils/frontend/utils/Driver";
 import { Sidebar } from "../../utils/frontend/microapps-pages/Sidebar";
 import { LiqPools } from "../../utils/frontend/microapps-pages/LiqPools";
@@ -135,6 +135,16 @@ describe("Microapps UI liq pools tests", () => {
     const sidebar = new Sidebar(driver);
     await sidebar.clickNavLiqPools();
     const poolsList = new LiqPools(driver);
+    const promotedPoolsElements = await poolsList.driver.findElements(
+      By.xpath("//*[@class='focus:outline-0 group']"),
+    );
+    const appPromotedPools = [];
+    const appPromotedPoolsNumber = promotedPoolsElements.length;
+    for (let i = 0; i < appPromotedPoolsNumber; i++) {
+      const dataTestId =
+        await promotedPoolsElements[i].getAttribute("data-testid");
+      appPromotedPools.push(dataTestId);
+    }
 
     for (let i = 0; i < poolsInfoLength; i++) {
       const isPoolVisible =
@@ -146,6 +156,7 @@ describe("Microapps UI liq pools tests", () => {
         ));
       expect(isPoolVisible).toBeTruthy();
     }
+    expect(appPromotedPoolsNumber).toEqual(poolsInfoLength);
   });
 
   afterEach(async () => {
