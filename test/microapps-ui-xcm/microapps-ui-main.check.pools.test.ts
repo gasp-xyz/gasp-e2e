@@ -123,12 +123,12 @@ describe("Microapps UI liq pools tests", () => {
       const poolName = await sdk.query.getLiquidityPool(promotedPools[i]);
       const firstTokenId = await sdk.query.getTokenInfo(poolName[0]);
       const secondTokenId = await sdk.query.getTokenInfo(poolName[1]);
-      const a = {
+      const poolData = {
         poolID: promotedPools[i],
         firstToken: firstTokenId.symbol,
         secondToken: secondTokenId.symbol,
       };
-      poolsInfo.push(a);
+      poolsInfo.push(poolData);
     }
     const poolsInfoLength = poolsInfo.length;
 
