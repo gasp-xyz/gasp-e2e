@@ -171,7 +171,11 @@ export async function getBurnAmount(
       "xyk",
       "(Balance,Balance)",
     );
-    return result as any as BurnAmount;
+    const burnAmountResult: BurnAmount = {
+      firstAssetAmount: new BN(result[0]),
+      secondAssetAmount: new BN(result[1]),
+    };
+    return burnAmountResult;
   }
   const mangata = await getMangataInstance();
   const result = await mangata.rpc.getBurnAmount({
