@@ -253,6 +253,7 @@ export async function writeText(
 export async function clearText(driver: WebDriver, elementXpath: string) {
   await waitForElement(driver, elementXpath);
   await (await driver.findElement(By.xpath(elementXpath))).clear();
+  await driver.sleep(500);
 }
 
 export async function getText(driver: WebDriver, elementXpath: string) {
