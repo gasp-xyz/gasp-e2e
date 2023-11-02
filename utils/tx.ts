@@ -14,7 +14,7 @@ import { StorageKey } from "@polkadot/types";
 import { AccountData, AccountId32 } from "@polkadot/types/interfaces";
 import { AnyJson, Codec } from "@polkadot/types/types";
 import { u32 } from "@polkadot/types-codec";
-import { BN, hexToString } from "@polkadot/util";
+import { BN, hexToBn, hexToString } from "@polkadot/util";
 import { env } from "process";
 import { getApi, getMangataInstance } from "./api";
 import {
@@ -241,7 +241,7 @@ export async function getMaxInstantBurnAmount(
   userAddress: string,
   liqId: string,
 ) {
-  const api = await getApi();
+  const api = getApi();
   if (isRunningInChops()) {
     const params = [
       { paramType: "AccountId", paramValue: userAddress },
@@ -253,13 +253,37 @@ export async function getMaxInstantBurnAmount(
       "xyk",
       "Balance",
     );
-    return new BN(result);
+    return hexToBn(result);
   }
   //@ts-ignore
   return (await api.rpc.xyk.get_max_instant_burn_amount(
     userAddress,
     liqId,
   )) as any as BN;
+}
+export async function calculateBalancedSellAmount(
+  amount: BN,
+  reserveAmount: BN,
+) {
+  const api = getApi();
+  if (isRunningInChops()) {
+    const params = [
+      { paramType: "Balance", paramValue: amount },
+      { paramType: "Balance", paramValue: reserveAmount },
+    ];
+    const result = await replaceByStateCall(
+      "calculate_balanced_sell_amount",
+      params,
+      "xyk",
+      "Balance",
+    );
+    return new BN(result);
+  }
+  // @ts-ignore
+  return await api.rpc.xyk.calculate_balanced_sell_amount(
+    amount,
+    reserveAmount,
+  );
 }
 export async function calculate_buy_price_rpc(
   inputReserve: BN,
