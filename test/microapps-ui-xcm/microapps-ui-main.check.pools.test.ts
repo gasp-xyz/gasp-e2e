@@ -141,9 +141,9 @@ describe("Microapps UI liq pools tests", () => {
 
   it("All liquidity pools exist in app", async () => {
     const liquidityAssets = await api.query.xyk.liquidityAssets.entries();
-    const liquidityPoolsLength = liquidityAssets.length;
+    const liquidityAssetsLength = liquidityAssets.length;
     const liquidityPoolsInfo = [];
-    for (let i = 0; i < liquidityPoolsLength; i++) {
+    for (let i = 0; i < liquidityAssetsLength; i++) {
       const liquidityAsset = JSON.parse(
         JSON.stringify(liquidityAssets[i][1].value),
       );
