@@ -219,41 +219,34 @@ describe("Miocroapps UI liq pools tests", () => {
       await poolDetails.isSecondTokenNameSet(KSM_ASSET_NAME);
     expect(isSecondTokenNameSet).toBeTruthy();
 
-    // 0 in both inputs
-    await poolDetails.setFirstTokenAmount("0");
-    await poolDetails.setSecondTokenAmount("0");
-    await poolDetails.waitForContinueState(false);
-
-    // only first token value set by user
-    await poolDetails.setFirstTokenAmount("10");
-    await poolDetails.waitSecondTokenAmountSet(true);
-    const secondTokenAmount = await poolDetails.getSecondTokenAmount();
-    expect(secondTokenAmount).toBeGreaterThan(0);
-
-    // clear token amount
-    await poolDetails.clearFirstTokenAmount();
-    await poolDetails.waitForContinueState(false);
-
     // only second token value set by user
-    await poolDetails.clearSecondTokenAmount();
     await poolDetails.setSecondTokenAmount("0.01");
     await poolDetails.waitFirstTokenAmountSet(true);
     let firstTokenAmount = await poolDetails.getFirstTokenAmount();
     expect(firstTokenAmount).toBeGreaterThan(0);
+   await driver.sleep(500);
+
+    // 0 in both inputs
+    await poolDetails.setFirstTokenAmount("0");
+    await poolDetails.setSecondTokenAmount("0");
+    await poolDetails.waitForContinueState(false);
+    await driver.sleep(500);
+
+    // clear token amount
+    await poolDetails.clearFirstTokenAmount();
+    await poolDetails.waitForContinueState(false);
+    await driver.sleep(500);
 
     // not enough one token
-    await poolDetails.clearFirstTokenAmount();
-    await poolDetails.clearSecondTokenAmount();
     await poolDetails.setSecondTokenAmount("9");
     await poolDetails.waitFirstTokenAmountSet(true);
     firstTokenAmount = await poolDetails.getFirstTokenAmount();
     expect(firstTokenAmount).toBeGreaterThan(0);
     let firstTokenAlert = await poolDetails.isFirstTokenAlert();
     expect(firstTokenAlert).toBeTruthy();
+    await driver.sleep(500);
 
     // not enough both tokens
-    await poolDetails.clearFirstTokenAmount();
-    await poolDetails.clearSecondTokenAmount();
     await poolDetails.setSecondTokenAmount("20");
     await poolDetails.waitFirstTokenAmountSet(true);
     firstTokenAmount = await poolDetails.getFirstTokenAmount();
@@ -263,6 +256,14 @@ describe("Miocroapps UI liq pools tests", () => {
     const secondTokenAlert = await poolDetails.isSecondTokenAlert();
     expect(secondTokenAlert).toBeTruthy();
     await poolDetails.waitForContinueState(false);
+
+    // only first token value set by user
+    await poolDetails.clearFirstTokenAmount();
+    await poolDetails.clearSecondTokenAmount();
+    await poolDetails.setFirstTokenAmount("10");
+    await poolDetails.waitSecondTokenAmountSet(true);
+    const secondTokenAmount = await poolDetails.getSecondTokenAmount();
+    expect(secondTokenAmount).toBeGreaterThan(0);
   });
 
   it("Add MGX-KSM pool liquidity", async () => {
