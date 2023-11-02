@@ -13,7 +13,10 @@ import { BN } from "@polkadot/util";
 import { Keyring } from "@polkadot/api";
 import { AssetWallet, User } from "../../utils/User";
 import { Assets } from "../../utils/Assets";
-import { getEnvironmentRequiredVars } from "../../utils/utils";
+import {
+  getEnvironmentRequiredVars,
+  isRunningInChops,
+} from "../../utils/utils";
 import { getEventResultFromMangataTx } from "../../utils/txHandler";
 import { MGA_ASSET_ID } from "../../utils/Constants";
 import { testLog } from "../../utils/Logger";
@@ -133,7 +136,11 @@ async function do10Swaps(
   userNonce.push(await mangata.query.getNonce(testUser2.keyRingPair.address));
   const promises = [];
   const maxFutureNonce = userNonce[0].toNumber() + 9;
+  let nonceValue = undefined;
   for (let index = maxFutureNonce; index >= userNonce[0].toNumber(); index--) {
+    if (!isRunningInChops()) {
+      nonceValue = new BN(index);
+    }
     if (index % 2 === 0) {
       promises.push(
         sellAsset(
@@ -143,7 +150,7 @@ async function do10Swaps(
           new BN(10000),
           new BN(0),
           {
-            nonce: new BN(index),
+            nonce: nonceValue,
           },
         ),
       );
@@ -156,7 +163,7 @@ async function do10Swaps(
           new BN(10000),
           new BN(0),
           {
-            nonce: new BN(index),
+            nonce: nonceValue,
           },
         ),
       );
@@ -164,7 +171,7 @@ async function do10Swaps(
 
     await waitNewBlock();
   }
-  const promisesEvents = await await Promise.all(promises);
+  const promisesEvents = await Promise.all(promises);
   promisesEvents.forEach((events) => {
     const result = getEventResultFromMangataTx(events);
     expect(result.state).toEqual(ExtrinsicResult.ExtrinsicSuccess);
