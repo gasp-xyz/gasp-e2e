@@ -1036,8 +1036,13 @@ export async function vestingTransfer(
 
 export async function unlockVestedToken(User: User, tokenID: BN) {
   const api = getApi();
-  // @ts-ignore
-  return await signTx(api, api.tx.vesting.vest(tokenID), User.keyRingPair);
+
+  return await signTx(
+    api,
+    // @ts-ignore
+    api.tx.vesting.vest(tokenID),
+    User.keyRingPair,
+  );
 }
 
 export class FeeTxs {

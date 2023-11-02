@@ -28,7 +28,11 @@ import {
   getMaxInstantBurnAmount,
 } from "../../utils/tx";
 import { BN_ZERO, toBN } from "@mangata-finance/sdk";
-import { getEnvironmentRequiredVars, getBlockNumber } from "../../utils/utils";
+import {
+  getEnvironmentRequiredVars,
+  getBlockNumber,
+  waitForNBlocks,
+} from "../../utils/utils";
 import { User } from "../../utils/User";
 import { Xyk } from "../../utils/xyk";
 import { testLog } from "../../utils/Logger";
@@ -46,6 +50,7 @@ let createdToken: BN;
 let liquidityID: BN;
 const defaultCurrencyValue = new BN(250000);
 const defaultVestingValue = new BN(200000);
+const vestingStartingBlock = 5;
 
 async function createPoolAndVestingToken(
   needPromotePool: boolean,
@@ -77,7 +82,8 @@ async function createPoolAndVestingToken(
       ExtrinsicResult.ExtrinsicSuccess,
     );
   }
-  const vestingStartBlockNumber = (await getBlockNumber()) + 5;
+  const vestingStartBlockNumber =
+    (await getBlockNumber()) + vestingStartingBlock;
   await vestingTransfer(
     sudo,
     MGA_ASSET_ID,
@@ -191,7 +197,7 @@ describe("xyk-pallet - Vested token tests: which action you can do with vesting 
     const api = getApi();
 
     await createPoolAndVestingToken(true, toBN("1", 20), new BN(100));
-
+    const blockNo = await getBlockNumber();
     const userBalanceBeforeAmount = await api.query.tokens.accounts(
       testUser1.keyRingPair.address,
       liquidityID,
@@ -200,6 +206,11 @@ describe("xyk-pallet - Vested token tests: which action you can do with vesting 
       userBalanceBeforeAmount.free.sub(userBalanceBeforeAmount.frozen),
     ).bnEqual(new BN(0));
 
+    const blockNoAfterReqOperation = await getBlockNumber();
+    await waitForNBlocks(
+      vestingStartingBlock - (blockNoAfterReqOperation - blockNo),
+    );
+
     const unlockSomeVestedToken = await unlockVestedToken(
       testUser1,
       liquidityID,
@@ -207,7 +218,6 @@ describe("xyk-pallet - Vested token tests: which action you can do with vesting 
     expect(getEventResultFromMangataTx(unlockSomeVestedToken).state).toEqual(
       ExtrinsicResult.ExtrinsicSuccess,
     );
-
     const userBalanceAfterUnlockingAmount = await api.query.tokens.accounts(
       testUser1.keyRingPair.address,
       liquidityID,
@@ -224,7 +234,7 @@ describe("xyk-pallet - Vested token tests: which action you can do with vesting 
         testUser1.keyRingPair.address,
         liquidityID.toString(),
       );
-    expect(howManyCanBeUnReserved).bnEqual(BN_ZERO);
+    expect(howManyCanBeUnReserved).bnGt(BN_ZERO);
 
     const maxInstantBurnAmount =
       //@ts-ignore
