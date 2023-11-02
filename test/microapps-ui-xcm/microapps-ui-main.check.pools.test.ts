@@ -120,7 +120,7 @@ describe("Microapps UI liq pools tests", () => {
       JSON.stringify(Object.keys(promotedPoolsRewards.toHuman())),
     );
     const promotedPoolsLength = promotedPools.length;
-    const poolsInfo = [];
+    const promotedPoolsInfo = [];
     for (let i = 0; i < promotedPoolsLength; i++) {
       const poolName = await sdk.query.getLiquidityPool(promotedPools[i]);
       const firstTokenId = await sdk.query.getTokenInfo(poolName[0]);
@@ -130,54 +130,41 @@ describe("Microapps UI liq pools tests", () => {
         firstToken: firstTokenId.symbol,
         secondToken: secondTokenId.symbol,
       };
-      poolsInfo.push(poolData);
+      promotedPoolsInfo.push(poolData);
     }
-    const poolsInfoLength = poolsInfo.length;
 
     const sidebar = new Sidebar(driver);
     await sidebar.clickNavLiqPools();
     const poolsList = await new LiqPools(driver);
-    await waitForElementVisible(
-      poolsList.driver,
-      "//*[@class='focus:outline-0 group']",
-      5000,
-    );
-    const promotedPoolsElements = await poolsList.driver.findElements(
-      By.xpath("//*[@class='focus:outline-0 group']"),
-    );
-    const appPromotedPools = [];
-    const appPromotedPoolsNumber = promotedPoolsElements.length;
-    for (let i = 0; i < appPromotedPoolsNumber; i++) {
-      const dataTestId =
-        await promotedPoolsElements[i].getAttribute("data-testid");
-      appPromotedPools.push(dataTestId);
-    }
+    await comparePoolsLists(promotedPoolsInfo, poolsList);
+  });
 
-    const poolsInfoRightOrder = [];
-    for (let i = 0; i < poolsInfoLength; i++) {
-      const isPoolVisible = await poolsList.isPoolItemDisplayed(
-        "-" + poolsInfo[i].firstToken + "-" + poolsInfo[i].secondToken,
+  it("All liquidity pools exist in app", async () => {
+    const liquidityAssets = await api.query.xyk.liquidityAssets.entries();
+    const liquidityPoolsLength = liquidityAssets.length;
+    const liquidityPoolsInfo = [];
+    for (let i = 0; i < liquidityPoolsLength; i++) {
+      const liquidityAsset = JSON.parse(
+        JSON.stringify(liquidityAssets[i][1].value),
       );
-      if (isPoolVisible) {
-        poolsInfoRightOrder.push(
-          "pool-item" +
-            "-" +
-            poolsInfo[i].firstToken +
-            "-" +
-            poolsInfo[i].secondToken,
-        );
-      } else {
-        poolsInfoRightOrder.push(
-          "pool-item" +
-            "-" +
-            poolsInfo[i].secondToken +
-            "-" +
-            poolsInfo[i].firstToken,
-        );
+      const poolName = await sdk.query.getLiquidityPool(liquidityAsset);
+      if (poolName[1] !== "2") {
+        const firstTokenInfo = await sdk.query.getTokenInfo(poolName[0]);
+        const secondTokenInfo = await sdk.query.getTokenInfo(poolName[1]);
+        const poolData = {
+          poolID: liquidityAsset,
+          firstToken: firstTokenInfo.symbol,
+          secondToken: secondTokenInfo.symbol,
+        };
+        liquidityPoolsInfo.push(poolData);
       }
     }
-    expect(poolsInfoRightOrder).toIncludeSameMembers(appPromotedPools);
-    expect(appPromotedPoolsNumber).toEqual(poolsInfoLength);
+
+    const sidebar = new Sidebar(driver);
+    await sidebar.clickNavLiqPools();
+    const poolsList = await new LiqPools(driver);
+    await poolsList.clickAllPoolsTab();
+    await comparePoolsLists(liquidityPoolsInfo, poolsList);
   });
 
   afterEach(async () => {
@@ -198,3 +185,46 @@ describe("Microapps UI liq pools tests", () => {
     DriverBuilder.destroy();
   });
 });
+
+async function comparePoolsLists(bePoolsInfo: any, poolsList: LiqPools) {
+  await waitForElementVisible(
+    poolsList.driver,
+    "//*[@class='focus:outline-0 group']",
+    5000,
+  );
+  const fePoolsInfo = await poolsList.driver.findElements(
+    By.xpath("//*[@class='focus:outline-0 group']"),
+  );
+  const bePoolsInfoLength = bePoolsInfo.length;
+  const fePoolsNumber = fePoolsInfo.length;
+  const fePoolsList = [];
+  for (let i = 0; i < fePoolsNumber; i++) {
+    const dataTestId = await fePoolsInfo[i].getAttribute("data-testid");
+    fePoolsList.push(dataTestId);
+  }
+
+  const bePoolsList = [];
+  for (let i = 0; i < bePoolsInfoLength; i++) {
+    const isPoolVisible = await poolsList.isPoolItemDisplayed(
+      "-" + bePoolsInfo[i].firstToken + "-" + bePoolsInfo[i].secondToken,
+    );
+    if (isPoolVisible) {
+      bePoolsList.push(
+        "pool-item" +
+          "-" +
+          bePoolsInfo[i].firstToken +
+          "-" +
+          bePoolsInfo[i].secondToken,
+      );
+    } else {
+      bePoolsList.push(
+        "pool-item" +
+          "-" +
+          bePoolsInfo[i].secondToken +
+          "-" +
+          bePoolsInfo[i].firstToken,
+      );
+    }
+  }
+  expect(bePoolsList).toIncludeSameMembers(fePoolsList);
+}
