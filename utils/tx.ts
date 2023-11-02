@@ -6,6 +6,7 @@ import {
   signTx,
   toBN,
   TokenBalance,
+  TradeAbleTokens,
 } from "@mangata-finance/sdk";
 import { AddressOrPair, SubmittableExtrinsic } from "@polkadot/api/types";
 import { KeyringPair } from "@polkadot/keyring/types";
@@ -13,7 +14,7 @@ import { StorageKey } from "@polkadot/types";
 import { AccountData, AccountId32 } from "@polkadot/types/interfaces";
 import { AnyJson, Codec } from "@polkadot/types/types";
 import { u32 } from "@polkadot/types-codec";
-import { BN } from "@polkadot/util";
+import { BN, hexToString } from "@polkadot/util";
 import { env } from "process";
 import { getApi, getMangataInstance } from "./api";
 import {
@@ -303,6 +304,28 @@ export async function calculate_buy_price_id_rpc(
       boughtTokenId.toString(),
       buyAmount,
     );
+  }
+}
+export async function getTradeableTokens() {
+  if (isRunningInChops()) {
+    const result = await replaceByStateCall(
+      "get_tradeable_tokens",
+      [],
+      "xyk",
+      "Vec<RpcAssetMetadata<TokenId>>",
+    );
+    const tradeAble = result.map((item: any) => {
+      return {
+        name: hexToString(item.name),
+        symbol: hexToString(item.symbol),
+        decimals: item.decimals,
+        tokenId: new BN(item.tokenId).toString(),
+      };
+    });
+    return tradeAble as TradeAbleTokens[];
+  } else {
+    const mangata = await getMangataInstance();
+    return await mangata.rpc.getTradeableTokens();
   }
 }
 
