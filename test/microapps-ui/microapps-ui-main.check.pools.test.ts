@@ -1,10 +1,9 @@
 /*
  *
- * @group microappsXCM
+ * @group microappsUI
  */
 import { jest } from "@jest/globals";
 import { ApiPromise, Keyring } from "@polkadot/api";
-import { KeyringPair } from "@polkadot/keyring/types";
 import { getApi, initApi, getMangataInstance } from "../../utils/api";
 import {
   BN_TEN_THOUSAND,
@@ -21,11 +20,15 @@ import {
   importPolkadotExtension,
   waitForElementVisible,
 } from "../../utils/frontend/utils/Helper";
-import { FIVE_MIN, KSM_ASSET_ID, MGA_ASSET_ID } from "../../utils/Constants";
+import {
+  DUMMY_POOL_ASSET_ID,
+  FIVE_MIN,
+  KSM_ASSET_ID,
+  MGA_ASSET_ID,
+} from "../../utils/Constants";
 import { ApiContext } from "../../utils/Framework/XcmHelper";
 import XcmNetworks from "../../utils/Framework/XcmNetworks";
 import { connectVertical } from "@acala-network/chopsticks";
-import { devTestingPairs } from "../../utils/setup";
 import StashServiceMockSingleton from "../../utils/stashServiceMockSingleton";
 import { AssetId } from "../../utils/ChainSpecs";
 import { getEnvironmentRequiredVars } from "../../utils/utils";
@@ -43,11 +46,9 @@ let testUser1: User;
 
 const acc_name = "acc_automation";
 const userAddress = "5CfLmpjCJu41g3cpZVoiH7MSrSppgVVVC3xq23iy9dZrW2HR";
-
 describe("Microapps UI liq pools tests", () => {
   let kusama: ApiContext;
   let mangata: ApiContext;
-  let alice: KeyringPair;
   let sdk: MangataInstance;
   let api: ApiPromise;
 
@@ -55,7 +56,6 @@ describe("Microapps UI liq pools tests", () => {
     kusama = await XcmNetworks.kusama({ localPort: 9944 });
     mangata = await XcmNetworks.mangata({ localPort: 9946 });
     await connectVertical(kusama.chain, mangata.chain);
-    alice = devTestingPairs().alice;
     StashServiceMockSingleton.getInstance().startMock();
 
     try {
@@ -79,11 +79,6 @@ describe("Microapps UI liq pools tests", () => {
           [
             [userAddress, { token: 0 }],
             { free: AssetId.Mgx.unit.mul(BN_TEN_THOUSAND).toString() },
-          ],
-          [[alice.address, { token: 4 }], { free: 10 * 1e12 }],
-          [
-            [alice.address, { token: 0 }],
-            { free: AssetId.Mgx.unit.mul(BN_THOUSAND).toString() },
           ],
         ],
       },
@@ -114,17 +109,19 @@ describe("Microapps UI liq pools tests", () => {
   });
 
   it("All promoted pools exist in app", async () => {
-    const promotedPoolsRewards =
-      await api.query.proofOfStake.promotedPoolRewards();
     const promotedPools = JSON.parse(
-      JSON.stringify(Object.keys(promotedPoolsRewards.toHuman())),
+      JSON.stringify(
+        Object.keys(
+          (await api.query.proofOfStake.promotedPoolRewards()).toHuman(),
+        ),
+      ),
     );
     const promotedPoolsLength = promotedPools.length;
     const promotedPoolsInfo = [];
     for (let i = 0; i < promotedPoolsLength; i++) {
-      const poolName = await sdk.query.getLiquidityPool(promotedPools[i]);
-      const firstTokenId = await sdk.query.getTokenInfo(poolName[0]);
-      const secondTokenId = await sdk.query.getTokenInfo(poolName[1]);
+      const promotedPool = await sdk.query.getLiquidityPool(promotedPools[i]);
+      const firstTokenId = await sdk.query.getTokenInfo(promotedPool[0]);
+      const secondTokenId = await sdk.query.getTokenInfo(promotedPool[1]);
       const poolData = {
         poolID: promotedPools[i],
         firstToken: firstTokenId.symbol,
@@ -135,8 +132,9 @@ describe("Microapps UI liq pools tests", () => {
 
     const sidebar = new Sidebar(driver);
     await sidebar.clickNavLiqPools();
-    const poolsList = await new LiqPools(driver);
-    await comparePoolsLists(promotedPoolsInfo, poolsList);
+    const liquidityPools = await new LiqPools(driver);
+    const fePoolsList = await getFePoolList(liquidityPools);
+    await comparePoolsLists(fePoolsList, promotedPoolsInfo, liquidityPools);
   });
 
   it("All liquidity pools exist in app", async () => {
@@ -147,10 +145,10 @@ describe("Microapps UI liq pools tests", () => {
       const liquidityAsset = JSON.parse(
         JSON.stringify(liquidityAssets[i][1].value),
       );
-      const poolName = await sdk.query.getLiquidityPool(liquidityAsset);
-      if (poolName[1] !== "2") {
-        const firstTokenInfo = await sdk.query.getTokenInfo(poolName[0]);
-        const secondTokenInfo = await sdk.query.getTokenInfo(poolName[1]);
+      const liquidityPool = await sdk.query.getLiquidityPool(liquidityAsset);
+      if (liquidityPool[1] !== DUMMY_POOL_ASSET_ID.toString()) {
+        const firstTokenInfo = await sdk.query.getTokenInfo(liquidityPool[0]);
+        const secondTokenInfo = await sdk.query.getTokenInfo(liquidityPool[1]);
         const poolData = {
           poolID: liquidityAsset,
           firstToken: firstTokenInfo.symbol,
@@ -162,9 +160,10 @@ describe("Microapps UI liq pools tests", () => {
 
     const sidebar = new Sidebar(driver);
     await sidebar.clickNavLiqPools();
-    const poolsList = await new LiqPools(driver);
-    await poolsList.clickAllPoolsTab();
-    await comparePoolsLists(liquidityPoolsInfo, poolsList);
+    const liquidityPools = await new LiqPools(driver);
+    await liquidityPools.clickAllPoolsTab();
+    const fePoolsList = await getFePoolList(liquidityPools);
+    await comparePoolsLists(fePoolsList, liquidityPoolsInfo, liquidityPools);
   });
 
   afterEach(async () => {
@@ -186,7 +185,7 @@ describe("Microapps UI liq pools tests", () => {
   });
 });
 
-async function comparePoolsLists(bePoolsInfo: any, poolsList: LiqPools) {
+async function getFePoolList(poolsList: LiqPools) {
   await waitForElementVisible(
     poolsList.driver,
     "//*[@class='focus:outline-0 group']",
@@ -195,17 +194,24 @@ async function comparePoolsLists(bePoolsInfo: any, poolsList: LiqPools) {
   const fePoolsInfo = await poolsList.driver.findElements(
     By.xpath("//*[@class='focus:outline-0 group']"),
   );
-  const bePoolsInfoLength = bePoolsInfo.length;
   const fePoolsNumber = fePoolsInfo.length;
   const fePoolsList = [];
   for (let i = 0; i < fePoolsNumber; i++) {
     const dataTestId = await fePoolsInfo[i].getAttribute("data-testid");
     fePoolsList.push(dataTestId);
   }
+  return fePoolsList;
+}
 
+async function comparePoolsLists(
+  fePoolsList: any,
+  bePoolsInfo: any,
+  liquidityPools: LiqPools,
+) {
+  const bePoolsInfoLength = bePoolsInfo.length;
   const bePoolsList = [];
   for (let i = 0; i < bePoolsInfoLength; i++) {
-    const isPoolVisible = await poolsList.isPoolItemDisplayed(
+    const isPoolVisible = await liquidityPools.isPoolItemDisplayed(
       "-" + bePoolsInfo[i].firstToken + "-" + bePoolsInfo[i].secondToken,
     );
     if (isPoolVisible) {
