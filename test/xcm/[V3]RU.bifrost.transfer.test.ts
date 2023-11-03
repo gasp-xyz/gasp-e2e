@@ -15,6 +15,7 @@ import XcmNetworks from "../../utils/Framework/XcmNetworks";
 import { alice, api, setupApi, setupUsers } from "../../utils/setup";
 import { expectEvent, expectJson } from "../../utils/validators";
 import { Assets } from "../../utils/Assets";
+
 /**
  * @group xcm
  */
@@ -93,7 +94,7 @@ describe("XCM transfers", () => {
     const mgaSdk = Mangata.instance([mangata.uri]);
     await mgaSdk.xTokens.withdraw({
       account: alice.keyRingPair,
-      amount: AssetId.Bnc.unit.mul(BN_TEN.add(BN_TEN)),
+      amount: AssetId.Bnc.unit.mul(BN_HUNDRED.add(BN_TEN)),
       destinationAddress: alice.keyRingPair.address,
       parachainId: 2001,
       tokenSymbol: "BNC",
@@ -103,6 +104,7 @@ describe("XCM transfers", () => {
     await bifrost.chain.newBlock();
     //END-TODO
   });
+
   it("[ BNC V3 -> MGA -> BNC V3 ] send BNC to mangata and back", async () => {
     const mgaSdk = Mangata.instance([mangata.uri]);
     const target = ChainSpecs.get(ChainId.Mg)!;
@@ -115,7 +117,7 @@ describe("XCM transfers", () => {
             Concrete: asset.location,
           },
           fun: {
-            Fungible: AssetId.ImbueBncV3.unit.mul(BN_TEN),
+            Fungible: AssetId.Bnc.unit.mul(BN_HUNDRED),
           },
         },
       },
