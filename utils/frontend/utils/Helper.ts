@@ -449,6 +449,10 @@ export function buildDataTestIdXpathFunction(
   return `//*[@data-testid[${xpathFunction}(., '${dataTestId}')]]`;
 }
 
+export function buildClassXpath(className: string) {
+  return `//*[@class='${className}']`;
+}
+
 export async function waitForNewWindow(
   driver: WebDriver,
   timeout: number,

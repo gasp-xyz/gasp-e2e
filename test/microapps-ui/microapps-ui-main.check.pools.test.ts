@@ -11,14 +11,13 @@ import {
   MangataInstance,
 } from "@mangata-finance/sdk";
 import { Node } from "../../utils/Framework/Node/Node";
-import { By, WebDriver } from "selenium-webdriver";
+import { WebDriver } from "selenium-webdriver";
 import { DriverBuilder } from "../../utils/frontend/utils/Driver";
 import { Sidebar } from "../../utils/frontend/microapps-pages/Sidebar";
 import { LiqPools } from "../../utils/frontend/microapps-pages/LiqPools";
 import {
   addExtraLogs,
   importPolkadotExtension,
-  waitForElementVisible,
 } from "../../utils/frontend/utils/Helper";
 import {
   DUMMY_POOL_ASSET_ID,
@@ -133,7 +132,7 @@ describe("Microapps UI liq pools tests", () => {
     const sidebar = new Sidebar(driver);
     await sidebar.clickNavLiqPools();
     const liquidityPools = await new LiqPools(driver);
-    const fePoolsList = await getFePoolList(liquidityPools);
+    const fePoolsList = await liquidityPools.getPoolsList();
     await comparePoolsLists(fePoolsList, promotedPoolsInfo, liquidityPools);
   });
 
@@ -162,7 +161,7 @@ describe("Microapps UI liq pools tests", () => {
     await sidebar.clickNavLiqPools();
     const liquidityPools = await new LiqPools(driver);
     await liquidityPools.clickAllPoolsTab();
-    const fePoolsList = await getFePoolList(liquidityPools);
+    const fePoolsList = await liquidityPools.getPoolsList();
     await comparePoolsLists(fePoolsList, liquidityPoolsInfo, liquidityPools);
   });
 
@@ -184,24 +183,6 @@ describe("Microapps UI liq pools tests", () => {
     DriverBuilder.destroy();
   });
 });
-
-async function getFePoolList(poolsList: LiqPools) {
-  await waitForElementVisible(
-    poolsList.driver,
-    "//*[@class='focus:outline-0 group']",
-    5000,
-  );
-  const fePoolsInfo = await poolsList.driver.findElements(
-    By.xpath("//*[@class='focus:outline-0 group']"),
-  );
-  const fePoolsNumber = fePoolsInfo.length;
-  const fePoolsList = [];
-  for (let i = 0; i < fePoolsNumber; i++) {
-    const dataTestId = await fePoolsInfo[i].getAttribute("data-testid");
-    fePoolsList.push(dataTestId);
-  }
-  return fePoolsList;
-}
 
 async function comparePoolsLists(
   fePoolsList: any,
