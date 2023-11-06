@@ -1,6 +1,7 @@
 /*
  *
  * @group maintenance
+ * @group maintenanceSkipChops
  */
 import { jest } from "@jest/globals";
 import { hexToU8a } from "@polkadot/util";

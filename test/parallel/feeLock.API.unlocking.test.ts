@@ -2,7 +2,7 @@
  *
  * @group paralgasless
  * @group parallel
- * @group skipChops
+ * @group parallelSkipChops
  */
 import { jest } from "@jest/globals";
 import { ApiPromise, Keyring } from "@polkadot/api";

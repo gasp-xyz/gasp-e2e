@@ -3,7 +3,7 @@
  * @group xyk
  * @group errors
  * @group parallel
- * @group skipChops
+ * @group parallelSkipChops
  */
 import { jest } from "@jest/globals";
 import { getApi, initApi } from "../../utils/api";
