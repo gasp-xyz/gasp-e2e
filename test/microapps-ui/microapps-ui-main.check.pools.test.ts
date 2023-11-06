@@ -5,11 +5,7 @@
 import { jest } from "@jest/globals";
 import { ApiPromise, Keyring } from "@polkadot/api";
 import { getApi, initApi, getMangataInstance } from "../../utils/api";
-import {
-  BN_TEN_THOUSAND,
-  BN_THOUSAND,
-  MangataInstance,
-} from "@mangata-finance/sdk";
+import { MangataInstance } from "@mangata-finance/sdk";
 import { Node } from "../../utils/Framework/Node/Node";
 import { WebDriver } from "selenium-webdriver";
 import { DriverBuilder } from "../../utils/frontend/utils/Driver";
@@ -17,6 +13,7 @@ import { Sidebar } from "../../utils/frontend/microapps-pages/Sidebar";
 import { LiqPools } from "../../utils/frontend/microapps-pages/LiqPools";
 import {
   addExtraLogs,
+  comparePoolsLists,
   importPolkadotExtension,
 } from "../../utils/frontend/utils/Helper";
 import {
@@ -25,11 +22,6 @@ import {
   KSM_ASSET_ID,
   MGA_ASSET_ID,
 } from "../../utils/Constants";
-import { ApiContext } from "../../utils/Framework/XcmHelper";
-import XcmNetworks from "../../utils/Framework/XcmNetworks";
-import { connectVertical } from "@acala-network/chopsticks";
-import StashServiceMockSingleton from "../../utils/stashServiceMockSingleton";
-import { AssetId } from "../../utils/ChainSpecs";
 import { getEnvironmentRequiredVars } from "../../utils/utils";
 import { AssetWallet, User } from "../../utils/User";
 import {
@@ -44,19 +36,12 @@ let driver: WebDriver;
 let testUser1: User;
 
 const acc_name = "acc_automation";
-const userAddress = "5CfLmpjCJu41g3cpZVoiH7MSrSppgVVVC3xq23iy9dZrW2HR";
+
 describe("Microapps UI liq pools tests", () => {
-  let kusama: ApiContext;
-  let mangata: ApiContext;
   let sdk: MangataInstance;
   let api: ApiPromise;
 
   beforeAll(async () => {
-    kusama = await XcmNetworks.kusama({ localPort: 9944 });
-    mangata = await XcmNetworks.mangata({ localPort: 9946 });
-    await connectVertical(kusama.chain, mangata.chain);
-    StashServiceMockSingleton.getInstance().startMock();
-
     try {
       getApi();
     } catch (e) {
@@ -65,26 +50,6 @@ describe("Microapps UI liq pools tests", () => {
 
     sdk = await getMangataInstance();
     api = getApi();
-
-    await mangata.dev.setStorage({
-      Tokens: {
-        Accounts: [
-          [[userAddress, { token: 4 }], { free: 10 * 1e12 }],
-          [[userAddress, { token: 7 }], { free: 10 * 1e10 }],
-          [
-            [userAddress, { token: 26 }],
-            { free: AssetId.Mgx.unit.mul(BN_THOUSAND).toString() },
-          ],
-          [
-            [userAddress, { token: 0 }],
-            { free: AssetId.Mgx.unit.mul(BN_TEN_THOUSAND).toString() },
-          ],
-        ],
-      },
-      Sudo: {
-        Key: userAddress,
-      },
-    });
 
     driver = await DriverBuilder.getInstance();
     await importPolkadotExtension(driver);
@@ -174,44 +139,9 @@ describe("Microapps UI liq pools tests", () => {
   });
 
   afterAll(async () => {
-    StashServiceMockSingleton.getInstance().stopServer();
-    await kusama.teardown();
-    await mangata.teardown();
     const api = getApi();
     await api.disconnect();
     await driver.quit();
     DriverBuilder.destroy();
   });
 });
-
-async function comparePoolsLists(
-  fePoolsList: any,
-  bePoolsInfo: any,
-  liquidityPools: LiqPools,
-) {
-  const bePoolsInfoLength = bePoolsInfo.length;
-  const bePoolsList = [];
-  for (let i = 0; i < bePoolsInfoLength; i++) {
-    const isPoolVisible = await liquidityPools.isPoolItemDisplayed(
-      "-" + bePoolsInfo[i].firstToken + "-" + bePoolsInfo[i].secondToken,
-    );
-    if (isPoolVisible) {
-      bePoolsList.push(
-        "pool-item" +
-          "-" +
-          bePoolsInfo[i].firstToken +
-          "-" +
-          bePoolsInfo[i].secondToken,
-      );
-    } else {
-      bePoolsList.push(
-        "pool-item" +
-          "-" +
-          bePoolsInfo[i].secondToken +
-          "-" +
-          bePoolsInfo[i].firstToken,
-      );
-    }
-  }
-  expect(bePoolsList).toIncludeSameMembers(fePoolsList);
-}
