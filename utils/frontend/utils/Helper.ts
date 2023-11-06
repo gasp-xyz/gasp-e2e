@@ -7,6 +7,7 @@ import fs from "fs";
 import { testLog } from "../../Logger";
 import { BN } from "@polkadot/util";
 import { Talisman } from "../pages/Talisman";
+import { LiqPools } from "../microapps-pages/LiqPools";
 
 const timeOut = 60000;
 const outputPath = `reports/artifacts`;
@@ -450,6 +451,10 @@ export function buildDataTestIdXpathFunction(
   return `//*[@data-testid[${xpathFunction}(., '${dataTestId}')]]`;
 }
 
+export function buildClassXpath(className: string) {
+  return `//*[@class='${className}']`;
+}
+
 export async function waitForNewWindow(
   driver: WebDriver,
   timeout: number,
@@ -558,4 +563,36 @@ export function buildXpathByText(text: string) {
 
 export function buildXpathByElementText(element: string, text: string) {
   return `//${element}[contains(., "${text}")]`;
+}
+
+export async function comparePoolsLists(
+  fePoolsList: any,
+  bePoolsInfo: any,
+  liquidityPools: LiqPools,
+) {
+  const bePoolsInfoLength = bePoolsInfo.length;
+  const bePoolsList = [];
+  for (let i = 0; i < bePoolsInfoLength; i++) {
+    const isPoolVisible = await liquidityPools.isPoolItemDisplayed(
+      "-" + bePoolsInfo[i].firstToken + "-" + bePoolsInfo[i].secondToken,
+    );
+    if (isPoolVisible) {
+      bePoolsList.push(
+        "pool-item" +
+          "-" +
+          bePoolsInfo[i].firstToken +
+          "-" +
+          bePoolsInfo[i].secondToken,
+      );
+    } else {
+      bePoolsList.push(
+        "pool-item" +
+          "-" +
+          bePoolsInfo[i].secondToken +
+          "-" +
+          bePoolsInfo[i].firstToken,
+      );
+    }
+  }
+  expect(bePoolsList).toIncludeSameMembers(fePoolsList);
 }
