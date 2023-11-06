@@ -102,6 +102,7 @@ describe("XCM transfers", () => {
         TRANSFER_INSTRUCTIONS * ChainSpecs.get(ChainId.Bifrost)!.unitCostWeight,
     });
     await bifrost.chain.newBlock();
+    await bifrost.chain.newBlock();
     //END-TODO
   });
 
