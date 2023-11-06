@@ -29,7 +29,6 @@ import {
   BN_ZERO,
   MangataInstance,
   MangataSubmittableExtrinsic,
-  signTx,
 } from "@mangata-finance/sdk";
 import { ExtrinsicResult, waitForRewards } from "../../utils/eventListeners";
 import { getEventResultFromMangataTx } from "../../utils/txHandler";
@@ -95,9 +94,9 @@ beforeAll(async () => {
         MGA_ASSET_ID,
         Assets.DEFAULT_AMOUNT.divn(2),
         token2,
-        Assets.DEFAULT_AMOUNT.divn(2)
-      )
-    )
+        Assets.DEFAULT_AMOUNT.divn(2),
+      ),
+    ),
   );
 
   liqId = await getLiquidityAssetId(MGA_ASSET_ID, token1);
@@ -105,7 +104,7 @@ beforeAll(async () => {
 
   await Sudo.batchAsSudoFinalized(
     Assets.promotePool(liqId.toNumber(), 20),
-    Assets.promotePool(liqId2.toNumber(), 20)
+    Assets.promotePool(liqId2.toNumber(), 20),
   );
 
   testUser.addAsset(liqId);
