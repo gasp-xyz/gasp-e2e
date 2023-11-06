@@ -54,7 +54,7 @@ beforeAll(async () => {
   [token1] = await Assets.setupUserWithCurrencies(
     sudo,
     [defaultCurrencyValue],
-    sudo
+    sudo,
   );
 
   await Sudo.batchAsSudoFinalized(
@@ -68,9 +68,9 @@ beforeAll(async () => {
         MGA_ASSET_ID,
         Assets.DEFAULT_AMOUNT.divn(2),
         token1,
-        Assets.DEFAULT_AMOUNT.divn(2)
-      )
-    )
+        Assets.DEFAULT_AMOUNT.divn(2),
+      ),
+    ),
   );
 
   liqId = await getLiquidityAssetId(MGA_ASSET_ID, token1);
@@ -88,7 +88,7 @@ beforeEach(async () => {
 
 test("Given a user hame some liquidity token THEN he activate them THEN deactivate", async () => {
   await Sudo.batchAsSudoFinalized(
-    Assets.mintToken(liqId, testUser1, Assets.DEFAULT_AMOUNT.divn(2))
+    Assets.mintToken(liqId, testUser1, Assets.DEFAULT_AMOUNT.divn(2)),
   );
 
   testUser1.addAssets([MGA_ASSET_ID, liqId]);
@@ -101,7 +101,7 @@ test("Given a user hame some liquidity token THEN he activate them THEN deactiva
   await activateLiquidity(
     testUser1.keyRingPair,
     liqId,
-    Assets.DEFAULT_AMOUNT.divn(2)
+    Assets.DEFAULT_AMOUNT.divn(2),
   );
 
   await testUser1.refreshAmounts(AssetWallet.AFTER);
@@ -112,7 +112,7 @@ test("Given a user hame some liquidity token THEN he activate them THEN deactiva
   await deactivateLiquidity(
     testUser1.keyRingPair,
     liqId,
-    Assets.DEFAULT_AMOUNT.divn(2)
+    Assets.DEFAULT_AMOUNT.divn(2),
   );
 
   await testUser1.refreshAmounts(AssetWallet.AFTER);
@@ -127,7 +127,7 @@ test("Given a user hame some liquidity token THEN he activate them THEN deactiva
 
 test("Activate liquidity and claim rewards", async () => {
   await Sudo.batchAsSudoFinalized(
-    Assets.mintToken(liqId, testUser1, Assets.DEFAULT_AMOUNT.divn(2))
+    Assets.mintToken(liqId, testUser1, Assets.DEFAULT_AMOUNT.divn(2)),
   );
 
   testUser1.addAssets([MGA_ASSET_ID, liqId]);
@@ -135,21 +135,21 @@ test("Activate liquidity and claim rewards", async () => {
   await activateLiquidity(
     testUser1.keyRingPair,
     liqId,
-    Assets.DEFAULT_AMOUNT.divn(2)
+    Assets.DEFAULT_AMOUNT.divn(2),
   );
 
   await waitForRewards(testUser1, liqId);
 
   const userTokenBeforeClaiming = await getRewardsInfo(
     testUser1.keyRingPair.address,
-    liqId
+    liqId,
   );
 
   await claimRewards(testUser1, liqId);
 
   const userTokenAfterClaiming = await getRewardsInfo(
     testUser1.keyRingPair.address,
-    liqId
+    liqId,
   );
 
   expect(userTokenBeforeClaiming.activatedAmount).bnGt(BN_ZERO);

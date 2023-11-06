@@ -55,15 +55,14 @@ export class DepositModal {
 
   async isErrorMessage() {
     const errMessageXpath = buildDataTestIdXpath(ERR_MESSAGE);
-    const isAlert = await isDisplayed(this.driver, errMessageXpath);
-    return isAlert;
+    return await isDisplayed(this.driver, errMessageXpath);
   }
 
   async selectChain(chainName: string) {
     await waitForElementVisible(
       this.driver,
       buildDataTestIdXpath(CHAIN_SELECT_LIST),
-      5000
+      5000,
     );
     const chainTestId = `${chainName}-chain`;
     const chainLocator = buildDataTestIdXpath(chainTestId);
@@ -95,7 +94,7 @@ export class DepositModal {
     await waitForElementVisible(
       this.driver,
       buildDataTestIdXpath(TOKEN_LIST),
-      5000
+      5000,
     );
     const tokenTestId = `token-icon-${assetName}`;
     const tokenLocator = buildDataTestIdXpath(tokenTestId);
@@ -114,7 +113,7 @@ export class DepositModal {
       this.driver,
       continueBtn,
       isEnabled,
-      timeout
+      timeout,
     );
   }
 
@@ -125,9 +124,6 @@ export class DepositModal {
 
   async isContinueButtonEnabled() {
     const xpath = buildDataTestIdXpath(BTN_SUBMIT);
-    const enabled = await (
-      await this.driver.findElement(By.xpath(xpath))
-    ).isEnabled();
-    return enabled;
+    return await (await this.driver.findElement(By.xpath(xpath))).isEnabled();
   }
 }

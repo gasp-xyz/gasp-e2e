@@ -1,6 +1,6 @@
 /*
  *
- * @group poolliquidity
+ * @group poolLiq
  */
 import { jest } from "@jest/globals";
 import { Keyring } from "@polkadot/api";
@@ -60,7 +60,7 @@ beforeEach(async () => {
   [token1] = await Assets.setupUserWithCurrencies(
     sudo,
     [defaultCurrencyValue],
-    sudo
+    sudo,
   );
 
   await Sudo.batchAsSudoFinalized(
@@ -74,9 +74,9 @@ beforeEach(async () => {
         MGA_ASSET_ID,
         defaultCurrencyValue,
         token1,
-        defaultCurrencyValue
-      )
-    )
+        defaultCurrencyValue,
+      ),
+    ),
   );
 
   liquidityId = await getLiquidityAssetId(MGA_ASSET_ID, token1);
@@ -85,8 +85,8 @@ beforeEach(async () => {
     Assets.promotePool(liquidityId.toNumber(), 20),
     Sudo.sudoAs(
       testUser1,
-      Xyk.activateLiquidity(liquidityId, defaultCurrencyValue)
-    )
+      Xyk.activateLiquidity(liquidityId, defaultCurrencyValue),
+    ),
   );
 
   await waitForRewards(testUser1, liquidityId);
@@ -94,8 +94,8 @@ beforeEach(async () => {
   await Sudo.batchAsSudoFinalized(
     Sudo.sudoAs(
       testUser1,
-      Xyk.burnLiquidity(MGA_ASSET_ID, token1, defaultCurrencyValue)
-    )
+      Xyk.burnLiquidity(MGA_ASSET_ID, token1, defaultCurrencyValue),
+    ),
   );
 
   const deactivatedPoolBalance = await getBalanceOfPool(MGA_ASSET_ID, token1);
@@ -109,7 +109,7 @@ test("GIVEN user create a pool, wait for rewards and then deactivate the pool WH
 
   const rewardsInfoBefore = await getRewardsInfo(
     testUser1.keyRingPair.address,
-    liquidityId
+    liquidityId,
   );
 
   const rewardsAmount = await mangata?.rpc.calculateRewardsAmount({
@@ -126,12 +126,12 @@ test("GIVEN user create a pool, wait for rewards and then deactivate the pool WH
 
   const rewardsInfoAfter = await getRewardsInfo(
     testUser1.keyRingPair.address,
-    liquidityId
+    liquidityId,
   );
 
   expect(rewardsAmount).bnGt(BN_ZERO);
   expect(testUser1.getAsset(MGA_ASSET_ID)?.amountAfter.free!).bnGt(
-    testUser1.getAsset(MGA_ASSET_ID)?.amountBefore.free!
+    testUser1.getAsset(MGA_ASSET_ID)?.amountBefore.free!,
   );
   expect(rewardsInfoBefore.rewardsNotYetClaimed).bnGt(BN_ZERO);
   expect(rewardsInfoAfter.rewardsNotYetClaimed).bnEqual(BN_ZERO);

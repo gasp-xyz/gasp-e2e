@@ -46,7 +46,7 @@ describe.skip("xToken -> Transfer -> rely to Parachain", () => {
     destUser = UserFactory.createUser(
       Users.GovernanceUser,
       keyring,
-      mgaParachainNode
+      mgaParachainNode,
     ) as GovernanceUser;
     keyring.addPair(destUser.keyRingPair);
     // Subscribe to events
@@ -59,7 +59,7 @@ describe.skip("xToken -> Transfer -> rely to Parachain", () => {
       relayNode,
       new User(keyring, "//Alice"),
       destUser,
-      amount
+      amount,
     );
     //wait for balance changes.
     await waitForNBlocks(5);
@@ -82,10 +82,10 @@ describe.skip("xToken -> Transfer -> rely to Parachain", () => {
     await waitForNBlocks(5);
     const acalaAccountAfter = await getAcalaBalance(user);
     const amountBeforeAsBN = hexToBn(
-      JSON.parse(acalaAccountBefore![0][1].toString()).free
+      JSON.parse(acalaAccountBefore![0][1].toString()).free,
     );
     const amountAfterAsBN = hexToBn(
-      JSON.parse(acalaAccountAfter![0][1].toString()).free
+      JSON.parse(acalaAccountAfter![0][1].toString()).free,
     );
     expect(amountBeforeAsBN).bnLt(amountAfterAsBN);
   });
@@ -97,7 +97,7 @@ describe.skip("xToken -> Transfer -> rely to Parachain", () => {
       mgaParachainNode,
       new User(keyring, "//Alice"),
       new User(keyring, "//Alice"),
-      amount
+      amount,
     );
     //wait for balance changes.
     await waitForNBlocks(5);
@@ -130,13 +130,13 @@ describe.skip("xToken -> Transfer -> MGA <-> Acala", () => {
     destUser = UserFactory.createUser(
       Users.GovernanceUser,
       keyring,
-      mgaParachainNode
+      mgaParachainNode,
     ) as GovernanceUser;
     srcUser = UserFactory.createUser(
       Users.GovernanceUser,
       keyring,
       acalaParachainNode,
-      "//Alice"
+      "//Alice",
     ) as GovernanceUser;
 
     keyring.addPair(destUser.keyRingPair);
@@ -151,7 +151,7 @@ describe.skip("xToken -> Transfer -> MGA <-> Acala", () => {
       new User(keyring, "//Alice"),
       srcUser,
       amount,
-      2001
+      2001,
     );
     //wait for balance changes.
     await waitForNBlocks(5);
@@ -161,7 +161,7 @@ describe.skip("xToken -> Transfer -> MGA <-> Acala", () => {
       acalaParachainNode,
       srcUser,
       destUser,
-      amount.div(new BN(2))
+      amount.div(new BN(2)),
     );
     //wait for balance changes.
     await waitForNBlocks(5);
@@ -183,7 +183,7 @@ describe.skip("xToken -> Transfer -> MGA <-> Acala", () => {
       new User(keyring, "//Alice"),
       srcUser,
       amount,
-      2000
+      2000,
     );
     //wait for balance changes.
     await waitForNBlocks(5);
@@ -192,14 +192,14 @@ describe.skip("xToken -> Transfer -> MGA <-> Acala", () => {
       mgaParachainNode,
       srcUser,
       destUser,
-      amount.div(new BN(2))
+      amount.div(new BN(2)),
     );
     //wait for balance changes.
     await waitForNBlocks(5);
 
     const acalaAccountAfter = await getAcalaBalance(destUser);
     const acalaAccountAfterBN = hexToBn(
-      JSON.parse(acalaAccountAfter![0][1].toString()).free
+      JSON.parse(acalaAccountAfter![0][1].toString()).free,
     );
     expect(new BN(0)).bnLt(acalaAccountAfterBN);
   });
@@ -212,7 +212,7 @@ async function getAcalaBalance(user: User) {
     (value) =>
       (value[0].toHuman() as any[])[0].toString() ===
         user.keyRingPair.address &&
-      (value[0].toHuman() as any[])[1].Token?.toString() === "DOT"
+      (value[0].toHuman() as any[])[1].Token?.toString() === "DOT",
   );
 }
 
@@ -221,7 +221,7 @@ async function sendTokensFromRelayToParachain(
   srcUser: User,
   dstParachainUser: User,
   amount: BN,
-  parachainId = 2000
+  parachainId = 2000,
 ) {
   await relyNode.api?.tx.xcmPallet
     .reserveTransferAssets(
@@ -263,7 +263,7 @@ async function sendTokensFromRelayToParachain(
           },
         ],
       },
-      new BN("0")
+      new BN("0"),
     )
     .signAndSend(srcUser.keyRingPair);
 }
@@ -272,7 +272,7 @@ async function sendTokensFromParachainToRely(
   parachainNode: Node,
   srcUser: User,
   dstRelyUser: User,
-  amount: BN
+  amount: BN,
 ) {
   await signSendAndWaitToFinishTx(
     parachainNode.api?.tx.polkadotXcm.reserveTransferAssets(
@@ -310,9 +310,9 @@ async function sendTokensFromParachainToRely(
           },
         ],
       },
-      new BN("0")
+      new BN("0"),
     ),
-    srcUser.keyRingPair
+    srcUser.keyRingPair,
   );
 }
 
@@ -320,7 +320,7 @@ async function sendTokensFromParachainToMGA(
   sourceNode: Node,
   srcUser: User,
   dstRelyUser: User,
-  amount: BN
+  amount: BN,
 ) {
   await sourceNode.api?.tx.xTokens
     .transfer(
@@ -344,7 +344,7 @@ async function sendTokensFromParachainToMGA(
           },
         },
       },
-      { Limited: new BN("6000000000") }
+      { Limited: new BN("6000000000") },
     )
     .signAndSend(srcUser.keyRingPair);
 }
@@ -354,7 +354,7 @@ async function sendTokensFromMGAtoParachain(
   srcUser: User,
   dstRelyUser: User,
   amount: BN,
-  parachainId = 2001
+  parachainId = 2001,
 ) {
   await signSendAndWaitToFinishTx(
     sourceNode.api?.tx.xTokens.transfer(
@@ -378,9 +378,9 @@ async function sendTokensFromMGAtoParachain(
           },
         },
       },
-      { Limited: new BN("6000000000") }
+      { Limited: new BN("6000000000") },
     ),
-    srcUser.keyRingPair
+    srcUser.keyRingPair,
   ).then();
 }
 // const acalaAccountBefore =

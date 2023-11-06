@@ -27,19 +27,14 @@ export class WalletConnectModal {
   };
 
   async displayed() {
-    const displayed = await isDisplayed(
-      this.driver,
-      this.modalStage[ModalType.Connect]
-    );
-    return displayed;
+    return await isDisplayed(this.driver, this.modalStage[ModalType.Connect]);
   }
 
   async accountsDisplayed() {
-    const displayed = await isDisplayed(
+    return await isDisplayed(
       this.driver,
-      this.modalStage[ModalType.AccountList]
+      this.modalStage[ModalType.AccountList],
     );
-    return displayed;
   }
 
   async isReqExtensionInfoDisplayed(walletName: string) {
@@ -47,14 +42,13 @@ export class WalletConnectModal {
       this.modalStage[ModalType.NoExtension],
       this.getAccountItemXpath(ModalType.NoExtension, walletName),
     ];
-    const allVisible = await areDisplayed(this.driver, listDataTestIds);
-    return allVisible;
+    return await areDisplayed(this.driver, listDataTestIds);
   }
 
   async pickAccount(accountName: string) {
     await clickElement(
       this.driver,
-      this.getAccountItemXpath(ModalType.AccountList, accountName)
+      this.getAccountItemXpath(ModalType.AccountList, accountName),
     );
   }
 

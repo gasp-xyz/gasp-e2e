@@ -56,7 +56,7 @@ test("xyk-pallet - Sudo tests: Sudo Issue an asset", async () => {
   await sudoIssueAsset(
     sudoPair,
     new BN(tokensAmount),
-    testUser.keyRingPair.address
+    testUser.keyRingPair.address,
   ).then((result) => {
     const eventResponse = getEventResultFromMangataTx(result, [
       "tokens",
@@ -92,7 +92,7 @@ test("xyk-pallet - Sudo tests: Sudo Issue two  different assets to the same acco
   await sudoIssueAsset(
     sudoPair,
     new BN(tokensFirstAmount),
-    testUser.keyRingPair.address
+    testUser.keyRingPair.address,
   ).then((result) => {
     const eventResponse = getEventResultFromMangataTx(result, [
       "tokens",
@@ -112,7 +112,7 @@ test("xyk-pallet - Sudo tests: Sudo Issue two  different assets to the same acco
   await sudoIssueAsset(
     sudoPair,
     new BN(tokensSecondAmount),
-    testUser.keyRingPair.address
+    testUser.keyRingPair.address,
   ).then((result) => {
     const eventResponse = getEventResultFromMangataTx(result, [
       "tokens",

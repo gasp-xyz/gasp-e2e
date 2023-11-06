@@ -7,22 +7,22 @@ export class MPL {
   static unreserveAndRelockInstance(tokenId: BN, vestingIndex: BN) {
     return api.tx.multiPurposeLiquidity.unreserveAndRelockInstance(
       tokenId,
-      vestingIndex
+      vestingIndex,
     );
   }
   static reserveVestingNativeTokensByVestingIndex(
     tokenId: BN,
-    amount = BN_ZERO
+    amount = BN_ZERO,
   ) {
     if (amount.gt(BN_ZERO)) {
       return api.tx.multiPurposeLiquidity.reserveVestingNativeTokensByVestingIndex(
         tokenId,
-        amount
+        amount,
       );
     } else {
       return api.tx.multiPurposeLiquidity.reserveVestingNativeTokensByVestingIndex(
         tokenId,
-        api.createType("Option<u128>", null)
+        api.createType("Option<u128>", null),
       );
     }
   }

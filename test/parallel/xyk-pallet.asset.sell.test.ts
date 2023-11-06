@@ -59,14 +59,14 @@ beforeEach(async () => {
   [firstCurrency, secondCurrency] = await Assets.setupUserWithCurrencies(
     testUser1,
     [defaultCurrecyValue, defaultCurrecyValue.add(new BN(1))],
-    sudo
+    sudo,
   );
   await testUser1.addMGATokens(sudo);
   await testUser1.createPoolToAsset(
     new BN(60000),
     new BN(60000),
     firstCurrency,
-    secondCurrency
+    secondCurrency,
   );
 
   // add users to pair.
@@ -87,25 +87,25 @@ beforeEach(async () => {
 test("xyk-pallet - AssetsOperation: sellAsset [minAmountOut = 0] , first to second currency", async () => {
   const poolBalanceBefore = await getBalanceOfPool(
     firstCurrency,
-    secondCurrency
+    secondCurrency,
   );
   const amount = new BN(30000);
 
   const sellPriceLocal = calculate_sell_price_local(
     poolBalanceBefore[0],
     poolBalanceBefore[1],
-    amount
+    amount,
   );
   const sellPriceRpc = await calculate_sell_price_rpc(
     poolBalanceBefore[0],
     poolBalanceBefore[1],
-    amount
+    amount,
   );
   expect(sellPriceLocal).bnEqual(sellPriceRpc);
   testLog
     .getLog()
     .info(
-      "selling asset " + firstCurrency + ", buying asset " + secondCurrency
+      "selling asset " + firstCurrency + ", buying asset " + secondCurrency,
     );
 
   const soldAssetId = firstCurrency;
@@ -121,14 +121,14 @@ test("xyk-pallet - AssetsOperation: sellAsset [minAmountOut = 0] , first to seco
     .getAsset(soldAssetId)
     ?.amountBefore.free!.sub(amount);
   expect(testUser1.getAsset(soldAssetId)?.amountAfter.free!).bnEqual(
-    diffFromWallet!
+    diffFromWallet!,
   );
 
   let addFromWallet = testUser1
     .getAsset(boughtAssetId)
     ?.amountBefore.free!.add(sellPriceLocal);
   expect(testUser1.getAsset(boughtAssetId)?.amountAfter.free!).bnEqual(
-    addFromWallet!
+    addFromWallet!,
   );
 
   testUser2.getFreeAssetAmounts().forEach((asset) => {
@@ -139,7 +139,7 @@ test("xyk-pallet - AssetsOperation: sellAsset [minAmountOut = 0] , first to seco
     .getAsset(boughtAssetId)
     ?.amountBefore.free!.sub(sellPriceLocal);
   expect(pallet.getAsset(boughtAssetId)?.amountAfter.free!).bnEqual(
-    diffFromWallet!
+    diffFromWallet!,
   );
 
   addFromWallet = pallet.getAsset(soldAssetId)?.amountBefore.free!.add(amount);
@@ -154,7 +154,7 @@ test("xyk-pallet - AssetsOperation: sellAsset [minAmountOut = 0] , first to seco
     poolBalanceBefore[1].sub(sellPriceLocal),
   ]).collectionBnEqual(pool_balance);
   expect(pallet.getAsset(soldAssetId)?.amountAfter.free!).bnEqual(
-    addFromWallet!.sub(fee)
+    addFromWallet!.sub(fee),
   );
 });
 
@@ -169,7 +169,7 @@ test("xyk-pallet - AssetsOperation: sellAsset [minAmountOut = 0], sell an alread
   await pallet.refreshAmounts(AssetWallet.BEFORE);
   const poolBalanceBefore = await getBalanceOfPool(
     firstCurrency,
-    secondCurrency
+    secondCurrency,
   );
 
   amount = new BN(20000);
@@ -177,12 +177,12 @@ test("xyk-pallet - AssetsOperation: sellAsset [minAmountOut = 0], sell an alread
   const sellPriceLocal = calculate_sell_price_local(
     poolBalanceBefore[1],
     poolBalanceBefore[0],
-    amount
+    amount,
   );
   const sellPriceRpc = await calculate_sell_price_rpc(
     poolBalanceBefore[1],
     poolBalanceBefore[0],
-    amount
+    amount,
   );
   expect(sellPriceLocal).bnEqual(sellPriceRpc);
 
@@ -198,14 +198,14 @@ test("xyk-pallet - AssetsOperation: sellAsset [minAmountOut = 0], sell an alread
     .getAsset(soldAssetId)
     ?.amountBefore.free!.sub(amount);
   expect(testUser1.getAsset(soldAssetId)?.amountAfter.free!).bnEqual(
-    diffFromWallet!
+    diffFromWallet!,
   );
 
   let addFromWallet = testUser1
     .getAsset(boughtAssetId)
     ?.amountBefore.free!.add(sellPriceLocal);
   expect(testUser1.getAsset(boughtAssetId)?.amountAfter.free!).bnEqual(
-    addFromWallet!
+    addFromWallet!,
   );
 
   testUser2.getFreeAssetAmounts().forEach((asset) => {
@@ -219,7 +219,7 @@ test("xyk-pallet - AssetsOperation: sellAsset [minAmountOut = 0], sell an alread
   const { treasury, treasuryBurn } = calculateFees(amount);
   const bothFees = treasury.add(treasuryBurn);
   expect(pallet.getAsset(boughtAssetId)?.amountAfter.free!).bnEqual(
-    diffFromWallet!
+    diffFromWallet!,
   );
 
   addFromWallet = pallet
@@ -227,7 +227,7 @@ test("xyk-pallet - AssetsOperation: sellAsset [minAmountOut = 0], sell an alread
     ?.amountBefore.free!.add(amount)
     .sub(bothFees);
   expect(pallet.getAsset(soldAssetId)?.amountAfter.free!).bnEqual(
-    addFromWallet!
+    addFromWallet!,
   );
 
   const pool_balance = await getBalanceOfPool(firstCurrency, secondCurrency);

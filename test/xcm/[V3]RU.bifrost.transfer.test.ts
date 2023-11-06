@@ -15,6 +15,7 @@ import XcmNetworks from "../../utils/Framework/XcmNetworks";
 import { alice, api, setupApi, setupUsers } from "../../utils/setup";
 import { expectEvent, expectJson } from "../../utils/validators";
 import { Assets } from "../../utils/Assets";
+
 /**
  * @group xcm
  */
@@ -93,7 +94,7 @@ describe("XCM transfers", () => {
     const mgaSdk = Mangata.instance([mangata.uri]);
     await mgaSdk.xTokens.withdraw({
       account: alice.keyRingPair,
-      amount: AssetId.Bnc.unit.mul(BN_TEN.add(BN_TEN)),
+      amount: AssetId.Bnc.unit.mul(BN_HUNDRED.add(BN_TEN)),
       destinationAddress: alice.keyRingPair.address,
       parachainId: 2001,
       tokenSymbol: "BNC",
@@ -101,8 +102,10 @@ describe("XCM transfers", () => {
         TRANSFER_INSTRUCTIONS * ChainSpecs.get(ChainId.Bifrost)!.unitCostWeight,
     });
     await bifrost.chain.newBlock();
+    await bifrost.chain.newBlock();
     //END-TODO
   });
+
   it("[ BNC V3 -> MGA -> BNC V3 ] send BNC to mangata and back", async () => {
     const mgaSdk = Mangata.instance([mangata.uri]);
     const target = ChainSpecs.get(ChainId.Mg)!;
@@ -115,7 +118,7 @@ describe("XCM transfers", () => {
             Concrete: asset.location,
           },
           fun: {
-            Fungible: AssetId.ImbueBncV3.unit.mul(BN_TEN),
+            Fungible: AssetId.Bnc.unit.mul(BN_HUNDRED),
           },
         },
       },
@@ -223,7 +226,7 @@ describe("XCM transfers", () => {
       }),
     });
     expectJson(
-      await mangata.api.query.tokens.accounts(alice.keyRingPair.address, 14)
+      await mangata.api.query.tokens.accounts(alice.keyRingPair.address, 14),
     ).toMatchSnapshot();
   });
   it("[ BNC V3 -> MGA -> BNC V3 ] send ZLK to mangata and back", async () => {
@@ -307,7 +310,7 @@ describe("XCM transfers", () => {
       }),
     });
     expectJson(
-      await mangata.api.query.tokens.accounts(alice.keyRingPair.address, 26)
+      await mangata.api.query.tokens.accounts(alice.keyRingPair.address, 26),
     ).toMatchSnapshot();
   });
   it("[ BNC V3 -> MGA -> BNC V3 ] send vKSM to mangata and back", async () => {
@@ -391,7 +394,7 @@ describe("XCM transfers", () => {
       }),
     });
     expectJson(
-      await mangata.api.query.tokens.accounts(alice.keyRingPair.address, 15)
+      await mangata.api.query.tokens.accounts(alice.keyRingPair.address, 15),
     ).toMatchSnapshot();
   });
   it("[ BNC V3 -> MGA -> BNC V3 ] send vsKSM to mangata and back", async () => {
@@ -475,7 +478,7 @@ describe("XCM transfers", () => {
       }),
     });
     expectJson(
-      await mangata.api.query.tokens.accounts(alice.keyRingPair.address, 16)
+      await mangata.api.query.tokens.accounts(alice.keyRingPair.address, 16),
     ).toMatchSnapshot();
   });
 });

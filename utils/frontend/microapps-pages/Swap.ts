@@ -47,15 +47,14 @@ export class Swap {
   async isDisplayed() {
     const firstTokenContainer = buildDataTestIdXpath(DIV_FIRST_TOKEN_CONTAINER);
     const secondTokenContainer = buildDataTestIdXpath(
-      DIV_SECOND_TOKEN_CONTAINER
+      DIV_SECOND_TOKEN_CONTAINER,
     );
     const switchBtn = buildDataTestIdXpath(BTN_SWITCH_TOKENS);
-    const displayed = await areDisplayed(this.driver, [
+    return await areDisplayed(this.driver, [
       firstTokenContainer,
       secondTokenContainer,
       switchBtn,
     ]);
-    return displayed;
   }
 
   async switchTokens() {
@@ -65,17 +64,16 @@ export class Swap {
 
   async isFirsttokenSelectorDisplayed() {
     const firstTokenSelector = buildDataTestIdXpath(
-      DIV_FIRST_TOKEN_SELECTOR_CONTENT
+      DIV_FIRST_TOKEN_SELECTOR_CONTENT,
     );
-    const displayed = await isDisplayed(this.driver, firstTokenSelector);
-    return displayed;
+    return await isDisplayed(this.driver, firstTokenSelector);
   }
 
   async pickPayToken(tokenName: string) {
     const selectFirstToken = buildDataTestIdXpath(BTN_SELECT_FIRST_TOKEN);
     await clickElement(this.driver, selectFirstToken);
     const firstTokenSelector = buildDataTestIdXpath(
-      DIV_FIRST_TOKEN_SELECTOR_CONTENT
+      DIV_FIRST_TOKEN_SELECTOR_CONTENT,
     );
     await waitForElement(this.driver, firstTokenSelector);
     const firstTokenSelectorButton =
@@ -87,8 +85,7 @@ export class Swap {
 
   async fetchPayTokenName() {
     const tokenSelector = buildDataTestIdXpath(BTN_SELECT_FIRST_TOKEN);
-    const tokenName = await getText(this.driver, tokenSelector);
-    return tokenName;
+    return await getText(this.driver, tokenSelector);
   }
 
   async setPayTokenAmount(amount: string) {
@@ -105,40 +102,34 @@ export class Swap {
 
   async fetchGetAssetAmount() {
     const inputGetLocator = buildDataTestIdXpath(INPUT_SECOND_TOKEN);
-    const text = await getAttribute(this.driver, inputGetLocator, "value");
-    return text;
+    return await getAttribute(this.driver, inputGetLocator, "value");
   }
 
   async fetchGetTokenName() {
     const tokenSelector = buildDataTestIdXpath(BTN_SELECT_SECOND_TOKEN);
-    const tokenName = await getText(this.driver, tokenSelector);
-    return tokenName;
+    return await getText(this.driver, tokenSelector);
   }
 
   async fetchPayAssetAmount() {
     const inputPayLocator = buildDataTestIdXpath(INPUT_FIRST_TOKEN);
-    const text = await getAttribute(this.driver, inputPayLocator, "value");
-    return text;
+    return await getAttribute(this.driver, inputPayLocator, "value");
   }
 
   async fetchMinimumReceivedAmount() {
     const inputGetLocator = buildDataTestIdXpath(DIV_MIN_RECEIVED + "-value");
     const text = await getText(this.driver, inputGetLocator);
-    const floatValue = parseFloat(text.split(" ")[0]);
-    return floatValue;
+    return parseFloat(text.split(" ")[0]);
   }
 
   async fetchSwapFee() {
     const text = await getText(this.driver, DIV_SWAP_FEE_XPATH);
-    const floatValue = parseInt(text.split(" ")[0]);
-    return floatValue;
+    return parseInt(text.split(" ")[0]);
   }
 
   async isSwapFeeAlert() {
     const swapAlertState =
       buildDataTestIdXpath(DIV_FEE) + "//*[contains(@class, 'text-alert')]";
-    const isAlert = await isDisplayed(this.driver, swapAlertState);
-    return isAlert;
+    return await isDisplayed(this.driver, swapAlertState);
   }
 
   async waitForSwapButtonEnabled() {
@@ -148,17 +139,16 @@ export class Swap {
 
   async isSwapButtonEnabled() {
     const firstTokenSelector = buildDataTestIdXpath(BTN_SUBMIT_SWAP);
-    const enabled = await (
+    return await (
       await this.driver.findElement(By.xpath(firstTokenSelector))
     ).isEnabled();
-    return enabled;
   }
 
   async pickGetToken(tokenName: string) {
     const selectSecondToken = buildDataTestIdXpath(BTN_SELECT_SECOND_TOKEN);
     await clickElement(this.driver, selectSecondToken);
     const secondTokenSelector = buildDataTestIdXpath(
-      DIV_SECOND_TOKEN_SELECTOR_CONTENT
+      DIV_SECOND_TOKEN_SELECTOR_CONTENT,
     );
     await waitForElement(this.driver, secondTokenSelector);
     const secondTokenSelectorButton =
@@ -170,7 +160,7 @@ export class Swap {
 
   async toggleTradeDetails() {
     const tradeDetailsToggleButton = buildDataTestIdXpath(
-      BTN_TOGGLE_TRADE_DETAILS
+      BTN_TOGGLE_TRADE_DETAILS,
     );
     await clickElement(this.driver, tradeDetailsToggleButton);
   }
@@ -182,8 +172,7 @@ export class Swap {
 
   async isTradeRateDisplayed() {
     const tradeRate = buildDataTestIdXpath(DIV_TRADE_RATE);
-    const displayed = await isDisplayed(this.driver, tradeRate);
-    return displayed;
+    return await isDisplayed(this.driver, tradeRate);
   }
 
   async areTradeDetailsDisplayed() {
@@ -196,21 +185,20 @@ export class Swap {
     const fee = buildDataTestIdXpath(DIV_FEE);
     await waitForElementVisible(this.driver, fee);
 
-    const displayed = await areDisplayed(this.driver, [
+    return await areDisplayed(this.driver, [
       minReceived,
       priceImpact,
       commission,
       fee,
     ]);
-    return displayed;
   }
 
   async areRouteDetailsDisplayed(
     firstTokenName: string,
-    secondTokenName: string
+    secondTokenName: string,
   ) {
     const tradeRouteDetailsClose = buildDataTestIdXpath(
-      BTN_TRADE_ROUTE_DETAILS_CLOSE
+      BTN_TRADE_ROUTE_DETAILS_CLOSE,
     );
     const routeDetailsXpath = buildDataTestIdXpath(DIV_TRADE_ROUTE_DETAILS);
     const firstTokenIcon =
@@ -221,12 +209,11 @@ export class Swap {
       routeDetailsXpath + buildDataTestIdXpath(DIV_MIDDLE_POOL);
     await waitForElementVisible(this.driver, middlePool);
 
-    const displayed = await areDisplayed(this.driver, [
+    return await areDisplayed(this.driver, [
       firstTokenIcon,
       secondTokenIcon,
       middlePool,
       tradeRouteDetailsClose,
     ]);
-    return displayed;
   }
 }

@@ -73,12 +73,12 @@ describe("UI tests - adding, removing liquidity", () => {
       sudo,
       "1800000000000000000000000000000000",
       MGA_ASSET_ID,
-      testAssetId
+      testAssetId,
     );
 
     await Sudo.batchAsSudoFinalized(
       Assets.mintToken(testAssetId, testUser1),
-      Assets.mintNative(testUser1)
+      Assets.mintNative(testUser1),
     );
 
     const assetAmount = new BN("1000000000000000");
@@ -87,7 +87,7 @@ describe("UI tests - adding, removing liquidity", () => {
       testUser1.keyRingPair,
       testAssetId,
       MGA_ASSET_ID,
-      assetAmount
+      assetAmount,
     ).then((result) => {
       const eventResponse = getEventResultFromMangataTx(result, [
         "xyk",
@@ -122,7 +122,7 @@ describe("UI tests - adding, removing liquidity", () => {
 
     const poolVisible = await sidebar.isLiquidityPoolVisible(
       MGR_ASSET_NAME,
-      testAssetName
+      testAssetName,
     );
     expect(poolVisible).toBeTruthy();
 
@@ -156,7 +156,7 @@ describe("UI tests - adding, removing liquidity", () => {
     await sidebar.waitForLiquidityPoolToLoad(MGR_ASSET_NAME, testAssetName);
     let poolVisible = await sidebar.isLiquidityPoolVisible(
       MGR_ASSET_NAME,
-      testAssetName
+      testAssetName,
     );
     expect(poolVisible).toBeTruthy();
 
@@ -175,7 +175,7 @@ describe("UI tests - adding, removing liquidity", () => {
 
     const modal = new NotificationModal(driver);
     const isModalWaitingForSignVisible = await modal.isModalVisible(
-      ModalType.Confirm
+      ModalType.Confirm,
     );
     expect(isModalWaitingForSignVisible).toBeTruthy();
     await Polkadot.signTransaction(driver);
@@ -185,9 +185,7 @@ describe("UI tests - adding, removing liquidity", () => {
       visible.push(await modal.isModalVisible(ModalType.Progress));
       await waitNewBlock();
     }
-    expect(
-      visible.some((visibleInBlock) => visibleInBlock === true)
-    ).toBeTruthy();
+    expect(visible.some((visibleInBlock) => visibleInBlock)).toBeTruthy();
     await modal.waitForModalState(ModalType.Success);
     const isModalSuccessVisible = await modal.isModalVisible(ModalType.Success);
     expect(isModalSuccessVisible).toBeTruthy();
@@ -204,7 +202,7 @@ describe("UI tests - adding, removing liquidity", () => {
 
     poolVisible = await sidebar.isLiquidityPoolVisible(
       MGR_ASSET_NAME,
-      testAssetName
+      testAssetName,
     );
     expect(poolVisible).toBeFalsy();
   });
@@ -213,7 +211,7 @@ describe("UI tests - adding, removing liquidity", () => {
     const session = await driver.getSession();
     await addExtraLogs(
       driver,
-      expect.getState().currentTestName + " - " + session.getId()
+      expect.getState().currentTestName + " - " + session.getId(),
     );
   });
 

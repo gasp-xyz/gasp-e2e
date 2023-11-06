@@ -13,7 +13,7 @@ import { User } from "./User";
 export const signSendFinalized = async (
   tx: Extrinsic,
   user: User,
-  nonce: BN | undefined = undefined
+  nonce: BN | undefined = undefined,
 ): Promise<MangataGenericEvent[]> => {
   return signTx(api, tx, user.keyRingPair, {
     nonce: nonce,
@@ -41,7 +41,7 @@ export const signSendFinalized = async (
 export const signSendSuccess = async (
   api: ApiPromise,
   tx: Extrinsic,
-  user: User
+  user: User,
 ): Promise<void> => {
   return new Promise(async (resolve, reject) => {
     try {
@@ -57,7 +57,7 @@ export const signSendSuccess = async (
           if (!_.isNil(dispatchError)) {
             if (dispatchError.isModule) {
               const metaError = api.registry.findMetaError(
-                dispatchError.asModule
+                dispatchError.asModule,
               );
               const { name, section } = metaError;
               reject(new Error(`${section}.${name}`));
@@ -69,7 +69,7 @@ export const signSendSuccess = async (
           }
 
           const event = _.find(events, ({ event }) =>
-            api.events.system.ExtrinsicSuccess.is(event)
+            api.events.system.ExtrinsicSuccess.is(event),
           );
           if (event) {
             resolve();
@@ -80,7 +80,7 @@ export const signSendSuccess = async (
             reject(new Error("The event.ExtrinsicSuccess is not found"));
             unsub();
           }
-        }
+        },
       );
     } catch (error) {
       reject(error);

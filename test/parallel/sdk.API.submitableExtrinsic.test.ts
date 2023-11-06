@@ -29,6 +29,7 @@ import {
   BN_ZERO,
   MangataInstance,
   MangataSubmittableExtrinsic,
+  signTx,
 } from "@mangata-finance/sdk";
 import { ExtrinsicResult, waitForRewards } from "../../utils/eventListeners";
 import { getEventResultFromMangataTx } from "../../utils/txHandler";
@@ -68,7 +69,7 @@ beforeAll(async () => {
   [token1, token2] = await Assets.setupUserWithCurrencies(
     sudo,
     [defaultCurrencyValue, defaultCurrencyValue],
-    sudo
+    sudo,
   );
 
   mangata = await getMangataInstance();
@@ -85,8 +86,8 @@ beforeAll(async () => {
         MGA_ASSET_ID,
         Assets.DEFAULT_AMOUNT.divn(2),
         token1,
-        Assets.DEFAULT_AMOUNT.divn(2)
-      )
+        Assets.DEFAULT_AMOUNT.divn(2),
+      ),
     ),
     Sudo.sudoAs(
       testUser,
@@ -122,7 +123,7 @@ test("activate some Liquidity using SDK THEN claim rewards THEN deactivate Liqui
       amount: BN_BILLION,
       liquidityTokenId: liqId.toString(),
     },
-    "AvailableBalance"
+    "AvailableBalance",
   );
 
   await signSubmittableExtrinsic(tx1, testUser);
@@ -164,14 +165,14 @@ test("check claimRewards", async () => {
 
   const userTokenBeforeClaiming = await getRewardsInfo(
     testUser.keyRingPair.address,
-    liqId2
+    liqId2,
   );
 
   await signSubmittableExtrinsic(tx2, testUser);
 
   const userTokenAfterClaiming = await getRewardsInfo(
     testUser.keyRingPair.address,
-    liqId2
+    liqId2,
   );
 
   expect(userTokenBeforeClaiming.rewardsAlreadyClaimed).bnEqual(BN_ZERO);
@@ -196,7 +197,7 @@ test("check mintLiquidity", async () => {
   const amountDifference = testUser
     .getAsset(liqId)
     ?.amountAfter.reserved!.sub(
-      testUser.getAsset(liqId)?.amountBefore.reserved!
+      testUser.getAsset(liqId)?.amountBefore.reserved!,
     );
 
   expect(amountDifference).bnEqual(BN_HUNDRED);
@@ -227,12 +228,12 @@ test("check createPool", async () => {
   const [token2] = await Assets.setupUserWithCurrencies(
     sudo,
     [defaultCurrencyValue],
-    sudo
+    sudo,
   );
 
   await Sudo.batchAsSudoFinalized(
     Assets.mintNative(testUser),
-    Assets.mintToken(token2, testUser, Assets.DEFAULT_AMOUNT)
+    Assets.mintToken(token2, testUser, Assets.DEFAULT_AMOUNT),
   );
 
   const tx = await mangata.submitableExtrinsic.createPool({
@@ -332,7 +333,7 @@ test("check transferAllTokens", async () => {
 
 async function signSubmittableExtrinsic(
   tx: MangataSubmittableExtrinsic,
-  user: User
+  user: User,
 ) {
   const result = await signSendFinalized(tx, user);
   const eventResponse = getEventResultFromMangataTx(result);

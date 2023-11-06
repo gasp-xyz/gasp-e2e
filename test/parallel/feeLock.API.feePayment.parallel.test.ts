@@ -44,7 +44,7 @@ async function checkErrorSellAsset(
   soldAssetId: any,
   boughtAssetId: any,
   reason: string,
-  amount = new BN(1000)
+  amount = new BN(1000),
 ) {
   let exception = false;
   const soldAssetIdString = soldAssetId.toString();
@@ -56,11 +56,11 @@ async function checkErrorSellAsset(
       soldAssetIdString,
       boughtAssetIdString,
       amount,
-      new BN(0)
+      new BN(0),
     ).catch((reason) => {
       exception = true;
       throw new Error(reason.data);
-    })
+    }),
   ).rejects.toThrow(reason);
 
   expect(exception).toBeTruthy();
@@ -80,14 +80,14 @@ beforeAll(async () => {
   firstCurrency = await Assets.issueAssetToUser(
     sudo,
     defaultCurrencyValue,
-    sudo
+    sudo,
   );
 
   await sudo.createPoolToAsset(
     defaultPoolVolumeValue,
     defaultPoolVolumeValue,
     MGA_ASSET_ID,
-    firstCurrency
+    firstCurrency,
   );
 
   await addMgaToWhitelisted(thresholdValue, sudo);
@@ -100,7 +100,7 @@ beforeEach(async () => {
 
   await Sudo.batchAsSudoFinalized(
     Assets.mintNative(testUser1),
-    Assets.mintToken(firstCurrency, testUser1, new BN(100000))
+    Assets.mintToken(firstCurrency, testUser1, new BN(100000)),
   );
 });
 
@@ -115,7 +115,7 @@ test("gasless- GIVEN a feeLock configured WHEN a swap happens THEN fees are not 
   await testUser1.refreshAmounts(AssetWallet.BEFORE);
   const isFree = await mangata?.rpc.isSellAssetLockFree(
     [MGA_ASSET_ID.toString(), firstCurrency.toString()],
-    saleAssetValue
+    saleAssetValue,
   );
   expect(isFree).toBeFalsy();
   await testUser1.sellAssets(MGA_ASSET_ID, firstCurrency, saleAssetValue);
@@ -124,13 +124,13 @@ test("gasless- GIVEN a feeLock configured WHEN a swap happens THEN fees are not 
   const tokenFees = testUser1
     .getAsset(MGA_ASSET_ID)
     ?.amountAfter.reserved!.sub(
-      testUser1.getAsset(MGA_ASSET_ID)?.amountBefore.reserved!
+      testUser1.getAsset(MGA_ASSET_ID)?.amountBefore.reserved!,
     );
 
   const userMgaFees = testUser1
     .getAsset(MGA_ASSET_ID)
     ?.amountAfter.free!.sub(
-      testUser1.getAsset(MGA_ASSET_ID)?.amountBefore.free!
+      testUser1.getAsset(MGA_ASSET_ID)?.amountBefore.free!,
     )
     .add(new BN(feeLockAmount))
     .add(new BN(saleAssetValue));
@@ -151,11 +151,11 @@ test("gasless- GIVEN a correct config for gasless swaps WHEN the user runs unloc
   await testUser1.sellAssets(MGA_ASSET_ID, firstCurrency, saleAssetValue);
   const accountFeeLockData = JSON.parse(
     JSON.stringify(
-      await api.query.feeLock.accountFeeLockData(testUser1.keyRingPair.address)
-    )
+      await api.query.feeLock.accountFeeLockData(testUser1.keyRingPair.address),
+    ),
   );
   const waitingBlock = stringToBN(accountFeeLockData.lastFeeLockBlock).add(
-    periodLength
+    periodLength,
   );
   await waitBlockNumber(waitingBlock.toString(), periodLength.toNumber() + 5);
   try {
@@ -169,12 +169,12 @@ test("gasless- GIVEN a correct config for gasless swaps WHEN the user runs unloc
   const userMgaFees = testUser1
     .getAsset(MGA_ASSET_ID)
     ?.amountAfter.free!.sub(
-      testUser1.getAsset(MGA_ASSET_ID)?.amountBefore.free!
+      testUser1.getAsset(MGA_ASSET_ID)?.amountBefore.free!,
     )
     .add(new BN(saleAssetValue));
 
   expect(testUser1.getAsset(MGA_ASSET_ID)?.amountAfter.reserved!).bnEqual(
-    new BN(0)
+    new BN(0),
   );
   expect(userMgaFees).bnEqual(new BN(0));
 });
@@ -185,28 +185,28 @@ test("gasless- High-value swaps are rejected from the txn pool if they would fai
     MGA_ASSET_ID,
     firstCurrency,
     feeLockErrors.SwapApprovalFail,
-    toBN("1", 26)
+    toBN("1", 26),
   );
 });
 
 test("gasless- For low-value swaps, token reservation status and pallet storage are altered in accordance with the timeout mechanism", async () => {
   async function checkAccountFeeLockData(
     totalAmountValue: any,
-    lastBlockValue: any
+    lastBlockValue: any,
   ) {
     const api = getApi();
     const accountFeeLockData = JSON.parse(
       JSON.stringify(
         await api.query.feeLock.accountFeeLockData(
-          testUser1.keyRingPair.address
-        )
-      )
+          testUser1.keyRingPair.address,
+        ),
+      ),
     );
     expect(stringToBN(accountFeeLockData.totalFeeLockAmount)).bnEqual(
-      new BN(totalAmountValue)
+      new BN(totalAmountValue),
     );
     expect(stringToBN(accountFeeLockData.lastFeeLockBlock)).bnEqual(
-      new BN(lastBlockValue)
+      new BN(lastBlockValue),
     );
   }
 
@@ -223,7 +223,7 @@ test("gasless- For low-value swaps, token reservation status and pallet storage 
 
   const isFree = await mangata?.rpc.isSellAssetLockFree(
     [MGA_ASSET_ID.toString(), firstCurrency.toString()],
-    saleAssetValue
+    saleAssetValue,
   );
   expect(isFree).toBeFalsy();
 
@@ -232,11 +232,11 @@ test("gasless- For low-value swaps, token reservation status and pallet storage 
 
   const accountFeeLockData = JSON.parse(
     JSON.stringify(
-      await api.query.feeLock.accountFeeLockData(testUser1.keyRingPair.address)
-    )
+      await api.query.feeLock.accountFeeLockData(testUser1.keyRingPair.address),
+    ),
   );
   const waitingBlock = stringToBN(accountFeeLockData.lastFeeLockBlock).add(
-    periodLength
+    periodLength,
   );
   await checkAccountFeeLockData(feeLockAmount, lockDataBlockNumber);
   await waitBlockNumber(waitingBlock.toString(), periodLength.toNumber() + 5);
@@ -252,7 +252,7 @@ test("gasless- High-value swaps when successful are not charged txn fee or token
   const secondCurrency = await Assets.issueAssetToUser(
     sudo,
     defaultCurrencyValue,
-    sudo
+    sudo,
   );
 
   await Sudo.batchAsSudoFinalized(
@@ -265,9 +265,9 @@ test("gasless- High-value swaps when successful are not charged txn fee or token
         firstCurrency,
         defaultPoolVolumeValue,
         secondCurrency,
-        defaultPoolVolumeValue
-      )
-    )
+        defaultPoolVolumeValue,
+      ),
+    ),
   );
 
   testUser1.addAsset(MGA_ASSET_ID);
@@ -279,7 +279,7 @@ test("gasless- High-value swaps when successful are not charged txn fee or token
     null,
     null,
     thresholdValue,
-    [[firstCurrency, true]]
+    [[firstCurrency, true]],
   );
   await waitSudoOperationSuccess(updateMetadataEvent);
 
@@ -288,7 +288,7 @@ test("gasless- High-value swaps when successful are not charged txn fee or token
   await testUser1.refreshAmounts(AssetWallet.BEFORE);
   const isFree = await mangata?.rpc.isSellAssetLockFree(
     [firstCurrency.toString(), secondCurrency.toString()],
-    saleAssetValue
+    saleAssetValue,
   );
   expect(isFree).toBeTruthy();
   await testUser1.sellAssets(firstCurrency, secondCurrency, saleAssetValue);
@@ -297,11 +297,11 @@ test("gasless- High-value swaps when successful are not charged txn fee or token
   const userMgaFees = testUser1
     .getAsset(MGA_ASSET_ID)
     ?.amountAfter.free!.sub(
-      testUser1.getAsset(MGA_ASSET_ID)?.amountBefore.free!
+      testUser1.getAsset(MGA_ASSET_ID)?.amountBefore.free!,
     );
 
   expect(userMgaFees).bnEqual(new BN(0));
   expect(testUser1.getAsset(MGA_ASSET_ID)?.amountAfter.reserved!).bnEqual(
-    new BN(0)
+    new BN(0),
   );
 });

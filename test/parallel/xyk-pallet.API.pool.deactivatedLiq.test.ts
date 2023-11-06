@@ -59,7 +59,7 @@ beforeAll(async () => {
   [token1, token2, token3] = await Assets.setupUserWithCurrencies(
     sudo,
     [defaultCurrencyValue, defaultCurrencyValue, defaultCurrencyValue],
-    sudo
+    sudo,
   );
 
   await Sudo.batchAsSudoFinalized(
@@ -75,9 +75,9 @@ beforeAll(async () => {
         token2,
         Assets.DEFAULT_AMOUNT.divn(2),
         token3,
-        Assets.DEFAULT_AMOUNT.divn(2)
-      )
-    )
+        Assets.DEFAULT_AMOUNT.divn(2),
+      ),
+    ),
   );
   liqId = await getLiquidityAssetId(token2, token3);
   [testUser1] = setupUsers();
@@ -89,7 +89,7 @@ beforeAll(async () => {
     Assets.mintNative(testUser1),
     Assets.mintNative(sudo),
     Sudo.sudoAs(testUser1, Xyk.activateLiquidity(liqId, BN_BILLION)),
-    Sudo.sudoAs(testUser1, Xyk.activateLiquidity(token1, BN_BILLION))
+    Sudo.sudoAs(testUser1, Xyk.activateLiquidity(token1, BN_BILLION)),
   );
   testUser1.addAsset(token1);
   testUser1.addAsset(MGA_ASSET_ID);
@@ -99,7 +99,7 @@ beforeAll(async () => {
   await waitForRewards(testUser1, liqId);
   await Sudo.batchAsSudoFinalized(
     Assets.promotePool(token1.toNumber(), 0),
-    Assets.promotePool(liqId.toNumber(), 0)
+    Assets.promotePool(liqId.toNumber(), 0),
   );
   //Now we have 2 pools that generated soem rewards and are now de-promoted.
 });
@@ -109,7 +109,7 @@ test("GIVEN a disabled pool the user can still interact with it: Burn, deactivat
   await testUser1.refreshAmounts(AssetWallet.BEFORE);
   const mplBef = await getMultiPurposeLiquidityStatus(
     testUser1.keyRingPair.address,
-    testTokenId
+    testTokenId,
   );
   expect(mplBef.activatedUnstakedReserves).bnEqual(BN_BILLION);
 
@@ -117,7 +117,7 @@ test("GIVEN a disabled pool the user can still interact with it: Burn, deactivat
     testUser1.keyRingPair,
     token2,
     token3,
-    BN_BILLION.divn(2)
+    BN_BILLION.divn(2),
   ).then((result) => {
     const event = getEventResultFromMangataTx(result);
     expect(event.state).toEqual(ExtrinsicResult.ExtrinsicSuccess);
@@ -125,14 +125,14 @@ test("GIVEN a disabled pool the user can still interact with it: Burn, deactivat
 
   await testUser1.refreshAmounts(AssetWallet.AFTER);
   expect(testUser1.getAsset(testTokenId)!.amountAfter.reserved!).bnEqual(
-    BN_BILLION.divn(2)
+    BN_BILLION.divn(2),
   );
   expect(testUser1.getAsset(testTokenId)!.amountBefore.reserved!).bnEqual(
-    BN_BILLION
+    BN_BILLION,
   );
   const mpl = await getMultiPurposeLiquidityStatus(
     testUser1.keyRingPair.address,
-    testTokenId
+    testTokenId,
   );
   expect(mpl.activatedUnstakedReserves).bnEqual(BN_BILLION.divn(2));
 
@@ -140,22 +140,22 @@ test("GIVEN a disabled pool the user can still interact with it: Burn, deactivat
   await deactivateLiquidity(
     testUser1.keyRingPair,
     testTokenId,
-    BN_BILLION.divn(2)
+    BN_BILLION.divn(2),
   ).then((result) => {
     const event = getEventResultFromMangataTx(result);
     expect(event.state).toEqual(ExtrinsicResult.ExtrinsicSuccess);
   });
   await testUser1.refreshAmounts(AssetWallet.AFTER);
   expect(testUser1.getAsset(testTokenId)!.amountAfter.reserved!).bnEqual(
-    BN_ZERO
+    BN_ZERO,
   );
   expect(testUser1.getAsset(testTokenId)!.amountAfter.free!).bnEqual(
-    BN_BILLION.divn(2)
+    BN_BILLION.divn(2),
   );
 
   const mplAfterDeac = await getMultiPurposeLiquidityStatus(
     testUser1.keyRingPair.address,
-    testTokenId
+    testTokenId,
   );
   expect(mplAfterDeac.activatedUnstakedReserves).bnEqual(BN_ZERO);
 
@@ -169,7 +169,7 @@ test("GIVEN a disabled solo rewarded token the user can still interact with it: 
   await testUser1.refreshAmounts(AssetWallet.BEFORE);
   const mpl = await getMultiPurposeLiquidityStatus(
     testUser1.keyRingPair.address,
-    testTokenId
+    testTokenId,
   );
   expect(mpl.activatedUnstakedReserves).bnEqual(BN_BILLION);
 
@@ -177,25 +177,25 @@ test("GIVEN a disabled solo rewarded token the user can still interact with it: 
   await deactivateLiquidity(
     testUser1.keyRingPair,
     testTokenId,
-    BN_BILLION.divn(2)
+    BN_BILLION.divn(2),
   ).then((result) => {
     const event = getEventResultFromMangataTx(result);
     expect(event.state).toEqual(ExtrinsicResult.ExtrinsicSuccess);
   });
   await testUser1.refreshAmounts(AssetWallet.AFTER);
   expect(testUser1.getAsset(testTokenId)!.amountAfter.reserved!).bnEqual(
-    BN_BILLION.divn(2)
+    BN_BILLION.divn(2),
   );
   expect(testUser1.getAsset(testTokenId)!.amountAfter.free!).bnEqual(
-    BN_BILLION.divn(2)
+    BN_BILLION.divn(2),
   );
 
   const mplAfterDeactivation = await getMultiPurposeLiquidityStatus(
     testUser1.keyRingPair.address,
-    testTokenId
+    testTokenId,
   );
   expect(mplAfterDeactivation.activatedUnstakedReserves).bnEqual(
-    BN_BILLION.divn(2)
+    BN_BILLION.divn(2),
   );
 
   await claimRewards(testUser1, testTokenId).then((result) => {

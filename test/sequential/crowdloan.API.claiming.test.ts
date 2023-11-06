@@ -78,7 +78,7 @@ beforeAll(async () => {
     Assets.mintNative(testUser6),
     Assets.mintNative(testUser7),
     Assets.mintNative(testUser8),
-    Assets.mintNative(testUser9)
+    Assets.mintNative(testUser9),
   );
 
   await setCrowdloanAllocation(crowdloanRewardsAmount.muln(8));
@@ -94,7 +94,7 @@ beforeAll(async () => {
       testUser7,
       testUser8,
     ],
-    crowdloanRewardsAmount
+    crowdloanRewardsAmount,
   );
 
   leaseStartBlock = (await getBlockNumber()) + 10;
@@ -108,24 +108,24 @@ beforeAll(async () => {
 test("Users receive different rewards when they confirm them before, during and after crowdloan", async () => {
   const user1BalanceBeforeClaiming = await api.query.tokens.accounts(
     testUser1.keyRingPair.address,
-    MGA_ASSET_ID
+    MGA_ASSET_ID,
   );
 
   const user2BalanceBeforeClaiming = await api.query.tokens.accounts(
     testUser2.keyRingPair.address,
-    MGA_ASSET_ID
+    MGA_ASSET_ID,
   );
 
   const user3BalanceBeforeClaiming = await api.query.tokens.accounts(
     testUser3.keyRingPair.address,
-    MGA_ASSET_ID
+    MGA_ASSET_ID,
   );
 
   await sudoClaimCrowdloanRewards(crowdloanId, testUser1);
 
   const user1BalanceAfterClaiming = await api.query.tokens.accounts(
     testUser1.keyRingPair.address,
-    MGA_ASSET_ID
+    MGA_ASSET_ID,
   );
 
   await waitBlockNumber((leaseStartBlock + 5).toString(), 10);
@@ -134,59 +134,59 @@ test("Users receive different rewards when they confirm them before, during and 
 
   const user2BalanceAfterClaiming = await api.query.tokens.accounts(
     testUser2.keyRingPair.address,
-    MGA_ASSET_ID
+    MGA_ASSET_ID,
   );
 
   await waitBlockNumber(leaseEndingBlock.toString(), 10);
   await sudoClaimCrowdloanRewards(crowdloanId, testUser3);
   const user3BalanceAfterClaiming = await api.query.tokens.accounts(
     testUser3.keyRingPair.address,
-    MGA_ASSET_ID
+    MGA_ASSET_ID,
   );
 
   //if user claimed rewards before crowdloan all tokens would be frozen
   expect(new BN(user1BalanceAfterClaiming.frozen)).bnGt(
-    crowdloanRewardsAmount.muln(0.78)
+    crowdloanRewardsAmount.muln(0.78),
   );
   expect(
-    new BN(user1BalanceAfterClaiming.free).sub(user1BalanceBeforeClaiming.free)
+    new BN(user1BalanceAfterClaiming.free).sub(user1BalanceBeforeClaiming.free),
   ).bnEqual(crowdloanRewardsAmount);
   //if user claimed rewards in the second half of the crowdloan less than half tokens would be frozen
   expect(new BN(user2BalanceAfterClaiming.frozen)).bnLt(
-    new BN(user1BalanceAfterClaiming.frozen).divn(2)
+    new BN(user1BalanceAfterClaiming.frozen).divn(2),
   );
   expect(new BN(user2BalanceAfterClaiming.frozen)).bnGt(BN_ZERO);
   expect(
-    new BN(user2BalanceAfterClaiming.free).sub(user2BalanceBeforeClaiming.free)
+    new BN(user2BalanceAfterClaiming.free).sub(user2BalanceBeforeClaiming.free),
   ).bnEqual(crowdloanRewardsAmount);
   //if user claimed rewards before crowdloan all tokens would be free
   expect(new BN(user3BalanceAfterClaiming.frozen)).bnEqual(BN_ZERO);
   expect(
-    new BN(user3BalanceAfterClaiming.free).sub(user3BalanceBeforeClaiming.free)
+    new BN(user3BalanceAfterClaiming.free).sub(user3BalanceBeforeClaiming.free),
   ).bnEqual(crowdloanRewardsAmount);
   await Sudo.batchAsSudoFinalized(
     Sudo.sudoAs(testUser1, api.tx.vesting.vest(MGA_ASSET_ID)),
-    Sudo.sudoAs(testUser2, api.tx.vesting.vest(MGA_ASSET_ID))
+    Sudo.sudoAs(testUser2, api.tx.vesting.vest(MGA_ASSET_ID)),
   );
 
   const user1FinalBalance = await api.query.tokens.accounts(
     testUser1.keyRingPair.address,
-    MGA_ASSET_ID
+    MGA_ASSET_ID,
   );
   const user2FinalBalance = await api.query.tokens.accounts(
     testUser2.keyRingPair.address,
-    MGA_ASSET_ID
+    MGA_ASSET_ID,
   );
   const user3FinalBalance = await api.query.tokens.accounts(
     testUser3.keyRingPair.address,
-    MGA_ASSET_ID
+    MGA_ASSET_ID,
   );
 
   expect(new BN(user1FinalBalance.free)).bnEqual(
-    new BN(user2FinalBalance.free)
+    new BN(user2FinalBalance.free),
   );
   expect(new BN(user3FinalBalance.free)).bnEqual(
-    new BN(user1FinalBalance.free)
+    new BN(user1FinalBalance.free),
   );
 });
 
@@ -196,9 +196,9 @@ test("A user can only change his reward-address with: crowdloan.updateRewardAddr
     api.tx.crowdloan.updateRewardAddress(
       testUser9.keyRingPair.address,
       // @ts-ignore
-      crowdloanId
+      crowdloanId,
     ),
-    testUser4.keyRingPair
+    testUser4.keyRingPair,
   ).then((result) => {
     const eventResponse = getEventResultFromMangataTx(result);
     expect(eventResponse.state).toEqual(ExtrinsicResult.ExtrinsicSuccess);
@@ -213,7 +213,7 @@ test("A user can only change his reward-address with: crowdloan.updateRewardAddr
 
   const userBalanceBeforeClaiming = await api.query.tokens.accounts(
     testUser9.keyRingPair.address,
-    MGA_ASSET_ID
+    MGA_ASSET_ID,
   );
 
   await claimCrowdloanRewards(crowdloanId, testUser9).then((result) => {
@@ -222,11 +222,11 @@ test("A user can only change his reward-address with: crowdloan.updateRewardAddr
 
   const userBalanceAfterClaiming = await api.query.tokens.accounts(
     testUser9.keyRingPair.address,
-    MGA_ASSET_ID
+    MGA_ASSET_ID,
   );
 
   expect(
-    new BN(userBalanceAfterClaiming.free).sub(userBalanceBeforeClaiming.free)
+    new BN(userBalanceAfterClaiming.free).sub(userBalanceBeforeClaiming.free),
   ).bnGt(BN_ZERO);
 });
 
@@ -261,7 +261,7 @@ describe("Test that a user can claim when", () => {
   async function claimAndCheckUserReward(crowdloanId: any, user: User) {
     const userTokenAmountBefore = await api.query.tokens.accounts(
       user.keyRingPair.address,
-      MGA_ASSET_ID
+      MGA_ASSET_ID,
     );
 
     await claimCrowdloanRewards(crowdloanId, user);
@@ -270,24 +270,24 @@ describe("Test that a user can claim when", () => {
 
     const userTokenAmountAfter = await api.query.tokens.accounts(
       user.keyRingPair.address,
-      MGA_ASSET_ID
+      MGA_ASSET_ID,
     );
 
     const userTokenAmountDiff = userTokenAmountAfter!.free.sub(
-      userTokenAmountBefore!.free
+      userTokenAmountBefore!.free,
     );
 
     const userAccountsPayable = JSON.parse(
       JSON.stringify(
         await api.query.crowdloan.accountsPayable(
           crowdloanId,
-          user.keyRingPair.address
-        )
-      )
+          user.keyRingPair.address,
+        ),
+      ),
     );
 
     const userClaimedReward = hexToBn(
-      await userAccountsPayable.claimedReward.toString()
+      await userAccountsPayable.claimedReward.toString(),
     );
 
     expect(userTokenAmountDiff).bnGt(BN_ZERO);

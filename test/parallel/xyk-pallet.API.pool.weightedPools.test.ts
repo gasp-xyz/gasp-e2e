@@ -61,7 +61,7 @@ beforeEach(async () => {
   [token1] = await Assets.setupUserWithCurrencies(
     sudo,
     [defaultCurrencyValue, defaultCurrencyValue],
-    sudo
+    sudo,
   );
 
   await Sudo.batchAsSudoFinalized(
@@ -75,9 +75,9 @@ beforeEach(async () => {
         MGA_ASSET_ID,
         Assets.DEFAULT_AMOUNT.divn(2),
         token1,
-        Assets.DEFAULT_AMOUNT.divn(2)
-      )
-    )
+        Assets.DEFAULT_AMOUNT.divn(2),
+      ),
+    ),
   );
 
   liqId = await getLiquidityAssetId(MGA_ASSET_ID, token1);
@@ -87,8 +87,8 @@ beforeEach(async () => {
     Assets.mintNative(testUser1),
     Sudo.sudoAs(
       testUser1,
-      Xyk.activateLiquidity(liqId, Assets.DEFAULT_AMOUNT.divn(2))
-    )
+      Xyk.activateLiquidity(liqId, Assets.DEFAULT_AMOUNT.divn(2)),
+    ),
   );
 });
 
@@ -98,8 +98,8 @@ test("Check that we can get the list of promoted pools with proofOfStake.promote
   const sdkPools = await mangata?.query.getPools();
   expect(
     sdkPools!.filter(
-      (x) => x.liquidityTokenId === liqId.toString() && x.isPromoted
-    )
+      (x) => x.liquidityTokenId === liqId.toString() && x.isPromoted,
+    ),
   ).toHaveLength(1);
 });
 
@@ -112,9 +112,9 @@ test("Validate that weight can be modified by using updatePoolPromotion AND only
     api,
     api.tx.proofOfStake.updatePoolPromotion(
       liqId,
-      poolWeightBefore.div(new BN(2))
+      poolWeightBefore.div(new BN(2)),
     ),
-    testUser1.keyRingPair
+    testUser1.keyRingPair,
   ).then((result) => {
     const eventResponse = getEventResultFromMangataTx(result);
     expect(eventResponse.state).toEqual(ExtrinsicResult.ExtrinsicFailed);
@@ -124,7 +124,7 @@ test("Validate that weight can be modified by using updatePoolPromotion AND only
   await promotePool(
     sudo.keyRingPair,
     liqId,
-    poolWeightBefore.div(new BN(2)).toNumber()
+    poolWeightBefore.div(new BN(2)).toNumber(),
   );
 
   const poolWeightAfter = (await getPromotedPoolInfo(liqId)).weight;
@@ -136,7 +136,7 @@ test("Testing that the sum of the weights can be greater than 100", async () => 
   const [token2] = await Assets.setupUserWithCurrencies(
     sudo,
     [defaultCurrencyValue, defaultCurrencyValue],
-    sudo
+    sudo,
   );
 
   await Sudo.batchAsSudoFinalized(
@@ -148,9 +148,9 @@ test("Testing that the sum of the weights can be greater than 100", async () => 
         MGA_ASSET_ID,
         Assets.DEFAULT_AMOUNT.divn(2),
         token2,
-        Assets.DEFAULT_AMOUNT.divn(2)
-      )
-    )
+        Assets.DEFAULT_AMOUNT.divn(2),
+      ),
+    ),
   );
 
   const liqId2 = await getLiquidityAssetId(MGA_ASSET_ID, token2);
@@ -174,8 +174,8 @@ test("GIVEN a pool WHEN it has configured with 0 THEN no new issuance will be re
     Assets.mintNative(testUser2),
     Sudo.sudoAs(
       testUser1,
-      Xyk.mintLiquidity(MGA_ASSET_ID, token1, defaultCurrencyValue)
-    )
+      Xyk.mintLiquidity(MGA_ASSET_ID, token1, defaultCurrencyValue),
+    ),
   );
 
   testUser2.addAsset(MGA_ASSET_ID);
@@ -195,7 +195,7 @@ test("GIVEN a pool WHEN it has configured with 0 THEN no new issuance will be re
     testUser2.keyRingPair,
     MGA_ASSET_ID,
     token1,
-    defaultCurrencyValue
+    defaultCurrencyValue,
   ).then((result) => {
     const eventResponse = getEventResultFromMangataTx(result);
     expect(eventResponse.state).toEqual(ExtrinsicResult.ExtrinsicSuccess);
@@ -205,7 +205,7 @@ test("GIVEN a pool WHEN it has configured with 0 THEN no new issuance will be re
 
   expect(testUser2.getAsset(MGA_ASSET_ID)!.amountAfter.free!).bnGt(BN_ZERO);
   expect(testUser2.getAsset(MGA_ASSET_ID)!.amountAfter.reserved!).bnEqual(
-    BN_ZERO
+    BN_ZERO,
   );
 });
 
@@ -220,7 +220,7 @@ test("GIVEN a deactivated pool WHEN its configured with more weight, THEN reward
 
   await Sudo.batchAsSudoFinalized(
     Assets.mintToken(token1, testUser2, Assets.DEFAULT_AMOUNT),
-    Assets.mintNative(testUser2)
+    Assets.mintNative(testUser2),
   );
 
   await promotePool(sudo.keyRingPair, liqId, 20);
@@ -229,7 +229,7 @@ test("GIVEN a deactivated pool WHEN its configured with more weight, THEN reward
     testUser2.keyRingPair,
     MGA_ASSET_ID,
     token1,
-    defaultCurrencyValue
+    defaultCurrencyValue,
   );
 
   await waitForRewards(testUser2, liqId);
@@ -253,11 +253,11 @@ test("GIVEN an activated pool WHEN pool was deactivated THEN check that the user
   //Test user1 should still have some rewards in the curve.
   await waitForRewards(testUser1, liqId);
   const poolRewards = JSON.parse(
-    JSON.stringify(await api.query.proofOfStake.promotedPoolRewards())
+    JSON.stringify(await api.query.proofOfStake.promotedPoolRewards()),
   );
   const poolInfoAfter = await getPromotedPoolInfo(liqId);
   const mangata = await getMangataInstance(
-    getEnvironmentRequiredVars().chainUri
+    getEnvironmentRequiredVars().chainUri,
   );
   const rewardsAfterDisablePool = await mangata.rpc.calculateRewardsAmount({
     address: testUser1.keyRingPair.address,
@@ -279,7 +279,7 @@ async function getPromotedPoolInfo(tokenId: BN) {
   const api = getApi();
 
   const poolRewards = JSON.parse(
-    JSON.stringify(await api.query.proofOfStake.promotedPoolRewards())
+    JSON.stringify(await api.query.proofOfStake.promotedPoolRewards()),
   );
   return {
     weight: stringToBN(poolRewards[tokenId.toString()].weight),

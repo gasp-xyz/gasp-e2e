@@ -14,7 +14,7 @@ import { acceptPermissionsPolkadotExtension } from "./Helper";
 export async function connectPolkadotWallet(
   driver: WebDriver,
   sidebar: Sidebar,
-  mga: Mangata
+  mga: Mangata,
 ) {
   await sidebar.clickOnWalletConnect();
   const walletConnectModal = new WalletConnectModal(driver);
@@ -30,7 +30,7 @@ export async function connectPolkadotWallet(
 
 export async function allowPolkadotWalletConnection(
   driver: WebDriver,
-  mga: Mangata
+  mga: Mangata,
 ) {
   const walletConnectModal = new WalletConnectModal(driver);
   const isWalletConnectModalDisplayed = await walletConnectModal.opens();
@@ -43,12 +43,12 @@ export async function allowPolkadotWalletConnection(
 export async function waitForActionNotification(
   driver: WebDriver,
   chainOne: ApiContext,
-  numOfBLocks = 1
+  numOfBLocks = 1,
 ) {
   const modal = new NotificationModal(driver);
   await modal.waitForModalState(ModalType.Confirm, 3000);
   const isModalWaitingForSignVisible = await modal.isModalVisible(
-    ModalType.Confirm
+    ModalType.Confirm,
   );
   expect(isModalWaitingForSignVisible).toBeTruthy();
   await Polkadot.signTransaction(driver);

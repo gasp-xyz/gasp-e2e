@@ -54,13 +54,13 @@ beforeAll(async () => {
   sudo = new User(keyring, sudoUserName);
 
   minStk = new BN(
-    (await getApi()).consts.parachainStaking.minCandidateStk.toString()
+    (await getApi()).consts.parachainStaking.minCandidateStk.toString(),
   );
 
   [tokenId] = await Assets.setupUserWithCurrencies(
     testUser,
     [minStk.muln(1000), minStk.muln(1000)],
-    sudo
+    sudo,
   );
 
   await Sudo.batchAsSudoFinalized(
@@ -69,14 +69,14 @@ beforeAll(async () => {
     Assets.mintNative(testUser, minStk.muln(1000)),
     Sudo.sudoAs(
       testUser,
-      Xyk.createPool(MGA_ASSET_ID, minStk.muln(3), tokenId, minStk.muln(3))
-    )
+      Xyk.createPool(MGA_ASSET_ID, minStk.muln(3), tokenId, minStk.muln(3)),
+    ),
   );
 
   liqToken = await getLiquidityAssetId(MGA_ASSET_ID, tokenId);
 
   await Sudo.asSudoFinalized(
-    Sudo.sudo(Staking.addStakingLiquidityToken(liqToken))
+    Sudo.sudo(Staking.addStakingLiquidityToken(liqToken)),
   );
 });
 
@@ -85,14 +85,14 @@ beforeEach(async () => {
 
   await Sudo.batchAsSudoFinalized(
     Assets.mintNative(testUser1, minStk.muln(1000)),
-    Assets.mintToken(tokenId, testUser1, minStk.muln(1000))
+    Assets.mintToken(tokenId, testUser1, minStk.muln(1000)),
   );
 
   await Sudo.batchAsSudoFinalized(
     Sudo.sudoAs(
       testUser1,
-      Xyk.mintLiquidity(MGA_ASSET_ID, tokenId, minStk.muln(5), minStk.muln(6))
-    )
+      Xyk.mintLiquidity(MGA_ASSET_ID, tokenId, minStk.muln(5), minStk.muln(6)),
+    ),
   );
 });
 
@@ -103,7 +103,7 @@ test("A user can delegate more using liq token", async () => {
 
   await Sudo.batchAsSudoFinalized(
     Assets.mintNative(testUser2, minStk.muln(1000)),
-    Assets.mintToken(liqToken, testUser2, minStk.muln(2))
+    Assets.mintToken(liqToken, testUser2, minStk.muln(2)),
   );
 
   testUser1.addAsset(liqToken);
@@ -113,7 +113,7 @@ test("A user can delegate more using liq token", async () => {
   await joinCandidate(testUser1.keyRingPair, liqToken, minStk.muln(2)).then(
     (result) => {
       expect(result.state).toEqual(ExtrinsicResult.ExtrinsicSuccess);
-    }
+    },
   );
 
   const candidateStateAfterJoining = await getCandidateState(testUser1);
@@ -122,7 +122,7 @@ test("A user can delegate more using liq token", async () => {
     testUser2.keyRingPair,
     liqToken,
     minStk.divn(4),
-    "AvailableBalance"
+    "AvailableBalance",
   ).then((result) => {
     expect(result.state).toEqual(ExtrinsicResult.ExtrinsicSuccess);
   });
@@ -130,7 +130,7 @@ test("A user can delegate more using liq token", async () => {
   await signTx(
     api,
     Staking.scheduleDelegatorBondMore(testUser1, minStk.divn(4)),
-    testUser2.keyRingPair
+    testUser2.keyRingPair,
   ).then((value) => {
     const event = getEventResultFromMangataTx(value);
     expect(event.state).toEqual(ExtrinsicResult.ExtrinsicSuccess);
@@ -144,7 +144,7 @@ test("A user can delegate more using liq token", async () => {
   await signTx(
     api,
     Staking.executeDelegationRequest(testUser2, testUser1),
-    testUser2.keyRingPair
+    testUser2.keyRingPair,
   ).then((value) => {
     const event = getEventResultFromMangataTx(value);
     expect(event.state).toEqual(ExtrinsicResult.ExtrinsicSuccess);
@@ -156,19 +156,19 @@ test("A user can delegate more using liq token", async () => {
     candidateStateAfterJoining,
     minStk.muln(2),
     minStk.muln(2),
-    minStk.muln(2)
+    minStk.muln(2),
   );
   await checkCandidateInfo(
     candidateStateBeforeExecuting,
     minStk.muln(2),
     minStk.muln(2).add(minStk.divn(4)),
-    minStk.muln(2).add(minStk.divn(4))
+    minStk.muln(2).add(minStk.divn(4)),
   );
   await checkCandidateInfo(
     candidateStateAfterExecuting,
     minStk.muln(2),
     minStk.muln(2).add(minStk.divn(2)),
-    minStk.muln(2).add(minStk.divn(2))
+    minStk.muln(2).add(minStk.divn(2)),
   );
 });
 
@@ -176,11 +176,11 @@ test("A User with free tokens can join as collator", async () => {
   const result = await joinCandidate(
     testUser1.keyRingPair,
     liqToken,
-    minStk.muln(2)
+    minStk.muln(2),
   );
   expect(result.state).toEqual(ExtrinsicResult.ExtrinsicSuccess);
   const isUserInCandidate = await Staking.isUserInCandidateList(
-    testUser1.keyRingPair.address
+    testUser1.keyRingPair.address,
   );
   expect(isUserInCandidate).toBeTruthy();
 });
@@ -198,7 +198,7 @@ test("A user can schedule and execute bond more", async () => {
   await joinCandidate(testUser1.keyRingPair, liqToken, minStk.muln(2)).then(
     (result) => {
       expect(result.state).toEqual(ExtrinsicResult.ExtrinsicSuccess);
-    }
+    },
   );
 
   const candidateStateBeforeExecuting = await getCandidateState(testUser1);
@@ -206,7 +206,7 @@ test("A user can schedule and execute bond more", async () => {
   await signTx(
     api,
     Staking.scheduleCandidateBondMore(minStk),
-    testUser1.keyRingPair
+    testUser1.keyRingPair,
   ).then((value) => {
     const event = getEventResultFromMangataTx(value);
     expect(event.state).toEqual(ExtrinsicResult.ExtrinsicSuccess);
@@ -218,7 +218,7 @@ test("A user can schedule and execute bond more", async () => {
   await signTx(
     api,
     Staking.executeBondRequest(testUser1),
-    testUser1.keyRingPair
+    testUser1.keyRingPair,
   ).then((value) => {
     const event = getEventResultFromMangataTx(value);
     expect(event.state).toEqual(ExtrinsicResult.ExtrinsicSuccess);
@@ -231,13 +231,13 @@ test("A user can schedule and execute bond more", async () => {
     candidateStateBeforeExecuting,
     minStk.muln(2),
     minStk.muln(2),
-    minStk.muln(2)
+    minStk.muln(2),
   );
   await checkCandidateInfo(
     candidateStateAfterExecuting,
     minStk.muln(3),
     minStk.muln(3),
-    minStk.muln(3)
+    minStk.muln(3),
   );
 });
 
@@ -245,23 +245,21 @@ async function getCandidateState(user: User) {
   const api = getApi();
 
   const candidateState = await api.query.parachainStaking.candidateState(
-    user.keyRingPair.address
+    user.keyRingPair.address,
   );
 
-  const results = {
+  return {
     bond: stringToBN(candidateState.value.bond.toString()),
     totalCounted: stringToBN(candidateState.value.totalCounted.toString()),
     totalBacking: stringToBN(candidateState.value.totalBacking.toString()),
   };
-
-  return results;
 }
 
 async function checkCandidateInfo(
   candidateState: { bond: BN; totalCounted: BN; totalBacking: BN },
   bondAmount: BN,
   totalCountedAmount: BN,
-  totalBackingAmount: BN
+  totalBackingAmount: BN,
 ) {
   expect(candidateState.bond).bnEqual(bondAmount);
   expect(candidateState.totalCounted).bnEqual(totalCountedAmount);

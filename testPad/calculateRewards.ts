@@ -34,8 +34,9 @@ async function main() {
       mangata
         .calculateRewardsAmount(user, liqId.toString())
         .then((result: any) => {
-          if (result.toString() === "0")
+          if (result.toString() === "0") {
             console.log("foo: " + liq + "-" + JSON.stringify(result));
+          }
           if (result.toString() !== "0") {
             const str = `${user}:${header.number}:${(
               result as any
@@ -44,7 +45,9 @@ async function main() {
             const plott = `${header.number},${(result as any).toString()} \n`;
 
             fs.appendFile(`./${liqId}_${user}.txt`, plott, function (err) {
-              if (err) throw err;
+              if (err) {
+                throw err;
+              }
             });
             console.log(str);
           }
