@@ -8,6 +8,7 @@ import { testLog } from "../../Logger";
 import { BN } from "@polkadot/util";
 import { Talisman } from "../pages/Talisman";
 import { LiqPools } from "../microapps-pages/LiqPools";
+import "jest-extended";
 
 const timeOut = 60000;
 const outputPath = `reports/artifacts`;
