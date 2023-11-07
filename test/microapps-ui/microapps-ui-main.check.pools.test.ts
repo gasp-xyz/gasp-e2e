@@ -28,7 +28,6 @@ import {
   connectWallet,
   setupPage,
 } from "../../utils/frontend/microapps-utils/Handlers";
-import "jest-extended";
 
 jest.setTimeout(FIVE_MIN);
 jest.spyOn(console, "log").mockImplementation(jest.fn());

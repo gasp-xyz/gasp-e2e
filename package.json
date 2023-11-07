@@ -177,6 +177,7 @@
       "./utils/setupTests.ts"
     ],
     "setupFilesAfterEnv": [
+      "jest-extended/all",
       "./utils/setupJest.ts"
     ],
     "testTimeout": 1500000,
