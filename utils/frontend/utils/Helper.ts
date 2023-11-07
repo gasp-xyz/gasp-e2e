@@ -9,6 +9,7 @@ import { testLog } from "../../Logger";
 import { BN } from "@polkadot/util";
 import { Talisman } from "../pages/Talisman";
 import { LiqPools } from "../microapps-pages/LiqPools";
+
 const timeOut = 60000;
 const outputPath = `reports/artifacts`;
 export async function waitForElement(
