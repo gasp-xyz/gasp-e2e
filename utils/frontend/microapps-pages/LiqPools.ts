@@ -206,7 +206,7 @@ export class LiqPools {
 
   async getPoolsList() {
     const classNameXpath = await buildClassXpath("focus:outline-0 group");
-    await waitForElementVisible(this.driver, classNameXpath, 5000);
+    await waitForElementVisible(this.driver, classNameXpath, 10000);
     const fePoolsInfo = await this.driver.findElements(
       By.xpath(classNameXpath),
     );

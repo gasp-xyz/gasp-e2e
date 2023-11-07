@@ -72,12 +72,10 @@ describe("Microapps UI liq pools tests", () => {
   });
 
   it("All promoted pools exist in app", async () => {
+    const promotedPoolsRaw = await api.query.proofOfStake.promotedPoolRewards();
+    const promotedPoolsRawHuman = promotedPoolsRaw.toHuman();
     const promotedPools = JSON.parse(
-      JSON.stringify(
-        Object.keys(
-          (await api.query.proofOfStake.promotedPoolRewards()).toHuman(),
-        ),
-      ),
+      JSON.stringify(Object.keys(promotedPoolsRawHuman)),
     );
     const promotedPoolsLength = promotedPools.length;
     const promotedPoolsInfo = [];
