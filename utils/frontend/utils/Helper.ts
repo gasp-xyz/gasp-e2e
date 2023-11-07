@@ -595,5 +595,8 @@ export async function comparePoolsLists(
       );
     }
   }
+  expect(fePoolsList).not.toBeEmpty();
+  expect(bePoolsInfo).not.toBeEmpty();
+  expect(bePoolsList).not.toBeEmpty();
   expect(bePoolsList).toIncludeSameMembers(fePoolsList);
 }
