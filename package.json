@@ -68,6 +68,7 @@
     "build": "tsc --project tsconfig.json",
     "init-test": "rm nonce.db; rm sudo.lock;",
     "test": "jest",
+    "test-run": "export JEST_HTML_REPORTERS_PUBLIC_PATH=reports/html-report-seq; rm nonce.db ; rm sudo.lock;  node --experimental-specifier-resolution=node --loader ts-node/esm --experimental-vm-modules node_modules/jest/bin/jest.js --forceExit ",
     "test-parallel": "export JEST_HTML_REPORTERS_PUBLIC_PATH=reports/html-report-parallel;rm nonce.db ; rm sudo.lock; node --expose-gc --experimental-specifier-resolution=node --loader ts-node/esm --experimental-vm-modules node_modules/jest/bin/jest.js --verbose --ci --group=parallel --forceExit --workerIdleMemoryLimit=200MB --logHeapUsage",
     "test-sequential-no-bootstrap": "export JEST_HTML_REPORTERS_PUBLIC_PATH=reports/html-report-seq; rm nonce.db ; rm sudo.lock;  node --experimental-specifier-resolution=node --loader ts-node/esm --experimental-vm-modules node_modules/jest/bin/jest.js --verbose --runInBand --group=sequential --group=-bootstrap --group=-rewards-bootstrap --forceExit ",
     "test-seqgasless": "export GASLESS=true; export JEST_HTML_REPORTERS_PUBLIC_PATH=reports/html-report-seq; rm nonce.db ; rm sudo.lock;  node --experimental-specifier-resolution=node --loader ts-node/esm --experimental-vm-modules node_modules/jest/bin/jest.js --verbose --runInBand --group=seqgasless --forceExit ",
@@ -194,5 +195,6 @@
         }
       ]
     ]
-  }
+  },
+  "packageManager": "yarn@1.22.19"
 }

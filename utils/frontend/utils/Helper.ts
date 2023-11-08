@@ -3,12 +3,12 @@ import { By, Key, logging, until, WebDriver } from "selenium-webdriver";
 import { sleep } from "../../utils";
 import { Mangata } from "../pages/Mangata";
 import { Polkadot } from "../pages/Polkadot";
+import "jest-extended";
 import fs from "fs";
 import { testLog } from "../../Logger";
 import { BN } from "@polkadot/util";
 import { Talisman } from "../pages/Talisman";
 import { LiqPools } from "../microapps-pages/LiqPools";
-import "jest-extended";
 
 const timeOut = 60000;
 const outputPath = `reports/artifacts`;

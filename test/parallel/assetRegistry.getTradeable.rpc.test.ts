@@ -62,7 +62,7 @@ describe("AssetRegistry RPC -", () => {
       ),
     );
     expectMGAExtrinsicSuDidSuccess(events);
-    noRegistered = filterEventData(events, "tokens.Issued").map(
+    noRegistered = filterEventData(events, "tokens.Created").map(
       (event) => event[0],
     )[0];
     [

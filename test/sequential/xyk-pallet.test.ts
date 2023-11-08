@@ -75,7 +75,7 @@ test("xyk-pallet: Happy case scenario", async () => {
     (result) => {
       const eventResponse = getEventResultFromMangataTx(result, [
         "tokens",
-        "Issued",
+        "Created",
         alice.address,
       ]);
       expect(eventResponse.state).toEqual(ExtrinsicResult.ExtrinsicSuccess);
@@ -93,7 +93,7 @@ test("xyk-pallet: Happy case scenario", async () => {
     (result) => {
       const eventResponse = getEventResultFromMangataTx(result, [
         "tokens",
-        "Issued",
+        "Created",
         alice.address,
       ]);
       expect(eventResponse.state).toEqual(ExtrinsicResult.ExtrinsicSuccess);
@@ -1004,7 +1004,7 @@ test("xyk-pallet: Liquidity sufficiency scenario", async () => {
     (result) => {
       const eventResponse = getEventResultFromMangataTx(result, [
         "tokens",
-        "Issued",
+        "Created",
         alice.address,
       ]);
       expect(eventResponse.state).toEqual(ExtrinsicResult.ExtrinsicSuccess);
@@ -1022,7 +1022,7 @@ test("xyk-pallet: Liquidity sufficiency scenario", async () => {
     (result) => {
       const eventResponse = getEventResultFromMangataTx(result, [
         "tokens",
-        "Issued",
+        "Created",
         alice.address,
       ]);
       expect(eventResponse.state).toEqual(ExtrinsicResult.ExtrinsicSuccess);
