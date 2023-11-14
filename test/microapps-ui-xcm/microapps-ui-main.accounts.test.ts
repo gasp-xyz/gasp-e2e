@@ -63,12 +63,12 @@ beforeAll(async () => {
 });
 
 describe.each`
-  userAddressString                                     | mnemonicKey
-  ${"5HRSqs882zwRmzY3zyXVFrWim6aMKS2c7a35zdAwWpjp9SVi"} | ${mnemonicPolkadotEcdsa}
-  ${"5CowkvkRjFgffQ2Nb7W5mv1e5Ee7fujmtX9db4hnfPZV8jnf"} | ${mnemonicPolkadotEd25519}
+  userAddressString                                     | mnemonicKey                | accType
+  ${"5HRSqs882zwRmzY3zyXVFrWim6aMKS2c7a35zdAwWpjp9SVi"} | ${mnemonicPolkadotEcdsa}   | ${"ed25519"}
+  ${"5CowkvkRjFgffQ2Nb7W5mv1e5Ee7fujmtX9db4hnfPZV8jnf"} | ${mnemonicPolkadotEd25519} | ${"ecdsa"}
 `(
   "Microapps UI alternative accounts tests",
-  ({ userAddressString, mnemonicKey }) => {
+  ({ userAddressString, mnemonicKey, accType }) => {
     let alice: KeyringPair;
     const userAddress = userAddressString;
 
@@ -121,7 +121,7 @@ describe.each`
       await connectWallet(driver, "Polkadot", acc_name);
     });
 
-    test("Swap tokens", async () => {
+    test("Swap tokens by account type " + accType, async () => {
       await setupPageWithState(driver, acc_name);
       const swap = new Swap(driver);
       const isSwapFrameDisplayed = await swap.isDisplayed();
@@ -137,7 +137,7 @@ describe.each`
       expect(isSwapEnabled).toBeTruthy();
     });
 
-    test("Add MGX-KSM pool liquidity", async () => {
+    test("Add MGX-KSM pool liquidity by account type " + accType, async () => {
       await setupPageWithState(driver, acc_name);
       const sidebar = new Sidebar(driver);
       await sidebar.clickNavLiqPools();
@@ -195,7 +195,7 @@ describe.each`
       expect(my_new_pool_share).toBeGreaterThan(my_pool_share);
     });
 
-    test("Deposit tokens", async () => {
+    test("Deposit tokens by account type " + accType, async () => {
       await setupPageWithState(driver, acc_name);
 
       const walletWrapper = new WalletWrapper(driver);
@@ -233,7 +233,7 @@ describe.each`
       );
     });
 
-    test("Withdraw tokens", async () => {
+    test("Withdraw tokens by account type " + accType, async () => {
       await setupPageWithState(driver, acc_name);
 
       const walletWrapper = new WalletWrapper(driver);
