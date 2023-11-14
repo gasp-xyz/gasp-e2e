@@ -47,21 +47,21 @@ beforeAll(async () => {
   [testUser1] = setupUsers();
   await setupApi();
   minStk = new BN(
-    (await getApi()).consts.parachainStaking.minCandidateStk.toString()
+    (await getApi()).consts.parachainStaking.minCandidateStk.toString(),
   );
   await waitUntilUserCollatorRewarded(alice);
   await Sudo.batchAsSudoFinalized(
     Assets.mintNative(testUser1, minStk.muln(1000)),
     Assets.mintNative(eve, minStk.muln(1000)),
     Sudo.sudo(
-      await Vesting.forceVested(testUser1, eve, minStk.muln(50), MGA_ASSET_ID)
+      await Vesting.forceVested(testUser1, eve, minStk.muln(50), MGA_ASSET_ID),
     ),
     Sudo.sudoAs(
       eve,
-      MPL.reserveVestingNativeTokensByVestingIndex(MGA_ASSET_ID)
+      MPL.reserveVestingNativeTokensByVestingIndex(MGA_ASSET_ID),
     ),
     Assets.FinalizeTge(),
-    Assets.initIssuance()
+    Assets.initIssuance(),
   );
 });
 
@@ -74,9 +74,9 @@ describe("HappyPath - staking - a collator producing blocks", () => {
         await Staking.joinAsCandidate(
           minStk.muln(2),
           MGA_ASSET_ID,
-          tokenOriginEnum.UnspentReserves
-        )
-      )
+          tokenOriginEnum.UnspentReserves,
+        ),
+      ),
     );
     await startDockerImage();
     await signNodeWithEve();
@@ -91,7 +91,7 @@ describe("HappyPath - staking - a collator producing blocks", () => {
 
   beforeEach(async () => {
     const containers = (await docker.listContainers()).filter((x) =>
-      x.Image.includes(dockerImageName)
+      x.Image.includes(dockerImageName),
     );
     for (let index = 0; index < containers.length; index++) {
       const containerInfo = containers[index];
@@ -102,7 +102,7 @@ describe("HappyPath - staking - a collator producing blocks", () => {
 
   afterEach(async () => {
     const containers = (await docker.listContainers()).filter((x) =>
-      x.Image.includes(dockerImageName)
+      x.Image.includes(dockerImageName),
     );
     for (let index = 0; index < containers.length; index++) {
       const containerInfo = containers[index];
@@ -116,7 +116,7 @@ async function startDockerImage() {
   const bobImage = as.filter(
     (x) =>
       x.Command.toLowerCase().includes("bob") &&
-      x.Image.includes(mgaParachainImageName)
+      x.Image.includes(mgaParachainImageName),
   )[0];
   await execSh(`docker tag ${mgaDockerContainerImage} ${dockerImageName}`);
   await sleep(2000);
@@ -167,7 +167,7 @@ async function startDockerImage() {
       }
       testLog.getLog().error(data.StatusCode);
       return undefined;
-    }
+    },
   );
 }
 async function signNodeWithEve() {
@@ -180,6 +180,6 @@ async function signNodeWithEve() {
   const keys = await eveNode.rpc.author.rotateKeys();
   await signSendAndWaitToFinishTx(
     eveNode?.tx.session.setKeys(keys.toString(), "0x00"),
-    eve.keyRingPair
+    eve.keyRingPair,
   );
 }

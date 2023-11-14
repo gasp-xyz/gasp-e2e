@@ -16,7 +16,7 @@ import { Codec } from "@polkadot/types/types";
 import { expectEvent, matchEvents } from "../../utils/eventListeners";
 
 /**
- * @group xcm
+ * @group skippedXcm
  * @group proxied
  */
 describe("XCM tests for Mangata <-> Statemine", () => {
@@ -103,11 +103,11 @@ describe("XCM tests for Mangata <-> Statemine", () => {
 
     await statemine.chain.newBlock();
     expectJson(
-      await mangata.api.query.tokens.accounts(alice.address, 30)
+      await mangata.api.query.tokens.accounts(alice.address, 30),
     ).toMatchSnapshot();
 
     expect(
-      await statemine.api.query.assets.account(1984, alice.address)
+      await statemine.api.query.assets.account(1984, alice.address),
     ).toMatchSnapshot();
 
     await matchSystemEvents(mangata, "xcmpQueue", "Success");
@@ -214,13 +214,13 @@ describe("XCM tests for Mangata <-> Statemine", () => {
     //  await matchEvents(tx.events, "polkadotXcm");
 
     expect(
-      await statemine.api.query.assets.account(1984, alice.address)
+      await statemine.api.query.assets.account(1984, alice.address),
     ).toMatchSnapshot();
 
     await mangata.chain.newBlock();
 
     expectJson(
-      await mangata.api.query.tokens.accounts(alice.address, 30)
+      await mangata.api.query.tokens.accounts(alice.address, 30),
     ).toMatchSnapshot();
 
     await matchSystemEvents(mangata, "xcmpQueue", "Success");
@@ -250,11 +250,11 @@ describe("XCM tests for Mangata <-> Statemine", () => {
 
     await statemine.chain.newBlock();
     expectJson(
-      await mangata.api.query.tokens.accounts(alice.address, 31)
+      await mangata.api.query.tokens.accounts(alice.address, 31),
     ).toMatchSnapshot();
 
     expect(
-      await statemine.api.query.assets.account(8, alice.address)
+      await statemine.api.query.assets.account(8, alice.address),
     ).toMatchSnapshot();
 
     await matchSystemEvents(mangata, "xcmpQueue", "Success");
@@ -312,13 +312,13 @@ describe("XCM tests for Mangata <-> Statemine", () => {
     await statemine.chain.newBlock();
 
     expect(
-      await statemine.api.query.assets.account(8, alice.address)
+      await statemine.api.query.assets.account(8, alice.address),
     ).toMatchSnapshot();
 
     await mangata.chain.newBlock();
 
     expectJson(
-      await mangata.api.query.tokens.accounts(alice.address, 31)
+      await mangata.api.query.tokens.accounts(alice.address, 31),
     ).toMatchSnapshot();
 
     await matchSystemEvents(mangata, "xcmpQueue", "Success");

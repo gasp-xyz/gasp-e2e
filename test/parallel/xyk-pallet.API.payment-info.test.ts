@@ -50,11 +50,11 @@ test("GIVEN a paymentInfo request, WHEN extrinsic is sellAsset  THEN zero is ret
     MGA_ASSET_ID,
     KSM_ASSET_ID,
     new BN(1000),
-    BN_ZERO
+    BN_ZERO,
   );
 
   const sellAssetPaymentInfo = await sellAssetEvent.paymentInfo(
-    testUser.keyRingPair
+    testUser.keyRingPair,
   );
   expect(sellAssetPaymentInfo.partialFee).bnEqual(BN_ZERO);
 });
@@ -63,11 +63,11 @@ test("GIVEN a paymentInfo request, WHEN extrinsic is multiswapBuyAsset THEN  zer
   const multiswapBuyEvent = api.tx.xyk.multiswapBuyAsset(
     [MGA_ASSET_ID, KSM_ASSET_ID],
     BN_HUNDRED,
-    BN_MILLION
+    BN_MILLION,
   );
 
   const multiswapBuyPaymentInfo = await multiswapBuyEvent.paymentInfo(
-    testUser.keyRingPair
+    testUser.keyRingPair,
   );
 
   expect(multiswapBuyPaymentInfo.partialFee).bnEqual(BN_ZERO);
@@ -78,11 +78,11 @@ test("GIVEN a paymentInfo request, WHEN extrinsic is mintLiquidityEvent THEN non
     MGA_ASSET_ID,
     KSM_ASSET_ID,
     BN_HUNDRED,
-    new BN(Number.MAX_SAFE_INTEGER)
+    new BN(Number.MAX_SAFE_INTEGER),
   );
 
   const mintLiquidityPaymentInfo = await mintLiquidityEvent.paymentInfo(
-    testUser.keyRingPair
+    testUser.keyRingPair,
   );
 
   expect(mintLiquidityPaymentInfo.partialFee).bnGt(BN_ZERO);
@@ -92,7 +92,7 @@ test("GIVEN a paymentInfo request, WHEN extrinsic is compoundRewards THEN non-ze
   const compoundRewardsEvent = api.tx.xyk.compoundRewards(liqId, 1000000);
 
   const compoundRewardsPaymentInfo = await compoundRewardsEvent.paymentInfo(
-    testUser.keyRingPair
+    testUser.keyRingPair,
   );
 
   expect(compoundRewardsPaymentInfo.partialFee).bnGt(BN_ZERO);
@@ -102,11 +102,11 @@ test("GIVEN a paymentInfo request, WHEN extrinsic is provideLiquidityWithId THEN
   const provideLiquidityEvent = api.tx.xyk.provideLiquidityWithConversion(
     liqId,
     MGA_ASSET_ID,
-    BN_HUNDRED
+    BN_HUNDRED,
   );
 
   const provideLiquidityPaymentInfo = await provideLiquidityEvent.paymentInfo(
-    testUser.keyRingPair
+    testUser.keyRingPair,
   );
 
   expect(provideLiquidityPaymentInfo.partialFee).bnGt(BN_ZERO);
@@ -125,7 +125,7 @@ test("GIVEN a paymentInfo request, WHEN extrinsic is a batch with a sell/buy ope
   });
 
   const batchAllPaymentInfo = await batchAllEvent.paymentInfo(
-    testUser.keyRingPair
+    testUser.keyRingPair,
   );
 
   expect(batchAllPaymentInfo.partialFee).bnGt(BN_ZERO);

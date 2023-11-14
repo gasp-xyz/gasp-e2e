@@ -1,10 +1,10 @@
 import { getApi } from "./api";
-import { ExtrinsicResult } from "./eventListeners";
+import { ExtrinsicResult, waitNewBlock } from "./eventListeners";
 import { User } from "./User";
 import { getEventResultFromMangataTx, sudoIssueAsset } from "./txHandler";
 import { getCurrentNonce } from "./tx";
 import { getBlockNumber } from "./utils";
-import { toBN, signTx } from "@mangata-finance/sdk";
+import { signTx, toBN } from "@mangata-finance/sdk";
 import { Assets } from "./Assets";
 import { setupApi } from "./setup";
 import { Sudo } from "./sudo";
@@ -15,7 +15,7 @@ import { BN } from "@polkadot/util";
 
 export async function waitForBootstrapStatus(
   bootstrapStatus: string,
-  maxNumberBlocks: number
+  maxNumberBlocks: number,
 ) {
   const lastBlock = (await getBlockNumber()) + maxNumberBlocks;
   let currentBlock = await getBlockNumber();
@@ -55,44 +55,37 @@ export async function createNewBootstrapCurrency(sudoUser: User) {
   const creatingBootstrapToken = await sudoIssueAsset(
     sudoUser.keyRingPair,
     toBN("1", 20),
-    sudoUser.keyRingPair.address
+    sudoUser.keyRingPair.address,
   );
-  const creatingBootstrapTokenResult = await getEventResultFromMangataTx(
+  const creatingBootstrapTokenResult = getEventResultFromMangataTx(
     creatingBootstrapToken,
-    ["tokens", "Issued", sudoUser.keyRingPair.address]
+    ["tokens", "Created", sudoUser.keyRingPair.address],
   );
 
-  const bootstrapCurrencyId = new BN(
-    creatingBootstrapTokenResult.data[0].split(",").join("")
-  );
-
-  return bootstrapCurrencyId;
+  return new BN(creatingBootstrapTokenResult.data[0].split(",").join(""));
 }
 
 export async function setupBootstrapTokensBalance(
   bootstrapTokenId: BN,
   sudoUser: User,
-  testUser: User[]
+  testUser: User[],
 ) {
   const extrinsicCall = [
     Assets.mintNative(sudoUser),
     Assets.mintToken(bootstrapTokenId, sudoUser),
   ];
   testUser.forEach(async (userId) =>
-    extrinsicCall.push(Assets.mintToken(bootstrapTokenId, userId))
+    extrinsicCall.push(Assets.mintToken(bootstrapTokenId, userId)),
   );
   testUser.forEach(async (userId) =>
-    extrinsicCall.push(Assets.mintNative(userId))
+    extrinsicCall.push(Assets.mintNative(userId)),
   );
   await Sudo.batchAsSudoFinalized(...extrinsicCall);
 }
 
 export async function getPromotionBootstrapPoolState() {
   const api = getApi();
-  const currentPromotingState = await (
-    await api.query.bootstrap.promoteBootstrapPool()
-  ).toHuman();
-  return currentPromotingState;
+  return (await api.query.bootstrap.promoteBootstrapPool()).toHuman();
 }
 
 export async function scheduleBootstrap(
@@ -102,11 +95,11 @@ export async function scheduleBootstrap(
   waitingPeriod: number,
   bootstrapPeriod: number,
   whitelistPeriod = 1,
-  provisionBootstrap = false
+  provisionBootstrap = false,
 ) {
   const api = getApi();
   const bootstrapBlockNumber = (await getBlockNumber()) + waitingPeriod;
-  const result = await signTx(
+  return await signTx(
     api,
     api.tx.sudo.sudo(
       api.tx.bootstrap.scheduleBootstrap(
@@ -117,63 +110,58 @@ export async function scheduleBootstrap(
         new BN(bootstrapPeriod),
         [100, 1],
         // @ts-ignore
-        provisionBootstrap
-      )
+        provisionBootstrap,
+      ),
     ),
     sudoUser.keyRingPair,
     {
       nonce: await getCurrentNonce(sudoUser.keyRingPair.address),
-    }
+    },
   );
-  return result;
 }
 
 export async function provisionBootstrap(
   user: User,
   bootstrapCurrency: BN,
-  bootstrapAmount: BN
+  bootstrapAmount: BN,
 ) {
   const api = getApi();
-  const result = await signTx(
+  return await signTx(
     api,
     api.tx.bootstrap.provision(bootstrapCurrency, bootstrapAmount),
-    user.keyRingPair
+    user.keyRingPair,
   );
-  return result;
 }
 
 export async function provisionVestedBootstrap(
   user: User,
   bootstrapCurrency: BN,
-  bootstrapAmount: BN
+  bootstrapAmount: BN,
 ) {
   const api = getApi();
-  const result = await signTx(
+  return await signTx(
     api,
     api.tx.bootstrap.provisionVested(bootstrapCurrency, bootstrapAmount),
-    user.keyRingPair
+    user.keyRingPair,
   );
-  return result;
 }
 
 export async function claimRewardsBootstrap(user: User) {
   const api = getApi();
-  const result = await signTx(
+  return await signTx(
     api,
     api.tx.bootstrap.claimLiquidityTokens(),
-    user.keyRingPair
+    user.keyRingPair,
   );
-  return result;
 }
 
 export async function claimAndActivateBootstrap(user: User) {
   const api = getApi();
-  const result = await signTx(
+  return await signTx(
     api,
     api.tx.bootstrap.claimAndActivateLiquidityTokens(),
-    user.keyRingPair
+    user.keyRingPair,
   );
-  return result;
 }
 
 export async function finalizeBootstrap(sudoUser: User) {
@@ -182,56 +170,53 @@ export async function finalizeBootstrap(sudoUser: User) {
     api,
     api.tx.sudo.sudoAs(
       sudoUser.keyRingPair.address,
-      api.tx.bootstrap.preFinalize()
+      api.tx.bootstrap.preFinalize(),
     ),
     sudoUser.keyRingPair,
     {
       nonce: await getCurrentNonce(sudoUser.keyRingPair.address),
-    }
+    },
   );
-  const result = await signTx(
+  return await signTx(
     api,
     api.tx.sudo.sudoAs(
       sudoUser.keyRingPair.address,
-      api.tx.bootstrap.finalize()
+      api.tx.bootstrap.finalize(),
     ),
     sudoUser.keyRingPair,
     {
       nonce: await getCurrentNonce(sudoUser.keyRingPair.address),
-    }
+    },
   );
-  return result;
 }
 
 export async function cancelRunningBootstrap(sudoUser: User) {
   const api = getApi();
-  const result = await signTx(
+  return await signTx(
     api,
     api.tx.sudo.sudo(api.tx.bootstrap.cancelBootstrap()),
     sudoUser.keyRingPair,
     {
       nonce: await getCurrentNonce(sudoUser.keyRingPair.address),
-    }
+    },
   );
-  return result;
 }
 
 export async function updatePromoteBootstrapPool(
   sudoUser: User,
-  promoteBootstrapPoolFlag: boolean
+  promoteBootstrapPoolFlag: boolean,
 ) {
   const api = getApi();
-  const result = await signTx(
+  return await signTx(
     api,
     api.tx.sudo.sudo(
-      api.tx.bootstrap.updatePromoteBootstrapPool(promoteBootstrapPoolFlag)
+      api.tx.bootstrap.updatePromoteBootstrapPool(promoteBootstrapPoolFlag),
     ),
     sudoUser.keyRingPair,
     {
       nonce: await getCurrentNonce(sudoUser.keyRingPair.address),
     }
   );
-  return result;
 }
 export class Bootstrap {
   static provision(tokenId: BN, amount: BN): Extrinsic {

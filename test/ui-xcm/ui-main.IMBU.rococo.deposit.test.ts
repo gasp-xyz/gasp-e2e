@@ -104,7 +104,7 @@ describe("UI XCM tests - IMBU rococo", () => {
     testUser1 = new User(keyring);
     testUser1.addFromMnemonic(
       keyring,
-      getEnvironmentRequiredVars().mnemonicPolkadot
+      getEnvironmentRequiredVars().mnemonicPolkadot,
     );
 
     testUser1.addAsset(imbueTokenId);
@@ -137,9 +137,8 @@ describe("UI XCM tests - IMBU rococo", () => {
     const areTokenListElementsVisible =
       await depositModal.areTokenListElementsVisible(IMBU_ASSET_NAME);
     expect(areTokenListElementsVisible).toBeTruthy();
-    const tokensAtSourceBefore = await depositModal.getTokenAmount(
-      IMBU_ASSET_NAME
-    );
+    const tokensAtSourceBefore =
+      await depositModal.getTokenAmount(IMBU_ASSET_NAME);
     await depositModal.selectToken(IMBU_ASSET_NAME);
     await depositModal.enterValue("1");
     await depositModal.waitForProgressBar();
@@ -153,9 +152,8 @@ describe("UI XCM tests - IMBU rococo", () => {
     expect(isModalVisible).toBeTruthy();
 
     await depositModal.openTokensList();
-    const tokensAtSourceAfter = await depositModal.getTokenAmount(
-      IMBU_ASSET_NAME
-    );
+    const tokensAtSourceAfter =
+      await depositModal.getTokenAmount(IMBU_ASSET_NAME);
     expect(tokensAtSourceAfter).toBeLessThan(tokensAtSourceBefore);
 
     await mangata.chain.newBlock();
@@ -163,12 +161,12 @@ describe("UI XCM tests - IMBU rococo", () => {
     await mga.go();
     await testUser1.refreshAmounts(AssetWallet.AFTER);
     expect(testUser1.getAsset(imbueTokenId)?.amountBefore.free!).bnLt(
-      testUser1.getAsset(imbueTokenId)?.amountAfter.free!
+      testUser1.getAsset(imbueTokenId)?.amountAfter.free!,
     );
     await sidebar.waitForLoad();
     const tokenOnAppAfter = await sidebar.getTokenAmount(IMBU_ASSET_NAME);
     expect(parseFloat(tokenOnAppAfter.replace(",", ""))).toBeGreaterThan(
-      parseFloat(tokenOnAppBefore.replace(",", ""))
+      parseFloat(tokenOnAppBefore.replace(",", "")),
     );
   });
 
@@ -176,7 +174,7 @@ describe("UI XCM tests - IMBU rococo", () => {
     const session = await driver.getSession();
     await addExtraLogs(
       driver,
-      expect.getState().currentTestName + " - " + session.getId()
+      expect.getState().currentTestName + " - " + session.getId(),
     );
     await driver.manage().deleteAllCookies();
     await driver.executeScript("localStorage.clear(); sessionStorage.clear();");

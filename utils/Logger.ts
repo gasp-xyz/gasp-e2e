@@ -37,10 +37,10 @@ export class testLog {
 
 //@ts-ignore
 export const logEvent = (chain, event) => {
-  const obj = toHuman(event).event;
+  const obj = toHuman(event.event);
   testLog
     .getLog()
     .info(
-      `${chain} -> ${obj.section}.${obj.method}: ${JSON.stringify(obj.data)}`
+      `${chain} -> ${obj.section}.${obj.method}: ${JSON.stringify(obj.data)}`,
     );
 };

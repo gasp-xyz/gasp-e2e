@@ -1,7 +1,7 @@
 import { BN } from "@polkadot/util";
 import { setupApi, setupUsers } from "../../utils/setup";
 import { Sudo } from "../../utils/sudo";
-import { BN_HUNDRED, BN_ONE, BN_THOUSAND, BN_ZERO } from "@mangata-finance/sdk";
+import { BN_HUNDRED, BN_THOUSAND, BN_ZERO } from "@mangata-finance/sdk";
 import { AssetWallet, User } from "../../utils/User";
 import {
   findBlockWithExtrinsicSigned,
@@ -11,10 +11,10 @@ import {
 } from "../../utils/utils";
 import { MGA_ASSET_ID } from "../../utils/Constants";
 import { Xyk } from "../../utils/xyk";
-import { getNextAssetId } from "../../utils/tx";
 import { Assets } from "../../utils/Assets";
 import { signSendFinalized } from "../../utils/sign";
 import { getApi } from "../../utils/api";
+import { SudoDB } from "../../utils/SudoDB";
 /**
  * @group xyk
  * @group api
@@ -32,25 +32,25 @@ describe("API fees test suite", () => {
   beforeAll(async () => {
     await setupApi();
     [user1, user2] = setupUsers();
-    currency1 = await getNextAssetId();
-    currency2 = currency1.add(BN_ONE);
-    currency3 = currency2.add(BN_ONE);
-    currency4 = currency3.add(BN_ONE);
+    currency1 = await SudoDB.getInstance().getTokenId();
+    currency2 = await SudoDB.getInstance().getTokenId();
+    currency3 = await SudoDB.getInstance().getTokenId();
+    currency4 = await SudoDB.getInstance().getTokenId();
     user1.addAsset(currency1);
     user1.addAsset(currency2);
 
     await Sudo.batchAsSudoFinalized(
-      Assets.issueToken(user1),
-      Assets.issueToken(user1),
-      Assets.issueToken(user1), // createPool test
-      Assets.issueToken(user1), // createPool test
+      Assets.mintToken(currency1, user1),
+      Assets.mintToken(currency2, user1),
+      Assets.mintToken(currency3, user1),
+      Assets.mintToken(currency4, user1),
       Assets.mintToken(currency1, user2), // transferAll test
       Assets.mintNative(user1),
       Assets.mintNative(user2),
       Sudo.sudoAs(
         user1,
-        Xyk.createPool(currency1, BN_THOUSAND, currency2, BN_THOUSAND)
-      )
+        Xyk.createPool(currency1, BN_THOUSAND, currency2, BN_THOUSAND),
+      ),
     );
   });
 
@@ -62,13 +62,13 @@ describe("API fees test suite", () => {
   async function expectFeePaid(from: number, to: number, user: User) {
     const blockNumber = await findBlockWithExtrinsicSigned(
       [from, to],
-      user.keyRingPair.address
+      user.keyRingPair.address,
     );
     const authorMGAtokens = await getTokensDiffForBlockAuthor(blockNumber);
     await user.refreshAmounts(AssetWallet.AFTER);
     const mgaUserToken = user.getAsset(MGA_ASSET_ID)!;
     const diff = mgaUserToken.amountBefore.free.sub(
-      mgaUserToken.amountAfter.free!
+      mgaUserToken.amountAfter.free!,
     );
     expect(BN_ZERO).bnLt(diff);
     expect(BN_ZERO).bnLt(authorMGAtokens);
@@ -77,20 +77,20 @@ describe("API fees test suite", () => {
   async function expectGasLessSwapFrozenTokens(
     from: number,
     to: number,
-    user: User
+    user: User,
   ) {
     const blockNumber = await findBlockWithExtrinsicSigned(
       [from, to],
-      user.keyRingPair.address
+      user.keyRingPair.address,
     );
     const authorMGAtokens = await getTokensDiffForBlockAuthor(blockNumber);
     await user.refreshAmounts(AssetWallet.AFTER);
     const mgaUserToken = user.getAsset(MGA_ASSET_ID)!;
     const diff = mgaUserToken.amountBefore.free.sub(
-      mgaUserToken.amountAfter.free!
+      mgaUserToken.amountAfter.free!,
     );
     const diffReserved = mgaUserToken.amountBefore.reserved.sub(
-      mgaUserToken.amountAfter.reserved!
+      mgaUserToken.amountAfter.reserved!,
     );
     const swapFee = await getFeeLockMetadata(await getApi());
     expect(swapFee.feeLockAmount).bnEqual(diff);
@@ -102,7 +102,7 @@ describe("API fees test suite", () => {
     const from = await getBlockNumber();
     await signSendFinalized(
       Xyk.createPool(currency3, BN_THOUSAND, currency4, BN_HUNDRED),
-      user1
+      user1,
     );
     const to = await getBlockNumber();
 
@@ -113,7 +113,7 @@ describe("API fees test suite", () => {
     const from = await getBlockNumber();
     await signSendFinalized(
       Xyk.mintLiquidity(currency1, currency2, BN_THOUSAND),
-      user1
+      user1,
     );
     const to = await getBlockNumber();
 
@@ -124,7 +124,7 @@ describe("API fees test suite", () => {
     const from = await getBlockNumber();
     await signSendFinalized(
       Xyk.burnLiquidity(currency1, currency2, BN_THOUSAND),
-      user1
+      user1,
     );
     const to = await getBlockNumber();
 
@@ -135,7 +135,7 @@ describe("API fees test suite", () => {
     const from = await getBlockNumber();
     await signSendFinalized(
       Assets.transfer(user2, currency1, BN_THOUSAND),
-      user1
+      user1,
     );
     const to = await getBlockNumber();
 
@@ -156,7 +156,7 @@ describe("API fees test suite", () => {
     //those currencies are not in whitelist -> hence tokens are reserved.
     await signSendFinalized(
       Xyk.sellAsset(currency1, currency2, new BN(50)),
-      user1
+      user1,
     );
     const to = await getBlockNumber();
 
@@ -167,7 +167,7 @@ describe("API fees test suite", () => {
     const from = await getBlockNumber();
     await signSendFinalized(
       Xyk.buyAsset(currency1, currency2, new BN(50)),
-      user1
+      user1,
     );
     const to = await getBlockNumber();
 

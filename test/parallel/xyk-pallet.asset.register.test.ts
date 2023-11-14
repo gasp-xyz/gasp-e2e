@@ -30,7 +30,7 @@ let testUser1: User;
 async function setupUserAssetRegister(
   user: User,
   extrinsicSuccess: boolean,
-  eventErrorData?: string
+  eventErrorData?: string,
 ) {
   const api = getApi();
 
@@ -44,17 +44,17 @@ async function setupUserAssetRegister(
   const assetMetadata = await api.query.assetRegistry.metadata(assetId);
   if (extrinsicSuccess === true) {
     expect(getEventResultFromMangataTx(userRegisterAsset).state).toEqual(
-      ExtrinsicResult.ExtrinsicSuccess
+      ExtrinsicResult.ExtrinsicSuccess,
     );
     expect(assetTotalIssuance.toNumber()).toEqual(250000);
     //@ts-ignore
     expect(assetMetadata.value.name.toHuman()).toEqual("TEST_TOKEN-" + assetId);
   } else {
     expect(getEventResultFromMangataTx(userRegisterAsset).state).toEqual(
-      ExtrinsicResult.ExtrinsicFailed
+      ExtrinsicResult.ExtrinsicFailed,
     );
     expect(getEventResultFromMangataTx(userRegisterAsset).data).toContain(
-      eventErrorData
+      eventErrorData,
     );
   }
   return assetId;
@@ -64,24 +64,22 @@ async function findAssetError(userRegisterNewAsset: MangataGenericEvent[]) {
   const api = getApi();
 
   const filterRegisterAsset = userRegisterNewAsset.filter(
-    (extrinsicResult) => extrinsicResult.method === "Sudid"
+    (extrinsicResult) => extrinsicResult.method === "Sudid",
   );
 
   const userAssetErr = hexToU8a(
     //@ts-ignore
-    filterRegisterAsset[0].event.data[0].asErr.value.error.toString()
+    filterRegisterAsset[0].event.data[0].asErr.value.error.toString(),
   );
 
   const userAssetIndex =
     //@ts-ignore
     filterRegisterAsset[0].event.data[0].asErr.value.index.toString();
 
-  const userAssetMetaError = api?.registry.findMetaError({
+  return api?.registry.findMetaError({
     error: userAssetErr,
     index: new BN(userAssetIndex),
   });
-
-  return userAssetMetaError;
 }
 
 beforeAll(async () => {
@@ -110,7 +108,7 @@ test("register new asset and then update it by sudo user", async () => {
   const userUpdateAsset = await sudo.updateAsset(assetId);
 
   expect(getEventResultFromMangataTx(userUpdateAsset).state).toEqual(
-    ExtrinsicResult.ExtrinsicSuccess
+    ExtrinsicResult.ExtrinsicSuccess,
   );
 
   const assetMetadata = await api.query.assetRegistry.metadata(assetId);
@@ -124,11 +122,11 @@ test("register new asset and then update it by non sudo user, expect to fail", a
   const userUpdateAsset = await testUser1.updateAsset(assetId);
 
   expect(getEventResultFromMangataTx(userUpdateAsset).state).toEqual(
-    ExtrinsicResult.ExtrinsicFailed
+    ExtrinsicResult.ExtrinsicFailed,
   );
 
   expect(getEventResultFromMangataTx(userUpdateAsset).data).toContain(
-    "RequireSudo"
+    "RequireSudo",
   );
 });
 
@@ -145,11 +143,11 @@ test("register new asset and then update it without the location", async () => {
       },
     },
     //@ts-ignore
-    api!.createType("Vec<u8>", "0x0100")
+    api!.createType("Vec<u8>", "0x0100"),
   );
 
   expect(getEventResultFromMangataTx(userUpdateAsset).state).toEqual(
-    ExtrinsicResult.ExtrinsicSuccess
+    ExtrinsicResult.ExtrinsicSuccess,
   );
   const assetMetadata = await api.query.assetRegistry.metadata(assetId);
   expect(assetMetadata.value.location.toHuman()).toEqual(null);
@@ -163,11 +161,11 @@ test("register new asset and then update it without fee", async () => {
   const userUpdateAsset = await Sudo.asSudoFinalized(
     Assets.updateAsset(assetId, {
       metadata: undefined,
-    })
+    }),
   );
 
   expect(getEventResultFromMangataTx(userUpdateAsset).state).toEqual(
-    ExtrinsicResult.ExtrinsicSuccess
+    ExtrinsicResult.ExtrinsicSuccess,
   );
 
   const assetMetadata = await api.query.assetRegistry.metadata(assetId);
@@ -196,25 +194,25 @@ test("register asset with xyk disabled and try to create a pool, expect to fail"
     10,
     undefined,
     undefined,
-    { operationsDisabled: true }
+    { operationsDisabled: true },
   );
   const result = await Sudo.asSudoFinalized(register);
   // assetRegistry.RegisteredAsset [8,{"decimals":10,"name":"0x44697361626c65642058796b","symbol":"0x44697361626c65642058796b","existentialDeposit":0,"location":null,"additional":{"xcm":null,"xyk":{"operationsDisabled":true}}}]
   const assetId = findEventData(
     result,
-    "assetRegistry.RegisteredAsset"
+    "assetRegistry.RegisteredAsset",
   ).assetId;
 
   await expect(
     signSendFinalized(
       Xyk.createPool(assetId, BN_ONE, MGA_ASSET_ID, BN_ONE),
-      testUser1
-    )
+      testUser1,
+    ),
   ).rejects.toEqual(
     expect.objectContaining({
       state: ExtrinsicResult.ExtrinsicFailed,
       data: xykErrors.FunctionNotAvailableForThisToken,
-    })
+    }),
   );
 });
 
@@ -225,19 +223,19 @@ test("register asset with xyk undefined and try to create a pool, expect success
     10,
     undefined,
     undefined,
-    undefined
+    undefined,
   );
   const result = await Sudo.asSudoFinalized(register);
   const assetId = findEventData(
     result,
-    "assetRegistry.RegisteredAsset"
+    "assetRegistry.RegisteredAsset",
   ).assetId;
 
   await Sudo.asSudoFinalized(Assets.mintToken(assetId, testUser1, BN_TEN));
 
   await signSendFinalized(
     Xyk.createPool(assetId, BN_ONE, MGA_ASSET_ID, BN_ONE),
-    testUser1
+    testUser1,
   );
 });
 
@@ -248,18 +246,18 @@ test("register asset with xyk enabled and try to create a pool, expect success",
     10,
     undefined,
     undefined,
-    { operationsDisabled: false }
+    { operationsDisabled: false },
   );
   const result = await Sudo.asSudoFinalized(register);
   const assetId = findEventData(
     result,
-    "assetRegistry.RegisteredAsset"
+    "assetRegistry.RegisteredAsset",
   ).assetId;
 
   await Sudo.asSudoFinalized(Assets.mintToken(assetId, testUser1, BN_TEN));
 
   await signSendFinalized(
     Xyk.createPool(assetId, BN_ONE, MGA_ASSET_ID, BN_ONE),
-    testUser1
+    testUser1,
   );
 });

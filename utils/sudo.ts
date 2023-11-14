@@ -9,7 +9,7 @@ import { Call } from "@polkadot/types/interfaces";
 
 export class Sudo {
   static sudo(
-    tx: SubmittableExtrinsic<"promise", ISubmittableResult>
+    tx: SubmittableExtrinsic<"promise", ISubmittableResult>,
   ): Extrinsic {
     return api.tx.sudo.sudo(tx as any as Call);
   }
@@ -36,18 +36,18 @@ export class Sudo {
     ...txs: Extrinsic[]
   ): Promise<MangataGenericEvent[]> {
     const nonce = await SudoDB.getInstance().getSudoNonce(
-      sudo.keyRingPair.address
+      sudo.keyRingPair.address,
     );
     return signSendFinalized(
       api.tx.utility.batchAll(txs as any as Call[]),
       sudo,
-      nonce
+      nonce,
     );
   }
 
   static async asSudoFinalized(tx: Extrinsic): Promise<MangataGenericEvent[]> {
     const nonce = await SudoDB.getInstance().getSudoNonce(
-      sudo.keyRingPair.address
+      sudo.keyRingPair.address,
     );
     return signSendFinalized(tx, sudo, nonce);
   }

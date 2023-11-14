@@ -34,11 +34,11 @@ async function main() {
   testUser1 = new User(keyring, user);
   await fs.writeFileSync(
     testUser1.keyRingPair.address + ".json",
-    JSON.stringify(testUser1.keyRingPair.toJson("mangata123"))
+    JSON.stringify(testUser1.keyRingPair.toJson("mangata123")),
   );
   await fs.writeFileSync(
     sudo.keyRingPair.address + ".json",
-    JSON.stringify(sudo.keyRingPair.toJson("mangata123"))
+    JSON.stringify(sudo.keyRingPair.toJson("mangata123")),
   );
   // add users to pair.
   keyring.addPair(testUser1.keyRingPair);
@@ -62,7 +62,7 @@ async function main() {
       genesisHead: genesis,
       validationCode: wasm,
       parachain: true,
-    }
+    },
   );
   await api.tx.sudo.sudo(scheduleParaInit).signAndSend(testUser1.keyRingPair);
   await waitNewBlock();
@@ -78,6 +78,6 @@ main()
       .getLog()
       .info(
         "Setup complete! wait ~ 2mins! \n " +
-          `https://polkadot.js.org/apps/?rpc=${uri}#/extrinsics`
+          `https://polkadot.js.org/apps/?rpc=${uri}#/extrinsics`,
       );
   });

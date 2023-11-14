@@ -34,7 +34,7 @@ async function checkErrorSellAsset(
   soldAssetId: any,
   boughtAssetId: any,
   amount: BN,
-  reason: string
+  reason: string,
 ) {
   let exception = false;
 
@@ -44,11 +44,11 @@ async function checkErrorSellAsset(
       soldAssetId,
       boughtAssetId,
       amount,
-      new BN(0)
+      new BN(0),
     ).catch((reason) => {
       exception = true;
       throw new Error(reason.data);
-    })
+    }),
   ).rejects.toThrow(reason);
 
   expect(exception).toBeTruthy();
@@ -68,7 +68,7 @@ beforeAll(async () => {
   firstCurrency = await Assets.issueAssetToUser(
     sudo,
     defaultCurrencyValue,
-    sudo
+    sudo,
   );
 });
 
@@ -85,9 +85,9 @@ beforeEach(async () => {
         MGA_ASSET_ID,
         defaultPoolVolumeValue,
         firstCurrency,
-        defaultPoolVolumeValue
-      )
-    )
+        defaultPoolVolumeValue,
+      ),
+    ),
   );
 });
 
@@ -96,7 +96,7 @@ test("gasless- GIVEN a feeLock configured (only Time and Amount ) WHEN the user 
 
   await Sudo.batchAsSudoFinalized(
     Assets.mintNative(testUser1, new BN(2)),
-    Assets.mintToken(TUR_ASSET_ID, testUser1)
+    Assets.mintToken(TUR_ASSET_ID, testUser1),
   );
 
   await checkErrorSellAsset(
@@ -104,7 +104,7 @@ test("gasless- GIVEN a feeLock configured (only Time and Amount ) WHEN the user 
     firstCurrency,
     MGA_ASSET_ID,
     thresholdValue.sub(new BN(100)),
-    feeLockErrors.FeeLockingFail
+    feeLockErrors.FeeLockingFail,
   );
 });
 
@@ -118,7 +118,7 @@ test("gasless- GIVEN a feeLock configured (only Time and Amount )  WHEN the user
     firstCurrency,
     MGA_ASSET_ID,
     thresholdValue.sub(new BN(100)),
-    feeLockErrors.FeeLockingFail
+    feeLockErrors.FeeLockingFail,
   );
 });
 
@@ -138,19 +138,19 @@ test("gasless- Given a feeLock correctly configured (only Time and Amount ) WHEN
   const firstCurrencyDeposit = testUser1
     .getAsset(firstCurrency)
     ?.amountAfter.free!.sub(
-      testUser1.getAsset(firstCurrency)?.amountBefore.free!
+      testUser1.getAsset(firstCurrency)?.amountBefore.free!,
     );
 
   const tokenFees = testUser1
     .getAsset(MGA_ASSET_ID)
     ?.amountAfter.reserved!.sub(
-      testUser1.getAsset(MGA_ASSET_ID)?.amountBefore.reserved!
+      testUser1.getAsset(MGA_ASSET_ID)?.amountBefore.reserved!,
     );
 
   const userMgaFees = testUser1
     .getAsset(MGA_ASSET_ID)
     ?.amountAfter.free!.sub(
-      testUser1.getAsset(MGA_ASSET_ID)?.amountBefore.free!
+      testUser1.getAsset(MGA_ASSET_ID)?.amountBefore.free!,
     )
     .add(new BN(saleAssetValue));
 

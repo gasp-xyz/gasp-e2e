@@ -63,7 +63,7 @@ beforeAll(async () => {
   [firstCurrency, secondCurrency] = await Assets.setupUserWithCurrencies(
     sudo,
     [defaultCurrencyValue, defaultCurrencyValue],
-    sudo
+    sudo,
   );
 
   keyring.addPair(sudo.keyRingPair);
@@ -74,14 +74,14 @@ beforeAll(async () => {
       MGA_ASSET_ID,
       first_asset_amount,
       secondCurrency,
-      second_asset_amount
+      second_asset_amount,
     ),
     Xyk.createPool(
       firstCurrency,
       first_asset_amount,
       secondCurrency,
-      second_asset_amount
-    )
+      second_asset_amount,
+    ),
   );
 });
 
@@ -100,7 +100,7 @@ beforeEach(async () => {
   await setupUsers();
   await Sudo.batchAsSudoFinalized(
     Assets.mintToken(firstCurrency, testUser1, defaultCurrencyValue),
-    Assets.mintToken(secondCurrency, testUser1, defaultCurrencyValue)
+    Assets.mintToken(secondCurrency, testUser1, defaultCurrencyValue),
   );
 });
 
@@ -116,7 +116,7 @@ test("xyk-pallet - Check required fee - User with MGX only", async () => {
       firstCurrency.toString(),
       new BN(100),
       secondCurrency.toString(),
-      new BN(1000000)
+      new BN(1000000),
     )
     .paymentInfo(testUser1.keyRingPair, opt);
 
@@ -130,7 +130,7 @@ test("xyk-pallet - Check required fee - User with MGX only", async () => {
     firstCurrency,
     secondCurrency,
     new BN(100),
-    new BN(1000000)
+    new BN(1000000),
   ).then((result) => {
     const eventResponse = getEventResultFromMangataTx(result);
     expect(eventResponse.state).toEqual(ExtrinsicResult.ExtrinsicSuccess);
@@ -140,7 +140,7 @@ test("xyk-pallet - Check required fee - User with MGX only", async () => {
   const deductedMGATkns = testUser1
     .getAsset(MGA_ASSET_ID)
     ?.amountBefore.free.sub(
-      testUser1.getAsset(MGA_ASSET_ID)?.amountAfter.free!
+      testUser1.getAsset(MGA_ASSET_ID)?.amountAfter.free!,
     );
   const fee = cost.partialFee;
   expect(deductedMGATkns).bnLte(fee);
@@ -157,7 +157,7 @@ test("xyk-pallet - Check required fee - User with KSM only", async () => {
     firstCurrency,
     secondCurrency,
     new BN(100),
-    new BN(1000000)
+    new BN(1000000),
   ).then((result) => {
     const eventResponse = getEventResultFromMangataTx(result);
     expect(eventResponse.state).toEqual(ExtrinsicResult.ExtrinsicSuccess);
@@ -168,7 +168,7 @@ test("xyk-pallet - Check required fee - User with KSM only", async () => {
   const deductedKSMTkns = testUser1
     .getAsset(KSM_ASSET_ID)
     ?.amountBefore.free.sub(
-      testUser1.getAsset(KSM_ASSET_ID)?.amountAfter.free!
+      testUser1.getAsset(KSM_ASSET_ID)?.amountAfter.free!,
     );
 
   expect(deductedKSMTkns).bnGt(new BN(0));
@@ -185,7 +185,7 @@ test("xyk-pallet - Check required fee - User with TUR only", async () => {
     firstCurrency,
     secondCurrency,
     new BN(100),
-    new BN(1000000)
+    new BN(1000000),
   ).then((result) => {
     const eventResponse = getEventResultFromMangataTx(result);
     expect(eventResponse.state).toEqual(ExtrinsicResult.ExtrinsicSuccess);
@@ -196,7 +196,7 @@ test("xyk-pallet - Check required fee - User with TUR only", async () => {
   const deductedTURTkns = testUser1
     .getAsset(TUR_ASSET_ID)
     ?.amountBefore.free.sub(
-      testUser1.getAsset(TUR_ASSET_ID)?.amountAfter.free!
+      testUser1.getAsset(TUR_ASSET_ID)?.amountAfter.free!,
     );
 
   expect(deductedTURTkns).bnGt(new BN(0));
@@ -208,7 +208,7 @@ test("xyk-pallet - Check required fee - User with some MGA, very few KSM and ver
   await Sudo.batchAsSudoFinalized(
     Assets.mintNative(testUser1),
     Assets.mintToken(KSM_ASSET_ID, testUser1, new BN(100000)),
-    Assets.mintToken(TUR_ASSET_ID, testUser1, new BN(100000))
+    Assets.mintToken(TUR_ASSET_ID, testUser1, new BN(100000)),
   );
   await testUser1.refreshAmounts(AssetWallet.BEFORE);
 
@@ -224,7 +224,7 @@ test("xyk-pallet - Check required fee - User with some MGA, very few KSM and ver
       firstCurrency.toString(),
       new BN(100),
       secondCurrency.toString(),
-      new BN(1000000)
+      new BN(1000000),
     )
     .paymentInfo(testUser1.keyRingPair, opt);
 
@@ -233,7 +233,7 @@ test("xyk-pallet - Check required fee - User with some MGA, very few KSM and ver
     firstCurrency,
     secondCurrency,
     new BN(100),
-    new BN(1000000)
+    new BN(1000000),
   ).then((result) => {
     const eventResponse = getEventResultFromMangataTx(result);
     expect(eventResponse.state).toEqual(ExtrinsicResult.ExtrinsicSuccess);
@@ -243,17 +243,17 @@ test("xyk-pallet - Check required fee - User with some MGA, very few KSM and ver
   const deductedMGATkns = testUser1
     .getAsset(MGA_ASSET_ID)
     ?.amountBefore.free.sub(
-      testUser1.getAsset(MGA_ASSET_ID)?.amountAfter.free!
+      testUser1.getAsset(MGA_ASSET_ID)?.amountAfter.free!,
     );
   const deductedKSMTkns = testUser1
     .getAsset(KSM_ASSET_ID)
     ?.amountBefore.free.sub(
-      testUser1.getAsset(KSM_ASSET_ID)?.amountAfter.free!
+      testUser1.getAsset(KSM_ASSET_ID)?.amountAfter.free!,
     );
   const deductedTURTkns = testUser1
     .getAsset(TUR_ASSET_ID)
     ?.amountBefore.free.sub(
-      testUser1.getAsset(TUR_ASSET_ID)?.amountAfter.free!
+      testUser1.getAsset(TUR_ASSET_ID)?.amountAfter.free!,
     );
   const fee = cost.partialFee;
 
@@ -269,7 +269,7 @@ test("xyk-pallet - Check required fee - User with very few MGA, some KSM and ver
   await Sudo.batchAsSudoFinalized(
     Assets.mintToken(TUR_ASSET_ID, testUser1, new BN(100000)),
     Assets.mintToken(KSM_ASSET_ID, testUser1),
-    Assets.mintToken(MGA_ASSET_ID, testUser1, new BN(100000))
+    Assets.mintToken(MGA_ASSET_ID, testUser1, new BN(100000)),
   );
   await testUser1.refreshAmounts(AssetWallet.BEFORE);
 
@@ -278,7 +278,7 @@ test("xyk-pallet - Check required fee - User with very few MGA, some KSM and ver
     firstCurrency,
     secondCurrency,
     new BN(100),
-    new BN(1000000)
+    new BN(1000000),
   ).then((result) => {
     const eventResponse = getEventResultFromMangataTx(result);
     expect(eventResponse.state).toEqual(ExtrinsicResult.ExtrinsicSuccess);
@@ -289,17 +289,17 @@ test("xyk-pallet - Check required fee - User with very few MGA, some KSM and ver
   const deductedMGATkns = testUser1
     .getAsset(MGA_ASSET_ID)
     ?.amountBefore.free.sub(
-      testUser1.getAsset(MGA_ASSET_ID)?.amountAfter.free!
+      testUser1.getAsset(MGA_ASSET_ID)?.amountAfter.free!,
     );
   const deductedKSMTkns = testUser1
     .getAsset(KSM_ASSET_ID)
     ?.amountBefore.free.sub(
-      testUser1.getAsset(KSM_ASSET_ID)?.amountAfter.free!
+      testUser1.getAsset(KSM_ASSET_ID)?.amountAfter.free!,
     );
   const deductedTURTkns = testUser1
     .getAsset(TUR_ASSET_ID)
     ?.amountBefore.free.sub(
-      testUser1.getAsset(TUR_ASSET_ID)?.amountAfter.free!
+      testUser1.getAsset(TUR_ASSET_ID)?.amountAfter.free!,
     );
 
   expect(deductedMGATkns).bnEqual(new BN(0));
@@ -313,7 +313,7 @@ test("xyk-pallet - Check required fee - User with very few MGA, very few KSM and
   await Sudo.batchAsSudoFinalized(
     Assets.mintToken(TUR_ASSET_ID, testUser1),
     Assets.mintToken(KSM_ASSET_ID, testUser1, new BN(100000)),
-    Assets.mintToken(MGA_ASSET_ID, testUser1, new BN(100000))
+    Assets.mintToken(MGA_ASSET_ID, testUser1, new BN(100000)),
   );
   await testUser1.refreshAmounts(AssetWallet.BEFORE);
 
@@ -322,7 +322,7 @@ test("xyk-pallet - Check required fee - User with very few MGA, very few KSM and
     firstCurrency,
     secondCurrency,
     new BN(100),
-    new BN(1000000)
+    new BN(1000000),
   ).then((result) => {
     const eventResponse = getEventResultFromMangataTx(result);
     expect(eventResponse.state).toEqual(ExtrinsicResult.ExtrinsicSuccess);
@@ -333,17 +333,17 @@ test("xyk-pallet - Check required fee - User with very few MGA, very few KSM and
   const deductedMGATkns = testUser1
     .getAsset(MGA_ASSET_ID)
     ?.amountBefore.free.sub(
-      testUser1.getAsset(MGA_ASSET_ID)?.amountAfter.free!
+      testUser1.getAsset(MGA_ASSET_ID)?.amountAfter.free!,
     );
   const deductedKSMTkns = testUser1
     .getAsset(KSM_ASSET_ID)
     ?.amountBefore.free.sub(
-      testUser1.getAsset(KSM_ASSET_ID)?.amountAfter.free!
+      testUser1.getAsset(KSM_ASSET_ID)?.amountAfter.free!,
     );
   const deductedTURTkns = testUser1
     .getAsset(TUR_ASSET_ID)
     ?.amountBefore.free.sub(
-      testUser1.getAsset(TUR_ASSET_ID)?.amountAfter.free!
+      testUser1.getAsset(TUR_ASSET_ID)?.amountAfter.free!,
     );
 
   expect(deductedMGATkns).bnEqual(new BN(0));
@@ -357,7 +357,7 @@ test("xyk-pallet - Check required fee - User with very few  MGA, very few KSM an
   await Sudo.batchAsSudoFinalized(
     Assets.mintToken(TUR_ASSET_ID, testUser1, new BN(100000)),
     Assets.mintToken(KSM_ASSET_ID, testUser1, new BN(100000)),
-    Assets.mintToken(MGA_ASSET_ID, testUser1, new BN(100000))
+    Assets.mintToken(MGA_ASSET_ID, testUser1, new BN(100000)),
   );
   let exception = false;
   await expect(
@@ -366,13 +366,13 @@ test("xyk-pallet - Check required fee - User with very few  MGA, very few KSM an
       firstCurrency,
       secondCurrency,
       new BN(100),
-      new BN(1000000)
+      new BN(1000000),
     ).catch((reason) => {
       exception = true;
       throw new Error(reason.data);
-    })
+    }),
   ).rejects.toThrow(
-    "1010: Invalid Transaction: Inability to pay some fees , e.g. account balance too low"
+    "1010: Invalid Transaction: Inability to pay some fees , e.g. account balance too low",
   );
   expect(exception).toBeTruthy();
 });
@@ -383,7 +383,7 @@ test.skip("BUG under discussion:xyk-pallet - when minting all MGX should pay fee
     Assets.mintToken(TUR_ASSET_ID, testUser1, new BN(100000)),
     Assets.mintToken(KSM_ASSET_ID, testUser1),
     Assets.mintToken(MGA_ASSET_ID, testUser1, Assets.DEFAULT_AMOUNT),
-    Assets.mintToken(secondCurrency, testUser1, Assets.DEFAULT_AMOUNT)
+    Assets.mintToken(secondCurrency, testUser1, Assets.DEFAULT_AMOUNT),
   );
   await testUser1.refreshAmounts(AssetWallet.BEFORE);
 
@@ -392,7 +392,7 @@ test.skip("BUG under discussion:xyk-pallet - when minting all MGX should pay fee
     MGA_ASSET_ID,
     secondCurrency,
     Assets.DEFAULT_AMOUNT.subn(100000),
-    Assets.DEFAULT_AMOUNT
+    Assets.DEFAULT_AMOUNT,
   ).then((result) => {
     const eventResponse = getEventResultFromMangataTx(result);
     expect(eventResponse.state).toEqual(ExtrinsicResult.ExtrinsicSuccess);
@@ -403,17 +403,17 @@ test.skip("BUG under discussion:xyk-pallet - when minting all MGX should pay fee
   const deductedMGATkns = testUser1
     .getAsset(MGA_ASSET_ID)
     ?.amountBefore.free.sub(
-      testUser1.getAsset(MGA_ASSET_ID)?.amountAfter.free!
+      testUser1.getAsset(MGA_ASSET_ID)?.amountAfter.free!,
     );
   const deductedKSMTkns = testUser1
     .getAsset(KSM_ASSET_ID)
     ?.amountBefore.free.sub(
-      testUser1.getAsset(KSM_ASSET_ID)?.amountAfter.free!
+      testUser1.getAsset(KSM_ASSET_ID)?.amountAfter.free!,
     );
   const deductedTURTkns = testUser1
     .getAsset(TUR_ASSET_ID)
     ?.amountBefore.free.sub(
-      testUser1.getAsset(TUR_ASSET_ID)?.amountAfter.free!
+      testUser1.getAsset(TUR_ASSET_ID)?.amountAfter.free!,
     );
 
   expect(deductedMGATkns).bnEqual(new BN(0));

@@ -34,20 +34,20 @@ describe("Identity pallet tests: Main use cases", () => {
     await Sudo.batchAsSudoFinalized(
       Assets.mintNative(
         users[0],
-        BN_HUNDRED.mul(BN_THOUSAND).mul(Assets.MG_UNIT)
+        BN_HUNDRED.mul(BN_THOUSAND).mul(Assets.MG_UNIT),
       ),
       Assets.mintNative(
         users[1],
-        BN_HUNDRED.mul(BN_THOUSAND).mul(Assets.MG_UNIT)
+        BN_HUNDRED.mul(BN_THOUSAND).mul(Assets.MG_UNIT),
       ),
       Assets.mintNative(
         users[2],
-        BN_HUNDRED.mul(BN_THOUSAND).mul(Assets.MG_UNIT)
+        BN_HUNDRED.mul(BN_THOUSAND).mul(Assets.MG_UNIT),
       ),
       Assets.mintNative(
         users[3],
-        BN_HUNDRED.mul(BN_THOUSAND).mul(Assets.MG_UNIT)
-      )
+        BN_HUNDRED.mul(BN_THOUSAND).mul(Assets.MG_UNIT),
+      ),
     );
   });
   it("Check setter & getters for identity pallet and reserves 5k mgas", async () => {

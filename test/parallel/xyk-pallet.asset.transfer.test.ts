@@ -65,7 +65,7 @@ beforeEach(async () => {
   [firstCurrency, secondCurrency] = await Assets.setupUserWithCurrencies(
     testUser1,
     [defaultCurrecyValue, defaultCurrecyValue.add(new BN(1))],
-    sudo
+    sudo,
   );
   await testUser1.addMGATokens(sudo);
 
@@ -91,7 +91,7 @@ beforeEach(async () => {
     [
       defaultCurrecyValue.toNumber(),
       defaultCurrecyValue.add(new BN(1)).toNumber(),
-    ]
+    ],
   );
   validateEmptyAssets([
     testUser2.getAsset(firstCurrency)?.amountBefore.free!,
@@ -103,7 +103,7 @@ test("xyk-pallet - AssetsOperation: transferAsset", async () => {
   //Refactor Note: [Missing Wallet assert?] Did not considered creating a liquity asset. Transaction does nothing with it.
   const pool_balance_before = await getBalanceOfPool(
     firstCurrency,
-    secondCurrency
+    secondCurrency,
   );
   const amount = new BN(100000);
   testLog
@@ -114,7 +114,7 @@ test("xyk-pallet - AssetsOperation: transferAsset", async () => {
     testUser1.keyRingPair,
     firstCurrency,
     testUser2.keyRingPair.address,
-    amount
+    amount,
   ).then((result) => {
     const eventResponse = getEventResultFromMangataTx(result, [
       "tokens",
@@ -126,8 +126,8 @@ test("xyk-pallet - AssetsOperation: transferAsset", async () => {
       result.findIndex(
         (x) =>
           x.section === EVENT_SECTION_PAYMENT ||
-          x.method === EVENT_METHOD_PAYMENT
-      )
+          x.method === EVENT_METHOD_PAYMENT,
+      ),
     ).toBeGreaterThan(-1);
   });
 
@@ -139,28 +139,28 @@ test("xyk-pallet - AssetsOperation: transferAsset", async () => {
     .getAsset(firstCurrency)
     ?.amountBefore.free!.sub(amount);
   expect(testUser1.getAsset(firstCurrency)?.amountAfter.free!).bnEqual(
-    diffFromWallet!
+    diffFromWallet!,
   );
 
   let addFromWallet = testUser1
     .getAsset(secondCurrency)
     ?.amountBefore.free!.add(new BN(0));
   expect(testUser1.getAsset(secondCurrency)?.amountAfter.free!).bnEqual(
-    addFromWallet!
+    addFromWallet!,
   );
 
   addFromWallet = testUser2
     .getAsset(firstCurrency)
     ?.amountBefore.free!.add(amount);
   expect(testUser2.getAsset(firstCurrency)?.amountAfter.free!).bnEqual(
-    addFromWallet!
+    addFromWallet!,
   );
 
   addFromWallet = testUser1
     .getAsset(secondCurrency)
     ?.amountBefore.free!.add(new BN(0));
   expect(testUser1.getAsset(secondCurrency)?.amountAfter.free!).bnEqual(
-    addFromWallet!
+    addFromWallet!,
   );
 
   const pool_balance = await getBalanceOfPool(firstCurrency, secondCurrency);
@@ -171,19 +171,19 @@ test("xyk-pallet - AssetsOperation: transferAll", async () => {
   //Refactor Note: [Missing Wallet assert?] Did not considered creating a liquity asset. Transaction does nothing with it.
   const pool_balance_before = await getBalanceOfPool(
     firstCurrency,
-    secondCurrency
+    secondCurrency,
   );
   const amount = testUser1.getAsset(firstCurrency)?.amountBefore!;
   testLog
     .getLog()
     .debug(
-      "testUser1: transfering all assets " + firstCurrency + " to testUser2"
+      "testUser1: transfering all assets " + firstCurrency + " to testUser2",
     );
 
   await transferAll(
     testUser1.keyRingPair,
     firstCurrency,
-    testUser2.keyRingPair.address
+    testUser2.keyRingPair.address,
   ).then((result) => {
     const eventResponse = getEventResultFromMangataTx(result, [
       "tokens",
@@ -201,28 +201,28 @@ test("xyk-pallet - AssetsOperation: transferAll", async () => {
     .getAsset(firstCurrency)
     ?.amountBefore.free!.sub(amount.free);
   expect(testUser1.getAsset(firstCurrency)?.amountAfter.free!).bnEqual(
-    diffFromWallet!
+    diffFromWallet!,
   );
 
   let addFromWallet = testUser1
     .getAsset(secondCurrency)
     ?.amountBefore.free!.add(new BN(0));
   expect(testUser1.getAsset(secondCurrency)?.amountAfter.free!).bnEqual(
-    addFromWallet!
+    addFromWallet!,
   );
 
   addFromWallet = testUser2
     .getAsset(firstCurrency)
     ?.amountBefore.free!.add(amount.free);
   expect(testUser2.getAsset(firstCurrency)?.amountAfter.free!).bnEqual(
-    addFromWallet!
+    addFromWallet!,
   );
 
   addFromWallet = testUser1
     .getAsset(secondCurrency)
     ?.amountBefore.free!.add(new BN(0));
   expect(testUser1.getAsset(secondCurrency)?.amountAfter.free!).bnEqual(
-    addFromWallet!
+    addFromWallet!,
   );
 
   const pool_balance = await getBalanceOfPool(firstCurrency, secondCurrency);

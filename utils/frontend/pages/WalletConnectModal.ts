@@ -28,10 +28,9 @@ export class WalletConnectModal {
   };
 
   async opens() {
-    const displayed = await this.driver
+    return await this.driver
       .findElement(By.xpath(this.modalStage[ModalType.Connect]))
       .isDisplayed();
-    return displayed;
   }
 
   async isReqExtensionInfoDisplayed(walletName: string) {
@@ -39,21 +38,20 @@ export class WalletConnectModal {
       this.modalStage[ModalType.NoExtension],
       this.getModalButtonXpath(ModalType.NoExtension, walletName),
     ];
-    const allVisible = await areDisplayed(this.driver, listDataTestIds);
-    return allVisible;
+    return await areDisplayed(this.driver, listDataTestIds);
   }
 
   async pickWallet(walletName: string) {
     await clickElement(
       this.driver,
-      this.getModalButtonXpath(ModalType.Connect, walletName)
+      this.getModalButtonXpath(ModalType.Connect, walletName),
     );
   }
 
   async pickAccount(accountName: string) {
     await clickElement(
       this.driver,
-      this.getModalButtonXpath(ModalType.AccountList, accountName)
+      this.getModalButtonXpath(ModalType.AccountList, accountName),
     );
   }
 

@@ -3,7 +3,7 @@ import {
   BuildBlockMode,
   setupWithServer,
 } from "@acala-network/chopsticks";
-import { StorageValues } from "@acala-network/chopsticks/lib/utils/set-storage";
+import { StorageValues } from "@acala-network/chopsticks-core";
 import { ApiPromise, WsProvider } from "@polkadot/api";
 import { HexString } from "@polkadot/util/types";
 import { getPort } from "get-port-please";
@@ -107,8 +107,8 @@ export async function upgradeMangata(mangata: ApiContext) {
   await Sudo.asSudoFinalized(
     Sudo.sudo(
       //@ts-ignore
-      mangata.api!.tx.parachainSystem.authorizeUpgrade(hexHash)
-    )
+      mangata.api!.tx.parachainSystem.authorizeUpgrade(hexHash),
+    ),
   );
   const wasmParam = Uint8Array.from(wasmContent);
   const hex = u8aToHex(wasmParam);

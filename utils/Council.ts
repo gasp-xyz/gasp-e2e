@@ -17,7 +17,7 @@ export class Council {
       hash,
       index,
       { refTime: "100000000000", proofSize: "0" },
-      10000
+      10000,
     );
   }
   static vote(hash: string, index: number, vote = "aye"): Extrinsic {

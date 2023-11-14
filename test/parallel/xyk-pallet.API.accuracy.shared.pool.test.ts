@@ -18,12 +18,12 @@ import { Sudo } from "../../utils/sudo";
 import {
   activateLiquidity,
   burnLiquidity,
+  createPool,
   getLiquidityAssetId,
   getRewardsInfo,
 } from "../../utils/tx";
 import { Xyk } from "../../utils/xyk";
 import { waitForRewards } from "../../utils/eventListeners";
-import { createPool } from "../../utils/tx";
 
 jest.spyOn(console, "log").mockImplementation(jest.fn());
 jest.spyOn(console, "error").mockImplementation(jest.fn());
@@ -66,7 +66,7 @@ beforeEach(async () => {
   [firstCurrency] = await Assets.setupUserWithCurrencies(
     testUser1,
     [defaultCurrencyValue, defaultCurrencyValue.add(new BN(1))],
-    sudo
+    sudo,
   );
 
   await Sudo.batchAsSudoFinalized(
@@ -74,7 +74,7 @@ beforeEach(async () => {
     Assets.initIssuance(),
     Assets.mintNative(testUser1),
     Assets.mintNative(testUser2),
-    Assets.mintNative(testUser3)
+    Assets.mintNative(testUser3),
   );
 
   // add users to pair.
@@ -92,7 +92,7 @@ describe("Accuracy > Shared pool", () => {
   beforeEach(async () => {
     await Sudo.batchAsSudoFinalized(
       Assets.mintToken(firstCurrency, testUser2, default50k),
-      Assets.mintToken(firstCurrency, testUser3, default50k)
+      Assets.mintToken(firstCurrency, testUser3, default50k),
     );
     testUser1.addAsset(firstCurrency);
     testUser2.addAsset(firstCurrency);
@@ -107,7 +107,7 @@ describe("Accuracy > Shared pool", () => {
       firstCurrency,
       default50k,
       MGA_ASSET_ID,
-      default50k
+      default50k,
     );
   });
   test("Each user who minted owns the same % of tokens - one user gets extra token", async () => {
@@ -124,7 +124,7 @@ describe("Accuracy > Shared pool", () => {
       .add(sellAmount);
     const balancesWithCounts = getDuplicatedWithCounts(balancesFirstCurrency);
     const orderedKeys = Array.from(balancesWithCounts.keys()).sort((a, b) =>
-      new BN(a).sub(new BN(b)).isNeg() ? -1 : 1
+      new BN(a).sub(new BN(b)).isNeg() ? -1 : 1,
     );
     // test that the two users got 1 token less than the other.
     expect(balancesWithCounts.get(orderedKeys[0])).toEqual(2);
@@ -135,7 +135,7 @@ describe("Accuracy > Shared pool", () => {
     expect(
       new BN(Array.from(balancesWithCounts.keys())[0])
         .sub(new BN(Array.from(balancesWithCounts.keys())[1]))
-        .abs()
+        .abs(),
     ).bnEqual(new BN(1));
   });
   test("Each user who minted onws the same % of tokens - two users gets the extra", async () => {
@@ -152,7 +152,7 @@ describe("Accuracy > Shared pool", () => {
       .add(sellAmount);
     const balancesWithCounts = getDuplicatedWithCounts(balancesFirstCurrency);
     const orderedKeys = Array.from(balancesWithCounts.keys()).sort((a, b) =>
-      new BN(a).sub(new BN(b)).isNeg() ? -1 : 1
+      new BN(a).sub(new BN(b)).isNeg() ? -1 : 1,
     );
     // test that the two users got 1 token more than the other.
     expect(balancesWithCounts.get(orderedKeys[1])).toEqual(2);
@@ -162,7 +162,7 @@ describe("Accuracy > Shared pool", () => {
     expect(
       new BN(Array.from(balancesWithCounts.keys())[0])
         .sub(new BN(Array.from(balancesWithCounts.keys())[1]))
-        .abs()
+        .abs(),
     ).bnEqual(new BN(1));
   });
   test("Each user who minted onws the same % of tokens - divisible by 3", async () => {
@@ -196,7 +196,7 @@ describe("Accuracy > Shared pool", () => {
     const balancesFirstCurrency = await mintAndBurnTokens(
       users,
       sellAmount,
-      amountsToMint
+      amountsToMint,
     );
     balancesFirstCurrency[0] = balancesFirstCurrency[0]
       .sub(defaultCurrencyValue.sub(default50k))
@@ -217,21 +217,21 @@ describe("Accuracy > Shared pool", () => {
           (balancesFirstCurrency[1].toNumber() / 2.5).toString() +
           "\n" +
           "Test user - 50k tokens get " +
-          balancesFirstCurrency[2].toNumber().toString()
+          balancesFirstCurrency[2].toNumber().toString(),
       );
     // worst case  [-1,-1,+2] - so the fifference in worst case is +2.
     expect(
       balancesFirstCurrency[0]
         .div(new BN(5))
         .sub(balancesFirstCurrency[1].mul(new BN(10)).div(new BN(25)))
-        .abs()
+        .abs(),
     ).bnLte(new BN(2));
 
     expect(
       balancesFirstCurrency[0]
         .div(new BN(5))
         .sub(balancesFirstCurrency[2])
-        .abs()
+        .abs(),
     ).bnLte(new BN(2));
   });
 });
@@ -239,7 +239,7 @@ describe("Accuracy > Shared pool", () => {
 test("Given 3 users that minted liquidity WHEN only one activated the rewards THEN all rewards belongs to him on this pool", async () => {
   await Sudo.batchAsSudoFinalized(
     Assets.mintToken(firstCurrency, testUser2, default50k),
-    Assets.mintToken(firstCurrency, testUser3, default50k)
+    Assets.mintToken(firstCurrency, testUser3, default50k),
   );
   testUser1.addAsset(firstCurrency);
   testUser2.addAsset(firstCurrency);
@@ -254,7 +254,7 @@ test("Given 3 users that minted liquidity WHEN only one activated the rewards TH
     firstCurrency,
     default50k,
     MGA_ASSET_ID,
-    default50k
+    default50k,
   );
 
   const liqId = await getLiquidityAssetId(MGA_ASSET_ID, firstCurrency);
@@ -262,13 +262,13 @@ test("Given 3 users that minted liquidity WHEN only one activated the rewards TH
   await Sudo.batchAsSudoFinalized(
     Sudo.sudoAs(
       testUser2,
-      Xyk.mintLiquidity(firstCurrency, MGA_ASSET_ID, default50k)
+      Xyk.mintLiquidity(firstCurrency, MGA_ASSET_ID, default50k),
     ),
     Sudo.sudoAs(
       testUser3,
-      Xyk.mintLiquidity(firstCurrency, MGA_ASSET_ID, default50k)
+      Xyk.mintLiquidity(firstCurrency, MGA_ASSET_ID, default50k),
     ),
-    Assets.promotePool(liqId.toNumber(), 20)
+    Assets.promotePool(liqId.toNumber(), 20),
   );
 
   testUser1.addAsset(liqId);
@@ -283,18 +283,18 @@ test("Given 3 users that minted liquidity WHEN only one activated the rewards TH
 
   const rewardsUser1 = await getRewardsInfo(
     testUser1.keyRingPair.address,
-    liqId
+    liqId,
   );
   const rewardsUser2 = await getRewardsInfo(
     testUser2.keyRingPair.address,
-    liqId
+    liqId,
   );
   const rewardsUser3 = await getRewardsInfo(
     testUser3.keyRingPair.address,
-    liqId
+    liqId,
   );
   const mangata = await getMangataInstance(
-    getEnvironmentRequiredVars().chainUri
+    getEnvironmentRequiredVars().chainUri,
   );
   await waitForRewards(testUser2, liqId);
   const user1AvailableRewards = await mangata.rpc.calculateRewardsAmount({
@@ -322,11 +322,11 @@ test("Given 3 users that minted liquidity WHEN only one activated the rewards TH
 async function mintAndBurnTokens(
   users: User[],
   sellAmount: BN,
-  amountToMint: BN[]
+  amountToMint: BN[],
 ) {
   const liqToken = await mga.query.getLiquidityTokenId(
     firstCurrency.toString(),
-    MGA_ASSET_ID.toString()
+    MGA_ASSET_ID.toString(),
   );
   users.forEach((user) => user.addAsset(liqToken));
   testUser3.addAsset(firstCurrency);
@@ -341,7 +341,7 @@ async function mintAndBurnTokens(
     await users[2].refreshAmounts(AssetWallet.AFTER),
   ]);
   const balancesLiqToken = users.map(
-    (user) => user.getFreeAssetAmount(liqToken).amountAfter.free! as BN
+    (user) => user.getFreeAssetAmount(liqToken).amountAfter.free! as BN,
   );
   //pool is perfectly balance
   expect(balancesLiqToken[0]).bnEqual(amountToMint[0]);
@@ -356,10 +356,9 @@ async function mintAndBurnTokens(
     await users[1].refreshAmounts(AssetWallet.AFTER),
     await users[2].refreshAmounts(AssetWallet.AFTER),
   ]);
-  const balancesFirstCurrency = users.map(
-    (user) => user.getFreeAssetAmount(firstCurrency).amountAfter.free! as BN
+  return users.map(
+    (user) => user.getFreeAssetAmount(firstCurrency).amountAfter.free! as BN,
   );
-  return balancesFirstCurrency;
 }
 
 async function burnAllLiquidities(users: User[], balances: BN[]) {
@@ -368,19 +367,19 @@ async function burnAllLiquidities(users: User[], balances: BN[]) {
       users[0].keyRingPair,
       firstCurrency,
       MGA_ASSET_ID,
-      balances[0]
+      balances[0],
     ),
     burnLiquidity(
       users[1].keyRingPair,
       firstCurrency,
       MGA_ASSET_ID,
-      balances[1]
+      balances[1],
     ),
     burnLiquidity(
       users[2].keyRingPair,
       firstCurrency,
       MGA_ASSET_ID,
-      balances[2]
+      balances[2],
     ),
   ]);
 }

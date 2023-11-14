@@ -23,16 +23,14 @@ export class WalletWrapper {
 
   async isWalletConnectButtonDisplayed() {
     const walletWrapper = buildDataTestIdXpath(DIV_WALLET_WRAPPER);
-    const displayed = await isDisplayed(this.driver, walletWrapper);
-    return displayed;
+    return await isDisplayed(this.driver, walletWrapper);
   }
 
   async isAccInfoDisplayed(accName: string) {
     const walletWrapperHeaderAcc =
       buildDataTestIdXpath(DIV_WALLET_WRAPPER_HEADER_ACC) +
       buildXpathByText(accName);
-    const displayed = await isDisplayed(this.driver, walletWrapperHeaderAcc);
-    return displayed;
+    return await isDisplayed(this.driver, walletWrapperHeaderAcc);
   }
 
   async openWalletConnectionInfo() {
@@ -53,11 +51,10 @@ export class WalletWrapper {
   async isWalletConnected() {
     const walletWrapper = buildDataTestIdXpath(DIV_WALLET_WRAPPER);
     const walletConnectedContent = buildDataTestIdXpath(DIV_WALLET_CONNECTED);
-    const isConnected = await elementExists(
+    return await elementExists(
       this.driver,
-      walletWrapper + walletConnectedContent
+      walletWrapper + walletConnectedContent,
     );
-    return isConnected;
   }
 
   async clickWalletConnect() {

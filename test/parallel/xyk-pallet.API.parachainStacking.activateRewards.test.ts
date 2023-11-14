@@ -46,7 +46,7 @@ beforeAll(async () => {
   await setupUsers();
 
   const tokenAmount = new BN(
-    await api.consts.parachainStaking.minCandidateStk.toString()
+    await api.consts.parachainStaking.minCandidateStk.toString(),
   );
   const aBigEnoughAmount = tokenAmount.mul(multiplier);
   const totalMgxInPool = aBigEnoughAmount.divn(10);
@@ -59,7 +59,7 @@ beforeAll(async () => {
     sudo,
     tokenAmount.mul(multiplier),
     sudo,
-    true
+    true,
   );
 
   await Sudo.batchAsSudoFinalized(
@@ -69,13 +69,13 @@ beforeAll(async () => {
     Assets.mintNative(testUser1, aBigEnoughAmount),
     Sudo.sudoAs(
       testUser1,
-      Xyk.createPool(MGA_ASSET_ID, totalMgxInPool, newTokenId, tokenAmount)
-    )
+      Xyk.createPool(MGA_ASSET_ID, totalMgxInPool, newTokenId, tokenAmount),
+    ),
   );
   liqToken = await getLiquidityAssetId(MGA_ASSET_ID, newTokenId);
   await Sudo.batchAsSudoFinalized(
     Sudo.sudo(Staking.addStakingLiquidityToken(liqToken)),
-    Assets.promotePool(liqToken.toNumber(), 20)
+    Assets.promotePool(liqToken.toNumber(), 20),
   );
 });
 
@@ -83,7 +83,7 @@ test("Given a user with bonded but not activated liq tokens WHEN he tries to act
   const api = await getApi();
 
   const minCandidate = new BN(
-    await api.consts.parachainStaking.minCandidateStk.toString()
+    await api.consts.parachainStaking.minCandidateStk.toString(),
   ).add(BN_ONE);
   const liqTokens = await getUserBalanceOfToken(liqToken, testUser1);
   expect(liqTokens.free).bnGt(BN_ZERO);
@@ -91,25 +91,25 @@ test("Given a user with bonded but not activated liq tokens WHEN he tries to act
     testUser1.keyRingPair,
     liqToken,
     minCandidate,
-    "AvailableBalance"
+    "AvailableBalance",
   );
   expect(events.state).toEqual(ExtrinsicResult.ExtrinsicSuccess);
 
   const rewardsInfoBefore = await getRewardsInfo(
     testUser1.keyRingPair.address,
-    liqToken
+    liqToken,
   );
 
   await activateLiquidity(
     testUser1.keyRingPair,
     liqToken,
     minCandidate,
-    "StakedUnactivatedReserves"
+    "StakedUnactivatedReserves",
   );
 
   const rewardsInfoAfter = await getRewardsInfo(
     testUser1.keyRingPair.address,
-    liqToken
+    liqToken,
   );
   expect(rewardsInfoBefore.activatedAmount).bnEqual(BN_ZERO);
   expect(rewardsInfoAfter.activatedAmount).bnGt(BN_ZERO);

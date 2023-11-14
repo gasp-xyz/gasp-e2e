@@ -1,7 +1,7 @@
 /*
  *
  * @group xyk
- * @group poolliquidity
+ * @group poolLiq
  */
 import { jest } from "@jest/globals";
 import { Keyring } from "@polkadot/api";
@@ -54,7 +54,7 @@ beforeAll(async () => {
   [token1, token2] = await Assets.setupUserWithCurrencies(
     sudo,
     [defaultCurrencyValue, defaultCurrencyValue],
-    sudo
+    sudo,
   );
 
   await Sudo.batchAsSudoFinalized(
@@ -70,8 +70,8 @@ beforeAll(async () => {
         MGA_ASSET_ID,
         Assets.DEFAULT_AMOUNT.divn(2),
         token1,
-        Assets.DEFAULT_AMOUNT.divn(2)
-      )
+        Assets.DEFAULT_AMOUNT.divn(2),
+      ),
     ),
     Sudo.sudoAs(
       testUser2,
@@ -79,9 +79,9 @@ beforeAll(async () => {
         MGA_ASSET_ID,
         Assets.DEFAULT_AMOUNT.divn(2),
         token2,
-        Assets.DEFAULT_AMOUNT.divn(2)
-      )
-    )
+        Assets.DEFAULT_AMOUNT.divn(2),
+      ),
+    ),
   );
 
   liqIdPromPool = await getLiquidityAssetId(MGA_ASSET_ID, token1);
@@ -89,7 +89,7 @@ beforeAll(async () => {
 
   await Sudo.batchAsSudoFinalized(
     Assets.promotePool(liqIdPromPool.toNumber(), 20),
-    Assets.mintNative(testUser1)
+    Assets.mintNative(testUser1),
   );
 
   testUser1.addAsset(liqIdPromPool);
@@ -104,7 +104,7 @@ test("Check that a user can burn tokens when they are activated, and when burnin
     testUser1.keyRingPair,
     MGA_ASSET_ID,
     token1,
-    defaultCurrencyValue
+    defaultCurrencyValue,
   );
   await testUser1.refreshAmounts(AssetWallet.BEFORE);
 
@@ -112,18 +112,18 @@ test("Check that a user can burn tokens when they are activated, and when burnin
 
   const userBalanceBeforeBurning = await api.query.tokens.accounts(
     testUser1.keyRingPair.address,
-    liqIdPromPool
+    liqIdPromPool,
   );
 
   const valueBurningTokens = userBalanceBeforeBurning.free.add(
-    userBalanceBeforeBurning.reserved.div(new BN(10))
+    userBalanceBeforeBurning.reserved.div(new BN(10)),
   );
 
   await burnLiquidity(
     testUser1.keyRingPair,
     MGA_ASSET_ID,
     token1,
-    new BN(valueBurningTokens)
+    new BN(valueBurningTokens),
   );
 
   await testUser1.refreshAmounts(AssetWallet.AFTER);
@@ -131,13 +131,13 @@ test("Check that a user can burn tokens when they are activated, and when burnin
   const differenceLiqTokensReserved = testUser1
     .getAsset(liqIdPromPool)
     ?.amountBefore.reserved!.sub(
-      testUser1.getAsset(liqIdPromPool)?.amountAfter.reserved!
+      testUser1.getAsset(liqIdPromPool)?.amountAfter.reserved!,
     );
 
   expect(userBalanceBeforeBurning.free).bnGt(new BN(0));
   expect(userBalanceBeforeBurning.reserved).bnGt(new BN(0));
   expect(testUser1.getAsset(liqIdPromPool)?.amountAfter.free!).bnEqual(
-    new BN(0)
+    new BN(0),
   );
   expect(differenceLiqTokensReserved).bnGt(new BN(0));
 });
@@ -147,7 +147,7 @@ test("Check that a user can burn some tokens on a non-promoted pool", async () =
     testUser2.keyRingPair,
     MGA_ASSET_ID,
     token2,
-    defaultCurrencyValue
+    defaultCurrencyValue,
   );
   await testUser2.refreshAmounts(AssetWallet.BEFORE);
 
@@ -155,14 +155,14 @@ test("Check that a user can burn some tokens on a non-promoted pool", async () =
     testUser2.keyRingPair,
     MGA_ASSET_ID,
     token2,
-    defaultCurrencyValue
+    defaultCurrencyValue,
   );
 
   await testUser2.refreshAmounts(AssetWallet.AFTER);
   const differenceLiqTokensFree = testUser2
     .getAsset(liqIdNonPromPool)
     ?.amountBefore.free!.sub(
-      testUser2.getAsset(liqIdNonPromPool)?.amountAfter.free!
+      testUser2.getAsset(liqIdNonPromPool)?.amountAfter.free!,
     );
   const differenceAssetTokenReserved = testUser2
     .getAsset(token2)

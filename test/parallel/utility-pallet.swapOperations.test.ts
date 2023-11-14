@@ -53,11 +53,11 @@ describe("Utility - batched swaps are not allowed", () => {
     //last asset is mangata paired
     const liq = await getLiquidityAssetId(
       tokenIds[tokenIds.length - 1],
-      MGA_ASSET_ID
+      MGA_ASSET_ID,
     );
     await Sudo.batchAsSudoFinalized(
       Sudo.sudo(Staking.addStakingLiquidityToken(liq)),
-      Assets.promotePool(liq.toNumber(), 20)
+      Assets.promotePool(liq.toNumber(), 20),
     );
 
     swapOperations = {
@@ -65,7 +65,7 @@ describe("Utility - batched swaps are not allowed", () => {
       multiswapBuyAsset: Xyk.multiswapBuyAsset(
         tokenIds,
         BN_HUNDRED,
-        BN_MILLION
+        BN_MILLION,
       ),
       sellAsset: Xyk.sellAsset(tokenIds[0], tokenIds[1], BN_HUNDRED, BN_ONE),
       buyAsset: Xyk.buyAsset(tokenIds[0], tokenIds[1], BN_HUNDRED, BN_MILLION),
@@ -85,7 +85,7 @@ describe("Utility - batched swaps are not allowed", () => {
     const events = await signTx(
       api,
       Sudo.batch(extrinsic),
-      users[0].keyRingPair
+      users[0].keyRingPair,
     );
     const event = getEventResultFromMangataTx(events, [
       "system",
@@ -106,7 +106,7 @@ describe("Utility - batched swaps are not allowed", () => {
     const events = await signTx(
       api,
       Sudo.singleBatch(extrinsic),
-      users[1].keyRingPair
+      users[1].keyRingPair,
     );
     const event = getEventResultFromMangataTx(events, [
       "utility",
@@ -127,7 +127,7 @@ describe("Utility - batched swaps are not allowed", () => {
     const events = await signTx(
       api,
       Sudo.forceBatch(extrinsic),
-      users[2].keyRingPair
+      users[2].keyRingPair,
     );
     const event = getEventResultFromMangataTx(events, [
       "utility",
@@ -151,7 +151,7 @@ describe("Utility - batched swaps are not allowed", () => {
       const events = await signTx(
         api,
         Sudo.singleBatch(...[transfer, extrinsic]),
-        users[3].keyRingPair
+        users[3].keyRingPair,
       );
       const event = getEventResultFromMangataTx(events, [
         "utility",
@@ -159,6 +159,6 @@ describe("Utility - batched swaps are not allowed", () => {
       ]);
       expect(event.state).toEqual(ExtrinsicResult.ExtrinsicSuccess);
       expect(JSON.stringify(event.data)).toContain(errorEnum);
-    }
+    },
   );
 });

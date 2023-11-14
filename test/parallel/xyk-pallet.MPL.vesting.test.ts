@@ -62,36 +62,36 @@ describe("Vesting", () => {
               locked: vestedTokenAmount,
               perBlock: new BN(BN_HUNDRED_THOUSAND).divn(1000),
               startingBlock: block + 1000,
-            }
-          )
-        )
+            },
+          ),
+        ),
       )
       .withFn(
         node.api!.tx.sudo.sudo(
           node.api!.tx.tokens.create(
             testUser1.keyRingPair.address,
-            new BN(Math.pow(10, 20).toString())
-          )
-        )
+            new BN(Math.pow(10, 20).toString()),
+          ),
+        ),
       )
       .sudoBatch(sudo);
     createdToken = new BN(
-      result.filter((x) => x.event.method === "Issued")[0].eventData[0]
-        .data as any
+      result.filter((x) => x.event.method === "Created")[0].eventData[0]
+        .data as any,
     );
     await createPoolIfMissing(
       sudo,
       BN_HUNDRED_THOUSAND.muln(2).toString(),
       MGA_ASSET_ID,
       createdToken,
-      true
+      true,
     );
   });
 
   test("As a user, I can use vested tokens to mint", async () => {
     await testUser1.mintLiquidityWithVestedTokens(
       BN_HUNDRED_THOUSAND,
-      createdToken
+      createdToken,
     );
     const liqToken = await getLiquidityAssetId(MGA_ASSET_ID, createdToken);
     const balances = await getUserAssets(testUser1.keyRingPair.address, [
@@ -99,22 +99,22 @@ describe("Vesting", () => {
       MGA_ASSET_ID,
     ]);
     expect(balances[0].frozen).bnEqual(
-      vestedTokenAmount.sub(balances[1].frozen)
+      vestedTokenAmount.sub(balances[1].frozen),
     );
     expect(balances[0].frozen).bnEqual(BN_HUNDRED_THOUSAND);
     const liqTokenStatus = await getMultiPurposeLiquidityStatus(
       testUser1.keyRingPair.address,
-      liqToken
+      liqToken,
     );
     const allZeroes = Object.values(JSON.parse(liqTokenStatus)).every(
-      (val) => val === 0
+      (val) => val === 0,
     );
     expect(allZeroes).toBeTruthy();
   });
   test("As a user, I can activate vesting-minted tokens only if reserved", async () => {
     await testUser1.mintLiquidityWithVestedTokens(
       BN_HUNDRED_THOUSAND,
-      createdToken
+      createdToken,
     );
     const liqToken = await getLiquidityAssetId(MGA_ASSET_ID, createdToken);
     const balances = await getUserAssets(testUser1.keyRingPair.address, [
@@ -125,7 +125,7 @@ describe("Vesting", () => {
     const result = await activateLiquidity(
       testUser1.keyRingPair,
       liqToken,
-      balances[0].free
+      balances[0].free,
     );
     const eventResponse = getEventResultFromMangataTx(result);
     expect(eventResponse.state).toBe(ExtrinsicResult.ExtrinsicFailed);
@@ -137,19 +137,19 @@ describe("Vesting", () => {
       liqToken,
       balances[0].free,
       "UnspentReserves",
-      true
+      true,
     );
 
     const mplStatus = await getMultiPurposeLiquidityStatus(
       testUser1.keyRingPair.address,
-      liqToken
+      liqToken,
     );
     expect(hexToBn(mplStatus.stakedAndActivatedReserves)).bnEqual(BN_ZERO);
     expect(hexToBn(mplStatus.stakedUnactivatedReserves)).bnEqual(
-      new BN(BN_ZERO)
+      new BN(BN_ZERO),
     );
     expect(hexToBn(mplStatus.activatedUnstakedReserves)).bnEqual(
-      balances[0].frozen
+      balances[0].frozen,
     );
     expect(hexToBn(mplStatus.unspentReserves)).bnEqual(new BN(BN_ZERO));
     expect(hexToBn(mplStatus.relockAmount)).bnEqual(balances[0].frozen);

@@ -63,11 +63,11 @@ describe("Story tests > Rewards - autocompound", () => {
     });
     const mgasBalancesBefore = await mangata.query.getTokenBalance(
       MGA_ASSET_ID.toString(),
-      testUser2.keyRingPair.address
+      testUser2.keyRingPair.address,
     );
     const amount = await calculateMGAFees(
       api.tx.proofOfStake.claimRewardsAll(liqId),
-      testUser2.keyRingPair
+      testUser2.keyRingPair,
     );
 
     await claimRewards(testUser2, liqId);
@@ -78,7 +78,7 @@ describe("Story tests > Rewards - autocompound", () => {
     });
     const mgasBalancesAfter = await mangata.query.getTokenBalance(
       MGA_ASSET_ID.toString(),
-      testUser2.keyRingPair.address
+      testUser2.keyRingPair.address,
     );
     const expectedMGAAmount = mgasBalancesBefore.free
       .add(availableRewards)
@@ -93,7 +93,7 @@ describe("Story tests > Rewards - autocompound", () => {
     const mangata = await getMangataInstance(chainUri);
     const liqBefore = await mangata.query.getTokenBalance(
       liqId.toString(),
-      testUser3.keyRingPair.address
+      testUser3.keyRingPair.address,
     );
     await compoundRewards(testUser3, liqId);
     const availableRewardsAfter = await mangata.rpc.calculateRewardsAmount({
@@ -102,7 +102,7 @@ describe("Story tests > Rewards - autocompound", () => {
     });
     const liqAfter = await mangata.query.getTokenBalance(
       liqId.toString(),
-      testUser3.keyRingPair.address
+      testUser3.keyRingPair.address,
     );
     expect(liqBefore.reserved).bnLt(liqAfter.reserved);
     expect(availableRewardsAfter).bnLte(new BN(0));
@@ -118,7 +118,7 @@ async function setupPoolWithRewardsForUsers(users: User[]) {
     sudo,
     defaultCurrecyValue,
     sudo,
-    true
+    true,
   );
   await Sudo.batchAsSudoFinalized(
     Assets.FinalizeTge(),
@@ -137,29 +137,29 @@ async function setupPoolWithRewardsForUsers(users: User[]) {
         MGA_ASSET_ID,
         Assets.DEFAULT_AMOUNT.divn(2),
         token2,
-        Assets.DEFAULT_AMOUNT.divn(2)
-      )
-    )
+        Assets.DEFAULT_AMOUNT.divn(2),
+      ),
+    ),
   );
   const liqId = await getLiquidityAssetId(MGA_ASSET_ID, token2);
   await Sudo.batchAsSudoFinalized(
     Assets.promotePool(liqId.toNumber(), 20),
     Sudo.sudoAs(
       testUser1,
-      Xyk.mintLiquidity(MGA_ASSET_ID, token2, new BN("1000000000000000"))
+      Xyk.mintLiquidity(MGA_ASSET_ID, token2, new BN("1000000000000000")),
     ),
     Sudo.sudoAs(
       testUser2,
-      Xyk.mintLiquidity(MGA_ASSET_ID, token2, new BN("1000000000000000"))
+      Xyk.mintLiquidity(MGA_ASSET_ID, token2, new BN("1000000000000000")),
     ),
     Sudo.sudoAs(
       testUser3,
-      Xyk.mintLiquidity(MGA_ASSET_ID, token2, new BN("1000000000000000"))
+      Xyk.mintLiquidity(MGA_ASSET_ID, token2, new BN("1000000000000000")),
     ),
     Sudo.sudoAs(
       testUser4,
-      Xyk.mintLiquidity(MGA_ASSET_ID, token2, new BN("1000000000000000"))
-    )
+      Xyk.mintLiquidity(MGA_ASSET_ID, token2, new BN("1000000000000000")),
+    ),
   );
   await waitForRewards(testUser4, liqId);
   return { users, liqId, sudo, token2 };

@@ -43,17 +43,17 @@ export class performanceTestItem implements TestItem {
   enqueued: Promise<[number, number][]> = new Promise<[number, number][]>(
     (resolve) => {
       resolve([]);
-    }
+    },
   );
   executed: Promise<[number, number][]> = new Promise<[number, number][]>(
     (resolve) => {
       resolve([]);
-    }
+    },
   );
   pending: Promise<[number, number][]> = new Promise<[number, number][]>(
     (resolve) => {
       resolve([]);
-    }
+    },
   );
   ipc: any;
 
@@ -66,7 +66,7 @@ export class performanceTestItem implements TestItem {
     const keyring = new Keyring({ type: "sr25519" });
     const sudoKeyringPair = keyring.createFromUri(sudo);
     const nonce = await api.rpc.system.accountNextIndex(
-      sudoKeyringPair.address
+      sudoKeyringPair.address,
     );
     ipc.config.id = "nonceManager";
     ipc.config.retry = 1500;
@@ -122,44 +122,44 @@ export class performanceTestItem implements TestItem {
 
     const execution_throughput = quantile(
       executed.map(([_, val]) => val),
-      0.1
+      0.1,
     );
     const enqueue_throughput = quantile(
       enqueued.map(([_, val]) => val),
-      0.1
+      0.1,
     );
     const pending_throughput = quantile(
       pending.map(([_, val]) => val),
-      0.1
+      0.1,
     );
 
     console.info(
-      `execution_thruput : 90% of measurements was above ${execution_throughput}`
+      `execution_thruput : 90% of measurements was above ${execution_throughput}`,
     );
     console.info(
-      `enqueue_thruput   : 90% of measurements was above ${enqueue_throughput}`
+      `enqueue_thruput   : 90% of measurements was above ${enqueue_throughput}`,
     );
     console.info(
-      `pending_thruput   : 90% of measurements was above ${pending_throughput}`
+      `pending_thruput   : 90% of measurements was above ${pending_throughput}`,
     );
 
     if (execution_throughput < testParams.throughput) {
       console.info(
-        `execution throughput was to low: ${execution_throughput} <= ${testParams.throughput}`
+        `execution throughput was to low: ${execution_throughput} <= ${testParams.throughput}`,
       );
       return false;
     }
 
     if (enqueue_throughput < testParams.throughput) {
       console.info(
-        `enqueued throughput was to low: ${execution_throughput} <= ${testParams.throughput}`
+        `enqueued throughput was to low: ${execution_throughput} <= ${testParams.throughput}`,
       );
       return false;
     }
 
     if (pending_throughput < testParams.throughput * 0.75) {
       console.info(
-        `pending throughput was too small, consider increasing pending/totalTx parameter`
+        `pending throughput was too small, consider increasing pending/totalTx parameter`,
       );
       return false;
     }
@@ -169,7 +169,7 @@ export class performanceTestItem implements TestItem {
 
   async teardown(): Promise<boolean> {
     const apis = await Promise.all(
-      [...this.mgaNodeandUsers.values()].map(({ mgaSdk }) => mgaSdk.api())
+      [...this.mgaNodeandUsers.values()].map(({ mgaSdk }) => mgaSdk.api()),
     );
     await Promise.all(apis.map((api) => api.disconnect()));
     await this.ipc.server.stop();
@@ -207,20 +207,20 @@ export class performanceTestItem implements TestItem {
     const sudo = UserFactory.createUser(
       Users.SudoUser,
       keyring,
-      mgaNode
+      mgaNode,
     ) as SudoUser;
     await sudo.node.connect();
     await createPoolIfMissing(
       sudo,
       "1000000000000000000000000000",
       tokenId,
-      tokenId2
+      tokenId2,
     );
   }
   async mintTokensToUsers(
     numberOfThreads: number,
     nodes: string[],
-    assets = [MGA_ASSET_ID]
+    assets = [MGA_ASSET_ID],
   ) {
     const keyring = new Keyring({ type: "sr25519" });
     const mintPromises: Promise<MangataGenericEvent[]>[] = [];
@@ -247,8 +247,8 @@ export class performanceTestItem implements TestItem {
               assetId,
               keyPair.address,
               new BN(10).pow(new BN(30)),
-              sudoNonce
-            )
+              sudoNonce,
+            ),
           );
           sudoNonce = sudoNonce.addn(1);
         });
@@ -267,7 +267,7 @@ export class performanceTestItem implements TestItem {
     mgaNodeandUsers: Map<
       number,
       { mgaSdk: MangataInstance; users: { nonce: BN; keyPair: KeyringPair }[] }
-    >
+    >,
   ) {
     const keyring = new Keyring({ type: "sr25519" });
     const mintPromises = [];
@@ -290,8 +290,8 @@ export class performanceTestItem implements TestItem {
               new BN(token),
               users[i].keyPair.address,
               new BN(10).pow(new BN(18)),
-              sudoNonce
-            )
+              sudoNonce,
+            ),
           );
           sudoNonce = sudoNonce.addn(1);
         }
@@ -326,7 +326,7 @@ export class performanceTestItem implements TestItem {
     mgaNodeandUsers: Map<
       number,
       { mgaSdk: MangataInstance; users: { nonce: BN; keyPair: KeyringPair }[] }
-    >
+    >,
   ) {
     const transferPromises = [];
 
@@ -343,8 +343,8 @@ export class performanceTestItem implements TestItem {
             user.keyRingPair,
             new BN(liqAssetId),
             users[i].keyPair.address,
-            amount
-          )
+            amount,
+          ),
         );
         userNonce = userNonce.addn(1);
       }

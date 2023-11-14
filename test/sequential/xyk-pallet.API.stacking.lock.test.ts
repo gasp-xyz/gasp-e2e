@@ -51,21 +51,21 @@ describe.skip("xyk-pallet - Sell Asset: validate Errors:", () => {
       Assets.mintToken(ASSET_ID_MGA_ETH, testUser1, new BN(minStake!).muln(2)),
       Assets.mintNative(
         testUser1,
-        new BN(10000).add(new BN(Math.pow(10, 20).toString()))
+        new BN(10000).add(new BN(Math.pow(10, 20).toString())),
       ),
-      Assets.mintNative(testUser1)
+      Assets.mintNative(testUser1),
     );
   });
 
   test("joinCandidates operation reserves some tokens", async () => {
     const candidates = JSON.parse(
-      JSON.stringify(await api?.query.parachainStaking.candidatePool())
+      JSON.stringify(await api?.query.parachainStaking.candidatePool()),
     );
     const liqAssets =
       await api?.query.parachainStaking.stakingLiquidityTokens();
     const liqAssetsCount = [...liqAssets!.keys()].length;
     const amountToJoin = new BN(
-      api!.consts.parachainStaking.minCollatorStk!.toString()
+      api!.consts.parachainStaking.minCollatorStk!.toString(),
     ).addn(1234);
 
     await signSendAndWaitToFinishTx(
@@ -75,19 +75,19 @@ describe.skip("xyk-pallet - Sell Asset: validate Errors:", () => {
         new BN(3),
         "AvailableBalance",
         candidates.length + 10,
-        liqAssetsCount + 10
+        liqAssetsCount + 10,
       ),
-      testUser1.keyRingPair
+      testUser1.keyRingPair,
     );
     const tokenStatuses = await getTokensAccountInfo(
       testUser1.keyRingPair.address,
-      new BN(3)
+      new BN(3),
     );
     const minStake = new BN(
-      api!.consts.parachainStaking.minCollatorStk.toString()
+      api!.consts.parachainStaking.minCollatorStk.toString(),
     );
     expect(hexToBn(tokenStatuses.free.toString())).bnEqual(
-      minStake.muln(2).sub(amountToJoin)
+      minStake.muln(2).sub(amountToJoin),
     );
     expect(hexToBn(tokenStatuses.reserved.toString())).bnEqual(amountToJoin);
     expect(tokenStatuses.frozen.toString()).toEqual("0");

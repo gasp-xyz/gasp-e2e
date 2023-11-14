@@ -44,7 +44,7 @@ beforeAll(async () => {
 
 afterAll(async () => {
   await Promise.all([nodes.map(async (node) => await node.stop())]).catch(
-    (err) => testLog.getLog().error(err)
+    (err) => testLog.getLog().error(err),
   );
 });
 
@@ -57,7 +57,7 @@ describe("Cluster -> Healthcheck", () => {
     nodes.map(async (node) => {
       const hashes = takeRight(
         Array.from(node.hashes.values()),
-        numberOfHashesToCheck
+        numberOfHashesToCheck,
       );
       testLog.getLog().info(`${node.name}'s Hashes: ${hashes}`);
       nodeHashMap.set(node.name, new Set(hashes));
@@ -76,25 +76,25 @@ describe("Cluster -> Healthcheck", () => {
     nodes.map(async (node) => {
       const blockNumbers = takeRight(
         Array.from(node.blockNumbers.values()),
-        numberOfBlocksToCheck
+        numberOfBlocksToCheck,
       );
       testLog
         .getLog()
         .info(
-          `${node.name}'s Last ${numberOfBlocksToCheck} Blocks: ${blockNumbers}`
+          `${node.name}'s Last ${numberOfBlocksToCheck} Blocks: ${blockNumbers}`,
         );
       nodeBlockMap.set(node.name, new Set(blockNumbers));
     });
 
     expect(
-      intersection(Array.from(nodeBlockMap.values())).length
+      intersection(Array.from(nodeBlockMap.values())).length,
     ).toBeGreaterThan(0);
   });
 
   test("Block merkle hash matches across all nodes", async () => {
     const randomBlockNumber = Math.floor(
       Math.random() * (nodes[0].lastBlock! - nodes[0].firstBlock! + 1) +
-        nodes[0].firstBlock!
+        nodes[0].firstBlock!,
     );
 
     await waitForNBlocks(5);
@@ -124,7 +124,7 @@ describe("Cluster -> Healthcheck", () => {
     });
 
     expect(
-      intersection(Array.from(nodeHashMap.values())).length
+      intersection(Array.from(nodeHashMap.values())).length,
     ).toBeGreaterThan(0);
   });
 });

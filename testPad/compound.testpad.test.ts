@@ -57,15 +57,15 @@ describe("auto-compound story: auto compound rewards XCM task", () => {
           ChainId.Mg,
           AssetId.Tur,
           AssetId.Tur.unit.mul(new BN(10_000)),
-          userMangata
+          userMangata,
         ),
         // existential deposit into mangata account on OAK, when paying fees account cannot be reaped
         oakApi.api.tx.balances.transfer(
           userMangata.keyRingPair.address,
-          TUR_ED
+          TUR_ED,
         ),
       ]),
-      alice
+      alice,
     );
 
     testLog.getLog().info("running section: setup pools & rewards for MG-TUR");
@@ -83,28 +83,28 @@ describe("auto-compound story: auto compound rewards XCM task", () => {
           BN_ZERO,
           AssetId.Mgx.unit.mul(BN_THOUSAND),
           TUR_ID,
-          AssetId.Tur.unit.mul(BN_THOUSAND)
-        )
+          AssetId.Tur.unit.mul(BN_THOUSAND),
+        ),
       ),
       Xyk.updatePoolPromotion(lpId, 1),
       Sudo.sudoAs(
         userMangata,
-        Xyk.activateLiquidity(lpId, new BN("500000005000000000000"))
+        Xyk.activateLiquidity(lpId, new BN("500000005000000000000")),
       ),
     ];
 
     const proxy = await oakApi.api.rpc.xcmpHandler.crossChainAccount(
-      userMangata.keyRingPair.address
+      userMangata.keyRingPair.address,
     );
     const proxyCall = [
       Sudo.sudoAs(
         userMangata,
-        api.tx.proxy.addProxy(proxy, { AutoCompound: 0 }, 0)
+        api.tx.proxy.addProxy(proxy, { AutoCompound: 0 }, 0),
       ),
     ];
 
     await Sudo.batchAsSudoFinalized(
-      ...[initIssuance, initPool, proxyCall].flat()
+      ...[initIssuance, initPool, proxyCall].flat(),
     );
 
     await waitForRewards(userMangata, lpId);
@@ -116,7 +116,7 @@ describe("auto-compound story: auto compound rewards XCM task", () => {
     const tx = api.tx.proxy.proxy(
       userMangata.keyRingPair.address,
       undefined,
-      api.tx.xyk.compoundRewards(lpId, BN_MILLION)
+      api.tx.xyk.compoundRewards(lpId, BN_MILLION),
     );
     const encodedTxHex = tx.unwrap().toHex();
     const encodedTxInfo = await tx.paymentInfo(userMangata.keyRingPair);
@@ -126,7 +126,7 @@ describe("auto-compound story: auto compound rewards XCM task", () => {
 
     const taskIdLog = await oakApi.api.rpc.automationTime.generateTaskId(
       alice.keyRingPair.address,
-      "compound"
+      "compound",
     );
     testLog.getLog().info(`task id: ${taskIdLog}`);
     const taskId = "compound";
@@ -146,7 +146,7 @@ describe("auto-compound story: auto compound rewards XCM task", () => {
       // encoded call
       oakApi.api.createType("Vec<u8>", encodedTxHex),
       // extrinsic weight
-      encodedTxInfo.weight
+      encodedTxInfo.weight,
     );
 
     const task = await oakApi.taskFees(encodedTxInfo, 1);
@@ -173,7 +173,7 @@ describe("auto-compound story: auto compound rewards XCM task", () => {
         Xyk.buyAsset(BN_ZERO, TUR_ID, totalFees),
         XToken.transfer(ChainId.Tur, AssetId.Tur, totalFees, userMangata),
       ]),
-      userMangata
+      userMangata,
     );
 
     await signSendSuccess(oakApi.api, txCreate, userMangata);
@@ -223,7 +223,7 @@ describe.skip("auto-compound story: check all fees", () => {
     const tx = api.tx.proxy.proxy(
       user1.keyRingPair.address,
       undefined,
-      api.tx.xyk.compoundRewards(8, BN_MILLION)
+      api.tx.xyk.compoundRewards(8, BN_MILLION),
     );
     const encodedCall = tx.unwrap().toHex();
     const weight = await tx
@@ -243,13 +243,13 @@ describe.skip("auto-compound story: check all fees", () => {
         // encoded call
         oakApi.api.createType("Vec<u8>", encodedCall),
         // extrinsic weight
-        weight
+        weight,
       )
       .paymentInfo(alice.keyRingPair);
     testLog
       .getLog()
       .info(
-        `auto-compound: automation task create fee = ${feeInfo.partialFee}`
+        `auto-compound: automation task create fee = ${feeInfo.partialFee}`,
       );
 
     const currencyData =

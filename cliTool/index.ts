@@ -178,7 +178,7 @@ async function app(): Promise<any> {
               await joinAsCandidate(answers.user, answers.liq);
               console.log("Done");
               return app();
-            }
+            },
           );
       }
       if (answers.option.includes("Give tokens to user")) {
@@ -203,7 +203,7 @@ async function app(): Promise<any> {
               await giveTokensToUser(answers.user, answers.liq);
               console.log("Done");
               return app();
-            }
+            },
           );
       }
       if (answers.option.includes("Find Error")) {
@@ -268,8 +268,8 @@ async function app(): Promise<any> {
             console.info(result?.toString());
             console.info(
               `Is collator selected? : ${
-                result && result.toString()?.length > 0 ? true : false
-              }`
+                result && result.toString()?.length > 0
+              }`,
             );
             return app();
           });
@@ -295,7 +295,7 @@ async function app(): Promise<any> {
             }) => {
               await joinAFewCandidates(answers.numCandidates, answers.liqToken);
               return app();
-            }
+            },
           );
       }
       if (answers.option.includes("Fill with delegators")) {
@@ -326,10 +326,10 @@ async function app(): Promise<any> {
               await fillWithDelegators(
                 answers.numDelegators,
                 answers.liqToken,
-                answers.targetAddress
+                answers.targetAddress,
               );
               return app();
-            }
+            },
           );
       }
       if (answers.option.includes("Get powers")) {
