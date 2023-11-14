@@ -41,9 +41,11 @@ import { LiqPoolDetils } from "../../utils/frontend/microapps-pages/LiqPoolDetai
 import { Swap } from "../../utils/frontend/microapps-pages/Swap";
 
 jest.spyOn(console, "log").mockImplementation(jest.fn());
-
 jest.setTimeout(1500000);
+
 let driver: WebDriver;
+let kusama: ApiContext;
+let mangata: ApiContext;
 
 const acc_name = "acc_automation";
 const MGX_ASSET_NAME = "MGX";
@@ -53,6 +55,13 @@ const INIT_KSM_RELAY = 15;
 const { mnemonicPolkadotEd25519, mnemonicPolkadotEcdsa } =
   getEnvironmentRequiredVars();
 
+beforeAll(async () => {
+  kusama = await XcmNetworks.kusama({ localPort: 9944 });
+  mangata = await XcmNetworks.mangata({ localPort: 9946 });
+  await connectVertical(kusama.chain, mangata.chain);
+  StashServiceMockSingleton.getInstance().startMock();
+});
+
 describe.each`
   userAddressString                                     | mnemonicKey
   ${"5HRSqs882zwRmzY3zyXVFrWim6aMKS2c7a35zdAwWpjp9SVi"} | ${mnemonicPolkadotEcdsa}
@@ -60,17 +69,11 @@ describe.each`
 `(
   "Microapps UI alternative accounts tests",
   ({ userAddressString, mnemonicKey }) => {
-    let kusama: ApiContext;
-    let mangata: ApiContext;
     let alice: KeyringPair;
     const userAddress = userAddressString;
 
     beforeAll(async () => {
-      kusama = await XcmNetworks.kusama({ localPort: 9944 });
-      mangata = await XcmNetworks.mangata({ localPort: 9946 });
-      await connectVertical(kusama.chain, mangata.chain);
       alice = devTestingPairs().alice;
-      StashServiceMockSingleton.getInstance().startMock();
 
       try {
         getApi();
@@ -282,9 +285,6 @@ describe.each`
     });
 
     afterAll(async () => {
-      StashServiceMockSingleton.getInstance().stopServer();
-      await kusama.teardown();
-      await mangata.teardown();
       const api = getApi();
       await api.disconnect();
       await driver.quit();
@@ -292,3 +292,9 @@ describe.each`
     });
   },
 );
+
+afterAll(async () => {
+  StashServiceMockSingleton.getInstance().stopServer();
+  await kusama.teardown();
+  await mangata.teardown();
+});

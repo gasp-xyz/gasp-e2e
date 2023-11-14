@@ -100,7 +100,15 @@ export function getEnvironmentRequiredVars() {
 
   const mnemonicPolkadot = process.env.MNEMONIC_POLK
     ? process.env.MNEMONIC_POLK
-    : " oh oh";
+    : "parrot reveal arena shrimp announce ten draw pretty forget caught advice jacket";
+
+  const mnemonicPolkadotEd25519 = process.env.MNEMONIC_POLK
+    ? process.env.MNEMONIC_POLK
+    : "nice say prison sword favorite sustain exit guitar own hen clip borrow";
+
+  const mnemonicPolkadotEcdsa = process.env.MNEMONIC_POLK
+    ? process.env.MNEMONIC_POLK
+    : "catch alarm travel gravity crash pudding clip bike process wine virtual stamp";
 
   const ethereumHTTPUrl = process.env.ETH_HTTP_URL
     ? process.env.ETH_HTTP_URL
@@ -151,6 +159,8 @@ export function getEnvironmentRequiredVars() {
     stashServiceAddress: stashServiceAddress,
     mnemonicMetaMask: mnemonicMetaMask,
     mnemonicPolkadot: mnemonicPolkadot,
+    mnemonicPolkadotEd25519: mnemonicPolkadotEd25519,
+    mnemonicPolkadotEcdsa: mnemonicPolkadotEcdsa,
     logLevel: logLevel,
     xykPalletAddress: xykPalletAddress,
     treasuryPalletAddress: treasuryPalletAddress,
