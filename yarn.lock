@@ -7,42 +7,48 @@
   resolved "https://registry.yarnpkg.com/@aashutoshrathi/word-wrap/-/word-wrap-1.2.6.tgz#bd9154aec9983f77b3a034ecaa015c2e4201f6cf"
   integrity sha512-1Yjs2SvM8TflER/OD3cOjhWWOZb58A2t7wpE2S9XfBYTiIl+XFhQG2bjy4Pu1I+EAlCNUzRDYDdFwFYUKvXcIA==
 
-"@acala-network/chopsticks-core@0.8.4":
-  version "0.8.4"
-  resolved "https://registry.yarnpkg.com/@acala-network/chopsticks-core/-/chopsticks-core-0.8.4.tgz#ff504d404dc40df0f50f19043a0880fbbd1dd747"
-  integrity sha512-kAJX8KtHzHpF/6sjcwyp+bsfOJ9rssjoMS/dMDIxzQ7KzisrID/LfrIJrScMCnw/2fuE4NYsebrEFKBxJSw2Dw==
+"@acala-network/chopsticks-core@0.9.1-2":
+  version "0.9.1-2"
+  resolved "https://registry.yarnpkg.com/@acala-network/chopsticks-core/-/chopsticks-core-0.9.1-2.tgz#8ccc0e471d7555a164f4dee3ff18f4cd9d1abb97"
+  integrity sha512-5BEDSH/SLDybfiiBiEg/8qG0m/IlHtZdleWXwBv1Dnv9JRGkYvuNObldNLxPljXFRfKwrrJ+4mraQRfhCk5//g==
   dependencies:
-    "@acala-network/chopsticks-executor" "0.8.4"
-    "@polkadot/api" "^10.9.1"
-    "@polkadot/util-crypto" "^12.3.2"
-    axios "^1.5.1"
+    "@acala-network/chopsticks-executor" "0.9.1-2"
+    "@polkadot/api" "^10.10.1"
+    "@polkadot/util-crypto" "^12.5.1"
     comlink "^4.4.1"
     eventemitter3 "^5.0.1"
-    localforage "^1.10.0"
     lodash "^4.17.21"
-    pino "^8.15.0"
+    pino "^8.16.1"
     pino-pretty "^10.2.0"
-    sql.js "^1.8.0"
-    sqlite3 "^5.1.6"
-    typeorm "^0.3.17"
     zod "^3.22.3"
 
-"@acala-network/chopsticks-executor@0.8.4":
-  version "0.8.4"
-  resolved "https://registry.yarnpkg.com/@acala-network/chopsticks-executor/-/chopsticks-executor-0.8.4.tgz#cb56dd46f37256b98c2aaa5ff1e7c49f216e7060"
-  integrity sha512-HnjueHHP43OJMVQp8/wTh8v79Rz50J+eL/Fr5IGFsXEEa1hb2/v0PjWOWMowd+81plA3iHk7H6oDJxgOqcgcew==
+"@acala-network/chopsticks-db@0.9.1-2":
+  version "0.9.1-2"
+  resolved "https://registry.yarnpkg.com/@acala-network/chopsticks-db/-/chopsticks-db-0.9.1-2.tgz#1ec04bd9a33193ec171908b652d0b72b97488b78"
+  integrity sha512-EKjBY86geBTr8xKHqhU56bMIotfcfD1/lLHEJX6lfS5VHtMqDIO6ay5sL5bZrmmDGnc0XZXkYw/8U8+ZI2r6iQ==
   dependencies:
+    "@acala-network/chopsticks-core" "0.9.1-2"
+    idb "^7.1.1"
+    sqlite3 "^5.1.6"
+    typeorm "^0.3.17"
+
+"@acala-network/chopsticks-executor@0.9.1-2":
+  version "0.9.1-2"
+  resolved "https://registry.yarnpkg.com/@acala-network/chopsticks-executor/-/chopsticks-executor-0.9.1-2.tgz#8f9b274792f259c60d4f98b336160b888cdbb8ce"
+  integrity sha512-XKy/cEoeuS699PbciP3Lb5bg8/dhfqjQuUGXbr/Q4Pb3NjxXoUZwdUXLwsf68ZSEK3fPMIVtYtX0+4Zo3ZV3QA==
+  dependencies:
+    "@polkadot/util" "^12.5.1"
     "@polkadot/wasm-util" "^7.2.2"
 
-"@acala-network/chopsticks@^0.8.3":
-  version "0.8.4"
-  resolved "https://registry.yarnpkg.com/@acala-network/chopsticks/-/chopsticks-0.8.4.tgz#f3efa2497ce8fa4f3edb9823defe1f1c7afdb323"
-  integrity sha512-G63UkBGg8ybqTPKOVEmkkhirrtwZmrfUgFBY8SgKfF1cTz5E2i7X4b9LCzTM4csZdH8JH4Q4gq213zgvg7G8IQ==
+"@acala-network/chopsticks@0.9.1-2":
+  version "0.9.1-2"
+  resolved "https://registry.yarnpkg.com/@acala-network/chopsticks/-/chopsticks-0.9.1-2.tgz#2fb8ece6b2c7965255f408780c52e472d4393af3"
+  integrity sha512-og3579OHuyk+y1tt+lKxHGUrpSKx+mhGtKwHhxFgxY2iwev5bki/ja9GyN5qNQNx8vUvCuzCIYmhvGl7yl/fjQ==
   dependencies:
-    "@acala-network/chopsticks-core" "0.8.4"
+    "@acala-network/chopsticks-core" "0.9.1-2"
+    "@acala-network/chopsticks-db" "0.9.1-2"
     "@pnpm/npm-conf" "^2.2.2"
-    "@polkadot/api" "^10.9.1"
-    axios "^1.5.1"
+    axios "^1.6.0"
     dotenv "^16.3.1"
     global-agent "^3.0.0"
     js-yaml "^4.1.0"
@@ -2310,19 +2316,19 @@
     "@jridgewell/resolve-uri" "^3.1.0"
     "@jridgewell/sourcemap-codec" "^1.4.14"
 
-"@mangata-finance/sdk@2.1.0-rc.1":
-  version "2.1.0-rc.1"
-  resolved "https://registry.yarnpkg.com/@mangata-finance/sdk/-/sdk-2.1.0-rc.1.tgz#ca8a81d2e9beac601920b37876c25531511a854b"
-  integrity sha512-bCoP5vtdIM3lIrpIb0jb5pCc4wMUflB8Daec+JUEMa5dUtWUdwfqnd2vKPA+bJo4mzsh9LSJsMNF2F7iRwkJHw==
+"@mangata-finance/sdk@2.1.1":
+  version "2.1.1"
+  resolved "https://registry.yarnpkg.com/@mangata-finance/sdk/-/sdk-2.1.1.tgz#c35720d156da4c56ea06176dc631f4e8f25d427b"
+  integrity sha512-Sbge0swlR2oFTi4QR6my2RjZ0T01SbKICYO2NOgT2ipUcva3gbpt0B+O/FJ7WfckrAYVsiTUmBmQc76euAgxxA==
   dependencies:
-    "@mangata-finance/type-definitions" "2.0.0-rc.8"
+    "@mangata-finance/type-definitions" "2.0.0"
     big.js "6.2.1"
     tslog "4.8.2"
 
-"@mangata-finance/type-definitions@2.0.0-rc.8":
-  version "2.0.0-rc.8"
-  resolved "https://registry.yarnpkg.com/@mangata-finance/type-definitions/-/type-definitions-2.0.0-rc.8.tgz#6e1824d7adfab3cb8157707ea8ec1f815db7dc7c"
-  integrity sha512-w5JHVpaj2jgoKC1vgiwkfZ69Y53Wekgl9+SLWu8CgNb41QflPtVV04vh0yPS/clHAEwnA8gtkp2noicrsqAH9Q==
+"@mangata-finance/type-definitions@2.0.0":
+  version "2.0.0"
+  resolved "https://registry.yarnpkg.com/@mangata-finance/type-definitions/-/type-definitions-2.0.0.tgz#f0d80fd16825870acb367c3989fd42ab690eb99d"
+  integrity sha512-N8o0PgeSjTsb5MLfdsZD/DsD1BldBqrvRZ/KaanPY1ESFAAEu+B9BebSUZm/XFDm9GzQpOZqNg9KaZsghx4E5A==
 
 "@mangata-finance/types@2.0.0-rc.3":
   version "2.0.0-rc.3"
@@ -2516,7 +2522,7 @@
     rxjs "^7.8.1"
     tslib "^2.6.2"
 
-"@polkadot/api@10.10.1", "@polkadot/api@^10.7.3", "@polkadot/api@^10.9.1":
+"@polkadot/api@10.10.1", "@polkadot/api@^10.10.1", "@polkadot/api@^10.7.3":
   version "10.10.1"
   resolved "https://registry.yarnpkg.com/@polkadot/api/-/api-10.10.1.tgz#06fcbdcc8e17d2312d4b4093733d506f15ff62ad"
   integrity sha512-YHVkmNvjGF4Eg3thAbVhj9UX3SXx+Yxk6yVuzsEcckEudIRHzL2ikIWGCfUprfzSeFNpUCKdJIi1tsxVHtA7Tg==
@@ -2662,7 +2668,7 @@
     rxjs "^7.8.1"
     tslib "^2.6.2"
 
-"@polkadot/util-crypto@12.5.1", "@polkadot/util-crypto@^12.3.2", "@polkadot/util-crypto@^12.5.1":
+"@polkadot/util-crypto@12.5.1", "@polkadot/util-crypto@^12.5.1":
   version "12.5.1"
   resolved "https://registry.yarnpkg.com/@polkadot/util-crypto/-/util-crypto-12.5.1.tgz#1753b23abfb9d72db950399ef65b0cbe5bef9f2f"
   integrity sha512-Y8ORbMcsM/VOqSG3DgqutRGQ8XXK+X9M3C8oOEI2Tji65ZsXbh9Yh+ryPLM0oBp/9vqOXjkLgZJbbVuQceOw0A==
@@ -4523,10 +4529,19 @@ axios@1.5.0:
     form-data "^4.0.0"
     proxy-from-env "^1.1.0"
 
-axios@^1.4.0, axios@^1.5.1:
+axios@^1.4.0:
   version "1.6.0"
   resolved "https://registry.yarnpkg.com/axios/-/axios-1.6.0.tgz#f1e5292f26b2fd5c2e66876adc5b06cdbd7d2102"
   integrity sha512-EZ1DYihju9pwVB+jg67ogm+Tmqc6JmhamRN6I4Zt8DfZu5lbcQGw3ozH9lFejSJgs/ibaef3A9PMXPLeefFGJg==
+  dependencies:
+    follow-redirects "^1.15.0"
+    form-data "^4.0.0"
+    proxy-from-env "^1.1.0"
+
+axios@^1.6.0:
+  version "1.6.1"
+  resolved "https://registry.yarnpkg.com/axios/-/axios-1.6.1.tgz#76550d644bf0a2d469a01f9244db6753208397d7"
+  integrity sha512-vfBmhDpKafglh0EldBEbVuoe7DyAavGSLWhuSm5ZSEKQnHhBf0xAAwybbNH1IkrJNGnS/VG4I5yxig1pCEXE4g==
   dependencies:
     follow-redirects "^1.15.0"
     form-data "^4.0.0"
@@ -8286,6 +8301,11 @@ iconv-lite@^0.6.2:
   dependencies:
     safer-buffer ">= 2.1.2 < 3.0.0"
 
+idb@^7.1.1:
+  version "7.1.1"
+  resolved "https://registry.yarnpkg.com/idb/-/idb-7.1.1.tgz#d910ded866d32c7ced9befc5bfdf36f572ced72b"
+  integrity sha512-gchesWBzyvGHRO9W8tzUWFDycow5gwjvFKfyV9FF32Y7F50yZMp7mP+T2mJIWFx49zicqyC4uefHM17o6xKIVQ==
+
 idna-uts46-hx@^2.3.1:
   version "2.3.1"
   resolved "https://registry.yarnpkg.com/idna-uts46-hx/-/idna-uts46-hx-2.3.1.tgz#a1dc5c4df37eee522bf66d969cc980e00e8711f9"
@@ -9737,13 +9757,6 @@ levn@~0.3.0:
     prelude-ls "~1.1.2"
     type-check "~0.3.2"
 
-lie@3.1.1:
-  version "3.1.1"
-  resolved "https://registry.yarnpkg.com/lie/-/lie-3.1.1.tgz#9a436b2cc7746ca59de7a41fa469b3efb76bd87e"
-  integrity sha512-RiNhHysUjhrDQntfYSfY4MU24coXXdEOgw9WGcKHNeEwffDYbF//u87M1EWaMGzuFoSbqW0C9C6lEEhDOAswfw==
-  dependencies:
-    immediate "~3.0.5"
-
 lie@~3.3.0:
   version "3.3.0"
   resolved "https://registry.yarnpkg.com/lie/-/lie-3.3.0.tgz#dcf82dee545f46074daf200c7c1c5a08e0f40f6a"
@@ -9773,13 +9786,6 @@ load-json-file@^1.0.0:
     pify "^2.0.0"
     pinkie-promise "^2.0.0"
     strip-bom "^2.0.0"
-
-localforage@^1.10.0:
-  version "1.10.0"
-  resolved "https://registry.yarnpkg.com/localforage/-/localforage-1.10.0.tgz#5c465dc5f62b2807c3a84c0c6a1b1b3212781dd4"
-  integrity sha512-14/H1aX7hzBBmmh7sGPd+AOMkkIrHM3Z1PAyGgZigA1H1p5O5ANnMyWzvpAETtG68/dC4pC0ncy3+PPGzXZHPg==
-  dependencies:
-    lie "3.1.1"
 
 locate-path@^2.0.0:
   version "2.0.0"
@@ -11271,7 +11277,7 @@ pino-std-serializers@^6.0.0:
   resolved "https://registry.yarnpkg.com/pino-std-serializers/-/pino-std-serializers-6.2.2.tgz#d9a9b5f2b9a402486a5fc4db0a737570a860aab3"
   integrity sha512-cHjPPsE+vhj/tnhCy/wiMh3M3z3h/j15zHQX+S9GkTBgqJuTuJzYJ4gUyACLhDaJ7kk9ba9iRDmbH2tJU03OiA==
 
-pino@^8.15.0:
+pino@^8.16.1:
   version "8.16.1"
   resolved "https://registry.yarnpkg.com/pino/-/pino-8.16.1.tgz#dcaf82764b1a27f24101317cdd6453e96290f1d9"
   integrity sha512-3bKsVhBmgPjGV9pyn4fO/8RtoVDR8ssW1ev819FsRXlRNgW8gR/9Kx+gCK4UPWd4JjrRDLWpzd/pb1AyWm3MGA==
@@ -12666,11 +12672,6 @@ sprintf-js@~1.0.2:
   version "1.0.3"
   resolved "https://registry.yarnpkg.com/sprintf-js/-/sprintf-js-1.0.3.tgz#04e6926f662895354f3dd015203633b857297e2c"
   integrity sha512-D9cPgkvLlV3t3IzL0D0YLvGA9Ahk4PcvVwUbN0dSGr1aP0Nrt4AEnTUbuGvquEC0mA64Gqt1fzirlRs5ibXx8g==
-
-sql.js@^1.8.0:
-  version "1.8.0"
-  resolved "https://registry.yarnpkg.com/sql.js/-/sql.js-1.8.0.tgz#cb45d957e17a2239662fe2f614c9b678990867a6"
-  integrity sha512-3HD8pSkZL+5YvYUI8nlvNILs61ALqq34xgmF+BHpqxe68yZIJ1H+sIVIODvni25+CcxHUxDyrTJUL0lE/m7afw==
 
 sqlite3@^5.1.6:
   version "5.1.6"

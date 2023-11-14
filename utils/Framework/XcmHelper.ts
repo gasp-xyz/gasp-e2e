@@ -3,7 +3,7 @@ import {
   BuildBlockMode,
   setupWithServer,
 } from "@acala-network/chopsticks";
-import { StorageValues } from "@acala-network/chopsticks-core/lib/utils/set-storage";
+import { StorageValues } from "@acala-network/chopsticks-core";
 import { ApiPromise, WsProvider } from "@polkadot/api";
 import { HexString } from "@polkadot/util/types";
 import { getPort } from "get-port-please";
