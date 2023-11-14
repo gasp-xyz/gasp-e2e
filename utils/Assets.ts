@@ -66,7 +66,7 @@ export class Assets {
       }
       const result = await Sudo.batchAsSudoFinalized(...txs);
       const assetIds: BN[] = result
-        .filter((X) => X.method === "Issued")
+        .filter((X) => X.method === "Created")
         .map((t) => new BN(t.eventData[0].data.toString()));
       const addInfos: Extrinsic[] = [];
       if (!skipInfo) {
@@ -143,7 +143,7 @@ export class Assets {
       );
       const eventResult = getEventResultFromMangataTx(result, [
         "tokens",
-        "Issued",
+        "Created",
         user.keyRingPair.address,
       ]);
 

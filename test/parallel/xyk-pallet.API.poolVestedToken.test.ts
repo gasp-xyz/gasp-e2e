@@ -157,7 +157,7 @@ describe("xyk-pallet - Vested token tests: which action you can do with vesting 
     );
     const poolEventResult = await getEventResultFromMangataTx(
       poolCurrencyIssue,
-      ["tokens", "Issued", sudo.keyRingPair.address],
+      ["tokens", "Created", sudo.keyRingPair.address],
     );
     const poolAssetId = poolEventResult.data[0].split(",").join("");
     createdToken = new BN(poolAssetId);

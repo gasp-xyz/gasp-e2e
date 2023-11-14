@@ -68,6 +68,7 @@
     "build": "tsc --project tsconfig.json",
     "init-test": "rm nonce.db; rm sudo.lock;",
     "test": "jest",
+    "test-run": "export JEST_HTML_REPORTERS_PUBLIC_PATH=reports/html-report-seq; rm nonce.db ; rm sudo.lock;  node --experimental-specifier-resolution=node --loader ts-node/esm --experimental-vm-modules node_modules/jest/bin/jest.js --forceExit ",
     "test-parallel": "export JEST_HTML_REPORTERS_PUBLIC_PATH=reports/html-report-parallel;rm nonce.db ; rm sudo.lock; node --expose-gc --experimental-specifier-resolution=node --loader ts-node/esm --experimental-vm-modules node_modules/jest/bin/jest.js --verbose --ci --group=parallel --forceExit --workerIdleMemoryLimit=200MB --logHeapUsage",
     "test-parallel-chops": "export MANGATA_ENDPOINT=ws://127.0.0.1:9946; export CHOPSTICK_ENABLED=true;  export JEST_HTML_REPORTERS_PUBLIC_PATH=reports/html-report-parallel;rm nonce.db ; rm sudo.lock; node --expose-gc --experimental-specifier-resolution=node --loader ts-node/esm --experimental-vm-modules node_modules/jest/bin/jest.js --verbose --ci --group=parallel --group=-parallelSkipChops --forceExit --workerIdleMemoryLimit=200MB --logHeapUsage --max-workers=1",
     "test-parallel-skipped-chops": "export JEST_HTML_REPORTERS_PUBLIC_PATH=reports/html-report-parallel;rm nonce.db ; rm sudo.lock; node --expose-gc --experimental-specifier-resolution=node --loader ts-node/esm --experimental-vm-modules node_modules/jest/bin/jest.js --verbose --ci --group=parallelSkipChops --forceExit --workerIdleMemoryLimit=200MB --logHeapUsage",
@@ -180,6 +181,7 @@
       "./utils/setupTests.ts"
     ],
     "setupFilesAfterEnv": [
+      "jest-extended/all",
       "./utils/setupJest.ts"
     ],
     "testTimeout": 1500000,
@@ -196,5 +198,6 @@
         }
       ]
     ]
-  }
+  },
+  "packageManager": "yarn@1.22.19"
 }

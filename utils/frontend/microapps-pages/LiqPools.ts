@@ -1,5 +1,6 @@
-import { WebDriver } from "selenium-webdriver";
+import { By, WebDriver } from "selenium-webdriver";
 import {
+  buildClassXpath,
   buildDataTestIdXpath,
   buildXpathByElementText,
   buildXpathByText,
@@ -9,6 +10,7 @@ import {
   scrollIntoView,
   waitForElement,
   waitForElementStateInterval,
+  waitForElementVisible,
   writeText,
 } from "../utils/Helper";
 
@@ -200,5 +202,20 @@ export class LiqPools {
       isEnabled,
       timeout,
     );
+  }
+
+  async getPoolsList() {
+    const classNameXpath = await buildClassXpath("focus:outline-0 group");
+    await waitForElementVisible(this.driver, classNameXpath, 5000);
+    const fePoolsInfo = await this.driver.findElements(
+      By.xpath(classNameXpath),
+    );
+    const fePoolsNumber = fePoolsInfo.length;
+    const fePoolsList = [];
+    for (let i = 0; i < fePoolsNumber; i++) {
+      const dataTestId = await fePoolsInfo[i].getAttribute("data-testid");
+      fePoolsList.push(dataTestId);
+    }
+    return fePoolsList;
   }
 }

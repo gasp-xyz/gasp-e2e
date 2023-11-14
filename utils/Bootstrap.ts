@@ -57,7 +57,7 @@ export async function createNewBootstrapCurrency(sudoUser: User) {
   );
   const creatingBootstrapTokenResult = getEventResultFromMangataTx(
     creatingBootstrapToken,
-    ["tokens", "Issued", sudoUser.keyRingPair.address],
+    ["tokens", "Created", sudoUser.keyRingPair.address],
   );
 
   return new BN(creatingBootstrapTokenResult.data[0].split(",").join(""));
