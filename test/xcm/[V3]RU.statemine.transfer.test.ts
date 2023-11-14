@@ -16,7 +16,7 @@ import { Codec } from "@polkadot/types/types";
 import { expectEvent, matchEvents } from "../../utils/eventListeners";
 
 /**
- * @group xcm
+ * @group skippedXcm
  * @group proxied
  */
 describe("XCM tests for Mangata <-> Statemine", () => {
