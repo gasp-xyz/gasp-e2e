@@ -9,7 +9,6 @@ import { Assets } from "./Assets";
 import { setupApi } from "./setup";
 import { Sudo } from "./sudo";
 import { testLog } from "./Logger";
-import { waitNewBlock } from "./eventListeners";
 import { api, Extrinsic } from "./setup";
 import { BN } from "@polkadot/util";
 
