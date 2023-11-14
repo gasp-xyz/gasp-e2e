@@ -28,6 +28,7 @@ import {
   testTokensForUsers,
   replaceByStateCall,
   burnAllTokensFromPool,
+  createProposal,
 } from "../utils/setupsOnTheGo";
 import {
   findErrorMetadata,
@@ -54,6 +55,7 @@ async function app(): Promise<any> {
       name: "option",
       choices: [
         "Setup rewards with default users",
+        "Create Proposal",
         "Setup a collator with token",
         "Join as candidate",
         "Fill with candidates",
@@ -472,6 +474,9 @@ async function app(): Promise<any> {
       }
       if (answers.option.includes("find and claim all rewards")) {
         await findAllRewardsAndClaim();
+      }
+      if (answers.option.includes("Create Proposal")) {
+        await createProposal();
       }
       if (answers.option.includes("slibing")) {
         const EMPTY_U8A_32 = new Uint8Array(32);

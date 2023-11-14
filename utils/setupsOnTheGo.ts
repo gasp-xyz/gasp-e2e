@@ -2,7 +2,7 @@
 import Keyring from "@polkadot/keyring";
 import BN from "bn.js";
 import { Assets } from "./Assets";
-import { MGA_ASSET_ID, MAX_BALANCE } from "./Constants";
+import { MGA_ASSET_ID, MAX_BALANCE, KSM_ASSET_ID } from "./Constants";
 import { waitForRewards } from "./eventListeners";
 import { Extrinsic, setupApi, setupUsers } from "./setup";
 import { Sudo } from "./sudo";
@@ -367,15 +367,15 @@ export async function joinAFewCandidates(numCandidates = 50, liqId = 9) {
   for (let index = 0; index < numCandidates; index++) {
     const user = new User(keyring);
     users.push(user);
-    txs.push(Assets.mintToken(tokenInPool, user, tokensToMint.muln(100)));
-    txs.push(Assets.mintNative(user, amountToJoin.muln(100000)));
+    txs.push(Assets.mintToken(tokenInPool, user, tokensToMint.muln(500)));
+    txs.push(Assets.mintNative(user, amountToJoin.muln(500)));
     txs.push(
       Sudo.sudoAs(
         user,
         Xyk.mintLiquidity(
           MGA_ASSET_ID,
           tokenInPool,
-          amountToJoin.muln(2),
+          amountToJoin.muln(10),
           MAX_BALANCE
         )
       )
@@ -389,7 +389,7 @@ export async function joinAFewCandidates(numCandidates = 50, liqId = 9) {
         api,
         // @ts-ignore
         api?.tx.parachainStaking.joinCandidates(
-          minLiqToJoin.addn(1000).addn(index * 2),
+          minLiqToJoin.addn(10000).addn(index * 2000),
           liqId,
           tokenOrigin,
           // @ts-ignore - Mangata bond operation has 4 params, somehow is inheriting the bond operation from polkadot :S
@@ -851,6 +851,47 @@ export async function testTokensForUsers(userName = "//Eve") {
   });
   await Sudo.batchAsSudoFinalized(...txs);
 }
+export async function createProposal() {
+  await setupApi();
+  await setupUsers();
+  const dict = {
+    "5G22cv9fT5RNVm2AV4MKgagmKH9aoZL4289UDcYrToP9K6hQ": 2000000000000,
+    "5GbtrMJi2MV3oDMpXnkCjNHErDHfmwN6AS4E7JCtsqsABU86": 2000000000000,
+    "5HKgtV7xNbKQyX4RZeTA5gtpZZZb67fay4kfjDhgjzdPe6ap": 100000000000,
+    "5FZKwNzhMiKzqAmSepiTQSSxx8cfM5kJmnAJT4R5a99LZvRh": 600000000000,
+    "5EAP8iPdRrPA6qjqcVZm7LobYd7Qy9r3JddaEs4uLKVChzC6": 2245583936554,
+    "5HnHFaFWkVkHfxf4J6Pwh7xyjJFHTjm78kC29oALhG1WkRK5": 2264063755235,
+    "5FTexk7oF68CohbR2DDyr2k6sBEyktNLFVZCCzGEfrcheCXM": 361400000000,
+    "5E2KX6jQi2w63MS4srza3nCMRkVwLnWYT1yp9gB6rPY9JAFa": 235000000000,
+    "5CZpuyTyEGBKFBRu7ebyTp9q97jxKuyejrAGXZJwUQ17PHAk": 20000000000,
+    "5CzMGHQAz9LT2CmuNTRAmvbwsdeJzCAvQYDmj3K6h6pLcUXK": 9361013561421,
+    "5H92NmUsAvVRpc6UC38SnU2RDX1fMyxAxzLL65uvqAFBynkH": 183051308897,
+    "5GYknXBBRKfRXYYBc1f8xhm15UrR3kLV9kMayqYr86sKRfT5": 1242738580000,
+  };
+  const dict2 = {
+    "5CZpuyTyEGBKFBRu7ebyTp9q97jxKuyejrAGXZJwUQ17PHAk": 1286000000000,
+    "5G22cv9fT5RNVm2AV4MKgagmKH9aoZL4289UDcYrToP9K6hQ": 9000000000000,
+    "5FZKwNzhMiKzqAmSepiTQSSxx8cfM5kJmnAJT4R5a99LZvRh": 53000000000000,
+  };
+  const txs: Extrinsic[] = [];
+  Object.keys(dict).forEach((account) => {
+    txs.push(
+      Assets.mintTokenAddress(
+        KSM_ASSET_ID,
+        account,
+        //@ts-ignore
+        new BN(dict[account]!)
+      )
+    );
+  });
+  Object.keys(dict2).forEach((account) => {
+    txs.push(
+      //@ts-ignore
+      Assets.mintTokenAddress(KSM_ASSET_ID, account, new BN(dict2[account]!))
+    );
+  });
+  await Sudo.batch(...txs);
+}
 export async function migrate() {
   await setupApi();
   await setupUsers();
@@ -858,7 +899,10 @@ export async function migrate() {
   const api = await getApi();
   const allPallets = await listStorages();
   const storageToMigrate1 = allPallets
-    .filter((x: any) => x[0] === "AssetRegistry" || x[0] === "Tokens")
+    .filter(
+      (x: any) =>
+        x[0] === "Crowdloan" || x[0] === "AssetRegistry" || x[0] === "Tokens"
+    )
     .flatMap((item: any) =>
       item[1].map((element: any) => {
         return [item[0], element];
@@ -873,7 +917,6 @@ export async function migrate() {
         x[0] === "RewardsInfo" ||
         x[0] === "MultiPurposeLiquidity" ||
         x[0] === "Vesting" ||
-        x[0] === "Crowdloan" ||
         x[0] === "Bootstrap" ||
         x[0] === "OrmlXcm"
       //        x[0] === "System"
@@ -883,8 +926,8 @@ export async function migrate() {
         return [item[0], element];
       })
     );
-  const storageToMigrate = (storageToMigrate1 as []).concat(storageToMigrate2);
-  console.info(JSON.stringify(storageToMigrate));
+  const storageToMigrate = storageToMigrate1 as []; //.concat(storageToMigrate2);
+  console.info(JSON.stringify(storageToMigrate2));
   //  const data = [
   //    ["Xyk", "RewardsInfo"],
   //    ["Xyk", "LiquidityMiningUser"],
