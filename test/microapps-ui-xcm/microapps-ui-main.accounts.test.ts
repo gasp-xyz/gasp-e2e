@@ -39,6 +39,12 @@ import { Sidebar } from "../../utils/frontend/microapps-pages/Sidebar";
 import { LiqPools } from "../../utils/frontend/microapps-pages/LiqPools";
 import { LiqPoolDetils } from "../../utils/frontend/microapps-pages/LiqPoolDetails";
 import { Swap } from "../../utils/frontend/microapps-pages/Swap";
+import {
+  INIT_KSM_RELAY,
+  KSM_ASSET_NAME,
+  KSM_FULL_NAME,
+  MGX_ASSET_NAME,
+} from "../../utils/frontend/microapps-pages/UiConstant";
 
 jest.spyOn(console, "log").mockImplementation(jest.fn());
 jest.setTimeout(1500000);
@@ -48,10 +54,6 @@ let kusama: ApiContext;
 let mangata: ApiContext;
 
 const acc_name = "acc_automation";
-const MGX_ASSET_NAME = "MGX";
-const KSM_ASSET_NAME = "KSM";
-const KSM_FULL_NAME = "Kusama Native";
-const INIT_KSM_RELAY = 15;
 const { mnemonicPolkadotEd25519, mnemonicPolkadotEcdsa } =
   getEnvironmentRequiredVars();
 
