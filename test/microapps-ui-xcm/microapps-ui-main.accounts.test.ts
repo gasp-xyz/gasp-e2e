@@ -240,7 +240,7 @@ describe.each`
       );
     });
 
-    test.only("Withdraw tokens by account type " + accType, async () => {
+    test("Withdraw tokens by account type " + accType, async () => {
       await setupPageWithState(driver, acc_name);
 
       const walletWrapper = new WalletWrapper(driver);
