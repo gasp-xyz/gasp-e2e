@@ -92,12 +92,8 @@ describe("Microapps UI withdraw modal tests", () => {
           [
             [userAddress],
             { providers: 1, data: { free: INIT_KSM_RELAY * 1e12 } },
-            
           ],
-          [
-            [alice.address], 
-            { providers: 1, data: { free: 10 * 1e12 } }
-          ],
+          [[alice.address], { providers: 1, data: { free: 10 * 1e12 } }],
         ],
       },
     });
