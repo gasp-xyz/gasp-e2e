@@ -29,11 +29,7 @@ import { devTestingPairs } from "../../utils/setup";
 import { AssetId } from "../../utils/ChainSpecs";
 import { BN_THOUSAND } from "@mangata-finance/sdk";
 import StashServiceMockSingleton from "../../utils/stashServiceMockSingleton";
-import {
-  ModalType,
-  NotificationModal,
-  TransactionType,
-} from "../../utils/frontend/microapps-pages/NotificationModal";
+import { TransactionType } from "../../utils/frontend/microapps-pages/NotificationModal";
 import { WithdrawModal } from "../../utils/frontend/microapps-pages/WithdrawModal";
 import { Sidebar } from "../../utils/frontend/microapps-pages/Sidebar";
 import { LiqPools } from "../../utils/frontend/microapps-pages/LiqPools";
@@ -272,18 +268,13 @@ describe.each`
       expect(isContinueButtonEnabled).toBeTruthy();
 
       await withdrawModal.clickContinue();
-
-      const modal = new NotificationModal(driver);
-      await modal.waitForModalState(
-        ModalType.Confirm,
+      await waitForMicroappsActionNotification(
+        driver,
+        mangata,
+        kusama,
         TransactionType.Withdraw,
-        3000,
+        2,
       );
-      const isModalWaitingForSignVisible = await modal.isModalVisible(
-        ModalType.Confirm,
-        TransactionType.Withdraw,
-      );
-      expect(isModalWaitingForSignVisible).toBeTruthy();
     });
 
     afterEach(async () => {
