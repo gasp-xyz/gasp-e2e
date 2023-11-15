@@ -49,7 +49,7 @@ let driver: WebDriver;
 let kusama: ApiContext;
 let mangata: ApiContext;
 
-const acc_name = "acc_automation";
+const accountName = "acc_automation";
 const { mnemonicPolkadotEd25519, mnemonicPolkadotEcdsa } =
   getEnvironmentRequiredVars();
 
@@ -117,11 +117,11 @@ describe.each`
       await node.connect();
 
       await setupPage(driver);
-      await connectWallet(driver, "Polkadot", acc_name);
+      await connectWallet(driver, "Polkadot", accountName);
     });
 
     test("Swap tokens by account type " + accType, async () => {
-      await setupPageWithState(driver, acc_name);
+      await setupPageWithState(driver, accountName);
       const swap = new Swap(driver);
       const isSwapFrameDisplayed = await swap.isDisplayed();
       expect(isSwapFrameDisplayed).toBeTruthy();
@@ -145,7 +145,7 @@ describe.each`
     });
 
     test("Add MGX-KSM pool liquidity by account type " + accType, async () => {
-      await setupPageWithState(driver, acc_name);
+      await setupPageWithState(driver, accountName);
       const sidebar = new Sidebar(driver);
       await sidebar.clickNavLiqPools();
 
@@ -203,7 +203,7 @@ describe.each`
     });
 
     test("Deposit tokens by account type " + accType, async () => {
-      await setupPageWithState(driver, acc_name);
+      await setupPageWithState(driver, accountName);
 
       const walletWrapper = new WalletWrapper(driver);
       await walletWrapper.openWalletConnectionInfo();
@@ -241,7 +241,7 @@ describe.each`
     });
 
     test("Withdraw tokens by account type " + accType, async () => {
-      await setupPageWithState(driver, acc_name);
+      await setupPageWithState(driver, accountName);
 
       const walletWrapper = new WalletWrapper(driver);
       await walletWrapper.openWalletConnectionInfo();
