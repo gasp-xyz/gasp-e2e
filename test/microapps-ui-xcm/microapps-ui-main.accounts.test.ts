@@ -137,6 +137,14 @@ describe.each`
       await swap.waitForSwapButtonEnabled();
       const isSwapEnabled = await swap.isSwapButtonEnabled();
       expect(isSwapEnabled).toBeTruthy();
+      await swap.clickSwapButton();
+      await waitForMicroappsActionNotification(
+        driver,
+        mangata,
+        kusama,
+        TransactionType.Swap,
+        2,
+      );
     });
 
     test("Add MGX-KSM pool liquidity by account type " + accType, async () => {
