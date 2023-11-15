@@ -166,7 +166,7 @@ describe.each`
         MGX_ASSET_NAME + " / " + KSM_ASSET_NAME,
       );
       expect(isPoolDetailsVisible).toBeTruthy();
-      const my_pool_share = await poolDetails.getMyPositionAmount();
+      const poolShareBefore = await poolDetails.getMyPositionAmount();
 
       await poolDetails.clickAddLiquidity();
       const isFirstTokenNameSet =
@@ -198,8 +198,8 @@ describe.each`
         2,
       );
 
-      const my_new_pool_share = await poolDetails.getMyPositionAmount();
-      expect(my_new_pool_share).toBeGreaterThan(my_pool_share);
+      const poolShareAfter = await poolDetails.getMyPositionAmount();
+      expect(poolShareAfter).toBeGreaterThan(poolShareBefore);
     });
 
     test("Deposit tokens by account type " + accType, async () => {
