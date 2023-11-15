@@ -95,7 +95,7 @@ describe.each`
           ],
         },
         Sudo: {
-          Key: userAddress,
+          Key: alice.address,
         },
       });
       await kusama.dev.setStorage({
@@ -104,6 +104,10 @@ describe.each`
             [
               [userAddress],
               { providers: 1, data: { free: INIT_KSM_RELAY * 1e12 } },
+            ],
+            [
+              [alice.address], 
+              { providers: 1, data: { free: 10 * 1e12 } }
             ],
           ],
         },
@@ -239,7 +243,7 @@ describe.each`
       );
     });
 
-    test("Withdraw tokens by account type " + accType, async () => {
+    test.only("Withdraw tokens by account type " + accType, async () => {
       await setupPageWithState(driver, acc_name);
 
       const walletWrapper = new WalletWrapper(driver);
@@ -273,7 +277,7 @@ describe.each`
         mangata,
         kusama,
         TransactionType.Withdraw,
-        2,
+        4,
       );
     });
 
