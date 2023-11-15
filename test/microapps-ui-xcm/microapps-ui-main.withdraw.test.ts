@@ -21,6 +21,7 @@ import {
   connectWallet,
   setupPage,
   setupPageWithState,
+  waitForMicroappsActionNotification,
 } from "../../utils/frontend/microapps-utils/Handlers";
 import { WalletWrapper } from "../../utils/frontend/microapps-pages/WalletWrapper";
 import { ApiContext } from "../../utils/Framework/XcmHelper";
@@ -82,7 +83,7 @@ describe("Microapps UI withdraw modal tests", () => {
         ],
       },
       Sudo: {
-        Key: userAddress,
+        Key: alice.address,
       },
     });
     await kusama.dev.setStorage({
@@ -92,6 +93,7 @@ describe("Microapps UI withdraw modal tests", () => {
             [userAddress],
             { providers: 1, data: { free: INIT_KSM_RELAY * 1e12 } },
           ],
+          [[alice.address], { providers: 1, data: { free: 10 * 1e12 } }],
         ],
       },
     });
@@ -158,6 +160,13 @@ describe("Microapps UI withdraw modal tests", () => {
       TransactionType.Withdraw,
     );
     expect(isModalWaitingForSignVisible).toBeTruthy();
+    await waitForMicroappsActionNotification(
+      driver,
+      mangata,
+      kusama,
+      TransactionType.Withdraw,
+      4,
+    );
   });
 
   test("Withdraw - input null values", async () => {
