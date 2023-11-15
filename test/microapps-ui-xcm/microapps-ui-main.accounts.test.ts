@@ -62,8 +62,8 @@ beforeAll(async () => {
 
 describe.each`
   userAddressString                                     | mnemonicKey                | accType
-  ${"5HRSqs882zwRmzY3zyXVFrWim6aMKS2c7a35zdAwWpjp9SVi"} | ${mnemonicPolkadotEcdsa}   | ${"ed25519"}
-  ${"5CowkvkRjFgffQ2Nb7W5mv1e5Ee7fujmtX9db4hnfPZV8jnf"} | ${mnemonicPolkadotEd25519} | ${"ecdsa"}
+  ${"5HRSqs882zwRmzY3zyXVFrWim6aMKS2c7a35zdAwWpjp9SVi"} | ${mnemonicPolkadotEcdsa}   | ${"ecdsa"}
+  ${"5CowkvkRjFgffQ2Nb7W5mv1e5Ee7fujmtX9db4hnfPZV8jnf"} | ${mnemonicPolkadotEd25519} | ${"ed25519"}
 `(
   "Microapps UI alternative accounts tests",
   ({ userAddressString, mnemonicKey, accType }) => {
