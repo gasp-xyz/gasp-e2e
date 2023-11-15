@@ -102,11 +102,11 @@ export function getEnvironmentRequiredVars() {
     ? process.env.MNEMONIC_POLK
     : "oh oh";
 
-  const mnemonicPolkadotEd25519 = process.env.MNEMONIC_POLK
+  const mnemonicPolkadotEd25519 = process.env.MNEMONIC_POLK_ED25519
     ? process.env.MNEMONIC_POLK_ED25519
     : "oh oh";
 
-  const mnemonicPolkadotEcdsa = process.env.MNEMONIC_POLK
+  const mnemonicPolkadotEcdsa = process.env.MNEMONIC_POLK_ECDSA
     ? process.env.MNEMONIC_POLK_ECDSA
     : "oh oh";
 
