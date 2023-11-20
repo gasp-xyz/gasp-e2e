@@ -11,7 +11,7 @@ const endpoints = {
   mangata: "wss://kusama-archive.mangata.online",
   bifrost: "wss://bifrost-parachain.api.onfinality.io/public-ws",
   turing: "wss://rpc.turing.oak.tech",
-  moonriver: "wss://wss.moonriver.moonbeam.network",
+  moonriver: "wss://moonriver-rpc.dwellir.com",
 };
 
 const toNumber = (value: string | undefined): number | undefined => {
