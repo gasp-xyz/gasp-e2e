@@ -1,6 +1,6 @@
 /*
  *
- * @group microappsXCM
+ * @group microappsWithdraw
  */
 import { jest } from "@jest/globals";
 import { Keyring } from "@polkadot/api";
@@ -13,7 +13,7 @@ import {
   importPolkadotExtension,
 } from "../../utils/frontend/utils/Helper";
 import { AssetWallet, User } from "../../utils/User";
-import { getEnvironmentRequiredVars } from "../../utils/utils";
+import { getEnvironmentRequiredVars, sleep } from "../../utils/utils";
 import { KSM_ASSET_ID, MGA_ASSET_ID } from "../../utils/Constants";
 import { Node } from "../../utils/Framework/Node/Node";
 import "dotenv/config";
@@ -26,7 +26,11 @@ import {
 import { WalletWrapper } from "../../utils/frontend/microapps-pages/WalletWrapper";
 import { ApiContext } from "../../utils/Framework/XcmHelper";
 import XcmNetworks from "../../utils/Framework/XcmNetworks";
-import { connectVertical } from "@acala-network/chopsticks";
+import {
+  BuildBlockMode,
+  connectParachains,
+  connectVertical,
+} from "@acala-network/chopsticks";
 import { devTestingPairs } from "../../utils/setup";
 import { AssetId } from "../../utils/ChainSpecs";
 import { BN_THOUSAND } from "@mangata-finance/sdk";
@@ -52,12 +56,24 @@ const INIT_KSM_RELAY = 15;
 describe("Microapps UI withdraw modal tests", () => {
   let kusama: ApiContext;
   let mangata: ApiContext;
+  let turing: ApiContext;
   let alice: KeyringPair;
 
   beforeAll(async () => {
-    kusama = await XcmNetworks.kusama({ localPort: 9944 });
-    mangata = await XcmNetworks.mangata({ localPort: 9946 });
+    kusama = await XcmNetworks.kusama({
+      buildBlockMode: BuildBlockMode.Instant,
+      localPort: 9944,
+    });
+    mangata = await XcmNetworks.mangata({
+      buildBlockMode: BuildBlockMode.Instant,
+      localPort: 9946,
+    });
+    turing = await XcmNetworks.turing({
+      buildBlockMode: BuildBlockMode.Instant,
+      localPort: 9948,
+    });
     await connectVertical(kusama.chain, mangata.chain);
+    await connectParachains([turing.chain, mangata.chain]);
     alice = devTestingPairs().alice;
     StashServiceMockSingleton.getInstance().startMock();
 
@@ -73,6 +89,10 @@ describe("Microapps UI withdraw modal tests", () => {
           [[userAddress, { token: 4 }], { free: 10 * 1e12 }],
           [
             [userAddress, { token: 0 }],
+            { free: AssetId.Mgx.unit.mul(BN_THOUSAND).toString() },
+          ],
+          [
+            [userAddress, { token: 5 }],
             { free: AssetId.Mgx.unit.mul(BN_THOUSAND).toString() },
           ],
           [[alice.address, { token: 4 }], { free: 10 * 1e12 }],
@@ -128,7 +148,7 @@ describe("Microapps UI withdraw modal tests", () => {
     const withdrawModal = new WithdrawModal(driver);
     const isModalVisible = await withdrawModal.isModalVisible();
     expect(isModalVisible).toBeTruthy();
-
+    await sleep(220000000);
     await withdrawModal.openChainList();
     await withdrawModal.selectChain("Kusama");
     await withdrawModal.openTokensList();

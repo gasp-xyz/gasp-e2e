@@ -1,6 +1,6 @@
 /*
  *
- * @group microappsXCM
+ * @group microappsPools
  */
 import { jest } from "@jest/globals";
 import { WebDriver } from "selenium-webdriver";
