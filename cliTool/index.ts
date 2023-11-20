@@ -149,11 +149,11 @@ async function app(): Promise<any> {
               await joinAsCandidate(
                 answers.user,
                 liq?.toNumber(),
-                new BN(amount)
+                new BN(amount),
               );
               console.log("Done");
               return app();
-            }
+            },
           );
       }
       if (answers.option.includes("Join as candidate")) {
@@ -263,7 +263,7 @@ async function app(): Promise<any> {
             const user = new User(keyring, answers.user);
             const result = JSON.parse(JSON.stringify(collators)).find(
               (x: { toString: () => string }) =>
-                x.toString() === user.keyRingPair.address
+                x.toString() === user.keyRingPair.address,
             );
             console.info(result?.toString());
             console.info(
@@ -394,7 +394,7 @@ async function app(): Promise<any> {
               const user = answers.user;
               await createCustomPool(mgaBig, ratio, user);
               return app();
-            }
+            },
           );
       }
       if (answers.option.includes("createACouncil")) {
@@ -457,16 +457,16 @@ async function app(): Promise<any> {
             }) => {
               await userAggregatesOn(
                 answers.userAggregating,
-                answers.userWhoDelegates
+                answers.userWhoDelegates,
               );
               console.log("Done");
               return app();
-            }
+            },
           );
       }
       if (answers.option.includes("listen token balance changes")) {
         await subscribeAndPrintTokenChanges(
-          getEnvironmentRequiredVars().chainUri
+          getEnvironmentRequiredVars().chainUri,
         );
       }
       if (answers.option.includes("provisionWith100Users")) {
@@ -483,8 +483,8 @@ async function app(): Promise<any> {
         const ass = encodeAddress(
           u8aConcat(stringToU8a("para"), bnToU8a(2110), EMPTY_U8A_32).subarray(
             0,
-            32
-          )
+            32,
+          ),
         );
         console.log(ass);
       }
@@ -513,8 +513,8 @@ async function app(): Promise<any> {
           api.tx.crowdloan.associateNativeIdentity(
             accMga.address,
             relayAcc.address,
-            signature
-          )
+            signature,
+          ),
         );
         await Sudo.batchAsSudoFinalized(tx);
         console.log(message.toString());

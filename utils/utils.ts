@@ -594,8 +594,8 @@ export async function printCandidatePowers() {
         "< -- > liq" +
         info[index][1].toString() +
         " -- " +
-        info[index][2].toString()
-    )
+        info[index][2].toString(),
+    ),
   );
   //console.log(JSON.stringify(sorted));
 }

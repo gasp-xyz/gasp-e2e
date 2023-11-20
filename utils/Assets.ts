@@ -205,7 +205,7 @@ export class Assets {
   static mintTokenAddress(
     asset: BN,
     user: string,
-    amount: BN = this.DEFAULT_AMOUNT
+    amount: BN = this.DEFAULT_AMOUNT,
   ): Extrinsic {
     return api.tx.tokens.mint(asset, user, amount);
   }

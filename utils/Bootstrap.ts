@@ -214,7 +214,7 @@ export async function updatePromoteBootstrapPool(
     sudoUser.keyRingPair,
     {
       nonce: await getCurrentNonce(sudoUser.keyRingPair.address),
-    }
+    },
   );
 }
 export class Bootstrap {

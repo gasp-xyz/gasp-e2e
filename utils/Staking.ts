@@ -117,16 +117,16 @@ export class Staking {
   }
   static updateCandidateAggregator(testUser: User | string): Extrinsic {
     return api.tx.parachainStaking.updateCandidateAggregator(
-      testUser.toString()
+      testUser.toString(),
     );
   }
   static aggregatorUpdateMetadata(
     collators: User[] | string[],
-    action: AggregatorOptions = AggregatorOptions.ExtendApprovedCollators
+    action: AggregatorOptions = AggregatorOptions.ExtendApprovedCollators,
   ): Extrinsic {
     return api.tx.parachainStaking.aggregatorUpdateMetadata(
       collators.flatMap((user) => user.toString()),
-      action
+      action,
     );
   }
 
