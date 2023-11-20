@@ -1,4 +1,4 @@
-import { WebDriver } from "selenium-webdriver";
+import { By, WebDriver } from "selenium-webdriver";
 import {
   areDisplayed,
   buildDataTestIdXpath,
@@ -23,6 +23,7 @@ const DIV_POOL_TVL = "tvl";
 const DIV_POOL_VOLUME = "volume";
 const DIV_POOL_REWARDS = "monthly-rewards";
 const BUTTON_ADD_LIQ = "add-liquidity";
+const BUTTON_SUBMIT_LIQ = "submit-button";
 const MY_POOL_POSTION_AMNT = "my-pool-position-amount";
 const ADD_LIQ_POOL_WIDGET = "provide-liquidity-widget";
 const DIV_FIRST_TOKEN_CONTAINER = "firstToken-container";
@@ -51,6 +52,31 @@ export class LiqPoolDetils {
   async clickAddLiquidity() {
     const itemXpath = buildDataTestIdXpath(BUTTON_ADD_LIQ);
     await clickElement(this.driver, itemXpath);
+  }
+
+  async clickSubmitLiquidity() {
+    const itemXpath = buildDataTestIdXpath(BUTTON_SUBMIT_LIQ);
+    await clickElement(this.driver, itemXpath);
+  }
+
+  async waitAddLiqBtnVisible(timeout = 20000) {
+    const itemXpath = buildDataTestIdXpath(BUTTON_SUBMIT_LIQ);
+    const startTime = Date.now();
+    const endTime = startTime + timeout;
+
+    while (Date.now() < endTime) {
+      try {
+        const element = await this.driver.findElement(By.xpath(itemXpath));
+        const isElementVisible = await element.isDisplayed();
+        const buttonClass = await element.getAttribute("class");
+        const buttonClassIncludes = buttonClass.includes("bg-btn-primary");
+        if (isElementVisible && buttonClassIncludes) {
+          return;
+        }
+      } catch (error) {
+        // Element not found or other error occurred, continue waiting
+      }
+    }
   }
 
   async isAddLiqPoolWidgetVisible() {
