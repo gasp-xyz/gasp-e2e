@@ -81,7 +81,7 @@ export async function setupACouncilWithDefaultUsers() {
     Assets.mintNative(testUser3, amount),
     Assets.mintNative(testUser4, amount),
     Assets.mintNative(testUser5, amount),
-    Assets.mintNative(testUser6, amount)
+    Assets.mintNative(testUser6, amount),
   );
   await Sudo.asSudoFinalized(
     Sudo.sudo(
@@ -161,16 +161,16 @@ export async function setupPoolWithRewardsForDefaultUsers() {
     ),
     Sudo.sudoAs(
       testUser4,
-      Xyk.mintLiquidity(MGA_ASSET_ID, token2, amount.divn(10), amount)
+      Xyk.mintLiquidity(MGA_ASSET_ID, token2, amount.divn(10), amount),
     ),
     Sudo.sudoAs(
       testUser5,
-      Xyk.mintLiquidity(MGA_ASSET_ID, token2, amount.divn(10), amount)
+      Xyk.mintLiquidity(MGA_ASSET_ID, token2, amount.divn(10), amount),
     ),
     Sudo.sudoAs(
       testUser6,
-      Xyk.mintLiquidity(MGA_ASSET_ID, token2, amount.divn(10), amount)
-    )
+      Xyk.mintLiquidity(MGA_ASSET_ID, token2, amount.divn(10), amount),
+    ),
   );
   await waitForRewards(testUser4, liqId);
   return { users, liqId, sudo, token2 };
@@ -179,7 +179,7 @@ export async function setupTokenWithRewardsForDefaultUsers() {
   await setupApi();
   await setupUsers();
   const amount = (await api?.consts.parachainStaking.minCandidateStk)?.muln(
-    1000
+    1000,
   )!;
   const keyring = new Keyring({ type: "sr25519" });
   const testUser1 = new User(keyring, "//Bob");
@@ -212,7 +212,7 @@ export async function setupTokenWithRewardsForDefaultUsers() {
     Assets.mintNative(testUser3, amount),
     Assets.mintNative(testUser4, amount),
     Assets.mintNative(testUser5, amount),
-    Assets.mintNative(testUser6, amount)
+    Assets.mintNative(testUser6, amount),
   );
   const liqId = token2;
   await Sudo.batchAsSudoFinalized(
@@ -222,7 +222,7 @@ export async function setupTokenWithRewardsForDefaultUsers() {
     Sudo.sudoAs(testUser3, Xyk.activateLiquidity(token2, amount.divn(10))),
     Sudo.sudoAs(testUser4, Xyk.activateLiquidity(token2, amount.divn(10))),
     Sudo.sudoAs(testUser5, Xyk.activateLiquidity(token2, amount.divn(10))),
-    Sudo.sudoAs(testUser6, Xyk.activateLiquidity(token2, amount.divn(10)))
+    Sudo.sudoAs(testUser6, Xyk.activateLiquidity(token2, amount.divn(10))),
   );
   await waitForRewards(testUser4, liqId);
   return { users, liqId, sudo, token2 };
@@ -254,7 +254,7 @@ export async function burnAllTokensFromPool(liqToken: BN) {
     const burnTx = Xyk.burnLiquidity(
       pool[0],
       pool[1],
-      amounts.free.add(amounts.reserved)
+      amounts.free.add(amounts.reserved),
     );
     txs.push(Sudo.sudoAs(user, burnTx));
   }
@@ -263,7 +263,7 @@ export async function burnAllTokensFromPool(liqToken: BN) {
 export async function joinAsCandidate(
   userName = "//Charlie",
   liqId = 9,
-  amount = new BN(0)
+  amount = new BN(0),
 ) {
   await setupUsers();
   await setupApi();
@@ -277,7 +277,7 @@ export async function joinAsCandidate(
     .length;
   //const amountToJoin = new BN("5000000000000000000000");
   let amountToJoin = new BN(
-    await api!.consts.parachainStaking.minCandidateStk!.toString()
+    await api!.consts.parachainStaking.minCandidateStk!.toString(),
   ).addn(1234567);
   if (amount.gt(BN_ZERO)) {
     amountToJoin = amount;
@@ -291,7 +291,7 @@ export async function joinAsCandidate(
     const tokensToMint = await calculate_buy_price_id_rpc(
       tokenInPool,
       MGA_ASSET_ID,
-      amountToJoin
+      amountToJoin,
     );
     console.info("Token to  mint: " + tokensToMint.toString());
     await Sudo.batchAsSudoFinalized(
@@ -303,13 +303,13 @@ export async function joinAsCandidate(
           MGA_ASSET_ID,
           tokenInPool,
           amountToJoin.muln(2),
-          amountToJoin.muln(100000)
-        )
-      )
+          amountToJoin.muln(100000),
+        ),
+      ),
     );
   } else {
     await Sudo.batchAsSudoFinalized(
-      Assets.mintToken(BN_ZERO, user, amountToJoin.muln(100000))
+      Assets.mintToken(BN_ZERO, user, amountToJoin.muln(100000)),
     );
     amountToJoin = amountToJoin.muln(2);
     orig = tokenOriginEnum.AvailableBalance;
@@ -378,9 +378,9 @@ export async function joinAFewCandidates(numCandidates = 50, liqId = 9) {
           MGA_ASSET_ID,
           tokenInPool,
           amountToJoin.muln(10),
-          MAX_BALANCE
-        )
-      )
+          MAX_BALANCE,
+        ),
+      ),
     );
   }
   await Sudo.batchAsSudoFinalized(...txs);
@@ -423,7 +423,7 @@ export async function giveTokensToUser(userName = "//Charlie", liqId = 9) {
     const tokensToMint = await calculate_buy_price_id_rpc(
       tokenInPool,
       MGA_ASSET_ID,
-      amountToJoin
+      amountToJoin,
     );
     console.info("Token to  mint: " + tokensToMint.toString());
     await Sudo.batchAsSudoFinalized(
@@ -435,9 +435,9 @@ export async function giveTokensToUser(userName = "//Charlie", liqId = 9) {
           MGA_ASSET_ID,
           tokenInPool,
           amountToJoin.muln(2),
-          tokensToMint.muln(4)
-        )
-      )
+          tokensToMint.muln(4),
+        ),
+      ),
     );
   } else {
     await Sudo.batchAsSudoFinalized(Assets.mintToken(liq, user));
@@ -474,9 +474,11 @@ export async function fillWithDelegators(
     let tokensToMint = await calculate_buy_price_id_rpc(
       tokenInPool,
       MGA_ASSET_ID,
-      amountToJoin
+      amountToJoin,
     );
-    if (tokensToMint.eqn(0)) tokensToMint = amountToJoin.muln(10000);
+    if (tokensToMint.eqn(0)) {
+      tokensToMint = amountToJoin.muln(10000);
+    }
     const txs = [];
     const users = [];
     for (let index = 0; index < numDelegators; index++) {
@@ -491,9 +493,9 @@ export async function fillWithDelegators(
             MGA_ASSET_ID,
             tokenInPool,
             amountToJoin.muln(2),
-            MAX_BALANCE
-          )
-        )
+            MAX_BALANCE,
+          ),
+        ),
       );
     }
     await Sudo.batchAsSudoFinalized(...txs);
@@ -510,10 +512,10 @@ export async function fillWithDelegators(
             // @ts-ignore - Mangata bond operation has 4 params, somehow is inheriting the bond operation from polkadot :S
             new BN(candidateDelegationCount).addn(index),
             // @ts-ignore
-            new BN(totalDelegators).addn(index)
+            new BN(totalDelegators).addn(index),
           ),
-          users[index].keyRingPair
-        )
+          users[index].keyRingPair,
+        ),
       );
     }
     await Promise.all(joins);
@@ -540,10 +542,10 @@ export async function fillWithDelegators(
             // @ts-ignore - Mangata bond operation has 4 params, somehow is inheriting the bond operation from polkadot :S
             new BN(candidateDelegationCount).addn(index),
             // @ts-ignore
-            new BN(totalDelegators).addn(index)
+            new BN(totalDelegators).addn(index),
           ),
-          users[index].keyRingPair
-        )
+          users[index].keyRingPair,
+        ),
       );
     }
     await Promise.all(joins);
@@ -617,7 +619,7 @@ export async function createCustomPool(div = true, ratio = 1, user = "//Bob") {
 }
 export function getStorageKey(
   moduleName: string,
-  storageItemName: string
+  storageItemName: string,
 ): string {
   return (
     xxhashAsHex(moduleName, 128) +
@@ -631,7 +633,7 @@ function isHexPrefixed(str: string): boolean {
   return str.slice(0, 2) === "0x";
 }
 export async function subscribeAndPrintTokenChanges(
-  ws = "ws://127.0.0.1:9946"
+  ws = "ws://127.0.0.1:9946",
 ) {
   await setupApi();
   await setupUsers();
@@ -669,11 +671,11 @@ export async function subscribeAndPrintTokenChanges(
           ) {
             console.log("BEFORE:" + getPrint(user, currentState.get(user)!));
             const diffSentence = `Diff: free: ${new BN(status.free).sub(
-              new BN(currentState.get(user)!.free)
+              new BN(currentState.get(user)!.free),
             )} - , reserved: ${new BN(status.reserved).sub(
-              new BN(currentState.get(user)!.reserved)
+              new BN(currentState.get(user)!.reserved),
             )} - , frozen: ${new BN(status.frozen).sub(
-              new BN(currentState.get(user)!.frozen)
+              new BN(currentState.get(user)!.frozen),
             )} `;
             currentState.set(user, status);
             console.log(" AFTER:" + getPrint(user, currentState.get(user)!));
@@ -714,20 +716,20 @@ export async function findAllRewardsAndClaim() {
     const status = {
       tokenId: new BN(element[0].toHuman()[1]),
       activatedAmount: hexToBn(
-        JSON.parse(element[1].toString()).activatedAmount
+        JSON.parse(element[1].toString()).activatedAmount,
       ),
       lastCheckpoint: hexToBn(JSON.parse(element[1].toString()).lastCheckpoint),
       missingAtLastCheckpoint: hexToBn(
-        JSON.parse(element[1].toString()).missingAtLastCheckpoint
+        JSON.parse(element[1].toString()).missingAtLastCheckpoint,
       ),
       poolRatioAtLastCheckpoint: hexToBn(
-        JSON.parse(element[1].toString()).poolRatioAtLastCheckpoint
+        JSON.parse(element[1].toString()).poolRatioAtLastCheckpoint,
       ),
       rewardsAlreadyClaimed: hexToBn(
-        JSON.parse(element[1].toString()).rewardsAlreadyClaimed
+        JSON.parse(element[1].toString()).rewardsAlreadyClaimed,
       ),
       rewardsNotYetClaimed: hexToBn(
-        JSON.parse(element[1].toString()).rewardsNotYetClaimed
+        JSON.parse(element[1].toString()).rewardsNotYetClaimed,
       ),
     } as RewardsInfo;
     usersInfo.push([user, status]);
@@ -765,7 +767,7 @@ export async function findAllRewardsAndClaim() {
     txs.push(tx);
     if (txs.length > 100) {
       const methodSudoAsDone = (await Sudo.batchAsSudoFinalized(...txs)).filter(
-        (extrinsicResult) => extrinsicResult.method === "SudoAsDone"
+        (extrinsicResult) => extrinsicResult.method === "SudoAsDone",
       );
       txs = [];
       methodSudoAsDone.forEach((element: any) => {
@@ -777,7 +779,7 @@ export async function findAllRewardsAndClaim() {
     }
   }
   const methodSudoAsDone = (await Sudo.batchAsSudoFinalized(...txs)).filter(
-    (extrinsicResult) => extrinsicResult.method === "SudoAsDone"
+    (extrinsicResult) => extrinsicResult.method === "SudoAsDone",
   );
   methodSudoAsDone.forEach((element: any) => {
     if (element.event.data[0].isErr !== false) {
@@ -798,14 +800,14 @@ export async function getTokensAccountDataStorage(ws = "ws://127.0.0.1:9946") {
     .flatMap((item: any) =>
       item[1].map((element: any) => {
         return [item[0], element];
-      })
+      }),
     );
   console.info(JSON.stringify(storageToListen));
 
   for (let dataId = 0; dataId < storageToListen.length; dataId++) {
     const key = getStorageKey(
       storageToListen[dataId][0],
-      storageToListen[dataId][1]
+      storageToListen[dataId][1],
     );
     const allKeys = [];
     let cont = true;
@@ -845,7 +847,7 @@ export async function testTokensForUsers(userName = "//Eve") {
   tokens.forEach((token: any) => {
     if (
       !(JSON.parse(JSON.stringify(token[1])).name as string).includes(
-        "Liquidity"
+        "Liquidity",
       )
     ) {
       txs.push(Assets.mintToken(new BN(token[0]), user));
@@ -882,14 +884,14 @@ export async function createProposal() {
         KSM_ASSET_ID,
         account,
         //@ts-ignore
-        new BN(dict[account]!)
-      )
+        new BN(dict[account]!),
+      ),
     );
   });
   Object.keys(dict2).forEach((account) => {
     txs.push(
       //@ts-ignore
-      Assets.mintTokenAddress(KSM_ASSET_ID, account, new BN(dict2[account]!))
+      Assets.mintTokenAddress(KSM_ASSET_ID, account, new BN(dict2[account]!)),
     );
   });
   await Sudo.batch(...txs);
@@ -903,32 +905,34 @@ export async function migrate() {
   const storageToMigrate1 = allPallets
     .filter(
       (x: any) =>
-        x[0] === "Crowdloan" || x[0] === "AssetRegistry" || x[0] === "Tokens"
+        x[0] === "AssetRegistry" ||
+        x[0] === "Tokens" ||
+        x[0] === "Issuance" ||
+        x[0] === "Xyk" ||
+        x[0] === "MultiPurposeLiquidity",
     )
     .flatMap((item: any) =>
       item[1].map((element: any) => {
         return [item[0], element];
-      })
+      }),
     );
   const storageToMigrate2 = allPallets
     .filter(
       (x: any) =>
-        x[0] === "Issuance" ||
-        x[0] === "Xyk" ||
         x[0] === "ProofOfStake" ||
         x[0] === "RewardsInfo" ||
-        x[0] === "MultiPurposeLiquidity" ||
         x[0] === "Vesting" ||
         x[0] === "Bootstrap" ||
-        x[0] === "OrmlXcm"
-      //        x[0] === "System"
+        x[0] === "OrmlXcm" ||
+        x[0] === "Crowdloan" ||
+        x[0] === "System",
     )
     .flatMap((item: any) =>
       item[1].map((element: any) => {
         return [item[0], element];
-      })
+      }),
     );
-  const storageToMigrate = storageToMigrate1 as []; //.concat(storageToMigrate2);
+  const storageToMigrate = (storageToMigrate1 as []).concat(storageToMigrate2);
   console.info(JSON.stringify(storageToMigrate2));
   //  const data = [
   //    ["Xyk", "RewardsInfo"],
@@ -944,10 +948,10 @@ export async function migrate() {
   for (let dataId = 0; dataId < storageToMigrate.length; dataId++) {
     const key = getStorageKey(
       storageToMigrate[dataId][0],
-      storageToMigrate[dataId][1]
+      storageToMigrate[dataId][1],
     );
     console.warn(
-      "::: starting with :::" + JSON.stringify(storageToMigrate[dataId])
+      "::: starting with :::" + JSON.stringify(storageToMigrate[dataId]),
     );
     let allKeys = [];
     let cont = true;
@@ -962,7 +966,7 @@ export async function migrate() {
       const nextkeys = await api.rpc.state.getKeysPaged(
         key,
         100,
-        keys[keys.length - 1]
+        keys[keys.length - 1],
       );
       if (loop % 8 === 0) {
         const txs: Extrinsic[] = [];
@@ -1010,7 +1014,7 @@ export async function listStorages(ws = "wss://kusama-archive.mangata.online") {
   res.forEach((pallet) => {
     const storageItems = jsonpath.query(
       metaJson,
-      `$..pallets[?(@.name =="${pallet}")].storage.items[*].name`
+      `$..pallets[?(@.name =="${pallet}")].storage.items[*].name`,
     );
     result.push([pallet, storageItems]);
   });
@@ -1032,7 +1036,10 @@ export async function provisionWith100Users() {
       txs.push(Assets.mintToken(tokenId, user, Assets.MG_UNIT.muln(100)));
       txs.push(Assets.mintNative(user, Assets.MG_UNIT.muln(100000)));
       txs.push(
-        Sudo.sudoAs(user, Bootstrap.provision(tokenId, Assets.MG_UNIT.muln(10)))
+        Sudo.sudoAs(
+          user,
+          Bootstrap.provision(tokenId, Assets.MG_UNIT.muln(10)),
+        ),
       );
     }
     await Sudo.batchAsSudoFinalized(...txs);
@@ -1045,8 +1052,8 @@ export async function provisionWith100Users() {
       txs.push(
         Sudo.sudoAs(
           user,
-          Bootstrap.provision(secToken, Assets.MG_UNIT.muln(10))
-        )
+          Bootstrap.provision(secToken, Assets.MG_UNIT.muln(10)),
+        ),
       );
     }
     await Sudo.batchAsSudoFinalized(...txs);
@@ -1054,7 +1061,7 @@ export async function provisionWith100Users() {
 }
 export async function userAggregatesOn(
   userAggregating: string,
-  userWhoDelegates: string
+  userWhoDelegates: string,
 ) {
   await setupApi();
   await setupUsers();
@@ -1062,12 +1069,12 @@ export async function userAggregatesOn(
     userAggregating,
     Staking.aggregatorUpdateMetadata(
       [userWhoDelegates],
-      AggregatorOptions.ExtendApprovedCollators
-    )
+      AggregatorOptions.ExtendApprovedCollators,
+    ),
   );
   const tx2 = Sudo.sudoAsWithAddressString(
     userWhoDelegates,
-    Staking.updateCandidateAggregator(userAggregating)
+    Staking.updateCandidateAggregator(userAggregating),
   );
   await Sudo.batchAsSudoFinalized(tx1, tx2);
 }
@@ -1087,7 +1094,7 @@ export async function replaceByStateCall(
     { paramType: "TokenId", paramValue: "8" },
   ],
   module = "xyk",
-  returnType = "XYKRpcResult"
+  returnType = "XYKRpcResult",
 ) {
   await setupApi();
   await setupUsers();
