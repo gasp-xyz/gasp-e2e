@@ -9,6 +9,7 @@ import { Assets } from "./Assets";
 import { setupApi } from "./setup";
 import { Sudo } from "./sudo";
 import { testLog } from "./Logger";
+import { api, Extrinsic } from "./setup";
 import { BN } from "@polkadot/util";
 
 export async function waitForBootstrapStatus(
@@ -215,4 +216,9 @@ export async function updatePromoteBootstrapPool(
       nonce: await getCurrentNonce(sudoUser.keyRingPair.address),
     },
   );
+}
+export class Bootstrap {
+  static provision(tokenId: BN, amount: BN): Extrinsic {
+    return api.tx.bootstrap.provision(tokenId, amount);
+  }
 }

@@ -580,10 +580,14 @@ export async function printCandidatePowers() {
   for (let index = 0; index < info.length; index++) {
     const stakingInfo = info[index];
     const poolStatus = await getStakingLiquidityTokens(stakingInfo[1]);
-    const power = stringToBN(stakingInfo[2])
-      .mul(stringToBN(poolStatus[0]))
-      .div(stringToBN(poolStatus[1]));
-    info[index].push(power.toString());
+    if (poolStatus) {
+      const power = stringToBN(stakingInfo[2])
+        .mul(stringToBN(poolStatus[0]))
+        .div(stringToBN(poolStatus[1]));
+      info[index].push(power.toString());
+    } else {
+      info[index].push(new BN(info[index][2]).divn(2));
+    }
   }
 
   const sorted = info.sort((a, b) =>
@@ -598,7 +602,9 @@ export async function printCandidatePowers() {
         " - " +
         index +
         "< -- > liq" +
-        info[index][1].toString(),
+        info[index][1].toString() +
+        " -- " +
+        info[index][2].toString(),
     ),
   );
   //console.log(JSON.stringify(sorted));

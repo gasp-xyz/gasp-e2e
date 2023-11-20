@@ -202,6 +202,13 @@ export class Assets {
       api.tx.tokens.mint(asset, user.keyRingPair.address, amount),
     );
   }
+  static mintTokenAddress(
+    asset: BN,
+    user: string,
+    amount: BN = this.DEFAULT_AMOUNT,
+  ): Extrinsic {
+    return api.tx.tokens.mint(asset, user, amount);
+  }
 
   static transfer(target: User, tokenId: BN, amount: BN): Extrinsic {
     return api.tx.tokens.transfer(target.keyRingPair.address, tokenId, amount);

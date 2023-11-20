@@ -65,7 +65,9 @@ export class User {
         .info(`name: ${this.name}, address: ${this.keyRingPair.address}`);
     }
   }
-
+  toString() {
+    return this.keyRingPair.address;
+  }
   addFromMnemonic(keyring: Keyring, mnemonic: string) {
     this.keyRingPair = keyring.addFromMnemonic(mnemonic);
     this.name = "mnemonic_created_account";
