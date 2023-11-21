@@ -1,5 +1,5 @@
 /* eslint-disable no-loop-func */
-import { MangataGenericEvent } from "@mangata-finance/sdk";
+import { BN_ZERO, MangataGenericEvent } from "@mangata-finance/sdk";
 import { ApiPromise } from "@polkadot/api";
 import { BN } from "@polkadot/util";
 import _, { reject } from "lodash-es";
@@ -166,20 +166,32 @@ export const waitForEvents = async (
 export const waitForRewards = async (
   user: User,
   liquidityAssetId: BN,
+  thirdPartyRewardToken: BN = BN_ZERO,
   max: number = 20,
 ) =>
   new Promise(async (resolve) => {
     let numblocks = max;
+    let rewardAmount = BN_ZERO;
+    const initSessionNumber = (
+      await api.query.session.currentIndex()
+    ).toNumber();
     const unsub = await api.rpc.chain.subscribeNewHeads(async (header) => {
       numblocks--;
       const { chainUri } = getEnvironmentRequiredVars();
       const mangata = await getMangataInstance(chainUri);
-      const price = await mangata.rpc.calculateRewardsAmount({
-        address: user.keyRingPair.address,
-        liquidityTokenId: liquidityAssetId.toString(),
-      });
-
-      if (price.gtn(0)) {
+      if (thirdPartyRewardToken.gtn(0)) {
+        const api = await mangata.api();
+        const currentSessionNumber = (
+          await api.query.session.currentIndex()
+        ).toNumber();
+        rewardAmount = new BN(currentSessionNumber - initSessionNumber);
+      } else {
+        rewardAmount = await mangata.rpc.calculateRewardsAmount({
+          address: user.keyRingPair.address,
+          liquidityTokenId: liquidityAssetId.toString(),
+        });
+      }
+      if (rewardAmount.gtn(0)) {
         unsub();
         resolve({});
       } else {
