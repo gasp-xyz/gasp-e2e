@@ -168,11 +168,12 @@ describe("Microapps UI deposit modal tests", () => {
     await setupPageWithState(driver, acc_name);
     const sidebar = new Sidebar(driver);
     await sidebar.clickNavPositions();
-    await sleep(5000);
 
     const positionModal = new PositionModal(driver);
+    await positionModal.waitForPoolPositionsVisible();
     await positionModal.isLiqPoolDisplayed(MGX_ASSET_NAME, KSM_ASSET_NAME);
     await positionModal.clickPromPoolPosition(MGX_ASSET_NAME, KSM_ASSET_NAME);
+    await positionModal.removeLiquidity();
     await sleep(120000);
   });
 
