@@ -1,6 +1,7 @@
 import { BN } from "@polkadot/util";
 import { setupApi } from "./setup";
 import { getApi } from "./api";
+import { PalletProofOfStakeThirdPartyActivationKind } from "@polkadot/types/lookup";
 
 export class ProofOfStake {
   static async rewardPool(
@@ -45,7 +46,10 @@ export class ProofOfStake {
     liquidityTokenId: BN,
     amount: BN,
     rewardToken: BN,
-    useBalanceFrom = null,
+    useBalanceFrom:
+      | PalletProofOfStakeThirdPartyActivationKind
+      | null
+      | string = null,
   ) {
     setupApi();
     const api = getApi();

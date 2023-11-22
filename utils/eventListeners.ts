@@ -8,7 +8,7 @@ import { logEvent, testLog } from "./Logger";
 import { api } from "./setup";
 import { getEventErrorFromSudo } from "./txHandler";
 import { User } from "./User";
-import { getEnvironmentRequiredVars } from "./utils";
+import { getEnvironmentRequiredVars, getThirdPartyRewards } from "./utils";
 import { Codec } from "@polkadot/types/types";
 
 // lets create a enum for different status.
@@ -172,19 +172,16 @@ export const waitForRewards = async (
   new Promise(async (resolve) => {
     let numblocks = max;
     let rewardAmount = BN_ZERO;
-    const initSessionNumber = (
-      await api.query.session.currentIndex()
-    ).toNumber();
     const unsub = await api.rpc.chain.subscribeNewHeads(async (header) => {
       numblocks--;
       const { chainUri } = getEnvironmentRequiredVars();
       const mangata = await getMangataInstance(chainUri);
       if (thirdPartyRewardToken.gtn(0)) {
-        const api = await mangata.api();
-        const currentSessionNumber = (
-          await api.query.session.currentIndex()
-        ).toNumber();
-        rewardAmount = new BN(currentSessionNumber - initSessionNumber);
+        rewardAmount = await getThirdPartyRewards(
+          user.keyRingPair.address,
+          liquidityAssetId,
+          thirdPartyRewardToken,
+        );
       } else {
         rewardAmount = await mangata.rpc.calculateRewardsAmount({
           address: user.keyRingPair.address,

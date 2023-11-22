@@ -17,6 +17,7 @@ import { Xyk } from "./xyk";
 import { getApi, api, initApi } from "./api";
 import { signTx } from "@mangata-finance/sdk";
 import { getBalanceOfPool } from "./txHandler";
+import { Staking, tokenOriginEnum } from "./Staking";
 
 const tokenOrigin = "ActivatedUnstakedReserves"; // "AvailableBalance";
 
@@ -138,59 +139,15 @@ export async function setupPoolWithRewardsForDefaultUsers() {
   await waitForRewards(testUser4, liqId);
   return { users, liqId, sudo, token2 };
 }
-export async function joinAsCandidate(userName = "//Charlie", liqId = 9) {
+export async function joinAsCandidate(
+  userName: string,
+  liqId = 9,
+  tokenOrigin = tokenOriginEnum.AvailableBalance,
+) {
   await setupUsers();
   await setupApi();
-  const api = await getApi();
-  const keyring = new Keyring({ type: "sr25519" });
-  const liq = new BN(liqId);
-  const user = new User(keyring, userName);
-  const liqAssets = await api?.query.parachainStaking.stakingLiquidityTokens();
-  const liqAssetsCount = [...liqAssets!.keys()].length;
-  const numCollators = (await api?.query.parachainStaking.candidatePool())!
-    .length;
-  //const amountToJoin = new BN("5000000000000000000000");
-  const amountToJoin = new BN(
-    await api!.consts.parachainStaking.minCandidateStk!.toString(),
-  ).addn(1234567);
-
-  console.info("amount: " + amountToJoin.toString());
-  const tokenInPool = await (
-    await getLiquidityPool(liq)
-  ).filter((x) => x.gt(MGA_ASSET_ID))[0];
-  const tokensToMint = await calculate_buy_price_id_rpc(
-    tokenInPool,
-    MGA_ASSET_ID,
-    amountToJoin,
-  );
-  console.info("Token to  mint: " + tokensToMint.toString());
-  await Sudo.batchAsSudoFinalized(
-    Assets.mintToken(tokenInPool, user, amountToJoin.muln(100000)),
-    Assets.mintNative(user, amountToJoin.muln(100000)),
-    Sudo.sudoAs(
-      user,
-      Xyk.mintLiquidity(
-        MGA_ASSET_ID,
-        tokenInPool,
-        amountToJoin.muln(2),
-        amountToJoin.muln(100000),
-      ),
-    ),
-  );
-  await signTx(
-    api,
-    // @ts-ignore
-    api?.tx.parachainStaking.joinCandidates(
-      amountToJoin.subn(100),
-      liqId,
-      tokenOrigin,
-      // @ts-ignore - Mangata bond operation has 4 params, somehow is inheriting the bond operation from polkadot :S
-      new BN(numCollators),
-      // @ts-ignore
-      new BN(liqAssetsCount),
-    ),
-    user.keyRingPair,
-  );
+  const user = new User(new Keyring({ type: "sr25519" }), userName);
+  await Staking.joinAsCandidateWithUser(user, new BN(liqId), tokenOrigin);
 }
 export async function joinAFewCandidates(numCandidates = 50, liqId = 9) {
   await setupUsers();

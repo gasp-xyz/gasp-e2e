@@ -42,13 +42,14 @@ describe("Proof of stake tests", () => {
     sudo = new User(keyring, getEnvironmentRequiredVars().sudo);
     [testUser1, testUser2, testUser3] = setupUsers();
     testUser1 = eve;
+    newToken = new BN(18);
     newToken = await Assets.issueAssetToUser(
       sudo,
       Assets.DEFAULT_AMOUNT,
       sudo,
       true,
     );
-    newToken = new BN(18);
+
     await setupApi();
     await Sudo.batchAsSudoFinalized(
       Assets.FinalizeTge(),
