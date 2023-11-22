@@ -13,6 +13,16 @@ export class PositionModal {
     this.driver = driver;
   }
 
+  async chooseOverviewPage() {
+    const overviewPageXpath = buildDataTestIdXpath("Overview-item");
+    await clickElement(this.driver, overviewPageXpath);
+  }
+
+  async chooseLiqMiningPage() {
+    const liqMiningPageXpath = buildDataTestIdXpath("Liquidity-Mining-item");
+    await clickElement(this.driver, liqMiningPageXpath);
+  }
+
   async isLiqPoolDisplayed(firstTokenName: string, secondTokenName: string) {
     const PoolName = "pool-" + firstTokenName + "-" + secondTokenName;
     const itemXpath = buildDataTestIdXpath(PoolName);
@@ -42,6 +52,21 @@ export class PositionModal {
 
   async clickRemoveLiquidity() {
     const submitSwapXpath = buildDataTestIdXpath("submitSwap");
+    await clickElement(this.driver, submitSwapXpath);
+  }
+
+  async waitCalculatingFee() {
+    const feeAmountLocator = buildDataTestIdXpath("fee-amount");
+    await waitForElementVisible(this.driver, feeAmountLocator, 20000);
+  }
+
+  async activateAllLiq() {
+    const activateLiquidityXpath = buildDataTestIdXpath("activate");
+    await clickElement(this.driver, activateLiquidityXpath);
+  }
+
+  async clickConfirmActivating() {
+    const submitSwapXpath = buildDataTestIdXpath("confirm-fee-amount");
     await clickElement(this.driver, submitSwapXpath);
   }
 }

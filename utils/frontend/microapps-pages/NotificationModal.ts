@@ -35,6 +35,7 @@ export enum TransactionType {
   Withdraw,
   AddLiquidity,
   RemoveLiquidity,
+  ActivateLiquidity,
   CreatePool,
   Claim,
 }
@@ -55,6 +56,7 @@ export class NotificationModal {
     [TransactionType.Withdraw]: "-withdraw",
     [TransactionType.AddLiquidity]: "-addLiquidity",
     [TransactionType.Swap]: "-swap",
+    [TransactionType.ActivateLiquidity]: "-activateLP",
     [TransactionType.RemoveLiquidity]: "-removeLiquidity",
     [TransactionType.Claim]: "-claim",
     [TransactionType.CreatePool]: "-createPool",

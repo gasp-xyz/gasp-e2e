@@ -181,6 +181,34 @@ describe("Microapps UI deposit modal tests", () => {
     );
   });
 
+  it("Activate liquidity", async () => {
+    await mangata.dev.setStorage({
+      Tokens: {
+        Accounts: [[[userAddress, { token: 5 }], { free: 10 * 1e12 }]],
+      },
+    });
+
+    await setupPageWithState(driver, acc_name);
+    const sidebar = new Sidebar(driver);
+    await sidebar.clickNavPositions();
+
+    const positionModal = new PositionModal(driver);
+    await positionModal.waitForPoolPositionsVisible();
+    await positionModal.isLiqPoolDisplayed(MGX_ASSET_NAME, KSM_ASSET_NAME);
+    await positionModal.clickPromPoolPosition(MGX_ASSET_NAME, KSM_ASSET_NAME);
+    await positionModal.chooseLiqMiningPage();
+    await positionModal.activateAllLiq();
+    await positionModal.waitCalculatingFee();
+    await positionModal.clickConfirmActivating();
+    await waitForMicroappsActionNotification(
+      driver,
+      mangata,
+      kusama,
+      TransactionType.ActivateLiquidity,
+      2,
+    );
+  });
+
   afterEach(async () => {
     const session = await driver.getSession();
     await addExtraLogs(
