@@ -1,6 +1,6 @@
 /*
  *
- * @group microappsXCM
+ * @group microappsPosition
  */
 import { jest } from "@jest/globals";
 import { Keyring } from "@polkadot/api";
@@ -12,7 +12,7 @@ import {
   importPolkadotExtension,
 } from "../../utils/frontend/utils/Helper";
 import { AssetWallet, User } from "../../utils/User";
-import { getEnvironmentRequiredVars, sleep } from "../../utils/utils";
+import { getEnvironmentRequiredVars } from "../../utils/utils";
 import { KSM_ASSET_ID, MGA_ASSET_ID } from "../../utils/Constants";
 import { Node } from "../../utils/Framework/Node/Node";
 import "dotenv/config";
@@ -158,10 +158,7 @@ describe("Microapps UI deposit modal tests", () => {
   it("Remove pool liquidity", async () => {
     await mangata.dev.setStorage({
       Tokens: {
-        Accounts: [
-          [[userAddress, { token: 5 }], { free: 10 * 1e12 }],
-          [[userAddress, { token: 8 }], { free: 10 * 1e12 }],
-        ],
+        Accounts: [[[userAddress, { token: 5 }], { free: 10 * 1e12 }]],
       },
     });
 
@@ -173,8 +170,15 @@ describe("Microapps UI deposit modal tests", () => {
     await positionModal.waitForPoolPositionsVisible();
     await positionModal.isLiqPoolDisplayed(MGX_ASSET_NAME, KSM_ASSET_NAME);
     await positionModal.clickPromPoolPosition(MGX_ASSET_NAME, KSM_ASSET_NAME);
-    await positionModal.removeLiquidity();
-    await sleep(1200000);
+    await positionModal.setupRemovableLiquidity();
+    await positionModal.clickRemoveLiquidity();
+    await waitForMicroappsActionNotification(
+      driver,
+      mangata,
+      kusama,
+      TransactionType.RemoveLiquidity,
+      2,
+    );
   });
 
   afterEach(async () => {

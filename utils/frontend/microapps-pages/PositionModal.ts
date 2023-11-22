@@ -28,21 +28,20 @@ export class PositionModal {
 
   async waitForPoolPositionsVisible() {
     const rewardsLocator = buildDataTestIdXpath("user-rewards-panel");
-    await waitForElementVisible(this.driver, rewardsLocator, 10000);
+    await waitForElementVisible(this.driver, rewardsLocator, 8000);
   }
 
-  async removeLiquidity() {
+  async setupRemovableLiquidity() {
     const removeButtonXpath = buildDataTestIdXpath("remove-button");
     await clickElement(this.driver, removeButtonXpath);
-    const removeAmountXpath = buildDataTestIdXpath("removedLiq-percent-input");
-    const removeAmountValue = await this.driver.findElement(
-      By.xpath(removeAmountXpath),
-    );
-    await removeAmountValue.clear();
-    await removeAmountValue.sendKeys("28");
-    await removeAmountValue.clear();
-    await removeAmountValue.sendKeys(28);
-    await removeAmountValue.clear();
-    await removeAmountValue.sendKeys(0.5);
+    const removeAmountXpath = buildDataTestIdXpath("50%-button");
+    await clickElement(this.driver, removeAmountXpath);
+    const feeValueXpath = buildDataTestIdXpath("removing-fee-value");
+    await waitForElementVisible(this.driver, feeValueXpath, 12000);
+  }
+
+  async clickRemoveLiquidity() {
+    const submitSwapXpath = buildDataTestIdXpath("submitSwap");
+    await clickElement(this.driver, submitSwapXpath);
   }
 }
