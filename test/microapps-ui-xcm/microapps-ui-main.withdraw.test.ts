@@ -1,6 +1,6 @@
 /*
  *
- * @group microappsXCM
+ * @group microappsWithdraw
  */
 import { jest } from "@jest/globals";
 import { Keyring } from "@polkadot/api";
@@ -55,8 +55,12 @@ describe("Microapps UI withdraw modal tests", () => {
   let alice: KeyringPair;
 
   beforeAll(async () => {
-    kusama = await XcmNetworks.kusama({ localPort: 9944 });
-    mangata = await XcmNetworks.mangata({ localPort: 9946 });
+    kusama = await XcmNetworks.kusama({
+      localPort: 9944,
+    });
+    mangata = await XcmNetworks.mangata({
+      localPort: 9946,
+    });
     await connectVertical(kusama.chain, mangata.chain);
     alice = devTestingPairs().alice;
     StashServiceMockSingleton.getInstance().startMock();
@@ -73,6 +77,10 @@ describe("Microapps UI withdraw modal tests", () => {
           [[userAddress, { token: 4 }], { free: 10 * 1e12 }],
           [
             [userAddress, { token: 0 }],
+            { free: AssetId.Mgx.unit.mul(BN_THOUSAND).toString() },
+          ],
+          [
+            [userAddress, { token: 5 }],
             { free: AssetId.Mgx.unit.mul(BN_THOUSAND).toString() },
           ],
           [[alice.address, { token: 4 }], { free: 10 * 1e12 }],

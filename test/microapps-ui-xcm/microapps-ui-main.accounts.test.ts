@@ -1,6 +1,6 @@
 /*
  *
- * @group microappsXCM
+ * @group microappsAccounts
  */
 import { jest } from "@jest/globals";
 import { KeyringPair } from "@polkadot/keyring/types";
