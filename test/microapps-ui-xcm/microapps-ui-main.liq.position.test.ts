@@ -174,7 +174,7 @@ describe("Microapps UI deposit modal tests", () => {
     await positionModal.isLiqPoolDisplayed(MGX_ASSET_NAME, KSM_ASSET_NAME);
     await positionModal.clickPromPoolPosition(MGX_ASSET_NAME, KSM_ASSET_NAME);
     await positionModal.removeLiquidity();
-    await sleep(120000);
+    await sleep(1200000);
   });
 
   afterEach(async () => {
