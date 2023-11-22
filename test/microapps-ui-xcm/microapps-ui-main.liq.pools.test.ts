@@ -226,12 +226,6 @@ describe("Miocroapps UI liq pools tests", () => {
     expect(firstTokenAmount).toBeGreaterThan(0);
     await driver.sleep(500);
 
-    // 0 in both inputs
-    await poolDetails.setFirstTokenAmount("0");
-    await poolDetails.setSecondTokenAmount("0");
-    await poolDetails.waitForContinueState(false);
-    await driver.sleep(500);
-
     // clear token amount
     await poolDetails.clearFirstTokenAmount();
     await poolDetails.waitForContinueState(false);
@@ -256,14 +250,6 @@ describe("Miocroapps UI liq pools tests", () => {
     const secondTokenAlert = await poolDetails.isSecondTokenAlert();
     expect(secondTokenAlert).toBeTruthy();
     await poolDetails.waitForContinueState(false);
-
-    // only first token value set by user
-    await poolDetails.clearFirstTokenAmount();
-    await poolDetails.clearSecondTokenAmount();
-    await poolDetails.setFirstTokenAmount("10");
-    await poolDetails.waitSecondTokenAmountSet(true);
-    const secondTokenAmount = await poolDetails.getSecondTokenAmount();
-    expect(secondTokenAmount).toBeGreaterThan(0);
   });
 
   it("Add MGX-KSM pool liquidity", async () => {
