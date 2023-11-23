@@ -29,6 +29,9 @@ import {
   replaceByStateCall,
   burnAllTokensFromPool,
   createProposal,
+  printAllTxsDoneByUser,
+  vote,
+  close,
 } from "../utils/setupsOnTheGo";
 import {
   findErrorMetadata,
@@ -56,6 +59,8 @@ async function app(): Promise<any> {
       choices: [
         "Setup rewards with default users",
         "Create Proposal",
+        "Vote",
+        "CloseProposal",
         "Setup a collator with token",
         "Join as candidate",
         "Fill with candidates",
@@ -84,6 +89,7 @@ async function app(): Promise<any> {
         "testTokensForUsers",
         "rpc_chops",
         "Empty pool created by default users",
+        "Print user txs",
       ],
     })
     .then(async (answers: { option: string | string[] }) => {
@@ -107,6 +113,48 @@ async function app(): Promise<any> {
           ])
           .then(async (answers: { liqToken: string }) => {
             await burnAllTokensFromPool(new BN(answers.liqToken));
+          });
+      }
+      if (answers.option.includes("Vote")) {
+        return inquirer
+          .prompt([
+            {
+              type: "input",
+              name: "proposalId",
+              message: " id",
+              default: "0",
+            },
+          ])
+          .then(async (answers: { proposalId: number }) => {
+            await vote(answers.proposalId);
+          });
+      }
+      if (answers.option.includes("CloseProposal")) {
+        return inquirer
+          .prompt([
+            {
+              type: "input",
+              name: "proposalId",
+              message: " id",
+              default: "0",
+            },
+          ])
+          .then(async (answers: { proposalId: number }) => {
+            await close(answers.proposalId);
+          });
+      }
+      if (answers.option.includes("Print user txs")) {
+        return inquirer
+          .prompt([
+            {
+              type: "input",
+              name: "userAddress",
+              message: "default Alice",
+              default: "5GrwvaEF5zXb26Fz9rcQpDWS57CtERHpNehXCPcNoHGKutQY",
+            },
+          ])
+          .then(async (answers: { userAddress: string }) => {
+            await printAllTxsDoneByUser(answers.userAddress);
           });
       }
       if (answers.option.includes("Setup a collator with token")) {
