@@ -92,11 +92,15 @@ export class Xyk {
     );
   }
 
-  static activateLiquidity(liquidityAssetId: BN, amount: BN): Extrinsic {
+  static activateLiquidity(
+    liquidityAssetId: BN,
+    amount: BN,
+    from: any | null = null,
+  ): Extrinsic {
     return api.tx.proofOfStake.activateLiquidity(
       liquidityAssetId,
       amount,
-      null,
+      from,
     );
   }
 
@@ -120,6 +124,18 @@ export class Xyk {
       liquidityAssetId,
       providedAssetId,
       providedAssetAmount,
+    );
+  }
+
+  static mintLiquidityUsingVested(
+    tokenId: BN,
+    vestingTokensAmount: BN,
+    expectedSecondAssetAmount: BN,
+  ) {
+    return api.tx.xyk.mintLiquidityUsingVestingNativeTokens(
+      vestingTokensAmount,
+      tokenId.toString(),
+      expectedSecondAssetAmount,
     );
   }
 }

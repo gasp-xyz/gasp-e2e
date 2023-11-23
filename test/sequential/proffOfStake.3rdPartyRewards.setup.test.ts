@@ -136,7 +136,7 @@ describe("Proof of stake tests", () => {
     test("Math Error when calculating checkpoint for deactivation", async () => {
       const liqId = await getLiquidityAssetId(MGA_ASSET_ID, newToken);
       testLog.getLog().warn("liqId: " + liqId.toString());
-      await waitForRewards(testUser1, liqId, newToken);
+      await waitForRewards(testUser1, liqId, 20, newToken);
       await signTx(
         getApi(),
         await ProofOfStake.deactivateLiquidityFor3rdpartyRewards(
@@ -163,8 +163,8 @@ describe("Proof of stake tests", () => {
           ExtrinsicResult.ExtrinsicSuccess,
         );
       });
-      await waitForRewards(testUser1, liqId, newToken);
-      await waitForRewards(testUser1, liqId, newToken);
+      await waitForRewards(testUser1, liqId, 20, newToken);
+      await waitForRewards(testUser1, liqId, 20, newToken);
       await signTx(
         getApi(),
         await ProofOfStake.claim3rdpartyRewards(liqId, newToken),

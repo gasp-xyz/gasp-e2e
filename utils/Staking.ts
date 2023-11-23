@@ -9,6 +9,8 @@ import { Sudo } from "./sudo";
 import { Assets } from "./Assets";
 import { Xyk } from "./xyk";
 import { signTx } from "@mangata-finance/sdk";
+import { getEventResultFromMangataTx } from "./txHandler";
+import { ExtrinsicResult } from "./eventListeners";
 
 export enum tokenOriginEnum {
   AvailableBalance = "AvailableBalance",
@@ -173,6 +175,9 @@ export class Staking {
     tokenOrigin: tokenOriginEnum = tokenOriginEnum.AvailableBalance,
   ) {
     const api = await getApi();
+    if (await Staking.isUserInCandidateList(user.keyRingPair.address)) {
+      return;
+    }
     const liq = new BN(liqId);
     const liqAssets =
       await api?.query.parachainStaking.stakingLiquidityTokens();
@@ -199,6 +204,7 @@ export class Staking {
           amountToJoin.muln(100000),
         ),
       ),
+      Sudo.sudoAs(user, Xyk.deactivateLiquidity(liq, amountToJoin)),
     );
     await signTx(
       api,
@@ -214,5 +220,23 @@ export class Staking {
       ),
       user.keyRingPair,
     );
+  }
+  static async delegateWithUser(
+    collatorAddress: string = "",
+    user: User,
+    from: tokenOriginEnum.AvailableBalance,
+  ) {
+    const amountToDelegate = new BN(
+      getApi()!.consts.parachainStaking.minDelegation,
+    ).addn(1234567);
+    await signTx(
+      getApi(),
+      await Staking.delegate(collatorAddress, amountToDelegate, from),
+      user.keyRingPair,
+    ).then((events) => {
+      const res = getEventResultFromMangataTx(events);
+      expect(res.state).toEqual(ExtrinsicResult.ExtrinsicSuccess);
+    });
+    return amountToDelegate;
   }
 }

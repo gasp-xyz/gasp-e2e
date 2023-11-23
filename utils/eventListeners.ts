@@ -166,8 +166,8 @@ export const waitForEvents = async (
 export const waitForRewards = async (
   user: User,
   liquidityAssetId: BN,
-  thirdPartyRewardToken: BN = BN_ZERO,
   max: number = 20,
+  thirdPartyRewardToken: BN = BN_ZERO,
 ) =>
   new Promise(async (resolve) => {
     let numblocks = max;
