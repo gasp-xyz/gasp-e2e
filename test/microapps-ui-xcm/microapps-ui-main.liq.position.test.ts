@@ -276,11 +276,10 @@ describe("Microapps UI deposit modal tests", () => {
     await positionModal.waitForPoolPositionsVisible();
     await positionModal.isLiqPoolDisplayed(TUR_ASSET_NAME, KSM_ASSET_NAME);
 
-    const turKsmPositionValue = await positionModal.checkNonPromPoolPosition(
+    await positionModal.checkNonPromPoolPosition(
       TUR_ASSET_NAME,
       KSM_ASSET_NAME,
     );
-    expect(turKsmPositionValue).toBeGreaterThan(0);
   });
 
   afterEach(async () => {

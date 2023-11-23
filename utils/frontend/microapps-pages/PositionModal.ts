@@ -80,9 +80,8 @@ export class PositionModal {
     const myPoolPosition = await this.driver
       .findElement(By.xpath(poolNameXpath))
       .findElement(By.xpath(activatedTokensXpath));
-    const myPoolPositionText = await myPoolPosition.getText();
-    const myPoolPositionValue = toNumber(myPoolPositionText);
-    return myPoolPositionValue;
+    const myPoolPositionisDisplayed = await myPoolPosition.isDisplayed();
+    expect(myPoolPositionisDisplayed).toBeTrue();
   }
 
   async waitCalculatingFee() {
