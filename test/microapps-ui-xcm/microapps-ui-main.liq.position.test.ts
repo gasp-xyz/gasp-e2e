@@ -13,7 +13,11 @@ import {
 } from "../../utils/frontend/utils/Helper";
 import { AssetWallet, User } from "../../utils/User";
 import { getEnvironmentRequiredVars } from "../../utils/utils";
-import { KSM_ASSET_ID, MGA_ASSET_ID } from "../../utils/Constants";
+import {
+  KSM_ASSET_ID,
+  MGA_ASSET_ID,
+  TUR_ASSET_NAME,
+} from "../../utils/Constants";
 import { Node } from "../../utils/Framework/Node/Node";
 import "dotenv/config";
 import {
@@ -181,7 +185,7 @@ describe("Microapps UI deposit modal tests", () => {
     );
   });
 
-  it("Activate liquidity", async () => {
+  it("Activate and deactivate liquidity", async () => {
     await mangata.dev.setStorage({
       Tokens: {
         Accounts: [[[userAddress, { token: 5 }], { free: 10 * 1e12 }]],
@@ -197,9 +201,10 @@ describe("Microapps UI deposit modal tests", () => {
     await positionModal.isLiqPoolDisplayed(MGX_ASSET_NAME, KSM_ASSET_NAME);
     await positionModal.clickPromPoolPosition(MGX_ASSET_NAME, KSM_ASSET_NAME);
     await positionModal.chooseLiqMiningPage();
+
     await positionModal.activateAllLiq();
     await positionModal.waitCalculatingFee();
-    await positionModal.clickConfirmActivating();
+    await positionModal.clickConfirmFeeAmount();
     await waitForMicroappsActionNotification(
       driver,
       mangata,
@@ -207,6 +212,75 @@ describe("Microapps UI deposit modal tests", () => {
       TransactionType.ActivateLiquidity,
       2,
     );
+
+    await positionModal.deactivateAllLiq();
+    await positionModal.waitCalculatingFee();
+    await positionModal.clickConfirmFeeAmount();
+    await waitForMicroappsActionNotification(
+      driver,
+      mangata,
+      kusama,
+      TransactionType.DeactivateLiquidity,
+      2,
+    );
+  });
+
+  it("User can see liquidity providing details (share of pool) - promoted pool", async () => {
+    await mangata.dev.setStorage({
+      Tokens: {
+        Accounts: [[[userAddress, { token: 5 }], { free: 9000 * 1e12 }]],
+      },
+    });
+
+    await setupPageWithState(driver, acc_name);
+    const sidebar = new Sidebar(driver);
+    await sidebar.clickNavPositions();
+
+    const positionModal = new PositionModal(driver);
+    await positionModal.waitForPoolPositionsVisible();
+    await positionModal.isLiqPoolDisplayed(MGX_ASSET_NAME, KSM_ASSET_NAME);
+    await positionModal.clickPromPoolPosition(MGX_ASSET_NAME, KSM_ASSET_NAME);
+    await positionModal.chooseLiqMiningPage();
+
+    await positionModal.activateAllLiq();
+    await positionModal.waitCalculatingFee();
+    await positionModal.clickConfirmFeeAmount();
+    await waitForMicroappsActionNotification(
+      driver,
+      mangata,
+      kusama,
+      TransactionType.ActivateLiquidity,
+      2,
+    );
+
+    await sidebar.clickNavPositions();
+    const mgxKsmPositionValue = await positionModal.checkPromPoolPosition(
+      MGX_ASSET_NAME,
+      KSM_ASSET_NAME,
+    );
+    expect(mgxKsmPositionValue).toBeGreaterThan(0);
+  });
+
+  it("User can see liquidity providing details (share of pool) - non-promoted pool", async () => {
+    await mangata.dev.setStorage({
+      Tokens: {
+        Accounts: [[[userAddress, { token: 9 }], { free: 9000 * 1e12 }]],
+      },
+    });
+
+    await setupPageWithState(driver, acc_name);
+    const sidebar = new Sidebar(driver);
+    await sidebar.clickNavPositions();
+
+    const positionModal = new PositionModal(driver);
+    await positionModal.waitForPoolPositionsVisible();
+    await positionModal.isLiqPoolDisplayed(TUR_ASSET_NAME, KSM_ASSET_NAME);
+
+    const turKsmPositionValue = await positionModal.checkNonPromPoolPosition(
+      TUR_ASSET_NAME,
+      KSM_ASSET_NAME,
+    );
+    expect(turKsmPositionValue).toBeGreaterThan(0);
   });
 
   afterEach(async () => {

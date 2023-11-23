@@ -5,6 +5,7 @@ import {
   clickElement,
   waitForElementVisible,
 } from "../utils/Helper";
+import toNumber from "lodash-es/toNumber";
 
 export class PositionModal {
   driver: WebDriver;
@@ -55,6 +56,35 @@ export class PositionModal {
     await clickElement(this.driver, submitSwapXpath);
   }
 
+  async checkPromPoolPosition(firstTokenName: string, secondTokenName: string) {
+    const PoolName = "pool-" + firstTokenName + "-" + secondTokenName;
+    const poolNameXpath = buildDataTestIdXpath(PoolName);
+    const activatedTokensXpath = buildDataTestIdXpath(
+      "activated-LP-tokens-value",
+    );
+    const myPoolPosition = await this.driver
+      .findElement(By.xpath(poolNameXpath))
+      .findElement(By.xpath(activatedTokensXpath));
+    const myPoolPositionText = await myPoolPosition.getText();
+    const myPoolPositionValue = toNumber(myPoolPositionText);
+    return myPoolPositionValue;
+  }
+
+  async checkNonPromPoolPosition(
+    firstTokenName: string,
+    secondTokenName: string,
+  ) {
+    const PoolName = "pool-" + firstTokenName + "-" + secondTokenName;
+    const poolNameXpath = buildDataTestIdXpath(PoolName);
+    const activatedTokensXpath = buildDataTestIdXpath("pool-share-value");
+    const myPoolPosition = await this.driver
+      .findElement(By.xpath(poolNameXpath))
+      .findElement(By.xpath(activatedTokensXpath));
+    const myPoolPositionText = await myPoolPosition.getText();
+    const myPoolPositionValue = toNumber(myPoolPositionText);
+    return myPoolPositionValue;
+  }
+
   async waitCalculatingFee() {
     const feeAmountLocator = buildDataTestIdXpath("fee-amount");
     await waitForElementVisible(this.driver, feeAmountLocator, 20000);
@@ -65,7 +95,12 @@ export class PositionModal {
     await clickElement(this.driver, activateLiquidityXpath);
   }
 
-  async clickConfirmActivating() {
+  async deactivateAllLiq() {
+    const activateLiquidityXpath = buildDataTestIdXpath("deactivate");
+    await clickElement(this.driver, activateLiquidityXpath);
+  }
+
+  async clickConfirmFeeAmount() {
     const submitSwapXpath = buildDataTestIdXpath("confirm-fee-amount");
     await clickElement(this.driver, submitSwapXpath);
   }
