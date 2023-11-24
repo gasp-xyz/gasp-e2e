@@ -12,7 +12,7 @@ import {
   importPolkadotExtension,
 } from "../../utils/frontend/utils/Helper";
 import { AssetWallet, User } from "../../utils/User";
-import { getEnvironmentRequiredVars } from "../../utils/utils";
+import { getEnvironmentRequiredVars, sleep } from "../../utils/utils";
 import {
   KSM_ASSET_ID,
   MGA_ASSET_ID,
@@ -53,7 +53,7 @@ const acc_name = "acc_automation";
 const userAddress = "5FeYEhdFzSQP6YWapPC6Myd17zdPba9CXmSptNSTh4Hz9cZ9";
 const INIT_KSM_RELAY = 15;
 
-describe("Microapps UI deposit modal tests", () => {
+describe("Microapps UI position modal tests", () => {
   let kusama: ApiContext;
   let mangata: ApiContext;
 
@@ -276,10 +276,29 @@ describe("Microapps UI deposit modal tests", () => {
     await positionModal.waitForPoolPositionsVisible();
     await positionModal.isLiqPoolDisplayed(TUR_ASSET_NAME, KSM_ASSET_NAME);
 
-    await positionModal.checkNonPromPoolPosition(
+    const turKsmPositionValue = await positionModal.checkNonPromPoolPosition(
       TUR_ASSET_NAME,
       KSM_ASSET_NAME,
     );
+    expect(turKsmPositionValue).toBeGreaterThan(0);
+  });
+
+  it("User see hint if some positions are not active", async () => {
+    await mangata.dev.setStorage({
+      Tokens: {
+        Accounts: [[[userAddress, { token: 5 }], { free: 9000 * 1e12 }]],
+      },
+    });
+
+    await setupPageWithState(driver, acc_name);
+    const sidebar = new Sidebar(driver);
+    await sidebar.clickNavPositions();
+
+    const positionModal = new PositionModal(driver);
+    await positionModal.waitForPoolPositionsVisible();
+    await positionModal.isLiqPoolDisplayed(MGX_ASSET_NAME, KSM_ASSET_NAME);
+    await positionModal.isRewardHintDisplayed();
+    await sleep(100);
   });
 
   afterEach(async () => {

@@ -31,6 +31,12 @@ export class PositionModal {
     return myPoolPosition;
   }
 
+  async isRewardHintDisplayed() {
+    const itemXpath = buildDataTestIdXpath("reward-hint");
+    const myPoolPosition = await this.driver.findElement(By.xpath(itemXpath));
+    return myPoolPosition;
+  }
+
   async clickPromPoolPosition(firstTokenName: string, secondTokenName: string) {
     const PoolName = "/positions/" + firstTokenName + "-" + secondTokenName;
     const hrefXpath = buildHrefXpath(PoolName);
@@ -80,8 +86,10 @@ export class PositionModal {
     const myPoolPosition = await this.driver
       .findElement(By.xpath(poolNameXpath))
       .findElement(By.xpath(activatedTokensXpath));
-    const myPoolPositionisDisplayed = await myPoolPosition.isDisplayed();
-    expect(myPoolPositionisDisplayed).toBeTrue();
+    const myPoolPositionText = await myPoolPosition.getText();
+    const myPoolPositionNumber = myPoolPositionText.replace(",", "");
+    const myPoolPositionValue = toNumber(myPoolPositionNumber);
+    return myPoolPositionValue;
   }
 
   async waitCalculatingFee() {
