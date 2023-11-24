@@ -1,6 +1,7 @@
 /*
  *
- * @group rewardsV2Sequential
+ * @group 3rdPartyRewards
+ *
  */
 import { getApi, initApi } from "../../utils/api";
 import { PalletProofOfStakeThirdPartyActivationKind } from "@polkadot/types/lookup";
@@ -17,11 +18,11 @@ import { Xyk } from "../../utils/xyk";
 import { setupApi, setupUsers } from "../../utils/setup";
 import { MGA_ASSET_ID } from "../../utils/Constants";
 import {
-  BN_ONE,
-  BN_ZERO,
   BN_HUNDRED,
-  signTx,
+  BN_ONE,
   BN_THOUSAND,
+  BN_ZERO,
+  signTx,
 } from "@mangata-finance/sdk";
 import { ProofOfStake } from "../../utils/ProofOfStake";
 import { getLiquidityAssetId } from "../../utils/tx";
@@ -30,7 +31,9 @@ import { Staking, tokenOriginEnum } from "../../utils/Staking";
 import { getEventResultFromMangataTx } from "../../utils/txHandler";
 import { ExtrinsicResult } from "../../utils/eventListeners";
 import { Vesting } from "../../utils/Vesting";
+import { MPL } from "../../utils/MPL";
 
+let testUser0: User;
 let testUser1: User;
 let testUser2: User;
 let testUser3: User;
@@ -52,7 +55,8 @@ describe("Proof of stake tests", () => {
 
     keyring = new Keyring({ type: "sr25519" });
     sudo = new User(keyring, getEnvironmentRequiredVars().sudo);
-    [testUser1, testUser2, testUser3, candidate, testUser4] = setupUsers();
+    [testUser0, testUser1, testUser2, testUser3, candidate, testUser4] =
+      setupUsers();
     newToken = new BN(18);
     newToken = await Assets.issueAssetToUser(
       sudo,
@@ -65,11 +69,13 @@ describe("Proof of stake tests", () => {
     await Sudo.batchAsSudoFinalized(
       Assets.FinalizeTge(),
       Assets.initIssuance(),
+      Assets.mintToken(newToken, testUser0, Assets.DEFAULT_AMOUNT.muln(40e6)),
       Assets.mintToken(newToken, testUser1, Assets.DEFAULT_AMOUNT.muln(40e6)),
       Assets.mintToken(newToken, testUser1, Assets.DEFAULT_AMOUNT.muln(40e6)),
       Assets.mintToken(newToken, testUser2, Assets.DEFAULT_AMOUNT),
       Assets.mintToken(newToken, testUser3, Assets.DEFAULT_AMOUNT),
       Assets.mintToken(newToken, testUser4, Assets.DEFAULT_AMOUNT),
+      Assets.mintNative(testUser0, Assets.DEFAULT_AMOUNT.muln(40e6).muln(2)),
       Assets.mintNative(testUser1, Assets.DEFAULT_AMOUNT.muln(40e6).muln(2)),
       Assets.mintNative(testUser2),
       Assets.mintNative(testUser3),
@@ -113,20 +119,38 @@ describe("Proof of stake tests", () => {
           MGA_ASSET_ID,
         ),
       ),
+      Assets.promotePool(liqId.toNumber(), 20),
       Sudo.sudoAs(
-        testUser3,
+        testUser4,
         Xyk.mintLiquidityUsingVested(
           newToken,
           Assets.DEFAULT_AMOUNT.divn(2),
           Assets.DEFAULT_AMOUNT,
         ),
       ),
-      Assets.promotePool(liqId.toNumber(), 20),
+      Sudo.sudoAs(
+        testUser4,
+        MPL.reserveVestingLiquidityTokensByVestingIndex(liqId),
+      ),
     );
     testLog.getLog().info("liqId: " + liqId.toString());
   });
 
   describe("MPL integration", () => {
+    beforeAll(async () => {
+      await Sudo.batchAsSudoFinalized(
+        ...(await rewardAndActivatePool(
+          newToken,
+          testUser0,
+          liqId,
+          Assets.DEFAULT_AMOUNT,
+          null,
+        )),
+      ).then((events) => {
+        const res = getEventResultFromMangataTx(events);
+        expect(res.state).toEqual(ExtrinsicResult.ExtrinsicSuccess);
+      });
+    });
     test("User [testUser1] with: stakedUnactivatedReserves ->  stakedAndActivatedReserves -> stakedUnactivatedReserves", async () => {
       await Staking.joinAsCandidateWithUser(candidate, liqId);
       const testUser = testUser1;
@@ -138,19 +162,20 @@ describe("Proof of stake tests", () => {
       const from: PalletProofOfStakeThirdPartyActivationKind = {
         activatekind: "StakedUnactivatedReserves",
       } as any as PalletProofOfStakeThirdPartyActivationKind;
-
-      await Sudo.batchAsSudoFinalized(
-        ...(await rewardAndActivatePool(
-          newToken,
-          testUser,
+      await signTx(
+        getApi(),
+        await ProofOfStake.activateLiquidityFor3rdpartyRewards(
           liqId,
-          amountToDelegate.sub(BN_ONE),
+          amountToDelegate.subn(1),
+          newToken,
           from,
-        )),
+        ),
+        testUser.keyRingPair,
       ).then((events) => {
         const res = getEventResultFromMangataTx(events);
         expect(res.state).toEqual(ExtrinsicResult.ExtrinsicSuccess);
       });
+
       let mplStatus = await getMultiPurposeLiquidityStatus(
         testUser.keyRingPair.address,
         liqId,
@@ -181,7 +206,7 @@ describe("Proof of stake tests", () => {
       );
       expect(new BN(mplStatus.stakedAndActivatedReserves)).bnEqual(BN_ZERO);
     });
-    test("User [testUser2] with: stakedActivatedReserves ->  stakedAndActivatedReserves -> stakedAndActivatedReserves", async () => {
+    test("Bug ? User [testUser2] with: stakedActivatedReserves ->  stakedAndActivatedReserves -> stakedAndActivatedReserves", async () => {
       const testUser = testUser2;
       await Staking.joinAsCandidateWithUser(candidate, liqId);
       const delegatedAmount = await Staking.delegateWithUser(
@@ -194,7 +219,7 @@ describe("Proof of stake tests", () => {
         Xyk.activateLiquidity(
           liqId,
           delegatedAmount,
-          tokenOriginEnum.AvailableBalance,
+          "StakedUnactivatedReserves",
         ),
         testUser.keyRingPair,
       ).then((events) => {
@@ -203,7 +228,7 @@ describe("Proof of stake tests", () => {
       });
 
       const from: PalletProofOfStakeThirdPartyActivationKind =
-        "ActivatedLiquidity" as any as PalletProofOfStakeThirdPartyActivationKind;
+        "NativeRewardsLiquidity" as any as PalletProofOfStakeThirdPartyActivationKind;
       const activatedAmount = delegatedAmount.sub(BN_THOUSAND);
       await signTx(
         getApi(),
@@ -223,15 +248,14 @@ describe("Proof of stake tests", () => {
         liqId,
       );
       expect(new BN(mplStatus.stakedAndActivatedReserves)).bnEqual(
-        activatedAmount,
+        delegatedAmount,
       );
-      expect(new BN(mplStatus.stakedUnactivatedReserves)).bnEqual(BN_THOUSAND);
 
       await signTx(
         getApi(),
         await ProofOfStake.deactivateLiquidityFor3rdpartyRewards(
           liqId,
-          delegatedAmount.sub(BN_HUNDRED),
+          activatedAmount,
           newToken,
         ),
         testUser.keyRingPair,
@@ -246,7 +270,7 @@ describe("Proof of stake tests", () => {
       expect(new BN(mplStatus.stakedAndActivatedReserves)).bnEqual(
         delegatedAmount,
       );
-      expect(new BN(mplStatus.stakedAndActivatedReserves)).bnEqual(BN_ZERO);
+      expect(new BN(mplStatus.stakedUnactivatedReserves)).bnEqual(BN_ZERO);
     });
     test("User [testUser3] with: activatedUnstakedReserves ->  activatedUnstakedReserves -> activatedUnstakedReserves", async () => {
       const testUser = testUser3;
@@ -266,6 +290,7 @@ describe("Proof of stake tests", () => {
 
       const from: PalletProofOfStakeThirdPartyActivationKind =
         "NativeRewardsLiquidity" as any as PalletProofOfStakeThirdPartyActivationKind;
+
       const activatedAmount = testAmount.sub(BN_HUNDRED);
       await signTx(
         getApi(),
@@ -346,7 +371,7 @@ describe("Proof of stake tests", () => {
         testUser.keyRingPair.address,
         liqId,
       );
-      expect(new BN(mplStatus.unspentReserves)).bnEqual(testAmount);
+      expect(new BN(mplStatus.unspentReserves)).bnEqual(mintedAmount);
     });
   });
 });

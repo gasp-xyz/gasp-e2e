@@ -1,6 +1,6 @@
 /*
  *
- * @group rewardsV2Sequential
+ * @group 3rdPartyRewards
  */
 import { getApi, initApi } from "../../utils/api";
 import { User } from "../../utils/User";
@@ -8,14 +8,15 @@ import { Keyring } from "@polkadot/api";
 import { BN } from "@polkadot/util";
 import {
   getEnvironmentRequiredVars,
+  getThirdPartyRewards,
   getUserBalanceOfToken,
 } from "../../utils/utils";
 import { Assets } from "../../utils/Assets";
 import { Sudo } from "../../utils/sudo";
 import { Xyk } from "../../utils/xyk";
-import { eve, setupApi, setupUsers } from "../../utils/setup";
+import { setupApi, setupUsers } from "../../utils/setup";
 import { MGA_ASSET_ID } from "../../utils/Constants";
-import { BN_MILLION, signTx } from "@mangata-finance/sdk";
+import { BN_MILLION, BN_ZERO, signTx } from "@mangata-finance/sdk";
 import { ProofOfStake } from "../../utils/ProofOfStake";
 import { getLiquidityAssetId } from "../../utils/tx";
 import { getEventResultFromMangataTx } from "../../utils/txHandler";
@@ -41,8 +42,6 @@ describe("Proof of stake tests", () => {
     keyring = new Keyring({ type: "sr25519" });
     sudo = new User(keyring, getEnvironmentRequiredVars().sudo);
     [testUser1, testUser2, testUser3] = setupUsers();
-    testUser1 = eve;
-    newToken = new BN(18);
     newToken = await Assets.issueAssetToUser(
       sudo,
       Assets.DEFAULT_AMOUNT,
@@ -133,7 +132,7 @@ describe("Proof of stake tests", () => {
   });
 
   describe("Happy path", () => {
-    test("Math Error when calculating checkpoint for deactivation", async () => {
+    test("A user can deactivate all the tokens when partial activation / deactivation", async () => {
       const liqId = await getLiquidityAssetId(MGA_ASSET_ID, newToken);
       testLog.getLog().warn("liqId: " + liqId.toString());
       await waitForRewards(testUser1, liqId, 20, newToken);
@@ -163,8 +162,40 @@ describe("Proof of stake tests", () => {
           ExtrinsicResult.ExtrinsicSuccess,
         );
       });
+      const amountToDeactivate =
+        await ProofOfStake.activatedLiquidityForSchedules(
+          liqId,
+          testUser1.keyRingPair.address,
+          newToken,
+        );
       await waitForRewards(testUser1, liqId, 20, newToken);
       await waitForRewards(testUser1, liqId, 20, newToken);
+
+      await signTx(
+        getApi(),
+        await ProofOfStake.deactivateLiquidityFor3rdpartyRewards(
+          liqId,
+          amountToDeactivate,
+          newToken,
+        ),
+        testUser1.keyRingPair,
+      ).then((events) => {
+        expect(getEventResultFromMangataTx(events).state).toBe(
+          ExtrinsicResult.ExtrinsicSuccess,
+        );
+      });
+      const userBalance = await getUserBalanceOfToken(liqId, testUser1);
+      expect(userBalance.reserved).bnEqual(BN_ZERO);
+      expect(userBalance.frozen).bnEqual(BN_ZERO);
+      const userBalanceBefore = await getUserBalanceOfToken(
+        newToken,
+        testUser1,
+      );
+      const rewards = await getThirdPartyRewards(
+        testUser1.keyRingPair.address,
+        liqId,
+        newToken,
+      );
       await signTx(
         getApi(),
         await ProofOfStake.claim3rdpartyRewards(liqId, newToken),
@@ -174,20 +205,10 @@ describe("Proof of stake tests", () => {
           ExtrinsicResult.ExtrinsicSuccess,
         );
       });
-      const amountToDeactivate = await getUserBalanceOfToken(liqId, testUser1);
-      await signTx(
-        getApi(),
-        await ProofOfStake.deactivateLiquidityFor3rdpartyRewards(
-          liqId,
-          amountToDeactivate.reserved,
-          newToken,
-        ),
-        testUser1.keyRingPair,
-      ).then((events) => {
-        expect(getEventResultFromMangataTx(events).state).toBe(
-          ExtrinsicResult.ExtrinsicSuccess,
-        );
-      });
+      const userBalanceAfter = await getUserBalanceOfToken(newToken, testUser1);
+      expect(userBalanceAfter.free.sub(userBalanceBefore.free)).bnEqual(
+        rewards,
+      );
     });
   });
 });

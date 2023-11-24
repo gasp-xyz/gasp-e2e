@@ -19,7 +19,7 @@ export class Vesting {
       {
         locked: amount,
         perBlock: BN_THOUSAND,
-        startingBlock: blockNo,
+        startingBlock: blockNo + 100,
       },
     );
   }

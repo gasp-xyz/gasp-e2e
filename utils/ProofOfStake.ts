@@ -60,4 +60,18 @@ export class ProofOfStake {
       useBalanceFrom,
     );
   }
+
+  static async activatedLiquidityForSchedules(
+    liqId: BN,
+    address: string,
+    rewardedTokenId: BN,
+  ) {
+    const value =
+      await getApi().query.proofOfStake.activatedLiquidityForSchedules(
+        address,
+        liqId,
+        rewardedTokenId,
+      );
+    return new BN(value.toString());
+  }
 }
