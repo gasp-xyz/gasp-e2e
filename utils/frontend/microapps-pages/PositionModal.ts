@@ -92,6 +92,35 @@ export class PositionModal {
     return myPoolPositionValue;
   }
 
+  async getPoolPositionTokensValues() {
+    const liquidityTokenXpath = buildDataTestIdXpath("positionLP-anchor");
+    const liquidityTokenValue = await this.driver.findElement(
+      By.xpath(liquidityTokenXpath),
+    );
+    const liquidityTokenText = await liquidityTokenValue.getText();
+    const myPoolPositionTextReplaced = liquidityTokenText.replace(",", "");
+    const liquidityTokenNumber = toNumber(myPoolPositionTextReplaced);
+    const firstTokenXpath = buildDataTestIdXpath("positionTokenA-anchor");
+    const firstTokenValue = await this.driver.findElement(
+      By.xpath(firstTokenXpath),
+    );
+    const firstTokenText = await firstTokenValue.getText();
+    const firstTokenTextReplaced = firstTokenText.replace(",", "");
+    const firstTokenNumber = toNumber(firstTokenTextReplaced);
+    const secondTokenXpath = buildDataTestIdXpath("positionTokenB-anchor");
+    const secondTokenValue = await this.driver.findElement(
+      By.xpath(secondTokenXpath),
+    );
+    const secondTokenText = await secondTokenValue.getText();
+    const secondTokenTextReplaced = secondTokenText.replace(",", "");
+    const secondTokenNumber = toNumber(secondTokenTextReplaced);
+    return {
+      liquidityTokenValue: liquidityTokenNumber,
+      firstTokenValue: firstTokenNumber,
+      secondTokenValue: secondTokenNumber,
+    };
+  }
+
   async waitCalculatingFee() {
     const feeAmountLocator = buildDataTestIdXpath("fee-amount");
     await waitForElementVisible(this.driver, feeAmountLocator, 20000);

@@ -12,7 +12,7 @@ import {
   importPolkadotExtension,
 } from "../../utils/frontend/utils/Helper";
 import { AssetWallet, User } from "../../utils/User";
-import { getEnvironmentRequiredVars, sleep } from "../../utils/utils";
+import { getEnvironmentRequiredVars } from "../../utils/utils";
 import {
   KSM_ASSET_ID,
   MGA_ASSET_ID,
@@ -30,7 +30,8 @@ import { ApiContext } from "../../utils/Framework/XcmHelper";
 import XcmNetworks from "../../utils/Framework/XcmNetworks";
 import { connectVertical } from "@acala-network/chopsticks";
 import { AssetId } from "../../utils/ChainSpecs";
-import { BN_THOUSAND } from "@mangata-finance/sdk";
+import { BN_TEN, BN_THOUSAND } from "@mangata-finance/sdk";
+import { BN } from "@polkadot/util";
 import StashServiceMockSingleton from "../../utils/stashServiceMockSingleton";
 import { LiqPools } from "../../utils/frontend/microapps-pages/LiqPools";
 import { Sidebar } from "../../utils/frontend/microapps-pages/Sidebar";
@@ -160,11 +161,7 @@ describe("Microapps UI position modal tests", () => {
   });
 
   it("Remove pool liquidity", async () => {
-    await mangata.dev.setStorage({
-      Tokens: {
-        Accounts: [[[userAddress, { token: 5 }], { free: 10 * 1e12 }]],
-      },
-    });
+    await addLiquidityToken(mangata, 5, 18, 100);
 
     await setupPageWithState(driver, acc_name);
     const sidebar = new Sidebar(driver);
@@ -186,11 +183,7 @@ describe("Microapps UI position modal tests", () => {
   });
 
   it("Activate and deactivate liquidity", async () => {
-    await mangata.dev.setStorage({
-      Tokens: {
-        Accounts: [[[userAddress, { token: 5 }], { free: 10 * 1e12 }]],
-      },
-    });
+    await addLiquidityToken(mangata, 5, 18, 100);
 
     await setupPageWithState(driver, acc_name);
     const sidebar = new Sidebar(driver);
@@ -226,11 +219,7 @@ describe("Microapps UI position modal tests", () => {
   });
 
   it("User can see liquidity providing details (share of pool) - promoted pool", async () => {
-    await mangata.dev.setStorage({
-      Tokens: {
-        Accounts: [[[userAddress, { token: 5 }], { free: 9000 * 1e12 }]],
-      },
-    });
+    await addLiquidityToken(mangata, 5, 18, 100);
 
     await setupPageWithState(driver, acc_name);
     const sidebar = new Sidebar(driver);
@@ -262,11 +251,7 @@ describe("Microapps UI position modal tests", () => {
   });
 
   it("User can see liquidity providing details (share of pool) - non-promoted pool", async () => {
-    await mangata.dev.setStorage({
-      Tokens: {
-        Accounts: [[[userAddress, { token: 9 }], { free: 9000 * 1e12 }]],
-      },
-    });
+    await addLiquidityToken(mangata, 9, 12, 1);
 
     await setupPageWithState(driver, acc_name);
     const sidebar = new Sidebar(driver);
@@ -284,11 +269,7 @@ describe("Microapps UI position modal tests", () => {
   });
 
   it("User see hint if some positions are not active", async () => {
-    await mangata.dev.setStorage({
-      Tokens: {
-        Accounts: [[[userAddress, { token: 5 }], { free: 9000 * 1e12 }]],
-      },
-    });
+    await addLiquidityToken(mangata, 5, 18, 100);
 
     await setupPageWithState(driver, acc_name);
     const sidebar = new Sidebar(driver);
@@ -298,7 +279,23 @@ describe("Microapps UI position modal tests", () => {
     await positionModal.waitForPoolPositionsVisible();
     await positionModal.isLiqPoolDisplayed(MGX_ASSET_NAME, KSM_ASSET_NAME);
     await positionModal.isRewardHintDisplayed();
-    await sleep(100);
+  });
+
+  it("User can see number of active rewards for his positions", async () => {
+    await addLiquidityToken(mangata, 5, 18, 1000);
+
+    await setupPageWithState(driver, acc_name);
+    const sidebar = new Sidebar(driver);
+    await sidebar.clickNavPositions();
+
+    const positionModal = new PositionModal(driver);
+    await positionModal.waitForPoolPositionsVisible();
+    await positionModal.isLiqPoolDisplayed(MGX_ASSET_NAME, KSM_ASSET_NAME);
+    await positionModal.clickPromPoolPosition(MGX_ASSET_NAME, KSM_ASSET_NAME);
+    const tokensValues = await positionModal.getPoolPositionTokensValues();
+    expect(tokensValues.liquidityTokenValue).toBeGreaterThan(0);
+    expect(tokensValues.firstTokenValue).toBeGreaterThan(0);
+    expect(tokensValues.secondTokenValue).toBeGreaterThan(0);
   });
 
   afterEach(async () => {
@@ -319,3 +316,21 @@ describe("Microapps UI position modal tests", () => {
     DriverBuilder.destroy();
   });
 });
+
+async function addLiquidityToken(
+  apiContext: ApiContext,
+  tokenId: number,
+  power: number,
+  value: number,
+) {
+  await apiContext.dev.setStorage({
+    Tokens: {
+      Accounts: [
+        [
+          [userAddress, { token: tokenId }],
+          { free: BN_TEN.pow(new BN(power)).mul(new BN(value)).toString() },
+        ],
+      ],
+    },
+  });
+}
