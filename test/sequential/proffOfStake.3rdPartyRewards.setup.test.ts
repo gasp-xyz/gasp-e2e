@@ -3,7 +3,7 @@
  * @group 3rdPartyRewards
  */
 import { getApi, initApi } from "../../utils/api";
-import { User } from "../../utils/User";
+import { AssetWallet, User } from "../../utils/User";
 import { Keyring } from "@polkadot/api";
 import { BN } from "@polkadot/util";
 import {
@@ -196,6 +196,8 @@ describe("Proof of stake tests", () => {
         liqId,
         newToken,
       );
+      testUser1.addAsset(MGA_ASSET_ID);
+      await testUser1.refreshAmounts();
       await signTx(
         getApi(),
         await ProofOfStake.claim3rdpartyRewards(liqId, newToken),
@@ -214,6 +216,11 @@ describe("Proof of stake tests", () => {
           rewards.toString(),
         );
       });
+      await testUser1.refreshAmounts(AssetWallet.AFTER);
+      const diff = testUser1.getWalletDifferences();
+      expect(
+        diff.find((assetDiff) => assetDiff.currencyId === MGA_ASSET_ID),
+      ).toBeUndefined();
       const userBalanceAfter = await getUserBalanceOfToken(newToken, testUser1);
       expect(userBalanceAfter.free.sub(userBalanceBefore.free)).bnEqual(
         rewards,

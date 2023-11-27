@@ -205,5 +205,102 @@ describe("Proof of stake tests", () => {
       // only rewarded token must be affected
       expect(diffDeact).toHaveLength(1);
     });
+    test("Activate - deactivate is not free if fails", async () => {
+      const testUser = testUser0;
+      const amountToActivate = Assets.DEFAULT_AMOUNT;
+      testUser.addAssets([MGA_ASSET_ID, newToken1, newToken2, liqId, liqId2]);
+      await testUser.refreshAmounts();
+
+      await signTx(
+        getApi(),
+        await ProofOfStake.activateLiquidityFor3rdpartyRewards(
+          liqId.addn(123),
+          amountToActivate,
+          newToken1,
+        ),
+        testUser.keyRingPair,
+      ).then((events) => {
+        const res = getEventResultFromMangataTx(events);
+        expect(res.state).toEqual(ExtrinsicResult.ExtrinsicFailed);
+      });
+      await testUser.refreshAmounts(AssetWallet.AFTER);
+      const diff = testUser.getWalletDifferences();
+      expect(
+        diff.find((assetDiff) => assetDiff.currencyId === MGA_ASSET_ID)?.diff
+          .free,
+      ).bnLt(BN_ZERO);
+
+      // only MGX token must be affected
+      expect(diff).toHaveLength(1);
+
+      await testUser.refreshAmounts(AssetWallet.BEFORE);
+      await signTx(
+        getApi(),
+        await ProofOfStake.deactivateLiquidityFor3rdpartyRewards(
+          liqId,
+          amountToActivate,
+          newToken2, // wrong token
+        ),
+        testUser.keyRingPair,
+      ).then((events) => {
+        const res = getEventResultFromMangataTx(events);
+        expect(res.state).toEqual(ExtrinsicResult.ExtrinsicFailed);
+      });
+      await testUser.refreshAmounts(AssetWallet.AFTER);
+      const diffDeact = testUser.getWalletDifferences();
+      expect(
+        diffDeact.find((assetDiff) => assetDiff.currencyId === MGA_ASSET_ID)
+          ?.diff.free,
+      ).bnLt(BN_ZERO);
+      // only MGX token must be affected
+      expect(diffDeact).toHaveLength(1);
+    });
+    test("Claiming is not free if Zero", async () => {
+      const testUser = testUser0;
+      await Sudo.batchAsSudoFinalized(
+        Sudo.sudoAs(
+          testUser,
+          Xyk.mintLiquidity(
+            MGA_ASSET_ID,
+            newToken1,
+            Assets.DEFAULT_AMOUNT,
+            Assets.DEFAULT_AMOUNT.muln(2),
+          ),
+        ),
+        Sudo.sudoAs(
+          testUser,
+          await ProofOfStake.activateLiquidityFor3rdpartyRewards(
+            liqId,
+            Assets.DEFAULT_AMOUNT,
+            newToken1,
+          ),
+        ),
+      ).then((events) => {
+        const res = getEventResultFromMangataTx(events);
+        expect(res.state).toEqual(ExtrinsicResult.ExtrinsicSuccess);
+      });
+      await testUser.refreshAmounts();
+      testUser.addAssets([MGA_ASSET_ID, newToken1, newToken2, liqId, liqId2]);
+      await testUser.refreshAmounts();
+      await signTx(
+        getApi(),
+        await ProofOfStake.claim3rdpartyRewards(liqId, newToken1),
+        testUser.keyRingPair,
+      ).then((events) => {
+        const res = getEventResultFromMangataTx(events);
+        expect(res.state).toEqual(ExtrinsicResult.ExtrinsicFailed);
+      });
+      await testUser.refreshAmounts(AssetWallet.AFTER);
+      const diff = testUser.getWalletDifferences();
+      expect(
+        diff.find((assetDiff) => assetDiff.currencyId === MGA_ASSET_ID)?.diff
+          .free,
+      ).bnLt(BN_ZERO);
+
+      // only MGX token must be affected
+      expect(diff).toHaveLength(1);
+
+      await testUser.refreshAmounts(AssetWallet.BEFORE);
+    });
   });
 });
