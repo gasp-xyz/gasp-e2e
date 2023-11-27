@@ -140,7 +140,7 @@ describe("Proof of stake tests", () => {
         expect(res.state).toEqual(ExtrinsicResult.ExtrinsicSuccess);
       });
     });
-    test("GIVEN a user with N tokens activated for 3rd party, WHEN the user wants to burn ( all the existing - N ) THEN the operation fails.", async () => {
+    test("GIVEN a user with N tokens activated for 3rd party, WHEN the user wants to burn ( all the existing - N ) THEN the operation works", async () => {
       const testUser = testUser1;
       const amountToActivate = Assets.DEFAULT_AMOUNT.divn(10);
       await signTx(

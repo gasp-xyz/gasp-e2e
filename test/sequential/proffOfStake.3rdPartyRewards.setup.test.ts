@@ -204,6 +204,15 @@ describe("Proof of stake tests", () => {
         expect(getEventResultFromMangataTx(events).state).toBe(
           ExtrinsicResult.ExtrinsicSuccess,
         );
+        const claimEvent = getEventResultFromMangataTx(events, [
+          "ThirdPartyRewardsClaimed",
+        ]);
+        expect(claimEvent.data[0]).toEqual(testUser1.keyRingPair.address);
+        expect(claimEvent.data[1]).toEqual(liqId.toString());
+        expect(claimEvent.data[2]).toEqual(newToken.toString());
+        expect(claimEvent.data[3].replaceAll(",", "")).toEqual(
+          rewards.toString(),
+        );
       });
       const userBalanceAfter = await getUserBalanceOfToken(newToken, testUser1);
       expect(userBalanceAfter.free.sub(userBalanceBefore.free)).bnEqual(
