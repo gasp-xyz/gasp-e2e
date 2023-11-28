@@ -202,5 +202,27 @@ describe("Proof of stake tests", () => {
       ]);
       expect(rewardedPools.length).toBe(1);
     });
+    test("A user can not reward mgx??", async () => {
+      // const liqId = await getLiquidityAssetId(MGA_ASSET_ID, newToken);
+      await Sudo.batchAsSudoFinalized(
+        Sudo.sudoAs(
+          testUser3,
+          await ProofOfStake.rewardPool(
+            newToken3,
+            newToken2,
+            MGA_ASSET_ID,
+            Assets.DEFAULT_AMOUNT.muln(1e6),
+            3,
+          ),
+        ),
+      ).then((x) => {
+        const event = getEventResultFromMangataTx(x);
+        expect(event.state).toBe(ExtrinsicResult.ExtrinsicSuccess);
+      });
+      const rewardedPools = await ProofOfStake.rewardsSchedulesList([
+        newToken3,
+      ]);
+      expect(rewardedPools.length).toBe(1);
+    });
   });
 });
