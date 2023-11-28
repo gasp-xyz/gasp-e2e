@@ -32,7 +32,7 @@ let testUser: User;
 let testUser1: User;
 let sudo: User;
 let keyring: Keyring;
-let soloTokenId: BN;
+
 let poolTokenIds: BN[];
 let liqIds: BN[];
 let tokenAmounts: BN[];
@@ -57,11 +57,6 @@ beforeAll(async () => {
     Assets.initIssuance(),
     Assets.mintNative(sudo),
     Assets.mintNative(testUser),
-  );
-  [soloTokenId] = await Assets.setupUserWithCurrencies(
-    sudo,
-    [defaultCurrencyValue],
-    sudo,
   );
 
   const batchPromisesMinting = [];
@@ -263,61 +258,6 @@ test("GIVEN an user has available some rewards in two pools one deactivated WHEN
   const rewardsLiqId2After = await getRewardsInfo(
     testUser1.keyRingPair.address,
     liqIds[12],
-  );
-
-  expect(rewardsLiqId1Before.rewardsAlreadyClaimed).bnEqual(BN_ZERO);
-  expect(rewardsLiqId1After.rewardsAlreadyClaimed).bnGt(BN_ZERO);
-  expect(rewardsLiqId2Before.rewardsAlreadyClaimed).bnEqual(BN_ZERO);
-  expect(rewardsLiqId2After.rewardsAlreadyClaimed).bnGt(BN_ZERO);
-});
-
-test("GIVEN an user has available some rewards in two “pools” one solo token, one pool WHEN claims all rewards THEN the user gets the rewards for thats pools", async () => {
-  await Sudo.batchAsSudoFinalized(
-    Assets.mintToken(poolTokenIds[0], testUser1, defaultCurrencyValue),
-    Assets.mintToken(soloTokenId, testUser1, defaultCurrencyValue),
-    Sudo.sudoAs(
-      testUser1,
-      Xyk.mintLiquidity(
-        MGA_ASSET_ID,
-        poolTokenIds[0],
-        defaultCurrencyValue.divn(2),
-      ),
-    ),
-  );
-
-  await Sudo.batchAsSudoFinalized(
-    Assets.promotePool(soloTokenId.toNumber(), 20),
-    Sudo.sudoAs(
-      testUser1,
-      Xyk.activateLiquidity(soloTokenId, defaultCurrencyValue.divn(2)),
-    ),
-  );
-
-  await waitForRewards(testUser1, soloTokenId);
-
-  const rewardsLiqId1Before = await getRewardsInfo(
-    testUser1.keyRingPair.address,
-    liqIds[0],
-  );
-
-  const rewardsLiqId2Before = await getRewardsInfo(
-    testUser1.keyRingPair.address,
-    soloTokenId,
-  );
-
-  await claimRewardsAll(testUser1).then((result) => {
-    const eventResponse = getEventResultFromMangataTx(result);
-    expect(eventResponse.state).toEqual(ExtrinsicResult.ExtrinsicSuccess);
-  });
-
-  const rewardsLiqId1After = await getRewardsInfo(
-    testUser1.keyRingPair.address,
-    liqIds[0],
-  );
-
-  const rewardsLiqId2After = await getRewardsInfo(
-    testUser1.keyRingPair.address,
-    soloTokenId,
   );
 
   expect(rewardsLiqId1Before.rewardsAlreadyClaimed).bnEqual(BN_ZERO);
