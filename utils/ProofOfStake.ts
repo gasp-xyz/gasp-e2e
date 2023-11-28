@@ -1,7 +1,11 @@
 import { BN } from "@polkadot/util";
 import { setupApi } from "./setup";
 import { getApi } from "./api";
-import { PalletProofOfStakeThirdPartyActivationKind } from "@polkadot/types/lookup";
+import {
+  PalletProofOfStakeSchedule,
+  PalletProofOfStakeThirdPartyActivationKind,
+} from "@polkadot/types/lookup";
+import { stringToBN } from "./utils";
 
 export class ProofOfStake {
   static async rewardPool(
@@ -73,5 +77,31 @@ export class ProofOfStake {
         rewardedTokenId,
       );
     return new BN(value.toString());
+  }
+
+  static async scheduleRewardsPerLiquidity() {
+    const [value] = await Promise.all([
+      getApi().query.proofOfStake.scheduleRewardsPerLiquidity.entries(),
+    ]);
+    return value;
+  }
+
+  static async rewardsSchedulesList(rewardedTokenList: BN[] = []) {
+    const value =
+      await getApi().query.proofOfStake.rewardsSchedulesList.entries();
+    if (rewardedTokenList.length > 0) {
+      return value
+        .filter((schedules: any[]) => {
+          return rewardedTokenList
+            .map((x) => x.toString())
+            .includes(
+              stringToBN(schedules[1].toHuman()[0].rewardToken).toString(),
+            );
+        })
+        .map((x) => (x[1].toHuman() as any)[0] as PalletProofOfStakeSchedule);
+    }
+    return value.map(
+      (x) => (x[1].toHuman() as any[])[0] as PalletProofOfStakeSchedule,
+    );
   }
 }
