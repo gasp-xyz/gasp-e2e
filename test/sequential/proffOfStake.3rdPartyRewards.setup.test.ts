@@ -202,7 +202,7 @@ describe("Proof of stake tests", () => {
       ]);
       expect(rewardedPools.length).toBe(1);
     });
-    test("A user can not reward mgx??", async () => {
+    test("A user can reward in mgx", async () => {
       // const liqId = await getLiquidityAssetId(MGA_ASSET_ID, newToken);
       await Sudo.batchAsSudoFinalized(
         Sudo.sudoAs(
@@ -220,9 +220,26 @@ describe("Proof of stake tests", () => {
         expect(event.state).toBe(ExtrinsicResult.ExtrinsicSuccess);
       });
       const rewardedPools = await ProofOfStake.rewardsSchedulesList([
-        newToken3,
+        MGA_ASSET_ID,
       ]);
       expect(rewardedPools.length).toBe(1);
+    });
+    test("Rewards schedule must last at least 2 sessions", async () => {
+      await Sudo.batchAsSudoFinalized(
+        Sudo.sudoAs(
+          testUser3,
+          await ProofOfStake.rewardPool(
+            newToken3,
+            newToken2,
+            MGA_ASSET_ID,
+            Assets.DEFAULT_AMOUNT.muln(1e6),
+            1,
+          ),
+        ),
+      ).then((x) => {
+        const event = getEventResultFromMangataTx(x);
+        expect(event.state).toBe(ExtrinsicResult.ExtrinsicFailed);
+      });
     });
   });
 });
