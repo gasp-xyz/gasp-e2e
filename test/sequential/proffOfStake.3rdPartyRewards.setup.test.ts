@@ -18,7 +18,11 @@ import { setupApi, setupUsers } from "../../utils/setup";
 import { MGA_ASSET_ID } from "../../utils/Constants";
 import { ProofOfStake } from "../../utils/ProofOfStake";
 import "jest-extended";
-import { getLiquidityAssetId } from "../../utils/tx";
+import {
+  calculate_buy_price_local_no_fee,
+  getBalanceOfPool,
+  getLiquidityAssetId,
+} from "../../utils/tx";
 import { ExtrinsicResult } from "../../utils/eventListeners";
 import {
   getEventErrorFromSudo,
@@ -66,6 +70,7 @@ describe("Proof of stake tests", () => {
       Assets.mintToken(newToken2, testUser3, Assets.DEFAULT_AMOUNT.muln(40e6)),
       Assets.mintToken(newToken2, testUser3, Assets.DEFAULT_AMOUNT.muln(40e6)),
       Assets.mintToken(newToken3, testUser3, Assets.DEFAULT_AMOUNT.muln(40e6)),
+      Assets.mintToken(newToken, testUser3, Assets.DEFAULT_AMOUNT.muln(40e6)),
       Assets.mintNative(testUser1, Assets.DEFAULT_AMOUNT.muln(40e6).muln(2)),
       Assets.mintNative(testUser2, Assets.DEFAULT_AMOUNT.muln(40e6).muln(2)),
       Assets.mintNative(testUser3, Assets.DEFAULT_AMOUNT.muln(40e6).muln(2)),
@@ -278,6 +283,49 @@ describe("Proof of stake tests", () => {
             newToken,
             MGA_ASSET_ID,
             new BN(3).mul(BN_MILLION).mul(Assets.MG_UNIT).subn(1),
+            1,
+          ),
+        ),
+      ).then(async (x) => {
+        // const event = getEventResultFromMangataTx(x);
+        const sudoEvent = await getEventErrorFromSudo(x);
+        expect(sudoEvent.state).toBe(ExtrinsicResult.ExtrinsicFailed);
+        expect(sudoEvent.data).toBe("TooLittleRewards");
+      });
+    });
+    test("Min liq valuation is required setup rewards", async () => {
+      const pool = await getBalanceOfPool(MGA_ASSET_ID, newToken);
+      const thresholdAmount = calculate_buy_price_local_no_fee(
+        pool[0],
+        pool[1],
+        new BN(3).mul(BN_MILLION).mul(Assets.MG_UNIT),
+      );
+      await waitIfSessionWillChangeInNblocks(4);
+      await Sudo.asSudoFinalized(
+        Sudo.sudoAs(
+          testUser3,
+          await ProofOfStake.rewardPool(
+            MGA_ASSET_ID,
+            newToken,
+            newToken,
+            thresholdAmount.addn(1),
+            1,
+          ),
+        ),
+      ).then(async (x) => {
+        // const event = getEventResultFromMangataTx(x);
+        const sudoEvent = await getEventErrorFromSudo(x);
+        expect(sudoEvent.state).toBe(ExtrinsicResult.ExtrinsicSuccess);
+      });
+      await waitIfSessionWillChangeInNblocks(4);
+      await Sudo.asSudoFinalized(
+        Sudo.sudoAs(
+          testUser3,
+          await ProofOfStake.rewardPool(
+            MGA_ASSET_ID,
+            newToken,
+            newToken,
+            thresholdAmount.subn(1),
             1,
           ),
         ),
