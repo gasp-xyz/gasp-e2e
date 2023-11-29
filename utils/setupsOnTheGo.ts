@@ -72,7 +72,7 @@ export async function vote(motionId: number) {
   console.info("proposal " + JSON.stringify(allProposals[0][0].toHuman()));
   const hash = proposal?.[0].toHuman()!.toString();
   console.info("hash " + hash);
-  const txs : Extrinsic[] = [];
+  const txs: Extrinsic[] = [];
   allMembers.forEach((x) => {
     txs.push(
       Sudo.sudoAsWithAddressString(
@@ -298,10 +298,7 @@ export async function printAllTxsDoneByUser(userAddress: string) {
   while (currBlock > 0) {
     const blockHash = await api.rpc.chain.getBlockHash(currBlock);
     const block = await api.rpc.chain.getBlock(blockHash);
-    if (currBlock === 324) {
-      let a = 0;
-      console.log(a);
-    }
+
     const txs = block.block.extrinsics.filter(
       (x: any) => x.signer.toString() === userAddress,
     ) as any;
