@@ -1011,8 +1011,8 @@ export async function migrate() {
         x[0] === "Vesting" ||
         x[0] === "Bootstrap" ||
         x[0] === "OrmlXcm" ||
-        x[0] === "Crowdloan" ||
-        x[0] === "System",
+        x[0] === "Crowdloan",
+      //  x[0] === "System",
     )
     .flatMap((item: any) =>
       item[1].map((element: any) => {
