@@ -41,6 +41,16 @@ export class PositionModal {
     return isDisplayed(this.driver, itemXpath);
   }
 
+  async isClaimableRewardsDisplayed() {
+    const itemXpath = buildDataTestIdXpath("claimable-rewards-value");
+    return isDisplayed(this.driver, itemXpath);
+  }
+
+  async isLpTokensValuesDisplayed() {
+    const itemXpath = buildDataTestIdXpath("active-eligible-lp-tokens");
+    return isDisplayed(this.driver, itemXpath);
+  }
+
   async clickPromPoolPosition(firstTokenName: string, secondTokenName: string) {
     const PoolName = "/positions/" + firstTokenName + "-" + secondTokenName;
     const hrefXpath = buildHrefXpath(PoolName);

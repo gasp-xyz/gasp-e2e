@@ -200,8 +200,15 @@ describe("Microapps UI position modal tests", () => {
       KSM_ASSET_NAME,
     );
     expect(isPoolMgxKsmVisible).toBeTruthy();
+
     await positionModal.clickPromPoolPosition(MGX_ASSET_NAME, KSM_ASSET_NAME);
     await positionModal.chooseLiqMiningPage();
+    const isClaimableRewardsVisible =
+      await positionModal.isClaimableRewardsDisplayed();
+    expect(isClaimableRewardsVisible).toBeTruthy();
+    const isLpTokensValuesVisible =
+      await positionModal.isLpTokensValuesDisplayed();
+    expect(isLpTokensValuesVisible).toBeTruthy();
 
     await positionModal.activateAllLiq();
     await positionModal.waitCalculatingFee();
