@@ -4,6 +4,7 @@ import {
   buildHrefXpath,
   clickElement,
   waitForElementVisible,
+  isDisplayed,
 } from "../utils/Helper";
 import toNumber from "lodash-es/toNumber";
 
@@ -27,14 +28,12 @@ export class PositionModal {
   async isLiqPoolDisplayed(firstTokenName: string, secondTokenName: string) {
     const PoolName = "pool-" + firstTokenName + "-" + secondTokenName;
     const itemXpath = buildDataTestIdXpath(PoolName);
-    const myPoolPosition = await this.driver.findElement(By.xpath(itemXpath));
-    return myPoolPosition;
+    return isDisplayed(this.driver, itemXpath);
   }
 
   async isRewardHintDisplayed() {
     const itemXpath = buildDataTestIdXpath("reward-hint");
-    const myPoolPosition = await this.driver.findElement(By.xpath(itemXpath));
-    return myPoolPosition;
+    return isDisplayed(this.driver, itemXpath);
   }
 
   async clickPromPoolPosition(firstTokenName: string, secondTokenName: string) {
@@ -139,5 +138,23 @@ export class PositionModal {
   async clickConfirmFeeAmount() {
     const submitSwapXpath = buildDataTestIdXpath("confirm-fee-amount");
     await clickElement(this.driver, submitSwapXpath);
+  }
+
+  async searchPoolToken(tokenName: string) {
+    const searchButtonXpath = buildDataTestIdXpath("search-toggle");
+    await clickElement(this.driver, searchButtonXpath);
+    const searchInputXpath = buildDataTestIdXpath("search-input");
+    const searchingLine = await this.driver.findElement(
+      By.xpath(searchInputXpath),
+    );
+    await searchingLine.clear();
+    await searchingLine.sendKeys(tokenName);
+  }
+
+  async closeSearchingBar() {
+    const searchInputXpath = buildDataTestIdXpath("search-input");
+    await this.driver.findElement(By.xpath(searchInputXpath));
+    const closeButtonXpath = buildDataTestIdXpath("search-toggle");
+    await clickElement(this.driver, closeButtonXpath);
   }
 }

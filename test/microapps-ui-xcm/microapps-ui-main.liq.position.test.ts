@@ -169,7 +169,11 @@ describe("Microapps UI position modal tests", () => {
 
     const positionModal = new PositionModal(driver);
     await positionModal.waitForPoolPositionsVisible();
-    await positionModal.isLiqPoolDisplayed(MGX_ASSET_NAME, KSM_ASSET_NAME);
+    const isPoolMgxKsmVisible = await positionModal.isLiqPoolDisplayed(
+      MGX_ASSET_NAME,
+      KSM_ASSET_NAME,
+    );
+    expect(isPoolMgxKsmVisible).toBeTruthy();
     await positionModal.clickPromPoolPosition(MGX_ASSET_NAME, KSM_ASSET_NAME);
     await positionModal.setupRemovableLiquidity();
     await positionModal.clickRemoveLiquidity();
@@ -191,7 +195,11 @@ describe("Microapps UI position modal tests", () => {
 
     const positionModal = new PositionModal(driver);
     await positionModal.waitForPoolPositionsVisible();
-    await positionModal.isLiqPoolDisplayed(MGX_ASSET_NAME, KSM_ASSET_NAME);
+    const isPoolMgxKsmVisible = await positionModal.isLiqPoolDisplayed(
+      MGX_ASSET_NAME,
+      KSM_ASSET_NAME,
+    );
+    expect(isPoolMgxKsmVisible).toBeTruthy();
     await positionModal.clickPromPoolPosition(MGX_ASSET_NAME, KSM_ASSET_NAME);
     await positionModal.chooseLiqMiningPage();
 
@@ -227,7 +235,11 @@ describe("Microapps UI position modal tests", () => {
 
     const positionModal = new PositionModal(driver);
     await positionModal.waitForPoolPositionsVisible();
-    await positionModal.isLiqPoolDisplayed(MGX_ASSET_NAME, KSM_ASSET_NAME);
+    const isPoolMgxKsmVisible = await positionModal.isLiqPoolDisplayed(
+      MGX_ASSET_NAME,
+      KSM_ASSET_NAME,
+    );
+    expect(isPoolMgxKsmVisible).toBeTruthy();
     await positionModal.clickPromPoolPosition(MGX_ASSET_NAME, KSM_ASSET_NAME);
     await positionModal.chooseLiqMiningPage();
 
@@ -259,8 +271,11 @@ describe("Microapps UI position modal tests", () => {
 
     const positionModal = new PositionModal(driver);
     await positionModal.waitForPoolPositionsVisible();
-    await positionModal.isLiqPoolDisplayed(TUR_ASSET_NAME, KSM_ASSET_NAME);
-
+    const isPoolTurKsmVisible = await positionModal.isLiqPoolDisplayed(
+      TUR_ASSET_NAME,
+      KSM_ASSET_NAME,
+    );
+    expect(isPoolTurKsmVisible).toBeTruthy();
     const turKsmPositionValue = await positionModal.checkNonPromPoolPosition(
       TUR_ASSET_NAME,
       KSM_ASSET_NAME,
@@ -277,8 +292,13 @@ describe("Microapps UI position modal tests", () => {
 
     const positionModal = new PositionModal(driver);
     await positionModal.waitForPoolPositionsVisible();
-    await positionModal.isLiqPoolDisplayed(MGX_ASSET_NAME, KSM_ASSET_NAME);
-    await positionModal.isRewardHintDisplayed();
+    const isPoolMgxKsmVisible = await positionModal.isLiqPoolDisplayed(
+      MGX_ASSET_NAME,
+      KSM_ASSET_NAME,
+    );
+    expect(isPoolMgxKsmVisible).toBeTruthy();
+    const isRewardHintVisible = await positionModal.isRewardHintDisplayed();
+    expect(isRewardHintVisible).toBeTruthy();
   });
 
   it("User can see number of active rewards for his positions", async () => {
@@ -290,12 +310,54 @@ describe("Microapps UI position modal tests", () => {
 
     const positionModal = new PositionModal(driver);
     await positionModal.waitForPoolPositionsVisible();
-    await positionModal.isLiqPoolDisplayed(MGX_ASSET_NAME, KSM_ASSET_NAME);
+    const isPoolMgxKsmVisible = await positionModal.isLiqPoolDisplayed(
+      MGX_ASSET_NAME,
+      KSM_ASSET_NAME,
+    );
+    expect(isPoolMgxKsmVisible).toBeTruthy();
     await positionModal.clickPromPoolPosition(MGX_ASSET_NAME, KSM_ASSET_NAME);
     const tokensValues = await positionModal.getPoolPositionTokensValues();
     expect(tokensValues.liquidityTokenValue).toBeGreaterThan(0);
     expect(tokensValues.firstTokenValue).toBeGreaterThan(0);
     expect(tokensValues.secondTokenValue).toBeGreaterThan(0);
+  });
+
+  it("User can search through his positions", async () => {
+    let isPoolMgxKsmVisible: boolean;
+    let isPoolTurKsmVisible: boolean;
+
+    await addLiquidityToken(mangata, 5, 18, 1000);
+    await addLiquidityToken(mangata, 9, 12, 10);
+
+    await setupPageWithState(driver, acc_name);
+    const sidebar = new Sidebar(driver);
+    await sidebar.clickNavPositions();
+
+    const positionModal = new PositionModal(driver);
+    await positionModal.waitForPoolPositionsVisible();
+    await positionModal.searchPoolToken(TUR_ASSET_NAME);
+    isPoolMgxKsmVisible = await positionModal.isLiqPoolDisplayed(
+      MGX_ASSET_NAME,
+      KSM_ASSET_NAME,
+    );
+    isPoolTurKsmVisible = await positionModal.isLiqPoolDisplayed(
+      TUR_ASSET_NAME,
+      KSM_ASSET_NAME,
+    );
+    expect(isPoolMgxKsmVisible).toBeFalsy();
+    expect(isPoolTurKsmVisible).toBeTruthy();
+    await positionModal.closeSearchingBar();
+    await positionModal.searchPoolToken(MGX_ASSET_NAME);
+    isPoolMgxKsmVisible = await positionModal.isLiqPoolDisplayed(
+      MGX_ASSET_NAME,
+      KSM_ASSET_NAME,
+    );
+    isPoolTurKsmVisible = await positionModal.isLiqPoolDisplayed(
+      TUR_ASSET_NAME,
+      KSM_ASSET_NAME,
+    );
+    expect(isPoolMgxKsmVisible).toBeTruthy();
+    expect(isPoolTurKsmVisible).toBeFalsy();
   });
 
   afterEach(async () => {
