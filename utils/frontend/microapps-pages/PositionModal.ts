@@ -31,6 +31,11 @@ export class PositionModal {
     return isDisplayed(this.driver, itemXpath);
   }
 
+  async isActiveRewardsDisplayed() {
+    const itemXpath = buildDataTestIdXpath("active-reward-number");
+    return isDisplayed(this.driver, itemXpath);
+  }
+
   async isRewardHintDisplayed() {
     const itemXpath = buildDataTestIdXpath("reward-hint");
     return isDisplayed(this.driver, itemXpath);

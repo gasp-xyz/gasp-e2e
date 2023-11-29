@@ -315,6 +315,25 @@ describe("Microapps UI position modal tests", () => {
       KSM_ASSET_NAME,
     );
     expect(isPoolMgxKsmVisible).toBeTruthy();
+    const isActiveRewardsVisible =
+      await positionModal.isActiveRewardsDisplayed();
+    expect(isActiveRewardsVisible).toBeTruthy();
+  });
+
+  it("User can see position detail overview with token shares", async () => {
+    await addLiquidityToken(mangata, 5, 18, 1000);
+
+    await setupPageWithState(driver, acc_name);
+    const sidebar = new Sidebar(driver);
+    await sidebar.clickNavPositions();
+
+    const positionModal = new PositionModal(driver);
+    await positionModal.waitForPoolPositionsVisible();
+    const isPoolMgxKsmVisible = await positionModal.isLiqPoolDisplayed(
+      MGX_ASSET_NAME,
+      KSM_ASSET_NAME,
+    );
+    expect(isPoolMgxKsmVisible).toBeTruthy();
     await positionModal.clickPromPoolPosition(MGX_ASSET_NAME, KSM_ASSET_NAME);
     const tokensValues = await positionModal.getPoolPositionTokensValues();
     expect(tokensValues.liquidityTokenValue).toBeGreaterThan(0);
