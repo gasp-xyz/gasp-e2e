@@ -296,6 +296,14 @@ export async function waitIfSessionWillChangeInNblocks(numberOfBlocks: number) {
       .getLog()
       .info(`Session will end soon, waiting for ${numberOfBlocks}`);
     await waitForNBlocks(numberOfBlocks);
+  } else {
+    testLog
+      .getLog()
+      .info(
+        `No need to wait ${blockNumber} :: ${
+          (blockNumber % sessionDuration) + BigInt(numberOfBlocks)
+        }`,
+      );
   }
 }
 export async function getThirdPartyRewards(

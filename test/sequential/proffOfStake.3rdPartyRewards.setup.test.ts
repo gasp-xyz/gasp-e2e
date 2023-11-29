@@ -6,7 +6,11 @@ import { getApi, initApi } from "../../utils/api";
 import { User } from "../../utils/User";
 import { Keyring } from "@polkadot/api";
 import { BN } from "@polkadot/util";
-import { getEnvironmentRequiredVars, stringToBN } from "../../utils/utils";
+import {
+  getEnvironmentRequiredVars,
+  stringToBN,
+  waitIfSessionWillChangeInNblocks,
+} from "../../utils/utils";
 import { Assets } from "../../utils/Assets";
 import { Sudo } from "../../utils/sudo";
 import { Xyk } from "../../utils/xyk";
@@ -16,7 +20,11 @@ import { ProofOfStake } from "../../utils/ProofOfStake";
 import "jest-extended";
 import { getLiquidityAssetId } from "../../utils/tx";
 import { ExtrinsicResult } from "../../utils/eventListeners";
-import { getEventResultFromMangataTx } from "../../utils/txHandler";
+import {
+  getEventErrorFromSudo,
+  getEventResultFromMangataTx,
+} from "../../utils/txHandler";
+import { BN_MILLION } from "@mangata-finance/sdk";
 
 let testUser1: User;
 let testUser2: User;
@@ -186,8 +194,8 @@ describe("Proof of stake tests", () => {
         Sudo.sudoAs(
           testUser3,
           await ProofOfStake.rewardPool(
-            newToken3,
             newToken2,
+            newToken3,
             newToken3,
             Assets.DEFAULT_AMOUNT.muln(1e6),
             3,
@@ -224,21 +232,60 @@ describe("Proof of stake tests", () => {
       ]);
       expect(rewardedPools.length).toBe(1);
     });
-    test("Rewards schedule must last at least 2 sessions", async () => {
-      await Sudo.batchAsSudoFinalized(
+    test("Rewards schedule must last at least 1 session ahead", async () => {
+      await waitIfSessionWillChangeInNblocks(3);
+      await Sudo.asSudoFinalized(
         Sudo.sudoAs(
           testUser3,
           await ProofOfStake.rewardPool(
-            newToken3,
             newToken2,
+            newToken3,
             MGA_ASSET_ID,
             Assets.DEFAULT_AMOUNT.muln(1e6),
+            0,
+          ),
+        ),
+      ).then(async (x) => {
+        // const event = getEventResultFromMangataTx(x);
+        const sudoEvent = await getEventErrorFromSudo(x);
+        expect(sudoEvent.state).toBe(ExtrinsicResult.ExtrinsicFailed);
+      });
+    });
+    test("Min liq is required setup rewards", async () => {
+      await waitIfSessionWillChangeInNblocks(4);
+      await Sudo.asSudoFinalized(
+        Sudo.sudoAs(
+          testUser3,
+          await ProofOfStake.rewardPool(
+            MGA_ASSET_ID,
+            newToken,
+            MGA_ASSET_ID,
+            new BN(3).mul(BN_MILLION).mul(Assets.MG_UNIT).addn(1),
             1,
           ),
         ),
-      ).then((x) => {
-        const event = getEventResultFromMangataTx(x);
-        expect(event.state).toBe(ExtrinsicResult.ExtrinsicFailed);
+      ).then(async (x) => {
+        // const event = getEventResultFromMangataTx(x);
+        const sudoEvent = await getEventErrorFromSudo(x);
+        expect(sudoEvent.state).toBe(ExtrinsicResult.ExtrinsicSuccess);
+      });
+      await waitIfSessionWillChangeInNblocks(4);
+      await Sudo.asSudoFinalized(
+        Sudo.sudoAs(
+          testUser3,
+          await ProofOfStake.rewardPool(
+            MGA_ASSET_ID,
+            newToken,
+            MGA_ASSET_ID,
+            new BN(3).mul(BN_MILLION).mul(Assets.MG_UNIT).subn(1),
+            1,
+          ),
+        ),
+      ).then(async (x) => {
+        // const event = getEventResultFromMangataTx(x);
+        const sudoEvent = await getEventErrorFromSudo(x);
+        expect(sudoEvent.state).toBe(ExtrinsicResult.ExtrinsicFailed);
+        expect(sudoEvent.data).toBe("TooLittleRewards");
       });
     });
   });

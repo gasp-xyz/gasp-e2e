@@ -122,7 +122,7 @@ export async function waitSudoOperationFail(
 
   const BootstrapError = await getEventErrorFromSudo(filterBootstrapEvent);
 
-  expect(expectedErrors).toContain(BootstrapError.method);
+  expect(expectedErrors).toContain(BootstrapError.data);
 }
 
 export const waitForEvents = async (
