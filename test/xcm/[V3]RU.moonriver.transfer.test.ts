@@ -22,7 +22,9 @@ import { jest } from "@jest/globals";
  * @group xcm
  * @group proxied
  */
+
 jest.setTimeout(140000);
+
 const keyring = new Keyring({ type: "ethereum" });
 const alith = keyring.addFromUri(
   "0x5fb92d6e98884f76de468fa3f6278f8807c48bebc13595d45af5bdc4da702133",
