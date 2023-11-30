@@ -104,4 +104,25 @@ export class ProofOfStake {
       (x) => (x[1].toHuman() as any[])[0] as PalletProofOfStakeSchedule,
     );
   }
+
+  static async totalActivatedLiquidityForSchedules(
+    liqId: BN,
+    rewardedToken: BN,
+  ) {
+    return getApi().query.proofOfStake.totalActivatedLiquidityForSchedules(
+      liqId,
+      rewardedToken,
+    );
+  }
+
+  static async rewardsInfoForScheduleRewards(
+    userAddress: string,
+    liqId: BN,
+    rewardedToken: BN,
+  ) {
+    return getApi().query.proofOfStake.rewardsInfoForScheduleRewards(
+      userAddress,
+      [liqId, rewardedToken],
+    );
+  }
 }
