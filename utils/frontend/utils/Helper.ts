@@ -463,6 +463,10 @@ export function buildClassXpath(className: string) {
   return `//*[@class='${className}']`;
 }
 
+export function buildHrefXpath(hrefName: string) {
+  return `//*[@href='${hrefName}']`;
+}
+
 export async function waitForNewWindow(
   driver: WebDriver,
   timeout: number,
