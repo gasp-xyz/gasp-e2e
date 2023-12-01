@@ -14,7 +14,11 @@ import {
   calculate_buy_price_id_rpc,
 } from "./tx";
 import { User } from "./User";
-import { getEnvironmentRequiredVars, getUserBalanceOfToken } from "./utils";
+import {
+  getBlockNumber,
+  getEnvironmentRequiredVars,
+  getUserBalanceOfToken,
+} from "./utils";
 import { Xyk } from "./xyk";
 import { getApi, api, initApi, getMangataInstance } from "./api";
 import { BN_ZERO, signTx } from "@mangata-finance/sdk";
@@ -26,6 +30,8 @@ import { Staking, AggregatorOptions, tokenOriginEnum } from "./Staking";
 import { hexToBn } from "@polkadot/util";
 import { Bootstrap } from "./Bootstrap";
 import assert from "assert";
+import { testLog } from "./Logger";
+import { Council } from "./Council";
 const tokenOrigin = tokenOriginEnum.ActivatedUnstakedReserves;
 
 export async function vetoMotion(motionId: number) {
@@ -48,6 +54,63 @@ export async function vetoMotion(motionId: number) {
     Sudo.sudoAsWithAddressString(
       fundAcc,
       api.tx.council.disapproveProposal(hash!),
+    ),
+  );
+}
+export async function vote(motionId: number) {
+  await setupApi();
+  await setupUsers();
+  await initApi();
+  const api = await getApi();
+  const allProposals = await api.query.council.voting.entries();
+  const allMembers = await api.query.council.members();
+
+  const proposal = allProposals.find(
+    (x) =>
+      JSON.parse(JSON.stringify(x[1].toHuman())).index === motionId.toString(),
+  );
+  console.info("proposal " + JSON.stringify(allProposals[0][0].toHuman()));
+  const hash = proposal?.[0].toHuman()!.toString();
+  console.info("hash " + hash);
+  const txs: Extrinsic[] = [];
+  allMembers.forEach((x) => {
+    txs.push(
+      Sudo.sudoAsWithAddressString(
+        x.toHuman()!.toString(),
+        Council.vote(hash!, motionId, "aye"),
+      ),
+    );
+  });
+
+  await Sudo.batchAsSudoFinalized(...txs);
+}
+export async function close(motionId: number) {
+  const fundAcc = "5Gc1GyxLPr1A4jE1U7u9LFYuFftDjeSYZWQXHgejQhSdEN4s";
+  await setupApi();
+  await setupUsers();
+  await initApi();
+  const api = await getApi();
+  const allProposals = await api.query.council.voting.entries();
+
+  const proposal = allProposals.find(
+    (x) =>
+      JSON.parse(JSON.stringify(x[1].toHuman())).index === motionId.toString(),
+  );
+  console.info("proposal " + JSON.stringify(allProposals[0][0].toHuman()));
+  const hash = proposal?.[0].toHuman()!.toString();
+  console.info("hash " + hash);
+  await Sudo.batchAsSudoFinalized(
+    Sudo.sudoAsWithAddressString(
+      fundAcc,
+      api.tx.council.close(
+        hash!,
+        motionId,
+        {
+          refTime: 97042819915,
+          proofSize: 100000,
+        },
+        1000000,
+      ),
     ),
   );
 }
@@ -227,7 +290,28 @@ export async function setupTokenWithRewardsForDefaultUsers() {
   await waitForRewards(testUser4, liqId);
   return { users, liqId, sudo, token2 };
 }
+export async function printAllTxsDoneByUser(userAddress: string) {
+  await setupUsers();
+  await setupApi();
+  const api = await getApi();
+  let currBlock = await getBlockNumber();
+  while (currBlock > 0) {
+    const blockHash = await api.rpc.chain.getBlockHash(currBlock);
+    const block = await api.rpc.chain.getBlock(blockHash);
 
+    const txs = block.block.extrinsics.filter(
+      (x: any) => x.signer.toString() === userAddress,
+    ) as any;
+    const readabaleTxs = txs.map((x: any) => x.toHuman());
+    // testLog.getLog().info("Block " + currBlock);
+    if (txs.length > 0) {
+      testLog.getLog().info("Block " + currBlock);
+      testLog.getLog().info(JSON.stringify(readabaleTxs));
+      testLog.getLog().info(JSON.stringify(txs));
+    }
+    currBlock--;
+  }
+}
 export async function burnAllTokensFromPool(liqToken: BN) {
   await setupApi();
   await setupUsers();
@@ -924,8 +1008,8 @@ export async function migrate() {
         x[0] === "Vesting" ||
         x[0] === "Bootstrap" ||
         x[0] === "OrmlXcm" ||
-        x[0] === "Crowdloan" ||
-        x[0] === "System",
+        x[0] === "Crowdloan",
+      //  x[0] === "System",
     )
     .flatMap((item: any) =>
       item[1].map((element: any) => {
