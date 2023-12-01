@@ -51,7 +51,7 @@ let driver: WebDriver;
 let testUser1: User;
 
 const acc_name = "acc_automation";
-const userAddress = "5FeYEhdFzSQP6YWapPC6Myd17zdPba9CXmSptNSTh4Hz9cZ9";
+const userAddress = "5CfLmpjCJu41g3cpZVoiH7MSrSppgVVVC3xq23iy9dZrW2HR";
 const INIT_KSM_RELAY = 15;
 
 describe("Microapps UI position modal tests", () => {
