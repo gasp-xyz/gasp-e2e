@@ -187,7 +187,7 @@ describe("Microapps UI position modal tests", () => {
   });
 
   it("Activate and deactivate liquidity", async () => {
-    await addLiquidityToken(mangata, 5, 18, 100);
+    await addLiquidityToken(mangata, 8, 18, 100);
 
     await setupPageWithState(driver, acc_name);
     const sidebar = new Sidebar(driver);
@@ -196,12 +196,12 @@ describe("Microapps UI position modal tests", () => {
     const positionModal = new PositionModal(driver);
     await positionModal.waitForPoolPositionsVisible();
     const isPoolMgxKsmVisible = await positionModal.isLiqPoolDisplayed(
+      TUR_ASSET_NAME,
       MGX_ASSET_NAME,
-      KSM_ASSET_NAME,
     );
     expect(isPoolMgxKsmVisible).toBeTruthy();
 
-    await positionModal.clickPromPoolPosition(MGX_ASSET_NAME, KSM_ASSET_NAME);
+    await positionModal.clickPromPoolPosition(TUR_ASSET_NAME, MGX_ASSET_NAME);
     await positionModal.chooseLiqMiningPage();
     const isClaimableRewardsVisible =
       await positionModal.isClaimableRewardsDisplayed();
@@ -221,6 +221,8 @@ describe("Microapps UI position modal tests", () => {
       2,
     );
 
+    await positionModal.clickPromPoolPosition(TUR_ASSET_NAME, MGX_ASSET_NAME);
+    await positionModal.chooseLiqMiningPage();
     await positionModal.deactivateAllLiq();
     await positionModal.waitCalculatingFee();
     await positionModal.clickConfirmFeeAmount();
@@ -234,7 +236,7 @@ describe("Microapps UI position modal tests", () => {
   });
 
   it("User can see liquidity providing details (share of pool) - promoted pool", async () => {
-    await addLiquidityToken(mangata, 5, 18, 100);
+    await addLiquidityToken(mangata, 8, 18, 100);
 
     await setupPageWithState(driver, acc_name);
     const sidebar = new Sidebar(driver);
@@ -243,11 +245,11 @@ describe("Microapps UI position modal tests", () => {
     const positionModal = new PositionModal(driver);
     await positionModal.waitForPoolPositionsVisible();
     const isPoolMgxKsmVisible = await positionModal.isLiqPoolDisplayed(
+      TUR_ASSET_NAME,
       MGX_ASSET_NAME,
-      KSM_ASSET_NAME,
     );
     expect(isPoolMgxKsmVisible).toBeTruthy();
-    await positionModal.clickPromPoolPosition(MGX_ASSET_NAME, KSM_ASSET_NAME);
+    await positionModal.clickPromPoolPosition(TUR_ASSET_NAME, MGX_ASSET_NAME);
     await positionModal.chooseLiqMiningPage();
 
     await positionModal.activateAllLiq();
