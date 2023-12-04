@@ -20,6 +20,7 @@ import { ProofOfStake } from "../../utils/ProofOfStake";
 import "jest-extended";
 import {
   calculate_buy_price_local_no_fee,
+  getBalanceOfAssetStr,
   getBalanceOfPool,
   getLiquidityAssetId,
 } from "../../utils/tx";
@@ -166,6 +167,12 @@ describe("Proof of stake tests", () => {
     });
     test("Multiple users can reward multiple pools - token does not belong to the promoted pool", async () => {
       // const liqId = await getLiquidityAssetId(MGA_ASSET_ID, newToken);
+      const rewardsPalletAddress =
+        "5EYCAe5j84jdabP3t3DW6E1ahTsWGVqf2nzgikxGJDM1CMyB";
+      const balanceBefore = await getBalanceOfAssetStr(
+        newToken2,
+        rewardsPalletAddress,
+      );
       await Sudo.batchAsSudoFinalized(
         Sudo.sudoAs(
           testUser2,
@@ -188,6 +195,13 @@ describe("Proof of stake tests", () => {
           ),
         ),
       );
+      const balanceAfter = await getBalanceOfAssetStr(
+        newToken2,
+        rewardsPalletAddress,
+      );
+      expect(
+        balanceAfter.free.sub(Assets.DEFAULT_AMOUNT.muln(1e6).muln(2)),
+      ).bnEqual(balanceBefore.free);
       const rewardedPools = await ProofOfStake.rewardsSchedulesList([
         newToken2,
       ]);

@@ -1,8 +1,8 @@
 /* eslint-disable no-loop-func */
-import { BN_ZERO, MangataGenericEvent } from "@mangata-finance/sdk";
+import { BN_ONE, BN_ZERO, MangataGenericEvent } from "@mangata-finance/sdk";
 import { ApiPromise } from "@polkadot/api";
 import { BN } from "@polkadot/util";
-import _, { reject } from "lodash-es";
+import _ from "lodash-es";
 import { getApi, getMangataInstance } from "./api";
 import { logEvent, testLog } from "./Logger";
 import { api } from "./setup";
@@ -167,7 +167,7 @@ export const waitForRewards = async (
   user: User,
   liquidityAssetId: BN,
   max: number = 20,
-  thirdPartyRewardToken: BN = BN_ZERO,
+  thirdPartyRewardToken: BN = BN_ONE.neg(),
 ) =>
   new Promise(async (resolve) => {
     let numblocks = max;
@@ -176,7 +176,7 @@ export const waitForRewards = async (
       numblocks--;
       const { chainUri } = getEnvironmentRequiredVars();
       const mangata = await getMangataInstance(chainUri);
-      if (thirdPartyRewardToken.gtn(0)) {
+      if (thirdPartyRewardToken.gten(0)) {
         rewardAmount = await getThirdPartyRewards(
           user.keyRingPair.address,
           liquidityAssetId,
@@ -200,9 +200,12 @@ export const waitForRewards = async (
       }
       if (numblocks < 0) {
         unsub();
-        reject(
-          `Waited too long for rewards :( #${header.number}  ${user.keyRingPair.address} (LP${liquidityAssetId} `,
-        );
+        testLog
+          .getLog()
+          .error(
+            `Waited too long for rewards :( #${header.number}  ${user.keyRingPair.address} (LP${liquidityAssetId} `,
+          );
+        resolve(false);
       }
     });
   });
