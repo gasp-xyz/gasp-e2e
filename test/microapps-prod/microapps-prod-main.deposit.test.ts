@@ -34,9 +34,7 @@ const acc_name = "acc_automation";
 const KSM_ASSET_NAME = "KSM";
 
 describe("Microapps Prod UI deposit modal tests", () => {
-
   beforeAll(async () => {
-
     try {
       getApi();
     } catch (e) {

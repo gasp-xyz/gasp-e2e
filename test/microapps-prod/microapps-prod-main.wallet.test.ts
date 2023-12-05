@@ -35,9 +35,7 @@ const MGX_ASSET_NAME = "MGX";
 const TUR_ASSET_NAME = "TUR";
 
 describe("Microapps Prod UI wallet tests", () => {
-
   beforeAll(async () => {
-
     try {
       getApi();
     } catch (e) {
@@ -70,11 +68,11 @@ describe("Microapps Prod UI wallet tests", () => {
 
     const walletWrapper = new WalletWrapper(driver);
     await walletWrapper.openWalletConnectionInfo();
-    const isKSM = await walletWrapper.isMyTokensRowDisplayed(KSM_ASSET_NAME)
+    const isKSM = await walletWrapper.isMyTokensRowDisplayed(KSM_ASSET_NAME);
     expect(isKSM).toBeFalsy();
-    const isMGX = await walletWrapper.isMyTokensRowDisplayed(MGX_ASSET_NAME)
+    const isMGX = await walletWrapper.isMyTokensRowDisplayed(MGX_ASSET_NAME);
     expect(isMGX).toBeTruthy();
-    const isTUR = await walletWrapper.isMyTokensRowDisplayed(TUR_ASSET_NAME)
+    const isTUR = await walletWrapper.isMyTokensRowDisplayed(TUR_ASSET_NAME);
     expect(isTUR).toBeTruthy();
 
     const mgxAmount = await walletWrapper.getMyTokensRowAmount(MGX_ASSET_NAME);
@@ -90,8 +88,8 @@ describe("Microapps Prod UI wallet tests", () => {
     const walletWrapper = new WalletWrapper(driver);
     await walletWrapper.openWalletConnectionInfo();
     await walletWrapper.pickMyPositions();
-    const POOL_NAME = "TUR - MGX"
-    const isTurMgx = await walletWrapper.isMyPositionsRowDisplayed(POOL_NAME)
+    const POOL_NAME = "TUR - MGX";
+    const isTurMgx = await walletWrapper.isMyPositionsRowDisplayed(POOL_NAME);
     expect(isTurMgx).toBeTruthy();
   });
 

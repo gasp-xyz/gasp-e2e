@@ -12,11 +12,7 @@ import {
   importPolkadotExtension,
 } from "../../utils/frontend/utils/Helper";
 import { Keyring } from "@polkadot/api";
-import {
-  FIVE_MIN,
-  KSM_ASSET_ID,
-  MGA_ASSET_ID,
-} from "../../utils/Constants";
+import { FIVE_MIN, KSM_ASSET_ID, MGA_ASSET_ID } from "../../utils/Constants";
 import { AssetWallet, User } from "../../utils/User";
 import { getEnvironmentRequiredVars } from "../../utils/utils";
 import {

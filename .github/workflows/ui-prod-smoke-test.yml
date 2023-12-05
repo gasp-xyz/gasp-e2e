@@ -171,7 +171,7 @@ jobs:
         uses: bryannice/gitactions-slack-notification@2.0.0
         env:
           SLACK_INCOMING_WEBHOOK: ${{ secrets.STG_SLACK_WEBHOOK }}
-          SLACK_TITLE: 'PROD dex smoke UI tests - results - OK'
+          SLACK_TITLE: 'PROD Microapps smoke UI tests - results - OK'
           SLACK_COLOR: "#00ff11"
           SLACK_MESSAGE: 'Test succeed in [ ${{ env.TEST_SCRIPT }} ]
            testmo report: https://mangata-finance.testmo.net/automation/runs/view/${{needs.setup-report.outputs.testmo-run-id}}'
@@ -187,7 +187,7 @@ jobs:
         uses: bryannice/gitactions-slack-notification@2.0.0
         env:
           SLACK_INCOMING_WEBHOOK: ${{ secrets.STG_SLACK_WEBHOOK }}
-          SLACK_TITLE: 'PROD dex smoke UI tests - results - NOOK'
+          SLACK_TITLE: 'PROD Microapps smoke UI tests - results - NOOK'
           SLACK_COLOR: "#ff0011"
           SLACK_MESSAGE: 'Test failures [ ${{ env.TEST_SCRIPT }} ]
            testmo report: https://mangata-finance.testmo.net/automation/runs/view/${{needs.setup-report.outputs.testmo-run-id}}'
