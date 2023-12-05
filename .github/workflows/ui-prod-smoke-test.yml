@@ -1,4 +1,4 @@
-name: dex UI prod smoke tests
+name: Microapps UI prod smoke tests
 
 on:
 
@@ -49,7 +49,7 @@ jobs:
     strategy:
       fail-fast: false
       matrix:
-        command: ['prodUiSmoke']
+        command: ['first']
     runs-on: ubuntu-latest
     env:
       API_URL: 'wss://kusama-rpc.mangata.online'
@@ -88,7 +88,7 @@ jobs:
         run: curl http://localhost:4444/status
   
       - name: Run tests
-        run: yarn test-ui --group=${{ matrix.command }}
+        run: yarn test-microapps-prod-${{ matrix.command }}
       
       - name: Test Report
         uses: dorny/test-reporter@v1

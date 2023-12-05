@@ -1,6 +1,6 @@
 /*
  *
- * @group microappsWithdraw
+ * @group microappsProdWithdraw
  */
 import { jest } from "@jest/globals";
 import { Keyring } from "@polkadot/api";
