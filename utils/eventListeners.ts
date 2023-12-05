@@ -162,7 +162,18 @@ export const waitForEvents = async (
     });
   });
 };
-
+export const waitforSessionChange = async (): Promise<number> => {
+  const currSession = await api.query.session.currentIndex();
+  return new Promise(async (resolve) => {
+    const unsub = await api.rpc.chain.subscribeNewHeads(async () => {
+      const sessionNo = await api.query.session.currentIndex();
+      if (sessionNo.toNumber() > currSession.toNumber()) {
+        resolve(sessionNo.toNumber());
+        unsub();
+      }
+    });
+  });
+};
 export const waitForRewards = async (
   user: User,
   liquidityAssetId: BN,

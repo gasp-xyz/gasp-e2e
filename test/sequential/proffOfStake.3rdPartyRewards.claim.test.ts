@@ -20,18 +20,23 @@ import { MGA_ASSET_ID } from "../../utils/Constants";
 import { ProofOfStake } from "../../utils/ProofOfStake";
 import "jest-extended";
 import { getLiquidityAssetId } from "../../utils/tx";
-import { waitForRewards } from "../../utils/eventListeners";
+import {
+  waitForRewards,
+  waitforSessionChange,
+} from "../../utils/eventListeners";
 import { BN_ZERO, signTx } from "@mangata-finance/sdk";
 
 let testUser1: User;
 let testUser2: User;
 let testUser3: User;
+let testUser4: User;
 let sudo: User;
 
 let keyring: Keyring;
 let newToken: BN;
 let newToken2: BN;
 let newToken3: BN;
+let newToken4: BN;
 
 describe("Proof of stake tests", () => {
   beforeAll(async () => {
@@ -43,13 +48,19 @@ describe("Proof of stake tests", () => {
 
     keyring = new Keyring({ type: "sr25519" });
     sudo = new User(keyring, getEnvironmentRequiredVars().sudo);
-    [testUser1, testUser2, testUser3] = setupUsers();
-    [newToken, newToken2, newToken3] = await Assets.setupUserWithCurrencies(
-      sudo,
-      [Assets.DEFAULT_AMOUNT, Assets.DEFAULT_AMOUNT, Assets.DEFAULT_AMOUNT],
-      sudo,
-      true,
-    );
+    [testUser1, testUser2, testUser3, testUser4] = setupUsers();
+    [newToken, newToken2, newToken3, newToken4] =
+      await Assets.setupUserWithCurrencies(
+        sudo,
+        [
+          Assets.DEFAULT_AMOUNT,
+          Assets.DEFAULT_AMOUNT,
+          Assets.DEFAULT_AMOUNT,
+          Assets.DEFAULT_AMOUNT,
+        ],
+        sudo,
+        true,
+      );
 
     await setupApi();
     await Sudo.batchAsSudoFinalized(
@@ -64,9 +75,14 @@ describe("Proof of stake tests", () => {
       Assets.mintToken(newToken3, testUser1, Assets.DEFAULT_AMOUNT.muln(40e6)),
       Assets.mintToken(newToken3, testUser2, Assets.DEFAULT_AMOUNT.muln(40e6)),
       Assets.mintToken(newToken3, testUser3, Assets.DEFAULT_AMOUNT.muln(40e6)),
+      Assets.mintToken(newToken4, testUser4, Assets.DEFAULT_AMOUNT.muln(40e6)),
+      Assets.mintToken(newToken4, testUser1, Assets.DEFAULT_AMOUNT.muln(40e6)),
+      Assets.mintToken(newToken4, testUser2, Assets.DEFAULT_AMOUNT.muln(40e6)),
+      Assets.mintToken(newToken4, testUser3, Assets.DEFAULT_AMOUNT.muln(40e6)),
       Assets.mintNative(testUser1, Assets.DEFAULT_AMOUNT.muln(40e6).muln(2)),
       Assets.mintNative(testUser2, Assets.DEFAULT_AMOUNT.muln(40e6).muln(2)),
       Assets.mintNative(testUser3, Assets.DEFAULT_AMOUNT.muln(40e6).muln(2)),
+      Assets.mintNative(testUser4, Assets.DEFAULT_AMOUNT.muln(40e6).muln(2)),
       Sudo.sudoAs(
         testUser1,
         Xyk.createPool(
@@ -91,6 +107,15 @@ describe("Proof of stake tests", () => {
           MGA_ASSET_ID,
           Assets.DEFAULT_AMOUNT.muln(20e6),
           newToken3,
+          Assets.DEFAULT_AMOUNT.muln(20e6),
+        ),
+      ),
+      Sudo.sudoAs(
+        testUser4,
+        Xyk.createPool(
+          MGA_ASSET_ID,
+          Assets.DEFAULT_AMOUNT.muln(20e6),
+          newToken4,
           Assets.DEFAULT_AMOUNT.muln(20e6),
         ),
       ),
@@ -318,6 +343,103 @@ describe("Proof of stake tests", () => {
       expect(
         (await getUserBalanceOfToken(MGA_ASSET_ID, otherUser)).free,
       ).bnEqual(balanceOther.free.add(rewardsOther2));
+    });
+    it("Bug about new rewards and activation", async () => {
+      const eve = testUser4;
+      const alice = testUser1;
+      const bob = testUser2;
+      const testToken = newToken4;
+      const liquidityAssetId = await getLiquidityAssetId(
+        MGA_ASSET_ID,
+        testToken,
+      );
+      await Sudo.batchAsSudoFinalized(
+        Sudo.sudoAs(
+          alice,
+          Xyk.mintLiquidity(
+            MGA_ASSET_ID,
+            testToken,
+            Assets.DEFAULT_AMOUNT,
+            Assets.DEFAULT_AMOUNT.muln(2),
+          ),
+        ),
+        Sudo.sudoAs(
+          bob,
+          Xyk.mintLiquidity(
+            MGA_ASSET_ID,
+            testToken,
+            Assets.DEFAULT_AMOUNT,
+            Assets.DEFAULT_AMOUNT.muln(2),
+          ),
+        ),
+        Sudo.sudoAs(
+          eve,
+          await ProofOfStake.rewardPool(
+            MGA_ASSET_ID,
+            testToken,
+            MGA_ASSET_ID,
+            Assets.DEFAULT_AMOUNT.muln(1e6),
+            5,
+          ),
+        ),
+        Sudo.sudoAs(
+          bob,
+          await ProofOfStake.activateLiquidityFor3rdpartyRewards(
+            liquidityAssetId,
+            Assets.DEFAULT_AMOUNT,
+            MGA_ASSET_ID,
+          ),
+        ),
+        Sudo.sudoAs(
+          alice,
+          await ProofOfStake.activateLiquidityFor3rdpartyRewards(
+            liquidityAssetId,
+            Assets.DEFAULT_AMOUNT,
+            MGA_ASSET_ID,
+          ),
+        ),
+      );
+      await waitforSessionChange();
+
+      await Sudo.batchAsSudoFinalized(
+        Sudo.sudoAs(
+          eve,
+          await ProofOfStake.rewardPool(
+            MGA_ASSET_ID,
+            testToken,
+            MGA_ASSET_ID,
+            Assets.DEFAULT_AMOUNT.muln(1e6),
+            5,
+          ),
+        ),
+        Sudo.sudoAs(
+          eve,
+          await ProofOfStake.activateLiquidityFor3rdpartyRewards(
+            liquidityAssetId,
+            Assets.DEFAULT_AMOUNT,
+            MGA_ASSET_ID,
+          ),
+        ),
+      );
+      await waitforSessionChange();
+      const rewardsAlice = await getThirdPartyRewards(
+        alice.keyRingPair.address,
+        liquidityAssetId,
+        MGA_ASSET_ID,
+      );
+      const rewardsBob = await getThirdPartyRewards(
+        bob.keyRingPair.address,
+        liquidityAssetId,
+        MGA_ASSET_ID,
+      );
+      const rewardsEve = await getThirdPartyRewards(
+        eve.keyRingPair.address,
+        liquidityAssetId,
+        MGA_ASSET_ID,
+      );
+      expect(rewardsAlice).bnGt(BN_ZERO);
+      expect(rewardsAlice).bnEqual(rewardsBob);
+      expect(rewardsAlice).bnGt(rewardsEve);
     });
   });
 });
