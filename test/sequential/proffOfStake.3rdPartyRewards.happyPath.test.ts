@@ -10,6 +10,7 @@ import {
   getEnvironmentRequiredVars,
   getThirdPartyRewards,
   getUserBalanceOfToken,
+  stringToBN,
 } from "../../utils/utils";
 import { Assets } from "../../utils/Assets";
 import { Sudo } from "../../utils/sudo";
@@ -210,8 +211,12 @@ describe("Proof of stake tests", () => {
           "ThirdPartyRewardsClaimed",
         ]);
         expect(claimEvent.data[0]).toEqual(testUser1.keyRingPair.address);
-        expect(claimEvent.data[1]).toEqual(liqId.toString());
-        expect(claimEvent.data[2]).toEqual(newToken.toString());
+        expect(stringToBN(claimEvent.data[1].toString())).toEqual(
+          liqId.toString(),
+        );
+        expect(stringToBN(claimEvent.data[2].toString())).toEqual(
+          newToken.toString(),
+        );
         expect(claimEvent.data[3].replaceAll(",", "")).toEqual(
           rewards.toString(),
         );

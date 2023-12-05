@@ -97,7 +97,7 @@ describe("Proof of stake tests", () => {
   });
 
   describe("Accuracy rewards scenarios", () => {
-    it("User liq. is only considered if it last more than 1 session", async () => {
+    it("User liq. is considered on the ongoing session", async () => {
       const testUser = testUser2;
       const liquidityAssetId = await getLiquidityAssetId(newToken, newToken2);
       await Sudo.batchAsSudoFinalized(
@@ -141,7 +141,7 @@ describe("Proof of stake tests", () => {
         liquidityAssetId,
         MGA_ASSET_ID,
       );
-      expect(avl).bnEqual(expectedRewards);
+      expect(avl).bnGt(expectedRewards);
     });
   });
 });

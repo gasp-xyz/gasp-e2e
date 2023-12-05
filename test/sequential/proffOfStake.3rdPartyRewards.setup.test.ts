@@ -230,7 +230,7 @@ describe("Proof of stake tests", () => {
       expect(rewardedPools.length).toBe(1);
     });
     test("A user can reward in mgx", async () => {
-      // const liqId = await getLiquidityAssetId(MGA_ASSET_ID, newToken);
+      const liqId = await getLiquidityAssetId(newToken3, newToken2);
       await Sudo.batchAsSudoFinalized(
         Sudo.sudoAs(
           testUser3,
@@ -249,7 +249,10 @@ describe("Proof of stake tests", () => {
       const rewardedPools = await ProofOfStake.rewardsSchedulesList([
         MGA_ASSET_ID,
       ]);
-      expect(rewardedPools.length).toBe(1);
+      const filtered = rewardedPools.filter((x) =>
+        stringToBN(x.liqToken.toString()).eq(liqId),
+      );
+      expect(filtered.length).toBe(1);
     });
     test("Rewards schedule must last at least 1 session ahead", async () => {
       await waitIfSessionWillChangeInNblocks(3);
@@ -297,7 +300,7 @@ describe("Proof of stake tests", () => {
             newToken,
             MGA_ASSET_ID,
             new BN(3).mul(BN_MILLION).mul(Assets.MG_UNIT).subn(1),
-            1,
+            2,
           ),
         ),
       ).then(async (x) => {
