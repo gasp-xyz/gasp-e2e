@@ -223,7 +223,7 @@ describe("Miocroapps UI liq pools tests", () => {
     await poolDetails.setSecondTokenAmount("0.01");
     await poolDetails.waitFirstTokenAmountSet(true);
     await driver.sleep(500);
-    let firstTokenAmount = await poolDetails.getFirstTokenAmount();
+    const firstTokenAmount = await poolDetails.getFirstTokenAmount();
     expect(firstTokenAmount).toBeGreaterThan(0);
     await driver.sleep(500);
   });
