@@ -6,7 +6,10 @@ import { getApi, initApi } from "../../utils/api";
 import { AssetWallet, User } from "../../utils/User";
 import { Keyring } from "@polkadot/api";
 import { BN } from "@polkadot/util";
-import { getEnvironmentRequiredVars } from "../../utils/utils";
+import {
+  getEnvironmentRequiredVars,
+  waitIfSessionWillChangeInNblocks,
+} from "../../utils/utils";
 import { Assets } from "../../utils/Assets";
 import { Sudo } from "../../utils/sudo";
 import { Xyk } from "../../utils/xyk";
@@ -247,6 +250,9 @@ describe("Proof of stake tests", () => {
       const liqId = await getLiquidityAssetId(MGA_ASSET_ID, newToken);
       testUser.addAssets([liqId, newToken, newToken3, MGA_ASSET_ID]);
       await testUser.refreshAmounts();
+      await waitIfSessionWillChangeInNblocks(6);
+      const totalActivatedBefore =
+        await ProofOfStake.totalActivatedLiquidityForSchedules(liqId, newToken);
       await signTx(
         getApi(),
         api.tx.utility.batchAll([
@@ -295,7 +301,9 @@ describe("Proof of stake tests", () => {
       const totalActivated =
         await ProofOfStake.totalActivatedLiquidityForSchedules(liqId, newToken);
       expect(totalActivated.pendingPositive).bnEqual(Assets.DEFAULT_AMOUNT);
-      expect(totalActivated.total).bnEqual(BN_ZERO);
+      expect(totalActivated.total).bnEqual(
+        totalActivatedBefore.pendingPositive,
+      );
       expect(totalActivated.pendingNegative).bnEqual(BN_ZERO);
 
       const totalActivated2 =

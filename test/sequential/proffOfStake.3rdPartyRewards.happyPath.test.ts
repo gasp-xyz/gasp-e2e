@@ -211,12 +211,8 @@ describe("Proof of stake tests", () => {
           "ThirdPartyRewardsClaimed",
         ]);
         expect(claimEvent.data[0]).toEqual(testUser1.keyRingPair.address);
-        expect(stringToBN(claimEvent.data[1].toString())).toEqual(
-          liqId.toString(),
-        );
-        expect(stringToBN(claimEvent.data[2].toString())).toEqual(
-          newToken.toString(),
-        );
+        expect(stringToBN(claimEvent.data[1].toString())).bnEqual(liqId);
+        expect(stringToBN(claimEvent.data[2].toString())).bnEqual(newToken);
         expect(claimEvent.data[3].replaceAll(",", "")).toEqual(
           rewards.toString(),
         );
