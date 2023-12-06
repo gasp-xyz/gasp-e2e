@@ -82,9 +82,9 @@ export class PositionModal {
     const activatedTokensXpath = buildDataTestIdXpath(
       "activated-LP-tokens-value",
     );
-    const myPoolPosition = await this.driver
-      .findElement(By.xpath(poolNameXpath))
-      .findElement(By.xpath(activatedTokensXpath));
+    const myPoolPosition = await this.driver.findElement(
+      By.xpath(poolNameXpath + activatedTokensXpath),
+    );
     const myPoolPositionText = await myPoolPosition.getText();
     const myPoolPositionValue = toNumber(myPoolPositionText);
     return myPoolPositionValue;
@@ -97,9 +97,9 @@ export class PositionModal {
     const PoolName = "pool-" + firstTokenName + "-" + secondTokenName;
     const poolNameXpath = buildDataTestIdXpath(PoolName);
     const activatedTokensXpath = buildDataTestIdXpath("pool-share-value");
-    const myPoolPosition = await this.driver
-      .findElement(By.xpath(poolNameXpath))
-      .findElement(By.xpath(activatedTokensXpath));
+    const myPoolPosition = await this.driver.findElement(
+      By.xpath(poolNameXpath + activatedTokensXpath),
+    );
     const myPoolPositionText = await myPoolPosition.getText();
     const myPoolPositionNumber = myPoolPositionText.replace(",", "");
     const myPoolPositionValue = toNumber(myPoolPositionNumber);

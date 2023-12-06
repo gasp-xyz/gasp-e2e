@@ -121,10 +121,33 @@ describe("Microapps UI stacking modal tests", () => {
 
     const stackingModal = new StackingModal(driver);
     await stackingModal.waitForCollatorsVisible();
-    const collatorInfo = await stackingModal.getCollatorInfo();
+    const collatorInfo = await stackingModal.getCollatorInfo("active");
     expect(collatorInfo.collatorAddress).not.toBeEmpty();
     expect(collatorInfo.totalStake).not.toBeEmpty();
     expect(collatorInfo.minBond).toBeGreaterThan(0);
+  });
+
+  it("In staking page user can see waiting collators with details (staked token, min stake, etc..)", async () => {
+    await setupPageWithState(driver, acc_name);
+    const sidebar = new Sidebar(driver);
+    await sidebar.clickNavStaking();
+
+    const stackingModal = new StackingModal(driver);
+    await stackingModal.waitForCollatorsVisible();
+    const collatorInfo = await stackingModal.getCollatorInfo("waiting");
+    expect(collatorInfo.collatorAddress).not.toBeEmpty();
+  });
+
+  it("User can enter active collator details and see its stats", async () => {
+    await setupPageWithState(driver, acc_name);
+    const sidebar = new Sidebar(driver);
+    await sidebar.clickNavStaking();
+
+    const stackingModal = new StackingModal(driver);
+    await stackingModal.chooseCollatorRow();
+    const isCollatorsDetailCardVisible =
+      await stackingModal.isCollatorsDetailCardDisplayed();
+    expect(isCollatorsDetailCardVisible).toBeTruthy();
   });
 
   afterEach(async () => {

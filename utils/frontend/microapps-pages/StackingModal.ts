@@ -1,6 +1,7 @@
 import { By, WebDriver } from "selenium-webdriver";
 import {
   buildDataTestIdXpath,
+  clickElement,
   isDisplayed,
   waitForElementVisible,
 } from "../utils/Helper";
@@ -23,28 +24,50 @@ export class StackingModal {
     await waitForElementVisible(this.driver, collatorListLocator, 8000);
   }
 
-  async getCollatorInfo() {
-    const collatorRowXpath = buildDataTestIdXpath("collator-row-item");
-    const addressXpath = buildDataTestIdXpath("collator-address");
-    const totalStakeXpath = buildDataTestIdXpath("total-stake");
-    const minBondXpath = buildDataTestIdXpath("min-bond");
-    const collatorAddress = await this.driver
-      .findElement(By.xpath(collatorRowXpath))
-      .findElement(By.xpath(addressXpath));
+  async getCollatorInfo(collatorType: string) {
+    const collatorListXpath =
+      buildDataTestIdXpath(collatorType + "-collators-list") +
+      buildDataTestIdXpath("collator-row-item");
+    const addressXpath =
+      collatorListXpath + buildDataTestIdXpath("collator-address");
+    const totalStakeXpath =
+      collatorListXpath + buildDataTestIdXpath("total-stake");
+    const minBondXpath = collatorListXpath + buildDataTestIdXpath("min-bond");
+    const collatorAddress = await this.driver.findElement(
+      By.xpath(addressXpath),
+    );
     const collatorAddressText = await collatorAddress.getText();
-    const totalStake = await this.driver
-      .findElement(By.xpath(collatorRowXpath))
-      .findElement(By.xpath(totalStakeXpath));
-    const totalStakeText = await totalStake.getText();
-    const minBond = await this.driver
-      .findElement(By.xpath(collatorRowXpath))
-      .findElement(By.xpath(minBondXpath));
-    const minBondText = await minBond.getText();
-    const minBondValue = toNumber(minBondText);
-    return {
-      collatorAddress: collatorAddressText,
-      totalStake: totalStakeText,
-      minBond: minBondValue,
-    };
+    if (collatorType === "active") {
+      const totalStake = await this.driver.findElement(
+        By.xpath(totalStakeXpath),
+      );
+      const totalStakeText = await totalStake.getText();
+      const minBond = await this.driver.findElement(By.xpath(minBondXpath));
+      const minBondText = await minBond.getText();
+      const minBondValue = toNumber(minBondText);
+
+      return {
+        collatorAddress: collatorAddressText,
+        totalStake: totalStakeText,
+        minBond: minBondValue,
+      };
+    } else {
+      return {
+        collatorAddress: collatorAddressText,
+      };
+    }
+  }
+
+  async chooseCollatorRow() {
+    const collatorRowXpath =
+      buildDataTestIdXpath("active-collators-list") +
+      buildDataTestIdXpath("collator-row-item") +
+      buildDataTestIdXpath("collator-address");
+    await clickElement(this.driver, collatorRowXpath);
+  }
+
+  async isCollatorsDetailCardDisplayed() {
+    const itemXpath = buildDataTestIdXpath("collator-detail-card");
+    return isDisplayed(this.driver, itemXpath);
   }
 }
