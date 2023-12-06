@@ -99,7 +99,7 @@ jobs:
           reporter: jest-junit        # Format of test results
 
       - name: Install testmo
-        run: npm install --no-save @testmo/testmo-cli
+        run: yarn global add @testmo/testmo-cli
 
       - name: Submit results to the testmo-run
         if: always()
