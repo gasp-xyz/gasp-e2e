@@ -344,7 +344,7 @@ describe("Proof of stake tests", () => {
         (await getUserBalanceOfToken(MGA_ASSET_ID, otherUser)).free,
       ).bnEqual(balanceOther.free.add(rewardsOther2));
     });
-    it("Bug about new rewards and activation", async () => {
+    it("Rewards are not given for the ongoing session it got scheduled", async () => {
       const eve = testUser4;
       const alice = testUser1;
       const bob = testUser2;
@@ -437,9 +437,32 @@ describe("Proof of stake tests", () => {
         liquidityAssetId,
         MGA_ASSET_ID,
       );
+      // here we test that rewards are not given for the ongoing session it got scheduled,
+      // alice and bob activated in the same session, but eve activated in the next one
+      // so alice and bob should have the same rewards, and eve has the same rewards as alice and bob
       expect(rewardsAlice).bnGt(BN_ZERO);
       expect(rewardsAlice).bnEqual(rewardsBob);
-      expect(rewardsAlice).bnGt(rewardsEve);
+      expect(rewardsAlice).bnEqual(rewardsEve);
+
+      await waitforSessionChange();
+      const rewardsAlice2 = await getThirdPartyRewards(
+        alice.keyRingPair.address,
+        liquidityAssetId,
+        MGA_ASSET_ID,
+      );
+      const rewardsBob2 = await getThirdPartyRewards(
+        bob.keyRingPair.address,
+        liquidityAssetId,
+        MGA_ASSET_ID,
+      );
+      const rewardsEve2 = await getThirdPartyRewards(
+        eve.keyRingPair.address,
+        liquidityAssetId,
+        MGA_ASSET_ID,
+      );
+      expect(rewardsAlice2).bnGt(BN_ZERO);
+      expect(rewardsAlice2).bnEqual(rewardsBob2);
+      expect(rewardsAlice2).bnEqual(rewardsEve2);
     });
   });
 });

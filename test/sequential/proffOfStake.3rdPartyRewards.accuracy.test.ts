@@ -9,7 +9,6 @@ import { BN } from "@polkadot/util";
 import {
   getEnvironmentRequiredVars,
   getThirdPartyRewards,
-  waitForNBlocks,
   waitIfSessionWillChangeInNblocks,
 } from "../../utils/utils";
 import { Assets } from "../../utils/Assets";
@@ -20,7 +19,7 @@ import { MGA_ASSET_ID } from "../../utils/Constants";
 import { ProofOfStake } from "../../utils/ProofOfStake";
 import "jest-extended";
 import { getLiquidityAssetId } from "../../utils/tx";
-import { waitForRewards } from "../../utils/eventListeners";
+import { waitForRewards, waitforSessionChange } from "../../utils/eventListeners";
 import { BN_ZERO } from "@mangata-finance/sdk";
 
 let testUser1: User;
@@ -100,6 +99,7 @@ describe("Proof of stake tests", () => {
     it("User liq. is considered on the ongoing session", async () => {
       const testUser = testUser2;
       const liquidityAssetId = await getLiquidityAssetId(newToken, newToken2);
+      await waitIfSessionWillChangeInNblocks(6);
       await Sudo.batchAsSudoFinalized(
         Sudo.sudoAs(
           testUser,
@@ -112,7 +112,6 @@ describe("Proof of stake tests", () => {
           ),
         ),
       );
-      await waitIfSessionWillChangeInNblocks(3);
       await Sudo.asSudoFinalized(
         Sudo.sudoAs(
           testUser,
@@ -123,7 +122,7 @@ describe("Proof of stake tests", () => {
           ),
         ),
       );
-      await waitForNBlocks(10);
+      await waitforSessionChange();
       await Sudo.asSudoFinalized(
         Sudo.sudoAs(
           testUser,
