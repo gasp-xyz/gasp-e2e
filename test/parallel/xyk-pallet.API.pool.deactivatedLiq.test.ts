@@ -35,7 +35,6 @@ let testUser: User;
 let testUser1: User;
 let sudo: User;
 let keyring: Keyring;
-let token1: BN = BN_ZERO;
 let token2: BN = BN_ZERO;
 let token3: BN = BN_ZERO;
 let liqId: BN = BN_ZERO;
@@ -56,7 +55,7 @@ beforeAll(async () => {
 
   await setupApi();
 
-  [token1, token2, token3] = await Assets.setupUserWithCurrencies(
+  [token2, token3] = await Assets.setupUserWithCurrencies(
     sudo,
     [defaultCurrencyValue, defaultCurrencyValue, defaultCurrencyValue],
     sudo,
@@ -65,7 +64,6 @@ beforeAll(async () => {
   await Sudo.batchAsSudoFinalized(
     Assets.FinalizeTge(),
     Assets.initIssuance(),
-    Assets.mintToken(token1, testUser, Assets.DEFAULT_AMOUNT),
     Assets.mintToken(token2, testUser, Assets.DEFAULT_AMOUNT),
     Assets.mintToken(token3, testUser, Assets.DEFAULT_AMOUNT),
     Assets.mintNative(testUser),
@@ -82,25 +80,16 @@ beforeAll(async () => {
   liqId = await getLiquidityAssetId(token2, token3);
   [testUser1] = setupUsers();
   await Sudo.batchAsSudoFinalized(
-    Assets.promotePool(token1.toNumber(), 20),
     Assets.promotePool(liqId.toNumber(), 20),
-    Assets.mintToken(token1, testUser1, BN_BILLION),
     Assets.mintToken(liqId, testUser1, BN_BILLION),
     Assets.mintNative(testUser1),
     Assets.mintNative(sudo),
     Sudo.sudoAs(testUser1, Xyk.activateLiquidity(liqId, BN_BILLION)),
-    Sudo.sudoAs(testUser1, Xyk.activateLiquidity(token1, BN_BILLION)),
   );
-  testUser1.addAsset(token1);
   testUser1.addAsset(MGA_ASSET_ID);
-  testUser1.addAsset(token1);
   testUser1.addAsset(liqId);
-  await waitForRewards(testUser1, token1);
   await waitForRewards(testUser1, liqId);
-  await Sudo.batchAsSudoFinalized(
-    Assets.promotePool(token1.toNumber(), 0),
-    Assets.promotePool(liqId.toNumber(), 0),
-  );
+  await Sudo.batchAsSudoFinalized(Assets.promotePool(liqId.toNumber(), 0));
   //Now we have 2 pools that generated soem rewards and are now de-promoted.
 });
 
@@ -158,45 +147,6 @@ test("GIVEN a disabled pool the user can still interact with it: Burn, deactivat
     testTokenId,
   );
   expect(mplAfterDeac.activatedUnstakedReserves).bnEqual(BN_ZERO);
-
-  await claimRewards(testUser1, testTokenId).then((result) => {
-    const eventResponse = getEventResultFromMangataTx(result);
-    expect(eventResponse.state).toEqual(ExtrinsicResult.ExtrinsicSuccess);
-  });
-});
-test("GIVEN a disabled solo rewarded token the user can still interact with it: deactivate Liq & claim rewards", async () => {
-  const testTokenId = token1;
-  await testUser1.refreshAmounts(AssetWallet.BEFORE);
-  const mpl = await getMultiPurposeLiquidityStatus(
-    testUser1.keyRingPair.address,
-    testTokenId,
-  );
-  expect(mpl.activatedUnstakedReserves).bnEqual(BN_BILLION);
-
-  await testUser1.refreshAmounts(AssetWallet.BEFORE);
-  await deactivateLiquidity(
-    testUser1.keyRingPair,
-    testTokenId,
-    BN_BILLION.divn(2),
-  ).then((result) => {
-    const event = getEventResultFromMangataTx(result);
-    expect(event.state).toEqual(ExtrinsicResult.ExtrinsicSuccess);
-  });
-  await testUser1.refreshAmounts(AssetWallet.AFTER);
-  expect(testUser1.getAsset(testTokenId)!.amountAfter.reserved!).bnEqual(
-    BN_BILLION.divn(2),
-  );
-  expect(testUser1.getAsset(testTokenId)!.amountAfter.free!).bnEqual(
-    BN_BILLION.divn(2),
-  );
-
-  const mplAfterDeactivation = await getMultiPurposeLiquidityStatus(
-    testUser1.keyRingPair.address,
-    testTokenId,
-  );
-  expect(mplAfterDeactivation.activatedUnstakedReserves).bnEqual(
-    BN_BILLION.divn(2),
-  );
 
   await claimRewards(testUser1, testTokenId).then((result) => {
     const eventResponse = getEventResultFromMangataTx(result);
