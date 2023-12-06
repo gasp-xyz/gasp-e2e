@@ -148,7 +148,7 @@ jobs:
 
     steps:
       - name: Install testmo
-        run: npm install --no-save @testmo/testmo-cli
+        run: yarn global add @testmo/testmo-cli
 
       - name: Complete test run
         run: |
