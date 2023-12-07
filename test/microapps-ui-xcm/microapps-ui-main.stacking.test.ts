@@ -12,7 +12,7 @@ import {
   importPolkadotExtension,
 } from "../../utils/frontend/utils/Helper";
 import { AssetWallet, User } from "../../utils/User";
-import { getEnvironmentRequiredVars, sleep } from "../../utils/utils";
+import { getEnvironmentRequiredVars } from "../../utils/utils";
 import { KSM_ASSET_ID, MGA_ASSET_ID } from "../../utils/Constants";
 import { Node } from "../../utils/Framework/Node/Node";
 import "dotenv/config";
@@ -167,7 +167,6 @@ describe("Microapps UI stacking modal tests", () => {
     await stackingModal.setStackingValue("50");
     await stackingModal.waitForStackingFeeVisible();
     await stackingModal.submitStacking();
-    await sleep(200000);
     await waitForMicroappsActionNotification(
       driver,
       mangata,
