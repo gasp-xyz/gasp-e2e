@@ -12,14 +12,16 @@ import {
   importPolkadotExtension,
 } from "../../utils/frontend/utils/Helper";
 import { AssetWallet, User } from "../../utils/User";
-import { getEnvironmentRequiredVars } from "../../utils/utils";
+import { getEnvironmentRequiredVars, sleep } from "../../utils/utils";
 import { KSM_ASSET_ID, MGA_ASSET_ID } from "../../utils/Constants";
 import { Node } from "../../utils/Framework/Node/Node";
 import "dotenv/config";
 import {
+  addLiqTokenMicroapps,
   connectWallet,
   setupPage,
   setupPageWithState,
+  waitForMicroappsActionNotification,
 } from "../../utils/frontend/microapps-utils/Handlers";
 import { ApiContext } from "../../utils/Framework/XcmHelper";
 import XcmNetworks from "../../utils/Framework/XcmNetworks";
@@ -30,6 +32,7 @@ import StashServiceMockSingleton from "../../utils/stashServiceMockSingleton";
 import { Sidebar } from "../../utils/frontend/microapps-pages/Sidebar";
 //import { Polkadot } from "../../utils/frontend/pages/Polkadot";
 import { StackingModal } from "../../utils/frontend/microapps-pages/StackingModal";
+import { TransactionType } from "../../utils/frontend/microapps-pages/NotificationModal";
 
 jest.spyOn(console, "log").mockImplementation(jest.fn());
 
@@ -144,10 +147,34 @@ describe("Microapps UI stacking modal tests", () => {
     await sidebar.clickNavStaking();
 
     const stackingModal = new StackingModal(driver);
+    await stackingModal.waitForCollatorsVisible();
     await stackingModal.chooseCollatorRow();
     const isCollatorsDetailCardVisible =
       await stackingModal.isCollatorsDetailCardDisplayed();
     expect(isCollatorsDetailCardVisible).toBeTruthy();
+  });
+
+  it("In collator details page if already stakes user can see his stake", async () => {
+    await addLiqTokenMicroapps(userAddress, mangata, 5, 18, 100);
+    await setupPageWithState(driver, acc_name);
+    const sidebar = new Sidebar(driver);
+    await sidebar.clickNavStaking();
+
+    const stackingModal = new StackingModal(driver);
+    await stackingModal.waitForCollatorsVisible();
+    await stackingModal.chooseCollatorRow();
+    await stackingModal.startStacking();
+    await stackingModal.setStackingValue("50");
+    await stackingModal.waitForStackingFeeVisible();
+    await stackingModal.submitStacking();
+    await sleep(200000);
+    await waitForMicroappsActionNotification(
+      driver,
+      mangata,
+      kusama,
+      TransactionType.Stacking,
+      2,
+    );
   });
 
   afterEach(async () => {

@@ -21,6 +21,7 @@ import {
 import { Node } from "../../utils/Framework/Node/Node";
 import "dotenv/config";
 import {
+  addLiqTokenMicroapps,
   connectWallet,
   setupPage,
   setupPageWithState,
@@ -30,8 +31,7 @@ import { ApiContext } from "../../utils/Framework/XcmHelper";
 import XcmNetworks from "../../utils/Framework/XcmNetworks";
 import { connectVertical } from "@acala-network/chopsticks";
 import { AssetId } from "../../utils/ChainSpecs";
-import { BN_TEN, BN_THOUSAND } from "@mangata-finance/sdk";
-import { BN } from "@polkadot/util";
+import { BN_THOUSAND } from "@mangata-finance/sdk";
 import StashServiceMockSingleton from "../../utils/stashServiceMockSingleton";
 import { LiqPools } from "../../utils/frontend/microapps-pages/LiqPools";
 import { Sidebar } from "../../utils/frontend/microapps-pages/Sidebar";
@@ -161,7 +161,7 @@ describe("Microapps UI position modal tests", () => {
   });
 
   it("Remove pool liquidity", async () => {
-    await addLiquidityToken(mangata, 5, 18, 100);
+    await addLiqTokenMicroapps(userAddress, mangata, 5, 18, 100);
 
     await setupPageWithState(driver, acc_name);
     const sidebar = new Sidebar(driver);
@@ -187,7 +187,7 @@ describe("Microapps UI position modal tests", () => {
   });
 
   it("Activate and deactivate liquidity", async () => {
-    await addLiquidityToken(mangata, 8, 18, 100);
+    await addLiqTokenMicroapps(userAddress, mangata, 8, 18, 100);
 
     await setupPageWithState(driver, acc_name);
     const sidebar = new Sidebar(driver);
@@ -236,7 +236,7 @@ describe("Microapps UI position modal tests", () => {
   });
 
   it("User can see liquidity providing details (share of pool) - promoted pool", async () => {
-    await addLiquidityToken(mangata, 8, 18, 100);
+    await addLiqTokenMicroapps(userAddress, mangata, 8, 18, 100);
 
     await setupPageWithState(driver, acc_name);
     const sidebar = new Sidebar(driver);
@@ -272,7 +272,7 @@ describe("Microapps UI position modal tests", () => {
   });
 
   it("User can see liquidity providing details (share of pool) - non-promoted pool", async () => {
-    await addLiquidityToken(mangata, 9, 12, 1);
+    await addLiqTokenMicroapps(userAddress, mangata, 9, 12, 1);
 
     await setupPageWithState(driver, acc_name);
     const sidebar = new Sidebar(driver);
@@ -293,7 +293,7 @@ describe("Microapps UI position modal tests", () => {
   });
 
   it("User see hint if some positions are not active", async () => {
-    await addLiquidityToken(mangata, 5, 18, 100);
+    await addLiqTokenMicroapps(userAddress, mangata, 5, 18, 100);
 
     await setupPageWithState(driver, acc_name);
     const sidebar = new Sidebar(driver);
@@ -311,7 +311,7 @@ describe("Microapps UI position modal tests", () => {
   });
 
   it("User can see number of active rewards for his positions", async () => {
-    await addLiquidityToken(mangata, 5, 18, 1000);
+    await addLiqTokenMicroapps(userAddress, mangata, 5, 18, 1000);
 
     await setupPageWithState(driver, acc_name);
     const sidebar = new Sidebar(driver);
@@ -330,7 +330,7 @@ describe("Microapps UI position modal tests", () => {
   });
 
   it("User can see position detail overview with token shares", async () => {
-    await addLiquidityToken(mangata, 5, 18, 1000);
+    await addLiqTokenMicroapps(userAddress, mangata, 5, 18, 1000);
 
     await setupPageWithState(driver, acc_name);
     const sidebar = new Sidebar(driver);
@@ -354,8 +354,8 @@ describe("Microapps UI position modal tests", () => {
     let isPoolMgxKsmVisible: boolean;
     let isPoolTurKsmVisible: boolean;
 
-    await addLiquidityToken(mangata, 5, 18, 1000);
-    await addLiquidityToken(mangata, 9, 12, 10);
+    await addLiqTokenMicroapps(userAddress, mangata, 5, 18, 1000);
+    await addLiqTokenMicroapps(userAddress, mangata, 9, 12, 10);
 
     await setupPageWithState(driver, acc_name);
     const sidebar = new Sidebar(driver);
@@ -406,21 +406,3 @@ describe("Microapps UI position modal tests", () => {
     DriverBuilder.destroy();
   });
 });
-
-async function addLiquidityToken(
-  apiContext: ApiContext,
-  tokenId: number,
-  power: number,
-  value: number,
-) {
-  await apiContext.dev.setStorage({
-    Tokens: {
-      Accounts: [
-        [
-          [userAddress, { token: tokenId }],
-          { free: BN_TEN.pow(new BN(power)).mul(new BN(value)).toString() },
-        ],
-      ],
-    },
-  });
-}

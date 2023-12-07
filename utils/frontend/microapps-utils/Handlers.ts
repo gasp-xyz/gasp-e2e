@@ -10,6 +10,8 @@ import { WalletConnectModal } from "../microapps-pages/WalletConnectModal";
 import { WalletWrapper } from "../microapps-pages/WalletWrapper";
 import { Polkadot } from "../pages/Polkadot";
 import { acceptPermissionsWalletExtensionInNewWindow } from "../utils/Helper";
+import { BN_TEN } from "@mangata-finance/sdk";
+import { BN } from "@polkadot/util";
 
 export async function connectWallet(
   driver: WebDriver,
@@ -89,4 +91,23 @@ export async function waitForMicroappsActionNotification(
   );
   expect(isModalSuccessVisible).toBeTruthy();
   await modal.clickInDone();
+}
+
+export async function addLiqTokenMicroapps(
+  userAddress: string,
+  apiContext: ApiContext,
+  tokenId: number,
+  power: number,
+  value: number,
+) {
+  await apiContext.dev.setStorage({
+    Tokens: {
+      Accounts: [
+        [
+          [userAddress, { token: tokenId }],
+          { free: BN_TEN.pow(new BN(power)).mul(new BN(value)).toString() },
+        ],
+      ],
+    },
+  });
 }

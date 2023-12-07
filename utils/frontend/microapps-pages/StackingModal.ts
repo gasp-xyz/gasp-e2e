@@ -1,6 +1,7 @@
 import { By, WebDriver } from "selenium-webdriver";
 import {
   buildDataTestIdXpath,
+  buildXpathByText,
   clickElement,
   isDisplayed,
   waitForElementVisible,
@@ -58,16 +59,53 @@ export class StackingModal {
     }
   }
 
-  async chooseCollatorRow() {
+  async chooseCollatorRow(index = 0) {
     const collatorRowXpath =
       buildDataTestIdXpath("active-collators-list") +
       buildDataTestIdXpath("collator-row-item") +
       buildDataTestIdXpath("collator-address");
-    await clickElement(this.driver, collatorRowXpath);
+    const collatorAddresses = await this.driver.findElements(
+      By.xpath(collatorRowXpath),
+    );
+    const collatorAddress = await collatorAddresses[index].getText();
+    const collatorAddressValueXpath =
+      buildDataTestIdXpath("active-collators-list") +
+      buildDataTestIdXpath("collator-row-item") +
+      buildXpathByText(collatorAddress);
+    await clickElement(this.driver, collatorAddressValueXpath);
   }
 
   async isCollatorsDetailCardDisplayed() {
     const itemXpath = buildDataTestIdXpath("collator-detail-card");
     return isDisplayed(this.driver, itemXpath);
+  }
+
+  async startStacking() {
+    const startStackingButton = buildDataTestIdXpath(
+      "stake-widget-banner-new-cta",
+    );
+    await clickElement(this.driver, startStackingButton);
+  }
+
+  async setStackingValue(value: any) {
+    const stackingValueXpath = buildDataTestIdXpath(
+      "new-stake-widget-tokenInput-input",
+    );
+    const tokenInput = await this.driver.findElement(
+      By.xpath(stackingValueXpath),
+    );
+    await tokenInput.sendKeys(value);
+  }
+
+  async waitForStackingFeeVisible() {
+    const collatorListLocator = buildDataTestIdXpath(
+      "new-stake-widget-details-fee-value",
+    );
+    await waitForElementVisible(this.driver, collatorListLocator, 8000);
+  }
+
+  async submitStacking() {
+    const startStackingButton = buildDataTestIdXpath("new-stake-widget-submit");
+    await clickElement(this.driver, startStackingButton);
   }
 }
