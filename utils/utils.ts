@@ -542,7 +542,8 @@ export async function getFeeLockMetadata(api: ApiPromise) {
 }
 
 export function stringToBN(value: string): BN {
-  return isHex(value) ? hexToBn(value) : new BN(value.replaceAll(",", ""));
+  const strValue = value.toString();
+  return isHex(value) ? hexToBn(value) : new BN(strValue.replaceAll(",", ""));
 }
 export async function findErrorMetadata(errorStr: string, index: string) {
   try {
