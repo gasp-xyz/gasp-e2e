@@ -1,6 +1,6 @@
 /*
  *
- * @group microappsStacking
+ * @group microappsStaking
  */
 import { jest } from "@jest/globals";
 import { Keyring } from "@polkadot/api";
@@ -31,7 +31,7 @@ import { BN_THOUSAND } from "@mangata-finance/sdk";
 import StashServiceMockSingleton from "../../utils/stashServiceMockSingleton";
 import { Sidebar } from "../../utils/frontend/microapps-pages/Sidebar";
 //import { Polkadot } from "../../utils/frontend/pages/Polkadot";
-import { StackingModal } from "../../utils/frontend/microapps-pages/StackingModal";
+import { StakingModal } from "../../utils/frontend/microapps-pages/StakingModal";
 import { TransactionType } from "../../utils/frontend/microapps-pages/NotificationModal";
 
 jest.spyOn(console, "log").mockImplementation(jest.fn());
@@ -44,7 +44,7 @@ const acc_name = "acc_automation";
 const userAddress = "5CfLmpjCJu41g3cpZVoiH7MSrSppgVVVC3xq23iy9dZrW2HR";
 const INIT_KSM_RELAY = 15;
 
-describe("Microapps UI stacking modal tests", () => {
+describe("Microapps UI staking modal tests", () => {
   let kusama: ApiContext;
   let mangata: ApiContext;
 
@@ -111,9 +111,9 @@ describe("Microapps UI stacking modal tests", () => {
     const sidebar = new Sidebar(driver);
     await sidebar.clickNavStaking();
 
-    const stackingModal = new StackingModal(driver);
+    const stakingModal = new StakingModal(driver);
     const isCollatorsListVisible =
-      await stackingModal.isCollatorsListDisplayed();
+      await stakingModal.isCollatorsListDisplayed();
     expect(isCollatorsListVisible).toBeTruthy();
   });
 
@@ -122,9 +122,9 @@ describe("Microapps UI stacking modal tests", () => {
     const sidebar = new Sidebar(driver);
     await sidebar.clickNavStaking();
 
-    const stackingModal = new StackingModal(driver);
-    await stackingModal.waitForCollatorsVisible();
-    const collatorInfo = await stackingModal.getCollatorInfo("active");
+    const stakingModal = new StakingModal(driver);
+    await stakingModal.waitForCollatorsVisible();
+    const collatorInfo = await stakingModal.getCollatorInfo("active");
     expect(collatorInfo.collatorAddress).not.toBeEmpty();
     expect(collatorInfo.totalStake).not.toBeEmpty();
     expect(collatorInfo.minBond).toBeGreaterThan(0);
@@ -135,9 +135,9 @@ describe("Microapps UI stacking modal tests", () => {
     const sidebar = new Sidebar(driver);
     await sidebar.clickNavStaking();
 
-    const stackingModal = new StackingModal(driver);
-    await stackingModal.waitForCollatorsVisible();
-    const collatorInfo = await stackingModal.getCollatorInfo("waiting");
+    const stakingModal = new StakingModal(driver);
+    await stakingModal.waitForCollatorsVisible();
+    const collatorInfo = await stakingModal.getCollatorInfo("waiting");
     expect(collatorInfo.collatorAddress).not.toBeEmpty();
   });
 
@@ -146,11 +146,11 @@ describe("Microapps UI stacking modal tests", () => {
     const sidebar = new Sidebar(driver);
     await sidebar.clickNavStaking();
 
-    const stackingModal = new StackingModal(driver);
-    await stackingModal.waitForCollatorsVisible();
-    await stackingModal.chooseCollatorRow();
+    const stakingModal = new StakingModal(driver);
+    await stakingModal.waitForCollatorsVisible();
+    await stakingModal.chooseCollatorRow();
     const isCollatorsDetailCardVisible =
-      await stackingModal.isCollatorsDetailCardDisplayed();
+      await stakingModal.isCollatorsDetailCardDisplayed();
     expect(isCollatorsDetailCardVisible).toBeTruthy();
   });
 
@@ -160,18 +160,18 @@ describe("Microapps UI stacking modal tests", () => {
     const sidebar = new Sidebar(driver);
     await sidebar.clickNavStaking();
 
-    const stackingModal = new StackingModal(driver);
-    await stackingModal.waitForCollatorsVisible();
-    await stackingModal.chooseCollatorRow();
-    await stackingModal.startStacking();
-    await stackingModal.setStackingValue("50");
-    await stackingModal.waitForStackingFeeVisible();
-    await stackingModal.submitStacking();
+    const stakingModal = new StakingModal(driver);
+    await stakingModal.waitForCollatorsVisible();
+    await stakingModal.chooseCollatorRow();
+    await stakingModal.startStaking();
+    await stakingModal.setStakingValue("50");
+    await stakingModal.waitForStakingFeeVisible();
+    await stakingModal.submitStaking();
     await waitForMicroappsActionNotification(
       driver,
       mangata,
       kusama,
-      TransactionType.Stacking,
+      TransactionType.Staking,
       2,
     );
   });

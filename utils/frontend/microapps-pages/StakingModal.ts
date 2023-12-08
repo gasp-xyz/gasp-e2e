@@ -8,7 +8,7 @@ import {
 } from "../utils/Helper";
 import toNumber from "lodash-es/toNumber";
 
-export class StackingModal {
+export class StakingModal {
   driver: WebDriver;
 
   constructor(driver: WebDriver) {
@@ -80,32 +80,32 @@ export class StackingModal {
     return isDisplayed(this.driver, itemXpath);
   }
 
-  async startStacking() {
-    const startStackingButton = buildDataTestIdXpath(
+  async startStaking() {
+    const startStakingButton = buildDataTestIdXpath(
       "stake-widget-banner-new-cta",
     );
-    await clickElement(this.driver, startStackingButton);
+    await clickElement(this.driver, startStakingButton);
   }
 
-  async setStackingValue(value: any) {
-    const stackingValueXpath = buildDataTestIdXpath(
+  async setStakingValue(value: any) {
+    const stakingValueXpath = buildDataTestIdXpath(
       "new-stake-widget-tokenInput-input",
     );
     const tokenInput = await this.driver.findElement(
-      By.xpath(stackingValueXpath),
+      By.xpath(stakingValueXpath),
     );
     await tokenInput.sendKeys(value);
   }
 
-  async waitForStackingFeeVisible() {
+  async waitForStakingFeeVisible() {
     const collatorListLocator = buildDataTestIdXpath(
       "new-stake-widget-details-fee-value",
     );
     await waitForElementVisible(this.driver, collatorListLocator, 8000);
   }
 
-  async submitStacking() {
-    const startStackingButton = buildDataTestIdXpath("new-stake-widget-submit");
-    await clickElement(this.driver, startStackingButton);
+  async submitStaking() {
+    const startStakingButton = buildDataTestIdXpath("new-stake-widget-submit");
+    await clickElement(this.driver, startStakingButton);
   }
 }
