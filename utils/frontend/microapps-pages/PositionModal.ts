@@ -106,6 +106,11 @@ export class PositionModal {
     return myPoolPositionValue;
   }
 
+  async waitForLpPositionVisible() {
+    const rewardsLocator = buildDataTestIdXpath("positionLP-anchor");
+    await waitForElementVisible(this.driver, rewardsLocator, 8000);
+  }
+
   async getPoolPositionTokensValues() {
     const liquidityTokenXpath = buildDataTestIdXpath("positionLP-anchor");
     const liquidityTokenValue = await this.driver.findElement(

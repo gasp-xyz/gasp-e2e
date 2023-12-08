@@ -33,6 +33,7 @@ import { Sidebar } from "../../utils/frontend/microapps-pages/Sidebar";
 //import { Polkadot } from "../../utils/frontend/pages/Polkadot";
 import { StakingModal } from "../../utils/frontend/microapps-pages/StakingModal";
 import { TransactionType } from "../../utils/frontend/microapps-pages/NotificationModal";
+import { PositionModal } from "../../utils/frontend/microapps-pages/PositionModal";
 
 jest.spyOn(console, "log").mockImplementation(jest.fn());
 
@@ -171,9 +172,32 @@ describe("Microapps UI staking modal tests", () => {
       driver,
       mangata,
       kusama,
-      TransactionType.Staking,
+      TransactionType.Stake,
       2,
     );
+    await stakingModal.goToPositionInfo();
+
+    const positionModal = new PositionModal(driver);
+    await positionModal.waitForLpPositionVisible();
+    const tokensValues = await positionModal.getPoolPositionTokensValues();
+    expect(tokensValues.liquidityTokenValue).toBeGreaterThan(0);
+    expect(tokensValues.firstTokenValue).toBeGreaterThan(0);
+    expect(tokensValues.secondTokenValue).toBeGreaterThan(0);
+  });
+
+  it("In collator details page if not staking user can see start staking button", async () => {
+    await addLiqTokenMicroapps(userAddress, mangata, 5, 18, 100);
+    await setupPageWithState(driver, acc_name);
+    const sidebar = new Sidebar(driver);
+    await sidebar.clickNavStaking();
+
+    const stakingModal = new StakingModal(driver);
+    await stakingModal.waitForCollatorsVisible();
+    await stakingModal.chooseCollatorRow(1);
+    await stakingModal.waitStartStakingButtonVisible();
+    const isStartStakingButtonVisible =
+      await stakingModal.isStartStakingButtonDisplayed();
+    expect(isStartStakingButtonVisible).toBeTruthy();
   });
 
   afterEach(async () => {

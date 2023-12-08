@@ -108,4 +108,21 @@ export class StakingModal {
     const startStakingButton = buildDataTestIdXpath("new-stake-widget-submit");
     await clickElement(this.driver, startStakingButton);
   }
+
+  async waitStartStakingButtonVisible() {
+    const collatorListLocator = buildDataTestIdXpath(
+      "stake-widget-banner-new-cta",
+    );
+    await waitForElementVisible(this.driver, collatorListLocator, 4000);
+  }
+
+  async isStartStakingButtonDisplayed() {
+    const itemXpath = buildDataTestIdXpath("stake-widget-banner-new-cta");
+    return isDisplayed(this.driver, itemXpath);
+  }
+
+  async goToPositionInfo() {
+    const positionInfoButton = buildDataTestIdXpath("staking-manage-position");
+    await clickElement(this.driver, positionInfoButton);
+  }
 }
