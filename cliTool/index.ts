@@ -1,6 +1,9 @@
 /* eslint-disable no-console */
 /**
- * npx ts-node cliTool/index.ts --runInBand
+ * cd cliTool
+ * yarn
+ * npx ts-node index.ts --runInBand
+ * If you want to define the url ( default is localhost:9946 )
  * API_URL="wss://mangata-x.api.onfinality.io/public-ws"  npx ts-node ./index.ts --runInBand
  * or:
  * node --experimental-specifier-resolution=node --loader ts-node/esm --experimental-vm-modules  ./index.ts --runInBand
@@ -16,6 +19,19 @@ import {
   createCustomPool,
   setupACouncilWithDefaultUsers,
   vetoMotion,
+  migrate,
+  userAggregatesOn,
+  subscribeAndPrintTokenChanges,
+  provisionWith100Users,
+  findAllRewardsAndClaim,
+  setupTokenWithRewardsForDefaultUsers,
+  testTokensForUsers,
+  replaceByStateCall,
+  burnAllTokensFromPool,
+  createProposal,
+  printAllTxsDoneByUser,
+  vote,
+  close,
 } from "../utils/setupsOnTheGo";
 import {
   findErrorMetadata,
@@ -28,7 +44,11 @@ import { SudoUser } from "../utils/Framework/User/SudoUser";
 import { Keyring } from "@polkadot/api";
 import { getApi, initApi } from "../utils/api";
 import { User } from "../utils/User";
-import { Mangata } from "@mangata-finance/sdk";
+import { BN_ZERO, Mangata } from "@mangata-finance/sdk";
+import { encodeAddress } from "@polkadot/keyring";
+import { stringToU8a, bnToU8a, u8aConcat, BN } from "@polkadot/util";
+import { Sudo } from "../utils/sudo";
+import { setupApi, setupUsers } from "../utils/setup";
 
 async function app(): Promise<any> {
   return inquirer
@@ -38,6 +58,10 @@ async function app(): Promise<any> {
       name: "option",
       choices: [
         "Setup rewards with default users",
+        "Create Proposal",
+        "Vote",
+        "CloseProposal",
+        "Setup a collator with token",
         "Join as candidate",
         "Fill with candidates",
         "Give tokens to user",
@@ -54,6 +78,18 @@ async function app(): Promise<any> {
         "createPool",
         "createACouncil",
         "veto",
+        "migrateData",
+        "user aggregates with",
+        "listen token balance changes",
+        "provisionWith100Users",
+        "find and claim all rewards",
+        "Setup token rewards with default users",
+        "slibing",
+        "proof crowdloan",
+        "testTokensForUsers",
+        "rpc_chops",
+        "Empty pool created by default users",
+        "Print user txs",
       ],
     })
     .then(async (answers: { option: string | string[] }) => {
@@ -61,6 +97,112 @@ async function app(): Promise<any> {
       if (answers.option.includes("Setup rewards with default users")) {
         const setupData = await setupPoolWithRewardsForDefaultUsers();
         console.log("liq Id = " + setupData.liqId);
+      }
+      if (answers.option.includes("Setup token rewards with default users")) {
+        await setupTokenWithRewardsForDefaultUsers();
+      }
+      if (answers.option.includes("Empty pool created by default users")) {
+        return inquirer
+          .prompt([
+            {
+              type: "input",
+              name: "liqToken",
+              message: "default 9",
+              default: "9",
+            },
+          ])
+          .then(async (answers: { liqToken: string }) => {
+            await burnAllTokensFromPool(new BN(answers.liqToken));
+          });
+      }
+      if (answers.option.includes("Vote")) {
+        return inquirer
+          .prompt([
+            {
+              type: "input",
+              name: "proposalId",
+              message: " id",
+              default: "0",
+            },
+          ])
+          .then(async (answers: { proposalId: number }) => {
+            await vote(answers.proposalId);
+          });
+      }
+      if (answers.option.includes("CloseProposal")) {
+        return inquirer
+          .prompt([
+            {
+              type: "input",
+              name: "proposalId",
+              message: " id",
+              default: "0",
+            },
+          ])
+          .then(async (answers: { proposalId: number }) => {
+            await close(answers.proposalId);
+          });
+      }
+      if (answers.option.includes("Print user txs")) {
+        return inquirer
+          .prompt([
+            {
+              type: "input",
+              name: "userAddress",
+              message: "default Alice",
+              default: "5GrwvaEF5zXb26Fz9rcQpDWS57CtERHpNehXCPcNoHGKutQY",
+            },
+          ])
+          .then(async (answers: { userAddress: string }) => {
+            await printAllTxsDoneByUser(answers.userAddress);
+          });
+      }
+      if (answers.option.includes("Setup a collator with token")) {
+        return inquirer
+          .prompt([
+            {
+              type: "input",
+              name: "user",
+              message: "default //Charlie",
+            },
+            {
+              type: "input",
+              name: "liq",
+              message: "liq id",
+            },
+            {
+              type: "input",
+              name: "amount",
+              message: "amountToJoin",
+            },
+          ])
+          .then(
+            async (answers: {
+              user: string | undefined;
+              liq: number | undefined;
+              amount: string | 0;
+            }) => {
+              let liq = new BN(answers.liq!.toString());
+              const amount = new BN(answers.amount!.toString());
+              if (liq!.eq(BN_ZERO)) {
+                const setupData = await setupPoolWithRewardsForDefaultUsers();
+                console.log("liq Id = " + setupData.liqId);
+                liq = new BN(setupData.liqId);
+              }
+              const node = new Node(getEnvironmentRequiredVars().chainUri);
+              await node.connect();
+              const keyring = new Keyring({ type: "sr25519" });
+              const sudo = new SudoUser(keyring, node);
+              await sudo.addStakingLiquidityToken(liq);
+              await joinAsCandidate(
+                answers.user,
+                liq?.toNumber(),
+                new BN(amount),
+              );
+              console.log("Done");
+              return app();
+            },
+          );
       }
       if (answers.option.includes("Join as candidate")) {
         return inquirer
@@ -167,8 +309,9 @@ async function app(): Promise<any> {
               await api.query.parachainStaking.selectedCandidates();
             const keyring = new Keyring({ type: "sr25519" });
             const user = new User(keyring, answers.user);
-            const result = collators.find(
-              (x) => x.toString() === user.keyRingPair.address,
+            const result = JSON.parse(JSON.stringify(collators)).find(
+              (x: { toString: () => string }) =>
+                x.toString() === user.keyRingPair.address,
             );
             console.info(result?.toString());
             console.info(
@@ -252,7 +395,7 @@ async function app(): Promise<any> {
               message: "",
             },
           ])
-          .then(async (answers) => {
+          .then(async (answers: { str: unknown }) => {
             await initApi();
             const api = await getApi();
             const str = api.createType("Vec<u8>", answers.str);
@@ -287,14 +430,20 @@ async function app(): Promise<any> {
               message: "MGX bigger?",
             },
           ])
-          .then(async (answers) => {
-            await initApi();
-            const mgaBig = answers.mgaBig === "true";
-            const ratio = parseInt(answers.ratio.toString());
-            const user = answers.user;
-            await createCustomPool(mgaBig, ratio, user);
-            return app();
-          });
+          .then(
+            async (answers: {
+              mgaBig: string;
+              ratio: { toString: () => string };
+              user: any;
+            }) => {
+              await initApi();
+              const mgaBig = answers.mgaBig === "true";
+              const ratio = parseInt(answers.ratio.toString());
+              const user = answers.user;
+              await createCustomPool(mgaBig, ratio, user);
+              return app();
+            },
+          );
       }
       if (answers.option.includes("createACouncil")) {
         await initApi();
@@ -310,7 +459,7 @@ async function app(): Promise<any> {
               message: "motion_no",
             },
           ])
-          .then(async (answers) => {
+          .then(async (answers: { motion: number }) => {
             await initApi();
             await vetoMotion(answers.motion);
             return app();
@@ -318,6 +467,105 @@ async function app(): Promise<any> {
       }
       if (answers.option.includes("Who is offline")) {
         await printCandidatesNotProducing();
+      }
+      if (answers.option.includes("migrateData")) {
+        await migrate();
+      }
+      if (answers.option.includes("testTokensForUsers")) {
+        await inquirer
+          .prompt([
+            {
+              type: "input",
+              name: "userPath",
+              message: "//Eve",
+            },
+          ])
+          .then(async (answers: { userPath: string }) => {
+            await testTokensForUsers(answers.userPath);
+          });
+      }
+      if (answers.option.includes("user aggregates with")) {
+        return inquirer
+          .prompt([
+            {
+              type: "input",
+              name: "userAggregating",
+              message: "",
+            },
+            {
+              type: "input",
+              name: "userWhoDelegates",
+              message: "",
+            },
+          ])
+          .then(
+            async (answers: {
+              userAggregating: string;
+              userWhoDelegates: string;
+            }) => {
+              await userAggregatesOn(
+                answers.userAggregating,
+                answers.userWhoDelegates,
+              );
+              console.log("Done");
+              return app();
+            },
+          );
+      }
+      if (answers.option.includes("listen token balance changes")) {
+        await subscribeAndPrintTokenChanges(
+          getEnvironmentRequiredVars().chainUri,
+        );
+      }
+      if (answers.option.includes("provisionWith100Users")) {
+        await provisionWith100Users();
+      }
+      if (answers.option.includes("find and claim all rewards")) {
+        await findAllRewardsAndClaim();
+      }
+      if (answers.option.includes("Create Proposal")) {
+        await createProposal();
+      }
+      if (answers.option.includes("slibing")) {
+        const EMPTY_U8A_32 = new Uint8Array(32);
+        const ass = encodeAddress(
+          u8aConcat(stringToU8a("para"), bnToU8a(2110), EMPTY_U8A_32).subarray(
+            0,
+            32,
+          ),
+        );
+        console.log(ass);
+      }
+      if (answers.option.includes("rpc_chops")) {
+        await replaceByStateCall();
+      }
+      if (answers.option.includes("proof crowdloan")) {
+        const keyring = new Keyring({ type: "ed25519" });
+        const relayAcc = keyring.addFromMnemonic("//Bob");
+        const keyringMga = new Keyring({ type: "sr25519" });
+        const accMga = keyringMga.addFromMnemonic("//Bob");
+        const message = new Uint8Array([
+          ...stringToU8a("<Bytes>"),
+          ...stringToU8a("mangata-"),
+          ...accMga.addressRaw,
+          ...stringToU8a("</Bytes>"),
+        ]);
+        await initApi();
+        await setupUsers();
+        await setupApi();
+        const api = await getApi();
+        const signature = {
+          Ed25519: relayAcc.sign(message),
+        };
+        const tx = Sudo.sudo(
+          api.tx.crowdloan.associateNativeIdentity(
+            accMga.address,
+            relayAcc.address,
+            signature,
+          ),
+        );
+        await Sudo.batchAsSudoFinalized(tx);
+        console.log(message.toString());
       }
       return app();
     });

@@ -311,12 +311,19 @@ export async function setupPolkadotExtension(driver: WebDriver) {
   };
 }
 
-export async function importPolkadotExtension(driver: WebDriver) {
+export async function importPolkadotExtension(
+  driver: WebDriver,
+  mnemonicKeys = "",
+) {
   await leaveOnlyOneTab(driver);
 
   const polkadotExtension = new Polkadot(driver);
   await polkadotExtension.go();
-  await polkadotExtension.setupAccount();
+  if (mnemonicKeys === "") {
+    await polkadotExtension.setupAccount();
+  } else {
+    await polkadotExtension.setupAccount(mnemonicKeys);
+  }
 }
 
 export async function setupTalismanExtension(driver: WebDriver) {
@@ -454,6 +461,10 @@ export function buildDataTestIdXpathFunction(
 
 export function buildClassXpath(className: string) {
   return `//*[@class='${className}']`;
+}
+
+export function buildHrefXpath(hrefName: string) {
+  return `//*[@href='${hrefName}']`;
 }
 
 export async function waitForNewWindow(

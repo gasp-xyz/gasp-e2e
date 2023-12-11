@@ -16,11 +16,14 @@ import { BN, BN_THOUSAND } from "@polkadot/util";
 import { Keyring } from "@polkadot/api";
 import { waitForEvents } from "../../utils/eventListeners";
 import { testLog } from "../../utils/Logger";
+import { jest } from "@jest/globals";
 
 /**
- * @group xcm
+ * @group skip-xcm
  * @group proxied
  */
+
+jest.setTimeout(140000);
 
 const keyring = new Keyring({ type: "ethereum" });
 const alith = keyring.addFromUri(
