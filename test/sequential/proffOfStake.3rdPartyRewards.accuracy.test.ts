@@ -19,7 +19,10 @@ import { MGA_ASSET_ID } from "../../utils/Constants";
 import { ProofOfStake } from "../../utils/ProofOfStake";
 import "jest-extended";
 import { getLiquidityAssetId } from "../../utils/tx";
-import { waitForRewards, waitforSessionChange } from "../../utils/eventListeners";
+import {
+  waitForRewards,
+  waitforSessionChange,
+} from "../../utils/eventListeners";
 import { BN_ZERO } from "@mangata-finance/sdk";
 
 let testUser1: User;

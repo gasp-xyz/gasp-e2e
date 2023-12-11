@@ -16,7 +16,8 @@ import {
 import { User } from "./User";
 import {
   getBlockNumber,
-  getEnvironmentRequiredVars, getUserBalanceOfToken,
+  getEnvironmentRequiredVars,
+  getUserBalanceOfToken,
 } from "./utils";
 import { Xyk } from "./xyk";
 import { getApi, api, initApi, getMangataInstance } from "./api";
@@ -237,7 +238,7 @@ export async function setupPoolWithRewardsForDefaultUsers() {
   await waitForRewards(testUser4, liqId);
   return { users, liqId, sudo, token2 };
 }
-export async function joinAsCandidate(
+export async function joinAsCandidateByName(
   userName: string,
   liqId = 9,
   tokenOrigin = tokenOriginEnum.AvailableBalance,
@@ -246,8 +247,8 @@ export async function joinAsCandidate(
   await setupApi();
   const user = new User(new Keyring({ type: "sr25519" }), userName);
   await Staking.joinAsCandidateWithUser(user, new BN(liqId), tokenOrigin);
-
-  export async function setupTokenWithRewardsForDefaultUsers() {
+}
+export async function setupTokenWithRewardsForDefaultUsers() {
   await setupApi();
   await setupUsers();
   const amount = (await api?.consts.parachainStaking.minCandidateStk)?.muln(
@@ -299,6 +300,7 @@ export async function joinAsCandidate(
   await waitForRewards(testUser4, liqId);
   return { users, liqId, sudo, token2 };
 }
+
 export async function printAllTxsDoneByUser(userAddress: string) {
   await setupUsers();
   await setupApi();
