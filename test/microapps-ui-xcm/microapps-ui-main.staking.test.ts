@@ -43,6 +43,7 @@ let testUser1: User;
 
 const acc_name = "acc_automation";
 const userAddress = "5CfLmpjCJu41g3cpZVoiH7MSrSppgVVVC3xq23iy9dZrW2HR";
+const liqTokenNumber = 100;
 const INIT_KSM_RELAY = 15;
 
 describe("Microapps UI staking modal tests", () => {
@@ -156,7 +157,7 @@ describe("Microapps UI staking modal tests", () => {
   });
 
   it("In collator details page if already stakes user can see his stake", async () => {
-    await addLiqTokenMicroapps(userAddress, mangata, 5, 18, 100);
+    await addLiqTokenMicroapps(userAddress, mangata, 5, 18, liqTokenNumber);
     await setupPageWithState(driver, acc_name);
     const sidebar = new Sidebar(driver);
     await sidebar.clickNavStaking();
@@ -165,7 +166,7 @@ describe("Microapps UI staking modal tests", () => {
     await stakingModal.waitForCollatorsVisible();
     await stakingModal.chooseCollatorRow();
     await stakingModal.startStaking();
-    await stakingModal.setStakingValue("50");
+    await stakingModal.setStakingValue((liqTokenNumber / 2).toString());
     await stakingModal.waitForStakingFeeVisible();
     await stakingModal.submitStaking();
     await waitForMicroappsActionNotification(
@@ -186,7 +187,7 @@ describe("Microapps UI staking modal tests", () => {
   });
 
   it("In collator details page if not staking user can see start staking button", async () => {
-    await addLiqTokenMicroapps(userAddress, mangata, 5, 18, 100);
+    await addLiqTokenMicroapps(userAddress, mangata, 5, 18, liqTokenNumber);
     await setupPageWithState(driver, acc_name);
     const sidebar = new Sidebar(driver);
     await sidebar.clickNavStaking();
@@ -198,6 +199,53 @@ describe("Microapps UI staking modal tests", () => {
     const isStartStakingButtonVisible =
       await stakingModal.isStartStakingButtonDisplayed();
     expect(isStartStakingButtonVisible).toBeTruthy();
+  });
+
+  it("User can start staking with enough free tokens", async () => {
+    await addLiqTokenMicroapps(userAddress, mangata, 5, 18, liqTokenNumber);
+    await setupPageWithState(driver, acc_name);
+    const sidebar = new Sidebar(driver);
+    await sidebar.clickNavStaking();
+
+    const stakingModal = new StakingModal(driver);
+    await stakingModal.waitForCollatorsVisible();
+    await stakingModal.chooseCollatorRow(2);
+    await stakingModal.startStaking();
+    await stakingModal.setStakingValue((liqTokenNumber / 2).toString());
+    await stakingModal.waitForStakingFeeVisible();
+    const stakingButtonText = await stakingModal.getStakingButtonText();
+    expect(stakingButtonText).toEqual("STAKE");
+  });
+
+  it("User can not start staking with more tokens than he owns", async () => {
+    await addLiqTokenMicroapps(userAddress, mangata, 5, 18, liqTokenNumber);
+    await setupPageWithState(driver, acc_name);
+    const sidebar = new Sidebar(driver);
+    await sidebar.clickNavStaking();
+
+    const stakingModal = new StakingModal(driver);
+    await stakingModal.waitForCollatorsVisible();
+    await stakingModal.chooseCollatorRow(2);
+    await stakingModal.startStaking();
+    await stakingModal.setStakingValue((liqTokenNumber * 2).toString());
+    const stakingButtonText = await stakingModal.getStakingButtonText();
+    expect(stakingButtonText).toEqual("INSUFFICIENT BALANCE");
+  });
+
+  it("User can not start staking amount less than 1 MGX - KSM", async () => {
+    await addLiqTokenMicroapps(userAddress, mangata, 5, 18, liqTokenNumber);
+    await setupPageWithState(driver, acc_name);
+    const sidebar = new Sidebar(driver);
+    await sidebar.clickNavStaking();
+
+    const stakingModal = new StakingModal(driver);
+    await stakingModal.waitForCollatorsVisible();
+    await stakingModal.chooseCollatorRow(2);
+    await stakingModal.startStaking();
+    await stakingModal.setStakingValue("0.5");
+    await stakingModal.waitForStakingFeeVisible();
+    const stakingButtonText = await stakingModal.getStakingButtonText();
+    expect(stakingButtonText).toEqual("INSUFFICIENT AMOUNT");
   });
 
   afterEach(async () => {

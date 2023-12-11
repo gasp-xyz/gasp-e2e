@@ -125,4 +125,15 @@ export class StakingModal {
     const positionInfoButton = buildDataTestIdXpath("staking-manage-position");
     await clickElement(this.driver, positionInfoButton);
   }
+
+  async getStakingButtonText() {
+    const startStakingButtonXpath = buildDataTestIdXpath(
+      "new-stake-widget-submit",
+    );
+    const startStakingButton = await this.driver.findElement(
+      By.xpath(startStakingButtonXpath),
+    );
+    const startStakingButtonText = await startStakingButton.getText();
+    return startStakingButtonText;
+  }
 }
