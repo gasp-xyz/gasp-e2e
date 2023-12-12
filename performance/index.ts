@@ -85,6 +85,15 @@ async function main() {
     case "ping":
       testParams.command = Commands.Ping;
       break;
+    case "schedule3rdParty":
+      testParams.command = Commands.Schedule3rdParty;
+      break;
+    case "claim3rdParty":
+      testParams.command = Commands.Claim3rdParty;
+      break;
+    case "scheduleActivate3rdParty":
+      testParams.command = Commands.ScheduleActivate3rdParty;
+      break;
     default:
       throw new Error(
         `Unknown command: ${command}, available: "transfer", "mint", "burn", "swap"`,
