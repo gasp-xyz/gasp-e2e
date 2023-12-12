@@ -117,6 +117,7 @@ describe("Proof of stake tests", () => {
           testUser4,
           Assets.DEFAULT_AMOUNT.divn(2),
           MGA_ASSET_ID,
+          100,
         ),
       ),
       Assets.promotePool(liqId.toNumber(), 20),

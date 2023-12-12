@@ -10,6 +10,7 @@ export class Vesting {
     toUser: User | string,
     amount: BN,
     tokenId: BN,
+    offset = 0,
   ) {
     const blockNo = await getBlockNumber();
     return api.tx.vesting.forceVestedTransfer(
@@ -19,7 +20,7 @@ export class Vesting {
       {
         locked: amount,
         perBlock: BN_THOUSAND,
-        startingBlock: blockNo + 100,
+        startingBlock: blockNo + offset,
       },
     );
   }
