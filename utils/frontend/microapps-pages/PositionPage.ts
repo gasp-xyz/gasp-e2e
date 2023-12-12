@@ -8,7 +8,7 @@ import {
 } from "../utils/Helper";
 import toNumber from "lodash-es/toNumber";
 
-export class PositionModal {
+export class PositionPageDriver {
   driver: WebDriver;
 
   constructor(driver: WebDriver) {

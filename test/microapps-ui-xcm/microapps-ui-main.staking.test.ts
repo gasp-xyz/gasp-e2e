@@ -31,9 +31,9 @@ import { BN_THOUSAND } from "@mangata-finance/sdk";
 import StashServiceMockSingleton from "../../utils/stashServiceMockSingleton";
 import { Sidebar } from "../../utils/frontend/microapps-pages/Sidebar";
 //import { Polkadot } from "../../utils/frontend/pages/Polkadot";
-import { StakingModal } from "../../utils/frontend/microapps-pages/StakingModal";
+import { StakingPageDriver } from "../../utils/frontend/microapps-pages/StakingPage";
 import { TransactionType } from "../../utils/frontend/microapps-pages/NotificationModal";
-import { PositionModal } from "../../utils/frontend/microapps-pages/PositionModal";
+import { PositionPageDriver } from "../../utils/frontend/microapps-pages/PositionPage";
 
 jest.spyOn(console, "log").mockImplementation(jest.fn());
 
@@ -46,9 +46,11 @@ const userAddress = "5CfLmpjCJu41g3cpZVoiH7MSrSppgVVVC3xq23iy9dZrW2HR";
 const liqTokenNumber = 100;
 const INIT_KSM_RELAY = 15;
 
-describe("Microapps UI staking modal tests", () => {
+describe("Microapps UI Staking page tests", () => {
   let kusama: ApiContext;
   let mangata: ApiContext;
+  let sidebar: Sidebar;
+  let stakingPageDriver: StakingPageDriver;
 
   beforeAll(async () => {
     kusama = await XcmNetworks.kusama({ localPort: 9944 });
@@ -90,6 +92,9 @@ describe("Microapps UI staking modal tests", () => {
     driver = await DriverBuilder.getInstance();
     await importPolkadotExtension(driver);
 
+    sidebar = new Sidebar(driver);
+    stakingPageDriver = new StakingPageDriver(driver);
+
     const keyring = new Keyring({ type: "sr25519" });
     const node = new Node(getEnvironmentRequiredVars().chainUri);
     await node.connect();
@@ -110,23 +115,19 @@ describe("Microapps UI staking modal tests", () => {
 
   it("User can enter staking page with list of collators", async () => {
     await setupPageWithState(driver, acc_name);
-    const sidebar = new Sidebar(driver);
     await sidebar.clickNavStaking();
 
-    const stakingModal = new StakingModal(driver);
     const isCollatorsListVisible =
-      await stakingModal.isCollatorsListDisplayed();
+      await stakingPageDriver.isCollatorsListDisplayed();
     expect(isCollatorsListVisible).toBeTruthy();
   });
 
   it("In staking page user can see active collators with details (staked token, min stake, etc..)", async () => {
     await setupPageWithState(driver, acc_name);
-    const sidebar = new Sidebar(driver);
     await sidebar.clickNavStaking();
 
-    const stakingModal = new StakingModal(driver);
-    await stakingModal.waitForCollatorsVisible();
-    const collatorInfo = await stakingModal.getCollatorInfo("active");
+    await stakingPageDriver.waitForCollatorsVisible();
+    const collatorInfo = await stakingPageDriver.getCollatorInfo("active");
     expect(collatorInfo.collatorAddress).not.toBeEmpty();
     expect(collatorInfo.totalStake).not.toBeEmpty();
     expect(collatorInfo.minBond).toBeGreaterThan(0);
@@ -134,41 +135,35 @@ describe("Microapps UI staking modal tests", () => {
 
   it("In staking page user can see waiting collators with details (staked token, min stake, etc..)", async () => {
     await setupPageWithState(driver, acc_name);
-    const sidebar = new Sidebar(driver);
     await sidebar.clickNavStaking();
 
-    const stakingModal = new StakingModal(driver);
-    await stakingModal.waitForCollatorsVisible();
-    const collatorInfo = await stakingModal.getCollatorInfo("waiting");
+    await stakingPageDriver.waitForCollatorsVisible();
+    const collatorInfo = await stakingPageDriver.getCollatorInfo("waiting");
     expect(collatorInfo.collatorAddress).not.toBeEmpty();
   });
 
   it("User can enter active collator details and see its stats", async () => {
     await setupPageWithState(driver, acc_name);
-    const sidebar = new Sidebar(driver);
     await sidebar.clickNavStaking();
 
-    const stakingModal = new StakingModal(driver);
-    await stakingModal.waitForCollatorsVisible();
-    await stakingModal.chooseCollatorRow();
+    await stakingPageDriver.waitForCollatorsVisible();
+    await stakingPageDriver.chooseCollatorRow();
     const isCollatorsDetailCardVisible =
-      await stakingModal.isCollatorsDetailCardDisplayed();
+      await stakingPageDriver.isCollatorsDetailCardDisplayed();
     expect(isCollatorsDetailCardVisible).toBeTruthy();
   });
 
   it("In collator details page if already stakes user can see his stake", async () => {
     await addLiqTokenMicroapps(userAddress, mangata, 5, 18, liqTokenNumber);
     await setupPageWithState(driver, acc_name);
-    const sidebar = new Sidebar(driver);
     await sidebar.clickNavStaking();
 
-    const stakingModal = new StakingModal(driver);
-    await stakingModal.waitForCollatorsVisible();
-    await stakingModal.chooseCollatorRow();
-    await stakingModal.startStaking();
-    await stakingModal.setStakingValue((liqTokenNumber / 2).toString());
-    await stakingModal.waitForStakingFeeVisible();
-    await stakingModal.submitStaking();
+    await stakingPageDriver.waitForCollatorsVisible();
+    await stakingPageDriver.chooseCollatorRow();
+    await stakingPageDriver.startStaking();
+    await stakingPageDriver.setStakingValue((liqTokenNumber / 2).toString());
+    await stakingPageDriver.waitForStakingFeeVisible();
+    await stakingPageDriver.submitStaking();
     await waitForMicroappsActionNotification(
       driver,
       mangata,
@@ -176,11 +171,10 @@ describe("Microapps UI staking modal tests", () => {
       TransactionType.Stake,
       2,
     );
-    await stakingModal.goToPositionInfo();
-
-    const positionModal = new PositionModal(driver);
-    await positionModal.waitForLpPositionVisible();
-    const tokensValues = await positionModal.getPoolPositionTokensValues();
+    await stakingPageDriver.goToPositionInfo();
+    const positionPageDriver = new PositionPageDriver(driver);
+    await positionPageDriver.waitForLpPositionVisible();
+    const tokensValues = await positionPageDriver.getPoolPositionTokensValues();
     expect(tokensValues.liquidityTokenValue).toBeGreaterThan(0);
     expect(tokensValues.firstTokenValue).toBeGreaterThan(0);
     expect(tokensValues.secondTokenValue).toBeGreaterThan(0);
@@ -189,62 +183,54 @@ describe("Microapps UI staking modal tests", () => {
   it("In collator details page if not staking user can see start staking button", async () => {
     await addLiqTokenMicroapps(userAddress, mangata, 5, 18, liqTokenNumber);
     await setupPageWithState(driver, acc_name);
-    const sidebar = new Sidebar(driver);
     await sidebar.clickNavStaking();
 
-    const stakingModal = new StakingModal(driver);
-    await stakingModal.waitForCollatorsVisible();
-    await stakingModal.chooseCollatorRow(1);
-    await stakingModal.waitStartStakingButtonVisible();
+    await stakingPageDriver.waitForCollatorsVisible();
+    await stakingPageDriver.chooseCollatorRow(1);
+    await stakingPageDriver.waitStartStakingButtonVisible();
     const isStartStakingButtonVisible =
-      await stakingModal.isStartStakingButtonDisplayed();
+      await stakingPageDriver.isStartStakingButtonDisplayed();
     expect(isStartStakingButtonVisible).toBeTruthy();
   });
 
   it("User can start staking with enough free tokens", async () => {
     await addLiqTokenMicroapps(userAddress, mangata, 5, 18, liqTokenNumber);
     await setupPageWithState(driver, acc_name);
-    const sidebar = new Sidebar(driver);
     await sidebar.clickNavStaking();
 
-    const stakingModal = new StakingModal(driver);
-    await stakingModal.waitForCollatorsVisible();
-    await stakingModal.chooseCollatorRow(2);
-    await stakingModal.startStaking();
-    await stakingModal.setStakingValue((liqTokenNumber / 2).toString());
-    await stakingModal.waitForStakingFeeVisible();
-    const stakingButtonText = await stakingModal.getStakingButtonText();
+    await stakingPageDriver.waitForCollatorsVisible();
+    await stakingPageDriver.chooseCollatorRow(2);
+    await stakingPageDriver.startStaking();
+    await stakingPageDriver.setStakingValue((liqTokenNumber / 2).toString());
+    await stakingPageDriver.waitForStakingFeeVisible();
+    const stakingButtonText = await stakingPageDriver.getStakingButtonText();
     expect(stakingButtonText).toEqual("STAKE");
   });
 
   it("User can not start staking with more tokens than he owns", async () => {
     await addLiqTokenMicroapps(userAddress, mangata, 5, 18, liqTokenNumber);
     await setupPageWithState(driver, acc_name);
-    const sidebar = new Sidebar(driver);
     await sidebar.clickNavStaking();
 
-    const stakingModal = new StakingModal(driver);
-    await stakingModal.waitForCollatorsVisible();
-    await stakingModal.chooseCollatorRow(2);
-    await stakingModal.startStaking();
-    await stakingModal.setStakingValue((liqTokenNumber * 2).toString());
-    const stakingButtonText = await stakingModal.getStakingButtonText();
+    await stakingPageDriver.waitForCollatorsVisible();
+    await stakingPageDriver.chooseCollatorRow(2);
+    await stakingPageDriver.startStaking();
+    await stakingPageDriver.setStakingValue((liqTokenNumber * 2).toString());
+    const stakingButtonText = await stakingPageDriver.getStakingButtonText();
     expect(stakingButtonText).toEqual("INSUFFICIENT BALANCE");
   });
 
   it("User can not start staking amount less than 1 MGX - KSM", async () => {
     await addLiqTokenMicroapps(userAddress, mangata, 5, 18, liqTokenNumber);
     await setupPageWithState(driver, acc_name);
-    const sidebar = new Sidebar(driver);
     await sidebar.clickNavStaking();
 
-    const stakingModal = new StakingModal(driver);
-    await stakingModal.waitForCollatorsVisible();
-    await stakingModal.chooseCollatorRow(2);
-    await stakingModal.startStaking();
-    await stakingModal.setStakingValue("0.5");
-    await stakingModal.waitForStakingFeeVisible();
-    const stakingButtonText = await stakingModal.getStakingButtonText();
+    await stakingPageDriver.waitForCollatorsVisible();
+    await stakingPageDriver.chooseCollatorRow(2);
+    await stakingPageDriver.startStaking();
+    await stakingPageDriver.setStakingValue("0.5");
+    await stakingPageDriver.waitForStakingFeeVisible();
+    const stakingButtonText = await stakingPageDriver.getStakingButtonText();
     expect(stakingButtonText).toEqual("INSUFFICIENT AMOUNT");
   });
 

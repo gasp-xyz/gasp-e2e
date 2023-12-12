@@ -8,7 +8,7 @@ import {
 } from "../utils/Helper";
 import toNumber from "lodash-es/toNumber";
 
-export class StakingModal {
+export class StakingPageDriver {
   driver: WebDriver;
 
   constructor(driver: WebDriver) {
@@ -101,7 +101,7 @@ export class StakingModal {
     const collatorListLocator = buildDataTestIdXpath(
       "new-stake-widget-details-fee-value",
     );
-    await waitForElementVisible(this.driver, collatorListLocator, 8000);
+    await waitForElementVisible(this.driver, collatorListLocator, 10000);
   }
 
   async submitStaking() {
@@ -122,7 +122,9 @@ export class StakingModal {
   }
 
   async goToPositionInfo() {
-    const positionInfoButton = buildDataTestIdXpath("staking-manage-position");
+    const positionInfoButton = buildDataTestIdXpath(
+      "stake-widget-banner-manage-position",
+    );
     await clickElement(this.driver, positionInfoButton);
   }
 
