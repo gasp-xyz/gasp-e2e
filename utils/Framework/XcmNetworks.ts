@@ -5,13 +5,13 @@ dotenv.config();
 
 const endpoints = {
   kusama: "wss://kusama-rpc.polkadot.io",
-  statemine: "wss://kusama-asset-hub-rpc.polkadot.io",
+  statemine: "wss://ksm-rpc.stakeworld.io/assethub",
   imbue: "wss://kusama.imbuenetwork.com",
   karura: "wss://karura-rpc-0.aca-api.network",
   mangata: "wss://kusama-archive.mangata.online",
-  bifrost: "wss://bifrost-rpc.dwellir.com",
+  bifrost: "wss://bifrost-parachain.api.onfinality.io/public-ws",
   turing: "wss://rpc.turing.oak.tech",
-  moonriver: "wss://wss.moonriver.moonbeam.network",
+  moonriver: "wss://moonriver-rpc.dwellir.com",
 };
 
 const toNumber = (value: string | undefined): number | undefined => {

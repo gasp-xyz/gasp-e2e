@@ -145,17 +145,17 @@ export class Staking {
       liqToken,
     );
   }
-  static updateCandidateAggregator(testUser: User): Extrinsic {
+  static updateCandidateAggregator(testUser: User | string): Extrinsic {
     return api.tx.parachainStaking.updateCandidateAggregator(
-      testUser.keyRingPair.address,
+      testUser.toString(),
     );
   }
   static aggregatorUpdateMetadata(
-    collators: User[],
-    action: AggregatorOptions,
+    collators: User[] | string[],
+    action: AggregatorOptions = AggregatorOptions.ExtendApprovedCollators,
   ): Extrinsic {
     return api.tx.parachainStaking.aggregatorUpdateMetadata(
-      collators.flatMap((user) => user.keyRingPair.address),
+      collators.flatMap((user) => user.toString()),
       action,
     );
   }

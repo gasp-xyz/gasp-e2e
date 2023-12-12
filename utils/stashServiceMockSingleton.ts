@@ -32,11 +32,11 @@ class StashServiceMockSingleton {
           name: "Kusama",
           status: "open",
           unitWeightCost: "",
-          xcmTransferWeight: "300000000",
+          xcmTransferWeight: "500000000",
           url: "ws://" + localAddress + ":9944",
           xcmVersion: "V3",
           chainType: "relaychain",
-          proofSize: "0",
+          proofSize: "10000",
         },
         {
           channelId: "1000",

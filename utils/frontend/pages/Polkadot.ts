@@ -56,12 +56,12 @@ export class Polkadot {
     return this.ACCOUNT_ADDRESS;
   }
 
-  async setupAccount() {
+  async setupAccount(mnemonicKeys = this.mnemonicPolkadot) {
     await this.driver.get(`${this.WEB_UI_ACCESS_URL}#/account/import-seed`);
     await waitForElement(this.driver, XPATH_MNEMONIC);
     await (await this.driver)
       .findElement(By.xpath(XPATH_MNEMONIC))
-      .sendKeys(this.mnemonicPolkadot);
+      .sendKeys(mnemonicKeys);
     await clickElement(this.driver, XPATH_NEXT);
 
     await this.fillUserPass();

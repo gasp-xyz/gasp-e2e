@@ -62,7 +62,7 @@ export class Swap {
     await clickElement(this.driver, switchButton);
   }
 
-  async isFirsttokenSelectorDisplayed() {
+  async isFirstTokenSelectorDisplayed() {
     const firstTokenSelector = buildDataTestIdXpath(
       DIV_FIRST_TOKEN_SELECTOR_CONTENT,
     );
@@ -142,6 +142,11 @@ export class Swap {
     return await (
       await this.driver.findElement(By.xpath(firstTokenSelector))
     ).isEnabled();
+  }
+
+  async clickSwapButton() {
+    const firstTokenSelector = buildDataTestIdXpath(BTN_SUBMIT_SWAP);
+    await (await this.driver.findElement(By.xpath(firstTokenSelector))).click();
   }
 
   async pickGetToken(tokenName: string) {

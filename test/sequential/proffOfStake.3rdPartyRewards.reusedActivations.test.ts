@@ -229,9 +229,7 @@ describe("Proof of stake tests", () => {
         liqId,
         newToken,
       );
-      expect(testUserRewards).bnEqual(
-        expectedSharedReward,
-      );
+      expect(testUserRewards).bnEqual(expectedSharedReward);
       expect(testUser2Rewards).bnEqual(testUserRewards);
 
       const testUserRewardsT3 = await getThirdPartyRewards(

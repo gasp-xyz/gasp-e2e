@@ -35,7 +35,7 @@
             "name": "Current TS File",
             "type": "node",
             "request": "launch",
-            "args": ["${relativeFile}" ,"transferAll", "testCaseName=ConcurrentTest",  "threadNumber=300", "duration=10", "totalTransactions=3000", "nodes=ws://10.0.0.6:9944" ],
+            "args": ["${relativeFile}" ,"transferAll", "testCaseName=ConcurrentTest",  "threadNumber=300", "duration=10", "totalTransactions=3000", "nodes=ws://10.0.0.6:9944", "--runInBand" ],
             "runtimeArgs": ["--nolazy", "-r", "ts-node/register"],
             "sourceMaps": true,
             "cwd": "${workspaceRoot}",
