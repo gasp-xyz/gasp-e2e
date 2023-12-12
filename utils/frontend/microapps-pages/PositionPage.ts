@@ -8,7 +8,7 @@ import {
 } from "../utils/Helper";
 import toNumber from "lodash-es/toNumber";
 
-export class PositionModal {
+export class PositionPageDriver {
   driver: WebDriver;
 
   constructor(driver: WebDriver) {
@@ -82,9 +82,9 @@ export class PositionModal {
     const activatedTokensXpath = buildDataTestIdXpath(
       "activated-LP-tokens-value",
     );
-    const myPoolPosition = await this.driver
-      .findElement(By.xpath(poolNameXpath))
-      .findElement(By.xpath(activatedTokensXpath));
+    const myPoolPosition = await this.driver.findElement(
+      By.xpath(poolNameXpath + activatedTokensXpath),
+    );
     const myPoolPositionText = await myPoolPosition.getText();
     const myPoolPositionValue = toNumber(myPoolPositionText);
     return myPoolPositionValue;
@@ -97,13 +97,18 @@ export class PositionModal {
     const PoolName = "pool-" + firstTokenName + "-" + secondTokenName;
     const poolNameXpath = buildDataTestIdXpath(PoolName);
     const activatedTokensXpath = buildDataTestIdXpath("pool-share-value");
-    const myPoolPosition = await this.driver
-      .findElement(By.xpath(poolNameXpath))
-      .findElement(By.xpath(activatedTokensXpath));
+    const myPoolPosition = await this.driver.findElement(
+      By.xpath(poolNameXpath + activatedTokensXpath),
+    );
     const myPoolPositionText = await myPoolPosition.getText();
     const myPoolPositionNumber = myPoolPositionText.replace(",", "");
     const myPoolPositionValue = toNumber(myPoolPositionNumber);
     return myPoolPositionValue;
+  }
+
+  async waitForLpPositionVisible() {
+    const rewardsLocator = buildDataTestIdXpath("positionLP-anchor");
+    await waitForElementVisible(this.driver, rewardsLocator, 8000);
   }
 
   async getPoolPositionTokensValues() {

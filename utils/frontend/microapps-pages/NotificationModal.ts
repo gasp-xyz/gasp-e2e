@@ -39,6 +39,7 @@ export enum TransactionType {
   DeactivateLiquidity,
   CreatePool,
   Claim,
+  Stake,
 }
 
 export class NotificationModal {
@@ -62,6 +63,7 @@ export class NotificationModal {
     [TransactionType.RemoveLiquidity]: "-removeLiquidity",
     [TransactionType.Claim]: "-claim",
     [TransactionType.CreatePool]: "-createPool",
+    [TransactionType.Stake]: "-stake",
   };
 
   constructor(driver: WebDriver) {

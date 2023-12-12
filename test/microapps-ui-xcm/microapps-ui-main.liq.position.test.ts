@@ -21,6 +21,7 @@ import {
 import { Node } from "../../utils/Framework/Node/Node";
 import "dotenv/config";
 import {
+  addLiqTokenMicroapps,
   connectWallet,
   setupPage,
   setupPageWithState,
@@ -30,8 +31,7 @@ import { ApiContext } from "../../utils/Framework/XcmHelper";
 import XcmNetworks from "../../utils/Framework/XcmNetworks";
 import { connectVertical } from "@acala-network/chopsticks";
 import { AssetId } from "../../utils/ChainSpecs";
-import { BN_TEN, BN_THOUSAND } from "@mangata-finance/sdk";
-import { BN } from "@polkadot/util";
+import { BN_THOUSAND } from "@mangata-finance/sdk";
 import StashServiceMockSingleton from "../../utils/stashServiceMockSingleton";
 import { LiqPools } from "../../utils/frontend/microapps-pages/LiqPools";
 import { Sidebar } from "../../utils/frontend/microapps-pages/Sidebar";
@@ -42,7 +42,7 @@ import {
 import { LiqPoolDetils } from "../../utils/frontend/microapps-pages/LiqPoolDetails";
 //import { Polkadot } from "../../utils/frontend/pages/Polkadot";
 import { TransactionType } from "../../utils/frontend/microapps-pages/NotificationModal";
-import { PositionModal } from "../../utils/frontend/microapps-pages/PositionModal";
+import { PositionPageDriver } from "../../utils/frontend/microapps-pages/PositionPage";
 
 jest.spyOn(console, "log").mockImplementation(jest.fn());
 
@@ -54,9 +54,11 @@ const acc_name = "acc_automation";
 const userAddress = "5CfLmpjCJu41g3cpZVoiH7MSrSppgVVVC3xq23iy9dZrW2HR";
 const INIT_KSM_RELAY = 15;
 
-describe("Microapps UI position modal tests", () => {
+describe("Microapps UI Position page tests", () => {
   let kusama: ApiContext;
   let mangata: ApiContext;
+  let sidebar: Sidebar;
+  let positionPageDriver: PositionPageDriver;
 
   beforeAll(async () => {
     kusama = await XcmNetworks.kusama({ localPort: 9944 });
@@ -98,6 +100,9 @@ describe("Microapps UI position modal tests", () => {
     driver = await DriverBuilder.getInstance();
     await importPolkadotExtension(driver);
 
+    sidebar = new Sidebar(driver);
+    positionPageDriver = new PositionPageDriver(driver);
+
     const keyring = new Keyring({ type: "sr25519" });
     const node = new Node(getEnvironmentRequiredVars().chainUri);
     await node.connect();
@@ -118,7 +123,6 @@ describe("Microapps UI position modal tests", () => {
 
   it("Add pool liquidity", async () => {
     await setupPageWithState(driver, acc_name);
-    const sidebar = new Sidebar(driver);
     await sidebar.clickNavLiqPools();
 
     const poolsList = new LiqPools(driver);
@@ -161,22 +165,23 @@ describe("Microapps UI position modal tests", () => {
   });
 
   it("Remove pool liquidity", async () => {
-    await addLiquidityToken(mangata, 5, 18, 100);
+    await addLiqTokenMicroapps(userAddress, mangata, 5, 18, 100);
 
     await setupPageWithState(driver, acc_name);
-    const sidebar = new Sidebar(driver);
     await sidebar.clickNavPositions();
 
-    const positionModal = new PositionModal(driver);
-    await positionModal.waitForPoolPositionsVisible();
-    const isPoolMgxKsmVisible = await positionModal.isLiqPoolDisplayed(
+    await positionPageDriver.waitForPoolPositionsVisible();
+    const isPoolMgxKsmVisible = await positionPageDriver.isLiqPoolDisplayed(
       MGX_ASSET_NAME,
       KSM_ASSET_NAME,
     );
     expect(isPoolMgxKsmVisible).toBeTruthy();
-    await positionModal.clickPromPoolPosition(MGX_ASSET_NAME, KSM_ASSET_NAME);
-    await positionModal.setupRemovableLiquidity();
-    await positionModal.clickRemoveLiquidity();
+    await positionPageDriver.clickPromPoolPosition(
+      MGX_ASSET_NAME,
+      KSM_ASSET_NAME,
+    );
+    await positionPageDriver.setupRemovableLiquidity();
+    await positionPageDriver.clickRemoveLiquidity();
     await waitForMicroappsActionNotification(
       driver,
       mangata,
@@ -187,32 +192,33 @@ describe("Microapps UI position modal tests", () => {
   });
 
   it("Activate and deactivate liquidity", async () => {
-    await addLiquidityToken(mangata, 8, 18, 100);
+    await addLiqTokenMicroapps(userAddress, mangata, 8, 18, 100);
 
     await setupPageWithState(driver, acc_name);
-    const sidebar = new Sidebar(driver);
     await sidebar.clickNavPositions();
 
-    const positionModal = new PositionModal(driver);
-    await positionModal.waitForPoolPositionsVisible();
-    const isPoolMgxKsmVisible = await positionModal.isLiqPoolDisplayed(
+    await positionPageDriver.waitForPoolPositionsVisible();
+    const isPoolMgxKsmVisible = await positionPageDriver.isLiqPoolDisplayed(
       TUR_ASSET_NAME,
       MGX_ASSET_NAME,
     );
     expect(isPoolMgxKsmVisible).toBeTruthy();
 
-    await positionModal.clickPromPoolPosition(TUR_ASSET_NAME, MGX_ASSET_NAME);
-    await positionModal.chooseLiqMiningPage();
+    await positionPageDriver.clickPromPoolPosition(
+      TUR_ASSET_NAME,
+      MGX_ASSET_NAME,
+    );
+    await positionPageDriver.chooseLiqMiningPage();
     const isClaimableRewardsVisible =
-      await positionModal.isClaimableRewardsDisplayed();
+      await positionPageDriver.isClaimableRewardsDisplayed();
     expect(isClaimableRewardsVisible).toBeTruthy();
     const isLpTokensValuesVisible =
-      await positionModal.isLpTokensValuesDisplayed();
+      await positionPageDriver.isLpTokensValuesDisplayed();
     expect(isLpTokensValuesVisible).toBeTruthy();
 
-    await positionModal.activateAllLiq();
-    await positionModal.waitCalculatingFee();
-    await positionModal.clickConfirmFeeAmount();
+    await positionPageDriver.activateAllLiq();
+    await positionPageDriver.waitCalculatingFee();
+    await positionPageDriver.clickConfirmFeeAmount();
     await waitForMicroappsActionNotification(
       driver,
       mangata,
@@ -221,11 +227,14 @@ describe("Microapps UI position modal tests", () => {
       2,
     );
 
-    await positionModal.clickPromPoolPosition(TUR_ASSET_NAME, MGX_ASSET_NAME);
-    await positionModal.chooseLiqMiningPage();
-    await positionModal.deactivateAllLiq();
-    await positionModal.waitCalculatingFee();
-    await positionModal.clickConfirmFeeAmount();
+    await positionPageDriver.clickPromPoolPosition(
+      TUR_ASSET_NAME,
+      MGX_ASSET_NAME,
+    );
+    await positionPageDriver.chooseLiqMiningPage();
+    await positionPageDriver.deactivateAllLiq();
+    await positionPageDriver.waitCalculatingFee();
+    await positionPageDriver.clickConfirmFeeAmount();
     await waitForMicroappsActionNotification(
       driver,
       mangata,
@@ -236,25 +245,26 @@ describe("Microapps UI position modal tests", () => {
   });
 
   it("User can see liquidity providing details (share of pool) - promoted pool", async () => {
-    await addLiquidityToken(mangata, 8, 18, 100);
+    await addLiqTokenMicroapps(userAddress, mangata, 8, 18, 100);
 
     await setupPageWithState(driver, acc_name);
-    const sidebar = new Sidebar(driver);
     await sidebar.clickNavPositions();
 
-    const positionModal = new PositionModal(driver);
-    await positionModal.waitForPoolPositionsVisible();
-    const isPoolMgxKsmVisible = await positionModal.isLiqPoolDisplayed(
+    await positionPageDriver.waitForPoolPositionsVisible();
+    const isPoolMgxKsmVisible = await positionPageDriver.isLiqPoolDisplayed(
       TUR_ASSET_NAME,
       MGX_ASSET_NAME,
     );
     expect(isPoolMgxKsmVisible).toBeTruthy();
-    await positionModal.clickPromPoolPosition(TUR_ASSET_NAME, MGX_ASSET_NAME);
-    await positionModal.chooseLiqMiningPage();
+    await positionPageDriver.clickPromPoolPosition(
+      TUR_ASSET_NAME,
+      MGX_ASSET_NAME,
+    );
+    await positionPageDriver.chooseLiqMiningPage();
 
-    await positionModal.activateAllLiq();
-    await positionModal.waitCalculatingFee();
-    await positionModal.clickConfirmFeeAmount();
+    await positionPageDriver.activateAllLiq();
+    await positionPageDriver.waitCalculatingFee();
+    await positionPageDriver.clickConfirmFeeAmount();
     await waitForMicroappsActionNotification(
       driver,
       mangata,
@@ -264,7 +274,7 @@ describe("Microapps UI position modal tests", () => {
     );
 
     await sidebar.clickNavPositions();
-    const mgxKsmPositionValue = await positionModal.checkPromPoolPosition(
+    const mgxKsmPositionValue = await positionPageDriver.checkPromPoolPosition(
       MGX_ASSET_NAME,
       KSM_ASSET_NAME,
     );
@@ -272,79 +282,76 @@ describe("Microapps UI position modal tests", () => {
   });
 
   it("User can see liquidity providing details (share of pool) - non-promoted pool", async () => {
-    await addLiquidityToken(mangata, 9, 12, 1);
+    await addLiqTokenMicroapps(userAddress, mangata, 9, 12, 1);
 
     await setupPageWithState(driver, acc_name);
-    const sidebar = new Sidebar(driver);
     await sidebar.clickNavPositions();
 
-    const positionModal = new PositionModal(driver);
-    await positionModal.waitForPoolPositionsVisible();
-    const isPoolTurKsmVisible = await positionModal.isLiqPoolDisplayed(
+    await positionPageDriver.waitForPoolPositionsVisible();
+    const isPoolTurKsmVisible = await positionPageDriver.isLiqPoolDisplayed(
       TUR_ASSET_NAME,
       KSM_ASSET_NAME,
     );
     expect(isPoolTurKsmVisible).toBeTruthy();
-    const turKsmPositionValue = await positionModal.checkNonPromPoolPosition(
-      TUR_ASSET_NAME,
-      KSM_ASSET_NAME,
-    );
+    const turKsmPositionValue =
+      await positionPageDriver.checkNonPromPoolPosition(
+        TUR_ASSET_NAME,
+        KSM_ASSET_NAME,
+      );
     expect(turKsmPositionValue).toBeGreaterThan(0);
   });
 
   it("User see hint if some positions are not active", async () => {
-    await addLiquidityToken(mangata, 5, 18, 100);
+    await addLiqTokenMicroapps(userAddress, mangata, 5, 18, 100);
 
     await setupPageWithState(driver, acc_name);
-    const sidebar = new Sidebar(driver);
     await sidebar.clickNavPositions();
 
-    const positionModal = new PositionModal(driver);
-    await positionModal.waitForPoolPositionsVisible();
-    const isPoolMgxKsmVisible = await positionModal.isLiqPoolDisplayed(
+    await positionPageDriver.waitForPoolPositionsVisible();
+    const isPoolMgxKsmVisible = await positionPageDriver.isLiqPoolDisplayed(
       MGX_ASSET_NAME,
       KSM_ASSET_NAME,
     );
     expect(isPoolMgxKsmVisible).toBeTruthy();
-    const isRewardHintVisible = await positionModal.isRewardHintDisplayed();
+    const isRewardHintVisible =
+      await positionPageDriver.isRewardHintDisplayed();
     expect(isRewardHintVisible).toBeTruthy();
   });
 
   it("User can see number of active rewards for his positions", async () => {
-    await addLiquidityToken(mangata, 5, 18, 1000);
+    await addLiqTokenMicroapps(userAddress, mangata, 5, 18, 1000);
 
     await setupPageWithState(driver, acc_name);
-    const sidebar = new Sidebar(driver);
     await sidebar.clickNavPositions();
 
-    const positionModal = new PositionModal(driver);
-    await positionModal.waitForPoolPositionsVisible();
-    const isPoolMgxKsmVisible = await positionModal.isLiqPoolDisplayed(
+    await positionPageDriver.waitForPoolPositionsVisible();
+    const isPoolMgxKsmVisible = await positionPageDriver.isLiqPoolDisplayed(
       MGX_ASSET_NAME,
       KSM_ASSET_NAME,
     );
     expect(isPoolMgxKsmVisible).toBeTruthy();
     const isActiveRewardsVisible =
-      await positionModal.isActiveRewardsDisplayed();
+      await positionPageDriver.isActiveRewardsDisplayed();
     expect(isActiveRewardsVisible).toBeTruthy();
   });
 
   it("User can see position detail overview with token shares", async () => {
-    await addLiquidityToken(mangata, 5, 18, 1000);
+    await addLiqTokenMicroapps(userAddress, mangata, 5, 18, 1000);
 
     await setupPageWithState(driver, acc_name);
-    const sidebar = new Sidebar(driver);
     await sidebar.clickNavPositions();
 
-    const positionModal = new PositionModal(driver);
-    await positionModal.waitForPoolPositionsVisible();
-    const isPoolMgxKsmVisible = await positionModal.isLiqPoolDisplayed(
+    await positionPageDriver.waitForPoolPositionsVisible();
+    const isPoolMgxKsmVisible = await positionPageDriver.isLiqPoolDisplayed(
       MGX_ASSET_NAME,
       KSM_ASSET_NAME,
     );
     expect(isPoolMgxKsmVisible).toBeTruthy();
-    await positionModal.clickPromPoolPosition(MGX_ASSET_NAME, KSM_ASSET_NAME);
-    const tokensValues = await positionModal.getPoolPositionTokensValues();
+    await positionPageDriver.clickPromPoolPosition(
+      MGX_ASSET_NAME,
+      KSM_ASSET_NAME,
+    );
+    const tokensValues = await positionPageDriver.getPoolPositionTokensValues();
     expect(tokensValues.liquidityTokenValue).toBeGreaterThan(0);
     expect(tokensValues.firstTokenValue).toBeGreaterThan(0);
     expect(tokensValues.secondTokenValue).toBeGreaterThan(0);
@@ -354,33 +361,31 @@ describe("Microapps UI position modal tests", () => {
     let isPoolMgxKsmVisible: boolean;
     let isPoolTurKsmVisible: boolean;
 
-    await addLiquidityToken(mangata, 5, 18, 1000);
-    await addLiquidityToken(mangata, 9, 12, 10);
+    await addLiqTokenMicroapps(userAddress, mangata, 5, 18, 1000);
+    await addLiqTokenMicroapps(userAddress, mangata, 9, 12, 10);
 
     await setupPageWithState(driver, acc_name);
-    const sidebar = new Sidebar(driver);
     await sidebar.clickNavPositions();
 
-    const positionModal = new PositionModal(driver);
-    await positionModal.waitForPoolPositionsVisible();
-    await positionModal.searchPoolToken(TUR_ASSET_NAME);
-    isPoolMgxKsmVisible = await positionModal.isLiqPoolDisplayed(
+    await positionPageDriver.waitForPoolPositionsVisible();
+    await positionPageDriver.searchPoolToken(TUR_ASSET_NAME);
+    isPoolMgxKsmVisible = await positionPageDriver.isLiqPoolDisplayed(
       MGX_ASSET_NAME,
       KSM_ASSET_NAME,
     );
-    isPoolTurKsmVisible = await positionModal.isLiqPoolDisplayed(
+    isPoolTurKsmVisible = await positionPageDriver.isLiqPoolDisplayed(
       TUR_ASSET_NAME,
       KSM_ASSET_NAME,
     );
     expect(isPoolMgxKsmVisible).toBeFalsy();
     expect(isPoolTurKsmVisible).toBeTruthy();
-    await positionModal.closeSearchingBar();
-    await positionModal.searchPoolToken(MGX_ASSET_NAME);
-    isPoolMgxKsmVisible = await positionModal.isLiqPoolDisplayed(
+    await positionPageDriver.closeSearchingBar();
+    await positionPageDriver.searchPoolToken(MGX_ASSET_NAME);
+    isPoolMgxKsmVisible = await positionPageDriver.isLiqPoolDisplayed(
       MGX_ASSET_NAME,
       KSM_ASSET_NAME,
     );
-    isPoolTurKsmVisible = await positionModal.isLiqPoolDisplayed(
+    isPoolTurKsmVisible = await positionPageDriver.isLiqPoolDisplayed(
       TUR_ASSET_NAME,
       KSM_ASSET_NAME,
     );
@@ -406,21 +411,3 @@ describe("Microapps UI position modal tests", () => {
     DriverBuilder.destroy();
   });
 });
-
-async function addLiquidityToken(
-  apiContext: ApiContext,
-  tokenId: number,
-  power: number,
-  value: number,
-) {
-  await apiContext.dev.setStorage({
-    Tokens: {
-      Accounts: [
-        [
-          [userAddress, { token: tokenId }],
-          { free: BN_TEN.pow(new BN(power)).mul(new BN(value)).toString() },
-        ],
-      ],
-    },
-  });
-}
