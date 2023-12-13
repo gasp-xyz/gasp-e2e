@@ -136,7 +136,7 @@ describe("Proof of stake tests", () => {
           ),
         ),
       );
-      await waitForRewards(testUser, liquidityAssetId, 20, MGA_ASSET_ID);
+      await waitForRewards(testUser, liquidityAssetId, 30, MGA_ASSET_ID);
       const expectedRewards = BN_ZERO;
       const avl = await getThirdPartyRewards(
         testUser.keyRingPair.address,

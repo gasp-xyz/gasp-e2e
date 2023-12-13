@@ -116,6 +116,7 @@ describe("Proof of stake tests", () => {
 
   describe("Setup rewards scenarios", () => {
     test("Multiple users can reward the same pool - same tokens", async () => {
+      await waitIfSessionWillChangeInNblocks(4);
       const liqId = await getLiquidityAssetId(MGA_ASSET_ID, newToken);
       await Sudo.batchAsSudoFinalized(
         Sudo.sudoAs(
