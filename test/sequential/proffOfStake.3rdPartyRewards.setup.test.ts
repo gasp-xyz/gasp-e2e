@@ -276,7 +276,7 @@ describe("Proof of stake tests", () => {
       });
     });
     test("Min liq is required setup rewards", async () => {
-      await waitIfSessionWillChangeInNblocks(4);
+      await waitIfSessionWillChangeInNblocks(6);
       await Sudo.asSudoFinalized(
         Sudo.sudoAs(
           testUser3,
