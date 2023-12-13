@@ -114,8 +114,6 @@ describe("Proof of stake tests", () => {
             3,
           ),
         ),
-      );
-      await Sudo.asSudoFinalized(
         Sudo.sudoAs(
           testUser,
           await ProofOfStake.activateLiquidityFor3rdpartyRewards(
@@ -125,6 +123,9 @@ describe("Proof of stake tests", () => {
           ),
         ),
       );
+      await waitforSessionChange();
+      // tokens must last one session.
+      // corner case about rewarding and activating on the same session
       await waitforSessionChange();
       await Sudo.asSudoFinalized(
         Sudo.sudoAs(

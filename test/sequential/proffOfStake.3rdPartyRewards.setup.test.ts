@@ -30,6 +30,7 @@ import {
   getEventResultFromMangataTx,
 } from "../../utils/txHandler";
 import { BN_MILLION } from "@mangata-finance/sdk";
+import { testLog } from "../../utils/Logger";
 
 let testUser1: User;
 let testUser2: User;
@@ -290,6 +291,7 @@ describe("Proof of stake tests", () => {
       ).then(async (x) => {
         // const event = getEventResultFromMangataTx(x);
         const sudoEvent = await getEventErrorFromSudo(x);
+        testLog.getLog().info("Events:trace" + JSON.stringify(x));
         expect(sudoEvent.state).toBe(ExtrinsicResult.ExtrinsicSuccess);
       });
       await waitIfSessionWillChangeInNblocks(4);
