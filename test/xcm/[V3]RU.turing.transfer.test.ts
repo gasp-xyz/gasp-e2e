@@ -58,6 +58,10 @@ describe("XCM transfers", () => {
             [alice.keyRingPair.address, { token: 0 }],
             { free: BN_THOUSAND.mul(AssetId.Mgx.unit).toString() },
           ],
+          [
+            [alice.keyRingPair.address, { token: 7 }],
+            { free: BN_THOUSAND.mul(AssetId.Mgx.unit).toString() },
+          ],
         ],
       },
     });
@@ -66,11 +70,26 @@ describe("XCM transfers", () => {
         Account: [
           [
             [alice.keyRingPair.address],
-            { data: { free: BN_HUNDRED.mul(AssetId.Tur.unit).toString() } },
+            {
+              data: {
+                free: BN_HUNDRED.mul(AssetId.Tur.unit).toString(),
+              },
+            },
           ],
         ],
       },
     });
+    const mgaSdk = Mangata.instance([mangata.uri]);
+    await mgaSdk.xTokens.withdraw({
+      account: alice.keyRingPair,
+      amount: new BN(15e10),
+      destinationAddress: alice.keyRingPair.address,
+      parachainId: 2114,
+      tokenSymbol: "TUR",
+      withWeight: 4000000000,
+    });
+    await turing.chain.newBlock();
+    await turing.chain.newBlock();
   });
 
   // todo repeat for every other asset
