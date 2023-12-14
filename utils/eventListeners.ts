@@ -162,7 +162,7 @@ export const waitForEvents = async (
     });
   });
 };
-export const waitforSessionChange = async (): Promise<number> => {
+export const waitForSessionChange = async (): Promise<number> => {
   const currSession = await api.query.session.currentIndex();
   return new Promise(async (resolve) => {
     const unsub = await api.rpc.chain.subscribeNewHeads(async () => {

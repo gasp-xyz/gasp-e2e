@@ -22,7 +22,7 @@ import { getLiquidityAssetId } from "../../utils/tx";
 import { BN_ZERO, signTx } from "@mangata-finance/sdk";
 import {
   waitForRewards,
-  waitforSessionChange,
+  waitForSessionChange,
 } from "../../utils/eventListeners";
 
 let testUser1: User;
@@ -162,7 +162,7 @@ describe("Proof of stake tests", () => {
         newToken,
       );
       expect(availableRewards).bnEqual(Assets.DEFAULT_AMOUNT.muln(10e6));
-      await waitforSessionChange();
+      await waitForSessionChange();
 
       await Sudo.batchAsSudoFinalized(
         Sudo.sudoAs(

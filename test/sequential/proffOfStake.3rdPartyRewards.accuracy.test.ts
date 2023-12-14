@@ -21,7 +21,7 @@ import "jest-extended";
 import { getLiquidityAssetId } from "../../utils/tx";
 import {
   waitForRewards,
-  waitforSessionChange,
+  waitForSessionChange,
 } from "../../utils/eventListeners";
 import { BN_ZERO } from "@mangata-finance/sdk";
 
@@ -123,10 +123,10 @@ describe("Proof of stake tests", () => {
           ),
         ),
       );
-      await waitforSessionChange();
+      await waitForSessionChange();
       // tokens must last one session.
       // corner case about rewarding and activating on the same session
-      await waitforSessionChange();
+      await waitForSessionChange();
       await Sudo.asSudoFinalized(
         Sudo.sudoAs(
           testUser,

@@ -22,7 +22,7 @@ import "jest-extended";
 import { getLiquidityAssetId } from "../../utils/tx";
 import {
   waitForRewards,
-  waitforSessionChange,
+  waitForSessionChange,
 } from "../../utils/eventListeners";
 import { BN_ZERO, signTx } from "@mangata-finance/sdk";
 
@@ -399,7 +399,7 @@ describe("Proof of stake tests", () => {
           ),
         ),
       );
-      await waitforSessionChange();
+      await waitForSessionChange();
 
       await Sudo.batchAsSudoFinalized(
         Sudo.sudoAs(
@@ -421,7 +421,7 @@ describe("Proof of stake tests", () => {
           ),
         ),
       );
-      await waitforSessionChange();
+      await waitForSessionChange();
       const rewardsAlice = await getThirdPartyRewards(
         alice.keyRingPair.address,
         liquidityAssetId,
@@ -444,7 +444,7 @@ describe("Proof of stake tests", () => {
       expect(rewardsAlice).bnEqual(rewardsBob);
       expect(rewardsAlice).bnEqual(rewardsEve);
 
-      await waitforSessionChange();
+      await waitForSessionChange();
       const rewardsAlice2 = await getThirdPartyRewards(
         alice.keyRingPair.address,
         liquidityAssetId,
