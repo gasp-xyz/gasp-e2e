@@ -20,6 +20,7 @@ import {
 import { AssetWallet, User } from "../../utils/User";
 import { getEnvironmentRequiredVars } from "../../utils/utils";
 import { Xyk } from "../../utils/xyk";
+import { waitSudoOperationFail } from "../../utils/eventListeners";
 
 jest.spyOn(console, "log").mockImplementation(jest.fn());
 jest.setTimeout(2500000);
@@ -78,6 +79,15 @@ beforeAll(async () => {
   );
 
   testUser1.addAsset(liqIdPromPool);
+});
+
+test("GIVEN a proofOfStake.updatePoolPromotion WHEN the liq token is a regular token, extrinsic fail", async () => {
+  const promotionSoloToken = await Sudo.batchAsSudoFinalized(
+    Assets.promotePool(token1.toNumber(), 20),
+  );
+  await waitSudoOperationFail(promotionSoloToken, [
+    "SoloTokenPromotionForbiddenError",
+  ]);
 });
 
 test("Check that a user that deactivate some tokens, put liquidity tokens from frozen to free, then activate some tokens and put liquidity tokens from free to frozen", async () => {
