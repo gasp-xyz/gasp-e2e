@@ -6,6 +6,10 @@ import {
   PalletProofOfStakeThirdPartyActivationKind,
 } from "@polkadot/types/lookup";
 import { stringToBN } from "./utils";
+import { Sudo } from "./sudo";
+import { MGA_ASSET_ID } from "./Constants";
+import { Assets } from "./Assets";
+import { User } from "./User";
 
 export class ProofOfStake {
   static async rewardPool(
@@ -124,5 +128,35 @@ export class ProofOfStake {
       userAddress,
       [liqId, rewardedToken],
     );
+  }
+
+  static async rewardAndActivatePool(
+    newToken: BN,
+    testUser: User,
+    liqId: BN,
+    amountToActivate: BN = Assets.DEFAULT_AMOUNT.divn(10),
+    from: PalletProofOfStakeThirdPartyActivationKind | null | string = null,
+  ) {
+    return [
+      Sudo.sudoAs(
+        testUser,
+        await ProofOfStake.rewardPool(
+          MGA_ASSET_ID,
+          newToken,
+          newToken,
+          Assets.DEFAULT_AMOUNT.muln(10e6),
+          3,
+        ),
+      ),
+      Sudo.sudoAs(
+        testUser,
+        await ProofOfStake.activateLiquidityFor3rdpartyRewards(
+          liqId,
+          amountToActivate,
+          newToken,
+          from,
+        ),
+      ),
+    ];
   }
 }

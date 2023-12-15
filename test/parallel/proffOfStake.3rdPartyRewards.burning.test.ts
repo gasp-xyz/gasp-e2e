@@ -4,7 +4,6 @@
  *
  */
 import { getApi, initApi } from "../../utils/api";
-import { PalletProofOfStakeThirdPartyActivationKind } from "@polkadot/types/lookup";
 import { User } from "../../utils/User";
 import { Keyring } from "@polkadot/api";
 import { BN } from "@polkadot/util";
@@ -129,7 +128,7 @@ describe("Proof of stake tests", () => {
   describe("Burn liquidity", () => {
     beforeAll(async () => {
       await Sudo.batchAsSudoFinalized(
-        ...(await rewardAndActivatePool(
+        ...(await ProofOfStake.rewardAndActivatePool(
           newToken,
           testUser0,
           liqId,
@@ -184,32 +183,3 @@ describe("Proof of stake tests", () => {
     });
   });
 });
-async function rewardAndActivatePool(
-  newToken: BN,
-  testUser: User,
-  liqId: BN,
-  amountToActivate: BN = Assets.DEFAULT_AMOUNT.divn(10),
-  from: PalletProofOfStakeThirdPartyActivationKind | null | string = null,
-) {
-  return [
-    Sudo.sudoAs(
-      testUser,
-      await ProofOfStake.rewardPool(
-        MGA_ASSET_ID,
-        newToken,
-        newToken,
-        Assets.DEFAULT_AMOUNT.muln(10e6),
-        3,
-      ),
-    ),
-    Sudo.sudoAs(
-      testUser,
-      await ProofOfStake.activateLiquidityFor3rdpartyRewards(
-        liqId,
-        amountToActivate,
-        newToken,
-        from,
-      ),
-    ),
-  ];
-}

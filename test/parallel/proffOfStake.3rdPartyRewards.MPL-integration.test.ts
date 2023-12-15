@@ -140,7 +140,7 @@ describe("Proof of stake tests", () => {
   describe("MPL integration", () => {
     beforeAll(async () => {
       await Sudo.batchAsSudoFinalized(
-        ...(await rewardAndActivatePool(
+        ...(await ProofOfStake.rewardAndActivatePool(
           newToken,
           testUser0,
           liqId,
@@ -376,32 +376,3 @@ describe("Proof of stake tests", () => {
     });
   });
 });
-async function rewardAndActivatePool(
-  newToken: BN,
-  testUser: User,
-  liqId: BN,
-  amountToActivate: BN = Assets.DEFAULT_AMOUNT.divn(10),
-  from: PalletProofOfStakeThirdPartyActivationKind | null | string = null,
-) {
-  return [
-    Sudo.sudoAs(
-      testUser,
-      await ProofOfStake.rewardPool(
-        MGA_ASSET_ID,
-        newToken,
-        newToken,
-        Assets.DEFAULT_AMOUNT.muln(10e6),
-        3,
-      ),
-    ),
-    Sudo.sudoAs(
-      testUser,
-      await ProofOfStake.activateLiquidityFor3rdpartyRewards(
-        liqId,
-        amountToActivate,
-        newToken,
-        from,
-      ),
-    ),
-  ];
-}
