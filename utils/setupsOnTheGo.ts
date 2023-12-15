@@ -17,7 +17,10 @@ import { User } from "./User";
 import {
   getBlockNumber,
   getEnvironmentRequiredVars,
+  getMultiPurposeLiquidityReLockStatus,
+  getMultiPurposeLiquidityStatus,
   getUserBalanceOfToken,
+  stringToBN,
 } from "./utils";
 import { Xyk } from "./xyk";
 import { getApi, api, initApi, getMangataInstance } from "./api";
@@ -32,6 +35,10 @@ import { Bootstrap } from "./Bootstrap";
 import assert from "assert";
 import { Council } from "./Council";
 import { testLog } from "./Logger";
+import {
+  PalletMultipurposeLiquidityRelockStatusInfo,
+  PalletMultipurposeLiquidityReserveStatusInfo,
+} from "@polkadot/types/lookup";
 const tokenOrigin = tokenOriginEnum.ActivatedUnstakedReserves;
 
 export async function vetoMotion(motionId: number) {
@@ -321,6 +328,101 @@ export async function printAllTxsDoneByUser(userAddress: string) {
       testLog.getLog().info(JSON.stringify(txs));
     }
     currBlock--;
+  }
+}
+export async function printUserInfo(userAddress: string) {
+  setupUsers();
+  await setupApi();
+  const api = await getApi();
+  const accountInfo = (await api.query.tokens.accounts.entries()).filter(
+    (x: any) => x[0].toHuman()[0] === userAddress,
+  );
+  for (const id in accountInfo) {
+    const tokenId = JSON.parse(JSON.stringify(accountInfo[id][0].toHuman()))[1];
+    const tokenIdBn = stringToBN(tokenId.toString());
+    console.info("            ");
+    console.info("For token Id  [ " + tokenId + " ]");
+    const tokenStatus = JSON.parse(
+      JSON.stringify(accountInfo[id][1].toHuman()),
+    );
+    const frozen = stringToBN(tokenStatus.frozen);
+    const reserved = stringToBN(tokenStatus.reserved);
+
+    console.info("---------------: ");
+    console.info("Free: " + tokenStatus.free);
+    console.info("Frozen: " + tokenStatus.frozen);
+    if (frozen.gt(new BN(0))) {
+      const vesting = await api.query.vesting.vesting(userAddress, tokenIdBn);
+      console.info("  Vesting: " + JSON.stringify(vesting.toHuman()));
+    }
+    console.info("Reserved: " + tokenStatus.reserved);
+    if (reserved.gt(new BN(0))) {
+      const liqRewards = await api.query.proofOfStake.rewardsInfo(
+        userAddress,
+        tokenIdBn,
+      );
+      const stakingInfoCandidate =
+        await api.query.parachainStaking.candidateState(userAddress);
+      const stakingInfoDelegator =
+        await api.query.parachainStaking.delegatorState(userAddress);
+
+      const mpl = (await getMultiPurposeLiquidityStatus(
+        userAddress,
+        tokenIdBn,
+      )) as PalletMultipurposeLiquidityReserveStatusInfo;
+      console.info("  liq Rewards :: ");
+      console.info("    totalRewards " + JSON.stringify(liqRewards.toHuman()));
+      
+      console.info("  MPL status :: ");
+      console.info(
+        "    stakedUnactivatedReserves " + mpl.stakedUnactivatedReserves,
+      );
+      console.info(
+        "    activatedUnstakedReserves " + mpl.activatedUnstakedReserves,
+      );
+      console.info(
+        "   stakedAndActivatedReserves " + mpl.stakedAndActivatedReserves,
+      );
+      console.info("    unspentReserves " + mpl.unspentReserves);
+      console.info("    relockAmount " + mpl.relockAmount);
+
+      if (
+        mpl.activatedUnstakedReserves.gt(new BN(0)) ||
+        mpl.stakedAndActivatedReserves.gt(new BN(0))
+      ) {
+        console.info("  User has activated reserves");
+      }
+      if (
+        (stakingInfoCandidate.value.bond !== undefined &&
+          stakingInfoCandidate.value.bond.gt(new BN(0))) ||
+        (stakingInfoDelegator.value.delegations !== undefined &&
+          stakingInfoDelegator.value.delegations.length > 0 )
+      ) {
+        console.info("  User has some staking business");
+        console.info("    Staking info :: ");
+        console.info(
+          "     Candidate :: " +
+            JSON.stringify(stakingInfoCandidate.value.toHuman()),
+        );
+        console.info(
+          "     Delegator :: " +
+            JSON.stringify(stakingInfoDelegator.value.toHuman()),
+        );
+      }
+
+      if (mpl.unspentReserves.gt(new BN(0))) {
+        console.info("  User has unspent reserves");
+      }
+      if (mpl.relockAmount.gt(new BN(0))) {
+        console.info("  User has relock amount");
+        const schedule = (await getMultiPurposeLiquidityReLockStatus(
+          userAddress,
+          tokenIdBn,
+        )) as PalletMultipurposeLiquidityRelockStatusInfo[];
+        console.info("    schedule : " + JSON.stringify(schedule));
+      }
+      console.info("---------------: ");
+    }
   }
 }
 export async function burnAllTokensFromPool(liqToken: BN) {
