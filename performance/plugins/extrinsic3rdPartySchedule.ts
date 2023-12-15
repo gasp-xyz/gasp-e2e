@@ -14,6 +14,7 @@ import { Sudo } from "../../utils/sudo";
 import { Xyk } from "../../utils/xyk";
 import { ProofOfStake } from "../../utils/ProofOfStake";
 import { setupApi, setupUsers } from "../../utils/setup";
+import { MangataInstance } from "@mangata-finance/sdk";
 
 let tokens: number[] = [];
 export class Extrinsic3rdPartySchedule extends performanceTestItem {
@@ -106,6 +107,8 @@ export class Extrinsic3rdPartySchedule extends performanceTestItem {
 }
 
 async function createAndSignNewSchedules(
+  // @ts-ignore
+  mgaSdk: MangataInstance,
   users: { nonce: BN; keyPair: KeyringPair }[],
   threadId: number,
   nonceOffset: BN = new BN(0),
