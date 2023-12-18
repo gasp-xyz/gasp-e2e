@@ -592,7 +592,17 @@ async function app(): Promise<any> {
           "Activate and claim 3rd party rewards to default users",
         )
       ) {
-        await activateAndClaim3rdPartyRewardsForUser();
+        await inquirer
+          .prompt([
+            {
+              type: "input",
+              name: "user",
+              message: "default //Charlie",
+            },
+          ])
+          .then(async (answers: { user: string }) => {
+            activateAndClaim3rdPartyRewardsForUser(answers.user);
+          });
       }
       return app();
     });

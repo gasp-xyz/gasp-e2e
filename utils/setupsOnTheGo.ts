@@ -1315,12 +1315,12 @@ export async function replaceByStateCall(
   console.log(JSON.parse(JSON.stringify(parsed)));
 }
 
-export async function activateAndClaim3rdPartyRewardsForUser() {
+export async function activateAndClaim3rdPartyRewardsForUser(userName: string) {
   await setupApi();
   await setupUsers();
   const mangata = await getMangataInstance();
   const keyring = new Keyring({ type: "sr25519" });
-  const testUser = new User(keyring, "//Bob");
+  const testUser = new User(keyring, userName);
   const sudo = new User(keyring, getEnvironmentRequiredVars().sudo);
   const [newToken, newToken2] = await Assets.setupUserWithCurrencies(
     sudo,
