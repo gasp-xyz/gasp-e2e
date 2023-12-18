@@ -9,7 +9,7 @@ const endpoints = {
   imbue: "wss://kusama.imbuenetwork.com",
   karura: "wss://karura-rpc-0.aca-api.network",
   mangata: "wss://kusama-archive.mangata.online",
-  bifrost: "wss://bifrost-parachain.api.onfinality.io/public-ws",
+  bifrost: "wss://bifrost-rpc.liebi.com/ws",
   turing: "wss://rpc.turing.oak.tech",
   moonriver: "wss://moonriver-rpc.dwellir.com",
 };
