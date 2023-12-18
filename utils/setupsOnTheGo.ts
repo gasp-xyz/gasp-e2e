@@ -1315,7 +1315,7 @@ export async function replaceByStateCall(
   console.log(JSON.parse(JSON.stringify(parsed)));
 }
 
-export async function activateClaim3rdPartyRewardsForUser() {
+export async function activateAndClaim3rdPartyRewardsForUser() {
   await setupApi();
   await setupUsers();
   const keyring = new Keyring({ type: "sr25519" });
