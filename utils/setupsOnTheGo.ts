@@ -1318,8 +1318,9 @@ export async function replaceByStateCall(
 export async function activateAndClaim3rdPartyRewardsForUser() {
   await setupApi();
   await setupUsers();
+  const mangata = await getMangataInstance();
   const keyring = new Keyring({ type: "sr25519" });
-  const testUser = new User(keyring);
+  const testUser = new User(keyring, "//Bob");
   const sudo = new User(keyring, getEnvironmentRequiredVars().sudo);
   const [newToken, newToken2] = await Assets.setupUserWithCurrencies(
     sudo,
@@ -1382,10 +1383,18 @@ export async function activateAndClaim3rdPartyRewardsForUser() {
       await ProofOfStake.claim3rdpartyRewards(liqId, newToken),
     ),
   );
+  const userRewardsTokenBalance = (
+    await mangata.query.getTokenBalance(
+      newToken.toString(),
+      testUser.keyRingPair.address,
+    )
+  ).free;
+
   return {
-    user: testUser,
-    liqId: liqId,
-    liqPoolToken: newToken2,
-    thirdPartyRewardsToken: newToken,
+    testUser,
+    liqId,
+    newToken,
+    newToken2,
+    userRewardsTokenBalance,
   };
 }
