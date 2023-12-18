@@ -101,7 +101,7 @@ describe("Microapps UI KSM transfer tests", () => {
     testUser1 = new User(keyring);
     testUser1.addFromMnemonic(
       keyring,
-      getEnvironmentRequiredVars().mnemonicPolkadot
+      getEnvironmentRequiredVars().mnemonicPolkadot,
     );
 
     testUser1.addAsset(TUR_ASSET_ID);
@@ -146,11 +146,11 @@ describe("Microapps UI KSM transfer tests", () => {
     await modal.waitForModalState(
       ModalType.Confirm,
       TransactionType.Withdraw,
-      3000
+      3000,
     );
     const isModalWaitingForSignVisible = await modal.isModalVisible(
       ModalType.Confirm,
-      TransactionType.Withdraw
+      TransactionType.Withdraw,
     );
     expect(isModalWaitingForSignVisible).toBeTruthy();
     await waitForMicroappsActionNotification(
@@ -158,7 +158,7 @@ describe("Microapps UI KSM transfer tests", () => {
       mangata,
       kusama,
       TransactionType.Withdraw,
-      4
+      4,
     );
   });
 
@@ -196,7 +196,7 @@ describe("Microapps UI KSM transfer tests", () => {
       mangata,
       kusama,
       TransactionType.Deposit,
-      2
+      2,
     );
   });
 
@@ -204,7 +204,7 @@ describe("Microapps UI KSM transfer tests", () => {
     const session = await driver.getSession();
     await addExtraLogs(
       driver,
-      expect.getState().currentTestName + " - " + session.getId()
+      expect.getState().currentTestName + " - " + session.getId(),
     );
   });
 
