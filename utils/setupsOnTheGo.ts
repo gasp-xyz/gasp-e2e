@@ -1315,7 +1315,9 @@ export async function replaceByStateCall(
   console.log(JSON.parse(JSON.stringify(parsed)));
 }
 
-export async function activateAndClaim3rdPartyRewardsForUser(userName: string) {
+export async function activateAndClaim3rdPartyRewardsForUser(
+  userName = "//Charlie",
+) {
   await setupApi();
   await setupUsers();
   const mangata = await getMangataInstance();
@@ -1390,11 +1392,16 @@ export async function activateAndClaim3rdPartyRewardsForUser(userName: string) {
     )
   ).free;
 
-  return {
-    testUser,
-    liqId,
-    newToken,
-    newToken2,
-    userRewardsTokenBalance,
-  };
+  testLog
+    .getLog()
+    .info(
+      "3rd party rewards were activated and claimed for user " +
+        testUser.name.toString() +
+        ", liquidity token's ID is " +
+        liqId.toString() +
+        ",  rewards token's ID is " +
+        newToken.toString() +
+        " and the amount of rewards is " +
+        userRewardsTokenBalance.toString(),
+    );
 }
