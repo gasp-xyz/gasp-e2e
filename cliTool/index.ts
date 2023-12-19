@@ -33,6 +33,7 @@ import {
   vote,
   close,
   printUserInfo,
+  activateAndClaim3rdPartyRewardsForUser,
 } from "../utils/setupsOnTheGo";
 import {
   findErrorMetadata,
@@ -92,6 +93,7 @@ async function app(): Promise<any> {
         "Empty pool created by default users",
         "Print user txs",
         "Print user info",
+        "Activate and claim 3rd party rewards to default users",
       ],
     })
     .then(async (answers: { option: string | string[] }) => {
@@ -584,6 +586,23 @@ async function app(): Promise<any> {
         );
         await Sudo.batchAsSudoFinalized(tx);
         console.log(message.toString());
+      }
+      if (
+        answers.option.includes(
+          "Activate and claim 3rd party rewards to default users",
+        )
+      ) {
+        await inquirer
+          .prompt([
+            {
+              type: "input",
+              name: "user",
+              message: "default //Charlie",
+            },
+          ])
+          .then(async (answers: { user: string }) => {
+            activateAndClaim3rdPartyRewardsForUser(answers.user);
+          });
       }
       return app();
     });
