@@ -88,10 +88,10 @@ class StashServiceMockSingleton {
           status: "open",
           unitWeightCost: "200000000",
           xcmTransferWeight: "800000000",
-          url: "wss://imbue-kusama.imbue.network",
+          url: "ws://" + localAddress + ":9951",
           xcmVersion: "V3",
           chainType: "parachain",
-          proofSize: "0",
+          proofSize: "4096",
         },
       ];
 

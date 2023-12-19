@@ -1,55 +1,53 @@
-name: FE UI XCM tests
+name: FE Microapps XCM tests
 
 on:
-
   workflow_dispatch:
     inputs:
       feBranch:
-        description: 'Name of the FE target branch'
+        description: "Name of the FE target branch"
         type: string
         required: false
-        default: 'develop'
-  workflow_call:
-    inputs:
-      feBranch:
-        description: 'Name of the FE target branch'
-        type: string
-        required: false
-        default: 'develop'
-
-permissions:
-  contents: write
-  id-token: write
-  deployments: write
-  checks: write
+        default: "develop"
+  schedule:
+    - cron: "5 9 * * *"
 
 jobs:
   e2e-test-matrix:
     strategy:
       fail-fast: false
       matrix:
-        command: ['uiXcmKSM', 'uiXcmBNC', 'uiXcmWithdrawBNC', 'uiXcmWithdrawKSM']
+        command:
+          [
+            "microappsTransferKSM",
+            "microappsTransferBNC",
+            "microappsTransferTUR",
+          ]
     runs-on: ubuntu-latest
     timeout-minutes: 30
     env:
-      TEST_PALLET_ADDRESS: ${{ secrets.TEST_PALLET_ADDRESS }}
-      E2E_XYK_PALLET_ADDRESS: ${{ secrets.E2E_XYK_PALLET_ADDRESS }}
-      TEST_SUDO_NAME: ${{ secrets.TEST_SUDO_NAME }}
+      API_URL: ws://127.0.0.1:9946
       SELENIUM_REMOTE_URL: http://localhost:4444/wd/hub
       UI_URL: http://localhost:5500
       MANGATA_ASSETS_URL: https://storage.googleapis.com/mangata-assets
-      MNEMONIC_POLK: ${{ secrets.MNEMONIC_CHOPS_FE_ACC }}
-    outputs:
-      testmo-run-id: ${{ steps.setTestRun.outputs.testmo-run-id }}
+      MANGATA_API_URL: ws://127.0.0.1:9946
+      MANGATA_EXPLORER_URL: https://mangatax.subscan.io
+      MANGATA_PARACHAIN_ID: 2110
+      MANGATA_TOKEN_ID: 0
+      MANGATA_ANNUAL_MGX_POOL_REWARDS: "300000000000000000000000000"
+      MANGATA_MAX_DELEGATION_COUNT: 30
+      MNEMONIC_POLK: "parrot reveal arena shrimp announce ten draw pretty forget caught advice jacket"
+      MNEMONIC_POLK_ECDSA: "catch alarm travel gravity crash pudding clip bike process wine virtual stamp"
+      MNEMONIC_POLK_ED25519: "nice say prison sword favorite sustain exit guitar own hen clip borrow"
+
     steps:
       - uses: actions/checkout@v3
 
       - uses: actions/setup-node@v3
         with:
-          node-version: '18'
-          cache: 'yarn'
-          cache-dependency-path: '**/yarn.lock'
-      
+          node-version: 18
+          cache: yarn
+          cache-dependency-path: "**/yarn.lock"
+
       #### Selenoid
       - name: Start Selenoid Server
         uses: Xotabu4/selenoid-github-action@v2
@@ -61,97 +59,52 @@ jobs:
       - name: Checkout FE app
         uses: actions/checkout@v3
         with:
-          repository: mangata-finance/mangata-fe
+          repository: mangata-finance/microapps
           token: ${{ secrets.PRIVATE_FE_REPO_ACCESS_TOKEN }}
-          ref: '${{ github.event.inputs.feBranch || inputs.feBranch }}'
-          path: mangata-fe
+          ref: "${{ github.event.inputs.feBranch || inputs.feBranch }}"
+          path: microapps
 
-      - name: Create npmrc file
+      - name: Install app dependencies
+        working-directory: microapps
+        run: yarn
+
+      - name: Create env file and env variables
+        working-directory: microapps
         run: |
-          echo registry=https://registry.yarnpkg.com/ >> .npmrc
-          echo @mangata-finance:registry=https://registry.npmjs.org >> .npmrc
-          echo //registry.npmjs.org/:_authToken=${{ secrets.FE_NPM_AUTH_TOKEN }} >> .npmrc
-          echo always-auth=true >> .npmrc
-
-      # - name: Inject chops sdk to FE app
-      #   working-directory: mangata-fe
-      #   run: |
-      #     chops_sdk="1.20.2"
-      #     jq ".dependencies[\"@mangata-finance/sdk\"] = \"${chops_sdk}\"" package.json > tmp.json
-      #     mv tmp.json package.json
-      #     jq '.dependencies["@mangata-finance/sdk"]' package.json
-
-      - name: Install fe app dependencies
-        working-directory: mangata-fe
-        run: |
-          export SKIP_HUSKY=true
-          yarn
-
-      - name: Create env file
-        working-directory: mangata-fe
-        run: |
-          netstat -tuln
+          ifconfig
           IP_ADDRESS=$(ifconfig eth0 | awk '/inet / {print $2}')
-          if [[ "${{ matrix.command }}" == *"rococo"* ]]; then
-            echo "Command contains 'rococo'"
-            echo APP_ENV=rococo >> .env
-          else
-            echo APP_ENV=kusama >> .env
-          fi
-          echo API_URL=ws://$IP_ADDRESS:9946 >> .env
+          echo "LOCAL_ADDRESS=$IP_ADDRESS" >> $GITHUB_ENV
+          echo "STASH_URL=https://mangata-stash-prod-dot-direct-pixel-353917.oa.r.appspot.com" >> $GITHUB_ENV
+          echo MANGATA_ASSETS_URL="https://storage.googleapis.com/mangata-assets" >> .env
+          echo MANGATA_STASH_URL="http://$IP_ADDRESS:3456" >> .env
+          echo MANGATA_EXPLORER_URL="https://mangatax.subscan.io" >> .env
+          echo MANGATA_API_URL=ws://$IP_ADDRESS:9946 >> .env
+          echo "MANGATA_API_URL=ws://$IP_ADDRESS:9946" >> $GITHUB_ENV
           echo "API_URL=ws://$IP_ADDRESS:9946" >> $GITHUB_ENV
-          echo KUSAMA_API_URL=ws://$IP_ADDRESS:9944 >> .env
-          echo TURING_API_URL=ws://$IP_ADDRESS:8002 >> .env
-          echo IMBUE_API_URL=ws://$IP_ADDRESS:9947 >> .env
-          echo STATEMINE_API_URL=ws://$IP_ADDRESS:9949 >> .env
-          echo BIFROST_API_URL=ws://$IP_ADDRESS:9948 >> .env
-          echo MOONRIVER_API_URL=ws://$IP_ADDRESS:9951 >> .env
-          echo PARACHAIN_ID=2110 >> .env
-          echo MANGATA_ENV=local >> .env
-          echo EXTEND_ESLINT=true >> .env
-          echo PRICE_DISCOVERY_URL=https://mangata-stash-prod-dot-direct-pixel-353917.oa.r.appspot.com/price-discovery >> .env
-          echo SENTRY_DSN=https://f0d2c93dcf3248d291729e077510045c@o495498.ingest.sentry.io/6074902 >> .env
-          echo SENTRY_AUTH_TOKEN=${{ secrets.SENTRY_AUTH_TOKEN }} >> .env
-          echo SENTRY_PROJECT=mangata-sentry >> .env
-          echo SENTRY_ORG=mangata-g7 >> .env
+          echo MANGATA_PARACHAIN_ID="2110" >> .env
+          echo MANGATA_ANNUAL_MGX_POOL_REWARDS="300000000000000000000000000" >> .env
+          echo MANGATA_MAX_DELEGATION_COUNT="30" >> .env
+          echo MANGATA_DEV_TOOLS=false >> .env
           cat .env
 
       - name: Install http-server
         run: yarn global add http-server
 
       - name: Build app
-        working-directory: mangata-fe
-        run: yarn build
+        working-directory: microapps
+        run: yarn nx run-many --target=build
+        env:
+          NODE_OPTIONS: "--max_old_space_size=6144"
 
       - name: Start app
-        working-directory: mangata-fe
+        working-directory: microapps
         run: |
           ifconfig
           IP_ADDRESS=$(ifconfig eth0 | awk '/inet / {print $2}')
           echo "UI_URL=http://$IP_ADDRESS:5500" >> $GITHUB_ENV
-          cd dist
+          cd dist/packages/dex
           http-server -p 5500 &
-
-      #### Tests
-
-      # - name: E2E- Get branch name
-      #   id: branch-name
-      #   uses: tj-actions/branch-names@v4.9
-
-      # - name: E2E- Calculate if run e2e feature branch or main.
-      #   run: |
-      #     echo DEFAULT: E2E test will run with: $E2EBRANCHNAME
-      #     echo "Running on: ${{ steps.branch-name.outputs.current_branch }}"
-      #     if [ -n "$(git ls-remote --heads https://github.com/mangata-finance/mangata-e2e.git ${{ steps.branch-name.outputs.current_branch }} --force --quiet)" ]; then echo "E2EBRANCHNAME=${{ steps.branch-name.outputs.current_branch }}" >> $GITHUB_ENV; echo "MATCH - OK" ; elif [ -n "$(git ls-remote --heads https://github.com/mangata-finance/mangata-e2e.git ${{ github.base_ref }} --force --quiet)" ]; then echo "E2EBRANCHNAME=${{ github.base_ref }}" >> $GITHUB_ENV; echo "MATCH - OK" ;  fi
-
-      # - name: Decide if main - branch or parameter
-      #   # if we have something in e2eBranch - override E2EBranchName, else -> E2EBRANCHNAME , that
-      #   # by default will be main.
-      #   run: |
-      #     echo "E2EBRANCHNAME=${{ inputs.e2eBranch || env.E2EBRANCHNAME }}" >> $GITHUB_ENV
-      #     echo "${{ env.E2EBRANCHNAME }}"
-      #Use for debug
-      # - uses: mxschmitt/action-tmate@v3
+          sleep 5s
 
       - name: Install e2e tests dependencies
         run: |
