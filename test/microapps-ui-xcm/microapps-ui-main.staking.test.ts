@@ -43,7 +43,7 @@ let testUser1: User;
 
 const acc_name = "acc_automation";
 const userAddress = "5CfLmpjCJu41g3cpZVoiH7MSrSppgVVVC3xq23iy9dZrW2HR";
-const liqTokenNumber = 100;
+const liqTokenNumber = 10000;
 const INIT_KSM_RELAY = 15;
 
 describe("Microapps UI Staking page tests", () => {

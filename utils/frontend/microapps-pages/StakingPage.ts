@@ -45,7 +45,8 @@ export class StakingPageDriver {
       const totalStakeText = await totalStake.getText();
       const minBond = await this.driver.findElement(By.xpath(minBondXpath));
       const minBondText = await minBond.getText();
-      const minBondValue = toNumber(minBondText);
+      const minBondNumber = minBondText.replace(",", "");
+      const minBondValue = toNumber(minBondNumber);
 
       return {
         collatorAddress: collatorAddressText,
