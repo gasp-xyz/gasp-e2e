@@ -29,7 +29,6 @@ import {
   getEventErrorFromSudo,
   getEventResultFromMangataTx,
 } from "../../utils/txHandler";
-import { BN_MILLION } from "@mangata-finance/sdk";
 import { testLog } from "../../utils/Logger";
 
 let testUser1: User;
@@ -41,7 +40,7 @@ let keyring: Keyring;
 let newToken: BN;
 let newToken2: BN;
 let newToken3: BN;
-
+const TEN_DOLLARS = new BN(17250).mul(Assets.MG_UNIT);
 describe("Proof of stake tests", () => {
   beforeAll(async () => {
     try {
@@ -284,7 +283,7 @@ describe("Proof of stake tests", () => {
             MGA_ASSET_ID,
             newToken,
             MGA_ASSET_ID,
-            new BN(3).mul(BN_MILLION).mul(Assets.MG_UNIT).addn(1),
+            TEN_DOLLARS.addn(1),
             1,
           ),
         ),
@@ -294,7 +293,7 @@ describe("Proof of stake tests", () => {
         testLog.getLog().info("Events:trace" + JSON.stringify(x));
         expect(sudoEvent.state).toBe(ExtrinsicResult.ExtrinsicSuccess);
       });
-      await waitIfSessionWillChangeInNblocks(4);
+      await waitIfSessionWillChangeInNblocks(6);
       await Sudo.asSudoFinalized(
         Sudo.sudoAs(
           testUser3,
@@ -302,7 +301,7 @@ describe("Proof of stake tests", () => {
             MGA_ASSET_ID,
             newToken,
             MGA_ASSET_ID,
-            new BN(3).mul(BN_MILLION).mul(Assets.MG_UNIT).subn(1),
+            TEN_DOLLARS.subn(1),
             2,
           ),
         ),
@@ -318,9 +317,9 @@ describe("Proof of stake tests", () => {
       const thresholdAmount = calculate_buy_price_local_no_fee(
         pool[0],
         pool[1],
-        new BN(3).mul(BN_MILLION).mul(Assets.MG_UNIT),
+        TEN_DOLLARS,
       );
-      await waitIfSessionWillChangeInNblocks(4);
+      await waitIfSessionWillChangeInNblocks(6);
       await Sudo.asSudoFinalized(
         Sudo.sudoAs(
           testUser3,
@@ -337,7 +336,7 @@ describe("Proof of stake tests", () => {
         const sudoEvent = await getEventErrorFromSudo(x);
         expect(sudoEvent.state).toBe(ExtrinsicResult.ExtrinsicSuccess);
       });
-      await waitIfSessionWillChangeInNblocks(4);
+      await waitIfSessionWillChangeInNblocks(6);
       await Sudo.asSudoFinalized(
         Sudo.sudoAs(
           testUser3,
