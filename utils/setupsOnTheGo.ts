@@ -12,6 +12,7 @@ import {
   getLiquidityAssetId,
   getLiquidityPool,
   calculate_buy_price_id_rpc,
+  promotePool,
 } from "./tx";
 import { User } from "./User";
 import {
@@ -39,6 +40,7 @@ import {
   PalletMultipurposeLiquidityRelockStatusInfo,
   PalletMultipurposeLiquidityReserveStatusInfo,
 } from "@polkadot/types/lookup";
+import { ProofOfStake } from "./ProofOfStake";
 const tokenOrigin = tokenOriginEnum.ActivatedUnstakedReserves;
 
 export async function vetoMotion(motionId: number) {
@@ -372,7 +374,7 @@ export async function printUserInfo(userAddress: string) {
       )) as PalletMultipurposeLiquidityReserveStatusInfo;
       console.info("  liq Rewards :: ");
       console.info("    totalRewards " + JSON.stringify(liqRewards.toHuman()));
-      
+
       console.info("  MPL status :: ");
       console.info(
         "    stakedUnactivatedReserves " + mpl.stakedUnactivatedReserves,
@@ -396,7 +398,7 @@ export async function printUserInfo(userAddress: string) {
         (stakingInfoCandidate.value.bond !== undefined &&
           stakingInfoCandidate.value.bond.gt(new BN(0))) ||
         (stakingInfoDelegator.value.delegations !== undefined &&
-          stakingInfoDelegator.value.delegations.length > 0 )
+          stakingInfoDelegator.value.delegations.length > 0)
       ) {
         console.info("  User has some staking business");
         console.info("    Staking info :: ");
@@ -1311,4 +1313,95 @@ export async function replaceByStateCall(
   }
   const parsed = api.createType(returnType, res);
   console.log(JSON.parse(JSON.stringify(parsed)));
+}
+
+export async function activateAndClaim3rdPartyRewardsForUser(
+  userName = "//Charlie",
+) {
+  await setupApi();
+  await setupUsers();
+  const mangata = await getMangataInstance();
+  const keyring = new Keyring({ type: "sr25519" });
+  const testUser = new User(keyring, userName);
+  const sudo = new User(keyring, getEnvironmentRequiredVars().sudo);
+  const [newToken, newToken2] = await Assets.setupUserWithCurrencies(
+    sudo,
+    [Assets.DEFAULT_AMOUNT, Assets.DEFAULT_AMOUNT],
+    sudo,
+    true,
+  );
+  await Sudo.batchAsSudoFinalized(
+    Assets.FinalizeTge(),
+    Assets.initIssuance(),
+    Assets.mintToken(newToken2, testUser, Assets.DEFAULT_AMOUNT.muln(40e6)),
+    Assets.mintNative(testUser, Assets.DEFAULT_AMOUNT.muln(40e6).muln(2)),
+    Assets.mintToken(newToken, sudo, Assets.DEFAULT_AMOUNT.muln(40e6)),
+    Assets.mintNative(sudo, Assets.DEFAULT_AMOUNT.muln(40e6).muln(2)),
+    Sudo.sudoAs(
+      sudo,
+      Xyk.createPool(
+        MGA_ASSET_ID,
+        Assets.DEFAULT_AMOUNT.muln(1e6),
+        newToken,
+        Assets.DEFAULT_AMOUNT.muln(1e6),
+      ),
+    ),
+    Sudo.sudoAs(
+      testUser,
+      Xyk.createPool(
+        MGA_ASSET_ID,
+        Assets.DEFAULT_AMOUNT,
+        newToken2,
+        Assets.DEFAULT_AMOUNT,
+      ),
+    ),
+  );
+  const liqId = await getLiquidityAssetId(MGA_ASSET_ID, newToken2);
+  await promotePool(sudo.keyRingPair, liqId, 20);
+  await Sudo.batchAsSudoFinalized(
+    Sudo.sudoAs(
+      sudo,
+      await ProofOfStake.rewardPool(
+        newToken2,
+        MGA_ASSET_ID,
+        newToken,
+        Assets.DEFAULT_AMOUNT.muln(1e6),
+        2,
+      ),
+    ),
+    Sudo.sudoAs(
+      testUser,
+      await ProofOfStake.activateLiquidityFor3rdpartyRewards(
+        liqId,
+        Assets.DEFAULT_AMOUNT.divn(2),
+        newToken,
+      ),
+    ),
+  );
+  await waitForRewards(testUser, liqId, 30, newToken);
+  await Sudo.batchAsSudoFinalized(
+    Sudo.sudoAs(
+      testUser,
+      await ProofOfStake.claim3rdpartyRewards(liqId, newToken),
+    ),
+  );
+  const userRewardsTokenBalance = (
+    await mangata.query.getTokenBalance(
+      newToken.toString(),
+      testUser.keyRingPair.address,
+    )
+  ).free;
+
+  testLog
+    .getLog()
+    .info(
+      "3rd party rewards were activated and claimed for user " +
+        testUser.name.toString() +
+        ", liquidity token's ID is " +
+        liqId.toString() +
+        ",  rewards token's ID is " +
+        newToken.toString() +
+        " and the amount of rewards is " +
+        userRewardsTokenBalance.toString(),
+    );
 }
