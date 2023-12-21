@@ -213,7 +213,6 @@ export class Assets {
   static transfer(target: User, tokenId: BN, amount: BN): Extrinsic {
     return api.tx.tokens.transfer(target.keyRingPair.address, tokenId, amount);
   }
-
   static transferAll(target: User, tokenId: BN): Extrinsic {
     return api.tx.tokens.transferAll(target.keyRingPair.address, tokenId, true);
   }

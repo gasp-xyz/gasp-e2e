@@ -1,14 +1,14 @@
 /* eslint-disable no-loop-func */
-import { MangataGenericEvent } from "@mangata-finance/sdk";
+import { BN_ONE, BN_ZERO, MangataGenericEvent } from "@mangata-finance/sdk";
 import { ApiPromise } from "@polkadot/api";
 import { BN } from "@polkadot/util";
-import _, { reject } from "lodash-es";
+import _ from "lodash-es";
 import { getApi, getMangataInstance } from "./api";
 import { logEvent, testLog } from "./Logger";
 import { api } from "./setup";
 import { getEventErrorFromSudo } from "./txHandler";
 import { User } from "./User";
-import { getEnvironmentRequiredVars } from "./utils";
+import { getEnvironmentRequiredVars, getThirdPartyRewards } from "./utils";
 import { Codec } from "@polkadot/types/types";
 
 // lets create a enum for different status.
@@ -122,7 +122,7 @@ export async function waitSudoOperationFail(
 
   const BootstrapError = await getEventErrorFromSudo(filterBootstrapEvent);
 
-  expect(expectedErrors).toContain(BootstrapError.method);
+  expect(expectedErrors).toContain(BootstrapError.data);
 }
 
 export const waitForEvents = async (
@@ -162,24 +162,44 @@ export const waitForEvents = async (
     });
   });
 };
-
+export const waitForSessionChange = async (): Promise<number> => {
+  const currSession = await api.query.session.currentIndex();
+  return new Promise(async (resolve) => {
+    const unsub = await api.rpc.chain.subscribeNewHeads(async () => {
+      const sessionNo = await api.query.session.currentIndex();
+      if (sessionNo.toNumber() > currSession.toNumber()) {
+        resolve(sessionNo.toNumber());
+        unsub();
+      }
+    });
+  });
+};
 export const waitForRewards = async (
   user: User,
   liquidityAssetId: BN,
   max: number = 20,
+  thirdPartyRewardToken: BN = BN_ONE.neg(),
 ) =>
   new Promise(async (resolve) => {
     let numblocks = max;
+    let rewardAmount = BN_ZERO;
     const unsub = await api.rpc.chain.subscribeNewHeads(async (header) => {
       numblocks--;
       const { chainUri } = getEnvironmentRequiredVars();
       const mangata = await getMangataInstance(chainUri);
-      const price = await mangata.rpc.calculateRewardsAmount({
-        address: user.keyRingPair.address,
-        liquidityTokenId: liquidityAssetId.toString(),
-      });
-
-      if (price.gtn(0)) {
+      if (thirdPartyRewardToken.gten(0)) {
+        rewardAmount = await getThirdPartyRewards(
+          user.keyRingPair.address,
+          liquidityAssetId,
+          thirdPartyRewardToken,
+        );
+      } else {
+        rewardAmount = await mangata.rpc.calculateRewardsAmount({
+          address: user.keyRingPair.address,
+          liquidityTokenId: liquidityAssetId.toString(),
+        });
+      }
+      if (rewardAmount.gtn(0)) {
         unsub();
         resolve({});
       } else {
@@ -191,9 +211,12 @@ export const waitForRewards = async (
       }
       if (numblocks < 0) {
         unsub();
-        reject(
-          `Waited too long for rewards :( #${header.number}  ${user.keyRingPair.address} (LP${liquidityAssetId} `,
-        );
+        testLog
+          .getLog()
+          .error(
+            `Waited too long for rewards :( #${header.number}  ${user.keyRingPair.address} (LP${liquidityAssetId} `,
+          );
+        resolve(false);
       }
     });
   });

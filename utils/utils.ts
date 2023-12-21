@@ -306,9 +306,28 @@ export async function waitIfSessionWillChangeInNblocks(numberOfBlocks: number) {
       .getLog()
       .info(`Session will end soon, waiting for ${numberOfBlocks}`);
     await waitForNBlocks(numberOfBlocks);
+  } else {
+    testLog
+      .getLog()
+      .info(
+        `No need to wait ${blockNumber} :: ${
+          (blockNumber % sessionDuration) + BigInt(numberOfBlocks)
+        }`,
+      );
   }
 }
-
+export async function getThirdPartyRewards(
+  userAddress: string,
+  liquidityAssetId: BN,
+  rewardToken: BN,
+) {
+  const api = getApi();
+  return await api.rpc.pos.calculate_3rdparty_rewards_amount(
+    userAddress,
+    liquidityAssetId.toString(),
+    rewardToken.toString(),
+  );
+}
 export async function waitNewStakingRound(maxBlocks: number = 0) {
   let currentSessionNumber: number;
   let currentBlockNumber: number;
@@ -533,7 +552,8 @@ export async function getFeeLockMetadata(api: ApiPromise) {
 }
 
 export function stringToBN(value: string): BN {
-  return isHex(value) ? hexToBn(value) : new BN(value);
+  const strValue = value.toString();
+  return isHex(value) ? hexToBn(value) : new BN(strValue.replaceAll(",", ""));
 }
 export async function findErrorMetadata(errorStr: string, index: string) {
   try {

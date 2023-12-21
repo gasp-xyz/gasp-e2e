@@ -26,4 +26,23 @@ export class MPL {
       );
     }
   }
+  static reserveVestingLiquidityTokensByVestingIndex(
+    tokenId: BN,
+    index = 0,
+    amount = BN_ZERO,
+  ) {
+    if (amount.gt(BN_ZERO)) {
+      return api.tx.multiPurposeLiquidity.reserveVestingLiquidityTokensByVestingIndex(
+        tokenId,
+        index,
+        amount,
+      );
+    } else {
+      return api.tx.multiPurposeLiquidity.reserveVestingLiquidityTokensByVestingIndex(
+        tokenId,
+        index,
+        api.createType("Option<u128>", null),
+      );
+    }
+  }
 }

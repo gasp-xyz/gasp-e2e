@@ -22,16 +22,21 @@ import {
   trackExecutedExtrinsics,
   trackEnqueuedExtrinsics,
 } from "./testReporter";
-import { Guid } from "guid-typescript";
 import { User } from "../../utils/User";
 import { getEnvironmentRequiredVars } from "../../utils/utils";
 import { SudoUser } from "../../utils/Framework/User/SudoUser";
 import { quantile } from "simple-statistics";
 import ipc from "node-ipc";
 
+/**
 function seedFromNum(seed: number): string {
   const guid = Guid.create().toString();
   return "//user//" + ("0000" + seed + guid).slice(-4);
+}
+  */
+
+function createUserSequentially(idx: number): string {
+  return `//user//0000${idx}`;
 }
 
 export class performanceTestItem implements TestItem {
@@ -82,7 +87,6 @@ export class performanceTestItem implements TestItem {
 
     ipc.server.start();
     this.ipc = ipc;
-    console.info("helo world 2");
     console.info(testParams.nodes);
 
     return true;
@@ -235,7 +239,7 @@ export class performanceTestItem implements TestItem {
       let sudoNonce = await mga.query.getNonce(sudo.keyRingPair.address);
       //lets create as many of users as threads.
       for (let i = 0; i < numberOfThreads; i++) {
-        const stringSeed = seedFromNum(i);
+        const stringSeed = createUserSequentially(i + nodeNumber * 10e12);
         const keyPair = keyring.addFromUri(stringSeed);
         const nonce = await mga.query.getNonce(keyPair.address);
         //lets mint some MGA assets to pay fees
@@ -311,7 +315,7 @@ export class performanceTestItem implements TestItem {
       testLog.getLog().info("Fetching nonces for node " + nodeNumber);
       //lets create as many of users as threads.
       for (let i = 0; i < numberOfThreads; i++) {
-        const stringSeed = seedFromNum(i);
+        const stringSeed = createUserSequentially(i);
         const keyPair = keyring.addFromUri(stringSeed);
         const nonce = await mga.query.getNonce(keyPair.address);
         users.push({ nonce: nonce, keyPair: keyPair });

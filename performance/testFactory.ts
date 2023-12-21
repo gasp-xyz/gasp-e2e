@@ -6,6 +6,9 @@ import { ExtrinsicTransfer } from "./plugins/extrinsicTransfer";
 // import { ExtrinsicTransferAll } from "./plugins/extrinsicTransferAll";
 // import { Ping } from "./plugins/ping";
 import { TestItem } from "./plugins/testItem.js";
+import { Extrinsic3rdPartySchedule } from "./plugins/extrinsic3rdPartySchedule";
+import { Extrinsic3rdPartyClaim } from "./plugins/extrinsic3rdPartyClaim";
+import { Extrinsic3rdPartyScheduleActivate } from "./plugins/extrinsic3rdPartyScheduleActivate";
 
 export enum Commands {
   ExtrinsicTransfer,
@@ -17,6 +20,9 @@ export enum Commands {
   Mint,
   Burn,
   ExtrinsicBatch,
+  Schedule3rdParty,
+  Claim3rdParty,
+  ScheduleActivate3rdParty,
 }
 
 export enum TestsCases {
@@ -36,6 +42,15 @@ export class TestFactory {
     }
     if (type === Commands.SwapSell) {
       return new ExtrinsicSwap(false);
+    }
+    if (type === Commands.Schedule3rdParty) {
+      return new Extrinsic3rdPartySchedule();
+    }
+    if (type === Commands.Claim3rdParty) {
+      return new Extrinsic3rdPartyClaim();
+    }
+    if (type === Commands.ScheduleActivate3rdParty) {
+      return new Extrinsic3rdPartyScheduleActivate();
     }
     // if (type === Commands.Ping) {
     //   return new Ping();

@@ -165,14 +165,22 @@ export async function getEventErrorFromSudo(sudoEvent: MangataGenericEvent[]) {
   const api = getApi();
 
   const filteredEvent = sudoEvent.filter(
-    (extrinsicResult) => extrinsicResult.method === "Sudid",
+    (extrinsicResult) =>
+      extrinsicResult.method === "Sudid" ||
+      (extrinsicResult.method === "SudoAsDone" &&
+        JSON.parse(JSON.stringify(extrinsicResult.eventData[0].data)).err !==
+          undefined),
   );
 
-  if (filteredEvent[1] !== undefined) {
+  if (filteredEvent.length > 1) {
     testLog.getLog().warn("WARN: Received more than one errors");
     //throw new Error("  --- TX Mapping issue --- ");
   }
-
+  if (filteredEvent.length === 0) {
+    testLog.getLog().warn("WARN: Received no errors");
+    return new EventResult(ExtrinsicResult.ExtrinsicSuccess, null);
+    //throw new Error("  --- TX Mapping issue --- ");
+  }
   const eventErrorValue = hexToU8a(
     JSON.parse(JSON.stringify(filteredEvent[0].event.data[0])).err.module.error,
   );
@@ -181,10 +189,13 @@ export async function getEventErrorFromSudo(sudoEvent: MangataGenericEvent[]) {
     JSON.stringify(filteredEvent[0].event.data[0]),
   ).err.module.index;
 
-  return api?.registry.findMetaError({
-    error: eventErrorValue,
-    index: new BN(eventErrorIndex),
-  });
+  return new EventResult(
+    ExtrinsicResult.ExtrinsicFailed,
+    api?.registry.findMetaError({
+      error: eventErrorValue,
+      index: new BN(eventErrorIndex),
+    }).method,
+  );
 }
 
 function createEventResultfromExtrinsic(extrinsicResult: MangataGenericEvent) {

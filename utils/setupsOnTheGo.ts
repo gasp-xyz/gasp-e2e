@@ -12,12 +12,16 @@ import {
   getLiquidityAssetId,
   getLiquidityPool,
   calculate_buy_price_id_rpc,
+  promotePool,
 } from "./tx";
 import { User } from "./User";
 import {
   getBlockNumber,
   getEnvironmentRequiredVars,
+  getMultiPurposeLiquidityReLockStatus,
+  getMultiPurposeLiquidityStatus,
   getUserBalanceOfToken,
+  stringToBN,
 } from "./utils";
 import { Xyk } from "./xyk";
 import { getApi, api, initApi, getMangataInstance } from "./api";
@@ -30,8 +34,13 @@ import { Staking, AggregatorOptions, tokenOriginEnum } from "./Staking";
 import { hexToBn } from "@polkadot/util";
 import { Bootstrap } from "./Bootstrap";
 import assert from "assert";
-import { testLog } from "./Logger";
 import { Council } from "./Council";
+import { testLog } from "./Logger";
+import {
+  PalletMultipurposeLiquidityRelockStatusInfo,
+  PalletMultipurposeLiquidityReserveStatusInfo,
+} from "@polkadot/types/lookup";
+import { ProofOfStake } from "./ProofOfStake";
 const tokenOrigin = tokenOriginEnum.ActivatedUnstakedReserves;
 
 export async function vetoMotion(motionId: number) {
@@ -238,6 +247,16 @@ export async function setupPoolWithRewardsForDefaultUsers() {
   await waitForRewards(testUser4, liqId);
   return { users, liqId, sudo, token2 };
 }
+export async function joinAsCandidateByName(
+  userName: string,
+  liqId = 9,
+  tokenOrigin = tokenOriginEnum.AvailableBalance,
+) {
+  await setupUsers();
+  await setupApi();
+  const user = new User(new Keyring({ type: "sr25519" }), userName);
+  await Staking.joinAsCandidateWithUser(user, new BN(liqId), tokenOrigin);
+}
 export async function setupTokenWithRewardsForDefaultUsers() {
   await setupApi();
   await setupUsers();
@@ -290,6 +309,7 @@ export async function setupTokenWithRewardsForDefaultUsers() {
   await waitForRewards(testUser4, liqId);
   return { users, liqId, sudo, token2 };
 }
+
 export async function printAllTxsDoneByUser(userAddress: string) {
   await setupUsers();
   await setupApi();
@@ -310,6 +330,101 @@ export async function printAllTxsDoneByUser(userAddress: string) {
       testLog.getLog().info(JSON.stringify(txs));
     }
     currBlock--;
+  }
+}
+export async function printUserInfo(userAddress: string) {
+  setupUsers();
+  await setupApi();
+  const api = await getApi();
+  const accountInfo = (await api.query.tokens.accounts.entries()).filter(
+    (x: any) => x[0].toHuman()[0] === userAddress,
+  );
+  for (const id in accountInfo) {
+    const tokenId = JSON.parse(JSON.stringify(accountInfo[id][0].toHuman()))[1];
+    const tokenIdBn = stringToBN(tokenId.toString());
+    console.info("            ");
+    console.info("For token Id  [ " + tokenId + " ]");
+    const tokenStatus = JSON.parse(
+      JSON.stringify(accountInfo[id][1].toHuman()),
+    );
+    const frozen = stringToBN(tokenStatus.frozen);
+    const reserved = stringToBN(tokenStatus.reserved);
+
+    console.info("---------------: ");
+    console.info("Free: " + tokenStatus.free);
+    console.info("Frozen: " + tokenStatus.frozen);
+    if (frozen.gt(new BN(0))) {
+      const vesting = await api.query.vesting.vesting(userAddress, tokenIdBn);
+      console.info("  Vesting: " + JSON.stringify(vesting.toHuman()));
+    }
+    console.info("Reserved: " + tokenStatus.reserved);
+    if (reserved.gt(new BN(0))) {
+      const liqRewards = await api.query.proofOfStake.rewardsInfo(
+        userAddress,
+        tokenIdBn,
+      );
+      const stakingInfoCandidate =
+        await api.query.parachainStaking.candidateState(userAddress);
+      const stakingInfoDelegator =
+        await api.query.parachainStaking.delegatorState(userAddress);
+
+      const mpl = (await getMultiPurposeLiquidityStatus(
+        userAddress,
+        tokenIdBn,
+      )) as PalletMultipurposeLiquidityReserveStatusInfo;
+      console.info("  liq Rewards :: ");
+      console.info("    totalRewards " + JSON.stringify(liqRewards.toHuman()));
+
+      console.info("  MPL status :: ");
+      console.info(
+        "    stakedUnactivatedReserves " + mpl.stakedUnactivatedReserves,
+      );
+      console.info(
+        "    activatedUnstakedReserves " + mpl.activatedUnstakedReserves,
+      );
+      console.info(
+        "   stakedAndActivatedReserves " + mpl.stakedAndActivatedReserves,
+      );
+      console.info("    unspentReserves " + mpl.unspentReserves);
+      console.info("    relockAmount " + mpl.relockAmount);
+
+      if (
+        mpl.activatedUnstakedReserves.gt(new BN(0)) ||
+        mpl.stakedAndActivatedReserves.gt(new BN(0))
+      ) {
+        console.info("  User has activated reserves");
+      }
+      if (
+        (stakingInfoCandidate.value.bond !== undefined &&
+          stakingInfoCandidate.value.bond.gt(new BN(0))) ||
+        (stakingInfoDelegator.value.delegations !== undefined &&
+          stakingInfoDelegator.value.delegations.length > 0)
+      ) {
+        console.info("  User has some staking business");
+        console.info("    Staking info :: ");
+        console.info(
+          "     Candidate :: " +
+            JSON.stringify(stakingInfoCandidate.value.toHuman()),
+        );
+        console.info(
+          "     Delegator :: " +
+            JSON.stringify(stakingInfoDelegator.value.toHuman()),
+        );
+      }
+
+      if (mpl.unspentReserves.gt(new BN(0))) {
+        console.info("  User has unspent reserves");
+      }
+      if (mpl.relockAmount.gt(new BN(0))) {
+        console.info("  User has relock amount");
+        const schedule = (await getMultiPurposeLiquidityReLockStatus(
+          userAddress,
+          tokenIdBn,
+        )) as PalletMultipurposeLiquidityRelockStatusInfo[];
+        console.info("    schedule : " + JSON.stringify(schedule));
+      }
+      console.info("---------------: ");
+    }
   }
 }
 export async function burnAllTokensFromPool(liqToken: BN) {
@@ -1198,4 +1313,95 @@ export async function replaceByStateCall(
   }
   const parsed = api.createType(returnType, res);
   console.log(JSON.parse(JSON.stringify(parsed)));
+}
+
+export async function activateAndClaim3rdPartyRewardsForUser(
+  userName = "//Charlie",
+) {
+  await setupApi();
+  await setupUsers();
+  const mangata = await getMangataInstance();
+  const keyring = new Keyring({ type: "sr25519" });
+  const testUser = new User(keyring, userName);
+  const sudo = new User(keyring, getEnvironmentRequiredVars().sudo);
+  const [newToken, newToken2] = await Assets.setupUserWithCurrencies(
+    sudo,
+    [Assets.DEFAULT_AMOUNT, Assets.DEFAULT_AMOUNT],
+    sudo,
+    true,
+  );
+  await Sudo.batchAsSudoFinalized(
+    Assets.FinalizeTge(),
+    Assets.initIssuance(),
+    Assets.mintToken(newToken2, testUser, Assets.DEFAULT_AMOUNT.muln(40e6)),
+    Assets.mintNative(testUser, Assets.DEFAULT_AMOUNT.muln(40e6).muln(2)),
+    Assets.mintToken(newToken, sudo, Assets.DEFAULT_AMOUNT.muln(40e6)),
+    Assets.mintNative(sudo, Assets.DEFAULT_AMOUNT.muln(40e6).muln(2)),
+    Sudo.sudoAs(
+      sudo,
+      Xyk.createPool(
+        MGA_ASSET_ID,
+        Assets.DEFAULT_AMOUNT.muln(1e6),
+        newToken,
+        Assets.DEFAULT_AMOUNT.muln(1e6),
+      ),
+    ),
+    Sudo.sudoAs(
+      testUser,
+      Xyk.createPool(
+        MGA_ASSET_ID,
+        Assets.DEFAULT_AMOUNT,
+        newToken2,
+        Assets.DEFAULT_AMOUNT,
+      ),
+    ),
+  );
+  const liqId = await getLiquidityAssetId(MGA_ASSET_ID, newToken2);
+  await promotePool(sudo.keyRingPair, liqId, 20);
+  await Sudo.batchAsSudoFinalized(
+    Sudo.sudoAs(
+      sudo,
+      await ProofOfStake.rewardPool(
+        newToken2,
+        MGA_ASSET_ID,
+        newToken,
+        Assets.DEFAULT_AMOUNT.muln(1e6),
+        2,
+      ),
+    ),
+    Sudo.sudoAs(
+      testUser,
+      await ProofOfStake.activateLiquidityFor3rdpartyRewards(
+        liqId,
+        Assets.DEFAULT_AMOUNT.divn(2),
+        newToken,
+      ),
+    ),
+  );
+  await waitForRewards(testUser, liqId, 30, newToken);
+  await Sudo.batchAsSudoFinalized(
+    Sudo.sudoAs(
+      testUser,
+      await ProofOfStake.claim3rdpartyRewards(liqId, newToken),
+    ),
+  );
+  const userRewardsTokenBalance = (
+    await mangata.query.getTokenBalance(
+      newToken.toString(),
+      testUser.keyRingPair.address,
+    )
+  ).free;
+
+  testLog
+    .getLog()
+    .info(
+      "3rd party rewards were activated and claimed for user " +
+        testUser.name.toString() +
+        ", liquidity token's ID is " +
+        liqId.toString() +
+        ",  rewards token's ID is " +
+        newToken.toString() +
+        " and the amount of rewards is " +
+        userRewardsTokenBalance.toString(),
+    );
 }

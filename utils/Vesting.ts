@@ -6,20 +6,21 @@ import { getBlockNumber } from "./utils";
 
 export class Vesting {
   static async forceVested(
-    fromUser: User,
-    toUser: User,
+    fromUser: User | string,
+    toUser: User | string,
     amount: BN,
     tokenId: BN,
+    offset = 0,
   ) {
     const blockNo = await getBlockNumber();
     return api.tx.vesting.forceVestedTransfer(
       tokenId,
-      fromUser.keyRingPair.address,
-      toUser.keyRingPair.address,
+      fromUser.toString(),
+      toUser.toString(),
       {
         locked: amount,
         perBlock: BN_THOUSAND,
-        startingBlock: blockNo,
+        startingBlock: blockNo + offset,
       },
     );
   }
