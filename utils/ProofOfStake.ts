@@ -50,6 +50,7 @@ export class ProofOfStake {
       rewardToken,
     );
   }
+
   static async activateLiquidityFor3rdpartyRewards(
     liquidityTokenId: BN,
     amount: BN,
@@ -158,5 +159,37 @@ export class ProofOfStake {
         ),
       ),
     ];
+  }
+
+  static async activateLiquidityForNativeRewards(
+    liquidityTokenId: BN,
+    amount: BN,
+    useBalanceFrom: any = "AvailableBalance",
+  ) {
+    setupApi();
+    const api = getApi();
+    return api.tx.proofOfStake.activateLiquidityForNativeRewards(
+      liquidityTokenId,
+      amount,
+      useBalanceFrom,
+    );
+  }
+
+  static async claimNativeRewards(liquidityTokenId: BN) {
+    await setupApi();
+    const api = getApi();
+    return api.tx.proofOfStake.claimNativeRewards(liquidityTokenId);
+  }
+
+  static async deactivateLiquidityForNativeRewards(
+    liquidityTokenId: BN,
+    amount: BN,
+  ) {
+    await setupApi();
+    const api = getApi();
+    return api.tx.proofOfStake.deactivateLiquidityForNativeRewards(
+      liquidityTokenId,
+      amount,
+    );
   }
 }
