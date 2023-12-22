@@ -43,7 +43,7 @@ let testUser1: User;
 
 const acc_name = "acc_automation";
 const userAddress = "5CfLmpjCJu41g3cpZVoiH7MSrSppgVVVC3xq23iy9dZrW2HR";
-const liqTokenNumber = 10000;
+const liqTokenNumber = 100000;
 const INIT_KSM_RELAY = 15;
 
 describe("Microapps UI Staking page tests", () => {
@@ -102,7 +102,7 @@ describe("Microapps UI Staking page tests", () => {
     testUser1 = new User(keyring);
     testUser1.addFromMnemonic(
       keyring,
-      getEnvironmentRequiredVars().mnemonicPolkadot,
+      getEnvironmentRequiredVars().mnemonicPolkadot
     );
 
     testUser1.addAsset(KSM_ASSET_ID);
@@ -159,7 +159,7 @@ describe("Microapps UI Staking page tests", () => {
     await sidebar.clickNavStaking();
 
     await stakingPageDriver.waitForCollatorsVisible();
-    await stakingPageDriver.chooseCollatorRow();
+    await stakingPageDriver.chooseCollatorRow(3);
     await stakingPageDriver.startStaking();
     await stakingPageDriver.setStakingValue((liqTokenNumber / 2).toString());
     await stakingPageDriver.waitForStakingFeeVisible();
@@ -169,7 +169,7 @@ describe("Microapps UI Staking page tests", () => {
       mangata,
       kusama,
       TransactionType.Stake,
-      2,
+      2
     );
     await stakingPageDriver.goToPositionInfo();
     const positionPageDriver = new PositionPageDriver(driver);
@@ -238,7 +238,7 @@ describe("Microapps UI Staking page tests", () => {
     const session = await driver.getSession();
     await addExtraLogs(
       driver,
-      expect.getState().currentTestName + " - " + session.getId(),
+      expect.getState().currentTestName + " - " + session.getId()
     );
   });
 
