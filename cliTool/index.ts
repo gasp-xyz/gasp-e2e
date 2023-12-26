@@ -34,6 +34,7 @@ import {
   close,
   printUserInfo,
   activateAndClaim3rdPartyRewardsForUser,
+  claimForAllAvlRewards,
 } from "../utils/setupsOnTheGo";
 import {
   findErrorMetadata,
@@ -94,6 +95,7 @@ async function app(): Promise<any> {
         "Print user txs",
         "Print user info",
         "Activate and claim 3rd party rewards to default users",
+        "Claim 4 all avl rewards",
       ],
     })
     .then(async (answers: { option: string | string[] }) => {
@@ -101,6 +103,9 @@ async function app(): Promise<any> {
       if (answers.option.includes("Setup rewards with default users")) {
         const setupData = await setupPoolWithRewardsForDefaultUsers();
         console.log("liq Id = " + setupData.liqId);
+      }
+      if (answers.option.includes("Claim 4 all avl rewards")) {
+        await claimForAllAvlRewards();
       }
       if (answers.option.includes("Setup token rewards with default users")) {
         await setupTokenWithRewardsForDefaultUsers();

@@ -2,16 +2,17 @@
 import Keyring from "@polkadot/keyring";
 import BN from "bn.js";
 import { Assets } from "./Assets";
-import { MGA_ASSET_ID, MAX_BALANCE, KSM_ASSET_ID } from "./Constants";
+import { KSM_ASSET_ID, MAX_BALANCE, MGA_ASSET_ID } from "./Constants";
 import { waitForRewards } from "./eventListeners";
-import { Extrinsic, setupApi, setupUsers } from "./setup";
+import { Extrinsic, setupApi, setupUsers, sudo } from "./setup";
 import { Sudo } from "./sudo";
 import { xxhashAsHex } from "@polkadot/util-crypto";
 
 import {
+  calculate_buy_price_id_rpc,
+  getCurrentNonce,
   getLiquidityAssetId,
   getLiquidityPool,
-  calculate_buy_price_id_rpc,
   promotePool,
 } from "./tx";
 import { User } from "./User";
@@ -24,13 +25,13 @@ import {
   stringToBN,
 } from "./utils";
 import { Xyk } from "./xyk";
-import { getApi, api, initApi, getMangataInstance } from "./api";
+import { api, getApi, getMangataInstance, initApi } from "./api";
 import { BN_ZERO, signTx } from "@mangata-finance/sdk";
 import { getBalanceOfPool } from "./txHandler";
-import { StorageKey, Bytes } from "@polkadot/types";
-import { ITuple, Codec } from "@polkadot/types/types";
+import { Bytes, StorageKey } from "@polkadot/types";
+import { Codec, ITuple } from "@polkadot/types/types";
 import jsonpath from "jsonpath";
-import { Staking, AggregatorOptions, tokenOriginEnum } from "./Staking";
+import { AggregatorOptions, Staking, tokenOriginEnum } from "./Staking";
 import { hexToBn } from "@polkadot/util";
 import { Bootstrap } from "./Bootstrap";
 import assert from "assert";
@@ -41,6 +42,44 @@ import {
   PalletMultipurposeLiquidityReserveStatusInfo,
 } from "@polkadot/types/lookup";
 import { ProofOfStake } from "./ProofOfStake";
+import { signSendFinalized } from "./sign";
+
+export async function claimForAllAvlRewards() {
+  await setupApi();
+  setupUsers();
+  await initApi();
+  const api = await getApi();
+  const txs = [];
+  const allScheduleRewards =
+    await api.query.proofOfStake.rewardsInfoForScheduleRewards.entries();
+  const listOfUsersToClaim = allScheduleRewards.map((x) => [
+    x[0]!.toHuman()! as any[0],
+    x[0]!.toHuman()! as any[1],
+  ]);
+  for (let index = 0; index < listOfUsersToClaim.length; index++) {
+    const user = listOfUsersToClaim[index];
+    console.info(JSON.stringify(user) + "--" + user[1][1]);
+    txs.push(
+      Sudo.sudoAsWithAddressString(
+        user[1][0],
+        await ProofOfStake.claim3rdpartyRewards(user[1][1][0], user[1][1][1]),
+      ),
+    );
+  }
+  let promises = [];
+  let nonce = await getCurrentNonce(sudo.keyRingPair.address);
+  for (let index = 0; index < txs.length; index++) {
+    const tx = txs[index];
+    promises.push(signSendFinalized(tx, sudo, nonce));
+    nonce = nonce.addn(1);
+    if (index % 500 === 0) {
+      await Promise.all(promises);
+      promises = [];
+    }
+  }
+  await Promise.all(promises);
+}
+
 const tokenOrigin = tokenOriginEnum.ActivatedUnstakedReserves;
 
 export async function vetoMotion(motionId: number) {
@@ -937,7 +976,7 @@ export async function findAllRewardsAndClaim() {
   const user = new User(keyring);
   for (let index = 0; index < promotedPairNumber; index++) {
     function getPrint(user: string, tokens: RewardsInfo) {
-      const text =
+      return (
         user +
         "-- tokenID: " +
         tokens.tokenId.toString() +
@@ -946,8 +985,8 @@ export async function findAllRewardsAndClaim() {
         ", alreadyClaimed: " +
         tokens.rewardsAlreadyClaimed +
         ", notYetClaimed:" +
-        tokens.rewardsNotYetClaimed;
-      return text;
+        tokens.rewardsNotYetClaimed
+      );
     }
     user.addFromAddress(keyring, usersInfo[index][0]);
     liqTokenId = new BN(usersInfo[index][1].tokenId);
