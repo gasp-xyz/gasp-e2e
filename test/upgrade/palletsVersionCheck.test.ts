@@ -1,6 +1,7 @@
 /*
  *
  * @group upgrade
+ * @group asdasdui
  */
 
 import { getApi, initApi } from "../../utils/api";
@@ -11,6 +12,8 @@ import { getEnvironmentRequiredVars } from "../../utils/utils";
 import { Mangata } from "@mangata-finance/sdk";
 import "jest-extended";
 import { testLog } from "../../utils/Logger";
+import { xxhashAsHex } from "@polkadot/util-crypto";
+import { stripHexPrefix } from "../../utils/setupsOnTheGo";
 jest.setTimeout(1500000);
 
 describe("Story tests > LP", () => {
@@ -37,32 +40,37 @@ describe("Story tests > LP", () => {
     // const meta5k = await ksmApi.query.assetRegistry.metadata("5");
     // const meta5l = await localApi.query.assetRegistry.metadata("5");
     const errors: any = [];
+    const info = [] ;
+    const storageVersion = ":__STORAGE_VERSION__:";
     for (let i = 0; i < pallets.length; i++) {
-      const palletElement = pallets[i][0];
+      const palletName = pallets[i][0];
+      const palletElement = palletName[0].toUpperCase() + palletName.slice(1);
+      const storageKey =
+        xxhashAsHex(palletElement, 128) +
+        stripHexPrefix(xxhashAsHex(storageVersion, 128));
+      testLog.getLog().info(`Validating pallet ${storageKey}`);
       testLog.getLog().info(`Validating pallet ${palletElement}`);
-      if (
-        !Object.entries(ksmApi.query[palletElement]).find(
-          (x) => x[0] === "palletVersion"
-        )
-      ) {
-        testLog
-          .getLog()
-          .info(
-            `Skipping :: ${palletElement} : Does not implement palletVersion`
-          );
-        continue;
-      }
-      const ksmVersion = (
-        await ksmApi.query[palletElement].palletVersion()
-      ).toHuman();
-      const localVersion = (
-        await localApi.query[palletElement].palletVersion()
-      ).toHuman();
-      if (localVersion !== ksmVersion) {
-        errors.push([palletElement, ksmVersion, localVersion]);
-      }
+      const ksmStorage = (
+        await ksmApi.rpc.state.getStorage(storageKey)
+      );
+      const localStorage = (
+        await localApi.rpc.state.getStorage(storageKey)
+      );
+      testLog.getLog().info(`Kusama Version: ${ksmStorage}`);
+      testLog.getLog().info(`Local Version: ${localStorage}`);
+      info.push([ksmStorage, localStorage, palletName, storageKey]);
     }
-    testLog.getLog().info("[Pallet, Kusama Version, Local Version]");
+    info.forEach((element: any) => {
+      if (element[0].toString() !== element[1].toString()) {
+        errors.push(element);
+      }
+    });
+    testLog
+      .getLog()
+      .info("[Kusama Version, Local Version, Pallet , StorageKey]");
+    info.forEach((element: any) => {
+      testLog.getLog().info(JSON.stringify(element));
+    });
     expect(errors).toBeEmpty();
   });
 });
@@ -77,7 +85,7 @@ export async function listStorages(ws = "wss://kusama-archive.mangata.online") {
   res.forEach((pallet) => {
     const storageItems = jsonpath.query(
       metaJson,
-      `$..pallets[?(@.name =="${pallet}")].storage.items[*].name`
+      `$..pallets[?(@.name =="${pallet}")].storage.items[*].name`,
     );
     result.push([pallet, storageItems]);
   });
