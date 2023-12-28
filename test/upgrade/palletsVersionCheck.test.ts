@@ -40,7 +40,7 @@ describe("Story tests > LP", () => {
     // const meta5k = await ksmApi.query.assetRegistry.metadata("5");
     // const meta5l = await localApi.query.assetRegistry.metadata("5");
     const errors: any = [];
-    const info = [] ;
+    const info = [];
     const storageVersion = ":__STORAGE_VERSION__:";
     for (let i = 0; i < pallets.length; i++) {
       const palletName = pallets[i][0];
@@ -50,12 +50,8 @@ describe("Story tests > LP", () => {
         stripHexPrefix(xxhashAsHex(storageVersion, 128));
       testLog.getLog().info(`Validating pallet ${storageKey}`);
       testLog.getLog().info(`Validating pallet ${palletElement}`);
-      const ksmStorage = (
-        await ksmApi.rpc.state.getStorage(storageKey)
-      );
-      const localStorage = (
-        await localApi.rpc.state.getStorage(storageKey)
-      );
+      const ksmStorage = await ksmApi.rpc.state.getStorage(storageKey);
+      const localStorage = await localApi.rpc.state.getStorage(storageKey);
       testLog.getLog().info(`Kusama Version: ${ksmStorage}`);
       testLog.getLog().info(`Local Version: ${localStorage}`);
       info.push([ksmStorage, localStorage, palletName, storageKey]);
