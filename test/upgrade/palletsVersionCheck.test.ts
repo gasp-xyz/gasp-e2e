@@ -1,7 +1,6 @@
 /*
  *
  * @group upgrade
- * @group asdasdui
  */
 
 import { getApi, initApi } from "../../utils/api";
