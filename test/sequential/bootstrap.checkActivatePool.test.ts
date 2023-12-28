@@ -55,7 +55,7 @@ async function checkPossibilityCreatingPool(tokenA: any, tokenB: any) {
     tokenA,
     bootstrapAmount,
     tokenB,
-    bootstrapAmount
+    bootstrapAmount,
   );
   eventResponse = getEventResultFromMangataTx(creatingPool);
   expect(eventResponse.state).toEqual(ExtrinsicResult.ExtrinsicFailed);
@@ -92,7 +92,7 @@ test("bootstrap - Check that we can not create a pool for the bootstrap token af
     bootstrapCurrency,
     waitingPeriod,
     bootstrapPeriod,
-    whitelistPeriod
+    whitelistPeriod,
   );
   eventResponse = getEventResultFromMangataTx(sudoBootstrap);
   expect(eventResponse.state).toEqual(ExtrinsicResult.ExtrinsicSuccess);
@@ -111,7 +111,7 @@ test("bootstrap - Check that we can not create a pool for the bootstrap token af
   const provisionPublicBootstrapCurrency = await provisionBootstrap(
     testUser1,
     bootstrapCurrency,
-    bootstrapAmount
+    bootstrapAmount,
   );
   eventResponse = getEventResultFromMangataTx(provisionPublicBootstrapCurrency);
   expect(eventResponse.state).toEqual(ExtrinsicResult.ExtrinsicSuccess);
@@ -120,7 +120,7 @@ test("bootstrap - Check that we can not create a pool for the bootstrap token af
   const provisionPublicMGA = await provisionBootstrap(
     testUser1,
     MGA_ASSET_ID,
-    bootstrapAmount
+    bootstrapAmount,
   );
   eventResponse = getEventResultFromMangataTx(provisionPublicMGA);
   expect(eventResponse.state).toEqual(ExtrinsicResult.ExtrinsicSuccess);
@@ -135,7 +135,7 @@ test("bootstrap - Check that we can not create a pool for the bootstrap token af
   expect(bootstrapPoolBalance[0]).bnEqual(bootstrapAmount);
   expect(bootstrapPoolBalance[1]).bnEqual(bootstrapAmount);
   bootstrapExpectedUserLiquidity = new BN(
-    bootstrapPoolBalance[0].add(bootstrapPoolBalance[1]) / 2
+    bootstrapPoolBalance[0].add(bootstrapPoolBalance[1]) / 2,
   );
 });
 
@@ -146,12 +146,12 @@ afterEach(async () => {
   expect(eventResponse.state).toEqual(ExtrinsicResult.ExtrinsicSuccess);
   const liquidityID = await getLiquidityAssetId(
     MGA_ASSET_ID,
-    bootstrapCurrency
+    bootstrapCurrency,
   );
 
   const bootstrapUserLiquidity = await getUserBalanceOfToken(
     liquidityID,
-    testUser1
+    testUser1,
   );
   // check that the user's balance of liquidity token is equal the pool's balance
   expect(bootstrapUserLiquidity.free).bnEqual(bootstrapExpectedUserLiquidity);

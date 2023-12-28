@@ -49,14 +49,14 @@ beforeAll(async () => {
   [testUser1, testUser2, testUser3, testUser4, testUser5] = setupUsers();
   await setupApi();
   minStk = new BN(
-    (await getApi()).consts.parachainStaking.minCandidateStk.toString()
+    (await getApi()).consts.parachainStaking.minCandidateStk.toString(),
   );
   const keyring = new Keyring({ type: "sr25519" });
   const sudo = new User(keyring, getEnvironmentRequiredVars().sudo);
   const tokens = await Assets.setupUserWithCurrencies(
     testUser4,
     [minStk.muln(1000), minStk.muln(1000)],
-    sudo
+    sudo,
   );
   tokenId1 = tokens[0];
   tokenId2 = tokens[1];
@@ -70,16 +70,16 @@ beforeAll(async () => {
     Assets.mintToken(tokenId2, testUser4, minStk.muln(1000)),
     Sudo.sudoAs(
       testUser3,
-      Xyk.createPool(MGA_ASSET_ID, minStk.muln(3), tokenId1, minStk.muln(3))
+      Xyk.createPool(MGA_ASSET_ID, minStk.muln(3), tokenId1, minStk.muln(3)),
     ),
     Sudo.sudoAs(
       testUser4,
-      Xyk.createPool(MGA_ASSET_ID, minStk.muln(3), tokenId2, minStk.muln(3))
-    )
+      Xyk.createPool(MGA_ASSET_ID, minStk.muln(3), tokenId2, minStk.muln(3)),
+    ),
   );
   const liqToken1 = await getLiquidityAssetId(MGA_ASSET_ID, tokenId1);
   await Sudo.asSudoFinalized(
-    Sudo.sudo(Staking.addStakingLiquidityToken(liqToken1))
+    Sudo.sudo(Staking.addStakingLiquidityToken(liqToken1)),
   );
 });
 
@@ -94,25 +94,25 @@ describe("Test candidates actions: Collision by liq token", () => {
         await Staking.joinAsCandidate(
           minStk.muln(2),
           MGA_ASSET_ID,
-          tokenOriginEnum.AvailableBalance
-        )
+          tokenOriginEnum.AvailableBalance,
+        ),
       ),
       Sudo.sudoAs(
         testUser4,
         await Staking.joinAsCandidate(
           minStk.muln(2),
           MGA_ASSET_ID,
-          tokenOriginEnum.AvailableBalance
-        )
+          tokenOriginEnum.AvailableBalance,
+        ),
       ),
       Sudo.sudoAs(
         testUser3,
         await Staking.joinAsCandidate(
           minStk.muln(2),
           liqToken1,
-          tokenOriginEnum.AvailableBalance
-        )
-      )
+          tokenOriginEnum.AvailableBalance,
+        ),
+      ),
     ).then((value) => {
       expectMGAExtrinsicSuDidSuccess(value);
     });
@@ -121,11 +121,11 @@ describe("Test candidates actions: Collision by liq token", () => {
         aggregator,
         Staking.aggregatorUpdateMetadata(
           [testUser2, testUser3, testUser4],
-          AggregatorOptions.ExtendApprovedCollators
-        )
+          AggregatorOptions.ExtendApprovedCollators,
+        ),
       ),
       Sudo.sudoAs(testUser2, Staking.updateCandidateAggregator(aggregator)),
-      Sudo.sudoAs(testUser3, Staking.updateCandidateAggregator(aggregator))
+      Sudo.sudoAs(testUser3, Staking.updateCandidateAggregator(aggregator)),
     ).then((value) => {
       expectMGAExtrinsicSuDidSuccess(value);
     });
@@ -133,7 +133,7 @@ describe("Test candidates actions: Collision by liq token", () => {
     await signTx(
       await getApi(),
       Staking.updateCandidateAggregator(aggregator),
-      testUser4.keyRingPair
+      testUser4.keyRingPair,
     ).then((value) => {
       const event = getEventResultFromMangataTx(value, [
         "system",
@@ -144,25 +144,25 @@ describe("Test candidates actions: Collision by liq token", () => {
     });
     const candidateAggData = await Staking.candidateAggregator();
     expect(candidateAggData[testUser2.keyRingPair.address]).toEqual(
-      aggregator.keyRingPair.address
+      aggregator.keyRingPair.address,
     );
     expect(candidateAggData[testUser3.keyRingPair.address]).toEqual(
-      aggregator.keyRingPair.address
+      aggregator.keyRingPair.address,
     );
     expect(candidateAggData[testUser4.keyRingPair.address]).toBeUndefined();
 
     const aggData = await Staking.aggregatorMetadata(
-      aggregator.keyRingPair.address
+      aggregator.keyRingPair.address,
     );
     expect(
       Object.values(aggData["tokenCollatorMap"]).includes(
-        testUser2.keyRingPair.address
-      )
+        testUser2.keyRingPair.address,
+      ),
     ).toBeTruthy();
     expect(
       Object.values(aggData["tokenCollatorMap"]).includes(
-        testUser3.keyRingPair.address
-      )
+        testUser3.keyRingPair.address,
+      ),
     ).toBeTruthy();
     expect(Object.keys(aggData["tokenCollatorMap"])).toHaveLength(2);
 

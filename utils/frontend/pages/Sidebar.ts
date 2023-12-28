@@ -51,8 +51,7 @@ export class Sidebar {
 
   async isNoWalletConnectedInfoDisplayed() {
     const noWalletConnectedXpath = buildDataTestIdXpath(DIV_WALLET_NOT_FOUND);
-    const displayed = await this.isDisplayed(noWalletConnectedXpath);
-    return displayed;
+    return await this.isDisplayed(noWalletConnectedXpath);
   }
 
   async isWalletConnected(accountName: string) {
@@ -101,25 +100,21 @@ export class Sidebar {
 
   async isMetamaskExtensionNotFoundDisplayed() {
     const notInstalledXpath = buildDataTestIdXpath(DIV_META_NOT_FOUND);
-    const displayed = await this.isDisplayed(notInstalledXpath);
-    return displayed;
+    return await this.isDisplayed(notInstalledXpath);
   }
 
   async isPolkExtensionNotFoundDisplayed() {
     const notInstalledXpath = buildDataTestIdXpath(DIV_POLK_NOT_FOUND);
-    const displayed = await this.isDisplayed(notInstalledXpath);
-    return displayed;
+    return await this.isDisplayed(notInstalledXpath);
   }
 
   async isMetamaskInstallBtnDisplayed() {
     const notInstalledXpath = buildDataTestIdXpath(BTN_INSTALL_META);
-    const displayed = await this.isDisplayed(notInstalledXpath);
-    return displayed;
+    return await this.isDisplayed(notInstalledXpath);
   }
   async isPolkInstallBtnDisplayed() {
     const notInstalledXpath = buildDataTestIdXpath(BTN_INSTALL_POLK);
-    const displayed = await this.isDisplayed(notInstalledXpath);
-    return displayed;
+    return await this.isDisplayed(notInstalledXpath);
   }
 
   async waitForLoad(retry = 2): Promise<void> {
@@ -165,17 +160,16 @@ export class Sidebar {
   }
   async waitForTokenToAppear(tokenName: string, timeout: number) {
     const xpath = buildDataTestIdXpath(
-      this.buildTokenAvailableTestId(tokenName)
+      this.buildTokenAvailableTestId(tokenName),
     );
     await waitForElement(this.driver, xpath, timeout);
   }
   async getTokenAmount(tokenName: string, timeout = FIVE_MIN) {
     await this.waitForTokenToAppear(tokenName, timeout);
     const tokenValueXpath = `//*[@data-testid='wallet-token-${tokenName}-balance']`;
-    const value = await (
+    return await (
       await this.driver.findElement(By.xpath(tokenValueXpath))
     ).getText();
-    return value;
   }
   private buildTokenAvailableTestId(asseName1: string) {
     return `wallet-token-${asseName1}`;
@@ -184,10 +178,9 @@ export class Sidebar {
   private async isDisplayed(elementXpath: string) {
     try {
       await waitForElement(this.driver, elementXpath, 2000);
-      const displayed = await (
+      return await (
         await this.driver.findElement(By.xpath(elementXpath))
       ).isDisplayed();
-      return displayed;
     } catch (Error) {
       return false;
     }
@@ -204,8 +197,8 @@ export class Sidebar {
     let xpath = buildDataTestIdXpath(
       BTN_POOL_OVERVIEW.replace("tkn1", poolAsset1Name).replace(
         "tkn2",
-        poolAsset2Name
-      )
+        poolAsset2Name,
+      ),
     );
     const displayed = await this.isDisplayed(xpath);
     if (!displayed) {
@@ -213,8 +206,8 @@ export class Sidebar {
       xpath = buildDataTestIdXpath(
         BTN_POOL_OVERVIEW.replace("tkn1", poolAsset2Name).replace(
           "tkn2",
-          poolAsset1Name
-        )
+          poolAsset1Name,
+        ),
       );
     }
     await clickElement(this.driver, xpath);
@@ -233,31 +226,28 @@ export class Sidebar {
 
   async waitUntilTokenAvailable(assetName: string, timeout = FIVE_MIN) {
     const xpath = buildDataTestIdXpath(
-      LBL_TOKEN_NAME.replace("tokenName", assetName)
+      LBL_TOKEN_NAME.replace("tokenName", assetName),
     );
     await this.driver.wait(until.elementLocated(By.xpath(xpath)), timeout);
   }
   async getAssetValue(assetName: string) {
     const xpath = DIV_ASSETS_ITEM_VALUE.replace("tokenName", assetName);
     await waitForElement(this.driver, xpath);
-    const value = await (
-      await this.driver.findElement(By.xpath(xpath))
-    ).getText();
-    return value;
+    return await (await this.driver.findElement(By.xpath(xpath))).getText();
   }
   private buildPoolDataTestId(asseName1: string, assetName2: string) {
     return `poolsOverview-item-${asseName1}-${assetName2}`;
   }
   async isLiquidityPoolVisible(asset1Name: string, asset2Name: string) {
     const poolXpath = buildDataTestIdXpath(
-      this.buildPoolDataTestId(asset1Name, asset2Name)
+      this.buildPoolDataTestId(asset1Name, asset2Name),
     );
     return await this.isDisplayed(poolXpath);
   }
 
   async waitForLiquidityPoolToLoad(asset1Name: string, asset2Name: string) {
     const poolXpath = buildDataTestIdXpath(
-      this.buildPoolDataTestId(asset1Name, asset2Name)
+      this.buildPoolDataTestId(asset1Name, asset2Name),
     );
     await waitForElement(this.driver, poolXpath);
   }
@@ -269,14 +259,13 @@ export class Sidebar {
   async clickLiquidityPool(asset1Name: string, asset2Name: string) {
     await clickElement(
       this.driver,
-      buildDataTestIdXpath(this.buildPoolDataTestId(asset1Name, asset2Name))
+      buildDataTestIdXpath(this.buildPoolDataTestId(asset1Name, asset2Name)),
     );
   }
 
   async getAssetValueInvested(assetName: string) {
     const LBL_TOKEN_AMOUNT_INVESTED = `//*[contains(@data-testid,'poolDetail') and span[text()='${assetName}']]`;
-    const value = await getText(this.driver, LBL_TOKEN_AMOUNT_INVESTED);
-    return value;
+    return await getText(this.driver, LBL_TOKEN_AMOUNT_INVESTED);
   }
   async depositAseetsFromMetamask(metaAssetName: string, amount: string) {
     await this.clickOnDepositToMangata();
@@ -288,14 +277,13 @@ export class Sidebar {
   }
   async waitForTokenToDissapear(assetName: string) {
     const xpath = buildDataTestIdXpath(
-      LBL_TOKEN_NAME.replace("tokenName", assetName)
+      LBL_TOKEN_NAME.replace("tokenName", assetName),
     );
     await waitForElementToDissapear(this.driver, xpath);
   }
   async getUserName() {
     await waitForElement(this.driver, POLK_DIV_USER_NAME);
-    const userName = await getText(this.driver, POLK_DIV_USER_NAME);
-    return userName;
+    return await getText(this.driver, POLK_DIV_USER_NAME);
   }
   async switchAccountTo(userAddress: string) {
     //TODO: write the locatos here
@@ -310,7 +298,7 @@ export class Sidebar {
     const btnxpath = buildDataTestIdXpath(BTN_CHANGE_PLK);
     await clickElement(this.driver, btnxpath);
     const available = await this.driver.findElements(
-      By.xpath(AllListItemsFromModal)
+      By.xpath(AllListItemsFromModal),
     );
     const items = [];
     for (let index = 0; index < available.length; index++) {
@@ -328,10 +316,6 @@ export class Sidebar {
     const assetDataTestId = `wallet-asset-${assetName}-balance-tooltip`;
     const xpathByDataTestId = buildDataTestIdXpath(assetDataTestId);
     const xpathToTooltipValue = `${xpathByDataTestId}//div[@class='TruncatedNumber__tooltip__value']`;
-    const availableTooltipValue = await getText(
-      this.driver,
-      xpathToTooltipValue
-    );
-    return availableTooltipValue;
+    return await getText(this.driver, xpathToTooltipValue);
   }
 }

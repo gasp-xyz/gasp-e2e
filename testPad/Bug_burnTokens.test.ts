@@ -60,66 +60,66 @@ describe("staking - testpad", () => {
         api!.tx.sudo.sudo(api!.tx.issuance.finalizeTge()),
         api!.tx.sudo.sudo(api!.tx.issuance.initIssuanceConfig()),
         api!.tx.sudo.sudo(
-          api!.tx.tokens.mint(MGA_ASSET_ID, sudo.keyRingPair.address, amount)
+          api!.tx.tokens.mint(MGA_ASSET_ID, sudo.keyRingPair.address, amount),
         ),
         api!.tx.sudo.sudo(
-          api!.tx.tokens.create(sudo.keyRingPair.address, amount)
+          api!.tx.tokens.create(sudo.keyRingPair.address, amount),
         ),
         api!.tx.sudo.sudo(
           api!.tx.tokens.mint(
             MGA_ASSET_ID,
             testUser1.keyRingPair.address,
-            new BN(amount)
-          )
+            new BN(amount),
+          ),
         ),
         api!.tx.sudo.sudo(
           api!.tx.tokens.mint(
             tokenId,
             testUser1.keyRingPair.address,
-            new BN(amount)
-          )
+            new BN(amount),
+          ),
         ),
         api!.tx.sudo.sudo(
           api!.tx.tokens.mint(
             MGA_ASSET_ID,
             testUser2.keyRingPair.address,
-            new BN(amount)
-          )
+            new BN(amount),
+          ),
         ),
         api!.tx.sudo.sudo(
           api!.tx.tokens.mint(
             tokenId,
             testUser2.keyRingPair.address,
-            new BN(amount)
-          )
+            new BN(amount),
+          ),
         ),
         api!.tx.sudo.sudo(
           api!.tx.tokens.mint(
             MGA_ASSET_ID,
             testUser3.keyRingPair.address,
-            new BN(amount)
-          )
+            new BN(amount),
+          ),
         ),
         api!.tx.sudo.sudo(
           api!.tx.tokens.mint(
             tokenId,
             testUser3.keyRingPair.address,
-            new BN(amount)
-          )
+            new BN(amount),
+          ),
         ),
         api!.tx.sudo.sudo(
           api!.tx.tokens.mint(
             MGA_ASSET_ID,
             testUser4.keyRingPair.address,
-            new BN(amount)
-          )
+            new BN(amount),
+          ),
         ),
         api!.tx.sudo.sudo(
           api!.tx.tokens.mint(
             tokenId,
             testUser4.keyRingPair.address,
-            new BN(amount)
-          )
+            new BN(amount),
+          ),
         ),
       ])
       .signAndSend(sudo.keyRingPair);
@@ -131,7 +131,7 @@ describe("staking - testpad", () => {
       .info(
         "Creating pool + promote + giving tokens to users: \n pool: [ 0 ," +
           tokenId.toString() +
-          "]"
+          "]",
       );
 
     await api!.tx.utility
@@ -140,7 +140,7 @@ describe("staking - testpad", () => {
           MGA_ASSET_ID,
           amount.divn(2),
           tokenId,
-          amount.divn(2)
+          amount.divn(2),
         ),
         api!.tx.sudo.sudo(api!.tx.xyk.promotePool(tokenId.addn(1))),
       ])
@@ -158,8 +158,8 @@ describe("staking - testpad", () => {
           MGA_ASSET_ID,
           tokenId,
           tokenstoMint,
-          MAX_BALANCE
-        )
+          MAX_BALANCE,
+        ),
       );
     }
     await Promise.all(promises);
@@ -172,7 +172,7 @@ describe("staking - testpad", () => {
         .info(
           " User: " +
             user.keyRingPair.address +
-            "Minting tokens to pool -2 users"
+            "Minting tokens to pool -2 users",
         );
       promises.push(
         mintLiquidity(
@@ -180,8 +180,8 @@ describe("staking - testpad", () => {
           MGA_ASSET_ID,
           tokenId,
           tokenstoMint,
-          MAX_BALANCE
-        )
+          MAX_BALANCE,
+        ),
       );
     }
     testLog
@@ -196,7 +196,7 @@ describe("staking - testpad", () => {
         .info(
           " User: " +
             user.keyRingPair.address +
-            "Minting tokens to pool -2 users"
+            "Minting tokens to pool -2 users",
         );
       promises.push(
         mintLiquidity(
@@ -204,8 +204,8 @@ describe("staking - testpad", () => {
           MGA_ASSET_ID,
           tokenId,
           tokenstoMint,
-          MAX_BALANCE
-        )
+          MAX_BALANCE,
+        ),
       );
     }
     testLog
@@ -221,7 +221,7 @@ describe("staking - testpad", () => {
         .getLog()
         .info(" User: " + user.keyRingPair.address + "burning tokens to pool");
       promises.push(
-        burnLiquidity(user.keyRingPair, MGA_ASSET_ID, tokenId, tokenstoMint)
+        burnLiquidity(user.keyRingPair, MGA_ASSET_ID, tokenId, tokenstoMint),
       );
     }
     await Promise.all(promises);
@@ -232,7 +232,7 @@ describe("staking - testpad", () => {
         .getLog()
         .info(" User: " + user.keyRingPair.address + "burning tokens to pool");
       promises.push(
-        burnLiquidity(user.keyRingPair, MGA_ASSET_ID, tokenId, tokenstoMint)
+        burnLiquidity(user.keyRingPair, MGA_ASSET_ID, tokenId, tokenstoMint),
       );
     }
     await Promise.all(promises);

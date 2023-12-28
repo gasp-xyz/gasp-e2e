@@ -63,7 +63,7 @@ beforeEach(async () => {
   [firstCurrency, secondCurrency] = await Assets.setupUserWithCurrencies(
     testUser1,
     [defaultCurrecyValue, defaultCurrecyValue.add(new BN(1))],
-    sudo
+    sudo,
   );
   //add zero MGA tokens.
   await testUser1.addMGATokens(sudo);
@@ -81,7 +81,7 @@ beforeEach(async () => {
     [
       defaultCurrecyValue.toNumber(),
       defaultCurrecyValue.add(new BN(1)).toNumber(),
-    ]
+    ],
   );
 });
 
@@ -97,7 +97,7 @@ test("xyk-pallet - Calculate required MGA fee - CreatePool", async () => {
       firstCurrency,
       first_asset_amount,
       secondCurrency,
-      second_asset_amount
+      second_asset_amount,
     )
     .paymentInfo(testUser1.keyRingPair, opt);
   await createPool(
@@ -105,7 +105,7 @@ test("xyk-pallet - Calculate required MGA fee - CreatePool", async () => {
     firstCurrency,
     first_asset_amount,
     secondCurrency,
-    second_asset_amount
+    second_asset_amount,
   ).then((result) => {
     const eventResponse = getEventResultFromMangataTx(result);
     expect(eventResponse.state).toEqual(ExtrinsicResult.ExtrinsicSuccess);
@@ -115,7 +115,7 @@ test("xyk-pallet - Calculate required MGA fee - CreatePool", async () => {
   const deductedMGATkns = testUser1
     .getAsset(MGA_ASSET_ID)
     ?.amountBefore.free.sub(
-      testUser1.getAsset(MGA_ASSET_ID)?.amountAfter.free!
+      testUser1.getAsset(MGA_ASSET_ID)?.amountAfter.free!,
     );
   const fee = cost.partialFee;
   expect(deductedMGATkns).bnLte(fee);
@@ -126,7 +126,7 @@ test("xyk-pallet - Calculate required MGA fee - BuyAsset", async () => {
     defaultCurrecyValue.div(new BN(10)),
     defaultCurrecyValue.div(new BN(10)),
     firstCurrency,
-    secondCurrency
+    secondCurrency,
   );
 
   //create a pool requires mga, so refreshing wallets.
@@ -147,7 +147,7 @@ test("xyk-pallet - Calculate required MGA fee - BuyAsset", async () => {
     firstCurrency,
     secondCurrency,
     new BN(100),
-    new BN(1000000)
+    new BN(1000000),
   ).then((result) => {
     const eventResponse = getEventResultFromMangataTx(result);
     expect(eventResponse.state).toEqual(ExtrinsicResult.ExtrinsicSuccess);
@@ -158,7 +158,7 @@ test("xyk-pallet - Calculate required MGA fee - BuyAsset", async () => {
   const deductedMGATkns = testUser1
     .getAsset(MGA_ASSET_ID)
     ?.amountBefore.free.sub(
-      testUser1.getAsset(MGA_ASSET_ID)?.amountAfter.free!
+      testUser1.getAsset(MGA_ASSET_ID)?.amountAfter.free!,
     );
   const gaslessFee = (await getFeeLockMetadata(await getApi())).feeLockAmount;
   expect(deductedMGATkns?.sub(gaslessFee)).bnLte(BN_ZERO);

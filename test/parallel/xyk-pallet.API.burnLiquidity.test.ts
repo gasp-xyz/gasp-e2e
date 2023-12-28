@@ -81,7 +81,7 @@ describe("xyk-pallet - Burn liquidity tests: when burning liquidity you can", ()
     [firstCurrency, secondCurrency] = await Assets.setupUserWithCurrencies(
       testUser1,
       [assetXamount, assetYamount],
-      sudo
+      sudo,
     );
     await testUser1.addMGATokens(sudo);
     //lets create a pool
@@ -90,11 +90,11 @@ describe("xyk-pallet - Burn liquidity tests: when burning liquidity you can", ()
       firstCurrency,
       assetXamount,
       secondCurrency,
-      assetYamount
+      assetYamount,
     );
     const liquidityAssetId = await getLiquidityAssetId(
       firstCurrency,
-      secondCurrency
+      secondCurrency,
     );
     const liquidityPoolBeforeDestroy = await getLiquidityPool(liquidityAssetId);
 
@@ -102,7 +102,7 @@ describe("xyk-pallet - Burn liquidity tests: when burning liquidity you can", ()
     const amountOfX = calculate_buy_price_local(
       new BN(assetXamount),
       new BN(assetYamount),
-      new BN(9)
+      new BN(9),
     );
     await sudo.mint(firstCurrency, testUser2, amountOfX);
     //user2 exange some assets.
@@ -110,24 +110,24 @@ describe("xyk-pallet - Burn liquidity tests: when burning liquidity you can", ()
       firstCurrency,
       secondCurrency,
       new BN(9),
-      amountOfX.add(new BN(1))
+      amountOfX.add(new BN(1)),
     );
     await testUser1.refreshAmounts(AssetWallet.BEFORE);
     const ownedLiquidityAssets = calculateLiqAssetAmount(
       assetXamount,
-      assetYamount
+      assetYamount,
     );
     //user1 can still burn all the assets, eventhough pool got modified.
 
     const liqAsseIdBeforeBurningIt = await getLiquidityAssetId(
       firstCurrency,
-      secondCurrency
+      secondCurrency,
     );
     await burnLiquidity(
       testUser1.keyRingPair,
       firstCurrency,
       secondCurrency,
-      ownedLiquidityAssets
+      ownedLiquidityAssets,
     ).then((result) => {
       const eventResponse = getEventResultFromMangataTx(result, [
         "xyk",
@@ -139,7 +139,7 @@ describe("xyk-pallet - Burn liquidity tests: when burning liquidity you can", ()
     await waitNewBlock(); //lets wait one block until liquidity asset Id gets destroyed. Avoid flakiness ;)
     const liqAssetAfterBurning = await getLiquidityAssetId(
       firstCurrency,
-      secondCurrency
+      secondCurrency,
     );
     expect(liqAssetAfterBurning).bnEqual(liqAsseIdBeforeBurningIt);
     const poolBalance = await getBalanceOfPool(firstCurrency, secondCurrency);
@@ -148,12 +148,12 @@ describe("xyk-pallet - Burn liquidity tests: when burning liquidity you can", ()
     const fee = new BN(10);
     let amount = amountOfX.add(new BN(assetXamount)).sub(fee);
     expect(testUser1.getAsset(firstCurrency)?.amountAfter.free!).bnEqual(
-      amount
+      amount,
     );
 
     amount = new BN(1);
     expect(testUser1.getAsset(secondCurrency)?.amountAfter.free!).bnEqual(
-      amount
+      amount,
     );
 
     expect([new BN(0), new BN(0)]).collectionBnEqual(poolBalance);
@@ -174,14 +174,14 @@ describe("xyk-pallet - Burn liquidity tests: when burning liquidity you can", ()
       sudo,
       new BN(defaultCurrecyValue),
       new BN(defaultCurrecyValue).div(new BN(2)),
-      new BN(defaultCurrecyValue).div(new BN(4))
+      new BN(defaultCurrecyValue).div(new BN(4)),
     );
 
     await burnLiquidity(
       testUser1.keyRingPair,
       firstCurrency,
       secondCurrency,
-      new BN(defaultCurrecyValue).div(new BN(4))
+      new BN(defaultCurrecyValue).div(new BN(4)),
     ).then((result) => {
       const eventResponse = getEventResultFromMangataTx(result, [
         "xyk",
@@ -203,7 +203,7 @@ describe("xyk-pallet - Burn liquidity tests: when burning liquidity you can", ()
       sudo,
       new BN(defaultCurrecyValue),
       new BN(defaultCurrecyValue).div(new BN(2)),
-      new BN(defaultCurrecyValue).div(new BN(4))
+      new BN(defaultCurrecyValue).div(new BN(4)),
     );
     const burnAmount = new BN(defaultCurrecyValue).div(new BN(4));
     await testUser1.refreshAmounts(AssetWallet.BEFORE);
@@ -213,7 +213,7 @@ describe("xyk-pallet - Burn liquidity tests: when burning liquidity you can", ()
       testUser1.keyRingPair,
       firstCurrency,
       secondCurrency,
-      burnAmount
+      burnAmount,
     ).then((result) => {
       eventResponse = getEventResultFromMangataTx(result, [
         "xyk",
@@ -227,16 +227,16 @@ describe("xyk-pallet - Burn liquidity tests: when burning liquidity you can", ()
     const secondCurrencyAmount = testUser1
       .getAsset(secondCurrency)
       ?.amountAfter.free.sub(
-        testUser1.getAsset(secondCurrency)?.amountBefore.free!
+        testUser1.getAsset(secondCurrency)?.amountBefore.free!,
       )!;
     const firstCurrencyAmount = testUser1
       .getAsset(firstCurrency)
       ?.amountAfter.free.sub(
-        testUser1.getAsset(firstCurrency)?.amountBefore.free!
+        testUser1.getAsset(firstCurrency)?.amountBefore.free!,
       )!;
     const liquidityAssetId = await getLiquidityAssetId(
       firstCurrency,
-      secondCurrency
+      secondCurrency,
     );
     validateMintedLiquidityEvent(
       eventResponse,
@@ -246,7 +246,7 @@ describe("xyk-pallet - Burn liquidity tests: when burning liquidity you can", ()
       secondCurrency,
       secondCurrencyAmount,
       liquidityAssetId,
-      burnAmount
+      burnAmount,
     );
   });
 });
@@ -256,12 +256,12 @@ async function UserCreatesAPoolAndMintLiquidity(
   sudo: User,
   userAmount: BN,
   poolAmount: BN = new BN(userAmount).div(new BN(2)),
-  mintAmount: BN = new BN(userAmount).div(new BN(4))
+  mintAmount: BN = new BN(userAmount).div(new BN(4)),
 ) {
   const [firstCurrency, secondCurrency] = await Assets.setupUserWithCurrencies(
     testUser1,
     [userAmount, userAmount],
-    sudo
+    sudo,
   );
   await testUser1.addMGATokens(sudo);
   await createPool(
@@ -269,7 +269,7 @@ async function UserCreatesAPoolAndMintLiquidity(
     firstCurrency,
     poolAmount,
     secondCurrency,
-    poolAmount
+    poolAmount,
   );
 
   await testUser1.mintLiquidity(firstCurrency, secondCurrency, mintAmount);

@@ -1,7 +1,7 @@
 /*
  *
  * @group xyk
- * @group poolliquidity
+ * @group poolLiq
  */
 import { jest } from "@jest/globals";
 import { Keyring } from "@polkadot/api";
@@ -53,7 +53,7 @@ beforeAll(async () => {
   [token] = await Assets.setupUserWithCurrencies(
     sudo,
     [defaultCurrencyValue, defaultCurrencyValue, defaultCurrencyValue],
-    sudo
+    sudo,
   );
 
   await Sudo.batchAsSudoFinalized(
@@ -71,9 +71,9 @@ beforeAll(async () => {
         MGA_ASSET_ID,
         Assets.DEFAULT_AMOUNT.divn(2),
         token,
-        Assets.DEFAULT_AMOUNT.divn(2)
-      )
-    )
+        Assets.DEFAULT_AMOUNT.divn(2),
+      ),
+    ),
   );
 });
 
@@ -81,34 +81,34 @@ test("One user claim all the rewards on every session and other user claim them 
   liqIdPromPool = await getLiquidityAssetId(MGA_ASSET_ID, token);
 
   await Sudo.batchAsSudoFinalized(
-    Assets.promotePool(liqIdPromPool.toNumber(), 20)
+    Assets.promotePool(liqIdPromPool.toNumber(), 20),
   );
   await Sudo.batchAsSudoFinalized(
     Sudo.sudoAs(
       testUser1,
-      Xyk.mintLiquidity(MGA_ASSET_ID, token, defaultCurrencyValue)
+      Xyk.mintLiquidity(MGA_ASSET_ID, token, defaultCurrencyValue),
     ),
     Sudo.sudoAs(
       testUser2,
-      Xyk.mintLiquidity(MGA_ASSET_ID, token, defaultCurrencyValue)
-    )
+      Xyk.mintLiquidity(MGA_ASSET_ID, token, defaultCurrencyValue),
+    ),
   );
 
   await waitForRewards(testUser1, liqIdPromPool);
 
   await Sudo.batchAsSudoFinalized(
     Sudo.sudoAs(testUser1, Xyk.claimRewardsAll(liqIdPromPool)),
-    Sudo.sudoAs(testUser2, Xyk.claimRewardsAll(liqIdPromPool))
+    Sudo.sudoAs(testUser2, Xyk.claimRewardsAll(liqIdPromPool)),
   );
 
   const rewardsInfoUser1Before = await getRewardsInfo(
     testUser1.keyRingPair.address,
-    liqIdPromPool
+    liqIdPromPool,
   );
 
   const rewardsInfoUser2Before = await getRewardsInfo(
     testUser2.keyRingPair.address,
-    liqIdPromPool
+    liqIdPromPool,
   );
 
   for (let index = 0; index < 2; index++) {
@@ -121,42 +121,42 @@ test("One user claim all the rewards on every session and other user claim them 
 
   await Sudo.batchAsSudoFinalized(
     Sudo.sudoAs(testUser1, Xyk.claimRewardsAll(liqIdPromPool)),
-    Sudo.sudoAs(testUser2, Xyk.claimRewardsAll(liqIdPromPool))
+    Sudo.sudoAs(testUser2, Xyk.claimRewardsAll(liqIdPromPool)),
   );
 
   const rewardsInfoUser1After = await getRewardsInfo(
     testUser1.keyRingPair.address,
-    liqIdPromPool
+    liqIdPromPool,
   );
 
   const rewardsInfoUser2After = await getRewardsInfo(
     testUser2.keyRingPair.address,
-    liqIdPromPool
+    liqIdPromPool,
   );
   const rewardsClaimedUser1 = rewardsInfoUser1After.rewardsAlreadyClaimed.sub(
-    rewardsInfoUser1Before.rewardsAlreadyClaimed
+    rewardsInfoUser1Before.rewardsAlreadyClaimed,
   );
   const rewardsClaimedUser2 = rewardsInfoUser2After.rewardsAlreadyClaimed.sub(
-    rewardsInfoUser2Before.rewardsAlreadyClaimed
+    rewardsInfoUser2Before.rewardsAlreadyClaimed,
   );
 
   expect(rewardsClaimedUser1).bnEqual(rewardsClaimedUser2);
   expect(rewardsInfoUser1After.activatedAmount).bnEqual(
-    rewardsInfoUser2After.activatedAmount
+    rewardsInfoUser2After.activatedAmount,
   );
   expect(rewardsInfoUser1After.rewardsNotYetClaimed).bnEqual(
-    rewardsInfoUser2After.rewardsNotYetClaimed
+    rewardsInfoUser2After.rewardsNotYetClaimed,
   );
   expect(rewardsInfoUser1After.rewardsAlreadyClaimed).bnEqual(
-    rewardsInfoUser2After.rewardsAlreadyClaimed
+    rewardsInfoUser2After.rewardsAlreadyClaimed,
   );
   expect(rewardsInfoUser1After.lastCheckpoint).bnEqual(
-    rewardsInfoUser2After.lastCheckpoint
+    rewardsInfoUser2After.lastCheckpoint,
   );
   expect(rewardsInfoUser1After.poolRatioAtLastCheckpoint).bnEqual(
-    rewardsInfoUser2After.poolRatioAtLastCheckpoint
+    rewardsInfoUser2After.poolRatioAtLastCheckpoint,
   );
   expect(rewardsInfoUser1After.missingAtLastCheckpoint).bnEqual(
-    rewardsInfoUser2After.missingAtLastCheckpoint
+    rewardsInfoUser2After.missingAtLastCheckpoint,
   );
 });

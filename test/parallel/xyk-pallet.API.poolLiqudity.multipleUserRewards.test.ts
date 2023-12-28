@@ -1,7 +1,7 @@
 /*
  *
  * @group xyk
- * @group poolliquidity
+ * @group poolLiq
  */
 import { jest } from "@jest/globals";
 import { Keyring } from "@polkadot/api";
@@ -55,7 +55,7 @@ beforeAll(async () => {
   [token1, token2] = await Assets.setupUserWithCurrencies(
     sudo,
     [defaultCurrencyValue, defaultCurrencyValue],
-    sudo
+    sudo,
   );
 
   await Sudo.batchAsSudoFinalized(
@@ -76,8 +76,8 @@ beforeAll(async () => {
         MGA_ASSET_ID,
         Assets.DEFAULT_AMOUNT.divn(2),
         token1,
-        Assets.DEFAULT_AMOUNT.divn(2)
-      )
+        Assets.DEFAULT_AMOUNT.divn(2),
+      ),
     ),
     Sudo.sudoAs(
       testUser,
@@ -85,9 +85,9 @@ beforeAll(async () => {
         MGA_ASSET_ID,
         Assets.DEFAULT_AMOUNT.divn(2),
         token2,
-        Assets.DEFAULT_AMOUNT.divn(2)
-      )
-    )
+        Assets.DEFAULT_AMOUNT.divn(2),
+      ),
+    ),
   );
 
   testUser1.addAsset(liqIdPromPool);
@@ -105,13 +105,13 @@ test("Users minted a different number of tokens THEN they receive an equivalent 
       Xyk.mintLiquidity(
         MGA_ASSET_ID,
         token1,
-        defaultCurrencyValue.mul(new BN(2))
-      )
+        defaultCurrencyValue.mul(new BN(2)),
+      ),
     ),
     Sudo.sudoAs(
       testUser2,
-      Xyk.mintLiquidity(MGA_ASSET_ID, token1, defaultCurrencyValue)
-    )
+      Xyk.mintLiquidity(MGA_ASSET_ID, token1, defaultCurrencyValue),
+    ),
   );
 
   await waitForRewards(testUser1, liqIdPromPool);
@@ -126,7 +126,7 @@ test("Users minted a different number of tokens THEN they receive an equivalent 
     liquidityTokenId: liqIdPromPool.toString(),
   });
   const rewardsDifference = rewardsAmountUser1.sub(
-    rewardsAmountUser2.mul(new BN(2))
+    rewardsAmountUser2.mul(new BN(2)),
   );
 
   expect(rewardsAmountUser1.div(rewardsDifference)).bnGt(new BN(10000));
@@ -138,48 +138,48 @@ test("One user mints X tokens, other mints those X tokens but splitted in 5 mint
   await Sudo.batchAsSudoFinalized(
     Sudo.sudoAs(
       testUser1,
-      Xyk.mintLiquidity(MGA_ASSET_ID, token2, defaultCurrencyValue)
+      Xyk.mintLiquidity(MGA_ASSET_ID, token2, defaultCurrencyValue),
     ),
     Sudo.sudoAs(
       testUser2,
       Xyk.mintLiquidity(
         MGA_ASSET_ID,
         token2,
-        defaultCurrencyValue.div(new BN(5))
-      )
+        defaultCurrencyValue.div(new BN(5)),
+      ),
     ),
     Sudo.sudoAs(
       testUser2,
       Xyk.mintLiquidity(
         MGA_ASSET_ID,
         token2,
-        defaultCurrencyValue.div(new BN(5))
-      )
+        defaultCurrencyValue.div(new BN(5)),
+      ),
     ),
     Sudo.sudoAs(
       testUser2,
       Xyk.mintLiquidity(
         MGA_ASSET_ID,
         token2,
-        defaultCurrencyValue.div(new BN(5))
-      )
+        defaultCurrencyValue.div(new BN(5)),
+      ),
     ),
     Sudo.sudoAs(
       testUser2,
       Xyk.mintLiquidity(
         MGA_ASSET_ID,
         token2,
-        defaultCurrencyValue.div(new BN(5))
-      )
+        defaultCurrencyValue.div(new BN(5)),
+      ),
     ),
     Sudo.sudoAs(
       testUser2,
       Xyk.mintLiquidity(
         MGA_ASSET_ID,
         token2,
-        defaultCurrencyValue.div(new BN(5))
-      )
-    )
+        defaultCurrencyValue.div(new BN(5)),
+      ),
+    ),
   );
 
   await waitForRewards(testUser1, liqIdPromPool);
@@ -201,6 +201,6 @@ async function promotePool(token: BN) {
   liqIdPromPool = await getLiquidityAssetId(MGA_ASSET_ID, token);
 
   await Sudo.batchAsSudoFinalized(
-    Assets.promotePool(liqIdPromPool.toNumber(), 20)
+    Assets.promotePool(liqIdPromPool.toNumber(), 20),
   );
 }

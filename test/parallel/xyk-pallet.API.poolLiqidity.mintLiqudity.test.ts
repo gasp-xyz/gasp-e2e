@@ -55,7 +55,7 @@ beforeAll(async () => {
   [token1, token2] = await Assets.setupUserWithCurrencies(
     sudo,
     [defaultCurrencyValue, defaultCurrencyValue],
-    sudo
+    sudo,
   );
 
   await Sudo.batchAsSudoFinalized(
@@ -70,8 +70,8 @@ beforeAll(async () => {
         MGA_ASSET_ID,
         Assets.DEFAULT_AMOUNT.divn(2),
         token1,
-        Assets.DEFAULT_AMOUNT.divn(2)
-      )
+        Assets.DEFAULT_AMOUNT.divn(2),
+      ),
     ),
     Sudo.sudoAs(
       testUser1,
@@ -79,9 +79,9 @@ beforeAll(async () => {
         MGA_ASSET_ID,
         Assets.DEFAULT_AMOUNT.divn(2),
         token2,
-        Assets.DEFAULT_AMOUNT.divn(2)
-      )
-    )
+        Assets.DEFAULT_AMOUNT.divn(2),
+      ),
+    ),
   );
 
   liqIdPromPool = await getLiquidityAssetId(MGA_ASSET_ID, token1);
@@ -89,7 +89,7 @@ beforeAll(async () => {
 
   await Sudo.batchAsSudoFinalized(
     Assets.promotePool(liqIdPromPool.toNumber(), 20),
-    Assets.mintNative(testUser1)
+    Assets.mintNative(testUser1),
   );
 
   testUser1.addAsset(liqIdPromPool);
@@ -102,18 +102,18 @@ test("Check that a user that mints on a promoted pool liquidity tokens are reser
     testUser1.keyRingPair,
     MGA_ASSET_ID,
     token1,
-    defaultCurrencyValue
+    defaultCurrencyValue,
   );
   await testUser1.refreshAmounts(AssetWallet.AFTER);
   const differenceLiqTokensFree = testUser1
     .getAsset(liqIdPromPool)
     ?.amountAfter.free!.sub(
-      testUser1.getAsset(liqIdPromPool)?.amountBefore.free!
+      testUser1.getAsset(liqIdPromPool)?.amountBefore.free!,
     );
   const differenceLiqTokensReserved = testUser1
     .getAsset(liqIdPromPool)
     ?.amountAfter.reserved!.sub(
-      testUser1.getAsset(liqIdPromPool)?.amountBefore.reserved!
+      testUser1.getAsset(liqIdPromPool)?.amountBefore.reserved!,
     );
 
   expect(differenceLiqTokensFree).bnEqual(new BN(0));
@@ -126,18 +126,18 @@ test("Check that a user that mints on a non-promoted pool liquidity tokens are f
     testUser1.keyRingPair,
     MGA_ASSET_ID,
     token2,
-    defaultCurrencyValue
+    defaultCurrencyValue,
   );
   await testUser1.refreshAmounts(AssetWallet.AFTER);
   const differenceLiqTokensFree = testUser1
     .getAsset(liqIdNonPromPool)
     ?.amountAfter.free!.sub(
-      testUser1.getAsset(liqIdNonPromPool)?.amountBefore.free!
+      testUser1.getAsset(liqIdNonPromPool)?.amountBefore.free!,
     );
   const differenceLiqTokensReserved = testUser1
     .getAsset(liqIdNonPromPool)
     ?.amountAfter.reserved!.sub(
-      testUser1.getAsset(liqIdNonPromPool)?.amountBefore.reserved!
+      testUser1.getAsset(liqIdNonPromPool)?.amountBefore.reserved!,
     );
 
   expect(differenceLiqTokensFree).bnEqual(defaultCurrencyValue);
@@ -155,15 +155,15 @@ test("Given 3 pool: token1-MGX, token2-MGX and token1-token2 WHEN token1-token2 
         token1,
         Assets.DEFAULT_AMOUNT.divn(2),
         token2,
-        Assets.DEFAULT_AMOUNT.divn(2)
-      )
-    )
+        Assets.DEFAULT_AMOUNT.divn(2),
+      ),
+    ),
   );
 
   const liqIdThirdPool = await getLiquidityAssetId(token1, token2);
   const rewardsThirdPoolBefore = await getRewardsInfo(
     testUser1.keyRingPair.address,
-    liqIdThirdPool
+    liqIdThirdPool,
   );
   await Sudo.batchAsSudoFinalized(
     Xyk.updatePoolPromotion(liqIdThirdPool, 20),
@@ -173,13 +173,13 @@ test("Given 3 pool: token1-MGX, token2-MGX and token1-token2 WHEN token1-token2 
         token1,
         token2,
         defaultCurrencyValue,
-        new BN(Number.MAX_SAFE_INTEGER)
-      )
-    )
+        new BN(Number.MAX_SAFE_INTEGER),
+      ),
+    ),
   );
   await waitForRewards(testUser1, liqIdThirdPool, 21);
   const mangata = await getMangataInstance(
-    getEnvironmentRequiredVars().chainUri
+    getEnvironmentRequiredVars().chainUri,
   );
   const testUser1Rewards = await mangata.rpc.calculateRewardsAmount({
     address: testUser1.keyRingPair.address,
@@ -189,7 +189,7 @@ test("Given 3 pool: token1-MGX, token2-MGX and token1-token2 WHEN token1-token2 
 
   const rewardsThirdPoolAfter = await getRewardsInfo(
     testUser1.keyRingPair.address,
-    liqIdThirdPool
+    liqIdThirdPool,
   );
 
   expect(rewardsThirdPoolBefore.activatedAmount).bnEqual(BN_ZERO);

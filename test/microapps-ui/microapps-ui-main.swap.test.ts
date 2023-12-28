@@ -51,7 +51,7 @@ describe("Miocroapps UI swap tests", () => {
     testUser1 = new User(keyring);
     testUser1.addFromMnemonic(
       keyring,
-      getEnvironmentRequiredVars().mnemonicPolkadot
+      getEnvironmentRequiredVars().mnemonicPolkadot,
     );
 
     testUser1.addAsset(KSM_ASSET_ID);
@@ -113,7 +113,7 @@ describe("Miocroapps UI swap tests", () => {
     await swap.toggleRouteDetails();
     const areRouteDetailsDisplayed = await swap.areRouteDetailsDisplayed(
       MGR_ASSET_NAME,
-      "ROC"
+      "ROC",
     );
     expect(areRouteDetailsDisplayed).toBeTruthy();
 
@@ -225,7 +225,7 @@ describe("Miocroapps UI swap tests", () => {
     const session = await driver.getSession();
     await addExtraLogs(
       driver,
-      expect.getState().currentTestName + " - " + session.getId()
+      expect.getState().currentTestName + " - " + session.getId(),
     );
   });
 

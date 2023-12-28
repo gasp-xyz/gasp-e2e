@@ -5,12 +5,12 @@
 import { jest } from "@jest/globals";
 import {
   getLiquidityAssetId,
-  mintLiquidity,
   joinCandidate,
+  mintLiquidity,
 } from "../../utils/tx";
 import { Keyring } from "@polkadot/api";
 import { User } from "../../utils/User";
-import { MGA_ASSET_ID, MAX_BALANCE } from "../../utils/Constants";
+import { MAX_BALANCE, MGA_ASSET_ID } from "../../utils/Constants";
 import {
   getEnvironmentRequiredVars,
   getUserBalanceOfToken,
@@ -47,7 +47,7 @@ describe("Collators: MinCandidateStk limit", () => {
     await setupApi();
     await setupUsers();
     const tokenAmount = new BN(
-      await api.consts.parachainStaking.minCandidateStk.toString()
+      await api.consts.parachainStaking.minCandidateStk.toString(),
     );
     const aBigEnoughAmount = tokenAmount.mul(multiplier);
     const totalMgxInPool = aBigEnoughAmount.divn(10);
@@ -60,7 +60,7 @@ describe("Collators: MinCandidateStk limit", () => {
       sudo,
       tokenAmount.mul(multiplier),
       sudo,
-      true
+      true,
     );
     await Sudo.batchAsSudoFinalized(
       Assets.FinalizeTge(),
@@ -79,14 +79,14 @@ describe("Collators: MinCandidateStk limit", () => {
           MGA_ASSET_ID,
           totalMgxInPool,
           newTokenId,
-          aBigEnoughAmount.div(multiplier)
-        )
-      )
+          aBigEnoughAmount.div(multiplier),
+        ),
+      ),
     );
 
     liqToken = await getLiquidityAssetId(MGA_ASSET_ID, newTokenId);
     await Sudo.asSudoFinalized(
-      Sudo.sudo(Staking.addStakingLiquidityToken(liqToken))
+      Sudo.sudo(Staking.addStakingLiquidityToken(liqToken)),
     );
     minLiquidityToJoin = await calculateMinLiquidity(liqToken, totalMgxInPool);
   });
@@ -94,14 +94,14 @@ describe("Collators: MinCandidateStk limit", () => {
   test("Min Mangatas to be a collator matches with minLiq.", async () => {
     const api = await getApi();
     const minCandidate = new BN(
-      await api.consts.parachainStaking.minCandidateStk.toString()
+      await api.consts.parachainStaking.minCandidateStk.toString(),
     );
     await mintLiquidity(
       testUser2.keyRingPair,
       MGA_ASSET_ID,
       newTokenId,
       minCandidate,
-      MAX_BALANCE
+      MAX_BALANCE,
     );
     const liqTokens = await getUserBalanceOfToken(liqToken, testUser2);
     expect(new BN(liqTokens.free)).bnEqual(minLiquidityToJoin);
@@ -109,14 +109,14 @@ describe("Collators: MinCandidateStk limit", () => {
   test("Min Mangatas -1 will make joinCollator fail", async () => {
     const api = await getApi();
     const minCandidate = new BN(
-      await api.consts.parachainStaking.minCandidateStk.toString()
+      await api.consts.parachainStaking.minCandidateStk.toString(),
     ).sub(BN_ONE);
     await mintLiquidity(
       testUser4.keyRingPair,
       MGA_ASSET_ID,
       newTokenId,
       minCandidate,
-      MAX_BALANCE
+      MAX_BALANCE,
     );
     const liqTokens = await getUserBalanceOfToken(liqToken, testUser4);
     expect(liqTokens.free).bnGt(BN_ZERO);
@@ -125,21 +125,21 @@ describe("Collators: MinCandidateStk limit", () => {
       liqToken,
       liqTokens.free,
       "AvailableBalance",
-      false
+      false,
     );
     expect(events.data).toEqual("CandidateBondBelowMin");
   });
   test("Min Mangatas +1 will make joinCollator work", async () => {
     const api = await getApi();
     const minCandidate = new BN(
-      await api.consts.parachainStaking.minCandidateStk.toString()
+      await api.consts.parachainStaking.minCandidateStk.toString(),
     ).add(BN_ONE);
     await mintLiquidity(
       testUser3.keyRingPair,
       MGA_ASSET_ID,
       newTokenId,
       minCandidate,
-      MAX_BALANCE
+      MAX_BALANCE,
     );
     const liqTokens = await getUserBalanceOfToken(liqToken, testUser3);
     expect(liqTokens.free).bnGt(BN_ZERO);
@@ -147,7 +147,7 @@ describe("Collators: MinCandidateStk limit", () => {
       testUser3.keyRingPair,
       liqToken,
       liqTokens.free,
-      "AvailableBalance"
+      "AvailableBalance",
     );
     expect(events.state).toEqual(ExtrinsicResult.ExtrinsicSuccess);
   });
@@ -157,8 +157,7 @@ async function calculateMinLiquidity(liqTkn: BN, totalMgxInPool: BN) {
   const api = await getApi();
   const totalIssuance = new BN(await api.query.tokens.totalIssuance(liqTkn));
   const minCandidateStk = new BN(
-    await api.consts.parachainStaking.minCandidateStk.toString()
+    await api.consts.parachainStaking.minCandidateStk.toString(),
   );
-  const minTokens = minCandidateStk.mul(totalIssuance).div(totalMgxInPool);
-  return minTokens;
+  return minCandidateStk.mul(totalIssuance).div(totalMgxInPool);
 }

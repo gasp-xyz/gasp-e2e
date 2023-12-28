@@ -63,7 +63,7 @@ describe("upgrade - testpad", () => {
       repo,
       outputdir,
       filterRelease,
-      filterAsset
+      filterAsset,
     )
       .then(function (path) {
         testLog.getLog().info("Downloaded!");
@@ -73,7 +73,11 @@ describe("upgrade - testpad", () => {
         testLog.getLog().info(err.message);
       });
     const wasmspaths = (await Promise.all([result])) as unknown as string[];
-    if (wasmspaths.length > 0) if (!wasmPath) wasmPath = wasmspaths[0][0];
+    if (wasmspaths.length > 0) {
+      if (!wasmPath) {
+        wasmPath = wasmspaths[0][0];
+      }
+    }
     testLog.getLog().info("Downloaded in: " + wasmPath);
   });
 
@@ -91,16 +95,16 @@ describe("upgrade - testpad", () => {
       api!,
       api!.tx.sudo.sudo(
         //@ts-ignore
-        api!.tx.parachainSystem.authorizeUpgrade(hexHash, false)
+        api!.tx.parachainSystem.authorizeUpgrade(hexHash, false),
       ),
-      sudo.keyRingPair
+      sudo.keyRingPair,
     );
     await signTx(
       api!,
       api!.tx.sudo.sudo(
-        api!.tx.parachainSystem.enactAuthorizedUpgrade(wasmContent.toString())
+        api!.tx.parachainSystem.enactAuthorizedUpgrade(wasmContent.toString()),
       ),
-      sudo.keyRingPair
+      sudo.keyRingPair,
     );
     let found = false;
 
@@ -119,7 +123,7 @@ describe("upgrade - testpad", () => {
               event.method +
               "::" +
               "phase=" +
-              phase.toString()
+              phase.toString(),
           );
         testLog.getLog().info(event.meta.docs.toString());
         // loop through each of the parameters, displaying the type and data
@@ -132,7 +136,7 @@ describe("upgrade - testpad", () => {
             ) {
               found = true;
             }
-          }
+          },
         );
       });
     });
@@ -147,7 +151,7 @@ describe("upgrade - testpad", () => {
       sudo.keyRingPair,
       new BN(0),
       sudo.keyRingPair.address,
-      new BN("1231244")
+      new BN("1231244"),
     );
     await waitForNBlocks(5);
   });

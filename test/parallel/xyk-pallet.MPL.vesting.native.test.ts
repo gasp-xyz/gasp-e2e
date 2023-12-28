@@ -45,7 +45,7 @@ describe("Vesting-native", () => {
     await setupApi();
     [user1, user2, user3, user4] = await setupUsers();
     const minStk = new BN(
-      (await getApi()).consts.parachainStaking.minCandidateStk.toString()
+      (await getApi()).consts.parachainStaking.minCandidateStk.toString(),
     );
 
     await Sudo.batchAsSudoFinalized(
@@ -54,14 +54,14 @@ describe("Vesting-native", () => {
       Assets.mintNative(user3, minStk.muln(10)),
       Assets.mintNative(user4, minStk.muln(10)),
       Sudo.sudo(
-        await Vesting.forceVested(user1, user2, minStk.muln(5), MGA_ASSET_ID)
+        await Vesting.forceVested(user1, user2, minStk.muln(5), MGA_ASSET_ID),
       ),
       Sudo.sudo(
-        await Vesting.forceVested(user1, user3, minStk.muln(5), MGA_ASSET_ID)
+        await Vesting.forceVested(user1, user3, minStk.muln(5), MGA_ASSET_ID),
       ),
       Sudo.sudo(
-        await Vesting.forceVested(user1, user4, minStk.muln(5), MGA_ASSET_ID)
-      )
+        await Vesting.forceVested(user1, user4, minStk.muln(5), MGA_ASSET_ID),
+      ),
     ).then((events) => {
       expectMGAExtrinsicSuDidSuccess(events);
     });
@@ -69,13 +69,13 @@ describe("Vesting-native", () => {
   test("As a user, I can use MGX vested to move tokens to MPL pallet", async () => {
     let vesting = await getVestingStatus(
       user2.keyRingPair.address,
-      MGA_ASSET_ID
+      MGA_ASSET_ID,
     );
     expect(vesting).not.toBeUndefined();
     const reservedAmount = await signTx(
       await getApi(),
       MPL.reserveVestingNativeTokensByVestingIndex(MGA_ASSET_ID),
-      user2.keyRingPair
+      user2.keyRingPair,
     ).then((value) => {
       const event = getEventResultFromMangataTx(value, [
         "multiPurposeLiquidity",
@@ -86,32 +86,32 @@ describe("Vesting-native", () => {
     });
     const mplStorage = await getMultiPurposeLiquidityStatus(
       user2.keyRingPair.address,
-      MGA_ASSET_ID
+      MGA_ASSET_ID,
     );
     const relockStatus = await getMultiPurposeLiquidityReLockStatus(
       user2.keyRingPair.address,
-      MGA_ASSET_ID
+      MGA_ASSET_ID,
     );
 
     const reservedTotalAmount = stringToBN(
-      reservedAmount[2].toString().split(",").join("")
+      reservedAmount[2].toString().split(",").join(""),
     );
     expect(stringToBN(mplStorage.stakedUnactivatedReserves)).bnEqual(BN_ZERO);
     expect(stringToBN(mplStorage.activatedUnstakedReserves)).bnEqual(BN_ZERO);
     expect(stringToBN(mplStorage.stakedAndActivatedReserves)).bnEqual(BN_ZERO);
     expect(stringToBN(mplStorage.unspentReserves.toString())).bnEqual(
-      reservedTotalAmount
+      reservedTotalAmount,
     );
     expect(hexToBn(mplStorage.relockAmount)).bnEqual(reservedTotalAmount);
 
     const relockItem = relockStatus[0];
     expect(stringToBN(relockItem.amount.toString())).bnEqual(
-      reservedTotalAmount
+      reservedTotalAmount,
     );
     const bn = await getBlockNumber();
     expect(stringToBN(relockItem.startingBlock.toString())).bnEqual(new BN(bn));
     expect(stringToBN(relockItem.endingBlockAsBalance.toString())).bnGt(
-      new BN(bn)
+      new BN(bn),
     );
     vesting = await getVestingStatus(user2.keyRingPair.address, MGA_ASSET_ID);
     expect(vesting.toString()).toEqual("");
@@ -120,7 +120,7 @@ describe("Vesting-native", () => {
     const reservedAmount = await signTx(
       await getApi(),
       MPL.reserveVestingNativeTokensByVestingIndex(MGA_ASSET_ID),
-      user3.keyRingPair
+      user3.keyRingPair,
     ).then((value) => {
       const event = getEventResultFromMangataTx(value, [
         "multiPurposeLiquidity",
@@ -130,30 +130,30 @@ describe("Vesting-native", () => {
       return event.data;
     });
     const reservedTotalAmount = stringToBN(
-      reservedAmount[2].toString().split(",").join("")
+      reservedAmount[2].toString().split(",").join(""),
     );
     const result = await joinCandidate(
       user3.keyRingPair,
       MGA_ASSET_ID,
       reservedTotalAmount,
-      tokenOriginEnum.UnspentReserves
+      tokenOriginEnum.UnspentReserves,
     );
     expect(result.state).toEqual(ExtrinsicResult.ExtrinsicSuccess);
     const isUserInCandidate = await Staking.isUserInCandidateList(
-      user3.keyRingPair.address
+      user3.keyRingPair.address,
     );
     expect(isUserInCandidate).toBeTruthy();
   });
   test("As a user, I can revert MGX vested from MPL to vesting pallet", async () => {
     const vestingBefore = await getVestingStatus(
       user4.keyRingPair.address,
-      MGA_ASSET_ID
+      MGA_ASSET_ID,
     );
     expect(vestingBefore).not.toBeUndefined();
     const reservedAmount = await signTx(
       await getApi(),
       MPL.reserveVestingNativeTokensByVestingIndex(MGA_ASSET_ID),
-      user4.keyRingPair
+      user4.keyRingPair,
     ).then((value) => {
       const event = getEventResultFromMangataTx(value, [
         "multiPurposeLiquidity",
@@ -163,19 +163,19 @@ describe("Vesting-native", () => {
       return event.data;
     });
     const reservedTotalAmount = stringToBN(
-      reservedAmount[2].toString().split(",").join("")
+      reservedAmount[2].toString().split(",").join(""),
     );
     expect(reservedTotalAmount).bnGt(BN_ZERO);
     const vestingStatus = await getVestingStatus(
       user4.keyRingPair.address,
-      MGA_ASSET_ID
+      MGA_ASSET_ID,
     );
     expect(vestingStatus.toString()).toBeEmpty();
 
     await signTx(
       await getApi(),
       MPL.unreserveAndRelockInstance(MGA_ASSET_ID, BN_ZERO),
-      user4.keyRingPair
+      user4.keyRingPair,
     ).then((events) => {
       const event = getEventResultFromMangataTx(events, [
         "multiPurposeLiquidity",
@@ -186,17 +186,17 @@ describe("Vesting-native", () => {
     });
     const vestingAfter = await getVestingStatus(
       user4.keyRingPair.address,
-      MGA_ASSET_ID
+      MGA_ASSET_ID,
     );
     expect(vestingAfter).not.toBeUndefined();
     const vestingAfterAsJson = JSON.parse(JSON.stringify(vestingAfter))[0];
     const vestingBeforeAsJson = JSON.parse(JSON.stringify(vestingBefore))[0];
     expect(vestingAfterAsJson.perBlock).toEqual(vestingBeforeAsJson.perBlock);
     expect(vestingBeforeAsJson.startingBlock).toBeLessThan(
-      vestingAfterAsJson.startingBlock
+      vestingAfterAsJson.startingBlock,
     );
     expect(stringToBN(vestingBeforeAsJson.locked.toString())).bnGt(
-      stringToBN(vestingAfterAsJson.locked.toString())
+      stringToBN(vestingAfterAsJson.locked.toString()),
     );
   });
 });

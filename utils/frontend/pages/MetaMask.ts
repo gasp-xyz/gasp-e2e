@@ -67,7 +67,7 @@ export class MetaMask {
 
   async setupAccount() {
     await this.driver.get(
-      `${this.WEB_UI_ACCESS_URL}#initialize/create-password/import-with-seed-phrase`
+      `${this.WEB_UI_ACCESS_URL}#initialize/create-password/import-with-seed-phrase`,
     );
     await waitForElement(this.driver, XPATH_MNEMONIC);
     await (await this.driver)

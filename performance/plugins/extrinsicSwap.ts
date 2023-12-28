@@ -37,7 +37,7 @@ export class ExtrinsicSwap extends performanceTestItem {
         new BN("1000000000000000000000000000"),
         new BN("1000000000000000000000000000"),
       ],
-      sudo
+      sudo,
     ).then((values) => {
       return values.map((val) => val.toNumber());
     });
@@ -45,7 +45,7 @@ export class ExtrinsicSwap extends performanceTestItem {
     await this.createPoolIfMissing(
       new BN(this.tokens[0]),
       new BN(this.tokens[1]),
-      testParams.nodes
+      testParams.nodes,
     );
     await this.mintTokensToUsers(testParams.threads, testParams.nodes);
     await this.mintERC20TokensToUsers(this.tokens, this.mgaNodeandUsers);
@@ -59,7 +59,7 @@ export class ExtrinsicSwap extends performanceTestItem {
       sdk: MangataInstance,
       users: { nonce: BN; keyPair: KeyringPair }[],
       thread: number,
-      offset: BN
+      offset: BN,
     ) => {
       return createAndSignSwaps(this.isBuy, sdk, users, thread, offset);
     };
@@ -74,7 +74,7 @@ async function createAndSignSwaps(
   mgaSdk: MangataInstance,
   users: { nonce: BN; keyPair: KeyringPair }[],
   threadId: number,
-  nonceOffset: BN = new BN(0)
+  nonceOffset: BN = new BN(0),
 ) {
   const srcUser = users[threadId % users.length];
   const api = await mgaSdk.api();
@@ -97,7 +97,7 @@ async function createAndSignSwaps(
     //@ts-ignore
     {
       nonce,
-    }
+    },
   );
   return tx;
 }

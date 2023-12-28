@@ -24,9 +24,9 @@ export function generateHtmlReport(
   fileName: string,
   enqueued: [number, number][],
   executed: [number, number][],
-  pending: [number, number][]
+  pending: [number, number][],
 ) {
-  const content = `<!doctype html>
+  const contentHtml = `<!doctype html>
 <html lang="en">
   <head>
     <meta charset="utf-8">
@@ -96,7 +96,7 @@ export function generateHtmlReport(
 
   </body>
 </html>`;
-  fs.writeFileSync(fileName, content);
+  fs.writeFileSync(fileName, contentHtml);
 }
 
 export async function captureEvents(logName: string, api: ApiPromise) {
@@ -119,7 +119,7 @@ export async function captureEvents(logName: string, api: ApiPromise) {
         eventsFileName,
         `\n \n [ ${new Date().toUTCString()}] - Received ${
           (events as any).length
-        } events: ------- Block: ${currentBlock}`
+        } events: ------- Block: ${currentBlock}`,
       );
 
       // Loop through the Vec<EventRecord>
@@ -159,7 +159,7 @@ export async function trackPendingExtrinsics(api: ApiPromise, count: number) {
           unsub();
           resolve(results);
         }
-      }
+      },
     );
   });
 }
@@ -186,7 +186,7 @@ export async function trackEnqueuedExtrinsics(api: ApiPromise, count: number) {
           unsub();
           resolve(results);
         }
-      }
+      },
     );
   });
 }
@@ -205,7 +205,7 @@ export async function trackExecutedExtrinsics(api: ApiPromise, count: number) {
           unsub();
           resolve(results);
         }
-      }
+      },
     );
   });
 }

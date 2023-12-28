@@ -48,14 +48,14 @@ describe("Test sudo actions", () => {
       const extrinsic = testCases[extrinsicName];
       const ERROR_MSG = "badOrigin";
       const events = await Sudo.asSudoFinalized(
-        Sudo.sudoAs(testUser1, extrinsic)
+        Sudo.sudoAs(testUser1, extrinsic),
       );
       const event = expectMGAExtrinsicSuDidFailed(events);
       //omg!
       const error = Object.keys(
-        JSON.parse(event.event.data.toString())[0].err
+        JSON.parse(event.event.data.toString())[0].err,
       )[0];
       expect(error).toEqual(ERROR_MSG);
-    }
+    },
   );
 });

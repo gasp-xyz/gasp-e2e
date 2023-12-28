@@ -37,7 +37,7 @@ export class BaseUser extends User {
     // first filter by user address.
     // this can not be done directly, because the key is a [address , tokenId] pair.
     const userEntries = allEntries.filter((value) =>
-      (value[0].toHuman() as string[]).includes(userAddress)
+      (value[0].toHuman() as string[]).includes(userAddress),
     );
     //now, from the filtered list we get all the amounts from the second entry.
     const tokenValues: Map<
@@ -52,12 +52,12 @@ export class BaseUser extends User {
           free: hexToBn(JSON.parse(userEntries[0][1].toString()).free),
           reserved: hexToBn(JSON.parse(userEntries[0][1].toString()).reserved),
           feeFrozen: hexToBn(
-            JSON.parse(userEntries[0][1].toString()).feeFrozen
+            JSON.parse(userEntries[0][1].toString()).feeFrozen,
           ),
           miscFrozen: hexToBn(
-            JSON.parse(userEntries[0][1].toString()).miscFrozen
+            JSON.parse(userEntries[0][1].toString()).miscFrozen,
           ),
-        }
+        },
       );
     });
     return tokenValues;
@@ -69,9 +69,9 @@ export class BaseUser extends User {
           this.node?.api!.tx.tokens.mint(
             token,
             this.keyRingPair.address,
-            amount
-          )
-        )
+            amount,
+          ),
+        ),
       );
     });
     return this;
@@ -82,13 +82,13 @@ export class BaseUser extends User {
   }
   async sudoBatch(sudo: SudoUser) {
     const nonce = new BN(
-      await SudoDB.getInstance().getSudoNonce(sudo.keyRingPair.address)
+      await SudoDB.getInstance().getSudoNonce(sudo.keyRingPair.address),
     );
     const txResult = await signTx(
       sudo.node?.api!,
       sudo.node?.api!.tx.utility.batch(this.batchedFucntions)!,
       sudo.keyRingPair,
-      { nonce: new BN(nonce) }
+      { nonce: new BN(nonce) },
     ).catch((reason) => {
       // eslint-disable-next-line no-console
       console.error("OhOh sth went wrong. " + reason.toString());
@@ -100,7 +100,7 @@ export class BaseUser extends User {
     const txResult = await signTx(
       this.node?.api!,
       this.node?.api!.tx.utility.batch(this.batchedFucntions)!,
-      this.keyRingPair
+      this.keyRingPair,
     ).catch((reason) => {
       // eslint-disable-next-line no-console
       console.error("OhOh sth went wrong. " + reason.toString());

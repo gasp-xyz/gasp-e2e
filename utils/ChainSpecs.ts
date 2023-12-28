@@ -61,7 +61,7 @@ export class AssetId {
       const elem = entry[1];
       const name = api.createType(
         "Vec<u8>",
-        JSON.parse(JSON.stringify(elem)).symbol
+        JSON.parse(JSON.stringify(elem)).symbol,
       );
       return name.toHuman() === symbol;
     })[0];

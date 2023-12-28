@@ -18,7 +18,7 @@ export class XcmNode {
     toChain: ChainId,
     assetId: AssetSpec,
     amount: BN,
-    toUser: User
+    toUser: User,
   ): any {
     assert(ChainSpecs.has(toChain));
     const target = ChainSpecs.get(toChain)!;
@@ -55,14 +55,14 @@ export class XcmNode {
       },
       {
         Limited: TRANSFER_INSTRUCTIONS * target.unitCostWeight,
-      }
+      },
     );
   }
   xTokenTransferV2(
     toChain: ChainId,
     assetId: AssetSpec,
     amount: BN,
-    toUser: User
+    toUser: User,
   ): any {
     assert(ChainSpecs.has(toChain));
     const target = ChainSpecs.get(toChain)!;
@@ -102,7 +102,7 @@ export class XcmNode {
           refTime: TRANSFER_INSTRUCTIONS * target.unitCostWeight,
           proofSize: 0,
         },
-      }
+      },
     );
   }
 
@@ -110,7 +110,7 @@ export class XcmNode {
     toChain: ChainId,
     assetId: AssetSpec,
     amount: BN,
-    toUser: User
+    toUser: User,
   ): any {
     assert(ChainSpecs.has(toChain));
     const target = ChainSpecs.get(toChain)!;
@@ -150,7 +150,7 @@ export class XcmNode {
           refTime: TRANSFER_INSTRUCTIONS * target.unitCostWeight,
           proofSize: 0,
         },
-      }
+      },
     );
   }
 

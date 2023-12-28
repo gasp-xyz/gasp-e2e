@@ -110,7 +110,7 @@ describe("UI XCM tests - BNC", () => {
     testUser1 = new User(keyring);
     testUser1.addFromMnemonic(
       keyring,
-      getEnvironmentRequiredVars().mnemonicPolkadot
+      getEnvironmentRequiredVars().mnemonicPolkadot,
     );
 
     //TODO: Remove when clarified how to setup tokens on Bifrost.
@@ -159,9 +159,8 @@ describe("UI XCM tests - BNC", () => {
     expect(isModalVisible).toBeTruthy();
 
     await depositModal.openTokensList();
-    const tokensAtSourceAfter = await depositModal.getTokenAmount(
-      BNC_ASSET_NAME
-    );
+    const tokensAtSourceAfter =
+      await depositModal.getTokenAmount(BNC_ASSET_NAME);
     expect(tokensAtSourceAfter).toBeLessThan(INIT_BNC_SOURCE);
   });
 
@@ -169,7 +168,7 @@ describe("UI XCM tests - BNC", () => {
     const session = await driver.getSession();
     await addExtraLogs(
       driver,
-      expect.getState().currentTestName + " - " + session.getId()
+      expect.getState().currentTestName + " - " + session.getId(),
     );
     await driver.manage().deleteAllCookies();
     await driver.executeScript("localStorage.clear(); sessionStorage.clear();");

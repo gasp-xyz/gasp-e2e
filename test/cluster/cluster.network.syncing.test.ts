@@ -73,7 +73,7 @@ describe("Cluster -> Network -> Syncing", () => {
     nodes.map(async (node) => {
       const hashes = takeRight(
         Array.from(node.hashes.values()),
-        numberOfHashesToCheck
+        numberOfHashesToCheck,
       );
       testLog.getLog().info(`${node.name}'s Hashes: ${hashes}`);
       nodeHashMap.set(node.name, new Set(hashes));
@@ -87,7 +87,7 @@ describe("Cluster -> Network -> Syncing", () => {
   test("Block merkle hash matches across all nodes", async () => {
     const randomBlockNumber = Math.floor(
       Math.random() * (alice.lastBlock! - alice.firstBlock! + 1) +
-        alice.firstBlock!
+        alice.firstBlock!,
     );
 
     await waitForNBlocks(5);
@@ -117,7 +117,7 @@ describe("Cluster -> Network -> Syncing", () => {
     });
 
     expect(
-      intersection(Array.from(nodeHashMap.values())).length
+      intersection(Array.from(nodeHashMap.values())).length,
     ).toBeGreaterThan(0);
   });
 });

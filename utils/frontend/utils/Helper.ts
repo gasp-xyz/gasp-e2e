@@ -1,27 +1,27 @@
 import "chromedriver";
-import { Key, logging, WebDriver } from "selenium-webdriver";
+import { By, Key, logging, until, WebDriver } from "selenium-webdriver";
 import { sleep } from "../../utils";
 import { Mangata } from "../pages/Mangata";
 import { Polkadot } from "../pages/Polkadot";
+import "jest-extended";
 import fs from "fs";
 import { testLog } from "../../Logger";
 import { BN } from "@polkadot/util";
 import { Talisman } from "../pages/Talisman";
-
-import { By, until } from "selenium-webdriver";
+import { LiqPools } from "../microapps-pages/LiqPools";
 
 const timeOut = 60000;
 const outputPath = `reports/artifacts`;
 export async function waitForElement(
   driver: WebDriver,
   xpath: string,
-  timeout = timeOut
+  timeout = timeOut,
 ) {
   await driver.wait(until.elementLocated(By.xpath(xpath)), timeout);
 }
 
 type SetupFunction = (
-  driver: WebDriver
+  driver: WebDriver,
 ) => Promise<{ polkUserAddress: string; mnemonic: string }>;
 
 const walletSetupFunction: Record<string, SetupFunction> = {
@@ -42,7 +42,7 @@ const acceptWalletPermissionFunction: WalletPermissionFunction = {
 
 export async function setupWalletExtension(
   driver: WebDriver,
-  walletType: string
+  walletType: string,
 ) {
   const setupFunction =
     walletSetupFunction[walletType] || walletSetupFunction.default;
@@ -52,7 +52,7 @@ export async function setupWalletExtension(
 export async function waitForElementEnabled(
   driver: WebDriver,
   xpath: string,
-  timeout = timeOut
+  timeout = timeOut,
 ) {
   await waitForElement(driver, xpath, timeout);
   const element = await driver.findElement(By.xpath(xpath));
@@ -63,7 +63,7 @@ export async function waitForElementState(
   driver: WebDriver,
   xpath: string,
   isEnabled: boolean,
-  timeout = 5000
+  timeout = 5000,
 ) {
   const element = await driver.wait(until.elementLocated(By.xpath(xpath)));
   await driver.wait(until.elementIsVisible(element), timeout);
@@ -75,11 +75,48 @@ export async function waitForElementState(
   }
 }
 
+export async function waitInputValueSetInterval(
+  driver: WebDriver,
+  xpath: string,
+  isSet: boolean,
+  timeout = 5000,
+) {
+  const startTime = Date.now();
+  const endTime = startTime + timeout;
+
+  while (Date.now() < endTime) {
+    try {
+      const element = await driver.findElement(By.xpath(xpath));
+      const isElementVisible = await element.isDisplayed();
+
+      if (isSet) {
+        const value = await element.getAttribute("value");
+        if (isElementVisible && value !== "") {
+          return;
+        }
+      } else {
+        const value = await element.getAttribute("value");
+        if (isElementVisible && value === "") {
+          return;
+        }
+      }
+    } catch (error) {
+      // Element not found or other error occurred, continue waiting
+    }
+
+    await new Promise((resolve) => setTimeout(resolve, 1000));
+  }
+
+  throw new Error(
+    `Timeout: Element value not as desired after ${timeout} milliseconds`,
+  );
+}
+
 export async function waitForElementStateInterval(
   driver: WebDriver,
   xpath: string,
   isEnabled: boolean,
-  timeout = 5000
+  timeout = 5000,
 ) {
   const startTime = Date.now();
   const endTime = startTime + timeout;
@@ -108,14 +145,14 @@ export async function waitForElementStateInterval(
   }
 
   throw new Error(
-    `Timeout: Element state not as desired after ${timeout} milliseconds`
+    `Timeout: Element state not as desired after ${timeout} milliseconds`,
   );
 }
 
 export async function waitForElementVisible(
   driver: WebDriver,
   xpath: string,
-  timeout = timeOut
+  timeout = timeOut,
 ) {
   await waitForElement(driver, xpath, timeout);
   const element = await driver.findElement(By.xpath(xpath));
@@ -124,7 +161,7 @@ export async function waitForElementVisible(
 
 export async function waitForElementToDissapear(
   driver: WebDriver,
-  xpath: string
+  xpath: string,
 ) {
   let continueWaiting = false;
   do {
@@ -141,7 +178,7 @@ export async function waitForElementToDissapear(
 export async function waitForLoad(
   retry = 2,
   loaderXpath: string,
-  driver: WebDriver
+  driver: WebDriver,
 ): Promise<void> {
   return new Promise<void>(async (resolve, reject) => {
     setTimeout(async () => {
@@ -166,12 +203,11 @@ export async function waitForLoad(
 export async function getNumberOfElements(
   driver: WebDriver,
   xpath: string,
-  timeout = timeOut
+  timeout = timeOut,
 ) {
   await waitForElement(driver, xpath, timeout);
   const elements = await driver.findElements(By.xpath(xpath));
-  const count = elements.length;
-  return count;
+  return elements.length;
 }
 
 export async function clickElement(driver: WebDriver, xpath: string) {
@@ -180,6 +216,16 @@ export async function clickElement(driver: WebDriver, xpath: string) {
   await driver.wait(until.elementIsVisible(element), timeOut);
   await sleep(500);
   await element.click();
+}
+
+export async function scrollIntoView(driver: WebDriver, xpath: string) {
+  await waitForElement(driver, xpath);
+  const element = await driver.findElement(By.xpath(xpath));
+  await driver.executeScript(
+    'arguments[0].scrollIntoView({ behavior: "smooth" });',
+    element,
+  );
+  await driver.wait(until.elementIsVisible(element), timeOut);
 }
 
 export async function clickElementForce(driver: WebDriver, xpath: string) {
@@ -197,7 +243,7 @@ export async function pressEscape(driver: WebDriver) {
 export async function writeText(
   driver: WebDriver,
   elementXpath: string,
-  text: string
+  text: string,
 ) {
   await waitForElement(driver, elementXpath);
   await (await driver.findElement(By.xpath(elementXpath))).clear();
@@ -206,24 +252,26 @@ export async function writeText(
   await (await driver.findElement(By.xpath(elementXpath))).sendKeys(text);
 }
 
+export async function clearText(driver: WebDriver, elementXpath: string) {
+  await waitForElement(driver, elementXpath);
+  await (await driver.findElement(By.xpath(elementXpath))).clear();
+  await driver.sleep(500);
+}
+
 export async function getText(driver: WebDriver, elementXpath: string) {
   await waitForElement(driver, elementXpath);
-  const text = await (
-    await driver.findElement(By.xpath(elementXpath))
-  ).getText();
-  return text;
+  return await (await driver.findElement(By.xpath(elementXpath))).getText();
 }
 
 export async function getAttribute(
   driver: WebDriver,
   elementXpath: string,
-  attrName = "value"
+  attrName = "value",
 ) {
   await waitForElement(driver, elementXpath);
-  const attr = await (
+  return await (
     await driver.findElement(By.xpath(elementXpath))
   ).getAttribute(attrName);
-  return attr;
 }
 
 ///Setup extensions
@@ -263,12 +311,19 @@ export async function setupPolkadotExtension(driver: WebDriver) {
   };
 }
 
-export async function importPolkadotExtension(driver: WebDriver) {
+export async function importPolkadotExtension(
+  driver: WebDriver,
+  mnemonicKeys = "",
+) {
   await leaveOnlyOneTab(driver);
 
   const polkadotExtension = new Polkadot(driver);
   await polkadotExtension.go();
-  await polkadotExtension.setupAccount();
+  if (mnemonicKeys === "") {
+    await polkadotExtension.setupAccount();
+  } else {
+    await polkadotExtension.setupAccount(mnemonicKeys);
+  }
 }
 
 export async function setupTalismanExtension(driver: WebDriver) {
@@ -296,7 +351,7 @@ export async function acceptPermissionsPolkadotExtension(driver: WebDriver) {
 
 export async function acceptPermissionsWalletExtensionInNewWindow(
   driver: WebDriver,
-  walletType: string
+  walletType: string,
 ) {
   const acceptPermissions =
     acceptWalletPermissionFunction[walletType] ||
@@ -305,14 +360,14 @@ export async function acceptPermissionsWalletExtensionInNewWindow(
 }
 
 export async function acceptPermissionsPolkadotExtensionInNewWindow(
-  driver: WebDriver
+  driver: WebDriver,
 ) {
   const polkadotExtension = new Polkadot(driver);
   await polkadotExtension.acceptPermissions();
 }
 
 export async function acceptPermissionsTalismanExtensionInNewWindow(
-  driver: WebDriver
+  driver: WebDriver,
 ) {
   const polkadotExtension = new Talisman(driver);
   await polkadotExtension.acceptPermissions();
@@ -334,10 +389,9 @@ export async function leaveOnlyOneTab(driver: WebDriver) {
 export async function isDisplayed(driver: WebDriver, elementXpath: string) {
   try {
     await waitForElement(driver, elementXpath, 4000);
-    const displayed = await (
+    return await (
       await driver.findElement(By.xpath(elementXpath))
     ).isDisplayed();
-    return displayed;
   } catch (Error) {
     return false;
   }
@@ -345,10 +399,10 @@ export async function isDisplayed(driver: WebDriver, elementXpath: string) {
 
 export async function areDisplayed(
   driver: WebDriver,
-  listDataTestIds: string[]
+  listDataTestIds: string[],
 ) {
   const promises: Promise<boolean>[] = listDataTestIds.map((dataTestId) =>
-    isDisplayed(driver, dataTestId)
+    isDisplayed(driver, dataTestId),
   );
   const allVisible = await Promise.all(promises);
   return allVisible.every((elem) => elem === true);
@@ -365,7 +419,7 @@ export async function addExtraLogs(driver: WebDriver, testName = "") {
           const logLine = `[${entry.level.name}] ${entry.message}`;
           fs.appendFileSync(
             `${outputPath}/log_${value}_${testName}_${Date.now().toString()}.txt`,
-            logLine + " \n"
+            logLine + " \n",
           );
         });
       });
@@ -385,10 +439,9 @@ export async function renameExtraLogs(testName: string, result = "FAILED_") {
 export async function getAccountJSON() {
   const path = "utils/frontend/utils/extensions";
   const polkadotUserJson = `${path}/polkadotExportedUser.json`;
-  const jsonContent = JSON.parse(
-    fs.readFileSync(polkadotUserJson, { encoding: "utf8", flag: "r" })
+  return JSON.parse(
+    fs.readFileSync(polkadotUserJson, { encoding: "utf8", flag: "r" }),
   );
-  return jsonContent;
 }
 
 export function buildDataTestIdSelector(dataTestId: string) {
@@ -396,22 +449,28 @@ export function buildDataTestIdSelector(dataTestId: string) {
 }
 
 export function buildDataTestIdXpath(dataTestId: string) {
-  const xpathSelector = `//*[@data-testid='${dataTestId}']`;
-  return xpathSelector;
+  return `//*[@data-testid='${dataTestId}']`;
 }
 
 export function buildDataTestIdXpathFunction(
   dataTestId: string,
-  xpathFunction: string
+  xpathFunction: string,
 ) {
-  const xpathSelector = `//*[@data-testid[${xpathFunction}(., '${dataTestId}')]]`;
-  return xpathSelector;
+  return `//*[@data-testid[${xpathFunction}(., '${dataTestId}')]]`;
+}
+
+export function buildClassXpath(className: string) {
+  return `//*[@class='${className}']`;
+}
+
+export function buildHrefXpath(hrefName: string) {
+  return `//*[@href='${hrefName}']`;
 }
 
 export async function waitForNewWindow(
   driver: WebDriver,
   timeout: number,
-  retryInterval: number
+  retryInterval: number,
 ): Promise<void> {
   const currentWindowHandle = await driver.getWindowHandle();
 
@@ -436,7 +495,7 @@ export async function waitForNewWindow(
 
 export async function doActionInDifferentWindow(
   driver: WebDriver,
-  fn: (driver: WebDriver) => void
+  fn: (driver: WebDriver) => void,
 ) {
   await waitForNewWindow(driver, 10000, 500);
   let handle = await (await driver).getAllWindowHandles();
@@ -462,7 +521,7 @@ export async function doActionInDifferentWindow(
 
 export async function selectAssetFromModalList(
   assetName: string,
-  driver: WebDriver
+  driver: WebDriver,
 ) {
   const assetTestId = `TokensModal-token-${assetName}`;
   const assetLocator = buildDataTestIdXpath(assetTestId);
@@ -483,7 +542,7 @@ export function uiStringToBN(stringValue: string, decimals = 18) {
     return part1.add(new BN(partDec));
   } else {
     return new BN(
-      (Math.pow(10, decimals) * parseFloat(stringValue)).toString()
+      (Math.pow(10, decimals) * parseFloat(stringValue)).toString(),
     );
   }
 }
@@ -493,7 +552,7 @@ export async function openInNewTab(driver: WebDriver, url: string) {
   await driver.executeScript(`window.open("${url}");`);
   const windowsAfterNewTab = await driver.getAllWindowHandles();
   const newTabHandler = windowsAfterNewTab.filter(
-    (item) => windowsBefore.indexOf(item) < 0
+    (item) => windowsBefore.indexOf(item) < 0,
   )[0];
   await driver.switchTo().window(newTabHandler);
 }
@@ -511,11 +570,41 @@ export async function elementExists(driver: WebDriver, xpath: string) {
 }
 
 export function buildXpathByText(text: string) {
-  const xpath = `//*[contains(., "${text}")]`;
-  return xpath;
+  return `//*[contains(., "${text}")]`;
 }
 
 export function buildXpathByElementText(element: string, text: string) {
-  const xpath = `//${element}[contains(., "${text}")]`;
-  return xpath;
+  return `//${element}[contains(., "${text}")]`;
+}
+
+export async function comparePoolsLists(
+  fePoolsList: any,
+  bePoolsInfo: any,
+  liquidityPools: LiqPools,
+) {
+  const bePoolsInfoLength = bePoolsInfo.length;
+  const bePoolsList = [];
+  for (let i = 0; i < bePoolsInfoLength; i++) {
+    const isPoolVisible = await liquidityPools.isPoolItemDisplayed(
+      "-" + bePoolsInfo[i].firstToken + "-" + bePoolsInfo[i].secondToken,
+    );
+    if (isPoolVisible) {
+      bePoolsList.push(
+        "pool-item" +
+          "-" +
+          bePoolsInfo[i].firstToken +
+          "-" +
+          bePoolsInfo[i].secondToken,
+      );
+    } else {
+      bePoolsList.push(
+        "pool-item" +
+          "-" +
+          bePoolsInfo[i].secondToken +
+          "-" +
+          bePoolsInfo[i].firstToken,
+      );
+    }
+  }
+  expect(bePoolsList).toIncludeSameMembers(fePoolsList);
 }

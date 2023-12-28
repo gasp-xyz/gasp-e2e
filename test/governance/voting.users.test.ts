@@ -1,3 +1,4 @@
+//Elections are disabled. Hence, skipping the test
 /*
  * @group elections
  */
@@ -41,13 +42,13 @@ beforeEach(async () => {
   candidate = UserFactory.createUser(
     Users.GovernanceUser,
     keyring,
-    bootnode
+    bootnode,
   ) as GovernanceUser;
 
   voter = UserFactory.createUser(
     Users.GovernanceUser,
     keyring,
-    bootnode
+    bootnode,
   ) as GovernanceUser;
 
   bank = new Bank(sudo);
@@ -56,7 +57,7 @@ beforeEach(async () => {
   await voter.addMGATokens(bank.sudoUser, new BN(Math.pow(10, 17).toString()));
   await candidate.addMGATokens(
     bank.sudoUser,
-    new BN(Math.pow(10, 16).toString())
+    new BN(Math.pow(10, 16).toString()),
   );
 
   // Subscribe to events
@@ -76,11 +77,11 @@ describe("Governance -> Voting -> Users", () => {
 
     // Gonzalo is now listed in the latest blocks candidates list
     const electionCandidates = bootnode.electionEvents.get(
-      bootnode.lastBlock! - 1
+      bootnode.lastBlock! - 1,
     )!.candidates;
 
     expect(electionCandidates).toEqual(
-      expect.arrayContaining([candidate.keyRingPair.address])
+      expect.arrayContaining([candidate.keyRingPair.address]),
     );
 
     // Eddy has reserved the voting stake amount in his last transaction

@@ -71,19 +71,19 @@ describe("RewardsV2 - testpad", () => {
         signTx(
           api!,
           api!.tx.xyk.compoundRewards(liqtokenId, 1000000),
-          testUser1.keyRingPair
-        )
+          testUser1.keyRingPair,
+        ),
       );
       balancesBefore.push(
         testUser1.keyRingPair.address,
-        testUser1.getFreeAssetAmount(0).amountBefore.free
+        testUser1.getFreeAssetAmount(0).amountBefore.free,
       );
       testLog
         .getLog()
         .info(
           `User: ${testUser1.keyRingPair.address} has: ${
             testUser1.getFreeAssetAmount(0).amountBefore.free
-          }`
+          }`,
         );
     }
     await Promise.all(promises).catch();
@@ -96,7 +96,7 @@ describe("RewardsV2 - testpad", () => {
         .info(
           `User: ${testUser1.keyRingPair.address}  NOW has: ${
             testUser1.getFreeAssetAmount(0).amountAfter.free
-          }`
+          }`,
         );
     }
     testLog.getLog().info(JSON.stringify(balancesBefore));
@@ -121,14 +121,14 @@ describe("RewardsV2 - testpad", () => {
       const api2 = await new ApiPromise(options({ provider })).isReady;
       const result = await (api2.rpc as any).xyk.calculate_rewards_amount(
         testUser1.keyRingPair.address,
-        liqtokenId
+        liqtokenId,
       );
       promises.push(
         signTx(
           api!,
           api!.tx.xyk.claimRewardsV2(liqtokenId, new BN(result.toString())),
-          testUser1.keyRingPair
-        )
+          testUser1.keyRingPair,
+        ),
       );
       testLog.getLog().info(result.price.toString());
     }
@@ -156,11 +156,11 @@ describe("RewardsV2 - testpad", () => {
               xyk: {
                 operationsDisabled: true,
               },
-            }
-          )
+            },
+          ),
         ),
-        sudo.keyRingPair
-      )
+        sudo.keyRingPair,
+      ),
     );
     await Promise.all(promises);
   });
@@ -178,8 +178,8 @@ describe("RewardsV2 - testpad", () => {
       signTx(
         api!,
         api!.tx.xyk.burnLiquidity(0, liqtokenId, amount.divn(2)),
-        sudo.keyRingPair
-      )
+        sudo.keyRingPair,
+      ),
     );
     for (let index = 0; index < 4; index++) {
       const testUser1 = users[index];
@@ -191,14 +191,14 @@ describe("RewardsV2 - testpad", () => {
       const api2 = await new ApiPromise(options({ provider })).isReady;
       const result = await (api2.rpc as any).xyk.calculate_rewards_amount(
         testUser1.keyRingPair.address,
-        liqtokenId.addn(1)
+        liqtokenId.addn(1),
       );
       promises.push(
         signTx(
           api!,
           api!.tx.xyk.burnLiquidity(0, liqtokenId, new BN(10000000000000)),
-          testUser1.keyRingPair
-        )
+          testUser1.keyRingPair,
+        ),
       );
       testLog.getLog().info(result.toString());
     }
@@ -223,7 +223,7 @@ describe("RewardsV2 - testpad", () => {
       const api2 = await new ApiPromise(options({ provider })).isReady;
       const result = await (api2.rpc as any).xyk.calculate_rewards_amount_v2(
         testUser1.keyRingPair.address,
-        liqtokenId.addn(1)
+        liqtokenId.addn(1),
       );
       promises.push(
         signTx(
@@ -232,10 +232,10 @@ describe("RewardsV2 - testpad", () => {
             0,
             liqtokenId,
             new BN(100000),
-            new BN(1998000)
+            new BN(1998000),
           ),
-          testUser1.keyRingPair
-        )
+          testUser1.keyRingPair,
+        ),
       );
       testLog.getLog().info(result.toHuman().toString());
     }
@@ -290,10 +290,10 @@ describe("RewardsV2 - testpad", () => {
           api!.tx.feeLock.updateFeeLockMetadata(10, 10, "100000000000", [
             [12, true],
             [14, true],
-          ])
+          ]),
         ),
-        sudo.keyRingPair
-      )
+        sudo.keyRingPair,
+      ),
     );
     await Promise.all(promises);
   });
@@ -308,7 +308,7 @@ describe("RewardsV2 - testpad", () => {
     const proxyCall = [
       Sudo.sudoAs(
         testUser1,
-        api!.tx.proxy.addProxy(bob.keyRingPair.address, "Autocompound", 0)
+        api!.tx.proxy.addProxy(bob.keyRingPair.address, "Autocompound", 0),
       ),
     ];
     await Sudo.batchAsSudoFinalized(...[proxyCall].flat());
@@ -332,66 +332,66 @@ async function doSetup(rewardsGenerationTime: number) {
       api!.tx.sudo.sudo(api!.tx.issuance.finalizeTge()),
       api!.tx.sudo.sudo(api!.tx.issuance.initIssuanceConfig()),
       api!.tx.sudo.sudo(
-        api!.tx.tokens.mint(MGA_ASSET_ID, sudo.keyRingPair.address, amount)
+        api!.tx.tokens.mint(MGA_ASSET_ID, sudo.keyRingPair.address, amount),
       ),
       api!.tx.sudo.sudo(
-        api!.tx.tokens.create(sudo.keyRingPair.address, amount)
+        api!.tx.tokens.create(sudo.keyRingPair.address, amount),
       ),
       api!.tx.sudo.sudo(
         api!.tx.tokens.mint(
           MGA_ASSET_ID,
           testUser1.keyRingPair.address,
-          new BN(amount)
-        )
+          new BN(amount),
+        ),
       ),
       api!.tx.sudo.sudo(
         api!.tx.tokens.mint(
           tokenId,
           testUser1.keyRingPair.address,
-          new BN(amount)
-        )
+          new BN(amount),
+        ),
       ),
       api!.tx.sudo.sudo(
         api!.tx.tokens.mint(
           MGA_ASSET_ID,
           testUser2.keyRingPair.address,
-          new BN(amount)
-        )
+          new BN(amount),
+        ),
       ),
       api!.tx.sudo.sudo(
         api!.tx.tokens.mint(
           tokenId,
           testUser2.keyRingPair.address,
-          new BN(amount)
-        )
+          new BN(amount),
+        ),
       ),
       api!.tx.sudo.sudo(
         api!.tx.tokens.mint(
           MGA_ASSET_ID,
           testUser3.keyRingPair.address,
-          new BN(amount)
-        )
+          new BN(amount),
+        ),
       ),
       api!.tx.sudo.sudo(
         api!.tx.tokens.mint(
           tokenId,
           testUser3.keyRingPair.address,
-          new BN(amount)
-        )
+          new BN(amount),
+        ),
       ),
       api!.tx.sudo.sudo(
         api!.tx.tokens.mint(
           MGA_ASSET_ID,
           testUser4.keyRingPair.address,
-          new BN(amount)
-        )
+          new BN(amount),
+        ),
       ),
       api!.tx.sudo.sudo(
         api!.tx.tokens.mint(
           tokenId,
           testUser4.keyRingPair.address,
-          new BN(amount)
-        )
+          new BN(amount),
+        ),
       ),
     ])
     .signAndSend(sudo.keyRingPair);
@@ -403,7 +403,7 @@ async function doSetup(rewardsGenerationTime: number) {
     .info(
       "Creating pool + promote + giving tokens to users: \n pool: [ 0 ," +
         tokenId.toString() +
-        "]"
+        "]",
     );
 
   await api!.tx.utility
@@ -412,7 +412,7 @@ async function doSetup(rewardsGenerationTime: number) {
         MGA_ASSET_ID,
         amount.divn(2),
         tokenId,
-        amount.divn(2)
+        amount.divn(2),
       ),
       api!.tx.sudo.sudo(api!.tx.xyk.updatePoolPromotion(tokenId.addn(1), 50)),
     ])
@@ -430,8 +430,8 @@ async function doSetup(rewardsGenerationTime: number) {
         MGA_ASSET_ID,
         tokenId,
         tokenstoMint,
-        MAX_BALANCE
-      )
+        MAX_BALANCE,
+      ),
     );
   }
   await Promise.all(promises);
@@ -442,14 +442,16 @@ async function doSetup(rewardsGenerationTime: number) {
     testLog
       .getLog()
       .info(
-        " User: " + user.keyRingPair.address + "Minting tokens to pool -2 users"
+        " User: " +
+          user.keyRingPair.address +
+          "Minting tokens to pool -2 users",
       );
     await mintLiquidity(
       user.keyRingPair,
       MGA_ASSET_ID,
       tokenId,
       tokenstoMint,
-      MAX_BALANCE
+      MAX_BALANCE,
     );
     await waitForNBlocks(5);
   }

@@ -60,7 +60,7 @@ describe("On Maintenance mode - multiSwaps / swaps / compound / prov liq are not
       multiswapBuyAsset: Xyk.multiswapBuyAsset(
         tokenIds,
         BN_HUNDRED,
-        BN_MILLION
+        BN_MILLION,
       ),
       sellAsset: Xyk.sellAsset(tokenIds[0], tokenIds[1], BN_HUNDRED, BN_ONE),
       buyAsset: Xyk.buyAsset(tokenIds[0], tokenIds[1], BN_HUNDRED, BN_MILLION),
@@ -69,15 +69,15 @@ describe("On Maintenance mode - multiSwaps / swaps / compound / prov liq are not
     await Sudo.batchAsSudoFinalized(
       Sudo.sudoAsWithAddressString(
         foundationAccountAddress,
-        Maintenance.switchMaintenanceModeOff()
-      )
+        Maintenance.switchMaintenanceModeOff(),
+      ),
     );
     await Sudo.batchAsSudoFinalized(
       Sudo.sudoAsWithAddressString(
         foundationAccountAddress,
-        Maintenance.switchMaintenanceModeOn()
+        Maintenance.switchMaintenanceModeOn(),
       ),
-      Xyk.updatePoolPromotion(liq, 20)
+      Xyk.updatePoolPromotion(liq, 20),
     ).then((value) => {
       expectMGAExtrinsicSuDidSuccess(value);
     });
@@ -103,7 +103,7 @@ describe("On Maintenance mode - multiSwaps / swaps / compound / prov liq are not
       })
       .catch((exc) => {
         expect(JSON.parse(JSON.stringify(exc)).data.toString()).toContain(
-          "1010: Invalid Transaction: The swap prevalidation has failed"
+          "1010: Invalid Transaction: The swap prevalidation has failed",
         );
       });
   });
@@ -111,8 +111,8 @@ describe("On Maintenance mode - multiSwaps / swaps / compound / prov liq are not
     await Sudo.batchAsSudoFinalized(
       Sudo.sudoAsWithAddressString(
         foundationAccountAddress,
-        Maintenance.switchMaintenanceModeOff()
-      )
+        Maintenance.switchMaintenanceModeOff(),
+      ),
     );
   });
 });
@@ -127,15 +127,15 @@ describe("On Maintenance mode - aggregators and candidates are allowed", () => {
     [testUser1, testUser2] = setupUsers();
     await setupApi();
     minStk = new BN(
-      (await getApi()).consts.parachainStaking.minCandidateStk.toString()
+      (await getApi()).consts.parachainStaking.minCandidateStk.toString(),
     );
     await Sudo.batchAsSudoFinalized(
       Assets.mintNative(testUser1, minStk.muln(1000)),
       Assets.mintNative(testUser2, minStk.muln(1000)),
       Sudo.sudoAsWithAddressString(
         foundationAccountAddress,
-        Maintenance.switchMaintenanceModeOn()
-      )
+        Maintenance.switchMaintenanceModeOn(),
+      ),
     );
   });
   it("Join as candidate , Aggregate metadata and update CandidateAgg runs on Mm", async () => {
@@ -146,23 +146,23 @@ describe("On Maintenance mode - aggregators and candidates are allowed", () => {
         await Staking.joinAsCandidate(
           minStk.muln(2),
           MGA_ASSET_ID,
-          tokenOriginEnum.AvailableBalance
-        )
+          tokenOriginEnum.AvailableBalance,
+        ),
       ),
       Sudo.sudoAs(
         aggregator,
         Staking.aggregatorUpdateMetadata(
           [testUser2],
-          AggregatorOptions.ExtendApprovedCollators
-        )
+          AggregatorOptions.ExtendApprovedCollators,
+        ),
       ),
-      Sudo.sudoAs(testUser2, Staking.updateCandidateAggregator(aggregator))
+      Sudo.sudoAs(testUser2, Staking.updateCandidateAggregator(aggregator)),
     ).then((events) => {
       expectMGAExtrinsicSuDidSuccess(events);
     });
     const candidateAggData = await Staking.candidateAggregator();
     expect(candidateAggData[testUser2.keyRingPair.address]).toEqual(
-      aggregator.keyRingPair.address
+      aggregator.keyRingPair.address,
     );
   });
 
@@ -170,8 +170,8 @@ describe("On Maintenance mode - aggregators and candidates are allowed", () => {
     await Sudo.batchAsSudoFinalized(
       Sudo.sudoAsWithAddressString(
         foundationAccountAddress,
-        Maintenance.switchMaintenanceModeOff()
-      )
+        Maintenance.switchMaintenanceModeOff(),
+      ),
     );
   });
 });

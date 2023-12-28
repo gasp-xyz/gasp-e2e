@@ -1,6 +1,6 @@
 /*
  *
- * @group microappsXCM
+ * @group microappsDeposit
  */
 import { jest } from "@jest/globals";
 import { Keyring } from "@polkadot/api";
@@ -103,7 +103,7 @@ describe("Microapps UI deposit modal tests", () => {
     testUser1 = new User(keyring);
     testUser1.addFromMnemonic(
       keyring,
-      getEnvironmentRequiredVars().mnemonicPolkadot
+      getEnvironmentRequiredVars().mnemonicPolkadot,
     );
 
     testUser1.addAsset(KSM_ASSET_ID);
@@ -148,7 +148,7 @@ describe("Microapps UI deposit modal tests", () => {
       mangata,
       kusama,
       TransactionType.Deposit,
-      2
+      2,
     );
   });
 
@@ -229,7 +229,7 @@ describe("Microapps UI deposit modal tests", () => {
     const session = await driver.getSession();
     await addExtraLogs(
       driver,
-      expect.getState().currentTestName + " - " + session.getId()
+      expect.getState().currentTestName + " - " + session.getId(),
     );
   });
 

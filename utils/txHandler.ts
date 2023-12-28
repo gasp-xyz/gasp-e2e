@@ -23,9 +23,7 @@ export async function getCurrentNonce(account?: string) {
 }
 export async function getCandidates() {
   const api = getApi();
-  const candidates = (await api.query.parachainStaking.selectedCandidates())
-    .length;
-  return candidates;
+  return (await api.query.parachainStaking.selectedCandidates()).length;
 }
 
 export async function getBalanceOfAsset(assetId: BN, account: any) {
@@ -36,7 +34,7 @@ export async function getBalanceOfAsset(assetId: BN, account: any) {
   testLog
     .getLog()
     .info(
-      account.address + " asset " + assetId + " balance: " + balance.toString()
+      account.address + " asset " + assetId + " balance: " + balance.toString(),
     );
 
   return balance.toString();
@@ -44,7 +42,7 @@ export async function getBalanceOfAsset(assetId: BN, account: any) {
 
 export async function getBalanceOfPool(
   assetId1: BN,
-  assetId2: BN
+  assetId2: BN,
 ): Promise<BN[][]> {
   const api = getApi();
 
@@ -61,7 +59,7 @@ export async function getBalanceOfPool(
         " has balance of " +
         balance1 +
         "-" +
-        balance2
+        balance2,
     );
 
   return [
@@ -87,7 +85,7 @@ export const getNextAssetId = async () => {
 export const sudoIssueAsset = async (
   sudoAccount: KeyringPair,
   total_balance: BN,
-  targetAddress: string
+  targetAddress: string,
 ): Promise<MangataGenericEvent[]> => {
   const nonce = await SudoDB.getInstance().getSudoNonce(sudoAccount.address);
   testLog.getLog().info(`W[${env.JEST_WORKER_ID}] - sudoNonce: ${nonce} `);
@@ -98,7 +96,7 @@ export const sudoIssueAsset = async (
       api,
       api.tx.sudo.sudo(api.tx.tokens.create(targetAddress, total_balance)),
       sudoAccount,
-      { nonce: new BN(nonce) }
+      { nonce: new BN(nonce) },
     );
   } catch (e) {
     testLog.getLog().error(JSON.stringify(e));
@@ -112,7 +110,7 @@ export const transferAssets = async (
   to: any,
   asset_id: BN,
   amount: BN,
-  nonce: number
+  nonce: number,
 ): Promise<MangataGenericEvent[]> => {
   const api = getApi();
   return signTx(api, api.tx.tokens.transfer(to, asset_id, amount), from, {
@@ -128,13 +126,13 @@ const extrinsicResultMethods = [
 
 export const getEventResultFromMangataTx = function (
   relatedEvents: MangataGenericEvent[],
-  searchTerm: string[] = []
+  searchTerm: string[] = [],
 ): EventResult {
   let extrinsicResult;
-  extrinsicResult = relatedEvents.find(
+  relatedEvents.find(
     (e) =>
       e.event.toHuman().method !== null &&
-      extrinsicResultMethods.includes(e.event.toHuman().method!.toString())
+      extrinsicResultMethods.includes(e.event.toHuman().method!.toString()),
   );
   if (searchTerm.length > 0) {
     extrinsicResult = relatedEvents.find(
@@ -144,14 +142,14 @@ export const getEventResultFromMangataTx = function (
           (
             JSON.stringify(e.event.toHuman()) +
             JSON.stringify(e.event.toHuman().data)
-          ).includes(filterTerm)
-        )
+          ).includes(filterTerm),
+        ),
     );
   } else {
     extrinsicResult = relatedEvents.find(
       (e) =>
         e.event.toHuman().method !== null &&
-        extrinsicResultMethods.includes(e.event.toHuman().method!.toString())
+        extrinsicResultMethods.includes(e.event.toHuman().method!.toString()),
     );
   }
   if ((extrinsicResult?.event as GenericEvent) === undefined) {
@@ -167,7 +165,7 @@ export async function getEventErrorFromSudo(sudoEvent: MangataGenericEvent[]) {
   const api = getApi();
 
   const filteredEvent = sudoEvent.filter(
-    (extrinsicResult) => extrinsicResult.method === "Sudid"
+    (extrinsicResult) => extrinsicResult.method === "Sudid",
   );
 
   if (filteredEvent[1] !== undefined) {
@@ -176,18 +174,17 @@ export async function getEventErrorFromSudo(sudoEvent: MangataGenericEvent[]) {
   }
 
   const eventErrorValue = hexToU8a(
-    JSON.parse(JSON.stringify(filteredEvent[0].event.data[0])).err.module.error
+    JSON.parse(JSON.stringify(filteredEvent[0].event.data[0])).err.module.error,
   );
 
   const eventErrorIndex = JSON.parse(
-    JSON.stringify(filteredEvent[0].event.data[0])
+    JSON.stringify(filteredEvent[0].event.data[0]),
   ).err.module.index;
 
-  const sudoEventError = api?.registry.findMetaError({
+  return api?.registry.findMetaError({
     error: eventErrorValue,
     index: new BN(eventErrorIndex),
   });
-  return sudoEventError;
 }
 
 function createEventResultfromExtrinsic(extrinsicResult: MangataGenericEvent) {
@@ -196,19 +193,19 @@ function createEventResultfromExtrinsic(extrinsicResult: MangataGenericEvent) {
     case extrinsicResultMethods[1]:
       return new EventResult(
         ExtrinsicResult.ExtrinsicFailed,
-        JSON.parse(JSON.stringify(extrinsicResult.error!)).name
+        JSON.parse(JSON.stringify(extrinsicResult.error!)).name,
       );
 
     case extrinsicResultMethods[2]:
       return new EventResult(
         ExtrinsicResult.ExtrinsicUndefined,
-        eventResult.data
+        eventResult.data,
       );
 
     default:
       return new EventResult(
         ExtrinsicResult.ExtrinsicSuccess,
-        eventResult.data
+        eventResult.data,
       );
   }
 }
@@ -217,7 +214,7 @@ function createEventResultfromExtrinsic(extrinsicResult: MangataGenericEvent) {
 export async function signSendAndWaitToFinishTx(
   fun: SubmittableExtrinsic<"promise"> | undefined,
   account: KeyringPair,
-  strictSuccess: boolean = true
+  strictSuccess: boolean = true,
 ) {
   const nonce = await getCurrentNonce(account.address);
   const api = getApi();
@@ -239,10 +236,10 @@ export async function setAssetInfo(
   name: string,
   symbol: string,
   _address: string,
-  decimals: BN
+  decimals: BN,
 ) {
   const nonce = await SudoDB.getInstance().getSudoNonce(
-    sudo.keyRingPair.address
+    sudo.keyRingPair.address,
   );
   testLog.getLog().info(`W[${env.JEST_WORKER_ID}] - sudoNonce: ${nonce} `);
 
@@ -258,11 +255,11 @@ export async function setAssetInfo(
           existentialDeposit: 0,
         },
         // @ts-ignore, todo remove after sdk update
-        id
-      )
+        id,
+      ),
     ),
     sudo.keyRingPair,
-    { nonce: new BN(nonce) }
+    { nonce: new BN(nonce) },
   ).then((result) => {
     return getEventResultFromMangataTx(result);
   });

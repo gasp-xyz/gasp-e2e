@@ -58,7 +58,7 @@ beforeEach(async () => {
   [firstCurrency, secondCurrency] = await Assets.setupUserWithCurrencies(
     testUser1,
     [defaultCurrecyValue, defaultCurrecyValue.add(new BN(1))],
-    sudo
+    sudo,
   );
 
   // check users accounts.
@@ -71,7 +71,7 @@ beforeEach(async () => {
     [
       defaultCurrecyValue.toNumber(),
       defaultCurrecyValue.add(new BN(1)).toNumber(),
-    ]
+    ],
   );
 });
 
@@ -84,13 +84,13 @@ describe("Wallets unmodified", () => {
         firstCurrency,
         first_asset_amount,
         secondCurrency,
-        second_asset_amount
+        second_asset_amount,
       ).catch((reason) => {
         exception = true;
         throw new Error(reason.data);
-      })
+      }),
     ).rejects.toThrow(
-      "1010: Invalid Transaction: Inability to pay some fees , e.g. account balance too low"
+      "1010: Invalid Transaction: Inability to pay some fees , e.g. account balance too low",
     );
     expect(exception).toBeTruthy();
   });
@@ -103,13 +103,13 @@ describe("Wallets unmodified", () => {
         firstCurrency,
         secondCurrency,
         first_asset_amount,
-        new BN(Number.MAX_SAFE_INTEGER)
+        new BN(Number.MAX_SAFE_INTEGER),
       ).catch((reason) => {
         exception = true;
         throw new Error(reason.data);
-      })
+      }),
     ).rejects.toThrow(
-      "1010: Invalid Transaction: Inability to pay some fees , e.g. account balance too low"
+      "1010: Invalid Transaction: Inability to pay some fees , e.g. account balance too low",
     );
     expect(exception).toBeTruthy();
   });
@@ -117,7 +117,7 @@ describe("Wallets unmodified", () => {
   afterEach(async () => {
     const liquidity_asset_id = await getLiquidityAssetId(
       firstCurrency,
-      secondCurrency
+      secondCurrency,
     );
     expect(liquidity_asset_id).bnEqual(new BN(-1));
     //validate
@@ -129,7 +129,7 @@ describe("Wallets unmodified", () => {
 
     const pool_balance = await getBalanceOfPool(firstCurrency, secondCurrency);
     expect([pool_balance_before[0], pool_balance_before[1]]).collectionBnEqual(
-      pool_balance
+      pool_balance,
     );
     const balance = await getBalanceOfPool(secondCurrency, firstCurrency);
     expect([pool_balance_before[0], pool_balance_before[1]]).collectionBnEqual([
@@ -145,7 +145,7 @@ test("xyk-pallet - User Balance - Selling an asset does not require paying fees"
     defaultCurrecyValue,
     defaultCurrecyValue,
     firstCurrency,
-    secondCurrency
+    secondCurrency,
   );
   //TODO:swapFees
   if (Fees.swapFeesEnabled) {
@@ -159,13 +159,13 @@ test("xyk-pallet - User Balance - Selling an asset does not require paying fees"
     firstCurrency,
     secondCurrency,
     amountInWallet.free.sub(new BN(1)),
-    new BN(1)
+    new BN(1),
   ).catch((reason) => {
     exception = true;
     throw new Error(reason);
   });
   expect(
-    soldEvent.filter((event) => event.method === "AssetsSwapped")
+    soldEvent.filter((event) => event.method === "AssetsSwapped"),
   ).toHaveLength(1);
   expect(exception).toBeFalsy();
 });
@@ -177,7 +177,7 @@ test("xyk-pallet - User Balance - Buying an asset does not require paying fees",
     defaultCurrecyValue,
     defaultCurrecyValue,
     firstCurrency,
-    secondCurrency
+    secondCurrency,
   );
   //TODO:swapFees
   if (Fees.swapFeesEnabled) {
@@ -190,13 +190,13 @@ test("xyk-pallet - User Balance - Buying an asset does not require paying fees",
     firstCurrency,
     secondCurrency,
     new BN(100),
-    new BN(10000000)
+    new BN(10000000),
   ).catch((reason) => {
     exception = true;
     throw new Error(reason.data);
   });
   expect(
-    boughtEvent.filter((event) => event.method === "AssetsSwapped")
+    boughtEvent.filter((event) => event.method === "AssetsSwapped"),
   ).toHaveLength(1);
   expect(exception).toBeFalsy();
 });

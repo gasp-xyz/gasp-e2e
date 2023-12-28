@@ -29,10 +29,10 @@ import {
   BN_ZERO,
   MangataInstance,
   MangataSubmittableExtrinsic,
-  signTx,
 } from "@mangata-finance/sdk";
 import { ExtrinsicResult, waitForRewards } from "../../utils/eventListeners";
 import { getEventResultFromMangataTx } from "../../utils/txHandler";
+import { signSendFinalized } from "../../utils/sign";
 
 jest.spyOn(console, "log").mockImplementation(jest.fn());
 jest.setTimeout(2500000);
@@ -43,7 +43,9 @@ let testUser: User;
 let sudo: User;
 let keyring: Keyring;
 let token1: BN;
+let token2: BN;
 let liqId: BN;
+let liqId2: BN;
 let mangata: MangataInstance;
 const defaultCurrencyValue = new BN(250000);
 
@@ -58,14 +60,15 @@ beforeAll(async () => {
   // setup users
   sudo = new User(keyring, sudoUserName);
 
-  [testUser] = setupUsers();
+  const users = setupUsers();
+  testUser = users[5];
 
   await setupApi();
 
-  [token1] = await Assets.setupUserWithCurrencies(
+  [token1, token2] = await Assets.setupUserWithCurrencies(
     sudo,
-    [defaultCurrencyValue],
-    sudo
+    [defaultCurrencyValue, defaultCurrencyValue],
+    sudo,
   );
 
   mangata = await getMangataInstance();
@@ -73,24 +76,39 @@ beforeAll(async () => {
   await Sudo.batchAsSudoFinalized(
     Assets.FinalizeTge(),
     Assets.initIssuance(),
-    Assets.mintNative(testUser),
+    Assets.mintNative(testUser, Assets.DEFAULT_AMOUNT.muln(10)),
     Assets.mintToken(token1, testUser, Assets.DEFAULT_AMOUNT),
+    Assets.mintToken(token2, testUser, Assets.DEFAULT_AMOUNT),
     Sudo.sudoAs(
       testUser,
       Xyk.createPool(
         MGA_ASSET_ID,
         Assets.DEFAULT_AMOUNT.divn(2),
         token1,
-        Assets.DEFAULT_AMOUNT.divn(2)
-      )
-    )
+        Assets.DEFAULT_AMOUNT.divn(2),
+      ),
+    ),
+    Sudo.sudoAs(
+      testUser,
+      Xyk.createPool(
+        MGA_ASSET_ID,
+        Assets.DEFAULT_AMOUNT.divn(2),
+        token2,
+        Assets.DEFAULT_AMOUNT.divn(2),
+      ),
+    ),
   );
 
   liqId = await getLiquidityAssetId(MGA_ASSET_ID, token1);
+  liqId2 = await getLiquidityAssetId(MGA_ASSET_ID, token2);
 
-  await Sudo.batchAsSudoFinalized(Assets.promotePool(liqId.toNumber(), 20));
+  await Sudo.batchAsSudoFinalized(
+    Assets.promotePool(liqId.toNumber(), 20),
+    Assets.promotePool(liqId2.toNumber(), 20),
+  );
 
   testUser.addAsset(liqId);
+  testUser.addAsset(liqId2);
   testUser.addAsset(MGA_ASSET_ID);
   testUser.addAsset(token1);
 });
@@ -104,7 +122,7 @@ test("activate some Liquidity using SDK THEN claim rewards THEN deactivate Liqui
       amount: BN_BILLION,
       liquidityTokenId: liqId.toString(),
     },
-    "AvailableBalance"
+    "AvailableBalance",
   );
 
   await signSubmittableExtrinsic(tx1, testUser);
@@ -135,25 +153,25 @@ test("activate some Liquidity using SDK THEN claim rewards THEN deactivate Liqui
 });
 
 test("check claimRewards", async () => {
-  await activateLiquidity(testUser.keyRingPair, liqId, BN_BILLION);
+  await activateLiquidity(testUser.keyRingPair, liqId2, BN_BILLION);
 
-  await waitForRewards(testUser, liqId);
+  await waitForRewards(testUser, liqId2);
 
   const tx2 = await mangata.submitableExtrinsic.claimRewards({
     account: testUser.keyRingPair.address,
-    liquidityTokenId: liqId.toString(),
+    liquidityTokenId: liqId2.toString(),
   });
 
   const userTokenBeforeClaiming = await getRewardsInfo(
     testUser.keyRingPair.address,
-    liqId
+    liqId2,
   );
 
   await signSubmittableExtrinsic(tx2, testUser);
 
   const userTokenAfterClaiming = await getRewardsInfo(
     testUser.keyRingPair.address,
-    liqId
+    liqId2,
   );
 
   expect(userTokenBeforeClaiming.rewardsAlreadyClaimed).bnEqual(BN_ZERO);
@@ -178,7 +196,7 @@ test("check mintLiquidity", async () => {
   const amountDifference = testUser
     .getAsset(liqId)
     ?.amountAfter.reserved!.sub(
-      testUser.getAsset(liqId)?.amountBefore.reserved!
+      testUser.getAsset(liqId)?.amountBefore.reserved!,
     );
 
   expect(amountDifference).bnEqual(BN_HUNDRED);
@@ -209,12 +227,12 @@ test("check createPool", async () => {
   const [token2] = await Assets.setupUserWithCurrencies(
     sudo,
     [defaultCurrencyValue],
-    sudo
+    sudo,
   );
 
   await Sudo.batchAsSudoFinalized(
     Assets.mintNative(testUser),
-    Assets.mintToken(token2, testUser, Assets.DEFAULT_AMOUNT)
+    Assets.mintToken(token2, testUser, Assets.DEFAULT_AMOUNT),
   );
 
   const tx = await mangata.submitableExtrinsic.createPool({
@@ -314,10 +332,9 @@ test("check transferAllTokens", async () => {
 
 async function signSubmittableExtrinsic(
   tx: MangataSubmittableExtrinsic,
-  user: User
+  user: User,
 ) {
-  const api = getApi();
-  const result = await signTx(api, tx, user.keyRingPair);
+  const result = await signSendFinalized(tx, user);
   const eventResponse = getEventResultFromMangataTx(result);
   expect(eventResponse.state).toEqual(ExtrinsicResult.ExtrinsicSuccess);
   return result;

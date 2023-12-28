@@ -1,13 +1,10 @@
-name: dex UI prod smoke tests
+name: Microapps UI prod smoke tests
 
 on:
-
   workflow_dispatch:
- 
-  repository_dispatch:
-# Goncer: Old app is decomissioned    types: [run-ci]
+  schedule:
+    - cron: "5 10 * * *"
 jobs:
-
   setup-report:
     name: setup testmo report
     runs-on: ubuntu-latest
@@ -49,24 +46,24 @@ jobs:
     strategy:
       fail-fast: false
       matrix:
-        command: ['prodUiSmoke']
+        command: ["first"]
     runs-on: ubuntu-latest
     env:
-      API_URL: 'wss://kusama-rpc.mangata.online'
+      API_URL: "wss://kusama-rpc.mangata.online"
       UI_URL: https://app.mangata.finance/
       TEST_SUDO_NAME: ${{ secrets.DEV_SUDO_NAME }}
       MNEMONIC_POLK: ${{ secrets.MNEMONIC_PROD_POLK }}
-      TEST_SCRIPT: 'test-ui'
+      TEST_SCRIPT: "test-ui"
       NODE_ENV: test
       SELENIUM_REMOTE_URL: http://localhost:4444/wd/hub
 
-    steps:  
+    steps:
       - name: Start Selenoid Server
         uses: Xotabu4/selenoid-github-action@v2
         with:
           selenoid-start-arguments: |
             --args "-timeout 300s" --browsers 'chrome:110.0;chrome:112.0;chrome:114.0'
-  
+
       - uses: actions/checkout@v3
       - uses: actions/setup-node@v3
         with:
@@ -80,34 +77,34 @@ jobs:
       - name: Tsc code quality check
         run: yarn tsc-lint
       - name: ESLint code quality check
-        run: yarn eslint  
+        run: yarn eslint
       - name: installed packages
         run: yarn list
 
       - name: is selenoid started?
         run: curl http://localhost:4444/status
-  
+
       - name: Run tests
-        run: yarn test-ui --group=${{ matrix.command }}
-      
+        run: yarn test-microapps-prod-${{ matrix.command }}
+
       - name: Test Report
         uses: dorny/test-reporter@v1
-        if: success() || failure()    # run this step even if previous step failed
+        if: success() || failure() # run this step even if previous step failed
         with:
-          name: JEST UI Tests ${{ matrix.command }}           # Name of the check run which will be created
-          path: reports/junit-*.xml    # Path to test results
-          reporter: jest-junit        # Format of test results
+          name: JEST UI Tests ${{ matrix.command }} # Name of the check run which will be created
+          path: reports/*.xml # Path to test results
+          reporter: jest-junit # Format of test results
 
       - name: Install testmo
-        run: npm install --no-save @testmo/testmo-cli
+        run: yarn global add @testmo/testmo-cli
 
       - name: Submit results to the testmo-run
         if: always()
         run: |
-            testmo automation:run:submit-thread \
-              --instance https://mangata-finance.testmo.net \
-              --run-id ${{needs.setup-report.outputs.testmo-run-id}} \
-              --results reports/*.xml
+          testmo automation:run:submit-thread \
+            --instance https://mangata-finance.testmo.net \
+            --run-id ${{needs.setup-report.outputs.testmo-run-id}} \
+            --results reports/*.xml
         env:
           TESTMO_URL: ${{ secrets.TESTMO_URL }}
           TESTMO_TOKEN: ${{ secrets.TESTMO_TOKEN }}
@@ -148,20 +145,20 @@ jobs:
 
     steps:
       - name: Install testmo
-        run: npm install --no-save @testmo/testmo-cli
+        run: yarn global add @testmo/testmo-cli
 
       - name: Complete test run
         run: |
-            npx testmo automation:run:complete \
-              --instance https://mangata-finance.testmo.net \
-              --run-id ${{needs.setup-report.outputs.testmo-run-id}} \
+          npx testmo automation:run:complete \
+            --instance https://mangata-finance.testmo.net \
+            --run-id ${{needs.setup-report.outputs.testmo-run-id}} \
         env:
           TESTMO_URL: ${{ secrets.TESTMO_URL }}
           TESTMO_TOKEN: ${{ secrets.TESTMO_TOKEN }}
         continue-on-error: true
 
   slack-notify-ok:
-    needs: [e2e-test-matrix]
+    needs: [e2e-test-matrix, setup-report]
     if: success()
     runs-on: ubuntu-latest
 
@@ -171,11 +168,11 @@ jobs:
         uses: bryannice/gitactions-slack-notification@2.0.0
         env:
           SLACK_INCOMING_WEBHOOK: ${{ secrets.STG_SLACK_WEBHOOK }}
-          SLACK_TITLE: 'PROD dex smoke UI tests - results - OK'
+          SLACK_TITLE: "PROD Microapps smoke UI tests - results - OK"
           SLACK_COLOR: "#00ff11"
-          SLACK_MESSAGE: 'Test succeed in [ ${{ env.TEST_SCRIPT }} ]
-           testmo report: https://mangata-finance.testmo.net/automation/runs/view/${{needs.setup-report.outputs.testmo-run-id}}'
-          GITHUB_REF: 'https://mangata-finance.github.io/mangata-e2e/${{ github.run_number }}'
+          SLACK_MESSAGE: "Test succeed in [ ${{ env.TEST_SCRIPT }} ]
+            testmo report: https://mangata-finance.testmo.net/automation/runs/view/${{needs.setup-report.outputs.testmo-run-id}}"
+          GITHUB_REF: "https://mangata-finance.github.io/mangata-e2e/${{ github.run_number }}"
 
   slack-notify-nook:
     needs: [e2e-test-matrix]
@@ -187,8 +184,8 @@ jobs:
         uses: bryannice/gitactions-slack-notification@2.0.0
         env:
           SLACK_INCOMING_WEBHOOK: ${{ secrets.STG_SLACK_WEBHOOK }}
-          SLACK_TITLE: 'PROD dex smoke UI tests - results - NOOK'
+          SLACK_TITLE: "PROD Microapps smoke UI tests - results - NOOK"
           SLACK_COLOR: "#ff0011"
-          SLACK_MESSAGE: 'Test failures [ ${{ env.TEST_SCRIPT }} ]
-           testmo report: https://mangata-finance.testmo.net/automation/runs/view/${{needs.setup-report.outputs.testmo-run-id}}'
-          GITHUB_REF: 'https://mangata-finance.github.io/mangata-e2e/${{ github.run_number }}'
+          SLACK_MESSAGE: "Test failures [ ${{ env.TEST_SCRIPT }} ]
+            testmo report: https://mangata-finance.testmo.net/automation/runs/view/${{needs.setup-report.outputs.testmo-run-id}}"
+          GITHUB_REF: "https://mangata-finance.github.io/mangata-e2e/${{ github.run_number }}"

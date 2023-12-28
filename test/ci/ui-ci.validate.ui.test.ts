@@ -34,7 +34,7 @@ describe("UI tests: Infra", () => {
     const session = await driver.getSession();
     await addExtraLogs(
       driver,
-      expect.getState().currentTestName + " - " + session.getId()
+      expect.getState().currentTestName + " - " + session.getId(),
     );
     await driver.quit();
     await DriverBuilder.destroy();

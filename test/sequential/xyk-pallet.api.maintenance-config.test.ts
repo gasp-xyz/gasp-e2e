@@ -66,7 +66,7 @@ beforeAll(async () => {
   firstCurrency = await Assets.issueAssetToUser(
     sudo,
     defaultCurrencyValue,
-    sudo
+    sudo,
   );
 
   await Sudo.batchAsSudoFinalized(
@@ -81,13 +81,13 @@ beforeAll(async () => {
         MGA_ASSET_ID,
         defaultPoolVolumeValue,
         firstCurrency,
-        defaultPoolVolumeValue
-      )
+        defaultPoolVolumeValue,
+      ),
     ),
     Sudo.sudoAsWithAddressString(
       foundationAccountAddress,
-      Maintenance.switchMaintenanceModeOff()
-    )
+      Maintenance.switchMaintenanceModeOff(),
+    ),
   );
 
   liqId = await getLiquidityAssetId(MGA_ASSET_ID, firstCurrency);
@@ -96,8 +96,8 @@ beforeAll(async () => {
     Assets.promotePool(liqId.toNumber(), 20),
     Sudo.sudoAs(
       testUser1,
-      Xyk.mintLiquidity(MGA_ASSET_ID, firstCurrency, defaultPoolVolumeValue)
-    )
+      Xyk.mintLiquidity(MGA_ASSET_ID, firstCurrency, defaultPoolVolumeValue),
+    ),
   );
 });
 
@@ -105,15 +105,15 @@ test("maintenance- try to change Maintenance Mode with a non-foundation account 
   await Sudo.batchAsSudoFinalized(
     Sudo.sudoAsWithAddressString(
       foundationAccountAddress,
-      Maintenance.switchMaintenanceModeOn()
-    )
+      Maintenance.switchMaintenanceModeOn(),
+    ),
   );
 
   const userSwitchModeEvents = await Sudo.batchAsSudoFinalized(
     Sudo.sudoAsWithAddressString(
       testUser1.keyRingPair.address,
-      Maintenance.switchMaintenanceModeOff()
-    )
+      Maintenance.switchMaintenanceModeOff(),
+    ),
   );
 
   await getSudoError(userSwitchModeEvents, "NotFoundationAccount");
@@ -121,8 +121,8 @@ test("maintenance- try to change Maintenance Mode with a non-foundation account 
   const sudoSwitchModeEvents = await Sudo.batchAsSudoFinalized(
     Sudo.sudoAsWithAddressString(
       sudo.keyRingPair.address,
-      Maintenance.switchMaintenanceModeOff()
-    )
+      Maintenance.switchMaintenanceModeOff(),
+    ),
   );
 
   await getSudoError(sudoSwitchModeEvents, "NotFoundationAccount");
@@ -130,12 +130,12 @@ test("maintenance- try to change Maintenance Mode with a non-foundation account 
   const foundationSwitchModeEvents = await Sudo.batchAsSudoFinalized(
     Sudo.sudoAsWithAddressString(
       foundationAccountAddress,
-      Maintenance.switchMaintenanceModeOff()
-    )
+      Maintenance.switchMaintenanceModeOff(),
+    ),
   );
 
   const filteredEvent = foundationSwitchModeEvents.filter(
-    (extrinsicResult) => extrinsicResult.method === "SudoAsDone"
+    (extrinsicResult) => extrinsicResult.method === "SudoAsDone",
   );
   const eventIndex = JSON.parse(JSON.stringify(filteredEvent[0].event.data[0]));
   expect(eventIndex.ok).toBeDefined();
@@ -147,8 +147,8 @@ test("check UpgradabilityOn can only be set after MaintenanceModeOn is set and M
   await Sudo.batchAsSudoFinalized(
     Sudo.sudoAsWithAddressString(
       foundationAccountAddress,
-      Maintenance.switchUpgradabilityInMaintenanceModeOn()
-    )
+      Maintenance.switchUpgradabilityInMaintenanceModeOn(),
+    ),
   );
 
   await checkMaintenanceStatus(false, false);
@@ -156,8 +156,8 @@ test("check UpgradabilityOn can only be set after MaintenanceModeOn is set and M
   await Sudo.batchAsSudoFinalized(
     Sudo.sudoAsWithAddressString(
       foundationAccountAddress,
-      Maintenance.switchMaintenanceModeOn()
-    )
+      Maintenance.switchMaintenanceModeOn(),
+    ),
   );
 
   await checkMaintenanceStatus(true, false);
@@ -165,8 +165,8 @@ test("check UpgradabilityOn can only be set after MaintenanceModeOn is set and M
   await Sudo.batchAsSudoFinalized(
     Sudo.sudoAsWithAddressString(
       foundationAccountAddress,
-      Maintenance.switchUpgradabilityInMaintenanceModeOn()
-    )
+      Maintenance.switchUpgradabilityInMaintenanceModeOn(),
+    ),
   );
 
   await checkMaintenanceStatus(true, true);
@@ -174,8 +174,8 @@ test("check UpgradabilityOn can only be set after MaintenanceModeOn is set and M
   await Sudo.batchAsSudoFinalized(
     Sudo.sudoAsWithAddressString(
       foundationAccountAddress,
-      Maintenance.switchMaintenanceModeOff()
-    )
+      Maintenance.switchMaintenanceModeOff(),
+    ),
   );
 
   await checkMaintenanceStatus(false, false);
@@ -195,7 +195,7 @@ test("maintenance- check we can sell MGX tokens and compoundRewards THEN switch 
     firstCurrency,
     MGA_ASSET_ID,
     new BN(10000),
-    new BN(1)
+    new BN(1),
   ).then((result) => {
     const eventResponse = getEventResultFromMangataTx(result);
     expect(eventResponse.state).toEqual(ExtrinsicResult.ExtrinsicSuccess);
@@ -209,8 +209,8 @@ test("maintenance- check we can sell MGX tokens and compoundRewards THEN switch 
   await Sudo.batchAsSudoFinalized(
     Sudo.sudoAsWithAddressString(
       foundationAccountAddress,
-      Maintenance.switchMaintenanceModeOn()
-    )
+      Maintenance.switchMaintenanceModeOn(),
+    ),
   );
 
   await expect(
@@ -219,12 +219,12 @@ test("maintenance- check we can sell MGX tokens and compoundRewards THEN switch 
       firstCurrency,
       MGA_ASSET_ID,
       new BN(10000),
-      new BN(1)
+      new BN(1),
     ).catch((reason) => {
       throw new Error(reason.data);
-    })
+    }),
   ).rejects.toThrow(
-    "1010: Invalid Transaction: The swap prevalidation has failed"
+    "1010: Invalid Transaction: The swap prevalidation has failed",
   );
 
   await waitForRewards(testUser1, liqId);
@@ -237,8 +237,8 @@ test("maintenance- check we can sell MGX tokens and compoundRewards THEN switch 
   await Sudo.batchAsSudoFinalized(
     Sudo.sudoAsWithAddressString(
       foundationAccountAddress,
-      Maintenance.switchMaintenanceModeOff()
-    )
+      Maintenance.switchMaintenanceModeOff(),
+    ),
   );
 
   await sellAsset(
@@ -246,7 +246,7 @@ test("maintenance- check we can sell MGX tokens and compoundRewards THEN switch 
     firstCurrency,
     MGA_ASSET_ID,
     new BN(10000),
-    new BN(1)
+    new BN(1),
   ).then((result) => {
     const eventResponse = getEventResultFromMangataTx(result);
     expect(eventResponse.state).toEqual(ExtrinsicResult.ExtrinsicSuccess);
@@ -257,12 +257,12 @@ test("maintenance- check we can sell MGX tokens and compoundRewards THEN switch 
   const currencyAssetDifference = testUser1
     .getAsset(firstCurrency)
     ?.amountBefore.free!.sub(
-      testUser1.getAsset(firstCurrency)?.amountAfter.free!
+      testUser1.getAsset(firstCurrency)?.amountAfter.free!,
     );
 
   expect(currencyAssetDifference).bnEqual(new BN(20000));
   expect(testUser1.getAsset(liqId)?.amountBefore.reserved!).bnLt(
-    testUser1.getAsset(liqId)?.amountAfter.reserved!
+    testUser1.getAsset(liqId)?.amountAfter.reserved!,
   );
 });
 
@@ -275,20 +275,20 @@ test("maintenance- validate that when UpgradabilityON, Sudo or council can only 
   await Sudo.batchAsSudoFinalized(
     Sudo.sudoAsWithAddressString(
       foundationAccountAddress,
-      Maintenance.switchMaintenanceModeOn()
-    )
+      Maintenance.switchMaintenanceModeOn(),
+    ),
   );
 
   const authorizeUpgradeBefore = await signTx(
     api!,
     api!.tx.sudo.sudo(
       //@ts-ignore
-      api!.tx.parachainSystem.authorizeUpgrade(hash, false)
+      api!.tx.parachainSystem.authorizeUpgrade(hash, false),
     ),
     sudo.keyRingPair,
     {
       nonce: await getCurrentNonce(sudo.keyRingPair.address),
-    }
+    },
   );
   await waitSudoOperationFail(authorizeUpgradeBefore, [
     "UpgradeBlockedByMaintenanceMode",
@@ -297,8 +297,8 @@ test("maintenance- validate that when UpgradabilityON, Sudo or council can only 
   await Sudo.batchAsSudoFinalized(
     Sudo.sudoAsWithAddressString(
       foundationAccountAddress,
-      Maintenance.switchUpgradabilityInMaintenanceModeOn()
-    )
+      Maintenance.switchUpgradabilityInMaintenanceModeOn(),
+    ),
   );
 
   const authorizeUpgradeAfter = await signTx(
@@ -308,19 +308,19 @@ test("maintenance- validate that when UpgradabilityON, Sudo or council can only 
     sudo.keyRingPair,
     {
       nonce: await getCurrentNonce(sudo.keyRingPair.address),
-    }
+    },
   );
   await waitSudoOperationSuccess(authorizeUpgradeAfter);
 });
 
 async function getSudoError(
   mangataEvent: MangataGenericEvent[],
-  expectedError: string
+  expectedError: string,
 ) {
   const api = getApi();
 
   const filteredEvent = mangataEvent.filter(
-    (extrinsicResult) => extrinsicResult.method === "SudoAsDone"
+    (extrinsicResult) => extrinsicResult.method === "SudoAsDone",
   );
 
   if (filteredEvent[1] !== undefined) {
@@ -329,10 +329,10 @@ async function getSudoError(
   }
 
   const eventErrorValue = hexToU8a(
-    JSON.parse(JSON.stringify(filteredEvent[0].event.data[0])).err.module.error
+    JSON.parse(JSON.stringify(filteredEvent[0].event.data[0])).err.module.error,
   );
   const eventErrorIndex = JSON.parse(
-    JSON.stringify(filteredEvent[0].event.data[0])
+    JSON.stringify(filteredEvent[0].event.data[0]),
   ).err.module.index;
 
   const sudoEventError = api?.registry.findMetaError({
@@ -345,12 +345,12 @@ async function getSudoError(
 
 async function checkMaintenanceStatus(
   maintenanceModeValue: boolean,
-  upgradableValue: boolean
+  upgradableValue: boolean,
 ) {
   const api = getApi();
   maintenanceStatus = await api.query.maintenance.maintenanceStatus();
   expect(maintenanceStatus.isMaintenance.isTrue).toEqual(maintenanceModeValue);
   expect(maintenanceStatus.isUpgradableInMaintenance.isTrue).toEqual(
-    upgradableValue
+    upgradableValue,
   );
 }

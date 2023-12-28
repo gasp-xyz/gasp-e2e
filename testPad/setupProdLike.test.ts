@@ -68,8 +68,8 @@ describe("Boostrap - testpad", () => {
           MGA_ASSET_ID,
           new BN("1000000000000000000000"),
           new BN(7),
-          new BN("10000000000000")
-        )
+          new BN("10000000000000"),
+        ),
       ),
       Sudo.sudoAs(
         testUser1,
@@ -77,9 +77,9 @@ describe("Boostrap - testpad", () => {
           new BN(4),
           new BN("1000000000000000"),
           new BN(7),
-          new BN("10000000000000")
-        )
-      )
+          new BN("10000000000000"),
+        ),
+      ),
     );
     const blockstostart = 5;
     const bootstraplength = 10;
@@ -89,14 +89,14 @@ describe("Boostrap - testpad", () => {
       new BN(4),
       blockstostart,
       bootstraplength,
-      1
+      1,
     );
     await waitForBootstrapStatus("Public", 6);
     await provisionBootstrap(testUser1, new BN(4), new BN("10000000000000000"));
     await provisionBootstrap(
       testUser1,
       MGA_ASSET_ID,
-      new BN("1000000000000000000000")
+      new BN("1000000000000000000000"),
     );
     await setAssetInfo(sudo, new BN(4), "KSM", "KSM", "", new BN(12));
     await setAssetInfo(sudo, new BN(7), "TUR", "TUR", "", new BN(10));

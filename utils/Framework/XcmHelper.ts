@@ -3,7 +3,7 @@ import {
   BuildBlockMode,
   setupWithServer,
 } from "@acala-network/chopsticks";
-import { StorageValues } from "@acala-network/chopsticks/lib/utils/set-storage";
+import { StorageValues } from "@acala-network/chopsticks-core";
 import { ApiPromise, WsProvider } from "@polkadot/api";
 import { HexString } from "@polkadot/util/types";
 import { getPort } from "get-port-please";
@@ -22,6 +22,7 @@ export type SetupOption = {
   types?: Record<string, any>;
   localPort?: number;
   buildBlockMode?: BuildBlockMode;
+  "allow-unresolved-imports"?: boolean;
 };
 
 export type DevApi = {
@@ -63,6 +64,7 @@ export const setupContext = async ({
     "registered-types": { types: types },
     "runtime-log-level": 5,
     runtimeLogLevel: 5,
+    "allow-unresolved-imports": true,
   };
   const { chain, listenPort, close } = await setupWithServer(config);
   const uri = `ws://localhost:${listenPort}`;
@@ -107,8 +109,8 @@ export async function upgradeMangata(mangata: ApiContext) {
   await Sudo.asSudoFinalized(
     Sudo.sudo(
       //@ts-ignore
-      mangata.api!.tx.parachainSystem.authorizeUpgrade(hexHash)
-    )
+      mangata.api!.tx.parachainSystem.authorizeUpgrade(hexHash),
+    ),
   );
   const wasmParam = Uint8Array.from(wasmContent);
   const hex = u8aToHex(wasmParam);

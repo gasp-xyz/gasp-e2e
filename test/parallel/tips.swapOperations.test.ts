@@ -34,14 +34,14 @@ describe("Tips - Tips are not allowed for swaps", () => {
       multiswapBuyAsset: Xyk.multiswapBuyAsset(
         tokenIds,
         BN_HUNDRED,
-        BN_MILLION
+        BN_MILLION,
       ),
       sellAsset: Xyk.sellAsset(tokenIds[0], tokenIds[1], BN_HUNDRED, BN_ONE),
       buyAsset: Xyk.buyAsset(tokenIds[0], tokenIds[1], BN_HUNDRED, BN_MILLION),
       transfer: Tokens.transfer(
         users[0].keyRingPair.address,
         tokenIds[0],
-        BN_HUNDRED
+        BN_HUNDRED,
       ),
       mint: Xyk.mintLiquidity(tokenIds[0], tokenIds[1], BN_HUNDRED, BN_MILLION),
     };
@@ -62,11 +62,11 @@ describe("Tips - Tips are not allowed for swaps", () => {
             exception = true;
             exceptionData = reason.data;
             throw new Error(reason.data);
-          })
+          }),
       ).rejects.toThrow(ERROR_MSG);
       expect(exceptionData).toEqual(ERROR_MSG);
       expect(exception).toBeTruthy();
-    }
+    },
   );
   it.each(["transfer", "mint"])(
     "%s tips operations are allowed",
@@ -77,6 +77,6 @@ describe("Tips - Tips are not allowed for swaps", () => {
         tip: new BN(100001000),
       });
       expect(result).not.toBeNull();
-    }
+    },
   );
 });

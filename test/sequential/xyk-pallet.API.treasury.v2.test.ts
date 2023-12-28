@@ -7,7 +7,6 @@ import {
   calculate_sell_price_local_no_fee,
   calculate_sell_price_rpc,
   getBalanceOfPool,
-  getNextAssetId,
   getTreasury,
   getTreasuryBurn,
 } from "../../utils/tx";
@@ -26,13 +25,14 @@ import { testLog } from "../../utils/Logger";
 import { Assets } from "../../utils/Assets";
 import { signSendFinalized } from "../../utils/sign";
 import { getApi } from "../../utils/api";
+import { SudoDB } from "../../utils/SudoDB";
 
 const asset_amount1 = new BN(500000);
 const asset_amount2 = asset_amount1.div(new BN(2));
 
 async function validateTreasuryAmountsEqual(
   assetId: BN,
-  treasuryExpectation: BN[]
+  treasuryExpectation: BN[],
 ) {
   const [expectedTreasury, expectedTreasuryBurn] = treasuryExpectation;
   const treasuryAsset = await getTreasury(assetId);
@@ -56,16 +56,16 @@ describe("xyk-pallet - treasury tests [Mangata]: on treasury we store", () => {
     await setupApi();
     [user] = setupUsers();
 
-    currency = await getNextAssetId();
+    currency = await SudoDB.getInstance().getTokenId();
     user.addAsset(currency);
 
     await Sudo.batchAsSudoFinalized(
       Assets.mintNative(user),
-      Assets.issueToken(user),
+      Assets.mintToken(currency, user),
       Sudo.sudoAs(
         user,
-        Xyk.createPool(MGA_ASSET_ID, asset_amount1, currency, asset_amount2)
-      )
+        Xyk.createPool(MGA_ASSET_ID, asset_amount1, currency, asset_amount2),
+      ),
     );
 
     await user.refreshAmounts(AssetWallet.BEFORE);
@@ -79,7 +79,7 @@ describe("xyk-pallet - treasury tests [Mangata]: on treasury we store", () => {
 
     await signSendFinalized(
       Xyk.sellAsset(MGA_ASSET_ID, currency, sellAssetAmount),
-      user
+      user,
     );
     await user.refreshAmounts(AssetWallet.AFTER);
 
@@ -102,25 +102,25 @@ describe("xyk-pallet - treasury tests [Mangata]: on treasury we store", () => {
     const sellPrice = await calculate_buy_price_rpc(
       asset_amount2,
       asset_amount1,
-      buyAssetAmount
+      buyAssetAmount,
     );
     const { treasury } = calculateFees(sellPrice);
     testLog
       .getLog()
       .debug(
-        `treasury before: ${treasuryBefore}, sell price: ${sellPrice}, fee: ${treasury}`
+        `treasury before: ${treasuryBefore}, sell price: ${sellPrice}, fee: ${treasury}`,
       );
 
     await signSendFinalized(
       Xyk.buyAsset(currency, MGA_ASSET_ID, buyAssetAmount),
-      user
+      user,
     );
 
     const poolBalance = await getBalanceOfPool(MGA_ASSET_ID, currency);
     const feeInMGAPrice = await calculate_sell_price_rpc(
       poolBalance[1],
       poolBalance[0],
-      treasury
+      treasury,
     );
     await user.refreshAmounts(AssetWallet.AFTER);
     const treasuryAfter = await getTreasury(MGA_ASSET_ID);
@@ -145,14 +145,14 @@ describe("xyk-pallet - treasury tests [Mangata]: on treasury we store", () => {
 
     await signSendFinalized(
       Xyk.sellAsset(currency, MGA_ASSET_ID, sellAssetAmount),
-      user
+      user,
     );
 
     const poolBalance = await getBalanceOfPool(MGA_ASSET_ID, currency);
     const feeInMGAPrice = await calculate_sell_price_rpc(
       poolBalance[1],
       poolBalance[0],
-      treasury
+      treasury,
     );
     await user.refreshAmounts(AssetWallet.AFTER);
     const treasuryAfter = await getTreasury(MGA_ASSET_ID);
@@ -173,7 +173,7 @@ describe("xyk-pallet - treasury tests [Mangata]: on treasury we store", () => {
     const sellPrice = await calculate_buy_price_id_rpc(
       MGA_ASSET_ID,
       currency,
-      buyAssetAmount
+      buyAssetAmount,
     );
     testLog
       .getLog()
@@ -181,7 +181,7 @@ describe("xyk-pallet - treasury tests [Mangata]: on treasury we store", () => {
 
     await signSendFinalized(
       Xyk.buyAsset(MGA_ASSET_ID, currency, buyAssetAmount),
-      user
+      user,
     );
 
     const { treasury } = calculateFees(sellPrice);
@@ -206,23 +206,23 @@ describe("xyk-pallet - treasury tests [Connected - Mangata]: on treasury we stor
     await setupApi();
     [user] = setupUsers();
 
-    connectedToMGA = await getNextAssetId();
-    indirectlyConnected = connectedToMGA.add(BN_ONE);
+    connectedToMGA = await SudoDB.getInstance().getTokenId();
+    indirectlyConnected = await SudoDB.getInstance().getTokenId();
     user.addAsset(connectedToMGA);
     user.addAsset(indirectlyConnected);
 
     await Sudo.batchAsSudoFinalized(
       Assets.mintNative(user),
-      Assets.issueToken(user),
-      Assets.issueToken(user),
+      Assets.mintToken(connectedToMGA, user),
+      Assets.mintToken(indirectlyConnected, user),
       Sudo.sudoAs(
         user,
         Xyk.createPool(
           MGA_ASSET_ID,
           asset_amount1,
           connectedToMGA,
-          asset_amount1.div(new BN(2))
-        )
+          asset_amount1.div(new BN(2)),
+        ),
       ),
       Sudo.sudoAs(
         user,
@@ -230,9 +230,9 @@ describe("xyk-pallet - treasury tests [Connected - Mangata]: on treasury we stor
           connectedToMGA,
           asset_amount1,
           indirectlyConnected,
-          asset_amount1.div(new BN(2))
-        )
-      )
+          asset_amount1.div(new BN(2)),
+        ),
+      ),
     );
 
     await user.refreshAmounts(AssetWallet.BEFORE);
@@ -245,24 +245,24 @@ describe("xyk-pallet - treasury tests [Connected - Mangata]: on treasury we stor
     const swapTreasuryInMG = calculate_sell_price_local_no_fee(
       mgPoolAmount[1],
       mgPoolAmount[0],
-      treasury
+      treasury,
     );
     const twoTreasuries = calculate_sell_price_local_no_fee(
       mgPoolAmount[1],
       mgPoolAmount[0],
-      treasury.mul(new BN(2))
+      treasury.mul(new BN(2)),
     );
     const treasuryBefore = await getTreasury(MGA_ASSET_ID);
     const treasuryBurnBefore = await getTreasuryBurn(MGA_ASSET_ID);
 
     testLog.getLog().debug(
       `treasury before: ${treasuryBefore}, fee: ${treasury}, pool: ${mgPoolAmount}
-         swapTreasuryInMG: ${swapTreasuryInMG}, twoTreasuries: ${twoTreasuries}`
+         swapTreasuryInMG: ${swapTreasuryInMG}, twoTreasuries: ${twoTreasuries}`,
     );
 
     await signSendFinalized(
       Xyk.sellAsset(connectedToMGA, indirectlyConnected, sellAssetAmount),
-      user
+      user,
     );
     await user.refreshAmounts(AssetWallet.AFTER);
 
@@ -270,16 +270,16 @@ describe("xyk-pallet - treasury tests [Connected - Mangata]: on treasury we stor
     const treasuryBurnAfter = await getTreasuryBurn(MGA_ASSET_ID);
     const mgPoolAmountAfter = await getBalanceOfPool(
       MGA_ASSET_ID,
-      connectedToMGA
+      connectedToMGA,
     );
     testLog
       .getLog()
       .debug(
-        `treasury after: ${treasuryAfter}, poolAfter: ${mgPoolAmountAfter}`
+        `treasury after: ${treasuryAfter}, poolAfter: ${mgPoolAmountAfter}`,
       );
 
     expect(mgPoolAmountAfter[1].sub(mgPoolAmount[1])).bnEqual(
-      treasury.add(treasury)
+      treasury.add(treasury),
     );
     expect(treasuryAfter).bnEqual(treasuryBefore.add(swapTreasuryInMG));
     //validated with Stano that the rounding issue is no longer required.
@@ -293,19 +293,19 @@ describe("xyk-pallet - treasury tests [Connected - Mangata]: on treasury we stor
     const buyAssetAmount = new BN(7000);
     const poolAmount = await getBalanceOfPool(
       indirectlyConnected,
-      connectedToMGA
+      connectedToMGA,
     );
     const sellPrice = await calculate_buy_price_rpc(
       poolAmount[1],
       poolAmount[0],
-      buyAssetAmount
+      buyAssetAmount,
     );
     const { treasury } = calculateFees(sellPrice);
     const mgPoolAmount = await getBalanceOfPool(MGA_ASSET_ID, connectedToMGA);
     const swapTreasuryInMG = calculate_sell_price_local_no_fee(
       mgPoolAmount[1],
       mgPoolAmount[0],
-      treasury
+      treasury,
     );
     const treasuryBefore = await getTreasury(MGA_ASSET_ID);
     const treasuryBurnBefore = await getTreasuryBurn(MGA_ASSET_ID);
@@ -313,12 +313,12 @@ describe("xyk-pallet - treasury tests [Connected - Mangata]: on treasury we stor
     testLog
       .getLog()
       .debug(
-        `treasury before: ${treasuryBefore}, fee: ${treasury}, pool: ${mgPoolAmount}`
+        `treasury before: ${treasuryBefore}, fee: ${treasury}, pool: ${mgPoolAmount}`,
       );
 
     await signSendFinalized(
       Xyk.buyAsset(connectedToMGA, indirectlyConnected, buyAssetAmount),
-      user
+      user,
     );
 
     await user.refreshAmounts(AssetWallet.AFTER);
@@ -327,7 +327,7 @@ describe("xyk-pallet - treasury tests [Connected - Mangata]: on treasury we stor
     testLog
       .getLog()
       .debug(
-        `treasury after: ${treasuryAfter}, swapTreasuryInMG: ${swapTreasuryInMG}`
+        `treasury after: ${treasuryAfter}, swapTreasuryInMG: ${swapTreasuryInMG}`,
       );
 
     expect(treasuryAfter).bnEqual(treasuryBefore.add(swapTreasuryInMG));
@@ -346,12 +346,12 @@ describe("xyk-pallet - treasury tests [Connected - Mangata]: on treasury we stor
     testLog
       .getLog()
       .debug(
-        `treasury before: ${treasuryBefore}, indirect: ${treasuryBeforeInd}`
+        `treasury before: ${treasuryBefore}, indirect: ${treasuryBeforeInd}`,
       );
 
     await signSendFinalized(
       Xyk.sellAsset(indirectlyConnected, connectedToMGA, sellAssetAmount),
-      user
+      user,
     );
 
     await user.refreshAmounts(AssetWallet.AFTER);
@@ -362,14 +362,14 @@ describe("xyk-pallet - treasury tests [Connected - Mangata]: on treasury we stor
     testLog
       .getLog()
       .debug(
-        `treasury after: ${treasuryAfter}, indirect: ${treasuryAfterInd}, fee: ${treasury},${treasuryBurn}`
+        `treasury after: ${treasuryAfter}, indirect: ${treasuryAfterInd}, fee: ${treasury},${treasuryBurn}`,
       );
 
     expect(treasuryAfter).bnEqual(treasuryBefore);
     expect(treasuryBurnAfter).bnEqual(treasuryBurnBefore);
     expect(treasuryAfterInd).bnEqual(treasuryBeforeInd.add(treasury));
     expect(treasuryBurnAfterInd).bnEqual(
-      treasuryBurnBeforeInd.add(treasuryBurn)
+      treasuryBurnBeforeInd.add(treasuryBurn),
     );
   });
 
@@ -379,31 +379,31 @@ describe("xyk-pallet - treasury tests [Connected - Mangata]: on treasury we stor
     const treasuryBurnBefore = await getTreasuryBurn(MGA_ASSET_ID);
     const poolAmount = await getBalanceOfPool(
       indirectlyConnected,
-      connectedToMGA
+      connectedToMGA,
     );
     const sellPrice = await calculate_buy_price_rpc(
       poolAmount[1],
       poolAmount[0],
-      buyAssetAmount
+      buyAssetAmount,
     );
     const { treasury } = calculateFees(sellPrice);
     const mgPoolAmount = await getBalanceOfPool(MGA_ASSET_ID, connectedToMGA);
     const swapTreasuryInMG = calculate_sell_price_local_no_fee(
       mgPoolAmount[1],
       mgPoolAmount[0],
-      treasury
+      treasury,
     );
     const treasuryBeforeInd = await getTreasury(indirectlyConnected);
     const treasuryBurnBeforeInd = await getTreasuryBurn(indirectlyConnected);
     testLog
       .getLog()
       .debug(
-        `treasury before: ${treasuryBefore}, pool: ${mgPoolAmount}, fee: ${treasury}`
+        `treasury before: ${treasuryBefore}, pool: ${mgPoolAmount}, fee: ${treasury}`,
       );
 
     await signSendFinalized(
       Xyk.buyAsset(connectedToMGA, indirectlyConnected, buyAssetAmount),
-      user
+      user,
     );
 
     await user.refreshAmounts(AssetWallet.AFTER);
@@ -412,7 +412,7 @@ describe("xyk-pallet - treasury tests [Connected - Mangata]: on treasury we stor
     testLog
       .getLog()
       .debug(
-        `treasury after: ${treasuryAfter}, swapTreasuryInMG: ${swapTreasuryInMG}`
+        `treasury after: ${treasuryAfter}, swapTreasuryInMG: ${swapTreasuryInMG}`,
       );
 
     expect(treasuryAfter).bnEqual(treasuryBefore.add(swapTreasuryInMG));
@@ -432,16 +432,16 @@ describe("xyk-pallet - treasury tests [Connected - Mangata]: Error cases", () =>
     await setupApi();
     [user] = setupUsers();
 
-    currency = await getNextAssetId();
+    currency = await SudoDB.getInstance().getTokenId();
     user.addAsset(currency);
 
     await Sudo.batchAsSudoFinalized(
       Assets.mintNative(user),
-      Assets.issueToken(user),
+      Assets.mintToken(currency, user),
       Sudo.sudoAs(
         user,
-        Xyk.createPool(MGA_ASSET_ID, asset_amount1, currency, asset_amount2)
-      )
+        Xyk.createPool(MGA_ASSET_ID, asset_amount1, currency, asset_amount2),
+      ),
     );
 
     await user.refreshAmounts(AssetWallet.BEFORE);
@@ -457,13 +457,13 @@ describe("xyk-pallet - treasury tests [Connected - Mangata]: Error cases", () =>
 
     await signSendFinalized(
       Xyk.buyAsset(currency, MGA_ASSET_ID, mgPoolAmount[0].sub(BN_ONE)),
-      user
+      user,
     );
 
     const to = await getBlockNumber();
     const blockNumber = await findBlockWithExtrinsicSigned(
       [from, to],
-      user.keyRingPair.address
+      user.keyRingPair.address,
     );
     const fees = await getTokensDiffForBlockAuthor(blockNumber);
     await user.refreshAmounts(AssetWallet.AFTER);
@@ -482,7 +482,7 @@ describe("xyk-pallet - treasury tests [Connected - Mangata]: Error cases", () =>
       .amountAfter.free.sub(mgPoolAmount[0].sub(new BN(1)));
     const feeLock = (await getFeeLockMetadata(await getApi())).feeLockAmount;
     expect(user.getAsset(MGA_ASSET_ID)!.amountBefore.free).bnEqual(
-      expectedValue.add(fees).add(feeLock)
+      expectedValue.add(fees).add(feeLock),
     );
 
     //burned destroyed! because is translated toMGA
@@ -491,10 +491,10 @@ describe("xyk-pallet - treasury tests [Connected - Mangata]: Error cases", () =>
     //not enough tokens to get the fee.
     expect(treasuryAfter).bnEqual(treasuryBefore);
     expect(
-      treasuryAfterConnectedAsset.sub(treasuryBeforeConnectedAsset)
+      treasuryAfterConnectedAsset.sub(treasuryBeforeConnectedAsset),
     ).bnEqual(BN_ZERO);
     expect(
-      treasuryBurnAfterConnectedAsset.sub(treasuryBurnBeforeConnectedAsset)
+      treasuryBurnAfterConnectedAsset.sub(treasuryBurnBeforeConnectedAsset),
     ).bnEqual(BN_ZERO);
   });
 });

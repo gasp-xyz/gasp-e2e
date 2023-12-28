@@ -67,7 +67,7 @@ beforeAll(async () => {
     Assets.mintNative(testUser1),
     Assets.mintNative(testUser2),
     Assets.mintNative(testUser3),
-    Assets.mintNative(testUser4)
+    Assets.mintNative(testUser4),
   );
 });
 
@@ -76,18 +76,20 @@ describe("Only sudo can", () => {
     const setCrowdLoanAllocationEvents = await signTx(
       api,
       api.tx.crowdloan.setCrowdloanAllocation(crowdloanRewardsAmount),
-      testUser1.keyRingPair
+      testUser1.keyRingPair,
     );
 
     const eventResponse = getEventResultFromMangataTx(
-      setCrowdLoanAllocationEvents
+      setCrowdLoanAllocationEvents,
     );
 
     expect(eventResponse.state).toEqual(ExtrinsicResult.ExtrinsicFailed);
     const isBadOrigin = isBadOriginError(setCrowdLoanAllocationEvents);
     expect(isBadOrigin).toEqual(true);
     const sudoSetCrowdloanAllocationEvents = await Sudo.batchAsSudoFinalized(
-      Sudo.sudo(api.tx.crowdloan.setCrowdloanAllocation(crowdloanRewardsAmount))
+      Sudo.sudo(
+        api.tx.crowdloan.setCrowdloanAllocation(crowdloanRewardsAmount),
+      ),
     );
 
     await waitSudoOperationSuccess(sudoSetCrowdloanAllocationEvents);
@@ -103,7 +105,7 @@ describe("Only sudo can", () => {
           crowdloanRewardsAmount,
         ],
       ]),
-      testUser1.keyRingPair
+      testUser1.keyRingPair,
     );
 
     const eventResponse = getEventResultFromMangataTx(userInitializeRewardVec);
@@ -119,8 +121,8 @@ describe("Only sudo can", () => {
             testUser1.keyRingPair.address,
             crowdloanRewardsAmount,
           ],
-        ])
-      )
+        ]),
+      ),
     );
 
     await waitSudoOperationSuccess(sudoInitializeRewardVec);
@@ -138,13 +140,13 @@ describe("Only sudo can", () => {
       api.tx.crowdloan.completeInitialization(
         leaseStartBlock,
         // @ts-ignore
-        leaseEndingBlock
+        leaseEndingBlock,
       ),
-      testUser1.keyRingPair
+      testUser1.keyRingPair,
     );
 
     const eventResponse = getEventResultFromMangataTx(
-      userCompleteInitialization
+      userCompleteInitialization,
     );
 
     expect(eventResponse.state).toEqual(ExtrinsicResult.ExtrinsicFailed);
@@ -158,9 +160,9 @@ describe("Only sudo can", () => {
         api.tx.crowdloan.completeInitialization(
           leaseStartBlock,
           // @ts-ignore
-          leaseEndingBlock
-        )
-      )
+          leaseEndingBlock,
+        ),
+      ),
     );
 
     await waitSudoOperationSuccess(sudoCompleteInitialization);
@@ -208,7 +210,7 @@ test("CL needs to be setup in order", async () => {
 
   initializationRewards = await initializeCrowdloanReward(
     [testUser1],
-    crowdloanRewardsAmount
+    crowdloanRewardsAmount,
   );
 
   await waitSudoOperationFail(initializationRewards, [
@@ -221,7 +223,7 @@ test("CL needs to be setup in order", async () => {
 
   completionCrowdloan = await completeCrowdloanInitialization(
     leaseStartBlock,
-    leaseEndingBlock
+    leaseEndingBlock,
   );
 
   await waitSudoOperationFail(completionCrowdloan, [
@@ -230,21 +232,21 @@ test("CL needs to be setup in order", async () => {
   ]);
 
   const settingAllocation = await setCrowdloanAllocation(
-    crowdloanRewardsAmount
+    crowdloanRewardsAmount,
   );
 
   await waitSudoOperationSuccess(settingAllocation);
 
   completionCrowdloan = await completeCrowdloanInitialization(
     leaseStartBlock,
-    leaseEndingBlock
+    leaseEndingBlock,
   );
 
   await waitSudoOperationFail(completionCrowdloan, ["RewardsDoNotMatchFund"]);
 
   initializationRewards = await initializeCrowdloanReward(
     [testUser1],
-    crowdloanRewardsAmount
+    crowdloanRewardsAmount,
   );
 
   await waitSudoOperationSuccess(initializationRewards);
@@ -254,7 +256,7 @@ test("CL needs to be setup in order", async () => {
 
   completionCrowdloan = await completeCrowdloanInitialization(
     leaseStartBlock,
-    leaseEndingBlock
+    leaseEndingBlock,
   );
 
   await waitSudoOperationSuccess(completionCrowdloan);

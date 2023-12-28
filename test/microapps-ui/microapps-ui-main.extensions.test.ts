@@ -71,23 +71,21 @@ describe("Wallets management", () => {
       isWalletConnected = await walletWrapper.isWalletConnected();
       expect(isWalletConnected).toBeTruthy();
 
-      const isSuccessToastDisplayed = await mainPage.isToastDisplayed(
-        "Wallet Connected"
-      );
+      const isSuccessToastDisplayed =
+        await mainPage.isToastDisplayed("Wallet Connected");
       expect(isSuccessToastDisplayed).toBeTruthy();
 
-      const isAccInfoDisplayed = await walletWrapper.isAccInfoDisplayed(
-        acc_name
-      );
+      const isAccInfoDisplayed =
+        await walletWrapper.isAccInfoDisplayed(acc_name);
       expect(isAccInfoDisplayed).toBeTruthy();
-    }
+    },
   );
 
   afterEach(async () => {
     const session = await driver.getSession();
     await addExtraLogs(
       driver,
-      expect.getState().currentTestName + " - " + session.getId()
+      expect.getState().currentTestName + " - " + session.getId(),
     );
     await driver.manage().deleteAllCookies();
     await driver.executeScript("localStorage.clear(); sessionStorage.clear();");

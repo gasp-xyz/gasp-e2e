@@ -20,7 +20,7 @@ function difference(a1: any, a2: any) {
 
   const file = fs.readFileSync(
     "/home/goncer/accounts/5CthcoS3CYHoVHDMUacydayRLMzMWedKryjsrvzrmv3VHCKP" +
-      ".json"
+      ".json",
   );
   const keyring = new Keyring({ type: "sr25519" });
   const user = keyring.createFromJson(JSON.parse(file as any));
@@ -29,17 +29,17 @@ function difference(a1: any, a2: any) {
 
   const claimedRewardsKeys = await api.query.bootstrap.claimedRewards.keys();
   const alreadyClaimedAddresses = claimedRewardsKeys.map(
-    ({ args: [address] }) => address.toString()
+    ({ args: [address] }) => address.toString(),
   );
 
   const provisionedAddresses = await api.query.bootstrap.provisions.keys();
   const provisioned = provisionedAddresses.map(({ args: [address] }) =>
-    address.toString()
+    address.toString(),
   );
 
   const accountsNotClaimedLpRewards = difference(
     provisioned,
-    alreadyClaimedAddresses
+    alreadyClaimedAddresses,
   );
   console.log(JSON.stringify(accountsNotClaimedLpRewards));
   console.log(JSON.stringify(provisioned));
@@ -48,7 +48,7 @@ function difference(a1: any, a2: any) {
     await signTx(
       api,
       api!.tx.bootstrap.claimLiquidityTokensForAccount(account, false),
-      user
+      user,
     );
   }
   provisioned.push("5EYCAe5fva7A4cKCNZH5hjHguP83vY8vygL9jepYHZqYEYe1");
@@ -66,17 +66,17 @@ function difference(a1: any, a2: any) {
             Id: user.address,
           },
           liqToken,
-          tokens.free.toString()
-        )
+          tokens.free.toString(),
+        ),
       ),
-      user
+      user,
     );
   }
   const tokens = await api!.query.tokens.accounts(user.address, liqToken);
   await signTx(
     api!,
     api!.tx.xyk.burnLiquidity(0, 7, tokens.free.toString()),
-    user
+    user,
   );
 })()
   .then(() => console.log("done"))

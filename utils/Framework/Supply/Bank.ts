@@ -1,6 +1,6 @@
 import { BN } from "@polkadot/util";
 import { ExtrinsicResult } from "../../eventListeners";
-import { SudoUser } from "../../Framework/User/SudoUser";
+import { SudoUser } from "../User/SudoUser";
 import { mintAsset } from "../../tx";
 import { getEventResultFromMangataTx } from "../../txHandler";
 import { Token } from "./Token";
@@ -16,7 +16,7 @@ export class Bank {
 
   public async mintToken(
     supply: BN,
-    targetUserAddress: string
+    targetUserAddress: string,
   ): Promise<Token> {
     this.id.add(new BN(1));
     const token = new Token(this.id, supply);
@@ -25,7 +25,7 @@ export class Bank {
       this.sudoUser.keyRingPair,
       this.id,
       targetUserAddress,
-      supply
+      supply,
     ).then((result) => {
       const eventResponse = getEventResultFromMangataTx(result, [
         "tokens",

@@ -10,11 +10,13 @@ import { WalletConnectModal } from "../microapps-pages/WalletConnectModal";
 import { WalletWrapper } from "../microapps-pages/WalletWrapper";
 import { Polkadot } from "../pages/Polkadot";
 import { acceptPermissionsWalletExtensionInNewWindow } from "../utils/Helper";
+import { BN_TEN } from "@mangata-finance/sdk";
+import { BN } from "@polkadot/util";
 
 export async function connectWallet(
   driver: WebDriver,
   walletType: string,
-  acc_name: string
+  acc_name: string,
 ) {
   const walletWrapper = new WalletWrapper(driver);
   const isWalletButton = await walletWrapper.isWalletConnectButtonDisplayed();
@@ -57,7 +59,6 @@ export async function setupPageWithState(driver: WebDriver, acc_name: string) {
   await mainPage.go();
   const appLoaded = await mainPage.isAppLoaded();
   expect(appLoaded).toBeTruthy();
-  await mainPage.skipBetaInfo();
 
   const walletWrapper = new WalletWrapper(driver);
   const isAccInfoDisplayed = await walletWrapper.isAccInfoDisplayed(acc_name);
@@ -69,13 +70,13 @@ export async function waitForMicroappsActionNotification(
   chainOne: ApiContext,
   chainTwo: ApiContext,
   transaction: TransactionType,
-  numOfBLocks = 1
+  numOfBLocks = 1,
 ) {
   const modal = new NotificationModal(driver);
   await modal.waitForModalState(ModalType.Confirm, transaction, 3000);
   const isModalWaitingForSignVisible = await modal.isModalVisible(
     ModalType.Confirm,
-    transaction
+    transaction,
   );
   expect(isModalWaitingForSignVisible).toBeTruthy();
   await Polkadot.signTransaction(driver);
@@ -86,8 +87,27 @@ export async function waitForMicroappsActionNotification(
   await modal.waitForModalState(ModalType.Success, transaction);
   const isModalSuccessVisible = await modal.isModalVisible(
     ModalType.Success,
-    transaction
+    transaction,
   );
   expect(isModalSuccessVisible).toBeTruthy();
   await modal.clickInDone();
+}
+
+export async function addLiqTokenMicroapps(
+  userAddress: string,
+  apiContext: ApiContext,
+  tokenId: number,
+  power: number,
+  value: number,
+) {
+  await apiContext.dev.setStorage({
+    Tokens: {
+      Accounts: [
+        [
+          [userAddress, { token: tokenId }],
+          { free: BN_TEN.pow(new BN(power)).mul(new BN(value)).toString() },
+        ],
+      ],
+    },
+  });
 }

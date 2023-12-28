@@ -68,11 +68,11 @@ describe("staking - testpad", () => {
       testUser1 = new User(keyring);
       await fs.writeFileSync(
         testUser1.keyRingPair.address + ".json",
-        JSON.stringify(testUser1.keyRingPair.toJson("mangata123"))
+        JSON.stringify(testUser1.keyRingPair.toJson("mangata123")),
       );
       await fs.writeFileSync(
         sudo.keyRingPair.address + ".json",
-        JSON.stringify(sudo.keyRingPair.toJson("mangata123"))
+        JSON.stringify(sudo.keyRingPair.toJson("mangata123")),
       );
       // add users to pair.
       keyring.addPair(testUser1.keyRingPair);
@@ -80,7 +80,7 @@ describe("staking - testpad", () => {
       await testUser1.refreshAmounts(AssetWallet.BEFORE);
 
       const { nonce } = await api.query.system.account(
-        sudo.keyRingPair.address
+        sudo.keyRingPair.address,
       );
       await signTx(
         api,
@@ -88,11 +88,11 @@ describe("staking - testpad", () => {
           api.tx.tokens.mint(
             MGA_ASSET_ID,
             testUser1.keyRingPair.address,
-            new BN("1000000000000")
-          )
+            new BN("1000000000000"),
+          ),
         ),
         sudo.keyRingPair,
-        { nonce: new BN(nonce) }
+        { nonce: new BN(nonce) },
       );
       const nonce2 = await (
         await api.query.system.account(sudo.keyRingPair.address)
@@ -103,11 +103,11 @@ describe("staking - testpad", () => {
           api.tx.tokens.mint(
             new BN(3),
             testUser1.keyRingPair.address,
-            new BN(10000)
-          )
+            new BN(10000),
+          ),
         ),
         sudo.keyRingPair,
-        { nonce: new BN(nonce2.toNumber()) }
+        { nonce: new BN(nonce2.toNumber()) },
       );
 
       //    await sudo.mint(MGA_ASSET_ID, testUser1, new BN("1000000000000"));
@@ -125,9 +125,9 @@ describe("staking - testpad", () => {
           new BN(bondAmount),
           "Staked",
           // @ts-ignore - Mangata bond operation has 4 params, somehow is inheriting the bond operation from polkadot :S
-          new BN(3)
+          new BN(3),
         ),
-        testUser1.keyRingPair
+        testUser1.keyRingPair,
       );
       await waitNewBlock();
       //      await signSendAndWaitToFinishTx(
@@ -144,7 +144,7 @@ describe("staking - testpad", () => {
       //        testUser1.keyRingPair
       //      ).then();
       //      testLog.getLog().warn("done" + testUser1.keyRingPair.address);
-    }
+    },
   );
 
   test("V4 xyk-pallet: Bob offline", async () => {
@@ -161,7 +161,7 @@ describe("staking - testpad", () => {
 
     await signSendAndWaitToFinishTx(
       api?.tx.parachainStaking.goOffline(),
-      user.keyRingPair
+      user.keyRingPair,
     ).then();
     testLog.getLog().warn("done");
   });
@@ -179,7 +179,7 @@ describe("staking - testpad", () => {
 
     await signSendAndWaitToFinishTx(
       api?.tx.parachainStaking.goOnline(),
-      user.keyRingPair
+      user.keyRingPair,
     ).then();
     testLog.getLog().warn("done");
   });
@@ -197,7 +197,7 @@ describe("staking - testpad", () => {
 
     await signSendAndWaitToFinishTx(
       api?.tx.parachainStaking.setBlocksPerRound(1),
-      user.keyRingPair
+      user.keyRingPair,
     ).then();
     testLog.getLog().warn("done");
   });
@@ -219,9 +219,9 @@ describe("staking - testpad", () => {
     await signSendAndWaitToFinishTx(
       api?.tx.parachainStaking.removeStakingLiquidityToken(
         params.paired_or_liquidity_token,
-        3
+        3,
       ),
-      user.keyRingPair
+      user.keyRingPair,
     ).then();
     testLog.getLog().warn("done");
   });
@@ -239,9 +239,9 @@ describe("staking - testpad", () => {
     keyring.addPair(user.keyRingPair);
     await signSendAndWaitToFinishTx(
       api?.tx.parachainStaking.scheduleCandidateBondLess(
-        new BN("1999999999999999999999")
+        new BN("1999999999999999999999"),
       ),
-      user.keyRingPair
+      user.keyRingPair,
     ).then();
     testLog.getLog().warn("done");
   });
@@ -258,26 +258,26 @@ describe("staking - testpad", () => {
     keyring.addPair(user.keyRingPair);
     await signSendAndWaitToFinishTx(
       api?.tx.parachainStaking.executeCandidateBondRequest(
-        user.keyRingPair.address
+        user.keyRingPair.address,
       ),
-      user.keyRingPair
+      user.keyRingPair,
     ).then();
     testLog.getLog().warn("done");
   });
 
   test.each(["6666"])(
     "V4 - xyk-pallet: Create new users with bonded amounts.",
-    async (bondAmount) => {
+    async () => {
       keyring = new Keyring({ type: "sr25519" });
       sudo = new User(keyring, sudoUserName);
       testUser1 = new User(keyring);
       await fs.writeFileSync(
         testUser1.keyRingPair.address + ".json",
-        JSON.stringify(testUser1.keyRingPair.toJson("mangata123"))
+        JSON.stringify(testUser1.keyRingPair.toJson("mangata123")),
       );
       await fs.writeFileSync(
         sudo.keyRingPair.address + ".json",
-        JSON.stringify(sudo.keyRingPair.toJson("mangata123"))
+        JSON.stringify(sudo.keyRingPair.toJson("mangata123")),
       );
       // add users to pair.
       keyring.addPair(testUser1.keyRingPair);
@@ -286,7 +286,7 @@ describe("staking - testpad", () => {
       await testUser1.refreshAmounts(AssetWallet.BEFORE);
 
       const { nonce } = await api.query.system.account(
-        sudo.keyRingPair.address
+        sudo.keyRingPair.address,
       );
       await signTx(
         api,
@@ -294,11 +294,11 @@ describe("staking - testpad", () => {
           api.tx.tokens.mint(
             MGA_ASSET_ID,
             testUser1.keyRingPair.address,
-            new BN("1000000000000")
-          )
+            new BN("1000000000000"),
+          ),
         ),
         sudo.keyRingPair,
-        { nonce: new BN(nonce) }
+        { nonce: new BN(nonce) },
       );
       const nonce2 = await (
         await api.query.system.account(sudo.keyRingPair.address)
@@ -309,11 +309,11 @@ describe("staking - testpad", () => {
           api.tx.tokens.mint(
             new BN(3),
             testUser1.keyRingPair.address,
-            new BN("100000000000000000000")
-          )
+            new BN("100000000000000000000"),
+          ),
         ),
         sudo.keyRingPair,
-        { nonce: new BN(nonce2.toNumber()) }
+        { nonce: new BN(nonce2.toNumber()) },
       );
 
       await waitNewBlock();
@@ -322,12 +322,12 @@ describe("staking - testpad", () => {
           new BN("100000000000000000000"),
           new BN(3),
           // @ts-ignore - Mangata bond operation has 4 params, somehow is inheriting the bond operation from polkadot :S
-          new BN(3)
+          new BN(3),
         ),
-        testUser1.keyRingPair
+        testUser1.keyRingPair,
       );
       await waitNewBlock();
-    }
+    },
   );
   test("V4 xyk-pallet: bond", async () => {
     try {
@@ -350,9 +350,9 @@ describe("staking - testpad", () => {
         new BN("100000000000000000000"),
         new BN(3),
         // @ts-ignore - Mangata bond operation has 4 params, somehow is inheriting the bond operation from polkadot :S
-        new BN(3)
+        new BN(3),
       ),
-      user.keyRingPair
+      user.keyRingPair,
     );
     await waitNewBlock();
     testLog.getLog().warn("done");
@@ -370,7 +370,7 @@ describe("staking - testpad", () => {
       {
         encoding: "utf8",
         flag: "r",
-      }
+      },
     );
     const user = new User(keyring, "aasd", JSON.parse(json));
     keyring.addPair(user.keyRingPair);
@@ -380,9 +380,9 @@ describe("staking - testpad", () => {
       api?.tx.parachainStaking.joinCandidates(
         new BN("100000000000000000000"),
         new BN(3),
-        new BN(3)
+        new BN(3),
       ),
-      user.keyRingPair
+      user.keyRingPair,
     );
     await waitNewBlock();
     testLog.getLog().warn("done");
@@ -401,7 +401,7 @@ describe("staking - testpad", () => {
       {
         encoding: "utf8",
         flag: "r",
-      }
+      },
     );
 
     const testUser1 = new User(keyring, "aasd", JSON.parse(json));
@@ -421,11 +421,11 @@ describe("staking - testpad", () => {
         api.tx.tokens.mint(
           MGA_ASSET_ID,
           testUser1.keyRingPair.address,
-          new BN(Math.pow(10, 20).toString())
-        )
+          new BN(Math.pow(10, 20).toString()),
+        ),
       ),
       sudo.keyRingPair,
-      { nonce: new BN(nonce) }
+      { nonce: new BN(nonce) },
     );
     const nonce2 = await (
       await api.query.system.account(sudo.keyRingPair.address)
@@ -436,11 +436,11 @@ describe("staking - testpad", () => {
         api.tx.tokens.mint(
           new BN(3),
           testUser1.keyRingPair.address,
-          new BN("11000000000000000000000")
-        )
+          new BN("11000000000000000000000"),
+        ),
       ),
       sudo.keyRingPair,
-      { nonce: new BN(nonce2.toNumber()) }
+      { nonce: new BN(nonce2.toNumber()) },
     );
 
     await waitNewBlock();
@@ -449,16 +449,16 @@ describe("staking - testpad", () => {
         new BN("11000000000000000000000"),
         new BN(3),
         // @ts-ignore - Mangata bond operation has 4 params, somehow is inheriting the bond operation from polkadot :S
-        new BN(3)
+        new BN(3),
       ),
-      testUser1.keyRingPair
+      testUser1.keyRingPair,
     );
     await waitNewBlock();
     const rpcResult = await api?.rpc.author.rotateKeys();
 
     await signSendAndWaitToFinishTx(
       api?.tx.session.setKeys(rpcResult.toString(), "0x00"),
-      user.keyRingPair
+      user.keyRingPair,
     );
     await waitNewBlock();
     testLog.getLog().warn("done");
@@ -477,7 +477,7 @@ describe("staking - testpad", () => {
       {
         encoding: "utf8",
         flag: "r",
-      }
+      },
     );
     const user = new User(keyring, "aasd", JSON.parse(json));
     //const pk = u8aToHex(user.keyRingPair.publicKey);
@@ -490,7 +490,7 @@ describe("staking - testpad", () => {
       "0xa02218669065017eb04a952e24e9ec1724d639449b8871d410df44883fb22c6d";
     await signSendAndWaitToFinishTx(
       api?.tx.session.setKeys(rpcResult.toString(), "0x00"),
-      user.keyRingPair
+      user.keyRingPair,
     );
     await waitNewBlock();
     testLog.getLog().warn("done");
@@ -519,11 +519,11 @@ describe("staking - testpad", () => {
         api.tx.tokens.mint(
           new BN(3),
           testUser1.keyRingPair.address,
-          new BN(amount)
-        )
+          new BN(amount),
+        ),
       ),
       sudo.keyRingPair,
-      { nonce: new BN(nonce.toNumber()) }
+      { nonce: new BN(nonce.toNumber()) },
     );
 
     keyring.addPair(user.keyRingPair);
@@ -531,7 +531,7 @@ describe("staking - testpad", () => {
 
     await signSendAndWaitToFinishTx(
       api?.tx.parachainStaking.scheduleCandidateBondMore(amount),
-      user.keyRingPair
+      user.keyRingPair,
     );
     await waitNewBlock();
     testLog.getLog().warn("done");
@@ -552,7 +552,7 @@ describe("staking - testpad", () => {
       api,
       api.tx.sudo.sudo(api.tx.parachainStaking.setTotalSelected(new BN(3))),
       sudo.keyRingPair,
-      { nonce: new BN(nonce.toNumber()) }
+      { nonce: new BN(nonce.toNumber()) },
     );
 
     await waitNewBlock();
@@ -577,7 +577,7 @@ describe("staking - testpad", () => {
 
     await signSendAndWaitToFinishTx(
       api?.tx.parachainStaking.scheduleLeaveCandidates(3),
-      user.keyRingPair
+      user.keyRingPair,
     );
     //    await signSendAndWaitToFinishTx(
     //      api?.tx.parachainStaking.executeLeaveCandidates(user.keyRingPair.address),
@@ -608,7 +608,7 @@ describe("staking - testpad", () => {
 
     await signSendAndWaitToFinishTx(
       api?.tx.staking.chill(),
-      user.keyRingPair
+      user.keyRingPair,
     ).then();
     testLog.getLog().warn("done");
   });
@@ -633,7 +633,7 @@ describe("staking - testpad", () => {
 
     await signSendAndWaitToFinishTx(
       api?.tx.staking.validate({ commission: "0" }),
-      user.keyRingPair
+      user.keyRingPair,
     ).then();
     testLog.getLog().warn("done");
   });
@@ -657,7 +657,7 @@ describe("staking - testpad", () => {
       api?.tx.staking.nominate([
         "5CPFKKg6cUH2XRzzg3Zb4UYVY1cTUzrxUFiqzbF94voStUZx",
       ]),
-      user.keyRingPair
+      user.keyRingPair,
     ).then();
     await waitNewBlock();
     testLog.getLog().warn("done");
@@ -680,7 +680,7 @@ describe("staking - testpad", () => {
 
     await signSendAndWaitToFinishTx(
       api?.tx.staking.bondExtra(new BN(1000)),
-      user.keyRingPair
+      user.keyRingPair,
     ).then();
     await waitNewBlock();
     testLog.getLog().warn("done");
@@ -707,9 +707,9 @@ describe("staking - testpad", () => {
         new BN("1000"),
         "Staked",
         // @ts-ignore - Mangata bond operation has 4 params, somehow is inheriting the bond operation from polkadot :S
-        new BN(3)
+        new BN(3),
       ),
-      user.keyRingPair
+      user.keyRingPair,
     );
     await waitNewBlock();
     testLog.getLog().warn("done");
@@ -732,7 +732,7 @@ describe("staking - testpad", () => {
 
     await signSendAndWaitToFinishTx(
       api?.tx.staking.validate({ commission: "99" }),
-      user.keyRingPair
+      user.keyRingPair,
     );
     await waitNewBlock();
     testLog.getLog().warn("done");
@@ -755,7 +755,7 @@ describe("staking - testpad", () => {
 
     await signSendAndWaitToFinishTx(
       api?.tx.staking.rebond(new BN("80")),
-      user.keyRingPair
+      user.keyRingPair,
     );
     await waitNewBlock();
     testLog.getLog().warn("done");
@@ -780,9 +780,9 @@ describe("staking - testpad", () => {
         await signSendAndWaitToFinishTx(
           api?.tx.staking.payoutStakers(
             "5GrwvaEF5zXb26Fz9rcQpDWS57CtERHpNehXCPcNoHGKutQY",
-            index
+            index,
           ),
-          user.keyRingPair
+          user.keyRingPair,
         ).then();
       } catch (error) {}
     }
@@ -808,7 +808,7 @@ describe("staking - testpad", () => {
 
     await signSendAndWaitToFinishTx(
       api?.tx.staking.unbond(new BN(1111)),
-      user.keyRingPair
+      user.keyRingPair,
     ).then();
     await waitNewBlock();
     testLog.getLog().warn("done");
@@ -831,7 +831,7 @@ describe("staking - testpad", () => {
 
     await signSendAndWaitToFinishTx(
       api?.tx.staking.withdrawUnbonded(new BN(3000)),
-      user.keyRingPair
+      user.keyRingPair,
     ).then();
     await waitNewBlock();
     testLog.getLog().warn("done");
@@ -849,7 +849,7 @@ describe("staking - testpad", () => {
       api,
       api.tx.sudo.sudo(api.tx.staking.forceNewEraAlways()),
       sudo.keyRingPair,
-      { nonce: nonce }
+      { nonce: nonce },
     );
   });
   test("create token", async () => {
@@ -893,7 +893,7 @@ describe("staking - testpad", () => {
     const response = await api.query.tokens.accounts.entries();
     const userAddress = "5FHneW46xGXgs5mUiveU4sbTyGBzmstUspZC92UhjJM694ty";
     const userEntries = response.filter((value) =>
-      (value[0].toHuman() as string[]).includes(userAddress)
+      (value[0].toHuman() as string[]).includes(userAddress),
     );
     const tokenValues: Map<
       BN,
@@ -905,9 +905,9 @@ describe("staking - testpad", () => {
         reserved: hexToBn(JSON.parse(userEntries[0][1].toString()).reserved),
         feeFrozen: hexToBn(JSON.parse(userEntries[0][1].toString()).feeFrozen),
         miscFrozen: hexToBn(
-          JSON.parse(userEntries[0][1].toString()).miscFrozen
+          JSON.parse(userEntries[0][1].toString()).miscFrozen,
         ),
-      })
+      }),
     );
   });
   test("sellAsset", async () => {
@@ -926,7 +926,7 @@ describe("staking - testpad", () => {
       new BN(0),
       new BN(1),
       new BN(0),
-      new BN(100)
+      new BN(100),
     );
   });
 
@@ -946,7 +946,7 @@ describe("staking - testpad", () => {
   test("block author", async () => {
     const blockNumber = await findBlockWithExtrinsicSigned(
       [1403, 1406],
-      "5D4rciiZg4Lk4478mMsaMsx8b5KEefk15Vmf1HkzKiBrw1cT"
+      "5D4rciiZg4Lk4478mMsaMsx8b5KEefk15Vmf1HkzKiBrw1cT",
     );
     const diff = await getTokensDiffForBlockAuthor(blockNumber);
     testLog.getLog().warn(diff.toString());

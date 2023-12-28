@@ -44,7 +44,7 @@ export class DepositModal {
     const assetLocator = buildDataTestIdXpath(assetTestId);
     await sleep(2000);
     const element = await this.driver.wait(
-      until.elementLocated(By.xpath(assetLocator))
+      until.elementLocated(By.xpath(assetLocator)),
     );
     await this.driver.wait(until.elementIsVisible(element));
     await this.driver.wait(until.elementIsEnabled(element));
@@ -59,14 +59,14 @@ export class DepositModal {
 
   async areTokenListElementsVisible(
     assetName: string,
-    retries = 10
+    retries = 10,
   ): Promise<boolean> {
     try {
       const assetTestId = `TokensModal-token-${assetName}`;
       const assetLocator = buildDataTestIdXpath(assetTestId);
       const element = await this.driver.wait(
         until.elementLocated(By.xpath(assetLocator)),
-        10000
+        10000,
       );
       await this.driver.wait(until.elementIsVisible(element));
       await this.driver.wait(until.elementIsEnabled(element));
@@ -74,11 +74,10 @@ export class DepositModal {
       const assetAmountLocator =
         assetLocator + buildDataTestIdXpath(assetAmountTestId);
       await waitForElement(this.driver, assetAmountLocator, 60000);
-      const elementsDisplayed = await areDisplayed(this.driver, [
+      return await areDisplayed(this.driver, [
         assetLocator,
         assetAmountLocator,
       ]);
-      return elementsDisplayed;
     } catch (error) {
       if (retries > 0) {
         await sleep(3000);
@@ -110,10 +109,7 @@ export class DepositModal {
 
   async isContinueButtonEnabled() {
     const xpath = buildDataTestIdXpath(STEP_O_CONT);
-    const enabled = await (
-      await this.driver.findElement(By.xpath(xpath))
-    ).isEnabled();
-    return enabled;
+    return await (await this.driver.findElement(By.xpath(xpath))).isEnabled();
   }
 
   async confirmAndSign() {

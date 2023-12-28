@@ -66,14 +66,14 @@ beforeEach(async () => {
   [firstCurrency, secondCurrency] = await Assets.setupUserWithCurrencies(
     testUser1,
     [defaultCurrecyValue, defaultCurrecyValue.add(new BN(1))],
-    sudo
+    sudo,
   );
 
   await testUser1.createPoolToAsset(
     new BN(50000),
     new BN(50000),
     firstCurrency,
-    secondCurrency
+    secondCurrency,
   );
 
   // add users to pair.
@@ -94,7 +94,7 @@ beforeEach(async () => {
 test("xyk-pallet - AssetsOperation: buyAsset [maxAmountIn = 1M], buy asset", async () => {
   const poolBalanceBefore = await getBalanceOfPool(
     firstCurrency,
-    secondCurrency
+    secondCurrency,
   );
 
   const amount = new BN(10000);
@@ -102,19 +102,22 @@ test("xyk-pallet - AssetsOperation: buyAsset [maxAmountIn = 1M], buy asset", asy
   const buyPriceLocal = calculate_buy_price_local(
     poolBalanceBefore[0],
     poolBalanceBefore[1],
-    amount
+    amount,
   );
   const buyPriceRpc = await calculate_buy_price_rpc(
     poolBalanceBefore[0],
     poolBalanceBefore[1],
-    amount
+    amount,
   );
   expect(buyPriceLocal).bnEqual(buyPriceRpc);
 
   testLog
     .getLog()
     .info(
-      "Bob: buying asset " + secondCurrency + ", selling asset " + firstCurrency
+      "Bob: buying asset " +
+        secondCurrency +
+        ", selling asset " +
+        firstCurrency,
     );
   const soldAssetId = firstCurrency;
   const boughtAssetId = secondCurrency;
@@ -124,7 +127,7 @@ test("xyk-pallet - AssetsOperation: buyAsset [maxAmountIn = 1M], buy asset", asy
     soldAssetId,
     boughtAssetId,
     amount,
-    new BN(1000000)
+    new BN(1000000),
   ).then((result) => {
     const eventResponse = getEventResultFromMangataTx(result, [
       "xyk",
@@ -136,8 +139,8 @@ test("xyk-pallet - AssetsOperation: buyAsset [maxAmountIn = 1M], buy asset", asy
       result.findIndex(
         (x) =>
           x.section === EVENT_SECTION_PAYMENT ||
-          x.method === EVENT_METHOD_PAYMENT
-      )
+          x.method === EVENT_METHOD_PAYMENT,
+      ),
     ).toEqual(-1);
   });
 
@@ -149,14 +152,14 @@ test("xyk-pallet - AssetsOperation: buyAsset [maxAmountIn = 1M], buy asset", asy
     .getAsset(boughtAssetId)
     ?.amountBefore.free!.add(amount);
   expect(testUser1.getAsset(boughtAssetId)?.amountAfter.free!).bnEqual(
-    addFromWallet!
+    addFromWallet!,
   );
 
   let diffFromWallet = testUser1
     .getAsset(soldAssetId)
     ?.amountBefore.free!.sub(buyPriceLocal);
   expect(testUser1.getAsset(soldAssetId)?.amountAfter.free!).bnEqual(
-    diffFromWallet!
+    diffFromWallet!,
   );
 
   testUser2.getFreeAssetAmounts().forEach((asset) => {
@@ -169,14 +172,14 @@ test("xyk-pallet - AssetsOperation: buyAsset [maxAmountIn = 1M], buy asset", asy
     ?.amountBefore.free!.add(buyPriceLocal)
     .sub(bothFees);
   expect(pallet.getAsset(soldAssetId)?.amountAfter.free!).bnEqual(
-    addFromWallet!
+    addFromWallet!,
   );
 
   diffFromWallet = pallet
     .getAsset(boughtAssetId)
     ?.amountBefore.free!.sub(amount);
   expect(pallet.getAsset(boughtAssetId)?.amountAfter.free!).bnEqual(
-    diffFromWallet!
+    diffFromWallet!,
   );
 
   const pool_balance = await getBalanceOfPool(firstCurrency, secondCurrency);
@@ -193,7 +196,7 @@ test("xyk-pallet - AssetsOperation: buyAsset [maxAmountIn = 1M], sell a bought a
   testLog
     .getLog()
     .info(
-      "buying asset " + secondCurrency + ", selling asset " + firstCurrency
+      "buying asset " + secondCurrency + ", selling asset " + firstCurrency,
     );
   let soldAssetId = firstCurrency;
   let boughtAssetId = secondCurrency;
@@ -203,17 +206,17 @@ test("xyk-pallet - AssetsOperation: buyAsset [maxAmountIn = 1M], sell a bought a
   // considering the pool and the 15k amount
   const poolBalanceBefore = await getBalanceOfPool(
     secondCurrency,
-    firstCurrency
+    firstCurrency,
   );
   const buyPriceLocal = calculate_buy_price_local(
     poolBalanceBefore[0],
     poolBalanceBefore[1],
-    amount
+    amount,
   );
   const buypriceRpc = await calculate_buy_price_rpc(
     poolBalanceBefore[0],
     poolBalanceBefore[1],
-    amount
+    amount,
   );
   expect(buyPriceLocal).bnEqual(buypriceRpc);
 
@@ -234,14 +237,14 @@ test("xyk-pallet - AssetsOperation: buyAsset [maxAmountIn = 1M], sell a bought a
     .getAsset(boughtAssetId)
     ?.amountBefore.free!.add(amount);
   expect(testUser1.getAsset(boughtAssetId)?.amountAfter.free!).bnEqual(
-    addFromWallet!
+    addFromWallet!,
   );
 
   let diffFromWallet = testUser1
     .getAsset(soldAssetId)
     ?.amountBefore.free!.sub(buyPriceLocal);
   expect(testUser1.getAsset(soldAssetId)?.amountAfter.free!).bnEqual(
-    diffFromWallet!
+    diffFromWallet!,
   );
 
   testUser2.getFreeAssetAmounts().forEach((asset) => {
@@ -255,14 +258,14 @@ test("xyk-pallet - AssetsOperation: buyAsset [maxAmountIn = 1M], sell a bought a
     ?.amountBefore.free!.add(buyPriceLocal)
     .sub(bothFees);
   expect(pallet.getAsset(soldAssetId)?.amountAfter.free!).bnEqual(
-    addFromWallet!
+    addFromWallet!,
   );
 
   diffFromWallet = pallet
     .getAsset(boughtAssetId)
     ?.amountBefore.free!.sub(amount);
   expect(pallet.getAsset(boughtAssetId)?.amountAfter.free!).bnEqual(
-    diffFromWallet!
+    diffFromWallet!,
   );
 
   const pool_balance = await getBalanceOfPool(secondCurrency, firstCurrency);

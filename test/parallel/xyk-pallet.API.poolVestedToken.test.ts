@@ -26,7 +26,7 @@ import {
   transferAsset,
   unlockVestedToken,
 } from "../../utils/tx";
-import { toBN } from "@mangata-finance/sdk";
+import { BN_ZERO, toBN } from "@mangata-finance/sdk";
 import { getEnvironmentRequiredVars, getBlockNumber } from "../../utils/utils";
 import { User } from "../../utils/User";
 import { Xyk } from "../../utils/xyk";
@@ -49,7 +49,7 @@ const defaultVestingValue = new BN(200000);
 async function createPoolAndVestingToken(
   needPromotePool: boolean,
   lockedValue: BN,
-  perBlockValue: BN
+  perBlockValue: BN,
 ) {
   const api = getApi();
 
@@ -63,17 +63,17 @@ async function createPoolAndVestingToken(
         MGA_ASSET_ID,
         defaultCurrencyValue,
         createdToken,
-        defaultCurrencyValue
-      )
-    )
+        defaultCurrencyValue,
+      ),
+    ),
   );
 
   liquidityID = await getLiquidityAssetId(MGA_ASSET_ID, createdToken);
 
-  if (needPromotePool === true) {
+  if (needPromotePool) {
     const promotingPool = await promotePool(sudo.keyRingPair, liquidityID);
     expect(getEventResultFromMangataTx(promotingPool).state).toEqual(
-      ExtrinsicResult.ExtrinsicSuccess
+      ExtrinsicResult.ExtrinsicSuccess,
     );
   }
   const vestingStartBlockNumber = (await getBlockNumber()) + 5;
@@ -84,19 +84,19 @@ async function createPoolAndVestingToken(
     testUser1,
     vestingStartBlockNumber,
     lockedValue,
-    perBlockValue
+    perBlockValue,
   );
 
   const mintingVestingToken = await mintLiquidityUsingVestingNativeTokens(
     testUser1.keyRingPair,
     defaultVestingValue,
-    createdToken
+    createdToken,
   );
 
-  if (needPromotePool === true) {
+  if (needPromotePool) {
     const userBalanceAfterMinting = await api.query.tokens.accounts(
       testUser1.keyRingPair.address,
-      liquidityID
+      liquidityID,
     );
 
     expect(userBalanceAfterMinting.frozen).bnEqual(defaultVestingValue);
@@ -146,11 +146,11 @@ describe("xyk-pallet - Vested token tests: which action you can do with vesting 
     const poolCurrencyIssue = await sudoIssueAsset(
       sudo.keyRingPair,
       toBN("1", 20),
-      sudo.keyRingPair.address
+      sudo.keyRingPair.address,
     );
     const poolEventResult = await getEventResultFromMangataTx(
       poolCurrencyIssue,
-      ["tokens", "Issued", sudo.keyRingPair.address]
+      ["tokens", "Created", sudo.keyRingPair.address],
     );
     const poolAssetId = poolEventResult.data[0].split(",").join("");
     createdToken = new BN(poolAssetId);
@@ -163,26 +163,26 @@ describe("xyk-pallet - Vested token tests: which action you can do with vesting 
       testUser1.keyRingPair,
       MGA_ASSET_ID,
       createdToken,
-      new BN(150000)
+      new BN(150000),
     );
     expect(getEventResultFromMangataTx(burnLiudityResult).state).toEqual(
-      ExtrinsicResult.ExtrinsicFailed
+      ExtrinsicResult.ExtrinsicFailed,
     );
     expect(getEventResultFromMangataTx(burnLiudityResult).data).toContain(
-      "NotEnoughAssets"
+      "NotEnoughAssets",
     );
 
     const transferAssetResult = await transferAsset(
       testUser1.keyRingPair,
       liquidityID,
       sudo.keyRingPair.address.toString(),
-      new BN(150000)
+      new BN(150000),
     );
     expect(getEventResultFromMangataTx(transferAssetResult).state).toEqual(
-      ExtrinsicResult.ExtrinsicFailed
+      ExtrinsicResult.ExtrinsicFailed,
     );
     expect(getEventResultFromMangataTx(transferAssetResult).data).toContain(
-      "LiquidityRestrictions"
+      "LiquidityRestrictions",
     );
   });
 
@@ -193,61 +193,67 @@ describe("xyk-pallet - Vested token tests: which action you can do with vesting 
 
     const userBalanceBeforeAmount = await api.query.tokens.accounts(
       testUser1.keyRingPair.address,
-      liquidityID
+      liquidityID,
     );
-
     expect(
-      userBalanceBeforeAmount.free.sub(userBalanceBeforeAmount.frozen)
+      userBalanceBeforeAmount.free.sub(userBalanceBeforeAmount.frozen),
     ).bnEqual(new BN(0));
 
     const unlockSomeVestedToken = await unlockVestedToken(
       testUser1,
-      liquidityID
+      liquidityID,
     );
     expect(getEventResultFromMangataTx(unlockSomeVestedToken).state).toEqual(
-      ExtrinsicResult.ExtrinsicSuccess
+      ExtrinsicResult.ExtrinsicSuccess,
     );
 
     const userBalanceAfterUnlockingAmount = await api.query.tokens.accounts(
       testUser1.keyRingPair.address,
-      liquidityID
+      liquidityID,
     );
     expect(
       userBalanceAfterUnlockingAmount.free.sub(
-        userBalanceAfterUnlockingAmount.frozen
-      )
+        userBalanceAfterUnlockingAmount.frozen,
+      ),
     ).bnGt(new BN(0));
 
-    // eslint-disable-next-line prettier/prettier
+    const howManyCanBeUnReserved =
+      // @ts-ignore
+      await api.rpc.xyk.get_max_instant_unreserve_amount(
+        testUser1.keyRingPair.address,
+        liquidityID.toString(),
+      );
+    expect(howManyCanBeUnReserved).bnEqual(BN_ZERO);
+
     const maxInstantBurnAmount =
       //@ts-ignore
       await api.rpc.xyk.get_max_instant_burn_amount(
         testUser1.keyRingPair.address,
-        liquidityID
+        liquidityID,
       );
 
     const burnUnlockedToken = await burnLiquidity(
       testUser1.keyRingPair,
       MGA_ASSET_ID,
       createdToken,
-      new BN(maxInstantBurnAmount)
+      new BN(maxInstantBurnAmount),
     );
     expect(getEventResultFromMangataTx(burnUnlockedToken).state).toEqual(
-      ExtrinsicResult.ExtrinsicSuccess
+      ExtrinsicResult.ExtrinsicSuccess,
     );
 
     const userBalanceAfterBurningAmount = await api.query.tokens.accounts(
       testUser1.keyRingPair.address,
-      liquidityID
+      liquidityID,
     );
     expect(
       userBalanceAfterBurningAmount.free.sub(
-        userBalanceAfterBurningAmount.frozen
-      )
+        userBalanceAfterBurningAmount.frozen,
+      ),
     ).bnEqual(new BN(0));
 
     expect(
-      userBalanceBeforeAmount.frozen.sub(userBalanceAfterBurningAmount.frozen)
+      userBalanceBeforeAmount.frozen.sub(userBalanceAfterBurningAmount.frozen),
     ).bnGt(new BN(0));
   });
 
@@ -259,47 +265,47 @@ describe("xyk-pallet - Vested token tests: which action you can do with vesting 
     const vestingTokenFunction = await createPoolAndVestingToken(
       true,
       amountVestingToken,
-      amountUnlockedPerBlock
+      amountUnlockedPerBlock,
     );
 
     const vestingStartBlockNumber = new BN(
-      vestingTokenFunction.vestingStartBlockNumber
+      vestingTokenFunction.vestingStartBlockNumber,
     );
 
     const vestingFinishBlockNumber = new BN(
       vestingStartBlockNumber.add(
-        amountVestingToken.div(amountUnlockedPerBlock)
-      )
+        amountVestingToken.div(amountUnlockedPerBlock),
+      ),
     );
 
     await waitNecessaryBlock(vestingFinishBlockNumber);
 
     const userBalanceBeforeAmount = await api.query.tokens.accounts(
       testUser1.keyRingPair.address,
-      liquidityID
+      liquidityID,
     );
 
     expect(
-      userBalanceBeforeAmount.free.sub(userBalanceBeforeAmount.frozen)
+      userBalanceBeforeAmount.free.sub(userBalanceBeforeAmount.frozen),
     ).bnEqual(new BN(0));
 
     const unlockSomeVestedToken = await unlockVestedToken(
       testUser1,
-      liquidityID
+      liquidityID,
     );
     expect(getEventResultFromMangataTx(unlockSomeVestedToken).state).toEqual(
-      ExtrinsicResult.ExtrinsicSuccess
+      ExtrinsicResult.ExtrinsicSuccess,
     );
 
     const userBalanceAfterUnlockingAmount = await api.query.tokens.accounts(
       testUser1.keyRingPair.address,
-      liquidityID
+      liquidityID,
     );
 
     expect(
       userBalanceAfterUnlockingAmount.free.sub(
-        userBalanceAfterUnlockingAmount.frozen
-      )
+        userBalanceAfterUnlockingAmount.frozen,
+      ),
     ).bnGt(new BN(0));
 
     expect(userBalanceAfterUnlockingAmount.frozen).bnEqual(new BN(0));
@@ -309,38 +315,38 @@ describe("xyk-pallet - Vested token tests: which action you can do with vesting 
       //@ts-ignore
       await api.rpc.xyk.get_max_instant_burn_amount(
         testUser1.keyRingPair.address,
-        liquidityID
+        liquidityID,
       );
 
     const burnUnlockedToken = await burnLiquidity(
       testUser1.keyRingPair,
       MGA_ASSET_ID,
       createdToken,
-      new BN(maxInstantBurnAmount)
+      new BN(maxInstantBurnAmount),
     );
     expect(getEventResultFromMangataTx(burnUnlockedToken).state).toEqual(
-      ExtrinsicResult.ExtrinsicSuccess
+      ExtrinsicResult.ExtrinsicSuccess,
     );
 
     const userBalanceAfterBurningAmount = await api.query.tokens.accounts(
       testUser1.keyRingPair.address,
-      liquidityID
+      liquidityID,
     );
 
     const UserBalanceNewTokAfterBurning = await api.query.tokens.accounts(
       testUser1.keyRingPair.address,
-      createdToken
+      createdToken,
     );
 
     expect(userBalanceAfterBurningAmount.free).bnEqual(new BN(0));
     expect(userBalanceAfterBurningAmount.frozen).bnEqual(new BN(0));
 
     expect(UserBalanceNewTokAfterBurning.free).bnEqual(
-      defaultCurrencyValue.sub(new BN(1))
+      defaultCurrencyValue.sub(new BN(1)),
     );
 
     expect(
-      userBalanceBeforeAmount.frozen.sub(userBalanceAfterBurningAmount.frozen)
+      userBalanceBeforeAmount.frozen.sub(userBalanceAfterBurningAmount.frozen),
     ).bnGt(new BN(0));
   });
 
@@ -348,19 +354,19 @@ describe("xyk-pallet - Vested token tests: which action you can do with vesting 
     const poolMintingVestingToken = await createPoolAndVestingToken(
       false,
       toBN("1", 20),
-      new BN(100)
+      new BN(100),
     );
 
     expect(
       getEventResultFromMangataTx(
-        poolMintingVestingToken.mintingVestingTokenEvent
-      ).state
+        poolMintingVestingToken.mintingVestingTokenEvent,
+      ).state,
     ).toEqual(ExtrinsicResult.ExtrinsicFailed);
 
     expect(
       getEventResultFromMangataTx(
-        poolMintingVestingToken.mintingVestingTokenEvent
-      ).data
+        poolMintingVestingToken.mintingVestingTokenEvent,
+      ).data,
     ).toContain("NotAPromotedPool");
   });
 });

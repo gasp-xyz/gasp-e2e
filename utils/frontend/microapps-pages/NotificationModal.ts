@@ -35,7 +35,11 @@ export enum TransactionType {
   Withdraw,
   AddLiquidity,
   RemoveLiquidity,
+  ActivateLiquidity,
+  DeactivateLiquidity,
+  CreatePool,
   Claim,
+  Stake,
 }
 
 export class NotificationModal {
@@ -54,8 +58,12 @@ export class NotificationModal {
     [TransactionType.Withdraw]: "-withdraw",
     [TransactionType.AddLiquidity]: "-addLiquidity",
     [TransactionType.Swap]: "-swap",
+    [TransactionType.ActivateLiquidity]: "-activateLP",
+    [TransactionType.DeactivateLiquidity]: "-deactivateLP",
     [TransactionType.RemoveLiquidity]: "-removeLiquidity",
     [TransactionType.Claim]: "-claim",
+    [TransactionType.CreatePool]: "-createPool",
+    [TransactionType.Stake]: "-stake",
   };
 
   constructor(driver: WebDriver) {
@@ -63,7 +71,7 @@ export class NotificationModal {
   }
   private getModalXpath(type: ModalType, transaction: TransactionType) {
     return buildDataTestIdXpath(
-      MODAL_BASE + this.modalTransaction[transaction] + this.modalStage[type]
+      MODAL_BASE + this.modalTransaction[transaction] + this.modalStage[type],
     );
   }
   private getModalTextXpath(type: ModalType) {
@@ -89,34 +97,34 @@ export class NotificationModal {
   public async clickInDone() {
     await clickElement(
       this.driver,
-      buildXpathByElementText(MODAL_DONE_BTN, "Confirm")
+      buildXpathByElementText(MODAL_DONE_BTN, "Confirm"),
     );
   }
 
   public async dismiss() {
     await clickElement(
       this.driver,
-      buildXpathByElementText(MODAL_DONE_BTN, "close")
+      buildXpathByElementText(MODAL_DONE_BTN, "close"),
     );
   }
 
   public async waitForModalDisappear(
     modalState: ModalType,
-    transaction: TransactionType
+    transaction: TransactionType,
   ) {
     await waitForElementToDissapear(
       this.driver,
-      this.getModalXpath(modalState, transaction)
+      this.getModalXpath(modalState, transaction),
     );
   }
 
   public async waitForModal(
     modalState: ModalType,
-    transaction: TransactionType
+    transaction: TransactionType,
   ) {
     await waitForElement(
       this.driver,
-      this.getModalXpath(modalState, transaction)
+      this.getModalXpath(modalState, transaction),
     );
     await waitForNBlocks(2);
   }
@@ -124,12 +132,12 @@ export class NotificationModal {
   public async waitForModalState(
     modalState: ModalType,
     transaction: TransactionType,
-    timeout = FIVE_MIN
+    timeout = FIVE_MIN,
   ) {
     await waitForElementVisible(
       this.driver,
       this.getModalXpath(modalState, transaction),
-      timeout
+      timeout,
     );
   }
 

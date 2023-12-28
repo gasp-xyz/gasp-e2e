@@ -9,7 +9,7 @@ on:
           required: false
           default: ''
  
-  repository_dispatch:
+#  repository_dispatch:
 # GonCer: Decommission old app    types: [run-ci]
 jobs:
 
@@ -122,7 +122,7 @@ jobs:
         if: success() || failure()    # run this step even if previous step failed
         with:
           name: JEST UI Tests ${{ matrix.command }}           # Name of the check run which will be created
-          path: reports/junit-*.xml    # Path to test results
+          path: reports/*.xml    # Path to test results
           reporter: jest-junit        # Format of test results
 
       - name: Install testmo

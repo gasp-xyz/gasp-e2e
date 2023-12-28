@@ -53,7 +53,7 @@ describe("UI prod smoke tests - no action", () => {
     testUser1 = new User(keyring);
     testUser1.addFromMnemonic(
       keyring,
-      getEnvironmentRequiredVars().mnemonicPolkadot
+      getEnvironmentRequiredVars().mnemonicPolkadot,
     );
 
     testUser1.addAsset(TUR_ASSET_ID);
@@ -90,7 +90,7 @@ describe("UI prod smoke tests - no action", () => {
 
     const isPoolsOverviewItemVisible = await sidebar.isLiquidityPoolVisible(
       MGX_ASSET_NAME,
-      TUR_ASSET_NAME
+      TUR_ASSET_NAME,
     );
     expect(isPoolsOverviewItemVisible).toBeTruthy();
   });
@@ -145,7 +145,7 @@ describe("UI prod smoke tests - no action", () => {
     const session = await driver.getSession();
     await addExtraLogs(
       driver,
-      expect.getState().currentTestName + " - " + session.getId()
+      expect.getState().currentTestName + " - " + session.getId(),
     );
   });
 

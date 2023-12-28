@@ -10,5 +10,6 @@ test/exploratory/testPad.ts
 allure-results/*
 allure-report
 reports/**/*
-.yarn
+.yarn/cache
+.yarn/*.*
 *.sqlite

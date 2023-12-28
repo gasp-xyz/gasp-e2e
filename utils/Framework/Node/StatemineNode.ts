@@ -18,7 +18,7 @@ export class StatemineNode {
     toChain: ChainId,
     assetId: AssetSpec,
     amount: BN,
-    toUser: User
+    toUser: User,
   ): any {
     assert(ChainSpecs.has(toChain));
     const target = ChainSpecs.get(toChain)!;
@@ -65,7 +65,7 @@ export class StatemineNode {
         ],
       },
       0,
-      { Limited: TRANSFER_INSTRUCTIONS * target.unitCostWeight }
+      { Limited: TRANSFER_INSTRUCTIONS * target.unitCostWeight },
     );
   }
 

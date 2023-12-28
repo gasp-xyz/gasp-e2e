@@ -18,16 +18,16 @@ export class GovernanceUser extends BaseUser {
   async runForCouncil(): Promise<void> {
     await signSendAndWaitToFinishTx(
       this.api.tx.elections.submitCandidacy(
-        ((await this.api.query.elections.candidates()) as any).length
+        ((await this.api.query.elections.candidates()) as any).length,
       ),
-      this.keyRingPair
+      this.keyRingPair,
     );
   }
 
   async renounceCandidacy(candidateStatus: any): Promise<void> {
     await signSendAndWaitToFinishTx(
       this.api.tx.elections.renounceCandidacy(candidateStatus),
-      this.keyRingPair
+      this.keyRingPair,
     );
   }
 
@@ -40,7 +40,7 @@ export class GovernanceUser extends BaseUser {
 
     await signSendAndWaitToFinishTx(
       this.api.tx.elections.vote(userAddresses, stake),
-      this.keyRingPair
+      this.keyRingPair,
     );
   }
 }

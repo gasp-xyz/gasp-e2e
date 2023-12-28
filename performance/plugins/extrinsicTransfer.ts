@@ -21,7 +21,7 @@ export class ExtrinsicTransfer extends performanceTestItem {
     await runTransactions(
       this.mgaNodeandUsers,
       testParams,
-      createAndSignTransfer
+      createAndSignTransfer,
     );
     console.info(`.... Done Sending Txs`);
     return true;
@@ -32,7 +32,7 @@ async function createAndSignTransfer(
   mgaSdk: MangataInstance,
   users: { nonce: BN; keyPair: KeyringPair }[],
   threadId: number,
-  nonceOffset: BN = new BN(0)
+  nonceOffset: BN = new BN(0),
 ) {
   const destUser = users[(threadId + 1) % users.length];
   const srcUser = users[threadId % users.length];
@@ -42,7 +42,7 @@ async function createAndSignTransfer(
   const tx = api!.tx.tokens.transfer(
     destUser.keyPair.address,
     MGA_ASSET_ID,
-    new BN(1)
+    new BN(1),
   );
 
   await tx.signAsync(
@@ -50,7 +50,7 @@ async function createAndSignTransfer(
     //@ts-ignore
     {
       nonce,
-    }
+    },
   );
   return tx;
 }

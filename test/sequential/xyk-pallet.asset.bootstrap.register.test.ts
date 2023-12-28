@@ -3,7 +3,6 @@
  * @group xyk
  * @group asset
  * @group rewards-bootstrap
- * @group sequential
  */
 import { jest } from "@jest/globals";
 import { getApi } from "../../utils/api";
@@ -51,7 +50,7 @@ async function runBootstrap(assetId: BN) {
     MGA_ASSET_ID,
     assetId,
     waitingPeriod,
-    bootstrapPeriod
+    bootstrapPeriod,
   );
   await waitSudoOperationSuccess(scheduleBootstrapEvent);
 
@@ -61,12 +60,12 @@ async function runBootstrap(assetId: BN) {
     Assets.mintToken(assetId, testUser1, toBN("1", 13)),
     Sudo.sudoAs(
       testUser1,
-      api.tx.bootstrap.provision(assetId, poolAssetAmount)
+      api.tx.bootstrap.provision(assetId, poolAssetAmount),
     ),
     Sudo.sudoAs(
       testUser1,
-      api.tx.bootstrap.provision(MGA_ASSET_ID, poolAssetAmount)
-    )
+      api.tx.bootstrap.provision(MGA_ASSET_ID, poolAssetAmount),
+    ),
   );
 
   await waitForBootstrapStatus("Finished", bootstrapPeriod);
@@ -124,7 +123,7 @@ test("register asset and then try to register new one with the same location, ex
           ],
         },
       },
-    }
+    },
   );
 
   await waitSudoOperationFail(userRegisterNewAsset, ["ConflictingLocation"]);
@@ -137,12 +136,12 @@ test("register asset with xyk disabled and try to schedule bootstrap, expect to 
     10,
     undefined,
     undefined,
-    { operationsDisabled: true }
+    { operationsDisabled: true },
   );
   const result = await Sudo.asSudoFinalized(register);
   const assetId = findEventData(
     result,
-    "assetRegistry.RegisteredAsset"
+    "assetRegistry.RegisteredAsset",
   ).assetId;
 
   await runBootstrap(assetId);
@@ -155,13 +154,13 @@ test("register asset with xyk enabled and try to schedule bootstrap, expect to s
     10,
     undefined,
     undefined,
-    { operationsDisabled: false }
+    { operationsDisabled: false },
   );
   const result = await Sudo.asSudoFinalized(register);
   // assetRegistry.RegisteredAsset [8,{"decimals":10,"name":"0x44697361626c65642058796b","symbol":"0x44697361626c65642058796b","existentialDeposit":0,"location":null,"additional":{"xcm":null,"xyk":{"operationsDisabled":true}}}]
   const assetId = findEventData(
     result,
-    "assetRegistry.RegisteredAsset"
+    "assetRegistry.RegisteredAsset",
   ).assetId;
 
   await runBootstrap(assetId);
@@ -172,7 +171,7 @@ test("try to schedule bootstrap for token when does not have AssetRegistry, expe
     testUser1,
     [BN_ONE],
     sudo,
-    true
+    true,
   );
 
   await runBootstrap(assetId[0]);
@@ -184,7 +183,7 @@ test("register asset without asset metadata  and try to schedule bootstrap, expe
   // assetRegistry.RegisteredAsset [8,{"decimals":10,"name":"0x44697361626c65642058796b","symbol":"0x44697361626c65642058796b","existentialDeposit":0,"location":null,"additional":{"xcm":null,"xyk":{"operationsDisabled":true}}}]
   const assetId = findEventData(
     result,
-    "assetRegistry.RegisteredAsset"
+    "assetRegistry.RegisteredAsset",
   ).assetId;
 
   await runBootstrap(assetId);

@@ -100,7 +100,15 @@ export function getEnvironmentRequiredVars() {
 
   const mnemonicPolkadot = process.env.MNEMONIC_POLK
     ? process.env.MNEMONIC_POLK
-    : " oh oh";
+    : "oh oh";
+
+  const mnemonicPolkadotEd25519 = process.env.MNEMONIC_POLK_ED25519
+    ? process.env.MNEMONIC_POLK_ED25519
+    : "oh oh";
+
+  const mnemonicPolkadotEcdsa = process.env.MNEMONIC_POLK_ECDSA
+    ? process.env.MNEMONIC_POLK_ECDSA
+    : "oh oh";
 
   const ethereumHTTPUrl = process.env.ETH_HTTP_URL
     ? process.env.ETH_HTTP_URL
@@ -151,6 +159,8 @@ export function getEnvironmentRequiredVars() {
     stashServiceAddress: stashServiceAddress,
     mnemonicMetaMask: mnemonicMetaMask,
     mnemonicPolkadot: mnemonicPolkadot,
+    mnemonicPolkadotEd25519: mnemonicPolkadotEd25519,
+    mnemonicPolkadotEcdsa: mnemonicPolkadotEcdsa,
     logLevel: logLevel,
     xykPalletAddress: xykPalletAddress,
     treasuryPalletAddress: treasuryPalletAddress,
@@ -174,12 +184,12 @@ export async function UserCreatesAPoolAndMintLiquidity(
   sudo: User,
   userAmount: BN,
   poolAmount: BN = new BN(userAmount).div(new BN(2)),
-  mintAmount: BN = new BN(userAmount).div(new BN(4))
+  mintAmount: BN = new BN(userAmount).div(new BN(4)),
 ) {
   const [firstCurrency, secondCurrency] = await Assets.setupUserWithCurrencies(
     testUser1,
     [userAmount, userAmount],
-    sudo
+    sudo,
   );
   await testUser1.addMGATokens(sudo);
   await (
@@ -222,7 +232,7 @@ export async function createUserFromJson(keyring: Keyring) {
 
 export function calculateLiqAssetAmount(
   firstAssetAmount: BN,
-  secondAssetAmount: BN
+  secondAssetAmount: BN,
 ) {
   return firstAssetAmount.add(secondAssetAmount).div(new BN(2));
 }
@@ -256,7 +266,7 @@ export const waitForNBlocks = async (n: number) => {
 
 export async function waitBlockNumber(
   blockNumber: string,
-  maxWaitingPeriod: number
+  maxWaitingPeriod: number,
 ) {
   let currentBlock = await getBlockNumber();
   let waitingperiodCounter: number;
@@ -283,10 +293,10 @@ export async function waitBlockNumber(
 export async function waitIfSessionWillChangeInNblocks(numberOfBlocks: number) {
   const api = await getApi();
   const sessionDuration = BigInt(
-    (await api!.consts.parachainStaking.blocksPerRound!).toString()
+    (await api!.consts.parachainStaking.blocksPerRound!).toString(),
   );
   const blockNumber = BigInt(
-    await (await api!.query.system.number()).toString()
+    await (await api!.query.system.number()).toString(),
   );
   if (
     (blockNumber % sessionDuration) + BigInt(numberOfBlocks) >
@@ -326,7 +336,7 @@ export async function waitNewStakingRound(maxBlocks: number = 0) {
         "Awaited session number: " +
           awaitedSessionNumber +
           ", current session number: " +
-          currentSessionNumber
+          currentSessionNumber,
       );
     await waitNewBlock();
   }
@@ -337,7 +347,7 @@ export async function waitNewStakingRound(maxBlocks: number = 0) {
 
 export async function waitUntilCollatorProducesBlocks(
   maxBlocks: number = 0,
-  userAddress: string
+  userAddress: string,
 ) {
   let currentBlockNumber = await getBlockNumber();
   const initialBlockNumber = currentBlockNumber;
@@ -346,9 +356,8 @@ export async function waitUntilCollatorProducesBlocks(
   while (awaitedBlockNumber > currentBlockNumber && !found) {
     currentBlockNumber = await getBlockNumber();
     const api = await mangata?.api()!;
-    const blockHashSignedByUser = await api.rpc.chain.getBlockHash(
-      currentBlockNumber
-    );
+    const blockHashSignedByUser =
+      await api.rpc.chain.getBlockHash(currentBlockNumber);
     const header = await api.derive.chain.getHeader(blockHashSignedByUser);
     const author = header!.author!.toHuman();
 
@@ -362,7 +371,7 @@ export async function waitUntilCollatorProducesBlocks(
 export async function waitUntilUserCollatorRewarded(
   user: User,
   maxBlocks = 100,
-  distributeRewardsEvent = "parachainStaking.Rewarded"
+  distributeRewardsEvent = "parachainStaking.Rewarded",
 ) {
   return new Promise(async (resolve, reject) => {
     const method = distributeRewardsEvent;
@@ -373,19 +382,19 @@ export async function waitUntilUserCollatorRewarded(
       testLog
         .getLog()
         .info(
-          `→ find on ${api.runtimeChain} for '${method}' event, attempt ${maxBlocks}, head ${head.hash}`
+          `→ find on ${api.runtimeChain} for '${method}' event, attempt ${maxBlocks}, head ${head.hash}`,
         );
       events.forEach((e) => logEvent(api.runtimeChain, e));
 
       const filtered = _.filter(
         events,
-        ({ event }) => `${event.section}.${event.method}` === method
+        ({ event }) => `${event.section}.${event.method}` === method,
       );
       if (filtered.length > 0) {
         const destUser = filtered.filter((e) =>
           JSON.parse(JSON.stringify(e.toHuman())).event.data.includes(
-            user.keyRingPair.address
-          )
+            user.keyRingPair.address,
+          ),
         );
         if (destUser.length > 0) {
           resolve(destUser);
@@ -407,16 +416,16 @@ export async function getTokensDiffForBlockAuthor(blockNumber: AnyNumber) {
   const data = await api.query.tokens.accounts.at(
     blockHashSignedByUser,
     author,
-    0
+    0,
   );
   const freeAfter = hexToBn(JSON.parse(data.toString()).free);
   const blockHashBefore = await api.rpc.chain.getBlockHash(
-    Number(blockNumber) - 1
+    Number(blockNumber) - 1,
   );
   const dataBefore = await api.query.tokens.accounts.at(
     blockHashBefore,
     author,
-    0
+    0,
   );
   const freeBefore = hexToBn(JSON.parse(dataBefore.toString()).free);
   return freeAfter.sub(freeBefore);
@@ -433,22 +442,22 @@ export async function getBlockNumber(): Promise<number> {
 }
 export async function getMultiPurposeLiquidityStatus(
   address: string,
-  tokenId: BN
+  tokenId: BN,
 ) {
   const api = await mangata?.api()!;
   return (await api.query.multiPurposeLiquidity.reserveStatus(
     address,
-    tokenId
+    tokenId,
   )) as any;
 }
 export async function getMultiPurposeLiquidityReLockStatus(
   address: string,
-  tokenId: BN
+  tokenId: BN,
 ) {
   const api = await mangata?.api()!;
   return (await api.query.multiPurposeLiquidity.relockStatus(
     address,
-    tokenId
+    tokenId,
   )) as any;
 }
 export async function getVestingStatus(address: string, tokenId: BN) {
@@ -457,7 +466,7 @@ export async function getVestingStatus(address: string, tokenId: BN) {
 }
 export async function findBlockWithExtrinsicSigned(
   blocks = [0, 1],
-  userAddress: string
+  userAddress: string,
 ) {
   const api = await mangata?.api()!;
   if (blocks.length < 2) {
@@ -471,7 +480,7 @@ export async function findBlockWithExtrinsicSigned(
     const blockHashSignedByUser = await api.rpc.chain.getBlockHash(blockNumber);
     const block = await api.rpc.chain.getBlock(blockHashSignedByUser);
     const signedByUser = (block.block.extrinsics.toHuman() as any[]).some(
-      (ext) => ext.isSigned && ext.signer.Id === userAddress
+      (ext) => ext.isSigned && ext.signer.Id === userAddress,
     );
     if (signedByUser) {
       return blockNumber;
@@ -511,7 +520,7 @@ export enum feeLockErrors {
 
 export async function getFeeLockMetadata(api: ApiPromise) {
   const lockMetadata = JSON.parse(
-    JSON.stringify(await api?.query.feeLock.feeLockMetadata())
+    JSON.stringify(await api?.query.feeLock.feeLockMetadata()),
   );
   const periodLength = stringToBN(lockMetadata.periodLength.toString());
   const feeLockAmount = stringToBN(lockMetadata.feeLockAmount.toString());
@@ -557,26 +566,32 @@ export async function printCandidatePowers() {
         return [
           JSON.parse(JSON.stringify(state[1].toHuman())).id,
           stringToBN(
-            JSON.parse(JSON.stringify(state[1].toHuman())).liquidityToken
+            JSON.parse(JSON.stringify(state[1].toHuman())).liquidityToken,
           ),
           stringToBN(
-            JSON.parse(JSON.stringify(state[1])).totalCounted
+            JSON.parse(JSON.stringify(state[1])).totalCounted,
           ).toString(),
         ];
-      } else return [];
+      } else {
+        return [];
+      }
     });
 
   for (let index = 0; index < info.length; index++) {
     const stakingInfo = info[index];
     const poolStatus = await getStakingLiquidityTokens(stakingInfo[1]);
-    const power = stringToBN(stakingInfo[2])
-      .mul(stringToBN(poolStatus[0]))
-      .div(stringToBN(poolStatus[1]));
-    info[index].push(power.toString());
+    if (poolStatus) {
+      const power = stringToBN(stakingInfo[2])
+        .mul(stringToBN(poolStatus[0]))
+        .div(stringToBN(poolStatus[1]));
+      info[index].push(power.toString());
+    } else {
+      info[index].push(new BN(info[index][2]).divn(2));
+    }
   }
 
   const sorted = info.sort((a, b) =>
-    stringToBN(a[3]).sub(stringToBN(b[3])).isNeg() ? 1 : -1
+    stringToBN(a[3]).sub(stringToBN(b[3])).isNeg() ? 1 : -1,
   );
   sorted.forEach((x, index) =>
     // eslint-disable-next-line no-console
@@ -587,8 +602,10 @@ export async function printCandidatePowers() {
         " - " +
         index +
         "< -- > liq" +
-        info[index][1].toString()
-    )
+        info[index][1].toString() +
+        " -- " +
+        info[index][2].toString(),
+    ),
   );
   //console.log(JSON.stringify(sorted));
 }
@@ -603,7 +620,7 @@ export async function swapEachNBlocks(period: number) {
     sudo,
     Assets.DEFAULT_AMOUNT,
     sudo,
-    true
+    true,
   );
   await Sudo.batchAsSudoFinalized(
     Assets.FinalizeTge(),
@@ -621,9 +638,9 @@ export async function swapEachNBlocks(period: number) {
         MGA_ASSET_ID,
         Assets.DEFAULT_AMOUNT.divn(2),
         token2,
-        Assets.DEFAULT_AMOUNT.divn(2)
-      )
-    )
+        Assets.DEFAULT_AMOUNT.divn(2),
+      ),
+    ),
   );
   // noinspection InfiniteLoopJS
   while (true) {
@@ -632,7 +649,7 @@ export async function swapEachNBlocks(period: number) {
       token2,
       MGA_ASSET_ID,
       BN_HUNDRED,
-      BN_ONE
+      BN_ONE,
     );
     await waitForNBlocks(period);
   }
@@ -640,7 +657,7 @@ export async function swapEachNBlocks(period: number) {
 export async function getUserIdentity(user: User) {
   const api = getApi();
   const identity = await api.query.identity.identityOf(
-    user.keyRingPair.address
+    user.keyRingPair.address,
   );
   return JSON.parse(JSON.stringify(identity.toHuman()));
 }
@@ -658,7 +675,7 @@ export function isBadOriginError(events: MangataGenericEvent[]) {
     .info(`Looking for badOrigin here: ${JSON.stringify(events)}`);
   const matches = jsonpath.query(
     JSON.parse(JSON.stringify(events)),
-    `$..${key}`
+    `$..${key}`,
   );
   return matches.length > 0;
 }

@@ -47,7 +47,7 @@ describe("xyk-rpc - calculate_buy_price_by_id, calculate_sell_price_by_id", () =
     const assetIds = await Assets.setupUserWithCurrencies(
       sudo,
       [new BN(10), new BN(10), new BN(10), new BN(10), new BN(10)],
-      sudo
+      sudo,
     );
     const assetValues = [1, 1, 2, 2, 3];
     for (let index = 0; index < assetIds.length; index++) {
@@ -57,7 +57,7 @@ describe("xyk-rpc - calculate_buy_price_by_id, calculate_sell_price_by_id", () =
           new BN(assetValues[index]),
           new BN(assetValues[index + 1]),
           assetIds[index],
-          assetIds[index + 1]
+          assetIds[index + 1],
         );
       }
     }
@@ -78,21 +78,21 @@ describe("xyk-rpc - calculate_buy_price_by_id, calculate_sell_price_by_id", () =
     async (soldTokenId, boughtTokenId, amount, expected) => {
       const poolBalance = await getBalanceOfPool(
         dictAssets.get(soldTokenId)!,
-        dictAssets.get(boughtTokenId)!
+        dictAssets.get(boughtTokenId)!,
       );
       const priceBuy = await calculate_buy_price_id_rpc(
         dictAssets.get(soldTokenId)!,
         dictAssets.get(boughtTokenId)!,
-        amount
+        amount,
       );
       const priceBuyNoIds = await calculate_buy_price_rpc(
         poolBalance[0],
         poolBalance[1],
-        amount
+        amount,
       );
       expect(priceBuyNoIds).bnEqual(priceBuy);
       expect(priceBuy).bnEqual(expected);
-    }
+    },
   );
 
   test.each([
@@ -108,20 +108,20 @@ describe("xyk-rpc - calculate_buy_price_by_id, calculate_sell_price_by_id", () =
     async (soldTokenId, boughtTokenId, amount, expected) => {
       const poolBalance = await getBalanceOfPool(
         dictAssets.get(soldTokenId)!,
-        dictAssets.get(boughtTokenId)!
+        dictAssets.get(boughtTokenId)!,
       );
       const priceBuy = await calculate_sell_price_id_rpc(
         dictAssets.get(soldTokenId)!,
         dictAssets.get(boughtTokenId)!,
-        amount
+        amount,
       );
       const priceBuyNoIds = await calculate_sell_price_rpc(
         poolBalance[0],
         poolBalance[1],
-        amount
+        amount,
       );
       expect(priceBuyNoIds).bnEqual(priceBuy);
       expect(priceBuy).bnEqual(expected);
-    }
+    },
   );
 });

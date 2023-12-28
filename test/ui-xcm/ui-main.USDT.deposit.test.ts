@@ -121,7 +121,7 @@ describe("UI XCM tests - USDT", () => {
     testUser1 = new User(keyring);
     testUser1.addFromMnemonic(
       keyring,
-      getEnvironmentRequiredVars().mnemonicPolkadot
+      getEnvironmentRequiredVars().mnemonicPolkadot,
     );
 
     testUser1.addAsset(USDT_ASSET_ID);
@@ -157,9 +157,8 @@ describe("UI XCM tests - USDT", () => {
     expect(isModalVisible).toBeTruthy();
 
     await depositModal.openTokensList();
-    const tokensAtSourceAfter = await depositModal.getTokenAmount(
-      USDT_ASSET_NAME
-    );
+    const tokensAtSourceAfter =
+      await depositModal.getTokenAmount(USDT_ASSET_NAME);
     expect(tokensAtSourceAfter).toBeLessThan(INIT_USDT_SOURCE);
 
     await mangata.chain.newBlock();
@@ -167,12 +166,12 @@ describe("UI XCM tests - USDT", () => {
     await mga.go();
     await testUser1.refreshAmounts(AssetWallet.AFTER);
     expect(testUser1.getAsset(USDT_ASSET_ID)?.amountBefore.free!).bnLt(
-      testUser1.getAsset(USDT_ASSET_ID)?.amountAfter.free!
+      testUser1.getAsset(USDT_ASSET_ID)?.amountAfter.free!,
     );
     await sidebar.waitForLoad();
     const tokenOnAppAfter = await sidebar.getTokenAmount(USDT_ASSET_NAME);
     expect(parseFloat(tokenOnAppAfter.replace(",", ""))).toBeGreaterThan(
-      parseFloat(tokenOnAppBefore.replace(",", ""))
+      parseFloat(tokenOnAppBefore.replace(",", "")),
     );
   });
 
@@ -180,7 +179,7 @@ describe("UI XCM tests - USDT", () => {
     const session = await driver.getSession();
     await addExtraLogs(
       driver,
-      expect.getState().currentTestName + " - " + session.getId()
+      expect.getState().currentTestName + " - " + session.getId(),
     );
     await driver.manage().deleteAllCookies();
     await driver.executeScript("localStorage.clear(); sessionStorage.clear();");

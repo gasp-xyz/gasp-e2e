@@ -1,6 +1,6 @@
 /*
  *
- * @group microappsXCM
+ * @group microappsWithdraw
  */
 import { jest } from "@jest/globals";
 import { Keyring } from "@polkadot/api";
@@ -21,6 +21,7 @@ import {
   connectWallet,
   setupPage,
   setupPageWithState,
+  waitForMicroappsActionNotification,
 } from "../../utils/frontend/microapps-utils/Handlers";
 import { WalletWrapper } from "../../utils/frontend/microapps-pages/WalletWrapper";
 import { ApiContext } from "../../utils/Framework/XcmHelper";
@@ -54,8 +55,12 @@ describe("Microapps UI withdraw modal tests", () => {
   let alice: KeyringPair;
 
   beforeAll(async () => {
-    kusama = await XcmNetworks.kusama({ localPort: 9944 });
-    mangata = await XcmNetworks.mangata({ localPort: 9946 });
+    kusama = await XcmNetworks.kusama({
+      localPort: 9944,
+    });
+    mangata = await XcmNetworks.mangata({
+      localPort: 9946,
+    });
     await connectVertical(kusama.chain, mangata.chain);
     alice = devTestingPairs().alice;
     StashServiceMockSingleton.getInstance().startMock();
@@ -74,6 +79,10 @@ describe("Microapps UI withdraw modal tests", () => {
             [userAddress, { token: 0 }],
             { free: AssetId.Mgx.unit.mul(BN_THOUSAND).toString() },
           ],
+          [
+            [userAddress, { token: 5 }],
+            { free: AssetId.Mgx.unit.mul(BN_THOUSAND).toString() },
+          ],
           [[alice.address, { token: 4 }], { free: 10 * 1e12 }],
           [
             [alice.address, { token: 0 }],
@@ -82,7 +91,7 @@ describe("Microapps UI withdraw modal tests", () => {
         ],
       },
       Sudo: {
-        Key: userAddress,
+        Key: alice.address,
       },
     });
     await kusama.dev.setStorage({
@@ -92,6 +101,7 @@ describe("Microapps UI withdraw modal tests", () => {
             [userAddress],
             { providers: 1, data: { free: INIT_KSM_RELAY * 1e12 } },
           ],
+          [[alice.address], { providers: 1, data: { free: 10 * 1e12 } }],
         ],
       },
     });
@@ -106,7 +116,7 @@ describe("Microapps UI withdraw modal tests", () => {
     testUser1 = new User(keyring);
     testUser1.addFromMnemonic(
       keyring,
-      getEnvironmentRequiredVars().mnemonicPolkadot
+      getEnvironmentRequiredVars().mnemonicPolkadot,
     );
 
     testUser1.addAsset(KSM_ASSET_ID);
@@ -151,13 +161,20 @@ describe("Microapps UI withdraw modal tests", () => {
     await modal.waitForModalState(
       ModalType.Confirm,
       TransactionType.Withdraw,
-      3000
+      3000,
     );
     const isModalWaitingForSignVisible = await modal.isModalVisible(
       ModalType.Confirm,
-      TransactionType.Withdraw
+      TransactionType.Withdraw,
     );
     expect(isModalWaitingForSignVisible).toBeTruthy();
+    await waitForMicroappsActionNotification(
+      driver,
+      mangata,
+      kusama,
+      TransactionType.Withdraw,
+      4,
+    );
   });
 
   test("Withdraw - input null values", async () => {
@@ -237,7 +254,7 @@ describe("Microapps UI withdraw modal tests", () => {
     const session = await driver.getSession();
     await addExtraLogs(
       driver,
-      expect.getState().currentTestName + " - " + session.getId()
+      expect.getState().currentTestName + " - " + session.getId(),
     );
   });
 

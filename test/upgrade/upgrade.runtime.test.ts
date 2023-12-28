@@ -37,15 +37,15 @@ describe("Story tests > LP", () => {
     await signSendAndWaitToFinishTx(
       api.tx.sudo.sudo(
         //@ts-ignore
-        api!.tx.parachainSystem.authorizeUpgrade(hash, false)
+        api!.tx.parachainSystem.authorizeUpgrade(hash, false),
       ),
-      sudo.keyRingPair
+      sudo.keyRingPair,
     );
     await signSendAndWaitToFinishTx(
       api.tx.sudo.sudo(
-        api!.tx.parachainSystem.enactAuthorizedUpgrade(wasmFile.toString())
+        api!.tx.parachainSystem.enactAuthorizedUpgrade(wasmFile.toString()),
       ),
-      sudo.keyRingPair
+      sudo.keyRingPair,
     );
     await waitForUpgradeEvent();
   });

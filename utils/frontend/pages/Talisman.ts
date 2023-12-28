@@ -1,4 +1,4 @@
-import { WebDriver } from "selenium-webdriver";
+import { By, WebDriver } from "selenium-webdriver";
 import { getEnvironmentRequiredVars } from "../../utils";
 import {
   clickElement,
@@ -6,7 +6,6 @@ import {
   waitForElement,
   waitForElementToDissapear,
 } from "../utils/Helper";
-import { By } from "selenium-webdriver";
 
 const acc_name = "acc_automation";
 
@@ -83,13 +82,12 @@ export class Talisman {
     const element = await this.driver.findElement(By.xpath(XPATH_SECRET));
     const text = await element.getText();
     const phrases = text.split("\n").map((phrase: string) => phrase.trim());
-    const mnemonic = phrases.join(" ");
-    return mnemonic;
+    return phrases.join(" ");
   }
 
   async createAccount(): Promise<[string, string]> {
     await this.driver.get(
-      `${this.WEB_UI_ACCESS_URL}/onboarding.html#/password`
+      `${this.WEB_UI_ACCESS_URL}/onboarding.html#/password`,
     );
     await this.fillUserPass();
     await clickElement(this.driver, XPATH_BUTTON_SUBMIT);

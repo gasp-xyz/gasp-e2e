@@ -31,7 +31,7 @@ let keyring;
 
 describe("staking - testpad", () => {
   const mnemonicMini = mnemonicToMiniSecret(
-    "remain flame shell morning solar filter silver lawn clarify witness sign wall"
+    "remain flame shell morning solar filter silver lawn clarify witness sign wall",
   );
   // eslint-disable-next-line no-console
   testLog.getLog().warn(u8aToHex(mnemonicMini));
@@ -56,7 +56,7 @@ describe("staking - testpad", () => {
     keyring.addPair(user.keyRingPair);
     await signSendAndWaitToFinishTx(
       api?.tx.system.remark("0x00"),
-      user.keyRingPair
+      user.keyRingPair,
     ).then();
   });
   test("V4 xtokens transfer", async () => {
@@ -94,9 +94,9 @@ describe("staking - testpad", () => {
             },
           },
         },
-        new BN("6000000000")
+        new BN("6000000000"),
       ),
-      user.keyRingPair
+      user.keyRingPair,
     ).then();
     testLog.getLog().warn("done");
   });
@@ -149,9 +149,9 @@ describe("staking - testpad", () => {
             },
           ],
         },
-        new BN("0")
+        new BN("0"),
       ),
-      user.keyRingPair
+      user.keyRingPair,
     ).then();
     testLog.getLog().warn("done");
   });
@@ -215,7 +215,7 @@ describe("staking - testpad", () => {
             },
           ],
         },
-        new BN("0")
+        new BN("0"),
       )
       .signAndSend(user.keyRingPair);
 

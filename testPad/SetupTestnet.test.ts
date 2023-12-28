@@ -69,7 +69,7 @@ describe("staking - testpad", () => {
       sudo,
       "1800000000000000000000000000000000",
       new BN(0),
-      new BN(1)
+      new BN(1),
     );
     const mga = await getMangataInstance();
     await mga.mintLiquidity(
@@ -77,7 +77,7 @@ describe("staking - testpad", () => {
       new BN(1).toString(),
       new BN(0).toString(),
       new BN("1800000000000000000000000000000000"),
-      new BN("2700000000000000000000000000000000")
+      new BN("2700000000000000000000000000000000"),
     );
 
     //    const promises: any[] = [];

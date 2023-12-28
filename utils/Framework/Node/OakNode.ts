@@ -25,14 +25,14 @@ export class OakNode {
 
   async taskFees(
     encodedTxInfo: RuntimeDispatchInfo,
-    executions: number
+    executions: number,
   ): Promise<BN> {
     // @ts-ignore
     const currencyData: Option<CurrencyChainData> =
       await this.api.query.xcmpHandler.xcmChainCurrencyData(2110, 0);
     // @ts-ignore
     const totalWeight = new BN(encodedTxInfo.weight).add(
-      new BN(currencyData.unwrap().instructionWeight)
+      new BN(currencyData.unwrap().instructionWeight),
     );
     const taskExecutionFee = totalWeight
       .mul(new BN(currencyData.unwrap().feePerSecond))
@@ -43,7 +43,7 @@ export class OakNode {
       // @ts-ignore
       await this.api.rpc.automationTime.getTimeAutomationFees(
         "XCMP",
-        executions
+        executions,
       );
 
     return taskExecutionFee.add(automationTimeFee);
@@ -53,7 +53,7 @@ export class OakNode {
     toChain: ChainId,
     assetId: AssetSpec,
     amount: BN,
-    toUser: User
+    toUser: User,
   ): any {
     assert(ChainSpecs.has(toChain));
     const chain = ChainSpecs.get(toChain)!;
@@ -86,7 +86,7 @@ export class OakNode {
           },
         },
       },
-      { Limited: TRANSFER_INSTRUCTIONS * chain.unitCostWeight }
+      { Limited: TRANSFER_INSTRUCTIONS * chain.unitCostWeight },
     );
   }
 

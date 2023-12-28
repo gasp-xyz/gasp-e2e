@@ -16,7 +16,7 @@ import { Codec } from "@polkadot/types/types";
 import { BN } from "@polkadot/util";
 
 /**
- * @group xcm
+ * @group skip-xcm
  * @group proxied
  */
 describe("[V3][V3] XCM tests for Mangata <-> imbue", () => {
@@ -74,11 +74,11 @@ describe("[V3][V3] XCM tests for Mangata <-> imbue", () => {
   });
   it("[V3] mangata transfer assets to [V3] imbue", async () => {
     expectJson(
-      await mangata.api.query.tokens.accounts(alice.keyRingPair.address, 11)
+      await mangata.api.query.tokens.accounts(alice.keyRingPair.address, 11),
     ).toMatchSnapshot("Before");
 
     expect(
-      await imbue.api.query.system.account(alice.keyRingPair.address)
+      await imbue.api.query.system.account(alice.keyRingPair.address),
     ).toMatchSnapshot("Before");
     const mgaSdk = Mangata.instance([mangata.uri]);
     await mgaSdk.xTokens.withdraw({
@@ -105,11 +105,11 @@ describe("[V3][V3] XCM tests for Mangata <-> imbue", () => {
 
     await imbue.chain.newBlock();
     expectJson(
-      await mangata.api.query.tokens.accounts(alice.keyRingPair.address, 11)
+      await mangata.api.query.tokens.accounts(alice.keyRingPair.address, 11),
     ).toMatchSnapshot("After");
 
     expect(
-      await imbue.api.query.system.account(alice.keyRingPair.address)
+      await imbue.api.query.system.account(alice.keyRingPair.address),
     ).toMatchSnapshot("After");
 
     await matchSystemEvents(mangata, "xcmpQueue", "Success");
@@ -117,10 +117,10 @@ describe("[V3][V3] XCM tests for Mangata <-> imbue", () => {
 
   it("[V3] imbue transfer assets to [V3] mangata", async () => {
     expectJson(
-      await mangata.api.query.tokens.accounts(alice.keyRingPair.address, 11)
+      await mangata.api.query.tokens.accounts(alice.keyRingPair.address, 11),
     ).toMatchSnapshot("Before");
     expect(
-      await imbue.api.query.system.account(alice.keyRingPair.address)
+      await imbue.api.query.system.account(alice.keyRingPair.address),
     ).toMatchSnapshot("Before");
     const mgaSdk = Mangata.instance([mangata.uri]);
     await mgaSdk.xTokens.depositFromParachain({
@@ -180,13 +180,13 @@ describe("[V3][V3] XCM tests for Mangata <-> imbue", () => {
 
     await imbue.chain.newBlock();
     expect(
-      await imbue.api.query.system.account(alice.keyRingPair.address)
+      await imbue.api.query.system.account(alice.keyRingPair.address),
     ).toMatchSnapshot("After");
 
     await mangata.chain.newBlock();
 
     expectJson(
-      await mangata.api.query.tokens.accounts(alice.keyRingPair.address, 11)
+      await mangata.api.query.tokens.accounts(alice.keyRingPair.address, 11),
     ).toMatchSnapshot("After");
     await matchSystemEvents(mangata, "xcmpQueue", "Success");
   });

@@ -59,7 +59,7 @@ beforeAll(async () => {
   [token1, token2, token3] = await Assets.setupUserWithCurrencies(
     sudo,
     [defaultCurrencyValue, defaultCurrencyValue, defaultCurrencyValue],
-    sudo
+    sudo,
   );
 
   await Sudo.batchAsSudoFinalized(
@@ -75,8 +75,8 @@ beforeAll(async () => {
         MGA_ASSET_ID,
         Assets.DEFAULT_AMOUNT.divn(2),
         token1,
-        Assets.DEFAULT_AMOUNT.divn(2)
-      )
+        Assets.DEFAULT_AMOUNT.divn(2),
+      ),
     ),
     Sudo.sudoAs(
       testUser,
@@ -84,8 +84,8 @@ beforeAll(async () => {
         MGA_ASSET_ID,
         Assets.DEFAULT_AMOUNT.divn(2),
         token2,
-        Assets.DEFAULT_AMOUNT.divn(2)
-      )
+        Assets.DEFAULT_AMOUNT.divn(2),
+      ),
     ),
     Sudo.sudoAs(
       testUser,
@@ -93,9 +93,9 @@ beforeAll(async () => {
         token2,
         Assets.DEFAULT_AMOUNT.divn(2),
         token3,
-        Assets.DEFAULT_AMOUNT.divn(2)
-      )
-    )
+        Assets.DEFAULT_AMOUNT.divn(2),
+      ),
+    ),
   );
 
   liqIdPromPool = await getLiquidityAssetId(MGA_ASSET_ID, token1);
@@ -103,7 +103,7 @@ beforeAll(async () => {
   liqIdNonMgaPool = await getLiquidityAssetId(token2, token3);
 
   await Sudo.batchAsSudoFinalized(
-    Assets.promotePool(liqIdPromPool.toNumber(), 20)
+    Assets.promotePool(liqIdPromPool.toNumber(), 20),
   );
 });
 
@@ -124,7 +124,7 @@ test("Function provideLiquidityWithConversion does not work with non-mga paired 
     testUser1.keyRingPair,
     liqIdNonMgaPool,
     MGA_ASSET_ID,
-    defaultCurrencyValue
+    defaultCurrencyValue,
   ).then((result) => {
     const eventResponse = getEventResultFromMangataTx(result);
     expect(eventResponse.state).toEqual(ExtrinsicResult.ExtrinsicFailed);
@@ -137,7 +137,7 @@ test("A user without any liq token, can use provideLiquidityWithConversion to mi
     testUser1.keyRingPair,
     liqIdNonPromPool,
     MGA_ASSET_ID,
-    defaultCurrencyValue
+    defaultCurrencyValue,
   ).then((result) => {
     const eventResponse = getEventResultFromMangataTx(result);
     expect(eventResponse.state).toEqual(ExtrinsicResult.ExtrinsicSuccess);
@@ -154,7 +154,7 @@ test("A user without any liq token, can use provideLiquidityWithConversion to mi
     testUser1.keyRingPair,
     liqIdPromPool,
     MGA_ASSET_ID,
-    defaultCurrencyValue
+    defaultCurrencyValue,
   ).then((result) => {
     const eventResponse = getEventResultFromMangataTx(result);
     expect(eventResponse.state).toEqual(ExtrinsicResult.ExtrinsicSuccess);
@@ -162,7 +162,7 @@ test("A user without any liq token, can use provideLiquidityWithConversion to mi
 
   const testUserRewards = await getRewardsInfo(
     testUser1.keyRingPair.address,
-    liqIdPromPool
+    liqIdPromPool,
   );
 
   await testUser1.refreshAmounts(AssetWallet.AFTER);
@@ -184,15 +184,15 @@ test("A user who uses provideLiquidityWithConversion and other who do manually a
     testUser1.keyRingPair,
     liqIdPromPool,
     MGA_ASSET_ID,
-    defaultCurrencyValue
+    defaultCurrencyValue,
   );
   const eventResponse = getEventResultFromMangataTx(
-    provideLiquidityWithConversion
+    provideLiquidityWithConversion,
   );
   expect(eventResponse.state).toEqual(ExtrinsicResult.ExtrinsicSuccess);
 
   const filteredEvent = provideLiquidityWithConversion.filter(
-    (event) => event.method === "AssetsSwapped"
+    (event) => event.method === "AssetsSwapped",
   );
 
   const soldAssetAmount = await filteredEvent[0].event.data[2].toString();
@@ -207,12 +207,12 @@ test("A user who uses provideLiquidityWithConversion and other who do manually a
 
   const testUser1Rewards = await getRewardsInfo(
     testUser1.keyRingPair.address,
-    liqIdPromPool
+    liqIdPromPool,
   );
 
   const testUser2Rewards = await getRewardsInfo(
     testUser2.keyRingPair.address,
-    liqIdPromPool
+    liqIdPromPool,
   );
 
   await testUser1.refreshAmounts(AssetWallet.AFTER);
@@ -222,6 +222,6 @@ test("A user who uses provideLiquidityWithConversion and other who do manually a
   expect(testUser1.getAsset(liqIdPromPool)?.amountAfter.reserved).bnGt(BN_ZERO);
   expect(testUser1Rewards.activatedAmount).bnGt(BN_ZERO);
   expect(testUser1Rewards.activatedAmount).bnEqual(
-    testUser2Rewards.activatedAmount
+    testUser2Rewards.activatedAmount,
   );
 });

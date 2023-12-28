@@ -16,7 +16,7 @@ export class Staking {
   static async isUserElected(address: string) {
     const candidates = await api?.query.parachainStaking.selectedCandidates();
     return (JSON.parse(JSON.stringify(candidates)) as string[]).includes(
-      address
+      address,
     );
   }
   static async aggregatorMetadata(address: string) {
@@ -30,7 +30,7 @@ export class Staking {
   static async joinAsCandidate(
     amount: BN,
     tokenId: BN,
-    tokenOrigin: tokenOriginEnum
+    tokenOrigin: tokenOriginEnum,
   ) {
     const numCollators = await SudoDB.getInstance().getNextCandidateNum();
     const liqAssets =
@@ -41,7 +41,7 @@ export class Staking {
       tokenId,
       tokenOrigin,
       (numCollators + 10).toString(),
-      liqAssetsCount.toString()
+      liqAssetsCount.toString(),
     );
   }
   static addStakingLiquidityToken(liqToken: BN): Extrinsic {
@@ -49,7 +49,7 @@ export class Staking {
       {
         Liquidity: liqToken,
       },
-      liqToken
+      liqToken,
     );
   }
   static setTotalSelected(totalNo: BN): Extrinsic {
@@ -60,11 +60,11 @@ export class Staking {
   }
   static scheduleCandidateBondMore(
     more: BN,
-    useBalanceFrom: any = "AvailableBalance"
+    useBalanceFrom: any = "AvailableBalance",
   ) {
     return api.tx.parachainStaking.scheduleCandidateBondMore(
       more,
-      useBalanceFrom
+      useBalanceFrom,
     );
   }
   static scheduleCandidateBondLess(less: BN) {
@@ -73,38 +73,38 @@ export class Staking {
   static scheduleDelegatorBondMore(
     candidate: User,
     more: BN,
-    useBalanceFrom: any = "AvailableBalance"
+    useBalanceFrom: any = "AvailableBalance",
   ) {
     return api.tx.parachainStaking.scheduleDelegatorBondMore(
       candidate.keyRingPair.address,
       more,
-      useBalanceFrom
+      useBalanceFrom,
     );
   }
   static scheduleDelegatorBondLess(candidate: User, less: BN) {
     return api.tx.parachainStaking.scheduleDelegatorBondLess(
       candidate.keyRingPair.address,
-      less
+      less,
     );
   }
   static executeBondRequest(
     candidate: User,
-    useBalanceFrom: any = "AvailableBalance"
+    useBalanceFrom: any = "AvailableBalance",
   ): Extrinsic {
     return api.tx.parachainStaking.executeCandidateBondRequest(
       candidate.keyRingPair.address,
-      useBalanceFrom
+      useBalanceFrom,
     );
   }
   static executeDelegationRequest(
     delegator: User,
     candidate: User,
-    useBalanceFrom: any = "AvailableBalance"
+    useBalanceFrom: any = "AvailableBalance",
   ): Extrinsic {
     return api.tx.parachainStaking.executeDelegationRequest(
       delegator.keyRingPair.address,
       candidate.keyRingPair.address,
-      useBalanceFrom
+      useBalanceFrom,
     );
   }
   static removeStakingLiquidityToken(liqToken: BN): Extrinsic {
@@ -112,30 +112,30 @@ export class Staking {
       {
         Liquidity: liqToken,
       },
-      liqToken
+      liqToken,
     );
   }
-  static updateCandidateAggregator(testUser: User): Extrinsic {
+  static updateCandidateAggregator(testUser: User | string): Extrinsic {
     return api.tx.parachainStaking.updateCandidateAggregator(
-      testUser.keyRingPair.address
+      testUser.toString(),
     );
   }
   static aggregatorUpdateMetadata(
-    collators: User[],
-    action: AggregatorOptions
+    collators: User[] | string[],
+    action: AggregatorOptions = AggregatorOptions.ExtendApprovedCollators,
   ): Extrinsic {
     return api.tx.parachainStaking.aggregatorUpdateMetadata(
-      collators.flatMap((user) => user.keyRingPair.address),
-      action
+      collators.flatMap((user) => user.toString()),
+      action,
     );
   }
 
   static async isUserInCandidateList(address: string) {
     const candidates = JSON.parse(
-      JSON.stringify(await api.query.parachainStaking.candidatePool())
+      JSON.stringify(await api.query.parachainStaking.candidatePool()),
     );
     const result = (candidates as unknown as any[]).find(
-      (candidate) => candidate.owner === address
+      (candidate) => candidate.owner === address,
     );
     return result !== undefined;
   }

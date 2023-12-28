@@ -5,23 +5,23 @@
 import { jest } from "@jest/globals";
 import { getApi, initApi } from "../../utils/api";
 import {
-  setupApi,
-  setupUsers,
-  Extrinsic,
   alice,
   api,
   eve,
+  Extrinsic,
+  setupApi,
+  setupUsers,
 } from "../../utils/setup";
 import { Sudo } from "../../utils/sudo";
 import { Assets } from "../../utils/Assets";
-import { BN_THOUSAND, BN } from "@polkadot/util";
+import { BN, BN_THOUSAND } from "@polkadot/util";
 import { BN_HUNDRED, MangataGenericEvent } from "@mangata-finance/sdk";
 import { User } from "../../utils/User";
 import { FOUNDATION_ADDRESS_1, MGA_ASSET_ID } from "../../utils/Constants";
 import { Council } from "../../utils/Council";
 import {
-  expectMGAExtrinsicSuDidSuccess,
   expectMGAExtrinsicSuDidFailed,
+  expectMGAExtrinsicSuDidSuccess,
 } from "../../utils/eventListeners";
 import { Option } from "@polkadot/types-codec";
 import { Call } from "@polkadot/types/interfaces";
@@ -59,22 +59,22 @@ describe.each(["mmON", "mmOFF"])(
       await Sudo.batchAsSudoFinalized(
         Assets.mintNative(
           councilUsers[0],
-          BN_HUNDRED.mul(BN_THOUSAND).mul(Assets.MG_UNIT)
+          BN_HUNDRED.mul(BN_THOUSAND).mul(Assets.MG_UNIT),
         ),
         Assets.mintNative(
           councilUsers[1],
-          BN_HUNDRED.mul(BN_THOUSAND).mul(Assets.MG_UNIT)
+          BN_HUNDRED.mul(BN_THOUSAND).mul(Assets.MG_UNIT),
         ),
         Assets.mintNative(
           councilUsers[2],
-          BN_HUNDRED.mul(BN_THOUSAND).mul(Assets.MG_UNIT)
+          BN_HUNDRED.mul(BN_THOUSAND).mul(Assets.MG_UNIT),
         ),
         Assets.mintNative(
           councilUsers[3],
-          BN_HUNDRED.mul(BN_THOUSAND).mul(Assets.MG_UNIT)
+          BN_HUNDRED.mul(BN_THOUSAND).mul(Assets.MG_UNIT),
         ),
         Assets.mintNative(eve, BN_HUNDRED.mul(BN_THOUSAND).mul(Assets.MG_UNIT)),
-        Sudo.sudo(Council.setMembers(councilUsers))
+        Sudo.sudo(Council.setMembers(councilUsers)),
       );
       testCases["Foundation"] = {
         address: FOUNDATION_ADDRESS_1,
@@ -99,7 +99,7 @@ describe.each(["mmON", "mmOFF"])(
         await waitForNBlocks(31);
       }
       const event = await await Sudo.asSudoFinalized(
-        Sudo.sudoAsWithAddressString(FOUNDATION_ADDRESS_1, maintenanceMode[mm])
+        Sudo.sudoAsWithAddressString(FOUNDATION_ADDRESS_1, maintenanceMode[mm]),
       );
       expectMGAExtrinsicSuDidSuccess(event);
     });
@@ -115,14 +115,14 @@ describe.each(["mmON", "mmOFF"])(
         const propBefore = await getProposal(hash);
         await voteProposal(hash, councilUsers);
         const propIndex = JSON.parse(
-          JSON.stringify(await getVotes(hash))
+          JSON.stringify(await getVotes(hash)),
         ).index;
         const events = await Sudo.asSudoFinalized(
-          Sudo.sudoAsWithAddressString(address, Council.close(hash, propIndex))
+          Sudo.sudoAsWithAddressString(address, Council.close(hash, propIndex)),
         );
         const propAfter = await getProposal(hash);
         validate(events, propAfter, propBefore);
-      }
+      },
     );
     it.each([
       ["Foundation", 0],
@@ -135,11 +135,11 @@ describe.each(["mmON", "mmOFF"])(
         const hash = proposalHashes[index];
         const propBefore = await getProposal(hash);
         const events = await Sudo.asSudoFinalized(
-          Sudo.sudoAsWithAddressString(address, Council.veto(hash))
+          Sudo.sudoAsWithAddressString(address, Council.veto(hash)),
         );
         const propAfter = await getProposal(hash);
         validate(events, propAfter, propBefore);
-      }
+      },
     );
     it("Test that sudo address can veto a proposal", async () => {
       const { validate } = testCases["Foundation"];
@@ -162,11 +162,11 @@ describe.each(["mmON", "mmOFF"])(
         const propBefore = await getProposal(hash);
         await voteProposal(hash, councilUsers);
         const events = await Sudo.asSudoFinalized(
-          Sudo.sudoAsWithAddressString(address, Council.veto(hash))
+          Sudo.sudoAsWithAddressString(address, Council.veto(hash)),
         );
         const propAfter = await getProposal(hash);
         validate(events, propAfter, propBefore);
-      }
+      },
     );
     it("Test that sudo address can veto an already voted proposal", async () => {
       const { validate } = testCases["Foundation"];
@@ -184,12 +184,12 @@ describe.each(["mmON", "mmOFF"])(
       await voteProposal(hash, councilUsers);
       const propIndex = JSON.parse(JSON.stringify(await getVotes(hash))).index;
       const events = await Sudo.asSudoFinalized(
-        Sudo.sudo(Council.close(hash, propIndex))
+        Sudo.sudo(Council.close(hash, propIndex)),
       );
       const propAfter = await getProposal(hash);
       validate(events, propAfter, propBefore);
     });
-  }
+  },
 );
 it("Test that Closing a motion requires some time for Council mebers but not for founders", async () => {
   try {
@@ -202,48 +202,48 @@ it("Test that Closing a motion requires some time for Council mebers but not for
   await Sudo.batchAsSudoFinalized(
     Assets.mintNative(
       councilUsers[0],
-      BN_HUNDRED.mul(BN_THOUSAND).mul(Assets.MG_UNIT)
+      BN_HUNDRED.mul(BN_THOUSAND).mul(Assets.MG_UNIT),
     ),
     Assets.mintNative(
       councilUsers[1],
-      BN_HUNDRED.mul(BN_THOUSAND).mul(Assets.MG_UNIT)
+      BN_HUNDRED.mul(BN_THOUSAND).mul(Assets.MG_UNIT),
     ),
     Assets.mintNative(
       councilUsers[2],
-      BN_HUNDRED.mul(BN_THOUSAND).mul(Assets.MG_UNIT)
+      BN_HUNDRED.mul(BN_THOUSAND).mul(Assets.MG_UNIT),
     ),
     Assets.mintNative(
       councilUsers[3],
-      BN_HUNDRED.mul(BN_THOUSAND).mul(Assets.MG_UNIT)
+      BN_HUNDRED.mul(BN_THOUSAND).mul(Assets.MG_UNIT),
     ),
     Assets.mintNative(eve, BN_HUNDRED.mul(BN_THOUSAND).mul(Assets.MG_UNIT)),
-    Sudo.sudo(Council.setMembers(councilUsers))
+    Sudo.sudo(Council.setMembers(councilUsers)),
   );
   const proposal = await createProposals(councilUsers, 1);
   await voteProposal(proposal[0], councilUsers);
   const propIndex = JSON.parse(
-    JSON.stringify(await getVotes(proposal[0]))
+    JSON.stringify(await getVotes(proposal[0])),
   ).index;
   const propBefore = await getProposal(proposal[0]);
   const events = await Sudo.asSudoFinalized(
     Sudo.sudoAsWithAddressString(
       councilUsers[0].keyRingPair.address,
-      Council.close(proposal[0], propIndex)
-    )
+      Council.close(proposal[0], propIndex),
+    ),
   );
   let propAfter = await getProposal(proposal[0]);
   validateNoOK(events, propAfter, propBefore);
   const error = getEventResultFromMangataTx(events, ["sudo", "SudoAsDone"]);
   const err = await findErrorMetadata(
     JSON.parse(JSON.stringify(error.data)).sudoResult.Err.Module.error,
-    JSON.parse(JSON.stringify(error.data)).sudoResult.Err.Module.index
+    JSON.parse(JSON.stringify(error.data)).sudoResult.Err.Module.index,
   );
   expect(err.name).toEqual("TooEarlyToCloseByNonFoundationAccount");
   const eventsFundationUser = await Sudo.asSudoFinalized(
     Sudo.sudoAsWithAddressString(
       FOUNDATION_ADDRESS_1,
-      Council.close(proposal[0], propIndex)
-    )
+      Council.close(proposal[0], propIndex),
+    ),
   );
   propAfter = await getProposal(proposal[0]);
   validateOK(eventsFundationUser, propAfter, propBefore);
@@ -252,7 +252,7 @@ it("Test that Closing a motion requires some time for Council mebers but not for
 function validateOK(
   events: MangataGenericEvent[],
   propAfter: Option<Call>,
-  propBefore: Option<Call>
+  propBefore: Option<Call>,
 ) {
   expectMGAExtrinsicSuDidSuccess(events);
   expect(propAfter.toHuman()).toBeNull();
@@ -261,7 +261,7 @@ function validateOK(
 function validateNoOK(
   events: MangataGenericEvent[],
   propAfter: Option<Call>,
-  propBefore: Option<Call>
+  propBefore: Option<Call>,
 ) {
   expectMGAExtrinsicSuDidFailed(events);
   expect(propAfter.toHuman()).not.toBeNull();
@@ -277,20 +277,19 @@ async function createProposals(users: User[], num = 10): Promise<string[]> {
         api.tx.tokens.mint(
           MGA_ASSET_ID,
           userToSubmit.keyRingPair.address,
-          new BN(i).addn(1)
-        )
+          new BN(i).addn(1),
+        ),
       ),
-      44
+      44,
     );
     txs.push(tx);
   }
   const events = await Sudo.asSudoFinalized(
-    Sudo.sudoAs(userToSubmit, Sudo.batch(...txs))
+    Sudo.sudoAs(userToSubmit, Sudo.batch(...txs)),
   );
-  const proposalHashes = events
+  return events
     .filter((x) => x.event.method === "Proposed")
     .flatMap((x) => x.eventData[2].data.toString());
-  return proposalHashes;
 }
 async function getProposal(hash: string) {
   return await api.query.council.proposalOf(hash);
@@ -307,11 +306,10 @@ async function voteProposal(hash: string, councilUsers: User[]) {
       Council.vote(
         hash,
         JSON.parse(JSON.stringify(proposal.toHuman())).index,
-        "aye"
-      )
+        "aye",
+      ),
     );
     txs.push(tx);
   }
-  const events = await Sudo.batchAsSudoFinalized(...txs);
-  return events;
+  return await Sudo.batchAsSudoFinalized(...txs);
 }

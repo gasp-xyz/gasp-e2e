@@ -24,7 +24,7 @@ export class Network {
     bootnode: Node,
     nodes: Node[],
     //    sudo: SudoUser,
-    users: any
+    users: any,
   ) {
     //    this._keyring = keyring;
     this._bootnode = bootnode;

@@ -58,13 +58,13 @@ describe("Story tests > LP", () => {
     [token1] = await Assets.setupUserWithCurrencies(
       testUser1,
       [defaultCurrecyValue],
-      sudo
+      sudo,
     );
     await testUser1.addMGATokens(sudo);
     await sudo.mint(
       MGA_ASSET_ID,
       testUser2,
-      new BN("1000000000000000000000000")
+      new BN("1000000000000000000000000"),
     );
     await sudo.mint(token1, testUser2, defaultCurrecyValue);
     //TODO:swapFees
@@ -86,7 +86,7 @@ describe("Story tests > LP", () => {
       token1,
       defaultCurrecyValue,
       MGA_ASSET_ID,
-      defaultCurrecyValue
+      defaultCurrecyValue,
     );
     const poolBalanceBeforeSwaps = await getBalanceOfPool(token1, MGA_ASSET_ID);
     //lets swap tokens
@@ -97,16 +97,16 @@ describe("Story tests > LP", () => {
     const userTokensBefore = testUser2
       .getAsset(token1)
       ?.amountBefore.free!.add(
-        testUser2.getAsset(MGA_ASSET_ID)?.amountBefore.free!
+        testUser2.getAsset(MGA_ASSET_ID)?.amountBefore.free!,
       );
 
     const userTokensAfter = testUser2
       .getAsset(token1)
       ?.amountAfter.free!.add(
-        testUser2.getAsset(MGA_ASSET_ID)?.amountAfter.free!
+        testUser2.getAsset(MGA_ASSET_ID)?.amountAfter.free!,
       );
     const totalPoolBefore = poolBalanceBeforeSwaps[0].add(
-      poolBalanceBeforeSwaps[1]
+      poolBalanceBeforeSwaps[1],
     );
     const totalPoolAfter = poolBalance[0].add(poolBalance[1]);
 
@@ -127,7 +127,7 @@ describe("Story tests > LP", () => {
 async function do10Swaps(
   mangata: MangataInstance,
   testUser2: User,
-  token1: BN
+  token1: BN,
 ) {
   const userNonce = [];
   userNonce.push(await mangata.query.getNonce(testUser2.keyRingPair.address));
@@ -144,8 +144,8 @@ async function do10Swaps(
           new BN(0),
           {
             nonce: new BN(index),
-          }
-        )
+          },
+        ),
       );
     } else {
       promises.push(
@@ -157,8 +157,8 @@ async function do10Swaps(
           new BN(0),
           {
             nonce: new BN(index),
-          }
-        )
+          },
+        ),
       );
     }
 

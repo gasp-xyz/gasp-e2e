@@ -5,6 +5,7 @@ import {
   buildXpathByText,
   clickElement,
   elementExists,
+  getText,
   isDisplayed,
 } from "../utils/Helper";
 
@@ -13,6 +14,11 @@ const DIV_WALLET_CONNECTED = "wallet-connected";
 const DIV_WALLET_ITEM = "installedWallets-walletCard";
 const DIV_WALLET_WRAPPER_HEADER_ACC = "wallet-wrapper-header-account";
 const BUTTON_WALLET_CONNECT = "wallet-notConnected-cta";
+const MY_TOKENS = "my-tokens";
+const MY_POSITIONS = "my-positions";
+const MY_TOKENS_TAB_BUTTON = "My-Tokens-item";
+const MY_TOKENS_ROW_AMOUNT = "AmountTooltip-anchor";
+const MY_POSITIONS_TAB_BUTTON = "My-Positions-item";
 
 export class WalletWrapper {
   driver: WebDriver;
@@ -23,16 +29,14 @@ export class WalletWrapper {
 
   async isWalletConnectButtonDisplayed() {
     const walletWrapper = buildDataTestIdXpath(DIV_WALLET_WRAPPER);
-    const displayed = await isDisplayed(this.driver, walletWrapper);
-    return displayed;
+    return await isDisplayed(this.driver, walletWrapper);
   }
 
   async isAccInfoDisplayed(accName: string) {
     const walletWrapperHeaderAcc =
       buildDataTestIdXpath(DIV_WALLET_WRAPPER_HEADER_ACC) +
       buildXpathByText(accName);
-    const displayed = await isDisplayed(this.driver, walletWrapperHeaderAcc);
-    return displayed;
+    return await isDisplayed(this.driver, walletWrapperHeaderAcc);
   }
 
   async openWalletConnectionInfo() {
@@ -53,11 +57,10 @@ export class WalletWrapper {
   async isWalletConnected() {
     const walletWrapper = buildDataTestIdXpath(DIV_WALLET_WRAPPER);
     const walletConnectedContent = buildDataTestIdXpath(DIV_WALLET_CONNECTED);
-    const isConnected = await elementExists(
+    return await elementExists(
       this.driver,
-      walletWrapper + walletConnectedContent
+      walletWrapper + walletConnectedContent,
     );
-    return isConnected;
   }
 
   async clickWalletConnect() {
@@ -69,5 +72,35 @@ export class WalletWrapper {
     const walletButtonXpath = buildXpathByText(wallet);
     const walletItem = buildDataTestIdXpath(DIV_WALLET_ITEM);
     await clickElement(this.driver, walletItem + walletButtonXpath);
+  }
+
+  async pickMyTokens() {
+    const myTokensTab = buildDataTestIdXpath(MY_TOKENS_TAB_BUTTON);
+    await clickElement(this.driver, myTokensTab);
+  }
+
+  async pickMyPositions() {
+    const myPositionsTab = buildDataTestIdXpath(MY_POSITIONS_TAB_BUTTON);
+    await clickElement(this.driver, myPositionsTab);
+  }
+
+  async isMyTokensRowDisplayed(tokenName: string) {
+    const tokenRow =
+      buildDataTestIdXpath(MY_TOKENS) + buildXpathByText(tokenName);
+    return await isDisplayed(this.driver, tokenRow);
+  }
+
+  async getMyTokensRowAmount(tokenName: string) {
+    const tokenRowAmount =
+      buildDataTestIdXpath(MY_TOKENS) +
+      buildXpathByText(tokenName) +
+      buildDataTestIdXpath(MY_TOKENS_ROW_AMOUNT);
+    return await getText(this.driver, tokenRowAmount);
+  }
+
+  async isMyPositionsRowDisplayed(poolName: string) {
+    const poolRow =
+      buildDataTestIdXpath(MY_POSITIONS) + buildXpathByText(poolName);
+    return await isDisplayed(this.driver, poolRow);
   }
 }

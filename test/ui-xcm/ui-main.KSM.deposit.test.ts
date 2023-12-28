@@ -105,7 +105,7 @@ describe("UI XCM tests - KSM", () => {
     testUser1 = new User(keyring);
     testUser1.addFromMnemonic(
       keyring,
-      getEnvironmentRequiredVars().mnemonicPolkadot
+      getEnvironmentRequiredVars().mnemonicPolkadot,
     );
 
     testUser1.addAsset(KSM_ASSET_ID);
@@ -140,9 +140,8 @@ describe("UI XCM tests - KSM", () => {
     expect(isModalVisible).toBeTruthy();
 
     await depositModal.openTokensList();
-    const tokensAtSourceAfter = await depositModal.getTokenAmount(
-      KSM_ASSET_NAME
-    );
+    const tokensAtSourceAfter =
+      await depositModal.getTokenAmount(KSM_ASSET_NAME);
     expect(tokensAtSourceAfter).toBeLessThan(INIT_KSM_RELAY);
 
     await mangata.chain.newBlock();
@@ -150,12 +149,12 @@ describe("UI XCM tests - KSM", () => {
     await mga.go();
     await testUser1.refreshAmounts(AssetWallet.AFTER);
     expect(testUser1.getAsset(KSM_ASSET_ID)?.amountBefore.free!).bnLt(
-      testUser1.getAsset(KSM_ASSET_ID)?.amountAfter.free!
+      testUser1.getAsset(KSM_ASSET_ID)?.amountAfter.free!,
     );
     await sidebar.waitForLoad();
     const tokenOnAppAfter = await sidebar.getTokenAmount(KSM_ASSET_NAME);
     expect(parseFloat(tokenOnAppAfter.replace(",", ""))).toBeGreaterThan(
-      parseFloat(tokenOnAppBefore.replace(",", ""))
+      parseFloat(tokenOnAppBefore.replace(",", "")),
     );
   });
 
@@ -163,7 +162,7 @@ describe("UI XCM tests - KSM", () => {
     const session = await driver.getSession();
     await addExtraLogs(
       driver,
-      expect.getState().currentTestName + " - " + session.getId()
+      expect.getState().currentTestName + " - " + session.getId(),
     );
     await driver.manage().deleteAllCookies();
     await driver.executeScript("localStorage.clear(); sessionStorage.clear();");

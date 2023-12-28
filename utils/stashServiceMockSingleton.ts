@@ -22,7 +22,7 @@ class StashServiceMockSingleton {
     this.stashServiceMock.use(
       cors({
         origin: "*",
-      })
+      }),
     );
 
     this.stashServiceMock.get("/xcm/channels", (_req, res) => {
@@ -32,10 +32,11 @@ class StashServiceMockSingleton {
           name: "Kusama",
           status: "open",
           unitWeightCost: "",
-          xcmTransferWeight: "298368000",
+          xcmTransferWeight: "500000000",
           url: "ws://" + localAddress + ":9944",
           xcmVersion: "V3",
           chainType: "relaychain",
+          proofSize: "10000",
         },
         {
           channelId: "1000",
@@ -46,6 +47,7 @@ class StashServiceMockSingleton {
           url: "ws://" + localAddress + ":9949",
           xcmVersion: "V3",
           chainType: "parachain",
+          proofSize: "0",
         },
         {
           channelId: "2001",
@@ -56,6 +58,7 @@ class StashServiceMockSingleton {
           url: "ws://" + localAddress + ":9947",
           xcmVersion: "V2",
           chainType: "parachain",
+          proofSize: "0",
         },
         {
           channelId: "2023",
@@ -66,6 +69,7 @@ class StashServiceMockSingleton {
           url: "wss://wss.api.moonriver.moonbeam.network",
           xcmVersion: "V2",
           chainType: "parachain",
+          proofSize: "0",
         },
         {
           channelId: "2114",
@@ -76,6 +80,7 @@ class StashServiceMockSingleton {
           url: "ws://" + localAddress + ":9948",
           xcmVersion: "V3",
           chainType: "parachain",
+          proofSize: "0",
         },
         {
           channelId: "2121",
@@ -86,6 +91,7 @@ class StashServiceMockSingleton {
           url: "wss://imbue-kusama.imbue.network",
           xcmVersion: "V3",
           chainType: "parachain",
+          proofSize: "0",
         },
       ];
 

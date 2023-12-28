@@ -8,15 +8,15 @@ import { BN } from "@polkadot/util";
 
 export async function clearMgaFromWhitelisted(
   thresholdValueExpected: BN,
-  sudo: User
+  sudo: User,
 ) {
   const api = getApi();
   const feeLockMetadata = JSON.parse(
-    JSON.stringify(await api.query.feeLock.feeLockMetadata())
+    JSON.stringify(await api.query.feeLock.feeLockMetadata()),
   );
   const swapValueThreshold = stringToBN(feeLockMetadata.swapValueThreshold);
   const isMgaWhitelisted = feeLockMetadata.whitelistedTokens.includes(
-    MGA_ASSET_ID.toNumber()
+    MGA_ASSET_ID.toNumber(),
   );
 
   if (isMgaWhitelisted || swapValueThreshold.lt(thresholdValueExpected)) {
@@ -25,7 +25,7 @@ export async function clearMgaFromWhitelisted(
       new BN(feeLockMetadata.periodLength),
       new BN(feeLockMetadata.feeLockAmount),
       thresholdValueExpected,
-      [[MGA_ASSET_ID, false]]
+      [[MGA_ASSET_ID, false]],
     );
     await waitSudoOperationSuccess(updateMetadataEvent);
   }
@@ -33,14 +33,14 @@ export async function clearMgaFromWhitelisted(
 
 export async function addMgaToWhitelisted(
   thresholdValueExpected: BN,
-  sudo: User
+  sudo: User,
 ) {
   const api = getApi();
 
   let isWhitelistedAlreadySetup = false;
 
   const feeLockMetadata = JSON.parse(
-    JSON.stringify(await api.query.feeLock.feeLockMetadata())
+    JSON.stringify(await api.query.feeLock.feeLockMetadata()),
   );
   const swapValueThreshold = stringToBN(feeLockMetadata.swapValueThreshold);
   const whitelistedTokens = feeLockMetadata.whitelistedTokens;
@@ -59,7 +59,7 @@ export async function addMgaToWhitelisted(
       new BN(feeLockMetadata.periodLength),
       stringToBN(feeLockMetadata.feeLockAmount),
       thresholdValueExpected,
-      [[MGA_ASSET_ID, true]]
+      [[MGA_ASSET_ID, true]],
     );
     await waitSudoOperationSuccess(updateMetadataEvent);
   }

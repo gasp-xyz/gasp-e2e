@@ -23,7 +23,7 @@ export abstract class UserFactory {
     keyring: Keyring,
     node: Node,
     name: string = "",
-    json: any = ""
+    json: any = "",
   ) {
     switch (type) {
       case Users.GovernanceUser:

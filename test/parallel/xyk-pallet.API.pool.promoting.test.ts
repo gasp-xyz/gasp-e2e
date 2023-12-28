@@ -56,7 +56,7 @@ beforeAll(async () => {
   [token1, token2, token3] = await Assets.setupUserWithCurrencies(
     sudo,
     [defaultCurrencyValue, defaultCurrencyValue, defaultCurrencyValue],
-    sudo
+    sudo,
   );
 
   await Sudo.batchAsSudoFinalized(
@@ -76,8 +76,8 @@ beforeAll(async () => {
         MGA_ASSET_ID,
         Assets.DEFAULT_AMOUNT.divn(2),
         token1,
-        Assets.DEFAULT_AMOUNT.divn(2)
-      )
+        Assets.DEFAULT_AMOUNT.divn(2),
+      ),
     ),
     Sudo.sudoAs(
       testUser2,
@@ -85,8 +85,8 @@ beforeAll(async () => {
         MGA_ASSET_ID,
         Assets.DEFAULT_AMOUNT.divn(2),
         token2,
-        Assets.DEFAULT_AMOUNT.divn(2)
-      )
+        Assets.DEFAULT_AMOUNT.divn(2),
+      ),
     ),
     Sudo.sudoAs(
       testUser3,
@@ -94,9 +94,9 @@ beforeAll(async () => {
         MGA_ASSET_ID,
         Assets.DEFAULT_AMOUNT.divn(2),
         token3,
-        Assets.DEFAULT_AMOUNT.divn(2)
-      )
-    )
+        Assets.DEFAULT_AMOUNT.divn(2),
+      ),
+    ),
   );
 
   liqIdPool1 = await getLiquidityAssetId(MGA_ASSET_ID, token1);
@@ -110,11 +110,11 @@ beforeAll(async () => {
         MGA_ASSET_ID,
         token1,
         Assets.DEFAULT_AMOUNT.divn(2),
-        Assets.DEFAULT_AMOUNT.muln(2)
-      )
+        Assets.DEFAULT_AMOUNT.muln(2),
+      ),
     ),
     Assets.promotePool(liqIdPool1.toNumber(), 20),
-    Assets.mintNative(testUser1)
+    Assets.mintNative(testUser1),
   );
 });
 
@@ -122,7 +122,7 @@ test("GIVEN a promoted pool WHEN more pools gets activated THEN shares are decre
   await activateLiquidity(
     testUser1.keyRingPair,
     liqIdPool1,
-    Assets.DEFAULT_AMOUNT.divn(2)
+    Assets.DEFAULT_AMOUNT.divn(2),
   );
   await waitForRewards(testUser1, liqIdPool1);
 
@@ -131,21 +131,21 @@ test("GIVEN a promoted pool WHEN more pools gets activated THEN shares are decre
     Assets.promotePool(liqIdPool3.toNumber(), 20),
     Sudo.sudoAs(
       testUser1,
-      Xyk.deactivateLiquidity(liqIdPool1, Assets.DEFAULT_AMOUNT.divn(2))
+      Xyk.deactivateLiquidity(liqIdPool1, Assets.DEFAULT_AMOUNT.divn(2)),
     ),
     Sudo.sudoAs(
       testUser2,
-      Xyk.activateLiquidity(liqIdPool2, Assets.DEFAULT_AMOUNT.divn(2))
+      Xyk.activateLiquidity(liqIdPool2, Assets.DEFAULT_AMOUNT.divn(2)),
     ),
     Sudo.sudoAs(
       testUser3,
-      Xyk.activateLiquidity(liqIdPool3, Assets.DEFAULT_AMOUNT.divn(2))
+      Xyk.activateLiquidity(liqIdPool3, Assets.DEFAULT_AMOUNT.divn(2)),
     ),
     Sudo.sudoAs(
       testUser11,
-      Xyk.activateLiquidity(liqIdPool1, Assets.DEFAULT_AMOUNT.divn(2))
+      Xyk.activateLiquidity(liqIdPool1, Assets.DEFAULT_AMOUNT.divn(2)),
     ),
-    Sudo.sudoAs(testUser1, Xyk.claimRewardsAll(liqIdPool1))
+    Sudo.sudoAs(testUser1, Xyk.claimRewardsAll(liqIdPool1)),
   );
 
   await waitForRewards(testUser11, liqIdPool1);
@@ -156,7 +156,7 @@ test("GIVEN a promoted pool WHEN more pools gets activated THEN shares are decre
     Sudo.sudoAs(testUser11, Xyk.claimRewardsAll(liqIdPool1)),
     Sudo.sudoAs(testUser1, Xyk.claimRewardsAll(liqIdPool1)),
     Sudo.sudoAs(testUser2, Xyk.claimRewardsAll(liqIdPool2)),
-    Sudo.sudoAs(testUser3, Xyk.claimRewardsAll(liqIdPool3))
+    Sudo.sudoAs(testUser3, Xyk.claimRewardsAll(liqIdPool3)),
   );
 
   await waitForRewards(testUser11, liqIdPool1);

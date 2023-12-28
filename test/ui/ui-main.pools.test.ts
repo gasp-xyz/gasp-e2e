@@ -68,13 +68,13 @@ describe("UI tests - pools, provide liquidity", () => {
       sudo,
       "1800000000000000000000000000000000",
       MGA_ASSET_ID,
-      testAssetId
+      testAssetId,
     );
 
     await Sudo.batchAsSudoFinalized(
       Assets.mintToken(new BN(7), testUser1), // transferAll test
       Assets.mintToken(testAssetId, testUser1), // transferAll test
-      Assets.mintNative(testUser1)
+      Assets.mintNative(testUser1),
     );
 
     testUser1.addAsset(testAssetId);
@@ -106,7 +106,7 @@ describe("UI tests - pools, provide liquidity", () => {
     await poolView.provideOrCreatePool();
     const modal = new NotificationModal(driver);
     const isModalWaitingForSignVisible = await modal.isModalVisible(
-      ModalType.Confirm
+      ModalType.Confirm,
     );
     expect(isModalWaitingForSignVisible).toBeTruthy();
     await Polkadot.signTransaction(driver);
@@ -116,9 +116,7 @@ describe("UI tests - pools, provide liquidity", () => {
       visible.push(await modal.isModalVisible(ModalType.Progress));
       await waitNewBlock();
     }
-    expect(
-      visible.some((visibleInBlock) => visibleInBlock === true)
-    ).toBeTruthy();
+    expect(visible.some((visibleInBlock) => visibleInBlock)).toBeTruthy();
     await modal.waitForModalState(ModalType.Success);
     const isModalSuccessVisible = await modal.isModalVisible(ModalType.Success);
     expect(isModalSuccessVisible).toBeTruthy();
@@ -140,7 +138,7 @@ describe("UI tests - pools, provide liquidity", () => {
 
     const poolVisible = await new Sidebar(driver).isLiquidityPoolVisible(
       MGR_ASSET_NAME,
-      testAssetName
+      testAssetName,
     );
     expect(poolVisible).toBeTruthy();
   });
@@ -149,7 +147,7 @@ describe("UI tests - pools, provide liquidity", () => {
     const session = await driver.getSession();
     await addExtraLogs(
       driver,
-      expect.getState().currentTestName + " - " + session.getId()
+      expect.getState().currentTestName + " - " + session.getId(),
     );
   });
 

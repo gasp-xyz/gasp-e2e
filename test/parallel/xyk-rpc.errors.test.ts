@@ -55,13 +55,13 @@ test.each([
   "xyk-rpc - calculate_sell_price validates parameters - Negative params",
   async (input_reserve, output_reserve, amount, expected) => {
     await expect(
-      calculate_sell_price_rpc(input_reserve, output_reserve, amount)
+      calculate_sell_price_rpc(input_reserve, output_reserve, amount),
     ).rejects.toThrow(expected.toString());
 
     await expect(
-      calculate_buy_price_rpc(input_reserve, output_reserve, amount)
+      calculate_buy_price_rpc(input_reserve, output_reserve, amount),
     ).rejects.toThrow(expected.toString());
-  }
+  },
 );
 
 test.each([
@@ -75,10 +75,10 @@ test.each([
     const priceSell = await calculate_sell_price_rpc(
       input_reserve,
       output_reserve,
-      amount
+      amount,
     );
     expect(priceSell).bnEqual(expected);
-  }
+  },
 );
 
 test.each([
@@ -93,10 +93,10 @@ test.each([
     const priceSell = await calculate_buy_price_rpc(
       input_reserve,
       output_reserve,
-      amount
+      amount,
     );
     expect(priceSell).bnEqual(expected);
-  }
+  },
 );
 
 describe("xyk-rpc - calculate_buy_price_by_id:No pool assotiated with the assets", () => {
@@ -112,7 +112,7 @@ describe("xyk-rpc - calculate_buy_price_by_id:No pool assotiated with the assets
     const assetIds = await Assets.setupUserWithCurrencies(
       sudo,
       [new BN(10), new BN(10)],
-      sudo
+      sudo,
     );
     for (let index = 0; index < assetIds.length; index++) {
       dictAssets.set(index, assetIds[index]);
@@ -129,10 +129,10 @@ describe("xyk-rpc - calculate_buy_price_by_id:No pool assotiated with the assets
       const priceBuy = await calculate_buy_price_id_rpc(
         dictAssets.get(soldTokenId)!,
         dictAssets.get(boughtTokenId)!,
-        amount
+        amount,
       );
       expect(priceBuy).bnEqual(expected);
-    }
+    },
   );
 });
 
@@ -156,18 +156,18 @@ test.each([
       (api.rpc as any).xyk.calculate_buy_price_id(
         soldTokenId,
         boughtTokenId,
-        amount
-      )
+        amount,
+      ),
     ).rejects.toThrow(expected.toString());
 
     await expect(
       (api.rpc as any).xyk.calculate_sell_price_id(
         soldTokenId,
         boughtTokenId,
-        amount
-      )
+        amount,
+      ),
     ).rejects.toThrow(expected.toString());
-  }
+  },
 );
 
 test.each([
@@ -184,7 +184,7 @@ test.each([
   const resp = await (api.rpc as any).xyk.calculate_buy_price_id(
     hexFrom,
     hexTo,
-    hexAmount
+    hexAmount,
   );
   const respJson = JSON.parse(JSON.stringify(resp.toHuman()));
   testLog.getLog().info(respJson);

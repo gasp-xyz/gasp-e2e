@@ -62,14 +62,14 @@ test("xyk-pallet - SecurityTests - Only sudo can perform actions [tokens.create]
   await signTx(
     api,
     api.tx.sudo.sudo(
-      api.tx.tokens.create(testUser2.keyRingPair.address, new BN(10000000))
+      api.tx.tokens.create(testUser2.keyRingPair.address, new BN(10000000)),
     ),
     testUser1.keyRingPair,
     {
       nonce: new BN(
-        await (await getCurrentNonce(testUser1.keyRingPair.address)).toNumber()
+        await (await getCurrentNonce(testUser1.keyRingPair.address)).toNumber(),
       ),
-    }
+    },
   ).then((result) => {
     const eventResponse = getEventResultFromMangataTx(result);
     expect(eventResponse.state).toEqual(ExtrinsicResult.ExtrinsicFailed);
@@ -82,14 +82,14 @@ test("xyk-pallet - SecurityTests - Only sudo can perform actions [tokens.create 
   await signTx(
     api,
     api.tx.sudo.sudo(
-      api.tx.tokens.create(testUser1.keyRingPair.address, new BN(10000000))
+      api.tx.tokens.create(testUser1.keyRingPair.address, new BN(10000000)),
     ),
     testUser1.keyRingPair,
     {
       nonce: new BN(
-        await (await getCurrentNonce(testUser1.keyRingPair.address)).toNumber()
+        await (await getCurrentNonce(testUser1.keyRingPair.address)).toNumber(),
       ),
-    }
+    },
   ).then((result) => {
     const eventResponse = getEventResultFromMangataTx(result);
     expect(eventResponse.state).toEqual(ExtrinsicResult.ExtrinsicFailed);
@@ -105,13 +105,13 @@ test("xyk-pallet - SecurityTests - Only sudo can perform actions [tokens.mint]",
       api.tx.tokens.mint(
         new BN(0),
         testUser2.keyRingPair.address,
-        new BN(100000)
-      )
+        new BN(100000),
+      ),
     ),
     testUser1.keyRingPair,
     {
       nonce: await getCurrentNonce(testUser1.keyRingPair.address),
-    }
+    },
   ).then((result) => {
     const eventResponse = getEventResultFromMangataTx(result);
     expect(eventResponse.state).toEqual(ExtrinsicResult.ExtrinsicFailed);
@@ -127,11 +127,11 @@ test("xyk-pallet - SecurityTests - Only sudo can perform actions [tokens.mint to
       api.tx.tokens.mint(
         new BN(0),
         testUser1.keyRingPair.address,
-        new BN(100000)
-      )
+        new BN(100000),
+      ),
     ),
     testUser1.keyRingPair,
-    { nonce: await getCurrentNonce(testUser1.keyRingPair.address) }
+    { nonce: await getCurrentNonce(testUser1.keyRingPair.address) },
   ).then((result) => {
     const eventResponse = getEventResultFromMangataTx(result);
     expect(eventResponse.state).toEqual(ExtrinsicResult.ExtrinsicFailed);

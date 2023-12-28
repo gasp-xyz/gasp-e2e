@@ -52,7 +52,7 @@ beforeAll(async () => {
   [token1] = await Assets.setupUserWithCurrencies(
     sudo,
     [defaultCurrencyValue],
-    sudo
+    sudo,
   );
 
   await Sudo.batchAsSudoFinalized(
@@ -66,9 +66,9 @@ beforeAll(async () => {
         MGA_ASSET_ID,
         Assets.DEFAULT_AMOUNT.divn(2),
         token1,
-        Assets.DEFAULT_AMOUNT.divn(2)
-      )
-    )
+        Assets.DEFAULT_AMOUNT.divn(2),
+      ),
+    ),
   );
 });
 
@@ -76,7 +76,7 @@ beforeEach(async () => {
   testUser1 = new User(keyring);
   await Sudo.batchAsSudoFinalized(
     Assets.mintNative(testUser1),
-    Assets.mintToken(token1, testUser1, BN_TEN_THOUSAND)
+    Assets.mintToken(token1, testUser1, BN_TEN_THOUSAND),
   );
 });
 
@@ -84,13 +84,13 @@ test("GIVEN buyAsset WHEN operation is confirmed AND isMultiSwapAssetTransaction
   const buyAssetEvent = await signTx(
     api,
     Xyk.buyAsset(MGA_ASSET_ID, token1, new BN(1000)),
-    testUser1.keyRingPair
+    testUser1.keyRingPair,
   );
 
   const eventResult = isMultiSwapAssetTransactionSuccessful(buyAssetEvent);
 
   expect(getEventResultFromMangataTx(buyAssetEvent).state).toEqual(
-    ExtrinsicResult.ExtrinsicSuccess
+    ExtrinsicResult.ExtrinsicSuccess,
   );
   expect(eventResult).toEqual(true);
 });
@@ -99,19 +99,19 @@ test("GIVEN buyAsset WHEN operation is failed AND isMultiSwapAssetTransactionSuc
   const [token2] = await Assets.setupUserWithCurrencies(
     sudo,
     [defaultCurrencyValue],
-    sudo
+    sudo,
   );
 
   const buyAssetEvent = await signTx(
     api,
     Xyk.buyAsset(token1, token2, new BN(1000)),
-    testUser1.keyRingPair
+    testUser1.keyRingPair,
   );
 
   const eventResult = isMultiSwapAssetTransactionSuccessful(buyAssetEvent);
 
   expect(getEventResultFromMangataTx(buyAssetEvent).state).toEqual(
-    ExtrinsicResult.ExtrinsicFailed
+    ExtrinsicResult.ExtrinsicFailed,
   );
   expect(getEventResultFromMangataTx(buyAssetEvent).data).toEqual("NoSuchPool");
   expect(eventResult).toEqual(false);
@@ -121,13 +121,13 @@ test("GIVEN sellAsset WHEN operation is confirmed AND isMultiSwapAssetTransactio
   const sellAssetEvent = await signTx(
     api,
     Xyk.sellAsset(MGA_ASSET_ID, token1, new BN(1000)),
-    testUser1.keyRingPair
+    testUser1.keyRingPair,
   );
 
   const eventResult = isMultiSwapAssetTransactionSuccessful(sellAssetEvent);
 
   expect(getEventResultFromMangataTx(sellAssetEvent).state).toEqual(
-    ExtrinsicResult.ExtrinsicSuccess
+    ExtrinsicResult.ExtrinsicSuccess,
   );
   expect(eventResult).toEqual(true);
 });
@@ -136,22 +136,22 @@ test("GIVEN sellAsset WHEN operation is failed AND isMultiSwapAssetTransactionSu
   const [token2] = await Assets.setupUserWithCurrencies(
     sudo,
     [defaultCurrencyValue],
-    sudo
+    sudo,
   );
 
   const sellAssetEvent = await signTx(
     api,
     Xyk.sellAsset(token1, token2, new BN(1000)),
-    testUser1.keyRingPair
+    testUser1.keyRingPair,
   );
 
   const eventResult = isMultiSwapAssetTransactionSuccessful(sellAssetEvent);
 
   expect(getEventResultFromMangataTx(sellAssetEvent).state).toEqual(
-    ExtrinsicResult.ExtrinsicFailed
+    ExtrinsicResult.ExtrinsicFailed,
   );
   expect(getEventResultFromMangataTx(sellAssetEvent).data).toEqual(
-    "NoSuchPool"
+    "NoSuchPool",
   );
   expect(eventResult).toEqual(false);
 });
@@ -163,13 +163,13 @@ test("GIVEN multiSwapBuy WHEN operation is confirmed AND isMultiSwapAssetTransac
     testUser1,
     tokenIds,
     new BN(1000),
-    BN_TEN_THOUSAND
+    BN_TEN_THOUSAND,
   );
 
   const eventResult = isMultiSwapAssetTransactionSuccessful(multiSwapBuyEvent);
 
   expect(getEventResultFromMangataTx(multiSwapBuyEvent).state).toEqual(
-    ExtrinsicResult.ExtrinsicSuccess
+    ExtrinsicResult.ExtrinsicSuccess,
   );
   expect(eventResult).toEqual(true);
 });
@@ -178,7 +178,7 @@ test("GIVEN multiSwapBuy WHEN operation is failed AND isMultiSwapAssetTransactio
   const [token2] = await Assets.setupUserWithCurrencies(
     sudo,
     [defaultCurrencyValue],
-    sudo
+    sudo,
   );
 
   const tokenIds = [token1, token2];
@@ -186,16 +186,16 @@ test("GIVEN multiSwapBuy WHEN operation is failed AND isMultiSwapAssetTransactio
   const multiSwapBuyEvent = await multiSwapBuy(
     testUser1,
     tokenIds,
-    new BN(1000)
+    new BN(1000),
   );
 
   const eventResult = isMultiSwapAssetTransactionSuccessful(multiSwapBuyEvent);
 
   expect(getEventResultFromMangataTx(multiSwapBuyEvent).state).toEqual(
-    ExtrinsicResult.ExtrinsicFailed
+    ExtrinsicResult.ExtrinsicFailed,
   );
   expect(getEventResultFromMangataTx(multiSwapBuyEvent).data).toEqual(
-    "NoSuchPool"
+    "NoSuchPool",
   );
   expect(eventResult).toEqual(false);
 });
@@ -206,13 +206,13 @@ test("GIVEN multiSwapSell WHEN operation is confirmed AND isMultiSwapAssetTransa
   const multiSwapSellEvent = await multiSwapSell(
     testUser1,
     tokenIds,
-    new BN(1000)
+    new BN(1000),
   );
 
   const eventResult = isMultiSwapAssetTransactionSuccessful(multiSwapSellEvent);
 
   expect(getEventResultFromMangataTx(multiSwapSellEvent).state).toEqual(
-    ExtrinsicResult.ExtrinsicSuccess
+    ExtrinsicResult.ExtrinsicSuccess,
   );
   expect(eventResult).toEqual(true);
 });
@@ -221,7 +221,7 @@ test("GIVEN multiSwapSell WHEN operation is failed AND isMultiSwapAssetTransacti
   const [token2] = await Assets.setupUserWithCurrencies(
     sudo,
     [defaultCurrencyValue],
-    sudo
+    sudo,
   );
 
   const tokenIds = [token1, token2];
@@ -229,16 +229,16 @@ test("GIVEN multiSwapSell WHEN operation is failed AND isMultiSwapAssetTransacti
   const multiSwapSellEvent = await multiSwapSell(
     testUser1,
     tokenIds,
-    new BN(1000)
+    new BN(1000),
   );
 
   const eventResult = isMultiSwapAssetTransactionSuccessful(multiSwapSellEvent);
 
   expect(getEventResultFromMangataTx(multiSwapSellEvent).state).toEqual(
-    ExtrinsicResult.ExtrinsicFailed
+    ExtrinsicResult.ExtrinsicFailed,
   );
   expect(getEventResultFromMangataTx(multiSwapSellEvent).data).toEqual(
-    "NoSuchPool"
+    "NoSuchPool",
   );
   expect(eventResult).toEqual(false);
 });

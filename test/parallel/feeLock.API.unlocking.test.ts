@@ -67,14 +67,14 @@ beforeAll(async () => {
   [firstCurrency, secondCurrency] = await Assets.setupUserWithCurrencies(
     sudo,
     [defaultCurrencyValue, defaultCurrencyValue],
-    sudo
+    sudo,
   );
 
   await sudo.createPoolToAsset(
     defaultPoolVolumeValue,
     defaultPoolVolumeValue,
     firstCurrency,
-    secondCurrency
+    secondCurrency,
   );
 
   const updateMetadataEvent = await updateFeeLockMetadata(
@@ -85,7 +85,7 @@ beforeAll(async () => {
     [
       [MGA_ASSET_ID, true],
       [firstCurrency, true],
-    ]
+    ],
   );
   await waitSudoOperationSuccess(updateMetadataEvent);
 
@@ -113,7 +113,7 @@ test("gasless- GIVEN some locked tokens and no more free MGX WHEN another tx is 
   const saleAssetValue = thresholdValue.sub(new BN(5));
   const isFree = await mangata?.rpc.isSellAssetLockFree(
     [firstCurrency.toString(), secondCurrency.toString()],
-    saleAssetValue
+    saleAssetValue,
   );
   expect(isFree).toBeFalsy();
   await testUsers[0].sellAssets(firstCurrency, secondCurrency, saleAssetValue);
@@ -124,10 +124,10 @@ test("gasless- GIVEN some locked tokens and no more free MGX WHEN another tx is 
       firstCurrency,
       secondCurrency,
       saleAssetValue,
-      new BN(0)
+      new BN(0),
     ).catch((reason) => {
       throw new Error(reason.data);
-    })
+    }),
   ).rejects.toThrow(feeLockErrors.FeeLockingFail);
 });
 
@@ -137,7 +137,7 @@ test("gasless- GIVEN some locked tokens and no more free MGX WHEN another tx is 
   const saleAssetValue = thresholdValue.sub(new BN(5));
   const isFree = await mangata?.rpc.isSellAssetLockFree(
     [firstCurrency.toString(), secondCurrency.toString()],
-    saleAssetValue
+    saleAssetValue,
   );
   expect(isFree).toBeFalsy();
   await testUsers[1].sellAssets(firstCurrency, secondCurrency, saleAssetValue);
@@ -145,12 +145,12 @@ test("gasless- GIVEN some locked tokens and no more free MGX WHEN another tx is 
   const accountFeeLockData = JSON.parse(
     JSON.stringify(
       await api.query.feeLock.accountFeeLockData(
-        testUsers[1].keyRingPair.address
-      )
-    )
+        testUsers[1].keyRingPair.address,
+      ),
+    ),
   );
   const waitingBlock = stringToBN(accountFeeLockData.lastFeeLockBlock).add(
-    periodLength
+    periodLength,
   );
   await waitBlockNumber(waitingBlock.toString(), periodLength.toNumber() + 5);
 
@@ -168,7 +168,7 @@ test("gasless- GIVEN some locked tokens WHEN querying accountFeeLockData THEN th
   const saleAssetValue = thresholdValue.sub(new BN(5));
   const isFree = await mangata?.rpc.isSellAssetLockFree(
     [firstCurrency.toString(), secondCurrency.toString()],
-    saleAssetValue
+    saleAssetValue,
   );
   expect(isFree).toBeFalsy();
   await testUsers[2].sellAssets(firstCurrency, secondCurrency, saleAssetValue);
@@ -178,16 +178,16 @@ test("gasless- GIVEN some locked tokens WHEN querying accountFeeLockData THEN th
   const accountFeeLockData = JSON.parse(
     JSON.stringify(
       await api.query.feeLock.accountFeeLockData(
-        testUsers[2].keyRingPair.address
-      )
-    )
+        testUsers[2].keyRingPair.address,
+      ),
+    ),
   );
 
   expect(stringToBN(accountFeeLockData.lastFeeLockBlock)).bnEqual(
-    new BN(block)
+    new BN(block),
   );
   expect(stringToBN(accountFeeLockData.totalFeeLockAmount)).bnEqual(
-    new BN(feeLockAmount)
+    new BN(feeLockAmount),
   );
 });
 
@@ -197,7 +197,7 @@ test("gasless- GIVEN some locked tokens and lastFeeLockBlock is lower than curre
   const saleAssetValue = thresholdValue.sub(new BN(5));
   const isFree = await mangata?.rpc.isSellAssetLockFree(
     [firstCurrency.toString(), secondCurrency.toString()],
-    saleAssetValue
+    saleAssetValue,
   );
   expect(isFree).toBeFalsy();
   await testUsers[3].sellAssets(firstCurrency, secondCurrency, saleAssetValue);
@@ -205,13 +205,13 @@ test("gasless- GIVEN some locked tokens and lastFeeLockBlock is lower than curre
   const accountFeeLockData = JSON.parse(
     JSON.stringify(
       await api.query.feeLock.accountFeeLockData(
-        testUsers[3].keyRingPair.address
-      )
-    )
+        testUsers[3].keyRingPair.address,
+      ),
+    ),
   );
 
   const waitingBlock = stringToBN(accountFeeLockData.lastFeeLockBlock).add(
-    periodLength
+    periodLength,
   );
   await waitBlockNumber(waitingBlock.toString(), periodLength.toNumber() + 5);
 
@@ -223,10 +223,10 @@ test("gasless- GIVEN some locked tokens and lastFeeLockBlock is lower than curre
 
   await testUsers[3].refreshAmounts(AssetWallet.AFTER);
   expect(testUsers[3].getAsset(MGA_ASSET_ID)?.amountBefore.reserved!).bnEqual(
-    new BN(feeLockAmount)
+    new BN(feeLockAmount),
   );
   expect(testUsers[3].getAsset(MGA_ASSET_ID)?.amountAfter.reserved!).bnEqual(
-    new BN(0)
+    new BN(0),
   );
 });
 
@@ -238,7 +238,7 @@ test("gasless- GIVEN a lock WHEN the period is N THEN the tokens can not be unlo
   const saleAssetValue = thresholdValue.sub(new BN(5));
   const isFree = await mangata?.rpc.isSellAssetLockFree(
     [firstCurrency.toString(), secondCurrency.toString()],
-    saleAssetValue
+    saleAssetValue,
   );
   expect(isFree).toBeFalsy();
   await testUsers[4].sellAssets(firstCurrency, secondCurrency, saleAssetValue);
@@ -246,10 +246,10 @@ test("gasless- GIVEN a lock WHEN the period is N THEN the tokens can not be unlo
     JSON.parse(
       JSON.stringify(
         await api.query.feeLock.accountFeeLockData(
-          testUsers[4].keyRingPair.address
-        )
-      )
-    ).lastFeeLockBlock
+          testUsers[4].keyRingPair.address,
+        ),
+      ),
+    ).lastFeeLockBlock,
   );
   const waitingBlock = feeLockBlock.add(periodLength);
 
@@ -259,7 +259,7 @@ test("gasless- GIVEN a lock WHEN the period is N THEN the tokens can not be unlo
     await expect(
       unlockFee(testUsers[4]).catch((reason) => {
         throw new Error(reason.data);
-      })
+      }),
     ).rejects.toThrow(feeLockErrors.FeeUnlockingFail);
     await waitNewBlock();
     currentBlockNumber = await getBlockNumber();
@@ -269,7 +269,7 @@ test("gasless- GIVEN a lock WHEN the period is N THEN the tokens can not be unlo
         "now::" +
           currentBlockNumber +
           "Waiting for block " +
-          waitingBlock.toString()
+          waitingBlock.toString(),
       );
   } while (currentBlockNumber < waitingBlock.subn(2).toNumber());
   // at this point, we should be able to unlock in the following 3-4 blocks

@@ -22,12 +22,12 @@ import {
 export function validateTransactionSucessful(
   eventResult: EventResult,
   tokensAmount: number,
-  user: User
+  user: User,
 ) {
   expect(eventResult.state).toEqual(ExtrinsicResult.ExtrinsicSuccess);
   expect(eventResult.data[1]).toEqual(user.keyRingPair.address);
   expect(fromStringToUnitString(eventResult.data[2])).toEqual(
-    fromBNToUnitString(new BN(tokensAmount))
+    fromBNToUnitString(new BN(tokensAmount)),
   );
 }
 
@@ -48,7 +48,7 @@ export function validatePoolCreatedEvent(
   firstCurrency: BN,
   first_asset_amount: BN,
   secondCurrency: BN,
-  second_asset_amount: BN
+  second_asset_amount: BN,
 ) {
   //validate the pool created event contract.
   const rawData = result.data;
@@ -56,11 +56,11 @@ export function validatePoolCreatedEvent(
   expect(rawData[0]).toEqual(userAddress);
   expect(parseInt(rawData[1])).toEqual(parseInt(firstCurrency.toString()));
   expect(fromStringToUnitString(rawData[2])).toEqual(
-    fromBNToUnitString(first_asset_amount)
+    fromBNToUnitString(first_asset_amount),
   );
   expect(parseInt(rawData[3])).toEqual(parseInt(secondCurrency.toString()));
   expect(fromStringToUnitString(rawData[4])).toEqual(
-    fromBNToUnitString(second_asset_amount)
+    fromBNToUnitString(second_asset_amount),
   );
 }
 
@@ -70,7 +70,7 @@ export function validateAssetsSwappedEvent(
   firstCurrency: BN,
   first_asset_amount: BN,
   secondCurrency: BN,
-  second_asset_amount: BN
+  second_asset_amount: BN,
 ) {
   //validate the asset swapped created event contract.
   const rawData = result.data;
@@ -78,11 +78,11 @@ export function validateAssetsSwappedEvent(
   expect(rawData[0]).toEqual(userAddress);
   expect(parseInt(rawData[1][0])).toEqual(parseInt(firstCurrency.toString()));
   expect(fromStringToUnitString(rawData[2])).toEqual(
-    fromBNToUnitString(first_asset_amount)
+    fromBNToUnitString(first_asset_amount),
   );
   expect(parseInt(rawData[1][1])).toEqual(parseInt(secondCurrency.toString()));
   expect(fromStringToUnitString(rawData[3])).toEqual(
-    fromBNToUnitString(second_asset_amount)
+    fromBNToUnitString(second_asset_amount),
   );
 }
 
@@ -94,22 +94,22 @@ export function validateMintedLiquidityEvent(
   secondCurrency: BN,
   secondCurrencyAmount: BN,
   liquidityAssetId: BN,
-  txAmount: BN
+  txAmount: BN,
 ) {
   const rawData = result.data;
   expect(rawData).not.toBeNull();
   expect(rawData[0]).toEqual(address);
   expect(rawData[1]).toEqual(firstCurrency.toString());
   expect(fromStringToUnitString(rawData[2])).toEqual(
-    fromBNToUnitString(firstCurerncyAmount)
+    fromBNToUnitString(firstCurerncyAmount),
   );
   expect(rawData[3]).toEqual(secondCurrency.toString());
   expect(fromStringToUnitString(rawData[4])).toEqual(
-    fromBNToUnitString(secondCurrencyAmount)
+    fromBNToUnitString(secondCurrencyAmount),
   );
   expect(rawData[5].toString()).toEqual(liquidityAssetId.toString());
   expect(fromStringToUnitString(rawData[6])).toEqual(
-    fromBNToUnitString(txAmount)
+    fromBNToUnitString(txAmount),
   );
 }
 
@@ -120,15 +120,15 @@ export async function validateStatusWhenPoolCreated(
   pool_balance_before: BN[],
   total_liquidity_assets_before: BN,
   first_asset_amount: BN = new BN(50000),
-  second_asset_amount: BN = new BN(50000)
+  second_asset_amount: BN = new BN(50000),
 ) {
   const liquidity_asset_id = await getLiquidityAssetId(
     firstCurrency,
-    secondCurrency
+    secondCurrency,
   );
   const liquidity_assets_minted = calculateLiqAssetAmount(
     first_asset_amount,
-    second_asset_amount
+    second_asset_amount,
   );
 
   testUser1.addAsset(liquidity_asset_id, new BN(0));
@@ -139,21 +139,21 @@ export async function validateStatusWhenPoolCreated(
     .getAsset(firstCurrency)
     ?.amountBefore.free!.sub(first_asset_amount);
   expect(testUser1.getAsset(firstCurrency)?.amountAfter.free!).bnEqual(
-    diffFromWallet!
+    diffFromWallet!,
   );
 
   diffFromWallet = testUser1
     .getAsset(secondCurrency)
     ?.amountBefore.free!.sub(second_asset_amount);
   expect(testUser1.getAsset(secondCurrency)?.amountAfter.free!).bnEqual(
-    diffFromWallet!
+    diffFromWallet!,
   );
 
   const addFromWallet = testUser1
     .getAsset(liquidity_asset_id)
     ?.amountBefore.free!.add(liquidity_assets_minted);
   expect(testUser1.getAsset(liquidity_asset_id)?.amountAfter.free!).bnEqual(
-    addFromWallet!
+    addFromWallet!,
   );
 
   const pool_balance = await getBalanceOfPool(firstCurrency, secondCurrency);
@@ -170,7 +170,7 @@ export async function validateStatusWhenPoolCreated(
 
   const total_liquidity_assets = await getAssetSupply(liquidity_asset_id);
   expect(total_liquidity_assets_before.add(liquidity_assets_minted)).bnEqual(
-    total_liquidity_assets
+    total_liquidity_assets,
   );
 }
 
@@ -178,7 +178,7 @@ export async function validateUnmodified(
   firstCurrency: BN,
   secondCurrency: BN,
   testUser1: User,
-  pool_balance_before: BN[]
+  pool_balance_before: BN[],
 ) {
   await testUser1.refreshAmounts(AssetWallet.AFTER);
 
@@ -188,7 +188,7 @@ export async function validateUnmodified(
 
   const pool_balance = await getBalanceOfPool(firstCurrency, secondCurrency);
   expect([pool_balance_before[0], pool_balance_before[1]]).collectionBnEqual(
-    pool_balance
+    pool_balance,
   );
 
   const balance = await getBalanceOfPool(secondCurrency, firstCurrency);
@@ -200,7 +200,7 @@ export async function validateUnmodified(
 
 export async function validateTreasuryAmountsEqual(
   assetId: BN,
-  treasuryExpectation: BN[]
+  treasuryExpectation: BN[],
 ) {
   const [expectedTreasury, expectedTreasuryBurn] = treasuryExpectation;
   const treasuryAsset = await getTreasury(assetId);
@@ -216,7 +216,7 @@ export async function validateUserPaidFeeForFailedTx(
   assetSoldId: BN,
   failedBoughtAssetId: BN,
   poolAmountFailedBought: BN,
-  initialPoolValueSoldAssetId: BN
+  initialPoolValueSoldAssetId: BN,
 ) {
   const { treasury, treasuryBurn } = calculateFees(soldAmount);
   const { completeFee } = calculateCompleteFees(soldAmount);
@@ -227,13 +227,13 @@ export async function validateUserPaidFeeForFailedTx(
     .getAsset(assetSoldId)
     ?.amountBefore.free!.sub(completeFee);
   expect(user.getAsset(assetSoldId)?.amountAfter.free!).bnEqual(
-    diffFromWallet!
+    diffFromWallet!,
   );
 
   //second wallet should not be modified.
   const amount = user.getAsset(failedBoughtAssetId)?.amountBefore!;
   expect(user.getAsset(failedBoughtAssetId)?.amountAfter.free!).bnEqual(
-    amount.free
+    amount.free,
   );
 
   const treasuryTokens = await getTreasury(assetSoldId);
@@ -244,7 +244,7 @@ export async function validateUserPaidFeeForFailedTx(
   const increasedInPool = completeFee.sub(treasury.add(treasuryBurn));
   const poolBalances = await getBalanceOfPool(assetSoldId, failedBoughtAssetId);
   expect(poolBalances[0]).bnEqual(
-    initialPoolValueSoldAssetId.add(increasedInPool)
+    initialPoolValueSoldAssetId.add(increasedInPool),
   );
   expect(poolBalances[1]).bnEqual(poolAmountFailedBought);
 }
@@ -253,16 +253,16 @@ export async function validateUserPaidFeeForFailedTx(
 
 export const matchSnapshot = (
   codec: CodecOrArray | Promise<CodecOrArray>,
-  message?: string
+  message?: string,
 ) => {
   return expect(Promise.resolve(codec).then(toHuman)).resolves.toMatchSnapshot(
-    message
+    message,
   );
 };
 
 export const expectEvent = (codec: CodecOrArray, event: any) => {
   return expect(toHuman(codec)).toEqual(
-    expect.arrayContaining([expect.objectContaining(event)])
+    expect.arrayContaining([expect.objectContaining(event)]),
   );
 };
 
@@ -286,7 +286,7 @@ const _matchEvents = async (
   ...filters: EventFilter[]
 ) => {
   let data = toHuman(await events).map(
-    ({ event: { index: _, ...event } }: any) => event
+    ({ event: { index: _, ...event } }: any) => event,
   );
   if (filters) {
     const filtersArr = Array.isArray(filters) ? filters : [filters];
@@ -317,7 +317,7 @@ export const matchSystemEvents = async (
   await _matchEvents(
     "system events",
     redact(api.query.system.events()),
-    ...filters
+    ...filters,
   );
 };
 export const matchSystemEventsAt = async (
@@ -328,13 +328,13 @@ export const matchSystemEventsAt = async (
   await _matchEvents(
     "system events",
     redact((await api.at(blockHashAt)).query.system.events()),
-    ...filters
+    ...filters,
   );
 };
 
 export const matchUmp = async ({ api }: { api: ApiPromise }) => {
   expect(await api.query.parachainSystem.upwardMessages()).toMatchSnapshot(
-    "ump"
+    "ump",
   );
 };
 
@@ -359,7 +359,7 @@ export const redact = async (data: any | Promise<any>) => {
     }
     if (typeof obj === "object") {
       return Object.fromEntries(
-        Object.entries(obj).map(([k, v]) => [k, process(v)])
+        Object.entries(obj).map(([k, v]) => [k, process(v)]),
       );
     }
     return obj;
