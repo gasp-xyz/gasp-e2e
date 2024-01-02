@@ -26,6 +26,7 @@ let keyring: Keyring;
 let newToken: BN;
 let newToken2: BN;
 let liqId: BN;
+let liqId2: BN;
 
 describe("Proof of stake tests", () => {
   beforeAll(async () => {
@@ -52,20 +53,20 @@ describe("Proof of stake tests", () => {
     await Sudo.batchAsSudoFinalized(
       Assets.FinalizeTge(),
       Assets.initIssuance(),
-      Assets.mintToken(newToken, sudo, Assets.DEFAULT_AMOUNT.muln(2)),
+      Assets.mintToken(newToken2, sudo, Assets.DEFAULT_AMOUNT.muln(40e6)),
       Assets.mintNative(testUser, Assets.DEFAULT_AMOUNT.muln(2)),
-      Assets.mintNative(sudo, Assets.DEFAULT_AMOUNT.muln(2)),
+      Assets.mintNative(sudo, Assets.DEFAULT_AMOUNT.muln(40e6).muln(2)),
       Sudo.sudoAs(
         sudo,
         Xyk.createPool(
           MGA_ASSET_ID,
-          Assets.DEFAULT_AMOUNT,
-          newToken,
-          Assets.DEFAULT_AMOUNT,
+          Assets.DEFAULT_AMOUNT.muln(20e6),
+          newToken2,
+          Assets.DEFAULT_AMOUNT.muln(20e6),
         ),
       ),
     );
-    liqId = await getLiquidityAssetId(MGA_ASSET_ID, newToken);
+    liqId = await getLiquidityAssetId(MGA_ASSET_ID, newToken2);
   });
 
   describe("Activation rewards scenarios", () => {
@@ -80,7 +81,94 @@ describe("Proof of stake tests", () => {
         await ProofOfStake.activateLiquidityFor3rdpartyRewards(
           liqId,
           Assets.DEFAULT_AMOUNT,
-          newToken2,
+          newToken,
+        ),
+        testUser.keyRingPair,
+      ).then((events) => {
+        const res = getEventResultFromMangataTx(events);
+        expect(res.state).toEqual(ExtrinsicResult.ExtrinsicFailed);
+        expect(res.data).toEqual("NotAPromotedPool");
+      });
+    });
+
+    test("GIVEN promoted pool MGX-Token2, pool MGX-Token1 AND user without liquidity tokens for MGX-Token2 WHEN  user tries to activate 3rd party rewards for Token1 THEN receive error", async () => {
+      await Sudo.batchAsSudoFinalized(
+        Assets.mintToken(newToken, sudo, Assets.DEFAULT_AMOUNT.muln(40e6)),
+        Sudo.sudoAs(
+          sudo,
+          Xyk.createPool(
+            MGA_ASSET_ID,
+            Assets.DEFAULT_AMOUNT.muln(20e6),
+            newToken,
+            Assets.DEFAULT_AMOUNT.muln(20e6),
+          ),
+        ),
+        Assets.promotePool(liqId.toNumber(), 20),
+      );
+      liqId2 = await getLiquidityAssetId(MGA_ASSET_ID, newToken);
+      await Sudo.batchAsSudoFinalized(
+        Sudo.sudoAs(
+          sudo,
+          await ProofOfStake.rewardPool(
+            MGA_ASSET_ID,
+            newToken2,
+            newToken,
+            Assets.DEFAULT_AMOUNT.muln(10e6),
+            5,
+          ),
+        ),
+        Assets.promotePool(liqId2.toNumber(), 20),
+      );
+      await signTx(
+        getApi(),
+        await ProofOfStake.activateLiquidityFor3rdpartyRewards(
+          liqId,
+          Assets.DEFAULT_AMOUNT,
+          newToken,
+        ),
+        testUser.keyRingPair,
+      ).then((events) => {
+        const res = getEventResultFromMangataTx(events);
+        expect(res.state).toEqual(ExtrinsicResult.ExtrinsicFailed);
+        expect(res.data).toEqual("NotEnoughAssets");
+      });
+    });
+
+    test("GIVEN promoted pool MGX-Token2, pool MGX-Token1 AND user with liquidity tokens for MGX-Token2 WHEN user activates 3rd party rewards for Token1, waits and claims all rewards THEN operation is successful", async () => {
+      await Sudo.batchAsSudoFinalized(
+        Assets.mintToken(newToken, sudo, Assets.DEFAULT_AMOUNT.muln(40e6)),
+        Assets.mintToken(liqId, testUser, Assets.DEFAULT_AMOUNT.muln(2)),
+        Sudo.sudoAs(
+          sudo,
+          Xyk.createPool(
+            MGA_ASSET_ID,
+            Assets.DEFAULT_AMOUNT.muln(20e6),
+            newToken,
+            Assets.DEFAULT_AMOUNT.muln(20e6),
+          ),
+        ),
+        Assets.promotePool(liqId.toNumber(), 20),
+      );
+      liqId2 = await getLiquidityAssetId(MGA_ASSET_ID, newToken);
+      await Sudo.batchAsSudoFinalized(
+        Sudo.sudoAs(
+          sudo,
+          await ProofOfStake.rewardPool(
+            MGA_ASSET_ID,
+            newToken2,
+            newToken,
+            Assets.DEFAULT_AMOUNT.muln(10e6),
+            5,
+          ),
+        ),
+        Assets.promotePool(liqId2.toNumber(), 20),
+      );
+      await signTx(
+        getApi(),
+        await ProofOfStake.activateLiquidityFor3rdpartyRewards(
+          liqId,
+          Assets.DEFAULT_AMOUNT,
+          newToken,
         ),
         testUser.keyRingPair,
       ).then((events) => {
