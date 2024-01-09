@@ -19,7 +19,7 @@ import { testLog } from "../../utils/Logger";
 import { jest } from "@jest/globals";
 
 /**
- * @group skip-xcm
+ * @group xcm
  * @group proxied
  */
 

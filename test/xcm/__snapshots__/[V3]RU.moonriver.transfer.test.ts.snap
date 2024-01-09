@@ -21,6 +21,7 @@ exports[`[V3][V3] XCM tests for Mangata <-> moonriver [V3] mangata transfer MGX 
   {
     "data": {
       "messageHash": "(redacted)",
+      "messageId": "(redacted)",
       "weight": {
         "proofSize": "(redacted)",
         "refTime": "(redacted)",
@@ -53,6 +54,7 @@ exports[`[V3][V3] XCM tests for Mangata <-> moonriver [V3] mangata transfer MOVR
   {
     "data": {
       "messageHash": "(redacted)",
+      "messageId": "(redacted)",
       "weight": {
         "proofSize": "(redacted)",
         "refTime": "(redacted)",

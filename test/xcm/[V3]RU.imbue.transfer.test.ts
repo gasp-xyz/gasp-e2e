@@ -16,7 +16,7 @@ import { Codec } from "@polkadot/types/types";
 import { BN } from "@polkadot/util";
 
 /**
- * @group skip-xcm
+ * @group xcm
  * @group proxied
  */
 describe("[V3][V3] XCM tests for Mangata <-> imbue", () => {
