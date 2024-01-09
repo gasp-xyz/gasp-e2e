@@ -8,7 +8,7 @@
   "license": "GPLv3",
   "private": true,
   "dependencies": {
-    "@acala-network/chopsticks": "0.9.1-2",
+    "@acala-network/chopsticks": "0.9.5",
     "@babel/plugin-proposal-decorators": "^7.17.8",
     "@babel/plugin-proposal-object-rest-spread": "^7.20.7",
     "@babel/plugin-syntax-flow": "^7.22.5",

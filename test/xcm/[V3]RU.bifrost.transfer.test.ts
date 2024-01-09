@@ -221,7 +221,7 @@ describe("XCM transfers", () => {
       event: expect.objectContaining({
         data: expect.objectContaining({
           who: "eCSrvbA5gGNYdM3UjBNxcBNBqGxtz3SEEfydKragtL4pJ4F",
-          amount: "5,631,360,000",
+          amount: "5,143,680,000",
         }),
       }),
     });
@@ -302,7 +302,7 @@ describe("XCM transfers", () => {
       event: expect.objectContaining({
         data: expect.objectContaining({
           who: "gXCcrjjFX3RPyhHYgwZDmw8oe4JFpd5anko3nTY8VrmnJpe",
-          amount: "4,989,441,200,000,000,000",
+          amount: "4,990,355,600,000,000,000",
           currencyId: expect.objectContaining({
             Token: "ZLK",
           }),
@@ -386,7 +386,7 @@ describe("XCM transfers", () => {
       event: expect.objectContaining({
         data: expect.objectContaining({
           who: "gXCcrjjFX3RPyhHYgwZDmw8oe4JFpd5anko3nTY8VrmnJpe",
-          amount: "4,999,929,608,000",
+          amount: "4,999,935,704,000",
           currencyId: expect.objectContaining({
             VToken: "KSM",
           }),
@@ -470,7 +470,7 @@ describe("XCM transfers", () => {
       event: expect.objectContaining({
         data: expect.objectContaining({
           who: "gXCcrjjFX3RPyhHYgwZDmw8oe4JFpd5anko3nTY8VrmnJpe",
-          amount: "4,999,929,608,000",
+          amount: "4,999,935,704,000",
           currencyId: expect.objectContaining({
             VSToken: "KSM",
           }),
