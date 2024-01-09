@@ -2,7 +2,7 @@ import { connectVertical } from "@acala-network/chopsticks";
 import { KeyringPair } from "@polkadot/keyring/types";
 import { balance } from "../../utils/Assets";
 import { AssetId } from "../../utils/ChainSpecs";
-import { ApiContext } from "../../utils/Framework/XcmHelper";
+import { ApiContext, upgradeMangata } from "../../utils/Framework/XcmHelper";
 import XcmNetworks from "../../utils/Framework/XcmNetworks";
 import { devTestingPairs, setupApi, setupUsers } from "../../utils/setup";
 import { mangataChopstick } from "../../utils/api";
@@ -46,7 +46,7 @@ describe("XCM tests for Mangata <-> Kusama", () => {
         Key: alice.address,
       },
     });
-    // await upgradeMangata(mangata);
+    await upgradeMangata(mangata);
   });
 
   beforeEach(async () => {

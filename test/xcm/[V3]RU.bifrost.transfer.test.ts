@@ -10,7 +10,7 @@ import {
 } from "../../utils/ChainSpecs";
 import { waitForEvents } from "../../utils/eventListeners";
 import { XcmNode } from "../../utils/Framework/Node/XcmNode";
-import { ApiContext } from "../../utils/Framework/XcmHelper";
+import { ApiContext, upgradeMangata } from "../../utils/Framework/XcmHelper";
 import XcmNetworks from "../../utils/Framework/XcmNetworks";
 import { alice, api, setupApi, setupUsers } from "../../utils/setup";
 import { expectEvent, expectJson } from "../../utils/validators";
@@ -88,7 +88,7 @@ describe("XCM transfers", () => {
         ],
       },
     });
-    // await upgradeMangata(mangata);
+    await upgradeMangata(mangata);
 
     //TODO: Remove when clarified how to setup tokens on Bifrost.
     const mgaSdk = Mangata.instance([mangata.uri]);

@@ -1,6 +1,6 @@
 import { connectParachains } from "@acala-network/chopsticks";
 import { AssetId } from "../../utils/ChainSpecs";
-import { ApiContext } from "../../utils/Framework/XcmHelper";
+import { ApiContext, upgradeMangata } from "../../utils/Framework/XcmHelper";
 import XcmNetworks from "../../utils/Framework/XcmNetworks";
 import { alice, setupApi, setupUsers } from "../../utils/setup";
 import {
@@ -72,7 +72,7 @@ describe("[V3][V3] XCM tests for Mangata <-> moonriver", () => {
         ],
       },
     });
-    // await upgradeMangata(mangata);
+    await upgradeMangata(mangata);
   });
 
   beforeEach(async () => {
