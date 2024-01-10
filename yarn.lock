@@ -2345,25 +2345,25 @@
     "@jridgewell/resolve-uri" "^3.1.0"
     "@jridgewell/sourcemap-codec" "^1.4.14"
 
-"@mangata-finance/sdk@2.1.2-rc-sdk.2":
-  version "2.1.2-rc-sdk.2"
-  resolved "https://registry.yarnpkg.com/@mangata-finance/sdk/-/sdk-2.1.2-rc-sdk.2.tgz#852643780a4aa96405935a5c3dff132b4ca4e94e"
-  integrity sha512-+EzXoIqcH70jstQ9YarybZZ+5JSulsSYoFhP1w4Xw5ynZxbPncq255hgAnSouGtJrpFFbNa0GMBU1lRV053QuA==
+"@mangata-finance/sdk@2.1.2-rc-sdk.4":
+  version "2.1.2-rc-sdk.4"
+  resolved "https://registry.yarnpkg.com/@mangata-finance/sdk/-/sdk-2.1.2-rc-sdk.4.tgz#8dc16f97f389f54723ea28cb31549a7c240ddbd6"
+  integrity sha512-zafGdiJ/TfMK5CkioXPlflRvtln8rjejF7e9yvVI/saa1jLc4LGCih1TSvjaDXrZqyGzS8AztAPBgKC8bIph5A==
   dependencies:
-    "@mangata-finance/type-definitions" "2.0.1-feature-3rdparty-rewards-merge.0"
+    "@mangata-finance/type-definitions" "2.1.2"
     big.js "6.2.1"
     tslib "^2.3.0"
     tslog "4.8.2"
 
-"@mangata-finance/type-definitions@2.0.1-feature-3rdparty-rewards-merge.0":
-  version "2.0.1-feature-3rdparty-rewards-merge.0"
-  resolved "https://registry.yarnpkg.com/@mangata-finance/type-definitions/-/type-definitions-2.0.1-feature-3rdparty-rewards-merge.0.tgz#dc68df405b346decab7b997a6ab2d6de4b12b2ff"
-  integrity sha512-f5oXQN/AO+voGF3paQRUtr4nTn7f8BswZZ5B4HsI+hGBgryDS0gDnPkgfgpG7KAeNBL4iBHlQh8LhelQ+70emg==
+"@mangata-finance/type-definitions@2.1.2":
+  version "2.1.2"
+  resolved "https://registry.yarnpkg.com/@mangata-finance/type-definitions/-/type-definitions-2.1.2.tgz#2665ddf4a31ed0ab611c8b14b43ce59da93fad24"
+  integrity sha512-kr4mVMuQ6DqZ0H72z0YI8tcdlk4XD4vUgRVYYfTJdXFJhRsfS4YRxfs/iiQPNzWKgoQZKcDqsbQD3xz9T1gELw==
 
-"@mangata-finance/types@2.0.1-feature-3rdparty-rewards-merge.13":
-  version "2.0.1-feature-3rdparty-rewards-merge.13"
-  resolved "https://registry.yarnpkg.com/@mangata-finance/types/-/types-2.0.1-feature-3rdparty-rewards-merge.13.tgz#d16af9bd2ed47705a7b17e069cb9f279cc2f6c9e"
-  integrity sha512-ECnhpsaGCNjAGA0KJYd+VvnWcItjT2/F1AslT/jUUsmg20kdzd4+nfVOeOx3DB8p6qjnEV0Evd9RM4W51fQDJQ==
+"@mangata-finance/types@2.2.2":
+  version "2.2.2"
+  resolved "https://registry.yarnpkg.com/@mangata-finance/types/-/types-2.2.2.tgz#4a5b50970e120f4fb2a6057a68ff277a886be9f3"
+  integrity sha512-qsp3KgMbvC3CI4+17+ksfDExNDD2awTKcqqNl4WC3eQYxOaSdxShWW/eT0FCPpZ68Df8MFA6WQOn44jiQT4bvg==
 
 "@metamask/eth-sig-util@4.0.1":
   version "4.0.1"
@@ -3579,9 +3579,9 @@
     "@types/node" "*"
 
 "@types/node@*":
-  version "20.10.7"
-  resolved "https://registry.yarnpkg.com/@types/node/-/node-20.10.7.tgz#40fe8faf25418a75de9fe68a8775546732a3a901"
-  integrity sha512-fRbIKb8C/Y2lXxB5eVMj4IU7xpdox0Lh8bUPEdtLysaylsml1hOOx1+STloRs/B9nf7C6kPRmmg/V7aQW7usNg==
+  version "20.10.8"
+  resolved "https://registry.yarnpkg.com/@types/node/-/node-20.10.8.tgz#f1e223cbde9e25696661d167a5b93a9b2a5d57c7"
+  integrity sha512-f8nQs3cLxbAFc00vEU59yf9UyGUftkPaLGfvbVOIDdx2i1b8epBqj2aNGyP19fiyXWvlmZ7qC1XLjAzw/OKIeA==
   dependencies:
     undici-types "~5.26.4"
 
@@ -3601,9 +3601,9 @@
   integrity sha512-J8xLz7q2OFulZ2cyGTLE1TbbZcjpno7FaN6zdJNrgAdrJ+DZzh/uFR6YrTb4C+nXakvud8Q4+rbhoIWlYQbUFQ==
 
 "@types/node@^18.11.18", "@types/node@^18.14.6":
-  version "18.19.5"
-  resolved "https://registry.yarnpkg.com/@types/node/-/node-18.19.5.tgz#4b23a9ab8ab7dafebb57bcbaf5c3d8d04f9d8cac"
-  integrity sha512-22MG6T02Hos2JWfa1o5jsIByn+bc5iOt1IS4xyg6OG68Bu+wMonVZzdrgCw693++rpLE9RUT/Bx15BeDzO0j+g==
+  version "18.19.6"
+  resolved "https://registry.yarnpkg.com/@types/node/-/node-18.19.6.tgz#537beece2c8ad4d9abdaa3b0f428e601eb57dac8"
+  integrity sha512-X36s5CXMrrJOs2lQCdDF68apW4Rfx9ixYMawlepwmE4Anezv/AV2LSpKD1Ub8DAc+urp5bk0BGZ6NtmBitfnsg==
   dependencies:
     undici-types "~5.26.4"
 
@@ -6191,9 +6191,9 @@ ee-first@1.1.1:
   integrity sha512-WMwm9LhRUo+WUaRN+vRuETqG89IgZphVSNkdFgeb6sS/E4OrDIN7t48CAewSHXc6C8lefD8KKfr5vY61brQlow==
 
 electron-to-chromium@^1.4.601:
-  version "1.4.625"
-  resolved "https://registry.yarnpkg.com/electron-to-chromium/-/electron-to-chromium-1.4.625.tgz#a9a1d18ee911f9074a9c42d9e84b1c79b29f4059"
-  integrity sha512-DENMhh3MFgaPDoXWrVIqSPInQoLImywfCwrSmVl3cf9QHzoZSiutHwGaB/Ql3VkqcQV30rzgdM+BjKqBAJxo5Q==
+  version "1.4.626"
+  resolved "https://registry.yarnpkg.com/electron-to-chromium/-/electron-to-chromium-1.4.626.tgz#c20e1706354a31721b65e81496800534dd04b222"
+  integrity sha512-f7/be56VjRRQk+Ric6PmIrEtPcIqsn3tElyAu9Sh6egha2VLJ82qwkcOdcnT06W+Pb6RUulV1ckzrGbKzVcTHg==
 
 elliptic@6.5.4, elliptic@^6.4.0, elliptic@^6.5.2, elliptic@^6.5.4:
   version "6.5.4"
@@ -7729,9 +7729,9 @@ get-package-type@^0.1.0:
   integrity sha512-pjzuKtY64GYfWizNAJ0fr9VqttZkNiK2iS430LtIHzjBEr6bX8Am2zm4sW4Ro5wjWW5cAlRL1qAMTcXbjNAO2Q==
 
 get-port-please@^3.0.1:
-  version "3.1.1"
-  resolved "https://registry.yarnpkg.com/get-port-please/-/get-port-please-3.1.1.tgz#2556623cddb4801d823c0a6a15eec038abb483be"
-  integrity sha512-3UBAyM3u4ZBVYDsxOQfJDxEa6XTbpBDrOjp4mf7ExFRt5BKs/QywQQiJsh2B+hxcZLSapWqCRvElUe8DnKcFHA==
+  version "3.1.2"
+  resolved "https://registry.yarnpkg.com/get-port-please/-/get-port-please-3.1.2.tgz#502795e56217128e4183025c89a48c71652f4e49"
+  integrity sha512-Gxc29eLs1fbn6LQ4jSU4vXjlwyZhF5HsGuMAa7gqBP4Rw4yxxltyDUuF5MBclFzDTXO+ACchGQoeela4DSfzdQ==
 
 get-port@*:
   version "7.0.0"
@@ -12265,12 +12265,12 @@ safe-event-emitter@^1.0.1:
     events "^3.0.0"
 
 safe-regex-test@^1.0.0:
-  version "1.0.0"
-  resolved "https://registry.yarnpkg.com/safe-regex-test/-/safe-regex-test-1.0.0.tgz#793b874d524eb3640d1873aad03596db2d4f2295"
-  integrity sha512-JBUUzyOgEwXQY1NuPtvcj/qcBDbDmEvWufhlnXZIm75DEHp+afM1r1ujJpJsV/gSM4t59tpDyPi1sd6ZaPFfsA==
+  version "1.0.1"
+  resolved "https://registry.yarnpkg.com/safe-regex-test/-/safe-regex-test-1.0.1.tgz#207369b445fd007e534864635b28b2ae7b105783"
+  integrity sha512-Y5NejJTTliTyY4H7sipGqY+RX5P87i3F7c4Rcepy72nq+mNLhIsD0W4c7kEmduMDQCSqtPsXPlSTsFhh2LQv+g==
   dependencies:
-    call-bind "^1.0.2"
-    get-intrinsic "^1.1.3"
+    call-bind "^1.0.5"
+    get-intrinsic "^1.2.2"
     is-regex "^1.1.4"
 
 safe-stable-stringify@^2.3.1:
