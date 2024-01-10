@@ -3,7 +3,7 @@
  * @group microappsUI
  */
 import { jest } from "@jest/globals";
-import { ApiPromise, Keyring } from "@polkadot/api";
+import { ApiPromise } from "@polkadot/api";
 import { getApi, initApi, getMangataInstance } from "../../utils/api";
 import { MangataInstance } from "@mangata-finance/sdk";
 import { Node } from "../../utils/Framework/Node/Node";
@@ -16,14 +16,8 @@ import {
   comparePoolsLists,
   importPolkadotExtension,
 } from "../../utils/frontend/utils/Helper";
-import {
-  DUMMY_POOL_ASSET_ID,
-  FIVE_MIN,
-  KSM_ASSET_ID,
-  MGA_ASSET_ID,
-} from "../../utils/Constants";
+import { DUMMY_POOL_ASSET_ID, FIVE_MIN } from "../../utils/Constants";
 import { getEnvironmentRequiredVars } from "../../utils/utils";
-import { AssetWallet, User } from "../../utils/User";
 import {
   connectWallet,
   setupPage,
@@ -32,7 +26,6 @@ import {
 jest.setTimeout(FIVE_MIN);
 jest.spyOn(console, "log").mockImplementation(jest.fn());
 let driver: WebDriver;
-let testUser1: User;
 
 const acc_name = "acc_automation";
 
@@ -53,19 +46,8 @@ describe("Microapps UI liq pools tests", () => {
     driver = await DriverBuilder.getInstance();
     await importPolkadotExtension(driver);
 
-    const keyring = new Keyring({ type: "sr25519" });
     const node = new Node(getEnvironmentRequiredVars().chainUri);
     await node.connect();
-
-    testUser1 = new User(keyring);
-    testUser1.addFromMnemonic(
-      keyring,
-      getEnvironmentRequiredVars().mnemonicPolkadot,
-    );
-
-    testUser1.addAsset(KSM_ASSET_ID);
-    testUser1.addAsset(MGA_ASSET_ID);
-    await testUser1.refreshAmounts(AssetWallet.BEFORE);
 
     await setupPage(driver);
     await connectWallet(driver, "Polkadot", acc_name);
@@ -83,14 +65,16 @@ describe("Microapps UI liq pools tests", () => {
     const promotedPoolsInfo = [];
     for (let i = 0; i < promotedPoolsLength; i++) {
       const promotedPool = await sdk.query.getLiquidityPool(promotedPools[i]);
-      const firstTokenId = await sdk.query.getTokenInfo(promotedPool[0]);
-      const secondTokenId = await sdk.query.getTokenInfo(promotedPool[1]);
-      const poolData = {
-        poolID: promotedPools[i],
-        firstToken: firstTokenId.symbol,
-        secondToken: secondTokenId.symbol,
-      };
-      promotedPoolsInfo.push(poolData);
+      if (promotedPool[0] !== "-1") {
+        const firstTokenId = await sdk.query.getTokenInfo(promotedPool[0]);
+        const secondTokenId = await sdk.query.getTokenInfo(promotedPool[1]);
+        const poolData = {
+          poolID: promotedPools[i],
+          firstToken: firstTokenId.symbol,
+          secondToken: secondTokenId.symbol,
+        };
+        promotedPoolsInfo.push(poolData);
+      }
     }
 
     const sidebar = new Sidebar(driver);
@@ -109,7 +93,10 @@ describe("Microapps UI liq pools tests", () => {
         JSON.stringify(liquidityAssets[i][1].value),
       );
       const liquidityPool = await sdk.query.getLiquidityPool(liquidityAsset);
-      if (liquidityPool[1] !== DUMMY_POOL_ASSET_ID.toString()) {
+      if (
+        liquidityPool[1] !== DUMMY_POOL_ASSET_ID.toString() &&
+        liquidityPool[0] !== "-1"
+      ) {
         const firstTokenInfo = await sdk.query.getTokenInfo(liquidityPool[0]);
         const secondTokenInfo = await sdk.query.getTokenInfo(liquidityPool[1]);
         const poolData = {
