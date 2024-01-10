@@ -16,7 +16,11 @@ import {
   comparePoolsLists,
   importPolkadotExtension,
 } from "../../utils/frontend/utils/Helper";
-import { DUMMY_POOL_ASSET_ID, FIVE_MIN } from "../../utils/Constants";
+import {
+  DUMMY_POOL_ASSET_ID,
+  FIVE_MIN,
+  SDK_NOT_EXISTING_FLAG,
+} from "../../utils/Constants";
 import { getEnvironmentRequiredVars } from "../../utils/utils";
 import {
   connectWallet,
@@ -65,7 +69,7 @@ describe("Microapps UI liq pools tests", () => {
     const promotedPoolsInfo = [];
     for (let i = 0; i < promotedPoolsLength; i++) {
       const promotedPool = await sdk.query.getLiquidityPool(promotedPools[i]);
-      if (promotedPool[0] !== "-1") {
+      if (promotedPool[0] !== SDK_NOT_EXISTING_FLAG) {
         const firstTokenId = await sdk.query.getTokenInfo(promotedPool[0]);
         const secondTokenId = await sdk.query.getTokenInfo(promotedPool[1]);
         const poolData = {
@@ -95,7 +99,7 @@ describe("Microapps UI liq pools tests", () => {
       const liquidityPool = await sdk.query.getLiquidityPool(liquidityAsset);
       if (
         liquidityPool[1] !== DUMMY_POOL_ASSET_ID.toString() &&
-        liquidityPool[0] !== "-1"
+        liquidityPool[0] !== SDK_NOT_EXISTING_FLAG
       ) {
         const firstTokenInfo = await sdk.query.getTokenInfo(liquidityPool[0]);
         const secondTokenInfo = await sdk.query.getTokenInfo(liquidityPool[1]);

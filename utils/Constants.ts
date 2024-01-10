@@ -33,3 +33,4 @@ export const FOUNDATION_ADDRESS_2 =
   "5GWESxf3u3taJ4h4nHpHwyZCyixnbywYrxt1Fpd98jNd1vTP";
 export const FOUNDATION_ADDRESS_3 =
   "5HmiQLrRJC5mayvaeAXnbMbUCNMypTwhX5NnHhYTwSnAuAdf";
+export const SDK_NOT_EXISTING_FLAG = "-1";
