@@ -2360,10 +2360,10 @@
   resolved "https://registry.yarnpkg.com/@mangata-finance/type-definitions/-/type-definitions-2.1.2.tgz#2665ddf4a31ed0ab611c8b14b43ce59da93fad24"
   integrity sha512-kr4mVMuQ6DqZ0H72z0YI8tcdlk4XD4vUgRVYYfTJdXFJhRsfS4YRxfs/iiQPNzWKgoQZKcDqsbQD3xz9T1gELw==
 
-"@mangata-finance/types@2.2.3-rc-0-32-0.7":
-  version "2.2.3-rc-0-32-0.7"
-  resolved "https://registry.yarnpkg.com/@mangata-finance/types/-/types-2.2.3-rc-0-32-0.7.tgz#8d7e0727a7fcc4564a534bb3f398c41345e911c9"
-  integrity sha512-kZVbYA/aqwJgNraKDVL06tdxVklZ6caVxyyoD6TW9U875Z+L45jCzwXPVrya+1NI3Ip3R/HcvdzTHZiCn1Jd3Q==
+"@mangata-finance/types@2.2.2":
+  version "2.2.2"
+  resolved "https://registry.yarnpkg.com/@mangata-finance/types/-/types-2.2.2.tgz#4a5b50970e120f4fb2a6057a68ff277a886be9f3"
+  integrity sha512-qsp3KgMbvC3CI4+17+ksfDExNDD2awTKcqqNl4WC3eQYxOaSdxShWW/eT0FCPpZ68Df8MFA6WQOn44jiQT4bvg==
 
 "@metamask/eth-sig-util@4.0.1":
   version "4.0.1"
