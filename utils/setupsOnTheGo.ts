@@ -1444,3 +1444,41 @@ export async function activateAndClaim3rdPartyRewardsForUser(
         userRewardsTokenBalance.toString(),
     );
 }
+
+export async function addActivatedLiquidity3rdPartyRewardsForUser(
+  liqId: BN,
+  rewardToken: BN,
+  tokenValue: BN,
+  userName = "//Alice",
+) {
+  await setupApi();
+  await setupUsers();
+  const keyring = new Keyring({ type: "sr25519" });
+  const testUser = new User(keyring, userName);
+
+  await Sudo.batchAsSudoFinalized(
+    Assets.mintToken(liqId, testUser, tokenValue),
+  );
+
+  await Sudo.batchAsSudoFinalized(
+    Sudo.sudoAs(
+      testUser,
+      await ProofOfStake.activateLiquidityFor3rdpartyRewards(
+        liqId,
+        tokenValue,
+        rewardToken,
+      ),
+    ),
+  );
+
+  console.log(
+    "activated 3rd party rewards liquidity for user " +
+      testUser.name.toString() +
+      " was added, liquidity Id is " +
+      liqId.toString() +
+      ",  rewards token's ID is " +
+      rewardToken.toString() +
+      " and the amount of token is " +
+      tokenValue.toString(),
+  );
+}

@@ -84,7 +84,7 @@ export function getEnvironmentRequiredVars() {
 
   const uiUri = process.env.UI_URL
     ? process.env.UI_URL
-    : "https://develop.mangata.finance/";
+    : "http://localhost:4200/";
 
   const localAddress = process.env.LOCAL_ADDRESS
     ? process.env.LOCAL_ADDRESS
@@ -100,7 +100,7 @@ export function getEnvironmentRequiredVars() {
 
   const mnemonicPolkadot = process.env.MNEMONIC_POLK
     ? process.env.MNEMONIC_POLK
-    : "oh oh";
+    : "same borrow fatigue similar weekend ready express over elbow refuse february spirit";
 
   const mnemonicPolkadotEd25519 = process.env.MNEMONIC_POLK_ED25519
     ? process.env.MNEMONIC_POLK_ED25519

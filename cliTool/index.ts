@@ -35,6 +35,7 @@ import {
   printUserInfo,
   activateAndClaim3rdPartyRewardsForUser,
   claimForAllAvlRewards,
+  addActivatedLiquidity3rdPartyRewardsForUser,
 } from "../utils/setupsOnTheGo";
 import {
   findErrorMetadata,
@@ -96,6 +97,7 @@ async function app(): Promise<any> {
         "Print user info",
         "Activate and claim 3rd party rewards to default users",
         "Claim 4 all avl rewards",
+        "Add activated 3rd party rewards liquidity",
       ],
     })
     .then(async (answers: { option: string | string[] }) => {
@@ -607,7 +609,51 @@ async function app(): Promise<any> {
           ])
           .then(async (answers: { user: string }) => {
             activateAndClaim3rdPartyRewardsForUser(answers.user);
+            return app();
           });
+      }
+      if (
+        answers.option.includes("Add activated 3rd party rewards liquidity")
+      ) {
+        await inquirer
+          .prompt([
+            {
+              type: "input",
+              name: "user",
+              message: "default //Alice",
+            },
+            {
+              type: "input",
+              name: "liqId",
+              message: "liqId",
+            },
+            {
+              type: "input",
+              name: "rewardToken",
+              message: "rewardToken",
+            },
+            {
+              type: "input",
+              name: "tokenValue",
+              message: "tokenValue",
+            },
+          ])
+          .then(
+            async (answers: {
+              user: string | undefined;
+              liqId: string;
+              rewardToken: string;
+              tokenValue: string;
+            }) => {
+              addActivatedLiquidity3rdPartyRewardsForUser(
+                new BN(answers.liqId!.toString()),
+                new BN(answers.rewardToken!.toString()),
+                new BN(answers.tokenValue!.toString()),
+                answers.user,
+              );
+              return app();
+            },
+          );
       }
       return app();
     });
