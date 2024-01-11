@@ -1454,15 +1454,13 @@ export async function addActivatedLiquidity3rdPartyRewardsForUser(
   await setupApi();
   await setupUsers();
   const keyring = new Keyring({ type: "sr25519" });
-  const testUser = new User(keyring, userName);
+  const user = new User(keyring, userName);
 
-  await Sudo.batchAsSudoFinalized(
-    Assets.mintToken(liqId, testUser, tokenValue),
-  );
+  await Sudo.batchAsSudoFinalized(Assets.mintToken(liqId, user, tokenValue));
 
   await Sudo.batchAsSudoFinalized(
     Sudo.sudoAs(
-      testUser,
+      user,
       await ProofOfStake.activateLiquidityFor3rdpartyRewards(
         liqId,
         tokenValue,
@@ -1473,7 +1471,7 @@ export async function addActivatedLiquidity3rdPartyRewardsForUser(
 
   console.log(
     "activated 3rd party rewards liquidity for user " +
-      testUser.name.toString() +
+      user.name.toString() +
       " was added, liquidity Id is " +
       liqId.toString() +
       ",  rewards token's ID is " +

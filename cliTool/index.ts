@@ -604,7 +604,8 @@ async function app(): Promise<any> {
             {
               type: "input",
               name: "user",
-              message: "default //Charlie",
+              message: "user",
+              default: "//Charlie",
             },
           ])
           .then(async (answers: { user: string }) => {
@@ -620,7 +621,8 @@ async function app(): Promise<any> {
             {
               type: "input",
               name: "user",
-              message: "default //Alice",
+              message: "user",
+              default: "//Alice",
             },
             {
               type: "input",
@@ -640,15 +642,15 @@ async function app(): Promise<any> {
           ])
           .then(
             async (answers: {
-              user: string | undefined;
+              user: string;
               liqId: string;
               rewardToken: string;
               tokenValue: string;
             }) => {
               addActivatedLiquidity3rdPartyRewardsForUser(
-                new BN(answers.liqId!.toString()),
-                new BN(answers.rewardToken!.toString()),
-                new BN(answers.tokenValue!.toString()),
+                new BN(answers.liqId.toString()),
+                new BN(answers.rewardToken.toString()),
+                new BN(answers.tokenValue.toString()),
                 answers.user,
               );
               return app();
