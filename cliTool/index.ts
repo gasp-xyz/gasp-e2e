@@ -35,7 +35,8 @@ import {
   printUserInfo,
   activateAndClaim3rdPartyRewardsForUser,
   claimForAllAvlRewards,
-  addActivatedLiquidity3rdPartyRewardsForUser,
+  addActivatedLiquidityFor3rdPartyRewards,
+  addActivatedLiquidityForNativeRewards,
 } from "../utils/setupsOnTheGo";
 import {
   findErrorMetadata,
@@ -53,6 +54,7 @@ import { encodeAddress } from "@polkadot/keyring";
 import { stringToU8a, bnToU8a, u8aConcat, BN } from "@polkadot/util";
 import { Sudo } from "../utils/sudo";
 import { setupApi, setupUsers } from "../utils/setup";
+import { Assets } from "../utils/Assets";
 
 async function app(): Promise<any> {
   return inquirer
@@ -69,6 +71,7 @@ async function app(): Promise<any> {
         "Join as candidate",
         "Fill with candidates",
         "Give tokens to user",
+        "Mint token to user",
         "Foo",
         "Find Error",
         "Enable liq token",
@@ -98,6 +101,7 @@ async function app(): Promise<any> {
         "Activate and claim 3rd party rewards to default users",
         "Claim 4 all avl rewards",
         "Add activated 3rd party rewards liquidity",
+        "Add activated native rewards liquidity",
       ],
     })
     .then(async (answers: { option: string | string[] }) => {
@@ -276,6 +280,55 @@ async function app(): Promise<any> {
               liq: number | undefined;
             }) => {
               await giveTokensToUser(answers.user, answers.liq);
+              console.log("Done");
+              return app();
+            },
+          );
+      }
+      if (answers.option.includes("Mint token to user")) {
+        return inquirer
+          .prompt([
+            {
+              type: "input",
+              name: "user",
+              message: "user",
+              default: "//Alice",
+            },
+            {
+              type: "input",
+              name: "tokenId",
+              message: "token id",
+            },
+            {
+              type: "input",
+              name: "amount",
+              message: "amount",
+            },
+          ])
+          .then(
+            async (answers: {
+              user: string;
+              tokenId: number;
+              amount: number;
+            }) => {
+              try {
+                getApi();
+              } catch (e) {
+                await initApi();
+              }
+              await setupApi();
+              await setupUsers();
+              const keyring = new Keyring({ type: "sr25519" });
+              const user = new User(keyring, answers.user);
+              await Sudo.batchAsSudoFinalized(
+                Assets.FinalizeTge(),
+                Assets.initIssuance(),
+                Assets.mintToken(
+                  new BN(answers.tokenId),
+                  user,
+                  new BN(answers.amount),
+                ),
+              );
               console.log("Done");
               return app();
             },
@@ -616,7 +669,7 @@ async function app(): Promise<any> {
       if (
         answers.option.includes("Add activated 3rd party rewards liquidity")
       ) {
-        await inquirer
+        return inquirer
           .prompt([
             {
               type: "input",
@@ -647,9 +700,45 @@ async function app(): Promise<any> {
               rewardToken: string;
               tokenValue: string;
             }) => {
-              addActivatedLiquidity3rdPartyRewardsForUser(
+              addActivatedLiquidityFor3rdPartyRewards(
                 new BN(answers.liqId.toString()),
                 new BN(answers.rewardToken.toString()),
+                new BN(answers.tokenValue.toString()),
+                answers.user,
+              );
+              return app();
+            },
+          );
+      }
+      if (answers.option.includes("Add activated native rewards liquidity")) {
+        return inquirer
+          .prompt([
+            {
+              type: "input",
+              name: "user",
+              message: "user",
+              default: "//Alice",
+            },
+            {
+              type: "input",
+              name: "liqId",
+              message: "liqId",
+            },
+            {
+              type: "input",
+              name: "tokenValue",
+              message: "tokenValue",
+            },
+          ])
+          .then(
+            async (answers: {
+              user: string;
+              liqId: string;
+              rewardToken: string;
+              tokenValue: string;
+            }) => {
+              addActivatedLiquidityForNativeRewards(
+                new BN(answers.liqId.toString()),
                 new BN(answers.tokenValue.toString()),
                 answers.user,
               );

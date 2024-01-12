@@ -2,6 +2,7 @@ import { BN } from "@polkadot/util";
 import { setupApi } from "./setup";
 import { getApi } from "./api";
 import {
+  MangataTypesMultipurposeLiquidityActivateKind,
   PalletProofOfStakeSchedule,
   PalletProofOfStakeThirdPartyActivationKind,
 } from "@polkadot/types/lookup";
@@ -68,7 +69,22 @@ export class ProofOfStake {
       useBalanceFrom,
     );
   }
-
+  static async activateLiquidityForNativeRewards(
+    liquidityTokenId: BN,
+    amount: BN,
+    useBalanceFrom:
+      | MangataTypesMultipurposeLiquidityActivateKind
+      | null
+      | Uint8Array = null,
+  ) {
+    setupApi();
+    const api = getApi();
+    return api.tx.proofOfStake.activateLiquidityForNativeRewards(
+      liquidityTokenId,
+      amount,
+      useBalanceFrom,
+    );
+  }
   static async activatedLiquidityForSchedules(
     liqId: BN,
     address: string,

@@ -1445,7 +1445,7 @@ export async function activateAndClaim3rdPartyRewardsForUser(
     );
 }
 
-export async function addActivatedLiquidity3rdPartyRewardsForUser(
+export async function addActivatedLiquidityFor3rdPartyRewards(
   liqId: BN,
   rewardToken: BN,
   tokenValue: BN,
@@ -1476,6 +1476,35 @@ export async function addActivatedLiquidity3rdPartyRewardsForUser(
       liqId.toString() +
       ",  rewards token's ID is " +
       rewardToken.toString() +
+      " and the amount of token is " +
+      tokenValue.toString(),
+  );
+}
+
+export async function addActivatedLiquidityForNativeRewards(
+  liqId: BN,
+  tokenValue: BN,
+  userName = "//Alice",
+) {
+  await setupApi();
+  await setupUsers();
+  const keyring = new Keyring({ type: "sr25519" });
+  const user = new User(keyring, userName);
+
+  await Sudo.batchAsSudoFinalized(Assets.mintToken(liqId, user, tokenValue));
+
+  await Sudo.batchAsSudoFinalized(
+    Sudo.sudoAs(
+      user,
+      await ProofOfStake.activateLiquidityForNativeRewards(liqId, tokenValue),
+    ),
+  );
+
+  console.log(
+    "activated Native rewards liquidity for user " +
+      user.name.toString() +
+      " was added, liquidity Id is " +
+      liqId.toString() +
       " and the amount of token is " +
       tokenValue.toString(),
   );
