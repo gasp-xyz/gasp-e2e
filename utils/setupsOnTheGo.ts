@@ -1509,3 +1509,59 @@ export async function addActivatedLiquidityForNativeRewards(
       tokenValue.toString(),
   );
 }
+
+export async function addStakedUnactivatedReserves(tokenId = 1) {
+  await setupApi();
+  await setupUsers();
+  let liqToken: BN;
+  const api = await getApi();
+  const keyring = new Keyring({ type: "sr25519" });
+  const tokenAmount = new BN(
+    await api.consts.parachainStaking.minCandidateStk.toString(),
+  ).muln(100);
+  const user = new User(keyring);
+  const sudo = new User(keyring, getEnvironmentRequiredVars().sudo);
+  if (tokenId === 1) {
+    const [newToken] = await Assets.setupUserWithCurrencies(
+      user,
+      [tokenAmount],
+      sudo,
+    );
+    await Sudo.batchAsSudoFinalized(
+      Assets.FinalizeTge(),
+      Assets.initIssuance(),
+      Assets.mintNative(user, tokenAmount.muln(2)),
+      Assets.mintNative(sudo, tokenAmount.muln(2)),
+      Sudo.sudoAs(
+        user,
+        Xyk.createPool(MGA_ASSET_ID, tokenAmount, newToken, tokenAmount),
+      ),
+    );
+    liqToken = await getLiquidityAssetId(MGA_ASSET_ID, newToken);
+  } else {
+    liqToken = new BN(tokenId);
+    await Sudo.batchAsSudoFinalized(
+      Assets.mintNative(user),
+      Assets.mintToken(liqToken, user, tokenAmount.muln(2)),
+    );
+  }
+  await Sudo.batchAsSudoFinalized(
+    Sudo.sudo(Staking.addStakingLiquidityToken(liqToken)),
+  );
+  const liqTokensAmount = hexToBn(
+    (await user.getUserTokensAccountInfo(liqToken)).free,
+  );
+  await user.joinAsCandidate(liqToken, liqTokensAmount);
+  const mplStatus = await getMultiPurposeLiquidityStatus(
+    user.keyRingPair.address,
+    liqToken,
+  );
+  console.log(
+    "Amount of staked liqToken " +
+      liqToken.toString() +
+      " for user " +
+      user.name.toString() +
+      " is " +
+      mplStatus.stakedUnactivatedReserves.toString(),
+  );
+}

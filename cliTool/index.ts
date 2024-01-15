@@ -37,6 +37,7 @@ import {
   claimForAllAvlRewards,
   addActivatedLiquidityFor3rdPartyRewards,
   addActivatedLiquidityForNativeRewards,
+  addStakedUnactivatedReserves,
 } from "../utils/setupsOnTheGo";
 import {
   findErrorMetadata,
@@ -102,6 +103,7 @@ async function app(): Promise<any> {
         "Claim 4 all avl rewards",
         "Add activated 3rd party rewards liquidity",
         "Add activated native rewards liquidity",
+        "Staked liq that is not activated",
       ],
     })
     .then(async (answers: { option: string | string[] }) => {
@@ -745,6 +747,21 @@ async function app(): Promise<any> {
               return app();
             },
           );
+      }
+      if (answers.option.includes("Staked liq that is not activated")) {
+        return inquirer
+          .prompt([
+            {
+              type: "input",
+              name: "liqId",
+              message: "liquidity token ID",
+              default: "1",
+            },
+          ])
+          .then(async (answers: { liqId: number }) => {
+            addStakedUnactivatedReserves(answers.liqId);
+            return app();
+          });
       }
       return app();
     });
