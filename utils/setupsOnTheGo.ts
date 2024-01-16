@@ -1558,8 +1558,6 @@ export async function addStakedUnactivatedReserves(tokenId = 1) {
       sudo,
     );
     await Sudo.batchAsSudoFinalized(
-      Assets.FinalizeTge(),
-      Assets.initIssuance(),
       Assets.mintNative(user, tokenAmount.muln(2)),
       Assets.mintNative(sudo, tokenAmount.muln(2)),
       Sudo.sudoAs(
