@@ -43,6 +43,7 @@ import {
 } from "@polkadot/types/lookup";
 import { ProofOfStake } from "./ProofOfStake";
 import { signSendFinalized } from "./sign";
+import { toNumber } from "lodash-es";
 
 Assets.legacy = true;
 export async function claimForAllAvlRewards() {
@@ -1552,7 +1553,22 @@ export async function addStakedUnactivatedReserves(tokenId = 1) {
   const liqTokensAmount = hexToBn(
     (await user.getUserTokensAccountInfo(liqToken)).free,
   );
-  await user.joinAsCandidate(liqToken, liqTokensAmount);
+  const liqTokenNumber = await toNumber(liqToken);
+  const numCollators = (await api?.query.parachainStaking.candidatePool())!
+    .length;
+  const liqAssets = await api?.query.parachainStaking.stakingLiquidityTokens();
+  const liqAssetsCount = [...liqAssets!.keys()].length;
+  await signTx(
+    api,
+    api?.tx.parachainStaking.joinCandidates(
+      liqTokensAmount,
+      liqTokenNumber,
+      tokenOriginEnum.AvailableBalance,
+      new BN(numCollators),
+      new BN(liqAssetsCount),
+    ),
+    user.keyRingPair,
+  );
   const mplStatus = await getMultiPurposeLiquidityStatus(
     user.keyRingPair.address,
     liqToken,
