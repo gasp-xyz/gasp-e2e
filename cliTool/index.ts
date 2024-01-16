@@ -38,6 +38,7 @@ import {
   addActivatedLiquidityFor3rdPartyRewards,
   addActivatedLiquidityForNativeRewards,
   addStakedUnactivatedReserves,
+  getAllCollatorsInfoFromStash,
 } from "../utils/setupsOnTheGo";
 import {
   findErrorMetadata,
@@ -105,10 +106,14 @@ async function app(): Promise<any> {
         "Add activated 3rd party rewards liquidity",
         "Add activated native rewards liquidity",
         "Staked liq that is not activated",
+        "Get All collators info from stash",
       ],
     })
     .then(async (answers: { option: string | string[] }) => {
       console.log("Answers::: " + JSON.stringify(answers, null, "  "));
+      if (answers.option.includes("Get All collators info from stash")) {
+        await getAllCollatorsInfoFromStash();
+      }
       if (answers.option.includes("Setup rewards with default users")) {
         const setupData = await setupPoolWithRewardsForDefaultUsers();
         console.log("liq Id = " + setupData.liqId);
