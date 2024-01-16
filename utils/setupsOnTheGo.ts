@@ -106,6 +106,34 @@ export async function vetoMotion(motionId: number) {
     ),
   );
 }
+export async function getAllCollatorsInfoFromStash() {
+  //const fundAcc = "5Gc1GyxLPr1A4jE1U7u9LFYuFftDjeSYZWQXHgejQhSdEN4s";
+  await setupApi();
+  await setupUsers();
+  await initApi();
+  const api = await getApi();
+  const apiAt = await api.at(
+    "0x8de8328944b57a0fae7b6780d98c8d98e31a8539a393b64e299a38db0f200edf",
+  );
+  // const collators = await apiAt.query.parachainStaking.candidateState.entries();
+  // const collatorsInfo = collators.map((x) => [
+  //   x[0].toHuman() as any,
+  //   x[1].toHuman() as any,
+  // ]);
+  // const addresses = collatorsInfo.map((x) => x[0].toString());
+  const addresses = await apiAt.query.parachainStaking.selectedCandidates();
+  for (const address in addresses) {
+    console.log("address " + addresses[address]);
+    await fetch(
+      `https://mangata-stash-dev-dot-direct-pixel-353917.oa.r.appspot.com/collator/${addresses[address]}/staking/apr`,
+    ).then(async (response) => {
+      const json = await response.text();
+      // @ts-ignore
+      console.info(`response ${JSON.stringify(json)}`);
+    });
+  }
+  //console.info(JSON.stringify(collatorsInfo));
+}
 export async function vote(motionId: number) {
   await setupApi();
   await setupUsers();
