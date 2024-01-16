@@ -56,6 +56,7 @@ import { stringToU8a, bnToU8a, u8aConcat, BN } from "@polkadot/util";
 import { Sudo } from "../utils/sudo";
 import { setupApi, setupUsers } from "../utils/setup";
 import { Assets } from "../utils/Assets";
+import { toNumber } from "lodash-es";
 
 async function app(): Promise<any> {
   return inquirer
@@ -702,7 +703,7 @@ async function app(): Promise<any> {
               rewardToken: string;
               tokenValue: string;
             }) => {
-              addActivatedLiquidityFor3rdPartyRewards(
+              await addActivatedLiquidityFor3rdPartyRewards(
                 new BN(answers.liqId.toString()),
                 new BN(answers.rewardToken.toString()),
                 new BN(answers.tokenValue.toString()),
@@ -739,7 +740,7 @@ async function app(): Promise<any> {
               rewardToken: string;
               tokenValue: string;
             }) => {
-              addActivatedLiquidityForNativeRewards(
+              await addActivatedLiquidityForNativeRewards(
                 new BN(answers.liqId.toString()),
                 new BN(answers.tokenValue.toString()),
                 answers.user,
@@ -759,7 +760,8 @@ async function app(): Promise<any> {
             },
           ])
           .then(async (answers: { liqId: number }) => {
-            addStakedUnactivatedReserves(answers.liqId);
+            const liqIdBn = toNumber(answers.liqId.toString());
+            await addStakedUnactivatedReserves(liqIdBn);
             return app();
           });
       }
