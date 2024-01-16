@@ -45,6 +45,7 @@ import { ProofOfStake } from "./ProofOfStake";
 import { signSendFinalized } from "./sign";
 
 Assets.legacy = true;
+
 export async function claimForAllAvlRewards() {
   await setupApi();
   setupUsers();
@@ -106,6 +107,7 @@ export async function vetoMotion(motionId: number) {
     ),
   );
 }
+
 export async function getAllCollatorsInfoFromStash() {
   //const fundAcc = "5Gc1GyxLPr1A4jE1U7u9LFYuFftDjeSYZWQXHgejQhSdEN4s";
   await setupApi();
@@ -115,12 +117,24 @@ export async function getAllCollatorsInfoFromStash() {
   const apiAt = await api.at(
     "0x8de8328944b57a0fae7b6780d98c8d98e31a8539a393b64e299a38db0f200edf",
   );
-  // const collators = await apiAt.query.parachainStaking.candidateState.entries();
-  // const collatorsInfo = collators.map((x) => [
-  //   x[0].toHuman() as any,
-  //   x[1].toHuman() as any,
-  // ]);
-  // const addresses = collatorsInfo.map((x) => x[0].toString());
+  const collators = await apiAt.query.parachainStaking.candidateState.entries();
+  const collatorsInfo = collators.map((x) => [x[0], x[1]]);
+  const item: any[][] = [];
+  collatorsInfo.forEach((x) => {
+    item.push([
+      BigInt(
+        hexToBn(JSON.parse(JSON.stringify(x[1])).totalCounted)
+          .sub(hexToBn(JSON.parse(JSON.stringify(x[1])).bond))
+          .toString(),
+      ),
+      x[0].toHuman(),
+    ]);
+  });
+  const item2 = item.sort();
+  item2.forEach((x) => {
+    console.log(x[0].toString(), "," ,  x[1][0]);
+  });
+
   const addresses = await apiAt.query.parachainStaking.selectedCandidates();
   for (const address in addresses) {
     console.log("address " + addresses[address]);
