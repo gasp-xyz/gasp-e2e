@@ -44,6 +44,7 @@ import {
 import { ProofOfStake } from "./ProofOfStake";
 import { signSendFinalized } from "./sign";
 
+Assets.legacy = true;
 export async function claimForAllAvlRewards() {
   await setupApi();
   setupUsers();
