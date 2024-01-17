@@ -44,6 +44,8 @@ import {
 import { ProofOfStake } from "./ProofOfStake";
 import { signSendFinalized } from "./sign";
 import { toNumber } from "lodash-es";
+import { Vesting } from "./Vesting";
+import { MPL } from "./MPL";
 
 Assets.legacy = true;
 export async function claimForAllAvlRewards() {
@@ -1606,5 +1608,80 @@ export async function addStakedUnactivatedReserves(tokenId = 1) {
       user.name.toString() +
       " is " +
       mplStatus.stakedUnactivatedReserves.toString(),
+  );
+}
+
+export async function addUnspentReserves(tokenId = 1, userName = "//Alice") {
+  await setupApi();
+  await setupUsers();
+  let liqToken: BN;
+  let assetID: BN;
+  const keyring = new Keyring({ type: "sr25519" });
+  const user = new User(keyring, userName);
+  const sudo = new User(keyring, getEnvironmentRequiredVars().sudo);
+  if (tokenId === 1) {
+    [assetID] = await Assets.setupUserWithCurrencies(
+      sudo,
+      [Assets.DEFAULT_AMOUNT],
+      sudo,
+    );
+    await Sudo.batchAsSudoFinalized(
+      Assets.mintToken(assetID, user, Assets.DEFAULT_AMOUNT.muln(2)),
+      Assets.mintNative(user, Assets.DEFAULT_AMOUNT.muln(2)),
+      Sudo.sudoAs(
+        user,
+        Xyk.createPool(
+          MGA_ASSET_ID,
+          Assets.DEFAULT_AMOUNT,
+          assetID,
+          Assets.DEFAULT_AMOUNT,
+        ),
+      ),
+    );
+    liqToken = await getLiquidityAssetId(MGA_ASSET_ID, assetID);
+  } else {
+    assetID = new BN(tokenId);
+    liqToken = await getLiquidityAssetId(MGA_ASSET_ID, assetID);
+    await Sudo.batchAsSudoFinalized(
+      Assets.mintNative(user),
+      Assets.mintToken(liqToken, user, Assets.DEFAULT_AMOUNT.muln(2)),
+    );
+  }
+  await Sudo.batchAsSudoFinalized(
+    Sudo.sudo(Staking.addStakingLiquidityToken(liqToken)),
+    Sudo.sudo(
+      await Vesting.forceVested(
+        sudo.keyRingPair.address,
+        user,
+        Assets.DEFAULT_AMOUNT.divn(2),
+        MGA_ASSET_ID,
+        100,
+      ),
+    ),
+    Assets.promotePool(liqToken.toNumber(), 20),
+    Sudo.sudoAs(
+      user,
+      Xyk.mintLiquidityUsingVested(
+        assetID,
+        Assets.DEFAULT_AMOUNT.divn(2),
+        Assets.DEFAULT_AMOUNT,
+      ),
+    ),
+    Sudo.sudoAs(
+      user,
+      MPL.reserveVestingLiquidityTokensByVestingIndex(liqToken),
+    ),
+  );
+  const mplStatus = await getMultiPurposeLiquidityStatus(
+    user.keyRingPair.address,
+    liqToken,
+  );
+  console.log(
+    "Amount of vesting tokens moved to MPL for liqId " +
+      liqToken.toString() +
+      " for user " +
+      user.name.toString() +
+      " is " +
+      mplStatus.unspentReserves.toString(),
   );
 }

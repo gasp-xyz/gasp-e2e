@@ -39,6 +39,7 @@ import {
   addActivatedLiquidityForNativeRewards,
   addStakedUnactivatedReserves,
   getAllCollatorsInfoFromStash,
+  addUnspentReserves,
 } from "../utils/setupsOnTheGo";
 import {
   findErrorMetadata,
@@ -107,6 +108,7 @@ async function app(): Promise<any> {
         "Add activated native rewards liquidity",
         "Staked liq that is not activated",
         "Get All collators info from stash",
+        "Add vesting tokens and move these to MPL",
       ],
     })
     .then(async (answers: { option: string | string[] }) => {
@@ -767,6 +769,28 @@ async function app(): Promise<any> {
           .then(async (answers: { liqId: number }) => {
             const liqIdBn = toNumber(answers.liqId.toString());
             await addStakedUnactivatedReserves(liqIdBn);
+            return app();
+          });
+      }
+      if (answers.option.includes("Add vesting tokens and move these to MPL")) {
+        return inquirer
+          .prompt([
+            {
+              type: "input",
+              name: "user",
+              message: "user",
+              default: "//Alice",
+            },
+            {
+              type: "input",
+              name: "tokenId",
+              message: "liquidity token ID",
+              default: "1",
+            },
+          ])
+          .then(async (answers: { user: string; tokenId: number }) => {
+            const tokenIdBn = toNumber(answers.tokenId.toString());
+            await addUnspentReserves(tokenIdBn, answers.user);
             return app();
           });
       }
