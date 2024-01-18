@@ -790,7 +790,7 @@ async function app(): Promise<any> {
             {
               type: "input",
               name: "tokenId",
-              message: "liquidity token ID",
+              message: "liquidity token ID (1 - create new pool)",
               default: "1",
             },
           ])
