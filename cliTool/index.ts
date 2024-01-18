@@ -762,7 +762,7 @@ async function app(): Promise<any> {
             {
               type: "input",
               name: "user",
-              message: "user (new - create new pool)",
+              message: "user",
               default: "//Alice",
             },
             {

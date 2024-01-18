@@ -1550,17 +1550,12 @@ export async function addStakedUnactivatedReserves(
   await setupApi();
   await setupUsers();
   let liqToken: BN;
-  let user: User;
   const api = await getApi();
   const keyring = new Keyring({ type: "sr25519" });
   const tokenAmount = new BN(
     await api.consts.parachainStaking.minCandidateStk.toString(),
   ).muln(100);
-  if (userName === "new") {
-    user = new User(keyring);
-  } else {
-    user = new User(keyring, userName);
-  }
+  const user = new User(keyring, userName);
   const userCandidateStateBefore =
     await api?.query.parachainStaking.candidateState(user.keyRingPair.address);
   const userCandidateBond = new BN(userCandidateStateBefore.value.bond);
