@@ -699,8 +699,8 @@ async function app(): Promise<any> {
             },
             {
               type: "input",
-              name: "tokenValue",
-              message: "tokenValue",
+              name: "tokenAmount",
+              message: "tokenAmount",
             },
           ])
           .then(
@@ -708,12 +708,12 @@ async function app(): Promise<any> {
               user: string;
               liqId: string;
               rewardToken: string;
-              tokenValue: string;
+              tokenAmount: string;
             }) => {
               await addActivatedLiquidityFor3rdPartyRewards(
                 new BN(answers.liqId.toString()),
                 new BN(answers.rewardToken.toString()),
-                new BN(answers.tokenValue.toString()),
+                new BN(answers.tokenAmount.toString()),
                 answers.user,
               );
               return app();
@@ -761,14 +761,20 @@ async function app(): Promise<any> {
           .prompt([
             {
               type: "input",
+              name: "user",
+              message: "user (new - create new pool)",
+              default: "//Alice",
+            },
+            {
+              type: "input",
               name: "liqId",
-              message: "liquidity token ID",
+              message: "liquidity token ID (1 - create new pool)",
               default: "1",
             },
           ])
-          .then(async (answers: { liqId: number }) => {
+          .then(async (answers: { user: string; liqId: number }) => {
             const liqIdBn = toNumber(answers.liqId.toString());
-            await addStakedUnactivatedReserves(liqIdBn);
+            await addStakedUnactivatedReserves(answers.user, liqIdBn);
             return app();
           });
       }
@@ -790,7 +796,7 @@ async function app(): Promise<any> {
           ])
           .then(async (answers: { user: string; tokenId: number }) => {
             const tokenIdBn = toNumber(answers.tokenId.toString());
-            await addUnspentReserves(tokenIdBn, answers.user);
+            await addUnspentReserves(answers.user, tokenIdBn);
             return app();
           });
       }

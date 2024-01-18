@@ -7,6 +7,7 @@ import { waitForRewards } from "./eventListeners";
 import { Extrinsic, setupApi, setupUsers, sudo } from "./setup";
 import { Sudo } from "./sudo";
 import { xxhashAsHex } from "@polkadot/util-crypto";
+import { SudoDB } from "./SudoDB";
 
 import {
   calculate_buy_price_id_rpc,
@@ -1480,7 +1481,7 @@ export async function activateAndClaim3rdPartyRewardsForUser(
 export async function addActivatedLiquidityFor3rdPartyRewards(
   liqId: BN,
   rewardToken: BN,
-  tokenValue: BN,
+  tokenAmount: BN,
   userName = "//Alice",
 ) {
   await setupApi();
@@ -1488,14 +1489,14 @@ export async function addActivatedLiquidityFor3rdPartyRewards(
   const keyring = new Keyring({ type: "sr25519" });
   const user = new User(keyring, userName);
 
-  await Sudo.batchAsSudoFinalized(Assets.mintToken(liqId, user, tokenValue));
+  await Sudo.batchAsSudoFinalized(Assets.mintToken(liqId, user, tokenAmount));
 
   await Sudo.batchAsSudoFinalized(
     Sudo.sudoAs(
       user,
       await ProofOfStake.activateLiquidityFor3rdpartyRewards(
         liqId,
-        tokenValue,
+        tokenAmount,
         rewardToken,
       ),
     ),
@@ -1509,7 +1510,7 @@ export async function addActivatedLiquidityFor3rdPartyRewards(
       ",  rewards token's ID is " +
       rewardToken.toString() +
       " and the amount of token is " +
-      tokenValue.toString(),
+      tokenAmount.toString(),
   );
 }
 
@@ -1542,16 +1543,31 @@ export async function addActivatedLiquidityForNativeRewards(
   );
 }
 
-export async function addStakedUnactivatedReserves(tokenId = 1) {
+export async function addStakedUnactivatedReserves(
+  userName = "//Alice",
+  tokenId = 1,
+) {
   await setupApi();
   await setupUsers();
   let liqToken: BN;
+  let user: User;
   const api = await getApi();
   const keyring = new Keyring({ type: "sr25519" });
   const tokenAmount = new BN(
     await api.consts.parachainStaking.minCandidateStk.toString(),
   ).muln(100);
-  const user = new User(keyring);
+  if (userName === "new") {
+    user = new User(keyring);
+  } else {
+    user = new User(keyring, userName);
+  }
+  const userCandidateStateBefore =
+    await api?.query.parachainStaking.candidateState(user.keyRingPair.address);
+  const userCandidateBond = new BN(userCandidateStateBefore.value.bond);
+  if (userCandidateBond > BN_ZERO) {
+    console.error("User is already a candidate");
+    process.exit(1);
+  }
   const sudo = new User(keyring, getEnvironmentRequiredVars().sudo);
   if (tokenId === 1) {
     const [newToken] = await Assets.setupUserWithCurrencies(
@@ -1571,7 +1587,7 @@ export async function addStakedUnactivatedReserves(tokenId = 1) {
   } else {
     liqToken = new BN(tokenId);
     await Sudo.batchAsSudoFinalized(
-      Assets.mintNative(user),
+      Assets.mintNative(user, tokenAmount.muln(2)),
       Assets.mintToken(liqToken, user, tokenAmount.muln(2)),
     );
   }
@@ -1582,17 +1598,16 @@ export async function addStakedUnactivatedReserves(tokenId = 1) {
     (await user.getUserTokensAccountInfo(liqToken)).free,
   );
   const liqTokenNumber = await toNumber(liqToken);
-  const numCollators = (await api?.query.parachainStaking.candidatePool())!
-    .length;
+  const numCollators = await SudoDB.getInstance().getNextCandidateNum();
   const liqAssets = await api?.query.parachainStaking.stakingLiquidityTokens();
-  const liqAssetsCount = [...liqAssets!.keys()].length;
+  const liqAssetsCount = [...liqAssets!.keys()].length + 10;
   await signTx(
     api,
     api?.tx.parachainStaking.joinCandidates(
       liqTokensAmount,
       liqTokenNumber,
       tokenOriginEnum.AvailableBalance,
-      new BN(numCollators),
+      new BN(numCollators + 10),
       new BN(liqAssetsCount),
     ),
     user.keyRingPair,
@@ -1611,7 +1626,7 @@ export async function addStakedUnactivatedReserves(tokenId = 1) {
   );
 }
 
-export async function addUnspentReserves(tokenId = 1, userName = "//Alice") {
+export async function addUnspentReserves(userName = "//Alice", tokenId = 1) {
   await setupApi();
   await setupUsers();
   let liqToken: BN;
