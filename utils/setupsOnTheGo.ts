@@ -124,7 +124,7 @@ export async function getAllCollatorsInfoFromStash() {
     item.push([
       BigInt(
         hexToBn(JSON.parse(JSON.stringify(x[1])).totalCounted)
-          .sub(hexToBn(JSON.parse(JSON.stringify(x[1])).bond))
+  //        .sub(hexToBn(JSON.parse(JSON.stringify(x[1])).bond))
           .toString(),
       ),
       x[0].toHuman(),
