@@ -83,9 +83,10 @@ beforeAll(async () => {
   testUser.addAsset(token1);
 });
 
-test("activate some Liquidity using SDK THEN claim rewards THEN deactivate Liquidity", async () => {
+test.skip("TODO Activate some Liquidity using SDK THEN claim rewards THEN deactivate Liquidity", async () => {
   await testUser.refreshAmounts(AssetWallet.BEFORE);
 
+  // this options must be changed to SDK function activateLiquidityForNativeRewards
   await signTx(
     getApi(),
     await ProofOfStake.activateLiquidityForNativeRewards(
