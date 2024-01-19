@@ -35,6 +35,11 @@ import {
   printUserInfo,
   activateAndClaim3rdPartyRewardsForUser,
   claimForAllAvlRewards,
+  addActivatedLiquidityFor3rdPartyRewards,
+  addActivatedLiquidityForNativeRewards,
+  addStakedUnactivatedReserves,
+  getAllCollatorsInfoFromStash,
+  addUnspentReserves,
 } from "../utils/setupsOnTheGo";
 import {
   findErrorMetadata,
@@ -52,6 +57,8 @@ import { encodeAddress } from "@polkadot/keyring";
 import { stringToU8a, bnToU8a, u8aConcat, BN } from "@polkadot/util";
 import { Sudo } from "../utils/sudo";
 import { setupApi, setupUsers } from "../utils/setup";
+import { Assets } from "../utils/Assets";
+import { toNumber } from "lodash-es";
 
 async function app(): Promise<any> {
   return inquirer
@@ -68,6 +75,7 @@ async function app(): Promise<any> {
         "Join as candidate",
         "Fill with candidates",
         "Give tokens to user",
+        "Mint token to user",
         "Foo",
         "Find Error",
         "Enable liq token",
@@ -96,10 +104,18 @@ async function app(): Promise<any> {
         "Print user info",
         "Activate and claim 3rd party rewards to default users",
         "Claim 4 all avl rewards",
+        "Add activated 3rd party rewards liquidity",
+        "Add activated native rewards liquidity",
+        "Staked liq that is not activated",
+        "Get All collators info from stash",
+        "Add vesting tokens and move these to MPL",
       ],
     })
     .then(async (answers: { option: string | string[] }) => {
       console.log("Answers::: " + JSON.stringify(answers, null, "  "));
+      if (answers.option.includes("Get All collators info from stash")) {
+        await getAllCollatorsInfoFromStash();
+      }
       if (answers.option.includes("Setup rewards with default users")) {
         const setupData = await setupPoolWithRewardsForDefaultUsers();
         console.log("liq Id = " + setupData.liqId);
@@ -274,6 +290,55 @@ async function app(): Promise<any> {
               liq: number | undefined;
             }) => {
               await giveTokensToUser(answers.user, answers.liq);
+              console.log("Done");
+              return app();
+            },
+          );
+      }
+      if (answers.option.includes("Mint token to user")) {
+        return inquirer
+          .prompt([
+            {
+              type: "input",
+              name: "user",
+              message: "user",
+              default: "//Alice",
+            },
+            {
+              type: "input",
+              name: "tokenId",
+              message: "token id",
+            },
+            {
+              type: "input",
+              name: "amount",
+              message: "amount",
+            },
+          ])
+          .then(
+            async (answers: {
+              user: string;
+              tokenId: number;
+              amount: number;
+            }) => {
+              try {
+                getApi();
+              } catch (e) {
+                await initApi();
+              }
+              await setupApi();
+              await setupUsers();
+              const keyring = new Keyring({ type: "sr25519" });
+              const user = new User(keyring, answers.user);
+              await Sudo.batchAsSudoFinalized(
+                Assets.FinalizeTge(),
+                Assets.initIssuance(),
+                Assets.mintToken(
+                  new BN(answers.tokenId),
+                  user,
+                  new BN(answers.amount),
+                ),
+              );
               console.log("Done");
               return app();
             },
@@ -602,11 +667,137 @@ async function app(): Promise<any> {
             {
               type: "input",
               name: "user",
-              message: "default //Charlie",
+              message: "user",
+              default: "//Charlie",
             },
           ])
           .then(async (answers: { user: string }) => {
             activateAndClaim3rdPartyRewardsForUser(answers.user);
+            return app();
+          });
+      }
+      if (
+        answers.option.includes("Add activated 3rd party rewards liquidity")
+      ) {
+        return inquirer
+          .prompt([
+            {
+              type: "input",
+              name: "user",
+              message: "user",
+              default: "//Alice",
+            },
+            {
+              type: "input",
+              name: "liqId",
+              message: "liqId",
+            },
+            {
+              type: "input",
+              name: "rewardToken",
+              message: "rewardToken",
+            },
+            {
+              type: "input",
+              name: "tokenAmount",
+              message: "tokenAmount",
+            },
+          ])
+          .then(
+            async (answers: {
+              user: string;
+              liqId: string;
+              rewardToken: string;
+              tokenAmount: string;
+            }) => {
+              await addActivatedLiquidityFor3rdPartyRewards(
+                new BN(answers.liqId.toString()),
+                new BN(answers.rewardToken.toString()),
+                new BN(answers.tokenAmount.toString()),
+                answers.user,
+              );
+              return app();
+            },
+          );
+      }
+      if (answers.option.includes("Add activated native rewards liquidity")) {
+        return inquirer
+          .prompt([
+            {
+              type: "input",
+              name: "user",
+              message: "user",
+              default: "//Alice",
+            },
+            {
+              type: "input",
+              name: "liqId",
+              message: "liqId",
+            },
+            {
+              type: "input",
+              name: "tokenValue",
+              message: "tokenValue",
+            },
+          ])
+          .then(
+            async (answers: {
+              user: string;
+              liqId: string;
+              rewardToken: string;
+              tokenValue: string;
+            }) => {
+              await addActivatedLiquidityForNativeRewards(
+                new BN(answers.liqId.toString()),
+                new BN(answers.tokenValue.toString()),
+                answers.user,
+              );
+              return app();
+            },
+          );
+      }
+      if (answers.option.includes("Staked liq that is not activated")) {
+        return inquirer
+          .prompt([
+            {
+              type: "input",
+              name: "user",
+              message: "user",
+              default: "//Alice",
+            },
+            {
+              type: "input",
+              name: "liqId",
+              message: "liquidity token ID (1 - create new pool)",
+              default: "1",
+            },
+          ])
+          .then(async (answers: { user: string; liqId: number }) => {
+            const liqIdBn = toNumber(answers.liqId.toString());
+            await addStakedUnactivatedReserves(answers.user, liqIdBn);
+            return app();
+          });
+      }
+      if (answers.option.includes("Add vesting tokens and move these to MPL")) {
+        return inquirer
+          .prompt([
+            {
+              type: "input",
+              name: "user",
+              message: "user",
+              default: "//Alice",
+            },
+            {
+              type: "input",
+              name: "tokenId",
+              message: "liquidity token ID (1 - create new pool)",
+              default: "1",
+            },
+          ])
+          .then(async (answers: { user: string; tokenId: number }) => {
+            const tokenIdBn = toNumber(answers.tokenId.toString());
+            await addUnspentReserves(answers.user, tokenIdBn);
+            return app();
           });
       }
       return app();
