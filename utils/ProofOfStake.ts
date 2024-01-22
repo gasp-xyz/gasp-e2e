@@ -161,6 +161,12 @@ export class ProofOfStake {
     ];
   }
 
+  static async claimNativeRewards(liquidityTokenId: BN) {
+    await setupApi();
+    const api = getApi();
+    return api.tx.proofOfStake.claimNativeRewards(liquidityTokenId);
+  }
+
   static async activateLiquidityForNativeRewards(
     liquidityTokenId: BN,
     amount: BN,
@@ -173,12 +179,6 @@ export class ProofOfStake {
       amount,
       useBalanceFrom,
     );
-  }
-
-  static async claimNativeRewards(liquidityTokenId: BN) {
-    await setupApi();
-    const api = getApi();
-    return api.tx.proofOfStake.claimNativeRewards(liquidityTokenId);
   }
 
   static async deactivateLiquidityForNativeRewards(
