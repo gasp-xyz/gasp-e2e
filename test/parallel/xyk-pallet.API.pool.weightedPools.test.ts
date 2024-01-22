@@ -28,6 +28,7 @@ import { ExtrinsicResult, waitForRewards } from "../../utils/eventListeners";
 import { getEventResultFromMangataTx } from "../../utils/txHandler";
 import { BN } from "@polkadot/util";
 import "jest-extended";
+import { ProofOfStake } from "../../utils/ProofOfStake";
 
 jest.spyOn(console, "log").mockImplementation(jest.fn());
 jest.setTimeout(2500000);
@@ -87,7 +88,7 @@ beforeEach(async () => {
     Assets.mintNative(testUser1),
     Sudo.sudoAs(
       testUser1,
-      Xyk.activateLiquidity(liqId, Assets.DEFAULT_AMOUNT.divn(2)),
+      ProofOfStake.activateLiquidity(liqId, Assets.DEFAULT_AMOUNT.divn(2)),
     ),
   );
 });

@@ -22,6 +22,7 @@ import { getEnvironmentRequiredVars } from "../../utils/utils";
 import { Xyk } from "../../utils/xyk";
 import { waitForRewards } from "../../utils/eventListeners";
 import { BN } from "@polkadot/util";
+import { ProofOfStake } from "../../utils/ProofOfStake";
 
 jest.spyOn(console, "log").mockImplementation(jest.fn());
 jest.setTimeout(2500000);
@@ -166,7 +167,7 @@ test("Given 3 pool: token1-MGX, token2-MGX and token1-token2 WHEN token1-token2 
     liqIdThirdPool,
   );
   await Sudo.batchAsSudoFinalized(
-    Xyk.updatePoolPromotion(liqIdThirdPool, 20),
+    ProofOfStake.updatePoolPromotion(liqIdThirdPool, 20),
     Sudo.sudoAs(
       testUser1,
       Xyk.mintLiquidity(

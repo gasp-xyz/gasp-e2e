@@ -26,6 +26,7 @@ import {
 } from "../../utils/txHandler";
 import { ExtrinsicResult, waitForRewards } from "../../utils/eventListeners";
 import { BN_ZERO } from "@mangata-finance/sdk";
+import { ProofOfStake } from "../../utils/ProofOfStake";
 
 jest.spyOn(console, "log").mockImplementation(jest.fn());
 jest.setTimeout(2500000);
@@ -85,7 +86,7 @@ beforeEach(async () => {
     Assets.promotePool(liquidityId.toNumber(), 20),
     Sudo.sudoAs(
       testUser1,
-      Xyk.activateLiquidity(liquidityId, defaultCurrencyValue),
+      ProofOfStake.activateLiquidity(liquidityId, defaultCurrencyValue),
     ),
   );
 

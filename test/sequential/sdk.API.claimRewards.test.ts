@@ -22,6 +22,7 @@ import {
 import { getEventResultFromMangataTx } from "../../utils/txHandler";
 import { ExtrinsicResult, waitForRewards } from "../../utils/eventListeners";
 import { BN_ZERO } from "@mangata-finance/sdk";
+import { ProofOfStake } from "../../utils/ProofOfStake";
 
 jest.spyOn(console, "log").mockImplementation(jest.fn());
 jest.setTimeout(2500000);
@@ -103,7 +104,7 @@ beforeAll(async () => {
     batchPromisesPromoting.push(
       Sudo.sudoAs(
         testUser,
-        Xyk.activateLiquidity(
+        ProofOfStake.activateLiquidity(
           liqIds[tokenNumber],
           defaultCurrencyValue.divn(2),
         ),
@@ -332,9 +333,9 @@ test("GIVEN a user has available some rewards in over ten pools AND this user cl
   );
 
   await Sudo.batchAsSudoFinalized(
-    Sudo.sudoAs(testUser1, Xyk.claimRewardsAll(liqIds[0])),
-    Sudo.sudoAs(testUser1, Xyk.claimRewardsAll(liqIds[1])),
-    Sudo.sudoAs(testUser1, Xyk.claimRewardsAll(liqIds[2])),
+    Sudo.sudoAs(testUser1, ProofOfStake.claimRewardsAll(liqIds[0])),
+    Sudo.sudoAs(testUser1, ProofOfStake.claimRewardsAll(liqIds[1])),
+    Sudo.sudoAs(testUser1, ProofOfStake.claimRewardsAll(liqIds[2])),
   );
 
   for (let i = 3; i < 12; i++) {

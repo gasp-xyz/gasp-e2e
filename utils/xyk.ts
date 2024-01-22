@@ -1,7 +1,6 @@
 import { BN_ZERO } from "@mangata-finance/sdk";
 import { BN } from "@polkadot/util";
 import { api, Extrinsic } from "./setup";
-import { Sudo } from "./sudo";
 
 export class Xyk {
   static createPool(
@@ -38,10 +37,6 @@ export class Xyk {
     assetAmount: BN,
   ): Extrinsic {
     return api.tx.xyk.burnLiquidity(firstAsset, secondAsset, assetAmount);
-  }
-
-  static claimRewardsAll(liquidityToken: BN): Extrinsic {
-    return api.tx.proofOfStake.claimRewardsAll(liquidityToken);
   }
 
   static sellAsset(
@@ -84,28 +79,6 @@ export class Xyk {
     minAmountOut: BN,
   ): Extrinsic {
     return api.tx.xyk.multiswapSellAsset(tokenIds, buyAmount, minAmountOut);
-  }
-
-  static updatePoolPromotion(liquidityAssetId: BN, weight: number): Extrinsic {
-    return Sudo.sudo(
-      api.tx.proofOfStake.updatePoolPromotion(liquidityAssetId, weight),
-    );
-  }
-
-  static activateLiquidity(
-    liquidityAssetId: BN,
-    amount: BN,
-    from: any | null = null,
-  ): Extrinsic {
-    return api.tx.proofOfStake.activateLiquidity(
-      liquidityAssetId,
-      amount,
-      from,
-    );
-  }
-
-  static deactivateLiquidity(liquidityAssetId: BN, amount: BN): Extrinsic {
-    return api.tx.proofOfStake.deactivateLiquidity(liquidityAssetId, amount);
   }
 
   static compoundRewards(

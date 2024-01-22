@@ -196,4 +196,33 @@ export class ProofOfStake {
     const api = getApi();
     return api.tx.proofOfStake.claimNativeRewards(liquidityTokenId);
   }
+
+  static claimRewardsAll(liquidityToken: BN) {
+    return getApi().tx.proofOfStake.claimRewardsAll(liquidityToken);
+  }
+
+  static updatePoolPromotion(liquidityAssetId: BN, weight: number) {
+    return Sudo.sudo(
+      getApi().tx.proofOfStake.updatePoolPromotion(liquidityAssetId, weight),
+    );
+  }
+
+  static activateLiquidity(
+    liquidityAssetId: BN,
+    amount: BN,
+    from: any | null = null,
+  ) {
+    return getApi().tx.proofOfStake.activateLiquidity(
+      liquidityAssetId,
+      amount,
+      from,
+    );
+  }
+
+  static deactivateLiquidity(liquidityAssetId: BN, amount: BN) {
+    return getApi().tx.proofOfStake.deactivateLiquidity(
+      liquidityAssetId,
+      amount,
+    );
+  }
 }

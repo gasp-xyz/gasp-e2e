@@ -18,6 +18,7 @@ import { getEnvironmentRequiredVars } from "../../utils/utils";
 import { Xyk } from "../../utils/xyk";
 import { waitForRewards } from "../../utils/eventListeners";
 import { BN } from "@polkadot/util";
+import { ProofOfStake } from "../../utils/ProofOfStake";
 
 jest.spyOn(console, "log").mockImplementation(jest.fn());
 jest.setTimeout(2500000);
@@ -131,21 +132,24 @@ test("GIVEN a promoted pool WHEN more pools gets activated THEN shares are decre
     Assets.promotePool(liqIdPool3.toNumber(), 20),
     Sudo.sudoAs(
       testUser1,
-      Xyk.deactivateLiquidity(liqIdPool1, Assets.DEFAULT_AMOUNT.divn(2)),
+      ProofOfStake.deactivateLiquidity(
+        liqIdPool1,
+        Assets.DEFAULT_AMOUNT.divn(2),
+      ),
     ),
     Sudo.sudoAs(
       testUser2,
-      Xyk.activateLiquidity(liqIdPool2, Assets.DEFAULT_AMOUNT.divn(2)),
+      ProofOfStake.activateLiquidity(liqIdPool2, Assets.DEFAULT_AMOUNT.divn(2)),
     ),
     Sudo.sudoAs(
       testUser3,
-      Xyk.activateLiquidity(liqIdPool3, Assets.DEFAULT_AMOUNT.divn(2)),
+      ProofOfStake.activateLiquidity(liqIdPool3, Assets.DEFAULT_AMOUNT.divn(2)),
     ),
     Sudo.sudoAs(
       testUser11,
-      Xyk.activateLiquidity(liqIdPool1, Assets.DEFAULT_AMOUNT.divn(2)),
+      ProofOfStake.activateLiquidity(liqIdPool1, Assets.DEFAULT_AMOUNT.divn(2)),
     ),
-    Sudo.sudoAs(testUser1, Xyk.claimRewardsAll(liqIdPool1)),
+    Sudo.sudoAs(testUser1, ProofOfStake.claimRewardsAll(liqIdPool1)),
   );
 
   await waitForRewards(testUser11, liqIdPool1);
@@ -153,10 +157,10 @@ test("GIVEN a promoted pool WHEN more pools gets activated THEN shares are decre
   await waitForRewards(testUser3, liqIdPool3);
 
   await Sudo.batchAsSudoFinalized(
-    Sudo.sudoAs(testUser11, Xyk.claimRewardsAll(liqIdPool1)),
-    Sudo.sudoAs(testUser1, Xyk.claimRewardsAll(liqIdPool1)),
-    Sudo.sudoAs(testUser2, Xyk.claimRewardsAll(liqIdPool2)),
-    Sudo.sudoAs(testUser3, Xyk.claimRewardsAll(liqIdPool3)),
+    Sudo.sudoAs(testUser11, ProofOfStake.claimRewardsAll(liqIdPool1)),
+    Sudo.sudoAs(testUser1, ProofOfStake.claimRewardsAll(liqIdPool1)),
+    Sudo.sudoAs(testUser2, ProofOfStake.claimRewardsAll(liqIdPool2)),
+    Sudo.sudoAs(testUser3, ProofOfStake.claimRewardsAll(liqIdPool3)),
   );
 
   await waitForRewards(testUser11, liqIdPool1);

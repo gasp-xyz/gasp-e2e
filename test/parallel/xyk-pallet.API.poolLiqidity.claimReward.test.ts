@@ -29,6 +29,7 @@ import { Xyk } from "../../utils/xyk";
 import { waitForRewards } from "../../utils/eventListeners";
 import { getBalanceOfPool } from "../../utils/txHandler";
 import { BN } from "@polkadot/util";
+import { ProofOfStake } from "../../utils/ProofOfStake";
 
 jest.spyOn(console, "log").mockImplementation(jest.fn());
 jest.setTimeout(2500000);
@@ -223,8 +224,8 @@ test("Given a pool with 2 users with activated rewards WHEN more than one period
   await testUser2.refreshAmounts(AssetWallet.BEFORE);
 
   await Sudo.batchAsSudoFinalized(
-    Sudo.sudoAs(testUser1, Xyk.claimRewardsAll(liquidityAssetId)),
-    Sudo.sudoAs(testUser2, Xyk.claimRewardsAll(liquidityAssetId)),
+    Sudo.sudoAs(testUser1, ProofOfStake.claimRewardsAll(liquidityAssetId)),
+    Sudo.sudoAs(testUser2, ProofOfStake.claimRewardsAll(liquidityAssetId)),
   );
 
   await testUser1.refreshAmounts(AssetWallet.AFTER);
@@ -262,7 +263,7 @@ test("Given a pool with user with activated rewards  WHEN it was deactivated AND
   await testUser1.refreshAmounts(AssetWallet.BEFORE);
 
   await Sudo.batchAsSudoFinalized(
-    Sudo.sudoAs(testUser1, Xyk.claimRewardsAll(liqIdPromPool2)),
+    Sudo.sudoAs(testUser1, ProofOfStake.claimRewardsAll(liqIdPromPool2)),
   );
 
   await testUser1.refreshAmounts(AssetWallet.AFTER);
@@ -280,7 +281,7 @@ test("Given a pool with user with activated rewards  WHEN it was deactivated AND
   await testUser1.refreshAmounts(AssetWallet.BEFORE);
 
   await Sudo.batchAsSudoFinalized(
-    Sudo.sudoAs(testUser1, Xyk.claimRewardsAll(liqIdPromPool2)),
+    Sudo.sudoAs(testUser1, ProofOfStake.claimRewardsAll(liqIdPromPool2)),
   );
 
   await testUser1.refreshAmounts(AssetWallet.AFTER);

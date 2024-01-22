@@ -371,12 +371,30 @@ export async function setupTokenWithRewardsForDefaultUsers() {
   const liqId = token2;
   await Sudo.batchAsSudoFinalized(
     Assets.promotePool(liqId.toNumber(), 20),
-    Sudo.sudoAs(testUser1, Xyk.activateLiquidity(token2, amount.divn(10))),
-    Sudo.sudoAs(testUser2, Xyk.activateLiquidity(token2, amount.divn(10))),
-    Sudo.sudoAs(testUser3, Xyk.activateLiquidity(token2, amount.divn(10))),
-    Sudo.sudoAs(testUser4, Xyk.activateLiquidity(token2, amount.divn(10))),
-    Sudo.sudoAs(testUser5, Xyk.activateLiquidity(token2, amount.divn(10))),
-    Sudo.sudoAs(testUser6, Xyk.activateLiquidity(token2, amount.divn(10))),
+    Sudo.sudoAs(
+      testUser1,
+      ProofOfStake.activateLiquidity(token2, amount.divn(10)),
+    ),
+    Sudo.sudoAs(
+      testUser2,
+      ProofOfStake.activateLiquidity(token2, amount.divn(10)),
+    ),
+    Sudo.sudoAs(
+      testUser3,
+      ProofOfStake.activateLiquidity(token2, amount.divn(10)),
+    ),
+    Sudo.sudoAs(
+      testUser4,
+      ProofOfStake.activateLiquidity(token2, amount.divn(10)),
+    ),
+    Sudo.sudoAs(
+      testUser5,
+      ProofOfStake.activateLiquidity(token2, amount.divn(10)),
+    ),
+    Sudo.sudoAs(
+      testUser6,
+      ProofOfStake.activateLiquidity(token2, amount.divn(10)),
+    ),
   );
   await waitForRewards(testUser4, liqId);
   return { users, liqId, sudo, token2 };
@@ -1029,7 +1047,9 @@ export async function findAllRewardsAndClaim() {
     });
     if (rewardAmount) {
       console.info(getPrint(usersInfo[index][0], usersInfo[index][1]));
-      extrinsicCall.push(Sudo.sudoAs(user, Xyk.claimRewardsAll(liqTokenId)));
+      extrinsicCall.push(
+        Sudo.sudoAs(user, ProofOfStake.claimRewardsAll(liqTokenId)),
+      );
     }
   }
   let txs: Extrinsic[] = [];

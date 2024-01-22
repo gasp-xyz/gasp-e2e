@@ -11,6 +11,7 @@ import { Xyk } from "./xyk";
 import { signTx } from "@mangata-finance/sdk";
 import { getEventResultFromMangataTx } from "./txHandler";
 import { ExtrinsicResult } from "./eventListeners";
+import { ProofOfStake } from "./ProofOfStake";
 
 export enum tokenOriginEnum {
   AvailableBalance = "AvailableBalance",
@@ -204,7 +205,7 @@ export class Staking {
           amountToJoin.muln(100000),
         ),
       ),
-      Sudo.sudoAs(user, Xyk.deactivateLiquidity(liq, amountToJoin)),
+      Sudo.sudoAs(user, ProofOfStake.deactivateLiquidity(liq, amountToJoin)),
     );
     await signTx(
       api,
