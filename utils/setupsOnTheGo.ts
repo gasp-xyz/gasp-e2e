@@ -124,7 +124,7 @@ export async function getAllCollatorsInfoFromStash() {
     item.push([
       BigInt(
         hexToBn(JSON.parse(JSON.stringify(x[1])).totalCounted)
-  //        .sub(hexToBn(JSON.parse(JSON.stringify(x[1])).bond))
+          //        .sub(hexToBn(JSON.parse(JSON.stringify(x[1])).bond))
           .toString(),
       ),
       x[0].toHuman(),
@@ -132,14 +132,14 @@ export async function getAllCollatorsInfoFromStash() {
   });
   const item2 = item.sort();
   item2.forEach((x) => {
-    console.log(x[0].toString(), "," ,  x[1][0]);
+    console.log(x[0].toString(), ",", x[1][0]);
   });
 
   const addresses = await apiAt.query.parachainStaking.selectedCandidates();
   for (const address in addresses) {
     console.log("address " + addresses[address]);
     await fetch(
-      `https://mangata-stash-dev-dot-direct-pixel-353917.oa.r.appspot.com/collator/${addresses[address]}/staking/apr`,
+      `https://mangata-stash-dev-dot-direct-pixel-353917.oa.r.appspot.com/collator/${addresses[address]}/staking/apy`,
     ).then(async (response) => {
       const json = await response.text();
       // @ts-ignore
