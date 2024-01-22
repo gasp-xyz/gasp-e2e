@@ -2,16 +2,18 @@
 import Keyring from "@polkadot/keyring";
 import BN from "bn.js";
 import { Assets } from "./Assets";
-import { MGA_ASSET_ID, MAX_BALANCE, KSM_ASSET_ID } from "./Constants";
+import { KSM_ASSET_ID, MAX_BALANCE, MGA_ASSET_ID } from "./Constants";
 import { waitForRewards } from "./eventListeners";
-import { Extrinsic, setupApi, setupUsers } from "./setup";
+import { Extrinsic, setupApi, setupUsers, sudo } from "./setup";
 import { Sudo } from "./sudo";
 import { xxhashAsHex } from "@polkadot/util-crypto";
+import { SudoDB } from "./SudoDB";
 
 import {
+  calculate_buy_price_id_rpc,
+  getCurrentNonce,
   getLiquidityAssetId,
   getLiquidityPool,
-  calculate_buy_price_id_rpc,
   promotePool,
 } from "./tx";
 import { User } from "./User";
@@ -24,13 +26,13 @@ import {
   stringToBN,
 } from "./utils";
 import { Xyk } from "./xyk";
-import { getApi, api, initApi, getMangataInstance } from "./api";
+import { api, getApi, getMangataInstance, initApi } from "./api";
 import { BN_ZERO, signTx } from "@mangata-finance/sdk";
 import { getBalanceOfPool } from "./txHandler";
-import { StorageKey, Bytes } from "@polkadot/types";
-import { ITuple, Codec } from "@polkadot/types/types";
+import { Bytes, StorageKey } from "@polkadot/types";
+import { Codec, ITuple } from "@polkadot/types/types";
 import jsonpath from "jsonpath";
-import { Staking, AggregatorOptions, tokenOriginEnum } from "./Staking";
+import { AggregatorOptions, Staking, tokenOriginEnum } from "./Staking";
 import { hexToBn } from "@polkadot/util";
 import { Bootstrap } from "./Bootstrap";
 import assert from "assert";
@@ -41,6 +43,48 @@ import {
   PalletMultipurposeLiquidityReserveStatusInfo,
 } from "@polkadot/types/lookup";
 import { ProofOfStake } from "./ProofOfStake";
+import { signSendFinalized } from "./sign";
+import { toNumber } from "lodash-es";
+import { Vesting } from "./Vesting";
+import { MPL } from "./MPL";
+
+Assets.legacy = true;
+export async function claimForAllAvlRewards() {
+  await setupApi();
+  setupUsers();
+  await initApi();
+  const api = await getApi();
+  const txs = [];
+  const allScheduleRewards =
+    await api.query.proofOfStake.rewardsInfoForScheduleRewards.entries();
+  const listOfUsersToClaim = allScheduleRewards.map((x) => [
+    x[0]!.toHuman()! as any[0],
+    x[0]!.toHuman()! as any[1],
+  ]);
+  for (let index = 0; index < listOfUsersToClaim.length; index++) {
+    const user = listOfUsersToClaim[index];
+    console.info(JSON.stringify(user) + "--" + user[1][1]);
+    txs.push(
+      Sudo.sudoAsWithAddressString(
+        user[1][0],
+        await ProofOfStake.claim3rdpartyRewards(user[1][1][0], user[1][1][1]),
+      ),
+    );
+  }
+  let promises = [];
+  let nonce = await getCurrentNonce(sudo.keyRingPair.address);
+  for (let index = 0; index < txs.length; index++) {
+    const tx = txs[index];
+    promises.push(signSendFinalized(tx, sudo, nonce));
+    nonce = nonce.addn(1);
+    if (index % 500 === 0) {
+      await Promise.all(promises);
+      promises = [];
+    }
+  }
+  await Promise.all(promises);
+}
+
 const tokenOrigin = tokenOriginEnum.ActivatedUnstakedReserves;
 
 export async function vetoMotion(motionId: number) {
@@ -65,6 +109,34 @@ export async function vetoMotion(motionId: number) {
       api.tx.council.disapproveProposal(hash!),
     ),
   );
+}
+export async function getAllCollatorsInfoFromStash() {
+  //const fundAcc = "5Gc1GyxLPr1A4jE1U7u9LFYuFftDjeSYZWQXHgejQhSdEN4s";
+  await setupApi();
+  await setupUsers();
+  await initApi();
+  const api = await getApi();
+  const apiAt = await api.at(
+    "0x8de8328944b57a0fae7b6780d98c8d98e31a8539a393b64e299a38db0f200edf",
+  );
+  // const collators = await apiAt.query.parachainStaking.candidateState.entries();
+  // const collatorsInfo = collators.map((x) => [
+  //   x[0].toHuman() as any,
+  //   x[1].toHuman() as any,
+  // ]);
+  // const addresses = collatorsInfo.map((x) => x[0].toString());
+  const addresses = await apiAt.query.parachainStaking.selectedCandidates();
+  for (const address in addresses) {
+    console.log("address " + addresses[address]);
+    await fetch(
+      `https://mangata-stash-dev-dot-direct-pixel-353917.oa.r.appspot.com/collator/${addresses[address]}/staking/apr`,
+    ).then(async (response) => {
+      const json = await response.text();
+      // @ts-ignore
+      console.info(`response ${JSON.stringify(json)}`);
+    });
+  }
+  //console.info(JSON.stringify(collatorsInfo));
 }
 export async function vote(motionId: number) {
   await setupApi();
@@ -937,7 +1009,7 @@ export async function findAllRewardsAndClaim() {
   const user = new User(keyring);
   for (let index = 0; index < promotedPairNumber; index++) {
     function getPrint(user: string, tokens: RewardsInfo) {
-      const text =
+      return (
         user +
         "-- tokenID: " +
         tokens.tokenId.toString() +
@@ -946,8 +1018,8 @@ export async function findAllRewardsAndClaim() {
         ", alreadyClaimed: " +
         tokens.rewardsAlreadyClaimed +
         ", notYetClaimed:" +
-        tokens.rewardsNotYetClaimed;
-      return text;
+        tokens.rewardsNotYetClaimed
+      );
     }
     user.addFromAddress(keyring, usersInfo[index][0]);
     liqTokenId = new BN(usersInfo[index][1].tokenId);
@@ -1404,4 +1476,222 @@ export async function activateAndClaim3rdPartyRewardsForUser(
         " and the amount of rewards is " +
         userRewardsTokenBalance.toString(),
     );
+}
+
+export async function addActivatedLiquidityFor3rdPartyRewards(
+  liqId: BN,
+  rewardToken: BN,
+  tokenAmount: BN,
+  userName = "//Alice",
+) {
+  await setupApi();
+  await setupUsers();
+  const keyring = new Keyring({ type: "sr25519" });
+  const user = new User(keyring, userName);
+
+  await Sudo.batchAsSudoFinalized(Assets.mintToken(liqId, user, tokenAmount));
+
+  await Sudo.batchAsSudoFinalized(
+    Sudo.sudoAs(
+      user,
+      await ProofOfStake.activateLiquidityFor3rdpartyRewards(
+        liqId,
+        tokenAmount,
+        rewardToken,
+      ),
+    ),
+  );
+
+  console.log(
+    "activated 3rd party rewards liquidity for user " +
+      user.name.toString() +
+      " was added, liquidity Id is " +
+      liqId.toString() +
+      ",  rewards token's ID is " +
+      rewardToken.toString() +
+      " and the amount of token is " +
+      tokenAmount.toString(),
+  );
+}
+
+export async function addActivatedLiquidityForNativeRewards(
+  liqId: BN,
+  tokenValue: BN,
+  userName = "//Alice",
+) {
+  await setupApi();
+  await setupUsers();
+  const keyring = new Keyring({ type: "sr25519" });
+  const user = new User(keyring, userName);
+
+  await Sudo.batchAsSudoFinalized(Assets.mintToken(liqId, user, tokenValue));
+
+  await Sudo.batchAsSudoFinalized(
+    Sudo.sudoAs(
+      user,
+      await ProofOfStake.activateLiquidityForNativeRewards(liqId, tokenValue),
+    ),
+  );
+
+  console.log(
+    "activated Native rewards liquidity for user " +
+      user.name.toString() +
+      " was added, liquidity Id is " +
+      liqId.toString() +
+      " and the amount of token is " +
+      tokenValue.toString(),
+  );
+}
+
+export async function addStakedUnactivatedReserves(
+  userName = "//Alice",
+  tokenId = 1,
+) {
+  await setupApi();
+  await setupUsers();
+  let liqToken: BN;
+  const api = await getApi();
+  const keyring = new Keyring({ type: "sr25519" });
+  const tokenAmount = new BN(
+    await api.consts.parachainStaking.minCandidateStk.toString(),
+  ).muln(100);
+  const user = new User(keyring, userName);
+  const userCandidateStateBefore =
+    await api?.query.parachainStaking.candidateState(user.keyRingPair.address);
+  const userCandidateBond = new BN(userCandidateStateBefore.value.bond);
+  if (userCandidateBond > BN_ZERO) {
+    console.error("User is already a candidate");
+    process.exit(1);
+  }
+  const sudo = new User(keyring, getEnvironmentRequiredVars().sudo);
+  if (tokenId === 1) {
+    const [newToken] = await Assets.setupUserWithCurrencies(
+      user,
+      [tokenAmount],
+      sudo,
+    );
+    await Sudo.batchAsSudoFinalized(
+      Assets.mintNative(user, tokenAmount.muln(2)),
+      Assets.mintNative(sudo, tokenAmount.muln(2)),
+      Sudo.sudoAs(
+        user,
+        Xyk.createPool(MGA_ASSET_ID, tokenAmount, newToken, tokenAmount),
+      ),
+    );
+    liqToken = await getLiquidityAssetId(MGA_ASSET_ID, newToken);
+  } else {
+    liqToken = new BN(tokenId);
+    await Sudo.batchAsSudoFinalized(
+      Assets.mintNative(user, tokenAmount.muln(2)),
+      Assets.mintToken(liqToken, user, tokenAmount.muln(2)),
+    );
+  }
+  await Sudo.batchAsSudoFinalized(
+    Sudo.sudo(Staking.addStakingLiquidityToken(liqToken)),
+  );
+  const liqTokensAmount = hexToBn(
+    (await user.getUserTokensAccountInfo(liqToken)).free,
+  );
+  const liqTokenNumber = await toNumber(liqToken);
+  const numCollators = await SudoDB.getInstance().getNextCandidateNum();
+  const liqAssets = await api?.query.parachainStaking.stakingLiquidityTokens();
+  const liqAssetsCount = [...liqAssets!.keys()].length + 10;
+  await signTx(
+    api,
+    api?.tx.parachainStaking.joinCandidates(
+      liqTokensAmount,
+      liqTokenNumber,
+      tokenOriginEnum.AvailableBalance,
+      new BN(numCollators + 10),
+      new BN(liqAssetsCount),
+    ),
+    user.keyRingPair,
+  );
+  const mplStatus = await getMultiPurposeLiquidityStatus(
+    user.keyRingPair.address,
+    liqToken,
+  );
+  console.log(
+    "Amount of staked liqToken " +
+      liqToken.toString() +
+      " for user " +
+      user.name.toString() +
+      " is " +
+      mplStatus.stakedUnactivatedReserves.toString(),
+  );
+}
+
+export async function addUnspentReserves(userName = "//Alice", tokenId = 1) {
+  await setupApi();
+  await setupUsers();
+  let liqToken: BN;
+  let assetID: BN;
+  const keyring = new Keyring({ type: "sr25519" });
+  const user = new User(keyring, userName);
+  const sudo = new User(keyring, getEnvironmentRequiredVars().sudo);
+  if (tokenId === 1) {
+    [assetID] = await Assets.setupUserWithCurrencies(
+      sudo,
+      [Assets.DEFAULT_AMOUNT],
+      sudo,
+    );
+    await Sudo.batchAsSudoFinalized(
+      Assets.mintToken(assetID, user, Assets.DEFAULT_AMOUNT.muln(2)),
+      Assets.mintNative(user, Assets.DEFAULT_AMOUNT.muln(2)),
+      Sudo.sudoAs(
+        user,
+        Xyk.createPool(
+          MGA_ASSET_ID,
+          Assets.DEFAULT_AMOUNT,
+          assetID,
+          Assets.DEFAULT_AMOUNT,
+        ),
+      ),
+    );
+    liqToken = await getLiquidityAssetId(MGA_ASSET_ID, assetID);
+  } else {
+    assetID = new BN(tokenId);
+    liqToken = await getLiquidityAssetId(MGA_ASSET_ID, assetID);
+    await Sudo.batchAsSudoFinalized(
+      Assets.mintNative(user),
+      Assets.mintToken(liqToken, user, Assets.DEFAULT_AMOUNT.muln(2)),
+    );
+  }
+  await Sudo.batchAsSudoFinalized(
+    Sudo.sudo(Staking.addStakingLiquidityToken(liqToken)),
+    Sudo.sudo(
+      await Vesting.forceVested(
+        sudo.keyRingPair.address,
+        user,
+        Assets.DEFAULT_AMOUNT.divn(2),
+        MGA_ASSET_ID,
+        100,
+      ),
+    ),
+    Assets.promotePool(liqToken.toNumber(), 20),
+    Sudo.sudoAs(
+      user,
+      Xyk.mintLiquidityUsingVested(
+        assetID,
+        Assets.DEFAULT_AMOUNT.divn(2),
+        Assets.DEFAULT_AMOUNT,
+      ),
+    ),
+    Sudo.sudoAs(
+      user,
+      MPL.reserveVestingLiquidityTokensByVestingIndex(liqToken),
+    ),
+  );
+  const mplStatus = await getMultiPurposeLiquidityStatus(
+    user.keyRingPair.address,
+    liqToken,
+  );
+  console.log(
+    "Amount of vesting tokens moved to MPL for liqId " +
+      liqToken.toString() +
+      " for user " +
+      user.name.toString() +
+      " is " +
+      mplStatus.unspentReserves.toString(),
+  );
 }

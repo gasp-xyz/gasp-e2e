@@ -9,7 +9,7 @@ import { BN } from "@polkadot/util";
 import { mangataChopstick } from "../../utils/api";
 import { AssetId } from "../../utils/ChainSpecs";
 import { waitForEvents } from "../../utils/eventListeners";
-import { ApiContext } from "../../utils/Framework/XcmHelper";
+import { ApiContext, upgradeMangata } from "../../utils/Framework/XcmHelper";
 import XcmNetworks from "../../utils/Framework/XcmNetworks";
 import { alice, api, setupApi, setupUsers } from "../../utils/setup";
 import { expectEvent } from "../../utils/validators";
@@ -47,7 +47,7 @@ describe("XCM transfers", () => {
         Key: alice.keyRingPair.address,
       },
     });
-    // await upgradeMangata(mangata);
+    await upgradeMangata(mangata);
   });
 
   beforeEach(async () => {

@@ -34,7 +34,7 @@ exports[`XCM tests for Mangata <-> Statemine [RMRK] statemine transfer assets to
 
 exports[`XCM tests for Mangata <-> Statemine [RMRK] statemine transfer assets to mangata 2`] = `
 {
-  "free": 10099948390400,
+  "free": 10099935488000,
   "frozen": 0,
   "reserved": 0,
 }
@@ -76,7 +76,7 @@ exports[`XCM tests for Mangata <-> Statemine statemine transfer assets to mangat
 
 exports[`XCM tests for Mangata <-> Statemine statemine transfer assets to mangata 2`] = `
 {
-  "free": 1009991936,
+  "free": 1009989920,
   "frozen": 0,
   "reserved": 0,
 }

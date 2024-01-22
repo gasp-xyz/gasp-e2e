@@ -2,7 +2,7 @@ import { connectParachains } from "@acala-network/chopsticks";
 import { KeyringPair } from "@polkadot/keyring/types";
 import { BN_THOUSAND, BN } from "@polkadot/util";
 import { AssetId } from "../../utils/ChainSpecs";
-import { ApiContext } from "../../utils/Framework/XcmHelper";
+import { ApiContext, upgradeMangata } from "../../utils/Framework/XcmHelper";
 import XcmNetworks from "../../utils/Framework/XcmNetworks";
 import { devTestingPairs, setupApi, setupUsers } from "../../utils/setup";
 import {
@@ -16,7 +16,7 @@ import { Codec } from "@polkadot/types/types";
 import { expectEvent, matchEvents } from "../../utils/eventListeners";
 
 /**
- * @group skippedXcm
+ * @group xcm
  * @group proxied
  */
 describe("XCM tests for Mangata <-> Statemine", () => {
@@ -46,7 +46,7 @@ describe("XCM tests for Mangata <-> Statemine", () => {
         Key: alice.address,
       },
     });
-    // await upgradeMangata(mangata);
+    await upgradeMangata(mangata);
   });
 
   beforeEach(async () => {

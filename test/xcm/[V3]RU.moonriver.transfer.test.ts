@@ -1,6 +1,6 @@
 import { connectParachains } from "@acala-network/chopsticks";
 import { AssetId } from "../../utils/ChainSpecs";
-import { ApiContext } from "../../utils/Framework/XcmHelper";
+import { ApiContext, upgradeMangata } from "../../utils/Framework/XcmHelper";
 import XcmNetworks from "../../utils/Framework/XcmNetworks";
 import { alice, setupApi, setupUsers } from "../../utils/setup";
 import {
@@ -19,7 +19,7 @@ import { testLog } from "../../utils/Logger";
 import { jest } from "@jest/globals";
 
 /**
- * @group skip-xcm
+ * @group xcm
  * @group proxied
  */
 
@@ -72,7 +72,7 @@ describe("[V3][V3] XCM tests for Mangata <-> moonriver", () => {
         ],
       },
     });
-    // await upgradeMangata(mangata);
+    await upgradeMangata(mangata);
   });
 
   beforeEach(async () => {

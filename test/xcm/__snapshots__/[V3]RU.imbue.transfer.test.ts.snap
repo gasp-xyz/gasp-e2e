@@ -5,7 +5,7 @@ exports[`[V3][V3] XCM tests for Mangata <-> imbue [V3] imbue transfer assets to 
   "consumers": 0,
   "data": {
     "flags": "0x80000000000000000000000000000000",
-    "free": 4996099132685,
+    "free": 4996175428168,
     "frozen": 0,
     "reserved": 0,
   },
@@ -61,7 +61,7 @@ exports[`[V3][V3] XCM tests for Mangata <-> imbue [V3] mangata transfer assets t
   "consumers": 0,
   "data": {
     "flags": "0x80000000000000000000000000000000",
-    "free": 19965593710250,
+    "free": 19968573320750,
     "frozen": 0,
     "reserved": 0,
   },
