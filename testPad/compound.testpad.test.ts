@@ -13,6 +13,7 @@ import { OakNode } from "../utils/Framework/Node/OakNode";
 import { XToken } from "../utils/xToken";
 import { AssetId, ChainId, ChainSpecs } from "../utils/ChainSpecs";
 import { signSendFinalized, signSendSuccess } from "../utils/sign";
+import { ProofOfStake } from "../utils/ProofOfStake";
 
 const TUR_ID = new BN(7);
 const TUR_ED = ChainSpecs.get(ChainId.Tur)!.assets.get(AssetId.Tur)!.ed;
@@ -86,7 +87,7 @@ describe("auto-compound story: auto compound rewards XCM task", () => {
           AssetId.Tur.unit.mul(BN_THOUSAND),
         ),
       ),
-      Xyk.updatePoolPromotion(lpId, 1),
+      ProofOfStake.updatePoolPromotion(lpId, 1),
       Sudo.sudoAs(
         userMangata,
         Xyk.activateLiquidity(lpId, new BN("500000005000000000000")),

@@ -25,6 +25,7 @@ import { BN_BILLION, BN_ZERO } from "@mangata-finance/sdk";
 import { ExtrinsicResult, waitForRewards } from "../../utils/eventListeners";
 import { MGA_ASSET_ID } from "../../utils/Constants";
 import { getEventResultFromMangataTx } from "../../utils/txHandler";
+import { ProofOfStake } from "../../utils/ProofOfStake";
 
 jest.spyOn(console, "log").mockImplementation(jest.fn());
 jest.setTimeout(2500000);
@@ -84,7 +85,7 @@ beforeAll(async () => {
     Assets.mintToken(liqId, testUser1, BN_BILLION),
     Assets.mintNative(testUser1),
     Assets.mintNative(sudo),
-    Sudo.sudoAs(testUser1, Xyk.activateLiquidity(liqId, BN_BILLION)),
+    Sudo.sudoAs(testUser1, ProofOfStake.activateLiquidity(liqId, BN_BILLION)),
   );
   testUser1.addAsset(MGA_ASSET_ID);
   testUser1.addAsset(liqId);

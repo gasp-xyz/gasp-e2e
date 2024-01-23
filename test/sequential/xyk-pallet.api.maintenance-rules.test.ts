@@ -32,6 +32,7 @@ import {
 } from "../../utils/Staking";
 import { Maintenance } from "../../utils/Maintenance";
 import { getLiquidityAssetId } from "../../utils/tx";
+import { ProofOfStake } from "../../utils/ProofOfStake";
 
 jest.spyOn(console, "log").mockImplementation(jest.fn());
 jest.setTimeout(1500000);
@@ -77,7 +78,7 @@ describe("On Maintenance mode - multiSwaps / swaps / compound / prov liq are not
         foundationAccountAddress,
         Maintenance.switchMaintenanceModeOn(),
       ),
-      Xyk.updatePoolPromotion(liq, 20),
+      ProofOfStake.updatePoolPromotion(liq, 20),
     ).then((value) => {
       expectMGAExtrinsicSuDidSuccess(value);
     });

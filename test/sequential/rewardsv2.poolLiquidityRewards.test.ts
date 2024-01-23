@@ -27,6 +27,7 @@ import {
   MangataInstance,
 } from "@mangata-finance/sdk";
 import { getEventResultFromMangataTx } from "../../utils/txHandler";
+import { ProofOfStake } from "../../utils/ProofOfStake";
 
 const defaultCurrencyValue = new BN(10000000);
 const assetAmount = new BN("1000000000000000");
@@ -128,7 +129,10 @@ describe("rewards v2 tests", () => {
           testUser3,
           Xyk.mintLiquidity(MGA_ASSET_ID, secondCurrency, assetAmount),
         ),
-        Sudo.sudoAs(testUser1, Xyk.activateLiquidity(liqId, liqBalance.free)),
+        Sudo.sudoAs(
+          testUser1,
+          ProofOfStake.activateLiquidity(liqId, liqBalance.free),
+        ),
       );
 
       await waitForRewards(testUser1, liqId);
@@ -158,7 +162,7 @@ describe("rewards v2 tests", () => {
         liqId,
       );
       const events = await Sudo.batchAsSudoFinalized(
-        Sudo.sudoAs(testUser1, Xyk.claimRewardsAll(liqId)),
+        Sudo.sudoAs(testUser1, ProofOfStake.claimRewardsAll(liqId)),
       );
       const { claimedAmount } = getClaimedAmount(events);
       await testUser1.refreshAmounts(AssetWallet.AFTER);

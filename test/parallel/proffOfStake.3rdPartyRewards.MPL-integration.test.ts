@@ -217,7 +217,7 @@ describe("Proof of stake tests", () => {
       );
       await signTx(
         getApi(),
-        Xyk.activateLiquidity(
+        ProofOfStake.activateLiquidity(
           liqId,
           delegatedAmount,
           "StakedUnactivatedReserves",
@@ -278,7 +278,7 @@ describe("Proof of stake tests", () => {
       const testAmount = Assets.DEFAULT_AMOUNT.divn(100);
       await signTx(
         getApi(),
-        Xyk.activateLiquidity(
+        ProofOfStake.activateLiquidity(
           liqId,
           testAmount,
           tokenOriginEnum.AvailableBalance,
