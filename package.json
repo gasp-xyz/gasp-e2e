@@ -14,7 +14,7 @@
     "@babel/plugin-syntax-flow": "^7.22.5",
     "@babel/plugin-transform-react-jsx": "^7.22.15",
     "@commitlint/config-conventional": "^17.4.2",
-    "@mangata-finance/sdk": "2.1.2-rc-sdk.4",
+    "@mangata-finance/sdk": "2.2.0-rc-sdk.2",
     "@polkadot/api": "^10.7.3",
     "@polkadot/types": "^10.9.1",
     "@terascope/fetch-github-release": "^0.8.7",

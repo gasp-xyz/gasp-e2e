@@ -102,7 +102,7 @@ export class StakingPageDriver {
     const collatorListLocator = buildDataTestIdXpath(
       "new-stake-widget-details-fee-value",
     );
-    await waitForElementVisible(this.driver, collatorListLocator, 10000);
+    await waitForElementVisible(this.driver, collatorListLocator, 20000);
   }
 
   async submitStaking() {

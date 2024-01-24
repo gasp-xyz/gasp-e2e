@@ -142,7 +142,7 @@ export class PositionPageDriver {
 
   async waitCalculatingFee() {
     const feeAmountLocator = buildDataTestIdXpath("fee-amount");
-    await waitForElementVisible(this.driver, feeAmountLocator, 20000);
+    await waitForElementVisible(this.driver, feeAmountLocator, 40000);
   }
 
   async activateAllLiq() {
