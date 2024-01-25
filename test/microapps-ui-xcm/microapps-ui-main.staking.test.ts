@@ -92,7 +92,7 @@ describe("Microapps UI Staking page tests", () => {
         ],
       },
       Sudo: {
-        Key: "5GrwvaEF5zXb26Fz9rcQpDWS57CtERHpNehXCPcNoHGKutQY",
+        Key: sudo.keyRingPair.address,
       },
     });
     await kusama.dev.setStorage({
