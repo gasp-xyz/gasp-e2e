@@ -10,7 +10,7 @@ import { getPort } from "get-port-please";
 import * as fs from "fs";
 import { bufferToU8a, u8aToHex } from "@polkadot/util";
 import { Assets } from "../Assets";
-import { alice } from "../setup";
+import { sudo } from "../setup";
 import { Sudo } from "../sudo";
 
 export type SetupOption = {
@@ -110,7 +110,7 @@ export async function upgradeMangata(mangata: ApiContext) {
   const path = `test/xcm/_releasesUT/0.32.0/kusama-v0.32.0.wasm`;
   const wasmContent = fs.readFileSync(path);
   const hexHash = mangata.api!.registry.hash(bufferToU8a(wasmContent)).toHex();
-  await Sudo.batchAsSudoFinalized(Assets.mintNative(alice));
+  await Sudo.batchAsSudoFinalized(Assets.mintNative(sudo));
   await Sudo.asSudoFinalized(
     Sudo.sudo(
       //@ts-ignore
@@ -123,7 +123,7 @@ export async function upgradeMangata(mangata: ApiContext) {
   const param = hex.toString();
   await mangata.api.tx.sudo
     .sudo(mangata.api.tx.parachainSystem.enactAuthorizedUpgrade(param))
-    .signAndSend(alice.keyRingPair);
+    .signAndSend(sudo.keyRingPair);
 
   await mangata.dev.newBlock();
   await mangata.dev.newBlock();
