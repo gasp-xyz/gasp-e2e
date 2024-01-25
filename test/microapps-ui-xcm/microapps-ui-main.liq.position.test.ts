@@ -29,9 +29,9 @@ import {
 } from "../../utils/frontend/microapps-utils/Handlers";
 import { ApiContext, upgradeMangata } from "../../utils/Framework/XcmHelper";
 import XcmNetworks from "../../utils/Framework/XcmNetworks";
-import { connectVertical } from "@acala-network/chopsticks";
+import { BuildBlockMode, connectVertical } from "@acala-network/chopsticks";
 import { AssetId } from "../../utils/ChainSpecs";
-import { BN_THOUSAND } from "@mangata-finance/sdk";
+import { BN_BILLION, BN_THOUSAND } from "@mangata-finance/sdk";
 import StashServiceMockSingleton from "../../utils/stashServiceMockSingleton";
 import { LiqPools } from "../../utils/frontend/microapps-pages/LiqPools";
 import { Sidebar } from "../../utils/frontend/microapps-pages/Sidebar";
@@ -43,6 +43,7 @@ import { LiqPoolDetils } from "../../utils/frontend/microapps-pages/LiqPoolDetai
 //import { Polkadot } from "../../utils/frontend/pages/Polkadot";
 import { TransactionType } from "../../utils/frontend/microapps-pages/NotificationModal";
 import { PositionPageDriver } from "../../utils/frontend/microapps-pages/PositionPage";
+import { alice, setupApi, setupUsers } from "../../utils/setup";
 
 jest.spyOn(console, "log").mockImplementation(jest.fn());
 
@@ -61,11 +62,18 @@ describe("Microapps UI Position page tests", () => {
   let positionPageDriver: PositionPageDriver;
 
   beforeAll(async () => {
-    kusama = await XcmNetworks.kusama({ localPort: 9944 });
-    mangata = await XcmNetworks.mangata({ localPort: 9946 });
+    kusama = await XcmNetworks.kusama({
+      localPort: 9944,
+      buildBlockMode: BuildBlockMode.Instant,
+    });
+    mangata = await XcmNetworks.mangata({
+      localPort: 9946,
+      buildBlockMode: BuildBlockMode.Instant,
+    });
     await connectVertical(kusama.chain, mangata.chain);
     StashServiceMockSingleton.getInstance().startMock();
-
+    await setupApi();
+    setupUsers();
     try {
       getApi();
     } catch (e) {
@@ -80,10 +88,14 @@ describe("Microapps UI Position page tests", () => {
             [userAddress, { token: 0 }],
             { free: AssetId.Mgx.unit.mul(BN_THOUSAND).toString() },
           ],
+          [
+            [alice.keyRingPair.address, { token: 0 }],
+            { free: BN_BILLION.mul(AssetId.Mgx.unit).toString() },
+          ],
         ],
       },
       Sudo: {
-        Key: userAddress,
+        Key: "5GrwvaEF5zXb26Fz9rcQpDWS57CtERHpNehXCPcNoHGKutQY",
       },
     });
     await kusama.dev.setStorage({
@@ -96,6 +108,7 @@ describe("Microapps UI Position page tests", () => {
         ],
       },
     });
+    setupUsers();
     await upgradeMangata(mangata);
     driver = await DriverBuilder.getInstance();
     await importPolkadotExtension(driver);

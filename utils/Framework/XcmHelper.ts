@@ -115,6 +115,7 @@ export async function upgradeMangata(mangata: ApiContext) {
       mangata.api!.tx.parachainSystem.authorizeUpgrade(hexHash, false),
     ),
   );
+  await mangata.dev.newBlock();
   const wasmParam = Uint8Array.from(wasmContent);
   const hex = u8aToHex(wasmParam);
   const param = hex.toString();
