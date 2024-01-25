@@ -43,7 +43,8 @@ import { LiqPoolDetils } from "../../utils/frontend/microapps-pages/LiqPoolDetai
 //import { Polkadot } from "../../utils/frontend/pages/Polkadot";
 import { TransactionType } from "../../utils/frontend/microapps-pages/NotificationModal";
 import { PositionPageDriver } from "../../utils/frontend/microapps-pages/PositionPage";
-import { alice, setupApi, setupUsers } from "../../utils/setup";
+import { alice, setupApi, setupUsers, sudo } from "../../utils/setup";
+import { testLog } from "../../utils/Logger";
 
 jest.spyOn(console, "log").mockImplementation(jest.fn());
 
@@ -92,6 +93,10 @@ describe("Microapps UI Position page tests", () => {
             [alice.keyRingPair.address, { token: 0 }],
             { free: BN_BILLION.mul(AssetId.Mgx.unit).toString() },
           ],
+          [
+            [sudo.keyRingPair.address, { token: 0 }],
+            { free: BN_BILLION.mul(AssetId.Mgx.unit).toString() },
+          ],
         ],
       },
       Sudo: {
@@ -108,7 +113,8 @@ describe("Microapps UI Position page tests", () => {
         ],
       },
     });
-    setupUsers();
+    testLog.getLog().info(`Sudo address is: ${sudo.keyRingPair.address}`);
+
     await upgradeMangata(mangata);
     driver = await DriverBuilder.getInstance();
     await importPolkadotExtension(driver);

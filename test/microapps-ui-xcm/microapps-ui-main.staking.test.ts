@@ -34,7 +34,8 @@ import { Sidebar } from "../../utils/frontend/microapps-pages/Sidebar";
 import { StakingPageDriver } from "../../utils/frontend/microapps-pages/StakingPage";
 import { TransactionType } from "../../utils/frontend/microapps-pages/NotificationModal";
 import { PositionPageDriver } from "../../utils/frontend/microapps-pages/PositionPage";
-import { alice, setupApi, setupUsers } from "../../utils/setup";
+import { alice, setupApi, setupUsers, sudo } from "../../utils/setup";
+import { testLog } from "../../utils/Logger";
 
 jest.spyOn(console, "log").mockImplementation(jest.fn());
 
@@ -71,7 +72,7 @@ describe("Microapps UI Staking page tests", () => {
     } catch (e) {
       await initApi();
     }
-
+    testLog.getLog().info(`Sudo address is: ${sudo.keyRingPair.address}`);
     await mangata.dev.setStorage({
       Tokens: {
         Accounts: [
@@ -82,6 +83,10 @@ describe("Microapps UI Staking page tests", () => {
           ],
           [
             [alice.keyRingPair.address, { token: 0 }],
+            { free: BN_BILLION.mul(AssetId.Mgx.unit).toString() },
+          ],
+          [
+            [sudo.keyRingPair.address, { token: 0 }],
             { free: BN_BILLION.mul(AssetId.Mgx.unit).toString() },
           ],
         ],
