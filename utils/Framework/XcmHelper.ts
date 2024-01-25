@@ -105,6 +105,8 @@ export async function upgradeMangata(mangata: ApiContext) {
   if (process.env.WITH_MANGATA_UPGRADE !== "true") {
     return;
   }
+  await mangata.dev.newBlock();
+  await mangata.dev.newBlock();
   const path = `test/xcm/_releasesUT/0.32.0/kusama-v0.32.0.wasm`;
   const wasmContent = fs.readFileSync(path);
   const hexHash = mangata.api!.registry.hash(bufferToU8a(wasmContent)).toHex();
