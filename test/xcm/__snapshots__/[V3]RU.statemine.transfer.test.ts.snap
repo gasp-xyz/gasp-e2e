@@ -10,7 +10,7 @@ exports[`XCM tests for Mangata <-> Statemine [RMRK] mangata transfer assets to s
 
 exports[`XCM tests for Mangata <-> Statemine [RMRK] mangata transfer assets to statemine 2`] = `
 {
-  "balance": 10099999640700,
+  "balance": 10099999928140,
   "extra": null,
   "reason": {
     "consumer": null,
@@ -52,7 +52,7 @@ exports[`XCM tests for Mangata <-> Statemine mangata transfer assets to statemin
 
 exports[`XCM tests for Mangata <-> Statemine mangata transfer assets to statemine 2`] = `
 {
-  "balance": 1009996407,
+  "balance": 1009999282,
   "extra": null,
   "reason": {
     "consumer": null,
