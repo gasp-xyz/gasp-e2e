@@ -27,7 +27,7 @@ import {
   setupPageWithState,
   waitForMicroappsActionNotification,
 } from "../../utils/frontend/microapps-utils/Handlers";
-import { ApiContext } from "../../utils/Framework/XcmHelper";
+import { ApiContext, upgradeMangata } from "../../utils/Framework/XcmHelper";
 import XcmNetworks from "../../utils/Framework/XcmNetworks";
 import { connectVertical } from "@acala-network/chopsticks";
 import { AssetId } from "../../utils/ChainSpecs";
@@ -96,7 +96,7 @@ describe("Microapps UI Position page tests", () => {
         ],
       },
     });
-
+    await upgradeMangata(mangata);
     driver = await DriverBuilder.getInstance();
     await importPolkadotExtension(driver);
 
