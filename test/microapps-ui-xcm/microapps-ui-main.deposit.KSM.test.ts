@@ -25,7 +25,7 @@ import {
 } from "../../utils/frontend/microapps-utils/Handlers";
 import { DepositModal } from "../../utils/frontend/microapps-pages/DepositModal";
 import { WalletWrapper } from "../../utils/frontend/microapps-pages/WalletWrapper";
-import { ApiContext } from "../../utils/Framework/XcmHelper";
+import { ApiContext, upgradeMangata } from "../../utils/Framework/XcmHelper";
 import XcmNetworks from "../../utils/Framework/XcmNetworks";
 import { connectVertical } from "@acala-network/chopsticks";
 import { devTestingPairs } from "../../utils/setup";
@@ -90,7 +90,7 @@ describe("Microapps UI KSM transfer tests", () => {
         Key: userAddress,
       },
     });
-
+    await upgradeMangata(mangata);
     driver = await DriverBuilder.getInstance();
     await importPolkadotExtension(driver);
 

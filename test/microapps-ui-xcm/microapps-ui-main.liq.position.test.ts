@@ -31,7 +31,7 @@ import { ApiContext, upgradeMangata } from "../../utils/Framework/XcmHelper";
 import XcmNetworks from "../../utils/Framework/XcmNetworks";
 import { BuildBlockMode, connectVertical } from "@acala-network/chopsticks";
 import { AssetId } from "../../utils/ChainSpecs";
-import { BN_BILLION, BN_THOUSAND } from "@mangata-finance/sdk";
+import { BN_THOUSAND } from "@mangata-finance/sdk";
 import StashServiceMockSingleton from "../../utils/stashServiceMockSingleton";
 import { LiqPools } from "../../utils/frontend/microapps-pages/LiqPools";
 import { Sidebar } from "../../utils/frontend/microapps-pages/Sidebar";
@@ -43,7 +43,7 @@ import { LiqPoolDetils } from "../../utils/frontend/microapps-pages/LiqPoolDetai
 //import { Polkadot } from "../../utils/frontend/pages/Polkadot";
 import { TransactionType } from "../../utils/frontend/microapps-pages/NotificationModal";
 import { PositionPageDriver } from "../../utils/frontend/microapps-pages/PositionPage";
-import { alice, setupApi, setupUsers, sudo } from "../../utils/setup";
+import { sudo } from "../../utils/setup";
 import { testLog } from "../../utils/Logger";
 
 jest.spyOn(console, "log").mockImplementation(jest.fn());
@@ -73,14 +73,11 @@ describe("Microapps UI Position page tests", () => {
     });
     await connectVertical(kusama.chain, mangata.chain);
     StashServiceMockSingleton.getInstance().startMock();
-    await setupApi();
-    setupUsers();
     try {
       getApi();
     } catch (e) {
       await initApi();
     }
-
     await mangata.dev.setStorage({
       Tokens: {
         Accounts: [
@@ -88,14 +85,6 @@ describe("Microapps UI Position page tests", () => {
           [
             [userAddress, { token: 0 }],
             { free: AssetId.Mgx.unit.mul(BN_THOUSAND).toString() },
-          ],
-          [
-            [alice.keyRingPair.address, { token: 0 }],
-            { free: BN_BILLION.mul(AssetId.Mgx.unit).toString() },
-          ],
-          [
-            [sudo.keyRingPair.address, { token: 0 }],
-            { free: BN_BILLION.mul(AssetId.Mgx.unit).toString() },
           ],
         ],
       },

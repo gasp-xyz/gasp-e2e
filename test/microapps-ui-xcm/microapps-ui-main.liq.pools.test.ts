@@ -22,7 +22,7 @@ import {
   setupPageWithState,
   waitForMicroappsActionNotification,
 } from "../../utils/frontend/microapps-utils/Handlers";
-import { ApiContext } from "../../utils/Framework/XcmHelper";
+import { ApiContext, upgradeMangata } from "../../utils/Framework/XcmHelper";
 import { connectVertical } from "@acala-network/chopsticks";
 import { BN_TEN_THOUSAND, BN_THOUSAND } from "@mangata-finance/sdk";
 import { AssetId } from "../../utils/ChainSpecs";
@@ -88,7 +88,7 @@ describe("Miocroapps UI liq pools tests", () => {
         Key: userAddress,
       },
     });
-
+    await upgradeMangata(mangata);
     driver = await DriverBuilder.getInstance();
     await importPolkadotExtension(driver);
 

@@ -10,8 +10,10 @@ import { getPort } from "get-port-please";
 import * as fs from "fs";
 import { bufferToU8a, u8aToHex } from "@polkadot/util";
 import { Assets } from "../Assets";
-import { sudo } from "../setup";
+import { alice, setupApi, setupUsers, sudo } from "../setup";
 import { Sudo } from "../sudo";
+import { AssetId } from "../ChainSpecs";
+import { BN_BILLION } from "@mangata-finance/sdk";
 
 export type SetupOption = {
   endpoint: string;
@@ -105,7 +107,26 @@ export async function upgradeMangata(mangata: ApiContext) {
   if (process.env.WITH_MANGATA_UPGRADE !== "true") {
     return;
   }
+  await setupApi();
+  setupUsers();
   await mangata.dev.newBlock();
+  await mangata.dev.setStorage({
+    Tokens: {
+      Accounts: [
+        [
+          [alice.keyRingPair.address, { token: 0 }],
+          { free: BN_BILLION.mul(AssetId.Mgx.unit).toString() },
+        ],
+        [
+          [sudo.keyRingPair.address, { token: 0 }],
+          { free: BN_BILLION.mul(AssetId.Mgx.unit).toString() },
+        ],
+      ],
+    },
+    Sudo: {
+      Key: sudo.keyRingPair.address,
+    },
+  });
   await mangata.dev.newBlock();
   const path = `test/xcm/_releasesUT/0.32.0/kusama-v0.32.0.wasm`;
   const wasmContent = fs.readFileSync(path);

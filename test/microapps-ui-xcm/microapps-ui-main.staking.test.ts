@@ -27,14 +27,14 @@ import { ApiContext, upgradeMangata } from "../../utils/Framework/XcmHelper";
 import XcmNetworks from "../../utils/Framework/XcmNetworks";
 import { BuildBlockMode, connectVertical } from "@acala-network/chopsticks";
 import { AssetId } from "../../utils/ChainSpecs";
-import { BN_BILLION, BN_THOUSAND } from "@mangata-finance/sdk";
+import { BN_THOUSAND } from "@mangata-finance/sdk";
 import StashServiceMockSingleton from "../../utils/stashServiceMockSingleton";
 import { Sidebar } from "../../utils/frontend/microapps-pages/Sidebar";
 //import { Polkadot } from "../../utils/frontend/pages/Polkadot";
 import { StakingPageDriver } from "../../utils/frontend/microapps-pages/StakingPage";
 import { TransactionType } from "../../utils/frontend/microapps-pages/NotificationModal";
 import { PositionPageDriver } from "../../utils/frontend/microapps-pages/PositionPage";
-import { alice, setupApi, setupUsers, sudo } from "../../utils/setup";
+import { setupApi, setupUsers, sudo } from "../../utils/setup";
 import { testLog } from "../../utils/Logger";
 
 jest.spyOn(console, "log").mockImplementation(jest.fn());
@@ -82,14 +82,6 @@ describe("Microapps UI Staking page tests", () => {
           [
             [userAddress, { token: 0 }],
             { free: AssetId.Mgx.unit.mul(BN_THOUSAND).toString() },
-          ],
-          [
-            [alice.keyRingPair.address, { token: 0 }],
-            { free: BN_BILLION.mul(AssetId.Mgx.unit).toString() },
-          ],
-          [
-            [sudo.keyRingPair.address, { token: 0 }],
-            { free: BN_BILLION.mul(AssetId.Mgx.unit).toString() },
           ],
         ],
       },
