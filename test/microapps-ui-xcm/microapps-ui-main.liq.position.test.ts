@@ -43,7 +43,7 @@ import { LiqPoolDetils } from "../../utils/frontend/microapps-pages/LiqPoolDetai
 //import { Polkadot } from "../../utils/frontend/pages/Polkadot";
 import { TransactionType } from "../../utils/frontend/microapps-pages/NotificationModal";
 import { PositionPageDriver } from "../../utils/frontend/microapps-pages/PositionPage";
-import { sudo } from "../../utils/setup";
+import { setupUsers, sudo } from "../../utils/setup";
 import { testLog } from "../../utils/Logger";
 
 jest.spyOn(console, "log").mockImplementation(jest.fn());
@@ -78,6 +78,7 @@ describe("Microapps UI Position page tests", () => {
     } catch (e) {
       await initApi();
     }
+    await setupUsers();
     await mangata.dev.setStorage({
       Tokens: {
         Accounts: [
