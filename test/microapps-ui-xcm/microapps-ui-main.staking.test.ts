@@ -219,7 +219,9 @@ describe("Microapps UI Staking page tests", () => {
     await sidebar.clickNavStaking();
 
     await stakingPageDriver.waitForCollatorsVisible();
-    await stakingPageDriver.chooseCollatorRow(CollatorWithLikelyLessDelegators);
+    await stakingPageDriver.chooseCollatorRow(
+      CollatorWithLikelyLessDelegators - 1,
+    );
     await stakingPageDriver.startStaking();
     await stakingPageDriver.setStakingValue((liqTokenNumber / 2).toString());
     await stakingPageDriver.waitForStakingFeeVisible();
