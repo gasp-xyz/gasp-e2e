@@ -47,6 +47,8 @@ const acc_name = "acc_automation";
 const userAddress = "5CfLmpjCJu41g3cpZVoiH7MSrSppgVVVC3xq23iy9dZrW2HR";
 const liqTokenNumber = 10000;
 const INIT_KSM_RELAY = 15;
+//collators are the bottom of the list will have less stake, therefore the min required will be 1.
+const CollatorWithLikelyLessDelegators = 24;
 
 describe("Microapps UI Staking page tests", () => {
   let kusama: ApiContext;
@@ -177,7 +179,7 @@ describe("Microapps UI Staking page tests", () => {
     await sidebar.clickNavStaking();
 
     await stakingPageDriver.waitForCollatorsVisible();
-    await stakingPageDriver.chooseCollatorRow();
+    await stakingPageDriver.chooseCollatorRow(CollatorWithLikelyLessDelegators);
     await stakingPageDriver.startStaking();
     await stakingPageDriver.setStakingValue((liqTokenNumber / 2).toString());
     await stakingPageDriver.waitForStakingFeeVisible();
@@ -217,7 +219,7 @@ describe("Microapps UI Staking page tests", () => {
     await sidebar.clickNavStaking();
 
     await stakingPageDriver.waitForCollatorsVisible();
-    await stakingPageDriver.chooseCollatorRow(2);
+    await stakingPageDriver.chooseCollatorRow(CollatorWithLikelyLessDelegators);
     await stakingPageDriver.startStaking();
     await stakingPageDriver.setStakingValue((liqTokenNumber / 2).toString());
     await stakingPageDriver.waitForStakingFeeVisible();
