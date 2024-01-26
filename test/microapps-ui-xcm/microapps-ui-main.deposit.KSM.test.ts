@@ -27,7 +27,7 @@ import { DepositModal } from "../../utils/frontend/microapps-pages/DepositModal"
 import { WalletWrapper } from "../../utils/frontend/microapps-pages/WalletWrapper";
 import { ApiContext, upgradeMangata } from "../../utils/Framework/XcmHelper";
 import XcmNetworks from "../../utils/Framework/XcmNetworks";
-import { connectVertical } from "@acala-network/chopsticks";
+import { BuildBlockMode, connectVertical } from "@acala-network/chopsticks";
 import { devTestingPairs } from "../../utils/setup";
 import { AssetId } from "../../utils/ChainSpecs";
 import { BN_THOUSAND } from "@mangata-finance/sdk";
@@ -57,9 +57,11 @@ describe("Microapps UI KSM transfer tests", () => {
   beforeAll(async () => {
     kusama = await XcmNetworks.kusama({
       localPort: 9944,
+      buildBlockMode: BuildBlockMode.Instant,
     });
     mangata = await XcmNetworks.mangata({
       localPort: 9946,
+      buildBlockMode: BuildBlockMode.Instant,
     });
     await connectVertical(kusama.chain, mangata.chain);
     alice = devTestingPairs().alice;

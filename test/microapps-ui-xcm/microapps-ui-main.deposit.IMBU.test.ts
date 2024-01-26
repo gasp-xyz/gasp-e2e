@@ -27,7 +27,7 @@ import { DepositModal } from "../../utils/frontend/microapps-pages/DepositModal"
 import { WalletWrapper } from "../../utils/frontend/microapps-pages/WalletWrapper";
 import { ApiContext, upgradeMangata } from "../../utils/Framework/XcmHelper";
 import XcmNetworks from "../../utils/Framework/XcmNetworks";
-import { connectParachains } from "@acala-network/chopsticks";
+import { BuildBlockMode, connectParachains } from "@acala-network/chopsticks";
 import { devTestingPairs } from "../../utils/setup";
 import { AssetId } from "../../utils/ChainSpecs";
 import { BN_THOUSAND } from "@mangata-finance/sdk";
@@ -57,9 +57,11 @@ describe("Microapps UI IMBU transfer tests", () => {
   beforeAll(async () => {
     mangata = await XcmNetworks.mangata({
       localPort: 9946,
+      buildBlockMode: BuildBlockMode.Instant,
     });
     imbue = await XcmNetworks.imbue({
       localPort: 9951,
+      buildBlockMode: BuildBlockMode.Instant,
     });
     await connectParachains([imbue.chain, mangata.chain]);
     alice = devTestingPairs().alice;

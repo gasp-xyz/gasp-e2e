@@ -23,7 +23,7 @@ import {
   waitForMicroappsActionNotification,
 } from "../../utils/frontend/microapps-utils/Handlers";
 import { ApiContext, upgradeMangata } from "../../utils/Framework/XcmHelper";
-import { connectVertical } from "@acala-network/chopsticks";
+import { BuildBlockMode, connectVertical } from "@acala-network/chopsticks";
 import { BN_TEN_THOUSAND, BN_THOUSAND } from "@mangata-finance/sdk";
 import { AssetId } from "../../utils/ChainSpecs";
 import XcmNetworks from "../../utils/Framework/XcmNetworks";
@@ -52,8 +52,14 @@ describe("Miocroapps UI liq pools tests", () => {
   let alice: KeyringPair;
 
   beforeAll(async () => {
-    kusama = await XcmNetworks.kusama({ localPort: 9944 });
-    mangata = await XcmNetworks.mangata({ localPort: 9946 });
+    kusama = await XcmNetworks.kusama({
+      localPort: 9944,
+      buildBlockMode: BuildBlockMode.Instant,
+    });
+    mangata = await XcmNetworks.mangata({
+      localPort: 9946,
+      buildBlockMode: BuildBlockMode.Instant,
+    });
     await connectVertical(kusama.chain, mangata.chain);
     alice = devTestingPairs().alice;
     StashServiceMockSingleton.getInstance().startMock();
