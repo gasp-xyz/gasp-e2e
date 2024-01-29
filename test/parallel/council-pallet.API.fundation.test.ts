@@ -54,7 +54,14 @@ describe.each(["mmON", "mmOFF"])(
       maintenanceMode["mmON"] = Maintenance.switchMaintenanceModeOn();
       maintenanceMode["mmOFF"] = Maintenance.switchMaintenanceModeOff();
 
-      councilUsers = await setupUsers();
+      const [councilUsers0, councilUsers1, councilUsers2, councilUsers3] =
+        await setupUsers();
+      councilUsers = [
+        councilUsers0,
+        councilUsers1,
+        councilUsers2,
+        councilUsers3,
+      ];
       councilUsers.push(alice);
       await Sudo.batchAsSudoFinalized(
         Assets.mintNative(
@@ -198,7 +205,9 @@ it("Test that Closing a motion requires some time for Council mebers but not for
     await initApi();
   }
   await setupApi();
-  const councilUsers = await setupUsers();
+  const [councilUsers0, councilUsers1, councilUsers2, councilUsers3] =
+    await setupUsers();
+  councilUsers = [councilUsers0, councilUsers1, councilUsers2, councilUsers3];
   await Sudo.batchAsSudoFinalized(
     Assets.mintNative(
       councilUsers[0],
