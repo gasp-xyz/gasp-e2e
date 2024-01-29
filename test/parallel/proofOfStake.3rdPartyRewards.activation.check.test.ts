@@ -27,6 +27,7 @@ let newToken1: BN;
 let newToken2: BN;
 let newToken3: BN;
 let liqIdMgaToken1: BN;
+let liqIdMgaToken2: BN;
 
 describe("Proof of stake tests", () => {
   beforeAll(async () => {
@@ -38,13 +39,14 @@ describe("Proof of stake tests", () => {
 
     keyring = new Keyring({ type: "sr25519" });
     sudo = new User(keyring, getEnvironmentRequiredVars().sudo);
-  });
-
-  beforeEach(async () => {
-    [testUser] = setupUsers();
     [newToken1, newToken2, newToken3] = await Assets.setupUserWithCurrencies(
       sudo,
-      [Assets.DEFAULT_AMOUNT, Assets.DEFAULT_AMOUNT, Assets.DEFAULT_AMOUNT],
+      [
+        Assets.DEFAULT_AMOUNT,
+        Assets.DEFAULT_AMOUNT,
+        Assets.DEFAULT_AMOUNT,
+        Assets.DEFAULT_AMOUNT,
+      ],
       sudo,
       true,
     );
@@ -54,7 +56,7 @@ describe("Proof of stake tests", () => {
       Assets.FinalizeTge(),
       Assets.initIssuance(),
       Assets.mintToken(newToken1, sudo, Assets.DEFAULT_AMOUNT.muln(40e6)),
-      Assets.mintNative(testUser, Assets.DEFAULT_AMOUNT.muln(2)),
+      Assets.mintToken(newToken2, sudo, Assets.DEFAULT_AMOUNT.muln(40e6)),
       Assets.mintNative(sudo, Assets.DEFAULT_AMOUNT.muln(40e6).muln(2)),
       Sudo.sudoAs(
         sudo,
@@ -65,23 +67,52 @@ describe("Proof of stake tests", () => {
           Assets.DEFAULT_AMOUNT.muln(20e6),
         ),
       ),
+      Sudo.sudoAs(
+        sudo,
+        Xyk.createPool(
+          MGA_ASSET_ID,
+          Assets.DEFAULT_AMOUNT.muln(20e6),
+          newToken2,
+          Assets.DEFAULT_AMOUNT.muln(20e6),
+        ),
+      ),
     );
     liqIdMgaToken1 = await getLiquidityAssetId(MGA_ASSET_ID, newToken1);
+    liqIdMgaToken2 = await getLiquidityAssetId(MGA_ASSET_ID, newToken2);
+    await Sudo.batchAsSudoFinalized(
+      Sudo.sudoAs(
+        sudo,
+        await ProofOfStake.rewardPool(
+          MGA_ASSET_ID,
+          newToken1,
+          newToken2,
+          Assets.DEFAULT_AMOUNT.muln(10e6),
+          20,
+        ),
+      ),
+      Assets.promotePool(liqIdMgaToken1.toNumber(), 20),
+      Assets.promotePool(liqIdMgaToken2.toNumber(), 20),
+    );
+  });
+
+  beforeEach(async () => {
+    [testUser] = setupUsers();
+    await Sudo.batchAsSudoFinalized(
+      Assets.mintNative(testUser, Assets.DEFAULT_AMOUNT.muln(40e6).muln(2)),
+    );
   });
 
   describe("Added scenarios with reward activation", () => {
-    test("GIVEN promoted pool MGX-Token2 AND user with liquidity tokens for MGX-Token2 WHEN user tries to activate 3rd party rewards for Token1 THEN receive error", async () => {
+    test("GIVEN promoted pool AND user with liquidity tokens for this pool WHEN user tries to activate 3rd party rewards for non-promoted liqToken THEN receive error", async () => {
       await Sudo.batchAsSudoFinalized(
-        Assets.promotePool(liqIdMgaToken1.toNumber(), 20),
         Assets.mintToken(liqIdMgaToken1, testUser, Assets.DEFAULT_AMOUNT),
       );
-
       await signTx(
         getApi(),
         await ProofOfStake.activateLiquidityFor3rdpartyRewards(
           liqIdMgaToken1,
           Assets.DEFAULT_AMOUNT,
-          newToken2,
+          newToken3,
         ),
         testUser.keyRingPair,
       ).then((events) => {
@@ -91,14 +122,7 @@ describe("Proof of stake tests", () => {
       });
     });
 
-    test("GIVEN promoted pool MGX-Token2, pool MGX-Token1 AND user without liquidity tokens for MGX-Token2 WHEN  user tries to activate 3rd party rewards for Token1 THEN receive error", async () => {
-      await createAndPromoteSecondPool(
-        BN_ZERO,
-        liqIdMgaToken1,
-        newToken1,
-        newToken2,
-        true,
-      );
+    test("GIVEN two promoted pool AND user without liquidity tokens for first promoted WHEN user tries to activate 3rd party rewards for reward token THEN receive error", async () => {
       await signTx(
         getApi(),
         await ProofOfStake.activateLiquidityFor3rdpartyRewards(
@@ -114,13 +138,9 @@ describe("Proof of stake tests", () => {
       });
     });
 
-    test("GIVEN promoted pool MGX-Token2, pool MGX-Token1 AND user with liquidity tokens for MGX-Token2 WHEN user tries to activate 3rd party rewards for Token1 with too many liquidity tokens THEN receive error", async () => {
-      await createAndPromoteSecondPool(
-        Assets.DEFAULT_AMOUNT,
-        liqIdMgaToken1,
-        newToken1,
-        newToken2,
-        true,
+    test("GIVEN promoted two promoted pool AND user with liquidity tokens for first promoted pool WHEN user tries to activate 3rd party rewards for second (reward) token with too many liquidity tokens THEN receive error", async () => {
+      await Sudo.batchAsSudoFinalized(
+        Assets.mintToken(liqIdMgaToken1, testUser, Assets.DEFAULT_AMOUNT),
       );
       await signTx(
         getApi(),
@@ -137,20 +157,16 @@ describe("Proof of stake tests", () => {
       });
     });
 
-    test("GIVEN promoted pool MGX-Token2, pool MGX-Token1 AND user with liquidity tokens for MGX-Token2 WHEN user activates 3rd party rewards for Token1 AND does not uses rewardPool function THEN he cant claim rewards", async () => {
-      await createAndPromoteSecondPool(
-        Assets.DEFAULT_AMOUNT.muln(2),
-        liqIdMgaToken1,
-        newToken1,
-        newToken2,
-        false,
+    test("GIVEN promoted two promoted pool AND user with liquidity tokens for first promoted pool WHEN user activates 3rd party rewards for non-reward token THEN he cant claim rewards", async () => {
+      await Sudo.batchAsSudoFinalized(
+        Assets.mintToken(liqIdMgaToken1, testUser, Assets.DEFAULT_AMOUNT),
       );
       await signTx(
         getApi(),
         await ProofOfStake.activateLiquidityFor3rdpartyRewards(
           liqIdMgaToken1,
           Assets.DEFAULT_AMOUNT,
-          newToken2,
+          newToken3,
         ),
         testUser.keyRingPair,
       ).then((events) => {
@@ -160,7 +176,7 @@ describe("Proof of stake tests", () => {
       });
       await signTx(
         getApi(),
-        await ProofOfStake.claim3rdpartyRewards(liqIdMgaToken1, newToken2),
+        await ProofOfStake.claim3rdpartyRewards(liqIdMgaToken1, newToken3),
         testUser.keyRingPair,
       ).then((events) => {
         const res = getEventResultFromMangataTx(events);
@@ -169,13 +185,13 @@ describe("Proof of stake tests", () => {
       });
     });
 
-    test("GIVEN promoted pool MGX-Token2, pool MGX-Token1 AND user with liquidity tokens for MGX-Token2 WHEN user activates 3rd party rewards for Token1, waits and claims all rewards THEN operation is successful", async () => {
-      await createAndPromoteSecondPool(
-        Assets.DEFAULT_AMOUNT.muln(2),
-        liqIdMgaToken1,
-        newToken1,
-        newToken2,
-        true,
+    test("GIVEN promoted two promoted pool AND user with liquidity tokens for first promoted pool WHEN user activates 3rd party rewards for second (reward) token, waits and claims all rewards THEN operation is successful", async () => {
+      await Sudo.batchAsSudoFinalized(
+        Assets.mintToken(
+          liqIdMgaToken1,
+          testUser,
+          Assets.DEFAULT_AMOUNT.muln(2),
+        ),
       );
       await signTx(
         getApi(),
@@ -213,13 +229,13 @@ describe("Proof of stake tests", () => {
       expect(rewardTokenAfter).bnGt(BN_ZERO);
     });
 
-    test("GIVEN promoted pool MGX-Token2, pool MGX-Token1 AND user with liquidity tokens for MGX-Token2 WHEN user activates 3rd party rewards for Token1, waits more than one period last AND the user burns all his liquidity THEN users can still claim pending rewards", async () => {
-      await createAndPromoteSecondPool(
-        Assets.DEFAULT_AMOUNT.muln(2),
-        liqIdMgaToken1,
-        newToken1,
-        newToken2,
-        true,
+    test("GIVEN promoted two promoted pool AND user with liquidity tokens for first promoted pool WHEN user activates 3rd party rewards for second (reward) token , waits more than one period last AND the user burns all his liquidity THEN users can still claim pending rewards", async () => {
+      await Sudo.batchAsSudoFinalized(
+        Assets.mintToken(
+          liqIdMgaToken1,
+          testUser,
+          Assets.DEFAULT_AMOUNT.muln(2),
+        ),
       );
       await signTx(
         getApi(),
@@ -272,44 +288,3 @@ describe("Proof of stake tests", () => {
     });
   });
 });
-
-async function createAndPromoteSecondPool(
-  userLiqTokenAmount: BN,
-  liqId1: BN,
-  token1: BN,
-  token2: BN,
-  isRewardPoolEnabled: boolean,
-) {
-  await Sudo.batchAsSudoFinalized(
-    Assets.mintToken(token2, sudo, Assets.DEFAULT_AMOUNT.muln(40e6)),
-    Assets.mintToken(liqId1, testUser, userLiqTokenAmount),
-    Sudo.sudoAs(
-      sudo,
-      Xyk.createPool(
-        MGA_ASSET_ID,
-        Assets.DEFAULT_AMOUNT.muln(20e6),
-        token2,
-        Assets.DEFAULT_AMOUNT.muln(20e6),
-      ),
-    ),
-    Assets.promotePool(liqId1.toNumber(), 20),
-  );
-  const liqId2 = await getLiquidityAssetId(MGA_ASSET_ID, token2);
-  if (isRewardPoolEnabled) {
-    await Sudo.batchAsSudoFinalized(
-      Sudo.sudoAs(
-        sudo,
-        await ProofOfStake.rewardPool(
-          MGA_ASSET_ID,
-          token1,
-          token2,
-          Assets.DEFAULT_AMOUNT.muln(10e6),
-          2,
-        ),
-      ),
-      Assets.promotePool(liqId2.toNumber(), 20),
-    );
-  } else {
-    await Sudo.batchAsSudoFinalized(Assets.promotePool(liqId2.toNumber(), 20));
-  }
-}
