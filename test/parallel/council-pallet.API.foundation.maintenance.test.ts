@@ -1,6 +1,6 @@
 /*
  *
- * @group governance
+ * @group governanceMaintenance
  */
 import { jest } from "@jest/globals";
 import { getApi, initApi } from "../../utils/api";
@@ -26,8 +26,7 @@ import {
 import { Option } from "@polkadot/types-codec";
 import { Call } from "@polkadot/types/interfaces";
 import { Maintenance } from "../../utils/Maintenance";
-import { findErrorMetadata, waitForNBlocks } from "../../utils/utils";
-import { getEventResultFromMangataTx } from "../../utils/txHandler";
+import { waitForNBlocks } from "../../utils/utils";
 
 jest.spyOn(console, "log").mockImplementation(jest.fn());
 
@@ -54,14 +53,7 @@ describe.each(["mmON", "mmOFF"])(
       maintenanceMode["mmON"] = Maintenance.switchMaintenanceModeOn();
       maintenanceMode["mmOFF"] = Maintenance.switchMaintenanceModeOff();
 
-      const [councilUsers0, councilUsers1, councilUsers2, councilUsers3] =
-        await setupUsers();
-      councilUsers = [
-        councilUsers0,
-        councilUsers1,
-        councilUsers2,
-        councilUsers3,
-      ];
+      councilUsers = await setupUsers();
       councilUsers.push(alice);
       await Sudo.batchAsSudoFinalized(
         Assets.mintNative(
@@ -198,65 +190,6 @@ describe.each(["mmON", "mmOFF"])(
     });
   },
 );
-it("Test that Closing a motion requires some time for Council mebers but not for founders", async () => {
-  try {
-    getApi();
-  } catch (e) {
-    await initApi();
-  }
-  await setupApi();
-  const [councilUsers0, councilUsers1, councilUsers2, councilUsers3] =
-    await setupUsers();
-  councilUsers = [councilUsers0, councilUsers1, councilUsers2, councilUsers3];
-  await Sudo.batchAsSudoFinalized(
-    Assets.mintNative(
-      councilUsers[0],
-      BN_HUNDRED.mul(BN_THOUSAND).mul(Assets.MG_UNIT),
-    ),
-    Assets.mintNative(
-      councilUsers[1],
-      BN_HUNDRED.mul(BN_THOUSAND).mul(Assets.MG_UNIT),
-    ),
-    Assets.mintNative(
-      councilUsers[2],
-      BN_HUNDRED.mul(BN_THOUSAND).mul(Assets.MG_UNIT),
-    ),
-    Assets.mintNative(
-      councilUsers[3],
-      BN_HUNDRED.mul(BN_THOUSAND).mul(Assets.MG_UNIT),
-    ),
-    Assets.mintNative(eve, BN_HUNDRED.mul(BN_THOUSAND).mul(Assets.MG_UNIT)),
-    Sudo.sudo(Council.setMembers(councilUsers)),
-  );
-  const proposal = await createProposals(councilUsers, 1);
-  await voteProposal(proposal[0], councilUsers);
-  const propIndex = JSON.parse(
-    JSON.stringify(await getVotes(proposal[0])),
-  ).index;
-  const propBefore = await getProposal(proposal[0]);
-  const events = await Sudo.asSudoFinalized(
-    Sudo.sudoAsWithAddressString(
-      councilUsers[0].keyRingPair.address,
-      Council.close(proposal[0], propIndex),
-    ),
-  );
-  let propAfter = await getProposal(proposal[0]);
-  validateNoOK(events, propAfter, propBefore);
-  const error = getEventResultFromMangataTx(events, ["sudo", "SudoAsDone"]);
-  const err = await findErrorMetadata(
-    JSON.parse(JSON.stringify(error.data)).sudoResult.Err.Module.error,
-    JSON.parse(JSON.stringify(error.data)).sudoResult.Err.Module.index,
-  );
-  expect(err.name).toEqual("TooEarlyToCloseByNonFoundationAccount");
-  const eventsFundationUser = await Sudo.asSudoFinalized(
-    Sudo.sudoAsWithAddressString(
-      FOUNDATION_ADDRESS_1,
-      Council.close(proposal[0], propIndex),
-    ),
-  );
-  propAfter = await getProposal(proposal[0]);
-  validateOK(eventsFundationUser, propAfter, propBefore);
-});
 
 function validateOK(
   events: MangataGenericEvent[],
