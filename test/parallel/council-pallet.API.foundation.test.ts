@@ -4,7 +4,14 @@
  */
 import { jest } from "@jest/globals";
 import { getApi, initApi } from "../../utils/api";
-import { api, eve, Extrinsic, setupApi, setupUsers } from "../../utils/setup";
+import {
+  alice,
+  api,
+  eve,
+  Extrinsic,
+  setupApi,
+  setupUsers,
+} from "../../utils/setup";
 import { Sudo } from "../../utils/sudo";
 import { Assets } from "../../utils/Assets";
 import { BN, BN_THOUSAND } from "@polkadot/util";
@@ -18,11 +25,161 @@ import {
 } from "../../utils/eventListeners";
 import { Option } from "@polkadot/types-codec";
 import { Call } from "@polkadot/types/interfaces";
-import { findErrorMetadata } from "../../utils/utils";
+import { Maintenance } from "../../utils/Maintenance";
+import { findErrorMetadata, waitForNBlocks } from "../../utils/utils";
 import { getEventResultFromMangataTx } from "../../utils/txHandler";
 
 jest.spyOn(console, "log").mockImplementation(jest.fn());
 
+let councilUsers: User[];
+let proposalHashes: string[];
+type TestItem = { address: string; validate: Function };
+const testCases: { [id: string]: TestItem } = {};
+
+describe("Council tests: Special rules for foundation addresses on mmOFF", () => {
+  beforeAll(async () => {
+    try {
+      getApi();
+    } catch (e) {
+      await initApi();
+    }
+    await setupApi();
+
+    councilUsers = await setupUsers();
+    councilUsers.push(alice);
+    await Sudo.batchAsSudoFinalized(
+      Assets.mintNative(
+        councilUsers[0],
+        BN_HUNDRED.mul(BN_THOUSAND).mul(Assets.MG_UNIT),
+      ),
+      Assets.mintNative(
+        councilUsers[1],
+        BN_HUNDRED.mul(BN_THOUSAND).mul(Assets.MG_UNIT),
+      ),
+      Assets.mintNative(
+        councilUsers[2],
+        BN_HUNDRED.mul(BN_THOUSAND).mul(Assets.MG_UNIT),
+      ),
+      Assets.mintNative(
+        councilUsers[3],
+        BN_HUNDRED.mul(BN_THOUSAND).mul(Assets.MG_UNIT),
+      ),
+      Assets.mintNative(eve, BN_HUNDRED.mul(BN_THOUSAND).mul(Assets.MG_UNIT)),
+      Sudo.sudo(Council.setMembers(councilUsers)),
+    );
+    testCases["Foundation"] = {
+      address: FOUNDATION_ADDRESS_1,
+      //fundation can only close motions when mm is ON.
+      validate: validateOK,
+    };
+    testCases["NoFoundation"] = {
+      address: councilUsers[3].keyRingPair.address,
+      //Council members can close motions always.
+      validate: validateOK,
+    };
+    testCases["NoCouncil"] = {
+      address: eve.keyRingPair.address,
+      //nonCouncil can not close any motion
+      validate: validateNoOK,
+    };
+    //ugly workaround to workaroudn the beforeAll jest missbehavior.
+    proposalHashes = await createProposals(councilUsers);
+    //wait 6 mins 60 / 12 * 6 ::https://github.com/mangata-finance/mangata-node/blob/develop/runtime/mangata-rococo/src/lib.rs#L198
+    await waitForNBlocks(31);
+
+    const event = await await Sudo.asSudoFinalized(
+      Sudo.sudoAsWithAddressString(
+        FOUNDATION_ADDRESS_1,
+        Maintenance.switchMaintenanceModeOff(),
+      ),
+    );
+    expectMGAExtrinsicSuDidSuccess(event);
+  });
+  it.each([
+    ["Foundation", 6],
+    ["NoFoundation", 7],
+    ["NoCouncil", 9],
+  ])(
+    "Test that %s address can/cannot close an already voted proposal",
+    async (test: string, index: number) => {
+      const { address, validate } = testCases[test];
+      const hash = proposalHashes[index];
+      const propBefore = await getProposal(hash);
+      await voteProposal(hash, councilUsers);
+      const propIndex = JSON.parse(JSON.stringify(await getVotes(hash))).index;
+      const events = await Sudo.asSudoFinalized(
+        Sudo.sudoAsWithAddressString(address, Council.close(hash, propIndex)),
+      );
+      const propAfter = await getProposal(hash);
+      validate(events, propAfter, propBefore);
+    },
+  );
+  it.each([
+    ["Foundation", 0],
+    ["NoFoundation", 1],
+  ])(
+    "Test that %s address can/cannot veto a proposal",
+    async (test: string, index: number) => {
+      const address = testCases[test].address;
+      const validate = test === "Foundation" ? validateOK : validateNoOK;
+      const hash = proposalHashes[index];
+      const propBefore = await getProposal(hash);
+      const events = await Sudo.asSudoFinalized(
+        Sudo.sudoAsWithAddressString(address, Council.veto(hash)),
+      );
+      const propAfter = await getProposal(hash);
+      validate(events, propAfter, propBefore);
+    },
+  );
+  it("Test that sudo address can veto a proposal", async () => {
+    const { validate } = testCases["Foundation"];
+    const hash = proposalHashes[2];
+    const propBefore = await getProposal(hash);
+    const events = await Sudo.asSudoFinalized(Sudo.sudo(Council.veto(hash)));
+    const propAfter = await getProposal(hash);
+    validate(events, propAfter, propBefore);
+  });
+
+  it.each([
+    ["Foundation", 3],
+    ["NoFoundation", 4],
+  ])(
+    "Test that %s address can/cannot veto an already voted proposal",
+    async (test: string, index: number) => {
+      const address = testCases[test].address;
+      const validate = test === "Foundation" ? validateOK : validateNoOK;
+      const hash = proposalHashes[index];
+      const propBefore = await getProposal(hash);
+      await voteProposal(hash, councilUsers);
+      const events = await Sudo.asSudoFinalized(
+        Sudo.sudoAsWithAddressString(address, Council.veto(hash)),
+      );
+      const propAfter = await getProposal(hash);
+      validate(events, propAfter, propBefore);
+    },
+  );
+  it("Test that sudo address can veto an already voted proposal", async () => {
+    const { validate } = testCases["Foundation"];
+    const hash = proposalHashes[5];
+    const propBefore = await getProposal(hash);
+    await voteProposal(hash, councilUsers);
+    const events = await Sudo.asSudoFinalized(Sudo.sudo(Council.veto(hash)));
+    const propAfter = await getProposal(hash);
+    validate(events, propAfter, propBefore);
+  });
+  it("Test that sudo address cannot close an already voted proposal", async () => {
+    const validate = validateNoOK;
+    const hash = proposalHashes[8];
+    const propBefore = await getProposal(hash);
+    await voteProposal(hash, councilUsers);
+    const propIndex = JSON.parse(JSON.stringify(await getVotes(hash))).index;
+    const events = await Sudo.asSudoFinalized(
+      Sudo.sudo(Council.close(hash, propIndex)),
+    );
+    const propAfter = await getProposal(hash);
+    validate(events, propAfter, propBefore);
+  });
+});
 it("Test that Closing a motion requires some time for Council mebers but not for founders", async () => {
   try {
     getApi();
