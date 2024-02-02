@@ -86,7 +86,7 @@ describe("Council tests: Special rules for foundation addresses on mmON", () => 
     //wait 6 mins 60 / 12 * 6 ::https://github.com/mangata-finance/mangata-node/blob/develop/runtime/mangata-rococo/src/lib.rs#L198
     await waitForNBlocks(31);
 
-    const event = await await Sudo.asSudoFinalized(
+    const event = await Sudo.asSudoFinalized(
       Sudo.sudoAsWithAddressString(
         FOUNDATION_ADDRESS_1,
         Maintenance.switchMaintenanceModeOn(),
@@ -138,7 +138,6 @@ describe("Council tests: Special rules for foundation addresses on mmON", () => 
     const propAfter = await getProposal(hash);
     validate(events, propAfter, propBefore);
   });
-
   it.each([
     ["Foundation", 3],
     ["NoFoundation", 4],
