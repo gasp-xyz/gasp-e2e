@@ -27,6 +27,7 @@ import { Option } from "@polkadot/types-codec";
 import { Call } from "@polkadot/types/interfaces";
 import { findErrorMetadata, waitForNBlocks } from "../../utils/utils";
 import { getEventResultFromMangataTx } from "../../utils/txHandler";
+import { Maintenance } from "../../utils/Maintenance";
 
 jest.spyOn(console, "log").mockImplementation(jest.fn());
 
@@ -85,6 +86,13 @@ describe("Council tests: Special rules for foundation addresses on mmOFF", () =>
     proposalHashes = await createProposals(councilUsers);
     //wait 6 mins 60 / 12 * 6 ::https://github.com/mangata-finance/mangata-node/blob/develop/runtime/mangata-rococo/src/lib.rs#L198
     await waitForNBlocks(31);
+
+    await Sudo.asSudoFinalized(
+      Sudo.sudoAsWithAddressString(
+        FOUNDATION_ADDRESS_1,
+        Maintenance.switchMaintenanceModeOff(),
+      ),
+    );
   });
   it.each([
     ["Foundation", 6],
