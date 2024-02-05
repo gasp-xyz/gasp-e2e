@@ -1,7 +1,7 @@
 /* eslint-disable jest/no-conditional-expect */
 /*
  *
- * @group bootstrap
+ * @group claiming-bootstrap
  * @group sequential
  */
 import { jest } from "@jest/globals";

@@ -36,7 +36,6 @@ jest.spyOn(console, "log").mockImplementation(jest.fn());
 
 let sudo: User;
 let testUser1: User;
-//let eventResponse: EventResult;
 let bootstrapPool: any;
 
 async function runBootstrap(assetId: any) {
@@ -77,13 +76,6 @@ async function runBootstrap(assetId: any) {
     Sudo.sudoAs(sudo, api.tx.bootstrap.finalize()),
   );
   await expectMGAExtrinsicSuDidSuccess(claimRewardsAndBootstrapFinalize);
-  // const claimRewards = await claimRewardsBootstrap(testUser1);
-  // eventResponse = getEventResultFromMangataTx(claimRewards);
-  // expect(eventResponse.state).toEqual(ExtrinsicResult.ExtrinsicSuccess);
-
-  // const bootstrapFinalize = await finalizeBootstrap(sudo);
-  // eventResponse = getEventResultFromMangataTx(bootstrapFinalize);
-  // expect(eventResponse.state).toEqual(ExtrinsicResult.ExtrinsicSuccess);
 }
 
 beforeAll(async () => {
