@@ -5,7 +5,7 @@
  */
 import { jest } from "@jest/globals";
 import { BN } from "@polkadot/util";
-import { Keyring } from "@polkadot/api";
+import { ApiPromise, Keyring } from "@polkadot/api";
 import { BN_ZERO, signTx } from "@mangata-finance/sdk";
 import { getApi, initApi } from "../../utils/api";
 import { Assets } from "../../utils/Assets";
@@ -22,14 +22,20 @@ import { delegate, getLiquidityAssetId, joinCandidate } from "../../utils/tx";
 import { AssetWallet, User } from "../../utils/User";
 import { Xyk } from "../../utils/xyk";
 import { getEventResultFromMangataTx } from "../../utils/txHandler";
+import { setupUsers } from "../../utils/setup";
 
 jest.spyOn(console, "log").mockImplementation(jest.fn());
 jest.spyOn(console, "error").mockImplementation(jest.fn());
 jest.setTimeout(1500000);
 process.env.NODE_ENV = "test";
 
+let api: ApiPromise;
+
 let testUser: User;
 let testUser1: User;
+let testUser2: User;
+let testUser3: User;
+let testUser4: User;
 
 let sudo: User;
 
@@ -47,6 +53,7 @@ beforeAll(async () => {
     await initApi();
   }
 
+  api = getApi();
   keyring = new Keyring({ type: "sr25519" });
 
   // setup users
@@ -78,34 +85,34 @@ beforeAll(async () => {
   await Sudo.asSudoFinalized(
     Sudo.sudo(Staking.addStakingLiquidityToken(liqToken)),
   );
-});
 
-beforeEach(async () => {
-  testUser1 = new User(keyring);
+  [testUser1, testUser2, testUser3, testUser4] = setupUsers();
 
   await Sudo.batchAsSudoFinalized(
     Assets.mintNative(testUser1, minStk.muln(1000)),
     Assets.mintToken(tokenId, testUser1, minStk.muln(1000)),
-  );
-
-  await Sudo.batchAsSudoFinalized(
     Sudo.sudoAs(
       testUser1,
+      Xyk.mintLiquidity(MGA_ASSET_ID, tokenId, minStk.muln(5), minStk.muln(6)),
+    ),
+    Assets.mintNative(testUser2, minStk.muln(1000)),
+    Assets.mintToken(liqToken, testUser2, minStk.muln(2)),
+    Assets.mintNative(testUser3, minStk.muln(1000)),
+    Assets.mintToken(tokenId, testUser3, minStk.muln(1000)),
+    Sudo.sudoAs(
+      testUser3,
+      Xyk.mintLiquidity(MGA_ASSET_ID, tokenId, minStk.muln(5), minStk.muln(6)),
+    ),
+    Assets.mintNative(testUser4, minStk.muln(1000)),
+    Assets.mintToken(tokenId, testUser4, minStk.muln(1000)),
+    Sudo.sudoAs(
+      testUser4,
       Xyk.mintLiquidity(MGA_ASSET_ID, tokenId, minStk.muln(5), minStk.muln(6)),
     ),
   );
 });
 
 test("A user can delegate more using liq token", async () => {
-  const api = getApi();
-
-  const testUser2 = new User(keyring);
-
-  await Sudo.batchAsSudoFinalized(
-    Assets.mintNative(testUser2, minStk.muln(1000)),
-    Assets.mintToken(liqToken, testUser2, minStk.muln(2)),
-  );
-
   testUser1.addAsset(liqToken);
 
   await testUser1.refreshAmounts(AssetWallet.BEFORE);
@@ -174,39 +181,37 @@ test("A user can delegate more using liq token", async () => {
 
 test("A User with free tokens can join as collator", async () => {
   const result = await joinCandidate(
-    testUser1.keyRingPair,
+    testUser3.keyRingPair,
     liqToken,
     minStk.muln(2),
   );
   expect(result.state).toEqual(ExtrinsicResult.ExtrinsicSuccess);
   const isUserInCandidate = await Staking.isUserInCandidateList(
-    testUser1.keyRingPair.address,
+    testUser3.keyRingPair.address,
   );
   expect(isUserInCandidate).toBeTruthy();
 });
 
 test("A user can schedule and execute bond more", async () => {
-  const api = getApi();
+  testUser4.addAsset(liqToken);
 
-  testUser1.addAsset(liqToken);
-
-  await testUser1.refreshAmounts(AssetWallet.BEFORE);
+  await testUser4.refreshAmounts(AssetWallet.BEFORE);
 
   const candidateStateBeforeJoining =
-    testUser1.getAsset(liqToken)?.amountBefore.reserved!;
+    testUser4.getAsset(liqToken)?.amountBefore.reserved!;
 
-  await joinCandidate(testUser1.keyRingPair, liqToken, minStk.muln(2)).then(
+  await joinCandidate(testUser4.keyRingPair, liqToken, minStk.muln(2)).then(
     (result) => {
       expect(result.state).toEqual(ExtrinsicResult.ExtrinsicSuccess);
     },
   );
 
-  const candidateStateBeforeExecuting = await getCandidateState(testUser1);
+  const candidateStateBeforeExecuting = await getCandidateState(testUser4);
 
   await signTx(
     api,
     Staking.scheduleCandidateBondMore(minStk),
-    testUser1.keyRingPair,
+    testUser4.keyRingPair,
   ).then((value) => {
     const event = getEventResultFromMangataTx(value);
     expect(event.state).toEqual(ExtrinsicResult.ExtrinsicSuccess);
@@ -217,14 +222,14 @@ test("A user can schedule and execute bond more", async () => {
 
   await signTx(
     api,
-    Staking.executeBondRequest(testUser1),
-    testUser1.keyRingPair,
+    Staking.executeBondRequest(testUser4),
+    testUser4.keyRingPair,
   ).then((value) => {
     const event = getEventResultFromMangataTx(value);
     expect(event.state).toEqual(ExtrinsicResult.ExtrinsicSuccess);
   });
 
-  const candidateStateAfterExecuting = await getCandidateState(testUser1);
+  const candidateStateAfterExecuting = await getCandidateState(testUser4);
 
   expect(candidateStateBeforeJoining).bnEqual(BN_ZERO);
   await checkCandidateInfo(
