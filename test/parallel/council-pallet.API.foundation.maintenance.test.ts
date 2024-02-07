@@ -8,7 +8,7 @@ import { setupApi } from "../../utils/setup";
 import { Sudo } from "../../utils/sudo";
 import { User } from "../../utils/User";
 import { FOUNDATION_ADDRESS_1 } from "../../utils/Constants";
-import { Council, getCouncilUsersSettings } from "../../utils/Council";
+import { Council, setupMaintenanceTests } from "../../utils/Council";
 import {
   validateExtrinsicFailed,
   validateExtrinsicSuccess,
@@ -29,13 +29,13 @@ describe("Council tests: Special rules for foundation addresses on mmON", () => 
       await initApi();
     }
     await setupApi();
-    const councilUsersSettings = await getCouncilUsersSettings(
+    const maintenanceTestsSettings = await setupMaintenanceTests(
       FOUNDATION_ADDRESS_1,
       true,
     );
-    councilUsers = councilUsersSettings.councilUsers;
-    proposalHashes = councilUsersSettings.proposalHashes;
-    testCases = councilUsersSettings.testCases;
+    councilUsers = maintenanceTestsSettings.councilUsers;
+    proposalHashes = maintenanceTestsSettings.proposalHashes;
+    testCases = maintenanceTestsSettings.testCases;
   });
   it.each([
     ["Foundation", 6],

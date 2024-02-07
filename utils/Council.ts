@@ -85,7 +85,7 @@ export class Council {
   }
 }
 
-export async function getCouncilUsersSettings(
+export async function setupMaintenanceTests(
   foundationAddress: string,
   MaintenanceMode: boolean,
 ) {
