@@ -78,7 +78,7 @@ beforeAll(async () => {
 });
 
 test("bootstrap - Check possibility to change promoteBootstrapPool in each phase", async () => {
-  let changePromotionBootstrapPool: MangataGenericEvent[];
+  let events: MangataGenericEvent[];
 
   const scheduleBootstrapBefPlan = await scheduleBootstrap(
     sudo,
@@ -92,11 +92,8 @@ test("bootstrap - Check possibility to change promoteBootstrapPool in each phase
 
   const startingPromotionState = await getPromotionBootstrapPoolState();
 
-  changePromotionBootstrapPool = await updatePromoteBootstrapPool(
-    sudo,
-    !startingPromotionState,
-  );
-  await waitSudoOperationSuccess(changePromotionBootstrapPool);
+  events = await updatePromoteBootstrapPool(sudo, !startingPromotionState);
+  await waitSudoOperationSuccess(events);
 
   const scheduleBootstrapAftPlan = await scheduleBootstrap(
     sudo,
@@ -108,27 +105,18 @@ test("bootstrap - Check possibility to change promoteBootstrapPool in each phase
   );
   await waitSudoOperationSuccess(scheduleBootstrapAftPlan);
 
-  changePromotionBootstrapPool = await updatePromoteBootstrapPool(
-    sudo,
-    !startingPromotionState,
-  );
-  await waitSudoOperationSuccess(changePromotionBootstrapPool);
+  events = await updatePromoteBootstrapPool(sudo, !startingPromotionState);
+  await waitSudoOperationSuccess(events);
 
   await waitForBootstrapStatus("Whitelist", waitingPeriodLessPlan);
 
-  changePromotionBootstrapPool = await updatePromoteBootstrapPool(
-    sudo,
-    startingPromotionState,
-  );
-  await waitSudoOperationSuccess(changePromotionBootstrapPool);
+  events = await updatePromoteBootstrapPool(sudo, startingPromotionState);
+  await waitSudoOperationSuccess(events);
 
   await waitForBootstrapStatus("Public", waitingPeriodLessPlan);
 
-  changePromotionBootstrapPool = await updatePromoteBootstrapPool(
-    sudo,
-    !startingPromotionState,
-  );
-  await waitSudoOperationSuccess(changePromotionBootstrapPool);
+  events = await updatePromoteBootstrapPool(sudo, !startingPromotionState);
+  await waitSudoOperationSuccess(events);
 
   const provisionPublicBootstrapCurrency = await provisionBootstrap(
     testUser1,
@@ -148,13 +136,8 @@ test("bootstrap - Check possibility to change promoteBootstrapPool in each phase
 
   await waitForBootstrapStatus("Finished", bootstrapPeriod);
 
-  changePromotionBootstrapPool = await updatePromoteBootstrapPool(
-    sudo,
-    startingPromotionState,
-  );
-  await waitSudoOperationFail(changePromotionBootstrapPool, [
-    "BootstrapFinished",
-  ]);
+  events = await updatePromoteBootstrapPool(sudo, startingPromotionState);
+  await waitSudoOperationFail(events, ["BootstrapFinished"]);
 
   bootstrapPool = await getBalanceOfPool(MGA_ASSET_ID, bootstrapCurrency);
   const bootstrapPoolBalance = bootstrapPool[0];
