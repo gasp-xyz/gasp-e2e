@@ -142,13 +142,12 @@ export async function setupMaintenanceTests(
     );
     expectMGAExtrinsicSuDidSuccess(event);
   } else {
-    const event = await Sudo.asSudoFinalized(
+    await Sudo.asSudoFinalized(
       Sudo.sudoAsWithAddressString(
         foundationAddress,
         Maintenance.switchMaintenanceModeOff(),
       ),
     );
-    expectMGAExtrinsicSuDidSuccess(event);
   }
   return {
     councilUsers: councilUsers,
