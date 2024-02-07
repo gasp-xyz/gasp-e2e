@@ -1,5 +1,5 @@
 import { getApi } from "./api";
-import { ExtrinsicResult, waitNewBlock } from "./eventListeners";
+import { expectMGAExtrinsicSuDidSuccess, waitNewBlock } from "./eventListeners";
 import { User } from "./User";
 import { getEventResultFromMangataTx, sudoIssueAsset } from "./txHandler";
 import { getCurrentNonce } from "./tx";
@@ -42,8 +42,7 @@ export async function checkLastBootstrapFinalized(sudoUser: User) {
   bootstrapPhase = await api.query.bootstrap.phase();
   if (bootstrapPhase.toString() === "Finished") {
     const bootstrapFinalize = await finalizeBootstrap(sudoUser);
-    const eventResponse = getEventResultFromMangataTx(bootstrapFinalize);
-    expect(eventResponse.state).toEqual(ExtrinsicResult.ExtrinsicSuccess);
+    await expectMGAExtrinsicSuDidSuccess(bootstrapFinalize);
   }
 
   bootstrapPhase = await api.query.bootstrap.phase();
@@ -165,27 +164,9 @@ export async function claimAndActivateBootstrap(user: User) {
 
 export async function finalizeBootstrap(sudoUser: User) {
   const api = getApi();
-  await signTx(
-    api,
-    api.tx.sudo.sudoAs(
-      sudoUser.keyRingPair.address,
-      api.tx.bootstrap.preFinalize(),
-    ),
-    sudoUser.keyRingPair,
-    {
-      nonce: await getCurrentNonce(sudoUser.keyRingPair.address),
-    },
-  );
-  return await signTx(
-    api,
-    api.tx.sudo.sudoAs(
-      sudoUser.keyRingPair.address,
-      api.tx.bootstrap.finalize(),
-    ),
-    sudoUser.keyRingPair,
-    {
-      nonce: await getCurrentNonce(sudoUser.keyRingPair.address),
-    },
+  return await Sudo.batchAsSudoFinalized(
+    Sudo.sudoAs(sudoUser, api.tx.bootstrap.preFinalize()),
+    Sudo.sudoAs(sudoUser, api.tx.bootstrap.finalize()),
   );
 }
 

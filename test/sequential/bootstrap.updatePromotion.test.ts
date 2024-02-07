@@ -10,6 +10,7 @@ import { getBalanceOfAsset, getLiquidityAssetId } from "../../utils/tx";
 import {
   EventResult,
   ExtrinsicResult,
+  expectMGAExtrinsicSuDidSuccess,
   waitSudoOperationFail,
   waitSudoOperationSuccess,
 } from "../../utils/eventListeners";
@@ -57,12 +58,6 @@ const bootstrapPeriod = 10;
 const whitelistPeriod = 4;
 const bootstrapAmount = new BN(10000000000);
 
-async function changePromotionBootstrapPool(userName: User) {
-  const currentPromotingState = await getPromotionBootstrapPoolState();
-
-  return await updatePromoteBootstrapPool(userName, !currentPromotingState);
-}
-
 beforeAll(async () => {
   try {
     getApi();
@@ -82,8 +77,8 @@ beforeAll(async () => {
   await setupBootstrapTokensBalance(bootstrapCurrency, sudo, [testUser1]);
 });
 
-test("bootstrap - bootstrap - Check if we can change promoteBootstrapPool in each phase", async () => {
-  let checkingUpdatingPool: MangataGenericEvent[];
+test("bootstrap - Check possibility to change promoteBootstrapPool in each phase", async () => {
+  let events: MangataGenericEvent[];
 
   const scheduleBootstrapBefPlan = await scheduleBootstrap(
     sudo,
@@ -95,8 +90,10 @@ test("bootstrap - bootstrap - Check if we can change promoteBootstrapPool in eac
   );
   await waitSudoOperationSuccess(scheduleBootstrapBefPlan);
 
-  checkingUpdatingPool = await changePromotionBootstrapPool(sudo);
-  await waitSudoOperationSuccess(checkingUpdatingPool);
+  const startingPromotionState = await getPromotionBootstrapPoolState();
+
+  events = await updatePromoteBootstrapPool(sudo, !startingPromotionState);
+  await waitSudoOperationSuccess(events);
 
   const scheduleBootstrapAftPlan = await scheduleBootstrap(
     sudo,
@@ -108,18 +105,18 @@ test("bootstrap - bootstrap - Check if we can change promoteBootstrapPool in eac
   );
   await waitSudoOperationSuccess(scheduleBootstrapAftPlan);
 
-  checkingUpdatingPool = await changePromotionBootstrapPool(sudo);
-  await waitSudoOperationSuccess(checkingUpdatingPool);
+  events = await updatePromoteBootstrapPool(sudo, !startingPromotionState);
+  await waitSudoOperationSuccess(events);
 
   await waitForBootstrapStatus("Whitelist", waitingPeriodLessPlan);
 
-  checkingUpdatingPool = await changePromotionBootstrapPool(sudo);
-  await waitSudoOperationSuccess(checkingUpdatingPool);
+  events = await updatePromoteBootstrapPool(sudo, startingPromotionState);
+  await waitSudoOperationSuccess(events);
 
   await waitForBootstrapStatus("Public", waitingPeriodLessPlan);
 
-  checkingUpdatingPool = await changePromotionBootstrapPool(sudo);
-  await waitSudoOperationSuccess(checkingUpdatingPool);
+  events = await updatePromoteBootstrapPool(sudo, !startingPromotionState);
+  await waitSudoOperationSuccess(events);
 
   const provisionPublicBootstrapCurrency = await provisionBootstrap(
     testUser1,
@@ -139,8 +136,8 @@ test("bootstrap - bootstrap - Check if we can change promoteBootstrapPool in eac
 
   await waitForBootstrapStatus("Finished", bootstrapPeriod);
 
-  checkingUpdatingPool = await changePromotionBootstrapPool(sudo);
-  await waitSudoOperationFail(checkingUpdatingPool, ["BootstrapFinished"]);
+  events = await updatePromoteBootstrapPool(sudo, startingPromotionState);
+  await waitSudoOperationFail(events, ["BootstrapFinished"]);
 
   bootstrapPool = await getBalanceOfPool(MGA_ASSET_ID, bootstrapCurrency);
   const bootstrapPoolBalance = bootstrapPool[0];
@@ -161,19 +158,9 @@ test("bootstrap - bootstrap - Check if we can change promoteBootstrapPool in eac
 
   const userBalance = await getBalanceOfAsset(liquidityID, testUser1);
 
-  const currentPromotionState = await getPromotionBootstrapPoolState();
-
-  if (currentPromotionState) {
-    expect(userBalance.free).bnEqual(bootstrapExpectedUserLiquidity);
-    expect(userBalance.frozen).bnEqual(new BN(0));
-  } else {
-    expect(userBalance.free).bnEqual(new BN(0));
-    expect(userBalance.frozen).bnEqual(bootstrapExpectedUserLiquidity);
-  }
+  expect(userBalance.free).bnEqual(bootstrapExpectedUserLiquidity);
+  expect(userBalance.frozen).bnEqual(new BN(0));
 
   const bootstrapFinalize = await finalizeBootstrap(sudo);
-  eventResponse = getEventResultFromMangataTx(bootstrapFinalize);
-  expect(eventResponse.state).toEqual(ExtrinsicResult.ExtrinsicSuccess);
-
-  await checkLastBootstrapFinalized(sudo);
+  await expectMGAExtrinsicSuDidSuccess(bootstrapFinalize);
 });

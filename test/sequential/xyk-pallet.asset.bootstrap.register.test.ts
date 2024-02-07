@@ -11,20 +11,16 @@ import { User } from "../../utils/User";
 import { Keyring } from "@polkadot/api";
 import { Assets } from "../../utils/Assets";
 import {
-  EventResult,
-  ExtrinsicResult,
   findEventData,
   waitSudoOperationSuccess,
   waitSudoOperationFail,
+  expectMGAExtrinsicSuDidSuccess,
 } from "../../utils/eventListeners";
 import {
-  claimRewardsBootstrap,
-  finalizeBootstrap,
   scheduleBootstrap,
   waitForBootstrapStatus,
 } from "../../utils/Bootstrap";
 import { getNextAssetId } from "../../utils/tx";
-import { getEventResultFromMangataTx } from "../../utils/txHandler";
 import { BN } from "@polkadot/util";
 import { BN_ONE, toBN } from "@mangata-finance/sdk";
 import { MGA_ASSET_ID } from "../../utils/Constants";
@@ -40,15 +36,15 @@ jest.spyOn(console, "log").mockImplementation(jest.fn());
 
 let sudo: User;
 let testUser1: User;
-let eventResponse: EventResult;
 let bootstrapPool: any;
 
-async function runBootstrap(assetId: BN) {
+async function runBootstrap(assetId: any) {
   const api = getApi();
+  const assetIdBn = new BN(assetId.toString());
   const scheduleBootstrapEvent = await scheduleBootstrap(
     sudo,
     MGA_ASSET_ID,
-    assetId,
+    assetIdBn,
     waitingPeriod,
     bootstrapPeriod,
   );
@@ -74,13 +70,12 @@ async function runBootstrap(assetId: BN) {
   expect(bootstrapPool[0]).bnEqual(poolAssetAmount);
   expect(bootstrapPool[1]).bnEqual(poolAssetAmount);
 
-  const claimRewards = await claimRewardsBootstrap(testUser1);
-  eventResponse = getEventResultFromMangataTx(claimRewards);
-  expect(eventResponse.state).toEqual(ExtrinsicResult.ExtrinsicSuccess);
-
-  const bootstrapFinalize = await finalizeBootstrap(sudo);
-  eventResponse = getEventResultFromMangataTx(bootstrapFinalize);
-  expect(eventResponse.state).toEqual(ExtrinsicResult.ExtrinsicSuccess);
+  const claimRewardsAndBootstrapFinalize = await Sudo.batchAsSudoFinalized(
+    Sudo.sudoAs(testUser1, api.tx.bootstrap.claimLiquidityTokens()),
+    Sudo.sudoAs(sudo, api.tx.bootstrap.preFinalize()),
+    Sudo.sudoAs(sudo, api.tx.bootstrap.finalize()),
+  );
+  await expectMGAExtrinsicSuDidSuccess(claimRewardsAndBootstrapFinalize);
 }
 
 beforeAll(async () => {
