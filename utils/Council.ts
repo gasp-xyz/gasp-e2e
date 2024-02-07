@@ -1,8 +1,17 @@
+import { BN_HUNDRED, BN_THOUSAND } from "@mangata-finance/sdk";
+import { Assets } from "./Assets";
 import { MGA_ASSET_ID } from "./Constants";
-import { api, Extrinsic } from "./setup";
+import { api, alice, eve, Extrinsic, setupUsers } from "./setup";
 import { Sudo } from "./sudo";
 import { User } from "./User";
 import { BN } from "@polkadot/util";
+import { waitForNBlocks } from "./utils";
+import {
+  expectMGAExtrinsicSuDidSuccess,
+  validateExtrinsicFailed,
+  validateExtrinsicSuccess,
+} from "./eventListeners";
+import { Maintenance } from "./Maintenance";
 
 export class Council {
   static propose(threshold: number, extrinsic: Extrinsic, lenghtBound: number) {
@@ -74,4 +83,76 @@ export class Council {
       .filter((x) => x.event.method === "Proposed")
       .flatMap((x) => x.eventData[2].data.toString());
   }
+}
+
+export async function getCouncilUsersSettings(
+  foundationAddress: string,
+  MaintenanceMode: boolean,
+) {
+  type TestItem = { address: string; validate: Function };
+  const testCases: { [id: string]: TestItem } = {};
+  const councilUsers = await setupUsers();
+  councilUsers.push(alice);
+  await Sudo.batchAsSudoFinalized(
+    Assets.mintNative(
+      councilUsers[0],
+      BN_HUNDRED.mul(BN_THOUSAND).mul(Assets.MG_UNIT),
+    ),
+    Assets.mintNative(
+      councilUsers[1],
+      BN_HUNDRED.mul(BN_THOUSAND).mul(Assets.MG_UNIT),
+    ),
+    Assets.mintNative(
+      councilUsers[2],
+      BN_HUNDRED.mul(BN_THOUSAND).mul(Assets.MG_UNIT),
+    ),
+    Assets.mintNative(
+      councilUsers[3],
+      BN_HUNDRED.mul(BN_THOUSAND).mul(Assets.MG_UNIT),
+    ),
+    Assets.mintNative(eve, BN_HUNDRED.mul(BN_THOUSAND).mul(Assets.MG_UNIT)),
+    Sudo.sudo(Council.setMembers(councilUsers)),
+  );
+  testCases["Foundation"] = {
+    address: foundationAddress,
+    //foundation can only close motions when mm is ON.
+    validate: validateExtrinsicSuccess,
+  };
+  testCases["NoFoundation"] = {
+    address: councilUsers[3].keyRingPair.address,
+    //Council members can close motions always.
+    validate: validateExtrinsicSuccess,
+  };
+  testCases["NoCouncil"] = {
+    address: eve.keyRingPair.address,
+    //nonCouncil can not close any motion
+    validate: validateExtrinsicFailed,
+  };
+  //ugly workaround to workaroudn the beforeAll jest missbehavior.
+  const proposalHashes = await Council.createProposals(councilUsers);
+  //wait 6 mins 60 / 12 * 6 ::https://github.com/mangata-finance/mangata-node/blob/develop/runtime/mangata-rococo/src/lib.rs#L198
+  await waitForNBlocks(31);
+
+  if (MaintenanceMode) {
+    const event = await Sudo.asSudoFinalized(
+      Sudo.sudoAsWithAddressString(
+        foundationAddress,
+        Maintenance.switchMaintenanceModeOn(),
+      ),
+    );
+    expectMGAExtrinsicSuDidSuccess(event);
+  } else {
+    const event = await Sudo.asSudoFinalized(
+      Sudo.sudoAsWithAddressString(
+        foundationAddress,
+        Maintenance.switchMaintenanceModeOff(),
+      ),
+    );
+    expectMGAExtrinsicSuDidSuccess(event);
+  }
+  return {
+    councilUsers: councilUsers,
+    proposalHashes: proposalHashes,
+    testCases: testCases,
+  };
 }

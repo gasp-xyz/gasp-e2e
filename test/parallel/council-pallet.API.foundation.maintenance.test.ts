@@ -4,28 +4,22 @@
  */
 import { jest } from "@jest/globals";
 import { getApi, initApi } from "../../utils/api";
-import { alice, eve, setupApi, setupUsers } from "../../utils/setup";
+import { setupApi } from "../../utils/setup";
 import { Sudo } from "../../utils/sudo";
-import { Assets } from "../../utils/Assets";
-import { BN_THOUSAND } from "@polkadot/util";
-import { BN_HUNDRED } from "@mangata-finance/sdk";
 import { User } from "../../utils/User";
 import { FOUNDATION_ADDRESS_1 } from "../../utils/Constants";
-import { Council } from "../../utils/Council";
+import { Council, getCouncilUsersSettings } from "../../utils/Council";
 import {
-  expectMGAExtrinsicSuDidSuccess,
   validateExtrinsicFailed,
   validateExtrinsicSuccess,
 } from "../../utils/eventListeners";
-import { Maintenance } from "../../utils/Maintenance";
-import { waitForNBlocks } from "../../utils/utils";
 
 jest.spyOn(console, "log").mockImplementation(jest.fn());
 
 let councilUsers: User[];
 let proposalHashes: string[];
 type TestItem = { address: string; validate: Function };
-const testCases: { [id: string]: TestItem } = {};
+let testCases: { [id: string]: TestItem } = {};
 
 describe("Council tests: Special rules for foundation addresses on mmON", () => {
   beforeAll(async () => {
@@ -35,56 +29,13 @@ describe("Council tests: Special rules for foundation addresses on mmON", () => 
       await initApi();
     }
     await setupApi();
-
-    councilUsers = await setupUsers();
-    councilUsers.push(alice);
-    await Sudo.batchAsSudoFinalized(
-      Assets.mintNative(
-        councilUsers[0],
-        BN_HUNDRED.mul(BN_THOUSAND).mul(Assets.MG_UNIT),
-      ),
-      Assets.mintNative(
-        councilUsers[1],
-        BN_HUNDRED.mul(BN_THOUSAND).mul(Assets.MG_UNIT),
-      ),
-      Assets.mintNative(
-        councilUsers[2],
-        BN_HUNDRED.mul(BN_THOUSAND).mul(Assets.MG_UNIT),
-      ),
-      Assets.mintNative(
-        councilUsers[3],
-        BN_HUNDRED.mul(BN_THOUSAND).mul(Assets.MG_UNIT),
-      ),
-      Assets.mintNative(eve, BN_HUNDRED.mul(BN_THOUSAND).mul(Assets.MG_UNIT)),
-      Sudo.sudo(Council.setMembers(councilUsers)),
+    const councilUsersSettings = await getCouncilUsersSettings(
+      FOUNDATION_ADDRESS_1,
+      true,
     );
-    testCases["Foundation"] = {
-      address: FOUNDATION_ADDRESS_1,
-      //fundation can only close motions when mm is ON.
-      validate: validateExtrinsicSuccess,
-    };
-    testCases["NoFoundation"] = {
-      address: councilUsers[3].keyRingPair.address,
-      //Council members can close motions always.
-      validate: validateExtrinsicSuccess,
-    };
-    testCases["NoCouncil"] = {
-      address: eve.keyRingPair.address,
-      //nonCouncil can not close any motion
-      validate: validateExtrinsicFailed,
-    };
-    //ugly workaround to workaroudn the beforeAll jest missbehavior.
-    proposalHashes = await Council.createProposals(councilUsers);
-    //wait 6 mins 60 / 12 * 6 ::https://github.com/mangata-finance/mangata-node/blob/develop/runtime/mangata-rococo/src/lib.rs#L198
-    await waitForNBlocks(31);
-
-    const event = await Sudo.asSudoFinalized(
-      Sudo.sudoAsWithAddressString(
-        FOUNDATION_ADDRESS_1,
-        Maintenance.switchMaintenanceModeOn(),
-      ),
-    );
-    expectMGAExtrinsicSuDidSuccess(event);
+    councilUsers = councilUsersSettings.councilUsers;
+    proposalHashes = councilUsersSettings.proposalHashes;
+    testCases = councilUsersSettings.testCases;
   });
   it.each([
     ["Foundation", 6],
