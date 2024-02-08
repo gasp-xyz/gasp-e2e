@@ -234,6 +234,23 @@ describe("Microapps UI Staking page tests", () => {
     expect(stakingButtonText).toEqual("INSUFFICIENT AMOUNT");
   });
 
+  it("Validate the list of collators matches with the ones in BE", async () => {
+    const api = await getApi();
+
+    const listCollatorsBe =
+      await api.query.parachainStaking.selectedCandidates();
+    const listCollatorsBeString: string[] = [];
+    listCollatorsBe.forEach(async (element) => {
+      listCollatorsBeString.push(element.toString());
+    });
+    await setupPageWithState(driver, acc_name);
+    await sidebar.clickNavStaking();
+    await stakingPageDriver.waitForCollatorsVisible();
+    const listCollatorsFe =
+      await stakingPageDriver.getCollatorsAdresses("active");
+    expect(listCollatorsFe).toIncludeSameMembers(listCollatorsBeString);
+  });
+
   afterEach(async () => {
     const session = await driver.getSession();
     await addExtraLogs(

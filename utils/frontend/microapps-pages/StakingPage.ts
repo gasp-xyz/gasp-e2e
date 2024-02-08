@@ -60,6 +60,22 @@ export class StakingPageDriver {
     }
   }
 
+  async getCollatorsAdresses(collatorsType: string) {
+    const collatorsListXpath =
+      buildDataTestIdXpath(collatorsType + "-collators-list") +
+      buildDataTestIdXpath("collator-container");
+    const collatorsContainer = await this.driver.findElements(
+      By.xpath(collatorsListXpath),
+    );
+    const collatorsAddressesString: string[] = [];
+    for (let i = 0; i < collatorsContainer.length; i++) {
+      const collatorHref = await collatorsContainer[i].getAttribute("href");
+      const collatorAddressText = collatorHref.split("/staking/")[1];
+      collatorsAddressesString.push(collatorAddressText);
+    }
+    return collatorsAddressesString;
+  }
+
   async chooseCollatorRow(index = 0) {
     const collatorRowXpath =
       buildDataTestIdXpath("active-collators-list") +
