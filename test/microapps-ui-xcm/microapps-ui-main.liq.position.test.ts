@@ -216,6 +216,7 @@ describe("Microapps UI Position page tests", () => {
       await positionPageDriver.isLpTokensValuesDisplayed();
     expect(isLpTokensValuesVisible).toBeTruthy();
 
+    await positionPageDriver.expandPoolPositonCard();
     await positionPageDriver.activateAllLiq();
     await positionPageDriver.waitCalculatingFee();
     await positionPageDriver.clickConfirmFeeAmount();
@@ -232,6 +233,7 @@ describe("Microapps UI Position page tests", () => {
       MGX_ASSET_NAME,
     );
     await positionPageDriver.chooseLiqMiningPage();
+    await positionPageDriver.expandPoolPositonCard();
     await positionPageDriver.deactivateAllLiq();
     await positionPageDriver.waitCalculatingFee();
     await positionPageDriver.clickConfirmFeeAmount();
@@ -262,6 +264,7 @@ describe("Microapps UI Position page tests", () => {
     );
     await positionPageDriver.chooseLiqMiningPage();
 
+    await positionPageDriver.expandPoolPositonCard();
     await positionPageDriver.activateAllLiq();
     await positionPageDriver.waitCalculatingFee();
     await positionPageDriver.clickConfirmFeeAmount();

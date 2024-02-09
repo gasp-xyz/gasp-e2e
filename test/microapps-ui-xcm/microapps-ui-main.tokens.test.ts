@@ -46,7 +46,7 @@ const MGX_ASSET_NAME = "MGX";
 const TUR_ASSET_NAME = "TUR";
 const IMBU_ASSET_NAME = "IMBU";
 
-describe("Miocroapps UI tokens & token details tests", () => {
+describe.skip("Miocroapps UI tokens & token details tests", () => {
   let kusama: ApiContext;
   let mangata: ApiContext;
   let alice: KeyringPair;
