@@ -234,7 +234,7 @@ describe("Microapps UI Staking page tests", () => {
     expect(stakingButtonText).toEqual("INSUFFICIENT AMOUNT");
   });
 
-  it("Validate the list of collators matches with the ones in BE", async () => {
+  it("The list of active collators matches with the ones in BE", async () => {
     const api = await getApi();
 
     const listCollatorsBe =
@@ -247,8 +247,17 @@ describe("Microapps UI Staking page tests", () => {
     await sidebar.clickNavStaking();
     await stakingPageDriver.waitForCollatorsVisible();
     const listCollatorsFe =
-      await stakingPageDriver.getCollatorsAdresses("active");
+      await stakingPageDriver.getCollatorsAddresses("active");
     expect(listCollatorsFe).toIncludeSameMembers(listCollatorsBeString);
+  });
+
+  it("The list of waiting collators is empty", async () => {
+    await setupPageWithState(driver, acc_name);
+    await sidebar.clickNavStaking();
+    await stakingPageDriver.waitForCollatorsVisible();
+    const listCollatorsFe =
+      await stakingPageDriver.getCollatorsAddresses("waiting");
+    expect(listCollatorsFe).toBeEmpty();
   });
 
   afterEach(async () => {
