@@ -10,6 +10,8 @@ import { getEventErrorFromSudo } from "./txHandler";
 import { User } from "./User";
 import { getEnvironmentRequiredVars, getThirdPartyRewards } from "./utils";
 import { Codec } from "@polkadot/types/types";
+import { Call } from "@polkadot/types/interfaces";
+import { Option } from "@polkadot/types-codec";
 
 // lets create a enum for different status.
 export enum ExtrinsicResult {
@@ -123,6 +125,25 @@ export async function waitSudoOperationFail(
   const BootstrapError = await getEventErrorFromSudo(filterBootstrapEvent);
 
   expect(expectedErrors).toContain(BootstrapError.data);
+}
+
+export function validateExtrinsicSuccess(
+  events: MangataGenericEvent[],
+  propAfter: Option<Call>,
+  propBefore: Option<Call>,
+) {
+  expectMGAExtrinsicSuDidSuccess(events);
+  expect(propAfter.toHuman()).toBeNull();
+  expect(propBefore.toHuman()).not.toBeNull();
+}
+export function validateExtrinsicFailed(
+  events: MangataGenericEvent[],
+  propAfter: Option<Call>,
+  propBefore: Option<Call>,
+) {
+  expectMGAExtrinsicSuDidFailed(events);
+  expect(propAfter.toHuman()).not.toBeNull();
+  expect(propBefore.toHuman()).not.toBeNull();
 }
 
 export const waitForEvents = async (
