@@ -4,6 +4,7 @@ import {
   buildXpathByText,
   clickElement,
   isDisplayed,
+  uiStringToNumber,
   waitForElementVisible,
 } from "../utils/Helper";
 import toNumber from "lodash-es/toNumber";
@@ -22,6 +23,13 @@ export class StakingPageDriver {
 
   async waitForCollatorsVisible() {
     const collatorListLocator = buildDataTestIdXpath("collator-row-item");
+    await waitForElementVisible(this.driver, collatorListLocator, 8000);
+  }
+
+  async waitForStakeVisible() {
+    const collatorListLocator =
+      buildDataTestIdXpath("collator-row-item") +
+      buildDataTestIdXpath("total-stake");
     await waitForElementVisible(this.driver, collatorListLocator, 8000);
   }
 
@@ -60,7 +68,22 @@ export class StakingPageDriver {
     }
   }
 
-  async getCollatorsAdresses(collatorsType: string) {
+  async getCollatorsStakes(collatorsType: string) {
+    const collatorsListXpath =
+      buildDataTestIdXpath(collatorsType + "-collators-list") +
+      buildDataTestIdXpath("collator-row-item") +
+      buildDataTestIdXpath("total-stake");
+    const stakes = await this.driver.findElements(By.xpath(collatorsListXpath));
+    const collatorsStakesNumber: number[] = [];
+    for (let i = 0; i < stakes.length; i++) {
+      const stakesText = await stakes[i].getText();
+      const stakesNumber = await uiStringToNumber(stakesText);
+      collatorsStakesNumber.push(stakesNumber);
+    }
+    return collatorsStakesNumber;
+  }
+
+  async getCollatorsAddresses(collatorsType: string) {
     const collatorsListXpath =
       buildDataTestIdXpath(collatorsType + "-collators-list") +
       buildDataTestIdXpath("collator-container");

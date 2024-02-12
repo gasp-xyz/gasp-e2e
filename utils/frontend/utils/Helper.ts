@@ -9,6 +9,7 @@ import { testLog } from "../../Logger";
 import { BN } from "@polkadot/util";
 import { Talisman } from "../pages/Talisman";
 import { LiqPools } from "../microapps-pages/LiqPools";
+import toNumber from "lodash-es/toNumber";
 
 const timeOut = 60000;
 const outputPath = `reports/artifacts`;
@@ -545,6 +546,30 @@ export function uiStringToBN(stringValue: string, decimals = 18) {
       (Math.pow(10, decimals) * parseFloat(stringValue)).toString(),
     );
   }
+}
+
+export async function uiStringToNumber(stringValue: string) {
+  let partIntNum: number;
+  let partDecNum: number;
+  let numberValue: number = 0;
+  const partInt = stringValue.split(".")[0];
+  const partDec = stringValue.split(".")[1];
+  const millions = await stringValue.includes("M");
+  const kilos = await stringValue.includes("K");
+  if (millions) {
+    partIntNum = toNumber(partInt) * 1000000;
+    partDecNum = toNumber(partDec.replace("M", "")) * 10000;
+    numberValue = partIntNum + partDecNum;
+  }
+  if (kilos) {
+    partIntNum = toNumber(partInt) * 1000;
+    partDecNum = toNumber(partDec.replace("K", "")) * 10;
+    numberValue = partIntNum + partDecNum;
+  }
+  if (!millions && !kilos) {
+    numberValue = toNumber(stringValue);
+  }
+  return numberValue;
 }
 
 export async function openInNewTab(driver: WebDriver, url: string) {
