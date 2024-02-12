@@ -110,7 +110,7 @@ describe("Microapps UI Position page tests", () => {
     testUser1 = new User(keyring);
     testUser1.addFromMnemonic(
       keyring,
-      getEnvironmentRequiredVars().mnemonicPolkadot,
+      getEnvironmentRequiredVars().mnemonicPolkadot
     );
 
     testUser1.addAsset(KSM_ASSET_ID);
@@ -130,14 +130,14 @@ describe("Microapps UI Position page tests", () => {
     expect(isPoolsListDisplayed).toBeTruthy();
 
     const isMgxKsmPoolVisible = await poolsList.isPoolItemDisplayed(
-      "-" + MGX_ASSET_NAME + "-" + KSM_ASSET_NAME,
+      "-" + MGX_ASSET_NAME + "-" + KSM_ASSET_NAME
     );
     expect(isMgxKsmPoolVisible).toBeTruthy();
     await poolsList.clickPoolItem("-" + MGX_ASSET_NAME + "-" + KSM_ASSET_NAME);
 
     const poolDetails = new LiqPoolDetils(driver);
     const isPoolDetailsVisible = await poolDetails.isDisplayed(
-      MGX_ASSET_NAME + " / " + KSM_ASSET_NAME,
+      MGX_ASSET_NAME + " / " + KSM_ASSET_NAME
     );
     expect(isPoolDetailsVisible).toBeTruthy();
 
@@ -160,7 +160,7 @@ describe("Microapps UI Position page tests", () => {
       mangata,
       kusama,
       TransactionType.AddLiquidity,
-      2,
+      2
     );
   });
 
@@ -173,12 +173,12 @@ describe("Microapps UI Position page tests", () => {
     await positionPageDriver.waitForPoolPositionsVisible();
     const isPoolMgxKsmVisible = await positionPageDriver.isLiqPoolDisplayed(
       MGX_ASSET_NAME,
-      KSM_ASSET_NAME,
+      KSM_ASSET_NAME
     );
     expect(isPoolMgxKsmVisible).toBeTruthy();
     await positionPageDriver.clickPromPoolPosition(
       MGX_ASSET_NAME,
-      KSM_ASSET_NAME,
+      KSM_ASSET_NAME
     );
     await positionPageDriver.setupRemovableLiquidity();
     await positionPageDriver.clickRemoveLiquidity();
@@ -187,7 +187,7 @@ describe("Microapps UI Position page tests", () => {
       mangata,
       kusama,
       TransactionType.RemoveLiquidity,
-      2,
+      2
     );
   });
 
@@ -200,22 +200,22 @@ describe("Microapps UI Position page tests", () => {
     await positionPageDriver.waitForPoolPositionsVisible();
     const isPoolMgxKsmVisible = await positionPageDriver.isLiqPoolDisplayed(
       TUR_ASSET_NAME,
-      MGX_ASSET_NAME,
+      MGX_ASSET_NAME
     );
     expect(isPoolMgxKsmVisible).toBeTruthy();
 
     await positionPageDriver.clickPromPoolPosition(
       TUR_ASSET_NAME,
-      MGX_ASSET_NAME,
+      MGX_ASSET_NAME
     );
     await positionPageDriver.chooseLiqMiningPage();
-    const isClaimableRewardsVisible =
+
+    let isClaimableRewardsVisible =
       await positionPageDriver.isClaimableRewardsDisplayed();
     expect(isClaimableRewardsVisible).toBeTruthy();
-    const isLpTokensValuesVisible =
+    let isLpTokensValuesVisible =
       await positionPageDriver.isLpTokensValuesDisplayed();
     expect(isLpTokensValuesVisible).toBeTruthy();
-
     await positionPageDriver.expandPoolPositonCard();
     await positionPageDriver.activateAllLiq();
     await positionPageDriver.waitCalculatingFee();
@@ -225,15 +225,18 @@ describe("Microapps UI Position page tests", () => {
       mangata,
       kusama,
       TransactionType.ActivateLiquidity,
-      2,
-    );
-
-    await positionPageDriver.clickPromPoolPosition(
-      TUR_ASSET_NAME,
-      MGX_ASSET_NAME,
+      2
     );
     await positionPageDriver.chooseLiqMiningPage();
+
     await positionPageDriver.expandPoolPositonCard();
+    isClaimableRewardsVisible =
+      await positionPageDriver.isClaimableRewardsDisplayed();
+    expect(isClaimableRewardsVisible).toBeTruthy();
+    isLpTokensValuesVisible =
+      await positionPageDriver.isLpTokensValuesDisplayed();
+    expect(isLpTokensValuesVisible).toBeTruthy();
+
     await positionPageDriver.deactivateAllLiq();
     await positionPageDriver.waitCalculatingFee();
     await positionPageDriver.clickConfirmFeeAmount();
@@ -242,7 +245,7 @@ describe("Microapps UI Position page tests", () => {
       mangata,
       kusama,
       TransactionType.DeactivateLiquidity,
-      2,
+      2
     );
   });
 
@@ -255,12 +258,12 @@ describe("Microapps UI Position page tests", () => {
     await positionPageDriver.waitForPoolPositionsVisible();
     const isPoolMgxKsmVisible = await positionPageDriver.isLiqPoolDisplayed(
       TUR_ASSET_NAME,
-      MGX_ASSET_NAME,
+      MGX_ASSET_NAME
     );
     expect(isPoolMgxKsmVisible).toBeTruthy();
     await positionPageDriver.clickPromPoolPosition(
       TUR_ASSET_NAME,
-      MGX_ASSET_NAME,
+      MGX_ASSET_NAME
     );
     await positionPageDriver.chooseLiqMiningPage();
 
@@ -273,13 +276,13 @@ describe("Microapps UI Position page tests", () => {
       mangata,
       kusama,
       TransactionType.ActivateLiquidity,
-      2,
+      2
     );
 
     await sidebar.clickNavPositions();
     const mgxKsmPositionValue = await positionPageDriver.checkPromPoolPosition(
       MGX_ASSET_NAME,
-      KSM_ASSET_NAME,
+      KSM_ASSET_NAME
     );
     expect(mgxKsmPositionValue).toBeGreaterThan(0);
   });
@@ -293,13 +296,13 @@ describe("Microapps UI Position page tests", () => {
     await positionPageDriver.waitForPoolPositionsVisible();
     const isPoolTurKsmVisible = await positionPageDriver.isLiqPoolDisplayed(
       TUR_ASSET_NAME,
-      KSM_ASSET_NAME,
+      KSM_ASSET_NAME
     );
     expect(isPoolTurKsmVisible).toBeTruthy();
     const turKsmPositionValue =
       await positionPageDriver.checkNonPromPoolPosition(
         TUR_ASSET_NAME,
-        KSM_ASSET_NAME,
+        KSM_ASSET_NAME
       );
     expect(turKsmPositionValue).toBeGreaterThan(0);
   });
@@ -313,7 +316,7 @@ describe("Microapps UI Position page tests", () => {
     await positionPageDriver.waitForPoolPositionsVisible();
     const isPoolMgxKsmVisible = await positionPageDriver.isLiqPoolDisplayed(
       MGX_ASSET_NAME,
-      KSM_ASSET_NAME,
+      KSM_ASSET_NAME
     );
     expect(isPoolMgxKsmVisible).toBeTruthy();
     const isRewardHintVisible =
@@ -330,7 +333,7 @@ describe("Microapps UI Position page tests", () => {
     await positionPageDriver.waitForPoolPositionsVisible();
     const isPoolMgxKsmVisible = await positionPageDriver.isLiqPoolDisplayed(
       MGX_ASSET_NAME,
-      KSM_ASSET_NAME,
+      KSM_ASSET_NAME
     );
     expect(isPoolMgxKsmVisible).toBeTruthy();
     const isActiveRewardsVisible =
@@ -347,12 +350,12 @@ describe("Microapps UI Position page tests", () => {
     await positionPageDriver.waitForPoolPositionsVisible();
     const isPoolMgxKsmVisible = await positionPageDriver.isLiqPoolDisplayed(
       MGX_ASSET_NAME,
-      KSM_ASSET_NAME,
+      KSM_ASSET_NAME
     );
     expect(isPoolMgxKsmVisible).toBeTruthy();
     await positionPageDriver.clickPromPoolPosition(
       MGX_ASSET_NAME,
-      KSM_ASSET_NAME,
+      KSM_ASSET_NAME
     );
     const tokensValues = await positionPageDriver.getPoolPositionTokensValues();
     expect(tokensValues.liquidityTokenValue).toBeGreaterThan(0);
@@ -374,11 +377,11 @@ describe("Microapps UI Position page tests", () => {
     await positionPageDriver.searchPoolToken(TUR_ASSET_NAME);
     isPoolMgxKsmVisible = await positionPageDriver.isLiqPoolDisplayed(
       MGX_ASSET_NAME,
-      KSM_ASSET_NAME,
+      KSM_ASSET_NAME
     );
     isPoolTurKsmVisible = await positionPageDriver.isLiqPoolDisplayed(
       TUR_ASSET_NAME,
-      KSM_ASSET_NAME,
+      KSM_ASSET_NAME
     );
     expect(isPoolMgxKsmVisible).toBeFalsy();
     expect(isPoolTurKsmVisible).toBeTruthy();
@@ -386,11 +389,11 @@ describe("Microapps UI Position page tests", () => {
     await positionPageDriver.searchPoolToken(MGX_ASSET_NAME);
     isPoolMgxKsmVisible = await positionPageDriver.isLiqPoolDisplayed(
       MGX_ASSET_NAME,
-      KSM_ASSET_NAME,
+      KSM_ASSET_NAME
     );
     isPoolTurKsmVisible = await positionPageDriver.isLiqPoolDisplayed(
       TUR_ASSET_NAME,
-      KSM_ASSET_NAME,
+      KSM_ASSET_NAME
     );
     expect(isPoolMgxKsmVisible).toBeTruthy();
     expect(isPoolTurKsmVisible).toBeFalsy();
@@ -400,7 +403,7 @@ describe("Microapps UI Position page tests", () => {
     const session = await driver.getSession();
     await addExtraLogs(
       driver,
-      expect.getState().currentTestName + " - " + session.getId(),
+      expect.getState().currentTestName + " - " + session.getId()
     );
   });
 
