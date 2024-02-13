@@ -71,7 +71,6 @@ export function getEnvironmentRequiredVars() {
   const logLevel = process.env.LOG_LEVEL ? process.env.LOG_LEVEL : "info";
 
   const uri = process.env.API_URL ? process.env.API_URL : "ws://127.0.0.1:9946";
-
   const relyUri = process.env.RELY_API_URL
     ? process.env.RELY_API_URL
     : "ws://127.0.0.1:9944";
@@ -85,7 +84,7 @@ export function getEnvironmentRequiredVars() {
 
   const uiUri = process.env.UI_URL
     ? process.env.UI_URL
-    : "http://app.mangata.finance/";
+    : "https://develop.mangata.finance/";
 
   const localAddress = process.env.LOCAL_ADDRESS
     ? process.env.LOCAL_ADDRESS
@@ -101,7 +100,7 @@ export function getEnvironmentRequiredVars() {
 
   const mnemonicPolkadot = process.env.MNEMONIC_POLK
     ? process.env.MNEMONIC_POLK
-    : "same borrow fatigue similar weekend ready express over elbow refuse february spirit";
+    : "oh oh";
 
   const mnemonicPolkadotEd25519 = process.env.MNEMONIC_POLK_ED25519
     ? process.env.MNEMONIC_POLK_ED25519
