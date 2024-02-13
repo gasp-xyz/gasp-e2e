@@ -81,10 +81,10 @@ export class PositionPageDriver {
     const PoolName = "pool-" + firstTokenName + "-" + secondTokenName;
     const poolNameXpath = buildDataTestIdXpath(PoolName);
     const activatedTokensXpath = buildDataTestIdXpath(
-      "activated-LP-tokens-value"
+      "activated-LP-tokens-value",
     );
     const myPoolPosition = await this.driver.findElement(
-      By.xpath(poolNameXpath + activatedTokensXpath)
+      By.xpath(poolNameXpath + activatedTokensXpath),
     );
     const myPoolPositionText = await myPoolPosition.getText();
     const myPoolPositionValue = toNumber(myPoolPositionText);
@@ -93,13 +93,13 @@ export class PositionPageDriver {
 
   async checkNonPromPoolPosition(
     firstTokenName: string,
-    secondTokenName: string
+    secondTokenName: string,
   ) {
     const PoolName = "pool-" + firstTokenName + "-" + secondTokenName;
     const poolNameXpath = buildDataTestIdXpath(PoolName);
     const activatedTokensXpath = buildDataTestIdXpath("pool-share-value");
     const myPoolPosition = await this.driver.findElement(
-      By.xpath(poolNameXpath + activatedTokensXpath)
+      By.xpath(poolNameXpath + activatedTokensXpath),
     );
     const myPoolPositionText = await myPoolPosition.getText();
     const myPoolPositionNumber = myPoolPositionText.replace(",", "");
@@ -115,21 +115,21 @@ export class PositionPageDriver {
   async getPoolPositionTokensValues() {
     const liquidityTokenXpath = buildDataTestIdXpath("positionLP-anchor");
     const liquidityTokenValue = await this.driver.findElement(
-      By.xpath(liquidityTokenXpath)
+      By.xpath(liquidityTokenXpath),
     );
     const liquidityTokenText = await liquidityTokenValue.getText();
     const myPoolPositionTextReplaced = liquidityTokenText.replace(",", "");
     const liquidityTokenNumber = toNumber(myPoolPositionTextReplaced);
     const firstTokenXpath = buildDataTestIdXpath("positionTokenA-anchor");
     const firstTokenValue = await this.driver.findElement(
-      By.xpath(firstTokenXpath)
+      By.xpath(firstTokenXpath),
     );
     const firstTokenText = await firstTokenValue.getText();
     const firstTokenTextReplaced = firstTokenText.replace(",", "");
     const firstTokenNumber = toNumber(firstTokenTextReplaced);
     const secondTokenXpath = buildDataTestIdXpath("positionTokenB-anchor");
     const secondTokenValue = await this.driver.findElement(
-      By.xpath(secondTokenXpath)
+      By.xpath(secondTokenXpath),
     );
     const secondTokenText = await secondTokenValue.getText();
     const secondTokenTextReplaced = secondTokenText.replace(",", "");
@@ -172,7 +172,7 @@ export class PositionPageDriver {
     await clickElement(this.driver, searchButtonXpath);
     const searchInputXpath = buildDataTestIdXpath("search-input");
     const searchingLine = await this.driver.findElement(
-      By.xpath(searchInputXpath)
+      By.xpath(searchInputXpath),
     );
     await searchingLine.clear();
     await searchingLine.sendKeys(tokenName);

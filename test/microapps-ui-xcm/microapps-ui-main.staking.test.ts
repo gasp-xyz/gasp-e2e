@@ -103,7 +103,7 @@ describe("Microapps UI Staking page tests", () => {
     testUser1 = new User(keyring);
     testUser1.addFromMnemonic(
       keyring,
-      getEnvironmentRequiredVars().mnemonicPolkadot
+      getEnvironmentRequiredVars().mnemonicPolkadot,
     );
 
     testUser1.addAsset(KSM_ASSET_ID);
@@ -224,7 +224,7 @@ describe("Microapps UI Staking page tests", () => {
       mangata,
       kusama,
       TransactionType.Stake,
-      2
+      2,
     );
     await stakingPageDriver.goToPositionInfo();
     const positionPageDriver = new PositionPageDriver(driver);
@@ -238,7 +238,7 @@ describe("Microapps UI Staking page tests", () => {
     const session = await driver.getSession();
     await addExtraLogs(
       driver,
-      expect.getState().currentTestName + " - " + session.getId()
+      expect.getState().currentTestName + " - " + session.getId(),
     );
   });
 
