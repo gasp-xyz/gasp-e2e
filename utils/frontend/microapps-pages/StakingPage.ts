@@ -5,6 +5,7 @@ import {
   clickElement,
   isDisplayed,
   waitForElementVisible,
+  writeText,
 } from "../utils/Helper";
 import toNumber from "lodash-es/toNumber";
 
@@ -101,10 +102,7 @@ export class StakingPageDriver {
     const stakingValueXpath = buildDataTestIdXpath(
       "new-stake-widget-tokenInput-input"
     );
-    const tokenInput = await this.driver.findElement(
-      By.xpath(stakingValueXpath)
-    );
-    await tokenInput.sendKeys(value);
+    await writeText(this.driver, stakingValueXpath, value);
   }
 
   async waitForStakingFeeVisible() {
