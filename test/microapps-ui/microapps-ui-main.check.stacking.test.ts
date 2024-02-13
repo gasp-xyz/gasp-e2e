@@ -50,16 +50,21 @@ describe("Microapps UI stacking tests", () => {
     await connectWallet(driver, "Polkadot", acc_name);
   });
 
-  it("All stacking collator is sorted in descending order of stack", async () => {
+  it("The list of active collators matches with the ones in BE", async () => {
+    const api = await getApi();
+
+    const listCollatorsBe =
+      await api.query.parachainStaking.selectedCandidates();
+    const listCollatorsBeString: string[] = [];
+    listCollatorsBe.forEach(async (element) => {
+      listCollatorsBeString.push(element.toString());
+    });
     await setupPageWithState(driver, acc_name);
-
     await sidebar.clickNavStaking();
-    await stakingPageDriver.waitForStakeVisible();
-
-    const collatorStakes = await stakingPageDriver.getCollatorsStakes("active");
-    for (let i = 1; i < collatorStakes.length; i++) {
-      expect(collatorStakes[i - 1]).toBeGreaterThanOrEqual(collatorStakes[i]);
-    }
+    await stakingPageDriver.waitForCollatorsVisible();
+    const listCollatorsFe =
+      await stakingPageDriver.getCollatorsAddresses("active");
+    expect(listCollatorsFe).toIncludeSameMembers(listCollatorsBeString);
   });
 
   afterEach(async () => {
