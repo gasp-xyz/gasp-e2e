@@ -67,6 +67,15 @@ describe("Microapps UI stacking tests", () => {
     expect(listCollatorsFe).toIncludeSameMembers(listCollatorsBeString);
   });
 
+  it("The list of waiting collators is empty", async () => {
+    await setupPageWithState(driver, acc_name);
+    await sidebar.clickNavStaking();
+    await stakingPageDriver.waitForCollatorsVisible();
+    const listCollatorsFe =
+      await stakingPageDriver.getCollatorsAddresses("waiting");
+    expect(listCollatorsFe).toBeEmpty();
+  });
+
   afterEach(async () => {
     const session = await driver.getSession();
     await addExtraLogs(

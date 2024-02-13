@@ -246,15 +246,6 @@ describe("Microapps UI Staking page tests", () => {
     expect(stakingButtonText).toEqual("INSUFFICIENT AMOUNT");
   });
 
-  it("The list of waiting collators is empty", async () => {
-    await setupPageWithState(driver, acc_name);
-    await sidebar.clickNavStaking();
-    await stakingPageDriver.waitForCollatorsVisible();
-    const listCollatorsFe =
-      await stakingPageDriver.getCollatorsAddresses("waiting");
-    expect(listCollatorsFe).toBeEmpty();
-  });
-
   afterEach(async () => {
     const session = await driver.getSession();
     await addExtraLogs(
