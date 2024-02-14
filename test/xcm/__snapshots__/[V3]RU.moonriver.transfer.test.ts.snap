@@ -2,7 +2,7 @@
 
 exports[`[V3][V3] XCM tests for Mangata <-> moonriver [V3] mangata transfer MGX assets to [V3] moonriver: After 1`] = `
 {
-  "free": "999999879880303252117536339",
+  "free": "0x00000000033b2e36fc8b7b5da192382f",
   "frozen": 0,
   "reserved": 0,
 }
