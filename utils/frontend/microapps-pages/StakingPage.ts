@@ -5,8 +5,11 @@ import {
   clickElement,
   isDisplayed,
   waitForElementVisible,
+  writeText,
 } from "../utils/Helper";
 import toNumber from "lodash-es/toNumber";
+
+const COLLATOR_ROW_ITEM = "collator-row-item";
 
 export class StakingPageDriver {
   driver: WebDriver;
@@ -76,6 +79,13 @@ export class StakingPageDriver {
     await clickElement(this.driver, collatorAddressValueXpath);
   }
 
+  async chooseCollatorByAddress(address = "XKD3") {
+    const collatorAdderssXpath = buildXpathByText(address);
+    const collatorRowLocator =
+      buildDataTestIdXpath(COLLATOR_ROW_ITEM) + collatorAdderssXpath;
+    await clickElement(this.driver, collatorRowLocator);
+  }
+
   async isCollatorsDetailCardDisplayed() {
     const itemXpath = buildDataTestIdXpath("collator-detail-card");
     return isDisplayed(this.driver, itemXpath);
@@ -92,10 +102,7 @@ export class StakingPageDriver {
     const stakingValueXpath = buildDataTestIdXpath(
       "new-stake-widget-tokenInput-input",
     );
-    const tokenInput = await this.driver.findElement(
-      By.xpath(stakingValueXpath),
-    );
-    await tokenInput.sendKeys(value);
+    await writeText(this.driver, stakingValueXpath, value);
   }
 
   async waitForStakingFeeVisible() {
