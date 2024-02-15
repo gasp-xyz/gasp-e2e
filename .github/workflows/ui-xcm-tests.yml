@@ -12,7 +12,7 @@ on:
     - cron: "5 9 * * *"
 
 jobs:
-  e2e-test-matrix:
+  e2e-tm:
     strategy:
       fail-fast: false
       matrix:
