@@ -1,5 +1,6 @@
 import { By, WebDriver } from "selenium-webdriver";
 import {
+  buildClassXpath,
   buildDataTestIdXpath,
   buildXpathByText,
   clickElement,
@@ -86,7 +87,7 @@ export class StakingPageDriver {
   async getCollatorsAddresses(collatorsType: string) {
     const collatorsListXpath =
       buildDataTestIdXpath(collatorsType + "-collators-list") +
-      buildDataTestIdXpath("collator-row-element");
+      buildClassXpath("w-full");
     const collatorsContainer = await this.driver.findElements(
       By.xpath(collatorsListXpath),
     );

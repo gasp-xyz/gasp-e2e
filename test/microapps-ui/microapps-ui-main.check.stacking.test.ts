@@ -1,6 +1,6 @@
 /*
  *
- * @group microappsUI
+ * @group stakingUi
  */
 import { jest } from "@jest/globals";
 import { getApi, initApi } from "../../utils/api";
@@ -29,7 +29,11 @@ let stakingPageDriver: StakingPageDriver;
 
 const acc_name = "acc_automation";
 
-describe("Microapps UI stacking tests", () => {
+describe("Microapps UI staking tests", () => {
+  //for these tests you need to setup uri and uiUri in mangata-e2e/utils/utils.ts
+  //const uri = process.env.API_URL ? process.env.API_URL : "wss://kusama-archive.mangata.online/";
+  //const uiUri = process.env.UI_URL ? process.env.UI_URL : "http://app.mangata.finance/";
+
   beforeAll(async () => {
     try {
       getApi();
@@ -67,13 +71,20 @@ describe("Microapps UI stacking tests", () => {
     expect(listCollatorsFe).toIncludeSameMembers(listCollatorsBeString);
   });
 
-  it("The list of waiting collators is empty", async () => {
+  it("The non-active collators appear in the “waiting” section", async () => {
     await setupPageWithState(driver, acc_name);
     await sidebar.clickNavStaking();
-    await stakingPageDriver.waitForCollatorsVisible();
-    const listCollatorsFe =
-      await stakingPageDriver.getCollatorsAddresses("waiting");
-    expect(listCollatorsFe).toBeEmpty();
+    await stakingPageDriver.waitForStakeVisible();
+    const activeCollatorStakes =
+      await stakingPageDriver.getCollatorsStakes("active");
+    const waitingCollatorStakes =
+      await stakingPageDriver.getCollatorsStakes("waiting");
+    for (let i = 1; i < activeCollatorStakes.length; i++) {
+      expect(activeCollatorStakes[i]).not.toBe(NaN);
+    }
+    for (let i = 1; i < waitingCollatorStakes.length; i++) {
+      expect(waitingCollatorStakes[i]).toBe(NaN);
+    }
   });
 
   afterEach(async () => {
