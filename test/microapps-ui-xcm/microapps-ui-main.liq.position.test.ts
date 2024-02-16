@@ -182,6 +182,7 @@ describe("Microapps UI Position page tests", () => {
     );
     await positionPageDriver.setupRemovableLiquidity();
     await positionPageDriver.clickRemoveLiquidity();
+    await positionPageDriver.clickConfirmFeeAmount();
     await waitForMicroappsActionNotification(
       driver,
       mangata,
