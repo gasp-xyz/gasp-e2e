@@ -5,6 +5,7 @@ import {
   clickElement,
   waitForElementVisible,
   isDisplayed,
+  buildXpathByElementText,
 } from "../utils/Helper";
 import toNumber from "lodash-es/toNumber";
 
@@ -143,6 +144,12 @@ export class PositionPageDriver {
   async waitCalculatingFee() {
     const feeAmountLocator = buildDataTestIdXpath("fee-amount");
     await waitForElementVisible(this.driver, feeAmountLocator, 20000);
+  }
+
+  async expandPoolPositonCard() {
+    const activateLiquidityXpath =
+      buildXpathByElementText("span", "Show more") + "[1]";
+    await clickElement(this.driver, activateLiquidityXpath);
   }
 
   async activateAllLiq() {

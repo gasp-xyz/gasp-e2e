@@ -43,8 +43,9 @@ let testUser1: User;
 
 const acc_name = "acc_automation";
 const userAddress = "5CfLmpjCJu41g3cpZVoiH7MSrSppgVVVC3xq23iy9dZrW2HR";
-const liqTokenNumber = 10000;
+const liqTokenNumber = 40000;
 const INIT_KSM_RELAY = 15;
+const testedCollatorAddress = "7z3x";
 
 describe("Microapps UI Staking page tests", () => {
   let kusama: ApiContext;
@@ -153,33 +154,6 @@ describe("Microapps UI Staking page tests", () => {
     expect(isCollatorsDetailCardVisible).toBeTruthy();
   });
 
-  it("In collator details page if already stakes user can see his stake", async () => {
-    await addLiqTokenMicroapps(userAddress, mangata, 5, 18, liqTokenNumber);
-    await setupPageWithState(driver, acc_name);
-    await sidebar.clickNavStaking();
-
-    await stakingPageDriver.waitForCollatorsVisible();
-    await stakingPageDriver.chooseCollatorRow();
-    await stakingPageDriver.startStaking();
-    await stakingPageDriver.setStakingValue((liqTokenNumber / 2).toString());
-    await stakingPageDriver.waitForStakingFeeVisible();
-    await stakingPageDriver.submitStaking();
-    await waitForMicroappsActionNotification(
-      driver,
-      mangata,
-      kusama,
-      TransactionType.Stake,
-      2,
-    );
-    await stakingPageDriver.goToPositionInfo();
-    const positionPageDriver = new PositionPageDriver(driver);
-    await positionPageDriver.waitForLpPositionVisible();
-    const tokensValues = await positionPageDriver.getPoolPositionTokensValues();
-    expect(tokensValues.liquidityTokenValue).toBeGreaterThan(0);
-    expect(tokensValues.firstTokenValue).toBeGreaterThan(0);
-    expect(tokensValues.secondTokenValue).toBeGreaterThan(0);
-  });
-
   it("In collator details page if not staking user can see start staking button", async () => {
     await addLiqTokenMicroapps(userAddress, mangata, 5, 18, liqTokenNumber);
     await setupPageWithState(driver, acc_name);
@@ -211,7 +185,7 @@ describe("Microapps UI Staking page tests", () => {
     await sidebar.clickNavStaking();
 
     await stakingPageDriver.waitForCollatorsVisible();
-    await stakingPageDriver.chooseCollatorRow(2);
+    await stakingPageDriver.chooseCollatorByAddress(testedCollatorAddress);
     await stakingPageDriver.startStaking();
     await stakingPageDriver.setStakingValue((liqTokenNumber / 2).toString());
     await stakingPageDriver.waitForStakingFeeVisible();
@@ -225,7 +199,7 @@ describe("Microapps UI Staking page tests", () => {
     await sidebar.clickNavStaking();
 
     await stakingPageDriver.waitForCollatorsVisible();
-    await stakingPageDriver.chooseCollatorRow(2);
+    await stakingPageDriver.chooseCollatorByAddress(testedCollatorAddress);
     await stakingPageDriver.startStaking();
     await stakingPageDriver.setStakingValue((liqTokenNumber * 2).toString());
     const stakingButtonText = await stakingPageDriver.getStakingButtonText();
@@ -238,7 +212,7 @@ describe("Microapps UI Staking page tests", () => {
     await sidebar.clickNavStaking();
 
     await stakingPageDriver.waitForCollatorsVisible();
-    await stakingPageDriver.chooseCollatorRow(2);
+    await stakingPageDriver.chooseCollatorByAddress(testedCollatorAddress);
     await stakingPageDriver.startStaking();
     await stakingPageDriver.setStakingValue("0.5");
     await stakingPageDriver.waitForStakingFeeVisible();
@@ -246,6 +220,32 @@ describe("Microapps UI Staking page tests", () => {
     expect(stakingButtonText).toEqual("INSUFFICIENT AMOUNT");
   });
 
+  it("In collator details page if already stakes user can see his stake", async () => {
+    await addLiqTokenMicroapps(userAddress, mangata, 5, 18, liqTokenNumber);
+    await setupPageWithState(driver, acc_name);
+    await sidebar.clickNavStaking();
+
+    await stakingPageDriver.waitForCollatorsVisible();
+    await stakingPageDriver.chooseCollatorByAddress(testedCollatorAddress);
+    await stakingPageDriver.startStaking();
+    await stakingPageDriver.setStakingValue((liqTokenNumber / 2).toString());
+    await stakingPageDriver.waitForStakingFeeVisible();
+    await stakingPageDriver.submitStaking();
+    await waitForMicroappsActionNotification(
+      driver,
+      mangata,
+      kusama,
+      TransactionType.Stake,
+      2,
+    );
+    await stakingPageDriver.goToPositionInfo();
+    const positionPageDriver = new PositionPageDriver(driver);
+    await positionPageDriver.waitForLpPositionVisible();
+    const tokensValues = await positionPageDriver.getPoolPositionTokensValues();
+    expect(tokensValues.liquidityTokenValue).toBeGreaterThan(0);
+    expect(tokensValues.firstTokenValue).toBeGreaterThan(0);
+    expect(tokensValues.secondTokenValue).toBeGreaterThan(0);
+  });
   afterEach(async () => {
     const session = await driver.getSession();
     await addExtraLogs(

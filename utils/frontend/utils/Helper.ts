@@ -216,6 +216,7 @@ export async function clickElement(driver: WebDriver, xpath: string) {
   const element = await driver.findElement(By.xpath(xpath));
   await driver.wait(until.elementIsVisible(element), timeOut);
   await sleep(500);
+  await driver.wait(until.elementIsEnabled(element), timeOut);
   await element.click();
 }
 

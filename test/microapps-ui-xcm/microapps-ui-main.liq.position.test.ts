@@ -182,6 +182,7 @@ describe("Microapps UI Position page tests", () => {
     );
     await positionPageDriver.setupRemovableLiquidity();
     await positionPageDriver.clickRemoveLiquidity();
+    await positionPageDriver.clickConfirmFeeAmount();
     await waitForMicroappsActionNotification(
       driver,
       mangata,
@@ -209,13 +210,14 @@ describe("Microapps UI Position page tests", () => {
       MGX_ASSET_NAME,
     );
     await positionPageDriver.chooseLiqMiningPage();
-    const isClaimableRewardsVisible =
+
+    let isClaimableRewardsVisible =
       await positionPageDriver.isClaimableRewardsDisplayed();
     expect(isClaimableRewardsVisible).toBeTruthy();
-    const isLpTokensValuesVisible =
+    let isLpTokensValuesVisible =
       await positionPageDriver.isLpTokensValuesDisplayed();
     expect(isLpTokensValuesVisible).toBeTruthy();
-
+    await positionPageDriver.expandPoolPositonCard();
     await positionPageDriver.activateAllLiq();
     await positionPageDriver.waitCalculatingFee();
     await positionPageDriver.clickConfirmFeeAmount();
@@ -232,6 +234,15 @@ describe("Microapps UI Position page tests", () => {
       MGX_ASSET_NAME,
     );
     await positionPageDriver.chooseLiqMiningPage();
+
+    await positionPageDriver.expandPoolPositonCard();
+    isClaimableRewardsVisible =
+      await positionPageDriver.isClaimableRewardsDisplayed();
+    expect(isClaimableRewardsVisible).toBeTruthy();
+    isLpTokensValuesVisible =
+      await positionPageDriver.isLpTokensValuesDisplayed();
+    expect(isLpTokensValuesVisible).toBeTruthy();
+
     await positionPageDriver.deactivateAllLiq();
     await positionPageDriver.waitCalculatingFee();
     await positionPageDriver.clickConfirmFeeAmount();
@@ -262,6 +273,7 @@ describe("Microapps UI Position page tests", () => {
     );
     await positionPageDriver.chooseLiqMiningPage();
 
+    await positionPageDriver.expandPoolPositonCard();
     await positionPageDriver.activateAllLiq();
     await positionPageDriver.waitCalculatingFee();
     await positionPageDriver.clickConfirmFeeAmount();
