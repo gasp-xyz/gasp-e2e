@@ -1,9 +1,11 @@
 import { By, WebDriver } from "selenium-webdriver";
 import {
+  buildClassXpath,
   buildDataTestIdXpath,
   buildXpathByText,
   clickElement,
   isDisplayed,
+  uiStringToNumber,
   waitForElementVisible,
   writeText,
 } from "../utils/Helper";
@@ -25,6 +27,13 @@ export class StakingPageDriver {
 
   async waitForCollatorsVisible() {
     const collatorListLocator = buildDataTestIdXpath("collator-row-item");
+    await waitForElementVisible(this.driver, collatorListLocator, 8000);
+  }
+
+  async waitForStakeVisible() {
+    const collatorListLocator =
+      buildDataTestIdXpath("collator-row-item") +
+      buildDataTestIdXpath("total-stake");
     await waitForElementVisible(this.driver, collatorListLocator, 8000);
   }
 
@@ -61,6 +70,37 @@ export class StakingPageDriver {
         collatorAddress: collatorAddressText,
       };
     }
+  }
+
+  async getCollatorsStakes(collatorsType: string) {
+    const collatorsListXpath =
+      buildDataTestIdXpath(collatorsType + "-collators-list") +
+      buildDataTestIdXpath("collator-row-item") +
+      buildDataTestIdXpath("total-stake");
+    const stakes = await this.driver.findElements(By.xpath(collatorsListXpath));
+    const collatorsStakesNumber: number[] = [];
+    for (let i = 0; i < stakes.length; i++) {
+      const stakesText = await stakes[i].getText();
+      const stakesNumber = await uiStringToNumber(stakesText);
+      collatorsStakesNumber.push(stakesNumber);
+    }
+    return collatorsStakesNumber;
+  }
+
+  async getCollatorsAddresses(collatorsType: string) {
+    const collatorsListXpath =
+      buildDataTestIdXpath(collatorsType + "-collators-list") +
+      buildClassXpath("w-full");
+    const collatorsContainer = await this.driver.findElements(
+      By.xpath(collatorsListXpath),
+    );
+    const collatorsAddressesString: string[] = [];
+    for (let i = 0; i < collatorsContainer.length; i++) {
+      const collatorHref = await collatorsContainer[i].getAttribute("href");
+      const collatorAddressText = collatorHref.split("staking/")[1];
+      collatorsAddressesString.push(collatorAddressText);
+    }
+    return collatorsAddressesString;
   }
 
   async chooseCollatorRow(index = 0) {

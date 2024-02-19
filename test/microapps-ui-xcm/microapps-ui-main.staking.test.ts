@@ -167,6 +167,18 @@ describe("Microapps UI Staking page tests", () => {
     expect(isStartStakingButtonVisible).toBeTruthy();
   });
 
+  it("All stacking collator is sorted in descending order of stack", async () => {
+    await setupPageWithState(driver, acc_name);
+
+    await sidebar.clickNavStaking();
+    await stakingPageDriver.waitForStakeVisible();
+
+    const collatorStakes = await stakingPageDriver.getCollatorsStakes("active");
+    for (let i = 1; i < collatorStakes.length; i++) {
+      expect(collatorStakes[i - 1]).toBeGreaterThanOrEqual(collatorStakes[i]);
+    }
+  });
+
   it("User can start staking with enough free tokens", async () => {
     await addLiqTokenMicroapps(userAddress, mangata, 5, 18, liqTokenNumber);
     await setupPageWithState(driver, acc_name);
