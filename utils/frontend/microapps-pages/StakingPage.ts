@@ -5,6 +5,7 @@ import {
   buildXpathByText,
   clickElement,
   isDisplayed,
+  scrollElementIntoView,
   scrollIntoView,
   uiStringToNumber,
   waitForElementVisible,
@@ -82,6 +83,7 @@ export class StakingPageDriver {
     const stakes = await this.driver.findElements(By.xpath(collatorsListXpath));
     const collatorsStakesNumber: number[] = [];
     for (let i = 0; i < stakes.length; i++) {
+      await scrollElementIntoView(this.driver, stakes[i]);
       const stakesText = await stakes[i].getText();
       const stakesNumber = await uiStringToNumber(stakesText);
       collatorsStakesNumber.push(stakesNumber);

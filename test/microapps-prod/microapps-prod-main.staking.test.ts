@@ -73,11 +73,11 @@ describe("Microapps UI staking tests", () => {
     await stakingPageDriver.waitForStakeVisible();
     const activeCollatorStakes =
       await stakingPageDriver.getCollatorsStakes("active");
-    const waitingCollatorStakes =
-      await stakingPageDriver.getCollatorsStakes("waiting");
     for (let i = 1; i < activeCollatorStakes.length; i++) {
       expect(activeCollatorStakes[i]).not.toBe(NaN);
     }
+    const waitingCollatorStakes =
+      await stakingPageDriver.getCollatorsStakes("waiting");
     for (let i = 1; i < waitingCollatorStakes.length; i++) {
       expect(waitingCollatorStakes[i]).toBe(NaN);
     }
