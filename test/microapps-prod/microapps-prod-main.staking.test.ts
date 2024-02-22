@@ -30,7 +30,6 @@ let stakingPageDriver: StakingPageDriver;
 const acc_name = "acc_automation";
 
 describe("Microapps UI staking tests", () => {
-
   beforeAll(async () => {
     try {
       getApi();
