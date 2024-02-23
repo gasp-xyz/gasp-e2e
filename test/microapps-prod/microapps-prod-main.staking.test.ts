@@ -71,6 +71,7 @@ describe("Microapps UI staking tests", () => {
     await setupPageWithState(driver, acc_name);
     await sidebar.clickNavStaking();
     await stakingPageDriver.waitForStakeVisible();
+    await driver.sleep(3000);
     const activeCollatorStakes =
       await stakingPageDriver.getCollatorsStakes("active");
     for (let i = 1; i < activeCollatorStakes.length; i++) {
