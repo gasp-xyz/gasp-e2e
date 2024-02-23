@@ -1,5 +1,12 @@
 import "chromedriver";
-import { By, Key, logging, until, WebDriver } from "selenium-webdriver";
+import {
+  By,
+  Key,
+  logging,
+  until,
+  WebDriver,
+  WebElement,
+} from "selenium-webdriver";
 import { sleep } from "../../utils";
 import { Mangata } from "../pages/Mangata";
 import { Polkadot } from "../pages/Polkadot";
@@ -223,6 +230,17 @@ export async function clickElement(driver: WebDriver, xpath: string) {
 export async function scrollIntoView(driver: WebDriver, xpath: string) {
   await waitForElement(driver, xpath);
   const element = await driver.findElement(By.xpath(xpath));
+  await driver.executeScript(
+    'arguments[0].scrollIntoView({ behavior: "smooth" });',
+    element,
+  );
+  await driver.wait(until.elementIsVisible(element), timeOut);
+}
+
+export async function scrollElementIntoView(
+  driver: WebDriver,
+  element: WebElement,
+) {
   await driver.executeScript(
     'arguments[0].scrollIntoView({ behavior: "smooth" });',
     element,

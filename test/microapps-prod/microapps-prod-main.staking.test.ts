@@ -1,6 +1,6 @@
 /*
  *
- * @group stakingUi
+ * @group microappsProdStaking
  */
 import { jest } from "@jest/globals";
 import { getApi, initApi } from "../../utils/api";
@@ -30,10 +30,6 @@ let stakingPageDriver: StakingPageDriver;
 const acc_name = "acc_automation";
 
 describe("Microapps UI staking tests", () => {
-  //for these tests you need to setup uri and uiUri in mangata-e2e/utils/utils.ts
-  //const uri = process.env.API_URL ? process.env.API_URL : "wss://kusama-archive.mangata.online/";
-  //const uiUri = process.env.UI_URL ? process.env.UI_URL : "http://app.mangata.finance/";
-
   beforeAll(async () => {
     try {
       getApi();
@@ -75,13 +71,14 @@ describe("Microapps UI staking tests", () => {
     await setupPageWithState(driver, acc_name);
     await sidebar.clickNavStaking();
     await stakingPageDriver.waitForStakeVisible();
+    await driver.sleep(3000);
     const activeCollatorStakes =
       await stakingPageDriver.getCollatorsStakes("active");
-    const waitingCollatorStakes =
-      await stakingPageDriver.getCollatorsStakes("waiting");
     for (let i = 1; i < activeCollatorStakes.length; i++) {
       expect(activeCollatorStakes[i]).not.toBe(NaN);
     }
+    const waitingCollatorStakes =
+      await stakingPageDriver.getCollatorsStakes("waiting");
     for (let i = 1; i < waitingCollatorStakes.length; i++) {
       expect(waitingCollatorStakes[i]).toBe(NaN);
     }

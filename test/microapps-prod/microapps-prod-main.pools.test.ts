@@ -1,6 +1,6 @@
 /*
  *
- * @group microappsUI
+ * @group microappsProdPools
  */
 import { jest } from "@jest/globals";
 import { ApiPromise } from "@polkadot/api";
