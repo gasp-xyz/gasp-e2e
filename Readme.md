@@ -84,7 +84,7 @@ After that env. variables have been exported, you can run all tests with the com
 You can specify the command `--runInBand` if you don't want to run the tests in parallel
 
 UPDATE:
-since ESM module upgrades, you need to specify certain flags for jest. for example:
+Since ESM module upgrades, you need to specify certain flags for jest. For example:
 `node --experimental-specifier-resolution=node --loader ts-node/esm --experimental-vm-modules node_modules/jest/bin/jest.js --verbose --ci test/story/story.LP.test.ts`
 
 There are also some configurations to run tests, 
@@ -95,7 +95,7 @@ There are also some configurations to run tests,
 
 Finally, there are groups that can be ran instead.
 
-These are ran like so: jest --group=sequential. Multiple groups can be ran like jest --group=group1 --group=group2.
+These are ran like so: `jest --group=sequential`. Multiple groups can be ran like `jest --group=group1 --group=group2`.
 
 At the moment groups are split between testing configurations (parallel, sequential, etc) and pallets (api, asset, liquidity, sudo, etc). They can be found in docstrings at the top of any test file.
 
