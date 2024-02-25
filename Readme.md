@@ -101,17 +101,27 @@ At the moment groups are split between testing configurations (parallel, sequent
 
 ###  How to run in a docker setup
 There exist a possibility to run test pointing to a dockerize setup. You only need to :
-1. Follow the instructions in mangata-node to setup a local environment. Here a personal hint: 
+1. Follow the instructions in mangata-node to setup a local environment. Here is a personal hint: 
 ```bash
-yarn global add  @open-web3/parachain-launch -g ;
-cd <mangata-node local path goes here >/devops/parachain-launch  ; cd output ;   docker-compose down -v ; rm -rf output;    cd <mangata-node local path goes here >/devops/parachain-launch/ ;   nvim ./config.yml ;   npx @open-web3/parachain-launch generate config.yml --yes ; cd output ; docker-compose down -v ;  docker-compose up -d --build
+yarn global add @open-web3/parachain-launch -g
+cd <mangata-node local path goes here >/devops/parachain-launch
+cd output
+docker-compose down -v
+cd ..
+rm -rf output
+cd <mangata-node local path goes here >/devops/parachain-launch/
+nvim ./config.yml
+npx @open-web3/parachain-launch generate config.yml --yes
+cd output
+docker-compose down -v
+docker-compose up -d --build
 ```
 
-2. Point to that node ( ip can be obtained from the docker-compose) exporting `API_URL='ws://172.16.238.10:9944`.`
+2. Point to that node (ip can be obtained from the docker-compose) exporting `API_URL='ws://172.16.238.10:9944`.
 3. Run any test `yarn test-sequential`.
 
 ### Reports reports reports!
-Reports are now in TestMo. https://mangata-finance.testmo.net/
+Reports are now in TestMo: https://mangata-finance.testmo.net/
 
 ### How to setup on Windows
 - Follow all the steps from [here](https://ubuntu.com/tutorials/working-with-visual-studio-code-on-ubuntu-on-wsl2#4-install-the-remote-development-extension)
