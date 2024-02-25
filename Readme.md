@@ -20,11 +20,11 @@
 1. Install node (v18.16.1 ) (we try to support nvm stable version )  
 2. Clone the code
 3. Run `yarn` in the root folder.
-4. Install Jest test framework globally. `yarn global add  jest -g `
+4. Install Jest test framework globally: `yarn global add  jest -g `
 
 ### Setup with Dev Container
 1. Follow the instructions to setup a local node and export the API_URL according to the node web socket.
-ie:  export API_URL=ws://127.0.0.1:9949
+- ie:  `export API_URL=ws://127.0.0.1:9949`
 
 
 #### Working with Dev Containers ( Dev containers are no longer maintained, PRs are welcomed )
@@ -102,10 +102,9 @@ At the moment groups are split between testing configurations (parallel, sequent
 ###  How to run in a docker setup
 There exist a possibility to run test pointing to a dockerize setup. You only need to :
 1. Follow the instructions in mangata-node to setup a local environment. Here a personal hint: 
-```
+```bash
 yarn global add  @open-web3/parachain-launch -g ;
 cd <mangata-node local path goes here >/devops/parachain-launch  ; cd output ;   docker-compose down -v ; rm -rf output;    cd <mangata-node local path goes here >/devops/parachain-launch/ ;   nvim ./config.yml ;   npx @open-web3/parachain-launch generate config.yml --yes ; cd output ; docker-compose down -v ;  docker-compose up -d --build
-
 ```
 
 2. Point to that node ( ip can be obtained from the docker-compose) exporting `API_URL='ws://172.16.238.10:9944`.`
