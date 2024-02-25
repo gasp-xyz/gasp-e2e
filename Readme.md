@@ -50,8 +50,11 @@ If you run test on your machine first you need to set using `yarn`.
 2. Run `yarn` in **/mangata-e2e**. This command begin installation and creating necessary files for `yarn`.
 3. If process will finish correct you'll see folder **/node_modules** and **file yarn.lock**
 
-After each running you system you need to configure some parameters for test.
-Use this pattern (don't forget to add parameters instead of <text in the same brackets>): `export TEST_SUDO_NAME=//<You need insert name here> && export TEST_PALLET_ADDRESS=5EYCAe5XGPRojsCSi9p1ZZQ5qgeJGFcTxPxrsFRzkASu6bT2 && export E2E_XYK_PALLET_ADDRESS=5EYCAe5XGPRojsCSi9p1ZZQ5qgeJGFcTxPxrsFRzkASu6bT2 && export E2E_TREASURY_PALLET_ADDRESS=5EYCAe5ijiYfyeZ2JJCGq56LmPyNRAKzpG4QkoQkkQNB5e6Z && export E2E_TREASURY_BURN_PALLET_ADDRESS=5EYCAe5ijiYfyeZ2JJezKNMZfdbiFMyQc4YVzxaiMebAZBcm && API_URL=ws://<You need insert url here> 
+After each running you need to configure some parameters for test.
+Use this pattern (don't forget to add parameters instead of `<text in the same brackets>`): 
+```command
+export TEST_SUDO_NAME=//<You need insert name here> && export TEST_PALLET_ADDRESS=5EYCAe5XGPRojsCSi9p1ZZQ5qgeJGFcTxPxrsFRzkASu6bT2 && export E2E_XYK_PALLET_ADDRESS=5EYCAe5XGPRojsCSi9p1ZZQ5qgeJGFcTxPxrsFRzkASu6bT2 && export E2E_TREASURY_PALLET_ADDRESS=5EYCAe5ijiYfyeZ2JJCGq56LmPyNRAKzpG4QkoQkkQNB5e6Z && export E2E_TREASURY_BURN_PALLET_ADDRESS=5EYCAe5ijiYfyeZ2JJezKNMZfdbiFMyQc4YVzxaiMebAZBcm && API_URL=ws://<You need insert url here>
+```
 
 
 ####  Node tests ( no UI )
