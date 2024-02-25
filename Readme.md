@@ -1,6 +1,6 @@
 <p align="center">
-    <a href="https://https://mangata.finance/">
-    <img width="132" height="101" src="https://mangata.finance/images/logo-without-text.svg" class="attachment-full size-full" alt="Mangata brand" loading="lazy" /></a>
+    <a href="https://mangata.finance/">
+    <img width="264" height="202" src="https://assets-global.website-files.com/63e60f4a25768f19afed1e9a/63e64abe0002fc4ee4b0b7d9_mga_logo.svg" class="attachment-full size-full" alt="Mangata brand" loading="lazy" /></a>
 </p>
 
 <h2 align="center">Mangata E2E Tests</h2>
