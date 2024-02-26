@@ -8,15 +8,16 @@ import { Keyring } from "@polkadot/api";
 import { User } from "../../utils/User";
 import { getEnvironmentRequiredVars } from "../../utils/utils";
 import { signTxMetamask } from "../../utils/metamask";
-import { setupApi } from "../../utils/setup";
+import { setupApi, setupUsers } from "../../utils/setup";
+import { Sudo } from "../../utils/sudo";
+import { Assets } from "../../utils/Assets";
 
 jest.spyOn(console, "log").mockImplementation(jest.fn());
 jest.setTimeout(1500000);
 process.env.NODE_ENV = "test";
 
-const { sudo: sudoUserName } = getEnvironmentRequiredVars();
-
 describe("Metamask test", () => {
+  const { sudo: sudoUserName } = getEnvironmentRequiredVars();
   let testUser1: User;
   let sudo: User;
 
@@ -29,18 +30,13 @@ describe("Metamask test", () => {
       await initApi();
     }
 
-    await setupApi();
-
     keyring = new Keyring({ type: "sr25519" });
-
-    // setup users
-    testUser1 = new User(keyring);
-
+    [testUser1] = setupUsers();
     sudo = new User(keyring, sudoUserName);
 
-    // add users to pair.
-    keyring.addPair(sudo.keyRingPair);
-    keyring.addPair(testUser1.keyRingPair);
+    await setupApi();
+    await setupUsers();
+    await Sudo.batchAsSudoFinalized(Assets.mintNative(sudo));
   });
 
   test("Try transfer tokens", async () => {
