@@ -2,8 +2,6 @@
 import { blake2AsU8a } from "@polkadot/util-crypto";
 import { hexToU8a, isNumber, objectSpread, u8aToHex } from "@polkadot/util";
 import { ApiPromise, WsProvider } from "@polkadot/api";
-import { GenericExtrinsic } from "@polkadot/types";
-import { AnyTuple } from "@polkadot/types/types";
 
 const eth_sig_utils = require("@metamask/eth-sig-util");
 const eth_util = require("ethereumjs-util");
@@ -54,7 +52,7 @@ function makeEraOptions(
 }
 
 export async function signTxMetamask(
-  extrinsic: GenericExtrinsic<AnyTuple>,
+  tx: any,
   ethAddress = "0x9428406f4f4b467B7F5B8d6f4f066dD9d884D24B",
   ethPrivateKey = "0x2faacaa84871c08a596159fe88f8b2d05cf1ed861ac3d963c4a15593420cf53f",
 ) {
@@ -99,10 +97,10 @@ export async function signTxMetamask(
     },
   });
 
-  const tx = api.tx.tokens.transfer(
-    "HWyLYmpW68JGJYoVJcot6JQ1CJbtUQeTdxfY1kUTsvGCB1r",
-    0,
-    1000,
+  const extrinsic = api.createType(
+    "Extrinsic",
+    { method: tx.method },
+    { version: tx.version },
   );
 
   const dotAddress = blake2AsU8a(hexToU8a(ethAddress)).toString();
