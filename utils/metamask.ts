@@ -2,9 +2,8 @@
 import { blake2AsU8a } from "@polkadot/util-crypto";
 import { hexToU8a, isNumber, objectSpread, u8aToHex } from "@polkadot/util";
 import { ApiPromise, WsProvider } from "@polkadot/api";
-
-const eth_sig_utils = require("@metamask/eth-sig-util");
-const eth_util = require("ethereumjs-util");
+import eth_util from "ethereumjs-util";
+import eth_sig_utils from "@metamask/eth-sig-util";
 
 function makeSignOptions(api: any, partialOptions: any, extras: any) {
   return objectSpread(
@@ -127,7 +126,7 @@ export async function signTxMetamask(
   const msg_sig = eth_sig_utils.signTypedData({
     privateKey: eth_util.toBuffer(ethPrivateKey),
     data: data,
-    version: "V4",
+    version: data.SignTypedDataVersion,
   });
   console.log("Ok, signed typed data ");
   console.log("SIGNATURE = " + msg_sig);
