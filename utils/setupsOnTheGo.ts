@@ -1199,18 +1199,27 @@ export async function migrate() {
         x[0] === "AssetRegistry" ||
         x[0] === "Tokens" ||
         x[0] === "Issuance" ||
-        x[0] === "Xyk" ||
-        x[0] === "MultiPurposeLiquidity",
+        x[0] === "Xyk",
     )
     .flatMap((item: any) =>
       item[1].map((element: any) => {
         return [item[0], element];
       }),
-    );
+    )
+    .sort((a: any, b: any) => {
+      if (a[0] === "AssetRegistry" && b[0] !== "AssetRegistry") {
+        return -1; // "AssetRegistry" should come before other categories
+      } else if (a[0] !== "AssetRegistry" && b[0] === "AssetRegistry") {
+        return 1; // Other categories should come after "AssetRegistry"
+      } else {
+        return 0; // Maintain original order if both are "AssetRegistry" or both are not "AssetRegistry"
+      }
+    });
   const storageToMigrate2 = allPallets
     .filter(
       (x: any) =>
         x[0] === "ProofOfStake" ||
+        x[0] === "MultiPurposeLiquidity" ||
         x[0] === "RewardsInfo" ||
         x[0] === "Vesting" ||
         x[0] === "Bootstrap" ||
@@ -1222,7 +1231,16 @@ export async function migrate() {
       item[1].map((element: any) => {
         return [item[0], element];
       }),
-    );
+    )
+    .sort((a: any, b: any) => {
+      if (a[0] === "ProofOfStake" && b[0] !== "ProofOfStake") {
+        return -1; // "AssetRegistry" should come before other categories
+      } else if (a[0] !== "ProofOfStake" && b[0] === "ProofOfStake") {
+        return 1; // Other categories should come after "AssetRegistry"
+      } else {
+        return 0; // Maintain original order if both are "AssetRegistry" or both are not "AssetRegistry"
+      }
+    });
   const storageToMigrate = (storageToMigrate1 as []).concat(storageToMigrate2);
   console.info(JSON.stringify(storageToMigrate2));
   //  const data = [
@@ -1244,6 +1262,7 @@ export async function migrate() {
     console.warn(
       "::: starting with :::" + JSON.stringify(storageToMigrate[dataId]),
     );
+    await initApi("wss://kusama-archive.mangata.online");
     let allKeys = [];
     let cont = true;
     let keys = await api.rpc.state.getKeysPaged(key, 100);
@@ -1269,7 +1288,6 @@ export async function migrate() {
           ]);
           txs.push(Sudo.sudo(tx));
         });
-
         await Sudo.batchAsSudoFinalized(...txs);
         allKeys = [];
       }
