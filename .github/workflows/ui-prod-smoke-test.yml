@@ -40,7 +40,7 @@ jobs:
           TESTMO_TOKEN: ${{ secrets.TESTMO_TOKEN }}
         id: setTestRun
 
-  e2e-test-matrix:
+  e2e-tm:
     name: Run UI tests
     needs: [setup-report]
     strategy:
@@ -139,7 +139,7 @@ jobs:
           path: reports/html-report/report.html
 
   test-complete:
-    needs: [setup-report, e2e-test-matrix]
+    needs: [setup-report, e2e-tm]
     if: always()
     runs-on: ubuntu-latest
 
@@ -158,7 +158,7 @@ jobs:
         continue-on-error: true
 
   slack-notify-ok:
-    needs: [e2e-test-matrix, setup-report]
+    needs: [e2e-tm, setup-report]
     if: success()
     runs-on: ubuntu-latest
 
@@ -175,7 +175,7 @@ jobs:
           GITHUB_REF: "https://mangata-finance.github.io/mangata-e2e/${{ github.run_number }}"
 
   slack-notify-nook:
-    needs: [e2e-test-matrix]
+    needs: [e2e-tm]
     if: failure()
     runs-on: ubuntu-latest
 
