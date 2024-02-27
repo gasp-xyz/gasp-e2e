@@ -1208,11 +1208,11 @@ export async function migrate() {
     )
     .sort((a: any, b: any) => {
       if (a[0] === "AssetRegistry" && b[0] !== "AssetRegistry") {
-        return -1; // "AssetRegistry" should come before other categories
+        return -1;
       } else if (a[0] !== "AssetRegistry" && b[0] === "AssetRegistry") {
-        return 1; // Other categories should come after "AssetRegistry"
+        return 1;
       } else {
-        return 0; // Maintain original order if both are "AssetRegistry" or both are not "AssetRegistry"
+        return 0;
       }
     });
   const storageToMigrate2 = allPallets
@@ -1234,11 +1234,11 @@ export async function migrate() {
     )
     .sort((a: any, b: any) => {
       if (a[0] === "ProofOfStake" && b[0] !== "ProofOfStake") {
-        return -1; // "AssetRegistry" should come before other categories
+        return -1;
       } else if (a[0] !== "ProofOfStake" && b[0] === "ProofOfStake") {
-        return 1; // Other categories should come after "AssetRegistry"
+        return 1;
       } else {
-        return 0; // Maintain original order if both are "AssetRegistry" or both are not "AssetRegistry"
+        return 0;
       }
     });
   const storageToMigrate = (storageToMigrate1 as []).concat(storageToMigrate2);
