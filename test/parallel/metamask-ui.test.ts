@@ -11,6 +11,7 @@ import { signTxMetamask } from "../../utils/metamask";
 import { setupApi, setupUsers } from "../../utils/setup";
 import { Sudo } from "../../utils/sudo";
 import { Assets } from "../../utils/Assets";
+import { MGA_ASSET_ID } from "../../utils/Constants";
 
 jest.spyOn(console, "log").mockImplementation(jest.fn());
 jest.setTimeout(1500000);
@@ -35,8 +36,17 @@ describe("Metamask test", () => {
     sudo = new User(keyring, sudoUserName);
 
     await setupApi();
-    await setupUsers();
-    await Sudo.batchAsSudoFinalized(Assets.mintNative(sudo));
+    setupUsers();
+    await Sudo.batchAsSudoFinalized(
+      Assets.mintNative(sudo),
+      Sudo.sudo(
+        Assets.mintTokenAddress(
+          MGA_ASSET_ID,
+          "5FeifGJWHVnuKiRR8WcHbQtwxvwr3RbagVRhBJiKTkzmbfB5",
+          Assets.DEFAULT_AMOUNT,
+        ),
+      ),
+    );
   });
 
   test("Try transfer tokens", async () => {

@@ -1,9 +1,10 @@
 /* eslint-disable no-console */
-import { blake2AsU8a } from "@polkadot/util-crypto";
+import { blake2AsU8a, encodeAddress } from "@polkadot/util-crypto";
 import { hexToU8a, isNumber, objectSpread, u8aToHex } from "@polkadot/util";
 import { ApiPromise, WsProvider } from "@polkadot/api";
 import eth_util from "ethereumjs-util";
 import eth_sig_utils from "@metamask/eth-sig-util";
+import { testLog } from "./Logger";
 
 function makeSignOptions(api: any, partialOptions: any, extras: any) {
   return objectSpread(
@@ -95,16 +96,19 @@ export async function signTxMetamask(
       },
     },
   });
-
   const extrinsic = api.createType(
     "Extrinsic",
     { method: tx.method },
     { version: tx.version },
   );
 
-  const dotAddress = blake2AsU8a(hexToU8a(ethAddress)).toString();
+  const dotAddress = blake2AsU8a(hexToU8a(ethAddress));
+  testLog
+    .getLog()
+    .info("dot addr:: " + encodeAddress(blake2AsU8a(hexToU8a(ethAddress)), 42));
   const options = {};
   const signingInfo = await api.derive.tx.signingInfo(
+    // @ts-ignore
     dotAddress,
     // @ts-ignore
     options.nonce,
@@ -126,7 +130,8 @@ export async function signTxMetamask(
   const msg_sig = eth_sig_utils.signTypedData({
     privateKey: eth_util.toBuffer(ethPrivateKey),
     data: data,
-    version: data.SignTypedDataVersion,
+    // @ts-ignore
+    version: "V4",
   });
   console.log("Ok, signed typed data ");
   console.log("SIGNATURE = " + msg_sig);
