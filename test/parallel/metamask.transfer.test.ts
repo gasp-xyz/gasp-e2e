@@ -68,7 +68,10 @@ describe("Metamask test", () => {
     await ethUser.refreshAmounts(AssetWallet.BEFORE);
 
     const tx = api.tx.tokens.transfer(testUser1.keyRingPair.address, 0, 1000);
-    await signTxMetamask(tx, ethUserAddress, ethPrivateKey);
+    const hash = await signTxMetamask(tx, ethUserAddress, ethPrivateKey);
+    const apiAt = await api.at(hash.toHex());
+    const currentBlockEvent = await apiAt.query.system.events();
+    expect(currentBlockEvent.isEmpty).toBeFalse();
 
     await waitForNBlocks(4);
 
