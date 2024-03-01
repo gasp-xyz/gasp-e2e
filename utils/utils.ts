@@ -71,7 +71,6 @@ export function getEnvironmentRequiredVars() {
   const logLevel = process.env.LOG_LEVEL ? process.env.LOG_LEVEL : "info";
 
   const uri = process.env.API_URL ? process.env.API_URL : "ws://127.0.0.1:9946";
-
   const relyUri = process.env.RELY_API_URL
     ? process.env.RELY_API_URL
     : "ws://127.0.0.1:9944";
@@ -101,6 +100,7 @@ export function getEnvironmentRequiredVars() {
 
   const mnemonicPolkadot = process.env.MNEMONIC_POLK
     ? process.env.MNEMONIC_POLK
+    : "oh oh";
     : "oh oh";
 
   const mnemonicPolkadotEd25519 = process.env.MNEMONIC_POLK_ED25519
