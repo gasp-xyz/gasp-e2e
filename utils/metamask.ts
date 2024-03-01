@@ -9,6 +9,8 @@ import { signTx } from "@mangata-finance/sdk";
 import { User } from "./User";
 //import { getApi } from "./api";
 
+//let keyring: Keyring;
+
 function makeSignOptions(api: any, partialOptions: any, extras: any) {
   return objectSpread(
     { blockHash: api.genesisHash, genesisHash: api.genesisHash },
