@@ -4,7 +4,7 @@
  */
 import { jest } from "@jest/globals";
 import { getApi, initApi } from "../../utils/api";
-import { Keyring, ApiPromise, WsProvider } from "@polkadot/api";
+import { Keyring } from "@polkadot/api";
 import { AssetWallet, User } from "../../utils/User";
 import { getEnvironmentRequiredVars, waitForNBlocks } from "../../utils/utils";
 import { setupApi, setupUsers } from "../../utils/setup";
@@ -13,7 +13,6 @@ import { Assets } from "../../utils/Assets";
 import { MGA_ASSET_ID } from "../../utils/Constants";
 import { BN } from "@polkadot/util";
 import { signTxMetamask } from "../../utils/metamask";
-//import { Mangata } from "@mangata-finance/sdk";
 
 jest.spyOn(console, "log").mockImplementation(jest.fn());
 jest.setTimeout(1500000);
@@ -60,47 +59,7 @@ describe("Metamask test", () => {
   });
 
   test("Try transfer tokens", async () => {
-    const api = await ApiPromise.create({
-      provider: new WsProvider("ws://127.0.0.1:9946"),
-      rpc: {
-        metamask: {
-          get_eip712_sign_data: {
-            description: "",
-            params: [
-              {
-                name: "call",
-                type: "String",
-              },
-            ],
-            type: "String",
-          },
-        },
-      },
-      types: {
-        MultiSignature: {
-          _enum: {
-            Ed25519: "Ed25519Signature",
-            Sr25519: "Sr25519Signature",
-            Ecdsa: "EcdsaSignature",
-            Eth: "EcdsaSignature",
-          },
-        },
-        ShufflingSeed: {
-          seed: "H256",
-          proof: "H512",
-        },
-        Header: {
-          parentHash: "Hash",
-          number: "Compact<BlockNumber>",
-          stateRoot: "Hash",
-          extrinsicsRoot: "Hash",
-          digest: "Digest",
-          seed: "ShufflingSeed",
-          count: "BlockNumber",
-        },
-      },
-    });
-
+    const api = getApi();
     const ethUserAddress = "0x9428406f4f4b467B7F5B8d6f4f066dD9d884D24B";
     const ethPrivateKey =
       "0x2faacaa84871c08a596159fe88f8b2d05cf1ed861ac3d963c4a15593420cf53f";
@@ -109,7 +68,8 @@ describe("Metamask test", () => {
     await ethUser.refreshAmounts(AssetWallet.BEFORE);
 
     const tx = api.tx.tokens.transfer(testUser1.keyRingPair.address, 0, 1000);
-    await signTxMetamask(tx, ethUserAddress, ethPrivateKey, ethUser);
+    expect(tx).not.toBeEmpty();
+    await signTxMetamask(tx, ethUserAddress, ethPrivateKey);
     await waitForNBlocks(4);
 
     await testUser1.refreshAmounts(AssetWallet.AFTER);

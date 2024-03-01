@@ -5,9 +5,6 @@ import { ApiPromise, WsProvider } from "@polkadot/api";
 import eth_util from "ethereumjs-util";
 import eth_sig_utils from "@metamask/eth-sig-util";
 import { testLog } from "./Logger";
-import { signTx } from "@mangata-finance/sdk";
-import { User } from "./User";
-//import { getApi } from "./api";
 
 //let keyring: Keyring;
 
@@ -57,10 +54,9 @@ function makeEraOptions(
 }
 
 export async function signTxMetamask(
-  extrinsic: any,
+  tx: any,
   ethAddress = "0x9428406f4f4b467B7F5B8d6f4f066dD9d884D24B",
   ethPrivateKey = "0x2faacaa84871c08a596159fe88f8b2d05cf1ed861ac3d963c4a15593420cf53f",
-  ethUser: User,
 ) {
   const api = await ApiPromise.create({
     provider: new WsProvider("ws://127.0.0.1:9946"),
@@ -102,6 +98,11 @@ export async function signTxMetamask(
       },
     },
   });
+  const extrinsic = api.createType(
+    "Extrinsic",
+    { method: tx.method },
+    { version: tx.version },
+  );
 
   const dotAddress = blake2AsU8a(hexToU8a(ethAddress));
   testLog
@@ -117,13 +118,12 @@ export async function signTxMetamask(
     options.era,
   );
   const eraOptions = makeEraOptions(api, api.registry, options, signingInfo);
-  const tx_payload = extrinsic.inner.signature.createPayload(
-    extrinsic.method,
-    eraOptions,
-  );
+  // @ts-ignore
+  const tx_payload = tx.inner.signature.createPayload(tx.method, eraOptions);
   const raw_payload = tx_payload.toU8a({ method: true });
+  // @ts-ignore
   const result = await api.rpc.metamask.get_eip712_sign_data(
-    extrinsic.toHex().slice(2),
+    tx.toHex().slice(2),
   );
   console.log(JSON.stringify(result));
   const data = JSON.parse(result.toString());
@@ -142,9 +142,10 @@ export async function signTxMetamask(
   });
   console.log(tx_payload);
   console.log(msg_sig);
+  // @ts-ignore
   extrinsic.addSignature(dotAddress, created_signature, tx_payload);
-  const resultSigning = await signTx(api, extrinsic, ethUser.keyRingPair);
+  const hash = await api.rpc.author.submitExtrinsic(extrinsic.toHex());
   console.log("Sent!!!");
 
-  return resultSigning;
+  return hash;
 }
