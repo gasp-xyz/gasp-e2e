@@ -69,7 +69,7 @@ describe("Metamask test", () => {
 
     const tx = api.tx.tokens.transfer(testUser1.keyRingPair.address, 0, 1000);
     expect(tx).not.toBeEmpty();
-    await signTxMetamask(tx, ethUserAddress, ethPrivateKey);
+    await signTxMetamask(tx, ethUserAddress, ethPrivateKey, ethUser);
     await waitForNBlocks(4);
 
     await testUser1.refreshAmounts(AssetWallet.AFTER);
