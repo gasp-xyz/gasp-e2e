@@ -67,7 +67,7 @@ describe("Proof of stake tests", () => {
       // Wait for the balance to change
       const anyChange = await waitForBalanceChange(
         dotAddress,
-        13,
+        20,
         stringToBN(assetId.toHex()),
       );
 

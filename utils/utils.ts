@@ -725,7 +725,8 @@ export async function waitForBalanceChange(
         reject("Timeout waiting for balance change");
       }
       blocks--;
-      testLog.getLog().info("Waiting for balance change - count: " + blocks);
+      const blockNo = await getBlockNumber();
+      testLog.getLog().info("["+ blockNo + "] Waiting for balance change - count: " + blocks);
       const balance =
         assetId !== BN_ZERO
           ? await api.query.tokens.accounts.entries(userAddress)
