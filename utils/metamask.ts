@@ -6,8 +6,6 @@ import eth_util from "ethereumjs-util";
 import eth_sig_utils from "@metamask/eth-sig-util";
 import { testLog } from "./Logger";
 
-//let keyring: Keyring;
-
 function makeSignOptions(api: any, partialOptions: any, extras: any) {
   return objectSpread(
     { blockHash: api.genesisHash, genesisHash: api.genesisHash },
