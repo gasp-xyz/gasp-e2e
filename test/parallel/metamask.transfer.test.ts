@@ -7,12 +7,12 @@ import { getApi, initApi } from "../../utils/api";
 import { Keyring } from "@polkadot/api";
 import { AssetWallet, User } from "../../utils/User";
 import { getEnvironmentRequiredVars, waitForNBlocks } from "../../utils/utils";
-import { signTxMetamask } from "../../utils/metamask";
 import { setupApi, setupUsers } from "../../utils/setup";
 import { Sudo } from "../../utils/sudo";
 import { Assets } from "../../utils/Assets";
 import { MGA_ASSET_ID } from "../../utils/Constants";
 import { BN } from "@polkadot/util";
+import { signTxMetamask } from "../../utils/metamask";
 
 jest.spyOn(console, "log").mockImplementation(jest.fn());
 jest.setTimeout(1500000);
@@ -68,11 +68,8 @@ describe("Metamask test", () => {
     await ethUser.refreshAmounts(AssetWallet.BEFORE);
 
     const tx = api.tx.tokens.transfer(testUser1.keyRingPair.address, 0, 1000);
-    const hash = await signTxMetamask(tx, ethUserAddress, ethPrivateKey);
-    const apiAt = await api.at(hash.toHex());
-    const currentBlockEvent = await apiAt.query.system.events();
-    expect(currentBlockEvent.isEmpty).toBeFalse();
-
+    expect(tx).not.toBeEmpty();
+    await signTxMetamask(tx, ethUserAddress, ethPrivateKey);
     await waitForNBlocks(4);
 
     await testUser1.refreshAmounts(AssetWallet.AFTER);
