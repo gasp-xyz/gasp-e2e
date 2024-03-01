@@ -143,8 +143,8 @@ export async function signTxMetamask(
   console.log(tx_payload);
   console.log(msg_sig);
   extrinsic.addSignature(dotAddress, created_signature, tx_payload);
-  const hash = await signTx(api, extrinsic, ethUser.keyRingPair);
+  const resultSigning = await signTx(api, extrinsic, ethUser.keyRingPair);
   console.log("Sent!!!");
 
-  return hash;
+  return resultSigning;
 }
