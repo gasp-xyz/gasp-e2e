@@ -68,7 +68,7 @@ export async function signTxMetamask(
   tx: any,
   ethAddress: string,
   ethPrivateKey: string,
-):  Promise<MangataGenericEvent[]> {
+): Promise<MangataGenericEvent[]> {
   const api = await ApiPromise.create({
     provider: new WsProvider(getEnvironmentRequiredVars().chainUri),
     rpc: {

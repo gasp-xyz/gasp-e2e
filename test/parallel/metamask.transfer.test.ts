@@ -14,6 +14,8 @@ import { MGA_ASSET_ID } from "../../utils/Constants";
 import { BN } from "@polkadot/util";
 import { signTxMetamask } from "../../utils/metamask";
 import { testLog } from "../../utils/Logger";
+import { getEventResultFromMangataTx } from "../../utils/txHandler";
+import { ExtrinsicResult } from "../../utils/eventListeners";
 
 jest.spyOn(console, "log").mockImplementation(jest.fn());
 jest.setTimeout(1500000);
@@ -63,12 +65,14 @@ describe("Metamask test", () => {
     await ethUser.refreshAmounts(AssetWallet.BEFORE);
 
     const tx = api.tx.tokens.transfer(testUser1.keyRingPair.address, 0, 1000);
-    expect(tx).not.toBeEmpty();
     const extrinsicFromBlock = await signTxMetamask(
       tx,
       ethUserAddress,
       ethPrivateKey,
-    );
+    ).then((result) => {
+      const eventResponse = getEventResultFromMangataTx(result);
+      expect(eventResponse.state).toEqual(ExtrinsicResult.ExtrinsicSuccess);
+    });
     testLog
       .getLog()
       .info("Extrinsic from block", JSON.stringify(extrinsicFromBlock));
