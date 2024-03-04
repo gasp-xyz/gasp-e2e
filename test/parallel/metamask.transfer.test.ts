@@ -46,13 +46,7 @@ describe("Metamask test", () => {
     setupUsers();
     await Sudo.batchAsSudoFinalized(
       Assets.mintNative(sudo),
-      Sudo.sudo(
-        Assets.mintTokenAddress(
-          MGA_ASSET_ID,
-          ethUser.keyRingPair.address,
-          Assets.DEFAULT_AMOUNT,
-        ),
-      ),
+      Assets.mintNative(ethUser),
     );
     testUser1.addAsset(MGA_ASSET_ID);
     ethUser.addAsset(MGA_ASSET_ID);
