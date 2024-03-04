@@ -1,12 +1,23 @@
 /* eslint-disable no-console */
 import { blake2AsU8a, encodeAddress } from "@polkadot/util-crypto";
-import { hexToU8a, isNumber, objectSpread, u8aToHex } from "@polkadot/util";
+import {
+  BN,
+  hexToU8a,
+  isHex,
+  isNumber,
+  objectSpread,
+  u8aToHex,
+} from "@polkadot/util";
 import { ApiPromise, WsProvider } from "@polkadot/api";
 import eth_util from "ethereumjs-util";
 import eth_sig_utils from "@metamask/eth-sig-util";
 import { testLog } from "./Logger";
-import { signTx } from "@mangata-finance/sdk";
-import { User } from "./User";
+import {
+  ErrorData,
+  MangataEventData,
+  MangataGenericEvent,
+} from "@mangata-finance/sdk";
+import { getEnvironmentRequiredVars } from "./utils";
 
 function makeSignOptions(api: any, partialOptions: any, extras: any) {
   return objectSpread(
@@ -54,13 +65,12 @@ function makeEraOptions(
 }
 
 export async function signTxMetamask(
-  extrinsic: any,
-  ethAddress = "0x9428406f4f4b467B7F5B8d6f4f066dD9d884D24B",
-  ethPrivateKey = "0x2faacaa84871c08a596159fe88f8b2d05cf1ed861ac3d963c4a15593420cf53f",
-  ethUser: User,
-) {
+  tx: any,
+  ethAddress: string,
+  ethPrivateKey: string,
+):  Promise<MangataGenericEvent[]> {
   const api = await ApiPromise.create({
-    provider: new WsProvider("ws://127.0.0.1:9946"),
+    provider: new WsProvider(getEnvironmentRequiredVars().chainUri),
     rpc: {
       metamask: {
         get_eip712_sign_data: {
@@ -99,7 +109,11 @@ export async function signTxMetamask(
       },
     },
   });
-
+  const extrinsic = api.createType(
+    "Extrinsic",
+    { method: tx.method },
+    { version: tx.version },
+  );
   const dotAddress = blake2AsU8a(hexToU8a(ethAddress));
   testLog
     .getLog()
@@ -116,13 +130,13 @@ export async function signTxMetamask(
   const eraOptions = makeEraOptions(api, api.registry, options, signingInfo);
   const tx_payload = extrinsic.inner.signature.createPayload(
     // @ts-ignore
-    tx.method,
+    extrinsic.method,
     eraOptions,
   );
   const raw_payload = tx_payload.toU8a({ method: true });
   // @ts-ignore
   const result = await api.rpc.metamask.get_eip712_sign_data(
-    extrinsic.toHex().slice(2),
+    tx.toHex().slice(2),
   );
   console.log(JSON.stringify(result));
   const data = JSON.parse(result.toString());
@@ -143,8 +157,106 @@ export async function signTxMetamask(
   console.log(msg_sig);
   // @ts-ignore
   extrinsic.addSignature(dotAddress, created_signature, tx_payload);
-  const resultSigning = await signTx(api, extrinsic, ethUser.keyRingPair);
-  console.log("Sent!!!");
-
-  return resultSigning;
+  testLog.getLog().info("Sending tx");
+  const txHash = await api.rpc.author.submitExtrinsic(extrinsic.toHex());
+  testLog.getLog().info("Tx sent " + txHash);
+  let extrinsicResult: any;
+  let counter = 10;
+  return new Promise(async (resolve, reject) => {
+    const unsub = await api.rpc.chain.subscribeNewHeads(
+      async (header): Promise<void> => {
+        if (counter <= 0) {
+          unsub();
+          reject("Timeout");
+        }
+        counter--;
+        const currentBlock = await api.rpc.chain.getBlock(header.hash);
+        const extrinsics = currentBlock.block.extrinsics;
+        extrinsicResult = extrinsics.filter(
+          (ext) => ext.hash.toString() === txHash.toString(),
+        );
+        if (extrinsicResult.length > 0) {
+          const index = extrinsics.findIndex((extrinsic) => {
+            return extrinsic.hash.toString() === txHash.toString();
+          });
+          const events = await api.query.system.events();
+          const eventsTriggeredByTx: MangataGenericEvent[] = events
+            .filter((currentBlockEvent) => {
+              return (
+                currentBlockEvent.phase.isApplyExtrinsic &&
+                currentBlockEvent.phase.asApplyExtrinsic.toNumber() === index
+              );
+            })
+            .map((eventRecord) => {
+              const { event, phase } = eventRecord;
+              const types = event.typeDef;
+              const eventData: MangataEventData[] = event.data.map(
+                (d: any, i: any) => {
+                  return {
+                    lookupName: types[i].lookupName!,
+                    data: d,
+                  };
+                },
+              );
+              return {
+                event,
+                phase,
+                section: event.section,
+                method: event.method,
+                metaDocumentation: event.meta.docs.toString(),
+                eventData,
+                error: getTxError(api, event.method, eventData),
+              } as MangataGenericEvent;
+            });
+          unsub();
+          resolve(eventsTriggeredByTx);
+        }
+      },
+    );
+  });
 }
+
+export const getTxError = (
+  api: ApiPromise,
+  method: string,
+  eventData: MangataEventData[],
+): {
+  documentation: string[];
+  name: string;
+} | null => {
+  const failedEvent = method === "ExtrinsicFailed";
+
+  if (failedEvent) {
+    const error = eventData.find((item) =>
+      item.lookupName.includes("DispatchError"),
+    );
+    const errorData = error?.data?.toHuman?.() as ErrorData | undefined;
+    const errorIdx = errorData?.Module?.error;
+    const moduleIdx = errorData?.Module?.index;
+
+    if (errorIdx && moduleIdx) {
+      try {
+        const decode = api.registry.findMetaError({
+          error: isHex(errorIdx) ? hexToU8a(errorIdx) : new BN(errorIdx),
+          index: new BN(moduleIdx),
+        });
+        return {
+          documentation: decode.docs,
+          name: decode.name,
+        };
+      } catch (error) {
+        return {
+          documentation: ["Unknown error"],
+          name: "UnknownError",
+        };
+      }
+    } else {
+      return {
+        documentation: ["Unknown error"],
+        name: "UnknownError",
+      };
+    }
+  }
+
+  return null;
+};
