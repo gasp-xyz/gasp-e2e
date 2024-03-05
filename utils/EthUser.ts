@@ -11,7 +11,7 @@ export class EthUser {
    */
   privateKey: string;
   ethAddress: string;
-  pdUser: User;
+  pdAccount: User;
 
   constructor(keyring: Keyring) {
     const ethId = randomBytes(32).toString("hex");
@@ -19,8 +19,8 @@ export class EthUser {
     //@ts-ignore
     this.ethAddress = new ethers.Wallet(this.privateKey).address;
 
-    this.pdUser = new User(keyring);
-    this.pdUser.addFromAddress(
+    this.pdAccount = new User(keyring);
+    this.pdAccount.addFromAddress(
       keyring,
       encodeAddress(blake2AsU8a(hexToU8a(this.ethAddress)), 42),
     );
