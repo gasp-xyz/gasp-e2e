@@ -726,7 +726,11 @@ export async function waitForBalanceChange(
       }
       blocks--;
       const blockNo = await getBlockNumber();
-      testLog.getLog().info("["+ blockNo + "] Waiting for balance change - count: " + blocks);
+      testLog
+        .getLog()
+        .info(
+          "[" + blockNo + "] Waiting for balance change - count: " + blocks,
+        );
       const balance =
         assetId !== BN_ZERO
           ? await api.query.tokens.accounts.entries(userAddress)
@@ -736,6 +740,24 @@ export async function waitForBalanceChange(
       if (!eq) {
         unsub();
         resolve(true);
+      }
+    });
+  });
+}
+
+export async function monitorEvents() {
+  let maxBlocks = 50;
+  return new Promise(async (_, reject) => {
+    const api = getApi();
+    const unsub = await api.rpc.chain.subscribeFinalizedHeads(async (head) => {
+      const events = await (await api.at(head.hash)).query.system.events();
+      maxBlocks--;
+      testLog.getLog().info(`-> attempt ${maxBlocks}, head ${head.hash}`);
+      events.forEach((e) => logEvent(api.runtimeChain, e));
+
+      if (maxBlocks < 0) {
+        reject(`TimedOut!`);
+        unsub();
       }
     });
   });
