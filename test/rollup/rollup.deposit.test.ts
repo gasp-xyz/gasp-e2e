@@ -6,7 +6,7 @@ import { getApi, initApi } from "../../utils/api";
 import { setupApi } from "../../utils/setup";
 import "jest-extended";
 import { Abi } from "viem";
-import { testLog } from "../../utils/Logger";
+import { logEvent, testLog } from "../../utils/Logger";
 import { stringToBN, waitForBalanceChange } from "../../utils/utils";
 import {
   abi,
@@ -16,8 +16,9 @@ import {
   getL2UpdatesStorage,
   publicClient,
   ROLL_DOWN_CONTRACT_ADDRESS,
-  walletClient
+  walletClient,
 } from "../../utils/rollup/ethUtils";
+
 describe("Proof of stake tests", () => {
   beforeAll(async () => {
     try {
@@ -30,6 +31,30 @@ describe("Proof of stake tests", () => {
 
   describe("Deposits arrive to mangata node", () => {
     test("A user who deposits a token will have them on the node", async () => {
+      let maxBlocks = 40;
+      let allGood = false;
+      const p = new Promise(async (resolve, reject) => {
+        const api = getApi();
+        const unsub = await api.rpc.chain.subscribeFinalizedHeads(
+          async (head) => {
+            const events = await (
+              await api.at(head.hash)
+            ).query.system.events();
+            maxBlocks--;
+            testLog.getLog().info(`-> attempt ${maxBlocks}, head ${head.hash}`);
+            events.forEach((e) => logEvent(api.runtimeChain, e));
+
+            if (maxBlocks < 0) {
+              reject(`TimedOut!`);
+            }
+            if (allGood) {
+              unsub();
+              resolve(true);
+            }
+          },
+        );
+      });
+
       const updatesBefore = await getL2UpdatesStorage();
       testLog.getLog().info(JSON.stringify(updatesBefore));
       // Set up the request to write in the contract
@@ -70,9 +95,10 @@ describe("Proof of stake tests", () => {
         20,
         stringToBN(assetId.toHex()),
       );
-
       // Check that got updated.
       expect(anyChange).toBeTruthy();
+      allGood = true;
+      await Promise.all([p]);
     });
   });
 });
