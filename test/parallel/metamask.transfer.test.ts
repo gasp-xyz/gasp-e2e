@@ -11,7 +11,7 @@ import { setupApi, setupUsers } from "../../utils/setup";
 import { Sudo } from "../../utils/sudo";
 import { Assets } from "../../utils/Assets";
 import { MGA_ASSET_ID } from "../../utils/Constants";
-import { BN, BN_ONE, BN_TWO, BN_ZERO } from "@polkadot/util";
+import { BN, BN_ONE, BN_THOUSAND, BN_TWO, BN_ZERO } from "@polkadot/util";
 import { signTxMetamask } from "../../utils/metamask";
 import { testLog } from "../../utils/Logger";
 import { getEventResultFromMangataTx } from "../../utils/txHandler";
@@ -24,7 +24,7 @@ jest.spyOn(console, "log").mockImplementation(jest.fn());
 jest.setTimeout(1500000);
 process.env.NODE_ENV = "test";
 
-describe("Metamask test", () => {
+describe("Tests with Metamask signing:", () => {
   const { sudo: sudoUserName } = getEnvironmentRequiredVars();
   let sudo: User;
   let testPdUser: User;
@@ -82,7 +82,31 @@ describe("Metamask test", () => {
     testEthUser = new EthUser(keyring);
   });
 
-  test("Swap liquidity by Metamask signing", async () => {
+  test("GIVEN sign extrinsic by using privateKey of another ethUser THEN receive error", async () => {
+    let signingError: any;
+
+    const secondEthUser = new EthUser(keyring);
+
+    await Sudo.batchAsSudoFinalized(Assets.mintNative(testEthUser.pdAccount));
+
+    const tx = api.tx.tokens.transfer(testPdUser.keyRingPair.address, 0, 1000);
+
+    try {
+      await signTxMetamask(
+        tx,
+        testEthUser.ethAddress,
+        secondEthUser.privateKey,
+      );
+    } catch (error) {
+      signingError = error;
+    }
+
+    expect(signingError.toString()).toBe(
+      "RpcError: 1010: Invalid Transaction: Transaction has a bad signature",
+    );
+  });
+
+  test("Swap liquidity", async () => {
     await Sudo.batchAsSudoFinalized(Assets.mintNative(testEthUser.pdAccount));
     testEthUser.pdAccount.addAsset(MGA_ASSET_ID);
 
@@ -102,7 +126,7 @@ describe("Metamask test", () => {
     expect(diff[0].diff.free).bnEqual(new BN(1000));
   });
 
-  test("Mint liquidity by Metamask signing", async () => {
+  test("Mint liquidity", async () => {
     await Sudo.batchAsSudoFinalized(
       Assets.mintNative(testEthUser.pdAccount),
       Assets.mintToken(
@@ -130,7 +154,7 @@ describe("Metamask test", () => {
     );
   });
 
-  test("Burn liquidity by Metamask signing", async () => {
+  test("Burn liquidity", async () => {
     await Sudo.batchAsSudoFinalized(
       Assets.mintNative(testEthUser.pdAccount),
       Assets.mintToken(liqId, testEthUser.pdAccount, Assets.DEFAULT_AMOUNT),
@@ -160,6 +184,52 @@ describe("Metamask test", () => {
       testEthUser.pdAccount.getAsset(secondCurrency)!.amountAfter.free!,
     ).bnGt(BN_ZERO);
     expect(diff).bnEqual(Assets.DEFAULT_AMOUNT);
+  });
+
+  test("Create batch function", async () => {
+    await Sudo.batchAsSudoFinalized(
+      Assets.mintNative(testEthUser.pdAccount),
+      Assets.mintToken(
+        secondCurrency,
+        testEthUser.pdAccount,
+        Assets.DEFAULT_AMOUNT,
+      ),
+    );
+
+    const txs = [];
+
+    txs.push(
+      api.tx.xyk.mintLiquidity(
+        MGA_ASSET_ID,
+        secondCurrency,
+        Assets.DEFAULT_AMOUNT.div(BN_TWO),
+        Assets.DEFAULT_AMOUNT.div(BN_TWO).add(BN_ONE),
+      ),
+      api.tx.tokens.transfer(testPdUser.keyRingPair.address, liqId, 1000),
+    );
+
+    testEthUser.pdAccount.addAsset(MGA_ASSET_ID);
+    testEthUser.pdAccount.addAsset(liqId);
+    testPdUser.addAsset(liqId);
+
+    await testEthUser.pdAccount.refreshAmounts(AssetWallet.BEFORE);
+
+    const tx = api.tx.utility.batchAll(txs);
+
+    await signByMetamask(tx, testEthUser);
+
+    testEthUser.pdAccount.addAsset(secondCurrency);
+    await testEthUser.pdAccount.refreshAmounts(AssetWallet.AFTER);
+    const diff = testEthUser.pdAccount
+      .getAsset(liqId)!
+      .amountAfter.free!.sub(
+        testEthUser.pdAccount.getAsset(liqId)!.amountBefore.free!,
+      );
+
+    expect(testEthUser.pdAccount.getAsset(liqId)!.amountAfter.free!).bnGt(
+      BN_THOUSAND,
+    );
+    expect(diff).bnGt(BN_ZERO);
   });
 });
 
