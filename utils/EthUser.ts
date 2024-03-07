@@ -15,7 +15,11 @@ export class EthUser {
 
   constructor(keyring: Keyring) {
     const ethId = randomBytes(32).toString("hex");
+    console.log(ethId);
     this.privateKey = "0x" + ethId;
+//    this.privateKey =
+//      "0xdc92c5a7649a10d6de3bec8109886010bd31a1cab338834609e24ccff517a7a6";
+
     //@ts-ignore
     this.ethAddress = new ethers.Wallet(this.privateKey).address;
 

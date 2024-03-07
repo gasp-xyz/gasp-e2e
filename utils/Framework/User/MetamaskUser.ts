@@ -4,14 +4,14 @@ import { Keyring } from "@polkadot/api";
 import { Node } from "../Node/Node";
 import { getEnvironmentRequiredVars } from "../../utils";
 import { erc20User, mMNGAdrress } from "../../../utils/erc20Utils";
-import { ethUser } from "../../../utils/ethUtils";
+import { metamaskUser } from "../../metamaskUser";
 import Web3 from "web3";
 import HDWalletProvider from "@truffle/hdwallet-provider";
 
 export class MetamaskUser extends BaseUser {
   node: Node;
   erc20MetaMaskWallet: erc20User;
-  ethMetaMaskWallet: ethUser;
+  ethMetaMaskWallet: metamaskUser;
 
   constructor(keyring: Keyring, json: any, node: Node) {
     const {
@@ -30,7 +30,7 @@ export class MetamaskUser extends BaseUser {
     //@ts-ignore
     const web3 = new Web3(provider);
     this.erc20MetaMaskWallet = new erc20User(ethUserAddress, uri, web3);
-    this.ethMetaMaskWallet = new ethUser(ethUserAddress, uri);
+    this.ethMetaMaskWallet = new metamaskUser(ethUserAddress, uri);
   }
   async getEthBalance(): Promise<BN> {
     const ethBalance = this.ethMetaMaskWallet.getBalance();

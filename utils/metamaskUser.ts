@@ -2,7 +2,7 @@ import { BN } from "@polkadot/util";
 import { ethers } from "ethers";
 import { JsonRpcProvider } from "@ethersproject/providers";
 
-export class ethUser {
+export class metamaskUser {
   private provider: JsonRpcProvider;
   private ethUserAddress: string;
 
@@ -21,7 +21,7 @@ export class ethUser {
     this.ethUserAddress = ethUserAddress;
   }
   public async getBalance() {
-    return await ethUser.getBalance(this.provider, this.ethUserAddress);
+    return await metamaskUser.getBalance(this.provider, this.ethUserAddress);
   }
 
   static async getBalance(provider: JsonRpcProvider, ethUserAddress: string) {
