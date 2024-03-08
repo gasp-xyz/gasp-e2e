@@ -74,25 +74,25 @@ async function depositAndWait(depositor: EthUser) {
 }
 
 describe("Rollup", () => {
-  beforeEach(async () => {
-    try {
-      getApi();
-    } catch (e) {
-      await initApi();
-    }
-    await setupApi();
-    setupUsers();
-    const keyRing = new Keyring({ type: "sr25519" });
-    user = new EthUser(keyRing);
-    await setupEthUser(
-      user,
-      ERC20_ADDRESS,
-      ROLL_DOWN_CONTRACT_ADDRESS,
-      112233445566,
-    );
-  });
-
   describe("Deposits & withdraws", () => {
+    beforeEach(async () => {
+      try {
+        getApi();
+      } catch (e) {
+        await initApi();
+      }
+      await setupApi();
+      setupUsers();
+      const keyRing = new Keyring({ type: "sr25519" });
+      user = new EthUser(keyRing);
+      await setupEthUser(
+        user,
+        ERC20_ADDRESS,
+        ROLL_DOWN_CONTRACT_ADDRESS,
+        112233445566,
+      );
+    });
+
     test("A user who deposits a token will have them on the node", async () => {
       const anyChange = await depositAndWait(user);
       // Check that got updated.
