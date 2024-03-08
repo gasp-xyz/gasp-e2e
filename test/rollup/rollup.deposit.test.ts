@@ -31,6 +31,48 @@ import { jest } from "@jest/globals";
 
 let user: EthUser;
 jest.setTimeout(600000);
+
+async function depositAndWait(depositor: EthUser) {
+  const updatesBefore = await getL2UpdatesStorage();
+  testLog.getLog().info(JSON.stringify(updatesBefore));
+  const acc: PrivateKeyAccount = privateKeyToAccount(
+    depositor.privateKey as `0x${string}`,
+  );
+  const { request } = await publicClient.simulateContract({
+    account: acc,
+    address: ROLL_DOWN_CONTRACT_ADDRESS,
+    abi: abi as Abi,
+    functionName: "deposit",
+    args: [ERC20_ADDRESS, BigInt(112233445566)],
+  });
+
+  const wc = createWalletClient({
+    account: acc,
+    chain: anvil,
+    transport: http(),
+  });
+  await wc.writeContract(request);
+
+  const updatesAfter = await getL2UpdatesStorage();
+  testLog.getLog().info(JSON.stringify(updatesAfter));
+
+  //validate that the request got inserted.
+  expect(
+    parseInt(JSON.parse(JSON.stringify(updatesAfter)).lastAcceptedRequestOnL1),
+  ).toBeGreaterThan(
+    parseInt(JSON.parse(JSON.stringify(updatesBefore)).lastAcceptedRequestOnL1),
+  );
+  testLog.getLog().info(depositor.pdAccount.keyRingPair.address);
+  const assetId = await getAssetIdFromErc20();
+  // Wait for the balance to change
+  const anyChange = await waitForBalanceChange(
+    depositor.pdAccount.keyRingPair.address,
+    20,
+    assetId,
+  );
+  return anyChange;
+}
+
 describe("Rollup", () => {
   beforeEach(async () => {
     try {
@@ -52,52 +94,15 @@ describe("Rollup", () => {
 
   describe("Deposits & withdraws", () => {
     test("A user who deposits a token will have them on the node", async () => {
-      const updatesBefore = await getL2UpdatesStorage();
-      testLog.getLog().info(JSON.stringify(updatesBefore));
-      // Set up the request to write in the contract
-      const acc: PrivateKeyAccount = privateKeyToAccount(
-        user.privateKey as `0x${string}`,
-      );
-      const { request } = await publicClient.simulateContract({
-        account: acc,
-        address: ROLL_DOWN_CONTRACT_ADDRESS,
-        abi: abi as Abi,
-        functionName: "deposit",
-        args: [ERC20_ADDRESS, BigInt(112233445566)],
-      });
-
-      const wc = createWalletClient({
-        account: acc,
-        chain: anvil,
-        transport: http(),
-      });
-      await wc.writeContract(request);
-
-      const updatesAfter = await getL2UpdatesStorage();
-      testLog.getLog().info(JSON.stringify(updatesAfter));
-
-      //validate that the request got inserted.
-      expect(
-        parseInt(
-          JSON.parse(JSON.stringify(updatesAfter)).lastAcceptedRequestOnL1,
-        ),
-      ).toBeGreaterThan(
-        parseInt(
-          JSON.parse(JSON.stringify(updatesBefore)).lastAcceptedRequestOnL1,
-        ),
-      );
-      testLog.getLog().info(user.pdAccount.keyRingPair.address);
-      const assetId = await getAssetIdFromErc20();
-      // Wait for the balance to change
-      const anyChange = await waitForBalanceChange(
-        user.pdAccount.keyRingPair.address,
-        20,
-        assetId,
-      );
+      const anyChange = await depositAndWait(user);
       // Check that got updated.
       expect(anyChange).toBeTruthy();
     });
     test("withdrawing tokens from the rollup contract", async () => {
+      const anyChange = await depositAndWait(user);
+      // Check that got updated.
+      expect(anyChange).toBeTruthy();
+
       await Sudo.batchAsSudoFinalized(Assets.mintNative(user.pdAccount));
       const tx = getApi().tx.rolldown.withdraw(
         user.ethAddress,
@@ -111,13 +116,17 @@ describe("Rollup", () => {
 
       let balanceAfter = await getBalance(ERC20_ADDRESS, user.ethAddress);
       while (
-        BigInt((balanceBefore as any).toString()) <=
-        BigInt((balanceAfter as any).toString())
+        BigInt((balanceAfter as any).toString()) <=
+        BigInt((balanceBefore as any).toString())
       ) {
         await new Promise((resolve) => setTimeout(resolve, 5000));
         balanceAfter = await getBalance(ERC20_ADDRESS, user.ethAddress);
         testLog.getLog().info(balanceAfter);
       }
+      const diff =
+        BigInt((balanceAfter as any).toString()) -
+        BigInt((balanceBefore as any).toString());
+      expect(diff).toBe(BigInt(1122));
     });
     test.skip("A user who deposited can withdraw the tokens", async () => {
       await fakeDepositOnL2(
@@ -139,7 +148,7 @@ describe("Rollup", () => {
 
       let balanceAfter = await getBalance(ERC20_ADDRESS, user.ethAddress);
       while (
-        BigInt((balanceBefore as any).toString()) <=
+        BigInt((balanceBefore as any).toString()) >=
         BigInt((balanceAfter as any).toString())
       ) {
         await new Promise((resolve) => setTimeout(resolve, 1000));
