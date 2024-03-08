@@ -3,17 +3,21 @@ import {
   Address,
   createPublicClient,
   createWalletClient,
-  http, PrivateKeyAccount
+  http,
+  PrivateKeyAccount,
 } from "viem";
 import { anvil } from "viem/chains";
 import { privateKeyToAccount } from "viem/accounts";
 import fs from "fs";
 import { encodeAddress } from "@polkadot/keyring";
 import { blake2AsU8a } from "@polkadot/util-crypto";
-import { hexToU8a } from "@polkadot/util";
+import { BN, hexToU8a } from "@polkadot/util";
 import { getApi } from "../api";
 import { EthUser } from "../EthUser";
 import { testLog } from "../Logger";
+import { setupApi, setupUsers } from "../setup";
+import { Sudo } from "../sudo";
+import { Assets } from "../Assets";
 
 export const ROLL_DOWN_CONTRACT_ADDRESS =
   "0x5f3f1dbd7b74c6b46e8c44f98792a1daf8d69154";
@@ -64,7 +68,7 @@ export async function getAssetIdFromErc20(ethTokenAddress = ERC20_ADDRESS) {
     Ethereum: ethTokenAddress,
   };
   const assetId = await getApi().query.assetRegistry.l1AssetToId(param);
-  return assetId;
+  return new BN(assetId.toString());
 }
 
 export async function mintTokens(
@@ -144,5 +148,27 @@ export async function setupEthUser(
     erc20Address,
     rollDownContractAddress,
     amountToApprove,
+  );
+}
+export async function fakeDepositOnL2(
+  ethUser: EthUser,
+  erc20Address: `0x${string}` = ERC20_ADDRESS,
+  rollDownContractAddress: string = ROLL_DOWN_CONTRACT_ADDRESS,
+  amount: BN,
+) {
+  //Mint some tokens to the contract ( as if the user deposited them)
+  await mintTokens(rollDownContractAddress, amount.toNumber(), erc20Address);
+  setupUsers();
+  await setupApi();
+  const tokenId = await getAssetIdFromErc20(erc20Address);
+  await Sudo.batchAsSudoFinalized(
+    Sudo.sudo(
+      Assets.mintTokenAddress(
+        tokenId,
+        ethUser.pdAccount.keyRingPair.address,
+        amount,
+      ),
+    ),
+    Assets.mintNative(ethUser.pdAccount),
   );
 }
