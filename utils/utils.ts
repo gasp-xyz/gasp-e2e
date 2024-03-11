@@ -14,11 +14,17 @@ import { Sudo } from "./sudo";
 import { setupApi, setupUsers } from "./setup";
 import { Xyk } from "./xyk";
 import { MGA_ASSET_ID } from "./Constants";
-import { BN_HUNDRED, BN_ONE, MangataGenericEvent } from "@mangata-finance/sdk";
-import _ from "lodash";
+import {
+  BN_HUNDRED,
+  BN_ONE,
+  BN_ZERO,
+  MangataGenericEvent,
+} from "@mangata-finance/sdk";
 import Keyring from "@polkadot/keyring";
 import jsonpath from "jsonpath";
+import _ from "lodash";
 
+export type Tokens = { free: BN; reserved: BN; frozen: BN };
 export function sleep(ms: number) {
   return new Promise((resolve) => {
     setTimeout(resolve, ms);
@@ -698,4 +704,61 @@ export function isBadOriginError(events: MangataGenericEvent[]) {
     `$..${key}`,
   );
   return matches.length > 0;
+}
+export async function waitForBalanceChange(
+  userAddress: string,
+  maxBlocks: number,
+  assetId: BN = BN_ZERO,
+) {
+  let blocks = maxBlocks;
+  const api = getApi();
+  const balanceBefore =
+    assetId !== BN_ZERO
+      ? await api.query.tokens.accounts.entries(userAddress)
+      : await api.query.tokens.accounts(userAddress, assetId);
+
+  return new Promise(async (resolve, reject) => {
+    const api = await getApi();
+    const unsub = await api.rpc.chain.subscribeFinalizedHeads(async () => {
+      if (blocks < 0) {
+        unsub();
+        reject("Timeout waiting for balance change");
+      }
+      blocks--;
+      const blockNo = await getBlockNumber();
+      testLog
+        .getLog()
+        .info(
+          "[" + blockNo + "] Waiting for balance change - count: " + blocks,
+        );
+      const balance =
+        assetId !== BN_ZERO
+          ? await api.query.tokens.accounts.entries(userAddress)
+          : await api.query.tokens.accounts(userAddress, assetId);
+
+      const eq = _.isEqual(balance, balanceBefore);
+      if (!eq) {
+        unsub();
+        resolve(true);
+      }
+    });
+  });
+}
+
+export async function monitorEvents() {
+  let maxBlocks = 50;
+  return new Promise(async (_, reject) => {
+    const api = getApi();
+    const unsub = await api.rpc.chain.subscribeFinalizedHeads(async (head) => {
+      const events = await (await api.at(head.hash)).query.system.events();
+      maxBlocks--;
+      testLog.getLog().info(`-> attempt ${maxBlocks}, head ${head.hash}`);
+      events.forEach((e) => logEvent(api.runtimeChain, e));
+
+      if (maxBlocks < 0) {
+        reject(`TimedOut!`);
+        unsub();
+      }
+    });
+  });
 }

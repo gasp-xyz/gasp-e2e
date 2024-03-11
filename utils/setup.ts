@@ -46,14 +46,16 @@ export function isBackendTest() {
   if (
     isThereAPath &&
     isThereAPath.length > 0 &&
-    isThereAPath.toLowerCase().includes("ui")
+    (isThereAPath.toLowerCase().includes("ui") ||
+      isThereAPath.toLowerCase().includes("rollup"))
   ) {
     return false;
   }
   return !(
     isAGroupRun &&
     isAGroupRun.length > 0 &&
-    isAGroupRun.toLowerCase().includes("ui")
+    (isAGroupRun.toLowerCase().includes("ui") ||
+      isAGroupRun.toLowerCase().includes("rollup"))
   );
 }
 export const setupUsers = () => {
