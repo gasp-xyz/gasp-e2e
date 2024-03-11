@@ -106,7 +106,7 @@ describe("Tests with Metamask signing:", () => {
     );
   });
 
-  test("Swap liquidity", async () => {
+  test("Transfer tokens", async () => {
     await Sudo.batchAsSudoFinalized(Assets.mintNative(testEthUser.pdAccount));
     testEthUser.pdAccount.addAsset(MGA_ASSET_ID);
 

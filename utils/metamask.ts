@@ -69,6 +69,7 @@ export async function signTxMetamask(
   ethAddress: string,
   ethPrivateKey: string,
 ): Promise<MangataGenericEvent[]> {
+  //TODO: use sdk api when ready
   const api = await ApiPromise.create({
     provider: new WsProvider(getEnvironmentRequiredVars().chainUri),
     rpc: {
@@ -138,7 +139,7 @@ export async function signTxMetamask(
   const result = await api.rpc.metamask.get_eip712_sign_data(
     tx.toHex().slice(2),
   );
-  console.log(JSON.stringify(result));
+  testLog.getLog().debug(JSON.stringify(result));
   const data = JSON.parse(result.toString());
   data.message.tx = u8aToHex(raw_payload).slice(2);
 
@@ -148,13 +149,13 @@ export async function signTxMetamask(
     // @ts-ignore
     version: "V4",
   });
-  console.log("Ok, signed typed data ");
-  console.log("SIGNATURE = " + msg_sig);
+  testLog.getLog().debug("Ok, signed typed data ");
+  testLog.getLog().debug("SIGNATURE = " + msg_sig);
   const created_signature = api.createType("MultiSignature", {
     Eth: hexToU8a(msg_sig),
   });
-  console.log(tx_payload);
-  console.log(msg_sig);
+  testLog.getLog().debug(tx_payload);
+  testLog.getLog().debug(msg_sig);
   // @ts-ignore
   extrinsic.addSignature(dotAddress, created_signature, tx_payload);
   testLog.getLog().info("Sending tx");
@@ -172,6 +173,7 @@ export async function signTxMetamask(
         counter--;
         const currentBlock = await api.rpc.chain.getBlock(header.hash);
         const extrinsics = currentBlock.block.extrinsics;
+        //TODO: Find some extra determinist way to filter the extrinsic signed by the user
         extrinsicResult = extrinsics.filter(
           (ext) => ext.hash.toString() === txHash.toString(),
         );
