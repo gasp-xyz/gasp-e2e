@@ -1,127 +1,157 @@
 import { WebDriver } from "selenium-webdriver";
-import { getEnvironmentRequiredVars, sleep } from "../../utils";
+import { getEnvironmentRequiredVars } from "../../utils";
 import {
+  appendText,
   buildDataTestIdXpath,
+  clearTextManual,
   clickElement,
-  doActionInDifferentWindow,
-  getAttribute,
+  isDisplayed,
+  scrollIntoView,
   waitForElement,
+  waitForElementVisible,
+  writeText,
 } from "../utils/Helper";
-import { By } from "selenium-webdriver";
 
-//xpaths
-const XPATH_PASSWORD = "//input[@id='password']";
-const XPATH_CONFIRM_PASSWORD = "//input[@id='confirm-password']";
-const XPATH_ACCEPT_TERMS =
-  "//*[contains(@class,'first-time-flow__checkbox first-time-flow__terms')]";
-const XPATH_SUBMIT = "//button[contains(@type,'submit')]";
-const XPATH_POPOVER_CLOSE = "//button[@data-testid='popover-close']";
-const XPATH_SELECT_NET_CMB =
-  "//*[@class='app-header__network-component-wrapper']//span[contains(@class,'box')]";
-const XPATH_KOVAN_NETWORK = "//span[text()='Kovan Test Network']";
-const XPATH_ALL_DONE =
-  "//*[contains(@class,'button btn-primary first-time-flow__button')]";
-const XPATH_MNEMONIC = `//input[@placeholder='Paste Secret Recovery Phrase from clipboard']`;
-const TEST_ID_CONNECT_META = `extensionMetamask-accountNotFound-connectBtn`;
-const XPATH_NEXT = `//*[contains(@class,'button btn-primary')]`;
-const XPATH_ACCOUNT = `//*[@class='selected-account']`;
-const XPATH_CONFIRM_TX = "//*[@data-testid='page-container-footer-next']";
-const BTN_MENU_DOTS = "//*[@data-testid='account-options-menu-button']";
-const SELECT_ACCOUNT_DETAILS =
-  "//*[@data-testid='account-options-menu__account-details']";
-const INPUT_READONLY = `//*[@class='readonly-input__input']`;
-const BTN_CLOSE_MODAL = `//*[@class='account-modal__close']`;
+//locators
+const IMPUT_MNEMONIC_FIELD = "import-srp__srp-word-";
+const BTN_IMPORT_SUBMIT = "import-srp-confirm";
+const INPUT_PASS_NEW = "create-password-new";
+const INPUT_PASS_CONFIRM = "create-password-confirm";
+const CHECKBOX_PASS_TERMS = "create-password-terms";
+const BTN_CREATE_PASS_SUBMIT = "create-password-wallet";
+const BTN_SECURE_LATER = "secure-wallet-later";
+const CHECKBOX_SECURE_LATER = "skip-srp-backup-popover-checkbox";
+const BTN_SKIP_SRP = "skip-srp-backup";
+const BTN_IMPORT_DONE = "onboarding-complete-done";
+const BTN_PIN_EXT_NEXT = "pin-extension-next";
+const BTN_PIN_EXT_DONE = "pin-extension-done";
+const CHECKBOX_TERMS_POPOVER = "terms-of-use-checkbox";
+const BTN_TERMS_POPOVER_ACCEPT = "terms-of-use-accept-button";
+const BTN_ACCOUNT_OPTIONS = "account-options-menu-button";
+const BTN_ACCOUNT_DETAILS = "account-list-menu-details";
+const BTN_ACCOUNT_LABEL = "editable-label-button";
+const DIV_ACCOUNT_LABEL_INPUT = "editable-input";
 
 export class MetaMask {
-  async confirmAndSign(driver: WebDriver) {
-    await clickElement(driver, XPATH_CONFIRM_TX);
-  }
-  async confirmTransaction() {
-    await doActionInDifferentWindow(this.driver, this.confirmAndSign);
-  }
-
   WEB_UI_ACCESS_URL =
     "chrome-extension://nkbihfbeogaeaoehlefnkodbefgpgknn/home.html";
 
-  //TEST ACCOUNT
-  ACCOUNT_ADDRESS = "0x5cf5710342d514Fe5A0b61923a1e5c91B23FA0Ef";
   driver: any;
   userPassword: string;
   mnemonicMetaMask: string;
+  acc_name: string;
 
-  constructor(driver: any) {
+  constructor(driver: WebDriver) {
     this.driver = driver;
     const { uiUserPassword: userPassword, mnemonicMetaMask } =
       getEnvironmentRequiredVars();
     this.userPassword = userPassword;
     this.mnemonicMetaMask = mnemonicMetaMask;
+    this.acc_name = "acc_automation";
   }
-
-  getAccountAddress() {
-    return this.ACCOUNT_ADDRESS;
-  }
-
   async go() {
     await this.driver.get(this.WEB_UI_ACCESS_URL);
   }
 
-  async setupAccount() {
+  async setupAccount(mnemonicKeys = this.mnemonicMetaMask) {
     await this.driver.get(
-      `${this.WEB_UI_ACCESS_URL}#initialize/create-password/import-with-seed-phrase`,
+      `${this.WEB_UI_ACCESS_URL}#onboarding/import-with-recovery-phrase`,
     );
-    await waitForElement(this.driver, XPATH_MNEMONIC);
-    await (await this.driver)
-      .findElement(By.xpath(XPATH_MNEMONIC))
-      .sendKeys(this.mnemonicMetaMask);
-    await (
-      await this.driver.findElement(By.xpath(XPATH_PASSWORD))
-    ).sendKeys(this.userPassword);
-    await (
-      await this.driver.findElement(By.xpath(XPATH_CONFIRM_PASSWORD))
-    ).sendKeys(this.userPassword);
-    await clickElement(this.driver, XPATH_ACCEPT_TERMS);
-    await clickElement(this.driver, XPATH_SUBMIT);
-    await this.driver.get(`${this.WEB_UI_ACCESS_URL}#initialize/end-of-flow`);
-    await waitForElement(this.driver, XPATH_ALL_DONE);
-    await clickElement(this.driver, XPATH_ALL_DONE);
-    return await this.enable();
+
+    const XPATH_FIRST_WORD = buildDataTestIdXpath(IMPUT_MNEMONIC_FIELD + 0);
+    await waitForElement(this.driver, XPATH_FIRST_WORD);
+    await this.fillPassPhrase(mnemonicKeys);
+
+    const XPATH_IMPORT_SUBMIT = buildDataTestIdXpath(BTN_IMPORT_SUBMIT);
+    await clickElement(this.driver, XPATH_IMPORT_SUBMIT);
+
+    await this.fillUserPass();
+
+    const XPATH_PASS_TERMS = buildDataTestIdXpath(CHECKBOX_PASS_TERMS);
+    await clickElement(this.driver, XPATH_PASS_TERMS);
+
+    const XPATH_CREATE_PASS_SUBMIT = buildDataTestIdXpath(
+      BTN_CREATE_PASS_SUBMIT,
+    );
+    await clickElement(this.driver, XPATH_CREATE_PASS_SUBMIT);
+
+    const XPATH_BTN_SECURE_LATER = buildDataTestIdXpath(BTN_SECURE_LATER);
+    if (await isDisplayed(this.driver, XPATH_BTN_SECURE_LATER)) {
+      await this.skipBackup();
+    }
+
+    const XPATH_BTN_IMPORT_DONE = buildDataTestIdXpath(BTN_IMPORT_DONE);
+    await clickElement(this.driver, XPATH_BTN_IMPORT_DONE);
+    const XPATH_BTN_PIN_EXT_NEXT = buildDataTestIdXpath(BTN_PIN_EXT_NEXT);
+    await clickElement(this.driver, XPATH_BTN_PIN_EXT_NEXT);
+    const XPATH_BTN_PIN_EXT_DONE = buildDataTestIdXpath(BTN_PIN_EXT_DONE);
+    await clickElement(this.driver, XPATH_BTN_PIN_EXT_DONE);
+
+    await this.acceptTNC();
+    await this.skipPopup();
+
+    await this.changeAccountName(this.acc_name);
   }
 
-  private async enable() {
-    await waitForElement(this.driver, XPATH_POPOVER_CLOSE);
-    await clickElement(this.driver, XPATH_POPOVER_CLOSE);
-    await clickElement(this.driver, XPATH_ACCOUNT);
-    const address = await this.getAccountAddressFromUI();
-    await clickElement(this.driver, XPATH_SELECT_NET_CMB);
-    await clickElement(this.driver, XPATH_KOVAN_NETWORK);
-    return address;
-  }
-  private async getAccountAddressFromUI() {
-    await clickElement(this.driver, BTN_MENU_DOTS);
-    await clickElement(this.driver, SELECT_ACCOUNT_DETAILS);
-    const address = await getAttribute(this.driver, INPUT_READONLY);
-    await clickElement(this.driver, BTN_CLOSE_MODAL);
-    return address;
+  async fillPassPhrase(phrase: string) {
+    const words = phrase.split(" ");
+    for (let i = 0; i < words.length; i++) {
+      const xpath = buildDataTestIdXpath(IMPUT_MNEMONIC_FIELD + i);
+      await writeText(this.driver, xpath, words[i]);
+    }
   }
 
-  public async connect() {
-    await sleep(4000);
-    const xpath = buildDataTestIdXpath(TEST_ID_CONNECT_META);
-    await clickElement(this.driver, xpath);
-    await this.acceptConnectionPermissions();
+  async changeAccountName(accountName: string) {
+    const XPATH_BTN_ACCOUNT_OPTIONS = buildDataTestIdXpath(BTN_ACCOUNT_OPTIONS);
+    await clickElement(this.driver, XPATH_BTN_ACCOUNT_OPTIONS);
+    const XPATH_BTN_ACCOUNT_DETAILS = buildDataTestIdXpath(BTN_ACCOUNT_DETAILS);
+    await clickElement(this.driver, XPATH_BTN_ACCOUNT_DETAILS);
+    const XPATH_BTN_ACCOUNT_LABEL = buildDataTestIdXpath(BTN_ACCOUNT_LABEL);
+    await clickElement(this.driver, XPATH_BTN_ACCOUNT_LABEL);
+    const XPATH_DIV_ACCOUNT_LABEL_INPUT =
+      buildDataTestIdXpath(DIV_ACCOUNT_LABEL_INPUT) + "//input";
+    await clearTextManual(this.driver, XPATH_DIV_ACCOUNT_LABEL_INPUT);
+    await appendText(this.driver, XPATH_DIV_ACCOUNT_LABEL_INPUT, accountName);
+    const XPATH_BTN_ACCOUNT_LABEL_CONFIRM =
+      "//*[contains(@style, 'check.svg')]";
+    await clickElement(this.driver, XPATH_BTN_ACCOUNT_LABEL_CONFIRM);
   }
 
-  async acceptConnection(driver: WebDriver) {
-    await waitForElement(driver, XPATH_NEXT);
-    await clickElement(driver, XPATH_NEXT);
-    await sleep(2000);
-    //now click on connect.
-    await waitForElement(driver, XPATH_NEXT);
-    await clickElement(driver, XPATH_NEXT);
+  async fillUserPass() {
+    const XPATH_PASS_NEW = buildDataTestIdXpath(INPUT_PASS_NEW);
+    const XPATH_PASS_CONFIRM = buildDataTestIdXpath(INPUT_PASS_CONFIRM);
+    await writeText(this.driver, XPATH_PASS_NEW, this.userPassword);
+    await writeText(this.driver, XPATH_PASS_CONFIRM, this.userPassword);
   }
-  async acceptConnectionPermissions() {
-    //wait for window to be opened.
-    await doActionInDifferentWindow(this.driver, this.acceptConnection);
-    return;
+
+  async skipBackup() {
+    const XPATH_BTN_SECURE_LATER = buildDataTestIdXpath(BTN_SECURE_LATER);
+    const XPATH_CHECKBOX_SECURE_LATER = buildDataTestIdXpath(
+      CHECKBOX_SECURE_LATER,
+    );
+    const XPATH_BTN_SKIP_SRP = buildDataTestIdXpath(BTN_SKIP_SRP);
+    await clickElement(this.driver, XPATH_BTN_SECURE_LATER);
+    await clickElement(this.driver, XPATH_CHECKBOX_SECURE_LATER);
+    await clickElement(this.driver, XPATH_BTN_SKIP_SRP);
+  }
+
+  async skipPopup() {
+    const XPATH_DIV_POPOVER_CONTENT = "//*[@id='popover-content']";
+    await waitForElementVisible(this.driver, XPATH_DIV_POPOVER_CONTENT);
+    await this.driver.executeScript(
+      "var element = document.getElementById('popover-content'); if(element) element.remove();",
+    );
+  }
+
+  async acceptTNC() {
+    const XPATH_CHECKBOX_TERMS_POPOVER = buildDataTestIdXpath(
+      CHECKBOX_TERMS_POPOVER,
+    );
+    await scrollIntoView(this.driver, XPATH_CHECKBOX_TERMS_POPOVER);
+    await clickElement(this.driver, XPATH_CHECKBOX_TERMS_POPOVER);
+    const XPATH_BTN_TERMS_POPOVER_ACCEPT = buildDataTestIdXpath(
+      BTN_TERMS_POPOVER_ACCEPT,
+    );
+    await clickElement(this.driver, XPATH_BTN_TERMS_POPOVER_ACCEPT);
   }
 }

@@ -11,13 +11,11 @@ import {
   waitForLoad,
   writeText,
 } from "../utils/Helper";
-import { MetaMask } from "./MetaMask";
 
 //SELECTORS
 const DIV_TITLE = "depositModal-step0-title";
 const SELECT_TOKEN = "depositModal-step0-tokenInput";
 const STEP_O_CONT = "depositModal-step0-continueBtn";
-const STEP_1_CONF = "depositModal-step1-confirmBtn";
 
 export class DepositModal {
   driver: WebDriver;
@@ -110,12 +108,5 @@ export class DepositModal {
   async isContinueButtonEnabled() {
     const xpath = buildDataTestIdXpath(STEP_O_CONT);
     return await (await this.driver.findElement(By.xpath(xpath))).isEnabled();
-  }
-
-  async confirmAndSign() {
-    const xpath = buildDataTestIdXpath(STEP_1_CONF);
-    await clickElement(this.driver, xpath);
-    const meta = new MetaMask(this.driver);
-    await meta.confirmTransaction();
   }
 }
