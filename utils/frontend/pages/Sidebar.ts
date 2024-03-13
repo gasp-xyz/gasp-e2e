@@ -9,7 +9,6 @@ import {
   waitForElement,
   waitForElementToDissapear,
 } from "../utils/Helper";
-import { DepositModal } from "./DepositModal";
 import { testLog } from "../../Logger";
 
 const DIV_WALLET_NOT_FOUND = "connect-noWalletConnected";
@@ -266,14 +265,6 @@ export class Sidebar {
   async getAssetValueInvested(assetName: string) {
     const LBL_TOKEN_AMOUNT_INVESTED = `//*[contains(@data-testid,'poolDetail') and span[text()='${assetName}']]`;
     return await getText(this.driver, LBL_TOKEN_AMOUNT_INVESTED);
-  }
-  async depositAseetsFromMetamask(metaAssetName: string, amount: string) {
-    await this.clickOnDepositToMangata();
-    const modal = new DepositModal(this.driver);
-    await modal.selectToken(metaAssetName);
-    await modal.enterValue(amount);
-    await modal.clickContinue();
-    await modal.confirmAndSign();
   }
   async waitForTokenToDissapear(assetName: string) {
     const xpath = buildDataTestIdXpath(

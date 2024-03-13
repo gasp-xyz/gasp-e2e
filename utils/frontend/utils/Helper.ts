@@ -10,6 +10,7 @@ import {
 import { sleep } from "../../utils";
 import { Mangata } from "../pages/Mangata";
 import { Polkadot } from "../pages/Polkadot";
+import { MetaMask } from "../pages/MetaMask";
 import "jest-extended";
 import fs from "fs";
 import { testLog } from "../../Logger";
@@ -272,9 +273,28 @@ export async function writeText(
   await (await driver.findElement(By.xpath(elementXpath))).sendKeys(text);
 }
 
+export async function appendText(
+  driver: WebDriver,
+  elementXpath: string,
+  text: string,
+) {
+  await waitForElement(driver, elementXpath);
+  const element = await driver.findElement(By.xpath(elementXpath));
+  await element.sendKeys(text);
+}
+
 export async function clearText(driver: WebDriver, elementXpath: string) {
   await waitForElement(driver, elementXpath);
   await (await driver.findElement(By.xpath(elementXpath))).clear();
+  await driver.sleep(500);
+}
+
+export async function clearTextManual(driver: WebDriver, elementXpath: string) {
+  await waitForElement(driver, elementXpath);
+  const inputField = await driver.findElement(By.xpath(elementXpath));
+  while ((await inputField.getAttribute("value")) !== "") {
+    await inputField.sendKeys(Key.BACK_SPACE);
+  }
   await driver.sleep(500);
 }
 
@@ -343,6 +363,21 @@ export async function importPolkadotExtension(
     await polkadotExtension.setupAccount();
   } else {
     await polkadotExtension.setupAccount(mnemonicKeys);
+  }
+}
+
+export async function importMetamaskExtension(
+  driver: WebDriver,
+  mnemonicKeys = "",
+) {
+  await leaveOnlyOneTab(driver);
+
+  const extension = new MetaMask(driver);
+  await extension.go();
+  if (mnemonicKeys === "") {
+    await extension.setupAccount();
+  } else {
+    await extension.setupAccount(mnemonicKeys);
   }
 }
 

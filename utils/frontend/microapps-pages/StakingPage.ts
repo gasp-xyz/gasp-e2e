@@ -146,6 +146,7 @@ export class StakingPageDriver {
     const stakingValueXpath = buildDataTestIdXpath(
       "new-stake-widget-tokenInput-input",
     );
+    await waitForElementVisible(this.driver, stakingValueXpath, 5000);
     await writeText(this.driver, stakingValueXpath, value);
   }
 
