@@ -109,6 +109,7 @@ async function app(): Promise<any> {
         "Staked liq that is not activated",
         "Get All collators info from stash",
         "Add vesting tokens and move these to MPL",
+        "Deposit tokens using updateL2FromL1",
       ],
     })
     .then(async (answers: { option: string | string[] }) => {
