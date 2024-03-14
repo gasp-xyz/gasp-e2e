@@ -44,7 +44,9 @@ export const DriverBuilder = (function () {
       .build();
     await driver!.manage().setTimeouts({ script: 5000 });
     await driver!.manage().window().maximize();
-    await waitForMultipleTabs(driver);
+    if (addExtensions) {
+      await waitForMultipleTabs(driver);
+    }
 
     return driver;
   }
