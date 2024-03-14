@@ -44,8 +44,22 @@ export const DriverBuilder = (function () {
       .build();
     await driver!.manage().setTimeouts({ script: 5000 });
     await driver!.manage().window().maximize();
+    if (addExtensions) {
+      await waitForMultipleTabs(driver);
+    }
 
     return driver;
+  }
+
+  async function waitForMultipleTabs(driver: WebDriver) {
+    await driver.wait(
+      async () => {
+        const handles = await driver.getAllWindowHandles();
+        return handles.length > 2;
+      },
+      10000,
+      "Waiting for all extensions tabs to open",
+    );
   }
 
   let driver: WebDriver | undefined;
