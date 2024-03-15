@@ -47,6 +47,7 @@ import { signSendFinalized } from "./sign";
 import { toNumber } from "lodash-es";
 import { Vesting } from "./Vesting";
 import { MPL } from "./MPL";
+import { rolldownDeposit } from "./rolldown";
 
 Assets.legacy = true;
 export async function claimForAllAvlRewards() {
@@ -1731,5 +1732,36 @@ export async function addUnspentReserves(userName = "//Alice", tokenId = 1) {
       user.name.toString() +
       " is " +
       mplStatus.unspentReserves.toString(),
+  );
+}
+
+export async function depositFromL1(
+  lastProcessedRequestOnL1: number,
+  lastAcceptedRequestOnL1: number,
+  offsetValue: number,
+  ethAddress: string,
+  amountValue: number,
+) {
+  const keyring = new Keyring({ type: "sr25519" });
+  const sudo = new User(keyring, getEnvironmentRequiredVars().sudo);
+  const mangata = await getMangataInstance();
+  const sdkApi = await mangata.api();
+  await signTx(
+    sdkApi,
+    await rolldownDeposit(
+      lastProcessedRequestOnL1,
+      lastAcceptedRequestOnL1,
+      offsetValue,
+      ethAddress,
+      amountValue,
+    ),
+    sudo.keyRingPair,
+  );
+
+  console.log(
+    "Amount of tokens for the user " +
+      ethAddress +
+      " would be deposited in the amount of " +
+      amountValue.toString(),
   );
 }

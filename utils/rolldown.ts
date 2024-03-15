@@ -1,7 +1,7 @@
 import { getMangataInstance } from "./api";
 
 export async function rolldownDeposit(
-  lastProccessedRequestOnL1: number,
+  lastProcessedRequestOnL1: number,
   lastAcceptedRequestOnL1: number,
   offsetValue: number,
   ethAddress: string,
@@ -11,7 +11,7 @@ export async function rolldownDeposit(
   const sdkApi = await mangata.api();
 
   const extrinsic = sdkApi.tx.rolldown.updateL2FromL1({
-    lastProccessedRequestOnL1: lastProccessedRequestOnL1,
+    lastProccessedRequestOnL1: lastProcessedRequestOnL1,
     lastAcceptedRequestOnL1: lastAcceptedRequestOnL1,
     offset: offsetValue,
     order: sdkApi.createType("Vec<PalletRolldownMessagesPendingRequestType>", [

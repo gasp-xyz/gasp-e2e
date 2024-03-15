@@ -40,6 +40,7 @@ import {
   addStakedUnactivatedReserves,
   getAllCollatorsInfoFromStash,
   addUnspentReserves,
+  depositFromL1,
 } from "../utils/setupsOnTheGo";
 import {
   findErrorMetadata,
@@ -109,7 +110,7 @@ async function app(): Promise<any> {
         "Staked liq that is not activated",
         "Get All collators info from stash",
         "Add vesting tokens and move these to MPL",
-        "Deposit tokens using updateL2FromL1",
+        "Deposit tokens by using updateL2FromL1",
       ],
     })
     .then(async (answers: { option: string | string[] }) => {
@@ -800,6 +801,57 @@ async function app(): Promise<any> {
             await addUnspentReserves(answers.user, tokenIdBn);
             return app();
           });
+      }
+      if (answers.option.includes("Deposit tokens by using updateL2FromL1")) {
+        return inquirer
+          .prompt([
+            {
+              type: "input",
+              name: "lastProcessedRequestOnL1",
+              message: "last processed request on L1",
+              default: "0",
+            },
+            {
+              type: "input",
+              name: "lastAcceptedRequestOnL1",
+              message: "last accepted request on L1",
+              default: "1",
+            },
+            {
+              type: "input",
+              name: "offsetValue",
+              message: "offset",
+              default: "1",
+            },
+            {
+              type: "input",
+              name: "ethAddress",
+              message: "Ethereum address",
+            },
+            {
+              type: "input",
+              name: "amountValue",
+              message: "amount",
+            },
+          ])
+          .then(
+            async (answers: {
+              lastProcessedRequestOnL1: number;
+              lastAcceptedRequestOnL1: number;
+              offsetValue: number;
+              ethAddress: string;
+              amountValue: number;
+            }) => {
+              await depositFromL1(
+                answers.lastProcessedRequestOnL1,
+                answers.lastAcceptedRequestOnL1,
+                answers.offsetValue,
+                answers.ethAddress,
+                answers.amountValue,
+              );
+              return app();
+            },
+          );
       }
       return app();
     });
