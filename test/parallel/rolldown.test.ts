@@ -47,7 +47,7 @@ describe("Tests with rolldown functions:", () => {
   test("Deposit token using rolldown", async () => {
     await signTx(
       sdkApi,
-      await rolldownDeposit(0, 1, 1, testEthUser, 123),
+      await rolldownDeposit(0, 1, 1, testEthUser.ethAddress, 123),
       sudo.keyRingPair,
     );
   });

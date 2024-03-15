@@ -1,11 +1,10 @@
-import { EthUser } from "./EthUser";
 import { getMangataInstance } from "./api";
 
 export async function rolldownDeposit(
   lastProccessedRequestOnL1: number,
   lastAcceptedRequestOnL1: number,
   offsetValue: number,
-  user: EthUser,
+  ethAddress: string,
   amountValue: number,
 ) {
   const mangata = await getMangataInstance();
@@ -20,10 +19,10 @@ export async function rolldownDeposit(
     ]),
     pendingDeposits: sdkApi.createType("Vec<PalletRolldownMessagesDeposit>", [
       {
-        depositRecipient: user.ethAddress,
-        tokenAddress: user.ethAddress,
+        depositRecipient: ethAddress,
+        tokenAddress: ethAddress,
         amount: amountValue,
-        blockHash: user.ethAddress + "000000000000000000000000",
+        blockHash: ethAddress + "000000000000000000000000",
       },
     ]),
   });
