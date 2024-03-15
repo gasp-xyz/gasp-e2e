@@ -1,17 +1,17 @@
 import { WebDriver } from "selenium-webdriver";
 import { ApiContext } from "../../Framework/XcmHelper";
 import { Main } from "../microapps-pages/Main";
-import {
-  ModalType,
-  NotificationModal,
-  TransactionType,
-} from "../microapps-pages/NotificationModal";
 import { WalletConnectModal } from "../microapps-pages/WalletConnectModal";
 import { WalletWrapper } from "../microapps-pages/WalletWrapper";
 import { Polkadot } from "../pages/Polkadot";
 import { acceptPermissionsWalletExtensionInNewWindow } from "../utils/Helper";
 import { BN_TEN } from "@mangata-finance/sdk";
 import { BN } from "@polkadot/util";
+import {
+  NotificationToast,
+  ToastType,
+  TransactionType,
+} from "../microapps-pages/NotificationToast";
 
 export async function connectWallet(
   driver: WebDriver,
@@ -72,10 +72,10 @@ export async function waitForMicroappsActionNotification(
   transaction: TransactionType,
   numOfBLocks = 1,
 ) {
-  const modal = new NotificationModal(driver);
-  await modal.waitForModalState(ModalType.Confirm, transaction, 3000);
-  const isModalWaitingForSignVisible = await modal.isModalVisible(
-    ModalType.Confirm,
+  const toast = new NotificationToast(driver);
+  await toast.waitForToastState(ToastType.Confirm, transaction, 3000);
+  const isModalWaitingForSignVisible = await toast.istoastVisible(
+    ToastType.Confirm,
     transaction,
   );
   expect(isModalWaitingForSignVisible).toBeTruthy();
@@ -84,13 +84,12 @@ export async function waitForMicroappsActionNotification(
     await chainOne.chain.newBlock();
     await chainTwo.chain.newBlock();
   }
-  await modal.waitForModalState(ModalType.Success, transaction);
-  const isModalSuccessVisible = await modal.isModalVisible(
-    ModalType.Success,
+  await toast.waitForToastState(ToastType.Success, transaction);
+  const isModalSuccessVisible = await toast.istoastVisible(
+    ToastType.Success,
     transaction,
   );
   expect(isModalSuccessVisible).toBeTruthy();
-  await modal.clickInDone();
 }
 
 export async function addLiqTokenMicroapps(
