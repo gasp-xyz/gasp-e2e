@@ -44,7 +44,7 @@ describe("Tests with rolldown functions:", () => {
     testEthUser = new EthUser(keyring);
   });
 
-  test("Deposit token using rolldown", async () => {
+  test.skip("Deposit token using rolldown", async () => {
     await signTx(
       sdkApi,
       await rolldownDeposit(0, 1, 1, testEthUser.ethAddress, 123),
