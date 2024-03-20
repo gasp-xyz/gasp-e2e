@@ -833,7 +833,6 @@ async function app(): Promise<any> {
                 answers.ethAddress,
                 answers.amountValue,
               );
-
               return app();
             },
           );
