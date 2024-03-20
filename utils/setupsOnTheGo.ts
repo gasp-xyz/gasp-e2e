@@ -1736,9 +1736,7 @@ export async function addUnspentReserves(userName = "//Alice", tokenId = 1) {
 }
 
 export async function depositFromL1(
-  lastProcessedRequestOnL1: number,
-  lastAcceptedRequestOnL1: number,
-  offsetValue: number,
+  requestNumber: number,
   ethAddress: string,
   amountValue: number,
 ) {
@@ -1748,13 +1746,7 @@ export async function depositFromL1(
   const sdkApi = await mangata.api();
   await signTx(
     sdkApi,
-    await rolldownDeposit(
-      lastProcessedRequestOnL1,
-      lastAcceptedRequestOnL1,
-      offsetValue,
-      ethAddress,
-      amountValue,
-    ),
+    await rolldownDeposit(requestNumber, ethAddress, amountValue),
     sudo.keyRingPair,
   );
 

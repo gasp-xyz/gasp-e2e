@@ -9,7 +9,10 @@ import { User } from "../../utils/User";
 import { getEnvironmentRequiredVars } from "../../utils/utils";
 import { setupApi } from "../../utils/setup";
 import { EthUser } from "../../utils/EthUser";
-import { rolldownDeposit } from "../../utils/rolldown";
+import {
+  getLastProcessedRequestNumber,
+  rolldownDeposit,
+} from "../../utils/rolldown";
 import { signTx } from "@mangata-finance/sdk";
 
 jest.spyOn(console, "log").mockImplementation(jest.fn());
@@ -44,10 +47,23 @@ describe("Tests with rolldown functions:", () => {
     testEthUser = new EthUser(keyring);
   });
 
-  test.skip("Deposit token using rolldown", async () => {
+  test.skip("Deposit token using rolldown and cancel it", async () => {
+    const lastProcessRequest = await getLastProcessedRequestNumber();
     await signTx(
       sdkApi,
-      await rolldownDeposit(0, 1, 1, testEthUser.ethAddress, 123),
+      await rolldownDeposit(
+        lastProcessRequest + 1,
+        testEthUser.ethAddress,
+        1000,
+      ),
+      sudo.keyRingPair,
+    );
+  });
+
+  test.skip("cancel reqest", async () => {
+    await signTx(
+      sdkApi,
+      await sdkApi.tx.rolldown.cancelRequestsFromL1(1),
       sudo.keyRingPair,
     );
   });

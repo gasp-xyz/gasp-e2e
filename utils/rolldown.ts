@@ -1,9 +1,7 @@
 import { getMangataInstance } from "./api";
 
 export async function rolldownDeposit(
-  lastProcessedRequestOnL1: number,
-  lastAcceptedRequestOnL1: number,
-  offsetValue: number,
+  requestNumber: number,
   ethAddress: string,
   amountValue: number,
 ) {
@@ -11,14 +9,12 @@ export async function rolldownDeposit(
   const sdkApi = await mangata.api();
 
   const extrinsic = sdkApi.tx.rolldown.updateL2FromL1({
-    lastProccessedRequestOnL1: lastProcessedRequestOnL1,
-    lastAcceptedRequestOnL1: lastAcceptedRequestOnL1,
-    offset: offsetValue,
-    order: sdkApi.createType("Vec<PalletRolldownMessagesPendingRequestType>", [
-      "DEPOSIT",
-    ]),
     pendingDeposits: sdkApi.createType("Vec<PalletRolldownMessagesDeposit>", [
       {
+        requestId: sdkApi.createType("PalletRolldownMessagesRequestId", [
+          "L1",
+          requestNumber,
+        ]),
         depositRecipient: ethAddress,
         tokenAddress: ethAddress,
         amount: amountValue,
@@ -27,4 +23,17 @@ export async function rolldownDeposit(
     ]),
   });
   return extrinsic;
+}
+
+export async function getLastProcessedRequestNumber() {
+  const mangata = await getMangataInstance();
+  const sdkApi = await mangata.api();
+
+  const value = JSON.parse(
+    JSON.stringify(
+      await sdkApi.query.rolldown.lastProcessedRequestOnL2("Ethereum"),
+    ),
+  );
+  const valueNumber = +value;
+  return valueNumber;
 }

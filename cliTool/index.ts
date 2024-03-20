@@ -807,20 +807,8 @@ async function app(): Promise<any> {
           .prompt([
             {
               type: "input",
-              name: "lastProcessedRequestOnL1",
-              message: "last processed request on L1",
-              default: "0",
-            },
-            {
-              type: "input",
-              name: "lastAcceptedRequestOnL1",
-              message: "last accepted request on L1",
-              default: "1",
-            },
-            {
-              type: "input",
-              name: "offsetValue",
-              message: "offset",
+              name: "requestNumber",
+              message: "request number",
               default: "1",
             },
             {
@@ -836,16 +824,12 @@ async function app(): Promise<any> {
           ])
           .then(
             async (answers: {
-              lastProcessedRequestOnL1: number;
-              lastAcceptedRequestOnL1: number;
-              offsetValue: number;
+              requestNumber: number;
               ethAddress: string;
               amountValue: number;
             }) => {
               await depositFromL1(
-                answers.lastProcessedRequestOnL1,
-                answers.lastAcceptedRequestOnL1,
-                answers.offsetValue,
+                answers.requestNumber,
                 answers.ethAddress,
                 answers.amountValue,
               );
