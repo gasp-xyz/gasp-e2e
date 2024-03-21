@@ -234,7 +234,7 @@ describe("Miocroapps UI liq pools tests", () => {
     await sidebar.clickNavLiqPools();
 
     const poolsList = new LiqPools(driver);
-    const isPoolsListDisplayed = await poolsList.isDisplayed();
+    let isPoolsListDisplayed = await poolsList.isDisplayed();
     expect(isPoolsListDisplayed).toBeTruthy();
 
     const isMgxKsmPoolVisible = await poolsList.isPoolItemDisplayed(
@@ -279,6 +279,11 @@ describe("Miocroapps UI liq pools tests", () => {
       TransactionType.AddLiquidity,
       2,
     );
+    await poolDetails.waitForContinueState(false, 5000);
+    await poolDetails.clickBackButton();
+    isPoolsListDisplayed = await poolsList.isDisplayed();
+    expect(isPoolsListDisplayed).toBeTruthy();
+    await poolsList.clickPoolItem("-" + MGX_ASSET_NAME + "-" + KSM_ASSET_NAME);
 
     const my_new_pool_share = await poolDetails.getMyPositionAmount();
     expect(my_new_pool_share).toBeGreaterThan(my_pool_share);
@@ -290,7 +295,7 @@ describe("Miocroapps UI liq pools tests", () => {
     await sidebar.clickNavLiqPools();
 
     const poolsList = new LiqPools(driver);
-    const isPoolsListDisplayed = await poolsList.isDisplayed();
+    let isPoolsListDisplayed = await poolsList.isDisplayed();
     expect(isPoolsListDisplayed).toBeTruthy();
     await poolsList.clickAllPoolsTab();
     await poolsList.clickCreateLiquidity();
@@ -305,6 +310,7 @@ describe("Miocroapps UI liq pools tests", () => {
     const isFeeDisplayed = await poolsList.isFeeDisplayed();
     expect(isFeeDisplayed).toBeTruthy();
 
+    await poolsList.waitForContinueState(true, 5000);
     await poolsList.createLiqPoolsubmit();
     await waitForMicroappsActionNotification(
       driver,
@@ -313,12 +319,19 @@ describe("Miocroapps UI liq pools tests", () => {
       TransactionType.CreatePool,
       2,
     );
+    await poolsList.clickCancelButton();
+    isPoolsListDisplayed = await poolsList.isDisplayed();
+    expect(isPoolsListDisplayed).toBeTruthy();
+    await poolsList.clickPoolItem("-" + ZLK_ASSET_NAME + "-" + TUR_ASSET_NAME);
 
     const poolDetails = new LiqPoolDetils(driver);
     const isPoolDetailsVisible = await poolDetails.isDisplayed(
-      TUR_ASSET_NAME + " / " + ZLK_ASSET_NAME,
+      ZLK_ASSET_NAME + " / " + TUR_ASSET_NAME,
     );
     expect(isPoolDetailsVisible).toBeTruthy();
+    const isMyPositionAmountDisplayed =
+      await poolDetails.isMyPositionAmountDisplayed();
+    expect(isMyPositionAmountDisplayed).toBeTruthy();
     const my_pool_share = await poolDetails.getMyPositionAmount();
     expect(my_pool_share).toBeGreaterThan(0);
   });
