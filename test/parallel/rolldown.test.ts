@@ -6,14 +6,16 @@ import { jest } from "@jest/globals";
 import { getApi, getMangataInstance, initApi } from "../../utils/api";
 import { ApiPromise, Keyring } from "@polkadot/api";
 import { User } from "../../utils/User";
-import { getEnvironmentRequiredVars } from "../../utils/utils";
+import { getEnvironmentRequiredVars, waitForNBlocks } from "../../utils/utils";
 import { setupApi } from "../../utils/setup";
 import { EthUser } from "../../utils/EthUser";
 import {
   getLastProcessedRequestNumber,
   rolldownDeposit,
+  rolldownWithdraw,
 } from "../../utils/rolldown";
 import { signTx } from "@mangata-finance/sdk";
+import { withdrawToL1 } from "../../utils/setupsOnTheGo";
 
 jest.spyOn(console, "log").mockImplementation(jest.fn());
 jest.setTimeout(1500000);
@@ -48,6 +50,7 @@ describe("Tests with rolldown functions:", () => {
   });
 
   test.skip("Deposit token using rolldown and cancel it", async () => {
+    await testEthUser.pdAccount.addMGATokens(sudo);
     const lastProcessRequest = await getLastProcessedRequestNumber();
     await signTx(
       sdkApi,
@@ -60,11 +63,29 @@ describe("Tests with rolldown functions:", () => {
     );
   });
 
-  test.skip("cancel reqest", async () => {
+  test("Deposit token using rolldown and then withdraw a part", async () => {
+    await testEthUser.pdAccount.addMGATokens(sudo);
+    const lastProcessRequest = await getLastProcessedRequestNumber();
     await signTx(
       sdkApi,
-      await sdkApi.tx.rolldown.cancelRequestsFromL1(1),
+      await rolldownDeposit(
+        lastProcessRequest + 1,
+        testEthUser.ethAddress,
+        1000,
+      ),
       sudo.keyRingPair,
     );
+
+    await waitForNBlocks(4);
+
+    await signTx(
+      sdkApi,
+      await rolldownWithdraw(testEthUser, 100),
+      sudo.keyRingPair,
+    );
+  });
+
+  test.skip("Checking sli", async () => {
+    await withdrawToL1(testEthUser.privateKey, 100);
   });
 });

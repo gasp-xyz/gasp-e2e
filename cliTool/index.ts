@@ -41,6 +41,7 @@ import {
   getAllCollatorsInfoFromStash,
   addUnspentReserves,
   depositFromL1,
+  withdrawToL1,
 } from "../utils/setupsOnTheGo";
 import {
   findErrorMetadata,
@@ -111,6 +112,7 @@ async function app(): Promise<any> {
         "Get All collators info from stash",
         "Add vesting tokens and move these to MPL",
         "Deposit tokens by using updateL2FromL1",
+        "Withdraw tokens by using updateL2FromL1",
       ],
     })
     .then(async (answers: { option: string | string[] }) => {
@@ -808,8 +810,8 @@ async function app(): Promise<any> {
             {
               type: "input",
               name: "requestNumber",
-              message: "request number",
-              default: "1",
+              message: "request number (0 - next available)",
+              default: "0",
             },
             {
               type: "input",
@@ -833,6 +835,31 @@ async function app(): Promise<any> {
                 answers.ethAddress,
                 answers.amountValue,
               );
+              return app();
+            },
+          );
+      }
+      if (answers.option.includes("Withdraw tokens by using updateL2FromL1")) {
+        return inquirer
+          .prompt([
+            {
+              type: "input",
+              name: "ethPrivateKey",
+              message: "Ethereum private key",
+            },
+            {
+              type: "input",
+              name: "amountValue",
+              message: "amount",
+            },
+          ])
+          .then(
+            async (answers: { ethPrivateKey: string; amountValue: number }) => {
+              await initApi();
+              //await setupUsers();
+              await setupApi();
+              //await getApi();
+              await withdrawToL1(answers.ethPrivateKey, answers.amountValue);
               return app();
             },
           );

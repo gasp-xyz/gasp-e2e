@@ -47,7 +47,12 @@ import { signSendFinalized } from "./sign";
 import { toNumber } from "lodash-es";
 import { Vesting } from "./Vesting";
 import { MPL } from "./MPL";
-import { rolldownDeposit } from "./rolldown";
+import {
+  getLastProcessedRequestNumber,
+  rolldownDeposit,
+  rolldownWithdraw,
+} from "./rolldown";
+import { EthUser } from "./EthUser";
 
 Assets.legacy = true;
 export async function claimForAllAvlRewards() {
@@ -1740,13 +1745,19 @@ export async function depositFromL1(
   ethAddress: string,
   amountValue: number,
 ) {
+  let requestNumberToDeposit: number;
   const keyring = new Keyring({ type: "sr25519" });
   const sudo = new User(keyring, getEnvironmentRequiredVars().sudo);
   const mangata = await getMangataInstance();
   const sdkApi = await mangata.api();
+  if (requestNumber === 0) {
+    requestNumberToDeposit = (await getLastProcessedRequestNumber()) + 1;
+  } else {
+    requestNumberToDeposit = requestNumber;
+  }
   await signTx(
     sdkApi,
-    await rolldownDeposit(requestNumber, ethAddress, amountValue),
+    await rolldownDeposit(requestNumberToDeposit, ethAddress, amountValue),
     sudo.keyRingPair,
   );
 
@@ -1754,6 +1765,28 @@ export async function depositFromL1(
     "Amount of tokens for the user " +
       ethAddress +
       " would be deposited in the amount of " +
+      amountValue.toString(),
+  );
+}
+
+export async function withdrawToL1(ethPrivateKey: string, amountValue: number) {
+  const keyring = new Keyring({ type: "sr25519" });
+  const sudo = new User(keyring, getEnvironmentRequiredVars().sudo);
+  const mangata = await getMangataInstance();
+  const sdkApi = await mangata.api();
+  const testEthUser = new EthUser(keyring);
+  testEthUser.addFromEthPrivateKey(keyring, ethPrivateKey);
+
+  await signTx(
+    sdkApi,
+    await rolldownWithdraw(testEthUser, 100),
+    sudo.keyRingPair,
+  );
+
+  console.log(
+    "Amount of tokens of the user " +
+      testEthUser.ethAddress +
+      " would be withdrawn in the amount of " +
       amountValue.toString(),
   );
 }
