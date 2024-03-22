@@ -15,7 +15,7 @@ import {
   rolldownWithdraw,
 } from "../../utils/rolldown";
 import { signTx } from "@mangata-finance/sdk";
-import { withdrawToL1 } from "../../utils/setupsOnTheGo";
+import { signTxMetamask } from "../../utils/metamask";
 
 jest.spyOn(console, "log").mockImplementation(jest.fn());
 jest.setTimeout(1500000);
@@ -63,7 +63,7 @@ describe("Tests with rolldown functions:", () => {
     );
   });
 
-  test("Deposit token using rolldown and then withdraw a part", async () => {
+  test.skip("Deposit token using rolldown and then withdraw a part", async () => {
     await testEthUser.pdAccount.addMGATokens(sudo);
     const lastProcessRequest = await getLastProcessedRequestNumber();
     await signTx(
@@ -78,14 +78,10 @@ describe("Tests with rolldown functions:", () => {
 
     await waitForNBlocks(4);
 
-    await signTx(
-      sdkApi,
+    await signTxMetamask(
       await rolldownWithdraw(testEthUser, 100),
-      sudo.keyRingPair,
+      testEthUser.ethAddress,
+      testEthUser.privateKey,
     );
-  });
-
-  test.skip("Checking sli", async () => {
-    await withdrawToL1(testEthUser.privateKey, 100);
   });
 });

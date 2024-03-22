@@ -1,5 +1,4 @@
 import { getMangataInstance } from "./api";
-import { Sudo } from "./sudo";
 import { EthUser } from "./EthUser";
 
 export async function rolldownDeposit(
@@ -44,13 +43,10 @@ export async function rolldownWithdraw(EthUser: EthUser, amountValue: number) {
   const mangata = await getMangataInstance();
   const sdkApi = await mangata.api();
 
-  const extrinsic = Sudo.sudoAs(
-    EthUser.pdAccount,
-    sdkApi.tx.rolldown.withdraw(
-      EthUser.ethAddress,
-      EthUser.ethAddress,
-      amountValue,
-    ),
+  const extrinsic = sdkApi.tx.rolldown.withdraw(
+    EthUser.ethAddress,
+    EthUser.ethAddress,
+    amountValue,
   );
   return extrinsic;
 }

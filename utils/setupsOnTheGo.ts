@@ -53,6 +53,7 @@ import {
   rolldownWithdraw,
 } from "./rolldown";
 import { EthUser } from "./EthUser";
+import { signTxMetamask } from "./metamask";
 
 Assets.legacy = true;
 export async function claimForAllAvlRewards() {
@@ -1771,16 +1772,16 @@ export async function depositFromL1(
 
 export async function withdrawToL1(ethPrivateKey: string, amountValue: number) {
   const keyring = new Keyring({ type: "sr25519" });
-  const sudo = new User(keyring, getEnvironmentRequiredVars().sudo);
-  const mangata = await getMangataInstance();
-  const sdkApi = await mangata.api();
+  //const sudo = new User(keyring, getEnvironmentRequiredVars().sudo);
+  //const mangata = await getMangataInstance();
+  //const sdkApi = await mangata.api();
   const testEthUser = new EthUser(keyring);
   testEthUser.addFromEthPrivateKey(keyring, ethPrivateKey);
 
-  await signTx(
-    sdkApi,
+  await signTxMetamask(
     await rolldownWithdraw(testEthUser, 100),
-    sudo.keyRingPair,
+    testEthUser.ethAddress,
+    testEthUser.privateKey,
   );
 
   console.log(
