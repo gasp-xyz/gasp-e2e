@@ -40,6 +40,8 @@ import {
   addStakedUnactivatedReserves,
   getAllCollatorsInfoFromStash,
   addUnspentReserves,
+  depositFromL1,
+  withdrawToL1,
 } from "../utils/setupsOnTheGo";
 import {
   findErrorMetadata,
@@ -109,6 +111,8 @@ async function app(): Promise<any> {
         "Staked liq that is not activated",
         "Get All collators info from stash",
         "Add vesting tokens and move these to MPL",
+        "Deposit tokens by using updateL2FromL1",
+        "Withdraw tokens by using updateL2FromL1",
       ],
     })
     .then(async (answers: { option: string | string[] }) => {
@@ -799,6 +803,56 @@ async function app(): Promise<any> {
             await addUnspentReserves(answers.user, tokenIdBn);
             return app();
           });
+      }
+      if (answers.option.includes("Deposit tokens by using updateL2FromL1")) {
+        return inquirer
+          .prompt([
+            {
+              type: "input",
+              name: "ethAddress",
+              message: "Ethereum address",
+            },
+            {
+              type: "input",
+              name: "amountValue",
+              message: "amount",
+            },
+          ])
+          .then(
+            async (answers: {
+              requestNumber: number;
+              ethAddress: string;
+              amountValue: number;
+            }) => {
+              await depositFromL1(answers.ethAddress, answers.amountValue);
+              return app();
+            },
+          );
+      }
+      if (answers.option.includes("Withdraw tokens by using updateL2FromL1")) {
+        return inquirer
+          .prompt([
+            {
+              type: "input",
+              name: "ethPrivateKey",
+              message: "Ethereum private key",
+            },
+            {
+              type: "input",
+              name: "amountValue",
+              message: "amount",
+            },
+          ])
+          .then(
+            async (answers: { ethPrivateKey: string; amountValue: number }) => {
+              await initApi();
+              //await setupUsers();
+              await setupApi();
+              //await getApi();
+              await withdrawToL1(answers.ethPrivateKey, answers.amountValue);
+              return app();
+            },
+          );
       }
       return app();
     });

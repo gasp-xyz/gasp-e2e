@@ -47,6 +47,13 @@ import { signSendFinalized } from "./sign";
 import { toNumber } from "lodash-es";
 import { Vesting } from "./Vesting";
 import { MPL } from "./MPL";
+import {
+  getLastProcessedRequestNumber,
+  rolldownDeposit,
+  rolldownWithdraw,
+} from "./rolldown";
+import { EthUser } from "./EthUser";
+import { signTxMetamask } from "./metamask";
 
 Assets.legacy = true;
 export async function claimForAllAvlRewards() {
@@ -1731,5 +1738,44 @@ export async function addUnspentReserves(userName = "//Alice", tokenId = 1) {
       user.name.toString() +
       " is " +
       mplStatus.unspentReserves.toString(),
+  );
+}
+
+export async function depositFromL1(ethAddress: string, amountValue: number) {
+  const keyring = new Keyring({ type: "sr25519" });
+  const sudo = new User(keyring, getEnvironmentRequiredVars().sudo);
+  const mangata = await getMangataInstance();
+  const sdkApi = await mangata.api();
+  const requestNumber = (await getLastProcessedRequestNumber()) + 1;
+  await signTx(
+    sdkApi,
+    await rolldownDeposit(requestNumber, ethAddress, amountValue),
+    sudo.keyRingPair,
+  );
+
+  console.log(
+    "Amount of tokens for the user " +
+      ethAddress +
+      " would be deposited in the amount of " +
+      amountValue.toString(),
+  );
+}
+
+export async function withdrawToL1(ethPrivateKey: string, amountValue: number) {
+  const keyring = new Keyring({ type: "sr25519" });
+  const testEthUser = new EthUser(keyring);
+  testEthUser.addFromEthPrivateKey(keyring, ethPrivateKey);
+
+  await signTxMetamask(
+    await rolldownWithdraw(testEthUser, 100),
+    testEthUser.ethAddress,
+    testEthUser.privateKey,
+  );
+
+  console.log(
+    "Amount of tokens of the user " +
+      testEthUser.ethAddress +
+      " would be withdrawn in the amount of " +
+      amountValue.toString(),
   );
 }
