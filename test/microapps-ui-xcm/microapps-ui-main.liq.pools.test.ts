@@ -33,6 +33,10 @@ import { LiqPools } from "../../utils/frontend/microapps-pages/LiqPools";
 import { Sidebar } from "../../utils/frontend/microapps-pages/Sidebar";
 import { LiqPoolDetils } from "../../utils/frontend/microapps-pages/LiqPoolDetails";
 import { TransactionType } from "../../utils/frontend/microapps-pages/NotificationModal";
+import {
+  NotificationToast,
+  ToastType,
+} from "../../utils/frontend/microapps-pages/NotificationToast";
 
 jest.setTimeout(FIVE_MIN);
 jest.spyOn(console, "log").mockImplementation(jest.fn());
@@ -280,6 +284,11 @@ describe("Miocroapps UI liq pools tests", () => {
       2,
     );
     await poolDetails.waitForContinueState(false, 5000);
+    const toast = new NotificationToast(driver);
+    await toast.waitForToastDisappear(
+      ToastType.Success,
+      TransactionType.AddLiquidity,
+    );
     await poolDetails.clickBackButton();
     isPoolsListDisplayed = await poolsList.isDisplayed();
     expect(isPoolsListDisplayed).toBeTruthy();

@@ -11,7 +11,7 @@ import {
   addExtraLogs,
   importPolkadotExtension,
 } from "../../utils/frontend/utils/Helper";
-import { getEnvironmentRequiredVars, sleep } from "../../utils/utils";
+import { getEnvironmentRequiredVars } from "../../utils/utils";
 import { Node } from "../../utils/Framework/Node/Node";
 import "dotenv/config";
 import {
@@ -41,6 +41,10 @@ import {
   KSM_FULL_NAME,
   MGX_ASSET_NAME,
 } from "../../utils/frontend/microapps-pages/UiConstant";
+import {
+  NotificationToast,
+  ToastType,
+} from "../../utils/frontend/microapps-pages/NotificationToast";
 
 jest.spyOn(console, "log").mockImplementation(jest.fn());
 jest.setTimeout(1500000);
@@ -199,8 +203,12 @@ describe.each`
       );
 
       await poolDetails.waitForContinueState(false, 5000);
+      const toast = new NotificationToast(driver);
+      await toast.waitForToastDisappear(
+        ToastType.Success,
+        TransactionType.AddLiquidity,
+      );
       await poolDetails.clickBackButton();
-      await sleep(5000);
       isPoolsListDisplayed = await poolsList.isDisplayed();
       expect(isPoolsListDisplayed).toBeTruthy();
       await poolsList.clickPoolItem(
