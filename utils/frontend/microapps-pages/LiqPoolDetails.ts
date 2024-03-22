@@ -24,6 +24,7 @@ const DIV_POOL_VOLUME = "volume";
 const DIV_POOL_REWARDS = "monthly-rewards";
 const BUTTON_ADD_LIQ = "add-liquidity";
 const BUTTON_SUBMIT_LIQ = "submit-button";
+const BUTTON_BACK = "back-button";
 const MY_POOL_POSTION_AMNT = "my-pool-position-amount";
 const ADD_LIQ_POOL_WIDGET = "provide-liquidity-widget";
 const DIV_FIRST_TOKEN_CONTAINER = "firstToken-container";
@@ -51,6 +52,11 @@ export class LiqPoolDetils {
 
   async clickAddLiquidity() {
     const itemXpath = buildDataTestIdXpath(BUTTON_ADD_LIQ);
+    await clickElement(this.driver, itemXpath);
+  }
+
+  async clickBackButton() {
+    const itemXpath = buildDataTestIdXpath(BUTTON_BACK);
     await clickElement(this.driver, itemXpath);
   }
 
@@ -201,6 +207,12 @@ export class LiqPoolDetils {
     const itemXpath =
       buildDataTestIdXpath(ADD_LIQ_POOL_WIDGET) +
       buildDataTestIdXpath(EST_REWARDS);
+    const displayed = await isDisplayed(this.driver, itemXpath);
+    return displayed;
+  }
+
+  async isMyPositionAmountDisplayed() {
+    const itemXpath = buildDataTestIdXpath(MY_POOL_POSTION_AMNT);
     const displayed = await isDisplayed(this.driver, itemXpath);
     return displayed;
   }

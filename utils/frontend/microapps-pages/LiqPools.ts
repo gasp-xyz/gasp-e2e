@@ -32,6 +32,7 @@ const POOL_SHARE = "poolShare";
 const EST_REWARDS = "est-rewards";
 const FEE = "fee";
 const BTN_SUBMIT = "submit-button";
+const BTN_CANCEL = "cancel-button";
 
 export class LiqPools {
   driver: WebDriver;
@@ -202,6 +203,11 @@ export class LiqPools {
       isEnabled,
       timeout,
     );
+  }
+
+  async clickCancelButton() {
+    const itemXpath = buildDataTestIdXpath(BTN_CANCEL);
+    await clickElement(this.driver, itemXpath);
   }
 
   async getPoolsList() {

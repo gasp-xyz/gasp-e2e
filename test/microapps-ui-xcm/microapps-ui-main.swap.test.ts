@@ -20,6 +20,7 @@ import {
   connectWallet,
   setupPage,
   setupPageWithState,
+  waitForMicroappsActionNotification,
 } from "../../utils/frontend/microapps-utils/Handlers";
 import { Swap } from "../../utils/frontend/microapps-pages/Swap";
 import { ApiContext } from "../../utils/Framework/XcmHelper";
@@ -29,6 +30,7 @@ import { AssetId } from "../../utils/ChainSpecs";
 import XcmNetworks from "../../utils/Framework/XcmNetworks";
 import { devTestingPairs } from "../../utils/setup";
 import StashServiceMockSingleton from "../../utils/stashServiceMockSingleton";
+import { TransactionType } from "../../utils/frontend/microapps-pages/NotificationToast";
 
 jest.setTimeout(FIVE_MIN);
 jest.spyOn(console, "log").mockImplementation(jest.fn());
@@ -257,6 +259,31 @@ describe("Miocroapps UI swap tests", () => {
     expect(getTokenNameAfterSwitch).toEqual(MGX_ASSET_NAME);
     const payTokeAmountAfterSwitch = await swap.fetchPayAssetAmount();
     expect(payTokeAmountAfterSwitch).toEqual(getTokenAmount);
+  });
+
+  it("Swap is possible with enough tokens", async () => {
+    await setupPageWithState(driver, acc_name);
+    const swap = new Swap(driver);
+    const isSwapFrameDisplayed = await swap.isDisplayed();
+    expect(isSwapFrameDisplayed).toBeTruthy();
+    await swap.pickPayToken(MGX_ASSET_NAME);
+    await swap.pickGetToken(KSM_FULL_NAME);
+    await swap.setPayTokenAmount("500");
+    const getTokenAmount = await swap.fetchGetAssetAmount();
+    expect(parseFloat(getTokenAmount)).toBeGreaterThan(0);
+
+    await swap.waitForSwapButtonEnabled();
+    const isSwapEnabled = await swap.isSwapButtonEnabled();
+    expect(isSwapEnabled).toBeTruthy();
+
+    await swap.clickSwapButton();
+    await waitForMicroappsActionNotification(
+      driver,
+      mangata,
+      kusama,
+      TransactionType.Swap,
+      2,
+    );
   });
 
   afterEach(async () => {

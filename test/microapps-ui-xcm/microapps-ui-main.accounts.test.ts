@@ -41,6 +41,10 @@ import {
   KSM_FULL_NAME,
   MGX_ASSET_NAME,
 } from "../../utils/frontend/microapps-pages/UiConstant";
+import {
+  NotificationToast,
+  ToastType,
+} from "../../utils/frontend/microapps-pages/NotificationToast";
 
 jest.spyOn(console, "log").mockImplementation(jest.fn());
 jest.setTimeout(1500000);
@@ -150,7 +154,7 @@ describe.each`
       await sidebar.clickNavLiqPools();
 
       const poolsList = new LiqPools(driver);
-      const isPoolsListDisplayed = await poolsList.isDisplayed();
+      let isPoolsListDisplayed = await poolsList.isDisplayed();
       expect(isPoolsListDisplayed).toBeTruthy();
 
       const isMgxKsmPoolVisible = await poolsList.isPoolItemDisplayed(
@@ -198,8 +202,21 @@ describe.each`
         2,
       );
 
-      const poolShareAfter = await poolDetails.getMyPositionAmount();
-      expect(poolShareAfter).toBeGreaterThan(poolShareBefore);
+      await poolDetails.waitForContinueState(false, 5000);
+      const toast = new NotificationToast(driver);
+      await toast.waitForToastDisappear(
+        ToastType.Success,
+        TransactionType.AddLiquidity,
+      );
+      await poolDetails.clickBackButton();
+      isPoolsListDisplayed = await poolsList.isDisplayed();
+      expect(isPoolsListDisplayed).toBeTruthy();
+      await poolsList.clickPoolItem(
+        "-" + MGX_ASSET_NAME + "-" + KSM_ASSET_NAME,
+      );
+
+      const my_new_pool_share = await poolDetails.getMyPositionAmount();
+      expect(my_new_pool_share).toBeGreaterThan(poolShareBefore);
     });
 
     test("Deposit tokens by account type " + accType, async () => {
