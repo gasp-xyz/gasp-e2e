@@ -809,12 +809,6 @@ async function app(): Promise<any> {
           .prompt([
             {
               type: "input",
-              name: "requestNumber",
-              message: "request number (0 - next available)",
-              default: "0",
-            },
-            {
-              type: "input",
               name: "ethAddress",
               message: "Ethereum address",
             },
@@ -830,11 +824,7 @@ async function app(): Promise<any> {
               ethAddress: string;
               amountValue: number;
             }) => {
-              await depositFromL1(
-                answers.requestNumber,
-                answers.ethAddress,
-                answers.amountValue,
-              );
+              await depositFromL1(answers.ethAddress, answers.amountValue);
               return app();
             },
           );

@@ -1,6 +1,4 @@
 /*
- *
- * @group rolldown
  */
 import { jest } from "@jest/globals";
 import { getApi, getMangataInstance, initApi } from "../../utils/api";

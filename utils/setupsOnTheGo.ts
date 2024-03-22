@@ -1741,24 +1741,15 @@ export async function addUnspentReserves(userName = "//Alice", tokenId = 1) {
   );
 }
 
-export async function depositFromL1(
-  requestNumber: number,
-  ethAddress: string,
-  amountValue: number,
-) {
-  let requestNumberToDeposit: number;
+export async function depositFromL1(ethAddress: string, amountValue: number) {
   const keyring = new Keyring({ type: "sr25519" });
   const sudo = new User(keyring, getEnvironmentRequiredVars().sudo);
   const mangata = await getMangataInstance();
   const sdkApi = await mangata.api();
-  if (requestNumber === 0) {
-    requestNumberToDeposit = (await getLastProcessedRequestNumber()) + 1;
-  } else {
-    requestNumberToDeposit = requestNumber;
-  }
+  const requestNumber = (await getLastProcessedRequestNumber()) + 1;
   await signTx(
     sdkApi,
-    await rolldownDeposit(requestNumberToDeposit, ethAddress, amountValue),
+    await rolldownDeposit(requestNumber, ethAddress, amountValue),
     sudo.keyRingPair,
   );
 
@@ -1772,9 +1763,6 @@ export async function depositFromL1(
 
 export async function withdrawToL1(ethPrivateKey: string, amountValue: number) {
   const keyring = new Keyring({ type: "sr25519" });
-  //const sudo = new User(keyring, getEnvironmentRequiredVars().sudo);
-  //const mangata = await getMangataInstance();
-  //const sdkApi = await mangata.api();
   const testEthUser = new EthUser(keyring);
   testEthUser.addFromEthPrivateKey(keyring, ethPrivateKey);
 
