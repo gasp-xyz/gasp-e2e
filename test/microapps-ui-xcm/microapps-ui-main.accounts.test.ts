@@ -11,7 +11,7 @@ import {
   addExtraLogs,
   importPolkadotExtension,
 } from "../../utils/frontend/utils/Helper";
-import { getEnvironmentRequiredVars } from "../../utils/utils";
+import { getEnvironmentRequiredVars, sleep } from "../../utils/utils";
 import { Node } from "../../utils/Framework/Node/Node";
 import "dotenv/config";
 import {
@@ -200,6 +200,7 @@ describe.each`
 
       await poolDetails.waitForContinueState(false, 5000);
       await poolDetails.clickBackButton();
+      await sleep(5000);
       isPoolsListDisplayed = await poolsList.isDisplayed();
       expect(isPoolsListDisplayed).toBeTruthy();
       await poolsList.clickPoolItem(
