@@ -65,11 +65,11 @@ async function depositAndWait(depositor: EthUser) {
   // ).toBeGreaterThan(
   //   parseInt(JSON.parse(JSON.stringify(updatesBefore)).lastAcceptedRequestOnL1),
   // );
-  testLog.getLog().info(depositor.pdAccount.keyRingPair.address);
+  testLog.getLog().info(depositor.keyRingPair.address);
   const assetId = await getAssetIdFromErc20();
   // Wait for the balance to change
   const anyChange = await waitForBalanceChange(
-    depositor.pdAccount.keyRingPair.address,
+    depositor.keyRingPair.address,
     20,
     assetId,
   );
@@ -106,7 +106,7 @@ describe("Rollup", () => {
       // Check that got updated.
       expect(anyChange).toBeTruthy();
 
-      await Sudo.batchAsSudoFinalized(Assets.mintNative(user.pdAccount));
+      await Sudo.batchAsSudoFinalized(Assets.mintNative(user));
       const tx = getApi().tx.rolldown.withdraw(
         user.ethAddress,
         ERC20_ADDRESS,

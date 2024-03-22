@@ -34,6 +34,7 @@ import { getEnvironmentRequiredVars, stringToBN } from "./utils";
 import Keyring from "@polkadot/keyring";
 import { ExtrinsicResult } from "./eventListeners";
 import { Sudo } from "./sudo";
+import { Assets } from "./Assets";
 
 export const signTxDeprecated = async (
   tx: SubmittableExtrinsic<"promise">,
@@ -384,26 +385,17 @@ export const mintAsset = async (
   amount: BN,
   sudoNonce: BN = new BN(-1),
 ) => {
-  const api = getApi();
-  let nonce;
-  if (sudoNonce.lte(new BN(-1))) {
-    nonce = new BN(await SudoDB.getInstance().getSudoNonce(account.address));
-  } else {
-    nonce = sudoNonce;
-  }
-
-  testLog.getLog().info(`W[${env.JEST_WORKER_ID}] - sudoNonce: ${nonce} `);
-  const txResult = await signTx(
-    api,
-    api.tx.sudo.sudo(api.tx.tokens.mint(asset_id, target, amount)),
-    account,
-    { nonce: new BN(nonce) },
+  console.log("minting asset" + account + sudoNonce);
+  const res = await Sudo.batchAsSudoFinalized(
+    Assets.mintToken(asset_id, target, amount),
   ).catch((reason) => {
     // eslint-disable-next-line no-console
     console.error("OhOh sth went wrong. " + reason.toString());
-    testLog.getLog().error(`W[${env.JEST_WORKER_ID}] - ${reason.toString()}`);
+    testLog
+      .getLog()
+      .error(`W[${env.JEST_WORKER_ID}] - ${JSON.stringify(reason).toString()}`);
   });
-  return txResult as MangataGenericEvent[];
+  return res as MangataGenericEvent[];
 };
 
 export const createPool = async (

@@ -18,6 +18,7 @@ import {
   MangataGenericEvent,
 } from "@mangata-finance/sdk";
 import { getEnvironmentRequiredVars } from "./utils";
+import { Optional } from "web3";
 
 function makeSignOptions(api: any, partialOptions: any, extras: any) {
   return objectSpread(
@@ -68,6 +69,7 @@ export async function signTxMetamask(
   tx: any,
   ethAddress: string,
   ethPrivateKey: string,
+  txOptions: Optional<any, any> = { nonce: BN },
 ): Promise<MangataGenericEvent[]> {
   //TODO: use sdk api when ready
   const api = await ApiPromise.create({
@@ -95,6 +97,7 @@ export async function signTxMetamask(
           Eth: "EcdsaSignature",
         },
       },
+      EthereumSignature: "EcdsaSignature",
       ShufflingSeed: {
         seed: "H256",
         proof: "H512",
@@ -115,14 +118,14 @@ export async function signTxMetamask(
     { method: tx.method },
     { version: tx.version },
   );
-  const dotAddress = blake2AsU8a(hexToU8a(ethAddress));
+  //const dotAddress = blake2AsU8a(hexToU8a(ethAddress));
   testLog
     .getLog()
     .info("dot addr:: " + encodeAddress(blake2AsU8a(hexToU8a(ethAddress)), 42));
-  const options = {};
+  const options = txOptions;
   const signingInfo = await api.derive.tx.signingInfo(
     // @ts-ignore
-    dotAddress,
+    ethAddress,
     // @ts-ignore
     options.nonce,
     // @ts-ignore
@@ -151,15 +154,23 @@ export async function signTxMetamask(
   });
   testLog.getLog().debug("Ok, signed typed data ");
   testLog.getLog().debug("SIGNATURE = " + msg_sig);
-  const created_signature = api.createType("MultiSignature", {
-    Eth: hexToU8a(msg_sig),
-  });
+  const created_signature = api.createType(
+    "EthereumSignature",
+    hexToU8a(msg_sig),
+  );
   testLog.getLog().debug(tx_payload);
   testLog.getLog().debug(msg_sig);
   // @ts-ignore
-  extrinsic.addSignature(dotAddress, created_signature, tx_payload);
+  extrinsic.addSignature(ethAddress, created_signature, tx_payload);
   testLog.getLog().info("Sending tx");
-  const txHash = await api.rpc.author.submitExtrinsic(extrinsic.toHex());
+  let txHash: any;
+  try {
+    txHash = await api.rpc.author.submitExtrinsic(extrinsic.toHex());
+  } catch (e) {
+    testLog.getLog().error("Error sending tx: " + e);
+    throw e;
+  }
+
   testLog.getLog().info("Tx sent " + txHash);
   let extrinsicResult: any;
   let counter = 10;
@@ -172,6 +183,7 @@ export async function signTxMetamask(
         }
         counter--;
         const currentBlock = await api.rpc.chain.getBlock(header.hash);
+        testLog.getLog().info("Block: " + currentBlock.block.header.number);
         const extrinsics = currentBlock.block.extrinsics;
         //TODO: Find some extra determinist way to filter the extrinsic signed by the user
         extrinsicResult = extrinsics.filter(

@@ -10,12 +10,13 @@ import { SudoDB } from "./SudoDB";
 import { Codec } from "@polkadot/types-codec/types";
 import { signTx } from "@mangata-finance/sdk";
 import { SubmittableExtrinsic } from "@polkadot/api/types";
+import { EthUser } from "./EthUser";
 // API
 export let api: ApiPromise;
 
 // Users
 export let keyring: Keyring;
-export let sudo: User;
+export let sudo: EthUser;
 export let alice: User;
 export let eve: User;
 
@@ -58,10 +59,15 @@ export function isBackendTest() {
       isAGroupRun.toLowerCase().includes("rollup"))
   );
 }
+export function getSudoUser(): EthUser {
+  return new EthUser(
+    new Keyring({ type: "ecdsa" }),
+    getEnvironmentRequiredVars().sudo,
+  );
+}
 export const setupUsers = () => {
   keyring = new Keyring({ type: "sr25519" });
-  const { sudo: sudoUserName } = getEnvironmentRequiredVars();
-  sudo = new User(keyring, sudoUserName);
+  sudo = getSudoUser();
   alice = new User(keyring, "//Alice");
   eve = new User(keyring, "//Eve");
   const testUser1 = new User(keyring);
@@ -178,9 +184,9 @@ export async function setupAPoolForUsers(users: User[]) {
   return { users, tokenIds };
 }
 export const setupGasLess = async (force = false) => {
-  keyring = new Keyring({ type: "sr25519" });
+  keyring = new Keyring({ type: "ecdsa" });
   const { sudo: sudoUserName } = getEnvironmentRequiredVars();
-  sudo = new User(keyring, sudoUserName);
+  sudo = new User(keyring, sudoUserName) as EthUser;
   alice = new User(keyring, "//Alice");
   await setupApi();
   const feeLockConfig = JSON.parse(

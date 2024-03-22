@@ -71,7 +71,7 @@ export async function getAssetIdFromErc20(ethTokenAddress = ERC20_ADDRESS) {
   return new BN(assetId.toString());
 }
 
-export async function mintTokens(
+export async function mintERC20TokensOnEthL1(
   ethAddress: string,
   number: number,
   erc20Address: `0x${string}` = ERC20_ADDRESS,
@@ -139,7 +139,7 @@ export async function setupEthUser(
   amountToApprove: number,
 ) {
   await setBalance(ethUser.ethAddress, 10e18);
-  await mintTokens(ethUser.ethAddress, 10e18);
+  await mintERC20TokensOnEthL1(ethUser.ethAddress, 10e18);
 
   const balance = await getBalance(erc20Address, ethUser.ethAddress);
   testLog.getLog().info(balance);
@@ -157,7 +157,7 @@ export async function fakeDepositOnL2(
   amount: BN,
 ) {
   //Mint some tokens to the contract ( as if the user deposited them)
-  await mintTokens(rollDownContractAddress, amount.toNumber(), erc20Address);
+  await mintERC20TokensOnEthL1(rollDownContractAddress, amount.toNumber(), erc20Address);
   setupUsers();
   await setupApi();
   const tokenId = await getAssetIdFromErc20(erc20Address);
@@ -165,10 +165,10 @@ export async function fakeDepositOnL2(
     Sudo.sudo(
       Assets.mintTokenAddress(
         tokenId,
-        ethUser.pdAccount.keyRingPair.address,
+        ethUser.keyRingPair.address,
         amount,
       ),
     ),
-    Assets.mintNative(ethUser.pdAccount),
+    Assets.mintNative(ethUser),
   );
 }

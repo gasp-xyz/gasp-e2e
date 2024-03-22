@@ -1763,8 +1763,7 @@ export async function depositFromL1(ethAddress: string, amountValue: number) {
 
 export async function withdrawToL1(ethPrivateKey: string, amountValue: number) {
   const keyring = new Keyring({ type: "sr25519" });
-  const testEthUser = new EthUser(keyring);
-  testEthUser.addFromEthPrivateKey(keyring, ethPrivateKey);
+  const testEthUser = new EthUser(keyring, ethPrivateKey);
 
   await signTxMetamask(
     await rolldownWithdraw(testEthUser, 100),
