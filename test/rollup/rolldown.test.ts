@@ -80,8 +80,4 @@ describe("Tests with rolldown functions:", () => {
       testEthUser.privateKey,
     );
   });
-
-  test("brum", async () => {
-    console.log("brum");
-  });
 });
