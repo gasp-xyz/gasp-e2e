@@ -56,7 +56,9 @@ async function depositAndWait(depositor: EthUser) {
   const updatesAfter = await getL2UpdatesStorage();
   testLog.getLog().info(JSON.stringify(updatesAfter));
 
+  // eslint-disable-next-line no-console
   console.log(updatesAfter);
+  // eslint-disable-next-line no-console
   console.log(updatesBefore);
   // TODO: verify that deposit is present in the pendingDeposits in l2update
   //validate that the request got inserted.
@@ -68,12 +70,7 @@ async function depositAndWait(depositor: EthUser) {
   testLog.getLog().info(depositor.keyRingPair.address);
   const assetId = await getAssetIdFromErc20();
   // Wait for the balance to change
-  const anyChange = await waitForBalanceChange(
-    depositor.keyRingPair.address,
-    20,
-    assetId,
-  );
-  return anyChange;
+  return await waitForBalanceChange(depositor.ethAddress, 20, assetId);
 }
 
 describe("Rollup", () => {
@@ -163,6 +160,6 @@ describe("Rollup", () => {
 });
 
 // @ts-ignore
-BigInt.prototype["toJSON"] = function() {
+BigInt.prototype["toJSON"] = function () {
   return this.toString();
 };
