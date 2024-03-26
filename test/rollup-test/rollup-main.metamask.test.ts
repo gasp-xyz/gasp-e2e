@@ -8,6 +8,7 @@ import { WebDriver } from "selenium-webdriver";
 import { getApi, initApi } from "../../utils/api";
 import { DriverBuilder } from "../../utils/frontend/utils/Driver";
 import {
+  acceptNetworkSwitchInNewWindow,
   addExtraLogs,
   importMetamaskExtension,
 } from "../../utils/frontend/utils/Helper";
@@ -29,7 +30,8 @@ jest.setTimeout(1500000);
 let driver: WebDriver;
 let testUser1: User;
 
-const acc_name = "acc_automation";
+//const acc_name = "acc_automation";
+const temp_default_acc_name = "Metamask account 1";
 
 describe("Microapps Prod UI wallet tests", () => {
   beforeAll(async () => {
@@ -57,11 +59,12 @@ describe("Microapps Prod UI wallet tests", () => {
     await testUser1.refreshAmounts(AssetWallet.BEFORE);
 
     await setupPage(driver);
-    await connectWallet(driver, "Metamask", acc_name);
+    await connectWallet(driver, "Metamask", temp_default_acc_name);
+    await acceptNetworkSwitchInNewWindow(driver);
   });
 
   test("User can connect Metamask wallet", async () => {
-    await setupPageWithState(driver, acc_name);
+    await setupPageWithState(driver, temp_default_acc_name);
 
     const walletWrapper = new WalletWrapper(driver);
     await walletWrapper.openWalletConnectionInfo();

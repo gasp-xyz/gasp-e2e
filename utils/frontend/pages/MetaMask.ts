@@ -5,6 +5,7 @@ import {
   buildDataTestIdXpath,
   clearTextManual,
   clickElement,
+  doActionInDifferentWindow,
   isDisplayed,
   scrollIntoView,
   waitForElement,
@@ -31,6 +32,8 @@ const BTN_ACCOUNT_OPTIONS = "account-options-menu-button";
 const BTN_ACCOUNT_DETAILS = "account-list-menu-details";
 const BTN_ACCOUNT_LABEL = "editable-label-button";
 const DIV_ACCOUNT_LABEL_INPUT = "editable-input";
+const BTN_CONNECT_ACCOUNT = "page-container-footer-next";
+const BTN_APPROVE_NETWORK = "confirmation-submit-button";
 
 export class MetaMask {
   WEB_UI_ACCESS_URL =
@@ -153,5 +156,27 @@ export class MetaMask {
       BTN_TERMS_POPOVER_ACCEPT,
     );
     await clickElement(this.driver, XPATH_BTN_TERMS_POPOVER_ACCEPT);
+  }
+
+  async acceptModal(driver: WebDriver) {
+    const XPATH_BTN_CONNECT_ACCOUNT = buildDataTestIdXpath(BTN_CONNECT_ACCOUNT);
+    await waitForElement(driver, XPATH_BTN_CONNECT_ACCOUNT);
+    await clickElement(driver, XPATH_BTN_CONNECT_ACCOUNT);
+    await clickElement(driver, XPATH_BTN_CONNECT_ACCOUNT);
+  }
+
+  async acceptNetwork(driver: WebDriver) {
+    const XPATH_BTN_APPROVE_NETWORK = buildDataTestIdXpath(BTN_APPROVE_NETWORK);
+    await waitForElement(driver, XPATH_BTN_APPROVE_NETWORK);
+    await clickElement(driver, XPATH_BTN_APPROVE_NETWORK);
+    await clickElement(driver, XPATH_BTN_APPROVE_NETWORK);
+  }
+
+  async acceptPermissions() {
+    await doActionInDifferentWindow(this.driver, this.acceptModal);
+  }
+
+  async acceptNetworkSwitch() {
+    await doActionInDifferentWindow(this.driver, this.acceptNetwork);
   }
 }
