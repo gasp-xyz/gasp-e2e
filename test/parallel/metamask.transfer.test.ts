@@ -87,7 +87,7 @@ describe("Tests with Metamask signing:", () => {
 
     const secondEthUser = new EthUser(keyring);
 
-    await Sudo.batchAsSudoFinalized(Assets.mintNative(testEthUser.pdAccount));
+    await Sudo.batchAsSudoFinalized(Assets.mintNative(testEthUser));
 
     const tx = api.tx.tokens.transfer(testPdUser.keyRingPair.address, 0, 1000);
 
@@ -107,35 +107,35 @@ describe("Tests with Metamask signing:", () => {
   });
 
   test("Transfer tokens", async () => {
-    await Sudo.batchAsSudoFinalized(Assets.mintNative(testEthUser.pdAccount));
-    testEthUser.pdAccount.addAsset(MGA_ASSET_ID);
+    await Sudo.batchAsSudoFinalized(Assets.mintNative(testEthUser));
+    testEthUser.addAsset(MGA_ASSET_ID);
 
     await testPdUser.refreshAmounts(AssetWallet.BEFORE);
-    await testEthUser.pdAccount.refreshAmounts(AssetWallet.BEFORE);
+    await testEthUser.refreshAmounts(AssetWallet.BEFORE);
 
     const tx = api.tx.tokens.transfer(testPdUser.keyRingPair.address, 0, 1000);
     await signByMetamask(tx, testEthUser);
 
     await testPdUser.refreshAmounts(AssetWallet.AFTER);
-    await testEthUser.pdAccount.refreshAmounts(AssetWallet.AFTER);
+    await testEthUser.refreshAmounts(AssetWallet.AFTER);
     const diff = testPdUser.getWalletDifferences();
 
     expect(
-      testEthUser.pdAccount.getAsset(MGA_ASSET_ID)!.amountBefore.free!,
-    ).bnGt(testEthUser.pdAccount.getAsset(MGA_ASSET_ID)!.amountAfter.free!);
+      testEthUser.getAsset(MGA_ASSET_ID)!.amountBefore.free!,
+    ).bnGt(testEthUser.getAsset(MGA_ASSET_ID)!.amountAfter.free!);
     expect(diff[0].diff.free).bnEqual(new BN(1000));
   });
 
   test("Mint liquidity", async () => {
     await Sudo.batchAsSudoFinalized(
-      Assets.mintNative(testEthUser.pdAccount),
+      Assets.mintNative(testEthUser),
       Assets.mintToken(
         secondCurrency,
-        testEthUser.pdAccount,
+        testEthUser,
         Assets.DEFAULT_AMOUNT,
       ),
     );
-    testEthUser.pdAccount.addAsset(MGA_ASSET_ID);
+    testEthUser.addAsset(MGA_ASSET_ID);
 
     const tx = api.tx.xyk.mintLiquidity(
       MGA_ASSET_ID,
@@ -146,23 +146,23 @@ describe("Tests with Metamask signing:", () => {
 
     await signByMetamask(tx, testEthUser);
 
-    testEthUser.pdAccount.addAsset(liqId);
-    await testEthUser.pdAccount.refreshAmounts(AssetWallet.AFTER);
+    testEthUser.addAsset(liqId);
+    await testEthUser.refreshAmounts(AssetWallet.AFTER);
 
-    expect(testEthUser.pdAccount.getAsset(liqId)!.amountAfter.free!).bnGt(
+    expect(testEthUser.getAsset(liqId)!.amountAfter.free!).bnGt(
       BN_ZERO,
     );
   });
 
   test("Burn liquidity", async () => {
     await Sudo.batchAsSudoFinalized(
-      Assets.mintNative(testEthUser.pdAccount),
-      Assets.mintToken(liqId, testEthUser.pdAccount, Assets.DEFAULT_AMOUNT),
+      Assets.mintNative(testEthUser),
+      Assets.mintToken(liqId, testEthUser, Assets.DEFAULT_AMOUNT),
     );
-    testEthUser.pdAccount.addAsset(MGA_ASSET_ID);
-    testEthUser.pdAccount.addAsset(liqId);
+    testEthUser.addAsset(MGA_ASSET_ID);
+    testEthUser.addAsset(liqId);
 
-    await testEthUser.pdAccount.refreshAmounts(AssetWallet.BEFORE);
+    await testEthUser.refreshAmounts(AssetWallet.BEFORE);
 
     const tx = api.tx.xyk.burnLiquidity(
       MGA_ASSET_ID,
@@ -172,26 +172,26 @@ describe("Tests with Metamask signing:", () => {
 
     await signByMetamask(tx, testEthUser);
 
-    testEthUser.pdAccount.addAsset(secondCurrency);
-    await testEthUser.pdAccount.refreshAmounts(AssetWallet.AFTER);
-    const diff = testEthUser.pdAccount
+    testEthUser.addAsset(secondCurrency);
+    await testEthUser.refreshAmounts(AssetWallet.AFTER);
+    const diff = testEthUser
       .getAsset(liqId)!
       .amountBefore.free!.sub(
-        testEthUser.pdAccount.getAsset(liqId)!.amountAfter.free!,
+        testEthUser.getAsset(liqId)!.amountAfter.free!,
       );
 
     expect(
-      testEthUser.pdAccount.getAsset(secondCurrency)!.amountAfter.free!,
+      testEthUser.getAsset(secondCurrency)!.amountAfter.free!,
     ).bnGt(BN_ZERO);
     expect(diff).bnEqual(Assets.DEFAULT_AMOUNT);
   });
 
   test("Create batch function", async () => {
     await Sudo.batchAsSudoFinalized(
-      Assets.mintNative(testEthUser.pdAccount),
+      Assets.mintNative(testEthUser),
       Assets.mintToken(
         secondCurrency,
-        testEthUser.pdAccount,
+        testEthUser,
         Assets.DEFAULT_AMOUNT,
       ),
     );
@@ -208,25 +208,25 @@ describe("Tests with Metamask signing:", () => {
       api.tx.tokens.transfer(testPdUser.keyRingPair.address, liqId, 1000),
     );
 
-    testEthUser.pdAccount.addAsset(MGA_ASSET_ID);
-    testEthUser.pdAccount.addAsset(liqId);
+    testEthUser.addAsset(MGA_ASSET_ID);
+    testEthUser.addAsset(liqId);
     testPdUser.addAsset(liqId);
 
-    await testEthUser.pdAccount.refreshAmounts(AssetWallet.BEFORE);
+    await testEthUser.refreshAmounts(AssetWallet.BEFORE);
 
     const tx = api.tx.utility.batchAll(txs);
 
     await signByMetamask(tx, testEthUser);
 
-    testEthUser.pdAccount.addAsset(secondCurrency);
-    await testEthUser.pdAccount.refreshAmounts(AssetWallet.AFTER);
-    const diff = testEthUser.pdAccount
+    testEthUser.addAsset(secondCurrency);
+    await testEthUser.refreshAmounts(AssetWallet.AFTER);
+    const diff = testEthUser
       .getAsset(liqId)!
       .amountAfter.free!.sub(
-        testEthUser.pdAccount.getAsset(liqId)!.amountBefore.free!,
+        testEthUser.getAsset(liqId)!.amountBefore.free!,
       );
 
-    expect(testEthUser.pdAccount.getAsset(liqId)!.amountAfter.free!).bnGt(
+    expect(testEthUser.getAsset(liqId)!.amountAfter.free!).bnGt(
       BN_THOUSAND,
     );
     expect(diff).bnGt(BN_ZERO);

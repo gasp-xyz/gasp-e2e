@@ -115,6 +115,7 @@ describe("UI XCM tests - BNC", () => {
 
     //TODO: Remove when clarified how to setup tokens on Bifrost.
     const mgaSdk = MangataSDK.instance([mangata.uri]);
+    // @ts-ignore
     await mgaSdk.xTokens.withdraw({
       account: testUser1.keyRingPair,
       amount: AssetId.Bnc.unit.mul(BN_HUNDRED),

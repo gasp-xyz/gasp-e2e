@@ -62,7 +62,7 @@ export function getEnvironmentRequiredVars() {
     : "";
   const sudoUserName = process.env.TEST_SUDO_NAME
     ? process.env.TEST_SUDO_NAME
-    : "//Alice";
+    : "//Alith";
   const testUserName = process.env.TEST_USER_NAME
     ? process.env.TEST_USER_NAME
     : "//Alice";
@@ -154,6 +154,8 @@ export function getEnvironmentRequiredVars() {
     : "ws://127.0.0.1:9949";
 
   return {
+    ethSudoAddress:
+      "0x5fb92d6e98884f76de468fa3f6278f8807c48bebc13595d45af5bdc4da702133",
     sudo: sudoUserName,
     chainUri: uri,
     relyUri: relyUri,

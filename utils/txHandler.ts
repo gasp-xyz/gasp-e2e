@@ -138,12 +138,19 @@ export const getEventResultFromMangataTx = function (
     extrinsicResult = relatedEvents.find(
       (e) =>
         e.event.toHuman().method !== null &&
-        searchTerm.every((filterTerm) =>
-          (
+        searchTerm.every((filterTerm) => {
+          testLog
+            .getLog()
+            .debug(
+              JSON.stringify(e.event.toHuman()) +
+                JSON.stringify(e.event.toHuman().data),
+            );
+
+          return (
             JSON.stringify(e.event.toHuman()) +
             JSON.stringify(e.event.toHuman().data)
-          ).includes(filterTerm),
-        ),
+          ).includes(filterTerm);
+        }),
     );
   } else {
     extrinsicResult = relatedEvents.find(

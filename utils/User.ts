@@ -30,6 +30,7 @@ import { strict as assert } from "assert";
 import { toBN, TokenBalance } from "@mangata-finance/sdk";
 import { KeyringPair } from "@polkadot/keyring/types";
 import Keyring from "@polkadot/keyring";
+import { EthUser } from "./EthUser";
 
 export enum AssetWallet {
   BEFORE,
@@ -169,16 +170,11 @@ export class User {
   }
 
   async mint(assetId: BN, user: User, amount: BN) {
-    await mintAsset(
-      this.keyRingPair,
-      assetId,
-      user.keyRingPair.address,
-      amount,
-    ).then((result) => {
+    await mintAsset(this.keyRingPair, assetId, user, amount).then((result) => {
       const eventResponse = getEventResultFromMangataTx(result, [
         "tokens",
         "Minted",
-        user.keyRingPair.address,
+        (user as EthUser).ethAddress.toLowerCase(),
       ]);
       assert.equal(eventResponse.state, ExtrinsicResult.ExtrinsicSuccess);
     });
