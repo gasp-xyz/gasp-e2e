@@ -43,7 +43,7 @@ export class Sudo {
       api.tx.utility.batchAll(txs as any as Call[]),
       sudo.ethAddress,
       sudo.privateKey,
-      nonce,
+      { nonce: nonce },
     );
   }
 

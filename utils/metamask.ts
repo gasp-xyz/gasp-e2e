@@ -69,7 +69,7 @@ export async function signTxMetamask(
   tx: any,
   ethAddress: string,
   ethPrivateKey: string,
-  txOptions: Optional<any, any> = { nonce: BN },
+  txOptions: Optional<any, any> = { nonce: undefined },
 ): Promise<MangataGenericEvent[]> {
   //TODO: use sdk api when ready
   const api = await ApiPromise.create({
@@ -123,6 +123,7 @@ export async function signTxMetamask(
     .getLog()
     .info("dot addr:: " + encodeAddress(blake2AsU8a(hexToU8a(ethAddress)), 42));
   const options = txOptions;
+
   const signingInfo = await api.derive.tx.signingInfo(
     // @ts-ignore
     ethAddress,

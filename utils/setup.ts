@@ -62,7 +62,7 @@ export function isBackendTest() {
 export function getSudoUser(): EthUser {
   return new EthUser(
     new Keyring({ type: "ecdsa" }),
-    getEnvironmentRequiredVars().sudo,
+    getEnvironmentRequiredVars().ethSudoAddress,
   );
 }
 export const setupUsers = () => {

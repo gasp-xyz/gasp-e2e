@@ -98,6 +98,7 @@ describe("Rollup", () => {
       // Check that got updated.
       expect(anyChange).toBeTruthy();
     });
+
     test("withdrawing tokens from the rollup contract", async () => {
       const anyChange = await depositAndWait(user);
       // Check that got updated.
