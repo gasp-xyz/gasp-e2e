@@ -180,7 +180,7 @@ describe("Microapps UI KSM transfer tests", () => {
       mangata,
       kusama,
       TransactionType.Deposit,
-      2,
+      3,
     );
   });
 
