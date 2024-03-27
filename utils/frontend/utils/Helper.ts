@@ -47,6 +47,7 @@ type WalletPermissionFunction = Record<
 const acceptWalletPermissionFunction: WalletPermissionFunction = {
   Polkadot: acceptPermissionsPolkadotExtensionInNewWindow,
   Talisman: acceptPermissionsTalismanExtensionInNewWindow,
+  Metamask: acceptPermissionsMetamaskExtensionInNewWindow,
 };
 
 export async function setupWalletExtension(
@@ -426,6 +427,18 @@ export async function acceptPermissionsTalismanExtensionInNewWindow(
 ) {
   const polkadotExtension = new Talisman(driver);
   await polkadotExtension.acceptPermissions();
+}
+
+export async function acceptPermissionsMetamaskExtensionInNewWindow(
+  driver: WebDriver,
+) {
+  const metamaskExtension = new MetaMask(driver);
+  await metamaskExtension.acceptPermissions();
+}
+
+export async function acceptNetworkSwitchInNewWindow(driver: WebDriver) {
+  const metamaskExtension = new MetaMask(driver);
+  await metamaskExtension.acceptNetworkSwitch();
 }
 
 export async function leaveOnlyOneTab(driver: WebDriver) {
