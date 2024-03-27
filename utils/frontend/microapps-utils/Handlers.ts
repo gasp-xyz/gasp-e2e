@@ -80,20 +80,27 @@ export async function waitForMicroappsActionNotification(
   );
   expect(isModalWaitingForSignVisible).toBeTruthy();
   await Polkadot.signTransaction(driver);
-  let i = 1;
-  do {
-    await chainOne.chain.newBlock();
-    await chainTwo.chain.newBlock();
-    i++;
-  } while (i < numOfBLocks);
-
-  // pushing last block instructions for concurrent run along with toast wait
-  // this is required to make sure driver will in time check the toast
   const promises = [];
   promises.push(chainOne.chain.newBlock());
   promises.push(chainTwo.chain.newBlock());
+  let i = 1;
+  do {
+    const INTERVAL = 2000;
+    promises.push(delayedNewBlock(chainOne, i * INTERVAL));
+    promises.push(delayedNewBlock(chainTwo, i * INTERVAL + 1000));
+    i++;
+  } while (i < numOfBLocks);
   promises.push(toast.waitForToastState(ToastType.Success, transaction));
   await Promise.all(promises);
+}
+
+async function delayedNewBlock(chainName: ApiContext, delayMs: number) {
+  await delay(delayMs);
+  return chainName.chain.newBlock();
+}
+
+function delay(ms: number) {
+  return new Promise((resolve) => setTimeout(resolve, ms));
 }
 
 export async function addLiqTokenMicroapps(
