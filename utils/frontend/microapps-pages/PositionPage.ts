@@ -27,6 +27,7 @@ export class PositionPageDriver {
   }
 
   async isLiqPoolDisplayed(firstTokenName: string, secondTokenName: string) {
+    await this.driver.sleep(2000);
     const PoolName = "pool-" + firstTokenName + "-" + secondTokenName;
     const itemXpath = buildDataTestIdXpath(PoolName);
     return isDisplayed(this.driver, itemXpath);

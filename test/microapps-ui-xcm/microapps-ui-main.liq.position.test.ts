@@ -128,7 +128,7 @@ describe("Microapps UI Position page tests", () => {
     const poolsList = new LiqPools(driver);
     const isPoolsListDisplayed = await poolsList.isDisplayed();
     expect(isPoolsListDisplayed).toBeTruthy();
-
+    await driver.sleep(3000);
     const isMgxKsmPoolVisible = await poolsList.isPoolItemDisplayed(
       "-" + MGX_ASSET_NAME + "-" + KSM_ASSET_NAME,
     );
