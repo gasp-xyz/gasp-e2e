@@ -7,7 +7,7 @@ on:
         description: "Name of the FE target branch"
         type: string
         required: false
-        default: "develop"
+        default: "main"
   schedule:
     - cron: "5 9 * * *"
 
