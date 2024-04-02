@@ -89,6 +89,7 @@ export class WalletWrapper {
   async isMyTokensRowDisplayed(tokenName: string) {
     const tokenRow =
       buildDataTestIdXpath(MY_TOKENS) + buildXpathByText(tokenName);
+    await waitForElement(this.driver, tokenRow);
     return await isDisplayed(this.driver, tokenRow);
   }
 
