@@ -1,17 +1,17 @@
 import { WebDriver } from "selenium-webdriver";
 import { ApiContext } from "../../Framework/XcmHelper";
 import { Main } from "../microapps-pages/Main";
-import {
-  ModalType,
-  NotificationModal,
-  TransactionType,
-} from "../microapps-pages/NotificationModal";
 import { WalletConnectModal } from "../microapps-pages/WalletConnectModal";
 import { WalletWrapper } from "../microapps-pages/WalletWrapper";
 import { Polkadot } from "../pages/Polkadot";
 import { acceptPermissionsWalletExtensionInNewWindow } from "../utils/Helper";
 import { BN_TEN } from "@mangata-finance/sdk";
 import { BN } from "@polkadot/util";
+import {
+  NotificationToast,
+  ToastType,
+  TransactionType,
+} from "../microapps-pages/NotificationToast";
 
 export async function connectWallet(
   driver: WebDriver,
@@ -72,25 +72,35 @@ export async function waitForMicroappsActionNotification(
   transaction: TransactionType,
   numOfBLocks = 1,
 ) {
-  const modal = new NotificationModal(driver);
-  await modal.waitForModalState(ModalType.Confirm, transaction, 3000);
-  const isModalWaitingForSignVisible = await modal.isModalVisible(
-    ModalType.Confirm,
+  const toast = new NotificationToast(driver);
+  await toast.waitForToastState(ToastType.Confirm, transaction, 3000);
+  const isModalWaitingForSignVisible = await toast.istoastVisible(
+    ToastType.Confirm,
     transaction,
   );
   expect(isModalWaitingForSignVisible).toBeTruthy();
   await Polkadot.signTransaction(driver);
-  for (let i = 0; i < numOfBLocks; i++) {
-    await chainOne.chain.newBlock();
-    await chainTwo.chain.newBlock();
-  }
-  await modal.waitForModalState(ModalType.Success, transaction);
-  const isModalSuccessVisible = await modal.isModalVisible(
-    ModalType.Success,
-    transaction,
-  );
-  expect(isModalSuccessVisible).toBeTruthy();
-  await modal.clickInDone();
+  const promises = [];
+  promises.push(chainOne.chain.newBlock());
+  promises.push(chainTwo.chain.newBlock());
+  let i = 1;
+  do {
+    const INTERVAL = 2000;
+    promises.push(delayedNewBlock(chainOne, i * INTERVAL));
+    promises.push(delayedNewBlock(chainTwo, i * INTERVAL + 1000));
+    i++;
+  } while (i < numOfBLocks);
+  promises.push(toast.waitForToastState(ToastType.Success, transaction));
+  await Promise.all(promises);
+}
+
+async function delayedNewBlock(chainName: ApiContext, delayMs: number) {
+  await delay(delayMs);
+  return chainName.chain.newBlock();
+}
+
+function delay(ms: number) {
+  return new Promise((resolve) => setTimeout(resolve, ms));
 }
 
 export async function addLiqTokenMicroapps(

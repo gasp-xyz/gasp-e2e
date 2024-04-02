@@ -1,6 +1,6 @@
 <p align="center">
-    <a href="https://https://mangata.finance/">
-    <img width="132" height="101" src="https://mangata.finance/images/logo-without-text.svg" class="attachment-full size-full" alt="Mangata brand" loading="lazy" /></a>
+    <a href="https://mangata.finance/">
+    <img width="264" height="202" src="https://assets-global.website-files.com/63e60f4a25768f19afed1e9a/63e64abe0002fc4ee4b0b7d9_mga_logo.svg" class="attachment-full size-full" alt="Mangata brand" loading="lazy" /></a>
 </p>
 
 <h2 align="center">Mangata E2E Tests</h2>
@@ -20,11 +20,11 @@
 1. Install node (v18.16.1 ) (we try to support nvm stable version )  
 2. Clone the code
 3. Run `yarn` in the root folder.
-4. Install Jest test framework globally. `yarn global add  jest -g `
+4. Install Jest test framework globally: `yarn global add  jest -g `
 
 ### Setup with Dev Container
 1. Follow the instructions to setup a local node and export the API_URL according to the node web socket.
-ie:  export API_URL=ws://127.0.0.1:9949
+- ie:  `export API_URL=ws://127.0.0.1:9949`
 
 
 #### Working with Dev Containers ( Dev containers are no longer maintained, PRs are welcomed )
@@ -50,8 +50,11 @@ If you run test on your machine first you need to set using `yarn`.
 2. Run `yarn` in **/mangata-e2e**. This command begin installation and creating necessary files for `yarn`.
 3. If process will finish correct you'll see folder **/node_modules** and **file yarn.lock**
 
-After each running you system you need to configure some parameters for test.
-Use this pattern (don't forget to add parameters instead of <text in the same brackets>): `export TEST_SUDO_NAME=//<You need insert name here> && export TEST_PALLET_ADDRESS=5EYCAe5XGPRojsCSi9p1ZZQ5qgeJGFcTxPxrsFRzkASu6bT2 && export E2E_XYK_PALLET_ADDRESS=5EYCAe5XGPRojsCSi9p1ZZQ5qgeJGFcTxPxrsFRzkASu6bT2 && export E2E_TREASURY_PALLET_ADDRESS=5EYCAe5ijiYfyeZ2JJCGq56LmPyNRAKzpG4QkoQkkQNB5e6Z && export E2E_TREASURY_BURN_PALLET_ADDRESS=5EYCAe5ijiYfyeZ2JJezKNMZfdbiFMyQc4YVzxaiMebAZBcm && API_URL=ws://<You need insert url here> 
+After each running you need to configure some parameters for test.
+Use this pattern (don't forget to add parameters instead of `<text in the same brackets>`): 
+```command
+export TEST_SUDO_NAME=//<You need insert name here> && export TEST_PALLET_ADDRESS=5EYCAe5XGPRojsCSi9p1ZZQ5qgeJGFcTxPxrsFRzkASu6bT2 && export E2E_XYK_PALLET_ADDRESS=5EYCAe5XGPRojsCSi9p1ZZQ5qgeJGFcTxPxrsFRzkASu6bT2 && export E2E_TREASURY_PALLET_ADDRESS=5EYCAe5ijiYfyeZ2JJCGq56LmPyNRAKzpG4QkoQkkQNB5e6Z && export E2E_TREASURY_BURN_PALLET_ADDRESS=5EYCAe5ijiYfyeZ2JJezKNMZfdbiFMyQc4YVzxaiMebAZBcm && API_URL=ws://<You need insert url here>
+```
 
 
 ####  Node tests ( no UI )
@@ -81,7 +84,7 @@ After that env. variables have been exported, you can run all tests with the com
 You can specify the command `--runInBand` if you don't want to run the tests in parallel
 
 UPDATE:
-since ESM module upgrades, you need to specify certain flags for jest. for example:
+Since ESM module upgrades, you need to specify certain flags for jest. For example:
 `node --experimental-specifier-resolution=node --loader ts-node/esm --experimental-vm-modules node_modules/jest/bin/jest.js --verbose --ci test/story/story.LP.test.ts`
 
 There are also some configurations to run tests, 
@@ -92,24 +95,33 @@ There are also some configurations to run tests,
 
 Finally, there are groups that can be ran instead.
 
-These are ran like so: jest --group=sequential. Multiple groups can be ran like jest --group=group1 --group=group2.
+These are ran like so: `jest --group=sequential`. Multiple groups can be ran like `jest --group=group1 --group=group2`.
 
 At the moment groups are split between testing configurations (parallel, sequential, etc) and pallets (api, asset, liquidity, sudo, etc). They can be found in docstrings at the top of any test file.
 
 ###  How to run in a docker setup
 There exist a possibility to run test pointing to a dockerize setup. You only need to :
-1. Follow the instructions in mangata-node to setup a local environment. Here a personal hint: 
+1. Follow the instructions in mangata-node to setup a local environment. Here is a personal hint: 
+```bash
+yarn global add @open-web3/parachain-launch -g
+cd <mangata-node local path goes here >/devops/parachain-launch
+cd output
+docker-compose down -v
+cd ..
+rm -rf output
+cd <mangata-node local path goes here >/devops/parachain-launch/
+nvim ./config.yml
+npx @open-web3/parachain-launch generate config.yml --yes
+cd output
+docker-compose down -v
+docker-compose up -d --build
 ```
-yarn global add  @open-web3/parachain-launch -g ;
-cd <mangata-node local path goes here >/devops/parachain-launch  ; cd output ;   docker-compose down -v ; rm -rf output;    cd <mangata-node local path goes here >/devops/parachain-launch/ ;   nvim ./config.yml ;   npx @open-web3/parachain-launch generate config.yml --yes ; cd output ; docker-compose down -v ;  docker-compose up -d --build
 
-```
-
-2. Point to that node ( ip can be obtained from the docker-compose) exporting `API_URL='ws://172.16.238.10:9944`.`
+2. Point to that node (ip can be obtained from the docker-compose) exporting `API_URL='ws://172.16.238.10:9944`.
 3. Run any test `yarn test-sequential`.
 
 ### Reports reports reports!
-Reports are now in TestMo. https://mangata-finance.testmo.net/
+Reports are now in TestMo: https://mangata-finance.testmo.net/
 
 ### How to setup on Windows
 - Follow all the steps from [here](https://ubuntu.com/tutorials/working-with-visual-studio-code-on-ubuntu-on-wsl2#4-install-the-remote-development-extension)

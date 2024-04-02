@@ -6,6 +6,7 @@ import chrome from "selenium-webdriver/chrome";
 const path = "utils/frontend/utils/extensions";
 const polkadotExtensionPath = `${path}/polkadot_v0.44.1.0.crx`;
 const talismanExtensionPath = `${path}/talisman_v1.15.1.crx`;
+const metamaskExtensionPath = `${path}/metamask_11.11.4.crx`;
 
 // Singleton constructor
 export const DriverBuilder = (function () {
@@ -14,6 +15,7 @@ export const DriverBuilder = (function () {
     if (addExtensions) {
       options.addExtensions(polkadotExtensionPath);
       options.addExtensions(talismanExtensionPath);
+      options.addExtensions(metamaskExtensionPath);
     }
     options
       .addArguments("--disable-dev-shm-usage")
@@ -42,8 +44,22 @@ export const DriverBuilder = (function () {
       .build();
     await driver!.manage().setTimeouts({ script: 5000 });
     await driver!.manage().window().maximize();
+    if (addExtensions) {
+      await waitForMultipleTabs(driver);
+    }
 
     return driver;
+  }
+
+  async function waitForMultipleTabs(driver: WebDriver) {
+    await driver.wait(
+      async () => {
+        const handles = await driver.getAllWindowHandles();
+        return handles.length > 2;
+      },
+      10000,
+      "Waiting for all extensions tabs to open",
+    );
   }
 
   let driver: WebDriver | undefined;

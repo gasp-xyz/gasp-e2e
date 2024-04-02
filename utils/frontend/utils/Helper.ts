@@ -10,6 +10,7 @@ import {
 import { sleep } from "../../utils";
 import { Mangata } from "../pages/Mangata";
 import { Polkadot } from "../pages/Polkadot";
+import { MetaMask } from "../pages/MetaMask";
 import "jest-extended";
 import fs from "fs";
 import { testLog } from "../../Logger";
@@ -46,6 +47,7 @@ type WalletPermissionFunction = Record<
 const acceptWalletPermissionFunction: WalletPermissionFunction = {
   Polkadot: acceptPermissionsPolkadotExtensionInNewWindow,
   Talisman: acceptPermissionsTalismanExtensionInNewWindow,
+  Metamask: acceptPermissionsMetamaskExtensionInNewWindow,
 };
 
 export async function setupWalletExtension(
@@ -272,9 +274,28 @@ export async function writeText(
   await (await driver.findElement(By.xpath(elementXpath))).sendKeys(text);
 }
 
+export async function appendText(
+  driver: WebDriver,
+  elementXpath: string,
+  text: string,
+) {
+  await waitForElement(driver, elementXpath);
+  const element = await driver.findElement(By.xpath(elementXpath));
+  await element.sendKeys(text);
+}
+
 export async function clearText(driver: WebDriver, elementXpath: string) {
   await waitForElement(driver, elementXpath);
   await (await driver.findElement(By.xpath(elementXpath))).clear();
+  await driver.sleep(500);
+}
+
+export async function clearTextManual(driver: WebDriver, elementXpath: string) {
+  await waitForElement(driver, elementXpath);
+  const inputField = await driver.findElement(By.xpath(elementXpath));
+  while ((await inputField.getAttribute("value")) !== "") {
+    await inputField.sendKeys(Key.BACK_SPACE);
+  }
   await driver.sleep(500);
 }
 
@@ -346,6 +367,21 @@ export async function importPolkadotExtension(
   }
 }
 
+export async function importMetamaskExtension(
+  driver: WebDriver,
+  mnemonicKeys = "",
+) {
+  await leaveOnlyOneTab(driver);
+
+  const extension = new MetaMask(driver);
+  await extension.go();
+  if (mnemonicKeys === "") {
+    await extension.setupAccount();
+  } else {
+    await extension.setupAccount(mnemonicKeys);
+  }
+}
+
 export async function setupTalismanExtension(driver: WebDriver) {
   await leaveOnlyOneTab(driver);
 
@@ -391,6 +427,18 @@ export async function acceptPermissionsTalismanExtensionInNewWindow(
 ) {
   const polkadotExtension = new Talisman(driver);
   await polkadotExtension.acceptPermissions();
+}
+
+export async function acceptPermissionsMetamaskExtensionInNewWindow(
+  driver: WebDriver,
+) {
+  const metamaskExtension = new MetaMask(driver);
+  await metamaskExtension.acceptPermissions();
+}
+
+export async function acceptNetworkSwitchInNewWindow(driver: WebDriver) {
+  const metamaskExtension = new MetaMask(driver);
+  await metamaskExtension.acceptNetworkSwitch();
 }
 
 export async function leaveOnlyOneTab(driver: WebDriver) {
