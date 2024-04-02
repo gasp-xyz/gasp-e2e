@@ -54,6 +54,7 @@ import {
 } from "./rolldown";
 import { EthUser } from "./EthUser";
 import { signTxMetamask } from "./metamask";
+import { getL2UpdatesStorage } from "./rollup/ethUtils";
 
 Assets.legacy = true;
 export async function claimForAllAvlRewards() {
@@ -1778,3 +1779,12 @@ export async function withdrawToL1(ethPrivateKey: string, amountValue: number) {
       amountValue.toString(),
   );
 }
+export async function readL2Updates() {
+  const res = await getL2UpdatesStorage();
+  console.log(JSON.stringify(res, null, 2));
+}
+
+// @ts-ignore
+BigInt.prototype["toJSON"] = function () {
+  return this.toString();
+};

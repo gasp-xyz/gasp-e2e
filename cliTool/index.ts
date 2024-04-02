@@ -42,6 +42,7 @@ import {
   addUnspentReserves,
   depositFromL1,
   withdrawToL1,
+  readL2Updates,
 } from "../utils/setupsOnTheGo";
 import {
   findErrorMetadata,
@@ -113,10 +114,14 @@ async function app(): Promise<any> {
         "Add vesting tokens and move these to MPL",
         "Deposit tokens by using updateL2FromL1",
         "Withdraw tokens by using updateL2FromL1",
+        "Read L2 updates",
       ],
     })
     .then(async (answers: { option: string | string[] }) => {
       console.log("Answers::: " + JSON.stringify(answers, null, "  "));
+      if (answers.option.includes("Read L2 updates")) {
+        await readL2Updates();
+      }
       if (answers.option.includes("Get All collators info from stash")) {
         await getAllCollatorsInfoFromStash();
       }
