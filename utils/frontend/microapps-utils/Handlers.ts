@@ -81,8 +81,8 @@ export async function waitForMicroappsActionNotification(
   expect(isModalWaitingForSignVisible).toBeTruthy();
   await Polkadot.signTransaction(driver);
   const promises = [];
-  promises.push(chainOne.chain.newBlock());
-  promises.push(chainTwo.chain.newBlock());
+  await chainOne.chain.newBlock();
+  await chainTwo.chain.newBlock();
   let i = 1;
   do {
     const INTERVAL = 2000;

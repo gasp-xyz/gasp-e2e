@@ -47,8 +47,11 @@ export class LiqPools {
     return displayed;
   }
 
-  async isPoolItemDisplayed(pool: string) {
+  async isPoolItemDisplayed(pool: string, visible = true) {
     const itemXpath = buildDataTestIdXpath("pool-item" + pool);
+    if (visible) {
+      await waitForElementStateInterval(this.driver, itemXpath, true);
+    }
     const displayed = await isDisplayed(this.driver, itemXpath);
     return displayed;
   }

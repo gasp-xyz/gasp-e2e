@@ -13,7 +13,7 @@ import {
   importPolkadotExtension,
 } from "../../utils/frontend/utils/Helper";
 import { AssetWallet, User } from "../../utils/User";
-import { getEnvironmentRequiredVars } from "../../utils/utils";
+import { getEnvironmentRequiredVars, sleep } from "../../utils/utils";
 import { KSM_ASSET_ID, MGA_ASSET_ID } from "../../utils/Constants";
 import { Node } from "../../utils/Framework/Node/Node";
 import "dotenv/config";
@@ -143,12 +143,13 @@ describe("Microapps UI deposit modal tests", () => {
     expect(isContinueButtonEnabled).toBeTruthy();
 
     await depositModal.clickContinue();
+    await sleep(3000);
     await waitForMicroappsActionNotification(
       driver,
       mangata,
       kusama,
       TransactionType.Deposit,
-      2,
+      5,
     );
   });
 

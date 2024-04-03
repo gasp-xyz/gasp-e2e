@@ -7,6 +7,7 @@ import {
   elementExists,
   getText,
   isDisplayed,
+  waitForElement,
 } from "../utils/Helper";
 
 const DIV_WALLET_WRAPPER = "wallet-wrapper";
@@ -19,6 +20,7 @@ const MY_POSITIONS = "my-positions";
 const MY_TOKENS_TAB_BUTTON = "My-Tokens-item";
 const MY_TOKENS_ROW_AMOUNT = "AmountTooltip-anchor";
 const MY_POSITIONS_TAB_BUTTON = "My-Positions-item";
+const MY_TOKENS_FIAT_VALUE = "fiat-value";
 
 export class WalletWrapper {
   driver: WebDriver;
@@ -87,6 +89,7 @@ export class WalletWrapper {
   async isMyTokensRowDisplayed(tokenName: string) {
     const tokenRow =
       buildDataTestIdXpath(MY_TOKENS) + buildXpathByText(tokenName);
+    await waitForElement(this.driver, tokenRow);
     return await isDisplayed(this.driver, tokenRow);
   }
 
@@ -96,6 +99,17 @@ export class WalletWrapper {
       buildXpathByText(tokenName) +
       buildDataTestIdXpath(MY_TOKENS_ROW_AMOUNT);
     return await getText(this.driver, tokenRowAmount);
+  }
+
+  async getMyTokensRowFiatValue(tokenName: string) {
+    const tokenFiatValue =
+      buildDataTestIdXpath(MY_TOKENS) +
+      buildDataTestIdXpath(tokenName + "-token-row") +
+      buildDataTestIdXpath(MY_TOKENS_FIAT_VALUE);
+    await waitForElement(this.driver, tokenFiatValue, 20000);
+    const text = await getText(this.driver, tokenFiatValue);
+    const cleanedText = text.replace(/[^\d.]/g, "");
+    return cleanedText;
   }
 
   async isMyPositionsRowDisplayed(poolName: string) {
