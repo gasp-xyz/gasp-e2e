@@ -181,7 +181,8 @@ describe("Miocroapps UI liq pools tests", () => {
     const isPoolsListDisplayed = await poolsList.isDisplayed();
     expect(isPoolsListDisplayed).toBeTruthy();
     await poolsList.clickAllPoolsTab();
-
+    await driver.sleep(1500);
+    
     let isTurKsmPoolVisible = await poolsList.isPoolItemDisplayed(
       "-" + TUR_ASSET_NAME + "-" + KSM_ASSET_NAME,
     );
