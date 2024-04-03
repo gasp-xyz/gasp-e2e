@@ -158,7 +158,7 @@ describe("Microapps UI withdraw modal tests", () => {
       mangata,
       kusama,
       TransactionType.Withdraw,
-      3,
+      6,
     );
   });
 

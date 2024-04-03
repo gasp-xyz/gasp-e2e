@@ -13,11 +13,7 @@ import {
 } from "../../utils/frontend/utils/Helper";
 import { AssetWallet, User } from "../../utils/User";
 import { getEnvironmentRequiredVars } from "../../utils/utils";
-import {
-  FIVE_MIN,
-  KSM_ASSET_ID,
-  MGA_ASSET_ID,
-} from "../../utils/Constants";
+import { FIVE_MIN, KSM_ASSET_ID, MGA_ASSET_ID } from "../../utils/Constants";
 import { Node } from "../../utils/Framework/Node/Node";
 import "dotenv/config";
 import {
