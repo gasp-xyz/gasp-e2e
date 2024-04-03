@@ -163,6 +163,7 @@ describe("Miocroapps UI liq pools tests", () => {
 
     isMgxKsmPoolVisible = await poolsList.isPoolItemDisplayed(
       "-" + MGX_ASSET_NAME + "-" + KSM_ASSET_NAME,
+      false,
     );
     expect(isMgxKsmPoolVisible).toBeFalsy();
 
@@ -191,6 +192,7 @@ describe("Miocroapps UI liq pools tests", () => {
     await poolsList.clickPromotedPoolsTab();
     isTurKsmPoolVisible = await poolsList.isPoolItemDisplayed(
       "-" + TUR_ASSET_NAME + "-" + KSM_ASSET_NAME,
+      false,
     );
     expect(isTurKsmPoolVisible).toBeFalsy();
   });
