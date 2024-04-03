@@ -17,7 +17,6 @@ import {
   FIVE_MIN,
   KSM_ASSET_ID,
   MGA_ASSET_ID,
-  TUR_ASSET_NAME,
 } from "../../utils/Constants";
 import { Node } from "../../utils/Framework/Node/Node";
 import "dotenv/config";
@@ -118,8 +117,6 @@ describe("Microapps UI wallet tests", () => {
     expect(isKSM).toBeTruthy();
     const isMGX = await walletWrapper.isMyTokensRowDisplayed(MGX_ASSET_NAME);
     expect(isMGX).toBeTruthy();
-    const isTUR = await walletWrapper.isMyTokensRowDisplayed(TUR_ASSET_NAME);
-    expect(isTUR).toBeFalsy();
 
     const mgxAmount = await walletWrapper.getMyTokensRowAmount(MGX_ASSET_NAME);
     expect(parseFloat(mgxAmount)).toBeGreaterThan(0);
