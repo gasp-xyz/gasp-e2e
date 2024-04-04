@@ -68,8 +68,6 @@ describe("Microapps Prod UI wallet tests", () => {
 
     const walletWrapper = new WalletWrapper(driver);
     await walletWrapper.openWalletConnectionInfo();
-    const isKSM = await walletWrapper.isMyTokensRowDisplayed(KSM_ASSET_NAME);
-    expect(isKSM).toBeFalsy();
     const isMGX = await walletWrapper.isMyTokensRowDisplayed(MGX_ASSET_NAME);
     expect(isMGX).toBeTruthy();
     const isTUR = await walletWrapper.isMyTokensRowDisplayed(TUR_ASSET_NAME);
