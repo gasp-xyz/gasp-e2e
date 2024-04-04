@@ -15,6 +15,7 @@ import {
   addExtraLogs,
   comparePoolsLists,
   importPolkadotExtension,
+  waitForHttpCall,
 } from "../../utils/frontend/utils/Helper";
 import {
   DUMMY_POOL_ASSET_ID,
@@ -83,6 +84,8 @@ describe("Microapps UI liq pools tests", () => {
 
     const sidebar = new Sidebar(driver);
     await sidebar.clickNavLiqPools();
+    const status = await waitForHttpCall(driver, "token/order-buckets", 20000);
+    expect(status).toEqual(200);
     const liquidityPools = await new LiqPools(driver);
     const fePoolsList = await liquidityPools.getPoolsList();
     await comparePoolsLists(fePoolsList, promotedPoolsInfo, liquidityPools);
@@ -114,6 +117,8 @@ describe("Microapps UI liq pools tests", () => {
 
     const sidebar = new Sidebar(driver);
     await sidebar.clickNavLiqPools();
+    const status = await waitForHttpCall(driver, "token/order-buckets", 20000);
+    expect(status).toEqual(200);
     const liquidityPools = await new LiqPools(driver);
     await liquidityPools.clickAllPoolsTab();
     const fePoolsList = await liquidityPools.getPoolsList();
