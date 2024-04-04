@@ -30,7 +30,6 @@ let driver: WebDriver;
 let testUser1: User;
 
 const acc_name = "acc_automation";
-const KSM_ASSET_NAME = "KSM";
 const MGX_ASSET_NAME = "MGX";
 const TUR_ASSET_NAME = "TUR";
 
