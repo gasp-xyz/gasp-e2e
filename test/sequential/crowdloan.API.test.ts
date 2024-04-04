@@ -5,16 +5,11 @@
 import { jest } from "@jest/globals";
 import { ApiPromise, Keyring } from "@polkadot/api";
 import { getApi, initApi } from "../../utils/api";
-import { Assets } from "../../utils/Assets";
-import { BN } from "@polkadot/util";
+import { BN, BN_ZERO } from "@polkadot/util";
 import { setupApi, setupUsers } from "../../utils/setup";
 import { Sudo } from "../../utils/sudo";
 import { User } from "../../utils/User";
-import {
-  getBlockNumber,
-  getEnvironmentRequiredVars,
-  isBadOriginError,
-} from "../../utils/utils";
+import { getBlockNumber, isBadOriginError } from "../../utils/utils";
 import { MGA_ASSET_ID } from "../../utils/Constants";
 import { MangataGenericEvent, signTx } from "@mangata-finance/sdk";
 import { getEventResultFromMangataTx } from "../../utils/txHandler";
@@ -34,11 +29,7 @@ jest.spyOn(console, "log").mockImplementation(jest.fn());
 jest.setTimeout(2500000);
 process.env.NODE_ENV = "test";
 
-const { sudo: sudoUserName } = getEnvironmentRequiredVars();
 let testUser1: User;
-let testUser2: User;
-let testUser3: User;
-let testUser4: User;
 let api: ApiPromise;
 let sudo: User;
 let keyring: Keyring;
@@ -52,23 +43,27 @@ beforeAll(async () => {
   } catch (e) {
     await initApi();
   }
-  keyring = new Keyring({ type: "sr25519" });
+  keyring = new Keyring({ type: "ethereum" });
 
   api = getApi();
-  sudo = new User(keyring, sudoUserName);
+  sudo = new User(
+    keyring,
+    "0x5fb92d6e98884f76de468fa3f6278f8807c48bebc13595d45af5bdc4da702133",
+  );
 
   await setupApi();
 
-  [testUser1, testUser2, testUser3, testUser4] = setupUsers();
+  [testUser1] = setupUsers();
+
+  keyring.addPair(sudo.keyRingPair);
 
   testUser1.addAsset(nativeCurrencyId);
-  await Sudo.batchAsSudoFinalized(
-    Assets.mintNative(sudo),
-    Assets.mintNative(testUser1),
-    Assets.mintNative(testUser2),
-    Assets.mintNative(testUser3),
-    Assets.mintNative(testUser4),
-  );
+  // await Sudo.batchAsSudoFinalized(
+  //   Assets.mintNative(testUser1),
+  //   Assets.mintNative(testUser2),
+  //   Assets.mintNative(testUser3),
+  //   Assets.mintNative(testUser4),
+  // );
 });
 
 describe("Only sudo can", () => {
@@ -287,4 +282,16 @@ test("Total contributors returns the number of contributors per crowdloan AND va
   ).toHuman();
 
   expect(numberContributors!.toString()).toEqual("1");
+});
+
+test.only("fooo", async () => {
+  // eslint-disable-next-line no-console
+  console.log(sudo.keyRingPair.address);
+  const as = await signTx(
+    getApi(),
+    api.tx.tokens.transfer(sudo.keyRingPair.address, BN_ZERO, new BN(100)),
+    sudo.keyRingPair,
+  );
+  // eslint-disable-next-line no-console
+  console.log(as);
 });
