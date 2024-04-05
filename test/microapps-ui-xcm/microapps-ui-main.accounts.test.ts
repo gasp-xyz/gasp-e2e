@@ -10,6 +10,7 @@ import { DriverBuilder } from "../../utils/frontend/utils/Driver";
 import {
   addExtraLogs,
   importPolkadotExtension,
+  waitForHttpCall,
 } from "../../utils/frontend/utils/Helper";
 import { getEnvironmentRequiredVars } from "../../utils/utils";
 import { Node } from "../../utils/Framework/Node/Node";
@@ -152,6 +153,8 @@ describe.each`
       await setupPageWithState(driver, accountName);
       const sidebar = new Sidebar(driver);
       await sidebar.clickNavLiqPools();
+      const status = await waitForHttpCall(driver, "token/order-buckets", 20000);
+      expect(status).toEqual(200);
 
       const poolsList = new LiqPools(driver);
       let isPoolsListDisplayed = await poolsList.isDisplayed();

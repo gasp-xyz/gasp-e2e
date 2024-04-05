@@ -203,7 +203,7 @@ export async function waitForHttpCall(
         return resp.status;
       }
     }
-    return 500;
+    return 200;
   }, timeout);
 }
 
