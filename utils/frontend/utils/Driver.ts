@@ -10,7 +10,7 @@ const metamaskExtensionPath = `${path}/metamask_11.11.4.crx`;
 
 // Singleton constructor
 export const DriverBuilder = (function () {
-  async function buildChromeDriver(addExtensions = true) {
+  async function buildChromeDriver(addExtensions = true, debugLogs = false) {
     const options = new chrome.Options();
     if (addExtensions) {
       options.addExtensions(polkadotExtensionPath);
@@ -36,7 +36,9 @@ export const DriverBuilder = (function () {
       enableVideo: true,
       enableLog: true,
     });
-    caps.set("goog:loggingPrefs", prefs);
+    if (debugLogs) {
+      caps.set("goog:loggingPrefs", prefs);
+    }
 
     driver = new Builder()
       .forBrowser("chrome")
@@ -65,9 +67,12 @@ export const DriverBuilder = (function () {
 
   let driver: WebDriver | undefined;
   return {
-    getInstance: async function (withExtensions = true): Promise<WebDriver> {
+    getInstance: async function (
+      withExtensions = true,
+      debugLogs = false,
+    ): Promise<WebDriver> {
       if (!driver) {
-        driver = await buildChromeDriver(withExtensions);
+        driver = await buildChromeDriver(withExtensions, debugLogs);
       }
       return driver!;
     },

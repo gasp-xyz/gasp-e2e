@@ -115,7 +115,7 @@ describe.each`
         },
       });
 
-      driver = await DriverBuilder.getInstance();
+      driver = await DriverBuilder.getInstance(true, true);
       await importPolkadotExtension(driver, mnemonicKey);
 
       const node = new Node(getEnvironmentRequiredVars().chainUri);

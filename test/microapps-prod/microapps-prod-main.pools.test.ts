@@ -48,7 +48,7 @@ describe("Microapps UI liq pools tests", () => {
     sdk = await getMangataInstance();
     api = getApi();
 
-    driver = await DriverBuilder.getInstance();
+    driver = await DriverBuilder.getInstance(true, true);
     await importPolkadotExtension(driver);
 
     const node = new Node(getEnvironmentRequiredVars().chainUri);

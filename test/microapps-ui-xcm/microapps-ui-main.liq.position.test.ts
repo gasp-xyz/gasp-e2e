@@ -98,7 +98,7 @@ describe("Microapps UI Position page tests", () => {
       },
     });
 
-    driver = await DriverBuilder.getInstance();
+    driver = await DriverBuilder.getInstance(true, true);
     await importPolkadotExtension(driver);
 
     sidebar = new Sidebar(driver);
