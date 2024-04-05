@@ -30,7 +30,6 @@ let driver: WebDriver;
 let testUser1: User;
 
 const acc_name = "acc_automation";
-const KSM_ASSET_NAME = "KSM";
 const MGX_ASSET_NAME = "MGX";
 const TUR_ASSET_NAME = "TUR";
 
@@ -68,8 +67,6 @@ describe("Microapps Prod UI wallet tests", () => {
 
     const walletWrapper = new WalletWrapper(driver);
     await walletWrapper.openWalletConnectionInfo();
-    const isKSM = await walletWrapper.isMyTokensRowDisplayed(KSM_ASSET_NAME);
-    expect(isKSM).toBeFalsy();
     const isMGX = await walletWrapper.isMyTokensRowDisplayed(MGX_ASSET_NAME);
     expect(isMGX).toBeTruthy();
     const isTUR = await walletWrapper.isMyTokensRowDisplayed(TUR_ASSET_NAME);

@@ -10,6 +10,7 @@ import { Node } from "../../utils/Framework/Node/Node";
 import {
   addExtraLogs,
   importPolkadotExtension,
+  waitForHttpCall,
 } from "../../utils/frontend/utils/Helper";
 import { Keyring } from "@polkadot/api";
 import { KeyringPair } from "@polkadot/keyring/types";
@@ -118,6 +119,8 @@ describe("Miocroapps UI liq pools tests", () => {
     await setupPageWithState(driver, acc_name);
     const sidebar = new Sidebar(driver);
     await sidebar.clickNavLiqPools();
+    const status = await waitForHttpCall(driver, "token/order-buckets", 20000);
+    expect(status).toEqual(200);
 
     const poolsList = new LiqPools(driver);
     const isPoolsListDisplayed = await poolsList.isDisplayed();
@@ -148,6 +151,8 @@ describe("Miocroapps UI liq pools tests", () => {
     await setupPageWithState(driver, acc_name);
     const sidebar = new Sidebar(driver);
     await sidebar.clickNavLiqPools();
+    const status = await waitForHttpCall(driver, "token/order-buckets", 20000);
+    expect(status).toEqual(200);
 
     const poolsList = new LiqPools(driver);
     const isPoolsListDisplayed = await poolsList.isDisplayed();
@@ -177,12 +182,13 @@ describe("Miocroapps UI liq pools tests", () => {
     await setupPageWithState(driver, acc_name);
     const sidebar = new Sidebar(driver);
     await sidebar.clickNavLiqPools();
+    const status = await waitForHttpCall(driver, "token/order-buckets", 20000);
+    expect(status).toEqual(200);
 
     const poolsList = new LiqPools(driver);
     const isPoolsListDisplayed = await poolsList.isDisplayed();
     expect(isPoolsListDisplayed).toBeTruthy();
     await poolsList.clickAllPoolsTab();
-    await driver.sleep(1500);
 
     let isTurKsmPoolVisible = await poolsList.isPoolItemDisplayed(
       "-" + TUR_ASSET_NAME + "-" + KSM_ASSET_NAME,
@@ -205,6 +211,8 @@ describe("Miocroapps UI liq pools tests", () => {
     const poolsList = new LiqPools(driver);
     const isPoolsListDisplayed = await poolsList.isDisplayed();
     expect(isPoolsListDisplayed).toBeTruthy();
+    const status = await waitForHttpCall(driver, "token/order-buckets", 20000);
+    expect(status).toEqual(200);
 
     const isMgxKsmPoolVisible = await poolsList.isPoolItemDisplayed(
       "-" + MGX_ASSET_NAME + "-" + KSM_ASSET_NAME,
@@ -243,6 +251,8 @@ describe("Miocroapps UI liq pools tests", () => {
     const poolsList = new LiqPools(driver);
     let isPoolsListDisplayed = await poolsList.isDisplayed();
     expect(isPoolsListDisplayed).toBeTruthy();
+    let status = await waitForHttpCall(driver, "token/order-buckets", 20000);
+    expect(status).toEqual(200);
 
     const isMgxKsmPoolVisible = await poolsList.isPoolItemDisplayed(
       "-" + MGX_ASSET_NAME + "-" + KSM_ASSET_NAME,
@@ -295,6 +305,8 @@ describe("Miocroapps UI liq pools tests", () => {
     await poolDetails.clickBackButton();
     isPoolsListDisplayed = await poolsList.isDisplayed();
     expect(isPoolsListDisplayed).toBeTruthy();
+    status = await waitForHttpCall(driver, "token/order-buckets", 20000);
+    expect(status).toEqual(200);
     await poolsList.clickPoolItem("-" + MGX_ASSET_NAME + "-" + KSM_ASSET_NAME);
 
     const my_new_pool_share = await poolDetails.getMyPositionAmount();

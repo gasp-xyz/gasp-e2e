@@ -10,6 +10,7 @@ import { DriverBuilder } from "../../utils/frontend/utils/Driver";
 import {
   addExtraLogs,
   importPolkadotExtension,
+  waitForHttpCall,
 } from "../../utils/frontend/utils/Helper";
 import { AssetWallet, User } from "../../utils/User";
 import { getEnvironmentRequiredVars } from "../../utils/utils";
@@ -124,6 +125,8 @@ describe("Microapps UI Position page tests", () => {
   it("Add pool liquidity", async () => {
     await setupPageWithState(driver, acc_name);
     await sidebar.clickNavLiqPools();
+    const status = await waitForHttpCall(driver, "token/order-buckets", 20000);
+    expect(status).toEqual(200);
 
     const poolsList = new LiqPools(driver);
     const isPoolsListDisplayed = await poolsList.isDisplayed();

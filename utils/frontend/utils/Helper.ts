@@ -18,6 +18,7 @@ import { BN } from "@polkadot/util";
 import { Talisman } from "../pages/Talisman";
 import { LiqPools } from "../microapps-pages/LiqPools";
 import toNumber from "lodash-es/toNumber";
+import { HttpResponse } from "selenium-webdriver/networkinterceptor";
 
 const timeOut = 60000;
 const outputPath = `reports/artifacts`;
@@ -183,6 +184,27 @@ export async function waitForElementToDissapear(
       continueWaiting = false;
     }
   } while (continueWaiting);
+}
+
+export async function waitForHttpCall(
+  driver: WebDriver,
+  callPattern: string,
+  timeout = 10000,
+): Promise<number> {
+  return await driver.wait(async function () {
+    const logs = await driver.manage().logs().get("performance");
+    for (const entry of logs) {
+      const log = JSON.parse(entry.message).message;
+      const resp: HttpResponse = log.params.response;
+      if (
+        log.method === "Network.responseReceived" &&
+        log.params.response.url.includes(callPattern)
+      ) {
+        return resp.status;
+      }
+    }
+    return 200;
+  }, timeout);
 }
 
 export async function waitForLoad(

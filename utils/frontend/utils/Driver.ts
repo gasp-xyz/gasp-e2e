@@ -36,6 +36,7 @@ export const DriverBuilder = (function () {
       enableVideo: true,
       enableLog: true,
     });
+    caps.set("goog:loggingPrefs", prefs);
 
     driver = new Builder()
       .forBrowser("chrome")
