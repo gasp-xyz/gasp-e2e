@@ -94,7 +94,7 @@ describe("Miocroapps UI liq pools tests", () => {
       },
     });
 
-    driver = await DriverBuilder.getInstance();
+    driver = await DriverBuilder.getInstance(true, true);
     await importPolkadotExtension(driver);
 
     const keyring = new Keyring({ type: "sr25519" });
