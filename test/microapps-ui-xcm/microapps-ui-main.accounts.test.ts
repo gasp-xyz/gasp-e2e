@@ -153,7 +153,11 @@ describe.each`
       await setupPageWithState(driver, accountName);
       const sidebar = new Sidebar(driver);
       await sidebar.clickNavLiqPools();
-      const status = await waitForHttpCall(driver, "token/order-buckets", 20000);
+      const status = await waitForHttpCall(
+        driver,
+        "token/order-buckets",
+        20000,
+      );
       expect(status).toEqual(200);
 
       const poolsList = new LiqPools(driver);
