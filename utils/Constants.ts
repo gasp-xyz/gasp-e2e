@@ -27,10 +27,12 @@ export const TUR_ASSET_NAME = "TUR";
 export const MAX_BALANCE = new BN("340282366920938463463374607431768211455"); //max balance
 export const EVENT_SECTION_PAYMENT = "transactionPayment";
 export const EVENT_METHOD_PAYMENT = "TransactionFeePaid";
+//https://github.com/mangata-finance/mangata-node/pull/716/files#diff-7bbcc3b35c4a5ccc06d27e2fbc592c65d70a996c5578c7dd079cb28a68bd71f7R1094
+
 export const FOUNDATION_ADDRESS_1 =
-  "5Gc1GyxLPr1A4jE1U7u9LFYuFftDjeSYZWQXHgejQhSdEN4s";
+  "0xc8d02dfbff5ce2fda651c7dd7719bc5b17b9c104";
 export const FOUNDATION_ADDRESS_2 =
-  "5GWESxf3u3taJ4h4nHpHwyZCyixnbywYrxt1Fpd98jNd1vTP";
+  "0xc4690c56c36cec7ed5f6ed5d5eebace0c317073a";
 export const FOUNDATION_ADDRESS_3 =
-  "5HmiQLrRJC5mayvaeAXnbMbUCNMypTwhX5NnHhYTwSnAuAdf";
+  "0xfc741134c82b81b7ab7efbf334b0c90ff8dbf22c";
 export const SDK_NOT_EXISTING_FLAG = "-1";

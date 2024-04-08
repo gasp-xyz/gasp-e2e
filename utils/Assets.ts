@@ -18,6 +18,7 @@ import { User } from "./User";
 import { MangataTypesAssetsCustomMetadata } from "@polkadot/types/lookup";
 import { SudoDB } from "./SudoDB";
 import { EthUser } from "./EthUser";
+import { testLog } from "./Logger";
 
 export class Assets {
   static legacy = true;
@@ -141,6 +142,7 @@ export class Assets {
         num,
         user.keyRingPair.address,
       );
+      testLog.getLog().info(`Issue asset to user: ${user.keyRingPair.address}`);
       const eventResult = getEventResultFromMangataTx(result, [
         "tokens",
         "Created",

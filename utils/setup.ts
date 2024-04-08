@@ -61,15 +61,16 @@ export function isBackendTest() {
 }
 export function getSudoUser(): EthUser {
   return new EthUser(
-    new Keyring({ type: "ecdsa" }),
+    new Keyring({ type: "ethereum" }),
     getEnvironmentRequiredVars().ethSudoAddress,
   );
 }
 export const setupUsers = () => {
-  keyring = new Keyring({ type: "sr25519" });
-  //sudo = getSudoUser();
+  keyring = new Keyring({ type: "ethereum" });
+  sudo = getSudoUser();
   //alice = new User(keyring, "//Alice");
   //eve = new User(keyring, "//Eve");
+
   const testUser1 = new User(keyring);
   const testUser2 = new User(keyring);
   const testUser3 = new User(keyring);
@@ -77,7 +78,7 @@ export const setupUsers = () => {
   const testUser5 = new User(keyring);
   const testUser6 = new User(keyring);
 
-  //keyring.addPair(sudo.keyRingPair);
+  keyring.addPair(sudo.keyRingPair);
   //keyring.addPair(alice.keyRingPair);
   //keyring.addPair(eve.keyRingPair);
   keyring.addPair(testUser1.keyRingPair);

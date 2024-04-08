@@ -19,16 +19,16 @@ const globalConfig = async () => {
   } catch (e) {
     await initApi();
   }
-
+  console.warn(`getApi`);
   const api = getApi();
 
   ipc.config.id = "nonceManager";
   ipc.config.retry = 1500;
   ipc.config.silent = false;
   ipc.config.sync = true;
-  const { sudo } = getEnvironmentRequiredVars();
-  const keyring = new Keyring({ type: "ecdsa" });
-  const sudoKeyringPair = keyring.createFromUri(sudo);
+  const sudoPrivateKey = getEnvironmentRequiredVars().ethSudoAddress;
+  const keyring = new Keyring({ type: "ethereum" });
+  const sudoKeyringPair = keyring.createFromUri(sudoPrivateKey);
   const nonce = await api.rpc.system.accountNextIndex(sudoKeyringPair.address);
   let numCollators = (await api?.query.parachainStaking.candidatePool()).length;
   const assetIds = [];
