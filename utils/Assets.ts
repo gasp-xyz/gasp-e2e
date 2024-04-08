@@ -6,7 +6,7 @@ import { assert } from "console";
 import _ from "lodash";
 import { MGA_ASSET_ID } from "./Constants";
 import { ExtrinsicResult } from "./eventListeners";
-import { api, Extrinsic, isBackendTest, setupApi, setupUsers } from "./setup";
+import { api, Extrinsic, setupApi, setupUsers } from "./setup";
 import { Sudo } from "./sudo";
 import { getAssetSupply, getNextAssetId } from "./tx";
 import {
@@ -20,7 +20,7 @@ import { SudoDB } from "./SudoDB";
 import { EthUser } from "./EthUser";
 
 export class Assets {
-  static legacy = isBackendTest();
+  static legacy = true;
   static MG_UNIT: BN = BN_TEN.pow(new BN(18));
   static DEFAULT_AMOUNT = BN_THOUSAND.mul(this.MG_UNIT);
 

@@ -5,7 +5,7 @@
 import { jest } from "@jest/globals";
 import { ApiPromise, Keyring } from "@polkadot/api";
 import { getApi, initApi } from "../../utils/api";
-import { BN, BN_ZERO } from "@polkadot/util";
+import { BN } from "@polkadot/util";
 import { setupApi, setupUsers } from "../../utils/setup";
 import { Sudo } from "../../utils/sudo";
 import { User } from "../../utils/User";
@@ -282,16 +282,4 @@ test("Total contributors returns the number of contributors per crowdloan AND va
   ).toHuman();
 
   expect(numberContributors!.toString()).toEqual("1");
-});
-
-test.only("fooo", async () => {
-  // eslint-disable-next-line no-console
-  console.log(sudo.keyRingPair.address);
-  const as = await signTx(
-    getApi(),
-    api.tx.tokens.transfer(sudo.keyRingPair.address, BN_ZERO, new BN(100)),
-    sudo.keyRingPair,
-  );
-  // eslint-disable-next-line no-console
-  console.log(as);
 });
