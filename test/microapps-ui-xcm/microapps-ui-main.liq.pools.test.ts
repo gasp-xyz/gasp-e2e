@@ -16,7 +16,7 @@ import { Keyring } from "@polkadot/api";
 import { KeyringPair } from "@polkadot/keyring/types";
 import { FIVE_MIN, KSM_ASSET_ID, MGA_ASSET_ID } from "../../utils/Constants";
 import { AssetWallet, User } from "../../utils/User";
-import { getEnvironmentRequiredVars } from "../../utils/utils";
+import { getEnvironmentRequiredVars, sleep } from "../../utils/utils";
 import {
   connectWallet,
   setupPage,
@@ -356,6 +356,7 @@ describe("Miocroapps UI liq pools tests", () => {
     const isMyPositionAmountDisplayed =
       await poolDetails.isMyPositionAmountDisplayed();
     expect(isMyPositionAmountDisplayed).toBeTruthy();
+    await sleep(3000);
     const my_pool_share = await poolDetails.getMyPositionAmount();
     expect(my_pool_share).toBeGreaterThan(0);
   });
