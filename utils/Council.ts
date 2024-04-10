@@ -12,6 +12,7 @@ import {
   validateExtrinsicSuccess,
 } from "./eventListeners";
 import { Maintenance } from "./Maintenance";
+import { EthUser } from "./EthUser";
 
 export class Council {
   static propose(threshold: number, extrinsic: Extrinsic, lenghtBound: number) {
@@ -92,7 +93,7 @@ export async function setupMaintenanceTests(
   type TestItem = { address: string; validate: Function };
   const testCases: { [id: string]: TestItem } = {};
   const councilUsers = await setupUsers();
-  councilUsers.push(alice);
+  councilUsers.push(alice as EthUser);
   await Sudo.batchAsSudoFinalized(
     Assets.mintNative(
       councilUsers[0],

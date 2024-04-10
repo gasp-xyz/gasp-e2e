@@ -157,17 +157,17 @@ export async function fakeDepositOnL2(
   amount: BN,
 ) {
   //Mint some tokens to the contract ( as if the user deposited them)
-  await mintERC20TokensOnEthL1(rollDownContractAddress, amount.toNumber(), erc20Address);
+  await mintERC20TokensOnEthL1(
+    rollDownContractAddress,
+    amount.toNumber(),
+    erc20Address,
+  );
   setupUsers();
   await setupApi();
   const tokenId = await getAssetIdFromErc20(erc20Address);
   await Sudo.batchAsSudoFinalized(
     Sudo.sudo(
-      Assets.mintTokenAddress(
-        tokenId,
-        ethUser.keyRingPair.address,
-        amount,
-      ),
+      Assets.mintTokenAddress(tokenId, ethUser.keyRingPair.address, amount),
     ),
     Assets.mintNative(ethUser),
   );

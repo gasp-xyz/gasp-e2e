@@ -71,12 +71,12 @@ export const setupUsers = () => {
   //alice = new User(keyring, "//Alice");
   //eve = new User(keyring, "//Eve");
 
-  const testUser1 = new User(keyring);
-  const testUser2 = new User(keyring);
-  const testUser3 = new User(keyring);
-  const testUser4 = new User(keyring);
-  const testUser5 = new User(keyring);
-  const testUser6 = new User(keyring);
+  const testUser1 = new EthUser(keyring);
+  const testUser2 = new EthUser(keyring);
+  const testUser3 = new EthUser(keyring);
+  const testUser4 = new EthUser(keyring);
+  const testUser5 = new EthUser(keyring);
+  const testUser6 = new EthUser(keyring);
 
   keyring.addPair(sudo.keyRingPair);
   //keyring.addPair(alice.keyRingPair);
