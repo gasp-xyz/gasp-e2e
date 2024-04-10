@@ -12,7 +12,6 @@ export class EthUser extends User {
   ethAddress: string;
 
   constructor(keyring: Keyring, pKey?: string) {
-
     let privateKey: string;
     if (pKey) {
       privateKey = pKey;
