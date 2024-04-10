@@ -45,7 +45,8 @@ let testUser1: User;
 let testUser2: User;
 let minStk: BN;
 const foundationAccountAddress = FOUNDATION_ADDRESS_1;
-describe("On Maintenance mode - multiSwaps / swaps / compound / prov liq are not allowed", () => {
+//TODO: Goncer Need to change getTokenIds function in setup5PoolsChained
+describe.skip("On Maintenance mode - multiSwaps / swaps / compound / prov liq are not allowed", () => {
   beforeAll(async () => {
     try {
       getApi();

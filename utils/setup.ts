@@ -11,6 +11,7 @@ import { Codec } from "@polkadot/types-codec/types";
 import { signTx } from "@mangata-finance/sdk";
 import { SubmittableExtrinsic } from "@polkadot/api/types";
 import { EthUser } from "./EthUser";
+import { randomBytes } from "crypto";
 // API
 export let api: ApiPromise;
 
@@ -71,12 +72,18 @@ export const setupUsers = () => {
   //alice = new User(keyring, "//Alice");
   //eve = new User(keyring, "//Eve");
 
-  const testUser1 = new User(keyring);
-  const testUser2 = new User(keyring);
-  const testUser3 = new User(keyring);
-  const testUser4 = new User(keyring);
-  const testUser5 = new User(keyring);
-  const testUser6 = new User(keyring);
+  const privateKey1 = "0x" + randomBytes(32).toString("hex");
+  const privateKey2 = "0x" + randomBytes(32).toString("hex");
+  const privateKey3 = "0x" + randomBytes(32).toString("hex");
+  const privateKey4 = "0x" + randomBytes(32).toString("hex");
+  const privateKey5 = "0x" + randomBytes(32).toString("hex");
+  const privateKey6 = "0x" + randomBytes(32).toString("hex");
+  const testUser1 = new EthUser(keyring, privateKey1);
+  const testUser2 = new EthUser(keyring, privateKey2);
+  const testUser3 = new EthUser(keyring, privateKey3);
+  const testUser4 = new EthUser(keyring, privateKey4);
+  const testUser5 = new EthUser(keyring, privateKey5);
+  const testUser6 = new EthUser(keyring, privateKey6);
 
   keyring.addPair(sudo.keyRingPair);
   //keyring.addPair(alice.keyRingPair);
@@ -111,8 +118,7 @@ export const devTestingPairs = (ss58Format?: number) => {
 export async function setup5PoolsChained(users: User[]) {
   const [testUser1, testUser2, testUser3, testUser4] = await setupUsers();
   users = [testUser1, testUser2, testUser3, testUser4];
-  const keyring = new Keyring({ type: "sr25519" });
-  const sudo = new User(keyring, getEnvironmentRequiredVars().sudo);
+  const sudo = getSudoUser();
   const tokenIds = await SudoDB.getInstance().getTokenIds(5);
   const mints = [
     Assets.mintToken(tokenIds[0], sudo),
