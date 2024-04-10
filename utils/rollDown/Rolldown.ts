@@ -80,6 +80,8 @@ export class L2Update {
   api: ApiPromise;
   pendingDeposits: any[];
   pendingWithdrawalResolutions: any[];
+  pendingCancelResultions: any[];
+  pendingL2UpdatesToRemove: any[];
 
   constructor(api: ApiPromise) {
     this.api = api;
@@ -89,6 +91,13 @@ export class L2Update {
     this.pendingWithdrawalResolutions = this.api.createType(
       "Vec<PalletRolldownMessagesWithdrawalResolution>",
     );
+    this.pendingCancelResultions = this.api.createType(
+      "Vec<PalletRolldownMessagesCancelResolution>",
+    );
+    this.pendingL2UpdatesToRemove = this.api.createType(
+      "Vec<PalletRolldownMessagesL2UpdatesToRemove>",
+    );
+
   }
 
   build() {
@@ -142,6 +151,46 @@ export class L2Update {
       },
     );
     this.pendingWithdrawalResolutions.push(withdraw);
+    return this;
+  }
+  withCancelResolution(
+    txIndex: number,
+    l2RequestId: number,
+    cancelJustified: boolean,
+    timestamp: number,
+  ) {
+    const cancelResolution = this.api.createType(
+      "PalletRolldownMessagesCancelResolution",
+      {
+        requestId: this.api.createType("PalletRolldownMessagesRequestId", [
+          "L1",
+          txIndex,
+        ]),
+        l2RequestId: l2RequestId,
+        cancelJustified: cancelJustified,
+        timeStamp: timestamp,
+      },
+    );
+    this.pendingCancelResultions.push(cancelResolution);
+    return this;
+  }
+  withUpdatesToRemove(
+    txIndex: number,
+    updatesToRemove: number[],
+    timestamp: number,
+  ) {
+    const updateToRemove = this.api.createType(
+      "PalletRolldownMessagesL2UpdatesToRemove",
+      {
+        requestId: this.api.createType("PalletRolldownMessagesRequestId", [
+          "L1",
+          txIndex,
+        ]),
+        l2UpdatesToRemove: this.api.createType("Vec<u128>", updatesToRemove),
+        timeStamp: timestamp,
+      },
+    );
+    this.pendingL2UpdatesToRemove.push(updateToRemove);
     return this;
   }
 }

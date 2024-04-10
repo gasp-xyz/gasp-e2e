@@ -230,6 +230,7 @@ describe("updateL1FromL1", () => {
     const res = await signTx(api, update, sequencer.keyRingPair);
     expectExtrinsicFail(res);
   });
+
   it("An update that is not ordered will fail", async () => {
     const txIndex = await Rolldown.l2OriginRequestId();
     const txIndexForL2Request = await Rolldown.lastProcessedRequestOnL2();
@@ -253,7 +254,36 @@ describe("updateL1FromL1", () => {
     const res = await signTx(api, update, sequencer.keyRingPair);
     expect(expectExtrinsicFail(res).data).toEqual("0x0a000000");
   });
+
   it("An update with two identical deposits must be executed correctly", async () => {
+    const txIndex = await Rolldown.l2OriginRequestId();
+    const txIndexForL2Request = await Rolldown.lastProcessedRequestOnL2();
+    const otherUser = new EthUser(new Keyring({ type: "ethereum" }));
+    const api = getApi();
+    const update = new L2Update(api)
+      .withWithdraw(txIndex - 2, txIndexForL2Request, false, Date.now())
+      .withDeposit(
+        txIndex - 1,
+        otherUser.ethAddress,
+        otherUser.ethAddress,
+        BN_MILLION,
+      )
+      .withDeposit(
+        txIndex,
+        otherUser.ethAddress,
+        otherUser.ethAddress,
+        BN_MILLION,
+      )
+      .build();
+    const res = await signTx(api, update, sequencer.keyRingPair);
+    expectExtrinsicSucceed(res);
+    await Rolldown.untilL2Processed(res);
+    expect(
+      (await otherUser.getBalanceForEthToken(otherUser.ethAddress)).free,
+    ).bnEqual(BN_MILLION.muln(2));
+  });
+
+  it.only("Every update item is validated", async () => {
     const txIndex = await Rolldown.l2OriginRequestId();
     const txIndexForL2Request = await Rolldown.lastProcessedRequestOnL2();
     const otherUser = new EthUser(new Keyring({ type: "ethereum" }));
