@@ -5,7 +5,7 @@ import { BN } from "@polkadot/util";
 import { MangataGenericEvent, signTx } from "@mangata-finance/sdk";
 import { getEventResultFromMangataTx } from "../txHandler";
 import { stringToBN, waitBlockNumber } from "../utils";
-import { getEventsAt } from "../eventListeners";
+import { getEventsAt, waitNewBlock } from "../eventListeners";
 import { ApiPromise } from "@polkadot/api";
 
 export class Rolldown {
@@ -13,7 +13,7 @@ export class Rolldown {
     setupUsers();
     const api = getApi();
     const requestId = await api.query.rolldown.l2OriginRequestId(l1);
-    return requestId as any as number;
+    return parseInt(requestId.toString());
   }
   static async lastProcessedRequestOnL2(l1 = "Ethereum") {
     setupUsers();
@@ -61,14 +61,33 @@ export class Rolldown {
     const api = getApi();
     return await signTx(api, tx, user.keyRingPair);
   }
+
+  static async waitForReadRights(userAddress: string, maxBlocks = 10) {
+    while (maxBlocks-- > 0) {
+      const seqRights =
+        await getApi().query.rolldown.sequencerRights(userAddress);
+      // @ts-ignore : it's secure to access the readRights property
+      if (seqRights && JSON.parse(JSON.stringify(seqRights)).readRights > 0) {
+        return;
+      } else {
+        await waitNewBlock();
+      }
+    }
+    throw new Error("Max blocks reached without getting read rights");
+  }
 }
 export class L2Update {
   api: ApiPromise;
   pendingDeposits: any[];
+  pendingWithdrawalResolutions: any[];
+
   constructor(api: ApiPromise) {
     this.api = api;
     this.pendingDeposits = this.api.createType(
       "Vec<PalletRolldownMessagesDeposit>",
+    );
+    this.pendingWithdrawalResolutions = this.api.createType(
+      "Vec<PalletRolldownMessagesWithdrawalResolution>",
     );
   }
 
@@ -78,13 +97,17 @@ export class L2Update {
         "Vec<PalletRolldownMessagesDeposit>",
         this.pendingDeposits,
       ),
+      pendingWithdrawalResolutions: this.api.createType(
+        "Vec<PalletRolldownMessagesWithdrawalResolution>",
+        this.pendingWithdrawalResolutions,
+      ),
     });
   }
   withDeposit(
     txIndex: number,
     ethAddress: string,
     erc20Address: string,
-    amountValue: number,
+    amountValue: number | BN,
   ) {
     const deposit = this.api.createType("PalletRolldownMessagesDeposit", {
       requestId: this.api.createType("PalletRolldownMessagesRequestId", [
@@ -97,6 +120,28 @@ export class L2Update {
       blockHash: ethAddress + "000000000000000000000000",
     });
     this.pendingDeposits.push(deposit);
+    return this;
+  }
+
+  withWithdraw(
+    txIndex: number,
+    txIndexForL2Request: number,
+    status: boolean,
+    timestamp: number,
+  ) {
+    const withdraw = this.api.createType(
+      "PalletRolldownMessagesWithdrawalResolution",
+      {
+        requestId: this.api.createType("PalletRolldownMessagesRequestId", [
+          "L1",
+          txIndex,
+        ]),
+        l2RequestId: txIndexForL2Request,
+        status: status,
+        timeStamp: timestamp,
+      },
+    );
+    this.pendingWithdrawalResolutions.push(withdraw);
     return this;
   }
 }
