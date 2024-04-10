@@ -115,7 +115,7 @@ export const devTestingPairs = (ss58Format?: number) => {
   };
 };
 
-export async function setup5PoolsChained(users: User[]) {
+export async function setup5PoolsChained(users: EthUser[]) {
   const [testUser1, testUser2, testUser3, testUser4] = await setupUsers();
   users = [testUser1, testUser2, testUser3, testUser4];
   const sudo = getSudoUser();
