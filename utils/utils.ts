@@ -152,8 +152,22 @@ export function getEnvironmentRequiredVars() {
   const oakUri = process.env.OAK_URL
     ? process.env.OAK_URL
     : "ws://127.0.0.1:9949";
+  const rollDownContractAddress = process.env.MANGATA_CONTRACT_ADDRESS
+    ? (process.env.MANGATA_CONTRACT_ADDRESS as `0x${string}`)
+    : ("0x5f3f1dbd7b74c6b46e8c44f98792a1daf8d69154" as `0x${string}`);
+
+  const erc20ContractAddress: `0x${string}` = process.env.ERC20_CONTRACT_ADDRESS
+    ? (process.env.ERC20_CONTRACT_ADDRESS as `0x${string}`)
+    : ("0xb7278a61aa25c888815afc32ad3cc52ff24fe575" as `0x${string}`);
+
+  const taskManager = process.env.AVS_TASK_MANAGER_ADDRESS
+    ? process.env.AVS_TASK_MANAGER_ADDRESS
+    : "0x9E545E3C0baAB3E08CdfD552C960A1050f373042";
 
   return {
+    taskManager: taskManager as `0x${string}`,
+    erc20ContractAddress: erc20ContractAddress,
+    rollDownContractAddress: rollDownContractAddress,
     ethSudoAddress:
       "0x5fb92d6e98884f76de468fa3f6278f8807c48bebc13595d45af5bdc4da702133",
     sudo: sudoUserName,

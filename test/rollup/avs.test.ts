@@ -7,9 +7,10 @@ import { PublicClient } from "viem";
 import { publicClient } from "../../utils/rollup/ethUtils";
 import { jest } from "@jest/globals";
 import { testLog } from "../../utils/Logger";
+import { getEnvironmentRequiredVars } from "../../utils/utils";
 
 jest.setTimeout(600000);
-const taskManagerAddress = "0x9E545E3C0baAB3E08CdfD552C960A1050f373042";
+const taskManagerAddress = getEnvironmentRequiredVars().taskManager;
 
 function waitForTaskGenerated(publicClient: PublicClient) {
   return new Promise((resolve, _) => {
@@ -94,6 +95,6 @@ describe("Rollup", () => {
 });
 
 // @ts-ignore
-BigInt.prototype["toJSON"] = function() {
+BigInt.prototype["toJSON"] = function () {
   return this.toString();
 };

@@ -18,11 +18,12 @@ import { testLog } from "../Logger";
 import { setupApi, setupUsers } from "../setup";
 import { Sudo } from "../sudo";
 import { Assets } from "../Assets";
+import { getEnvironmentRequiredVars } from "../utils";
 
 export const ROLL_DOWN_CONTRACT_ADDRESS =
-  "0x5f3f1dbd7b74c6b46e8c44f98792a1daf8d69154";
+  getEnvironmentRequiredVars().rollDownContractAddress;
 
-export const ERC20_ADDRESS = "0xb7278a61aa25c888815afc32ad3cc52ff24fe575";
+export const ERC20_ADDRESS = getEnvironmentRequiredVars().erc20ContractAddress;
 export const account = privateKeyToAccount(
   "0xac0974bec39a17e36ba4a6b4d238ff944bacb478cbed5efcae784d7bf4f2ff80",
 );
@@ -157,17 +158,17 @@ export async function fakeDepositOnL2(
   amount: BN,
 ) {
   //Mint some tokens to the contract ( as if the user deposited them)
-  await mintERC20TokensOnEthL1(rollDownContractAddress, amount.toNumber(), erc20Address);
+  await mintERC20TokensOnEthL1(
+    rollDownContractAddress,
+    amount.toNumber(),
+    erc20Address,
+  );
   setupUsers();
   await setupApi();
   const tokenId = await getAssetIdFromErc20(erc20Address);
   await Sudo.batchAsSudoFinalized(
     Sudo.sudo(
-      Assets.mintTokenAddress(
-        tokenId,
-        ethUser.keyRingPair.address,
-        amount,
-      ),
+      Assets.mintTokenAddress(tokenId, ethUser.keyRingPair.address, amount),
     ),
     Assets.mintNative(ethUser),
   );
