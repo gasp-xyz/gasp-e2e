@@ -769,3 +769,8 @@ export function expectExtrinsicSucceed(res: MangataGenericEvent[]) {
   const eventResponse = getEventResultFromMangataTx(res);
   expect(eventResponse.state).toEqual(ExtrinsicResult.ExtrinsicSuccess);
 }
+export function expectExtrinsicFail(res: MangataGenericEvent[]) {
+  const eventResponse = getEventResultFromMangataTx(res);
+  expect(eventResponse.state).toEqual(ExtrinsicResult.ExtrinsicFailed);
+  return eventResponse;
+}

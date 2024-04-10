@@ -9,7 +9,7 @@ import { L2Update, Rolldown } from "../../utils/rollDown/Rolldown";
 import { BN_MILLION, BN_THOUSAND, signTx } from "@mangata-finance/sdk";
 import { getApi, initApi } from "../../utils/api";
 import { setupUsers } from "../../utils/setup";
-import { expectExtrinsicSucceed } from "../../utils/utils";
+import { expectExtrinsicFail, expectExtrinsicSucceed } from "../../utils/utils";
 import { Keyring } from "@polkadot/api";
 
 describe("updateL1FromL1", () => {
@@ -183,5 +183,101 @@ describe("updateL1FromL1", () => {
     ).toBe(false);
 
     expect(events.length).toBeGreaterThan(2);
+  });
+
+  it("An update with no new updates will not fail but wont run", async () => {
+    const txIndex = await Rolldown.l2OriginRequestId();
+    const txIndexForL2Request = await Rolldown.lastProcessedRequestOnL2();
+    const otherUser = new EthUser(new Keyring({ type: "ethereum" }));
+    const api = getApi();
+    const update = new L2Update(api)
+      .withWithdraw(txIndex - 1, txIndexForL2Request, false, Date.now())
+      .withDeposit(
+        txIndex - 2,
+        otherUser.ethAddress,
+        otherUser.ethAddress,
+        BN_MILLION,
+      )
+      .build();
+    const res = await signTx(api, update, sequencer.keyRingPair);
+    expectExtrinsicSucceed(res);
+    const events = await Rolldown.untilL2Processed(res);
+    expect(
+      Rolldown.isDepositSucceed(events, otherUser.ethAddress, BN_MILLION),
+    ).toBe(false);
+  });
+
+  it("An update with a gap will fail", async () => {
+    const txIndex = await Rolldown.l2OriginRequestId();
+    const txIndexForL2Request = await Rolldown.lastProcessedRequestOnL2();
+    const otherUser = new EthUser(new Keyring({ type: "ethereum" }));
+    const api = getApi();
+    const update = new L2Update(api)
+      .withWithdraw(txIndex - 3, txIndexForL2Request, false, Date.now())
+      .withDeposit(
+        txIndex - 1,
+        otherUser.ethAddress,
+        otherUser.ethAddress,
+        BN_MILLION,
+      )
+      .withDeposit(
+        txIndex,
+        otherUser.ethAddress,
+        otherUser.ethAddress,
+        BN_MILLION,
+      )
+      .build();
+    const res = await signTx(api, update, sequencer.keyRingPair);
+    expectExtrinsicFail(res);
+  });
+  it("An update that is not ordered will fail", async () => {
+    const txIndex = await Rolldown.l2OriginRequestId();
+    const txIndexForL2Request = await Rolldown.lastProcessedRequestOnL2();
+    const otherUser = new EthUser(new Keyring({ type: "ethereum" }));
+    const api = getApi();
+    const update = new L2Update(api)
+      .withWithdraw(txIndex - 2, txIndexForL2Request, false, Date.now())
+      .withDeposit(
+        txIndex,
+        otherUser.ethAddress,
+        otherUser.ethAddress,
+        BN_MILLION,
+      )
+      .withDeposit(
+        txIndex - 1,
+        otherUser.ethAddress,
+        otherUser.ethAddress,
+        BN_MILLION,
+      )
+      .build();
+    const res = await signTx(api, update, sequencer.keyRingPair);
+    expect(expectExtrinsicFail(res).data).toEqual("0x0a000000");
+  });
+  it("An update with two identical deposits must be executed correctly", async () => {
+    const txIndex = await Rolldown.l2OriginRequestId();
+    const txIndexForL2Request = await Rolldown.lastProcessedRequestOnL2();
+    const otherUser = new EthUser(new Keyring({ type: "ethereum" }));
+    const api = getApi();
+    const update = new L2Update(api)
+      .withWithdraw(txIndex - 2, txIndexForL2Request, false, Date.now())
+      .withDeposit(
+        txIndex - 1,
+        otherUser.ethAddress,
+        otherUser.ethAddress,
+        BN_MILLION,
+      )
+      .withDeposit(
+        txIndex,
+        otherUser.ethAddress,
+        otherUser.ethAddress,
+        BN_MILLION,
+      )
+      .build();
+    const res = await signTx(api, update, sequencer.keyRingPair);
+    expectExtrinsicSucceed(res);
+    await Rolldown.untilL2Processed(res);
+    expect(
+      (await otherUser.getBalanceForEthToken(otherUser.ethAddress)).free,
+    ).bnEqual(BN_MILLION.muln(2));
   });
 });
