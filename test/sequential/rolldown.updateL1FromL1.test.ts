@@ -21,6 +21,55 @@ describe("updateL1FromL1", () => {
     sequencer = await SequencerStaking.getSequencerUser();
     await Rolldown.waitForReadRights(sequencer.ethAddress);
   });
+  it("Updates are accepted", async () => {
+    const txIndex = await Rolldown.l2OriginRequestId();
+    const txIndexForL2Request = await Rolldown.lastProcessedRequestOnL2();
+    const user = new EthUser(new Keyring({ type: "ethereum" }));
+    const userAddr = user.keyRingPair.address;
+    const api = getApi();
+    const update = new L2Update(api)
+      .withWithdraw(txIndex + 1, txIndexForL2Request, false, Date.now())
+      .withDeposit(txIndex, userAddr, userAddr, BN_MILLION)
+      .withUpdatesToRemove(txIndex + 2, [0, 1], Date.now())
+      .withCancelResolution(txIndex + 3, txIndexForL2Request, false, Date.now())
+      .build();
+    const res = await signTx(api, update, sequencer.keyRingPair);
+    expectExtrinsicSucceed(res);
+    await Rolldown.untilL2Processed(res);
+    expect((await user.getBalanceForEthToken(userAddr)).free).bnEqual(
+      BN_MILLION,
+    );
+  });
+  it("Future +1 updates are  not accepted", async () => {
+    const txIndex = await Rolldown.l2OriginRequestId();
+    const txIndexForL2Request = await Rolldown.lastProcessedRequestOnL2();
+    const user = new EthUser(new Keyring({ type: "ethereum" }));
+    const userAddr = user.keyRingPair.address;
+    const api = getApi();
+    const update = new L2Update(api)
+      .withWithdraw(txIndex + 4, txIndexForL2Request, false, Date.now())
+      .withDeposit(txIndex + 1, userAddr, userAddr, BN_MILLION)
+      .withUpdatesToRemove(txIndex + 2, [0, 1], Date.now())
+      .withCancelResolution(txIndex + 3, txIndexForL2Request, false, Date.now())
+      .build();
+    const res = await signTx(api, update, sequencer.keyRingPair);
+    expect(expectExtrinsicFail(res).data).toEqual("InvalidUpdate");
+  });
+  it("Future -1,0,+2,+3 updates are  not accepted", async () => {
+    const txIndex = await Rolldown.l2OriginRequestId();
+    const txIndexForL2Request = await Rolldown.lastProcessedRequestOnL2();
+    const user = new EthUser(new Keyring({ type: "ethereum" }));
+    const userAddr = user.keyRingPair.address;
+    const api = getApi();
+    const update = new L2Update(api)
+      .withWithdraw(txIndex - 1, txIndexForL2Request, false, Date.now())
+      .withDeposit(txIndex, userAddr, userAddr, BN_MILLION)
+      .withUpdatesToRemove(txIndex + 2, [0, 1], Date.now())
+      .withCancelResolution(txIndex + 3, txIndexForL2Request, false, Date.now())
+      .build();
+    const res = await signTx(api, update, sequencer.keyRingPair);
+    expect(expectExtrinsicFail(res).data).toEqual("InvalidUpdate");
+  });
   it("Add twice the same deposit with requestId", async () => {
     const txIndex = await Rolldown.l2OriginRequestId();
     const res = await Rolldown.deposit(
@@ -48,7 +97,6 @@ describe("updateL1FromL1", () => {
     expect(events.length).toBeGreaterThan(2);
     expect(events2.length).toBe(2);
   });
-
   it("Add twice the same request id but different deposits", async () => {
     const txIndex = await Rolldown.l2OriginRequestId();
     const api = getApi();
@@ -90,7 +138,6 @@ describe("updateL1FromL1", () => {
     expect(events.length).toBeGreaterThan(2);
     expect(events2.length).toBe(2);
   });
-
   it("Add twice the same request groups", async () => {
     const txIndex = await Rolldown.l2OriginRequestId();
     const otherUser = new EthUser(new Keyring({ type: "ethereum" }));
@@ -125,7 +172,6 @@ describe("updateL1FromL1", () => {
     expect(events.length).toBeGreaterThan(2);
     expect(events2.length).toBe(2);
   });
-
   it("Old Ids can be included but wont be considered", async () => {
     const txIndex = await Rolldown.l2OriginRequestId();
     const otherUser = new EthUser(new Keyring({ type: "ethereum" }));
@@ -157,7 +203,6 @@ describe("updateL1FromL1", () => {
 
     expect(events.length).toBeGreaterThan(2);
   });
-
   it("Old Ids can be included on some other update and wont be considered", async () => {
     const txIndex = await Rolldown.l2OriginRequestId();
     const txIndexForL2Request = await Rolldown.lastProcessedRequestOnL2();
@@ -185,7 +230,6 @@ describe("updateL1FromL1", () => {
 
     expect(events.length).toBeGreaterThan(2);
   });
-
   it("An update with no new updates will not fail but wont run", async () => {
     const txIndex = await Rolldown.l2OriginRequestId();
     const txIndexForL2Request = await Rolldown.lastProcessedRequestOnL2();
@@ -207,7 +251,6 @@ describe("updateL1FromL1", () => {
       Rolldown.isDepositSucceed(events, otherUser.ethAddress, BN_MILLION),
     ).toBe(false);
   });
-
   it("An update with a gap will fail", async () => {
     const txIndex = await Rolldown.l2OriginRequestId();
     const txIndexForL2Request = await Rolldown.lastProcessedRequestOnL2();
@@ -231,7 +274,6 @@ describe("updateL1FromL1", () => {
     const res = await signTx(api, update, sequencer.keyRingPair);
     expectExtrinsicFail(res);
   });
-
   it("An update that is not ordered will fail", async () => {
     const txIndex = await Rolldown.l2OriginRequestId();
     const txIndexForL2Request = await Rolldown.lastProcessedRequestOnL2();
@@ -255,7 +297,6 @@ describe("updateL1FromL1", () => {
     const res = await signTx(api, update, sequencer.keyRingPair);
     expect(expectExtrinsicFail(res).data).toEqual("InvalidUpdate");
   });
-
   it("An update with two identical deposits must be executed correctly", async () => {
     const txIndex = await Rolldown.l2OriginRequestId();
     const txIndexForL2Request = await Rolldown.lastProcessedRequestOnL2();
@@ -283,7 +324,6 @@ describe("updateL1FromL1", () => {
       (await otherUser.getBalanceForEthToken(otherUser.ethAddress)).free,
     ).bnEqual(BN_MILLION.muln(2));
   });
-
   it("Every update item is validated", async () => {
     const txIndex = await Rolldown.l2OriginRequestId();
     const txIndexForL2Request = await Rolldown.lastProcessedRequestOnL2();
@@ -312,10 +352,6 @@ describe("updateL1FromL1 - errors", () => {
     sequencer = await SequencerStaking.getSequencerUser();
     await Rolldown.waitForReadRights(sequencer.ethAddress);
   });
-  // TODO: Add test for:
-  // - An update with a gap with the 4 types
-  // - An update with a gap with the 4 types but not ordered
-  // - And update with each type and un-ordered
   describe.each([true, false])(`Update with gap: %s`, (withGap) => {
     it.each([0, 1, 2, 3])(
       `An update including gap? : ${withGap} at positions %s`,
