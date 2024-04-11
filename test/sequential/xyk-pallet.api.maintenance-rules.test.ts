@@ -32,17 +32,17 @@ import {
 import { Maintenance } from "../../utils/Maintenance";
 import { getLiquidityAssetId } from "../../utils/tx";
 import { ProofOfStake } from "../../utils/ProofOfStake";
-import { EthUser } from "../../utils/EthUser";
+import { User } from "../../utils/User";
 
 jest.spyOn(console, "log").mockImplementation(jest.fn());
 jest.setTimeout(1500000);
 
-let users: EthUser[] = [];
+let users: User[] = [];
 let tokenIds: BN[] = [];
 let api: ApiPromise;
 let swapOperations: { [K: string]: Extrinsic } = {};
-let testUser1: EthUser;
-let testUser2: EthUser;
+let testUser1: User;
+let testUser2: User;
 let minStk: BN;
 const foundationAccountAddress = FOUNDATION_ADDRESS_1;
 //TODO: Goncer Need to change getTokenIds function in setup5PoolsChained

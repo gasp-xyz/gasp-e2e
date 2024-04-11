@@ -76,7 +76,6 @@ export class User {
       } else {
         this.keyRingPair = keyring.addFromUri(name);
       }
-      this.keyRingPair.address = this.keyRingPair.address.toLowerCase();
       //this.ethAddress = this.keyRingPair.address.toString();
     }
     this.assets = [];
