@@ -11,6 +11,7 @@ import { getApi, initApi } from "../../utils/api";
 import { setupUsers } from "../../utils/setup";
 import { expectExtrinsicFail, expectExtrinsicSucceed } from "../../utils/utils";
 import { Keyring } from "@polkadot/api";
+import { testLog } from "../../utils/Logger";
 
 describe("updateL1FromL1", () => {
   let sequencer: EthUser;
@@ -252,7 +253,7 @@ describe("updateL1FromL1", () => {
       )
       .build();
     const res = await signTx(api, update, sequencer.keyRingPair);
-    expect(expectExtrinsicFail(res).data).toEqual("0x0a000000");
+    expect(expectExtrinsicFail(res).data).toEqual("InvalidUpdate");
   });
 
   it("An update with two identical deposits must be executed correctly", async () => {
@@ -302,8 +303,55 @@ describe("updateL1FromL1", () => {
       BN_MILLION,
     );
   });
+});
+describe("updateL1FromL1 - errors", () => {
+  let sequencer: EthUser;
+  beforeEach(async () => {
+    await initApi();
+    setupUsers();
+    sequencer = await SequencerStaking.getSequencerUser();
+    await Rolldown.waitForReadRights(sequencer.ethAddress);
+  });
   // TODO: Add test for:
   // - An update with a gap with the 4 types
   // - An update with a gap with the 4 types but not ordered
   // - And update with each type and un-ordered
+  describe.each([true, false])(`Update with gap: %s`, (withGap) => {
+    it.each([0, 1, 2, 3])(
+      `An update including gap? : ${withGap} at positions %s`,
+      async (gap) => {
+        const txIndex = await Rolldown.l2OriginRequestId();
+        const txIndexForL2Request = await Rolldown.lastProcessedRequestOnL2();
+        const user = new EthUser(new Keyring({ type: "ethereum" }));
+        const userAddr = user.keyRingPair.address;
+        const api = getApi();
+
+        const indexes = [txIndex, txIndex + 1, txIndex + 2, txIndex + 3].sort(
+          () => Math.random() - 0.5,
+        );
+        if (withGap) {
+          indexes[gap] = txIndex + 5;
+        }
+
+        testLog.getLog().info(`Indexes ${indexes}`);
+        const update = new L2Update(api)
+          .withWithdraw(indexes[0], txIndexForL2Request, false, Date.now())
+          .withDeposit(indexes[1], userAddr, userAddr, BN_MILLION)
+          .withUpdatesToRemove(indexes[2], [0, 1], Date.now())
+          .withCancelResolution(
+            indexes[3],
+            txIndexForL2Request,
+            false,
+            Date.now(),
+          )
+          .build();
+        const result = await signTx(api, update, sequencer.keyRingPair);
+        if (withGap) {
+          expectExtrinsicFail(result);
+        } else {
+          expectExtrinsicSucceed(result);
+        }
+      },
+    );
+  });
 });
