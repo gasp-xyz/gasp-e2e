@@ -97,7 +97,6 @@ export class L2Update {
     this.pendingL2UpdatesToRemove = this.api.createType(
       "Vec<PalletRolldownMessagesL2UpdatesToRemove>",
     );
-
   }
 
   build() {
@@ -106,9 +105,17 @@ export class L2Update {
         "Vec<PalletRolldownMessagesDeposit>",
         this.pendingDeposits,
       ),
+      pendingCancelResultions: this.api.createType(
+        "Vec<PalletRolldownMessagesCancelResolution>",
+        this.pendingCancelResultions,
+      ),
       pendingWithdrawalResolutions: this.api.createType(
         "Vec<PalletRolldownMessagesWithdrawalResolution>",
         this.pendingWithdrawalResolutions,
+      ),
+      pendingL2UpdatesToRemove: this.api.createType(
+        "Vec<PalletRolldownMessagesL2UpdatesToRemove>",
+        this.pendingL2UpdatesToRemove,
       ),
     });
   }
@@ -117,6 +124,7 @@ export class L2Update {
     ethAddress: string,
     erc20Address: string,
     amountValue: number | BN,
+    timestamp: number = Date.now(),
   ) {
     const deposit = this.api.createType("PalletRolldownMessagesDeposit", {
       requestId: this.api.createType("PalletRolldownMessagesRequestId", [
@@ -126,7 +134,7 @@ export class L2Update {
       depositRecipient: ethAddress,
       tokenAddress: erc20Address,
       amount: amountValue,
-      blockHash: ethAddress + "000000000000000000000000",
+      timeStamp: timestamp,
     });
     this.pendingDeposits.push(deposit);
     return this;
@@ -136,7 +144,7 @@ export class L2Update {
     txIndex: number,
     txIndexForL2Request: number,
     status: boolean,
-    timestamp: number,
+    timestamp: number = Date.now(),
   ) {
     const withdraw = this.api.createType(
       "PalletRolldownMessagesWithdrawalResolution",
@@ -157,7 +165,7 @@ export class L2Update {
     txIndex: number,
     l2RequestId: number,
     cancelJustified: boolean,
-    timestamp: number,
+    timestamp: number = Date.now(),
   ) {
     const cancelResolution = this.api.createType(
       "PalletRolldownMessagesCancelResolution",
@@ -177,7 +185,7 @@ export class L2Update {
   withUpdatesToRemove(
     txIndex: number,
     updatesToRemove: number[],
-    timestamp: number,
+    timestamp: number = Date.now(),
   ) {
     const updateToRemove = this.api.createType(
       "PalletRolldownMessagesL2UpdatesToRemove",

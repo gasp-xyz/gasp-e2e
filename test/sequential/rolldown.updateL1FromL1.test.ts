@@ -283,31 +283,27 @@ describe("updateL1FromL1", () => {
     ).bnEqual(BN_MILLION.muln(2));
   });
 
-  it.only("Every update item is validated", async () => {
+  it("Every update item is validated", async () => {
     const txIndex = await Rolldown.l2OriginRequestId();
     const txIndexForL2Request = await Rolldown.lastProcessedRequestOnL2();
-    const otherUser = new EthUser(new Keyring({ type: "ethereum" }));
+    const user = new EthUser(new Keyring({ type: "ethereum" }));
+    const userAddr = user.keyRingPair.address;
     const api = getApi();
     const update = new L2Update(api)
       .withWithdraw(txIndex - 2, txIndexForL2Request, false, Date.now())
-      .withDeposit(
-        txIndex - 1,
-        otherUser.ethAddress,
-        otherUser.ethAddress,
-        BN_MILLION,
-      )
-      .withDeposit(
-        txIndex,
-        otherUser.ethAddress,
-        otherUser.ethAddress,
-        BN_MILLION,
-      )
+      .withDeposit(txIndex - 1, userAddr, userAddr, BN_MILLION)
+      .withUpdatesToRemove(txIndex - 3, [0, 1], Date.now())
+      .withCancelResolution(txIndex - 4, txIndexForL2Request, false, Date.now())
       .build();
     const res = await signTx(api, update, sequencer.keyRingPair);
     expectExtrinsicSucceed(res);
     await Rolldown.untilL2Processed(res);
-    expect(
-      (await otherUser.getBalanceForEthToken(otherUser.ethAddress)).free,
-    ).bnEqual(BN_MILLION.muln(2));
+    expect((await user.getBalanceForEthToken(userAddr)).free).bnEqual(
+      BN_MILLION,
+    );
   });
+  // TODO: Add test for:
+  // - An update with a gap with the 4 types
+  // - An update with a gap with the 4 types but not ordered
+  // - And update with each type and un-ordered
 });
