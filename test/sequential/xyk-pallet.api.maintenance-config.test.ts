@@ -11,7 +11,7 @@ import { MangataGenericEvent } from "@mangata-finance/sdk";
 import { BN } from "@polkadot/util";
 import { setupApi, setupUsers, sudo } from "../../utils/setup";
 import { Sudo } from "../../utils/sudo";
-import { AssetWallet } from "../../utils/User";
+import { AssetWallet, User } from "../../utils/User";
 import { Xyk } from "../../utils/xyk";
 import { Maintenance } from "../../utils/Maintenance";
 import {
@@ -26,13 +26,12 @@ import {
   waitForRewards,
 } from "../../utils/eventListeners";
 import { testLog } from "../../utils/Logger";
-import { EthUser } from "../../utils/EthUser";
 
 jest.spyOn(console, "log").mockImplementation(jest.fn());
 jest.setTimeout(2500000);
 process.env.NODE_ENV = "test";
 
-let testUser1: EthUser;
+let testUser1: User;
 //let keyring: Keyring;
 let firstCurrency: BN;
 let eventResponse: EventResult;

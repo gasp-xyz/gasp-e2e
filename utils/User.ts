@@ -44,6 +44,7 @@ export class User {
   keyRingPair: KeyringPair;
   //ethAddress: any;
   name: String;
+  ethAddress: String;
   keyring: Keyring;
   assets: Asset[];
 
@@ -56,6 +57,7 @@ export class User {
     }
     this.name = name;
     this.keyring = keyring;
+    this.ethAddress = new ethers.Wallet(name).address;
     if (json) {
       this.keyRingPair = keyring.createFromJson(json);
     } else {
@@ -74,6 +76,7 @@ export class User {
       } else {
         this.keyRingPair = keyring.addFromUri(name);
       }
+      this.keyRingPair.address = this.keyRingPair.address.toLowerCase();
       //this.ethAddress = this.keyRingPair.address.toString();
     }
     this.assets = [];
