@@ -68,7 +68,10 @@ export function getSudoUser(): EthUser {
 export const setupUsers = () => {
   keyring = new Keyring({ type: "ethereum" });
   sudo = getSudoUser();
-  //alice = new User(keyring, "//Alice");
+  alice = new User(
+    keyring,
+    "0x5fb92d6e98884f76de468fa3f6278f8807c48bebc13595d45af5bdc4da702133",
+  );
   //eve = new User(keyring, "//Eve");
 
   const testUser1 = new User(keyring);
@@ -79,7 +82,7 @@ export const setupUsers = () => {
   const testUser6 = new User(keyring);
 
   keyring.addPair(sudo.keyRingPair);
-  //keyring.addPair(alice.keyRingPair);
+  keyring.addPair(alice.keyRingPair);
   //keyring.addPair(eve.keyRingPair);
   keyring.addPair(testUser1.keyRingPair);
   keyring.addPair(testUser2.keyRingPair);
@@ -186,7 +189,10 @@ export async function setupAPoolForUsers(users: User[]) {
 export const setupGasLess = async (force = false) => {
   keyring = new Keyring({ type: "ethereum" });
   sudo = getSudoUser();
-  //alice = new User(keyring, "//Alice");
+  alice = new User(
+    keyring,
+    "0x5fb92d6e98884f76de468fa3f6278f8807c48bebc13595d45af5bdc4da702133",
+  );
   //const alith = new User(keyring, "//Alith");
   await setupApi();
   const feeLockConfig = JSON.parse(

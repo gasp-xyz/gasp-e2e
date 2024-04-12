@@ -36,7 +36,7 @@ beforeAll(async () => {
   }
   await setupApi();
   setupUsers();
-  keyring = new Keyring({ type: "sr25519" });
+  keyring = new Keyring({ type: "ethereum" });
   testUserMGX = new User(keyring);
   testUserKSM = new User(keyring);
   testUserTUR = new User(keyring);
