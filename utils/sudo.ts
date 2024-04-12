@@ -1,12 +1,12 @@
 import { api, Extrinsic, getSudoUser, sudo } from "./setup";
 import { User } from "./User";
-import { MangataGenericEvent } from "@mangata-finance/sdk";
+import { MangataGenericEvent, signTx } from "@mangata-finance/sdk";
 import { SudoDB } from "./SudoDB";
 import { signSendFinalized } from "./sign";
 import { SubmittableExtrinsic } from "@polkadot/api/types";
 import type { ISubmittableResult } from "@polkadot/types/types";
 import { Call } from "@polkadot/types/interfaces";
-import { signTxMetamask } from "./metamask";
+import { getApi } from "./api";
 
 export class Sudo {
   static sudo(
@@ -39,10 +39,11 @@ export class Sudo {
     const nonce = await SudoDB.getInstance().getSudoNonce(
       getSudoUser().ethAddress,
     );
-    return signTxMetamask(
+    const api = getApi();
+    return signTx(
+      api,
       api.tx.utility.batchAll(txs as any as Call[]),
-      sudo.ethAddress,
-      sudo.privateKey,
+      sudo.keyRingPair,
       { nonce: nonce },
     );
   }

@@ -61,15 +61,19 @@ export function isBackendTest() {
 }
 export function getSudoUser(): EthUser {
   return new EthUser(
-    new Keyring({ type: "ecdsa" }),
+    new Keyring({ type: "ethereum" }),
     getEnvironmentRequiredVars().ethSudoAddress,
   );
 }
 export const setupUsers = () => {
-  keyring = new Keyring({ type: "sr25519" });
+  keyring = new Keyring({ type: "ethereum" });
   sudo = getSudoUser();
-  alice = new User(keyring, "//Alice");
-  eve = new User(keyring, "//Eve");
+  alice = new User(
+    keyring,
+    "0x5fb92d6e98884f76de468fa3f6278f8807c48bebc13595d45af5bdc4da702133",
+  );
+  //eve = new User(keyring, "//Eve");
+
   const testUser1 = new User(keyring);
   const testUser2 = new User(keyring);
   const testUser3 = new User(keyring);
@@ -79,7 +83,7 @@ export const setupUsers = () => {
 
   keyring.addPair(sudo.keyRingPair);
   keyring.addPair(alice.keyRingPair);
-  keyring.addPair(eve.keyRingPair);
+  //keyring.addPair(eve.keyRingPair);
   keyring.addPair(testUser1.keyRingPair);
   keyring.addPair(testUser2.keyRingPair);
   keyring.addPair(testUser3.keyRingPair);
@@ -110,8 +114,7 @@ export const devTestingPairs = (ss58Format?: number) => {
 export async function setup5PoolsChained(users: User[]) {
   const [testUser1, testUser2, testUser3, testUser4] = await setupUsers();
   users = [testUser1, testUser2, testUser3, testUser4];
-  const keyring = new Keyring({ type: "sr25519" });
-  const sudo = new User(keyring, getEnvironmentRequiredVars().sudo);
+  const sudo = getSudoUser();
   const tokenIds = await SudoDB.getInstance().getTokenIds(5);
   const mints = [
     Assets.mintToken(tokenIds[0], sudo),
@@ -184,10 +187,13 @@ export async function setupAPoolForUsers(users: User[]) {
   return { users, tokenIds };
 }
 export const setupGasLess = async (force = false) => {
-  keyring = new Keyring({ type: "ecdsa" });
-  const { sudo: sudoUserName } = getEnvironmentRequiredVars();
-  sudo = new User(keyring, sudoUserName) as EthUser;
-  alice = new User(keyring, "//Alice");
+  keyring = new Keyring({ type: "ethereum" });
+  sudo = getSudoUser();
+  alice = new User(
+    keyring,
+    "0x5fb92d6e98884f76de468fa3f6278f8807c48bebc13595d45af5bdc4da702133",
+  );
+  //const alith = new User(keyring, "//Alith");
   await setupApi();
   const feeLockConfig = JSON.parse(
     JSON.stringify(await api?.query.feeLock.feeLockMetadata()),
