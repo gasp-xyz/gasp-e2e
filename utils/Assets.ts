@@ -21,7 +21,7 @@ import { EthUser } from "./EthUser";
 import { testLog } from "./Logger";
 
 export class Assets {
-  static legacy = true;
+  static legacy = false;
   static MG_UNIT: BN = BN_TEN.pow(new BN(18));
   static DEFAULT_AMOUNT = BN_THOUSAND.mul(this.MG_UNIT);
 
