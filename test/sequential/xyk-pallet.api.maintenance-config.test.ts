@@ -26,7 +26,6 @@ import {
   waitForRewards,
 } from "../../utils/eventListeners";
 import { testLog } from "../../utils/Logger";
-import { ProofOfStake } from "../../utils/ProofOfStake";
 
 jest.spyOn(console, "log").mockImplementation(jest.fn());
 jest.setTimeout(2500000);
@@ -83,7 +82,7 @@ beforeAll(async () => {
   liqId = await getLiquidityAssetId(MGA_ASSET_ID, firstCurrency);
 
   await Sudo.batchAsSudoFinalized(
-    ProofOfStake.updatePoolPromotion(liqId, 20),
+    Assets.promotePool(liqId.toNumber(), 20),
     Sudo.sudoAs(
       testUser1,
       Xyk.mintLiquidity(MGA_ASSET_ID, firstCurrency, defaultPoolVolumeValue),
