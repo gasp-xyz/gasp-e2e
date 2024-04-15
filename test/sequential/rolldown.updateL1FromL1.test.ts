@@ -6,10 +6,10 @@
 import { EthUser } from "../../utils/EthUser";
 import { SequencerStaking } from "../../utils/rollDown/SequencerStaking";
 import { L2Update, Rolldown } from "../../utils/rollDown/Rolldown";
-import { BN_MILLION, BN_THOUSAND, signTx } from "@mangata-finance/sdk";
+import { BN_MILLION, BN_THOUSAND, BN_ZERO, signTx } from "@mangata-finance/sdk";
 import { getApi, initApi } from "../../utils/api";
 import { setupUsers } from "../../utils/setup";
-import { expectExtrinsicFail, expectExtrinsicSucceed, waitForNBlocks } from "../../utils/utils";
+import { expectExtrinsicFail, expectExtrinsicSucceed, stringToBN, waitForNBlocks } from "../../utils/utils";
 import { Keyring } from "@polkadot/api";
 import { testLog } from "../../utils/Logger";
 
@@ -53,7 +53,7 @@ describe("updateL1FromL1", () => {
       .withCancelResolution(txIndex + 3, txIndexForL2Request, false, Date.now())
       .build();
     const res = await signTx(api, update, sequencer.keyRingPair);
-    expect(expectExtrinsicFail(res).data).toEqual("InvalidUpdate");
+    expect(expectExtrinsicFail(res).data).toEqual("WrongRequestId");
   });
   it("Future -1,0,+2,+3 updates are  not accepted", async () => {
     const txIndex = await Rolldown.l2OriginRequestId();
@@ -306,22 +306,26 @@ describe("updateL1FromL1", () => {
       .withWithdraw(txIndex - 1, txIndexForL2Request, false, Date.now())
       .withDeposit(
         txIndex,
-        otherUser.ethAddress,
-        otherUser.ethAddress,
+        otherUser.keyRingPair.address,
+        otherUser.keyRingPair.address,
         BN_MILLION,
       )
       .withDeposit(
         txIndex +1 ,
-        otherUser.ethAddress,
-        otherUser.ethAddress,
+        otherUser.keyRingPair.address,
+        otherUser.keyRingPair.address,
         BN_MILLION,
       )
       .build();
     const res = await signTx(api, update, sequencer.keyRingPair);
     expectExtrinsicSucceed(res);
     await Rolldown.untilL2Processed(res);
+    await waitForNBlocks(1);
+    const balance = await otherUser.getBalanceForEthToken(otherUser.keyRingPair.address);
     expect(
-      (await otherUser.getBalanceForEthToken(otherUser.ethAddress)).free,
+      stringToBN(
+        balance.free.toString()
+      )
     ).bnEqual(BN_MILLION.muln(2));
   });
   it("Every update item is validated", async () => {
@@ -341,7 +345,7 @@ describe("updateL1FromL1", () => {
     await Rolldown.untilL2Processed(res);
     await waitForNBlocks(1);
     expect((await user.getBalanceForEthToken(userAddr)).free).bnEqual(
-      BN_MILLION,
+      BN_ZERO,
     );
   });
 });
