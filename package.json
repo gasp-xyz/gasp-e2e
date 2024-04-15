@@ -135,14 +135,14 @@
     "cliTool": "node --experimental-specifier-resolution=node --loader ts-node/esm --experimental-vm-modules cliTool/index.ts --runInBand",
     "test-rollup": "export JEST_HTML_REPORTERS_PUBLIC_PATH=reports/html-report-seq; node --experimental-specifier-resolution=node --loader ts-node/esm --experimental-vm-modules node_modules/jest/bin/jest.js --verbose --runInBand --group=rollup --forceExit ",
     "test-rollupUpdate": "export JEST_HTML_REPORTERS_PUBLIC_PATH=reports/html-report-seq; node --experimental-specifier-resolution=node --loader ts-node/esm --experimental-vm-modules node_modules/jest/bin/jest.js --verbose --runInBand --group=rollupUpdate --forceExit ",
-    "test-cookiesAndMilk": "export JEST_HTML_REPORTERS_PUBLIC_PATH=reports/html-report-seq; rm nonce.db ; rm sudo.lock;  node --experimental-specifier-resolution=node --loader ts-node/esm --experimental-vm-modules node_modules/jest/bin/jest.js --verbose --runInBand --group=cookiesAndMilk --forceExit ",
     "runtimeUpgrade": " jest --verbose --ci --group=upgradeRuntime --runInBand --forceExit"
+    
   },
   "devDependencies": {
     "@babel/core": "^7.13.10",
     "@babel/preset-env": "^7.13.10",
     "@babel/preset-typescript": "^7.13.0",
-    "@mangata-finance/types": "2.2.3-eth-rollup-develop.30",
+    "@mangata-finance/types": "2.2.3-eth-rollup-develop.16",
     "@types/jest": "29.5.5",
     "@types/lodash-es": "^4.14.173",
     "@typescript-eslint/eslint-plugin": "^6.7.5",

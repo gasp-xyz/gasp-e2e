@@ -10,7 +10,6 @@ import {
   expectMGAExtrinsicSuDidSuccess,
 } from "../../utils/eventListeners";
 import { BN } from "@polkadot/util";
-import { User } from "../../utils/User";
 import {
   setupApi,
   setup5PoolsChained,
@@ -33,6 +32,7 @@ import {
 import { Maintenance } from "../../utils/Maintenance";
 import { getLiquidityAssetId } from "../../utils/tx";
 import { ProofOfStake } from "../../utils/ProofOfStake";
+import { User } from "../../utils/User";
 
 jest.spyOn(console, "log").mockImplementation(jest.fn());
 jest.setTimeout(1500000);
@@ -45,6 +45,7 @@ let testUser1: User;
 let testUser2: User;
 let minStk: BN;
 const foundationAccountAddress = FOUNDATION_ADDRESS_1;
+//TODO: Goncer Need to change getTokenIds function in setup5PoolsChained
 describe("On Maintenance mode - multiSwaps / swaps / compound / prov liq are not allowed", () => {
   beforeAll(async () => {
     try {
@@ -162,9 +163,9 @@ describe("On Maintenance mode - aggregators and candidates are allowed", () => {
       expectMGAExtrinsicSuDidSuccess(events);
     });
     const candidateAggData = await Staking.candidateAggregator();
-    expect(candidateAggData[testUser2.keyRingPair.address]).toEqual(
-      aggregator.keyRingPair.address,
-    );
+    expect(
+      candidateAggData[testUser2.keyRingPair.address.toLowerCase()],
+    ).toEqual(aggregator.keyRingPair.address.toLowerCase());
   });
 
   afterAll(async () => {

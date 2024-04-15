@@ -109,6 +109,7 @@ export class L2Update {
         "Vec<PalletRolldownMessagesCancelResolution>",
         this.pendingCancelResultions,
       ),
+      // @ts-ignore
       pendingWithdrawalResolutions: this.api.createType(
         "Vec<PalletRolldownMessagesWithdrawalResolution>",
         this.pendingWithdrawalResolutions,

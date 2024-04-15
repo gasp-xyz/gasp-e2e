@@ -6,7 +6,7 @@ import { jest } from "@jest/globals";
 import { ApiPromise, Keyring } from "@polkadot/api";
 import { getApi, initApi } from "../../utils/api";
 import { BN } from "@polkadot/util";
-import { setupApi, setupUsers } from "../../utils/setup";
+import { getSudoUser, setupApi, setupUsers } from "../../utils/setup";
 import { Sudo } from "../../utils/sudo";
 import { User } from "../../utils/User";
 import { getBlockNumber, isBadOriginError } from "../../utils/utils";
@@ -24,6 +24,7 @@ import {
   initializeCrowdloanReward,
   setCrowdloanAllocation,
 } from "../../utils/tx";
+import { Assets } from "../../utils/Assets";
 
 jest.spyOn(console, "log").mockImplementation(jest.fn());
 jest.setTimeout(2500000);
@@ -46,11 +47,7 @@ beforeAll(async () => {
   keyring = new Keyring({ type: "ethereum" });
 
   api = getApi();
-  sudo = new User(
-    keyring,
-    "0x5fb92d6e98884f76de468fa3f6278f8807c48bebc13595d45af5bdc4da702133",
-  );
-
+  sudo = getSudoUser();
   await setupApi();
 
   [testUser1] = setupUsers();
@@ -58,12 +55,7 @@ beforeAll(async () => {
   keyring.addPair(sudo.keyRingPair);
 
   testUser1.addAsset(nativeCurrencyId);
-  // await Sudo.batchAsSudoFinalized(
-  //   Assets.mintNative(testUser1),
-  //   Assets.mintNative(testUser2),
-  //   Assets.mintNative(testUser3),
-  //   Assets.mintNative(testUser4),
-  // );
+  await Sudo.batchAsSudoFinalized(Assets.mintNative(testUser1));
 });
 
 describe("Only sudo can", () => {

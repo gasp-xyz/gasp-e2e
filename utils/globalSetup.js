@@ -1,11 +1,13 @@
 /* eslint-disable no-console */
-import { isBackendTest, setupGasLess } from "./setup";
+import { isBackendTest, setupApi, setupGasLess, setupUsers } from "./setup";
 import dotenv from "dotenv";
 import ipc from "node-ipc";
 import { getApi, initApi } from "./api";
 import { getEnvironmentRequiredVars } from "./utils";
 import { Keyring } from "@polkadot/api";
 import { testLog } from "./Logger.js";
+import { Sudo } from "./sudo.js";
+import { Assets } from "./Assets.js";
 
 dotenv.config();
 
@@ -31,7 +33,7 @@ const globalConfig = async () => {
   const sudoKeyringPair = keyring.createFromUri(sudoPrivateKey);
   const nonce = await api.rpc.system.accountNextIndex(sudoKeyringPair.address);
   let numCollators = (await api?.query.parachainStaking.candidatePool()).length;
-  const assetIds = [];
+  let assetIds = [];
   console.info(`${nonce}`);
   console.info(`${numCollators}`);
 
@@ -49,7 +51,7 @@ const globalConfig = async () => {
     ipc.server.on("getTokenId", (data, socket) => {
       const assetId = assetIds.pop();
       if (assetIds.length === 0) {
-        // registerAssets().then((value) => (assetIds = value.reverse()));
+        registerAssets().then((value) => (assetIds = value.reverse()));
       }
       console.info("serving getTokenId" + data.id + assetId);
       ipc.server.emit(socket, "TokenId-" + data.id, assetId);
@@ -65,8 +67,8 @@ const globalConfig = async () => {
 
   if (isBackendTest()) {
     testLog.getLog().info("Registering assets....");
-    //const registeredIds = await registerAssets();
-    //assetIds = registeredIds.reverse();
+    const registeredIds = await registerAssets();
+    assetIds = registeredIds.reverse();
   } else {
     testLog.getLog().info("Not a BE test, skipping asset registration!");
   }
@@ -74,19 +76,19 @@ const globalConfig = async () => {
 
 export default globalConfig;
 
-// async function registerAssets(num = 300) {
-//   await setupApi();
-//   setupUsers();
-//   const txs = [
-//     ...Array(num)
-//       .fill(0)
-//       .map((_, i) => {
-//         return Assets.registerAsset(`TEST_${i}`, `SYM_${i}`, 18);
-//       }),
-//   ];
-//   const result = await Sudo.batchAsSudoFinalized(...txs);
-//   testLog.getLog().info("Registered assets", result);
-//   return result
-//     .filter((X) => X.method === "RegisteredAsset")
-//     .map((t) => t.eventData[0].data.toString());
-// }
+async function registerAssets(num = 300) {
+  await setupApi();
+  setupUsers();
+  const txs = [
+    ...Array(num)
+      .fill(0)
+      .map((_, i) => {
+        return Assets.registerAsset(`TEST_${i}`, `SYM_${i}`, 18);
+      }),
+  ];
+  const result = await Sudo.batchAsSudoFinalized(...txs);
+  testLog.getLog().info("Registered assets", result);
+  return result
+    .filter((X) => X.method === "RegisteredAsset")
+    .map((t) => t.eventData[0].data.toString());
+}

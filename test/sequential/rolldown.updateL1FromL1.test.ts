@@ -9,7 +9,7 @@ import { L2Update, Rolldown } from "../../utils/rollDown/Rolldown";
 import { BN_MILLION, BN_THOUSAND, signTx } from "@mangata-finance/sdk";
 import { getApi, initApi } from "../../utils/api";
 import { setupUsers } from "../../utils/setup";
-import { expectExtrinsicFail, expectExtrinsicSucceed } from "../../utils/utils";
+import { expectExtrinsicFail, expectExtrinsicSucceed, waitForNBlocks } from "../../utils/utils";
 import { Keyring } from "@polkadot/api";
 import { testLog } from "../../utils/Logger";
 
@@ -303,15 +303,15 @@ describe("updateL1FromL1", () => {
     const otherUser = new EthUser(new Keyring({ type: "ethereum" }));
     const api = getApi();
     const update = new L2Update(api)
-      .withWithdraw(txIndex - 2, txIndexForL2Request, false, Date.now())
+      .withWithdraw(txIndex - 1, txIndexForL2Request, false, Date.now())
       .withDeposit(
-        txIndex - 1,
+        txIndex,
         otherUser.ethAddress,
         otherUser.ethAddress,
         BN_MILLION,
       )
       .withDeposit(
-        txIndex,
+        txIndex +1 ,
         otherUser.ethAddress,
         otherUser.ethAddress,
         BN_MILLION,
@@ -339,6 +339,7 @@ describe("updateL1FromL1", () => {
     const res = await signTx(api, update, sequencer.keyRingPair);
     expectExtrinsicSucceed(res);
     await Rolldown.untilL2Processed(res);
+    await waitForNBlocks(1);
     expect((await user.getBalanceForEthToken(userAddr)).free).bnEqual(
       BN_MILLION,
     );

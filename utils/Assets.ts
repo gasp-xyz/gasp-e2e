@@ -1,11 +1,11 @@
-import { BN_TEN, BN_THOUSAND } from "@mangata-finance/sdk";
+import { BN_TEN, BN_THOUSAND, MangataGenericEvent } from "@mangata-finance/sdk";
 import { ApiPromise } from "@polkadot/api";
 import { AccountInfo } from "@polkadot/types/interfaces";
-import { BN } from "@polkadot/util";
+import { BN, BN_FOUR } from "@polkadot/util";
 import { assert } from "console";
 import _ from "lodash";
 import { MGA_ASSET_ID } from "./Constants";
-import { ExtrinsicResult } from "./eventListeners";
+import { EventResult, ExtrinsicResult } from "./eventListeners";
 import { api, Extrinsic, setupApi, setupUsers } from "./setup";
 import { Sudo } from "./sudo";
 import { getAssetSupply, getNextAssetId } from "./tx";
@@ -21,7 +21,7 @@ import { EthUser } from "./EthUser";
 import { testLog } from "./Logger";
 
 export class Assets {
-  static legacy = true;
+  static legacy = false;
   static MG_UNIT: BN = BN_TEN.pow(new BN(18));
   static DEFAULT_AMOUNT = BN_THOUSAND.mul(this.MG_UNIT);
 
@@ -137,20 +137,43 @@ export class Assets {
     skipInfo = false,
   ) {
     if (this.legacy) {
-      const result = await sudoIssueAsset(
+      let result: MangataGenericEvent[];
+      let eventResult: EventResult;
+      let assetId: any;
+      result = await sudoIssueAsset(
         sudo.keyRingPair,
         num,
         user.keyRingPair.address,
       );
       testLog.getLog().info(`Issue asset to user: ${user.keyRingPair.address}`);
-      const eventResult = getEventResultFromMangataTx(result, [
+      eventResult = getEventResultFromMangataTx(result, [
         "tokens",
         "Created",
         user.keyRingPair.address,
       ]);
 
       assert(eventResult.state === ExtrinsicResult.ExtrinsicSuccess);
-      const assetId = eventResult.data[0].split(",").join("");
+      assetId = eventResult.data[0].split(",").join("");
+      if (assetId === "4") {
+        result = await sudoIssueAsset(
+          sudo.keyRingPair,
+          num,
+          user.keyRingPair.address,
+        );
+        testLog
+          .getLog()
+          .info(
+            `Wrong token number! Change asset to user: ${user.keyRingPair.address}`,
+          );
+        eventResult = getEventResultFromMangataTx(result, [
+          "tokens",
+          "Created",
+          user.keyRingPair.address,
+        ]);
+
+        assert(eventResult.state === ExtrinsicResult.ExtrinsicSuccess);
+        assetId = eventResult.data[0].split(",").join("");
+      }
       if (!skipInfo) {
         await setAssetInfo(
           sudo,
@@ -163,12 +186,16 @@ export class Assets {
       }
       return new BN(assetId);
     } else {
-      const assetId = await this.setupUserWithCurrencies(
-        user,
-        [num],
-        sudo,
-        skipInfo,
-      );
+      let assetId: BN[];
+      assetId = await this.setupUserWithCurrencies(user, [num], sudo, skipInfo);
+      if (assetId[0] === BN_FOUR) {
+        assetId = await this.setupUserWithCurrencies(
+          user,
+          [num],
+          sudo,
+          skipInfo,
+        );
+      }
       return assetId[0];
     }
   }
