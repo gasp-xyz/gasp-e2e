@@ -188,7 +188,7 @@ export class Assets {
     } else {
       let assetId: BN[];
       assetId = await this.setupUserWithCurrencies(user, [num], sudo, skipInfo);
-      if (assetId[0] === BN_FOUR) {
+      if (assetId[0].eq(BN_FOUR)) {
         assetId = await this.setupUserWithCurrencies(
           user,
           [num],
