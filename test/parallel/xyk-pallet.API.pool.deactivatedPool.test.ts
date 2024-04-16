@@ -188,7 +188,7 @@ test("GIVEN deactivated pool WHEN the user tries to swap/multiswap tokens on the
 test("GIVEN deactivated pool WHEN sudo try to promote a pool THEN poolPromotion is updated", async () => {
   const api = getApi();
 
-  await promotePool(sudo.keyRingPair, liquidityId, 35).then((result) => {
+  await promotePool(sudo, liquidityId, 35).then((result) => {
     const eventResponse = getEventResultFromMangataTx(result);
     expect(eventResponse.state).toEqual(ExtrinsicResult.ExtrinsicSuccess);
   });
@@ -229,7 +229,7 @@ test("GIVEN deactivated pool WHEN call RPCs that work with the pools (e.g., calc
 });
 
 test("GIVEN deactivated pool WHEN user tries to activate the pool THEN error returns", async () => {
-  await promotePool(sudo.keyRingPair, liquidityId, 20);
+  await promotePool(sudo, liquidityId, 20);
 
   await activateLiquidity(
     testUser1.keyRingPair,

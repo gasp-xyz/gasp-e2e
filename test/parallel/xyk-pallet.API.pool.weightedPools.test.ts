@@ -122,11 +122,7 @@ test("Validate that weight can be modified by using updatePoolPromotion AND only
     expect(eventResponse.data).toEqual("UnknownError");
   });
 
-  await promotePool(
-    sudo.keyRingPair,
-    liqId,
-    poolWeightBefore.div(new BN(2)).toNumber(),
-  );
+  await promotePool(sudo, liqId, poolWeightBefore.div(new BN(2)).toNumber());
 
   const poolWeightAfter = (await getPromotedPoolInfo(liqId)).weight;
 
@@ -184,7 +180,7 @@ test("GIVEN a pool WHEN it has configured with 0 THEN no new issuance will be re
 
   await waitForRewards(testUser1, liqId);
 
-  await promotePool(sudo.keyRingPair, liqId, 0);
+  await promotePool(sudo, liqId, 0);
 
   await claimRewards(testUser1, liqId).then((result) => {
     const eventResponse = getEventResultFromMangataTx(result);
@@ -215,7 +211,7 @@ test("GIVEN a deactivated pool WHEN its configured with more weight, THEN reward
 
   const poolRewardsBefore = (await getPromotedPoolInfo(liqId)).rewards;
 
-  await promotePool(sudo.keyRingPair, liqId, 0);
+  await promotePool(sudo, liqId, 0);
 
   const [testUser2] = setupUsers();
 
@@ -224,7 +220,7 @@ test("GIVEN a deactivated pool WHEN its configured with more weight, THEN reward
     Assets.mintNative(testUser2),
   );
 
-  await promotePool(sudo.keyRingPair, liqId, 20);
+  await promotePool(sudo, liqId, 20);
 
   await mintLiquidity(
     testUser2.keyRingPair,
@@ -250,7 +246,7 @@ test("GIVEN an activated pool WHEN pool was deactivated THEN check that the user
   });
   await waitForNBlocks(1);
   const poolInfoBefore = await getPromotedPoolInfo(liqId);
-  await promotePool(sudo.keyRingPair, liqId, 0);
+  await promotePool(sudo, liqId, 0);
   //Test user1 should still have some rewards in the curve.
   await waitForRewards(testUser1, liqId);
   const poolRewards = JSON.parse(

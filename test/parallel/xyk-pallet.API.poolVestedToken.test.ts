@@ -71,7 +71,7 @@ async function createPoolAndVestingToken(
   liquidityID = await getLiquidityAssetId(MGA_ASSET_ID, createdToken);
 
   if (needPromotePool) {
-    const promotingPool = await promotePool(sudo.keyRingPair, liquidityID);
+    const promotingPool = await promotePool(sudo, liquidityID);
     expect(getEventResultFromMangataTx(promotingPool).state).toEqual(
       ExtrinsicResult.ExtrinsicSuccess,
     );

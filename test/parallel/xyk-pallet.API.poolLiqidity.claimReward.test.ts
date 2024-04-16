@@ -258,7 +258,7 @@ test("Given a pool with user with activated rewards  WHEN it was deactivated AND
 
   await waitForRewards(testUser1, liqIdPromPool2);
 
-  await promotePool(sudo.keyRingPair, liqIdPromPool2, 0);
+  await promotePool(sudo, liqIdPromPool2, 0);
 
   await testUser1.refreshAmounts(AssetWallet.BEFORE);
 
@@ -274,7 +274,7 @@ test("Given a pool with user with activated rewards  WHEN it was deactivated AND
       testUser1.getAsset(MGA_ASSET_ID)!.amountBefore.free!,
     );
 
-  await promotePool(sudo.keyRingPair, liqIdPromPool2, 20);
+  await promotePool(sudo, liqIdPromPool2, 20);
 
   await waitForRewards(testUser1, liqIdPromPool2);
 
