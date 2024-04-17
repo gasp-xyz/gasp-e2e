@@ -35,6 +35,7 @@ import Keyring from "@polkadot/keyring";
 import { ExtrinsicResult } from "./eventListeners";
 import { Sudo } from "./sudo";
 import { Assets } from "./Assets";
+import { signTxMetamask } from "./metamask";
 
 export const signTxDeprecated = async (
   tx: SubmittableExtrinsic<"promise">,
@@ -953,8 +954,7 @@ export async function registerAsset(
   additional: any,
 ) {
   const api = getApi();
-  return await signTx(
-    api,
+  return await signTxMetamask(
     api.tx.sudo.sudo(
       api.tx.assetRegistry.registerAsset(
         {
@@ -969,10 +969,8 @@ export async function registerAsset(
         assetId,
       ),
     ),
-    sudoUser.keyRingPair,
-    {
-      nonce: await getCurrentNonce(sudoUser.keyRingPair.address),
-    },
+    sudoUser.ethAddress.toString(),
+    sudoUser.name.toString(),
   );
 }
 

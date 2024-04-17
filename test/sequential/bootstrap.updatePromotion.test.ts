@@ -14,9 +14,7 @@ import {
   waitSudoOperationFail,
   waitSudoOperationSuccess,
 } from "../../utils/eventListeners";
-import { Keyring } from "@polkadot/api";
 import { User } from "../../utils/User";
-import { getEnvironmentRequiredVars } from "../../utils/utils";
 import {
   getBalanceOfPool,
   getEventResultFromMangataTx,
@@ -35,7 +33,7 @@ import {
 } from "../../utils/Bootstrap";
 import { MGA_ASSET_ID } from "../../utils/Constants";
 import { MangataGenericEvent } from "@mangata-finance/sdk";
-import { setupUsers } from "../../utils/setup";
+import { getSudoUser, setupUsers } from "../../utils/setup";
 import { BN } from "@polkadot/util";
 
 jest.spyOn(console, "log").mockImplementation(jest.fn());
@@ -44,12 +42,10 @@ process.env.NODE_ENV = "test";
 
 let testUser1: User;
 let sudo: User;
-let keyring: Keyring;
 let bootstrapCurrency: any;
 let bootstrapPool: any;
 let eventResponse: EventResult;
 
-const { sudo: sudoUserName } = getEnvironmentRequiredVars();
 //constant for bootstrap include a planning period
 const waitingPeriodWithPlan = 400;
 //constant for bootstrap less a planning period
@@ -65,9 +61,7 @@ beforeAll(async () => {
     await initApi();
   }
 
-  keyring = new Keyring({ type: "sr25519" });
-
-  sudo = new User(keyring, sudoUserName);
+  sudo = getSudoUser();
 
   [testUser1] = setupUsers();
 

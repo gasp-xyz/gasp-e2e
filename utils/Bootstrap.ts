@@ -2,15 +2,15 @@ import { getApi } from "./api";
 import { expectMGAExtrinsicSuDidSuccess, waitNewBlock } from "./eventListeners";
 import { User } from "./User";
 import { getEventResultFromMangataTx, sudoIssueAsset } from "./txHandler";
-import { getCurrentNonce } from "./tx";
 import { getBlockNumber } from "./utils";
-import { signTx, toBN } from "@mangata-finance/sdk";
+import { toBN } from "@mangata-finance/sdk";
 import { Assets } from "./Assets";
 import { setupApi } from "./setup";
 import { Sudo } from "./sudo";
 import { testLog } from "./Logger";
 import { api, Extrinsic } from "./setup";
 import { BN } from "@polkadot/util";
+import { signTxMetamask } from "./metamask";
 
 export async function waitForBootstrapStatus(
   bootstrapStatus: string,
@@ -97,8 +97,7 @@ export async function scheduleBootstrap(
 ) {
   const api = getApi();
   const bootstrapBlockNumber = (await getBlockNumber()) + waitingPeriod;
-  return await signTx(
-    api,
+  return await signTxMetamask(
     api.tx.sudo.sudo(
       api.tx.bootstrap.scheduleBootstrap(
         mainCurrency,
@@ -111,10 +110,8 @@ export async function scheduleBootstrap(
         provisionBootstrap,
       ),
     ),
-    sudoUser.keyRingPair,
-    {
-      nonce: await getCurrentNonce(sudoUser.keyRingPair.address),
-    },
+    sudoUser.ethAddress.toString(),
+    sudoUser.name.toString(),
   );
 }
 
@@ -124,10 +121,10 @@ export async function provisionBootstrap(
   bootstrapAmount: BN,
 ) {
   const api = getApi();
-  return await signTx(
-    api,
+  return await signTxMetamask(
     api.tx.bootstrap.provision(bootstrapCurrency, bootstrapAmount),
-    user.keyRingPair,
+    user.ethAddress.toString(),
+    user.name.toString(),
   );
 }
 
@@ -137,28 +134,28 @@ export async function provisionVestedBootstrap(
   bootstrapAmount: BN,
 ) {
   const api = getApi();
-  return await signTx(
-    api,
+  return await signTxMetamask(
     api.tx.bootstrap.provisionVested(bootstrapCurrency, bootstrapAmount),
-    user.keyRingPair,
+    user.ethAddress.toString(),
+    user.name.toString(),
   );
 }
 
 export async function claimRewardsBootstrap(user: User) {
   const api = getApi();
-  return await signTx(
-    api,
+  return await signTxMetamask(
     api.tx.bootstrap.claimLiquidityTokens(),
-    user.keyRingPair,
+    user.ethAddress.toString(),
+    user.name.toString(),
   );
 }
 
 export async function claimAndActivateBootstrap(user: User) {
   const api = getApi();
-  return await signTx(
-    api,
+  return await signTxMetamask(
     api.tx.bootstrap.claimAndActivateLiquidityTokens(),
-    user.keyRingPair,
+    user.ethAddress.toString(),
+    user.name.toString(),
   );
 }
 
@@ -172,13 +169,10 @@ export async function finalizeBootstrap(sudoUser: User) {
 
 export async function cancelRunningBootstrap(sudoUser: User) {
   const api = getApi();
-  return await signTx(
-    api,
+  return await signTxMetamask(
     api.tx.sudo.sudo(api.tx.bootstrap.cancelBootstrap()),
-    sudoUser.keyRingPair,
-    {
-      nonce: await getCurrentNonce(sudoUser.keyRingPair.address),
-    },
+    sudoUser.ethAddress.toString(),
+    sudoUser.name.toString(),
   );
 }
 
@@ -187,15 +181,12 @@ export async function updatePromoteBootstrapPool(
   promoteBootstrapPoolFlag: boolean,
 ) {
   const api = getApi();
-  return await signTx(
-    api,
+  return await signTxMetamask(
     api.tx.sudo.sudo(
       api.tx.bootstrap.updatePromoteBootstrapPool(promoteBootstrapPoolFlag),
     ),
-    sudoUser.keyRingPair,
-    {
-      nonce: await getCurrentNonce(sudoUser.keyRingPair.address),
-    },
+    sudoUser.ethAddress.toString(),
+    sudoUser.name.toString(),
   );
 }
 export class Bootstrap {
