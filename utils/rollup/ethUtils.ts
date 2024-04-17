@@ -104,6 +104,7 @@ export async function setBalance(ethAddress: string, amount: number) {
   // @ts-ignore
   await fetch(host, requestOptions)
     .then((response) => response.text())
+    // eslint-disable-next-line no-console
     .then((result) => console.log(result))
     // eslint-disable-next-line no-console
     .catch((error) => console.error(error));
