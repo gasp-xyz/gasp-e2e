@@ -400,27 +400,29 @@ export const mintAsset = async (
 };
 
 export const createPool = async (
-  account: KeyringPair,
+  account: User,
   firstAssetId: BN,
   firstAssetAmount: BN,
   secondAssetId: BN,
   secondAssetAmount: BN,
 ) => {
-  const nonce = await getCurrentNonce(account.address);
   testLog
     .getLog()
     .info(
       `Creating pool:${firstAssetId},${firstAssetAmount},${secondAssetId},${secondAssetAmount}`,
     );
-  const mangata = await getMangataInstance();
-  return await mangata.xyk.createPool({
-    account: account,
-    firstTokenId: firstAssetId.toString(),
-    secondTokenId: secondAssetId.toString(),
-    secondTokenAmount: secondAssetAmount,
-    firstTokenAmount: firstAssetAmount,
-    txOptions: { nonce: nonce },
-  });
+  const api = getApi();
+
+  return await signTxMetamask(
+    api.tx.xyk.createPool(
+      firstAssetId,
+      firstAssetAmount,
+      secondAssetId,
+      secondAssetAmount,
+    ),
+    account.ethAddress.toString(),
+    account.name.toString(),
+  );
 };
 
 // for alignment purposes lets keep it backward comaptible
