@@ -315,7 +315,7 @@ export class User {
     secondCurrency: BN,
   ) {
     await createPool(
-      this.keyRingPair,
+      this,
       firstCurrency,
       first_asset_amount,
       secondCurrency,

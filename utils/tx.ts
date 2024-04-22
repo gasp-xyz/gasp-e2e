@@ -35,6 +35,7 @@ import Keyring from "@polkadot/keyring";
 import { ExtrinsicResult } from "./eventListeners";
 import { Sudo } from "./sudo";
 import { Assets } from "./Assets";
+import { signTxMetamask } from "./metamask";
 
 export const signTxDeprecated = async (
   tx: SubmittableExtrinsic<"promise">,
@@ -399,27 +400,29 @@ export const mintAsset = async (
 };
 
 export const createPool = async (
-  account: KeyringPair,
+  account: User,
   firstAssetId: BN,
   firstAssetAmount: BN,
   secondAssetId: BN,
   secondAssetAmount: BN,
 ) => {
-  const nonce = await getCurrentNonce(account.address);
   testLog
     .getLog()
     .info(
       `Creating pool:${firstAssetId},${firstAssetAmount},${secondAssetId},${secondAssetAmount}`,
     );
-  const mangata = await getMangataInstance();
-  return await mangata.xyk.createPool({
-    account: account,
-    firstTokenId: firstAssetId.toString(),
-    secondTokenId: secondAssetId.toString(),
-    secondTokenAmount: secondAssetAmount,
-    firstTokenAmount: firstAssetAmount,
-    txOptions: { nonce: nonce },
-  });
+  const api = getApi();
+
+  return await signTxMetamask(
+    api.tx.xyk.createPool(
+      firstAssetId,
+      firstAssetAmount,
+      secondAssetId,
+      secondAssetAmount,
+    ),
+    account.ethAddress.toString(),
+    account.name.toString(),
+  );
 };
 
 // for alignment purposes lets keep it backward comaptible
@@ -953,8 +956,7 @@ export async function registerAsset(
   additional: any,
 ) {
   const api = getApi();
-  return await signTx(
-    api,
+  return await signTxMetamask(
     api.tx.sudo.sudo(
       api.tx.assetRegistry.registerAsset(
         {
@@ -969,10 +971,8 @@ export async function registerAsset(
         assetId,
       ),
     ),
-    sudoUser.keyRingPair,
-    {
-      nonce: await getCurrentNonce(sudoUser.keyRingPair.address),
-    },
+    sudoUser.ethAddress.toString(),
+    sudoUser.name.toString(),
   );
 }
 
@@ -1159,8 +1159,8 @@ export async function initializeCrowdloanReward(
   const rewards: any[] = [];
   user.forEach((account) => {
     rewards.push([
-      account.keyRingPair.address,
-      account.keyRingPair.address,
+      account.name.toString(),
+      account.ethAddress.toString(),
       crowdloanRewardsAmount,
     ]);
   });
@@ -1187,11 +1187,10 @@ export async function completeCrowdloanInitialization(
 
 export async function claimCrowdloanRewards(crowdloanId: any, userId: User) {
   const api = getApi();
-  const claimRewards = await signTx(
-    api,
-    // @ts-ignore
+  const claimRewards = await signTxMetamask(
     api.tx.crowdloan.claim(crowdloanId),
-    userId.keyRingPair,
+    userId.ethAddress.toString(),
+    userId.name.toString(),
   );
   return getEventResultFromMangataTx(claimRewards);
 }

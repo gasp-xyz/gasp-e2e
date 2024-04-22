@@ -25,6 +25,7 @@ import {
   setCrowdloanAllocation,
 } from "../../utils/tx";
 import { Assets } from "../../utils/Assets";
+import { signTxMetamask } from "../../utils/metamask";
 
 jest.spyOn(console, "log").mockImplementation(jest.fn());
 jest.setTimeout(2500000);
@@ -35,7 +36,7 @@ let api: ApiPromise;
 let sudo: User;
 let keyring: Keyring;
 let crowdloanId: any;
-const crowdloanRewardsAmount = new BN("1000000000000000000000000");
+const crowdloanRewardsAmount = new BN("100000");
 const nativeCurrencyId = MGA_ASSET_ID;
 
 beforeAll(async () => {
@@ -60,10 +61,10 @@ beforeAll(async () => {
 
 describe("Only sudo can", () => {
   test("crowdloan.setCrowdloanAllocation(crowdloanAllocationAmount)", async () => {
-    const setCrowdLoanAllocationEvents = await signTx(
-      api,
+    const setCrowdLoanAllocationEvents = await signTxMetamask(
       api.tx.crowdloan.setCrowdloanAllocation(crowdloanRewardsAmount),
-      testUser1.keyRingPair,
+      testUser1.ethAddress.toString(),
+      testUser1.name.toString(),
     );
 
     const eventResponse = getEventResultFromMangataTx(
@@ -83,16 +84,16 @@ describe("Only sudo can", () => {
   });
 
   test("crowdloan.initializeCrowdloanRewardVec(rewards)", async () => {
-    const userInitializeRewardVec = await signTx(
-      api,
+    const userInitializeRewardVec = await signTxMetamask(
       api.tx.crowdloan.initializeRewardVec([
         [
-          testUser1.keyRingPair.address,
-          testUser1.keyRingPair.address,
+          testUser1.name.toString(),
+          testUser1.ethAddress.toString(),
           crowdloanRewardsAmount,
         ],
       ]),
-      testUser1.keyRingPair,
+      testUser1.ethAddress.toString(),
+      testUser1.name.toString(),
     );
 
     const eventResponse = getEventResultFromMangataTx(userInitializeRewardVec);
@@ -104,8 +105,8 @@ describe("Only sudo can", () => {
       Sudo.sudo(
         api.tx.crowdloan.initializeRewardVec([
           [
-            testUser1.keyRingPair.address,
-            testUser1.keyRingPair.address,
+            testUser1.name.toString(),
+            testUser1.ethAddress.toString(),
             crowdloanRewardsAmount,
           ],
         ]),
