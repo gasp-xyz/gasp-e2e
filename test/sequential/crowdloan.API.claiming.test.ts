@@ -4,11 +4,11 @@
  *
  */
 import { jest } from "@jest/globals";
-import { ApiPromise } from "@polkadot/api";
+import { ApiPromise, Keyring } from "@polkadot/api";
 import { getApi, initApi } from "../../utils/api";
 import { Assets } from "../../utils/Assets";
 import { BN, hexToBn } from "@polkadot/util";
-import { getSudoUser, setupApi, setupUsers } from "../../utils/setup";
+import { setupApi, setupUsers } from "../../utils/setup";
 import { Sudo } from "../../utils/sudo";
 import { User } from "../../utils/User";
 import {
@@ -18,17 +18,21 @@ import {
   setCrowdloanAllocation,
   sudoClaimCrowdloanRewards,
 } from "../../utils/tx";
-import { getBlockNumber, waitBlockNumber } from "../../utils/utils";
+import {
+  getBlockNumber,
+  getEnvironmentRequiredVars,
+  waitBlockNumber,
+} from "../../utils/utils";
 import { MGA_ASSET_ID } from "../../utils/Constants";
-import { BN_ZERO } from "@mangata-finance/sdk";
+import { BN_ZERO, signTx } from "@mangata-finance/sdk";
 import { getEventResultFromMangataTx } from "../../utils/txHandler";
 import { ExtrinsicResult, waitNewBlock } from "../../utils/eventListeners";
-import { signTxMetamask } from "../../utils/metamask";
 
 jest.spyOn(console, "log").mockImplementation(jest.fn());
 jest.setTimeout(2500000);
 process.env.NODE_ENV = "test";
 
+const { sudo: sudoUserName } = getEnvironmentRequiredVars();
 let testUser1: User;
 let testUser2: User;
 let testUser3: User;
@@ -42,6 +46,7 @@ let leaseStartBlock: number;
 let leaseEndingBlock: number;
 let api: ApiPromise;
 let sudo: User;
+let keyring: Keyring;
 let crowdloanId: any;
 const crowdloanRewardsAmount = new BN("1000000000000000000000000");
 const nativeCurrencyId = MGA_ASSET_ID;
@@ -52,9 +57,10 @@ beforeAll(async () => {
   } catch (e) {
     await initApi();
   }
+  keyring = new Keyring({ type: "sr25519" });
 
   api = getApi();
-  sudo = getSudoUser();
+  sudo = new User(keyring, sudoUserName);
 
   await setupApi();
 
@@ -185,14 +191,14 @@ test("Users receive different rewards when they confirm them before, during and 
 });
 
 test("A user can only change his reward-address with: crowdloan.updateRewardAddress AND user can claim some rewards if it provided some on the specified cl_id", async () => {
-  await signTxMetamask(
+  await signTx(
+    api,
     api.tx.crowdloan.updateRewardAddress(
       testUser9.keyRingPair.address,
       // @ts-ignore
       crowdloanId,
     ),
-    testUser4.ethAddress.toString(),
-    testUser4.name.toString(),
+    testUser4.keyRingPair,
   ).then((result) => {
     const eventResponse = getEventResultFromMangataTx(result);
     expect(eventResponse.state).toEqual(ExtrinsicResult.ExtrinsicSuccess);
