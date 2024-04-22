@@ -29,7 +29,6 @@ import { connectVertical } from "@acala-network/chopsticks";
 import { devTestingPairs } from "../../utils/setup";
 import { AssetId } from "../../utils/ChainSpecs";
 import { BN_THOUSAND } from "@mangata-finance/sdk";
-import StashServiceMockSingleton from "../../utils/stashServiceMockSingleton";
 import { TransactionType } from "../../utils/frontend/microapps-pages/NotificationModal";
 import { WithdrawModal } from "../../utils/frontend/microapps-pages/WithdrawModal";
 import { Sidebar } from "../../utils/frontend/microapps-pages/Sidebar";
@@ -62,7 +61,6 @@ beforeAll(async () => {
   kusama = await XcmNetworks.kusama({ localPort: 9944 });
   mangata = await XcmNetworks.mangata({ localPort: 9946 });
   await connectVertical(kusama.chain, mangata.chain);
-  StashServiceMockSingleton.getInstance().startMock();
 });
 
 describe.each`
@@ -320,7 +318,6 @@ describe.each`
 );
 
 afterAll(async () => {
-  StashServiceMockSingleton.getInstance().stopServer();
   await kusama.teardown();
   await mangata.teardown();
 });

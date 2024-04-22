@@ -33,7 +33,6 @@ import XcmNetworks from "../../utils/Framework/XcmNetworks";
 import { connectVertical } from "@acala-network/chopsticks";
 import { AssetId } from "../../utils/ChainSpecs";
 import { BN_THOUSAND } from "@mangata-finance/sdk";
-import StashServiceMockSingleton from "../../utils/stashServiceMockSingleton";
 import { LiqPools } from "../../utils/frontend/microapps-pages/LiqPools";
 import { Sidebar } from "../../utils/frontend/microapps-pages/Sidebar";
 import {
@@ -65,7 +64,6 @@ describe("Microapps UI Position page tests", () => {
     kusama = await XcmNetworks.kusama({ localPort: 9944 });
     mangata = await XcmNetworks.mangata({ localPort: 9946 });
     await connectVertical(kusama.chain, mangata.chain);
-    StashServiceMockSingleton.getInstance().startMock();
 
     try {
       getApi();
@@ -417,7 +415,6 @@ describe("Microapps UI Position page tests", () => {
   });
 
   afterAll(async () => {
-    StashServiceMockSingleton.getInstance().stopServer();
     await kusama.teardown();
     await mangata.teardown();
     const api = getApi();

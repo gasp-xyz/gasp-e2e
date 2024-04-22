@@ -48,6 +48,8 @@
     "jest-extended": "4.0.2",
     "jest-runner": "^29.7.0",
     "jsonpath": "^1.1.1",
+    "mockserver-client": "^5.15.0",
+    "mockserver-node": "^5.15.0",
     "node-ipc": "10.1.0",
     "package.json": "^2.0.1",
     "prettier": "3.0.3",

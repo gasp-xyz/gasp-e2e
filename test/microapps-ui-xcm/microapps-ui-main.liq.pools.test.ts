@@ -29,7 +29,6 @@ import { BN_TEN_THOUSAND, BN_THOUSAND } from "@mangata-finance/sdk";
 import { AssetId } from "../../utils/ChainSpecs";
 import XcmNetworks from "../../utils/Framework/XcmNetworks";
 import { devTestingPairs } from "../../utils/setup";
-import StashServiceMockSingleton from "../../utils/stashServiceMockSingleton";
 import { LiqPools } from "../../utils/frontend/microapps-pages/LiqPools";
 import { Sidebar } from "../../utils/frontend/microapps-pages/Sidebar";
 import { LiqPoolDetils } from "../../utils/frontend/microapps-pages/LiqPoolDetails";
@@ -61,7 +60,6 @@ describe("Miocroapps UI liq pools tests", () => {
     mangata = await XcmNetworks.mangata({ localPort: 9946 });
     await connectVertical(kusama.chain, mangata.chain);
     alice = devTestingPairs().alice;
-    StashServiceMockSingleton.getInstance().startMock();
 
     try {
       getApi();
@@ -395,7 +393,6 @@ describe("Miocroapps UI liq pools tests", () => {
   });
 
   afterAll(async () => {
-    StashServiceMockSingleton.getInstance().stopServer();
     await kusama.teardown();
     await mangata.teardown();
     const api = getApi();

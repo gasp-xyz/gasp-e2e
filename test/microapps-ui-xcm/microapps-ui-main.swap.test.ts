@@ -29,7 +29,6 @@ import { BN_TEN_THOUSAND, BN_THOUSAND } from "@mangata-finance/sdk";
 import { AssetId } from "../../utils/ChainSpecs";
 import XcmNetworks from "../../utils/Framework/XcmNetworks";
 import { devTestingPairs } from "../../utils/setup";
-import StashServiceMockSingleton from "../../utils/stashServiceMockSingleton";
 import { TransactionType } from "../../utils/frontend/microapps-pages/NotificationToast";
 
 jest.setTimeout(FIVE_MIN);
@@ -53,7 +52,6 @@ describe("Miocroapps UI swap tests", () => {
     mangata = await XcmNetworks.mangata({ localPort: 9946 });
     await connectVertical(kusama.chain, mangata.chain);
     alice = devTestingPairs().alice;
-    StashServiceMockSingleton.getInstance().startMock();
 
     try {
       getApi();
@@ -295,7 +293,6 @@ describe("Miocroapps UI swap tests", () => {
   });
 
   afterAll(async () => {
-    StashServiceMockSingleton.getInstance().stopServer();
     await kusama.teardown();
     await mangata.teardown();
     const api = getApi();

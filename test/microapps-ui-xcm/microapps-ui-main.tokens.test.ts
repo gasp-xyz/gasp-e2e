@@ -27,7 +27,6 @@ import { BN_TEN_THOUSAND, BN_THOUSAND } from "@mangata-finance/sdk";
 import { AssetId } from "../../utils/ChainSpecs";
 import XcmNetworks from "../../utils/Framework/XcmNetworks";
 import { devTestingPairs } from "../../utils/setup";
-import StashServiceMockSingleton from "../../utils/stashServiceMockSingleton";
 import { Sidebar } from "../../utils/frontend/microapps-pages/Sidebar";
 import { Tokens } from "../../utils/frontend/microapps-pages/Tokens";
 import { TokenDetails } from "../../utils/frontend/microapps-pages/TokenDetails";
@@ -56,7 +55,6 @@ describe.skip("Miocroapps UI tokens & token details tests", () => {
     mangata = await XcmNetworks.mangata({ localPort: 9946 });
     await connectVertical(kusama.chain, mangata.chain);
     alice = devTestingPairs().alice;
-    StashServiceMockSingleton.getInstance().startMock();
 
     try {
       getApi();
@@ -256,7 +254,6 @@ describe.skip("Miocroapps UI tokens & token details tests", () => {
   });
 
   afterAll(async () => {
-    StashServiceMockSingleton.getInstance().stopServer();
     await kusama.teardown();
     await mangata.teardown();
     const api = getApi();

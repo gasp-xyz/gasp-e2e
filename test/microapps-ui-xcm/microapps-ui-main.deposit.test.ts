@@ -31,7 +31,6 @@ import { connectVertical } from "@acala-network/chopsticks";
 import { devTestingPairs } from "../../utils/setup";
 import { AssetId } from "../../utils/ChainSpecs";
 import { BN_THOUSAND } from "@mangata-finance/sdk";
-import StashServiceMockSingleton from "../../utils/stashServiceMockSingleton";
 import { TransactionType } from "../../utils/frontend/microapps-pages/NotificationModal";
 
 jest.spyOn(console, "log").mockImplementation(jest.fn());
@@ -55,7 +54,6 @@ describe("Microapps UI deposit modal tests", () => {
     mangata = await XcmNetworks.mangata({ localPort: 9946 });
     await connectVertical(kusama.chain, mangata.chain);
     alice = devTestingPairs().alice;
-    StashServiceMockSingleton.getInstance().startMock();
 
     try {
       getApi();
@@ -235,7 +233,6 @@ describe("Microapps UI deposit modal tests", () => {
   });
 
   afterAll(async () => {
-    StashServiceMockSingleton.getInstance().stopServer();
     await kusama.teardown();
     await mangata.teardown();
     const api = getApi();

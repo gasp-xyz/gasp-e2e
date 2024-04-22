@@ -28,7 +28,6 @@ import { AssetId } from "../../utils/ChainSpecs";
 import { ApiContext } from "../../utils/Framework/XcmHelper";
 import XcmNetworks from "../../utils/Framework/XcmNetworks";
 import { devTestingPairs } from "../../utils/setup";
-import StashServiceMockSingleton from "../../utils/stashServiceMockSingleton";
 import { KeyringPair } from "@polkadot/keyring/types";
 
 jest.setTimeout(FIVE_MIN);
@@ -51,7 +50,6 @@ describe("Microapps UI wallet tests", () => {
     mangata = await XcmNetworks.mangata({ localPort: 9946 });
     await connectVertical(kusama.chain, mangata.chain);
     alice = devTestingPairs().alice;
-    StashServiceMockSingleton.getInstance().startMock();
 
     try {
       getApi();
