@@ -120,7 +120,7 @@ const buckets = [
 ];
 
 const channelsResponse = JSON.stringify(channels);
-const bucketResponse = JSON.stringify(data);
+const bucketResponse = JSON.stringify(buckets);
 
 mockserver
   .start_mockserver({ serverPort: mockserver_port, verbose: true })
