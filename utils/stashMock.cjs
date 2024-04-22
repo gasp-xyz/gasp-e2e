@@ -3,7 +3,7 @@ var mockServerClient = require("mockserver-client").mockServerClient;
 var mockserver_port = 3456;
 
 const localAddress = process.env.LOCAL_ADDRESS || "localhost";
-const data = [
+const channels = [
   {
     channelId: "1",
     name: "Kusama",
@@ -72,6 +72,54 @@ const data = [
   },
 ];
 
+const buckets = [
+  {
+    buckets: [
+      {
+        bucket: "stables",
+        rank: 1,
+        tokens: ["USDT", "USDC", "aUSD"],
+      },
+      {
+        bucket: "bluechips",
+        rank: 2,
+        tokens: ["BTC", "ETH"],
+      },
+      {
+        bucket: "l0",
+        rank: 3,
+        tokens: ["DOT", "KSM"],
+      },
+      {
+        bucket: "dextoken",
+        rank: 4,
+        tokens: ["MGA", "MGX"],
+      },
+      {
+        bucket: "l1",
+        rank: 5,
+        tokens: ["MOVR", "BNC", "OAK", "TUR", "IMBU", "ZLK", "RMRK"],
+      },
+      {
+        bucket: "l2",
+        rank: 6,
+        tokens: [],
+      },
+      {
+        bucket: "protocols",
+        rank: 7,
+        tokens: [],
+      },
+      {
+        bucket: "derivatives",
+        rank: 8,
+        tokens: ["vKSM", "vsKSM", "vMOVR", "vBNC"],
+      },
+    ],
+  },
+];
+
+const channelsResponse = JSON.stringify(channels);
 const bucketResponse = JSON.stringify(data);
 
 mockserver
@@ -85,7 +133,7 @@ mockserver
           },
           httpResponse: {
             statusCode: 200,
-            body: bucketResponse,
+            body: channelsResponse,
           },
         })
         .then(
@@ -99,11 +147,32 @@ mockserver
 
       mockServerClient("localhost", mockserver_port)
         .mockAnyResponse({
+          httpRequest: {
+            path: "/token/order-buckets",
+          },
+          httpResponse: {
+            statusCode: 200,
+            body: bucketResponse,
+          },
+        })
+        .then(
+          function () {
+            console.log('created "/token/order-buckets" expectation');
+          },
+          function (error) {
+            console.log(error.body);
+          }
+        );
+
+      mockServerClient("localhost", mockserver_port)
+        .mockAnyResponse({
           httpRequest: {},
           httpOverrideForwardedRequest: {
             httpRequest: {
               headers: {
-                Host: ["mangata-stash-prod-dot-direct-pixel-353917.oa.r.appspot.com"],
+                Host: [
+                  "mangata-stash-prod-dot-direct-pixel-353917.oa.r.appspot.com",
+                ],
               },
               socketAddress: {
                 host: "mangata-stash-prod-dot-direct-pixel-353917.oa.r.appspot.com",
