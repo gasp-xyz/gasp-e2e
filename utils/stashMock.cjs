@@ -134,6 +134,11 @@ mockserver
           httpResponse: {
             statusCode: 200,
             body: channelsResponse,
+            headers: {
+              "Access-Control-Allow-Origin": "*",
+              "Access-Control-Allow-Methods": "GET, OPTIONS",
+              "Access-Control-Allow-Headers": "Content-Type",
+            },
           },
         })
         .then(
@@ -153,6 +158,11 @@ mockserver
           httpResponse: {
             statusCode: 200,
             body: bucketResponse,
+            headers: {
+              "Access-Control-Allow-Origin": "*",
+              "Access-Control-Allow-Methods": "GET, OPTIONS",
+              "Access-Control-Allow-Headers": "Content-Type",
+            },
           },
         })
         .then(
@@ -182,6 +192,11 @@ mockserver
             },
           },
           priority: -10,
+          headers: {
+            "Access-Control-Allow-Origin": "*",
+            "Access-Control-Allow-Methods": "GET, OPTIONS",
+            "Access-Control-Allow-Headers": "Content-Type",
+          },
         })
         .then(
           function () {
