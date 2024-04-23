@@ -19,8 +19,8 @@ export const DriverBuilder = (function () {
     }
     options
       .addArguments("--disable-dev-shm-usage")
-      .addArguments("--enable-clipboard-read");
-    //.addArguments("--disable-web-security");
+      .addArguments("--enable-clipboard-read")
+      .addArguments("--disable-site-isolation-trials");
     const prefs = new logging.Preferences();
     prefs.setLevel(logging.Type.BROWSER, logging.Level.DEBUG);
     prefs.setLevel(logging.Type.CLIENT, logging.Level.DEBUG);
