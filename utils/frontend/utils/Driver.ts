@@ -19,8 +19,8 @@ export const DriverBuilder = (function () {
     }
     options
       .addArguments("--disable-dev-shm-usage")
-      .addArguments("--enable-clipboard-read")
-      .addArguments("--disable-web-security");
+      .addArguments("--enable-clipboard-read");
+    //.addArguments("--disable-web-security");
     const prefs = new logging.Preferences();
     prefs.setLevel(logging.Type.BROWSER, logging.Level.DEBUG);
     prefs.setLevel(logging.Type.CLIENT, logging.Level.DEBUG);
@@ -39,6 +39,7 @@ export const DriverBuilder = (function () {
     if (debugLogs) {
       caps.set("goog:loggingPrefs", prefs);
     }
+    caps.setAcceptInsecureCerts(true);
 
     driver = new Builder()
       .forBrowser("chrome")
