@@ -35,6 +35,7 @@ import Keyring from "@polkadot/keyring";
 import { ExtrinsicResult } from "./eventListeners";
 import { Sudo } from "./sudo";
 import { Assets } from "./Assets";
+import { signTxMetamask } from "./metamask";
 
 export const signTxDeprecated = async (
   tx: SubmittableExtrinsic<"promise">,
@@ -1069,8 +1070,7 @@ export async function updateFeeLockMetadata(
   shouldBeWhitelisted: any,
 ) {
   const api = getApi();
-  return await signTx(
-    api,
+  return await signTxMetamask(
     api.tx.sudo.sudo(
       api.tx.feeLock.updateFeeLockMetadata(
         periodLength,
@@ -1079,10 +1079,8 @@ export async function updateFeeLockMetadata(
         shouldBeWhitelisted,
       ),
     ),
-    sudoUser.keyRingPair,
-    {
-      nonce: await getCurrentNonce(sudoUser.keyRingPair.address),
-    },
+    sudoUser.ethAddress.toString(),
+    sudoUser.name.toString(),
   );
 }
 
