@@ -8,6 +8,7 @@ import {
   buildXpathByElementText,
 } from "../utils/Helper";
 import toNumber from "lodash-es/toNumber";
+import { sleep } from "../../utils";
 
 export class PositionPageDriver {
   driver: WebDriver;
@@ -27,6 +28,7 @@ export class PositionPageDriver {
   }
 
   async isLiqPoolDisplayed(firstTokenName: string, secondTokenName: string) {
+    await sleep(1000);
     const PoolName = "pool-" + firstTokenName + "-" + secondTokenName;
     const itemXpath = buildDataTestIdXpath(PoolName);
     return isDisplayed(this.driver, itemXpath);

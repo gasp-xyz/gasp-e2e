@@ -1,4 +1,5 @@
 import { By, WebDriver } from "selenium-webdriver";
+import { sleep } from "../../utils";
 import {
   buildClassXpath,
   buildDataTestIdXpath,
@@ -48,6 +49,7 @@ export class LiqPools {
   }
 
   async isPoolItemDisplayed(pool: string, visible = false) {
+    await sleep(1500);
     const itemXpath = buildDataTestIdXpath("pool-item" + pool);
     if (visible) {
       await waitForElementStateInterval(this.driver, itemXpath, true);
