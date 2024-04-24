@@ -399,12 +399,13 @@ export const mintAsset = async (
 };
 
 export const createPool = async (
-  account: User,
+  account: KeyringPair,
   firstAssetId: BN,
   firstAssetAmount: BN,
   secondAssetId: BN,
   secondAssetAmount: BN,
 ) => {
+  const nonce = await getCurrentNonce(account.address);
   testLog
     .getLog()
     .info(
@@ -420,7 +421,10 @@ export const createPool = async (
       secondAssetId,
       secondAssetAmount,
     ),
-    account.keyRingPair,
+    account,
+    {
+      nonce: nonce,
+    },
   );
 };
 
@@ -1161,7 +1165,7 @@ export async function initializeCrowdloanReward(
   const rewards: any[] = [];
   user.forEach((account) => {
     rewards.push([
-      account.name.toString(),
+      account.ethAddress.toString(),
       account.ethAddress.toString(),
       crowdloanRewardsAmount,
     ]);
