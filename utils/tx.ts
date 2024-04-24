@@ -35,7 +35,6 @@ import Keyring from "@polkadot/keyring";
 import { ExtrinsicResult } from "./eventListeners";
 import { Sudo } from "./sudo";
 import { Assets } from "./Assets";
-import { signTxMetamask } from "./metamask";
 
 export const signTxDeprecated = async (
   tx: SubmittableExtrinsic<"promise">,
@@ -413,15 +412,15 @@ export const createPool = async (
     );
   const api = getApi();
 
-  return await signTxMetamask(
+  return await signTx(
+    api,
     api.tx.xyk.createPool(
       firstAssetId,
       firstAssetAmount,
       secondAssetId,
       secondAssetAmount,
     ),
-    account.ethAddress.toString(),
-    account.name.toString(),
+    account.keyRingPair,
   );
 };
 
@@ -956,7 +955,8 @@ export async function registerAsset(
   additional: any,
 ) {
   const api = getApi();
-  return await signTxMetamask(
+  return await signTx(
+    api,
     api.tx.sudo.sudo(
       api.tx.assetRegistry.registerAsset(
         {
@@ -971,8 +971,10 @@ export async function registerAsset(
         assetId,
       ),
     ),
-    sudoUser.ethAddress.toString(),
-    sudoUser.name.toString(),
+    sudoUser.keyRingPair,
+    {
+      nonce: await getCurrentNonce(sudoUser.keyRingPair.address),
+    },
   );
 }
 
@@ -1187,10 +1189,10 @@ export async function completeCrowdloanInitialization(
 
 export async function claimCrowdloanRewards(crowdloanId: any, userId: User) {
   const api = getApi();
-  const claimRewards = await signTxMetamask(
+  const claimRewards = await signTx(
+    api,
     api.tx.crowdloan.claim(crowdloanId),
-    userId.ethAddress.toString(),
-    userId.name.toString(),
+    userId.keyRingPair,
   );
   return getEventResultFromMangataTx(claimRewards);
 }

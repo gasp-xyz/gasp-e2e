@@ -20,10 +20,9 @@ import {
 } from "../../utils/tx";
 import { getBlockNumber, waitBlockNumber } from "../../utils/utils";
 import { MGA_ASSET_ID } from "../../utils/Constants";
-import { BN_ZERO } from "@mangata-finance/sdk";
+import { BN_ZERO, signTx } from "@mangata-finance/sdk";
 import { getEventResultFromMangataTx } from "../../utils/txHandler";
 import { ExtrinsicResult, waitNewBlock } from "../../utils/eventListeners";
-import { signTxMetamask } from "../../utils/metamask";
 
 jest.spyOn(console, "log").mockImplementation(jest.fn());
 jest.setTimeout(2500000);
@@ -185,14 +184,14 @@ test("Users receive different rewards when they confirm them before, during and 
 });
 
 test("A user can only change his reward-address with: crowdloan.updateRewardAddress AND user can claim some rewards if it provided some on the specified cl_id", async () => {
-  await signTxMetamask(
+  await signTx(
+    api,
     api.tx.crowdloan.updateRewardAddress(
       testUser9.keyRingPair.address,
       // @ts-ignore
       crowdloanId,
     ),
-    testUser4.ethAddress.toString(),
-    testUser4.name.toString(),
+    testUser4.keyRingPair,
   ).then((result) => {
     const eventResponse = getEventResultFromMangataTx(result);
     expect(eventResponse.state).toEqual(ExtrinsicResult.ExtrinsicSuccess);
