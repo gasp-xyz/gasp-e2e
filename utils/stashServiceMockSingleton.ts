@@ -99,52 +99,50 @@ class StashServiceMockSingleton {
     });
 
     this.stashServiceMock.get("/token/order-buckets", (_req, res) => {
-      const data = [
-        {
-          buckets: [
-            {
-              bucket: "stables",
-              rank: 1,
-              tokens: ["USDT", "USDC", "aUSD"],
-            },
-            {
-              bucket: "bluechips",
-              rank: 2,
-              tokens: ["BTC", "ETH"],
-            },
-            {
-              bucket: "l0",
-              rank: 3,
-              tokens: ["DOT", "KSM"],
-            },
-            {
-              bucket: "dextoken",
-              rank: 4,
-              tokens: ["MGA", "MGX"],
-            },
-            {
-              bucket: "l1",
-              rank: 5,
-              tokens: ["MOVR", "BNC", "OAK", "TUR", "IMBU", "ZLK", "RMRK"],
-            },
-            {
-              bucket: "l2",
-              rank: 6,
-              tokens: [],
-            },
-            {
-              bucket: "protocols",
-              rank: 7,
-              tokens: [],
-            },
-            {
-              bucket: "derivatives",
-              rank: 8,
-              tokens: ["vKSM", "vsKSM", "vMOVR", "vBNC"],
-            },
-          ],
-        },
-      ];
+      const data = {
+        buckets: [
+          {
+            bucket: "stables",
+            rank: 1,
+            tokens: ["USDT", "USDC", "aUSD"],
+          },
+          {
+            bucket: "bluechips",
+            rank: 2,
+            tokens: ["BTC", "ETH"],
+          },
+          {
+            bucket: "l0",
+            rank: 3,
+            tokens: ["DOT", "KSM"],
+          },
+          {
+            bucket: "dextoken",
+            rank: 4,
+            tokens: ["MGA", "MGX"],
+          },
+          {
+            bucket: "l1",
+            rank: 5,
+            tokens: ["MOVR", "BNC", "OAK", "TUR", "IMBU", "ZLK", "RMRK"],
+          },
+          {
+            bucket: "l2",
+            rank: 6,
+            tokens: [],
+          },
+          {
+            bucket: "protocols",
+            rank: 7,
+            tokens: [],
+          },
+          {
+            bucket: "derivatives",
+            rank: 8,
+            tokens: ["vKSM", "vsKSM", "vMOVR", "vBNC"],
+          },
+        ],
+      };
 
       res.json(data);
     });
