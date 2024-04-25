@@ -2,6 +2,7 @@ import { getApi } from "./api";
 import { expectMGAExtrinsicSuDidSuccess, waitNewBlock } from "./eventListeners";
 import { User } from "./User";
 import { getEventResultFromMangataTx, sudoIssueAsset } from "./txHandler";
+import { getCurrentNonce } from "./tx";
 import { getBlockNumber } from "./utils";
 import { signTx, toBN } from "@mangata-finance/sdk";
 import { Assets } from "./Assets";
@@ -10,7 +11,6 @@ import { Sudo } from "./sudo";
 import { testLog } from "./Logger";
 import { api, Extrinsic } from "./setup";
 import { BN } from "@polkadot/util";
-import { getCurrentNonce } from "./tx";
 
 export async function waitForBootstrapStatus(
   bootstrapStatus: string,
