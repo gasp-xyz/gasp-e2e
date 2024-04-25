@@ -35,7 +35,7 @@ import Keyring from "@polkadot/keyring";
 import { ExtrinsicResult } from "./eventListeners";
 import { Sudo } from "./sudo";
 import { Assets } from "./Assets";
-import { signTxMetamask } from "./metamask";
+import { getSudoUser } from "./setup";
 
 export const signTxDeprecated = async (
   tx: SubmittableExtrinsic<"promise">,
@@ -217,8 +217,7 @@ export async function calculate_sell_price_id_rpc(
 }
 
 export async function getCurrentNonce(account?: string) {
-  const { sudo: sudoUserName } = getEnvironmentRequiredVars();
-  const sudo = new User(new Keyring({ type: "sr25519" }), sudoUserName);
+  const sudo = getSudoUser();
   // lets check if sudo -> calculate manually nonce.
   if (account === sudo.keyRingPair.address) {
     return new BN(await SudoDB.getInstance().getSudoNonce(account));
@@ -1070,7 +1069,8 @@ export async function updateFeeLockMetadata(
   shouldBeWhitelisted: any,
 ) {
   const api = getApi();
-  return await signTxMetamask(
+  return await signTx(
+    api,
     api.tx.sudo.sudo(
       api.tx.feeLock.updateFeeLockMetadata(
         periodLength,
@@ -1079,8 +1079,10 @@ export async function updateFeeLockMetadata(
         shouldBeWhitelisted,
       ),
     ),
-    sudoUser.ethAddress.toString(),
-    sudoUser.name.toString(),
+    sudoUser.keyRingPair,
+    {
+      nonce: await getCurrentNonce(sudoUser.keyRingPair.address),
+    },
   );
 }
 
