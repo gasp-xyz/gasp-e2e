@@ -8,6 +8,7 @@ let clients = [];
 wss.on("connection", (ws) => {
   console.log("Client connected");
   clients.push(ws);
+  const connection_index = clients.indexOf(ws);
 
   ws.on("message", (message) => {
     console.log(`Received message: ${message}`);
@@ -47,6 +48,7 @@ wss.on("connection", (ws) => {
             });
             remoteWs.on("close", () => {
               console.log("Connection closed");
+              clients.splice(connection_index);
               remoteWs = null;
             });
           } else {
