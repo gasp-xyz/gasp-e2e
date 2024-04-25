@@ -35,7 +35,7 @@ import Keyring from "@polkadot/keyring";
 import { ExtrinsicResult } from "./eventListeners";
 import { Sudo } from "./sudo";
 import { Assets } from "./Assets";
-import { signTxMetamask } from "./metamask";
+import { getSudoUser } from "./setup";
 
 export const signTxDeprecated = async (
   tx: SubmittableExtrinsic<"promise">,
@@ -217,8 +217,7 @@ export async function calculate_sell_price_id_rpc(
 }
 
 export async function getCurrentNonce(account?: string) {
-  const { sudo: sudoUserName } = getEnvironmentRequiredVars();
-  const sudo = new User(new Keyring({ type: "sr25519" }), sudoUserName);
+  const sudo = getSudoUser();
   // lets check if sudo -> calculate manually nonce.
   if (account === sudo.keyRingPair.address) {
     return new BN(await SudoDB.getInstance().getSudoNonce(account));
@@ -426,17 +425,22 @@ export const createPool = async (
 // for alignment purposes lets keep it backward comaptible
 // so every pool will have same weight
 export const promotePool = async (
-  sudoAccount: User,
+  sudoAccount: KeyringPair,
   liqAssetId: BN,
   weight: number = 100,
 ) => {
   testLog.getLog().info(`Promoting pool :${liqAssetId}`);
   const mangata = await getMangataInstance();
   const api = await mangata.api();
-  return await signTxMetamask(
-    api.tx.proofOfStake.updatePoolPromotion(liqAssetId, weight),
-    sudoAccount.ethAddress.toString(),
-    sudoAccount.name.toString(),
+  return await signTx(
+    api,
+    api.tx.sudo.sudo(
+      api.tx.proofOfStake.updatePoolPromotion(liqAssetId, weight),
+    ),
+    sudoAccount,
+    {
+      nonce: await getCurrentNonce(sudoAccount.address),
+    },
   );
 };
 

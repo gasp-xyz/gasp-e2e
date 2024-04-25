@@ -179,7 +179,10 @@ describe.each`
         );
 
         if (promoting === true) {
-          const promotingPool = await promotePool(sudo, liquidityID);
+          const promotingPool = await promotePool(
+            sudo.keyRingPair,
+            liquidityID,
+          );
           eventResponse = getEventResultFromMangataTx(promotingPool);
           expect(eventResponse.state).toEqual(ExtrinsicResult.ExtrinsicSuccess);
         }

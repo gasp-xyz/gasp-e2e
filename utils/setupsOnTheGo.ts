@@ -1475,7 +1475,7 @@ export async function activateAndClaim3rdPartyRewardsForUser(
     ),
   );
   const liqId = await getLiquidityAssetId(MGA_ASSET_ID, newToken2);
-  await promotePool(sudo, liqId, 20);
+  await promotePool(sudo.keyRingPair, liqId, 20);
   await Sudo.batchAsSudoFinalized(
     Sudo.sudoAs(
       sudo,

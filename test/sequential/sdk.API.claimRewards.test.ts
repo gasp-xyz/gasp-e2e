@@ -229,7 +229,7 @@ test("GIVEN an user has available some rewards in two pools one deactivated WHEN
 
   await waitForRewards(testUser1, liqIds[12]);
 
-  await promotePool(sudo, liqIds[12], 0);
+  await promotePool(sudo.keyRingPair, liqIds[12], 0);
 
   const rewardsLiqId1Before = await getRewardsInfo(
     testUser1.keyRingPair.address,
