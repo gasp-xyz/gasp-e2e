@@ -960,7 +960,8 @@ export async function registerAsset(
   additional: any,
 ) {
   const api = getApi();
-  return await signTxMetamask(
+  return await signTx(
+    api,
     api.tx.sudo.sudo(
       api.tx.assetRegistry.registerAsset(
         {
@@ -975,8 +976,10 @@ export async function registerAsset(
         assetId,
       ),
     ),
-    sudoUser.ethAddress.toString(),
-    sudoUser.name.toString(),
+    sudoUser.keyRingPair,
+    {
+      nonce: await getCurrentNonce(sudoUser.keyRingPair.address),
+    },
   );
 }
 
