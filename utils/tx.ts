@@ -36,6 +36,7 @@ import { ExtrinsicResult } from "./eventListeners";
 import { Sudo } from "./sudo";
 import { Assets } from "./Assets";
 import { signTxMetamask } from "./metamask";
+import { getSudoUser } from "./setup";
 
 export const signTxDeprecated = async (
   tx: SubmittableExtrinsic<"promise">,
@@ -217,8 +218,7 @@ export async function calculate_sell_price_id_rpc(
 }
 
 export async function getCurrentNonce(account?: string) {
-  const { sudo: sudoUserName } = getEnvironmentRequiredVars();
-  const sudo = new User(new Keyring({ type: "sr25519" }), sudoUserName);
+  const sudo = getSudoUser();
   // lets check if sudo -> calculate manually nonce.
   if (account === sudo.keyRingPair.address) {
     return new BN(await SudoDB.getInstance().getSudoNonce(account));
@@ -400,12 +400,13 @@ export const mintAsset = async (
 };
 
 export const createPool = async (
-  account: User,
+  account: KeyringPair,
   firstAssetId: BN,
   firstAssetAmount: BN,
   secondAssetId: BN,
   secondAssetAmount: BN,
 ) => {
+  const nonce = await getCurrentNonce(account.address);
   testLog
     .getLog()
     .info(
@@ -413,15 +414,18 @@ export const createPool = async (
     );
   const api = getApi();
 
-  return await signTxMetamask(
+  return await signTx(
+    api,
     api.tx.xyk.createPool(
       firstAssetId,
       firstAssetAmount,
       secondAssetId,
       secondAssetAmount,
     ),
-    account.ethAddress.toString(),
-    account.name.toString(),
+    account,
+    {
+      nonce: nonce,
+    },
   );
 };
 
