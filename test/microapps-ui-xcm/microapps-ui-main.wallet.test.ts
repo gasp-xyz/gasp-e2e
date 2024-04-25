@@ -109,6 +109,7 @@ describe("Microapps UI wallet tests", () => {
 
     const walletWrapper = new WalletWrapper(driver);
     await walletWrapper.openWalletConnectionInfo();
+    await walletWrapper.waitForTokensVisible();
     const isKSM = await walletWrapper.isMyTokensRowDisplayed(KSM_ASSET_NAME);
     expect(isKSM).toBeTruthy();
     const isMGX = await walletWrapper.isMyTokensRowDisplayed(MGX_ASSET_NAME);
@@ -126,6 +127,7 @@ describe("Microapps UI wallet tests", () => {
 
     const walletWrapper = new WalletWrapper(driver);
     await walletWrapper.openWalletConnectionInfo();
+    await walletWrapper.waitForTokensVisible();
     await walletWrapper.pickMyPositions();
     const POOL_NAME = "MGX - KSM";
     const isTurMgx = await walletWrapper.isMyPositionsRowDisplayed(POOL_NAME);
@@ -137,6 +139,7 @@ describe("Microapps UI wallet tests", () => {
 
     const walletWrapper = new WalletWrapper(driver);
     await walletWrapper.openWalletConnectionInfo();
+    await walletWrapper.waitForTokensVisible();
     const isMGX = await walletWrapper.isMyTokensRowDisplayed(MGX_ASSET_NAME);
     expect(isMGX).toBeTruthy();
     const isKSM = await walletWrapper.isMyTokensRowDisplayed(KSM_ASSET_NAME);
