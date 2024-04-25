@@ -8,6 +8,7 @@ import {
   getText,
   isDisplayed,
   waitForElement,
+  waitForElementVisible,
 } from "../utils/Helper";
 
 const DIV_WALLET_WRAPPER = "wallet-wrapper";
@@ -84,6 +85,11 @@ export class WalletWrapper {
   async pickMyPositions() {
     const myPositionsTab = buildDataTestIdXpath(MY_POSITIONS_TAB_BUTTON);
     await clickElement(this.driver, myPositionsTab);
+  }
+
+  async waitForTokensVisible() {
+    const tokenRow = buildDataTestIdXpath(MY_TOKENS);
+    await waitForElementVisible(this.driver, tokenRow);
   }
 
   async isMyTokensRowDisplayed(tokenName: string) {
