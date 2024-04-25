@@ -47,6 +47,7 @@ wss.on("connection", (ws) => {
             });
             remoteWs.on("close", () => {
               console.log("Connection closed");
+              remoteWs = null;
             });
           } else {
             remoteWs.send(message);
