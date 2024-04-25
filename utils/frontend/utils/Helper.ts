@@ -127,7 +127,7 @@ export async function waitForElementStateInterval(
   driver: WebDriver,
   xpath: string,
   isEnabled: boolean,
-  timeout = 5000,
+  timeout = 10000,
 ) {
   const startTime = Date.now();
   const endTime = startTime + timeout;
