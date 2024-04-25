@@ -47,7 +47,7 @@ const bootstrapAmount = new BN(10000000000);
 
 async function checkPossibilityCreatingPool(tokenA: any, tokenB: any) {
   const creatingPool = await createPool(
-    testUser1,
+    testUser1.keyRingPair,
     tokenA,
     bootstrapAmount,
     tokenB,

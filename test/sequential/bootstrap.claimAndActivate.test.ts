@@ -12,20 +12,15 @@ import {
   vestingTransfer,
 } from "../../utils/tx";
 import { EventResult, ExtrinsicResult } from "../../utils/eventListeners";
-import { Keyring } from "@polkadot/api";
 import { User } from "../../utils/User";
-import {
-  getEnvironmentRequiredVars,
-  getBlockNumber,
-  getUserBalanceOfToken,
-} from "../../utils/utils";
+import { getBlockNumber, getUserBalanceOfToken } from "../../utils/utils";
 import {
   getEventResultFromMangataTx,
   getBalanceOfPool,
 } from "../../utils/txHandler";
 import { MGA_ASSET_ID } from "../../utils/Constants";
 import { BN } from "@polkadot/util";
-import { setupApi, setupUsers } from "../../utils/setup";
+import { getSudoUser, setupApi, setupUsers } from "../../utils/setup";
 import {
   checkLastBootstrapFinalized,
   createNewBootstrapCurrency,
@@ -44,12 +39,10 @@ process.env.NODE_ENV = "test";
 let testUser1: User;
 let testUser2: User;
 let sudo: User;
-let keyring: Keyring;
 let bootstrapCurrency: any;
 let bootstrapPool: any;
 let eventResponse: EventResult;
 
-const { sudo: sudoUserName } = getEnvironmentRequiredVars();
 const waitingPeriod = 6;
 const bootstrapPeriod = 20;
 const bootstrapAmount = new BN(10000000000);
@@ -61,10 +54,7 @@ beforeAll(async () => {
     await initApi();
   }
 
-  keyring = new Keyring({ type: "sr25519" });
-
-  sudo = new User(keyring, sudoUserName);
-  keyring.addPair(sudo.keyRingPair);
+  sudo = getSudoUser();
 });
 
 describe.each`

@@ -35,7 +35,6 @@ import Keyring from "@polkadot/keyring";
 import { ExtrinsicResult } from "./eventListeners";
 import { Sudo } from "./sudo";
 import { Assets } from "./Assets";
-import { signTxMetamask } from "./metamask";
 import { getSudoUser } from "./setup";
 
 export const signTxDeprecated = async (
