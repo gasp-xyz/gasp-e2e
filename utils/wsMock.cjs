@@ -23,6 +23,12 @@ wss.on("connection", (ws) => {
         case "xyk_get_burn_amount":
           handleGetBurnAmount(messageJson);
           break;
+        case "xyk_calculate_rewards_amount":
+          handleCalcRewards(messageJson);
+          break;
+        case "pos_calculate_3rdparty_rewards_all":
+          handleCalcRewardsAll(messageJson);
+          break;
         default:
           console.log("Unknown method:", messageJson.method);
           if (!remoteWs) {
@@ -44,7 +50,9 @@ wss.on("connection", (ws) => {
                 const response = message.toString();
                 client.send(response, { headers: resHeaders });
               });
-              console.log(`Received response: ${message} with headers: ${message.headers}`);
+              console.log(
+                `Received response: ${message} with headers: ${message.headers}`
+              );
             });
             remoteWs.on("close", () => {
               console.log("Connection closed");
@@ -74,10 +82,41 @@ function handleRpcMethods() {
 }
 
 function handleGetBurnAmount(messageJson) {
-  const burnResponseJson = fs.readFileSync("get_burn_amount_response.json", "utf8");
+  const burnResponseJson = fs.readFileSync(
+    "get_burn_amount_response.json",
+    "utf8"
+  );
   let burnResponseParsed = JSON.parse(burnResponseJson);
   burnResponseParsed.id = messageJson.id;
   let response = JSON.stringify(burnResponseParsed);
+  console.log("Mocked response:", response);
+  clients.forEach((client) => {
+    client.send(response);
+  });
+}
+
+function handleCalcRewards(messageJson) {
+  const responseJson = fs.readFileSync(
+    "calculate_rewards_amount_response.json",
+    "utf8"
+  );
+  let responseParsed = JSON.parse(responseJson);
+  responseParsed.id = messageJson.id;
+  let response = JSON.stringify(responseParsed);
+  console.log("Mocked response:", response);
+  clients.forEach((client) => {
+    client.send(response);
+  });
+}
+
+function handleCalcRewardsAll(messageJson) {
+  const responseJson = fs.readFileSync(
+    "calculate_rewards_all_response.json",
+    "utf8"
+  );
+  let responseParsed = JSON.parse(responseJson);
+  responseParsed.id = messageJson.id;
+  let response = JSON.stringify(responseParsed);
   console.log("Mocked response:", response);
   clients.forEach((client) => {
     client.send(response);
