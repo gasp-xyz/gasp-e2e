@@ -120,20 +120,16 @@ describe("Tests with Metamask signing:", () => {
     await testEthUser.refreshAmounts(AssetWallet.AFTER);
     const diff = testPdUser.getWalletDifferences();
 
-    expect(
-      testEthUser.getAsset(MGA_ASSET_ID)!.amountBefore.free!,
-    ).bnGt(testEthUser.getAsset(MGA_ASSET_ID)!.amountAfter.free!);
+    expect(testEthUser.getAsset(MGA_ASSET_ID)!.amountBefore.free!).bnGt(
+      testEthUser.getAsset(MGA_ASSET_ID)!.amountAfter.free!,
+    );
     expect(diff[0].diff.free).bnEqual(new BN(1000));
   });
 
   test("Mint liquidity", async () => {
     await Sudo.batchAsSudoFinalized(
       Assets.mintNative(testEthUser),
-      Assets.mintToken(
-        secondCurrency,
-        testEthUser,
-        Assets.DEFAULT_AMOUNT,
-      ),
+      Assets.mintToken(secondCurrency, testEthUser, Assets.DEFAULT_AMOUNT),
     );
     testEthUser.addAsset(MGA_ASSET_ID);
 
@@ -149,9 +145,7 @@ describe("Tests with Metamask signing:", () => {
     testEthUser.addAsset(liqId);
     await testEthUser.refreshAmounts(AssetWallet.AFTER);
 
-    expect(testEthUser.getAsset(liqId)!.amountAfter.free!).bnGt(
-      BN_ZERO,
-    );
+    expect(testEthUser.getAsset(liqId)!.amountAfter.free!).bnGt(BN_ZERO);
   });
 
   test("Burn liquidity", async () => {
@@ -176,24 +170,18 @@ describe("Tests with Metamask signing:", () => {
     await testEthUser.refreshAmounts(AssetWallet.AFTER);
     const diff = testEthUser
       .getAsset(liqId)!
-      .amountBefore.free!.sub(
-        testEthUser.getAsset(liqId)!.amountAfter.free!,
-      );
+      .amountBefore.free!.sub(testEthUser.getAsset(liqId)!.amountAfter.free!);
 
-    expect(
-      testEthUser.getAsset(secondCurrency)!.amountAfter.free!,
-    ).bnGt(BN_ZERO);
+    expect(testEthUser.getAsset(secondCurrency)!.amountAfter.free!).bnGt(
+      BN_ZERO,
+    );
     expect(diff).bnEqual(Assets.DEFAULT_AMOUNT);
   });
 
   test("Create batch function", async () => {
     await Sudo.batchAsSudoFinalized(
       Assets.mintNative(testEthUser),
-      Assets.mintToken(
-        secondCurrency,
-        testEthUser,
-        Assets.DEFAULT_AMOUNT,
-      ),
+      Assets.mintToken(secondCurrency, testEthUser, Assets.DEFAULT_AMOUNT),
     );
 
     const txs = [];
@@ -222,13 +210,9 @@ describe("Tests with Metamask signing:", () => {
     await testEthUser.refreshAmounts(AssetWallet.AFTER);
     const diff = testEthUser
       .getAsset(liqId)!
-      .amountAfter.free!.sub(
-        testEthUser.getAsset(liqId)!.amountBefore.free!,
-      );
+      .amountAfter.free!.sub(testEthUser.getAsset(liqId)!.amountBefore.free!);
 
-    expect(testEthUser.getAsset(liqId)!.amountAfter.free!).bnGt(
-      BN_THOUSAND,
-    );
+    expect(testEthUser.getAsset(liqId)!.amountAfter.free!).bnGt(BN_THOUSAND);
     expect(diff).bnGt(BN_ZERO);
   });
 });

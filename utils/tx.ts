@@ -35,6 +35,7 @@ import Keyring from "@polkadot/keyring";
 import { ExtrinsicResult } from "./eventListeners";
 import { Sudo } from "./sudo";
 import { Assets } from "./Assets";
+import { getSudoUser } from "./setup";
 
 export const signTxDeprecated = async (
   tx: SubmittableExtrinsic<"promise">,
@@ -216,8 +217,7 @@ export async function calculate_sell_price_id_rpc(
 }
 
 export async function getCurrentNonce(account?: string) {
-  const { sudo: sudoUserName } = getEnvironmentRequiredVars();
-  const sudo = new User(new Keyring({ type: "sr25519" }), sudoUserName);
+  const sudo = getSudoUser();
   // lets check if sudo -> calculate manually nonce.
   if (account === sudo.keyRingPair.address) {
     return new BN(await SudoDB.getInstance().getSudoNonce(account));
@@ -438,7 +438,9 @@ export const promotePool = async (
       api.tx.proofOfStake.updatePoolPromotion(liqAssetId, weight),
     ),
     sudoAccount,
-    { nonce: await getCurrentNonce(sudoAccount.address) },
+    {
+      nonce: await getCurrentNonce(sudoAccount.address),
+    },
   );
 };
 
