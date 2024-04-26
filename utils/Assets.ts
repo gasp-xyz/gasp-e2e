@@ -59,24 +59,16 @@ export class Assets {
     skipInfo = false,
   ): Promise<BN[]> {
     if (this.legacy || skipInfo) {
-      let assetIds: BN[];
-      let result: MangataGenericEvent[];
       const txs: Extrinsic[] = [];
       await setupApi();
       setupUsers();
       for (let currency = 0; currency < currencyValues.length; currency++) {
         txs.push(Assets.issueToken(user, currencyValues[currency]));
       }
-      result = await Sudo.batchAsSudoFinalized(...txs);
-      assetIds = result
+      const result = await Sudo.batchAsSudoFinalized(...txs);
+      const assetIds: BN[] = result
         .filter((X) => X.method === "Created")
         .map((t) => new BN(t.eventData[0].data.toString()));
-      if (assetIds[0].eq(BN_FOUR)) {
-        result = await Sudo.batchAsSudoFinalized(...txs);
-        assetIds = result
-          .filter((X) => X.method === "Created")
-          .map((t) => new BN(t.eventData[0].data.toString()));
-      }
       const addInfos: Extrinsic[] = [];
       if (!skipInfo) {
         for (let index = 0; index < assetIds.length; index++) {
