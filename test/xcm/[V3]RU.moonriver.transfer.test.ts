@@ -19,8 +19,6 @@ import { testLog } from "../../utils/Logger";
 import { jest } from "@jest/globals";
 
 /**
- * @group xcm
- * @group proxied
  */
 
 jest.setTimeout(140000);
