@@ -7,9 +7,7 @@ import { jest } from "@jest/globals";
 import { getApi, initApi } from "../../utils/api";
 import { getBalanceOfAsset, getLiquidityAssetId } from "../../utils/tx";
 import { EventResult, ExtrinsicResult } from "../../utils/eventListeners";
-import { Keyring } from "@polkadot/api";
 import { User } from "../../utils/User";
-import { getEnvironmentRequiredVars } from "../../utils/utils";
 import {
   getEventResultFromMangataTx,
   getBalanceOfPool,
@@ -25,7 +23,7 @@ import {
   claimRewardsBootstrap,
   waitForBootstrapStatus,
 } from "../../utils/Bootstrap";
-import { setupUsers } from "../../utils/setup";
+import { getSudoUser, setupUsers } from "../../utils/setup";
 
 jest.spyOn(console, "log").mockImplementation(jest.fn());
 jest.setTimeout(3500000);
@@ -33,12 +31,10 @@ process.env.NODE_ENV = "test";
 
 let testUser1: User;
 let sudo: User;
-let keyring: Keyring;
 let bootstrapCurrency: any;
 let bootstrapPool: any;
 let eventResponse: EventResult;
 
-const { sudo: sudoUserName } = getEnvironmentRequiredVars();
 const waitingPeriod = 10;
 const bootstrapPeriod = 8;
 const bootstrapAmount = toBN("1", 10);
@@ -50,10 +46,7 @@ beforeAll(async () => {
     await initApi();
   }
 
-  keyring = new Keyring({ type: "sr25519" });
-
-  sudo = new User(keyring, sudoUserName);
-  keyring.addPair(sudo.keyRingPair);
+  sudo = getSudoUser();
 
   await checkLastBootstrapFinalized(sudo);
   bootstrapCurrency = await createNewBootstrapCurrency(sudo);

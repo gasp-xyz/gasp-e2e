@@ -411,15 +411,21 @@ export const createPool = async (
     .info(
       `Creating pool:${firstAssetId},${firstAssetAmount},${secondAssetId},${secondAssetAmount}`,
     );
-  const mangata = await getMangataInstance();
-  return await mangata.xyk.createPool({
-    account: account,
-    firstTokenId: firstAssetId.toString(),
-    secondTokenId: secondAssetId.toString(),
-    secondTokenAmount: secondAssetAmount,
-    firstTokenAmount: firstAssetAmount,
-    txOptions: { nonce: nonce },
-  });
+  const api = getApi();
+
+  return await signTx(
+    api,
+    api.tx.xyk.createPool(
+      firstAssetId,
+      firstAssetAmount,
+      secondAssetId,
+      secondAssetAmount,
+    ),
+    account,
+    {
+      nonce: nonce,
+    },
+  );
 };
 
 // for alignment purposes lets keep it backward comaptible
