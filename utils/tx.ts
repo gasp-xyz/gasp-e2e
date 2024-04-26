@@ -1167,8 +1167,8 @@ export async function initializeCrowdloanReward(
   const rewards: any[] = [];
   user.forEach((account) => {
     rewards.push([
-      account.keyRingPair.address,
-      account.keyRingPair.address,
+      account.ethAddress.toString(),
+      account.ethAddress.toString(),
       crowdloanRewardsAmount,
     ]);
   });
@@ -1197,7 +1197,6 @@ export async function claimCrowdloanRewards(crowdloanId: any, userId: User) {
   const api = getApi();
   const claimRewards = await signTx(
     api,
-    // @ts-ignore
     api.tx.crowdloan.claim(crowdloanId),
     userId.keyRingPair,
   );

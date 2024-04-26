@@ -20,13 +20,12 @@ import { Assets } from "../../utils/Assets";
 import {
   findBlockWithExtrinsicSigned,
   getBlockNumber,
-  getEnvironmentRequiredVars,
   getFeeLockMetadata,
   getTokensDiffForBlockAuthor,
 } from "../../utils/utils";
 import { MGA_ASSET_ID } from "../../utils/Constants";
 import { Fees } from "../../utils/Fees";
-import { setupApi, setupUsers } from "../../utils/setup";
+import { getSudoUser, setupApi, setupUsers } from "../../utils/setup";
 import { Sudo } from "../../utils/sudo";
 import { Xyk } from "../../utils/xyk";
 
@@ -45,8 +44,6 @@ const firstAssetAmount = new BN(50000);
 const secondAssetAmount = new BN(50000);
 //creating pool
 
-const { sudo: sudoUserName } = getEnvironmentRequiredVars();
-
 const defaultCurrecyValue = new BN(250000);
 
 beforeEach(async () => {
@@ -58,11 +55,10 @@ beforeEach(async () => {
 
   await setupApi();
   await setupUsers();
-  keyring = new Keyring({ type: "sr25519" });
 
   // setup users
   testUser1 = new User(keyring);
-  sudo = new User(keyring, sudoUserName);
+  sudo = getSudoUser();
   firstCurrency = MGA_ASSET_ID;
   secondCurrency = await Assets.issueAssetToUser(
     sudo,

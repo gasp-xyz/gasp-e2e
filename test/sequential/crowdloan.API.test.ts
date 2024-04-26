@@ -87,8 +87,8 @@ describe("Only sudo can", () => {
       api,
       api.tx.crowdloan.initializeRewardVec([
         [
-          testUser1.keyRingPair.address,
-          testUser1.keyRingPair.address,
+          testUser1.ethAddress.toString(),
+          testUser1.ethAddress.toString(),
           crowdloanRewardsAmount,
         ],
       ]),
@@ -104,8 +104,8 @@ describe("Only sudo can", () => {
       Sudo.sudo(
         api.tx.crowdloan.initializeRewardVec([
           [
-            testUser1.keyRingPair.address,
-            testUser1.keyRingPair.address,
+            testUser1.ethAddress.toString(),
+            testUser1.ethAddress.toString(),
             crowdloanRewardsAmount,
           ],
         ]),
