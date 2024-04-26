@@ -98,7 +98,11 @@ export class Assets {
       for (let currency = 0; currency < currencyValues.length; currency++) {
         const tokenId = await SudoDB.getInstance().getTokenId();
         txs.push(Assets.mintToken(tokenId, user, currencyValues[currency]));
-        tokenIds.push(tokenId);
+        if (!tokenId.eq(BN_FOUR)) {
+          tokenIds.push(tokenId);
+        } else {
+          currency--;
+        }
       }
       await Sudo.batchAsSudoFinalized(...txs);
       user.addAssets(tokenIds);
