@@ -10,17 +10,14 @@ import { getLiquidityAssetId, createPool } from "../../utils/tx";
 import { EventResult, ExtrinsicResult } from "../../utils/eventListeners";
 import { Keyring } from "@polkadot/api";
 import { User } from "../../utils/User";
-import {
-  getEnvironmentRequiredVars,
-  getUserBalanceOfToken,
-} from "../../utils/utils";
+import { getUserBalanceOfToken } from "../../utils/utils";
 import {
   getEventResultFromMangataTx,
   getBalanceOfPool,
 } from "../../utils/txHandler";
 import { MGA_ASSET_ID } from "../../utils/Constants";
 import { BN } from "@polkadot/util";
-import { setupApi, setupUsers } from "../../utils/setup";
+import { getSudoUser, setupApi, setupUsers } from "../../utils/setup";
 import {
   checkLastBootstrapFinalized,
   createNewBootstrapCurrency,
@@ -43,7 +40,6 @@ let bootstrapPool: any;
 let eventResponse: EventResult;
 let bootstrapExpectedUserLiquidity: BN;
 
-const { sudo: sudoUserName } = getEnvironmentRequiredVars();
 const waitingPeriod = 6;
 const bootstrapPeriod = 20;
 const whitelistPeriod = 5;
@@ -72,7 +68,7 @@ beforeAll(async () => {
   keyring = new Keyring({ type: "sr25519" });
 
   // setup users
-  sudo = new User(keyring, sudoUserName);
+  sudo = getSudoUser();
   testUser1 = new User(keyring);
 
   [testUser1] = setupUsers();
