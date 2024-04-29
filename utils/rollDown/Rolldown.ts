@@ -80,7 +80,7 @@ export class L2Update {
   api: ApiPromise;
   pendingDeposits: any[];
   pendingWithdrawalResolutions: any[];
-  pendingCancelResultions: any[];
+  pendingCancelResolutions: any[];
   pendingL2UpdatesToRemove: any[];
 
   constructor(api: ApiPromise) {
@@ -91,7 +91,7 @@ export class L2Update {
     this.pendingWithdrawalResolutions = this.api.createType(
       "Vec<PalletRolldownMessagesWithdrawalResolution>",
     );
-    this.pendingCancelResultions = this.api.createType(
+    this.pendingCancelResolutions = this.api.createType(
       "Vec<PalletRolldownMessagesCancelResolution>",
     );
     this.pendingL2UpdatesToRemove = this.api.createType(
@@ -105,9 +105,9 @@ export class L2Update {
         "Vec<PalletRolldownMessagesDeposit>",
         this.pendingDeposits,
       ),
-      pendingCancelResultions: this.api.createType(
+      pendingCancelResolutions: this.api.createType(
         "Vec<PalletRolldownMessagesCancelResolution>",
-        this.pendingCancelResultions,
+        this.pendingCancelResolutions,
       ),
       // @ts-ignore
       pendingWithdrawalResolutions: this.api.createType(
@@ -180,7 +180,7 @@ export class L2Update {
         timeStamp: timestamp,
       },
     );
-    this.pendingCancelResultions.push(cancelResolution);
+    this.pendingCancelResolutions.push(cancelResolution);
     return this;
   }
   withUpdatesToRemove(
