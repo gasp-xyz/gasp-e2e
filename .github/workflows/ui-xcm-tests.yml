@@ -92,7 +92,7 @@ jobs:
 
       - name: Build app
         working-directory: microapps
-        run: yarn nx run-many --target=build
+        run: yarn nx run dex:build:production
         env:
           NODE_OPTIONS: "--max_old_space_size=6144"
 
