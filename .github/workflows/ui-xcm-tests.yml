@@ -78,6 +78,7 @@ jobs:
           echo MANGATA_ASSETS_URL="https://storage.googleapis.com/mangata-assets" >> .env
           echo MANGATA_STASH_URL="http://$IP_ADDRESS:3456" >> .env
           echo MANGATA_EXPLORER_URL="https://mangatax.subscan.io" >> .env
+          echo MANGATA_CHAIN_ENV="kusama" >> .env
           echo MANGATA_API_URL=ws://$IP_ADDRESS:9946 >> .env
           echo "MANGATA_API_URL=ws://$IP_ADDRESS:9946" >> $GITHUB_ENV
           echo "API_URL=ws://$IP_ADDRESS:9946" >> $GITHUB_ENV
