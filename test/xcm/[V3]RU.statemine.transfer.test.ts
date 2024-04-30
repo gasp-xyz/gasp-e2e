@@ -102,10 +102,10 @@ describe("XCM tests for Mangata <-> Statemine", () => {
     await mangata.chain.newBlock();
 
     await statemine.chain.newBlock();
+    await statemine.chain.newBlock();
     expectJson(
       await mangata.api.query.tokens.accounts(alice.address, 30),
     ).toMatchSnapshot();
-
     expect(
       await statemine.api.query.assets.account(1984, alice.address),
     ).toMatchSnapshot();
@@ -249,6 +249,7 @@ describe("XCM tests for Mangata <-> Statemine", () => {
     await mangata.chain.newBlock();
 
     await statemine.chain.newBlock();
+    await statemine.chain.newBlock();
     expectJson(
       await mangata.api.query.tokens.accounts(alice.address, 31),
     ).toMatchSnapshot();
@@ -310,7 +311,7 @@ describe("XCM tests for Mangata <-> Statemine", () => {
       },
     });
     await statemine.chain.newBlock();
-
+    await statemine.chain.newBlock();
     expect(
       await statemine.api.query.assets.account(8, alice.address),
     ).toMatchSnapshot();

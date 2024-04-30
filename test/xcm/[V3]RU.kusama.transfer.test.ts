@@ -161,7 +161,6 @@ describe("XCM tests for Mangata <-> Kusama", () => {
     });
 
     await kusama.chain.newBlock();
-
     expect(await balance(kusama.api, alice.address)).toMatchSnapshot();
     //TODO: Somehow I can not get the events from the dcmp.
     //    const hashBef = await mangata.api.rpc.chain.getBlockHash(
