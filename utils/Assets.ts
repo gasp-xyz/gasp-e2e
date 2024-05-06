@@ -139,7 +139,7 @@ export class Assets {
     num = new BN(1000),
     sudo: User,
     skipInfo = false,
-  ) {
+  ): Promise<BN> {
     if (this.legacy) {
       let result: MangataGenericEvent[];
       let eventResult: EventResult;
@@ -190,15 +190,15 @@ export class Assets {
       }
       return new BN(assetId);
     } else {
-      let assetId: BN[];
-      assetId = await this.setupUserWithCurrencies(user, [num], sudo, skipInfo);
-      if (assetId[0].eq(BN_FOUR)) {
-        assetId = await this.setupUserWithCurrencies(
-          user,
-          [num],
-          sudo,
-          skipInfo,
-        );
+      const assetId: BN[] = await this.setupUserWithCurrencies(
+        user,
+        [num],
+        sudo,
+        skipInfo,
+      );
+      if (assetId[0].lte(BN_FOUR)) {
+        // recursively register assets until we get a valid assetId
+        return (await Assets.issueAssetToUser(user, num, sudo, skipInfo)) as BN;
       }
       return assetId[0];
     }
