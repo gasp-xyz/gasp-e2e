@@ -12,7 +12,7 @@ import {
 } from "../../utils/tx";
 import { waitForRewards } from "../../utils/eventListeners";
 import { BN } from "@polkadot/util";
-import { Keyring, ApiPromise } from "@polkadot/api";
+import { ApiPromise } from "@polkadot/api";
 import { User } from "../../utils/User";
 import { Assets } from "../../utils/Assets";
 import {
@@ -20,7 +20,7 @@ import {
   getEnvironmentRequiredVars,
 } from "../../utils/utils";
 import { MGA_ASSET_ID } from "../../utils/Constants";
-import { setupUsers, setupApi } from "../../utils/setup";
+import { setupUsers, setupApi, getSudoUser } from "../../utils/setup";
 import { Sudo } from "../../utils/sudo";
 import { Xyk } from "../../utils/xyk";
 
@@ -112,8 +112,7 @@ describe("Story tests > Rewards - autocompound", () => {
 async function setupPoolWithRewardsForUsers(users: User[]) {
   const [testUser1, testUser2, testUser3, testUser4] = await setupUsers();
   users = [testUser1, testUser2, testUser3, testUser4];
-  const keyring = new Keyring({ type: "sr25519" });
-  const sudo = new User(keyring, getEnvironmentRequiredVars().sudo);
+  const sudo = getSudoUser();
   const token2 = await Assets.issueAssetToUser(
     sudo,
     defaultCurrecyValue,
