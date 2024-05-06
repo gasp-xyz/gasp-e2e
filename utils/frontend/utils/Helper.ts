@@ -156,7 +156,7 @@ export async function waitForElementStateInterval(
   }
 
   throw new Error(
-    `Timeout: Element state not as desired after ${timeout} milliseconds`,
+    `Timeout: Element ${xpath} state not as desired after ${timeout} milliseconds`,
   );
 }
 
@@ -701,6 +701,7 @@ export async function comparePoolsLists(
   for (let i = 0; i < bePoolsInfoLength; i++) {
     const isPoolVisible = await liquidityPools.isPoolItemDisplayed(
       "-" + bePoolsInfo[i].firstToken + "-" + bePoolsInfo[i].secondToken,
+      false,
     );
     if (isPoolVisible) {
       bePoolsList.push(
