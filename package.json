@@ -133,7 +133,7 @@
     "test-microapps-chops-fifth": "export CHOPSTICK_UI=true ; rm nonce.db ; rm sudo.lock;  node --experimental-specifier-resolution=node --loader ts-node/esm --experimental-vm-modules node_modules/jest/bin/jest.js --verbose --runInBand --ci --group=microappsStaking",
     "test-microapps-prod-first": "export CHOPSTICK_UI=true ; rm nonce.db ; rm sudo.lock;  node --experimental-specifier-resolution=node --loader ts-node/esm --experimental-vm-modules node_modules/jest/bin/jest.js --verbose --runInBand --ci --group=microappsProdDeposit --group=microappsProdSwap --group=microappsProdWallet --group=microappsProdWithdraw --group=microappsProdStaking --group=microappsProdPools",
     "cliTool": "node --experimental-specifier-resolution=node --loader ts-node/esm --experimental-vm-modules cliTool/index.ts --runInBand",
-    "test-rollup": "export JEST_HTML_REPORTERS_PUBLIC_PATH=reports/html-report-seq; node --experimental-specifier-resolution=node --loader ts-node/esm --experimental-vm-modules node_modules/jest/bin/jest.js --verbose --runInBand --group=rollup --forceExit ",
+    "test-rollup": "export JEST_HTML_REPORTERS_PUBLIC_PATH=reports/html-report-seq; node --experimental-specifier-resolution=node --loader ts-node/esm --experimental-vm-modules node_modules/jest/bin/jest.js --verbose --runInBand --group=rollup --group=-rollupUpdate --forceExit ",
     "test-rollupUpdate": "export JEST_HTML_REPORTERS_PUBLIC_PATH=reports/html-report-seq; node --experimental-specifier-resolution=node --loader ts-node/esm --experimental-vm-modules node_modules/jest/bin/jest.js --verbose --runInBand --group=rollupUpdate --forceExit ",
     "runtimeUpgrade": " jest --verbose --ci --group=upgradeRuntime --runInBand --forceExit"
     

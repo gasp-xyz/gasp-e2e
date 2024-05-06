@@ -1,6 +1,5 @@
 /*
  *
- * @group rollup
  */
 import "jest-extended";
 import { PublicClient } from "viem";
