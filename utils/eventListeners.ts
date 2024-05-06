@@ -392,3 +392,10 @@ export const expectMGAExtrinsicSuDidFailed = (
   expect(sudoErrorEvent).not.toBeNull();
   return sudoErrorEvent!;
 };
+
+export async function getEventsAt(blockNo: BN) {
+  const api = getApi();
+  const blockHash = await api.rpc.chain.getBlockHash(blockNo);
+  const events = await api.query.system.events.at(blockHash);
+  return events;
+}

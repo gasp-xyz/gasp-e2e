@@ -4,7 +4,7 @@ import { getApi, getMangataInstance, initApi, mangata } from "./api";
 import { Assets } from "./Assets";
 import { User } from "./User";
 import { getAccountJSON } from "./frontend/utils/Helper";
-import { waitNewBlock } from "./eventListeners";
+import { ExtrinsicResult, waitNewBlock } from "./eventListeners";
 import { logEvent, testLog } from "./Logger";
 import { AnyNumber } from "@polkadot/types/types";
 import { ApiPromise } from "@polkadot/api";
@@ -23,6 +23,7 @@ import {
 import Keyring from "@polkadot/keyring";
 import jsonpath from "jsonpath";
 import _ from "lodash";
+import { getEventResultFromMangataTx } from "./txHandler";
 
 export type Tokens = { free: BN; reserved: BN; frozen: BN };
 export function sleep(ms: number) {
@@ -763,4 +764,13 @@ export async function monitorEvents() {
       }
     });
   });
+}
+export function expectExtrinsicSucceed(res: MangataGenericEvent[]) {
+  const eventResponse = getEventResultFromMangataTx(res);
+  expect(eventResponse.state).toEqual(ExtrinsicResult.ExtrinsicSuccess);
+}
+export function expectExtrinsicFail(res: MangataGenericEvent[]) {
+  const eventResponse = getEventResultFromMangataTx(res);
+  expect(eventResponse.state).toEqual(ExtrinsicResult.ExtrinsicFailed);
+  return eventResponse;
 }
