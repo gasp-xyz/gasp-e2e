@@ -9,7 +9,7 @@ import { jest } from "@jest/globals";
 import { testLog } from "../../utils/Logger";
 
 jest.setTimeout(600000);
-const taskManagerAddress = "0x9E545E3C0baAB3E08CdfD552C960A1050f373042";
+const taskManagerAddress = "0x1613beB3B2C4f22Ee086B2b38C1476A3cE7f78E8";
 
 function waitForTaskGenerated(publicClient: PublicClient) {
   return new Promise((resolve, _) => {
