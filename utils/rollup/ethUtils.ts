@@ -28,7 +28,7 @@ export const account = privateKeyToAccount(
 );
 
 export const { abi } = JSON.parse(
-  fs.readFileSync("utils/rollup/rolldown.json").toString(),
+  fs.readFileSync("utils/rollup/RollDown.json").toString(),
 );
 export const erc20abi = JSON.parse(
   fs.readFileSync("utils/rollup/TestToken.json").toString(),

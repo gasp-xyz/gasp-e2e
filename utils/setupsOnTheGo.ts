@@ -54,8 +54,13 @@ import {
 } from "./rolldown";
 import { EthUser } from "./EthUser";
 import { signTxMetamask } from "./metamask";
-import { getL2UpdatesStorage } from "./rollup/ethUtils";
-
+import {
+  abi,
+  getBalance,
+  getL2UpdatesStorage,
+  publicClient,
+  ROLL_DOWN_CONTRACT_ADDRESS,
+} from "./rollup/ethUtils";
 Assets.legacy = true;
 export async function claimForAllAvlRewards() {
   await setupApi();
@@ -1778,6 +1783,76 @@ export async function withdrawToL1(ethPrivateKey: string, amountValue: number) {
       " would be withdrawn in the amount of " +
       amountValue.toString(),
   );
+}
+
+export async function monitorRollDown(type = "deposit") {
+  const users: Map<
+    string,
+    Set<{
+      DestAddress: string;
+      token: string;
+      amount: string;
+      totalBalance: string;
+      mgaBalance: string;
+    }>
+  > = new Map();
+
+  if (type === "deposit") {
+    while (true) {
+      const p = monitorEthDeposits();
+      const p2 = monitorPolkBalances();
+
+
+      await Promise.all([p, p2]);
+    }
+    async function printData(){
+      for (const entry of users.keys()) {
+        console.log("=====================================");
+        await printUserInfo(entry);
+        console.log(users.get(entry));
+        console.log("=====================================");
+      }
+    }
+
+    async function monitorPolkBalances() {}
+
+    async function monitorEthDeposits() {
+      return await new Promise(() => {
+        publicClient.watchContractEvent({
+          abi: abi,
+          address: ROLL_DOWN_CONTRACT_ADDRESS,
+          eventName: "DepositAcceptedIntoQueue",
+          onLogs: async (logs) => {
+            for (const log of logs){
+              console.log(
+                //@ts-ignore
+                `DepositAcceptedIntoQueue event: ${JSON.stringify(log.args)}`,
+              );
+              // @ts-ignore
+              const { depositRecipient, tokenAddress, amount } = log.args;
+              const totalBalance = await getBalance(
+                tokenAddress,
+                depositRecipient,
+              );
+              users.set(
+                depositRecipient,
+                new Set([
+                  {
+                    DestAddress: depositRecipient,
+                    token: tokenAddress,
+                    amount: amount,
+                    totalBalance: (totalBalance as any).toString(),
+                    mgaBalance: "0",
+                  },
+                ]),
+              );
+            }
+            await printData();
+          },
+        });
+      });
+    }
+  }
 }
 export async function readL2Updates() {
   const res = await getL2UpdatesStorage();
