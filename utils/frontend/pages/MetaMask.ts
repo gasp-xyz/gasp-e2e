@@ -6,6 +6,7 @@ import {
   clearTextManual,
   clickElement,
   doActionInDifferentWindow,
+  getText,
   isDisplayed,
   scrollIntoView,
   waitForElement,
@@ -34,6 +35,7 @@ const BTN_ACCOUNT_LABEL = "editable-label-button";
 const DIV_ACCOUNT_LABEL_INPUT = "editable-input";
 const BTN_CONNECT_ACCOUNT = "page-container-footer-next";
 const BTN_APPROVE_NETWORK = "confirmation-submit-button";
+const BTN_COPY_ADDRESS = "address-copy-button-text";
 
 export class MetaMask {
   WEB_UI_ACCESS_URL =
@@ -56,7 +58,7 @@ export class MetaMask {
     await this.driver.get(this.WEB_UI_ACCESS_URL);
   }
 
-  async setupAccount(mnemonicKeys = this.mnemonicMetaMask) {
+  async setupAccount(mnemonicKeys = this.mnemonicMetaMask): Promise<string> {
     await this.driver.get(
       `${this.WEB_UI_ACCESS_URL}#onboarding/import-with-recovery-phrase`,
     );
@@ -93,7 +95,11 @@ export class MetaMask {
     await this.acceptTNC();
     await this.skipPopup();
 
+    await this.openAccountDetails();
+    const address = await this.getAddress();
     await this.changeAccountName(this.acc_name);
+
+    return address;
   }
 
   async fillPassPhrase(phrase: string) {
@@ -105,10 +111,6 @@ export class MetaMask {
   }
 
   async changeAccountName(accountName: string) {
-    const XPATH_BTN_ACCOUNT_OPTIONS = buildDataTestIdXpath(BTN_ACCOUNT_OPTIONS);
-    await clickElement(this.driver, XPATH_BTN_ACCOUNT_OPTIONS);
-    const XPATH_BTN_ACCOUNT_DETAILS = buildDataTestIdXpath(BTN_ACCOUNT_DETAILS);
-    await clickElement(this.driver, XPATH_BTN_ACCOUNT_DETAILS);
     const XPATH_BTN_ACCOUNT_LABEL = buildDataTestIdXpath(BTN_ACCOUNT_LABEL);
     await clickElement(this.driver, XPATH_BTN_ACCOUNT_LABEL);
     const XPATH_DIV_ACCOUNT_LABEL_INPUT =
@@ -118,6 +120,18 @@ export class MetaMask {
     const XPATH_BTN_ACCOUNT_LABEL_CONFIRM =
       "//*[contains(@style, 'check.svg')]";
     await clickElement(this.driver, XPATH_BTN_ACCOUNT_LABEL_CONFIRM);
+  }
+
+  async getAddress(): Promise<string> {
+    const XPATH_BTN_COPY_ADDRESS = buildDataTestIdXpath(BTN_COPY_ADDRESS);
+    return await getText(this.driver, XPATH_BTN_COPY_ADDRESS);
+  }
+
+  async openAccountDetails() {
+    const XPATH_BTN_ACCOUNT_OPTIONS = buildDataTestIdXpath(BTN_ACCOUNT_OPTIONS);
+    await clickElement(this.driver, XPATH_BTN_ACCOUNT_OPTIONS);
+    const XPATH_BTN_ACCOUNT_DETAILS = buildDataTestIdXpath(BTN_ACCOUNT_DETAILS);
+    await clickElement(this.driver, XPATH_BTN_ACCOUNT_DETAILS);
   }
 
   async fillUserPass() {

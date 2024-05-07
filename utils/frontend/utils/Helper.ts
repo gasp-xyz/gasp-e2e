@@ -392,15 +392,15 @@ export async function importPolkadotExtension(
 export async function importMetamaskExtension(
   driver: WebDriver,
   mnemonicKeys = "",
-) {
+): Promise<string> {
   await leaveOnlyOneTab(driver);
 
   const extension = new MetaMask(driver);
   await extension.go();
   if (mnemonicKeys === "") {
-    await extension.setupAccount();
+    return await extension.setupAccount();
   } else {
-    await extension.setupAccount(mnemonicKeys);
+    return await extension.setupAccount(mnemonicKeys);
   }
 }
 

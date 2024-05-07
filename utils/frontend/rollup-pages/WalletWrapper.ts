@@ -16,7 +16,6 @@ const DIV_WALLET_CONNECTED = "wallet-connected";
 const DIV_WALLET_ITEM = "installedWallets-walletCard";
 const DIV_WALLET_WRAPPER_HEADER_ACC = "wallet-wrapper-header-account";
 const BUTTON_WALLET_CONNECT = "wallet-notConnected-cta";
-const BUTTON_WALLET_SETTINGS = "wallet-wrapper-header-settings";
 const MY_TOKENS = "my-tokens";
 const MY_POSITIONS = "my-positions";
 const MY_TOKENS_TAB_BUTTON = "My-Tokens-item";
@@ -46,11 +45,6 @@ export class WalletWrapper {
   async openWalletConnectionInfo() {
     const walletWrapper = buildDataTestIdXpath(DIV_WALLET_WRAPPER);
     await clickElement(this.driver, walletWrapper);
-  }
-
-  async openWalletSettings() {
-    const xpath = buildDataTestIdXpath(BUTTON_WALLET_SETTINGS);
-    await clickElement(this.driver, xpath);
   }
 
   async openDeposit() {
