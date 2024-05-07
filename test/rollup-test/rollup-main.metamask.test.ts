@@ -11,13 +11,13 @@ import {
   importMetamaskExtension,
 } from "../../utils/frontend/utils/Helper";
 import "dotenv/config";
-import { WalletWrapper } from "../../utils/frontend/microapps-pages/WalletWrapper";
 import {
   connectWallet,
   setupPage,
   setupPageWithState,
 } from "../../utils/frontend/rollup-utils/Handlers";
 import { WalletConnectModal } from "../../utils/frontend/rollup-pages/WalletConnectModal";
+import { WalletWrapper } from "../../utils/frontend/rollup-pages/WalletWrapper";
 
 jest.spyOn(console, "log").mockImplementation(jest.fn());
 
