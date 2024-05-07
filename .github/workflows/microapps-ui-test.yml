@@ -7,9 +7,9 @@ on:
         scriptName:
           description: 'Name of the script to run'
           required: false
-          default: 'test-microapps-ui'
+          default: 'test-gasp-ui'
         environment:
-          description: 'Environment to run the tests:[develop,rococo]'
+          description: 'Environment to run the tests:[develop,testnet]'
           required: false
           default: ''
         uiUrl:
@@ -25,16 +25,14 @@ jobs:
     runs-on: ubuntu-latest
 
     env:
-      API_URL: 'wss://collator-01-ws-rococo.mangata.online'
-      TEST_PALLET_ADDRESS: ${{ secrets.TEST_PALLET_ADDRESS }}
-      E2E_XYK_PALLET_ADDRESS: ${{ secrets.E2E_XYK_PALLET_ADDRESS }}
+      API_URL: 'wss://collator-01-ws-rollup-dev.mangata.online'
       TEST_SUDO_NAME: ${{ secrets.TEST_SUDO_NAME }}
-      TEST_SCRIPT: 'test-microapps-ui'
+      TEST_SCRIPT: 'test-gasp-ui'
       TEST_ENV_TAG: 'develop'
       NODE_ENV: test
-      UI_URL : 'https://microapps-dev-dot-direct-pixel-353917.oa.r.appspot.com'
+      UI_URL : 'https://gasp-testnet-dot-direct-pixel-353917.oa.r.appspot.com/'
       SELENIUM_REMOTE_URL: http://localhost:4444/wd/hub
-      MNEMONIC_POLK: 'sunny team hat fury give window animal polar time ethics clarify total'
+      MNEMONIC_META: 'twelve insect obvious hurdle control nature search response march version cake buffalo'
     outputs:
       testmo-run-id: ${{ steps.setTestRun.outputs.testmo-run-id }}
 
@@ -66,15 +64,15 @@ jobs:
             --args "-timeout 300s" --browsers 'chrome:110.0;chrome:112.0;chrome:114.0'
         
 
-      - name: Set Configuration - Rococo
-        if: contains(github.event.client_payload.environment, 'rococo') || contains(github.event.inputs.environment, 'rococo')
+      - name: Set Configuration - testnet
+        if: contains(github.event.client_payload.environment, 'testnet') || contains(github.event.inputs.environment, 'testnet')
         run:  |
-          echo 'API_URL=wss://collator-01-ws-rococo.mangata.online' >> $GITHUB_ENV
+          echo 'API_URL=wss://collator-01-ws-rollup-testnet.mangata.online' >> $GITHUB_ENV
   
       - name: Set Configuration - Develop
         if: contains(github.event.client_payload.environment, 'develop') || contains(github.event.inputs.environment, 'develop')
         run:  |
-          echo 'API_URL=wss://node-01-ws-dev.mangata.online' >> $GITHUB_ENV
+          echo 'API_URL=wss://collator-01-ws-rollup-dev.mangata.online' >> $GITHUB_ENV
           echo 'TEST_SUDO_NAME=${{ secrets.DEV_SUDO_NAME }}' >> $GITHUB_ENV
   
       - uses: actions/checkout@v3

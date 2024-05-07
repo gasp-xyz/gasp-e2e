@@ -48,11 +48,6 @@ export class WalletWrapper {
     await clickElement(this.driver, walletWrapper);
   }
 
-  async openWalletSettings() {
-    const xpath = buildDataTestIdXpath(BUTTON_WALLET_SETTINGS);
-    await clickElement(this.driver, xpath);
-  }
-
   async openDeposit() {
     const betaButton = buildXpathByElementText("button", "Deposit");
     await clickElement(this.driver, betaButton);
@@ -70,6 +65,11 @@ export class WalletWrapper {
       this.driver,
       walletWrapper + walletConnectedContent,
     );
+  }
+
+  async openWalletSettings() {
+    const xpath = buildDataTestIdXpath(BUTTON_WALLET_SETTINGS);
+    await clickElement(this.driver, xpath);
   }
 
   async clickWalletConnect() {
