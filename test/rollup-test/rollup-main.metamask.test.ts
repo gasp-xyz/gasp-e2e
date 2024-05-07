@@ -45,7 +45,7 @@ describe("Microapps Prod UI wallet tests", () => {
     acc_addr = await importMetamaskExtension(driver);
     acc_addr_short = acc_addr.slice(-4).toLowerCase();
 
-    const keyring = new Keyring({ type: "sr25519" });
+    const keyring = new Keyring({ type: "ecdsa" });
     const node = new Node(getEnvironmentRequiredVars().chainUri);
     await node.connect();
 
