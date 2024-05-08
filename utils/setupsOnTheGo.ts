@@ -61,6 +61,7 @@ import {
   publicClient,
   ROLL_DOWN_CONTRACT_ADDRESS,
 } from "./rollup/ethUtils";
+import Web3 from "web3";
 Assets.legacy = true;
 export async function claimForAllAvlRewards() {
   await setupApi();
@@ -936,6 +937,7 @@ function isHexPrefixed(str: string): boolean {
 }
 export async function subscribeAndPrintTokenChanges(
   ws = "ws://127.0.0.1:9946",
+  skipTokenId = 0,
 ) {
   await setupApi();
   await setupUsers();
@@ -947,41 +949,55 @@ export async function subscribeAndPrintTokenChanges(
   }
   const currentState = new Map<string, Tokens>();
   await api!.rpc.chain.subscribeNewHeads(async (lastHeader) => {
-    console.log("#" + lastHeader.number);
+    //console.log("#" + lastHeader.number);
     await api.query.tokens.accounts.entries(async (storageKey: any) => {
       storageKey.forEach((element: { toHuman: () => any }[]) => {
         const user = element[0].toHuman()[0] + "-" + element[0].toHuman()[1];
-        const status = {
-          free: hexToBn(JSON.parse(element[1].toString()).free),
-          reserved: hexToBn(JSON.parse(element[1].toString()).reserved),
-          frozen: hexToBn(JSON.parse(element[1].toString()).frozen),
-        } as Tokens;
-        if (currentState.get(user) === undefined) {
-          console.log(getPrint(user, status));
-          currentState.set(user, {
-            free: status.free,
-            reserved: status.reserved,
-            frozen: status.frozen,
-          } as Tokens);
-        } else {
-          if (
-            !(
-              status.free.eq(currentState.get(user)!.free) &&
-              status.frozen.eq(currentState.get(user)!.frozen) &&
-              status.reserved.eq(currentState.get(user)!.reserved)
-            )
-          ) {
-            console.log("BEFORE:" + getPrint(user, currentState.get(user)!));
-            const diffSentence = `Diff: free: ${new BN(status.free).sub(
-              new BN(currentState.get(user)!.free),
-            )} - , reserved: ${new BN(status.reserved).sub(
-              new BN(currentState.get(user)!.reserved),
-            )} - , frozen: ${new BN(status.frozen).sub(
-              new BN(currentState.get(user)!.frozen),
-            )} `;
-            currentState.set(user, status);
-            console.log(" AFTER:" + getPrint(user, currentState.get(user)!));
-            console.log(diffSentence);
+        if (Number(element[0].toHuman()[1]) !== skipTokenId) {
+          const status = {
+            free: hexToBn(JSON.parse(element[1].toString()).free),
+            reserved: hexToBn(JSON.parse(element[1].toString()).reserved),
+            frozen: hexToBn(JSON.parse(element[1].toString()).frozen),
+          } as Tokens;
+          if (currentState.get(user) === undefined) {
+            console.log(lastHeader.number + "#" + getPrint(user, status));
+            currentState.set(user, {
+              free: status.free,
+              reserved: status.reserved,
+              frozen: status.frozen,
+            } as Tokens);
+          } else {
+            if (
+              !(
+                status.free.eq(currentState.get(user)!.free) &&
+                status.frozen.eq(currentState.get(user)!.frozen) &&
+                status.reserved.eq(currentState.get(user)!.reserved)
+              )
+            ) {
+              console.log(
+                "Substrate-" +
+                  lastHeader.number +
+                  "#" +
+                  " BEFORE:" +
+                  getPrint(user, currentState.get(user)!),
+              );
+              const diffSentence = `Diff: free: ${new BN(status.free).sub(
+                new BN(currentState.get(user)!.free),
+              )} - , reserved: ${new BN(status.reserved).sub(
+                new BN(currentState.get(user)!.reserved),
+              )} - , frozen: ${new BN(status.frozen).sub(
+                new BN(currentState.get(user)!.frozen),
+              )} `;
+              currentState.set(user, status);
+              console.log(
+                "Substrate-" +
+                  lastHeader.number +
+                  "#" +
+                  "  AFTER:" +
+                  getPrint(user, currentState.get(user)!),
+              );
+              console.log(lastHeader.number + "# " + diffSentence);
+            }
           }
         }
       });
@@ -1784,7 +1800,65 @@ export async function withdrawToL1(ethPrivateKey: string, amountValue: number) {
       amountValue.toString(),
   );
 }
+export async function listenTransfers() {
+  const web3 = new Web3("ws://localhost:8545");
+  //@ts-ignore
+  const options = {
+    topics: [web3.utils.sha3("Transfer(address,address,uint256)")],
+  };
 
+  const subscription =
+    // @ts-ignore
+    web3.eth.subscribe("logs", options);
+
+  (await subscription).on("data", (trxData: any) => {
+    if (trxData.topics.length === 3) {
+      function formatAddress(data: any) {
+        const step1 = web3.utils.hexToBytes(data);
+        const res = web3.utils.hexToBytes(data).reverse();
+        for (let i = 0; i < step1.length; i++) {
+          if (step1[i] !== 0) {
+            //@ts-ignore
+            return web3.utils.bytesToHex(step1.slice(i));
+          }
+        }
+        return web3.utils.bytesToHex(res.reverse());
+      }
+
+      console.log("ETH- Register new transfer: " + trxData.transactionHash);
+      console.log(
+        "ETH- Contract " +
+          trxData.address +
+          " has transaction of " +
+          web3.utils.hexToNumberString(trxData.data) +
+          " from " +
+          formatAddress(trxData.topics["1"]) +
+          " to " +
+          formatAddress(trxData.topics["2"]),
+      );
+      //console.log(trxData);
+
+      web3.eth.getTransactionReceipt(
+        trxData.transactionHash,
+        // @ts-ignore
+        function (error, reciept) {
+          console.log(
+            "ETH- Sent by " + reciept.from + " to contract " + reciept.to,
+          );
+        },
+      );
+    }
+  });
+
+  // @ts-ignore
+  (await subscription).on("error", (err) => {
+    throw err;
+  });
+  // @ts-ignore
+  (await subscription).on("connected", (nr) =>
+    console.log("ETH- Subscription on ERC-20 started with ID %s", nr),
+  );
+}
 export async function monitorRollDown(type = "deposit") {
   const users: Map<
     string,
@@ -1799,19 +1873,19 @@ export async function monitorRollDown(type = "deposit") {
 
   if (type === "deposit") {
     while (true) {
-      const p = monitorEthDeposits();
+      const p0 = listenTransfers();
+      const p1 = monitorEthDeposits();
       const p2 = monitorPolkBalances();
-
-
-      await Promise.all([p, p2]);
+      const p3 = subscribeAndPrintTokenChanges();
+      await Promise.all([p0, p1, p2, p3]);
     }
-    async function printData(){
-      for (const entry of users.keys()) {
-        console.log("=====================================");
-        await printUserInfo(entry);
-        console.log(users.get(entry));
-        console.log("=====================================");
-      }
+    async function printData() {
+      // for (const entry of users.keys()) {
+        // console.log("=====================================");
+        // await printUserInfo(entry);
+        // console.log(users.get(entry));
+        // console.log("=====================================");
+      // }
     }
 
     async function monitorPolkBalances() {}
@@ -1823,10 +1897,10 @@ export async function monitorRollDown(type = "deposit") {
           address: ROLL_DOWN_CONTRACT_ADDRESS,
           eventName: "DepositAcceptedIntoQueue",
           onLogs: async (logs) => {
-            for (const log of logs){
+            for (const log of logs) {
               console.log(
                 //@ts-ignore
-                `DepositAcceptedIntoQueue event: ${JSON.stringify(log.args)}`,
+                `ETH - DepositAcceptedIntoQueue event: ${JSON.stringify(log.args)}`,
               );
               // @ts-ignore
               const { depositRecipient, tokenAddress, amount } = log.args;
