@@ -25,7 +25,7 @@ export class EthUser extends User {
     //@ts-ignore
     this.ethAddress = new ethers.Wallet(this.privateKey).address;
 
-    testLog.getLog().info(
+    testLog.getLog().debug(
       `
       ******************************** 
          Created EthUser with:  

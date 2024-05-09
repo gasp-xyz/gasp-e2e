@@ -42,6 +42,7 @@ import {
   addUnspentReserves,
   depositFromL1,
   withdrawToL1,
+  monitorRollDown,
   readL2Updates,
 } from "../utils/setupsOnTheGo";
 import {
@@ -115,10 +116,14 @@ async function app(): Promise<any> {
         "Deposit tokens by using updateL2FromL1",
         "Withdraw tokens by using updateL2FromL1",
         "Read L2 updates",
+        "RollDownMonitor",
       ],
     })
     .then(async (answers: { option: string | string[] }) => {
       console.log("Answers::: " + JSON.stringify(answers, null, "  "));
+      if (answers.option.includes("RollDownMonitor")) {
+        await monitorRollDown("deposit");
+      }
       if (answers.option.includes("Read L2 updates")) {
         await readL2Updates();
       }
