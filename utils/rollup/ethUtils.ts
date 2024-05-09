@@ -20,15 +20,15 @@ import { Sudo } from "../sudo";
 import { Assets } from "../Assets";
 
 export const ROLL_DOWN_CONTRACT_ADDRESS =
-  "0x5f3f1dbd7b74c6b46e8c44f98792a1daf8d69154";
+  "0xCD8a1C3ba11CF5ECfa6267617243239504a98d90";
 
-export const ERC20_ADDRESS = "0xb7278a61aa25c888815afc32ad3cc52ff24fe575";
+export const ERC20_ADDRESS = "0x82e01223d51Eb87e16A03E24687EDF0F294da6f1";
 export const account = privateKeyToAccount(
   "0xac0974bec39a17e36ba4a6b4d238ff944bacb478cbed5efcae784d7bf4f2ff80",
 );
 
 export const { abi } = JSON.parse(
-  fs.readFileSync("utils/rollup/rolldown.json").toString(),
+  fs.readFileSync("utils/rollup/RollDown.json").toString(),
 );
 export const erc20abi = JSON.parse(
   fs.readFileSync("utils/rollup/TestToken.json").toString(),
