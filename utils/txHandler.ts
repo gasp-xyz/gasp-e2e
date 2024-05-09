@@ -173,6 +173,15 @@ export const getEventResultFromMangataTx = function (
 
 export async function getEventErrorFromSudo(sudoEvent: MangataGenericEvent[]) {
   const api = getApi();
+  const hasSudo = sudoEvent.some(
+    (extrinsicResult) =>
+      extrinsicResult.method === "Sudid" ||
+      extrinsicResult.method === "SudoAsDone",
+  );
+  if (!hasSudo) {
+    testLog.getLog().warn("WARN: No sudo event found");
+    return new EventResult(ExtrinsicResult.Error, null);
+  }
 
   const filteredEvent = sudoEvent.filter(
     (extrinsicResult) =>

@@ -100,7 +100,14 @@ export class L2Update {
   }
 
   build() {
-    return this.api.tx.rolldown.updateL2FromL1({
+    return this.api.tx.rolldown.updateL2FromL1(this.buildParams());
+  }
+  forceBuild() {
+    return this.api.tx.rolldown.forceUpdateL2FromL1(this.buildParams());
+  }
+
+  private buildParams() {
+    return {
       pendingDeposits: this.api.createType(
         "Vec<PalletRolldownMessagesDeposit>",
         this.pendingDeposits,
@@ -118,8 +125,9 @@ export class L2Update {
         "Vec<PalletRolldownMessagesL2UpdatesToRemove>",
         this.pendingL2UpdatesToRemove,
       ),
-    });
+    };
   }
+
   withDeposit(
     txIndex: number,
     ethAddress: string,

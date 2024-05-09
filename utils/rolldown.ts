@@ -11,7 +11,7 @@ export async function rolldownDeposit(
   const mangata = await getMangataInstance();
   const sdkApi = await mangata.api();
 
-  const extrinsic = sdkApi.tx.rolldown.updateL2FromL1({
+  return sdkApi.tx.rolldown.updateL2FromL1({
     pendingDeposits: sdkApi.createType("Vec<PalletRolldownMessagesDeposit>", [
       {
         requestId: sdkApi.createType("PalletRolldownMessagesRequestId", [
@@ -25,7 +25,6 @@ export async function rolldownDeposit(
       },
     ]),
   });
-  return extrinsic;
 }
 
 export async function getLastProcessedRequestNumber() {
@@ -37,8 +36,7 @@ export async function getLastProcessedRequestNumber() {
       await sdkApi.query.rolldown.lastProcessedRequestOnL2("Ethereum"),
     ),
   );
-  const valueNumber = +value;
-  return valueNumber;
+  return +value;
 }
 
 export async function rolldownWithdraw(
@@ -50,10 +48,34 @@ export async function rolldownWithdraw(
   const sdkApi = await mangata.api();
   const address = tokenAddress === "" ? EthUser.toString() : tokenAddress;
 
-  const extrinsic = sdkApi.tx.rolldown.withdraw(
+  return sdkApi.tx.rolldown.withdraw(
     EthUser.toString(),
     address,
     amountValue,
   );
-  return extrinsic;
+}
+
+export class RollDown {
+  static async cancelRequestsFromL1(requestNumber: number, force: boolean) {
+    const mangata = await getMangataInstance();
+    const sdkApi = await mangata.api();
+    if (force) {
+      return sdkApi.tx.rolldown.forceCancelRequestsFromL1(requestNumber);
+    }
+    return sdkApi.tx.rolldown.cancelRequestsFromL1(requestNumber);
+  }
+  static async withdraw(
+    EthUser: EthUser | User,
+    amountValue: BN | number,
+    tokenAddress: string = "",
+  ) {
+    return rolldownWithdraw(EthUser, amountValue, tokenAddress);
+  }
+  static async deposit(
+    requestNumber: number,
+    ethAddress: string,
+    amountValue: number,
+  ) {
+    return rolldownDeposit(requestNumber, ethAddress, amountValue);
+  }
 }

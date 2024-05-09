@@ -8,6 +8,7 @@ import { getApi, initApi } from "../../utils/api";
 import {
   ExtrinsicResult,
   expectMGAExtrinsicSuDidSuccess,
+  EventResult,
 } from "../../utils/eventListeners";
 import { BN } from "@polkadot/util";
 import {
@@ -16,8 +17,12 @@ import {
   setupUsers,
   setupAsEthTokens,
   setupUsersWithBalances,
+  getSudoUser,
 } from "../../utils/setup";
-import { getEventResultFromMangataTx } from "../../utils/txHandler";
+import {
+  getEventErrorFromSudo,
+  getEventResultFromMangataTx,
+} from "../../utils/txHandler";
 import { BN_HUNDRED, signTx } from "@mangata-finance/sdk";
 import { FOUNDATION_ADDRESS_1, MGA_ASSET_ID } from "../../utils/Constants";
 import { Sudo } from "../../utils/sudo";
@@ -33,14 +38,15 @@ import { User } from "../../utils/User";
 import { L2Update, Rolldown } from "../../utils/rollDown/Rolldown";
 import { SequencerStaking } from "../../utils/rollDown/SequencerStaking";
 import { SudoDB } from "../../utils/SudoDB";
-import { rolldownWithdraw } from "../../utils/rolldown";
+import { RollDown, rolldownWithdraw } from "../../utils/rolldown";
+import { testLog } from "../../utils/Logger";
 
 jest.spyOn(console, "log").mockImplementation(jest.fn());
 jest.setTimeout(1500000);
 
 const users: User[] = [];
 let api: ApiPromise;
-let tests: { [K: string]: Extrinsic } = {};
+let tests: { [K: string]: [Extrinsic, User] } = {};
 let testUser1: User;
 let sequencer: User;
 let testUser2: User;
@@ -61,22 +67,46 @@ describe("On Maintenance mode - regular l1 updates must be forbidden", () => {
 
     api = await getApi();
     const tokenIds = await SudoDB.getInstance().getTokenIds(1);
-    const [tokenAddress] = await setupAsEthTokens(tokenIds);
+    const [token] = await setupAsEthTokens(tokenIds);
+    const tokenAddress = JSON.parse(token.toString()).ethereum;
     await setupUsersWithBalances(users, tokenIds.concat([MGA_ASSET_ID]));
     tests = {
-      updateL2fromL1: new L2Update(api)
-        .withDeposit(
-          await Rolldown.l2OriginRequestId(),
-          users[0].keyRingPair.address,
-          users[0].keyRingPair.address,
-          BN_HUNDRED,
-        )
-        .build(),
-      withdraw: await rolldownWithdraw(
+      updateL2fromL1: [
+        new L2Update(api)
+          .withDeposit(
+            await Rolldown.l2OriginRequestId(),
+            users[0].keyRingPair.address,
+            users[0].keyRingPair.address,
+            BN_HUNDRED,
+          )
+          .build(),
+        sequencer,
+      ],
+      withdraw: [
+        await rolldownWithdraw(users[0], BN_HUNDRED, tokenAddress.toString()),
         users[0],
-        BN_HUNDRED,
-        tokenAddress.toString(),
-      ),
+      ],
+      cancelRequestsFromL1: [
+        await RollDown.cancelRequestsFromL1(123, false),
+        sequencer,
+      ],
+      forceCancelRequestsFromL1: [
+        Sudo.sudo(await RollDown.cancelRequestsFromL1(123, true)),
+        getSudoUser(),
+      ],
+      forceUpdateL2fromL1: [
+        Sudo.sudo(
+          new L2Update(api)
+            .withDeposit(
+              await Rolldown.l2OriginRequestId(),
+              users[0].keyRingPair.address,
+              users[0].keyRingPair.address,
+              BN_HUNDRED,
+            )
+            .forceBuild(),
+        ),
+        getSudoUser(),
+      ],
     };
     await Sudo.batchAsSudoFinalized(
       Sudo.sudoAsWithAddressString(
@@ -93,29 +123,40 @@ describe("On Maintenance mode - regular l1 updates must be forbidden", () => {
       expectMGAExtrinsicSuDidSuccess(value);
     });
   });
-  it.each(["updateL2fromL1", "withdraw"])(
-    "%s operation is not allowed in mm",
-    async (testName) => {
-      const extrinsic = tests[testName];
-      if (testName === "updateL2fromL1") {
-        await Rolldown.waitForReadRights(sequencer.toString());
-      }
-      await signTx(api, extrinsic, sequencer.keyRingPair)
-        .then((events) => {
-          const event = getEventResultFromMangataTx(events, [
+  it.each([
+    "updateL2fromL1",
+    "withdraw",
+    "cancelRequestsFromL1",
+    "forceCancelRequestsFromL1",
+    "forceUpdateL2fromL1",
+  ])("%s operation is not allowed in mm", async (testName) => {
+    const [extrinsic, signer] = tests[testName];
+    if (testName === "updateL2fromL1") {
+      await Rolldown.waitForReadRights(signer.toString());
+    }
+    await signTx(api, extrinsic, signer.keyRingPair)
+      .then(async (events) => {
+        let event: EventResult;
+        try {
+          event = getEventResultFromMangataTx(events, [
             "system",
             "ExtrinsicFailed",
           ]);
-          expect(event.state).toEqual(ExtrinsicResult.ExtrinsicFailed);
-          expect(event.data).toContain("BlockedByMaintenanceMode");
-        })
-        .catch((exc) => {
-          expect(JSON.parse(JSON.stringify(exc)).data.toString()).toContain(
-            "1010: Invalid Transaction: The swap prevalidation has failed",
-          );
-        });
-    },
-  );
+        } catch (e) {
+          testLog.getLog().info("Perhaps a sudo event" + e);
+          event = await getEventErrorFromSudo(events);
+        }
+        expect(event.state).toEqual(ExtrinsicResult.ExtrinsicFailed);
+        expect(event.data).toContain("BlockedByMaintenanceMode");
+      })
+      .catch((exc) => {
+        testLog.getLog().error(exc);
+
+        expect(JSON.parse(JSON.stringify(exc)).data.toString()).toContain(
+          "1010: Invalid Transaction: The swap prevalidation has failed",
+        );
+      });
+  });
 });
 describe.skip("On Maintenance mode - sequencing and force updates are allowed", () => {
   beforeAll(async () => {
