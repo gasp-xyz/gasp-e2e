@@ -96,8 +96,12 @@ export const setupUsers = () => {
 };
 
 export const setupAsEthTokens = async (tokenIds: BN[]) => {
+  const api = getApi();
   await Sudo.batchAsSudoFinalized(
     ...tokenIds.map((tokenId) => Assets.updateL1Asset(tokenId)),
+  );
+  return await api.queryMulti(
+    tokenIds.map((tokenId) => [api.query.assetRegistry.idToL1Asset, tokenId]),
   );
 };
 

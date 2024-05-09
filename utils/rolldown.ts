@@ -1,5 +1,7 @@
 import { getMangataInstance } from "./api";
 import { EthUser } from "./EthUser";
+import { User } from "./User";
+import BN from "bn.js";
 
 export async function rolldownDeposit(
   requestNumber: number,
@@ -39,13 +41,18 @@ export async function getLastProcessedRequestNumber() {
   return valueNumber;
 }
 
-export async function rolldownWithdraw(EthUser: EthUser, amountValue: number) {
+export async function rolldownWithdraw(
+  EthUser: EthUser | User,
+  amountValue: BN | number,
+  tokenAddress: string = "",
+) {
   const mangata = await getMangataInstance();
   const sdkApi = await mangata.api();
+  const address = tokenAddress === "" ? EthUser.toString() : tokenAddress;
 
   const extrinsic = sdkApi.tx.rolldown.withdraw(
-    EthUser.ethAddress,
-    EthUser.ethAddress,
+    EthUser.toString(),
+    address,
     amountValue,
   );
   return extrinsic;

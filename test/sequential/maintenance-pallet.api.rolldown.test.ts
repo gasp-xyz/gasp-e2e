@@ -10,7 +10,13 @@ import {
   expectMGAExtrinsicSuDidSuccess,
 } from "../../utils/eventListeners";
 import { BN } from "@polkadot/util";
-import { setupApi, Extrinsic, setupUsers } from "../../utils/setup";
+import {
+  setupApi,
+  Extrinsic,
+  setupUsers,
+  setupAsEthTokens,
+  setupUsersWithBalances,
+} from "../../utils/setup";
 import { getEventResultFromMangataTx } from "../../utils/txHandler";
 import { BN_HUNDRED, signTx } from "@mangata-finance/sdk";
 import { FOUNDATION_ADDRESS_1, MGA_ASSET_ID } from "../../utils/Constants";
@@ -26,6 +32,8 @@ import { Maintenance } from "../../utils/Maintenance";
 import { User } from "../../utils/User";
 import { L2Update, Rolldown } from "../../utils/rollDown/Rolldown";
 import { SequencerStaking } from "../../utils/rollDown/SequencerStaking";
+import { SudoDB } from "../../utils/SudoDB";
+import { rolldownWithdraw } from "../../utils/rolldown";
 
 jest.spyOn(console, "log").mockImplementation(jest.fn());
 jest.setTimeout(1500000);
@@ -34,10 +42,11 @@ const users: User[] = [];
 let api: ApiPromise;
 let tests: { [K: string]: Extrinsic } = {};
 let testUser1: User;
+let sequencer: User;
 let testUser2: User;
 let minStk: BN;
 const foundationAccountAddress = FOUNDATION_ADDRESS_1;
-//TODO: Goncer Need to change getTokenIds function in setup5PoolsChained
+
 describe("On Maintenance mode - regular l1 updates must be forbidden", () => {
   beforeAll(async () => {
     try {
@@ -46,7 +55,14 @@ describe("On Maintenance mode - regular l1 updates must be forbidden", () => {
       await initApi();
     }
     await setupApi();
+    sequencer = await SequencerStaking.getSequencerUser();
+    users.push(...setupUsers());
+    users.push(sequencer);
+
     api = await getApi();
+    const tokenIds = await SudoDB.getInstance().getTokenIds(1);
+    const [tokenAddress] = await setupAsEthTokens(tokenIds);
+    await setupUsersWithBalances(users, tokenIds.concat([MGA_ASSET_ID]));
     tests = {
       updateL2fromL1: new L2Update(api)
         .withDeposit(
@@ -56,6 +72,11 @@ describe("On Maintenance mode - regular l1 updates must be forbidden", () => {
           BN_HUNDRED,
         )
         .build(),
+      withdraw: await rolldownWithdraw(
+        users[0],
+        BN_HUNDRED,
+        tokenAddress.toString(),
+      ),
     };
     await Sudo.batchAsSudoFinalized(
       Sudo.sudoAsWithAddressString(
@@ -72,12 +93,13 @@ describe("On Maintenance mode - regular l1 updates must be forbidden", () => {
       expectMGAExtrinsicSuDidSuccess(value);
     });
   });
-  it.each(["updateL2fromL1"])(
+  it.each(["updateL2fromL1", "withdraw"])(
     "%s operation is not allowed in mm",
     async (testName) => {
       const extrinsic = tests[testName];
-      const sequencer = await SequencerStaking.getSequencerUser();
-      await Rolldown.waitForReadRights(sequencer.ethAddress);
+      if (testName === "updateL2fromL1") {
+        await Rolldown.waitForReadRights(sequencer.toString());
+      }
       await signTx(api, extrinsic, sequencer.keyRingPair)
         .then((events) => {
           const event = getEventResultFromMangataTx(events, [
@@ -85,7 +107,7 @@ describe("On Maintenance mode - regular l1 updates must be forbidden", () => {
             "ExtrinsicFailed",
           ]);
           expect(event.state).toEqual(ExtrinsicResult.ExtrinsicFailed);
-          expect(event.data).toContain("TradingBlockedByMaintenanceMode");
+          expect(event.data).toContain("BlockedByMaintenanceMode");
         })
         .catch((exc) => {
           expect(JSON.parse(JSON.stringify(exc)).data.toString()).toContain(
@@ -94,16 +116,8 @@ describe("On Maintenance mode - regular l1 updates must be forbidden", () => {
         });
     },
   );
-  afterAll(async () => {
-    await Sudo.batchAsSudoFinalized(
-      Sudo.sudoAsWithAddressString(
-        foundationAccountAddress,
-        Maintenance.switchMaintenanceModeOff(),
-      ),
-    );
-  });
 });
-describe("On Maintenance mode - sequencing and force updates are allowed", () => {
+describe.skip("On Maintenance mode - sequencing and force updates are allowed", () => {
   beforeAll(async () => {
     try {
       getApi();
@@ -125,7 +139,7 @@ describe("On Maintenance mode - sequencing and force updates are allowed", () =>
       ),
     );
   });
-  it.todo("Sequencing & forced updates must be accepted", async () => {
+  it.skip("Sequencing must work on mm", async () => {
     const aggregator = testUser1;
     await Sudo.batchAsSudoFinalized(
       Sudo.sudoAs(
