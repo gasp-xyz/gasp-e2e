@@ -62,6 +62,8 @@ import {
   ROLL_DOWN_CONTRACT_ADDRESS,
 } from "./rollup/ethUtils";
 import Web3 from "web3";
+import { L2Update, Rolldown } from "./rollDown/Rolldown";
+import { SequencerStaking } from "./rollDown/SequencerStaking";
 Assets.legacy = true;
 export async function claimForAllAvlRewards() {
   await setupApi();
@@ -1881,10 +1883,10 @@ export async function monitorRollDown(type = "deposit") {
     }
     async function printData() {
       // for (const entry of users.keys()) {
-        // console.log("=====================================");
-        // await printUserInfo(entry);
-        // console.log(users.get(entry));
-        // console.log("=====================================");
+      // console.log("=====================================");
+      // await printUserInfo(entry);
+      // console.log(users.get(entry));
+      // console.log("=====================================");
       // }
     }
 
@@ -1900,7 +1902,10 @@ export async function monitorRollDown(type = "deposit") {
             for (const log of logs) {
               console.log(
                 //@ts-ignore
-                `ETH - DepositAcceptedIntoQueue event: ${JSON.stringify(log.args)}`,
+                `ETH - DepositAcceptedIntoQueue event: ${JSON.stringify(
+                  //@ts-ignore
+                  log.args,
+                )}`,
               );
               // @ts-ignore
               const { depositRecipient, tokenAddress, amount } = log.args;
@@ -1933,6 +1938,25 @@ export async function readL2Updates() {
   console.log(JSON.stringify(res, null, 2));
 }
 
+export async function depositHell(num: number, txIndexer = 0) {
+  await setupApi();
+  const api = await getApi();
+  let txIndex;
+  if (txIndexer === 0) {
+    txIndex = await Rolldown.maxAcceptedRequestIdOnl2();
+  } else {
+    txIndex = txIndexer;
+  }
+  const sequencer = await SequencerStaking.getSequencerUser();
+  await Rolldown.waitForReadRights(sequencer.ethAddress);
+  testLog.getLog().info("Depositing " + num + " transactions from " + txIndex);
+  const depositBatch = new L2Update(api)
+    .withDeposit(txIndex, sequencer.toString(), sequencer.toString(), 1001)
+    .clone(txIndex, num)
+    .build();
+  await signTx(api, depositBatch, sequencer.keyRingPair);
+  return txIndex + num;
+}
 // @ts-ignore
 BigInt.prototype["toJSON"] = function () {
   return this.toString();

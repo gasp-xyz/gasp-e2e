@@ -44,6 +44,7 @@ import {
   withdrawToL1,
   monitorRollDown,
   readL2Updates,
+  depositHell,
 } from "../utils/setupsOnTheGo";
 import {
   findErrorMetadata,
@@ -117,12 +118,19 @@ async function app(): Promise<any> {
         "Withdraw tokens by using updateL2FromL1",
         "Read L2 updates",
         "RollDownMonitor",
+        "depositHell",
       ],
     })
     .then(async (answers: { option: string | string[] }) => {
       console.log("Answers::: " + JSON.stringify(answers, null, "  "));
       if (answers.option.includes("RollDownMonitor")) {
         await monitorRollDown("deposit");
+      }
+      if (answers.option.includes("depositHell")) {
+        let index = 0;
+        while (true) {
+          index = await depositHell(1000, index);
+        }
       }
       if (answers.option.includes("Read L2 updates")) {
         await readL2Updates();
