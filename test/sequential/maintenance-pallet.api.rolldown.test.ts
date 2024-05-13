@@ -245,6 +245,14 @@ describe.each(["mm", "upgradabilityMm"])(
         const eventResult = await getEventErrorFromSudo(result);
         await validateUpdateInMaintenanceModeStatus(eventResult);
       });
+      it("RPC updates return null on both mm", async () => {
+        const updates = await api.rpc.rolldown.pending_updates();
+        const updateHash = await api.rpc.rolldown.pending_updates_hash();
+        expect(updates.toHex()).toBe("0x");
+        expect(updateHash.toHex()).toBe(
+          "0x0000000000000000000000000000000000000000000000000000000000000000",
+        );
+      });
     });
   },
 );
