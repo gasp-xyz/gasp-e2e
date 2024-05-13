@@ -10,7 +10,6 @@ import {
   expectMGAExtrinsicSuDidSuccess,
   EventResult,
 } from "../../utils/eventListeners";
-import { BN } from "@polkadot/util";
 import {
   setupApi,
   Extrinsic,
@@ -27,12 +26,6 @@ import { BN_HUNDRED, signTx } from "@mangata-finance/sdk";
 import { FOUNDATION_ADDRESS_1, MGA_ASSET_ID } from "../../utils/Constants";
 import { Sudo } from "../../utils/sudo";
 import { ApiPromise } from "@polkadot/api";
-import { Assets } from "../../utils/Assets";
-import {
-  AggregatorOptions,
-  Staking,
-  tokenOriginEnum,
-} from "../../utils/Staking";
 import { Maintenance } from "../../utils/Maintenance";
 import { User } from "../../utils/User";
 import { L2Update, Rolldown } from "../../utils/rollDown/Rolldown";
@@ -40,9 +33,13 @@ import { SequencerStaking } from "../../utils/rollDown/SequencerStaking";
 import { SudoDB } from "../../utils/SudoDB";
 import { RollDown, rolldownWithdraw } from "../../utils/rolldown";
 import { testLog } from "../../utils/Logger";
-import { checkMaintenanceStatus } from "../../utils/validators";
+import {
+  checkMaintenanceStatus,
+  validateUpdateInMaintenanceModeStatus,
+} from "../../utils/validators";
 import { getCurrentNonce } from "../../utils/tx";
 import { waitForNBlocks } from "../../utils/utils";
+import { System } from "../../utils/System";
 
 jest.spyOn(console, "log").mockImplementation(jest.fn());
 jest.setTimeout(1500000);
@@ -50,10 +47,7 @@ jest.setTimeout(1500000);
 const users: User[] = [];
 let api: ApiPromise;
 let tests: { [K: string]: [Extrinsic, User] } = {};
-let testUser1: User;
 let sequencer: User;
-let testUser2: User;
-let minStk: BN;
 const foundationAccountAddress = FOUNDATION_ADDRESS_1;
 
 async function setupMm() {
@@ -189,6 +183,8 @@ describe.each(["mm", "upgradabilityMm"])(
             users[1],
           ],
           sequencerTearDown: [await SequencerStaking.unstake(), users[2]],
+          mm: [await System.setCodeWithoutChecks(), getSudoUser()],
+          upgradabilityMm: [await System.setCode(), getSudoUser()],
         };
       }
     });
@@ -241,69 +237,17 @@ describe.each(["mm", "upgradabilityMm"])(
           });
         },
       );
+      it("Update is blocked on maintenance mode but works on upgradeability", async () => {
+        const test = tests[mmMode];
+        // it will run mm or upgradabilityMm.
+        const [extrinsic] = test;
+        const result = await Sudo.asSudoFinalized(Sudo.sudo(extrinsic));
+        const eventResult = await getEventErrorFromSudo(result);
+        await validateUpdateInMaintenanceModeStatus(eventResult);
+      });
     });
   },
 );
-
-describe.skip("On Maintenance mode - sequencing and force updates are allowed", () => {
-  beforeAll(async () => {
-    try {
-      getApi();
-    } catch (e) {
-      await initApi();
-    }
-    await setupApi();
-    [testUser1, testUser2] = setupUsers();
-    await setupApi();
-    minStk = new BN(
-      (await getApi()).consts.parachainStaking.minCandidateStk.toString(),
-    );
-    await Sudo.batchAsSudoFinalized(
-      Assets.mintNative(testUser1, minStk.muln(1000)),
-      Assets.mintNative(testUser2, minStk.muln(1000)),
-      Sudo.sudoAsWithAddressString(
-        foundationAccountAddress,
-        Maintenance.switchMaintenanceModeOn(),
-      ),
-    );
-  });
-  it.skip("Sequencing must work on mm", async () => {
-    const aggregator = testUser1;
-    await Sudo.batchAsSudoFinalized(
-      Sudo.sudoAs(
-        testUser2,
-        await Staking.joinAsCandidate(
-          minStk.muln(2),
-          MGA_ASSET_ID,
-          tokenOriginEnum.AvailableBalance,
-        ),
-      ),
-      Sudo.sudoAs(
-        aggregator,
-        Staking.aggregatorUpdateMetadata(
-          [testUser2],
-          AggregatorOptions.ExtendApprovedCollators,
-        ),
-      ),
-      Sudo.sudoAs(testUser2, Staking.updateCandidateAggregator(aggregator)),
-    ).then((events) => {
-      expectMGAExtrinsicSuDidSuccess(events);
-    });
-    const candidateAggData = await Staking.candidateAggregator();
-    expect(
-      candidateAggData[testUser2.keyRingPair.address.toLowerCase()],
-    ).toEqual(aggregator.keyRingPair.address.toLowerCase());
-  });
-
-  afterAll(async () => {
-    await Sudo.batchAsSudoFinalized(
-      Sudo.sudoAsWithAddressString(
-        foundationAccountAddress,
-        Maintenance.switchMaintenanceModeOff(),
-      ),
-    );
-  });
-});
 
 afterAll(async () => {
   await Sudo.batchAsSudoFinalized(

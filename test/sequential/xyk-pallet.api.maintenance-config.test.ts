@@ -254,7 +254,6 @@ test("maintenance- check we can sell MGX tokens and compoundRewards THEN switch 
     testUser1.getAsset(liqId)?.amountAfter.reserved!,
   );
 });
-//TODO: Add a test for upgrades Sudo > system>setCode
 async function getSudoError(
   mangataEvent: MangataGenericEvent[],
   expectedError: string,

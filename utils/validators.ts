@@ -388,3 +388,16 @@ export async function checkMaintenanceStatus(
     upgradableValue,
   );
 }
+export async function validateUpdateInMaintenanceModeStatus(
+  events: EventResult,
+) {
+  const api = getApi();
+  const maintenanceStatus = await api.query.maintenance.maintenanceStatus();
+  if (!maintenanceStatus.isUpgradableInMaintenance.isTrue) {
+    expect(events.data).toEqual("UpgradeBlockedByMaintenance");
+    expect(ExtrinsicResult.ExtrinsicFailed).toEqual(events.state);
+  } else {
+    expect(events.data).toEqual("FailedToExtractRuntimeVersion");
+    expect(ExtrinsicResult.ExtrinsicFailed).toEqual(events.state);
+  }
+}
