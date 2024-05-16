@@ -6,7 +6,7 @@ import chrome from "selenium-webdriver/chrome";
 const path = "utils/frontend/utils/extensions";
 const polkadotExtensionPath = `${path}/polkadot_v0.44.1.0.crx`;
 const talismanExtensionPath = `${path}/talisman_v1.15.1.crx`;
-const metamaskExtensionPath = `${path}/metamask_11.11.4.crx`;
+const metamaskExtensionPath = `${path}/chrome.crx`;
 
 // Singleton constructor
 export const DriverBuilder = (function () {
