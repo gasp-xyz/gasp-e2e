@@ -113,6 +113,11 @@ export class MetaMask {
     const XPATH_BTN_PIN_EXT_DONE = buildDataTestIdXpath(BTN_PIN_EXT_DONE);
     await clickElement(this.driver, XPATH_BTN_PIN_EXT_DONE);
 
+    const XPATH_BTN_NO_ENCHANCED_PROTECTION = buildXpathByElementText(
+      "button",
+      "Don't enable enhanced protection",
+    );
+    await clickElement(this.driver, XPATH_BTN_NO_ENCHANCED_PROTECTION);
     await this.acceptTNC();
     await this.skipPopup();
 
