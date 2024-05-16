@@ -20,9 +20,9 @@ import { Sudo } from "../sudo";
 import { Assets } from "../Assets";
 
 export const ROLL_DOWN_CONTRACT_ADDRESS =
-  "0xCD8a1C3ba11CF5ECfa6267617243239504a98d90";
+  "0x70e0bA845a1A0F2DA3359C97E0285013525FFC49";
 
-export const ERC20_ADDRESS = "0x82e01223d51Eb87e16A03E24687EDF0F294da6f1";
+export const ERC20_ADDRESS = "0x7a2088a1bFc9d81c55368AE168C2C02570cB814F";
 export const account = privateKeyToAccount(
   "0xac0974bec39a17e36ba4a6b4d238ff944bacb478cbed5efcae784d7bf4f2ff80",
 );
