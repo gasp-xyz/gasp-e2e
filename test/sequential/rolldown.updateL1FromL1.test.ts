@@ -9,7 +9,12 @@ import { L2Update, Rolldown } from "../../utils/rollDown/Rolldown";
 import { BN_MILLION, BN_THOUSAND, BN_ZERO, signTx } from "@mangata-finance/sdk";
 import { getApi, initApi } from "../../utils/api";
 import { setupUsers } from "../../utils/setup";
-import { expectExtrinsicFail, expectExtrinsicSucceed, stringToBN, waitForNBlocks } from "../../utils/utils";
+import {
+  expectExtrinsicFail,
+  expectExtrinsicSucceed,
+  stringToBN,
+  waitForNBlocks,
+} from "../../utils/utils";
 import { Keyring } from "@polkadot/api";
 import { testLog } from "../../utils/Logger";
 
@@ -311,7 +316,7 @@ describe("updateL1FromL1", () => {
         BN_MILLION,
       )
       .withDeposit(
-        txIndex +1 ,
+        txIndex + 1,
         otherUser.keyRingPair.address,
         otherUser.keyRingPair.address,
         BN_MILLION,
@@ -321,12 +326,10 @@ describe("updateL1FromL1", () => {
     expectExtrinsicSucceed(res);
     await Rolldown.untilL2Processed(res);
     await waitForNBlocks(1);
-    const balance = await otherUser.getBalanceForEthToken(otherUser.keyRingPair.address);
-    expect(
-      stringToBN(
-        balance.free.toString()
-      )
-    ).bnEqual(BN_MILLION.muln(2));
+    const balance = await otherUser.getBalanceForEthToken(
+      otherUser.keyRingPair.address,
+    );
+    expect(stringToBN(balance.free.toString())).bnEqual(BN_MILLION.muln(2));
   });
   it("Every update item is validated", async () => {
     const txIndex = await Rolldown.l2OriginRequestId();
@@ -344,9 +347,7 @@ describe("updateL1FromL1", () => {
     expectExtrinsicSucceed(res);
     await Rolldown.untilL2Processed(res);
     await waitForNBlocks(1);
-    expect((await user.getBalanceForEthToken(userAddr)).free).bnEqual(
-      BN_ZERO,
-    );
+    expect((await user.getBalanceForEthToken(userAddr)).free).bnEqual(BN_ZERO);
   });
 });
 describe("updateL1FromL1 - errors", () => {
