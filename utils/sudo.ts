@@ -1,4 +1,4 @@
-import { api, Extrinsic, getSudoUser, sudo } from "./setup";
+import { api, Extrinsic, sudo } from "./setup";
 import { User } from "./User";
 import { MangataGenericEvent, signTx } from "@mangata-finance/sdk";
 import { SudoDB } from "./SudoDB";
@@ -7,6 +7,7 @@ import { SubmittableExtrinsic } from "@polkadot/api/types";
 import type { ISubmittableResult } from "@polkadot/types/types";
 import { Call } from "@polkadot/types/interfaces";
 import { getApi } from "./api";
+import { BN } from "@polkadot/util";
 
 export class Sudo {
   static sudo(
@@ -37,15 +38,9 @@ export class Sudo {
     ...txs: Extrinsic[]
   ): Promise<MangataGenericEvent[]> {
     const nonce = await SudoDB.getInstance().getSudoNonce(
-      getSudoUser().ethAddress,
+      sudo.keyRingPair.address,
     );
-    const api = getApi();
-    return signTx(
-      api,
-      api.tx.utility.batchAll(txs as any as Call[]),
-      sudo.keyRingPair,
-      { nonce: nonce },
-    );
+    return Sudo.batchAsSudoFinalizedNonce(nonce, ...txs);
   }
 
   static async asSudoFinalized(tx: Extrinsic): Promise<MangataGenericEvent[]> {
@@ -53,5 +48,15 @@ export class Sudo {
       sudo.keyRingPair.address,
     );
     return signSendFinalized(tx, sudo, nonce);
+  }
+
+  static batchAsSudoFinalizedNonce(sudoNonce: BN, ...txs: Extrinsic[]) {
+    const api = getApi();
+    return signTx(
+      api,
+      api.tx.utility.batchAll(txs as any as Call[]),
+      sudo.keyRingPair,
+      { nonce: sudoNonce },
+    );
   }
 }
