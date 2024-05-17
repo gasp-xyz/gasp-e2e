@@ -70,7 +70,9 @@ export function getEnvironmentRequiredVars() {
 
   const logLevel = process.env.LOG_LEVEL ? process.env.LOG_LEVEL : "info";
 
-  const uri = process.env.API_URL ? process.env.API_URL : "ws://127.0.0.1:9946";
+  const uri = process.env.API_URL
+    ? process.env.API_URL
+    : "wss://kusama-rpc.mangata.online";
   const relyUri = process.env.RELY_API_URL
     ? process.env.RELY_API_URL
     : "ws://127.0.0.1:9944";
@@ -84,7 +86,7 @@ export function getEnvironmentRequiredVars() {
 
   const uiUri = process.env.UI_URL
     ? process.env.UI_URL
-    : "https://develop.mangata.finance/";
+    : "https://gasp-testnet-dot-direct-pixel-353917.oa.r.appspot.com/";
 
   const localAddress = process.env.LOCAL_ADDRESS
     ? process.env.LOCAL_ADDRESS
@@ -96,7 +98,11 @@ export function getEnvironmentRequiredVars() {
 
   const mnemonicMetaMask = process.env.MNEMONIC_META
     ? process.env.MNEMONIC_META
-    : " oh oh";
+    : "oh oh";
+
+  const privKeyMetaMask = process.env.PRIVKEY_META
+    ? process.env.PRIVKEY_META
+    : "oh oh";
 
   const mnemonicPolkadot = process.env.MNEMONIC_POLK
     ? process.env.MNEMONIC_POLK
@@ -158,6 +164,7 @@ export function getEnvironmentRequiredVars() {
     localAddress: localAddress,
     stashServiceAddress: stashServiceAddress,
     mnemonicMetaMask: mnemonicMetaMask,
+    privKeyMetaMask: privKeyMetaMask,
     mnemonicPolkadot: mnemonicPolkadot,
     mnemonicPolkadotEd25519: mnemonicPolkadotEd25519,
     mnemonicPolkadotEcdsa: mnemonicPolkadotEcdsa,

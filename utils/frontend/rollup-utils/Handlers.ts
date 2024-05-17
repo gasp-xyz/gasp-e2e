@@ -5,13 +5,14 @@ import { Polkadot } from "../pages/Polkadot";
 import { acceptPermissionsWalletExtensionInNewWindow } from "../utils/Helper";
 import { BN_TEN } from "@mangata-finance/sdk";
 import { BN } from "@polkadot/util";
-import {
-  NotificationToast,
-  ToastType,
-  TransactionType,
-} from "../microapps-pages/NotificationToast";
 import { Main } from "../rollup-pages/Main";
 import { WalletWrapper } from "../rollup-pages/WalletWrapper";
+import { MetaMask } from "../pages/MetaMask";
+import {
+  TransactionType,
+  NotificationToast,
+  ToastType,
+} from "../rollup-pages/NotificationToast";
 
 export async function connectWallet(
   driver: WebDriver,
@@ -92,6 +93,26 @@ export async function waitForMicroappsActionNotification(
   } while (i < numOfBLocks);
   promises.push(toast.waitForToastState(ToastType.Success, transaction));
   await Promise.all(promises);
+}
+
+export async function waitForActionNotification(
+  driver: WebDriver,
+  transaction: TransactionType,
+) {
+  const toast = new NotificationToast(driver);
+  await toast.waitForToastState(ToastType.Confirm, transaction, 10000);
+  const isModalWaitingForSignVisible = await toast.istoastVisible(
+    ToastType.Confirm,
+    transaction,
+  );
+  expect(isModalWaitingForSignVisible).toBeTruthy();
+
+  if (transaction === TransactionType.ApproveContract) {
+    await MetaMask.acceptContractInDifferentWindow(driver);
+  } else {
+    await MetaMask.signTransactionInDifferentWindow(driver);
+  }
+  await toast.waitForToastState(ToastType.Success, transaction);
 }
 
 async function delayedNewBlock(chainName: ApiContext, delayMs: number) {

@@ -2,7 +2,9 @@ import { WebDriver } from "selenium-webdriver";
 import { getEnvironmentRequiredVars } from "../../utils";
 import {
   appendText,
+  buildClassXpath,
   buildDataTestIdXpath,
+  buildXpathByElementText,
   clearTextManual,
   clickElement,
   doActionInDifferentWindow,
@@ -10,6 +12,8 @@ import {
   isDisplayed,
   scrollIntoView,
   waitForElement,
+  waitForElementEnabled,
+  waitForElementToDissapear,
   waitForElementVisible,
   writeText,
 } from "../utils/Helper";
@@ -34,25 +38,42 @@ const BTN_ACCOUNT_DETAILS = "account-list-menu-details";
 const BTN_ACCOUNT_LABEL = "editable-label-button";
 const DIV_ACCOUNT_LABEL_INPUT = "editable-input";
 const BTN_CONNECT_ACCOUNT = "page-container-footer-next";
-const BTN_APPROVE_NETWORK = "confirmation-submit-button";
 const BTN_COPY_ADDRESS = "address-copy-button-text";
+const BTN_ACC_SELECTION = "account-menu-icon";
+const BTN_IMPORT_ACCOUNT = "multichain-account-menu-popover-action-button";
+const BTN_IMPORT_ACCOUNT_CONFIRM = "import-account-confirm-button";
+const BTN_FOOTER_NEXT = "page-container-footer-next";
+const BTN_GENERIC_CONFIRMATION = "confirmation-submit-button";
 
 export class MetaMask {
   WEB_UI_ACCESS_URL =
-    "chrome-extension://nkbihfbeogaeaoehlefnkodbefgpgknn/home.html";
+    "chrome-extension://ibkogccjfnojapecnljinaondndgildg/home.html";
 
-  driver: any;
+  private static instance: MetaMask;
+  private constructor(driver: WebDriver) {
+    this.driver = driver;
+    const {
+      uiUserPassword: userPassword,
+      mnemonicMetaMask,
+      privKeyMetaMask,
+    } = getEnvironmentRequiredVars();
+    this.userPassword = userPassword;
+    this.mnemonicMetaMask = mnemonicMetaMask;
+    this.privKeyMetaMask = privKeyMetaMask;
+    this.acc_name = "acc_automation";
+  }
+
+  private driver: any;
   userPassword: string;
   mnemonicMetaMask: string;
   acc_name: string;
+  privKeyMetaMask: string;
 
-  constructor(driver: WebDriver) {
-    this.driver = driver;
-    const { uiUserPassword: userPassword, mnemonicMetaMask } =
-      getEnvironmentRequiredVars();
-    this.userPassword = userPassword;
-    this.mnemonicMetaMask = mnemonicMetaMask;
-    this.acc_name = "acc_automation";
+  public static getInstance(driver: WebDriver): MetaMask {
+    if (!MetaMask.instance) {
+      MetaMask.instance = new MetaMask(driver);
+    }
+    return MetaMask.instance;
   }
   async go() {
     await this.driver.get(this.WEB_UI_ACCESS_URL);
@@ -92,9 +113,68 @@ export class MetaMask {
     const XPATH_BTN_PIN_EXT_DONE = buildDataTestIdXpath(BTN_PIN_EXT_DONE);
     await clickElement(this.driver, XPATH_BTN_PIN_EXT_DONE);
 
+    const XPATH_BTN_NO_ENCHANCED_PROTECTION = buildXpathByElementText(
+      "button",
+      "Don't enable enhanced protection",
+    );
+    await clickElement(this.driver, XPATH_BTN_NO_ENCHANCED_PROTECTION);
     await this.acceptTNC();
     await this.skipPopup();
 
+    await this.openAccountDetails();
+    const address = await this.getAddress();
+    await this.changeAccountName(this.acc_name);
+
+    return address;
+  }
+
+  async setupAccountPrivKey(
+    mnemonicKeys = this.mnemonicMetaMask,
+    privKey = this.privKeyMetaMask,
+  ): Promise<string> {
+    await this.driver.get(
+      `${this.WEB_UI_ACCESS_URL}#onboarding/import-with-recovery-phrase`,
+    );
+
+    const XPATH_FIRST_WORD = buildDataTestIdXpath(IMPUT_MNEMONIC_FIELD + 0);
+    await waitForElement(this.driver, XPATH_FIRST_WORD);
+    await this.fillPassPhrase(mnemonicKeys);
+
+    const XPATH_IMPORT_SUBMIT = buildDataTestIdXpath(BTN_IMPORT_SUBMIT);
+    await clickElement(this.driver, XPATH_IMPORT_SUBMIT);
+
+    await this.fillUserPass();
+
+    const XPATH_PASS_TERMS = buildDataTestIdXpath(CHECKBOX_PASS_TERMS);
+    await clickElement(this.driver, XPATH_PASS_TERMS);
+
+    const XPATH_CREATE_PASS_SUBMIT = buildDataTestIdXpath(
+      BTN_CREATE_PASS_SUBMIT,
+    );
+    await clickElement(this.driver, XPATH_CREATE_PASS_SUBMIT);
+
+    const XPATH_BTN_SECURE_LATER = buildDataTestIdXpath(BTN_SECURE_LATER);
+    if (await isDisplayed(this.driver, XPATH_BTN_SECURE_LATER)) {
+      await this.skipBackup();
+    }
+
+    const XPATH_BTN_IMPORT_DONE = buildDataTestIdXpath(BTN_IMPORT_DONE);
+    await clickElement(this.driver, XPATH_BTN_IMPORT_DONE);
+    const XPATH_BTN_PIN_EXT_NEXT = buildDataTestIdXpath(BTN_PIN_EXT_NEXT);
+    await clickElement(this.driver, XPATH_BTN_PIN_EXT_NEXT);
+    const XPATH_BTN_PIN_EXT_DONE = buildDataTestIdXpath(BTN_PIN_EXT_DONE);
+    await clickElement(this.driver, XPATH_BTN_PIN_EXT_DONE);
+
+    const XPATH_BTN_NO_ENCHANCED_PROTECTION = buildXpathByElementText(
+      "button",
+      "Don't enable enhanced protection",
+    );
+    await clickElement(this.driver, XPATH_BTN_NO_ENCHANCED_PROTECTION);
+    await this.acceptTNC();
+    await this.skipPopup();
+
+    await this.openAccountSelection();
+    await this.importAccount(privKey);
     await this.openAccountDetails();
     const address = await this.getAddress();
     await this.changeAccountName(this.acc_name);
@@ -132,6 +212,31 @@ export class MetaMask {
     await clickElement(this.driver, XPATH_BTN_ACCOUNT_OPTIONS);
     const XPATH_BTN_ACCOUNT_DETAILS = buildDataTestIdXpath(BTN_ACCOUNT_DETAILS);
     await clickElement(this.driver, XPATH_BTN_ACCOUNT_DETAILS);
+  }
+
+  async openAccountSelection() {
+    const XPATH_BTN_ACC_SELECTIONS = buildDataTestIdXpath(BTN_ACC_SELECTION);
+    await clickElement(this.driver, XPATH_BTN_ACC_SELECTIONS);
+  }
+
+  async importAccount(privKey: string) {
+    const XPATH_BTN_IMPORT_ACCOUNT = buildDataTestIdXpath(BTN_IMPORT_ACCOUNT);
+    await clickElement(this.driver, XPATH_BTN_IMPORT_ACCOUNT);
+    const XPATH_IMPORT_WITH_PK = buildXpathByElementText(
+      "button",
+      "Import account",
+    );
+    await clickElement(this.driver, XPATH_IMPORT_WITH_PK);
+    const XPATH_INPUT_PRIV_KEY = "//input[@id='private-key-box']";
+    await writeText(this.driver, XPATH_INPUT_PRIV_KEY, privKey);
+    const XPATH_BTN_IMPORT_ACCOUNT_CONFIRM = buildDataTestIdXpath(
+      BTN_IMPORT_ACCOUNT_CONFIRM,
+    );
+    await clickElement(this.driver, XPATH_BTN_IMPORT_ACCOUNT_CONFIRM);
+    await waitForElementToDissapear(
+      this.driver,
+      XPATH_BTN_IMPORT_ACCOUNT_CONFIRM,
+    );
   }
 
   async fillUserPass() {
@@ -179,18 +284,44 @@ export class MetaMask {
     await clickElement(driver, XPATH_BTN_CONNECT_ACCOUNT);
   }
 
-  async acceptNetwork(driver: WebDriver) {
-    const XPATH_BTN_APPROVE_NETWORK = buildDataTestIdXpath(BTN_APPROVE_NETWORK);
-    await waitForElement(driver, XPATH_BTN_APPROVE_NETWORK);
-    await clickElement(driver, XPATH_BTN_APPROVE_NETWORK);
-    await clickElement(driver, XPATH_BTN_APPROVE_NETWORK);
+  private static async acceptNetwork(driver: WebDriver) {
+    const XPATH_BTN_CONFIRM = buildDataTestIdXpath(BTN_GENERIC_CONFIRMATION);
+    await clickElement(driver, XPATH_BTN_CONFIRM);
+    await clickElement(driver, XPATH_BTN_CONFIRM);
+  }
+
+  private static async acceptContract(driver: WebDriver) {
+    const XPATH_BTN_APPROVE_CONTRACT = buildDataTestIdXpath(BTN_FOOTER_NEXT);
+    await waitForElement(driver, XPATH_BTN_APPROVE_CONTRACT);
+    await clickElement(driver, XPATH_BTN_APPROVE_CONTRACT);
+    const XPATH_SPENDING_CAP_VALUE = buildClassXpath(
+      "mm-box review-spending-cap__value",
+    );
+    await waitForElementVisible(driver, XPATH_SPENDING_CAP_VALUE);
+    await clickElement(driver, XPATH_BTN_APPROVE_CONTRACT);
+  }
+
+  private static async signTransaction(driver: WebDriver) {
+    const XPATH_BTN_SIGN_TRANSACTION = buildDataTestIdXpath(BTN_FOOTER_NEXT);
+    await waitForElement(driver, XPATH_BTN_SIGN_TRANSACTION);
+    await waitForElementEnabled(driver, XPATH_BTN_SIGN_TRANSACTION);
+    await clickElement(driver, XPATH_BTN_SIGN_TRANSACTION);
   }
 
   async acceptPermissions() {
     await doActionInDifferentWindow(this.driver, this.acceptModal);
   }
 
-  async acceptNetworkSwitch() {
-    await doActionInDifferentWindow(this.driver, this.acceptNetwork);
+  static async acceptNetworkSwitch(driver: WebDriver) {
+    await doActionInDifferentWindow(driver, this.acceptNetwork);
+    return;
+  }
+  //handle sign and contract , rename below too
+  static async acceptContractInDifferentWindow(driver: WebDriver) {
+    await doActionInDifferentWindow(driver, this.acceptContract);
+  }
+
+  static async signTransactionInDifferentWindow(driver: WebDriver) {
+    await doActionInDifferentWindow(driver, this.signTransaction);
   }
 }

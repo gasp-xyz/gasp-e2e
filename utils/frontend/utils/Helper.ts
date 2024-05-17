@@ -391,16 +391,16 @@ export async function importPolkadotExtension(
 
 export async function importMetamaskExtension(
   driver: WebDriver,
-  mnemonicKeys = "",
+  withPrivateKey = false,
 ): Promise<string> {
   await leaveOnlyOneTab(driver);
 
-  const extension = new MetaMask(driver);
+  const extension = MetaMask.getInstance(driver);
   await extension.go();
-  if (mnemonicKeys === "") {
-    return await extension.setupAccount();
+  if (withPrivateKey) {
+    return await extension.setupAccountPrivKey();
   } else {
-    return await extension.setupAccount(mnemonicKeys);
+    return await extension.setupAccount();
   }
 }
 
@@ -454,13 +454,17 @@ export async function acceptPermissionsTalismanExtensionInNewWindow(
 export async function acceptPermissionsMetamaskExtensionInNewWindow(
   driver: WebDriver,
 ) {
-  const metamaskExtension = new MetaMask(driver);
+  const metamaskExtension = MetaMask.getInstance(driver);
   await metamaskExtension.acceptPermissions();
 }
 
 export async function acceptNetworkSwitchInNewWindow(driver: WebDriver) {
-  const metamaskExtension = new MetaMask(driver);
-  await metamaskExtension.acceptNetworkSwitch();
+  await MetaMask.acceptNetworkSwitch(driver);
+}
+
+export async function acceptContractInNewWindow(driver: WebDriver) {
+  //todo: value check
+  await MetaMask.acceptContractInDifferentWindow(driver);
 }
 
 export async function leaveOnlyOneTab(driver: WebDriver) {
@@ -598,7 +602,9 @@ export async function doActionInDifferentWindow(
     try {
       await fn(driver);
       break;
-    } catch (error) {}
+    } catch (error) {
+      testLog.getLog().error("Error occurred in new window:", error);
+    }
     value = iterator.next().value;
   }
   handle = await (await driver).getAllWindowHandles();

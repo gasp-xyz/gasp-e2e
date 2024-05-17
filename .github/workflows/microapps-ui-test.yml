@@ -33,6 +33,7 @@ jobs:
       UI_URL : 'https://gasp-testnet-dot-direct-pixel-353917.oa.r.appspot.com/'
       SELENIUM_REMOTE_URL: http://localhost:4444/wd/hub
       MNEMONIC_META: 'twelve insect obvious hurdle control nature search response march version cake buffalo'
+      PRIVKEY_META: ${{ secrets.PRIVKEY_META }}
     outputs:
       testmo-run-id: ${{ steps.setTestRun.outputs.testmo-run-id }}
 
