@@ -100,6 +100,8 @@ async function main() {
       );
   }
   verifyArgs(testParams, "transfer"); // Will throw an error if invalid args
+  // Temp: hardcode the first node.
+  process.env.API_URL = testParams.nodes[0];
   return TestFactory.BuildTestItem(testParams.command!).run(testParams);
 }
 
