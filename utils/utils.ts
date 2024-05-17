@@ -507,8 +507,9 @@ export async function findBlockWithExtrinsicSigned(
     const blockNumber = index;
     const blockHashSignedByUser = await api.rpc.chain.getBlockHash(blockNumber);
     const block = await api.rpc.chain.getBlock(blockHashSignedByUser);
-    const signedByUser = (block.block.extrinsics.toHuman() as any[]).some(
-      (ext) => ext.isSigned && ext.signer.Id === userAddress,
+    const signedByUser = (block.block.extrinsics as any[]).some(
+      (ext) =>
+        ext.isSigned && ext.signer.toHuman().toLowerCase() === userAddress,
     );
     if (signedByUser) {
       return blockNumber;
