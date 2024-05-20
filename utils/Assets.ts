@@ -233,7 +233,7 @@ export class Assets {
     amount: BN = this.DEFAULT_AMOUNT,
   ): Extrinsic {
     return Sudo.sudo(
-      api.tx.tokens.mint(asset, (user as EthUser).ethAddress, amount),
+      api.tx.tokens.mint(asset, user.keyRingPair.address, amount),
     );
   }
   static mintTokenAddress(

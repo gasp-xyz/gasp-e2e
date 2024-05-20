@@ -48,7 +48,7 @@ beforeAll(async () => {
   // Set chain variables
   termDuration =
     (await bootnode.api!.derive.elections.info())!.termDuration!.toNumber();
-  keyring = new Keyring({ type: "sr25519" });
+  keyring = new Keyring({ type: "ethereum" });
   sudo = UserFactory.createUser(Users.SudoUser, keyring, bootnode) as SudoUser;
 });
 

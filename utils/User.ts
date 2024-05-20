@@ -29,7 +29,6 @@ import { strict as assert } from "assert";
 import { toBN, TokenBalance } from "@mangata-finance/sdk";
 import { KeyringPair } from "@polkadot/keyring/types";
 import Keyring from "@polkadot/keyring";
-import { EthUser } from "./EthUser";
 import { randomBytes } from "crypto";
 import { ethers } from "ethers";
 export enum AssetWallet {
@@ -195,7 +194,7 @@ export class User {
       const eventResponse = getEventResultFromMangataTx(result, [
         "tokens",
         "Minted",
-        (user as EthUser).ethAddress.toLowerCase(),
+        user.keyRingPair.address,
       ]);
       assert.equal(eventResponse.state, ExtrinsicResult.ExtrinsicSuccess);
     });

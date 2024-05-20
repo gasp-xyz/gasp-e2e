@@ -6,20 +6,22 @@ import { Keyring } from "@polkadot/api";
 import { mintAsset } from "../../tx";
 import { Node } from "../Node/Node";
 import { Token } from "../Supply/Token";
-import { getEnvironmentRequiredVars } from "../../utils";
 import { User } from "../../User";
 import { MangataGenericEvent, signTx } from "@mangata-finance/sdk";
 import { SudoDB } from "../../SudoDB";
 import { testLog } from "../../Logger";
 import { env } from "process";
+import { getSudoUser } from "../../setup";
 
 export class SudoUser extends BaseUser {
   node: Node;
 
   constructor(keyring: Keyring, node: Node, json?: any) {
-    const { sudo: sudoName } = getEnvironmentRequiredVars();
-    super(keyring, sudoName, json);
+    const address = getSudoUser().privateKey;
+    super(keyring, address, json);
     this.node = node;
+    const sudo = getSudoUser();
+    this.keyRingPair = sudo.keyRingPair;
   }
 
   async mintToken(assetId: BN, amount: BN): Promise<Token> {
@@ -70,7 +72,7 @@ export class SudoUser extends BaseUser {
       { nonce: new BN(nonce) },
     ).catch((reason) => {
       // eslint-disable-next-line no-console
-      console.error("OhOh sth went wrong. " + reason.toString());
+      console.error("SudoUser.ts::OhOh sth went wrong. " + reason.toString());
       testLog.getLog().error(`W[${env.JEST_WORKER_ID}] - ${reason.toString()}`);
     });
     return txResult as MangataGenericEvent[];
@@ -108,7 +110,7 @@ export class SudoUser extends BaseUser {
       { nonce: new BN(nonce) },
     ).catch((reason) => {
       // eslint-disable-next-line no-console
-      console.error("OhOh sth went wrong. " + reason.toString());
+      console.error("SudoUser.ts111OhOh sth went wrong. " + reason.toString());
       testLog.getLog().error(`W[${env.JEST_WORKER_ID}] - ${reason.toString()}`);
     });
   }
