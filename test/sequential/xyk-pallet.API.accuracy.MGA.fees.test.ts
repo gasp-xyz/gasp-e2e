@@ -14,7 +14,6 @@ import {
   getTreasuryBurn,
 } from "../../utils/tx";
 import { BN } from "@polkadot/util";
-import { Keyring } from "@polkadot/api";
 import { AssetWallet, User } from "../../utils/User";
 import { Assets } from "../../utils/Assets";
 import {
@@ -37,7 +36,6 @@ process.env.NODE_ENV = "test";
 let testUser1: User;
 let sudo: User;
 
-let keyring: Keyring;
 let firstCurrency: BN;
 let secondCurrency: BN;
 const firstAssetAmount = new BN(50000);
@@ -57,7 +55,7 @@ beforeEach(async () => {
   await setupUsers();
 
   // setup users
-  testUser1 = new User(keyring);
+  [testUser1] = setupUsers();
   sudo = getSudoUser();
   firstCurrency = MGA_ASSET_ID;
   secondCurrency = await Assets.issueAssetToUser(
@@ -79,8 +77,6 @@ beforeEach(async () => {
       ),
     ),
   );
-  keyring.addPair(testUser1.keyRingPair);
-  keyring.addPair(sudo.keyRingPair);
   testUser1.addAsset(firstCurrency, defaultCurrecyValue);
   testUser1.addAsset(secondCurrency, defaultCurrecyValue);
 });
