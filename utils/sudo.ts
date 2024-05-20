@@ -1,6 +1,6 @@
 import { api, Extrinsic, sudo } from "./setup";
 import { User } from "./User";
-import { MangataGenericEvent, signTx } from "@mangata-finance/sdk";
+import { BN_ZERO, MangataGenericEvent, signTx } from "@mangata-finance/sdk";
 import { SudoDB } from "./SudoDB";
 import { signSendFinalized } from "./sign";
 import { SubmittableExtrinsic } from "@polkadot/api/types";
@@ -8,6 +8,7 @@ import type { ISubmittableResult } from "@polkadot/types/types";
 import { Call } from "@polkadot/types/interfaces";
 import { getApi } from "./api";
 import { BN } from "@polkadot/util";
+import { stringToBN } from "./utils";
 
 export class Sudo {
   static sudo(
@@ -50,13 +51,17 @@ export class Sudo {
     return signSendFinalized(tx, sudo, nonce);
   }
 
-  static batchAsSudoFinalizedNonce(sudoNonce: BN, ...txs: Extrinsic[]) {
+  static async batchAsSudoFinalizedNonce(sudoNonce: BN, ...txs: Extrinsic[]) {
     const api = getApi();
+    let nonce = sudoNonce;
+    if (stringToBN(sudoNonce.toString()).lt(BN_ZERO)) {
+      nonce = await SudoDB.getInstance().getSudoNonce(sudo.keyRingPair.address);
+    }
     return signTx(
       api,
       api.tx.utility.batchAll(txs as any as Call[]),
       sudo.keyRingPair,
-      { nonce: sudoNonce },
+      { nonce: nonce },
     );
   }
 }

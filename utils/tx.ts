@@ -224,6 +224,7 @@ export async function getCurrentNonce(account?: string) {
   } else if (account) {
     return getChainNonce(account);
   }
+  console.warn("No account provided");
   return new BN(-1);
 }
 
