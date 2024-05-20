@@ -56,7 +56,7 @@ export class NotificationToast {
 
   toastTransaction: Record<TransactionType, string> = {
     [TransactionType.Deposit]: "-rollupDeposit",
-    [TransactionType.Withdraw]: "-withdraw",
+    [TransactionType.Withdraw]: "-rollupWithdrawal",
     [TransactionType.AddLiquidity]: "-addLiquidity",
     [TransactionType.Swap]: "-swap",
     [TransactionType.ActivateLiquidity]: "-activateLP",

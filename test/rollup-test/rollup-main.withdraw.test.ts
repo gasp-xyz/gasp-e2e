@@ -1,6 +1,6 @@
 /*
  *
- * @group rollupDeposit
+ * @group rollupWithdraw
  */
 import { jest } from "@jest/globals";
 import { WebDriver } from "selenium-webdriver";
@@ -19,11 +19,11 @@ import {
   waitForActionNotification,
 } from "../../utils/frontend/rollup-utils/Handlers";
 import { WalletWrapper } from "../../utils/frontend/rollup-pages/WalletWrapper";
-import {
-  DepositActionType,
-  DepositModal,
-} from "../../utils/frontend/rollup-utils/DepositModal";
 import { TransactionType } from "../../utils/frontend/rollup-pages/NotificationToast";
+import {
+  WithdrawActionType,
+  WithdrawModal,
+} from "../../utils/frontend/rollup-pages/WithdrawModal";
 
 jest.spyOn(console, "log").mockImplementation(jest.fn());
 
@@ -34,7 +34,7 @@ let acc_addr = "";
 let acc_addr_short = "";
 const GETH_ASSET_NAME = "GETH";
 
-describe("Gasp UI deposit tests", () => {
+describe("Gasp UI withdraw tests", () => {
   beforeAll(async () => {
     try {
       getApi();
@@ -50,40 +50,36 @@ describe("Gasp UI deposit tests", () => {
     await connectWallet(driver, "Metamask", acc_addr_short);
   });
 
-  test("User can deposit GETH", async () => {
+  test("User can withdraw GETH", async () => {
     await setupPageWithState(driver, acc_addr_short);
 
     const walletWrapper = new WalletWrapper(driver);
     await walletWrapper.openWalletConnectionInfo();
-    await walletWrapper.openDeposit();
-    const depositModal = new DepositModal(driver);
-    const isModalVisible = await depositModal.isModalVisible();
+    await walletWrapper.openWithdraw();
+    const withdrawModal = new WithdrawModal(driver);
+    const isModalVisible = await withdrawModal.isModalVisible();
     expect(isModalVisible).toBeTruthy();
 
-    await depositModal.openChainList();
-    await depositModal.selectChain("Ethereum");
-    await depositModal.openTokensList();
-    await depositModal.waitForTokenListElementsVisible(GETH_ASSET_NAME);
-    await depositModal.selectToken(GETH_ASSET_NAME);
+    await withdrawModal.openChainList();
+    await withdrawModal.selectChain("Ethereum");
+    await withdrawModal.openTokensList();
+    await withdrawModal.waitForTokenListElementsVisible(GETH_ASSET_NAME);
+    await withdrawModal.selectToken(GETH_ASSET_NAME);
+    await withdrawModal.enterValue("1");
 
-    const randomNum = Math.floor(Math.random() * 99) + 1;
-    await depositModal.enterValue("1." + randomNum.toString());
-
-    await depositModal.waitForContinueState(true, 60000);
-    const isOriginFeeDisplayed = await depositModal.isOriginFeeDisplayed();
+    await withdrawModal.waitForContinueState(true, 60000);
+    const isOriginFeeDisplayed =
+      await withdrawModal.isDestinationFeeDisplayed();
     expect(isOriginFeeDisplayed).toBeTruthy();
 
-    const isNetworkButtonEnabled = await depositModal.isNetworkButtonEnabled();
+    const isNetworkButtonEnabled = await withdrawModal.isNetworkButtonEnabled();
     expect(isNetworkButtonEnabled).toBeTruthy();
 
-    await depositModal.clickDepositButtonByText(DepositActionType.Network);
+    await withdrawModal.clickWithdrawButtonByText(WithdrawActionType.Network);
     await acceptNetworkSwitchInNewWindow(driver);
 
-    await depositModal.clickDepositButtonByText(DepositActionType.Approve);
-    await waitForActionNotification(driver, TransactionType.ApproveContract);
-
-    await depositModal.clickDepositButtonByText(DepositActionType.Deposit);
-    await waitForActionNotification(driver, TransactionType.Deposit);
+    await withdrawModal.clickWithdrawButtonByText(WithdrawActionType.Withdraw);
+    await waitForActionNotification(driver, TransactionType.Withdraw);
   });
 
   afterEach(async () => {
