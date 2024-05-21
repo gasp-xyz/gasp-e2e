@@ -4,16 +4,12 @@
  */
 import { getApi, initApi } from "../../utils/api";
 import { AssetWallet, User } from "../../utils/User";
-import { Keyring } from "@polkadot/api";
 import { BN } from "@polkadot/util";
-import {
-  getEnvironmentRequiredVars,
-  waitIfSessionWillChangeInNblocks,
-} from "../../utils/utils";
+import { waitIfSessionWillChangeInNblocks } from "../../utils/utils";
 import { Assets } from "../../utils/Assets";
 import { Sudo } from "../../utils/sudo";
 import { Xyk } from "../../utils/xyk";
-import { api, setupApi, setupUsers } from "../../utils/setup";
+import { api, getSudoUser, setupApi, setupUsers } from "../../utils/setup";
 import { MGA_ASSET_ID } from "../../utils/Constants";
 import { ProofOfStake } from "../../utils/ProofOfStake";
 import "jest-extended";
@@ -26,10 +22,10 @@ let testUser2: User;
 let testUser3: User;
 let sudo: User;
 
-let keyring: Keyring;
 let newToken: BN;
 let newToken2: BN;
 let newToken3: BN;
+let newToken4: BN;
 
 describe("Proof of stake tests", () => {
   beforeAll(async () => {
@@ -38,32 +34,37 @@ describe("Proof of stake tests", () => {
     } catch (e) {
       await initApi();
     }
-
-    keyring = new Keyring({ type: "sr25519" });
-    sudo = new User(keyring, getEnvironmentRequiredVars().sudo);
+    sudo = getSudoUser();
     [testUser1, testUser2, testUser3] = setupUsers();
-    [newToken, newToken2, newToken3] = await Assets.setupUserWithCurrencies(
-      sudo,
-      [Assets.DEFAULT_AMOUNT, Assets.DEFAULT_AMOUNT, Assets.DEFAULT_AMOUNT],
-      sudo,
-      true,
-    );
+    [newToken, newToken2, newToken3, newToken4] =
+      await Assets.setupUserWithCurrencies(
+        sudo,
+        [
+          Assets.DEFAULT_AMOUNT,
+          Assets.DEFAULT_AMOUNT,
+          Assets.DEFAULT_AMOUNT,
+          Assets.DEFAULT_AMOUNT,
+        ],
+        sudo,
+        true,
+      );
 
     await setupApi();
     await Sudo.batchAsSudoFinalized(
       Assets.FinalizeTge(),
       Assets.initIssuance(),
-      Assets.mintToken(newToken, testUser1, Assets.DEFAULT_AMOUNT.muln(40e6)),
-      Assets.mintToken(newToken, testUser1, Assets.DEFAULT_AMOUNT.muln(40e6)),
+      Assets.mintToken(
+        newToken,
+        testUser1,
+        Assets.DEFAULT_AMOUNT.muln(40e6).muln(2),
+      ),
       Assets.mintToken(newToken, testUser2, Assets.DEFAULT_AMOUNT.muln(40e6)),
-      Assets.mintToken(newToken3, testUser2, Assets.DEFAULT_AMOUNT.muln(40e6)),
-      Assets.mintToken(newToken3, testUser1, Assets.DEFAULT_AMOUNT.muln(40e6)),
       Assets.mintToken(newToken2, testUser1, Assets.DEFAULT_AMOUNT.muln(40e6)),
       Assets.mintToken(newToken2, testUser2, Assets.DEFAULT_AMOUNT.muln(40e6)),
-      Assets.mintToken(newToken2, testUser3, Assets.DEFAULT_AMOUNT.muln(40e6)),
-      Assets.mintToken(newToken2, testUser3, Assets.DEFAULT_AMOUNT.muln(40e6)),
+      Assets.mintToken(newToken3, testUser1, Assets.DEFAULT_AMOUNT.muln(40e6)),
       Assets.mintToken(newToken3, testUser3, Assets.DEFAULT_AMOUNT.muln(40e6)),
-      Assets.mintToken(newToken, testUser3, Assets.DEFAULT_AMOUNT.muln(40e6)),
+      Assets.mintToken(newToken4, testUser1, Assets.DEFAULT_AMOUNT.muln(40e6)),
+      Assets.mintToken(newToken4, testUser3, Assets.DEFAULT_AMOUNT.muln(40e6)),
       Assets.mintNative(testUser1, Assets.DEFAULT_AMOUNT.muln(40e6).muln(2)),
       Assets.mintNative(testUser2, Assets.DEFAULT_AMOUNT.muln(40e6).muln(2)),
       Assets.mintNative(testUser3, Assets.DEFAULT_AMOUNT.muln(40e6).muln(2)),
@@ -86,7 +87,7 @@ describe("Proof of stake tests", () => {
         ),
       ),
       Sudo.sudoAs(
-        testUser2,
+        testUser3,
         Xyk.createPool(
           MGA_ASSET_ID,
           Assets.DEFAULT_AMOUNT.muln(20e6),
@@ -97,9 +98,9 @@ describe("Proof of stake tests", () => {
       Sudo.sudoAs(
         testUser3,
         Xyk.createPool(
-          newToken2,
+          MGA_ASSET_ID,
           Assets.DEFAULT_AMOUNT.muln(20e6),
-          newToken3,
+          newToken4,
           Assets.DEFAULT_AMOUNT.muln(20e6),
         ),
       ),
@@ -127,7 +128,7 @@ describe("Proof of stake tests", () => {
         testUser3,
         Xyk.mintLiquidity(
           MGA_ASSET_ID,
-          newToken,
+          newToken3,
           Assets.DEFAULT_AMOUNT,
           Assets.DEFAULT_AMOUNT.muln(2),
         ),
@@ -136,8 +137,18 @@ describe("Proof of stake tests", () => {
         testUser1,
         await ProofOfStake.rewardPool(
           MGA_ASSET_ID,
-          newToken,
           newToken3,
+          newToken3,
+          Assets.DEFAULT_AMOUNT.muln(10e6),
+          3,
+        ),
+      ),
+      Sudo.sudoAs(
+        testUser1,
+        await ProofOfStake.rewardPool(
+          MGA_ASSET_ID,
+          newToken3,
+          newToken4,
           Assets.DEFAULT_AMOUNT.muln(10e6),
           3,
         ),
@@ -247,26 +258,29 @@ describe("Proof of stake tests", () => {
     test("A user can activate rewards that were activated on some other schedules", async () => {
       const testUser = testUser3;
       //user3 has mgx anf new token. He can provide liq on mgx/new token and mgx/new token2 rewards
-      const liqId = await getLiquidityAssetId(MGA_ASSET_ID, newToken);
-      testUser.addAssets([liqId, newToken, newToken3, MGA_ASSET_ID]);
+      const liqId = await getLiquidityAssetId(MGA_ASSET_ID, newToken3);
+      testUser.addAssets([liqId, newToken3, newToken4, MGA_ASSET_ID]);
       await testUser.refreshAmounts();
       await waitIfSessionWillChangeInNblocks(6);
       const totalActivatedBefore =
-        await ProofOfStake.totalActivatedLiquidityForSchedules(liqId, newToken);
+        await ProofOfStake.totalActivatedLiquidityForSchedules(
+          liqId,
+          newToken3,
+        );
       await signTx(
         getApi(),
         api.tx.utility.batchAll([
           await ProofOfStake.activateLiquidityFor3rdpartyRewards(
             liqId,
             Assets.DEFAULT_AMOUNT,
-            newToken,
+            newToken3,
           ),
           await ProofOfStake.activateLiquidityFor3rdpartyRewards(
             liqId,
             Assets.DEFAULT_AMOUNT,
-            newToken3,
+            newToken4,
             {
-              ActivatedLiquidity: newToken,
+              ActivatedLiquidity: newToken3,
             } as unknown as PalletProofOfStakeThirdPartyActivationKind,
           ),
         ]),
@@ -286,20 +300,23 @@ describe("Proof of stake tests", () => {
       const activatedAmount = await ProofOfStake.activatedLiquidityForSchedules(
         liqId,
         testUser.keyRingPair.address,
-        newToken,
+        newToken3,
       );
       const activatedAmount2 =
         await ProofOfStake.activatedLiquidityForSchedules(
           liqId,
           testUser.keyRingPair.address,
-          newToken3,
+          newToken4,
         );
 
       expect(activatedAmount).bnEqual(Assets.DEFAULT_AMOUNT);
       expect(activatedAmount2).bnEqual(Assets.DEFAULT_AMOUNT);
 
       const totalActivated =
-        await ProofOfStake.totalActivatedLiquidityForSchedules(liqId, newToken);
+        await ProofOfStake.totalActivatedLiquidityForSchedules(
+          liqId,
+          newToken3,
+        );
       expect(totalActivated.pendingPositive).bnEqual(Assets.DEFAULT_AMOUNT);
       expect(totalActivated.total).bnEqual(
         totalActivatedBefore.pendingPositive,
@@ -309,7 +326,7 @@ describe("Proof of stake tests", () => {
       const totalActivated2 =
         await ProofOfStake.totalActivatedLiquidityForSchedules(
           liqId,
-          newToken3,
+          newToken4,
         );
 
       expect(totalActivated2.pendingPositive).bnEqual(Assets.DEFAULT_AMOUNT);
@@ -319,7 +336,7 @@ describe("Proof of stake tests", () => {
       const rewardsInfo = await ProofOfStake.rewardsInfoForScheduleRewards(
         testUser.keyRingPair.address,
         liqId,
-        newToken,
+        newToken3,
       );
       expect(rewardsInfo.activatedAmount).bnEqual(Assets.DEFAULT_AMOUNT);
       expect(rewardsInfo.missingAtLastCheckpoint).bnEqual(
@@ -328,7 +345,7 @@ describe("Proof of stake tests", () => {
       const rewardsInfo2 = await ProofOfStake.rewardsInfoForScheduleRewards(
         testUser.keyRingPair.address,
         liqId,
-        newToken3,
+        newToken4,
       );
       expect(rewardsInfo2.activatedAmount).bnEqual(Assets.DEFAULT_AMOUNT);
       expect(rewardsInfo2.missingAtLastCheckpoint).bnEqual(

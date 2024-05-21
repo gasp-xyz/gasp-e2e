@@ -4,7 +4,7 @@
  * @group parallel
  */
 import { jest } from "@jest/globals";
-import { ApiPromise, Keyring } from "@polkadot/api";
+import { ApiPromise } from "@polkadot/api";
 import { getApi, initApi, mangata } from "../../utils/api";
 import { Assets } from "../../utils/Assets";
 import { MGA_ASSET_ID } from "../../utils/Constants";
@@ -13,12 +13,16 @@ import {
   waitSudoOperationSuccess,
 } from "../../utils/eventListeners";
 import { BN_ZERO } from "@mangata-finance/sdk";
-import { Extrinsic, setupApi, setupUsers } from "../../utils/setup";
+import {
+  Extrinsic,
+  getSudoUser,
+  setupApi,
+  setupUsers,
+} from "../../utils/setup";
 import { Sudo } from "../../utils/sudo";
 import { updateFeeLockMetadata, unlockFee, sellAsset } from "../../utils/tx";
 import { AssetWallet, User } from "../../utils/User";
 import {
-  getEnvironmentRequiredVars,
   getBlockNumber,
   waitBlockNumber,
   feeLockErrors,
@@ -34,10 +38,8 @@ jest.spyOn(console, "log").mockImplementation(jest.fn());
 jest.setTimeout(2500000);
 process.env.NODE_ENV = "test";
 
-const { sudo: sudoUserName } = getEnvironmentRequiredVars();
 let testUsers: User[];
 let sudo: User;
-let keyring: Keyring;
 let firstCurrency: BN;
 let secondCurrency: BN;
 let feeLockAmount: BN;
@@ -59,10 +61,8 @@ beforeAll(async () => {
   await setupApi();
   api = getApi();
 
-  keyring = new Keyring({ type: "sr25519" });
-
   // setup users
-  sudo = new User(keyring, sudoUserName);
+  sudo = getSudoUser();
 
   [firstCurrency, secondCurrency] = await Assets.setupUserWithCurrencies(
     sudo,
