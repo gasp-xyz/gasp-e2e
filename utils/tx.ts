@@ -34,6 +34,8 @@ import { getEnvironmentRequiredVars, stringToBN } from "./utils";
 import Keyring from "@polkadot/keyring";
 import { ExtrinsicResult } from "./eventListeners";
 import { Sudo } from "./sudo";
+import { Assets } from "./Assets";
+import { getSudoUser, setupApi, setupUsers } from "./setup";
 
 export const signTxDeprecated = async (
   tx: SubmittableExtrinsic<"promise">,
@@ -215,14 +217,14 @@ export async function calculate_sell_price_id_rpc(
 }
 
 export async function getCurrentNonce(account?: string) {
-  const { sudo: sudoUserName } = getEnvironmentRequiredVars();
-  const sudo = new User(new Keyring({ type: "sr25519" }), sudoUserName);
+  const sudo = getSudoUser();
   // lets check if sudo -> calculate manually nonce.
   if (account === sudo.keyRingPair.address) {
     return new BN(await SudoDB.getInstance().getSudoNonce(account));
   } else if (account) {
     return getChainNonce(account);
   }
+  console.warn("No account provided");
   return new BN(-1);
 }
 
@@ -384,26 +386,20 @@ export const mintAsset = async (
   amount: BN,
   sudoNonce: BN = new BN(-1),
 ) => {
-  const api = getApi();
-  let nonce;
-  if (sudoNonce.lte(new BN(-1))) {
-    nonce = new BN(await SudoDB.getInstance().getSudoNonce(account.address));
-  } else {
-    nonce = sudoNonce;
-  }
-
-  testLog.getLog().info(`W[${env.JEST_WORKER_ID}] - sudoNonce: ${nonce} `);
-  const txResult = await signTx(
-    api,
-    api.tx.sudo.sudo(api.tx.tokens.mint(asset_id, target, amount)),
-    account,
-    { nonce: new BN(nonce) },
+  await setupApi();
+  await setupUsers();
+  console.log("minting asset" + account + sudoNonce);
+  const res = await Sudo.batchAsSudoFinalizedNonce(
+    sudoNonce,
+    Assets.mintToken(asset_id, target, amount),
   ).catch((reason) => {
     // eslint-disable-next-line no-console
-    console.error("OhOh sth went wrong. " + reason.toString());
-    testLog.getLog().error(`W[${env.JEST_WORKER_ID}] - ${reason.toString()}`);
+    console.error("Tx.ts::OhOh sth went wrong. " + reason.toString());
+    testLog
+      .getLog()
+      .error(`W[${env.JEST_WORKER_ID}] - ${JSON.stringify(reason).toString()}`);
   });
-  return txResult as MangataGenericEvent[];
+  return res as MangataGenericEvent[];
 };
 
 export const createPool = async (
@@ -419,15 +415,21 @@ export const createPool = async (
     .info(
       `Creating pool:${firstAssetId},${firstAssetAmount},${secondAssetId},${secondAssetAmount}`,
     );
-  const mangata = await getMangataInstance();
-  return await mangata.xyk.createPool({
-    account: account,
-    firstTokenId: firstAssetId.toString(),
-    secondTokenId: secondAssetId.toString(),
-    secondTokenAmount: secondAssetAmount,
-    firstTokenAmount: firstAssetAmount,
-    txOptions: { nonce: nonce },
-  });
+  const api = getApi();
+
+  return await signTx(
+    api,
+    api.tx.xyk.createPool(
+      firstAssetId,
+      firstAssetAmount,
+      secondAssetId,
+      secondAssetAmount,
+    ),
+    account,
+    {
+      nonce: nonce,
+    },
+  );
 };
 
 // for alignment purposes lets keep it backward comaptible
@@ -446,7 +448,9 @@ export const promotePool = async (
       api.tx.proofOfStake.updatePoolPromotion(liqAssetId, weight),
     ),
     sudoAccount,
-    { nonce: await getCurrentNonce(sudoAccount.address) },
+    {
+      nonce: await getCurrentNonce(sudoAccount.address),
+    },
   );
 };
 
@@ -1167,8 +1171,8 @@ export async function initializeCrowdloanReward(
   const rewards: any[] = [];
   user.forEach((account) => {
     rewards.push([
-      account.keyRingPair.address,
-      account.keyRingPair.address,
+      account.ethAddress.toString(),
+      account.ethAddress.toString(),
       crowdloanRewardsAmount,
     ]);
   });
@@ -1197,7 +1201,6 @@ export async function claimCrowdloanRewards(crowdloanId: any, userId: User) {
   const api = getApi();
   const claimRewards = await signTx(
     api,
-    // @ts-ignore
     api.tx.crowdloan.claim(crowdloanId),
     userId.keyRingPair,
   );

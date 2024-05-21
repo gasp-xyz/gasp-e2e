@@ -23,10 +23,12 @@ import {
   trackEnqueuedExtrinsics,
 } from "./testReporter";
 import { User } from "../../utils/User";
-import { getEnvironmentRequiredVars } from "../../utils/utils";
 import { SudoUser } from "../../utils/Framework/User/SudoUser";
 import { quantile } from "simple-statistics";
 import ipc from "node-ipc";
+import { getSudoUser, setupApi } from "../../utils/setup";
+import { EthUser } from "../../utils/EthUser";
+import { randomBytes } from "crypto";
 
 /**
 function seedFromNum(seed: number): string {
@@ -35,8 +37,8 @@ function seedFromNum(seed: number): string {
 }
   */
 
-function createUserSequentially(idx: number): string {
-  return `//user//0000${idx}`;
+function createUserSequentially(): string {
+  return "0x" + randomBytes(32).toString("hex");
 }
 
 export class performanceTestItem implements TestItem {
@@ -67,9 +69,8 @@ export class performanceTestItem implements TestItem {
     console.info(testParams.nodes);
     const mga = await getMangata(testParams.nodes[0]!);
     const api = await mga.api();
-    const { sudo } = getEnvironmentRequiredVars();
-    const keyring = new Keyring({ type: "sr25519" });
-    const sudoKeyringPair = keyring.createFromUri(sudo);
+    const sudo = getSudoUser();
+    const sudoKeyringPair = sudo.keyRingPair;
     const nonce = await api.rpc.system.accountNextIndex(
       sudoKeyringPair.address,
     );
@@ -205,7 +206,7 @@ export class performanceTestItem implements TestItem {
     });
   }
   async createPoolIfMissing(tokenId: BN, tokenId2: BN, nodes: string[]) {
-    const keyring = new Keyring({ type: "sr25519" });
+    const keyring = new Keyring({ type: "ethereum" });
     const node = nodes[0];
     const mgaNode = new Node(node);
     const sudo = UserFactory.createUser(
@@ -226,21 +227,21 @@ export class performanceTestItem implements TestItem {
     nodes: string[],
     assets = [MGA_ASSET_ID],
   ) {
-    const keyring = new Keyring({ type: "sr25519" });
+    const keyring = new Keyring({ type: "ethereum" });
     const mintPromises: Promise<MangataGenericEvent[]>[] = [];
+    await setupApi();
     for (let nodeNumber = 0; nodeNumber < nodes.length; nodeNumber++) {
       const node = nodes[nodeNumber];
       const mga = await getMangata(node);
-      const mgaNode = new Node(node);
-      const sudo = UserFactory.createUser(Users.SudoUser, keyring, mgaNode);
+      const sudo = getSudoUser();
 
       const users: { nonce: BN; keyPair: KeyringPair }[] = [];
       testLog.getLog().info("Fetching nonces for node " + nodeNumber);
       let sudoNonce = await mga.query.getNonce(sudo.keyRingPair.address);
       //lets create as many of users as threads.
       for (let i = 0; i < numberOfThreads; i++) {
-        const stringSeed = createUserSequentially(i + nodeNumber * 10e12);
-        const keyPair = keyring.addFromUri(stringSeed);
+        const user = new EthUser(keyring);
+        const keyPair = user.keyRingPair;
         const nonce = await mga.query.getNonce(keyPair.address);
         //lets mint some MGA assets to pay fees
         // eslint-disable-next-line no-loop-func
@@ -249,7 +250,7 @@ export class performanceTestItem implements TestItem {
             mintAsset(
               sudo.keyRingPair,
               assetId,
-              keyPair.address,
+              user,
               new BN(10).pow(new BN(30)),
               sudoNonce,
             ),
@@ -261,6 +262,7 @@ export class performanceTestItem implements TestItem {
       this.mgaNodeandUsers.set(nodeNumber, { mgaSdk: mga, users: users });
     }
     testLog.getLog().info("Waiting for mining tokens");
+    testLog.getLog().debug(JSON.stringify(this.mgaNodeandUsers.get(0) as any));
     await Promise.all(mintPromises);
     testLog.getLog().info("¡¡ Tokens minted !!");
 
@@ -273,7 +275,7 @@ export class performanceTestItem implements TestItem {
       { mgaSdk: MangataInstance; users: { nonce: BN; keyPair: KeyringPair }[] }
     >,
   ) {
-    const keyring = new Keyring({ type: "sr25519" });
+    const keyring = new Keyring({ type: "ethereum" });
     const mintPromises = [];
 
     for (let nodeNumber = 0; nodeNumber < mgaNodeandUsers.size; nodeNumber++) {
@@ -307,7 +309,7 @@ export class performanceTestItem implements TestItem {
     return true;
   }
   async buildMgaNodeandUsers(numberOfThreads: number, nodes: string[]) {
-    const keyring = new Keyring({ type: "sr25519" });
+    const keyring = new Keyring({ type: "ethereum" });
     for (let nodeNumber = 0; nodeNumber < nodes.length; nodeNumber++) {
       const node = nodes[nodeNumber];
       const mga = await getMangata(node);
@@ -315,7 +317,7 @@ export class performanceTestItem implements TestItem {
       testLog.getLog().info("Fetching nonces for node " + nodeNumber);
       //lets create as many of users as threads.
       for (let i = 0; i < numberOfThreads; i++) {
-        const stringSeed = createUserSequentially(i);
+        const stringSeed = createUserSequentially();
         const keyPair = keyring.addFromUri(stringSeed);
         const nonce = await mga.query.getNonce(keyPair.address);
         users.push({ nonce: nonce, keyPair: keyPair });

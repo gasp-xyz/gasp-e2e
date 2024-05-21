@@ -4,7 +4,7 @@ import { getApi, getMangataInstance, initApi, mangata } from "./api";
 import { Assets } from "./Assets";
 import { User } from "./User";
 import { getAccountJSON } from "./frontend/utils/Helper";
-import { waitNewBlock } from "./eventListeners";
+import { ExtrinsicResult, waitNewBlock } from "./eventListeners";
 import { logEvent, testLog } from "./Logger";
 import { AnyNumber } from "@polkadot/types/types";
 import { ApiPromise } from "@polkadot/api";
@@ -23,6 +23,7 @@ import {
 import Keyring from "@polkadot/keyring";
 import jsonpath from "jsonpath";
 import _ from "lodash";
+import { getEventResultFromMangataTx } from "./txHandler";
 
 export type Tokens = { free: BN; reserved: BN; frozen: BN };
 export function sleep(ms: number) {
@@ -62,7 +63,7 @@ export function getEnvironmentRequiredVars() {
     : "";
   const sudoUserName = process.env.TEST_SUDO_NAME
     ? process.env.TEST_SUDO_NAME
-    : "//Alice";
+    : "//Alith";
   const testUserName = process.env.TEST_USER_NAME
     ? process.env.TEST_USER_NAME
     : "//Alice";
@@ -154,6 +155,8 @@ export function getEnvironmentRequiredVars() {
     : "ws://127.0.0.1:9949";
 
   return {
+    ethSudoAddress:
+      "0x5fb92d6e98884f76de468fa3f6278f8807c48bebc13595d45af5bdc4da702133",
     sudo: sudoUserName,
     chainUri: uri,
     relyUri: relyUri,
@@ -504,8 +507,9 @@ export async function findBlockWithExtrinsicSigned(
     const blockNumber = index;
     const blockHashSignedByUser = await api.rpc.chain.getBlockHash(blockNumber);
     const block = await api.rpc.chain.getBlock(blockHashSignedByUser);
-    const signedByUser = (block.block.extrinsics.toHuman() as any[]).some(
-      (ext) => ext.isSigned && ext.signer.Id === userAddress,
+    const signedByUser = (block.block.extrinsics as any[]).some(
+      (ext) =>
+        ext.isSigned && ext.signer.toHuman().toLowerCase() === userAddress,
     );
     if (signedByUser) {
       return blockNumber;
@@ -761,4 +765,13 @@ export async function monitorEvents() {
       }
     });
   });
+}
+export function expectExtrinsicSucceed(res: MangataGenericEvent[]) {
+  const eventResponse = getEventResultFromMangataTx(res);
+  expect(eventResponse.state).toEqual(ExtrinsicResult.ExtrinsicSuccess);
+}
+export function expectExtrinsicFail(res: MangataGenericEvent[]) {
+  const eventResponse = getEventResultFromMangataTx(res);
+  expect(eventResponse.state).toEqual(ExtrinsicResult.ExtrinsicFailed);
+  return eventResponse;
 }

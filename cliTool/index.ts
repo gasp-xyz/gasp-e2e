@@ -43,6 +43,9 @@ import {
   depositFromL1,
   withdrawToL1,
   signEthUserTxByMetamask,
+  monitorRollDown,
+  readL2Updates,
+  depositHell,
 } from "../utils/setupsOnTheGo";
 import {
   findErrorMetadata,
@@ -115,10 +118,25 @@ async function app(): Promise<any> {
         "Deposit tokens by using updateL2FromL1",
         "Withdraw tokens by using updateL2FromL1",
         "Sign Tx from ethUser by Metamask",
+        "Read L2 updates",
+        "RollDownMonitor",
+        "depositHell",
       ],
     })
     .then(async (answers: { option: string | string[] }) => {
       console.log("Answers::: " + JSON.stringify(answers, null, "  "));
+      if (answers.option.includes("RollDownMonitor")) {
+        await monitorRollDown("deposit");
+      }
+      if (answers.option.includes("depositHell")) {
+        let index = 0;
+        while (true) {
+          index = await depositHell(1000, index);
+        }
+      }
+      if (answers.option.includes("Read L2 updates")) {
+        await readL2Updates();
+      }
       if (answers.option.includes("Get All collators info from stash")) {
         await getAllCollatorsInfoFromStash();
       }

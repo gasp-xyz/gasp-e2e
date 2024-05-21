@@ -6,7 +6,6 @@
  */
 import { jest } from "@jest/globals";
 import { getApi, initApi } from "../../utils/api";
-import { Keyring } from "@polkadot/api";
 import { User } from "../../utils/User";
 import {
   checkLastBootstrapFinalized,
@@ -16,14 +15,13 @@ import {
   cancelRunningBootstrap,
   waitForBootstrapStatus,
 } from "../../utils/Bootstrap";
-import { getEnvironmentRequiredVars } from "../../utils/utils";
 import {
   waitSudoOperationSuccess,
   waitSudoOperationFail,
 } from "../../utils/eventListeners";
 import { MGA_ASSET_ID } from "../../utils/Constants";
 import { MangataGenericEvent } from "@mangata-finance/sdk";
-import { setupUsers } from "../../utils/setup";
+import { getSudoUser, setupUsers } from "../../utils/setup";
 
 jest.spyOn(console, "log").mockImplementation(jest.fn());
 jest.setTimeout(3500000);
@@ -31,11 +29,9 @@ process.env.NODE_ENV = "test";
 
 let testUser1: User;
 let sudo: User;
-let keyring: Keyring;
 let bootstrapCurrency: any;
 let cancelBootstrapEvent: MangataGenericEvent[];
 
-const { sudo: sudoUserName } = getEnvironmentRequiredVars();
 //constant for bootstrap include a planning period
 const waitingPeriodWithPlan = 400;
 //constant for bootstrap less a planning period
@@ -50,9 +46,7 @@ beforeAll(async () => {
     await initApi();
   }
 
-  keyring = new Keyring({ type: "sr25519" });
-
-  sudo = new User(keyring, sudoUserName);
+  sudo = getSudoUser();
 });
 
 beforeEach(async () => {

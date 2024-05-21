@@ -20,15 +20,15 @@ import { Sudo } from "../sudo";
 import { Assets } from "../Assets";
 
 export const ROLL_DOWN_CONTRACT_ADDRESS =
-  "0x5f3f1dbd7b74c6b46e8c44f98792a1daf8d69154";
+  "0x70e0bA845a1A0F2DA3359C97E0285013525FFC49";
 
-export const ERC20_ADDRESS = "0xb7278a61aa25c888815afc32ad3cc52ff24fe575";
+export const ERC20_ADDRESS = "0x7a2088a1bFc9d81c55368AE168C2C02570cB814F";
 export const account = privateKeyToAccount(
   "0xac0974bec39a17e36ba4a6b4d238ff944bacb478cbed5efcae784d7bf4f2ff80",
 );
 
 export const { abi } = JSON.parse(
-  fs.readFileSync("utils/rollup/rolldown.json").toString(),
+  fs.readFileSync("utils/rollup/RollDown.json").toString(),
 );
 export const erc20abi = JSON.parse(
   fs.readFileSync("utils/rollup/TestToken.json").toString(),
@@ -71,7 +71,7 @@ export async function getAssetIdFromErc20(ethTokenAddress = ERC20_ADDRESS) {
   return new BN(assetId.toString());
 }
 
-export async function mintTokens(
+export async function mintERC20TokensOnEthL1(
   ethAddress: string,
   number: number,
   erc20Address: `0x${string}` = ERC20_ADDRESS,
@@ -104,7 +104,9 @@ export async function setBalance(ethAddress: string, amount: number) {
   // @ts-ignore
   await fetch(host, requestOptions)
     .then((response) => response.text())
+    // eslint-disable-next-line no-console
     .then((result) => console.log(result))
+    // eslint-disable-next-line no-console
     .catch((error) => console.error(error));
 }
 
@@ -139,7 +141,7 @@ export async function setupEthUser(
   amountToApprove: number,
 ) {
   await setBalance(ethUser.ethAddress, 10e18);
-  await mintTokens(ethUser.ethAddress, 10e18);
+  await mintERC20TokensOnEthL1(ethUser.ethAddress, 10e18);
 
   const balance = await getBalance(erc20Address, ethUser.ethAddress);
   testLog.getLog().info(balance);
@@ -157,18 +159,18 @@ export async function fakeDepositOnL2(
   amount: BN,
 ) {
   //Mint some tokens to the contract ( as if the user deposited them)
-  await mintTokens(rollDownContractAddress, amount.toNumber(), erc20Address);
+  await mintERC20TokensOnEthL1(
+    rollDownContractAddress,
+    amount.toNumber(),
+    erc20Address,
+  );
   setupUsers();
   await setupApi();
   const tokenId = await getAssetIdFromErc20(erc20Address);
   await Sudo.batchAsSudoFinalized(
     Sudo.sudo(
-      Assets.mintTokenAddress(
-        tokenId,
-        ethUser.pdAccount.keyRingPair.address,
-        amount,
-      ),
+      Assets.mintTokenAddress(tokenId, ethUser.keyRingPair.address, amount),
     ),
-    Assets.mintNative(ethUser.pdAccount),
+    Assets.mintNative(ethUser),
   );
 }

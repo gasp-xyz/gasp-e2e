@@ -56,7 +56,9 @@ async function depositAndWait(depositor: EthUser) {
   const updatesAfter = await getL2UpdatesStorage();
   testLog.getLog().info(JSON.stringify(updatesAfter));
 
+  // eslint-disable-next-line no-console
   console.log(updatesAfter);
+  // eslint-disable-next-line no-console
   console.log(updatesBefore);
   // TODO: verify that deposit is present in the pendingDeposits in l2update
   //validate that the request got inserted.
@@ -65,15 +67,10 @@ async function depositAndWait(depositor: EthUser) {
   // ).toBeGreaterThan(
   //   parseInt(JSON.parse(JSON.stringify(updatesBefore)).lastAcceptedRequestOnL1),
   // );
-  testLog.getLog().info(depositor.pdAccount.keyRingPair.address);
+  testLog.getLog().info(depositor.keyRingPair.address);
   const assetId = await getAssetIdFromErc20();
   // Wait for the balance to change
-  const anyChange = await waitForBalanceChange(
-    depositor.pdAccount.keyRingPair.address,
-    20,
-    assetId,
-  );
-  return anyChange;
+  return await waitForBalanceChange(depositor.ethAddress, 20, assetId);
 }
 
 describe("Rollup", () => {
@@ -101,12 +98,13 @@ describe("Rollup", () => {
       // Check that got updated.
       expect(anyChange).toBeTruthy();
     });
+
     test("withdrawing tokens from the rollup contract", async () => {
       const anyChange = await depositAndWait(user);
       // Check that got updated.
       expect(anyChange).toBeTruthy();
 
-      await Sudo.batchAsSudoFinalized(Assets.mintNative(user.pdAccount));
+      await Sudo.batchAsSudoFinalized(Assets.mintNative(user));
       const tx = getApi().tx.rolldown.withdraw(
         user.ethAddress,
         ERC20_ADDRESS,
@@ -163,6 +161,6 @@ describe("Rollup", () => {
 });
 
 // @ts-ignore
-BigInt.prototype["toJSON"] = function() {
+BigInt.prototype["toJSON"] = function () {
   return this.toString();
 };

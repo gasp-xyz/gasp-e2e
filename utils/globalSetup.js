@@ -5,30 +5,32 @@ import ipc from "node-ipc";
 import { getApi, initApi } from "./api";
 import { getEnvironmentRequiredVars } from "./utils";
 import { Keyring } from "@polkadot/api";
-import { Assets } from "./Assets";
-import { Sudo } from "./sudo";
 import { testLog } from "./Logger.js";
+import { Sudo } from "./sudo.js";
+import { Assets } from "./Assets.js";
 
 dotenv.config();
 
 const globalConfig = async () => {
-  if (process.env.CHOPSTICK_ENABLED || process.env.CHOPSTICK_UI) return;
+  if (process.env.CHOPSTICK_ENABLED || process.env.CHOPSTICK_UI) {
+    return;
+  }
 
   try {
     getApi();
   } catch (e) {
     await initApi();
   }
-
+  console.warn(`getApi`);
   const api = getApi();
 
   ipc.config.id = "nonceManager";
   ipc.config.retry = 1500;
   ipc.config.silent = false;
   ipc.config.sync = true;
-  const { sudo } = getEnvironmentRequiredVars();
-  const keyring = new Keyring({ type: "sr25519" });
-  const sudoKeyringPair = keyring.createFromUri(sudo);
+  const sudoPrivateKey = getEnvironmentRequiredVars().ethSudoAddress;
+  const keyring = new Keyring({ type: "ethereum" });
+  const sudoKeyringPair = keyring.createFromUri(sudoPrivateKey);
   const nonce = await api.rpc.system.accountNextIndex(sudoKeyringPair.address);
   let numCollators = (await api?.query.parachainStaking.candidatePool()).length;
   let assetIds = [];

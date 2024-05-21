@@ -8,32 +8,18 @@ import { publicClient } from "../../utils/rollup/ethUtils";
 import { jest } from "@jest/globals";
 import { testLog } from "../../utils/Logger";
 
+// @ts-ignore
+import finalizerTaskManager from "./abis/FinalizerTaskManager.json";
+
 jest.setTimeout(600000);
-const taskManagerAddress = "0x9E545E3C0baAB3E08CdfD552C960A1050f373042";
+const taskManagerAddress = "0x1613beB3B2C4f22Ee086B2b38C1476A3cE7f78E8";
 
 function waitForTaskGenerated(publicClient: PublicClient) {
   return new Promise((resolve, _) => {
-    publicClient.watchEvent({
+    publicClient.watchContractEvent({
+      abi: finalizerTaskManager.abi,
       address: taskManagerAddress,
-      event: {
-        type: "event",
-        name: "NewTaskCreated",
-        inputs: [
-          {
-            name: "taskIndex",
-            type: "uint32",
-            indexed: true,
-            internalType: "uint32",
-          },
-          {
-            name: "task",
-            type: "(uint256,uint32,bytes,uint32)",
-            indexed: false,
-            internalType: "(uint256,uint32,bytes,uint32)",
-          },
-        ],
-        anonymous: false,
-      },
+      eventName: "NewTaskCreated",
       onLogs: async (logs) => {
         for (const log of logs) {
           // @ts-ignore
@@ -48,27 +34,10 @@ function waitForTaskGenerated(publicClient: PublicClient) {
 
 function waitForTaskResponded(publicClient: PublicClient) {
   return new Promise((resolve, _) => {
-    publicClient.watchEvent({
+    publicClient.watchContractEvent({
+      abi: finalizerTaskManager.abi,
       address: taskManagerAddress,
-      event: {
-        type: "event",
-        name: "TaskResponded",
-        inputs: [
-          {
-            name: "taskResponse",
-            type: "(uint32,bytes32,bytes32)",
-            indexed: false,
-            internalType: "(uint32,bytes32,bytes32)",
-          },
-          {
-            name: "taskResponseMetadata",
-            type: "(uint32,bytes32,uint96[],uint96[])",
-            indexed: false,
-            internalType: "(uint32,bytes32,uint96[],uint96[])",
-          },
-        ],
-        anonymous: false,
-      },
+      eventName: "TaskResponded",
       onLogs: async (logs) => {
         for (const log of logs) {
           // @ts-ignore
@@ -94,6 +63,6 @@ describe("Rollup", () => {
 });
 
 // @ts-ignore
-BigInt.prototype["toJSON"] = function() {
+BigInt.prototype["toJSON"] = function () {
   return this.toString();
 };

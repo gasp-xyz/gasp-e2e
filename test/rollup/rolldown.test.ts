@@ -1,11 +1,9 @@
-/*
- */
 import { jest } from "@jest/globals";
 import { getApi, getMangataInstance, initApi } from "../../utils/api";
 import { ApiPromise, Keyring } from "@polkadot/api";
 import { User } from "../../utils/User";
-import { getEnvironmentRequiredVars, waitForNBlocks } from "../../utils/utils";
-import { setupApi } from "../../utils/setup";
+import { waitForNBlocks } from "../../utils/utils";
+import { getSudoUser, setupApi, setupUsers } from "../../utils/setup";
 import { EthUser } from "../../utils/EthUser";
 import {
   getLastProcessedRequestNumber,
@@ -20,8 +18,6 @@ jest.setTimeout(1500000);
 process.env.NODE_ENV = "test";
 
 describe("Tests with rolldown functions:", () => {
-  const { sudo: sudoUserName } = getEnvironmentRequiredVars();
-
   let sdkApi: ApiPromise;
   let keyring: Keyring;
   let sudo: User;
@@ -33,11 +29,11 @@ describe("Tests with rolldown functions:", () => {
     } catch (e) {
       await initApi();
     }
-
+    setupUsers();
     const mangata = await getMangataInstance();
     sdkApi = await mangata.api();
-    keyring = new Keyring({ type: "sr25519" });
-    sudo = new User(keyring, sudoUserName);
+    keyring = new Keyring({ type: "ecdsa" });
+    sudo = getSudoUser();
 
     await setupApi();
     await sudo.addMGATokens(sudo);
@@ -48,7 +44,7 @@ describe("Tests with rolldown functions:", () => {
   });
 
   test.skip("Deposit token using rolldown and cancel it", async () => {
-    await testEthUser.pdAccount.addMGATokens(sudo);
+    await testEthUser.addMGATokens(sudo);
     const lastProcessRequest = await getLastProcessedRequestNumber();
     await signTx(
       sdkApi,
@@ -62,7 +58,7 @@ describe("Tests with rolldown functions:", () => {
   });
 
   test.skip("Deposit token using rolldown and then withdraw a part", async () => {
-    await testEthUser.pdAccount.addMGATokens(sudo);
+    await testEthUser.addMGATokens(sudo);
     const lastProcessRequest = await getLastProcessedRequestNumber();
     await signTx(
       sdkApi,

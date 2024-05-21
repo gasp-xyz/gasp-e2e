@@ -4,11 +4,11 @@
  *
  */
 import { jest } from "@jest/globals";
-import { ApiPromise, Keyring } from "@polkadot/api";
+import { ApiPromise } from "@polkadot/api";
 import { getApi, initApi } from "../../utils/api";
 import { Assets } from "../../utils/Assets";
 import { BN, hexToBn } from "@polkadot/util";
-import { setupApi, setupUsers } from "../../utils/setup";
+import { getSudoUser, setupApi, setupUsers } from "../../utils/setup";
 import { Sudo } from "../../utils/sudo";
 import { User } from "../../utils/User";
 import {
@@ -18,11 +18,7 @@ import {
   setCrowdloanAllocation,
   sudoClaimCrowdloanRewards,
 } from "../../utils/tx";
-import {
-  getBlockNumber,
-  getEnvironmentRequiredVars,
-  waitBlockNumber,
-} from "../../utils/utils";
+import { getBlockNumber, waitBlockNumber } from "../../utils/utils";
 import { MGA_ASSET_ID } from "../../utils/Constants";
 import { BN_ZERO, signTx } from "@mangata-finance/sdk";
 import { getEventResultFromMangataTx } from "../../utils/txHandler";
@@ -32,7 +28,6 @@ jest.spyOn(console, "log").mockImplementation(jest.fn());
 jest.setTimeout(2500000);
 process.env.NODE_ENV = "test";
 
-const { sudo: sudoUserName } = getEnvironmentRequiredVars();
 let testUser1: User;
 let testUser2: User;
 let testUser3: User;
@@ -46,7 +41,6 @@ let leaseStartBlock: number;
 let leaseEndingBlock: number;
 let api: ApiPromise;
 let sudo: User;
-let keyring: Keyring;
 let crowdloanId: any;
 const crowdloanRewardsAmount = new BN("1000000000000000000000000");
 const nativeCurrencyId = MGA_ASSET_ID;
@@ -57,10 +51,9 @@ beforeAll(async () => {
   } catch (e) {
     await initApi();
   }
-  keyring = new Keyring({ type: "sr25519" });
 
   api = getApi();
-  sudo = new User(keyring, sudoUserName);
+  sudo = getSudoUser();
 
   await setupApi();
 

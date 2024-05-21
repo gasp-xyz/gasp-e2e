@@ -4,7 +4,6 @@
  */
 import { getApi, getMangataInstance, initApi } from "../../utils/api";
 import { AssetWallet, User } from "../../utils/User";
-import { Keyring } from "@polkadot/api";
 import { BN } from "@polkadot/util";
 import { getEnvironmentRequiredVars, stringToBN } from "../../utils/utils";
 import { Assets } from "../../utils/Assets";
@@ -18,7 +17,7 @@ import {
   getRewardsInfo,
   claimRewards,
 } from "../../utils/tx";
-import { setupApi, setupUsers } from "../../utils/setup";
+import { getSudoUser, setupApi, setupUsers } from "../../utils/setup";
 import { ExtrinsicResult, waitForRewards } from "../../utils/eventListeners";
 import { MGA_ASSET_ID } from "../../utils/Constants";
 import {
@@ -37,7 +36,6 @@ let testUser2: User;
 let testUser3: User;
 let sudo: User;
 
-let keyring: Keyring;
 let secondCurrency: BN;
 let liqId: BN;
 
@@ -49,8 +47,7 @@ describe("rewards v2 tests", () => {
       await initApi();
     }
 
-    keyring = new Keyring({ type: "sr25519" });
-    sudo = new User(keyring, getEnvironmentRequiredVars().sudo);
+    sudo = getSudoUser();
     [testUser1, testUser2, testUser3] = setupUsers();
 
     secondCurrency = await Assets.issueAssetToUser(

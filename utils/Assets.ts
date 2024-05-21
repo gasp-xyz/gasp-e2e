@@ -1,12 +1,12 @@
-import { BN_TEN, BN_THOUSAND } from "@mangata-finance/sdk";
+import { BN_TEN, BN_THOUSAND, MangataGenericEvent } from "@mangata-finance/sdk";
 import { ApiPromise } from "@polkadot/api";
 import { AccountInfo } from "@polkadot/types/interfaces";
-import { BN } from "@polkadot/util";
+import { BN, BN_FOUR } from "@polkadot/util";
 import { assert } from "console";
 import _ from "lodash";
 import { MGA_ASSET_ID } from "./Constants";
-import { ExtrinsicResult } from "./eventListeners";
-import { api, Extrinsic, isBackendTest, setupApi, setupUsers } from "./setup";
+import { EventResult, ExtrinsicResult } from "./eventListeners";
+import { api, Extrinsic, setupApi, setupUsers } from "./setup";
 import { Sudo } from "./sudo";
 import { getAssetSupply, getNextAssetId } from "./tx";
 import {
@@ -17,9 +17,11 @@ import {
 import { User } from "./User";
 import { MangataTypesAssetsCustomMetadata } from "@polkadot/types/lookup";
 import { SudoDB } from "./SudoDB";
+import { EthUser } from "./EthUser";
+import { testLog } from "./Logger";
 
 export class Assets {
-  static legacy = !isBackendTest();
+  static legacy = false;
   static MG_UNIT: BN = BN_TEN.pow(new BN(18));
   static DEFAULT_AMOUNT = BN_THOUSAND.mul(this.MG_UNIT);
 
@@ -96,7 +98,11 @@ export class Assets {
       for (let currency = 0; currency < currencyValues.length; currency++) {
         const tokenId = await SudoDB.getInstance().getTokenId();
         txs.push(Assets.mintToken(tokenId, user, currencyValues[currency]));
-        tokenIds.push(tokenId);
+        if (!tokenId.eq(BN_FOUR)) {
+          tokenIds.push(tokenId);
+        } else {
+          currency--;
+        }
       }
       await Sudo.batchAsSudoFinalized(...txs);
       user.addAssets(tokenIds);
@@ -133,21 +139,45 @@ export class Assets {
     num = new BN(1000),
     sudo: User,
     skipInfo = false,
-  ) {
+  ): Promise<BN> {
     if (this.legacy) {
-      const result = await sudoIssueAsset(
+      let result: MangataGenericEvent[];
+      let eventResult: EventResult;
+      let assetId: any;
+      result = await sudoIssueAsset(
         sudo.keyRingPair,
         num,
         user.keyRingPair.address,
       );
-      const eventResult = getEventResultFromMangataTx(result, [
+      testLog.getLog().info(`Issue asset to user: ${user.keyRingPair.address}`);
+      eventResult = getEventResultFromMangataTx(result, [
         "tokens",
         "Created",
         user.keyRingPair.address,
       ]);
 
       assert(eventResult.state === ExtrinsicResult.ExtrinsicSuccess);
-      const assetId = eventResult.data[0].split(",").join("");
+      assetId = eventResult.data[0].split(",").join("");
+      if (assetId === "4") {
+        result = await sudoIssueAsset(
+          sudo.keyRingPair,
+          num,
+          user.keyRingPair.address,
+        );
+        testLog
+          .getLog()
+          .info(
+            `Wrong token number! Change asset to user: ${user.keyRingPair.address}`,
+          );
+        eventResult = getEventResultFromMangataTx(result, [
+          "tokens",
+          "Created",
+          user.keyRingPair.address,
+        ]);
+
+        assert(eventResult.state === ExtrinsicResult.ExtrinsicSuccess);
+        assetId = eventResult.data[0].split(",").join("");
+      }
       if (!skipInfo) {
         await setAssetInfo(
           sudo,
@@ -160,12 +190,16 @@ export class Assets {
       }
       return new BN(assetId);
     } else {
-      const assetId = await this.setupUserWithCurrencies(
+      const assetId: BN[] = await this.setupUserWithCurrencies(
         user,
         [num],
         sudo,
         skipInfo,
       );
+      if (assetId[0].lte(BN_FOUR)) {
+        // recursively register assets until we get a valid assetId
+        return (await Assets.issueAssetToUser(user, num, sudo, skipInfo)) as BN;
+      }
       return assetId[0];
     }
   }
@@ -177,7 +211,7 @@ export class Assets {
   static mintNative(user: User, amount: BN = this.DEFAULT_AMOUNT): Extrinsic {
     user.addAsset(MGA_ASSET_ID);
     return Sudo.sudo(
-      api.tx.tokens.mint(MGA_ASSET_ID, user.keyRingPair.address, amount),
+      api.tx.tokens.mint(MGA_ASSET_ID, (user as EthUser).ethAddress, amount),
     );
   }
   public static createTokenWithNoAssetRegistry(

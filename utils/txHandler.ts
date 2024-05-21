@@ -92,6 +92,7 @@ export const sudoIssueAsset = async (
   const api = getApi();
   let results: MangataGenericEvent[] = [];
   try {
+    testLog.getLog().info("Sudo issuing asset. ");
     results = await signTx(
       api,
       api.tx.sudo.sudo(api.tx.tokens.create(targetAddress, total_balance)),
@@ -100,8 +101,10 @@ export const sudoIssueAsset = async (
     );
   } catch (e) {
     testLog.getLog().error(JSON.stringify(e));
+    testLog.getLog().info("Error! ");
   }
   testLog.getLog().info(JSON.stringify(results));
+  testLog.getLog().info("Sudo issuing asset. Done.");
   return results;
 };
 
@@ -138,12 +141,19 @@ export const getEventResultFromMangataTx = function (
     extrinsicResult = relatedEvents.find(
       (e) =>
         e.event.toHuman().method !== null &&
-        searchTerm.every((filterTerm) =>
-          (
-            JSON.stringify(e.event.toHuman()) +
-            JSON.stringify(e.event.toHuman().data)
-          ).includes(filterTerm),
-        ),
+        searchTerm.every((filterTerm) => {
+          testLog
+            .getLog()
+            .debug(
+              JSON.stringify(e.event.toHuman()) +
+                JSON.stringify(e.event.toHuman().data),
+            );
+
+          return (
+            JSON.stringify(e.event.toHuman()).toLowerCase() +
+            JSON.stringify(e.event.toHuman().data).toLowerCase()
+          ).includes(filterTerm.toLowerCase());
+        }),
     );
   } else {
     extrinsicResult = relatedEvents.find(

@@ -6,6 +6,7 @@ import { KeyringPair } from "@polkadot/keyring/types";
 import { MGA_ASSET_ID } from "../../utils/Constants";
 import { runTransactions } from "./testRunner";
 import { performanceTestItem } from "./performanceTestItem";
+import { testLog } from "../../utils/Logger";
 
 export class ExtrinsicTransfer extends performanceTestItem {
   async arrange(testParams: TestParams): Promise<boolean> {
@@ -38,13 +39,12 @@ async function createAndSignTransfer(
   const srcUser = users[threadId % users.length];
   const api = await mgaSdk.api();
   const nonce = srcUser.nonce.add(nonceOffset);
-
   const tx = api!.tx.tokens.transfer(
     destUser.keyPair.address,
     MGA_ASSET_ID,
     new BN(1),
   );
-
+  testLog.getLog().info("::user runing tx::" + srcUser.keyPair.address);
   await tx.signAsync(
     srcUser!.keyPair,
     //@ts-ignore

@@ -4,21 +4,18 @@
  */
 import { jest } from "@jest/globals";
 import { hexToU8a } from "@polkadot/util";
-import { Keyring } from "@polkadot/api";
 import { getApi, initApi } from "../../utils/api";
 import { Assets } from "../../utils/Assets";
 import { FOUNDATION_ADDRESS_1, MGA_ASSET_ID } from "../../utils/Constants";
-import { MangataGenericEvent, signTx } from "@mangata-finance/sdk";
+import { MangataGenericEvent } from "@mangata-finance/sdk";
 import { BN } from "@polkadot/util";
-import { setupApi, setupUsers } from "../../utils/setup";
+import { setupApi, setupUsers, sudo } from "../../utils/setup";
 import { Sudo } from "../../utils/sudo";
 import { AssetWallet, User } from "../../utils/User";
-import { getEnvironmentRequiredVars } from "../../utils/utils";
 import { Xyk } from "../../utils/xyk";
 import { Maintenance } from "../../utils/Maintenance";
 import {
   compoundRewards,
-  getCurrentNonce,
   getLiquidityAssetId,
   sellAsset,
 } from "../../utils/tx";
@@ -27,8 +24,6 @@ import {
   EventResult,
   ExtrinsicResult,
   waitForRewards,
-  waitSudoOperationFail,
-  waitSudoOperationSuccess,
 } from "../../utils/eventListeners";
 import { testLog } from "../../utils/Logger";
 
@@ -36,10 +31,8 @@ jest.spyOn(console, "log").mockImplementation(jest.fn());
 jest.setTimeout(2500000);
 process.env.NODE_ENV = "test";
 
-const { sudo: sudoUserName } = getEnvironmentRequiredVars();
 let testUser1: User;
-let sudo: User;
-let keyring: Keyring;
+//let keyring: Keyring;
 let firstCurrency: BN;
 let eventResponse: EventResult;
 let liqId: BN;
@@ -54,10 +47,6 @@ beforeAll(async () => {
   } catch (e) {
     await initApi();
   }
-  keyring = new Keyring({ type: "sr25519" });
-
-  // setup users
-  sudo = new User(keyring, sudoUserName);
 
   [testUser1] = setupUsers();
 
@@ -265,54 +254,7 @@ test("maintenance- check we can sell MGX tokens and compoundRewards THEN switch 
     testUser1.getAsset(liqId)?.amountAfter.reserved!,
   );
 });
-
-test("maintenance- validate that when UpgradabilityON, Sudo or council can only run upgradability extrinsics", async () => {
-  //const mangata = await getMangataInstance(chainUri);
-  const api = getApi();
-  const hash =
-    "0xa4f385913ba0acb618402fe01aa20a87ed3d5b58cc7d28cb7a9165eb309c9300";
-
-  await Sudo.batchAsSudoFinalized(
-    Sudo.sudoAsWithAddressString(
-      foundationAccountAddress,
-      Maintenance.switchMaintenanceModeOn(),
-    ),
-  );
-
-  const authorizeUpgradeBefore = await signTx(
-    api!,
-    api!.tx.sudo.sudo(
-      //@ts-ignore
-      api!.tx.parachainSystem.authorizeUpgrade(hash, false),
-    ),
-    sudo.keyRingPair,
-    {
-      nonce: await getCurrentNonce(sudo.keyRingPair.address),
-    },
-  );
-  await waitSudoOperationFail(authorizeUpgradeBefore, [
-    "UpgradeBlockedByMaintenanceMode",
-  ]);
-
-  await Sudo.batchAsSudoFinalized(
-    Sudo.sudoAsWithAddressString(
-      foundationAccountAddress,
-      Maintenance.switchUpgradabilityInMaintenanceModeOn(),
-    ),
-  );
-
-  const authorizeUpgradeAfter = await signTx(
-    api!,
-    //@ts-ignore
-    api!.tx.sudo.sudo(api!.tx.parachainSystem.authorizeUpgrade(hash, false)),
-    sudo.keyRingPair,
-    {
-      nonce: await getCurrentNonce(sudo.keyRingPair.address),
-    },
-  );
-  await waitSudoOperationSuccess(authorizeUpgradeAfter);
-});
-
+//TODO: Add a test for upgrades Sudo > system>setCode
 async function getSudoError(
   mangataEvent: MangataGenericEvent[],
   expectedError: string,

@@ -54,7 +54,16 @@ import {
 } from "./rolldown";
 import { EthUser } from "./EthUser";
 import { signTxMetamask } from "./metamask";
-
+import {
+  abi,
+  getBalance,
+  getL2UpdatesStorage,
+  publicClient,
+  ROLL_DOWN_CONTRACT_ADDRESS,
+} from "./rollup/ethUtils";
+import Web3 from "web3";
+import { L2Update, Rolldown } from "./rollDown/Rolldown";
+import { SequencerStaking } from "./rollDown/SequencerStaking";
 Assets.legacy = true;
 export async function claimForAllAvlRewards() {
   await setupApi();
@@ -930,6 +939,7 @@ function isHexPrefixed(str: string): boolean {
 }
 export async function subscribeAndPrintTokenChanges(
   ws = "ws://127.0.0.1:9946",
+  skipTokenId = 0,
 ) {
   await setupApi();
   await setupUsers();
@@ -941,41 +951,55 @@ export async function subscribeAndPrintTokenChanges(
   }
   const currentState = new Map<string, Tokens>();
   await api!.rpc.chain.subscribeNewHeads(async (lastHeader) => {
-    console.log("#" + lastHeader.number);
+    //console.log("#" + lastHeader.number);
     await api.query.tokens.accounts.entries(async (storageKey: any) => {
       storageKey.forEach((element: { toHuman: () => any }[]) => {
         const user = element[0].toHuman()[0] + "-" + element[0].toHuman()[1];
-        const status = {
-          free: hexToBn(JSON.parse(element[1].toString()).free),
-          reserved: hexToBn(JSON.parse(element[1].toString()).reserved),
-          frozen: hexToBn(JSON.parse(element[1].toString()).frozen),
-        } as Tokens;
-        if (currentState.get(user) === undefined) {
-          console.log(getPrint(user, status));
-          currentState.set(user, {
-            free: status.free,
-            reserved: status.reserved,
-            frozen: status.frozen,
-          } as Tokens);
-        } else {
-          if (
-            !(
-              status.free.eq(currentState.get(user)!.free) &&
-              status.frozen.eq(currentState.get(user)!.frozen) &&
-              status.reserved.eq(currentState.get(user)!.reserved)
-            )
-          ) {
-            console.log("BEFORE:" + getPrint(user, currentState.get(user)!));
-            const diffSentence = `Diff: free: ${new BN(status.free).sub(
-              new BN(currentState.get(user)!.free),
-            )} - , reserved: ${new BN(status.reserved).sub(
-              new BN(currentState.get(user)!.reserved),
-            )} - , frozen: ${new BN(status.frozen).sub(
-              new BN(currentState.get(user)!.frozen),
-            )} `;
-            currentState.set(user, status);
-            console.log(" AFTER:" + getPrint(user, currentState.get(user)!));
-            console.log(diffSentence);
+        if (Number(element[0].toHuman()[1]) !== skipTokenId) {
+          const status = {
+            free: hexToBn(JSON.parse(element[1].toString()).free),
+            reserved: hexToBn(JSON.parse(element[1].toString()).reserved),
+            frozen: hexToBn(JSON.parse(element[1].toString()).frozen),
+          } as Tokens;
+          if (currentState.get(user) === undefined) {
+            console.log(lastHeader.number + "#" + getPrint(user, status));
+            currentState.set(user, {
+              free: status.free,
+              reserved: status.reserved,
+              frozen: status.frozen,
+            } as Tokens);
+          } else {
+            if (
+              !(
+                status.free.eq(currentState.get(user)!.free) &&
+                status.frozen.eq(currentState.get(user)!.frozen) &&
+                status.reserved.eq(currentState.get(user)!.reserved)
+              )
+            ) {
+              console.log(
+                "Substrate-" +
+                  lastHeader.number +
+                  "#" +
+                  " BEFORE:" +
+                  getPrint(user, currentState.get(user)!),
+              );
+              const diffSentence = `Diff: free: ${new BN(status.free).sub(
+                new BN(currentState.get(user)!.free),
+              )} - , reserved: ${new BN(status.reserved).sub(
+                new BN(currentState.get(user)!.reserved),
+              )} - , frozen: ${new BN(status.frozen).sub(
+                new BN(currentState.get(user)!.frozen),
+              )} `;
+              currentState.set(user, status);
+              console.log(
+                "Substrate-" +
+                  lastHeader.number +
+                  "#" +
+                  "  AFTER:" +
+                  getPrint(user, currentState.get(user)!),
+              );
+              console.log(lastHeader.number + "# " + diffSentence);
+            }
           }
         }
       });
@@ -1763,8 +1787,7 @@ export async function depositFromL1(ethAddress: string, amountValue: number) {
 
 export async function withdrawToL1(ethPrivateKey: string, amountValue: number) {
   const keyring = new Keyring({ type: "sr25519" });
-  const testEthUser = new EthUser(keyring);
-  testEthUser.addFromEthPrivateKey(keyring, ethPrivateKey);
+  const testEthUser = new EthUser(keyring, ethPrivateKey);
 
   await signTxMetamask(
     await rolldownWithdraw(testEthUser, 100),
@@ -1798,3 +1821,163 @@ export async function signEthUserTxByMetamask(
       testEthUser.ethAddress,
   );
 }
+
+export async function listenTransfers() {
+  const web3 = new Web3("ws://localhost:8545");
+  //@ts-ignore
+  const options = {
+    topics: [web3.utils.sha3("Transfer(address,address,uint256)")],
+  };
+
+  const subscription =
+    // @ts-ignore
+    web3.eth.subscribe("logs", options);
+
+  (await subscription).on("data", (trxData: any) => {
+    if (trxData.topics.length === 3) {
+      function formatAddress(data: any) {
+        const step1 = web3.utils.hexToBytes(data);
+        const res = web3.utils.hexToBytes(data).reverse();
+        for (let i = 0; i < step1.length; i++) {
+          if (step1[i] !== 0) {
+            //@ts-ignore
+            return web3.utils.bytesToHex(step1.slice(i));
+          }
+        }
+        return web3.utils.bytesToHex(res.reverse());
+      }
+
+      console.log("ETH- Register new transfer: " + trxData.transactionHash);
+      console.log(
+        "ETH- Contract " +
+          trxData.address +
+          " has transaction of " +
+          web3.utils.hexToNumberString(trxData.data) +
+          " from " +
+          formatAddress(trxData.topics["1"]) +
+          " to " +
+          formatAddress(trxData.topics["2"]),
+      );
+      //console.log(trxData);
+
+      web3.eth.getTransactionReceipt(
+        trxData.transactionHash,
+        // @ts-ignore
+        function (error, reciept) {
+          console.log(
+            "ETH- Sent by " + reciept.from + " to contract " + reciept.to,
+          );
+        },
+      );
+    }
+  });
+
+  // @ts-ignore
+  (await subscription).on("error", (err) => {
+    throw err;
+  });
+  // @ts-ignore
+  (await subscription).on("connected", (nr) =>
+    console.log("ETH- Subscription on ERC-20 started with ID %s", nr),
+  );
+}
+export async function monitorRollDown(type = "deposit") {
+  const users: Map<
+    string,
+    Set<{
+      DestAddress: string;
+      token: string;
+      amount: string;
+      totalBalance: string;
+      mgaBalance: string;
+    }>
+  > = new Map();
+
+  if (type === "deposit") {
+    while (true) {
+      const p0 = listenTransfers();
+      const p1 = monitorEthDeposits();
+      const p2 = monitorPolkBalances();
+      const p3 = subscribeAndPrintTokenChanges();
+      await Promise.all([p0, p1, p2, p3]);
+    }
+    async function printData() {
+      // for (const entry of users.keys()) {
+      // console.log("=====================================");
+      // await printUserInfo(entry);
+      // console.log(users.get(entry));
+      // console.log("=====================================");
+      // }
+    }
+
+    async function monitorPolkBalances() {}
+
+    async function monitorEthDeposits() {
+      return await new Promise(() => {
+        publicClient.watchContractEvent({
+          abi: abi,
+          address: ROLL_DOWN_CONTRACT_ADDRESS,
+          eventName: "DepositAcceptedIntoQueue",
+          onLogs: async (logs) => {
+            for (const log of logs) {
+              console.log(
+                //@ts-ignore
+                `ETH - DepositAcceptedIntoQueue event: ${JSON.stringify(
+                  //@ts-ignore
+                  log.args,
+                )}`,
+              );
+              // @ts-ignore
+              const { depositRecipient, tokenAddress, amount } = log.args;
+              const totalBalance = await getBalance(
+                tokenAddress,
+                depositRecipient,
+              );
+              users.set(
+                depositRecipient,
+                new Set([
+                  {
+                    DestAddress: depositRecipient,
+                    token: tokenAddress,
+                    amount: amount,
+                    totalBalance: (totalBalance as any).toString(),
+                    mgaBalance: "0",
+                  },
+                ]),
+              );
+            }
+            await printData();
+          },
+        });
+      });
+    }
+  }
+}
+export async function readL2Updates() {
+  const res = await getL2UpdatesStorage();
+  console.log(JSON.stringify(res, null, 2));
+}
+
+export async function depositHell(num: number, txIndexer = 0) {
+  await setupApi();
+  const api = await getApi();
+  let txIndex;
+  if (txIndexer === 0) {
+    txIndex = await Rolldown.maxAcceptedRequestIdOnl2();
+  } else {
+    txIndex = txIndexer;
+  }
+  const sequencer = await SequencerStaking.getSequencerUser();
+  await Rolldown.waitForReadRights(sequencer.ethAddress);
+  testLog.getLog().info("Depositing " + num + " transactions from " + txIndex);
+  const depositBatch = new L2Update(api)
+    .withDeposit(txIndex, sequencer.toString(), sequencer.toString(), 1001)
+    .clone(txIndex, num)
+    .build();
+  await signTx(api, depositBatch, sequencer.keyRingPair);
+  return txIndex + num;
+}
+// @ts-ignore
+BigInt.prototype["toJSON"] = function () {
+  return this.toString();
+};

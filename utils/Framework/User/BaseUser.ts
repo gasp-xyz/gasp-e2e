@@ -91,7 +91,7 @@ export class BaseUser extends User {
       { nonce: new BN(nonce) },
     ).catch((reason) => {
       // eslint-disable-next-line no-console
-      console.error("OhOh sth went wrong. " + reason.toString());
+      console.error("BaseUser.ts::OhOh sth went wrong. " + reason.toString());
       testLog.getLog().error(`W[${env.JEST_WORKER_ID}] - ${reason.toString()}`);
     });
     return txResult as MangataGenericEvent[];
@@ -103,7 +103,9 @@ export class BaseUser extends User {
       this.keyRingPair,
     ).catch((reason) => {
       // eslint-disable-next-line no-console
-      console.error("OhOh sth went wrong. " + reason.toString());
+      console.error(
+        "BaseUser.ts106:.ts:: OhOh sth went wrong. " + reason.toString(),
+      );
       testLog.getLog().error(`W[${env.JEST_WORKER_ID}] - ${reason.toString()}`);
     });
 

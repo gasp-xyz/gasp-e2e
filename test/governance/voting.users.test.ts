@@ -33,7 +33,7 @@ beforeAll(async () => {
   await bootnode.connect();
   await bootnode.subscribeToHead();
 
-  keyring = new Keyring({ type: "sr25519" });
+  keyring = new Keyring({ type: "ethereum" });
   sudo = UserFactory.createUser(Users.SudoUser, keyring, bootnode) as SudoUser;
 });
 
