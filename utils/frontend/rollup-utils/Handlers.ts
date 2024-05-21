@@ -107,11 +107,20 @@ export async function waitForActionNotification(
   );
   expect(isModalWaitingForSignVisible).toBeTruthy();
 
-  if (transaction === TransactionType.ApproveContract) {
-    await MetaMask.acceptContractInDifferentWindow(driver);
-  } else {
-    await MetaMask.signTransactionInDifferentWindow(driver);
+  switch (transaction) {
+    case TransactionType.ApproveContract:
+      await MetaMask.acceptContractInDifferentWindow(driver);
+      break;
+    case TransactionType.Deposit:
+      await MetaMask.signTransactionInDifferentWindow(driver);
+      break;
+    case TransactionType.Withdraw:
+      await MetaMask.signWithdrawInDifferentWindow(driver);
+      break;
+    default:
+      await MetaMask.signTransactionInDifferentWindow(driver);
   }
+
   await toast.waitForToastState(ToastType.Success, transaction);
 }
 

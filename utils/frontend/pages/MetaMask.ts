@@ -44,6 +44,7 @@ const BTN_IMPORT_ACCOUNT = "multichain-account-menu-popover-action-button";
 const BTN_IMPORT_ACCOUNT_CONFIRM = "import-account-confirm-button";
 const BTN_FOOTER_NEXT = "page-container-footer-next";
 const BTN_GENERIC_CONFIRMATION = "confirmation-submit-button";
+const BTN_CONFIRM_TRANSACTION = "confirm-footer-confirm-button";
 
 export class MetaMask {
   WEB_UI_ACCESS_URL =
@@ -308,6 +309,18 @@ export class MetaMask {
     await clickElement(driver, XPATH_BTN_SIGN_TRANSACTION);
   }
 
+  private static async signWithdrawal(driver: WebDriver) {
+    const XPATH_SCROLL_DOWN = "//*[@aria-label='Scroll down']";
+    await waitForElement(driver, XPATH_SCROLL_DOWN);
+    await clickElement(driver, XPATH_SCROLL_DOWN);
+    const XPATH_BTN_SIGN_TRANSACTION = buildDataTestIdXpath(
+      BTN_CONFIRM_TRANSACTION,
+    );
+    await waitForElement(driver, XPATH_BTN_SIGN_TRANSACTION);
+    await waitForElementEnabled(driver, XPATH_BTN_SIGN_TRANSACTION);
+    await clickElement(driver, XPATH_BTN_SIGN_TRANSACTION);
+  }
+
   async acceptPermissions() {
     await doActionInDifferentWindow(this.driver, this.acceptModal);
   }
@@ -323,5 +336,9 @@ export class MetaMask {
 
   static async signTransactionInDifferentWindow(driver: WebDriver) {
     await doActionInDifferentWindow(driver, this.signTransaction);
+  }
+
+  static async signWithdrawInDifferentWindow(driver: WebDriver) {
+    await doActionInDifferentWindow(driver, this.signWithdrawal);
   }
 }

@@ -27,7 +27,7 @@ let driver: WebDriver;
 let acc_addr = "";
 let acc_addr_short = "";
 
-describe("Gasp Prod UI wallet tests", () => {
+describe("Gasp UI wallet tests", () => {
   beforeAll(async () => {
     try {
       getApi();
