@@ -3,17 +3,13 @@
  * @group sdk
  */
 import { jest } from "@jest/globals";
-import { Keyring } from "@polkadot/api";
 import { getApi, getMangataInstance, initApi } from "../../utils/api";
 import { Assets } from "../../utils/Assets";
 import { BN } from "@polkadot/util";
-import { setupApi, setupUsers } from "../../utils/setup";
+import { getSudoUser, setupApi, setupUsers } from "../../utils/setup";
 import { Sudo } from "../../utils/sudo";
 import { AssetWallet, User } from "../../utils/User";
-import {
-  getEnvironmentRequiredVars,
-  getUserBalanceOfToken,
-} from "../../utils/utils";
+import { getUserBalanceOfToken } from "../../utils/utils";
 import { Xyk } from "../../utils/xyk";
 import { MGA_ASSET_ID } from "../../utils/Constants";
 import {
@@ -38,10 +34,8 @@ jest.spyOn(console, "log").mockImplementation(jest.fn());
 jest.setTimeout(2500000);
 process.env.NODE_ENV = "test";
 
-const { sudo: sudoUserName } = getEnvironmentRequiredVars();
 let testUser: User;
 let sudo: User;
-let keyring: Keyring;
 let token1: BN;
 let token2: BN;
 let liqId: BN;
@@ -55,10 +49,9 @@ beforeAll(async () => {
   } catch (e) {
     await initApi();
   }
-  keyring = new Keyring({ type: "sr25519" });
 
   // setup users
-  sudo = new User(keyring, sudoUserName);
+  sudo = getSudoUser();
 
   const users = setupUsers();
   testUser = users[5];
