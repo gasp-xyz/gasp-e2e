@@ -336,7 +336,7 @@ export async function getThirdPartyRewards(
     liquidityAssetId.toString(),
     rewardToken.toString(),
   );
-  return new BN(calculation.toString());
+  return stringToBN(calculation.toString());
 }
 export async function waitNewStakingRound(maxBlocks: number = 0) {
   let currentSessionNumber: number;
