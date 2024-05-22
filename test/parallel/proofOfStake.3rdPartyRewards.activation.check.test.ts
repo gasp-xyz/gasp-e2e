@@ -4,13 +4,11 @@
  */
 import { getApi, initApi } from "../../utils/api";
 import { AssetWallet, User } from "../../utils/User";
-import { Keyring } from "@polkadot/api";
 import { BN } from "@polkadot/util";
-import { getEnvironmentRequiredVars } from "../../utils/utils";
 import { Assets } from "../../utils/Assets";
 import { Sudo } from "../../utils/sudo";
 import { Xyk } from "../../utils/xyk";
-import { setupApi, setupUsers } from "../../utils/setup";
+import { getSudoUser, setupApi, setupUsers } from "../../utils/setup";
 import { MGA_ASSET_ID } from "../../utils/Constants";
 import { ProofOfStake } from "../../utils/ProofOfStake";
 import "jest-extended";
@@ -22,7 +20,6 @@ import { ExtrinsicResult, waitForRewards } from "../../utils/eventListeners";
 let testUser: User;
 let sudo: User;
 
-let keyring: Keyring;
 let newToken1: BN;
 let newToken2: BN;
 let newToken3: BN;
@@ -37,8 +34,7 @@ describe("Proof of stake tests", () => {
       await initApi();
     }
 
-    keyring = new Keyring({ type: "sr25519" });
-    sudo = new User(keyring, getEnvironmentRequiredVars().sudo);
+    sudo = getSudoUser();
     [newToken1, newToken2, newToken3] = await Assets.setupUserWithCurrencies(
       sudo,
       [
@@ -209,7 +205,7 @@ describe("Proof of stake tests", () => {
       testUser.addAsset(newToken2);
       await testUser.refreshAmounts(AssetWallet.BEFORE);
 
-      await waitForRewards(testUser, liqIdMgaToken1, 20, newToken3);
+      await waitForRewards(testUser, liqIdMgaToken1, 40, newToken3);
 
       await signTx(
         getApi(),
@@ -250,7 +246,7 @@ describe("Proof of stake tests", () => {
         expect(res.state).toEqual(ExtrinsicResult.ExtrinsicSuccess);
       });
 
-      await waitForRewards(testUser, liqIdMgaToken1, 20, newToken2);
+      await waitForRewards(testUser, liqIdMgaToken1, 40, newToken2);
 
       await signTx(
         getApi(),

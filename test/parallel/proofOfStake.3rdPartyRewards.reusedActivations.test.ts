@@ -4,17 +4,15 @@
  */
 import { getApi, initApi } from "../../utils/api";
 import { AssetWallet, User } from "../../utils/User";
-import { Keyring } from "@polkadot/api";
 import { BN } from "@polkadot/util";
 import {
-  getEnvironmentRequiredVars,
   getThirdPartyRewards,
   waitIfSessionWillChangeInNblocks,
 } from "../../utils/utils";
 import { Assets } from "../../utils/Assets";
 import { Sudo } from "../../utils/sudo";
 import { Xyk } from "../../utils/xyk";
-import { setupApi, setupUsers } from "../../utils/setup";
+import { getSudoUser, setupApi, setupUsers } from "../../utils/setup";
 import { MGA_ASSET_ID } from "../../utils/Constants";
 import { ProofOfStake } from "../../utils/ProofOfStake";
 import "jest-extended";
@@ -30,7 +28,6 @@ let testUser2: User;
 let testUser3: User;
 let sudo: User;
 
-let keyring: Keyring;
 let newToken: BN;
 let newToken2: BN;
 let newToken3: BN;
@@ -43,8 +40,7 @@ describe("Proof of stake tests", () => {
       await initApi();
     }
 
-    keyring = new Keyring({ type: "sr25519" });
-    sudo = new User(keyring, getEnvironmentRequiredVars().sudo);
+    sudo = getSudoUser();
     [testUser1, testUser2, testUser3] = setupUsers();
     [newToken, newToken2, newToken3] = await Assets.setupUserWithCurrencies(
       sudo,
@@ -154,7 +150,7 @@ describe("Proof of stake tests", () => {
         newToken,
       );
       expect(activatedAmount).bnEqual(Assets.DEFAULT_AMOUNT);
-      await waitForRewards(testUser, liqId, 20, newToken);
+      await waitForRewards(testUser, liqId, 40, newToken);
       // now we have rewards available for newToken
       const availableRewards = await getThirdPartyRewards(
         testUser.keyRingPair.address,
@@ -213,7 +209,7 @@ describe("Proof of stake tests", () => {
       );
       // testUser must have the liq already activated for mgx-new token - newtoken
       // testUser2 just activated for both rewarded mgx-newtoken pools
-      await waitForRewards(testUser2, liqId, 20, newToken);
+      await waitForRewards(testUser2, liqId, 40, newToken);
       // So expected is: for first rewards shares are divided, for the second, only testUser2 gets rewards
       const expectedSharedReward = Assets.DEFAULT_AMOUNT.muln(10e6).divn(2);
       const expectedOnlyTestUser2Reward = Assets.DEFAULT_AMOUNT.muln(10e6);

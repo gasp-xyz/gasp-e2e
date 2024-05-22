@@ -4,17 +4,15 @@
  */
 import { getApi, initApi } from "../../utils/api";
 import { User } from "../../utils/User";
-import { Keyring } from "@polkadot/api";
 import { BN } from "@polkadot/util";
 import {
-  getEnvironmentRequiredVars,
   stringToBN,
   waitIfSessionWillChangeInNblocks,
 } from "../../utils/utils";
 import { Assets } from "../../utils/Assets";
 import { Sudo } from "../../utils/sudo";
 import { Xyk } from "../../utils/xyk";
-import { setupApi, setupUsers } from "../../utils/setup";
+import { getSudoUser, setupApi, setupUsers } from "../../utils/setup";
 import { MGA_ASSET_ID } from "../../utils/Constants";
 import { ProofOfStake } from "../../utils/ProofOfStake";
 import "jest-extended";
@@ -36,7 +34,6 @@ let testUser2: User;
 let testUser3: User;
 let sudo: User;
 
-let keyring: Keyring;
 let newToken: BN;
 let newToken2: BN;
 let newToken3: BN;
@@ -49,8 +46,7 @@ describe("Proof of stake tests", () => {
       await initApi();
     }
 
-    keyring = new Keyring({ type: "sr25519" });
-    sudo = new User(keyring, getEnvironmentRequiredVars().sudo);
+    sudo = getSudoUser();
     [testUser1, testUser2, testUser3] = setupUsers();
     [newToken, newToken2, newToken3] = await Assets.setupUserWithCurrencies(
       sudo,
@@ -168,8 +164,7 @@ describe("Proof of stake tests", () => {
     });
     test("Multiple users can reward multiple pools - token does not belong to the promoted pool", async () => {
       // const liqId = await getLiquidityAssetId(MGA_ASSET_ID, newToken);
-      const rewardsPalletAddress =
-        "5EYCAe5j84jdabP3t3DW6E1ahTsWGVqf2nzgikxGJDM1CMyB";
+      const rewardsPalletAddress = "0x6d6f646c72657761726473210000000000000000";
       const balanceBefore = await getBalanceOfAssetStr(
         newToken2,
         rewardsPalletAddress,

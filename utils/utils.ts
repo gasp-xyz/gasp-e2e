@@ -331,11 +331,12 @@ export async function getThirdPartyRewards(
   rewardToken: BN,
 ) {
   const api = getApi();
-  return await api.rpc.pos.calculate_3rdparty_rewards_amount(
+  const calculation = await api.rpc.pos.calculate_3rdparty_rewards_amount(
     userAddress,
     liquidityAssetId.toString(),
     rewardToken.toString(),
   );
+  return stringToBN(calculation.toString());
 }
 export async function waitNewStakingRound(maxBlocks: number = 0) {
   let currentSessionNumber: number;

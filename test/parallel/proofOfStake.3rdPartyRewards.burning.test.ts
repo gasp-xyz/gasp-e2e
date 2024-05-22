@@ -5,13 +5,11 @@
  */
 import { getApi, initApi } from "../../utils/api";
 import { User } from "../../utils/User";
-import { Keyring } from "@polkadot/api";
 import { BN } from "@polkadot/util";
-import { getEnvironmentRequiredVars } from "../../utils/utils";
 import { Assets } from "../../utils/Assets";
 import { Sudo } from "../../utils/sudo";
 import { Xyk } from "../../utils/xyk";
-import { setupApi, setupUsers } from "../../utils/setup";
+import { getSudoUser, setupApi, setupUsers } from "../../utils/setup";
 import { MGA_ASSET_ID } from "../../utils/Constants";
 import { BN_ZERO, signTx } from "@mangata-finance/sdk";
 import { ProofOfStake } from "../../utils/ProofOfStake";
@@ -30,7 +28,6 @@ let testUser3: User;
 let testUser4: User;
 let sudo: User;
 
-let keyring: Keyring;
 let newToken: BN;
 let liqId: BN;
 
@@ -42,8 +39,7 @@ describe("Proof of stake tests", () => {
       await initApi();
     }
 
-    keyring = new Keyring({ type: "sr25519" });
-    sudo = new User(keyring, getEnvironmentRequiredVars().sudo);
+    sudo = getSudoUser();
     [testUser0, testUser1, testUser2, testUser3, testUser4] = setupUsers();
     newToken = new BN(18);
     newToken = await Assets.issueAssetToUser(

@@ -4,17 +4,15 @@
  */
 import { getApi, initApi } from "../../utils/api";
 import { User } from "../../utils/User";
-import { Keyring } from "@polkadot/api";
 import { BN } from "@polkadot/util";
 import {
-  getEnvironmentRequiredVars,
   getThirdPartyRewards,
   waitIfSessionWillChangeInNblocks,
 } from "../../utils/utils";
 import { Assets } from "../../utils/Assets";
 import { Sudo } from "../../utils/sudo";
 import { Xyk } from "../../utils/xyk";
-import { setupApi, setupUsers } from "../../utils/setup";
+import { getSudoUser, setupApi, setupUsers } from "../../utils/setup";
 import { MGA_ASSET_ID } from "../../utils/Constants";
 import { ProofOfStake } from "../../utils/ProofOfStake";
 import "jest-extended";
@@ -30,7 +28,6 @@ let testUser2: User;
 let testUser3: User;
 let sudo: User;
 
-let keyring: Keyring;
 let newToken: BN;
 let newToken2: BN;
 let newToken3: BN;
@@ -43,8 +40,7 @@ describe("Proof of stake tests", () => {
       await initApi();
     }
 
-    keyring = new Keyring({ type: "sr25519" });
-    sudo = new User(keyring, getEnvironmentRequiredVars().sudo);
+    sudo = getSudoUser();
     [testUser1, testUser2, testUser3] = setupUsers();
     [newToken, newToken2, newToken3] = await Assets.setupUserWithCurrencies(
       sudo,
@@ -137,7 +133,7 @@ describe("Proof of stake tests", () => {
           ),
         ),
       );
-      await waitForRewards(testUser, liquidityAssetId, 30, MGA_ASSET_ID);
+      await waitForRewards(testUser, liquidityAssetId, 40, MGA_ASSET_ID);
       const expectedRewards = BN_ZERO;
       const avl = await getThirdPartyRewards(
         testUser.keyRingPair.address,
