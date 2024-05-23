@@ -15,14 +15,18 @@ import { User, AssetWallet } from "../../utils/User";
 import { Assets } from "../../utils/Assets";
 import {
   feeLockErrors,
-  getEnvironmentRequiredVars,
   getUserBalanceOfToken,
   stringToBN,
 } from "../../utils/utils";
-import { setupApi, setup5PoolsChained } from "../../utils/setup";
+import {
+  setupApi,
+  setup5PoolsChained,
+  getSudoUser,
+  setupUsers,
+} from "../../utils/setup";
 import { getEventResultFromMangataTx } from "../../utils/txHandler";
 import { BN_BILLION, BN_TEN_THOUSAND, BN_ZERO } from "@mangata-finance/sdk";
-import { ApiPromise, Keyring } from "@polkadot/api";
+import { ApiPromise } from "@polkadot/api";
 import { MGA_ASSET_ID } from "../../utils/Constants";
 import { Sudo } from "../../utils/sudo";
 
@@ -132,9 +136,8 @@ describe("Multiswap - error cases: pool status & gasless integration", () => {
     ).bnEqual(feeLockAmount);
   });
   test("[gasless] Fail on client when not enough MGAs to lock AND tokens that exist whitelist", async () => {
-    const keyring = new Keyring({ type: "sr25519" });
-    const testUser1 = new User(keyring);
-    const sudo = new User(keyring, getEnvironmentRequiredVars().sudo);
+    const [testUser1] = setupUsers();
+    const sudo = getSudoUser();
     await Sudo.batchAsSudoFinalized(Assets.mintToken(tokenIds[0], testUser1));
     const meta = await api.query.feeLock.feeLockMetadata();
     //TODO:Update whitelist!
