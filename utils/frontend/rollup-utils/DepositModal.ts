@@ -31,6 +31,7 @@ export enum DepositActionType {
   Approve,
   Network,
   Approving,
+  Done,
 }
 
 export class DepositModal {
@@ -45,6 +46,7 @@ export class DepositModal {
     [DepositActionType.Deposit]: "Deposit",
     [DepositActionType.Network]: "Switch to Holesky",
     [DepositActionType.Approving]: "Enabling Deposit...",
+    [DepositActionType.Done]: "Ok, I understand",
   };
 
   async isModalVisible() {

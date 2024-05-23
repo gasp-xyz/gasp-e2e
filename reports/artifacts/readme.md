@@ -1,1 +1,0 @@
-This folder will contain screenshots for Github actions artifacts

@@ -86,7 +86,7 @@ export function getEnvironmentRequiredVars() {
 
   const uiUri = process.env.UI_URL
     ? process.env.UI_URL
-    : "https://gasp-testnet-dot-direct-pixel-353917.oa.r.appspot.com/";
+    : "http://localhost:4200/";
 
   const localAddress = process.env.LOCAL_ADDRESS
     ? process.env.LOCAL_ADDRESS
@@ -98,15 +98,15 @@ export function getEnvironmentRequiredVars() {
 
   const mnemonicMetaMask = process.env.MNEMONIC_META
     ? process.env.MNEMONIC_META
-    : "oh oh";
+    : "tag select clinic chef they team junk hidden early drop logic achieve";
 
   const privKeyMetaMask = process.env.PRIVKEY_META
     ? process.env.PRIVKEY_META
-    : "oh oh";
+    : "20b1552a53afe13061895f04cf5dde5156c885fa5ef147f072951637318df8df";
 
   const mnemonicPolkadot = process.env.MNEMONIC_POLK
     ? process.env.MNEMONIC_POLK
-    : "oh oh";
+    : "parrot reveal arena shrimp announce ten draw pretty forget caught advice jacket";
 
   const mnemonicPolkadotEd25519 = process.env.MNEMONIC_POLK_ED25519
     ? process.env.MNEMONIC_POLK_ED25519

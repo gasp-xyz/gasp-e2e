@@ -1,4 +1,5 @@
 import { WebDriver } from "selenium-webdriver";
+import { FIVE_MIN } from "../../Constants";
 import {
   buildDataTestIdXpath,
   buildXpathByElementText,
@@ -45,7 +46,11 @@ export class WalletWrapper {
 
   async openWalletConnectionInfo() {
     const walletWrapper = buildDataTestIdXpath(DIV_WALLET_WRAPPER);
-    await clickElement(this.driver, walletWrapper);
+    const depositButton = buildXpathByElementText("button", "Deposit");
+    const isDepositDisplayed = await isDisplayed(this.driver, depositButton);
+    if(!isDepositDisplayed){
+      await clickElement(this.driver, walletWrapper);
+    }
   }
 
   async openDeposit() {
@@ -111,6 +116,33 @@ export class WalletWrapper {
       buildXpathByText(tokenName) +
       buildDataTestIdXpath(MY_TOKENS_ROW_AMOUNT);
     return await getText(this.driver, tokenRowAmount);
+  }
+
+  async waitTokenAmountChange(
+    tokenName: string,
+    initValue: string,
+    timeout = FIVE_MIN,
+  ) {
+    const startTime = Date.now();
+    const endTime = startTime + timeout;
+  
+    while (Date.now() < endTime) {
+      try {
+          let tokenAmount = await this.getMyTokensRowAmount(tokenName);
+          if (tokenAmount !== initValue) {
+            return;
+          }
+  
+      } catch (error) {
+        // Element not found or other error occurred, continue waiting
+      }
+  
+      await new Promise((resolve) => setTimeout(resolve, 1000));
+    }
+  
+    throw new Error(
+      `Timeout: Element value not as desired after ${timeout} milliseconds`,
+    );
   }
 
   async getMyTokensRowFiatValue(tokenName: string) {
