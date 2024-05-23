@@ -198,7 +198,7 @@ export const waitForSessionChange = async (): Promise<number> => {
 export const waitForRewards = async (
   user: User,
   liquidityAssetId: BN,
-  max: number = 20,
+  max: number = 40,
   thirdPartyRewardToken: BN = BN_ONE.neg(),
 ) =>
   new Promise(async (resolve) => {

@@ -12,7 +12,6 @@ import { BN } from "@polkadot/util";
 import { Keyring } from "@polkadot/api";
 import { Assets } from "../../utils/Assets";
 import { AssetWallet, User } from "../../utils/User";
-import { getEnvironmentRequiredVars } from "../../utils/utils";
 import { SignerOptions } from "@polkadot/api/types";
 import { getEventResultFromMangataTx } from "../../utils/txHandler";
 import { RuntimeDispatchInfo } from "@polkadot/types/interfaces";
@@ -22,7 +21,7 @@ import {
   TUR_ASSET_ID,
 } from "../../utils/Constants";
 import { Sudo } from "../../utils/sudo";
-import { setupUsers, setupApi } from "../../utils/setup";
+import { setupUsers, setupApi, getSudoUser } from "../../utils/setup";
 import { Xyk } from "../../utils/xyk";
 
 jest.spyOn(console, "log").mockImplementation(jest.fn());
@@ -39,8 +38,6 @@ const first_asset_amount = new BN(50000);
 const second_asset_amount = new BN(50000);
 //creating pool
 
-const { sudo: sudoUserName } = getEnvironmentRequiredVars();
-
 let cost: RuntimeDispatchInfo;
 
 const defaultCurrencyValue = new BN(250000);
@@ -52,9 +49,9 @@ beforeAll(async () => {
     await initApi();
   }
 
-  keyring = new Keyring({ type: "sr25519" });
+  keyring = new Keyring({ type: "ethereum" });
 
-  sudo = new User(keyring, sudoUserName);
+  sudo = getSudoUser();
 
   //add MGA tokens for creating pool.
   await sudo.addMGATokens(sudo);
