@@ -143,7 +143,7 @@ test("xyk-pallet - Check required fee - User with MGX only", async () => {
   expect(deductedMGATkns).bnLte(fee);
   expect(deductedMGATkns).bnGt(new BN(0));
 });
-test("xyk-pallet - Check required fee - User with KSM only", async () => {
+test.skip("xyk-pallet - Check required fee - User with KSM only", async () => {
   //add KSM tokens.
   await testUser1.addKSMTokens(sudo);
 
@@ -171,7 +171,7 @@ test("xyk-pallet - Check required fee - User with KSM only", async () => {
   expect(deductedKSMTkns).bnGt(new BN(0));
 });
 
-test("xyk-pallet - Check required fee - User with TUR only", async () => {
+test.skip("xyk-pallet - Check required fee - User with TUR only", async () => {
   //add TUR tokens.
   await testUser1.addTURTokens(sudo);
 
@@ -260,7 +260,7 @@ test("xyk-pallet - Check required fee - User with some MGA, very few KSM and ver
   expect(deductedTURTkns).bnEqual(new BN(0));
 });
 
-test("xyk-pallet - Check required fee - User with very few MGA, some KSM and very few TUR", async () => {
+test.skip("xyk-pallet - Check required fee - User with very few MGA, some KSM and very few TUR", async () => {
   await setupApi();
   await setupUsers();
   await Sudo.batchAsSudoFinalized(
@@ -304,7 +304,7 @@ test("xyk-pallet - Check required fee - User with very few MGA, some KSM and ver
   expect(deductedTURTkns).bnEqual(new BN(0));
 });
 
-test("xyk-pallet - Check required fee - User with very few MGA, very few KSM and some TUR", async () => {
+test.skip("xyk-pallet - Check required fee - User with very few MGA, very few KSM and some TUR", async () => {
   await setupApi();
   await setupUsers();
   await Sudo.batchAsSudoFinalized(

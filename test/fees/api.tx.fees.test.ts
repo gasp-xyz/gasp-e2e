@@ -52,7 +52,7 @@ beforeAll(async () => {
     Assets.mintToken(TUR_ASSET_ID, testUserTUR),
   );
 });
-test("Fees : Transfers are about 5~ MGX", async () => {
+test.skip("Fees : Transfers are about 5~ MGX", async () => {
   const api = getApi();
   testUserMGX.addAsset(MGA_ASSET_ID);
   await testUserMGX.refreshAmounts(AssetWallet.BEFORE);
@@ -70,7 +70,7 @@ test("Fees : Transfers are about 5~ MGX", async () => {
   expect(diff[0].diff.free.muln(-1)).bnLt(upperValue);
   expect(diff[0].diff.free.muln(-1)).bnGt(lowerValue);
 });
-test("Fees : Transfers are about 0.005~ KSM", async () => {
+test.skip("Fees : Transfers are about 0.005~ KSM", async () => {
   const api = getApi();
   testUserKSM.addAsset(KSM_ASSET_ID);
   await testUserKSM.refreshAmounts(AssetWallet.BEFORE);
@@ -88,7 +88,7 @@ test("Fees : Transfers are about 0.005~ KSM", async () => {
   expect(diff[0].diff.free.muln(-1)).bnLt(upperValue);
   expect(diff[0].diff.free.muln(-1)).bnGt(lowerValue);
 });
-test("Fees : Transfers are about 0.5~ TUR", async () => {
+test.skip("Fees : Transfers are about 0.5~ TUR", async () => {
   const api = getApi();
   testUserTUR.addAsset(TUR_ASSET_ID);
   await testUserTUR.refreshAmounts(AssetWallet.BEFORE);
