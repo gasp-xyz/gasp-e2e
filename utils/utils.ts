@@ -545,6 +545,7 @@ export enum xykErrors {
 export enum feeLockErrors {
   FeeLockingFail = "1010: Invalid Transaction: Fee lock processing has failed either due to not enough funds to reserve or an unexpected error",
   FeeUnlockingFail = "1010: Invalid Transaction: Unlock fee has failed either due to no fee locks or fee lock cant be unlocked yet or an unexpected error",
+  AccountBalanceFail = "1010: Invalid Transaction: Inability to pay some fees , e.g. account balance too low",
   SwapApprovalFail = "1010: Invalid Transaction: The swap prevalidation has failed",
 }
 

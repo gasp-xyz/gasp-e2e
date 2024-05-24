@@ -16,7 +16,7 @@ import { Keyring } from "@polkadot/api";
 import { AssetWallet, User } from "../../utils/User";
 import { validateAssetsWithValues } from "../../utils/validators";
 import { Assets } from "../../utils/Assets";
-import { getEnvironmentRequiredVars } from "../../utils/utils";
+import { feeLockErrors, getEnvironmentRequiredVars } from "../../utils/utils";
 import { Fees } from "../../utils/Fees";
 import { mintLiquidity, sellAsset, buyAsset } from "../../utils/tx";
 import { testLog } from "../../utils/Logger";
@@ -89,9 +89,7 @@ describe("Wallets unmodified", () => {
         exception = true;
         throw new Error(reason.data);
       }),
-    ).rejects.toThrow(
-      "1010: Invalid Transaction: Inability to pay some fees , e.g. account balance too low",
-    );
+    ).rejects.toThrow(feeLockErrors.AccountBalanceFail);
     expect(exception).toBeTruthy();
   });
 
@@ -108,9 +106,7 @@ describe("Wallets unmodified", () => {
         exception = true;
         throw new Error(reason.data);
       }),
-    ).rejects.toThrow(
-      "1010: Invalid Transaction: Inability to pay some fees , e.g. account balance too low",
-    );
+    ).rejects.toThrow(feeLockErrors.AccountBalanceFail);
     expect(exception).toBeTruthy();
   });
 
