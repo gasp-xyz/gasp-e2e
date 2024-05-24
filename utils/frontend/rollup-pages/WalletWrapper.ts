@@ -48,7 +48,7 @@ export class WalletWrapper {
     const walletWrapper = buildDataTestIdXpath(DIV_WALLET_WRAPPER);
     const depositButton = buildXpathByElementText("button", "Deposit");
     const isDepositDisplayed = await isDisplayed(this.driver, depositButton);
-    if(!isDepositDisplayed){
+    if (!isDepositDisplayed) {
       await clickElement(this.driver, walletWrapper);
     }
   }
@@ -115,6 +115,7 @@ export class WalletWrapper {
       buildDataTestIdXpath(MY_TOKENS) +
       buildXpathByText(tokenName) +
       buildDataTestIdXpath(MY_TOKENS_ROW_AMOUNT);
+    await waitForElementVisible(this.driver, tokenRowAmount);
     return await getText(this.driver, tokenRowAmount);
   }
 
@@ -125,21 +126,20 @@ export class WalletWrapper {
   ) {
     const startTime = Date.now();
     const endTime = startTime + timeout;
-  
+
     while (Date.now() < endTime) {
       try {
-          let tokenAmount = await this.getMyTokensRowAmount(tokenName);
-          if (tokenAmount !== initValue) {
-            return;
-          }
-  
+        const tokenAmount = await this.getMyTokensRowAmount(tokenName);
+        if (tokenAmount !== initValue) {
+          return;
+        }
       } catch (error) {
         // Element not found or other error occurred, continue waiting
       }
-  
+
       await new Promise((resolve) => setTimeout(resolve, 1000));
     }
-  
+
     throw new Error(
       `Timeout: Element value not as desired after ${timeout} milliseconds`,
     );

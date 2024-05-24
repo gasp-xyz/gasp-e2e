@@ -10,6 +10,7 @@ import {
   acceptNetworkSwitchInNewWindow,
   addExtraLogs,
   importMetamaskExtension,
+  uiStringToNumber,
 } from "../../utils/frontend/utils/Helper";
 import "dotenv/config";
 import {
@@ -55,7 +56,8 @@ describe("Gasp Prod UI deposit tests", () => {
 
     const walletWrapper = new WalletWrapper(driver);
     await walletWrapper.openWalletConnectionInfo();
-    const tokensAmountBefore = await walletWrapper.getMyTokensRowAmount(GETH_ASSET_NAME);
+    const tokensAmountBefore =
+      await walletWrapper.getMyTokensRowAmount(GETH_ASSET_NAME);
     await walletWrapper.openDeposit();
     const depositModal = new DepositModal(driver);
     const isModalVisible = await depositModal.isModalVisible();
@@ -87,7 +89,15 @@ describe("Gasp Prod UI deposit tests", () => {
     await waitForActionNotification(driver, TransactionType.Deposit);
     await depositModal.clickDepositButtonByText(DepositActionType.Done);
 
-    await walletWrapper.waitTokenAmountChange(GETH_ASSET_NAME, tokensAmountBefore);
+    await walletWrapper.waitTokenAmountChange(
+      GETH_ASSET_NAME,
+      tokensAmountBefore,
+    );
+    const tokensAmountAfter =
+      await walletWrapper.getMyTokensRowAmount(GETH_ASSET_NAME);
+    expect(await uiStringToNumber(tokensAmountAfter)).toBeGreaterThan(
+      await uiStringToNumber(tokensAmountBefore),
+    );
   });
 
   afterEach(async () => {
