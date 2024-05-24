@@ -86,7 +86,7 @@ export function getEnvironmentRequiredVars() {
 
   const uiUri = process.env.UI_URL
     ? process.env.UI_URL
-    : "http://localhost:4200/";
+    : "https://gasp-testnet-dot-direct-pixel-353917.oa.r.appspot.com/";
 
   const localAddress = process.env.LOCAL_ADDRESS
     ? process.env.LOCAL_ADDRESS
@@ -106,7 +106,7 @@ export function getEnvironmentRequiredVars() {
 
   const mnemonicPolkadot = process.env.MNEMONIC_POLK
     ? process.env.MNEMONIC_POLK
-    : "parrot reveal arena shrimp announce ten draw pretty forget caught advice jacket";
+    : "oh oh";
 
   const mnemonicPolkadotEd25519 = process.env.MNEMONIC_POLK_ED25519
     ? process.env.MNEMONIC_POLK_ED25519
