@@ -16,8 +16,9 @@ import {
 } from "../../utils/Constants";
 import { Sudo } from "../../utils/sudo";
 import { setupApi, alice as Alice, setupUsers } from "../../utils/setup";
-import { BN_TEN, BN_THOUSAND, signTx } from "@mangata-finance/sdk";
+import { BN_THOUSAND, signTx } from "@mangata-finance/sdk";
 import { BN } from "@polkadot/util";
+import { feeLockErrors } from "../../utils/utils";
 
 jest.spyOn(console, "log").mockImplementation(jest.fn());
 jest.setTimeout(1500000);
@@ -52,7 +53,7 @@ beforeAll(async () => {
     Assets.mintToken(TUR_ASSET_ID, testUserTUR),
   );
 });
-test("Fees : Transfers are about 5~ MGX", async () => {
+test("Fees : Transfers are about 4~ MGX", async () => {
   const api = getApi();
   testUserMGX.addAsset(MGA_ASSET_ID);
   await testUserMGX.refreshAmounts(AssetWallet.BEFORE);
@@ -65,44 +66,39 @@ test("Fees : Transfers are about 5~ MGX", async () => {
   const diff = testUserMGX.getWalletDifferences();
 
   //Assert:We pay like 5MGAs per tokens transfer.
-  const upperValue = new BN(6).mul(Assets.MG_UNIT);
-  const lowerValue = new BN(5).mul(Assets.MG_UNIT);
+  const upperValue = new BN(4).mul(Assets.MG_UNIT);
+  const lowerValue = new BN(3).mul(Assets.MG_UNIT);
   expect(diff[0].diff.free.muln(-1)).bnLt(upperValue);
   expect(diff[0].diff.free.muln(-1)).bnGt(lowerValue);
 });
-test("Fees : Transfers are about 0.005~ KSM", async () => {
+test("Fees : UPD You can no longer pay fees to KSM", async () => {
   const api = getApi();
   testUserKSM.addAsset(KSM_ASSET_ID);
-  await testUserKSM.refreshAmounts(AssetWallet.BEFORE);
-  await signTx(
-    api,
-    Assets.transfer(alice, KSM_ASSET_ID, BN_THOUSAND),
-    testUserKSM.keyRingPair,
-  );
-  await testUserKSM.refreshAmounts(AssetWallet.AFTER);
-  const diff = testUserKSM.getWalletDifferences();
-
-  //Assert:We pay like 0.005Ksms per tokens transfer.
-  const upperValue = new BN(6).mul(Assets.KSM_UNIT).div(BN_THOUSAND);
-  const lowerValue = new BN(5).mul(Assets.KSM_UNIT).div(BN_THOUSAND);
-  expect(diff[0].diff.free.muln(-1)).bnLt(upperValue);
-  expect(diff[0].diff.free.muln(-1)).bnGt(lowerValue);
+  let transferError: any = [];
+  try {
+    await signTx(
+      api,
+      Assets.transfer(alice, KSM_ASSET_ID, BN_THOUSAND),
+      testUserKSM.keyRingPair,
+    );
+  } catch (error) {
+    transferError = error;
+  }
+  expect(transferError.data).toBe(feeLockErrors.AccountBalanceFail);
 });
-test("Fees : Transfers are about 0.5~ TUR", async () => {
+
+test("Fees : UPD You can no longer pay fees to TUR", async () => {
   const api = getApi();
   testUserTUR.addAsset(TUR_ASSET_ID);
-  await testUserTUR.refreshAmounts(AssetWallet.BEFORE);
-  await signTx(
-    api,
-    Assets.transfer(alice, TUR_ASSET_ID, BN_THOUSAND),
-    testUserTUR.keyRingPair,
-  );
-  await testUserTUR.refreshAmounts(AssetWallet.AFTER);
-  const diff = testUserTUR.getWalletDifferences();
-
-  //Assert:We pay like 0.005TURs per tokens transfer.
-  const upperValue = new BN(6).mul(Assets.TUR_UNIT).div(BN_TEN);
-  const lowerValue = new BN(5).mul(Assets.TUR_UNIT).div(BN_TEN);
-  expect(diff[0].diff.free.muln(-1)).bnLt(upperValue);
-  expect(diff[0].diff.free.muln(-1)).bnGt(lowerValue);
+  let transferError: any = [];
+  try {
+    await signTx(
+      api,
+      Assets.transfer(alice, TUR_ASSET_ID, BN_THOUSAND),
+      testUserTUR.keyRingPair,
+    );
+  } catch (error) {
+    transferError = error;
+  }
+  expect(transferError.data).toBe(feeLockErrors.AccountBalanceFail);
 });

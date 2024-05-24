@@ -14,16 +14,14 @@ import { AssetWallet, User } from "../../utils/User";
 import { validateAssetsWithValues } from "../../utils/validators";
 import { Assets } from "../../utils/Assets";
 
-import {
-  getEnvironmentRequiredVars,
-  getFeeLockMetadata,
-} from "../../utils/utils";
+import { getFeeLockMetadata } from "../../utils/utils";
 import { SignerOptions } from "@polkadot/api/types";
 import { getEventResultFromMangataTx } from "../../utils/txHandler";
 import { RuntimeDispatchInfo } from "@polkadot/types/interfaces";
 import { MGA_ASSET_ID } from "../../utils/Constants";
 import { Fees } from "../../utils/Fees";
 import { BN_ZERO } from "@mangata-finance/sdk";
+import { getSudoUser } from "../../utils/setup";
 
 jest.spyOn(console, "log").mockImplementation(jest.fn());
 jest.spyOn(console, "error").mockImplementation(jest.fn());
@@ -40,8 +38,6 @@ const first_asset_amount = new BN(50000);
 const second_asset_amount = new BN(50000);
 //creating pool
 
-const { sudo: sudoUserName } = getEnvironmentRequiredVars();
-
 let cost: RuntimeDispatchInfo;
 
 const defaultCurrecyValue = new BN(250000);
@@ -53,11 +49,11 @@ beforeEach(async () => {
     await initApi();
   }
 
-  keyring = new Keyring({ type: "sr25519" });
+  keyring = new Keyring({ type: "ethereum" });
 
   // setup users
   testUser1 = new User(keyring);
-  sudo = new User(keyring, sudoUserName);
+  sudo = getSudoUser();
 
   //add two curerncies and balance to testUser:
   [firstCurrency, secondCurrency] = await Assets.setupUserWithCurrencies(

@@ -4,12 +4,11 @@
  * @group rewardsV2Parallel
  */
 import { jest } from "@jest/globals";
-import { Keyring } from "@polkadot/api";
 import { getApi, getMangataInstance, initApi, mangata } from "../../utils/api";
 import { Assets } from "../../utils/Assets";
 import { MGA_ASSET_ID } from "../../utils/Constants";
 import { BN_HUNDRED, BN_ZERO, signTx } from "@mangata-finance/sdk";
-import { setupApi, setupUsers } from "../../utils/setup";
+import { getSudoUser, setupApi, setupUsers } from "../../utils/setup";
 import { Sudo } from "../../utils/sudo";
 import {
   claimRewards,
@@ -35,10 +34,8 @@ jest.setTimeout(2500000);
 
 process.env.NODE_ENV = "test";
 
-const { sudo: sudoUserName } = getEnvironmentRequiredVars();
 let testUser1: User;
 let sudo: User;
-let keyring: Keyring;
 let token1: BN;
 let liqId: BN;
 const defaultCurrencyValue = new BN(250000);
@@ -49,10 +46,9 @@ beforeAll(async () => {
   } catch (e) {
     await initApi();
   }
-  keyring = new Keyring({ type: "sr25519" });
 
   // setup users
-  sudo = new User(keyring, sudoUserName);
+  sudo = getSudoUser();
 
   await setupApi();
 });
