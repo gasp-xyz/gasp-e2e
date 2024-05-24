@@ -98,11 +98,11 @@ export function getEnvironmentRequiredVars() {
 
   const mnemonicMetaMask = process.env.MNEMONIC_META
     ? process.env.MNEMONIC_META
-    : "tag select clinic chef they team junk hidden early drop logic achieve";
+    : "oh oh";
 
   const privKeyMetaMask = process.env.PRIVKEY_META
     ? process.env.PRIVKEY_META
-    : "20b1552a53afe13061895f04cf5dde5156c885fa5ef147f072951637318df8df";
+    : "oh oh";
 
   const mnemonicPolkadot = process.env.MNEMONIC_POLK
     ? process.env.MNEMONIC_POLK
