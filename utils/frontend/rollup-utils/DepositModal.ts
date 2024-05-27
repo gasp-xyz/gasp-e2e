@@ -1,4 +1,5 @@
 import { By, WebDriver } from "selenium-webdriver";
+import { FIVE_MIN } from "../../Constants";
 import { sleep } from "../../utils";
 import {
   buildDataTestIdXpath,
@@ -25,12 +26,15 @@ const ORIGIN_FEE = "origin-fee";
 const DESTINATION_FEE = "destination-fee";
 const FEE_VALUE = "fee-value";
 const ERR_MESSAGE = "deposit-error-message";
+const AMOUNT_FIELD = "AmountTooltip-anchor";
+const CLOSE_MODAL = "deposit-modal-close";
 
 export enum DepositActionType {
   Deposit,
   Approve,
   Network,
   Approving,
+  Done,
 }
 
 export class DepositModal {
@@ -45,6 +49,7 @@ export class DepositModal {
     [DepositActionType.Deposit]: "Deposit",
     [DepositActionType.Network]: "Switch to Holesky",
     [DepositActionType.Approving]: "Enabling Deposit...",
+    [DepositActionType.Done]: "Ok, I understand",
   };
 
   async isModalVisible() {
@@ -66,6 +71,10 @@ export class DepositModal {
 
   async openChainList() {
     await clickElement(this.driver, buildDataTestIdXpath(BTN_CHAIN_SELECT));
+  }
+
+  async close() {
+    await clickElement(this.driver, buildDataTestIdXpath(CLOSE_MODAL));
   }
 
   async isErrorMessage() {
@@ -99,10 +108,11 @@ export class DepositModal {
     await clickElement(this.driver, tokenLocator);
   }
 
-  async getTokenAmount(assetName: string) {
-    const assetTestId = `token-list-token-${assetName}-balance`;
-    const assetLocator = buildDataTestIdXpath(assetTestId);
-    return parseFloat(await getText(this.driver, assetLocator));
+  async getTokenAmount() {
+    const amountLocator =
+      buildDataTestIdXpath(DEPOSIT_MODAL_CONTENT) +
+      buildDataTestIdXpath(AMOUNT_FIELD);
+    return await getText(this.driver, amountLocator);
   }
 
   async waitForTokenListElementsVisible(assetName: string) {
@@ -156,5 +166,27 @@ export class DepositModal {
   async isNetworkButtonEnabled() {
     const xpath = buildXpathByElementText("button", "Switch to Holesky");
     return await (await this.driver.findElement(By.xpath(xpath))).isEnabled();
+  }
+
+  async waitTokenAmountChange(initValue: string, timeout = FIVE_MIN) {
+    const startTime = Date.now();
+    const endTime = startTime + timeout;
+
+    while (Date.now() < endTime) {
+      try {
+        const tokenAmount = await this.getTokenAmount();
+        if (tokenAmount !== initValue) {
+          return;
+        }
+      } catch (error) {
+        // Element not found or other error occurred, continue waiting
+      }
+
+      await new Promise((resolve) => setTimeout(resolve, 1000));
+    }
+
+    throw new Error(
+      `Timeout: Element value not as desired after ${timeout} milliseconds`,
+    );
   }
 }

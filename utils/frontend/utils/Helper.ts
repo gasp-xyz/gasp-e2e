@@ -647,6 +647,7 @@ export async function uiStringToNumber(stringValue: string) {
   let partIntNum: number;
   let partDecNum: number;
   let numberValue: number = 0;
+  stringValue = stringValue.replaceAll(",", "");
   const partInt = stringValue.split(".")[0];
   const partDec = stringValue.split(".")[1];
   const millions = await stringValue.includes("M");
