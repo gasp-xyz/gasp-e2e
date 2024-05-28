@@ -303,12 +303,23 @@ export class MetaMask {
   }
 
   private static async signTransaction(driver: WebDriver) {
-    const XPATH_BTN_SIGN_TRANSACTION = buildDataTestIdXpath(BTN_FOOTER_NEXT);
+    const XPATH_SCROLL_DOWN = "//*[@aria-label='Scroll down']";
+    await waitForElement(driver, XPATH_SCROLL_DOWN);
+    await clickElement(driver, XPATH_SCROLL_DOWN);
+    const XPATH_BTN_SIGN_TRANSACTION = buildDataTestIdXpath(
+      BTN_CONFIRM_TRANSACTION,
+    );
     await waitForElement(driver, XPATH_BTN_SIGN_TRANSACTION);
     await waitForElementEnabled(driver, XPATH_BTN_SIGN_TRANSACTION);
     await clickElement(driver, XPATH_BTN_SIGN_TRANSACTION);
   }
 
+  private static async signDeposit(driver: WebDriver) {
+    const XPATH_BTN_SIGN_TRANSACTION = buildDataTestIdXpath(BTN_FOOTER_NEXT);
+    await waitForElement(driver, XPATH_BTN_SIGN_TRANSACTION);
+    await waitForElementEnabled(driver, XPATH_BTN_SIGN_TRANSACTION);
+    await clickElement(driver, XPATH_BTN_SIGN_TRANSACTION);
+  }
   private static async signWithdrawal(driver: WebDriver) {
     const XPATH_SCROLL_DOWN = "//*[@aria-label='Scroll down']";
     await waitForElement(driver, XPATH_SCROLL_DOWN);
@@ -336,6 +347,10 @@ export class MetaMask {
 
   static async signTransactionInDifferentWindow(driver: WebDriver) {
     await doActionInDifferentWindow(driver, this.signTransaction);
+  }
+
+  static async signDepositInDifferentWindow(driver: WebDriver) {
+    await doActionInDifferentWindow(driver, this.signDeposit);
   }
 
   static async signWithdrawInDifferentWindow(driver: WebDriver) {
