@@ -1,6 +1,6 @@
 /*
  *
- * @group rollupSwap
+ * @group rollupSwapDev
  */
 import { jest } from "@jest/globals";
 import { WebDriver } from "selenium-webdriver";
@@ -34,7 +34,7 @@ let acc_addr_short = "";
 const GETH_ASSET_NAME = "GETH";
 const GASP_ASSET_NAME = "GASP";
 
-describe("Gasp UI deposit tests", () => {
+describe("Gasp UI swap tests", () => {
   beforeAll(async () => {
     try {
       getApi();
@@ -190,12 +190,6 @@ describe("Gasp UI deposit tests", () => {
     const getTokenAmount = await swap.fetchGetAssetAmount();
     expect(parseFloat(getTokenAmount)).toBeGreaterThan(0);
 
-    await swap.waitForSwapButtonEnabled();
-    const isSwapEnabled = await swap.isSwapButtonEnabled();
-    expect(isSwapEnabled).toBeTruthy();
-
-    await swap.clickSwapButtonByAction(SwapActionType.Network);
-    await acceptNetworkSwitchInNewWindow(driver);
     await swap.clickSwapButtonByAction(SwapActionType.Swap);
     await waitForActionNotification(driver, TransactionType.Swap);
   });

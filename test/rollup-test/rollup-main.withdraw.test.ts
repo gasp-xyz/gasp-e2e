@@ -1,6 +1,6 @@
 /*
  *
- * @group rollupWithdraw
+ * @group rollupWithdrawDev
  */
 import { jest } from "@jest/globals";
 import { WebDriver } from "selenium-webdriver";

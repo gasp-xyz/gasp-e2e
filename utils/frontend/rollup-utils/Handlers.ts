@@ -112,7 +112,7 @@ export async function waitForActionNotification(
       await MetaMask.acceptContractInDifferentWindow(driver);
       break;
     case TransactionType.Deposit:
-      await MetaMask.signTransactionInDifferentWindow(driver);
+      await MetaMask.signDepositInDifferentWindow(driver);
       break;
     case TransactionType.Withdraw:
       await MetaMask.signWithdrawInDifferentWindow(driver);
