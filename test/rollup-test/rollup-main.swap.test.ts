@@ -190,6 +190,10 @@ describe("Gasp UI swap tests", () => {
     const getTokenAmount = await swap.fetchGetAssetAmount();
     expect(parseFloat(getTokenAmount)).toBeGreaterThan(0);
 
+    await swap.waitForSwapButtonEnabled();
+    const isSwapEnabled = await swap.isSwapButtonEnabled();
+    expect(isSwapEnabled).toBeTruthy();
+
     await swap.clickSwapButtonByAction(SwapActionType.Swap);
     await waitForActionNotification(driver, TransactionType.Swap);
   });
