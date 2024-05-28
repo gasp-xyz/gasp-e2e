@@ -32,7 +32,8 @@ jest.setTimeout(3500000);
 process.env.NODE_ENV = "test";
 let docker: Docker;
 const dockerImageName = "test_image:automation";
-const mgaParachainImageName = "parachain-2110";
+const mgaParachainImageName =
+  "mangatasolutions/rollup-node:feature-fix-typo-fast";
 const mgaDockerContainerImage = "output-parachain-2110-1";
 
 let testUser1: User;
@@ -115,15 +116,15 @@ async function startDockerImage() {
   const as = await docker.listContainers();
   const bobImage = as.filter(
     (x) =>
-      x.Command.toLowerCase().includes("bob") &&
+      x.Command.toLowerCase().includes("baltathar") &&
       x.Image.includes(mgaParachainImageName),
   )[0];
   await execSh(`docker tag ${mgaDockerContainerImage} ${dockerImageName}`);
   await sleep(2000);
   const command = bobImage.Command;
   const commandReady = command
-    .replace("/mangata/node", "")
-    .replace("--bob", "--eve");
+    .replace("/app/node", "")
+    .replace("--baltathar", "--ethan");
   const sanitized = commandReady.split(" ").filter((x) => x.length !== 0);
   return docker.run(
     dockerImageName,
@@ -173,7 +174,9 @@ async function startDockerImage() {
 async function signNodeWithEve() {
   await sleep(30000);
   const cont = await docker.listContainers();
-  const newRunnCont = cont.filter((x) => x.Image.includes(dockerImageName))[0];
+  const newRunnCont = cont.filter((x) =>
+    x.Image.includes(mgaParachainImageName),
+  )[0];
   const port = newRunnCont.Ports.filter((p) => p.PrivatePort === 9944)[0]
     .PublicPort;
   const eveNode = await Mangata.instance([`ws://127.0.0.1:${port}`]).api();
