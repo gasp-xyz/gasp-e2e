@@ -177,7 +177,9 @@ async function startDockerImage() {
 async function signNodeWithEve() {
   await sleep(30000);
   const cont = await docker.listContainers();
-  const newRunnCont = cont.filter((x) => x.Image.includes(dockerImageName))[0];
+  const newRunnCont = cont.filter((x) =>
+    x.Image.includes(mgaParachainImageName),
+  )[0];
   const port = newRunnCont.Ports.filter((p) => p.PrivatePort === 9944)[0]
     .PublicPort;
   const eveNode = await Mangata.instance([`ws://127.0.0.1:${port}`]).api();
