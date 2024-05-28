@@ -116,11 +116,14 @@ async function startDockerImage() {
   const as = await docker.listContainers();
   const bobImage = as.filter(
     (x) =>
+      testLog.getLog().info("the next Command is" + x.Command) &&
+      testLog.getLog().info("the next Image is" + x.Image) &&
       x.Command.toLowerCase().includes("baltathar") &&
       x.Image.includes(mgaParachainImageName),
   )[0];
   await execSh(`docker tag ${mgaDockerContainerImage} ${dockerImageName}`);
   await sleep(2000);
+  testLog.getLog().info(bobImage.Command);
   const command = bobImage.Command;
   const commandReady = command
     .replace("/app/node", "")
