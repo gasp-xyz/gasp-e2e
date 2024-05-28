@@ -32,7 +32,8 @@ jest.setTimeout(3500000);
 process.env.NODE_ENV = "test";
 let docker: Docker;
 const dockerImageName = "test_image:automation";
-const mgaParachainImageName = "parachain-2110";
+const mgaParachainImageName =
+  "mangatasolutions/rollup-node:eth-rollup-develop-fast";
 const mgaDockerContainerImage = "output-parachain-2110-1";
 
 let testUser1: User;
