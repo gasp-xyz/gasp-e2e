@@ -31,9 +31,9 @@ jest.spyOn(console, "log").mockImplementation(jest.fn());
 jest.setTimeout(3500000);
 process.env.NODE_ENV = "test";
 let docker: Docker;
-const dockerImageName = "test_image:automation";
+const dockerImageName = "testImage_mangata_node";
 const mgaParachainImageName =
-  "mangatasolutions/rollup-node:eth-rollup-develop-fast";
+  "mangatasolutions/rollup-node:feature-fix-typo-fast";
 const mgaDockerContainerImage = "output-parachain-2110-1";
 
 let testUser1: User;
@@ -126,7 +126,7 @@ async function startDockerImage() {
   testLog.getLog().info(bobImage.Command);
   const command = bobImage.Command;
   const commandReady = command
-    .replace("/app/node", "")
+    .replace("/mangata/node", "")
     .replace("--baltathar", "--ethan");
   const sanitized = commandReady.split(" ").filter((x) => x.length !== 0);
   return docker.run(
