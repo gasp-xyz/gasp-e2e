@@ -32,9 +32,8 @@ jest.setTimeout(3500000);
 process.env.NODE_ENV = "test";
 let docker: Docker;
 const dockerImageName = "test_image:automation";
-const mgaParachainImageName =
-  "mangatasolutions/rollup-node:eth-rollup-develop-fast";
-const mgaDockerContainerImage = "output-parachain-2110-1";
+const mgaParachainImageName = "rollup-node";
+const mgaDockerContainerImage = "rollup-node-alice-1";
 
 let testUser1: User;
 let minStk: BN;
@@ -116,8 +115,6 @@ async function startDockerImage() {
   const as = await docker.listContainers();
   const bobImage = as.filter(
     (x) =>
-      testLog.getLog().info("the next Command is " + x.Command) &&
-      testLog.getLog().info("the next Image is " + x.Image) &&
       x.Command.toLowerCase().includes("baltathar") &&
       x.Image.includes(mgaParachainImageName),
   )[0];
