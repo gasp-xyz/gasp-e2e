@@ -31,7 +31,7 @@ jest.spyOn(console, "log").mockImplementation(jest.fn());
 jest.setTimeout(3500000);
 process.env.NODE_ENV = "test";
 let docker: Docker;
-const dockerImageName = "testImage_mangata_node";
+const dockerImageName = "test_image:automation";
 const mgaParachainImageName =
   "mangatasolutions/rollup-node:feature-fix-typo-fast";
 const mgaDockerContainerImage = "output-parachain-2110-1";
