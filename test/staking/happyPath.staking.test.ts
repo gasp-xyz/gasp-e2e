@@ -33,7 +33,7 @@ process.env.NODE_ENV = "test";
 let docker: Docker;
 const dockerImageName = "test_image:automation";
 const mgaParachainImageName =
-  "mangatasolutions/rollup-node:feature-fix-typo-fast";
+  "mangatasolutions/rollup-node:eth-rollup-develop-fast";
 const mgaDockerContainerImage = "output-parachain-2110-1";
 
 let testUser1: User;
@@ -116,8 +116,8 @@ async function startDockerImage() {
   const as = await docker.listContainers();
   const bobImage = as.filter(
     (x) =>
-      testLog.getLog().info("the next Command is" + x.Command) &&
-      testLog.getLog().info("the next Image is" + x.Image) &&
+      testLog.getLog().info("the next Command is " + x.Command) &&
+      testLog.getLog().info("the next Image is " + x.Image) &&
       x.Command.toLowerCase().includes("baltathar") &&
       x.Image.includes(mgaParachainImageName),
   )[0];
