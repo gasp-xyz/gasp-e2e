@@ -83,7 +83,7 @@ describe("Rollup", () => {
       }
       await setupApi();
       setupUsers();
-      const keyRing = new Keyring({ type: "sr25519" });
+      const keyRing = new Keyring({ type: "ethereum" });
       user = new EthUser(keyRing);
       await setupEthUser(
         user,
