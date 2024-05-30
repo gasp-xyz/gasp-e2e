@@ -33,7 +33,6 @@ process.env.NODE_ENV = "test";
 let docker: Docker;
 const dockerImageName = "test_image:automation";
 const mgaParachainImageName = "rollup-node";
-const mgaDockerContainerImage = "rollup-node-alice-1";
 
 let testUser1: User;
 let minStk: BN;
@@ -118,7 +117,7 @@ async function startDockerImage() {
       x.Command.toLowerCase().includes("baltathar") &&
       x.Image.includes(mgaParachainImageName),
   )[0];
-  await execSh(`docker tag ${mgaDockerContainerImage} ${dockerImageName}`);
+  await execSh(`docker tag ${bobImage.Image} ${dockerImageName}`);
   await sleep(2000);
   testLog.getLog().info(bobImage.Command);
   const command = bobImage.Command;
