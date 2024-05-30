@@ -11,18 +11,14 @@ import { getApi, initApi } from "../../utils/api";
 import { Assets } from "../../utils/Assets";
 import { MGA_ASSET_ID } from "../../utils/Constants";
 import { ExtrinsicResult } from "../../utils/eventListeners";
-import {
-  getEnvironmentRequiredVars,
-  stringToBN,
-  waitNewStakingRound,
-} from "../../utils/utils";
+import { stringToBN, waitNewStakingRound } from "../../utils/utils";
 import { Sudo } from "../../utils/sudo";
 import { Staking } from "../../utils/Staking";
 import { delegate, getLiquidityAssetId, joinCandidate } from "../../utils/tx";
 import { AssetWallet, User } from "../../utils/User";
 import { Xyk } from "../../utils/xyk";
 import { getEventResultFromMangataTx } from "../../utils/txHandler";
-import { setupUsers } from "../../utils/setup";
+import { getSudoUser, setupUsers } from "../../utils/setup";
 
 jest.spyOn(console, "log").mockImplementation(jest.fn());
 jest.spyOn(console, "error").mockImplementation(jest.fn());
@@ -44,8 +40,6 @@ let tokenId: BN;
 let liqToken: BN;
 let minStk: BN;
 
-const { sudo: sudoUserName } = getEnvironmentRequiredVars();
-
 beforeAll(async () => {
   try {
     getApi();
@@ -54,11 +48,11 @@ beforeAll(async () => {
   }
 
   api = getApi();
-  keyring = new Keyring({ type: "sr25519" });
+  keyring = new Keyring({ type: "ethereum" });
 
   // setup users
   testUser = new User(keyring);
-  sudo = new User(keyring, sudoUserName);
+  sudo = getSudoUser();
 
   minStk = new BN(
     (await getApi()).consts.parachainStaking.minCandidateStk.toString(),
