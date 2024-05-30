@@ -122,8 +122,8 @@ async function startDockerImage() {
   testLog.getLog().info(bobImage.Command);
   const command = bobImage.Command;
   const commandReady = command
-    .replace("/mangata/node", "")
-    .replace("--baltathar", "--ethan");
+    .replace("/app/node", "")
+    .replace("--baltathar", "--eve");
   const sanitized = commandReady.split(" ").filter((x) => x.length !== 0);
   return docker.run(
     dockerImageName,
@@ -140,7 +140,7 @@ async function startDockerImage() {
       },
       HostConfig: {
         AutoRemove: true,
-        NetworkMode: "output_default",
+        NetworkMode: "mangata-node_default",
         PortBindings: {
           "9944": [
             {
