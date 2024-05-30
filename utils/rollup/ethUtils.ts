@@ -13,11 +13,11 @@ import { encodeAddress } from "@polkadot/keyring";
 import { blake2AsU8a } from "@polkadot/util-crypto";
 import { BN, hexToU8a } from "@polkadot/util";
 import { getApi } from "../api";
-import { EthUser } from "../EthUser";
 import { testLog } from "../Logger";
 import { setupApi, setupUsers } from "../setup";
 import { Sudo } from "../sudo";
 import { Assets } from "../Assets";
+import { User } from "../User";
 
 export const ROLL_DOWN_CONTRACT_ADDRESS =
   "0x70e0bA845a1A0F2DA3359C97E0285013525FFC49";
@@ -111,13 +111,13 @@ export async function setBalance(ethAddress: string, amount: number) {
 }
 
 export async function approveTokens(
-  ethUser: EthUser,
+  ethUser: User,
   erc20Address: `0x${string}` = ERC20_ADDRESS,
   contractAddress: string = ROLL_DOWN_CONTRACT_ADDRESS,
   amount: number = 10e18,
 ) {
   const acc: PrivateKeyAccount = privateKeyToAccount(
-    ethUser.privateKey as `0x${string}`,
+    ethUser.name as `0x${string}`,
   );
   const walletClient = createWalletClient({
     account: acc,
@@ -135,15 +135,15 @@ export async function approveTokens(
 }
 
 export async function setupEthUser(
-  ethUser: EthUser,
+  ethUser: User,
   erc20Address: `0x${string}` = ERC20_ADDRESS,
   rollDownContractAddress: string = ROLL_DOWN_CONTRACT_ADDRESS,
   amountToApprove: number,
 ) {
-  await setBalance(ethUser.ethAddress, 10e18);
-  await mintERC20TokensOnEthL1(ethUser.ethAddress, 10e18);
+  await setBalance(ethUser.keyRingPair.address, 10e18);
+  await mintERC20TokensOnEthL1(ethUser.keyRingPair.address, 10e18);
 
-  const balance = await getBalance(erc20Address, ethUser.ethAddress);
+  const balance = await getBalance(erc20Address, ethUser.keyRingPair.address);
   testLog.getLog().info(balance);
   await approveTokens(
     ethUser,
@@ -153,7 +153,7 @@ export async function setupEthUser(
   );
 }
 export async function fakeDepositOnL2(
-  ethUser: EthUser,
+  ethUser: User,
   erc20Address: `0x${string}` = ERC20_ADDRESS,
   rollDownContractAddress: string = ROLL_DOWN_CONTRACT_ADDRESS,
   amount: BN,
