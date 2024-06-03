@@ -10,7 +10,7 @@ import {
   expectMGAExtrinsicSuDidSuccess,
 } from "../../utils/eventListeners";
 import { signTx } from "@mangata-finance/sdk";
-import { setupUsers, setupApi } from "../../utils/setup";
+import { setupUsers, setupApi, getSudoUser } from "../../utils/setup";
 import {
   AggregatorOptions,
   Staking,
@@ -21,14 +21,9 @@ import { Assets } from "../../utils/Assets";
 import { MGA_ASSET_ID } from "../../utils/Constants";
 import { testLog } from "../../utils/Logger";
 import { BN } from "@polkadot/util";
-import {
-  findErrorMetadata,
-  getEnvironmentRequiredVars,
-  getUserBalanceOfToken,
-} from "../../utils/utils";
+import { findErrorMetadata, getUserBalanceOfToken } from "../../utils/utils";
 import { hexToBn } from "@polkadot/util";
 import { getEventResultFromMangataTx } from "../../utils/txHandler";
-import { Keyring } from "@polkadot/api";
 import { Xyk } from "../../utils/xyk";
 import { getLiquidityAssetId } from "../../utils/tx";
 
@@ -55,8 +50,7 @@ beforeAll(async () => {
   minStk = new BN(
     (await getApi()).consts.parachainStaking.minCandidateStk.toString(),
   );
-  const keyring = new Keyring({ type: "sr25519" });
-  const sudo = new User(keyring, getEnvironmentRequiredVars().sudo);
+  const sudo = getSudoUser();
   const tokens = await Assets.setupUserWithCurrencies(
     testUser4,
     [minStk.muln(1000), minStk.muln(1000)],

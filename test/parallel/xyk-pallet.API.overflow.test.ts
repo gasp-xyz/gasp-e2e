@@ -33,6 +33,7 @@ import { getEventResultFromMangataTx } from "../../utils/txHandler";
 import { Sudo } from "../../utils/sudo";
 import { Xyk } from "../../utils/xyk";
 import { BN_ONE } from "@mangata-finance/sdk";
+import { getSudoUser } from "../../utils/setup";
 
 jest.spyOn(console, "log").mockImplementation(jest.fn());
 jest.setTimeout(1500000);
@@ -56,11 +57,11 @@ describe("xyk-pallet - Check operations are not executed because of overflow in 
       await initApi();
     }
 
-    keyring = new Keyring({ type: "sr25519" });
+    keyring = new Keyring({ type: "ethereum" });
 
     // setup users
     testUser1 = new User(keyring);
-    sudo = new User(keyring, sudoUserName);
+    sudo = getSudoUser();
     // add users to pair.
     keyring.addPair(testUser1.keyRingPair);
     keyring.addPair(sudo.keyRingPair);

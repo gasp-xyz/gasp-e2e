@@ -37,7 +37,7 @@ let liqTokensAmount: BN;
 
 describe("MPL: Delegator", () => {
   beforeEach(async () => {
-    keyring = new Keyring({ type: "sr25519" });
+    keyring = new Keyring({ type: "ethereum" });
     const node = new Node(getEnvironmentRequiredVars().chainUri);
     await node.connect();
     // setup users

@@ -41,7 +41,7 @@ const vestedTokenAmount = new BN("9000000000000000000000");
 
 describe("Vesting", () => {
   beforeAll(async () => {
-    keyring = new Keyring({ type: "sr25519" });
+    keyring = new Keyring({ type: "ethereum" });
     node = new Node(getEnvironmentRequiredVars().chainUri);
     await node.connect();
   });

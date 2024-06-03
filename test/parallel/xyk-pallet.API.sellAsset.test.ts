@@ -25,6 +25,7 @@ import { getEventResultFromMangataTx } from "../../utils/txHandler";
 import { createPool } from "../../utils/tx";
 import { Sudo } from "../../utils/sudo";
 import { Xyk } from "../../utils/xyk";
+import { getSudoUser } from "../../utils/setup";
 
 jest.spyOn(console, "log").mockImplementation(jest.fn());
 jest.setTimeout(1500000);
@@ -54,12 +55,12 @@ describe("xyk-pallet - Sell assets tests: SellAsset Errors:", () => {
       await initApi();
     }
 
-    keyring = new Keyring({ type: "sr25519" });
+    keyring = new Keyring({ type: "ethereum" });
 
     // setup users
     testUser1 = new User(keyring);
 
-    sudo = new User(keyring, sudoUserName);
+    sudo = getSudoUser();
 
     // add users to pair.
     keyring.addPair(testUser1.keyRingPair);

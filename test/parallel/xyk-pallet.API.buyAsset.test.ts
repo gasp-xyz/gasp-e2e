@@ -32,6 +32,7 @@ import {
   getEnvironmentRequiredVars,
   xykErrors,
 } from "../../utils/utils";
+import { getSudoUser } from "../../utils/setup";
 
 jest.spyOn(console, "log").mockImplementation(jest.fn());
 jest.setTimeout(1500000);
@@ -57,12 +58,12 @@ beforeAll(async () => {
   } catch (e) {
     await initApi();
   }
-  keyring = new Keyring({ type: "sr25519" });
+  keyring = new Keyring({ type: "ethereum" });
 
   // setup users
   testUser1 = new User(keyring);
 
-  sudo = new User(keyring, sudoUserName);
+  sudo = getSudoUser();
 
   // add users to pair.
   keyring.addPair(testUser1.keyRingPair);
