@@ -111,7 +111,7 @@ describe("MPL: Delegator", () => {
 
 describe("MPL: Collators", () => {
   beforeAll(async () => {
-    keyring = new Keyring({ type: "sr25519" });
+    keyring = new Keyring({ type: "ethereum" });
     const node = new Node(getEnvironmentRequiredVars().chainUri);
     await node.connect();
     const api = await getApi();
@@ -204,7 +204,7 @@ describe("MPL: Collators", () => {
 
 describe("MPL: Collators - Activated liq", () => {
   beforeAll(async () => {
-    keyring = new Keyring({ type: "sr25519" });
+    keyring = new Keyring({ type: "ethereum" });
     const node = new Node(getEnvironmentRequiredVars().chainUri);
     await node.connect();
     const api = await getApi();

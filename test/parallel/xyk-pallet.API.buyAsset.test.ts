@@ -27,17 +27,12 @@ import {
 import { Assets } from "../../utils/Assets";
 import { getEventResultFromMangataTx } from "../../utils/txHandler";
 import { createPool } from "../../utils/tx";
-import {
-  calculateFees,
-  getEnvironmentRequiredVars,
-  xykErrors,
-} from "../../utils/utils";
+import { calculateFees, xykErrors } from "../../utils/utils";
 import { getSudoUser } from "../../utils/setup";
 
 jest.spyOn(console, "log").mockImplementation(jest.fn());
 jest.setTimeout(1500000);
 process.env.NODE_ENV = "test";
-const { sudo: sudoUserName } = getEnvironmentRequiredVars();
 
 const firstAssetAmount = new BN(50000);
 const secondAssetAmount = new BN(25000);
@@ -231,12 +226,12 @@ describe("xyk-pallet - Buy assets tests: Buying assets you can", () => {
   });
 
   beforeEach(async () => {
-    keyring = new Keyring({ type: "sr25519" });
+    keyring = new Keyring({ type: "ethereum" });
 
     // setup users
     testUser1 = new User(keyring);
 
-    sudo = new User(keyring, sudoUserName);
+    sudo = getSudoUser();
 
     // add users to pair.
     keyring.addPair(testUser1.keyRingPair);

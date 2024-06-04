@@ -24,11 +24,7 @@ import { BN } from "@polkadot/util";
 import { Keyring } from "@polkadot/api";
 import { AssetWallet, User } from "../../utils/User";
 import { Assets } from "../../utils/Assets";
-import {
-  getEnvironmentRequiredVars,
-  TokensErrorCodes,
-  xykErrors,
-} from "../../utils/utils";
+import { TokensErrorCodes, xykErrors } from "../../utils/utils";
 import { getEventResultFromMangataTx } from "../../utils/txHandler";
 import { Sudo } from "../../utils/sudo";
 import { Xyk } from "../../utils/xyk";
@@ -38,7 +34,6 @@ import { getSudoUser } from "../../utils/setup";
 jest.spyOn(console, "log").mockImplementation(jest.fn());
 jest.setTimeout(1500000);
 process.env.NODE_ENV = "test";
-const { sudo: sudoUserName } = getEnvironmentRequiredVars();
 
 const MAX_BALANCE = new BN("340282366920938463463374607431768211455"); //max balance
 
@@ -151,11 +146,11 @@ describe("xyk-pallet - Operate with a pool close to overflow", () => {
       await initApi();
     }
 
-    keyring = new Keyring({ type: "sr25519" });
+    keyring = new Keyring({ type: "ethereum" });
 
     // setup users
     testUser1 = new User(keyring);
-    sudo = new User(keyring, sudoUserName);
+    sudo = getSudoUser();
     // add users to pair.
     keyring.addPair(testUser1.keyRingPair);
     keyring.addPair(sudo.keyRingPair);
@@ -302,11 +297,11 @@ describe("xyk-pallet - Operate with a user account close to overflow", () => {
       await initApi();
     }
 
-    keyring = new Keyring({ type: "sr25519" });
+    keyring = new Keyring({ type: "ethereum" });
 
     // setup users
     testUser1 = new User(keyring);
-    sudo = new User(keyring, sudoUserName);
+    sudo = getSudoUser();
     // add users to pair.
     keyring.addPair(testUser1.keyRingPair);
     keyring.addPair(sudo.keyRingPair);
@@ -412,11 +407,11 @@ describe.skip("xyk-pallet - Operate with a highly unbalanced pool [mg - newAsset
       await initApi();
     }
 
-    keyring = new Keyring({ type: "sr25519" });
+    keyring = new Keyring({ type: "ethereum" });
 
     // setup users
     testUser1 = new User(keyring);
-    sudo = new User(keyring, sudoUserName);
+    sudo = getSudoUser();
     // add users to pair.
     keyring.addPair(testUser1.keyRingPair);
     keyring.addPair(sudo.keyRingPair);

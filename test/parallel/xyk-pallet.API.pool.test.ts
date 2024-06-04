@@ -26,21 +26,17 @@ import {
   validateStatusWhenPoolCreated,
 } from "../../utils/validators";
 import { Assets } from "../../utils/Assets";
-import {
-  calculateLiqAssetAmount,
-  getEnvironmentRequiredVars,
-  xykErrors,
-} from "../../utils/utils";
+import { calculateLiqAssetAmount, xykErrors } from "../../utils/utils";
 import { testLog } from "../../utils/Logger";
 import { hexToBn } from "@polkadot/util";
 import { getEventResultFromMangataTx } from "../../utils/txHandler";
 import { Sudo } from "../../utils/sudo";
 import { Xyk } from "../../utils/xyk";
+import { getSudoUser } from "../../utils/setup";
 
 jest.spyOn(console, "log").mockImplementation(jest.fn());
 jest.setTimeout(1500000);
 process.env.NODE_ENV = "test";
-const { sudo: sudoUserName } = getEnvironmentRequiredVars();
 
 const first_asset_amount = new BN(50000);
 const second_asset_amount = new BN(50000);
@@ -64,13 +60,11 @@ describe("xyk-pallet - Poll creation: Errors:", () => {
     } catch (e) {
       await initApi();
     }
-
-    keyring = new Keyring({ type: "sr25519" });
+    keyring = new Keyring({ type: "ethereum" });
 
     // setup users
     testUser1 = new User(keyring);
-
-    sudo = new User(keyring, sudoUserName);
+    sudo = getSudoUser();
 
     //add two curerncies and balance to testUser:
     [firstCurrency, secondCurrency] = await Assets.setupUserWithCurrencies(
@@ -209,11 +203,11 @@ describe("xyk-pallet - Pool tests: a pool can:", () => {
       await initApi();
     }
 
-    keyring = new Keyring({ type: "sr25519" });
+    keyring = new Keyring({ type: "ethereum" });
     // setup a second user
     testUser2 = new User(keyring);
     testUser1 = new User(keyring);
-    const sudo = new User(keyring, sudoUserName);
+    const sudo = getSudoUser();
     keyring.addPair(testUser2.keyRingPair);
     keyring.addPair(testUser1.keyRingPair);
 
@@ -451,12 +445,12 @@ describe("xyk-pallet - Pool opeations: Simmetry", () => {
       await initApi();
     }
 
-    keyring = new Keyring({ type: "sr25519" });
+    keyring = new Keyring({ type: "ethereum" });
 
     // setup users
     testUser1 = new User(keyring);
 
-    sudo = new User(keyring, sudoUserName);
+    sudo = getSudoUser();
 
     //add two currencies and balance to testUser:
     [firstCurrency, secondCurrency] = await Assets.setupUserWithCurrencies(
