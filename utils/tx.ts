@@ -1238,7 +1238,7 @@ export async function addUserIdentitySub(
   newSubName: string,
 ) {
   const api = await getApi();
-  const destAddress = userToSub.keyRingPair.publicKey;
+  const destAddress = userToSub.keyRingPair.address;
 
   await signTx(
     api,
