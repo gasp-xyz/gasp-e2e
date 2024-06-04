@@ -89,15 +89,12 @@ describe("xyk-pallet - Check operations are not executed because of overflow in 
   test("Minting Max+1 tokens operation fails", async () => {
     const testUser2 = new User(keyring);
     keyring.addPair(testUser2.keyRingPair);
-    await mintAsset(
-      sudo.keyRingPair,
-      firstCurrency,
-      testUser2.keyRingPair.address,
-      new BN(1),
-    ).then((result) => {
-      const eventResponse = getEventResultFromMangataTx(result, ["Overflow"]);
-      expect(eventResponse.state).toEqual(ExtrinsicResult.ExtrinsicSuccess);
-    });
+    await mintAsset(sudo.keyRingPair, firstCurrency, testUser2, new BN(1)).then(
+      (result) => {
+        const eventResponse = getEventResultFromMangataTx(result, ["Overflow"]);
+        expect(eventResponse.state).toEqual(ExtrinsicResult.ExtrinsicSuccess);
+      },
+    );
   });
 
   //A token can not be minted with MAX +1 value. Sudo mint token operation fails, hence skipping this test. and adding the above.(Minting Max+1 tokens operation fails)

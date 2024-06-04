@@ -810,9 +810,8 @@ export function requireFees() {
 }
 
 async function mintMgas(account: KeyringPair) {
-  const { sudo: sudoUserName } = getEnvironmentRequiredVars();
-  const keyring = new Keyring({ type: "sr25519" });
-  const sudo = new User(keyring, sudoUserName);
+  const keyring = new Keyring({ type: "ethereum" });
+  const sudo = getSudoUser();
   const user = new User(keyring);
   user.addFromAddress(keyring, account.address);
   await user.addMGATokens(sudo);
