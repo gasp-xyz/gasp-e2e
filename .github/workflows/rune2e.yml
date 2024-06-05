@@ -238,5 +238,39 @@ jobs:
         env:
           TESTMO_URL: ${{ secrets.TESTMO_URL }}
           TESTMO_TOKEN: ${{ secrets.TESTMO_TOKEN }}
+        continue-on-error: true
+
+  slack-notify-ok:
+    needs: [test,test-complete]
+    if: success()
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Slack Notification - OK
+        if: success()
+        uses: bryannice/gitactions-slack-notification@2.0.0
+        env:
+          SLACK_INCOMING_WEBHOOK: ${{ secrets.STG_SLACK_WEBHOOK }}
+          SLACK_TITLE: "XCM monitor - OK"
+          SLACK_COLOR: "#00ff11"
+          SLACK_MESSAGE: "Test succeed in [ ${{ env.TEST_SCRIPT }} ]
+            testmo report: https://mangata-finance.testmo.net/automation/runs/view/${{needs.test.outputs.testmo-run-id}}"
+          GITHUB_REF: "https://mangata-finance.github.io/mangata-e2e/${{ github.run_number }}"
+
+  slack-notify-nook:
+    needs: [e2e-tm]
+    if: failure()
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Slack Notification - Error
+        uses: bryannice/gitactions-slack-notification@2.0.0
+        env:
+          SLACK_INCOMING_WEBHOOK: ${{ secrets.STG_SLACK_WEBHOOK }}
+          SLACK_TITLE: "XCM monitor - NOOK"
+          SLACK_COLOR: "#ff0011"
+          SLACK_MESSAGE: "Test failures [ ${{ env.TEST_SCRIPT }} ]
+            testmo report: https://mangata-finance.testmo.net/automation/runs/view/${{{needs.test.outputs.testmo-run-id}}"
+          GITHUB_REF: "https://mangata-finance.github.io/mangata-e2e/${{ github.run_number }}"
         
         
