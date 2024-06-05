@@ -258,7 +258,7 @@ jobs:
           GITHUB_REF: "https://mangata-finance.github.io/mangata-e2e/${{ github.run_number }}"
 
   slack-notify-nook:
-    needs: [e2e-tm]
+    needs: [test,test-complete]
     if: failure()
     runs-on: ubuntu-latest
 
