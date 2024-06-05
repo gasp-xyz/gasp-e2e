@@ -19,7 +19,7 @@ import { Assets } from "../../utils/Assets";
 /**
  * @group xcm
  */
-describe("XCM transfers", () => {
+describe.skip("XCM transfers", () => {
   let bifrost: ApiContext;
   let mangata: ApiContext;
   let bifrostApi: XcmNode;

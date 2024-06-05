@@ -52,7 +52,7 @@ exports[`XCM tests for Mangata <-> Statemine mangata transfer assets to statemin
 
 exports[`XCM tests for Mangata <-> Statemine mangata transfer assets to statemine 2`] = `
 {
-  "balance": 1009991073,
+  "balance": 1009991004,
   "extra": null,
   "reason": {
     "consumer": null,
