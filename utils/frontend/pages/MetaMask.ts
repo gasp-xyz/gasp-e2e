@@ -139,6 +139,13 @@ export class MetaMask {
 
     const XPATH_FIRST_WORD = buildDataTestIdXpath(IMPUT_MNEMONIC_FIELD + 0);
     await waitForElement(this.driver, XPATH_FIRST_WORD);
+
+    try {
+      await this.closeAnyExtraWindow(this.driver);
+    } catch (e) {
+      //no window to close
+    }
+
     await this.fillPassPhrase(mnemonicKeys);
 
     const XPATH_IMPORT_SUBMIT = buildDataTestIdXpath(BTN_IMPORT_SUBMIT);
@@ -312,6 +319,11 @@ export class MetaMask {
     await waitForElement(driver, XPATH_BTN_SIGN_TRANSACTION);
     await waitForElementEnabled(driver, XPATH_BTN_SIGN_TRANSACTION);
     await clickElement(driver, XPATH_BTN_SIGN_TRANSACTION);
+  }
+
+  async closeAnyExtraWindow(driver: WebDriver) {
+    const XPATH_CLOSE = "//*[@aria-label='Close']";
+    await clickElement(driver, XPATH_CLOSE);
   }
 
   private static async signDeposit(driver: WebDriver) {
