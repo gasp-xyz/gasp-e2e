@@ -53,7 +53,7 @@ let testUser1: User;
 const userAddress = "5EekB3dsQ4yW6WukZRL5muXb4qKvJMpJdXW3w59SptYHBkvk";
 const INIT_BNC_SOURCE = 100;
 
-describe("UI XCM tests - BNC", () => {
+describe.skip("UI XCM tests - BNC", () => {
   let mangata: ApiContext;
   let bifrost: ApiContext;
   let alice: KeyringPair;

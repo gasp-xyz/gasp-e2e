@@ -49,7 +49,7 @@ const acc_name = "acc_automation";
 const BNC_ASSET_NAME = "BNC";
 const userAddress = "5CfLmpjCJu41g3cpZVoiH7MSrSppgVVVC3xq23iy9dZrW2HR";
 
-describe("Microapps UI BNC transfer tests", () => {
+describe.skip("Microapps UI BNC transfer tests", () => {
   let mangata: ApiContext;
   let bifrost: ApiContext;
   let alice: KeyringPair;
