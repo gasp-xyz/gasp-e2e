@@ -124,7 +124,7 @@ describe("xyk-rpc - calculate get_burn amount: RPC result matches with burn amou
   let secondAssetId: BN;
 
   beforeAll(async () => {
-    const sudo = getSudoUser();
+    sudo = getSudoUser();
 
     const assetIds = await Assets.setupUserWithCurrencies(
       sudo,
