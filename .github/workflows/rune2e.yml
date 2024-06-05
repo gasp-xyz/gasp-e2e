@@ -253,8 +253,7 @@ jobs:
           SLACK_INCOMING_WEBHOOK: ${{ secrets.STG_SLACK_WEBHOOK }}
           SLACK_TITLE: "XCM monitor - OK"
           SLACK_COLOR: "#00ff11"
-          SLACK_MESSAGE: "Test succeed in [ ${{ env.TEST_SCRIPT }} ]
-            testmo report: https://mangata-finance.testmo.net/automation/runs/view/${{needs.test.outputs.testmo-run-id}}"
+          SLACK_MESSAGE: "Test succeed in [ ${{ env.TEST_SCRIPT }} ] testmo report: https://mangata-finance.testmo.net/automation/runs/view/${{needs.test.outputs.testmo-run-id}}"
           GITHUB_REF: "https://mangata-finance.github.io/mangata-e2e/${{ github.run_number }}"
 
   slack-notify-nook:
@@ -269,8 +268,7 @@ jobs:
           SLACK_INCOMING_WEBHOOK: ${{ secrets.STG_SLACK_WEBHOOK }}
           SLACK_TITLE: "XCM monitor - NOOK"
           SLACK_COLOR: "#ff0011"
-          SLACK_MESSAGE: "Test failures [ ${{ env.TEST_SCRIPT }} ]
-            testmo report: https://mangata-finance.testmo.net/automation/runs/view/${{{needs.test.outputs.testmo-run-id}}"
+          SLACK_MESSAGE: "Test failures [ ${{ env.TEST_SCRIPT }} ]  testmo report: https://mangata-finance.testmo.net/automation/runs/view/${{{needs.test.outputs.testmo-run-id}}"
           GITHUB_REF: "https://mangata-finance.github.io/mangata-e2e/${{ github.run_number }}"
         
         
