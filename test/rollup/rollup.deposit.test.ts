@@ -106,6 +106,7 @@ describe("Rollup", () => {
 
       await Sudo.batchAsSudoFinalized(Assets.mintNative(user));
       const tx = getApi().tx.rolldown.withdraw(
+        "Ethereum",
         user.keyRingPair.address,
         ERC20_ADDRESS,
         1122,
@@ -129,6 +130,7 @@ describe("Rollup", () => {
         BigInt((balanceBefore as any).toString());
       expect(diff).toBe(BigInt(1122));
     });
+
     test.skip("A user who deposited can withdraw the tokens", async () => {
       await fakeDepositOnL2(
         user,
@@ -137,6 +139,7 @@ describe("Rollup", () => {
         stringToBN("112233"),
       );
       const tx = getApi().tx.rolldown.withdraw(
+        "Ethereum",
         user.keyRingPair.address,
         ERC20_ADDRESS,
         112233,
