@@ -15,6 +15,12 @@ export class Rolldown {
     const requestId = await api.query.rolldown.l2OriginRequestId(l1);
     return parseInt(requestId.toString());
   }
+  static async maxAcceptedRequestIdOnl2(l1 = "Ethereum") {
+    setupUsers();
+    const api = getApi();
+    const requestId = await api.query.rolldown.maxAcceptedRequestIdOnl2(l1);
+    return parseInt(requestId.toString());
+  }
   static async lastProcessedRequestOnL2(l1 = "Ethereum") {
     setupUsers();
     const api = getApi();
@@ -126,6 +132,36 @@ export class L2Update {
         this.pendingL2UpdatesToRemove,
       ),
     };
+  }
+
+  clone(fromIndex: number, number: number) {
+    let index = fromIndex;
+    this.pendingDeposits.forEach((x) => {
+      for (let i = 0; i < number; i++) {
+        index++;
+        this.withDeposit(index, x.depositRecipient, x.tokenAddress, x.amount);
+      }
+    });
+    this.pendingL2UpdatesToRemove.forEach((x) => {
+      for (let i = 0; i < number; i++) {
+        index++;
+        this.withUpdatesToRemove(index, x.updatesToRemove);
+      }
+    });
+    this.pendingCancelResolutions.forEach((x) => {
+      for (let i = 0; i < number; i++) {
+        index++;
+        this.withCancelResolution(index, x.l2RequestId, x.cancelJustified);
+      }
+    });
+    this.pendingWithdrawalResolutions.forEach((x) => {
+      for (let i = 0; i < number; i++) {
+        index++;
+        this.withWithdraw(index, x.txIndex, x.status);
+      }
+    });
+
+    return this;
   }
 
   withDeposit(

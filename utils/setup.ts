@@ -73,8 +73,10 @@ export const setupUsers = () => {
     keyring,
     "0x5fb92d6e98884f76de468fa3f6278f8807c48bebc13595d45af5bdc4da702133",
   );
-  //eve = new User(keyring, "//Eve");
-
+  eve = new User(
+    keyring,
+    "0x7dce9bc8babb68fec1409be38c8e1a52650206a7ed90ff956ae8a6d15eeaaef4",
+  );
   const testUser1 = new User(keyring);
   const testUser2 = new User(keyring);
   const testUser3 = new User(keyring);

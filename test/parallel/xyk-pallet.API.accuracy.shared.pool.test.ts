@@ -24,6 +24,7 @@ import {
 } from "../../utils/tx";
 import { Xyk } from "../../utils/xyk";
 import { waitForRewards } from "../../utils/eventListeners";
+import { getSudoUser } from "../../utils/setup";
 
 jest.spyOn(console, "log").mockImplementation(jest.fn());
 jest.spyOn(console, "error").mockImplementation(jest.fn());
@@ -42,8 +43,6 @@ const default50k = new BN(50000);
 
 //creating pool
 
-const { sudo: sudoUserName } = getEnvironmentRequiredVars();
-
 const defaultCurrencyValue = new BN(250000);
 let mga: MangataInstance;
 
@@ -54,13 +53,13 @@ beforeEach(async () => {
     await initApi();
   }
 
-  keyring = new Keyring({ type: "sr25519" });
+  keyring = new Keyring({ type: "ethereum" });
 
   // setup users
   testUser1 = new User(keyring);
   testUser2 = new User(keyring);
   testUser3 = new User(keyring);
-  sudo = new User(keyring, sudoUserName);
+  sudo = getSudoUser();
 
   //add two currencies and balance to testUser:
   [firstCurrency] = await Assets.setupUserWithCurrencies(

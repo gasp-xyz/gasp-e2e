@@ -18,7 +18,6 @@ import {
   ROLL_DOWN_CONTRACT_ADDRESS,
   setupEthUser,
 } from "../../utils/rollup/ethUtils";
-import { EthUser } from "../../utils/EthUser";
 import { Keyring } from "@polkadot/api";
 import { anvil } from "viem/chains";
 import { privateKeyToAccount } from "viem/accounts";
@@ -27,15 +26,16 @@ import { getEventResultFromMangataTx } from "../../utils/txHandler";
 import { Sudo } from "../../utils/sudo";
 import { Assets } from "../../utils/Assets";
 import { jest } from "@jest/globals";
+import {User} from "../../utils/User";
 
-let user: EthUser;
+let user: User;
 jest.setTimeout(600000);
 
-async function depositAndWait(depositor: EthUser) {
+async function depositAndWait(depositor: User) {
   const updatesBefore = await getL2UpdatesStorage();
   testLog.getLog().info(JSON.stringify(updatesBefore));
   const acc: PrivateKeyAccount = privateKeyToAccount(
-    depositor.privateKey as `0x${string}`,
+    depositor.name as `0x${string}`,
   );
   const { request } = await publicClient.simulateContract({
     account: acc,
@@ -69,7 +69,7 @@ async function depositAndWait(depositor: EthUser) {
   testLog.getLog().info(depositor.keyRingPair.address);
   const assetId = await getAssetIdFromErc20();
   // Wait for the balance to change
-  return await waitForBalanceChange(depositor.ethAddress, 20, assetId);
+  return await waitForBalanceChange(depositor.keyRingPair.address, 20, assetId);
 }
 
 describe("Rollup", () => {
@@ -81,9 +81,9 @@ describe("Rollup", () => {
         await initApi();
       }
       await setupApi();
-      setupUsers();
-      const keyRing = new Keyring({ type: "sr25519" });
-      user = new EthUser(keyRing);
+      [user] =  setupUsers();
+      const keyRing = new Keyring({ type: "ethereum" });
+      user = new User(keyRing);
       await setupEthUser(
         user,
         ERC20_ADDRESS,
@@ -105,22 +105,22 @@ describe("Rollup", () => {
 
       await Sudo.batchAsSudoFinalized(Assets.mintNative(user));
       const tx = getApi().tx.rolldown.withdraw(
-        user.ethAddress,
+        user.keyRingPair.address,
         ERC20_ADDRESS,
         1122,
       );
-      const balanceBefore = await getBalance(ERC20_ADDRESS, user.ethAddress);
-      const result = await signTxMetamask(tx, user.ethAddress, user.privateKey);
+      const balanceBefore = await getBalance(ERC20_ADDRESS, user.keyRingPair.address);
+      const result = await signTxMetamask(tx, user.keyRingPair.address, user.name as string);
       const res = getEventResultFromMangataTx(result);
       expect(res).toBeTruthy();
 
-      let balanceAfter = await getBalance(ERC20_ADDRESS, user.ethAddress);
+      let balanceAfter = await getBalance(ERC20_ADDRESS, user.keyRingPair.address);
       while (
         BigInt((balanceAfter as any).toString()) <=
         BigInt((balanceBefore as any).toString())
       ) {
         await new Promise((resolve) => setTimeout(resolve, 5000));
-        balanceAfter = await getBalance(ERC20_ADDRESS, user.ethAddress);
+        balanceAfter = await getBalance(ERC20_ADDRESS, user.keyRingPair.address);
         testLog.getLog().info(balanceAfter);
       }
       const diff =

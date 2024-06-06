@@ -19,9 +19,9 @@ import { Keyring } from "@polkadot/api";
 import { AssetWallet, User } from "../../utils/User";
 import { validateAssetsWithValues } from "../../utils/validators";
 import { Assets } from "../../utils/Assets";
-import { getEnvironmentRequiredVars } from "../../utils/utils";
 import { MGA_ASSET_ID } from "../../utils/Constants";
 import { createPool } from "../../utils/tx";
+import { getSudoUser } from "../../utils/setup";
 
 jest.spyOn(console, "log").mockImplementation(jest.fn());
 jest.spyOn(console, "error").mockImplementation(jest.fn());
@@ -38,8 +38,6 @@ const firstAssetAmount = new BN(50000);
 const secondAssetAmount = new BN(50000);
 //creating pool
 
-const { sudo: sudoUserName } = getEnvironmentRequiredVars();
-
 const defaultCurrecyValue = new BN(250000);
 
 beforeEach(async () => {
@@ -50,11 +48,11 @@ beforeEach(async () => {
   }
 
   await waitNewBlock();
-  keyring = new Keyring({ type: "sr25519" });
+  keyring = new Keyring({ type: "ethereum" });
 
   // setup users
   testUser1 = new User(keyring);
-  sudo = new User(keyring, sudoUserName);
+  sudo = getSudoUser();
 
   //add two curerncies and balance to testUser:
   [firstCurrency, secondCurrency] = await Assets.setupUserWithCurrencies(

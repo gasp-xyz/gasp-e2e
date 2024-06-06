@@ -4,10 +4,8 @@
  */
 import { getApi, initApi } from "../../utils/api";
 import { AssetWallet, User } from "../../utils/User";
-import { Keyring } from "@polkadot/api";
 import { BN } from "@polkadot/util";
 import {
-  getEnvironmentRequiredVars,
   getThirdPartyRewards,
   getUserBalanceOfToken,
   stringToBN,
@@ -15,7 +13,7 @@ import {
 import { Assets } from "../../utils/Assets";
 import { Sudo } from "../../utils/sudo";
 import { Xyk } from "../../utils/xyk";
-import { setupApi, setupUsers } from "../../utils/setup";
+import { getSudoUser, setupApi, setupUsers } from "../../utils/setup";
 import { MGA_ASSET_ID } from "../../utils/Constants";
 import { BN_MILLION, BN_ZERO, signTx } from "@mangata-finance/sdk";
 import { ProofOfStake } from "../../utils/ProofOfStake";
@@ -29,7 +27,6 @@ let testUser2: User;
 let testUser3: User;
 let sudo: User;
 
-let keyring: Keyring;
 let newToken: BN;
 
 describe("Proof of stake tests", () => {
@@ -40,8 +37,7 @@ describe("Proof of stake tests", () => {
       await initApi();
     }
 
-    keyring = new Keyring({ type: "sr25519" });
-    sudo = new User(keyring, getEnvironmentRequiredVars().sudo);
+    sudo = getSudoUser();
     [testUser1, testUser2, testUser3] = setupUsers();
     newToken = await Assets.issueAssetToUser(
       sudo,
@@ -136,7 +132,7 @@ describe("Proof of stake tests", () => {
     test("A user can deactivate all the tokens when partial activation / deactivation", async () => {
       const liqId = await getLiquidityAssetId(MGA_ASSET_ID, newToken);
       testLog.getLog().warn("liqId: " + liqId.toString());
-      await waitForRewards(testUser1, liqId, 20, newToken);
+      await waitForRewards(testUser1, liqId, 40, newToken);
       await signTx(
         getApi(),
         await ProofOfStake.deactivateLiquidityFor3rdpartyRewards(
@@ -169,8 +165,8 @@ describe("Proof of stake tests", () => {
           testUser1.keyRingPair.address,
           newToken,
         );
-      await waitForRewards(testUser1, liqId, 20, newToken);
-      await waitForRewards(testUser1, liqId, 20, newToken);
+      await waitForRewards(testUser1, liqId, 40, newToken);
+      await waitForRewards(testUser1, liqId, 40, newToken);
 
       await signTx(
         getApi(),

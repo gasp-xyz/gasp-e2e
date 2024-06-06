@@ -17,7 +17,6 @@ import {
 import { User } from "./User";
 import { MangataTypesAssetsCustomMetadata } from "@polkadot/types/lookup";
 import { SudoDB } from "./SudoDB";
-import { EthUser } from "./EthUser";
 import { testLog } from "./Logger";
 import { randomBytes } from "crypto";
 
@@ -212,7 +211,7 @@ export class Assets {
   static mintNative(user: User, amount: BN = this.DEFAULT_AMOUNT): Extrinsic {
     user.addAsset(MGA_ASSET_ID);
     return Sudo.sudo(
-      api.tx.tokens.mint(MGA_ASSET_ID, (user as EthUser).ethAddress, amount),
+      api.tx.tokens.mint(MGA_ASSET_ID, user.keyRingPair.address, amount),
     );
   }
   public static createTokenWithNoAssetRegistry(
@@ -234,7 +233,7 @@ export class Assets {
     amount: BN = this.DEFAULT_AMOUNT,
   ): Extrinsic {
     return Sudo.sudo(
-      api.tx.tokens.mint(asset, (user as EthUser).ethAddress, amount),
+      api.tx.tokens.mint(asset, user.keyRingPair.address, amount),
     );
   }
   static mintTokenAddress(

@@ -35,7 +35,7 @@ import Keyring from "@polkadot/keyring";
 import { ExtrinsicResult } from "./eventListeners";
 import { Sudo } from "./sudo";
 import { Assets } from "./Assets";
-import { getSudoUser } from "./setup";
+import { getSudoUser, setupApi, setupUsers } from "./setup";
 
 export const signTxDeprecated = async (
   tx: SubmittableExtrinsic<"promise">,
@@ -224,6 +224,7 @@ export async function getCurrentNonce(account?: string) {
   } else if (account) {
     return getChainNonce(account);
   }
+  console.warn("No account provided");
   return new BN(-1);
 }
 
@@ -385,12 +386,15 @@ export const mintAsset = async (
   amount: BN,
   sudoNonce: BN = new BN(-1),
 ) => {
+  await setupApi();
+  await setupUsers();
   console.log("minting asset" + account + sudoNonce);
-  const res = await Sudo.batchAsSudoFinalized(
+  const res = await Sudo.batchAsSudoFinalizedNonce(
+    sudoNonce,
     Assets.mintToken(asset_id, target, amount),
   ).catch((reason) => {
     // eslint-disable-next-line no-console
-    console.error("OhOh sth went wrong. " + reason.toString());
+    console.error("Tx.ts::OhOh sth went wrong. " + reason.toString());
     testLog
       .getLog()
       .error(`W[${env.JEST_WORKER_ID}] - ${JSON.stringify(reason).toString()}`);

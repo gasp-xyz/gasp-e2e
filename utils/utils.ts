@@ -331,11 +331,12 @@ export async function getThirdPartyRewards(
   rewardToken: BN,
 ) {
   const api = getApi();
-  return await api.rpc.pos.calculate_3rdparty_rewards_amount(
+  const calculation = await api.rpc.pos.calculate_3rdparty_rewards_amount(
     userAddress,
     liquidityAssetId.toString(),
     rewardToken.toString(),
   );
+  return stringToBN(calculation.toString());
 }
 export async function waitNewStakingRound(maxBlocks: number = 0) {
   let currentSessionNumber: number;
@@ -507,8 +508,9 @@ export async function findBlockWithExtrinsicSigned(
     const blockNumber = index;
     const blockHashSignedByUser = await api.rpc.chain.getBlockHash(blockNumber);
     const block = await api.rpc.chain.getBlock(blockHashSignedByUser);
-    const signedByUser = (block.block.extrinsics.toHuman() as any[]).some(
-      (ext) => ext.isSigned && ext.signer.Id === userAddress,
+    const signedByUser = (block.block.extrinsics as any[]).some(
+      (ext) =>
+        ext.isSigned && ext.signer.toHuman().toLowerCase() === userAddress,
     );
     if (signedByUser) {
       return blockNumber;
@@ -543,6 +545,7 @@ export enum xykErrors {
 export enum feeLockErrors {
   FeeLockingFail = "1010: Invalid Transaction: Fee lock processing has failed either due to not enough funds to reserve or an unexpected error",
   FeeUnlockingFail = "1010: Invalid Transaction: Unlock fee has failed either due to no fee locks or fee lock cant be unlocked yet or an unexpected error",
+  AccountBalanceFail = "1010: Invalid Transaction: Inability to pay some fees , e.g. account balance too low",
   SwapApprovalFail = "1010: Invalid Transaction: The swap prevalidation has failed",
 }
 

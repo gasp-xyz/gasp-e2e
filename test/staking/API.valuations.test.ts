@@ -11,10 +11,7 @@ import {
 import { Keyring } from "@polkadot/api";
 import { User } from "../../utils/User";
 import { MAX_BALANCE, MGA_ASSET_ID } from "../../utils/Constants";
-import {
-  getEnvironmentRequiredVars,
-  getUserBalanceOfToken,
-} from "../../utils/utils";
+import { getUserBalanceOfToken } from "../../utils/utils";
 import { BN_BILLION, BN_ONE, BN_ZERO } from "@mangata-finance/sdk";
 import { BN } from "@polkadot/util";
 import { Assets } from "../../utils/Assets";
@@ -22,7 +19,7 @@ import { getApi, initApi } from "../../utils/api";
 import { Sudo } from "../../utils/sudo";
 import { Xyk } from "../../utils/xyk";
 import { Staking } from "../../utils/Staking";
-import { setupApi, setupUsers } from "../../utils/setup";
+import { getSudoUser, setupApi, setupUsers } from "../../utils/setup";
 import { ExtrinsicResult } from "../../utils/eventListeners";
 
 jest.spyOn(console, "log").mockImplementation(jest.fn());
@@ -41,7 +38,7 @@ let minLiquidityToJoin: BN;
 
 describe("Collators: MinCandidateStk limit", () => {
   beforeAll(async () => {
-    keyring = new Keyring({ type: "sr25519" });
+    keyring = new Keyring({ type: "ethereum" });
     await initApi();
     const api = await getApi();
     await setupApi();
@@ -55,7 +52,7 @@ describe("Collators: MinCandidateStk limit", () => {
     testUser2 = new User(keyring);
     testUser3 = new User(keyring);
     testUser4 = new User(keyring);
-    const sudo = new User(keyring, getEnvironmentRequiredVars().sudo);
+    const sudo = getSudoUser();
     newTokenId = await Assets.issueAssetToUser(
       sudo,
       tokenAmount.mul(multiplier),

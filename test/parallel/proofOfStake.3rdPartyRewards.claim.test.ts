@@ -4,10 +4,8 @@
  */
 import { getApi, initApi } from "../../utils/api";
 import { User } from "../../utils/User";
-import { Keyring } from "@polkadot/api";
 import { BN } from "@polkadot/util";
 import {
-  getEnvironmentRequiredVars,
   getThirdPartyRewards,
   getUserBalanceOfToken,
   stringToBN,
@@ -15,7 +13,7 @@ import {
 import { Assets } from "../../utils/Assets";
 import { Sudo } from "../../utils/sudo";
 import { Xyk } from "../../utils/xyk";
-import { setupApi, setupUsers } from "../../utils/setup";
+import { getSudoUser, setupApi, setupUsers } from "../../utils/setup";
 import { MGA_ASSET_ID } from "../../utils/Constants";
 import { ProofOfStake } from "../../utils/ProofOfStake";
 import "jest-extended";
@@ -32,7 +30,6 @@ let testUser3: User;
 let testUser4: User;
 let sudo: User;
 
-let keyring: Keyring;
 let newToken: BN;
 let newToken2: BN;
 let newToken3: BN;
@@ -46,8 +43,7 @@ describe("Proof of stake tests", () => {
       await initApi();
     }
 
-    keyring = new Keyring({ type: "sr25519" });
-    sudo = new User(keyring, getEnvironmentRequiredVars().sudo);
+    sudo = getSudoUser();
     [testUser1, testUser2, testUser3, testUser4] = setupUsers();
     [newToken, newToken2, newToken3, newToken4] =
       await Assets.setupUserWithCurrencies(
@@ -185,7 +181,7 @@ describe("Proof of stake tests", () => {
           ),
         ),
       );
-      await waitForRewards(testUser, liquidityAssetId, 20, MGA_ASSET_ID);
+      await waitForRewards(testUser, liquidityAssetId, 40, MGA_ASSET_ID);
       // its 2 sessions, so 50% of rewards should be available
       const expectedRewards = Assets.DEFAULT_AMOUNT.muln(10e6).divn(2);
       const avl = await getThirdPartyRewards(
@@ -247,7 +243,7 @@ describe("Proof of stake tests", () => {
           ),
         ),
       );
-      await waitForRewards(oneUser, liquidityAssetId, 20, MGA_ASSET_ID);
+      await waitForRewards(oneUser, liquidityAssetId, 40, MGA_ASSET_ID);
       const rewardsOne = await getThirdPartyRewards(
         oneUser.keyRingPair.address,
         liquidityAssetId,
@@ -307,7 +303,7 @@ describe("Proof of stake tests", () => {
           ),
         ),
       );
-      await waitForRewards(otherUser, liquidityAssetId, 20, MGA_ASSET_ID);
+      await waitForRewards(otherUser, liquidityAssetId, 40, MGA_ASSET_ID);
       const balanceOne = await getUserBalanceOfToken(MGA_ASSET_ID, oneUser);
       const balanceOther = await getUserBalanceOfToken(MGA_ASSET_ID, otherUser);
       const rewardsOne2 = await getThirdPartyRewards(

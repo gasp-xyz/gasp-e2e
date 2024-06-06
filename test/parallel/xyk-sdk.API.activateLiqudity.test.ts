@@ -4,13 +4,12 @@
  * @group sdk
  */
 import { jest } from "@jest/globals";
-import { Keyring } from "@polkadot/api";
 import { BN_ZERO } from "@mangata-finance/sdk";
 import { getApi, initApi } from "../../utils/api";
 import { Assets } from "../../utils/Assets";
 import { MGA_ASSET_ID } from "../../utils/Constants";
 import { BN } from "@polkadot/util";
-import { setupApi, setupUsers } from "../../utils/setup";
+import { getSudoUser, setupApi, setupUsers } from "../../utils/setup";
 import { Sudo } from "../../utils/sudo";
 import {
   activateLiquidity,
@@ -20,18 +19,15 @@ import {
   getRewardsInfo,
 } from "../../utils/tx";
 import { AssetWallet, User } from "../../utils/User";
-import { getEnvironmentRequiredVars } from "../../utils/utils";
 import { Xyk } from "../../utils/xyk";
 import { waitForRewards } from "../../utils/eventListeners";
 jest.spyOn(console, "log").mockImplementation(jest.fn());
 jest.setTimeout(2500000);
 process.env.NODE_ENV = "test";
 
-const { sudo: sudoUserName } = getEnvironmentRequiredVars();
 let testUser: User;
 let testUser1: User;
 let sudo: User;
-let keyring: Keyring;
 let token1: BN;
 let liqId: BN;
 const defaultCurrencyValue = new BN(2500000);
@@ -42,10 +38,9 @@ beforeAll(async () => {
   } catch (e) {
     await initApi();
   }
-  keyring = new Keyring({ type: "sr25519" });
 
   // setup users
-  sudo = new User(keyring, sudoUserName);
+  sudo = getSudoUser();
 
   [testUser] = setupUsers();
 
@@ -79,7 +74,7 @@ beforeAll(async () => {
 });
 
 beforeEach(async () => {
-  testUser1 = new User(keyring);
+  [testUser1] = setupUsers();
   await Sudo.batchAsSudoFinalized(Assets.mintNative(testUser1));
 
   testUser.addAsset(liqId);

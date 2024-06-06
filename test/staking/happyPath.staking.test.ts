@@ -32,8 +32,7 @@ jest.setTimeout(3500000);
 process.env.NODE_ENV = "test";
 let docker: Docker;
 const dockerImageName = "test_image:automation";
-const mgaParachainImageName = "parachain-2110";
-const mgaDockerContainerImage = "output-parachain-2110-1";
+const mgaParachainImageName = "rollup-node";
 
 let testUser1: User;
 let minStk: BN;
@@ -115,15 +114,16 @@ async function startDockerImage() {
   const as = await docker.listContainers();
   const bobImage = as.filter(
     (x) =>
-      x.Command.toLowerCase().includes("bob") &&
+      x.Command.toLowerCase().includes("baltathar") &&
       x.Image.includes(mgaParachainImageName),
   )[0];
-  await execSh(`docker tag ${mgaDockerContainerImage} ${dockerImageName}`);
+  await execSh(`docker tag ${bobImage.Image} ${dockerImageName}`);
   await sleep(2000);
+  testLog.getLog().info(bobImage.Command);
   const command = bobImage.Command;
   const commandReady = command
-    .replace("/mangata/node", "")
-    .replace("--bob", "--eve");
+    .replace("/app/node", "")
+    .replace("--baltathar", "--eve");
   const sanitized = commandReady.split(" ").filter((x) => x.length !== 0);
   return docker.run(
     dockerImageName,
@@ -140,7 +140,7 @@ async function startDockerImage() {
       },
       HostConfig: {
         AutoRemove: true,
-        NetworkMode: "output_default",
+        NetworkMode: "mangata-node_default",
         PortBindings: {
           "9944": [
             {

@@ -13,17 +13,14 @@ import {
 import { Keyring } from "@polkadot/api";
 import { User } from "../../utils/User";
 import { MGA_ASSET_ID } from "../../utils/Constants";
-import {
-  getEnvironmentRequiredVars,
-  getUserBalanceOfToken,
-} from "../../utils/utils";
+import { getUserBalanceOfToken } from "../../utils/utils";
 import { BN_BILLION, BN_ONE, BN_ZERO } from "@mangata-finance/sdk";
 import { Assets } from "../../utils/Assets";
 import { getApi, initApi } from "../../utils/api";
 import { Sudo } from "../../utils/sudo";
 import { Xyk } from "../../utils/xyk";
 import { Staking } from "../../utils/Staking";
-import { setupApi, setupUsers } from "../../utils/setup";
+import { getSudoUser, setupApi, setupUsers } from "../../utils/setup";
 import { ExtrinsicResult } from "../../utils/eventListeners";
 import { BN } from "@polkadot/util";
 
@@ -39,7 +36,7 @@ let newTokenId: BN;
 const multiplier = BN_BILLION;
 
 beforeAll(async () => {
-  keyring = new Keyring({ type: "sr25519" });
+  keyring = new Keyring({ type: "ethereum" });
   await initApi();
   const api = await getApi();
   await setupApi();
@@ -53,7 +50,7 @@ beforeAll(async () => {
 
   testUser1 = new User(keyring);
 
-  const sudo = new User(keyring, getEnvironmentRequiredVars().sudo);
+  const sudo = getSudoUser();
 
   newTokenId = await Assets.issueAssetToUser(
     sudo,

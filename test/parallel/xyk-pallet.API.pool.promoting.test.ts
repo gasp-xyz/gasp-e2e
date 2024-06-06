@@ -5,16 +5,14 @@
  * @group rewardsV2Parallel
  */
 import { jest } from "@jest/globals";
-import { Keyring } from "@polkadot/api";
 import { getApi, initApi, mangata } from "../../utils/api";
 import { Assets } from "../../utils/Assets";
 import { MGA_ASSET_ID } from "../../utils/Constants";
 import { BN_ZERO } from "@mangata-finance/sdk";
-import { setupApi, setupUsers } from "../../utils/setup";
+import { getSudoUser, setupApi, setupUsers } from "../../utils/setup";
 import { Sudo } from "../../utils/sudo";
 import { activateLiquidity, getLiquidityAssetId } from "../../utils/tx";
 import { User } from "../../utils/User";
-import { getEnvironmentRequiredVars } from "../../utils/utils";
 import { Xyk } from "../../utils/xyk";
 import { waitForRewards } from "../../utils/eventListeners";
 import { BN } from "@polkadot/util";
@@ -24,13 +22,11 @@ jest.spyOn(console, "log").mockImplementation(jest.fn());
 jest.setTimeout(2500000);
 process.env.NODE_ENV = "test";
 
-const { sudo: sudoUserName } = getEnvironmentRequiredVars();
 let testUser1: User;
 let testUser11: User;
 let testUser2: User;
 let testUser3: User;
 let sudo: User;
-let keyring: Keyring;
 let token1: BN;
 let token2: BN;
 let token3: BN;
@@ -45,10 +41,9 @@ beforeAll(async () => {
   } catch (e) {
     await initApi();
   }
-  keyring = new Keyring({ type: "sr25519" });
 
   // setup users
-  sudo = new User(keyring, sudoUserName);
+  sudo = getSudoUser();
 
   [testUser1, testUser2, testUser3, testUser11] = setupUsers();
 
