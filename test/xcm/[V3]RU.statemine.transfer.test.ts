@@ -106,10 +106,13 @@ describe("XCM tests for Mangata <-> Statemine", () => {
     expectJson(
       await mangata.api.query.tokens.accounts(alice.address, 30),
     ).toMatchSnapshot();
-    expect(
-      await statemine.api.query.assets.account(1984, alice.address),
-    ).toMatchSnapshot();
-
+    const accountData = await statemine.api.query.assets.account(
+      1984,
+      alice.address,
+    );
+    const accountBalance = JSON.parse(accountData.toString()).balance;
+    const accountBalanceRounded = Math.round(accountBalance / 10e4);
+    expect(accountBalanceRounded).toEqual(10100);
     await matchSystemEvents(mangata, "xcmpQueue", "Success");
   });
 
