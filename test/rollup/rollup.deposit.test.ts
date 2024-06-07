@@ -105,6 +105,7 @@ describe("Rollup", () => {
 
       await Sudo.batchAsSudoFinalized(Assets.mintNative(user));
       const tx = getApi().tx.rolldown.withdraw(
+        "Ethereum",
         user.keyRingPair.address,
         ERC20_ADDRESS,
         1122,
