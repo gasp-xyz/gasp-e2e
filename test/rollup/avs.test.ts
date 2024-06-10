@@ -4,12 +4,12 @@
  */
 import "jest-extended";
 import { PublicClient } from "viem";
-import { publicClient } from "../../utils/rollup/ethUtils";
 import { jest } from "@jest/globals";
 import { testLog } from "../../utils/Logger";
 
 // @ts-ignore
 import finalizerTaskManager from "./abis/FinalizerTaskManager.json";
+import { getPublicClient } from "../../utils/rollup/ethUtils";
 
 jest.setTimeout(600000);
 const taskManagerAddress = "0x1613beB3B2C4f22Ee086B2b38C1476A3cE7f78E8";
@@ -54,10 +54,10 @@ describe("Rollup", () => {
     beforeEach(async () => {});
 
     test("Aggregator - Tasks are generated", async () => {
-      await waitForTaskGenerated(publicClient);
+      await waitForTaskGenerated(getPublicClient("EthAnvil"));
     });
     test("Aggregator & Finalizer - Responses are written in aws", async () => {
-      await waitForTaskResponded(publicClient);
+      await waitForTaskResponded(getPublicClient("EthAnvil"));
     });
   });
 });
