@@ -75,12 +75,12 @@ export class Rolldown {
     chain: ChainName = "Ethereum",
   ) {
     while (maxBlocks-- > 0) {
-      const seqRights = await getApi().query.rolldown.sequencersRights(
-        chain,
-        userAddress,
-      );
+      const seqRights = await getApi().query.rolldown.sequencersRights(chain);
       // @ts-ignore : it's secure to access the readRights property
-      if (seqRights && JSON.parse(JSON.stringify(seqRights)).readRights > 0) {
+      if (
+        seqRights &&
+        JSON.parse(JSON.stringify(seqRights))[userAddress].readRights > 0
+      ) {
         return;
       } else {
         await waitNewBlock();
