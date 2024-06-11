@@ -246,8 +246,9 @@ describe.each(["mm", "upgradabilityMm"])(
         await validateUpdateInMaintenanceModeStatus(eventResult);
       });
       it("RPC updates return null on both mm", async () => {
-        const updates = await api.rpc.rolldown.pending_updates();
-        const updateHash = await api.rpc.rolldown.pending_updates_hash();
+        const updates = await api.rpc.rolldown.pending_l2_requests("Ethereum");
+        const updateHash =
+          await api.rpc.rolldown.pending_l2_requests_hash("Ethereum");
         expect(updates.toHex()).toBe("0x");
         expect(updateHash.toHex()).toBe(
           "0x0000000000000000000000000000000000000000000000000000000000000000",
