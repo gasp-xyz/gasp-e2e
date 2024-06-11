@@ -115,6 +115,7 @@ describe("Rollup", () => {
       const balanceBefore = await getBalance(
         erc20Address,
         user.keyRingPair.address,
+        "EthAnvil",
       );
       const result = await signTxMetamask(
         tx,
@@ -127,13 +128,18 @@ describe("Rollup", () => {
       let balanceAfter = await getBalance(
         erc20Address,
         user.keyRingPair.address,
+        "EthAnvil",
       );
       while (
         BigInt((balanceAfter as any).toString()) <=
         BigInt((balanceBefore as any).toString())
       ) {
         await new Promise((resolve) => setTimeout(resolve, 5000));
-        balanceAfter = await getBalance(erc20Address, user.keyRingPair.address);
+        balanceAfter = await getBalance(
+          erc20Address,
+          user.keyRingPair.address,
+          "EthAnvil",
+        );
         testLog.getLog().info(balanceAfter);
       }
       const diff =
@@ -159,6 +165,7 @@ describe("Rollup", () => {
         params?.contracts.dummyErc20.address!,
         params?.contracts.rollDown.address!,
         112233445566,
+        "ArbAnvil",
       );
     });
 
@@ -184,6 +191,7 @@ describe("Rollup", () => {
       const balanceBefore = await getBalance(
         arbErc20,
         user.keyRingPair.address,
+        "ArbAnvil",
       );
       const result = await signTxMetamask(
         tx,
@@ -193,13 +201,21 @@ describe("Rollup", () => {
       const res = getEventResultFromMangataTx(result);
       expect(res).toBeTruthy();
 
-      let balanceAfter = await getBalance(arbErc20, user.keyRingPair.address);
+      let balanceAfter = await getBalance(
+        arbErc20,
+        user.keyRingPair.address,
+        "ArbAnvil",
+      );
       while (
         BigInt((balanceAfter as any).toString()) <=
         BigInt((balanceBefore as any).toString())
       ) {
         await new Promise((resolve) => setTimeout(resolve, 5000));
-        balanceAfter = await getBalance(arbErc20, user.keyRingPair.address);
+        balanceAfter = await getBalance(
+          arbErc20,
+          user.keyRingPair.address,
+          "ArbAnvil",
+        );
         testLog.getLog().info(balanceAfter);
       }
       const diff =
