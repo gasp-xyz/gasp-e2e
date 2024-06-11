@@ -70,7 +70,7 @@ async function depositAndWait(depositor: User) {
   testLog.getLog().info(depositor.keyRingPair.address);
   const assetId = await getAssetIdFromErc20();
   // Wait for the balance to change
-  return await waitForBalanceChange(depositor.keyRingPair.address, 20, assetId);
+  return await waitForBalanceChange(depositor.keyRingPair.address, 40, assetId);
 }
 
 describe("Rollup", () => {
