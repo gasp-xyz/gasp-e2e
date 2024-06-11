@@ -2,6 +2,7 @@ import { getMangataInstance } from "./api";
 import { EthUser } from "./EthUser";
 import { User } from "./User";
 import BN from "bn.js";
+import { ChainName } from "./rollDown/SequencerStaking";
 
 export async function rolldownDeposit(
   requestNumber: number,
@@ -43,12 +44,14 @@ export async function rolldownWithdraw(
   EthUser: EthUser | User,
   amountValue: BN | number,
   tokenAddress: string = "",
+  chain: ChainName = "Ethereum",
 ) {
   const mangata = await getMangataInstance();
   const sdkApi = await mangata.api();
   const address = tokenAddress === "" ? EthUser.toString() : tokenAddress;
 
   return sdkApi.tx.rolldown.withdraw(
+    chain,
     EthUser.toString(),
     address,
     amountValue,
@@ -56,20 +59,25 @@ export async function rolldownWithdraw(
 }
 
 export class RollDown {
-  static async cancelRequestsFromL1(requestNumber: number, force: boolean) {
+  static async cancelRequestsFromL1(
+    requestNumber: number,
+    force: boolean,
+    chain: ChainName = "Ethereum",
+  ) {
     const mangata = await getMangataInstance();
     const sdkApi = await mangata.api();
     if (force) {
-      return sdkApi.tx.rolldown.forceCancelRequestsFromL1(requestNumber);
+      return sdkApi.tx.rolldown.forceCancelRequestsFromL1(chain, requestNumber);
     }
-    return sdkApi.tx.rolldown.cancelRequestsFromL1(requestNumber);
+    return sdkApi.tx.rolldown.cancelRequestsFromL1(chain, requestNumber);
   }
   static async withdraw(
     EthUser: EthUser | User,
     amountValue: BN | number,
     tokenAddress: string = "",
+    chainName: ChainName = "Ethereum",
   ) {
-    return rolldownWithdraw(EthUser, amountValue, tokenAddress);
+    return rolldownWithdraw(EthUser, amountValue, tokenAddress, chainName);
   }
   static async deposit(
     requestNumber: number,

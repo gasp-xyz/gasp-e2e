@@ -7,6 +7,7 @@ import { getEventResultFromMangataTx } from "../txHandler";
 import { stringToBN, waitBlockNumber } from "../utils";
 import { getEventsAt, waitNewBlock } from "../eventListeners";
 import { ApiPromise } from "@polkadot/api";
+import { ChainName } from "./SequencerStaking";
 
 export class Rolldown {
   static async l2OriginRequestId(l1 = "Ethereum") {
@@ -68,10 +69,16 @@ export class Rolldown {
     return await signTx(api, tx, user.keyRingPair);
   }
 
-  static async waitForReadRights(userAddress: string, maxBlocks = 10) {
+  static async waitForReadRights(
+    userAddress: string,
+    maxBlocks = 10,
+    chain: ChainName = "Ethereum",
+  ) {
     while (maxBlocks-- > 0) {
-      const seqRights =
-        await getApi().query.rolldown.sequencerRights(userAddress);
+      const seqRights = await getApi().query.rolldown.sequencersRights(
+        chain,
+        userAddress,
+      );
       // @ts-ignore : it's secure to access the readRights property
       if (seqRights && JSON.parse(JSON.stringify(seqRights)).readRights > 0) {
         return;
@@ -88,6 +95,7 @@ export class L2Update {
   pendingWithdrawalResolutions: any[];
   pendingCancelResolutions: any[];
   pendingL2UpdatesToRemove: any[];
+  chain: string = "Ethereum";
 
   constructor(api: ApiPromise) {
     this.api = api;
@@ -114,6 +122,7 @@ export class L2Update {
 
   private buildParams() {
     return {
+      chain: this.api.createType("PalletRolldownMessagesChain", this.chain),
       pendingDeposits: this.api.createType(
         "Vec<PalletRolldownMessagesDeposit>",
         this.pendingDeposits,
@@ -163,7 +172,10 @@ export class L2Update {
 
     return this;
   }
-
+  on(chainName = "Ethereum") {
+    this.chain = chainName;
+    return this;
+  }
   withDeposit(
     txIndex: number,
     ethAddress: string,
