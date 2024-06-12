@@ -19,6 +19,7 @@ import {
   MangataInstance,
   PoolWithRatio,
 } from "@mangata-finance/sdk";
+import { testLog } from "../../utils/Logger";
 
 jest.spyOn(console, "log").mockImplementation(jest.fn());
 jest.setTimeout(2500000);
@@ -198,6 +199,8 @@ test("check calculateMintingFutureRewards", async () => {
 
 test("check getAssetsInfo", async () => {
   const assetsInfo = await mangata.query.getAssetsInfo();
+  testLog.getLog().info("token1 is " + token1.toNumber());
+  testLog.getLog().info("token1 info is " + assetsInfo[token1.toNumber()].id);
   expect(assetsInfo[token1.toNumber()].name).toEqual(token1Name);
 });
 
@@ -211,13 +214,21 @@ test("check getOwnedTokens", async () => {
   const userTokensInfo = await mangata.query.getOwnedTokens(
     testUser.keyRingPair.address,
   );
+  testLog.getLog().info("token1 is " + token1.toNumber());
+  testLog
+    .getLog()
+    .info(
+      "token1 balance is " + userTokensInfo[token1.toNumber()].balance.free,
+    );
   expect(userTokensInfo[MGA_ASSET_ID.toNumber()].balance.free).bnGt(BN_ZERO);
   expect(userTokensInfo[token1.toNumber()].balance.free).bnGt(BN_ZERO);
   expect(userTokensInfo[liqId.toNumber()].balance.free).bnGt(BN_ZERO);
 });
 
 test("check getTokenInfo", async () => {
+  testLog.getLog().info("token1 is " + token1.toString());
   const tokenInfo = await mangata.query.getTokenInfo(token1.toString());
+  testLog.getLog().info("token1 info is " + tokenInfo.id);
   expect(tokenInfo.name).toEqual(token1Name);
 });
 
