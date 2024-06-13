@@ -26,8 +26,10 @@ jest.setTimeout(2500000);
 process.env.NODE_ENV = "test";
 
 let testUser: User;
+let testUser1: User;
 let sudo: User;
 let token1: BN;
+let token2: BN;
 let token1Name: string;
 let liqId: BN;
 let mangata: MangataInstance;
@@ -79,6 +81,14 @@ beforeAll(async () => {
   await Sudo.batchAsSudoFinalized(Assets.promotePool(liqId.toNumber(), 20));
 });
 
+beforeEach(async () => {
+  [testUser1] = setupUsers();
+  await Sudo.batchAsSudoFinalized(
+    Assets.mintNative(testUser1),
+    Assets.mintToken(liqId, testUser1, Assets.DEFAULT_AMOUNT.divn(2)),
+  );
+});
+
 test("getAmountOfTokensInPool return poolAmount AND in reverse list of token we recived equal result", async () => {
   const poolAmount = await mangata.query.getAmountOfTokensInPool(
     MGA_ASSET_ID.toString(),
@@ -98,7 +108,7 @@ test("getAmountOfTokensInPool return poolAmount AND in reverse list of token we 
 
 test("check parameters of getInvestedPools function", async () => {
   const userInvestedPool = await mangata.query.getInvestedPools(
-    testUser.keyRingPair.address,
+    testUser1.keyRingPair.address,
   );
 
   const firstTokenId = stringToBN(userInvestedPool[0].firstTokenId);
@@ -147,6 +157,27 @@ test("check parameters of getPools function", async () => {
 });
 
 test("check parameters of getTotalIssuance functions", async () => {
+  [token2] = await Assets.setupUserWithCurrencies(
+    sudo,
+    [defaultCurrencyValue],
+    sudo,
+  );
+  await Sudo.batchAsSudoFinalized(
+    Assets.mintToken(token2, testUser, Assets.DEFAULT_AMOUNT),
+    Sudo.sudoAs(
+      testUser,
+      Xyk.createPool(
+        MGA_ASSET_ID,
+        Assets.DEFAULT_AMOUNT.divn(2),
+        token2,
+        Assets.DEFAULT_AMOUNT.divn(2),
+      ),
+    ),
+  );
+
+  liqId = await getLiquidityAssetId(MGA_ASSET_ID, token2);
+  await Sudo.batchAsSudoFinalized(Assets.promotePool(liqId.toNumber(), 20));
+
   const valueIssuance = await mangata.query.getTotalIssuance(liqId.toString());
   const valueIssuanceAll = await mangata.query.getTotalIssuanceOfTokens();
 
@@ -211,11 +242,10 @@ test("check getLiquidityTokens", async () => {
 
 test("check getOwnedTokens", async () => {
   const userTokensInfo = await mangata.query.getOwnedTokens(
-    testUser.keyRingPair.address,
+    testUser1.keyRingPair.address,
   );
   testLog.getLog().info("token1 is " + token1.toNumber());
   expect(userTokensInfo[MGA_ASSET_ID.toNumber()].balance.free).bnGt(BN_ZERO);
-  expect(userTokensInfo[token1.toNumber()].balance.free).bnGt(BN_ZERO);
   expect(userTokensInfo[liqId.toNumber()].balance.free).bnGt(BN_ZERO);
 });
 
@@ -226,15 +256,15 @@ test("check getTokenInfo", async () => {
 });
 
 test("sdk - filter deactivated pools on node", async () => {
-  const [token2] = await Assets.setupUserWithCurrencies(
+  [token2] = await Assets.setupUserWithCurrencies(
     sudo,
     [defaultCurrencyValue],
     sudo,
   );
   await Sudo.batchAsSudoFinalized(
-    Assets.mintToken(token2, testUser, Assets.DEFAULT_AMOUNT),
+    Assets.mintToken(token2, testUser1, Assets.DEFAULT_AMOUNT),
     Sudo.sudoAs(
-      testUser,
+      testUser1,
       Xyk.createPool(
         MGA_ASSET_ID,
         Assets.DEFAULT_AMOUNT.divn(2),
@@ -243,7 +273,7 @@ test("sdk - filter deactivated pools on node", async () => {
       ),
     ),
     Sudo.sudoAs(
-      testUser,
+      testUser1,
       Xyk.burnLiquidity(MGA_ASSET_ID, token2, Assets.DEFAULT_AMOUNT.divn(2)),
     ),
   );
