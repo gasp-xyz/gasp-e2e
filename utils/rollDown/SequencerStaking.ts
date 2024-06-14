@@ -14,7 +14,8 @@ export class SequencerStaking {
     setupUsers();
     const api = await getApi();
     const sequencer = await api.query.sequencerStaking.selectedSequencer();
-    const pkey = wellKnownUsers[sequencer.toString()];
+    // @ts-ignore
+    const pkey = wellKnownUsers[sequencer.toHuman().Ethereum];
     return new EthUser(new Keyring({ type: "ethereum" }), pkey);
   }
   static async provideSequencerStaking(chainName: ChainName = "Ethereum") {

@@ -76,11 +76,14 @@ export class Rolldown {
   ) {
     while (maxBlocks-- > 0) {
       const seqRights = await getApi().query.rolldown.sequencersRights(chain);
-      // @ts-ignore : it's secure to access the readRights property
-      if (
-        seqRights &&
-        JSON.parse(JSON.stringify(seqRights))[userAddress].readRights > 0
-      ) {
+      const selectedSequencer =
+        await getApi().query.sequencerStaking.selectedSequencer();
+      const isSelectedSeq = Object.values(selectedSequencer.toHuman()).includes(
+        userAddress,
+      );
+      const reads = (Object.entries(seqRights.toHuman())[0][1] as any)
+        .readRights;
+      if (reads && parseInt(reads) > 0 && isSelectedSeq) {
         return;
       } else {
         await waitNewBlock();
