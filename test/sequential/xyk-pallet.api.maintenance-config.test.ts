@@ -26,6 +26,7 @@ import {
   waitForRewards,
 } from "../../utils/eventListeners";
 import { testLog } from "../../utils/Logger";
+import { checkMaintenanceStatus } from "../../utils/validators";
 
 jest.spyOn(console, "log").mockImplementation(jest.fn());
 jest.setTimeout(2500000);
@@ -36,7 +37,6 @@ let testUser1: User;
 let firstCurrency: BN;
 let eventResponse: EventResult;
 let liqId: BN;
-let maintenanceStatus: any;
 const defaultCurrencyValue = new BN(1000000000000000);
 const defaultPoolVolumeValue = new BN(10000000000);
 const foundationAccountAddress = FOUNDATION_ADDRESS_1;
@@ -254,7 +254,6 @@ test("maintenance- check we can sell MGX tokens and compoundRewards THEN switch 
     testUser1.getAsset(liqId)?.amountAfter.reserved!,
   );
 });
-//TODO: Add a test for upgrades Sudo > system>setCode
 async function getSudoError(
   mangataEvent: MangataGenericEvent[],
   expectedError: string,
@@ -283,16 +282,4 @@ async function getSudoError(
   });
 
   expect(sudoEventError.name).toEqual(expectedError);
-}
-
-async function checkMaintenanceStatus(
-  maintenanceModeValue: boolean,
-  upgradableValue: boolean,
-) {
-  const api = getApi();
-  maintenanceStatus = await api.query.maintenance.maintenanceStatus();
-  expect(maintenanceStatus.isMaintenance.isTrue).toEqual(maintenanceModeValue);
-  expect(maintenanceStatus.isUpgradableInMaintenance.isTrue).toEqual(
-    upgradableValue,
-  );
 }

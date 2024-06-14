@@ -18,6 +18,7 @@ import { User } from "./User";
 import { MangataTypesAssetsCustomMetadata } from "@polkadot/types/lookup";
 import { SudoDB } from "./SudoDB";
 import { testLog } from "./Logger";
+import { randomBytes } from "crypto";
 
 export class Assets {
   static legacy = false;
@@ -288,7 +289,14 @@ export class Assets {
       ),
     );
   }
-
+  static updateL1Asset(assetId: BN, l1Asset: any = undefined) {
+    if (!l1Asset) {
+      l1Asset = {
+        Ethereum: "0x" + randomBytes(20).toString("hex"),
+      };
+    }
+    return Sudo.sudo(api.tx.assetRegistry.updateL1AssetData(assetId, l1Asset));
+  }
   static updateAsset(assetId: number | BN, update: UpdateAsset): Extrinsic {
     const optional = update.decimals
       ? api.createType("Option<u32>", update.decimals)

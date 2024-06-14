@@ -56,7 +56,7 @@ export class SudoDB {
     await sleep(1000);
     testLog
       .getLog()
-      .info(
+      .debug(
         `[${process.env.JEST_WORKER_ID}] Returned tokenIdfromRpc : ${tokenIdfromRpc}`,
       );
     return new BN(tokenIdfromRpc);
@@ -136,12 +136,12 @@ async function getTokenIdFromIPC(): Promise<string> {
         });
         testLog
           .getLog()
-          .info(`[${process.env.JEST_WORKER_ID}] Waiting for getTokenId`);
+          .debug(`[${process.env.JEST_WORKER_ID}] Waiting for getTokenId`);
       });
       ipc.of.nonceManager.on("TokenId-" + ipc.config.id, (data: string) => {
         testLog
           .getLog()
-          .info(`[${process.env.JEST_WORKER_ID}] I got this ${data}`);
+          .debug(`[${process.env.JEST_WORKER_ID}] I got this ${data}`);
         ipc.disconnect("nonceManager");
         resolve(data);
       });

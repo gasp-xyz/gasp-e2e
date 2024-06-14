@@ -7,11 +7,10 @@ import { setupApi, setupUsers } from "../../utils/setup";
 import "jest-extended";
 import { Abi, createWalletClient, http, PrivateKeyAccount } from "viem";
 import { testLog } from "../../utils/Logger";
-import { stringToBN, waitForBalanceChange } from "../../utils/utils";
+import { waitForBalanceChange } from "../../utils/utils";
 import {
   abi,
   ERC20_ADDRESS,
-  fakeDepositOnL2,
   getAssetIdFromErc20,
   getBalance,
   getL2UpdatesStorage,
@@ -129,36 +128,6 @@ describe("Rollup", () => {
         BigInt((balanceAfter as any).toString()) -
         BigInt((balanceBefore as any).toString());
       expect(diff).toBe(BigInt(1122));
-    });
-
-    test.skip("A user who deposited can withdraw the tokens", async () => {
-      await fakeDepositOnL2(
-        user,
-        ERC20_ADDRESS,
-        ROLL_DOWN_CONTRACT_ADDRESS,
-        stringToBN("112233"),
-      );
-      const tx = getApi().tx.rolldown.withdraw(
-        "Ethereum",
-        user.keyRingPair.address,
-        ERC20_ADDRESS,
-        112233,
-      );
-      const balanceBefore = await getBalance(ERC20_ADDRESS, user.keyRingPair.address);
-      testLog.getLog().info(balanceBefore);
-      const result = await signTxMetamask(tx, user.keyRingPair.address, user.name as string);
-      const res = getEventResultFromMangataTx(result);
-      expect(res).toBeTruthy();
-
-      let balanceAfter = await getBalance(ERC20_ADDRESS, user.keyRingPair.address);
-      while (
-        BigInt((balanceBefore as any).toString()) >=
-        BigInt((balanceAfter as any).toString())
-      ) {
-        await new Promise((resolve) => setTimeout(resolve, 1000));
-        balanceAfter = await getBalance(ERC20_ADDRESS, user.keyRingPair.address);
-      }
-      testLog.getLog().info(balanceAfter);
     });
   });
 });

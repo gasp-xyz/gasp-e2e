@@ -1,5 +1,8 @@
 import { getMangataInstance } from "./api";
 import { EthUser } from "./EthUser";
+import { User } from "./User";
+import BN from "bn.js";
+import { ChainName } from "./rollDown/SequencerStaking";
 
 export async function rolldownDeposit(
   requestNumber: number,
@@ -9,7 +12,7 @@ export async function rolldownDeposit(
   const mangata = await getMangataInstance();
   const sdkApi = await mangata.api();
 
-  const extrinsic = sdkApi.tx.rolldown.updateL2FromL1({
+  return sdkApi.tx.rolldown.updateL2FromL1({
     pendingDeposits: sdkApi.createType("Vec<PalletRolldownMessagesDeposit>", [
       {
         requestId: sdkApi.createType("PalletRolldownMessagesRequestId", [
@@ -23,7 +26,6 @@ export async function rolldownDeposit(
       },
     ]),
   });
-  return extrinsic;
 }
 
 export async function getLastProcessedRequestNumber() {
@@ -35,18 +37,53 @@ export async function getLastProcessedRequestNumber() {
       await sdkApi.query.rolldown.lastProcessedRequestOnL2("Ethereum"),
     ),
   );
-  const valueNumber = +value;
-  return valueNumber;
+  return +value;
 }
 
-export async function rolldownWithdraw(EthUser: EthUser, amountValue: number) {
+export async function rolldownWithdraw(
+  EthUser: EthUser | User,
+  amountValue: BN | number,
+  tokenAddress: string = "",
+  chain: ChainName = "Ethereum",
+) {
   const mangata = await getMangataInstance();
   const sdkApi = await mangata.api();
+  const address = tokenAddress === "" ? EthUser.toString() : tokenAddress;
 
-  const extrinsic = sdkApi.tx.rolldown.withdraw(
-    EthUser.ethAddress,
-    EthUser.ethAddress,
+  return sdkApi.tx.rolldown.withdraw(
+    chain,
+    EthUser.toString(),
+    address,
     amountValue,
   );
-  return extrinsic;
+}
+
+export class RollDown {
+  static async cancelRequestsFromL1(
+    requestNumber: number,
+    force: boolean,
+    chain: ChainName = "Ethereum",
+  ) {
+    const mangata = await getMangataInstance();
+    const sdkApi = await mangata.api();
+    if (force) {
+      return sdkApi.tx.rolldown.forceCancelRequestsFromL1(chain, requestNumber);
+    }
+    return sdkApi.tx.rolldown.cancelRequestsFromL1(chain, requestNumber);
+  }
+  static async withdraw(
+    EthUser: EthUser | User,
+    amountValue: BN | number,
+    tokenAddress: string = "",
+    chainName: ChainName = "Ethereum",
+  ) {
+    return rolldownWithdraw(EthUser, amountValue, tokenAddress, chainName);
+  }
+  static async deposit(
+    requestNumber: number,
+    ethAddress: string,
+    amountValue: number,
+  ) {
+    return rolldownDeposit(requestNumber, ethAddress, amountValue);
+  }
 }

@@ -18,6 +18,7 @@ import {
   fromBNToUnitString,
   fromStringToUnitString,
 } from "./utils";
+import { getApi } from "./api";
 
 export function validateTransactionSucessful(
   eventResult: EventResult,
@@ -376,3 +377,27 @@ export const expectExtrinsicSuccess = (events: Codec[]) => {
     }),
   });
 };
+export async function checkMaintenanceStatus(
+  maintenanceModeValue: boolean,
+  upgradableValue: boolean,
+) {
+  const api = getApi();
+  const maintenanceStatus = await api.query.maintenance.maintenanceStatus();
+  expect(maintenanceStatus.isMaintenance.isTrue).toEqual(maintenanceModeValue);
+  expect(maintenanceStatus.isUpgradableInMaintenance.isTrue).toEqual(
+    upgradableValue,
+  );
+}
+export async function validateUpdateInMaintenanceModeStatus(
+  events: EventResult,
+) {
+  const api = getApi();
+  const maintenanceStatus = await api.query.maintenance.maintenanceStatus();
+  if (!maintenanceStatus.isUpgradableInMaintenance.isTrue) {
+    expect(events.data).toEqual("UpgradeBlockedByMaintenance");
+    expect(ExtrinsicResult.ExtrinsicFailed).toEqual(events.state);
+  } else {
+    expect(events.data).toEqual("FailedToExtractRuntimeVersion");
+    expect(ExtrinsicResult.ExtrinsicFailed).toEqual(events.state);
+  }
+}

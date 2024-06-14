@@ -18,6 +18,7 @@ export enum ExtrinsicResult {
   ExtrinsicSuccess,
   ExtrinsicFailed,
   ExtrinsicUndefined,
+  Error,
 }
 
 ///Class that stores the event result.
@@ -396,6 +397,5 @@ export const expectMGAExtrinsicSuDidFailed = (
 export async function getEventsAt(blockNo: BN) {
   const api = getApi();
   const blockHash = await api.rpc.chain.getBlockHash(blockNo);
-  const events = await api.query.system.events.at(blockHash);
-  return events;
+  return await api.query.system.events.at(blockHash);
 }
