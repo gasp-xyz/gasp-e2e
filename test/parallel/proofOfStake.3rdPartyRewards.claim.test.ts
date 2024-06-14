@@ -181,7 +181,7 @@ describe("Proof of stake tests", () => {
           ),
         ),
       );
-      await waitForRewards(testUser, liquidityAssetId, 40, MGA_ASSET_ID);
+      await waitForRewards(testUser, liquidityAssetId, 60, MGA_ASSET_ID);
       // its 2 sessions, so 50% of rewards should be available
       const expectedRewards = Assets.DEFAULT_AMOUNT.muln(10e6).divn(2);
       const avl = await getThirdPartyRewards(
