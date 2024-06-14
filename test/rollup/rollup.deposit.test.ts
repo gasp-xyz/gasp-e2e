@@ -10,7 +10,6 @@ import { testLog } from "../../utils/Logger";
 import { waitForBalanceChange } from "../../utils/utils";
 import {
   abi,
-  ERC20_ADDRESS,
   getAssetIdFromErc20,
   getBalance,
   getL2UpdatesStorage,
@@ -148,7 +147,6 @@ describe("Rollup", () => {
         BigInt((balanceBefore as any).toString());
       expect(diff).toBe(BigInt(1122));
     });
-
   });
   describe("ARB Deposits & withdraws", () => {
     beforeEach(async () => {
