@@ -24,6 +24,7 @@ import { Sudo } from "../../utils/sudo";
 import { setupUsers, setupApi, getSudoUser } from "../../utils/setup";
 import { Xyk } from "../../utils/xyk";
 import { feeLockErrors } from "../../utils/utils";
+import { testLog } from "../../utils/Logger";
 
 jest.spyOn(console, "log").mockImplementation(jest.fn());
 jest.spyOn(console, "error").mockImplementation(jest.fn());
@@ -165,6 +166,11 @@ test("xyk-pallet - Check required fee - User with KSM only, operation fails", as
 
 test("xyk-pallet - Check required fee - User with TUR only, operation fails", async () => {
   //add TUR tokens.
+  testLog
+    .getLog()
+    .info(
+      "xyk-pallet - Check required fee - User with TUR only, operation fails",
+    );
   await testUser1.addTURTokens(sudo);
   let exception = false;
   await expect(
