@@ -11,6 +11,7 @@ import { Codec } from "@polkadot/types-codec/types";
 import { signTx } from "@mangata-finance/sdk";
 import { SubmittableExtrinsic } from "@polkadot/api/types";
 import { EthUser } from "./EthUser";
+import { BN } from "@polkadot/util";
 // API
 export let api: ApiPromise;
 
@@ -94,6 +95,28 @@ export const setupUsers = () => {
   keyring.addPair(testUser6.keyRingPair);
 
   return [testUser1, testUser2, testUser3, testUser4, testUser5, testUser6];
+};
+
+export const setupAsEthTokens = async (tokenIds: BN[]) => {
+  const api = getApi();
+  await Sudo.batchAsSudoFinalized(
+    ...tokenIds.map((tokenId) => Assets.updateL1Asset(tokenId)),
+  );
+  return await api.queryMulti(
+    tokenIds.map((tokenId) => [api.query.assetRegistry.idToL1Asset, tokenId]),
+  );
+};
+
+export const setupUsersWithBalances = async (users: User[], tokenIds: BN[]) => {
+  await Sudo.batchAsSudoFinalized(
+    ...users
+      .map((user) => Assets.mintNative(user))
+      .concat(
+        tokenIds.flatMap((tokenId) =>
+          users.map((user) => Assets.mintToken(tokenId, user)),
+        ),
+      ),
+  );
 };
 
 export const devTestingPairs = (ss58Format?: number) => {

@@ -18,6 +18,10 @@ import { Assets } from "../Assets";
 import { User } from "../User";
 import { ArbAnvil, EthAnvil, getL1, L1Type } from "./l1s";
 
+export const ROLL_DOWN_CONTRACT_ADDRESS =
+  "0x7bc06c482DEAd17c0e297aFbC32f6e63d3846650";
+
+export const ERC20_ADDRESS = "0x7a2088a1bFc9d81c55368AE168C2C02570cB814F";
 export const account = privateKeyToAccount(
   "0xac0974bec39a17e36ba4a6b4d238ff944bacb478cbed5efcae784d7bf4f2ff80",
 );
