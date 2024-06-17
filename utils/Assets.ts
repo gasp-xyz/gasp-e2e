@@ -70,16 +70,14 @@ export class Assets {
         .filter((X) => X.method === "Created")
         .map((t) => new BN(t.eventData[0].data.toString()));
       const addInfos: Extrinsic[] = [];
-      for (let index = 0; index < assetIds.length; index++) {
-        while (assetIds[index].toNumber() < 5) {
-          for (let currency = 0; currency < currencyValues.length; currency++) {
-            txs.push(Assets.issueToken(user, currencyValues[currency]));
-          }
-          const result = await Sudo.batchAsSudoFinalized(...txs);
-          assetIds = result
-            .filter((X) => X.method === "Created")
-            .map((t) => new BN(t.eventData[0].data.toString()));
+      while (assetIds[0].toNumber() < 5) {
+        for (let currency = 0; currency < currencyValues.length; currency++) {
+          txs.push(Assets.issueToken(user, currencyValues[currency]));
         }
+        const result = await Sudo.batchAsSudoFinalized(...txs);
+        assetIds = result
+          .filter((X) => X.method === "Created")
+          .map((t) => new BN(t.eventData[0].data.toString()));
       }
       if (!skipInfo) {
         for (let index = 0; index < assetIds.length; index++) {
