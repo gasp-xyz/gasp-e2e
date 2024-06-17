@@ -70,7 +70,7 @@ export class Assets {
         .filter((X) => X.method === "Created")
         .map((t) => new BN(t.eventData[0].data.toString()));
       const addInfos: Extrinsic[] = [];
-      while (assetIds[0].toNumber() < 5) {
+      while (assetIds[0].toNumber() < 8) {
         for (let currency = 0; currency < currencyValues.length; currency++) {
           txs.push(Assets.issueToken(user, currencyValues[currency]));
         }
@@ -107,7 +107,7 @@ export class Assets {
       for (let currency = 0; currency < currencyValues.length; currency++) {
         const tokenId = await SudoDB.getInstance().getTokenId();
         txs.push(Assets.mintToken(tokenId, user, currencyValues[currency]));
-        if (!tokenId.eq(BN_FOUR)) {
+        if (!tokenId.lt(new BN(8))) {
           tokenIds.push(tokenId);
         } else {
           currency--;
