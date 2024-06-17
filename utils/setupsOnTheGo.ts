@@ -60,11 +60,11 @@ import {
   getBalance,
   getL2UpdatesStorage,
   getPublicClient,
-  ROLL_DOWN_CONTRACT_ADDRESS,
 } from "./rollup/ethUtils";
 import Web3 from "web3";
 import { L2Update, Rolldown } from "./rollDown/Rolldown";
 import { SequencerStaking } from "./rollDown/SequencerStaking";
+import { getL1, L1Type } from "./rollup/l1s";
 Assets.legacy = true;
 export async function claimForAllAvlRewards() {
   await setupApi();
@@ -1759,12 +1759,7 @@ export async function addUnspentReserves(userName = "//Alice", tokenId = 1) {
     liqToken,
   );
   console.log(
-    "Amount of vesting tokens moved to MPL for liqId " +
-      liqToken.toString() +
-      " for user " +
-      user.name.toString() +
-      " is " +
-      mplStatus.unspentReserves.toString(),
+    `Amount of vesting tokens moved to MPL for liqId ${liqToken.toString()} for user ${user.name.toString()} is ${mplStatus.unspentReserves.toString()}`,
   );
 }
 
@@ -1781,10 +1776,7 @@ export async function depositFromL1(ethAddress: string, amountValue: number) {
   );
 
   console.log(
-    "Amount of tokens for the user " +
-      ethAddress +
-      " would be deposited in the amount of " +
-      amountValue.toString(),
+    `Amount of tokens for the user ${ethAddress} would be deposited in the amount of ${amountValue.toString()}`,
   );
 }
 
@@ -1799,14 +1791,14 @@ export async function withdrawToL1(ethPrivateKey: string, amountValue: number) {
   );
 
   console.log(
-    "Amount of tokens of the user " +
-      testEthUser.ethAddress +
-      " would be withdrawn in the amount of " +
-      amountValue.toString(),
+    `Amount of tokens of the user ${
+      testEthUser.ethAddress
+    } would be withdrawn in the amount of ${amountValue.toString()}`,
   );
 }
-export async function listenTransfers() {
-  const web3 = new Web3("ws://localhost:8545");
+export async function listenTransfers(l1: L1Type = "EthAnvil") {
+  // @ts-ignore
+  const web3 = new Web3(getL1(l1)?.rpcUrls.default.webSocket[0]!);
   //@ts-ignore
   const options = {
     topics: [web3.utils.sha3("Transfer(address,address,uint256)")],
@@ -1829,17 +1821,18 @@ export async function listenTransfers() {
         }
         return web3.utils.bytesToHex(res.reverse());
       }
-
-      console.log("ETH- Register new transfer: " + trxData.transactionHash);
+      const chainName = getL1(l1)?.name;
       console.log(
-        "ETH- Contract " +
-          trxData.address +
-          " has transaction of " +
-          web3.utils.hexToNumberString(trxData.data) +
-          " from " +
-          formatAddress(trxData.topics["1"]) +
-          " to " +
-          formatAddress(trxData.topics["2"]),
+        `${chainName}- Register new transfer: ${trxData.transactionHash}`,
+      );
+      console.log(
+        `${chainName}- Contract ${
+          trxData.address
+        } has transaction of ${web3.utils.hexToNumberString(
+          trxData.data,
+        )} from ${formatAddress(trxData.topics["1"])} to ${formatAddress(
+          trxData.topics["2"],
+        )}`,
       );
       //console.log(trxData);
 
@@ -1848,7 +1841,7 @@ export async function listenTransfers() {
         // @ts-ignore
         function (error, reciept) {
           console.log(
-            "ETH- Sent by " + reciept.from + " to contract " + reciept.to,
+            `${chainName}- Sent by ${reciept.from} to contract ${reciept.to}`,
           );
         },
       );
@@ -1877,13 +1870,14 @@ export async function monitorRollDown(type = "deposit") {
   > = new Map();
 
   if (type === "deposit") {
-    //ts-ignore
     while (true) {
       const p0 = listenTransfers();
       const p1 = monitorEthDeposits();
       const p2 = monitorPolkBalances();
       const p3 = subscribeAndPrintTokenChanges();
-      await Promise.all([p0, p1, p2, p3]);
+      const p4 = monitorEthDeposits("ArbAnvil");
+      const p5 = listenTransfers("ArbAnvil");
+      await Promise.all([p0, p1, p2, p3, p4, p5]);
     }
     async function printData() {
       // for (const entry of users.keys()) {
@@ -1896,17 +1890,18 @@ export async function monitorRollDown(type = "deposit") {
 
     async function monitorPolkBalances() {}
 
-    async function monitorEthDeposits() {
+    async function monitorEthDeposits(l1: L1Type = "EthAnvil") {
       return await new Promise(() => {
-        getPublicClient("EthAnvil").watchContractEvent({
+        getPublicClient(l1).watchContractEvent({
           abi: abi,
-          address: ROLL_DOWN_CONTRACT_ADDRESS,
+          address: getL1(l1)?.contracts.rollDown.address,
           eventName: "DepositAcceptedIntoQueue",
           onLogs: async (logs) => {
             for (const log of logs) {
               console.log(
                 //@ts-ignore
-                `ETH - DepositAcceptedIntoQueue event: ${JSON.stringify(
+                `${getL1(l1)
+                  ?.name} - DepositAcceptedIntoQueue event: ${JSON.stringify(
                   //@ts-ignore
                   log.args,
                 )}`,
@@ -1916,7 +1911,7 @@ export async function monitorRollDown(type = "deposit") {
               const totalBalance = await getBalance(
                 tokenAddress,
                 depositRecipient,
-                "EthAnvil",
+                l1,
               );
               users.set(
                 depositRecipient,
