@@ -71,7 +71,7 @@ export class Assets {
         .map((t) => new BN(t.eventData[0].data.toString()));
       const addInfos: Extrinsic[] = [];
       for (let index = 0; index < assetIds.length; index++) {
-        if (assetIds[index].toNumber() < 5) {
+        while (assetIds[index].toNumber() < 5) {
           for (let currency = 0; currency < currencyValues.length; currency++) {
             txs.push(Assets.issueToken(user, currencyValues[currency]));
           }
