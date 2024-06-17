@@ -148,6 +148,14 @@ test("xyk-pallet - Check required fee - User with MGX only", async () => {
 test("xyk-pallet - Check required fee - User with KSM only, operation fails", async () => {
   //add KSM tokens.
   await testUser1.addKSMTokens(sudo);
+  testLog
+    .getLog()
+    .info(
+      "testUser1 with KSM only: mint Liquidity for pool" +
+        firstCurrency +
+        " - " +
+        secondCurrency,
+    );
   let exception = false;
   await expect(
     mintLiquidity(
@@ -169,7 +177,10 @@ test("xyk-pallet - Check required fee - User with TUR only, operation fails", as
   testLog
     .getLog()
     .info(
-      "xyk-pallet - Check required fee - User with TUR only, operation fails",
+      "testUser1 with TUR only: mint Liquidity for pool" +
+        firstCurrency +
+        " - " +
+        secondCurrency,
     );
   await testUser1.addTURTokens(sudo);
   let exception = false;
