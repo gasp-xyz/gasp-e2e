@@ -75,6 +75,9 @@ export async function getBalance(
   l1: L1Type,
 ) {
   const client = getPublicClient(l1);
+  if (erc20Address === "0x5748395867463837537395739375937493733457") {
+    return client.getBalance({ address: userAddress as `0x${string}` });
+  }
   return client.readContract({
     address: `${erc20Address}` as Address,
     abi: erc20abi as Abi,
