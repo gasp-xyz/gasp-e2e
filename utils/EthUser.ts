@@ -38,7 +38,7 @@ export class EthUser extends User {
 
   async getBalanceForEthToken(address: string) {
     const tokenId = await getApi().query.assetRegistry.l1AssetToId({
-      'Ethereum': address,
+      Ethereum: address,
     });
     return await getApi().query.tokens.accounts(
       this.keyRingPair.address,
