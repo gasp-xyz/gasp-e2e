@@ -45,6 +45,7 @@ import {
   monitorRollDown,
   readL2Updates,
   depositHell,
+  getPolkAddress,
 } from "../utils/setupsOnTheGo";
 import {
   findErrorMetadata,
@@ -119,10 +120,27 @@ async function app(): Promise<any> {
         "Read L2 updates",
         "RollDownMonitor",
         "depositHell",
+        "getPolkAddress",
       ],
     })
     .then(async (answers: { option: string | string[] }) => {
       console.log("Answers::: " + JSON.stringify(answers, null, "  "));
+      if (answers.option.includes("getPolkAddress")) {
+        return inquirer
+          .prompt([
+            {
+              type: "input",
+              name: "address",
+              message: "Eth addresss",
+              default: "",
+            },
+          ])
+          .then(async (answers: { address: string }) => {
+            const addr = await getPolkAddress(answers.address);
+            console.info(addr);
+          });
+      }
+
       if (answers.option.includes("RollDownMonitor")) {
         await monitorRollDown("deposit");
       }
@@ -673,7 +691,7 @@ async function app(): Promise<any> {
           api.tx.crowdloan.associateNativeIdentity(
             accMga.address,
             relayAcc.address,
-            signature,
+            signature.toString(),
           ),
         );
         await Sudo.batchAsSudoFinalized(tx);

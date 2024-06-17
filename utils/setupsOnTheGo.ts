@@ -56,9 +56,10 @@ import { EthUser } from "./EthUser";
 import { signTxMetamask } from "./metamask";
 import {
   abi,
+  convertEthAddressToDotAddress,
   getBalance,
   getL2UpdatesStorage,
-  publicClient,
+  getPublicClient,
   ROLL_DOWN_CONTRACT_ADDRESS,
 } from "./rollup/ethUtils";
 import Web3 from "web3";
@@ -426,7 +427,9 @@ export async function printAllTxsDoneByUser(userAddress: string) {
     const block = await api.rpc.chain.getBlock(blockHash);
 
     const txs = block.block.extrinsics.filter(
-      (x: any) => x.signer.toString() === userAddress,
+      (x: any) =>
+        x.signer.toString() === userAddress ||
+        JSON.stringify(x).includes(userAddress),
     ) as any;
     const readabaleTxs = txs.map((x: any) => x.toHuman());
     // testLog.getLog().info("Block " + currBlock);
@@ -1874,6 +1877,7 @@ export async function monitorRollDown(type = "deposit") {
   > = new Map();
 
   if (type === "deposit") {
+    //ts-ignore
     while (true) {
       const p0 = listenTransfers();
       const p1 = monitorEthDeposits();
@@ -1894,7 +1898,7 @@ export async function monitorRollDown(type = "deposit") {
 
     async function monitorEthDeposits() {
       return await new Promise(() => {
-        publicClient.watchContractEvent({
+        getPublicClient("EthAnvil").watchContractEvent({
           abi: abi,
           address: ROLL_DOWN_CONTRACT_ADDRESS,
           eventName: "DepositAcceptedIntoQueue",
@@ -1912,6 +1916,7 @@ export async function monitorRollDown(type = "deposit") {
               const totalBalance = await getBalance(
                 tokenAddress,
                 depositRecipient,
+                "EthAnvil",
               );
               users.set(
                 depositRecipient,
@@ -1956,6 +1961,10 @@ export async function depositHell(num: number, txIndexer = 0) {
     .build();
   await signTx(api, depositBatch, sequencer.keyRingPair);
   return txIndex + num;
+}
+
+export async function getPolkAddress(address: string) {
+  return convertEthAddressToDotAddress(address);
 }
 // @ts-ignore
 BigInt.prototype["toJSON"] = function () {

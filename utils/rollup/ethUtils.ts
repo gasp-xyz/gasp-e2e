@@ -9,7 +9,7 @@ import {
 } from "viem";
 import { privateKeyToAccount } from "viem/accounts";
 import fs from "fs";
-import { BN } from "@polkadot/util";
+import { BN, hexToU8a } from "@polkadot/util";
 import { getApi } from "../api";
 import { testLog } from "../Logger";
 import { setupApi, setupUsers } from "../setup";
@@ -17,6 +17,8 @@ import { Sudo } from "../sudo";
 import { Assets } from "../Assets";
 import { User } from "../User";
 import { ArbAnvil, EthAnvil, getL1, L1Type } from "./l1s";
+import { encodeAddress } from "@polkadot/keyring";
+import { blake2AsU8a } from "@polkadot/util-crypto";
 
 export const ROLL_DOWN_CONTRACT_ADDRESS =
   "0x7bc06c482DEAd17c0e297aFbC32f6e63d3846650";
@@ -211,4 +213,7 @@ export async function fakeDepositOnL2(
     ),
     Assets.mintNative(ethUser),
   );
+}
+export function convertEthAddressToDotAddress(ethAddress: string) {
+  return encodeAddress(blake2AsU8a(hexToU8a(ethAddress)), 42);
 }
