@@ -6,7 +6,11 @@
  */
 import { jest } from "@jest/globals";
 import { getApi, initApi } from "../../utils/api";
-import { getCurrentNonce, mintLiquidity } from "../../utils/tx";
+import {
+  getCurrentNonce,
+  getLiquidityAssetId,
+  mintLiquidity,
+} from "../../utils/tx";
 import { ExtrinsicResult } from "../../utils/eventListeners";
 import { BN } from "@polkadot/util";
 import { Keyring } from "@polkadot/api";
@@ -82,6 +86,10 @@ beforeAll(async () => {
       second_asset_amount,
     ),
   );
+  const liqId1 = await getLiquidityAssetId(MGA_ASSET_ID, secondCurrency);
+  const liqId2 = await getLiquidityAssetId(firstCurrency, secondCurrency);
+  testLog.getLog().info("liqId1 in checking fees is " + liqId1.toNumber());
+  testLog.getLog().info("liqId2 in checking fees is " + liqId2.toNumber());
 });
 
 beforeEach(async () => {
@@ -151,7 +159,7 @@ test("xyk-pallet - Check required fee - User with KSM only, operation fails", as
   testLog
     .getLog()
     .info(
-      "testUser1 with KSM only: mint Liquidity for pool" +
+      "testUser1 with KSM only: mint Liquidity for pool " +
         firstCurrency +
         " - " +
         secondCurrency,
@@ -177,7 +185,7 @@ test("xyk-pallet - Check required fee - User with TUR only, operation fails", as
   testLog
     .getLog()
     .info(
-      "testUser1 with TUR only: mint Liquidity for pool" +
+      "testUser1 with TUR only: mint Liquidity for pool " +
         firstCurrency +
         " - " +
         secondCurrency,
