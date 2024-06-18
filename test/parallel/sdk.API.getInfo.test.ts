@@ -19,7 +19,6 @@ import {
   MangataInstance,
   PoolWithRatio,
 } from "@mangata-finance/sdk";
-import { testLog } from "../../utils/Logger";
 
 jest.spyOn(console, "log").mockImplementation(jest.fn());
 jest.setTimeout(2500000);
@@ -79,7 +78,6 @@ beforeAll(async () => {
   liqId = await getLiquidityAssetId(MGA_ASSET_ID, token1);
 
   await Sudo.batchAsSudoFinalized(Assets.promotePool(liqId.toNumber(), 20));
-  testLog.getLog().info("token1 value is " + token1.toNumber());
 });
 
 beforeEach(async () => {

@@ -196,17 +196,6 @@ export class User {
         "Minted",
         user.keyRingPair.address,
       ]);
-      testLog
-        .getLog()
-        .info(
-          "eventResponse data is " +
-            eventResponse.data[1].toString() +
-            ", " +
-            +eventResponse.data[0] +
-            ", " +
-            eventResponse.data[2],
-        );
-      testLog.getLog().info("eventResponse state is " + eventResponse.state);
       assert.equal(eventResponse.state, ExtrinsicResult.ExtrinsicSuccess);
     });
   }
