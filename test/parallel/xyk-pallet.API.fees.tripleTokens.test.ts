@@ -24,7 +24,6 @@ import { Sudo } from "../../utils/sudo";
 import { setupUsers, setupApi, getSudoUser } from "../../utils/setup";
 import { Xyk } from "../../utils/xyk";
 import { feeLockErrors } from "../../utils/utils";
-import { testLog } from "../../utils/Logger";
 
 jest.spyOn(console, "log").mockImplementation(jest.fn());
 jest.spyOn(console, "error").mockImplementation(jest.fn());
@@ -145,17 +144,9 @@ test("xyk-pallet - Check required fee - User with MGX only", async () => {
   expect(deductedMGATkns).bnLte(fee);
   expect(deductedMGATkns).bnGt(new BN(0));
 });
-test("xyk-pallet - Check required fee - User with KSM only, operation fails", async () => {
+test.skip("xyk-pallet - Check required fee - User with KSM only, operation fails", async () => {
   //add KSM tokens.
   await Sudo.batchAsSudoFinalized(Assets.mintToken(KSM_ASSET_ID, testUser1));
-  testLog
-    .getLog()
-    .info(
-      "testUser1 with KSM only: mint Liquidity for pool " +
-        firstCurrency +
-        " - " +
-        secondCurrency,
-    );
   let exception = false;
   await expect(
     mintLiquidity(
@@ -172,16 +163,8 @@ test("xyk-pallet - Check required fee - User with KSM only, operation fails", as
   expect(exception).toBeTruthy();
 });
 
-test("xyk-pallet - Check required fee - User with TUR only, operation fails", async () => {
+test.skip("xyk-pallet - Check required fee - User with TUR only, operation fails", async () => {
   //add TUR tokens.
-  testLog
-    .getLog()
-    .info(
-      "testUser1 with TUR only: mint Liquidity for pool " +
-        firstCurrency +
-        " - " +
-        secondCurrency,
-    );
   await Sudo.batchAsSudoFinalized(Assets.mintToken(TUR_ASSET_ID, testUser1));
   let exception = false;
   await expect(

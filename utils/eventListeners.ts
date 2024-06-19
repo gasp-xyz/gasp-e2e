@@ -242,53 +242,6 @@ export const waitForRewards = async (
     });
   });
 
-export const waitForRewards1 = async (
-  user: User,
-  liquidityAssetId: BN,
-  max: number = 40,
-  thirdPartyRewardToken: BN = BN_ONE.neg(),
-) =>
-  new Promise(async (resolve) => {
-    let numblocks = max;
-    let rewardAmount = BN_ZERO;
-    const unsub = await api.rpc.chain.subscribeNewHeads(async (header) => {
-      numblocks--;
-      const { chainUri } = getEnvironmentRequiredVars();
-      const mangata = await getMangataInstance(chainUri);
-      if (thirdPartyRewardToken.gten(0)) {
-        rewardAmount = await getThirdPartyRewards(
-          user.keyRingPair.address,
-          liquidityAssetId,
-          thirdPartyRewardToken,
-        );
-      } else {
-        rewardAmount = await mangata.rpc.calculateRewardsAmount({
-          address: user.keyRingPair.address,
-          liquidityTokenId: liquidityAssetId.toString(),
-        });
-      }
-      if (rewardAmount.gtn(0)) {
-        unsub();
-        resolve({});
-      } else {
-        testLog
-          .getLog()
-          .info(
-            `#${header.number}  ${user.keyRingPair.address} (LP${liquidityAssetId}) - testTimer no rewards yet`,
-          );
-      }
-      if (numblocks < 0) {
-        unsub();
-        testLog
-          .getLog()
-          .error(
-            `TestTimer waited too long for rewards :( #${header.number}  ${user.keyRingPair.address} (LP${liquidityAssetId} `,
-          );
-        resolve(false);
-      }
-    });
-  });
-
 type CodecOrArray = Codec | Codec[];
 
 const processCodecOrArray = (codec: CodecOrArray, fn: (c: Codec) => any) =>
