@@ -26,6 +26,12 @@ wss.on("connection", (ws) => {
         case "xyk_calculate_rewards_amount":
           handleCalcRewards(messageJson);
           break;
+        case "xyk_get_tradeable_tokens":
+          handleTradableTokens(messageJson);
+          break;
+        case "xyk_get_liq_tokens_for_trading":
+          handleTradableLiqTokens(messageJson);
+          break;
         case "pos_calculate_3rdparty_rewards_all":
           handleCalcRewardsAll(messageJson);
           break;
@@ -112,6 +118,34 @@ function handleCalcRewards(messageJson) {
 function handleCalcRewardsAll(messageJson) {
   const responseJson = fs.readFileSync(
     "calculate_rewards_all_response.json",
+    "utf8"
+  );
+  let responseParsed = JSON.parse(responseJson);
+  responseParsed.id = messageJson.id;
+  let response = JSON.stringify(responseParsed);
+  console.log("Mocked response:", response);
+  clients.forEach((client) => {
+    client.send(response);
+  });
+}
+
+function handleTradableTokens(messageJson) {
+  const responseJson = fs.readFileSync(
+    "get_tradeable_tokens_response.json",
+    "utf8"
+  );
+  let responseParsed = JSON.parse(responseJson);
+  responseParsed.id = messageJson.id;
+  let response = JSON.stringify(responseParsed);
+  console.log("Mocked response:", response);
+  clients.forEach((client) => {
+    client.send(response);
+  });
+}
+
+function handleTradableLiqTokens(messageJson) {
+  const responseJson = fs.readFileSync(
+    "get_liq_tokens_for_trading_response.json",
     "utf8"
   );
   let responseParsed = JSON.parse(responseJson);

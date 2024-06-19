@@ -11,10 +11,8 @@ import {
   addExtraLogs,
   importPolkadotExtension,
 } from "../../utils/frontend/utils/Helper";
-import { Keyring } from "@polkadot/api";
 import { KeyringPair } from "@polkadot/keyring/types";
-import { FIVE_MIN, KSM_ASSET_ID, MGA_ASSET_ID } from "../../utils/Constants";
-import { AssetWallet, User } from "../../utils/User";
+import { FIVE_MIN } from "../../utils/Constants";
 import { getEnvironmentRequiredVars, sleep } from "../../utils/utils";
 import {
   connectWallet,
@@ -35,7 +33,6 @@ import { TransactionType } from "../../utils/frontend/microapps-pages/Notificati
 jest.setTimeout(FIVE_MIN);
 jest.spyOn(console, "log").mockImplementation(jest.fn());
 let driver: WebDriver;
-let testUser1: User;
 
 const acc_name = "acc_automation";
 const userAddress = "5CfLmpjCJu41g3cpZVoiH7MSrSppgVVVC3xq23iy9dZrW2HR";
@@ -84,19 +81,8 @@ describe("Miocroapps UI swap tests", () => {
     driver = await DriverBuilder.getInstance();
     await importPolkadotExtension(driver);
 
-    const keyring = new Keyring({ type: "sr25519" });
     const node = new Node(getEnvironmentRequiredVars().chainUri);
     await node.connect();
-
-    testUser1 = new User(keyring);
-    testUser1.addFromMnemonic(
-      keyring,
-      getEnvironmentRequiredVars().mnemonicPolkadot,
-    );
-
-    testUser1.addAsset(KSM_ASSET_ID);
-    testUser1.addAsset(MGA_ASSET_ID);
-    await testUser1.refreshAmounts(AssetWallet.BEFORE);
 
     await setupPage(driver);
     await connectWallet(driver, "Polkadot", acc_name);
