@@ -57,7 +57,6 @@ export class Assets {
     _sudo: User,
     skipInfo = false,
   ): Promise<BN[]> {
-    let assetIds: BN[];
     if (this.legacy || skipInfo) {
       const txs: Extrinsic[] = [];
       await setupApi();
@@ -66,19 +65,10 @@ export class Assets {
         txs.push(Assets.issueToken(user, currencyValues[currency]));
       }
       const result = await Sudo.batchAsSudoFinalized(...txs);
-      assetIds = result
+      const assetIds: BN[] = result
         .filter((X) => X.method === "Created")
         .map((t) => new BN(t.eventData[0].data.toString()));
       const addInfos: Extrinsic[] = [];
-      while (assetIds[0].toNumber() < 8) {
-        for (let currency = 0; currency < currencyValues.length; currency++) {
-          txs.push(Assets.issueToken(user, currencyValues[currency]));
-        }
-        const result = await Sudo.batchAsSudoFinalized(...txs);
-        assetIds = result
-          .filter((X) => X.method === "Created")
-          .map((t) => new BN(t.eventData[0].data.toString()));
-      }
       if (!skipInfo) {
         for (let index = 0; index < assetIds.length; index++) {
           const assetId = assetIds[index];
@@ -107,7 +97,7 @@ export class Assets {
       for (let currency = 0; currency < currencyValues.length; currency++) {
         const tokenId = await SudoDB.getInstance().getTokenId();
         txs.push(Assets.mintToken(tokenId, user, currencyValues[currency]));
-        if (!tokenId.lt(new BN(8))) {
+        if (!tokenId.eq(BN_FOUR)) {
           tokenIds.push(tokenId);
         } else {
           currency--;
