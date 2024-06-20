@@ -19,6 +19,7 @@ import {
   MangataInstance,
   PoolWithRatio,
 } from "@mangata-finance/sdk";
+import { testLog } from "../../utils/Logger";
 
 jest.spyOn(console, "log").mockImplementation(jest.fn());
 jest.setTimeout(2500000);
@@ -52,6 +53,7 @@ beforeAll(async () => {
     [defaultCurrencyValue],
     sudo,
   );
+  testLog.getLog().info("For SDK getInfo token1 is " + token1.toNumber());
   mangata = await getMangataInstance();
   token1Name = await (await mangata.api()).query.assetRegistry
     .metadata(token1)
@@ -228,6 +230,10 @@ test("check calculateMintingFutureRewards", async () => {
 
 test("check getAssetsInfo", async () => {
   const assetsInfo = await mangata.query.getAssetsInfo();
+  const assetsInfoJson = JSON.stringify(assetsInfo);
+  testLog
+    .getLog()
+    .info("For SDK getAssetsInfo assetsInfoJson is " + assetsInfoJson);
   expect(assetsInfo[token1.toNumber()].name).toEqual(token1Name);
 });
 
@@ -247,6 +253,10 @@ test("check getOwnedTokens", async () => {
 
 test("check getTokenInfo", async () => {
   const tokenInfo = await mangata.query.getTokenInfo(token1.toString());
+  const assetsInfoJson = JSON.stringify(tokenInfo);
+  testLog
+    .getLog()
+    .info("For SDK getTokenInfo assetsInfoJson is " + assetsInfoJson);
   expect(tokenInfo.name).toEqual(token1Name);
 });
 
