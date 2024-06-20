@@ -183,14 +183,13 @@ describe("Proof of stake tests", () => {
       );
 
       await waitForRewards(testUser, liquidityAssetId, 80, MGA_ASSET_ID);
-      await waitForSessionChange();
       // its 2 sessions, so 50% of rewards or more should be available
+      const expectedRewards = Assets.DEFAULT_AMOUNT.muln(10e6).divn(2);
       const avl = await getThirdPartyRewards(
         testUser.keyRingPair.address,
         liquidityAssetId,
         MGA_ASSET_ID,
       );
-      const expectedRewards = Assets.DEFAULT_AMOUNT.muln(10e6).divn(2);
       expect(avl).bnEqual(expectedRewards);
     });
     it("Two users activated, one in one exec, other in two - check balances", async () => {
