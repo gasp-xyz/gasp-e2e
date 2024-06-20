@@ -159,8 +159,6 @@ describe("Proof of stake tests", () => {
       expect(errors[0].error!.name).toBe("NoThirdPartyPartyRewardsToClaim");
     });
     it("Rewards are divided in n-sessions", async () => {
-      let expectedRewards: BN;
-      const api = getApi();
       const testUser = testUser2;
       const liquidityAssetId = await getLiquidityAssetId(newToken, newToken2);
       await Sudo.batchAsSudoFinalized(
@@ -171,7 +169,7 @@ describe("Proof of stake tests", () => {
             newToken2,
             MGA_ASSET_ID,
             Assets.DEFAULT_AMOUNT.muln(10e6),
-            4,
+            2,
           ),
         ),
         Sudo.sudoAs(
@@ -184,25 +182,15 @@ describe("Proof of stake tests", () => {
         ),
       );
 
-      await waitForRewards(testUser, liquidityAssetId, 40, MGA_ASSET_ID);
-      const sessionNumberBefore = (
-        await api.query.session.currentIndex()
-      ).toNumber();
+      await waitForRewards(testUser, liquidityAssetId, 80, MGA_ASSET_ID);
       await waitForSessionChange();
-      // its 4 sessions, so 50% of rewards or more should be available
+      // its 2 sessions, so 50% of rewards or more should be available
       const avl = await getThirdPartyRewards(
         testUser.keyRingPair.address,
         liquidityAssetId,
         MGA_ASSET_ID,
       );
-      const sessionNumberAfter = (
-        await api.query.session.currentIndex()
-      ).toNumber();
-      if (sessionNumberAfter === sessionNumberBefore + 1) {
-        expectedRewards = Assets.DEFAULT_AMOUNT.muln(10e6).divn(2);
-      } else {
-        expectedRewards = Assets.DEFAULT_AMOUNT.muln(10e6).divn(4).muln(3);
-      }
+      const expectedRewards = Assets.DEFAULT_AMOUNT.muln(10e6).divn(2);
       expect(avl).bnEqual(expectedRewards);
     });
     it("Two users activated, one in one exec, other in two - check balances", async () => {

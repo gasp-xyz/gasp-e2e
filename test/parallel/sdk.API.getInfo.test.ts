@@ -28,7 +28,6 @@ let testUser: User;
 let testUser1: User;
 let sudo: User;
 let token1: BN;
-let token2: BN;
 let token1Name: string;
 let liqId: BN;
 let mangata: MangataInstance;
@@ -156,7 +155,7 @@ test("check parameters of getPools function", async () => {
 });
 
 test("check parameters of getTotalIssuance functions", async () => {
-  [token2] = await Assets.setupUserWithCurrencies(
+  const [token2] = await Assets.setupUserWithCurrencies(
     sudo,
     [defaultCurrencyValue],
     sudo,
@@ -252,7 +251,7 @@ test("check getTokenInfo", async () => {
 });
 
 test("sdk - filter deactivated pools on node", async () => {
-  [token2] = await Assets.setupUserWithCurrencies(
+  const [token2] = await Assets.setupUserWithCurrencies(
     sudo,
     [defaultCurrencyValue],
     sudo,

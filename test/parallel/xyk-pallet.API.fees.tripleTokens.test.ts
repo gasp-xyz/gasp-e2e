@@ -146,7 +146,7 @@ test("xyk-pallet - Check required fee - User with MGX only", async () => {
 });
 test.skip("xyk-pallet - Check required fee - User with KSM only, operation fails", async () => {
   //add KSM tokens.
-  await Sudo.batchAsSudoFinalized(Assets.mintToken(KSM_ASSET_ID, testUser1));
+  await testUser1.addKSMTokens(sudo);
   let exception = false;
   await expect(
     mintLiquidity(
@@ -165,7 +165,7 @@ test.skip("xyk-pallet - Check required fee - User with KSM only, operation fails
 
 test.skip("xyk-pallet - Check required fee - User with TUR only, operation fails", async () => {
   //add TUR tokens.
-  await Sudo.batchAsSudoFinalized(Assets.mintToken(TUR_ASSET_ID, testUser1));
+  await testUser1.addTURTokens(sudo);
   let exception = false;
   await expect(
     mintLiquidity(
