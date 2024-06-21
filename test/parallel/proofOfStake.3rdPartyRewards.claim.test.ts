@@ -56,7 +56,7 @@ describe("Proof of stake tests", () => {
           Assets.DEFAULT_AMOUNT,
         ],
         sudo,
-        true,
+        false,
       );
 
     await setupApi();
