@@ -254,10 +254,14 @@ test("check getLiquidityTokens", async () => {
 });
 
 test("check getOwnedTokens", async () => {
+  await Sudo.batchAsSudoFinalized(
+    Assets.mintToken(token1, testUser1, Assets.DEFAULT_AMOUNT),
+  );
   const userTokensInfo = await mangata.query.getOwnedTokens(
     testUser1.keyRingPair.address,
   );
   expect(userTokensInfo[MGA_ASSET_ID.toNumber()].balance.free).bnGt(BN_ZERO);
+  expect(userTokensInfo[token1.toNumber()].balance.free).bnGt(BN_ZERO);
   expect(userTokensInfo[liqId.toNumber()].balance.free).bnGt(BN_ZERO);
 });
 
