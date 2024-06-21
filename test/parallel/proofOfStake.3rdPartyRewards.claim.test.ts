@@ -9,6 +9,7 @@ import {
   getThirdPartyRewards,
   getUserBalanceOfToken,
   stringToBN,
+  waitIfSessionWillChangeInNblocks,
 } from "../../utils/utils";
 import { Assets } from "../../utils/Assets";
 import { Sudo } from "../../utils/sudo";
@@ -160,6 +161,7 @@ describe("Proof of stake tests", () => {
     });
     it("Rewards are divided in n-sessions", async () => {
       const testUser = testUser2;
+      await waitIfSessionWillChangeInNblocks(5);
       const liquidityAssetId = await getLiquidityAssetId(newToken, newToken2);
       await Sudo.batchAsSudoFinalized(
         Sudo.sudoAs(
