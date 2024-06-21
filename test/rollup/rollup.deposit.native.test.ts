@@ -89,7 +89,7 @@ describe("Rollup", () => {
     });
 
     test("A user who deposits a token will have them on the node", async () => {
-      const anyChange = await depositAndWait(user, "EthAnvil", true);
+      const anyChange = await depositAndWait(user, "EthAnvil");
       // Check that got updated.
       expect(anyChange).toBeTruthy();
     });
