@@ -53,8 +53,18 @@ beforeAll(async () => {
     [defaultCurrencyValue],
     sudo,
   );
-  testLog.getLog().info("For SDK getInfo token1 is " + token1.toNumber());
   mangata = await getMangataInstance();
+  testLog.getLog().info("For SDK getInfo token1 is " + token1.toNumber());
+  const assetMetadata = await (
+    await mangata.api()
+  ).query.assetRegistry.metadata(token1.toNumber());
+  testLog
+    .getLog()
+    .info(
+      "For SDK getInfo assetMetadata is " +
+        JSON.stringify(assetMetadata.toHuman()),
+    );
+
   token1Name = await (await mangata.api()).query.assetRegistry
     .metadata(token1)
     .then((metadata) => {
