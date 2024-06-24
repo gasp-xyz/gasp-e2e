@@ -50,7 +50,11 @@ describe("Council tests: Special rules for foundation addresses on mmOFF", () =>
   ])(
     "Test that %s address can/cannot close an already voted proposal",
     async (test: string, index: number) => {
-      const { address, validate } = testCases[test];
+      const address = testCases[test].address;
+      const validate =
+        test === "Foundation"
+          ? validateExtrinsicSuccess
+          : validateExtrinsicFailed;
       const hash = proposalHashes[index];
       const propBefore = await Council.getProposal(hash);
       await Council.voteProposal(hash, councilUsers);
