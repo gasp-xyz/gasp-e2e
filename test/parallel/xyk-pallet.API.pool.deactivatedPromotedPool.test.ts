@@ -3,14 +3,12 @@
  * @group poolLiq
  */
 import { jest } from "@jest/globals";
-import { Keyring } from "@polkadot/api";
 import { getApi, initApi, mangata } from "../../utils/api";
 import { Assets } from "../../utils/Assets";
 import { MGA_ASSET_ID } from "../../utils/Constants";
-import { setupApi, setupUsers } from "../../utils/setup";
+import { getSudoUser, setupApi, setupUsers } from "../../utils/setup";
 import { Sudo } from "../../utils/sudo";
 import { AssetWallet, User } from "../../utils/User";
-import { getEnvironmentRequiredVars } from "../../utils/utils";
 import { Xyk } from "../../utils/xyk";
 import { BN } from "@polkadot/util";
 import "jest-extended";
@@ -33,10 +31,8 @@ jest.setTimeout(2500000);
 
 process.env.NODE_ENV = "test";
 
-const { sudo: sudoUserName } = getEnvironmentRequiredVars();
 let testUser1: User;
 let sudo: User;
-let keyring: Keyring;
 let token1: BN;
 let liquidityId: BN;
 const defaultCurrencyValue = new BN(250000);
@@ -47,10 +43,9 @@ beforeAll(async () => {
   } catch (e) {
     await initApi();
   }
-  keyring = new Keyring({ type: "sr25519" });
 
   // setup users
-  sudo = new User(keyring, sudoUserName);
+  sudo = getSudoUser();
 
   await setupApi();
 });
