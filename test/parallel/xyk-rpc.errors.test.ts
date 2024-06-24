@@ -13,11 +13,10 @@ import {
 } from "../../utils/tx";
 import { BN } from "@polkadot/util";
 import { bnToHex } from "@polkadot/util";
-import { getEnvironmentRequiredVars } from "../../utils/utils";
 import { Assets } from "../../utils/Assets";
-import { ApiPromise, Keyring } from "@polkadot/api";
-import { User } from "../../utils/User";
+import { ApiPromise } from "@polkadot/api";
 import { testLog } from "../../utils/Logger";
+import { getSudoUser } from "../../utils/setup";
 
 jest.spyOn(console, "log").mockImplementation(jest.fn());
 jest.setTimeout(1500000);
@@ -103,10 +102,7 @@ describe("xyk-rpc - calculate_buy_price_by_id:No pool assotiated with the assets
   const dictAssets = new Map<number, BN>();
 
   beforeAll(async () => {
-    const { sudo: sudoUserName } = getEnvironmentRequiredVars();
-    const keyring = new Keyring({ type: "sr25519" });
-    const sudo = new User(keyring, sudoUserName);
-    keyring.addPair(sudo.keyRingPair);
+    const sudo = getSudoUser();
 
     //the idea of this mess is to have assets with different values,
     const assetIds = await Assets.setupUserWithCurrencies(

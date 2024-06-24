@@ -17,6 +17,7 @@ import { AssetWallet, User } from "../../utils/User";
 import { Assets } from "../../utils/Assets";
 import { calculateFees, getEnvironmentRequiredVars } from "../../utils/utils";
 import { testLog } from "../../utils/Logger";
+import { getSudoUser } from "../../utils/setup";
 
 jest.spyOn(console, "log").mockImplementation(jest.fn());
 jest.setTimeout(1500000);
@@ -31,8 +32,7 @@ let firstCurrency: BN;
 let secondCurrency: BN;
 
 // Assuming the pallet's AccountId
-const { xykPalletAddress: pallet_address, sudo: sudoUserName } =
-  getEnvironmentRequiredVars();
+const { xykPalletAddress: pallet_address } = getEnvironmentRequiredVars();
 const defaultCurrecyValue = new BN(250000);
 
 beforeAll(async () => {
@@ -44,12 +44,12 @@ beforeAll(async () => {
 });
 
 beforeEach(async () => {
-  keyring = new Keyring({ type: "sr25519" });
+  keyring = new Keyring({ type: "ethereum" });
 
   // setup users
   testUser1 = new User(keyring);
   testUser2 = new User(keyring);
-  const sudo = new User(keyring, sudoUserName);
+  const sudo = getSudoUser();
 
   // setup Pallet.
   pallet = new User(keyring);

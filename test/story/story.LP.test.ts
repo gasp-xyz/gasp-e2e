@@ -13,14 +13,12 @@ import { BN } from "@polkadot/util";
 import { Keyring } from "@polkadot/api";
 import { AssetWallet, User } from "../../utils/User";
 import { Assets } from "../../utils/Assets";
-import { getEnvironmentRequiredVars } from "../../utils/utils";
 import { getEventResultFromMangataTx } from "../../utils/txHandler";
 import { MGA_ASSET_ID } from "../../utils/Constants";
 import { testLog } from "../../utils/Logger";
 import { Fees } from "../../utils/Fees";
 import { MangataInstance } from "@mangata-finance/sdk";
-
-const { sudo: sudoUserName } = getEnvironmentRequiredVars();
+import { getSudoUser } from "../../utils/setup";
 
 jest.spyOn(console, "log").mockImplementation(jest.fn());
 jest.setTimeout(1500000);
@@ -44,13 +42,13 @@ describe("Story tests > LP", () => {
   });
 
   beforeEach(async () => {
-    keyring = new Keyring({ type: "sr25519" });
+    keyring = new Keyring({ type: "ethereum" });
 
     // setup users
     testUser1 = new User(keyring);
     testUser2 = new User(keyring);
 
-    sudo = new User(keyring, sudoUserName);
+    sudo = getSudoUser();
     // add users to pair.
     keyring.addPair(testUser1.keyRingPair);
     keyring.addPair(testUser2.keyRingPair);

@@ -20,11 +20,12 @@ import { Keyring } from "@polkadot/api";
 import { AssetWallet, User } from "../../utils/User";
 import { validateAssetsSwappedEvent } from "../../utils/validators";
 import { Assets } from "../../utils/Assets";
-import { getEnvironmentRequiredVars, xykErrors } from "../../utils/utils";
+import { xykErrors } from "../../utils/utils";
 import { getEventResultFromMangataTx } from "../../utils/txHandler";
 import { createPool } from "../../utils/tx";
 import { Sudo } from "../../utils/sudo";
 import { Xyk } from "../../utils/xyk";
+import { getSudoUser } from "../../utils/setup";
 
 jest.spyOn(console, "log").mockImplementation(jest.fn());
 jest.setTimeout(1500000);
@@ -33,7 +34,6 @@ process.env.NODE_ENV = "test";
 const firstAssetAmount = new BN(50000);
 const secondAssetAmount = new BN(25000);
 const defaultCurrencyValue = new BN(250000);
-const { sudo: sudoUserName } = getEnvironmentRequiredVars();
 
 describe("xyk-pallet - Sell assets tests: SellAsset Errors:", () => {
   let testUser1: User;
@@ -54,12 +54,12 @@ describe("xyk-pallet - Sell assets tests: SellAsset Errors:", () => {
       await initApi();
     }
 
-    keyring = new Keyring({ type: "sr25519" });
+    keyring = new Keyring({ type: "ethereum" });
 
     // setup users
     testUser1 = new User(keyring);
 
-    sudo = new User(keyring, sudoUserName);
+    sudo = getSudoUser();
 
     // add users to pair.
     keyring.addPair(testUser1.keyRingPair);
@@ -326,12 +326,12 @@ describe("xyk-pallet - Sell assets tests: Selling Assets you can", () => {
   });
 
   beforeEach(async () => {
-    keyring = new Keyring({ type: "sr25519" });
+    keyring = new Keyring({ type: "ethereum" });
 
     // setup users
     testUser1 = new User(keyring);
 
-    sudo = new User(keyring, sudoUserName);
+    sudo = getSudoUser();
 
     // add users to pair.
     keyring.addPair(testUser1.keyRingPair);
