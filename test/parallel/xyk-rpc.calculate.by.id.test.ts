@@ -14,10 +14,8 @@ import {
   getBalanceOfPool,
 } from "../../utils/tx";
 import { BN } from "@polkadot/util";
-import { Keyring } from "@polkadot/api";
-import { User } from "../../utils/User";
 import { Assets } from "../../utils/Assets";
-import { getEnvironmentRequiredVars } from "../../utils/utils";
+import { getSudoUser } from "../../utils/setup";
 
 jest.spyOn(console, "log").mockImplementation(jest.fn());
 jest.setTimeout(1500000);
@@ -35,10 +33,7 @@ describe("xyk-rpc - calculate_buy_price_by_id, calculate_sell_price_by_id", () =
   const dictAssets = new Map<number, BN>();
 
   beforeAll(async () => {
-    const { sudo: sudoUserName } = getEnvironmentRequiredVars();
-    const keyring = new Keyring({ type: "sr25519" });
-    const sudo = new User(keyring, sudoUserName);
-    keyring.addPair(sudo.keyRingPair);
+    const sudo = getSudoUser();
 
     //the idea of this mess is to have some pools with different values,
     //pool1 [0,1]: with one,one value

@@ -20,18 +20,14 @@ import {
   validateTreasuryAmountsEqual,
 } from "../../utils/validators";
 import { Assets } from "../../utils/Assets";
-import {
-  calculateLiqAssetAmount,
-  getEnvironmentRequiredVars,
-} from "../../utils/utils";
+import { calculateLiqAssetAmount } from "../../utils/utils";
 import { getEventResultFromMangataTx } from "../../utils/txHandler";
 import { createPool } from "../../utils/tx";
+import { getSudoUser } from "../../utils/setup";
 
 jest.spyOn(console, "log").mockImplementation(jest.fn());
 jest.setTimeout(1500000);
 process.env.NODE_ENV = "test";
-
-const { sudo: sudoUserName } = getEnvironmentRequiredVars();
 
 const defaultCurrencyValue = new BN(250000);
 
@@ -54,12 +50,12 @@ describe("xyk-pallet - Mint liquidity tests: with minting you can", () => {
   });
 
   beforeEach(async () => {
-    keyring = new Keyring({ type: "sr25519" });
+    keyring = new Keyring({ type: "ethereum" });
 
     // setup users
     testUser1 = new User(keyring);
 
-    sudo = new User(keyring, sudoUserName);
+    sudo = getSudoUser();
 
     // add users to pair.
     keyring.addPair(testUser1.keyRingPair);

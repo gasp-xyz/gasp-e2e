@@ -6,7 +6,6 @@
  * @group parallel
  */
 import { jest } from "@jest/globals";
-import { Keyring } from "@polkadot/api";
 import { getApi, initApi } from "../../utils/api";
 import { Assets } from "../../utils/Assets";
 import { MGA_ASSET_ID } from "../../utils/Constants";
@@ -15,7 +14,7 @@ import {
   sudoIssueAsset,
 } from "../../utils/txHandler";
 import { ExtrinsicResult, waitNewBlock } from "../../utils/eventListeners";
-import { setupApi, setupUsers } from "../../utils/setup";
+import { getSudoUser, setupApi, setupUsers } from "../../utils/setup";
 import { Sudo } from "../../utils/sudo";
 import {
   promotePool,
@@ -27,7 +26,7 @@ import {
   unlockVestedToken,
 } from "../../utils/tx";
 import { BN_ZERO, toBN } from "@mangata-finance/sdk";
-import { getEnvironmentRequiredVars, getBlockNumber } from "../../utils/utils";
+import { getBlockNumber } from "../../utils/utils";
 import { User } from "../../utils/User";
 import { Xyk } from "../../utils/xyk";
 import { testLog } from "../../utils/Logger";
@@ -37,10 +36,8 @@ jest.spyOn(console, "log").mockImplementation(jest.fn());
 jest.setTimeout(2500000);
 process.env.NODE_ENV = "test";
 
-const { sudo: sudoUserName } = getEnvironmentRequiredVars();
 let testUser1: User;
 let sudo: User;
-let keyring: Keyring;
 let createdToken: BN;
 let liquidityID: BN;
 const defaultCurrencyValue = new BN(250000);
@@ -134,10 +131,8 @@ describe("xyk-pallet - Vested token tests: which action you can do with vesting 
   });
 
   beforeEach(async () => {
-    keyring = new Keyring({ type: "sr25519" });
-
     // setup users
-    sudo = new User(keyring, sudoUserName);
+    sudo = getSudoUser();
 
     [testUser1] = setupUsers();
 

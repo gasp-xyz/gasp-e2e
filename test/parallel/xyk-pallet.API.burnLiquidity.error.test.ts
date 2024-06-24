@@ -18,14 +18,9 @@ import { Keyring } from "@polkadot/api";
 import { AssetWallet, User } from "../../utils/User";
 import { validateUnmodified } from "../../utils/validators";
 import { Assets } from "../../utils/Assets";
-import {
-  getEnvironmentRequiredVars,
-  UserCreatesAPoolAndMintLiquidity,
-  xykErrors,
-} from "../../utils/utils";
+import { UserCreatesAPoolAndMintLiquidity, xykErrors } from "../../utils/utils";
 import { getEventResultFromMangataTx } from "../../utils/txHandler";
-
-const { sudo: sudoUserName } = getEnvironmentRequiredVars();
+import { getSudoUser } from "../../utils/setup";
 
 jest.spyOn(console, "log").mockImplementation(jest.fn());
 jest.setTimeout(1500000);
@@ -50,12 +45,12 @@ describe("xyk-pallet - Burn liquidity tests: BurnLiquidity Errors:", () => {
   });
 
   beforeEach(async () => {
-    keyring = new Keyring({ type: "sr25519" });
+    keyring = new Keyring({ type: "ethereum" });
 
     // setup users
     testUser1 = new User(keyring);
 
-    sudo = new User(keyring, sudoUserName);
+    sudo = getSudoUser();
 
     // add users to pair.
     keyring.addPair(testUser1.keyRingPair);
@@ -64,7 +59,6 @@ describe("xyk-pallet - Burn liquidity tests: BurnLiquidity Errors:", () => {
   });
 
   test("Burn liquidity assets that does not belong to any pool", async () => {
-    await testUser1.addMGATokens(sudo);
     const [firstCurrency, secondCurrency] =
       await Assets.setupUserWithCurrencies(
         testUser1,

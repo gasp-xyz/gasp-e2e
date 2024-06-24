@@ -15,7 +15,7 @@ import { BN } from "@polkadot/util";
 import { Keyring } from "@polkadot/api";
 import { AssetWallet, User } from "../../utils/User";
 import { Assets } from "../../utils/Assets";
-import { getEnvironmentRequiredVars } from "../../utils/utils";
+import { getSudoUser } from "../../utils/setup";
 
 jest.spyOn(console, "log").mockImplementation(jest.fn());
 jest.setTimeout(1500000);
@@ -28,7 +28,6 @@ let firstCurrency: BN;
 let secondCurrency: BN;
 
 // Assuming the pallet's AccountId
-const { sudo: sudoUserName } = getEnvironmentRequiredVars();
 const firstAssetAmount = 1000;
 const seccondAssetAmount = 1000;
 
@@ -39,11 +38,11 @@ beforeAll(async () => {
     await initApi();
   }
 
-  keyring = new Keyring({ type: "sr25519" });
+  keyring = new Keyring({ type: "ethereum" });
 
   // setup users
   testUser1 = new User(keyring);
-  const sudo = new User(keyring, sudoUserName);
+  const sudo = getSudoUser();
 
   //add two curerncies and balance to testUser:
   [firstCurrency, secondCurrency] = await Assets.setupUserWithCurrencies(

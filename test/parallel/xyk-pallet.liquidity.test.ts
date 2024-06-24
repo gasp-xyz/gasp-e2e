@@ -25,6 +25,7 @@ import { testLog } from "../../utils/Logger";
 import { getEventResultFromMangataTx } from "../../utils/txHandler";
 import { Sudo } from "../../utils/sudo";
 import { Xyk } from "../../utils/xyk";
+import { getSudoUser } from "../../utils/setup";
 
 jest.spyOn(console, "log").mockImplementation(jest.fn());
 jest.setTimeout(1500000);
@@ -39,8 +40,7 @@ let firstCurrency: BN;
 let secondCurrency: BN;
 let liquidityAssetId: BN;
 
-const { xykPalletAddress: pallet_address, sudo: sudoUserName } =
-  getEnvironmentRequiredVars();
+const { xykPalletAddress: pallet_address } = getEnvironmentRequiredVars();
 const defaultCurrecyValue = new BN(250000);
 
 beforeAll(async () => {
@@ -52,12 +52,12 @@ beforeAll(async () => {
 });
 
 beforeEach(async () => {
-  keyring = new Keyring({ type: "sr25519" });
+  keyring = new Keyring({ type: "ethereum" });
 
   // setup users
   testUser1 = new User(keyring);
   testUser2 = new User(keyring);
-  const sudo = new User(keyring, sudoUserName);
+  const sudo = getSudoUser();
 
   // setup Pallet.
   pallet = new User(keyring);

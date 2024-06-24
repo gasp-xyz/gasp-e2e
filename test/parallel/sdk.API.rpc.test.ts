@@ -3,9 +3,8 @@
  * @group parallel
  */
 import { jest } from "@jest/globals";
-import { setupApi, setupUsers } from "../../utils/setup";
+import { getSudoUser, setupApi, setupUsers } from "../../utils/setup";
 import { Assets } from "../../utils/Assets";
-import { Keyring } from "@polkadot/api";
 import { User } from "../../utils/User";
 import { getEnvironmentRequiredVars } from "../../utils/utils";
 import { Sudo } from "../../utils/sudo";
@@ -30,9 +29,7 @@ beforeAll(async () => {
   await setupApi();
   [user1] = setupUsers();
 
-  const keyring = new Keyring({ type: "sr25519" });
-
-  const sudo = new User(keyring, getEnvironmentRequiredVars().sudo);
+  const sudo = getSudoUser();
   [token1, token2] = await Assets.setupUserWithCurrencies(
     sudo,
     [Assets.DEFAULT_AMOUNT, Assets.DEFAULT_AMOUNT],

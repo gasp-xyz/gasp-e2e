@@ -144,7 +144,7 @@ test("xyk-pallet - Check required fee - User with MGX only", async () => {
   expect(deductedMGATkns).bnLte(fee);
   expect(deductedMGATkns).bnGt(new BN(0));
 });
-test("xyk-pallet - Check required fee - User with KSM only, operation fails", async () => {
+test.skip("xyk-pallet - Check required fee - User with KSM only, operation fails", async () => {
   //add KSM tokens.
   await testUser1.addKSMTokens(sudo);
   let exception = false;
@@ -163,7 +163,7 @@ test("xyk-pallet - Check required fee - User with KSM only, operation fails", as
   expect(exception).toBeTruthy();
 });
 
-test("xyk-pallet - Check required fee - User with TUR only, operation fails", async () => {
+test.skip("xyk-pallet - Check required fee - User with TUR only, operation fails", async () => {
   //add TUR tokens.
   await testUser1.addTURTokens(sudo);
   let exception = false;

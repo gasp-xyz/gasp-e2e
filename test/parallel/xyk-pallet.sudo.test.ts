@@ -11,17 +11,16 @@ import { BN } from "@polkadot/util";
 import { Keyring } from "@polkadot/api";
 import { User } from "../../utils/User";
 import { validateTransactionSucessful } from "../../utils/validators";
-import { getEnvironmentRequiredVars } from "../../utils/utils";
 import {
   getEventResultFromMangataTx,
   sudoIssueAsset,
 } from "../../utils/txHandler";
 import { testLog } from "../../utils/Logger";
+import { getSudoUser } from "../../utils/setup";
 
 jest.spyOn(console, "log").mockImplementation(jest.fn());
 jest.setTimeout(1500000);
 process.env.NODE_ENV = "test";
-const { sudo: sudoUserName } = getEnvironmentRequiredVars();
 
 let testUser: User;
 let keyring: Keyring;
@@ -35,11 +34,11 @@ beforeAll(async () => {
 });
 
 beforeEach(async () => {
-  keyring = new Keyring({ type: "sr25519" });
+  keyring = new Keyring({ type: "ethereum" });
 
   // setup users
   testUser = new User(keyring);
-  const sudo = new User(keyring, sudoUserName);
+  const sudo = getSudoUser();
   // add users to pair.
   keyring.addPair(testUser.keyRingPair);
   keyring.addPair(sudo.keyRingPair);

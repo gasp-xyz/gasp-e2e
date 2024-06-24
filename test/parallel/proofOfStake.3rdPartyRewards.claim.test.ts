@@ -9,6 +9,7 @@ import {
   getThirdPartyRewards,
   getUserBalanceOfToken,
   stringToBN,
+  waitIfSessionWillChangeInNblocks,
 } from "../../utils/utils";
 import { Assets } from "../../utils/Assets";
 import { Sudo } from "../../utils/sudo";
@@ -55,7 +56,7 @@ describe("Proof of stake tests", () => {
           Assets.DEFAULT_AMOUNT,
         ],
         sudo,
-        true,
+        false,
       );
 
     await setupApi();
@@ -160,6 +161,7 @@ describe("Proof of stake tests", () => {
     });
     it("Rewards are divided in n-sessions", async () => {
       const testUser = testUser2;
+      await waitIfSessionWillChangeInNblocks(5);
       const liquidityAssetId = await getLiquidityAssetId(newToken, newToken2);
       await Sudo.batchAsSudoFinalized(
         Sudo.sudoAs(
@@ -181,7 +183,8 @@ describe("Proof of stake tests", () => {
           ),
         ),
       );
-      await waitForRewards(testUser, liquidityAssetId, 40, MGA_ASSET_ID);
+
+      await waitForRewards(testUser, liquidityAssetId, 80, MGA_ASSET_ID);
       // its 2 sessions, so 50% of rewards should be available
       const expectedRewards = Assets.DEFAULT_AMOUNT.muln(10e6).divn(2);
       const avl = await getThirdPartyRewards(

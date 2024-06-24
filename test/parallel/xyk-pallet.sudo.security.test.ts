@@ -10,11 +10,11 @@ import { getCurrentNonce } from "../../utils/tx";
 import { ExtrinsicResult } from "../../utils/eventListeners";
 import { Keyring } from "@polkadot/api";
 import { AssetWallet, User } from "../../utils/User";
-import { getEnvironmentRequiredVars } from "../../utils/utils";
 import { MGA_ASSET_ID } from "../../utils/Constants";
 import { BN } from "@polkadot/util";
 import { getEventResultFromMangataTx } from "../../utils/txHandler";
 import { signTx } from "@mangata-finance/sdk";
+import { getSudoUser } from "../../utils/setup";
 jest.spyOn(console, "log").mockImplementation(jest.fn());
 jest.spyOn(console, "error").mockImplementation(jest.fn());
 jest.setTimeout(1500000);
@@ -27,8 +27,6 @@ let sudo: User;
 let keyring: Keyring;
 //creating pool
 
-const { sudo: sudoUserName } = getEnvironmentRequiredVars();
-
 beforeAll(async () => {
   try {
     getApi();
@@ -36,12 +34,12 @@ beforeAll(async () => {
     await initApi();
   }
 
-  keyring = new Keyring({ type: "sr25519" });
+  keyring = new Keyring({ type: "ethereum" });
 
   // setup users
   testUser1 = new User(keyring);
   testUser2 = new User(keyring);
-  sudo = new User(keyring, sudoUserName);
+  sudo = getSudoUser();
 
   keyring.addPair(testUser1.keyRingPair);
   keyring.addPair(testUser2.keyRingPair);

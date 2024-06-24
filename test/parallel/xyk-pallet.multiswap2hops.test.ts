@@ -120,9 +120,12 @@ describe("Multiswap [2 hops] - happy paths", () => {
     expect(eventResponse.state).toEqual(ExtrinsicResult.ExtrinsicSuccess);
   });
   test("[gasless] Fees - multi-swap roll backs all the swaps when one fail but 0.3% is charged", async () => {
-    const assetIdWithSmallPool = new BN(7);
+    const [assetIdWithSmallPool] = await Assets.setupUserWithCurrencies(
+      sudo,
+      [new BN(1)],
+      sudo,
+    );
     await Sudo.batchAsSudoFinalized(
-      Assets.mintToken(assetIdWithSmallPool, sudo, new BN(1)),
       Assets.mintToken(tokenIds[tokenIds.length - 1], sudo, new BN(1)),
       Xyk.createPool(
         tokenIds[tokenIds.length - 1],

@@ -336,6 +336,7 @@ export async function getThirdPartyRewards(
     liquidityAssetId.toString(),
     rewardToken.toString(),
   );
+  testLog.getLog().info("3rd party rewards - " + calculation.toString());
   return stringToBN(calculation.toString());
 }
 export async function waitNewStakingRound(maxBlocks: number = 0) {

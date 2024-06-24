@@ -23,6 +23,7 @@ import {
   EVENT_SECTION_PAYMENT,
   EVENT_METHOD_PAYMENT,
 } from "../../utils/Constants";
+import { getSudoUser } from "../../utils/setup";
 
 jest.spyOn(console, "log").mockImplementation(jest.fn());
 jest.setTimeout(1500000);
@@ -36,8 +37,7 @@ let keyring: Keyring;
 let firstCurrency: BN;
 let secondCurrency: BN;
 
-const { xykPalletAddress: pallet_address, sudo: sudoUserName } =
-  getEnvironmentRequiredVars();
+const { xykPalletAddress: pallet_address } = getEnvironmentRequiredVars();
 
 const defaultCurrecyValue = new BN(250000);
 
@@ -50,12 +50,12 @@ beforeAll(async () => {
 });
 
 beforeEach(async () => {
-  keyring = new Keyring({ type: "sr25519" });
+  keyring = new Keyring({ type: "ethereum" });
 
   // setup users
   testUser1 = new User(keyring);
   testUser2 = new User(keyring);
-  const sudo = new User(keyring, sudoUserName);
+  const sudo = getSudoUser();
 
   // setup Pallet.
   pallet = new User(keyring);

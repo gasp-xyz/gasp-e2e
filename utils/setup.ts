@@ -181,8 +181,7 @@ export async function setup5PoolsChained(users: User[]) {
 export async function setupAPoolForUsers(users: User[]) {
   const [testUser1, testUser2, testUser3, testUser4] = await setupUsers();
   users = [testUser1, testUser2, testUser3, testUser4];
-  const keyring = new Keyring({ type: "sr25519" });
-  const sudo = new User(keyring, getEnvironmentRequiredVars().sudo);
+  const sudo = getSudoUser();
 
   const tokenIds = await SudoDB.getInstance().getTokenIds(2);
 

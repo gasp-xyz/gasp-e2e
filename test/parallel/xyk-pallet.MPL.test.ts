@@ -24,12 +24,14 @@ import { BN } from "@polkadot/util";
 import { hexToBn } from "@polkadot/util";
 import { Assets } from "../../utils/Assets";
 import { getApi } from "../../utils/api";
+import { setupUsers } from "../../utils/setup";
 
 jest.spyOn(console, "log").mockImplementation(jest.fn());
 jest.setTimeout(1500000);
 process.env.NODE_ENV = "test";
 
 let testUser1: User;
+let testUser2: User;
 let sudo: SudoUser;
 let keyring: Keyring;
 let liqTokenForCandidate: BN;
@@ -37,11 +39,34 @@ let liqTokensAmount: BN;
 
 describe("MPL: Delegator", () => {
   beforeEach(async () => {
-    keyring = new Keyring({ type: "sr25519" });
+    keyring = new Keyring({ type: "ethereum" });
     const node = new Node(getEnvironmentRequiredVars().chainUri);
     await node.connect();
+    const api = getApi();
+    const tokenAmount = new BN(
+      await api.consts.parachainStaking.minCandidateStk.toString(),
+    ).muln(100);
     // setup users
-    testUser1 = new User(keyring);
+    [testUser1, testUser2] = setupUsers();
+    sudo = new SudoUser(keyring, node);
+    const [tokenId] = await Assets.setupUserWithCurrencies(
+      testUser2,
+      [tokenAmount],
+      sudo,
+    );
+    await testUser2.addMGATokens(sudo, tokenAmount.muln(1000));
+    await testUser2.createPoolToAsset(
+      tokenAmount,
+      tokenAmount,
+      MGA_ASSET_ID,
+      tokenId,
+    );
+    liqTokenForCandidate = await getLiquidityAssetId(MGA_ASSET_ID, tokenId);
+    await sudo.addStakingLiquidityToken(liqTokenForCandidate);
+    liqTokensAmount = hexToBn(
+      (await testUser2.getUserTokensAccountInfo(liqTokenForCandidate)).free,
+    );
+    await testUser2.joinAsCandidate(liqTokenForCandidate, liqTokensAmount);
     sudo = new SudoUser(keyring, node);
     const candidates = JSON.parse(
       JSON.stringify(await node.api?.query.parachainStaking.candidatePool()),
@@ -111,10 +136,10 @@ describe("MPL: Delegator", () => {
 
 describe("MPL: Collators", () => {
   beforeAll(async () => {
-    keyring = new Keyring({ type: "sr25519" });
+    keyring = new Keyring({ type: "ethereum" });
     const node = new Node(getEnvironmentRequiredVars().chainUri);
     await node.connect();
-    const api = await getApi();
+    const api = getApi();
     const tokenAmount = new BN(
       await api.consts.parachainStaking.minCandidateStk.toString(),
     ).muln(100);
@@ -204,7 +229,7 @@ describe("MPL: Collators", () => {
 
 describe("MPL: Collators - Activated liq", () => {
   beforeAll(async () => {
-    keyring = new Keyring({ type: "sr25519" });
+    keyring = new Keyring({ type: "ethereum" });
     const node = new Node(getEnvironmentRequiredVars().chainUri);
     await node.connect();
     const api = await getApi();
