@@ -121,7 +121,7 @@ export async function setupMaintenanceTests(
   testCases["NoFoundation"] = {
     address: councilUsers[3].keyRingPair.address,
     //Council members can close motions always.
-    validate: validateExtrinsicSuccess,
+    validate: validateExtrinsicFailed,
   };
   testCases["NoCouncil"] = {
     address: eve.keyRingPair.address,
