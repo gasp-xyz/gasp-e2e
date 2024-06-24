@@ -109,7 +109,6 @@ describe("Council tests: Special rules for foundation addresses on mmON", () => 
   );
   it("Test that sudo address can veto an already voted proposal", async () => {
     const { validate } = testCases["Foundation"];
-
     const hash = proposalHashes[5];
     const propBefore = await Council.getProposal(hash);
     await Council.voteProposal(hash, councilUsers);
