@@ -130,8 +130,8 @@ export async function setupMaintenanceTests(
   };
   //ugly workaround to workaroudn the beforeAll jest missbehavior.
   const proposalHashes = await Council.createProposals(councilUsers);
-  //wait 6 mins 60 / 12 * 6 ::https://github.com/mangata-finance/mangata-node/blob/develop/runtime/mangata-rococo/src/lib.rs#L198
-  await waitForNBlocks(31);
+  //wait 6 mins 60 / 6 * 6 ::https://github.com/mangata-finance/mangata-node/blob/develop/runtime/common/src/lib.rs#L1166C54-L1166C75
+  await waitForNBlocks(61);
 
   if (MaintenanceMode) {
     const event = await Sudo.asSudoFinalized(

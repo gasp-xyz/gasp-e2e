@@ -48,11 +48,13 @@ beforeAll(async () => {
 
   await setupApi();
 
-  [token1] = await Assets.setupUserWithCurrencies(
+  //this code was added to prevent a token with the number 1 or 3 from being received as a token1. It must be removed after changing SDK
+  const tokens = await Assets.setupUserWithCurrencies(
     sudo,
-    [defaultCurrencyValue],
+    [defaultCurrencyValue, defaultCurrencyValue, defaultCurrencyValue],
     sudo,
   );
+  token1 = tokens.pop()!;
   mangata = await getMangataInstance();
   testLog.getLog().info("For SDK getInfo token1 is " + token1.toNumber());
   const assetMetadata = await (
