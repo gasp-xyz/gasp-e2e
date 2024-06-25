@@ -11,8 +11,8 @@ import { waitForBalanceChange } from "../../utils/utils";
 import {
   abi,
   getAssetIdFromErc20,
-  getBalance,
   getL2UpdatesStorage,
+  getNativeBalance,
   getPublicClient,
   setupEthUser,
 } from "../../utils/rollup/ethUtils";
@@ -98,7 +98,7 @@ describe("Rollup", () => {
       const anyChange = await depositAndWait(user);
       // Check that got updated.
       expect(anyChange).toBeTruthy();
-      const erc20Address = getL1("EthAnvil")?.contracts.dummyErc20.address!;
+      const erc20Address = getL1("EthAnvil")?.contracts.native.address!;
       await Sudo.batchAsSudoFinalized(Assets.mintNative(user));
       const tx = getApi().tx.rolldown.withdraw(
         "Ethereum",
@@ -106,11 +106,7 @@ describe("Rollup", () => {
         erc20Address,
         1122,
       );
-      const balanceBefore = await getBalance(
-        erc20Address,
-        user.keyRingPair.address,
-        "EthAnvil",
-      );
+      const balanceBefore = await getNativeBalance(user, "EthAnvil");
       const result = await signTxMetamask(
         tx,
         user.keyRingPair.address,
@@ -119,21 +115,13 @@ describe("Rollup", () => {
       const res = getEventResultFromMangataTx(result);
       expect(res).toBeTruthy();
 
-      let balanceAfter = await getBalance(
-        erc20Address,
-        user.keyRingPair.address,
-        "EthAnvil",
-      );
+      let balanceAfter = await getNativeBalance(user, "EthAnvil");
       while (
         BigInt((balanceAfter as any).toString()) <=
         BigInt((balanceBefore as any).toString())
       ) {
         await new Promise((resolve) => setTimeout(resolve, 5000));
-        balanceAfter = await getBalance(
-          erc20Address,
-          user.keyRingPair.address,
-          "EthAnvil",
-        );
+        balanceAfter = await getNativeBalance(user, "EthAnvil");
         testLog.getLog().info(balanceAfter);
       }
       const diff =
@@ -142,7 +130,7 @@ describe("Rollup", () => {
       expect(diff).toBe(BigInt(1122));
     });
   });
-  describe("ARB Deposits & withdraws", () => {
+  describe("ARB Deposits & withdraws - native", () => {
     beforeEach(async () => {
       try {
         getApi();
@@ -173,7 +161,7 @@ describe("Rollup", () => {
       const anyChange = await depositAndWait(user, "ArbAnvil");
       // Check that got updated.
       expect(anyChange).toBeTruthy();
-      const arbErc20 = getL1("ArbAnvil")?.contracts.dummyErc20.address!;
+      const arbErc20 = getL1("ArbAnvil")?.contracts.native.address!;
       await Sudo.batchAsSudoFinalized(Assets.mintNative(user));
       const tx = getApi().tx.rolldown.withdraw(
         "Arbitrum",
@@ -182,11 +170,7 @@ describe("Rollup", () => {
         1122,
       );
 
-      const balanceBefore = await getBalance(
-        arbErc20,
-        user.keyRingPair.address,
-        "ArbAnvil",
-      );
+      const balanceBefore = await getNativeBalance(user, "ArbAnvil");
       const result = await signTxMetamask(
         tx,
         user.keyRingPair.address,
@@ -195,21 +179,13 @@ describe("Rollup", () => {
       const res = getEventResultFromMangataTx(result);
       expect(res).toBeTruthy();
 
-      let balanceAfter = await getBalance(
-        arbErc20,
-        user.keyRingPair.address,
-        "ArbAnvil",
-      );
+      let balanceAfter = await getNativeBalance(user, "ArbAnvil");
       while (
         BigInt((balanceAfter as any).toString()) <=
         BigInt((balanceBefore as any).toString())
       ) {
         await new Promise((resolve) => setTimeout(resolve, 5000));
-        balanceAfter = await getBalance(
-          arbErc20,
-          user.keyRingPair.address,
-          "ArbAnvil",
-        );
+        balanceAfter = await getNativeBalance(user, "ArbAnvil");
         testLog.getLog().info(balanceAfter);
       }
       const diff =
