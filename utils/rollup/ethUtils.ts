@@ -69,6 +69,13 @@ export async function getL2UpdatesStorage(l1: L1Type = "EthAnvil") {
     functionName: "getUpdateForL2",
   });
 }
+
+export async function getNativeBalance(user: User, l1: L1Type) {
+  const client = getPublicClient(l1);
+  return client.getBalance({
+    address: user.keyRingPair.address as `0x${string}`,
+  });
+}
 export async function getBalance(
   erc20Address: string,
   userAddress: string,
