@@ -96,7 +96,7 @@ describe.each(["mmON", "mmOFF"])(
         mode = mm;
         proposalHashes = await createProposals(councilUsers);
         //wait 6 mins 60 / 12 * 6 ::https://github.com/mangata-finance/mangata-node/blob/develop/runtime/mangata-rococo/src/lib.rs#L198
-        await waitForNBlocks(31);
+        await waitForNBlocks(61);
       }
       const event = await await Sudo.asSudoFinalized(
         Sudo.sudoAsWithAddressString(FOUNDATION_ADDRESS_1, maintenanceMode[mm]),
