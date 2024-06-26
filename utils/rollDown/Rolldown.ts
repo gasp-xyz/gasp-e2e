@@ -102,6 +102,11 @@ export class Rolldown {
     const api = getApi();
     return (await api.consts.rolldown.disputePeriodLength) as any as BN;
   }
+
+  static async cancelRequestFromL1(chainId: ChainName, reqId: number) {
+    const api = getApi();
+    return api.tx.rolldown.cancelRequestsFromL1(chainId, reqId);
+  }
 }
 export class L2Update {
   api: ApiPromise;

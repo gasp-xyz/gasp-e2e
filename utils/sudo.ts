@@ -22,6 +22,7 @@ export class Sudo {
   }
 
   static sudoAsWithAddressString(address: string, tx: Extrinsic): Extrinsic {
+    const api = getApi();
     return api.tx.sudo.sudoAs(address, tx as any as Call);
   }
 

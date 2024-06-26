@@ -10,13 +10,15 @@ import {
 import { L2Update, Rolldown } from "../../utils/rollDown/Rolldown";
 import { BN_MILLION, signTx } from "@mangata-finance/sdk";
 import { getApi, initApi } from "../../utils/api";
-import { alice, setupUsers } from "../../utils/setup";
+import { alice, setupApi, setupUsers } from "../../utils/setup";
 import {
   expectExtrinsicFail,
   expectExtrinsicSucceed,
   waitForNBlocks,
 } from "../../utils/utils";
 import { User } from "../../utils/User";
+import { Sudo } from "../../utils/sudo";
+import { waitSudoOperationSuccess } from "../../utils/eventListeners";
 
 const findACollatorButNotSequencerUser = () => {
   return alice;
@@ -56,6 +58,7 @@ describe("sequencerStaking", () => {
   beforeEach(async () => {
     await initApi();
     setupUsers();
+    await setupApi();
     await leaveSequencingIfAlreadySequencer(findACollatorButNotSequencerUser());
     const sequencersBefore = await SequencerStaking.activeSequencers();
     expect(sequencersBefore.toHuman().Ethereum).not.toContain(
@@ -144,9 +147,102 @@ describe("sequencerStaking", () => {
       seq.keyRingPair,
     ).then((events) => {
       const res = expectExtrinsicFail(events);
-      expect(res.data.toString()).toContain("SequencerLastUpdateStillInDisputePeriod");
+      expect(res.data.toString()).toContain(
+        "SequencerLastUpdateStillInDisputePeriod",
+      );
     });
     await waitForNBlocks((await Rolldown.disputePeriodLength()).toNumber());
+    await signTx(
+      api,
+      await SequencerStaking.unstake("Arbitrum"),
+      seq.keyRingPair,
+    ).then((events) => {
+      expectExtrinsicSucceed(events);
+    });
+    const res = await SequencerStaking.sequencerStake(
+      seq.keyRingPair.address,
+      "Arbitrum",
+    );
+    expect(res.toHuman()).toBe("0");
+  });
+  it("Active Sequencer -> Active -> canceled update -> Can not leave", async () => {
+    const notYetSequencer = findACollatorButNotSequencerUser();
+    const minToBeSequencer = await SequencerStaking.minimalStakeAmount();
+    await signTx(
+      await getApi(),
+      await SequencerStaking.provideSequencerStaking(
+        minToBeSequencer.addn(1234),
+        "Arbitrum",
+      ),
+      notYetSequencer.keyRingPair,
+    ).then((events) => {
+      expectExtrinsicSucceed(events);
+    });
+    const sequencers = await SequencerStaking.activeSequencers();
+    expect(sequencers.toHuman().Arbitrum).toContain(
+      notYetSequencer.keyRingPair.address,
+    );
+    const canceler = (sequencers.toHuman().Arbitrum as string[]).filter(
+      (x) => x !== notYetSequencer.keyRingPair.address,
+    )[0];
+    const seq = notYetSequencer;
+    await Rolldown.waitForReadRights(seq.keyRingPair.address, 50, "Arbitrum");
+    const txIndex = await Rolldown.l2OriginRequestId();
+    const api = getApi();
+    const update = new L2Update(api)
+      .withDeposit(
+        txIndex + 1,
+        seq.keyRingPair.address,
+        seq.keyRingPair.address,
+        BN_MILLION,
+      )
+      .on("Arbitrum")
+      .build();
+    await signTx(api, update, seq.keyRingPair).then((events) => {
+      expectExtrinsicSucceed(events);
+    });
+    const reqId = txIndex + 1;
+    await Sudo.asSudoFinalized(
+      Sudo.sudoAsWithAddressString(
+        canceler,
+        await Rolldown.cancelRequestFromL1("Arbitrum", reqId),
+      ),
+    ).then(async (events) => {
+      await waitSudoOperationSuccess(events);
+    });
+    await signTx(
+      api,
+      await SequencerStaking.leaveSequencerStaking("Arbitrum"),
+      seq.keyRingPair,
+    ).then((events) => {
+      expectExtrinsicSucceed(events);
+    });
+    await signTx(
+      api,
+      await SequencerStaking.unstake("Arbitrum"),
+      seq.keyRingPair,
+    ).then((events) => {
+      const res = expectExtrinsicFail(events);
+      expect(res.data.toString()).toContain(
+        "SequencerLastUpdateStillInDisputePeriod",
+      );
+    });
+    await waitForNBlocks((await Rolldown.disputePeriodLength()).toNumber());
+    await Rolldown.waitForReadRights(canceler, 50, "Arbitrum");
+
+    const cancelResolutionEvents = await Sudo.asSudoFinalized(
+      Sudo.sudoAsWithAddressString(
+        canceler,
+        new L2Update(api)
+          .withCancelResolution(reqId + 1, reqId, false)
+          .on("Arbitrum")
+          .build(),
+      ),
+    );
+    await waitSudoOperationSuccess(cancelResolutionEvents);
+    await waitForNBlocks((await Rolldown.disputePeriodLength()).toNumber());
+    //then the user must be able to unstake and leave
+
     await signTx(
       api,
       await SequencerStaking.unstake("Arbitrum"),
