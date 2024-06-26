@@ -8,6 +8,7 @@ import { stringToBN, waitBlockNumber } from "../utils";
 import { getEventsAt, waitNewBlock } from "../eventListeners";
 import { ApiPromise } from "@polkadot/api";
 import { ChainName } from "./SequencerStaking";
+import { testLog } from "../Logger";
 
 export class Rolldown {
   static async l2OriginRequestId(l1 = "Ethereum") {
@@ -75,6 +76,11 @@ export class Rolldown {
     chain: ChainName = "Ethereum",
   ) {
     while (maxBlocks-- > 0) {
+      testLog
+        .getLog()
+        .info(
+          `Waiting for read rights ${maxBlocks} : ${chain} : ${userAddress}`,
+        );
       const seqRights = await getApi().query.rolldown.sequencersRights(chain);
       const selectedSequencer =
         await getApi().query.sequencerStaking.selectedSequencer();
@@ -90,6 +96,11 @@ export class Rolldown {
       }
     }
     throw new Error("Max blocks reached without getting read rights");
+  }
+
+  static async disputePeriodLength() {
+    const api = getApi();
+    return (await api.consts.rolldown.disputePeriodLength) as any as BN;
   }
 }
 export class L2Update {
