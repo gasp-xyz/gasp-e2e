@@ -105,9 +105,10 @@ export function findEventData(result: MangataGenericEvent[], method: string) {
 
 export async function waitSudoOperationSuccess(
   checkingEvent: MangataGenericEvent[],
+  filterBy = "Sudid",
 ) {
   const filterBootstrapEvent = checkingEvent.filter(
-    (extrinsicResult) => extrinsicResult.method === "Sudid",
+    (extrinsicResult) => extrinsicResult.method === filterBy,
   );
 
   const userBootstrapCall = filterBootstrapEvent[0].event.data[0].toString();

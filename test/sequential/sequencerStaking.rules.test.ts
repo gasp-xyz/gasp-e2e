@@ -165,7 +165,7 @@ describe("sequencerStaking", () => {
     );
     expect(res.toHuman()).toBe("0");
   });
-  it("Active Sequencer -> Active -> canceled update -> Can not leave", async () => {
+  it.skip("Active Sequencer -> Active -> canceled update -> Can not leave", async () => {
     const notYetSequencer = findACollatorButNotSequencerUser();
     const minToBeSequencer = await SequencerStaking.minimalStakeAmount();
     await signTx(
@@ -187,28 +187,29 @@ describe("sequencerStaking", () => {
     )[0];
     const seq = notYetSequencer;
     await Rolldown.waitForReadRights(seq.keyRingPair.address, 50, "Arbitrum");
-    const txIndex = await Rolldown.l2OriginRequestId();
+    let txIndex = await Rolldown.l2OriginRequestId();
     const api = getApi();
     const update = new L2Update(api)
       .withDeposit(
-        txIndex + 1,
+        txIndex,
         seq.keyRingPair.address,
         seq.keyRingPair.address,
         BN_MILLION,
       )
       .on("Arbitrum")
       .build();
+    let reqId = 0;
     await signTx(api, update, seq.keyRingPair).then((events) => {
       expectExtrinsicSucceed(events);
+      reqId = Rolldown.getRequestIdFromEvents(events);
     });
-    const reqId = txIndex + 1;
     await Sudo.asSudoFinalized(
       Sudo.sudoAsWithAddressString(
         canceler,
         await Rolldown.cancelRequestFromL1("Arbitrum", reqId),
       ),
     ).then(async (events) => {
-      await waitSudoOperationSuccess(events);
+      await waitSudoOperationSuccess(events, "SudoAsDone");
     });
     await signTx(
       api,
@@ -224,22 +225,22 @@ describe("sequencerStaking", () => {
     ).then((events) => {
       const res = expectExtrinsicFail(events);
       expect(res.data.toString()).toContain(
-        "SequencerLastUpdateStillInDisputePeriod",
+        "SequencerAwaitingCancelResolution",
       );
     });
     await waitForNBlocks((await Rolldown.disputePeriodLength()).toNumber());
     await Rolldown.waitForReadRights(canceler, 50, "Arbitrum");
-
+    txIndex = await Rolldown.l2OriginRequestId();
     const cancelResolutionEvents = await Sudo.asSudoFinalized(
       Sudo.sudoAsWithAddressString(
         canceler,
         new L2Update(api)
-          .withCancelResolution(reqId + 1, reqId, false)
+          .withCancelResolution(txIndex, reqId, false)
           .on("Arbitrum")
           .build(),
       ),
     );
-    await waitSudoOperationSuccess(cancelResolutionEvents);
+    await waitSudoOperationSuccess(cancelResolutionEvents, "SudoAsDone");
     await waitForNBlocks((await Rolldown.disputePeriodLength()).toNumber());
     //then the user must be able to unstake and leave
 

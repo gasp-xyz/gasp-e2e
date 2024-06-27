@@ -107,6 +107,14 @@ export class Rolldown {
     const api = getApi();
     return api.tx.rolldown.cancelRequestsFromL1(chainId, reqId);
   }
+
+  static getRequestIdFromEvents(events: MangataGenericEvent[]) {
+    const event = getEventResultFromMangataTx(events, [
+      "rolldown",
+      "L1ReadStored",
+    ]);
+    return parseInt(event.data[0][2]);
+  }
 }
 export class L2Update {
   api: ApiPromise;
