@@ -19,6 +19,8 @@ import {
 import { User } from "../../utils/User";
 import { Sudo } from "../../utils/sudo";
 import { waitSudoOperationSuccess } from "../../utils/eventListeners";
+import { Assets } from "../../utils/Assets";
+import { BN_ZERO } from "@polkadot/util";
 
 const findACollatorButNotSequencerUser = () => {
   return alice;
@@ -256,5 +258,24 @@ describe("sequencerStaking", () => {
       "Arbitrum",
     );
     expect(res.toHuman()).toBe("0");
+  });
+  //TODO - Add test for sequencer creating a cancel and unstake
+  it.skip("Max sequencer is set for both chains", async () => {
+    const maxSequencers = await SequencerStaking.maxSequencers();
+    const activeSequencers = await SequencerStaking.activeSequencers();
+    const amountForArb =
+      (parseInt(maxSequencers.toHuman()) as number) -
+      (activeSequencers.toHuman().Arbitrum! as string[]).length;
+    for (let i = 0; i < amountForArb; i++) {
+      const [user] = setupUsers();
+      const tx = await Sudo.batchAsSudoFinalized(
+        Assets.mintNative(user),
+        Sudo.sudoAs(
+          user,
+          await SequencerStaking.provideSequencerStaking(BN_ZERO, "Arbitrum"),
+        ),
+      );
+      await waitSudoOperationSuccess(tx, "SudoAsDone");
+    }
   });
 });

@@ -57,4 +57,9 @@ export class SequencerStaking {
     const api = getApi();
     return await api.query.sequencerStaking.sequencerStake([address, chain]);
   }
+
+  static async maxSequencers() {
+    const api = getApi();
+    return await api.consts.sequencerStaking.maxSequencers;
+  }
 }
