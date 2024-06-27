@@ -12,7 +12,7 @@ import { Assets } from "../../utils/Assets";
 import { Sudo } from "../../utils/sudo";
 import { Xyk } from "../../utils/xyk";
 import { getSudoUser, setupApi, setupUsers } from "../../utils/setup";
-import { MGA_ASSET_ID } from "../../utils/Constants";
+import { GASP_ASSET_ID } from "../../utils/Constants";
 import {
   BN_HUNDRED,
   BN_ONE,
@@ -77,20 +77,20 @@ describe("Proof of stake tests", () => {
       Sudo.sudoAs(
         testUser1,
         Xyk.createPool(
-          MGA_ASSET_ID,
+          GASP_ASSET_ID,
           Assets.DEFAULT_AMOUNT.muln(20e6),
           newToken,
           Assets.DEFAULT_AMOUNT.muln(20e6),
         ),
       ),
     );
-    liqId = await getLiquidityAssetId(MGA_ASSET_ID, newToken);
+    liqId = await getLiquidityAssetId(GASP_ASSET_ID, newToken);
     await Sudo.batchAsSudoFinalized(
       Sudo.sudo(Staking.addStakingLiquidityToken(liqId)),
       Sudo.sudoAs(
         testUser2,
         Xyk.mintLiquidity(
-          MGA_ASSET_ID,
+          GASP_ASSET_ID,
           newToken,
           Assets.DEFAULT_AMOUNT.divn(2),
           Assets.DEFAULT_AMOUNT,
@@ -99,7 +99,7 @@ describe("Proof of stake tests", () => {
       Sudo.sudoAs(
         testUser3,
         Xyk.mintLiquidity(
-          MGA_ASSET_ID,
+          GASP_ASSET_ID,
           newToken,
           Assets.DEFAULT_AMOUNT.divn(2),
           Assets.DEFAULT_AMOUNT,
@@ -110,7 +110,7 @@ describe("Proof of stake tests", () => {
           sudo.keyRingPair.address,
           testUser4,
           Assets.DEFAULT_AMOUNT.divn(2),
-          MGA_ASSET_ID,
+          GASP_ASSET_ID,
           100,
         ),
       ),

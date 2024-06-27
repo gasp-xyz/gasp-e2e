@@ -14,7 +14,7 @@ import {
 } from "../../utils/tx";
 import { Keyring } from "@polkadot/api";
 import { SudoUser } from "../../utils/Framework/User/SudoUser";
-import { MGA_ASSET_ID } from "../../utils/Constants";
+import { GASP_ASSET_ID } from "../../utils/Constants";
 import { hexToBn, BN } from "@polkadot/util";
 import {
   getBlockNumber,
@@ -51,7 +51,7 @@ describe("Vesting", () => {
     sudo = new SudoUser(keyring, node);
     const block = await getBlockNumber();
     const result = await testUser1
-      .withTokens([MGA_ASSET_ID])
+      .withTokens([GASP_ASSET_ID])
       .withFn(
         node.api!.tx.sudo.sudo(
           node.api!.tx.vesting.forceVestedTransfer(
@@ -82,7 +82,7 @@ describe("Vesting", () => {
     await createPoolIfMissing(
       sudo,
       BN_HUNDRED_THOUSAND.muln(2).toString(),
-      MGA_ASSET_ID,
+      GASP_ASSET_ID,
       createdToken,
       true,
     );
@@ -93,10 +93,10 @@ describe("Vesting", () => {
       BN_HUNDRED_THOUSAND,
       createdToken,
     );
-    const liqToken = await getLiquidityAssetId(MGA_ASSET_ID, createdToken);
+    const liqToken = await getLiquidityAssetId(GASP_ASSET_ID, createdToken);
     const balances = await getUserAssets(testUser1.keyRingPair.address, [
       liqToken,
-      MGA_ASSET_ID,
+      GASP_ASSET_ID,
     ]);
     expect(balances[0].frozen).bnEqual(
       vestedTokenAmount.sub(balances[1].frozen),
@@ -116,10 +116,10 @@ describe("Vesting", () => {
       BN_HUNDRED_THOUSAND,
       createdToken,
     );
-    const liqToken = await getLiquidityAssetId(MGA_ASSET_ID, createdToken);
+    const liqToken = await getLiquidityAssetId(GASP_ASSET_ID, createdToken);
     const balances = await getUserAssets(testUser1.keyRingPair.address, [
       liqToken,
-      MGA_ASSET_ID,
+      GASP_ASSET_ID,
     ]);
 
     const result = await activateLiquidity(

@@ -420,7 +420,7 @@ describe.skip("xyk-pallet - Operate with a highly unbalanced pool [mg - newAsset
       [divNumber, MAX_BALANCE.div(divNumber)],
       sudo,
     );
-    await testUser1.addMGATokens(sudo);
+    await testUser1.addGASPTokens(sudo);
 
     // check users accounts.
     await testUser1.refreshAmounts(AssetWallet.BEFORE);
@@ -431,7 +431,7 @@ describe.skip("xyk-pallet - Operate with a highly unbalanced pool [mg - newAsset
     await sudo.mint(secondCurrency, testUser2, MAX_BALANCE);
     await sudo.mint(firstCurrency, testUser2, MAX_BALANCE);
     testUser2.addAssets([firstCurrency, secondCurrency]);
-    await testUser2.addMGATokens(sudo);
+    await testUser2.addGASPTokens(sudo);
     //Lets create a pool with Lot of MGA few secondCurr.
     await createPool(
       testUser2.keyRingPair,

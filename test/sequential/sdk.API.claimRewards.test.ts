@@ -10,7 +10,7 @@ import { getSudoUser, setupApi, setupUsers } from "../../utils/setup";
 import { Sudo } from "../../utils/sudo";
 import { User } from "../../utils/User";
 import { Xyk } from "../../utils/xyk";
-import { MGA_ASSET_ID } from "../../utils/Constants";
+import { GASP_ASSET_ID } from "../../utils/Constants";
 import {
   claimRewardsAll,
   getLiquidityAssetId,
@@ -73,7 +73,7 @@ beforeAll(async () => {
       Sudo.sudoAs(
         testUser,
         Xyk.createPool(
-          MGA_ASSET_ID,
+          GASP_ASSET_ID,
           defaultCurrencyValue.divn(2),
           new BN(newTokenId),
           defaultCurrencyValue.divn(2),
@@ -86,7 +86,7 @@ beforeAll(async () => {
 
   for (let tokenNumber = 0; tokenNumber < poolTokenIds.length; tokenNumber++) {
     const liqId = await getLiquidityAssetId(
-      MGA_ASSET_ID,
+      GASP_ASSET_ID,
       poolTokenIds[tokenNumber],
     );
     liqIds.push(liqId);
@@ -122,7 +122,7 @@ test("GIVEN an user has available some rewards in one pool WHEN claims all rewar
     Sudo.sudoAs(
       testUser1,
       Xyk.mintLiquidity(
-        MGA_ASSET_ID,
+        GASP_ASSET_ID,
         poolTokenIds[0],
         defaultCurrencyValue.divn(2),
       ),
@@ -157,7 +157,7 @@ test("GIVEN an user has available some rewards in two pools WHEN claims all rewa
     Sudo.sudoAs(
       testUser1,
       Xyk.mintLiquidity(
-        MGA_ASSET_ID,
+        GASP_ASSET_ID,
         poolTokenIds[0],
         defaultCurrencyValue.divn(2),
       ),
@@ -165,7 +165,7 @@ test("GIVEN an user has available some rewards in two pools WHEN claims all rewa
     Sudo.sudoAs(
       testUser1,
       Xyk.mintLiquidity(
-        MGA_ASSET_ID,
+        GASP_ASSET_ID,
         poolTokenIds[1],
         defaultCurrencyValue.divn(2),
       ),
@@ -212,7 +212,7 @@ test("GIVEN an user has available some rewards in two pools one deactivated WHEN
     Sudo.sudoAs(
       testUser1,
       Xyk.mintLiquidity(
-        MGA_ASSET_ID,
+        GASP_ASSET_ID,
         poolTokenIds[0],
         defaultCurrencyValue.divn(2),
       ),
@@ -220,7 +220,7 @@ test("GIVEN an user has available some rewards in two pools one deactivated WHEN
     Sudo.sudoAs(
       testUser1,
       Xyk.mintLiquidity(
-        MGA_ASSET_ID,
+        GASP_ASSET_ID,
         poolTokenIds[12],
         defaultCurrencyValue.divn(2),
       ),
@@ -368,7 +368,7 @@ async function createMultiplePoolsForUser(user: User, numberPools: number) {
       Sudo.sudoAs(
         user,
         Xyk.mintLiquidity(
-          MGA_ASSET_ID,
+          GASP_ASSET_ID,
           poolTokenIds[i],
           defaultCurrencyValue.divn(2),
         ),

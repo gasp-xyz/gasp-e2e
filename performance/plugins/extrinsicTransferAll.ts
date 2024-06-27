@@ -3,7 +3,7 @@
 // import { Mangata } from "@mangata-finance/sdk";
 // import { TestParams } from "../testParams";
 // import { KeyringPair } from "@polkadot/keyring/types";
-// import { MGA_ASSET_ID } from "../../utils/Constants";
+// import { GASP_ASSET_ID } from "../../utils/Constants";
 // import { preGenerateTransactions, runTransactions } from "./testRunner";
 // import { performanceTestItem } from "./performanceTestItem";
 //
@@ -11,7 +11,7 @@
 //   assets = [1, 3];
 //   async arrange(numberOfThreads: number, nodes: string[]): Promise<boolean> {
 //     await super.arrange(numberOfThreads, nodes);
-//     await this.mintTokensToUsers(numberOfThreads, nodes, [MGA_ASSET_ID]);
+//     await this.mintTokensToUsers(numberOfThreads, nodes, [GASP_ASSET_ID]);
 //     await this.mintERC20TokensToUsers(this.assets, this.mgaNodeandUsers);
 //     return true;
 //   }

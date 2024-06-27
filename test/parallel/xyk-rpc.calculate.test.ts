@@ -50,7 +50,7 @@ beforeAll(async () => {
     [new BN(firstAssetAmount * 2), new BN(seccondAssetAmount * 2)],
     sudo,
   );
-  await testUser1.addMGATokens(sudo);
+  await testUser1.addGASPTokens(sudo);
   await testUser1.createPoolToAsset(
     new BN(firstAssetAmount),
     new BN(seccondAssetAmount),

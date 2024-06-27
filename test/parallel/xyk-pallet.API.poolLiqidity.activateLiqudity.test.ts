@@ -6,7 +6,7 @@
 import { jest } from "@jest/globals";
 import { getApi, initApi } from "../../utils/api";
 import { Assets } from "../../utils/Assets";
-import { MGA_ASSET_ID } from "../../utils/Constants";
+import { GASP_ASSET_ID } from "../../utils/Constants";
 import { BN } from "@polkadot/util";
 import { getSudoUser, setupApi, setupUsers } from "../../utils/setup";
 import { Sudo } from "../../utils/sudo";
@@ -58,7 +58,7 @@ beforeAll(async () => {
     Sudo.sudoAs(
       testUser1,
       Xyk.createPool(
-        MGA_ASSET_ID,
+        GASP_ASSET_ID,
         Assets.DEFAULT_AMOUNT.divn(2),
         token1,
         Assets.DEFAULT_AMOUNT.divn(2),
@@ -66,7 +66,7 @@ beforeAll(async () => {
     ),
   );
 
-  liqIdPromPool = await getLiquidityAssetId(MGA_ASSET_ID, token1);
+  liqIdPromPool = await getLiquidityAssetId(GASP_ASSET_ID, token1);
 
   await Sudo.batchAsSudoFinalized(
     Assets.promotePool(liqIdPromPool.toNumber(), 20),
@@ -88,7 +88,7 @@ test("GIVEN a proofOfStake.updatePoolPromotion WHEN the liq token is a regular t
 test("Check that a user that deactivate some tokens, put liquidity tokens from frozen to free, then activate some tokens and put liquidity tokens from free to frozen", async () => {
   await mintLiquidity(
     testUser1.keyRingPair,
-    MGA_ASSET_ID,
+    GASP_ASSET_ID,
     token1,
     defaultCurrencyValue,
   );

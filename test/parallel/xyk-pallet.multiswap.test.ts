@@ -24,7 +24,7 @@ import { BN_ONE, BN_TEN_THOUSAND, BN_ZERO } from "@mangata-finance/sdk";
 import {
   EVENT_METHOD_PAYMENT,
   EVENT_SECTION_PAYMENT,
-  MGA_ASSET_ID,
+  GASP_ASSET_ID,
 } from "../../utils/Constants";
 import { Assets } from "../../utils/Assets";
 import { BN_MILLION } from "@mangata-finance/sdk";
@@ -117,7 +117,7 @@ describe("Multiswap - happy paths", () => {
     await testUser2.refreshAmounts(AssetWallet.AFTER);
     const walletsModifiedInSwap = testUser2.getWalletDifferences();
     const mgaDiff = walletsModifiedInSwap.find((value) =>
-      value.currencyId.eq(MGA_ASSET_ID),
+      value.currencyId.eq(GASP_ASSET_ID),
     )?.diff;
     expect(mgaDiff?.free.add(mgaDiff?.reserved)).bnEqual(BN_ZERO);
     expect(mgaDiff?.reserved).bnGt(BN_ZERO);
@@ -159,7 +159,7 @@ describe("Multiswap - happy paths", () => {
     //Validate that the modified tokens are MGX and the first element in the list.
     expect(walletsModifiedInSwap).toHaveLength(2);
     expect(
-      walletsModifiedInSwap.some((token) => token.currencyId.eq(MGA_ASSET_ID)),
+      walletsModifiedInSwap.some((token) => token.currencyId.eq(GASP_ASSET_ID)),
     ).toBeTruthy();
     expect(
       walletsModifiedInSwap.some((token) =>
@@ -339,7 +339,7 @@ describe("Multiswap - happy paths", () => {
     );
     const multiSwapOutput = await multiSwapSell(
       testUser4,
-      tokenIds.concat(MGA_ASSET_ID),
+      tokenIds.concat(GASP_ASSET_ID),
       Assets.DEFAULT_AMOUNT.divn(100000),
       BN_ONE,
     );
@@ -348,12 +348,12 @@ describe("Multiswap - happy paths", () => {
       successSwapEventName,
     ]);
     expect(eventResponse.state).toEqual(ExtrinsicResult.ExtrinsicSuccess);
-    testUser4.addAssets(tokenIds.concat(MGA_ASSET_ID));
+    testUser4.addAssets(tokenIds.concat(GASP_ASSET_ID));
     await testUser4.refreshAmounts(AssetWallet.BEFORE);
     //now only one token must be in the pool
     const multiSwapOutput2 = await multiSwapSell(
       testUser4,
-      tokenIds.concat(MGA_ASSET_ID),
+      tokenIds.concat(GASP_ASSET_ID),
       Assets.DEFAULT_AMOUNT.divn(100000),
       BN_ZERO,
     );

@@ -64,7 +64,7 @@ beforeAll(async () => {
   keyring.addPair(testUser1.keyRingPair);
   keyring.addPair(sudo.keyRingPair);
 
-  await testUser1.addMGATokens(sudo);
+  await testUser1.addGASPTokens(sudo);
 });
 
 describe("xyk-pallet - Buy assets tests: BuyAssets Errors:", () => {
@@ -236,7 +236,7 @@ describe("xyk-pallet - Buy assets tests: Buying assets you can", () => {
     // add users to pair.
     keyring.addPair(testUser1.keyRingPair);
     keyring.addPair(sudo.keyRingPair);
-    await testUser1.addMGATokens(sudo);
+    await testUser1.addGASPTokens(sudo);
   });
 
   test("Leave only one asset in the pool", async () => {

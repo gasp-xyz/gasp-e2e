@@ -9,7 +9,7 @@ import { getApi, initApi } from "../../utils/api";
 import { Node } from "../../utils/Framework/Node/Node";
 import { UserFactory, Users } from "../../utils/Framework/User/UserFactory";
 import { Keyring } from "@polkadot/api";
-import { MGA_ASSET_ID } from "../../utils/Constants";
+import { GASP_ASSET_ID } from "../../utils/Constants";
 import { Sudo } from "../../utils/sudo";
 import { Xyk } from "../../utils/xyk";
 import { ProofOfStake } from "../../utils/ProofOfStake";
@@ -76,13 +76,13 @@ export class Extrinsic3rdPartyClaim extends performanceTestItem {
         Assets.DEFAULT_AMOUNT.muln(40e6),
       ),
       Xyk.createPool(
-        MGA_ASSET_ID,
+        GASP_ASSET_ID,
         Assets.DEFAULT_AMOUNT.muln(10e6),
         new BN(this.tokens[0]),
         Assets.DEFAULT_AMOUNT.muln(10e6),
       ),
       Xyk.createPool(
-        MGA_ASSET_ID,
+        GASP_ASSET_ID,
         Assets.DEFAULT_AMOUNT.muln(10e6),
         new BN(this.tokens[1]),
         Assets.DEFAULT_AMOUNT.muln(10e6),
@@ -90,28 +90,28 @@ export class Extrinsic3rdPartyClaim extends performanceTestItem {
     );
     await Sudo.batchAsSudoFinalized(
       await ProofOfStake.rewardPool(
-        MGA_ASSET_ID,
+        GASP_ASSET_ID,
         new BN(this.tokens[0]),
-        MGA_ASSET_ID,
+        GASP_ASSET_ID,
         Assets.DEFAULT_AMOUNT.muln(40e6),
         10,
       ),
       await ProofOfStake.rewardPool(
-        MGA_ASSET_ID,
+        GASP_ASSET_ID,
         new BN(this.tokens[1]),
-        MGA_ASSET_ID,
+        GASP_ASSET_ID,
         Assets.DEFAULT_AMOUNT.muln(40e6),
         10,
       ),
     );
     await this.mintTokensToUsers(testParams.threads, testParams.nodes, [
-      MGA_ASSET_ID,
-      await getLiquidityAssetId(MGA_ASSET_ID, new BN(this.tokens[0])),
-      await getLiquidityAssetId(MGA_ASSET_ID, new BN(this.tokens[1])),
+      GASP_ASSET_ID,
+      await getLiquidityAssetId(GASP_ASSET_ID, new BN(this.tokens[0])),
+      await getLiquidityAssetId(GASP_ASSET_ID, new BN(this.tokens[1])),
     ]);
     await this.activate3rdPArtyRewards(testParams.nodes, [
-      await getLiquidityAssetId(MGA_ASSET_ID, new BN(this.tokens[0])),
-      await getLiquidityAssetId(MGA_ASSET_ID, new BN(this.tokens[1])),
+      await getLiquidityAssetId(GASP_ASSET_ID, new BN(this.tokens[0])),
+      await getLiquidityAssetId(GASP_ASSET_ID, new BN(this.tokens[1])),
     ]);
     // await this.mintERC20TokensToUsers(this.tokens, this.mgaNodeandUsers);
     console.info(`Setup Done!`);
@@ -157,7 +157,7 @@ export class Extrinsic3rdPartyClaim extends performanceTestItem {
               await ProofOfStake.activateLiquidityFor3rdpartyRewards(
                 assetId,
                 BN_ONE,
-                MGA_ASSET_ID,
+                GASP_ASSET_ID,
               ),
               usersWithLiq[i].keyPair,
               { nonce: usersWithLiq[i].nonce },
@@ -190,8 +190,8 @@ async function createAndSignClaimRewards(
   const assets = [tokens[0], tokens[1]];
   const claimAssetId = threadId % 2 === 0 ? assets[0] : assets[1];
   const tx = await ProofOfStake.claim3rdpartyRewards(
-    await getLiquidityAssetId(MGA_ASSET_ID, new BN(claimAssetId)),
-    MGA_ASSET_ID,
+    await getLiquidityAssetId(GASP_ASSET_ID, new BN(claimAssetId)),
+    GASP_ASSET_ID,
   );
   await tx.signAsync(
     srcUser!.keyPair,

@@ -13,7 +13,7 @@ import { findErrorMetadata } from "../../utils/utils";
 import { getEventResultFromMangataTx } from "../../utils/txHandler";
 import { ExtrinsicResult } from "../../utils/eventListeners";
 import { Xyk } from "../../utils/xyk";
-import { MGA_ASSET_ID } from "../../utils/Constants";
+import { GASP_ASSET_ID } from "../../utils/Constants";
 import { getLiquidityAssetId } from "../../utils/tx";
 import { BN_ZERO } from "@mangata-finance/sdk";
 jest.spyOn(console, "log").mockImplementation(jest.fn());
@@ -56,7 +56,7 @@ beforeAll(async () => {
     Sudo.sudoAs(
       testUser,
       Xyk.createPool(
-        MGA_ASSET_ID,
+        GASP_ASSET_ID,
         Assets.DEFAULT_AMOUNT.divn(2),
         token1,
         Assets.DEFAULT_AMOUNT.divn(2),
@@ -64,7 +64,7 @@ beforeAll(async () => {
     ),
   );
 
-  liqId = await getLiquidityAssetId(MGA_ASSET_ID, token1);
+  liqId = await getLiquidityAssetId(GASP_ASSET_ID, token1);
 
   await Sudo.batchAsSudoFinalized(Assets.promotePool(liqId.toNumber(), 20));
 });
@@ -75,7 +75,7 @@ beforeEach(async () => {
     Assets.mintNative(testUser1),
     Assets.mintToken(token1, testUser1, Assets.DEFAULT_AMOUNT),
   );
-  testUser1.addAsset(MGA_ASSET_ID);
+  testUser1.addAsset(GASP_ASSET_ID);
   testUser1.addAsset(token1);
   testUser1.addAsset(liqId);
 });
@@ -90,7 +90,7 @@ test("Check that when we are using SDK batch function and the first call finishe
     account: testUser1.keyRingPair,
     calls: [
       Assets.mintToken(token1, testUser1, defaultCurrencyValue),
-      Xyk.mintLiquidity(MGA_ASSET_ID, token1, defaultCurrencyValue),
+      Xyk.mintLiquidity(GASP_ASSET_ID, token1, defaultCurrencyValue),
     ],
   });
 
@@ -120,7 +120,7 @@ test("Check that when we are using SDK batch function and the second call finish
   ).batch({
     account: testUser1.keyRingPair,
     calls: [
-      Xyk.mintLiquidity(MGA_ASSET_ID, token1, defaultCurrencyValue),
+      Xyk.mintLiquidity(GASP_ASSET_ID, token1, defaultCurrencyValue),
       Assets.mintToken(token1, testUser1, defaultCurrencyValue),
     ],
   });
@@ -145,20 +145,20 @@ test("Check that when we are using SDK batch function and the second call finish
 test("Happy path - batch", async () => {
   await testUser1.refreshAmounts(AssetWallet.BEFORE);
   const userMgaTokenBefore =
-    testUser1.getAsset(MGA_ASSET_ID)?.amountBefore.free;
+    testUser1.getAsset(GASP_ASSET_ID)?.amountBefore.free;
 
   const extrinsic = await (
     await mangata
   ).batch({
     account: testUser1.keyRingPair,
     calls: [
-      Xyk.mintLiquidity(MGA_ASSET_ID, token1, defaultCurrencyValue),
-      Xyk.burnLiquidity(MGA_ASSET_ID, token1, defaultCurrencyValue),
+      Xyk.mintLiquidity(GASP_ASSET_ID, token1, defaultCurrencyValue),
+      Xyk.burnLiquidity(GASP_ASSET_ID, token1, defaultCurrencyValue),
     ],
   });
 
   await testUser1.refreshAmounts(AssetWallet.AFTER);
-  const userMgaTokenAfter = testUser1.getAsset(MGA_ASSET_ID)?.amountAfter.free;
+  const userMgaTokenAfter = testUser1.getAsset(GASP_ASSET_ID)?.amountAfter.free;
   const userLiqTokenAfter = testUser1.getAsset(liqId)?.amountAfter.reserved;
 
   const eventResponse = getEventResultFromMangataTx(extrinsic, [
@@ -179,7 +179,7 @@ test("WHEN call batchAll where one item is failed THEN all entire transactions w
   ).batchAll({
     account: testUser1.keyRingPair,
     calls: [
-      Xyk.mintLiquidity(MGA_ASSET_ID, token1, defaultCurrencyValue),
+      Xyk.mintLiquidity(GASP_ASSET_ID, token1, defaultCurrencyValue),
       Assets.mintToken(token1, testUser1, defaultCurrencyValue),
     ],
   });
@@ -197,20 +197,20 @@ test("WHEN call batchAll where one item is failed THEN all entire transactions w
 test("Happy path - batchAll", async () => {
   await testUser1.refreshAmounts(AssetWallet.BEFORE);
   const userMgaTokenBefore =
-    testUser1.getAsset(MGA_ASSET_ID)?.amountBefore.free;
+    testUser1.getAsset(GASP_ASSET_ID)?.amountBefore.free;
 
   const extrinsic = await (
     await mangata
   ).batchAll({
     account: testUser1.keyRingPair,
     calls: [
-      Xyk.mintLiquidity(MGA_ASSET_ID, token1, defaultCurrencyValue),
-      Xyk.burnLiquidity(MGA_ASSET_ID, token1, defaultCurrencyValue),
+      Xyk.mintLiquidity(GASP_ASSET_ID, token1, defaultCurrencyValue),
+      Xyk.burnLiquidity(GASP_ASSET_ID, token1, defaultCurrencyValue),
     ],
   });
 
   await testUser1.refreshAmounts(AssetWallet.AFTER);
-  const userMgaTokenAfter = testUser1.getAsset(MGA_ASSET_ID)?.amountAfter.free;
+  const userMgaTokenAfter = testUser1.getAsset(GASP_ASSET_ID)?.amountAfter.free;
   const userLiqTokenAfter = testUser1.getAsset(liqId)?.amountAfter.reserved;
 
   const eventResponse = getEventResultFromMangataTx(extrinsic, [
@@ -232,7 +232,7 @@ test("WHEN call forceBatch where one item is failed THEN check completed and fai
     account: testUser1.keyRingPair,
     calls: [
       Assets.mintToken(token1, testUser1, defaultCurrencyValue),
-      Xyk.mintLiquidity(MGA_ASSET_ID, token1, defaultCurrencyValue),
+      Xyk.mintLiquidity(GASP_ASSET_ID, token1, defaultCurrencyValue),
     ],
   });
 
@@ -258,20 +258,20 @@ test("WHEN call forceBatch where one item is failed THEN check completed and fai
 test("Happy path - forceBatch", async () => {
   await testUser1.refreshAmounts(AssetWallet.BEFORE);
   const userMgaTokenBefore =
-    testUser1.getAsset(MGA_ASSET_ID)?.amountBefore.free;
+    testUser1.getAsset(GASP_ASSET_ID)?.amountBefore.free;
 
   const extrinsic = await (
     await mangata
   ).forceBatch({
     account: testUser1.keyRingPair,
     calls: [
-      Xyk.mintLiquidity(MGA_ASSET_ID, token1, defaultCurrencyValue),
-      Xyk.burnLiquidity(MGA_ASSET_ID, token1, defaultCurrencyValue),
+      Xyk.mintLiquidity(GASP_ASSET_ID, token1, defaultCurrencyValue),
+      Xyk.burnLiquidity(GASP_ASSET_ID, token1, defaultCurrencyValue),
     ],
   });
 
   await testUser1.refreshAmounts(AssetWallet.AFTER);
-  const userMgaTokenAfter = testUser1.getAsset(MGA_ASSET_ID)?.amountAfter.free;
+  const userMgaTokenAfter = testUser1.getAsset(GASP_ASSET_ID)?.amountAfter.free;
   const userLiqTokenAfter = testUser1.getAsset(liqId)?.amountAfter.reserved;
 
   const eventResponse = getEventResultFromMangataTx(extrinsic, [

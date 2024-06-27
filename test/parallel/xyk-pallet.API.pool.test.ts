@@ -72,7 +72,7 @@ describe("xyk-pallet - Poll creation: Errors:", () => {
       [defaultCurrecyValue, defaultCurrecyValue.add(new BN(1))],
       sudo,
     );
-    await testUser1.addMGATokens(sudo);
+    await testUser1.addGASPTokens(sudo);
     // add users to pair.
     keyring.addPair(testUser1.keyRingPair);
     keyring.addPair(sudo.keyRingPair);
@@ -458,7 +458,7 @@ describe("xyk-pallet - Pool opeations: Simmetry", () => {
       [defaultCurrecyValue, defaultCurrecyValue.add(new BN(1))],
       sudo,
     );
-    await testUser1.addMGATokens(sudo, new BN("100000000000000000000000"));
+    await testUser1.addGASPTokens(sudo, new BN("100000000000000000000000"));
     // add users to pair.
     keyring.addPair(testUser1.keyRingPair);
     keyring.addPair(sudo.keyRingPair);

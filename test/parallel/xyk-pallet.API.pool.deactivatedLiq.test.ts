@@ -19,7 +19,7 @@ import { Xyk } from "../../utils/xyk";
 import { BN } from "@polkadot/util";
 import { BN_BILLION, BN_ZERO } from "@mangata-finance/sdk";
 import { ExtrinsicResult, waitForRewards } from "../../utils/eventListeners";
-import { MGA_ASSET_ID } from "../../utils/Constants";
+import { GASP_ASSET_ID } from "../../utils/Constants";
 import { getEventResultFromMangataTx } from "../../utils/txHandler";
 import { ProofOfStake } from "../../utils/ProofOfStake";
 
@@ -80,7 +80,7 @@ beforeAll(async () => {
     Assets.mintNative(sudo),
     Sudo.sudoAs(testUser1, ProofOfStake.activateLiquidity(liqId, BN_BILLION)),
   );
-  testUser1.addAsset(MGA_ASSET_ID);
+  testUser1.addAsset(GASP_ASSET_ID);
   testUser1.addAsset(liqId);
   await waitForRewards(testUser1, liqId);
   await Sudo.batchAsSudoFinalized(Assets.promotePool(liqId.toNumber(), 0));

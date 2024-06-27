@@ -22,7 +22,7 @@ import { BN_ONE, BN_TEN_THOUSAND, BN_ZERO } from "@mangata-finance/sdk";
 import {
   EVENT_METHOD_PAYMENT,
   EVENT_SECTION_PAYMENT,
-  MGA_ASSET_ID,
+  GASP_ASSET_ID,
 } from "../../utils/Constants";
 import { Xyk } from "../../utils/xyk";
 import { Assets } from "../../utils/Assets";
@@ -109,7 +109,7 @@ describe("Multiswap [2 hops] - happy paths", () => {
     await testUser2.refreshAmounts(AssetWallet.AFTER);
     const walletsModifiedInSwap = testUser2.getWalletDifferences();
     const mgaDiff = walletsModifiedInSwap.find((value) =>
-      value.currencyId.eq(MGA_ASSET_ID),
+      value.currencyId.eq(GASP_ASSET_ID),
     )?.diff;
     expect(mgaDiff?.free.add(mgaDiff?.reserved)).bnEqual(BN_ZERO);
     expect(mgaDiff?.reserved).bnGt(BN_ZERO);
@@ -154,7 +154,7 @@ describe("Multiswap [2 hops] - happy paths", () => {
     //Validate that the modified tokens are MGX and the first element in the list.
     expect(walletsModifiedInSwap).toHaveLength(2);
     expect(
-      walletsModifiedInSwap.some((token) => token.currencyId.eq(MGA_ASSET_ID)),
+      walletsModifiedInSwap.some((token) => token.currencyId.eq(GASP_ASSET_ID)),
     ).toBeTruthy();
     expect(
       walletsModifiedInSwap.some((token) =>

@@ -8,7 +8,7 @@ import {
 } from "@polkadot/types/lookup";
 import { stringToBN } from "./utils";
 import { Sudo } from "./sudo";
-import { MGA_ASSET_ID } from "./Constants";
+import { GASP_ASSET_ID } from "./Constants";
 import { Assets } from "./Assets";
 import { User } from "./User";
 
@@ -172,7 +172,7 @@ export class ProofOfStake {
       Sudo.sudoAs(
         testUser,
         await ProofOfStake.rewardPool(
-          MGA_ASSET_ID,
+          GASP_ASSET_ID,
           newToken,
           newToken,
           Assets.DEFAULT_AMOUNT.muln(10e6),

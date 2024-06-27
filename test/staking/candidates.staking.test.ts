@@ -18,7 +18,7 @@ import {
 } from "../../utils/Staking";
 import { Sudo } from "../../utils/sudo";
 import { Assets } from "../../utils/Assets";
-import { MGA_ASSET_ID } from "../../utils/Constants";
+import { GASP_ASSET_ID } from "../../utils/Constants";
 import { testLog } from "../../utils/Logger";
 import { BN } from "@polkadot/util";
 import { findErrorMetadata, getUserBalanceOfToken } from "../../utils/utils";
@@ -67,11 +67,11 @@ beforeAll(async () => {
     Assets.mintToken(tokenId2, testUser5, minStk.muln(1000)),
     Sudo.sudoAs(
       testUser4,
-      Xyk.createPool(MGA_ASSET_ID, minStk.muln(3), tokenId1, minStk.muln(3)),
+      Xyk.createPool(GASP_ASSET_ID, minStk.muln(3), tokenId1, minStk.muln(3)),
     ),
     Sudo.sudoAs(
       testUser5,
-      Xyk.createPool(MGA_ASSET_ID, minStk.muln(3), tokenId2, minStk.muln(3)),
+      Xyk.createPool(GASP_ASSET_ID, minStk.muln(3), tokenId2, minStk.muln(3)),
     ),
   );
 });
@@ -81,7 +81,7 @@ describe("Test candidates actions", () => {
   it("A user can become a candidate by joining as candidate", async () => {
     const extrinsic = await Staking.joinAsCandidate(
       minStk.muln(2),
-      MGA_ASSET_ID,
+      GASP_ASSET_ID,
       tokenOriginEnum.AvailableBalance,
     );
     const events = await Sudo.asSudoFinalized(
@@ -94,7 +94,7 @@ describe("Test candidates actions", () => {
     );
     expect(isUserInCandidateList).toBeTruthy();
 
-    const userBalance = await getUserBalanceOfToken(MGA_ASSET_ID, testUser1);
+    const userBalance = await getUserBalanceOfToken(GASP_ASSET_ID, testUser1);
     const total = hexToBn(JSON.parse(userBalance.toString()).free).add(
       hexToBn(JSON.parse(userBalance.toString()).reserved),
     );
@@ -104,10 +104,10 @@ describe("Test candidates actions", () => {
   it("A user can only join as candidate with one staking token at the same time", async () => {
     const extrinsic = await Staking.joinAsCandidate(
       minStk.muln(2),
-      MGA_ASSET_ID,
+      GASP_ASSET_ID,
       tokenOriginEnum.AvailableBalance,
     );
-    const liqToken = await getLiquidityAssetId(MGA_ASSET_ID, tokenId1);
+    const liqToken = await getLiquidityAssetId(GASP_ASSET_ID, tokenId1);
     const extrinsicNewToken = await Staking.joinAsCandidate(
       minStk.muln(2),
       liqToken,
@@ -132,7 +132,7 @@ describe("Test candidates actions", () => {
     expect(error.state).toEqual(ExtrinsicResult.ExtrinsicFailed);
   });
   it("A user can not join as candidate with a token that is not enabled ( or MGX )", async () => {
-    const liqToken = await getLiquidityAssetId(MGA_ASSET_ID, tokenId2);
+    const liqToken = await getLiquidityAssetId(GASP_ASSET_ID, tokenId2);
     const extrinsicNewToken = await Staking.joinAsCandidate(
       minStk.muln(2),
       liqToken,
@@ -153,7 +153,7 @@ describe("Test candidates actions", () => {
     const aggregator = testUser3;
     const extrinsic = await Staking.joinAsCandidate(
       minStk.muln(2),
-      MGA_ASSET_ID,
+      GASP_ASSET_ID,
       tokenOriginEnum.AvailableBalance,
     );
     const events = await Sudo.asSudoFinalized(

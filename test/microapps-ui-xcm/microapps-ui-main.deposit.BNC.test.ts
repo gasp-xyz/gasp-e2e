@@ -14,7 +14,7 @@ import {
 } from "../../utils/frontend/utils/Helper";
 import { AssetWallet, User } from "../../utils/User";
 import { getEnvironmentRequiredVars } from "../../utils/utils";
-import { MGA_ASSET_ID, TUR_ASSET_ID } from "../../utils/Constants";
+import { GASP_ASSET_ID, TUR_ASSET_ID } from "../../utils/Constants";
 import { Node } from "../../utils/Framework/Node/Node";
 import "dotenv/config";
 import {
@@ -107,7 +107,7 @@ describe("Microapps UI BNC transfer tests", () => {
     );
 
     testUser1.addAsset(TUR_ASSET_ID);
-    testUser1.addAsset(MGA_ASSET_ID);
+    testUser1.addAsset(GASP_ASSET_ID);
     await testUser1.refreshAmounts(AssetWallet.BEFORE);
 
     await setupPage(driver);

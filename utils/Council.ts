@@ -1,4 +1,4 @@
-import { MGA_ASSET_ID } from "./Constants";
+import { GASP_ASSET_ID } from "./Constants";
 import { api, Extrinsic } from "./setup";
 import { Sudo } from "./sudo";
 import { User } from "./User";
@@ -58,7 +58,7 @@ export class Council {
         users.length,
         api.tx.sudoOrigin.sudo(
           api.tx.tokens.mint(
-            MGA_ASSET_ID,
+            GASP_ASSET_ID,
             userToSubmit.keyRingPair.address,
             new BN(i).addn(1),
           ),

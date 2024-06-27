@@ -18,7 +18,7 @@ import { getFeeLockMetadata } from "../../utils/utils";
 import { SignerOptions } from "@polkadot/api/types";
 import { getEventResultFromMangataTx } from "../../utils/txHandler";
 import { RuntimeDispatchInfo } from "@polkadot/types/interfaces";
-import { MGA_ASSET_ID } from "../../utils/Constants";
+import { GASP_ASSET_ID } from "../../utils/Constants";
 import { Fees } from "../../utils/Fees";
 import { BN_ZERO } from "@mangata-finance/sdk";
 import { getSudoUser } from "../../utils/setup";
@@ -62,11 +62,11 @@ beforeEach(async () => {
     sudo,
   );
   //add zero MGA tokens.
-  await testUser1.addMGATokens(sudo);
+  await testUser1.addGASPTokens(sudo);
   // add users to pair.
   keyring.addPair(testUser1.keyRingPair);
   keyring.addPair(sudo.keyRingPair);
-  testUser1.addAsset(MGA_ASSET_ID);
+  testUser1.addAsset(GASP_ASSET_ID);
   // check users accounts.
   await testUser1.refreshAmounts(AssetWallet.BEFORE);
   validateAssetsWithValues(
@@ -109,9 +109,9 @@ test("xyk-pallet - Calculate required MGA fee - CreatePool", async () => {
 
   await testUser1.refreshAmounts(AssetWallet.AFTER);
   const deductedMGATkns = testUser1
-    .getAsset(MGA_ASSET_ID)
+    .getAsset(GASP_ASSET_ID)
     ?.amountBefore.free.sub(
-      testUser1.getAsset(MGA_ASSET_ID)?.amountAfter.free!,
+      testUser1.getAsset(GASP_ASSET_ID)?.amountAfter.free!,
     );
   const fee = cost.partialFee;
   expect(deductedMGATkns).bnLte(fee);
@@ -152,9 +152,9 @@ test("xyk-pallet - Calculate required MGA fee - BuyAsset", async () => {
   expect(cost.partialFee).bnLte(costExpected);
   await testUser1.refreshAmounts(AssetWallet.AFTER);
   const deductedMGATkns = testUser1
-    .getAsset(MGA_ASSET_ID)
+    .getAsset(GASP_ASSET_ID)
     ?.amountBefore.free.sub(
-      testUser1.getAsset(MGA_ASSET_ID)?.amountAfter.free!,
+      testUser1.getAsset(GASP_ASSET_ID)?.amountAfter.free!,
     );
   const gaslessFee = (await getFeeLockMetadata(await getApi())).feeLockAmount;
   expect(deductedMGATkns?.sub(gaslessFee)).bnLte(BN_ZERO);

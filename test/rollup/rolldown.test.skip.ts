@@ -36,7 +36,7 @@ describe("Tests with rolldown functions:", () => {
     sudo = getSudoUser();
 
     await setupApi();
-    await sudo.addMGATokens(sudo);
+    await sudo.addGASPTokens(sudo);
   });
 
   beforeEach(async () => {
@@ -44,7 +44,7 @@ describe("Tests with rolldown functions:", () => {
   });
 
   test.skip("Deposit token using rolldown and cancel it", async () => {
-    await testEthUser.addMGATokens(sudo);
+    await testEthUser.addGASPTokens(sudo);
     const lastProcessRequest = await getLastProcessedRequestNumber();
     await signTx(
       sdkApi,
@@ -58,7 +58,7 @@ describe("Tests with rolldown functions:", () => {
   });
 
   test.skip("Deposit token using rolldown and then withdraw a part", async () => {
-    await testEthUser.addMGATokens(sudo);
+    await testEthUser.addGASPTokens(sudo);
     const lastProcessRequest = await getLastProcessedRequestNumber();
     await signTx(
       sdkApi,

@@ -16,7 +16,7 @@ import { getUserIdentity, getUserSubIdentity } from "../../utils/utils";
 import { BN_THOUSAND, BN_FIVE } from "@polkadot/util";
 import { BN_ONE, BN_HUNDRED } from "@mangata-finance/sdk";
 import { AssetWallet, User } from "../../utils/User";
-import { MGA_ASSET_ID } from "../../utils/Constants";
+import { GASP_ASSET_ID } from "../../utils/Constants";
 
 jest.spyOn(console, "log").mockImplementation(jest.fn());
 jest.setTimeout(1500000);
@@ -53,7 +53,7 @@ describe("Identity pallet tests: Main use cases", () => {
   it("Check setter & getters for identity pallet and reserves 5k mgas", async () => {
     const name = "CookiesAndMilk";
     const testUser = users[0];
-    testUser.addAsset(MGA_ASSET_ID);
+    testUser.addAsset(GASP_ASSET_ID);
     await testUser.refreshAmounts();
     await setUserIdentity(testUser, name);
     const identity = await getUserIdentity(testUser);
@@ -68,7 +68,7 @@ describe("Identity pallet tests: Main use cases", () => {
     const name = "CookiesAndMilk2";
     const testUser = users[1];
     await setUserIdentity(testUser, name);
-    testUser.addAsset(MGA_ASSET_ID);
+    testUser.addAsset(GASP_ASSET_ID);
     await testUser.refreshAmounts();
     const identity = await getUserIdentity(testUser);
     expect(identity.info.display.Raw).toEqual(name);

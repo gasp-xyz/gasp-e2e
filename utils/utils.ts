@@ -13,7 +13,7 @@ import { getStakingLiquidityTokens, sellAsset } from "./tx";
 import { Sudo } from "./sudo";
 import { setupApi, setupUsers } from "./setup";
 import { Xyk } from "./xyk";
-import { MGA_ASSET_ID } from "./Constants";
+import { GASP_ASSET_ID } from "./Constants";
 import {
   BN_HUNDRED,
   BN_ONE,
@@ -200,7 +200,7 @@ export async function UserCreatesAPoolAndMintLiquidity(
     [userAmount, userAmount],
     sudo,
   );
-  await testUser1.addMGATokens(sudo);
+  await testUser1.addGASPTokens(sudo);
   await (
     await getMangataInstance()
   ).xyk.createPool({
@@ -668,7 +668,7 @@ export async function swapEachNBlocks(period: number) {
     Sudo.sudoAs(
       testUser4,
       Xyk.createPool(
-        MGA_ASSET_ID,
+        GASP_ASSET_ID,
         Assets.DEFAULT_AMOUNT.divn(2),
         token2,
         Assets.DEFAULT_AMOUNT.divn(2),
@@ -680,7 +680,7 @@ export async function swapEachNBlocks(period: number) {
     await sellAsset(
       testUser4.keyRingPair,
       token2,
-      MGA_ASSET_ID,
+      GASP_ASSET_ID,
       BN_HUNDRED,
       BN_ONE,
     );

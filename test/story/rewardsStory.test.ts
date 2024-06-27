@@ -19,7 +19,7 @@ import {
   calculateMGAFees,
   getEnvironmentRequiredVars,
 } from "../../utils/utils";
-import { MGA_ASSET_ID } from "../../utils/Constants";
+import { GASP_ASSET_ID } from "../../utils/Constants";
 import { setupUsers, setupApi, getSudoUser } from "../../utils/setup";
 import { Sudo } from "../../utils/sudo";
 import { Xyk } from "../../utils/xyk";
@@ -62,7 +62,7 @@ describe("Story tests > Rewards - autocompound", () => {
       liquidityTokenId: liqId.toString(),
     });
     const mgasBalancesBefore = await mangata.query.getTokenBalance(
-      MGA_ASSET_ID.toString(),
+      GASP_ASSET_ID.toString(),
       testUser2.keyRingPair.address,
     );
     const amount = await calculateMGAFees(
@@ -77,7 +77,7 @@ describe("Story tests > Rewards - autocompound", () => {
       liquidityTokenId: liqId.toString(),
     });
     const mgasBalancesAfter = await mangata.query.getTokenBalance(
-      MGA_ASSET_ID.toString(),
+      GASP_ASSET_ID.toString(),
       testUser2.keyRingPair.address,
     );
     const expectedMGAAmount = mgasBalancesBefore.free
@@ -133,31 +133,31 @@ async function setupPoolWithRewardsForUsers(users: User[]) {
     Sudo.sudoAs(
       testUser1,
       Xyk.createPool(
-        MGA_ASSET_ID,
+        GASP_ASSET_ID,
         Assets.DEFAULT_AMOUNT.divn(2),
         token2,
         Assets.DEFAULT_AMOUNT.divn(2),
       ),
     ),
   );
-  const liqId = await getLiquidityAssetId(MGA_ASSET_ID, token2);
+  const liqId = await getLiquidityAssetId(GASP_ASSET_ID, token2);
   await Sudo.batchAsSudoFinalized(
     Assets.promotePool(liqId.toNumber(), 20),
     Sudo.sudoAs(
       testUser1,
-      Xyk.mintLiquidity(MGA_ASSET_ID, token2, new BN("1000000000000000")),
+      Xyk.mintLiquidity(GASP_ASSET_ID, token2, new BN("1000000000000000")),
     ),
     Sudo.sudoAs(
       testUser2,
-      Xyk.mintLiquidity(MGA_ASSET_ID, token2, new BN("1000000000000000")),
+      Xyk.mintLiquidity(GASP_ASSET_ID, token2, new BN("1000000000000000")),
     ),
     Sudo.sudoAs(
       testUser3,
-      Xyk.mintLiquidity(MGA_ASSET_ID, token2, new BN("1000000000000000")),
+      Xyk.mintLiquidity(GASP_ASSET_ID, token2, new BN("1000000000000000")),
     ),
     Sudo.sudoAs(
       testUser4,
-      Xyk.mintLiquidity(MGA_ASSET_ID, token2, new BN("1000000000000000")),
+      Xyk.mintLiquidity(GASP_ASSET_ID, token2, new BN("1000000000000000")),
     ),
   );
   await waitForRewards(testUser4, liqId);

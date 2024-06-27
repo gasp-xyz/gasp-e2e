@@ -5,7 +5,7 @@
 import { jest } from "@jest/globals";
 import { getApi, initApi } from "../../utils/api";
 import { Assets } from "../../utils/Assets";
-import { MGA_ASSET_ID, TUR_ASSET_ID } from "../../utils/Constants";
+import { GASP_ASSET_ID, TUR_ASSET_ID } from "../../utils/Constants";
 import { BN } from "@polkadot/util";
 import { getSudoUser, setupApi, setupUsers } from "../../utils/setup";
 import { Sudo } from "../../utils/sudo";
@@ -78,7 +78,7 @@ beforeEach(async () => {
     Sudo.sudoAs(
       sudo,
       Xyk.createPool(
-        MGA_ASSET_ID,
+        GASP_ASSET_ID,
         defaultPoolVolumeValue,
         firstCurrency,
         defaultPoolVolumeValue,
@@ -98,7 +98,7 @@ test("gasless- GIVEN a feeLock configured (only Time and Amount ) WHEN the user 
   await checkErrorSellAsset(
     testUser1,
     firstCurrency,
-    MGA_ASSET_ID,
+    GASP_ASSET_ID,
     thresholdValue.sub(new BN(100)),
     feeLockErrors.FeeLockingFail,
   );
@@ -107,12 +107,12 @@ test("gasless- GIVEN a feeLock configured (only Time and Amount ) WHEN the user 
 test("gasless- GIVEN a feeLock configured (only Time and Amount )  WHEN the user swaps AND the user does not have enough MGAs THEN the extrinsic fails on submission", async () => {
   await clearMgaFromWhitelisted(thresholdValue, sudo);
 
-  await testUser1.addMGATokens(sudo, new BN(2));
+  await testUser1.addGASPTokens(sudo, new BN(2));
 
   await checkErrorSellAsset(
     testUser1,
     firstCurrency,
-    MGA_ASSET_ID,
+    GASP_ASSET_ID,
     thresholdValue.sub(new BN(100)),
     feeLockErrors.FeeLockingFail,
   );
@@ -121,14 +121,14 @@ test("gasless- GIVEN a feeLock configured (only Time and Amount )  WHEN the user
 test("gasless- Given a feeLock correctly configured (only Time and Amount ) WHEN the user swaps AND the user has enough MGAs THEN the extrinsic is correctly submitted", async () => {
   await clearMgaFromWhitelisted(thresholdValue, sudo);
 
-  await testUser1.addMGATokens(sudo);
-  testUser1.addAsset(MGA_ASSET_ID);
+  await testUser1.addGASPTokens(sudo);
+  testUser1.addAsset(GASP_ASSET_ID);
   testUser1.addAsset(firstCurrency);
 
   const saleAssetValue = thresholdValue.add(new BN(5));
 
   await testUser1.refreshAmounts(AssetWallet.BEFORE);
-  await testUser1.sellAssets(MGA_ASSET_ID, firstCurrency, saleAssetValue);
+  await testUser1.sellAssets(GASP_ASSET_ID, firstCurrency, saleAssetValue);
   await testUser1.refreshAmounts(AssetWallet.AFTER);
 
   const firstCurrencyDeposit = testUser1
@@ -138,15 +138,15 @@ test("gasless- Given a feeLock correctly configured (only Time and Amount ) WHEN
     );
 
   const tokenFees = testUser1
-    .getAsset(MGA_ASSET_ID)
+    .getAsset(GASP_ASSET_ID)
     ?.amountAfter.reserved!.sub(
-      testUser1.getAsset(MGA_ASSET_ID)?.amountBefore.reserved!,
+      testUser1.getAsset(GASP_ASSET_ID)?.amountBefore.reserved!,
     );
 
   const userMgaFees = testUser1
-    .getAsset(MGA_ASSET_ID)
+    .getAsset(GASP_ASSET_ID)
     ?.amountAfter.free!.sub(
-      testUser1.getAsset(MGA_ASSET_ID)?.amountBefore.free!,
+      testUser1.getAsset(GASP_ASSET_ID)?.amountBefore.free!,
     )
     .add(new BN(saleAssetValue));
 

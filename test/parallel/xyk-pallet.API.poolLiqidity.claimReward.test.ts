@@ -6,7 +6,7 @@
 import { jest } from "@jest/globals";
 import { getApi, initApi } from "../../utils/api";
 import { Assets } from "../../utils/Assets";
-import { MGA_ASSET_ID } from "../../utils/Constants";
+import { GASP_ASSET_ID } from "../../utils/Constants";
 import { BN_ZERO } from "@mangata-finance/sdk";
 import { getSudoUser, setupApi, setupUsers } from "../../utils/setup";
 import { Sudo } from "../../utils/sudo";
@@ -75,7 +75,7 @@ beforeAll(async () => {
     Sudo.sudoAs(
       testUser1,
       Xyk.createPool(
-        MGA_ASSET_ID,
+        GASP_ASSET_ID,
         Assets.DEFAULT_AMOUNT.divn(2),
         token1,
         Assets.DEFAULT_AMOUNT.divn(2),
@@ -84,7 +84,7 @@ beforeAll(async () => {
     Sudo.sudoAs(
       testUser1,
       Xyk.createPool(
-        MGA_ASSET_ID,
+        GASP_ASSET_ID,
         Assets.DEFAULT_AMOUNT.divn(2),
         token2,
         Assets.DEFAULT_AMOUNT.divn(2),
@@ -93,7 +93,7 @@ beforeAll(async () => {
     Sudo.sudoAs(
       testUser1,
       Xyk.createPool(
-        MGA_ASSET_ID,
+        GASP_ASSET_ID,
         Assets.DEFAULT_AMOUNT.divn(2),
         token3,
         Assets.DEFAULT_AMOUNT.divn(2),
@@ -101,8 +101,8 @@ beforeAll(async () => {
     ),
   );
 
-  liqIdPromPool1 = await getLiquidityAssetId(MGA_ASSET_ID, token1);
-  liqIdPromPool2 = await getLiquidityAssetId(MGA_ASSET_ID, token3);
+  liqIdPromPool1 = await getLiquidityAssetId(GASP_ASSET_ID, token1);
+  liqIdPromPool2 = await getLiquidityAssetId(GASP_ASSET_ID, token3);
 
   await Sudo.batchAsSudoFinalized(
     Assets.promotePool(liqIdPromPool1.toNumber(), 20),
@@ -116,7 +116,7 @@ test("Check that rewards are generated and can be claimed on each session, then 
 
   await mintLiquidity(
     testUser1.keyRingPair,
-    MGA_ASSET_ID,
+    GASP_ASSET_ID,
     token1,
     defaultCurrencyValue,
   );
@@ -152,7 +152,7 @@ test("Check that rewards are generated and can be claimed on each session, then 
 
   await burnLiquidity(
     testUser1.keyRingPair,
-    MGA_ASSET_ID,
+    GASP_ASSET_ID,
     token1,
     new BN(valueBurningTokens),
   );
@@ -171,13 +171,13 @@ test("Check that rewards are generated and can be claimed on each session, then 
 });
 
 test("Given a pool with 2 users with activated rewards WHEN more than one period last AND the user burn all liquidity THEN pool is destroyed but users can still claim pending rewards", async () => {
-  const liquidityAssetId = await getLiquidityAssetId(MGA_ASSET_ID, token2);
+  const liquidityAssetId = await getLiquidityAssetId(GASP_ASSET_ID, token2);
 
   await Sudo.batchAsSudoFinalized(
     Sudo.sudoAs(
       testUser2,
       Xyk.mintLiquidity(
-        MGA_ASSET_ID,
+        GASP_ASSET_ID,
         token2,
         Assets.DEFAULT_AMOUNT.divn(4),
         Assets.DEFAULT_AMOUNT,
@@ -198,20 +198,20 @@ test("Given a pool with 2 users with activated rewards WHEN more than one period
 
   await waitForRewards(testUser2, liquidityAssetId);
 
-  const balancePoolBefore = await getBalanceOfPool(MGA_ASSET_ID, token2);
+  const balancePoolBefore = await getBalanceOfPool(GASP_ASSET_ID, token2);
 
   await Sudo.batchAsSudoFinalized(
     Sudo.sudoAs(
       testUser1,
-      Xyk.burnLiquidity(MGA_ASSET_ID, token2, Assets.DEFAULT_AMOUNT.divn(2)),
+      Xyk.burnLiquidity(GASP_ASSET_ID, token2, Assets.DEFAULT_AMOUNT.divn(2)),
     ),
     Sudo.sudoAs(
       testUser2,
-      Xyk.burnLiquidity(MGA_ASSET_ID, token2, Assets.DEFAULT_AMOUNT.divn(4)),
+      Xyk.burnLiquidity(GASP_ASSET_ID, token2, Assets.DEFAULT_AMOUNT.divn(4)),
     ),
   );
 
-  const balancePoolAfter = await getBalanceOfPool(MGA_ASSET_ID, token2);
+  const balancePoolAfter = await getBalanceOfPool(GASP_ASSET_ID, token2);
 
   await testUser1.refreshAmounts(AssetWallet.BEFORE);
   await testUser2.refreshAmounts(AssetWallet.BEFORE);
@@ -225,15 +225,15 @@ test("Given a pool with 2 users with activated rewards WHEN more than one period
   await testUser2.refreshAmounts(AssetWallet.AFTER);
 
   const differenceMGAUser1 = testUser1
-    .getAsset(MGA_ASSET_ID)
+    .getAsset(GASP_ASSET_ID)
     ?.amountAfter.free.sub(
-      testUser1.getAsset(MGA_ASSET_ID)?.amountBefore.free!,
+      testUser1.getAsset(GASP_ASSET_ID)?.amountBefore.free!,
     );
 
   const differenceMGAUser2 = testUser2
-    .getAsset(MGA_ASSET_ID)
+    .getAsset(GASP_ASSET_ID)
     ?.amountAfter.free.sub(
-      testUser2.getAsset(MGA_ASSET_ID)?.amountBefore.free!,
+      testUser2.getAsset(GASP_ASSET_ID)?.amountBefore.free!,
     );
 
   expect(balancePoolBefore[0][0]).bnGt(BN_ZERO);
@@ -262,9 +262,9 @@ test("Given a pool with user with activated rewards  WHEN it was deactivated AND
   await testUser1.refreshAmounts(AssetWallet.AFTER);
 
   const deactivatedPoolRewards = testUser1
-    .getAsset(MGA_ASSET_ID)!
+    .getAsset(GASP_ASSET_ID)!
     .amountAfter.free!.sub(
-      testUser1.getAsset(MGA_ASSET_ID)!.amountBefore.free!,
+      testUser1.getAsset(GASP_ASSET_ID)!.amountBefore.free!,
     );
 
   await promotePool(sudo.keyRingPair, liqIdPromPool2, 20);
@@ -280,9 +280,9 @@ test("Given a pool with user with activated rewards  WHEN it was deactivated AND
   await testUser1.refreshAmounts(AssetWallet.AFTER);
 
   const activatedPoolRewards = testUser1
-    .getAsset(MGA_ASSET_ID)!
+    .getAsset(GASP_ASSET_ID)!
     .amountAfter.free!.sub(
-      testUser1.getAsset(MGA_ASSET_ID)!.amountBefore.free!,
+      testUser1.getAsset(GASP_ASSET_ID)!.amountBefore.free!,
     );
 
   expect(deactivatedPoolRewards).bnGt(BN_ZERO);

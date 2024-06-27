@@ -16,7 +16,7 @@ import { SignerOptions } from "@polkadot/api/types";
 import { getEventResultFromMangataTx } from "../../utils/txHandler";
 import { RuntimeDispatchInfo } from "@polkadot/types/interfaces";
 import {
-  MGA_ASSET_ID,
+  GASP_ASSET_ID,
   KSM_ASSET_ID,
   TUR_ASSET_ID,
 } from "../../utils/Constants";
@@ -55,7 +55,7 @@ beforeAll(async () => {
   sudo = getSudoUser();
 
   //add MGA tokens for creating pool.
-  await sudo.addMGATokens(sudo);
+  await sudo.mint(GASP_ASSET_ID, sudo, Assets.DEFAULT_AMOUNT);
 
   //add two currencies and balance to sudo:
   [firstCurrency, secondCurrency] = await Assets.setupUserWithCurrencies(
@@ -69,7 +69,7 @@ beforeAll(async () => {
   await Sudo.batchAsSudoFinalized(
     Assets.mintNative(sudo),
     Xyk.createPool(
-      MGA_ASSET_ID,
+      GASP_ASSET_ID,
       first_asset_amount,
       secondCurrency,
       second_asset_amount,
@@ -89,7 +89,7 @@ beforeEach(async () => {
 
   // add users to pair.
   keyring.addPair(testUser1.keyRingPair);
-  testUser1.addAsset(MGA_ASSET_ID);
+  testUser1.addAsset(GASP_ASSET_ID);
   testUser1.addAsset(KSM_ASSET_ID);
   testUser1.addAsset(TUR_ASSET_ID);
 
@@ -119,7 +119,7 @@ test("xyk-pallet - Check required fee - User with MGX only", async () => {
     .paymentInfo(testUser1.keyRingPair, opt);
 
   //add MGA tokens.
-  await testUser1.addMGATokens(sudo);
+  await testUser1.addGASPTokens(sudo);
 
   await testUser1.refreshAmounts(AssetWallet.BEFORE);
 
@@ -136,9 +136,9 @@ test("xyk-pallet - Check required fee - User with MGX only", async () => {
 
   await testUser1.refreshAmounts(AssetWallet.AFTER);
   const deductedMGATkns = testUser1
-    .getAsset(MGA_ASSET_ID)
+    .getAsset(GASP_ASSET_ID)
     ?.amountBefore.free.sub(
-      testUser1.getAsset(MGA_ASSET_ID)?.amountAfter.free!,
+      testUser1.getAsset(GASP_ASSET_ID)?.amountAfter.free!,
     );
   const fee = cost.partialFee;
   expect(deductedMGATkns).bnLte(fee);
@@ -146,7 +146,7 @@ test("xyk-pallet - Check required fee - User with MGX only", async () => {
 });
 test.skip("xyk-pallet - Check required fee - User with KSM only, operation fails", async () => {
   //add KSM tokens.
-  await testUser1.addKSMTokens(sudo);
+  await testUser1.addETHTokens(sudo);
   let exception = false;
   await expect(
     mintLiquidity(
@@ -221,9 +221,9 @@ test("xyk-pallet - Check required fee - User with some MGA, very few KSM and ver
 
   await testUser1.refreshAmounts(AssetWallet.AFTER);
   const deductedMGATkns = testUser1
-    .getAsset(MGA_ASSET_ID)
+    .getAsset(GASP_ASSET_ID)
     ?.amountBefore.free.sub(
-      testUser1.getAsset(MGA_ASSET_ID)?.amountAfter.free!,
+      testUser1.getAsset(GASP_ASSET_ID)?.amountAfter.free!,
     );
   const deductedKSMTkns = testUser1
     .getAsset(KSM_ASSET_ID)
@@ -249,7 +249,7 @@ test("xyk-pallet - Check required fee - User with very few MGA, some KSM and ver
   await Sudo.batchAsSudoFinalized(
     Assets.mintToken(TUR_ASSET_ID, testUser1, new BN(100000)),
     Assets.mintToken(KSM_ASSET_ID, testUser1),
-    Assets.mintToken(MGA_ASSET_ID, testUser1, new BN(100000)),
+    Assets.mintToken(GASP_ASSET_ID, testUser1, new BN(100000)),
   );
   let exception = false;
   await expect(
@@ -273,7 +273,7 @@ test("xyk-pallet - Check required fee - User with very few MGA, very few KSM and
   await Sudo.batchAsSudoFinalized(
     Assets.mintToken(TUR_ASSET_ID, testUser1),
     Assets.mintToken(KSM_ASSET_ID, testUser1, new BN(100000)),
-    Assets.mintToken(MGA_ASSET_ID, testUser1, new BN(100000)),
+    Assets.mintToken(GASP_ASSET_ID, testUser1, new BN(100000)),
   );
   let exception = false;
   await expect(
@@ -297,7 +297,7 @@ test("xyk-pallet - Check required fee - User with very few  MGA, very few KSM an
   await Sudo.batchAsSudoFinalized(
     Assets.mintToken(TUR_ASSET_ID, testUser1, new BN(100000)),
     Assets.mintToken(KSM_ASSET_ID, testUser1, new BN(100000)),
-    Assets.mintToken(MGA_ASSET_ID, testUser1, new BN(100000)),
+    Assets.mintToken(GASP_ASSET_ID, testUser1, new BN(100000)),
   );
   let exception = false;
   await expect(
@@ -321,14 +321,14 @@ test.skip("BUG under discussion:xyk-pallet - when minting all MGX should pay fee
   await Sudo.batchAsSudoFinalized(
     Assets.mintToken(TUR_ASSET_ID, testUser1, new BN(100000)),
     Assets.mintToken(KSM_ASSET_ID, testUser1),
-    Assets.mintToken(MGA_ASSET_ID, testUser1, Assets.DEFAULT_AMOUNT),
+    Assets.mintToken(GASP_ASSET_ID, testUser1, Assets.DEFAULT_AMOUNT),
     Assets.mintToken(secondCurrency, testUser1, Assets.DEFAULT_AMOUNT),
   );
   await testUser1.refreshAmounts(AssetWallet.BEFORE);
 
   await mintLiquidity(
     testUser1.keyRingPair,
-    MGA_ASSET_ID,
+    GASP_ASSET_ID,
     secondCurrency,
     Assets.DEFAULT_AMOUNT.subn(100000),
     Assets.DEFAULT_AMOUNT,
@@ -340,9 +340,9 @@ test.skip("BUG under discussion:xyk-pallet - when minting all MGX should pay fee
   await testUser1.refreshAmounts(AssetWallet.AFTER);
 
   const deductedMGATkns = testUser1
-    .getAsset(MGA_ASSET_ID)
+    .getAsset(GASP_ASSET_ID)
     ?.amountBefore.free.sub(
-      testUser1.getAsset(MGA_ASSET_ID)?.amountAfter.free!,
+      testUser1.getAsset(GASP_ASSET_ID)?.amountAfter.free!,
     );
   const deductedKSMTkns = testUser1
     .getAsset(KSM_ASSET_ID)

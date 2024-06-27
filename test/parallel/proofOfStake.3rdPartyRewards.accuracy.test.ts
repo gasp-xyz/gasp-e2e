@@ -13,7 +13,7 @@ import { Assets } from "../../utils/Assets";
 import { Sudo } from "../../utils/sudo";
 import { Xyk } from "../../utils/xyk";
 import { getSudoUser, setupApi, setupUsers } from "../../utils/setup";
-import { MGA_ASSET_ID } from "../../utils/Constants";
+import { GASP_ASSET_ID } from "../../utils/Constants";
 import { ProofOfStake } from "../../utils/ProofOfStake";
 import "jest-extended";
 import { getLiquidityAssetId } from "../../utils/tx";
@@ -67,7 +67,7 @@ describe("Proof of stake tests", () => {
       Sudo.sudoAs(
         testUser1,
         Xyk.createPool(
-          MGA_ASSET_ID,
+          GASP_ASSET_ID,
           Assets.DEFAULT_AMOUNT.muln(20e6),
           newToken,
           Assets.DEFAULT_AMOUNT.muln(20e6),
@@ -85,7 +85,7 @@ describe("Proof of stake tests", () => {
       Sudo.sudoAs(
         testUser3,
         Xyk.createPool(
-          MGA_ASSET_ID,
+          GASP_ASSET_ID,
           Assets.DEFAULT_AMOUNT.muln(20e6),
           newToken3,
           Assets.DEFAULT_AMOUNT.muln(20e6),
@@ -105,7 +105,7 @@ describe("Proof of stake tests", () => {
           await ProofOfStake.rewardPool(
             newToken,
             newToken2,
-            MGA_ASSET_ID,
+            GASP_ASSET_ID,
             Assets.DEFAULT_AMOUNT.muln(10e6),
             3,
           ),
@@ -115,7 +115,7 @@ describe("Proof of stake tests", () => {
           await ProofOfStake.activateLiquidityFor3rdpartyRewards(
             liquidityAssetId,
             Assets.DEFAULT_AMOUNT,
-            MGA_ASSET_ID,
+            GASP_ASSET_ID,
           ),
         ),
       );
@@ -129,16 +129,16 @@ describe("Proof of stake tests", () => {
           await ProofOfStake.deactivateLiquidityFor3rdpartyRewards(
             liquidityAssetId,
             Assets.DEFAULT_AMOUNT,
-            MGA_ASSET_ID,
+            GASP_ASSET_ID,
           ),
         ),
       );
-      await waitForRewards(testUser, liquidityAssetId, 40, MGA_ASSET_ID);
+      await waitForRewards(testUser, liquidityAssetId, 40, GASP_ASSET_ID);
       const expectedRewards = BN_ZERO;
       const avl = await getThirdPartyRewards(
         testUser.keyRingPair.address,
         liquidityAssetId,
-        MGA_ASSET_ID,
+        GASP_ASSET_ID,
       );
       expect(avl).bnGt(expectedRewards);
     });

@@ -31,7 +31,7 @@ import {
   updatePromoteBootstrapPool,
   waitForBootstrapStatus,
 } from "../../utils/Bootstrap";
-import { MGA_ASSET_ID } from "../../utils/Constants";
+import { GASP_ASSET_ID } from "../../utils/Constants";
 import { MangataGenericEvent } from "@mangata-finance/sdk";
 import { getSudoUser, setupUsers } from "../../utils/setup";
 import { BN } from "@polkadot/util";
@@ -76,7 +76,7 @@ test("bootstrap - Check possibility to change promoteBootstrapPool in each phase
 
   const scheduleBootstrapBefPlan = await scheduleBootstrap(
     sudo,
-    MGA_ASSET_ID,
+    GASP_ASSET_ID,
     bootstrapCurrency,
     waitingPeriodWithPlan,
     bootstrapPeriod,
@@ -91,7 +91,7 @@ test("bootstrap - Check possibility to change promoteBootstrapPool in each phase
 
   const scheduleBootstrapAftPlan = await scheduleBootstrap(
     sudo,
-    MGA_ASSET_ID,
+    GASP_ASSET_ID,
     bootstrapCurrency,
     waitingPeriodLessPlan,
     bootstrapPeriod,
@@ -122,7 +122,7 @@ test("bootstrap - Check possibility to change promoteBootstrapPool in each phase
 
   const provisionPublicMGA = await provisionBootstrap(
     testUser1,
-    MGA_ASSET_ID,
+    GASP_ASSET_ID,
     bootstrapAmount,
   );
   eventResponse = getEventResultFromMangataTx(provisionPublicMGA);
@@ -133,7 +133,7 @@ test("bootstrap - Check possibility to change promoteBootstrapPool in each phase
   events = await updatePromoteBootstrapPool(sudo, startingPromotionState);
   await waitSudoOperationFail(events, ["BootstrapFinished"]);
 
-  bootstrapPool = await getBalanceOfPool(MGA_ASSET_ID, bootstrapCurrency);
+  bootstrapPool = await getBalanceOfPool(GASP_ASSET_ID, bootstrapCurrency);
   const bootstrapPoolBalance = bootstrapPool[0];
   expect(bootstrapPoolBalance[0]).bnEqual(bootstrapAmount);
   expect(bootstrapPoolBalance[1]).bnEqual(bootstrapAmount);
@@ -146,7 +146,7 @@ test("bootstrap - Check possibility to change promoteBootstrapPool in each phase
   expect(eventResponse.state).toEqual(ExtrinsicResult.ExtrinsicSuccess);
 
   const liquidityID = await getLiquidityAssetId(
-    MGA_ASSET_ID,
+    GASP_ASSET_ID,
     bootstrapCurrency,
   );
 

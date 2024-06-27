@@ -14,7 +14,7 @@ import { Assets } from "../../utils/Assets";
 import { Sudo } from "../../utils/sudo";
 import { Xyk } from "../../utils/xyk";
 import { getSudoUser, setupApi, setupUsers } from "../../utils/setup";
-import { MGA_ASSET_ID } from "../../utils/Constants";
+import { GASP_ASSET_ID } from "../../utils/Constants";
 import { BN_MILLION, BN_ZERO, signTx } from "@mangata-finance/sdk";
 import { ProofOfStake } from "../../utils/ProofOfStake";
 import { getLiquidityAssetId } from "../../utils/tx";
@@ -60,19 +60,19 @@ describe("Proof of stake tests", () => {
       Sudo.sudoAs(
         testUser1,
         Xyk.createPool(
-          MGA_ASSET_ID,
+          GASP_ASSET_ID,
           Assets.DEFAULT_AMOUNT.muln(20e6),
           newToken,
           Assets.DEFAULT_AMOUNT.muln(20e6),
         ),
       ),
     );
-    const liqId = await getLiquidityAssetId(MGA_ASSET_ID, newToken);
+    const liqId = await getLiquidityAssetId(GASP_ASSET_ID, newToken);
     await Sudo.batchAsSudoFinalized(
       Sudo.sudoAs(
         testUser2,
         Xyk.mintLiquidity(
-          MGA_ASSET_ID,
+          GASP_ASSET_ID,
           newToken,
           Assets.DEFAULT_AMOUNT.divn(2),
           Assets.DEFAULT_AMOUNT,
@@ -81,7 +81,7 @@ describe("Proof of stake tests", () => {
       Sudo.sudoAs(
         testUser3,
         Xyk.mintLiquidity(
-          MGA_ASSET_ID,
+          GASP_ASSET_ID,
           newToken,
           Assets.DEFAULT_AMOUNT.divn(2),
           Assets.DEFAULT_AMOUNT,
@@ -90,7 +90,7 @@ describe("Proof of stake tests", () => {
       Sudo.sudoAs(
         testUser1,
         await ProofOfStake.rewardPool(
-          MGA_ASSET_ID,
+          GASP_ASSET_ID,
           newToken,
           newToken,
           Assets.DEFAULT_AMOUNT.muln(10e6),
@@ -100,7 +100,7 @@ describe("Proof of stake tests", () => {
       Sudo.sudoAs(
         testUser1,
         await ProofOfStake.rewardPool(
-          MGA_ASSET_ID,
+          GASP_ASSET_ID,
           newToken,
           newToken,
           Assets.DEFAULT_AMOUNT.muln(10e6),
@@ -118,7 +118,7 @@ describe("Proof of stake tests", () => {
       Sudo.sudoAs(
         testUser1,
         await ProofOfStake.rewardPool(
-          MGA_ASSET_ID,
+          GASP_ASSET_ID,
           newToken,
           newToken,
           Assets.DEFAULT_AMOUNT.muln(10e6),
@@ -130,7 +130,7 @@ describe("Proof of stake tests", () => {
 
   describe("Happy path", () => {
     test("A user can deactivate all the tokens when partial activation / deactivation", async () => {
-      const liqId = await getLiquidityAssetId(MGA_ASSET_ID, newToken);
+      const liqId = await getLiquidityAssetId(GASP_ASSET_ID, newToken);
       testLog.getLog().warn("liqId: " + liqId.toString());
       await waitForRewards(testUser1, liqId, 40, newToken);
       await signTx(
@@ -193,7 +193,7 @@ describe("Proof of stake tests", () => {
         liqId,
         newToken,
       );
-      testUser1.addAsset(MGA_ASSET_ID);
+      testUser1.addAsset(GASP_ASSET_ID);
       await testUser1.refreshAmounts();
       await signTx(
         getApi(),
@@ -216,7 +216,7 @@ describe("Proof of stake tests", () => {
       await testUser1.refreshAmounts(AssetWallet.AFTER);
       const diff = testUser1.getWalletDifferences();
       expect(
-        diff.find((assetDiff) => assetDiff.currencyId === MGA_ASSET_ID),
+        diff.find((assetDiff) => assetDiff.currencyId === GASP_ASSET_ID),
       ).toBeUndefined();
       const userBalanceAfter = await getUserBalanceOfToken(newToken, testUser1);
       expect(userBalanceAfter.free.sub(userBalanceBefore.free)).bnEqual(

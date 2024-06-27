@@ -11,7 +11,7 @@ import {
   getTreasuryBurn,
 } from "../../utils/tx";
 import { Xyk } from "../../utils/xyk";
-import { MGA_ASSET_ID } from "../../utils/Constants";
+import { GASP_ASSET_ID } from "../../utils/Constants";
 import { AssetWallet, User } from "../../utils/User";
 import {
   calculateFees,
@@ -64,7 +64,7 @@ describe("xyk-pallet - treasury tests [Mangata]: on treasury we store", () => {
       Assets.mintToken(currency, user),
       Sudo.sudoAs(
         user,
-        Xyk.createPool(MGA_ASSET_ID, asset_amount1, currency, asset_amount2),
+        Xyk.createPool(GASP_ASSET_ID, asset_amount1, currency, asset_amount2),
       ),
     );
 
@@ -73,19 +73,19 @@ describe("xyk-pallet - treasury tests [Mangata]: on treasury we store", () => {
 
   it("assets won when assets are sold [Selling Mangata] - 5", async () => {
     const sellAssetAmount = new BN(10000);
-    const treasuryBefore = await getTreasury(MGA_ASSET_ID);
-    const treasuryBurnBefore = await getTreasuryBurn(MGA_ASSET_ID);
+    const treasuryBefore = await getTreasury(GASP_ASSET_ID);
+    const treasuryBurnBefore = await getTreasuryBurn(GASP_ASSET_ID);
     testLog.getLog().debug(`treasury before: ${treasuryBefore}`);
 
     await signSendFinalized(
-      Xyk.sellAsset(MGA_ASSET_ID, currency, sellAssetAmount),
+      Xyk.sellAsset(GASP_ASSET_ID, currency, sellAssetAmount),
       user,
     );
     await user.refreshAmounts(AssetWallet.AFTER);
 
     const { treasury } = calculateFees(sellAssetAmount);
-    const treasuryAfter = await getTreasury(MGA_ASSET_ID);
-    const treasuryBurnAfter = await getTreasuryBurn(MGA_ASSET_ID);
+    const treasuryAfter = await getTreasury(GASP_ASSET_ID);
+    const treasuryBurnAfter = await getTreasuryBurn(GASP_ASSET_ID);
     testLog
       .getLog()
       .debug(`treasury after: ${treasuryBefore}, fee: ${treasury}`);
@@ -97,8 +97,8 @@ describe("xyk-pallet - treasury tests [Mangata]: on treasury we store", () => {
 
   it("assets won when assets are bought [Buying Mangata]", async () => {
     const buyAssetAmount = new BN(10000);
-    const treasuryBefore = await getTreasury(MGA_ASSET_ID);
-    const treasuryBurnBefore = await getTreasuryBurn(MGA_ASSET_ID);
+    const treasuryBefore = await getTreasury(GASP_ASSET_ID);
+    const treasuryBurnBefore = await getTreasuryBurn(GASP_ASSET_ID);
     const sellPrice = await calculate_buy_price_rpc(
       asset_amount2,
       asset_amount1,
@@ -112,19 +112,19 @@ describe("xyk-pallet - treasury tests [Mangata]: on treasury we store", () => {
       );
 
     await signSendFinalized(
-      Xyk.buyAsset(currency, MGA_ASSET_ID, buyAssetAmount),
+      Xyk.buyAsset(currency, GASP_ASSET_ID, buyAssetAmount),
       user,
     );
 
-    const poolBalance = await getBalanceOfPool(MGA_ASSET_ID, currency);
+    const poolBalance = await getBalanceOfPool(GASP_ASSET_ID, currency);
     const feeInMGAPrice = await calculate_sell_price_rpc(
       poolBalance[1],
       poolBalance[0],
       treasury,
     );
     await user.refreshAmounts(AssetWallet.AFTER);
-    const treasuryAfter = await getTreasury(MGA_ASSET_ID);
-    const treasuryBurnAfter = await getTreasuryBurn(MGA_ASSET_ID);
+    const treasuryAfter = await getTreasury(GASP_ASSET_ID);
+    const treasuryBurnAfter = await getTreasuryBurn(GASP_ASSET_ID);
     testLog
       .getLog()
       .debug(`treasury after: ${treasuryAfter}, fee: ${feeInMGAPrice}`);
@@ -136,27 +136,27 @@ describe("xyk-pallet - treasury tests [Mangata]: on treasury we store", () => {
 
   it("assets won when assets are sold [Selling other in MGA pool] - 6", async () => {
     const sellAssetAmount = new BN(20000);
-    const treasuryBefore = await getTreasury(MGA_ASSET_ID);
-    const treasuryBurnBefore = await getTreasuryBurn(MGA_ASSET_ID);
+    const treasuryBefore = await getTreasury(GASP_ASSET_ID);
+    const treasuryBurnBefore = await getTreasuryBurn(GASP_ASSET_ID);
     const { treasury } = calculateFees(sellAssetAmount);
     testLog
       .getLog()
       .debug(`treasury before: ${treasuryBefore}, fee: ${treasury}`);
 
     await signSendFinalized(
-      Xyk.sellAsset(currency, MGA_ASSET_ID, sellAssetAmount),
+      Xyk.sellAsset(currency, GASP_ASSET_ID, sellAssetAmount),
       user,
     );
 
-    const poolBalance = await getBalanceOfPool(MGA_ASSET_ID, currency);
+    const poolBalance = await getBalanceOfPool(GASP_ASSET_ID, currency);
     const feeInMGAPrice = await calculate_sell_price_rpc(
       poolBalance[1],
       poolBalance[0],
       treasury,
     );
     await user.refreshAmounts(AssetWallet.AFTER);
-    const treasuryAfter = await getTreasury(MGA_ASSET_ID);
-    const treasuryBurnAfter = await getTreasuryBurn(MGA_ASSET_ID);
+    const treasuryAfter = await getTreasury(GASP_ASSET_ID);
+    const treasuryBurnAfter = await getTreasuryBurn(GASP_ASSET_ID);
     testLog
       .getLog()
       .debug(`treasury after: ${treasuryAfter}, fee: ${feeInMGAPrice}`);
@@ -168,10 +168,10 @@ describe("xyk-pallet - treasury tests [Mangata]: on treasury we store", () => {
 
   it("assets won when assets are bought [Buying other in MGA pool]", async () => {
     const buyAssetAmount = new BN(10000);
-    const treasuryBefore = await getTreasury(MGA_ASSET_ID);
-    const treasuryBurnBefore = await getTreasuryBurn(MGA_ASSET_ID);
+    const treasuryBefore = await getTreasury(GASP_ASSET_ID);
+    const treasuryBurnBefore = await getTreasuryBurn(GASP_ASSET_ID);
     const sellPrice = await calculate_buy_price_id_rpc(
-      MGA_ASSET_ID,
+      GASP_ASSET_ID,
       currency,
       buyAssetAmount,
     );
@@ -180,14 +180,14 @@ describe("xyk-pallet - treasury tests [Mangata]: on treasury we store", () => {
       .debug(`treasury before: ${treasuryBefore}, sell price: ${sellPrice}`);
 
     await signSendFinalized(
-      Xyk.buyAsset(MGA_ASSET_ID, currency, buyAssetAmount),
+      Xyk.buyAsset(GASP_ASSET_ID, currency, buyAssetAmount),
       user,
     );
 
     const { treasury } = calculateFees(sellPrice);
     await user.refreshAmounts(AssetWallet.AFTER);
-    const treasuryAfter = await getTreasury(MGA_ASSET_ID);
-    const treasuryBurnAfter = await getTreasuryBurn(MGA_ASSET_ID);
+    const treasuryAfter = await getTreasury(GASP_ASSET_ID);
+    const treasuryBurnAfter = await getTreasuryBurn(GASP_ASSET_ID);
     testLog
       .getLog()
       .debug(`treasury after: ${treasuryAfter}, fee: ${treasury}`);
@@ -218,7 +218,7 @@ describe("xyk-pallet - treasury tests [Connected - Mangata]: on treasury we stor
       Sudo.sudoAs(
         user,
         Xyk.createPool(
-          MGA_ASSET_ID,
+          GASP_ASSET_ID,
           asset_amount1,
           connectedToMGA,
           asset_amount1.div(new BN(2)),
@@ -240,7 +240,7 @@ describe("xyk-pallet - treasury tests [Connected - Mangata]: on treasury we stor
 
   it("assets won when assets are sold [Selling X connected to MGA pool] - rounding", async () => {
     const sellAssetAmount = new BN(10000);
-    const mgPoolAmount = await getBalanceOfPool(MGA_ASSET_ID, connectedToMGA);
+    const mgPoolAmount = await getBalanceOfPool(GASP_ASSET_ID, connectedToMGA);
     const { treasury } = calculateFees(sellAssetAmount);
     const swapTreasuryInMG = calculate_sell_price_local_no_fee(
       mgPoolAmount[1],
@@ -252,8 +252,8 @@ describe("xyk-pallet - treasury tests [Connected - Mangata]: on treasury we stor
       mgPoolAmount[0],
       treasury.mul(new BN(2)),
     );
-    const treasuryBefore = await getTreasury(MGA_ASSET_ID);
-    const treasuryBurnBefore = await getTreasuryBurn(MGA_ASSET_ID);
+    const treasuryBefore = await getTreasury(GASP_ASSET_ID);
+    const treasuryBurnBefore = await getTreasuryBurn(GASP_ASSET_ID);
 
     testLog.getLog().debug(
       `treasury before: ${treasuryBefore}, fee: ${treasury}, pool: ${mgPoolAmount}
@@ -266,10 +266,10 @@ describe("xyk-pallet - treasury tests [Connected - Mangata]: on treasury we stor
     );
     await user.refreshAmounts(AssetWallet.AFTER);
 
-    const treasuryAfter = await getTreasury(MGA_ASSET_ID);
-    const treasuryBurnAfter = await getTreasuryBurn(MGA_ASSET_ID);
+    const treasuryAfter = await getTreasury(GASP_ASSET_ID);
+    const treasuryBurnAfter = await getTreasuryBurn(GASP_ASSET_ID);
     const mgPoolAmountAfter = await getBalanceOfPool(
-      MGA_ASSET_ID,
+      GASP_ASSET_ID,
       connectedToMGA,
     );
     testLog
@@ -301,14 +301,14 @@ describe("xyk-pallet - treasury tests [Connected - Mangata]: on treasury we stor
       buyAssetAmount,
     );
     const { treasury } = calculateFees(sellPrice);
-    const mgPoolAmount = await getBalanceOfPool(MGA_ASSET_ID, connectedToMGA);
+    const mgPoolAmount = await getBalanceOfPool(GASP_ASSET_ID, connectedToMGA);
     const swapTreasuryInMG = calculate_sell_price_local_no_fee(
       mgPoolAmount[1],
       mgPoolAmount[0],
       treasury,
     );
-    const treasuryBefore = await getTreasury(MGA_ASSET_ID);
-    const treasuryBurnBefore = await getTreasuryBurn(MGA_ASSET_ID);
+    const treasuryBefore = await getTreasury(GASP_ASSET_ID);
+    const treasuryBurnBefore = await getTreasuryBurn(GASP_ASSET_ID);
 
     testLog
       .getLog()
@@ -322,8 +322,8 @@ describe("xyk-pallet - treasury tests [Connected - Mangata]: on treasury we stor
     );
 
     await user.refreshAmounts(AssetWallet.AFTER);
-    const treasuryAfter = await getTreasury(MGA_ASSET_ID);
-    const treasuryBurnAfter = await getTreasuryBurn(MGA_ASSET_ID);
+    const treasuryAfter = await getTreasury(GASP_ASSET_ID);
+    const treasuryBurnAfter = await getTreasuryBurn(GASP_ASSET_ID);
     testLog
       .getLog()
       .debug(
@@ -338,8 +338,8 @@ describe("xyk-pallet - treasury tests [Connected - Mangata]: on treasury we stor
 
   it("assets won when assets are sold [Selling Y - X connected toMGA pool] - 6", async () => {
     const sellAssetAmount = new BN(10000);
-    const treasuryBefore = await getTreasury(MGA_ASSET_ID);
-    const treasuryBurnBefore = await getTreasuryBurn(MGA_ASSET_ID);
+    const treasuryBefore = await getTreasury(GASP_ASSET_ID);
+    const treasuryBurnBefore = await getTreasuryBurn(GASP_ASSET_ID);
     const treasuryBeforeInd = await getTreasury(indirectlyConnected);
     const treasuryBurnBeforeInd = await getTreasuryBurn(indirectlyConnected);
     const { treasury, treasuryBurn } = calculateFees(sellAssetAmount);
@@ -355,8 +355,8 @@ describe("xyk-pallet - treasury tests [Connected - Mangata]: on treasury we stor
     );
 
     await user.refreshAmounts(AssetWallet.AFTER);
-    const treasuryAfter = await getTreasury(MGA_ASSET_ID);
-    const treasuryBurnAfter = await getTreasuryBurn(MGA_ASSET_ID);
+    const treasuryAfter = await getTreasury(GASP_ASSET_ID);
+    const treasuryBurnAfter = await getTreasuryBurn(GASP_ASSET_ID);
     const treasuryAfterInd = await getTreasury(indirectlyConnected);
     const treasuryBurnAfterInd = await getTreasuryBurn(indirectlyConnected);
     testLog
@@ -375,8 +375,8 @@ describe("xyk-pallet - treasury tests [Connected - Mangata]: on treasury we stor
 
   it("assets won when assets are bought [Buying Y - X connected toMGA pool] - 6", async () => {
     const buyAssetAmount = new BN(6000);
-    const treasuryBefore = await getTreasury(MGA_ASSET_ID);
-    const treasuryBurnBefore = await getTreasuryBurn(MGA_ASSET_ID);
+    const treasuryBefore = await getTreasury(GASP_ASSET_ID);
+    const treasuryBurnBefore = await getTreasuryBurn(GASP_ASSET_ID);
     const poolAmount = await getBalanceOfPool(
       indirectlyConnected,
       connectedToMGA,
@@ -387,7 +387,7 @@ describe("xyk-pallet - treasury tests [Connected - Mangata]: on treasury we stor
       buyAssetAmount,
     );
     const { treasury } = calculateFees(sellPrice);
-    const mgPoolAmount = await getBalanceOfPool(MGA_ASSET_ID, connectedToMGA);
+    const mgPoolAmount = await getBalanceOfPool(GASP_ASSET_ID, connectedToMGA);
     const swapTreasuryInMG = calculate_sell_price_local_no_fee(
       mgPoolAmount[1],
       mgPoolAmount[0],
@@ -407,8 +407,8 @@ describe("xyk-pallet - treasury tests [Connected - Mangata]: on treasury we stor
     );
 
     await user.refreshAmounts(AssetWallet.AFTER);
-    const treasuryAfter = await getTreasury(MGA_ASSET_ID);
-    const treasuryBurnAfter = await getTreasuryBurn(MGA_ASSET_ID);
+    const treasuryAfter = await getTreasury(GASP_ASSET_ID);
+    const treasuryBurnAfter = await getTreasuryBurn(GASP_ASSET_ID);
     testLog
       .getLog()
       .debug(
@@ -440,7 +440,7 @@ describe("xyk-pallet - treasury tests [Connected - Mangata]: Error cases", () =>
       Assets.mintToken(currency, user),
       Sudo.sudoAs(
         user,
-        Xyk.createPool(MGA_ASSET_ID, asset_amount1, currency, asset_amount2),
+        Xyk.createPool(GASP_ASSET_ID, asset_amount1, currency, asset_amount2),
       ),
     );
 
@@ -448,15 +448,15 @@ describe("xyk-pallet - treasury tests [Connected - Mangata]: Error cases", () =>
   });
 
   it("Not enough tokens to convert fee LINK[https://trello.com/c/p77t0atO]", async () => {
-    const mgPoolAmount = await getBalanceOfPool(MGA_ASSET_ID, currency);
-    const treasuryBefore = await getTreasury(MGA_ASSET_ID);
-    const treasuryBurnBefore = await getTreasuryBurn(MGA_ASSET_ID);
+    const mgPoolAmount = await getBalanceOfPool(GASP_ASSET_ID, currency);
+    const treasuryBefore = await getTreasury(GASP_ASSET_ID);
+    const treasuryBurnBefore = await getTreasuryBurn(GASP_ASSET_ID);
     const treasuryBeforeConnectedAsset = await getTreasury(currency);
     const treasuryBurnBeforeConnectedAsset = await getTreasuryBurn(currency);
     const from = await getBlockNumber();
 
     await signSendFinalized(
-      Xyk.buyAsset(currency, MGA_ASSET_ID, mgPoolAmount[0].sub(BN_ONE)),
+      Xyk.buyAsset(currency, GASP_ASSET_ID, mgPoolAmount[0].sub(BN_ONE)),
       user,
     );
 
@@ -467,21 +467,21 @@ describe("xyk-pallet - treasury tests [Connected - Mangata]: Error cases", () =>
     );
     const fees = await getTokensDiffForBlockAuthor(blockNumber);
     await user.refreshAmounts(AssetWallet.AFTER);
-    const treasuryAfter = await getTreasury(MGA_ASSET_ID);
-    const treasuryBurnAfter = await getTreasuryBurn(MGA_ASSET_ID);
+    const treasuryAfter = await getTreasury(GASP_ASSET_ID);
+    const treasuryBurnAfter = await getTreasuryBurn(GASP_ASSET_ID);
     const treasuryAfterConnectedAsset = await getTreasury(currency);
     const treasuryBurnAfterConnectedAsset = await getTreasuryBurn(currency);
-    const poolAfter = await getBalanceOfPool(MGA_ASSET_ID, currency);
+    const poolAfter = await getBalanceOfPool(GASP_ASSET_ID, currency);
 
     //Check that the pool has only one MGA token.
     expect(poolAfter[0]).bnEqual(new BN(1));
     //Check that the user has the right amount of MGA tokens.
     //The ones he had before + bought. 99
     const expectedValue = user
-      .getAsset(MGA_ASSET_ID)!
+      .getAsset(GASP_ASSET_ID)!
       .amountAfter.free.sub(mgPoolAmount[0].sub(new BN(1)));
     const feeLock = (await getFeeLockMetadata(await getApi())).feeLockAmount;
-    expect(user.getAsset(MGA_ASSET_ID)!.amountBefore.free).bnEqual(
+    expect(user.getAsset(GASP_ASSET_ID)!.amountBefore.free).bnEqual(
       expectedValue.add(fees).add(feeLock),
     );
 

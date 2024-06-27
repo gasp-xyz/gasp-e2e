@@ -18,7 +18,7 @@ import {
 } from "../../utils/setup";
 import { getEventResultFromMangataTx } from "../../utils/txHandler";
 import { BN_ONE, BN_HUNDRED, signTx } from "@mangata-finance/sdk";
-import { FOUNDATION_ADDRESS_1, MGA_ASSET_ID } from "../../utils/Constants";
+import { FOUNDATION_ADDRESS_1, GASP_ASSET_ID } from "../../utils/Constants";
 import { BN_MILLION } from "@mangata-finance/sdk";
 import { Sudo } from "../../utils/sudo";
 import { Xyk } from "../../utils/xyk";
@@ -56,7 +56,7 @@ describe("On Maintenance mode - multiSwaps / swaps / compound / prov liq are not
     await setupApi();
     ({ users, tokenIds } = await setup5PoolsChained(users));
     api = await getApi();
-    const liq = await getLiquidityAssetId(tokenIds.slice(-1)[0], MGA_ASSET_ID);
+    const liq = await getLiquidityAssetId(tokenIds.slice(-1)[0], GASP_ASSET_ID);
     swapOperations = {
       multiswapSellAsset: Xyk.multiswapSellAsset(tokenIds, BN_HUNDRED, BN_ONE),
       multiswapBuyAsset: Xyk.multiswapBuyAsset(
@@ -66,7 +66,7 @@ describe("On Maintenance mode - multiSwaps / swaps / compound / prov liq are not
       ),
       sellAsset: Xyk.sellAsset(tokenIds[0], tokenIds[1], BN_HUNDRED, BN_ONE),
       buyAsset: Xyk.buyAsset(tokenIds[0], tokenIds[1], BN_HUNDRED, BN_MILLION),
-      provideLiquidity: Xyk.provideLiquidity(liq, MGA_ASSET_ID, BN_HUNDRED),
+      provideLiquidity: Xyk.provideLiquidity(liq, GASP_ASSET_ID, BN_HUNDRED),
     };
     await Sudo.batchAsSudoFinalized(
       Sudo.sudoAsWithAddressString(
@@ -147,7 +147,7 @@ describe("On Maintenance mode - aggregators and candidates are allowed", () => {
         testUser2,
         await Staking.joinAsCandidate(
           minStk.muln(2),
-          MGA_ASSET_ID,
+          GASP_ASSET_ID,
           tokenOriginEnum.AvailableBalance,
         ),
       ),

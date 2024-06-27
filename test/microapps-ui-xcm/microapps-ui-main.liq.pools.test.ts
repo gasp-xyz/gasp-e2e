@@ -13,7 +13,7 @@ import {
 } from "../../utils/frontend/utils/Helper";
 import { Keyring } from "@polkadot/api";
 import { KeyringPair } from "@polkadot/keyring/types";
-import { FIVE_MIN, KSM_ASSET_ID, MGA_ASSET_ID } from "../../utils/Constants";
+import { FIVE_MIN, KSM_ASSET_ID, GASP_ASSET_ID } from "../../utils/Constants";
 import { AssetWallet, User } from "../../utils/User";
 import { getEnvironmentRequiredVars } from "../../utils/utils";
 import {
@@ -103,7 +103,7 @@ describe("Miocroapps UI liq pools tests", () => {
     );
 
     testUser1.addAsset(KSM_ASSET_ID);
-    testUser1.addAsset(MGA_ASSET_ID);
+    testUser1.addAsset(GASP_ASSET_ID);
     await testUser1.refreshAmounts(AssetWallet.BEFORE);
 
     await setupPage(driver);

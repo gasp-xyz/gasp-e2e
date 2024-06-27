@@ -4,7 +4,7 @@ import { AccountInfo } from "@polkadot/types/interfaces";
 import { BN, BN_FOUR } from "@polkadot/util";
 import { assert } from "console";
 import _ from "lodash";
-import { MGA_ASSET_ID } from "./Constants";
+import { GASP_ASSET_ID } from "./Constants";
 import { EventResult, ExtrinsicResult } from "./eventListeners";
 import { api, Extrinsic, setupApi, setupUsers } from "./setup";
 import { Sudo } from "./sudo";
@@ -209,9 +209,9 @@ export class Assets {
   }
 
   static mintNative(user: User, amount: BN = this.DEFAULT_AMOUNT): Extrinsic {
-    user.addAsset(MGA_ASSET_ID);
+    user.addAsset(GASP_ASSET_ID);
     return Sudo.sudo(
-      api.tx.tokens.mint(MGA_ASSET_ID, user.keyRingPair.address, amount),
+      api.tx.tokens.mint(GASP_ASSET_ID, user.keyRingPair.address, amount),
     );
   }
   public static createTokenWithNoAssetRegistry(

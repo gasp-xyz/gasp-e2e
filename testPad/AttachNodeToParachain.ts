@@ -10,7 +10,7 @@ import { testLog } from "../utils/Logger";
 import { api, getApi, initApi } from "../utils/api";
 import { signSendAndWaitToFinishTx } from "../utils/txHandler";
 import { signTx } from "@mangata-finance/sdk";
-import { MGA_ASSET_ID } from "../utils/Constants";
+import { GASP_ASSET_ID } from "../utils/Constants";
 import "dotenv/config";
 
 process.env.NODE_ENV = "test";
@@ -44,7 +44,7 @@ async function addUserAsCandidate(address: string) {
     api!,
     api!.tx.sudo.sudo(
       api!.tx.tokens.mint(
-        MGA_ASSET_ID,
+        GASP_ASSET_ID,
         testUser1.keyRingPair.address,
         new BN("100000000000000000"),
       ),

@@ -18,7 +18,7 @@ import { devTestingPairs, setupApi, setupUsers } from "../../utils/setup";
 import { AssetWallet, User } from "../../utils/User";
 import { getEnvironmentRequiredVars } from "../../utils/utils";
 import {
-  MGA_ASSET_ID,
+  GASP_ASSET_ID,
   USDT_ASSET_ID,
   USDT_ASSET_NAME,
 } from "../../utils/Constants";
@@ -125,7 +125,7 @@ describe("UI XCM tests - USDT", () => {
     );
 
     testUser1.addAsset(USDT_ASSET_ID);
-    testUser1.addAsset(MGA_ASSET_ID);
+    testUser1.addAsset(GASP_ASSET_ID);
     await testUser1.refreshAmounts(AssetWallet.BEFORE);
   });
 

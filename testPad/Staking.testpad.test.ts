@@ -1,7 +1,7 @@
 import { Keyring } from "@polkadot/api";
 import { BN } from "@polkadot/util";
 import { api, getApi, initApi } from "../utils/api";
-import { MGA_ASSET_ID } from "../utils/Constants";
+import { GASP_ASSET_ID } from "../utils/Constants";
 import { waitNewBlock } from "../utils/eventListeners";
 import { testLog } from "../utils/Logger";
 import { signSendAndWaitToFinishTx } from "../utils/txHandler";
@@ -86,7 +86,7 @@ describe("staking - testpad", () => {
         api,
         api.tx.sudo.sudo(
           api.tx.tokens.mint(
-            MGA_ASSET_ID,
+            GASP_ASSET_ID,
             testUser1.keyRingPair.address,
             new BN("1000000000000"),
           ),
@@ -110,7 +110,7 @@ describe("staking - testpad", () => {
         { nonce: new BN(nonce2.toNumber()) },
       );
 
-      //    await sudo.mint(MGA_ASSET_ID, testUser1, new BN("1000000000000"));
+      //    await sudo.mint(GASP_ASSET_ID, testUser1, new BN("1000000000000"));
 
       //  const [firstCurrency] = await Assets.setupUserWithCurrencies(
       //    testUser1,
@@ -292,7 +292,7 @@ describe("staking - testpad", () => {
         api,
         api.tx.sudo.sudo(
           api.tx.tokens.mint(
-            MGA_ASSET_ID,
+            GASP_ASSET_ID,
             testUser1.keyRingPair.address,
             new BN("1000000000000"),
           ),
@@ -419,7 +419,7 @@ describe("staking - testpad", () => {
       api,
       api.tx.sudo.sudo(
         api.tx.tokens.mint(
-          MGA_ASSET_ID,
+          GASP_ASSET_ID,
           testUser1.keyRingPair.address,
           new BN(Math.pow(10, 20).toString()),
         ),
@@ -875,7 +875,7 @@ describe("staking - testpad", () => {
     const user = new User(keyring, "aasd", JSON.parse(json));
     keyring.addPair(user.keyRingPair);
     keyring.pairs[0].decodePkcs8("mangata123");
-    //await user.addMGATokens(sudo);
+    //await user.addGASPTokens(sudo);
     //await sudo.mint(new BN(6), user, new BN("22000000000000000000000"));
     await sudo.mint(new BN(0), user, new BN("11000000000000000000000"));
   });
@@ -889,7 +889,7 @@ describe("staking - testpad", () => {
     const user = new User(keyring, "aasd", JSON.parse(json));
     keyring.addPair(user.keyRingPair);
     keyring.pairs[0].decodePkcs8("mangata123");
-    //await user.addMGATokens(sudo);
+    //await user.addGASPTokens(sudo);
     const response = await api.query.tokens.accounts.entries();
     const userAddress = "5FHneW46xGXgs5mUiveU4sbTyGBzmstUspZC92UhjJM694ty";
     const userEntries = response.filter((value) =>
@@ -920,7 +920,7 @@ describe("staking - testpad", () => {
     const user = new User(keyring, "aasd", JSON.parse(json));
     keyring.addPair(user.keyRingPair);
     keyring.pairs[0].decodePkcs8("mangata123");
-    //await user.addMGATokens(sudo);
+    //await user.addGASPTokens(sudo);
     await new FeeTxs().sellAsset(
       user.keyRingPair,
       new BN(0),

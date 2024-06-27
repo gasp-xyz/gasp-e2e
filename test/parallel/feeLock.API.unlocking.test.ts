@@ -7,7 +7,7 @@ import { jest } from "@jest/globals";
 import { ApiPromise } from "@polkadot/api";
 import { getApi, initApi, mangata } from "../../utils/api";
 import { Assets } from "../../utils/Assets";
-import { MGA_ASSET_ID } from "../../utils/Constants";
+import { GASP_ASSET_ID } from "../../utils/Constants";
 import {
   waitNewBlock,
   waitSudoOperationSuccess,
@@ -83,7 +83,7 @@ beforeAll(async () => {
     null,
     thresholdValue,
     [
-      [MGA_ASSET_ID, true],
+      [GASP_ASSET_ID, true],
       [firstCurrency, true],
     ],
   );
@@ -101,14 +101,14 @@ beforeAll(async () => {
   testUsers.forEach((user: User) => {
     txs.push(Assets.mintToken(firstCurrency, user, defaultCurrencyValue));
     txs.push(Assets.mintToken(secondCurrency, user, defaultCurrencyValue));
-    user.addAsset(MGA_ASSET_ID);
+    user.addAsset(GASP_ASSET_ID);
   });
 
   await Sudo.batchAsSudoFinalized(...txs);
 });
 
 test("gasless- GIVEN some locked tokens and no more free MGX WHEN another tx is submitted AND lock period did not finished THEN the operation can not be submitted", async () => {
-  await testUsers[0].addMGATokens(sudo, feeLockAmount);
+  await testUsers[0].addGASPTokens(sudo, feeLockAmount);
 
   const saleAssetValue = thresholdValue.sub(new BN(5));
   const isFree = await mangata?.rpc.isSellAssetLockFree(
@@ -132,7 +132,7 @@ test("gasless- GIVEN some locked tokens and no more free MGX WHEN another tx is 
 });
 
 test("gasless- GIVEN some locked tokens and no more free MGX WHEN another tx is submitted AND lock period finished THEN the operation can be submitted ( unlock before locking )", async () => {
-  await testUsers[1].addMGATokens(sudo, new BN(feeLockAmount).add(new BN(1)));
+  await testUsers[1].addGASPTokens(sudo, new BN(feeLockAmount).add(new BN(1)));
 
   const saleAssetValue = thresholdValue.sub(new BN(5));
   const isFree = await mangata?.rpc.isSellAssetLockFree(
@@ -163,7 +163,7 @@ test("gasless- GIVEN some locked tokens and no more free MGX WHEN another tx is 
 });
 
 test("gasless- GIVEN some locked tokens WHEN querying accountFeeLockData THEN the amount matches with locked tokens AND lastFeeLockBlock matches with the block when tokens were locked", async () => {
-  await testUsers[2].addMGATokens(sudo, new BN(feeLockAmount).add(new BN(1)));
+  await testUsers[2].addGASPTokens(sudo, new BN(feeLockAmount).add(new BN(1)));
 
   const saleAssetValue = thresholdValue.sub(new BN(5));
   const isFree = await mangata?.rpc.isSellAssetLockFree(
@@ -192,7 +192,7 @@ test("gasless- GIVEN some locked tokens WHEN querying accountFeeLockData THEN th
 });
 
 test("gasless- GIVEN some locked tokens and lastFeeLockBlock is lower than current block WHEN release feeLock is requested THEN the tokens are unlocked", async () => {
-  await testUsers[3].addMGATokens(sudo, new BN(feeLockAmount).add(new BN(1)));
+  await testUsers[3].addGASPTokens(sudo, new BN(feeLockAmount).add(new BN(1)));
 
   const saleAssetValue = thresholdValue.sub(new BN(5));
   const isFree = await mangata?.rpc.isSellAssetLockFree(
@@ -222,10 +222,10 @@ test("gasless- GIVEN some locked tokens and lastFeeLockBlock is lower than curre
   }
 
   await testUsers[3].refreshAmounts(AssetWallet.AFTER);
-  expect(testUsers[3].getAsset(MGA_ASSET_ID)?.amountBefore.reserved!).bnEqual(
+  expect(testUsers[3].getAsset(GASP_ASSET_ID)?.amountBefore.reserved!).bnEqual(
     new BN(feeLockAmount),
   );
-  expect(testUsers[3].getAsset(MGA_ASSET_ID)?.amountAfter.reserved!).bnEqual(
+  expect(testUsers[3].getAsset(GASP_ASSET_ID)?.amountAfter.reserved!).bnEqual(
     new BN(0),
   );
 });
@@ -233,7 +233,7 @@ test("gasless- GIVEN some locked tokens and lastFeeLockBlock is lower than curre
 test("gasless- GIVEN a lock WHEN the period is N THEN the tokens can not be unlocked before that period", async () => {
   let currentBlockNumber: number;
 
-  await testUsers[4].addMGATokens(sudo, new BN(feeLockAmount));
+  await testUsers[4].addGASPTokens(sudo, new BN(feeLockAmount));
 
   const saleAssetValue = thresholdValue.sub(new BN(5));
   const isFree = await mangata?.rpc.isSellAssetLockFree(
@@ -285,7 +285,7 @@ test("gasless- GIVEN a lock WHEN the period is N THEN the tokens can not be unlo
     }
   }
   await testUsers[4].refreshAmounts(AssetWallet.AFTER);
-  const reserved = testUsers[4].getAsset(MGA_ASSET_ID)?.amountAfter.reserved;
+  const reserved = testUsers[4].getAsset(GASP_ASSET_ID)?.amountAfter.reserved;
   expect(reserved).bnEqual(BN_ZERO);
   //expect(succeeded).toBeTruthy();
 });

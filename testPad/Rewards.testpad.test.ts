@@ -2,7 +2,7 @@
 import { Keyring } from "@polkadot/api";
 import { BN } from "@polkadot/util";
 import { api, getApi, initApi } from "../utils/api";
-import { MAX_BALANCE, MGA_ASSET_ID } from "../utils/Constants";
+import { MAX_BALANCE, GASP_ASSET_ID } from "../utils/Constants";
 import { User, AssetWallet } from "../utils/User";
 import { getEnvironmentRequiredVars, waitForNBlocks } from "../utils/utils";
 import { MangataGenericEvent, signTx } from "@mangata-finance/sdk";
@@ -332,14 +332,14 @@ async function doSetup(rewardsGenerationTime: number) {
       api!.tx.sudo.sudo(api!.tx.issuance.finalizeTge()),
       api!.tx.sudo.sudo(api!.tx.issuance.initIssuanceConfig()),
       api!.tx.sudo.sudo(
-        api!.tx.tokens.mint(MGA_ASSET_ID, sudo.keyRingPair.address, amount),
+        api!.tx.tokens.mint(GASP_ASSET_ID, sudo.keyRingPair.address, amount),
       ),
       api!.tx.sudo.sudo(
         api!.tx.tokens.create(sudo.keyRingPair.address, amount),
       ),
       api!.tx.sudo.sudo(
         api!.tx.tokens.mint(
-          MGA_ASSET_ID,
+          GASP_ASSET_ID,
           testUser1.keyRingPair.address,
           new BN(amount),
         ),
@@ -353,7 +353,7 @@ async function doSetup(rewardsGenerationTime: number) {
       ),
       api!.tx.sudo.sudo(
         api!.tx.tokens.mint(
-          MGA_ASSET_ID,
+          GASP_ASSET_ID,
           testUser2.keyRingPair.address,
           new BN(amount),
         ),
@@ -367,7 +367,7 @@ async function doSetup(rewardsGenerationTime: number) {
       ),
       api!.tx.sudo.sudo(
         api!.tx.tokens.mint(
-          MGA_ASSET_ID,
+          GASP_ASSET_ID,
           testUser3.keyRingPair.address,
           new BN(amount),
         ),
@@ -381,7 +381,7 @@ async function doSetup(rewardsGenerationTime: number) {
       ),
       api!.tx.sudo.sudo(
         api!.tx.tokens.mint(
-          MGA_ASSET_ID,
+          GASP_ASSET_ID,
           testUser4.keyRingPair.address,
           new BN(amount),
         ),
@@ -409,7 +409,7 @@ async function doSetup(rewardsGenerationTime: number) {
   await api!.tx.utility
     .batch([
       api!.tx.xyk.createPool(
-        MGA_ASSET_ID,
+        GASP_ASSET_ID,
         amount.divn(2),
         tokenId,
         amount.divn(2),
@@ -427,7 +427,7 @@ async function doSetup(rewardsGenerationTime: number) {
     promises.push(
       mintLiquidity(
         user.keyRingPair,
-        MGA_ASSET_ID,
+        GASP_ASSET_ID,
         tokenId,
         tokenstoMint,
         MAX_BALANCE,
@@ -448,7 +448,7 @@ async function doSetup(rewardsGenerationTime: number) {
       );
     await mintLiquidity(
       user.keyRingPair,
-      MGA_ASSET_ID,
+      GASP_ASSET_ID,
       tokenId,
       tokenstoMint,
       MAX_BALANCE,

@@ -14,7 +14,7 @@ import {
 import { Keyring } from "@polkadot/api";
 import { User } from "../../utils/User";
 import { SudoUser } from "../../utils/Framework/User/SudoUser";
-import { MGA_ASSET_ID } from "../../utils/Constants";
+import { GASP_ASSET_ID } from "../../utils/Constants";
 import {
   getEnvironmentRequiredVars,
   getMultiPurposeLiquidityStatus,
@@ -54,14 +54,14 @@ describe("MPL: Delegator", () => {
       [tokenAmount],
       sudo,
     );
-    await testUser2.addMGATokens(sudo, tokenAmount.muln(1000));
+    await testUser2.addGASPTokens(sudo, tokenAmount.muln(1000));
     await testUser2.createPoolToAsset(
       tokenAmount,
       tokenAmount,
-      MGA_ASSET_ID,
+      GASP_ASSET_ID,
       tokenId,
     );
-    liqTokenForCandidate = await getLiquidityAssetId(MGA_ASSET_ID, tokenId);
+    liqTokenForCandidate = await getLiquidityAssetId(GASP_ASSET_ID, tokenId);
     await sudo.addStakingLiquidityToken(liqTokenForCandidate);
     liqTokensAmount = hexToBn(
       (await testUser2.getUserTokensAccountInfo(liqTokenForCandidate)).free,
@@ -94,7 +94,7 @@ describe("MPL: Delegator", () => {
       ).toString(),
     ).subn(10);
     await sudo.mintTokens(
-      tokens.concat([MGA_ASSET_ID, liqTokenForCandidate]),
+      tokens.concat([GASP_ASSET_ID, liqTokenForCandidate]),
       [testUser1],
       minAmountInCollators.add(new BN(Math.pow(10, 20).toString())),
     );
@@ -152,15 +152,15 @@ describe("MPL: Collators", () => {
       [tokenAmount],
       sudo,
     );
-    await testUser1.addMGATokens(sudo, tokenAmount.muln(1000));
+    await testUser1.addGASPTokens(sudo, tokenAmount.muln(1000));
     const tokenId = results[0];
     await testUser1.createPoolToAsset(
       tokenAmount,
       tokenAmount,
-      MGA_ASSET_ID,
+      GASP_ASSET_ID,
       tokenId,
     );
-    liqTokenForCandidate = await getLiquidityAssetId(MGA_ASSET_ID, tokenId);
+    liqTokenForCandidate = await getLiquidityAssetId(GASP_ASSET_ID, tokenId);
     await sudo.addStakingLiquidityToken(liqTokenForCandidate);
     liqTokensAmount = hexToBn(
       (await testUser1.getUserTokensAccountInfo(liqTokenForCandidate)).free,
@@ -245,19 +245,19 @@ describe("MPL: Collators - Activated liq", () => {
       [tokenAmount],
       sudo,
     );
-    await testUser1.addMGATokens(sudo, tokenAmount.muln(1000));
+    await testUser1.addGASPTokens(sudo, tokenAmount.muln(1000));
     const tokenId = results[0];
     await testUser1.createPoolToAsset(
       tokenAmount,
       tokenAmount,
-      MGA_ASSET_ID,
+      GASP_ASSET_ID,
       tokenId,
     );
-    liqTokenForCandidate = await getLiquidityAssetId(MGA_ASSET_ID, tokenId);
+    liqTokenForCandidate = await getLiquidityAssetId(GASP_ASSET_ID, tokenId);
     await sudo.promotePool(liqTokenForCandidate);
     await sudo.addStakingLiquidityToken(liqTokenForCandidate);
 
-    liqTokenForCandidate = await getLiquidityAssetId(MGA_ASSET_ID, tokenId);
+    liqTokenForCandidate = await getLiquidityAssetId(GASP_ASSET_ID, tokenId);
     liqTokensAmount = hexToBn(
       (await testUser1.getUserTokensAccountInfo(liqTokenForCandidate)).free,
     );

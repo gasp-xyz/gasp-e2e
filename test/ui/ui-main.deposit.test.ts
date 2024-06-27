@@ -15,7 +15,7 @@ import {
 } from "../../utils/frontend/utils/Helper";
 import { AssetWallet, User } from "../../utils/User";
 import { getEnvironmentRequiredVars } from "../../utils/utils";
-import { KSM_ASSET_ID, MGA_ASSET_ID } from "../../utils/Constants";
+import { KSM_ASSET_ID, GASP_ASSET_ID } from "../../utils/Constants";
 import { Node } from "../../utils/Framework/Node/Node";
 import { connectPolkadotWallet } from "../../utils/frontend/utils/Handlers";
 import { DepositModal } from "../../utils/frontend/pages/DepositModal";
@@ -51,7 +51,7 @@ describe("UI deposit modal tests - no action", () => {
     );
 
     testUser1.addAsset(KSM_ASSET_ID);
-    testUser1.addAsset(MGA_ASSET_ID);
+    testUser1.addAsset(GASP_ASSET_ID);
     await testUser1.refreshAmounts(AssetWallet.BEFORE);
 
     const mga = new Mangata(driver);

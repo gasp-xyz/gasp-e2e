@@ -10,7 +10,7 @@ import { User } from "../../utils/User";
 import { setupApi, setup5PoolsChained, Extrinsic } from "../../utils/setup";
 import { getEventResultFromMangataTx } from "../../utils/txHandler";
 import { BN_ONE, BN_HUNDRED, signTx } from "@mangata-finance/sdk";
-import { MGA_ASSET_ID } from "../../utils/Constants";
+import { GASP_ASSET_ID } from "../../utils/Constants";
 import { BN_MILLION } from "@mangata-finance/sdk";
 import { Sudo } from "../../utils/sudo";
 import { Xyk } from "../../utils/xyk";
@@ -53,7 +53,7 @@ describe("Utility - batched swaps are not allowed", () => {
     //last asset is mangata paired
     const liq = await getLiquidityAssetId(
       tokenIds[tokenIds.length - 1],
-      MGA_ASSET_ID,
+      GASP_ASSET_ID,
     );
     await Sudo.batchAsSudoFinalized(
       Sudo.sudo(Staking.addStakingLiquidityToken(liq)),
@@ -147,7 +147,7 @@ describe("Utility - batched swaps are not allowed", () => {
     "%s operation is not allowed in singleBatch with some allowed",
     async (operation) => {
       const extrinsic = swapOperations[operation];
-      const transfer = Tokens.transfer(users[1], MGA_ASSET_ID);
+      const transfer = Tokens.transfer(users[1], GASP_ASSET_ID);
       const events = await signTx(
         api,
         Sudo.singleBatch(...[transfer, extrinsic]),

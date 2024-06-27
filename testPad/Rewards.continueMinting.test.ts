@@ -2,7 +2,7 @@
 import { Keyring } from "@polkadot/api";
 import { BN } from "@polkadot/util";
 import { getApi, initApi } from "../utils/api";
-import { MAX_BALANCE, MGA_ASSET_ID } from "../utils/Constants";
+import { MAX_BALANCE, GASP_ASSET_ID } from "../utils/Constants";
 import { User } from "../utils/User";
 import { getEnvironmentRequiredVars, waitForNBlocks } from "../utils/utils";
 import { mintLiquidity } from "../utils/tx";
@@ -63,7 +63,7 @@ describe("staking - testpad", () => {
         );
       await mintLiquidity(
         user.keyRingPair,
-        MGA_ASSET_ID,
+        GASP_ASSET_ID,
         tokenId,
         tokenstoMint,
         MAX_BALANCE,

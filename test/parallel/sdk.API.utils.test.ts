@@ -10,7 +10,7 @@ import { api, getSudoUser, setupApi, setupUsers } from "../../utils/setup";
 import { Sudo } from "../../utils/sudo";
 import { User } from "../../utils/User";
 import { Xyk } from "../../utils/xyk";
-import { MGA_ASSET_ID } from "../../utils/Constants";
+import { GASP_ASSET_ID } from "../../utils/Constants";
 import { multiSwapBuy, multiSwapSell } from "../../utils/tx";
 import {
   BN_TEN_THOUSAND,
@@ -57,7 +57,7 @@ beforeAll(async () => {
     Sudo.sudoAs(
       testUser,
       Xyk.createPool(
-        MGA_ASSET_ID,
+        GASP_ASSET_ID,
         Assets.DEFAULT_AMOUNT.divn(2),
         token1,
         Assets.DEFAULT_AMOUNT.divn(2),
@@ -77,7 +77,7 @@ beforeEach(async () => {
 test("GIVEN buyAsset WHEN operation is confirmed AND isMultiSwapAssetTransactionSuccessful THEN it returns true", async () => {
   const buyAssetEvent = await signTx(
     api,
-    Xyk.buyAsset(MGA_ASSET_ID, token1, new BN(1000)),
+    Xyk.buyAsset(GASP_ASSET_ID, token1, new BN(1000)),
     testUser1.keyRingPair,
   );
 
@@ -114,7 +114,7 @@ test("GIVEN buyAsset WHEN operation is failed AND isMultiSwapAssetTransactionSuc
 test("GIVEN sellAsset WHEN operation is confirmed AND isMultiSwapAssetTransactionSuccessful THEN it returns true", async () => {
   const sellAssetEvent = await signTx(
     api,
-    Xyk.sellAsset(MGA_ASSET_ID, token1, new BN(1000)),
+    Xyk.sellAsset(GASP_ASSET_ID, token1, new BN(1000)),
     testUser1.keyRingPair,
   );
 
@@ -151,7 +151,7 @@ test("GIVEN sellAsset WHEN operation is failed AND isMultiSwapAssetTransactionSu
 });
 
 test("GIVEN multiSwapBuy WHEN operation is confirmed AND isMultiSwapAssetTransactionSuccessful THEN it returns true", async () => {
-  const tokenIds = [MGA_ASSET_ID, token1];
+  const tokenIds = [GASP_ASSET_ID, token1];
 
   const multiSwapBuyEvent = await multiSwapBuy(
     testUser1,
@@ -195,7 +195,7 @@ test("GIVEN multiSwapBuy WHEN operation is failed AND isMultiSwapAssetTransactio
 });
 
 test("GIVEN multiSwapSell WHEN operation is confirmed AND isMultiSwapAssetTransactionSuccessful THEN it returns true", async () => {
-  const tokenIds = [MGA_ASSET_ID, token1];
+  const tokenIds = [GASP_ASSET_ID, token1];
 
   const multiSwapSellEvent = await multiSwapSell(
     testUser1,

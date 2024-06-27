@@ -3,14 +3,14 @@
 // import { Mangata } from "@mangata-finance/sdk";
 // import { TestParams } from "../testParams";
 // import { KeyringPair } from "@polkadot/keyring/types";
-// import { MGA_ASSET_ID } from "../../utils/Constants";
+// import { GASP_ASSET_ID } from "../../utils/Constants";
 // import { preGenerateTransactions, runTransactions } from "./testRunner";
 // import { ExtrinsicTransfer } from "./extrinsicTransfer";
 //
 // export class ExtrinsicBatch extends ExtrinsicTransfer {
 //   async arrange(numberOfThreads: number, nodes: string[]): Promise<boolean> {
 //     await super.arrange(numberOfThreads, nodes);
-//     await this.mintTokensToUsers(numberOfThreads, nodes, [MGA_ASSET_ID]);
+//     await this.mintTokensToUsers(numberOfThreads, nodes, [GASP_ASSET_ID]);
 //     return true;
 //   }
 //   async act(testParams: TestParams): Promise<boolean> {
@@ -54,7 +54,7 @@
 //   const txs: any = [];
 //   Array.from(Array(options.inBatchesOf).keys()).forEach(() => {
 //     txs.push(
-//       api!.tx.tokens.transfer(destUser.keyPair.address, MGA_ASSET_ID, new BN(1))
+//       api!.tx.tokens.transfer(destUser.keyPair.address, GASP_ASSET_ID, new BN(1))
 //     );
 //   });
 //   const signed = api!.tx.utility.batch(txs).sign(

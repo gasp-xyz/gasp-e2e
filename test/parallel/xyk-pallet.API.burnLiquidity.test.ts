@@ -79,7 +79,7 @@ describe("xyk-pallet - Burn liquidity tests: when burning liquidity you can", ()
       [assetXamount, assetYamount],
       sudo,
     );
-    await testUser1.addMGATokens(sudo);
+    await testUser1.addGASPTokens(sudo);
     //lets create a pool
     await createPool(
       testUser1.keyRingPair,
@@ -94,7 +94,7 @@ describe("xyk-pallet - Burn liquidity tests: when burning liquidity you can", ()
     );
     const liquidityPoolBeforeDestroy = await getLiquidityPool(liquidityAssetId);
 
-    await testUser2.addMGATokens(sudo);
+    await testUser2.addGASPTokens(sudo);
     const amountOfX = calculate_buy_price_local(
       new BN(assetXamount),
       new BN(assetYamount),
@@ -259,7 +259,7 @@ async function UserCreatesAPoolAndMintLiquidity(
     [userAmount, userAmount],
     sudo,
   );
-  await testUser1.addMGATokens(sudo);
+  await testUser1.addGASPTokens(sudo);
   await createPool(
     testUser1.keyRingPair,
     firstCurrency,

@@ -13,7 +13,7 @@ import { Assets } from "../../utils/Assets";
 import { Sudo } from "../../utils/sudo";
 import { Xyk } from "../../utils/xyk";
 import { getSudoUser, setupApi, setupUsers } from "../../utils/setup";
-import { MGA_ASSET_ID } from "../../utils/Constants";
+import { GASP_ASSET_ID } from "../../utils/Constants";
 import { ProofOfStake } from "../../utils/ProofOfStake";
 import "jest-extended";
 import { getLiquidityAssetId } from "../../utils/tx";
@@ -75,7 +75,7 @@ describe("Proof of stake tests", () => {
       Sudo.sudoAs(
         testUser1,
         Xyk.createPool(
-          MGA_ASSET_ID,
+          GASP_ASSET_ID,
           Assets.DEFAULT_AMOUNT.muln(20e6),
           newToken,
           Assets.DEFAULT_AMOUNT.muln(20e6),
@@ -84,7 +84,7 @@ describe("Proof of stake tests", () => {
       Sudo.sudoAs(
         testUser2,
         Xyk.createPool(
-          MGA_ASSET_ID,
+          GASP_ASSET_ID,
           Assets.DEFAULT_AMOUNT.muln(20e6),
           newToken2,
           Assets.DEFAULT_AMOUNT.muln(20e6),
@@ -93,7 +93,7 @@ describe("Proof of stake tests", () => {
       Sudo.sudoAs(
         testUser2,
         Xyk.createPool(
-          MGA_ASSET_ID,
+          GASP_ASSET_ID,
           Assets.DEFAULT_AMOUNT.muln(20e6),
           newToken3,
           Assets.DEFAULT_AMOUNT.muln(20e6),
@@ -111,7 +111,7 @@ describe("Proof of stake tests", () => {
       Sudo.sudoAs(
         testUser1,
         await ProofOfStake.rewardPool(
-          MGA_ASSET_ID,
+          GASP_ASSET_ID,
           newToken,
           newToken,
           Assets.DEFAULT_AMOUNT.muln(10e6),
@@ -125,8 +125,8 @@ describe("Proof of stake tests", () => {
     test("A user can activate - finish schedule and get automatically activated for the following schedules", async () => {
       // There are two rewards for newToken. One is for newToken and one is for newToken3
       const testUser = testUser1;
-      const liqId = await getLiquidityAssetId(MGA_ASSET_ID, newToken);
-      testUser.addAssets([liqId, newToken, MGA_ASSET_ID]);
+      const liqId = await getLiquidityAssetId(GASP_ASSET_ID, newToken);
+      testUser.addAssets([liqId, newToken, GASP_ASSET_ID]);
       await testUser.refreshAmounts();
       await signTx(
         getApi(),
@@ -164,7 +164,7 @@ describe("Proof of stake tests", () => {
         Sudo.sudoAs(
           testUser,
           await ProofOfStake.rewardPool(
-            MGA_ASSET_ID,
+            GASP_ASSET_ID,
             newToken,
             newToken3,
             Assets.DEFAULT_AMOUNT.muln(10e6),
@@ -174,7 +174,7 @@ describe("Proof of stake tests", () => {
         Sudo.sudoAs(
           testUser,
           await ProofOfStake.rewardPool(
-            MGA_ASSET_ID,
+            GASP_ASSET_ID,
             newToken,
             newToken,
             Assets.DEFAULT_AMOUNT.muln(10e6),
@@ -184,7 +184,7 @@ describe("Proof of stake tests", () => {
         Sudo.sudoAs(
           testUser2,
           Xyk.mintLiquidity(
-            MGA_ASSET_ID,
+            GASP_ASSET_ID,
             newToken,
             Assets.DEFAULT_AMOUNT.muln(3),
             Assets.DEFAULT_AMOUNT.muln(4),

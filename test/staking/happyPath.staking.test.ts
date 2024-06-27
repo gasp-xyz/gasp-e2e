@@ -11,7 +11,7 @@ import { setupUsers, setupApi, eve, alice } from "../../utils/setup";
 import { Staking, tokenOriginEnum } from "../../utils/Staking";
 import { Sudo } from "../../utils/sudo";
 import { Assets } from "../../utils/Assets";
-import { MGA_ASSET_ID } from "../../utils/Constants";
+import { GASP_ASSET_ID } from "../../utils/Constants";
 import {
   sleep,
   waitNewStakingRound,
@@ -53,11 +53,11 @@ beforeAll(async () => {
     Assets.mintNative(testUser1, minStk.muln(1000)),
     Assets.mintNative(eve, minStk.muln(1000)),
     Sudo.sudo(
-      await Vesting.forceVested(testUser1, eve, minStk.muln(50), MGA_ASSET_ID),
+      await Vesting.forceVested(testUser1, eve, minStk.muln(50), GASP_ASSET_ID),
     ),
     Sudo.sudoAs(
       eve,
-      MPL.reserveVestingNativeTokensByVestingIndex(MGA_ASSET_ID),
+      MPL.reserveVestingNativeTokensByVestingIndex(GASP_ASSET_ID),
     ),
     Assets.FinalizeTge(),
     Assets.initIssuance(),
@@ -72,7 +72,7 @@ describe("HappyPath - staking - a collator producing blocks", () => {
         eve,
         await Staking.joinAsCandidate(
           minStk.muln(2),
-          MGA_ASSET_ID,
+          GASP_ASSET_ID,
           tokenOriginEnum.UnspentReserves,
         ),
       ),
@@ -80,7 +80,7 @@ describe("HappyPath - staking - a collator producing blocks", () => {
     await startDockerImage();
     await signNodeWithEve();
     await waitNewStakingRound(50);
-    eve.addAsset(MGA_ASSET_ID);
+    eve.addAsset(GASP_ASSET_ID);
     await waitUntilCollatorProducesBlocks(100, eve.keyRingPair.address);
     const elected = await Staking.isUserElected(eve.keyRingPair.address);
     await eve.refreshAmounts();

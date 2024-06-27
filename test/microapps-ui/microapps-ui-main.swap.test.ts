@@ -15,7 +15,7 @@ import { Keyring } from "@polkadot/api";
 import {
   FIVE_MIN,
   KSM_ASSET_ID,
-  MGA_ASSET_ID,
+  GASP_ASSET_ID,
   MGR_ASSET_NAME,
 } from "../../utils/Constants";
 import { AssetWallet, User } from "../../utils/User";
@@ -55,7 +55,7 @@ describe("Miocroapps UI swap tests", () => {
     );
 
     testUser1.addAsset(KSM_ASSET_ID);
-    testUser1.addAsset(MGA_ASSET_ID);
+    testUser1.addAsset(GASP_ASSET_ID);
     await testUser1.refreshAmounts(AssetWallet.BEFORE);
 
     await setupPage(driver);

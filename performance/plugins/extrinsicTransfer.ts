@@ -3,7 +3,7 @@ import { BN } from "@polkadot/util";
 import { MangataInstance } from "@mangata-finance/sdk";
 import { TestParams } from "../testParams";
 import { KeyringPair } from "@polkadot/keyring/types";
-import { MGA_ASSET_ID } from "../../utils/Constants";
+import { GASP_ASSET_ID } from "../../utils/Constants";
 import { runTransactions } from "./testRunner";
 import { performanceTestItem } from "./performanceTestItem";
 import { testLog } from "../../utils/Logger";
@@ -12,7 +12,7 @@ export class ExtrinsicTransfer extends performanceTestItem {
   async arrange(testParams: TestParams): Promise<boolean> {
     await super.arrange(testParams);
     await this.mintTokensToUsers(testParams.threads, testParams.nodes, [
-      MGA_ASSET_ID,
+      GASP_ASSET_ID,
     ]);
     return true;
   }
@@ -41,7 +41,7 @@ async function createAndSignTransfer(
   const nonce = srcUser.nonce.add(nonceOffset);
   const tx = api!.tx.tokens.transfer(
     destUser.keyPair.address,
-    MGA_ASSET_ID,
+    GASP_ASSET_ID,
     new BN(1),
   );
   testLog.getLog().info("::user runing tx::" + srcUser.keyPair.address);

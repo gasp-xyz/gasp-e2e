@@ -11,7 +11,7 @@ import { User } from "../../utils/User";
 import { BN } from "@polkadot/util";
 import {
   KSM_ASSET_ID,
-  MGA_ASSET_ID,
+  GASP_ASSET_ID,
   TUR_ASSET_ID,
 } from "../../utils/Constants";
 import { BN_HUNDRED, BN_MILLION, BN_ZERO, signTx } from "@mangata-finance/sdk";
@@ -47,7 +47,7 @@ beforeAll(async () => {
 
 test("GIVEN a paymentInfo request, WHEN extrinsic is sellAsset  THEN zero is returned.", async () => {
   const sellAssetEvent = api.tx.xyk.sellAsset(
-    MGA_ASSET_ID,
+    GASP_ASSET_ID,
     KSM_ASSET_ID,
     new BN(1000),
     BN_ZERO,
@@ -61,7 +61,7 @@ test("GIVEN a paymentInfo request, WHEN extrinsic is sellAsset  THEN zero is ret
 
 test("GIVEN a paymentInfo request, WHEN extrinsic is multiswapBuyAsset THEN  zero is returned", async () => {
   const multiswapBuyEvent = api.tx.xyk.multiswapBuyAsset(
-    [MGA_ASSET_ID, KSM_ASSET_ID],
+    [GASP_ASSET_ID, KSM_ASSET_ID],
     BN_HUNDRED,
     BN_MILLION,
   );
@@ -75,7 +75,7 @@ test("GIVEN a paymentInfo request, WHEN extrinsic is multiswapBuyAsset THEN  zer
 
 test("GIVEN a paymentInfo request, WHEN extrinsic is mintLiquidityEvent THEN non-zero is returned", async () => {
   const mintLiquidityEvent = api.tx.xyk.mintLiquidity(
-    MGA_ASSET_ID,
+    GASP_ASSET_ID,
     KSM_ASSET_ID,
     BN_HUNDRED,
     new BN(Number.MAX_SAFE_INTEGER),
@@ -101,7 +101,7 @@ test("GIVEN a paymentInfo request, WHEN extrinsic is compoundRewards THEN non-ze
 test("GIVEN a paymentInfo request, WHEN extrinsic is provideLiquidityWithId THEN non-zero is returned", async () => {
   const provideLiquidityEvent = api.tx.xyk.provideLiquidityWithConversion(
     liqId,
-    MGA_ASSET_ID,
+    GASP_ASSET_ID,
     BN_HUNDRED,
   );
 
@@ -114,8 +114,8 @@ test("GIVEN a paymentInfo request, WHEN extrinsic is provideLiquidityWithId THEN
 
 test("GIVEN a paymentInfo request, WHEN extrinsic is a batch with a sell/buy operation THEN non-zero is returned AND the extrinsic will fail because sell/buy are forbidden in batches tx", async () => {
   const batchAllEvent = api.tx.utility.batchAll([
-    Xyk.buyAsset(MGA_ASSET_ID, KSM_ASSET_ID, BN_HUNDRED),
-    Xyk.buyAsset(MGA_ASSET_ID, TUR_ASSET_ID, BN_HUNDRED),
+    Xyk.buyAsset(GASP_ASSET_ID, KSM_ASSET_ID, BN_HUNDRED),
+    Xyk.buyAsset(GASP_ASSET_ID, TUR_ASSET_ID, BN_HUNDRED),
   ]);
 
   await signTx(api, batchAllEvent, testUser.keyRingPair).then((result) => {

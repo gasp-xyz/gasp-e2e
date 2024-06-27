@@ -1,12 +1,12 @@
 import { BN } from "@polkadot/util";
 
-export const MGA_ASSET_ID = new BN(0);
-export const MGA_ASSET_NAME = "MGA";
+export const GASP_ASSET_ID = new BN(0);
+export const GASP_ASSET_NAME = "MGA";
 export const MGR_ASSET_NAME = "MGR";
 export const ETH_ASSET_ID = new BN(1);
 export const ETH_ASSET_NAME = "ETH";
 export const mETH_ASSET_NAME = "mETH";
-export const DUMMY_POOL_ASSET_ID = new BN(2);
+export const ARB_ETH_ASSET_ID = new BN(2);
 export const MGA_DEFAULT_LIQ_TOKEN = new BN(3);
 export const KSM_ASSET_ID = new BN(4);
 export const KSM_ASSET_NAME = "mKSM";

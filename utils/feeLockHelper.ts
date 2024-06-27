@@ -1,5 +1,5 @@
 import { getApi } from "./api";
-import { MGA_ASSET_ID } from "./Constants";
+import { GASP_ASSET_ID } from "./Constants";
 import { waitSudoOperationSuccess } from "./eventListeners";
 import { updateFeeLockMetadata } from "./tx";
 import { User } from "./User";
@@ -16,7 +16,7 @@ export async function clearMgaFromWhitelisted(
   );
   const swapValueThreshold = stringToBN(feeLockMetadata.swapValueThreshold);
   const isMgaWhitelisted = feeLockMetadata.whitelistedTokens.includes(
-    MGA_ASSET_ID.toNumber(),
+    GASP_ASSET_ID.toNumber(),
   );
 
   if (isMgaWhitelisted || swapValueThreshold.lt(thresholdValueExpected)) {
@@ -25,7 +25,7 @@ export async function clearMgaFromWhitelisted(
       new BN(feeLockMetadata.periodLength),
       new BN(feeLockMetadata.feeLockAmount),
       thresholdValueExpected,
-      [[MGA_ASSET_ID, false]],
+      [[GASP_ASSET_ID, false]],
     );
     await waitSudoOperationSuccess(updateMetadataEvent);
   }
@@ -47,7 +47,7 @@ export async function addMgaToWhitelisted(
 
   whitelistedTokens.forEach((element: any) => {
     if (
-      element.toString() === MGA_ASSET_ID.toString() &&
+      element.toString() === GASP_ASSET_ID.toString() &&
       swapValueThreshold.gte(thresholdValueExpected)
     ) {
       isWhitelistedAlreadySetup = true;
@@ -59,7 +59,7 @@ export async function addMgaToWhitelisted(
       new BN(feeLockMetadata.periodLength),
       stringToBN(feeLockMetadata.feeLockAmount),
       thresholdValueExpected,
-      [[MGA_ASSET_ID, true]],
+      [[GASP_ASSET_ID, true]],
     );
     await waitSudoOperationSuccess(updateMetadataEvent);
   }

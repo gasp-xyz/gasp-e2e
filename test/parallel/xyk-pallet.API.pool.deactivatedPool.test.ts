@@ -5,7 +5,7 @@
 import { jest } from "@jest/globals";
 import { getApi, initApi, mangata } from "../../utils/api";
 import { Assets } from "../../utils/Assets";
-import { MGA_ASSET_ID } from "../../utils/Constants";
+import { GASP_ASSET_ID } from "../../utils/Constants";
 import { getSudoUser, setupApi, setupUsers } from "../../utils/setup";
 import { Sudo } from "../../utils/sudo";
 import { User } from "../../utils/User";
@@ -78,7 +78,7 @@ beforeEach(async () => {
     Sudo.sudoAs(
       testUser1,
       Xyk.createPool(
-        MGA_ASSET_ID,
+        GASP_ASSET_ID,
         defaultCurrencyValue,
         token1,
         defaultCurrencyValue,
@@ -86,12 +86,12 @@ beforeEach(async () => {
     ),
     Sudo.sudoAs(
       testUser1,
-      Xyk.burnLiquidity(MGA_ASSET_ID, token1, defaultCurrencyValue),
+      Xyk.burnLiquidity(GASP_ASSET_ID, token1, defaultCurrencyValue),
     ),
   );
 
-  liquidityId = await getLiquidityAssetId(MGA_ASSET_ID, token1);
-  const deactivatedPoolBalance = await getBalanceOfPool(MGA_ASSET_ID, token1);
+  liquidityId = await getLiquidityAssetId(GASP_ASSET_ID, token1);
+  const deactivatedPoolBalance = await getBalanceOfPool(GASP_ASSET_ID, token1);
 
   expect(deactivatedPoolBalance[0][0]).bnEqual(BN_ZERO);
 });
@@ -106,7 +106,7 @@ test("GIVEN deactivated pool WHEN another user tries to create an equal pool THE
 
   await createPool(
     testUser2.keyRingPair,
-    MGA_ASSET_ID,
+    GASP_ASSET_ID,
     defaultCurrencyValue,
     token1,
     defaultCurrencyValue,
@@ -127,7 +127,7 @@ test("GIVEN deactivated pool WHEN another user tries to mint liquidity in the po
 
   await mintLiquidity(
     testUser2.keyRingPair,
-    MGA_ASSET_ID,
+    GASP_ASSET_ID,
     token1,
     defaultCurrencyValue,
   ).then((result) => {
@@ -135,7 +135,7 @@ test("GIVEN deactivated pool WHEN another user tries to mint liquidity in the po
     expect(eventResponse.state).toEqual(ExtrinsicResult.ExtrinsicSuccess);
   });
 
-  const deactivatedPoolBalance = await getBalanceOfPool(MGA_ASSET_ID, token1);
+  const deactivatedPoolBalance = await getBalanceOfPool(GASP_ASSET_ID, token1);
 
   expect(deactivatedPoolBalance[0][0]).bnGt(BN_ZERO);
 });
@@ -150,7 +150,7 @@ test("GIVEN deactivated pool WHEN the user mints liquidity in the pool again THE
 
   await mintLiquidity(
     testUser2.keyRingPair,
-    MGA_ASSET_ID,
+    GASP_ASSET_ID,
     token1,
     defaultCurrencyValue,
   ).then((result) => {
@@ -158,7 +158,7 @@ test("GIVEN deactivated pool WHEN the user mints liquidity in the pool again THE
     expect(eventResponse.state).toEqual(ExtrinsicResult.ExtrinsicSuccess);
   });
 
-  const liquidityIdAfter = await getLiquidityAssetId(MGA_ASSET_ID, token1);
+  const liquidityIdAfter = await getLiquidityAssetId(GASP_ASSET_ID, token1);
 
   expect(liquidityIdAfter).bnEqual(liquidityId);
 });
@@ -168,7 +168,7 @@ test("GIVEN deactivated pool WHEN the user tries to swap/multiswap tokens on the
   try {
     await sellAsset(
       testUser1.keyRingPair,
-      MGA_ASSET_ID,
+      GASP_ASSET_ID,
       token1,
       defaultCurrencyValue,
       new BN(1),
@@ -205,7 +205,7 @@ test("GIVEN deactivated pool WHEN a bootstrap is scheduled for the existing pair
 
   const sudoBootstrap = await scheduleBootstrap(
     sudo,
-    MGA_ASSET_ID,
+    GASP_ASSET_ID,
     token1,
     5,
     5,
@@ -216,7 +216,7 @@ test("GIVEN deactivated pool WHEN a bootstrap is scheduled for the existing pair
 
 test("GIVEN deactivated pool WHEN call RPCs that work with the pools (e.g., calculate_buy_price_id) THEN zero returns", async () => {
   const priceAmount = await mangata?.rpc.calculateBuyPriceId(
-    MGA_ASSET_ID.toString(),
+    GASP_ASSET_ID.toString(),
     token1.toString(),
     defaultCurrencyValue,
   );

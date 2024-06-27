@@ -11,7 +11,7 @@ import { Assets } from "../../utils/Assets";
 import { AssetWallet, User } from "../../utils/User";
 import {
   KSM_ASSET_ID,
-  MGA_ASSET_ID,
+  GASP_ASSET_ID,
   TUR_ASSET_ID,
 } from "../../utils/Constants";
 import { Sudo } from "../../utils/sudo";
@@ -48,18 +48,18 @@ beforeAll(async () => {
   keyring.addPair(testUserTUR.keyRingPair);
 
   await Sudo.batchAsSudoFinalized(
-    Assets.mintToken(MGA_ASSET_ID, testUserMGX),
+    Assets.mintToken(GASP_ASSET_ID, testUserMGX),
     Assets.mintToken(KSM_ASSET_ID, testUserKSM),
     Assets.mintToken(TUR_ASSET_ID, testUserTUR),
   );
 });
 test("Fees : Transfers are about 4~ MGX", async () => {
   const api = getApi();
-  testUserMGX.addAsset(MGA_ASSET_ID);
+  testUserMGX.addAsset(GASP_ASSET_ID);
   await testUserMGX.refreshAmounts(AssetWallet.BEFORE);
   await signTx(
     api,
-    Assets.transfer(alice, MGA_ASSET_ID, BN_THOUSAND),
+    Assets.transfer(alice, GASP_ASSET_ID, BN_THOUSAND),
     testUserMGX.keyRingPair,
   );
   await testUserMGX.refreshAmounts(AssetWallet.AFTER);

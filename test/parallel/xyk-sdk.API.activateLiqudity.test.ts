@@ -7,7 +7,7 @@ import { jest } from "@jest/globals";
 import { BN_ZERO } from "@mangata-finance/sdk";
 import { getApi, initApi } from "../../utils/api";
 import { Assets } from "../../utils/Assets";
-import { MGA_ASSET_ID } from "../../utils/Constants";
+import { GASP_ASSET_ID } from "../../utils/Constants";
 import { BN } from "@polkadot/util";
 import { getSudoUser, setupApi, setupUsers } from "../../utils/setup";
 import { Sudo } from "../../utils/sudo";
@@ -60,7 +60,7 @@ beforeAll(async () => {
     Sudo.sudoAs(
       testUser,
       Xyk.createPool(
-        MGA_ASSET_ID,
+        GASP_ASSET_ID,
         Assets.DEFAULT_AMOUNT.divn(2),
         token1,
         Assets.DEFAULT_AMOUNT.divn(2),
@@ -68,7 +68,7 @@ beforeAll(async () => {
     ),
   );
 
-  liqId = await getLiquidityAssetId(MGA_ASSET_ID, token1);
+  liqId = await getLiquidityAssetId(GASP_ASSET_ID, token1);
 
   await Sudo.batchAsSudoFinalized(Assets.promotePool(liqId.toNumber(), 20));
 });
@@ -78,7 +78,7 @@ beforeEach(async () => {
   await Sudo.batchAsSudoFinalized(Assets.mintNative(testUser1));
 
   testUser.addAsset(liqId);
-  testUser.addAsset(MGA_ASSET_ID);
+  testUser.addAsset(GASP_ASSET_ID);
 });
 
 test("Given a user hame some liquidity token THEN he activate them THEN deactivate", async () => {
@@ -86,7 +86,7 @@ test("Given a user hame some liquidity token THEN he activate them THEN deactiva
     Assets.mintToken(liqId, testUser1, Assets.DEFAULT_AMOUNT.divn(2)),
   );
 
-  testUser1.addAssets([MGA_ASSET_ID, liqId]);
+  testUser1.addAssets([GASP_ASSET_ID, liqId]);
 
   await testUser1.refreshAmounts(AssetWallet.BEFORE);
 
@@ -125,7 +125,7 @@ test("Activate liquidity and claim rewards", async () => {
     Assets.mintToken(liqId, testUser1, Assets.DEFAULT_AMOUNT.divn(2)),
   );
 
-  testUser1.addAssets([MGA_ASSET_ID, liqId]);
+  testUser1.addAssets([GASP_ASSET_ID, liqId]);
 
   await activateLiquidity(
     testUser1.keyRingPair,

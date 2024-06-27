@@ -10,7 +10,7 @@ import { getSudoUser, setupApi, setupUsers } from "../../utils/setup";
 import { Sudo } from "../../utils/sudo";
 import { User } from "../../utils/User";
 import { getBlockNumber, isBadOriginError } from "../../utils/utils";
-import { MGA_ASSET_ID } from "../../utils/Constants";
+import { GASP_ASSET_ID } from "../../utils/Constants";
 import { MangataGenericEvent, signTx } from "@mangata-finance/sdk";
 import { getEventResultFromMangataTx } from "../../utils/txHandler";
 import {
@@ -36,7 +36,7 @@ let sudo: User;
 let keyring: Keyring;
 let crowdloanId: any;
 const crowdloanRewardsAmount = new BN("1000000000000000000000000");
-const nativeCurrencyId = MGA_ASSET_ID;
+const nativeCurrencyId = GASP_ASSET_ID;
 
 beforeAll(async () => {
   try {

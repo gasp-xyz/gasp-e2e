@@ -9,7 +9,7 @@ import { ApiPromise, Keyring } from "@polkadot/api";
 import { BN_ZERO, signTx } from "@mangata-finance/sdk";
 import { getApi, initApi } from "../../utils/api";
 import { Assets } from "../../utils/Assets";
-import { MGA_ASSET_ID } from "../../utils/Constants";
+import { GASP_ASSET_ID } from "../../utils/Constants";
 import { ExtrinsicResult } from "../../utils/eventListeners";
 import { stringToBN, waitNewStakingRound } from "../../utils/utils";
 import { Sudo } from "../../utils/sudo";
@@ -70,11 +70,11 @@ beforeAll(async () => {
     Assets.mintNative(testUser, minStk.muln(1000)),
     Sudo.sudoAs(
       testUser,
-      Xyk.createPool(MGA_ASSET_ID, minStk.muln(3), tokenId, minStk.muln(3)),
+      Xyk.createPool(GASP_ASSET_ID, minStk.muln(3), tokenId, minStk.muln(3)),
     ),
   );
 
-  liqToken = await getLiquidityAssetId(MGA_ASSET_ID, tokenId);
+  liqToken = await getLiquidityAssetId(GASP_ASSET_ID, tokenId);
 
   await Sudo.asSudoFinalized(
     Sudo.sudo(Staking.addStakingLiquidityToken(liqToken)),
@@ -87,7 +87,7 @@ beforeAll(async () => {
     Assets.mintToken(tokenId, testUser1, minStk.muln(1000)),
     Sudo.sudoAs(
       testUser1,
-      Xyk.mintLiquidity(MGA_ASSET_ID, tokenId, minStk.muln(5), minStk.muln(6)),
+      Xyk.mintLiquidity(GASP_ASSET_ID, tokenId, minStk.muln(5), minStk.muln(6)),
     ),
     Assets.mintNative(testUser2, minStk.muln(1000)),
     Assets.mintToken(liqToken, testUser2, minStk.muln(2)),
@@ -95,13 +95,13 @@ beforeAll(async () => {
     Assets.mintToken(tokenId, testUser3, minStk.muln(1000)),
     Sudo.sudoAs(
       testUser3,
-      Xyk.mintLiquidity(MGA_ASSET_ID, tokenId, minStk.muln(5), minStk.muln(6)),
+      Xyk.mintLiquidity(GASP_ASSET_ID, tokenId, minStk.muln(5), minStk.muln(6)),
     ),
     Assets.mintNative(testUser4, minStk.muln(1000)),
     Assets.mintToken(tokenId, testUser4, minStk.muln(1000)),
     Sudo.sudoAs(
       testUser4,
-      Xyk.mintLiquidity(MGA_ASSET_ID, tokenId, minStk.muln(5), minStk.muln(6)),
+      Xyk.mintLiquidity(GASP_ASSET_ID, tokenId, minStk.muln(5), minStk.muln(6)),
     ),
   );
 });

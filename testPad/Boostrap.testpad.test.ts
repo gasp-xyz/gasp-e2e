@@ -3,7 +3,7 @@ import { Keyring } from "@polkadot/api";
 import { BN, hexToU8a } from "@polkadot/util";
 import { api, getApi, initApi } from "../utils/api";
 import { getCurrentNonce, getNextAssetId, mintLiquidity } from "../utils/tx";
-import { MGA_ASSET_ID } from "../utils/Constants";
+import { GASP_ASSET_ID } from "../utils/Constants";
 import { AssetWallet, User } from "../utils/User";
 import {
   getBlockNumber,
@@ -99,14 +99,14 @@ describe("Boostrap - testpad", () => {
         .batch([
           api!.tx.sudo.sudo(
             api!.tx.tokens.mint(
-              MGA_ASSET_ID,
+              GASP_ASSET_ID,
               testUser1.keyRingPair.address,
               new BN(amount).muln(3),
             ),
           ),
           api!.tx.sudo.sudo(
             api!.tx.tokens.mint(
-              MGA_ASSET_ID,
+              GASP_ASSET_ID,
               testUser1.keyRingPair.address,
               new BN(amount),
             ),
@@ -186,7 +186,7 @@ describe("Boostrap - testpad", () => {
     await api!.tx.sudo
       .sudo(
         api!.tx.bootstrap.scheduleBootstrap(
-          MGA_ASSET_ID,
+          GASP_ASSET_ID,
           tokenId,
           block + 5,
           1,
@@ -212,7 +212,7 @@ describe("Boostrap - testpad", () => {
       testUser1.keyRingPair,
     );
     await signSendAndWaitToFinishTx(
-      api!.tx.bootstrap.provision(MGA_ASSET_ID, 1000),
+      api!.tx.bootstrap.provision(GASP_ASSET_ID, 1000),
       testUser1.keyRingPair,
     );
   });
@@ -263,7 +263,7 @@ describe("Boostrap - testpad", () => {
     keyring.pairs[0].decodePkcs8("mangata123");
     await testUser1.refreshAmounts(AssetWallet.BEFORE);
     await signSendAndWaitToFinishTx(
-      api!.tx.bootstrap.provisionVested(MGA_ASSET_ID, 1000),
+      api!.tx.bootstrap.provisionVested(GASP_ASSET_ID, 1000),
       testUser1.keyRingPair,
     );
   });
@@ -284,14 +284,14 @@ describe("Boostrap - testpad", () => {
         .batch([
           api!.tx.sudo.sudo(
             api!.tx.tokens.mint(
-              MGA_ASSET_ID,
+              GASP_ASSET_ID,
               testUser1.keyRingPair.address,
               new BN(amount).muln(3),
             ),
           ),
           api!.tx.sudo.sudo(
             api!.tx.tokens.mint(
-              MGA_ASSET_ID,
+              GASP_ASSET_ID,
               testUser1.keyRingPair.address,
               new BN(amount),
             ),

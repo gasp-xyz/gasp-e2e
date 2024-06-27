@@ -6,7 +6,7 @@
 import { jest } from "@jest/globals";
 import { getApi, getMangataInstance, initApi, mangata } from "../../utils/api";
 import { Assets } from "../../utils/Assets";
-import { MGA_ASSET_ID } from "../../utils/Constants";
+import { GASP_ASSET_ID } from "../../utils/Constants";
 import { BN_HUNDRED, BN_ZERO, signTx } from "@mangata-finance/sdk";
 import { getSudoUser, setupApi, setupUsers } from "../../utils/setup";
 import { Sudo } from "../../utils/sudo";
@@ -69,7 +69,7 @@ beforeEach(async () => {
     Sudo.sudoAs(
       testUser1,
       Xyk.createPool(
-        MGA_ASSET_ID,
+        GASP_ASSET_ID,
         Assets.DEFAULT_AMOUNT.divn(2),
         token1,
         Assets.DEFAULT_AMOUNT.divn(2),
@@ -77,7 +77,7 @@ beforeEach(async () => {
     ),
   );
 
-  liqId = await getLiquidityAssetId(MGA_ASSET_ID, token1);
+  liqId = await getLiquidityAssetId(GASP_ASSET_ID, token1);
 
   await Sudo.batchAsSudoFinalized(
     Assets.promotePool(liqId.toNumber(), 20),
@@ -142,7 +142,7 @@ test("Testing that the sum of the weights can be greater than 100", async () => 
     Sudo.sudoAs(
       testUser1,
       Xyk.createPool(
-        MGA_ASSET_ID,
+        GASP_ASSET_ID,
         Assets.DEFAULT_AMOUNT.divn(2),
         token2,
         Assets.DEFAULT_AMOUNT.divn(2),
@@ -150,7 +150,7 @@ test("Testing that the sum of the weights can be greater than 100", async () => 
     ),
   );
 
-  const liqId2 = await getLiquidityAssetId(MGA_ASSET_ID, token2);
+  const liqId2 = await getLiquidityAssetId(GASP_ASSET_ID, token2);
 
   await Sudo.batchAsSudoFinalized(Assets.promotePool(liqId2.toNumber(), 100));
 
@@ -171,11 +171,11 @@ test("GIVEN a pool WHEN it has configured with 0 THEN no new issuance will be re
     Assets.mintNative(testUser2),
     Sudo.sudoAs(
       testUser1,
-      Xyk.mintLiquidity(MGA_ASSET_ID, token1, defaultCurrencyValue),
+      Xyk.mintLiquidity(GASP_ASSET_ID, token1, defaultCurrencyValue),
     ),
   );
 
-  testUser2.addAsset(MGA_ASSET_ID);
+  testUser2.addAsset(GASP_ASSET_ID);
   testUser2.addAsset(token1);
 
   await waitForRewards(testUser1, liqId);
@@ -190,7 +190,7 @@ test("GIVEN a pool WHEN it has configured with 0 THEN no new issuance will be re
   //Validate that another user tries minting into the disabled pool.
   await mintLiquidity(
     testUser2.keyRingPair,
-    MGA_ASSET_ID,
+    GASP_ASSET_ID,
     token1,
     defaultCurrencyValue,
   ).then((result) => {
@@ -200,8 +200,8 @@ test("GIVEN a pool WHEN it has configured with 0 THEN no new issuance will be re
 
   await testUser2.refreshAmounts(AssetWallet.AFTER);
 
-  expect(testUser2.getAsset(MGA_ASSET_ID)!.amountAfter.free!).bnGt(BN_ZERO);
-  expect(testUser2.getAsset(MGA_ASSET_ID)!.amountAfter.reserved!).bnEqual(
+  expect(testUser2.getAsset(GASP_ASSET_ID)!.amountAfter.free!).bnGt(BN_ZERO);
+  expect(testUser2.getAsset(GASP_ASSET_ID)!.amountAfter.reserved!).bnEqual(
     BN_ZERO,
   );
 });
@@ -224,7 +224,7 @@ test("GIVEN a deactivated pool WHEN its configured with more weight, THEN reward
 
   await mintLiquidity(
     testUser2.keyRingPair,
-    MGA_ASSET_ID,
+    GASP_ASSET_ID,
     token1,
     defaultCurrencyValue,
   );

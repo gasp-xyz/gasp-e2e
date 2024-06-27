@@ -18,7 +18,7 @@ import {
   getEventResultFromMangataTx,
   getBalanceOfPool,
 } from "../../utils/txHandler";
-import { MGA_ASSET_ID } from "../../utils/Constants";
+import { GASP_ASSET_ID } from "../../utils/Constants";
 import { BN } from "@polkadot/util";
 import { getSudoUser, setupApi, setupUsers } from "../../utils/setup";
 import {
@@ -89,7 +89,7 @@ describe.each`
           const bootstrapBlockNumber = (await getBlockNumber()) + 5;
           const vestingUser = await vestingTransfer(
             sudo,
-            MGA_ASSET_ID,
+            GASP_ASSET_ID,
             sudo,
             testUser1,
             bootstrapBlockNumber,
@@ -100,7 +100,7 @@ describe.each`
 
         const sudoBootstrap = await scheduleBootstrap(
           sudo,
-          MGA_ASSET_ID,
+          GASP_ASSET_ID,
           bootstrapCurrency,
           waitingPeriod,
           bootstrapPeriod,
@@ -121,7 +121,7 @@ describe.each`
         if (vesting === true) {
           const provisionMGAUser1 = await provisionVestedBootstrap(
             testUser1,
-            MGA_ASSET_ID,
+            GASP_ASSET_ID,
             bootstrapAmount,
           );
           eventResponse = getEventResultFromMangataTx(provisionMGAUser1);
@@ -129,7 +129,7 @@ describe.each`
         } else {
           const provisionMGAUser1 = await provisionBootstrap(
             testUser1,
-            MGA_ASSET_ID,
+            GASP_ASSET_ID,
             bootstrapAmount,
           );
           eventResponse = getEventResultFromMangataTx(provisionMGAUser1);
@@ -146,7 +146,7 @@ describe.each`
         expect(eventResponse.state).toEqual(ExtrinsicResult.ExtrinsicSuccess);
         const provisionMGAUser2 = await provisionBootstrap(
           testUser2,
-          MGA_ASSET_ID,
+          GASP_ASSET_ID,
           bootstrapAmount,
         );
         eventResponse = getEventResultFromMangataTx(provisionMGAUser2);
@@ -155,7 +155,10 @@ describe.each`
         await waitForBootstrapStatus("Finished", bootstrapPeriod);
 
         const bootstrapAmountPool = bootstrapAmount.muln(2);
-        bootstrapPool = await getBalanceOfPool(MGA_ASSET_ID, bootstrapCurrency);
+        bootstrapPool = await getBalanceOfPool(
+          GASP_ASSET_ID,
+          bootstrapCurrency,
+        );
         const bootstrapPoolBalance = bootstrapPool[0];
         expect(bootstrapPoolBalance[0]).bnEqual(bootstrapAmountPool);
         expect(bootstrapPoolBalance[1]).bnEqual(bootstrapAmountPool);
@@ -164,7 +167,7 @@ describe.each`
         );
 
         const liquidityID = await getLiquidityAssetId(
-          MGA_ASSET_ID,
+          GASP_ASSET_ID,
           bootstrapCurrency,
         );
 

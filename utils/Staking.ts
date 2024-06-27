@@ -4,7 +4,7 @@ import { User } from "./User";
 import { SudoDB } from "./SudoDB";
 import { getApi } from "./api";
 import { getLiquidityPool } from "./tx";
-import { MGA_ASSET_ID } from "./Constants";
+import { GASP_ASSET_ID } from "./Constants";
 import { Sudo } from "./sudo";
 import { Assets } from "./Assets";
 import { Xyk } from "./xyk";
@@ -191,7 +191,7 @@ export class Staking {
     ).addn(1234567);
 
     const tokenInPool = (await getLiquidityPool(liq)).filter((x) =>
-      x.gt(MGA_ASSET_ID),
+      x.gt(GASP_ASSET_ID),
     )[0];
     await Sudo.batchAsSudoFinalized(
       Assets.mintToken(tokenInPool, user, amountToJoin.muln(100000)),
@@ -199,7 +199,7 @@ export class Staking {
       Sudo.sudoAs(
         user,
         Xyk.mintLiquidity(
-          MGA_ASSET_ID,
+          GASP_ASSET_ID,
           tokenInPool,
           amountToJoin.muln(2),
           amountToJoin.muln(100000),

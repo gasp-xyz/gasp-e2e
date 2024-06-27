@@ -39,7 +39,7 @@ describe("AssetInfo - testpad", () => {
     const sudo = new User(keyring, "sudo", JSON.parse(json));
     keyring.addPair(sudo.keyRingPair);
     keyring.pairs[0].decodePkcs8("mangata123");
-    await sudo.addMGATokens(sudo);
+    await sudo.addGASPTokens(sudo);
     const nextAssetId = await getNextAssetId();
     const numberOfMissingTokens = 7 - nextAssetId.toNumber();
 
@@ -103,7 +103,7 @@ describe("AssetInfo - testpad", () => {
     keyring.addPair(sudo.keyRingPair);
     keyring.pairs[0].decodePkcs8("mangata123");
     const alice = new User(keyring, "//Alice");
-    await alice.addMGATokens(sudo, new BN("10000000000000000000000000"));
+    await alice.addGASPTokens(sudo, new BN("10000000000000000000000000"));
   });
 
   test("Send tokens to Michal address", async () => {
@@ -124,7 +124,7 @@ describe("AssetInfo - testpad", () => {
     await sudo.mint(new BN(4), target, new BN(Math.pow(10, 20).toString()));
     await sudo.mint(new BN(5), target, new BN(Math.pow(10, 20).toString()));
     await sudo.mint(new BN(6), target, new BN(Math.pow(10, 20).toString()));
-    await target.addMGATokens(sudo);
+    await target.addGASPTokens(sudo);
   });
 
   test("Create big pools", async () => {
@@ -137,7 +137,7 @@ describe("AssetInfo - testpad", () => {
     const sudo = new User(keyring, "sudo", JSON.parse(json));
     keyring.addPair(sudo.keyRingPair);
     keyring.pairs[0].decodePkcs8("mangata123");
-    await sudo.addMGATokens(sudo);
+    await sudo.addGASPTokens(sudo);
     const poolSizeAsset = new BN("100000000000000000000000000000000");
     const poolSizeMGA = new BN("100000000000000000000000000000000");
     await sudo.mint(new BN(0), sudo, poolSizeMGA.muln(3));

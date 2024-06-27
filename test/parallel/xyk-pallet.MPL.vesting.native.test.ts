@@ -7,7 +7,7 @@
 import { jest } from "@jest/globals";
 import "jest-extended";
 import { joinCandidate } from "../../utils/tx";
-import { MGA_ASSET_ID } from "../../utils/Constants";
+import { GASP_ASSET_ID } from "../../utils/Constants";
 import { hexToBn, BN } from "@polkadot/util";
 import {
   getBlockNumber,
@@ -54,13 +54,13 @@ describe("Vesting-native", () => {
       Assets.mintNative(user3, minStk.muln(10)),
       Assets.mintNative(user4, minStk.muln(10)),
       Sudo.sudo(
-        await Vesting.forceVested(user1, user2, minStk.muln(5), MGA_ASSET_ID),
+        await Vesting.forceVested(user1, user2, minStk.muln(5), GASP_ASSET_ID),
       ),
       Sudo.sudo(
-        await Vesting.forceVested(user1, user3, minStk.muln(5), MGA_ASSET_ID),
+        await Vesting.forceVested(user1, user3, minStk.muln(5), GASP_ASSET_ID),
       ),
       Sudo.sudo(
-        await Vesting.forceVested(user1, user4, minStk.muln(5), MGA_ASSET_ID),
+        await Vesting.forceVested(user1, user4, minStk.muln(5), GASP_ASSET_ID),
       ),
     ).then((events) => {
       expectMGAExtrinsicSuDidSuccess(events);
@@ -69,12 +69,12 @@ describe("Vesting-native", () => {
   test("As a user, I can use MGX vested to move tokens to MPL pallet", async () => {
     let vesting = await getVestingStatus(
       user2.keyRingPair.address,
-      MGA_ASSET_ID,
+      GASP_ASSET_ID,
     );
     expect(vesting).not.toBeUndefined();
     const reservedAmount = await signTx(
       await getApi(),
-      MPL.reserveVestingNativeTokensByVestingIndex(MGA_ASSET_ID),
+      MPL.reserveVestingNativeTokensByVestingIndex(GASP_ASSET_ID),
       user2.keyRingPair,
     ).then((value) => {
       const event = getEventResultFromMangataTx(value, [
@@ -86,11 +86,11 @@ describe("Vesting-native", () => {
     });
     const mplStorage = await getMultiPurposeLiquidityStatus(
       user2.keyRingPair.address,
-      MGA_ASSET_ID,
+      GASP_ASSET_ID,
     );
     const relockStatus = await getMultiPurposeLiquidityReLockStatus(
       user2.keyRingPair.address,
-      MGA_ASSET_ID,
+      GASP_ASSET_ID,
     );
 
     const reservedTotalAmount = stringToBN(
@@ -113,13 +113,13 @@ describe("Vesting-native", () => {
     expect(stringToBN(relockItem.endingBlockAsBalance.toString())).bnGt(
       new BN(bn),
     );
-    vesting = await getVestingStatus(user2.keyRingPair.address, MGA_ASSET_ID);
+    vesting = await getVestingStatus(user2.keyRingPair.address, GASP_ASSET_ID);
     expect(vesting.toString()).toEqual("");
   });
   test("As a user, I can use MGX vested from MPL to staking", async () => {
     const reservedAmount = await signTx(
       await getApi(),
-      MPL.reserveVestingNativeTokensByVestingIndex(MGA_ASSET_ID),
+      MPL.reserveVestingNativeTokensByVestingIndex(GASP_ASSET_ID),
       user3.keyRingPair,
     ).then((value) => {
       const event = getEventResultFromMangataTx(value, [
@@ -134,7 +134,7 @@ describe("Vesting-native", () => {
     );
     const result = await joinCandidate(
       user3.keyRingPair,
-      MGA_ASSET_ID,
+      GASP_ASSET_ID,
       reservedTotalAmount,
       tokenOriginEnum.UnspentReserves,
     );
@@ -147,12 +147,12 @@ describe("Vesting-native", () => {
   test("As a user, I can revert MGX vested from MPL to vesting pallet", async () => {
     const vestingBefore = await getVestingStatus(
       user4.keyRingPair.address,
-      MGA_ASSET_ID,
+      GASP_ASSET_ID,
     );
     expect(vestingBefore).not.toBeUndefined();
     const reservedAmount = await signTx(
       await getApi(),
-      MPL.reserveVestingNativeTokensByVestingIndex(MGA_ASSET_ID),
+      MPL.reserveVestingNativeTokensByVestingIndex(GASP_ASSET_ID),
       user4.keyRingPair,
     ).then((value) => {
       const event = getEventResultFromMangataTx(value, [
@@ -168,13 +168,13 @@ describe("Vesting-native", () => {
     expect(reservedTotalAmount).bnGt(BN_ZERO);
     const vestingStatus = await getVestingStatus(
       user4.keyRingPair.address,
-      MGA_ASSET_ID,
+      GASP_ASSET_ID,
     );
     expect(vestingStatus.toString()).toBeEmpty();
 
     await signTx(
       await getApi(),
-      MPL.unreserveAndRelockInstance(MGA_ASSET_ID, BN_ZERO),
+      MPL.unreserveAndRelockInstance(GASP_ASSET_ID, BN_ZERO),
       user4.keyRingPair,
     ).then((events) => {
       const event = getEventResultFromMangataTx(events, [
@@ -186,7 +186,7 @@ describe("Vesting-native", () => {
     });
     const vestingAfter = await getVestingStatus(
       user4.keyRingPair.address,
-      MGA_ASSET_ID,
+      GASP_ASSET_ID,
     );
     expect(vestingAfter).not.toBeUndefined();
     const vestingAfterAsJson = JSON.parse(JSON.stringify(vestingAfter))[0];

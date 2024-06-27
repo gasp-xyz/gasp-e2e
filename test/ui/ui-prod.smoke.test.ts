@@ -16,7 +16,7 @@ import {
 import { AssetWallet, User } from "../../utils/User";
 import { getEnvironmentRequiredVars } from "../../utils/utils";
 import {
-  MGA_ASSET_ID,
+  GASP_ASSET_ID,
   TUR_ASSET_ID,
   TUR_ASSET_NAME,
 } from "../../utils/Constants";
@@ -57,7 +57,7 @@ describe("UI prod smoke tests - no action", () => {
     );
 
     testUser1.addAsset(TUR_ASSET_ID);
-    testUser1.addAsset(MGA_ASSET_ID);
+    testUser1.addAsset(GASP_ASSET_ID);
     await testUser1.refreshAmounts(AssetWallet.BEFORE);
 
     const mga = new Mangata(driver);

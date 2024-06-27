@@ -20,7 +20,7 @@ import { getEnvironmentRequiredVars } from "../../utils/utils";
 import {
   IMBU_ASSET_ID,
   IMBU_ASSET_NAME,
-  MGA_ASSET_ID,
+  GASP_ASSET_ID,
 } from "../../utils/Constants";
 import { SudoUser } from "../../utils/Framework/User/SudoUser";
 import { Node } from "../../utils/Framework/Node/Node";
@@ -107,7 +107,7 @@ describe("UI XCM tests - IMBU", () => {
     );
 
     testUser1.addAsset(IMBU_ASSET_ID);
-    testUser1.addAsset(MGA_ASSET_ID);
+    testUser1.addAsset(GASP_ASSET_ID);
     await testUser1.refreshAmounts(AssetWallet.BEFORE);
   });
 
