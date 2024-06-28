@@ -8,7 +8,7 @@ import { jest } from "@jest/globals";
 import { setupApi, setupUsers } from "../../utils/setup";
 import jsonpath from "jsonpath";
 import { getEnvironmentRequiredVars } from "../../utils/utils";
-import { Mangata } from "@mangata-finance/sdk";
+import { Mangata } from "gasp-sdk";
 import "jest-extended";
 import { testLog } from "../../utils/Logger";
 import { xxhashAsHex } from "@polkadot/util-crypto";

@@ -26,7 +26,7 @@ import {
   TUR_ASSET_ID,
 } from "./Constants";
 import { strict as assert } from "assert";
-import { toBN, TokenBalance } from "@mangata-finance/sdk";
+import { toBN, TokenBalance } from "gasp-sdk";
 import { KeyringPair } from "@polkadot/keyring/types";
 import Keyring from "@polkadot/keyring";
 import { randomBytes } from "crypto";

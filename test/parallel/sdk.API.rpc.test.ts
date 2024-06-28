@@ -10,7 +10,7 @@ import { getEnvironmentRequiredVars } from "../../utils/utils";
 import { Sudo } from "../../utils/sudo";
 import { Xyk } from "../../utils/xyk";
 import { getLiquidityAssetId } from "../../utils/tx";
-import { BN_ZERO, Mangata, MangataInstance } from "@mangata-finance/sdk";
+import { BN_ZERO, Mangata, MangataInstance } from "gasp-sdk";
 import { BN } from "@polkadot/util";
 
 jest.spyOn(console, "log").mockImplementation(jest.fn());

@@ -13,7 +13,7 @@ import {
   getBalanceOfPool,
 } from "../../utils/txHandler";
 import { MGA_ASSET_ID } from "../../utils/Constants";
-import { toBN } from "@mangata-finance/sdk";
+import { toBN } from "gasp-sdk";
 import {
   checkLastBootstrapFinalized,
   createNewBootstrapCurrency,

@@ -9,7 +9,7 @@ import { api, getApi, initApi } from "../../utils/api";
 import { User } from "../../utils/User";
 import { getEnvironmentRequiredVars, waitForNBlocks } from "../../utils/utils";
 import fs from "fs";
-import { signTx } from "@mangata-finance/sdk";
+import { signTx } from "gasp-sdk";
 import { testLog } from "../../utils/Logger";
 import { downloadRelease } from "@terascope/fetch-github-release";
 import { transferAsset } from "../../utils/tx";

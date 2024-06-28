@@ -8,7 +8,7 @@ import { MGA_ASSET_ID } from "./Constants";
 import { Sudo } from "./sudo";
 import { Assets } from "./Assets";
 import { Xyk } from "./xyk";
-import { signTx } from "@mangata-finance/sdk";
+import { signTx } from "gasp-sdk";
 import { getEventResultFromMangataTx } from "./txHandler";
 import { ExtrinsicResult } from "./eventListeners";
 import { ProofOfStake } from "./ProofOfStake";

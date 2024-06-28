@@ -5,7 +5,7 @@ import {
   signTx,
   toBN,
   TokenBalance,
-} from "@mangata-finance/sdk";
+} from "gasp-sdk";
 import { AddressOrPair, SubmittableExtrinsic } from "@polkadot/api/types";
 import { KeyringPair } from "@polkadot/keyring/types";
 import { StorageKey } from "@polkadot/types";

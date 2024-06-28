@@ -4,7 +4,7 @@
  */
 import { jest } from "@jest/globals";
 import { Mangata } from "../../utils/frontend/pages/Mangata";
-import { Mangata as MangataSDK } from "@mangata-finance/sdk";
+import { Mangata as MangataSDK } from "gasp-sdk";
 import { Keyring } from "@polkadot/api";
 import { KeyringPair } from "@polkadot/keyring/types";
 import { WebDriver } from "selenium-webdriver";
@@ -39,7 +39,7 @@ import {
   ChainSpecs,
   TRANSFER_INSTRUCTIONS,
 } from "../../utils/ChainSpecs";
-import { BN_HUNDRED, BN_THOUSAND } from "@mangata-finance/sdk";
+import { BN_HUNDRED, BN_THOUSAND } from "gasp-sdk";
 import { BuildBlockMode, connectParachains } from "@acala-network/chopsticks";
 
 import "dotenv/config";

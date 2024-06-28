@@ -36,7 +36,7 @@ import {
   sudoIssueAsset,
 } from "../../utils/txHandler";
 import { testLog } from "../../utils/Logger";
-import { TokenBalance } from "@mangata-finance/sdk";
+import { TokenBalance } from "gasp-sdk";
 
 jest.spyOn(console, "log").mockImplementation(jest.fn());
 const { xykPalletAddress, sudo: sudoUserName } = getEnvironmentRequiredVars();

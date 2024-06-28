@@ -16,7 +16,7 @@ import {
   BN_TEN_THOUSAND,
   isMultiSwapAssetTransactionSuccessful,
   signTx,
-} from "@mangata-finance/sdk";
+} from "gasp-sdk";
 import { getEventResultFromMangataTx } from "../../utils/txHandler";
 import { ExtrinsicResult } from "../../utils/eventListeners";
 

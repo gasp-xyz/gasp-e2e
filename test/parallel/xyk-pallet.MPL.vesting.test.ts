@@ -22,7 +22,7 @@ import {
   getMultiPurposeLiquidityStatus,
 } from "../../utils/utils";
 import { Node } from "../../utils/Framework/Node/Node";
-import { BN_HUNDRED_THOUSAND, BN_ZERO } from "@mangata-finance/sdk";
+import { BN_HUNDRED_THOUSAND, BN_ZERO } from "gasp-sdk";
 import { UserFactory, Users } from "../../utils/Framework/User/UserFactory";
 import { RegularUser } from "../../utils/Framework/User/RegularUser";
 import { ExtrinsicResult } from "../../utils/eventListeners";

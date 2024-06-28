@@ -11,7 +11,7 @@ import { Sudo } from "../../utils/sudo";
 import { User } from "../../utils/User";
 import { getBlockNumber, isBadOriginError } from "../../utils/utils";
 import { MGA_ASSET_ID } from "../../utils/Constants";
-import { MangataGenericEvent, signTx } from "@mangata-finance/sdk";
+import { MangataGenericEvent, signTx } from "gasp-sdk";
 import { getEventResultFromMangataTx } from "../../utils/txHandler";
 import {
   ExtrinsicResult,

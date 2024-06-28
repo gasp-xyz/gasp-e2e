@@ -16,7 +16,7 @@ import {
   getVestingStatus,
   stringToBN,
 } from "../../utils/utils";
-import { BN_ZERO, signTx } from "@mangata-finance/sdk";
+import { BN_ZERO, signTx } from "gasp-sdk";
 import {
   ExtrinsicResult,
   expectMGAExtrinsicSuDidSuccess,

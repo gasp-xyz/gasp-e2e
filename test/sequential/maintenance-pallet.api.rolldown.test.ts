@@ -22,7 +22,7 @@ import {
   getEventErrorFromSudo,
   getEventResultFromMangataTx,
 } from "../../utils/txHandler";
-import { BN_HUNDRED, signTx } from "@mangata-finance/sdk";
+import { BN_HUNDRED, signTx } from "gasp-sdk";
 import { FOUNDATION_ADDRESS_1, MGA_ASSET_ID } from "../../utils/Constants";
 import { Sudo } from "../../utils/sudo";
 import { ApiPromise } from "@polkadot/api";

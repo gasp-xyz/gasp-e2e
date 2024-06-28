@@ -5,7 +5,7 @@ import { waitNewBlock } from "../utils/eventListeners";
 import { User, AssetWallet } from "../utils/User";
 import { getEnvironmentRequiredVars } from "../utils/utils";
 import fs from "fs";
-import { signTx } from "@mangata-finance/sdk";
+import { signTx } from "gasp-sdk";
 
 import "dotenv/config";
 

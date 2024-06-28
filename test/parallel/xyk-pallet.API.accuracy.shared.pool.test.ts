@@ -12,7 +12,7 @@ import { AssetWallet, User } from "../../utils/User";
 import { Assets } from "../../utils/Assets";
 import { getEnvironmentRequiredVars } from "../../utils/utils";
 import { MGA_ASSET_ID } from "../../utils/Constants";
-import { BN_ZERO, MangataInstance } from "@mangata-finance/sdk";
+import { BN_ZERO, MangataInstance } from "gasp-sdk";
 import { testLog } from "../../utils/Logger";
 import { Sudo } from "../../utils/sudo";
 import {

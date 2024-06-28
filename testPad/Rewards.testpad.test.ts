@@ -5,7 +5,7 @@ import { api, getApi, initApi } from "../utils/api";
 import { MAX_BALANCE, MGA_ASSET_ID } from "../utils/Constants";
 import { User, AssetWallet } from "../utils/User";
 import { getEnvironmentRequiredVars, waitForNBlocks } from "../utils/utils";
-import { MangataGenericEvent, signTx } from "@mangata-finance/sdk";
+import { MangataGenericEvent, signTx } from "gasp-sdk";
 import { getNextAssetId, mintLiquidity } from "../utils/tx";
 import { ApiPromise } from "@polkadot/api";
 import { WsProvider } from "@polkadot/rpc-provider/ws";

@@ -4,7 +4,7 @@ import { User } from "./User";
 import { getEventResultFromMangataTx, sudoIssueAsset } from "./txHandler";
 import { getCurrentNonce } from "./tx";
 import { getBlockNumber } from "./utils";
-import { signTx, toBN } from "@mangata-finance/sdk";
+import { signTx, toBN } from "gasp-sdk";
 import { Assets } from "./Assets";
 import { setupApi } from "./setup";
 import { Sudo } from "./sudo";

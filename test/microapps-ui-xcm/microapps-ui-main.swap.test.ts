@@ -24,7 +24,7 @@ import {
 import { Swap } from "../../utils/frontend/microapps-pages/Swap";
 import { ApiContext } from "../../utils/Framework/XcmHelper";
 import { connectVertical } from "@acala-network/chopsticks";
-import { BN_TEN_THOUSAND, BN_THOUSAND } from "@mangata-finance/sdk";
+import { BN_TEN_THOUSAND, BN_THOUSAND } from "gasp-sdk";
 import { AssetId } from "../../utils/ChainSpecs";
 import XcmNetworks from "../../utils/Framework/XcmNetworks";
 import { devTestingPairs } from "../../utils/setup";

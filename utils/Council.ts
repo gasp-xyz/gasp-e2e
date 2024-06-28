@@ -1,4 +1,4 @@
-import { BN_HUNDRED, BN_THOUSAND } from "@mangata-finance/sdk";
+import { BN_HUNDRED, BN_THOUSAND } from "gasp-sdk";
 import { Assets } from "./Assets";
 import { MGA_ASSET_ID } from "./Constants";
 import { api, alice, eve, Extrinsic, setupUsers } from "./setup";

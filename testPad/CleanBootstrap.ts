@@ -1,6 +1,6 @@
 /* eslint-disable no-console */
 import "@mangata-finance/types";
-import { Mangata, signTx } from "@mangata-finance/sdk";
+import { Mangata, signTx } from "gasp-sdk";
 import * as fs from "fs";
 import { BN } from "@polkadot/util";
 import { Keyring } from "@polkadot/api";

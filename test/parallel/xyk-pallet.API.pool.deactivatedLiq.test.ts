@@ -17,7 +17,7 @@ import { AssetWallet, User } from "../../utils/User";
 import { getMultiPurposeLiquidityStatus } from "../../utils/utils";
 import { Xyk } from "../../utils/xyk";
 import { BN } from "@polkadot/util";
-import { BN_BILLION, BN_ZERO } from "@mangata-finance/sdk";
+import { BN_BILLION, BN_ZERO } from "gasp-sdk";
 import { ExtrinsicResult, waitForRewards } from "../../utils/eventListeners";
 import { MGA_ASSET_ID } from "../../utils/Constants";
 import { getEventResultFromMangataTx } from "../../utils/txHandler";

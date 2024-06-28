@@ -6,7 +6,7 @@ import { jest } from "@jest/globals";
 import { getApi, initApi } from "../../utils/api";
 import { User } from "../../utils/User";
 import { expectMGAExtrinsicSuDidFailed } from "../../utils/eventListeners";
-import { BN_ONE } from "@mangata-finance/sdk";
+import { BN_ONE } from "gasp-sdk";
 import { setupUsers, setupApi } from "../../utils/setup";
 import { Staking } from "../../utils/Staking";
 import { Sudo } from "../../utils/sudo";

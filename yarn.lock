@@ -1572,9 +1572,9 @@
     eslint-visitor-keys "^3.3.0"
 
 "@eslint-community/regexpp@^4.4.0", "@eslint-community/regexpp@^4.5.1", "@eslint-community/regexpp@^4.6.1":
-  version "4.10.1"
-  resolved "https://registry.yarnpkg.com/@eslint-community/regexpp/-/regexpp-4.10.1.tgz#361461e5cb3845d874e61731c11cfedd664d83a0"
-  integrity sha512-Zm2NGpWELsQAD1xsJzGQpYfvICSsFkEpU0jxBjfdC6uNEWXcHnfs9hScFWtXVDVl+rBQJGrl4g1vcKIejpH9dA==
+  version "4.11.0"
+  resolved "https://registry.yarnpkg.com/@eslint-community/regexpp/-/regexpp-4.11.0.tgz#b0ffd0312b4a3fd2d6f77237e7248a5ad3a680ae"
+  integrity sha512-G/M/tIiMrTAxEWRfLfQJMmGNX28IxBg4PBz8XqQhqUHLFI6TL2htpIB1iQCj144V5ee/JaKyT9/WZ0MGZWfA7A==
 
 "@eslint/eslintrc@^2.1.2":
   version "2.1.4"
@@ -2393,34 +2393,18 @@
     socket.io-client "4.3.2"
     tinymce "5.10.1"
 
-"@mangata-finance/sdk@2.2.1-eth-rollup-develop.54":
-  version "2.2.1-eth-rollup-develop.54"
-  resolved "https://registry.yarnpkg.com/@mangata-finance/sdk/-/sdk-2.2.1-eth-rollup-develop.54.tgz#15b280efebb22db1e6ddbdcee6a07e51f062a129"
-  integrity sha512-ZfE1NLlYz0t7psDcRobtomr5WXrP79FZO3t9RMApNtigr4O8WDSqBSZQHQ3mjN0qIdgHAzDebE/sNsnDSlzC/Q==
-  dependencies:
-    "@mangata-finance/type-definitions" "2.1.3-eth-rollup-develop.62"
-    "@metamask/sdk" "0.16.0"
-    big.js "6.2.1"
-    tslib "^2.3.0"
-    tslog "4.8.2"
-
-"@mangata-finance/type-definitions@2.1.3-eth-rollup-develop.62":
-  version "2.1.3-eth-rollup-develop.62"
-  resolved "https://registry.yarnpkg.com/@mangata-finance/type-definitions/-/type-definitions-2.1.3-eth-rollup-develop.62.tgz#2ecc501d447ef6bc58b8695abd57262cea8c0ff1"
-  integrity sha512-a23PQgTvlMhAD1sB6iT53l5qPhooC4/B64dAk77LE1hrDbUo13cpgcXYqJsDs6L26Jtt3gKoiW1aoGwcvk7cNQ==
-
 "@mangata-finance/types@2.2.3-eth-rollup-develop.61":
   version "2.2.3-eth-rollup-develop.61"
   resolved "https://registry.yarnpkg.com/@mangata-finance/types/-/types-2.2.3-eth-rollup-develop.61.tgz#30af3830850ccf6f18529634350f42dce77cb449"
   integrity sha512-IBuZQiItfKd4cM3CD2cJqFqzBhDOtDhk3LXMOEXLuVAiSEWYo0m7tQT9zVoo2SwEvzJpdBLkAHG1MkvDaGmZlg==
 
 "@metamask/abi-utils@^2.0.2":
-  version "2.0.2"
-  resolved "https://registry.yarnpkg.com/@metamask/abi-utils/-/abi-utils-2.0.2.tgz#ad394e9cb8a95ac177cad942daadd88a246c0de8"
-  integrity sha512-B/A1dY/w4F/t6cDHUscklO6ovb/ztFsrsTXFd8QlqSByk/vyy+QbPE3VVpmmyI/7RX+PA1AJcvBdzCIz+r9dVQ==
+  version "2.0.3"
+  resolved "https://registry.yarnpkg.com/@metamask/abi-utils/-/abi-utils-2.0.3.tgz#6316a9aa832621037e27a2ac391251860410802a"
+  integrity sha512-0PbzS6AtSmgwHxi7dYb+/Q7KszcKKg9rqjXKFcGJgSx7GnD7iY+O9O6O45G/gQ2+sOy+FYUVDsFQW7yKCZ9EVQ==
   dependencies:
-    "@metamask/utils" "^8.0.0"
-    superstruct "^1.0.3"
+    "@metamask/superstruct" "^3.0.0"
+    "@metamask/utils" "^8.5.0"
 
 "@metamask/eth-sig-util@4.0.1":
   version "4.0.1"
@@ -2547,9 +2531,9 @@
     uuid "^8.3.2"
 
 "@metamask/superstruct@^3.0.0":
-  version "3.0.0"
-  resolved "https://registry.yarnpkg.com/@metamask/superstruct/-/superstruct-3.0.0.tgz#0200d0a627522904a7e0fd751dcc6fb863cefacb"
-  integrity sha512-TOm+Lt/lCJk9j/3QT2LucrPewRmqI7/GKT+blK2IIOAkBMS+9TmeNjd2Y+TlfpSSYstaYsGZyz1XwpiTCg6RLA==
+  version "3.1.0"
+  resolved "https://registry.yarnpkg.com/@metamask/superstruct/-/superstruct-3.1.0.tgz#148f786a674fba3ac885c1093ab718515bf7f648"
+  integrity sha512-N08M56HdOgBfRKkrgCMZvQppkZGcArEop3kixNEtVbJKm6P9Cfg0YkI6X0s1g78sNrj2fWUwvJADdZuzJgFttA==
 
 "@metamask/utils@^5.0.0":
   version "5.0.2"
@@ -2562,7 +2546,7 @@
     semver "^7.3.8"
     superstruct "^1.0.3"
 
-"@metamask/utils@^8.0.0", "@metamask/utils@^8.1.0":
+"@metamask/utils@^8.1.0", "@metamask/utils@^8.5.0":
   version "8.5.0"
   resolved "https://registry.yarnpkg.com/@metamask/utils/-/utils-8.5.0.tgz#ddd0d4012d5191809404c97648a837ea9962cceb"
   integrity sha512-I6bkduevXb72TIM9q2LRO63JSsF9EXduh3sBr9oybNX2hNNpr/j1tEjXrsG0Uabm4MJ1xkGAQEMwifvKZIkyxQ==
@@ -3782,9 +3766,9 @@
   integrity sha512-nKu8pDrE3LNCEgJjZe1iGXzaD6OSIDD4Xzz/yo4KO9mQ6LBvf49BVrt4qxBFGL6++NneLiWUZGoh+VSd4PyVIg==
 
 "@substrate/connect-known-chains@^1.1.1", "@substrate/connect-known-chains@^1.1.4":
-  version "1.1.6"
-  resolved "https://registry.yarnpkg.com/@substrate/connect-known-chains/-/connect-known-chains-1.1.6.tgz#2627d329b82b46c7d745752c48c73e1b8ce6ac81"
-  integrity sha512-JwtdGbnK3ZqrY1qp3Ifr/p648sp9hG0Q715h4nRghnqZJnMQIiLKaFkcLnvrAiYQD3zNTYDztHidy5Q/u0TcbQ==
+  version "1.1.7"
+  resolved "https://registry.yarnpkg.com/@substrate/connect-known-chains/-/connect-known-chains-1.1.7.tgz#e7f2bbcae3c4cbddac6eddf1c87321d7854b0e33"
+  integrity sha512-y1YPrYdBCOGeLgRYqBErsZ54XUHD5i6HhRxM2smhtYxfNZSsk/zPVKHbNxuW+070L9qUhZBeqvB5deup7K3UIA==
 
 "@substrate/connect@0.8.10":
   version "0.8.10"
@@ -4416,9 +4400,9 @@
     "@types/lodash" "*"
 
 "@types/lodash@*":
-  version "4.17.5"
-  resolved "https://registry.yarnpkg.com/@types/lodash/-/lodash-4.17.5.tgz#e6c29b58e66995d57cd170ce3e2a61926d55ee04"
-  integrity sha512-MBIOHVZqVqgfro1euRDWX7OO0fBVUUMrN6Pwm8LQsz8cWhEpihlvR70ENj3f40j58TNxZaWv2ndSkInykNBBJw==
+  version "4.17.6"
+  resolved "https://registry.yarnpkg.com/@types/lodash/-/lodash-4.17.6.tgz#193ced6a40c8006cfc1ca3f4553444fb38f0e543"
+  integrity sha512-OpXEVoCKSS3lQqjx9GGGOapBeuW5eUboYHRlHP9urXPX25IKZ6AnP5ZRxtVf63iieUbsHxLn8NQ5Nlftc6yzAA==
 
 "@types/long@^4.0.0":
   version "4.0.2"
@@ -6101,9 +6085,9 @@ camelcase@^6.0.0, camelcase@^6.2.0:
   integrity sha512-Gmy6FhYlCY7uOElZUSbxo2UCDH8owEk996gkbrpsgGtrJLM3J7jGxl9Ic7Qwwj4ivOE5AWZWRMecDdF7hqGjFA==
 
 caniuse-lite@^1.0.30001629:
-  version "1.0.30001637"
-  resolved "https://registry.yarnpkg.com/caniuse-lite/-/caniuse-lite-1.0.30001637.tgz#d9fab531493d9ef46a8ff305e9812190ac463f21"
-  integrity sha512-1x0qRI1mD1o9e+7mBI7XtzFAP4XszbHaVWsMiGbSPLYekKTJF7K+FNk6AsXH4sUpc+qrsI3pVgf1Jdl/uGkuSQ==
+  version "1.0.30001638"
+  resolved "https://registry.yarnpkg.com/caniuse-lite/-/caniuse-lite-1.0.30001638.tgz#598e1f0c2ac36f37ebc3f5b8887a32ca558e5d56"
+  integrity sha512-5SuJUJ7cZnhPpeLHaH0c/HPAnAHZvS6ElWyHK9GSIbVOQABLzowiI2pjmpvZ1WEbkyz46iFd4UXlOHR5SqgfMQ==
 
 capture-stack-trace@^1.0.0:
   version "1.0.2"
@@ -7187,9 +7171,9 @@ ee-first@1.1.1:
   integrity sha512-WMwm9LhRUo+WUaRN+vRuETqG89IgZphVSNkdFgeb6sS/E4OrDIN7t48CAewSHXc6C8lefD8KKfr5vY61brQlow==
 
 electron-to-chromium@^1.4.796:
-  version "1.4.812"
-  resolved "https://registry.yarnpkg.com/electron-to-chromium/-/electron-to-chromium-1.4.812.tgz#21b78709c5a13af5d5c688d135a22dcea7617acf"
-  integrity sha512-7L8fC2Ey/b6SePDFKR2zHAy4mbdp1/38Yk5TsARO66W3hC5KEaeKMMHoxwtuH+jcu2AYLSn9QX04i95t6Fl1Hg==
+  version "1.4.814"
+  resolved "https://registry.yarnpkg.com/electron-to-chromium/-/electron-to-chromium-1.4.814.tgz#176535a0b899c9c473464502ab77576aa8bb1cbe"
+  integrity sha512-GVulpHjFu1Y9ZvikvbArHmAhZXtm3wHlpjTMcXNGKl4IQ4jMQjlnz8yMQYYqdLHKi/jEL2+CBC2akWVCoIGUdw==
 
 elliptic@6.5.4:
   version "6.5.4"
@@ -11236,9 +11220,9 @@ lowercase-keys@^3.0.0:
   integrity sha512-CHqbAq7NFlW3RSnoWXLJBxCWaZVBrfa9UEHId2M3AW8iEBurbqduNexEUCGc3SHc6iCYXNJCDi903LajSVAEPQ==
 
 lru-cache@^10.1.0, lru-cache@^10.2.0:
-  version "10.2.2"
-  resolved "https://registry.yarnpkg.com/lru-cache/-/lru-cache-10.2.2.tgz#48206bc114c1252940c41b25b41af5b545aca878"
-  integrity sha512-9hp3Vp2/hFQUiIwKo8XCeFVnrg8Pk3TYNPIR7tJADKi5YfcF7vEaK7avFHTlSy3kOKYaJQaalfEo6YuXdceBOQ==
+  version "10.3.0"
+  resolved "https://registry.yarnpkg.com/lru-cache/-/lru-cache-10.3.0.tgz#4a4aaf10c84658ab70f79a85a9a3f1e1fb11196b"
+  integrity sha512-CQl19J/g+Hbjbv4Y3mFNNXFEL/5t/KCg8POCuUqd4rMKjGG+j1ybER83hxV58zL+dFI1PTkt3GNFSHRt+d8qEQ==
 
 lru-cache@^5.1.1:
   version "5.1.1"
@@ -15413,9 +15397,9 @@ verror@1.10.0:
     extsprintf "^1.2.0"
 
 viem@^2.7.15:
-  version "2.16.2"
-  resolved "https://registry.yarnpkg.com/viem/-/viem-2.16.2.tgz#227e14c61afc9057d2290501649e37f7ed0379be"
-  integrity sha512-qor3v1cJFR3jcPtcJxPbKfKURAH2agNf2IWZIaSReV6teNLERiu4Sr7kbqpkIeTAEpiDCVQwg336M+mub1m+pg==
+  version "2.16.3"
+  resolved "https://registry.yarnpkg.com/viem/-/viem-2.16.3.tgz#a175f8779408ebab705f2be9dedd39cc8b1fe1b1"
+  integrity sha512-6ExbIpi77C1HzGSjx6W+fn39Cz1ULlVV74XHxi1kYpOAqY7/iAoynK5X2aQp2LvxstTqS1GIKEdpCAZ8dKi2Ag==
   dependencies:
     "@adraffy/ens-normalize" "1.10.0"
     "@noble/curves" "1.2.0"

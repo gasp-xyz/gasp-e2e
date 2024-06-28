@@ -1,5 +1,5 @@
 /* eslint-disable no-loop-func */
-import { BN_ONE, BN_ZERO, MangataGenericEvent } from "@mangata-finance/sdk";
+import { BN_ONE, BN_ZERO, MangataGenericEvent } from "gasp-sdk";
 import { ApiPromise } from "@polkadot/api";
 import { BN } from "@polkadot/util";
 import _ from "lodash-es";

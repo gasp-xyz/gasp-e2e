@@ -6,7 +6,7 @@
 import { jest } from "@jest/globals";
 import { BN } from "@polkadot/util";
 import { ApiPromise, Keyring } from "@polkadot/api";
-import { BN_ZERO, signTx } from "@mangata-finance/sdk";
+import { BN_ZERO, signTx } from "gasp-sdk";
 import { getApi, initApi } from "../../utils/api";
 import { Assets } from "../../utils/Assets";
 import { MGA_ASSET_ID } from "../../utils/Constants";

@@ -14,7 +14,7 @@ import { getEnvironmentRequiredVars } from "../../utils/utils";
 import { Xyk } from "../../utils/xyk";
 import { MGA_ASSET_ID } from "../../utils/Constants";
 import { getLiquidityAssetId } from "../../utils/tx";
-import { BN_ZERO, signTx } from "@mangata-finance/sdk";
+import { BN_ZERO, signTx } from "gasp-sdk";
 import { ProofOfStake } from "../../utils/ProofOfStake";
 import { getEventResultFromMangataTx } from "../../utils/txHandler";
 import { ExtrinsicResult, waitForRewards } from "../../utils/eventListeners";

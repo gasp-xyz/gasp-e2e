@@ -17,7 +17,7 @@ import { getEventResultFromMangataTx } from "../../utils/txHandler";
 import { MGA_ASSET_ID } from "../../utils/Constants";
 import { testLog } from "../../utils/Logger";
 import { Fees } from "../../utils/Fees";
-import { MangataInstance } from "@mangata-finance/sdk";
+import { MangataInstance } from "gasp-sdk";
 import { getSudoUser } from "../../utils/setup";
 
 jest.spyOn(console, "log").mockImplementation(jest.fn());

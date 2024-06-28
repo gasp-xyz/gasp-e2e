@@ -8,7 +8,7 @@ import { env } from "process";
 import { EventResult, ExtrinsicResult } from "./eventListeners";
 import { testLog } from "./Logger";
 import { User } from "./User";
-import { MangataGenericEvent, signTx } from "@mangata-finance/sdk";
+import { MangataGenericEvent, signTx } from "gasp-sdk";
 import { AccountId32 } from "@polkadot/types/interfaces";
 
 //let wait 7 blocks - 6000 * 7 = 42000; depends on the number of workers.

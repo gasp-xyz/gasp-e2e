@@ -58,7 +58,7 @@ import { SudoUser } from "../utils/Framework/User/SudoUser";
 import { Keyring } from "@polkadot/api";
 import { getApi, initApi } from "../utils/api";
 import { User } from "../utils/User";
-import { BN_ZERO, Mangata } from "@mangata-finance/sdk";
+import { BN_ZERO, Mangata } from "gasp-sdk";
 import { encodeAddress } from "@polkadot/keyring";
 import { stringToU8a, bnToU8a, u8aConcat, BN } from "@polkadot/util";
 import { Sudo } from "../utils/sudo";

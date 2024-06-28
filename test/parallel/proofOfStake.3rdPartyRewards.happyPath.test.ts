@@ -15,7 +15,7 @@ import { Sudo } from "../../utils/sudo";
 import { Xyk } from "../../utils/xyk";
 import { getSudoUser, setupApi, setupUsers } from "../../utils/setup";
 import { MGA_ASSET_ID } from "../../utils/Constants";
-import { BN_MILLION, BN_ZERO, signTx } from "@mangata-finance/sdk";
+import { BN_MILLION, BN_ZERO, signTx } from "gasp-sdk";
 import { ProofOfStake } from "../../utils/ProofOfStake";
 import { getLiquidityAssetId } from "../../utils/tx";
 import { getEventResultFromMangataTx } from "../../utils/txHandler";

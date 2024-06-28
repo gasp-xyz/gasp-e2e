@@ -16,7 +16,7 @@ import {
 } from "../../utils/Constants";
 import { Sudo } from "../../utils/sudo";
 import { setupApi, alice as Alice, setupUsers } from "../../utils/setup";
-import { BN_THOUSAND, signTx } from "@mangata-finance/sdk";
+import { BN_THOUSAND, signTx } from "gasp-sdk";
 import { BN } from "@polkadot/util";
 import { feeLockErrors } from "../../utils/utils";
 

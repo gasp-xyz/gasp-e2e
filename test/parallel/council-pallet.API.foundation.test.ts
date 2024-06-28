@@ -8,7 +8,7 @@ import { eve, setupApi, setupUsers } from "../../utils/setup";
 import { Sudo } from "../../utils/sudo";
 import { Assets } from "../../utils/Assets";
 import { BN_THOUSAND } from "@polkadot/util";
-import { BN_HUNDRED } from "@mangata-finance/sdk";
+import { BN_HUNDRED } from "gasp-sdk";
 import { User } from "../../utils/User";
 import { FOUNDATION_ADDRESS_1 } from "../../utils/Constants";
 import { Council, setupMaintenanceTests } from "../../utils/Council";

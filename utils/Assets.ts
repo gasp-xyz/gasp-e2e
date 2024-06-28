@@ -1,4 +1,4 @@
-import { BN_TEN, BN_THOUSAND, MangataGenericEvent } from "@mangata-finance/sdk";
+import { BN_TEN, BN_THOUSAND, MangataGenericEvent } from "gasp-sdk";
 import { ApiPromise } from "@polkadot/api";
 import { AccountInfo } from "@polkadot/types/interfaces";
 import { BN, BN_FOUR } from "@polkadot/util";

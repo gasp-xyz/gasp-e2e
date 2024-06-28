@@ -27,7 +27,7 @@ import {
 } from "./utils";
 import { Xyk } from "./xyk";
 import { api, getApi, getMangataInstance, initApi } from "./api";
-import { BN_ZERO, signTx } from "@mangata-finance/sdk";
+import { BN_ZERO, signTx } from "gasp-sdk";
 import { getBalanceOfPool } from "./txHandler";
 import { Bytes, StorageKey } from "@polkadot/types";
 import { Codec, ITuple } from "@polkadot/types/types";

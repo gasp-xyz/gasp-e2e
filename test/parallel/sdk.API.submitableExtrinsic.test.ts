@@ -25,7 +25,7 @@ import {
   BN_ZERO,
   MangataInstance,
   MangataSubmittableExtrinsic,
-} from "@mangata-finance/sdk";
+} from "gasp-sdk";
 import { ExtrinsicResult, waitForRewards } from "../../utils/eventListeners";
 import { getEventResultFromMangataTx } from "../../utils/txHandler";
 import { signSendFinalized } from "../../utils/sign";

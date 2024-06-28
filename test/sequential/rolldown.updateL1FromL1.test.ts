@@ -6,7 +6,7 @@
 import { EthUser } from "../../utils/EthUser";
 import { SequencerStaking } from "../../utils/rollDown/SequencerStaking";
 import { L2Update, Rolldown } from "../../utils/rollDown/Rolldown";
-import { BN_MILLION, BN_THOUSAND, BN_ZERO, signTx } from "@mangata-finance/sdk";
+import { BN_MILLION, BN_THOUSAND, BN_ZERO, signTx } from "gasp-sdk";
 import { getApi, initApi } from "../../utils/api";
 import { setupUsers } from "../../utils/setup";
 import {

@@ -2,13 +2,18 @@ import { setupUsers } from "../setup";
 import { getApi } from "../api";
 import { EthUser } from "../EthUser";
 import { BN } from "@polkadot/util";
-import { MangataGenericEvent, signTx } from "@mangata-finance/sdk";
+import { MangataGenericEvent, signTx } from "gasp-sdk";
 import { getEventResultFromMangataTx } from "../txHandler";
 import { stringToBN, waitBlockNumber } from "../utils";
 import { getEventsAt, waitNewBlock } from "../eventListeners";
 import { ApiPromise } from "@polkadot/api";
 import { ChainName } from "./SequencerStaking";
 import { testLog } from "../Logger";
+import { BTreeMap } from "@polkadot/types-codec";
+import {
+  PalletRolldownSequencerRights,
+  SpRuntimeAccountAccountId20,
+} from "@polkadot/types/lookup";
 
 export class Rolldown {
   static async l2OriginRequestId(l1 = "Ethereum") {
@@ -114,6 +119,28 @@ export class Rolldown {
       "L1ReadStored",
     ]);
     return parseInt(event.data[0][2]);
+  }
+
+  static async sequencerRights(chain: string, seqAddress = "") {
+    const api = getApi();
+    if (seqAddress.length > 0) {
+      const rights = (await api.query.rolldown.sequencersRights(
+        chain,
+      )) as any as unknown as BTreeMap<
+        SpRuntimeAccountAccountId20,
+        PalletRolldownSequencerRights
+      >;
+      const result = rights.get(
+        seqAddress as any as SpRuntimeAccountAccountId20,
+      );
+      return result;
+    }
+    return (await api.query.rolldown.sequencersRights(
+      chain,
+    )) as any as unknown as BTreeMap<
+      SpRuntimeAccountAccountId20,
+      PalletRolldownSequencerRights
+    >;
   }
 }
 export class L2Update {

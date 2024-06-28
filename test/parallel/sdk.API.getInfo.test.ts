@@ -13,12 +13,7 @@ import { stringToBN } from "../../utils/utils";
 import { Xyk } from "../../utils/xyk";
 import { MGA_ASSET_ID } from "../../utils/Constants";
 import { getLiquidityAssetId } from "../../utils/tx";
-import {
-  BN_BILLION,
-  BN_ZERO,
-  MangataInstance,
-  PoolWithRatio,
-} from "@mangata-finance/sdk";
+import { BN_BILLION, BN_ZERO, MangataInstance, PoolWithRatio } from "gasp-sdk";
 import { testLog } from "../../utils/Logger";
 
 jest.spyOn(console, "log").mockImplementation(jest.fn());

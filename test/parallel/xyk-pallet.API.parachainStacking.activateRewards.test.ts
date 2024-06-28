@@ -14,7 +14,7 @@ import { Keyring } from "@polkadot/api";
 import { User } from "../../utils/User";
 import { MGA_ASSET_ID } from "../../utils/Constants";
 import { getUserBalanceOfToken } from "../../utils/utils";
-import { BN_BILLION, BN_ONE, BN_ZERO } from "@mangata-finance/sdk";
+import { BN_BILLION, BN_ONE, BN_ZERO } from "gasp-sdk";
 import { Assets } from "../../utils/Assets";
 import { getApi, initApi } from "../../utils/api";
 import { Sudo } from "../../utils/sudo";

@@ -5,7 +5,7 @@ import { api, getApi, initApi } from "../utils/api";
 import { MAX_BALANCE, MGA_ASSET_ID } from "../utils/Constants";
 import { User } from "../utils/User";
 import { getEnvironmentRequiredVars, waitForNBlocks } from "../utils/utils";
-import { MangataGenericEvent } from "@mangata-finance/sdk";
+import { MangataGenericEvent } from "gasp-sdk";
 import { burnLiquidity, getNextAssetId, mintLiquidity } from "../utils/tx";
 import { testLog } from "../utils/Logger";
 

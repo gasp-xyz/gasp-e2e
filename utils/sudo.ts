@@ -1,6 +1,6 @@
 import { api, Extrinsic, sudo } from "./setup";
 import { User } from "./User";
-import { BN_ZERO, MangataGenericEvent, signTx } from "@mangata-finance/sdk";
+import { BN_ZERO, MangataGenericEvent, signTx } from "gasp-sdk";
 import { SudoDB } from "./SudoDB";
 import { signSendFinalized } from "./sign";
 import { SubmittableExtrinsic } from "@polkadot/api/types";
