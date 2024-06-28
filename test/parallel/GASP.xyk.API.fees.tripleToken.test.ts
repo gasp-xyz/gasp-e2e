@@ -8,7 +8,7 @@ import { jest } from "@jest/globals";
 import { getApi, initApi } from "../../utils/api";
 import { mintLiquidity } from "../../utils/tx";
 import { ExtrinsicResult } from "../../utils/eventListeners";
-import { BN, BN_TWO, BN_ZERO } from "@polkadot/util";
+import { BN, BN_THOUSAND, BN_TWO, BN_ZERO } from "@polkadot/util";
 import { Keyring } from "@polkadot/api";
 import { Assets } from "../../utils/Assets";
 import { AssetWallet, User } from "../../utils/User";
@@ -24,6 +24,7 @@ import { Sudo } from "../../utils/sudo";
 import { setupUsers, setupApi, getSudoUser } from "../../utils/setup";
 import { Xyk } from "../../utils/xyk";
 import { feeLockErrors } from "../../utils/utils";
+import { signTx } from "@mangata-finance/sdk";
 
 jest.spyOn(console, "log").mockImplementation(jest.fn());
 jest.spyOn(console, "error").mockImplementation(jest.fn());
@@ -35,9 +36,10 @@ let sudo: User;
 let keyring: Keyring;
 let firstCurrency: BN;
 let secondCurrency: BN;
-const first_asset_amount = new BN(50000);
-const second_asset_amount = new BN(50000);
-const defaultCurrencyValue = new BN(250000);
+let assetAmount: BN;
+let defaultCurrencyValue: BN;
+let swapValueThreshold: BN;
+let feeLockAmount: BN;
 
 beforeAll(async () => {
   try {
@@ -48,10 +50,18 @@ beforeAll(async () => {
 
   keyring = new Keyring({ type: "ethereum" });
 
+  const api = getApi();
   sudo = getSudoUser();
 
+  const feeLockMetadata = (await api.query.feeLock.feeLockMetadata()).value;
+
+  swapValueThreshold = new BN(feeLockMetadata.swapValueThreshold.toString());
+  feeLockAmount = new BN(feeLockMetadata.feeLockAmount.toString());
+
+  assetAmount = swapValueThreshold.muln(2);
+  defaultCurrencyValue = swapValueThreshold.muln(4);
   //add GASP tokens for creating pool.
-  await sudo.mint(GASP_ASSET_ID, sudo, Assets.DEFAULT_AMOUNT);
+  await sudo.mint(GASP_ASSET_ID, sudo, defaultCurrencyValue);
 
   //add two currencies and balance to sudo:
   [firstCurrency, secondCurrency] = await Assets.setupUserWithCurrencies(
@@ -64,18 +74,8 @@ beforeAll(async () => {
 
   await Sudo.batchAsSudoFinalized(
     Assets.mintNative(sudo),
-    Xyk.createPool(
-      GASP_ASSET_ID,
-      first_asset_amount,
-      secondCurrency,
-      second_asset_amount,
-    ),
-    Xyk.createPool(
-      firstCurrency,
-      first_asset_amount,
-      secondCurrency,
-      second_asset_amount,
-    ),
+    Xyk.createPool(GASP_ASSET_ID, assetAmount, secondCurrency, assetAmount),
+    Xyk.createPool(firstCurrency, assetAmount, secondCurrency, assetAmount),
   );
 });
 
@@ -153,7 +153,7 @@ test("xyk-pallet - GIVEN User has enough GASP & enough ETH THEN Fees are charged
   expect(deductedETHTkns).bnEqual(BN_ZERO);
 });
 
-test("xyk-pallet - a very limited amount of GASP & enough ETH THEN Fees are charged in ETH", async () => {
+test("xyk-pallet - GIVEN User has a very limited amount of GASP & enough ETH THEN Fees are charged in ETH", async () => {
   const api = getApi();
   const cost = await api?.tx.xyk
     .mintLiquidity(
@@ -176,6 +176,47 @@ test("xyk-pallet - a very limited amount of GASP & enough ETH THEN Fees are char
   const deductedETHTkns = await getDeductedTokens(testUser1, ETH_ASSET_ID);
   expect(deductedGASPTkns).bnEqual(BN_ZERO);
   expect(deductedETHTkns).bnGt(BN_ZERO);
+});
+
+test("xyk-pallet - GIVEN User has a very limited amount of GASP & a very limited amount of Eth AND the Tx is a swap above the “threshold” THEN operation succeed", async () => {
+  const api = getApi();
+  await Sudo.batchAsSudoFinalized(
+    Assets.mintToken(GASP_ASSET_ID, testUser1, feeLockAmount),
+    Assets.mintToken(ETH_ASSET_ID, testUser1, feeLockAmount),
+  );
+
+  const saleAssetValue = swapValueThreshold.muln(2);
+
+  await signTx(
+    api,
+    Xyk.sellAsset(firstCurrency, secondCurrency, saleAssetValue),
+    testUser1.keyRingPair,
+  ).then((events) => {
+    const res = getEventResultFromMangataTx(events);
+    expect(res.state).toEqual(ExtrinsicResult.ExtrinsicSuccess);
+  });
+});
+
+test("xyk-pallet - GIVEN User has a very limited amount of GASP & a minimal amount of Eth AND the Tx is a swap below the “threshold” THEN client error", async () => {
+  const api = getApi();
+  let clientError: any;
+  await Sudo.batchAsSudoFinalized(
+    Assets.mintToken(GASP_ASSET_ID, testUser1, feeLockAmount),
+    Assets.mintToken(ETH_ASSET_ID, testUser1, BN_THOUSAND),
+  );
+
+  const saleAssetValue = swapValueThreshold.divn(2);
+
+  try {
+    await signTx(
+      api,
+      Xyk.sellAsset(firstCurrency, secondCurrency, saleAssetValue),
+      testUser1.keyRingPair,
+    );
+  } catch (error) {
+    clientError = error;
+  }
+  expect(clientError).not.toBeEmpty();
 });
 
 async function getDeductedTokens(testUser: User, tokenId: BN) {
