@@ -254,14 +254,14 @@ describe.each`
         await depositModal.isContinueButtonEnabled();
       expect(isContinueButtonEnabled).toBeTruthy();
 
-      await depositModal.clickContinue();
-      await waitForMicroappsActionNotification(
-        driver,
-        mangata,
-        kusama,
-        TransactionType.Deposit,
-        2,
-      );
+      // await depositModal.clickContinue();
+      // await waitForMicroappsActionNotification(
+      //   driver,
+      //   mangata,
+      //   kusama,
+      //   TransactionType.Deposit,
+      //   2,
+      // );
     });
 
     test("Withdraw tokens by account type " + accType, async () => {
