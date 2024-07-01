@@ -118,29 +118,18 @@ export class Rolldown {
       "rolldown",
       "L1ReadStored",
     ]);
-    return parseInt(event.data[0][2]);
+    return stringToBN(event.data[0][2].toString()).toNumber();
   }
 
-  static async sequencerRights(chain: string, seqAddress = "") {
+  static async sequencerRights(chain: string, seqAddress: string) {
     const api = getApi();
-    if (seqAddress.length > 0) {
-      const rights = (await api.query.rolldown.sequencersRights(
-        chain,
-      )) as any as unknown as BTreeMap<
-        SpRuntimeAccountAccountId20,
-        PalletRolldownSequencerRights
-      >;
-      const result = rights.get(
-        seqAddress as any as SpRuntimeAccountAccountId20,
-      );
-      return result;
-    }
-    return (await api.query.rolldown.sequencersRights(
+    const rights = (await api.query.rolldown.sequencersRights(
       chain,
     )) as any as unknown as BTreeMap<
       SpRuntimeAccountAccountId20,
       PalletRolldownSequencerRights
     >;
+    return api.createType("PalletRolldownSequencerRights", rights.toJSON()[seqAddress] ) as any as PalletRolldownSequencerRights ;
   }
 }
 export class L2Update {

@@ -119,9 +119,10 @@ export async function waitSudoOperationSuccess(
 export async function waitSudoOperationFail(
   checkingEvent: MangataGenericEvent[],
   expectedErrors: string[],
+  method = "Sudid",
 ) {
   const filterBootstrapEvent = checkingEvent.filter(
-    (extrinsicResult) => extrinsicResult.method === "Sudid",
+    (extrinsicResult) => extrinsicResult.method === method,
   );
 
   const BootstrapError = await getEventErrorFromSudo(filterBootstrapEvent);

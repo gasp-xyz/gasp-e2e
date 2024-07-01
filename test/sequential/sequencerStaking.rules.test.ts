@@ -1,6 +1,6 @@
 /*
  *
- * @group rollupUpdate
+ * @group sequencerStaking
  */
 
 import {
@@ -20,6 +20,7 @@ import { User } from "../../utils/User";
 import { Sudo } from "../../utils/sudo";
 import {
   ExtrinsicResult,
+  waitSudoOperationFail,
   waitSudoOperationSuccess,
 } from "../../utils/eventListeners";
 import { Assets } from "../../utils/Assets";
@@ -60,24 +61,33 @@ async function leaveSequencingIfAlreadySequencer(user: User) {
   }
 }
 
-async function createAnUpdate(seq: User, chain: ChainName = "Arbitrum") {
-  await Rolldown.waitForReadRights(seq.keyRingPair.address, 50, chain);
-  const txIndex = await Rolldown.l2OriginRequestId();
+async function createAnUpdate(
+  seq: User | string,
+  chain: ChainName = "Arbitrum",
+  forcedIndex = 0
+) {
+  const address = typeof seq === "string" ? seq : seq.keyRingPair.address;
+  await Rolldown.waitForReadRights(address, 50, chain);
+  let txIndex = await Rolldown.l2OriginRequestId();
+  if(forcedIndex !== 0 ){
+    txIndex = forcedIndex;
+  }
   const api = getApi();
   const update = new L2Update(api)
-    .withDeposit(
-      txIndex,
-      seq.keyRingPair.address,
-      seq.keyRingPair.address,
-      BN_MILLION,
-    )
+    .withDeposit(txIndex, address, address, BN_MILLION)
     .on(chain)
     .build();
   let reqId = 0;
-  await signTx(api, update, seq.keyRingPair).then((events) => {
-    expectExtrinsicSucceed(events);
+  await Sudo.asSudoFinalized(
+    Sudo.sudoAsWithAddressString(address, update),
+  ).then(async (events) => {
+    await waitSudoOperationSuccess(events, "SudoAsDone");
     reqId = Rolldown.getRequestIdFromEvents(events);
   });
+  //await signTx(api, update, seq.keyRingPair).then((events) => {
+  //    expectExtrinsicSucceed(events);
+  //    reqId = Rolldown.getRequestIdFromEvents(events);
+  //  });
   return { txIndex, api, reqId };
 }
 
@@ -169,7 +179,7 @@ describe("sequencerStaking", () => {
     );
     const seq = notYetSequencer;
     await Rolldown.waitForReadRights(seq.keyRingPair.address, 50, "Arbitrum");
-    const txIndex = await Rolldown.l2OriginRequestId();
+    const txIndex = await Rolldown.l2OriginRequestId("Arbitrum");
     const api = getApi();
     const update = new L2Update(api)
       .withDeposit(
@@ -223,10 +233,11 @@ describe("sequencerStaking", () => {
       chain,
       sequencer.keyRingPair.address,
     );
+    expect(sequencerStatus.readRights.toString()).toBe("0");
+    expect(sequencerStatus.cancelRights.toString()).toBe("1");
 
-    await Rolldown.waitForReadRights(sequencer.keyRingPair.address, 50, chain);
-    const txIndex = await Rolldown.l2OriginRequestId();
     const api = getApi();
+    const txIndex = await Rolldown.l2OriginRequestId();
     const update = new L2Update(api)
       .withDeposit(
         txIndex,
@@ -239,20 +250,93 @@ describe("sequencerStaking", () => {
 
     await signTx(api, update, sequencer.keyRingPair).then((events) => {
       const eventResponse = getEventResultFromMangataTx(events);
+      //this must fail, since no read rights must be avl.
       expect(eventResponse.state).toEqual(ExtrinsicResult.ExtrinsicFailed);
       expect(eventResponse.data).toEqual("OperationFailed");
     });
-    expect(sequencerStatus).toBe("0");
+
     await waitForNBlocks((await Rolldown.disputePeriodLength()).toNumber());
-    const sequencerStatusAfter = await SequencerStaking.sequencerStake(
+    const sequencerStatusAfterWaiting = await Rolldown.sequencerRights(
+      chain,
       sequencer.keyRingPair.address,
+    );
+    expect(sequencerStatusAfterWaiting.readRights.toString()).toBe("1");
+    expect(sequencerStatusAfterWaiting.cancelRights.toString()).toBe("1");
+  });
+  it("Only an active sequencer with cancel rights can submit cancels", async () => {
+    const chain = "Ethereum";
+    const sequencer = await setupASequencer(chain);
+    const { reqId: reqIdCanceled } = await createAnUpdate(sequencer, chain);
+    let sequencerStatus = await Rolldown.sequencerRights(
+      chain,
+      sequencer.keyRingPair.address,
+    );
+    expect(sequencerStatus.readRights.toString()).toBe("0");
+    expect(sequencerStatus.cancelRights.toString()).toBe("1");
+
+    const api = getApi();
+    let cancel = await Sudo.asSudoFinalized(
+      Sudo.sudoAs(
+        sequencer,
+        await Rolldown.cancelRequestFromL1(chain, reqIdCanceled),
+      ),
+    );
+    await waitSudoOperationSuccess(cancel, "SudoAsDone");
+
+    sequencerStatus = await Rolldown.sequencerRights(
+      chain,
+      sequencer.keyRingPair.address,
+    );
+    expect(sequencerStatus.readRights.toString()).toBe("0");
+    expect(sequencerStatus.cancelRights.toString()).toBe("0");
+    // a user got rid of all his sequencer cancels.
+
+    //createAnUpdateWith: 0x3cd0a705a2dc65e5b1e1205896baa2be8a07c6e0
+    const idx = await Rolldown.l2OriginRequestId();
+    //since last update was canceled, idx is idx -1.
+    const { reqId } = await createAnUpdate(
+      "0x3cd0a705a2dc65e5b1e1205896baa2be8a07c6e0",
+      chain,
+      idx - 1,
+    );
+    cancel = await Sudo.asSudoFinalized(
+      Sudo.sudoAs(sequencer, await Rolldown.cancelRequestFromL1(chain, reqId)),
+    );
+    await waitSudoOperationFail(cancel, ["CancelRightsExhausted"], "SudoAsDone");
+
+    await Rolldown.waitForReadRights(
+      "0x3cd0a705a2dc65e5b1e1205896baa2be8a07c6e0",
+      50,
       chain,
     );
-    expect(sequencerStatusAfter.toHuman() as string).toBe("1");
-  });
-  it("Only an active sequencer with cancel rights can submit cancels", async () => {});
+    const txIndex = await Rolldown.l2OriginRequestId();
+    const cancelResolution = await Sudo.asSudoFinalized(
+      Sudo.sudoAsWithAddressString(
+        "0x3cd0a705a2dc65e5b1e1205896baa2be8a07c6e0",
+        new L2Update(api)
+          .withCancelResolution(txIndex -1, reqIdCanceled, false)
+          .on(chain)
+          .build(),
+      ),
+    );
+    await waitSudoOperationSuccess(cancelResolution, "SudoAsDone");
+    sequencerStatus = await Rolldown.sequencerRights(
+      chain,
+      sequencer.keyRingPair.address,
+    );
+    expect(sequencerStatus.readRights.toString()).toBe("0");
+    expect(sequencerStatus.cancelRights.toString()).toBe("0");
 
-  it.skip("Active Sequencer -> Active -> canceled update -> Can not leave", async () => {
+    await waitForNBlocks((await Rolldown.disputePeriodLength()).toNumber());
+    sequencerStatus = await Rolldown.sequencerRights(
+      chain,
+      sequencer.keyRingPair.address,
+    );
+    expect(sequencerStatus.readRights.toString()).toBe("1");
+    expect(sequencerStatus.cancelRights.toString()).toBe("1");
+  });
+
+  it.skip("Active Sequencer -> Active -> canceled update -> Can not leave - fix when BugFix", async () => {
     const notYetSequencer = findACollatorButNotSequencerUser();
     const minToBeSequencer = await SequencerStaking.minimalStakeAmount();
     await signTx(
@@ -325,7 +409,7 @@ describe("sequencerStaking", () => {
   });
   //TODO - Add test for sequencer creating a cancel and unstake
   //TODO- Add a test when collating is not required.
-  it.skip("Max sequencer is set for both chains- fix when BugFix", async () => {
+  it.skip("Max sequencer is set for both chains - fix when BugFix", async () => {
     const maxSequencers = await SequencerStaking.maxSequencers();
     const activeSequencers = await SequencerStaking.activeSequencers();
     const amountForArb =
