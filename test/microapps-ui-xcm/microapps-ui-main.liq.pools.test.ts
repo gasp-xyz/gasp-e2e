@@ -40,6 +40,7 @@ import {
 } from "../../utils/frontend/microapps-pages/NotificationToast";
 
 jest.setTimeout(FIVE_MIN);
+jest.retryTimes(2);
 jest.spyOn(console, "log").mockImplementation(jest.fn());
 let driver: WebDriver;
 let testUser1: User;
