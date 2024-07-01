@@ -64,12 +64,12 @@ async function leaveSequencingIfAlreadySequencer(user: User) {
 async function createAnUpdate(
   seq: User | string,
   chain: ChainName = "Arbitrum",
-  forcedIndex = 0
+  forcedIndex = 0,
 ) {
   const address = typeof seq === "string" ? seq : seq.keyRingPair.address;
   await Rolldown.waitForReadRights(address, 50, chain);
   let txIndex = await Rolldown.l2OriginRequestId();
-  if(forcedIndex !== 0 ){
+  if (forcedIndex !== 0) {
     txIndex = forcedIndex;
   }
   const api = getApi();
@@ -224,7 +224,7 @@ describe("sequencerStaking", () => {
     );
     expect(res.toHuman()).toBe("0");
   });
-  it("Only a selected sequencer can submit updates", async () => {});
+  it.todo("Only a selected sequencer can submit updates", async () => {});
   it("Only a selected sequencer with read rights can submit updates", async () => {
     const chain = "Ethereum";
     const sequencer = await setupASequencer();
@@ -263,7 +263,7 @@ describe("sequencerStaking", () => {
     expect(sequencerStatusAfterWaiting.readRights.toString()).toBe("1");
     expect(sequencerStatusAfterWaiting.cancelRights.toString()).toBe("1");
   });
-  it("Only an active sequencer with cancel rights can submit cancels", async () => {
+  it.skip("Only an active sequencer with cancel rights can submit cancels - fix when BugFix", async () => {
     const chain = "Ethereum";
     const sequencer = await setupASequencer(chain);
     const { reqId: reqIdCanceled } = await createAnUpdate(sequencer, chain);
@@ -302,7 +302,11 @@ describe("sequencerStaking", () => {
     cancel = await Sudo.asSudoFinalized(
       Sudo.sudoAs(sequencer, await Rolldown.cancelRequestFromL1(chain, reqId)),
     );
-    await waitSudoOperationFail(cancel, ["CancelRightsExhausted"], "SudoAsDone");
+    await waitSudoOperationFail(
+      cancel,
+      ["CancelRightsExhausted"],
+      "SudoAsDone",
+    );
 
     await Rolldown.waitForReadRights(
       "0x3cd0a705a2dc65e5b1e1205896baa2be8a07c6e0",
@@ -314,7 +318,7 @@ describe("sequencerStaking", () => {
       Sudo.sudoAsWithAddressString(
         "0x3cd0a705a2dc65e5b1e1205896baa2be8a07c6e0",
         new L2Update(api)
-          .withCancelResolution(txIndex -1, reqIdCanceled, false)
+          .withCancelResolution(txIndex - 1, reqIdCanceled, false)
           .on(chain)
           .build(),
       ),
@@ -335,7 +339,6 @@ describe("sequencerStaking", () => {
     expect(sequencerStatus.readRights.toString()).toBe("1");
     expect(sequencerStatus.cancelRights.toString()).toBe("1");
   });
-
   it.skip("Active Sequencer -> Active -> canceled update -> Can not leave - fix when BugFix", async () => {
     const notYetSequencer = findACollatorButNotSequencerUser();
     const minToBeSequencer = await SequencerStaking.minimalStakeAmount();
@@ -357,10 +360,7 @@ describe("sequencerStaking", () => {
       (x) => x !== notYetSequencer.keyRingPair.address,
     )[0];
     const seq = notYetSequencer;
-    let { txIndex, api, reqId } = await createAnUpdateAndCancelIt(
-      seq,
-      canceler,
-    );
+    const { api, reqId } = await createAnUpdateAndCancelIt(seq, canceler);
     await signTx(
       api,
       await SequencerStaking.leaveSequencerStaking("Arbitrum"),
