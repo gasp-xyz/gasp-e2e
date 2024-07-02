@@ -224,7 +224,7 @@ describe("sequencerStaking", () => {
     );
     expect(res.toHuman()).toBe("0");
   });
-  it.todo("Only a selected sequencer can submit updates", async () => {});
+  it.skip("TODO:Only a selected sequencer can submit updates", async () => {});
   it("Only a selected sequencer with read rights can submit updates", async () => {
     const chain = "Ethereum";
     const sequencer = await setupASequencer();
