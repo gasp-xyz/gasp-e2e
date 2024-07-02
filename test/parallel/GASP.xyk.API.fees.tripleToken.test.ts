@@ -154,6 +154,7 @@ test("GIVEN User has enough GASP & enough ETH THEN Fees are charged in GASP", as
 
   const deductedGaspTkns = await getDeductedTokens(testUser1, GASP_ASSET_ID);
   const deductedEthTkns = await getDeductedTokens(testUser1, ETH_ASSET_ID);
+  expect(deductedGaspTkns).bnGt(BN_ZERO);
   expect(deductedGaspTkns).bnLte(fee);
   expect(deductedEthTkns).bnEqual(BN_ZERO);
 });
