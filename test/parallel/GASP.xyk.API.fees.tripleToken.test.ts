@@ -85,10 +85,10 @@ beforeAll(async () => {
 });
 
 beforeEach(async () => {
-  // setup users
+  // setup user
   [testUser1] = setupUsers();
 
-  // add users to pair.
+  // add user to pair.
   testUser1.addAsset(GASP_ASSET_ID);
   testUser1.addAsset(ETH_ASSET_ID);
 
@@ -253,16 +253,11 @@ test("GIVEN User has a very limited amount of GASP & a minimal amount of Eth AND
 });
 
 test("User, when paying with eth, have to pay 1/30000 eth per GASP spent.", async () => {
-  // setup users
   const [testUser2] = setupUsers();
 
-  // add users to pair.
   testUser2.addAsset(GASP_ASSET_ID);
   testUser2.addAsset(ETH_ASSET_ID);
 
-  //add pool's tokens for user.
-  await setupApi();
-  await setupUsers();
   await Sudo.batchAsSudoFinalized(
     Assets.mintToken(firstCurrency, testUser2, defaultCurrencyValue),
     Assets.mintToken(secondCurrency, testUser2, defaultCurrencyValue),
