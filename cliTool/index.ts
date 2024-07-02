@@ -46,6 +46,7 @@ import {
   readL2Updates,
   depositHell,
   getPolkAddress,
+  allCandidatesToSequence,
 } from "../utils/setupsOnTheGo";
 import {
   findErrorMetadata,
@@ -121,10 +122,14 @@ async function app(): Promise<any> {
         "RollDownMonitor",
         "depositHell",
         "getPolkAddress",
+        "allCandidatesToSequence",
       ],
     })
     .then(async (answers: { option: string | string[] }) => {
       console.log("Answers::: " + JSON.stringify(answers, null, "  "));
+      if (answers.option.includes("allCandidatesToSequence")) {
+        return allCandidatesToSequence();
+      }
       if (answers.option.includes("getPolkAddress")) {
         return inquirer
           .prompt([

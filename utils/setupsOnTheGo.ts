@@ -102,7 +102,7 @@ export async function claimForAllAvlRewards() {
   await Promise.all(promises);
 }
 
-const tokenOrigin = tokenOriginEnum.ActivatedUnstakedReserves;
+const tokenOrigin = tokenOriginEnum.AvailableBalance;
 
 export async function vetoMotion(motionId: number) {
   //const fundAcc = "5Gc1GyxLPr1A4jE1U7u9LFYuFftDjeSYZWQXHgejQhSdEN4s";
@@ -221,7 +221,7 @@ export async function setupACouncilWithDefaultUsers() {
   const amount = (await api?.consts.parachainStaking.minCandidateStk)?.muln(
     1000,
   )!;
-  const keyring = new Keyring({ type: "sr25519" });
+  const keyring = new Keyring({ type: "ethereum" });
   const testUser1 = new User(keyring, "//Bob");
   const testUser2 = new User(keyring, "//Alice");
   const testUser3 = new User(keyring, "//Charlie");
@@ -268,7 +268,7 @@ export async function setupPoolWithRewardsForDefaultUsers() {
   const amount = (await api?.consts.parachainStaking.minCandidateStk)?.muln(
     1000,
   )!;
-  const keyring = new Keyring({ type: "sr25519" });
+  const keyring = new Keyring({ type: "ethereum" });
   const testUser1 = new User(keyring, "//Bob");
   const testUser2 = new User(keyring, "//Alice");
   const testUser3 = new User(keyring, "//Charlie");
@@ -343,7 +343,7 @@ export async function joinAsCandidateByName(
 ) {
   await setupUsers();
   await setupApi();
-  const user = new User(new Keyring({ type: "sr25519" }), userName);
+  const user = new User(new Keyring({ type: "ethereum" }), userName);
   await Staking.joinAsCandidateWithUser(user, new BN(liqId), tokenOrigin);
 }
 export async function setupTokenWithRewardsForDefaultUsers() {
@@ -352,7 +352,7 @@ export async function setupTokenWithRewardsForDefaultUsers() {
   const amount = (await api?.consts.parachainStaking.minCandidateStk)?.muln(
     1000,
   )!;
-  const keyring = new Keyring({ type: "sr25519" });
+  const keyring = new Keyring({ type: "ethereum" });
   const testUser1 = new User(keyring, "//Bob");
   const testUser2 = new User(keyring, "//Alice");
   const testUser3 = new User(keyring, "//Charlie");
@@ -539,7 +539,7 @@ export async function printUserInfo(userAddress: string) {
 export async function burnAllTokensFromPool(liqToken: BN) {
   await setupApi();
   await setupUsers();
-  const keyring = new Keyring({ type: "sr25519" });
+  const keyring = new Keyring({ type: "ethereum" });
   const testUser1 = new User(keyring, "//Bob");
   const testUser2 = new User(keyring, "//Alice");
   const testUser3 = new User(keyring, "//Charlie");
@@ -576,7 +576,7 @@ export async function joinAsCandidate(
   await setupUsers();
   await setupApi();
   const api = await getApi();
-  const keyring = new Keyring({ type: "sr25519" });
+  const keyring = new Keyring({ type: "ethereum" });
   const liq = new BN(liqId);
   const user = new User(keyring, userName);
   const liqAssets = await api?.query.parachainStaking.stakingLiquidityTokens();
@@ -641,7 +641,7 @@ export async function joinAFewCandidates(numCandidates = 50, liqId = 9) {
   await setupUsers();
   await setupApi();
   const api = await getApi();
-  const keyring = new Keyring({ type: "sr25519" });
+  const keyring = new Keyring({ type: "ethereum" });
   const liq = new BN(liqId);
   const amountToJoin = new BN(
     await api!.consts.parachainStaking.minCandidateStk!.toString(),
@@ -717,7 +717,7 @@ export async function giveTokensToUser(userName = "//Charlie", liqId = 9) {
   await setupUsers();
   await setupApi();
   const api = await getApi();
-  const keyring = new Keyring({ type: "sr25519" });
+  const keyring = new Keyring({ type: "ethereum" });
   const liq = new BN(liqId);
   const user = new User(keyring, userName);
   const amountToJoin = new BN(
@@ -759,7 +759,7 @@ export async function fillWithDelegators(
   await setupUsers();
   await setupApi();
   const api = await getApi();
-  const keyring = new Keyring({ type: "sr25519" });
+  const keyring = new Keyring({ type: "ethereum" });
   const liq = new BN(liqToken);
   const amountToJoin = new BN(
     api!.consts.parachainStaking.minDelegation!.toString(),
@@ -896,7 +896,7 @@ export async function createCustomPool(div = true, ratio = 1, user = "//Bob") {
   const amount = (await api?.consts.parachainStaking.minCandidateStk)?.muln(
     1000,
   )!;
-  const keyring = new Keyring({ type: "sr25519" });
+  const keyring = new Keyring({ type: "ethereum" });
   const testUser1 = new User(keyring, user);
   const sudo = new User(keyring, getEnvironmentRequiredVars().sudo);
   const token2 = await Assets.issueAssetToUser(
@@ -1013,7 +1013,7 @@ export async function subscribeAndPrintTokenChanges(
 export async function findAllRewardsAndClaim() {
   await setupUsers();
   await setupApi();
-  const keyring = new Keyring({ type: "sr25519" });
+  const keyring = new Keyring({ type: "ethereum" });
   let liqTokenId: BN;
   let rewardAmount: BN;
 
@@ -1161,7 +1161,7 @@ export async function testTokensForUsers(userName = "//Eve") {
   await setupApi();
   await setupUsers();
   const api = await getApi();
-  const keyring = new Keyring({ type: "sr25519" });
+  const keyring = new Keyring({ type: "ethereum" });
   const user = new User(keyring, userName);
   const availableAssetsInfo = await api.query.assetRegistry.metadata.entries();
   const tokens: any[] = [];
@@ -1372,7 +1372,7 @@ export async function provisionWith100Users() {
   for (let loop = 0; loop < 10; loop++) {
     const users = [];
     let txs = [];
-    const keyring = new Keyring({ type: "sr25519" });
+    const keyring = new Keyring({ type: "ethereum" });
     for (let index = 0; index < 50; index++) {
       const user = new User(keyring);
       users.push(user);
@@ -1465,7 +1465,7 @@ export async function activateAndClaim3rdPartyRewardsForUser(
   await setupApi();
   await setupUsers();
   const mangata = await getMangataInstance();
-  const keyring = new Keyring({ type: "sr25519" });
+  const keyring = new Keyring({ type: "ethereum" });
   const testUser = new User(keyring, userName);
   const sudo = new User(keyring, getEnvironmentRequiredVars().sudo);
   const [newToken, newToken2] = await Assets.setupUserWithCurrencies(
@@ -1558,7 +1558,7 @@ export async function addActivatedLiquidityFor3rdPartyRewards(
 ) {
   await setupApi();
   await setupUsers();
-  const keyring = new Keyring({ type: "sr25519" });
+  const keyring = new Keyring({ type: "ethereum" });
   const user = new User(keyring, userName);
 
   await Sudo.batchAsSudoFinalized(Assets.mintToken(liqId, user, tokenAmount));
@@ -1593,7 +1593,7 @@ export async function addActivatedLiquidityForNativeRewards(
 ) {
   await setupApi();
   await setupUsers();
-  const keyring = new Keyring({ type: "sr25519" });
+  const keyring = new Keyring({ type: "ethereum" });
   const user = new User(keyring, userName);
 
   await Sudo.batchAsSudoFinalized(Assets.mintToken(liqId, user, tokenValue));
@@ -1623,7 +1623,7 @@ export async function addStakedUnactivatedReserves(
   await setupUsers();
   let liqToken: BN;
   const api = await getApi();
-  const keyring = new Keyring({ type: "sr25519" });
+  const keyring = new Keyring({ type: "ethereum" });
   const tokenAmount = new BN(
     await api.consts.parachainStaking.minCandidateStk.toString(),
   ).muln(100);
@@ -1698,7 +1698,7 @@ export async function addUnspentReserves(userName = "//Alice", tokenId = 1) {
   await setupUsers();
   let liqToken: BN;
   let assetID: BN;
-  const keyring = new Keyring({ type: "sr25519" });
+  const keyring = new Keyring({ type: "ethereum" });
   const user = new User(keyring, userName);
   const sudo = new User(keyring, getEnvironmentRequiredVars().sudo);
   if (tokenId === 1) {
@@ -1769,7 +1769,7 @@ export async function addUnspentReserves(userName = "//Alice", tokenId = 1) {
 }
 
 export async function depositFromL1(ethAddress: string, amountValue: number) {
-  const keyring = new Keyring({ type: "sr25519" });
+  const keyring = new Keyring({ type: "ethereum" });
   const sudo = new User(keyring, getEnvironmentRequiredVars().sudo);
   const mangata = await getMangataInstance();
   const sdkApi = await mangata.api();
@@ -1789,7 +1789,7 @@ export async function depositFromL1(ethAddress: string, amountValue: number) {
 }
 
 export async function withdrawToL1(ethPrivateKey: string, amountValue: number) {
-  const keyring = new Keyring({ type: "sr25519" });
+  const keyring = new Keyring({ type: "ethereum" });
   const testEthUser = new EthUser(keyring, ethPrivateKey);
 
   await signTxMetamask(
@@ -1963,6 +1963,23 @@ export async function depositHell(num: number, txIndexer = 0) {
   return txIndex + num;
 }
 
+export async function allCandidatesToSequence() {
+  await setupApi();
+  await setupUsers();
+  const api = await getApi();
+  const candidates = await api.query.parachainStaking.candidatePool();
+  //@ts-ignore
+  const candidatesList = candidates.toHuman().map((x) => x.owner);
+  for (const candidate of candidatesList) {
+    await Sudo.batchAsSudoFinalized(
+      Assets.mintNativeAddress(candidate),
+      Sudo.sudoAsWithAddressString(
+        candidate,
+        await SequencerStaking.provideSequencerStaking(BN_ZERO, "Ethereum"),
+      ),
+    );
+  }
+}
 export async function getPolkAddress(address: string) {
   return convertEthAddressToDotAddress(address);
 }
