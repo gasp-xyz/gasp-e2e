@@ -6,9 +6,9 @@
  */
 import { jest } from "@jest/globals";
 import { getApi, initApi } from "../../utils/api";
-import { mintLiquidity } from "../../utils/tx";
+import { mintLiquidity, updateFeeLockMetadata } from "../../utils/tx";
 import { ExtrinsicResult } from "../../utils/eventListeners";
-import { BN, BN_THOUSAND, BN_TWO, BN_ZERO } from "@polkadot/util";
+import { BN, BN_THOUSAND, BN_ZERO } from "@polkadot/util";
 import { Keyring } from "@polkadot/api";
 import { Assets } from "../../utils/Assets";
 import { AssetWallet, User } from "../../utils/User";
@@ -58,8 +58,8 @@ beforeAll(async () => {
   swapValueThreshold = new BN(feeLockMetadata.swapValueThreshold.toString());
   feeLockAmount = new BN(feeLockMetadata.feeLockAmount.toString());
 
-  assetAmount = swapValueThreshold.muln(2);
-  defaultCurrencyValue = swapValueThreshold.muln(4);
+  assetAmount = swapValueThreshold.muln(2000);
+  defaultCurrencyValue = swapValueThreshold.muln(4000);
   //add GASP tokens for creating pool.
   await sudo.mint(GASP_ASSET_ID, sudo, defaultCurrencyValue);
 
@@ -72,9 +72,14 @@ beforeAll(async () => {
 
   keyring.addPair(sudo.keyRingPair);
 
+  await updateFeeLockMetadata(sudo, null, null, null, [
+    [firstCurrency, true],
+    [secondCurrency, true],
+  ]);
+
   await Sudo.batchAsSudoFinalized(
     Assets.mintNative(sudo),
-    Xyk.createPool(GASP_ASSET_ID, assetAmount, secondCurrency, assetAmount),
+    Xyk.createPool(GASP_ASSET_ID, assetAmount, firstCurrency, assetAmount),
     Xyk.createPool(firstCurrency, assetAmount, secondCurrency, assetAmount),
   );
 });
@@ -111,7 +116,7 @@ describe.each`
   });
 });
 
-test("xyk-pallet - User can't pay a Tx with only Arbitrum-Eth", async () => {
+test("User can't pay a Tx with only Arbitrum-Eth", async () => {
   await sudo.mint(ARB_ETH_ASSET_ID, testUser1, Assets.DEFAULT_AMOUNT);
   let exception = false;
   await expect(
@@ -129,7 +134,7 @@ test("xyk-pallet - User can't pay a Tx with only Arbitrum-Eth", async () => {
   expect(exception).toBeTruthy();
 });
 
-test("xyk-pallet - GIVEN User has enough GASP & enough ETH THEN Fees are charged in GASP", async () => {
+test("GIVEN User has enough GASP & enough ETH THEN Fees are charged in GASP", async () => {
   await Sudo.batchAsSudoFinalized(
     Assets.mintToken(GASP_ASSET_ID, testUser1, Assets.DEFAULT_AMOUNT),
     Assets.mintToken(ETH_ASSET_ID, testUser1, Assets.DEFAULT_AMOUNT),
@@ -147,13 +152,13 @@ test("xyk-pallet - GIVEN User has enough GASP & enough ETH THEN Fees are charged
 
   await runMintingLiquidity(testUser1);
 
-  const deductedGASPTkns = await getDeductedTokens(testUser1, GASP_ASSET_ID);
-  const deductedETHTkns = await getDeductedTokens(testUser1, ETH_ASSET_ID);
-  expect(deductedGASPTkns).bnLte(fee);
-  expect(deductedETHTkns).bnEqual(BN_ZERO);
+  const deductedGaspTkns = await getDeductedTokens(testUser1, GASP_ASSET_ID);
+  const deductedEthTkns = await getDeductedTokens(testUser1, ETH_ASSET_ID);
+  expect(deductedGaspTkns).bnLte(fee);
+  expect(deductedEthTkns).bnEqual(BN_ZERO);
 });
 
-test("xyk-pallet - GIVEN User has a very limited amount of GASP & enough ETH THEN Fees are charged in ETH", async () => {
+test("GIVEN User has a very limited amount of GASP & enough ETH THEN Fees are charged in ETH", async () => {
   const api = getApi();
   const cost = await api?.tx.xyk
     .mintLiquidity(
@@ -166,23 +171,23 @@ test("xyk-pallet - GIVEN User has a very limited amount of GASP & enough ETH THE
   const fee = cost.partialFee;
 
   await Sudo.batchAsSudoFinalized(
-    Assets.mintToken(GASP_ASSET_ID, testUser1, fee.div(BN_TWO)),
+    Assets.mintToken(GASP_ASSET_ID, testUser1, fee.divn(2)),
     Assets.mintToken(ETH_ASSET_ID, testUser1, Assets.DEFAULT_AMOUNT),
   );
 
   await runMintingLiquidity(testUser1);
 
-  const deductedGASPTkns = await getDeductedTokens(testUser1, GASP_ASSET_ID);
-  const deductedETHTkns = await getDeductedTokens(testUser1, ETH_ASSET_ID);
-  expect(deductedGASPTkns).bnEqual(BN_ZERO);
-  expect(deductedETHTkns).bnGt(BN_ZERO);
+  const deductedGaspTkns = await getDeductedTokens(testUser1, GASP_ASSET_ID);
+  const deductedEthTkns = await getDeductedTokens(testUser1, ETH_ASSET_ID);
+  expect(deductedGaspTkns).bnEqual(BN_ZERO);
+  expect(deductedEthTkns).bnGt(BN_ZERO);
 });
 
-test("xyk-pallet - GIVEN User has a very limited amount of GASP & a very limited amount of Eth AND the Tx is a swap above the “threshold” THEN operation succeed", async () => {
+test("GIVEN User has a very limited GASP & a very limited ETH AND we have GASP-tok1 pool WHEN the Tx is a swap tok1 to tok2 above the “threshold” THEN operation succeed", async () => {
   const api = getApi();
   await Sudo.batchAsSudoFinalized(
-    Assets.mintToken(GASP_ASSET_ID, testUser1, feeLockAmount),
-    Assets.mintToken(ETH_ASSET_ID, testUser1, feeLockAmount),
+    Assets.mintToken(GASP_ASSET_ID, testUser1, feeLockAmount.divn(2)),
+    Assets.mintToken(ETH_ASSET_ID, testUser1, feeLockAmount.divn(2)),
   );
 
   const saleAssetValue = swapValueThreshold.muln(2);
@@ -197,11 +202,36 @@ test("xyk-pallet - GIVEN User has a very limited amount of GASP & a very limited
   });
 });
 
-test("xyk-pallet - GIVEN User has a very limited amount of GASP & a minimal amount of Eth AND the Tx is a swap below the “threshold” THEN client error", async () => {
+test("GIVEN User has a very limited GASP & a very limited ETH AND we have GASP-tok1 pool WHEN the Tx is a swap tok2 to tok1 above the “threshold” THEN operation failed", async () => {
+  const api = getApi();
+  let clientError: any;
+
+  await Sudo.batchAsSudoFinalized(
+    Assets.mintToken(GASP_ASSET_ID, testUser1, feeLockAmount.divn(2)),
+    Assets.mintToken(ETH_ASSET_ID, testUser1, feeLockAmount.divn(2)),
+  );
+
+  const saleAssetValue = swapValueThreshold.muln(2);
+
+  try {
+    await signTx(
+      api,
+      Xyk.sellAsset(secondCurrency, firstCurrency, saleAssetValue),
+      testUser1.keyRingPair,
+    );
+  } catch (error) {
+    clientError = error;
+  }
+  expect(clientError.data).toContain(
+    "Invalid Transaction: Fee lock processing has failed either due to not enough funds to reserve or an unexpected error",
+  );
+});
+
+test("GIVEN User has a very limited amount of GASP & a minimal amount of Eth AND the Tx is a swap below the “threshold” THEN we receive client error", async () => {
   const api = getApi();
   let clientError: any;
   await Sudo.batchAsSudoFinalized(
-    Assets.mintToken(GASP_ASSET_ID, testUser1, feeLockAmount),
+    Assets.mintToken(GASP_ASSET_ID, testUser1, feeLockAmount.divn(2)),
     Assets.mintToken(ETH_ASSET_ID, testUser1, BN_THOUSAND),
   );
 
@@ -216,18 +246,48 @@ test("xyk-pallet - GIVEN User has a very limited amount of GASP & a minimal amou
   } catch (error) {
     clientError = error;
   }
-  expect(clientError).not.toBeEmpty();
+  expect(clientError.data).toContain(
+    "Invalid Transaction: Fee lock processing has failed either due to not enough funds to reserve or an unexpected error",
+  );
+});
+
+test("User, when paying with eth, have to pay 1/30000 eth per GASP spent.", async () => {
+  // setup users
+  const [testUser2] = setupUsers();
+
+  // add users to pair.
+  testUser2.addAsset(GASP_ASSET_ID);
+  testUser2.addAsset(ETH_ASSET_ID);
+
+  //add pool's tokens for user.
+  await setupApi();
+  await setupUsers();
+  await Sudo.batchAsSudoFinalized(
+    Assets.mintToken(firstCurrency, testUser2, defaultCurrencyValue),
+    Assets.mintToken(secondCurrency, testUser2, defaultCurrencyValue),
+    Assets.mintToken(ETH_ASSET_ID, testUser2, Assets.DEFAULT_AMOUNT),
+    Assets.mintNative(testUser1, Assets.DEFAULT_AMOUNT),
+  );
+
+  await runMintingLiquidity(testUser1);
+  await runMintingLiquidity(testUser2);
+
+  const deductedGaspTkns = await getDeductedTokens(testUser1, GASP_ASSET_ID);
+  const deductedEthTkns = await getDeductedTokens(testUser2, ETH_ASSET_ID);
+
+  expect(deductedGaspTkns).bnGt(BN_ZERO);
+  expect(deductedEthTkns).bnGt(BN_ZERO);
 });
 
 async function getDeductedTokens(testUser: User, tokenId: BN) {
   const deductedTokens = testUser
     .getAsset(tokenId)
-    ?.amountBefore.free.sub(testUser1.getAsset(tokenId)?.amountAfter.free!);
+    ?.amountBefore.free.sub(testUser.getAsset(tokenId)?.amountAfter.free!);
   return deductedTokens;
 }
 
 async function runMintingLiquidity(testUser: User) {
-  await testUser1.refreshAmounts(AssetWallet.BEFORE);
+  await testUser.refreshAmounts(AssetWallet.BEFORE);
 
   await mintLiquidity(
     testUser.keyRingPair,
@@ -240,5 +300,5 @@ async function runMintingLiquidity(testUser: User) {
     expect(eventResponse.state).toEqual(ExtrinsicResult.ExtrinsicSuccess);
   });
 
-  await testUser1.refreshAmounts(AssetWallet.AFTER);
+  await testUser.refreshAmounts(AssetWallet.AFTER);
 }
