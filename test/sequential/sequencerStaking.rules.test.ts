@@ -380,7 +380,7 @@ describe("sequencerStaking", () => {
     });
     await waitForNBlocks((await Rolldown.disputePeriodLength()).toNumber());
     await Rolldown.waitForReadRights(canceler, 50, "Arbitrum");
-    txIndex = await Rolldown.l2OriginRequestId();
+    const txIndex = await Rolldown.l2OriginRequestId();
     const cancelResolutionEvents = await Sudo.asSudoFinalized(
       Sudo.sudoAsWithAddressString(
         canceler,
