@@ -203,10 +203,8 @@ test("GIVEN User has a very limited GASP & a very limited ETH AND we have GASP-t
   });
 });
 
-test("GIVEN User has a very limited GASP & a very limited ETH AND we have GASP-tok1 pool WHEN the Tx is a swap tok2 to tok1 above the “threshold” THEN operation failed", async () => {
+test("GIVEN User has a very limited GASP & a very limited ETH AND we have GASP-tok1 pool WHEN the Tx is a swap tok2 to tok1 above the “threshold” THEN operation succeed", async () => {
   const api = getApi();
-  let clientError: any;
-
   await Sudo.batchAsSudoFinalized(
     Assets.mintToken(GASP_ASSET_ID, testUser1, feeLockAmount.divn(2)),
     Assets.mintToken(ETH_ASSET_ID, testUser1, feeLockAmount.divn(2)),
@@ -214,18 +212,14 @@ test("GIVEN User has a very limited GASP & a very limited ETH AND we have GASP-t
 
   const saleAssetValue = swapValueThreshold.muln(2);
 
-  try {
-    await signTx(
-      api,
-      Xyk.sellAsset(secondCurrency, firstCurrency, saleAssetValue),
-      testUser1.keyRingPair,
-    );
-  } catch (error) {
-    clientError = error;
-  }
-  expect(clientError.data).toContain(
-    "Invalid Transaction: Fee lock processing has failed either due to not enough funds to reserve or an unexpected error",
-  );
+  await signTx(
+    api,
+    Xyk.sellAsset(secondCurrency, firstCurrency, saleAssetValue),
+    testUser1.keyRingPair,
+  ).then((events) => {
+    const res = getEventResultFromMangataTx(events);
+    expect(res.state).toEqual(ExtrinsicResult.ExtrinsicSuccess);
+  });
 });
 
 test("GIVEN User has a very limited amount of GASP & a minimal amount of Eth AND the Tx is a swap below the “threshold” THEN we receive client error", async () => {
@@ -252,7 +246,7 @@ test("GIVEN User has a very limited amount of GASP & a minimal amount of Eth AND
   );
 });
 
-test("User, when paying with eth, have to pay 1/30000 eth per GASP spent.", async () => {
+test("User, when paying with eth, have to pay 1/10000000 eth per GASP spent.", async () => {
   const [testUser2] = setupUsers();
 
   testUser2.addAsset(GASP_ASSET_ID);
