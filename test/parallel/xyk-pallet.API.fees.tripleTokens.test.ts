@@ -109,7 +109,7 @@ describe.each`
   test("User can pay a Tx with only " + assetName, async () => {
     await sudo.mint(assetId, testUser1, Assets.DEFAULT_AMOUNT);
 
-    await runMintingLiquidity(testUser1);
+    await runMintingLiquidity(testUser1, firstCurrency, secondCurrency);
 
     const deductedTkns = await getDeductedTokens(testUser1, assetId);
     expect(deductedTkns).bnGt(BN_ZERO);
@@ -150,7 +150,7 @@ test("GIVEN User has enough GASP & enough ETH THEN Fees are charged in GASP", as
     .paymentInfo(testUser1.keyRingPair);
   const fee = cost.partialFee;
 
-  await runMintingLiquidity(testUser1);
+  await runMintingLiquidity(testUser1, firstCurrency, secondCurrency);
 
   const deductedGaspTkns = await getDeductedTokens(testUser1, GASP_ASSET_ID);
   const deductedEthTkns = await getDeductedTokens(testUser1, ETH_ASSET_ID);
@@ -176,7 +176,7 @@ test("GIVEN User has a very limited amount of GASP & enough ETH THEN Fees are ch
     Assets.mintToken(ETH_ASSET_ID, testUser1, Assets.DEFAULT_AMOUNT),
   );
 
-  await runMintingLiquidity(testUser1);
+  await runMintingLiquidity(testUser1, firstCurrency, secondCurrency);
 
   const deductedGaspTkns = await getDeductedTokens(testUser1, GASP_ASSET_ID);
   const deductedEthTkns = await getDeductedTokens(testUser1, ETH_ASSET_ID);
@@ -247,20 +247,35 @@ test("GIVEN User has a very limited amount of GASP & a minimal amount of Eth AND
 });
 
 test("User, when paying with eth, have to pay 1/10000000 eth per GASP spent.", async () => {
+  const api = getApi();
   const [testUser2] = setupUsers();
 
   testUser2.addAsset(GASP_ASSET_ID);
   testUser2.addAsset(ETH_ASSET_ID);
 
-  await Sudo.batchAsSudoFinalized(
+  await signTx(
+    api,
     Assets.mintToken(firstCurrency, testUser2, defaultCurrencyValue),
+    sudo.keyRingPair,
+  );
+  await signTx(
+    api,
     Assets.mintToken(secondCurrency, testUser2, defaultCurrencyValue),
+    sudo.keyRingPair,
+  );
+  await signTx(
+    api,
     Assets.mintToken(ETH_ASSET_ID, testUser2, Assets.DEFAULT_AMOUNT),
+    sudo.keyRingPair,
+  );
+  await signTx(
+    api,
     Assets.mintNative(testUser1, Assets.DEFAULT_AMOUNT),
+    sudo.keyRingPair,
   );
 
-  await runMintingLiquidity(testUser1);
-  await runMintingLiquidity(testUser2);
+  await runMintingLiquidity(testUser1, firstCurrency, secondCurrency);
+  await runMintingLiquidity(testUser2, firstCurrency, secondCurrency);
 
   const deductedGaspTkns = await getDeductedTokens(testUser1, GASP_ASSET_ID);
   const deductedEthTkns = await getDeductedTokens(testUser2, ETH_ASSET_ID);
@@ -278,13 +293,17 @@ async function getDeductedTokens(testUser: User, tokenId: BN) {
   return deductedTokens;
 }
 
-async function runMintingLiquidity(testUser: User) {
+async function runMintingLiquidity(
+  testUser: User,
+  firstAssetId: BN,
+  secondAssetId: BN,
+) {
   await testUser.refreshAmounts(AssetWallet.BEFORE);
 
   await mintLiquidity(
     testUser.keyRingPair,
-    firstCurrency,
-    secondCurrency,
+    firstAssetId,
+    secondAssetId,
     new BN(100),
     new BN(1000000),
   ).then((result) => {
