@@ -17,7 +17,7 @@ import {
   importPolkadotExtension,
 } from "../../utils/frontend/utils/Helper";
 import {
-  ARB_ETH_ASSET_ID,
+  DUMMY_POOL_ASSET_ID,
   FIVE_MIN,
   SDK_NOT_EXISTING_FLAG,
 } from "../../utils/Constants";
@@ -98,7 +98,7 @@ describe("Microapps UI liq pools tests", () => {
       );
       const liquidityPool = await sdk.query.getLiquidityPool(liquidityAsset);
       if (
-        liquidityPool[1] !== ARB_ETH_ASSET_ID.toString() &&
+        liquidityPool[1] !== DUMMY_POOL_ASSET_ID.toString() &&
         liquidityPool[0] !== SDK_NOT_EXISTING_FLAG
       ) {
         const firstTokenInfo = await sdk.query.getTokenInfo(liquidityPool[0]);
