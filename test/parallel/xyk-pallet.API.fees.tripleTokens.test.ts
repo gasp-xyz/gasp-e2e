@@ -72,8 +72,8 @@ beforeAll(async () => {
   swapValueThreshold = new BN(feeLockMetadata.swapValueThreshold.toString());
   feeLockAmount = new BN(feeLockMetadata.feeLockAmount.toString());
 
-  assetAmount = swapValueThreshold.muln(2000);
-  defaultCurrencyValue = swapValueThreshold.muln(4000);
+  assetAmount = swapValueThreshold.muln(200000);
+  defaultCurrencyValue = swapValueThreshold.muln(400000);
   //add GASP tokens for creating pool.
   await sudo.mint(GASP_ASSET_ID, sudo, defaultCurrencyValue);
 
