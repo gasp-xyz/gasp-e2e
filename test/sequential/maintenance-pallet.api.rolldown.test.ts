@@ -182,7 +182,10 @@ describe.each(["mm", "upgradabilityMm"])(
             await SequencerStaking.provideSequencerStaking(),
             users[1],
           ],
-          sequencerTearDown: [await SequencerStaking.leaveSequencerStaking(), users[2]],
+          sequencerTearDown: [
+            await SequencerStaking.leaveSequencerStaking(),
+            users[2],
+          ],
           mm: [await System.setCodeWithoutChecks(), getSudoUser()],
           upgradabilityMm: [await System.setCode(), getSudoUser()],
         };
