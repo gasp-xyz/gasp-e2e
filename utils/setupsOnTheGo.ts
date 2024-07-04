@@ -102,7 +102,7 @@ export async function claimForAllAvlRewards() {
   await Promise.all(promises);
 }
 
-const tokenOrigin = tokenOriginEnum.ActivatedUnstakedReserves;
+const tokenOrigin = tokenOriginEnum.AvailableBalance;
 
 export async function vetoMotion(motionId: number) {
   //const fundAcc = "5Gc1GyxLPr1A4jE1U7u9LFYuFftDjeSYZWQXHgejQhSdEN4s";
@@ -641,7 +641,7 @@ export async function joinAFewCandidates(numCandidates = 50, liqId = 9) {
   await setupUsers();
   await setupApi();
   const api = await getApi();
-  const keyring = new Keyring({ type: "sr25519" });
+  const keyring = new Keyring({ type: "ethereum" });
   const liq = new BN(liqId);
   const amountToJoin = new BN(
     await api!.consts.parachainStaking.minCandidateStk!.toString(),
