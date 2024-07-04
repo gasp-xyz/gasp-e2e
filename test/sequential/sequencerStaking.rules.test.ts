@@ -264,7 +264,7 @@ describe("sequencerStaking", () => {
     expect(sequencerStatusAfterWaiting.cancelRights.toString()).toBe("1");
   });
   // TODO: remove only
-  it.only("Only an active sequencer with cancel rights can submit cancels - fix when BugFix", async () => {
+  it("Only an active sequencer with cancel rights can submit cancels", async () => {
     const chain = "Ethereum";
     const sequencer = await setupASequencer(chain);
     const { reqId: reqIdCanceled } = await createAnUpdate(sequencer, chain);
@@ -282,6 +282,11 @@ describe("sequencerStaking", () => {
         await Rolldown.cancelRequestFromL1(chain, reqIdCanceled),
       ),
     );
+    const cancelReqId = Rolldown.getRequestIdFromCancelEvent(
+      cancel,
+      "rolldown",
+      "L1ReadCanceled",
+    );
     await waitSudoOperationSuccess(cancel, "SudoAsDone");
 
     sequencerStatus = await Rolldown.sequencerRights(
@@ -290,9 +295,7 @@ describe("sequencerStaking", () => {
     );
     expect(sequencerStatus.readRights.toString()).toBe("0");
     expect(sequencerStatus.cancelRights.toString()).toBe("0");
-    // a user got rid of all his sequencer cancels.
 
-    //createAnUpdateWith: 0x3cd0a705a2dc65e5b1e1205896baa2be8a07c6e0
     const idx = await Rolldown.l2OriginRequestId();
     //since last update was canceled, idx is idx -1.
     const { reqId } = await createAnUpdate(
@@ -319,29 +322,29 @@ describe("sequencerStaking", () => {
       Sudo.sudoAsWithAddressString(
         "0x3cd0a705a2dc65e5b1e1205896baa2be8a07c6e0",
         new L2Update(api)
-          //TODO: txIndex should be read from the event emited as a result of cancle_update_from_l1
-          .withCancelResolution(txIndex - 1, 1, false)
+          .withCancelResolution(txIndex - 1, cancelReqId, false)
           .on(chain)
           .build(),
       ),
     );
     await waitSudoOperationSuccess(cancelResolution, "SudoAsDone");
-    // TODO: in this case because of unjustified cancel the sequencer is kicked and removed from sequencer rights list
-    // sequencerStatus = await Rolldown.sequencerRights(
-    //   chain,
-    //   sequencer.keyRingPair.address,
-    // );
-    // expect(sequencerStatus.readRights.toString()).toBe("0");
-    // expect(sequencerStatus.cancelRights.toString()).toBe("0");
-
     await waitForNBlocks((await Rolldown.disputePeriodLength()).toNumber());
+
     sequencerStatus = await Rolldown.sequencerRights(
       chain,
       sequencer.keyRingPair.address,
     );
-    // TODO: since sequencer is kicked there is only 1 sequencer so cancel rights == 0
-    expect(sequencerStatus.readRights.toString()).toBe("1");
+    // sequencer did the cancel , its not justified -> kicked!
+    expect(sequencerStatus.readRights.toString()).toBe("0");
     expect(sequencerStatus.cancelRights.toString()).toBe("0");
+
+    await waitForNBlocks((await Rolldown.disputePeriodLength()).toNumber());
+    const otherSequencerStatus = await Rolldown.sequencerRights(
+      chain,
+      "0x3cd0a705a2dc65e5b1e1205896baa2be8a07c6e0",
+    );
+    expect(otherSequencerStatus.readRights.toString()).toBe("1");
+    expect(otherSequencerStatus.cancelRights.toString()).toBe("1");
   });
   it.skip("Active Sequencer -> Active -> canceled update -> Can not leave - fix when BugFix", async () => {
     const notYetSequencer = findACollatorButNotSequencerUser();

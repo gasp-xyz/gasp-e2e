@@ -113,12 +113,25 @@ export class Rolldown {
     return api.tx.rolldown.cancelRequestsFromL1(chainId, reqId);
   }
 
-  static getRequestIdFromEvents(events: MangataGenericEvent[]) {
-    const event = getEventResultFromMangataTx(events, [
-      "rolldown",
-      "L1ReadStored",
-    ]);
+  static getRequestIdFromEvents(
+    events: MangataGenericEvent[],
+    module = "rolldown",
+    method = "L1ReadStored",
+  ) {
+    const event = getEventResultFromMangataTx(events, [module, method]);
     return stringToBN(event.data[0][2].toString()).toNumber();
+  }
+  static getRequestIdFromCancelEvent(
+    cancel: MangataGenericEvent[],
+    rolldown: string = "rolldown",
+    l1ReadCanceled: string = "L1ReadCanceled",
+  ) {
+    const event = getEventResultFromMangataTx(cancel, [
+      rolldown,
+      l1ReadCanceled,
+    ]);
+    // @ts-ignore
+    return stringToBN(event.data.assignedId.id).toNumber();
   }
 
   static async sequencerRights(chain: string, seqAddress: string) {
@@ -129,7 +142,10 @@ export class Rolldown {
       SpRuntimeAccountAccountId20,
       PalletRolldownSequencerRights
     >;
-    return api.createType("PalletRolldownSequencerRights", rights.toJSON()[seqAddress] ) as any as PalletRolldownSequencerRights ;
+    return api.createType(
+      "PalletRolldownSequencerRights",
+      rights.toJSON()[seqAddress],
+    ) as any as PalletRolldownSequencerRights;
   }
 }
 export class L2Update {
