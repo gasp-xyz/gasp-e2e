@@ -2,7 +2,7 @@
  *
  * @group xyk
  * @group accuracy
- * @group parallel
+ * @group seqgasless
  */
 import { jest } from "@jest/globals";
 import { getApi, initApi } from "../../utils/api";
