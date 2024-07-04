@@ -279,32 +279,15 @@ test("GIVEN User has a very limited amount of GASP & a minimal amount of Eth AND
 });
 
 test("User, when paying with eth, have to pay 1/10000000 eth per GASP spent.", async () => {
-  const api = getApi();
   const [testUser2] = setupUsers();
 
   testUser2.addAsset(GASP_ASSET_ID);
   testUser2.addAsset(ETH_ASSET_ID);
 
-  await signTx(
-    api,
-    Assets.mintToken(firstCurrency, testUser2, defaultCurrencyValue),
-    sudo.keyRingPair,
-  );
-  await signTx(
-    api,
-    Assets.mintToken(secondCurrency, testUser2, defaultCurrencyValue),
-    sudo.keyRingPair,
-  );
-  await signTx(
-    api,
-    Assets.mintToken(ETH_ASSET_ID, testUser2, Assets.DEFAULT_AMOUNT),
-    sudo.keyRingPair,
-  );
-  await signTx(
-    api,
-    Assets.mintNative(testUser1, Assets.DEFAULT_AMOUNT),
-    sudo.keyRingPair,
-  );
+  await sudo.mint(firstCurrency, testUser2, defaultCurrencyValue);
+  await sudo.mint(secondCurrency, testUser2, defaultCurrencyValue);
+  await sudo.mint(ETH_ASSET_ID, testUser2, Assets.DEFAULT_AMOUNT);
+  await sudo.mint(GASP_ASSET_ID, testUser1, Assets.DEFAULT_AMOUNT);
 
   await runMintingLiquidity(testUser1, firstCurrency, secondCurrency);
   await runMintingLiquidity(testUser2, firstCurrency, secondCurrency);
