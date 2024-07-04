@@ -8,7 +8,7 @@ import { jest } from "@jest/globals";
 import { getApi, initApi } from "../../utils/api";
 import { mintLiquidity, updateFeeLockMetadata } from "../../utils/tx";
 import { ExtrinsicResult } from "../../utils/eventListeners";
-import { BN, BN_THOUSAND, BN_ZERO } from "@polkadot/util";
+import { BN, BN_ZERO } from "@polkadot/util";
 import { Keyring } from "@polkadot/api";
 import { Assets } from "../../utils/Assets";
 import { AssetWallet, User } from "../../utils/User";
@@ -104,6 +104,9 @@ beforeEach(async () => {
 
   const api = getApi();
   feeLockMetadata = (await api.query.feeLock.feeLockMetadata()).value;
+  swapValueThreshold = new BN(feeLockMetadata.swapValueThreshold.toString());
+  feeLockAmount = new BN(feeLockMetadata.feeLockAmount.toString());
+
   testLog
     .getLog()
     .info(
@@ -244,7 +247,7 @@ test("GIVEN User has a very limited amount of GASP & a minimal amount of Eth AND
   let clientError: any;
   await Sudo.batchAsSudoFinalized(
     Assets.mintToken(GASP_ASSET_ID, testUser1, feeLockAmount.divn(2)),
-    Assets.mintToken(ETH_ASSET_ID, testUser1, BN_THOUSAND),
+    Assets.mintToken(ETH_ASSET_ID, testUser1, feeLockAmount.divn(10)),
   );
 
   const saleAssetValue = swapValueThreshold.divn(2);
