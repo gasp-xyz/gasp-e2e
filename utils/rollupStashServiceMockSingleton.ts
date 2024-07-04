@@ -9,8 +9,8 @@ import { getEnvironmentRequiredVars } from "./utils";
 //const localAddress = getEnvironmentRequiredVars().localAddress;
 const stashServiceAddress = getEnvironmentRequiredVars().stashServiceAddress;
 
-class StashServiceMockSingleton {
-  private static instance: StashServiceMockSingleton | null = null;
+class RollupStashServiceMockSingleton {
+  private static instance: RollupStashServiceMockSingleton | null = null;
   private stashServiceMock: Express;
   private server: http.Server; // You can define the server variable here
   private readonly port = 3456; // Set the port number to 3456
@@ -43,22 +43,22 @@ class StashServiceMockSingleton {
           status: "APPROVED",
           rolldownContract: "0x7bc06c482DEAd17c0e297aFbC32f6e63d3846650"
         },
-        {
-          key: "Arbitrum",
-          name: "Arbitrum",
-          chainId: "0x539",
-          layer: 2,
-          parentChainId: 1,
-          explorerUrl: "",
-          rpcUrl: "https://evm-node-arb-frontend.gasp.xyz",
-          nativeToken: {
-            name: "SepoliaEthereum",
-            decimals: "18",
-            symbol: "SepoliaETH"
-          },
-          status: "APPROVED",
-          rolldownContract: "0xDc64a140Aa3E981100a9becA4E685f962f0cF6C9"
-        }
+        // {
+        //   key: "Arbitrum",
+        //   name: "Arbitrum",
+        //   chainId: "0x539",
+        //   layer: 2,
+        //   parentChainId: 1,
+        //   explorerUrl: "",
+        //   rpcUrl: "https://evm-node-arb-frontend.gasp.xyz",
+        //   nativeToken: {
+        //     name: "SepoliaEthereum",
+        //     decimals: "18",
+        //     symbol: "SepoliaETH"
+        //   },
+        //   status: "APPROVED",
+        //   rolldownContract: "0xDc64a140Aa3E981100a9becA4E685f962f0cF6C9"
+        // }
       ];
 
       res.json(data);
@@ -79,9 +79,6 @@ class StashServiceMockSingleton {
 
         res.status(response.status).json(response.data);
       } catch (error) {
-        testLog
-          .getLog()
-          .info("Error forwarding request to the real service:", error);
         res
           .status(500)
           .json({ error: "Failed to forward request to the true service" });
@@ -94,14 +91,15 @@ class StashServiceMockSingleton {
     });
   }
 
-  public static getInstance(): StashServiceMockSingleton {
-    if (!StashServiceMockSingleton.instance) {
-      StashServiceMockSingleton.instance = new StashServiceMockSingleton();
+  public static getInstance(): RollupStashServiceMockSingleton {
+    if (!RollupStashServiceMockSingleton.instance) {
+      RollupStashServiceMockSingleton.instance = new RollupStashServiceMockSingleton();
     }
-    return StashServiceMockSingleton.instance;
+    return RollupStashServiceMockSingleton.instance;
   }
 
   public startMock(): Express {
+    testLog.getLog().info(`Stash mock Server starting on port ${this.port}`);
     return this.stashServiceMock;
   }
 
@@ -114,4 +112,4 @@ class StashServiceMockSingleton {
   }
 }
 
-export default StashServiceMockSingleton;
+export default RollupStashServiceMockSingleton;

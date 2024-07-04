@@ -72,7 +72,7 @@ export function getEnvironmentRequiredVars() {
 
   const uri = process.env.API_URL
     ? process.env.API_URL
-    : "wss://kusama-rpc.mangata.online";
+    : "wss://archive-node-01-ws-kusama.mangata.online";
   const relyUri = process.env.RELY_API_URL
     ? process.env.RELY_API_URL
     : "ws://127.0.0.1:9944";
@@ -86,7 +86,7 @@ export function getEnvironmentRequiredVars() {
 
   const uiUri = process.env.UI_URL
     ? process.env.UI_URL
-    : "https://gasp-testnet-dot-direct-pixel-353917.oa.r.appspot.com/";
+    : "http://localhost:4200/";
 
   const localAddress = process.env.LOCAL_ADDRESS
     ? process.env.LOCAL_ADDRESS
@@ -94,19 +94,19 @@ export function getEnvironmentRequiredVars() {
 
   const stashServiceAddress = process.env.STASH_URL
     ? process.env.STASH_URL
-    : "https://mangata-stash-prod-dot-direct-pixel-353917.oa.r.appspot.com";
+    : "https://mangata-stash-rollup-dev-dot-direct-pixel-353917.oa.r.appspot.com";
 
   const mnemonicMetaMask = process.env.MNEMONIC_META
     ? process.env.MNEMONIC_META
-    : "oh oh";
+    : "tag select clinic chef they team junk hidden early drop logic achieve";
 
   const privKeyMetaMask = process.env.PRIVKEY_META
     ? process.env.PRIVKEY_META
-    : "oh oh";
+    : "21ee67f57bbefbb37290e5b1f5a2ad5daab329b9e70578267538f298a59ef68f";
 
   const mnemonicPolkadot = process.env.MNEMONIC_POLK
     ? process.env.MNEMONIC_POLK
-    : "oh oh";
+    : "parrot reveal arena shrimp announce ten draw pretty forget caught advice jacket";
 
   const mnemonicPolkadotEd25519 = process.env.MNEMONIC_POLK_ED25519
     ? process.env.MNEMONIC_POLK_ED25519
