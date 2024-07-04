@@ -326,7 +326,7 @@ describe("sequencerStaking", () => {
       ),
     );
     await waitSudoOperationSuccess(cancelResolution, "SudoAsDone");
-    // TODO: in this case because of justified cancel the sequencer is kicked and removed from sequencer rights list
+    // TODO: in this case because of unjustified cancel the sequencer is kicked and removed from sequencer rights list
     // sequencerStatus = await Rolldown.sequencerRights(
     //   chain,
     //   sequencer.keyRingPair.address,
