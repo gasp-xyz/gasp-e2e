@@ -2,7 +2,7 @@
  *
  * @group xyk
  * @group accuracy
- * @group seqgasless
+ * @group parallel
  */
 import { jest } from "@jest/globals";
 import { getApi, initApi } from "../../utils/api";
@@ -25,6 +25,7 @@ import { setupUsers, setupApi, getSudoUser } from "../../utils/setup";
 import { Xyk } from "../../utils/xyk";
 import { feeLockErrors } from "../../utils/utils";
 import { signTx } from "@mangata-finance/sdk";
+import { testLog } from "../../utils/Logger";
 
 jest.spyOn(console, "log").mockImplementation(jest.fn());
 jest.spyOn(console, "error").mockImplementation(jest.fn());
@@ -38,6 +39,7 @@ let firstCurrency: BN;
 let secondCurrency: BN;
 let assetAmount: BN;
 let defaultCurrencyValue: BN;
+let feeLockMetadata: any;
 let swapValueThreshold: BN;
 let feeLockAmount: BN;
 
@@ -53,7 +55,7 @@ beforeAll(async () => {
   const api = getApi();
   sudo = getSudoUser();
 
-  const feeLockMetadata = (await api.query.feeLock.feeLockMetadata()).value;
+  feeLockMetadata = (await api.query.feeLock.feeLockMetadata()).value;
 
   swapValueThreshold = new BN(feeLockMetadata.swapValueThreshold.toString());
   feeLockAmount = new BN(feeLockMetadata.feeLockAmount.toString());
@@ -99,6 +101,21 @@ beforeEach(async () => {
     Assets.mintToken(firstCurrency, testUser1, defaultCurrencyValue),
     Assets.mintToken(secondCurrency, testUser1, defaultCurrencyValue),
   );
+
+  const api = getApi();
+  feeLockMetadata = (await api.query.feeLock.feeLockMetadata()).value;
+  testLog
+    .getLog()
+    .info(
+      "current feeLockMetadata - periodLength: " +
+        feeLockMetadata.periodLength +
+        ", feeLockAmount: " +
+        feeLockMetadata.periodLength.toString() +
+        ", swapValueThreshold: " +
+        feeLockMetadata.swapValueThreshold.toString() +
+        ", whitelistedTokens: " +
+        feeLockMetadata.whitelistedTokens,
+    );
 });
 
 describe.each`
