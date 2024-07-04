@@ -4,6 +4,7 @@ import { Keyring } from "@polkadot/api";
 import { EthUser } from "../EthUser";
 import { stringToBN } from "../utils";
 export type ChainName = "Ethereum" | "Arbitrum";
+const baltathar = "0x3cd0a705a2dc65e5b1e1205896baa2be8a07c6e0";
 export const wellKnownUsers: Record<string, string> = {
   "0x3cd0a705a2dc65e5b1e1205896baa2be8a07c6e0":
     "0x8075991ce870b93a8870eca0c0f91913d12f47948ca0fd25b49c6fa7cdbeee8b",
@@ -12,10 +13,7 @@ export const wellKnownUsers: Record<string, string> = {
 export class SequencerStaking {
   static async getSequencerUser() {
     setupUsers();
-    const api = await getApi();
-    const sequencer = await api.query.sequencerStaking.selectedSequencer();
-    // @ts-ignore
-    const pkey = wellKnownUsers[sequencer.toHuman().Ethereum];
+    const pkey = wellKnownUsers[baltathar];
     return new EthUser(new Keyring({ type: "ethereum" }), pkey);
   }
   static async provideSequencerStaking(chainName: ChainName = "Ethereum") {
