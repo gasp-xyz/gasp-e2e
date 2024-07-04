@@ -214,6 +214,12 @@ export class Assets {
       api.tx.tokens.mint(MGA_ASSET_ID, user.keyRingPair.address, amount),
     );
   }
+  static mintNativeAddress(
+    userAddress: string,
+    amount: BN = this.DEFAULT_AMOUNT,
+  ): Extrinsic {
+    return Sudo.sudo(api.tx.tokens.mint(MGA_ASSET_ID, userAddress, amount));
+  }
   public static createTokenWithNoAssetRegistry(
     user: User,
     amount: BN = this.DEFAULT_AMOUNT,
