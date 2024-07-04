@@ -56,6 +56,18 @@ beforeAll(async () => {
   sudo = getSudoUser();
 
   feeLockMetadata = (await api.query.feeLock.feeLockMetadata()).value;
+  testLog
+    .getLog()
+    .info(
+      "current feeLockMetadata - periodLength: " +
+        feeLockMetadata.periodLength +
+        ", feeLockAmount: " +
+        feeLockMetadata.periodLength.toString() +
+        ", swapValueThreshold: " +
+        feeLockMetadata.swapValueThreshold.toString() +
+        ", whitelistedTokens: " +
+        feeLockMetadata.whitelistedTokens,
+    );
 
   swapValueThreshold = new BN(feeLockMetadata.swapValueThreshold.toString());
   feeLockAmount = new BN(feeLockMetadata.feeLockAmount.toString());
