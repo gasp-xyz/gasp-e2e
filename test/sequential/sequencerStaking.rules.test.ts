@@ -434,7 +434,7 @@ describe("sequencerStaking", () => {
     //the other sequencer got kicked, this must be zero, since it is the only sequencer
     expect(otherSequencerStatus.cancelRights.toString()).toBe("0");
   });
-  it.only("Active Sequencer -> Active -> canceled update -> Can not leave", async () => {
+  it("Active Sequencer -> Active -> canceled update -> Can not leave", async () => {
     const chain = "Arbitrum";
     const notYetSequencer = await findACollatorButNotSequencerUser();
     const minToBeSequencer = await SequencerStaking.minimalStakeAmount();
