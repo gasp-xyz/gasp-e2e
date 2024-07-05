@@ -257,7 +257,7 @@ describe("sequencerStaking", () => {
     const chain = "Arbitrum";
     const [user] = setupUsers();
     await Sudo.asSudoFinalized(Assets.mintNative(user));
-    const txIndex = await Rolldown.lastProcessedRequestOnL2();
+    const txIndex = await Rolldown.lastProcessedRequestOnL2(chain);
     const update = new L2Update(api)
       .withDeposit(
         txIndex,
@@ -426,6 +426,7 @@ describe("sequencerStaking", () => {
     expect(sequencerStatus.readRights.toString()).toBe("0");
     expect(sequencerStatus.cancelRights.toString()).toBe("0");
 
+    await Rolldown.waitForReadRights(preSetupSequencers.Ethereum, 50, chain);
     const otherSequencerStatus = await Rolldown.sequencerRights(
       chain,
       preSetupSequencers.Ethereum,
