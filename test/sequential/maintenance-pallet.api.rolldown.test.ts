@@ -141,7 +141,7 @@ describe.each(["mm", "upgradabilityMm"])(
           updateL2fromL1: [
             new L2Update(api)
               .withDeposit(
-                await Rolldown.l2OriginRequestId(),
+                await Rolldown.lastProcessedRequestOnL2(),
                 users[0].keyRingPair.address,
                 users[0].keyRingPair.address,
                 BN_HUNDRED,
@@ -169,7 +169,7 @@ describe.each(["mm", "upgradabilityMm"])(
             Sudo.sudo(
               new L2Update(api)
                 .withDeposit(
-                  await Rolldown.l2OriginRequestId(),
+                  await Rolldown.lastProcessedRequestOnL2(),
                   users[0].keyRingPair.address,
                   users[0].keyRingPair.address,
                   BN_HUNDRED,

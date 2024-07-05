@@ -27,7 +27,7 @@ describe("updateL1FromL1", () => {
     await Rolldown.waitForReadRights(sequencer.ethAddress);
   });
   it("Updates are accepted", async () => {
-    const txIndex = await Rolldown.l2OriginRequestId();
+    const txIndex = await Rolldown.lastProcessedRequestOnL2();
     const txIndexForL2Request = await Rolldown.lastProcessedRequestOnL2();
     const user = new EthUser(new Keyring({ type: "ethereum" }));
     const userAddr = user.keyRingPair.address;
@@ -46,7 +46,7 @@ describe("updateL1FromL1", () => {
     );
   });
   it("Future +1 updates are  not accepted", async () => {
-    const txIndex = await Rolldown.l2OriginRequestId();
+    const txIndex = await Rolldown.lastProcessedRequestOnL2();
     const txIndexForL2Request = await Rolldown.lastProcessedRequestOnL2();
     const user = new EthUser(new Keyring({ type: "ethereum" }));
     const userAddr = user.keyRingPair.address;
@@ -61,7 +61,7 @@ describe("updateL1FromL1", () => {
     expect(expectExtrinsicFail(res).data).toEqual("WrongRequestId");
   });
   it("Future -1,0,+2,+3 updates are  not accepted", async () => {
-    const txIndex = await Rolldown.l2OriginRequestId();
+    const txIndex = await Rolldown.lastProcessedRequestOnL2();
     const txIndexForL2Request = await Rolldown.lastProcessedRequestOnL2();
     const user = new EthUser(new Keyring({ type: "ethereum" }));
     const userAddr = user.keyRingPair.address;
@@ -76,7 +76,7 @@ describe("updateL1FromL1", () => {
     expect(expectExtrinsicFail(res).data).toEqual("InvalidUpdate");
   });
   it("Add twice the same deposit with requestId", async () => {
-    const txIndex = await Rolldown.l2OriginRequestId();
+    const txIndex = await Rolldown.lastProcessedRequestOnL2();
     const res = await Rolldown.deposit(
       sequencer,
       txIndex,
@@ -103,7 +103,7 @@ describe("updateL1FromL1", () => {
     expect(events2.length).toBe(2);
   });
   it("Add twice the same request id but different deposits", async () => {
-    const txIndex = await Rolldown.l2OriginRequestId();
+    const txIndex = await Rolldown.lastProcessedRequestOnL2();
     const api = getApi();
     const res = await signTx(
       api,
@@ -144,7 +144,7 @@ describe("updateL1FromL1", () => {
     expect(events2.length).toBe(2);
   });
   it("Add twice the same request groups", async () => {
-    const txIndex = await Rolldown.l2OriginRequestId();
+    const txIndex = await Rolldown.lastProcessedRequestOnL2();
     const otherUser = new EthUser(new Keyring({ type: "ethereum" }));
     const api = getApi();
     const update = new L2Update(api)
@@ -178,7 +178,7 @@ describe("updateL1FromL1", () => {
     expect(events2.length).toBe(2);
   });
   it("Old Ids can be included but wont be considered", async () => {
-    const txIndex = await Rolldown.l2OriginRequestId();
+    const txIndex = await Rolldown.lastProcessedRequestOnL2();
     const otherUser = new EthUser(new Keyring({ type: "ethereum" }));
     const api = getApi();
     const update = new L2Update(api)
@@ -209,7 +209,7 @@ describe("updateL1FromL1", () => {
     expect(events.length).toBeGreaterThan(2);
   });
   it("Old Ids can be included on some other update and wont be considered", async () => {
-    const txIndex = await Rolldown.l2OriginRequestId();
+    const txIndex = await Rolldown.lastProcessedRequestOnL2();
     const txIndexForL2Request = await Rolldown.lastProcessedRequestOnL2();
     const otherUser = new EthUser(new Keyring({ type: "ethereum" }));
     const api = getApi();
@@ -236,7 +236,7 @@ describe("updateL1FromL1", () => {
     expect(events.length).toBeGreaterThan(2);
   });
   it("An update with no new updates will not fail but wont run", async () => {
-    const txIndex = await Rolldown.l2OriginRequestId();
+    const txIndex = await Rolldown.lastProcessedRequestOnL2();
     const txIndexForL2Request = await Rolldown.lastProcessedRequestOnL2();
     const otherUser = new EthUser(new Keyring({ type: "ethereum" }));
     const api = getApi();
@@ -257,7 +257,7 @@ describe("updateL1FromL1", () => {
     ).toBe(false);
   });
   it("An update with a gap will fail", async () => {
-    const txIndex = await Rolldown.l2OriginRequestId();
+    const txIndex = await Rolldown.lastProcessedRequestOnL2();
     const txIndexForL2Request = await Rolldown.lastProcessedRequestOnL2();
     const otherUser = new EthUser(new Keyring({ type: "ethereum" }));
     const api = getApi();
@@ -280,7 +280,7 @@ describe("updateL1FromL1", () => {
     expectExtrinsicFail(res);
   });
   it("An update that is not ordered will fail", async () => {
-    const txIndex = await Rolldown.l2OriginRequestId();
+    const txIndex = await Rolldown.lastProcessedRequestOnL2();
     const txIndexForL2Request = await Rolldown.lastProcessedRequestOnL2();
     const otherUser = new EthUser(new Keyring({ type: "ethereum" }));
     const api = getApi();
@@ -303,7 +303,7 @@ describe("updateL1FromL1", () => {
     expect(expectExtrinsicFail(res).data).toEqual("InvalidUpdate");
   });
   it("An update with two identical deposits must be executed correctly", async () => {
-    const txIndex = await Rolldown.l2OriginRequestId();
+    const txIndex = await Rolldown.lastProcessedRequestOnL2();
     const txIndexForL2Request = await Rolldown.lastProcessedRequestOnL2();
     const otherUser = new EthUser(new Keyring({ type: "ethereum" }));
     const api = getApi();
@@ -332,7 +332,7 @@ describe("updateL1FromL1", () => {
     expect(stringToBN(balance.free.toString())).bnEqual(BN_MILLION.muln(2));
   });
   it("Every update item is validated", async () => {
-    const txIndex = await Rolldown.l2OriginRequestId();
+    const txIndex = await Rolldown.lastProcessedRequestOnL2();
     const txIndexForL2Request = await Rolldown.lastProcessedRequestOnL2();
     const user = new EthUser(new Keyring({ type: "ethereum" }));
     const userAddr = user.keyRingPair.address;
@@ -362,7 +362,7 @@ describe("updateL1FromL1 - errors", () => {
     it.each([0, 1, 2, 3])(
       `An update including gap? : ${withGap} at positions %s`,
       async (gap) => {
-        const txIndex = await Rolldown.l2OriginRequestId();
+        const txIndex = await Rolldown.lastProcessedRequestOnL2();
         const txIndexForL2Request = await Rolldown.lastProcessedRequestOnL2();
         const user = new EthUser(new Keyring({ type: "ethereum" }));
         const userAddr = user.keyRingPair.address;

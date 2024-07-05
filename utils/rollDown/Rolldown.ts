@@ -16,23 +16,17 @@ import {
 } from "@polkadot/types/lookup";
 
 export class Rolldown {
-  static async l2OriginRequestId(l1 = "Ethereum") {
+  static async lastProcessedRequestOnL2(l1 = "Ethereum") {
     setupUsers();
     const api = getApi();
-    const requestId = await api.query.rolldown.l2OriginRequestId(l1);
-    return parseInt(requestId.toString());
+    const requestId = await api.query.rolldown.lastProcessedRequestOnL2(l1);
+    return parseInt(requestId.toString()) + 1;
   }
   static async maxAcceptedRequestIdOnl2(l1 = "Ethereum") {
     setupUsers();
     const api = getApi();
     const requestId = await api.query.rolldown.maxAcceptedRequestIdOnl2(l1);
     return parseInt(requestId.toString());
-  }
-  static async lastProcessedRequestOnL2(l1 = "Ethereum") {
-    setupUsers();
-    const api = getApi();
-    const requestId = await api.query.rolldown.lastProcessedRequestOnL2(l1);
-    return requestId as any as number;
   }
   static isDepositSucceed(
     events: MangataGenericEvent[],
