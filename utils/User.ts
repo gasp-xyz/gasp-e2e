@@ -14,6 +14,7 @@ import {
   mintLiquidity,
   mintLiquidityUsingVestingNativeTokens,
   registerAsset,
+  registerL1Asset,
   reserveVestingLiquidityTokens,
   transferAll,
   updateAsset,
@@ -375,6 +376,19 @@ export class User {
     },
   ) {
     return await registerAsset(this, assetId, location, locMarker, null);
+  }
+
+  async registerL1Asset(
+    assetId: BN,
+    locMarker = assetId,
+    tokenEthereumAddress = "0x" + randomBytes(20).toString("hex"),
+  ) {
+    return await registerL1Asset(
+      this,
+      assetId,
+      locMarker,
+      tokenEthereumAddress,
+    );
   }
 
   async updateAsset(

@@ -987,6 +987,37 @@ export async function registerAsset(
   );
 }
 
+export async function registerL1Asset(
+  sudoUser: User,
+  assetId: BN,
+  locMarker: BN,
+  tokenEthereumAddress: string,
+) {
+  const api = getApi();
+  return await signTx(
+    api,
+    api.tx.sudo.sudo(
+      api.tx.assetRegistry.registerL1Asset(
+        {
+          decimals: 18,
+          name: "TEST_TOKEN-" + locMarker.toString(),
+          symbol: "TEST" + locMarker.toString(),
+          existentialDeposit: 0,
+        },
+        //@ts-ignore
+        assetId,
+        {
+          Ethereum: tokenEthereumAddress,
+        },
+      ),
+    ),
+    sudoUser.keyRingPair,
+    {
+      nonce: await getCurrentNonce(sudoUser.keyRingPair.address),
+    },
+  );
+}
+
 export async function updateAsset(
   sudoUser: User,
   assetId: any,
