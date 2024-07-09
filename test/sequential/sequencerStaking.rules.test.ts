@@ -151,6 +151,7 @@ describe("sequencerStaking", () => {
     //TODO: Replace this by some monitoring of the active queue.
     await waitForNBlocks((await Rolldown.disputePeriodLength()).toNumber());
     const activeSequencers = await SequencerStaking.activeSequencers();
+    let anysequencerGone = false;
     for (const chain in activeSequencers.toHuman()) {
       for (const seq of activeSequencers.toHuman()[chain] as string[]) {
         if (
@@ -158,9 +159,12 @@ describe("sequencerStaking", () => {
           seq !== preSetupSequencers.Arbitrum
         ) {
           await leaveSequencingIfAlreadySequencer(seq);
+          anysequencerGone = true;
         }
       }
     }
+    if(anysequencerGone)
+      await waitForNBlocks(10);
   });
 
   it("An already collator joining as sequencer - On Active", async () => {
@@ -410,7 +414,7 @@ describe("sequencerStaking", () => {
       Sudo.sudoAsWithAddressString(
         preSetupSequencers.Ethereum,
         new L2Update(api)
-          .withCancelResolution(txIndex - 1, cancelReqId, false)
+          .withCancelResolution(txIndex, cancelReqId, false)
           .on(chain)
           .build(),
       ),

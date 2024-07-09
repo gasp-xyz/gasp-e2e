@@ -81,13 +81,14 @@ export class Rolldown {
           `Waiting for read rights ${maxBlocks} : ${chain} : ${userAddress}`,
         );
       const seqRights = await getApi().query.rolldown.sequencersRights(chain);
+      testLog.getLog().info(JSON.stringify(seqRights.toHuman()));
       const selectedSequencer =
         await getApi().query.sequencerStaking.selectedSequencer();
+      testLog.getLog().info(JSON.stringify(selectedSequencer.toHuman()));
       const isSelectedSeq = Object.values(selectedSequencer.toHuman()).includes(
         userAddress,
       );
-      const reads = (Object.entries(seqRights.toHuman())[0][1] as any)
-        .readRights;
+      const reads = (seqRights.toHuman()[userAddress] as any).readRights;
       if (reads && parseInt(reads) > 0 && isSelectedSeq) {
         return;
       } else {
