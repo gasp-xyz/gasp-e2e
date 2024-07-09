@@ -137,6 +137,7 @@ export class Rolldown {
       SpRuntimeAccountAccountId20,
       PalletRolldownSequencerRights
     >;
+    testLog.getLog().info(`Rights : ${rights.toJSON()}`);
     return api.createType(
       "PalletRolldownSequencerRights",
       rights.toJSON()[seqAddress],
