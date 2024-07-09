@@ -991,9 +991,20 @@ export async function registerL1Asset(
   sudoUser: User,
   assetId: BN,
   locMarker: BN,
-  tokenEthereumAddress: string,
+  l1AssetChain = "Ethereum",
+  tokenAddress: string,
 ) {
   const api = getApi();
+  let l1Asset: any;
+  if (l1AssetChain === "Ethereum") {
+    l1Asset = {
+      Ethereum: tokenAddress,
+    };
+  } else {
+    l1Asset = {
+      Arbitrum: tokenAddress,
+    };
+  }
   return await signTx(
     api,
     api.tx.sudo.sudo(
@@ -1006,9 +1017,7 @@ export async function registerL1Asset(
         },
         //@ts-ignore
         assetId,
-        {
-          Ethereum: tokenEthereumAddress,
-        },
+        l1Asset,
       ),
     ),
     sudoUser.keyRingPair,
@@ -1039,6 +1048,33 @@ export async function updateAsset(
         additional,
       ),
     ),
+    sudoUser.keyRingPair,
+    {
+      nonce: await getCurrentNonce(sudoUser.keyRingPair.address),
+    },
+  );
+}
+
+export async function updateL1Asset(
+  sudoUser: User,
+  assetId: BN,
+  l1AssetChain = "Ethereum",
+  tokenAddress: string,
+) {
+  const api = getApi();
+  let l1Asset: any;
+  if (l1AssetChain === "Ethereum") {
+    l1Asset = {
+      Ethereum: tokenAddress,
+    };
+  } else {
+    l1Asset = {
+      Arbitrum: tokenAddress,
+    };
+  }
+  return await signTx(
+    api,
+    api.tx.sudo.sudo(api.tx.assetRegistry.updateL1AssetData(assetId, l1Asset)),
     sudoUser.keyRingPair,
     {
       nonce: await getCurrentNonce(sudoUser.keyRingPair.address),

@@ -18,6 +18,7 @@ import {
   reserveVestingLiquidityTokens,
   transferAll,
   updateAsset,
+  updateL1Asset,
 } from "./tx";
 import { getEventResultFromMangataTx } from "./txHandler";
 import {
@@ -380,14 +381,16 @@ export class User {
 
   async registerL1Asset(
     assetId: BN,
+    tokenAddress = "0x" + randomBytes(20).toString("hex"),
+    l1AssetChain = "Ethereum",
     locMarker = assetId,
-    tokenEthereumAddress = "0x" + randomBytes(20).toString("hex"),
   ) {
     return await registerL1Asset(
       this,
       assetId,
       locMarker,
-      tokenEthereumAddress,
+      l1AssetChain,
+      tokenAddress,
     );
   }
 
@@ -418,6 +421,14 @@ export class User {
     },
   ) {
     return await updateAsset(this, assetId, location, additional);
+  }
+
+  async updateL1Asset(
+    assetId: BN,
+    tokenAddress = "0x" + randomBytes(20).toString("hex"),
+    l1AssetChain = "Ethereum",
+  ) {
+    return await updateL1Asset(this, assetId, l1AssetChain, tokenAddress);
   }
 }
 export class Asset {

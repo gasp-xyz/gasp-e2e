@@ -6,9 +6,15 @@ import { jest } from "@jest/globals";
 import { getApi, initApi } from "../../utils/api";
 import { Keyring } from "@polkadot/api";
 import { User } from "../../utils/User";
-import { api, getSudoUser, setupApi } from "../../utils/setup";
-import { getEventResultFromMangataTx } from "../../utils/txHandler";
+import { api, getSudoUser, setupApi, setupUsers } from "../../utils/setup";
+import {
+  getEventErrorFromSudo,
+  getEventResultFromMangataTx,
+} from "../../utils/txHandler";
 import { ExtrinsicResult } from "../../utils/eventListeners";
+import { Sudo } from "../../utils/sudo";
+import { Assets } from "../../utils/Assets";
+import { randomBytes } from "crypto";
 
 jest.spyOn(console, "log").mockImplementation(jest.fn());
 jest.setTimeout(1500000);
@@ -35,10 +41,137 @@ beforeAll(async () => {
 });
 
 test("Asset can be created by a sudo user", async () => {
-  // setup users
   const assetId = await api.query.tokens.nextCurrencyId();
-  await sudo.registerL1Asset(assetId).then((result) => {
+  const tokenEthereumAddress = "0x" + randomBytes(20).toString("hex");
+  await sudo.registerL1Asset(assetId, tokenEthereumAddress).then((result) => {
     const eventResponse = getEventResultFromMangataTx(result);
     expect(eventResponse.state).toEqual(ExtrinsicResult.ExtrinsicSuccess);
+  });
+  const idToL1Asset = JSON.parse(
+    JSON.stringify(await api.query.assetRegistry.idToL1Asset(assetId)),
+  );
+  expect(idToL1Asset.ethereum).toEqual(tokenEthereumAddress);
+});
+
+test("Asset can't be created by a regular user", async () => {
+  const [testUser] = setupUsers();
+  await Sudo.batchAsSudoFinalized(
+    Assets.mintNative(testUser, Assets.DEFAULT_AMOUNT),
+  );
+
+  const assetId = await api.query.tokens.nextCurrencyId();
+  await testUser.registerL1Asset(assetId).then((result) => {
+    const eventResponse = getEventResultFromMangataTx(result);
+    expect(eventResponse.state).toEqual(ExtrinsicResult.ExtrinsicFailed);
+    expect(eventResponse.data).toEqual("RequireSudo");
+  });
+});
+
+test("GIVEN Create one asset with the same address but different chains THEN Operations pass", async () => {
+  const assetIdEthereum = await api.query.tokens.nextCurrencyId();
+  const tokenAddress = "0x" + randomBytes(20).toString("hex");
+
+  await sudo
+    .registerL1Asset(assetIdEthereum, tokenAddress, "Ethereum")
+    .then((result) => {
+      const eventResponse = getEventResultFromMangataTx(result);
+      expect(eventResponse.state).toEqual(ExtrinsicResult.ExtrinsicSuccess);
+    });
+
+  const assetIdArbitrum = await api.query.tokens.nextCurrencyId();
+
+  await sudo
+    .registerL1Asset(assetIdArbitrum, tokenAddress, "Arbitrum")
+    .then((result) => {
+      const eventResponse = getEventResultFromMangataTx(result);
+      expect(eventResponse.state).toEqual(ExtrinsicResult.ExtrinsicSuccess);
+    });
+
+  const idToL1EthereumAsset = JSON.parse(
+    JSON.stringify(await api.query.assetRegistry.idToL1Asset(assetIdEthereum)),
+  );
+  const idToL1ArbitrumAsset = JSON.parse(
+    JSON.stringify(await api.query.assetRegistry.idToL1Asset(assetIdArbitrum)),
+  );
+  expect(idToL1EthereumAsset.ethereum).toEqual(tokenAddress);
+  expect(idToL1ArbitrumAsset.arbitrum).toEqual(tokenAddress);
+});
+
+test("GIVEN Create one asset with the same address and same chain THEN Operation fail", async () => {
+  const assetId1 = await api.query.tokens.nextCurrencyId();
+  const tokenAddress = "0x" + randomBytes(20).toString("hex");
+
+  await sudo
+    .registerL1Asset(assetId1, tokenAddress, "Ethereum")
+    .then((result) => {
+      const eventResponse = getEventResultFromMangataTx(result);
+      expect(eventResponse.state).toEqual(ExtrinsicResult.ExtrinsicSuccess);
+    });
+
+  const assetId2 = await api.query.tokens.nextCurrencyId();
+
+  await sudo
+    .registerL1Asset(assetId2, tokenAddress, "Ethereum")
+    .then(async (result) => {
+      const sudoEvent = await getEventErrorFromSudo(result);
+      expect(sudoEvent.state).toBe(ExtrinsicResult.ExtrinsicFailed);
+      expect(sudoEvent.data).toBe("ConflictingL1Asset");
+    });
+
+  const idToL1Asset1 = JSON.parse(
+    JSON.stringify(await api.query.assetRegistry.idToL1Asset(assetId1)),
+  );
+  const idToL1Asset2 = JSON.parse(
+    JSON.stringify(await api.query.assetRegistry.idToL1Asset(assetId2)),
+  );
+  expect(idToL1Asset1.ethereum).toEqual(tokenAddress);
+  expect(idToL1Asset2).toEqual(null);
+});
+
+describe("update L1AssetData-", () => {
+  let assetId: any;
+  let tokenAddressBefore: string;
+  let tokenAddressAfter: string;
+  let idToL1Asset: any;
+
+  beforeEach(async () => {
+    assetId = await api.query.tokens.nextCurrencyId();
+    tokenAddressBefore = "0x" + randomBytes(20).toString("hex");
+    tokenAddressAfter = "0x" + randomBytes(20).toString("hex");
+
+    await sudo.registerL1Asset(assetId, tokenAddressBefore).then((result) => {
+      const eventResponse = getEventResultFromMangataTx(result);
+      expect(eventResponse.state).toEqual(ExtrinsicResult.ExtrinsicSuccess);
+    });
+
+    idToL1Asset = JSON.parse(
+      JSON.stringify(await api.query.assetRegistry.idToL1Asset(assetId)),
+    );
+    expect(idToL1Asset.ethereum).toEqual(tokenAddressBefore);
+  });
+
+  test("Asset can be updated by a sudo user", async () => {
+    await sudo.updateL1Asset(assetId, tokenAddressAfter).then((result) => {
+      const eventResponse = getEventResultFromMangataTx(result);
+      expect(eventResponse.state).toEqual(ExtrinsicResult.ExtrinsicSuccess);
+    });
+
+    idToL1Asset = JSON.parse(
+      JSON.stringify(await api.query.assetRegistry.idToL1Asset(assetId)),
+    );
+    expect(idToL1Asset.ethereum).toEqual(tokenAddressAfter);
+  });
+
+  test("Asset can't be updated by a regular user", async () => {
+    const [testUser] = setupUsers();
+    await Sudo.batchAsSudoFinalized(
+      Assets.mintNative(testUser, Assets.DEFAULT_AMOUNT),
+    );
+
+    await testUser.updateL1Asset(assetId, tokenAddressAfter).then((result) => {
+      const eventResponse = getEventResultFromMangataTx(result);
+      expect(eventResponse.state).toEqual(ExtrinsicResult.ExtrinsicFailed);
+      expect(eventResponse.data).toEqual("RequireSudo");
+    });
   });
 });
