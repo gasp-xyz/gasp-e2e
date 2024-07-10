@@ -89,7 +89,7 @@ export class Rolldown {
         userAddress,
       );
       const reads =
-        (seqRights.toHuman()[userAddress] as any) &&
+        (seqRights.toHuman()[userAddress] as any) !== undefined &&
         (seqRights.toHuman()[userAddress] as any).readRights;
       if (reads && parseInt(reads) > 0 && isSelectedSeq) {
         return;
