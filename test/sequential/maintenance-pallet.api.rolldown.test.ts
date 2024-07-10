@@ -201,7 +201,7 @@ describe.each(["mm", "upgradabilityMm"])(
       ])("%s operation is not allowed in mm", async (testName) => {
         const [extrinsic, signer] = tests[testName];
         if (testName === "updateL2fromL1") {
-          await Rolldown.waitForReadRights(signer.toString());
+          await Rolldown.waitForReadRights(signer.toString(), 50);
         }
         const nonce = await getCurrentNonce(signer.keyRingPair.address);
         await signTx(api, extrinsic, signer.keyRingPair, { nonce: nonce })
