@@ -13,10 +13,10 @@ export const wellKnownUsers: Record<string, string> = {
 export class SequencerStaking {
   static async getSequencerUser() {
     setupUsers();
-    const api = await getApi();
-    const sequencer = await api.query.sequencerStaking.selectedSequencer();
+    //const api = await getApi();
+    //const sequencer = await api.query.sequencerStaking.selectedSequencer();
     // @ts-ignore
-    const pkey = wellKnownUsers[sequencer.toHuman().Ethereum];
+    const pkey = wellKnownUsers["0x3cd0a705a2dc65e5b1e1205896baa2be8a07c6e0"];
     return new EthUser(new Keyring({ type: "ethereum" }), pkey);
   }
   static async provideSequencerStaking(

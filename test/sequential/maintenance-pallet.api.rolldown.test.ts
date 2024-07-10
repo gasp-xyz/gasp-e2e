@@ -51,6 +51,7 @@ let sequencer: User;
 const foundationAccountAddress = FOUNDATION_ADDRESS_1;
 
 async function setupMm() {
+
   await Sudo.batchAsSudoFinalized(
     Sudo.sudoAsWithAddressString(
       foundationAccountAddress,
