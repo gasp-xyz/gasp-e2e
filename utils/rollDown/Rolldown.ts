@@ -88,7 +88,9 @@ export class Rolldown {
       const isSelectedSeq = Object.values(selectedSequencer.toHuman()).includes(
         userAddress,
       );
-      const reads = (seqRights.toHuman()[userAddress] as any).readRights;
+      const reads =
+        (seqRights.toHuman()[userAddress] as any) &&
+        (seqRights.toHuman()[userAddress] as any).readRights;
       if (reads && parseInt(reads) > 0 && isSelectedSeq) {
         return;
       } else {
