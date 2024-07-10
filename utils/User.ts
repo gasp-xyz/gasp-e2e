@@ -380,18 +380,11 @@ export class User {
   }
 
   async registerL1Asset(
-    assetId: BN,
+    assetId: any,
     tokenAddress = "0x" + randomBytes(20).toString("hex"),
     l1AssetChain = "Ethereum",
-    locMarker = assetId,
   ) {
-    return await registerL1Asset(
-      this,
-      assetId,
-      locMarker,
-      l1AssetChain,
-      tokenAddress,
-    );
+    return await registerL1Asset(this, assetId, l1AssetChain, tokenAddress);
   }
 
   async updateAsset(
@@ -424,7 +417,7 @@ export class User {
   }
 
   async updateL1Asset(
-    assetId: BN,
+    assetId: any,
     tokenAddress = "0x" + randomBytes(20).toString("hex"),
     l1AssetChain = "Ethereum",
   ) {

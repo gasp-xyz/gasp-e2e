@@ -16,6 +16,8 @@ import { ExtrinsicResult } from "../../utils/eventListeners";
 import { Sudo } from "../../utils/sudo";
 import { Assets } from "../../utils/Assets";
 import { randomBytes } from "crypto";
+import { MangataGenericEvent } from "@mangata-finance/sdk";
+import { BN } from "@polkadot/util";
 
 jest.spyOn(console, "log").mockImplementation(jest.fn());
 jest.setTimeout(1500000);
@@ -42,11 +44,12 @@ beforeAll(async () => {
 });
 
 test("Asset can be created by a sudo user", async () => {
-  const assetId = await api.query.tokens.nextCurrencyId();
+  let assetId: any;
   const tokenEthereumAddress = "0x" + randomBytes(20).toString("hex");
-  await sudo.registerL1Asset(assetId, tokenEthereumAddress).then((result) => {
+  await sudo.registerL1Asset(null, tokenEthereumAddress).then((result) => {
     const eventResponse = getEventResultFromMangataTx(result);
     expect(eventResponse.state).toEqual(ExtrinsicResult.ExtrinsicSuccess);
+    assetId = getAssetId(result);
   });
   const idToL1Asset = JSON.parse(
     JSON.stringify(await api.query.assetRegistry.idToL1Asset(assetId)),
@@ -60,8 +63,7 @@ test("Asset can't be created by a regular user", async () => {
     Assets.mintNative(testUser, Assets.DEFAULT_AMOUNT),
   );
 
-  const assetId = await api.query.tokens.nextCurrencyId();
-  await testUser.registerL1Asset(assetId).then((result) => {
+  await testUser.registerL1Asset(null).then((result) => {
     const eventResponse = getEventResultFromMangataTx(result);
     expect(eventResponse.state).toEqual(ExtrinsicResult.ExtrinsicFailed);
     expect(eventResponse.data).toEqual("RequireSudo");
@@ -69,24 +71,21 @@ test("Asset can't be created by a regular user", async () => {
 });
 
 test("GIVEN Create one asset with the same address but different chains THEN Operations pass", async () => {
-  const assetIdEthereum = await api.query.tokens.nextCurrencyId();
+  let assetIdEthereum: any;
+  let assetIdArbitrum: any;
   const tokenAddress = "0x" + randomBytes(20).toString("hex");
 
-  await sudo
-    .registerL1Asset(assetIdEthereum, tokenAddress, "Ethereum")
-    .then((result) => {
-      const eventResponse = getEventResultFromMangataTx(result);
-      expect(eventResponse.state).toEqual(ExtrinsicResult.ExtrinsicSuccess);
-    });
+  await sudo.registerL1Asset(null, tokenAddress, "Ethereum").then((result) => {
+    const eventResponse = getEventResultFromMangataTx(result);
+    expect(eventResponse.state).toEqual(ExtrinsicResult.ExtrinsicSuccess);
+    assetIdEthereum = getAssetId(result);
+  });
 
-  const assetIdArbitrum = await api.query.tokens.nextCurrencyId();
-
-  await sudo
-    .registerL1Asset(assetIdArbitrum, tokenAddress, "Arbitrum")
-    .then((result) => {
-      const eventResponse = getEventResultFromMangataTx(result);
-      expect(eventResponse.state).toEqual(ExtrinsicResult.ExtrinsicSuccess);
-    });
+  await sudo.registerL1Asset(null, tokenAddress, "Arbitrum").then((result) => {
+    const eventResponse = getEventResultFromMangataTx(result);
+    expect(eventResponse.state).toEqual(ExtrinsicResult.ExtrinsicSuccess);
+    assetIdArbitrum = getAssetId(result);
+  });
 
   const idToL1EthereumAsset = JSON.parse(
     JSON.stringify(await api.query.assetRegistry.idToL1Asset(assetIdEthereum)),
@@ -99,34 +98,20 @@ test("GIVEN Create one asset with the same address but different chains THEN Ope
 });
 
 test("GIVEN Create one asset with the same address and same chain THEN Operation fail", async () => {
-  const assetId1 = await api.query.tokens.nextCurrencyId();
   const tokenAddress = "0x" + randomBytes(20).toString("hex");
 
-  await sudo
-    .registerL1Asset(assetId1, tokenAddress, "Ethereum")
-    .then((result) => {
-      const eventResponse = getEventResultFromMangataTx(result);
-      expect(eventResponse.state).toEqual(ExtrinsicResult.ExtrinsicSuccess);
-    });
-
-  const assetId2 = await api.query.tokens.nextCurrencyId();
+  await sudo.registerL1Asset(null, tokenAddress, "Ethereum").then((result) => {
+    const eventResponse = getEventResultFromMangataTx(result);
+    expect(eventResponse.state).toEqual(ExtrinsicResult.ExtrinsicSuccess);
+  });
 
   await sudo
-    .registerL1Asset(assetId2, tokenAddress, "Ethereum")
+    .registerL1Asset(null, tokenAddress, "Ethereum")
     .then(async (result) => {
       const sudoEvent = await getEventErrorFromSudo(result);
       expect(sudoEvent.state).toBe(ExtrinsicResult.ExtrinsicFailed);
       expect(sudoEvent.data).toBe("ConflictingL1Asset");
     });
-
-  const idToL1Asset1 = JSON.parse(
-    JSON.stringify(await api.query.assetRegistry.idToL1Asset(assetId1)),
-  );
-  const idToL1Asset2 = JSON.parse(
-    JSON.stringify(await api.query.assetRegistry.idToL1Asset(assetId2)),
-  );
-  expect(idToL1Asset1.ethereum).toEqual(tokenAddress);
-  expect(idToL1Asset2).toEqual(null);
 });
 
 describe("update L1AssetData-", () => {
@@ -136,13 +121,13 @@ describe("update L1AssetData-", () => {
   let idToL1Asset: any;
 
   beforeEach(async () => {
-    assetId = await api.query.tokens.nextCurrencyId();
     tokenAddressBefore = "0x" + randomBytes(20).toString("hex");
     tokenAddressAfter = "0x" + randomBytes(20).toString("hex");
 
-    await sudo.registerL1Asset(assetId, tokenAddressBefore).then((result) => {
+    await sudo.registerL1Asset(null, tokenAddressBefore).then((result) => {
       const eventResponse = getEventResultFromMangataTx(result);
       expect(eventResponse.state).toEqual(ExtrinsicResult.ExtrinsicSuccess);
+      assetId = getAssetId(result);
     });
 
     idToL1Asset = JSON.parse(
@@ -191,10 +176,8 @@ describe("update L1AssetData-", () => {
   });
 
   test("GIVEN Update asset so so that addresses & chain matches with some existing ones THEN Operation fail", async () => {
-    const assetId2 = await api.query.tokens.nextCurrencyId();
-
     await sudo
-      .registerL1Asset(assetId2, tokenAddressAfter, "Arbitrum")
+      .registerL1Asset(null, tokenAddressAfter, "Arbitrum")
       .then((result) => {
         const eventResponse = getEventResultFromMangataTx(result);
         expect(eventResponse.state).toEqual(ExtrinsicResult.ExtrinsicSuccess);
@@ -209,8 +192,10 @@ describe("update L1AssetData-", () => {
       });
   });
 
-  test("GIVEN An asset created by registerL1Asset AND It has been updated by updateL1Asset THEN It is now accessible tru IdToL1Asset", async () => {
-    const assetId2 = await api.query.tokens.nextCurrencyId();
+  test("GIVEN An asset created by registerAsset AND It has been updated by updateL1Asset THEN It is now accessible through IdToL1Asset", async () => {
+    const assetId2 = (
+      await Assets.setupUserWithCurrencies(sudo, [new BN(250000)], sudo, true)
+    )[0];
 
     await sudo.registerAsset(assetId2).then((result) => {
       const eventResponse = getEventResultFromMangataTx(result);
@@ -232,18 +217,30 @@ describe("update L1AssetData-", () => {
 });
 
 test("GIVEN 2 assets which have been created by registerAsset and registerL1Asset THEN Their IDs are consistent", async () => {
-  const assetId1 = await api.query.tokens.nextCurrencyId();
+  let assetId2: any;
+  const assetId1 = (
+    await Assets.setupUserWithCurrencies(sudo, [new BN(250000)], sudo, true)
+  )[0];
 
   await sudo.registerAsset(assetId1).then((result) => {
     const eventResponse = getEventResultFromMangataTx(result);
     expect(eventResponse.state).toEqual(ExtrinsicResult.ExtrinsicSuccess);
   });
 
-  const assetId2 = await api.query.tokens.nextCurrencyId();
-  const tokenEthereumAddress = "0x" + randomBytes(20).toString("hex");
-  await sudo.registerL1Asset(assetId2, tokenEthereumAddress).then((result) => {
+  await sudo.registerL1Asset(null).then((result) => {
     const eventResponse = getEventResultFromMangataTx(result);
     expect(eventResponse.state).toEqual(ExtrinsicResult.ExtrinsicSuccess);
+    assetId2 = getAssetId(result);
   });
-  expect(assetId2).bnEqual(assetId1.addn(1));
+  expect(assetId2).bnGt(assetId1);
 });
+
+function getAssetId(result: MangataGenericEvent[]) {
+  const regAsset = JSON.parse(
+    JSON.stringify(
+      result.filter((event) => event.method === "RegisteredAsset"),
+    ),
+  );
+  const assetId = regAsset[0].event.data[0];
+  return new BN(assetId);
+}

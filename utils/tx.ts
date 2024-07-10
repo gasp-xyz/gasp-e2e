@@ -989,13 +989,13 @@ export async function registerAsset(
 
 export async function registerL1Asset(
   sudoUser: User,
-  assetId: BN,
-  locMarker: BN,
+  assetId: any,
   l1AssetChain = "Ethereum",
   tokenAddress: string,
 ) {
   const api = getApi();
   let l1Asset: any;
+  let locMarker: string;
   if (l1AssetChain === "Ethereum") {
     l1Asset = {
       Ethereum: tokenAddress,
@@ -1005,14 +1005,19 @@ export async function registerL1Asset(
       Arbitrum: tokenAddress,
     };
   }
+  if (assetId === null) {
+    locMarker = "";
+  } else {
+    locMarker = assetId.toString();
+  }
   return await signTx(
     api,
     api.tx.sudo.sudo(
       api.tx.assetRegistry.registerL1Asset(
         {
           decimals: 18,
-          name: "TEST_TOKEN-" + locMarker.toString(),
-          symbol: "TEST" + locMarker.toString(),
+          name: "TEST_TOKEN-" + locMarker,
+          symbol: "TEST" + locMarker,
           existentialDeposit: 0,
         },
         //@ts-ignore
