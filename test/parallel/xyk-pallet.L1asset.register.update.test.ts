@@ -174,4 +174,75 @@ describe("update L1AssetData-", () => {
       expect(eventResponse.data).toEqual("RequireSudo");
     });
   });
+
+  test("GIVEN Update asset so that addresses match but chains are different from existing ones THEN Operation pass", async () => {
+    await sudo
+      .updateL1Asset(assetId, tokenAddressBefore, "Arbitrum")
+      .then((result) => {
+        const eventResponse = getEventResultFromMangataTx(result);
+        expect(eventResponse.state).toEqual(ExtrinsicResult.ExtrinsicSuccess);
+      });
+
+    idToL1Asset = JSON.parse(
+      JSON.stringify(await api.query.assetRegistry.idToL1Asset(assetId)),
+    );
+    expect(idToL1Asset.arbitrum).toEqual(tokenAddressBefore);
+  });
+
+  test("GIVEN Update asset so so that addresses & chain matches with some existing ones THEN Operation fail", async () => {
+    const assetId2 = await api.query.tokens.nextCurrencyId();
+
+    await sudo
+      .registerL1Asset(assetId2, tokenAddressAfter, "Arbitrum")
+      .then((result) => {
+        const eventResponse = getEventResultFromMangataTx(result);
+        expect(eventResponse.state).toEqual(ExtrinsicResult.ExtrinsicSuccess);
+      });
+
+    await sudo
+      .updateL1Asset(assetId, tokenAddressAfter, "Arbitrum")
+      .then(async (result) => {
+        const sudoEvent = await getEventErrorFromSudo(result);
+        expect(sudoEvent.state).toBe(ExtrinsicResult.ExtrinsicFailed);
+        expect(sudoEvent.data).toBe("ConflictingL1Asset");
+      });
+  });
+
+  test("GIVEN An asset created by registerL1Asset AND It has been updated by updateL1Asset THEN It is now accessible tru IdToL1Asset", async () => {
+    const assetId2 = await api.query.tokens.nextCurrencyId();
+
+    await sudo.registerAsset(assetId2).then((result) => {
+      const eventResponse = getEventResultFromMangataTx(result);
+      expect(eventResponse.state).toEqual(ExtrinsicResult.ExtrinsicSuccess);
+    });
+
+    await sudo
+      .updateL1Asset(assetId2, tokenAddressAfter, "Ethereum")
+      .then(async (result) => {
+        const eventResponse = getEventResultFromMangataTx(result);
+        expect(eventResponse.state).toEqual(ExtrinsicResult.ExtrinsicSuccess);
+      });
+
+    idToL1Asset = JSON.parse(
+      JSON.stringify(await api.query.assetRegistry.idToL1Asset(assetId2)),
+    );
+    expect(idToL1Asset.ethereum).toEqual(tokenAddressAfter);
+  });
+});
+
+test("GIVEN 2 assets which have been created by registerAsset and registerL1Asset THEN Their IDs are consistent", async () => {
+  const assetId1 = await api.query.tokens.nextCurrencyId();
+
+  await sudo.registerAsset(assetId1).then((result) => {
+    const eventResponse = getEventResultFromMangataTx(result);
+    expect(eventResponse.state).toEqual(ExtrinsicResult.ExtrinsicSuccess);
+  });
+
+  const assetId2 = await api.query.tokens.nextCurrencyId();
+  const tokenEthereumAddress = "0x" + randomBytes(20).toString("hex");
+  await sudo.registerL1Asset(assetId2, tokenEthereumAddress).then((result) => {
+    const eventResponse = getEventResultFromMangataTx(result);
+    expect(eventResponse.state).toEqual(ExtrinsicResult.ExtrinsicSuccess);
+  });
+  expect(assetId2).bnEqual(assetId1.addn(1));
 });
