@@ -40,7 +40,7 @@ async function depositAndWait(depositor: User, l1: L1Type = "EthAnvil") {
     account: acc,
     address: getL1(l1)?.contracts?.rollDown.address!,
     abi: abi as Abi,
-    functionName: "deposit_eth",
+    functionName: "deposit_native",
     value: BigInt(112233445566),
   });
   const wc = createWalletClient({

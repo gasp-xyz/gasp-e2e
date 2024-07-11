@@ -71,7 +71,7 @@ export class Rolldown {
 
   static async waitForReadRights(
     userAddress: string,
-    maxBlocks = 10,
+    maxBlocks = 61,
     chain: ChainName = "Ethereum",
   ) {
     while (maxBlocks-- > 0) {
