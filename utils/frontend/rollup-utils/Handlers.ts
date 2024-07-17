@@ -13,6 +13,8 @@ import {
   NotificationToast,
   ToastType,
 } from "../rollup-pages/NotificationToast";
+import { DepositModal } from "./DepositModal";
+import { WithdrawModal } from "../rollup-pages/WithdrawModal";
 
 export async function connectWallet(
   driver: WebDriver,
@@ -99,29 +101,25 @@ export async function waitForActionNotification(
   driver: WebDriver,
   transaction: TransactionType,
 ) {
-  const toast = new NotificationToast(driver);
-  await toast.waitForToastState(ToastType.Confirm, transaction, 10000);
-  const isModalWaitingForSignVisible = await toast.istoastVisible(
-    ToastType.Confirm,
-    transaction,
-  );
-  expect(isModalWaitingForSignVisible).toBeTruthy();
-
   switch (transaction) {
     case TransactionType.ApproveContract:
       await MetaMask.acceptContractInDifferentWindow(driver);
       break;
     case TransactionType.Deposit:
+      const depositModal = new DepositModal(driver);
+      await depositModal.waitForConfirmingVisible();
       await MetaMask.signDepositInDifferentWindow(driver);
+      await depositModal.waitForSuccessVisible();
       break;
     case TransactionType.Withdraw:
+      const withdrawModal = new WithdrawModal(driver);
+      await withdrawModal.waitForConfirmingVisible();
       await MetaMask.signWithdrawInDifferentWindow(driver);
+      await withdrawModal.waitForSuccessVisible();
       break;
     default:
       await MetaMask.signTransactionInDifferentWindow(driver);
   }
-
-  await toast.waitForToastState(ToastType.Success, transaction);
 }
 
 async function delayedNewBlock(chainName: ApiContext, delayMs: number) {

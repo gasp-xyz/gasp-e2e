@@ -14,7 +14,7 @@ import {
 
 //SELECTORS
 const WITHDRAW_MODAL_CONTENT = "withdrawal-modal-content";
-const BTN_CHAIN_SELECT = "chain-select-btn";
+const BTN_CHAIN_SELECT = "chain-selector";
 const CHAIN_SELECT_LIST = "chain-select-list";
 const BTN_SELECT_TOKEN = "tokenInput-selector-btn";
 const TOKEN_LIST = "tokenList";
@@ -25,6 +25,9 @@ const ORIGIN_FEE = "origin-fee";
 const DESTINATION_FEE = "destination-fee";
 const FEE_VALUE = "fee-value";
 const ERR_MESSAGE = "withdrawal-error-message";
+const CONFIRMING_BLOCKING = "withdraw-status-loading";
+const SUCCESS_MODAL = "transfer-success";
+const CLOSE_BUTTON = "close";
 
 export enum WithdrawActionType {
   Withdraw,
@@ -147,6 +150,21 @@ export class WithdrawModal {
     const xpath =
       buildDataTestIdXpath(WITHDRAW_MODAL_CONTENT) +
       buildXpathByElementText("button", this.withdrawAction[action]);
+    await clickElement(this.driver, xpath);
+  }
+
+  async waitForConfirmingVisible() {
+    const xpath = buildDataTestIdXpath(CONFIRMING_BLOCKING);
+    await waitForElementVisible(this.driver, xpath, 5000);
+  }
+
+  async waitForSuccessVisible() {
+    const xpath = buildDataTestIdXpath(SUCCESS_MODAL);
+    await waitForElementVisible(this.driver, xpath, 50000);
+  }
+
+  async closeSuccessModal() {
+    const xpath = buildDataTestIdXpath(CLOSE_BUTTON);
     await clickElement(this.driver, xpath);
   }
 }

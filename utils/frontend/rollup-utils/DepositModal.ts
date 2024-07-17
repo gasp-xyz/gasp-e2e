@@ -15,7 +15,7 @@ import {
 
 //SELECTORS
 const DEPOSIT_MODAL_CONTENT = "deposit-modal-content";
-const BTN_CHAIN_SELECT = "chain-select-btn";
+const BTN_CHAIN_SELECT = "chain-selector";
 const CHAIN_SELECT_LIST = "chain-select-list";
 const BTN_SELECT_TOKEN = "tokenInput-selector-btn";
 const TOKEN_LIST = "tokenList";
@@ -28,6 +28,9 @@ const FEE_VALUE = "fee-value";
 const ERR_MESSAGE = "deposit-error-message";
 const AMOUNT_FIELD = "AmountTooltip-anchor";
 const CLOSE_MODAL = "deposit-modal-close";
+const CONFIRMING_BLOCKING = "deposit-status-loading";
+const SUCCESS_MODAL = "transfer-success";
+const CLOSE_BUTTON = "close";
 
 export enum DepositActionType {
   Deposit,
@@ -140,6 +143,21 @@ export class DepositModal {
       isEnabled,
       timeout,
     );
+  }
+
+  async waitForConfirmingVisible() {
+    const xpath = buildDataTestIdXpath(CONFIRMING_BLOCKING);
+    await waitForElementVisible(this.driver, xpath, 5000);
+  }
+
+  async waitForSuccessVisible() {
+    const xpath = buildDataTestIdXpath(SUCCESS_MODAL);
+    await waitForElementVisible(this.driver, xpath, 15000);
+  }
+
+  async closeSuccessModal() {
+    const xpath = buildDataTestIdXpath(CLOSE_BUTTON);
+    await clickElement(this.driver, xpath);
   }
 
   async clickContinue() {
