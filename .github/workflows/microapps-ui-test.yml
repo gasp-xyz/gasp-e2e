@@ -25,7 +25,7 @@ jobs:
     runs-on: ubuntu-latest
 
     env:
-      API_URL: 'wss://collator-01-ws-rollup-dev.mangata.online'
+      API_URL: 'wss://collator-01-ws-rollup-frontend.gasp.xyz'
       TEST_SUDO_NAME: ${{ secrets.TEST_SUDO_NAME }}
       TEST_SCRIPT: 'test-gasp-ui'
       TEST_ENV_TAG: 'develop'
