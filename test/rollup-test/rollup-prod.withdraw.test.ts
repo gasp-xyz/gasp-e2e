@@ -34,7 +34,8 @@ let driver: WebDriver;
 
 let acc_addr = "";
 let acc_addr_short = "";
-const ASSET_NAME = "GASP";
+const ASSET_NAME = "GASPV2";
+const CHAIN_NAME = "Holesky";
 
 describe("Gasp Prod UI withdraw tests", () => {
   beforeAll(async () => {
@@ -65,7 +66,7 @@ describe("Gasp Prod UI withdraw tests", () => {
     let isDepositModalVisible = await depositModal.isModalVisible();
     expect(isDepositModalVisible).toBeTruthy();
     await depositModal.openChainList();
-    await depositModal.selectChain("Ethereum");
+    await depositModal.selectChain(CHAIN_NAME);
     await depositModal.openTokensList();
     await depositModal.waitForTokenListElementsVisible(ASSET_NAME);
     await depositModal.selectToken(ASSET_NAME);
@@ -78,7 +79,7 @@ describe("Gasp Prod UI withdraw tests", () => {
     expect(isModalVisible).toBeTruthy();
 
     await withdrawModal.openChainList();
-    await withdrawModal.selectChain("Ethereum");
+    await withdrawModal.selectChain(CHAIN_NAME);
     await withdrawModal.openTokensList();
     await withdrawModal.waitForTokenListElementsVisible(ASSET_NAME);
     await withdrawModal.selectToken(ASSET_NAME);
@@ -97,7 +98,9 @@ describe("Gasp Prod UI withdraw tests", () => {
 
     await withdrawModal.clickWithdrawButtonByText(WithdrawActionType.Withdraw);
     await waitForActionNotification(driver, TransactionType.Withdraw);
+    await withdrawModal.closeSuccessModal();
 
+    await walletWrapper.waitTokenAmountChange(ASSET_NAME, tokensAmountBefore);
     const tokensAmountAfter =
       await walletWrapper.getMyTokensRowAmount(ASSET_NAME);
     expect(await uiStringToNumber(tokensAmountAfter)).toBeLessThan(
@@ -108,7 +111,7 @@ describe("Gasp Prod UI withdraw tests", () => {
     isDepositModalVisible = await depositModal.isModalVisible();
     expect(isDepositModalVisible).toBeTruthy();
     await depositModal.openChainList();
-    await depositModal.selectChain("Ethereum");
+    await depositModal.selectChain(CHAIN_NAME);
     await depositModal.openTokensList();
     await depositModal.waitForTokenListElementsVisible(ASSET_NAME);
     await depositModal.selectToken(ASSET_NAME);

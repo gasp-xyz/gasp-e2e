@@ -21,7 +21,7 @@ const BUTTON_WALLET_SETTINGS = "wallet-wrapper-header-settings";
 const MY_TOKENS = "my-tokens";
 const MY_POSITIONS = "my-positions";
 const MY_TOKENS_TAB_BUTTON = "My-Tokens-item";
-const MY_TOKENS_ROW_AMOUNT = "AmountTooltip-anchor";
+const MY_TOKENS_ROW_AMOUNT = "token-amount";
 const MY_POSITIONS_TAB_BUTTON = "My-Positions-item";
 const MY_TOKENS_FIAT_VALUE = "fiat-value";
 

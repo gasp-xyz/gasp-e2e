@@ -33,7 +33,7 @@ let driver: WebDriver;
 
 let acc_addr = "";
 let acc_addr_short = "";
-const GETH_ASSET_NAME = "GETH";
+const ETH_ASSET_NAME = "ETH";
 
 describe("Gasp Prod UI deposit tests", () => {
   beforeAll(async () => {
@@ -51,26 +51,26 @@ describe("Gasp Prod UI deposit tests", () => {
     await connectWallet(driver, "Metamask", acc_addr_short);
   });
 
-  test("User can deposit GETH", async () => {
+  test("User can deposit ETH", async () => {
     await setupPageWithState(driver, acc_addr_short);
 
     const walletWrapper = new WalletWrapper(driver);
     await walletWrapper.openWalletConnectionInfo();
     const tokensAmountBefore =
-      await walletWrapper.getMyTokensRowAmount(GETH_ASSET_NAME);
+      await walletWrapper.getMyTokensRowAmount(ETH_ASSET_NAME);
     await walletWrapper.openDeposit();
     const depositModal = new DepositModal(driver);
     const isModalVisible = await depositModal.isModalVisible();
     expect(isModalVisible).toBeTruthy();
 
     await depositModal.openChainList();
-    await depositModal.selectChain("Ethereum");
+    await depositModal.selectChain("Holesky");
     await depositModal.openTokensList();
-    await depositModal.waitForTokenListElementsVisible(GETH_ASSET_NAME);
-    await depositModal.selectToken(GETH_ASSET_NAME);
+    await depositModal.waitForTokenListElementsVisible(ETH_ASSET_NAME);
+    await depositModal.selectToken(ETH_ASSET_NAME);
 
     const randomNum = Math.floor(Math.random() * 99) + 1;
-    await depositModal.enterValue("1." + randomNum.toString());
+    await depositModal.enterValue("0.001" + randomNum.toString());
 
     await depositModal.waitForContinueState(true, 60000);
     const isOriginFeeDisplayed = await depositModal.isOriginFeeDisplayed();
@@ -82,19 +82,19 @@ describe("Gasp Prod UI deposit tests", () => {
     await depositModal.clickDepositButtonByText(DepositActionType.Network);
     await acceptNetworkSwitchInNewWindow(driver);
 
-    await depositModal.clickDepositButtonByText(DepositActionType.Approve);
-    await waitForActionNotification(driver, TransactionType.ApproveContract);
+    // await depositModal.clickDepositButtonByText(DepositActionType.Approve);
+    // await waitForActionNotification(driver, TransactionType.ApproveContract);
 
     await depositModal.clickDepositButtonByText(DepositActionType.Deposit);
     await waitForActionNotification(driver, TransactionType.Deposit);
-    await depositModal.clickDepositButtonByText(DepositActionType.Done);
+    await depositModal.closeSuccessModal();
 
     await walletWrapper.waitTokenAmountChange(
-      GETH_ASSET_NAME,
+      ETH_ASSET_NAME,
       tokensAmountBefore,
     );
     const tokensAmountAfter =
-      await walletWrapper.getMyTokensRowAmount(GETH_ASSET_NAME);
+      await walletWrapper.getMyTokensRowAmount(ETH_ASSET_NAME);
     expect(await uiStringToNumber(tokensAmountAfter)).toBeGreaterThan(
       await uiStringToNumber(tokensAmountBefore),
     );
