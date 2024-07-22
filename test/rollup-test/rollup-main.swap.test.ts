@@ -195,9 +195,6 @@ describe("Gasp UI swap tests", () => {
     const isSwapEnabled = await swap.isSwapButtonEnabled();
     expect(isSwapEnabled).toBeTruthy();
 
-    await swap.clickSwapButtonByAction(SwapActionType.Network);
-    await acceptNetworkSwitchInNewWindow(driver);
-
     await swap.clickSwapButtonByAction(SwapActionType.Swap);
     await waitForActionNotification(driver, TransactionType.Swap);
   });
