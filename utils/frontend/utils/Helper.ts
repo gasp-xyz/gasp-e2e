@@ -694,6 +694,10 @@ export function buildXpathByText(text: string) {
   return `//*[contains(., "${text}")]`;
 }
 
+export function buildXpathByMultiText(texts: string[]) {
+  return `//*[${texts.map((text) => `contains(., "${text}")`).join(" and ")}]`;
+}
+
 export function buildXpathByElementText(element: string, text: string) {
   return `//${element}[contains(., "${text}")]`;
 }

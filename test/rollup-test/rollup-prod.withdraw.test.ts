@@ -35,6 +35,7 @@ let driver: WebDriver;
 let acc_addr = "";
 let acc_addr_short = "";
 const ASSET_NAME = "GASPV2";
+const NATIVE_ORIGIN = "Native";
 const CHAIN_NAME = "Holesky";
 
 describe("Gasp Prod UI withdraw tests", () => {
@@ -100,7 +101,11 @@ describe("Gasp Prod UI withdraw tests", () => {
     await waitForActionNotification(driver, TransactionType.Withdraw);
     await withdrawModal.closeSuccessModal();
 
-    await walletWrapper.waitTokenAmountChange(ASSET_NAME, tokensAmountBefore);
+    await walletWrapper.waitTokenAmountChange(
+      ASSET_NAME,
+      tokensAmountBefore,
+      NATIVE_ORIGIN,
+    );
     const tokensAmountAfter =
       await walletWrapper.getMyTokensRowAmount(ASSET_NAME);
     expect(await uiStringToNumber(tokensAmountAfter)).toBeLessThan(

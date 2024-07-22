@@ -32,7 +32,8 @@ let driver: WebDriver;
 
 let acc_addr = "";
 let acc_addr_short = "";
-const GETH_ASSET_NAME = "GETH";
+const ETH_ASSET_NAME = "ETH";
+const CHAIN_NAME = "Holesky";
 
 describe("Gasp UI deposit tests", () => {
   beforeAll(async () => {
@@ -50,7 +51,7 @@ describe("Gasp UI deposit tests", () => {
     await connectWallet(driver, "Metamask", acc_addr_short);
   });
 
-  test("User can deposit GETH", async () => {
+  test("User can deposit ETH", async () => {
     await setupPageWithState(driver, acc_addr_short);
 
     const walletWrapper = new WalletWrapper(driver);
@@ -61,10 +62,10 @@ describe("Gasp UI deposit tests", () => {
     expect(isModalVisible).toBeTruthy();
 
     await depositModal.openChainList();
-    await depositModal.selectChain("Ethereum");
+    await depositModal.selectChain(CHAIN_NAME);
     await depositModal.openTokensList();
-    await depositModal.waitForTokenListElementsVisible(GETH_ASSET_NAME);
-    await depositModal.selectToken(GETH_ASSET_NAME);
+    await depositModal.waitForTokenListElementsVisible(ETH_ASSET_NAME);
+    await depositModal.selectToken(ETH_ASSET_NAME);
 
     const randomNum = Math.floor(Math.random() * 99) + 1;
     await depositModal.enterValue("1." + randomNum.toString());
@@ -79,8 +80,8 @@ describe("Gasp UI deposit tests", () => {
     await depositModal.clickDepositButtonByText(DepositActionType.Network);
     await acceptNetworkSwitchInNewWindow(driver);
 
-    await depositModal.clickDepositButtonByText(DepositActionType.Approve);
-    await waitForActionNotification(driver, TransactionType.ApproveContract);
+    // await depositModal.clickDepositButtonByText(DepositActionType.Approve);
+    // await waitForActionNotification(driver, TransactionType.ApproveContract);
 
     await depositModal.clickDepositButtonByText(DepositActionType.Deposit);
     await waitForActionNotification(driver, TransactionType.Deposit);

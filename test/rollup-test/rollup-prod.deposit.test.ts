@@ -34,6 +34,7 @@ let driver: WebDriver;
 let acc_addr = "";
 let acc_addr_short = "";
 const ETH_ASSET_NAME = "ETH";
+const ETH_ORIGIN = "Ethereum";
 
 describe("Gasp Prod UI deposit tests", () => {
   beforeAll(async () => {
@@ -56,8 +57,10 @@ describe("Gasp Prod UI deposit tests", () => {
 
     const walletWrapper = new WalletWrapper(driver);
     await walletWrapper.openWalletConnectionInfo();
-    const tokensAmountBefore =
-      await walletWrapper.getMyTokensRowAmount(ETH_ASSET_NAME);
+    const tokensAmountBefore = await walletWrapper.getMyTokensRowAmount(
+      ETH_ASSET_NAME,
+      ETH_ORIGIN,
+    );
     await walletWrapper.openDeposit();
     const depositModal = new DepositModal(driver);
     const isModalVisible = await depositModal.isModalVisible();
@@ -92,9 +95,12 @@ describe("Gasp Prod UI deposit tests", () => {
     await walletWrapper.waitTokenAmountChange(
       ETH_ASSET_NAME,
       tokensAmountBefore,
+      ETH_ORIGIN,
     );
-    const tokensAmountAfter =
-      await walletWrapper.getMyTokensRowAmount(ETH_ASSET_NAME);
+    const tokensAmountAfter = await walletWrapper.getMyTokensRowAmount(
+      ETH_ASSET_NAME,
+      ETH_ORIGIN,
+    );
     expect(await uiStringToNumber(tokensAmountAfter)).toBeGreaterThan(
       await uiStringToNumber(tokensAmountBefore),
     );

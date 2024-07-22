@@ -3,6 +3,7 @@ import { FIVE_MIN } from "../../Constants";
 import {
   buildDataTestIdXpath,
   buildXpathByElementText,
+  buildXpathByMultiText,
   buildXpathByText,
   clickElement,
   elementExists,
@@ -110,18 +111,20 @@ export class WalletWrapper {
     return await isDisplayed(this.driver, tokenRow);
   }
 
-  async getMyTokensRowAmount(tokenName: string) {
+  async getMyTokensRowAmount(tokenName: string, origin = "Native") {
     const tokenRowAmount =
       buildDataTestIdXpath(MY_TOKENS) +
-      buildXpathByText(tokenName) +
+      buildXpathByMultiText([tokenName, origin]) +
       buildDataTestIdXpath(MY_TOKENS_ROW_AMOUNT);
     await waitForElementVisible(this.driver, tokenRowAmount);
-    return await getText(this.driver, tokenRowAmount);
+    const amount = await getText(this.driver, tokenRowAmount);
+    return amount.split(",").join("");
   }
 
   async waitTokenAmountChange(
     tokenName: string,
     initValue: string,
+    tokenOrigin = "Native",
     timeout = FIVE_MIN,
   ) {
     const startTime = Date.now();
@@ -129,7 +132,10 @@ export class WalletWrapper {
 
     while (Date.now() < endTime) {
       try {
-        const tokenAmount = await this.getMyTokensRowAmount(tokenName);
+        const tokenAmount = await this.getMyTokensRowAmount(
+          tokenName,
+          tokenOrigin,
+        );
         if (tokenAmount !== initValue) {
           return;
         }
