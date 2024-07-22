@@ -9,7 +9,7 @@ export class BalanceWarningModal {
   }
 
   async displayed() {
-    const xpath = buildXpathByText("Warning! Low GASP Balance");
+    const xpath = buildXpathByText("Warning! Low GASPV2 Balance");
     return await isDisplayed(this.driver, xpath);
   }
 }

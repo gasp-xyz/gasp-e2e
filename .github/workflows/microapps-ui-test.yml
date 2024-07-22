@@ -25,7 +25,7 @@ jobs:
     runs-on: ubuntu-latest
 
     env:
-      API_URL: 'wss://collator-01-ws-rollup-dev.mangata.online'
+      API_URL: 'wss://collator-01-ws-rollup-frontend.gasp.xyz'
       TEST_SUDO_NAME: ${{ secrets.TEST_SUDO_NAME }}
       TEST_SCRIPT: 'test-gasp-ui'
       TEST_ENV_TAG: 'develop'
@@ -68,12 +68,12 @@ jobs:
       - name: Set Configuration - testnet
         if: contains(github.event.client_payload.environment, 'testnet') || contains(github.event.inputs.environment, 'testnet')
         run:  |
-          echo 'API_URL=wss://collator-01-ws-rollup-testnet.mangata.online' >> $GITHUB_ENV
+          echo 'API_URL=wss://collator-01-ws-rollup-holesky.gasp.xyz' >> $GITHUB_ENV
   
       - name: Set Configuration - Develop
         if: contains(github.event.client_payload.environment, 'develop') || contains(github.event.inputs.environment, 'develop')
         run:  |
-          echo 'API_URL=wss://collator-01-ws-rollup-dev.mangata.online' >> $GITHUB_ENV
+          echo 'API_URL=wss://collator-01-ws-rollup-frontend.gasp.xyz' >> $GITHUB_ENV
           echo 'TEST_SUDO_NAME=${{ secrets.DEV_SUDO_NAME }}' >> $GITHUB_ENV
   
       - uses: actions/checkout@v3

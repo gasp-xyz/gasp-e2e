@@ -32,7 +32,8 @@ let driver: WebDriver;
 
 let acc_addr = "";
 let acc_addr_short = "";
-const GETH_ASSET_NAME = "GETH";
+const ETH_ASSET_NAME = "ETH";
+const CHAIN_NAME = "Holesky";
 
 describe("Gasp UI withdraw tests", () => {
   beforeAll(async () => {
@@ -50,7 +51,7 @@ describe("Gasp UI withdraw tests", () => {
     await connectWallet(driver, "Metamask", acc_addr_short);
   });
 
-  test("User can withdraw GETH", async () => {
+  test("User can withdraw ETH", async () => {
     await setupPageWithState(driver, acc_addr_short);
 
     const walletWrapper = new WalletWrapper(driver);
@@ -61,10 +62,10 @@ describe("Gasp UI withdraw tests", () => {
     expect(isModalVisible).toBeTruthy();
 
     await withdrawModal.openChainList();
-    await withdrawModal.selectChain("Ethereum");
+    await withdrawModal.selectChain(CHAIN_NAME);
     await withdrawModal.openTokensList();
-    await withdrawModal.waitForTokenListElementsVisible(GETH_ASSET_NAME);
-    await withdrawModal.selectToken(GETH_ASSET_NAME);
+    await withdrawModal.waitForTokenListElementsVisible(ETH_ASSET_NAME);
+    await withdrawModal.selectToken(ETH_ASSET_NAME);
     await withdrawModal.enterValue("1");
 
     await withdrawModal.waitForContinueState(true, 60000);

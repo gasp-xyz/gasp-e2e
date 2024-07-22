@@ -3,7 +3,7 @@ import {
   areDisplayed,
   buildDataTestIdXpath,
   buildXpathByElementText,
-  buildXpathByText,
+  buildXpathByMultiText,
   clickElement,
   getAttribute,
   getText,
@@ -80,7 +80,7 @@ export class Swap {
     return await isDisplayed(this.driver, firstTokenSelector);
   }
 
-  async pickPayToken(tokenName: string) {
+  async pickPayToken(tokenName: string, origin = "Native") {
     const selectFirstToken = buildDataTestIdXpath(BTN_SELECT_FIRST_TOKEN);
     await clickElement(this.driver, selectFirstToken);
     const firstTokenSelector = buildDataTestIdXpath(
@@ -89,13 +89,15 @@ export class Swap {
     await waitForElement(this.driver, firstTokenSelector);
     const firstTokenSelectorButton =
       buildDataTestIdXpath(DIV_TOKEN_SELECTOR_ITEM) +
-      buildXpathByText(tokenName);
+      buildXpathByMultiText([tokenName, origin]);
     await scrollIntoView(this.driver, firstTokenSelectorButton);
     await clickElement(this.driver, firstTokenSelectorButton);
   }
 
   async fetchPayTokenName() {
-    const tokenSelector = buildDataTestIdXpath(BTN_SELECT_FIRST_TOKEN);
+    const tokenSelector =
+      buildDataTestIdXpath(BTN_SELECT_FIRST_TOKEN) +
+      "//*[contains(@class, 'font-normal')]";
     return await getText(this.driver, tokenSelector);
   }
 
@@ -117,7 +119,9 @@ export class Swap {
   }
 
   async fetchGetTokenName() {
-    const tokenSelector = buildDataTestIdXpath(BTN_SELECT_SECOND_TOKEN);
+    const tokenSelector =
+      buildDataTestIdXpath(BTN_SELECT_SECOND_TOKEN) +
+      "//*[contains(@class, 'font-normal')]";
     return await getText(this.driver, tokenSelector);
   }
 
@@ -165,7 +169,7 @@ export class Swap {
     await clickElement(this.driver, xpath);
   }
 
-  async pickGetToken(tokenName: string) {
+  async pickGetToken(tokenName: string, origin = "Native") {
     const selectSecondToken = buildDataTestIdXpath(BTN_SELECT_SECOND_TOKEN);
     await clickElement(this.driver, selectSecondToken);
     const secondTokenSelector = buildDataTestIdXpath(
@@ -174,7 +178,7 @@ export class Swap {
     await waitForElement(this.driver, secondTokenSelector);
     const secondTokenSelectorButton =
       buildDataTestIdXpath(DIV_TOKEN_SELECTOR_ITEM) +
-      buildXpathByText(tokenName);
+      buildXpathByMultiText([tokenName, origin]);
     await scrollIntoView(this.driver, secondTokenSelectorButton);
     await clickElement(this.driver, secondTokenSelectorButton);
   }
