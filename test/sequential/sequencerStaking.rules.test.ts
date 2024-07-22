@@ -163,8 +163,9 @@ describe("sequencerStaking", () => {
         }
       }
     }
-    if(anysequencerGone)
+    if (anysequencerGone) {
       await waitForNBlocks(10);
+    }
   });
 
   it("An already collator joining as sequencer - On Active", async () => {
