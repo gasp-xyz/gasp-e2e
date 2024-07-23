@@ -11,16 +11,13 @@ import { L2Update, Rolldown } from "../../utils/rollDown/Rolldown";
 import { BN_MILLION, signTx } from "gasp-sdk";
 import { getApi, initApi } from "../../utils/api";
 import { setupApi, setupUsers } from "../../utils/setup";
-import {
-  expectExtrinsicFail,
-  expectExtrinsicSucceed,
-  waitForNBlocks,
-} from "../../utils/utils";
-import { User } from "../../utils/User";
+import { expectExtrinsicSucceed, waitForNBlocks } from "../../utils/utils";
+import { AssetWallet, User } from "../../utils/User";
 import { Sudo } from "../../utils/sudo";
 import { waitSudoOperationSuccess } from "../../utils/eventListeners";
 import { Assets } from "../../utils/Assets";
 import { BN_ZERO } from "@polkadot/util";
+import { MGA_ASSET_ID } from "../../utils/Constants";
 
 async function createACollatorUser() {
   const [user] = setupUsers();
@@ -58,6 +55,7 @@ async function createAnUpdateAndCancelIt(
   seq: User,
   canceler: string,
   chain: ChainName = "Ethereum",
+  cancellation: boolean = true,
 ) {
   const address = seq.keyRingPair.address;
   await Rolldown.waitForReadRights(address, 50, chain);
@@ -74,14 +72,23 @@ async function createAnUpdateAndCancelIt(
     await waitSudoOperationSuccess(events, "SudoAsDone");
     reqId = Rolldown.getRequestIdFromEvents(events);
   });
-  const cancel = await Sudo.asSudoFinalized(
-    Sudo.sudoAsWithAddressString(
-      canceler,
-      await Rolldown.cancelRequestFromL1(chain, reqId),
-    ),
-  );
-  await waitSudoOperationSuccess(cancel, "SudoAsDone");
-  const reqIdCanceled = Rolldown.getRequestIdFromCancelEvent(cancel);
+  //const disputePeriodStartBlock = await getBlockNumber();
+  let reqIdCanceled: number = 0;
+  if (cancellation === true) {
+    const cancel = await Sudo.asSudoFinalized(
+      Sudo.sudoAsWithAddressString(
+        canceler,
+        await Rolldown.cancelRequestFromL1(chain, reqId),
+      ),
+    );
+    await waitSudoOperationSuccess(cancel, "SudoAsDone");
+    reqIdCanceled = Rolldown.getRequestIdFromCancelEvent(cancel);
+  }
+  //const disputePeriodEndBlock = (
+  // disputePeriodStartBlock + (await Rolldown.disputePeriodLength()).toNumber()
+  //).toString();
+  //await waitBlockNumber(disputePeriodEndBlock, 10);
+  //await waitForNBlocks((await Rolldown.disputePeriodLength()).toNumber() * 2);
   return { txIndex, api, reqId, reqIdCanceled };
 }
 
@@ -128,98 +135,116 @@ beforeEach(async () => {
   }
 });
 
-it("GIVEN a sequencer, WHEN <correctly> canceling an update THEN a % of the slash is given to it.", async () => {
-  const chain = "Ethereum";
-  const notYetSequencer = await createACollatorUser();
-  const canceler = await createACollatorUser();
-  const cancelerAddress = canceler.ethAddress.toString();
-  const minToBeSequencer = await SequencerStaking.minimalStakeAmount();
-  await signTx(
-    await getApi(),
-    await SequencerStaking.provideSequencerStaking(
-      minToBeSequencer.addn(1000),
-      "Ethereum",
-    ),
-    notYetSequencer.keyRingPair,
-  ).then((events) => {
-    expectExtrinsicSucceed(events);
+describe("Update cancellation -", () => {
+  let chain: any;
+  let seq: User;
+  let canceler: User;
+  beforeEach(async () => {
+    chain = "Ethereum";
+    const notYetSequencer = await createACollatorUser();
+    canceler = await createACollatorUser();
+    const minToBeSequencer = await SequencerStaking.minimalStakeAmount();
+    await signTx(
+      await getApi(),
+      await SequencerStaking.provideSequencerStaking(
+        minToBeSequencer.addn(1000),
+        "Ethereum",
+      ),
+      notYetSequencer.keyRingPair,
+    ).then((events) => {
+      expectExtrinsicSucceed(events);
+    });
+    const sequencers = await SequencerStaking.activeSequencers();
+    expect(sequencers.toHuman().Ethereum).toContain(
+      notYetSequencer.keyRingPair.address,
+    );
+    await signTx(
+      await getApi(),
+      await SequencerStaking.provideSequencerStaking(
+        minToBeSequencer.addn(1000),
+        "Ethereum",
+      ),
+      canceler.keyRingPair,
+    ).then((events) => {
+      expectExtrinsicSucceed(events);
+    });
+    seq = notYetSequencer;
+    seq.addAsset(MGA_ASSET_ID);
+    canceler.addAsset(MGA_ASSET_ID);
   });
-  const sequencers = await SequencerStaking.activeSequencers();
-  expect(sequencers.toHuman().Ethereum).toContain(
-    notYetSequencer.keyRingPair.address,
-  );
-  await signTx(
-    await getApi(),
-    await SequencerStaking.provideSequencerStaking(
-      minToBeSequencer.addn(1000),
-      "Ethereum",
-    ),
-    canceler.keyRingPair,
-  ).then((events) => {
-    expectExtrinsicSucceed(events);
-  });
-  const seq = notYetSequencer;
-  const { reqIdCanceled, api } = await createAnUpdateAndCancelIt(
-    seq,
-    cancelerAddress,
-    chain,
-  );
-  await signTx(
-    api,
-    await SequencerStaking.leaveSequencerStaking("Ethereum"),
-    seq.keyRingPair,
-  ).then((events) => {
-    expectExtrinsicSucceed(events);
-  });
-  await signTx(
-    api,
-    await SequencerStaking.unstake("Ethereum"),
-    seq.keyRingPair,
-  ).then((events) => {
-    const res = expectExtrinsicFail(events);
-    expect(res.data.toString()).toContain("SequencerAwaitingCancelResolution");
-  });
-  await waitForNBlocks((await Rolldown.disputePeriodLength()).toNumber());
-  await Rolldown.waitForReadRights(cancelerAddress, 50, "Ethereum");
-  const txIndex = await Rolldown.lastProcessedRequestOnL2(chain);
-
-  //we approve the cancellation
-  const cancelResolutionEvents = await Sudo.asSudoFinalized(
-    Sudo.sudoAsWithAddressString(
+  it("GIVEN a sequencer, WHEN <correctly> canceling an update THEN a % of the slash is given to it.", async () => {
+    const cancelerAddress = canceler.ethAddress.toString();
+    const { reqIdCanceled, api } = await createAnUpdateAndCancelIt(
+      seq,
       cancelerAddress,
-      new L2Update(api)
-        .withCancelResolution(txIndex, reqIdCanceled, true)
-        .on("Ethereum")
-        .build(),
-    ),
-  );
-  await waitSudoOperationSuccess(cancelResolutionEvents, "SudoAsDone");
-  await waitForNBlocks((await Rolldown.disputePeriodLength()).toNumber());
+      chain,
+    );
+    await waitForNBlocks((await Rolldown.disputePeriodLength()).toNumber());
+    await Rolldown.waitForReadRights(cancelerAddress, 50, "Ethereum");
+    const txIndex = await Rolldown.lastProcessedRequestOnL2(chain);
+    //we approve the cancellation
+    const cancelResolutionEvents = await Sudo.asSudoFinalized(
+      Sudo.sudoAsWithAddressString(
+        cancelerAddress,
+        new L2Update(api)
+          .withCancelResolution(txIndex, reqIdCanceled, true)
+          .on("Ethereum")
+          .build(),
+      ),
+    );
+    await waitSudoOperationSuccess(cancelResolutionEvents, "SudoAsDone");
+    await canceler.refreshAmounts(AssetWallet.BEFORE);
+    await seq.refreshAmounts(AssetWallet.BEFORE);
+    await waitForNBlocks((await Rolldown.disputePeriodLength()).toNumber());
+    await canceler.refreshAmounts(AssetWallet.AFTER);
+    await seq.refreshAmounts(AssetWallet.AFTER);
+    const slashRewardCanceler = canceler
+      .getAsset(MGA_ASSET_ID)
+      ?.amountAfter.free!.sub(
+        canceler.getAsset(MGA_ASSET_ID)?.amountBefore.free!,
+      );
+    const slashRewardUpdater = seq
+      .getAsset(MGA_ASSET_ID)
+      ?.amountAfter.free!.sub(seq.getAsset(MGA_ASSET_ID)?.amountBefore.free!);
+    expect(slashRewardCanceler).bnGt(BN_ZERO);
+    expect(slashRewardUpdater).bnEqual(BN_ZERO);
+  });
 
-  //then the user must be able to unstake and leave
-  let res: any;
-  await signTx(
-    api,
-    await SequencerStaking.unstake("Ethereum"),
-    seq.keyRingPair,
-  ).then((events) => {
-    expectExtrinsicSucceed(events);
+  it("GIVEN a sequencer, WHEN <in-correctly> canceling an update THEN my slash is burned.", async () => {
+    const cancelerAddress = canceler.ethAddress.toString();
+    const { reqIdCanceled, api } = await createAnUpdateAndCancelIt(
+      seq,
+      cancelerAddress,
+      chain,
+    );
+    await waitForNBlocks((await Rolldown.disputePeriodLength()).toNumber());
+    await Rolldown.waitForReadRights(cancelerAddress, 50, "Ethereum");
+    const txIndex = await Rolldown.lastProcessedRequestOnL2(chain);
+    //we approve the cancellation
+    const cancelResolutionEvents = await Sudo.asSudoFinalized(
+      Sudo.sudoAsWithAddressString(
+        cancelerAddress,
+        new L2Update(api)
+          .withCancelResolution(txIndex, reqIdCanceled, false)
+          .on("Ethereum")
+          .build(),
+      ),
+    );
+    await waitSudoOperationSuccess(cancelResolutionEvents, "SudoAsDone");
+    await canceler.refreshAmounts(AssetWallet.BEFORE);
+    await seq.refreshAmounts(AssetWallet.BEFORE);
+    await waitForNBlocks((await Rolldown.disputePeriodLength()).toNumber());
+    await canceler.refreshAmounts(AssetWallet.AFTER);
+    await seq.refreshAmounts(AssetWallet.AFTER);
+    const slashRewardCanceler = canceler
+      .getAsset(MGA_ASSET_ID)
+      ?.amountAfter.free!.sub(
+        canceler.getAsset(MGA_ASSET_ID)?.amountBefore.free!,
+      );
+    const slashRewardUpdater = seq
+      .getAsset(MGA_ASSET_ID)
+      ?.amountAfter.free!.sub(seq.getAsset(MGA_ASSET_ID)?.amountBefore.free!);
+    expect(slashRewardCanceler).bnEqual(BN_ZERO);
+    expect(slashRewardUpdater).bnEqual(BN_ZERO);
   });
-  res = await SequencerStaking.sequencerStake(
-    seq.keyRingPair.address,
-    "Ethereum",
-  );
-  expect(res.toHuman()).toBe("0");
-  await signTx(
-    api,
-    await SequencerStaking.unstake("Ethereum"),
-    canceler.keyRingPair,
-  ).then((events) => {
-    expectExtrinsicSucceed(events);
-  });
-  res = await SequencerStaking.sequencerStake(
-    canceler.keyRingPair.address,
-    "Ethereum",
-  );
-  expect(res.toHuman()).toBe("0");
 });
