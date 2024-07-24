@@ -14,7 +14,10 @@ import { setupApi, setupUsers } from "../../utils/setup";
 import { expectExtrinsicSucceed, waitForNBlocks } from "../../utils/utils";
 import { AssetWallet, User } from "../../utils/User";
 import { Sudo } from "../../utils/sudo";
-import { waitSudoOperationSuccess } from "../../utils/eventListeners";
+import {
+  waitSudoOperationFail,
+  waitSudoOperationSuccess,
+} from "../../utils/eventListeners";
 import { Assets } from "../../utils/Assets";
 import { BN_ZERO } from "@polkadot/util";
 import { MGA_ASSET_ID } from "../../utils/Constants";
@@ -139,6 +142,7 @@ describe("Update cancellation -", () => {
   let chain: any;
   let seq: User;
   let canceler: User;
+  let cancelerAddress: string;
   beforeEach(async () => {
     chain = "Ethereum";
     const notYetSequencer = await createACollatorUser();
@@ -169,11 +173,11 @@ describe("Update cancellation -", () => {
       expectExtrinsicSucceed(events);
     });
     seq = notYetSequencer;
+    cancelerAddress = canceler.ethAddress.toString();
     seq.addAsset(MGA_ASSET_ID);
     canceler.addAsset(MGA_ASSET_ID);
   });
-  it("GIVEN a sequencer, WHEN <correctly> canceling an update THEN a % of the slash is given to it.", async () => {
-    const cancelerAddress = canceler.ethAddress.toString();
+  it("GIVEN a sequencer, WHEN <correctly> canceling an update THEN a % of the slash is given to it", async () => {
     const { reqIdCanceled, api } = await createAnUpdateAndCancelIt(
       seq,
       cancelerAddress,
@@ -203,15 +207,17 @@ describe("Update cancellation -", () => {
       ?.amountAfter.free!.sub(
         canceler.getAsset(MGA_ASSET_ID)?.amountBefore.free!,
       );
-    const slashRewardUpdater = seq
+    const slashFineUpdater = seq
       .getAsset(MGA_ASSET_ID)
-      ?.amountAfter.free!.sub(seq.getAsset(MGA_ASSET_ID)?.amountBefore.free!);
+      ?.amountBefore.reserved!.sub(
+        seq.getAsset(MGA_ASSET_ID)?.amountAfter.reserved!,
+      );
     expect(slashRewardCanceler).bnGt(BN_ZERO);
-    expect(slashRewardUpdater).bnEqual(BN_ZERO);
+    expect(slashRewardCanceler).bnLt(await SequencerStaking.slashFineAmount());
+    expect(slashFineUpdater).bnEqual(await SequencerStaking.slashFineAmount());
   });
 
-  it("GIVEN a sequencer, WHEN <in-correctly> canceling an update THEN my slash is burned.", async () => {
-    const cancelerAddress = canceler.ethAddress.toString();
+  it("GIVEN a sequencer, WHEN <in-correctly> canceling an update THEN my slash is burned", async () => {
     const { reqIdCanceled, api } = await createAnUpdateAndCancelIt(
       seq,
       cancelerAddress,
@@ -236,15 +242,86 @@ describe("Update cancellation -", () => {
     await waitForNBlocks((await Rolldown.disputePeriodLength()).toNumber());
     await canceler.refreshAmounts(AssetWallet.AFTER);
     await seq.refreshAmounts(AssetWallet.AFTER);
-    const slashRewardCanceler = canceler
-      .getAsset(MGA_ASSET_ID)
-      ?.amountAfter.free!.sub(
-        canceler.getAsset(MGA_ASSET_ID)?.amountBefore.free!,
-      );
     const slashRewardUpdater = seq
       .getAsset(MGA_ASSET_ID)
       ?.amountAfter.free!.sub(seq.getAsset(MGA_ASSET_ID)?.amountBefore.free!);
-    expect(slashRewardCanceler).bnEqual(BN_ZERO);
+    const slashFineCanceler = canceler
+      .getAsset(MGA_ASSET_ID)
+      ?.amountBefore.reserved!.sub(
+        canceler.getAsset(MGA_ASSET_ID)?.amountAfter.reserved!,
+      );
     expect(slashRewardUpdater).bnEqual(BN_ZERO);
+    expect(slashFineCanceler).bnEqual(await SequencerStaking.slashFineAmount());
+  });
+
+  it("GIVEN a sequencer, WHEN <no> canceling an update THEN no slash is applied", async () => {
+    await canceler.refreshAmounts(AssetWallet.BEFORE);
+    await seq.refreshAmounts(AssetWallet.BEFORE);
+    await createAnUpdateAndCancelIt(seq, cancelerAddress, chain, false);
+    await waitForNBlocks((await Rolldown.disputePeriodLength()).toNumber());
+    await canceler.refreshAmounts(AssetWallet.AFTER);
+    await seq.refreshAmounts(AssetWallet.AFTER);
+    const slashRewardUpdater = seq
+      .getAsset(MGA_ASSET_ID)
+      ?.amountAfter.free!.sub(seq.getAsset(MGA_ASSET_ID)?.amountBefore.free!);
+    const slashFineUpdater = seq
+      .getAsset(MGA_ASSET_ID)
+      ?.amountBefore.reserved!.sub(
+        seq.getAsset(MGA_ASSET_ID)?.amountAfter.reserved!,
+      );
+    expect(slashRewardUpdater).bnEqual(BN_ZERO);
+    expect(slashFineUpdater).bnEqual(BN_ZERO);
+  });
+
+  it("GIVEN a slashed sequencer, WHEN slashed it can not provide any update / cancel until the next session ( if gets elected )", async () => {
+    await Sudo.batchAsSudoFinalized(
+      Sudo.sudoAsWithAddressString(
+        seq.keyRingPair.address,
+        await SequencerStaking.provideSequencerStaking(
+          (await SequencerStaking.minimalStakeAmount()).muln(2),
+          "Ethereum",
+        ),
+      ),
+    );
+    const { reqIdCanceled, api } = await createAnUpdateAndCancelIt(
+      seq,
+      cancelerAddress,
+      chain,
+    );
+    await waitForNBlocks((await Rolldown.disputePeriodLength()).toNumber());
+    await Rolldown.waitForReadRights(cancelerAddress, 50, "Ethereum");
+    const txIndex = await Rolldown.lastProcessedRequestOnL2(chain);
+    //we approve the cancellation
+    const cancelResolutionEvents = await Sudo.asSudoFinalized(
+      Sudo.sudoAsWithAddressString(
+        cancelerAddress,
+        new L2Update(api)
+          .withCancelResolution(txIndex, reqIdCanceled, true)
+          .on("Ethereum")
+          .build(),
+      ),
+    );
+    await waitSudoOperationSuccess(cancelResolutionEvents, "SudoAsDone");
+    await signTx(
+      await getApi(),
+      await SequencerStaking.rejoinActiveSequencers(),
+      seq.keyRingPair,
+    ).then((events) => {
+      expectExtrinsicSucceed(events);
+    });
+    const update = new L2Update(api)
+      .withDeposit(
+        txIndex,
+        seq.keyRingPair.address,
+        seq.keyRingPair.address,
+        BN_MILLION,
+      )
+      .on(chain)
+      .build();
+    await Sudo.asSudoFinalized(
+      Sudo.sudoAsWithAddressString(seq.keyRingPair.address, update),
+    ).then(async (events) => {
+      await waitSudoOperationFail(events, ["SudoAsDone"]);
+    });
   });
 });

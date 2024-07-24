@@ -36,6 +36,11 @@ export class SequencerStaking {
     );
   }
 
+  static async rejoinActiveSequencers(chainName: ChainName = "Ethereum") {
+    const api = await getApi();
+    return api.tx.sequencerStaking.rejoinActiveSequencers(chainName);
+  }
+
   static async leaveSequencerStaking(chainName: ChainName = "Ethereum") {
     const api = getApi();
     return api.tx.sequencerStaking.leaveActiveSequencers(chainName);
@@ -57,6 +62,11 @@ export class SequencerStaking {
   static async sequencerStake(address: string, chain: string) {
     const api = getApi();
     return await api.query.sequencerStaking.sequencerStake([address, chain]);
+  }
+
+  static async slashFineAmount() {
+    const api = getApi();
+    return await api.query.sequencerStaking.slashFineAmount();
   }
 
   static async maxSequencers() {
