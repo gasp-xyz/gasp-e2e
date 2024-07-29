@@ -7,7 +7,7 @@ import { mintAsset } from "../../tx";
 import { Node } from "../Node/Node";
 import { Token } from "../Supply/Token";
 import { User } from "../../User";
-import { MangataGenericEvent, signTx } from "@mangata-finance/sdk";
+import { MangataGenericEvent, signTx } from "gasp-sdk";
 import { SudoDB } from "../../SudoDB";
 import { testLog } from "../../Logger";
 import { env } from "process";

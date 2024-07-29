@@ -6,7 +6,7 @@ import { waitForEvent, waitForRewards } from "../utils/eventListeners";
 import { Assets } from "../utils/Assets";
 import { Sudo } from "../utils/sudo";
 import { Xyk } from "../utils/xyk";
-import { BN_MILLION, BN_ONE, BN_THOUSAND, BN_ZERO } from "@mangata-finance/sdk";
+import { BN_MILLION, BN_ONE, BN_THOUSAND, BN_ZERO } from "gasp-sdk";
 import { getNextAssetId } from "../utils/tx";
 import { BN } from "@polkadot/util";
 import { OakNode } from "../utils/Framework/Node/OakNode";

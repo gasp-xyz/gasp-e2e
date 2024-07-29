@@ -19,7 +19,7 @@ import {
 } from "../../utils/tx";
 import { getEventResultFromMangataTx } from "../../utils/txHandler";
 import { ExtrinsicResult, waitForRewards } from "../../utils/eventListeners";
-import { BN_ZERO } from "@mangata-finance/sdk";
+import { BN_ZERO } from "gasp-sdk";
 import { ProofOfStake } from "../../utils/ProofOfStake";
 
 jest.spyOn(console, "log").mockImplementation(jest.fn());

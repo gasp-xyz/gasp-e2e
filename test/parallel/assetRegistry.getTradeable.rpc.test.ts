@@ -12,7 +12,7 @@ import { alice, setupApi, setupUsers, sudo } from "../../utils/setup";
 import { Sudo } from "../../utils/sudo";
 import { Assets } from "../../utils/Assets";
 import { BN } from "@polkadot/util";
-import { BN_THOUSAND } from "@mangata-finance/sdk";
+import { BN_THOUSAND } from "gasp-sdk";
 import { Xyk } from "../../utils/xyk";
 import { getLiquidityAssetId } from "../../utils/tx";
 

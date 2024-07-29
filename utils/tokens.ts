@@ -1,4 +1,4 @@
-import { BN_HUNDRED } from "@mangata-finance/sdk";
+import { BN_HUNDRED } from "gasp-sdk";
 import { BN } from "@polkadot/util";
 import { api, Extrinsic } from "./setup";
 import { User } from "./User";

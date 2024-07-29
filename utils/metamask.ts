@@ -12,11 +12,7 @@ import { ApiPromise, WsProvider } from "@polkadot/api";
 import eth_util from "ethereumjs-util";
 import eth_sig_utils from "@metamask/eth-sig-util";
 import { testLog } from "./Logger";
-import {
-  ErrorData,
-  MangataEventData,
-  MangataGenericEvent,
-} from "@mangata-finance/sdk";
+import { ErrorData, MangataEventData, MangataGenericEvent } from "gasp-sdk";
 import { getEnvironmentRequiredVars } from "./utils";
 import { Optional } from "web3";
 

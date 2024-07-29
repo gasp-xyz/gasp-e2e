@@ -12,7 +12,7 @@ import {
   waitNewBlock,
   waitSudoOperationSuccess,
 } from "../../utils/eventListeners";
-import { BN_ZERO } from "@mangata-finance/sdk";
+import { BN_ZERO } from "gasp-sdk";
 import {
   Extrinsic,
   getSudoUser,

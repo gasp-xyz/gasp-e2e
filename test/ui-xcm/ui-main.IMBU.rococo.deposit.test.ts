@@ -28,7 +28,7 @@ import { DepositModal } from "../../utils/frontend/pages/DepositModal";
 import { ApiContext } from "../../utils/Framework/XcmHelper";
 import XcmNetworks from "../../utils/Framework/XcmNetworks";
 import { AssetId } from "../../utils/ChainSpecs";
-import { BN_THOUSAND } from "@mangata-finance/sdk";
+import { BN_THOUSAND } from "gasp-sdk";
 import { connectParachains } from "@acala-network/chopsticks";
 
 import "dotenv/config";

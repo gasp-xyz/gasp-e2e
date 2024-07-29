@@ -6,7 +6,7 @@
 import { jest } from "@jest/globals";
 import { getApi, initApi } from "../../utils/api";
 import { User } from "../../utils/User";
-import { Mangata } from "@mangata-finance/sdk";
+import { Mangata } from "gasp-sdk";
 import { setupUsers, setupApi, eve, alice } from "../../utils/setup";
 import { Staking, tokenOriginEnum } from "../../utils/Staking";
 import { Sudo } from "../../utils/sudo";

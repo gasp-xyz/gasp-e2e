@@ -47,6 +47,7 @@ import {
   readL2Updates,
   depositHell,
   getPolkAddress,
+  allCandidatesToSequence,
 } from "../utils/setupsOnTheGo";
 import {
   findErrorMetadata,
@@ -59,7 +60,7 @@ import { SudoUser } from "../utils/Framework/User/SudoUser";
 import { Keyring } from "@polkadot/api";
 import { getApi, initApi } from "../utils/api";
 import { User } from "../utils/User";
-import { BN_ZERO, Mangata } from "@mangata-finance/sdk";
+import { BN_ZERO, Mangata } from "gasp-sdk";
 import { encodeAddress } from "@polkadot/keyring";
 import { stringToU8a, bnToU8a, u8aConcat, BN } from "@polkadot/util";
 import { Sudo } from "../utils/sudo";
@@ -123,10 +124,14 @@ async function app(): Promise<any> {
         "RollDownMonitor",
         "depositHell",
         "getPolkAddress",
+        "allCandidatesToSequence",
       ],
     })
     .then(async (answers: { option: string | string[] }) => {
       console.log("Answers::: " + JSON.stringify(answers, null, "  "));
+      if (answers.option.includes("allCandidatesToSequence")) {
+        return allCandidatesToSequence();
+      }
       if (answers.option.includes("getPolkAddress")) {
         return inquirer
           .prompt([

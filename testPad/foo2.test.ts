@@ -6,7 +6,7 @@ import { setupApi, setupUsers } from "../utils/setup";
 import { Keyring } from "@polkadot/api";
 import { initApi } from "../utils/api";
 import { User } from "../utils/User";
-import { Mangata } from "@mangata-finance/sdk";
+import { Mangata } from "gasp-sdk";
 
 dotenv.config();
 

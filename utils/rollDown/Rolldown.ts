@@ -2,31 +2,31 @@ import { setupUsers } from "../setup";
 import { getApi } from "../api";
 import { EthUser } from "../EthUser";
 import { BN } from "@polkadot/util";
-import { MangataGenericEvent, signTx } from "@mangata-finance/sdk";
+import { MangataGenericEvent, signTx } from "gasp-sdk";
 import { getEventResultFromMangataTx } from "../txHandler";
 import { stringToBN, waitBlockNumber } from "../utils";
 import { getEventsAt, waitNewBlock } from "../eventListeners";
 import { ApiPromise } from "@polkadot/api";
 import { ChainName } from "./SequencerStaking";
+import { testLog } from "../Logger";
+import { BTreeMap } from "@polkadot/types-codec";
+import {
+  PalletRolldownSequencerRights,
+  SpRuntimeAccountAccountId20,
+} from "@polkadot/types/lookup";
 
 export class Rolldown {
-  static async l2OriginRequestId(l1 = "Ethereum") {
+  static async lastProcessedRequestOnL2(l1 = "Ethereum") {
     setupUsers();
     const api = getApi();
-    const requestId = await api.query.rolldown.l2OriginRequestId(l1);
-    return parseInt(requestId.toString());
+    const requestId = await api.query.rolldown.lastProcessedRequestOnL2(l1);
+    return parseInt(requestId.toString()) + 1;
   }
   static async maxAcceptedRequestIdOnl2(l1 = "Ethereum") {
     setupUsers();
     const api = getApi();
     const requestId = await api.query.rolldown.maxAcceptedRequestIdOnl2(l1);
     return parseInt(requestId.toString());
-  }
-  static async lastProcessedRequestOnL2(l1 = "Ethereum") {
-    setupUsers();
-    const api = getApi();
-    const requestId = await api.query.rolldown.lastProcessedRequestOnL2(l1);
-    return requestId as any as number;
   }
   static isDepositSucceed(
     events: MangataGenericEvent[],
@@ -75,14 +75,22 @@ export class Rolldown {
     chain: ChainName = "Ethereum",
   ) {
     while (maxBlocks-- > 0) {
+      testLog
+        .getLog()
+        .info(
+          `Waiting for read rights ${maxBlocks} : ${chain} : ${userAddress}`,
+        );
       const seqRights = await getApi().query.rolldown.sequencersRights(chain);
+      testLog.getLog().info(JSON.stringify(seqRights.toHuman()));
       const selectedSequencer =
         await getApi().query.sequencerStaking.selectedSequencer();
+      testLog.getLog().info(JSON.stringify(selectedSequencer.toHuman()));
       const isSelectedSeq = Object.values(selectedSequencer.toHuman()).includes(
         userAddress,
       );
-      const reads = (Object.entries(seqRights.toHuman())[0][1] as any)
-        .readRights;
+      const reads =
+        (seqRights.toHuman()[userAddress] as any) !== undefined &&
+        (seqRights.toHuman()[userAddress] as any).readRights;
       if (reads && parseInt(reads) > 0 && isSelectedSeq) {
         return;
       } else {
@@ -90,6 +98,52 @@ export class Rolldown {
       }
     }
     throw new Error("Max blocks reached without getting read rights");
+  }
+
+  static async disputePeriodLength() {
+    const api = getApi();
+    return (await api.consts.rolldown.disputePeriodLength) as any as BN;
+  }
+
+  static async cancelRequestFromL1(chainId: ChainName, reqId: number) {
+    const api = getApi();
+    return api.tx.rolldown.cancelRequestsFromL1(chainId, reqId);
+  }
+
+  static getRequestIdFromEvents(
+    events: MangataGenericEvent[],
+    module = "rolldown",
+    method = "L1ReadStored",
+  ) {
+    const event = getEventResultFromMangataTx(events, [module, method]);
+    return stringToBN(event.data[0][2].toString()).toNumber();
+  }
+  static getRequestIdFromCancelEvent(
+    cancel: MangataGenericEvent[],
+    rolldown: string = "rolldown",
+    l1ReadCanceled: string = "L1ReadCanceled",
+  ) {
+    const event = getEventResultFromMangataTx(cancel, [
+      rolldown,
+      l1ReadCanceled,
+    ]);
+    // @ts-ignore
+    return stringToBN(event.data.assignedId.id).toNumber();
+  }
+
+  static async sequencerRights(chain: string, seqAddress: string) {
+    const api = getApi();
+    const rights = (await api.query.rolldown.sequencersRights(
+      chain,
+    )) as any as unknown as BTreeMap<
+      SpRuntimeAccountAccountId20,
+      PalletRolldownSequencerRights
+    >;
+    testLog.getLog().info(`Rights : ${rights.toJSON()}`);
+    return api.createType(
+      "PalletRolldownSequencerRights",
+      rights.toJSON()[seqAddress],
+    ) as any as PalletRolldownSequencerRights;
   }
 }
 export class L2Update {

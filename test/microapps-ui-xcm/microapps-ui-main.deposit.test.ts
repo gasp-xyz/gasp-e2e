@@ -30,7 +30,7 @@ import XcmNetworks from "../../utils/Framework/XcmNetworks";
 import { connectVertical } from "@acala-network/chopsticks";
 import { devTestingPairs } from "../../utils/setup";
 import { AssetId } from "../../utils/ChainSpecs";
-import { BN_THOUSAND } from "@mangata-finance/sdk";
+import { BN_THOUSAND } from "gasp-sdk";
 import StashServiceMockSingleton from "../../utils/stashServiceMockSingleton";
 import { TransactionType } from "../../utils/frontend/microapps-pages/NotificationModal";
 

@@ -22,7 +22,7 @@ import {
   getEventErrorFromSudo,
   getEventResultFromMangataTx,
 } from "../../utils/txHandler";
-import { BN_HUNDRED, signTx } from "@mangata-finance/sdk";
+import { BN_HUNDRED, signTx } from "gasp-sdk";
 import { FOUNDATION_ADDRESS_1, MGA_ASSET_ID } from "../../utils/Constants";
 import { Sudo } from "../../utils/sudo";
 import { ApiPromise } from "@polkadot/api";
@@ -141,7 +141,7 @@ describe.each(["mm", "upgradabilityMm"])(
           updateL2fromL1: [
             new L2Update(api)
               .withDeposit(
-                await Rolldown.l2OriginRequestId(),
+                await Rolldown.lastProcessedRequestOnL2(),
                 users[0].keyRingPair.address,
                 users[0].keyRingPair.address,
                 BN_HUNDRED,
@@ -169,7 +169,7 @@ describe.each(["mm", "upgradabilityMm"])(
             Sudo.sudo(
               new L2Update(api)
                 .withDeposit(
-                  await Rolldown.l2OriginRequestId(),
+                  await Rolldown.lastProcessedRequestOnL2(),
                   users[0].keyRingPair.address,
                   users[0].keyRingPair.address,
                   BN_HUNDRED,
@@ -201,7 +201,7 @@ describe.each(["mm", "upgradabilityMm"])(
       ])("%s operation is not allowed in mm", async (testName) => {
         const [extrinsic, signer] = tests[testName];
         if (testName === "updateL2fromL1") {
-          await Rolldown.waitForReadRights(signer.toString());
+          await Rolldown.waitForReadRights(signer.toString(), 50);
         }
         const nonce = await getCurrentNonce(signer.keyRingPair.address);
         await signTx(api, extrinsic, signer.keyRingPair, { nonce: nonce })

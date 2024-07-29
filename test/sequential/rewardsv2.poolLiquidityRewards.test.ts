@@ -20,11 +20,7 @@ import {
 import { getSudoUser, setupApi, setupUsers } from "../../utils/setup";
 import { ExtrinsicResult, waitForRewards } from "../../utils/eventListeners";
 import { MGA_ASSET_ID } from "../../utils/Constants";
-import {
-  BN_ZERO,
-  MangataGenericEvent,
-  MangataInstance,
-} from "@mangata-finance/sdk";
+import { BN_ZERO, MangataGenericEvent, MangataInstance } from "gasp-sdk";
 import { getEventResultFromMangataTx } from "../../utils/txHandler";
 import { ProofOfStake } from "../../utils/ProofOfStake";
 

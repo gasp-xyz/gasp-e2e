@@ -15,7 +15,7 @@ import { ExtrinsicResult } from "../../utils/eventListeners";
 import { Xyk } from "../../utils/xyk";
 import { MGA_ASSET_ID } from "../../utils/Constants";
 import { getLiquidityAssetId } from "../../utils/tx";
-import { BN_ZERO } from "@mangata-finance/sdk";
+import { BN_ZERO } from "gasp-sdk";
 jest.spyOn(console, "log").mockImplementation(jest.fn());
 jest.setTimeout(2500000);
 process.env.NODE_ENV = "test";

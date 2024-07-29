@@ -1,14 +1,14 @@
 import { ApiPromise, Keyring } from "@polkadot/api";
 import { getEnvironmentRequiredVars } from "./utils";
 import { User } from "./User";
-import "@mangata-finance/types";
+import "gasp-types";
 import { getApi, initApi } from "./api";
 import { Sudo } from "./sudo";
 import { Assets } from "./Assets";
 import { Xyk } from "./xyk";
 import { SudoDB } from "./SudoDB";
 import { Codec } from "@polkadot/types-codec/types";
-import { signTx } from "@mangata-finance/sdk";
+import { signTx } from "gasp-sdk";
 import { SubmittableExtrinsic } from "@polkadot/api/types";
 import { EthUser } from "./EthUser";
 import { BN } from "@polkadot/util";
