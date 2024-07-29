@@ -42,6 +42,7 @@ import {
   addUnspentReserves,
   depositFromL1,
   withdrawToL1,
+  signEthUserTxByMetamask,
   monitorRollDown,
   readL2Updates,
   depositHell,
@@ -117,6 +118,7 @@ async function app(): Promise<any> {
         "Add vesting tokens and move these to MPL",
         "Deposit tokens by using updateL2FromL1",
         "Withdraw tokens by using updateL2FromL1",
+        "Sign Tx from ethUser by Metamask",
         "Read L2 updates",
         "RollDownMonitor",
         "depositHell",
@@ -890,10 +892,29 @@ async function app(): Promise<any> {
             },
           );
       }
+      if (answers.option.includes("Sign Tx from ethUser by Metamask")) {
+        return inquirer
+          .prompt([
+            {
+              type: "input",
+              name: "ethPrivateKey",
+              message: "Ethereum private key",
+            },
+            {
+              type: "input",
+              name: "txHex",
+              message: "Extrinsic hex",
+            },
+          ])
+          .then(async (answers: { ethPrivateKey: string; txHex: string }) => {
+            await initApi();
+            await signEthUserTxByMetamask(answers.txHex, answers.ethPrivateKey);
+            return app();
+          });
+      }
       return app();
     });
 }
-
 const main = async () => {
   await app();
 };

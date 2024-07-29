@@ -1805,6 +1805,26 @@ export async function withdrawToL1(ethPrivateKey: string, amountValue: number) {
       amountValue.toString(),
   );
 }
+
+export async function signEthUserTxByMetamask(
+  txHex: string,
+  ethPrivateKey: string,
+) {
+  const api = getApi();
+  const keyring = new Keyring({ type: "sr25519" });
+
+  const testEthUser = new EthUser(keyring);
+  testEthUser.addFromEthPrivateKey(keyring, ethPrivateKey);
+
+  const extrinsic = await api.createType("Extrinsic", txHex);
+  await signTxMetamask(extrinsic, testEthUser.ethAddress, ethPrivateKey);
+
+  console.log(
+    "Extrinsic was signed by using Metamask for the user  " +
+      testEthUser.ethAddress,
+  );
+}
+
 export async function listenTransfers() {
   const web3 = new Web3("ws://localhost:8545");
   //@ts-ignore
