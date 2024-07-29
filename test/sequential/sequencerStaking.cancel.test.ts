@@ -8,16 +8,34 @@ import {
   SequencerStaking,
 } from "../../utils/rollDown/SequencerStaking";
 import { L2Update, Rolldown } from "../../utils/rollDown/Rolldown";
-import { BN_MILLION, signTx } from "gasp-sdk";
+import { BN_MILLION, MangataGenericEvent, signTx } from "gasp-sdk";
 import { getApi, initApi } from "../../utils/api";
 import { setupApi, setupUsers } from "../../utils/setup";
 import { expectExtrinsicSucceed, waitForNBlocks } from "../../utils/utils";
 import { AssetWallet, User } from "../../utils/User";
 import { Sudo } from "../../utils/sudo";
-import { waitSudoOperationSuccess } from "../../utils/eventListeners";
+import {
+  waitNewBlock,
+  waitSudoOperationSuccess,
+} from "../../utils/eventListeners";
 import { Assets } from "../../utils/Assets";
 import { BN_ZERO } from "@polkadot/util";
 import { MGA_ASSET_ID } from "../../utils/Constants";
+
+async function waitSequencerAsSelected(seq: User, n: number = 80) {
+  let selectedSequencer: any;
+  const api = getApi();
+  selectedSequencer = (
+    await api.query.sequencerStaking.selectedSequencer()
+  ).toHuman();
+  while (selectedSequencer.Ethereum !== seq.keyRingPair.address && n > 0) {
+    await waitNewBlock();
+    selectedSequencer = (
+      await api.query.sequencerStaking.selectedSequencer()
+    ).toHuman();
+    n--;
+  }
+}
 
 async function createACollatorUser() {
   const [user] = setupUsers();
@@ -304,6 +322,7 @@ describe("Update cancellation -", () => {
   });
 
   it("GIVEN a sequencer, WHEN <in-correctly> canceling an update AND some pending updates/cancels, THEN it can be still slashed and kicked, cancels & updates will be executed.", async () => {
+    let cancelResolutionEvents: MangataGenericEvent[];
     const judge = await createACollatorUser();
     await signTx(
       await getApi(),
@@ -317,39 +336,35 @@ describe("Update cancellation -", () => {
     });
     const sequencers = await SequencerStaking.activeSequencers();
     expect(sequencers.toHuman().Ethereum).toContain(judge.keyRingPair.address);
-    let txIndex: number;
-    const { reqIdCanceled, api } = await createAnUpdateAndCancelIt(
-      seq,
-      cancelerAddress,
-      chain,
-    );
+    await waitSequencerAsSelected(seq);
+    const { reqIdCanceled: reqIdCanceled1, api: api1 } =
+      await createAnUpdateAndCancelIt(seq, cancelerAddress, chain);
     await waitForNBlocks((await Rolldown.disputePeriodLength()).toNumber());
-    await Rolldown.waitForReadRights(cancelerAddress, 50, "Ethereum");
-    txIndex = await Rolldown.lastProcessedRequestOnL2(chain);
-    await Sudo.asSudoFinalized(
+    await Rolldown.waitForReadRights(cancelerAddress, 70, "Ethereum");
+    const txIndex1 = await Rolldown.lastProcessedRequestOnL2(chain);
+    await waitSequencerAsSelected(canceler);
+    const { reqIdCanceled: reqIdCanceled2, api: api2 } =
+      await createAnUpdateAndCancelIt(canceler, seq.keyRingPair.address, chain);
+    await waitForNBlocks((await Rolldown.disputePeriodLength()).toNumber());
+    await Rolldown.waitForReadRights(seq.keyRingPair.address, 70, "Ethereum");
+    const txIndex2 = await Rolldown.lastProcessedRequestOnL2(chain);
+    await waitSequencerAsSelected(judge);
+    cancelResolutionEvents = await Sudo.asSudoFinalized(
       Sudo.sudoAsWithAddressString(
-        cancelerAddress,
-        new L2Update(api)
-          .withDeposit(
-            (await Rolldown.lastProcessedRequestOnL2(chain)) + 1,
-            cancelerAddress,
-            cancelerAddress,
-            BN_MILLION,
-          )
-          .on(chain)
+        judge.keyRingPair.address,
+        new L2Update(api1)
+          .withCancelResolution(txIndex1, reqIdCanceled1, false)
+          .on("Ethereum")
           .build(),
       ),
-    ).then(async (events) => {
-      await waitSudoOperationSuccess(events, "SudoAsDone");
-    });
+    );
+    await waitSudoOperationSuccess(cancelResolutionEvents, "SudoAsDone");
     await waitForNBlocks((await Rolldown.disputePeriodLength()).toNumber());
-    txIndex = await Rolldown.lastProcessedRequestOnL2(chain);
-    //the cancellation is incorrectly
-    const cancelResolutionEvents = await Sudo.asSudoFinalized(
+    cancelResolutionEvents = await Sudo.asSudoFinalized(
       Sudo.sudoAsWithAddressString(
-        cancelerAddress,
-        new L2Update(api)
-          .withCancelResolution(txIndex, reqIdCanceled, true)
+        judge.keyRingPair.address,
+        new L2Update(api2)
+          .withCancelResolution(txIndex2, reqIdCanceled2, false)
           .on("Ethereum")
           .build(),
       ),
