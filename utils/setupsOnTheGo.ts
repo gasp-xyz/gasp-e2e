@@ -1816,7 +1816,11 @@ export async function signEthUserTxByMetamask(
   const testEthUser = new User(keyring, ethPrivateKey);
 
   const extrinsic = await api.createType("Extrinsic", txHex);
-  await signTxMetamask(extrinsic, testEthUser.keyRingPair.address, ethPrivateKey);
+  await signTxMetamask(
+    extrinsic,
+    testEthUser.keyRingPair.address,
+    ethPrivateKey,
+  );
 
   console.log(
     "Extrinsic was signed by using Metamask for the user  " +
@@ -1967,12 +1971,12 @@ export async function depositHell(num: number, txIndexer = 0) {
   const api = await getApi();
   let txIndex;
   if (txIndexer === 0) {
-    txIndex = await Rolldown.maxAcceptedRequestIdOnl2();
+    txIndex = await Rolldown.lastProcessedRequestOnL2();
   } else {
     txIndex = txIndexer;
   }
   const sequencer = await SequencerStaking.getSequencerUser();
-  await Rolldown.waitForReadRights(sequencer.ethAddress);
+  await Rolldown.waitForReadRights(sequencer.ethAddress.toLowerCase());
   testLog.getLog().info("Depositing " + num + " transactions from " + txIndex);
   const depositBatch = new L2Update(api)
     .withDeposit(txIndex, sequencer.toString(), sequencer.toString(), 1001)

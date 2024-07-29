@@ -152,9 +152,8 @@ async function app(): Promise<any> {
         await monitorRollDown("deposit");
       }
       if (answers.option.includes("depositHell")) {
-        let index = 0;
         while (true) {
-          index = await depositHell(1000, index);
+          await depositHell(1000);
         }
       }
       if (answers.option.includes("Read L2 updates")) {
