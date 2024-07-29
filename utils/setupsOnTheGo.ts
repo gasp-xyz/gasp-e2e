@@ -1811,13 +1811,12 @@ export async function signEthUserTxByMetamask(
   ethPrivateKey: string,
 ) {
   const api = getApi();
-  const keyring = new Keyring({ type: "sr25519" });
+  const keyring = new Keyring({ type: "ethereum" });
 
-  const testEthUser = new EthUser(keyring);
-  testEthUser.addFromEthPrivateKey(keyring, ethPrivateKey);
+  const testEthUser = new User(keyring, ethPrivateKey);
 
   const extrinsic = await api.createType("Extrinsic", txHex);
-  await signTxMetamask(extrinsic, testEthUser.ethAddress, ethPrivateKey);
+  await signTxMetamask(extrinsic, testEthUser.keyRingPair.address, ethPrivateKey);
 
   console.log(
     "Extrinsic was signed by using Metamask for the user  " +
