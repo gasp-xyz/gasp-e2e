@@ -240,7 +240,7 @@ describe("sequencerStaking", () => {
     ).then((events) => {
       const res = expectExtrinsicFail(events);
       expect(res.data.toString()).toContain(
-        "SequencerLastUpdateStillInDisputePeriod",
+        "SequencerAwaitingCancelResolution",
       );
     });
     await waitForNBlocks((await Rolldown.disputePeriodLength()).toNumber());
