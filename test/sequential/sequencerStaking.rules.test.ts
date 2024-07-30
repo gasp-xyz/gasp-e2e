@@ -472,6 +472,7 @@ describe("sequencerStaking", () => {
     ).then((events) => {
       expectExtrinsicSucceed(events);
     });
+    await waitForNBlocks((await Rolldown.disputePeriodLength()).toNumber());
     await signTx(
       api,
       await SequencerStaking.unstake("Arbitrum"),
