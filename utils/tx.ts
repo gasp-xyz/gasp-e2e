@@ -989,7 +989,7 @@ export async function registerAsset(
 
 export async function registerL1Asset(
   sudoUser: User,
-  assetId: any,
+  assetId: BN | null,
   l1AssetChain = "Ethereum",
   tokenAddress: string,
 ) {

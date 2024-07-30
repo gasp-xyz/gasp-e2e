@@ -176,11 +176,13 @@ describe("update L1AssetData-", () => {
   });
 
   test("GIVEN Update asset so so that addresses & chain matches with some existing ones THEN Operation fail", async () => {
+    let assetIdRegistered: any;
     await sudo
       .registerL1Asset(null, tokenAddressAfter, "Arbitrum")
       .then((result) => {
         const eventResponse = getEventResultFromMangataTx(result);
         expect(eventResponse.state).toEqual(ExtrinsicResult.ExtrinsicSuccess);
+        assetIdRegistered = getAssetId(result);
       });
 
     await sudo
@@ -190,6 +192,17 @@ describe("update L1AssetData-", () => {
         expect(sudoEvent.state).toBe(ExtrinsicResult.ExtrinsicFailed);
         expect(sudoEvent.data).toBe("ConflictingL1Asset");
       });
+
+    const idToL1AssetRegistered = JSON.parse(
+      JSON.stringify(
+        await api.query.assetRegistry.idToL1Asset(assetIdRegistered),
+      ),
+    );
+    const idToL1AssetUpdated = JSON.parse(
+      JSON.stringify(await api.query.assetRegistry.idToL1Asset(assetId)),
+    );
+    expect(idToL1AssetRegistered.arbitrum).toEqual(tokenAddressAfter);
+    expect(idToL1AssetUpdated.arbitrum).toEqual(undefined);
   });
 
   test("GIVEN An asset created by registerAsset AND It has been updated by updateL1Asset THEN It is now accessible through IdToL1Asset", async () => {

@@ -417,7 +417,7 @@ export class User {
   }
 
   async updateL1Asset(
-    assetId: any,
+    assetId: BN,
     tokenAddress = "0x" + randomBytes(20).toString("hex"),
     l1AssetChain = "Ethereum",
   ) {
