@@ -196,7 +196,7 @@ describe.each(["mm", "upgradabilityMm"])(
         };
       }
     });
-    describe.only("On [%s] - regular l1 updates must be forbidden", () => {
+    describe("On [%s] - regular l1 updates must be forbidden", () => {
       it.each([
         "updateL2fromL1",
         "withdraw",
