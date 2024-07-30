@@ -236,6 +236,9 @@ describe.each(["mm", "upgradabilityMm"])(
             nonce: nonce,
           }).then(async (events) => {
             const event = getEventResultFromMangataTx(events);
+            testLog
+              .getLog()
+              .info("DEBUG::Event result - " + JSON.stringify(event));
             expect(event.state).toEqual(ExtrinsicResult.ExtrinsicSuccess);
           });
         },
