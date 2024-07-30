@@ -230,6 +230,7 @@ describe.each(["mm", "upgradabilityMm"])(
       it.each(["sequencerSetup", "sequencerTearDown"])(
         "%s operations are allowed in mm",
         async (testName) => {
+          testLog.getLog().info("DEBUG::TestName - " + testName);
           const [extrinsic, signer] = tests[testName];
           const nonce = await getCurrentNonce(signer.keyRingPair.address);
           await signTx(api, extrinsic, signer.keyRingPair, {
