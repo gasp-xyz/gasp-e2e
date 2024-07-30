@@ -24,7 +24,7 @@ import { Sudo } from "../../utils/sudo";
 import { setupUsers, setupApi, getSudoUser } from "../../utils/setup";
 import { Xyk } from "../../utils/xyk";
 import { feeLockErrors } from "../../utils/utils";
-import { signTx } from "@mangata-finance/sdk";
+import { signTx } from "gasp-sdk";
 import { testLog } from "../../utils/Logger";
 import { getFeeLockMetadata } from "../../utils/feeLockHelper";
 
