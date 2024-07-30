@@ -20,7 +20,7 @@ import {
   getFeeLockMetadata,
   getTokensDiffForBlockAuthor,
 } from "../../utils/utils";
-import { BN_ONE, BN_ZERO } from "@mangata-finance/sdk";
+import { BN_ONE, BN_ZERO } from "gasp-sdk";
 import { testLog } from "../../utils/Logger";
 import { Assets } from "../../utils/Assets";
 import { signSendFinalized } from "../../utils/sign";

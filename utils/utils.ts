@@ -14,12 +14,7 @@ import { Sudo } from "./sudo";
 import { setupApi, setupUsers } from "./setup";
 import { Xyk } from "./xyk";
 import { GASP_ASSET_ID } from "./Constants";
-import {
-  BN_HUNDRED,
-  BN_ONE,
-  BN_ZERO,
-  MangataGenericEvent,
-} from "@mangata-finance/sdk";
+import { BN_HUNDRED, BN_ONE, BN_ZERO, MangataGenericEvent } from "gasp-sdk";
 import Keyring from "@polkadot/keyring";
 import jsonpath from "jsonpath";
 import _ from "lodash";

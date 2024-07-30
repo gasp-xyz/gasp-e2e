@@ -22,8 +22,8 @@ import {
   getEventErrorFromSudo,
   getEventResultFromMangataTx,
 } from "../../utils/txHandler";
-import { BN_HUNDRED, signTx } from "@mangata-finance/sdk";
 import { FOUNDATION_ADDRESS_1, GASP_ASSET_ID } from "../../utils/Constants";
+import { BN_HUNDRED, signTx } from "gasp-sdk";
 import { Sudo } from "../../utils/sudo";
 import { ApiPromise } from "@polkadot/api";
 import { Maintenance } from "../../utils/Maintenance";
@@ -136,12 +136,17 @@ describe.each(["mm", "upgradabilityMm"])(
             users[2],
             await SequencerStaking.provideSequencerStaking(),
           ),
-        );
+        ).then((value) => {
+          testLog
+            .getLog()
+            .info("Sequencer staking provided" + JSON.stringify(value));
+          expectMGAExtrinsicSuDidSuccess(value);
+        });
         tests = {
           updateL2fromL1: [
             new L2Update(api)
               .withDeposit(
-                await Rolldown.l2OriginRequestId(),
+                await Rolldown.lastProcessedRequestOnL2(),
                 users[0].keyRingPair.address,
                 users[0].keyRingPair.address,
                 BN_HUNDRED,
@@ -169,7 +174,7 @@ describe.each(["mm", "upgradabilityMm"])(
             Sudo.sudo(
               new L2Update(api)
                 .withDeposit(
-                  await Rolldown.l2OriginRequestId(),
+                  await Rolldown.lastProcessedRequestOnL2(),
                   users[0].keyRingPair.address,
                   users[0].keyRingPair.address,
                   BN_HUNDRED,
@@ -182,7 +187,10 @@ describe.each(["mm", "upgradabilityMm"])(
             await SequencerStaking.provideSequencerStaking(),
             users[1],
           ],
-          sequencerTearDown: [await SequencerStaking.unstake(), users[2]],
+          sequencerTearDown: [
+            await SequencerStaking.leaveSequencerStaking(),
+            users[2],
+          ],
           mm: [await System.setCodeWithoutChecks(), getSudoUser()],
           upgradabilityMm: [await System.setCode(), getSudoUser()],
         };
@@ -198,7 +206,7 @@ describe.each(["mm", "upgradabilityMm"])(
       ])("%s operation is not allowed in mm", async (testName) => {
         const [extrinsic, signer] = tests[testName];
         if (testName === "updateL2fromL1") {
-          await Rolldown.waitForReadRights(signer.toString());
+          await Rolldown.waitForReadRights(signer.toString(), 50);
         }
         const nonce = await getCurrentNonce(signer.keyRingPair.address);
         await signTx(api, extrinsic, signer.keyRingPair, { nonce: nonce })
@@ -227,12 +235,16 @@ describe.each(["mm", "upgradabilityMm"])(
       it.each(["sequencerSetup", "sequencerTearDown"])(
         "%s operations are allowed in mm",
         async (testName) => {
+          testLog.getLog().info("DEBUG::TestName - " + testName);
           const [extrinsic, signer] = tests[testName];
           const nonce = await getCurrentNonce(signer.keyRingPair.address);
           await signTx(api, extrinsic, signer.keyRingPair, {
             nonce: nonce,
           }).then(async (events) => {
             const event = getEventResultFromMangataTx(events);
+            testLog
+              .getLog()
+              .info("DEBUG::Event result - " + JSON.stringify(event));
             expect(event.state).toEqual(ExtrinsicResult.ExtrinsicSuccess);
           });
         },

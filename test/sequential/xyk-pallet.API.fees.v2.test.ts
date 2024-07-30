@@ -1,7 +1,7 @@
 import { BN } from "@polkadot/util";
 import { setupApi, setupUsers } from "../../utils/setup";
 import { Sudo } from "../../utils/sudo";
-import { BN_HUNDRED, BN_THOUSAND, BN_ZERO } from "@mangata-finance/sdk";
+import { BN_HUNDRED, BN_THOUSAND, BN_ZERO } from "gasp-sdk";
 import { AssetWallet, User } from "../../utils/User";
 import {
   findBlockWithExtrinsicSigned,

@@ -5,7 +5,7 @@
 import { jest } from "@jest/globals";
 import { ApiPromise } from "@polkadot/api";
 import { getApi, initApi, getMangataInstance } from "../../utils/api";
-import { MangataInstance } from "@mangata-finance/sdk";
+import { MangataInstance } from "gasp-sdk";
 import { Node } from "../../utils/Framework/Node/Node";
 import { WebDriver } from "selenium-webdriver";
 import { DriverBuilder } from "../../utils/frontend/utils/Driver";

@@ -15,11 +15,9 @@
     "@babel/plugin-transform-react-jsx": "^7.22.15",
     "@commitlint/config-conventional": "^17.4.2",
     "@league-of-foundry-developers/foundry-vtt-types": "^9.280.0",
-    "@mangata-finance/sdk": "2.2.1-eth-rollup-develop.54",
-    "@mangata-finance/types": "2.2.3-eth-rollup-develop.61",
     "@metamask/eth-sig-util": "^7.0.1",
-    "@polkadot/api": "^10.11.2",
-    "@polkadot/types": "^10.9.1",
+    "@polkadot/api": "^11.1.1",
+    "@polkadot/types": "^11.1.1",
     "@polkadot/util": "^12.6.2",
     "@polkadot/util-crypto": "^12.6.2",
     "@terascope/fetch-github-release": "^0.8.7",
@@ -50,6 +48,8 @@
     "ethers": "^5.4.7",
     "exec-sh": "^0.4.0",
     "express": "^4.18.2",
+    "gasp-sdk": "0.0.2-eth-rollup-develop.1",
+    "gasp-types": "0.0.2-eth-rollup-develop.1",
     "get-port-please": "^3.0.1",
     "guid-typescript": "^1.0.9",
     "jest-docblock": "^29.7.0",
@@ -133,8 +133,8 @@
     "cliTool": "node --experimental-specifier-resolution=node --loader ts-node/esm --experimental-vm-modules cliTool/index.ts --runInBand",
     "test-rollup": "export JEST_HTML_REPORTERS_PUBLIC_PATH=reports/html-report-seq; node --experimental-specifier-resolution=node --loader ts-node/esm --experimental-vm-modules node_modules/jest/bin/jest.js --verbose --runInBand --group=rollup --group=-rollupUpdate --forceExit ",
     "test-rollupUpdate": "export JEST_HTML_REPORTERS_PUBLIC_PATH=reports/html-report-seq; node --experimental-specifier-resolution=node --loader ts-node/esm --experimental-vm-modules node_modules/jest/bin/jest.js --verbose --runInBand --group=rollupUpdate --group=-rollup --forceExit ",
+    "test-sequencerStaking": "export JEST_HTML_REPORTERS_PUBLIC_PATH=reports/html-report-seq; node --experimental-specifier-resolution=node --loader ts-node/esm --experimental-vm-modules node_modules/jest/bin/jest.js --verbose --runInBand --group=sequencerStaking --group=-rollup --forceExit ",
     "runtimeUpgrade": " jest --verbose --ci --group=upgradeRuntime --runInBand --forceExit"
-    
   },
   "devDependencies": {
     "@babel/core": "^7.13.10",

@@ -9,7 +9,7 @@ import {
   ExtrinsicResult,
   expectMGAExtrinsicSuDidSuccess,
 } from "../../utils/eventListeners";
-import { signTx } from "@mangata-finance/sdk";
+import { signTx } from "gasp-sdk";
 import { setupUsers, setupApi, getSudoUser } from "../../utils/setup";
 import {
   AggregatorOptions,

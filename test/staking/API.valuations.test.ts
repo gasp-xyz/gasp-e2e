@@ -12,7 +12,7 @@ import { Keyring } from "@polkadot/api";
 import { User } from "../../utils/User";
 import { MAX_BALANCE, GASP_ASSET_ID } from "../../utils/Constants";
 import { getUserBalanceOfToken } from "../../utils/utils";
-import { BN_BILLION, BN_ONE, BN_ZERO } from "@mangata-finance/sdk";
+import { BN_BILLION, BN_ONE, BN_ZERO } from "gasp-sdk";
 import { BN } from "@polkadot/util";
 import { Assets } from "../../utils/Assets";
 import { getApi, initApi } from "../../utils/api";

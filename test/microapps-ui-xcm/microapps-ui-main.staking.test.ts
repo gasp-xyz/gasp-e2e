@@ -27,7 +27,7 @@ import { ApiContext } from "../../utils/Framework/XcmHelper";
 import XcmNetworks from "../../utils/Framework/XcmNetworks";
 import { connectVertical } from "@acala-network/chopsticks";
 import { AssetId } from "../../utils/ChainSpecs";
-import { BN_THOUSAND } from "@mangata-finance/sdk";
+import { BN_THOUSAND } from "gasp-sdk";
 import StashServiceMockSingleton from "../../utils/stashServiceMockSingleton";
 import { Sidebar } from "../../utils/frontend/microapps-pages/Sidebar";
 //import { Polkadot } from "../../utils/frontend/pages/Polkadot";

@@ -29,7 +29,7 @@ import {
   ExtrinsicResult,
   waitSudoOperationFail,
 } from "../../utils/eventListeners";
-import { BN_ZERO } from "@mangata-finance/sdk";
+import { BN_ZERO } from "gasp-sdk";
 import {
   checkLastBootstrapFinalized,
   scheduleBootstrap,

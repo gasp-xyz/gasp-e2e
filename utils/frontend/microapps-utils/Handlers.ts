@@ -10,7 +10,7 @@ import { WalletConnectModal } from "../microapps-pages/WalletConnectModal";
 import { WalletWrapper } from "../microapps-pages/WalletWrapper";
 import { Polkadot } from "../pages/Polkadot";
 import { acceptPermissionsWalletExtensionInNewWindow } from "../utils/Helper";
-import { BN_TEN } from "@mangata-finance/sdk";
+import { BN_TEN } from "gasp-sdk";
 import { BN } from "@polkadot/util";
 
 export async function connectWallet(

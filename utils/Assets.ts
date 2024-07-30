@@ -1,4 +1,4 @@
-import { BN_TEN, BN_THOUSAND, MangataGenericEvent } from "@mangata-finance/sdk";
+import { BN_TEN, BN_THOUSAND, MangataGenericEvent } from "gasp-sdk";
 import { ApiPromise } from "@polkadot/api";
 import { AccountInfo } from "@polkadot/types/interfaces";
 import { BN, BN_FOUR } from "@polkadot/util";
@@ -213,6 +213,12 @@ export class Assets {
     return Sudo.sudo(
       api.tx.tokens.mint(GASP_ASSET_ID, user.keyRingPair.address, amount),
     );
+  }
+  static mintNativeAddress(
+    userAddress: string,
+    amount: BN = this.DEFAULT_AMOUNT,
+  ): Extrinsic {
+    return Sudo.sudo(api.tx.tokens.mint(MGA_ASSET_ID, userAddress, amount));
   }
   public static createTokenWithNoAssetRegistry(
     user: User,

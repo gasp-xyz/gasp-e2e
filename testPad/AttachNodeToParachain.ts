@@ -9,7 +9,7 @@ import fs from "fs";
 import { testLog } from "../utils/Logger";
 import { api, getApi, initApi } from "../utils/api";
 import { signSendAndWaitToFinishTx } from "../utils/txHandler";
-import { signTx } from "@mangata-finance/sdk";
+import { signTx } from "gasp-sdk";
 import { GASP_ASSET_ID } from "../utils/Constants";
 import "dotenv/config";
 

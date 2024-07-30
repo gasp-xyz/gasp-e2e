@@ -14,7 +14,7 @@ import {
 } from "../../utils/tx";
 import { getUserIdentity, getUserSubIdentity } from "../../utils/utils";
 import { BN_THOUSAND, BN_FIVE } from "@polkadot/util";
-import { BN_ONE, BN_HUNDRED } from "@mangata-finance/sdk";
+import { BN_ONE, BN_HUNDRED } from "gasp-sdk";
 import { AssetWallet, User } from "../../utils/User";
 import { GASP_ASSET_ID } from "../../utils/Constants";
 

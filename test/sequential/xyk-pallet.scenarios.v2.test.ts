@@ -15,7 +15,7 @@ import {
   getBalanceOfPool,
   getLiquidityAssetId,
 } from "../../utils/tx";
-import { BN_ZERO } from "@mangata-finance/sdk";
+import { BN_ZERO } from "gasp-sdk";
 import { EventResult, ExtrinsicResult } from "../../utils/eventListeners";
 import { AssetWallet, User } from "../../utils/User";
 import { BN } from "@polkadot/util";

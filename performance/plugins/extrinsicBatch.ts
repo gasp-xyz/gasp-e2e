@@ -1,6 +1,6 @@
 // /* eslint-disable no-console */
 // import { BN } from "@polkadot/util";
-// import { Mangata } from "@mangata-finance/sdk";
+// import { Mangata } from "gasp-sdk";
 // import { TestParams } from "../testParams";
 // import { KeyringPair } from "@polkadot/keyring/types";
 // import { GASP_ASSET_ID } from "../../utils/Constants";

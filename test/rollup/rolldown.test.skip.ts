@@ -10,7 +10,7 @@ import {
   rolldownDeposit,
   rolldownWithdraw,
 } from "../../utils/rolldown";
-import { signTx } from "@mangata-finance/sdk";
+import { signTx } from "gasp-sdk";
 import { signTxMetamask } from "../../utils/metamask";
 
 jest.spyOn(console, "log").mockImplementation(jest.fn());

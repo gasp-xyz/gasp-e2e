@@ -4,7 +4,7 @@ import { BN } from "@polkadot/util";
 import { waitNewBlock } from "../utils/eventListeners";
 import { User, AssetWallet } from "../utils/User";
 import fs from "fs";
-import { signTx } from "@mangata-finance/sdk";
+import { signTx } from "gasp-sdk";
 import { testLog } from "../utils/Logger";
 import { ApiPromise, WsProvider } from "@polkadot/api";
 import { getApi, initApi } from "../utils/api";

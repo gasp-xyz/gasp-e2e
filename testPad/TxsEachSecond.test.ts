@@ -5,7 +5,7 @@ import { waitNewBlock } from "../utils/eventListeners";
 import { User, AssetWallet } from "../utils/User";
 import { getEnvironmentRequiredVars, sleep } from "../utils/utils";
 import fs from "fs";
-import { Mangata } from "@mangata-finance/sdk";
+import { Mangata } from "gasp-sdk";
 import { testLog } from "../utils/Logger";
 import { Assets } from "../utils/Assets";
 

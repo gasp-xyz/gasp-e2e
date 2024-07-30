@@ -3,7 +3,7 @@
 //Build And Run!
 // npx ts-node test/exploratory/eventListener.ts
 
-import { Mangata } from "@mangata-finance/sdk";
+import { Mangata } from "gasp-sdk";
 
 import { testLog } from "../utils/Logger";
 

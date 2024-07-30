@@ -20,7 +20,7 @@ import {
 } from "../../utils/tx";
 import { getBlockNumber, waitBlockNumber } from "../../utils/utils";
 import { GASP_ASSET_ID } from "../../utils/Constants";
-import { BN_ZERO, signTx } from "@mangata-finance/sdk";
+import { BN_ZERO, signTx } from "gasp-sdk";
 import { getEventResultFromMangataTx } from "../../utils/txHandler";
 import { ExtrinsicResult, waitNewBlock } from "../../utils/eventListeners";
 

@@ -23,7 +23,7 @@ import {
   waitForRewards,
   waitForSessionChange,
 } from "../../utils/eventListeners";
-import { BN_ZERO, signTx } from "@mangata-finance/sdk";
+import { BN_ZERO, signTx } from "gasp-sdk";
 
 let testUser1: User;
 let testUser2: User;

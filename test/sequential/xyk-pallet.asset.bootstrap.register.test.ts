@@ -20,8 +20,8 @@ import {
 } from "../../utils/Bootstrap";
 import { getNextAssetId } from "../../utils/tx";
 import { BN } from "@polkadot/util";
-import { BN_ONE, toBN } from "@mangata-finance/sdk";
 import { GASP_ASSET_ID } from "../../utils/Constants";
+import { BN_ONE, toBN } from "gasp-sdk";
 import { getSudoUser, setupApi, setupUsers } from "../../utils/setup";
 import { Sudo } from "../../utils/sudo";
 

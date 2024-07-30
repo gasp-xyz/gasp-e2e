@@ -5,7 +5,7 @@ import { testLog } from "../utils/Logger";
 import { signSendAndWaitToFinishTx } from "../utils/txHandler";
 import { User } from "../utils/User";
 import { getEnvironmentRequiredVars } from "../utils/utils";
-import { Mangata } from "@mangata-finance/sdk";
+import { Mangata } from "gasp-sdk";
 import { ApiPromise, WsProvider } from "@polkadot/api";
 import { mnemonicToMiniSecret } from "@polkadot/util-crypto";
 import { u8aToHex } from "@polkadot/util";

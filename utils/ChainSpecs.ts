@@ -1,4 +1,4 @@
-import { BN_TEN, BN_ZERO } from "@mangata-finance/sdk";
+import { BN_TEN, BN_ZERO } from "gasp-sdk";
 import { BN, BN_HUNDRED, BN_THOUSAND } from "@polkadot/util";
 import { ApiPromise } from "@polkadot/api";
 

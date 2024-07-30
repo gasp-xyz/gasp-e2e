@@ -1,5 +1,5 @@
 // wrap SDK signTx to allow verbose logs
-import { MangataGenericEvent, signTx } from "@mangata-finance/sdk";
+import { MangataGenericEvent, signTx } from "gasp-sdk";
 import { ApiPromise } from "@polkadot/api";
 import { Codec } from "@polkadot/types/types";
 import { BN } from "@polkadot/util";

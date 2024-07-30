@@ -42,10 +42,12 @@ import {
   addUnspentReserves,
   depositFromL1,
   withdrawToL1,
+  signEthUserTxByMetamask,
   monitorRollDown,
   readL2Updates,
   depositHell,
   getPolkAddress,
+  allCandidatesToSequence,
 } from "../utils/setupsOnTheGo";
 import {
   findErrorMetadata,
@@ -58,7 +60,7 @@ import { SudoUser } from "../utils/Framework/User/SudoUser";
 import { Keyring } from "@polkadot/api";
 import { getApi, initApi } from "../utils/api";
 import { User } from "../utils/User";
-import { BN_ZERO, Mangata } from "@mangata-finance/sdk";
+import { BN_ZERO, Mangata } from "gasp-sdk";
 import { encodeAddress } from "@polkadot/keyring";
 import { stringToU8a, bnToU8a, u8aConcat, BN } from "@polkadot/util";
 import { Sudo } from "../utils/sudo";
@@ -117,14 +119,19 @@ async function app(): Promise<any> {
         "Add vesting tokens and move these to MPL",
         "Deposit tokens by using updateL2FromL1",
         "Withdraw tokens by using updateL2FromL1",
+        "Sign Tx from ethUser by Metamask",
         "Read L2 updates",
         "RollDownMonitor",
         "depositHell",
         "getPolkAddress",
+        "allCandidatesToSequence",
       ],
     })
     .then(async (answers: { option: string | string[] }) => {
       console.log("Answers::: " + JSON.stringify(answers, null, "  "));
+      if (answers.option.includes("allCandidatesToSequence")) {
+        return allCandidatesToSequence();
+      }
       if (answers.option.includes("getPolkAddress")) {
         return inquirer
           .prompt([
@@ -145,9 +152,8 @@ async function app(): Promise<any> {
         await monitorRollDown("deposit");
       }
       if (answers.option.includes("depositHell")) {
-        let index = 0;
         while (true) {
-          index = await depositHell(1000, index);
+          await depositHell(1000);
         }
       }
       if (answers.option.includes("Read L2 updates")) {
@@ -890,10 +896,29 @@ async function app(): Promise<any> {
             },
           );
       }
+      if (answers.option.includes("Sign Tx from ethUser by Metamask")) {
+        return inquirer
+          .prompt([
+            {
+              type: "input",
+              name: "ethPrivateKey",
+              message: "Ethereum private key",
+            },
+            {
+              type: "input",
+              name: "txHex",
+              message: "Extrinsic hex",
+            },
+          ])
+          .then(async (answers: { ethPrivateKey: string; txHex: string }) => {
+            await initApi();
+            await signEthUserTxByMetamask(answers.txHex, answers.ethPrivateKey);
+            return app();
+          });
+      }
       return app();
     });
 }
-
 const main = async () => {
   await app();
 };

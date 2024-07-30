@@ -20,14 +20,14 @@ import {
   getBalanceOfPool,
   getEventResultFromMangataTx,
 } from "../../utils/txHandler";
-import { BN_ONE, BN_TEN_THOUSAND, BN_ZERO } from "@mangata-finance/sdk";
+import { BN_ONE, BN_TEN_THOUSAND, BN_ZERO } from "gasp-sdk";
 import {
   EVENT_METHOD_PAYMENT,
   EVENT_SECTION_PAYMENT,
   GASP_ASSET_ID,
 } from "../../utils/Constants";
 import { Assets } from "../../utils/Assets";
-import { BN_MILLION } from "@mangata-finance/sdk";
+import { BN_MILLION } from "gasp-sdk";
 import { Sudo } from "../../utils/sudo";
 import { Xyk } from "../../utils/xyk";
 

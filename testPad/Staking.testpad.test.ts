@@ -14,7 +14,7 @@ import {
 import fs from "fs";
 import { Assets } from "../utils/Assets";
 import { hexToBn } from "@polkadot/util";
-import { Mangata, signTx } from "@mangata-finance/sdk";
+import { Mangata, signTx } from "gasp-sdk";
 import { FeeTxs } from "../utils/tx";
 
 import "dotenv/config";

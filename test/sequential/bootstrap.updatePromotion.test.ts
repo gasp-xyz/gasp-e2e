@@ -32,7 +32,7 @@ import {
   waitForBootstrapStatus,
 } from "../../utils/Bootstrap";
 import { GASP_ASSET_ID } from "../../utils/Constants";
-import { MangataGenericEvent } from "@mangata-finance/sdk";
+import { MangataGenericEvent } from "gasp-sdk";
 import { getSudoUser, setupUsers } from "../../utils/setup";
 import { BN } from "@polkadot/util";
 

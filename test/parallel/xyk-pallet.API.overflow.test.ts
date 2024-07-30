@@ -28,7 +28,7 @@ import { TokensErrorCodes, xykErrors } from "../../utils/utils";
 import { getEventResultFromMangataTx } from "../../utils/txHandler";
 import { Sudo } from "../../utils/sudo";
 import { Xyk } from "../../utils/xyk";
-import { BN_ONE } from "@mangata-finance/sdk";
+import { BN_ONE } from "gasp-sdk";
 import { getSudoUser } from "../../utils/setup";
 
 jest.spyOn(console, "log").mockImplementation(jest.fn());

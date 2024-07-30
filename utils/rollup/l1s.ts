@@ -36,7 +36,7 @@ export const EthAnvil: TestChain = defineChain({
       address: "0x7a2088a1bFc9d81c55368AE168C2C02570cB814F",
     },
     native: {
-      address: "0x5748395867463837537395739375937493733457",
+      address: "0x0000000000000000000000000000000000000001",
     },
   },
   gaspName: "Ethereum",
@@ -63,7 +63,7 @@ export const ArbAnvil: TestChain = defineChain({
       address: "0x9fE46736679d2D9a65F0992F2272dE9f3c7fa6e0",
     },
     native: {
-      address: "0x5748395867463837537395739375937493733457",
+      address: "0x0000000000000000000000000000000000000001",
     },
   },
   gaspName: "Arbitrum",

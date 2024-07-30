@@ -14,7 +14,7 @@ import {
   GASP_ASSET_ID,
   TUR_ASSET_ID,
 } from "../../utils/Constants";
-import { BN_HUNDRED, BN_MILLION, BN_ZERO, signTx } from "@mangata-finance/sdk";
+import { BN_HUNDRED, BN_MILLION, BN_ZERO, signTx } from "gasp-sdk";
 import { Xyk } from "../../utils/xyk";
 import { getEventResultFromMangataTx } from "../../utils/txHandler";
 import { ExtrinsicResult } from "../../utils/eventListeners";

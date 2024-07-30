@@ -7,8 +7,8 @@ import { getApi, initApi } from "../../utils/api";
 import { BN } from "@polkadot/util";
 import { User } from "../../utils/User";
 import { setupApi, setupAPoolForUsers, Extrinsic } from "../../utils/setup";
-import { BN_ONE, BN_HUNDRED } from "@mangata-finance/sdk";
-import { BN_MILLION } from "@mangata-finance/sdk";
+import { BN_ONE, BN_HUNDRED } from "gasp-sdk";
+import { BN_MILLION } from "gasp-sdk";
 import { Tokens, Xyk } from "../../utils/xyk";
 
 jest.spyOn(console, "log").mockImplementation(jest.fn());

@@ -17,9 +17,9 @@ import {
   setupUsers,
 } from "../../utils/setup";
 import { getEventResultFromMangataTx } from "../../utils/txHandler";
-import { BN_ONE, BN_HUNDRED, signTx } from "@mangata-finance/sdk";
 import { FOUNDATION_ADDRESS_1, GASP_ASSET_ID } from "../../utils/Constants";
-import { BN_MILLION } from "@mangata-finance/sdk";
+import { BN_MILLION } from "gasp-sdk";
+import { BN_ONE, BN_HUNDRED, signTx } from "gasp-sdk";
 import { Sudo } from "../../utils/sudo";
 import { Xyk } from "../../utils/xyk";
 import { ApiPromise } from "@polkadot/api";

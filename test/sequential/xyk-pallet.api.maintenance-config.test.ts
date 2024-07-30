@@ -7,7 +7,7 @@ import { hexToU8a } from "@polkadot/util";
 import { getApi, initApi } from "../../utils/api";
 import { Assets } from "../../utils/Assets";
 import { FOUNDATION_ADDRESS_1, GASP_ASSET_ID } from "../../utils/Constants";
-import { MangataGenericEvent } from "@mangata-finance/sdk";
+import { MangataGenericEvent } from "gasp-sdk";
 import { BN } from "@polkadot/util";
 import { setupApi, setupUsers, sudo } from "../../utils/setup";
 import { Sudo } from "../../utils/sudo";

@@ -25,7 +25,7 @@ import {
   transferAsset,
   unlockVestedToken,
 } from "../../utils/tx";
-import { BN_ZERO, toBN } from "@mangata-finance/sdk";
+import { BN_ZERO, toBN } from "gasp-sdk";
 import { getBlockNumber } from "../../utils/utils";
 import { User } from "../../utils/User";
 import { Xyk } from "../../utils/xyk";

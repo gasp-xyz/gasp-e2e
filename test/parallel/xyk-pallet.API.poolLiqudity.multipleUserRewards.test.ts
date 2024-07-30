@@ -7,7 +7,7 @@ import { jest } from "@jest/globals";
 import { getApi, getMangataInstance, initApi } from "../../utils/api";
 import { Assets } from "../../utils/Assets";
 import { GASP_ASSET_ID } from "../../utils/Constants";
-import { MangataInstance } from "@mangata-finance/sdk";
+import { MangataInstance } from "gasp-sdk";
 import { getSudoUser, setupApi, setupUsers } from "../../utils/setup";
 import { Sudo } from "../../utils/sudo";
 import { getLiquidityAssetId } from "../../utils/tx";

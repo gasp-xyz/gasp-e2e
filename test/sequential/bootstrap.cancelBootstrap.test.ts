@@ -20,7 +20,7 @@ import {
   waitSudoOperationFail,
 } from "../../utils/eventListeners";
 import { GASP_ASSET_ID } from "../../utils/Constants";
-import { MangataGenericEvent } from "@mangata-finance/sdk";
+import { MangataGenericEvent } from "gasp-sdk";
 import { getSudoUser, setupUsers } from "../../utils/setup";
 
 jest.spyOn(console, "log").mockImplementation(jest.fn());

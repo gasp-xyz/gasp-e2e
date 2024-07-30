@@ -1,7 +1,7 @@
 /* eslint-disable no-console */
 /* eslint-disable no-loop-func */
 import { BN } from "@polkadot/util";
-import { MangataInstance } from "@mangata-finance/sdk";
+import { MangataInstance } from "gasp-sdk";
 import { testLog } from "../../utils/Logger";
 import { TestParams } from "../testParams";
 import { KeyringPair } from "@polkadot/keyring/types";
