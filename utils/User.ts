@@ -14,9 +14,11 @@ import {
   mintLiquidity,
   mintLiquidityUsingVestingNativeTokens,
   registerAsset,
+  registerL1Asset,
   reserveVestingLiquidityTokens,
   transferAll,
   updateAsset,
+  updateL1Asset,
 } from "./tx";
 import { getEventResultFromMangataTx } from "./txHandler";
 import {
@@ -377,6 +379,14 @@ export class User {
     return await registerAsset(this, assetId, location, locMarker, null);
   }
 
+  async registerL1Asset(
+    assetId: any,
+    tokenAddress = "0x" + randomBytes(20).toString("hex"),
+    l1AssetChain = "Ethereum",
+  ) {
+    return await registerL1Asset(this, assetId, l1AssetChain, tokenAddress);
+  }
+
   async updateAsset(
     assetId: any,
     additional = {
@@ -404,6 +414,14 @@ export class User {
     },
   ) {
     return await updateAsset(this, assetId, location, additional);
+  }
+
+  async updateL1Asset(
+    assetId: BN,
+    tokenAddress = "0x" + randomBytes(20).toString("hex"),
+    l1AssetChain = "Ethereum",
+  ) {
+    return await updateL1Asset(this, assetId, l1AssetChain, tokenAddress);
   }
 }
 export class Asset {
