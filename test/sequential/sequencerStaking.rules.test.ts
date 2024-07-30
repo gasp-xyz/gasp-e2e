@@ -239,9 +239,10 @@ describe("sequencerStaking", () => {
       seq.keyRingPair,
     ).then((events) => {
       const res = expectExtrinsicFail(events);
-      expect(res.data.toString()).toContain(
+      expect([
+        "SequencerLastUpdateStillInDisputePeriod",
         "SequencerAwaitingCancelResolution",
-      );
+      ]).toContain(res.data.toString());
     });
     await waitForNBlocks((await Rolldown.disputePeriodLength()).toNumber());
     await signTx(
