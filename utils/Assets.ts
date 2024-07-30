@@ -218,7 +218,7 @@ export class Assets {
     userAddress: string,
     amount: BN = this.DEFAULT_AMOUNT,
   ): Extrinsic {
-    return Sudo.sudo(api.tx.tokens.mint(MGA_ASSET_ID, userAddress, amount));
+    return Sudo.sudo(api.tx.tokens.mint(GASP_ASSET_ID, userAddress, amount));
   }
   public static createTokenWithNoAssetRegistry(
     user: User,

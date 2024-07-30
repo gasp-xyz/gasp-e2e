@@ -10,7 +10,7 @@ import { User } from "../../utils/User";
 import { setupApi, setup5PoolsChained, Extrinsic } from "../../utils/setup";
 import { getEventResultFromMangataTx } from "../../utils/txHandler";
 import { BN_ONE, BN_HUNDRED, signTx } from "gasp-sdk";
-import { MGA_ASSET_ID } from "../../utils/Constants";
+import { GASP_ASSET_ID } from "../../utils/Constants";
 import { BN_MILLION } from "gasp-sdk";
 import { Sudo } from "../../utils/sudo";
 import { Xyk } from "../../utils/xyk";

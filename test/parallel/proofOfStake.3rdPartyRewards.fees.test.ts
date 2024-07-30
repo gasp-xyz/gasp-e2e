@@ -10,7 +10,7 @@ import { Assets } from "../../utils/Assets";
 import { Sudo } from "../../utils/sudo";
 import { Xyk } from "../../utils/xyk";
 import { getSudoUser, setupApi, setupUsers } from "../../utils/setup";
-import { MGA_ASSET_ID } from "../../utils/Constants";
+import { GASP_ASSET_ID } from "../../utils/Constants";
 import { BN_ZERO, signTx } from "gasp-sdk";
 import { ProofOfStake } from "../../utils/ProofOfStake";
 import { getLiquidityAssetId } from "../../utils/tx";
