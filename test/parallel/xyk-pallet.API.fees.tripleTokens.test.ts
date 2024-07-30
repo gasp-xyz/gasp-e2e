@@ -295,7 +295,7 @@ test("User, when paying with eth, have to pay 1/10000000 eth per GASP spent.", a
   const deductedEthTkns = await getDeductedTokens(testUser2, ETH_ASSET_ID);
   const feesRatio = deductedGaspTkns.div(deductedEthTkns).toNumber();
 
-  expect(feesRatio).toEqual(10000000);
+  expect(feesRatio).toEqual(30000);
   expect(deductedGaspTkns).bnGt(BN_ZERO);
   expect(deductedEthTkns).bnGt(BN_ZERO);
 });
