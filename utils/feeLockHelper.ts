@@ -64,3 +64,9 @@ export async function addMgaToWhitelisted(
     await waitSudoOperationSuccess(updateMetadataEvent);
   }
 }
+
+export async function getFeeLockMetadata() {
+  const api = getApi();
+  const value = (await api.query.feeLock.feeLockMetadata()).value;
+  return value;
+}

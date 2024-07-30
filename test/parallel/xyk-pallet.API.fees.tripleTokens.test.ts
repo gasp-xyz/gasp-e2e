@@ -26,6 +26,7 @@ import { Xyk } from "../../utils/xyk";
 import { feeLockErrors } from "../../utils/utils";
 import { signTx } from "@mangata-finance/sdk";
 import { testLog } from "../../utils/Logger";
+import { getFeeLockMetadata } from "../../utils/feeLockHelper";
 
 jest.spyOn(console, "log").mockImplementation(jest.fn());
 jest.spyOn(console, "error").mockImplementation(jest.fn());
@@ -52,17 +53,16 @@ beforeAll(async () => {
 
   keyring = new Keyring({ type: "ethereum" });
 
-  const api = getApi();
   sudo = getSudoUser();
 
-  feeLockMetadata = (await api.query.feeLock.feeLockMetadata()).value;
+  feeLockMetadata = await getFeeLockMetadata();
   testLog
     .getLog()
-    .info(
+    .debug(
       "current feeLockMetadata - periodLength: " +
         feeLockMetadata.periodLength +
         ", feeLockAmount: " +
-        feeLockMetadata.periodLength.toString() +
+        feeLockMetadata.feeLockAmount.toString() +
         ", swapValueThreshold: " +
         feeLockMetadata.swapValueThreshold.toString() +
         ", whitelistedTokens: " +
@@ -114,18 +114,17 @@ beforeEach(async () => {
     Assets.mintToken(secondCurrency, testUser1, defaultCurrencyValue),
   );
 
-  const api = getApi();
-  feeLockMetadata = (await api.query.feeLock.feeLockMetadata()).value;
+  feeLockMetadata = await getFeeLockMetadata();
   swapValueThreshold = new BN(feeLockMetadata.swapValueThreshold.toString());
   feeLockAmount = new BN(feeLockMetadata.feeLockAmount.toString());
 
   testLog
     .getLog()
-    .info(
+    .debug(
       "current feeLockMetadata - periodLength: " +
         feeLockMetadata.periodLength +
         ", feeLockAmount: " +
-        feeLockMetadata.periodLength.toString() +
+        feeLockMetadata.feeLockAmount.toString() +
         ", swapValueThreshold: " +
         feeLockMetadata.swapValueThreshold.toString() +
         ", whitelistedTokens: " +
