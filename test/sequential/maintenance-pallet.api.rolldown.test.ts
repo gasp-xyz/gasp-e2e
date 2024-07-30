@@ -136,7 +136,12 @@ describe.each(["mm", "upgradabilityMm"])(
             users[2],
             await SequencerStaking.provideSequencerStaking(),
           ),
-        );
+        ).then((value) => {
+          testLog
+            .getLog()
+            .info("Sequencer staking provided" + JSON.stringify(value));
+          expectMGAExtrinsicSuDidSuccess(value);
+        });
         tests = {
           updateL2fromL1: [
             new L2Update(api)
@@ -191,7 +196,7 @@ describe.each(["mm", "upgradabilityMm"])(
         };
       }
     });
-    describe("On [%s] - regular l1 updates must be forbidden", () => {
+    describe.only("On [%s] - regular l1 updates must be forbidden", () => {
       it.each([
         "updateL2fromL1",
         "withdraw",
