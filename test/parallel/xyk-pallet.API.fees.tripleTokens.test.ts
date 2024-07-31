@@ -277,7 +277,7 @@ test("GIVEN User has a very limited amount of GASP & a minimal amount of Eth AND
   );
 });
 
-test("User, when paying with eth, have to pay 1/10000000 eth per GASP spent.", async () => {
+test("User, when paying with eth, have to pay 1/30000 eth per GASP spent.", async () => {
   const [testUser2] = setupUsers();
 
   testUser2.addAsset(GASP_ASSET_ID);
