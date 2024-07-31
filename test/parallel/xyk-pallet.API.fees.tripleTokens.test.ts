@@ -6,7 +6,11 @@
  */
 import { jest } from "@jest/globals";
 import { getApi, initApi } from "../../utils/api";
-import { mintLiquidity, updateFeeLockMetadata } from "../../utils/tx";
+import {
+  mintLiquidity,
+  updateFeeLockMetadata,
+  updateL1Asset,
+} from "../../utils/tx";
 import { ExtrinsicResult } from "../../utils/eventListeners";
 import { BN, BN_ZERO } from "@polkadot/util";
 import { Keyring } from "@polkadot/api";
@@ -148,6 +152,25 @@ describe.each`
 });
 
 test("User can't pay a Tx with only Arbitrum-Eth", async () => {
+  const api = getApi();
+
+  await updateL1Asset(
+    sudo,
+    ARB_ETH_ASSET_ID,
+    "Arbitrum",
+    "0x0000000000000000000000000000000000000001",
+  );
+
+  const idToL1ArbEthAsset = JSON.parse(
+    JSON.stringify(
+      await api.query.assetRegistry.idToL1Asset(ARB_ETH_ASSET_ID.toNumber()),
+    ),
+  );
+
+  expect(idToL1ArbEthAsset.arbitrum).toBe(
+    "0x0000000000000000000000000000000000000001",
+  );
+
   await Sudo.batchAsSudoFinalized(
     Assets.mintToken(ARB_ETH_ASSET_ID, testUser1, Assets.DEFAULT_AMOUNT),
   );
