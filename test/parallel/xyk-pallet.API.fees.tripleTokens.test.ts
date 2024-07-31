@@ -6,11 +6,7 @@
  */
 import { jest } from "@jest/globals";
 import { getApi, initApi } from "../../utils/api";
-import {
-  mintLiquidity,
-  updateFeeLockMetadata,
-  updateL1Asset,
-} from "../../utils/tx";
+import { mintLiquidity, updateFeeLockMetadata } from "../../utils/tx";
 import { ExtrinsicResult } from "../../utils/eventListeners";
 import { BN, BN_ZERO } from "@polkadot/util";
 import { Keyring } from "@polkadot/api";
@@ -18,7 +14,6 @@ import { Assets } from "../../utils/Assets";
 import { AssetWallet, User } from "../../utils/User";
 import { getEventResultFromMangataTx } from "../../utils/txHandler";
 import {
-  ARB_ETH_ASSET_ID,
   ETH_ASSET_ID,
   ETH_ASSET_NAME,
   GASP_ASSET_ID,
@@ -153,26 +148,34 @@ describe.each`
 
 test("User can't pay a Tx with only Arbitrum-Eth", async () => {
   const api = getApi();
-
-  await updateL1Asset(
-    sudo,
-    ARB_ETH_ASSET_ID,
-    "Arbitrum",
-    "0x0000000000000000000000000000000000000001",
-  );
-
-  const idToL1ArbEthAsset = JSON.parse(
+  let arbEthAssetId: BN;
+  arbEthAssetId = JSON.parse(
     JSON.stringify(
-      await api.query.assetRegistry.idToL1Asset(ARB_ETH_ASSET_ID.toNumber()),
+      await api.query.assetRegistry.l1AssetToId({
+        Arbitrum: "0x0000000000000000000000000000000000000001",
+      }),
     ),
   );
 
-  expect(idToL1ArbEthAsset.arbitrum).toBe(
-    "0x0000000000000000000000000000000000000001",
-  );
+  if (arbEthAssetId == null) {
+    await sudo.registerL1Asset(
+      null,
+      "0x0000000000000000000000000000000000000001",
+      "Arbitrum",
+    );
+    arbEthAssetId = JSON.parse(
+      JSON.stringify(
+        await api.query.assetRegistry.l1AssetToId({
+          Arbitrum: "0x0000000000000000000000000000000000000001",
+        }),
+      ),
+    );
+  }
+
+  expect(arbEthAssetId).not.toBe(null);
 
   await Sudo.batchAsSudoFinalized(
-    Assets.mintToken(ARB_ETH_ASSET_ID, testUser1, Assets.DEFAULT_AMOUNT),
+    Assets.mintToken(arbEthAssetId, testUser1, Assets.DEFAULT_AMOUNT),
   );
   let exception = false;
   await expect(
