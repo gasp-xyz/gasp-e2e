@@ -148,7 +148,9 @@ describe.each`
 });
 
 test("User can't pay a Tx with only Arbitrum-Eth", async () => {
-  await sudo.mint(ARB_ETH_ASSET_ID, testUser1, Assets.DEFAULT_AMOUNT);
+  await Sudo.batchAsSudoFinalized(
+    Assets.mintToken(ARB_ETH_ASSET_ID, testUser1, Assets.DEFAULT_AMOUNT),
+  );
   let exception = false;
   await expect(
     mintLiquidity(
