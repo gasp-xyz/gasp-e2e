@@ -20,8 +20,8 @@ import {
 } from "../../utils/Bootstrap";
 import { getNextAssetId } from "../../utils/tx";
 import { BN } from "@polkadot/util";
+import { GASP_ASSET_ID } from "../../utils/Constants";
 import { BN_ONE, toBN } from "gasp-sdk";
-import { MGA_ASSET_ID } from "../../utils/Constants";
 import { getSudoUser, setupApi, setupUsers } from "../../utils/setup";
 import { Sudo } from "../../utils/sudo";
 
@@ -40,7 +40,7 @@ async function runBootstrap(assetId: any) {
   const assetIdBn = new BN(assetId.toString());
   const scheduleBootstrapEvent = await scheduleBootstrap(
     sudo,
-    MGA_ASSET_ID,
+    GASP_ASSET_ID,
     assetIdBn,
     waitingPeriod,
     bootstrapPeriod,
@@ -57,13 +57,13 @@ async function runBootstrap(assetId: any) {
     ),
     Sudo.sudoAs(
       testUser1,
-      api.tx.bootstrap.provision(MGA_ASSET_ID, poolAssetAmount),
+      api.tx.bootstrap.provision(GASP_ASSET_ID, poolAssetAmount),
     ),
   );
 
   await waitForBootstrapStatus("Finished", bootstrapPeriod);
 
-  bootstrapPool = await api.query.xyk.pools([MGA_ASSET_ID, assetId]);
+  bootstrapPool = await api.query.xyk.pools([GASP_ASSET_ID, assetId]);
   expect(bootstrapPool[0]).bnEqual(poolAssetAmount);
   expect(bootstrapPool[1]).bnEqual(poolAssetAmount);
 
@@ -80,7 +80,7 @@ beforeAll(async () => {
   setupUsers();
   sudo = getSudoUser();
   [testUser1] = setupUsers();
-  await testUser1.addMGATokens(sudo, toBN("1", 22));
+  await testUser1.addGASPTokens(sudo, toBN("1", 22));
 });
 
 test("register asset and then try to register new one with the same location, expect to conflict", async () => {

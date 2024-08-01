@@ -9,7 +9,7 @@ import { getApi, initApi } from "../../utils/api";
 import { Node } from "../../utils/Framework/Node/Node";
 import { UserFactory, Users } from "../../utils/Framework/User/UserFactory";
 import { Keyring } from "@polkadot/api";
-import { MGA_ASSET_ID } from "../../utils/Constants";
+import { GASP_ASSET_ID } from "../../utils/Constants";
 import { Sudo } from "../../utils/sudo";
 import { Xyk } from "../../utils/xyk";
 import { ProofOfStake } from "../../utils/ProofOfStake";
@@ -71,22 +71,22 @@ export class Extrinsic3rdPartyScheduleActivate extends performanceTestItem {
         Assets.DEFAULT_AMOUNT.muln(40e6),
       ),
       Xyk.createPool(
-        MGA_ASSET_ID,
+        GASP_ASSET_ID,
         Assets.DEFAULT_AMOUNT.muln(10e6),
         new BN(this.tokens[0]),
         Assets.DEFAULT_AMOUNT.muln(10e6),
       ),
       Xyk.createPool(
-        MGA_ASSET_ID,
+        GASP_ASSET_ID,
         Assets.DEFAULT_AMOUNT.muln(10e6),
         new BN(this.tokens[1]),
         Assets.DEFAULT_AMOUNT.muln(10e6),
       ),
     );
-    liq1 = await getLiquidityAssetId(MGA_ASSET_ID, new BN(this.tokens[0]));
-    liq2 = await getLiquidityAssetId(MGA_ASSET_ID, new BN(this.tokens[1]));
+    liq1 = await getLiquidityAssetId(GASP_ASSET_ID, new BN(this.tokens[0]));
+    liq2 = await getLiquidityAssetId(GASP_ASSET_ID, new BN(this.tokens[1]));
     await this.mintTokensToUsers(testParams.threads, testParams.nodes, [
-      MGA_ASSET_ID,
+      GASP_ASSET_ID,
       liq1,
       liq2,
     ]);
@@ -128,16 +128,16 @@ async function createAndSignNewSchedulesAndActivate(
   const assets = [tokens[0], tokens[1]];
   const tx = Sudo.batch(
     await ProofOfStake.rewardPool(
-      MGA_ASSET_ID,
+      GASP_ASSET_ID,
       new BN(assets[0]),
-      MGA_ASSET_ID,
+      GASP_ASSET_ID,
       Assets.DEFAULT_AMOUNT.muln(10e6),
       4,
     ),
     await ProofOfStake.activateLiquidityFor3rdpartyRewards(
       liq1,
       BN_ONE,
-      MGA_ASSET_ID,
+      GASP_ASSET_ID,
     ),
   );
   await tx.signAsync(

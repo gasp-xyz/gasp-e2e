@@ -19,7 +19,7 @@ import { Keyring } from "@polkadot/api";
 import { AssetWallet, User } from "../../utils/User";
 import { validateAssetsWithValues } from "../../utils/validators";
 import { Assets } from "../../utils/Assets";
-import { MGA_ASSET_ID } from "../../utils/Constants";
+import { GASP_ASSET_ID } from "../../utils/Constants";
 import { createPool } from "../../utils/tx";
 import { getSudoUser } from "../../utils/setup";
 
@@ -61,11 +61,11 @@ beforeEach(async () => {
     sudo,
   );
   //add zero MGA tokens.
-  await testUser1.addMGATokens(sudo);
+  await testUser1.addGASPTokens(sudo);
   // add users to pair.
   keyring.addPair(testUser1.keyRingPair);
   keyring.addPair(sudo.keyRingPair);
-  testUser1.addAsset(MGA_ASSET_ID);
+  testUser1.addAsset(GASP_ASSET_ID);
   // check users accounts.
   await testUser1.refreshAmounts(AssetWallet.BEFORE);
   validateAssetsWithValues(

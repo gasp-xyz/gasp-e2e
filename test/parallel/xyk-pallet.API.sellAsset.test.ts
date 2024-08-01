@@ -77,7 +77,7 @@ describe("xyk-pallet - Sell assets tests: SellAsset Errors:", () => {
         sudo,
       );
 
-    await testUser1.addMGATokens(sudo);
+    await testUser1.addGASPTokens(sudo);
 
     await testUser1.refreshAmounts(AssetWallet.BEFORE);
 
@@ -344,7 +344,7 @@ describe("xyk-pallet - Sell assets tests: Selling Assets you can", () => {
       [defaultCurrencyValue, defaultCurrencyValue.add(new BN(1))],
       sudo,
     );
-    await testUser1.addMGATokens(sudo);
+    await testUser1.addGASPTokens(sudo);
     await createPool(
       testUser1.keyRingPair,
       firstCurrency,
@@ -419,7 +419,7 @@ describe("xyk-pallet - Sell assets tests: Selling Assets you can", () => {
     );
 
     await sudo.mint(thirdCurrency, testUser1, new BN(10000));
-    await testUser1.addMGATokens(sudo);
+    await testUser1.addGASPTokens(sudo);
     await createPool(
       testUser1.keyRingPair,
       firstCurrency,

@@ -9,7 +9,7 @@ import { Assets } from "../../utils/Assets";
 import { Sudo } from "../../utils/sudo";
 import { Xyk } from "../../utils/xyk";
 import { getSudoUser, setupApi, setupUsers } from "../../utils/setup";
-import { MGA_ASSET_ID } from "../../utils/Constants";
+import { GASP_ASSET_ID } from "../../utils/Constants";
 import { ProofOfStake } from "../../utils/ProofOfStake";
 import "jest-extended";
 import { getLiquidityAssetId } from "../../utils/tx";
@@ -54,7 +54,7 @@ describe("Proof of stake tests", () => {
       Sudo.sudoAs(
         sudo,
         Xyk.createPool(
-          MGA_ASSET_ID,
+          GASP_ASSET_ID,
           Assets.DEFAULT_AMOUNT.muln(20e6),
           newToken1,
           Assets.DEFAULT_AMOUNT.muln(20e6),
@@ -63,7 +63,7 @@ describe("Proof of stake tests", () => {
       Sudo.sudoAs(
         sudo,
         Xyk.createPool(
-          MGA_ASSET_ID,
+          GASP_ASSET_ID,
           Assets.DEFAULT_AMOUNT.muln(20e6),
           newToken2,
           Assets.DEFAULT_AMOUNT.muln(20e6),
@@ -72,21 +72,21 @@ describe("Proof of stake tests", () => {
       Sudo.sudoAs(
         sudo,
         Xyk.createPool(
-          MGA_ASSET_ID,
+          GASP_ASSET_ID,
           Assets.DEFAULT_AMOUNT.muln(20e6),
           newToken3,
           Assets.DEFAULT_AMOUNT.muln(20e6),
         ),
       ),
     );
-    liqIdMgaToken1 = await getLiquidityAssetId(MGA_ASSET_ID, newToken1);
-    liqIdMgaToken2 = await getLiquidityAssetId(MGA_ASSET_ID, newToken2);
-    liqIdMgaToken3 = await getLiquidityAssetId(MGA_ASSET_ID, newToken3);
+    liqIdMgaToken1 = await getLiquidityAssetId(GASP_ASSET_ID, newToken1);
+    liqIdMgaToken2 = await getLiquidityAssetId(GASP_ASSET_ID, newToken2);
+    liqIdMgaToken3 = await getLiquidityAssetId(GASP_ASSET_ID, newToken3);
     await Sudo.batchAsSudoFinalized(
       Sudo.sudoAs(
         sudo,
         await ProofOfStake.rewardPool(
-          MGA_ASSET_ID,
+          GASP_ASSET_ID,
           newToken1,
           newToken2,
           Assets.DEFAULT_AMOUNT.muln(10e6),
@@ -96,7 +96,7 @@ describe("Proof of stake tests", () => {
       Sudo.sudoAs(
         sudo,
         await ProofOfStake.rewardPool(
-          MGA_ASSET_ID,
+          GASP_ASSET_ID,
           newToken1,
           newToken3,
           Assets.DEFAULT_AMOUNT.muln(10e6),

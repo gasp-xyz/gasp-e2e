@@ -19,7 +19,7 @@ import {
   sudoClaimCrowdloanRewards,
 } from "../../utils/tx";
 import { getBlockNumber, waitBlockNumber } from "../../utils/utils";
-import { MGA_ASSET_ID } from "../../utils/Constants";
+import { GASP_ASSET_ID } from "../../utils/Constants";
 import { BN_ZERO, signTx } from "gasp-sdk";
 import { getEventResultFromMangataTx } from "../../utils/txHandler";
 import { ExtrinsicResult, waitNewBlock } from "../../utils/eventListeners";
@@ -43,7 +43,7 @@ let api: ApiPromise;
 let sudo: User;
 let crowdloanId: any;
 const crowdloanRewardsAmount = new BN("1000000000000000000000000");
-const nativeCurrencyId = MGA_ASSET_ID;
+const nativeCurrencyId = GASP_ASSET_ID;
 
 beforeAll(async () => {
   try {
@@ -101,24 +101,24 @@ beforeAll(async () => {
 test("Users receive different rewards when they confirm them before, during and after crowdloan", async () => {
   const user1BalanceBeforeClaiming = await api.query.tokens.accounts(
     testUser1.keyRingPair.address,
-    MGA_ASSET_ID,
+    GASP_ASSET_ID,
   );
 
   const user2BalanceBeforeClaiming = await api.query.tokens.accounts(
     testUser2.keyRingPair.address,
-    MGA_ASSET_ID,
+    GASP_ASSET_ID,
   );
 
   const user3BalanceBeforeClaiming = await api.query.tokens.accounts(
     testUser3.keyRingPair.address,
-    MGA_ASSET_ID,
+    GASP_ASSET_ID,
   );
 
   await sudoClaimCrowdloanRewards(crowdloanId, testUser1);
 
   const user1BalanceAfterClaiming = await api.query.tokens.accounts(
     testUser1.keyRingPair.address,
-    MGA_ASSET_ID,
+    GASP_ASSET_ID,
   );
 
   await waitBlockNumber((leaseStartBlock + 5).toString(), 10);
@@ -127,14 +127,14 @@ test("Users receive different rewards when they confirm them before, during and 
 
   const user2BalanceAfterClaiming = await api.query.tokens.accounts(
     testUser2.keyRingPair.address,
-    MGA_ASSET_ID,
+    GASP_ASSET_ID,
   );
 
   await waitBlockNumber(leaseEndingBlock.toString(), 10);
   await sudoClaimCrowdloanRewards(crowdloanId, testUser3);
   const user3BalanceAfterClaiming = await api.query.tokens.accounts(
     testUser3.keyRingPair.address,
-    MGA_ASSET_ID,
+    GASP_ASSET_ID,
   );
 
   //if user claimed rewards before crowdloan all tokens would be frozen
@@ -158,21 +158,21 @@ test("Users receive different rewards when they confirm them before, during and 
     new BN(user3BalanceAfterClaiming.free).sub(user3BalanceBeforeClaiming.free),
   ).bnEqual(crowdloanRewardsAmount);
   await Sudo.batchAsSudoFinalized(
-    Sudo.sudoAs(testUser1, api.tx.vesting.vest(MGA_ASSET_ID)),
-    Sudo.sudoAs(testUser2, api.tx.vesting.vest(MGA_ASSET_ID)),
+    Sudo.sudoAs(testUser1, api.tx.vesting.vest(GASP_ASSET_ID)),
+    Sudo.sudoAs(testUser2, api.tx.vesting.vest(GASP_ASSET_ID)),
   );
 
   const user1FinalBalance = await api.query.tokens.accounts(
     testUser1.keyRingPair.address,
-    MGA_ASSET_ID,
+    GASP_ASSET_ID,
   );
   const user2FinalBalance = await api.query.tokens.accounts(
     testUser2.keyRingPair.address,
-    MGA_ASSET_ID,
+    GASP_ASSET_ID,
   );
   const user3FinalBalance = await api.query.tokens.accounts(
     testUser3.keyRingPair.address,
-    MGA_ASSET_ID,
+    GASP_ASSET_ID,
   );
 
   expect(new BN(user1FinalBalance.free)).bnEqual(
@@ -206,7 +206,7 @@ test("A user can only change his reward-address with: crowdloan.updateRewardAddr
 
   const userBalanceBeforeClaiming = await api.query.tokens.accounts(
     testUser9.keyRingPair.address,
-    MGA_ASSET_ID,
+    GASP_ASSET_ID,
   );
 
   await claimCrowdloanRewards(crowdloanId, testUser9).then((result) => {
@@ -215,7 +215,7 @@ test("A user can only change his reward-address with: crowdloan.updateRewardAddr
 
   const userBalanceAfterClaiming = await api.query.tokens.accounts(
     testUser9.keyRingPair.address,
-    MGA_ASSET_ID,
+    GASP_ASSET_ID,
   );
 
   expect(
@@ -254,7 +254,7 @@ describe("Test that a user can claim when", () => {
   async function claimAndCheckUserReward(crowdloanId: any, user: User) {
     const userTokenAmountBefore = await api.query.tokens.accounts(
       user.keyRingPair.address,
-      MGA_ASSET_ID,
+      GASP_ASSET_ID,
     );
 
     await claimCrowdloanRewards(crowdloanId, user);
@@ -263,7 +263,7 @@ describe("Test that a user can claim when", () => {
 
     const userTokenAmountAfter = await api.query.tokens.accounts(
       user.keyRingPair.address,
-      MGA_ASSET_ID,
+      GASP_ASSET_ID,
     );
 
     const userTokenAmountDiff = userTokenAmountAfter!.free.sub(

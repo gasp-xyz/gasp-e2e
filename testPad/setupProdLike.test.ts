@@ -4,7 +4,7 @@ import { BN } from "@polkadot/util";
 import { Xyk } from "../utils/xyk";
 import { getApi, initApi } from "../utils/api";
 import { provisionBootstrap, scheduleBootstrap } from "../utils/tx";
-import { MGA_ASSET_ID } from "../utils/Constants";
+import { GASP_ASSET_ID } from "../utils/Constants";
 import { User } from "../utils/User";
 import {
   getEnvironmentRequiredVars,
@@ -65,7 +65,7 @@ describe("Boostrap - testpad", () => {
       Sudo.sudoAs(
         user1,
         Xyk.createPool(
-          MGA_ASSET_ID,
+          GASP_ASSET_ID,
           new BN("1000000000000000000000"),
           new BN(7),
           new BN("10000000000000"),
@@ -85,7 +85,7 @@ describe("Boostrap - testpad", () => {
     const bootstraplength = 10;
     await scheduleBootstrap(
       sudo,
-      MGA_ASSET_ID,
+      GASP_ASSET_ID,
       new BN(4),
       blockstostart,
       bootstraplength,
@@ -95,7 +95,7 @@ describe("Boostrap - testpad", () => {
     await provisionBootstrap(testUser1, new BN(4), new BN("10000000000000000"));
     await provisionBootstrap(
       testUser1,
-      MGA_ASSET_ID,
+      GASP_ASSET_ID,
       new BN("1000000000000000000000"),
     );
     await setAssetInfo(sudo, new BN(4), "KSM", "KSM", "", new BN(12));

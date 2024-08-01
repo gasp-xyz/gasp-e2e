@@ -19,7 +19,7 @@ import { setupApi, setupUsers } from "../../utils/setup";
 import { AssetWallet, User } from "../../utils/User";
 import { getEnvironmentRequiredVars } from "../../utils/utils";
 import { Swap } from "../../utils/frontend/pages/Swap";
-import { MGA_ASSET_ID, MGR_ASSET_NAME } from "../../utils/Constants";
+import { GASP_ASSET_ID, MGR_ASSET_NAME } from "../../utils/Constants";
 import {
   ModalType,
   NotificationModal,
@@ -68,7 +68,7 @@ describe("UI tests - swapping assets", () => {
     await createPoolIfMissing(
       sudo,
       "1800000000000000000000000000000000",
-      MGA_ASSET_ID,
+      GASP_ASSET_ID,
       testAssetId,
     );
 

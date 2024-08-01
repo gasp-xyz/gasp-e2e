@@ -6,7 +6,7 @@ import { jest } from "@jest/globals";
 import { hexToU8a } from "@polkadot/util";
 import { getApi, initApi } from "../../utils/api";
 import { Assets } from "../../utils/Assets";
-import { FOUNDATION_ADDRESS_1, MGA_ASSET_ID } from "../../utils/Constants";
+import { FOUNDATION_ADDRESS_1, GASP_ASSET_ID } from "../../utils/Constants";
 import { MangataGenericEvent } from "gasp-sdk";
 import { BN } from "@polkadot/util";
 import { setupApi, setupUsers, sudo } from "../../utils/setup";
@@ -67,7 +67,7 @@ beforeAll(async () => {
     Sudo.sudoAs(
       sudo,
       Xyk.createPool(
-        MGA_ASSET_ID,
+        GASP_ASSET_ID,
         defaultPoolVolumeValue,
         firstCurrency,
         defaultPoolVolumeValue,
@@ -79,13 +79,13 @@ beforeAll(async () => {
     ),
   );
 
-  liqId = await getLiquidityAssetId(MGA_ASSET_ID, firstCurrency);
+  liqId = await getLiquidityAssetId(GASP_ASSET_ID, firstCurrency);
 
   await Sudo.batchAsSudoFinalized(
     Assets.promotePool(liqId.toNumber(), 20),
     Sudo.sudoAs(
       testUser1,
-      Xyk.mintLiquidity(MGA_ASSET_ID, firstCurrency, defaultPoolVolumeValue),
+      Xyk.mintLiquidity(GASP_ASSET_ID, firstCurrency, defaultPoolVolumeValue),
     ),
   );
 });
@@ -171,7 +171,7 @@ test("check UpgradabilityOn can only be set after MaintenanceModeOn is set and M
 });
 
 test("maintenance- check we can sell MGX tokens and compoundRewards THEN switch maintenanceMode to on, repeat the operation and receive error", async () => {
-  testUser1.addAsset(MGA_ASSET_ID);
+  testUser1.addAsset(GASP_ASSET_ID);
   testUser1.addAsset(firstCurrency);
   testUser1.addAsset(liqId);
 
@@ -182,7 +182,7 @@ test("maintenance- check we can sell MGX tokens and compoundRewards THEN switch 
   await sellAsset(
     testUser1.keyRingPair,
     firstCurrency,
-    MGA_ASSET_ID,
+    GASP_ASSET_ID,
     new BN(10000),
     new BN(1),
   ).then((result) => {
@@ -206,7 +206,7 @@ test("maintenance- check we can sell MGX tokens and compoundRewards THEN switch 
     sellAsset(
       testUser1.keyRingPair,
       firstCurrency,
-      MGA_ASSET_ID,
+      GASP_ASSET_ID,
       new BN(10000),
       new BN(1),
     ).catch((reason) => {
@@ -233,7 +233,7 @@ test("maintenance- check we can sell MGX tokens and compoundRewards THEN switch 
   await sellAsset(
     testUser1.keyRingPair,
     firstCurrency,
-    MGA_ASSET_ID,
+    GASP_ASSET_ID,
     new BN(10000),
     new BN(1),
   ).then((result) => {

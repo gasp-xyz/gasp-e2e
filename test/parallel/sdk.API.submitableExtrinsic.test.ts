@@ -11,7 +11,7 @@ import { Sudo } from "../../utils/sudo";
 import { AssetWallet, User } from "../../utils/User";
 import { getUserBalanceOfToken } from "../../utils/utils";
 import { Xyk } from "../../utils/xyk";
-import { MGA_ASSET_ID } from "../../utils/Constants";
+import { GASP_ASSET_ID } from "../../utils/Constants";
 import {
   activateLiquidity,
   getBalanceOfPool,
@@ -75,7 +75,7 @@ beforeAll(async () => {
     Sudo.sudoAs(
       testUser,
       Xyk.createPool(
-        MGA_ASSET_ID,
+        GASP_ASSET_ID,
         Assets.DEFAULT_AMOUNT.divn(2),
         token1,
         Assets.DEFAULT_AMOUNT.divn(2),
@@ -84,7 +84,7 @@ beforeAll(async () => {
     Sudo.sudoAs(
       testUser,
       Xyk.createPool(
-        MGA_ASSET_ID,
+        GASP_ASSET_ID,
         Assets.DEFAULT_AMOUNT.divn(2),
         token2,
         Assets.DEFAULT_AMOUNT.divn(2),
@@ -92,8 +92,8 @@ beforeAll(async () => {
     ),
   );
 
-  liqId = await getLiquidityAssetId(MGA_ASSET_ID, token1);
-  liqId2 = await getLiquidityAssetId(MGA_ASSET_ID, token2);
+  liqId = await getLiquidityAssetId(GASP_ASSET_ID, token1);
+  liqId2 = await getLiquidityAssetId(GASP_ASSET_ID, token2);
 
   await Sudo.batchAsSudoFinalized(
     Assets.promotePool(liqId.toNumber(), 20),
@@ -102,7 +102,7 @@ beforeAll(async () => {
 
   testUser.addAsset(liqId);
   testUser.addAsset(liqId2);
-  testUser.addAsset(MGA_ASSET_ID);
+  testUser.addAsset(GASP_ASSET_ID);
   testUser.addAsset(token1);
 });
 
@@ -176,7 +176,7 @@ test("check mintLiquidity", async () => {
     account: testUser.keyRingPair.address,
     expectedSecondTokenAmount: BN_BILLION,
     firstTokenAmount: BN_HUNDRED,
-    firstTokenId: MGA_ASSET_ID.toString(),
+    firstTokenId: GASP_ASSET_ID.toString(),
     secondTokenId: token1.toString(),
   });
 
@@ -199,7 +199,7 @@ test("check burnLiquidity", async () => {
   const tx = await mangata.submitableExtrinsic.burnLiquidity({
     account: testUser.keyRingPair.address,
     amount: BN_HUNDRED,
-    firstTokenId: MGA_ASSET_ID.toString(),
+    firstTokenId: GASP_ASSET_ID.toString(),
     secondTokenId: token1.toString(),
   });
 
@@ -231,15 +231,15 @@ test("check createPool", async () => {
   const tx = await mangata.submitableExtrinsic.createPool({
     account: testUser.keyRingPair.address,
     firstTokenAmount: Assets.DEFAULT_AMOUNT.divn(2),
-    firstTokenId: MGA_ASSET_ID.toString(),
+    firstTokenId: GASP_ASSET_ID.toString(),
     secondTokenAmount: Assets.DEFAULT_AMOUNT.divn(2),
     secondTokenId: token2.toString(),
   });
 
   await signSubmittableExtrinsic(tx, testUser);
 
-  const balancePool = await getBalanceOfPool(MGA_ASSET_ID, token2);
-  const liqId2 = await getLiquidityAssetId(MGA_ASSET_ID, token2);
+  const balancePool = await getBalanceOfPool(GASP_ASSET_ID, token2);
+  const liqId2 = await getLiquidityAssetId(GASP_ASSET_ID, token2);
 
   expect(liqId2).bnGt(BN_ZERO);
   expect(balancePool[0]).bnEqual(Assets.DEFAULT_AMOUNT.divn(2));
@@ -249,7 +249,7 @@ test("check createPool", async () => {
 test("check multiswapBuyAsset", async () => {
   const tx = await mangata.submitableExtrinsic.multiswapBuyAsset({
     account: testUser.keyRingPair.address,
-    tokenIds: [MGA_ASSET_ID.toString(), token1.toString()],
+    tokenIds: [GASP_ASSET_ID.toString(), token1.toString()],
     amount: BN_HUNDRED,
     maxAmountIn: BN_BILLION,
   });
@@ -270,7 +270,7 @@ test("check multiswapBuyAsset", async () => {
 test("check multiswapSellAsset", async () => {
   const tx = await mangata.submitableExtrinsic.multiswapSellAsset({
     account: testUser.keyRingPair.address,
-    tokenIds: [MGA_ASSET_ID.toString(), token1.toString()],
+    tokenIds: [GASP_ASSET_ID.toString(), token1.toString()],
     amount: BN_HUNDRED,
     minAmountOut: BN_ONE,
   });
@@ -295,12 +295,12 @@ test("check transferTokens", async () => {
     account: testUser.keyRingPair.address,
     address: testUser1.keyRingPair.address,
     amount: BN_BILLION,
-    tokenId: MGA_ASSET_ID.toString(),
+    tokenId: GASP_ASSET_ID.toString(),
   });
 
   await signSubmittableExtrinsic(tx, testUser);
 
-  const balance = await getUserBalanceOfToken(MGA_ASSET_ID, testUser1);
+  const balance = await getUserBalanceOfToken(GASP_ASSET_ID, testUser1);
 
   expect(balance.free).bnEqual(BN_BILLION);
 });

@@ -19,7 +19,7 @@ import { Keyring } from "@polkadot/api";
 import { AssetWallet, User } from "../../utils/User";
 import { validateTreasuryAmountsEqual } from "../../utils/validators";
 import { Assets } from "../../utils/Assets";
-import { MAX_BALANCE, MGA_ASSET_ID } from "../../utils/Constants";
+import { MAX_BALANCE, GASP_ASSET_ID } from "../../utils/Constants";
 import {
   calculateFees,
   findBlockWithExtrinsicSigned,
@@ -70,7 +70,7 @@ describe("xyk-pallet - treasury tests [Mangata]: on treasury we store", () => {
     keyring.addPair(testUser1.keyRingPair);
     keyring.addPair(sudo.keyRingPair);
 
-    mgaTokenId = MGA_ASSET_ID;
+    mgaTokenId = GASP_ASSET_ID;
     await sudo.mint(
       mgaTokenId,
       testUser1,
@@ -84,7 +84,7 @@ describe("xyk-pallet - treasury tests [Mangata]: on treasury we store", () => {
         sudo,
       )
     )[0];
-    await testUser1.addMGATokens(sudo);
+    await testUser1.addGASPTokens(sudo);
     await createPool(
       testUser1.keyRingPair,
       mgaTokenId,
@@ -286,7 +286,7 @@ describe("xyk-pallet - treasury tests [Connected - Mangata]: on treasury we stor
     keyring.addPair(testUser1.keyRingPair);
     keyring.addPair(sudo.keyRingPair);
 
-    mgaTokenId = MGA_ASSET_ID;
+    mgaTokenId = GASP_ASSET_ID;
     await sudo.mint(
       mgaTokenId,
       testUser1,
@@ -307,7 +307,7 @@ describe("xyk-pallet - treasury tests [Connected - Mangata]: on treasury we stor
         sudo,
       )
     )[0];
-    await testUser1.addMGATokens(sudo);
+    await testUser1.addGASPTokens(sudo);
     await createPool(
       testUser1.keyRingPair,
       mgaTokenId,
@@ -570,7 +570,7 @@ describe("xyk-pallet - treasury tests [Connected - Mangata]: Error cases", () =>
     keyring.addPair(sudo.keyRingPair);
 
     await waitNewBlock();
-    mgaTokenId = MGA_ASSET_ID;
+    mgaTokenId = GASP_ASSET_ID;
     await sudo.mint(
       mgaTokenId,
       testUser1,
@@ -580,7 +580,7 @@ describe("xyk-pallet - treasury tests [Connected - Mangata]: Error cases", () =>
     connectedToMGA = (
       await Assets.setupUserWithCurrencies(testUser1, [MAX_BALANCE], sudo)
     )[0];
-    await testUser1.addMGATokens(sudo);
+    await testUser1.addGASPTokens(sudo);
     await waitIfSessionWillChangeInNblocks(3);
   });
 

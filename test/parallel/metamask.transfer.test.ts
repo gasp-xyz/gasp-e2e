@@ -10,7 +10,7 @@ import { getEnvironmentRequiredVars } from "../../utils/utils";
 import { setupApi, setupUsers } from "../../utils/setup";
 import { Sudo } from "../../utils/sudo";
 import { Assets } from "../../utils/Assets";
-import { MGA_ASSET_ID } from "../../utils/Constants";
+import { GASP_ASSET_ID } from "../../utils/Constants";
 import { BN, BN_ONE, BN_THOUSAND, BN_TWO, BN_ZERO } from "@polkadot/util";
 import { signTxMetamask } from "../../utils/metamask";
 import { testLog } from "../../utils/Logger";
@@ -61,15 +61,15 @@ describe("Tests with Metamask signing:", () => {
       Sudo.sudoAs(
         sudo,
         Xyk.createPool(
-          MGA_ASSET_ID,
+          GASP_ASSET_ID,
           Assets.DEFAULT_AMOUNT,
           secondCurrency,
           Assets.DEFAULT_AMOUNT,
         ),
       ),
     );
-    liqId = await getLiquidityAssetId(MGA_ASSET_ID, secondCurrency);
-    testPdUser.addAsset(MGA_ASSET_ID);
+    liqId = await getLiquidityAssetId(GASP_ASSET_ID, secondCurrency);
+    testPdUser.addAsset(GASP_ASSET_ID);
   });
 
   beforeEach(async () => {
@@ -108,7 +108,7 @@ describe("Tests with Metamask signing:", () => {
 
   test("Transfer tokens", async () => {
     await Sudo.batchAsSudoFinalized(Assets.mintNative(testEthUser));
-    testEthUser.addAsset(MGA_ASSET_ID);
+    testEthUser.addAsset(GASP_ASSET_ID);
 
     await testPdUser.refreshAmounts(AssetWallet.BEFORE);
     await testEthUser.refreshAmounts(AssetWallet.BEFORE);
@@ -120,8 +120,8 @@ describe("Tests with Metamask signing:", () => {
     await testEthUser.refreshAmounts(AssetWallet.AFTER);
     const diff = testPdUser.getWalletDifferences();
 
-    expect(testEthUser.getAsset(MGA_ASSET_ID)!.amountBefore.free!).bnGt(
-      testEthUser.getAsset(MGA_ASSET_ID)!.amountAfter.free!,
+    expect(testEthUser.getAsset(GASP_ASSET_ID)!.amountBefore.free!).bnGt(
+      testEthUser.getAsset(GASP_ASSET_ID)!.amountAfter.free!,
     );
     expect(diff[0].diff.free).bnEqual(new BN(1000));
   });
@@ -131,10 +131,10 @@ describe("Tests with Metamask signing:", () => {
       Assets.mintNative(testEthUser),
       Assets.mintToken(secondCurrency, testEthUser, Assets.DEFAULT_AMOUNT),
     );
-    testEthUser.addAsset(MGA_ASSET_ID);
+    testEthUser.addAsset(GASP_ASSET_ID);
 
     const tx = api.tx.xyk.mintLiquidity(
-      MGA_ASSET_ID,
+      GASP_ASSET_ID,
       secondCurrency,
       Assets.DEFAULT_AMOUNT.div(BN_TWO),
       Assets.DEFAULT_AMOUNT.div(BN_TWO).add(BN_ONE),
@@ -153,13 +153,13 @@ describe("Tests with Metamask signing:", () => {
       Assets.mintNative(testEthUser),
       Assets.mintToken(liqId, testEthUser, Assets.DEFAULT_AMOUNT),
     );
-    testEthUser.addAsset(MGA_ASSET_ID);
+    testEthUser.addAsset(GASP_ASSET_ID);
     testEthUser.addAsset(liqId);
 
     await testEthUser.refreshAmounts(AssetWallet.BEFORE);
 
     const tx = api.tx.xyk.burnLiquidity(
-      MGA_ASSET_ID,
+      GASP_ASSET_ID,
       secondCurrency,
       Assets.DEFAULT_AMOUNT,
     );
@@ -188,7 +188,7 @@ describe("Tests with Metamask signing:", () => {
 
     txs.push(
       api.tx.xyk.mintLiquidity(
-        MGA_ASSET_ID,
+        GASP_ASSET_ID,
         secondCurrency,
         Assets.DEFAULT_AMOUNT.div(BN_TWO),
         Assets.DEFAULT_AMOUNT.div(BN_TWO).add(BN_ONE),
@@ -196,7 +196,7 @@ describe("Tests with Metamask signing:", () => {
       api.tx.tokens.transfer(testPdUser.keyRingPair.address, liqId, 1000),
     );
 
-    testEthUser.addAsset(MGA_ASSET_ID);
+    testEthUser.addAsset(GASP_ASSET_ID);
     testEthUser.addAsset(liqId);
     testPdUser.addAsset(liqId);
 

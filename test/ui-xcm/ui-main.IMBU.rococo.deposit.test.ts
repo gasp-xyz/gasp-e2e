@@ -17,7 +17,7 @@ import {
 import { devTestingPairs, setupApi, setupUsers } from "../../utils/setup";
 import { AssetWallet, User } from "../../utils/User";
 import { getEnvironmentRequiredVars } from "../../utils/utils";
-import { IMBU_ASSET_NAME, MGA_ASSET_ID } from "../../utils/Constants";
+import { IMBU_ASSET_NAME, GASP_ASSET_ID } from "../../utils/Constants";
 import { SudoUser } from "../../utils/Framework/User/SudoUser";
 import { Node } from "../../utils/Framework/Node/Node";
 import {
@@ -108,7 +108,7 @@ describe("UI XCM tests - IMBU rococo", () => {
     );
 
     testUser1.addAsset(imbueTokenId);
-    testUser1.addAsset(MGA_ASSET_ID);
+    testUser1.addAsset(GASP_ASSET_ID);
     await testUser1.refreshAmounts(AssetWallet.BEFORE);
   });
 

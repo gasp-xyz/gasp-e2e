@@ -6,7 +6,7 @@
 import { jest } from "@jest/globals";
 import { getApi, initApi } from "../../utils/api";
 import { Assets } from "../../utils/Assets";
-import { MGA_ASSET_ID } from "../../utils/Constants";
+import { GASP_ASSET_ID } from "../../utils/Constants";
 import { BN } from "@polkadot/util";
 import { getSudoUser, setupApi, setupUsers } from "../../utils/setup";
 import { Sudo } from "../../utils/sudo";
@@ -62,7 +62,7 @@ beforeAll(async () => {
     Sudo.sudoAs(
       testUser1,
       Xyk.createPool(
-        MGA_ASSET_ID,
+        GASP_ASSET_ID,
         Assets.DEFAULT_AMOUNT.divn(2),
         token1,
         Assets.DEFAULT_AMOUNT.divn(2),
@@ -71,7 +71,7 @@ beforeAll(async () => {
     Sudo.sudoAs(
       testUser2,
       Xyk.createPool(
-        MGA_ASSET_ID,
+        GASP_ASSET_ID,
         Assets.DEFAULT_AMOUNT.divn(2),
         token2,
         Assets.DEFAULT_AMOUNT.divn(2),
@@ -79,8 +79,8 @@ beforeAll(async () => {
     ),
   );
 
-  liqIdPromPool = await getLiquidityAssetId(MGA_ASSET_ID, token1);
-  liqIdNonPromPool = await getLiquidityAssetId(MGA_ASSET_ID, token2);
+  liqIdPromPool = await getLiquidityAssetId(GASP_ASSET_ID, token1);
+  liqIdNonPromPool = await getLiquidityAssetId(GASP_ASSET_ID, token2);
 
   await Sudo.batchAsSudoFinalized(
     Assets.promotePool(liqIdPromPool.toNumber(), 20),
@@ -97,7 +97,7 @@ test("Check that a user can burn tokens when they are activated, and when burnin
 
   await mintLiquidity(
     testUser1.keyRingPair,
-    MGA_ASSET_ID,
+    GASP_ASSET_ID,
     token1,
     defaultCurrencyValue,
   );
@@ -116,7 +116,7 @@ test("Check that a user can burn tokens when they are activated, and when burnin
 
   await burnLiquidity(
     testUser1.keyRingPair,
-    MGA_ASSET_ID,
+    GASP_ASSET_ID,
     token1,
     new BN(valueBurningTokens),
   );
@@ -140,7 +140,7 @@ test("Check that a user can burn tokens when they are activated, and when burnin
 test("Check that a user can burn some tokens on a non-promoted pool", async () => {
   await mintLiquidity(
     testUser2.keyRingPair,
-    MGA_ASSET_ID,
+    GASP_ASSET_ID,
     token2,
     defaultCurrencyValue,
   );
@@ -148,7 +148,7 @@ test("Check that a user can burn some tokens on a non-promoted pool", async () =
 
   await burnLiquidity(
     testUser2.keyRingPair,
-    MGA_ASSET_ID,
+    GASP_ASSET_ID,
     token2,
     defaultCurrencyValue,
   );

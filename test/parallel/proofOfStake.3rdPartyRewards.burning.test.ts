@@ -10,7 +10,7 @@ import { Assets } from "../../utils/Assets";
 import { Sudo } from "../../utils/sudo";
 import { Xyk } from "../../utils/xyk";
 import { getSudoUser, setupApi, setupUsers } from "../../utils/setup";
-import { MGA_ASSET_ID } from "../../utils/Constants";
+import { GASP_ASSET_ID } from "../../utils/Constants";
 import { BN_ZERO, signTx } from "gasp-sdk";
 import { ProofOfStake } from "../../utils/ProofOfStake";
 import { getBalanceOfAsset, getLiquidityAssetId } from "../../utils/tx";
@@ -67,20 +67,20 @@ describe("Proof of stake tests", () => {
       Sudo.sudoAs(
         testUser1,
         Xyk.createPool(
-          MGA_ASSET_ID,
+          GASP_ASSET_ID,
           Assets.DEFAULT_AMOUNT.muln(20e6),
           newToken,
           Assets.DEFAULT_AMOUNT.muln(20e6),
         ),
       ),
     );
-    liqId = await getLiquidityAssetId(MGA_ASSET_ID, newToken);
+    liqId = await getLiquidityAssetId(GASP_ASSET_ID, newToken);
     await Sudo.batchAsSudoFinalized(
       Sudo.sudo(Staking.addStakingLiquidityToken(liqId)),
       Sudo.sudoAs(
         testUser2,
         Xyk.mintLiquidity(
-          MGA_ASSET_ID,
+          GASP_ASSET_ID,
           newToken,
           Assets.DEFAULT_AMOUNT.divn(2),
           Assets.DEFAULT_AMOUNT,
@@ -89,7 +89,7 @@ describe("Proof of stake tests", () => {
       Sudo.sudoAs(
         testUser3,
         Xyk.mintLiquidity(
-          MGA_ASSET_ID,
+          GASP_ASSET_ID,
           newToken,
           Assets.DEFAULT_AMOUNT.divn(2),
           Assets.DEFAULT_AMOUNT,
@@ -100,7 +100,7 @@ describe("Proof of stake tests", () => {
           sudo.keyRingPair.address,
           testUser4,
           Assets.DEFAULT_AMOUNT.divn(2),
-          MGA_ASSET_ID,
+          GASP_ASSET_ID,
           100,
         ),
       ),
@@ -158,7 +158,7 @@ describe("Proof of stake tests", () => {
       );
       await signTx(
         getApi(),
-        Xyk.burnLiquidity(newToken, MGA_ASSET_ID, amountToBurn),
+        Xyk.burnLiquidity(newToken, GASP_ASSET_ID, amountToBurn),
         testUser.keyRingPair,
       ).then((events) => {
         const res = getEventResultFromMangataTx(events);

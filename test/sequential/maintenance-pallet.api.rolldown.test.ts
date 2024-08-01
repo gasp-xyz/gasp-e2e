@@ -22,8 +22,8 @@ import {
   getEventErrorFromSudo,
   getEventResultFromMangataTx,
 } from "../../utils/txHandler";
+import { FOUNDATION_ADDRESS_1, GASP_ASSET_ID } from "../../utils/Constants";
 import { BN_HUNDRED, signTx } from "gasp-sdk";
-import { FOUNDATION_ADDRESS_1, MGA_ASSET_ID } from "../../utils/Constants";
 import { Sudo } from "../../utils/sudo";
 import { ApiPromise } from "@polkadot/api";
 import { Maintenance } from "../../utils/Maintenance";
@@ -130,7 +130,7 @@ describe.each(["mm", "upgradabilityMm"])(
         const tokenIds = await SudoDB.getInstance().getTokenIds(1);
         const [token] = await setupAsEthTokens(tokenIds);
         const tokenAddress = JSON.parse(token.toString()).ethereum;
-        await setupUsersWithBalances(users, tokenIds.concat([MGA_ASSET_ID]));
+        await setupUsersWithBalances(users, tokenIds.concat([GASP_ASSET_ID]));
         await Sudo.batchAsSudoFinalized(
           Sudo.sudoAs(
             users[2],

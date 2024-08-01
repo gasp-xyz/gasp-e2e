@@ -10,7 +10,7 @@ import { getCurrentNonce } from "../../utils/tx";
 import { ExtrinsicResult } from "../../utils/eventListeners";
 import { Keyring } from "@polkadot/api";
 import { AssetWallet, User } from "../../utils/User";
-import { MGA_ASSET_ID } from "../../utils/Constants";
+import { GASP_ASSET_ID } from "../../utils/Constants";
 import { BN } from "@polkadot/util";
 import { getEventResultFromMangataTx } from "../../utils/txHandler";
 import { signTx } from "gasp-sdk";
@@ -45,8 +45,8 @@ beforeAll(async () => {
   keyring.addPair(testUser2.keyRingPair);
   keyring.addPair(sudo.keyRingPair);
 
-  await testUser1.addMGATokens(sudo);
-  testUser1.addAsset(MGA_ASSET_ID);
+  await testUser1.addGASPTokens(sudo);
+  testUser1.addAsset(GASP_ASSET_ID);
   await testUser1.refreshAmounts(AssetWallet.BEFORE);
 });
 
@@ -138,6 +138,6 @@ test("xyk-pallet - SecurityTests - Only sudo can perform actions [tokens.mint to
 
 afterEach(async () => {
   await testUser1.refreshAmounts(AssetWallet.AFTER);
-  const assetValue = testUser1.getAsset(MGA_ASSET_ID);
+  const assetValue = testUser1.getAsset(GASP_ASSET_ID);
   expect(assetValue?.amountAfter.free).bnLt(assetValue?.amountBefore.free!);
 });

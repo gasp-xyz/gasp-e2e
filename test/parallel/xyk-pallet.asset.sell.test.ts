@@ -61,7 +61,7 @@ beforeEach(async () => {
     [defaultCurrecyValue, defaultCurrecyValue.add(new BN(1))],
     sudo,
   );
-  await testUser1.addMGATokens(sudo);
+  await testUser1.addGASPTokens(sudo);
   await testUser1.createPoolToAsset(
     new BN(60000),
     new BN(60000),

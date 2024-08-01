@@ -19,7 +19,7 @@ import { setupApi, setupUsers } from "../../utils/setup";
 import { Sudo } from "../../utils/sudo";
 import { AssetWallet, User } from "../../utils/User";
 import { getEnvironmentRequiredVars } from "../../utils/utils";
-import { MGA_ASSET_ID, MGR_ASSET_NAME } from "../../utils/Constants";
+import { GASP_ASSET_ID, MGR_ASSET_NAME } from "../../utils/Constants";
 import { ExtrinsicResult, waitNewBlock } from "../../utils/eventListeners";
 import {
   createAssetIfMissing,
@@ -72,7 +72,7 @@ describe("UI tests - adding, removing liquidity", () => {
     await createPoolIfMissing(
       sudo,
       "1800000000000000000000000000000000",
-      MGA_ASSET_ID,
+      GASP_ASSET_ID,
       testAssetId,
     );
 
@@ -86,7 +86,7 @@ describe("UI tests - adding, removing liquidity", () => {
     await mintLiquidity(
       testUser1.keyRingPair,
       testAssetId,
-      MGA_ASSET_ID,
+      GASP_ASSET_ID,
       assetAmount,
     ).then((result) => {
       const eventResponse = getEventResultFromMangataTx(result, [
@@ -98,7 +98,7 @@ describe("UI tests - adding, removing liquidity", () => {
     });
 
     testUser1.addAsset(testAssetId);
-    testUser1.addAsset(MGA_ASSET_ID);
+    testUser1.addAsset(GASP_ASSET_ID);
     await testUser1.refreshAmounts(AssetWallet.BEFORE);
   });
 

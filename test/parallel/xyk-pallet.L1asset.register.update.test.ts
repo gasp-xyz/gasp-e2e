@@ -16,7 +16,7 @@ import { ExtrinsicResult } from "../../utils/eventListeners";
 import { Sudo } from "../../utils/sudo";
 import { Assets } from "../../utils/Assets";
 import { randomBytes } from "crypto";
-import { MangataGenericEvent } from "@mangata-finance/sdk";
+import { MangataGenericEvent } from "gasp-sdk";
 import { BN } from "@polkadot/util";
 
 jest.spyOn(console, "log").mockImplementation(jest.fn());

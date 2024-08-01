@@ -2,7 +2,7 @@
 import { Keyring } from "@polkadot/api";
 import { BN } from "@polkadot/util";
 import { getApi, initApi } from "../utils/api";
-import { MGA_ASSET_ID } from "../utils/Constants";
+import { GASP_ASSET_ID } from "../utils/Constants";
 import { User } from "../utils/User";
 import {
     getNextAssetId,
@@ -52,7 +52,7 @@ describe("staking - testpad", () => {
       Sudo.sudoAs(
         charlie,
         Xyk.createPool(
-          MGA_ASSET_ID,
+          GASP_ASSET_ID,
           new BN("100000000000000000000"),
           tokenId,
           new BN("900000000000000000000")
@@ -61,7 +61,7 @@ describe("staking - testpad", () => {
       Sudo.sudoAs(
         charlie,
         Xyk.createPool(
-          MGA_ASSET_ID,
+          GASP_ASSET_ID,
           new BN("100000000000000000000"),
           tokenId.addn(1),
           new BN("100000000000000000000")

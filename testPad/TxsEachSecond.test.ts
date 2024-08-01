@@ -65,7 +65,7 @@ describe("staking - testpad", () => {
         [new BN("100000000000000000"), new BN("100000000000000000")],
         sudo,
       );
-    await testUser1.addMGATokens(sudo);
+    await testUser1.addGASPTokens(sudo);
     await testUser1.createPoolToAsset(
       new BN("30000000000000000"),
       new BN("30000000000000000"),

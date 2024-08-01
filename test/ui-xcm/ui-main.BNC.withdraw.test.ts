@@ -21,7 +21,7 @@ import { getEnvironmentRequiredVars } from "../../utils/utils";
 import {
   BNC_ASSET_ID,
   BNC_ASSET_NAME,
-  MGA_ASSET_ID,
+  GASP_ASSET_ID,
 } from "../../utils/Constants";
 import { SudoUser } from "../../utils/Framework/User/SudoUser";
 import { Node } from "../../utils/Framework/Node/Node";
@@ -129,7 +129,7 @@ describe("UI XCM tests - BNC", () => {
     //END-TODO
 
     testUser1.addAsset(BNC_ASSET_ID);
-    testUser1.addAsset(MGA_ASSET_ID);
+    testUser1.addAsset(GASP_ASSET_ID);
     await testUser1.refreshAmounts(AssetWallet.BEFORE);
   });
 

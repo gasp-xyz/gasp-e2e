@@ -15,7 +15,7 @@ import {
   getEventResultFromMangataTx,
   getBalanceOfPool,
 } from "../../utils/txHandler";
-import { MGA_ASSET_ID } from "../../utils/Constants";
+import { GASP_ASSET_ID } from "../../utils/Constants";
 import { BN } from "@polkadot/util";
 import { getSudoUser, setupApi, setupUsers } from "../../utils/setup";
 import {
@@ -84,7 +84,7 @@ test("bootstrap - Check that we can not create a pool for the bootstrap token af
 
   const sudoBootstrap = await scheduleBootstrap(
     sudo,
-    MGA_ASSET_ID,
+    GASP_ASSET_ID,
     bootstrapCurrency,
     waitingPeriod,
     bootstrapPeriod,
@@ -93,15 +93,15 @@ test("bootstrap - Check that we can not create a pool for the bootstrap token af
   eventResponse = getEventResultFromMangataTx(sudoBootstrap);
   expect(eventResponse.state).toEqual(ExtrinsicResult.ExtrinsicSuccess);
 
-  await checkPossibilityCreatingPool(MGA_ASSET_ID, bootstrapCurrency);
+  await checkPossibilityCreatingPool(GASP_ASSET_ID, bootstrapCurrency);
 
   await waitForBootstrapStatus("Whitelist", waitingPeriod);
 
-  await checkPossibilityCreatingPool(MGA_ASSET_ID, bootstrapCurrency);
+  await checkPossibilityCreatingPool(GASP_ASSET_ID, bootstrapCurrency);
 
   await waitForBootstrapStatus("Public", waitingPeriod);
 
-  await checkPossibilityCreatingPool(MGA_ASSET_ID, bootstrapCurrency);
+  await checkPossibilityCreatingPool(GASP_ASSET_ID, bootstrapCurrency);
 
   // new token must participate in provision as first
   const provisionPublicBootstrapCurrency = await provisionBootstrap(
@@ -115,7 +115,7 @@ test("bootstrap - Check that we can not create a pool for the bootstrap token af
   // we need to add MGA token in the provision for creating a pool
   const provisionPublicMGA = await provisionBootstrap(
     testUser1,
-    MGA_ASSET_ID,
+    GASP_ASSET_ID,
     bootstrapAmount,
   );
   eventResponse = getEventResultFromMangataTx(provisionPublicMGA);
@@ -123,10 +123,10 @@ test("bootstrap - Check that we can not create a pool for the bootstrap token af
 
   await waitForBootstrapStatus("Finished", bootstrapPeriod);
 
-  await checkPossibilityCreatingPool(MGA_ASSET_ID, bootstrapCurrency);
+  await checkPossibilityCreatingPool(GASP_ASSET_ID, bootstrapCurrency);
 
   // Check existing pool
-  bootstrapPool = await getBalanceOfPool(MGA_ASSET_ID, bootstrapCurrency);
+  bootstrapPool = await getBalanceOfPool(GASP_ASSET_ID, bootstrapCurrency);
   const bootstrapPoolBalance = bootstrapPool[0];
   expect(bootstrapPoolBalance[0]).bnEqual(bootstrapAmount);
   expect(bootstrapPoolBalance[1]).bnEqual(bootstrapAmount);
@@ -141,7 +141,7 @@ afterEach(async () => {
   eventResponse = getEventResultFromMangataTx(claimAndActivate);
   expect(eventResponse.state).toEqual(ExtrinsicResult.ExtrinsicSuccess);
   const liquidityID = await getLiquidityAssetId(
-    MGA_ASSET_ID,
+    GASP_ASSET_ID,
     bootstrapCurrency,
   );
 

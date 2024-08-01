@@ -14,7 +14,7 @@ import { Keyring } from "@polkadot/api";
 import { AssetWallet, User } from "../../utils/User";
 import { Assets } from "../../utils/Assets";
 import { getEventResultFromMangataTx } from "../../utils/txHandler";
-import { MGA_ASSET_ID } from "../../utils/Constants";
+import { GASP_ASSET_ID } from "../../utils/Constants";
 import { testLog } from "../../utils/Logger";
 import { Fees } from "../../utils/Fees";
 import { MangataInstance } from "gasp-sdk";
@@ -58,19 +58,19 @@ describe("Story tests > LP", () => {
       [defaultCurrecyValue],
       sudo,
     );
-    await testUser1.addMGATokens(sudo);
+    await testUser1.addGASPTokens(sudo);
     await sudo.mint(
-      MGA_ASSET_ID,
+      GASP_ASSET_ID,
       testUser2,
       new BN("1000000000000000000000000"),
     );
     await sudo.mint(token1, testUser2, defaultCurrecyValue);
     //TODO:swapFees
     if (Fees.swapFeesEnabled) {
-      await testUser2.addMGATokens(sudo);
+      await testUser2.addGASPTokens(sudo);
     }
-    testUser1.addAsset(MGA_ASSET_ID);
-    testUser2.addAsset(MGA_ASSET_ID);
+    testUser1.addAsset(GASP_ASSET_ID);
+    testUser2.addAsset(GASP_ASSET_ID);
     testUser2.addAsset(token1);
     testUser1.refreshAmounts();
     testUser2.refreshAmounts();
@@ -83,25 +83,28 @@ describe("Story tests > LP", () => {
       testUser1.keyRingPair,
       token1,
       defaultCurrecyValue,
-      MGA_ASSET_ID,
+      GASP_ASSET_ID,
       defaultCurrecyValue,
     );
-    const poolBalanceBeforeSwaps = await getBalanceOfPool(token1, MGA_ASSET_ID);
+    const poolBalanceBeforeSwaps = await getBalanceOfPool(
+      token1,
+      GASP_ASSET_ID,
+    );
     //lets swap tokens
     await do10Swaps(mangata, testUser2, token1);
-    const poolBalance = await getBalanceOfPool(token1, MGA_ASSET_ID);
+    const poolBalance = await getBalanceOfPool(token1, GASP_ASSET_ID);
     await testUser1.refreshAmounts(AssetWallet.AFTER);
     await testUser2.refreshAmounts(AssetWallet.AFTER);
     const userTokensBefore = testUser2
       .getAsset(token1)
       ?.amountBefore.free!.add(
-        testUser2.getAsset(MGA_ASSET_ID)?.amountBefore.free!,
+        testUser2.getAsset(GASP_ASSET_ID)?.amountBefore.free!,
       );
 
     const userTokensAfter = testUser2
       .getAsset(token1)
       ?.amountAfter.free!.add(
-        testUser2.getAsset(MGA_ASSET_ID)?.amountAfter.free!,
+        testUser2.getAsset(GASP_ASSET_ID)?.amountAfter.free!,
       );
     const totalPoolBefore = poolBalanceBeforeSwaps[0].add(
       poolBalanceBeforeSwaps[1],
@@ -136,7 +139,7 @@ async function do10Swaps(
       promises.push(
         sellAsset(
           testUser2.keyRingPair,
-          MGA_ASSET_ID,
+          GASP_ASSET_ID,
           token1,
           new BN(10000),
           new BN(0),
@@ -150,7 +153,7 @@ async function do10Swaps(
         sellAsset(
           testUser2.keyRingPair,
           token1,
-          MGA_ASSET_ID,
+          GASP_ASSET_ID,
           new BN(10000),
           new BN(0),
           {

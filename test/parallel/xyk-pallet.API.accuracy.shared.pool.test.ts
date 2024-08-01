@@ -11,7 +11,7 @@ import { Keyring } from "@polkadot/api";
 import { AssetWallet, User } from "../../utils/User";
 import { Assets } from "../../utils/Assets";
 import { getEnvironmentRequiredVars } from "../../utils/utils";
-import { MGA_ASSET_ID } from "../../utils/Constants";
+import { GASP_ASSET_ID } from "../../utils/Constants";
 import { BN_ZERO, MangataInstance } from "gasp-sdk";
 import { testLog } from "../../utils/Logger";
 import { Sudo } from "../../utils/sudo";
@@ -81,9 +81,9 @@ beforeEach(async () => {
   keyring.addPair(testUser2.keyRingPair);
   keyring.addPair(testUser3.keyRingPair);
   keyring.addPair(sudo.keyRingPair);
-  testUser1.addAsset(MGA_ASSET_ID);
-  testUser2.addAsset(MGA_ASSET_ID);
-  testUser3.addAsset(MGA_ASSET_ID);
+  testUser1.addAsset(GASP_ASSET_ID);
+  testUser2.addAsset(GASP_ASSET_ID);
+  testUser3.addAsset(GASP_ASSET_ID);
   // check users accounts.
 });
 
@@ -105,7 +105,7 @@ describe("Accuracy > Shared pool", () => {
       testUser1.keyRingPair,
       firstCurrency,
       default50k,
-      MGA_ASSET_ID,
+      GASP_ASSET_ID,
       default50k,
     );
   });
@@ -252,20 +252,20 @@ test("Given 3 users that minted liquidity WHEN only one activated the rewards TH
     testUser1.keyRingPair,
     firstCurrency,
     default50k,
-    MGA_ASSET_ID,
+    GASP_ASSET_ID,
     default50k,
   );
 
-  const liqId = await getLiquidityAssetId(MGA_ASSET_ID, firstCurrency);
+  const liqId = await getLiquidityAssetId(GASP_ASSET_ID, firstCurrency);
 
   await Sudo.batchAsSudoFinalized(
     Sudo.sudoAs(
       testUser2,
-      Xyk.mintLiquidity(firstCurrency, MGA_ASSET_ID, default50k),
+      Xyk.mintLiquidity(firstCurrency, GASP_ASSET_ID, default50k),
     ),
     Sudo.sudoAs(
       testUser3,
-      Xyk.mintLiquidity(firstCurrency, MGA_ASSET_ID, default50k),
+      Xyk.mintLiquidity(firstCurrency, GASP_ASSET_ID, default50k),
     ),
     Assets.promotePool(liqId.toNumber(), 20),
   );
@@ -325,13 +325,13 @@ async function mintAndBurnTokens(
 ) {
   const liqToken = await mga.query.getLiquidityTokenId(
     firstCurrency.toString(),
-    MGA_ASSET_ID.toString(),
+    GASP_ASSET_ID.toString(),
   );
   users.forEach((user) => user.addAsset(liqToken));
   testUser3.addAsset(firstCurrency);
   await Promise.all([
-    testUser2.mintLiquidity(firstCurrency, MGA_ASSET_ID, amountToMint[1]),
-    testUser3.mintLiquidity(firstCurrency, MGA_ASSET_ID, amountToMint[2]),
+    testUser2.mintLiquidity(firstCurrency, GASP_ASSET_ID, amountToMint[1]),
+    testUser3.mintLiquidity(firstCurrency, GASP_ASSET_ID, amountToMint[2]),
   ]);
   // now pool is[user1-33%, user2-33%, user3-33%]
   await Promise.all([
@@ -347,7 +347,7 @@ async function mintAndBurnTokens(
   expect(balancesLiqToken[1]).bnEqual(amountToMint[1]);
   expect(balancesLiqToken[2]).bnEqual(amountToMint[2]);
 
-  await testUser1.sellAssets(firstCurrency, MGA_ASSET_ID, sellAmount);
+  await testUser1.sellAssets(firstCurrency, GASP_ASSET_ID, sellAmount);
 
   await burnAllLiquidities(users, balancesLiqToken);
   await Promise.all([
@@ -365,19 +365,19 @@ async function burnAllLiquidities(users: User[], balances: BN[]) {
     burnLiquidity(
       users[0].keyRingPair,
       firstCurrency,
-      MGA_ASSET_ID,
+      GASP_ASSET_ID,
       balances[0],
     ),
     burnLiquidity(
       users[1].keyRingPair,
       firstCurrency,
-      MGA_ASSET_ID,
+      GASP_ASSET_ID,
       balances[1],
     ),
     burnLiquidity(
       users[2].keyRingPair,
       firstCurrency,
-      MGA_ASSET_ID,
+      GASP_ASSET_ID,
       balances[2],
     ),
   ]);

@@ -8,7 +8,7 @@ import { TestItem } from "./testItem";
 import { KeyringPair } from "@polkadot/keyring/types";
 import { UserFactory, Users } from "../../utils/Framework/User/UserFactory";
 import { Node } from "../../utils/Framework/Node/Node";
-import { MGA_ASSET_ID } from "../../utils/Constants";
+import { GASP_ASSET_ID } from "../../utils/Constants";
 import { createPoolIfMissing, mintAsset, transferAsset } from "../../utils/tx";
 import { initApi } from "../../utils/api";
 import {
@@ -221,7 +221,7 @@ export class performanceTestItem implements TestItem {
   async mintTokensToUsers(
     numberOfThreads: number,
     nodes: string[],
-    assets = [MGA_ASSET_ID],
+    assets = [GASP_ASSET_ID],
   ) {
     const keyring = new Keyring({ type: "ethereum" });
     const mintPromises: Promise<MangataGenericEvent[]>[] = [];

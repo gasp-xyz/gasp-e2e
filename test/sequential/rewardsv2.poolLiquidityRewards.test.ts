@@ -19,7 +19,7 @@ import {
 } from "../../utils/tx";
 import { getSudoUser, setupApi, setupUsers } from "../../utils/setup";
 import { ExtrinsicResult, waitForRewards } from "../../utils/eventListeners";
-import { MGA_ASSET_ID } from "../../utils/Constants";
+import { GASP_ASSET_ID } from "../../utils/Constants";
 import { BN_ZERO, MangataGenericEvent, MangataInstance } from "gasp-sdk";
 import { getEventResultFromMangataTx } from "../../utils/txHandler";
 import { ProofOfStake } from "../../utils/ProofOfStake";
@@ -67,7 +67,7 @@ describe("rewards v2 tests", () => {
       Sudo.sudoAs(
         testUser1,
         Xyk.createPool(
-          MGA_ASSET_ID,
+          GASP_ASSET_ID,
           Assets.DEFAULT_AMOUNT.divn(2),
           secondCurrency,
           Assets.DEFAULT_AMOUNT.divn(2),
@@ -75,14 +75,14 @@ describe("rewards v2 tests", () => {
       ),
     );
 
-    liqId = await getLiquidityAssetId(MGA_ASSET_ID, secondCurrency);
+    liqId = await getLiquidityAssetId(GASP_ASSET_ID, secondCurrency);
   });
 
   describe("Error cases", () => {
     test("Given a user with Liquidity on non promoted pool When tries to activate Then extrinsic fail", async () => {
       await mintLiquidity(
         testUser1.keyRingPair,
-        MGA_ASSET_ID,
+        GASP_ASSET_ID,
         secondCurrency,
         assetAmount,
       );
@@ -112,15 +112,15 @@ describe("rewards v2 tests", () => {
         Assets.promotePool(liqId.toNumber(), 20),
         Sudo.sudoAs(
           testUser1,
-          Xyk.mintLiquidity(MGA_ASSET_ID, secondCurrency, assetAmount),
+          Xyk.mintLiquidity(GASP_ASSET_ID, secondCurrency, assetAmount),
         ),
         Sudo.sudoAs(
           testUser2,
-          Xyk.mintLiquidity(MGA_ASSET_ID, secondCurrency, assetAmount),
+          Xyk.mintLiquidity(GASP_ASSET_ID, secondCurrency, assetAmount),
         ),
         Sudo.sudoAs(
           testUser3,
-          Xyk.mintLiquidity(MGA_ASSET_ID, secondCurrency, assetAmount),
+          Xyk.mintLiquidity(GASP_ASSET_ID, secondCurrency, assetAmount),
         ),
         Sudo.sudoAs(
           testUser1,
@@ -144,11 +144,11 @@ describe("rewards v2 tests", () => {
 
       await burnLiquidity(
         testUser1.keyRingPair,
-        MGA_ASSET_ID,
+        GASP_ASSET_ID,
         secondCurrency,
         reservedTokens,
       );
-      testUser1.addAsset(MGA_ASSET_ID);
+      testUser1.addAsset(GASP_ASSET_ID);
       await testUser1.refreshAmounts(AssetWallet.BEFORE);
       const rewardsAfterBurning = await getRewardsInfo(
         testUser1.keyRingPair.address,
@@ -160,9 +160,9 @@ describe("rewards v2 tests", () => {
       const { claimedAmount } = getClaimedAmount(events);
       await testUser1.refreshAmounts(AssetWallet.AFTER);
       const incrementedMGAs = testUser1
-        .getAsset(MGA_ASSET_ID)
+        .getAsset(GASP_ASSET_ID)
         ?.amountAfter.free.sub(
-          testUser1.getAsset(MGA_ASSET_ID)?.amountBefore.free!,
+          testUser1.getAsset(GASP_ASSET_ID)?.amountBefore.free!,
         );
       expect(incrementedMGAs!).bnGt(BN_ZERO);
       expect(claimedAmount).bnEqual(availableRewardsBefore);
@@ -182,11 +182,11 @@ describe("rewards v2 tests", () => {
 
       await burnLiquidity(
         testUser2.keyRingPair,
-        MGA_ASSET_ID,
+        GASP_ASSET_ID,
         secondCurrency,
         reservedTokens.divn(2),
       );
-      testUser2.addAsset(MGA_ASSET_ID);
+      testUser2.addAsset(GASP_ASSET_ID);
       await testUser2.refreshAmounts(AssetWallet.BEFORE);
 
       const rewardsInfo = await getRewardsInfo(
@@ -199,9 +199,9 @@ describe("rewards v2 tests", () => {
       const { claimedAmount } = getClaimedAmount(events);
       await testUser2.refreshAmounts(AssetWallet.AFTER);
       const incrementedMGAs = testUser2
-        .getAsset(MGA_ASSET_ID)
+        .getAsset(GASP_ASSET_ID)
         ?.amountAfter.free.sub(
-          testUser2.getAsset(MGA_ASSET_ID)?.amountBefore.free!,
+          testUser2.getAsset(GASP_ASSET_ID)?.amountBefore.free!,
         );
       expect(incrementedMGAs!.abs()).bnGt(BN_ZERO);
       expect(claimedAmount).bnGt(BN_ZERO);
@@ -223,7 +223,7 @@ describe("rewards v2 tests", () => {
 
       const mintingLiquidity = await mintLiquidity(
         testUser3.keyRingPair,
-        MGA_ASSET_ID,
+        GASP_ASSET_ID,
         secondCurrency,
         defaultCurrencyValue,
       );

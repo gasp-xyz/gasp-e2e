@@ -15,7 +15,7 @@ import { getBlockNumber, getFeeLockMetadata } from "../../utils/utils";
 import { Xyk } from "../../utils/xyk";
 import { ExtrinsicResult, waitForEvents } from "../../utils/eventListeners";
 import { getEventResultFromMangataTx } from "../../utils/txHandler";
-import { MGA_ASSET_ID } from "../../utils/Constants";
+import { GASP_ASSET_ID } from "../../utils/Constants";
 
 jest.spyOn(console, "log").mockImplementation(jest.fn());
 jest.setTimeout(2500000);
@@ -26,7 +26,7 @@ let sudo: User;
 let firstToken: BN;
 let secondToken: BN;
 const millionNative = new BN("1000000000000000000000000");
-const nativeCurrencyId = MGA_ASSET_ID;
+const nativeCurrencyId = GASP_ASSET_ID;
 const defaultCurrencyValue = new BN(10000000);
 const defaultPoolVolumeValue = new BN(1000000);
 const FREE_AND_RESERVED = false;

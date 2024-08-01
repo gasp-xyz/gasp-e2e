@@ -19,7 +19,7 @@ import {
   waitSudoOperationSuccess,
   waitSudoOperationFail,
 } from "../../utils/eventListeners";
-import { MGA_ASSET_ID } from "../../utils/Constants";
+import { GASP_ASSET_ID } from "../../utils/Constants";
 import { MangataGenericEvent } from "gasp-sdk";
 import { getSudoUser, setupUsers } from "../../utils/setup";
 
@@ -61,7 +61,7 @@ beforeEach(async () => {
 test("bootstrap - Check that we can cancel bootstrap before planned", async () => {
   const scheduleBootstrapEvent = await scheduleBootstrap(
     sudo,
-    MGA_ASSET_ID,
+    GASP_ASSET_ID,
     bootstrapCurrency,
     waitingPeriodWithPlan,
     bootstrapPeriod,
@@ -76,7 +76,7 @@ test("bootstrap - Check that we can cancel bootstrap before planned", async () =
 test("bootstrap - Check that we can not cancel bootstrap when bootstrap event already planned or started", async () => {
   const scheduleBootstrapEvent = await scheduleBootstrap(
     sudo,
-    MGA_ASSET_ID,
+    GASP_ASSET_ID,
     bootstrapCurrency,
     waitingPeriodLessPlan,
     bootstrapPeriod,

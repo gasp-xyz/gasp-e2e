@@ -17,7 +17,7 @@ import { getApi, getMangataInstance } from "./api";
 import {
   ETH_ASSET_ID,
   MAX_BALANCE,
-  MGA_ASSET_ID,
+  GASP_ASSET_ID,
   MGA_DEFAULT_LIQ_TOKEN,
 } from "./Constants";
 import { Fees } from "./Fees";
@@ -814,12 +814,12 @@ async function mintMgas(account: KeyringPair) {
   const sudo = getSudoUser();
   const user = new User(keyring);
   user.addFromAddress(keyring, account.address);
-  await user.addMGATokens(sudo);
+  await user.addGASPTokens(sudo);
 }
 export async function createPoolIfMissing(
   sudo: SudoUser,
   amountInPool: string,
-  firstAssetId = MGA_ASSET_ID,
+  firstAssetId = GASP_ASSET_ID,
   seccondAssetId = ETH_ASSET_ID,
   promoted = false,
 ) {
@@ -848,7 +848,7 @@ export async function createPoolIfMissing(
       .withFn(
         sudo.node.api!.tx.sudo.sudo(
           sudo.node.api!.tx.tokens.mint(
-            MGA_ASSET_ID,
+            GASP_ASSET_ID,
             sudo.keyRingPair.address,
             new BN(Math.pow(10, 20).toString()),
           ),

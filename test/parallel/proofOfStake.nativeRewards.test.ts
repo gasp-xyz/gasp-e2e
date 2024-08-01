@@ -12,7 +12,7 @@ import { Sudo } from "../../utils/sudo";
 import { AssetWallet, User } from "../../utils/User";
 import { getEnvironmentRequiredVars } from "../../utils/utils";
 import { Xyk } from "../../utils/xyk";
-import { MGA_ASSET_ID } from "../../utils/Constants";
+import { GASP_ASSET_ID } from "../../utils/Constants";
 import { getLiquidityAssetId } from "../../utils/tx";
 import { BN_ZERO, signTx } from "gasp-sdk";
 import { ProofOfStake } from "../../utils/ProofOfStake";
@@ -63,7 +63,7 @@ beforeAll(async () => {
     Sudo.sudoAs(
       sudo,
       Xyk.createPool(
-        MGA_ASSET_ID,
+        GASP_ASSET_ID,
         Assets.DEFAULT_AMOUNT.divn(2),
         token1,
         Assets.DEFAULT_AMOUNT.divn(2),
@@ -71,7 +71,7 @@ beforeAll(async () => {
     ),
   );
 
-  liqId = await getLiquidityAssetId(MGA_ASSET_ID, token1);
+  liqId = await getLiquidityAssetId(GASP_ASSET_ID, token1);
 
   await Sudo.batchAsSudoFinalized(
     Assets.promotePool(liqId.toNumber(), 20),
@@ -79,7 +79,7 @@ beforeAll(async () => {
   );
 
   testUser.addAsset(liqId);
-  testUser.addAsset(MGA_ASSET_ID);
+  testUser.addAsset(GASP_ASSET_ID);
   testUser.addAsset(token1);
 });
 
@@ -122,9 +122,9 @@ test.skip("TODO Activate some Liquidity using SDK THEN claim rewards THEN deacti
   await testUser.refreshAmounts(AssetWallet.AFTER);
 
   const claimedRewards = testUser
-    .getAsset(MGA_ASSET_ID)
+    .getAsset(GASP_ASSET_ID)
     ?.amountAfter.free!.sub(
-      testUser.getAsset(MGA_ASSET_ID)?.amountBefore.free!,
+      testUser.getAsset(GASP_ASSET_ID)?.amountBefore.free!,
     );
 
   expect(claimedRewards).bnGt(BN_ZERO);

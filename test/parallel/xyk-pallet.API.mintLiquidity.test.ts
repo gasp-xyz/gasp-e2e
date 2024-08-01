@@ -75,7 +75,7 @@ describe("xyk-pallet - Mint liquidity tests: with minting you can", () => {
       ],
       sudo,
     );
-    await testUser1.addMGATokens(sudo);
+    await testUser1.addGASPTokens(sudo);
     const amounttoThePool = new BN(1);
     await createPool(
       testUser1.keyRingPair,
@@ -151,7 +151,7 @@ describe("xyk-pallet - Mint liquidity tests: with minting you can", () => {
       [defaultCurrencyValue, defaultCurrencyValue],
       sudo,
     );
-    await testUser1.addMGATokens(sudo);
+    await testUser1.addGASPTokens(sudo);
     const amounttoThePool = new BN(defaultCurrencyValue).div(new BN(2));
     await createPool(
       testUser1.keyRingPair,

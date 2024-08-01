@@ -19,7 +19,7 @@ import { setupApi, setupUsers } from "../../utils/setup";
 import { Sudo } from "../../utils/sudo";
 import { AssetWallet, User } from "../../utils/User";
 import { getEnvironmentRequiredVars } from "../../utils/utils";
-import { MGA_ASSET_ID, MGR_ASSET_NAME } from "../../utils/Constants";
+import { GASP_ASSET_ID, MGR_ASSET_NAME } from "../../utils/Constants";
 import {
   ModalType,
   NotificationModal,
@@ -67,7 +67,7 @@ describe("UI tests - pools, provide liquidity", () => {
     await createPoolIfMissing(
       sudo,
       "1800000000000000000000000000000000",
-      MGA_ASSET_ID,
+      GASP_ASSET_ID,
       testAssetId,
     );
 
@@ -78,7 +78,7 @@ describe("UI tests - pools, provide liquidity", () => {
     );
 
     testUser1.addAsset(testAssetId);
-    testUser1.addAsset(MGA_ASSET_ID);
+    testUser1.addAsset(GASP_ASSET_ID);
     await testUser1.refreshAmounts(AssetWallet.BEFORE);
   });
 
@@ -128,8 +128,8 @@ describe("UI tests - pools, provide liquidity", () => {
     const testAssetAmountAfter =
       testUser1.getAsset(testAssetId)?.amountAfter.free!;
     const mgrAmountBefore =
-      testUser1.getAsset(MGA_ASSET_ID)?.amountBefore.free!;
-    const mgrAmountAfter = testUser1.getAsset(MGA_ASSET_ID)?.amountAfter.free!;
+      testUser1.getAsset(GASP_ASSET_ID)?.amountBefore.free!;
+    const mgrAmountAfter = testUser1.getAsset(GASP_ASSET_ID)?.amountAfter.free!;
 
     const liquidityProvided =
       testAssetAmountBefore.gt(testAssetAmountAfter) &&
