@@ -24,7 +24,7 @@ describe("updateL1FromL1", () => {
     await initApi();
     setupUsers();
     sequencer = await SequencerStaking.getSequencerUser();
-    await Rolldown.waitForReadRights(sequencer.ethAddress);
+    await Rolldown.waitForReadRights(sequencer.keyRingPair.address);
   });
   it("Updates are accepted", async () => {
     const txIndex = await Rolldown.lastProcessedRequestOnL2();
@@ -80,27 +80,49 @@ describe("updateL1FromL1", () => {
     const res = await Rolldown.deposit(
       sequencer,
       txIndex,
-      sequencer.ethAddress,
+      sequencer.keyRingPair.address,
       BN_THOUSAND,
     );
     expectExtrinsicSucceed(res);
     const events = await Rolldown.untilL2Processed(res);
     expect(
-      Rolldown.isDepositSucceed(events, sequencer.ethAddress, BN_THOUSAND),
+      Rolldown.isDepositSucceed(
+        events,
+        sequencer.keyRingPair.address,
+        BN_THOUSAND,
+      ),
     ).toBe(true);
     const res2 = await Rolldown.deposit(
       sequencer,
       txIndex,
-      sequencer.ethAddress,
+      sequencer.keyRingPair.address,
       BN_THOUSAND,
     );
     expectExtrinsicSucceed(res2);
     const events2 = await Rolldown.untilL2Processed(res2);
     expect(
-      Rolldown.isDepositSucceed(events2, sequencer.ethAddress, BN_THOUSAND),
+      Rolldown.isDepositSucceed(
+        events2,
+        sequencer.keyRingPair.address,
+        BN_THOUSAND,
+      ),
     ).toBe(false);
-    expect(events.length).toBeGreaterThan(2);
-    expect(events2.length).toBe(2);
+    expect(
+      events.some((x) => {
+        return (
+          x.event.section === "rolldown" &&
+          x.event.method === "RequestProcessedOnL2"
+        );
+      }),
+    ).toBeTrue();
+    expect(
+      events2.some((x) => {
+        return (
+          x.event.section === "rolldown" &&
+          x.event.method === "RequestProcessedOnL2"
+        );
+      }),
+    ).toBeFalse();
   });
   it("Add twice the same request id but different deposits", async () => {
     const txIndex = await Rolldown.lastProcessedRequestOnL2();
@@ -110,8 +132,8 @@ describe("updateL1FromL1", () => {
       new L2Update(api)
         .withDeposit(
           txIndex,
-          sequencer.ethAddress,
-          sequencer.ethAddress,
+          sequencer.keyRingPair.address,
+          sequencer.keyRingPair.address,
           BN_THOUSAND,
         )
         .build(),
@@ -120,15 +142,19 @@ describe("updateL1FromL1", () => {
     expectExtrinsicSucceed(res);
     const events = await Rolldown.untilL2Processed(res);
     expect(
-      Rolldown.isDepositSucceed(events, sequencer.ethAddress, BN_THOUSAND),
+      Rolldown.isDepositSucceed(
+        events,
+        sequencer.keyRingPair.address,
+        BN_THOUSAND,
+      ),
     ).toBe(true);
     const res2 = await signTx(
       api,
       new L2Update(api)
         .withDeposit(
           txIndex,
-          sequencer.ethAddress,
-          sequencer.ethAddress,
+          sequencer.keyRingPair.address,
+          sequencer.keyRingPair.address,
           BN_THOUSAND.muln(2),
         )
         .build(),
@@ -138,7 +164,11 @@ describe("updateL1FromL1", () => {
     expectExtrinsicSucceed(res2);
     const events2 = await Rolldown.untilL2Processed(res2);
     expect(
-      Rolldown.isDepositSucceed(events2, sequencer.ethAddress, BN_THOUSAND),
+      Rolldown.isDepositSucceed(
+        events2,
+        sequencer.keyRingPair.address,
+        BN_THOUSAND,
+      ),
     ).toBe(false);
     expect(events.length).toBeGreaterThan(2);
     expect(events2.length).toBe(2);
@@ -150,8 +180,8 @@ describe("updateL1FromL1", () => {
     const update = new L2Update(api)
       .withDeposit(
         txIndex,
-        sequencer.ethAddress,
-        sequencer.ethAddress,
+        sequencer.keyRingPair.address,
+        sequencer.keyRingPair.address,
         BN_THOUSAND,
       )
       .withDeposit(
@@ -165,14 +195,22 @@ describe("updateL1FromL1", () => {
     expectExtrinsicSucceed(res);
     const events = await Rolldown.untilL2Processed(res);
     expect(
-      Rolldown.isDepositSucceed(events, sequencer.ethAddress, BN_THOUSAND),
+      Rolldown.isDepositSucceed(
+        events,
+        sequencer.keyRingPair.address,
+        BN_THOUSAND,
+      ),
     ).toBe(true);
     const res2 = await signTx(api, update, sequencer.keyRingPair);
 
     expectExtrinsicSucceed(res2);
     const events2 = await Rolldown.untilL2Processed(res2);
     expect(
-      Rolldown.isDepositSucceed(events2, sequencer.ethAddress, BN_THOUSAND),
+      Rolldown.isDepositSucceed(
+        events2,
+        sequencer.keyRingPair.address,
+        BN_THOUSAND,
+      ),
     ).toBe(false);
     expect(events.length).toBeGreaterThan(2);
     expect(events2.length).toBe(2);
@@ -184,8 +222,8 @@ describe("updateL1FromL1", () => {
     const update = new L2Update(api)
       .withDeposit(
         txIndex - 1,
-        sequencer.ethAddress,
-        sequencer.ethAddress,
+        sequencer.keyRingPair.address,
+        sequencer.keyRingPair.address,
         BN_THOUSAND,
       )
       .withDeposit(
@@ -203,7 +241,11 @@ describe("updateL1FromL1", () => {
     ).toBe(true);
 
     expect(
-      Rolldown.isDepositSucceed(events, sequencer.ethAddress, BN_THOUSAND),
+      Rolldown.isDepositSucceed(
+        events,
+        sequencer.keyRingPair.address,
+        BN_THOUSAND,
+      ),
     ).toBe(false);
 
     expect(events.length).toBeGreaterThan(2);
@@ -230,7 +272,11 @@ describe("updateL1FromL1", () => {
     ).toBe(true);
 
     expect(
-      Rolldown.isDepositSucceed(events, sequencer.ethAddress, BN_THOUSAND),
+      Rolldown.isDepositSucceed(
+        events,
+        sequencer.keyRingPair.address,
+        BN_THOUSAND,
+      ),
     ).toBe(false);
 
     expect(events.length).toBeGreaterThan(2);
@@ -356,7 +402,7 @@ describe("updateL1FromL1 - errors", () => {
     await initApi();
     setupUsers();
     sequencer = await SequencerStaking.getSequencerUser();
-    await Rolldown.waitForReadRights(sequencer.ethAddress);
+    await Rolldown.waitForReadRights(sequencer.keyRingPair.address);
   });
   describe.each([true, false])(`Update with gap: %s`, (withGap) => {
     it.each([0, 1, 2, 3])(
