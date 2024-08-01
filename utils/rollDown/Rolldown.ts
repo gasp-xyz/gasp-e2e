@@ -51,10 +51,23 @@ export class Rolldown {
       "rolldown",
       "L1ReadStored",
     ]);
-    const blockNo = stringToBN(until.data[0][1]);
+    const blockNo = stringToBN(until.data[0][2]);
     await waitBlockNumber(blockNo.toString(), 10);
-    const events = await getEventsAt(blockNo);
+    let events = await getEventsAt(blockNo);
+    if (!Rolldown.hasL2Processed(events as any[] as MangataGenericEvent[])) {
+      //wait one block because of the session change.
+      await waitNewBlock();
+      events = await getEventsAt(blockNo.addn(1));
+    }
     return events as any[] as MangataGenericEvent[];
+  }
+  static hasL2Processed(events: MangataGenericEvent[]) {
+    return events.some((x) => {
+      return (
+        x.event.section === "rolldown" &&
+        x.event.method === "RequestProcessedOnL2"
+      );
+    });
   }
   static async deposit(
     user: EthUser,
