@@ -1,6 +1,6 @@
 /*
  *
- * @group rollupUpdate
+ * @group counters
  */
 
 import { EthUser } from "../../utils/EthUser";
