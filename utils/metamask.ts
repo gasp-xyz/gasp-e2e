@@ -1,5 +1,4 @@
 /* eslint-disable no-console */
-import { blake2AsU8a, encodeAddress } from "@polkadot/util-crypto";
 import {
   BN,
   hexToU8a,
@@ -114,10 +113,7 @@ export async function signTxMetamask(
     { method: tx.method },
     { version: tx.version },
   );
-  //const dotAddress = blake2AsU8a(hexToU8a(ethAddress));
-  testLog
-    .getLog()
-    .info("dot addr:: " + encodeAddress(blake2AsU8a(hexToU8a(ethAddress)), 42));
+
   const options = txOptions;
 
   const signingInfo = await api.derive.tx.signingInfo(
@@ -142,7 +138,8 @@ export async function signTxMetamask(
   testLog.getLog().debug(JSON.stringify(result));
   const data = JSON.parse(result.toString());
   data.message.tx = u8aToHex(raw_payload).slice(2);
-
+  testLog.getLog().info("Txhex " + data.message.tx);
+  data.domain.chainId = 31337;
   const msg_sig = eth_sig_utils.signTypedData({
     privateKey: eth_util.toBuffer(ethPrivateKey),
     data: data,
@@ -150,12 +147,12 @@ export async function signTxMetamask(
     version: "V4",
   });
   testLog.getLog().debug("Ok, signed typed data ");
-  testLog.getLog().debug("SIGNATURE = " + msg_sig);
+  testLog.getLog().info("SIGNATURE = " + msg_sig);
   const created_signature = api.createType(
     "EthereumSignature",
     hexToU8a(msg_sig),
   );
-  testLog.getLog().debug(tx_payload);
+  testLog.getLog().info(tx_payload);
   testLog.getLog().debug(msg_sig);
   // @ts-ignore
   extrinsic.addSignature(ethAddress, created_signature, tx_payload);
