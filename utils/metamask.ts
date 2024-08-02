@@ -136,14 +136,14 @@ export async function signTxMetamask(
   const result = await api.rpc.metamask.get_eip712_sign_data(
     tx.toHex().slice(2),
   );
-  testLog.getLog().warn(JSON.stringify(result));
+  testLog.getLog().debug(JSON.stringify(result));
   const data = JSON.parse(result.toString());
   data.message.tx = u8aToHex(raw_payload).slice(2);
   if (extOptions !== undefined && extOptions.chainId !== undefined) {
     data.domain.chainId = extOptions.chainId;
   }
 
-  testLog.getLog().info("Txhex " + data.message.tx);
+  testLog.getLog().debug("Txhex " + data.message.tx);
   const msg_sig = eth_sig_utils.signTypedData({
     privateKey: eth_util.toBuffer(ethPrivateKey),
     data: data,
@@ -151,12 +151,12 @@ export async function signTxMetamask(
     version: "V4",
   });
   testLog.getLog().debug("Ok, signed typed data ");
-  testLog.getLog().info("SIGNATURE = " + msg_sig);
+  testLog.getLog().debug("SIGNATURE = " + msg_sig);
   const created_signature = api.createType(
     "EthereumSignature",
     hexToU8a(msg_sig),
   );
-  testLog.getLog().info(tx_payload);
+  testLog.getLog().debug(tx_payload);
   testLog.getLog().debug(msg_sig);
   // @ts-ignore
   extrinsic.addSignature(ethAddress, created_signature, tx_payload);
