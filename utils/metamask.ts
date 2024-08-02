@@ -1,5 +1,4 @@
 /* eslint-disable no-console */
-import { blake2AsU8a, encodeAddress } from "@polkadot/util-crypto";
 import {
   BN,
   hexToU8a,
@@ -66,6 +65,7 @@ export async function signTxMetamask(
   ethAddress: string,
   ethPrivateKey: string,
   txOptions: Optional<any, any> = { nonce: undefined },
+  extOptions: Optional<any, any> = {},
 ): Promise<MangataGenericEvent[]> {
   //TODO: use sdk api when ready
   const api = await ApiPromise.create({
@@ -114,10 +114,7 @@ export async function signTxMetamask(
     { method: tx.method },
     { version: tx.version },
   );
-  //const dotAddress = blake2AsU8a(hexToU8a(ethAddress));
-  testLog
-    .getLog()
-    .info("dot addr:: " + encodeAddress(blake2AsU8a(hexToU8a(ethAddress)), 42));
+
   const options = txOptions;
 
   const signingInfo = await api.derive.tx.signingInfo(
@@ -142,7 +139,11 @@ export async function signTxMetamask(
   testLog.getLog().debug(JSON.stringify(result));
   const data = JSON.parse(result.toString());
   data.message.tx = u8aToHex(raw_payload).slice(2);
+  if (extOptions !== undefined && extOptions.chainId !== undefined) {
+    data.domain.chainId = extOptions.chainId;
+  }
 
+  testLog.getLog().debug("Txhex " + data.message.tx);
   const msg_sig = eth_sig_utils.signTypedData({
     privateKey: eth_util.toBuffer(ethPrivateKey),
     data: data,

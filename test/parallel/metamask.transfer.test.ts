@@ -1,13 +1,12 @@
 /*
  *
- * @group metamask
+ * @group parallel
  */
 import { jest } from "@jest/globals";
 import { getApi, initApi } from "../../utils/api";
 import { ApiPromise, Keyring } from "@polkadot/api";
 import { AssetWallet, User } from "../../utils/User";
-import { getEnvironmentRequiredVars } from "../../utils/utils";
-import { setupApi, setupUsers } from "../../utils/setup";
+import { setupApi, setupUsers, sudo } from "../../utils/setup";
 import { Sudo } from "../../utils/sudo";
 import { Assets } from "../../utils/Assets";
 import { GASP_ASSET_ID } from "../../utils/Constants";
@@ -24,11 +23,9 @@ jest.spyOn(console, "log").mockImplementation(jest.fn());
 jest.setTimeout(1500000);
 process.env.NODE_ENV = "test";
 
-describe("Tests with Metamask signing:", () => {
-  const { sudo: sudoUserName } = getEnvironmentRequiredVars();
-  let sudo: User;
+describe("Tests with Metamask signing: Test that with current data, txs can be signed", () => {
   let testPdUser: User;
-  let testEthUser: EthUser;
+  let testEthUser: User;
 
   let api: ApiPromise;
   let keyring: Keyring;
@@ -45,9 +42,9 @@ describe("Tests with Metamask signing:", () => {
     }
 
     api = getApi();
-    keyring = new Keyring({ type: "sr25519" });
+    setupApi();
     [testPdUser] = setupUsers();
-    sudo = new User(keyring, sudoUserName);
+    keyring = new Keyring({ type: "ethereum" });
 
     [secondCurrency] = await Assets.setupUserWithCurrencies(
       sudo,
@@ -79,7 +76,7 @@ describe("Tests with Metamask signing:", () => {
       await initApi();
     }
 
-    testEthUser = new EthUser(keyring);
+    testEthUser = new User(keyring);
   });
 
   test("GIVEN sign extrinsic by using privateKey of another ethUser THEN receive error", async () => {
@@ -94,9 +91,27 @@ describe("Tests with Metamask signing:", () => {
     try {
       await signTxMetamask(
         tx,
-        testEthUser.ethAddress,
+        testEthUser.keyRingPair.address,
         secondEthUser.privateKey,
       );
+    } catch (error) {
+      signingError = error;
+    }
+
+    expect(signingError.toString()).toBe(
+      "RpcError: 1010: Invalid Transaction: Transaction has a bad signature",
+    );
+  });
+
+  test("Transfer tokens with an incorrect chainId - must fail", async () => {
+    await Sudo.batchAsSudoFinalized(Assets.mintNative(testEthUser));
+    testEthUser.addAsset(GASP_ASSET_ID);
+
+    const tx = api.tx.tokens.transfer(testPdUser.keyRingPair.address, 0, 1000);
+
+    let signingError: any;
+    try {
+      await signByMetamask(tx, testEthUser, { chainId: 6666 });
     } catch (error) {
       signingError = error;
     }
@@ -217,11 +232,17 @@ describe("Tests with Metamask signing:", () => {
   });
 });
 
-async function signByMetamask(extrinsic: any, ethUser: EthUser) {
+async function signByMetamask(
+  extrinsic: any,
+  ethUser: User,
+  extOptions?: Partial<{ chainId: number }>,
+) {
   const extrinsicFromBlock = await signTxMetamask(
     extrinsic,
-    ethUser.ethAddress,
-    ethUser.privateKey,
+    ethUser.keyRingPair.address,
+    ethUser.name as string,
+    undefined,
+    extOptions,
   ).then((result) => {
     const eventResponse = getEventResultFromMangataTx(result);
     expect(eventResponse.state).toEqual(ExtrinsicResult.ExtrinsicSuccess);
