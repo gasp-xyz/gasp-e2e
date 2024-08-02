@@ -65,6 +65,7 @@ export async function signTxMetamask(
   ethAddress: string,
   ethPrivateKey: string,
   txOptions: Optional<any, any> = { nonce: undefined },
+  extOptions: Optional<any, any> = {},
 ): Promise<MangataGenericEvent[]> {
   //TODO: use sdk api when ready
   const api = await ApiPromise.create({
@@ -135,11 +136,14 @@ export async function signTxMetamask(
   const result = await api.rpc.metamask.get_eip712_sign_data(
     tx.toHex().slice(2),
   );
-  testLog.getLog().debug(JSON.stringify(result));
+  testLog.getLog().warn(JSON.stringify(result));
   const data = JSON.parse(result.toString());
   data.message.tx = u8aToHex(raw_payload).slice(2);
+  if (extOptions !== undefined && extOptions.chainId !== undefined) {
+    data.domain.chainId = extOptions.chainId;
+  }
+
   testLog.getLog().info("Txhex " + data.message.tx);
-  data.domain.chainId = 31337;
   const msg_sig = eth_sig_utils.signTypedData({
     privateKey: eth_util.toBuffer(ethPrivateKey),
     data: data,
