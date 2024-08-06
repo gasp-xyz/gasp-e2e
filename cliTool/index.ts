@@ -153,7 +153,7 @@ async function app(): Promise<any> {
       }
       if (answers.option.includes("depositHell")) {
         while (true) {
-          await depositHell(1000);
+          await depositHell(5000);
         }
       }
       if (answers.option.includes("Read L2 updates")) {
